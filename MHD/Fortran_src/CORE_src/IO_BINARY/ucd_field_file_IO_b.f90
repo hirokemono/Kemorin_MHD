@@ -7,12 +7,15 @@
 !> @brief binary format data IO
 !!
 !!@verbatim
-!!      subroutine write_ucd_2_fld_file_b(my_rank, istep, ucd)
+!!      subroutine write_ucd_2_fld_file_b(my_rank, istep, t_IO, ucd)
 !!
-!!      subroutine read_ucd_2_fld_file_b(my_rank, istep, ucd)
-!!      subroutine read_alloc_ucd_2_fld_file_b(my_rank, istep, ucd)
+!!      subroutine read_ucd_2_fld_file_b(my_rank, istep, t_IO, ucd)
+!!      subroutine read_alloc_ucd_2_fld_file_b                          &
+!!     &         (my_rank, istep, t_IO, ucd)
 !!
-!!      subroutine read_alloc_ucd_2_fld_header_b(my_rank, istep, ucd)
+!!      subroutine read_alloc_ucd_2_fld_header_b                        &
+!!     &         (my_rank, istep, t_IO, ucd)
+!!        type(time_params_IO), intent(inout) :: t_IO
 !!        type(ucd_data), intent(inout) :: ucd
 !!@endverbatim
 !!
@@ -26,9 +29,9 @@
       use m_machine_parameter
 !
       use m_constants
-      use m_time_data_IO
       use m_field_file_format
 !
+      use t_time_data_IO
       use t_ucd_data
       use set_ucd_file_names
       use field_data_IO_b
@@ -42,9 +45,10 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine write_ucd_2_fld_file_b(my_rank, istep, ucd)
+      subroutine write_ucd_2_fld_file_b(my_rank, istep, t_IO, ucd)
 !
       integer(kind=kint), intent(in) :: my_rank, istep
+      type(time_params_IO), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
 !
       character(len=kchara) :: file_name
@@ -60,7 +64,8 @@
       call open_write_binary_file(file_name)
 !
       nnod4 = int(ucd%nnod)
-      call write_step_data_b(my_rank)
+      call write_step_data_b                                            &
+     &   (my_rank, t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO)
       call write_field_data_b(nnod4, ucd%num_field,                     &
      &    ucd%ntot_comp, ucd%num_comp, ucd%phys_name, ucd%d_ucd)
       call close_binary_file
@@ -70,9 +75,10 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine read_ucd_2_fld_file_b(my_rank, istep, ucd)
+      subroutine read_ucd_2_fld_file_b(my_rank, istep, t_IO, ucd)
 !
       integer(kind=kint), intent(in) :: my_rank, istep
+      type(time_params_IO), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
       character(len=kchara) :: file_name
@@ -87,7 +93,9 @@
      &     'Read binary data file: ', trim(file_name)
 !
       call open_read_binary_file(file_name, my_rank)
-      call read_step_data_b(istack_merged, ucd%num_field)
+      call read_step_data_b                                             &
+     &   (t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO,           &
+     &    istack_merged, ucd%num_field)
       ucd%nnod = istack_merged(1)
       nnod4 = int(istack_merged(1))
 !
@@ -100,9 +108,11 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_alloc_ucd_2_fld_file_b(my_rank, istep, ucd)
+      subroutine read_alloc_ucd_2_fld_file_b                            &
+     &         (my_rank, istep, t_IO, ucd)
 !
       integer(kind=kint), intent(in) :: my_rank, istep
+      type(time_params_IO), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
       character(len=kchara) :: file_name
@@ -117,7 +127,9 @@
      &     'Read binary data file: ', trim(file_name)
 !
       call open_read_binary_file(file_name, my_rank)
-      call read_step_data_b(istack_merged, ucd%num_field)
+      call read_step_data_b                                             &
+     &   (t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO,           &
+     &    istack_merged, ucd%num_field)
       ucd%nnod = istack_merged(1)
       nnod4 = int(istack_merged(1))
 !
@@ -135,9 +147,11 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_alloc_ucd_2_fld_header_b(my_rank, istep, ucd)
+      subroutine read_alloc_ucd_2_fld_header_b                          &
+     &         (my_rank, istep, t_IO, ucd)
 !
       integer(kind=kint), intent(in) :: my_rank, istep
+      type(time_params_IO), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
       character(len=kchara) :: file_name
@@ -151,7 +165,9 @@
      &     'Read binary data file: ', trim(file_name)
 !
       call open_read_binary_file(file_name, my_rank)
-      call read_step_data_b(istack_merged, ucd%num_field)
+      call read_step_data_b                                             &
+     &   (t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO,           &
+     &    istack_merged, ucd%num_field)
       ucd%nnod = istack_merged(1)
 !
       call allocate_ucd_phys_name(ucd)

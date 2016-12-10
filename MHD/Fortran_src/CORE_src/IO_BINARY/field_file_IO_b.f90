@@ -7,13 +7,18 @@
 !> @brief Output merged binary field file using MPI-IO
 !!
 !!@verbatim
-!!      subroutine write_step_field_file_b(file_name, my_rank, fld_IO)
+!!      subroutine write_step_field_file_b                              &
+!!     &         (file_name, my_rank, t_IO, fld_IO)
+!!        type(time_params_IO), intent(in) :: t_IO
+!!        type(field_IO), intent(in) :: fld_IO
 !!
-!!      subroutine read_step_field_file_b(file_name, my_rank, fld_IO)
+!!      subroutine read_step_field_file_b                               &
+!!     &         (file_name, my_rank, t_IO, fld_IO)
 !!      subroutine read_and_allocate_step_field_b                       &
-!!     &         (file_name, my_rank, fld_IO)
+!!     &         (file_name, my_rank, t_IO, fld_IO)
 !!      subroutine read_and_allocate_step_head_b                        &
-!!     &         (file_name, my_rank, fld_IO)
+!!     &         (file_name, my_rank, t_IO, fld_IO)
+!!        type(time_params_IO), intent(inout) :: t_IO
 !!        type(field_IO), intent(inout) :: fld_IO
 !!@endverbatim
 !
@@ -23,7 +28,7 @@
       use m_constants
       use m_machine_parameter
 !
-      use m_time_data_IO
+      use t_time_data_IO
       use t_field_data_IO
       use field_data_IO_b
       use binary_IO
@@ -38,11 +43,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine write_step_field_file_b(file_name, my_rank, fld_IO)
+      subroutine write_step_field_file_b                                &
+     &         (file_name, my_rank, t_IO, fld_IO)
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank
 !
+      type(time_params_IO), intent(in) :: t_IO
       type(field_IO), intent(in) :: fld_IO
 !
 !
@@ -51,7 +58,8 @@
 !
       call open_write_binary_file(file_name)
 !
-      call write_step_data_b(my_rank)
+      call write_step_data_b                                            &
+     &   (my_rank, t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO)
       call write_field_data_b                                           &
      &   (fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
      &    fld_IO%num_comp_IO, fld_IO%fld_name, fld_IO%d_IO)
@@ -63,11 +71,13 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_step_field_file_b(file_name, my_rank, fld_IO)
+      subroutine read_step_field_file_b                                 &
+     &         (file_name, my_rank, t_IO, fld_IO)
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank
 !
+      type(time_params_IO), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       integer(kind = kint_gl) :: istack_merged(1)
@@ -77,7 +87,9 @@
      &   'Read binary data file: ', trim(file_name)
 !
       call open_read_binary_file(file_name, my_rank)
-      call read_step_data_b(istack_merged, fld_IO%num_field_IO)
+      call read_step_data_b                                             &
+     &   (t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO,           &
+     &    istack_merged, fld_IO%num_field_IO)
 !
       call read_mul_integer_b                                           &
      &   (fld_IO%num_field_IO, fld_IO%num_comp_IO)
@@ -92,11 +104,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine read_and_allocate_step_field_b                         &
-     &         (file_name, my_rank, fld_IO)
+     &         (file_name, my_rank, t_IO, fld_IO)
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank
 !
+      type(time_params_IO), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
 !
@@ -104,7 +117,7 @@
      &   'Read binary data file: ', trim(file_name)
 !
       call open_read_binary_file(file_name, my_rank)
-      call read_and_allocate_step_b(fld_IO)
+      call read_and_allocate_step_b(t_IO, fld_IO)
 !
       call alloc_phys_data_IO(fld_IO)
 !
@@ -118,11 +131,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine read_and_allocate_step_head_b                          &
-     &         (file_name, my_rank, fld_IO)
+     &         (file_name, my_rank, t_IO, fld_IO)
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank
 !
+      type(time_params_IO), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
 !
@@ -130,7 +144,7 @@
      &   'Read binary data file: ', trim(file_name)
 !
       call open_read_binary_file(file_name, my_rank)
-      call read_and_allocate_step_b(fld_IO)
+      call read_and_allocate_step_b(t_IO, fld_IO)
       call close_binary_file
 !
       end subroutine read_and_allocate_step_head_b
@@ -138,14 +152,17 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_and_allocate_step_b(fld_IO)
+      subroutine read_and_allocate_step_b(t_IO, fld_IO)
 !
+      type(time_params_IO), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       integer(kind = kint_gl) :: istack_merged(1)
 !
 !
-      call read_step_data_b(istack_merged, fld_IO%num_field_IO)
+      call read_step_data_b                                             &
+     &   (t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO,           &
+     &    istack_merged, fld_IO%num_field_IO)
       fld_IO%nnod_IO = int(istack_merged(1))
 !
       call alloc_phys_name_IO(fld_IO)

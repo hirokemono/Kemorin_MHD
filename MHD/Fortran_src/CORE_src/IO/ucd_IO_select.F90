@@ -94,7 +94,7 @@
 #endif
 !
       else if (ucd%ifmt_file .eq. iflag_bin) then
-        call write_ucd_2_fld_file_b(my_rank, istep_ucd, ucd)
+        call write_ucd_2_fld_file_b(my_rank, istep_ucd, t1_IO, ucd)
       else if (ucd%ifmt_file .eq. iflag_vtd) then
         call write_udt_data_2_vtk_phys(my_rank, istep_ucd, ucd)
       else if(ucd%ifmt_file .eq. iflag_ucd) then
@@ -134,7 +134,7 @@
 #endif
 !
       else if (ucd%ifmt_file .eq. iflag_bin) then
-        call write_ucd_2_fld_file_b(my_rank, istep_ucd, ucd)
+        call write_ucd_2_fld_file_b(my_rank, istep_ucd, t1_IO, ucd)
       else if(ucd%ifmt_file .eq. iflag_vtd) then
         call write_udt_data_2_vtk_phys(my_rank, istep_ucd, ucd)
       else if(ucd%ifmt_file .eq. iflag_ucd) then
@@ -196,7 +196,8 @@
 #endif
 !
       else if (ucd%ifmt_file .eq. iflag_bin) then
-        call read_alloc_ucd_2_fld_header_b(my_rank, istep_ucd, ucd)
+        call read_alloc_ucd_2_fld_header_b                              &
+     &     (my_rank, istep_ucd, t1_IO, ucd)
       else
         call read_alloc_ucd_2_fld_file(my_rank, istep_ucd, ucd)
       end if
@@ -224,7 +225,8 @@
 #endif
 !
       else if (ucd%ifmt_file .eq. iflag_bin) then
-        call read_alloc_ucd_2_fld_file_b(my_rank, istep_ucd, ucd)
+        call read_alloc_ucd_2_fld_file_b                                &
+     &     (my_rank, istep_ucd, t1_IO, ucd)
       else
         call read_alloc_ucd_2_fld_file(my_rank, istep_ucd, ucd)
       end if
@@ -252,7 +254,8 @@
 #endif
 !
       else if (ucd%ifmt_file .eq. iflag_bin) then
-        call read_ucd_2_fld_file_b(my_rank, istep_ucd, ucd)
+        call read_ucd_2_fld_file_b                                      &
+     &     (my_rank, istep_ucd, t1_IO, ucd)
       else
         call read_ucd_2_fld_file(my_rank, istep_ucd, ucd)
       end if

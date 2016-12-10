@@ -7,11 +7,13 @@
 !> @brief Output merged binary field file using MPI-IO
 !!
 !!@verbatim
-!!      subroutine write_step_data_b(id_rank)
+!!      subroutine write_step_data_b                                    &
+!!     &         (id_rank, i_time_step_IO, time_IO, delta_t_IO)
 !!      subroutine write_field_data_b(nnod, num_field, ntot_comp,       &
 !!     &          ncomp_field, field_name, d_nod)
 !!
-!!      subroutine read_step_data_b(istack_merged, num_field)
+!!      subroutine read_step_data_b(i_time_step_IO, time_IO, delta_t_IO,&
+!!     &         istack_merged, num_field)
 !!      subroutine read_field_data_b                                    &
 !!     &         (nnod, num_field, ntot_comp, field_name, vect)
 !!@endverbatim
@@ -22,8 +24,6 @@
       use m_constants
       use m_machine_parameter
 !
-      use m_time_data_IO
-      use t_field_data_IO
       use binary_IO
 !
       implicit none
@@ -34,17 +34,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_step_data_b(id_rank)
-!
+      subroutine write_step_data_b                                      &
+     &         (id_rank, i_time_step_IO, time_IO, delta_t_IO)
 !
       integer(kind=kint), intent(in) :: id_rank
+      integer(kind=kint), intent(in) :: i_time_step_IO
+      real(kind = kreal), intent(in) :: time_IO, delta_t_IO
 !
 !
       call write_one_integer_b(id_rank)
-      call write_one_integer_b(t1_IO%i_time_step_IO)
+      call write_one_integer_b(i_time_step_IO)
 !
-      call write_one_real_b(t1_IO%time_IO)
-      call write_one_real_b(t1_IO%delta_t_IO)
+      call write_one_real_b(time_IO)
+      call write_one_real_b(delta_t_IO)
 !
       end subroutine write_step_data_b
 !
@@ -76,7 +78,11 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_step_data_b(istack_merged, num_field)
+      subroutine read_step_data_b(i_time_step_IO, time_IO, delta_t_IO,  &
+     &         istack_merged, num_field)
+!
+      integer(kind=kint), intent(inout) :: i_time_step_IO
+      real(kind = kreal), intent(inout) :: time_IO, delta_t_IO
 !
       integer(kind=kint_gl), intent(inout) :: istack_merged(1)
       integer(kind=kint), intent(inout) :: num_field
@@ -85,9 +91,9 @@
 !
 !
       call read_one_integer_b(id_rank)
-      call read_one_integer_b(t1_IO%i_time_step_IO)
-      call read_one_real_b(t1_IO%time_IO)
-      call read_one_real_b(t1_IO%delta_t_IO)
+      call read_one_integer_b(i_time_step_IO)
+      call read_one_real_b(time_IO)
+      call read_one_real_b(delta_t_IO)
 !
       call read_mul_int8_b(ione, istack_merged)
       call read_one_integer_b(num_field)
