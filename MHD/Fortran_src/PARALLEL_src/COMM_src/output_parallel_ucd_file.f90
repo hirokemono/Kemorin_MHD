@@ -173,7 +173,7 @@
 !
       call set_ucd_file_format(ifile_format, ucd)
       call set_ucd_file_prefix(ucd_prefix, ucd)
-      call sel_write_udt_file(my_rank, istep_ucd, local_ucd)
+      call sel_write_udt_file(my_rank, istep_ucd, t1_IO, local_ucd)
       call disconnect_ucd_data(local_ucd)
 !
       end subroutine link_output_ucd_file_once

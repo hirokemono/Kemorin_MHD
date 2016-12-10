@@ -114,7 +114,7 @@
         call write_parallel_vtk_file(my_rank, nprocs, istep_ucd, ucd)
         call write_udt_data_2_vtk_phys(my_rank, istep_ucd, ucd)
       else
-        call sel_write_ucd_file(my_rank, istep_ucd, ucd)
+        call sel_write_ucd_file(my_rank, istep_ucd, t1_IO, ucd)
       end if
 !
       end subroutine sel_write_parallel_ucd_file

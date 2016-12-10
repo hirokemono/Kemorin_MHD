@@ -18,6 +18,7 @@
       use t_FEM_phys_data
       use t_phys_data
       use t_phys_address
+      use m_time_data_IO
       use t_ucd_data
       use t_interpolate_table
 !
@@ -136,7 +137,7 @@
 !
           call set_ucd_file_format(itype_itp_udt_file, fem_ucd)
           call set_ucd_file_prefix(itp_udt_file_head, fem_ucd)
-          call sel_write_udt_file(my_rank, istep, fem_ucd)
+          call sel_write_udt_file(my_rank, istep, t1_IO, fem_ucd)
           call disconnect_ucd_data(fem_ucd)
           call disconnect_ucd_node(fem_ucd)
         end if

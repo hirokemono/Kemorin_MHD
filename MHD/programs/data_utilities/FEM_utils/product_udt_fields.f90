@@ -21,6 +21,7 @@
       use m_constants
       use m_machine_parameter
 !
+      use m_time_data_IO
       use t_comm_table
       use t_geometry_data
       use t_phys_data
@@ -342,7 +343,7 @@
       local_ucd%nnod = numnod
       call set_ucd_file_format_prefix                                   &
      &   (ucd_prefix, ifile_format, local_ucd)
-      call sel_read_udt_param(my_rank, istep_ucd, local_ucd)
+      call sel_read_udt_param(my_rank, istep_ucd, t1_IO, local_ucd)
       call find_field_id_in_ucd(local_ucd, field_name,                  &
      &    i_field, ncomp_field)
       call deallocate_ucd_data(local_ucd)
@@ -371,7 +372,7 @@
       local_ucd%nnod =      numnod
       call set_ucd_file_format_prefix                                   &
      &   (ucd_prefix, ifile_format, local_ucd)
-      call sel_read_alloc_udt_file(my_rank, istep_ucd, local_ucd)
+      call sel_read_alloc_udt_file(my_rank, istep_ucd, t1_IO, local_ucd)
       call set_one_field_by_udt_data(numnod, ncomp_field,               &
      &    i_field, d_fld, local_ucd)
       call deallocate_ucd_data(local_ucd)

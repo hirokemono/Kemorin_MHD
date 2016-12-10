@@ -67,6 +67,7 @@
      &         (node, iphys, nod_fld, istep_ucd, ucd)
 !
       use calypso_mpi
+      use m_time_data_IO
       use t_ucd_data
       use m_phys_labels
       use m_ctl_params_4_prod_udt
@@ -124,7 +125,7 @@
       end if
 !
       call set_ucd_file_prefix(result_udt_file_head, ucd)
-      call sel_write_udt_file(my_rank, istep_ucd, ucd)
+      call sel_write_udt_file(my_rank, istep_ucd, t1_IO, ucd)
       call deallocate_ucd_data(ucd)
 !
       end subroutine const_MHD_length_scales

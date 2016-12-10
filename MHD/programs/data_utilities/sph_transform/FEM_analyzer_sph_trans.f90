@@ -25,6 +25,7 @@
       use m_SPH_transforms
       use t_ucd_data
       use t_file_IO_parameter
+      use m_time_data_IO
 !
       implicit none
 !
@@ -69,7 +70,7 @@
       call set_ucd_file_prefix(udt_file_param%file_prefix, input_ucd)
 !
       input_ucd%nnod = ione
-      call sel_read_udt_param(my_rank, i_step_init, input_ucd)
+      call sel_read_udt_param(my_rank, i_step_init, t1_IO, input_ucd)
 !
       end subroutine FEM_initialize_sph_trans
 !

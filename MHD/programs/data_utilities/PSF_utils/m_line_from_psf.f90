@@ -17,6 +17,7 @@
       use m_precision
       use m_constants
 !
+      use m_time_data_IO
       use t_ucd_data
 !
       implicit none
@@ -42,7 +43,7 @@
 !
       line%ifmt_file =   iflag_format
       line%file_prefix = file_header
-      call sel_write_ucd_file(delete_process, istep, line)
+      call sel_write_ucd_file(delete_process, istep, t1_IO, line)
       call deallocate_ucd_mesh(line)
 !
       end subroutine write_psf_line_data

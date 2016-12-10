@@ -22,6 +22,7 @@
       use t_next_node_ele_4_node
       use t_jacobian_3d
       use t_file_IO_parameter
+      use m_time_data_IO
 !
       implicit none
 !
@@ -103,7 +104,7 @@
 !     ---------------------
 !
       ucd_VIZ%nnod =      femmesh_VIZ%mesh%node%numnod
-      call sel_read_udt_param(my_rank, i_step_init, ucd_VIZ)
+      call sel_read_udt_param(my_rank, i_step_init, t1_IO, ucd_VIZ)
       call alloc_phys_data_type_by_output                               &
      &   (ucd_VIZ, femmesh_VIZ%mesh%node, field_VIZ)
 !

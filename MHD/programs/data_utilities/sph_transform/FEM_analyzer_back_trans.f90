@@ -120,7 +120,7 @@
 !*
       if(i_step_output_ucd .gt. 0) then
         if( mod(i_step,i_step_output_ucd) .eq. 0) then
-          call sel_write_udt_file(my_rank, i_step, ucd)
+          call sel_write_udt_file(my_rank, i_step, t1_IO, ucd)
         end if
       end if
 !

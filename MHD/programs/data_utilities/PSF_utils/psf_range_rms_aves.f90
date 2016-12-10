@@ -13,6 +13,7 @@
       use m_psf_results
       use m_field_file_format
 !
+      use m_time_data_IO
       use t_ucd_data
 !
       use set_parallel_file_name
@@ -113,7 +114,7 @@
         write(*,'(10a1)', advance='NO') (char(8),i=1,10)
         write(*,'(i15)', advance='NO') istep
 !
-        call sel_read_udt_file(iminus, istep, psf_ucd)
+        call sel_read_udt_file(iminus, istep, t1_IO, psf_ucd)
         call cal_range_rms_ave_4_psf                                    &
      &     (psf_u%psf_ele, psf_u%psf_phys, psf_normal,                  &
      &      icomp_ref_field, iflag_ref, ref_value, area_res,            &

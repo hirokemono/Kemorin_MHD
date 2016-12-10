@@ -23,9 +23,10 @@
 !
       subroutine init_by_ucd_4_plane_model(istep, nod_fld, ucd)
 !
-       use m_file_format_switch
-       use t_phys_data
-       use ucd_IO_select
+      use m_file_format_switch
+      use t_phys_data
+      use m_time_data_IO
+      use ucd_IO_select
 !
       integer (kind = kint), intent(in) :: istep
       type(ucd_data), intent(inout) :: ucd
@@ -34,7 +35,7 @@
 !
 !
       ucd%nnod = ione
-      call sel_read_udt_param(izero, istep, ucd)
+      call sel_read_udt_param(izero, istep, t1_IO, ucd)
       call deallocate_ucd_phys_data(ucd)
 !
       nod_fld%num_phys =    ucd%num_field
@@ -57,6 +58,7 @@
      &          ifield_target, phys_data, nnod_max, mesh, ucd)
 !
       use t_mesh_data
+      use m_time_data_IO
       use t_ucd_data
       use ucd_IO_select
 !
@@ -80,7 +82,7 @@
         my_rank = ip - 1
 !
         ucd%nnod =        mesh(ip)%node%numnod
-        call sel_read_udt_file(my_rank, istep, ucd)
+        call sel_read_udt_file(my_rank, istep, t1_IO, ucd)
 !
         call copy_and_pick_ucd_data_merge                               &
      &         (nnod_target, nfield_target, icomp_target,               &

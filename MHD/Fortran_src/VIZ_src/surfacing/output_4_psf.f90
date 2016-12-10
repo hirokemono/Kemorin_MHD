@@ -23,6 +23,7 @@
       use m_precision
 !
       use calypso_mpi
+      use m_time_data_IO
       use t_ucd_data
 !
       implicit  none
@@ -129,7 +130,8 @@
       do i_psf = 1, num_psf
         if((psf_out(i_psf)%ifmt_file/iflag_single) .eq. 0) then
           if(my_rank .eq. mod(i_psf-1,nprocs)) then
-            call sel_write_udt_file(iminus, istep_psf, psf_out(i_psf))
+            call sel_write_udt_file                                     &
+     &         (iminus, istep_psf, t1_IO, psf_out(i_psf))
           end if
         else
           call sel_write_parallel_ucd_file                              &
@@ -192,7 +194,8 @@
         iso_out(i_iso)%file_prefix = iso_header(i_iso)
         if((iso_out(i_iso)%ifmt_file/iflag_single) .eq. 0) then
           if(my_rank .eq. mod(i_iso-1,nprocs)) then
-            call sel_write_ucd_file(iminus, istep_iso, iso_out(i_iso))
+            call sel_write_ucd_file                                     &
+     &         (iminus, istep_iso, t1_IO, iso_out(i_iso))
           end if
           call deallocate_ucd_mesh(iso_out(i_iso))
         else

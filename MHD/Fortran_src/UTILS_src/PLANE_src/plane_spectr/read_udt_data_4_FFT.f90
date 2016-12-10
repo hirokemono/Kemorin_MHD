@@ -30,6 +30,7 @@
       use m_constants
       use m_control_param_merge
 !
+      use m_time_data_IO
       use t_ucd_data
 !
       use set_list_4_FFT
@@ -42,7 +43,7 @@
 !
 !
       ucd%nnod = ione
-      call sel_read_udt_param(izero, istep, ucd)
+      call sel_read_udt_param(izero, istep, t1_IO, ucd)
 !
       call alloc_phys_name_type_by_output(ucd, plane_phys)
       call deallocate_ucd_phys_data(ucd)

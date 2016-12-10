@@ -14,6 +14,7 @@
       use m_control_param_merge
       use m_geometry_data_4_merge
       use m_2nd_geometry_4_merge
+      use m_time_data_IO
       use t_ucd_data
 !
       implicit none
@@ -56,7 +57,7 @@
         call allocate_ucd_phys_data(fem_ucd)
 !
         call copy_domain_data_from_global(ip, fem_ucd)
-        call sel_write_udt_file(my_rank, istep, fem_ucd)
+        call sel_write_udt_file(my_rank, istep, t1_IO, fem_ucd)
 !
         call deallocate_ucd_phys_data(fem_ucd)
         call deallocate_ucd_node(fem_ucd)

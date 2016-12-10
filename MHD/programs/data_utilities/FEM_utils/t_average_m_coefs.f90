@@ -12,6 +12,7 @@
       use m_field_file_format
 !
       use t_group_data
+      use m_time_data_IO
       use t_ucd_data
 !
       use ucd_IO_select
@@ -138,7 +139,7 @@
 !
       ucd_med%ifmt_file = iflag_vtk
       ucd_med%file_prefix = tave_grp_udt_head
-      call sel_write_udt_file(iminus, istep_read, ucd_med)
+      call sel_write_udt_file(iminus, istep_read, t1_IO, ucd_med)
       stop
 !
       end program element_grouping_udt

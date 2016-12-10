@@ -12,6 +12,7 @@
       use m_field_file_format
 !
       use t_group_data
+      use m_time_data_IO
       use t_ucd_data
       use t_psf_results
 !
@@ -72,7 +73,7 @@
 !
       psf_ucd%ifmt_file = iflag_udt
       psf_ucd%file_prefix = tave_grp_udt_head
-      call sel_write_udt_file(iminus, istep_start, psf_ucd)
+      call sel_write_udt_file(iminus, istep_start, t1_IO, psf_ucd)
 !
       do
         call read_evolution_data(id_org_file, num_comp, num_layer,      &
@@ -83,7 +84,7 @@
         if(mod((istep_read-istep_start),istep_inc) .eq. izero           &
      &     .and. istep_read.ge.istep_start) then
           call sqrt_of_rms_coefs(num_layer, num_comp, coef)
-          call sel_write_udt_file(iminus, istep_start, psf_ucd)
+          call sel_write_udt_file(iminus, istep_start, t1_IO, psf_ucd)
         end if
 !
         if(istep_read .ge. istep_end) exit
