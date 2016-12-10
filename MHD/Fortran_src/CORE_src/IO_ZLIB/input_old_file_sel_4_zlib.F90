@@ -20,6 +20,7 @@
       use m_precision
 !
       use m_file_format_switch
+      use m_time_data_IO
       use t_field_data_IO
 !
 #ifdef ZLIB_IO
@@ -50,7 +51,8 @@
 !
 #ifdef ZLIB_IO
       if(fld_IO%iflag_file_fmt .eq. id_gzip_txt_file_fmt) then
-        call read_alloc_gz_field_file(file_name, my_rank, fld_IO)
+        call read_alloc_gz_field_file                                   &
+     &     (file_name, my_rank, fld_IO)
         return
       end if
 #endif
@@ -82,7 +84,7 @@
 !
 #ifdef ZLIB_IO
       if(fld_IO%iflag_file_fmt .eq. id_gzip_txt_file_fmt) then
-        call read_gz_rst_file(my_rank, file_name, fld_IO)
+        call read_gz_rst_file(my_rank, file_name, t1_IO, fld_IO)
         return
       end if
 #endif
@@ -114,7 +116,7 @@
 !
 #ifdef ZLIB_IO
       if(fld_IO%iflag_file_fmt .eq. id_gzip_txt_file_fmt) then
-        call read_gz_rst_comps(my_rank, file_name, fld_IO)
+        call read_gz_rst_comps(my_rank, file_name, t1_IO, fld_IO)
         return
       end if
 #endif

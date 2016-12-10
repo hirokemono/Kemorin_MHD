@@ -40,6 +40,7 @@
       use gz_write_ucd_to_vtk_file
 #endif
 !
+      use m_time_data_IO
       use t_ucd_data
 !
       implicit none
@@ -89,7 +90,7 @@
       else if(ucd%ifmt_file .eq. iflag_udt_gz) then
         call write_gz_udt_file(my_rank, istep_ucd, ucd)
       else if(ucd%ifmt_file .eq. iflag_fld_gz) then
-        call write_ucd_2_gz_fld_file(my_rank, istep_ucd, ucd)
+        call write_ucd_2_gz_fld_file(my_rank, istep_ucd, t1_IO, ucd)
 #endif
 !
       else if (ucd%ifmt_file .eq. iflag_bin) then
@@ -129,7 +130,7 @@
       else if(ucd%ifmt_file .eq. iflag_udt_gz) then
         call write_gz_udt_file(my_rank, istep_ucd, ucd)
       else if(ucd%ifmt_file .eq. iflag_fld_gz) then
-        call write_ucd_2_gz_fld_file(my_rank, istep_ucd, ucd)
+        call write_ucd_2_gz_fld_file(my_rank, istep_ucd, t1_IO, ucd)
 #endif
 !
       else if (ucd%ifmt_file .eq. iflag_bin) then
@@ -190,7 +191,8 @@
       else if(ucd%ifmt_file .eq. iflag_udt_gz) then
         call read_alloc_gz_udt_head(my_rank, istep_ucd, ucd)
       else if(ucd%ifmt_file .eq. iflag_fld_gz) then
-        call read_alloc_ucd_2_gz_fld_file(my_rank, istep_ucd, ucd)
+        call read_alloc_ucd_2_gz_fld_file                               &
+     &     (my_rank, istep_ucd, t1_IO, ucd)
 #endif
 !
       else if (ucd%ifmt_file .eq. iflag_bin) then
@@ -217,7 +219,8 @@
       else if(ucd%ifmt_file .eq. iflag_udt_gz) then
         call read_alloc_gz_udt_file(my_rank, istep_ucd, ucd)
       else if(ucd%ifmt_file .eq. iflag_fld_gz) then
-        call read_alloc_ucd_2_gz_fld_file(my_rank, istep_ucd, ucd)
+        call read_alloc_ucd_2_gz_fld_file                               &
+     &     (my_rank, istep_ucd, t1_IO, ucd)
 #endif
 !
       else if (ucd%ifmt_file .eq. iflag_bin) then
@@ -244,7 +247,8 @@
       else if(ucd%ifmt_file .eq. iflag_udt_gz) then
         call read_gz_udt_file(my_rank, istep_ucd, ucd)
       else if(ucd%ifmt_file .eq. iflag_fld_gz) then
-        call read_ucd_2_gz_fld_file(my_rank, istep_ucd, ucd)
+        call read_ucd_2_gz_fld_file                                     &
+     &     (my_rank, istep_ucd, t1_IO, ucd)
 #endif
 !
       else if (ucd%ifmt_file .eq. iflag_bin) then

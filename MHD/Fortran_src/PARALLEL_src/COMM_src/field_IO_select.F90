@@ -38,11 +38,13 @@
       use m_precision
 !
       use m_file_format_switch
-      use t_field_data_IO
       use field_file_IO
       use field_file_IO_b
       use field_file_MPI_IO
       use field_file_MPI_IO_b
+!
+      use m_time_data_IO
+      use t_field_data_IO
 !
 #ifdef ZLIB_IO
       use gz_field_file_IO
@@ -297,7 +299,8 @@
       else if(fld_IO%iflag_file_fmt .eq. id_gzip_bin_file_fmt) then
         call gz_write_step_fld_file_b(file_name, id_rank, fld_IO)
       else if(fld_IO%iflag_file_fmt .eq. id_gzip_txt_file_fmt) then
-        call write_gz_step_field_file(file_name, id_rank, fld_IO)
+        call write_gz_step_field_file                                   &
+     &     (file_name, id_rank, t1_IO, fld_IO)
 #endif
 !
       else
@@ -343,7 +346,8 @@
       else if(fld_IO%iflag_file_fmt .eq. id_gzip_bin_file_fmt) then
         call gz_read_step_field_file_b(file_name, id_rank, fld_IO)
       else if(fld_IO%iflag_file_fmt .eq. id_gzip_txt_file_fmt) then
-        call read_gz_step_field_file(file_name, id_rank, fld_IO)
+        call read_gz_step_field_file                                    &
+     &     (file_name, id_rank, t1_IO, fld_IO)
 #endif
 !
       else
@@ -389,7 +393,8 @@
       else if(fld_IO%iflag_file_fmt .eq. id_gzip_bin_file_fmt) then
         call gz_rd_alloc_st_fld_file_b(file_name, id_rank, fld_IO)
       else if(fld_IO%iflag_file_fmt .eq. id_gzip_txt_file_fmt) then
-        call read_alloc_gz_step_field_file(file_name, id_rank, fld_IO)
+        call read_alloc_gz_step_field_file                              &
+     &     (file_name, id_rank, t1_IO, fld_IO)
 #endif
 !
       else
@@ -435,7 +440,8 @@
       else if(fld_IO%iflag_file_fmt .eq. id_gzip_bin_file_fmt) then
         call gz_rd_alloc_st_fld_head_b(file_name, id_rank, fld_IO)
       else if(fld_IO%iflag_file_fmt .eq. id_gzip_txt_file_fmt) then
-        call read_alloc_gz_step_field_head(file_name, id_rank, fld_IO)
+        call read_alloc_gz_step_field_head                              &
+     &     (file_name, id_rank, t1_IO, fld_IO)
 #endif
 !
       else

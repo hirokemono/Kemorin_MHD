@@ -7,16 +7,24 @@
 !> @brief Field file IO using zlib
 !!
 !!@verbatim
-!!      subroutine write_gz_step_field_file(gzip_name, my_rank, fld_IO)
+!!      subroutine write_gz_step_field_file                             &
+!!     &         (gzip_name, my_rank, t_IO, fld_IO)
+!!        type(time_params_IO), intent(in) :: t_IO
+!!        type(field_IO), intent(in) :: fld_IO
 !!
 !!      subroutine read_alloc_gz_field_file(gzip_name, my_rank, fld_IO)
 !!
-!!      subroutine read_gz_step_field_file(gzip_name, my_rank, fld_IO)
+!!      subroutine read_gz_step_field_file                              &
+!!     &         (gzip_name, my_rank, t_IO, fld_IO)
 !!      subroutine read_alloc_gz_step_field_file                        &
-!!     &          (gzip_name, my_rank, fld_IO)
+!!     &          (gzip_name, my_rank, t_IO, fld_IO)
+!!        type(time_params_IO), intent(inout) :: t_IO
+!!        type(field_IO), intent(inout) :: fld_IO
 !!
 !!      subroutine read_alloc_gz_step_field_head                        &
-!!     &         (gzip_name, my_rank, fld_IO)
+!!     &         (gzip_name, my_rank, t_IO, fld_IO)
+!!        type(time_params_IO), intent(inout) :: t_IO
+!!        type(field_IO), intent(inout) :: fld_IO
 !!@endverbatim
 !
       module gz_field_file_IO
@@ -24,6 +32,7 @@
       use m_precision
       use m_machine_parameter
 !
+      use t_time_data_IO
       use t_field_data_IO
       use gz_field_data_IO
       use skip_gz_comment
@@ -36,10 +45,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine write_gz_step_field_file(gzip_name, my_rank, fld_IO)
+      subroutine write_gz_step_field_file                               &
+     &         (gzip_name, my_rank, t_IO, fld_IO)
 !
       integer(kind = kint), intent(in) :: my_rank
       character(len=kchara), intent(in) :: gzip_name
+      type(time_params_IO), intent(in) :: t_IO
       type(field_IO), intent(in) :: fld_IO
 !
 !
@@ -49,7 +60,8 @@
 !
       call open_wt_gzfile_f(gzip_name)
 !
-      call write_gz_step_data(my_rank)
+      call write_gz_step_data                                           &
+     &   (my_rank, t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO)
       call write_gz_field_data                                          &
      &   (fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
      &    fld_IO%num_comp_IO, fld_IO%fld_name, fld_IO%d_IO)
@@ -92,10 +104,13 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine read_gz_step_field_file(gzip_name, my_rank, fld_IO)
+      subroutine read_gz_step_field_file                                &
+     &         (gzip_name, my_rank, t_IO, fld_IO)
 !
       integer(kind=kint), intent(in) :: my_rank
       character(len=kchara), intent(in) :: gzip_name
+!
+      type(time_params_IO), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       integer(kind = kint) :: id_rank
@@ -107,7 +122,8 @@
 !
       call open_rd_gzfile_f(gzip_name)
 !
-      call read_gz_step_data(id_rank)
+      call read_gz_step_data                                            &
+     &   (id_rank, t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO)
       call skip_gz_comment_int2(fld_IO%nnod_IO, fld_IO%num_field_IO)
       call read_gz_multi_int(fld_IO%num_field_IO, fld_IO%num_comp_IO)
       call read_gz_field_data                                           &
@@ -121,10 +137,12 @@
 !------------------------------------------------------------------
 !
       subroutine read_alloc_gz_step_field_file                          &
-     &          (gzip_name, my_rank, fld_IO)
+     &          (gzip_name, my_rank, t_IO, fld_IO)
 !
       integer(kind=kint), intent(in) :: my_rank
       character(len=kchara), intent(in) :: gzip_name
+!
+      type(time_params_IO), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       integer(kind = kint) :: id_rank
@@ -136,7 +154,8 @@
 !
       call open_rd_gzfile_f(gzip_name)
 !
-      call read_gz_step_data(id_rank)
+      call read_gz_step_data                                            &
+     &   (id_rank, t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO)
       call skip_gz_comment_int2(fld_IO%nnod_IO, fld_IO%num_field_IO)
       call alloc_phys_name_IO(fld_IO)
 !
@@ -156,10 +175,12 @@
 !------------------------------------------------------------------
 !
       subroutine read_alloc_gz_step_field_head                          &
-     &         (gzip_name, my_rank, fld_IO)
+     &         (gzip_name, my_rank, t_IO, fld_IO)
 !
       integer(kind=kint), intent(in) :: my_rank
       character(len=kchara), intent(in) :: gzip_name
+!
+      type(time_params_IO), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       integer(kind = kint) :: id_rank
@@ -171,7 +192,8 @@
 !
       call open_rd_gzfile_f(gzip_name)
 !
-      call read_gz_step_data(id_rank)
+      call read_gz_step_data                                            &
+     &   (id_rank, t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO)
       call skip_gz_comment_int2(fld_IO%nnod_IO, fld_IO%num_field_IO)
 !
       call alloc_phys_name_IO(fld_IO)
