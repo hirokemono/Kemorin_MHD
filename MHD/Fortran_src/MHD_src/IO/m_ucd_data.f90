@@ -33,6 +33,7 @@
       use m_precision
       use m_constants
 !
+      use m_time_data_IO
       use t_mesh_data
       use t_comm_table
       use t_geometry_data
@@ -91,7 +92,7 @@
 !
       istep_ucd = istep_max_dt / i_step_output_ucd
 !
-      call copy_time_steps_to_restart
+      call copy_time_steps_to_restart(t1_IO)
       call sel_write_parallel_ucd_file(istep_ucd, fem_ucd, merged_ucd)
 !      call output_range_data(node, nod_fld, istep_ucd, time)
 !

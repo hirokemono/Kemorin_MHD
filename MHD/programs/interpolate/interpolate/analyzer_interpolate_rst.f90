@@ -164,7 +164,7 @@
      &      new_femmesh%mesh%node, new_phys)
 !
         if (my_rank .lt. ndomain_dest) then
-          call copy_time_steps_to_restart
+          call copy_time_steps_to_restart(t1_IO)
 !
           itp_fld_IO%nnod_IO = new_femmesh%mesh%node%numnod
           call alloc_phys_data_IO(itp_fld_IO)

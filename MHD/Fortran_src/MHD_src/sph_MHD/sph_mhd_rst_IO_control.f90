@@ -116,7 +116,7 @@
 !
       istep_fld = istep_max_dt/i_step_output_rst
 !
-      call copy_time_steps_to_restart
+      call copy_time_steps_to_restart(t1_IO)
       call set_sph_restart_data_to_IO(rj_fld, sph_fst_IO)
 !
       call sel_write_step_SPH_field_file                                &
@@ -136,7 +136,7 @@
       integer(kind = kint), parameter :: negaone = -1
 !
 !
-      call copy_time_steps_to_restart
+      call copy_time_steps_to_restart(t1_IO)
       call set_sph_restart_data_to_IO(rj_fld, sph_fst_IO)
 
       call sel_write_step_SPH_field_file                                &
@@ -169,7 +169,7 @@
       end if
 !
       call set_sph_restart_from_IO(sph_fst_IO, rj_fld)
-      call copy_init_time_from_restart
+      call copy_init_time_from_restart(t1_IO)
 !
       call dealloc_phys_data_IO(sph_fst_IO)
       call dealloc_phys_name_IO(sph_fst_IO)
@@ -230,7 +230,7 @@
       if(rj_file_param%iflag_IO .eq. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_sph_restart_from_IO'
         call set_sph_restart_from_IO(sph_fst_IO, rj_fld)
-        call copy_init_time_from_restart
+        call copy_init_time_from_restart(t1_IO)
         time = time_init
       else
         if (iflag_debug.gt.0)                                           &
@@ -268,7 +268,7 @@
      &    sph_out_IO)
 !
       istep_fld = i_step / i_step_output_ucd
-      call copy_time_steps_to_restart
+      call copy_time_steps_to_restart(t1_IO)
       call copy_rj_phys_name_to_IO                                      &
      &   (rj_fld%num_phys_viz, rj_fld, sph_out_IO)
       call alloc_phys_data_IO(sph_out_IO)

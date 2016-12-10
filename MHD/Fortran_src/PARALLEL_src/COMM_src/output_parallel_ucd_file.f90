@@ -33,6 +33,7 @@
 !
       use m_precision
       use calypso_mpi
+      use m_time_data_IO
       use t_ucd_data
       use m_field_file_format
 !
@@ -132,7 +133,7 @@
      &     (node, ele, nod_comm, ucd, m_ucd)
       end if
 !
-      call copy_time_steps_to_restart
+      call copy_time_steps_to_restart(t1_IO)
       call sel_write_parallel_ucd_file(istep_ucd, ucd, m_ucd)
       call calypso_mpi_barrier
 !

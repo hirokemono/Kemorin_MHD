@@ -219,7 +219,7 @@
         call scalar_send_recv(iphys%i_pre_composit, nod_comm, nod_fld)
       end if
 !
-      call copy_time_steps_to_restart
+      call copy_time_steps_to_restart(t1_IO)
       call copy_field_data_to_restart(node, nod_fld, fem_fst_IO)
 !
       call sel_write_step_FEM_field_file                                &
@@ -257,9 +257,9 @@
       call dealloc_phys_name_IO(fem_fst_IO)
 !
       if(iflag_flexible_step .eq. iflag_flex_step) then
-        call copy_time_steps_from_restart
+        call copy_time_steps_from_restart(t1_IO)
       else
-        call copy_init_time_from_restart
+        call copy_init_time_from_restart(t1_IO)
       end if
 !
       if(my_rank .eq. 0)  write(*,*) 'delta t ', dt, dt_fact, idt_digit

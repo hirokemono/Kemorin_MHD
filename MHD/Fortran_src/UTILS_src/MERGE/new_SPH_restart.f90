@@ -185,7 +185,7 @@
      &   (np_sph_org, irank_org, istep, org_fst_IO)
 !
       if(irank_org .lt. np_sph_org) then
-        call copy_time_steps_from_restart
+        call copy_time_steps_from_restart(t1_IO)
         call alloc_phys_data_type(org_sph%sph_rj%nnod_rj, org_phys)
         call copy_rj_phys_data_from_IO(org_fst_IO, org_phys)
 !
@@ -270,7 +270,7 @@
         end if
 !
 !
-        call copy_time_steps_to_restart
+        call copy_time_steps_to_restart(t1_IO)
         call copy_rj_phys_name_to_IO                                    &
      &     (new_phys%num_phys, new_phys, new_fst_IO)
 !

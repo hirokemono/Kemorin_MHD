@@ -65,7 +65,7 @@
 !
 !  -------------------------------
 !
-      call copy_time_from_restart
+      call copy_time_from_restart(t1_IO)
       call copy_rj_phys_name_from_IO(sph_fld_IN, rj_fld_spec)
 !
       call set_sph_sprctr_data_address(sph_mesh_spec%sph%sph_rj,        &
@@ -103,7 +103,7 @@
         call sel_read_step_SPH_field_file                               &
      &     (nprocs, my_rank, i_step, sph_fld_IN)
 !
-        call copy_time_from_restart
+        call copy_time_from_restart(t1_IO)
 !
         if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
         call set_rj_phys_data_from_IO(sph_fld_IN, rj_fld_spec)
@@ -149,7 +149,7 @@
         call sel_read_step_SPH_field_file                               &
      &     (nprocs, my_rank, i_step, sph_fld_IN)
 !
-        call copy_time_from_restart
+        call copy_time_from_restart(t1_IO)
 !
         if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
         call set_rj_phys_data_from_IO(sph_fld_IN, rj_fld_spec)
