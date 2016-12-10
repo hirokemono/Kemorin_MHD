@@ -8,6 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine sync_field_time_mpi(t_IO)
+!!        type(time_params_IO), intent(inout) :: t_IO
 !!      subroutine sync_field_header_mpi(nprocs_in, id_rank,            &
 !!     &           nnod, num_field, istack_merged)
 !!      subroutine sync_field_comp_mpi(num_field, ncomp_field)
@@ -18,6 +19,7 @@
 !!     &          ioff_gl, field_name, nnod, ncomp, vector, istack_merged)
 !!
 !!      subroutine read_field_time_mpi(id_fld, nprocs_in, ioff_gl, t_IO)
+!!        type(time_params_IO), intent(inout) :: t_IO
 !!      subroutine read_field_header_mpi(id_fld, nprocs_in, id_rank,    &
 !!     &           ioff_gl, nnod, num_field, istack_merged)
 !!      subroutine read_field_num_mpi                                   &
@@ -49,7 +51,6 @@
 !
       use calypso_mpi
       use m_calypso_mpi_IO
-      use t_time_data_IO
       use t_field_data_IO
 !
       implicit none
@@ -61,6 +62,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sync_field_time_mpi(t_IO)
+!
+      use t_time_data_IO
 !
       type(time_params_IO), intent(inout) :: t_IO
 !
@@ -183,15 +186,15 @@
 !
       subroutine read_field_time_mpi(id_fld, nprocs_in, ioff_gl, t_IO)
 !
+      use t_time_data_IO
       use field_data_IO
       use m_error_IDs
 !
+      type(time_params_IO), intent(inout) :: t_IO
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind=kint), intent(in) :: nprocs_in
 !
       integer, intent(in) ::  id_fld
-!
-      type(time_params_IO), intent(inout) :: t_IO
 !
       character(len=len_step_data_buf) :: textbuf_c
       integer(kind = MPI_OFFSET_KIND) :: ioffset

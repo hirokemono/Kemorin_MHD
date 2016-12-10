@@ -8,20 +8,21 @@
 !!
 !!@verbatim
 !!      subroutine gz_write_step_fld_file_mpi_b                         &
-!!     &         (file_name, nprocs_in, id_rank, fld_IO)
+!!     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !!
-!!      subroutine gz_write_field_head_mpi_b(IO_param_l,                &
-!!     &          num_field, ncomp_field, istack_merged)
+!!      subroutine gz_write_field_head_mpi_b                            &
+!!     &         (IO_param_l, i_time_step_IO, time_IO, delta_t_IO,      &
+!!     &         num_field, ncomp_field, istack_merged)
 !!      subroutine gz_write_field_data_mpi_b(IO_param_l,                &
 !!     &          nnod, num_field, ntot_comp, field_name, d_nod)
 !!
 !!      subroutine gz_read_step_field_file_mpi_b                        &
-!!     &         (file_name, nprocs_in, id_rank, fld_IO)
+!!     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !!      subroutine gz_rd_alloc_st_fld_file_mpi_b                        &
-!!     &         (file_name, nprocs_in, id_rank, fld_IO)
+!!     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !!
 !!      subroutine gz_rd_alloc_st_fld_head_mpi_b                        &
-!!     &         (file_name, nprocs_in, id_rank, fld_IO)
+!!     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !!@endverbatim
 !
       module gz_field_file_MPI_IO_b
@@ -32,6 +33,7 @@
       use calypso_mpi
       use m_machine_parameter
       use m_calypso_mpi_IO
+      use t_time_data_IO
       use t_field_data_IO
       use t_calypso_mpi_IO_param
 !
@@ -49,7 +51,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine gz_write_step_fld_file_mpi_b                           &
-     &         (file_name, nprocs_in, id_rank, fld_IO)
+     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       use m_error_IDs
       use MPI_binary_head_IO
@@ -59,6 +61,7 @@
       character(len=kchara), intent(in) :: file_name
 !
       integer(kind = kint), intent(in) :: nprocs_in, id_rank
+      type(time_params_IO), intent(in) :: t_IO
       type(field_IO), intent(in) :: fld_IO
 !
 !
@@ -72,8 +75,9 @@
      &   (file_name, nprocs_in, id_rank, IO_param)
 !
       call gz_write_field_head_mpi_b(IO_param,                          &
-     &      fld_IO%num_field_IO, fld_IO%num_comp_IO,                    &
-     &      fld_IO%istack_numnod_IO)
+     &    t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO,           &
+     &    fld_IO%num_field_IO, fld_IO%num_comp_IO,                      &
+     &    fld_IO%istack_numnod_IO)
       call gz_write_field_data_mpi_b                                    &
      &   (IO_param, fld_IO%nnod_IO, fld_IO%num_field_IO,                &
      &    fld_IO%ntot_comp_IO, fld_IO%fld_name, fld_IO%d_IO)
@@ -85,7 +89,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_read_step_field_file_mpi_b                          &
-     &         (file_name, nprocs_in, id_rank, fld_IO)
+     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       use field_file_MPI_IO
       use MPI_binary_head_IO
@@ -98,6 +102,7 @@
       integer(kind=kint), intent(in) :: id_rank
       integer(kind=kint), intent(in) :: nprocs_in
 !
+      type(time_params_IO), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
 !
@@ -106,7 +111,8 @@
       call open_read_gz_mpi_file_b                                      &
      &   (file_name, nprocs_in, id_rank, IO_param)
 !
-      call gz_read_step_data_mpi_b(IO_param)
+      call gz_read_step_data_mpi_b(IO_param,                            &
+     &    t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO)
 !
       call alloc_merged_field_stack(nprocs_in, fld_IO)
       call gz_read_field_header_mpi_b                                   &
@@ -131,7 +137,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_rd_alloc_st_fld_file_mpi_b                          &
-     &         (file_name, nprocs_in, id_rank, fld_IO)
+     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       use field_file_MPI_IO
       use MPI_binary_head_IO
@@ -144,6 +150,7 @@
       integer(kind=kint), intent(in) :: id_rank
       integer(kind=kint), intent(in) :: nprocs_in
 !
+      type(time_params_IO), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
 !
@@ -152,7 +159,8 @@
       call open_read_gz_mpi_file_b                                      &
      &   (file_name, nprocs_in, id_rank, IO_param)
 !
-      call gz_read_step_data_mpi_b(IO_param)
+      call gz_read_step_data_mpi_b(IO_param,                            &
+     &    t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO)
 !
       call alloc_merged_field_stack(nprocs_in, fld_IO)
       call gz_read_field_header_mpi_b                                   &
@@ -183,7 +191,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_rd_alloc_st_fld_head_mpi_b                          &
-     &         (file_name, nprocs_in, id_rank, fld_IO)
+     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       use field_file_MPI_IO
       use MPI_binary_head_IO
@@ -195,6 +203,7 @@
       integer(kind=kint), intent(in) :: id_rank
       integer(kind=kint), intent(in) :: nprocs_in
 !
+      type(time_params_IO), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
 !
@@ -203,7 +212,8 @@
       call open_read_gz_mpi_file_b                                      &
      &   (file_name, nprocs_in, id_rank, IO_param)
 !
-      call gz_read_step_data_mpi_b(IO_param)
+      call gz_read_step_data_mpi_b(IO_param,                            &
+     &    t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO)
 !
       call alloc_merged_field_stack(nprocs_in, fld_IO)
       call gz_read_field_header_mpi_b                                   &
@@ -229,15 +239,18 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_write_field_head_mpi_b                              &
-     &         (IO_param_l, num_field, ncomp_field, istack_merged)
+     &         (IO_param_l, i_time_step_IO, time_IO, delta_t_IO,        &
+     &         num_field, ncomp_field, istack_merged)
 !
       use m_phys_constants
-      use m_time_data_IO
       use field_data_IO
       use gz_MPI_binary_head_IO
       use gz_MPI_binary_datum_IO
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param_l
+!
+      integer(kind=kint), intent(in) :: i_time_step_IO
+      real(kind = kreal), intent(in) :: time_IO, delta_t_IO
 !
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs)
       integer(kind=kint), intent(in) :: num_field
@@ -245,10 +258,10 @@
 !
 !
       call gz_mpi_write_one_inthead_b(IO_param_l, IO_param_l%nprocs_in)
-      call gz_mpi_write_one_inthead_b(IO_param_l, t1_IO%i_time_step_IO)
+      call gz_mpi_write_one_inthead_b(IO_param_l, i_time_step_IO)
 !
-      call gz_mpi_write_one_realhead_b(IO_param_l, t1_IO%time_IO)
-      call gz_mpi_write_one_realhead_b(IO_param_l, t1_IO%delta_t_IO)
+      call gz_mpi_write_one_realhead_b(IO_param_l, time_IO)
+      call gz_mpi_write_one_realhead_b(IO_param_l, delta_t_IO)
 !
 !
       call gz_mpi_write_i8stack_head_b                                  &
@@ -286,23 +299,26 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_step_data_mpi_b(IO_param_l)
+      subroutine gz_read_step_data_mpi_b                                &
+     &         (IO_param_l, i_time_step_IO, time_IO, delta_t_IO)
 !
-      use m_time_data_IO
       use gz_MPI_binary_head_IO
       use gz_MPI_binary_datum_IO
       use m_error_IDs
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param_l
 !
+      integer(kind=kint), intent(inout) :: i_time_step_IO
+      real(kind = kreal), intent(inout) :: time_IO, delta_t_IO
+!
       integer(kind=kint) :: int_tmp
 !
 !
       call gz_mpi_read_one_inthead_b(IO_param_l, int_tmp)
-      call gz_mpi_read_one_inthead_b(IO_param_l, t1_IO%i_time_step_IO)
+      call gz_mpi_read_one_inthead_b(IO_param_l, i_time_step_IO)
 !
-      call gz_mpi_read_one_realhead_b(IO_param_l, t1_IO%time_IO)
-      call gz_mpi_read_one_realhead_b(IO_param_l, t1_IO%delta_t_IO)
+      call gz_mpi_read_one_realhead_b(IO_param_l, time_IO)
+      call gz_mpi_read_one_realhead_b(IO_param_l, delta_t_IO)
 !
       end subroutine gz_read_step_data_mpi_b
 !
