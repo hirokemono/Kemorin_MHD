@@ -91,6 +91,14 @@
      &     .or. rj_fld%phys_name(i_fld) .eq. fhd_heat_source            &
      &     .or. rj_fld%phys_name(i_fld) .eq. fhd_light_source           &
      &     .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy_source         &
+!
+     &     .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_h_flux        &
+     &     .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_c_flux        &
+     &     .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_m_flux        &
+     &     .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_Lorentz       &
+     &     .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_induction     &
+     &     .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_buoyancy      &
+     &     .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_comp_buo      &
      &     ) then
            fld_IO%num_field_IO = fld_IO%num_field_IO + 1
          end if
@@ -134,6 +142,14 @@
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_heat_source        &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_light_source       &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy_source     &
+!
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_h_flux    &
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_c_flux    &
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_m_flux    &
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_Lorentz   &
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_induction &
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_buoyancy  &
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_comp_buo  &
      &         ) then
           icou = icou + 1
           fld_IO%fld_name(icou) = rj_fld%phys_name(i_fld)
@@ -163,7 +179,7 @@
       integer(kind = kint) :: i_fld, j_IO
 !
 !
-      call copy_time_steps_to_restart
+      call copy_time_steps_to_restart(t1_IO)
 !
       do i_fld = 1, rj_fld%num_phys
         do j_IO = 1, fld_IO%num_field_IO
@@ -187,6 +203,14 @@
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_heat_source        &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_light_source       &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy_source     &
+!
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_h_flux    &
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_c_flux    &
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_m_flux    &
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_Lorentz   &
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_induction &
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_buoyancy  &
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_comp_buo  &
      &         ) then
               call copy_each_sph_field_to_IO                            &
      &           (rj_fld, fld_IO, i_fld, j_IO)
@@ -207,6 +231,7 @@
       use m_t_step_parameter
       use m_t_int_parameter
       use m_phys_labels
+      use copy_time_steps_4_restart
       use copy_rj_phys_data_4_IO
 !
       type(field_IO), intent(in) :: fld_IO
@@ -215,10 +240,8 @@
       integer(kind = kint) :: i_fld, j_IO
 !
 !
-      i_step_init = i_time_step_IO
-      time_init =   time_IO
-!
-      if(dt .le.zero) dt = delta_t_IO
+      call copy_init_time_from_restart(t1_IO)
+      if(dt .le.zero) dt = t1_IO%delta_t_IO
 !
       do i_fld = 1, rj_fld%num_phys
         do j_IO = 1, fld_IO%num_field_IO
@@ -242,6 +265,14 @@
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_heat_source        &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_light_source       &
      &         .or. rj_fld%phys_name(i_fld) .eq. fhd_entropy_source     &
+!
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_h_flux    &
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_c_flux    &
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_m_flux    &
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_Lorentz   &
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_induction &
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_buoyancy  &
+     &         .or. rj_fld%phys_name(i_fld) .eq. fhd_Csim_SGS_comp_buo  &
      &         ) then
               call copy_each_sph_field_from_IO                          &
      &           (fld_IO, rj_fld, i_fld, j_IO)
