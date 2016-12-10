@@ -44,6 +44,7 @@
 !
       time_init =   time_IO
       i_step_init = i_time_step_IO
+      if(dt .le. zero) dt = delta_t_IO
 !
       end subroutine copy_init_time_from_restart
 !
@@ -54,7 +55,8 @@
       use cal_num_digits
 !
 !
-      call copy_init_time_from_restart
+      time_init =   time_IO
+      i_step_init = i_time_step_IO
 !
       if(delta_t_IO .gt. zero) then
         dt = delta_t_IO

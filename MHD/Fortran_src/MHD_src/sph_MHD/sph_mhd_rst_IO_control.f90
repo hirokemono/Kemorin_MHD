@@ -105,6 +105,7 @@
       subroutine output_sph_restart_control(rj_fld)
 !
       use set_sph_restart_IO
+      use copy_time_steps_4_restart
 !
       type(phys_data), intent(in) :: rj_fld
 !
@@ -115,7 +116,9 @@
 !
       istep_fld = istep_max_dt/i_step_output_rst
 !
+      call copy_time_steps_to_restart
       call set_sph_restart_data_to_IO(rj_fld, sph_fst_IO)
+!
       call sel_write_step_SPH_field_file                                &
      &   (nprocs, my_rank, istep_fld, sph_fst_IO)
 !
@@ -126,13 +129,16 @@
       subroutine output_sph_rst_by_elaps(rj_fld)
 !
       use set_sph_restart_IO
+      use copy_time_steps_4_restart
 !
       type(phys_data), intent(in) :: rj_fld
 !
       integer(kind = kint), parameter :: negaone = -1
 !
 !
+      call copy_time_steps_to_restart
       call set_sph_restart_data_to_IO(rj_fld, sph_fst_IO)
+
       call sel_write_step_SPH_field_file                                &
      &   (nprocs, my_rank, negaone, sph_fst_IO)
 !
@@ -143,7 +149,11 @@
 !
       subroutine read_alloc_sph_restart_data(rj_fld)
 !
+      use m_time_data_IO
+      use m_t_step_parameter
+      use m_t_int_parameter
       use set_sph_restart_IO
+      use copy_time_steps_4_restart
 !
       integer(kind = kint) :: istep_fld
       type(phys_data), intent(inout) :: rj_fld
@@ -159,6 +169,7 @@
       end if
 !
       call set_sph_restart_from_IO(sph_fst_IO, rj_fld)
+      call copy_init_time_from_restart
 !
       call dealloc_phys_data_IO(sph_fst_IO)
       call dealloc_phys_name_IO(sph_fst_IO)
@@ -195,9 +206,13 @@
       subroutine read_alloc_sph_rst_4_snap                              &
      &         (i_step, rj_file_param, sph_rj, ipol, rj_fld)
 !
+      use m_time_data_IO
+      use m_t_step_parameter
+      use m_t_int_parameter
       use t_spheric_rj_data
       use set_sph_restart_IO
       use r_interpolate_sph_data
+      use copy_time_steps_4_restart
 !
       integer(kind = kint), intent(in) :: i_step
       type(field_IO_params), intent(in) :: rj_file_param
@@ -215,6 +230,7 @@
       if(rj_file_param%iflag_IO .eq. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_sph_restart_from_IO'
         call set_sph_restart_from_IO(sph_fst_IO, rj_fld)
+        call copy_init_time_from_restart
         time = time_init
       else
         if (iflag_debug.gt.0)                                           &
@@ -299,7 +315,7 @@
      &   (nprocs, my_rank, istep_fld, sph_out_IO)
 !
       if(rj_file_param%iflag_IO .eq. 0) then
-        if (iflag_debug.gt.0) write(*,*) 'set_sph_restart_from_IO'
+        if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
         call set_rj_phys_data_from_IO(sph_out_IO, rj_fld)
       else
         if (iflag_debug.gt.0) write(*,*)                                &

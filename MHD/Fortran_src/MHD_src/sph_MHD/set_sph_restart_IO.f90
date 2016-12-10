@@ -167,10 +167,7 @@
 !
       subroutine set_sph_restart_data_to_IO(rj_fld, fld_IO)
 !
-      use m_t_step_parameter
-      use m_t_int_parameter
       use m_phys_labels
-      use copy_time_steps_4_restart
       use copy_rj_phys_data_4_IO
 !
       type(phys_data), intent(in) :: rj_fld
@@ -178,8 +175,6 @@
 !
       integer(kind = kint) :: i_fld, j_IO
 !
-!
-      call copy_time_steps_to_restart(t1_IO)
 !
       do i_fld = 1, rj_fld%num_phys
         do j_IO = 1, fld_IO%num_field_IO
@@ -227,11 +222,7 @@
 !
       subroutine set_sph_restart_from_IO(fld_IO, rj_fld)
 !
-      use m_time_data_IO
-      use m_t_step_parameter
-      use m_t_int_parameter
       use m_phys_labels
-      use copy_time_steps_4_restart
       use copy_rj_phys_data_4_IO
 !
       type(field_IO), intent(in) :: fld_IO
@@ -239,9 +230,6 @@
 !
       integer(kind = kint) :: i_fld, j_IO
 !
-!
-      call copy_init_time_from_restart(t1_IO)
-      if(dt .le.zero) dt = t1_IO%delta_t_IO
 !
       do i_fld = 1, rj_fld%num_phys
         do j_IO = 1, fld_IO%num_field_IO
