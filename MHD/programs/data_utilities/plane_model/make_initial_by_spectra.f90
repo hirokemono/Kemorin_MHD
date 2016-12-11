@@ -10,6 +10,8 @@
       use m_precision
       use calypso_mpi
 !
+      use t_time_data_IO
+!
       use m_constants
       use m_file_format_switch
       use m_phys_labels
@@ -18,7 +20,6 @@
       use m_setting_4_ini
       use m_set_new_spectr
       use m_spectr_4_ispack
-      use m_time_data_IO
       use m_control_plane_fft
       use count_number_with_overlap
       use set_plane_spectr_file_head
@@ -55,6 +56,8 @@
 !
       real   (kind=kreal) ::  dt_init, t_init
       real   (kind=kreal), dimension(:), allocatable ::  zz
+!
+      type(time_params_IO), save :: plane_t_IO
 !
 ! ==============================================
 ! * get number of  nodes,elements for whole PES
@@ -225,9 +228,9 @@
 !
         istep_udt = i_time_step / ifactor_step
         istep_rst = i_time_step / ifactor_rst
-        t1_IO%i_time_step_IO = i_time_step
-        t1_IO%time_IO =    t_init + dble(i_time_step-ist) * dt_init
-        t1_IO%delta_t_IO = dt_init
+        plane_t_IO%i_time_step_IO = i_time_step
+        plane_t_IO%time_IO = t_init + dble(i_time_step-ist) * dt_init
+        plane_t_IO%delta_t_IO = dt_init
 !
 !    read spectral data
 !
@@ -297,7 +300,8 @@
           end do
         end do
 !
-        call s_write_restart_by_spectr(ip, subdomain(ip)%node%numnod)
+        call s_write_restart_by_spectr                                  &
+       &    (ip, subdomain(ip)%node%numnod, plane_t_IO)
 !
 !   deallocate arrays
 !

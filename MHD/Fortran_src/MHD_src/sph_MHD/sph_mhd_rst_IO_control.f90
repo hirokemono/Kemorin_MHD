@@ -57,7 +57,6 @@
       use t_file_IO_parameter
       use t_time_data_IO
 !
-      use m_time_data_IO
       use field_IO_select
 !
       implicit  none
@@ -153,7 +152,6 @@
 !
       subroutine read_alloc_sph_restart_data(rj_fld)
 !
-      use m_time_data_IO
       use m_t_step_parameter
       use m_t_int_parameter
       use set_sph_restart_IO
@@ -210,7 +208,6 @@
       subroutine read_alloc_sph_rst_4_snap                              &
      &         (i_step, rj_file_param, sph_rj, ipol, rj_fld)
 !
-      use m_time_data_IO
       use m_t_step_parameter
       use m_t_int_parameter
       use t_spheric_rj_data

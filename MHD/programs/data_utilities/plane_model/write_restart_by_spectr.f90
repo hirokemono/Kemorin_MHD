@@ -7,7 +7,7 @@
 !      subroutine allocate_rst_by_plane_sp(nnod, ndir)
 !      subroutine deallocate_rst_by_plane_sp
 !      subroutine plane_nnod_stack_4_IO
-!      subroutine s_write_restart_by_spectr(ip, nnod)
+!      subroutine s_write_restart_by_spectr(ip, nnod, t_IO)
 !
       module write_restart_by_spectr
 !
@@ -67,17 +67,18 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_write_restart_by_spectr(ip, nnod)
+      subroutine s_write_restart_by_spectr(ip, nnod, t_IO)
 !
       use m_constants
       use m_geometry_data_4_merge
-      use m_time_data_IO
+      use t_time_data_IO
       use field_IO_select
       use set_list_4_FFT
       use set_field_to_restart
       use set_restart_data
 !
       integer(kind=kint), intent(in) :: ip, nnod
+      type(time_params_IO), intent(inout) :: t_IO
 !
       integer(kind=kint) :: id_rank
 !
@@ -98,7 +99,7 @@
 !
       pl_fld_IO%file_prefix = rst_head_plane
       call sel_write_step_FEM_field_file                                &
-     &   (num_pe, id_rank, izero, t1_IO, pl_fld_IO)
+     &   (num_pe, id_rank, izero, t_IO, pl_fld_IO)
 !
       call dealloc_merged_field_stack(pl_fld_IO)
       call dealloc_phys_name_IO(pl_fld_IO)

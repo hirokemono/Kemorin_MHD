@@ -16,6 +16,7 @@
       use m_control_plane_correlate
 !
       use t_phys_data
+      use t_time_data_IO
       use t_ucd_data
 !
 
@@ -39,6 +40,8 @@
       type(phys_data), save :: cor_phys
       type(phys_data), save :: ref_phys
 
+!>      Structure for time data
+      type(time_params_IO), save :: plane_t_IO
       type(ucd_data), save :: plane_ucd
 
       integer(kind=kint ) :: istep
@@ -78,7 +81,7 @@
 !
 !   read field name and number of components
 !
-      call init_udt_4_correlate(ist, cor_phys, t1_IO, plane_ucd)
+      call init_udt_4_correlate(ist, cor_phys, plane_t_IO, plane_ucd)
 !
        call s_set_list_4_correlate(ref_phys, cor_phys)
 !
@@ -113,7 +116,7 @@
        call open_correlate_files_snap(istep)
 !
        write(*,*) 'read_udt_4_correlate'
-       call read_udt_4_correlate(istep, t1_IO, plane_ucd)
+       call read_udt_4_correlate(istep, plane_t_IO, plane_ucd)
 !
 !  -------  Cross correlatiion
 !

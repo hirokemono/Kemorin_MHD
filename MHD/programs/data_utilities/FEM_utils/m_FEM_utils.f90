@@ -14,6 +14,7 @@
       module m_FEM_utils
 !
       use m_precision
+      use t_time_data_IO
       use t_mesh_data
       use t_phys_data
       use t_phys_address
@@ -43,6 +44,7 @@
 !
 !>      Structure for field data IO paramters
       type(field_IO_params), save :: udt_param_FUTIL
+      type(time_params_IO), save :: time_IO_FUTIL
 !>        Instance for FEM field data IO
       type(ucd_data), save :: ucd_FUTIL
 !>        Instance for numbers of FEM mesh for merged IO

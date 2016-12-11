@@ -87,11 +87,11 @@
 !
           call set_data_by_read_ucd_once(my_rank, istep_ucd,            &
      &        udt_param_FUTIL%iflag_format, ref_udt_file_head,          &
-     &        field_FUTIL, t1_IO)
+     &        field_FUTIL, time_IO_FUTIL)
 !
           call const_MHD_length_scales                                  &
      &       (femmesh_FUTIL%mesh%node, iphys_FUTIL, field_FUTIL,        &
-     &        istep_ucd, ucd_FUTIL)
+     &        istep_ucd, time_IO_FUTIL, ucd_FUTIL)
         end if
       end do
 !

@@ -169,7 +169,7 @@
 !
           call set_data_by_read_ucd_once(my_rank, istep_ucd,            &
      &        udt_param_FUTIL%iflag_format, ref_udt_file_head,          &
-     &        field_FUTIL, t1_IO)
+     &        field_FUTIL, time_IO_FUTIL)
 !
           call nod_fields_send_recv                                     &
      &       (femmesh_p_FUT%mesh%nod_comm, field_FUTIL)

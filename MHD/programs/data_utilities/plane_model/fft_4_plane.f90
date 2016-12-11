@@ -14,6 +14,7 @@
       use m_ctl_data_4_plane_model
       use m_geometry_data_4_merge
 !
+      use t_time_data_IO
       use t_ucd_data
 !
       use set_geometry_to_merge
@@ -31,6 +32,7 @@
 
       type(field_IO_params), save ::  plane_mesh_file
 !
+      type(time_params_IO), save :: fft_t_IO
       type(ucd_data), save :: fft_ucd
 !
       integer(kind=kint ) :: istep
@@ -67,7 +69,7 @@
 !   read field name and number of components
 !
       write(*,*) 'init_ucd_data_4_FFT'
-      call init_ucd_data_4_FFT(ist, t1_IO, fft_ucd)
+      call init_ucd_data_4_FFT(ist, fft_t_IO, fft_ucd)
 !
       call set_fields_4_FFT
 !
@@ -91,7 +93,7 @@
 !
       do istep = ist, ied, iint
 !
-       call s_read_udt_data_4_FFT(istep, t1_IO, fft_ucd)
+       call s_read_udt_data_4_FFT(istep, fft_t_IO, fft_ucd)
 !
 !  -------   Fourier Transform
 !
