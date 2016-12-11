@@ -41,7 +41,7 @@
 !
       use t_geometry_data
       use t_phys_data
-      use m_time_data_IO
+      use t_time_data_IO
       use t_ucd_data
 !
       implicit none
@@ -215,6 +215,7 @@
       subroutine set_data_by_read_ucd                                   &
      &         (my_rank, istep_ucd, ucd, nod_fld)
 !
+      use m_time_data_IO
       use set_and_cal_udt_data
       use ucd_IO_select
 !
@@ -235,6 +236,7 @@
       subroutine set_data_by_read_ucd_once(my_rank, istep_ucd,          &
      &          ifile_format, ucd_prefix, nod_fld)
 !
+      use m_time_data_IO
       use set_and_cal_udt_data
       use ucd_IO_select
 !
@@ -272,13 +274,15 @@
 !
       type(phys_data), intent(inout) :: nod_fld
 !
+      type(time_params_IO) :: local_t_IO
       type(ucd_data) :: local_ucd
 !
 !
       local_ucd%nnod =  nod_fld%n_point
       call set_ucd_file_format_prefix                                   &
      &   (ucd_prefix, ifile_format, local_ucd)
-      call sel_read_alloc_udt_file(my_rank, istep_ucd, t1_IO, local_ucd)
+      call sel_read_alloc_udt_file                                      &
+     &   (my_rank, istep_ucd, local_t_IO, local_ucd)
       call add_field_by_udt_data(nod_fld%n_point, nod_fld%num_phys,     &
      &    nod_fld%ntot_phys, nod_fld%istack_component,                  &
      &    nod_fld%phys_name, nod_fld%d_fld, local_ucd)
@@ -301,13 +305,15 @@
 !
       type(phys_data), intent(inout) :: nod_fld
 !
+      type(time_params_IO) :: local_t_IO
       type(ucd_data) :: local_ucd
 !
 !
       local_ucd%nnod = nod_fld%n_point
       call set_ucd_file_format_prefix                                   &
      &   (ucd_prefix, ifile_format, local_ucd)
-      call sel_read_alloc_udt_file(my_rank, istep_ucd, t1_IO, local_ucd)
+      call sel_read_alloc_udt_file                                      &
+     &   (my_rank, istep_ucd, local_t_IO, local_ucd)
       call subtract_field_by_udt_data                                   &
      &   (nod_fld%n_point, nod_fld%num_phys,                            &
      &    nod_fld%ntot_phys, nod_fld%istack_component,                  &

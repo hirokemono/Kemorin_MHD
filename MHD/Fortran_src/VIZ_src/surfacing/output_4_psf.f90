@@ -135,7 +135,7 @@
           end if
         else
           call sel_write_parallel_ucd_file                              &
-     &      (istep_psf, psf_out(i_psf), psf_out_m(i_psf))
+     &      (istep_psf, t1_IO, psf_out(i_psf), psf_out_m(i_psf))
         end if
       end do
       call calypso_mpi_barrier
@@ -200,7 +200,7 @@
           call deallocate_ucd_mesh(iso_out(i_iso))
         else
           call sel_write_parallel_ucd_file                              &
-     &       (istep_iso, iso_out(i_iso), iso_out_m(i_iso))
+     &       (istep_iso, t1_IO, iso_out(i_iso), iso_out_m(i_iso))
           call disconnect_merged_ucd_mesh                               &
      &       (iso_out(i_iso), iso_out_m(i_iso))
         end if

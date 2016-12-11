@@ -134,7 +134,7 @@
       end if
 !
       call copy_time_steps_to_restart(t1_IO)
-      call sel_write_parallel_ucd_file(istep_ucd, ucd, m_ucd)
+      call sel_write_parallel_ucd_file(istep_ucd, t1_IO, ucd, m_ucd)
       call calypso_mpi_barrier
 !
       call deallocate_ucd_node(ucd)

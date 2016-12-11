@@ -11,8 +11,8 @@
 !!@verbatim
 !!      subroutine sel_read_alloc_field_file(my_rank, istep_fld, fld_IO)
 !!
-!!      subroutine sel_read_rst_file(my_rank, istep_fld, fld_IO)
-!!      subroutine sel_read_rst_comps(my_rank, istep_fld, fld_IO)
+!!      subroutine sel_read_rst_file(my_rank, istep_fld, t_IO, fld_IO)
+!!      subroutine sel_read_rst_comps(my_rank, istep_fld, t_IO, fld_IO)
 !!@endverbatim
 !
       module input_old_file_sel_4_zlib
@@ -20,7 +20,7 @@
       use m_precision
 !
       use m_file_format_switch
-      use m_time_data_IO
+      use t_time_data_IO
       use t_field_data_IO
 !
 #ifdef ZLIB_IO
@@ -64,13 +64,15 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine sel_read_rst_file(my_rank, istep_fld, fld_IO)
+      subroutine sel_read_rst_file(my_rank, istep_fld, t_IO, fld_IO)
 !
       use rst_data_IO_by_fld
       use set_parallel_file_name
 !
       integer(kind=kint), intent(in) :: my_rank, istep_fld
+      type(time_params_IO), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
+!
       character(len=kchara) :: file_name, fname_tmp
 !
 !
@@ -84,24 +86,25 @@
 !
 #ifdef ZLIB_IO
       if(fld_IO%iflag_file_fmt .eq. id_gzip_txt_file_fmt) then
-        call read_gz_rst_file(my_rank, file_name, t1_IO, fld_IO)
+        call read_gz_rst_file(my_rank, file_name, t_IO, fld_IO)
         return
       end if
 #endif
 !
-      call read_rst_file(my_rank, file_name, t1_IO, fld_IO)
+      call read_rst_file(my_rank, file_name, t_IO, fld_IO)
 !
 !
       end subroutine sel_read_rst_file
 !
 !------------------------------------------------------------------
 !
-      subroutine sel_read_rst_comps(my_rank, istep_fld, fld_IO)
+      subroutine sel_read_rst_comps(my_rank, istep_fld, t_IO, fld_IO)
 !
       use rst_data_IO_by_fld
       use set_parallel_file_name
 !
       integer(kind=kint), intent(in) :: my_rank, istep_fld
+      type(time_params_IO), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       character(len=kchara) :: file_name, fname_tmp
@@ -116,12 +119,12 @@
 !
 #ifdef ZLIB_IO
       if(fld_IO%iflag_file_fmt .eq. id_gzip_txt_file_fmt) then
-        call read_gz_rst_comps(my_rank, file_name, t1_IO, fld_IO)
+        call read_gz_rst_comps(my_rank, file_name, t_IO, fld_IO)
         return
       end if
 #endif
 !
-      call read_rst_data_comps(my_rank, file_name, t1_IO, fld_IO)
+      call read_rst_data_comps(my_rank, file_name, t_IO, fld_IO)
 !
       end subroutine sel_read_rst_comps
 !

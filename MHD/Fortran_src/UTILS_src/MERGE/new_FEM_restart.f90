@@ -132,7 +132,7 @@
 !
       call set_field_file_fmt_prefix                                    &
      &   (iorg_rst_file_fmt, org_rst_head, merged_IO)
-      call sel_read_rst_comps(izero, istep_start, merged_IO)
+      call sel_read_rst_comps(izero, istep_start, t1_IO, merged_IO)
 !
       call init_field_name_by_restart(merged_IO, merged_fld)
       call alloc_phys_data_type(merged%node%numnod, merged_fld)
@@ -162,7 +162,7 @@
         merged_IO%nnod_IO = subdomain(ip)%node%numnod
         call alloc_phys_data_IO(merged_IO)
 !
-        call sel_read_rst_file(id_rank, istep, merged_IO)
+        call sel_read_rst_file(id_rank, istep, t1_IO, merged_IO)
 !
         call set_restart_data_2_merge(ip, merged_IO)
 !
