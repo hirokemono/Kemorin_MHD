@@ -4,7 +4,7 @@
 !      Written by H. Matsui
 !
 !!      subroutine init_analyzer_snap(IO_bc, mesh, group, ele_mesh,     &
-!!     &          MHD_mesh, layer_tbl, iphys, nod_fld, label_sim)
+!!     &          MHD_mesh, layer_tbl, iphys, nod_fld, t_IO, label_sim)
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
@@ -13,6 +13,7 @@
 !!        type(layering_tbl), intent(inout) :: layer_tbl
 !!        type(phys_address), intent(inout) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(time_params_IO), intent(inout) :: t_IO
 !
       module initialize_4_snapshot
 !
@@ -29,7 +30,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine init_analyzer_snap(IO_bc, mesh, group, ele_mesh,       &
-     &          MHD_mesh, layer_tbl, iphys, nod_fld, label_sim)
+     &          MHD_mesh, layer_tbl, iphys, nod_fld, t_IO, label_sim)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -53,6 +54,7 @@
       use t_geometry_data_MHD
       use t_layering_ele_list
       use t_work_layer_correlate
+      use t_time_data_IO
       use t_boundary_field_IO
 !
       use count_whole_num_element
@@ -92,6 +94,7 @@
       type(layering_tbl), intent(inout) :: layer_tbl
       type(phys_address), intent(inout) :: iphys
       type(phys_data), intent(inout) :: nod_fld
+      type(time_params_IO), intent(inout) :: t_IO
       character(len=kchara), intent(inout)   :: label_sim
 !
 !     --------------------- 
@@ -198,7 +201,7 @@
 !
       if (i_step_output_rst .gt. 0) then
         if (iflag_debug.eq.1) write(*,*)' init_restart_4_snapshot'
-        call init_restart_4_snapshot(mesh%node)
+        call init_restart_4_snapshot(mesh%node, t_IO)
       end if
 !
 !     ---------------------

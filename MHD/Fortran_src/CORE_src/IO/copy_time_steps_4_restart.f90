@@ -13,6 +13,7 @@
 !!        type(time_params_IO), intent(in) :: t_IO
 !!
 !!      subroutine copy_time_steps_to_restart(t_IO)
+!!      subroutine copy_time_steps_from_field(t_IO)
 !!        type(time_params_IO), intent(inout) :: t_IO
 !!@endverbatim
 !
@@ -85,6 +86,19 @@
       t_IO%delta_t_IO =     dt
 !
       end subroutine copy_time_steps_to_restart
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_time_steps_from_field(t_IO)
+!
+      type(time_params_IO), intent(in) :: t_IO
+!
+!
+      i_step_MHD = t_IO%i_time_step_IO
+      time =       t_IO%time_IO
+      dt =         t_IO%delta_t_IO
+!
+      end subroutine copy_time_steps_from_field
 !
 !  ---------------------------------------------------------------------
 !

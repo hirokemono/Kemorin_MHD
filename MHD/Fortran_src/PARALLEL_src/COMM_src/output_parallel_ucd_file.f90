@@ -25,7 +25,7 @@
 !!        type(phys_data), intent(in) :: nod_fld
 !!
 !!      subroutine link_output_ucd_file_once(my_rank, istep_ucd,        &
-!!     &          ifile_format, ucd_prefix, nod_fld, ucd)
+!!     &          ifile_format, ucd_prefix, nod_fld, t_IO)
 !!
 !!      subroutine finalize_ucd_file_output(ucd, m_ucd)
 !
@@ -33,7 +33,7 @@
 !
       use m_precision
       use calypso_mpi
-      use m_time_data_IO
+      use t_time_data_IO
       use t_ucd_data
       use m_field_file_format
 !
@@ -152,7 +152,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine link_output_ucd_file_once(my_rank, istep_ucd,          &
-     &          ifile_format, ucd_prefix, nod_fld, ucd)
+     &          ifile_format, ucd_prefix, nod_fld, t_IO)
 !
       use t_phys_data
 !
@@ -165,16 +165,16 @@
 !
       type(phys_data), intent(in) :: nod_fld
 !
-      type(ucd_data), intent(inout) :: ucd
+      type(time_params_IO), intent(in) :: t_IO
 !
       type(ucd_data) :: local_ucd
 !
 !
       call link_field_data_to_ucd(nod_fld, local_ucd)
 !
-      call set_ucd_file_format(ifile_format, ucd)
-      call set_ucd_file_prefix(ucd_prefix, ucd)
-      call sel_write_udt_file(my_rank, istep_ucd, t1_IO, local_ucd)
+      call set_ucd_file_format(ifile_format, local_ucd)
+      call set_ucd_file_prefix(ucd_prefix, local_ucd)
+      call sel_write_udt_file(my_rank, istep_ucd, t_IO, local_ucd)
       call disconnect_ucd_data(local_ucd)
 !
       end subroutine link_output_ucd_file_once

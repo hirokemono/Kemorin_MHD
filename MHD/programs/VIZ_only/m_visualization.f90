@@ -48,7 +48,8 @@
 !
 !
 !>        Instance for FEM field data IO
-     type(ucd_data), save :: ucd_VIZ
+      type(time_params_IO), save :: VIZ_time_IO
+      type(ucd_data), save :: ucd_VIZ
 !>        Instance for numbers of FEM mesh for merged IO
 !      type(merged_ucd_data), save :: m_ucd_SPH_TRNS
 !
@@ -142,13 +143,16 @@
       subroutine set_field_data_4_VIZ(iflag, istep_ucd)
 !
       use set_ucd_data_to_type
+      use copy_time_steps_4_restart
       use nod_phys_send_recv
 !
       integer(kind = kint), intent(in) :: iflag, istep_ucd
 !
 !
       if(iflag .ne. 0) return
-      call set_data_by_read_ucd(my_rank, istep_ucd, ucd_VIZ, field_VIZ)
+      call set_data_by_read_ucd                                         &
+     &   (my_rank, istep_ucd, VIZ_time_IO, ucd_VIZ, field_VIZ)
+      call copy_time_steps_from_field(VIZ_time_IO)
 !
       if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'
       call nod_fields_send_recv                                         &

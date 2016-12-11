@@ -301,6 +301,7 @@
       use t_spheric_rj_data
       use copy_rj_phys_data_4_IO
       use r_interpolate_sph_data
+      use copy_time_steps_4_restart
 !
       integer(kind = kint), intent(in) :: i_step
       type(field_IO_params), intent(in) :: sph_file_param
@@ -317,7 +318,10 @@
      &   (sph_file_param%iflag_format, sph_file_param%file_prefix,      &
      &    sph_out_IO)
       call sel_read_alloc_step_SPH_file                                 &
-     &   (nprocs, my_rank, istep_fld, t1_IO, sph_out_IO)
+     &   (nprocs, my_rank, istep_fld, sph_time_IO, sph_out_IO)
+!
+      call copy_init_time_from_restart(sph_time_IO)
+      time = time_init
 !
       if(rj_file_param%iflag_IO .eq. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
@@ -328,7 +332,6 @@
         call r_interpolate_sph_fld_from_IO                              &
      &    (sph_out_IO, sph_rj, ipol, rj_fld)
       end if
-      time = time_init
 !
       call dealloc_merged_field_stack(sph_out_IO)
       call dealloc_phys_data_IO(sph_out_IO)

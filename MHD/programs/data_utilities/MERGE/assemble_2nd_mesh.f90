@@ -16,7 +16,7 @@
       use m_control_data_4_merge
       use m_control_param_merge
       use m_original_ucd_4_merge
-      use m_time_data_IO
+      use t_time_data_IO
       use t_ucd_data
 !
       use set_merged_geometry
@@ -32,7 +32,9 @@
 ! . for local 
 !  ===========
 !>        Instance for FEM field data IO
+      type(time_params_IO), save :: fem_time_IO
       type(ucd_data), save :: fem_ucd
+      type(ucd_data), save :: second_ucd
 !
       integer(kind=kint ) :: istep
 !
@@ -64,7 +66,7 @@
 !
 !   read field name and number of components
 !
-      call init_ucd_data_4_merge(istep_start, fem_ucd)
+      call init_ucd_data_4_merge(istep_start, fem_time_IO, fem_ucd)
 !
 !    set list array for merged field
 !
@@ -73,15 +75,15 @@
 !
 !   Cnostract grid data
 !
-      call assemble_2nd_udt_nesh
+      call assemble_2nd_udt_mesh(second_ucd)
 !
 !   loop for snap shots
 !
 !
       do istep = istep_start, istep_end, increment_step
 !        write(*,*) 'read_ucd_data_4_merge', istep
-        call read_ucd_data_4_merge(istep, fem_ucd)
-        call assemble_2nd_udt_phys(istep)
+        call read_ucd_data_4_merge(istep, fem_time_IO, fem_ucd)
+        call assemble_2nd_udt_phys(istep, fem_time_IO, second_ucd)
         write(*,*) 'step', istep, 'finish '
       end do
 !

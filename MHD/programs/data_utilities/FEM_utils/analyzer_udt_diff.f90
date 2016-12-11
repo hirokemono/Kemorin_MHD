@@ -17,6 +17,7 @@
       use calypso_mpi
 !
       use m_FEM_utils
+      use m_time_data_IO
 !
       implicit none
 !
@@ -84,7 +85,7 @@
 !
           call set_data_by_read_ucd_once(my_rank, istep_ucd,            &
      &        udt_param_FUTIL%iflag_format, ref_udt_file_head,          &
-     &        field_FUTIL)
+     &        field_FUTIL, t1_IO)
 !
           call subtract_by_ucd_data(my_rank, istep_ucd,                 &
      &        udt_param_FUTIL%iflag_format, tgt_udt_file_head,          &
@@ -98,7 +99,7 @@
 !    output udt data
           call link_output_ucd_file_once(my_rank, istep_ucd,            &
      &        ifmt_diff_udt_file, diff_udt_file_head,                   &
-     &        field_FUTIL, ucd_FUTIL)
+     &        field_FUTIL, t1_IO)
         end if
       end do
 !

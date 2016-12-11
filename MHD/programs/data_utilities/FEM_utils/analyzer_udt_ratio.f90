@@ -93,7 +93,7 @@
 !    output udt data
           call link_output_ucd_file_once(my_rank, istep_ucd,            &
      &        ifmt_result_udt_file, result_udt_file_head,               &
-     &        field_FUTIL, ucd_FUTIL)
+     &        field_FUTIL, t1_IO)
 !
         end if
       end do

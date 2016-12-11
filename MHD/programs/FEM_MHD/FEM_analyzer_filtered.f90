@@ -43,6 +43,7 @@
       use m_ucd_data
       use m_bc_data_velo
       use m_flexible_time_step
+      use m_time_data_IO
 !
       use nod_phys_send_recv
       use lead_physical_values
@@ -76,11 +77,12 @@
 !
       if (i_step_output_rst .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'input_restart_4_snapshot'
-        call input_restart_4_snapshot(mesh1%node, nod_fld1)
+        call input_restart_4_snapshot(mesh1%node, nod_fld1, t1_IO)
 !
       else if (i_step_output_ucd .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'read_udt_4_snap'
-        call read_udt_4_snap(istep_max_dt, FEM_udt_org_param, nod_fld1)
+        call read_udt_4_snap                                            &
+     &     (istep_max_dt, FEM_udt_org_param, nod_fld1, t1_IO)
         time = time_init + dt*dble(istep_max_dt)
         i_step_MHD = istep_max_dt
       end if

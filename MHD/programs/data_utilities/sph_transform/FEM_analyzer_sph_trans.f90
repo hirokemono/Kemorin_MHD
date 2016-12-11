@@ -97,7 +97,7 @@
       if(visval .eq. 0) then
         call set_ucd_file_prefix(udt_org_param%file_prefix, input_ucd)
         call set_data_by_read_ucd                                       &
-     &    (my_rank, i_step, input_ucd, field_STR)
+     &    (my_rank, i_step, t1_IO, input_ucd, field_STR)
         call nod_fields_send_recv                                       &
      &    (femmesh_STR%mesh%nod_comm, field_STR)
       end if

@@ -67,7 +67,7 @@
 !   read field name and number of components
 !
       write(*,*) 'init_ucd_data_4_FFT'
-      call init_ucd_data_4_FFT(ist, fft_ucd)
+      call init_ucd_data_4_FFT(ist, t1_IO, fft_ucd)
 !
       call set_fields_4_FFT
 !
@@ -91,7 +91,7 @@
 !
       do istep = ist, ied, iint
 !
-       call s_read_udt_data_4_FFT(istep, fft_ucd)
+       call s_read_udt_data_4_FFT(istep, t1_IO, fft_ucd)
 !
 !  -------   Fourier Transform
 !

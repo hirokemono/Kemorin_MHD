@@ -19,7 +19,7 @@
       use m_control_data_4_merge
       use m_control_param_merge
       use m_original_ucd_4_merge
-      use m_time_data_IO
+      use t_time_data_IO
       use t_ucd_data
 !
       use set_merged_geometry
@@ -33,6 +33,7 @@
 ! . for local 
 !  ===========
 !>        Instance for FEM field data IO
+      type(time_params_IO), save :: fem_time_IO
       type(ucd_data), save :: fem_ucd
 !
       integer(kind=kint ) :: istep
@@ -57,7 +58,7 @@
 !
 !   read field name and number of components
 !
-      call init_ucd_data_4_merge(istep_start, fem_ucd)
+      call init_ucd_data_4_merge(istep_start, fem_time_IO, fem_ucd)
 !
 !    set list array for merged field
 !
@@ -81,12 +82,12 @@
 !   loop for snap shots
 !
       do istep = istep_start, istep_end, increment_step
-        call read_ucd_data_4_merge(istep, fem_ucd)
+        call read_ucd_data_4_merge(istep, fem_time_IO, fem_ucd)
         call link_merged_field_2_udt_IO(fem_ucd)
 !
         fem_ucd%ifmt_file = itype_assembled_data
         fem_ucd%file_prefix = merged_data_head
-        call sel_write_ucd_file(iminus, istep, t1_IO, fem_ucd)
+        call sel_write_ucd_file(iminus, istep, fem_time_IO, fem_ucd)
         call deallocate_ucd_data(fem_ucd)
       write(*,*) 'step', istep, 'finish '
       end do

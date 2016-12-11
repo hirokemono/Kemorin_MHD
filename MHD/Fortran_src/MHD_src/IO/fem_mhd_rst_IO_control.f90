@@ -13,7 +13,7 @@
 !!      subroutine set_ctl_restart_4_fem_mhd
 !!
 !!      subroutine init_MHD_restart_output
-!!      subroutine init_restart_4_snapshot(node)
+!!      subroutine init_restart_4_snapshot(node, t_IO)
 !!
 !!      subroutine output_MHD_restart_file_ctl                          &
 !!     &         (node, nod_comm, iphys, wk_sgs, wk_diff, nod_fld)
@@ -43,7 +43,6 @@
       use t_layering_ele_list
       use t_ele_info_4_dynamic
 !
-      use m_time_data_IO
       use m_t_step_parameter
 !
       implicit  none
@@ -94,20 +93,21 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_restart_4_snapshot(node)
+      subroutine init_restart_4_snapshot(node, t_IO)
 !
       use const_global_element_ids
       use field_IO_select
       use set_field_to_restart
 !
       type(node_data), intent(in) :: node
+      type(time_params_IO), intent(inout) :: t_IO
 !
       integer(kind = kint) :: index_rst
 !
 !
       index_rst = i_step_init / i_step_output_rst
       call sel_read_alloc_FEM_fld_head                                  &
-     &   (nprocs, my_rank, index_rst, t1_IO, fem_fst_IO)
+     &   (nprocs, my_rank, index_rst, t_IO, fem_fst_IO)
 !
       fem_fst_IO%nnod_IO = node%numnod
       call alloc_phys_data_IO(fem_fst_IO)
@@ -271,12 +271,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine input_restart_4_snapshot(node, nod_fld)
+      subroutine input_restart_4_snapshot(node, nod_fld, t_IO)
 !
       use set_field_to_restart
       use field_IO_select
 !
       type(node_data), intent(in) :: node
+      type(time_params_IO), intent(inout) :: t_IO
       type(phys_data), intent(inout) :: nod_fld
 !
       integer(kind = kint) :: index_rst
@@ -286,7 +287,7 @@
 !
       index_rst = istep_max_dt / i_step_output_rst
       call sel_read_step_FEM_field_file                                 &
-     &    (nprocs, my_rank, index_rst, t1_IO, fem_fst_IO)
+     &    (nprocs, my_rank, index_rst, t_IO, fem_fst_IO)
 !
       call copy_field_data_from_restart(node, fem_fst_IO, nod_fld)
       time =       time_init

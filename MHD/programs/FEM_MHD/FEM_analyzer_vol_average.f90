@@ -32,6 +32,7 @@
       use m_layering_ele_list
       use m_geometry_data_MHD
       use m_boundary_field_IO
+      use m_time_data_IO
 !
       use initialize_4_snapshot
 !
@@ -43,7 +44,7 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
       call init_analyzer_snap(IO_bc1, mesh1, group1, ele_mesh1,         &
-     &    MHD_mesh1, layer_tbl1, iphys, nod_fld1, label_sim)
+     &    MHD_mesh1, layer_tbl1, iphys, nod_fld1, t1_IO, label_sim)
 !
       end subroutine FEM_initialize_vol_average
 !
@@ -59,6 +60,7 @@
       use m_jacobians
       use m_finite_element_matrix
 !
+      use m_time_data_IO
       use m_ucd_data
 !
       use nod_phys_send_recv
@@ -76,7 +78,7 @@
       if (my_rank.eq.0) write(*,*) 'step: ', i_step
 !
       if (iflag_debug.eq.1)  write(*,*) 'read_udt_4_snap'
-      call read_udt_4_snap(i_step, FEM_udt_org_param, nod_fld1)
+      call read_udt_4_snap(i_step, FEM_udt_org_param, nod_fld1, t1_IO)
       time = time_init + dt*dble(i_step)
 !
 !     ---- magnetic field update

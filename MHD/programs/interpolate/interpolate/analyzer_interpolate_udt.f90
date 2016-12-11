@@ -115,8 +115,9 @@
 !
       do istep = i_step_init, i_step_number, i_step_output_ucd
         if (my_rank .lt. ndomain_org) then
-          call set_data_by_read_ucd_once(my_rank, istep,                &
-     &        itype_org_udt_file, org_udt_file_head, nod_fld_ITP)
+          call set_data_by_read_ucd_once                                &
+     &       (my_rank, istep, itype_org_udt_file, org_udt_file_head,    &
+     &        nod_fld_ITP, t1_IO)
 !
           call nod_fields_send_recv                                     &
      &       (org_femmesh%mesh%nod_comm, nod_fld_ITP)

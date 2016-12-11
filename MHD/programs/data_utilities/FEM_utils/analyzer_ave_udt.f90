@@ -77,7 +77,7 @@
       istep_ucd = i_step_init / i_step_output_ucd
       call set_data_by_read_ucd_once(my_rank, istep_ucd,                &
      &    udt_param_FUTIL%iflag_format, udt_param_FUTIL%file_prefix,    &
-     &    field_FUTIL)
+     &    field_FUTIL, t1_IO)
 !
       icou = 1
       do istep = i_step_init+1, i_step_number
