@@ -16,7 +16,7 @@
       use m_spheric_data_sph_spetr
       use calypso_mpi
 !
-      use m_time_data_IO
+      use t_time_data_IO
       use field_IO_select
       use pickup_sph_rms_spectr 
 !
@@ -60,7 +60,7 @@
       call set_field_file_fmt_prefix                                    &
      &    (iflag_org_sph_file_fmt, org_sph_file_head, sph_spec_IO)
       call sel_read_alloc_step_SPH_file                                 &
-     &    (nprocs, my_rank, i_step_init, t1_IO, sph_spec_IO)
+     &    (nprocs, my_rank, i_step_init, spec_time_IO, sph_spec_IO)
 !
 !  -------------------------------
 !
@@ -109,7 +109,7 @@
         call set_field_file_fmt_prefix                                  &
      &     (iflag_org_sph_file_fmt, org_sph_file_head, sph_spec_IO)
         call sel_read_step_SPH_field_file                               &
-     &     (nprocs, my_rank, i_step, t1_IO, sph_spec_IO)
+     &     (nprocs, my_rank, i_step, spec_time_IO, sph_spec_IO)
 !
         call set_rj_phys_data_from_IO(sph_spec_IO, rj_fld_spec)
 !

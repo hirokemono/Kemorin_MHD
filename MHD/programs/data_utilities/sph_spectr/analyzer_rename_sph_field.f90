@@ -90,7 +90,7 @@
       subroutine difference_of_two_spectr(istep_fld, files, fld_list)
 !
       use calypso_mpi
-      use m_time_data_IO
+      use t_time_data_IO
       use field_IO_select
       use const_global_element_ids
 !
@@ -98,13 +98,14 @@
       type(diff_spectrum_file_param), intent(in) :: files
       type(rename_list), intent(in) :: fld_list
 !
+      type(time_params_IO) :: fst_t_IO
       type(field_IO) :: sph_fst_IO
 !
 !
       call set_field_file_fmt_prefix(files%org_file_param%iflag_format, &
      &    files%org_file_param%file_prefix, sph_fst_IO)
       call sel_read_alloc_step_SPH_file                                 &
-     &   (nprocs, my_rank, istep_fld, t1_IO, sph_fst_IO)
+     &   (nprocs, my_rank, istep_fld, fst_t_IO, sph_fst_IO)
 !
 !
       call calypso_mpi_barrier
@@ -119,7 +120,7 @@
      &    files%out_file_param%file_prefix, sph_fst_IO)
       call calypso_mpi_barrier
       call sel_write_step_SPH_field_file                                &
-     &   (nprocs, my_rank, istep_fld, t1_IO, sph_fst_IO)
+     &   (nprocs, my_rank, istep_fld, fst_t_IO, sph_fst_IO)
       call calypso_mpi_barrier
 !
       call dealloc_merged_field_stack(sph_fst_IO)
