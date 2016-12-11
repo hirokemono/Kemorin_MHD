@@ -14,6 +14,8 @@
       use m_control_data_4_merge
       use m_control_param_merge
 !
+      use t_time_data_IO
+      use t_field_data_IO
       use t_ucd_data
 !
       use set_merged_geometry
@@ -25,6 +27,9 @@
 !
 !>        Instance for FEM field data IO
       type(ucd_data), save :: fem_ucd
+!
+      type(time_params_IO), save :: merged_time_IO
+      type(field_IO), save :: merged_IO
 !
       integer (kind = kint) :: istep
 !
@@ -57,16 +62,16 @@
 !
 !  allocate restart data
 !
-      call init_by_old_restart_data
+      call init_by_old_restart_data(merged_time_IO, merged_IO)
 !
 !   loop for time integration
 !
       do istep = istep_start, istep_end, increment_step
 !
-        call update_restart_file(istep)
+        call update_restart_file(istep, merged_time_IO, merged_IO)
         write(*,*) 'step', istep, 'finish '
       end do
-      call dealloc_newrst_phys_name_IO
+      call dealloc_phys_name_IO(merged_IO)
 !
 !
       if(iflag_delete_org .gt. 0) then

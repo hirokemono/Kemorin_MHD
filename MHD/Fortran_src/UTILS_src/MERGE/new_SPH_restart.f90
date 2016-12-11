@@ -22,11 +22,16 @@
 !!        integer(kind = kint), intent(inout) :: nlayer_ICB, nlayer_CMB
 !!      subroutine load_field_name_assemble_sph                         &
 !!     &         (org_sph_fst_head, ifmt_org_sph_fst, istep_start,      &
-!!     &          np_sph_org, org_phys, new_phys)
+!!     &          np_sph_org, org_phys, new_phys, t_IO)
 !!      subroutine load_org_sph_data(org_sph_fst_head, ifmt_org_sph_fst,&
 !!     &          ip, istep, np_sph_org, org_sph, org_phys)
 !!      subroutine const_assembled_sph_data                             &
-!!     &         (b_ratio, new_sph, r_itp, new_phys, new_fst_IO)
+!!     &         (b_ratio, new_sph, r_itp, new_phys, new_fst_IO, t_IO)
+!!        type(sph_grids), intent(in) :: new_sph
+!!        type(sph_radial_itp_data), intent(in) :: r_itp
+!!        type(phys_data), intent(inout) :: new_phys
+!!        type(field_IO), intent(inout) :: new_fst_IO
+!!        type(time_params_IO), intent(in) :: t_IO
 !!@endverbatim
 !
       module new_SPH_restart
@@ -35,7 +40,7 @@
       use calypso_mpi
       use t_spheric_mesh
       use t_sph_spectr_data
-      use m_time_data_IO
+      use t_time_data_IO
       use t_field_data_IO
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
@@ -110,7 +115,7 @@
 !
       subroutine load_field_name_assemble_sph                           &
      &         (org_sph_fst_head, ifmt_org_sph_fst, istep_start,        &
-     &          np_sph_org, org_phys, new_phys)
+     &          np_sph_org, org_phys, new_phys, t_IO)
 !
       use calypso_mpi
       use t_spheric_parameter
@@ -125,6 +130,7 @@
 !
       type(phys_data), intent(inout) :: org_phys(np_sph_org)
       type(phys_data), intent(inout) :: new_phys
+      type(time_params_IO), intent(inout) :: t_IO
 !
 !>      Field data IO structure for original data
       type(field_IO) :: org_fst_IO
@@ -134,7 +140,7 @@
       call set_field_file_fmt_prefix                                    &
      &   (ifmt_org_sph_fst, org_sph_fst_head, org_fst_IO)
       call sel_read_alloc_step_SPH_file                                 &
-     &   (np_sph_org, izero, istep_start, t1_IO, org_fst_IO)
+     &   (np_sph_org, izero, istep_start, t_IO, org_fst_IO)
 !
       if(my_rank .eq. 0) then
         call copy_rj_phys_name_from_IO(org_fst_IO, new_phys)
@@ -176,6 +182,7 @@
       type(phys_data), intent(inout) :: org_phys
 !
 !>      Field data IO structure for original data
+      type(time_params_IO) :: org_time_IO
       type(field_IO) :: org_fst_IO
       integer(kind = kint) :: irank_org
 !
@@ -183,10 +190,10 @@
       call set_field_file_fmt_prefix                                    &
      &   (ifmt_org_sph_fst, org_sph_fst_head, org_fst_IO)
       call sel_read_alloc_step_SPH_file                                 &
-     &   (np_sph_org, irank_org, istep, t1_IO, org_fst_IO)
+     &   (np_sph_org, irank_org, istep, org_time_IO, org_fst_IO)
 !
       if(irank_org .lt. np_sph_org) then
-        call copy_time_steps_from_restart(t1_IO)
+        call copy_time_steps_from_restart(org_time_IO)
         call alloc_phys_data_type(org_sph%sph_rj%nnod_rj, org_phys)
         call copy_rj_phys_data_from_IO(org_fst_IO, org_phys)
 !
@@ -232,7 +239,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_assembled_sph_data                               &
-     &         (b_ratio, new_sph, r_itp, new_phys, new_fst_IO)
+     &         (b_ratio, new_sph, r_itp, new_phys, new_fst_IO, t_IO)
 !
       use calypso_mpi
       use m_phys_labels
@@ -250,6 +257,7 @@
       type(sph_radial_itp_data), intent(in) :: r_itp
       type(phys_data), intent(inout) :: new_phys
       type(field_IO), intent(inout) :: new_fst_IO
+      type(time_params_IO), intent(inout) :: t_IO
 !
 !
         if(r_itp%iflag_same_rgrid .eq. 0) then
@@ -271,7 +279,7 @@
         end if
 !
 !
-        call copy_time_steps_to_restart(t1_IO)
+        call copy_time_steps_to_restart(t_IO)
         call copy_rj_phys_name_to_IO                                    &
      &     (new_phys%num_phys, new_phys, new_fst_IO)
 !
