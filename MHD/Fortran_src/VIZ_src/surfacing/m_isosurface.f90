@@ -30,6 +30,7 @@
       use t_phys_data
       use t_psf_geometry_list
       use t_psf_patch_data
+      use t_time_data_IO
       use t_ucd_data
 !
 !
@@ -52,6 +53,8 @@
 !
 !>      Structure for psf patch data on local domain
       type(psf_local_data), allocatable, save :: iso_mesh(:)
+!
+      type(time_params_IO), save :: iso_time_IO
 !
 !>      Structure for isosurface output (used by master process)
       type(ucd_data), allocatable, save :: iso_out(:)
@@ -132,6 +135,7 @@
       use t_comm_table
       use t_edge_data
       use t_phys_data
+      use t_ucd_data
 !
       use set_const_4_sections
       use find_node_and_patch_psf
@@ -172,7 +176,7 @@
      &    iso_param, iso_list, iso_mesh)
 !
       call output_isosurface(num_iso, iso_header, itype_iso_file,       &
-     &    istep_iso, iso_mesh, iso_out, iso_out_m)
+     &    istep_iso, iso_mesh, iso_time_IO, iso_out, iso_out_m)
 !
       call dealloc_psf_field_data(num_iso, iso_mesh)
       call dealloc_psf_node_and_patch(num_iso, iso_list, iso_mesh)

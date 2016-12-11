@@ -25,7 +25,6 @@
 !!        type(surface_node_grp_data), intent(in) :: sf_grp_nod
 !!
 !!        type(phys_data), intent(in) :: nod_fld
-!!
 !!      subroutine dealloc_psf_field_type
 !!@endverbatim
 !
@@ -51,6 +50,7 @@
       use t_edge_data
       use t_group_data
       use t_surface_group_connect
+      use t_time_data_IO
 !
       implicit  none
 !
@@ -69,6 +69,8 @@
 !
 !>      Structure for psf patch data on local domain
       type(psf_local_data), allocatable, save :: psf_mesh(:)
+!
+      type(time_params_IO), save :: psf_time_IO
 !
 !>      Structure for cross sectioning output (used by master process)
       type(ucd_data), allocatable, save :: psf_out(:)
@@ -205,8 +207,8 @@
 !
 !      call start_eleps_time(21)
       if (iflag_debug.eq.1) write(*,*) 'output_section_mesh'
-      call output_section_data                                          &
-     &   (num_psf, istep_psf, psf_mesh, psf_out, psf_out_m)
+      call output_section_data(num_psf, istep_psf, psf_mesh,            &
+     &    psf_time_IO, psf_out, psf_out_m)
 !
       end subroutine SECTIONING_visualize
 !

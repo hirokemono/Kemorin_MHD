@@ -229,13 +229,14 @@
 !
       istep_fld = i_step / i_step_output_rst
       call sel_read_alloc_step_SPH_file                                 &
-     &   (nprocs, my_rank, istep_fld, t1_IO, sph_fst_IO)
+     &   (nprocs, my_rank, istep_fld, sph_time_IO, sph_fst_IO)
+!
+      call copy_init_time_from_restart(sph_time_IO)
+      time = time_init
 !
       if(rj_file_param%iflag_IO .eq. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_sph_restart_from_IO'
         call set_sph_restart_from_IO(sph_fst_IO, rj_fld)
-        call copy_init_time_from_restart(t1_IO)
-        time = time_init
       else
         if (iflag_debug.gt.0)                                           &
      &            write(*,*) 'r_interpolate_sph_rst_from_IO'

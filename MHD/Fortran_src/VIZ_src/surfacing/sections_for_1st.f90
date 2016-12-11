@@ -28,6 +28,7 @@
       use t_group_data
       use t_surface_group_connect
       use t_phys_data
+      use t_time_data_IO
 !
       implicit  none
 !
@@ -84,7 +85,8 @@
 !
 !
       call start_eleps_time(65)
-      call SECTIONING_visualize(istep_psf, ele_mesh%edge, nod_fld)
+      call SECTIONING_visualize                                         &
+     &   (istep_psf, ele_mesh%edge, nod_fld)
       call end_eleps_time(65)
 !
       call start_eleps_time(66)

@@ -108,7 +108,8 @@
 !
 !
       call start_eleps_time(65)
-      call SECTIONING_visualize(istep_psf, ele_mesh%edge, nod_fld)
+      call SECTIONING_visualize                                         &
+     &   (istep_psf, ele_mesh%edge, nod_fld)
       call end_eleps_time(65)
 !
       call start_eleps_time(66)
