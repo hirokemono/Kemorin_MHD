@@ -25,10 +25,12 @@
       use m_geometry_data_4_merge
       use m_file_format_switch
       use m_time_data_IO
+      use t_time_data_IO
       use t_field_data_IO
 !
       implicit none
 !
+      type(time_params_IO), save, private :: merged_time_IO
       type(field_IO), save, private :: merged_IO
 !
 !  ---------------------------------------------------------------------

@@ -38,11 +38,12 @@
       use t_comm_table
       use t_geometry_data
       use t_phys_data
-      use m_time_data_IO
+      use t_time_data_IO
       use t_field_data_IO
       use t_layering_ele_list
       use t_ele_info_4_dynamic
 !
+      use m_time_data_IO
       use m_t_step_parameter
 !
       implicit  none
@@ -50,6 +51,7 @@
       private :: output_restart_files, input_restart_files
       private :: input_model_coef_file, output_model_coef_file
 !
+      type(time_params_IO), save, private :: fem_time_IO
       type(field_IO), save, private :: fem_fst_IO
 !
 ! -----------------------------------------------------------------------
@@ -220,11 +222,11 @@
         call scalar_send_recv(iphys%i_pre_composit, nod_comm, nod_fld)
       end if
 !
-      call copy_time_steps_to_restart(t1_IO)
+      call copy_time_steps_to_restart(fem_time_IO)
       call copy_field_data_to_restart(node, nod_fld, fem_fst_IO)
 !
       call sel_write_step_FEM_field_file                                &
-     &   (nprocs, my_rank, index_rst, t1_IO, fem_fst_IO)
+     &   (nprocs, my_rank, index_rst, fem_time_IO, fem_fst_IO)
 !
       end subroutine output_restart_files
 !
@@ -251,16 +253,16 @@
       if(ierr .gt. 0) call calypso_MPI_abort(ierr,'No restart file.')
 !
       call sel_read_alloc_step_FEM_file                                 &
-     &   (nprocs, my_rank, istep_rst_start, t1_IO, fem_fst_IO)
+     &   (nprocs, my_rank, istep_rst_start, fem_time_IO, fem_fst_IO)
 !
       call copy_field_data_from_restart(node, fem_fst_IO, nod_fld)
       call dealloc_phys_data_IO(fem_fst_IO)
       call dealloc_phys_name_IO(fem_fst_IO)
 !
       if(iflag_flexible_step .eq. iflag_flex_step) then
-        call copy_time_steps_from_restart(t1_IO)
+        call copy_time_steps_from_restart(fem_time_IO)
       else
-        call copy_init_time_from_restart(t1_IO)
+        call copy_init_time_from_restart(fem_time_IO)
       end if
 !
       if(my_rank .eq. 0)  write(*,*) 'delta t ', dt, dt_fact, idt_digit

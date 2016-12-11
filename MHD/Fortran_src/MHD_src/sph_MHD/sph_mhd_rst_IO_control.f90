@@ -55,6 +55,7 @@
       use t_phys_address
       use t_phys_data
       use t_file_IO_parameter
+      use t_time_data_IO
 !
       use m_time_data_IO
       use field_IO_select
@@ -62,8 +63,10 @@
       implicit  none
 !
 !
+      type(time_params_IO), save, private :: sph_time_IO
       type(field_IO), save :: sph_fst_IO
-      type(field_IO), save :: sph_out_IO
+!
+      type(field_IO), save, private :: sph_out_IO
 !
 ! -----------------------------------------------------------------------
 !
@@ -117,11 +120,11 @@
 !
       istep_fld = istep_max_dt/i_step_output_rst
 !
-      call copy_time_steps_to_restart(t1_IO)
+      call copy_time_steps_to_restart(sph_time_IO)
       call set_sph_restart_data_to_IO(rj_fld, sph_fst_IO)
 !
       call sel_write_step_SPH_field_file                                &
-     &   (nprocs, my_rank, istep_fld, t1_IO, sph_fst_IO)
+     &   (nprocs, my_rank, istep_fld, sph_time_IO, sph_fst_IO)
 !
       end subroutine output_sph_restart_control
 !
@@ -137,11 +140,11 @@
       integer(kind = kint), parameter :: negaone = -1
 !
 !
-      call copy_time_steps_to_restart(t1_IO)
+      call copy_time_steps_to_restart(sph_time_IO)
       call set_sph_restart_data_to_IO(rj_fld, sph_fst_IO)
 
       call sel_write_step_SPH_field_file                                &
-     &   (nprocs, my_rank, negaone, t1_IO, sph_fst_IO)
+     &   (nprocs, my_rank, negaone, sph_time_IO, sph_fst_IO)
 !
       end subroutine output_sph_rst_by_elaps
 !
@@ -162,15 +165,15 @@
 !
       if (i_step_init .eq. -1) then
         call sel_read_alloc_step_SPH_file                               &
-     &     (nprocs, my_rank, i_step_init, t1_IO, sph_fst_IO)
+     &     (nprocs, my_rank, i_step_init, sph_time_IO, sph_fst_IO)
       else
         istep_fld = i_step_init / i_step_output_rst
         call sel_read_alloc_step_SPH_file                               &
-     &     (nprocs, my_rank, istep_fld, t1_IO, sph_fst_IO)
+     &     (nprocs, my_rank, istep_fld, sph_time_IO, sph_fst_IO)
       end if
 !
       call set_sph_restart_from_IO(sph_fst_IO, rj_fld)
-      call copy_init_time_from_restart(t1_IO)
+      call copy_init_time_from_restart(sph_time_IO)
 !
       call dealloc_phys_data_IO(sph_fst_IO)
       call dealloc_phys_name_IO(sph_fst_IO)
@@ -269,7 +272,7 @@
      &    sph_out_IO)
 !
       istep_fld = i_step / i_step_output_ucd
-      call copy_time_steps_to_restart(t1_IO)
+      call copy_time_steps_to_restart(sph_time_IO)
       call copy_rj_phys_name_to_IO                                      &
      &   (rj_fld%num_phys_viz, rj_fld, sph_out_IO)
       call alloc_phys_data_IO(sph_out_IO)
@@ -281,7 +284,7 @@
      &   (sph_out_IO%nnod_IO, sph_out_IO%istack_numnod_IO)
 !
       call sel_write_step_SPH_field_file                                &
-     &   (nprocs, my_rank, istep_fld, t1_IO, sph_out_IO)
+     &   (nprocs, my_rank, istep_fld, sph_time_IO, sph_out_IO)
 !
       call dealloc_merged_field_stack(sph_out_IO)
       call dealloc_phys_data_IO(sph_out_IO)

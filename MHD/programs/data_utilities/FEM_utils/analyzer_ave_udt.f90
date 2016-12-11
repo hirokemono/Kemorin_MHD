@@ -101,8 +101,7 @@
       call set_ucd_file_prefix(ave_udt_file_head, ucd_FUTIL)
       call output_udt_one_snapshot(i_step_number,                       &
      &    femmesh_FUTIL%mesh%node, femmesh_FUTIL%mesh%ele,              &
-     &    femmesh_FUTIL%mesh%nod_comm, field_FUTIL,                     &
-     &    ucd_FUTIL, m_ucd_FUTIL)
+     &    femmesh_FUTIL%mesh%nod_comm, field_FUTIL)
 !
       end subroutine analyze_ave_udt
 !
