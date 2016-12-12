@@ -284,14 +284,12 @@
 !
 !
       if ( mod(istep_max_dt,i_step_output_rst) .ne. 0) return
-!
       index_rst = istep_max_dt / i_step_output_rst
+!
       call sel_read_step_FEM_field_file                                 &
      &    (nprocs, my_rank, index_rst, t_IO, fem_fst_IO)
 !
       call copy_field_data_from_restart(node, fem_fst_IO, nod_fld)
-      time =       time_init
-      i_step_MHD = istep_max_dt
 !
       end subroutine input_restart_4_snapshot
 !

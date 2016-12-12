@@ -27,7 +27,6 @@
       use m_setting_4_ini
       use m_geometry_data_4_merge
       use m_ctl_data_4_cub_kemo
-      use m_time_data_IO
       use m_cube_files_data
       use set_ctl_data_plane_mesh
       use set_parallel_file_name
@@ -38,7 +37,7 @@
 !
       use t_mesh_data
       use t_geometry_data
-      use m_time_data_IO
+      use t_time_data_IO
       use t_field_data_IO
       use t_file_IO_parameter
 !
@@ -47,6 +46,7 @@
       integer(kind=kint) :: ip, id_rank, ierr, inod
       integer(kind=kint) :: np, jst, jed
       type(node_data) :: node_plane
+      type(time_params_IO), save :: plane_t_IO
       type(field_IO) :: plane_fst_IO
       type(mesh_geometry) :: mesh_IO_p
       type(field_IO_params) ::  cube_mesh_file
@@ -62,7 +62,7 @@
       call s_set_ctl_data_plane_mesh
 !
       call set_initial_components
-      call reset_time_data_IO(t1_IO)
+      call reset_time_data_IO(plane_t_IO)
 !
       num_pe = ndx * ndy * ndz
 !
@@ -148,7 +148,7 @@
         call set_field_file_fmt_prefix                                  &
      &     (izero, org_rst_f_header, plane_fst_IO)
         call sel_write_step_FEM_field_file                              &
-     &     (num_pe, id_rank, izero, t1_IO, plane_fst_IO)
+     &     (num_pe, id_rank, izero, plane_t_IO, plane_fst_IO)
 !
         call dealloc_phys_name_IO(plane_fst_IO)
         call dealloc_phys_data_IO(plane_fst_IO)

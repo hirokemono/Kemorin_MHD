@@ -18,7 +18,7 @@
       use t_FEM_phys_data
       use t_phys_data
       use t_phys_address
-      use m_time_data_IO
+      use t_time_data_IO
       use t_ucd_data
       use t_interpolate_table
 !
@@ -37,6 +37,7 @@
 !
       type(phys_data), save :: new_phys
 !
+      type(time_params_IO), save :: itp_time_IO
       type(ucd_data), save :: fem_ucd
 !
       private :: link_field_data_type_2_IO
@@ -117,7 +118,7 @@
         if (my_rank .lt. ndomain_org) then
           call set_data_by_read_ucd_once                                &
      &       (my_rank, istep, itype_org_udt_file, org_udt_file_head,    &
-     &        nod_fld_ITP, t1_IO)
+     &        nod_fld_ITP, itp_time_IO)
 !
           call nod_fields_send_recv                                     &
      &       (org_femmesh%mesh%nod_comm, nod_fld_ITP)
@@ -138,7 +139,7 @@
 !
           call set_ucd_file_format(itype_itp_udt_file, fem_ucd)
           call set_ucd_file_prefix(itp_udt_file_head, fem_ucd)
-          call sel_write_udt_file(my_rank, istep, t1_IO, fem_ucd)
+          call sel_write_udt_file(my_rank, istep, itp_time_IO, fem_ucd)
           call disconnect_ucd_data(fem_ucd)
           call disconnect_ucd_node(fem_ucd)
         end if

@@ -15,7 +15,7 @@
       use m_machine_parameter
       use m_t_step_parameter
 !
-      use m_time_data_IO
+      use t_time_data_IO
       use t_field_data_IO
 !
       use t_mesh_data
@@ -39,6 +39,7 @@
 !
       type(phys_data), save :: new_phys
 !
+      type(time_params_IO), save :: itp_time_IO
       type(field_IO), save :: itp_fld_IO
 !
       private :: new_femmesh, new_ele_mesh
@@ -93,7 +94,7 @@
       call set_field_file_fmt_prefix                                    &
      &   (ifmt_org_rst_file, org_rst_file_head, itp_fld_IO)
       call sel_read_alloc_step_FEM_file                                 &
-     &   (ndomain_org, izero, istep_rst_start, t1_IO, itp_fld_IO)
+     &   (ndomain_org, izero, istep_rst_start, itp_time_IO, itp_fld_IO)
       if (iflag_debug.eq.1) write(*,*) 'init_field_name_by_restart'
       call init_field_name_by_restart(itp_fld_IO, nod_fld_ITP)
       call dealloc_phys_data_IO(itp_fld_IO)
@@ -118,7 +119,6 @@
 !
       use calypso_mpi
       use m_ctl_params_4_gen_table
-      use m_time_data_IO
 !
       use field_IO_select
       use set_parallel_file_name
@@ -143,13 +143,13 @@
           call set_field_file_fmt_prefix                                &
      &       (ifmt_org_rst_file, org_rst_file_head, itp_fld_IO)
           call sel_read_step_FEM_field_file                             &
-     &       (nprocs, my_rank, i_step, t1_IO, itp_fld_IO)
+     &       (nprocs, my_rank, i_step, itp_time_IO, itp_fld_IO)
 !
           call copy_field_data_from_restart                             &
      &       (org_femmesh%mesh%node, itp_fld_IO, nod_fld_ITP)
           call dealloc_phys_data_IO(itp_fld_IO)
-          time =       t1_IO%time_IO
-          i_step_MHD = t1_IO%i_time_step_IO
+          time =       itp_time_IO%time_IO
+          i_step_MHD = itp_time_IO%i_time_step_IO
 !
           call nod_fields_send_recv                                     &
      &       (org_femmesh%mesh%nod_comm, nod_fld_ITP)
@@ -166,7 +166,7 @@
      &      new_femmesh%mesh%node, new_phys)
 !
         if (my_rank .lt. ndomain_dest) then
-          call copy_time_steps_to_restart(t1_IO)
+          call copy_time_steps_to_restart(itp_time_IO)
 !
           itp_fld_IO%nnod_IO = new_femmesh%mesh%node%numnod
           call alloc_phys_data_IO(itp_fld_IO)
@@ -180,7 +180,7 @@
           call set_field_file_fmt_prefix                                &
      &       (ifmt_itp_rst_file, itp_rst_file_head, itp_fld_IO)
           call sel_write_step_FEM_field_file                            &
-     &       (nprocs, my_rank, i_step, t1_IO, itp_fld_IO)
+     &       (nprocs, my_rank, i_step, itp_time_IO, itp_fld_IO)
 !
           call dealloc_phys_data_IO(itp_fld_IO)
           call dealloc_merged_field_stack(itp_fld_IO)

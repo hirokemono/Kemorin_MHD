@@ -20,7 +20,7 @@
       use m_ctl_data_4_plane_model
       use m_ctl_data_2nd_plane
 !
-      use m_time_data_IO
+      use t_time_data_IO
       use t_ucd_data
 !
       use count_number_with_overlap
@@ -40,6 +40,7 @@
 !
       type(field_IO_params), save ::  plane_mesh_file
       type(ucd_data) :: fft_ucd
+      type(time_params_IO), save :: fft_t_IO
 !
       integer(kind=kint ) :: ist, ied, iint
       integer(kind=kint ) ::  istep, isig, ip
@@ -307,7 +308,7 @@
         call link_merged_field_2_udt_IO(fft_ucd)
 !
         fft_ucd%ifmt_file = iflag_udt
-        call sel_write_ucd_file(izero, istep, t1_IO, fft_ucd)
+        call sel_write_ucd_file(izero, istep, fft_t_IO, fft_ucd)
         call disconnect_ucd_data(fft_ucd)
       end do
 !
