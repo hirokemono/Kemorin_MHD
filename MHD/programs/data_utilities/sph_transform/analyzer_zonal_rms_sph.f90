@@ -110,7 +110,7 @@
       do i_step = i_step_init, i_step_number
 !
 !   Input field data
-        call FEM_analyze_sph_trans(i_step, visval)
+        call FEM_analyze_sph_trans(i_step, time_IO_TRNS, visval)
 !
 !   Take zonal RMS
         if (iflag_debug.gt.0) write(*,*) 'zonal_rms_all_rtp_field'
@@ -120,7 +120,7 @@
      &      femmesh_STR%mesh%node, field_STR)
 !
         call set_ucd_file_prefix(zonal_udt_head, ucd_SPH_TRNS)
-        call FEM_analyze_back_trans(ucd_SPH_TRNS, i_step,               &
+        call FEM_analyze_back_trans(time_IO_TRNS, ucd_SPH_TRNS, i_step, &
      &      istep_psf, istep_iso, istep_pvr, istep_fline, visval)
 !
         if(visval .eq. 0) then

@@ -80,7 +80,7 @@
       if (iflag_debug.gt.0) write(*,*) 'SPH_initialize_back_trans'
       call SPH_initialize_back_trans(sph_mesh_trans,                    &
      &    ipol_trans, idpdr_trans, itor_trans, rj_fld_trans,            &
-     &    sph_trns_IO)
+     &    time_IO_TRNS, sph_trns_IO)
 !
 !  -------------------------------
 !
@@ -105,9 +105,9 @@
         if (iflag_debug.gt.0) write(*,*) 'step ', i_step, 'start...'
 !
         call SPH_analyze_zm_energies(i_step, sph_mesh_trans,            &
-     &      ipol_trans, rj_fld_trans, sph_trns_IO, visval)
+     &      ipol_trans, rj_fld_trans, time_IO_TRNS, sph_trns_IO, visval)
 !
-        call FEM_analyze_back_trans(ucd_SPH_TRNS, i_step,               &
+        call FEM_analyze_back_trans(time_IO_TRNS, ucd_SPH_TRNS, i_step, &
      &      istep_psf, istep_iso, istep_pvr, istep_fline, visval)
 !
         if(visval .eq. 0) then

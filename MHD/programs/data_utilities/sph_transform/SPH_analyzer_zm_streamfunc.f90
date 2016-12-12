@@ -4,9 +4,13 @@
 !      Written by H. Matsui
 !
 !!      subroutine SPH_analyze_zm_streamfunc(i_step, sph_mesh,          &
-!!     &          ipol, idpdr, itor, rj_fld, fld_IO, visval)
+!!     &          ipol, idpdr, itor, rj_fld, t_IO, fld_IO, visval)
+!!        type(sph_mesh_data), intent(in) :: sph_mesh
+!!        type(phys_address), intent(in) :: ipol, idpdr, itor
+!!        type(phys_data), intent(inout) :: rj_fld
 !!        type(sph_grids), intent(in) :: sph_mesh
 !!        type(phys_data), intent(inout) :: rj_fld
+!!        type(time_params_IO), intent(inout) :: t_IO
 !!        type(field_IO), intent(inout) :: fld_IO
 !
       module SPH_analyzer_zm_streamfunc
@@ -30,14 +34,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_analyze_zm_streamfunc(i_step, sph_mesh,            &
-     &          ipol, idpdr, itor, rj_fld, fld_IO, visval)
+     &          ipol, idpdr, itor, rj_fld, t_IO, fld_IO, visval)
 !
       use m_t_step_parameter
       use m_ctl_params_sph_trans
       use t_spheric_mesh
       use t_phys_address
       use t_phys_data
-      use m_time_data_IO
+      use t_time_data_IO
       use t_field_data_IO
 !
       use field_IO_select
@@ -55,6 +59,7 @@
       type(phys_data), intent(inout) :: rj_fld
 !
       integer(kind = kint), intent(inout) :: visval
+      type(time_params_IO), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       integer(kind = kint) :: i_udt
@@ -69,7 +74,7 @@
 !   Input spectr data
         if (iflag_debug.gt.0) write(*,*) 'sel_read_step_SPH_field_file'
         call sel_read_step_SPH_field_file                               &
-     &     (nprocs, my_rank, i_step, t1_IO, fld_IO)
+     &     (nprocs, my_rank, i_step, t_IO, fld_IO)
 !
 !    copy and extend magnetic field to outside
 !

@@ -4,9 +4,7 @@
 !      Written by H. Matsui
 !
 !!      subroutine SPH_initialize_back_trans                            &
-!!     &         (sph_mesh, ipol, idpdr, itor, rj_fld, fld_IO)
-!!      subroutine SPH_analyze_back_trans                               &
-!!     &         (i_step, sph_mesh, ipol, rj_fld, fld_IO, visval)
+!!     &         (sph_mesh, ipol, idpdr, itor, rj_fld, t_IO, fld_IO)
 !
       module SPH_analyzer_back_trans_old
 !
@@ -19,7 +17,7 @@
       use t_spheric_mesh
       use t_phys_address
       use t_phys_data
-      use m_time_data_IO
+      use t_time_data_IO
       use t_field_data_IO
 !
       implicit none
@@ -31,7 +29,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_initialize_back_trans                              &
-     &         (sph_mesh, ipol, idpdr, itor, rj_fld, fld_IO)
+     &         (sph_mesh, ipol, idpdr, itor, rj_fld, t_IO, fld_IO)
 !
       use m_t_step_parameter
 !
@@ -49,6 +47,7 @@
       type(phys_address), intent(inout) :: ipol, idpdr, itor
       type(phys_data), intent(inout) :: rj_fld
       type(field_IO), intent(inout) :: fld_IO
+      type(time_params_IO), intent(inout) :: t_IO
 !
 !
 !  ------  initialize spectr data
@@ -59,7 +58,7 @@
      &    fld_IO)
       write(*,*) 'ifmt_org_rst', rst_org_param%iflag_format
       call sel_read_alloc_step_SPH_file                                 &
-     &   (nprocs, my_rank, i_step_init, t1_IO, fld_IO)
+     &   (nprocs, my_rank, i_step_init, t_IO, fld_IO)
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_sph_name_rj_to_rtp'
       call copy_sph_name_rj_to_rtp(rj_fld)
@@ -99,68 +98,6 @@
 !     &    sph_mesh%sph%sph_rlm, trns_param%leg)
 !
       end subroutine SPH_initialize_back_trans
-!
-! ----------------------------------------------------------------------
-!
-      subroutine SPH_analyze_back_trans                                 &
-     &         (i_step, sph_mesh, ipol, rj_fld, fld_IO, visval)
-!
-      use m_t_step_parameter
-!
-      use field_IO_select
-      use r_interpolate_sph_data
-      use copy_rj_phys_data_4_IO
-!
-      use sph_transfer_all_field
-      use set_exit_flag_4_visualizer
-!
-!
-      integer(kind = kint), intent(in) :: i_step
-      type(sph_mesh_data), intent(in) :: sph_mesh
-      type(phys_address), intent(in) :: ipol
-!
-      integer(kind = kint), intent(inout) :: visval
-      type(phys_data), intent(inout) :: rj_fld
-      type(field_IO), intent(inout) :: fld_IO
-!
-      integer(kind = kint) :: i_udt
-!
-!
-      call set_output_flag(i_udt, i_step, i_step_output_ucd)
-      call set_output_flag_4_viz(i_step, visval)
-      call set_field_file_fmt_prefix                                    &
-     &   (rst_org_param%iflag_format, rst_org_param%file_prefix,        &
-     &    fld_IO)
-      write(*,*) 'ifmt_org_rst', rst_org_param%iflag_format
-      visval = visval * i_udt
-!
-      if(visval .eq. 0) then
-!
-!   Input spectr data
-        if (iflag_debug.gt.0) write(*,*) 'sel_read_step_SPH_field_file'
-      call sel_read_step_SPH_field_file                                 &
-     &     (nprocs, my_rank, i_step, t1_IO, fld_IO)
-!
-!    copy and extend magnetic field to outside
-!
-        if(rj_org_param%iflag_IO .eq. 0) then
-          if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
-          call set_rj_phys_data_from_IO(fld_IO, rj_fld)
-        else
-          if (iflag_debug.gt.0) write(*,*)                              &
-     &                        'r_interpolate_sph_fld_from_IO'
-          call r_interpolate_sph_fld_from_IO                            &
-     &       (fld_IO, sph_mesh%sph%sph_rj, ipol, rj_fld)
-        end if
-!
-!          call check_all_field_data(my_rank, rj_fld)
-!  spherical transform for vector
-        call sph_b_trans_all_field                                      &
-     &     (ncomp_sph_trans, sph_mesh%sph, sph_mesh%sph_comms,          &
-     &      femmesh_STR%mesh, trns_param, rj_fld, field_STR)
-      end if
-!
-      end subroutine SPH_analyze_back_trans
 !
 ! ----------------------------------------------------------------------
 !

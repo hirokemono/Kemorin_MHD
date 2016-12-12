@@ -22,7 +22,11 @@
       use m_SPH_transforms
       use calypso_mpi
 !
+      use t_time_data_IO
+!
       implicit none
+!
+      type(time_params_IO), save, private :: time_IO
 !
 ! ----------------------------------------------------------------------
 !
@@ -81,11 +85,9 @@
      &         (i_step, sph_mesh, rj_fld, fld_IO)
 !
       use m_t_step_parameter
-      use m_time_data_IO
       use m_ctl_params_sph_trans
       use t_spheric_mesh
       use t_phys_data
-      use m_time_data_IO
       use t_field_data_IO
 !
       use field_IO_select
@@ -113,12 +115,12 @@
      &    write(*,*) 'copy_rj_phys_data_to_IO'
       call copy_rj_phys_data_to_IO(rj_fld%num_phys, rj_fld, fld_IO)
 !
-     call reset_time_data_IO(t1_IO)
+     call reset_time_data_IO(time_IO)
      call set_field_file_fmt_prefix                                     &
      &   (sph_file_trns_p%iflag_format, sph_file_trns_p%file_prefix,    &
      &    fld_IO)
       call sel_write_step_SPH_field_file                                &
-     &   (nprocs, my_rank, i_step, t1_IO, fld_IO)
+     &   (nprocs, my_rank, i_step, time_IO, fld_IO)
 !
       end subroutine SPH_analyze_sph_trans
 !
@@ -128,10 +130,8 @@
      &         (i_step, sph_mesh, rj_fld, fld_IO)
 !
       use m_t_step_parameter
-      use m_time_data_IO
       use t_spheric_mesh
       use t_phys_data
-      use m_time_data_IO
       use t_field_data_IO
 !
       use field_IO_select
@@ -167,9 +167,9 @@
       call count_number_of_node_stack                                   &
      &   (fld_IO%nnod_IO, fld_IO%istack_numnod_IO)
 !
-      call reset_time_data_IO(t1_IO)
+      call reset_time_data_IO(time_IO)
       call sel_write_step_SPH_field_file                                &
-     &   (nprocs, my_rank, i_step, t1_IO, fld_IO)
+     &   (nprocs, my_rank, i_step, time_IO, fld_IO)
 !
       end subroutine SPH_analyze_sph_zm_trans
 !

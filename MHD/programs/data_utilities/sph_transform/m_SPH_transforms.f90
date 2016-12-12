@@ -17,7 +17,7 @@
 !
       use t_mesh_data
       use t_phys_data
-      use t_ucd_data
+      use t_time_data_IO
       use t_ucd_data
       use t_next_node_ele_4_node
       use t_jacobian_3d
@@ -45,6 +45,7 @@
 !
 !
 !>        Instance for FEM field data IO
+      type(time_params_IO), save :: time_IO_TRNS
       type(ucd_data), save :: ucd_SPH_TRNS
 !>        Instance for numbers of FEM mesh for merged IO
       type(merged_ucd_data), save :: m_ucd_SPH_TRNS

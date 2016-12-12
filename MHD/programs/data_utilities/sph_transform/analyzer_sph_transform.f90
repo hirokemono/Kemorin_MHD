@@ -62,7 +62,7 @@
 !
 !    Initialize FEM grid
       if (iflag_debug.gt.0) write(*,*) 'FEM_initialize_sph_trans'
-      call FEM_initialize_sph_trans(field_file_param)
+      call FEM_initialize_sph_trans(field_file_param, time_IO_TRNS)
 !
 !    Initialization for spherical tranform
       if (iflag_debug.gt.0) write(*,*) 'SPH_initialize_sph_trans'
@@ -90,7 +90,7 @@
       do i_step = i_step_init, i_step_number
 !
 !   Input field data
-        call FEM_analyze_sph_trans(i_step, visval)
+        call FEM_analyze_sph_trans(i_step, time_IO_TRNS, visval)
 !
 !   Spherical transform
         call SPH_analyze_sph_trans                                      &

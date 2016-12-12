@@ -1,12 +1,12 @@
 !FEM_analyzer_sph_trans.f90
 !
-!!      subroutine FEM_initialize_sph_trans(udt_file_param)
+!!      subroutine FEM_initialize_sph_trans(udt_file_param, t_IO)
 !!        type(field_IO_params), intent(in) :: udt_file_param
 !!
-!!      subroutine FEM_analyze_sph_trans(i_step, udt_file_param, visval)
+!!      subroutine FEM_analyze_sph_trans(i_step, t_IO, visval)
 !!
 !!      subroutine SPH_to_FEM_bridge_sph_trans                          &
-!!     &         (udt_file_param, sph_rj, rj_fld, fld_IO)
+!!     &         (udt_file_param, rj_fld, fld_IO)
 !!        type(field_IO_params), intent(in) :: udt_file_param
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(phys_data), intent(in) :: rj_fld
@@ -25,7 +25,7 @@
       use m_SPH_transforms
       use t_ucd_data
       use t_file_IO_parameter
-      use m_time_data_IO
+      use t_time_data_IO
 !
       implicit none
 !
@@ -38,7 +38,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_sph_trans(udt_file_param)
+      subroutine FEM_initialize_sph_trans(udt_file_param, t_IO)
 !
       use m_array_for_send_recv
       use m_t_step_parameter
@@ -56,6 +56,7 @@
       use copy_all_field_4_sph_trans
 !
       type(field_IO_params), intent(in) :: udt_file_param
+      type(time_params_IO), intent(inout) :: t_IO
 !
 !
 !  -----    construct geometry informations
@@ -70,14 +71,14 @@
       call set_ucd_file_prefix(udt_file_param%file_prefix, input_ucd)
 !
       input_ucd%nnod = ione
-      call sel_read_udt_param(my_rank, i_step_init, t1_IO, input_ucd)
+      call sel_read_udt_param(my_rank, i_step_init, t_IO, input_ucd)
 !
       end subroutine FEM_initialize_sph_trans
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_sph_trans(i_step, visval)
+      subroutine FEM_analyze_sph_trans(i_step, t_IO, visval)
 !
       use m_ctl_params_sph_trans
       use m_t_step_parameter
@@ -85,6 +86,7 @@
       use nod_phys_send_recv
 !
       integer (kind =kint), intent(in) :: i_step
+      type(time_params_IO), intent(inout) :: t_IO
       integer (kind =kint), intent(inout) :: visval
 !
 !
@@ -97,7 +99,7 @@
       if(visval .eq. 0) then
         call set_ucd_file_prefix(udt_org_param%file_prefix, input_ucd)
         call set_data_by_read_ucd                                       &
-     &    (my_rank, i_step, t1_IO, input_ucd, field_STR)
+     &    (my_rank, i_step, t_IO, input_ucd, field_STR)
         call nod_fields_send_recv                                       &
      &    (femmesh_STR%mesh%nod_comm, field_STR)
       end if

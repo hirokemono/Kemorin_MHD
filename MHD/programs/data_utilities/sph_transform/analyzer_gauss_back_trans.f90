@@ -100,7 +100,7 @@
         call SPH_analyze_gauss_back_trans                               &
      &     (i_step, sph_mesh_trans, ipol_trans, rj_fld_trans, visval)
 !
-        call FEM_analyze_back_trans(ucd_SPH_TRNS, i_step,               &
+        call FEM_analyze_back_trans(time_IO_TRNS, ucd_SPH_TRNS, i_step, &
      &      istep_psf, istep_iso, istep_pvr, istep_fline, visval)
 !
         if (visval .eq. 0) then
