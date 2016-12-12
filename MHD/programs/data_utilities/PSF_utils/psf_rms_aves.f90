@@ -13,7 +13,7 @@
       use m_psf_results
       use m_field_file_format
 !
-      use m_time_data_IO
+      use t_time_data_IO
       use t_ucd_data
 !
       use set_parallel_file_name
@@ -25,6 +25,7 @@
       implicit    none
 !
 !
+      type(time_params_IO), save :: psf_time
       type(ucd_data), save:: psf_ucd
 
       character(len=kchara) :: fname_tmp
@@ -124,7 +125,7 @@
         write(*,'(15a1)', advance='NO') (char(8),i=1,15)
         write(*,'(i15)', advance='NO') istep
 !
-        call sel_read_udt_file(iminus, istep, t1_IO, psf_ucd)
+        call sel_read_udt_file(iminus, istep, psf_time, psf_ucd)
         call cal_rms_ave_4_psf(psf_u%psf_ele, psf_u%psf_phys,           &
      &     psf_normal, psf_average)
         call cal_minmax_psf                                             &
@@ -174,7 +175,7 @@
         write(*,'(15a1)', advance='NO') (char(8),i=1,15)
         write(*,'(i15)', advance='NO') istep
 !
-        call sel_read_udt_file(iminus, istep, t1_IO, psf_ucd)
+        call sel_read_udt_file(iminus, istep, psf_time, psf_ucd)
 !
 !$omp parallel
         do nd = 1, psf_u%psf_phys%ntot_phys
@@ -203,16 +204,16 @@
 !
       psf_ucd%file_prefix = psf_ave_header
       call copy_filed_to_phys_data(tave_psf, psf_u%psf_phys)
-      call sel_write_udt_file(iminus, istep_end, t1_IO, psf_ucd)
+      call sel_write_udt_file(iminus, istep_end, psf_time, psf_ucd)
 !
 !
       psf_ucd%file_prefix = psf_rms_header
       call copy_filed_to_phys_data(trms_psf, psf_u%psf_phys)
-      call sel_write_udt_file(iminus, istep_end, t1_IO, psf_ucd)
+      call sel_write_udt_file(iminus, istep_end, psf_time, psf_ucd)
 !
       psf_ucd%file_prefix = psf_sdev_header
       call copy_filed_to_phys_data(tsdev_psf, psf_u%psf_phys)
-      call sel_write_udt_file(iminus, istep_end, t1_IO, psf_ucd)
+      call sel_write_udt_file(iminus, istep_end, psf_time, psf_ucd)
 !
       stop ' //// program normally finished //// '
 !

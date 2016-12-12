@@ -18,6 +18,7 @@
       use m_psf_edge_connect
       use m_dynamobench_data_by_psf
 !
+      use t_time_data_IO
       use t_ucd_data
 !
       implicit    none
@@ -33,6 +34,7 @@
       real(kind = kreal) :: xref
       real(kind = kreal) :: time
 !
+!      type(time_params_IO), save :: line_time
       type(ucd_data), save :: line
 !
 !  ===========
@@ -83,7 +85,8 @@
         call dealloc_psf_results(psf_u)
 !
         call cal_dynamobench_data_by_psf(istep, time, line)
-!        call write_psf_line_data(iflag_ucd, line_udt_head, istep, line)
+!        call write_psf_line_data                                       &
+!     &     (iflag_ucd, line_udt_head, istep, line_time, line)
         call deallocate_ucd_mesh(line)
       end do
 !

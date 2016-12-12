@@ -18,6 +18,7 @@
       use m_line_from_psf
       use m_psf_edge_connect
 !
+      use t_time_data_IO
       use t_ucd_data
 !
       implicit    none
@@ -32,6 +33,7 @@
       integer(kind = kint) :: nd
       real(kind = kreal) :: xref
 !
+      type(time_params_IO), save :: line_time
       type(ucd_data), save :: line
 !
 !  ===========
@@ -68,7 +70,8 @@
         call deallocate_psf_edge
         call dealloc_psf_results(psf_u)
 !
-        call write_psf_line_data(iflag_ucd, line_udt_head, istep, line)
+        call write_psf_line_data                                        &
+     &     (iflag_ucd, line_udt_head, istep, line_time, line)
       end do
 !
       stop ' //// program normally finished //// '
