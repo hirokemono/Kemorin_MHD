@@ -77,7 +77,7 @@
 !
       if (iflag_t_evo_4_velo .ne. id_no_evolution                       &
      &  .or. iflag_t_evo_4_temp .ne. id_no_evolution                    &
-     &  .or. iflag_t_evo_4_composit .ne. id_no_evolution) then
+     &  .or. evo_comp%iflag_scheme .ne. id_no_evolution) then
         write(*,*) 'alloc_type_marix_list'
         call set_index_list_4_mat_fl(mesh%node, mesh%ele,               &
      &      MHD_mesh%fluid, rhs_tbl, djds_tbl_fl, MG_mat_fl_q)

@@ -100,7 +100,7 @@
      &      mat_magne%num_non0, mat_magne%aiccg)
       end if
 !
-      if (iflag_t_evo_4_composit .eq. id_Crank_nicolson                 &
+      if (evo_comp%iflag_scheme .eq. id_Crank_nicolson                  &
      &     .and. coef_light .gt. zero) then
         call init_11_matrix_lump                                        &
      &     (mesh%node%numnod, fluid%numnod_fld, fluid%inod_fld,         &

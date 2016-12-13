@@ -156,7 +156,7 @@
 !
 !   For light element
 !
-      if (iflag_t_evo_4_composit .gt. id_no_evolution) then
+      if (evo_comp%iflag_scheme .gt. id_no_evolution) then
         coef_light =    one
         coef_d_light =  one
         coef_c_src =    one
@@ -174,7 +174,7 @@
      &     depth_low_t, depth_high_t)
 !
         call set_implicit_4_inf_viscous(coef_light,                     &
-     &      coef_imp_c, coef_exp_c)
+     &      evo_comp%coef_imp, evo_comp%coef_exp)
 !
         coef_nega_c = - coef_light
       end if
@@ -221,7 +221,7 @@
      &              coef_induct
         end if
 !
-        if (iflag_t_evo_4_composit .gt. id_no_evolution) then
+        if (evo_comp%iflag_scheme .gt. id_no_evolution) then
           write(*,*) 'coefficient for composition:         ',           &
      &              coef_light
           write(*,*) 'coefficient for composite diffusion: ',           &

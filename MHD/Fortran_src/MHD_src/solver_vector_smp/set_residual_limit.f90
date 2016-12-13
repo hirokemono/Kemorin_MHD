@@ -50,10 +50,10 @@
      &     write(12,*) 'eps_4_magne_crank', eps_4_magne_crank
       end if
 !
-      if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
+      if (evo_comp%iflag_scheme .ge. id_Crank_nicolson) then
         eps_4_comp_crank = eps_crank * coef_d_magne * dt**2
         if(iflag_debug.eq.1)                                            &
-     &     write(12,*) 'iflag_t_evo_4_composit', iflag_t_evo_4_composit
+     &     write(12,*) 'iflag_t_evo_4_composit', evo_comp%iflag_scheme
       end if
 !
       end subroutine set_residual_4_crank

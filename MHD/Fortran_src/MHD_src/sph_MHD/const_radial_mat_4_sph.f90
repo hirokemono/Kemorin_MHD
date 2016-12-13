@@ -125,12 +125,12 @@
      &     (sph_rj, r_2nd, g_sph_rj, band_bp_evo, band_bt_evo)
       end if
 !
-      if(iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
+      if(evo_comp%iflag_scheme .ge. id_Crank_nicolson) then
           if(iflag_debug .gt. 0)                                        &
      &          write(*,*) 'const_radial_mat_4_composit_sph'
         write(band_comp_evo%mat_name,'(a)') 'Composition_evolution'
         call const_radial_mat_4_scalar_sph                              &
-     &     (sph_rj, r_2nd, sph_bc_C, g_sph_rj, coef_imp_c,              &
+     &     (sph_rj, r_2nd, sph_bc_C, g_sph_rj, evo_comp%coef_imp,       &
      &      coef_light, coef_d_light, band_comp_evo)
       end if
 !
@@ -171,12 +171,12 @@
      &      band_temp_evo%mat, band_temp00_evo)
       end if
 !
-      if(iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
+      if(evo_comp%iflag_scheme .ge. id_Crank_nicolson) then
           if(i_debug .gt. 0) write(*,*) 'const_radial_mat_comp00_sph'
         write(band_comp_evo%mat_name,'(a)')                             &
      &                        'average_composition_w_center'
         call const_radial_mat_scalar00_sph(sph_rj, sph_bc_C,            &
-     &      coef_imp_c, coef_light, coef_d_light,                       &
+     &      evo_comp%coef_imp, coef_light, coef_d_light,                &
      &      band_comp_evo%n_vect, band_comp_evo%n_comp,                 &
      &      band_comp_evo%mat, band_comp00_evo)
       end if

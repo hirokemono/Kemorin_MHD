@@ -72,7 +72,7 @@
       end if
 !
 !
-      if (iflag_t_evo_4_composit .gt. id_no_evolution) then
+      if (evo_comp%iflag_scheme .gt. id_no_evolution) then
         call set_bc_temp_id(IO_bc, mesh%node, mesh%ele,                 &
      &      MHD_mesh%fluid, group%nod_grp, nodal_bc%Cnod_bcs)
       end if

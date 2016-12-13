@@ -36,7 +36,7 @@
 !
       if       (iflag_t_evo_4_velo .eq. id_no_evolution                 &
      &    .and. iflag_t_evo_4_temp .eq. id_no_evolution                 &
-     &    .and. iflag_t_evo_4_composit .eq. id_no_evolution) then
+     &    .and. evo_comp%iflag_scheme .eq. id_no_evolution) then
 !
           num_fl_ele_grp =  1
           call allocate_fluid_ele_grp_name

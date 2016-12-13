@@ -78,7 +78,7 @@
      &     (nod_bcs%Tnod_bcs%nod_bc_s, iphys%i_temp, nod_fld)
       end if
 !
-      if (iflag_t_evo_4_composit .gt. id_no_evolution) then
+      if (evo_comp%iflag_scheme .gt. id_no_evolution) then
         call set_boundary_scalar                                        &
      &     (nod_bcs%Cnod_bcs%nod_bc_s, iphys%i_light, nod_fld)
       end if

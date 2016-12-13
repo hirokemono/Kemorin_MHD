@@ -70,12 +70,12 @@
      &      ipol%i_temp, ipol%i_pre_heat, coef_exp_t, coef_h_src,       &
      &      sph_rj, rj_fld)
       end if
-      if(iflag_t_evo_4_composit .gt. id_no_evolution) then
+      if(evo_comp%iflag_scheme .gt. id_no_evolution) then
         call sel_scalar_diff_adv_src_adams                              &
      &     (sph_bc_C%kr_in, sph_bc_C%kr_out,                            &
      &      ipol%i_c_diffuse, ipol%i_c_advect, ipol%i_light_source,     &
-     &      ipol%i_light, ipol%i_pre_composit, coef_exp_c, coef_c_src,  &
-     &      sph_rj, rj_fld)
+     &      ipol%i_light, ipol%i_pre_composit,                          &
+     &      evo_comp%coef_exp, coef_c_src, sph_rj, rj_fld)
       end if
 !$omp end parallel
 !
@@ -115,11 +115,11 @@
         call cal_diff_induction_MHD_euler                               &
      &     (ipol, itor, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
-      if(iflag_t_evo_4_composit .gt. id_no_evolution) then
+      if(evo_comp%iflag_scheme .gt. id_no_evolution) then
         call sel_scalar_diff_adv_src_euler                              &
      &     (sph_bc_C%kr_in, sph_bc_C%kr_out,                            &
      &      ipol%i_c_diffuse, ipol%i_c_advect, ipol%i_light_source,     &
-     &      ipol%i_light, coef_exp_c, coef_light, coef_c_src,           &
+     &      ipol%i_light, evo_comp%coef_exp, coef_light, coef_c_src,    &
      &      sph_rj, rj_fld)
       end if
 !
@@ -138,7 +138,7 @@
           call set_ini_adams_mag_induct(ipol, itor,                     &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
-        if(iflag_t_evo_4_composit .gt. id_no_evolution) then
+        if(evo_comp%iflag_scheme .gt. id_no_evolution) then
           call sel_ini_adams_scalar_w_src                               &
      &       (sph_bc_C%kr_in, sph_bc_C%kr_out, ipol%i_c_advect,         &
      &        ipol%i_light_source, ipol%i_pre_composit,                 &

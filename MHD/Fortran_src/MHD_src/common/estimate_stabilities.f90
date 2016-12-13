@@ -72,7 +72,7 @@
      &    cfl_diffuse
         end if
 !
-        if (iflag_t_evo_4_composit .gt. id_no_evolution) then
+        if (evo_comp%iflag_scheme .gt. id_no_evolution) then
          cfl_diffuse = cfl_advect / coef_d_light
          write(12,*) 'estimated limit for Delta t for composition:   ', &
      &    cfl_diffuse

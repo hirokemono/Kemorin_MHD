@@ -449,12 +449,12 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if (coef_imp_c.gt.0.0d0) then
+      if (evo_comp%coef_imp .gt. zero) then
         call int_sk_fixed_temp                                          &
      &     (iflag_commute_composit, i_light, iak_diff_c,                &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
-     &      Cnod_bcs%nod_bc_s, ak_d_composit, coef_imp_c, fem_wk, f_l)
-!         if (iflag_initial_step.eq.1) coef_imp_c = 1.0d0 / coef_imp_c
+     &      Cnod_bcs%nod_bc_s, ak_d_composit, evo_comp%coef_imp,        &
+     &      fem_wk, f_l)
       end if
 !
       call cal_t_evo_4_scalar(iflag_comp_supg,                          &

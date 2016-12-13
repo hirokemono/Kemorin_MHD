@@ -47,8 +47,6 @@
       real(kind=kreal) :: coef_imp_t
 !>      Coefficient of implicit magnetic diffusion term
       real(kind=kreal) :: coef_imp_b
-!>      Coefficient of implicit compositional diffusion term
-      real(kind=kreal) :: coef_imp_c
 !
 !>      Coefficient of explicit viscous diffusion term
       real(kind=kreal) :: coef_exp_v
@@ -56,8 +54,6 @@
       real(kind=kreal) :: coef_exp_t
 !>      Coefficient of explicit magnetic diffusion term
       real(kind=kreal) :: coef_exp_b
-!>      Coefficient of explicit compositional diffusion term
-      real(kind=kreal) :: coef_exp_c
 !
 !>      Coefficient of terms at current step for Adams-Bashforth
       real(kind=kreal), parameter :: adam_0 =  three / two

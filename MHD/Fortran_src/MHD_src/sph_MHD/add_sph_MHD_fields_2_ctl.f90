@@ -56,7 +56,7 @@
       end if
 !
 !   gradient of dummy scalar flag
-      if(iflag_t_evo_4_composit .gt. id_no_evolution) then
+      if(evo_comp%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_tmp(fhd_grad_composit)
       end if
 !
@@ -120,7 +120,7 @@
       end if
 !
 !   divergence of dummy scalar flag
-      if(iflag_t_evo_4_composit .gt. id_no_evolution) then
+      if(evo_comp%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_tmp(fhd_c_diffuse)
         call add_phys_name_tmp(fhd_c_flux)
         call add_phys_name_tmp(fhd_composit_advect)

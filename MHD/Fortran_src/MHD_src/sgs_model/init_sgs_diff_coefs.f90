@@ -128,7 +128,7 @@
         end if
       end if
 !
-      if (iflag_t_evo_4_composit .gt. id_no_evolution) then
+      if (evo_comp%iflag_scheme .gt. id_no_evolution) then
         if (iflag_SGS_comp_flux .ne. id_SGS_none) then
           if (iflag_commute_c_flux .eq. id_SGS_commute_ON) then
             diff_coefs%num_field = diff_coefs%num_field + 1
@@ -145,7 +145,7 @@
         end if
       end if
 !
-      if (iflag_t_evo_4_composit .gt. id_no_evolution) then
+      if (evo_comp%iflag_scheme .gt. id_no_evolution) then
         if(iflag_SGS_model .ne. id_SGS_none                             &
      &      .and. iflag_commute_composit .eq. id_SGS_commute_ON) then
           diff_coefs%num_field = diff_coefs%num_field + 1
@@ -253,7 +253,7 @@
          end if
        end if
 !
-       if (iflag_t_evo_4_composit .gt. id_no_evolution) then
+       if (evo_comp%iflag_scheme .gt. id_no_evolution) then
          if (iflag_SGS_comp_flux .ne. id_SGS_none) then
            if (iflag_commute_c_flux .eq. id_SGS_commute_ON) then
              icomp_diff%i_comp_flux = id
@@ -279,7 +279,7 @@
         end if
       end if
 !
-      if (iflag_t_evo_4_composit .gt. id_no_evolution) then
+      if (evo_comp%iflag_scheme .gt. id_no_evolution) then
         if(iflag_SGS_model .ne. id_SGS_none                             &
      &        .and. iflag_commute_composit .eq. id_SGS_commute_ON) then
             icomp_diff%i_light = id

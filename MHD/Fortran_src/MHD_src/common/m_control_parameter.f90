@@ -26,6 +26,7 @@
       module   m_control_parameter
 !
       use m_precision
+      use t_time_stepping_parameter
 !
       implicit  none
 !
@@ -43,18 +44,10 @@
       character (len=kchara), allocatable :: time_evo_method(:)
 !
 !
-!>      Scheme ID for no evolution
-      integer (kind=kint), parameter :: id_no_evolution =     0
-!>      Scheme ID for explicit Euler scheme
-      integer (kind=kint), parameter :: id_explicit_euler =   1
-!>      Scheme ID for 2nd order Adams-Bashforth Scheme
-      integer (kind=kint), parameter :: id_explicit_adams2 =  2
-!>      Scheme ID for Crank-Nicolson Scheme
-      integer (kind=kint), parameter :: id_Crank_nicolson =   3
-!>      Scheme ID for Crank-Nicolson Scheme with consistent mass matrix
-      integer (kind=kint), parameter :: id_Crank_nicolson_cmass = 4
-!>      TIme evolution schme flag
       integer (kind=kint) :: iflag_scheme = id_Crank_nicolson
+!
+!>      TIme evolution parameters for composition variation
+      type(time_evolution_params), save :: evo_comp
 !
 !>      TIme evolution flag for velocity
       integer (kind=kint) :: iflag_t_evo_4_velo =     id_no_evolution
@@ -64,8 +57,6 @@
       integer (kind=kint) :: iflag_t_evo_4_magne =    id_no_evolution
 !>      TIme evolution flag for magnetic vector potential
       integer (kind=kint) :: iflag_t_evo_4_vect_p =   id_no_evolution
-!>      TIme evolution flag for composition variation
-      integer (kind=kint) :: iflag_t_evo_4_composit = id_no_evolution
 !
 !
 !>      Number of forces

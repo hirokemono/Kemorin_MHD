@@ -74,7 +74,7 @@
         call alloc_surf_data_velo(surf_bcs%Asf_bcs)
       end if
 ! 
-      if (iflag_t_evo_4_composit .gt. id_no_evolution) then
+      if (evo_comp%iflag_scheme .gt. id_no_evolution) then
         call alloc_surf_data_scalar(surf_bcs%Csf_bcs)
       end if
 ! 

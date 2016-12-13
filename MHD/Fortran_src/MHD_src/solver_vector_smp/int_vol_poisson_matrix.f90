@@ -158,12 +158,12 @@
      &      mat_temp)
       end if
 !
-      if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
+      if (evo_comp%iflag_scheme .ge. id_Crank_nicolson) then
         call choose_int_diffuse1_crank_mat(mesh%ele, jac_3d,            &
      &      rhs_tbl, MG_mat_fl_q, FEM_elens, intg_point_t_evo,          &
      &      diff_coefs%num_field, ifld_diff%i_light, diff_coefs%ak,     &
-     &      coef_imp_c, ak_MHD%ak_d_composit, ifilter_final, fem_wk,    &
-     &      mat_light)
+     &      evo_comp%coef_imp, ak_MHD%ak_d_composit, ifilter_final,     &
+     &      fem_wk, mat_light)
       end if
 !
       end subroutine int_MHD_crank_matrices

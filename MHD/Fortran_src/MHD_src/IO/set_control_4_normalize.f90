@@ -92,7 +92,7 @@
 !
 !    set normalization for composition
 !
-      if (iflag_t_evo_4_composit .eq. id_no_evolution) then
+      if (evo_comp%iflag_scheme .eq. id_no_evolution) then
         MHD_coef_list%coefs_composition%num = 0
         MHD_coef_list%coefs_c_diffuse%num =   0
         MHD_coef_list%coefs_c_source%num =    0

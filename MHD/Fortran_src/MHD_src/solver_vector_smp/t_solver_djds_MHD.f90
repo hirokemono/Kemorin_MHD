@@ -178,7 +178,7 @@
      &      djds_tbl_fl, mat_temp)
       end if
 !
-      if ( iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
+      if ( evo_comp%iflag_scheme .ge. id_Crank_nicolson) then
         call alloc_type_djds11_mat(node%numnod, node%internal_node,     &
      &       djds_tbl_fl, mat_light)
       end if
@@ -246,7 +246,7 @@
         call alloc_type_zero_mat(mat_magne)
       end if
 !
-      if ( iflag_t_evo_4_composit .gt. id_no_evolution) then
+      if ( evo_comp%iflag_scheme .gt. id_no_evolution) then
         call alloc_type_zero_mat(mat_light)
       end if
 !
@@ -279,7 +279,7 @@
          call dealloc_type_djds_mat(mat_temp)
       end if
 !
-      if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
+      if (evo_comp%iflag_scheme .ge. id_Crank_nicolson) then
         call dealloc_type_djds_mat(mat_light)
       end if
 !

@@ -93,13 +93,6 @@
         istep_flex_to_max = izero
       end if
 !
-!      if (iflag_initial_step .eq. 1) then
-!        if (coef_imp_v.gt.0.0d0) coef_imp_v = 1.0d0 / coef_imp_v
-!        if (coef_imp_b.gt.0.0d0) coef_imp_b = 1.0d0 / coef_imp_b
-!        if (coef_imp_t.gt.0.0d0) coef_imp_t = 1.0d0 / coef_imp_t
-!        if (coef_imp_c.gt.0.0d0) coef_imp_c = 1.0d0 / coef_imp_c
-!      end if
-!
       end subroutine initial_data_control
 !
 !-----------------------------------------------------------------------

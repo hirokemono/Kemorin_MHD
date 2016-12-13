@@ -77,7 +77,7 @@
      &       Tmatrix%MG_DJDS_table, Tmatrix%mat_MG_DJDS)
       end if
 !
-      if ( iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
+      if ( evo_comp%iflag_scheme .ge. id_Crank_nicolson) then
         call write_MHD_djds_mat11(fhead_dscalar_mat,                    &
      &       Cmatrix%nlevel_MG, Cmatrix%MG_comm_table,                  &
      &       Cmatrix%MG_DJDS_table, Cmatrix%mat_MG_DJDS)

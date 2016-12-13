@@ -113,7 +113,7 @@
       if(iflag_t_evo_4_temp .ne.  id_no_evolution) then
         call add_phys_name_tmp(fhd_pre_heat)
       end if
-      if(iflag_t_evo_4_composit .ne.  id_no_evolution) then
+      if(evo_comp%iflag_scheme .ne.  id_no_evolution) then
         call add_phys_name_tmp(fhd_pre_composit)
       end if
 !
@@ -136,7 +136,7 @@
       if(iflag_t_evo_4_temp .ne.  id_no_evolution) then
         call add_phys_name_tmp(fhd_chk_heat)
       end if
-      if(iflag_t_evo_4_composit .ne.  id_no_evolution) then
+      if(evo_comp%iflag_scheme .ne.  id_no_evolution) then
         call add_phys_name_tmp(fhd_chk_composit)
       end if
 !
@@ -152,7 +152,7 @@
 !      if(iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
 !        call add_phys_name_tmp(fhd_chk_heat_2)
 !      end if
-!      if(iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
+!      if(evo_comp%iflag_scheme .ge. id_Crank_nicolson) then
 !        call add_phys_name_tmp(fhd_chk_composit_2)
 !      end if
 !

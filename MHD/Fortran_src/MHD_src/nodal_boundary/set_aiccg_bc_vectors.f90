@@ -118,7 +118,7 @@
      &      ele, node_bcs%Tnod_bcs%nod_bc_s,  djds_tbl_fl, mat_temp)
       end if
 !
-      if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
+      if (evo_comp%iflag_scheme .ge. id_Crank_nicolson) then
         call set_aiccg_bc_scalar_nod(ele%nnod_4_ele,                    &
      &      ele, node_bcs%Cnod_bcs%nod_bc_s,                            &
      &      djds_tbl_fl, mat_light)
