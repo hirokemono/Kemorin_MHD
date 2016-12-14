@@ -181,7 +181,7 @@
 !
 !     ---- magnetic field update
 !
-      if ( iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+      if ( evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'cal_magne_vector_potential'
         call cal_vector_potential(mesh%nod_comm, mesh%node, mesh%ele,   &
      &     ele_mesh%surf, MHD_mesh%conduct, group%surf_grp,             &

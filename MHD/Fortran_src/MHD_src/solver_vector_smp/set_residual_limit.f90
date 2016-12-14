@@ -41,7 +41,7 @@
       end if
 !
       if (   iflag_t_evo_4_magne .ge. id_Crank_nicolson                 &
-     &  .or. iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
+     &  .or. evo_vect_p%iflag_scheme .ge. id_Crank_nicolson) then
 !
         if(eps_4_magne_crank .le. 0.0d0) then
           eps_4_magne_crank = eps_crank * coef_d_magne * dt**2

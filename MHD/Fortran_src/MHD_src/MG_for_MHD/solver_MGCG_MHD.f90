@@ -76,7 +76,7 @@
 !
 !
       if(     iflag_t_evo_4_velo .ge.   id_Crank_nicolson               &
-     &   .or. iflag_t_evo_4_vect_p .ge. id_Crank_nicolson               &
+     &   .or. evo_vect_p%iflag_scheme .ge. id_Crank_nicolson            &
      &   .or. iflag_t_evo_4_magne .ge.  id_Crank_nicolson) then
         METHOD = method_4_velo
         if (cmp_no_case(METHOD, 'MGCG')) then

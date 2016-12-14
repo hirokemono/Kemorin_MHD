@@ -126,7 +126,7 @@
 !   For Induction
 !
       if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
-     &     .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+     &     .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
 !
         coef_magne =   one
         coef_mag_p =   one
@@ -210,7 +210,7 @@
         end if
 !
         if (iflag_t_evo_4_magne .gt. id_no_evolution                    &
-     &     .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+     &     .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
           write(*,*) 'coefficient for magnetic field:      ',           &
      &              coef_magne
           write(*,*) 'coefficient for magnetic potential:  ',           &

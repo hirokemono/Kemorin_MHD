@@ -40,7 +40,7 @@
       integer (kind = kint) :: i
 !
 !
-      if (iflag_t_evo_4_vect_p .eq. id_no_evolution) then
+      if (evo_vect_p%iflag_scheme .eq. id_no_evolution) then
         a_potential_nod%num_bc =  0
         a_potential_surf%num_bc = 0
       else

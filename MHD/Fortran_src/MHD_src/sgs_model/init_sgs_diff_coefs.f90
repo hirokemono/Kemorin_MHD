@@ -161,7 +161,7 @@
         end if
       end if
 !
-      if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+      if (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         if(iflag_SGS_model .ne. id_SGS_none                             &
      &       .and. iflag_commute_magne .eq. id_SGS_commute_ON) then
           diff_coefs%num_field = diff_coefs%num_field + 1
@@ -303,7 +303,7 @@
         end if
       end if
 !
-      if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+      if (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         if(iflag_SGS_model .ne. id_SGS_none                             &
      &      .and. iflag_commute_magne .eq. id_SGS_commute_ON) then
             icomp_diff%i_magne = id

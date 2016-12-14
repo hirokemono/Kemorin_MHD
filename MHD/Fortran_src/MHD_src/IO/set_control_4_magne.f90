@@ -39,7 +39,7 @@
 !
 !
       if (iflag_t_evo_4_magne .eq. id_no_evolution                      &
-     &       .and.  iflag_t_evo_4_vect_p .eq. id_no_evolution) then
+     &       .and.  evo_vect_p%iflag_scheme .eq. id_no_evolution) then
         magne_nod%num_bc =  0
         magne_surf%num_bc = 0
       else

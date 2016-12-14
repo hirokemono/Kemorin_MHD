@@ -60,7 +60,7 @@
 !   For Induction
 !
       if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
-     &    .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+     &    .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         call alloc_magne_diff_MHD_AMG(numele, ak_MHD)
         ak_MHD%ak_d_magne(1:numele) = coef_d_magne
       end if

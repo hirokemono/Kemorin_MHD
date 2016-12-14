@@ -99,7 +99,7 @@
 !
 !   check dependencies for time evolution
 !
-      if (iflag_t_evo_4_vect_p .gt. id_no_evolution                     &
+      if (evo_vect_p%iflag_scheme .gt. id_no_evolution                  &
      &     .and. iflag_t_evo_4_magne .gt. id_no_evolution) then
          call calypso_MPI_abort(ierr_fld,                               &
      &        'You should choose vector potential OR magnetic field for &
@@ -135,7 +135,7 @@
         call check_missing_field_w_msg(fld, msg, iphys%i_velo)
       end if
 !
-      if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+      if (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         msg = 'Time integration for vector potential needs'
         call check_missing_field_w_msg(fld, msg, iphys%i_vecp)
         call check_missing_field_w_msg(fld, msg, iphys%i_velo)
@@ -246,7 +246,7 @@
       end if
 !
 !
-      if ( iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+      if ( evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         if ( iflag_SGS_induction .ne. id_SGS_none) then
           msg = 'solving SGS induction needs'
           call check_missing_field_w_msg                                &
@@ -309,7 +309,7 @@
 !
 !
       if (    iflag_t_evo_4_magne .gt. id_no_evolution                  &
-     &   .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+     &   .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         if ( iflag_SGS_induction .eq. id_SGS_similarity                 &
      &      .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS induction needs'
@@ -320,7 +320,7 @@
       end if
 !
 !
-      if ( iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+      if ( evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         if ( iflag_commute_correction .gt. id_SGS_commute_OFF           &
      &       .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'filterd A is required for dynamic model'

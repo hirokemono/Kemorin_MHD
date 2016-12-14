@@ -79,7 +79,7 @@
 !
 !
       if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
-     &  .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+     &  .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*)  'set boundary ID 4 magne'
         call set_bc_magne_id(IO_bc, mesh%node, mesh%ele,                &
      &     group%nod_grp, nodal_bc%Bnod_bcs)
@@ -92,7 +92,7 @@
      &      group%nod_grp, nodal_bc%Bnod_bcs)
       end if
 !
-      if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+      if (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug .eq.1) write(*,*) 'set boundary ID 4 vect_p'
         call set_bc_vect_p_id(IO_bc, mesh%node, mesh%ele,               &
      &      group%nod_grp, nodal_bc%Bnod_bcs)

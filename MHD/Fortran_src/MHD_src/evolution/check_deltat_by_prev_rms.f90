@@ -96,7 +96,7 @@
       end if
 !
 !
-      if( (flex_data%i_drmax_b*iflag_t_evo_4_vect_p) .gt. izero) then
+      if((flex_data%i_drmax_b*evo_vect_p%iflag_scheme) .gt. izero) then
         call int_ave_rms_4_scalar                                       &
      &     (fluid%istack_ele_fld_smp, ione, (iphys%i_vecp  ),           &
      &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &

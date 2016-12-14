@@ -342,7 +342,7 @@
 !
 !
       if (iphys%i_induction .gt. izero                                  &
-     &      .and. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+     &      .and. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_mag_induct)
           call s_int_magne_induction                                    &
@@ -351,7 +351,7 @@
       end if
 !
       if (iphys%i_b_diffuse .gt. izero                                  &
-     &      .and. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+     &      .and. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_mag_diffuse)
         call s_int_magne_diffusion                                      &

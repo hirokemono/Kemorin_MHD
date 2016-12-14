@@ -88,7 +88,7 @@
         call add_phys_name_tmp(fhd_press_work)
       end if
       if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
-     &     .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+     &     .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_tmp(fhd_m_potential_work)
       end if
 !
@@ -107,7 +107,7 @@
         call add_phys_name_tmp(fhd_div_forces)
       end if
       if      (iflag_t_evo_4_magne .ne. id_no_evolution                 &
-     &    .or. iflag_t_evo_4_vect_p .ne. id_no_evolution) then
+     &    .or. evo_vect_p%iflag_scheme .ne. id_no_evolution) then
         call add_phys_name_tmp(fhd_pre_uxb)
       end if
       if(iflag_t_evo_4_temp .ne.  id_no_evolution) then
@@ -129,7 +129,7 @@
         call add_phys_name_tmp(fhd_chk_press)
       end if
       if(iflag_t_evo_4_magne .ne. id_no_evolution                       &
-     &     .or. iflag_t_evo_4_vect_p .ne. id_no_evolution) then
+     &     .or. evo_vect_p%iflag_scheme .ne. id_no_evolution) then
         call add_phys_name_tmp(fhd_chk_uxb)
         call add_phys_name_tmp(fhd_chk_potential)
       end if
@@ -145,7 +145,7 @@
 !        call add_phys_name_tmp(fhd_chk_press_2)
 !      end if
 !      if(iflag_t_evo_4_magne .ge. id_Crank_nicolson                    &
-!     &     .or. iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
+!     &     .or. evo_vect_p%iflag_scheme .ge. id_Crank_nicolson) then
 !        call add_phys_name_tmp(fhd_chk_uxb_2)
 !        call add_phys_name_tmp(fhd_chk_potential_2)
 !      end if

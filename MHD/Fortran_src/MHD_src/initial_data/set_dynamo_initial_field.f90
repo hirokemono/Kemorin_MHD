@@ -137,7 +137,7 @@
      &      nod_fld%ntot_phys, iphys%i_velo, iphys%i_press,             &
      &      iphys%i_temp, nod_fld%d_fld)
         isig = 0
-        if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+        if (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
           call set_initial_vect_p(isig, node, nod_fld%ntot_phys,        &
      &        iphys%i_vecp, iphys%i_magne, iphys%i_mag_p,               &
      &        nod_fld%d_fld)
@@ -174,7 +174,7 @@
      &      fluid%inod_fld, nod_fld%ntot_phys,                          &
      &      iphys%i_velo, iphys%i_press, iphys%i_magne, nod_fld%d_fld)
         isig = 2000
-        if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+        if (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
           call set_initial_vect_p(isig, node, nod_fld%ntot_phys,        &
      &        iphys%i_vecp, iphys%i_magne, iphys%i_mag_p,               &
      &        nod_fld%d_fld)
@@ -188,7 +188,7 @@
      &     (iflag_restart, node, fluid%numnod_fld, fluid%inod_fld,      &
      &      nod_fld%ntot_phys, iphys%i_velo, iphys%i_press,             &
      &      iphys%i_temp, nod_fld%d_fld)
-        if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+        if (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
           call set_initial_vect_p(iflag_restart, node,                  &
      &        nod_fld%ntot_phys, iphys%i_vecp, iphys%i_magne,           &
      &        iphys%i_mag_p, nod_fld%d_fld)

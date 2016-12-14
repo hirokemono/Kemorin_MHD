@@ -172,7 +172,7 @@
       end if
 !
       if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
-     &      .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+     &      .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         call set_surf_grad_vector(name_sbn, name_bg,                    &
      &      IO_bc, node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v,       &
      &      magne_surf, surf_bcs%Bsf_bcs)
@@ -185,7 +185,7 @@
      &     (IO_bc, sf_grp, e_potential_surf, surf_bcs%Fsf_bcs)
       end if
 !
-      if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+      if (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         call set_surf_grad_velo(name_san, name_ag,                      &
      &      IO_bc, node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v,       &
      &      a_potential_surf, surf_bcs%Asf_bcs)

@@ -99,7 +99,7 @@
      &        k2, fem_wk%sk6, mat_magne%num_non0, mat_magne%aiccg)
         end if
 !
-        if ( iflag_t_evo_4_vect_p .eq. id_Crank_nicolson_cmass          &
+        if ( evo_vect_p%iflag_scheme .eq. id_Crank_nicolson_cmass       &
      &      .and. coef_magne.gt.0.0d0) then
           call add_skv1_to_crs_matrix33                                 &
      &       (mesh%ele, rhs_tbl, MG_mat_full_cd_q,                      &

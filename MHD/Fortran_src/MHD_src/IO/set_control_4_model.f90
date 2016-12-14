@@ -117,7 +117,7 @@
            else if ( t_evo_name(i) .eq. fhd_magne ) then
             iflag_t_evo_4_magne = iflag_scheme
            else if ( t_evo_name(i) .eq. fhd_vecp ) then
-            iflag_t_evo_4_vect_p = iflag_scheme
+            evo_vect_p%iflag_scheme = iflag_scheme
            end if
          end do
 !
@@ -127,7 +127,7 @@
      &    .and. iflag_t_evo_4_temp     .eq. id_no_evolution             &
      &    .and. evo_comp%iflag_scheme .eq. id_no_evolution              &
      &    .and. iflag_t_evo_4_magne    .eq. id_no_evolution             &
-     &    .and. iflag_t_evo_4_vect_p   .eq. id_no_evolution) then
+     &    .and. evo_vect_p%iflag_scheme   .eq. id_no_evolution) then
             e_message = 'Turn on field for time integration'
         call calypso_MPI_abort(ierr_evo, e_message)
       end if
@@ -137,7 +137,7 @@
         write(*,*) 'iflag_t_evo_4_temp     ', iflag_t_evo_4_temp
         write(*,*) 'iflag_t_evo_4_composit ', evo_comp%iflag_scheme
         write(*,*) 'iflag_t_evo_4_magne    ', iflag_t_evo_4_magne
-        write(*,*) 'iflag_t_evo_4_vect_p   ', iflag_t_evo_4_vect_p
+        write(*,*) 'iflag_t_evo_4_vect_p   ', evo_vect_p%iflag_scheme
         write(*,*) 'iflag_implicit_correct ', iflag_implicit_correct
       end if
 !
@@ -279,7 +279,7 @@
         end if
 !
         if(iflag_t_evo_4_magne .ge. id_Crank_nicolson                   &
-     &      .or. iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
+     &      .or. evo_vect_p%iflag_scheme .ge. id_Crank_nicolson) then
           if (coef_imp_b_ctl%iflag .eq. 0) then
             coef_imp_b = 0.5d0
           else

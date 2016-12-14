@@ -87,7 +87,7 @@
       end if
 !
       if (iflag_t_evo_4_magne .ne. id_no_evolution                      &
-     &     .or. iflag_t_evo_4_vect_p .eq. id_Crank_nicolson_cmass) then
+     &  .or. evo_vect_p%iflag_scheme .eq. id_Crank_nicolson_cmass) then
         call set_index_list_4_mat_fl(mesh%node, mesh%ele, &
      &      MHD_mesh%conduct, rhs_tbl, djds_tbl, MG_mat_full_cd_q)
       end if

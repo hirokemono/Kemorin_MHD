@@ -144,7 +144,7 @@
         end if
 !
         if (iflag_t_evo_4_magne .gt. id_no_evolution                    &
-     &      .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+     &      .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
           iflag_induction_filtering = 0
           if (cmp_no_case(induction_filter_ctl%charavalue,              &
      &        'Whole_filtering')) iflag_induction_filtering = 0

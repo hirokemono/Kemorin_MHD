@@ -92,7 +92,7 @@
      &      mat_magne%num_non0, mat_magne%aiccg)
       end if
 !
-      if (iflag_t_evo_4_vect_p .eq. id_Crank_nicolson                   &
+      if (evo_vect_p%iflag_scheme .eq. id_Crank_nicolson                &
      &     .and. coef_magne .gt. zero) then
         call init_33_matrix_lump                                        &
      &     (mesh%node%numnod, conduct%numnod_fld, conduct%inod_fld,     &

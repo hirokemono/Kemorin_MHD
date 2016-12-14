@@ -125,7 +125,7 @@
 !
       if(iphys%i_current .gt. izero)then
         if(nod_fld%iflag_update(iphys%i_current) .eq.0 ) then
-          if(iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+          if(evo_vect_p%iflag_scheme .gt. id_no_evolution) then
             if (iflag_debug .ge. iflag_routine_msg)                     &
      &        write(*,*) 'cal_current_density'
               call choose_cal_rotation_sgs                              &

@@ -64,7 +64,7 @@
 !
 !
       if(flex_data%i_drmax_b .gt. izero) then
-        if(iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+        if(evo_vect_p%iflag_scheme .gt. id_no_evolution) then
           if(iflag_debug .gt. izero)                                    &
      &      write(*,*) 'check_vector_evo_by_previous vecp'
           call check_vector_evo_by_previous                             &
