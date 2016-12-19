@@ -148,10 +148,15 @@
         call construct_coefficient(coef_induct,                         &
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_induction,  &
      &      depth_low_t, depth_high_t)
+      end if
 !
+      if(iflag_t_evo_4_magne .gt. id_no_evolution) then
         call set_implicit_4_inf_viscous(coef_magne,                     &
      &      coef_imp_b, coef_exp_b)
-!
+      end if
+      if(evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+        call set_implicit_4_inf_viscous(coef_magne,                     &
+     &      evo_vect_p%coef_imp, evo_vect_p%coef_exp)
       end if
 !
 !   For light element

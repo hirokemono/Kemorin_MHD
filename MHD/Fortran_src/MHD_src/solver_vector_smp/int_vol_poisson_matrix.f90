@@ -130,32 +130,32 @@
         call sel_int_diffuse3_crank_mat(mesh%ele, jac_3d,               &
      &      rhs_tbl, MG_mat_fl_q, FEM_elens, intg_point_t_evo,          &
      &      diff_coefs%num_field, ifld_diff%i_velo, diff_coefs%ak,      &
-     &      coef_imp_v, ak_MHD%ak_d_velo, ifilter_final, fem_wk,        &
-     &      mat_velo)
+     &      coef_imp_v, ak_MHD%ak_d_velo, ifilter_final,                &
+     &      fem_wk, mat_velo)
       end if
 !
       if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
         call sel_int_diffuse3_crank_mat(mesh%ele, jac_3d,               &
      &      rhs_tbl, MG_mat_full_cd_q, FEM_elens, intg_point_t_evo,     &
      &      diff_coefs%num_field, ifld_diff%i_magne, diff_coefs%ak,     &
-     &      coef_imp_b, ak_MHD%ak_d_magne, ifilter_final, fem_wk,       &
-     &      mat_magne)
+     &      coef_imp_b, ak_MHD%ak_d_magne, ifilter_final,               &
+     &      fem_wk, mat_magne)
       end if
 !
       if (evo_vect_p%iflag_scheme .ge. id_Crank_nicolson) then
         call sel_int_diffuse3_crank_mat(mesh%ele, jac_3d,               &
      &      rhs_tbl, MG_mat_q, FEM_elens, intg_point_t_evo,             &
      &      diff_coefs%num_field, ifld_diff%i_magne, diff_coefs%ak,     &
-     &      coef_imp_b, ak_MHD%ak_d_magne, ifilter_final, fem_wk,       &
-     &      mat_magne)
+     &      evo_vect_p%coef_imp, ak_MHD%ak_d_magne, ifilter_final,      &
+     &      fem_wk, mat_magne)
       end if
 !
       if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
         call choose_int_diffuse1_crank_mat(mesh%ele, jac_3d,            &
      &      rhs_tbl, MG_mat_fl_q, FEM_elens, intg_point_t_evo,          &
      &      diff_coefs%num_field, ifld_diff%i_temp, diff_coefs%ak,      &
-     &      coef_imp_t, ak_MHD%ak_d_temp, ifilter_final, fem_wk,        &
-     &      mat_temp)
+     &      coef_imp_t, ak_MHD%ak_d_temp, ifilter_final,                &
+     &      fem_wk, mat_temp)
       end if
 !
       if (evo_comp%iflag_scheme .ge. id_Crank_nicolson) then

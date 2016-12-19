@@ -289,16 +289,8 @@
           coef_imp_b = 0.0d0
         end if
 !
-        if(evo_comp%iflag_scheme .ge. id_Crank_nicolson) then
-          if (coef_imp_c_ctl%iflag .eq. 0) then
-            evo_comp%coef_imp = 0.5d0
-          else
-            evo_comp%coef_imp = coef_imp_c_ctl%realvalue
-          end if
-        else
-          evo_comp%coef_imp = 0.0d0
-        end if
-        evo_comp%coef_exp = 1.0d0 - evo_comp%coef_imp
+        call set_implicit_coefs(coef_imp_b_ctl, evo_vect_p)
+        call set_implicit_coefs(coef_imp_c_ctl, evo_comp)
 !
         coef_exp_v = 1.0d0 - coef_imp_v
         coef_exp_t = 1.0d0 - coef_imp_t
@@ -306,9 +298,10 @@
 !
 !
         if (iflag_debug .ge. iflag_routine_msg) then
-          write(*,*) 'coef_imp_v ',coef_imp_v
-          write(*,*) 'coef_imp_t ',coef_imp_t
-          write(*,*) 'coef_imp_b ',coef_imp_b
+          write(*,*) 'coef_imp_v ', coef_imp_v
+          write(*,*) 'coef_imp_t ', coef_imp_t
+          write(*,*) 'coef_imp_b ', coef_imp_b
+          write(*,*) 'coef_imp_a ', evo_vect_p%coef_imp
           write(*,*) 'coef_imp_c ', evo_comp%coef_imp
         end if
 !

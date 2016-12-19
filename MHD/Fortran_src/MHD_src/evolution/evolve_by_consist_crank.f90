@@ -202,12 +202,11 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if (coef_imp_b.gt.0.0d0) then
+      if (evo_vect_p%coef_imp .gt. 0.0d0) then
         call int_sk_4_fixed_vector(iflag_commute_magne,                 &
      &      i_vecp, node, ele, nod_fld, jac_3d, rhs_tbl,                &
      &      FEM_elens, diff_coefs, nod_bc_a, ak_d_magne,                &
-     &      coef_imp_b, iak_diff_b, fem_wk, f_l)
-!        if (iflag_initial_step.eq.1) coef_imp_b = 1.0d0 / coef_imp_b
+     &      evo_vect_p%coef_imp, iak_diff_b, fem_wk, f_l)
       end if
 !
       call reset_ff_t_smp(node%max_nod_smp, mhd_fem_wk)
@@ -279,7 +278,6 @@
      &      i_magne, node, ele, nod_fld, jac_3d, rhs_tbl,               &
      &      FEM_elens, diff_coefs, nod_bc_b, ak_d_magne,                &
      &      coef_imp_b, iak_diff_b, fem_wk, f_l)
-!         if (iflag_initial_step.eq.1) coef_imp_b = 1.0d0 / coef_imp_b
       end if
 !
       call reset_ff_t_smp(node%max_nod_smp, mhd_fem_wk)
