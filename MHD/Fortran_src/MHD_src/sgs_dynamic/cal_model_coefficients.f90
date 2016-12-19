@@ -155,7 +155,7 @@
       if(my_rank .eq. 0) write(*,*)                                     &
      &            'set Csim', i_step_MHD, i_step_sgs_coefs
 !
-      if(iflag_t_evo_4_temp .ne. id_no_evolution) then
+      if(evo_temp%iflag_scheme .ne. id_no_evolution) then
         if (iflag_SGS_heat .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_hf_dynamic'
           call cal_sgs_hf_dynamic                                       &

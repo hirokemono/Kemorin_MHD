@@ -72,7 +72,7 @@
       use m_control_parameter
 !
 !
-      if (iflag_t_evo_4_temp .gt. id_no_evolution) then
+      if (evo_temp%iflag_scheme .gt. id_no_evolution) then
         if(h_flux_surf%num_bc .gt. 0) call deallocate_temp_surf_ctl
       end if
 !

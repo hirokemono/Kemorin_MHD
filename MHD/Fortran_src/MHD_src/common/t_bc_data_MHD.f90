@@ -66,7 +66,7 @@
      &      MHD_mesh%fluid, group%nod_grp, nodal_bc%Vnod_bcs)
       end if
 !
-      if (iflag_t_evo_4_temp .gt. id_no_evolution) then
+      if (evo_temp%iflag_scheme .gt. id_no_evolution) then
         call set_bc_temp_id(IO_bc, mesh%node, mesh%ele,                 &
      &      MHD_mesh%fluid, group%nod_grp, nodal_bc%Tnod_bcs)
       end if

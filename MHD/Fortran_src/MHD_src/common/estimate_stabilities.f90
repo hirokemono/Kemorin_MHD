@@ -59,7 +59,7 @@
      &    cfl_diffuse
         end if
 !
-        if (iflag_t_evo_4_temp .gt. id_no_evolution) then
+        if (evo_temp%iflag_scheme .gt. id_no_evolution) then
          cfl_diffuse = cfl_advect / coef_d_temp
          write(12,*) 'estimated limit for Delta t for temperature:   ', &
      &    cfl_diffuse

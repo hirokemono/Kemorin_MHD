@@ -231,7 +231,7 @@
 !
 !     ---- temperature update
 !
-      if ( iflag_t_evo_4_temp .gt. id_no_evolution) then
+      if ( evo_temp%iflag_scheme .gt. id_no_evolution) then
         if( iflag_4_ref_temp .ne. id_no_ref_temp) then
           if (iflag_debug.eq.1) write(*,*) 'cal_parturbation_temp'
           call cal_parturbation_temp                                    &
@@ -508,7 +508,7 @@
 !
 !     ---- temperature update
 !
-      if ( iflag_t_evo_4_temp .gt. id_no_evolution) then
+      if ( evo_temp%iflag_scheme .gt. id_no_evolution) then
         if( iflag_4_ref_temp .ne. id_no_ref_temp) then
           if (iflag_debug.eq.1) write(*,*) 'cal_parturbation_temp'
           call cal_parturbation_temp                                    &

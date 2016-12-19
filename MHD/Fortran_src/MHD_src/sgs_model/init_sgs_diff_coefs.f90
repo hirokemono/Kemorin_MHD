@@ -94,7 +94,7 @@
 !
       diff_coefs%num_field = 0
       ntot_diff_comp = 0
-      if (iflag_t_evo_4_temp .gt. id_no_evolution) then
+      if (evo_temp%iflag_scheme .gt. id_no_evolution) then
         if (iflag_SGS_heat .ne. id_SGS_none) then
           if (iflag_commute_heat .eq. id_SGS_commute_ON) then
             diff_coefs%num_field = diff_coefs%num_field + 1
@@ -137,7 +137,7 @@
         end if
       end if
 !
-      if (iflag_t_evo_4_temp .gt. id_no_evolution) then
+      if (evo_temp%iflag_scheme .gt. id_no_evolution) then
         if(iflag_SGS_model .ne. id_SGS_none                             &
      &      .and. iflag_commute_temp .eq. id_SGS_commute_ON) then
           diff_coefs%num_field = diff_coefs%num_field + 1
@@ -203,7 +203,7 @@
 !
        id = 1
        jd = 1
-       if (iflag_t_evo_4_temp .gt. id_no_evolution) then
+       if (evo_temp%iflag_scheme .gt. id_no_evolution) then
          if (iflag_SGS_heat .ne. id_SGS_none) then
            if (iflag_commute_heat .eq. id_SGS_commute_ON) then
              icomp_diff%i_heat_flux = id
@@ -267,7 +267,7 @@
        end if
 !
 !
-      if (iflag_t_evo_4_temp .gt. id_no_evolution) then
+      if (evo_temp%iflag_scheme .gt. id_no_evolution) then
         if(iflag_SGS_model .ne. id_SGS_none                             &
      &      .and. iflag_commute_temp .eq. id_SGS_commute_ON) then
             icomp_diff%i_temp = id

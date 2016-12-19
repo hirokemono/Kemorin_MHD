@@ -117,7 +117,7 @@
         call check_missing_field_w_msg(fld, msg, iphys%i_vort)
       end if
 !
-      if (iflag_t_evo_4_temp .gt. id_no_evolution) then
+      if (evo_temp%iflag_scheme .gt. id_no_evolution) then
         msg = 'Time integration for temperature needs'
         call check_missing_field_w_msg(fld, msg, iphys%i_velo)
         call check_missing_field_w_msg(fld, msg, iphys%i_temp)
@@ -227,7 +227,7 @@
       end if
 !
 !
-      if ( iflag_t_evo_4_temp .gt. id_no_evolution) then
+      if ( evo_temp%iflag_scheme .gt. id_no_evolution) then
         if ( iflag_SGS_heat .ne. id_SGS_none) then
           msg = 'solving SGS heat flux needs'
           call check_missing_field_w_msg(fld, msg, iphys%i_SGS_h_flux)
@@ -299,7 +299,7 @@
         end if
       end if
 !
-      if ( iflag_t_evo_4_temp .gt. id_no_evolution) then
+      if ( evo_temp%iflag_scheme .gt. id_no_evolution) then
         if (iflag_SGS_heat .eq. id_SGS_similarity                       &
      &          .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS heat flux needs'
@@ -354,7 +354,7 @@
       end if
 !
 !
-      if ( iflag_t_evo_4_temp .gt. id_no_evolution) then
+      if ( evo_temp%iflag_scheme .gt. id_no_evolution) then
         if ( iflag_SGS_heat .ne. id_SGS_none) then
           msg = 'solving SGS heat flux needs'
           call check_missing_field_w_msg(fld, msg, iphys%i_SGS_h_flux)
@@ -418,7 +418,7 @@
         end if
       end if
 !
-      if ( iflag_t_evo_4_temp .gt. id_no_evolution) then
+      if ( evo_temp%iflag_scheme .gt. id_no_evolution) then
         if (iflag_SGS_heat .eq. id_SGS_similarity                       &
      &          .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS heat flux needs'

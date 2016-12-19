@@ -109,13 +109,13 @@
 !
          do i = 1, num_field_to_evolve
            if ( t_evo_name(i) .eq. fhd_velo ) then
-            evo_velo%iflag_scheme = iflag_scheme
+            evo_velo%iflag_scheme =   iflag_scheme
            else if ( t_evo_name(i) .eq. fhd_temp ) then
-            iflag_t_evo_4_temp = iflag_scheme
+            evo_temp%iflag_scheme =   iflag_scheme
            else if ( t_evo_name(i) .eq. fhd_light ) then
-            evo_comp%iflag_scheme = iflag_scheme
+            evo_comp%iflag_scheme =   iflag_scheme
            else if ( t_evo_name(i) .eq. fhd_magne ) then
-            evo_magne%iflag_scheme = iflag_scheme
+            evo_magne%iflag_scheme =  iflag_scheme
            else if ( t_evo_name(i) .eq. fhd_vecp ) then
             evo_vect_p%iflag_scheme = iflag_scheme
            end if
@@ -124,7 +124,7 @@
         end if
 !
       if       (evo_velo%iflag_scheme     .eq. id_no_evolution          &
-     &    .and. iflag_t_evo_4_temp     .eq. id_no_evolution             &
+     &    .and. evo_temp%iflag_scheme     .eq. id_no_evolution          &
      &    .and. evo_comp%iflag_scheme     .eq. id_no_evolution          &
      &    .and. evo_magne%iflag_scheme    .eq. id_no_evolution          &
      &    .and. evo_vect_p%iflag_scheme   .eq. id_no_evolution) then
@@ -134,7 +134,7 @@
 !
       if (iflag_debug .ge. iflag_routine_msg) then
         write(*,*) 'iflag_t_evo_4_velo     ', evo_velo%iflag_scheme
-        write(*,*) 'iflag_t_evo_4_temp     ', iflag_t_evo_4_temp
+        write(*,*) 'iflag_t_evo_4_temp     ', evo_temp%iflag_scheme
         write(*,*) 'iflag_t_evo_4_composit ', evo_comp%iflag_scheme
         write(*,*) 'iflag_t_evo_4_magne    ', evo_magne%iflag_scheme
         write(*,*) 'iflag_t_evo_4_vect_p   ', evo_vect_p%iflag_scheme
@@ -258,7 +258,7 @@
       subroutine s_set_control_4_crank
 !
 !
-        if(iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
+        if(evo_temp%iflag_scheme .ge. id_Crank_nicolson) then
           if (coef_imp_t_ctl%iflag .eq. 0) then
             coef_imp_t = 0.5d0
           else

@@ -150,7 +150,7 @@
      &      fem_wk, mat_magne)
       end if
 !
-      if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
+      if (evo_temp%iflag_scheme .ge. id_Crank_nicolson) then
         call choose_int_diffuse1_crank_mat(mesh%ele, jac_3d,            &
      &      rhs_tbl, MG_mat_fl_q, FEM_elens, intg_point_t_evo,          &
      &      diff_coefs%num_field, ifld_diff%i_temp, diff_coefs%ak,      &

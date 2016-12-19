@@ -70,7 +70,7 @@
 !     &      precond_4_crank, sigma_diag)
       end if
 !
-      if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
+      if (evo_temp%iflag_scheme .ge. id_Crank_nicolson) then
         if (iflag_debug.eq.1)  write(*,*) 'precond: ',                  &
      &          trim(precond_4_solver),' ', sigma_diag
         call precond_DJDS11_struct(np_smp,                              &

@@ -212,22 +212,22 @@
       end if
 !
 !
-      if (iflag_t_evo_4_temp .eq. id_explicit_euler) then
+      if (evo_temp%iflag_scheme .eq. id_explicit_euler) then
         call cal_scalar_pre_euler(iflag_temp_supg, iphys%i_temp,        &
      &      nod_comm, node, ele, fluid, iphys_ele, ele_fld,  jac_3d,    &
      &      rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-      else if (iflag_t_evo_4_temp .eq. id_explicit_adams2) then
+      else if (evo_temp%iflag_scheme .eq. id_explicit_adams2) then
         call cal_scalar_pre_adams                                       &
      &     (iflag_temp_supg, iphys%i_temp, iphys%i_pre_heat,            &
      &      nod_comm, node, ele, fluid, iphys_ele, ele_fld, jac_3d,     &
      &      rhs_tbl, mhd_fem_wk, fem_wk,  f_l, f_nl,  nod_fld)
-      else if (iflag_t_evo_4_temp .eq. id_Crank_nicolson) then
+      else if (evo_temp%iflag_scheme .eq. id_Crank_nicolson) then
         call cal_temp_pre_lumped_crank                                  &
      &     (iphys%i_temp, iphys%i_pre_heat, ifld_diff%i_temp,           &
      &      ak_d_temp, nod_comm, node, ele, fluid, Tnod_bcs,            &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
      &      Tmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-      else if (iflag_t_evo_4_temp .eq. id_Crank_nicolson_cmass) then 
+      else if (evo_temp%iflag_scheme .eq. id_Crank_nicolson_cmass) then 
         call cal_temp_pre_consist_crank(iphys%i_temp, iphys%i_pre_heat, &
      &      ifld_diff%i_temp, ak_d_temp,                                &
      &      node, ele, fluid, Tnod_bcs, jac_3d, rhs_tbl, FEM_elens,     &
@@ -379,22 +379,22 @@
       end if
 !
 !
-      if (iflag_t_evo_4_temp .eq. id_explicit_euler) then
+      if (evo_temp%iflag_scheme .eq. id_explicit_euler) then
         call cal_scalar_pre_euler(iflag_temp_supg, iphys%i_par_temp,    &
      &      nod_comm, node, ele, fluid, iphys_ele, ele_fld, jac_3d,     &
      &      rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-      else if (iflag_t_evo_4_temp .eq. id_explicit_adams2) then
+      else if (evo_temp%iflag_scheme .eq. id_explicit_adams2) then
         call cal_scalar_pre_adams                                       &
      &     (iflag_temp_supg, iphys%i_par_temp, iphys%i_pre_heat,        &
      &      nod_comm, node, ele, fluid, iphys_ele, ele_fld,  jac_3d,    &
      &      rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-      else if (iflag_t_evo_4_temp .eq. id_Crank_nicolson) then
+      else if (evo_temp%iflag_scheme .eq. id_Crank_nicolson) then
         call cal_temp_pre_lumped_crank(iphys%i_par_temp,                &
      &      iphys%i_pre_heat, ifld_diff%i_temp, ak_d_temp,              &
      &      nod_comm, node, ele, fluid, Tnod_bcs, iphys_ele, ele_fld,   &
      &      jac_3d, rhs_tbl, FEM_elens, diff_coefs, Tmatrix, MG_vector, &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-      else if (iflag_t_evo_4_temp .eq. id_Crank_nicolson_cmass) then 
+      else if (evo_temp%iflag_scheme .eq. id_Crank_nicolson_cmass) then 
         call cal_temp_pre_consist_crank(iphys%i_par_temp,               &
      &      iphys%i_pre_heat, ifld_diff%i_temp, ak_d_temp,              &
      &      node, ele, fluid, Tnod_bcs, jac_3d, rhs_tbl, FEM_elens,     &

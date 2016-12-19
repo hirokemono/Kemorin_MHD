@@ -67,7 +67,7 @@
      &     (mesh%node, nod_bcs%Vnod_bcs, iphys%i_velo, nod_fld)
       end if
 !
-      if (iflag_t_evo_4_temp .gt. id_no_evolution) then
+      if (evo_temp%iflag_scheme .gt. id_no_evolution) then
         if (iflag_4_ref_temp .ne. id_no_ref_temp) then
           call set_fixed_bc_4_par_temp                                  &
      &       (mesh%node%numnod, nod_fld%ntot_phys,                      &

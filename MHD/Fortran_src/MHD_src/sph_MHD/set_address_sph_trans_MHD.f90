@@ -123,7 +123,7 @@
 !   velocity flag
       if(       evo_velo%iflag_scheme .gt.     id_no_evolution          &
      &     .or. evo_magne%iflag_scheme .gt.    id_no_evolution          &
-     &     .or. iflag_t_evo_4_temp .gt.     id_no_evolution             &
+     &     .or. evo_temp%iflag_scheme .gt.     id_no_evolution          &
      &     .or. evo_comp%iflag_scheme .gt. id_no_evolution) then
         nvector_rj_2_rtp = nvector_rj_2_rtp + 1
         b_trns%i_velo = 3*nvector_rj_2_rtp - 2
@@ -189,7 +189,7 @@
 !
       nscalar_rj_2_rtp = 0
 !   temperature flag
-      if(iflag_t_evo_4_temp .gt. id_no_evolution) then
+      if(evo_temp%iflag_scheme .gt. id_no_evolution) then
         nscalar_rj_2_rtp = nscalar_rj_2_rtp + 1
         b_trns%i_temp = nscalar_rj_2_rtp + 3*nvector_rj_2_rtp
       end if
@@ -255,7 +255,7 @@
       end if
 !
 !   heat flux flag
-      if(iflag_t_evo_4_temp .gt. id_no_evolution) then
+      if(evo_temp%iflag_scheme .gt. id_no_evolution) then
         nvector_rtp_2_rj = nvector_rtp_2_rj + 1
         f_trns%i_h_flux = 3*nvector_rtp_2_rj - 2
       end if

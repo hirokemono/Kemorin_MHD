@@ -52,11 +52,10 @@
       type(time_evolution_params), save :: evo_magne
 !>      TIme evolution parameters for vector potential
       type(time_evolution_params), save :: evo_vect_p
+!>      TIme evolution parameters for temperature
+      type(time_evolution_params), save :: evo_temp
 !>      TIme evolution parameters for composition variation
       type(time_evolution_params), save :: evo_comp
-!
-!>      TIme evolution flag for temperature
-      integer (kind=kint) :: iflag_t_evo_4_temp =     id_no_evolution
 !
 !
 !>      Number of forces

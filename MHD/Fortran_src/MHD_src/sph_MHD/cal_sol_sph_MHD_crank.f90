@@ -85,7 +85,7 @@
 !
 !  Input: ipol%i_temp,  Solution: ipol%i_temp
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_temperature_sph_crank'
-      if(iflag_t_evo_4_temp .gt. id_no_evolution) then
+      if(evo_temp%iflag_scheme .gt. id_no_evolution) then
         call cal_sol_temperature_sph_crank                              &
      &     (sph_rj, band_temp_evo, ipol, rj_fld)
       end if
@@ -118,14 +118,14 @@
      &     (sph_rj, ipol, itor, sph_bc_U, rj_fld)
       end if
 !
-      if(iflag_t_evo_4_temp .gt.     id_no_evolution) then
+      if(evo_temp%iflag_scheme .gt. id_no_evolution) then
         call update_after_heat_sph(sph_rj, r_2nd, leg, ipol, rj_fld)
       end if
       if(evo_comp%iflag_scheme .gt. id_no_evolution) then
         call update_after_composit_sph                                  &
      &     (sph_rj, r_2nd, leg, ipol, rj_fld)
       end if
-      if(evo_magne%iflag_scheme .gt.    id_no_evolution) then
+      if(evo_magne%iflag_scheme .gt. id_no_evolution) then
         call update_after_magne_sph                                     &
      &     (sph_rj, r_2nd, leg, ipol, itor, rj_fld)
       end if

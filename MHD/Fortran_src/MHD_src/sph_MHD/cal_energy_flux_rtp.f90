@@ -74,7 +74,7 @@
 !
 !
 !
-      if( (f_trns%i_vp_induct*evo_magne%iflag_scheme) .gt. 0) then
+      if( (f_trns%i_vp_induct * evo_magne%iflag_scheme) .gt. 0) then
         call cal_cross_prod_w_coef_smp                                  &
      &     (sph_rtp%nnod_pole, coef_induct,                             &
      &      fls_pl(1,bs_trns%i_velo), fls_pl(1,bs_trns%i_magne),        &
@@ -82,14 +82,14 @@
       end if
 !
 !
-      if( (f_trns%i_h_flux*iflag_t_evo_4_temp) .gt. 0) then
+      if( (f_trns%i_h_flux * evo_temp%iflag_scheme) .gt. 0) then
         call cal_vec_scalar_prod_w_coef_smp                             &
      &     (sph_rtp%nnod_pole, coef_temp,                               &
      &      fls_pl(1,bs_trns%i_velo), fls_pl(1,bs_trns%i_temp),         &
      &      frc_pl(1,f_trns%i_h_flux) )
       end if
 !
-      if( (f_trns%i_c_flux*evo_comp%iflag_scheme) .gt. 0) then
+      if( (f_trns%i_c_flux * evo_comp%iflag_scheme) .gt. 0) then
         call cal_vec_scalar_prod_w_coef_smp                             &
      &     (sph_rtp%nnod_pole, coef_light,                              &
      &      fls_pl(1,bs_trns%i_velo), fls_pl(1,bs_trns%i_light),        &

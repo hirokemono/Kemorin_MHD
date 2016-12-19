@@ -49,7 +49,7 @@
       end if
 !
 !   gradient of temperature flag
-      if(iflag_t_evo_4_temp .gt. id_no_evolution) then
+      if(evo_temp%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_tmp(fhd_grad_temp)
         call add_phys_name_tmp(fhd_part_temp)
         call add_phys_name_tmp(fhd_grad_par_temp)
@@ -113,7 +113,7 @@
       end if
 !
 !   divergence of heat flux flag
-      if(iflag_t_evo_4_temp .gt. id_no_evolution) then
+      if(evo_temp%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_tmp(fhd_thermal_diffusion)
         call add_phys_name_tmp(fhd_h_flux)
         call add_phys_name_tmp(fhd_heat_advect)

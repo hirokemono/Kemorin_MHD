@@ -127,7 +127,7 @@
 !
         call dealloc_control_array_chara(fluid_filter_grp_ctl)
 !
-        if (iflag_t_evo_4_temp .gt. id_no_evolution) then
+        if (evo_temp%iflag_scheme .gt. id_no_evolution) then
           iflag_heat_filtering = 0
           if (cmp_no_case(heat_filter_ctl%charavalue,                   &
      &        'Whole_filtering')) iflag_heat_filtering = 0

@@ -55,7 +55,7 @@
 !
 !    set normalization for thermal
 !
-      if (iflag_t_evo_4_temp .eq. id_no_evolution) then
+      if (evo_temp%iflag_scheme .eq. id_no_evolution) then
         MHD_coef_list%coefs_termal%num =    0
         MHD_coef_list%coefs_t_diffuse%num = 0
         MHD_coef_list%coefs_h_source%num =  0

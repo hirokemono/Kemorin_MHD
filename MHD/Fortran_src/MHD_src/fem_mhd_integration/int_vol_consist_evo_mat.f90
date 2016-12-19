@@ -78,7 +78,7 @@
      &        mat_velo%num_non0, mat_velo%aiccg)
         end if
 !
-        if ( iflag_t_evo_4_temp .eq. id_Crank_nicolson_cmass            &
+        if ( evo_temp%iflag_scheme .eq. id_Crank_nicolson_cmass         &
      &      .and. coef_temp.gt.0.0d0 ) then
           call add_skv1_to_crs_matrix11(mesh%ele, rhs_tbl,              &
      &        MG_mat_fl_q, k2, fem_wk%sk6,                              &

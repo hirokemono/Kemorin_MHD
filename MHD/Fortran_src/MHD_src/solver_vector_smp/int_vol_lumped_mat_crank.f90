@@ -77,7 +77,7 @@
      &      mat_velo%num_non0, mat_velo%aiccg)
       end if
 !
-      if (iflag_t_evo_4_temp .eq. id_Crank_nicolson                     &
+      if (evo_temp%iflag_scheme .eq. id_Crank_nicolson                  &
      &     .and. coef_temp .gt. zero) then
         call init_11_matrix_lump                                        &
      &     (mesh%node%numnod, fluid%numnod_fld, fluid%inod_fld,         &

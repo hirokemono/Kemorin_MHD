@@ -35,7 +35,7 @@
 !
 !
       if       (evo_velo%iflag_scheme .eq. id_no_evolution              &
-     &    .and. iflag_t_evo_4_temp .eq. id_no_evolution                 &
+     &    .and. evo_temp%iflag_scheme .eq. id_no_evolution              &
      &    .and. evo_comp%iflag_scheme .eq. id_no_evolution) then
 !
           num_fl_ele_grp =  1

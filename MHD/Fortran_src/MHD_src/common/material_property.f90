@@ -41,7 +41,7 @@
 !
 !    For thermal
 !
-      if (iflag_t_evo_4_temp .gt. id_no_evolution) then
+      if (evo_temp%iflag_scheme .gt. id_no_evolution) then
 !
         coef_temp =   one
         coef_d_temp = one
@@ -205,7 +205,7 @@
      &         'coefficient for Lorentz force:       ', coef_lor
         end if
 !
-        if (iflag_t_evo_4_temp .gt. id_no_evolution) then
+        if (evo_temp%iflag_scheme .gt. id_no_evolution) then
           write(*,*) 'coefficient for temperature:         ',           &
      &              coef_temp
           write(*,*) 'coefficient for thermal diffusion:   ',           &
