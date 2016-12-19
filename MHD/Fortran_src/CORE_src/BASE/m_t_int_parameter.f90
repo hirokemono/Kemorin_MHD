@@ -41,12 +41,6 @@
 !>      Minimum error to expand time step
       real(kind=kreal) :: min_eps_to_expand_dt
 !
-!>      Coefficient of implicit thermal diffusion term
-      real(kind=kreal) :: coef_imp_t
-!
-!>      Coefficient of explicit thermal diffusion term
-      real(kind=kreal) :: coef_exp_t
-!
 !>      Coefficient of terms at current step for Adams-Bashforth
       real(kind=kreal), parameter :: adam_0 =  three / two
 !>      Coefficient of terms at previous step for Adams-Bashforth

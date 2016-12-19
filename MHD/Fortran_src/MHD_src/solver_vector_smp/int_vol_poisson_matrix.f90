@@ -154,7 +154,7 @@
         call choose_int_diffuse1_crank_mat(mesh%ele, jac_3d,            &
      &      rhs_tbl, MG_mat_fl_q, FEM_elens, intg_point_t_evo,          &
      &      diff_coefs%num_field, ifld_diff%i_temp, diff_coefs%ak,      &
-     &      coef_imp_t, ak_MHD%ak_d_temp, ifilter_final,                &
+     &      evo_temp%coef_imp, ak_MHD%ak_d_temp, ifilter_final,         &
      &      fem_wk, mat_temp)
       end if
 !

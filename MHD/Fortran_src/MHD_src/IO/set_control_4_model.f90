@@ -258,31 +258,19 @@
       subroutine s_set_control_4_crank
 !
 !
-        if(evo_temp%iflag_scheme .ge. id_Crank_nicolson) then
-          if (coef_imp_t_ctl%iflag .eq. 0) then
-            coef_imp_t = 0.5d0
-          else
-            coef_imp_t = coef_imp_t_ctl%realvalue
-          end if
-        else
-          coef_imp_t = 0.0d0
-        end if
-        coef_exp_t = 1.0d0 - coef_imp_t
+      call set_implicit_coefs(coef_imp_v_ctl, evo_velo)
+      call set_implicit_coefs(coef_imp_t_ctl, evo_temp)
+      call set_implicit_coefs(coef_imp_b_ctl, evo_magne)
+      call set_implicit_coefs(coef_imp_b_ctl, evo_vect_p)
+      call set_implicit_coefs(coef_imp_c_ctl, evo_comp)
 !
-        call set_implicit_coefs(coef_imp_v_ctl, evo_velo)
-        call set_implicit_coefs(coef_imp_b_ctl, evo_magne)
-        call set_implicit_coefs(coef_imp_b_ctl, evo_vect_p)
-        call set_implicit_coefs(coef_imp_c_ctl, evo_comp)
-!
-!
-!
-        if (iflag_debug .ge. iflag_routine_msg) then
-          write(*,*) 'coef_imp_v ', evo_velo%coef_imp
-          write(*,*) 'coef_imp_t ', coef_imp_t
-          write(*,*) 'coef_imp_b ', evo_magne%coef_imp
-          write(*,*) 'coef_imp_a ', evo_vect_p%coef_imp
-          write(*,*) 'coef_imp_c ', evo_comp%coef_imp
-        end if
+      if (iflag_debug .ge. iflag_routine_msg) then
+        write(*,*) 'coef_imp_v ', evo_velo%coef_imp
+        write(*,*) 'coef_imp_t ', evo_temp%coef_imp
+        write(*,*) 'coef_imp_b ', evo_magne%coef_imp
+        write(*,*) 'coef_imp_a ', evo_vect_p%coef_imp
+        write(*,*) 'coef_imp_c ', evo_comp%coef_imp
+      end if
 !
       end subroutine s_set_control_4_crank
 !

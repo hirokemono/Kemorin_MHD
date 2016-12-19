@@ -165,7 +165,8 @@
 !
       call cal_sol_scalar_sph_crank                                     &
      &   (sph_rj, sph_bc_T, band_temp_evo, band_temp00_evo,             &
-     &    coef_temp, coef_d_temp, coef_imp_t, ipol%i_temp, rj_fld)
+     &    coef_temp, coef_d_temp, evo_temp%coef_imp,                    &
+     &    ipol%i_temp, rj_fld)
 !
       end subroutine cal_sol_temperature_sph_crank
 !

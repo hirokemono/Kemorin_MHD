@@ -373,11 +373,14 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if (coef_imp_t .gt. 0.0d0) then
+      if (evo_temp%coef_imp .gt. zero) then
         call int_sk_fixed_temp(iflag_commute_temp, i_temp, iak_diff_t,  &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
-     &      Tnod_bcs%nod_bc_s, ak_d_temp, coef_imp_t, fem_wk, f_l)
-        if (iflag_initial_step.eq.1) coef_imp_t = 1.0d0 / coef_imp_t
+     &      Tnod_bcs%nod_bc_s, ak_d_temp, evo_temp%coef_imp,            &
+     &      fem_wk, f_l)
+        if (iflag_initial_step.eq.1) then
+          evo_temp%coef_imp = 1.0d0 / evo_temp%coef_imp
+        end if
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'multi_pass temp'

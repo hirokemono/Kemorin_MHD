@@ -60,7 +60,7 @@
      &      depth_low_t, depth_high_t)
 !
         call set_implicit_4_inf_viscous(coef_temp,                      &
-     &      coef_imp_t, coef_exp_t)
+     &      evo_temp%coef_imp, evo_temp%coef_exp)
 !
         coef_nega_t = - coef_temp
       end if

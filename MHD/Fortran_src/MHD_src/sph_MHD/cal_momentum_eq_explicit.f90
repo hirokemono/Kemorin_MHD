@@ -68,8 +68,8 @@
         call sel_scalar_diff_adv_src_adams                              &
      &     (sph_bc_T%kr_in, sph_bc_T%kr_out,                            &
      &      ipol%i_t_diffuse, ipol%i_h_advect, ipol%i_heat_source,      &
-     &      ipol%i_temp, ipol%i_pre_heat, coef_exp_t, coef_h_src,       &
-     &      sph_rj, rj_fld)
+     &      ipol%i_temp, ipol%i_pre_heat, evo_temp%coef_exp,            &
+     &      coef_h_src, sph_rj, rj_fld)
       end if
       if(evo_comp%iflag_scheme .gt. id_no_evolution) then
         call sel_scalar_diff_adv_src_adams                              &
@@ -110,7 +110,7 @@
         call sel_scalar_diff_adv_src_euler                              &
      &     (sph_bc_T%kr_in, sph_bc_T%kr_out,                            &
      &      ipol%i_t_diffuse, ipol%i_h_advect, ipol%i_heat_source,      &
-     &      ipol%i_temp, coef_exp_t, coef_temp, coef_h_src,             &
+     &      ipol%i_temp, evo_temp%coef_exp, coef_temp, coef_h_src,      &
      &      sph_rj, rj_fld)
       end if
       if(evo_magne%iflag_scheme .gt.    id_no_evolution) then
