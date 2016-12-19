@@ -102,7 +102,7 @@
 !
       nvector_rj_2_xyz = 0
 !   magnetic field flag
-      if(       iflag_t_evo_4_magne .gt. id_no_evolution                &
+      if(       evo_magne%iflag_scheme .gt. id_no_evolution             &
      &     .or. iflag_4_lorentz .gt.     id_turn_OFF) then
         nvector_rj_2_xyz = nvector_rj_2_xyz + 1
         b_hbd_trns%i_magne = 3*nvector_rj_2_xyz - 2
@@ -113,12 +113,12 @@
         b_hbd_trns%i_current = 3*nvector_rj_2_xyz - 2
       end if
 !   magnetic diffusion flag
-      if(iflag_t_evo_4_magne .gt. id_turn_OFF) then
+      if(evo_magne%iflag_scheme .gt. id_turn_OFF) then
         nvector_rj_2_xyz = nvector_rj_2_xyz + 1
         b_hbd_trns%i_b_diffuse = 3*nvector_rj_2_xyz - 2
       end if
 !    magnetic induction flag
-      if(iflag_t_evo_4_magne .gt. id_turn_OFF) then
+      if(evo_magne%iflag_scheme .gt. id_turn_OFF) then
         nvector_rj_2_xyz = nvector_rj_2_xyz + 1
         b_hbd_trns%i_induction = 3*nvector_rj_2_xyz - 2
       end if
@@ -136,7 +136,7 @@
 !
       nvector_xyz_2_rj = 0
 !   induction flag
-      if(iflag_t_evo_4_magne .gt. id_no_evolution) then
+      if(evo_magne%iflag_scheme .gt. id_no_evolution) then
         nvector_xyz_2_rj = nvector_xyz_2_rj + 1
         f_hbd_trns%i_vp_induct =  3*nvector_xyz_2_rj - 2
       end if

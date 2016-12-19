@@ -168,14 +168,14 @@
           call check_missing_field(fld, i_start, iphys%i_velo)
           call check_missing_field(fld, i_start, iphys%i_temp)
         else if(i_start .eq. iphys%i_induction) then 
-          if (iflag_t_evo_4_magne .gt. id_no_evolution) then
+          if (evo_magne%iflag_scheme .gt. id_no_evolution) then
             call check_missing_field(fld, i_start, iphys%i_velo)
             call check_missing_field(fld, i_start, iphys%i_magne)
           else
             call check_missing_field(fld, i_start, iphys%i_vp_induct)
           end if
         else if(i_start .eq. iphys%i_SGS_induction) then 
-          if (iflag_t_evo_4_magne .gt. id_no_evolution) then
+          if (evo_magne%iflag_scheme .gt. id_no_evolution) then
             call check_missing_field(fld, i_start, iphys%i_velo)
             call check_missing_field(fld, i_start, iphys%i_magne)
           else

@@ -34,7 +34,7 @@
 !
 !   velocity flag
       if(iflag_t_evo_4_velo .gt. id_no_evolution                        &
-     &     .or. iflag_t_evo_4_magne .gt. id_no_evolution) then
+     &     .or. evo_magne%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_tmp(fhd_velo)
       end if
 !   vorticity flag
@@ -42,7 +42,7 @@
         call add_phys_name_tmp(fhd_vort)
       end if
 !   magnetic field flag
-      if(iflag_t_evo_4_magne .gt. id_no_evolution                       &
+      if(evo_magne%iflag_scheme .gt. id_no_evolution                    &
      &     .or. iflag_4_lorentz .gt. id_turn_OFF) then
         call add_phys_name_tmp(fhd_magne)
         call add_phys_name_tmp(fhd_current)
@@ -105,7 +105,7 @@
       end if
 !
 !   induction flag
-      if(iflag_t_evo_4_magne .gt. id_no_evolution) then
+      if(evo_magne%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_tmp(fhd_mag_diffuse)
 !
         call add_phys_name_tmp(fhd_mag_induct)

@@ -80,7 +80,7 @@
 !
 !    coefficients for inducition equation
 !
-      if (iflag_t_evo_4_magne .eq. id_no_evolution                      &
+      if (evo_magne%iflag_scheme .eq. id_no_evolution                   &
      &  .and. evo_vect_p%iflag_scheme .eq. id_no_evolution) then
         MHD_coef_list%coefs_magnetic%num =  0
         MHD_coef_list%coefs_magne_p%num =   0

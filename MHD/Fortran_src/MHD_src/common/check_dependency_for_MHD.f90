@@ -100,7 +100,7 @@
 !   check dependencies for time evolution
 !
       if (evo_vect_p%iflag_scheme .gt. id_no_evolution                  &
-     &     .and. iflag_t_evo_4_magne .gt. id_no_evolution) then
+     &     .and. evo_magne%iflag_scheme .gt. id_no_evolution) then
          call calypso_MPI_abort(ierr_fld,                               &
      &        'You should choose vector potential OR magnetic field for &
      & time evolution')
@@ -129,7 +129,7 @@
         call check_missing_field_w_msg(fld, msg, iphys%i_light)
       end if
 !
-      if (iflag_t_evo_4_magne .ne. id_no_evolution) then
+      if (evo_magne%iflag_scheme .ne. id_no_evolution) then
         msg = 'Time integration for magnetic field needs'
         call check_missing_field_w_msg(fld, msg, iphys%i_magne)
         call check_missing_field_w_msg(fld, msg, iphys%i_velo)
@@ -235,7 +235,7 @@
       end if
 !
 !
-      if ( iflag_t_evo_4_magne .gt. id_no_evolution) then
+      if ( evo_magne%iflag_scheme .gt. id_no_evolution) then
         if ( iflag_SGS_induction .ne. id_SGS_none) then
           msg = 'solving SGS magnetic induction needs'
           call check_missing_field_w_msg                                &
@@ -308,7 +308,7 @@
       end if
 !
 !
-      if (    iflag_t_evo_4_magne .gt. id_no_evolution                  &
+      if (    evo_magne%iflag_scheme .gt. id_no_evolution               &
      &   .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         if ( iflag_SGS_induction .eq. id_SGS_similarity                 &
      &      .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
@@ -362,7 +362,7 @@
       end if
 !
 !
-      if ( iflag_t_evo_4_magne .gt. id_no_evolution) then
+      if ( evo_magne%iflag_scheme .gt. id_no_evolution) then
         if ( iflag_SGS_induction .ne. id_SGS_none) then
           msg = 'solving SGS magnetic induction needs'
           call check_missing_field_w_msg                                &
@@ -427,7 +427,7 @@
       end if
 !
 !
-      if ( iflag_t_evo_4_magne .gt. id_no_evolution) then
+      if ( evo_magne%iflag_scheme .gt. id_no_evolution) then
         if ( iflag_SGS_induction .eq. id_SGS_similarity                 &
      &      .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS induction needs'

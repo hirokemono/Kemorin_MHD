@@ -85,13 +85,13 @@
       end if
 !
       if (evo_vect_p%iflag_scheme .gt. id_no_evolution                  &
-     &      .or. iflag_t_evo_4_magne .gt. id_no_evolution) then
+     &      .or. evo_magne%iflag_scheme .gt. id_no_evolution) then
         call precond_DJDS11_struct(np_smp, djds_tbl_l, mat_magp,        &
      &     PRECOND_MG, sigma_diag)
       end if
 !
       if (evo_vect_p%iflag_scheme .ge. id_Crank_nicolson                &
-     &        .or. iflag_t_evo_4_magne .gt. id_no_evolution) then
+     &        .or. evo_magne%iflag_scheme .gt. id_no_evolution) then
         call precond_DJDS33_struct(np_smp, djds_tbl, mat_magne,         &
      &      PRECOND_MG, sigma_diag)
       end if

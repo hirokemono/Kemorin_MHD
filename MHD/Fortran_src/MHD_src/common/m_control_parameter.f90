@@ -46,6 +46,8 @@
 !
       integer (kind=kint) :: iflag_scheme = id_Crank_nicolson
 !
+!>      TIme evolution parameters for magnetic field
+      type(time_evolution_params), save :: evo_magne
 !>      TIme evolution parameters for vector potential
       type(time_evolution_params), save :: evo_vect_p
 !>      TIme evolution parameters for composition variation
@@ -55,8 +57,6 @@
       integer (kind=kint) :: iflag_t_evo_4_velo =     id_no_evolution
 !>      TIme evolution flag for temperature
       integer (kind=kint) :: iflag_t_evo_4_temp =     id_no_evolution
-!>      TIme evolution flag for magnetic field
-      integer (kind=kint) :: iflag_t_evo_4_magne =    id_no_evolution
 !
 !
 !>      Number of forces

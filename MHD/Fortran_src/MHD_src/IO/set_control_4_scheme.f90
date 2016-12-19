@@ -87,7 +87,7 @@
             end if
           end if
 !
-          if (iflag_t_evo_4_magne .gt. id_no_evolution                  &
+          if (evo_magne%iflag_scheme .gt. id_no_evolution               &
      &        .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
             if (eps_4_magne_ctl%iflag .eq. 0) then
               e_message                                                 &

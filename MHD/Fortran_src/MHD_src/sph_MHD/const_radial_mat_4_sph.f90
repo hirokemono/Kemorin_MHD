@@ -118,7 +118,7 @@
      &      coef_temp, coef_d_temp, band_temp_evo)
       end if
 !
-      if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
+      if (evo_magne%iflag_scheme .ge. id_Crank_nicolson) then
           if(iflag_debug .gt. 0)                                        &
      &          write(*,*) 'const_radial_mat_4_magne_sph'
         call const_radial_mat_4_magne_sph                               &

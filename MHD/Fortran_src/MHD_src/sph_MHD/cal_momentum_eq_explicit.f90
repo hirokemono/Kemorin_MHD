@@ -59,9 +59,9 @@
      &      sph_rj%nidx_rj(2), rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
-      if(iflag_t_evo_4_magne .gt.    id_no_evolution) then
-        call cal_diff_induction_MHD_adams(coef_exp_b, ipol, itor,       &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+      if(evo_magne%iflag_scheme .gt.    id_no_evolution) then
+        call cal_diff_induction_MHD_adams(evo_magne%coef_exp,           &
+     &      ipol, itor, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
       if(iflag_t_evo_4_temp .gt.     id_no_evolution) then
         call sel_scalar_diff_adv_src_adams                              &
@@ -111,9 +111,9 @@
      &      ipol%i_temp, coef_exp_t, coef_temp, coef_h_src,             &
      &      sph_rj, rj_fld)
       end if
-      if(iflag_t_evo_4_magne .gt.    id_no_evolution) then
-        call cal_diff_induction_MHD_euler(coef_exp_b, ipol, itor,       &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+      if(evo_magne%iflag_scheme .gt.    id_no_evolution) then
+        call cal_diff_induction_MHD_euler(evo_magne%coef_exp,           &
+     &      ipol, itor, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
       if(evo_comp%iflag_scheme .gt. id_no_evolution) then
         call sel_scalar_diff_adv_src_euler                              &
@@ -134,7 +134,7 @@
      &        ipol%i_heat_source, ipol%i_pre_heat,                      &
      &        coef_h_src, sph_rj, rj_fld)
         end if
-        if(iflag_t_evo_4_magne .gt.    id_no_evolution) then
+        if(evo_magne%iflag_scheme .gt.    id_no_evolution) then
           call set_ini_adams_mag_induct(ipol, itor,                     &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if

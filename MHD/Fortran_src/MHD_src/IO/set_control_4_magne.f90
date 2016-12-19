@@ -38,7 +38,7 @@
       integer (kind = kint) :: i
 !
 !
-      if (iflag_t_evo_4_magne .eq. id_no_evolution                      &
+      if (evo_magne%iflag_scheme .eq. id_no_evolution                   &
      &       .and.  evo_vect_p%iflag_scheme .eq. id_no_evolution) then
         magne_nod%num_bc =  0
         magne_surf%num_bc = 0

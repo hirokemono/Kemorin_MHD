@@ -47,7 +47,7 @@
       else
         call set_fluid_layer_egrp_name
 !
-        if     (iflag_t_evo_4_magne .eq. id_no_evolution                &
+        if     (evo_magne%iflag_scheme .eq. id_no_evolution             &
      &    .and. evo_vect_p%iflag_scheme .eq. id_no_evolution) then
           num_cd_ele_grp =  1
           call allocate_conduct_ele_grp_name

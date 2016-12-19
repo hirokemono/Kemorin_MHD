@@ -123,7 +123,7 @@
         if ( iflag_SGS_lorentz .ne. id_SGS_none) then
          mhd_fem_wk%n_dvx = mhd_fem_wk%n_dvx + 18
         else if (iflag_SGS_induction .ne. id_SGS_none                   &
-     &     .and. iflag_t_evo_4_magne .gt. id_no_evolution) then
+     &     .and. evo_magne%iflag_scheme .gt. id_no_evolution) then
          mhd_fem_wk%n_dvx = mhd_fem_wk%n_dvx + 18
         end if
 !
@@ -137,7 +137,7 @@
         if ( iflag_SGS_lorentz .ne. id_SGS_none) then
          mhd_fem_wk%n_dvx = mhd_fem_wk%n_dvx + 9
         else if (iflag_SGS_induction .ne. id_SGS_none                   &
-     &     .and. iflag_t_evo_4_magne .gt. id_no_evolution) then
+     &     .and. evo_magne%iflag_scheme .gt. id_no_evolution) then
          mhd_fem_wk%n_dvx = mhd_fem_wk%n_dvx + 9
         end if
       end if

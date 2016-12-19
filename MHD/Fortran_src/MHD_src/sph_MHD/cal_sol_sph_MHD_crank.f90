@@ -100,7 +100,7 @@
 !  Input: ipol%i_magne, itor%i_magne
 !  Solution: ipol%i_magne, itor%i_magne, idpdr%i_magne
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_magne_sph_crank'
-      if(iflag_t_evo_4_magne .gt. id_no_evolution) then
+      if(evo_magne%iflag_scheme .gt. id_no_evolution) then
         call cal_sol_magne_sph_crank                                    &
      &     (sph_rj, band_bp_evo, band_bt_evo, leg%g_sph_rj,             &
      &      ipol, itor, rj_fld)
@@ -125,7 +125,7 @@
         call update_after_composit_sph                                  &
      &     (sph_rj, r_2nd, leg, ipol, rj_fld)
       end if
-      if(iflag_t_evo_4_magne .gt.    id_no_evolution) then
+      if(evo_magne%iflag_scheme .gt.    id_no_evolution) then
         call update_after_magne_sph                                     &
      &     (sph_rj, r_2nd, leg, ipol, itor, rj_fld)
       end if

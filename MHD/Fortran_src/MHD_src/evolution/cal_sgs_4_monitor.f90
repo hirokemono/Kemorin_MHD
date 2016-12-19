@@ -239,7 +239,7 @@
       end do
 !
       if (      iphys%i_SGS_induction .gt. 0                            &
-     &   .and. iflag_t_evo_4_magne .gt. id_no_evolution) then
+     &   .and. evo_magne%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_induction)
         call cal_terms_4_magnetic(iphys%i_SGS_induction,                &

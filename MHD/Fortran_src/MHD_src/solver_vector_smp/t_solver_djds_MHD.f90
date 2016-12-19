@@ -183,11 +183,11 @@
      &       djds_tbl_fl, mat_light)
       end if
 !
-      if ( iflag_t_evo_4_magne .gt. id_no_evolution) then
+      if ( evo_magne%iflag_scheme .gt. id_no_evolution) then
         call alloc_type_djds11_mat(node%numnod, node%internal_node,     &
      &       djds_tbl_l, mat_magp)
 !
-        if ( iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
+        if ( evo_magne%iflag_scheme .ge. id_Crank_nicolson) then
           call alloc_type_djds33_mat(node%numnod, node%internal_node,   &
      &       djds_tbl, mat_magne)
         end if
@@ -233,12 +233,12 @@
         call alloc_type_zero_mat(mat_temp)
       end if
 !
-      if(iflag_t_evo_4_magne .gt. id_no_evolution                       &
+      if(evo_magne%iflag_scheme .gt. id_no_evolution                    &
      &     .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         call alloc_type_zero_mat(mat_magp)
       end if
 !
-      if ( iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
+      if ( evo_magne%iflag_scheme .ge. id_Crank_nicolson) then
         call alloc_type_zero_mat(mat_magne)
       end if
 !
@@ -283,10 +283,10 @@
         call dealloc_type_djds_mat(mat_light)
       end if
 !
-      if(     iflag_t_evo_4_magne .gt. id_no_evolution                  &
+      if(     evo_magne%iflag_scheme .gt. id_no_evolution               &
      &   .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         call dealloc_type_djds_mat(mat_magp)
-        if(    iflag_t_evo_4_magne .ge. id_Crank_nicolson               &
+        if(    evo_magne%iflag_scheme .ge. id_Crank_nicolson            &
      &    .or. evo_vect_p%iflag_scheme .ge. id_Crank_nicolson) then
           call dealloc_type_djds_mat(mat_magne)
         end if

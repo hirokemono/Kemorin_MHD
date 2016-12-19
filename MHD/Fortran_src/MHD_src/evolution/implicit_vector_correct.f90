@@ -409,19 +409,19 @@
 !
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_vol_magne_diffuse_co'
-      if (coef_imp_b.gt.zero) then
+      if (evo_magne%coef_imp .gt. zero) then
         call int_vol_vector_diffuse_ele(conduct%istack_ele_fld_smp,     &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,             &
-     &      diff_coefs, iak_diff_b, coef_imp_b, ak_d_magne, i_magne,    &
-     &      fem_wk, f_l)
+     &      diff_coefs, iak_diff_b, evo_magne%coef_imp, ak_d_magne,     &
+     &      i_magne, fem_wk, f_l)
       end if
 !
-      if (coef_imp_b.gt.0.0d0) then
+      if (evo_magne%coef_imp .gt. zero) then
         if (iflag_debug.eq.1)  write(*,*) 'int_sk_4_fixed_magne'
         call int_sk_4_fixed_vector(iflag_commute_magne,                 &
      &      i_magne, node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,    &
      &      diff_coefs, Bnod_bcs%nod_bc_b, ak_d_magne,                  &
-     &      coef_imp_b, iak_diff_b, fem_wk, f_l)
+     &      evo_magne%coef_imp, iak_diff_b, fem_wk, f_l)
       end if
 !
 !

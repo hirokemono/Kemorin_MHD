@@ -119,7 +119,7 @@
         end if
       end if
 !
-      if (iflag_t_evo_4_magne .gt. id_no_evolution) then
+      if (evo_magne%iflag_scheme .gt. id_no_evolution) then
         if (iflag_SGS_induction .ne. id_SGS_none) then
           if(iflag_commute_induction .eq. id_SGS_commute_ON) then
             diff_coefs%num_field = diff_coefs%num_field + 1
@@ -169,7 +169,7 @@
         end if
       end if
 !
-      if (iflag_t_evo_4_magne .gt. id_no_evolution) then
+      if (evo_magne%iflag_scheme .gt. id_no_evolution) then
         if(iflag_SGS_model .gt. id_SGS_none                             &
      &      .and. iflag_commute_magne .eq. id_SGS_commute_ON) then
           diff_coefs%num_field = diff_coefs%num_field + 1
@@ -240,7 +240,7 @@
          end if
        end if
 !
-       if (iflag_t_evo_4_magne .gt. id_no_evolution) then
+       if (evo_magne%iflag_scheme .gt. id_no_evolution) then
          if (iflag_SGS_induction .ne. id_SGS_none) then
            if (iflag_commute_induction .eq. id_SGS_commute_ON) then
              icomp_diff%i_induction = id
@@ -315,7 +315,7 @@
         end if
       end if
 !
-      if (iflag_t_evo_4_magne .gt. id_no_evolution) then
+      if (evo_magne%iflag_scheme .gt. id_no_evolution) then
         if(iflag_SGS_model .ne. id_SGS_none                             &
      &      .and. iflag_commute_magne .eq. id_SGS_commute_ON) then
             icomp_diff%i_magne = id

@@ -45,15 +45,11 @@
       real(kind=kreal) :: coef_imp_v
 !>      Coefficient of implicit thermal diffusion term
       real(kind=kreal) :: coef_imp_t
-!>      Coefficient of implicit magnetic diffusion term
-      real(kind=kreal) :: coef_imp_b
 !
 !>      Coefficient of explicit viscous diffusion term
       real(kind=kreal) :: coef_exp_v
 !>      Coefficient of explicit thermal diffusion term
       real(kind=kreal) :: coef_exp_t
-!>      Coefficient of explicit magnetic diffusion term
-      real(kind=kreal) :: coef_exp_b
 !
 !>      Coefficient of terms at current step for Adams-Bashforth
       real(kind=kreal), parameter :: adam_0 =  three / two

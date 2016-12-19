@@ -169,10 +169,10 @@
 !
 ! lead diffusion term
 !
-      if (coef_magne.gt.zero .and. coef_exp_b.gt.zero) then
+      if (coef_magne.gt.zero .and. evo_magne%coef_exp.gt.zero) then
         call int_vol_vector_diffuse_ele(conduct%istack_ele_fld_smp,     &
      &      node, ele, nod_fld, jac_3d_q, rhs_tbl, FEM_elens,           &
-     &      diff_coefs, iak_diff_b, coef_exp_b, ak_d_magne,             &
+     &      diff_coefs, iak_diff_b, evo_magne%coef_exp, ak_d_magne,     &
      &      iphys%i_magne, fem_wk, f_l)
       end if
 !
@@ -198,23 +198,23 @@
      &    jac_sf_grp_q, rhs_tbl, FEM_elens, diff_coefs,                 &
      &    fem_wk, surf_wk, f_l, f_nl)
 !
-      if (iflag_t_evo_4_magne .eq. id_explicit_euler) then
+      if(evo_magne%iflag_scheme .eq. id_explicit_euler) then
         call cal_magne_pre_euler(iflag_mag_supg, iphys%i_magne,         &
      &      nod_comm, node, ele, conduct, iphys_ele, ele_fld,           &
      &      jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-      else if (iflag_t_evo_4_magne .eq. id_explicit_adams2) then
+      else if(evo_magne%iflag_scheme .eq. id_explicit_adams2) then
         call cal_magne_pre_adams                                        &
      &     (iflag_mag_supg, iphys%i_magne, iphys%i_pre_uxb,             &
      &      nod_comm, node, ele, conduct, iphys_ele, ele_fld,           &
      &      jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-      else if (iflag_t_evo_4_magne .eq. id_Crank_nicolson) then
+      else if(evo_magne%iflag_scheme .eq. id_Crank_nicolson) then
         call cal_magne_pre_lumped_crank                                 &
      &     (iphys%i_magne, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,     &
      &      Bnod_bcs%nod_bc_b, nod_comm, node, ele, conduct,            &
      &      iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,           &
      &      diff_coefs, Bmatrix, MG_vector, mhd_fem_wk, fem_wk,         &
      &      f_l, f_nl, nod_fld)
-      else if (iflag_t_evo_4_magne .eq. id_Crank_nicolson_cmass) then 
+      else if(evo_magne%iflag_scheme .eq. id_Crank_nicolson_cmass) then 
         call cal_magne_pre_consist_crank                                &
      &     (iphys%i_magne, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,     &
      &      Bnod_bcs%nod_bc_b, node, ele, conduct, jac_3d_q, rhs_tbl,   &

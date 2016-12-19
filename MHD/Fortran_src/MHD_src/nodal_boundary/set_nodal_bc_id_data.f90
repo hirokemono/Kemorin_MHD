@@ -83,7 +83,7 @@
      &     (nod_bcs%Cnod_bcs%nod_bc_s, iphys%i_light, nod_fld)
       end if
 !
-      if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
+      if (evo_magne%iflag_scheme .gt. id_no_evolution                   &
      &  .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1)  write(*,*) 'set_boundary_vect magne'
         call set_boundary_vect                                          &

@@ -40,7 +40,7 @@
      &     write(12,*) 'eps_4_temp_crank', eps_4_temp_crank
       end if
 !
-      if (   iflag_t_evo_4_magne .ge. id_Crank_nicolson                 &
+      if (   evo_magne%iflag_scheme .ge. id_Crank_nicolson              &
      &  .or. evo_vect_p%iflag_scheme .ge. id_Crank_nicolson) then
 !
         if(eps_4_magne_crank .le. 0.0d0) then

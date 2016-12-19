@@ -127,7 +127,7 @@
           sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 3
         end if
       end if
-      if (iflag_t_evo_4_magne .gt. id_no_evolution) then
+      if (evo_magne%iflag_scheme .gt. id_no_evolution) then
         if (iflag_SGS_induction .ne. id_SGS_none) then
           sgs_coefs%num_field = sgs_coefs%num_field + 1
           sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 3
@@ -229,7 +229,7 @@
            j = j + 1
          end if
        end if
-       if (iflag_t_evo_4_magne .gt. id_no_evolution) then
+       if (evo_magne%iflag_scheme .gt. id_no_evolution) then
          if (iflag_SGS_induction .ne. id_SGS_none) then
            icomp_sgs%i_induction = i
            ifld_sgs%i_induction =  j
@@ -286,7 +286,7 @@
          iphys_elediff%i_filter_magne = i + 9
          i = i + 18
         else if (iflag_SGS_induction .ne. id_SGS_none                   &
-     &     .and. iflag_t_evo_4_magne .gt. id_no_evolution) then
+     &     .and. evo_magne%iflag_scheme .gt. id_no_evolution) then
          iphys_elediff%i_magne = i
          iphys_elediff%i_filter_magne = i + 9
          i = i + 18
@@ -305,7 +305,7 @@
          iphys_elediff%i_magne = i
          i = i + 9
         else if (iflag_SGS_induction .ne. id_SGS_none                   &
-     &     .and. iflag_t_evo_4_magne .gt. id_no_evolution) then
+     &     .and. evo_magne%iflag_scheme .gt. id_no_evolution) then
          iphys_elediff%i_magne = i
          i = i + 9
         end if

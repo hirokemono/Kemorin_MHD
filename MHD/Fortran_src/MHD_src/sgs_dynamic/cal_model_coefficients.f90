@@ -274,7 +274,7 @@
 !
 !
 !
-      if(iflag_t_evo_4_magne .gt. id_no_evolution) then
+      if(evo_magne%iflag_scheme .gt. id_no_evolution) then
         if(iflag_SGS_induction .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'cal_sgs_induct_t_dynamic'

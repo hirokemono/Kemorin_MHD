@@ -143,7 +143,7 @@
      &        'Fluid_filtering')) iflag_momentum_filtering = 1
         end if
 !
-        if (iflag_t_evo_4_magne .gt. id_no_evolution                    &
+        if (evo_magne%iflag_scheme .gt. id_no_evolution                 &
      &      .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
           iflag_induction_filtering = 0
           if (cmp_no_case(induction_filter_ctl%charavalue,              &

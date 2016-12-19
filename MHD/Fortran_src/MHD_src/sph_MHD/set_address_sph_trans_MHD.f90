@@ -122,7 +122,7 @@
       nvector_rj_2_rtp = 0
 !   velocity flag
       if(       iflag_t_evo_4_velo .gt.     id_no_evolution             &
-     &     .or. iflag_t_evo_4_magne .gt.    id_no_evolution             &
+     &     .or. evo_magne%iflag_scheme .gt.    id_no_evolution          &
      &     .or. iflag_t_evo_4_temp .gt.     id_no_evolution             &
      &     .or. evo_comp%iflag_scheme .gt. id_no_evolution) then
         nvector_rj_2_rtp = nvector_rj_2_rtp + 1
@@ -134,7 +134,7 @@
         b_trns%i_vort = 3*nvector_rj_2_rtp - 2
       end if
 !   magnetic field flag
-      if(       iflag_t_evo_4_magne .gt. id_no_evolution                &
+      if(       evo_magne%iflag_scheme .gt. id_no_evolution             &
      &     .or. iflag_4_lorentz .gt.     id_turn_OFF) then
         nvector_rj_2_rtp = nvector_rj_2_rtp + 1
         b_trns%i_magne = 3*nvector_rj_2_rtp - 2
@@ -249,7 +249,7 @@
       end if
 !
 !   induction flag
-      if(iflag_t_evo_4_magne .gt. id_no_evolution) then
+      if(evo_magne%iflag_scheme .gt. id_no_evolution) then
         nvector_rtp_2_rj = nvector_rtp_2_rj + 1
         f_trns%i_vp_induct =  3*nvector_rtp_2_rj - 2
       end if

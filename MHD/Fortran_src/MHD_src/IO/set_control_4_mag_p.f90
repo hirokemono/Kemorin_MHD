@@ -41,7 +41,7 @@
 !
 !   set boundary_conditons for magnetic potential
 !
-      if (iflag_t_evo_4_magne .eq. id_no_evolution                      &
+      if (evo_magne%iflag_scheme .eq. id_no_evolution                   &
      &       .and.  evo_vect_p%iflag_scheme .eq. id_no_evolution) then
         e_potential_nod%num_bc =  0
         e_potential_surf%num_bc = 0

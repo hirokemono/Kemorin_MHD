@@ -92,7 +92,7 @@
      &        mat_light%num_non0, mat_light%aiccg)
         end if
 !
-        if ( iflag_t_evo_4_magne .eq. id_Crank_nicolson_cmass           &
+        if ( evo_magne%iflag_scheme .eq. id_Crank_nicolson_cmass        &
      &      .and. coef_magne.gt.0.0d0) then
           call add_skv1_to_crs_matrix33                                 &
      &       (mesh%ele, rhs_tbl, MG_mat_full_cd_q,                      &

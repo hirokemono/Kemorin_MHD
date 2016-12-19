@@ -125,7 +125,7 @@
 !
 !   For Induction
 !
-      if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
+      if (evo_magne%iflag_scheme .gt. id_no_evolution                   &
      &     .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
 !
         coef_magne =   one
@@ -150,9 +150,9 @@
      &      depth_low_t, depth_high_t)
       end if
 !
-      if(iflag_t_evo_4_magne .gt. id_no_evolution) then
+      if(evo_magne%iflag_scheme .gt. id_no_evolution) then
         call set_implicit_4_inf_viscous(coef_magne,                     &
-     &      coef_imp_b, coef_exp_b)
+     &      evo_magne%coef_imp, evo_magne%coef_exp)
       end if
       if(evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         call set_implicit_4_inf_viscous(coef_magne,                     &
@@ -214,7 +214,7 @@
      &         'coefficient for heat source:         ', coef_h_src
         end if
 !
-        if (iflag_t_evo_4_magne .gt. id_no_evolution                    &
+        if (evo_magne%iflag_scheme .gt. id_no_evolution                 &
      &     .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
           write(*,*) 'coefficient for magnetic field:      ',           &
      &              coef_magne
