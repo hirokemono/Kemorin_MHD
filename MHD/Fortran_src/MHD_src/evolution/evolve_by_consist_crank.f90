@@ -131,12 +131,11 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if (coef_imp_v.gt.0.0d0) then
+      if (evo_velo%coef_imp .gt. zero) then
         call int_sk_4_fixed_velo(i_velo, iak_diff_v, node, ele,         &
      &      nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,            &
      &      Vnod_bcs%nod_bc_v, Vnod_bcs%nod_bc_rot, ak_d_velo,          &
      &      fem_wk, f_l)
-!        if (iflag_initial_step.eq.1) coef_imp_v = 1.0d0 / coef_imp_v
       end if
 !
       call reset_ff_t_smp(node%max_nod_smp, mhd_fem_wk)

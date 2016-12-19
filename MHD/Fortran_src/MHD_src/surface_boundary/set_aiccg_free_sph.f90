@@ -27,6 +27,7 @@
 !
       use m_precision
 !
+      use m_control_parameter
       use t_geometry_data
       use t_surface_data
       use t_group_data
@@ -87,7 +88,7 @@
      &          sf_grp%istack_grp_smp, sf_grp%item_sf_grp,              &
      &          jac_sf_grp%ntot_int, jac_sf_grp%an_sf,                  &
      &          jac_sf_grp%xj_sf, surf_wk%xe_sf,                        &
-     &          ak_d_velo, fem_wk%sk6)
+     &          ak_d_velo, evo_velo%coef_imp, fem_wk%sk6)
 !
             call add_skv1_to_crs_matrix33(ele, rhs_tbl, MG_mat_tbl,     &
      &          k2, fem_wk%sk6, mat33%num_non0, mat33%aiccg)
@@ -141,7 +142,7 @@
      &          sf_grp%istack_grp_smp, sf_grp%item_sf_grp,              &
      &          jac_sf_grp%ntot_int, jac_sf_grp%an_sf,                  &
      &          jac_sf_grp%xj_sf, surf_wk%xe_sf,                        &
-     &          ak_d_velo, fem_wk%sk6)
+     &          ak_d_velo, evo_velo%coef_imp, fem_wk%sk6)
 !
             call add_skv1_to_crs_matrix33(ele, rhs_tbl, MG_mat_tbl,     &
      &          k2, fem_wk%sk6, mat33%num_non0, mat33%aiccg)

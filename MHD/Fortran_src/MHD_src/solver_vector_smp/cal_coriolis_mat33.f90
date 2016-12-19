@@ -6,12 +6,12 @@
 !
 !      subroutine cal_lumped_coriolis_matrix                            &
 !     &         (numnod, numnod_fluid, inod_fluid, OLDtoNEW,            &
-!     &          coef_cor, angular, ml_o, num_mat, aiccg33)
+!!     &          coef_cor, angular, coef_imp, ml_o, num_mat, aiccg33)
 !      subroutine cal_consist_coriolis_matrix                           &
 !     &         (np_smp, numele, nnod_4_e1, nnod_4_e2,                  &
 !     &          inod_ele_max, num_sort_smp, nod_stack_smp,             &
-!     &          iele_sort_smp, iconn_sort_smp, idx_4_mat,              &
-!     &          k2, coef_cor, angular, sk_v, num_mat, aiccg33)
+!     &          iele_sort_smp, iconn_sort_smp, idx_4_mat, k2,          &
+!     &          coef_cor, angular, coef_imp, sk_v, num_mat, aiccg33)
 !
       module cal_coriolis_mat33
 !
@@ -31,7 +31,7 @@
 !
       subroutine cal_lumped_coriolis_matrix                             &
      &         (numnod, numnod_fluid, inod_fluid, OLDtoNEW,             &
-     &          coef_cor, angular, ml_o, num_mat, aiccg33)
+     &          coef_cor, angular, coef_imp, ml_o, num_mat, aiccg33)
 !
       integer(kind = kint), intent(in) :: numnod, numnod_fluid
       integer(kind = kint), intent(in) :: inod_fluid(numnod_fluid)
@@ -41,6 +41,7 @@
       real (kind=kreal), intent(in) :: ml_o(numnod)
       real (kind=kreal), intent(in) :: coef_cor
       real (kind=kreal), intent(in) :: angular(3)
+      real (kind=kreal), intent(in) :: coef_imp
 !
       integer(kind = kint), intent(in) :: num_mat
       real(kind = kreal), intent(inout) :: aiccg33(-8:num_mat)
@@ -48,7 +49,7 @@
       integer(kind = kint) :: inum, inod, in
       real(kind = kreal) :: coef
 !
-      coef = coef_imp_v * dt * coef_cor
+      coef = coef_imp * dt * coef_cor
 !$omp parallel do private(inum,inod,in)
       do inum = 1, numnod_fluid
         inod = inod_fluid(inum)
@@ -81,8 +82,8 @@
       subroutine cal_consist_coriolis_matrix                            &
      &         (np_smp, numele, nnod_4_e1, nnod_4_e2,                   &
      &          inod_ele_max, num_sort_smp, nod_stack_smp,              &
-     &          iele_sort_smp, iconn_sort_smp, idx_4_mat,               &
-     &          k2, coef_cor, angular, sk_v, num_mat, aiccg33)
+     &          iele_sort_smp, iconn_sort_smp, idx_4_mat, k2,           &
+     &          coef_cor, angular, coef_imp, sk_v, num_mat, aiccg33)
 !
       integer(kind = kint), intent(in) :: np_smp, numele
       integer(kind = kint), intent(in) :: nnod_4_e1, nnod_4_e2
@@ -101,6 +102,7 @@
      &                  :: sk_v(numele,n_sym_tensor,nnod_4_e1)
       real (kind=kreal), intent(in) :: coef_cor
       real (kind=kreal), intent(in) :: angular(3)
+      real (kind=kreal), intent(in) :: coef_imp
 !
       integer(kind = kint), intent(in) :: num_mat
       real(kind = kreal), intent(inout) :: aiccg33(-8:num_mat)
@@ -112,7 +114,7 @@
       real(kind = kreal) :: coef
 !
 !
-      coef = coef_imp_v * dt * coef_cor
+      coef = coef_imp * dt * coef_cor
 !$omp parallel do private(inum,iele,iconn,inn,in,istart,iend,mat_num)
       do iproc = 1, np_smp
         do inum = 1, inod_ele_max

@@ -91,7 +91,7 @@
      &      depth_low_t, depth_high_t)
 !
         call set_implicit_4_inf_viscous(coef_velo,                      &
-     &      coef_imp_v, coef_exp_v)
+     &      evo_velo%coef_imp, evo_velo%coef_exp)
 !
         acoef_press = one / coef_press
         coef_nega_v = - coef_velo

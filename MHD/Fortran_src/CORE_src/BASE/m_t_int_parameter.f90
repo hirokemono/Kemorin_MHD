@@ -41,13 +41,9 @@
 !>      Minimum error to expand time step
       real(kind=kreal) :: min_eps_to_expand_dt
 !
-!>      Coefficient of implicit viscous diffusion term
-      real(kind=kreal) :: coef_imp_v
 !>      Coefficient of implicit thermal diffusion term
       real(kind=kreal) :: coef_imp_t
 !
-!>      Coefficient of explicit viscous diffusion term
-      real(kind=kreal) :: coef_exp_v
 !>      Coefficient of explicit thermal diffusion term
       real(kind=kreal) :: coef_exp_t
 !

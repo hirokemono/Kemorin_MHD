@@ -237,14 +237,14 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'int_vol_viscosity_co'
-      if (coef_imp_v.gt.zero) then
+      if (evo_velo%coef_imp .gt. zero) then
         call int_vol_vector_diffuse_ele(fluid%istack_ele_fld_smp,       &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,             &
-     &      diff_coefs, iak_diff_v, coef_imp_v, ak_d_velo, i_velo,      &
-     &      fem_wk, f_l)
+     &      diff_coefs, iak_diff_v, evo_velo%coef_imp, ak_d_velo,       &
+     &      i_velo, fem_wk, f_l)
       end if
 !
-      if (coef_imp_v.gt.0.0d0) then
+      if (evo_velo%coef_imp .gt. zero) then
         if (iflag_debug.eq.1) write(*,*) 'int_sk_4_fixed_velo'
         call int_sk_4_fixed_velo(i_velo, iak_diff_v, node, ele,         &
      &      nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,            &

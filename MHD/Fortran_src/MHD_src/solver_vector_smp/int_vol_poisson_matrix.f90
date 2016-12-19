@@ -130,7 +130,7 @@
         call sel_int_diffuse3_crank_mat(mesh%ele, jac_3d,               &
      &      rhs_tbl, MG_mat_fl_q, FEM_elens, intg_point_t_evo,          &
      &      diff_coefs%num_field, ifld_diff%i_velo, diff_coefs%ak,      &
-     &      coef_imp_v, ak_MHD%ak_d_velo, ifilter_final,                &
+     &      evo_velo%coef_imp, ak_MHD%ak_d_velo, ifilter_final,         &
      &      fem_wk, mat_velo)
       end if
 !
