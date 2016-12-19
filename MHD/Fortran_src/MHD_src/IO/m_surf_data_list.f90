@@ -76,7 +76,7 @@
         if(h_flux_surf%num_bc .gt. 0) call deallocate_temp_surf_ctl
       end if
 !
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         if(torque_surf%num_bc.gt.0) call deallocate_velo_surf_ctl
         if(wall_surf%num_bc.gt.0)   call deallocate_press_surf_ctl
       end if

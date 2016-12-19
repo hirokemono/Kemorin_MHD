@@ -75,7 +75,7 @@
       end if
 !
 !
-      if(     iflag_t_evo_4_velo .ge.   id_Crank_nicolson               &
+      if(     evo_velo%iflag_scheme .ge.   id_Crank_nicolson            &
      &   .or. evo_vect_p%iflag_scheme .ge. id_Crank_nicolson            &
      &   .or. evo_magne%iflag_scheme .ge.  id_Crank_nicolson) then
         METHOD = method_4_velo

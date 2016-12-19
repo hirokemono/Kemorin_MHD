@@ -61,7 +61,7 @@
 !
 !
 !
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         if ( iflag_debug .eq.1) write(*,*)  'set boundary values 4 v'
         call set_boundary_velo                                          &
      &     (mesh%node, nod_bcs%Vnod_bcs, iphys%i_velo, nod_fld)

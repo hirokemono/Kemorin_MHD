@@ -34,7 +34,7 @@
       use m_ctl_data_mhd_evolution
 !
 !
-      if       (iflag_t_evo_4_velo .eq. id_no_evolution                 &
+      if       (evo_velo%iflag_scheme .eq. id_no_evolution              &
      &    .and. iflag_t_evo_4_temp .eq. id_no_evolution                 &
      &    .and. evo_comp%iflag_scheme .eq. id_no_evolution) then
 !

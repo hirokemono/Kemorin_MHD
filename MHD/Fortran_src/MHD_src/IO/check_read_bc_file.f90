@@ -40,7 +40,7 @@
 !
 ! ----  read boundary data for velocity
 !
-      if ( iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
      &      velo_nod%num_bc, velo_nod%ibc_type)
         call set_serch_boundary_file_flag(iflag_boundary_file,          &

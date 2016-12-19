@@ -72,7 +72,7 @@
 !*
 !      call check_ws_spectr(sph_rj, ipol, idpdr, itor, rj_fld)
 !
-      if(iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if(evo_velo%iflag_scheme .gt. id_no_evolution) then
 !         Input:    ipol%i_vort, itor%i_vort
 !         Solution: ipol%i_velo, itor%i_velo, idpdr%i_velo
         if (iflag_debug .gt. 0)                                         &
@@ -111,7 +111,7 @@
 !*  ---- update after evolution ------------------
 !      call check_vs_spectr(sph_rj, ipol, idpdr, itor, rj_fld)
 !
-      if(iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if(evo_velo%iflag_scheme .gt. id_no_evolution) then
         call update_after_vorticity_sph                                 &
      &     (sph_rj, r_2nd, leg, ipol, itor, rj_fld)
         call cal_rot_radial_self_gravity                                &
@@ -154,7 +154,7 @@
      &      ipol%i_velo, ipol%i_vort, rj_fld)
       end if
 !
-      if(iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if(evo_velo%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug.gt.0) write(*,*) 'update_after_vorticity_sph'
         call update_after_vorticity_sph                                 &
      &     (sph_rj, r_2nd, leg, ipol, itor, rj_fld)

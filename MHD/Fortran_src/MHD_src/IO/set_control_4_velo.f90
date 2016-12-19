@@ -40,7 +40,7 @@
       integer (kind = kint) :: i, iflag_4_hemi
 !
 !
-      if (iflag_t_evo_4_velo .eq. id_no_evolution) then
+      if (evo_velo%iflag_scheme .eq. id_no_evolution) then
         velo_nod%num_bc =    0
         torque_surf%num_bc = 0
       else

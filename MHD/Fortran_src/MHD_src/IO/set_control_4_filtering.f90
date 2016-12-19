@@ -135,7 +135,7 @@
      &        'Fluid_filtering')) iflag_heat_filtering = 1
         end if
 !
-        if ( iflag_t_evo_4_velo .gt. id_no_evolution) then
+        if ( evo_velo%iflag_scheme .gt. id_no_evolution) then
           iflag_momentum_filtering = 0
           if (cmp_no_case(momentum_filter_ctl%charavalue,               &
      &        'Whole_filtering')) iflag_momentum_filtering = 0

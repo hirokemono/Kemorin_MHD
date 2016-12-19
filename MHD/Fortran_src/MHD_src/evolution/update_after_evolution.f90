@@ -291,7 +291,7 @@
 !
 !     ---- velocity update
 !
-      if ( iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'velocity_evolution'
         call velocity_evolution                                         &
      &     (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &
@@ -564,7 +564,7 @@
 !
 !     ---- velocity update
 !
-      if ( iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if ( evo_velo%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'velocity_evolution'
         call velocity_evolution(mesh%nod_comm, mesh%node, mesh%ele,     &
      &      ele_mesh%surf, fluid, group%surf_grp, group%surf_nod_grp,   &

@@ -99,11 +99,11 @@
 !
 !   set boundary conditions for matrix
 !
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         call set_aiccg_bc_scalar_nod(num_t_linear, ele,                 &
      &      node_bcs%Vnod_bcs%nod_bc_p, djds_tbl_fl_l, mat_press)
 !
-        if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
+        if (evo_velo%iflag_scheme .ge. id_Crank_nicolson) then
           call set_aiccg_bc_velo(num_int, ele, surf, sf_grp,            &
      &      node_bcs%Vnod_bcs%nod_bc_v, node_bcs%Vnod_bcs%nod_bc_rot,   &
      &      surf_bcs%Vsf_bcs%free_sph_in,                               &

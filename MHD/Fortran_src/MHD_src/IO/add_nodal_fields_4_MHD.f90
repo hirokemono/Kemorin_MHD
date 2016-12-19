@@ -84,7 +84,7 @@
 !
 !    set work fields for potentials
 !
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if(evo_velo%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_tmp(fhd_press_work)
       end if
       if (evo_magne%iflag_scheme .gt. id_no_evolution                   &
@@ -99,7 +99,7 @@
       subroutine add_data_4_previous_step
 !
 !
-      if(iflag_t_evo_4_velo .ne. id_no_evolution) then
+      if(evo_velo%iflag_scheme .ne. id_no_evolution) then
         call add_phys_name_tmp(fhd_pre_mom)
         call add_phys_name_tmp(fhd_pre_press)
 !
@@ -124,7 +124,7 @@
       subroutine add_data_4_check_step
 !
 !
-      if(iflag_t_evo_4_velo .ne. id_no_evolution) then
+      if(evo_velo%iflag_scheme .ne. id_no_evolution) then
         call add_phys_name_tmp(fhd_chk_mom)
         call add_phys_name_tmp(fhd_chk_press)
       end if
@@ -140,7 +140,7 @@
         call add_phys_name_tmp(fhd_chk_composit)
       end if
 !
-!      if(iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
+!      if(evo_velo%iflag_scheme .ge. id_Crank_nicolson) then
 !        call add_phys_name_tmp(fhd_chk_mom_2)
 !        call add_phys_name_tmp(fhd_chk_press_2)
 !      end if

@@ -41,7 +41,7 @@
 !
 !    For convection
 !
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         call alloc_velo_diff_MHD_AMG(numele, ak_MHD)
         ak_MHD%ak_d_velo(1:numele) = coef_d_velo
 !

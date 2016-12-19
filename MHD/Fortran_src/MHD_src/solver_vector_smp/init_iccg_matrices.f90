@@ -54,12 +54,12 @@
       type(DJDS_MATRIX),  intent(inout) :: mat_magp
 !
 !
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         call reset_aiccg_11_MHD(node, ele,                              &
      &      fluid%iele_start_fld, fluid%iele_end_fld,                   &
      &      num_t_linear, djds_tbl_fl_l, mat_press)
 !
-        if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
+        if (evo_velo%iflag_scheme .ge. id_Crank_nicolson) then
           call reset_aiccg_33_MHD(node, ele,                            &
      &        fluid%iele_start_fld, fluid%iele_end_fld,                 &
      &        ele%nnod_4_ele, djds_tbl_fl, mat_velo)

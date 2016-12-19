@@ -109,7 +109,7 @@
 !
          do i = 1, num_field_to_evolve
            if ( t_evo_name(i) .eq. fhd_velo ) then
-            iflag_t_evo_4_velo = iflag_scheme
+            evo_velo%iflag_scheme = iflag_scheme
            else if ( t_evo_name(i) .eq. fhd_temp ) then
             iflag_t_evo_4_temp = iflag_scheme
            else if ( t_evo_name(i) .eq. fhd_light ) then
@@ -123,7 +123,7 @@
 !
         end if
 !
-      if       (iflag_t_evo_4_velo     .eq. id_no_evolution             &
+      if       (evo_velo%iflag_scheme     .eq. id_no_evolution          &
      &    .and. iflag_t_evo_4_temp     .eq. id_no_evolution             &
      &    .and. evo_comp%iflag_scheme     .eq. id_no_evolution          &
      &    .and. evo_magne%iflag_scheme    .eq. id_no_evolution          &
@@ -133,7 +133,7 @@
       end if
 !
       if (iflag_debug .ge. iflag_routine_msg) then
-        write(*,*) 'iflag_t_evo_4_velo     ', iflag_t_evo_4_velo
+        write(*,*) 'iflag_t_evo_4_velo     ', evo_velo%iflag_scheme
         write(*,*) 'iflag_t_evo_4_temp     ', iflag_t_evo_4_temp
         write(*,*) 'iflag_t_evo_4_composit ', evo_comp%iflag_scheme
         write(*,*) 'iflag_t_evo_4_magne    ', evo_magne%iflag_scheme
@@ -258,7 +258,7 @@
       subroutine s_set_control_4_crank
 !
 !
-        if(iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
+        if(evo_velo%iflag_scheme .ge. id_Crank_nicolson) then
           if (coef_imp_v_ctl%iflag.eq.0) then
             coef_imp_v = 0.5d0
           else

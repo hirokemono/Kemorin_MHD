@@ -49,7 +49,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if( (iphys%i_m_advect*iflag_t_evo_4_velo) .gt. 0) then
+      if( (iphys%i_m_advect*evo_velo%iflag_scheme) .gt. 0) then
         call pole_fld_cst_cross_prod                                    &
      &     (node%numnod, node%internal_node, node%xx,                   &
      &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), coef_velo,           &

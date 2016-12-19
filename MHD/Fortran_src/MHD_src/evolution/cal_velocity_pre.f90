@@ -256,17 +256,17 @@
      &    fem_wk, surf_wk, f_l, f_nl)
 !
 !
-      if (iflag_t_evo_4_velo .eq. id_explicit_euler) then
+      if (evo_velo%iflag_scheme .eq. id_explicit_euler) then
         call cal_velo_pre_euler(iflag_velo_supg,                        &
      &     nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,       &
      &     jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
-      else if (iflag_t_evo_4_velo .eq. id_explicit_adams2) then
+      else if(evo_velo%iflag_scheme .eq. id_explicit_adams2) then
         call cal_velo_pre_adams(iflag_velo_supg,                        &
      &     nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,       &
      &     jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
-      else if (iflag_t_evo_4_velo .eq. id_Crank_nicolson) then
+      else if(evo_velo%iflag_scheme .eq. id_Crank_nicolson) then
         call cal_velo_pre_lumped_crank                                  &
      &     (ifld_diff%i_velo, ak_MHD%ak_d_velo,                         &
      &      nod_comm, node, ele, fluid, Vnod_bcs,                       &
@@ -274,7 +274,7 @@
      &      diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,         &
      &      f_l, f_nl, nod_fld)
 !
-      else if (iflag_t_evo_4_velo .eq. id_Crank_nicolson_cmass) then 
+      else if(evo_velo%iflag_scheme .eq. id_Crank_nicolson_cmass) then 
         call cal_velo_pre_consist_crank(iphys%i_velo,                   &
      &      iphys%i_pre_mom, ifld_diff%i_velo, ak_MHD%ak_d_velo,        &
      &      node, ele, fluid, Vnod_bcs, jac_3d_q, rhs_tbl, FEM_elens,   &

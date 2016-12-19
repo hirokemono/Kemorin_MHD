@@ -67,7 +67,7 @@
 !
 !    For convection
 !
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if(evo_velo%iflag_scheme .gt. id_no_evolution) then
 !
         coef_velo =     one
         coef_d_velo =   one
@@ -188,7 +188,7 @@
 !
       if (my_rank .eq. 0) then
         write(*,*)''
-        if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+        if(evo_velo%iflag_scheme .gt. id_no_evolution) then
           write(*,*) 'coefficient for velocity:            ',           &
      &              coef_velo
           write(*,*) 'coefficient for pressure:            ',           &

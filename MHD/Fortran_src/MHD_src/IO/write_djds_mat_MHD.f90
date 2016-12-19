@@ -59,13 +59,13 @@
       type(MHD_MG_matrix), intent(in) :: Tmatrix, Cmatrix
 !
 !
-      if ( iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if ( evo_velo%iflag_scheme .gt. id_no_evolution) then
         call write_MHD_djds_mat11(fhead_press_mat,                      &
      &       Pmatrix%nlevel_MG, Pmatrix%MG_comm_table,                  &
      &       Pmatrix%MG_DJDS_table, Pmatrix%mat_MG_DJDS)
       end if
 !
-      if ( iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
+      if ( evo_velo%iflag_scheme .ge. id_Crank_nicolson) then
         call write_MHD_djds_mat33(fhead_velo_mat,                       &
      &       Vmatrix%nlevel_MG, Vmatrix%MG_comm_table,                  &
      &       Vmatrix%MG_DJDS_table, Vmatrix%mat_MG_DJDS)

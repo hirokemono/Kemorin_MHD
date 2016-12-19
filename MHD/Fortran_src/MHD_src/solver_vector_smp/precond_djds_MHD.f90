@@ -53,7 +53,7 @@
 !C +-----------------+
 !C===
 !
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1)   write(*,*) 'precond: ',                 &
      &                trim(precond_4_solver),' ', sigma_diag
         call precond_DJDS11_struct(np_smp,                              &
@@ -61,7 +61,7 @@
      &      precond_4_solver, sigma_diag)
       end if
 !
-      if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
+      if (evo_velo%iflag_scheme .ge. id_Crank_nicolson) then
         call precond_DJDS33_struct(np_smp,                              &
      &      Vmatrix%MG_DJDS_table(0), Vmatrix%mat_MG_DJDS(0),           &
      &      precond_4_crank, sigma_diag)

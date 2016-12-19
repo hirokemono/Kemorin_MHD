@@ -106,13 +106,13 @@
      & time evolution')
       end if
 !
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         msg = 'time integration for velocity needs'
         call check_missing_field_w_msg(fld, msg, iphys%i_velo)
         call check_missing_field_w_msg(fld, msg, iphys%i_press)
       end if
 !
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         msg = 'time integration for velocity needs'
         call check_missing_field_w_msg(fld, msg, iphys%i_vort)
       end if
@@ -142,7 +142,7 @@
       end if
 !
 !
-      if ( iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if ( evo_velo%iflag_scheme .gt. id_no_evolution) then
         if ( iflag_4_gravity .gt. id_turn_OFF) then
           msg = 'Buoyancy needs'
           call check_missing_field_w_msg(fld, msg, iphys%i_temp)
@@ -177,7 +177,7 @@
       character(len=kchara) :: msg
 !
 !
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         msg = 'time integration for velocity needs'
         call check_missing_field_w_msg(fld, msg, iphys%i_velo)
         call check_missing_field_w_msg(fld, msg, iphys%i_press)
@@ -195,7 +195,7 @@
       character(len=kchara) :: msg
 !
 !
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         msg = 'time integration for velocity needs'
         call check_missing_field_w_msg(fld, msg, iphys%i_vort)
       end if
@@ -214,7 +214,7 @@
       character(len=kchara) :: msg
 !
 !
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         if ( iflag_SGS_inertia .ne. id_SGS_none) then
           msg = 'solving SGS momentum flux needs'
           call check_missing_field_w_msg(fld, msg, iphys%i_SGS_m_flux)
@@ -262,7 +262,7 @@
         end if
       end if
 !
-      if ( iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if ( evo_velo%iflag_scheme .gt. id_no_evolution) then
         if ( iflag_SGS_inertia .eq. id_SGS_similarity                   &
      &     .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS momentum flux needs'
@@ -341,7 +341,7 @@
       character(len=kchara) :: msg
 !
 !
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         if ( iflag_SGS_inertia .ne. id_SGS_none) then
           msg = 'solving SGS momentum flux needs'
           call check_missing_field_w_msg(fld, msg, iphys%i_SGS_inertia)
@@ -381,7 +381,7 @@
       end if
 !
 !
-      if ( iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if ( evo_velo%iflag_scheme .gt. id_no_evolution) then
         if ( iflag_SGS_inertia .eq. id_SGS_similarity                   &
      &     .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS momentum flux needs'

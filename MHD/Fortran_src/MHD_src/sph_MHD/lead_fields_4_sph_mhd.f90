@@ -75,7 +75,7 @@
       call set_lead_physical_values_flag(iflag)
 !
       if ( (iflag*mod(istep_max_dt,i_step_output_rst)) .eq.0 ) then
-        if(iflag_t_evo_4_velo .gt. id_no_evolution) then
+        if(evo_velo%iflag_scheme .gt. id_no_evolution) then
           call pressure_4_sph_mhd(sph%sph_rj, r_2nd, trans_p%leg,       &
      &       band_p_poisson, ipol, rj_fld)
         end if

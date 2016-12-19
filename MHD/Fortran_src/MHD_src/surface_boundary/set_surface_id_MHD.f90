@@ -162,7 +162,7 @@
       type(surface_boundarty_conditions), intent(inout) :: surf_bcs
 !
 !
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         call set_surf_grad_velo(name_svn, name_vg,                      &
      &      IO_bc, node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v,       &
      &      torque_surf, surf_bcs%Vsf_bcs)

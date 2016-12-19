@@ -57,7 +57,7 @@
       type(nodal_boundarty_conditions), intent(inout) :: nodal_bc
 !
 !
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         if ( iflag_debug .eq.1) write(*,*)  'set boundary id 4 v'
         call set_bc_velo_id(IO_bc, mesh%node, mesh%ele,                 &
      &      MHD_mesh%fluid, group%nod_grp, nodal_bc%Vnod_bcs)

@@ -68,7 +68,7 @@
       type(legendre_4_sph_trans), intent(in) :: leg
 !
 !
-      if (iflag_t_evo_4_velo .lt. id_Crank_nicolson) return
+      if (evo_velo%iflag_scheme .lt. id_Crank_nicolson) return
       if(iflag_debug .gt. 0)                                            &
      &          write(*,*) 'const_radial_mat_4_press_sph'
       call const_radial_mat_4_press_sph                                 &
@@ -100,7 +100,7 @@
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
 !
-      if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
+      if (evo_velo%iflag_scheme .ge. id_Crank_nicolson) then
         if(iflag_debug .gt. 0)                                          &
      &          write(*,*) 'const_radial_mat_vort_2step'
         call const_radial_mat_vort_2step(sph_rj, r_2nd, g_sph_rj,       &
@@ -152,7 +152,7 @@
 !
       call allocate_average_w_center(sph_rj)
 !
-      if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
+      if (evo_velo%iflag_scheme .ge. id_Crank_nicolson) then
         if(i_debug .gt. 0) write(*,*) 'const_radial_mat_press00_sph'
         write(band_p_poisson%mat_name,'(a)')                            &
      &                         'average_pressure_w_center'

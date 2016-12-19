@@ -65,7 +65,7 @@
 !
 !    set coefficients for momentum equation
 !
-      if (iflag_t_evo_4_velo .eq. id_no_evolution) then
+      if (evo_velo%iflag_scheme .eq. id_no_evolution) then
         MHD_coef_list%coefs_momentum%num =  0
         MHD_coef_list%coefs_pressure%num =  0
         MHD_coef_list%coefs_v_diffuse%num = 0

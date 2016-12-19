@@ -68,7 +68,7 @@
 !
 !
 !$omp parallel
-      if (iflag_t_evo_4_velo .eq. id_Crank_nicolson                     &
+      if (evo_velo%iflag_scheme .eq. id_Crank_nicolson                  &
      &     .and. coef_velo .gt. zero) then
         call init_33_matrix_lump                                        &
      &     (mesh%node%numnod, fluid%numnod_fld, fluid%inod_fld,         &

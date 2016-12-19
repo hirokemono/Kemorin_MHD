@@ -121,7 +121,7 @@
 !
       nvector_rj_2_rtp = 0
 !   velocity flag
-      if(       iflag_t_evo_4_velo .gt.     id_no_evolution             &
+      if(       evo_velo%iflag_scheme .gt.     id_no_evolution          &
      &     .or. evo_magne%iflag_scheme .gt.    id_no_evolution          &
      &     .or. iflag_t_evo_4_temp .gt.     id_no_evolution             &
      &     .or. evo_comp%iflag_scheme .gt. id_no_evolution) then
@@ -129,7 +129,7 @@
         b_trns%i_velo = 3*nvector_rj_2_rtp - 2
       end if
 !   vorticity flag
-      if(       iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if(       evo_velo%iflag_scheme .gt. id_no_evolution) then
         nvector_rj_2_rtp = nvector_rj_2_rtp + 1
         b_trns%i_vort = 3*nvector_rj_2_rtp - 2
       end if
@@ -229,7 +229,7 @@
 !
       nvector_rtp_2_rj = 0
 !   advection flag
-      if(iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if(evo_velo%iflag_scheme .gt. id_no_evolution) then
         nvector_rtp_2_rj = nvector_rtp_2_rj + 1
         f_trns%i_m_advect = 3*nvector_rtp_2_rj - 2
 !   Coriolis flag

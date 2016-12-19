@@ -44,7 +44,7 @@
       iflag_4_composit_buo =   id_turn_OFF
       iflag_4_filter_gravity = id_turn_OFF
 !
-      if (iflag_t_evo_4_velo .eq. id_no_evolution) then
+      if (evo_velo%iflag_scheme .eq. id_no_evolution) then
         num_force = 0
       else
         if (force_names_ctl%icou .gt. 0) then
@@ -84,7 +84,7 @@
      &       .or. cmp_no_case(name_force(i), 'Thermal_buoyancy_node')   &
      &       .or. cmp_no_case(name_force(i), 'Thermal_gravity_node')    &
      &      ) then
-            if (iflag_t_evo_4_velo .eq. id_Crank_nicolson_cmass) then
+            if(evo_velo%iflag_scheme .eq. id_Crank_nicolson_cmass) then
               iflag_4_gravity = id_FORCE_ele_int
             else
               iflag_4_gravity = id_FORCE_at_node
@@ -104,7 +104,7 @@
      &       .or. cmp_no_case(name_force(i), 'Composite_buoyancy_node') &
      &       .or. cmp_no_case(name_force(i), 'Composite_gravity_node')  &
      &       ) then
-            if (iflag_t_evo_4_velo .eq. id_Crank_nicolson_cmass) then
+            if(evo_velo%iflag_scheme .eq. id_Crank_nicolson_cmass) then
               iflag_4_composit_buo = id_FORCE_ele_int
             else
               iflag_4_composit_buo = id_FORCE_at_node
@@ -119,7 +119,7 @@
      &        )  iflag_4_coriolis = id_FORCE_ele_int
 !
           if (cmp_no_case(name_force(i), 'Coriolis_node')) then
-            if (iflag_t_evo_4_velo .eq. id_Crank_nicolson_cmass) then
+            if(evo_velo%iflag_scheme .eq. id_Crank_nicolson_cmass) then
               iflag_4_coriolis = id_FORCE_ele_int
             else
               iflag_4_coriolis = id_FORCE_at_node
@@ -127,9 +127,9 @@
           end if
 !
           if(cmp_no_case(name_force(i), 'Coriolis_imp')) then
-            if (iflag_t_evo_4_velo .eq. id_Crank_nicolson) then
+            if(evo_velo%iflag_scheme .eq. id_Crank_nicolson) then
               iflag_4_coriolis = id_Coriolis_ele_imp
-            else if (iflag_t_evo_4_velo .eq. id_Crank_nicolson_cmass)   &
+            else if(evo_velo%iflag_scheme .eq. id_Crank_nicolson_cmass) &
      &          then
               iflag_4_coriolis = id_Coriolis_ele_imp
             else
@@ -138,9 +138,9 @@
           end if
 !
           if(cmp_no_case(name_force(i), 'Coriolis_node_imp')) then
-            if (iflag_t_evo_4_velo .eq. id_Crank_nicolson) then
+            if(evo_velo%iflag_scheme .eq. id_Crank_nicolson) then
               iflag_4_coriolis = id_Coriolis_nod_imp
-            else if (iflag_t_evo_4_velo .eq. id_Crank_nicolson_cmass)   &
+            else if(evo_velo%iflag_scheme .eq. id_Crank_nicolson_cmass) &
      &               then
               iflag_4_coriolis = id_Coriolis_ele_imp
             else

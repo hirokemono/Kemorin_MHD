@@ -81,7 +81,7 @@
       type(DJDS_MATRIX),  intent(inout) :: mat_magp
 !
 !
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         call sel_int_poisson_mat(mesh%ele, jac_3d_l,                    &
      &      rhs_tbl, MG_mat_fl_l, FEM_elens, intg_point_poisson,        &
      &      diff_coefs%num_field, ifld_diff%i_velo, diff_coefs%ak,      &
@@ -126,7 +126,7 @@
       type(DJDS_MATRIX),  intent(inout) :: mat_light
 !
 !
-      if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
+      if (evo_velo%iflag_scheme .ge. id_Crank_nicolson) then
         call sel_int_diffuse3_crank_mat(mesh%ele, jac_3d,               &
      &      rhs_tbl, MG_mat_fl_q, FEM_elens, intg_point_t_evo,          &
      &      diff_coefs%num_field, ifld_diff%i_velo, diff_coefs%ak,      &

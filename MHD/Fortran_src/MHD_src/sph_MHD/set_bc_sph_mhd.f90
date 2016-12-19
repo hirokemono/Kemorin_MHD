@@ -58,7 +58,7 @@
       integer(kind = kint) :: kst, ked
 !
 !
-      if (iflag_t_evo_4_velo .gt.     id_no_evolution) then
+      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_velo_sph'
         call set_sph_bc_velo_sph(sph_rj, radial_rj_grp,                 &
      &      sph_params%radius_ICB, sph_params%radius_CMB)
@@ -137,7 +137,7 @@
       end if
 !
       if (iflag_debug .eq. iflag_full_msg) then
-        if (iflag_t_evo_4_velo .gt.     id_no_evolution) then
+        if (evo_velo%iflag_scheme .gt. id_no_evolution) then
           call check_fdm_coefs_4_BC2(fhd_velo,  sph_bc_U)
           call check_coef_fdm_free_ICB
           call check_coef_fdm_free_CMB

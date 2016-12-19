@@ -53,7 +53,7 @@
 !
 !
 !$omp parallel
-      if(iflag_t_evo_4_velo .gt.     id_no_evolution) then
+      if(evo_velo%iflag_scheme .gt.     id_no_evolution) then
         call cal_vorticity_eq_adams(ipol, itor,                         &
      &      sph_bc_U%kr_in, sph_bc_U%kr_out, rj_fld%n_point,            &
      &      sph_rj%nidx_rj(2), rj_fld%ntot_phys, rj_fld%d_fld)
@@ -98,7 +98,7 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !$omp parallel
-      if(iflag_t_evo_4_velo .gt.     id_no_evolution) then
+      if(evo_velo%iflag_scheme .gt.     id_no_evolution) then
         call cal_vorticity_eq_euler(ipol, itor,                         &
      &      sph_bc_U%kr_in, sph_bc_U%kr_out, rj_fld%n_point,            &
      &      sph_rj%nidx_rj(2), rj_fld%ntot_phys, rj_fld%d_fld)
@@ -124,7 +124,7 @@
       end if
 !
       if (i_step .eq. 1) then
-        if(iflag_t_evo_4_velo .gt.     id_no_evolution) then
+        if(evo_velo%iflag_scheme .gt.     id_no_evolution) then
           call set_ini_adams_inertia(ipol, itor,                        &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if

@@ -194,7 +194,7 @@
       end if
 !
 !
-      if(iflag_t_evo_4_velo .ne. id_no_evolution) then
+      if(evo_velo%iflag_scheme .ne. id_no_evolution) then
 !
         if (iflag_SGS_inertia .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_m_flux_dynamic'

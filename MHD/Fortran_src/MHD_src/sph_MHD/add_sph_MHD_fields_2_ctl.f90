@@ -33,12 +33,12 @@
 !
 !
 !   velocity flag
-      if(iflag_t_evo_4_velo .gt. id_no_evolution                        &
+      if(evo_velo%iflag_scheme .gt. id_no_evolution                     &
      &     .or. evo_magne%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_tmp(fhd_velo)
       end if
 !   vorticity flag
-      if(iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if(evo_velo%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_tmp(fhd_vort)
       end if
 !   magnetic field flag
@@ -63,7 +63,7 @@
 !
 !
 !   advection flag
-      if(iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if(evo_velo%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_tmp(fhd_viscous)
         call add_phys_name_tmp(fhd_div_viscous)
         call add_phys_name_tmp(fhd_w_viscous)

@@ -163,11 +163,11 @@
       type(DJDS_MATRIX),  intent(inout) :: mat_magp
 !
 !
-      if ( iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if ( evo_velo%iflag_scheme .gt. id_no_evolution) then
         call alloc_type_djds11_mat(node%numnod, node%internal_node,     &
      &      djds_tbl_fll, mat_press)
 !
-        if ( iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
+        if ( evo_velo%iflag_scheme .ge. id_Crank_nicolson) then
           call alloc_type_djds33_mat(node%numnod, node%internal_node,   &
      &        djds_tbl_fl, mat_velo)
         end if
@@ -221,10 +221,10 @@
       type(DJDS_MATRIX),  intent(inout) :: mat_magp
 !
 !
-      if ( iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if ( evo_velo%iflag_scheme .gt. id_no_evolution) then
         call alloc_type_zero_mat(mat_press)
 !
-        if ( iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
+        if ( evo_velo%iflag_scheme .ge. id_Crank_nicolson) then
           call alloc_type_zero_mat(mat_velo)
         end if
       end if
@@ -267,10 +267,10 @@
       type(DJDS_MATRIX),  intent(inout) :: mat_magp
 !
 !
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         call dealloc_type_djds_mat(mat_press)
 !
-        if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
+        if (evo_velo%iflag_scheme .ge. id_Crank_nicolson) then
           call dealloc_type_djds_mat(mat_velo)
         end if
       end if

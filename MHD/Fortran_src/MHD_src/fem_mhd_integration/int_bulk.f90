@@ -566,7 +566,7 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
 !
 !
-      if  (iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if(evo_velo%iflag_scheme .gt. id_no_evolution) then
         call int_norm_divergence                                        &
      &     (fluid%istack_ele_fld_smp, iphys%i_velo,                     &
      &      node, ele, nod_fld, jac_3d_q, fem_wk, bulk_local(ja_divv))

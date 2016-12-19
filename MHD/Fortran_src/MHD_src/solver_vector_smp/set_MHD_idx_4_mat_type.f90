@@ -75,7 +75,7 @@
       call set_index_list_4_mat_etr_l(mesh%node, mesh%ele,              &
      &    rhs_tbl, djds_tbl_lin, MG_mat_q, MG_mat_linear)
 !
-      if (iflag_t_evo_4_velo .ne. id_no_evolution                       &
+      if (evo_velo%iflag_scheme .ne. id_no_evolution                    &
      &  .or. iflag_t_evo_4_temp .ne. id_no_evolution                    &
      &  .or. evo_comp%iflag_scheme .ne. id_no_evolution) then
         write(*,*) 'alloc_type_marix_list'

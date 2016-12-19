@@ -53,7 +53,7 @@
       if ( my_rank .eq. 0 ) then
 !
         write(12,*) ' Delta t: ', dt
-        if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+        if (evo_velo%iflag_scheme .gt. id_no_evolution) then
          cfl_diffuse = cfl_advect / coef_d_velo
          write(12,*) 'estimated limit for Delta t for velovity:      ', &
      &    cfl_diffuse

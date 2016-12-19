@@ -64,12 +64,12 @@
 !C +-----------------+
 !C===
 !
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         call precond_DJDS11_struct(np_smp, djds_tbl_fl_l, mat_press,    &
      &     PRECOND_MG, sigma_diag)
       end if
 !
-      if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
+      if (evo_velo%iflag_scheme .ge. id_Crank_nicolson) then
         call precond_DJDS33_struct(np_smp, djds_tbl_fl, mat_velo,       &
      &      PRECOND_MG, sigma_diag)
       end if
