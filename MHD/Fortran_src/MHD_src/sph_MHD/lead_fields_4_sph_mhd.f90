@@ -104,24 +104,24 @@
      &      WK%trns_MHD%fld_pole, WK%trns_MHD%frc_pole)
       end if
 !
-      if(iflag_SGS_model .gt. 0) then
-        if (iflag_debug.eq.1) write(*,*) 'swap_phi_from_trans'
-        call swap_phi_from_trans(WK%trns_SGS%ncomp_rj_2_rtp,            &
-     &      sph%sph_rtp%nnod_rtp, sph%sph_rtp%nidx_rtp,                 &
-     &      WK%trns_SGS%fld_rtp)
-        call swap_phi_from_trans(WK%trns_SGS%ncomp_rtp_2_rj,            &
-     &      sph%sph_rtp%nnod_rtp, sph%sph_rtp%nidx_rtp,                 &
-     &      WK%trns_SGS%frc_rtp)
+!      if(iflag_SGS_model .gt. 0) then
+!        if (iflag_debug.eq.1) write(*,*) 'swap_phi_from_trans'
+!        call swap_phi_from_trans(WK%trns_SGS%ncomp_rj_2_rtp,           &
+!     &      sph%sph_rtp%nnod_rtp, sph%sph_rtp%nidx_rtp,                &
+!     &      WK%trns_SGS%fld_rtp)
+!        call swap_phi_from_trans(WK%trns_SGS%ncomp_rtp_2_rj,           &
+!     &      sph%sph_rtp%nnod_rtp, sph%sph_rtp%nidx_rtp,                &
+!     &      WK%trns_SGS%frc_rtp)
 !
-        if (iflag_debug.eq.1) write(*,*) 'sph_pole_trans_SGS_MHD'
-        call sph_pole_trans_SGS_MHD                                     &
-     &     (sph, comms_sph, trans_p, ipol, rj_fld, WK%trns_SGS)
+!        if (iflag_debug.eq.1) write(*,*) 'sph_pole_trans_SGS_MHD'
+!        call sph_pole_trans_SGS_MHD                                    &
+!     &     (sph, comms_sph, trans_p, ipol, rj_fld, WK%trns_SGS)
 !
-        if (iflag_debug.eq.1) write(*,*) 'copy_model_coefs_4_sph_snap'
-        call copy_model_coefs_4_sph_snap(sph%sph_rtp,                   &
-     &      WK%dynamic_SPH%ifld_sgs, WK%dynamic_SPH%wk_sgs,             &
-     &      WK%trns_snap)
-      end if
+!        if (iflag_debug.eq.1) write(*,*) 'copy_model_coefs_4_sph_snap'
+!        call copy_model_coefs_4_sph_snap(sph%sph_rtp,                  &
+!     &      WK%dynamic_SPH%ifld_sgs, WK%dynamic_SPH%wk_sgs,            &
+!     &      WK%trns_snap)
+!      end if
 !
       call gradients_of_vectors_sph(sph, comms_sph, r_2nd, trans_p,     &
      &    ipol, WK%trns_MHD, WK%trns_tmp, rj_fld)
@@ -158,10 +158,10 @@
      &   (sph_rj, r_2nd, leg%g_sph_rj, ipol, rj_fld)
 !
 !   ----  Lead SGS terms
-      if(iflag_SGS_model .gt. 0) then
-        call cal_div_of_SGS_forces_sph_2                                &
-     &     (sph_rj, r_2nd, leg%g_sph_rj, ipol, rj_fld)
-      end if
+!      if(iflag_SGS_model .gt. 0) then
+!        call cal_div_of_SGS_forces_sph_2                               &
+!     &     (sph_rj, r_2nd, leg%g_sph_rj, ipol, rj_fld)
+!      end if
 !
       call s_const_radial_forces_on_bc                                  &
      &   (sph_rj, leg%g_sph_rj, ipol, rj_fld)
@@ -232,8 +232,8 @@
 !
       if (iflag_debug.eq.1) write(*,*)                                  &
      &                          'sph_forward_trans_snapshot_MHD'
-!      call sph_forward_trans_snapshot_MHD                              &
-!     &   (sph, comms_sph, trans_p, trns_snap, ipol, rj_fld)
+      call sph_forward_trans_snapshot_MHD                               &
+     &   (sph, comms_sph, trans_p, trns_snap, ipol, rj_fld)
       call calypso_mpi_barrier
 !
       end subroutine enegy_fluxes_4_sph_mhd
