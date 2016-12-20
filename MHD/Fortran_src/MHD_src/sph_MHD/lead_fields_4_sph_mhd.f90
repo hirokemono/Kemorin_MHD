@@ -158,10 +158,10 @@
      &   (sph_rj, r_2nd, leg%g_sph_rj, ipol, rj_fld)
 !
 !   ----  Lead SGS terms
-!      if(iflag_SGS_model .gt. 0) then
-!        call cal_div_of_SGS_forces_sph_2                               &
-!     &     (sph_rj, r_2nd, leg%g_sph_rj, ipol, rj_fld)
-!      end if
+      if(iflag_SGS_model .gt. 0) then
+        call cal_div_of_SGS_forces_sph_2                                &
+     &     (sph_rj, r_2nd, leg%g_sph_rj, ipol, rj_fld)
+      end if
 !
       call s_const_radial_forces_on_bc                                  &
      &   (sph_rj, leg%g_sph_rj, ipol, rj_fld)
