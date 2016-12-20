@@ -113,9 +113,9 @@
      &      sph%sph_rtp%nnod_rtp, sph%sph_rtp%nidx_rtp,                 &
      &      WK%trns_SGS%frc_rtp)
 !
-!        if (iflag_debug.eq.1) write(*,*) 'sph_pole_trans_SGS_MHD'
-!        call sph_pole_trans_SGS_MHD                                    &
-!     &     (sph, comms_sph, trans_p, ipol, rj_fld, WK%trns_SGS)
+        if (iflag_debug.eq.1) write(*,*) 'sph_pole_trans_SGS_MHD'
+        call sph_pole_trans_SGS_MHD                                     &
+     &     (sph, comms_sph, trans_p, ipol, rj_fld, WK%trns_SGS)
 !
 !        if (iflag_debug.eq.1) write(*,*) 'copy_model_coefs_4_sph_snap'
 !        call copy_model_coefs_4_sph_snap(sph%sph_rtp,                  &
