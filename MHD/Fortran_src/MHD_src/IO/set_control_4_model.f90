@@ -109,35 +109,35 @@
 !
          do i = 1, num_field_to_evolve
            if ( t_evo_name(i) .eq. fhd_velo ) then
-            iflag_t_evo_4_velo = iflag_scheme
+            evo_velo%iflag_scheme =   iflag_scheme
            else if ( t_evo_name(i) .eq. fhd_temp ) then
-            iflag_t_evo_4_temp = iflag_scheme
+            evo_temp%iflag_scheme =   iflag_scheme
            else if ( t_evo_name(i) .eq. fhd_light ) then
-            iflag_t_evo_4_composit = iflag_scheme
+            evo_comp%iflag_scheme =   iflag_scheme
            else if ( t_evo_name(i) .eq. fhd_magne ) then
-            iflag_t_evo_4_magne = iflag_scheme
+            evo_magne%iflag_scheme =  iflag_scheme
            else if ( t_evo_name(i) .eq. fhd_vecp ) then
-            iflag_t_evo_4_vect_p = iflag_scheme
+            evo_vect_p%iflag_scheme = iflag_scheme
            end if
          end do
 !
         end if
 !
-      if       (iflag_t_evo_4_velo     .eq. id_no_evolution             &
-     &    .and. iflag_t_evo_4_temp     .eq. id_no_evolution             &
-     &    .and. iflag_t_evo_4_composit .eq. id_no_evolution             &
-     &    .and. iflag_t_evo_4_magne    .eq. id_no_evolution             &
-     &    .and. iflag_t_evo_4_vect_p   .eq. id_no_evolution) then
+      if       (evo_velo%iflag_scheme     .eq. id_no_evolution          &
+     &    .and. evo_temp%iflag_scheme     .eq. id_no_evolution          &
+     &    .and. evo_comp%iflag_scheme     .eq. id_no_evolution          &
+     &    .and. evo_magne%iflag_scheme    .eq. id_no_evolution          &
+     &    .and. evo_vect_p%iflag_scheme   .eq. id_no_evolution) then
             e_message = 'Turn on field for time integration'
         call calypso_MPI_abort(ierr_evo, e_message)
       end if
 !
       if (iflag_debug .ge. iflag_routine_msg) then
-        write(*,*) 'iflag_t_evo_4_velo     ', iflag_t_evo_4_velo
-        write(*,*) 'iflag_t_evo_4_temp     ', iflag_t_evo_4_temp
-        write(*,*) 'iflag_t_evo_4_composit ', iflag_t_evo_4_composit
-        write(*,*) 'iflag_t_evo_4_magne    ', iflag_t_evo_4_magne
-        write(*,*) 'iflag_t_evo_4_vect_p   ', iflag_t_evo_4_vect_p
+        write(*,*) 'iflag_t_evo_4_velo     ', evo_velo%iflag_scheme
+        write(*,*) 'iflag_t_evo_4_temp     ', evo_temp%iflag_scheme
+        write(*,*) 'iflag_t_evo_4_composit ', evo_comp%iflag_scheme
+        write(*,*) 'iflag_t_evo_4_magne    ', evo_magne%iflag_scheme
+        write(*,*) 'iflag_t_evo_4_vect_p   ', evo_vect_p%iflag_scheme
         write(*,*) 'iflag_implicit_correct ', iflag_implicit_correct
       end if
 !
@@ -258,59 +258,19 @@
       subroutine s_set_control_4_crank
 !
 !
-        if(iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
-          if (coef_imp_v_ctl%iflag.eq.0) then
-            coef_imp_v = 0.5d0
-          else
-            coef_imp_v = coef_imp_v_ctl%realvalue
-          end if
-        else
-          coef_imp_v = 0.0d0
-        end if
+      call set_implicit_coefs(coef_imp_v_ctl, evo_velo)
+      call set_implicit_coefs(coef_imp_t_ctl, evo_temp)
+      call set_implicit_coefs(coef_imp_b_ctl, evo_magne)
+      call set_implicit_coefs(coef_imp_b_ctl, evo_vect_p)
+      call set_implicit_coefs(coef_imp_c_ctl, evo_comp)
 !
-        if(iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
-          if (coef_imp_t_ctl%iflag .eq. 0) then
-            coef_imp_t = 0.5d0
-          else
-            coef_imp_t = coef_imp_t_ctl%realvalue
-          end if
-        else
-          coef_imp_t = 0.0d0
-        end if
-!
-        if(iflag_t_evo_4_magne .ge. id_Crank_nicolson                   &
-     &      .or. iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
-          if (coef_imp_b_ctl%iflag .eq. 0) then
-            coef_imp_b = 0.5d0
-          else
-            coef_imp_b = coef_imp_b_ctl%realvalue
-          end if
-        else
-          coef_imp_b = 0.0d0
-        end if
-!
-        if(iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
-          if (coef_imp_c_ctl%iflag .eq. 0) then
-            coef_imp_c = 0.5d0
-          else
-            coef_imp_c = coef_imp_c_ctl%realvalue
-          end if
-        else
-          coef_imp_c = 0.0d0
-        end if
-!
-        coef_exp_v = 1.0d0 - coef_imp_v
-        coef_exp_t = 1.0d0 - coef_imp_t
-        coef_exp_b = 1.0d0 - coef_imp_b
-        coef_exp_c = 1.0d0 - coef_imp_c
-!
-!
-        if (iflag_debug .ge. iflag_routine_msg) then
-          write(*,*) 'coef_imp_v ',coef_imp_v
-          write(*,*) 'coef_imp_t ',coef_imp_t
-          write(*,*) 'coef_imp_b ',coef_imp_b
-          write(*,*) 'coef_imp_c ',coef_imp_c
-        end if
+      if (iflag_debug .ge. iflag_routine_msg) then
+        write(*,*) 'coef_imp_v ', evo_velo%coef_imp
+        write(*,*) 'coef_imp_t ', evo_temp%coef_imp
+        write(*,*) 'coef_imp_b ', evo_magne%coef_imp
+        write(*,*) 'coef_imp_a ', evo_vect_p%coef_imp
+        write(*,*) 'coef_imp_c ', evo_comp%coef_imp
+      end if
 !
       end subroutine s_set_control_4_crank
 !

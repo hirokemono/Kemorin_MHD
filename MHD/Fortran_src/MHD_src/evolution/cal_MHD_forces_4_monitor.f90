@@ -214,7 +214,7 @@
         i_fld = nod_fld%istack_component(i-1) + 1
         if(     i_fld .eq. iphys%i_induct_div                           &
      &     .or. (i_fld.eq.iphys%i_induction                             &
-     &           .and. iflag_t_evo_4_magne.gt.id_no_evolution)) then
+     &           .and. evo_magne%iflag_scheme.gt.id_no_evolution)) then
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call cal_terms_4_magnetic                                     &
@@ -282,7 +282,7 @@
       end if
 !
       if (iphys%i_b_diffuse .gt. izero                                  &
-     &      .and. iflag_t_evo_4_magne .gt. id_no_evolution) then
+     &      .and. evo_magne%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_mag_diffuse)
         call cal_magnetic_diffusion(ifld_diff%i_magne,                  &
@@ -342,7 +342,7 @@
 !
 !
       if (iphys%i_induction .gt. izero                                  &
-     &      .and. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+     &      .and. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_mag_induct)
           call s_int_magne_induction                                    &
@@ -351,7 +351,7 @@
       end if
 !
       if (iphys%i_b_diffuse .gt. izero                                  &
-     &      .and. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+     &      .and. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_mag_diffuse)
         call s_int_magne_diffusion                                      &

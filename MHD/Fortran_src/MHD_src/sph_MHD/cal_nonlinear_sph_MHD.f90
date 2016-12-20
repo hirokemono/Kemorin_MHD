@@ -56,7 +56,7 @@
 !
 !
 !$omp parallel
-      if( (f_trns%i_m_advect*iflag_t_evo_4_velo) .gt. 0) then
+      if( (f_trns%i_m_advect*evo_velo%iflag_scheme) .gt. 0) then
         call cal_cross_prod_w_coef_smp(sph_rtp%nnod_rtp, coef_velo,     &
      &      fld_rtp(1,b_trns%i_vort), fld_rtp(1,b_trns%i_velo),         &
      &      frc_rtp(1,f_trns%i_m_advect) )
@@ -70,21 +70,21 @@
 !
 !
 !
-      if( (f_trns%i_vp_induct*iflag_t_evo_4_magne) .gt. 0) then
+      if( (f_trns%i_vp_induct * evo_magne%iflag_scheme) .gt. 0) then
         call cal_cross_prod_w_coef_smp(sph_rtp%nnod_rtp, coef_induct,   &
      &      fld_rtp(1,b_trns%i_velo), fld_rtp(1,b_trns%i_magne),        &
      &      frc_rtp(1,f_trns%i_vp_induct) )
       end if
 !
 !
-      if( (f_trns%i_h_flux*iflag_t_evo_4_temp) .gt. 0) then
+      if( (f_trns%i_h_flux * evo_temp%iflag_scheme) .gt. 0) then
         call cal_vec_scalar_prod_w_coef_smp                             &
      &     (sph_rtp%nnod_rtp, coef_temp,                                &
      &      fld_rtp(1,b_trns%i_velo), fld_rtp(1,b_trns%i_temp),         &
      &      frc_rtp(1,f_trns%i_h_flux) )
       end if
 !
-      if( (f_trns%i_c_flux*iflag_t_evo_4_composit) .gt. 0) then
+      if( (f_trns%i_c_flux * evo_comp%iflag_scheme) .gt. 0) then
         call cal_vec_scalar_prod_w_coef_smp                             &
      &     (sph_rtp%nnod_rtp, coef_light,                               &
      &      fld_rtp(1,b_trns%i_velo), fld_rtp(1,b_trns%i_light),        &

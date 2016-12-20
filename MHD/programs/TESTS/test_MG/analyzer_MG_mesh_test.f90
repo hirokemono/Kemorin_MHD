@@ -35,6 +35,7 @@
       use calypso_mpi
 !
       use m_file_format_switch
+      use m_default_file_prefix
 !
       use copy_mesh_structures
       use set_element_data_4_IO
@@ -64,6 +65,7 @@
 !
       type(mesh_geometry) :: mesh_IO
       type(surf_edge_IO_file) :: ele_mesh_IO
+      character(len=kchara) :: file_prefix
 !
 !     --------------------- 
 !
@@ -122,39 +124,38 @@
       mesh_IO%nod_comm%num_neib = 0
       call allocate_type_neib_id(mesh_IO%nod_commm)
       call copy_node_sph_to_xx(mesh%node, mesh_IO%node)
-      call write_node_position_sph(my_rank, mesh_IO)
+      call write_node_position_sph(my_rank, def_sph_mesh_head, mesh_IO)
 !
       mesh_IO%nod_commm%num_neib = 0
       call allocate_type_neib_id(mesh_IO%nod_commm)
       call copy_node_cyl_to_xx(mesh%node, mesh_IO%node)
-      call write_node_position_cyl(my_rank, mesh_IO)
+      call write_node_position_cyl(my_rank, def_cyl_mesh_head, mesh_IO)
 !
 !  -------------------------------
 !     output element data
 !  -------------------------------
 !
-      iflag_mesh_file_fmt = id_ascii_file_fmt
+      file_prefix = def_ele_mesh_head
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_ele_geometry_to_IO'
-      mesh_ele_file_head = mesh_ele_def_head
       call copy_ele_geometry_to_IO(mesh%ele, nod_IO, sfed_IO)
-      call output_element_file(my_rank, ele_mesh_IO)
+      call output_element_file(my_rank, file_prefix, ele_mesh_IO)
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_ele_sph_geom_to_IO'
-      write(mesh_ele_file_head,'(a,a4)') mesh_ele_def_head, '_sph'
+      write(file_prefix,'(a,a4)') def_ele_mesh_head, '_sph'
       call copy_ele_sph_geom_to_IO(mesh%ele, nod_IO, sfed_IO)
-      call output_element_sph_file(my_rank, ele_mesh_IO)
+      call output_element_sph_file(my_rank, file_prefix, ele_mesh_IO)
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_ele_cyl_geom_to_IO'
-      write(mesh_ele_file_head,'(a,a4)') mesh_ele_def_head, '_cyl'
+      write(file_prefix,'(a,a4)') def_ele_mesh_head, '_cyl'
       call copy_ele_cyl_geom_to_IO(mesh%ele, nod_IO, sfed_IO)
-      call output_element_cyl_file(my_rank, ele_mesh_IO)
+      call output_element_cyl_file(my_rank, file_prefix, ele_mesh_IO)
 !
 !  -------------------------------
 !     output surface data
 !  -------------------------------
 !
-      mesh_surf_file_head = mesh_def_surf_head
+      file_prefix = def_surf_mesh_head
       if (iflag_debug.gt.0) write(*,*) 'copy_surf_geometry_to_IO'
       call copy_surf_connect_to_IO(ele_mesh%surf, mesh%ele%numele,      &
      &    ele_mesh_IO%ele, ele_mesh_IO%sfed)
@@ -162,9 +163,9 @@
      &   (ele_mesh%surf, ele_mesh_IO%node, ele_mesh_IO%sfed)
 !
       if (iflag_debug.gt.0) write(*,*) 'output_surface_file'
-      call output_surface_file(my_rank, ele_mesh_IO)
+      call output_surface_file(my_rank, file_prefix, ele_mesh_IO)
 !
-      write(mesh_surf_file_head,'(a,a4)') mesh_def_surf_head, '_sph'
+      write(file_prefix,'(a,a4)') def_surf_mesh_head, '_sph'
       if (iflag_debug.gt.0) write(*,*) 'copy_surf_geometry_to_IO_sph'
       call copy_surf_connect_to_IO(ele_mesh%surf, mesh%ele%numele,      &
      &    ele_mesh_IO%ele, ele_mesh_IO%sfed)
@@ -172,9 +173,10 @@
      &   (ele_mesh%surf, ele_mesh_IO%node, ele_mesh_IO%sfed)
 !
       if (iflag_debug.gt.0) write(*,*) 'output_surface_sph_file'
-      call output_surface_sph_file(my_rank, ele_mesh_IO)
+      call output_surface_sph_file                                      &
+     &   (my_rank, file_prefix, ele_mesh_IO)
 !
-      write(mesh_surf_file_head,'(a,a4)') mesh_def_surf_head, '_cyl'
+      write(file_prefix,'(a,a4)') def_surf_mesh_head, '_cyl'
       if (iflag_debug.gt.0) write(*,*) 'copy_surf_geometry_to_IO_cyl'
       call copy_surf_connect_to_IO(ele_mesh%surf, mesh%ele%numele,      &
      &    ele_mesh_IO%ele, ele_mesh_IO%sfed)
@@ -182,13 +184,14 @@
      &   (ele_mesh%surf, ele_mesh_IO%node, ele_mesh_IO%sfed)
 !
       if (iflag_debug.gt.0) write(*,*) 'output_surface_cyl_file'
-      call output_surface_cyl_file(my_rank, ele_mesh_IO)
+      call output_surface_cyl_file                                      &
+      &  (my_rank, file_prefix, ele_mesh_IO)
 !
 !  -------------------------------
 !     output edge data
 !  -------------------------------
 !
-      mesh_edge_file_head = mesh_def_edge_head
+      file_prefix = def_edge_mesh_head
       if (iflag_debug.gt.0) write(*,*) 'copy_edge_geometry_to_IO'
       call copy_edge_connect_to_IO                                      &
      &   (ele_mesh%edge, mesh%ele%numele, ele_mesh%surf%numsurf,        &
@@ -197,9 +200,9 @@
      &    ele_mesh_IO%node, ele_mesh_IO%sfed)
 !
       if (iflag_debug.gt.0) write(*,*) 'output_edge_geometries'
-      call output_edge_geometries(my_rank, ele_mesh_IO)
+      call output_edge_geometries(my_rank, file_prefix, ele_mesh_IO)
 !
-      write(mesh_edge_file_head,'(a,a4)') mesh_def_edge_head, '_sph'
+      write(file_prefix,'(a,a4)') def_edge_mesh_head, '_sph'
       if (iflag_debug.gt.0) write(*,*) 'copy_edge_geometry_to_IO_sph'
       call copy_edge_connect_to_IO                                      &
      &   (ele_mesh%edge, mesh%ele%numele, ele_mesh%surf%numsurf,        &
@@ -208,9 +211,10 @@
      &    ele_mesh_IO%node, ele_mesh_IO%sfed)
 !
       if (iflag_debug.gt.0) write(*,*) 'output_edge_geometries_sph'
-      call output_edge_geometries_sph(my_rank, ele_mesh_IO)
+      call output_edge_geometries_sph                                   &
+     &   (my_rank, file_prefix, ele_mesh_IO)
 !
-      write(mesh_edge_file_head,'(a,a4)') mesh_def_edge_head, '_cyl'
+      write(file_prefix,'(a,a4)') def_edge_mesh_head, '_cyl'
       if (iflag_debug.gt.0) write(*,*) 'copy_edge_geometry_to_IO_cyl'
       call copy_edge_connect_to_IO                                      &
      &   (ele_mesh%edge, mesh%ele%numele, ele_mesh%surf%numsurf,        &
@@ -218,7 +222,8 @@
       call copy_edge_geometry_to_IO_cyl(ele_mesh%edge,                  &
      &    ele_mesh_IO%node, ele_mesh_IO%sfed)
       if (iflag_debug.gt.0) write(*,*) 'output_edge_geometries_cyl'
-      call output_edge_geometries_cyl(my_rank, ele_mesh_IO)
+      call output_edge_geometries_cyl                                   &
+     &   (my_rank, file_prefix, ele_mesh_IO)
 !
        end subroutine init_analyzer
 !

@@ -66,7 +66,10 @@
       end if
 !
 !   set pickup layer
-      if(idx_spec_layer_ctl%num .gt. 0) then
+      if(idx_spec_layer_ctl%num .eq. 1                                  &
+        .and. idx_spec_layer_ctl%ivec(1) .lt. 0) then
+        pwr%nri_rms = -1
+      else if(idx_spec_layer_ctl%num .gt. 0) then
         call alloc_num_spec_layer(idx_spec_layer_ctl%num, pwr)
 !
         pwr%kr_4_rms(1:pwr%nri_rms)                                     &

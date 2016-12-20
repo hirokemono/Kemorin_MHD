@@ -54,27 +54,27 @@
       type(surface_boundarty_conditions), intent(inout) :: surf_bcs
 !
 !
-      if (iflag_t_evo_4_temp .gt. id_no_evolution) then
+      if (evo_temp%iflag_scheme .gt. id_no_evolution) then
         call alloc_surf_data_scalar(surf_bcs%Tsf_bcs)
       end if
 !
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         call alloc_surf_data_velo(surf_bcs%Vsf_bcs)
         call alloc_surf_potential(surf_bcs%Psf_bcs)
       end if
 !
-      if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
-     &      .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+      if (evo_magne%iflag_scheme .gt. id_no_evolution                   &
+     &      .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         call alloc_surf_vector(surf_bcs%Bsf_bcs)
         call alloc_surf_vector(surf_bcs%Jsf_bcs)
         call alloc_surf_potential(surf_bcs%Fsf_bcs)
       end if
 !
-      if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+      if (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         call alloc_surf_data_velo(surf_bcs%Asf_bcs)
       end if
 ! 
-      if (iflag_t_evo_4_composit .gt. id_no_evolution) then
+      if (evo_comp%iflag_scheme .gt. id_no_evolution) then
         call alloc_surf_data_scalar(surf_bcs%Csf_bcs)
       end if
 ! 

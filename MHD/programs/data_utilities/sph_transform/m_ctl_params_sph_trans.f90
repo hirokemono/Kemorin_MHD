@@ -3,9 +3,10 @@
 !
 !        programmed by H.Matsui on Oct., 2007
 !
-!!      subroutine set_control_4_sph_transform(ucd, rj_fld, d_gauss)
-!!      subroutine set_control_4_sph_back_trans(ucd, rj_fld, d_gauss)
-!!      subroutine s_set_ctl_data_4_sph_trans(ucd, rj_fld, d_gauss)
+!!      subroutine set_control_4_sph_transform                          &
+!!     &         (mesh_file, ucd, rj_fld, d_gauss)
+!!      subroutine s_set_ctl_data_4_sph_trans                           &
+!!     &         (mesh_file, ucd, rj_fld, d_gauss)
 !!        type(ucd_data), intent(inout) :: ucd
 !!        type(phys_data), intent(inout) :: rj_fld
 !!      subroutine set_ctl_data_4_zm_trans
@@ -21,7 +22,7 @@
       use t_phys_data
       use t_global_gauss_coefs
       use t_rms_4_sph_spectr
-      use t_field_data_IO
+      use t_file_IO_parameter
 !
       implicit  none
 !
@@ -29,6 +30,13 @@
       type(field_IO_params), save :: sph_file_trns_p
       type(field_IO_params), save :: field_file_param
       type(field_IO_params), save :: zm_source_file_param
+!
+!>      Structure for field data IO paramters
+      type(field_IO_params), save :: rj_org_param
+!>      Structure for field data IO paramters
+      type(field_IO_params), save :: udt_org_param
+!>      Structure for original restart file  paramters
+      type(field_IO_params), save :: rst_org_param
 !
       character(len = kchara) :: zm_spec_file_head = 'zm_spectral'
       character(len = kchara) :: zonal_udt_head = 'z_mean_out'
@@ -45,7 +53,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_sph_transform(ucd, rj_fld, d_gauss)
+      subroutine set_control_4_sph_transform                            &
+     &         (mesh_file, ucd, rj_fld, d_gauss)
 !
       use t_ucd_data
       use calypso_mpi
@@ -58,8 +67,10 @@
       use legendre_transform_select
       use ucd_IO_select
 !
+      use m_sel_spherical_SRs
       use m_ctl_data_4_sph_trans
 !
+      type(field_IO_params), intent(inout) :: mesh_file
       type(ucd_data), intent(inout) :: ucd
       type(phys_data), intent(inout) :: rj_fld
       type(global_gauss_points), intent(inout) :: d_gauss
@@ -69,25 +80,29 @@
 !
       call turn_off_debug_flag_by_ctl(my_rank)
       call set_control_smp_def(my_rank)
-      call set_control_sph_mesh(sph_file_trns_p)
+      call set_control_sph_mesh(mesh_file, sph_file_trns_p)
       call set_ucd_file_define(ucd)
       field_file_param%file_prefix =  ucd%file_prefix
       field_file_param%iflag_format = ucd%ifmt_file
 !
 !   setting for spherical transform
 !
-      if(i_legendre_vect_len .gt. 0) then
-        nvector_legendre = legendre_vector_len_ctl
+      if(legendre_vector_len_ctl%iflag .gt. 0) then
+        nvector_legendre = legendre_vector_len_ctl%intvalue
       else
         nvector_legendre = 0
       end if
 !
-      if(i_sph_transform_mode .gt. 0) then
-        call set_legendre_trans_mode_ctl(Legendre_trans_loop_ctl)
+      if(Legendre_trans_loop_ctl%iflag .gt. 0) then
+        call set_legendre_trans_mode_ctl                                &
+     &     (Legendre_trans_loop_ctl%charavalue)
       end if
 !
-      if(i_FFT_package .gt. 0) then
-        call set_fft_library_ctl(FFT_library_ctl)
+      if(FFT_library_ctl%iflag .gt. 0) then
+        call set_fft_library_ctl(FFT_library_ctl%charavalue)
+      end if
+      if(import_mode_ctl%iflag .gt. 0) then
+        call set_import_table_ctl(import_mode_ctl%charavalue)
       end if
 !
       if (restart_file_prefix%iflag .gt. 0) then
@@ -120,104 +135,30 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_sph_back_trans(ucd, rj_fld, d_gauss)
-!
-      use calypso_mpi
-      use t_ucd_data
-!
-      use m_control_params_2nd_files
-      use m_FFT_selector
-      use set_control_nodal_data
-      use set_control_sph_data
-      use set_control_platform_data
-      use set_fixed_time_step_params
-      use legendre_transform_select
-      use ucd_IO_select
-!
-      use m_ctl_data_4_sph_trans
-!
-      type(ucd_data), intent(inout) :: ucd
-      type(phys_data), intent(inout) :: rj_fld
-      type(global_gauss_points), intent(inout) :: d_gauss
-!
-      integer(kind = kint) :: ierr
-!
-!
-      call turn_off_debug_flag_by_ctl(my_rank)
-      call set_control_smp_def(my_rank)
-      call set_control_sph_mesh(sph_file_trns_p)
-      call set_control_org_sph_mesh
-      call set_ucd_file_define(ucd)
-!
-!   setting for spherical transform
-!
-      if(i_legendre_vect_len .gt. 0) then
-        nvector_legendre = legendre_vector_len_ctl
-      else
-        nvector_legendre = 0
-      end if
-!
-      if(i_sph_transform_mode .gt. 0) then
-        call set_legendre_trans_mode_ctl(Legendre_trans_loop_ctl)
-      end if
-!
-      if(i_FFT_package .gt. 0) then
-        call set_fft_library_ctl(FFT_library_ctl)
-      end if
-!
-      if (restart_file_prefix%iflag .gt. 0) then
-        sph_rst_file_head = restart_file_prefix%charavalue
-      end if
-      call choose_para_file_format                                      &
-     &   (restart_file_fmt_ctl, ifmt_sph_data)
-!
-!      stepping parameter
-!
-      call s_set_fixed_time_step_params(ierr, e_message)
-!
-!   set physical values
-!
-      call s_set_control_sph_data(rj_fld, ierr)
-      call s_set_control_nodal_data(field_STR, ierr)
-!
-!
-      if(i_cmb_grp .gt. 0) then
-        cmb_radial_grp = cmb_radial_grp_ctl
-      end if
-      if(i_icb_grp .gt. 0) then
-        icb_radial_grp = icb_radial_grp_ctl
-      end if
-      if(i_gauss_file_name .gt. 0) then
-        d_gauss%fhead_gauss = gauss_sph_fhead_ctl
-      end if
-!
-      end subroutine set_control_4_sph_back_trans
-!
-! -----------------------------------------------------------------------
-!
-      subroutine s_set_ctl_data_4_sph_trans(ucd, rj_fld, d_gauss)
+      subroutine s_set_ctl_data_4_sph_trans                             &
+     &         (mesh_file, ucd, rj_fld, d_gauss)
 !
       use calypso_mpi
       use t_ucd_data
       use m_machine_parameter
       use m_t_step_parameter
-      use m_read_mesh_data
       use m_FFT_selector
 !
       use set_control_nodal_data
       use set_control_sph_data
       use set_control_platform_data
       use set_fixed_time_step_params
+      use set_ctl_params_2nd_files
       use legendre_transform_select
 !
       use m_ctl_data_4_platforms
       use m_ctl_data_4_time_steps
       use m_ctl_data_4_sph_trans
       use m_ctl_data_4_fields
-      use m_control_params_2nd_files
       use skip_comment_f
       use parallel_ucd_IO_select
 !
+      type(field_IO_params), intent(inout) :: mesh_file
       type(ucd_data), intent(inout) :: ucd
       type(phys_data), intent(inout) :: rj_fld
       type(global_gauss_points), intent(inout) :: d_gauss
@@ -227,12 +168,12 @@
 !
       call turn_off_debug_flag_by_ctl(my_rank)
       call set_control_smp_def(my_rank)
-      call set_control_mesh_def
-      call set_control_sph_mesh(sph_file_trns_p)
-      call set_control_org_sph_mesh
+      call set_control_mesh_def(mesh_file)
+      call set_control_sph_mesh(mesh_file, sph_file_trns_p)
       call set_merged_ucd_file_define(ucd)
-      call set_control_org_rst_file_def
-      call set_control_org_udt_file_def
+      call set_control_org_sph_mesh(rj_org_param)
+      call set_control_org_rst_file_def(rst_org_param)
+      call set_control_org_udt_file_def(udt_org_param)
 !
 !    file header for field data
 !
@@ -254,18 +195,19 @@
 !
 !   setting for spherical transform
 !
-      if(i_legendre_vect_len .gt. 0) then
-        nvector_legendre = legendre_vector_len_ctl
+      if(legendre_vector_len_ctl%iflag .gt. 0) then
+        nvector_legendre = legendre_vector_len_ctl%intvalue
       else
         nvector_legendre = 0
       end if
 !
-      if(i_sph_transform_mode .gt. 0) then
-        call set_legendre_trans_mode_ctl(Legendre_trans_loop_ctl)
+      if(Legendre_trans_loop_ctl%iflag .gt. 0) then
+        call set_legendre_trans_mode_ctl                                &
+     &     (Legendre_trans_loop_ctl%charavalue)
       end if
 !
-      if(i_FFT_package .gt. 0) then
-        call set_fft_library_ctl(FFT_library_ctl)
+      if(FFT_library_ctl%iflag .gt. 0) then
+        call set_fft_library_ctl(FFT_library_ctl%charavalue)
       end if
 !
 !     file header for reduced data
@@ -314,7 +256,6 @@
       subroutine set_ctl_data_4_pick_zm
 !
       use m_ctl_data_4_platforms
-      use m_control_params_2nd_files
 !
 !
       if(udt_file_head_ctl%iflag .eq. 0) return

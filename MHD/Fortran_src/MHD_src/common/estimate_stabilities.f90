@@ -53,26 +53,26 @@
       if ( my_rank .eq. 0 ) then
 !
         write(12,*) ' Delta t: ', dt
-        if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+        if (evo_velo%iflag_scheme .gt. id_no_evolution) then
          cfl_diffuse = cfl_advect / coef_d_velo
          write(12,*) 'estimated limit for Delta t for velovity:      ', &
      &    cfl_diffuse
         end if
 !
-        if (iflag_t_evo_4_temp .gt. id_no_evolution) then
+        if (evo_temp%iflag_scheme .gt. id_no_evolution) then
          cfl_diffuse = cfl_advect / coef_d_temp
          write(12,*) 'estimated limit for Delta t for temperature:   ', &
      &    cfl_diffuse
         end if
 !
-        if (iflag_t_evo_4_magne .gt. id_no_evolution                    &
-     &        .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+        if (evo_magne%iflag_scheme .gt. id_no_evolution                 &
+     &        .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
          cfl_diffuse = cfl_advect / coef_d_magne
          write(12,*) 'estimated limit for Delta t for magnetic field:', &
      &    cfl_diffuse
         end if
 !
-        if (iflag_t_evo_4_composit .gt. id_no_evolution) then
+        if (evo_comp%iflag_scheme .gt. id_no_evolution) then
          cfl_diffuse = cfl_advect / coef_d_light
          write(12,*) 'estimated limit for Delta t for composition:   ', &
      &    cfl_diffuse

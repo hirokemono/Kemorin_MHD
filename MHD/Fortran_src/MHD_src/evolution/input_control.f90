@@ -9,13 +9,15 @@
 !>@brief  Load mesh and filtering data for MHD simulation
 !!
 !!@verbatim
-!!      subroutine input_control_4_MHD(mesh, group, ele_mesh, IO_bc,    &
-!!     &          filtering, wide_filtering, wk_filter, MHD_matrices)
+!!      subroutine input_control_4_MHD                                  &
+!!     &          (mesh, group, ele_mesh, nod_fld, IO_bc,               &
+!!     &           filtering, wide_filtering, wk_filter, MHD_matrices)
 !!      subroutine input_control_4_snapshot(mesh, group, ele_mesh,      &
-!!     &          IO_bc, filtering, wide_filtering, wk_filter)
+!!     &          nod_fld, IO_bc, filtering, wide_filtering, wk_filter)
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(element_geometry), intent(inout) :: ele_mesh
+!!        type(phys_data), intent(inout) :: nod_fld
 !!        type(IO_boundary), intent(inout) :: IO_bc
 !!        type(filtering_data_type), intent(inout) :: filtering
 !!        type(filtering_data_type), intent(inout) :: wide_filtering
@@ -35,9 +37,18 @@
       use t_boundary_field_IO
       use t_filtering_data
       use t_solver_djds_MHD
+      use t_phys_data
+      use t_file_IO_parameter
+      use t_field_data_IO
 !
       implicit none
 !
+!>      Structure for mesh file IO paramters
+      type(field_IO_params), save ::  mesh1_file
+!>      Structure for field data IO paramters
+      type(field_IO_params), save :: FEM_udt_org_param
+!
+      private :: mesh1_file
       private :: input_meshes_4_MHD
 !
 ! ----------------------------------------------------------------------
@@ -46,8 +57,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine input_control_4_MHD(mesh, group, ele_mesh, IO_bc,      &
-     &          filtering, wide_filtering, wk_filter, MHD_matrices)
+      subroutine input_control_4_MHD                                    &
+     &          (mesh, group, ele_mesh, nod_fld, IO_bc,                 &
+     &           filtering, wide_filtering, wk_filter, MHD_matrices)
 !
       use m_ctl_data_fem_MHD
       use m_iccg_parameter
@@ -56,10 +68,13 @@
       use mpi_load_mesh_data
       use input_MG_data
       use skip_comment_f
+      use ordering_field_by_viz
+      use node_monitor_IO
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
+      type(phys_data), intent(inout) :: nod_fld
 !
       type(IO_boundary), intent(inout) :: IO_bc
       type(filtering_data_type), intent(inout) :: filtering
@@ -71,10 +86,11 @@
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_fem_MHD'
       call read_control_4_fem_MHD
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_FEM_MHD'
-      call set_control_4_FEM_MHD
+      call set_control_4_FEM_MHD                                        &
+     &   (mesh1_file, FEM_udt_org_param, nod_fld)
 !
 !  --  load FEM mesh data
-      call mpi_input_mesh(mesh, group,                                  &
+      call mpi_input_mesh(mesh1_file, mesh, group,                      &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
       call input_meshes_4_MHD                                           &
@@ -82,27 +98,35 @@
 !
       if(cmp_no_case(method_4_solver, cflag_mgcg)) then
         call alloc_MHD_MG_DJDS_mat(num_MG_level, MHD_matrices)
-        call input_MG_mesh
+        call input_MG_mesh(mesh1_file)
         call input_MG_itp_tables(MHD_matrices%MG_interpolate)
       else
         num_MG_level = 0
         call alloc_MHD_MG_DJDS_mat(num_MG_level, MHD_matrices)
       end if
 !
+      call count_field_4_monitor                                        &
+     &   (nod_fld%num_phys, nod_fld%num_component,                      &
+     &    nod_fld%iflag_monitor, num_field_monitor, ntot_comp_monitor)
+!
+!
       end subroutine input_control_4_MHD
 !
 ! ----------------------------------------------------------------------
 !
       subroutine input_control_4_snapshot(mesh, group, ele_mesh,        &
-     &          IO_bc, filtering, wide_filtering, wk_filter)
+     &          nod_fld, IO_bc, filtering, wide_filtering, wk_filter)
 !
       use m_ctl_data_fem_MHD
       use set_control_FEM_MHD
       use mpi_load_mesh_data
+      use node_monitor_IO
+      use ordering_field_by_viz
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
+      type(phys_data), intent(inout) :: nod_fld
 !
       type(IO_boundary), intent(inout) :: IO_bc
       type(filtering_data_type), intent(inout) :: filtering
@@ -113,14 +137,19 @@
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_fem_snap'
       call read_control_4_fem_snap
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_FEM_MHD'
-      call set_control_4_FEM_MHD
+      call set_control_4_FEM_MHD                                        &
+     &   (mesh1_file, FEM_udt_org_param, nod_fld)
 !
 !  --  load FEM mesh data
-      call mpi_input_mesh(mesh, group,                                  &
+      call mpi_input_mesh(mesh1_file, mesh, group,                      &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
       call input_meshes_4_MHD                                           &
      &   (mesh, group, IO_bc, filtering, wide_filtering, wk_filter)
+!
+      call count_field_4_monitor                                        &
+     &   (nod_fld%num_phys, nod_fld%num_component,                      &
+     &    nod_fld%iflag_monitor, num_field_monitor, ntot_comp_monitor)
 !
       end subroutine input_control_4_snapshot
 !
@@ -132,7 +161,6 @@
 !
       use m_machine_parameter
       use m_control_parameter
-      use m_read_mesh_data
 !
       use set_3d_filtering_group_id
       use read_filtering_data

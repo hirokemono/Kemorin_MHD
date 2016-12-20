@@ -34,14 +34,14 @@
 !
 !    For thermal
 !
-      if (iflag_t_evo_4_temp .gt. id_no_evolution) then
+      if (evo_temp%iflag_scheme .gt. id_no_evolution) then
         call alloc_temp_diff_MHD_AMG(numele, ak_MHD)
         ak_MHD%ak_d_temp(1:numele) = coef_d_temp
       end if
 !
 !    For convection
 !
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         call alloc_velo_diff_MHD_AMG(numele, ak_MHD)
         ak_MHD%ak_d_velo(1:numele) = coef_d_velo
 !
@@ -59,15 +59,15 @@
 !
 !   For Induction
 !
-      if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
-     &    .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+      if (evo_magne%iflag_scheme .gt. id_no_evolution                   &
+     &    .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         call alloc_magne_diff_MHD_AMG(numele, ak_MHD)
         ak_MHD%ak_d_magne(1:numele) = coef_d_magne
       end if
 !
 !   For dummy scalar
 !
-      if (iflag_t_evo_4_composit .gt. id_no_evolution) then
+      if (evo_comp%iflag_scheme .gt. id_no_evolution) then
         call alloc_dscalar_diff_MHD_AMG(numele, ak_MHD)
         ak_MHD%ak_d_composit(1:numele) = coef_d_light
       end if

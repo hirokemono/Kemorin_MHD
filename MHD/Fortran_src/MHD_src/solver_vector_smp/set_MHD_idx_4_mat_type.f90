@@ -75,9 +75,9 @@
       call set_index_list_4_mat_etr_l(mesh%node, mesh%ele,              &
      &    rhs_tbl, djds_tbl_lin, MG_mat_q, MG_mat_linear)
 !
-      if (iflag_t_evo_4_velo .ne. id_no_evolution                       &
-     &  .or. iflag_t_evo_4_temp .ne. id_no_evolution                    &
-     &  .or. iflag_t_evo_4_composit .ne. id_no_evolution) then
+      if    (evo_velo%iflag_scheme .ne. id_no_evolution                 &
+     &  .or. evo_temp%iflag_scheme .ne. id_no_evolution                 &
+     &  .or. evo_comp%iflag_scheme .ne. id_no_evolution) then
         write(*,*) 'alloc_type_marix_list'
         call set_index_list_4_mat_fl(mesh%node, mesh%ele,               &
      &      MHD_mesh%fluid, rhs_tbl, djds_tbl_fl, MG_mat_fl_q)
@@ -86,8 +86,8 @@
      &      MG_mat_fl_q, MG_mat_fl_l)
       end if
 !
-      if (iflag_t_evo_4_magne .ne. id_no_evolution                      &
-     &     .or. iflag_t_evo_4_vect_p .eq. id_Crank_nicolson_cmass) then
+      if (evo_magne%iflag_scheme .ne. id_no_evolution                   &
+     &  .or. evo_vect_p%iflag_scheme .eq. id_Crank_nicolson_cmass) then
         call set_index_list_4_mat_fl(mesh%node, mesh%ele, &
      &      MHD_mesh%conduct, rhs_tbl, djds_tbl, MG_mat_full_cd_q)
       end if

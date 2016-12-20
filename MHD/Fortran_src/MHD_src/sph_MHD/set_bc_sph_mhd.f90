@@ -58,7 +58,7 @@
       integer(kind = kint) :: kst, ked
 !
 !
-      if (iflag_t_evo_4_velo .gt.     id_no_evolution) then
+      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_velo_sph'
         call set_sph_bc_velo_sph(sph_rj, radial_rj_grp,                 &
      &      sph_params%radius_ICB, sph_params%radius_CMB)
@@ -77,14 +77,14 @@
         call cal_fdm2_CMB_free_vt(sph_rj%radius_1d_rj_r(kst:ked))
       end if
 !
-      if (iflag_t_evo_4_temp .gt.     id_no_evolution) then
+      if (evo_temp%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_temp_sph'
         call set_sph_bc_temp_sph(sph_rj, radial_rj_grp)
         call cal_fdm_coefs_4_BCs                                       &
      &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, sph_bc_T)
       end if
 !
-      if (iflag_t_evo_4_magne .gt.    id_no_evolution) then
+      if (evo_magne%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_magne_sph'
         call set_sph_bc_magne_sph(sph_rj, radial_rj_grp,               &
      &      CTR_nod_grp_name, CTR_sf_grp_name)
@@ -92,7 +92,7 @@
      &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, sph_bc_B)
       end if
 !
-      if (iflag_t_evo_4_composit .gt. id_no_evolution) then
+      if (evo_comp%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_composition_sph'
         call set_sph_bc_composition_sph(sph_rj, radial_rj_grp)
         call cal_fdm_coefs_4_BCs                                       &
@@ -126,30 +126,30 @@
         write(*,*) 'sph_bc_C%iflag_cmb', sph_bc_C%kr_out,               &
      &          sph_bc_C%iflag_cmb
 !
-        if (iflag_t_evo_4_temp .gt.     id_no_evolution) then
+        if (evo_temp%iflag_scheme .gt. id_no_evolution) then
           call check_sph_boundary_spectra(fhd_temp,                     &
      &        sph_rj%nidx_rj(2), sph_rj%idx_gl_1d_rj_j, sph_bc_T)
         end if
-        if (iflag_t_evo_4_composit .gt. id_no_evolution) then
+        if (evo_comp%iflag_scheme .gt. id_no_evolution) then
           call check_sph_boundary_spectra(fhd_light,                    &
      &        sph_rj%nidx_rj(2), sph_rj%idx_gl_1d_rj_j, sph_bc_C)
         end if
       end if
 !
       if (iflag_debug .eq. iflag_full_msg) then
-        if (iflag_t_evo_4_velo .gt.     id_no_evolution) then
+        if (evo_velo%iflag_scheme .gt. id_no_evolution) then
           call check_fdm_coefs_4_BC2(fhd_velo,  sph_bc_U)
           call check_coef_fdm_free_ICB
           call check_coef_fdm_free_CMB
         end if
 !
-        if (iflag_t_evo_4_magne .gt.    id_no_evolution) then
+        if (evo_magne%iflag_scheme .gt. id_no_evolution) then
           call check_fdm_coefs_4_BC2(fhd_magne, sph_bc_B)
         end if
-        if (iflag_t_evo_4_temp .gt.     id_no_evolution) then
+        if (evo_temp%iflag_scheme .gt. id_no_evolution) then
           call check_fdm_coefs_4_BC2(fhd_temp,  sph_bc_T)
         end if
-        if (iflag_t_evo_4_composit .gt. id_no_evolution) then
+        if (evo_comp%iflag_scheme .gt. id_no_evolution) then
           call check_fdm_coefs_4_BC2(fhd_light, sph_bc_C)
         end if
 !

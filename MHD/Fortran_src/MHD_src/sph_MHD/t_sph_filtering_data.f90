@@ -11,6 +11,10 @@
 !!      subroutine dealloc_sph_filter_moms(mom)
 !!        type(sph_filter_moment), intent(inout) :: mom
 !!
+!!      subroutine cal_r_gaussian_moments(filter_length, mom)
+!!      subroutine set_sph_gaussian_filter(l_truncation, f_width,       &
+!!     &          weight, num_momentum, filter_mom)
+!!
 !!      subroutine check_radial_filter(sph_rj, r_filter)
 !!      subroutine check_radial_filter_func(sph_rj, r_filter)
 !!@endverbatim
@@ -43,7 +47,7 @@
 !>        Truncation degree
         integer(kind = kint) :: l_truncation
 !>        filter width
-        integer(kind = kint) :: k_width
+        real(kind = kreal) :: f_width
 !>        Coefficients for each degree
         real(kind = kreal), allocatable :: weight(:)
       end type sph_gaussian_filter
@@ -97,6 +101,7 @@
 !
       sph_filter%l_truncation = ltr
       allocate(sph_filter%weight(0:sph_filter%l_truncation))
+      sph_filter%weight = 1.0d0
 !
       end subroutine alloc_sph_filter_weights
 !
@@ -146,11 +151,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_sph_gaussian_filter(l_truncation, k_width, weight, &
-     &          num_momentum, filter_mom)
+      subroutine set_sph_gaussian_filter(l_truncation, f_width,         &
+     &          weight, num_momentum, filter_mom)
 !
-      integer(kind = kint), intent(in) :: l_truncation, k_width
+      integer(kind = kint), intent(in) :: l_truncation
       integer(kind = kint), intent(in) :: num_momentum
+      real(kind = kreal), intent(in) :: f_width
       real(kind = kreal), intent(inout) :: weight(0:l_truncation)
       real(kind = kreal), intent(inout) :: filter_mom(0:num_momentum-1)
 !
@@ -158,18 +164,23 @@
       real(kind = kreal) :: b, pi
 !
 !
-!      b = log(two) / (one - cos(six / real(k_width)))
-       pi = four * atan(one)
-       k_rev = l_truncation / k_width
-       b = dble(k_rev*k_rev)
+      pi = four * atan(one)
+!      k_rev = 2*l_truncation / f_width
+!      b = 2*pi*l_truncation / f_width
+      b = log(two) / (one                                               &
+     &   - cos(pi*dble(f_width) / (dble(l_truncation+1)*six)))
 !
       weight(0) = one
-      weight(1) = (one + exp(-two*b)) / (one - exp(-two*b)) - one / b
+      if(b .gt. 227.0) then
+        weight(1) = one
+      else
+        weight(1) = (one + exp(-two*b)) / (one - exp(-two*b)) - one / b
+      end if
 !
       l_rest = l_truncation+1
       do l = 2, l_truncation
         weight(l) = - weight(l-1) * dble(2*l - 1) / b + weight(l-2)
-        if(weight(l) .lt. zero) then
+        if(weight(l) .le. zero) then
           l_rest = l
           exit
         end if
@@ -180,9 +191,9 @@
       end do
 !
       filter_mom(0) = one
-      do i = 2, num_momentum, 2
-        filter_mom(i-1) = zero
-        filter_mom(i) =   real(2*i-1) * filter_mom(i-2) * b**i
+      do i = 1, num_momentum-2, 2
+        filter_mom(i) = zero
+        filter_mom(i+1) =   real(2*i-1) * filter_mom(i-1) * b**i
       end do
       filter_mom(0:num_momentum-1) = filter_mom**2
 !
@@ -249,7 +260,7 @@
       integer(kind = kint) :: l
 !
 !
-      write(*,*)  'horizontal_filter', sph_filter%k_width
+      write(*,*)  'horizontal_filter', sph_filter%f_width
       do l = 0, sph_filter%l_truncation
         write(*,*) l, sph_filter%weight(l)
       end do

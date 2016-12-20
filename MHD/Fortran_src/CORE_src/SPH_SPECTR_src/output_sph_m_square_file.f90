@@ -18,6 +18,8 @@
 !!     &         (my_rank, istep, time, sph_params, sph_rj, pwr)
 !!      subroutine write_sph_layer_ms_file                              &
 !!     &         (my_rank, istep, time, sph_params, pwr)
+!!      subroutine write_sph_layer_spectr_file                          &
+!!     &         (my_rank, istep, time, sph_params, pwr)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(sph_mean_squares), intent(in) :: pwr
@@ -289,6 +291,32 @@
      &    pwr%num_fld_sq, pwr%ntot_comp_sq, pwr%num_comp_sq,            &
      &    pwr%pwr_name, pwr%kr_4_rms, pwr%r_4_rms, pwr%shl_sq)
 !
+      end subroutine write_sph_layer_ms_file
+!
+! -----------------------------------------------------------------------
+!
+      subroutine write_sph_layer_spectr_file                            &
+     &         (my_rank, istep, time, sph_params, pwr)
+!
+      use t_spheric_parameter
+      use t_rms_4_sph_spectr
+      use set_parallel_file_name
+      use sph_mean_spectr_IO
+!
+      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: istep
+      real(kind = kreal), intent(in) :: time
+!
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_mean_squares), intent(in) :: pwr
+!
+      character(len=kchara) :: fname_rms, mode_label
+!
+!
+      if(my_rank .ne. 0)  return
+      if(pwr%iflag_layer_rms_spec .eq. izero)  return
+      if(pwr%ntot_comp_sq .eq. 0)  return
+!
       if(pwr%iflag_spectr_l .gt. izero) then
         write(fname_rms, '(a,a6)') trim(pwr%fhead_rms_layer), '_l.dat'
         write(mode_label,'(a)') 'radial_id  radius  degree'
@@ -329,7 +357,7 @@
      &     pwr%pwr_name, pwr%kr_4_rms, pwr%r_4_rms, pwr%shl_m0)
       end if
 !
-      end subroutine write_sph_layer_ms_file
+      end subroutine write_sph_layer_spectr_file
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

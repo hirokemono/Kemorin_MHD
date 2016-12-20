@@ -10,12 +10,12 @@
 !!@verbatim
 !!      subroutine output_section_mesh(num_psf, psf_header,             &
 !!     &          itype_psf_file, psf_mesh, psf_out, psf_out_m)
-!!      subroutine output_section_data                                  &
-!!     &         (num_psf, istep_psf, psf_mesh, psf_out, psf_out_m)
+!!      subroutine output_section_data(num_psf, istep_psf, psf_mesh,    &
+!!     &          t_IO, psf_out, psf_out_m)
 !!
 !!      subroutine output_isosurface                                    &
 !!     &         (num_iso, iso_header, itype_iso_file, istep_iso,       &
-!!     &         iso_mesh, iso_out, iso_out_m)
+!!     &         iso_mesh, t_IO, iso_out, iso_out_m)
 !!@endverbatim
 !
       module output_4_psf
@@ -23,6 +23,7 @@
       use m_precision
 !
       use calypso_mpi
+      use t_time_data_IO
       use t_ucd_data
 !
       implicit  none
@@ -61,10 +62,15 @@
             if(psf_mesh(i_psf)%patch%ie(iele,1) .le. 0                  &
      &        .or. psf_mesh(i_psf)%patch%ie(iele,2) .le. 0              &
      &        .or. psf_mesh(i_psf)%patch%ie(iele,3) .le. 0              &
-     &        .or. psf_mesh(i_psf)%patch%ie(iele,1) .gt. psf_mesh(i_psf)%node%istack_internod(nprocs) &
-     &        .or. psf_mesh(i_psf)%patch%ie(iele,2) .gt. psf_mesh(i_psf)%node%istack_internod(nprocs) &
-     &        .or. psf_mesh(i_psf)%patch%ie(iele,3) .gt. psf_mesh(i_psf)%node%istack_internod(nprocs)) then
-              write(*,*) 'Failed: ', my_rank,  psf_mesh(i_psf)%node%istack_internod(nprocs), &
+     &        .or. psf_mesh(i_psf)%patch%ie(iele,1)                     &
+     &             .gt. psf_mesh(i_psf)%node%istack_internod(nprocs)    &
+     &        .or. psf_mesh(i_psf)%patch%ie(iele,2)                     &
+     &             .gt. psf_mesh(i_psf)%node%istack_internod(nprocs)    &
+     &        .or. psf_mesh(i_psf)%patch%ie(iele,3)                     &
+     &             .gt. psf_mesh(i_psf)%node%istack_internod(nprocs)    &
+     &       ) then
+              write(*,*) 'Failed: ', my_rank,                           &
+     &              psf_mesh(i_psf)%node%istack_internod(nprocs),       &
      &             iele, psf_mesh(i_psf)%patch%ie(iele,1:3)
             end if
           end do
@@ -101,22 +107,26 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine output_section_data                                    &
-     &         (num_psf, istep_psf, psf_mesh, psf_out, psf_out_m)
+      subroutine output_section_data(num_psf, istep_psf, psf_mesh,      &
+     &          t_IO, psf_out, psf_out_m)
 !
       use set_ucd_data_to_type
       use parallel_ucd_IO_select
       use ucd_IO_select
+      use copy_time_steps_4_restart
       use merge_output_4_psf
 !
       integer(kind= kint), intent(in) :: num_psf
       integer(kind= kint), intent(in) ::  istep_psf
       type(psf_local_data), intent(in) :: psf_mesh(num_psf)
+      type(time_params_IO), intent(inout) :: t_IO
       type(ucd_data), intent(inout) ::        psf_out(num_psf)
       type(merged_ucd_data), intent(inout) :: psf_out_m(num_psf)
 !
       integer(kind= kint) :: i_psf, irank_tgt
 !
+!
+      call copy_time_steps_to_restart(t_IO)
 !
       do i_psf = 1, num_psf
         if((psf_out(i_psf)%ifmt_file/iflag_single) .eq. 0) then
@@ -129,11 +139,12 @@
       do i_psf = 1, num_psf
         if((psf_out(i_psf)%ifmt_file/iflag_single) .eq. 0) then
           if(my_rank .eq. mod(i_psf-1,nprocs)) then
-            call sel_write_udt_file(iminus, istep_psf, psf_out(i_psf))
+            call sel_write_udt_file                                     &
+     &         (iminus, istep_psf, t_IO, psf_out(i_psf))
           end if
         else
           call sel_write_parallel_ucd_file                              &
-     &      (istep_psf, psf_out(i_psf), psf_out_m(i_psf))
+     &      (istep_psf, t_IO, psf_out(i_psf), psf_out_m(i_psf))
         end if
       end do
       call calypso_mpi_barrier
@@ -145,12 +156,13 @@
 !
       subroutine output_isosurface                                      &
      &         (num_iso, iso_header, itype_iso_file, istep_iso,         &
-     &         iso_mesh, iso_out, iso_out_m)
+     &         iso_mesh, t_IO, iso_out, iso_out_m)
 !
       use t_psf_patch_data
       use set_ucd_data_to_type
       use parallel_ucd_IO_select
       use ucd_IO_select
+      use copy_time_steps_4_restart
       use merge_output_4_psf
 !
       integer(kind= kint), intent(in) :: num_iso
@@ -160,11 +172,14 @@
       type(psf_local_data), intent(in) :: iso_mesh(num_iso)
 !
 !>      Structure for isosurface output (used by master process)
+      type(time_params_IO), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: iso_out(num_iso)
       type(merged_ucd_data), intent(inout) :: iso_out_m(num_iso)
 !
       integer(kind= kint) :: i_iso, irank_tgt
 !
+!
+      call copy_time_steps_to_restart(t_IO)
 !
       do i_iso = 1, num_iso
         iso_out(i_iso)%ifmt_file = itype_iso_file(i_iso)
@@ -192,12 +207,13 @@
         iso_out(i_iso)%file_prefix = iso_header(i_iso)
         if((iso_out(i_iso)%ifmt_file/iflag_single) .eq. 0) then
           if(my_rank .eq. mod(i_iso-1,nprocs)) then
-            call sel_write_ucd_file(iminus, istep_iso, iso_out(i_iso))
+            call sel_write_ucd_file                                     &
+     &         (iminus, istep_iso, t_IO, iso_out(i_iso))
           end if
           call deallocate_ucd_mesh(iso_out(i_iso))
         else
           call sel_write_parallel_ucd_file                              &
-     &       (istep_iso, iso_out(i_iso), iso_out_m(i_iso))
+     &       (istep_iso, t_IO, iso_out(i_iso), iso_out_m(i_iso))
           call disconnect_merged_ucd_mesh                               &
      &       (iso_out(i_iso), iso_out_m(i_iso))
         end if

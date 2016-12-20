@@ -34,10 +34,11 @@
 !!        type(sph_rtm_grid), intent(inout) :: sph_rtm
 !!
 !!      subroutine mpi_gen_fem_mesh_for_sph                             &
-!!     &         (sph_params, sph_rj, sph_rtp)
+!!     &         (sph_params, sph_rj, sph_rtp, mesh_file)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(sph_rtp_grid), intent(inout) :: sph_rtp
+!!        type(field_IO_params), intent(inout) ::  mesh_file
 !!@endverbatim
 !
       module mpi_gen_sph_grids_modes
@@ -191,8 +192,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine mpi_gen_fem_mesh_for_sph                               &
-     &         (sph_params, sph_rj, sph_rtp)
+     &         (sph_params, sph_rj, sph_rtp, mesh_file)
 !
+      use t_file_IO_parameter
       use t_spheric_parameter
       use t_mesh_data
       use t_comm_table
@@ -200,8 +202,6 @@
       use t_gauss_points
 !
       use m_sph_mesh_1d_connect
-      use m_read_mesh_data
-      use m_read_mesh_data
       use const_1d_ele_connect_4_sph
       use set_local_index_table_sph
       use set_local_sphere_by_global
@@ -215,6 +215,7 @@
       type(sph_rj_grid), intent(in) :: sph_rj
 !
       type(sph_rtp_grid), intent(inout) :: sph_rtp
+      type(field_IO_params), intent(inout) ::  mesh_file
 !
       type(mesh_data) :: femmesh
       type(group_data) :: radial_rj_grp_lc
@@ -240,8 +241,8 @@
 !
 ! Output mesh data
       if(iflag_output_mesh .gt. 0) then
-        mesh_file_head = sph_file_head
-        call mpi_output_mesh(femmesh%mesh, femmesh%group)
+        mesh_file%file_prefix = sph_file_head
+        call mpi_output_mesh(mesh_file, femmesh%mesh, femmesh%group)
         write(*,'(a,i6,a)')                                             &
      &          'FEM mesh for domain', my_rank, ' is done.'
       end if

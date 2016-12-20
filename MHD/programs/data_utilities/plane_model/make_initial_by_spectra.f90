@@ -10,16 +10,16 @@
       use m_precision
       use calypso_mpi
 !
+      use t_time_data_IO
+!
       use m_constants
       use m_file_format_switch
       use m_phys_labels
       use m_geometry_data_4_merge
-      use m_read_mesh_data
       use m_size_4_plane
       use m_setting_4_ini
       use m_set_new_spectr
       use m_spectr_4_ispack
-      use m_time_data_IO
       use m_control_plane_fft
       use count_number_with_overlap
       use set_plane_spectr_file_head
@@ -35,7 +35,9 @@
       implicit    none
 !
 !
-      integer(kind=kint ) ::  istep_udt, n_comp
+      type(field_IO_params), save ::  plane_mesh_file
+!
+      integer(kind=kint ) ::  istep_udt, n_comp, i_time_step
 !
 !  ===========
 ! . for local 
@@ -54,6 +56,8 @@
 !
       real   (kind=kreal) ::  dt_init, t_init
       real   (kind=kreal), dimension(:), allocatable ::  zz
+!
+      type(time_params_IO), save :: plane_t_IO
 !
 ! ==============================================
 ! * get number of  nodes,elements for whole PES
@@ -75,10 +79,10 @@
       write(*,*) 'read_control_data_fft_plane'
       call read_control_data_fft_plane
 !
-      call s_set_plane_spectr_file_head
+      call s_set_plane_spectr_file_head(plane_mesh_file)
       call set_parameters_rst_by_spec(num_pe, ist, ied,                 &
      &          ifactor_step, ifactor_rst, dt_init, t_init,             &
-     &          kx_org, ky_org, iz_org)
+     &          kx_org, ky_org, iz_org, plane_mesh_file)
 !
 !     read outline of mesh
 !
@@ -105,8 +109,8 @@
 !
 !   read mesh data for initial values
 !
-      iflag_mesh_file_fmt = id_ascii_file_fmt
-      call set_merged_mesh_and_group
+      plane_mesh_file%iflag_format = id_ascii_file_fmt
+      call set_merged_mesh_and_group(plane_mesh_file)
 !
       write(*,*) 'allocate_rst_by_plane_sp'
       call allocate_rst_by_plane_sp(merge_tbl%nnod_max,                 &
@@ -220,12 +224,13 @@
 !
 !    start loop for snap shots
 !
-      do i_time_step_IO = ist, ied, ifactor_step
+      do i_time_step = ist, ied, ifactor_step
 !
-        istep_udt = i_time_step_IO / ifactor_step
-        istep_rst = i_time_step_IO / ifactor_rst
-        time_IO =    t_init + dble(i_time_step_IO-ist) * dt_init
-        delta_t_IO = dt_init
+        istep_udt = i_time_step / ifactor_step
+        istep_rst = i_time_step / ifactor_rst
+        plane_t_IO%i_time_step_IO = i_time_step
+        plane_t_IO%time_IO = t_init + dble(i_time_step-ist) * dt_init
+        plane_t_IO%delta_t_IO = dt_init
 !
 !    read spectral data
 !
@@ -295,7 +300,8 @@
           end do
         end do
 !
-        call s_write_restart_by_spectr(ip, subdomain(ip)%node%numnod)
+        call s_write_restart_by_spectr                                  &
+       &    (ip, subdomain(ip)%node%numnod, plane_t_IO)
 !
 !   deallocate arrays
 !

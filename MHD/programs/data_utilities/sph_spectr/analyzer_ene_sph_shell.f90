@@ -16,6 +16,7 @@
       use m_schmidt_poly_on_rtm
       use calypso_mpi
 !
+      use t_time_data_IO
       use cal_rms_fields_by_sph
       use field_IO_select
 !
@@ -62,7 +63,7 @@
      &  (sph_file_spec_p%iflag_format, sph_file_spec_p%file_prefix,     &
      &   sph_spec_IO)
       call sel_read_alloc_step_SPH_file                                 &
-     &   (nprocs, my_rank, i_step_init, sph_spec_IO)
+     &   (nprocs, my_rank, i_step_init, spec_time_IO, sph_spec_IO)
 !
 !  -------------------------------
 !
@@ -105,10 +106,9 @@
 !   Input spectr data
 !
       call sel_read_step_SPH_field_file                                 &
-     &     (nprocs, my_rank, i_step, sph_spec_IO)
+     &     (nprocs, my_rank, i_step, spec_time_IO, sph_spec_IO)
 !
-        call set_rj_phys_data_from_IO                                   &
-     &     (sph_mesh_spec%sph%sph_rj%nnod_rj, sph_spec_IO, rj_fld_spec)
+        call set_rj_phys_data_from_IO(sph_spec_IO, rj_fld_spec)
 !
 !  evaluate energies
 !
@@ -128,6 +128,8 @@
      &      sph_mesh_spec%sph%sph_params, sph_mesh_spec%sph%sph_rj,     &
      &      pwr_spec)
         call write_sph_layer_ms_file(my_rank, i_step, time,             &
+     &      sph_mesh_spec%sph%sph_params, pwr_spec)
+        call write_sph_layer_spectr_file(my_rank, i_step, time,         &
      &      sph_mesh_spec%sph%sph_params, pwr_spec)
       end do
 !

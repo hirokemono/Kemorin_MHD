@@ -3,8 +3,9 @@
 !
 !     Written by H. Matsui on Nov., 2006
 !
-!      subroutine set_ctl_params_prod_udt(ucd)
-
+!!      subroutine set_ctl_params_prod_udt                              &
+!!     &         (mesh_file, udt_org_param, ucd)
+!
       module m_ctl_params_4_prod_udt
 !
       use m_precision
@@ -43,20 +44,23 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_ctl_params_prod_udt(ucd)
+      subroutine set_ctl_params_prod_udt                                &
+     &         (mesh_file, udt_org_param, ucd)
 !
       use calypso_mpi
+      use t_file_IO_parameter
       use t_ucd_data
       use m_error_IDs
-      use m_read_mesh_data
       use m_ctl_data_4_platforms
       use m_ctl_data_4_org_data
       use m_ctl_data_product_udt
       use m_file_format_switch
-      use m_control_params_2nd_files
       use set_control_platform_data
+      use set_ctl_params_2nd_files
       use ucd_IO_select
 !
+      type(field_IO_params), intent(inout) ::  mesh_file
+      type(field_IO_params), intent(inout)  :: udt_org_param
       type(ucd_data), intent(inout) :: ucd
 !
 !
@@ -66,9 +70,8 @@
       end if
 !
       call set_control_smp_def(my_rank)
-      call set_control_mesh_def
-      call set_control_org_rst_file_def
-      call set_control_org_udt_file_def
+      call set_control_mesh_def(mesh_file)
+      call set_control_org_udt_file_def(udt_org_param)
       call set_ucd_file_define(ucd)
 !
 !   set fiale name

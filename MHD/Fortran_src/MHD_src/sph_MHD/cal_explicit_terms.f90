@@ -8,13 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine cal_diff_induction_MHD_adams                         &
-!!     &         (ipol, itor, n_point, ntot_phys_rj, d_rj)
+!!     &         (coef_exp, ipol, itor, n_point, ntot_phys_rj, d_rj)
 !!      subroutine cal_diff_induction_wSGS_adams                        &
-!!     &         (ipol, itor, n_point, ntot_phys_rj, d_rj)
+!!     &         (coef_exp, ipol, itor, n_point, ntot_phys_rj, d_rj)
 !!      subroutine cal_diff_induction_MHD_euler                         &
-!!     &         (ipol, itor, n_point, ntot_phys_rj, d_rj)
+!!     &         (coef_exp, ipol, itor, n_point, ntot_phys_rj, d_rj)
 !!      subroutine cal_diff_induction_wSGS_euler                        &
-!!     &         (ipol, itor, n_point, ntot_phys_rj, d_rj)
+!!     &         (coef_exp, ipol, itor, n_point, ntot_phys_rj, d_rj)
 !!
 !!      subroutine set_ini_adams_mag_induct                             &
 !!     &         (ipol, itor, n_point, ntot_phys_rj, d_rj)
@@ -37,11 +37,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_diff_induction_MHD_adams                           &
-     &         (ipol, itor, n_point, ntot_phys_rj, d_rj)
+     &         (coef_exp, ipol, itor, n_point, ntot_phys_rj, d_rj)
 !
       type(phys_address), intent(in) :: ipol, itor
+      real(kind = kreal), intent(in) :: coef_exp
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
+      real(kind = kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       integer(kind = kint) :: inod
 !
@@ -49,11 +50,11 @@
 !$omp do private (inod)
       do inod = 1, n_point
         d_rj(inod,ipol%i_magne) = d_rj(inod,ipol%i_magne)               &
-     &              + dt * (coef_exp_b * d_rj(inod,ipol%i_b_diffuse)    &
+     &                + dt * (coef_exp * d_rj(inod,ipol%i_b_diffuse)    &
      &                        + adam_0 * d_rj(inod,ipol%i_induction)    &
      &                        + adam_1 * d_rj(inod,ipol%i_pre_uxb) )
         d_rj(inod,itor%i_magne) = d_rj(inod,itor%i_magne)               &
-     &              + dt * (coef_exp_b * d_rj(inod,itor%i_b_diffuse)    &
+     &                + dt * (coef_exp * d_rj(inod,itor%i_b_diffuse)    &
      &                        + adam_0 * d_rj(inod,itor%i_induction)    &
      &                        + adam_1 * d_rj(inod,itor%i_pre_uxb) )
 !
@@ -67,11 +68,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_diff_induction_wSGS_adams                          &
-     &         (ipol, itor, n_point, ntot_phys_rj, d_rj)
+     &         (coef_exp, ipol, itor, n_point, ntot_phys_rj, d_rj)
 !
       type(phys_address), intent(in) :: ipol, itor
+      real(kind = kreal), intent(in) :: coef_exp
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
+      real(kind = kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       integer(kind = kint) :: inod
 !
@@ -79,12 +81,12 @@
 !$omp do private (inod)
       do inod = 1, n_point
         d_rj(inod,ipol%i_magne) = d_rj(inod,ipol%i_magne)               &
-     &           + dt * (coef_exp_b *  d_rj(inod,ipol%i_b_diffuse)      &
+     &             + dt * (coef_exp *  d_rj(inod,ipol%i_b_diffuse)      &
      &                     + adam_0 *  d_rj(inod,ipol%i_induction)      &
      &                     + adam_0 *  d_rj(inod,ipol%i_SGS_induction)  &
      &                     + adam_1 *  d_rj(inod,ipol%i_pre_uxb) )
         d_rj(inod,itor%i_magne) = d_rj(inod,itor%i_magne)               &
-     &           + dt * (coef_exp_b *  d_rj(inod,itor%i_b_diffuse)      &
+     &             + dt * (coef_exp *  d_rj(inod,itor%i_b_diffuse)      &
      &                     + adam_0 *  d_rj(inod,itor%i_induction)      &
      &                     + adam_0 *  d_rj(inod,itor%i_SGS_induction)  &
      &                     + adam_1 *  d_rj(inod,itor%i_pre_uxb) )
@@ -102,11 +104,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_diff_induction_MHD_euler                           &
-     &         (ipol, itor, n_point, ntot_phys_rj, d_rj)
+     &         (coef_exp, ipol, itor, n_point, ntot_phys_rj, d_rj)
 !
       type(phys_address), intent(in) :: ipol, itor
+      real(kind = kreal), intent(in) :: coef_exp
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
+      real(kind = kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       integer(kind = kint) :: inod
 !
@@ -114,11 +117,11 @@
 !$omp do private (inod)
       do inod = 1, n_point
         d_rj(inod,ipol%i_magne) = d_rj(inod,ipol%i_magne)               &
-     &              + dt * (coef_exp_b * d_rj(inod,ipol%i_b_diffuse)    &
-     &                                 + d_rj(inod,ipol%i_induction) )
+     &              + dt * (coef_exp * d_rj(inod,ipol%i_b_diffuse)      &
+     &                               + d_rj(inod,ipol%i_induction) )
         d_rj(inod,itor%i_magne) = d_rj(inod,itor%i_magne)               &
-     &              + dt * (coef_exp_b * d_rj(inod,itor%i_b_diffuse)    &
-     &                                 + d_rj(inod,itor%i_induction) )
+     &              + dt * (coef_exp * d_rj(inod,itor%i_b_diffuse)      &
+     &                               + d_rj(inod,itor%i_induction) )
        end do
 !$omp end do
 !
@@ -127,11 +130,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_diff_induction_wSGS_euler                          &
-     &         (ipol, itor, n_point, ntot_phys_rj, d_rj)
+     &         (coef_exp, ipol, itor, n_point, ntot_phys_rj, d_rj)
 !
       type(phys_address), intent(in) :: ipol, itor
+      real(kind = kreal), intent(in) :: coef_exp
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
+      real(kind = kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       integer(kind = kint) :: inod
 !
@@ -139,13 +143,13 @@
 !$omp do private (inod)
       do inod = 1, n_point
         d_rj(inod,ipol%i_magne) = d_rj(inod,ipol%i_magne)               &
-     &          + dt * (coef_exp_b * d_rj(inod,ipol%i_b_diffuse)        &
-     &                             + d_rj(inod,ipol%i_induction)        &
-     &                             + d_rj(inod,ipol%i_SGS_induction) )
+     &          + dt * (coef_exp * d_rj(inod,ipol%i_b_diffuse)          &
+     &                           + d_rj(inod,ipol%i_induction)          &
+     &                           + d_rj(inod,ipol%i_SGS_induction) )
         d_rj(inod,itor%i_magne) = d_rj(inod,itor%i_magne)               &
-     &          + dt * (coef_exp_b * d_rj(inod,itor%i_b_diffuse)        &
-     &                             + d_rj(inod,itor%i_induction)        &
-     &                             + d_rj(inod,itor%i_SGS_induction) )
+     &          + dt * (coef_exp * d_rj(inod,itor%i_b_diffuse)          &
+     &                           + d_rj(inod,itor%i_induction)          &
+     &                           + d_rj(inod,itor%i_SGS_induction) )
        end do
 !$omp end do
 !

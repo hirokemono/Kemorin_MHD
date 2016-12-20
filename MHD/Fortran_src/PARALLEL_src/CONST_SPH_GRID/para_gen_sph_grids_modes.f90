@@ -34,10 +34,11 @@
 !!        type(sph_rtm_grid), intent(inout) :: sph_rtm
 !!
 !!      subroutine para_gen_fem_mesh_for_sph(ndomain_sph,               &
-!!     &          sph_params, sph_rj, sph_rtp)
+!!     &          sph_params, sph_rj, sph_rtp, mesh_file)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(sph_rtp_grid), intent(inout) :: sph_rtp
+!!        type(field_IO_params), intent(inout) ::  mesh_file
 !!@endverbatim
 !
       module para_gen_sph_grids_modes
@@ -53,6 +54,7 @@
       use t_group_data
       use t_spheric_mesh
       use t_spheric_data_IO
+      use t_file_IO_parameter
 !
       use set_local_sphere_by_global
 !
@@ -224,13 +226,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine para_gen_fem_mesh_for_sph(ndomain_sph,                 &
-     &          sph_params, sph_rj, sph_rtp)
+     &          sph_params, sph_rj, sph_rtp, mesh_file)
 !
       use t_gauss_points
 !
       use m_sph_mesh_1d_connect
-      use m_read_mesh_data
-      use m_read_mesh_data
       use const_1d_ele_connect_4_sph
       use set_local_index_table_sph
       use set_local_sphere_by_global
@@ -245,6 +245,7 @@
       type(sph_rj_grid), intent(in) :: sph_rj
 !
       type(sph_rtp_grid), intent(inout) :: sph_rtp
+      type(field_IO_params), intent(inout) ::  mesh_file
 !
       integer(kind = kint) :: ip_rank, ip
       type(mesh_data) :: femmesh
@@ -278,8 +279,9 @@
 !
 ! Output mesh data
         if(iflag_output_mesh .gt. 0) then
-          mesh_file_head = sph_file_head
-          call output_mesh(ip_rank, femmesh%mesh, femmesh%group)
+          mesh_file%file_prefix = sph_file_head
+          call output_mesh(mesh_file, ip_rank,                          &
+     &                     femmesh%mesh, femmesh%group)
           write(*,'(a,i6,a,i6)')                                        &
      &          ip_rank, ' is done on process ', my_rank
         end if

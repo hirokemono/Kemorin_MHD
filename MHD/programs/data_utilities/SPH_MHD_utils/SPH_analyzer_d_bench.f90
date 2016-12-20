@@ -59,13 +59,15 @@
       use r_interpolate_sph_data
       use sph_mhd_rst_IO_control
       use m_field_at_mid_equator
+      use check_dependency_for_MHD
+      use input_control_sph_MHD
 !
       type(phys_address), intent(in) :: iphys
 !
 !
 !   Allocate spectr field data
 !
-      call set_sph_sprctr_data_address                                  &
+      call set_sph_MHD_sprctr_data                                      &
      &   (sph1%sph_rj, ipol, idpdr, itor, rj_fld1)
 !
       if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
@@ -95,7 +97,8 @@
 !     --------------------- 
 !  set original spectr mesh data for extension of B
 !
-      call init_radial_sph_interpolation(sph1%sph_params, sph1%sph_rj)
+      call init_radial_sph_interpolation                                &
+     &   (MHD1_org_files%rj_file_param, sph1%sph_params, sph1%sph_rj)
 !
 !* -----  find mid-equator point -----------------
 !*
@@ -124,12 +127,14 @@
       use lead_fields_4_sph_mhd
       use sph_mhd_rst_IO_control
       use const_data_4_dynamobench
+      use input_control_sph_MHD
 !
       integer(kind = kint), intent(in) :: i_step
 !
 !
       call read_alloc_sph_rst_4_snap                                    &
-     &   (i_step, sph1%sph_rj, ipol, rj_fld1)
+     &   (i_step, MHD1_org_files%rj_file_param, sph1%sph_rj,            &
+     &    ipol, rj_fld1)
 !
       call sync_temp_by_per_temp_sph                                    &
      &   (ref_temp1%t_rj, sph1%sph_rj, ipol, idpdr, rj_fld1)

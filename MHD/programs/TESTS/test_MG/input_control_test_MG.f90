@@ -41,6 +41,7 @@
       type(surface_data), intent(inout) :: surf
       type(edge_data), intent(inout) :: edge
 !
+      type(field_IO_params), save ::  mesh_file_test
 !
 !  --  read control data
 !
@@ -48,13 +49,12 @@
       call read_control_4_MG_test
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_test_MG'
-      call set_ctl_test_MG
+      call set_ctl_test_MG(mesh_file_test)
 !
 !  --  read geometry
 !
-      iflag_mesh_file_fmt = ifile_type
-      if (iflag_debug.eq.1) write(*,*) 'input_mesh'
-      call mpi_input_mesh(mesh, group,                                  &
+      if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh'
+      call mpi_input_mesh(mesh_file_test, mesh, group,                  &
      &    surf%nnod_4_surf, edge%nnod_4_edge)
 !
 !  --  read geometry data for MG

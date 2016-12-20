@@ -7,10 +7,11 @@
 !>@brief Copy FEM mesh data from IO structure
 !!
 !!@verbatim
-!!      subroutine input_mesh                                           &
-!!     &         (my_rank, mesh, group, nnod_4_surf, nnod_4_edge, ierr)
-!!      subroutine input_mesh_geometry(my_rank, mesh, ierr)
-!!      subroutine output_mesh(my_rank, mesh, group)
+!!      subroutine input_mesh(mesh_file, my_rank, mesh, group,          &
+!!     &          nnod_4_surf, nnod_4_edge, ierr)
+!!      subroutine input_mesh_geometry(mesh_file, my_rank, mesh, ierr)
+!!      subroutine output_mesh(mesh_file, my_rank, mesh, group)
+!!        type(field_IO_params), intent(in) ::  mesh_file
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!
@@ -30,6 +31,7 @@
       use m_precision
       use m_machine_parameter
 !
+      use t_file_IO_parameter
       use t_mesh_data
       use t_comm_table
       use t_geometry_data
@@ -45,13 +47,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine input_mesh                                             &
-     &         (my_rank, mesh, group, nnod_4_surf, nnod_4_edge, ierr)
+      subroutine input_mesh(mesh_file, my_rank, mesh, group,            &
+     &          nnod_4_surf, nnod_4_edge, ierr)
 !
       use mesh_IO_select
       use set_nnod_4_ele_by_type
 !
       integer(kind = kint), intent(in) :: my_rank
+      type(field_IO_params), intent(in) ::  mesh_file
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
@@ -61,25 +64,26 @@
       type(mesh_data) :: fem_IO_i
 !
 !
-      call sel_read_mesh(my_rank, fem_IO_i, ierr)
+      call sel_read_mesh(mesh_file, my_rank, fem_IO_i, ierr)
       call set_mesh(fem_IO_i, mesh, group, nnod_4_surf, nnod_4_edge)
 !
       end subroutine input_mesh
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine input_mesh_geometry(my_rank, mesh, ierr)
+      subroutine input_mesh_geometry(mesh_file, my_rank, mesh, ierr)
 !
       use mesh_IO_select
 !
       integer(kind = kint), intent(in) :: my_rank
+      type(field_IO_params), intent(in) ::  mesh_file
       type(mesh_geometry), intent(inout) :: mesh
       integer(kind = kint), intent(inout) :: ierr
 !
       type(mesh_geometry) :: mesh_IO_i
 !
 !
-      call sel_read_mesh_geometry(my_rank, mesh_IO_i, ierr)
+      call sel_read_mesh_geometry(mesh_file, my_rank, mesh_IO_i, ierr)
       call set_mesh_geometry_data(mesh_IO_i,                            &
      &    mesh%nod_comm, mesh%node, mesh%ele)
 !
@@ -88,7 +92,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine output_mesh(my_rank, mesh, group)
+      subroutine output_mesh(mesh_file, my_rank, mesh, group)
 !
       use mesh_IO_select
       use set_comm_table_4_IO
@@ -96,6 +100,7 @@
       use copy_mesh_structures
 !
       integer(kind = kint), intent(in) :: my_rank
+      type(field_IO_params), intent(in) ::  mesh_file
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
@@ -111,7 +116,7 @@
      &   (group%nod_grp, group%ele_grp, group%surf_grp, fem_IO_i%group)
 !
 !       save mesh information
-      call sel_write_mesh_file(my_rank, fem_IO_i)
+      call sel_write_mesh_file(mesh_file, my_rank, fem_IO_i)
 !
       end subroutine output_mesh
 !

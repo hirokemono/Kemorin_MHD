@@ -72,27 +72,27 @@
       use m_control_parameter
 !
 !
-      if (iflag_t_evo_4_temp .gt. id_no_evolution) then
+      if (evo_temp%iflag_scheme .gt. id_no_evolution) then
         if(h_flux_surf%num_bc .gt. 0) call deallocate_temp_surf_ctl
       end if
 !
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         if(torque_surf%num_bc.gt.0) call deallocate_velo_surf_ctl
         if(wall_surf%num_bc.gt.0)   call deallocate_press_surf_ctl
       end if
 !
-      if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
-     &      .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+      if (evo_magne%iflag_scheme .gt. id_no_evolution                   &
+     &      .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         if(magne_surf%num_bc .gt. 0)   call deallocate_magne_surf_ctl
         if(current_surf%num_bc .gt. 0) call deallocate_current_surf_ctl
         if(e_potential_surf%num_bc.gt.0) call deallocate_magp_surf_ctl
       end if
 !
-      if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+      if (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         if(a_potential_surf%num_bc.gt.0) call deallocate_vecp_surf_ctl
       end if
 ! 
-      if (iflag_t_evo_4_composit .gt. id_no_evolution) then
+      if (evo_comp%iflag_scheme .gt. id_no_evolution) then
         if(light_surf%num_bc.gt.0) call deallocate_composit_surf_ctl
       end if
 !

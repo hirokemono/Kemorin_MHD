@@ -71,35 +71,35 @@
         call fem_skv_mass_matrix_type(mesh%ele%istack_ele_smp,          &
      &      intg_point_t_evo, k2, mesh%ele, jac_3d, fem_wk%sk6)
 !
-        if ( iflag_t_evo_4_velo .eq. id_Crank_nicolson_cmass            &
+        if (evo_velo%iflag_scheme .eq. id_Crank_nicolson_cmass          &
      &      .and. coef_velo.gt.0.0d0 ) then
           call add_skv1_to_crs_matrix33(mesh%ele, rhs_tbl,              &
      &        MG_mat_fl_q, k2, fem_wk%sk6,                              &
      &        mat_velo%num_non0, mat_velo%aiccg)
         end if
 !
-        if ( iflag_t_evo_4_temp .eq. id_Crank_nicolson_cmass            &
+        if ( evo_temp%iflag_scheme .eq. id_Crank_nicolson_cmass         &
      &      .and. coef_temp.gt.0.0d0 ) then
           call add_skv1_to_crs_matrix11(mesh%ele, rhs_tbl,              &
      &        MG_mat_fl_q, k2, fem_wk%sk6,                              &
      &        mat_temp%num_non0, mat_temp%aiccg)
         end if
 !
-        if ( iflag_t_evo_4_composit .eq. id_Crank_nicolson_cmass        &
+        if ( evo_comp%iflag_scheme .eq. id_Crank_nicolson_cmass         &
      &      .and. coef_light .gt. 0.0d0) then
           call add_skv1_to_crs_matrix11(mesh%ele, rhs_tbl,              &
      &        MG_mat_fl_q, k2, fem_wk%sk6,                              &
      &        mat_light%num_non0, mat_light%aiccg)
         end if
 !
-        if ( iflag_t_evo_4_magne .eq. id_Crank_nicolson_cmass           &
+        if ( evo_magne%iflag_scheme .eq. id_Crank_nicolson_cmass        &
      &      .and. coef_magne.gt.0.0d0) then
           call add_skv1_to_crs_matrix33                                 &
      &       (mesh%ele, rhs_tbl, MG_mat_full_cd_q,                      &
      &        k2, fem_wk%sk6, mat_magne%num_non0, mat_magne%aiccg)
         end if
 !
-        if ( iflag_t_evo_4_vect_p .eq. id_Crank_nicolson_cmass          &
+        if ( evo_vect_p%iflag_scheme .eq. id_Crank_nicolson_cmass       &
      &      .and. coef_magne.gt.0.0d0) then
           call add_skv1_to_crs_matrix33                                 &
      &       (mesh%ele, rhs_tbl, MG_mat_full_cd_q,                      &

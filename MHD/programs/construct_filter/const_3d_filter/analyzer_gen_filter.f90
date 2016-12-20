@@ -16,6 +16,7 @@
 !
       use m_ctl_params_4_gen_filter
 !
+      use t_file_IO_parameter
       use t_mesh_data
       use t_jacobian_3d
       use t_table_FEM_const
@@ -29,6 +30,8 @@
 !
       implicit none
 !
+!
+      type(field_IO_params), save ::  mesh_filter_file
 !
       type(mesh_geometry), save :: mesh_filter
       type(mesh_groups), save :: group_filter
@@ -74,7 +77,6 @@
       use check_surface_groups
       use set_normal_vectors
       use set_edge_vectors
-      use m_read_mesh_data
       use set_element_list_4_filter
       use sum_normal_4_surf_group
       use const_jacobians_3d
@@ -95,12 +97,12 @@
       call read_control_4_gen_filter
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_gen_filter'
-      call set_ctl_params_gen_filter(FEM_elen_f)
+      call set_ctl_params_gen_filter(mesh_filter_file, FEM_elen_f)
 !
 !  --  read geometry
 !
       if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh(mesh_filter, group_filter,                    &
+      call mpi_input_mesh(mesh_filter_file, mesh_filter, group_filter,  &
      &    ele_filter%surf%nnod_4_surf, ele_filter%edge%nnod_4_edge)
 !
 !     --------------------- 

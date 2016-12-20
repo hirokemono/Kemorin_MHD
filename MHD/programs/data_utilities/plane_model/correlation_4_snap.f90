@@ -14,9 +14,9 @@
       use m_geometry_data_4_merge
       use m_2nd_geometry_4_merge
       use m_control_plane_correlate
-      use m_read_mesh_data
 !
       use t_phys_data
+      use t_time_data_IO
       use t_ucd_data
 !
 
@@ -40,6 +40,8 @@
       type(phys_data), save :: cor_phys
       type(phys_data), save :: ref_phys
 
+!>      Structure for time data
+      type(time_params_IO), save :: plane_t_IO
       type(ucd_data), save :: plane_ucd
 
       integer(kind=kint ) :: istep
@@ -70,20 +72,16 @@
       call s_set_plane_size_correlate(num_pe, num_pe2)
 !
       write(*,*) 'set_merged_node_and_element'
-      iflag_mesh_file_fmt = id_cor_mesh_fmt
-      mesh_file_head = cor_mesh_header
-      call set_merged_node_and_element
+      call set_merged_node_and_element(cor_mesh_file)
       write(*,*) 's_set_2nd_geometry_4_serial'
 !
-      iflag_mesh_file_fmt = id_ref_mesh_fmt
-      mesh_file_head = ref_mesh_header
-      call s_set_2nd_geometry_4_serial
+      call s_set_2nd_geometry_4_serial(ref_mesh_file)
 !
       call s_set_numnod_4_plane
 !
 !   read field name and number of components
 !
-      call init_udt_4_correlate(ist, cor_phys, plane_ucd)
+      call init_udt_4_correlate(ist, cor_phys, plane_t_IO, plane_ucd)
 !
        call s_set_list_4_correlate(ref_phys, cor_phys)
 !
@@ -118,7 +116,7 @@
        call open_correlate_files_snap(istep)
 !
        write(*,*) 'read_udt_4_correlate'
-       call read_udt_4_correlate(istep, plane_ucd)
+       call read_udt_4_correlate(istep, plane_t_IO, plane_ucd)
 !
 !  -------  Cross correlatiion
 !

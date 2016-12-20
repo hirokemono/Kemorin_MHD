@@ -13,6 +13,8 @@
       implicit none
 !
 !
+      type(field_IO_params), save ::  plane_mesh_file
+!
       integer(kind=kint) :: nx_2, ny_2
       integer(kind=kint) :: kx, ky, kx_in, ky_in
       integer(kind=kint) :: num_ene_z
@@ -41,7 +43,7 @@
 !
       write(*,*) 'read_control_data_fft_plane'
       call read_control_data_fft_plane
-      call s_set_plane_spectr_file_head
+      call s_set_plane_spectr_file_head(plane_mesh_file)
       call set_parameters_4_FFT(num_pe, ist, ied, iint)
 !
 !

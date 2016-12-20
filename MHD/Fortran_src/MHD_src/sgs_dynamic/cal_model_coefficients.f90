@@ -155,7 +155,7 @@
       if(my_rank .eq. 0) write(*,*)                                     &
      &            'set Csim', i_step_MHD, i_step_sgs_coefs
 !
-      if(iflag_t_evo_4_temp .ne. id_no_evolution) then
+      if(evo_temp%iflag_scheme .ne. id_no_evolution) then
         if (iflag_SGS_heat .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_hf_dynamic'
           call cal_sgs_hf_dynamic                                       &
@@ -194,7 +194,7 @@
       end if
 !
 !
-      if(iflag_t_evo_4_velo .ne. id_no_evolution) then
+      if(evo_velo%iflag_scheme .ne. id_no_evolution) then
 !
         if (iflag_SGS_inertia .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_m_flux_dynamic'
@@ -274,7 +274,7 @@
 !
 !
 !
-      if(iflag_t_evo_4_magne .gt. id_no_evolution) then
+      if(evo_magne%iflag_scheme .gt. id_no_evolution) then
         if(iflag_SGS_induction .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'cal_sgs_induct_t_dynamic'
@@ -312,7 +312,7 @@
      &       f_l, f_nl, nod_fld, diff_coefs)
         end if
 !
-      else if(iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+      else if(evo_vect_p%iflag_scheme .gt. id_no_evolution) then
 !
         if(iflag_SGS_induction .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_uxb_dynamic'

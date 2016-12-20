@@ -4,7 +4,11 @@
 !      Written by Kemorin
 !      Modified by Kemorin on Dec., 2006
 !
-!      subroutine choose_surface_mesh(file_head, ele, surf, edge)
+!!      subroutine choose_surface_mesh(mesh_file, ele, surf, edge)
+!!        type(field_IO_params), intent(inout) :: mesh_file
+!!        type(element_data), intent(inout) :: ele
+!!        type(surface_data), intent(inout) :: surf
+!!        type(edge_data), intent(inout) :: edge
 !
       module const_surface_mesh
 !
@@ -13,17 +17,18 @@
       use m_constants
       use m_machine_parameter
       use m_file_format_switch
-      use m_read_mesh_data
       use m_geometry_data_4_merge
       use m_surface_mesh_4_merge
 !
       use t_geometry_data
       use t_surface_data
       use t_edge_data
+      use t_file_IO_parameter
 !
       implicit none
 !
       private :: const_surf_mesh_4_viewer, set_source_mesh_parameter
+      private :: find_mesh_format_4_viewer
 !
 !------------------------------------------------------------------
 !
@@ -31,118 +36,71 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine choose_surface_mesh(file_head, ele, surf, edge)
+      subroutine choose_surface_mesh(mesh_file, ele, surf, edge)
 !
+      type(field_IO_params), intent(inout) :: mesh_file
       type(element_data), intent(inout) :: ele
       type(surface_data), intent(inout) :: surf
       type(edge_data), intent(inout) :: edge
 !
-      character(len=kchara), intent(in) :: file_head
 !
-!
-      mesh_file_head =    file_head
-      surface_file_head = file_head
-      call find_mesh_format_4_viewer
-      call const_surf_mesh_4_viewer(ele, surf, edge)
+      surface_file_head = mesh_file%file_prefix
+      call find_mesh_format_4_viewer(mesh_file)
+      call count_subdomains_4_viewer(mesh_file)
+      call const_surf_mesh_4_viewer(mesh_file, ele, surf, edge)
 !
       end subroutine choose_surface_mesh
 !
 !------------------------------------------------------------------
 !
-      subroutine find_mesh_format_4_viewer
+      subroutine find_mesh_format_4_viewer(mesh_file)
 !
+      use t_file_IO_parameter
       use m_file_format_switch
-      use set_mesh_file_names
-      use set_parallel_file_name
       use mesh_IO_select
-      use mesh_file_IO
 !
-      character(len=kchara) :: fname, fname_tmp
-      integer(kind = kint) :: iflag
-!
+      type(field_IO_params), intent(inout) ::  mesh_file
 !
 !  Detect file format
-      iflag = 0
-      call set_mesh_file_name(mesh_file_head, id_gzip_txt_file_fmt,     &
-     &   izero, fname)
-      open(15,file = fname, status='old', action='read', err=98)
-      close(15)
-      iflag = 1
-      iflag_mesh_file_fmt = id_gzip_txt_file_fmt
-   98 continue
+      mesh_file%iflag_format = id_gzip_txt_file_fmt
+      if(check_exist_mesh(mesh_file, izero) .gt. 0) return
 !
-      if(iflag .eq. 0) then
-        call set_mesh_file_name(mesh_file_head, id_ascii_file_fmt,      &
-     &      izero, fname)
-        open(15,file = fname, status='old', action='read', err=97)
-        close(15)
-        iflag = 1
-        iflag_mesh_file_fmt = id_ascii_file_fmt
-      end if
-   97 continue
+      mesh_file%iflag_format = id_ascii_file_fmt
+      if(check_exist_mesh(mesh_file, izero) .gt. 0) return
 !
-      if(iflag .eq. 0) then
-        call set_mesh_file_name(mesh_file_head, id_binary_file_fmt,     &
-     &      izero, fname)
-        open(15,file = fname, status='old', action='read', err=96)
-        close(15)
-        iflag = 1
-        iflag_mesh_file_fmt = id_binary_file_fmt
-      end if
-   96 continue
+      mesh_file%iflag_format = id_binary_file_fmt
+      if(check_exist_mesh(mesh_file, izero) .gt. 0) return
 !
-      if(iflag .eq. 0) then
-        call set_mesh_file_name(mesh_file_head, id_gzip_bin_file_fmt,   &
-     &      izero, fname)
-        open(15,file = fname, status='old', action='read', err=95)
-        close(15)
-        iflag = 1
-        iflag_mesh_file_fmt = id_gzip_bin_file_fmt
-      end if
-   95 continue
+      mesh_file%iflag_format = id_gzip_bin_file_fmt
+      if(check_exist_mesh(mesh_file, izero) .gt. 0) return
 !
-      if(iflag .eq. 0) then
-        call add_int_suffix(izero, mesh_file_head, fname_tmp)
-        call add_gzip_extension(fname_tmp, fname)
-        open(15,file = fname, status='old', action='read', err=94)
-        close(15)
-        iflag = 1
-        iflag_mesh_file_fmt = id_gzip_txt_file_fmt
-      end if
-   94 continue
+      mesh_file%iflag_format = id_gzip_txt_file_fmt
+      if(check_exist_mesh(mesh_file, izero) .gt. 0) return
 !
-      if(iflag .eq. 0) then
-        call add_int_suffix(izero, mesh_file_head, fname)
-        open(15,file = fname, status='old', action='read', err=93)
-        close(15)
-        iflag = 1
-        iflag_mesh_file_fmt = id_ascii_file_fmt
-      end if
-   93 continue
-!
-      if(iflag .eq. 0) stop 'I cannot find mesh file!!'
-!
-!   count number of subdomains
-!
-      num_pe = 0
-      do
-        call set_mesh_file_name(mesh_file_head, iflag_mesh_file_fmt,    &
-     &      num_pe, fname)
-!
-        write(*,*) 'mesh file name: ', trim(fname)
-        open(15,file = fname, status='old', action='read', err=99)
-        close(15)
-        num_pe = num_pe + 1
-      end do
-  99  continue
-!
-      write(*,*) 'Number of subdomains: ', num_pe
+      stop 'I cannot find mesh file!!'
 !
       end subroutine find_mesh_format_4_viewer
 !
 !------------------------------------------------------------------
 !
-      subroutine const_surf_mesh_4_viewer(ele, surf, edge)
+      subroutine count_subdomains_4_viewer(mesh_file)
+!
+      use mesh_IO_select
+!
+      type(field_IO_params), intent(in) ::  mesh_file
+!
+      num_pe = 0
+      do
+        if(check_exist_mesh(mesh_file, num_pe) .eq. 0) exit
+      end do
+!
+      write(*,*) 'Number of subdomains: ', num_pe
+!
+      end subroutine count_subdomains_4_viewer
+!
+!------------------------------------------------------------------
+!
+      subroutine const_surf_mesh_4_viewer(mesh_file, ele, surf, edge)
 !
       use set_merged_geometry
       use const_merged_surf_data
@@ -153,6 +111,7 @@
       use set_nodes_4_groups_viewer
       use viewer_IO_select_4_zlib
 !
+      type(field_IO_params), intent(in) :: mesh_file
       type(element_data), intent(inout) :: ele
       type(surface_data), intent(inout) :: surf
       type(edge_data), intent(inout) :: edge
@@ -161,7 +120,7 @@
 !  set mesh_information
 !
        write(*,*) 'set_overlapped_mesh_and_group'
-       call set_overlapped_mesh_and_group(ele%nnod_4_ele)
+       call set_overlapped_mesh_and_group(mesh_file, ele%nnod_4_ele)
 !
        call dealloc_subdomain_groups
 !
@@ -200,7 +159,7 @@
        call s_set_nodes_4_groups_viewer                                 &
      &    (surf%nnod_4_surf, edge%nnod_4_edge)
 !
-      call sel_output_surface_grid(iflag_mesh_file_fmt,                 &
+      call sel_output_surface_grid(mesh_file%iflag_format,              &
      &    surf%nnod_4_surf, edge%nnod_4_edge)
 !
       end subroutine const_surf_mesh_4_viewer

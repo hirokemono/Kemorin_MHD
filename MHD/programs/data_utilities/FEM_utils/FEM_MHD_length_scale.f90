@@ -11,7 +11,7 @@
 !!      subroutine deallocate_work_4_lscale
 !!
 !!      subroutine const_MHD_length_scales                              &
-!!     &         (node, iphys, nod_fld, istep_ucd, ucd)
+!!     &         (node, iphys, nod_fld, istep_ucd, t_IO, ucd)
 !!      subroutine find_field_address_4_lscale(nod_fld, iphys)
 !!@endverbatim
 !!
@@ -64,9 +64,10 @@
 !-----------------------------------------------------------------------
 !
       subroutine const_MHD_length_scales                                &
-     &         (node, iphys, nod_fld, istep_ucd, ucd)
+     &         (node, iphys, nod_fld, istep_ucd, t_IO, ucd)
 !
       use calypso_mpi
+      use t_time_data_IO
       use t_ucd_data
       use m_phys_labels
       use m_ctl_params_4_prod_udt
@@ -77,6 +78,7 @@
       type(node_data), intent(in) :: node
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
+      type(time_params_IO), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
       integer(kind = kint), intent(in) :: istep_ucd
       integer(kind = kint) :: icou
@@ -124,7 +126,7 @@
       end if
 !
       call set_ucd_file_prefix(result_udt_file_head, ucd)
-      call sel_write_udt_file(my_rank, istep_ucd, ucd)
+      call sel_write_udt_file(my_rank, istep_ucd, t_IO, ucd)
       call deallocate_ucd_data(ucd)
 !
       end subroutine const_MHD_length_scales

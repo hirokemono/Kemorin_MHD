@@ -27,7 +27,7 @@
       use m_setting_4_ini
       use m_geometry_data_4_merge
       use m_ctl_data_4_cub_kemo
-      use m_time_data_IO
+      use m_cube_files_data
       use set_ctl_data_plane_mesh
       use set_parallel_file_name
       use mesh_IO_select
@@ -37,15 +37,19 @@
 !
       use t_mesh_data
       use t_geometry_data
+      use t_time_data_IO
       use t_field_data_IO
+      use t_file_IO_parameter
 !
       implicit none
 !
       integer(kind=kint) :: ip, id_rank, ierr, inod
       integer(kind=kint) :: np, jst, jed
       type(node_data) :: node_plane
+      type(time_params_IO), save :: plane_t_IO
       type(field_IO) :: plane_fst_IO
       type(mesh_geometry) :: mesh_IO_p
+      type(field_IO_params) ::  cube_mesh_file
 !
       character(len=kchara), parameter                                  &
      &      :: org_rst_f_header = 'restart/rst'
@@ -58,10 +62,8 @@
       call s_set_ctl_data_plane_mesh
 !
       call set_initial_components
+      call reset_time_data_IO(plane_t_IO)
 !
-      i_time_step_IO = izero
-      time_IO =    zero
-      delta_t_IO = zero
       num_pe = ndx * ndy * ndz
 !
       merged%node%numnod = node_plane%numnod
@@ -78,9 +80,10 @@
 !
 !    read mesh file
 !
-        iflag_mesh_file_fmt = izero
-        mesh_file_head = 'mesh/in'
-        call sel_read_geometry_size(id_rank, mesh_IO_p, ierr)
+        call copy_mesh_format_and_prefix                                &
+     &     (mesh_file_header, id_ascii_file_fmt, cube_mesh_file)
+        call sel_read_geometry_size                                     &
+     &     (cube_mesh_file, id_rank, mesh_IO_p, ierr)
         if(ierr .gt. 0) stop 'Mesh is wrong!!'
 !
         call copy_node_geometry_types(mesh_IO_p%node, node_plane)
@@ -145,7 +148,7 @@
         call set_field_file_fmt_prefix                                  &
      &     (izero, org_rst_f_header, plane_fst_IO)
         call sel_write_step_FEM_field_file                              &
-     &     (num_pe, id_rank, izero, plane_fst_IO)
+     &     (num_pe, id_rank, izero, plane_t_IO, plane_fst_IO)
 !
         call dealloc_phys_name_IO(plane_fst_IO)
         call dealloc_phys_data_IO(plane_fst_IO)

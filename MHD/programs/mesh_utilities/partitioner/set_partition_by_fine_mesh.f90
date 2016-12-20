@@ -31,7 +31,6 @@
 !
       use m_ctl_param_partitioner
       use m_subdomain_table_IO
-      use m_read_mesh_data
       use m_domain_group_4_partition
       use m_ctl_param_partitioner
       use m_interpolate_table_IO
@@ -45,9 +44,7 @@
 !
 !     read finer mesh
 !
-      iflag_mesh_file_fmt = iflag_para_mesh_file_fmt
-      mesh_file_head = finer_mesh_file_head
-      call input_mesh_geometry(izero, finermesh, ierr)
+      call input_mesh_geometry(finer_mesh_file, izero, finermesh, ierr)
       if(ierr .gt. 0) stop 'finer mesh is wrong!!'
 !
 !     read interpolate table

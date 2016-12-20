@@ -9,6 +9,7 @@
 !
       use m_precision
       use m_error_IDs
+      use t_file_IO_parameter
 !
       implicit    none
 !
@@ -25,24 +26,18 @@
       use m_ctl_data_4_platforms
       use m_ctl_data_4_2nd_data
       use m_control_data_add_ele_grp
-      use m_read_mesh_data
       use m_add_ele_grp_parameter
       use set_ctl_parallel_platform
       use set_control_platform_data
+      use set_ctl_params_2nd_files
 !
       real(kind = kreal) :: pi
 !
 !
       call check_control_num_domains
       call turn_off_debug_flag_by_ctl(my_rank)
-      call set_control_mesh_def
-      original_mesh_head = mesh_file_head
-!
-      if (new_mesh_prefix%iflag .gt. 0) then
-        modified_mesh_head = new_mesh_prefix%charavalue
-      else
-        call calypso_MPI_abort(ierr_mesh, 'set modifield mesh prefix')
-      end if
+      call set_control_mesh_def(original_mesh_file)
+      call set_control_new_mesh_file_def(modified_mesh_file)
 !
       if (i_2nd_grp_direction .gt. 0) then
         if    (   sph_grp_direction_ctl .eq. 'sphere'                   &

@@ -8,7 +8,8 @@
 !>@brief  Subroutines to set coeffiecient of each term
 !!
 !!@verbatim
-!!      subroutine set_material_property
+!!      subroutine set_material_property(iphys)
+!!        type(phys_address), intent(in) :: iphys
 !!@endverbatim
 !!
 !
@@ -16,6 +17,8 @@
 !
       use m_precision
       use m_constants
+!
+      use t_phys_address
 !
       implicit none
 !
@@ -25,20 +28,20 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_material_property
+      subroutine set_material_property(iphys)
 !
       use calypso_mpi
       use m_control_parameter
       use m_normalize_parameter
-      use m_node_phys_data
       use m_physical_property
       use m_t_int_parameter
       use construct_MHD_coefficient
 !
+      type(phys_address), intent(in) :: iphys
+!
 !    For thermal
 !
-!
-      if (iflag_t_evo_4_temp .gt. id_no_evolution) then
+      if (evo_temp%iflag_scheme .gt. id_no_evolution) then
 !
         coef_temp =   one
         coef_d_temp = one
@@ -57,14 +60,14 @@
      &      depth_low_t, depth_high_t)
 !
         call set_implicit_4_inf_viscous(coef_temp,                      &
-     &      coef_imp_t, coef_exp_t)
+     &      evo_temp%coef_imp, evo_temp%coef_exp)
 !
         coef_nega_t = - coef_temp
       end if
 !
 !    For convection
 !
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if(evo_velo%iflag_scheme .gt. id_no_evolution) then
 !
         coef_velo =     one
         coef_d_velo =   one
@@ -88,7 +91,7 @@
      &      depth_low_t, depth_high_t)
 !
         call set_implicit_4_inf_viscous(coef_velo,                      &
-     &      coef_imp_v, coef_exp_v)
+     &      evo_velo%coef_imp, evo_velo%coef_exp)
 !
         acoef_press = one / coef_press
         coef_nega_v = - coef_velo
@@ -122,8 +125,8 @@
 !
 !   For Induction
 !
-      if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
-     &     .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+      if (evo_magne%iflag_scheme .gt. id_no_evolution                   &
+     &     .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
 !
         coef_magne =   one
         coef_mag_p =   one
@@ -145,15 +148,20 @@
         call construct_coefficient(coef_induct,                         &
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_induction,  &
      &      depth_low_t, depth_high_t)
+      end if
 !
+      if(evo_magne%iflag_scheme .gt. id_no_evolution) then
         call set_implicit_4_inf_viscous(coef_magne,                     &
-     &      coef_imp_b, coef_exp_b)
-!
+     &      evo_magne%coef_imp, evo_magne%coef_exp)
+      end if
+      if(evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+        call set_implicit_4_inf_viscous(coef_magne,                     &
+     &      evo_vect_p%coef_imp, evo_vect_p%coef_exp)
       end if
 !
 !   For light element
 !
-      if (iflag_t_evo_4_composit .gt. id_no_evolution) then
+      if (evo_comp%iflag_scheme .gt. id_no_evolution) then
         coef_light =    one
         coef_d_light =  one
         coef_c_src =    one
@@ -171,7 +179,7 @@
      &     depth_low_t, depth_high_t)
 !
         call set_implicit_4_inf_viscous(coef_light,                     &
-     &      coef_imp_c, coef_exp_c)
+     &      evo_comp%coef_imp, evo_comp%coef_exp)
 !
         coef_nega_c = - coef_light
       end if
@@ -180,7 +188,7 @@
 !
       if (my_rank .eq. 0) then
         write(*,*)''
-        if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+        if(evo_velo%iflag_scheme .gt. id_no_evolution) then
           write(*,*) 'coefficient for velocity:            ',           &
      &              coef_velo
           write(*,*) 'coefficient for pressure:            ',           &
@@ -197,7 +205,7 @@
      &         'coefficient for Lorentz force:       ', coef_lor
         end if
 !
-        if (iflag_t_evo_4_temp .gt. id_no_evolution) then
+        if (evo_temp%iflag_scheme .gt. id_no_evolution) then
           write(*,*) 'coefficient for temperature:         ',           &
      &              coef_temp
           write(*,*) 'coefficient for thermal diffusion:   ',           &
@@ -206,8 +214,8 @@
      &         'coefficient for heat source:         ', coef_h_src
         end if
 !
-        if (iflag_t_evo_4_magne .gt. id_no_evolution                    &
-     &     .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+        if (evo_magne%iflag_scheme .gt. id_no_evolution                 &
+     &     .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
           write(*,*) 'coefficient for magnetic field:      ',           &
      &              coef_magne
           write(*,*) 'coefficient for magnetic potential:  ',           &
@@ -218,7 +226,7 @@
      &              coef_induct
         end if
 !
-        if (iflag_t_evo_4_composit .gt. id_no_evolution) then
+        if (evo_comp%iflag_scheme .gt. id_no_evolution) then
           write(*,*) 'coefficient for composition:         ',           &
      &              coef_light
           write(*,*) 'coefficient for composite diffusion: ',           &

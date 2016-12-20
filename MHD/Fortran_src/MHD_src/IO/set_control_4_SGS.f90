@@ -57,8 +57,8 @@
       end if
 !
       if(sph_filter_ctl(1)%sphere_filter_width_ctl%iflag .gt. 0) then
-        sph_filters(1)%sph_filter%k_width                               &
-     &     = sph_filter_ctl(1)%sphere_filter_width_ctl%intvalue
+        sph_filters(1)%sph_filter%f_width                               &
+     &     = sph_filter_ctl(1)%sphere_filter_width_ctl%realvalue
       end if
 !
 !      if(sph_filter_ctl(2)%maximum_moments_ctl%iflag .gt. 0) then
@@ -81,9 +81,9 @@
 !      end if
 !
 !      if(sph_filter_ctl(2)%sphere_filter_width_ctl%iflag .gt. 0) then
-!        sph_filters(2)%sph_filter%k_width                              &
-!     &     = sph_filter_ctl(2)%sphere_filter_width_ctl%intvalue
-!        sph_filters(3)%sph_filter%k_width                              &
+!        sph_filters(2)%sph_filter%f_width                              &
+!     &     = sph_filter_ctl(2)%sphere_filter_width_ctl%realvalue
+!        sph_filters(3)%sph_filter%f_width                              &
 !     &     = itwo * sph_filter_ctl(2)%sphere_filter_width_ctl%intvalue
 !      end if
 !

@@ -1,17 +1,19 @@
 !m_add_ele_grp_parameter.f90
 !      module m_add_ele_grp_parameter
 !
-      module m_add_ele_grp_parameter
-!
 !      Written by H. Matsui on Oct., 2007
 !
+      module m_add_ele_grp_parameter
+!
       use m_precision
+      use t_file_IO_parameter
 !
       implicit    none
 !
-!
-      character(len=kchara) :: original_mesh_head
-      character(len=kchara) :: modified_mesh_head
+!>      Structure for field data IO paramters
+      type(field_IO_params), save ::  original_mesh_file
+!>      Structure for field data IO paramters
+      type(field_IO_params), save ::  modified_mesh_file
 !
       integer (kind=kint) :: iflag_grping_direction = 0
 !

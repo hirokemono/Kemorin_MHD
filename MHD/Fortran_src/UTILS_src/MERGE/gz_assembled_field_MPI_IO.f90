@@ -8,9 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine gz_write_step_asbl_fld_mpi                           &
-!!     &         (file_name, nprocs_in, nloop, fld_IO)
+!!     &         (file_name, nprocs_in, nloop, fld_IO, t_IO)
 !!      subroutine gz_write_step_asbl_fld_mpi_b                         &
-!!     &         (file_name, nprocs_in, id_rank, nloop, fld_IO)
+!!     &         (file_name, nprocs_in, id_rank, nloop, fld_IO, t_IO)
+!!        type(field_IO), intent(in) :: fld_IO(nloop)
+!!        type(time_params_IO), intent(in) :: t_IO
 !!
 !!   Data format for the merged ascii field data
 !!     1.   Number of process
@@ -42,6 +44,7 @@
       use m_constants
       use calypso_mpi
 !
+      use t_time_data_IO
       use t_field_data_IO
       use t_calypso_mpi_IO_param
       use m_calypso_mpi_IO
@@ -91,7 +94,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_write_step_asbl_fld_mpi                             &
-     &         (file_name, nprocs_in, nloop, fld_IO)
+     &         (file_name, nprocs_in, nloop, fld_IO, t_IO)
 !
       use field_data_IO
       use gz_field_file_MPI_IO
@@ -102,6 +105,7 @@
       integer(kind = kint), intent(in) :: nprocs_in
 !
       integer(kind = kint), intent(in) :: nloop
+      type(time_params_IO), intent(in) :: t_IO
       type(field_IO), intent(in) :: fld_IO(nloop)
 !
       integer ::  id_fld
@@ -118,7 +122,7 @@
 !
       ioff_gl = 0
       call write_field_head_gz_mpi                                      &
-     &   (id_fld, nprocs_in, ioff_gl, fld_IO(1)%num_field_IO,           &
+     &   (id_fld, nprocs_in, ioff_gl, t_IO, fld_IO(1)%num_field_IO,     &
      &    fld_IO(1)%num_comp_IO, fld_IO(1)%istack_numnod_IO)
 !
       icou = 1
@@ -138,7 +142,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine gz_write_step_asbl_fld_mpi_b                           &
-     &         (file_name, nprocs_in, id_rank, nloop, fld_IO)
+     &         (file_name, nprocs_in, id_rank, nloop, fld_IO, t_IO)
 !
       use gz_field_file_MPI_IO_b
       use gz_MPI_binary_head_IO
@@ -152,6 +156,7 @@
 !
       integer(kind = kint), intent(in) :: nloop
       type(field_IO), intent(in) :: fld_IO(nloop)
+      type(time_params_IO), intent(in) :: t_IO
 !
       type(calypso_MPI_IO_params) :: IO_param
 !
@@ -164,8 +169,9 @@
      &   (file_name, nprocs_in, id_rank, IO_param)
 !
       call gz_write_field_head_mpi_b(IO_param,                          &
-     &      fld_IO(1)%num_field_IO, fld_IO(1)%num_comp_IO,              &
-     &      fld_IO(1)%istack_numnod_IO)
+     &    t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO,           &
+     &    fld_IO(1)%num_field_IO, fld_IO(1)%num_comp_IO,                &
+     &    fld_IO(1)%istack_numnod_IO)
 !
       call gz_mpi_write_mul_charahead_b                                 &
      &   (IO_param, fld_IO(1)%num_field_IO, fld_IO(1)%fld_name)

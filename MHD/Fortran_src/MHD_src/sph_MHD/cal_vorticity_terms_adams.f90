@@ -10,7 +10,7 @@
 !!      subroutine cal_vorticity_eq_adams(ipol, itor, kr_in, kr_out,    &
 !!     &          nnod_rj, jmax, ntot_phys_rj, d_rj)
 !!      subroutine cal_vorticity_eq_euler(ipol, itor, kr_in, kr_out,    &
-!!     &          nnod_rj, jmax, ntot_phys_rj, d_rj)
+!!     &          coef_exp, nnod_rj, jmax, ntot_phys_rj, d_rj)
 !!
 !!      subroutine set_MHD_terms_to_force                               &
 !!     &         (ipol, itor, it_rot_buo, nnod_rj, ntot_phys_rj, d_rj)
@@ -56,11 +56,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_vorticity_eq_adams(ipol, itor, kr_in, kr_out,      &
-     &          nnod_rj, jmax, ntot_phys_rj, d_rj)
+     &          coef_exp, nnod_rj, jmax, ntot_phys_rj, d_rj)
 !
       use m_physical_property
 !
       type(phys_address), intent(in) :: ipol, itor
+      real(kind = kreal), intent(in) :: coef_exp
       integer(kind = kint), intent(in) :: kr_in, kr_out
       integer(kind = kint), intent(in) :: nnod_rj, jmax, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
@@ -73,13 +74,13 @@
 !$omp do private (inod)
       do inod = ist, ied
         d_rj(inod,ipol%i_vort) = d_rj(inod,ipol%i_vort)                 &
-     &                 + dt * (coef_exp_v * d_rj(inod,ipol%i_w_diffuse) &
-     &                           + adam_0 * d_rj(inod,ipol%i_forces)    &
-     &                           + adam_1 * d_rj(inod,ipol%i_pre_mom))
+     &                 + dt * (coef_exp * d_rj(inod,ipol%i_w_diffuse)   &
+     &                         + adam_0 * d_rj(inod,ipol%i_forces)      &
+     &                         + adam_1 * d_rj(inod,ipol%i_pre_mom))
         d_rj(inod,itor%i_vort) = d_rj(inod,itor%i_vort)                 &
-     &                 + dt * (coef_exp_v * d_rj(inod,itor%i_w_diffuse) &
-     &                           + adam_0 * d_rj(inod,itor%i_forces)    &
-     &                           + adam_1 * d_rj(inod,itor%i_pre_mom))
+     &                 + dt * (coef_exp * d_rj(inod,itor%i_w_diffuse)   &
+     &                         + adam_0 * d_rj(inod,itor%i_forces)      &
+     &                         + adam_1 * d_rj(inod,itor%i_pre_mom))
 !
         d_rj(inod,ipol%i_pre_mom) = d_rj(inod,ipol%i_forces)
         d_rj(inod,itor%i_pre_mom) = d_rj(inod,itor%i_forces)
@@ -91,11 +92,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_vorticity_eq_euler(ipol, itor, kr_in, kr_out,      &
-     &          nnod_rj, jmax, ntot_phys_rj, d_rj)
+     &          coef_exp, nnod_rj, jmax, ntot_phys_rj, d_rj)
 !
       use m_physical_property
 !
       type(phys_address), intent(in) :: ipol, itor
+      real(kind = kreal), intent(in) :: coef_exp
       integer(kind = kint), intent(in) :: kr_in, kr_out
       integer(kind = kint), intent(in) :: nnod_rj, jmax, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
@@ -108,12 +110,12 @@
 !$omp do private (inod)
       do inod = ist, ied
         d_rj(inod,ipol%i_vort) = d_rj(inod,ipol%i_vort)                 &
-     &               + dt * (coef_exp_v *  d_rj(inod,ipol%i_w_diffuse)  &
-     &                                   + d_rj(inod,ipol%i_forces) )
+     &               + dt * (coef_exp *  d_rj(inod,ipol%i_w_diffuse)    &
+     &                                 + d_rj(inod,ipol%i_forces) )
 !
         d_rj(inod,itor%i_vort) = d_rj(inod,itor%i_vort)                 &
-     &               + dt * (coef_exp_v *  d_rj(inod,itor%i_w_diffuse)  &
-     &                                   + d_rj(inod,itor%i_forces) )
+     &               + dt * (coef_exp *  d_rj(inod,itor%i_w_diffuse)    &
+     &                                 + d_rj(inod,itor%i_forces) )
        end do
 !$omp end do
 !

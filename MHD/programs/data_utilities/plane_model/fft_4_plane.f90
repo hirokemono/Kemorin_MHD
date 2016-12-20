@@ -14,6 +14,7 @@
       use m_ctl_data_4_plane_model
       use m_geometry_data_4_merge
 !
+      use t_time_data_IO
       use t_ucd_data
 !
       use set_geometry_to_merge
@@ -29,6 +30,9 @@
 ! . for local 
 !  ===========
 
+      type(field_IO_params), save ::  plane_mesh_file
+!
+      type(time_params_IO), save :: fft_t_IO
       type(ucd_data), save :: fft_ucd
 !
       integer(kind=kint ) :: istep
@@ -53,8 +57,7 @@
 !
 !     read outline of mesh
 !
-      write(*,*) 's_set_plane_spectr_file_head'
-      call s_set_plane_spectr_file_head
+      call s_set_plane_spectr_file_head(plane_mesh_file)
       call set_parameters_4_FFT(num_pe, ist, ied, iint)
 !
       call s_set_numnod_4_plane
@@ -66,7 +69,7 @@
 !   read field name and number of components
 !
       write(*,*) 'init_ucd_data_4_FFT'
-      call init_ucd_data_4_FFT(ist, fft_ucd)
+      call init_ucd_data_4_FFT(ist, fft_t_IO, fft_ucd)
 !
       call set_fields_4_FFT
 !
@@ -90,7 +93,7 @@
 !
       do istep = ist, ied, iint
 !
-       call s_read_udt_data_4_FFT(istep, fft_ucd)
+       call s_read_udt_data_4_FFT(istep, fft_t_IO, fft_ucd)
 !
 !  -------   Fourier Transform
 !

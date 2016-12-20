@@ -22,7 +22,11 @@
       use m_SPH_transforms
       use calypso_mpi
 !
+      use t_time_data_IO
+!
       implicit none
+!
+      type(time_params_IO), save, private :: time_IO
 !
 ! ----------------------------------------------------------------------
 !
@@ -51,8 +55,10 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_sph_name_rj_to_rtp'
       call copy_sph_name_rj_to_rtp(rj_fld)
+      call calypso_mpi_barrier
 !
       call alloc_phys_data_type(sph_mesh%sph%sph_rj%nnod_rj, rj_fld)
+      call calypso_mpi_barrier
 !
 !  ---- initialize spherical harmonics transform
 !
@@ -79,7 +85,6 @@
      &         (i_step, sph_mesh, rj_fld, fld_IO)
 !
       use m_t_step_parameter
-      use m_time_data_IO
       use m_ctl_params_sph_trans
       use t_spheric_mesh
       use t_phys_data
@@ -107,18 +112,15 @@
 !     data output
 !
       if (iflag_debug.gt.0)                                             &
-     &    write(*,*) 'copy_rj_all_phys_data_to_IO'
-      call copy_rj_all_phys_data_to_IO                                  &
-     &   (sph_mesh%sph%sph_rj%nnod_rj, rj_fld, fld_IO)
+     &    write(*,*) 'copy_rj_phys_data_to_IO'
+      call copy_rj_phys_data_to_IO(rj_fld%num_phys, rj_fld, fld_IO)
 !
-      i_time_step_IO = 0
-      time_IO = zero
-      delta_t_IO = zero
-      call set_field_file_fmt_prefix                                    &
+     call reset_time_data_IO(time_IO)
+     call set_field_file_fmt_prefix                                     &
      &   (sph_file_trns_p%iflag_format, sph_file_trns_p%file_prefix,    &
      &    fld_IO)
       call sel_write_step_SPH_field_file                                &
-     &   (nprocs, my_rank, i_step, fld_IO)
+     &   (nprocs, my_rank, i_step, time_IO, fld_IO)
 !
       end subroutine SPH_analyze_sph_trans
 !
@@ -128,7 +130,6 @@
      &         (i_step, sph_mesh, rj_fld, fld_IO)
 !
       use m_t_step_parameter
-      use m_time_data_IO
       use t_spheric_mesh
       use t_phys_data
       use t_field_data_IO
@@ -161,17 +162,14 @@
 !     data output
 !
       if (iflag_debug.gt.0)                                             &
-     &    write(*,*) 'copy_rj_all_phys_data_to_IO'
-      call copy_rj_all_phys_data_to_IO                                  &
-     &   (sph_mesh%sph%sph_rj%nnod_rj, rj_fld, fld_IO)
+     &    write(*,*) 'copy_rj_phys_data_to_IO'
+      call copy_rj_phys_data_to_IO(rj_fld%num_phys, rj_fld, fld_IO)
       call count_number_of_node_stack                                   &
      &   (fld_IO%nnod_IO, fld_IO%istack_numnod_IO)
 !
-      i_time_step_IO = 0
-      time_IO = zero
-      delta_t_IO = zero
+      call reset_time_data_IO(time_IO)
       call sel_write_step_SPH_field_file                                &
-     &   (nprocs, my_rank, i_step, fld_IO)
+     &   (nprocs, my_rank, i_step, time_IO, fld_IO)
 !
       end subroutine SPH_analyze_sph_zm_trans
 !

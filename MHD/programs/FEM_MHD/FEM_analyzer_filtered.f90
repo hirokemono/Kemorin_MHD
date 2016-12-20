@@ -12,10 +12,13 @@
       use m_work_time
       use m_t_step_parameter
       use m_t_int_parameter
+      use t_time_data_IO
 !
       use calypso_mpi
 !
       implicit none
+!
+      type(time_params_IO), save, private :: SNAP_time_IO
 !
 ! ----------------------------------------------------------------------
 !
@@ -44,8 +47,6 @@
       use m_bc_data_velo
       use m_flexible_time_step
 !
-      use read_udt_4_snapshot
-!
       use nod_phys_send_recv
       use lead_physical_values
       use update_after_evolution
@@ -60,6 +61,7 @@
       use output_viz_file_control
       use set_exit_flag_4_visualizer
       use filter_all_fields
+      use input_control
 !
       use check_deltat_by_prev_rms
 !
@@ -77,11 +79,13 @@
 !
       if (i_step_output_rst .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'input_restart_4_snapshot'
-        call input_restart_4_snapshot(mesh1%node, nod_fld1)
+        call input_restart_4_snapshot                                   &
+     &     (mesh1%node, nod_fld1, SNAP_time_IO)
 !
       else if (i_step_output_ucd .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'read_udt_4_snap'
-        call read_udt_4_snap(istep_max_dt)
+        call read_udt_4_snap                                            &
+     &     (istep_max_dt, FEM_udt_org_param, nod_fld1, SNAP_time_IO)
         time = time_init + dt*dble(istep_max_dt)
         i_step_MHD = istep_max_dt
       end if

@@ -7,10 +7,12 @@
 !> @brief gzipped UCD ascii data IO
 !!
 !!@verbatim
-!!      subroutine write_ucd_2_gz_fld_file(my_rank, istep, ucd)
+!!      subroutine write_ucd_2_gz_fld_file(my_rank, istep, t_IO, ucd)
 !!
-!!      subroutine read_ucd_2_gz_fld_file(my_rank, istep, ucd)
-!!      subroutine read_alloc_ucd_2_gz_fld_file(my_rank, istep, ucd)
+!!      subroutine read_ucd_2_gz_fld_file(my_rank, istep, t_IO, ucd)
+!!      subroutine read_alloc_ucd_2_gz_fld_file                         &
+!!     &         (my_rank, istep, t_IO, ucd)
+!!        type(time_params_IO), intent(inout) :: t_IO
 !!        type(ucd_data), intent(inout) :: ucd
 !!@endverbatim
 !!
@@ -23,9 +25,9 @@
       use m_precision
       use m_machine_parameter
 !
-      use m_time_data_IO
       use m_field_file_format
 !
+      use t_time_data_IO
       use t_ucd_data
 !
       use gz_field_data_IO
@@ -40,9 +42,11 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine write_ucd_2_gz_fld_file(my_rank, istep, ucd)
+      subroutine write_ucd_2_gz_fld_file(my_rank, istep, t_IO, ucd)
 !
       integer(kind=kint), intent(in) :: my_rank, istep
+!
+      type(time_params_IO), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
 !
       character(len=kchara) :: gzip_name
@@ -58,7 +62,8 @@
       call open_wt_gzfile_f(gzip_name)
 !
       nnod4 = int(ucd%nnod)
-      call write_gz_step_data(my_rank)
+      call write_gz_step_data                                           &
+     &   (my_rank, t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO)
       call write_gz_field_data                                          &
      &         (nnod4, ucd%num_field, ucd%ntot_comp,                    &
      &          ucd%num_comp, ucd%phys_name, ucd%d_ucd)
@@ -70,9 +75,11 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine read_ucd_2_gz_fld_file(my_rank, istep, ucd)
+      subroutine read_ucd_2_gz_fld_file(my_rank, istep, t_IO, ucd)
 !
       integer(kind=kint), intent(in) :: my_rank, istep
+!
+      type(time_params_IO), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
       character(len=kchara) :: gzip_name
@@ -87,7 +94,8 @@
 !
       call open_rd_gzfile_f(gzip_name)
 !
-      call read_gz_step_data(id_rank)
+      call read_gz_step_data                                            &
+     &   (id_rank, t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO)
       call skip_gz_comment_int2(nnod4, ucd%num_field)
       call read_gz_multi_int(ucd%num_field, ucd%num_comp)
 !
@@ -102,9 +110,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_alloc_ucd_2_gz_fld_file(my_rank, istep, ucd)
+      subroutine read_alloc_ucd_2_gz_fld_file                           &
+     &         (my_rank, istep, t_IO, ucd)
 !
       integer(kind=kint), intent(in) :: my_rank, istep
+!
+      type(time_params_IO), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
       character(len=kchara) :: gzip_name
@@ -119,7 +130,8 @@
 !
       call open_rd_gzfile_f(gzip_name)
 !
-      call read_gz_step_data(id_rank)
+      call read_gz_step_data                                            &
+     &   (id_rank, t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO)
       call skip_gz_comment_int2(nnod4, ucd%num_field)
       ucd%nnod = nnod4
 !

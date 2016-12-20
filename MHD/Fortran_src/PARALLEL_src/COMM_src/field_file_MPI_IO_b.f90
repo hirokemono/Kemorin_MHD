@@ -8,14 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine write_step_field_file_mpi_b                          &
-!!     &         (file_name, nprocs_in, id_rank, fld_IO)
+!!     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !!
 !!      subroutine read_step_field_file_mpi_b                           &
-!!     &         (file_name, nprocs_in, id_rank, fld_IO)
+!!     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !!      subroutine read_alloc_stp_fld_file_mpi_b                        &
-!!     &         (file_name, nprocs_in, id_rank, fld_IO)
+!!     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !!      subroutine read_alloc_stp_fld_head_mpi_b                        &
-!!     &         (file_name, nprocs_in, id_rank, fld_IO)
+!!     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !!
 !!   Data format for the merged binary field data
 !!     1.   Number of process
@@ -38,6 +38,7 @@
       use calypso_mpi
       use m_calypso_mpi_IO
 !
+      use t_time_data_IO
       use t_field_data_IO
       use t_calypso_mpi_IO_param
 !
@@ -55,7 +56,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine write_step_field_file_mpi_b                            &
-     &         (file_name, nprocs_in, id_rank, fld_IO)
+     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       use MPI_binary_head_IO
       use MPI_ascii_data_IO
@@ -63,6 +64,7 @@
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: nprocs_in, id_rank
 !
+      type(time_params_IO), intent(in) :: t_IO
       type(field_IO), intent(in) :: fld_IO
 !
 !
@@ -73,9 +75,10 @@
 !
       if(id_rank .lt. nprocs_in) then
         call write_field_data_mpi_b(IO_param,                           &
-     &    fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
-     &    fld_IO%num_comp_IO, fld_IO%fld_name, fld_IO%d_IO,             &
-     &    fld_IO%istack_numnod_IO)
+     &      t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO,         &
+     &      fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,   &
+     &      fld_IO%num_comp_IO, fld_IO%fld_name, fld_IO%d_IO,           &
+     &      fld_IO%istack_numnod_IO)
       end if
 !
       call close_mpi_file(IO_param)
@@ -85,7 +88,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine read_step_field_file_mpi_b                             &
-     &         (file_name, nprocs_in, id_rank, fld_IO)
+     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       use MPI_binary_data_IO
       use MPI_binary_head_IO
@@ -94,6 +97,8 @@
       character(len=kchara), intent(in) :: file_name
       integer(kind=kint), intent(in) :: id_rank
       integer(kind=kint), intent(in) :: nprocs_in
+!
+      type(time_params_IO), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
 !
@@ -103,7 +108,7 @@
 !
       call open_read_mpi_file_b                                         &
      &   (file_name, nprocs_in, id_rank, IO_param)
-      call read_field_header_mpi_b(IO_param, fld_IO)
+      call read_field_header_mpi_b(IO_param, t_IO, fld_IO)
 !
       call mpi_read_mul_inthead_b                                       &
      &    (IO_param, fld_IO%num_field_IO, fld_IO%num_comp_IO)
@@ -123,7 +128,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine read_alloc_stp_fld_file_mpi_b                          &
-     &         (file_name, nprocs_in, id_rank, fld_IO)
+     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       use MPI_binary_data_IO
       use MPI_binary_head_IO
@@ -132,6 +137,8 @@
       character(len=kchara), intent(in) :: file_name
       integer(kind=kint), intent(in) :: id_rank
       integer(kind=kint), intent(in) :: nprocs_in
+!
+      type(time_params_IO), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
 !
@@ -141,7 +148,7 @@
 !
       call open_read_mpi_file_b                                         &
      &   (file_name, nprocs_in, id_rank, IO_param)
-      call read_field_header_mpi_b(IO_param, fld_IO)
+      call read_field_header_mpi_b(IO_param, t_IO, fld_IO)
 !
       call alloc_phys_name_IO(fld_IO)
       call mpi_read_mul_inthead_b                                       &
@@ -169,7 +176,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine read_alloc_stp_fld_head_mpi_b                          &
-     &         (file_name, nprocs_in, id_rank, fld_IO)
+     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       use MPI_binary_head_IO
       use MPI_ascii_data_IO
@@ -177,6 +184,8 @@
       character(len=kchara), intent(in) :: file_name
       integer(kind=kint), intent(in) :: id_rank
       integer(kind=kint), intent(in) :: nprocs_in
+!
+      type(time_params_IO), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
 !
@@ -185,7 +194,7 @@
 !
       call open_read_mpi_file_b                                         &
      &   (file_name, nprocs_in, id_rank, IO_param)
-      call read_field_header_mpi_b(IO_param, fld_IO)
+      call read_field_header_mpi_b(IO_param, t_IO, fld_IO)
 !
       call alloc_phys_name_IO(fld_IO)
       call mpi_read_mul_inthead_b                                       &
@@ -208,14 +217,18 @@
 ! -----------------------------------------------------------------------
 !
       subroutine write_field_data_mpi_b(IO_param_l,                     &
+     &          i_time_step_IO, time_IO, delta_t_IO,                    &
      &          nnod, num_field, ntot_comp, ncomp_field,                &
      &          field_name, d_nod, istack_merged)
 !
-      use m_time_data_IO
       use MPI_binary_data_IO
       use MPI_binary_head_IO
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param_l
+!
+      integer(kind=kint), intent(in) :: i_time_step_IO
+      real(kind = kreal), intent(in) :: time_IO, delta_t_IO
+!
       integer(kind = kint_gl), intent(in)                               &
      &                    :: istack_merged(0:IO_param_l%nprocs_in)
       integer(kind=kint), intent(in) :: nnod
@@ -246,23 +259,23 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_field_header_mpi_b(IO_param_l, fld_IO)
+      subroutine read_field_header_mpi_b(IO_param_l, t_IO, fld_IO)
 !
-      use m_time_data_IO
       use m_phys_constants
       use field_data_MPI_IO
       use MPI_binary_head_IO
 !
       type(calypso_MPI_IO_params), intent(inout) :: IO_param_l
+      type(time_params_IO), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       integer(kind = kint) :: nprocs_tmp
 !
 !
       call mpi_read_one_inthead_b(IO_param_l, nprocs_tmp)
-      call mpi_read_one_inthead_b(IO_param_l, i_time_step_IO)
-      call mpi_read_one_realhead_b(IO_param_l, time_IO)
-      call mpi_read_one_realhead_b(IO_param_l, delta_t_IO)
+      call mpi_read_one_inthead_b(IO_param_l, t_IO%i_time_step_IO)
+      call mpi_read_one_realhead_b(IO_param_l, t_IO%time_IO)
+      call mpi_read_one_realhead_b(IO_param_l, t_IO%delta_t_IO)
 !
       call alloc_merged_field_stack(IO_param_l%nprocs_in, fld_IO)
 !

@@ -4,15 +4,17 @@
       use t_phys_address
       use t_phys_data
       use t_work_4_sph_trans
+      use t_file_IO_parameter
 !
       use calypso_mpi
 !
-      type(mesh_data) :: mesh_fem
-      type(phys_data) ::        fem_fld
+      type(field_IO_params), save ::  mesh_file_H
+      type(mesh_data), save :: mesh_fem
+      type(phys_data), save :: fem_fld
 !
-      type(mesh_data) :: mesh_sph
-      type(element_geometry) :: ele_mesh_sph
-      type(phys_data) :: sph_fld
+      type(mesh_data), save :: mesh_sph
+      type(element_geometry), save :: ele_mesh_sph
+      type(phys_data), save :: sph_fld
 !
       type(interpolate_table), intent(in) :: itp_FEM_2_SPH
       type(interpolate_table), intent(in) :: itp_SPH_2_FEM
@@ -66,7 +68,7 @@
 !     ---------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh(mesh_sph%mesh, mesh_sph%group,                &
+      call mpi_input_mesh(mesh_file_H, mesh_sph%mesh, mesh_sph%group,   &
      &    ele_mesh_sph%surf%nnod_4_surf, ele_mesh_sph%edge%nnod_4_edge)
       call const_mesh_infos                                             &
      &   (my_rank, mesh_sph%mesh, mesh_sph%group, ele_mesh_sph)
@@ -234,11 +236,11 @@
       type(phys_data), intent(in) :: rj_fld
 !
       if ( iflag_SGS_induction .ne. id_SGS_none) then
-        call cal_diff_induction_MHD_adams                               &
-     &     (ipol, itor, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+        call cal_diff_induction_MHD_adams(evo_magne%coef_exp,           &
+     &      ipol, itor, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else
-        call cal_diff_induction_wSGS_adams                              &
-     &     (ipol, itor, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+        call cal_diff_induction_wSGS_adams(evo_magne%coef_exp,          &
+     &      ipol, itor, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
       call cal_sol_magne_sph_crank                                      &

@@ -157,6 +157,8 @@
      &   (my_rank, i_step_MHD, time, sph_params, sph_rj, pwr)
       call write_sph_layer_ms_file                                      &
      &   (my_rank, i_step_MHD, time, sph_params, pwr)
+      call write_sph_layer_spectr_file                                  &
+     &   (my_rank, i_step_MHD, time, sph_params, pwr)
 !
       call write_gauss_coefs_4_monitor                                  &
      &   (my_rank, istep_max_dt, time, gauss_coefs_file_head, gauss1)

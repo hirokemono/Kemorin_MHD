@@ -57,13 +57,14 @@
       call read_control_data_sph_trans
       if (iflag_debug.gt.0) write(*,*) 's_set_ctl_data_4_sph_trans'
       call s_set_ctl_data_4_sph_trans                                   &
-     &   (ucd_SPH_TRNS, rj_fld_trans, d_gauss_trans)
+     &   (mesh_file_STR, ucd_SPH_TRNS, rj_fld_trans, d_gauss_trans)
 !
 !  ------    set spectr grids
       if (iflag_debug.gt.0) write(*,*) 'load_para_SPH_and_FEM_mesh'
       call load_para_SPH_and_FEM_mesh(sph_mesh_trans%sph,               &
      &    sph_mesh_trans%sph_comms, sph_mesh_trans%sph_grps,            &
-     &    femmesh_STR%mesh, femmesh_STR%group, elemesh_STR)
+     &    femmesh_STR%mesh, femmesh_STR%group, elemesh_STR,             &
+     &     mesh_file_STR)
 !
 !  ------  initialize FEM data
 !
@@ -99,7 +100,7 @@
         call SPH_analyze_gauss_back_trans                               &
      &     (i_step, sph_mesh_trans, ipol_trans, rj_fld_trans, visval)
 !
-        call FEM_analyze_back_trans(ucd_SPH_TRNS, i_step,               &
+        call FEM_analyze_back_trans(time_IO_TRNS, ucd_SPH_TRNS, i_step, &
      &      istep_psf, istep_iso, istep_pvr, istep_fline, visval)
 !
         if (visval .eq. 0) then

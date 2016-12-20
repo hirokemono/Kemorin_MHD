@@ -17,10 +17,13 @@
       use m_t_int_parameter
       use m_mesh_data
       use m_ucd_data
+      use t_time_data_IO
 !
       use calypso_mpi
 !
       implicit none
+!
+      type(time_params_IO), save, private :: SNAP_time_IO
 !
 ! ----------------------------------------------------------------------
 !
@@ -43,7 +46,8 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
       call init_analyzer_snap(IO_bc1, mesh1, group1, ele_mesh1,         &
-     &    MHD_mesh1, layer_tbl1)
+     &    MHD_mesh1, layer_tbl1, iphys, nod_fld1,                       &
+     &    SNAP_time_IO, label_sim)
 !
       call output_grd_file_w_org_connect(mesh1, MHD_mesh1, nod_fld1)
 !
@@ -72,14 +76,13 @@
       use m_bc_data_velo
       use m_flexible_time_step
 !
-      use read_udt_4_snapshot
-!
       use nod_phys_send_recv
       use lead_physical_values
       use update_after_evolution
       use cal_model_coefficients
       use chenge_step_4_dynamic
       use copy_nodal_fields
+      use input_control
 !
       use time_step_data_IO_control
       use node_monitor_IO
@@ -103,11 +106,13 @@
 !
       if (i_step_output_rst .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'input_restart_4_snapshot'
-        call input_restart_4_snapshot(mesh1%node, nod_fld1)
+        call input_restart_4_snapshot                                   &
+     &     (mesh1%node, nod_fld1, SNAP_time_IO)
 !
       else if (i_step_output_ucd .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'read_udt_4_snap'
-        call read_udt_4_snap(istep_max_dt)
+        call read_udt_4_snap                                            &
+     &     (istep_max_dt, FEM_udt_org_param, nod_fld1, SNAP_time_IO)
         time = time_init + dt*dble(istep_max_dt)
         i_step_MHD = istep_max_dt
       end if

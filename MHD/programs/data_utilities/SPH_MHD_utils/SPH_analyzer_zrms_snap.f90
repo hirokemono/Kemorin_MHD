@@ -45,13 +45,15 @@
       use cal_sol_sph_MHD_crank
       use adjust_reference_fields
       use lead_fields_4_sph_mhd
+      use input_control_sph_MHD
       use sph_mhd_rst_IO_control
 !
       integer(kind = kint), intent(in) :: i_step
 !
 !
       call read_alloc_sph_rst_4_snap                                    &
-     &   (i_step, sph1%sph_rj, ipol, rj_fld1)
+     &   (i_step, MHD1_org_files%rj_file_param, sph1%sph_rj,            &
+     &    ipol, rj_fld1)
 !
       if (iflag_debug.eq.1) write(*,*)' sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph                                    &

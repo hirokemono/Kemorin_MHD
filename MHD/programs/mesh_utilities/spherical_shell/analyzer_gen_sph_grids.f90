@@ -22,14 +22,16 @@
 !
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
-      use t_field_data_IO
+      use t_file_IO_parameter
 !
       implicit none
 !
 !>       Structure of grid and spectr data for spherical spectr method
       type(sph_grids), save :: sph_const
-!>      Structure of file name and formats
+!>      Structure of spectr index file name and formats
       type(field_IO_params), save :: sph_file_prm_const
+!>      Structure of mesh file name and formats
+      type(field_IO_params), save ::  fem_mesh_file
 !
       private :: sph_const, sph_file_prm_const
 !
@@ -57,7 +59,7 @@
       call start_eleps_time(1)
       call read_control_4_gen_shell_grids
       call s_set_control_4_gen_shell_grids                              &
-     &   (sph_const, sph_file_prm_const, ierr_MPI)
+     &   (sph_const, fem_mesh_file, sph_file_prm_const, ierr_MPI)
       if(ierr_MPI .gt. 0) call calypso_mpi_abort(ierr_MPI, e_message)
 !
       end subroutine init_gen_sph_grids
@@ -79,11 +81,13 @@
       call start_eleps_time(4)
       if(ndomain_sph .eq. nprocs) then
         call mpi_gen_fem_mesh_for_sph                                   &
-     &     (sph_const%sph_params, sph_const%sph_rj, sph_const%sph_rtp)
+     &     (sph_const%sph_params, sph_const%sph_rj, sph_const%sph_rtp,  &
+     &      fem_mesh_file)
       else
         if(iflag_debug .gt. 0) write(*,*) 'para_gen_fem_mesh_for_sph'
         call para_gen_fem_mesh_for_sph(ndomain_sph,                     &
-     &      sph_const%sph_params, sph_const%sph_rj, sph_const%sph_rtp)
+     &      sph_const%sph_params, sph_const%sph_rj, sph_const%sph_rtp,  &
+     &      fem_mesh_file)
       end if
       call end_eleps_time(4)
       call end_eleps_time(1)

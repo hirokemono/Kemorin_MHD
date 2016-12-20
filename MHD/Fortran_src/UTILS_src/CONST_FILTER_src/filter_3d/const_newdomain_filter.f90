@@ -4,9 +4,11 @@
 !      modified by H. Matsui on Apr., 2008
 !
 !!      subroutine marking_used_node_4_filtering                        &
-!!     &         (ip2, ifile_type, node, numele)
+!!     &         (ip2, ifile_type, mesh_file, node, numele)
 !!      subroutine trans_filter_4_new_domains                           &
-!!     &         (ip2, ifile_type, node, numele)
+!!     &         (ip2, ifile_type, mesh_file, node, numele)
+!!        type(field_IO_params), intent(in) ::  mesh_file
+!!        type(node_data), intent(inout) :: node
 !
       module const_newdomain_filter
 !
@@ -14,6 +16,7 @@
 !
       use calypso_mpi
       use t_geometry_data
+      use t_file_IO_parameter
       use m_filter_func_4_sorting
       use m_filter_coefs
       use set_parallel_file_name
@@ -31,8 +34,9 @@
 !------------------------------------------------------------------
 !
       subroutine marking_used_node_4_filtering                          &
-     &         (ip2, ifile_type, node, numele)
+     &         (ip2, ifile_type, mesh_file, node, numele)
 !
+      type(field_IO_params), intent(in) ::  mesh_file
       integer(kind = kint), intent(in) :: ip2, ifile_type
       integer(kind = kint), intent(inout) :: numele
       type(node_data), intent(inout) :: node
@@ -46,8 +50,8 @@
       do ip = 1, nprocs
         my_rank = ip - 1
 !
-        mesh_file_head = mesh_file_head
-        call sel_read_geometry_size(my_rank, mesh_IO_f, ierr)
+        call sel_read_geometry_size                                     &
+     &     (mesh_file, my_rank, mesh_IO_f, ierr)
         if(ierr .gt. 0) then
           call calypso_mpi_abort(ierr, 'Mesh data is wrong!!')
         end if
@@ -79,8 +83,9 @@
 !------------------------------------------------------------------
 !
       subroutine trans_filter_4_new_domains                             &
-     &         (ip2, ifile_type, node, numele)
+     &         (ip2, ifile_type, mesh_file, node, numele)
 !
+      type(field_IO_params), intent(in) ::  mesh_file
       integer(kind = kint), intent(in) :: ip2, ifile_type
       integer(kind = kint), intent(inout) :: numele
       type(node_data), intent(inout) :: node
@@ -93,7 +98,8 @@
       do ip = 1, nprocs
         my_rank = ip - 1
 !
-        call sel_read_geometry_size(my_rank, mesh_IO_f, ierr)
+        call sel_read_geometry_size                                     &
+     &     (mesh_file, my_rank, mesh_IO_f, ierr)
         if(ierr .gt. 0) then
           call calypso_mpi_abort(ierr, 'Mesh data is wrong!!')
         end if

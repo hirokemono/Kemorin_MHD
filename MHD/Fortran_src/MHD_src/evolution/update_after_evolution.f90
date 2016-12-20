@@ -181,7 +181,7 @@
 !
 !     ---- magnetic field update
 !
-      if ( iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+      if ( evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'cal_magne_vector_potential'
         call cal_vector_potential(mesh%nod_comm, mesh%node, mesh%ele,   &
      &     ele_mesh%surf, MHD_mesh%conduct, group%surf_grp,             &
@@ -203,7 +203,7 @@
      &     wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,      &
      &     surf_wk, f_l, f_nl, nod_fld, ele_fld, diff_coefs)
 !
-      else if ( iflag_t_evo_4_magne .gt. id_no_evolution) then
+      else if(evo_magne%iflag_scheme .gt. id_no_evolution) then
 !
 !        call check_surface_param_smp('cal_magnetic_field_pre start',   &
 !     &      my_rank, sf_grp, group%surf_nod_grp)
@@ -231,7 +231,7 @@
 !
 !     ---- temperature update
 !
-      if ( iflag_t_evo_4_temp .gt. id_no_evolution) then
+      if ( evo_temp%iflag_scheme .gt. id_no_evolution) then
         if( iflag_4_ref_temp .ne. id_no_ref_temp) then
           if (iflag_debug.eq.1) write(*,*) 'cal_parturbation_temp'
           call cal_parturbation_temp                                    &
@@ -270,7 +270,7 @@
 !
 !     ----- composition update
 !
-      if ( iflag_t_evo_4_composit .gt. id_no_evolution) then
+      if ( evo_comp%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_light_element'
         call s_cal_light_element(mesh%nod_comm, mesh%node, mesh%ele,    &
      &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
@@ -291,7 +291,7 @@
 !
 !     ---- velocity update
 !
-      if ( iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'velocity_evolution'
         call velocity_evolution                                         &
      &     (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &
@@ -508,7 +508,7 @@
 !
 !     ---- temperature update
 !
-      if ( iflag_t_evo_4_temp .gt. id_no_evolution) then
+      if ( evo_temp%iflag_scheme .gt. id_no_evolution) then
         if( iflag_4_ref_temp .ne. id_no_ref_temp) then
           if (iflag_debug.eq.1) write(*,*) 'cal_parturbation_temp'
           call cal_parturbation_temp                                    &
@@ -543,7 +543,7 @@
 !
 !     ----- composition update
 !
-      if ( iflag_t_evo_4_composit .gt. id_no_evolution) then
+      if ( evo_comp%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_light_element'
         call s_cal_light_element(mesh%nod_comm, mesh%node, mesh%ele,    &
      &      ele_mesh%surf, fluid, group%surf_grp,                       &
@@ -564,7 +564,7 @@
 !
 !     ---- velocity update
 !
-      if ( iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if ( evo_velo%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'velocity_evolution'
         call velocity_evolution(mesh%nod_comm, mesh%node, mesh%ele,     &
      &      ele_mesh%surf, fluid, group%surf_grp, group%surf_nod_grp,   &

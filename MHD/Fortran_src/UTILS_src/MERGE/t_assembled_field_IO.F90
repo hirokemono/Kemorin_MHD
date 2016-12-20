@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine sel_write_SPH_assemble_field                         &
-!!     &         (nprocs_in, istep_fld, nloop, fld_IO)
+!!     &         (nprocs_in, istep_fld, nloop, t_IO, fld_IO)
 !!
 !!   Data format for the merged ascii field data
 !!     1.   Number of process
@@ -40,6 +40,7 @@
       use m_constants
       use calypso_mpi
 !
+      use t_time_data_IO
       use t_field_data_IO
       use m_calypso_mpi_IO
 !
@@ -52,7 +53,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sel_write_SPH_assemble_field                           &
-     &         (nprocs_in, istep_fld, nloop, fld_IO)
+     &         (nprocs_in, istep_fld, nloop, t_IO, fld_IO)
 !
       use field_IO_select
       use set_field_file_names
@@ -63,6 +64,7 @@
       integer(kind = kint), intent(in) :: istep_fld
       integer(kind = kint), intent(in) :: nloop, nprocs_in
 !
+      type(time_params_IO), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO(nloop)
 !
       integer(kind = kint) :: iloop, id_rank
@@ -82,12 +84,12 @@
         if(fld_IO(1)%iflag_file_fmt                                     &
      &       .eq. iflag_single+id_gzip_bin_file_fmt) then
           call gz_write_step_asbl_fld_mpi_b                             &
-     &         (file_name, nprocs_in, id_rank, nloop, fld_IO)
+     &         (file_name, nprocs_in, id_rank, nloop, fld_IO, t_IO)
           return
         else if(fld_IO(1)%iflag_file_fmt                                &
      &       .eq. iflag_single+id_gzip_txt_file_fmt) then
           call gz_write_step_asbl_fld_mpi                               &
-     &         (file_name, nprocs_in, nloop, fld_IO)
+     &         (file_name, nprocs_in, nloop, fld_IO, t_IO)
           return
         end if
       end if
@@ -97,7 +99,7 @@
         id_rank = my_rank + (iloop-1) * nprocs
 !
         call sel_write_step_SPH_field_file                              &
-     &     (nprocs_in, id_rank, istep_fld, fld_IO(iloop))
+     &     (nprocs_in, id_rank, istep_fld, t_IO, fld_IO(iloop))
       end do
 !
       end subroutine sel_write_SPH_assemble_field

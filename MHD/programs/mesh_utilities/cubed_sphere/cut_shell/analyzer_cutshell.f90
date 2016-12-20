@@ -30,7 +30,6 @@
       subroutine  initialize_cutshell
 !
       use m_control_data_4_cutshell
-      use m_read_mesh_data
       use load_mesh_data
       use set_control_cut_shell
       use cal_mesh_position
@@ -44,8 +43,8 @@
 !
 !  read global mesh
 !
-      mesh_file_head = original_mesh_head
-      call input_mesh(my_rank, original_fem%mesh, original_fem%group,   &
+      call input_mesh(original_mesh_file, my_rank,                      &
+     &    original_fem%mesh, original_fem%group,                        &
      &    nnod_4_surf, nnod_4_edge, ierr)
       if(ierr .ne. 0) stop 'Mesh data is wrong!'
 !
@@ -59,7 +58,6 @@
 !
       subroutine analyze_cutshell
 !
-      use m_read_mesh_data
       use const_cutshell_mesh
       use load_mesh_data
 !
@@ -72,8 +70,8 @@
       call allocate_type_comm_tbl_num(cutted_fem%mesh%nod_comm)
       call allocate_type_comm_tbl_item(cutted_fem%mesh%nod_comm)
 !
-      mesh_file_head = modified_mesh_head
-      call output_mesh(my_rank, cutted_fem%mesh, cutted_fem%group)
+      call output_mesh(modified_mesh_file, my_rank,                     &
+     &                 cutted_fem%mesh, cutted_fem%group)
       call dealloc_mesh_infos(cutted_fem%mesh, cutted_fem%group)
 !
       end subroutine analyze_cutshell

@@ -61,8 +61,12 @@
 !
 !>      File name for domain grouping file name
       type(read_character_item), save :: domain_group_file_ctl
+!
 !>      File name for finer mesh file prefix
       type(read_character_item), save :: finer_mesh_head_ctl
+!>      File format for finer mesh file prefix
+      type(read_character_item), save :: finer_mesh_fmt_ctl
+!
 !>      File name for interpolation table for finer mesh file
       type(read_character_item), save :: itp_tbl_head_ctl
 !>      File format for finer mesh file
@@ -132,6 +136,8 @@
      &                      = 'domain_group_file_ctl'
       character(len=kchara), parameter :: hd_fine_mesh_file             &
      &                      = 'finer_mesh_head_ctl'
+      character(len=kchara), parameter :: hd_fine_fmt_file              &
+     &                      = 'finer_mesh_fmt_ctl'
       character(len=kchara), parameter :: hd_fine_itp_file              &
      &                      = 'interpolate_tbl_head'
       character(len=kchara), parameter                                  &
@@ -151,7 +157,7 @@
       private :: hd_num_rcb, hd_num_es, hd_num_r_layerd, hd_sph_sf_file
       private :: hd_metis_in_file, hd_metis_dom_file
       private :: hd_domain_tbl_file, hd_fine_mesh_file
-      private :: hd_fine_itp_file, hd_fmt_itp_tbl
+      private :: hd_fine_itp_file, hd_fmt_itp_tbl, hd_fine_fmt_file
 !
       private :: read_part_control_data
       private :: read_ctl_data_4_decomp, read_ctl_data_4_ele_ordeirng
@@ -266,6 +272,8 @@
      &     (hd_metis_dom_file, metis_domain_file_ctl)
         call read_chara_ctl_type                                        &
      &     (hd_fine_mesh_file, finer_mesh_head_ctl)
+        call read_chara_ctl_type                                        &
+     &     (hd_fine_fmt_file, finer_mesh_fmt_ctl)
         call read_chara_ctl_type(hd_fine_itp_file, itp_tbl_head_ctl)
         call read_chara_ctl_type                                        &
      &     (hd_domain_tbl_file, domain_group_file_ctl)

@@ -8,12 +8,12 @@
 !     &          numele, nnod_4_ele, nnod_4_surf, node_on_sf,           &
 !     &          num_surf_bc, num_surf_smp, isurf_grp_smp_stack,        &
 !     &          surf_item, ntot_int_sf_grp, aw_sf, xjq_sf, xe_sf,      &
-!     &          ak_d_velo, sk_v)
+!     &          ak_d_velo, coef_imp, sk_v)
 !      subroutine fem_surf_crank_free_outside(igrp, k2, num_int,        &
 !     &          numele, nnod_4_ele, nnod_4_surf, node_on_sf,           &
 !     &          num_surf_bc, num_surf_smp, isurf_grp_smp_stack,        &
 !     &          surf_item, ntot_int_sf_grp, aw_sf, xjq_sf, xe_sf,      &
-!    &           ak_d_velo, sk_v)
+!    &           ak_d_velo, coef_imp, sk_v)
 !
       module fem_surf_crank_free_sph
 !
@@ -37,7 +37,7 @@
      &          numele, nnod_4_ele, nnod_4_surf, node_on_sf,            &
      &          num_surf_bc, num_surf_smp, isurf_grp_smp_stack,         &
      &          surf_item, ntot_int_sf_grp, aw_sf, xjq_sf, xe_sf,       &
-     &          ak_d_velo, sk_v)
+     &          ak_d_velo, coef_imp, sk_v)
 !
       integer (kind = kint), intent(in) :: numele, nnod_4_ele
       integer (kind = kint), intent(in) :: nnod_4_surf
@@ -50,6 +50,7 @@
      &             :: isurf_grp_smp_stack(0:num_surf_smp)
       integer (kind = kint), intent(in) :: surf_item(2,num_surf_bc)
       real (kind=kreal), intent(in) :: ak_d_velo(numele)
+      real (kind=kreal), intent(in) :: coef_imp
 !
       integer (kind = kint), intent(in) :: ntot_int_sf_grp
       real (kind=kreal), intent(in)                                     &
@@ -88,7 +89,7 @@
      &                       - ak_d_velo(iele)                          &
      &                         * aw_sf(k1,ix) * aw_sf(k2,ix)            &
      &                         * xe_sf(inum,4,k2)* xjq_sf(id_sf,ix)     &
-     &                         * owe2d(ix) * coef_imp_v * dt
+     &                         * owe2d(ix) * coef_imp * dt
             end do
           end do
         end do
@@ -104,7 +105,7 @@
      &          numele, nnod_4_ele, nnod_4_surf, node_on_sf,            &
      &          num_surf_bc, num_surf_smp, isurf_grp_smp_stack,         &
      &          surf_item, ntot_int_sf_grp, aw_sf, xjq_sf, xe_sf,       &
-     &          ak_d_velo, sk_v)
+     &          ak_d_velo, coef_imp, sk_v)
 !
       integer (kind = kint), intent(in) :: numele, nnod_4_ele
       integer (kind = kint), intent(in) :: nnod_4_surf
@@ -117,6 +118,7 @@
      &             :: isurf_grp_smp_stack(0:num_surf_smp)
       integer (kind = kint), intent(in) :: surf_item(2,num_surf_bc)
       real (kind=kreal), intent(in) :: ak_d_velo(numele)
+      real (kind=kreal), intent(in) :: coef_imp
 !
       integer (kind = kint), intent(in) :: ntot_int_sf_grp
       real (kind=kreal), intent(in)                                     &
@@ -155,7 +157,7 @@
      &                       + ak_d_velo(iele)                          &
      &                         * aw_sf(k1,ix) * aw_sf(k2,ix)            &
      &                         * xe_sf(inum,4,k2)* xjq_sf(id_sf,ix)     &
-     &                         * owe2d(ix) * coef_imp_v * dt
+     &                         * owe2d(ix) * coef_imp * dt
             end do
           end do
         end do

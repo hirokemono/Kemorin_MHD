@@ -77,7 +77,7 @@
         end if
 !
         if (maxiter.gt.1) then
-          if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+          if (evo_velo%iflag_scheme .gt. id_no_evolution) then
             if (eps_4_velo_ctl%iflag .eq. 0) then
               e_message                                                 &
      &         = 'Set convergence area for velocity iteration'
@@ -87,8 +87,8 @@
             end if
           end if
 !
-          if (iflag_t_evo_4_magne .gt. id_no_evolution                  &
-     &            .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+          if (evo_magne%iflag_scheme .gt. id_no_evolution               &
+     &        .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
             if (eps_4_magne_ctl%iflag .eq. 0) then
               e_message                                                 &
      &         = 'Set convergence area for magnetic iteration'

@@ -8,13 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine const_FEM_mesh_4_sph_mhd(sph_params, sph_rtp, sph_rj,&
-!!     &          radial_rtp_grp, radial_rj_grp, mesh, group)
+!!     &          radial_rtp_grp, radial_rj_grp, mesh, group, mesh_file)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(group_data), intent(in) :: radial_rtp_grp, radial_rj_grp
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::  group
+!!        type(field_IO_params), intent(inout) ::  mesh_file
 !!@endverbatim
 !
       module const_FEM_mesh_sph_mhd
@@ -23,6 +24,7 @@
       use m_constants
       use m_machine_parameter
 !
+      use t_file_IO_parameter
       use t_spheric_parameter
       use t_mesh_data
       use t_group_data
@@ -41,11 +43,10 @@
 !-----------------------------------------------------------------------
 !
       subroutine const_FEM_mesh_4_sph_mhd(sph_params, sph_rtp, sph_rj,  &
-     &          radial_rtp_grp, radial_rj_grp, mesh, group)
+     &          radial_rtp_grp, radial_rj_grp, mesh, group, mesh_file)
 !
       use calypso_mpi
       use m_spheric_global_ranks
-      use m_read_mesh_data
       use set_FEM_mesh_4_sph
       use const_1d_ele_connect_4_sph
       use set_sph_groups
@@ -61,6 +62,7 @@
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::  group
+      type(field_IO_params), intent(inout) ::  mesh_file
 !
 !
       call const_gauss_colatitude(sph_rtp%nidx_global_rtp(2), gauss_s)
@@ -78,8 +80,8 @@
 !
 ! Output mesh data
       if(iflag_output_mesh .gt. 0) then
-        mesh_file_head = sph_file_head
-        call mpi_output_mesh(mesh, group)
+        mesh_file%file_prefix = sph_file_head
+        call mpi_output_mesh(mesh_file, mesh, group)
         write(*,'(a,i6,a)')                                             &
      &          'FEM mesh for domain', my_rank, ' is done.'
       end if

@@ -7,12 +7,22 @@
 !> @brief Output merged binary field file using MPI-IO
 !!
 !!@verbatim
-!!      subroutine gz_write_step_fld_file_b(gzip_name, my_rank, fld_IO)
+!!      subroutine gz_write_step_fld_file_b                             &
+!!     &         (gzip_name, my_rank, t_IO, fld_IO)
+!!        type(time_params_IO), intent(in) :: t_IO
+!!        type(field_IO), intent(in) :: fld_IO
 !!
-!!      subroutine gz_read_step_field_file_b(gzip_name, my_rank, fld_IO)
-!!      subroutine gz_rd_alloc_st_fld_file_b(gzip_name, my_rank, fld_IO)
+!!      subroutine gz_read_step_field_file_b                            &
+!!     &         (gzip_name, my_rank, t_IO, fld_IO)
+!!      subroutine gz_rd_alloc_st_fld_file_b                            &
+!!     &         (gzip_name, my_rank, t_IO, fld_IO)
+!!        type(time_params_IO), intent(inout) :: t_IO
+!!        type(field_IO), intent(inout) :: fld_IO
 !!
-!!      subroutine gz_rd_alloc_st_fld_head_b(gzip_name, my_rank, fld_IO)
+!!      subroutine gz_rd_alloc_st_fld_head_b                            &
+!!     &         (gzip_name, my_rank, t_IO, fld_IO)
+!!        type(time_params_IO), intent(inout) :: t_IO
+!!        type(field_IO), intent(inout) :: fld_IO
 !!@endverbatim
 !
       module gz_field_file_IO_b
@@ -21,7 +31,7 @@
       use m_constants
       use m_machine_parameter
 !
-      use m_time_data_IO
+      use t_time_data_IO
       use t_field_data_IO
       use gz_field_data_IO_b
       use gz_binary_IO
@@ -35,11 +45,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine gz_write_step_fld_file_b(gzip_name, my_rank, fld_IO)
+      subroutine gz_write_step_fld_file_b                               &
+     &         (gzip_name, my_rank, t_IO, fld_IO)
 !
       character(len=kchara), intent(in) :: gzip_name
       integer(kind = kint), intent(in) :: my_rank
 !
+      type(time_params_IO), intent(in) :: t_IO
       type(field_IO), intent(in) :: fld_IO
 !
 !
@@ -48,8 +60,10 @@
 !
       call open_wt_gzfile_f(gzip_name)
 !
-      call gz_write_field_data_b(my_rank,                               &
-     &    fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
+      call gz_write_step_data_b(my_rank,                                &
+     &    t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO)
+      call gz_write_field_data_b                                        &
+     &   (fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
      &    fld_IO%num_comp_IO, fld_IO%fld_name, fld_IO%d_IO)
 !
       call close_gzfile_f
@@ -58,11 +72,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_step_field_file_b(gzip_name, my_rank, fld_IO)
+      subroutine gz_read_step_field_file_b                              &
+     &         (gzip_name, my_rank, t_IO, fld_IO)
 !
       character(len=kchara), intent(in) :: gzip_name
       integer(kind = kint), intent(in) :: my_rank
 !
+      type(time_params_IO), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       integer(kind = kint_gl) :: istack_merged(1)
@@ -73,7 +89,8 @@
 !
       call open_rd_gzfile_f(gzip_name)
       call gz_read_step_data_b                                          &
-     &   (my_rank, istack_merged, fld_IO%num_field_IO)
+     &   (my_rank, t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO,  &
+     &    istack_merged, fld_IO%num_field_IO)
 !
       call gz_read_mul_integer_b                                        &
      &   (fld_IO%num_field_IO, fld_IO%num_comp_IO)
@@ -88,11 +105,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_rd_alloc_st_fld_file_b(gzip_name, my_rank, fld_IO)
+      subroutine gz_rd_alloc_st_fld_file_b                              &
+     &         (gzip_name, my_rank, t_IO, fld_IO)
 !
       character(len=kchara), intent(in) :: gzip_name
       integer(kind = kint), intent(in) :: my_rank
 !
+      type(time_params_IO), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       integer(kind = kint_gl) :: istack_merged(1)
@@ -103,7 +122,8 @@
 !
       call open_rd_gzfile_f(gzip_name)
       call gz_read_step_data_b                                          &
-     &   (my_rank, istack_merged, fld_IO%num_field_IO)
+     &   (my_rank, t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO,  &
+     &    istack_merged, fld_IO%num_field_IO)
 !
       call alloc_phys_name_IO(fld_IO)
       call gz_read_mul_integer_b                                        &
@@ -122,11 +142,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_rd_alloc_st_fld_head_b(gzip_name, my_rank, fld_IO)
+      subroutine gz_rd_alloc_st_fld_head_b                              &
+     &         (gzip_name, my_rank, t_IO, fld_IO)
 !
       character(len=kchara), intent(in) :: gzip_name
       integer(kind = kint), intent(in) :: my_rank
 !
+      type(time_params_IO), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       integer(kind = kint_gl) :: istack_merged(1)
@@ -137,7 +159,8 @@
 !
       call open_rd_gzfile_f(gzip_name)
       call gz_read_step_data_b                                          &
-     &   (my_rank, istack_merged, fld_IO%num_field_IO)
+     &   (my_rank, t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO,  &
+     &    istack_merged, fld_IO%num_field_IO)
 !
       call alloc_phys_name_IO(fld_IO)
       call gz_read_mul_integer_b                                        &

@@ -21,8 +21,18 @@
       use t_ucd_data
       use t_next_node_ele_4_node
       use t_jacobian_3d
+      use t_file_IO_parameter
+      use t_time_data_IO
 !
       implicit none
+!
+!>      Structure for mesh file IO paramters
+      type(field_IO_params), save :: mesh_file_VIZ
+!>      Structure for field file IO paramters
+      type(field_IO_params), save :: udt_org_param
+!>      Structure for original restart file  paramters
+      type(field_IO_params), save :: rst_org_param
+!
 !
 !>     Structure for mesh data
 !>        (position, connectivity, group, and communication)
@@ -38,7 +48,8 @@
 !
 !
 !>        Instance for FEM field data IO
-     type(ucd_data), save :: ucd_VIZ
+      type(time_params_IO), save :: VIZ_time_IO
+      type(ucd_data), save :: ucd_VIZ
 !>        Instance for numbers of FEM mesh for merged IO
 !      type(merged_ucd_data), save :: m_ucd_SPH_TRNS
 !
@@ -61,7 +72,6 @@
       use calypso_mpi
       use m_t_step_parameter
       use m_array_for_send_recv
-      use m_read_mesh_data
       use mpi_load_mesh_data
       use nod_phys_send_recv
       use const_mesh_information
@@ -75,7 +85,8 @@
 !   --------------------------------
 !
 !       load mesh informations
-      call mpi_input_mesh(femmesh_VIZ%mesh, femmesh_VIZ%group,          &
+      call mpi_input_mesh(mesh_file_VIZ,                                &
+     &    femmesh_VIZ%mesh, femmesh_VIZ%group,                          &
      &    elemesh_VIZ%surf%nnod_4_surf, elemesh_VIZ%edge%nnod_4_edge)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
@@ -94,7 +105,8 @@
 !     ---------------------
 !
       ucd_VIZ%nnod =      femmesh_VIZ%mesh%node%numnod
-      call sel_read_udt_param(my_rank, i_step_init, ucd_VIZ)
+      call sel_read_udt_param                                           &
+     &   (my_rank, i_step_init, VIZ_time_IO, ucd_VIZ)
       call alloc_phys_data_type_by_output                               &
      &   (ucd_VIZ, femmesh_VIZ%mesh%node, field_VIZ)
 !
@@ -132,13 +144,16 @@
       subroutine set_field_data_4_VIZ(iflag, istep_ucd)
 !
       use set_ucd_data_to_type
+      use copy_time_steps_4_restart
       use nod_phys_send_recv
 !
       integer(kind = kint), intent(in) :: iflag, istep_ucd
 !
 !
       if(iflag .ne. 0) return
-      call set_data_by_read_ucd(my_rank, istep_ucd, ucd_VIZ, field_VIZ)
+      call set_data_by_read_ucd                                         &
+     &   (my_rank, istep_ucd, VIZ_time_IO, ucd_VIZ, field_VIZ)
+      call copy_time_steps_from_field(VIZ_time_IO)
 !
       if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'
       call nod_fields_send_recv                                         &

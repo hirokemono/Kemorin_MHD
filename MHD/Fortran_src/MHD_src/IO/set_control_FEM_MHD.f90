@@ -7,12 +7,18 @@
 !> @brief Set parameters for MHD dynamo simulation from control data
 !!
 !!@verbatim
-!!     subroutine set_control_4_FEM_MHD
+!!      subroutine set_control_4_FEM_MHD                                &
+!!     &         (mesh_file, udt_org_param, nod_fld)
+!!        type(field_IO_params), intent(inout) :: mesh_file
+!!        type(field_IO_params), intent(inout) :: udt_org_param
+!!        type(phys_data), intent(inout) :: nod_fld
 !!@endverbatim
 !
       module set_control_FEM_MHD
 !
       use m_precision
+      use t_phys_data
+      use t_file_IO_parameter
 !
       implicit  none
 !
@@ -22,17 +28,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_FEM_MHD
+      subroutine set_control_4_FEM_MHD                                  &
+     &         (mesh_file, udt_org_param, nod_fld)
 !
       use calypso_mpi
-      use m_node_phys_data
-      use m_control_params_2nd_files
       use m_ucd_data
-      use t_phys_data
 !
       use set_control_platform_data
       use set_control_nodal_data_MHD
       use set_ctl_parallel_platform
+      use set_ctl_params_2nd_files
       use set_control_4_time_steps
 !
       use set_control_4_force
@@ -55,7 +60,10 @@
       use set_control_4_infty
       use fem_mhd_rst_IO_control
       use check_read_bc_file
-      use check_dependency_for_MHD
+!
+      type(field_IO_params), intent(inout) :: mesh_file
+      type(field_IO_params), intent(inout) :: udt_org_param
+      type(phys_data), intent(inout) :: nod_fld
 !
 !
 !   set parameters for data files
@@ -63,10 +71,10 @@
       call turn_off_debug_flag_by_ctl(my_rank)
       call check_control_num_domains
       call set_control_smp_def(my_rank)
-      call set_control_mesh_def
+      call set_control_mesh_def(mesh_file)
       call set_ctl_restart_4_fem_mhd
       call set_control_MHD_field_file
-      call set_control_org_udt_file_def
+      call set_control_org_udt_file_def(udt_org_param)
 !
 !   set parameters for general information
 !
@@ -91,7 +99,7 @@
 !
 !   set fields
 !
-      call set_control_4_fields(nod_fld1)
+      call set_control_4_fields(nod_fld)
 !
 !   set control parameters
 !
@@ -144,10 +152,6 @@
 !
       call s_set_control_4_solver
       call set_control_4_FEM_params
-!
-!  check dependencies
-!
-      call check_dependencies_FEM_MHD(nod_fld1)
 !
       end subroutine set_control_4_FEM_MHD
 !

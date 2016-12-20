@@ -36,7 +36,7 @@
 !!      delta_t_monitor_ctl      1.0e-4
 !!      delta_t_sgs_coefs_ctl    2.0e-5
 !!      delta_t_boundary_ctl     1.0e-4
-!!    end
+!!    end time_step_ctl
 !!
 !! ------------------------------------------------------------------
 !!
@@ -65,7 +65,7 @@
 !!
 !!      dt_ctl              5.0e-5
 !!      time_init_ctl       0.0e-8
-!!    end
+!!    end time_step_ctl
 !!
 !! ------------------------------------------------------------------
 !!@endverbatim

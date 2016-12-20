@@ -3,16 +3,18 @@
 !
 !      modified by H. Matsui on Apr., 2008
 !
-!      subroutine set_control_filter_newdomain(ierr)
+!!      subroutine set_control_filter_newdomain(ierr)
+!!        type(field_IO_params), intent(inout) ::  mesh_file
 !
       module m_ctl_param_newdom_filter
 !
       use m_precision
+      use t_file_IO_parameter
 !
       implicit none
 !
-      character(len=kchara) :: target_mesh_head
-      character(len=kchara) :: org_mesh_head
+      type(field_IO_params), save :: org_mesh_file
+      type(field_IO_params), save :: tgt_mesh_file
 !
       character(len=kchara) :: org_filter_elen_head
       character(len=kchara) :: org_filter_coef_head
@@ -44,11 +46,12 @@
       use m_2nd_pallalel_vector
       use m_file_format_switch
 !
-      use m_read_mesh_data
       use m_ctl_data_4_platforms
       use m_ctl_data_4_2nd_data
       use m_ctl_data_filter_files
       use m_ctl_data_org_filter_name
+      use set_control_platform_data
+      use set_ctl_params_2nd_files
 !
       integer(kind = kint), intent(inout) :: ierr
 !
@@ -79,22 +82,9 @@
       end if
 !
 !
-      if(new_mesh_prefix%iflag .gt. 0) then
-        target_mesh_head = new_mesh_prefix%charavalue
-      else
-        write(*,*) 'set target mesh file name'
-        stop
-      end if
+      call set_control_mesh_def(org_mesh_file)
+      call set_control_new_mesh_file_def(tgt_mesh_file)
 !
-      if(mesh_file_prefix%iflag .gt. 0) then
-        org_mesh_head =  mesh_file_prefix%charavalue
-        mesh_file_head = mesh_file_prefix%charavalue
-      else
-        write(*,*) 'set original mesh file name'
-        stop
-      end if
-!
-      iflag_mesh_file_fmt = id_ascii_file_fmt
 !
       iflag_set_filter_elen = i_org_filter_elen_head
       if(iflag_set_filter_elen .gt. 0) then

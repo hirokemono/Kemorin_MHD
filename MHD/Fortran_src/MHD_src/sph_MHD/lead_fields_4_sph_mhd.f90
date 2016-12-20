@@ -75,7 +75,7 @@
       call set_lead_physical_values_flag(iflag)
 !
       if ( (iflag*mod(istep_max_dt,i_step_output_rst)) .eq.0 ) then
-        if(iflag_t_evo_4_velo .gt. id_no_evolution) then
+        if(evo_velo%iflag_scheme .gt. id_no_evolution) then
           call pressure_4_sph_mhd(sph%sph_rj, r_2nd, trans_p%leg,       &
      &       band_p_poisson, ipol, rj_fld)
         end if
@@ -117,10 +117,12 @@
         call sph_pole_trans_SGS_MHD                                     &
      &     (sph, comms_sph, trans_p, ipol, rj_fld, WK%trns_SGS)
 !
-        if (iflag_debug.eq.1) write(*,*) 'copy_model_coefs_4_sph_snap'
-        call copy_model_coefs_4_sph_snap(sph%sph_rtp,                   &
-     &      WK%dynamic_SPH%ifld_sgs, WK%dynamic_SPH%wk_sgs,             &
-     &      WK%trns_snap)
+        if(iflag_dynamic_SGS .gt. 0) then
+          if(iflag_debug.eq.1) write(*,*) 'copy_model_coefs_4_sph_snap'
+          call copy_model_coefs_4_sph_snap(sph%sph_rtp,                 &
+     &        WK%dynamic_SPH%ifld_sgs, WK%dynamic_SPH%wk_sgs,           &
+     &        WK%trns_snap)
+        end if
       end if
 !
       call gradients_of_vectors_sph(sph, comms_sph, r_2nd, trans_p,     &

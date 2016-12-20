@@ -12,9 +12,11 @@
       use t_mesh_data
       use t_filtering_data
       use t_filter_coefficients
+      use t_file_IO_parameter
 !
       implicit none
 !
+      type(field_IO_params), save ::  mesh_filter_file
       type(mesh_geometry), save :: mesh_filter
       type(filtering_data_type), save :: filtering_gen
 !
@@ -43,7 +45,7 @@
       call read_control_4_sort_filter
 !
       if (iflag_debug.eq.1) write(*,*) 'set_file_heads_3d_comm_filter'
-      call set_file_heads_3d_comm_filter
+      call set_file_heads_3d_comm_filter(mesh_filter_file)
       call set_numdomain_3d_comm_filter(nprocs)
 !
 !
@@ -83,7 +85,8 @@
 !  --  read geometry
 !
         if (iflag_debug.eq.1) write(*,*) 'input_mesh_geometry'
-        call input_mesh_geometry(my_rank, mesh_filter, ierr)
+        call input_mesh_geometry                                        &
+     &     (mesh_filter_file, my_rank, mesh_filter, ierr)
         if(ierr .gt. 0) then
           call calypso_mpi_abort(ierr, 'Error in mesh data')
         end if

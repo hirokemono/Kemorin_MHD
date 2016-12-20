@@ -81,15 +81,15 @@
       type(DJDS_MATRIX),  intent(inout) :: mat_magp
 !
 !
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         call sel_int_poisson_mat(mesh%ele, jac_3d_l,                    &
      &      rhs_tbl, MG_mat_fl_l, FEM_elens, intg_point_poisson,        &
      &      diff_coefs%num_field, ifld_diff%i_velo, diff_coefs%ak,      &
      &      ifilter_final, fem_wk, mat_press)
       end if
 !
-      if (     iflag_t_evo_4_magne .gt.  id_no_evolution                &
-     &    .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+      if (     evo_magne%iflag_scheme .gt.  id_no_evolution             &
+     &    .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         call sel_int_poisson_mat(mesh%ele, jac_3d_l,                    &
      &      rhs_tbl, MG_mat_linear, FEM_elens, intg_point_poisson,      &
      &      diff_coefs%num_field, ifld_diff%i_magne, diff_coefs%ak,     &
@@ -126,44 +126,44 @@
       type(DJDS_MATRIX),  intent(inout) :: mat_light
 !
 !
-      if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
+      if (evo_velo%iflag_scheme .ge. id_Crank_nicolson) then
         call sel_int_diffuse3_crank_mat(mesh%ele, jac_3d,               &
      &      rhs_tbl, MG_mat_fl_q, FEM_elens, intg_point_t_evo,          &
      &      diff_coefs%num_field, ifld_diff%i_velo, diff_coefs%ak,      &
-     &      coef_imp_v, ak_MHD%ak_d_velo, ifilter_final, fem_wk,        &
-     &      mat_velo)
+     &      evo_velo%coef_imp, ak_MHD%ak_d_velo, ifilter_final,         &
+     &      fem_wk, mat_velo)
       end if
 !
-      if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
+      if (evo_magne%iflag_scheme .ge. id_Crank_nicolson) then
         call sel_int_diffuse3_crank_mat(mesh%ele, jac_3d,               &
      &      rhs_tbl, MG_mat_full_cd_q, FEM_elens, intg_point_t_evo,     &
      &      diff_coefs%num_field, ifld_diff%i_magne, diff_coefs%ak,     &
-     &      coef_imp_b, ak_MHD%ak_d_magne, ifilter_final, fem_wk,       &
-     &      mat_magne)
+     &      evo_magne%coef_imp, ak_MHD%ak_d_magne, ifilter_final,       &
+     &      fem_wk, mat_magne)
       end if
 !
-      if (iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
+      if (evo_vect_p%iflag_scheme .ge. id_Crank_nicolson) then
         call sel_int_diffuse3_crank_mat(mesh%ele, jac_3d,               &
      &      rhs_tbl, MG_mat_q, FEM_elens, intg_point_t_evo,             &
      &      diff_coefs%num_field, ifld_diff%i_magne, diff_coefs%ak,     &
-     &      coef_imp_b, ak_MHD%ak_d_magne, ifilter_final, fem_wk,       &
-     &      mat_magne)
+     &      evo_vect_p%coef_imp, ak_MHD%ak_d_magne, ifilter_final,      &
+     &      fem_wk, mat_magne)
       end if
 !
-      if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
+      if (evo_temp%iflag_scheme .ge. id_Crank_nicolson) then
         call choose_int_diffuse1_crank_mat(mesh%ele, jac_3d,            &
      &      rhs_tbl, MG_mat_fl_q, FEM_elens, intg_point_t_evo,          &
      &      diff_coefs%num_field, ifld_diff%i_temp, diff_coefs%ak,      &
-     &      coef_imp_t, ak_MHD%ak_d_temp, ifilter_final, fem_wk,        &
-     &      mat_temp)
+     &      evo_temp%coef_imp, ak_MHD%ak_d_temp, ifilter_final,         &
+     &      fem_wk, mat_temp)
       end if
 !
-      if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
+      if (evo_comp%iflag_scheme .ge. id_Crank_nicolson) then
         call choose_int_diffuse1_crank_mat(mesh%ele, jac_3d,            &
      &      rhs_tbl, MG_mat_fl_q, FEM_elens, intg_point_t_evo,          &
      &      diff_coefs%num_field, ifld_diff%i_light, diff_coefs%ak,     &
-     &      coef_imp_c, ak_MHD%ak_d_composit, ifilter_final, fem_wk,    &
-     &      mat_light)
+     &      evo_comp%coef_imp, ak_MHD%ak_d_composit, ifilter_final,     &
+     &      fem_wk, mat_light)
       end if
 !
       end subroutine int_MHD_crank_matrices

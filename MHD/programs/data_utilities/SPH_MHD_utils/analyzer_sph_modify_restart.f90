@@ -102,12 +102,14 @@
       use lead_fields_4_sph_mhd
       use sph_mhd_rst_IO_control
       use sph_mhd_rms_IO
+      use input_control_sph_MHD
 !
       integer(kind = kint), intent(in) :: i_step
 !
 !
-      call read_alloc_sph_rst_2_modify                                  &
-     &   (i_step, sph1%sph_rj, ipol, rj_fld1)
+      call read_alloc_sph_rst_2_modify(i_step,                          &
+     &    MHD1_org_files%rj_file_param, MHD1_org_files%rst_file_param,  &
+     &    sph1%sph_rj, ipol, rj_fld1)
 !
 !*  ----------------Modify spectr data ... ----------
 !*

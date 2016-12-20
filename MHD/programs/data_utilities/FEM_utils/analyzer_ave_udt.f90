@@ -41,16 +41,17 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_ave_udt'
-      call s_input_control_ave_udt(field_FUTIL, ucd_FUTIL)
+      call s_input_control_ave_udt                                      &
+     &   (mesh_file_FUTIL, udt_param_FUTIL, field_FUTIL, ucd_FUTIL)
 !
 !     --------------------- 
 !
-      call mesh_setup_4_FEM_UTIL
+      call mesh_setup_4_FEM_UTIL(mesh_file_FUTIL)
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_field_address_type'
-      call set_field_address_type                                       &
+      if (iflag_debug.eq.1) write(*,*) 'init_field_address'
+      call init_field_address                                           &
      &   (femmesh_FUTIL%mesh%node%numnod, field_FUTIL, iphys_FUTIL)
 !
       end subroutine initialize_ave_udt
@@ -61,7 +62,6 @@
 !
       use m_t_step_parameter
       use m_ctl_params_4_diff_udt
-      use m_control_params_2nd_files
       use ucd_IO_select
       use set_ucd_data
       use set_ucd_data_to_type
@@ -76,8 +76,8 @@
 !
       istep_ucd = i_step_init / i_step_output_ucd
       call set_data_by_read_ucd_once(my_rank, istep_ucd,                &
-     &    udt_org_param%iflag_format, udt_org_param%file_prefix,        &
-     &    field_FUTIL)
+     &    udt_param_FUTIL%iflag_format, udt_param_FUTIL%file_prefix,    &
+     &    field_FUTIL, time_IO_FUTIL)
 !
       icou = 1
       do istep = i_step_init+1, i_step_number
@@ -87,8 +87,8 @@
           icou = icou + 1
 !
           call add_ucd_to_data(my_rank, istep_ucd,                      &
-     &        udt_org_param%iflag_format, udt_org_param%file_prefix,    &
-     &        field_FUTIL)
+     &       udt_param_FUTIL%iflag_format, udt_param_FUTIL%file_prefix, &
+     &       field_FUTIL)
         end if
       end do
 !
@@ -101,8 +101,7 @@
       call set_ucd_file_prefix(ave_udt_file_head, ucd_FUTIL)
       call output_udt_one_snapshot(i_step_number,                       &
      &    femmesh_FUTIL%mesh%node, femmesh_FUTIL%mesh%ele,              &
-     &    femmesh_FUTIL%mesh%nod_comm, field_FUTIL,                     &
-     &    ucd_FUTIL, m_ucd_FUTIL)
+     &    femmesh_FUTIL%mesh%nod_comm, field_FUTIL)
 !
       end subroutine analyze_ave_udt
 !

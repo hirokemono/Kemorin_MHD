@@ -1,10 +1,5 @@
-!
-!     module SPH_analyzer_snap
-!
-!      Written by H. Matsui
-!
-!>@file   SPH_analyzer_MHD
-!!@brief  module SPH_analyzer_MHD
+!>@file   SPH_analyzer_snap
+!!@brief  module SPH_analyzer_snap
 !!
 !!@author H. Matsui
 !!@date    programmed by H.Matsui in Oct., 2009
@@ -60,13 +55,15 @@
       use sph_mhd_rms_IO
       use sph_mhd_rst_IO_control
       use sph_filtering
+      use check_dependency_for_MHD
+      use input_control_sph_MHD
 !
       type(phys_address), intent(in) :: iphys
 !
 !
 !   Allocate spectr field data
 !
-      call set_sph_sprctr_data_address                                  &
+      call set_sph_MHD_sprctr_data                                      &
      &   (sph1%sph_rj, ipol, idpdr, itor, rj_fld1)
 !
 ! ---------------------------------
@@ -97,9 +94,8 @@
 !     --------------------- 
 !  set original spectr mesh data for extension of B
 !
-      call init_radial_sph_interpolation(sph1%sph_params, sph1%sph_rj)
-!
-!* -----  set integrals for coriolis -----------------
+      call init_radial_sph_interpolation                                &
+     &   (MHD1_org_files%rj_file_param, sph1%sph_params, sph1%sph_rj)
 !*
       if(iflag_debug .gt. 0) write(*,*) 'open_sph_vol_rms_file_mhd'
       call open_sph_vol_rms_file_mhd                                    &
@@ -126,12 +122,14 @@
       use lead_fields_4_sph_mhd
       use sph_mhd_rst_IO_control
       use sph_mhd_rms_IO
+      use input_control_sph_MHD
 !
       integer(kind = kint), intent(in) :: i_step
 !
 !
       call read_alloc_sph_rst_4_snap                                    &
-     &   (i_step, sph1%sph_rj, ipol, rj_fld1)
+     &   (i_step, MHD1_org_files%rj_file_param, sph1%sph_rj,            &
+     &    ipol, rj_fld1)
 !
       if (iflag_debug.eq.1) write(*,*)' sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph                                    &
@@ -174,7 +172,7 @@
 !*  -----------  Output spectr data --------------
 !*
       if(iflag_debug.gt.0)  write(*,*) 'output_spectr_4_snap'
-      call output_spectr_4_snap(i_step, sph1%sph_rj, rj_fld1)
+      call output_spectr_4_snap(i_step, sph_file_param1, rj_fld1)
       call end_eleps_time(4)
 !
       end subroutine SPH_analyze_snap

@@ -61,13 +61,13 @@
 !
 !
 !
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         if ( iflag_debug .eq.1) write(*,*)  'set boundary values 4 v'
         call set_boundary_velo                                          &
      &     (mesh%node, nod_bcs%Vnod_bcs, iphys%i_velo, nod_fld)
       end if
 !
-      if (iflag_t_evo_4_temp .gt. id_no_evolution) then
+      if (evo_temp%iflag_scheme .gt. id_no_evolution) then
         if (iflag_4_ref_temp .ne. id_no_ref_temp) then
           call set_fixed_bc_4_par_temp                                  &
      &       (mesh%node%numnod, nod_fld%ntot_phys,                      &
@@ -78,13 +78,13 @@
      &     (nod_bcs%Tnod_bcs%nod_bc_s, iphys%i_temp, nod_fld)
       end if
 !
-      if (iflag_t_evo_4_composit .gt. id_no_evolution) then
+      if (evo_comp%iflag_scheme .gt. id_no_evolution) then
         call set_boundary_scalar                                        &
      &     (nod_bcs%Cnod_bcs%nod_bc_s, iphys%i_light, nod_fld)
       end if
 !
-      if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
-     &  .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+      if (evo_magne%iflag_scheme .gt. id_no_evolution                   &
+     &  .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1)  write(*,*) 'set_boundary_vect magne'
         call set_boundary_vect                                          &
      &     (nod_bcs%Bnod_bcs%nod_bc_b, iphys%i_magne, nod_fld)
@@ -96,7 +96,7 @@
      &     (nod_bcs%Bnod_bcs%nod_bc_j, iphys%i_current, nod_fld)
       end if
 !
-      if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+      if (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug .eq.1) write(*,*) 'set_boundary_vect vect_p'
         call set_boundary_vect                                          &
      &     (nod_bcs%Bnod_bcs%nod_bc_a, iphys%i_vecp, nod_fld)

@@ -13,7 +13,6 @@
       use m_file_format_switch
       use m_geometry_data_4_merge
       use m_2nd_geometry_4_merge
-      use m_read_mesh_data
       use m_size_4_plane
       use m_set_new_spectr
       use m_spectr_4_ispack
@@ -21,6 +20,7 @@
       use m_ctl_data_4_plane_model
       use m_ctl_data_2nd_plane
 !
+      use t_time_data_IO
       use t_ucd_data
 !
       use count_number_with_overlap
@@ -38,7 +38,10 @@
 !
        implicit none
 !
+      type(field_IO_params), save ::  plane_mesh_file
       type(ucd_data) :: fft_ucd
+      type(time_params_IO), save :: fft_t_IO
+!
       integer(kind=kint ) :: ist, ied, iint
       integer(kind=kint ) ::  istep, isig, ip
 !
@@ -71,10 +74,10 @@
       write(*,*) 'read_control_data_fft_plane'
       call read_control_data_fft_plane
 !
-      call s_set_plane_spectr_file_head
+      call s_set_plane_spectr_file_head(plane_mesh_file)
       call set_parameters_4_FFT(num_pe, ist, ied, iint)
       call set_parameters_data_by_spec(num_pe, kx_org, ky_org, iz_org,  &
-     &                                 fft_ucd)
+     &                                 plane_mesh_file, fft_ucd)
       call s_set_numnod_4_plane
 !
       call allocate_z_compliment_info(nz_all)
@@ -92,8 +95,8 @@
 !
 !   read mesh data for initial values
 !
-      iflag_mesh_file_fmt = id_ascii_file_fmt
-      call set_merged_mesh_and_group
+      plane_mesh_file%iflag_format = id_ascii_file_fmt
+      call set_merged_mesh_and_group(plane_mesh_file)
 !
       allocate( subdomains_2(num_pe2) )
 !
@@ -305,7 +308,7 @@
         call link_merged_field_2_udt_IO(fft_ucd)
 !
         fft_ucd%ifmt_file = iflag_udt
-        call sel_write_ucd_file(izero, istep, fft_ucd)
+        call sel_write_ucd_file(izero, istep, fft_t_IO, fft_ucd)
         call disconnect_ucd_data(fft_ucd)
       end do
 !

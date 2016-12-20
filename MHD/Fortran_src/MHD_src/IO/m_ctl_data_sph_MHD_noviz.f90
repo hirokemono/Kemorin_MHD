@@ -12,7 +12,7 @@
 !!
 !!@verbatim
 !!      subroutine read_control_4_sph_MHD_noviz
-!!      subroutine read_control_4_sph_snap_noviz
+!!      subroutine read_control_4_sph_snap_noviz(snap_ctl_name)
 !!@endverbatim
 !
       module m_ctl_data_sph_MHD_noviz
@@ -27,8 +27,6 @@
 !
       integer(kind=kint), parameter :: control_file_code = 11
       character(len=kchara), parameter :: MHD_ctl_name =  'control_MHD'
-      character(len=kchara), parameter                                  &
-     &                      :: snap_ctl_name = 'control_snapshot'
 !
 !   Top level of label
 !
@@ -37,7 +35,7 @@
 !
 !   2nd level for MHD
 !
-      private :: MHD_ctl_name, snap_ctl_name
+      private :: MHD_ctl_name
       private :: hd_mhd_ctl, i_mhd_ctl
 !
       private :: read_sph_mhd_ctl_noviz
@@ -67,9 +65,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine read_control_4_sph_snap_noviz
+      subroutine read_control_4_sph_snap_noviz(snap_ctl_name)
 !
       use m_read_ctl_gen_sph_shell
+!
+      character(len=kchara), intent(in) :: snap_ctl_name
 !
 !
       ctl_file_code = control_file_code

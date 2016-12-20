@@ -54,49 +54,49 @@
       type(DJDS_MATRIX),  intent(inout) :: mat_magp
 !
 !
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         call reset_aiccg_11_MHD(node, ele,                              &
      &      fluid%iele_start_fld, fluid%iele_end_fld,                   &
      &      num_t_linear, djds_tbl_fl_l, mat_press)
 !
-        if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
+        if (evo_velo%iflag_scheme .ge. id_Crank_nicolson) then
           call reset_aiccg_33_MHD(node, ele,                            &
      &        fluid%iele_start_fld, fluid%iele_end_fld,                 &
      &        ele%nnod_4_ele, djds_tbl_fl, mat_velo)
         end if
       end if
 !
-      if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
+      if (evo_temp%iflag_scheme .ge. id_Crank_nicolson) then
         call reset_aiccg_11_MHD(node, ele,                              &
      &      fluid%iele_start_fld, fluid%iele_end_fld,                   &
      &      ele%nnod_4_ele, djds_tbl_fl, mat_temp)
       end if
 !
-      if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
+      if (evo_comp%iflag_scheme .ge. id_Crank_nicolson) then
         call reset_aiccg_11_MHD(node, ele,                              &
      &      fluid%iele_start_fld, fluid%iele_end_fld,                   &
      &      ele%nnod_4_ele, djds_tbl_fl, mat_light)
       end if
 !
-      if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
-     &     .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+      if (evo_magne%iflag_scheme .gt. id_no_evolution                   &
+     &     .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         call reset_aiccg_11_MHD(node, ele, ione, ele%numele,            &
      &      num_t_linear, djds_tbl_l, mat_magp)
       end if
 !
-      if (iflag_t_evo_4_magne .gt. id_no_evolution) then
+      if (evo_magne%iflag_scheme .gt. id_no_evolution) then
         call reset_aiccg_11_MHD(node, ele, ione, ele%numele,            &
      &      num_t_linear, djds_tbl_l, mat_magp)
-        if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
+        if (evo_magne%iflag_scheme .ge. id_Crank_nicolson) then
           call reset_aiccg_33_MHD(node, ele, ione, ele%numele,          &
      &        ele%nnod_4_ele, djds_tbl, mat_magne)
         end if
       end if
 !
-      if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+      if (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         call reset_aiccg_11_MHD(node, ele, ione, ele%numele,            &
      &      num_t_linear, djds_tbl_l, mat_magp)
-        if (iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
+        if (evo_vect_p%iflag_scheme .ge. id_Crank_nicolson) then
           call reset_aiccg_vector_p(mat_magne)
         end if
       end if

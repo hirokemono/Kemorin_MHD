@@ -5,9 +5,11 @@
 !
 !       zlib and kemo_zlib_io_c are required
 !
-!      subroutine write_gz_step_data(id_rank)
-!      subroutine read_gz_step_data(id_rank)
-!
+!!      subroutine write_gz_step_data(                                  &
+!!     &          id_rank, i_time_step_IO, time_IO, delta_t_IO)
+!!      subroutine read_gz_step_data                                    &
+!!     &         (id_rank, i_time_step_IO, time_IO, delta_t_IO)
+!!
 !!      subroutine read_gz_field_data(nnod, num_field, ntot_comp,       &
 !!     &          ncomp_field, field_name, field_data)
 !!      subroutine read_gz_field_vect(nnod, ndir, vector)
@@ -15,7 +17,6 @@
       module gz_field_data_IO
 !
       use m_precision
-!
       use skip_gz_comment
 !
       implicit none
@@ -28,11 +29,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine write_gz_step_data(id_rank)
-!
-      use m_time_data_IO
+      subroutine write_gz_step_data(                                    &
+     &          id_rank, i_time_step_IO, time_IO, delta_t_IO)
 !
       integer(kind = kint), intent(in) :: id_rank
+      integer(kind=kint), intent(in) :: i_time_step_IO
+      real(kind = kreal), intent(in) :: time_IO, delta_t_IO
 !
 !
       write(textbuf,'(a,a1)'   )   '!  domain ID', char(0)
@@ -52,11 +54,13 @@
 !
 !-------------------------------------------------------------------
 !
-      subroutine read_gz_step_data(id_rank)
-!
-      use m_time_data_IO
+      subroutine read_gz_step_data                                      &
+     &         (id_rank, i_time_step_IO, time_IO, delta_t_IO)
 !
       integer(kind = kint), intent(inout) :: id_rank
+      integer(kind=kint), intent(inout) :: i_time_step_IO
+      real(kind = kreal), intent(inout) :: time_IO, delta_t_IO
+!
       character(len = kchara) :: tmpchara
 !
 !

@@ -51,17 +51,19 @@
       call read_control_4_prod_udt
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_prod_udt'
-      call set_ctl_params_prod_udt(ucd_FUTIL)
+      call set_ctl_params_prod_udt                                      &
+     &   (mesh_file_FUTIL, udt_param_FUTIL, ucd_FUTIL)
       call s_set_fixed_time_step_params(ierr, e_message)
 !
 !     --------------------- 
 !
-      call mesh_setup_4_FEM_UTIL
+      call mesh_setup_4_FEM_UTIL(mesh_file_FUTIL)
 !
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'set_field_id_4_product'
-      call set_field_id_4_product(femmesh_FUTIL%mesh%node%numnod)
+      call set_field_id_4_product                                       &
+     &   (femmesh_FUTIL%mesh%node%numnod, time_IO_FUTIL)
       call allocate_product_data(femmesh_FUTIL%mesh%node%numnod)
       call allocate_product_result(field_FUTIL)
 !
@@ -85,7 +87,7 @@
         if ( mod(istep,i_step_output_ucd) .eq. izero) then
           istep_ucd = istep / i_step_output_ucd
           call set_data_for_product                                     &
-     &       (femmesh_FUTIL%mesh%node%numnod, istep_ucd)
+     &       (femmesh_FUTIL%mesh%node%numnod, istep_ucd, time_IO_FUTIL)
 !
           call cal_products_of_fields                                   &
      &       (femmesh_FUTIL%mesh%nod_comm, femmesh_FUTIL%mesh%node,     &
@@ -94,7 +96,7 @@
 !    output udt data
           call link_output_ucd_file_once(my_rank, istep_ucd,            &
      &        ifmt_result_udt_file, result_udt_file_head,               &
-     &        field_FUTIL, ucd_FUTIL)
+     &        field_FUTIL, time_IO_FUTIL)
         end if
       end do
 !

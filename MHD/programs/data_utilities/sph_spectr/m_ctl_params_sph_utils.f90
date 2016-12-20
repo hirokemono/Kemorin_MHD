@@ -14,7 +14,7 @@
       use t_phys_data
       use t_rms_4_sph_spectr
       use t_pickup_sph_spectr_data
-      use t_field_data_IO
+      use t_file_IO_parameter
 !
       implicit  none
 !
@@ -69,16 +69,15 @@
       use calypso_mpi
       use m_machine_parameter
       use m_t_step_parameter
-      use m_read_mesh_data
       use m_sph_spectr_data
       use m_file_format_switch
-      use m_control_params_2nd_files
 !
       use set_control_nodal_data
       use set_control_sph_data
       use set_control_platform_data
       use set_fixed_time_step_params
       use set_control_4_pickup_sph
+      use set_ctl_params_2nd_files
 !
       use m_ctl_data_4_platforms
       use m_ctl_data_4_time_steps
@@ -90,16 +89,19 @@
       type(phys_data), intent(inout) :: rj_fld
       type(sph_mean_squares), intent(inout) :: pwr
 !
+      type(field_IO_params) :: mesh_file
+      type(field_IO_params) :: rj_org_param
+      type(field_IO_params) :: rst_org_param
+!
       integer(kind = kint) :: ierr
 !
 !
       call turn_off_debug_flag_by_ctl(my_rank)
       call set_control_smp_def(my_rank)
-      call set_control_mesh_def
-      call set_control_sph_mesh(sph_file_spec_p)
-      call set_control_org_sph_mesh
-      call set_control_org_rst_file_def
-      call set_control_org_udt_file_def
+      call set_control_mesh_def(mesh_file)
+      call set_control_sph_mesh(mesh_file, sph_file_spec_p)
+      call set_control_org_sph_mesh(rj_org_param)
+      call set_control_org_rst_file_def(rst_org_param)
 !
 !      stepping parameter
 !

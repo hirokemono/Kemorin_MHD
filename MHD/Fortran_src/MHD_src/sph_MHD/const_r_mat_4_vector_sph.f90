@@ -26,6 +26,7 @@
       use calypso_mpi
 !
       use m_constants
+      use m_control_parameter
       use m_machine_parameter
       use m_t_int_parameter
       use m_physical_property
@@ -94,7 +95,7 @@
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
      &      sph_bc_U%kr_in, sph_bc_U%kr_out, band_wt_evo%mat)
       else
-        coef_dvt = coef_imp_v * coef_d_velo * dt
+        coef_dvt = evo_velo%coef_imp * coef_d_velo * dt
         call set_unit_mat_4_time_evo                                    &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), band_vt_evo%mat)
         call set_unit_mat_4_time_evo                                    &
@@ -267,7 +268,7 @@
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
      &      sph_bc_B%kr_in, sph_bc_B%kr_out, band_bt_evo%mat)
       else
-        coef_dbt = coef_imp_b * coef_d_magne * dt
+        coef_dbt = evo_magne%coef_imp * coef_d_magne * dt
         call set_unit_mat_4_time_evo                                    &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), band_bp_evo%mat)
         call set_unit_mat_4_time_evo                                    &

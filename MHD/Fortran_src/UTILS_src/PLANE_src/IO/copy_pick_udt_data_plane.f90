@@ -1,9 +1,13 @@
 !copy_pick_udt_data_plane.f90
 !      module copy_pick_udt_data_plane
 !
-!      subroutine copy_and_pick_ucd_data_merge(nnod, internod,          &
-!     &          nnod_target, inod_gl, nfield_target, icomp_target,     &
-!     &          ifield_target, phys_data, ucd)
+!!      subroutine init_by_ucd_4_plane_model(istep, nod_fld, t_IO, ucd)
+!!      subroutine read_udt_data_4_plane_model(num_pe, istep,           &
+!!     &          nnod_target, nfield_target, icomp_target,             &
+!!     &          ifield_target, phys_data, nnod_max, mesh, t_IO, ucd)
+!!        type(time_params_IO), intent(inout) :: t_IO
+!!        type(ucd_data), intent(inout) :: ucd
+!!        type(phys_data), intent(inout) :: nod_fld
 !
 !      written by H. Matsui
 !
@@ -21,20 +25,22 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_by_ucd_4_plane_model(istep, nod_fld, ucd)
+      subroutine init_by_ucd_4_plane_model(istep, nod_fld, t_IO, ucd)
 !
-       use m_file_format_switch
-       use t_phys_data
-       use ucd_IO_select
+      use m_file_format_switch
+      use t_phys_data
+      use t_time_data_IO
+      use ucd_IO_select
 !
       integer (kind = kint), intent(in) :: istep
+      type(time_params_IO), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
       type(phys_data), intent(inout) :: nod_fld
       integer (kind = kint) :: i
 !
 !
       ucd%nnod = ione
-      call sel_read_udt_param(izero, istep, ucd)
+      call sel_read_udt_param(izero, istep, t_IO, ucd)
       call deallocate_ucd_phys_data(ucd)
 !
       nod_fld%num_phys =    ucd%num_field
@@ -54,14 +60,16 @@
 !
       subroutine read_udt_data_4_plane_model(num_pe, istep,             &
      &          nnod_target, nfield_target, icomp_target,               &
-     &          ifield_target, phys_data, nnod_max, mesh, ucd)
+     &          ifield_target, phys_data, nnod_max, mesh, t_IO, ucd)
 !
       use t_mesh_data
+      use t_time_data_IO
       use t_ucd_data
       use ucd_IO_select
 !
       integer(kind = kint), intent(in) :: num_pe, istep, nnod_max
       type(mesh_geometry), intent(in) :: mesh(num_pe)
+      type(time_params_IO), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
       integer(kind = kint), intent(in) :: nfield_target, nnod_target
@@ -80,7 +88,7 @@
         my_rank = ip - 1
 !
         ucd%nnod =        mesh(ip)%node%numnod
-        call sel_read_udt_file(my_rank, istep, ucd)
+        call sel_read_udt_file(my_rank, istep, t_IO, ucd)
 !
         call copy_and_pick_ucd_data_merge                               &
      &         (nnod_target, nfield_target, icomp_target,               &

@@ -6,13 +6,17 @@
 !      Written by Kemorin on May, 2010
 !
       use m_precision
+      use t_file_IO_parameter
 !
-      implicit    none
+      implicit none
 !
 !
-      character (len = kchara) :: para_fine_mesh_head = 'mesh_fine'
+      type(field_IO_params), save ::  para_fine_mesh_file
+      type(field_IO_params), save ::  para_course_mesh_file
 !
-      character (len = kchara) :: para_course_mesh_head= 'mesh_course'
+      character (len = kchara) :: def_para_fine_mesh_head = 'mesh_fine'
+      character (len = kchara)                                          &
+     &         :: def_para_course_mesh_head= 'mesh_course'
 !
       character (len = kchara) :: c2f_para_head = 'course_2_fine_p'
       character (len = kchara) :: f2c_para_head = 'fine_2_course_p'
@@ -35,6 +39,7 @@
 !
       use m_constants
       use m_machine_parameter
+      use m_file_format_switch
       use m_para_refine_itp_tables
       use m_ctl_data_4_platforms
       use m_control_data_4_refine
@@ -49,8 +54,11 @@
       end if
 !
       if(mesh_file_prefix%iflag .gt. 0) then
-        para_fine_mesh_head = mesh_file_prefix%charavalue
+        para_fine_mesh_file%file_prefix = mesh_file_prefix%charavalue
+      else 
+        para_fine_mesh_file%file_prefix = def_para_fine_mesh_head
       end if
+      para_fine_mesh_file%iflag_format = id_ascii_file_fmt
 !
 !
       if(i_course_to_fine_ctl .gt. 0) then
@@ -71,7 +79,9 @@
       end if
 !
       if(i_course_mesh_file_head .gt. 0) then
-        para_course_mesh_head = course_mesh_file_head_ctl
+        para_course_mesh_file%file_prefix = course_mesh_file_head_ctl
+      else
+        para_course_mesh_file%file_prefix = def_para_course_mesh_head
       end if
 !
       if(i_course_to_fine_p_head .gt. 0) then
@@ -92,9 +102,10 @@
       if(iflag_debug .gt. 0) then
         write(*,*) 'nprocs_fine, nprocs_course, nprocs_larger'
         write(*,*)  nprocs_fine, nprocs_course, nprocs_larger
-        write(*,*) 'para_fine_mesh_head:   ', trim(para_fine_mesh_head)
+        write(*,*) 'para_fine_mesh_head:   ',                           &
+     &            trim(para_fine_mesh_file%file_prefix)
         write(*,*) 'para_course_mesh_head: ',                           &
-       &           trim(para_course_mesh_head)
+     &           trim(para_course_mesh_file%file_prefix)
         write(*,*) 'c2f_para_head:         ', trim(c2f_para_head)
         write(*,*) 'f2c_para_head:         ', trim(f2c_para_head)
         write(*,*) 'f2c_ele_para_head:     ', trim(f2c_ele_para_head)

@@ -72,7 +72,7 @@
 !*
 !      call check_ws_spectr(sph_rj, ipol, idpdr, itor, rj_fld)
 !
-      if(iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if(evo_velo%iflag_scheme .gt. id_no_evolution) then
 !         Input:    ipol%i_vort, itor%i_vort
 !         Solution: ipol%i_velo, itor%i_velo, idpdr%i_velo
         if (iflag_debug .gt. 0)                                         &
@@ -85,14 +85,14 @@
 !
 !  Input: ipol%i_temp,  Solution: ipol%i_temp
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_temperature_sph_crank'
-      if(iflag_t_evo_4_temp .gt. id_no_evolution) then
+      if(evo_temp%iflag_scheme .gt. id_no_evolution) then
         call cal_sol_temperature_sph_crank                              &
      &     (sph_rj, band_temp_evo, ipol, rj_fld)
       end if
 !g
 !  Input: ipol%i_light,  Solution: ipol%i_light
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_composition_sph_crank'
-      if(iflag_t_evo_4_composit .gt. id_no_evolution) then
+      if(evo_comp%iflag_scheme .gt. id_no_evolution) then
         call cal_sol_composition_sph_crank                              &
      &     (sph_rj, band_comp_evo, ipol, rj_fld)
       end if
@@ -100,7 +100,7 @@
 !  Input: ipol%i_magne, itor%i_magne
 !  Solution: ipol%i_magne, itor%i_magne, idpdr%i_magne
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_magne_sph_crank'
-      if(iflag_t_evo_4_magne .gt. id_no_evolution) then
+      if(evo_magne%iflag_scheme .gt. id_no_evolution) then
         call cal_sol_magne_sph_crank                                    &
      &     (sph_rj, band_bp_evo, band_bt_evo, leg%g_sph_rj,             &
      &      ipol, itor, rj_fld)
@@ -111,21 +111,21 @@
 !*  ---- update after evolution ------------------
 !      call check_vs_spectr(sph_rj, ipol, idpdr, itor, rj_fld)
 !
-      if(iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if(evo_velo%iflag_scheme .gt. id_no_evolution) then
         call update_after_vorticity_sph                                 &
      &     (sph_rj, r_2nd, leg, ipol, itor, rj_fld)
         call cal_rot_radial_self_gravity                                &
      &     (sph_rj, ipol, itor, sph_bc_U, rj_fld)
       end if
 !
-      if(iflag_t_evo_4_temp .gt.     id_no_evolution) then
+      if(evo_temp%iflag_scheme .gt. id_no_evolution) then
         call update_after_heat_sph(sph_rj, r_2nd, leg, ipol, rj_fld)
       end if
-      if(iflag_t_evo_4_composit .gt. id_no_evolution) then
+      if(evo_comp%iflag_scheme .gt. id_no_evolution) then
         call update_after_composit_sph                                  &
      &     (sph_rj, r_2nd, leg, ipol, rj_fld)
       end if
-      if(iflag_t_evo_4_magne .gt.    id_no_evolution) then
+      if(evo_magne%iflag_scheme .gt. id_no_evolution) then
         call update_after_magne_sph                                     &
      &     (sph_rj, r_2nd, leg, ipol, itor, rj_fld)
       end if
@@ -154,7 +154,7 @@
      &      ipol%i_velo, ipol%i_vort, rj_fld)
       end if
 !
-      if(iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if(evo_velo%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug.gt.0) write(*,*) 'update_after_vorticity_sph'
         call update_after_vorticity_sph                                 &
      &     (sph_rj, r_2nd, leg, ipol, itor, rj_fld)

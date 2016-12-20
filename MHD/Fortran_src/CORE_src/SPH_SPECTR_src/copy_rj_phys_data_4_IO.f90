@@ -7,28 +7,26 @@
 !> @brief Copy between field data and IO data
 !!
 !!@verbatim
-!!      subroutine copy_rj_all_phys_name_to_IO(nnod_rj, rj_fld, fld_IO)
-!!      subroutine copy_rj_viz_phys_name_to_IO(nnod_rj, rj_fld, fld_IO)
-!!      subroutine copy_rj_all_phys_data_to_IO(nnod_rj, rj_fld, fld_IO)
-!!      subroutine copy_rj_viz_phys_data_to_IO(nnod_rj, rj_fld, fld_IO)
+!!      subroutine copy_rj_phys_name_to_IO(num_fld, rj_fld, fld_IO)
+!!      subroutine copy_rj_phys_data_to_IO(num_fld, rj_fld, fld_IO)
 !!
 !!      subroutine copy_rj_phys_name_from_IO(fld_IO, rj_fld)
-!!      subroutine copy_rj_phys_data_from_IO(nnod_rj, fld_IO, rj_fld)
-!!      subroutine set_rj_phys_data_from_IO(nnod_rj, fld_IO, rj_fld)
+!!      subroutine copy_rj_phys_data_from_IO(fld_IO, rj_fld)
+!!      subroutine set_rj_phys_data_from_IO(fld_IO, rj_fld)
 !!
 !!      subroutine copy_each_sph_solenoid_to_IO                         &
-!!     &         (nnod_rj, rj_fld, fld_IO, i_fld, j_IO)
+!!     &         (rj_fld, fld_IO, i_fld, j_IO)
 !!      subroutine copy_each_sph_vector_to_IO                           &
-!!     &         (nnod_rj, rj_fld, fld_IO, i_fld, j_IO)
+!!     &         (rj_fld, fld_IO, i_fld, j_IO)
 !!      subroutine copy_each_sph_field_to_IO                            &
-!!     &         (nnod_rj, rj_fld, fld_IO, i_fld, j_IO)
+!!     &         (rj_fld, fld_IO, i_fld, j_IO)
 !!
 !!      subroutine copy_each_sph_solenoid_from_IO                       &
-!!     &          (nnod_rj, fld_IO, rj_fld, i_fld, j_IO)
+!!     &         (fld_IO, rj_fld, i_fld, j_IO)
 !!      subroutine copy_each_sph_vector_from_IO                         &
-!!     &         (nnod_rj, fld_IO, rj_fld, i_fld, j_IO)
+!!     &         (fld_IO, rj_fld, i_fld, j_IO)
 !!      subroutine copy_each_sph_field_from_IO                          &
-!!     &         (nnod_rj, fld_IO, rj_fld, i_fld, j_IO)
+!!     &         (fld_IO, rj_fld, i_fld, j_IO)
 !!@endverbatim
 !
       module copy_rj_phys_data_4_IO
@@ -41,7 +39,6 @@
 !
       implicit none
 !
-      private :: copy_rj_phys_name_to_IO, copy_rj_phys_data_to_IO
       private :: copy_each_sph_solenoid_to_IO
       private :: copy_each_sph_solenoid_from_IO
 !
@@ -51,75 +48,16 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine copy_rj_all_phys_name_to_IO(nnod_rj, rj_fld, fld_IO)
+      subroutine copy_rj_phys_name_to_IO(num_fld, rj_fld, fld_IO)
 !
-      integer(kind = kint), intent(in) :: nnod_rj
+      integer(kind = kint), intent(in) :: num_fld
       type(phys_data), intent(in) :: rj_fld
       type(field_IO), intent(inout) :: fld_IO
 !
 !
-      call copy_rj_phys_name_to_IO                                      &
-     &   (nnod_rj, rj_fld%num_phys, rj_fld, fld_IO)
-!
-      end subroutine copy_rj_all_phys_name_to_IO
-!
-! -------------------------------------------------------------------
-!
-      subroutine copy_rj_viz_phys_name_to_IO(nnod_rj, rj_fld, fld_IO)
-!
-      integer(kind = kint), intent(in) :: nnod_rj
-      type(phys_data), intent(in) :: rj_fld
-      type(field_IO), intent(inout) :: fld_IO
-!
-!
-      call copy_rj_phys_name_to_IO                                      &
-     &   (nnod_rj, rj_fld%num_phys_viz, rj_fld, fld_IO)
-!
-      end subroutine copy_rj_viz_phys_name_to_IO
-!
-! -------------------------------------------------------------------
-! -------------------------------------------------------------------
-!
-      subroutine copy_rj_all_phys_data_to_IO(nnod_rj, rj_fld, fld_IO)
-!
-      integer(kind = kint), intent(in) :: nnod_rj
-      type(phys_data), intent(in) :: rj_fld
-      type(field_IO), intent(inout) :: fld_IO
-!
-!
-      call copy_rj_phys_data_to_IO                                      &
-     &   (nnod_rj, rj_fld%num_phys, rj_fld, fld_IO)
-!
-      end subroutine copy_rj_all_phys_data_to_IO
-!
-! -------------------------------------------------------------------
-!
-      subroutine copy_rj_viz_phys_data_to_IO(nnod_rj, rj_fld, fld_IO)
-!
-      integer(kind = kint), intent(in) :: nnod_rj
-      type(phys_data), intent(in) :: rj_fld
-      type(field_IO), intent(inout) :: fld_IO
-!
-!
-      call copy_rj_phys_data_to_IO                                      &
-     &   (nnod_rj, rj_fld%num_phys_viz, rj_fld, fld_IO)
-!
-      end subroutine copy_rj_viz_phys_data_to_IO
-!
-! -------------------------------------------------------------------
-! -------------------------------------------------------------------
-!
-      subroutine copy_rj_phys_name_to_IO                                &
-     &         (nnod_rj, num_fld, rj_fld, fld_IO)
-!
-      integer(kind = kint), intent(in) :: num_fld, nnod_rj
-      type(phys_data), intent(in) :: rj_fld
-      type(field_IO), intent(inout) :: fld_IO
-!
-!
-      fld_IO%nnod_IO =   nnod_rj
+      fld_IO%nnod_IO =       rj_fld%n_point
       fld_IO%num_field_IO =  num_fld
-      fld_IO%ntot_comp_IO = rj_fld%ntot_phys
+      fld_IO%ntot_comp_IO =  rj_fld%ntot_phys
 !
       call alloc_phys_name_IO(fld_IO)
 !
@@ -134,11 +72,9 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine copy_rj_phys_data_to_IO                                &
-     &         (nnod_rj, num_fld, rj_fld, fld_IO)
+      subroutine copy_rj_phys_data_to_IO(num_fld, rj_fld, fld_IO)
 !
       type(phys_data), intent(in) :: rj_fld
-      integer(kind = kint), intent(in) :: nnod_rj
       integer(kind = kint), intent(in) :: num_fld
       type(field_IO), intent(inout) :: fld_IO
 !
@@ -148,10 +84,10 @@
       do i_fld = 1, num_fld
         if (rj_fld%num_component(i_fld) .eq. n_vector) then
           call copy_each_sph_vector_to_IO                               &
-     &       (nnod_rj, rj_fld, fld_IO, i_fld, i_fld)
+     &       (rj_fld, fld_IO, i_fld, i_fld)
         else
           call copy_each_sph_field_to_IO                                &
-     &       (nnod_rj, rj_fld, fld_IO, i_fld, i_fld)
+     &       (rj_fld, fld_IO, i_fld, i_fld)
         end if
       end do
 !
@@ -196,9 +132,8 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine copy_rj_phys_data_from_IO(nnod_rj, fld_IO, rj_fld)
+      subroutine copy_rj_phys_data_from_IO(fld_IO, rj_fld)
 !
-      integer(kind = kint), intent(in) :: nnod_rj
       type(field_IO), intent(in) :: fld_IO
       type(phys_data), intent(inout) :: rj_fld
       integer(kind = kint) :: i_fld
@@ -207,10 +142,10 @@
       do i_fld = 1, rj_fld%num_phys
         if (rj_fld%num_component(i_fld) .eq. 3) then
           call copy_each_sph_vector_from_IO                             &
-     &       (nnod_rj, fld_IO, rj_fld, i_fld, i_fld)
+     &       (fld_IO, rj_fld, i_fld, i_fld)
         else
           call copy_each_sph_field_from_IO                              &
-     &       (nnod_rj, fld_IO, rj_fld, i_fld, i_fld)
+     &       (fld_IO, rj_fld, i_fld, i_fld)
         end if
       end do
 !
@@ -218,9 +153,8 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine set_rj_phys_data_from_IO(nnod_rj, fld_IO, rj_fld)
+      subroutine set_rj_phys_data_from_IO(fld_IO, rj_fld)
 !
-      integer(kind = kint), intent(in) :: nnod_rj
       type(field_IO), intent(in) :: fld_IO
       type(phys_data), intent(inout) :: rj_fld
       integer(kind = kint) :: i_fld, j_IO
@@ -230,13 +164,13 @@
           if (rj_fld%phys_name(i_fld) .eq. fld_IO%fld_name(j_IO)) then
             if (fld_IO%num_comp_IO(j_IO) .eq. 3) then
               call copy_each_sph_vector_from_IO                         &
-     &           (nnod_rj, fld_IO, rj_fld, i_fld, j_IO)
+     &           (fld_IO, rj_fld, i_fld, j_IO)
             else if (fld_IO%num_comp_IO(j_IO) .eq. 2) then
               call copy_each_sph_solenoid_from_IO                       &
-     &           (nnod_rj, fld_IO, rj_fld, i_fld, j_IO)
+     &           (fld_IO, rj_fld, i_fld, j_IO)
             else
               call copy_each_sph_field_from_IO                          &
-     &           (nnod_rj, fld_IO, rj_fld, i_fld, j_IO)
+     &           (fld_IO, rj_fld, i_fld, j_IO)
             end if
             exit
           end if
@@ -249,9 +183,9 @@
 ! -------------------------------------------------------------------
 !
       subroutine copy_each_sph_solenoid_to_IO                           &
-     &         (nnod_rj, rj_fld, fld_IO, i_fld, j_IO)
+     &         (rj_fld, fld_IO, i_fld, j_IO)
 !
-      integer(kind = kint), intent(in) :: i_fld, j_IO, nnod_rj
+      integer(kind = kint), intent(in) :: i_fld, j_IO
       type(phys_data), intent(in) :: rj_fld
       type(field_IO), intent(inout) :: fld_IO
       integer(kind = kint) :: ist, jst, inod
@@ -260,7 +194,7 @@
       ist = rj_fld%istack_component(i_fld-1)
       jst = fld_IO%istack_comp_IO(j_IO-1)
 !$omp parallel do
-      do inod = 1, nnod_rj
+      do inod = 1, rj_fld%n_point
         fld_IO%d_IO(inod,jst+1) = rj_fld%d_fld(inod,ist+1)
         fld_IO%d_IO(inod,jst+2) = rj_fld%d_fld(inod,ist+3)
       end do
@@ -271,9 +205,9 @@
 ! -------------------------------------------------------------------
 !
       subroutine copy_each_sph_vector_to_IO                             &
-     &         (nnod_rj, rj_fld, fld_IO, i_fld, j_IO)
+     &         (rj_fld, fld_IO, i_fld, j_IO)
 !
-      integer(kind = kint), intent(in) :: i_fld, j_IO, nnod_rj
+      integer(kind = kint), intent(in) :: i_fld, j_IO
       type(phys_data), intent(in) :: rj_fld
       type(field_IO), intent(inout) :: fld_IO
       integer(kind = kint) :: ist, jst, inod
@@ -282,7 +216,7 @@
       ist = rj_fld%istack_component(i_fld-1)
       jst = fld_IO%istack_comp_IO(j_IO-1)
 !$omp parallel do
-      do inod = 1, nnod_rj
+      do inod = 1, rj_fld%n_point
         fld_IO%d_IO(inod,jst+1) = rj_fld%d_fld(inod,ist+1)
         fld_IO%d_IO(inod,jst+2) = rj_fld%d_fld(inod,ist+3)
         fld_IO%d_IO(inod,jst+3) = rj_fld%d_fld(inod,ist+2)
@@ -294,9 +228,9 @@
 ! -------------------------------------------------------------------
 !
       subroutine copy_each_sph_field_to_IO                              &
-     &         (nnod_rj, rj_fld, fld_IO, i_fld, j_IO)
+     &         (rj_fld, fld_IO, i_fld, j_IO)
 !
-      integer(kind = kint), intent(in) :: i_fld, j_IO, nnod_rj
+      integer(kind = kint), intent(in) :: i_fld, j_IO
       type(phys_data), intent(in) :: rj_fld
       type(field_IO), intent(inout) :: fld_IO
       integer(kind = kint) :: ist, jst, nd, inod
@@ -307,7 +241,7 @@
 !$omp parallel
       do nd = 1, rj_fld%num_component(i_fld)
 !$omp do
-        do inod = 1, nnod_rj
+        do inod = 1, rj_fld%n_point
           fld_IO%d_IO(inod,jst+nd) = rj_fld%d_fld(inod,ist+nd)
         end do
 !$omp end do nowait
@@ -320,9 +254,9 @@
 ! -------------------------------------------------------------------
 !
       subroutine copy_each_sph_solenoid_from_IO                         &
-     &          (nnod_rj, fld_IO, rj_fld, i_fld, j_IO)
+     &          (fld_IO, rj_fld, i_fld, j_IO)
 !
-      integer(kind = kint), intent(in) :: i_fld, j_IO, nnod_rj
+      integer(kind = kint), intent(in) :: i_fld, j_IO
       type(field_IO), intent(in) :: fld_IO
       type(phys_data), intent(inout) :: rj_fld
       integer(kind = kint) :: ist, jst, inod
@@ -331,7 +265,7 @@
       ist = rj_fld%istack_component(i_fld-1)
       jst = fld_IO%istack_comp_IO(j_IO-1)
 !$omp parallel do
-      do inod = 1, nnod_rj
+      do inod = 1, rj_fld%n_point
         rj_fld%d_fld(inod,ist+1) = fld_IO%d_IO(inod,jst+1)
         rj_fld%d_fld(inod,ist+3) = fld_IO%d_IO(inod,jst+2)
       end do
@@ -342,9 +276,9 @@
 ! -------------------------------------------------------------------
 !
       subroutine copy_each_sph_vector_from_IO                           &
-     &         (nnod_rj, fld_IO, rj_fld, i_fld, j_IO)
+     &         (fld_IO, rj_fld, i_fld, j_IO)
 !
-      integer(kind = kint), intent(in) :: i_fld, j_IO, nnod_rj
+      integer(kind = kint), intent(in) :: i_fld, j_IO
       type(field_IO), intent(in) :: fld_IO
       type(phys_data), intent(inout) :: rj_fld
       integer(kind = kint) :: ist, jst, inod
@@ -353,7 +287,7 @@
       ist = rj_fld%istack_component(i_fld-1)
       jst = fld_IO%istack_comp_IO(j_IO-1)
 !$omp parallel do
-      do inod = 1, nnod_rj
+      do inod = 1, rj_fld%n_point
         rj_fld%d_fld(inod,ist+1) = fld_IO%d_IO(inod,jst+1)
         rj_fld%d_fld(inod,ist+3) = fld_IO%d_IO(inod,jst+2)
         rj_fld%d_fld(inod,ist+2) = fld_IO%d_IO(inod,jst+3)
@@ -365,9 +299,9 @@
 ! -------------------------------------------------------------------
 !
       subroutine copy_each_sph_field_from_IO                            &
-     &         (nnod_rj, fld_IO, rj_fld, i_fld, j_IO)
+     &         (fld_IO, rj_fld, i_fld, j_IO)
 !
-      integer(kind = kint), intent(in) :: i_fld, j_IO, nnod_rj
+      integer(kind = kint), intent(in) :: i_fld, j_IO
       type(field_IO), intent(in) :: fld_IO
       type(phys_data), intent(inout) :: rj_fld
       integer(kind = kint) :: ist, jst, nd, inod
@@ -378,7 +312,7 @@
 !$omp parallel
       do nd = 1, rj_fld%num_component(i_fld)
 !$omp do
-        do inod = 1, nnod_rj
+        do inod = 1, rj_fld%n_point
           rj_fld%d_fld(inod,ist+nd) = fld_IO%d_IO(inod,jst+nd)
         end do
 !$omp end do nowait

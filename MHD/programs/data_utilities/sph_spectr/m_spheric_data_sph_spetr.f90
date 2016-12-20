@@ -13,6 +13,7 @@
       use t_spheric_mesh
       use t_phys_data
       use t_phys_address
+      use t_time_data_IO
       use t_field_data_IO
       use t_schmidt_poly_on_rtm
       use t_rms_4_sph_spectr
@@ -33,6 +34,7 @@
       type(phys_data), save :: rj_fld_spec
 !
 !>  Structure for field data IO
+      type(time_params_IO) :: spec_time_IO
       type(field_IO), save :: sph_spec_IO
 !
       type(legendre_4_sph_trans), save :: leg_s

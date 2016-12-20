@@ -62,7 +62,7 @@
 !   matrix assembling
 !
       call init_analyzer_fl(IO_bc1, mesh1, group1, ele_mesh1,           &
-     &    MHD_mesh1, layer_tbl1)
+     &    MHD_mesh1, layer_tbl1, iphys, nod_fld1, label_sim)
 !
       call nod_fields_send_recv(mesh1%nod_comm, nod_fld1)
 !

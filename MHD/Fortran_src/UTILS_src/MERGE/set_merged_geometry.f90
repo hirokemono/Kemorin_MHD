@@ -3,14 +3,16 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine set_merged_mesh_and_group
-!      subroutine set_merged_node_and_element
-!      subroutine set_overlapped_mesh_and_group(nnod_4_ele)
+!!      subroutine set_merged_mesh_and_group(mesh_file)
+!!      subroutine set_merged_node_and_element(mesh_file)
+!!      subroutine set_overlapped_mesh_and_group(mesh_file, nnod_4_ele)
+!!        type(field_IO_params), intent(in) :: mesh_file
 !
       module set_merged_geometry
 !
       use m_precision
 !
+      use t_file_IO_parameter
       use m_geometry_data_4_merge
       use set_geometry_to_merge
       use count_number_with_overlap
@@ -23,9 +25,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_merged_mesh_and_group
+      subroutine set_merged_mesh_and_group(mesh_file)
 !
       use const_merged_groups
+!
+      type(field_IO_params), intent(in) :: mesh_file
 !
       integer (kind = kint) :: nnod_4_ele
 !
@@ -37,7 +41,7 @@
 !     count number of node for each domain
 !
 !       write(*,*) 'count_number_w_overlap'
-       call count_number_w_overlap(nnod_4_ele)
+       call count_number_w_overlap(mesh_file, nnod_4_ele)
 !
 !     array allocation
 !
@@ -59,8 +63,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_merged_node_and_element
+      subroutine set_merged_node_and_element(mesh_file)
 !
+      type(field_IO_params), intent(in) :: mesh_file
       integer (kind = kint) :: nnod_4_ele
 !
 !
@@ -71,7 +76,7 @@
 !     count number of node for each domain
 !
 !       write(*,*) 'count_number_w_overlap'
-       call count_number_w_overlap(nnod_4_ele)
+       call count_number_w_overlap(mesh_file, nnod_4_ele)
 !
 !     array allocation
 !
@@ -89,10 +94,11 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_overlapped_mesh_and_group(nnod_4_ele)
+      subroutine set_overlapped_mesh_and_group(mesh_file, nnod_4_ele)
 !
       use const_overlap_groups
 !
+      type(field_IO_params), intent(in) :: mesh_file
       integer (kind = kint), intent(inout) :: nnod_4_ele
 !
 !
@@ -103,7 +109,7 @@
 !     count number of node for each domain
 !
        write(*,*) 'count_number_w_overlap'
-       call count_number_w_overlap(nnod_4_ele)
+       call count_number_w_overlap(mesh_file, nnod_4_ele)
 !
 !     array allocation
 !

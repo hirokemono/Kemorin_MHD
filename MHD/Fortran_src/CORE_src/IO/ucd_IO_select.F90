@@ -10,13 +10,14 @@
 !!@verbatim
 !!      subroutine set_ucd_file_define(ucd)
 !!
-!!      subroutine sel_write_ucd_file(my_rank, istep_ucd, ucd)
-!!      subroutine sel_write_udt_file(my_rank, istep_ucd, ucd)
+!!      subroutine sel_write_ucd_file(my_rank, istep_ucd, t_IO, ucd)
+!!      subroutine sel_write_udt_file(my_rank, istep_ucd, t_IO, ucd)
 !!      subroutine sel_write_grd_file(my_rank, ucd)
 !!
-!!      subroutine sel_read_udt_param(my_rank, istep_ucd, ucd)
-!!      subroutine sel_read_alloc_udt_file(my_rank, istep_ucd, ucd)
-!!      subroutine sel_read_udt_file(my_rank, istep_ucd, ucd)
+!!      subroutine sel_read_udt_param(my_rank, istep_ucd, t_IO, ucd)
+!!      subroutine sel_read_alloc_udt_file                              &
+!!     &         (my_rank, istep_ucd, t_IO, ucd)
+!!      subroutine sel_read_udt_file(my_rank, istep_ucd, t_IO, ucd)
 !!      subroutine sel_read_ucd_file(my_rank, istep_ucd, nnod_ele, ucd)
 !!@endverbatim
 !!
@@ -40,6 +41,7 @@
       use gz_write_ucd_to_vtk_file
 #endif
 !
+      use t_time_data_IO
       use t_ucd_data
 !
       implicit none
@@ -68,11 +70,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sel_write_ucd_file(my_rank, istep_ucd, ucd)
+      subroutine sel_write_ucd_file(my_rank, istep_ucd, t_IO, ucd)
 !
       use write_ucd_to_vtk_file
 !
       integer(kind=kint), intent(in) :: my_rank, istep_ucd
+      type(time_params_IO), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
 !
 !
@@ -89,11 +92,11 @@
       else if(ucd%ifmt_file .eq. iflag_udt_gz) then
         call write_gz_udt_file(my_rank, istep_ucd, ucd)
       else if(ucd%ifmt_file .eq. iflag_fld_gz) then
-        call write_ucd_2_gz_fld_file(my_rank, istep_ucd, ucd)
+        call write_ucd_2_gz_fld_file(my_rank, istep_ucd, t_IO, ucd)
 #endif
 !
       else if (ucd%ifmt_file .eq. iflag_bin) then
-        call write_ucd_2_fld_file_b(my_rank, istep_ucd, ucd)
+        call write_ucd_2_fld_file_b(my_rank, istep_ucd, t_IO, ucd)
       else if (ucd%ifmt_file .eq. iflag_vtd) then
         call write_udt_data_2_vtk_phys(my_rank, istep_ucd, ucd)
       else if(ucd%ifmt_file .eq. iflag_ucd) then
@@ -101,18 +104,19 @@
       else if(ucd%ifmt_file .eq. iflag_udt) then
         call write_udt_file(my_rank, istep_ucd, ucd)
       else
-        call write_ucd_2_fld_file(my_rank, istep_ucd, ucd)
+        call write_ucd_2_fld_file(my_rank, istep_ucd, t_IO, ucd)
       end if
 !
       end subroutine sel_write_ucd_file
 !
 !------------------------------------------------------------------
 !
-      subroutine sel_write_udt_file(my_rank, istep_ucd, ucd)
+      subroutine sel_write_udt_file(my_rank, istep_ucd, t_IO, ucd)
 !
       use write_ucd_to_vtk_file
 !
       integer(kind=kint), intent(in) :: my_rank, istep_ucd
+      type(time_params_IO), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
 !
 !
@@ -129,11 +133,11 @@
       else if(ucd%ifmt_file .eq. iflag_udt_gz) then
         call write_gz_udt_file(my_rank, istep_ucd, ucd)
       else if(ucd%ifmt_file .eq. iflag_fld_gz) then
-        call write_ucd_2_gz_fld_file(my_rank, istep_ucd, ucd)
+        call write_ucd_2_gz_fld_file(my_rank, istep_ucd, t_IO, ucd)
 #endif
 !
       else if (ucd%ifmt_file .eq. iflag_bin) then
-        call write_ucd_2_fld_file_b(my_rank, istep_ucd, ucd)
+        call write_ucd_2_fld_file_b(my_rank, istep_ucd, t_IO, ucd)
       else if(ucd%ifmt_file .eq. iflag_vtd) then
         call write_udt_data_2_vtk_phys(my_rank, istep_ucd, ucd)
       else if(ucd%ifmt_file .eq. iflag_ucd) then
@@ -141,7 +145,7 @@
       else if(ucd%ifmt_file .eq. iflag_udt) then
         call write_udt_file(my_rank, istep_ucd, ucd)
       else
-        call write_ucd_2_fld_file(my_rank, istep_ucd, ucd)
+        call write_ucd_2_fld_file(my_rank, istep_ucd, t_IO, ucd)
       end if
 !
       end subroutine sel_write_udt_file
@@ -176,10 +180,11 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine sel_read_udt_param(my_rank, istep_ucd, ucd)
+      subroutine sel_read_udt_param(my_rank, istep_ucd, t_IO, ucd)
 !
 !
       integer(kind=kint), intent(in) :: my_rank, istep_ucd
+      type(time_params_IO), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
 !
@@ -190,23 +195,27 @@
       else if(ucd%ifmt_file .eq. iflag_udt_gz) then
         call read_alloc_gz_udt_head(my_rank, istep_ucd, ucd)
       else if(ucd%ifmt_file .eq. iflag_fld_gz) then
-        call read_alloc_ucd_2_gz_fld_file(my_rank, istep_ucd, ucd)
+        call read_alloc_ucd_2_gz_fld_file                               &
+     &     (my_rank, istep_ucd, t_IO, ucd)
 #endif
 !
       else if (ucd%ifmt_file .eq. iflag_bin) then
-        call read_alloc_ucd_2_fld_header_b(my_rank, istep_ucd, ucd)
+        call read_alloc_ucd_2_fld_header_b                              &
+     &     (my_rank, istep_ucd, t_IO, ucd)
       else
-        call read_alloc_ucd_2_fld_file(my_rank, istep_ucd, ucd)
+        call read_alloc_ucd_2_fld_file(my_rank, istep_ucd, t_IO, ucd)
       end if
 !
       end subroutine sel_read_udt_param
 !
 !------------------------------------------------------------------
 !
-      subroutine sel_read_alloc_udt_file(my_rank, istep_ucd, ucd)
+      subroutine sel_read_alloc_udt_file                                &
+     &         (my_rank, istep_ucd, t_IO, ucd)
 !
 !
       integer(kind=kint), intent(in) :: my_rank, istep_ucd
+      type(time_params_IO), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
 !
@@ -217,23 +226,25 @@
       else if(ucd%ifmt_file .eq. iflag_udt_gz) then
         call read_alloc_gz_udt_file(my_rank, istep_ucd, ucd)
       else if(ucd%ifmt_file .eq. iflag_fld_gz) then
-        call read_alloc_ucd_2_gz_fld_file(my_rank, istep_ucd, ucd)
+        call read_alloc_ucd_2_gz_fld_file                               &
+     &     (my_rank, istep_ucd, t_IO, ucd)
 #endif
 !
       else if (ucd%ifmt_file .eq. iflag_bin) then
-        call read_alloc_ucd_2_fld_file_b(my_rank, istep_ucd, ucd)
+        call read_alloc_ucd_2_fld_file_b(my_rank, istep_ucd, t_IO, ucd)
       else
-        call read_alloc_ucd_2_fld_file(my_rank, istep_ucd, ucd)
+        call read_alloc_ucd_2_fld_file(my_rank, istep_ucd, t_IO, ucd)
       end if
 !
       end subroutine sel_read_alloc_udt_file
 !
 !------------------------------------------------------------------
 !
-      subroutine sel_read_udt_file(my_rank, istep_ucd, ucd)
+      subroutine sel_read_udt_file(my_rank, istep_ucd, t_IO, ucd)
 !
 !
       integer(kind=kint), intent(in) :: my_rank, istep_ucd
+      type(time_params_IO), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
 !
@@ -244,13 +255,13 @@
       else if(ucd%ifmt_file .eq. iflag_udt_gz) then
         call read_gz_udt_file(my_rank, istep_ucd, ucd)
       else if(ucd%ifmt_file .eq. iflag_fld_gz) then
-        call read_ucd_2_gz_fld_file(my_rank, istep_ucd, ucd)
+        call read_ucd_2_gz_fld_file(my_rank, istep_ucd, t_IO, ucd)
 #endif
 !
       else if (ucd%ifmt_file .eq. iflag_bin) then
-        call read_ucd_2_fld_file_b(my_rank, istep_ucd, ucd)
+        call read_ucd_2_fld_file_b(my_rank, istep_ucd, t_IO, ucd)
       else
-        call read_ucd_2_fld_file(my_rank, istep_ucd, ucd)
+        call read_ucd_2_fld_file(my_rank, istep_ucd, t_IO, ucd)
       end if
 !
       end subroutine sel_read_udt_file

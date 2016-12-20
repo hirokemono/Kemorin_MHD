@@ -8,9 +8,9 @@
 !        type(phys_data), intent(inout) :: nod_fld
 !      subroutine deallocate_product_data
 !
-!      subroutine set_field_id_4_product(numnod)
+!      subroutine set_field_id_4_product(numnod, t_IO)
 !
-!      subroutine set_data_for_product(numnod, istep_ucd)
+!      subroutine set_data_for_product(numnod, istep_ucd, t_IO)
 !      subroutine cal_rev_of_2nd_field(numnod)
 !      subroutine cal_products_of_fields                                &
 !     &         (nod_comm, node, ncomp_nod, d_nod)
@@ -21,6 +21,7 @@
       use m_constants
       use m_machine_parameter
 !
+      use t_time_data_IO
       use t_comm_table
       use t_geometry_data
       use t_phys_data
@@ -90,7 +91,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_field_id_4_product(numnod)
+      subroutine set_field_id_4_product(numnod, t_IO)
 !
       use calypso_mpi
       use m_error_IDs
@@ -99,6 +100,7 @@
       use ucd_IO_select
 !
       integer(kind = kint), intent(in) :: numnod
+      type(time_params_IO), intent(inout) :: t_IO
       integer(kind = kint) :: istep_ucd
 !
 !
@@ -107,12 +109,12 @@
       call find_field_id_in_read_ucd(my_rank, istep_ucd,                &
      &    ifmt_result_udt_file, prod_udt_file1_head,                    &
      &    numnod, product_field_1_name, i_field_product1,               &
-     &    ncomp_4_product1)
+     &    ncomp_4_product1, t_IO)
 !
       call find_field_id_in_read_ucd(my_rank, istep_ucd,                &
      &   ifmt_result_udt_file, prod_udt_file2_head,                     &
      &   numnod, product_field_2_name, i_field_product2,                &
-     &   ncomp_4_product2)
+     &   ncomp_4_product2, t_IO)
 !
       if( (i_field_product1*i_field_product2) .eq. 0) then
         call calypso_MPI_abort(ierr_fld,'Field does not excist')
@@ -161,22 +163,23 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_data_for_product(numnod, istep_ucd)
+      subroutine set_data_for_product(numnod, istep_ucd, t_IO)
 !
       use calypso_mpi
       use m_ctl_params_4_prod_udt
 !
       integer(kind = kint), intent(in) :: numnod
       integer(kind = kint), intent(in) :: istep_ucd
+      type(time_params_IO), intent(inout) :: t_IO
 !
 !
       call set_one_field_by_read_ucd_once(my_rank, istep_ucd,           &
      &    ifmt_result_udt_file, prod_udt_file1_head,                    &
-     &    i_field_product1, ncomp_4_product1, numnod, d_prod1)
+     &    i_field_product1, ncomp_4_product1, numnod, d_prod1, t_IO)
 !
       call set_one_field_by_read_ucd_once(my_rank, istep_ucd,           &
      &    ifmt_result_udt_file, prod_udt_file2_head,                    &
-     &    i_field_product2, ncomp_4_product2, numnod, d_prod2)
+     &    i_field_product2, ncomp_4_product2, numnod, d_prod2, t_IO)
 !
       end subroutine set_data_for_product
 !
@@ -324,7 +327,7 @@
 !
       subroutine find_field_id_in_read_ucd(my_rank, istep_ucd,          &
      &          ifile_format, ucd_prefix, numnod, field_name,           &
-     &          i_field, ncomp_field)
+     &          i_field, ncomp_field, t_IO)
 !
       use set_and_cal_udt_data
       use ucd_IO_select
@@ -335,6 +338,7 @@
 !
       character(len = kchara), intent(in) :: field_name
       integer(kind = kint),  intent(inout) :: i_field, ncomp_field
+      type(time_params_IO), intent(inout) :: t_IO
 !
       type(ucd_data) :: local_ucd
 !
@@ -342,7 +346,7 @@
       local_ucd%nnod = numnod
       call set_ucd_file_format_prefix                                   &
      &   (ucd_prefix, ifile_format, local_ucd)
-      call sel_read_udt_param(my_rank, istep_ucd, local_ucd)
+      call sel_read_udt_param(my_rank, istep_ucd, t_IO, local_ucd)
       call find_field_id_in_ucd(local_ucd, field_name,                  &
      &    i_field, ncomp_field)
       call deallocate_ucd_data(local_ucd)
@@ -353,7 +357,7 @@
 !
       subroutine set_one_field_by_read_ucd_once(my_rank, istep_ucd,     &
      &          ifile_format, ucd_prefix, i_field, ncomp_field,         &
-     &          numnod, d_fld)
+     &          numnod, d_fld, t_IO)
 !
       use set_and_cal_udt_data
       use ucd_IO_select
@@ -362,7 +366,9 @@
       integer(kind = kint),  intent(in) :: ifile_format
       integer(kind = kint),  intent(in) :: my_rank, istep_ucd
       integer(kind = kint),  intent(in) :: numnod, i_field, ncomp_field
+!
       real(kind = kreal), intent(inout) :: d_fld(numnod,ncomp_field)
+      type(time_params_IO), intent(inout) :: t_IO
 !
       type(ucd_data) :: local_ucd
 !
@@ -371,7 +377,7 @@
       local_ucd%nnod =      numnod
       call set_ucd_file_format_prefix                                   &
      &   (ucd_prefix, ifile_format, local_ucd)
-      call sel_read_alloc_udt_file(my_rank, istep_ucd, local_ucd)
+      call sel_read_alloc_udt_file(my_rank, istep_ucd, t_IO, local_ucd)
       call set_one_field_by_udt_data(numnod, ncomp_field,               &
      &    i_field, d_fld, local_ucd)
       call deallocate_ucd_data(local_ucd)

@@ -44,7 +44,6 @@
 !
       subroutine FEM_analyze_fline(i_step, istep_fline)
 !
-      use m_control_params_2nd_files
       use set_exit_flag_4_visualizer
 !
       integer (kind =kint), intent(in) :: i_step

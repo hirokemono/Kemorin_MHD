@@ -18,6 +18,8 @@
 !
       implicit none
 !
+      type(field_IO_params), save ::  plane_mesh_file
+!
       character(len=kchara) :: xz_stacked_name
       character(len=kchara) :: yz_stacked_name
       character(len=kchara) :: xyz_stacked_name
@@ -67,7 +69,7 @@
 !
       write(*,*) 'read_control_data_fft_plane'
       call read_control_data_fft_plane
-      call s_set_plane_spectr_file_head
+      call s_set_plane_spectr_file_head(plane_mesh_file)
       call set_parameters_4_FFT(num_pe, ist, ied, iint)
 !
 !

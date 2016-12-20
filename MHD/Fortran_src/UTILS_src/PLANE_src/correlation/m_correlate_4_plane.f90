@@ -18,15 +18,14 @@
 !
       use m_file_format_switch
       use m_field_file_format
+      use t_file_IO_parameter
 !
       implicit    none
 !
       integer(kind=kint ) :: num_crt, num_domain
 !
-      character(len = kchara) :: cor_mesh_header = "mesh/in"
-      character(len = kchara) :: ref_mesh_header = "mesh_ref/in"
-      integer (kind = kint) :: id_cor_mesh_fmt = id_ascii_file_fmt
-      integer (kind = kint) :: id_ref_mesh_fmt = id_ascii_file_fmt
+      type(field_IO_params), save ::  cor_mesh_file
+      type(field_IO_params), save ::  ref_mesh_file
 !
       character(len=kchara) :: cor_udt_header =  'field/out'
       character(len=kchara) :: ref_udt_header =  'field_ref/out'

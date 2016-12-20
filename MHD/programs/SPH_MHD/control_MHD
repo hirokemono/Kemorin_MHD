@@ -461,6 +461,44 @@ begin MHD_control
         ext_magne_vec  z     0.000   end
       end array ext_magne_vec
     end Magneto_convection_def
+!
+    begin SGS_control
+!       SGS_model_ctl           similarity
+      SGS_model_ctl           dynamic
+!
+      array sph_filter_ctl  1
+        begin sph_filter_ctl
+          number_of_moments        3
+          radial_filter_width     1.0
+          sphere_filter_width       1
+        end   sph_filter_ctl
+!
+!        begin sph_filter_ctl
+!          number_of_moments        5
+!          radial_filter_width     2.0
+!          sphere_filter_width       2
+!        end   sph_filter_ctl
+!
+!        begin sph_filter_ctl
+!          number_of_moments        9
+!          radial_filter_width     3.0
+!          sphere_filter_width       3
+!        end   sph_filter_ctl
+!
+!        begin sph_filter_ctl
+!          number_of_moments        23
+!          radial_filter_width     4.0
+!          sphere_filter_width       4
+!        end   sph_filter_ctl
+      end array sph_filter_ctl
+!
+      array SGS_terms_ctl      4
+        SGS_terms_ctl    heat              end
+        SGS_terms_ctl    inertia           end
+        SGS_terms_ctl    Lorentz           end
+        SGS_terms_ctl    induction         end
+      end array SGS_terms_ctl
+    end SGS_control
   end model
 !
 !

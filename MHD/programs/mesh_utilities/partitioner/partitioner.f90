@@ -14,7 +14,6 @@
 !
       use m_control_data_4_part
       use m_ctl_param_partitioner
-      use m_read_mesh_data
 !
       use init_partitioner
       use grouping_for_partition
@@ -44,9 +43,7 @@
 !
 !  read global mesh
 !
-      iflag_mesh_file_fmt = ifmt_single_mesh_fmt
-      mesh_file_head = global_mesh_head
-      call input_mesh(my_rank, org_mesh, org_group,                     &
+      call input_mesh(global_mesh_file, my_rank, org_mesh, org_group,   &
      &    org_ele_mesh%surf%nnod_4_surf, org_ele_mesh%edge%nnod_4_edge, &
      &    ierr)
       if(ierr .gt. 0) stop 'Global mesh is wrong!'
@@ -74,7 +71,7 @@
 !  ========= Construct subdomain information for viewer ==============
 !
       write(*,*) 'choose_surface_mesh'
-      call choose_surface_mesh(local_file_header,                       &
+      call choose_surface_mesh(distribute_mesh_file,                    &
      &    org_mesh%ele, org_ele_mesh%surf, org_ele_mesh%edge)
 !
       stop ' * Partitioning finished'

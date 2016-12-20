@@ -4,7 +4,8 @@
 !     Written by H. Matsui on May., 2008
 !
 !!      subroutine set_inod_4_newdomain_filter                          &
-!!     &         (org_node, org_ele, new_node, ierr)
+!!     &         (mesh_file, org_node, org_ele, new_node, ierr)
+!!        type(field_IO_params), intent(in) :: mesh_file
 !!        type(node_data),    intent(inout) :: org_node
 !!        type(element_data), intent(inout) :: org_ele
 !!        type(node_data), intent(inout) :: new_node
@@ -29,15 +30,17 @@
 !   --------------------------------------------------------------------
 !
       subroutine set_inod_4_newdomain_filter                            &
-     &         (org_node, org_ele, new_node, ierr)
+     &         (mesh_file, org_node, org_ele, new_node, ierr)
 !
       use t_mesh_data
+      use t_file_IO_parameter
 !
       use m_internal_4_partitioner
       use m_filter_file_names
       use m_field_file_format
       use copy_mesh_structures
 !
+      type(field_IO_params), intent(in) :: mesh_file
       type(node_data),    intent(inout) :: org_node
       type(element_data), intent(inout) :: org_ele
       type(node_data), intent(inout) :: new_node
@@ -49,8 +52,8 @@
       do ip2 = 1, nprocs_2nd
         my_rank2 = ip2 - 1
 !
-        mesh_file_head = target_mesh_head
-        call sel_read_geometry_size(my_rank2, mesh_IO_f, ierr)
+        call sel_read_geometry_size                                     &
+     &     (tgt_mesh_file, my_rank2, mesh_IO_f, ierr)
         if(ierr .gt. 0) return
 !
         call copy_node_geometry_types(mesh_IO_f%node, new_node)
@@ -59,7 +62,7 @@
         call deallocate_type_neib_id(mesh_IO_f%nod_comm)
 !
         call marking_used_node_4_filtering                              &
-     &     (ip2, ifmt_3d_filter, org_node, org_ele%numele)
+     &     (ip2, ifmt_3d_filter, mesh_file, org_node, org_ele%numele)
 !
         call set_num_globalnod_4_newdomain(ip2, new_node)
 !

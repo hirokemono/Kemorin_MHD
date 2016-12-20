@@ -8,11 +8,13 @@
 !!       to FEM data for data visualization
 !!
 !!@verbatim
-!!      subroutine FEM_initialize_w_viz                                 &
-!!     &         (mesh, group, ele_mesh, next_tbl, jac_3d_q, jac_3d_l)
+!!      subroutine FEM_initialize_w_viz(mesh, group, ele_mesh,          &
+!!     &          iphys, nod_fld, next_tbl, jac_3d_q, jac_3d_l)
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(element_geometry), intent(inout) :: ele_mesh
+!!        type(phys_address), intent(in) :: iphys
+!!        type(phys_data), intent(inout) :: nod_fld
 !!        type(next_nod_ele_table), intent(inout) :: next_tbl
 !!        type(jacobians_3d), intent(inout) :: jac_3d_q, jac_3d_l
 !!@endverbatim
@@ -34,6 +36,8 @@
       use m_work_time
 !
       use t_mesh_data
+      use t_phys_data
+      use t_phys_address
       use t_next_node_ele_4_node
       use t_jacobian_3d
 !
@@ -45,12 +49,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_w_viz                                   &
-     &         (mesh, group, ele_mesh, next_tbl, jac_3d_q, jac_3d_l)
+      subroutine FEM_initialize_w_viz(mesh, group, ele_mesh,            &
+     &          iphys, nod_fld, next_tbl, jac_3d_q, jac_3d_l)
 !
       use m_t_step_parameter
       use m_fem_gauss_int_coefs
-      use m_node_phys_data
       use m_cal_max_indices
 !
       use set_ele_id_4_node_type
@@ -61,6 +64,8 @@
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
+      type(phys_address), intent(inout) :: iphys
+      type(phys_data), intent(inout) :: nod_fld
       type(next_nod_ele_table), intent(inout) :: next_tbl
       type(jacobians_3d), intent(inout) :: jac_3d_q, jac_3d_l
 !
@@ -72,7 +77,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
       call FEM_initialize_sph_MHD(mesh, group, ele_mesh,                &
-     &    iphys, nod_fld1, range)
+     &    iphys, nod_fld, range)
 !
 !  -------------------------------
 !

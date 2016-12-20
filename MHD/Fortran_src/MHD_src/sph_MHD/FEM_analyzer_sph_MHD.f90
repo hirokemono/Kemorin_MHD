@@ -108,8 +108,8 @@
 !
 !  -------------------------------
 !
-      if (iflag_debug.gt.0) write(*,*) 'set_field_address_type'
-      call set_field_address_type(mesh%node%numnod, nod_fld, iphys)
+      if (iflag_debug.gt.0) write(*,*) 'init_field_address'
+      call init_field_address(mesh%node%numnod, nod_fld, iphys)
 !
 !  connect grid data to volume output
 !

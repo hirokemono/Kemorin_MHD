@@ -139,12 +139,14 @@
       use lead_fields_4_sph_mhd
       use sph_mhd_rst_IO_control
       use sph_mhd_rms_IO
+      use input_control_sph_MHD
 !
       integer(kind = kint), intent(in) :: i_step
 !
 !
       call read_alloc_sph_rst_4_snap                                    &
-     &   (i_step, sph1%sph_rj, ipol, rj_fld1)
+     &   (i_step, MHD1_org_files%rj_file_param, sph1%sph_rj,            &
+     &    ipol, rj_fld1)
 !
       if (iflag_debug.eq.1) write(*,*)' sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph                                    &
@@ -192,7 +194,7 @@
 !
 !*  -----------  Output spectr data --------------
 !*
-      call output_spectr_4_snap(i_step, sph1%sph_rj, rj_fld1)
+      call output_spectr_4_snap(i_step, sph_file_param1, rj_fld1)
 !
       end subroutine SPH_analyze_special_snap
 !

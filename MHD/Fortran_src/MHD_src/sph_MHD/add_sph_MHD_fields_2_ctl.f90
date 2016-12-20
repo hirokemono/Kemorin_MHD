@@ -33,37 +33,37 @@
 !
 !
 !   velocity flag
-      if(iflag_t_evo_4_velo .gt. id_no_evolution                        &
-     &     .or. iflag_t_evo_4_magne .gt. id_no_evolution) then
+      if(evo_velo%iflag_scheme .gt. id_no_evolution                     &
+     &     .or. evo_magne%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_tmp(fhd_velo)
       end if
 !   vorticity flag
-      if(iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if(evo_velo%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_tmp(fhd_vort)
       end if
 !   magnetic field flag
-      if(iflag_t_evo_4_magne .gt. id_no_evolution                       &
+      if(evo_magne%iflag_scheme .gt. id_no_evolution                    &
      &     .or. iflag_4_lorentz .gt. id_turn_OFF) then
         call add_phys_name_tmp(fhd_magne)
         call add_phys_name_tmp(fhd_current)
       end if
 !
 !   gradient of temperature flag
-      if(iflag_t_evo_4_temp .gt. id_no_evolution) then
+      if(evo_temp%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_tmp(fhd_grad_temp)
         call add_phys_name_tmp(fhd_part_temp)
         call add_phys_name_tmp(fhd_grad_par_temp)
       end if
 !
 !   gradient of dummy scalar flag
-      if(iflag_t_evo_4_composit .gt. id_no_evolution) then
+      if(evo_comp%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_tmp(fhd_grad_composit)
       end if
 !
 !
 !
 !   advection flag
-      if(iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if(evo_velo%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_tmp(fhd_viscous)
         call add_phys_name_tmp(fhd_div_viscous)
         call add_phys_name_tmp(fhd_w_viscous)
@@ -105,7 +105,7 @@
       end if
 !
 !   induction flag
-      if(iflag_t_evo_4_magne .gt. id_no_evolution) then
+      if(evo_magne%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_tmp(fhd_mag_diffuse)
 !
         call add_phys_name_tmp(fhd_mag_induct)
@@ -113,14 +113,14 @@
       end if
 !
 !   divergence of heat flux flag
-      if(iflag_t_evo_4_temp .gt. id_no_evolution) then
+      if(evo_temp%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_tmp(fhd_thermal_diffusion)
         call add_phys_name_tmp(fhd_h_flux)
         call add_phys_name_tmp(fhd_heat_advect)
       end if
 !
 !   divergence of dummy scalar flag
-      if(iflag_t_evo_4_composit .gt. id_no_evolution) then
+      if(evo_comp%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_tmp(fhd_c_diffuse)
         call add_phys_name_tmp(fhd_c_flux)
         call add_phys_name_tmp(fhd_composit_advect)

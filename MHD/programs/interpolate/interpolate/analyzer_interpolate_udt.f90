@@ -18,6 +18,7 @@
       use t_FEM_phys_data
       use t_phys_data
       use t_phys_address
+      use t_time_data_IO
       use t_ucd_data
       use t_interpolate_table
 !
@@ -36,6 +37,7 @@
 !
       type(phys_data), save :: new_phys
 !
+      type(time_params_IO), save :: itp_time_IO
       type(ucd_data), save :: fem_ucd
 !
       private :: link_field_data_type_2_IO
@@ -86,9 +88,9 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_field_address_type'
-      call set_field_address_type(org_femmesh%mesh%node%numnod,         &
-     &                            nod_fld_ITP, iphys_ITP)
+      if (iflag_debug.eq.1) write(*,*) 'init_field_address'
+      call init_field_address(org_femmesh%mesh%node%numnod,             &
+     &                        nod_fld_ITP, iphys_ITP)
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_field_name_type'
       call copy_field_name_type(nod_fld_ITP, new_phys)
@@ -114,8 +116,9 @@
 !
       do istep = i_step_init, i_step_number, i_step_output_ucd
         if (my_rank .lt. ndomain_org) then
-          call set_data_by_read_ucd_once(my_rank, istep,                &
-     &        itype_org_udt_file, org_udt_file_head, nod_fld_ITP)
+          call set_data_by_read_ucd_once                                &
+     &       (my_rank, istep, itype_org_udt_file, org_udt_file_head,    &
+     &        nod_fld_ITP, itp_time_IO)
 !
           call nod_fields_send_recv                                     &
      &       (org_femmesh%mesh%nod_comm, nod_fld_ITP)
@@ -136,7 +139,7 @@
 !
           call set_ucd_file_format(itype_itp_udt_file, fem_ucd)
           call set_ucd_file_prefix(itp_udt_file_head, fem_ucd)
-          call sel_write_udt_file(my_rank, istep, fem_ucd)
+          call sel_write_udt_file(my_rank, istep, itp_time_IO, fem_ucd)
           call disconnect_ucd_data(fem_ucd)
           call disconnect_ucd_node(fem_ucd)
         end if

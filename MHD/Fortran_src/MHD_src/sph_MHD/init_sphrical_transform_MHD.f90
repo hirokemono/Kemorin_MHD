@@ -51,7 +51,7 @@
      &            iflag_leg_sym_dgemm_big/)
 !
       private :: num_test, list_test
-      private :: sel_sph_transform_MHD, select_legendre_transform
+      private :: select_legendre_transform
 !
 !-----------------------------------------------------------------------
 !
@@ -99,9 +99,9 @@
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
       call set_addresses_trans_sph_Csim(ipol, WK%trns_Csim,             &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-      call set_addresses_snapshot_trans(ipol, WK%trns_snap,             &
+      call set_addresses_snapshot_trans(ipol, iphys, WK%trns_snap,      &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
-      call set_addresses_temporal_trans(ipol, WK%trns_tmp,              &
+      call set_addresses_temporal_trans(ipol, iphys, WK%trns_tmp,       &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !
       if(iflag_debug .ge. iflag_routine_msg) then

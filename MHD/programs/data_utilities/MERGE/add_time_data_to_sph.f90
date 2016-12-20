@@ -17,6 +17,7 @@
       use m_constants
       use calypso_mpi
 !
+      use t_time_data_IO
       use t_field_data_IO
 !
       use m_machine_parameter
@@ -47,6 +48,7 @@
       type(phys_data), allocatable, save ::     new_sph_phys(:)
 !
       type(field_IO), save :: new_fst_IO
+      type(time_params_IO), save :: fst_time_IO
 !
       type(sph_radial_itp_data), save :: r_itp
       type(rj_assemble_tbl), allocatable, save :: j_table_s(:,:)
@@ -119,7 +121,7 @@
 !
       call load_field_name_assemble_sph                                 &
      &   (org_sph_fst_head, ifmt_org_sph_fst, istep_start,              &
-     &    np_sph_org, org_sph_phys(1), new_sph_phys(1))
+     &    np_sph_org, org_sph_phys(1), new_sph_phys(1), fst_time_IO)
 !
       do jp = 2, np_sph_new
         new_sph_phys(jp)%num_phys =  new_sph_phys(1)%num_phys
@@ -190,10 +192,10 @@
           irank_new = jp - 1
           call const_assembled_sph_data                                 &
      &       (b_sph_ratio, new_sph_mesh(jp)%sph,                        &
-     &        r_itp, new_sph_phys(jp), new_fst_IO)
+     &        r_itp, new_sph_phys(jp), new_fst_IO, fst_time_IO)
 !
           call sel_write_step_SPH_field_file                            &
-     &       (np_sph_new, irank_new, istep, new_fst_IO)
+     &       (np_sph_new, irank_new, istep, fst_time_IO, new_fst_IO)
 !
           call dealloc_phys_data_IO(new_fst_IO)
           call dealloc_phys_name_IO(new_fst_IO)
@@ -243,8 +245,7 @@
       call sel_read_alloc_field_file(irank_org, istep, org_fst_IO)
 !
       call alloc_phys_data_type(org_sph%sph_rj%nnod_rj, org_phys)
-      call copy_rj_phys_data_from_IO                                    &
-     &       (org_sph%sph_rj%nnod_rj, org_fst_IO, org_phys)
+      call copy_rj_phys_data_from_IO(org_fst_IO, org_phys)
 !
       call dealloc_phys_data_IO(org_fst_IO)
       call dealloc_phys_name_IO(org_fst_IO)

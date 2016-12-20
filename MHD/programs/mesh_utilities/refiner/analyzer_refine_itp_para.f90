@@ -29,7 +29,6 @@
       subroutine  init_refine_itp_para
 !
       use m_constants
-      use m_read_mesh_data
       use m_control_data_refine_para
       use m_interpolate_table_IO
       use itp_table_IO_select_4_zlib
@@ -43,13 +42,13 @@
       if(iflag_debug.gt.0) write(*,*) 'set_control_param_refine_para'
       call set_control_param_refine_para
 !
-      mesh_file_head = para_fine_mesh_head
       call alloc_para_fine_mesh_type
-      call s_set_parallel_mesh_in_1pe(nprocs_fine, fine_mesh)
+      call s_set_parallel_mesh_in_1pe                                   &
+     &   (para_fine_mesh_file, nprocs_fine, fine_mesh)
 !
-      mesh_file_head = para_course_mesh_head
       call alloc_para_course_mesh_type
-      call s_set_parallel_mesh_in_1pe(nprocs_course, course_mesh)
+      call s_set_parallel_mesh_in_1pe                                   &
+     &   (para_course_mesh_file, nprocs_course, course_mesh)
 !
 !
 !

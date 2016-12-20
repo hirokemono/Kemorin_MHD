@@ -1,14 +1,15 @@
 !m_original_ucd_4_merge.f90
 !      written by H. Matsui
 !
-!      subroutine allocate_subdomain_parameters
-!      subroutine deallocate_subdomain_parameters
-!
-!      subroutine init_ucd_data_4_merge(istep, ucd)
-!      subroutine read_ucd_data_4_merge(istep, ucd)
-!        type(ucd_data), intent(inout) :: ucd
-!
-!      subroutine set_field_list_4_merge
+!!      subroutine allocate_subdomain_parameters
+!!      subroutine deallocate_subdomain_parameters
+!!
+!!      subroutine init_ucd_data_4_merge(istep, t_IO, ucd)
+!!      subroutine read_ucd_data_4_merge(istep, t_IO, ucd)
+!!        type(time_params_IO), intent(inout) :: t_IO
+!!        type(ucd_data), intent(inout) :: ucd
+!!
+!!      subroutine set_field_list_4_merge
 !
       module m_original_ucd_4_merge
 !
@@ -51,14 +52,16 @@
 ! -----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine init_ucd_data_4_merge(istep, ucd)
+      subroutine init_ucd_data_4_merge(istep, t_IO, ucd)
 !
-      use t_ucd_data
       use m_constants
+      use t_time_data_IO
+      use t_ucd_data
       use m_control_param_merge
       use ucd_IO_select
 !
       integer (kind = kint), intent(in) :: istep
+      type(time_params_IO), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
       integer (kind = kint) :: i
@@ -67,7 +70,7 @@
       ucd%nnod = ione
       call set_ucd_file_format(itype_org_ucd_file, ucd)
       call set_ucd_file_prefix(udt_original_header, ucd)
-      call sel_read_udt_param(izero, istep, ucd)
+      call sel_read_udt_param(izero, istep, t_IO, ucd)
       call deallocate_ucd_phys_data(ucd)
 !
       org_fld%num_phys =    ucd%num_field
@@ -87,8 +90,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_ucd_data_4_merge(istep, ucd)
+      subroutine read_ucd_data_4_merge(istep, t_IO, ucd)
 !
+      use t_time_data_IO
       use t_ucd_data
       use m_control_param_merge
       use m_geometry_data_4_merge
@@ -96,6 +100,7 @@
       use ucd_IO_select
 !
        integer (kind = kint), intent(in) :: istep
+      type(time_params_IO), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
        integer (kind = kint) :: ip, my_rank
@@ -116,7 +121,7 @@
         ucd%nnod = subdomain(ip)%node%numnod
         call allocate_ucd_phys_data(ucd)
 !
-        call sel_read_udt_file(my_rank, istep, ucd)
+        call sel_read_udt_file(my_rank, istep, t_IO, ucd)
 !
         call copy_udt_field_data_merge(ip, ifield_2_copy, org_fld, ucd)
 !

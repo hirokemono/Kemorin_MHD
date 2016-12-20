@@ -15,6 +15,7 @@
       use m_psf_results
       use m_field_file_format
 !
+      use t_time_data_IO
       use t_ucd_data
 !
       use set_parallel_file_name
@@ -23,6 +24,7 @@
       implicit    none
 !
 !
+      type(time_params_IO), save :: psf_time
       type(ucd_data), save:: psf_ucd
 !
       character(len=kchara) :: psf_format
@@ -102,7 +104,7 @@
         write(*,'(i15)', advance='NO') istep
 !
         psf_ucd%file_prefix = psf_org_header
-        call sel_read_udt_file(iminus, istep, psf_ucd)
+        call sel_read_udt_file(iminus, istep, psf_time, psf_ucd)
 !
         do inod = 1, psf_u%psf_nod%numnod
           psf_u%psf_phys%d_fld(inod,ipsf_temp)                          &
@@ -111,7 +113,7 @@
         end do
 !
         psf_ucd%file_prefix = psf_fixed_header
-        call sel_write_udt_file(iminus, istep, psf_ucd)
+        call sel_write_udt_file(iminus, istep, psf_time, psf_ucd)
       end do
       write(*,*)
 !

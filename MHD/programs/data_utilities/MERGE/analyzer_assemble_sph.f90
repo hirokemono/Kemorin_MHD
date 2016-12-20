@@ -23,6 +23,7 @@
       use parallel_assemble_sph
       use copy_rj_phys_data_4_IO
       use r_interpolate_marged_sph
+      use t_time_data_IO
       use t_field_data_IO
       use t_assembled_field_IO
 !
@@ -36,6 +37,7 @@
 !
       integer(kind = kint) :: nloop_new
       type(field_IO), allocatable, save :: new_fst_IO(:)
+      type(time_params_IO), save :: fst_time_IO
 !
       integer(kind = kint), allocatable :: nnod_list_lc(:)
       integer(kind = kint), allocatable :: nnod_list(:)
@@ -146,7 +148,7 @@
 !
       call load_field_name_assemble_sph(org_sph_fst_head,               &
      &      ifmt_org_sph_fst, istep_start, np_sph_org,                  &
-     &      org_sph_phys(1), new_sph_phys(1))
+     &      org_sph_phys(1), new_sph_phys(1), fst_time_IO)
 !
       call share_spectr_field_names(np_sph_org, np_sph_new,             &
      &    new_sph_mesh, org_sph_phys, new_sph_phys)
@@ -222,8 +224,8 @@
 
           if(irank_new .lt. np_sph_new) then
             call const_assembled_sph_data                               &
-     &          (b_sph_ratio, new_sph_mesh(jp)%sph,                     &
-     &           r_itp, new_sph_phys(jp), new_fst_IO(jloop))
+     &          (b_sph_ratio, new_sph_mesh(jp)%sph, r_itp,              &
+     &           new_sph_phys(jp), new_fst_IO(jloop), fst_time_IO)
           end if
 !
             call set_field_file_fmt_prefix                              &
@@ -232,7 +234,7 @@
 !
 !
         call sel_write_SPH_assemble_field                               &
-     &     (np_sph_new, istep, nloop_new, new_fst_IO)
+     &     (np_sph_new, istep, nloop_new, fst_time_IO, new_fst_IO)
 !
         do jloop = 1, nloop_new
           irank_new = my_rank + (jloop-1) * nprocs

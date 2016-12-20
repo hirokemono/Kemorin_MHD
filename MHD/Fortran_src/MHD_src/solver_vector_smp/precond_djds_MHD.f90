@@ -53,7 +53,7 @@
 !C +-----------------+
 !C===
 !
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1)   write(*,*) 'precond: ',                 &
      &                trim(precond_4_solver),' ', sigma_diag
         call precond_DJDS11_struct(np_smp,                              &
@@ -61,7 +61,7 @@
      &      precond_4_solver, sigma_diag)
       end if
 !
-      if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
+      if (evo_velo%iflag_scheme .ge. id_Crank_nicolson) then
         call precond_DJDS33_struct(np_smp,                              &
      &      Vmatrix%MG_DJDS_table(0), Vmatrix%mat_MG_DJDS(0),           &
      &      precond_4_crank, sigma_diag)
@@ -70,7 +70,7 @@
 !     &      precond_4_crank, sigma_diag)
       end if
 !
-      if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
+      if (evo_temp%iflag_scheme .ge. id_Crank_nicolson) then
         if (iflag_debug.eq.1)  write(*,*) 'precond: ',                  &
      &          trim(precond_4_solver),' ', sigma_diag
         call precond_DJDS11_struct(np_smp,                              &
@@ -78,7 +78,7 @@
      &      precond_4_solver, sigma_diag)
       end if
 !
-      if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
+      if (evo_comp%iflag_scheme .ge. id_Crank_nicolson) then
         if (iflag_debug.eq.1)  write(*,*) 'precond: ',                  &
      &         trim(precond_4_solver),' ', sigma_diag
         call precond_DJDS11_struct(np_smp,                              &
@@ -86,15 +86,15 @@
      &      precond_4_solver, sigma_diag)
       end if
 !
-      if (iflag_t_evo_4_vect_p .gt. id_no_evolution                     &
-     &     .or. iflag_t_evo_4_magne .gt. id_no_evolution) then
+      if (evo_vect_p%iflag_scheme .gt. id_no_evolution                  &
+     &     .or. evo_magne%iflag_scheme .gt. id_no_evolution) then
         call precond_DJDS11_struct                                      &
      &     (np_smp, Fmatrix%MG_DJDS_table(0), Fmatrix%mat_MG_DJDS(0),   &
      &      precond_4_solver, sigma_diag)
       end if
 !
-      if (iflag_t_evo_4_vect_p .gt. id_no_evolution                     &
-     &     .or. iflag_t_evo_4_magne .gt. id_no_evolution) then
+      if (evo_vect_p%iflag_scheme .gt. id_no_evolution                  &
+     &     .or. evo_magne%iflag_scheme .gt. id_no_evolution) then
         call precond_DJDS33_struct                                      &
      &     (np_smp, Bmatrix%MG_DJDS_table(0), Bmatrix%mat_MG_DJDS(0),   &
      &      precond_4_crank, sigma_diag)

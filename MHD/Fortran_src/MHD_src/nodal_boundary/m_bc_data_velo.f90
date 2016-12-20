@@ -74,7 +74,7 @@
      &    sf1_bcs)
 !
 !     set normal velocity
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         call set_normal_velocity(group%surf_grp, group%surf_nod_grp,    &
      &      sf1_bcs%Vsf_bcs%normal, iphys%i_velo, nod_fld)
       end if

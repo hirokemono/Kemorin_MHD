@@ -31,6 +31,9 @@
 !
       implicit none
 !
+      character(len=kchara), parameter, private                         &
+     &                      :: snap_ctl_name = 'control_snapshot'
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -59,11 +62,12 @@
       call start_eleps_time(1)
       call start_eleps_time(4)
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_snap_noviz'
-      call read_control_4_sph_snap_noviz
+      call read_control_4_sph_snap_noviz(snap_ctl_name)
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_mesh'
-      call input_control_SPH_mesh(sph1, comms_sph1, sph_grps1, rj_fld1, &
-     &    pwr1, trns_WK1%dynamic_SPH, mesh1, group1, ele_mesh1)
+      call input_control_SPH_mesh                                       &
+     &   (sph1, comms_sph1, sph_grps1, rj_fld1, nod_fld1, pwr1,         &
+     &    trns_WK1%dynamic_SPH, mesh1, group1, ele_mesh1)
       call end_eleps_time(4)
 !
 !     --------------------- 

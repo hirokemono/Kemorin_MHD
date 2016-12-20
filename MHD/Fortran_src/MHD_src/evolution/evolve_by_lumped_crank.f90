@@ -142,12 +142,11 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if (coef_imp_v.gt.0.0d0) then
+      if (evo_velo%coef_imp .gt. zero) then
         call int_sk_4_fixed_velo(iphys%i_velo, iak_diff_v, node, ele,   &
      &      nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,            &
      &      Vnod_bcs%nod_bc_v, Vnod_bcs%nod_bc_rot, ak_d_velo,          &
      &      fem_wk, f_l)
-!        if (iflag_initial_step.eq.1) coef_imp_v = 1.0d0 / coef_imp_v
       end if
 !
       call cal_t_evo_4_vector(iflag_velo_supg,                          &
@@ -223,12 +222,11 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if (coef_imp_b.gt.0.0d0) then
+      if (evo_vect_p%coef_imp .gt. 0.0d0) then
         call int_sk_4_fixed_vector(iflag_commute_magne,                 &
      &      i_vecp, node, ele, nod_fld, jac_3d, rhs_tbl,                &
      &      FEM_elens, diff_coefs, nod_bc_a, ak_d_magne,                &
-     &      coef_imp_b, iak_diff_b, fem_wk, f_l)
-!        if (iflag_initial_step.eq.1) coef_imp_b = 1.0d0 / coef_imp_b
+     &      evo_vect_p%coef_imp, iak_diff_b, fem_wk, f_l)
       end if
 !
       call cal_t_evo_4_vector_cd(iflag_mag_supg,                        &
@@ -297,12 +295,11 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if (coef_imp_b.gt.0.0d0) then
+      if (evo_magne%coef_imp .gt. 0.0d0) then
         call int_sk_4_fixed_vector(iflag_commute_magne,                 &
      &      i_magne, node, ele, nod_fld, jac_3d, rhs_tbl,               &
      &      FEM_elens, diff_coefs, nod_bc_b, ak_d_magne,                &
-     &      coef_imp_b, iak_diff_b, fem_wk, f_l)
-!        if (iflag_initial_step.eq.1) coef_imp_b = 1.0d0 / coef_imp_b
+     &      evo_magne%coef_imp, iak_diff_b, fem_wk, f_l)
       end if
 !
       call cal_t_evo_4_vector_cd(iflag_mag_supg,                        &
@@ -376,11 +373,14 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if (coef_imp_t .gt. 0.0d0) then
+      if (evo_temp%coef_imp .gt. zero) then
         call int_sk_fixed_temp(iflag_commute_temp, i_temp, iak_diff_t,  &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
-     &      Tnod_bcs%nod_bc_s, ak_d_temp, coef_imp_t, fem_wk, f_l)
-        if (iflag_initial_step.eq.1) coef_imp_t = 1.0d0 / coef_imp_t
+     &      Tnod_bcs%nod_bc_s, ak_d_temp, evo_temp%coef_imp,            &
+     &      fem_wk, f_l)
+        if (iflag_initial_step.eq.1) then
+          evo_temp%coef_imp = 1.0d0 / evo_temp%coef_imp
+        end if
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'multi_pass temp'
@@ -449,12 +449,12 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if (coef_imp_c.gt.0.0d0) then
+      if (evo_comp%coef_imp .gt. zero) then
         call int_sk_fixed_temp                                          &
      &     (iflag_commute_composit, i_light, iak_diff_c,                &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
-     &      Cnod_bcs%nod_bc_s, ak_d_composit, coef_imp_c, fem_wk, f_l)
-!         if (iflag_initial_step.eq.1) coef_imp_c = 1.0d0 / coef_imp_c
+     &      Cnod_bcs%nod_bc_s, ak_d_composit, evo_comp%coef_imp,        &
+     &      fem_wk, f_l)
       end if
 !
       call cal_t_evo_4_scalar(iflag_comp_supg,                          &

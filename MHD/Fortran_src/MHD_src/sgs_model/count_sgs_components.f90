@@ -91,14 +91,14 @@
 !
       sgs_coefs%num_field = 0
       sgs_coefs%ntot_comp = 0
-      if (iflag_t_evo_4_temp .gt. id_no_evolution) then
+      if (evo_temp%iflag_scheme .gt. id_no_evolution) then
         if (iflag_SGS_heat .ne. id_SGS_none) then
           sgs_coefs%num_field = sgs_coefs%num_field + 1
           sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 3
         end if
       end if
 !
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         if (iflag_SGS_inertia .ne. id_SGS_none) then
           sgs_coefs%num_field = sgs_coefs%num_field + 1
           sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 6
@@ -121,20 +121,20 @@
         end if
       end if
 !
-      if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+      if (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         if (iflag_SGS_induction .ne. id_SGS_none) then
           sgs_coefs%num_field = sgs_coefs%num_field + 1
           sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 3
         end if
       end if
-      if (iflag_t_evo_4_magne .gt. id_no_evolution) then
+      if (evo_magne%iflag_scheme .gt. id_no_evolution) then
         if (iflag_SGS_induction .ne. id_SGS_none) then
           sgs_coefs%num_field = sgs_coefs%num_field + 1
           sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 3
         end if
       end if
 !
-      if (iflag_t_evo_4_composit .gt. id_no_evolution) then
+      if (evo_comp%iflag_scheme .gt. id_no_evolution) then
         if (iflag_SGS_comp_flux .ne. id_SGS_none) then
           sgs_coefs%num_field = sgs_coefs%num_field + 1
           sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 3
@@ -169,7 +169,7 @@
        j = 1
        id = 1
        jd = 1
-       if (iflag_t_evo_4_temp .gt. id_no_evolution) then
+       if (evo_temp%iflag_scheme .gt. id_no_evolution) then
          if (iflag_SGS_heat .ne. id_SGS_none) then
            icomp_sgs%i_heat_flux = i
            ifld_sgs%i_heat_flux =  j
@@ -180,7 +180,7 @@
          end if
        end if
 !
-       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+       if (evo_velo%iflag_scheme .gt. id_no_evolution) then
          if (iflag_SGS_inertia .ne. id_SGS_none) then
            icomp_sgs%i_mom_flux = i
            ifld_sgs%i_mom_flux =  j
@@ -219,7 +219,7 @@
         end if
        end if
 !
-       if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+       if (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
          if (iflag_SGS_induction .ne. id_SGS_none) then
            icomp_sgs%i_induction = i
            ifld_sgs%i_induction =  j
@@ -229,7 +229,7 @@
            j = j + 1
          end if
        end if
-       if (iflag_t_evo_4_magne .gt. id_no_evolution) then
+       if (evo_magne%iflag_scheme .gt. id_no_evolution) then
          if (iflag_SGS_induction .ne. id_SGS_none) then
            icomp_sgs%i_induction = i
            ifld_sgs%i_induction =  j
@@ -240,7 +240,7 @@
          end if
        end if
 !
-       if (iflag_t_evo_4_composit .gt. id_no_evolution) then
+       if (evo_comp%iflag_scheme .gt. id_no_evolution) then
          if (iflag_SGS_comp_flux .ne. id_SGS_none) then
            icomp_sgs%i_comp_flux = i
            ifld_sgs%i_comp_flux =  j
@@ -286,7 +286,7 @@
          iphys_elediff%i_filter_magne = i + 9
          i = i + 18
         else if (iflag_SGS_induction .ne. id_SGS_none                   &
-     &     .and. iflag_t_evo_4_magne .gt. id_no_evolution) then
+     &     .and. evo_magne%iflag_scheme .gt. id_no_evolution) then
          iphys_elediff%i_magne = i
          iphys_elediff%i_filter_magne = i + 9
          i = i + 18
@@ -305,7 +305,7 @@
          iphys_elediff%i_magne = i
          i = i + 9
         else if (iflag_SGS_induction .ne. id_SGS_none                   &
-     &     .and. iflag_t_evo_4_magne .gt. id_no_evolution) then
+     &     .and. evo_magne%iflag_scheme .gt. id_no_evolution) then
          iphys_elediff%i_magne = i
          i = i + 9
         end if

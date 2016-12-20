@@ -57,7 +57,7 @@
       type(nodal_boundarty_conditions), intent(inout) :: nodal_bc
 !
 !
-      if (iflag_t_evo_4_velo .gt. id_no_evolution) then
+      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         if ( iflag_debug .eq.1) write(*,*)  'set boundary id 4 v'
         call set_bc_velo_id(IO_bc, mesh%node, mesh%ele,                 &
      &      MHD_mesh%fluid, group%nod_grp, nodal_bc%Vnod_bcs)
@@ -66,20 +66,20 @@
      &      MHD_mesh%fluid, group%nod_grp, nodal_bc%Vnod_bcs)
       end if
 !
-      if (iflag_t_evo_4_temp .gt. id_no_evolution) then
+      if (evo_temp%iflag_scheme .gt. id_no_evolution) then
         call set_bc_temp_id(IO_bc, mesh%node, mesh%ele,                 &
      &      MHD_mesh%fluid, group%nod_grp, nodal_bc%Tnod_bcs)
       end if
 !
 !
-      if (iflag_t_evo_4_composit .gt. id_no_evolution) then
+      if (evo_comp%iflag_scheme .gt. id_no_evolution) then
         call set_bc_temp_id(IO_bc, mesh%node, mesh%ele,                 &
      &      MHD_mesh%fluid, group%nod_grp, nodal_bc%Cnod_bcs)
       end if
 !
 !
-      if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
-     &  .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+      if (evo_magne%iflag_scheme .gt. id_no_evolution                   &
+     &  .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*)  'set boundary ID 4 magne'
         call set_bc_magne_id(IO_bc, mesh%node, mesh%ele,                &
      &     group%nod_grp, nodal_bc%Bnod_bcs)
@@ -92,7 +92,7 @@
      &      group%nod_grp, nodal_bc%Bnod_bcs)
       end if
 !
-      if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+      if (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug .eq.1) write(*,*) 'set boundary ID 4 vect_p'
         call set_bc_vect_p_id(IO_bc, mesh%node, mesh%ele,               &
      &      group%nod_grp, nodal_bc%Bnod_bcs)

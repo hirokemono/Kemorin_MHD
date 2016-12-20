@@ -9,6 +9,7 @@
       module m_ctl_param_partitioner
 !
       use m_precision
+      use t_file_IO_parameter
 !
       implicit none
 !
@@ -36,6 +37,9 @@
       integer(kind = kint), parameter :: iPART_DECMP_MESH_TBL = 7
       integer(kind = kint), parameter :: iPART_SPH_TBL_MEM =   17
 !
+      character(len=kchara), parameter                                  &
+     &                      :: def_finer_mesh =    "finer_mesh/in"
+!
       integer(kind = kint) :: NPOWER_rcb
       integer(kind = kint), allocatable :: idir_rcb(:)
 !
@@ -50,17 +54,12 @@
       integer(kind = kint), allocatable :: igrp_ele_ordering(:)
       character(len=kchara), allocatable :: ele_grp_ordering(:)
 !
-      character(len=kchara) :: global_mesh_head
-      integer(kind = kint) :: ifmt_single_mesh_fmt  = 0
-!
-      character(len=kchara) :: local_file_header = 'in'
-      character(len=kchara) :: local_ele_header =  'in_ele'
-      character(len=kchara) :: local_surf_header = 'in_sf'
-      character(len=kchara) :: local_edge_header = 'in_ed'
-      integer(kind = kint) :: iflag_para_mesh_file_fmt = 0
-!
       character(len=kchara) :: finer_inter_file_head
-      character(len=kchara) :: finer_mesh_file_head
+!
+      type(field_IO_params), save :: global_mesh_file
+      type(field_IO_params), save :: distribute_mesh_file
+!
+      type(field_IO_params), save :: finer_mesh_file
 !
 !   --------------------------------------------------------------------
 !

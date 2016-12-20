@@ -13,8 +13,9 @@
       use m_2nd_geometry_4_merge
       use m_control_data_4_merge
       use m_control_param_merge
-      use m_read_mesh_data
 !
+      use t_time_data_IO
+      use t_field_data_IO
       use t_ucd_data
 !
       use set_merged_geometry
@@ -26,6 +27,9 @@
 !
 !>        Instance for FEM field data IO
       type(ucd_data), save :: fem_ucd
+!
+      type(time_params_IO), save :: merged_time_IO
+      type(field_IO), save :: merged_IO
 !
       integer (kind = kint) :: istep
 !
@@ -49,28 +53,25 @@
 !
 !     read outline of mesh
 !
-      iflag_mesh_file_fmt = iorg_mesh_file_fmt
-      call set_merged_node_and_element
+      call set_merged_node_and_element(merge_org_mesh_file)
 !
-      mesh_file_head = new_mesh_head
-      iflag_mesh_file_fmt = inew_mesh_file_fmt
-      call s_set_2nd_geometry_4_serial
+      call s_set_2nd_geometry_4_serial(merged_mesh_file)
 !
       call deallocate_node_geometry_type(merged%node)
       call deallocate_2nd_merge_table
 !
 !  allocate restart data
 !
-      call init_by_old_restart_data
+      call init_by_old_restart_data(merged_time_IO, merged_IO)
 !
 !   loop for time integration
 !
       do istep = istep_start, istep_end, increment_step
 !
-        call update_restart_file(istep)
+        call update_restart_file(istep, merged_time_IO, merged_IO)
         write(*,*) 'step', istep, 'finish '
       end do
-      call dealloc_newrst_phys_name_IO
+      call dealloc_phys_name_IO(merged_IO)
 !
 !
       if(iflag_delete_org .gt. 0) then

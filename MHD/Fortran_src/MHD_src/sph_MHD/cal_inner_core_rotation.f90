@@ -89,6 +89,7 @@
      &         (kr_in, fdm1_fix_fld_ICB, sph_rj, band_vt_evo)
 !
       use t_sph_matrices
+      use m_control_parameter
       use m_t_int_parameter
       use m_physical_property
 !
@@ -100,13 +101,16 @@
 !
       call set_rotate_icb_vt_sph_mat(sph_rj%idx_rj_degree_one(-1),      &
      &    kr_in, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj, &
-     &    fdm1_fix_fld_ICB, coef_imp_v, coef_d_velo, band_vt_evo%mat)
+     &    fdm1_fix_fld_ICB, evo_velo%coef_imp, coef_d_velo,             &
+     &    band_vt_evo%mat)
       call set_rotate_icb_vt_sph_mat(sph_rj%idx_rj_degree_one( 0),      &
      &    kr_in, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj, &
-     &    fdm1_fix_fld_ICB, coef_imp_v, coef_d_velo, band_vt_evo%mat)
+     &    fdm1_fix_fld_ICB, evo_velo%coef_imp, coef_d_velo,             &
+     &    band_vt_evo%mat)
       call set_rotate_icb_vt_sph_mat(sph_rj%idx_rj_degree_one( 1),      &
      &    kr_in, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj, &
-     &    fdm1_fix_fld_ICB, coef_imp_v, coef_d_velo, band_vt_evo%mat)
+     &    fdm1_fix_fld_ICB, evo_velo%coef_imp, coef_d_velo,             &
+     &    band_vt_evo%mat)
 !!
       end subroutine set_icore_viscous_matrix
 !

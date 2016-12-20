@@ -354,7 +354,7 @@
           call write_sym_tensor_label(file_id, lab(1))
 !
         else if ( wk_sgs%name(i) .eq. fhd_SGS_induction ) then
-          if(iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+          if(evo_vect_p%iflag_scheme .gt. id_no_evolution) then
             write(label,'(a)') 'SGS_uxB'
             call sel_coord_vector_comp_labels(icoord_SGS_model_coef,    &
      &          label, lab(1) )
@@ -435,7 +435,7 @@
           write(file_id,'(a)') 'SGS_lor_yx, SGS_lor_yy, SGS_lor_yz, '
           write(file_id,'(a)') 'SGS_lor_zx, SGS_lor_yz, SGS_lor_zz, '
         else if ( wk_diff%name(i) .eq. fhd_SGS_induction ) then
-          if(iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+          if(evo_vect_p%iflag_scheme .gt. id_no_evolution) then
             write(file_id,'(a)')                                        &
      &        'SGS_uxB_x, SGS_uxB_y, SGS_uxB_z, '
           else

@@ -16,6 +16,7 @@
       use m_schmidt_poly_on_rtm
       use calypso_mpi
 !
+      use t_time_data_IO
       use t_field_data_IO
       use field_IO_select
 !
@@ -59,7 +60,7 @@
       call set_field_file_fmt_prefix                                    &
      &    (iflag_org_sph_file_fmt, org_sph_file_head, sph_spec_IO)
       call sel_read_alloc_step_SPH_file                                 &
-     &   (nprocs, my_rank, i_step_init, sph_spec_IO)
+     &   (nprocs, my_rank, i_step_init, spec_time_IO, sph_spec_IO)
 !
 !  -------------------------------
 !
@@ -91,18 +92,17 @@
         call set_field_file_fmt_prefix                                  &
      &     (iflag_org_sph_file_fmt, org_sph_file_head, sph_spec_IO)
       call sel_read_step_SPH_field_file                                 &
-     &     (nprocs, my_rank, i_step, sph_spec_IO)
+     &     (nprocs, my_rank, i_step, spec_time_IO, sph_spec_IO)
 !
         if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
-        call set_rj_phys_data_from_IO                                   &
-     &     (sph_mesh_spec%sph%sph_rj%nnod_rj, sph_spec_IO, rj_fld_spec)
+        call set_rj_phys_data_from_IO(sph_spec_IO, rj_fld_spec)
 !
 !  evaluate energies
 !
         call zonal_mean_all_sph_spectr                                  &
      &     (sph_mesh_spec%sph%sph_rj, rj_fld_spec)
-        call copy_rj_all_phys_data_to_IO                                &
-     &     (sph_mesh_spec%sph%sph_rj%nnod_rj, rj_fld_spec, sph_spec_IO)
+        call copy_rj_phys_data_to_IO                                    &
+     &     (rj_fld_spec%num_phys, rj_fld_spec, sph_spec_IO)
 !
         call alloc_merged_field_stack(nprocs, sph_spec_IO)
         call count_number_of_node_stack                                 &
@@ -113,7 +113,7 @@
         if (iflag_debug.gt.0)                                           &
      &    write(*,*) 'sel_write_step_SPH_field_file'
         call sel_write_step_SPH_field_file                              &
-     &     (nprocs, my_rank, i_step, sph_spec_IO)
+     &     (nprocs, my_rank, i_step, spec_time_IO, sph_spec_IO)
         call dealloc_merged_field_stack(sph_spec_IO)
       end do
 !

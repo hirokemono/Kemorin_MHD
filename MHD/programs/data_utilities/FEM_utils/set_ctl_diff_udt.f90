@@ -4,8 +4,10 @@
 !     Written by H. Matsui on July, 2006
 !     Modified by H. Matsui on JUne, 2007
 !
-!      subroutine set_ctl_params_correlate_udt(nod_fld, ucd)
-!      subroutine set_ctl_params_diff_udt(ucd)
+!      subroutine set_ctl_params_correlate_udt                          &
+!     &         (mesh_file, udt_org_param, nod_fld, ucd)
+!      subroutine set_ctl_params_diff_udt                               &
+!     &         (mesh_file, udt_org_param, ucd)
 !      subroutine s_set_ctl_4_diff_udt_steps
 !
       module set_ctl_diff_udt
@@ -16,6 +18,7 @@
       use m_machine_parameter
       use m_ctl_params_4_diff_udt
       use t_phys_data
+      use t_file_IO_parameter
 !
       implicit none
 !
@@ -25,7 +28,8 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_ctl_params_correlate_udt(nod_fld, ucd)
+      subroutine set_ctl_params_correlate_udt                           &
+     &         (mesh_file, udt_org_param, nod_fld, ucd)
 !
       use t_ucd_data
       use m_ctl_data_4_fem_int_pts
@@ -33,13 +37,15 @@
       use set_control_nodal_data
       use set_control_ele_layering
 !
+      type(field_IO_params), intent(inout) ::  mesh_file
+      type(field_IO_params), intent(inout) :: udt_org_param
       type(phys_data), intent(inout) :: nod_fld
       type(ucd_data), intent(inout) :: ucd
       integer(kind = kint) :: ierr
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_diff_udt'
-      call set_ctl_params_diff_udt(ucd)
+      call set_ctl_params_diff_udt(mesh_file, udt_org_param, ucd)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_control_ele_layering'
       call s_set_control_ele_layering
@@ -60,29 +66,31 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_ctl_params_diff_udt(ucd)
+      subroutine set_ctl_params_diff_udt                                &
+     &         (mesh_file, udt_org_param, ucd)
 !
       use t_ucd_data
-      use m_read_mesh_data
+      use t_field_data_IO
       use m_ctl_data_4_platforms
       use m_ctl_data_4_org_data
       use m_ctl_data_diff_udt
       use m_geometry_constants
-      use m_control_params_2nd_files
       use m_file_format_switch
       use set_ctl_parallel_platform
       use set_control_platform_data
+      use set_ctl_params_2nd_files
       use ucd_IO_select
 !
+      type(field_IO_params), intent(inout) ::  mesh_file
+      type(field_IO_params), intent(inout) :: udt_org_param
       type(ucd_data), intent(inout) :: ucd
 !
 !
       call turn_off_debug_flag_by_ctl(my_rank)
       call check_control_num_domains
       call set_control_smp_def(my_rank)
-      call set_control_mesh_def
-      call set_control_org_rst_file_def
-      call set_control_org_udt_file_def
+      call set_control_mesh_def(mesh_file)
+      call set_control_org_udt_file_def(udt_org_param)
 !
 !
       call set_ucd_file_define(ucd)

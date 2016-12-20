@@ -12,13 +12,13 @@
 
       use m_precision
 !
-      use m_read_mesh_data
+      use t_ucd_data
       use m_geometry_data_4_merge
       use m_control_data_4_merge
       use m_control_param_merge
       use set_merged_geometry
       use write_merged_mesh
-      use t_ucd_data
+      use set_ctl_params_2nd_files
 !
       implicit    none
 !
@@ -31,12 +31,11 @@
 !
       call read_control_4_merge
       call set_control_4_merge(fem_ucd)
-      call set_control_4_merged_mesh
+      call set_control_new_mesh_file_def(merged_mesh_file)
 !
 !  read mesh information
 !
-      iflag_mesh_file_fmt = iorg_mesh_file_fmt
-      call set_merged_mesh_and_group
+      call set_merged_mesh_and_group(merge_org_mesh_file)
 !
 !   output grid data
 !

@@ -3,9 +3,9 @@
 !
       use t_mesh_data
       use t_interpolate_table
+      use t_file_IO_parameter
 !
       use m_ctl_data_gen_table
-      use m_read_mesh_data
       use m_work_ditribute_itp
       use m_interpolate_table_IO
       use distribute_itp_tbl_4_para
@@ -14,8 +14,8 @@
 !
       implicit  none
 !
-      character(len = kchara) :: org_mesh_head =   "mesh_fine/in"
-      character(len = kchara) :: dest_mesh_head =  "mesh_coase/in"
+      type(field_IO_params), save ::  org_mesh_file
+      type(field_IO_params), save ::  dest_mesh_file
       character(len = kchara) :: table_file_head = "mesh/table"
       character(len = kchara)                                           &
      &             :: sgl_table_file_head = "single_itp_table"
@@ -39,13 +39,13 @@
       call read_control_4_distribute_itp
       call set_control_4_dist_itp
 !
-      mesh_file_head = dest_mesh_head
       allocate( femmesh_dest(nprocs_dest) )
-      call s_set_parallel_mesh_in_1pe(nprocs_dest, femmesh_dest)
+      call s_set_parallel_mesh_in_1pe                                   &
+     &   (dest_mesh_file, nprocs_dest, femmesh_dest)
 !
-      mesh_file_head = org_mesh_head
       allocate( femmesh_org(nprocs_org) )
-      call s_set_parallel_mesh_in_1pe(nprocs_org, femmesh_org)
+      call s_set_parallel_mesh_in_1pe                                   &
+     &   (org_mesh_file, nprocs_org, femmesh_org)
 !
 !
       table_file_header = sgl_table_file_head
@@ -83,26 +83,22 @@
       use m_ctl_data_gen_table
       use m_ctl_data_4_platforms
       use m_ctl_data_4_2nd_data
-      use m_read_mesh_data
       use m_file_format_switch
       use set_control_platform_data
+      use set_ctl_params_2nd_files
 !
 !
       call turn_off_debug_flag_by_ctl(my_rank)
       call set_control_smp_def(my_rank)
-      call set_control_mesh_def
+      call set_control_mesh_def(org_mesh_file)
+      call set_control_new_mesh_file_def(dest_mesh_file)
 !
-      org_mesh_head = mesh_file_head
       nprocs_org = 1
       if(ndomain_ctl%iflag .gt. 0) nprocs_org = ndomain_ctl%intvalue
 !
       nprocs_dest = 1
       if(num_new_domain_ctl%iflag .gt. 0) then
          nprocs_dest = num_new_domain_ctl%intvalue
-      end if
-!
-      if (new_mesh_prefix%iflag .ne. 0) then
-        dest_mesh_head = new_mesh_prefix%charavalue
       end if
 !
       if (table_head_ctl%iflag .ne. 0) then
@@ -118,8 +114,6 @@
 !
       if (iflag_debug.eq.1) then
         write(*,*) 'np_smp', np_smp, np_smp
-        write(*,*) 'org_mesh_head: ',   trim(org_mesh_head)
-        write(*,*) 'dest_mesh_head: ',  trim(dest_mesh_head)
         write(*,*) 'table_file_head: ', trim(table_file_head)
       end if
 !

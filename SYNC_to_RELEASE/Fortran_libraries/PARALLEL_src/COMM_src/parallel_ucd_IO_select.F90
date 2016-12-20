@@ -6,7 +6,8 @@
 !
 !!      subroutine set_merged_ucd_file_define(ucd)
 !!
-!!      subroutine sel_write_parallel_ucd_file(istep_ucd, ucd, m_ucd)
+!!      subroutine sel_write_parallel_ucd_file                          &
+!!     &         (istep_ucd, t_IO, ucd, m_ucd)
 !!      subroutine sel_write_parallel_ucd_mesh(ucd, m_ucd)
 !!
 !
@@ -16,6 +17,7 @@
       use m_file_format_switch
       use m_field_file_format
 !
+      use t_time_data_IO
       use t_ucd_data
 !
       implicit none
@@ -44,7 +46,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sel_write_parallel_ucd_file(istep_ucd, ucd, m_ucd)
+      subroutine sel_write_parallel_ucd_file                            &
+     &         (istep_ucd, t_IO, ucd, m_ucd)
 !
       use ucd_IO_select
       use write_ucd_to_vtk_file
@@ -53,6 +56,7 @@
       use hdf5_file_IO
 !
       integer(kind=kint), intent(in) :: istep_ucd
+      type(time_params_IO), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
       type(merged_ucd_data), intent(inout) :: m_ucd
 !
@@ -63,8 +67,9 @@
 #ifdef HDF5_IO
       else if(ucd%ifmt_file .eq. iflag_sgl_hdf5) then
         call parallel_write_hdf5_field_file(istep_ucd, ucd, m_ucd)
-        call parallel_write_xdmf_snap_file(istep_ucd, ucd, m_ucd)
-        call parallel_write_xdmf_evo_file(istep_ucd, ucd, m_ucd)
+        call parallel_write_xdmf_snap_file                              &
+     &     (istep_ucd, t_IO, ucd, m_ucd)
+        call parallel_write_xdmf_evo_file(istep_ucd, t_IO, ucd, m_ucd)
 #endif
 !
       else

@@ -68,7 +68,7 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'bcast_parallel_domain_tbl'
-      call bcast_parallel_domain_tbl(target_mesh_head)
+      call bcast_parallel_domain_tbl(tgt_mesh_file)
 !
       end subroutine filter_to_newdomain_init
 !
@@ -82,7 +82,8 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'local_newdomain_filter_para'
-      call local_newdomain_filter_para(orgmesh%node, orgmesh%ele, newmesh)
+      call local_newdomain_filter_para                                  &
+     &   (org_mesh_file, orgmesh%node, orgmesh%ele, newmesh)
 !
       if (iflag_debug.eq.1) write(*,*) 'trans_filter_moms_newmesh_para'
       if (iflag_set_filter_elen .gt. 0                                  &
@@ -93,8 +94,8 @@
 !
       if (iflag_set_filter_coef .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'filters_4_newdomains_para'
-        call filters_4_newdomains_para                                  &
-     &     (filtering_nd, orgmesh%node, orgmesh%ele, newmesh)
+        call filters_4_newdomains_para(org_mesh_file,                   &
+     &      filtering_nd, orgmesh%node, orgmesh%ele, newmesh)
       end if
 !
       end subroutine filter_to_newdomain_analyze

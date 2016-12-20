@@ -19,9 +19,6 @@
 !!      num_smp_ctl                 4
 !!
 !!      mesh_file_prefix            'mesh/in'
-!!      elem_file_prefix            'mesh/in_element'
-!!      surf_file_prefix            'mesh/in_surface'
-!!      edge_file_prefix            'mesh/in_edge'
 !!
 !!      sph_file_prefix             'sph_shell/in'
 !!
@@ -59,10 +56,6 @@
 !>@n@param      num_smp_ctl                Number of SMP threads
 !>@n
 !>@n@param      mesh_file_prefix         File prefix for FEM mesh
-!>@n@param      elem_file_prefix
-!>                File prefix for FEM element comm. table
-!>@n@param      surf_file_prefix           File prefix for surface data
-!>@n@param      edge_file_prefix           File prefix for edge data
 !>@n
 !>@n@param      sph_file_prefix
 !>               File prefix for spherical harmonics mode files
@@ -106,11 +99,6 @@
 !
       type(read_character_item), save :: mesh_file_prefix
 !
-      type(read_character_item), save :: elem_file_prefix
-      type(read_character_item), save :: surf_file_prefix
-      type(read_character_item), save :: edge_file_prefix
-!
-!
       type(read_character_item), save :: udt_file_head_ctl
       type(read_character_item), save :: restart_file_prefix
       type(read_character_item), save :: spectr_file_head_ctl
@@ -150,12 +138,6 @@
 !
       character(len=kchara), parameter                                  &
      &       :: hd_mesh_header = 'mesh_file_prefix'
-      character(len=kchara), parameter                                  &
-     &       :: hd_elem_header = 'elem_file_prefix'
-      character(len=kchara), parameter                                  &
-     &       :: hd_surf_header = 'surf_file_prefix'
-      character(len=kchara), parameter                                  &
-     &       :: hd_edge_header = 'edge_file_prefix'
 !
       character(len=kchara), parameter                                  &
      &       :: hd_udt_header =   'field_file_prefix'
@@ -208,10 +190,8 @@
 !
       private :: hd_platform, i_platform
       private :: hd_num_subdomain, hd_num_smp, hd_sph_files_header
-      private :: hd_mesh_header, hd_elem_header, hd_surf_header
-      private :: hd_udt_header, hd_rst_header
+      private :: hd_mesh_header, hd_udt_header, hd_rst_header
       private :: hd_spectr_header, hd_bc_data_file_name
-      private :: hd_edge_header
       private :: hd_mesh_file_fmt, hd_rst_files_fmt
       private :: hd_udt_files_fmt, hd_sph_files_fmt
       private :: hd_debug_flag_ctl, hd_mem_conserve
@@ -248,10 +228,6 @@
 !
 !
         call read_chara_ctl_type(hd_mesh_header, mesh_file_prefix)
-!
-        call read_chara_ctl_type(hd_elem_header, elem_file_prefix)
-        call read_chara_ctl_type(hd_surf_header, surf_file_prefix)
-        call read_chara_ctl_type(hd_edge_header, edge_file_prefix)
 !
         call read_chara_ctl_type(hd_udt_header, udt_file_head_ctl)
         call read_chara_ctl_type(hd_rst_header, restart_file_prefix)

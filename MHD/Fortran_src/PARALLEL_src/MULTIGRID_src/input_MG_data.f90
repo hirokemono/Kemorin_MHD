@@ -3,7 +3,8 @@
 !
 !        programmed by H. Matsui on Dec., 2008
 !
-!!      subroutine input_MG_mesh
+!!      subroutine input_MG_mesh(mesh_file)
+!!        type(field_IO_params), intent(inout) ::  mesh_file
 !!      subroutine input_MG_itp_tables(MG_itp)
 !!        type(MG_itp_table), intent(inout) :: MG_itp(num_MG_level)
 !
@@ -27,24 +28,26 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine input_MG_mesh
+      subroutine input_MG_mesh(mesh_file)
 !
       use m_control_parameter
       use m_ctl_parameter_Multigrid
-      use m_read_mesh_data
+      use t_file_IO_parameter
       use mpi_load_mesh_data
       use element_file_IO
+!
+      type(field_IO_params), intent(inout) ::  mesh_file
 !
       integer(kind = kint) :: i_level
 !
 !
       do i_level = 1, num_MG_level
-        iflag_mesh_file_fmt = ifmt_MG_mesh_file(i_level)
+        mesh_file%iflag_format = ifmt_MG_mesh_file(i_level)
         if(my_rank .lt. MG_mpi(i_level)%nprocs ) then
 !
-          mesh_file_head = MG_mesh_file_head(i_level)
-          call mpi_input_mesh                                           &
-     &       (MG_mesh(i_level)%mesh, MG_mesh(i_level)%group,            &
+          mesh_file%file_prefix = MG_mesh_file_head(i_level)
+          call mpi_input_mesh(mesh_file,                                &
+     &        MG_mesh(i_level)%mesh, MG_mesh(i_level)%group,            &
      &        MG_ele_mesh(i_level)%surf%nnod_4_surf,                    &
      &        MG_ele_mesh(i_level)%edge%nnod_4_edge)
         else

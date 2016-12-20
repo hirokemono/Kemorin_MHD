@@ -20,6 +20,10 @@
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(ucd_data), intent(inout) :: ucd
 !!        type(merged_ucd_data), intent(inout) :: m_ucd
+!!      subroutine read_udt_4_snap                                      &
+!!     &         (i_step, udt_file_param, nod_fld, t_IO)
+!!        type(field_IO_params), intent(in) :: udt_file_param
+!!        type(phys_data),intent(inout) :: nod_fld
 !!      subroutine finalize_output_ucd
 !!
 !!      subroutine link_global_org_mesh_4_ucd(mesh, MHD_mesh, ucd)
@@ -30,14 +34,18 @@
       use m_precision
       use m_constants
 !
+      use t_time_data_IO
       use t_mesh_data
       use t_comm_table
       use t_geometry_data
       use t_ucd_data
       use t_phys_data
       use t_geometry_data_MHD
+      use t_file_IO_parameter
 !
       implicit none
+!
+      type(time_params_IO), save :: ucd_time_IO
 !
 !>        Instance for FEM field data IO
       type(ucd_data), save :: fem_ucd
@@ -45,7 +53,7 @@
 !>        Instance for numbers of FEM mesh for merged IO
       type(merged_ucd_data), save :: merged_ucd
 !
-      private :: fem_ucd, merged_ucd
+      private :: ucd_time_IO, fem_ucd, merged_ucd
       private :: link_local_org_mesh_4_ucd
 !
 ! ----------------------------------------------------------------------
@@ -56,8 +64,14 @@
 !
       subroutine set_control_MHD_field_file
 !
+      use m_ctl_data_4_platforms
       use parallel_ucd_IO_select
 !
+!
+      if(udt_file_head_ctl%iflag .eq. 0) then
+        fem_ucd%ifmt_file = -1
+        return
+      end if
 !
       call set_merged_ucd_file_define(fem_ucd)
 !
@@ -75,13 +89,15 @@
       integer(kind = kint) :: istep_ucd
 !
 !
+      if(fem_ucd%ifmt_file .lt. 0) return
       if(i_step_output_ucd .eq. 0) return
       if(mod(istep_max_dt,i_step_output_ucd) .ne. 0) return
 !
       istep_ucd = istep_max_dt / i_step_output_ucd
 !
-      call copy_time_steps_to_restart
-      call sel_write_parallel_ucd_file(istep_ucd, fem_ucd, merged_ucd)
+      call copy_time_steps_to_restart(ucd_time_IO)
+      call sel_write_parallel_ucd_file                                  &
+     &   (istep_ucd, ucd_time_IO, fem_ucd, merged_ucd)
 !      call output_range_data(node, nod_fld, istep_ucd, time)
 !
       end subroutine s_output_ucd_file_control
@@ -97,6 +113,7 @@
       type(phys_data),intent(inout) :: nod_fld
 !
 !
+      if(fem_ucd%ifmt_file .lt. 0) return
       if(i_step_output_ucd .eq. 0) return
       call link_output_grd_file(mesh%node, mesh%ele, mesh%nod_comm,     &
      &    nod_fld, fem_ucd, merged_ucd)
@@ -120,6 +137,7 @@
       type(phys_data), intent(in) :: nod_fld
 !
 !
+      if(fem_ucd%ifmt_file .lt. 0) return
       if(i_step_output_ucd .eq. 0) return
 !
       call link_num_field_2_ucd(nod_fld, fem_ucd)
@@ -147,6 +165,31 @@
       end subroutine output_grd_file_w_org_connect
 !
 !-----------------------------------------------------------------------
+!
+      subroutine read_udt_4_snap                                        &
+     &         (i_step, udt_file_param, nod_fld, t_IO)
+!
+      use calypso_mpi
+      use m_t_step_parameter
+      use set_ucd_data_to_type
+!
+      integer(kind = kint), intent(in) :: i_step
+      type(field_IO_params), intent(in) :: udt_file_param
+      type(phys_data),intent(inout) :: nod_fld
+      type(time_params_IO), intent(inout) :: t_IO
+!
+      integer(kind = kint) :: istep_ucd
+!
+!
+      if (mod(i_step,i_step_output_ucd) .ne. izero) return
+      istep_ucd = i_step / i_step_output_ucd
+      call set_data_by_read_ucd_once(my_rank, istep_ucd,                &
+    &     udt_file_param%iflag_format, udt_file_param%file_prefix,      &
+    &     nod_fld, t_IO)
+!
+      end subroutine read_udt_4_snap
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine finalize_output_ucd

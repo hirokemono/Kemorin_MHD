@@ -17,15 +17,19 @@
 !
       use t_mesh_data
       use t_phys_data
-      use t_ucd_data
+      use t_time_data_IO
       use t_ucd_data
       use t_next_node_ele_4_node
       use t_jacobian_3d
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
       use t_global_gauss_coefs
+      use t_file_IO_parameter
 !
       implicit none
+!
+!>      Structure for field data IO paramters
+      type(field_IO_params), save ::  mesh_file_STR
 !
 !>     Structure for mesh data
 !>        (position, connectivity, group, and communication)
@@ -41,6 +45,7 @@
 !
 !
 !>        Instance for FEM field data IO
+      type(time_params_IO), save :: time_IO_TRNS
       type(ucd_data), save :: ucd_SPH_TRNS
 !>        Instance for numbers of FEM mesh for merged IO
       type(merged_ucd_data), save :: m_ucd_SPH_TRNS

@@ -3,10 +3,11 @@
 !
 !      Written by H. Matsui on May, 2008
 !
-!      subroutine bcast_parallel_domain_tbl(mesh_head)
-!
-!      subroutine bcast_num_filter_part_table(nprocs_2nd)
-!      subroutine bcast_xx_whole_nod(nnod_global)
+!!      subroutine bcast_parallel_domain_tbl(mesh_file)
+!!        type(field_IO_params), intent(in) :: mesh_file
+!!
+!!      subroutine bcast_num_filter_part_table(nprocs_2nd)
+!!      subroutine bcast_xx_whole_nod(nnod_global)
 !
       module bcast_nodes_for_trans
 !
@@ -24,19 +25,20 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine bcast_parallel_domain_tbl(mesh_head)
+      subroutine bcast_parallel_domain_tbl(mesh_file)
 !
+      use t_file_IO_parameter
       use m_work_time
       use m_2nd_pallalel_vector
       use m_domain_group_4_partition
       use const_domain_tbl_by_file
 !
-      character(len=kchara), intent(in) :: mesh_head
+      type(field_IO_params), intent(in) :: mesh_file
 !
 !
       START_SRtime= MPI_WTIME()
       if(my_rank .eq. 0) then
-        call count_nnod_whole_domain(mesh_head)
+        call count_nnod_whole_domain(mesh_file)
       end if
 !
       call MPI_Bcast(nnod_s_domin, ione, CALYPSO_INTEGER, izero,        &
@@ -52,9 +54,9 @@
 !
       START_SRtime = MPI_WTIME()
       if(my_rank .eq. 0) then
-        call set_domain_grp_whole_domain(mesh_head)
+        call set_domain_grp_whole_domain(mesh_file)
       else
-        call set_domain_grp_each_domain(mesh_head, my_rank)
+        call set_domain_grp_each_domain(mesh_file, my_rank)
       end if
 !
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime

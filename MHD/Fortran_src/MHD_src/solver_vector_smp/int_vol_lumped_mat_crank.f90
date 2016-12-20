@@ -32,6 +32,7 @@
       use m_constants
 !
       use m_physical_property
+      use m_control_parameter
 !
       use t_mesh_data
       use t_geometry_data
@@ -68,7 +69,7 @@
 !
 !
 !$omp parallel
-      if (iflag_t_evo_4_velo .eq. id_Crank_nicolson                     &
+      if (evo_velo%iflag_scheme .eq. id_Crank_nicolson                  &
      &     .and. coef_velo .gt. zero) then
         call init_33_matrix_lump                                        &
      &     (mesh%node%numnod, fluid%numnod_fld, fluid%inod_fld,         &
@@ -76,7 +77,7 @@
      &      mat_velo%num_non0, mat_velo%aiccg)
       end if
 !
-      if (iflag_t_evo_4_temp .eq. id_Crank_nicolson                     &
+      if (evo_temp%iflag_scheme .eq. id_Crank_nicolson                  &
      &     .and. coef_temp .gt. zero) then
         call init_11_matrix_lump                                        &
      &     (mesh%node%numnod, fluid%numnod_fld, fluid%inod_fld,         &
@@ -84,7 +85,7 @@
      &      mat_temp%num_non0, mat_temp%aiccg)
       end if
 !
-      if (iflag_t_evo_4_magne .eq. id_Crank_nicolson                    &
+      if (evo_magne%iflag_scheme .eq. id_Crank_nicolson                 &
      &     .and. coef_magne .gt. zero) then
         call init_33_matrix_lump                                        &
      &     (mesh%node%numnod, conduct%numnod_fld, conduct%inod_fld,     &
@@ -92,7 +93,7 @@
      &      mat_magne%num_non0, mat_magne%aiccg)
       end if
 !
-      if (iflag_t_evo_4_vect_p .eq. id_Crank_nicolson                   &
+      if (evo_vect_p%iflag_scheme .eq. id_Crank_nicolson                &
      &     .and. coef_magne .gt. zero) then
         call init_33_matrix_lump                                        &
      &     (mesh%node%numnod, conduct%numnod_fld, conduct%inod_fld,     &
@@ -100,7 +101,7 @@
      &      mat_magne%num_non0, mat_magne%aiccg)
       end if
 !
-      if (iflag_t_evo_4_composit .eq. id_Crank_nicolson                 &
+      if (evo_comp%iflag_scheme .eq. id_Crank_nicolson                  &
      &     .and. coef_light .gt. zero) then
         call init_11_matrix_lump                                        &
      &     (mesh%node%numnod, fluid%numnod_fld, fluid%inod_fld,         &
@@ -129,7 +130,8 @@
       call cal_lumped_coriolis_matrix                                   &
      &   (mesh%node%numnod, fluid%numnod_fld,                           &
      &    fluid%inod_fld, DJDS_table_fluid%OLDtoNEW, coef_cor, angular, &
-     &    mlump_fl%ml_o, mat_velo%num_non0, mat_velo%aiccg)
+     &    evo_velo%coef_imp, mlump_fl%ml_o, mat_velo%num_non0,          &
+     &    mat_velo%aiccg)
 !
       end subroutine add_lumped_coriolis_matrix
 !

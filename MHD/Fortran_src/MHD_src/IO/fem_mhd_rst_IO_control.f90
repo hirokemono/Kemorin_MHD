@@ -13,7 +13,7 @@
 !!      subroutine set_ctl_restart_4_fem_mhd
 !!
 !!      subroutine init_MHD_restart_output
-!!      subroutine init_restart_4_snapshot(node)
+!!      subroutine init_restart_4_snapshot(node, t_IO)
 !!
 !!      subroutine output_MHD_restart_file_ctl                          &
 !!     &         (node, nod_comm, iphys, wk_sgs, wk_diff, nod_fld)
@@ -38,6 +38,7 @@
       use t_comm_table
       use t_geometry_data
       use t_phys_data
+      use t_time_data_IO
       use t_field_data_IO
       use t_layering_ele_list
       use t_ele_info_4_dynamic
@@ -49,6 +50,7 @@
       private :: output_restart_files, input_restart_files
       private :: input_model_coef_file, output_model_coef_file
 !
+      type(time_params_IO), save, private :: fem_time_IO
       type(field_IO), save, private :: fem_fst_IO
 !
 ! -----------------------------------------------------------------------
@@ -91,20 +93,21 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_restart_4_snapshot(node)
+      subroutine init_restart_4_snapshot(node, t_IO)
 !
       use const_global_element_ids
       use field_IO_select
       use set_field_to_restart
 !
       type(node_data), intent(in) :: node
+      type(time_params_IO), intent(inout) :: t_IO
 !
       integer(kind = kint) :: index_rst
 !
 !
       index_rst = i_step_init / i_step_output_rst
       call sel_read_alloc_FEM_fld_head                                  &
-     &   (nprocs, my_rank, index_rst, fem_fst_IO)
+     &   (nprocs, my_rank, index_rst, t_IO, fem_fst_IO)
 !
       fem_fst_IO%nnod_IO = node%numnod
       call alloc_phys_data_IO(fem_fst_IO)
@@ -219,11 +222,11 @@
         call scalar_send_recv(iphys%i_pre_composit, nod_comm, nod_fld)
       end if
 !
-      call copy_time_steps_to_restart
+      call copy_time_steps_to_restart(fem_time_IO)
       call copy_field_data_to_restart(node, nod_fld, fem_fst_IO)
 !
       call sel_write_step_FEM_field_file                                &
-     &   (nprocs, my_rank, index_rst, fem_fst_IO)
+     &   (nprocs, my_rank, index_rst, fem_time_IO, fem_fst_IO)
 !
       end subroutine output_restart_files
 !
@@ -250,16 +253,16 @@
       if(ierr .gt. 0) call calypso_MPI_abort(ierr,'No restart file.')
 !
       call sel_read_alloc_step_FEM_file                                 &
-     &   (nprocs, my_rank, istep_rst_start, fem_fst_IO)
+     &   (nprocs, my_rank, istep_rst_start, fem_time_IO, fem_fst_IO)
 !
       call copy_field_data_from_restart(node, fem_fst_IO, nod_fld)
       call dealloc_phys_data_IO(fem_fst_IO)
       call dealloc_phys_name_IO(fem_fst_IO)
 !
       if(iflag_flexible_step .eq. iflag_flex_step) then
-        call copy_time_steps_from_restart
+        call copy_time_steps_from_restart(fem_time_IO)
       else
-        call copy_init_time_from_restart
+        call copy_init_time_from_restart(fem_time_IO)
       end if
 !
       if(my_rank .eq. 0)  write(*,*) 'delta t ', dt, dt_fact, idt_digit
@@ -268,26 +271,25 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine input_restart_4_snapshot(node, nod_fld)
+      subroutine input_restart_4_snapshot(node, nod_fld, t_IO)
 !
       use set_field_to_restart
       use field_IO_select
 !
       type(node_data), intent(in) :: node
+      type(time_params_IO), intent(inout) :: t_IO
       type(phys_data), intent(inout) :: nod_fld
 !
       integer(kind = kint) :: index_rst
 !
 !
       if ( mod(istep_max_dt,i_step_output_rst) .ne. 0) return
-!
       index_rst = istep_max_dt / i_step_output_rst
+!
       call sel_read_step_FEM_field_file                                 &
-     &    (nprocs, my_rank, index_rst, fem_fst_IO)
+     &    (nprocs, my_rank, index_rst, t_IO, fem_fst_IO)
 !
       call copy_field_data_from_restart(node, fem_fst_IO, nod_fld)
-      time =       time_init
-      i_step_MHD = istep_max_dt
 !
       end subroutine input_restart_4_snapshot
 !

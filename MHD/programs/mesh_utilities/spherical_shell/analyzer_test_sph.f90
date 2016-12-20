@@ -16,7 +16,7 @@
       use t_spheric_mesh
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
-      use t_field_data_IO
+      use t_file_IO_parameter
 !
       use calypso_mpi
 !
@@ -27,6 +27,7 @@
 !
       type(sph_mesh_data), save :: sph_mesh_t
       type(field_IO_params), save :: sph_file_param
+      type(field_IO_params), save ::  test_mesh_file
 !
       private :: check_header, sph_mesh_t
 !
@@ -55,7 +56,7 @@
 !
       call turn_off_debug_flag_by_ctl(my_rank)
       call read_control_4_gen_shell_grids
-      call set_control_sph_mesh(sph_file_param)
+      call set_control_sph_mesh(test_mesh_file, sph_file_param)
 !
       if (iflag_debug.gt.0) write(*,*) 'load_para_sph_mesh'
       call load_para_sph_mesh                                           &

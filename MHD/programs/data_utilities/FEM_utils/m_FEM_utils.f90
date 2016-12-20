@@ -7,20 +7,26 @@
 !>@brief Arrays for Field data IO for FEM utilities
 !!
 !!@verbatim
+!!      subroutine mesh_setup_4_FEM_UTIL(mesh_file)
+!!        type(field_IO_params), intent(in) ::  mesh_file
 !!@endverbatim
 !
       module m_FEM_utils
 !
       use m_precision
+      use t_time_data_IO
       use t_mesh_data
       use t_phys_data
       use t_phys_address
       use t_ucd_data
+      use t_file_IO_parameter
       use t_jacobian_3d
       use calypso_mpi
 !
       implicit none
 !
+!>      Structure for mesh file IO paramters
+      type(field_IO_params), save :: mesh_file_FUTIL
 !>     Structure for mesh data
 !>        (position, connectivity, group, and communication)
       type(mesh_data), save :: femmesh_FUTIL
@@ -36,6 +42,9 @@
       type(phys_address), save :: iphys_FUTIL
 !
 !
+!>      Structure for field data IO paramters
+      type(field_IO_params), save :: udt_param_FUTIL
+      type(time_params_IO), save :: time_IO_FUTIL
 !>        Instance for FEM field data IO
       type(ucd_data), save :: ucd_FUTIL
 !>        Instance for numbers of FEM mesh for merged IO
@@ -52,17 +61,19 @@
 !
 !   ---------------------------------------------------------------------
 !
-      subroutine mesh_setup_4_FEM_UTIL
+      subroutine mesh_setup_4_FEM_UTIL(mesh_file)
 !
-      use m_read_mesh_data
       use m_array_for_send_recv
       use mpi_load_mesh_data
       use nod_phys_send_recv
       use const_mesh_information
 !
+      type(field_IO_params), intent(in) ::  mesh_file
+!
 !
       if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh(femmesh_FUTIL%mesh, femmesh_FUTIL%group,      &
+      call mpi_input_mesh                                               &
+     &   (mesh_file, femmesh_FUTIL%mesh, femmesh_FUTIL%group,           &
      &    elemesh_FUTIL%surf%nnod_4_surf,                               &
      &    elemesh_FUTIL%edge%nnod_4_edge)
 !

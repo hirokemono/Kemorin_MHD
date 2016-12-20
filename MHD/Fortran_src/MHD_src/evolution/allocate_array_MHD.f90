@@ -58,6 +58,8 @@
       use t_SGS_model_coefs
 !
       use count_sgs_components
+      use node_monitor_IO
+      use check_dependency_for_MHD
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -88,8 +90,8 @@
       call set_SGS_ele_fld_addresses(iphys_elediff)
 !
 !  allocation for field values
-      if (iflag_debug.ge.1)  write(*,*) 'set_field_address_type'
-      call set_field_address_type(node%numnod, nod_fld, iphys)
+      if (iflag_debug.ge.1)  write(*,*) 'set_FEM_MHD_field_data'
+      call set_FEM_MHD_field_data(node, iphys, nod_fld)
       if (iflag_debug.ge.1)  write(*,*) 'initialize_ele_field_data'
       call initialize_ele_field_data(ele%numele)
 !
@@ -121,7 +123,7 @@
         if ( iflag_SGS_lorentz .ne. id_SGS_none) then
          mhd_fem_wk%n_dvx = mhd_fem_wk%n_dvx + 18
         else if (iflag_SGS_induction .ne. id_SGS_none                   &
-     &     .and. iflag_t_evo_4_magne .gt. id_no_evolution) then
+     &     .and. evo_magne%iflag_scheme .gt. id_no_evolution) then
          mhd_fem_wk%n_dvx = mhd_fem_wk%n_dvx + 18
         end if
 !
@@ -135,7 +137,7 @@
         if ( iflag_SGS_lorentz .ne. id_SGS_none) then
          mhd_fem_wk%n_dvx = mhd_fem_wk%n_dvx + 9
         else if (iflag_SGS_induction .ne. id_SGS_none                   &
-     &     .and. iflag_t_evo_4_magne .gt. id_no_evolution) then
+     &     .and. evo_magne%iflag_scheme .gt. id_no_evolution) then
          mhd_fem_wk%n_dvx = mhd_fem_wk%n_dvx + 9
         end if
       end if

@@ -11,12 +11,15 @@
 !
       use m_precision
       use m_field_file_format
+      use t_file_IO_parameter
 !
       implicit none
 !
 !
-      character(len = kchara) :: org_mesh_head =   "mesh_fine/in"
-      character(len = kchara) :: dest_mesh_head =  "mesh_coase/in"
+      type(field_IO_params), save :: itp_org_mesh_file
+!
+      type(field_IO_params), save :: itp_dest_mesh_file
+!
       character(len = kchara) :: table_file_head = "mesh/table"
       character(len = kchara)                                           &
      &             :: sgl_table_file_head = "single_itp_table"
@@ -27,9 +30,6 @@
       character(len = kchara) :: itp_node_file_head = "node_test_itp"
       character(len = kchara) :: itp_rst_file_head = "rst_new/rst"
       character(len = kchara) :: itp_udt_file_head = "field_new/out"
-!
-      integer(kind = kint) :: ifmt_org_mesh_file = 0
-      integer(kind = kint) :: ifmt_itp_mesh_file = 0
 !
       integer(kind = kint) :: ifmt_org_rst_file =  0
       integer(kind = kint) :: ifmt_itp_rst_file =  0
@@ -86,7 +86,6 @@
       use m_error_IDs
       use m_machine_parameter
       use m_2nd_pallalel_vector
-      use m_read_mesh_data
       use m_ctl_data_gen_table
       use m_ctl_data_4_platforms
       use m_ctl_data_4_2nd_data
@@ -94,35 +93,29 @@
       use m_file_format_switch
       use itp_table_IO_select_4_zlib
       use set_control_platform_data
+      use set_ctl_params_2nd_files
       use skip_comment_f
 !
 !
       call turn_off_debug_flag_by_ctl(my_rank)
       call set_control_smp_def(my_rank)
 !
-      if (mesh_file_prefix%iflag .ne. 0) then
-        org_mesh_head = mesh_file_prefix%charavalue
-      end if
-!
-      if (new_mesh_prefix%iflag .ne. 0) then
-        dest_mesh_head = new_mesh_prefix%charavalue
-      end if
+      call set_control_mesh_def(itp_org_mesh_file)
 !
       if (table_head_ctl%iflag .ne. 0) then
         table_file_head = table_head_ctl%charavalue
       end if
 !
-      call choose_para_file_format                                      &
-     &   (mesh_file_fmt_ctl, ifmt_org_mesh_file)
-      call choose_para_file_format                                      &
-     &   (new_mesh_file_fmt_ctl, ifmt_itp_mesh_file)
+      call set_control_new_mesh_file_def(itp_dest_mesh_file)
       call choose_file_format                                           &
      &   (fmt_itp_table_file_ctl, ifmt_itp_table_file)
 !
       if (iflag_debug.eq.1)  then
         write(*,*) 'np_smp', np_smp, np_smp
-        write(*,*) 'org_mesh_head: ',   trim(org_mesh_head)
-        write(*,*) 'dest_mesh_head: ',  trim(dest_mesh_head)
+        write(*,*) 'org_mesh_head: ',                                   &
+     &            trim(itp_org_mesh_file%file_prefix)
+        write(*,*) 'dest_mesh_head: ',                                  &
+     &            trim(itp_dest_mesh_file%file_prefix)
         write(*,*) 'table_file_head: ', trim(table_file_head)
       end if
 !

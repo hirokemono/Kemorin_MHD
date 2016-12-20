@@ -209,11 +209,11 @@
 !
 ! --------   loop for direction of velocity ---------------
 !
-      if (coef_velo.gt.zero .and. coef_exp_v.gt.zero) then
+      if (coef_velo.gt.zero .and. evo_velo%coef_exp.gt.zero) then
         call int_vol_vector_diffuse_ele(fluid%istack_ele_fld_smp,       &
      &      node, ele, nod_fld, jac_3d_q, rhs_tbl, FEM_elens,           &
-     &      diff_coefs, ifld_diff%i_velo, coef_exp_v, ak_MHD%ak_d_velo, &
-     &      iphys%i_velo, fem_wk, f_l)
+     &      diff_coefs, ifld_diff%i_velo, evo_velo%coef_exp,            &
+     &      ak_MHD%ak_d_velo, iphys%i_velo, fem_wk, f_l)
       end if
 !
       if ( iflag_4_coriolis .eq. id_Coriolis_ele_imp) then
@@ -256,17 +256,17 @@
      &    fem_wk, surf_wk, f_l, f_nl)
 !
 !
-      if (iflag_t_evo_4_velo .eq. id_explicit_euler) then
+      if (evo_velo%iflag_scheme .eq. id_explicit_euler) then
         call cal_velo_pre_euler(iflag_velo_supg,                        &
      &     nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,       &
      &     jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
-      else if (iflag_t_evo_4_velo .eq. id_explicit_adams2) then
+      else if(evo_velo%iflag_scheme .eq. id_explicit_adams2) then
         call cal_velo_pre_adams(iflag_velo_supg,                        &
      &     nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,       &
      &     jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
-      else if (iflag_t_evo_4_velo .eq. id_Crank_nicolson) then
+      else if(evo_velo%iflag_scheme .eq. id_Crank_nicolson) then
         call cal_velo_pre_lumped_crank                                  &
      &     (ifld_diff%i_velo, ak_MHD%ak_d_velo,                         &
      &      nod_comm, node, ele, fluid, Vnod_bcs,                       &
@@ -274,7 +274,7 @@
      &      diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,         &
      &      f_l, f_nl, nod_fld)
 !
-      else if (iflag_t_evo_4_velo .eq. id_Crank_nicolson_cmass) then 
+      else if(evo_velo%iflag_scheme .eq. id_Crank_nicolson_cmass) then 
         call cal_velo_pre_consist_crank(iphys%i_velo,                   &
      &      iphys%i_pre_mom, ifld_diff%i_velo, ak_MHD%ak_d_velo,        &
      &      node, ele, fluid, Vnod_bcs, jac_3d_q, rhs_tbl, FEM_elens,   &
