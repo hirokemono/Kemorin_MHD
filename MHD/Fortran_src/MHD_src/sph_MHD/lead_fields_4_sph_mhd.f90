@@ -104,14 +104,14 @@
      &      WK%trns_MHD%fld_pole, WK%trns_MHD%frc_pole)
       end if
 !
-!      if(iflag_SGS_model .gt. 0) then
-!        if (iflag_debug.eq.1) write(*,*) 'swap_phi_from_trans'
-!        call swap_phi_from_trans(WK%trns_SGS%ncomp_rj_2_rtp,           &
-!     &      sph%sph_rtp%nnod_rtp, sph%sph_rtp%nidx_rtp,                &
-!     &      WK%trns_SGS%fld_rtp)
-!        call swap_phi_from_trans(WK%trns_SGS%ncomp_rtp_2_rj,           &
-!     &      sph%sph_rtp%nnod_rtp, sph%sph_rtp%nidx_rtp,                &
-!     &      WK%trns_SGS%frc_rtp)
+      if(iflag_SGS_model .gt. 0) then
+        if (iflag_debug.eq.1) write(*,*) 'swap_phi_from_trans'
+        call swap_phi_from_trans(WK%trns_SGS%ncomp_rj_2_rtp,            &
+     &      sph%sph_rtp%nnod_rtp, sph%sph_rtp%nidx_rtp,                 &
+     &      WK%trns_SGS%fld_rtp)
+        call swap_phi_from_trans(WK%trns_SGS%ncomp_rtp_2_rj,            &
+     &      sph%sph_rtp%nnod_rtp, sph%sph_rtp%nidx_rtp,                 &
+     &      WK%trns_SGS%frc_rtp)
 !
 !        if (iflag_debug.eq.1) write(*,*) 'sph_pole_trans_SGS_MHD'
 !        call sph_pole_trans_SGS_MHD                                    &
@@ -121,7 +121,7 @@
 !        call copy_model_coefs_4_sph_snap(sph%sph_rtp,                  &
 !     &      WK%dynamic_SPH%ifld_sgs, WK%dynamic_SPH%wk_sgs,            &
 !     &      WK%trns_snap)
-!      end if
+      end if
 !
       call gradients_of_vectors_sph(sph, comms_sph, r_2nd, trans_p,     &
      &    ipol, WK%trns_MHD, WK%trns_tmp, rj_fld)
@@ -222,11 +222,11 @@
 !      Work of SGS terms
       if(iflag_SGS_model .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'SGS_fluxes_for_snapshot'
-        call SGS_fluxes_for_snapshot(sph%sph_rtp, trns_MHD%b_trns,     &
-     &      trns_SGS%f_trns, trns_snap%b_trns, trns_snap%f_trns,       &
-     &      trns_MHD%ncomp_rj_2_rtp, trns_SGS%ncomp_rtp_2_rj,          &
-     &      trns_snap%ncomp_rj_2_rtp, trns_snap%ncomp_rtp_2_rj,        &
-     &      trns_MHD%fld_rtp, trns_SGS%frc_rtp,                        &
+        call SGS_fluxes_for_snapshot(sph%sph_rtp, trns_MHD%b_trns,      &
+     &      trns_SGS%f_trns, trns_snap%b_trns, trns_snap%f_trns,        &
+     &      trns_MHD%ncomp_rj_2_rtp, trns_SGS%ncomp_rtp_2_rj,           &
+     &      trns_snap%ncomp_rj_2_rtp, trns_snap%ncomp_rtp_2_rj,         &
+     &      trns_MHD%fld_rtp, trns_SGS%frc_rtp,                         &
      &      trns_snap%fld_rtp, trns_snap%frc_rtp)
       end if
 !
