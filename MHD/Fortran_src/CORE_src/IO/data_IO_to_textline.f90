@@ -16,21 +16,26 @@
 !!      integer(kind = kint) function len_int8_and_vector_textline(num)
 !!
 !!      character(len=len_trim(word)+1) function one_word_textline(word)
-!!      character(len=16) function integer_nolfline(int_dat)
-!!      character(len=16+1) function integer_textline(int_dat)
-!!      character(len=num*16+1) function int_stack_textline(num, istack)
-!!      character(len=num*16+1) function multi_int_textline             &
-!!     &                               (num, int_dat)
-!!      character(len=num*16+1) function int_stack8_textline(num, istack)
-!!      character(len=num*16+1) function multi_int8_textline            &
-!!     &                               (num, int8_dat)
-!!    character(len=num*6+1) function mul_6digit_int_line               &
-!!     &                               (num, int_dat)
-!!      character(len=num*25+1) function vector_textline(num, real_dat)
-!!      character(len=num*16+17) function int8_and_mul_int_textline     &
-!!     &                                (int8_gl, num, int_dat)
-!!      character(len=num*25+17) function int8_and_vector_textline      &
-!!     &                                (int8_gl, num, real_dat)
+!!      function integer_nolfline(int_dat)
+!!        character(len=16) :: integer_nolfline
+!!      function integer_textline(int_dat)
+!!        character(len=16+1) :: integer_textline
+!!      function int_stack_textline(num, istack)
+!!        character(len=num*16+1) :: int_stack_textline
+!!      function multi_int_textline(num, int_dat)
+!!        character(len=num*16+1) :: multi_int_textline
+!!      function int_stack8_textline(num, istack)
+!!        character(len=num*16+1) :: int_stack8_textline
+!!      function multi_int8_textline(num, int8_dat)
+!!        character(len=num*16+1) :: multi_int8_textline
+!!      function mul_6digit_int_line(num, int_dat)
+!!        character(len=num*6+1) :: mul_6digit_int_line
+!!      function vector_textline(num, real_dat)
+!!        character(len=num*25+1) :: vector_textline
+!!      function int8_and_mul_int_textline(int8_gl, num, int_dat)
+!!        character(len=num*16+17) :: int8_and_mul_int_textline
+!!      function int8_and_vector_textline(int8_gl, num, real_dat)
+!!        character(len=num*25+17) :: int8_and_vector_textline
 !!
 !!      integer(kind = kint) function read_one_word_textline            &
 !!     &                            (textbuf, field_name)
@@ -144,10 +149,12 @@
 !
 ! -------------------------------------------------------------------
 !
-      character(len=16) function integer_nolfline(int_dat)
+      function integer_nolfline(int_dat)
 !
       integer(kind = kint), intent(in) ::    int_dat
       integer(kind = kint) :: int_tmp(1)
+!
+      character(len=16) :: integer_nolfline
 !
 !
       int_tmp(1) = int_dat
@@ -157,10 +164,12 @@
 !
 ! -------------------------------------------------------------------
 !
-      character(len=16+1) function integer_textline(int_dat)
+      function integer_textline(int_dat)
 !
       integer(kind = kint), intent(in) ::    int_dat
       integer(kind = kint) :: int_tmp(1)
+!
+      character(len=16+1) :: integer_textline
 !
 !
       int_tmp(1) = int_dat
@@ -170,10 +179,12 @@
 !
 ! -------------------------------------------------------------------
 !
-      character(len=num*16+1) function int_stack_textline(num, istack)
+      function int_stack_textline(num, istack)
 !
       integer(kind = kint), intent(in) ::    num
       integer(kind = kint), intent(in) ::    istack(0:num)
+!
+      character(len=num*16+1) :: int_stack_textline
 !
 !
       int_stack_textline = multi_int_textline(num, istack(1))
@@ -182,11 +193,12 @@
 !
 ! -------------------------------------------------------------------
 !
-      character(len=num*16+1) function multi_int_textline               &
-     &                               (num, int_dat)
+      function multi_int_textline(num, int_dat)
 !
       integer(kind = kint), intent(in) ::    num
       integer(kind = kint), intent(in) ::    int_dat(num)
+!
+      character(len=num*16+1) :: multi_int_textline
 !
       character(len=kchara) :: fmt_txt
 !
@@ -202,10 +214,12 @@
 !
 ! -------------------------------------------------------------------
 !
-      character(len=num*16+1) function int_stack8_textline(num, istack)
+      function int_stack8_textline(num, istack)
 !
       integer(kind = kint), intent(in) ::    num
       integer(kind = kint_gl), intent(in) :: istack(0:num)
+!
+      character(len=num*16+1) :: int_stack8_textline
 !
 !
       int_stack8_textline = multi_int8_textline(num, istack(1))
@@ -214,11 +228,12 @@
 !
 ! -------------------------------------------------------------------
 !
-      character(len=num*16+1) function multi_int8_textline              &
-     &                               (num, int8_dat)
+      function multi_int8_textline(num, int8_dat)
 !
       integer(kind = kint), intent(in) ::    num
       integer(kind = kint_gl), intent(in) ::    int8_dat(num)
+!
+      character(len=num*16+1) :: multi_int8_textline
 !
       character(len=kchara) :: fmt_txt
 !
@@ -234,11 +249,12 @@
 !
 ! -------------------------------------------------------------------
 !
-      character(len=num*6+1) function mul_6digit_int_line               &
-     &                               (num, int_dat)
+      function mul_6digit_int_line(num, int_dat)
 !
       integer(kind = kint), intent(in) ::    num
       integer(kind = kint), intent(in) ::    int_dat(num)
+!
+      character(len=num*6+1) :: mul_6digit_int_line
 !
       character(len=kchara) :: fmt_txt
 !
@@ -254,10 +270,12 @@
 !
 ! -------------------------------------------------------------------
 !
-      character(len=num*25+1) function vector_textline(num, real_dat)
+      function vector_textline(num, real_dat)
 !
       integer(kind = kint), intent(in) ::    num
       integer(kind = kint), intent(in) ::    real_dat(num)
+!
+      character(len=num*25+1) :: vector_textline
 !
       character(len=kchara) :: fmt_txt
 !
@@ -269,12 +287,13 @@
 !
 ! -------------------------------------------------------------------
 !
-      character(len=num*16+17) function int8_and_mul_int_textline       &
-     &                                (int8_gl, num, int_dat)
+      function int8_and_mul_int_textline(int8_gl, num, int_dat)
 !
       integer(kind = kint), intent(in) ::    num
       integer(kind = kint_gl), intent(in) :: int8_gl
       integer(kind = kint), intent(in) ::    int_dat(num)
+!
+      character(len=num*16+17) :: int8_and_mul_int_textline
 !
       character(len=kchara) :: fmt_txt
 !
@@ -291,12 +310,13 @@
 !
 ! -------------------------------------------------------------------
 !
-      character(len=num*25+17) function int8_and_vector_textline        &
-     &                                (int8_gl, num, real_dat)
+      function int8_and_vector_textline(int8_gl, num, real_dat)
 !
       integer(kind = kint), intent(in) ::    num
       integer(kind = kint_gl), intent(in) :: int8_gl
       real(kind = kreal), intent(in) ::    real_dat(num)
+!
+      character(len=num*25+17) :: int8_and_vector_textline
 !
       character(len=kchara) :: fmt_txt
 !
