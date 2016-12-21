@@ -155,7 +155,7 @@
 #ifdef ZLIB_IO
       call rawwrite_f(kint, i_UNIX, ierr_IO)
 #else
-      write(id_binary)  int_dat
+      write(id_binary)  i_UNIX
 #endif
 !
       end subroutine write_endian_flag
