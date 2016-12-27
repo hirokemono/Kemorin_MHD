@@ -109,8 +109,8 @@
 !
 !    file header for field data
 !
-      if(plt1%spectr_file_head_ctl%iflag .gt. 0) then
-        org_sph_file_head =  plt1%spectr_file_head_ctl%charavalue
+      if(plt1%spectr_field_file_prefix%iflag .gt. 0) then
+        org_sph_file_head =  plt1%spectr_field_file_prefix%charavalue
         call choose_para_file_format                                    &
      &     (plt1%restart_file_fmt_ctl, iflag_org_sph_file_fmt)
       end if

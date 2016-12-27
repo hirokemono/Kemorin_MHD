@@ -7,7 +7,7 @@ begin spherical_transform
 !
     restart_file_prefix        'restart/rst'
     field_file_prefix          'field/out'
-    spectr_file_head_ctl       'sph_spectr/spectral'
+    spectr_field_file_prefix   'sph_spectr/spectral'
 !
 !
     sph_file_fmt_ctl       'gzip'

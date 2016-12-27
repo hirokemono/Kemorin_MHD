@@ -32,7 +32,7 @@
 !!      field_file_prefix           'field/out'
 !!      restart_file_prefix         'restart/rst'
 !!
-!!      spectr_data_file_prefix     'sph_spectr/spectr'
+!!      spectr_field_file_prefix    'sph_spectr/spectr'
 !!
 !!
 !!      mesh_file_fmt_ctl           'ascii'
@@ -103,7 +103,7 @@
 !
         type(read_character_item) :: udt_file_head_ctl
         type(read_character_item) :: restart_file_prefix
-        type(read_character_item) :: spectr_file_head_ctl
+        type(read_character_item) :: spectr_field_file_prefix
 !
         type(read_character_item) :: sph_file_prefix
 !
@@ -150,7 +150,7 @@
       character(len=kchara), parameter                                  &
      &       :: hd_rst_header =   'restart_file_prefix'
       character(len=kchara), parameter                                  &
-     &       :: hd_spectr_header =   'spectr_data_file_prefix'
+     &       :: hd_spectr_header =   'spectr_field_file_prefix'
 !
       character(len=kchara), parameter                                  &
      &       :: hd_sph_files_header = 'sph_file_prefix'
@@ -175,7 +175,7 @@
       character(len=kchara), parameter                                  &
      &       :: hd_itp_files_fmt =  'itp_file_fmt_ctl'
       character(len=kchara), parameter                                  &
-     &       :: hd_spect_files_fmt =  'spectr_field_fmt_ctl'
+     &       :: hd_spect_field_fmt =  'spectr_field_fmt_ctl'
       character(len=kchara), parameter                                  &
      &       :: hd_coriolis_file_fmt =  'coriolis_file_fmt_ctl'
 !
@@ -203,7 +203,7 @@
       private :: hd_coriolis_tri_int_name
       private :: hd_itp_sph_to_fem, hd_itp_fem_to_sph
       private :: hd_itp_files_fmt, hd_coriolis_file_fmt
-      private :: hd_spect_files_fmt, hd_FEM_mesh_output
+      private :: hd_spect_field_fmt, hd_FEM_mesh_output
       private :: hd_exclude_FEM_mesh
 !
 !  ---------------------------------------------------------------------
@@ -240,7 +240,7 @@
         call read_chara_ctl_type(hd_rst_header,                         &
      &      plt%restart_file_prefix)
         call read_chara_ctl_type(hd_spectr_header,                      &
-     &      plt%spectr_file_head_ctl)
+     &      plt%spectr_field_file_prefix)
 !
         call read_chara_ctl_type(hd_sph_files_header,                   &
      &       plt%sph_file_prefix)
@@ -265,7 +265,7 @@
      &      plt%sph_file_fmt_ctl)
         call read_chara_ctl_type(hd_itp_files_fmt,                      &
      &      plt%itp_file_fmt_ctl)
-        call read_chara_ctl_type(hd_spect_files_fmt,                    &
+        call read_chara_ctl_type(hd_spect_field_fmt,                    &
      &      plt%spectr_field_fmt_ctl)
         call read_chara_ctl_type(hd_coriolis_file_fmt,                  &
      &      plt%coriolis_file_fmt_ctl)

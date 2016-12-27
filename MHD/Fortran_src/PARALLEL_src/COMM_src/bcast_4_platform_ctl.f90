@@ -37,7 +37,7 @@
 !
       call bcast_ctl_type_c1(plt%udt_file_head_ctl)
       call bcast_ctl_type_c1(plt%restart_file_prefix)
-      call bcast_ctl_type_c1(plt%spectr_file_head_ctl)
+      call bcast_ctl_type_c1(plt%spectr_field_file_prefix)
 !
       call bcast_ctl_type_c1(plt%sph_file_prefix)
 !

@@ -135,10 +135,10 @@
      &      iflag_sph_file_fmt, mesh_file)
       end if
 !
-      sph_file_param%iflag_IO = plt%spectr_file_head_ctl%iflag
+      sph_file_param%iflag_IO = plt%spectr_field_file_prefix%iflag
       if(sph_file_param%iflag_IO .gt. 0) then
         sph_file_param%file_prefix                                      &
-     &         = plt%spectr_file_head_ctl%charavalue
+     &         = plt%spectr_field_file_prefix%charavalue
       end if
 !
       end subroutine set_control_sph_mesh
