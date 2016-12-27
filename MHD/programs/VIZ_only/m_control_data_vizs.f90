@@ -89,7 +89,7 @@
         call find_control_end_flag(hd_viz_only_file, i_viz_only_file)
         if(i_viz_only_file .eq. 1) exit
 !
-        call read_ctl_data_4_platform(plt1)
+        call read_ctl_data_4_platform
         call read_time_step_ctl
 !
         call read_viz_control_data

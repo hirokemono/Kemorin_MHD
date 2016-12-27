@@ -127,7 +127,7 @@
         call find_control_end_flag(hd_prod_control, i_prod_control)
         if(i_prod_control .gt. 0) exit
 !
-        call read_ctl_data_4_platform(plt1)
+        call read_ctl_data_4_platform
         call read_ctl_data_4_org_data
 !
         call read_prod_files_ctl

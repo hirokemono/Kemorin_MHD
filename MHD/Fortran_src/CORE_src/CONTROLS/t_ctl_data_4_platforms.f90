@@ -9,6 +9,8 @@
 !!@verbatim
 !!      subroutine read_ctl_data_4_platform(plt)
 !!        type(platform_data_control), intent(inout) :: plt
+!!      subroutine read_control_platforms(hd_block, iflag, plt)
+!!        type(platform_data_control), intent(inout) :: plt
 !!
 !! ------------------------------------------------------------------
 !!      Example of control parameters
@@ -129,12 +131,6 @@
         type(read_character_item) :: excluding_FEM_mesh_ctl
       end type platform_data_control
 !
-!     Label for the entry
-!
-      character(len=kchara), parameter                                  &
-     &                    :: hd_platform = 'data_files_def'
-      integer (kind=kint) :: i_platform =   0
-!
 !   file and domain controls
 !
       character(len=kchara), parameter                                  &
@@ -193,7 +189,6 @@
      &       :: hd_exclude_FEM_mesh = 'excluding_FEM_mesh_ctl'
 !
 !
-      private :: hd_platform, i_platform
       private :: hd_num_subdomain, hd_num_smp, hd_sph_files_header
       private :: hd_mesh_header, hd_udt_header, hd_rst_header
       private :: hd_spectr_header, hd_bc_data_file_name
@@ -212,22 +207,25 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_ctl_data_4_platform(plt)
+      subroutine read_control_platforms(hd_block, iflag, plt)
 !
       use m_machine_parameter
       use m_read_control_elements
       use skip_comment_f
 !
+      character(len=kchara), intent(in) :: hd_block
+!
+      integer(kind = kint), intent(inout) :: iflag
       type(platform_data_control), intent(inout) :: plt
 !
 !
-      if(right_begin_flag(hd_platform) .eq. 0) return
-      if (i_platform .gt. 0) return
+      if(right_begin_flag(hd_block) .eq. 0) return
+      if(iflag .gt. 0) return
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_platform, i_platform)
-        if(i_platform .gt. 0) exit
+        call find_control_end_flag(hd_block, iflag)
+        if(iflag .gt. 0) exit
 !
 !
         call read_integer_ctl_type(hd_num_subdomain, plt%ndomain_ctl)
@@ -280,7 +278,7 @@
      &      plt%excluding_FEM_mesh_ctl)
        end do
 !
-      end subroutine read_ctl_data_4_platform
+      end subroutine read_control_platforms
 !
 !  ---------------------------------------------------------------------
 !

@@ -117,7 +117,7 @@
         if(i_mesh_test_ctl .gt. 0) exit
 !
 !
-        call read_ctl_data_4_platform(plt1)
+        call read_ctl_data_4_platform
         call read_ctl_data_4_temp_nod_bc
       end do
 !

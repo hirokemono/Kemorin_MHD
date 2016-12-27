@@ -85,7 +85,7 @@
      &      i_filter_test_ctl)
         if(i_filter_test_ctl .gt. 0) exit
 !
-        call read_ctl_data_4_platform(plt1)
+        call read_ctl_data_4_platform
         call read_filter_fnames_ctl
       end do
 !

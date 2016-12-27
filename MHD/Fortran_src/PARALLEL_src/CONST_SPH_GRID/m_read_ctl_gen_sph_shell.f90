@@ -76,7 +76,7 @@
         if(i_sph_shell .gt. 0) exit
 !
 !
-        call read_ctl_data_4_platform(plt1)
+        call read_ctl_data_4_platform
         call read_ctl_4_shell_define
 !
         call read_ctl_ndomain_4_shell

@@ -143,7 +143,7 @@
         if(i_plane_mesh .gt. 0) exit
 !
 !
-        call read_ctl_data_4_platform(plt1)
+        call read_ctl_data_4_platform
         call read_filter_fnames_ctl
 !
         call read_plane_model_param_ctl

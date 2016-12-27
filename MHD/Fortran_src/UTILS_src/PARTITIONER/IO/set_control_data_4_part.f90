@@ -51,14 +51,15 @@
       write(*,*) 'iflag_memory_conserve', iflag_memory_conserve
 !
 !
-      if (org_mesh_head_ctl%iflag .gt. 0) then
-        global_mesh_file%file_prefix = org_mesh_head_ctl%charavalue
+      if (org_plt%mesh_file_prefix%iflag .gt. 0) then
+        global_mesh_file%file_prefix                                    &
+     &      = org_plt%mesh_file_prefix%charavalue
       else
         write(*,*) 'Set original mesh data'
         stop
       end if
       call choose_file_format                                           &
-     &   (org_mesh_file_fmt_ctl, global_mesh_file%iflag_format)
+     &   (org_plt%sph_file_fmt_ctl, global_mesh_file%iflag_format)
 !
       write(*,*) 'i_part_method', part_method_ctl%iflag
 !

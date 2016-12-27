@@ -93,7 +93,7 @@
         if(i_MG_test_ctl .gt. 0) exit
 !
 !
-        call read_ctl_data_4_platform(plt1)
+        call read_ctl_data_4_platform
         call read_MG_param_ctl
       end do
 !

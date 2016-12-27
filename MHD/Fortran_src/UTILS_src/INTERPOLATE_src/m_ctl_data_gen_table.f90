@@ -231,7 +231,7 @@
         call find_control_end_flag(hd_table_control, i_table_control)
         if(i_table_control .gt. 0) exit
 !
-        call read_ctl_data_4_platform(plt1)
+        call read_ctl_data_4_platform
         call read_ctl_data_4_new_data
 !
         call read_itp_files_ctl
@@ -258,7 +258,7 @@
         call find_control_end_flag(hd_distribute_itp, i_distribute_itp)
         if(i_distribute_itp .gt. 0) exit
 !
-        call read_ctl_data_4_platform(plt1)
+        call read_ctl_data_4_platform
         call read_ctl_data_4_new_data
 !
         call read_itp_files_ctl

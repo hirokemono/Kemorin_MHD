@@ -132,7 +132,7 @@
         org_sph_file_head =  rst_org_param%file_prefix
         i_step_output_ucd =  i_step_output_rst
         call choose_file_format                                         &
-     &     (org_sph_file_fmt_ctl, iflag_org_sph_file_fmt)
+     &     (org_plt%sph_file_fmt_ctl, iflag_org_sph_file_fmt)
       end if
 !
       write(tave_sph_file_head,'(a,a5)')                                &

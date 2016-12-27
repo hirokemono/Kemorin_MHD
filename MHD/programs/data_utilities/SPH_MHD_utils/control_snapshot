@@ -39,7 +39,7 @@
   end data_files_def
 !
   begin  org_data_files_def
-    orginal_restart_prefix           'rst_org/rst'
+    restart_file_prefix           'rst_org/rst'
   end  org_data_files_def
 !
   begin model

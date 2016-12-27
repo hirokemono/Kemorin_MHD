@@ -50,7 +50,7 @@
         open(ctl_file_code, file = fname_test_mesh_ctl, status='old')
 !
         call load_ctl_label_and_line
-        call read_ctl_data_4_platform(plt1)
+        call read_ctl_data_4_platform
 !
         close(ctl_file_code)
       end if

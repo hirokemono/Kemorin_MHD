@@ -57,7 +57,8 @@
 !
 !
       call set_file_control_params(def_org_sph_rj_head,                 &
-     &    org_sph_mode_head_ctl, org_sph_file_fmt_ctl, rj_file_param)
+     &    org_plt%sph_file_prefix, org_plt%sph_file_fmt_ctl,            &
+     &    rj_file_param)
 !
       end subroutine set_control_org_sph_mesh
 !
@@ -65,14 +66,13 @@
 !
       subroutine set_control_org_rst_file_def(rst_file_param)
 !
-      use m_ctl_data_4_platforms
       use m_ctl_data_4_org_data
 !
       type(field_IO_params), intent(inout) :: rst_file_param
 !
 !
       call set_file_control_params(def_org_rst_header,                  &
-     &    orginal_restart_prefix, plt1%restart_file_fmt_ctl,            &
+     &    org_plt%restart_file_prefix, org_plt%restart_file_fmt_ctl,    &
      &    rst_file_param)
 !
       end subroutine set_control_org_rst_file_def
@@ -81,14 +81,14 @@
 !
       subroutine set_control_org_udt_file_def(udt_file_param)
 !
-      use m_ctl_data_4_platforms
       use m_ctl_data_4_org_data
 !
       type(field_IO_params), intent(inout) :: udt_file_param
 !
 !
       call set_file_control_params(def_org_ucd_header,                  &
-     &    org_udt_head_ctl, plt1%udt_file_fmt_ctl,  udt_file_param)
+     &    org_plt%udt_file_head_ctl, org_plt%udt_file_fmt_ctl,          &
+     &    udt_file_param)
 !
       end subroutine set_control_org_udt_file_def
 !

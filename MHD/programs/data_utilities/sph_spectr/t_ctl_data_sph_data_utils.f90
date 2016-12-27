@@ -120,7 +120,7 @@
         call find_control_end_flag(hd_control_d_sph, i_hard)
         if(i_hard .gt. 0) exit
 !
-        call read_ctl_data_4_platform(plt1)
+        call read_ctl_data_4_platform
         call read_time_step_ctl
         call read_diff_spectr_file_control(ctl%file_list)
         call read_rename_spectr_control(ctl%field_list)
