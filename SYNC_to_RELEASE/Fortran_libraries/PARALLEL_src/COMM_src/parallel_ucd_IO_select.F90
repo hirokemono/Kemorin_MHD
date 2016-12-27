@@ -46,12 +46,13 @@
       type(ucd_data), intent(inout) :: ucd
 !
 !
-      ucd%ifmt_file = plt%udt_file_head_ctl%iflag
+      ucd%ifmt_file = plt%field_file_prefix%iflag
       if(ucd%ifmt_file .gt. 0)                                          &
-     &         ucd%file_prefix = plt%udt_file_head_ctl%charavalue
+     &         ucd%file_prefix = plt%field_file_prefix%charavalue
 !
-      call choose_para_fld_file_format(plt%udt_file_fmt_ctl%charavalue, &
-     &    plt%udt_file_fmt_ctl%iflag, ucd%ifmt_file)
+      call choose_para_fld_file_format                                  &
+     &   (plt%field_file_fmt_ctl%charavalue,                            &
+     &    plt%field_file_fmt_ctl%iflag, ucd%ifmt_file)
 !
       end subroutine set_merged_ucd_file_define
 !

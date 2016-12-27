@@ -7,7 +7,7 @@ begin change_filter_domain_ctl
   end
 !
   begin target_mesh_ctl
-    num_new_domain_ctl          4
+    num_subdomain_ctl          4
     new_mesh_head_ctl           'mesh_ref2_4/in'
   end
 !

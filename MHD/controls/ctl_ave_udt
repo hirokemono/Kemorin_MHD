@@ -2,7 +2,7 @@ begin averaging_udts
 !
 !  make time average of field
 !     original field file :  org_udt_file_head_ctl
-!     averaged field file : udt_file_head_ctl
+!     averaged field file : field_file_prefix
 !
   begin data_files_def
     num_subdomain_ctl           2
@@ -11,7 +11,7 @@ begin averaging_udts
     mesh_file_head_ctl          'mesh_fine/in'
 !
     org_udt_file_head_ctl       'field_org/out'
-    udt_file_head_ctl           'out_average'
+    field_file_prefix           'out_average'
 !
     udt_files_fmt_ctl           'gzip'
   end

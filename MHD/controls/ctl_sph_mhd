@@ -9,7 +9,7 @@ begin fluid_control
 !  rst_file_head_ctl:   header of restart file
 !                            (Default: restart/rst.step#.domain#)
 !
-!  udt_file_head_ctl: header for snapshot field data 
+!  field_file_prefix: header for snapshot field data 
 !                            (Default: out.step#.domain#.udt)
 !
 !    mesh_file_fmt_ctl:   data format for mesh file
@@ -33,7 +33,7 @@ begin fluid_control
     rst_file_head_ctl           'restart/rst'
 !
     org_udt_file_head_ctl       'filed_org/out'
-    udt_file_head_ctl           'field/out'
+    field_file_prefix           'field/out'
 !
     mesh_file_fmt_ctl           'ascii'
     rst_files_fmt_ctl           'ascii'

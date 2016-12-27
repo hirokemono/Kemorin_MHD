@@ -2,7 +2,7 @@ begin difference_udts
 !
 !  make a difference of field
 !     original field file :  org_udt_file_head_ctl
-!     result field file : udt_file_head_ctl
+!     result field file : field_file_prefix
 !
   begin data_files_def
     num_subdomain_ctl           2
@@ -10,7 +10,7 @@ begin difference_udts
 !
     mesh_file_head_ctl          'mesh_fine/in'
 !
-    udt_file_head_ctl           'out_average'
+    field_file_prefix           'out_average'
   end
 !
   begin data_file_header_ctl

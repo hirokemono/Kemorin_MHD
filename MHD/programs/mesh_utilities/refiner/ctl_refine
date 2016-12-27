@@ -8,7 +8,7 @@ begin refine_control
   end data_files_def
 !
   begin new_data_files_def
-    new_mesh_prefix             'sph_lm31r48c_6/in'
+    mesh_file_prefix             'sph_lm31r48c_6/in'
   end new_data_files_def
 !
   begin single_refined_table_ctl

@@ -87,7 +87,7 @@
 !
 !
       call set_file_control_params(def_org_ucd_header,                  &
-     &    org_plt%udt_file_head_ctl, org_plt%udt_file_fmt_ctl,          &
+     &    org_plt%field_file_prefix, org_plt%field_file_fmt_ctl,        &
      &    udt_file_param)
 !
       end subroutine set_control_org_udt_file_def
@@ -103,7 +103,8 @@
 !
 !
       call set_file_control_params(def_new_mesh_head,                   &
-     &    new_mesh_prefix, new_mesh_file_fmt_ctl,  mesh_file)
+     &    new_plt%mesh_file_prefix, new_plt%mesh_file_fmt_ctl,          &
+     &    mesh_file)
 !
       end subroutine set_control_new_mesh_file_def
 !

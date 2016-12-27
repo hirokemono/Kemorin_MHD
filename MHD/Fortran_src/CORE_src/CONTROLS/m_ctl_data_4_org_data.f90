@@ -53,10 +53,6 @@
 !
       subroutine read_ctl_data_4_org_data
 !
-      use m_machine_parameter
-      use m_read_control_elements
-      use skip_comment_f
-!
 !
       call read_control_platforms(hd_org_data, i_org_data, org_plt)
 !

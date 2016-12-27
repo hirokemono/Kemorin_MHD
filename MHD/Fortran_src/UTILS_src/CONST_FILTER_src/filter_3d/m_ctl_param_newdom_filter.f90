@@ -56,11 +56,11 @@
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      if(num_new_domain_ctl%intvalue .gt. 0) then
+      if(new_plt%ndomain_ctl%intvalue .gt. 0) then
         if(nprocs_2nd .eq. 0) then
-          nprocs_2nd = num_new_domain_ctl%intvalue
+          nprocs_2nd = new_plt%ndomain_ctl%intvalue
         else
-          if(nprocs_2nd .ne. num_new_domain_ctl%intvalue) then
+          if(nprocs_2nd .ne. new_plt%ndomain_ctl%intvalue) then
             write(e_message,'(a)')                                      &
      &             'set num. of new domain for numn. of processes'
             ierr = 1

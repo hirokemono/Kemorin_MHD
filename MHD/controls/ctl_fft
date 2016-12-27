@@ -5,7 +5,7 @@ begin zonal_fft
     mesh_file_head_ctl     'in_single'
     mesh_sph_grid_ctl      'in_rtp'
 !
-    udt_file_head_ctl      'field/out'
+    field_file_prefix      'field/out'
   end
 !
   begin time_step_ctl

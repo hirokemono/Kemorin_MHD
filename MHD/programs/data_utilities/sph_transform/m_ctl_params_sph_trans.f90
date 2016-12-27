@@ -259,9 +259,9 @@
       use m_ctl_data_4_platforms
 !
 !
-      if(plt1%udt_file_head_ctl%iflag .eq. 0) return
+      if(plt1%field_file_prefix%iflag .eq. 0) return
       zm_source_file_param%file_prefix                                  &
-     &              = plt1%udt_file_head_ctl%charavalue
+     &              = plt1%field_file_prefix%charavalue
 !
       end subroutine set_ctl_data_4_pick_zm
 !

@@ -14,21 +14,17 @@ begin assemble_control
   end data_files_def
 !
   begin new_data_files_def
-    num_new_domain_ctl           2
-    new_mesh_prefix            'mesh_target/in'
-    new_sph_mode_prefix        'mesh_target/in'
+    num_subdomain_ctl           2
+    mesh_file_prefix           'mesh_target/in'
+    sph_file_prefix            'mesh_target/in'
 !
-    new_restart_prefix         'rst_new/rst'
-    new_field_file_prefix      'field_new/out'
-    new_vtk_prefix             'outall'
+    restart_file_prefix        'rst_new/rst'
+    field_file_prefix          'field_new/out'
 !
-    new_dx_head_prefix         'outall'
-    new_dx_data_prefix         'field_new/field'
-!
-    new_mesh_file_fmt_ctl           'ascii'
-    new_rst_files_fmt_ctl           'ascii'
-    new_field_files_fmt_ctl         'ascii'
-    new_sph_files_fmt_ctl           'ascii'
+    mesh_file_fmt_ctl           'ascii'
+    restart_file_fmt_ctl        'ascii'
+    field_file_fmt_ctl          'ascii'
+    sph_file_fmt_ctl            'ascii'
 !
     delete_original_data_flag       'YES'
   end new_data_files_def

@@ -128,8 +128,8 @@
       nprocs_2nd = ndomain_org
       if (iflag_debug.eq.1)   write(*,*) 'ndomain_org', nprocs_2nd
 !
-      if (num_new_domain_ctl%iflag .gt. 0) then
-        ndomain_dest = num_new_domain_ctl%intvalue
+      if (new_plt%ndomain_ctl%iflag .gt. 0) then
+        ndomain_dest = new_plt%ndomain_ctl%intvalue
       else
         ndomain_dest = 1
       end if

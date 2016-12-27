@@ -12,12 +12,12 @@ begin spherical_transform
     org_mesh_sph_mode_ctl  'sph_orginal/in_rj'
 !
     rst_file_head_ctl      'restart/rst'
-    udt_file_head_ctl      'field/out'
+    field_file_prefix      'field/out'
 !
     mesh_file_fmt_ctl           'gzip'
     sph_file_fmt_ctl           'gzip'
     rst_file_fmt_ctl      'ascii'
-    udt_file_fmt_ctl      'ascii'
+    field_file_fmt_ctl      'ascii'
   end
 !
 !

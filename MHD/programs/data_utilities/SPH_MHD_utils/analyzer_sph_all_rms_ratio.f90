@@ -194,11 +194,12 @@
 !
 !
       call choose_para_file_format                                      &
-     &   (new_spectr_data_fmt_ctl, sph_file_param2%iflag_format)
+     &   (new_plt%spectr_field_fmt_ctl, sph_file_param2%iflag_format)
 !
-      sph_file_param2%iflag_IO = new_spectr_file_prefix%iflag
+      sph_file_param2%iflag_IO = new_plt%spectr_field_file_prefix%iflag
       if(sph_file_param2%iflag_IO .gt. 0) then
-        sph_file_param2%file_prefix = new_spectr_file_prefix%charavalue
+        sph_file_param2%file_prefix                                     &
+     &           = new_plt%spectr_field_file_prefix%charavalue
       end if
 !
       end subroutine set_ctl_4_second_spectr_data

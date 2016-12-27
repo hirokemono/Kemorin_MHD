@@ -42,8 +42,9 @@
 !
       call set_control_mesh_def(plt1, itp_org_mesh_file)
 !
-      if (new_mesh_prefix%iflag .ne. 0) then
-        itp_dest_mesh_file%file_prefix = new_mesh_prefix%charavalue
+      if (new_plt%mesh_file_prefix%iflag .ne. 0) then
+        itp_dest_mesh_file%file_prefix                                  &
+     &     = new_plt%mesh_file_prefix%charavalue
       end if
 !
       if (table_head_ctl%iflag .ne. 0) then
@@ -69,14 +70,14 @@
      &   write(*,*) 'itp_node_file_head: ', trim(itp_node_file_head)
       end if
 !
-      if (new_restart_prefix%iflag .gt. 0) then
-        itp_rst_file_head = new_restart_prefix%charavalue
+      if(new_plt%restart_file_prefix%iflag .gt. 0) then
+        itp_rst_file_head = new_plt%restart_file_prefix%charavalue
       end if
         if (iflag_debug.eq.1)                                           &
      &   write(*,*) 'itp_rst_file_head: ', trim(itp_rst_file_head)
 !
-      if (new_field_file_prefix%iflag .gt. 0) then
-        itp_udt_file_head = new_field_file_prefix%charavalue
+      if (new_plt%field_file_prefix%iflag .gt. 0) then
+        itp_udt_file_head = new_plt%field_file_prefix%charavalue
       end if
         if (iflag_debug.eq.1)                                           &
      &   write(*,*) 'itp_udt_file_head: ', trim(itp_udt_file_head)
@@ -88,8 +89,8 @@
         if (iflag_debug.eq.1)                                           &
      &   write(*,*) 'org_rst_file_head: ', trim(org_rst_file_head)
 !
-      if (plt1%udt_file_head_ctl%iflag .ne. 0) then
-        org_udt_file_head = plt1%udt_file_head_ctl%charavalue
+      if (plt1%field_file_prefix%iflag .ne. 0) then
+        org_udt_file_head = plt1%field_file_prefix%charavalue
       end if
         if (iflag_debug.eq.1)                                           &
      &   write(*,*) 'org_udt_file_head: ', trim(org_udt_file_head)
@@ -104,14 +105,14 @@
       nprocs_2nd = ndomain_org
       if (iflag_debug.eq.1)   write(*,*) 'ndomain_org', nprocs_2nd
 !
-      if (num_new_domain_ctl%iflag .gt. 0) then
-        ndomain_dest = num_new_domain_ctl%intvalue
+      if (new_plt%ndomain_ctl%iflag .gt. 0) then
+        ndomain_dest = new_plt%ndomain_ctl%intvalue
       else
         ndomain_dest = 1
       end if
 !
       call choose_file_format                                           &
-     &   (new_mesh_file_fmt_ctl, itp_dest_mesh_file%iflag_format)
+     &   (new_plt%mesh_file_fmt_ctl, itp_dest_mesh_file%iflag_format)
 !
       call choose_file_format                                           &
      &   (fmt_itp_table_file_ctl, ifmt_itp_table_file)
@@ -119,12 +120,13 @@
       call choose_para_file_format                                      &
      &   (plt1%restart_file_fmt_ctl, ifmt_org_rst_file)
       call choose_para_file_format                                      &
-     &   (new_rst_files_fmt_ctl, ifmt_itp_rst_file)
+     &   (new_plt%restart_file_fmt_ctl, ifmt_itp_rst_file)
 !
-      call choose_ucd_file_format(plt1%udt_file_fmt_ctl%charavalue,     &
-     &    plt1%udt_file_fmt_ctl%iflag, itype_org_udt_file)
-      call choose_ucd_file_format(new_udt_file_fmt_ctl%charavalue,      &
-     &    new_udt_file_fmt_ctl%iflag, itype_itp_udt_file)
+      call choose_ucd_file_format(plt1%field_file_fmt_ctl%charavalue,   &
+     &    plt1%field_file_fmt_ctl%iflag, itype_org_udt_file)
+      call choose_ucd_file_format                                       &
+     &   (new_plt%field_file_fmt_ctl%charavalue,                        &
+     &    new_plt%field_file_fmt_ctl%iflag, itype_itp_udt_file)
 !
 !
       if (nprocs .ne. max(ndomain_org,ndomain_dest) ) then

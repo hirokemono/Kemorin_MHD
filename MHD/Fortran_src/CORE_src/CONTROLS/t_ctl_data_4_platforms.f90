@@ -47,6 +47,8 @@
 !!
 !!      memory_conservation_ctl     'YES'
 !!      FEM_mesh_output_switch      'NO'
+!!
+!!      delete_original_data_flag       'YES'
 !!    end data_files_def
 !! ------------------------------------------------------------------
 !!@endverbatim
@@ -103,7 +105,7 @@
 !
         type(read_character_item) :: mesh_file_prefix
 !
-        type(read_character_item) :: udt_file_head_ctl
+        type(read_character_item) :: field_file_prefix
         type(read_character_item) :: restart_file_prefix
         type(read_character_item) :: spectr_field_file_prefix
 !
@@ -117,7 +119,7 @@
         type(read_character_item) :: mesh_file_fmt_ctl
         type(read_character_item) :: sph_file_fmt_ctl
         type(read_character_item) :: restart_file_fmt_ctl
-        type(read_character_item) :: udt_file_fmt_ctl
+        type(read_character_item) :: field_file_fmt_ctl
         type(read_character_item) :: itp_file_fmt_ctl
         type(read_character_item) :: spectr_field_fmt_ctl
         type(read_character_item) :: coriolis_file_fmt_ctl
@@ -126,6 +128,8 @@
 !
         type(read_character_item) :: memory_conservation_ctl
         type(read_character_item) :: FEM_mesh_output_switch
+!
+        type(read_character_item) :: del_org_data_ctl
 !
 !         Deprecated
         type(read_character_item) :: excluding_FEM_mesh_ctl
@@ -183,6 +187,9 @@
       character(len=kchara), parameter                                  &
      &       :: hd_FEM_mesh_output = 'FEM_mesh_output_switch'
 !
+      character(len=kchara), parameter                                  &
+     &       :: hd_del_org_data = 'delete_original_data_flag'
+!
 !       Deprecated
 !
       character(len=kchara), parameter                                  &
@@ -199,7 +206,7 @@
       private :: hd_itp_sph_to_fem, hd_itp_fem_to_sph
       private :: hd_itp_files_fmt, hd_coriolis_file_fmt
       private :: hd_spect_field_fmt, hd_FEM_mesh_output
-      private :: hd_exclude_FEM_mesh
+      private :: hd_exclude_FEM_mesh, hd_del_org_data
 !
 !  ---------------------------------------------------------------------
 !
@@ -234,7 +241,7 @@
 !
         call read_chara_ctl_type(hd_mesh_header, plt%mesh_file_prefix)
 !
-        call read_chara_ctl_type(hd_udt_header, plt%udt_file_head_ctl)
+        call read_chara_ctl_type(hd_udt_header, plt%field_file_prefix)
         call read_chara_ctl_type(hd_rst_header,                         &
      &      plt%restart_file_prefix)
         call read_chara_ctl_type(hd_spectr_header,                      &
@@ -258,7 +265,7 @@
         call read_chara_ctl_type(hd_rst_files_fmt,                      &
      &      plt%restart_file_fmt_ctl)
         call read_chara_ctl_type(hd_udt_files_fmt,                      &
-     &      plt%udt_file_fmt_ctl)
+     &      plt%field_file_fmt_ctl)
         call read_chara_ctl_type(hd_sph_files_fmt,                      &
      &      plt%sph_file_fmt_ctl)
         call read_chara_ctl_type(hd_itp_files_fmt,                      &
@@ -276,6 +283,8 @@
 !
         call read_chara_ctl_type(hd_exclude_FEM_mesh,                   &
      &      plt%excluding_FEM_mesh_ctl)
+!
+        call read_chara_ctl_type(hd_del_org_data, plt%del_org_data_ctl)
        end do
 !
       end subroutine read_control_platforms

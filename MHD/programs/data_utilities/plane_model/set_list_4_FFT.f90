@@ -99,8 +99,8 @@
       real(kind = kreal), intent(inout) :: dt, t_init
 !
 !
-      write(*,*) 'new_mesh_prefix         ', new_mesh_prefix
-!      write(*,*) 'new_restart_prefix     ', new_restart_prefix
+      write(*,*) 'new_mesh_prefix       ', new_plt%mesh_file_prefix
+!      write(*,*) 'new_restart_prefix    ', new_plt%restart_file_prefix
 !      write(*,*) 'new_udt_type_ctl     ', new_udt_type_ctl
       write(*,*) 'nnod_plane_ctl       ', nnod_plane_ctl%intvalue
       write(*,*) 'ndomain_plane_ctl    ', ndomain_plane_ctl%intvalue
@@ -110,8 +110,8 @@
 !
       call set_control_new_mesh_file_def(mesh_file)
 !
-      if (new_restart_prefix%iflag .gt. 0) then
-        rst_head_plane = new_restart_prefix%charavalue
+      if (new_plt%restart_file_prefix%iflag .gt. 0) then
+        rst_head_plane = new_plt%restart_file_prefix%charavalue
       else
         rst_head_plane = def_newrst_head
       end if
@@ -198,15 +198,11 @@
 !
       call set_control_new_mesh_file_def(mesh_file)
 !
-      if (new_field_file_prefix%iflag .gt. 0) then
-        call set_ucd_file_format(iflag_udt, ucd)
+      if (new_plt%field_file_prefix%iflag .gt. 0) then
+        call choose_file_format                                         &
+     &     (new_plt%field_file_fmt_ctl, ucd%ifmt_file)
         call set_ucd_file_prefix                                        &
-     &     (new_field_file_prefix%charavalue, ucd)
-      else if (new_vtk_prefix%iflag .gt. 0) then
-        call set_ucd_file_format(iflag_vtk, ucd)
-        call set_ucd_file_prefix(new_vtk_prefix%charavalue, ucd)
-      else
-        call set_ucd_file_format(iflag_fld, ucd)
+     &     (new_plt%field_file_prefix%charavalue, ucd)
       end if
 !
 !

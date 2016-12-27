@@ -9,7 +9,7 @@ begin construct_table
 !
     rst_file_head_ctl           'restart/rst'
 !
-    udt_file_head_ctl           'field/out'
+    field_file_prefix           'field/out'
 !
     mesh_file_fmt_ctl           'ascii'
     rst_files_fmt_ctl           'ascii'
@@ -17,14 +17,14 @@ begin construct_table
   end original_data_ctl
 !
   begin new_data_ctl
-    num_new_domain_ctl           2
+    num_subdomain_ctl           2
     new_mesh_head_ctl          'mesh_target/in'
     new_rst_head_ctl           'rst_new/rst'
     new_udt_head_ctl           'field_new/out'
 !
-    new_mesh_file_fmt_ctl           'ascii'
-    new_rst_files_fmt_ctl           'ascii'
-    new_udt_files_fmt_ctl           'ascii'
+    mesh_file_fmt_ctl           'ascii'
+    restart_file_fmt_ctl        'ascii'
+    field_file_fmt_ctl          'ascii'
   end new_data_ctl
 !
 !

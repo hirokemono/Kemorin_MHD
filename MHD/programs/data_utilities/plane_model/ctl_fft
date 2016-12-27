@@ -5,9 +5,9 @@ begin  plane_fft_control
   end data_files_def
 !
   begin new_data_files_def
-    new_mesh_prefix            'mesh_new/in'
-    new_restart_prefix         'rst_new/rst'
-    new_field_file_prefix      'outall'
+    mesh_file_prefix           'mesh_new/in'
+    restart_file_prefix        'rst_new/rst'
+    field_file_prefix          'outall'
   end new_data_files_def
 !
   begin plane_spectr_file_def

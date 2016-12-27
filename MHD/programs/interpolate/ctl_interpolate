@@ -17,14 +17,14 @@ begin construct_table
   end data_files_def
 !
   begin new_data_files_def
-    num_new_domain_ctl           2
-    new_mesh_prefix            'mesh_target/in'
-    new_restart_prefix         'rst_new/rst'
-    new_field_file_prefix      'field_new/out'
+    num_subdomain_ctl           2
+    mesh_file_prefix           'mesh_target/in'
+    restart_file_prefix        'rst_new/rst'
+    field_file_prefix          'field_new/out'
 !
-    new_mesh_file_fmt_ctl           'ascii'
-    new_rst_files_fmt_ctl           'ascii'
-    new_field_files_fmt_ctl         'ascii'
+    mesh_file_fmt_ctl           'ascii'
+    restart_file_fmt_ctl        'ascii'
+    field_file_fmt_ctl          'ascii'
   end new_data_files_def
 !
 !

@@ -99,8 +99,8 @@
       end if
 !
       nprocs_dest = 1
-      if(num_new_domain_ctl%iflag .gt. 0) then
-         nprocs_dest = num_new_domain_ctl%intvalue
+      if(new_plt%ndomain_ctl%iflag .gt. 0) then
+         nprocs_dest = new_plt%ndomain_ctl%intvalue
       end if
 !
       if (table_head_ctl%iflag .ne. 0) then

@@ -7,8 +7,8 @@ begin change_filter_domain_ctl
   end data_files_def
 !
   begin new_data_files_def
-    num_new_domain_ctl          4
-    new_mesh_prefix             'mesh_ref2_4/in'
+    num_subdomain_ctl          4
+    mesh_file_prefix             'mesh_ref2_4/in'
   end new_data_files_def
 !
   begin orginal_filter_files_ctl

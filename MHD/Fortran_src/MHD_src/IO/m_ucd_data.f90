@@ -68,7 +68,7 @@
       use parallel_ucd_IO_select
 !
 !
-      if(plt1%udt_file_head_ctl%iflag .eq. 0) then
+      if(plt1%field_file_prefix%iflag .eq. 0) then
         fem_ucd%ifmt_file = -1
         return
       end if

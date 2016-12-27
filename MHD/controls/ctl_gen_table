@@ -10,9 +10,9 @@ begin construct_table
   end original_data_ctl
 !
   begin new_data_ctl
-    num_new_domain_ctl           2
+    num_subdomain_ctl           2
     new_mesh_head_ctl          'mesh_target/in'
-    new_mesh_file_fmt_ctl           'ascii'
+    mesh_file_fmt_ctl          'ascii'
   end new_data_ctl
 !
 !

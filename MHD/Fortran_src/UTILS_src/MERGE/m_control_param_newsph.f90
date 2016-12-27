@@ -108,8 +108,8 @@
         stop
       end if
 !
-      if (num_new_domain_ctl%iflag .gt. 0) then
-        np_sph_new = num_new_domain_ctl%intvalue
+      if (new_plt%ndomain_ctl%iflag .gt. 0) then
+        np_sph_new = new_plt%ndomain_ctl%intvalue
       else
         write(*,*) 'Set number of subdomains for new grid'
         stop
@@ -118,28 +118,28 @@
       if(plt1%sph_file_prefix%iflag .gt. 0) then
         org_sph_head = plt1%sph_file_prefix%charavalue
       end if
-      if (new_sph_mode_prefix%iflag .gt. 0) then
-        new_sph_head = new_sph_mode_prefix%charavalue
+      if (new_plt%sph_file_prefix%iflag .gt. 0) then
+        new_sph_head = new_plt%sph_file_prefix%charavalue
       end if
 !
       call choose_para_file_format                                      &
      &   (plt1%sph_file_fmt_ctl, ifmt_org_sph_file)
       call choose_para_file_format                                      &
-     &   (new_sph_file_fmt_ctl, ifmt_new_sph_file)
+     &   (new_plt%sph_file_fmt_ctl, ifmt_new_sph_file)
 !
 !
       if (plt1%restart_file_prefix%iflag .gt. 0) then
         org_sph_fst_head = plt1%restart_file_prefix%charavalue
       end if
 !
-      if (new_restart_prefix%iflag .gt. 0) then
-        new_sph_fst_head = new_restart_prefix%charavalue
+      if(new_plt%restart_file_prefix%iflag .gt. 0) then
+        new_sph_fst_head = new_plt%restart_file_prefix%charavalue
       end if
 !
       call choose_para_file_format                                      &
      &   (plt1%restart_file_fmt_ctl, ifmt_org_sph_fst)
       call choose_para_file_format                                      &
-     &   (new_rst_files_fmt_ctl, ifmt_new_sph_fst)
+     &   (new_plt%restart_file_fmt_ctl, ifmt_new_sph_fst)
 !
       if((ifmt_new_sph_fst/iflag_single) .gt. 0                         &
      &     .and. np_sph_new .ne. nprocs) then
@@ -149,8 +149,8 @@
      &             'the number of target subdomains.'
       end if
 !
-      if(del_org_data_ctl%iflag .gt. 0) then
-        if(yes_flag(del_org_data_ctl%charavalue)) then
+      if(new_plt%del_org_data_ctl%iflag .gt. 0) then
+        if(yes_flag(new_plt%del_org_data_ctl%charavalue)) then
           iflag_delete_org_sph = 1
         end if
       end if

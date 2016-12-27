@@ -35,7 +35,7 @@
 !
       call bcast_ctl_type_c1(plt%mesh_file_prefix)
 !
-      call bcast_ctl_type_c1(plt%udt_file_head_ctl)
+      call bcast_ctl_type_c1(plt%field_file_prefix)
       call bcast_ctl_type_c1(plt%restart_file_prefix)
       call bcast_ctl_type_c1(plt%spectr_field_file_prefix)
 !
@@ -49,7 +49,7 @@
 !
       call bcast_ctl_type_c1(plt%mesh_file_fmt_ctl)
       call bcast_ctl_type_c1(plt%restart_file_fmt_ctl)
-      call bcast_ctl_type_c1(plt%udt_file_fmt_ctl)
+      call bcast_ctl_type_c1(plt%field_file_fmt_ctl)
       call bcast_ctl_type_c1(plt%sph_file_fmt_ctl)
       call bcast_ctl_type_c1(plt%itp_file_fmt_ctl)
       call bcast_ctl_type_c1(plt%spectr_field_fmt_ctl)

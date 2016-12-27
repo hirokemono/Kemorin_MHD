@@ -140,25 +140,21 @@
 !
       call set_ucd_file_define(plt1, ucd)
 !
-      if(plt1%udt_file_head_ctl%iflag .gt. 0)                           &
-     &      udt_original_header = plt1%udt_file_head_ctl%charavalue
-      call choose_ucd_file_format(plt1%udt_file_fmt_ctl%charavalue,     &
-     &    plt1%udt_file_fmt_ctl%iflag, itype_org_ucd_file)
+      if(plt1%field_file_prefix%iflag .gt. 0)                           &
+     &      udt_original_header = plt1%field_file_prefix%charavalue
+      call choose_ucd_file_format(plt1%field_file_fmt_ctl%charavalue,   &
+     &    plt1%field_file_fmt_ctl%iflag, itype_org_ucd_file)
 !
 !
-      if (new_vtk_prefix%iflag .gt. 0) then
-        itype_assembled_data = iflag_vtk
-        merged_data_head = new_vtk_prefix%charavalue
-      end if
-!
-      if (new_field_file_prefix%iflag .gt. 0) then
-        new_udt_head =     new_field_file_prefix%charavalue
-        merged_data_head = new_field_file_prefix%charavalue
+      if (new_plt%field_file_prefix%iflag .gt. 0) then
+        new_udt_head =     new_plt%field_file_prefix%charavalue
+        merged_data_head = new_plt%field_file_prefix%charavalue
       else
         new_udt_head = def_new_udt_head
       end if
-      call choose_ucd_file_format(new_udt_file_fmt_ctl%charavalue,      &
-     &    new_udt_file_fmt_ctl%iflag, itype_assembled_data)
+      call choose_ucd_file_format                                       &
+     &   (new_plt%field_file_fmt_ctl%charavalue,                        &
+     &    new_plt%field_file_fmt_ctl%iflag, itype_assembled_data)
 !
 !
        num_nod_phys = 0
@@ -222,8 +218,8 @@
         org_rst_head = org_rst_def_head
       end if
 !
-      if (new_restart_prefix%iflag .gt. 0) then
-        new_rst_head = new_restart_prefix%charavalue
+      if(new_plt%restart_file_prefix%iflag .gt. 0) then
+        new_rst_head = new_plt%restart_file_prefix%charavalue
       else
         new_rst_head = new_rst_def_head
       end if
@@ -231,7 +227,7 @@
       call choose_para_file_format                                      &
      &   (plt1%restart_file_fmt_ctl, iorg_rst_file_fmt)
       call choose_para_file_format                                      &
-     &   (new_rst_files_fmt_ctl, inew_rst_file_fmt)
+     &   (new_plt%restart_file_fmt_ctl, inew_rst_file_fmt)
 !
 !
       if (magnetic_ratio_ctl%iflag .gt. 0) then
@@ -260,8 +256,8 @@
       use skip_comment_f
 !
 !
-      if (num_new_domain_ctl%iflag .gt. 0) then
-        num_pe2 = num_new_domain_ctl%intvalue
+      if (new_plt%ndomain_ctl%iflag .gt. 0) then
+        num_pe2 = new_plt%ndomain_ctl%intvalue
       else
         write(*,*) 'Set number of subdomains for new grid'
         stop
@@ -269,8 +265,8 @@
 !
       call set_control_new_mesh_file_def(merged_mesh_file)
 !
-      if(del_org_data_ctl%iflag .gt. 0) then
-        if(yes_flag(del_org_data_ctl%charavalue)) then
+      if(new_plt%del_org_data_ctl%iflag .gt. 0) then
+        if(yes_flag(new_plt%del_org_data_ctl%charavalue)) then
           iflag_delete_org = 1
         end if
       end if
