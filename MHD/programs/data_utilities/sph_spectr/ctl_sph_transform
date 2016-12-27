@@ -10,7 +10,7 @@ begin spherical_transform
     mesh_file_fmt_ctl      'gzip'
     sph_file_fmt_ctl       'gzip'
     restart_file_fmt_ctl   'ascii'
-    spectr_file_fmt_ctl    'ascii'
+    spectr_field_fmt_ctl    'ascii'
   end data_files_def
 !
   begin org_data_files_def

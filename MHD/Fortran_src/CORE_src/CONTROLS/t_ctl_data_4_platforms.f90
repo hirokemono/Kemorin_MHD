@@ -39,7 +39,7 @@
 !!      restart_file_fmt_ctl        'ascii'
 !!      field_file_fmt_ctl          'ucd_ascii'
 !!      sph_file_fmt_ctl            'ascii'
-!!      spectr_file_fmt_ctl         'ascii'
+!!      spectr_field_fmt_ctl        'ascii'
 !!      itp_file_fmt_ctl            'ascii'
 !!      coriolis_file_fmt_ctl       'ascii'
 !!
@@ -80,7 +80,7 @@
 !>@n@param      field_file_fmt_ctl       field data  file format
 !>@n@param      sph_file_fmt_ctl         spectr data  file format
 !>@n@param      itp_file_fmt_ctl         interpolation data file format
-!>@n@param      spectr_file_fmt_ctl      Spectr data file format
+!>@n@param      spectr_field_fmt_ctl     Spectr data file format
 !>@n@param      coriolis_file_fmt_ctl    integration data  file format
 !>
 !>
@@ -117,7 +117,7 @@
         type(read_character_item) :: restart_file_fmt_ctl
         type(read_character_item) :: udt_file_fmt_ctl
         type(read_character_item) :: itp_file_fmt_ctl
-        type(read_character_item) :: spectr_file_fmt_ctl
+        type(read_character_item) :: spectr_field_fmt_ctl
         type(read_character_item) :: coriolis_file_fmt_ctl
 !
         type(read_character_item) :: debug_flag_ctl
@@ -175,7 +175,7 @@
       character(len=kchara), parameter                                  &
      &       :: hd_itp_files_fmt =  'itp_file_fmt_ctl'
       character(len=kchara), parameter                                  &
-     &       :: hd_spect_files_fmt =  'spectr_file_fmt_ctl'
+     &       :: hd_spect_files_fmt =  'spectr_field_fmt_ctl'
       character(len=kchara), parameter                                  &
      &       :: hd_coriolis_file_fmt =  'coriolis_file_fmt_ctl'
 !
@@ -266,7 +266,7 @@
         call read_chara_ctl_type(hd_itp_files_fmt,                      &
      &      plt%itp_file_fmt_ctl)
         call read_chara_ctl_type(hd_spect_files_fmt,                    &
-     &      plt%spectr_file_fmt_ctl)
+     &      plt%spectr_field_fmt_ctl)
         call read_chara_ctl_type(hd_coriolis_file_fmt,                  &
      &      plt%coriolis_file_fmt_ctl)
 !

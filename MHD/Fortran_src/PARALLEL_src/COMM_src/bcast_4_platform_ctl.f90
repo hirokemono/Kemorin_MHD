@@ -52,7 +52,7 @@
       call bcast_ctl_type_c1(plt%udt_file_fmt_ctl)
       call bcast_ctl_type_c1(plt%sph_file_fmt_ctl)
       call bcast_ctl_type_c1(plt%itp_file_fmt_ctl)
-      call bcast_ctl_type_c1(plt%spectr_file_fmt_ctl)
+      call bcast_ctl_type_c1(plt%spectr_field_fmt_ctl)
       call bcast_ctl_type_c1(plt%coriolis_file_fmt_ctl)
 !
       call bcast_ctl_type_c1(plt%debug_flag_ctl)

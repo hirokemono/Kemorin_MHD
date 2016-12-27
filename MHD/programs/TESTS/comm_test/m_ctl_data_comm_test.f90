@@ -39,18 +39,24 @@
 !
       subroutine read_control_4_comm_test
 !
+      use calypso_mpi
       use m_machine_parameter
       use m_ctl_data_4_platforms
+      use bcast_4_platform_ctl
 !
 !
-      ctl_file_code = test_mest_ctl_file_code
+      if(my_rank .eq. 0) then
+        ctl_file_code = test_mest_ctl_file_code
+        open(ctl_file_code, file = fname_test_mesh_ctl, status='old')
 !
-      open(ctl_file_code, file = fname_test_mesh_ctl, status='old')
+        call load_ctl_label_and_line
+        call read_ctl_data_4_platform(plt1)
 !
-      call load_ctl_label_and_line
-      call read_ctl_data_4_platform(plt1)
+        close(ctl_file_code)
+      end if
 !
-      close(ctl_file_code)
+      call calypso_mpi_barrier
+      call bcast_ctl_data_4_platform(plt1)
 !
       end subroutine read_control_4_comm_test
 !

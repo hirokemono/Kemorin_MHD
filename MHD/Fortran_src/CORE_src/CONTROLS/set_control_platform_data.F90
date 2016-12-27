@@ -124,7 +124,7 @@
       call choose_para_file_format                                      &
      &  (plt%sph_file_fmt_ctl, iflag_sph_file_fmt)
       call choose_para_file_format                                      &
-     &   (plt%spectr_file_fmt_ctl, sph_file_param%iflag_format)
+     &   (plt%spectr_field_fmt_ctl, sph_file_param%iflag_format)
 !
 !   set file header at once
 !

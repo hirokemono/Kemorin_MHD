@@ -44,9 +44,12 @@
 !
       subroutine read_control_4_mesh_test
 !
+      use calypso_mpi
       use m_machine_parameter
+      use m_ctl_data_4_platforms
       use m_read_control_elements
       use skip_comment_f
+      use bcast_4_platform_ctl
 !
       use m_read_control_elements
 !
@@ -56,21 +59,26 @@
       open(ctl_file_code, file = fname_test_mesh_ctl,  status='old')
 !
       call load_ctl_label_and_line
-      call read_test_mesh_ctl_data
+      call read_test_mesh_ctl_data(plt1)
 !
       close(ctl_file_code)
+!
+      call calypso_mpi_barrier
+      call bcast_ctl_data_4_platform(plt1)
 !
       end subroutine read_control_4_mesh_test
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine read_test_mesh_ctl_data
+      subroutine read_test_mesh_ctl_data(plt)
 !
       use m_machine_parameter
-      use m_ctl_data_4_platforms
       use m_read_control_elements
+      use t_ctl_data_4_platforms
       use skip_comment_f
+!
+      type(platform_data_control), intent(inout) :: plt
 !
 !
       if(right_begin_flag(hd_mesh_test_ctl) .eq. 0) return
@@ -81,7 +89,7 @@
         call find_control_end_flag(hd_mesh_test_ctl, i_mesh_test_ctl)
         if(i_mesh_test_ctl .gt. 0) exit
 !
-        call read_ctl_data_4_platform(plt1)
+        call read_ctl_data_4_platform(plt)
       end do
 !
       end subroutine read_test_mesh_ctl_data

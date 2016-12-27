@@ -97,7 +97,6 @@
 !
       subroutine set_control_new_mesh_file_def(mesh_file)
 !
-      use m_ctl_data_4_platforms
       use m_ctl_data_4_2nd_data
 !
       type(field_IO_params), intent(inout) :: mesh_file
