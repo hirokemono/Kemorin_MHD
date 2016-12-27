@@ -60,6 +60,7 @@
       call bcast_ctl_type_c1(plt%FEM_mesh_output_switch)
 !
       call bcast_ctl_type_c1(plt%excluding_FEM_mesh_ctl)
+      call bcast_ctl_type_c1(plt%del_org_data_ctl)
 !
       end subroutine bcast_ctl_data_4_platform
 !
