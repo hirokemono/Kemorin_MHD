@@ -234,8 +234,8 @@
      &   (new_rst_files_fmt_ctl, inew_rst_file_fmt)
 !
 !
-      if (i_newrst_magne .gt. 0) then
-        b_ratio = magnetic_field_ratio_ctl
+      if (magnetic_ratio_ctl%iflag .gt. 0) then
+        b_ratio = magnetic_ratio_ctl%realvalue
       else
         b_ratio = 1.0d0
       end if

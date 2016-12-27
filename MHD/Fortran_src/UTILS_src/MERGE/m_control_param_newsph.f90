@@ -156,8 +156,8 @@
       end if
 !
       b_sph_ratio = 1.0d0
-      if (i_newrst_magne .gt. 0) then
-        b_sph_ratio = magnetic_field_ratio_ctl
+      if (magnetic_ratio_ctl%iflag .gt. 0) then
+        b_sph_ratio = magnetic_ratio_ctl%realvalue
       end if
 !
       istep_start = 1

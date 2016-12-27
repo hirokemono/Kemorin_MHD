@@ -11,6 +11,7 @@
       use m_precision
       use m_machine_parameter
       use m_read_control_elements
+      use t_control_elements
       use skip_comment_f
 !
       implicit none
@@ -22,7 +23,7 @@
      &         :: ctl_assemble_sph_name = 'control_assemble_sph'
 !
 !
-      real(kind=kreal) :: magnetic_field_ratio_ctl
+      type(read_real_item), save :: magnetic_ratio_ctl
 !
 !   Top level
 !
@@ -45,7 +46,6 @@
 !
       character(len=kchara), parameter                                  &
      &      :: hd_magnetic_field_ratio =  'magnetic_field_ratio_ctl'
-      integer (kind=kint) :: i_magnetic_field_ratio =   0
 !
       private :: hd_assemble, i_assemble
       private :: hd_model, hd_control, i_model, i_control
@@ -177,8 +177,8 @@
         call find_control_end_flag(hd_newrst_magne, i_newrst_magne)
         if(i_newrst_magne .gt. 0) exit
 !
-        call read_real_ctl_item(hd_magnetic_field_ratio,                &
-     &        i_magnetic_field_ratio, magnetic_field_ratio_ctl)
+        call read_real_ctl_type(hd_magnetic_field_ratio,                &
+     &      magnetic_ratio_ctl)
       end do
 !
       end subroutine  read_newrst_control
