@@ -129,21 +129,21 @@
       integer(kind=kint ) :: i, icou
 !
 !
-      if (ndomain_ctl%iflag .gt. 0) then
-        num_pe = ndomain_ctl%intvalue
+      if (plt1%ndomain_ctl%iflag .gt. 0) then
+        num_pe = plt1%ndomain_ctl%intvalue
       else
         write(*,*) 'Set number of subdomains'
         stop
       end if
 !
-      call set_control_mesh_def(merge_org_mesh_file)
+      call set_control_mesh_def(plt1, merge_org_mesh_file)
 !
-      call set_ucd_file_define(ucd)
+      call set_ucd_file_define(plt1, ucd)
 !
-      if(udt_file_head_ctl%iflag .gt. 0)                                &
-     &      udt_original_header = udt_file_head_ctl%charavalue
-      call choose_ucd_file_format(udt_file_fmt_ctl%charavalue,          &
-     &    udt_file_fmt_ctl%iflag, itype_org_ucd_file)
+      if(plt1%udt_file_head_ctl%iflag .gt. 0)                           &
+     &      udt_original_header = plt1%udt_file_head_ctl%charavalue
+      call choose_ucd_file_format(plt1%udt_file_fmt_ctl%charavalue,     &
+     &    plt1%udt_file_fmt_ctl%iflag, itype_org_ucd_file)
 !
 !
       if (new_vtk_prefix%iflag .gt. 0) then
@@ -216,8 +216,8 @@
       call set_control_4_newudt
 !
 !
-      if (restart_file_prefix%iflag .gt. 0) then
-        org_rst_head = restart_file_prefix%charavalue
+      if (plt1%restart_file_prefix%iflag .gt. 0) then
+        org_rst_head = plt1%restart_file_prefix%charavalue
       else
         org_rst_head = org_rst_def_head
       end if
@@ -229,7 +229,7 @@
       end if
 !
       call choose_para_file_format                                      &
-     &   (restart_file_fmt_ctl, iorg_rst_file_fmt)
+     &   (plt1%restart_file_fmt_ctl, iorg_rst_file_fmt)
       call choose_para_file_format                                      &
      &   (new_rst_files_fmt_ctl, inew_rst_file_fmt)
 !

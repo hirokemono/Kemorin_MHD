@@ -81,7 +81,7 @@
         call find_control_end_flag(hd_mesh_test_ctl, i_mesh_test_ctl)
         if(i_mesh_test_ctl .gt. 0) exit
 !
-        call read_ctl_data_4_platform
+        call read_ctl_data_4_platform(plt1)
       end do
 !
       end subroutine read_test_mesh_ctl_data

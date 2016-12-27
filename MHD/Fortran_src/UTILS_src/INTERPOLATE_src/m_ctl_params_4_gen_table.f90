@@ -97,10 +97,10 @@
       use skip_comment_f
 !
 !
-      call turn_off_debug_flag_by_ctl(my_rank)
-      call set_control_smp_def(my_rank)
+      call turn_off_debug_flag_by_ctl(my_rank, plt1)
+      call set_control_smp_def(my_rank, plt1)
 !
-      call set_control_mesh_def(itp_org_mesh_file)
+      call set_control_mesh_def(plt1, itp_org_mesh_file)
 !
       if (table_head_ctl%iflag .ne. 0) then
         table_file_head = table_head_ctl%charavalue
@@ -121,7 +121,9 @@
 !
 !
       ndomain_org = 1
-      if (ndomain_ctl%iflag .gt. 0) ndomain_org = ndomain_ctl%intvalue
+      if (plt1%ndomain_ctl%iflag .gt. 0) then
+        ndomain_org = plt1%ndomain_ctl%intvalue
+      end if
 !
       nprocs_2nd = ndomain_org
       if (iflag_debug.eq.1)   write(*,*) 'ndomain_org', nprocs_2nd

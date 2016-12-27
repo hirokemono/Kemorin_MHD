@@ -39,6 +39,7 @@
 !
       subroutine init_test_sph
 !
+      use m_ctl_data_4_platforms
       use m_read_ctl_gen_sph_shell
       use set_control_platform_data
       use parallel_load_data_4_sph
@@ -54,9 +55,9 @@
 !
 !     --------------------- 
 !
-      call turn_off_debug_flag_by_ctl(my_rank)
+      call turn_off_debug_flag_by_ctl(my_rank, plt1)
       call read_control_4_gen_shell_grids
-      call set_control_sph_mesh(test_mesh_file, sph_file_param)
+      call set_control_sph_mesh(plt1, test_mesh_file, sph_file_param)
 !
       if (iflag_debug.gt.0) write(*,*) 'load_para_sph_mesh'
       call load_para_sph_mesh                                           &

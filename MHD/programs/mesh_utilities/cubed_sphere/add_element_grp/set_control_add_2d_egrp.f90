@@ -34,9 +34,9 @@
       real(kind = kreal) :: pi
 !
 !
-      call check_control_num_domains
-      call turn_off_debug_flag_by_ctl(my_rank)
-      call set_control_mesh_def(original_mesh_file)
+      call check_control_num_domains(plt1)
+      call turn_off_debug_flag_by_ctl(my_rank, plt1)
+      call set_control_mesh_def(plt1, original_mesh_file)
       call set_control_new_mesh_file_def(modified_mesh_file)
 !
       if (i_2nd_grp_direction .gt. 0) then

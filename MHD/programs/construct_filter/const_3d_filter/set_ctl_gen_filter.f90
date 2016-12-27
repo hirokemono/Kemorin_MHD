@@ -47,7 +47,9 @@
       call set_file_heads_3d_comm_filter(mesh_file)
 !
       np_smp = 1
-      if(num_smp_ctl%iflag .gt. 0) np_smp = num_smp_ctl%intvalue
+      if(plt1%num_smp_ctl%iflag .gt. 0) then
+         np_smp = plt1%num_smp_ctl%intvalue
+      end if
 !
       num_int_points = 4
       if (i_num_int_points .ne. 0) num_int_points = num_int_points_ctl
@@ -340,7 +342,7 @@
       type(field_IO_params), intent(inout) :: mesh_file
 !
 !
-      call set_control_mesh_def(mesh_file)
+      call set_control_mesh_def(plt1, mesh_file)
       if (iflag_debug.gt.0) write(*,*)                                  &
      &                'mesh_file_head ', mesh_file%file_prefix
 !
@@ -385,8 +387,8 @@
       integer(kind = kint), intent(inout) :: nprocs
 !
 !
-      if (ndomain_ctl%iflag .ne. 0) then
-        nprocs = ndomain_ctl%intvalue
+      if (plt1%ndomain_ctl%iflag .ne. 0) then
+        nprocs = plt1%ndomain_ctl%intvalue
       else
         write(*,*) 'set number of domains'
         stop

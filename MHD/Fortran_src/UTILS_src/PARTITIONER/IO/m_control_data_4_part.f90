@@ -232,7 +232,7 @@
         if(i_part_ctl .gt. 0) exit
 !
 !
-        call read_ctl_data_4_platform
+        call read_ctl_data_4_platform(plt1)
         call read_ctl_data_4_org_data
 !
         call read_ctl_data_4_decomp

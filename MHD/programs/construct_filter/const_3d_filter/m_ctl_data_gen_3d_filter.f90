@@ -163,7 +163,7 @@
         if(i_filter_control .gt. 0) exit
 !
 !
-        call read_ctl_data_4_platform
+        call read_ctl_data_4_platform(plt1)
 !
         call read_filter_param_ctl
         call read_filter_fnames_ctl

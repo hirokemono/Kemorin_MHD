@@ -90,7 +90,7 @@
       use set_ctl_params_2nd_files
 !
 !
-      call set_control_mesh_def(original_mesh_file)
+      call set_control_mesh_def(plt1, original_mesh_file)
       call set_control_new_mesh_file_def(refined_mesh_file)
 !
 !

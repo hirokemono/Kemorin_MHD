@@ -64,6 +64,7 @@
 !
       use t_ctl_data_sph_data_utils
       use m_file_format_switch
+      use m_ctl_data_4_platforms
       use m_ctl_data_4_time_steps
       use set_ctl_parallel_platform
       use set_control_platform_data
@@ -73,8 +74,8 @@
       integer(kind = kint), intent(inout) :: istart, iend, increment
 !
 !
-      call turn_off_debug_flag_by_ctl(my_rank)
-!      call check_control_num_domains
+      call turn_off_debug_flag_by_ctl(my_rank, plt1)
+!      call check_control_num_domains(plt1)
 !
       call choose_para_file_format(f_ctl%org_spec_file_fmt_ctl,         &
      &   files%org_file_param%iflag_format)
@@ -97,9 +98,12 @@
      &          = f_ctl%out_field_head_ctl%charavalue
       end if
 !
-      write(*,*) 'f_ctl%org_field_head_ctl%iflag', f_ctl%org_field_head_ctl%iflag
-      write(*,*) 'f_ctl%sub_field_head_ctl%iflag', f_ctl%sub_field_head_ctl%iflag
-      write(*,*) 'f_ctl%out_field_head_ctl%iflag', f_ctl%out_field_head_ctl%iflag
+      write(*,*) 'f_ctl%org_field_head_ctl%iflag',                      &
+     &          f_ctl%org_field_head_ctl%iflag
+      write(*,*) 'f_ctl%sub_field_head_ctl%iflag',                      &
+     &          f_ctl%sub_field_head_ctl%iflag
+      write(*,*) 'f_ctl%out_field_head_ctl%iflag',                      &
+     &          f_ctl%out_field_head_ctl%iflag
 !
         if(i_step_init_ctl%iflag .gt. 0)                                &
      &             istart = i_step_init_ctl%intvalue

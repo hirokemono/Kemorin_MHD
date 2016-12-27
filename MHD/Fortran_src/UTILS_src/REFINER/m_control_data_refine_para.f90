@@ -102,7 +102,7 @@
      &      i_para_refine_tbl_ctl)
 !
 !
-        call read_ctl_data_4_platform
+        call read_ctl_data_4_platform(plt1)
 !
         call read_ctl_data_4_course_mesh
         call read_ctl_data_4_refine_mesh

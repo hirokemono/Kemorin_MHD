@@ -84,7 +84,7 @@
         if(i_filter_newdomain_ctl .gt. 0) exit
 !
 !
-        call read_ctl_data_4_platform
+        call read_ctl_data_4_platform(plt1)
         call read_ctl_data_4_new_data
         call read_filter_fnames_ctl
         call read_org_filter_fnames_ctl

@@ -8,7 +8,9 @@
 !> @brief UCD data IO selector
 !!
 !!@verbatim
-!!      subroutine set_ucd_file_define(ucd)
+!!      subroutine set_ucd_file_define(plt, ucd)
+!!        type(platform_data_control), intent(inout) :: plt
+!!        type(ucd_data), intent(inout) :: ucd
 !!
 !!      subroutine sel_write_ucd_file(my_rank, istep_ucd, t_IO, ucd)
 !!      subroutine sel_write_udt_file(my_rank, istep_ucd, t_IO, ucd)
@@ -52,19 +54,20 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_ucd_file_define(ucd)
+      subroutine set_ucd_file_define(plt, ucd)
 !
-      use m_ctl_data_4_platforms
+      use t_ctl_data_4_platforms
 !
+      type(platform_data_control), intent(inout) :: plt
       type(ucd_data), intent(inout) :: ucd
 !
 !
-      ucd%ifmt_file = udt_file_head_ctl%iflag
+      ucd%ifmt_file = plt%udt_file_head_ctl%iflag
       if (ucd%ifmt_file .gt. 0)                                         &
-     &         ucd%file_prefix = udt_file_head_ctl%charavalue
+     &         ucd%file_prefix = plt%udt_file_head_ctl%charavalue
 !
-      call choose_ucd_file_format(udt_file_fmt_ctl%charavalue,          &
-     &    udt_file_fmt_ctl%iflag, ucd%ifmt_file)
+      call choose_ucd_file_format(plt%udt_file_fmt_ctl%charavalue,      &
+     &    plt%udt_file_fmt_ctl%iflag, ucd%ifmt_file)
 !
       end subroutine set_ucd_file_define
 !

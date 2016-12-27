@@ -37,14 +37,14 @@
       integer(kind = kint) :: i
 !
 !
-      call set_control_mesh_def(distribute_mesh_file)
+      call set_control_mesh_def(plt1, distribute_mesh_file)
 !
 !   set local data format
 !
 !
       iflag_memory_conserve = 1
-      if(memory_conservation_ctl%iflag .gt. 0                           &
-     &  .and. no_flag(memory_conservation_ctl%charavalue)) then
+      if(plt1%memory_conservation_ctl%iflag .gt. 0                      &
+     &  .and. no_flag(plt1%memory_conservation_ctl%charavalue)) then
         iflag_memory_conserve = 0
       end if
 !

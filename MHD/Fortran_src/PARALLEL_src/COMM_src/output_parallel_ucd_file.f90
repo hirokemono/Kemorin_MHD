@@ -13,8 +13,6 @@
 !>@brief parallel UCD file output routines
 !!
 !!@verbatim
-!!      subroutine set_control_parallel_field_def(ucd)
-!!
 !!      subroutine link_output_grd_file                                 &
 !!     &         (node, ele, nod_comm, nod_fld, ucd, m_ucd)
 !!      subroutine output_udt_one_snapshot                              &
@@ -44,19 +42,6 @@
       contains
 !
 !-----------------------------------------------------------------------
-!
-      subroutine set_control_parallel_field_def(ucd)
-!
-      use parallel_ucd_IO_select
-!
-      type(ucd_data), intent(inout) :: ucd
-!
-!
-      call set_merged_ucd_file_define(ucd)
-!
-      end subroutine set_control_parallel_field_def
-!
-! -----------------------------------------------------------------------
 !
       subroutine link_output_grd_file                                   &
      &         (node, ele, nod_comm, nod_fld, ucd, m_ucd)

@@ -56,7 +56,7 @@
       call bcast_ctl_type_c1(plt%coriolis_file_fmt_ctl)
 !
       call bcast_ctl_type_c1(plt%debug_flag_ctl)
-      call bcast_ctl_type_c1( plt%memory_conservation_ctl)
+      call bcast_ctl_type_c1(plt%memory_conservation_ctl)
       call bcast_ctl_type_c1(plt%FEM_mesh_output_switch)
 !
       call bcast_ctl_type_c1(plt%excluding_FEM_mesh_ctl)

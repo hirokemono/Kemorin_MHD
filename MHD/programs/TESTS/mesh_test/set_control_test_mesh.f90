@@ -30,13 +30,15 @@
       type(field_IO_params), intent(inout) :: mesh_file
 !
 !
-      call turn_off_debug_flag_by_ctl(my_rank)
-      call set_control_mesh_def(mesh_file)
+      call turn_off_debug_flag_by_ctl(my_rank, plt1)
+      call set_control_mesh_def(plt1, mesh_file)
       if(iflag_debug.gt.0) write(*,*)                                   &
      &       'mesh_file_head:  ', trim(mesh_file%file_prefix)
 !
       np_smp = 1
-      if (num_smp_ctl%iflag .gt. 0) np_smp = num_smp_ctl%intvalue
+      if (plt1%num_smp_ctl%iflag .gt. 0) then
+        np_smp = plt1%num_smp_ctl%intvalue
+      end if
       if (iflag_debug.gt.0) write(*,*) 'np_smp', np_smp
 !
       end subroutine set_ctl_params_4_test_mesh

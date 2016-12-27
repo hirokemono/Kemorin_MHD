@@ -101,8 +101,8 @@
       use skip_comment_f
 !
 !
-      if (ndomain_ctl%iflag .gt. 0) then
-        np_sph_org = ndomain_ctl%intvalue
+      if (plt1%ndomain_ctl%iflag .gt. 0) then
+        np_sph_org = plt1%ndomain_ctl%intvalue
       else
         write(*,*) 'Set number of subdomains'
         stop
@@ -115,21 +115,21 @@
         stop
       end if
 !
-      if(sph_file_prefix%iflag .gt. 0) then
-        org_sph_head = sph_file_prefix%charavalue
+      if(plt1%sph_file_prefix%iflag .gt. 0) then
+        org_sph_head = plt1%sph_file_prefix%charavalue
       end if
       if (new_sph_mode_prefix%iflag .gt. 0) then
         new_sph_head = new_sph_mode_prefix%charavalue
       end if
 !
       call choose_para_file_format                                      &
-     &   (sph_file_fmt_ctl, ifmt_org_sph_file)
+     &   (plt1%sph_file_fmt_ctl, ifmt_org_sph_file)
       call choose_para_file_format                                      &
      &   (new_sph_file_fmt_ctl, ifmt_new_sph_file)
 !
 !
-      if (restart_file_prefix%iflag .gt. 0) then
-        org_sph_fst_head = restart_file_prefix%charavalue
+      if (plt1%restart_file_prefix%iflag .gt. 0) then
+        org_sph_fst_head = plt1%restart_file_prefix%charavalue
       end if
 !
       if (new_restart_prefix%iflag .gt. 0) then
@@ -137,7 +137,7 @@
       end if
 !
       call choose_para_file_format                                      &
-     &   (restart_file_fmt_ctl, ifmt_org_sph_fst)
+     &   (plt1%restart_file_fmt_ctl, ifmt_org_sph_fst)
       call choose_para_file_format                                      &
      &   (new_rst_files_fmt_ctl, ifmt_new_sph_fst)
 !

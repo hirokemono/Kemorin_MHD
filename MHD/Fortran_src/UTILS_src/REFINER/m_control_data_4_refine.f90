@@ -169,7 +169,7 @@
         call find_control_end_flag(hd_refine_ctl, i_refine_ctl)
         if(i_refine_ctl .gt. 0) exit
 !
-        call read_ctl_data_4_platform
+        call read_ctl_data_4_platform(plt1)
         call read_ctl_data_4_new_data
         call read_ctl_data_4_refine_mesh
         call read_ctl_data_4_refine_type

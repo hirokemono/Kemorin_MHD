@@ -87,6 +87,7 @@
 !
       use m_spheric_global_ranks
       use m_ucd_data
+      use m_ctl_data_4_platforms
       use m_read_ctl_gen_sph_shell
       use sph_mhd_rms_IO
 !
@@ -127,13 +128,13 @@
 !
 !   set parameters for data files
 !
-      call turn_off_debug_flag_by_ctl(my_rank)
-      call check_control_num_domains
-      call set_control_smp_def(my_rank)
-      call set_control_mesh_def(mesh_file)
-      call set_FEM_mesh_switch_4_SPH(iflag_output_mesh)
-      call set_control_sph_mesh(mesh_file, sph_file_param)
-      call set_control_restart_file_def(sph_fst_IO)
+      call turn_off_debug_flag_by_ctl(my_rank, plt1)
+      call check_control_num_domains(plt1)
+      call set_control_smp_def(my_rank, plt1)
+      call set_control_mesh_def(plt1, mesh_file)
+      call set_FEM_mesh_switch_4_SPH(plt1, iflag_output_mesh)
+      call set_control_sph_mesh(plt1, mesh_file, sph_file_param)
+      call set_control_restart_file_def(plt1, sph_fst_IO)
       call set_control_MHD_field_file
       call set_control_org_sph_files(MHD_org_files)
 !
@@ -155,8 +156,8 @@
 !   set parameters for general information
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_sph_data_MHD'
-      call s_set_control_sph_data_MHD                                   &
-     &   (MHD_org_files%rj_file_param, MHD_org_files%rst_file_param,    &
+      call s_set_control_sph_data_MHD(plt1,                             &
+     &    MHD_org_files%rj_file_param, MHD_org_files%rst_file_param,    &
      &    rj_fld)
 !
 !   set control parameters

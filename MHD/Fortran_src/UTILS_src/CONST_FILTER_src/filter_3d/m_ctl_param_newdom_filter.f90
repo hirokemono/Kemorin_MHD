@@ -74,15 +74,15 @@
       end if
 !
 !
-      if(ndomain_ctl%iflag .gt. 0) then
-        nprocs = ndomain_ctl%intvalue
+      if(plt1%ndomain_ctl%iflag .gt. 0) then
+        nprocs = plt1%ndomain_ctl%intvalue
       else
         write(*,*) 'set original number of domain'
         stop
       end if
 !
 !
-      call set_control_mesh_def(org_mesh_file)
+      call set_control_mesh_def(plt1, org_mesh_file)
       call set_control_new_mesh_file_def(tgt_mesh_file)
 !
 !

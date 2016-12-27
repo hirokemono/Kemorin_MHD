@@ -88,13 +88,15 @@
       use set_ctl_params_2nd_files
 !
 !
-      call turn_off_debug_flag_by_ctl(my_rank)
-      call set_control_smp_def(my_rank)
-      call set_control_mesh_def(org_mesh_file)
+      call turn_off_debug_flag_by_ctl(my_rank, plt1)
+      call set_control_smp_def(my_rank, plt1)
+      call set_control_mesh_def(plt1, org_mesh_file)
       call set_control_new_mesh_file_def(dest_mesh_file)
 !
       nprocs_org = 1
-      if(ndomain_ctl%iflag .gt. 0) nprocs_org = ndomain_ctl%intvalue
+      if(plt1%ndomain_ctl%iflag .gt. 0) then
+        nprocs_org = plt1%ndomain_ctl%intvalue
+      end if
 !
       nprocs_dest = 1
       if(num_new_domain_ctl%iflag .gt. 0) then

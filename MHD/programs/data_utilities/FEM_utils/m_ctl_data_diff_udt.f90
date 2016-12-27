@@ -203,7 +203,7 @@
         call find_control_end_flag(hd_entry, i_diff_control)
         if(i_diff_control .gt. 0) exit
 !
-        call read_ctl_data_4_platform
+        call read_ctl_data_4_platform(plt1)
         call read_ctl_data_4_org_data
 !
         call read_diff_files_ctl

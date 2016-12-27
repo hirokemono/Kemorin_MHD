@@ -30,10 +30,10 @@
       type(field_IO_params), intent(inout) :: mesh_file
 !
 !
-      call set_control_mesh_def(mesh_file)
+      call set_control_mesh_def(plt1, mesh_file)
 !
-      if (udt_file_head_ctl%iflag .gt. 0) then
-        plane_udt_header = udt_file_head_ctl%charavalue
+      if (plt1%udt_file_head_ctl%iflag .gt. 0) then
+        plane_udt_header = plt1%udt_file_head_ctl%charavalue
       end if
 !
 !

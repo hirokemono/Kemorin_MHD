@@ -10,7 +10,8 @@
 !> @brief Call restart data IO routines
 !!
 !!@verbatim
-!!      subroutine set_ctl_restart_4_fem_mhd
+!!      subroutine set_ctl_restart_4_fem_mhd(plt)
+!!        type(platform_data_control), intent(in) :: plt
 !!
 !!      subroutine init_MHD_restart_output
 !!      subroutine init_restart_4_snapshot(node, t_IO)
@@ -59,12 +60,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_ctl_restart_4_fem_mhd
+      subroutine set_ctl_restart_4_fem_mhd(plt)
 !
+      use t_ctl_data_4_platforms
       use set_control_platform_data
 !
+      type(platform_data_control), intent(in) :: plt
 !
-      call set_control_restart_file_def(fem_fst_IO)
+!
+      call set_control_restart_file_def(plt, fem_fst_IO)
 !
       end subroutine set_ctl_restart_4_fem_mhd
 !

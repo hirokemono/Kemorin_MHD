@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine s_set_control_sph_data_MHD                           &
-!!     &         (rj_org_param, rst_org_param, rj_fld)
+!!     &         (plt, rj_org_param, rst_org_param, rj_fld)
 !!       type(field_IO_params), intent(in) :: rj_org_param
 !!       type(field_IO_params), intent(in) :: rst_org_param
 !!       type(phys_data), intent(inout) :: rj_fld
@@ -29,12 +29,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_sph_data_MHD                             &
-     &         (rj_org_param, rst_org_param, rj_fld)
+     &         (plt, rj_org_param, rst_org_param, rj_fld)
 !
       use calypso_mpi
       use m_error_IDs
       use m_machine_parameter
-      use m_ctl_data_4_platforms
+      use t_ctl_data_4_platforms
       use m_ctl_data_4_fields
       use m_ctl_data_mhd_forces
       use m_ctl_data_mhd_evo_scheme
@@ -55,6 +55,7 @@
       use add_sph_MHD_fields_2_ctl
       use sph_mhd_rst_IO_control
 !
+      type(platform_data_control), intent(in) :: plt
       type(field_IO_params), intent(in) :: rj_org_param, rst_org_param
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -111,8 +112,8 @@
         call set_sph_comm_routine_ctl(SR_routine_ctl%charavalue)
       end if
 !
-      if (bc_data_file_name_ctl%iflag .gt. 0) then
-        bc_sph_file_name = bc_data_file_name_ctl%charavalue
+      if (plt%bc_data_file_name_ctl%iflag .gt. 0) then
+        bc_sph_file_name = plt%bc_data_file_name_ctl%charavalue
       end if
 !
       end subroutine s_set_control_sph_data_MHD

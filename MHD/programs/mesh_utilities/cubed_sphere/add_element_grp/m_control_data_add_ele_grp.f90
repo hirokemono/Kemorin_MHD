@@ -125,7 +125,7 @@
      &      i_add_ele_grp_ctl)
         if(i_add_ele_grp_ctl .gt. 0) exit
 !
-        call read_ctl_data_4_platform
+        call read_ctl_data_4_platform(plt1)
         call read_ctl_data_4_new_data
 !
         call read_ctl_data_4_add_2d_egrp

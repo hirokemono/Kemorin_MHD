@@ -47,14 +47,15 @@
       use set_control_platform_data
 !
 !
-      call turn_off_debug_flag_by_ctl(izero)
+      call turn_off_debug_flag_by_ctl(izero, plt1)
 !
-      if(ndomain_ctl%iflag .gt. 0) then
-        nprocs_fine = ndomain_ctl%intvalue
+      if(plt1%ndomain_ctl%iflag .gt. 0) then
+        nprocs_fine = plt1%ndomain_ctl%intvalue
       end if
 !
-      if(mesh_file_prefix%iflag .gt. 0) then
-        para_fine_mesh_file%file_prefix = mesh_file_prefix%charavalue
+      if(plt1%mesh_file_prefix%iflag .gt. 0) then
+        para_fine_mesh_file%file_prefix                                 &
+     &         = plt1%mesh_file_prefix%charavalue
       else 
         para_fine_mesh_file%file_prefix = def_para_fine_mesh_head
       end if

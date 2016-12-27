@@ -96,10 +96,10 @@
       integer(kind = kint) :: ierr
 !
 !
-      call turn_off_debug_flag_by_ctl(my_rank)
-      call set_control_smp_def(my_rank)
-      call set_control_mesh_def(mesh_file)
-      call set_control_sph_mesh(mesh_file, sph_file_spec_p)
+      call turn_off_debug_flag_by_ctl(my_rank, plt1)
+      call set_control_smp_def(my_rank, plt1)
+      call set_control_mesh_def(plt1, mesh_file)
+      call set_control_sph_mesh(plt1, mesh_file, sph_file_spec_p)
       call set_control_org_sph_mesh(rj_org_param)
       call set_control_org_rst_file_def(rst_org_param)
 !
@@ -109,10 +109,10 @@
 !
 !    file header for field data
 !
-      if(spectr_file_head_ctl%iflag .gt. 0) then
-        org_sph_file_head =  spectr_file_head_ctl%charavalue
+      if(plt1%spectr_file_head_ctl%iflag .gt. 0) then
+        org_sph_file_head =  plt1%spectr_file_head_ctl%charavalue
         call choose_para_file_format                                    &
-     &     (restart_file_fmt_ctl, iflag_org_sph_file_fmt)
+     &     (plt1%restart_file_fmt_ctl, iflag_org_sph_file_fmt)
       end if
 !
       if(i_zm_sph_spec_file .gt. 0) then
@@ -121,10 +121,10 @@
 !
 !   using restart data for spherical dynamo
 !
-      if(restart_file_prefix%iflag .gt. 0) then
-        org_sph_file_head =  restart_file_prefix%charavalue
+      if(plt1%restart_file_prefix%iflag .gt. 0) then
+        org_sph_file_head =  plt1%restart_file_prefix%charavalue
         call choose_para_file_format                                    &
-     &     (restart_file_fmt_ctl, iflag_org_sph_file_fmt)
+     &     (plt1%restart_file_fmt_ctl, iflag_org_sph_file_fmt)
         i_step_output_ucd =   i_step_output_rst
       end if
 !

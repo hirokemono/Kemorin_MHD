@@ -68,6 +68,7 @@
       use ucd_IO_select
 !
       use m_sel_spherical_SRs
+      use m_ctl_data_4_platforms
       use m_ctl_data_4_sph_trans
 !
       type(field_IO_params), intent(inout) :: mesh_file
@@ -78,10 +79,10 @@
       integer(kind = kint) :: ierr
 !
 !
-      call turn_off_debug_flag_by_ctl(my_rank)
-      call set_control_smp_def(my_rank)
-      call set_control_sph_mesh(mesh_file, sph_file_trns_p)
-      call set_ucd_file_define(ucd)
+      call turn_off_debug_flag_by_ctl(my_rank, plt1)
+      call set_control_smp_def(my_rank, plt1)
+      call set_control_sph_mesh(plt1, mesh_file, sph_file_trns_p)
+      call set_ucd_file_define(plt1, ucd)
       field_file_param%file_prefix =  ucd%file_prefix
       field_file_param%iflag_format = ucd%ifmt_file
 !
@@ -105,11 +106,11 @@
         call set_import_table_ctl(import_mode_ctl%charavalue)
       end if
 !
-      if (restart_file_prefix%iflag .gt. 0) then
-        sph_rst_file_head = restart_file_prefix%charavalue
+      if (plt1%restart_file_prefix%iflag .gt. 0) then
+        sph_rst_file_head = plt1%restart_file_prefix%charavalue
       end if
       call choose_para_file_format                                      &
-     &   (restart_file_fmt_ctl, ifmt_sph_data)
+     &   (plt1%restart_file_fmt_ctl, ifmt_sph_data)
 !
 !      stepping parameter
 !
@@ -166,11 +167,11 @@
       integer(kind = kint) :: ierr
 !
 !
-      call turn_off_debug_flag_by_ctl(my_rank)
-      call set_control_smp_def(my_rank)
-      call set_control_mesh_def(mesh_file)
-      call set_control_sph_mesh(mesh_file, sph_file_trns_p)
-      call set_merged_ucd_file_define(ucd)
+      call turn_off_debug_flag_by_ctl(my_rank, plt1)
+      call set_control_smp_def(my_rank, plt1)
+      call set_control_mesh_def(plt1, mesh_file)
+      call set_control_sph_mesh(plt1, mesh_file, sph_file_trns_p)
+      call set_merged_ucd_file_define(plt1, ucd)
       call set_control_org_sph_mesh(rj_org_param)
       call set_control_org_rst_file_def(rst_org_param)
       call set_control_org_udt_file_def(udt_org_param)
@@ -187,11 +188,11 @@
         sph_rst_file_head = rst_org_param%file_prefix
       end if
 !
-      if (restart_file_prefix%iflag .gt. 0) then
-        sph_rst_file_head = restart_file_prefix%charavalue
+      if (plt1%restart_file_prefix%iflag .gt. 0) then
+        sph_rst_file_head = plt1%restart_file_prefix%charavalue
       end if
       call choose_para_file_format                                      &
-     &   (restart_file_fmt_ctl, ifmt_sph_data)
+     &   (plt1%restart_file_fmt_ctl, ifmt_sph_data)
 !
 !   setting for spherical transform
 !
@@ -258,8 +259,9 @@
       use m_ctl_data_4_platforms
 !
 !
-      if(udt_file_head_ctl%iflag .eq. 0) return
-      zm_source_file_param%file_prefix = udt_file_head_ctl%charavalue
+      if(plt1%udt_file_head_ctl%iflag .eq. 0) return
+      zm_source_file_param%file_prefix                                  &
+     &              = plt1%udt_file_head_ctl%charavalue
 !
       end subroutine set_ctl_data_4_pick_zm
 !

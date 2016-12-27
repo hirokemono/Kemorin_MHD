@@ -70,11 +70,14 @@
 !
 !
       nprocs_check = 1
-      if(ndomain_ctl%iflag .gt. 0) nprocs_check = ndomain_ctl%intvalue
-      call turn_off_debug_flag_by_ctl(izero)
-      call set_control_mesh_def(mesh_file)
-      call set_FEM_mesh_switch_4_SPH(iflag_output_mesh)
-      call set_control_sph_mesh(mesh_file, sph_file_param)
+      if(plt1%ndomain_ctl%iflag .gt. 0) then
+        nprocs_check = plt1%ndomain_ctl%intvalue
+      end if
+!
+      call turn_off_debug_flag_by_ctl(izero, plt1)
+      call set_control_mesh_def(plt1, mesh_file)
+      call set_FEM_mesh_switch_4_SPH(plt1, iflag_output_mesh)
+      call set_control_sph_mesh(plt1, mesh_file, sph_file_param)
 !
       end subroutine set_control_4_shell_filess
 !

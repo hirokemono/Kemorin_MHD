@@ -34,8 +34,8 @@
       use skip_comment_f
 !
 !
-      if (mesh_file_prefix%iflag .gt. 0) then
-        mesh_file_header = mesh_file_prefix%charavalue
+      if (plt1%mesh_file_prefix%iflag .gt. 0) then
+        mesh_file_header = plt1%mesh_file_prefix%charavalue
       else
         mesh_file_header = 'mesh/in'
       end if

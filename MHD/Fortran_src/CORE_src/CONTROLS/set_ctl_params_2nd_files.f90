@@ -72,7 +72,8 @@
 !
 !
       call set_file_control_params(def_org_rst_header,                  &
-     &    orginal_restart_prefix, restart_file_fmt_ctl, rst_file_param)
+     &    orginal_restart_prefix, plt1%restart_file_fmt_ctl,            &
+     &    rst_file_param)
 !
       end subroutine set_control_org_rst_file_def
 !
@@ -87,7 +88,7 @@
 !
 !
       call set_file_control_params(def_org_ucd_header,                  &
-     &    org_udt_head_ctl, udt_file_fmt_ctl,  udt_file_param)
+     &    org_udt_head_ctl, plt1%udt_file_fmt_ctl,  udt_file_param)
 !
       end subroutine set_control_org_udt_file_def
 !

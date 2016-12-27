@@ -68,12 +68,12 @@
       use parallel_ucd_IO_select
 !
 !
-      if(udt_file_head_ctl%iflag .eq. 0) then
+      if(plt1%udt_file_head_ctl%iflag .eq. 0) then
         fem_ucd%ifmt_file = -1
         return
       end if
 !
-      call set_merged_ucd_file_define(fem_ucd)
+      call set_merged_ucd_file_define(plt1, fem_ucd)
 !
       end subroutine set_control_MHD_field_file
 !

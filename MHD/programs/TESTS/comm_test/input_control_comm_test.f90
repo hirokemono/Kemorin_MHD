@@ -47,12 +47,13 @@
 !
       use calypso_mpi
       use set_control_platform_data
+      use m_ctl_data_4_platforms
 !
       type(field_IO_params), intent(inout) ::  mesh_file
 !
-      call turn_off_debug_flag_by_ctl(my_rank)
-      call set_control_smp_def(my_rank)
-      call set_control_mesh_def(mesh_file)
+      call turn_off_debug_flag_by_ctl(my_rank, plt1)
+      call set_control_smp_def(my_rank, plt1)
+      call set_control_mesh_def(plt1, mesh_file)
 !
       end subroutine set_ctl_params_4_comm_test
 !

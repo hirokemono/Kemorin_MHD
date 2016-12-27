@@ -37,10 +37,10 @@
       use set_control_platform_data
 !
 !
-      call turn_off_debug_flag_by_ctl(my_rank)
-      call set_control_smp_def(my_rank)
+      call turn_off_debug_flag_by_ctl(my_rank, plt1)
+      call set_control_smp_def(my_rank, plt1)
 !
-      call set_control_mesh_def(itp_org_mesh_file)
+      call set_control_mesh_def(plt1, itp_org_mesh_file)
 !
       if (new_mesh_prefix%iflag .ne. 0) then
         itp_dest_mesh_file%file_prefix = new_mesh_prefix%charavalue
@@ -82,14 +82,14 @@
      &   write(*,*) 'itp_udt_file_head: ', trim(itp_udt_file_head)
 !
 !
-      if (restart_file_prefix%iflag .ne. 0) then
-        org_rst_file_head = restart_file_prefix%charavalue
+      if (plt1%restart_file_prefix%iflag .ne. 0) then
+        org_rst_file_head = plt1%restart_file_prefix%charavalue
       end if
         if (iflag_debug.eq.1)                                           &
      &   write(*,*) 'org_rst_file_head: ', trim(org_rst_file_head)
 !
-      if (udt_file_head_ctl%iflag .ne. 0) then
-        org_udt_file_head = udt_file_head_ctl%charavalue
+      if (plt1%udt_file_head_ctl%iflag .ne. 0) then
+        org_udt_file_head = plt1%udt_file_head_ctl%charavalue
       end if
         if (iflag_debug.eq.1)                                           &
      &   write(*,*) 'org_udt_file_head: ', trim(org_udt_file_head)
@@ -97,7 +97,9 @@
 !
 !
       ndomain_org = 1
-      if (ndomain_ctl%iflag .gt. 0) ndomain_org = ndomain_ctl%intvalue
+      if (plt1%ndomain_ctl%iflag .gt. 0) then
+        ndomain_org = plt1%ndomain_ctl%intvalue
+      end if
 !
       nprocs_2nd = ndomain_org
       if (iflag_debug.eq.1)   write(*,*) 'ndomain_org', nprocs_2nd
@@ -115,12 +117,12 @@
      &   (fmt_itp_table_file_ctl, ifmt_itp_table_file)
 !
       call choose_para_file_format                                      &
-     &   (restart_file_fmt_ctl, ifmt_org_rst_file)
+     &   (plt1%restart_file_fmt_ctl, ifmt_org_rst_file)
       call choose_para_file_format                                      &
      &   (new_rst_files_fmt_ctl, ifmt_itp_rst_file)
 !
-      call choose_ucd_file_format(udt_file_fmt_ctl%charavalue,          &
-     &    udt_file_fmt_ctl%iflag, itype_org_udt_file)
+      call choose_ucd_file_format(plt1%udt_file_fmt_ctl%charavalue,     &
+     &    plt1%udt_file_fmt_ctl%iflag, itype_org_udt_file)
       call choose_ucd_file_format(new_udt_file_fmt_ctl%charavalue,      &
      &    new_udt_file_fmt_ctl%iflag, itype_itp_udt_file)
 !
