@@ -51,6 +51,7 @@
       module m_ctl_data_4_platforms
 !
       use m_precision
+      use m_machine_parameter
       use t_ctl_data_4_platforms
 !
       implicit  none
@@ -73,10 +74,6 @@
 !  ---------------------------------------------------------------------
 !
       subroutine read_ctl_data_4_platform
-!
-      use m_machine_parameter
-      use m_read_control_elements
-      use skip_comment_f
 !
 !
       call read_control_platforms(hd_platform, i_platform, plt1)

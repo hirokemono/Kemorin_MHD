@@ -55,7 +55,7 @@
       call set_control_org_rst_file_def(rst_org_param)
       call set_control_org_udt_file_def(udt_org_param)
 !
-      call s_set_fixed_time_step_params(ierr, e_message)
+      call s_set_fixed_time_step_params(tctl1, ierr, e_message)
       if(ierr .gt. 0) return
 !
       end subroutine set_control_params_4_viz

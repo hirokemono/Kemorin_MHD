@@ -7,7 +7,7 @@
 !> @brief Control flags for initial data
 !
 !!@verbatim
-!!      subroutine set_initial_field_id
+!!      subroutine set_initial_field_id(tctl)
 !!@endverbatim
 !
       module m_initial_field_control
@@ -91,15 +91,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_field_id
+      subroutine set_initial_field_id(tctl)
 !
       use calypso_mpi
       use m_error_IDs
       use m_machine_parameter
       use m_t_step_parameter
       use m_ctl_data_mhd_evo_scheme
-      use m_ctl_data_4_time_steps
+      use t_ctl_data_4_time_steps
       use skip_comment_f
+!
+      type(time_data_control), intent(in) :: tctl
 !
 !
       if(restart_flag_ctl%iflag .eq. 0) then
@@ -143,11 +145,11 @@
       end if
 !
       if (iflag_restart .eq. i_rst_no_file) then
-        if (time_init_ctl%iflag .eq. 0) then
+        if (tctl%time_init_ctl%iflag .eq. 0) then
           e_message  = 'Set initial time'
           call calypso_MPI_abort(ierr_evo, e_message)
         else
-          time_init = time_init_ctl%realvalue
+          time_init = tctl%time_init_ctl%realvalue
         end if
       end if
 !

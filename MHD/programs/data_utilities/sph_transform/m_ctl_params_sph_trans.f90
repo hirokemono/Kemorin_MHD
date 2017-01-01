@@ -69,6 +69,7 @@
 !
       use m_sel_spherical_SRs
       use m_ctl_data_4_platforms
+      use m_ctl_data_4_time_steps
       use m_ctl_data_4_sph_trans
 !
       type(field_IO_params), intent(inout) :: mesh_file
@@ -114,7 +115,7 @@
 !
 !      stepping parameter
 !
-      call s_set_fixed_time_step_params(ierr, e_message)
+      call s_set_fixed_time_step_params(tctl1, ierr, e_message)
 !
 !   set physical values
 !
@@ -219,7 +220,7 @@
 !
 !      stepping parameter
 !
-      call s_set_fixed_time_step_params(ierr, e_message)
+      call s_set_fixed_time_step_params(tctl1, ierr, e_message)
 !
 !   set physical values
 !

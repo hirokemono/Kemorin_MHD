@@ -30,18 +30,18 @@
 !
 !
       ist = 1
-      if(i_step_init_ctl%iflag .gt. 0) then
-        ist = i_step_init_ctl%intvalue
+      if(tctl1%i_step_init_ctl%iflag .gt. 0) then
+        ist = tctl1%i_step_init_ctl%intvalue
       end if
 !
       ied = 1
-      if(i_step_number_ctl%iflag .gt. 0) then
-        ied = i_step_number_ctl%intvalue
+      if(tctl1%i_step_number_ctl%iflag .gt. 0) then
+        ied = tctl1%i_step_number_ctl%intvalue
       end if
 !
       iint = 1
-      if (i_step_ucd_ctl%iflag .gt. 0) then
-        iint = i_step_ucd_ctl%intvalue
+      if (tctl1%i_step_ucd_ctl%iflag .gt. 0) then
+        iint = tctl1%i_step_ucd_ctl%intvalue
       end if
 !
       call set_file_control_params(def_mesh_file_head,                  &

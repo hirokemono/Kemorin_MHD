@@ -34,6 +34,7 @@
       use calypso_mpi
       use m_ucd_data
       use m_ctl_data_4_platforms
+      use m_ctl_data_4_time_steps
 !
       use set_control_platform_data
       use set_control_nodal_data_MHD
@@ -148,7 +149,7 @@
 !
 !   set control parameters
 !
-      call s_set_control_4_time_steps
+      call s_set_control_4_time_steps(tctl1)
       call s_set_control_4_crank
 !
       call s_set_control_4_solver

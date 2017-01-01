@@ -88,6 +88,7 @@
       use m_spheric_global_ranks
       use m_ucd_data
       use m_ctl_data_4_platforms
+      use m_ctl_data_4_time_steps
       use m_read_ctl_gen_sph_shell
       use sph_mhd_rms_IO
 !
@@ -198,7 +199,7 @@
 !   set control parameters
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_time_steps'
-      call s_set_control_4_time_steps
+      call s_set_control_4_time_steps(tctl1)
       call s_set_control_4_crank
 !
 !   set_pickup modes

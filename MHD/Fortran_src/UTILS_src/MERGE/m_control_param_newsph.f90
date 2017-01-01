@@ -161,18 +161,18 @@
       end if
 !
       istep_start = 1
-      if(i_step_init_ctl%iflag .gt. 0) then
-        istep_start = i_step_init_ctl%intvalue
+      if(tctl1%i_step_init_ctl%iflag .gt. 0) then
+        istep_start = tctl1%i_step_init_ctl%intvalue
       end if
 !
       istep_end =  1
-      if(i_step_number_ctl%iflag .gt. 0) then
-        istep_end = i_step_number_ctl%intvalue
+      if(tctl1%i_step_number_ctl%iflag .gt. 0) then
+        istep_end = tctl1%i_step_number_ctl%intvalue
       end if
 !
       increment_step = 1
-      if (i_step_rst_ctl%iflag .gt. 0) then
-        increment_step = i_step_rst_ctl%intvalue
+      if (tctl1%i_step_rst_ctl%iflag .gt. 0) then
+        increment_step = tctl1%i_step_rst_ctl%intvalue
       end if
 !
       end subroutine set_control_4_newsph

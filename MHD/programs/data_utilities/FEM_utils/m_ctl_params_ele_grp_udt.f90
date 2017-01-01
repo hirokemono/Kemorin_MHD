@@ -105,28 +105,28 @@
 !
 !
       start_time = 0.0d0
-      if(time_init_ctl%iflag .gt. 0) then
-        start_time = time_init_ctl%realvalue
+      if(tctl1%time_init_ctl%iflag .gt. 0) then
+        start_time = tctl1%time_init_ctl%realvalue
       end if
 !
       delta_t = 0.0d0
-      if(dt_ctl%iflag .gt. 0) then
-        delta_t = dt_ctl%realvalue
+      if(tctl1%dt_ctl%iflag .gt. 0) then
+        delta_t = tctl1%dt_ctl%realvalue
       end if
 !
       istep_start = 1
-      if(i_step_init_ctl%iflag .gt. 0) then
-        istep_start = i_step_init_ctl%intvalue
+      if(tctl1%i_step_init_ctl%iflag .gt. 0) then
+        istep_start = tctl1%i_step_init_ctl%intvalue
       end if
 !
       istep_end = 1
-      if(i_step_number_ctl%iflag .gt. 0) then
-        istep_end = i_step_number_ctl%intvalue
+      if(tctl1%i_step_number_ctl%iflag .gt. 0) then
+        istep_end = tctl1%i_step_number_ctl%intvalue
       end if
 !
       istep_inc = 1
-      if(i_step_psf_ctl%iflag .gt. 0) then
-        istep_inc = i_step_psf_ctl%intvalue
+      if(tctl1%i_step_psf_ctl%iflag .gt. 0) then
+        istep_inc = tctl1%i_step_psf_ctl%intvalue
       end if
 !
       call add_int_suffix(istep_start, grp_ucd_data_head, fhead_tmp)

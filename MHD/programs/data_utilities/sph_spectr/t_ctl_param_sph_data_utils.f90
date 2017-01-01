@@ -105,12 +105,12 @@
       write(*,*) 'f_ctl%out_field_head_ctl%iflag',                      &
      &          f_ctl%out_field_head_ctl%iflag
 !
-        if(i_step_init_ctl%iflag .gt. 0)                                &
-     &             istart = i_step_init_ctl%intvalue
-        if(i_step_number_ctl%iflag .gt. 0)                              &
-     &             iend = i_step_number_ctl%intvalue
-        if(i_step_ucd_ctl%iflag .gt. 0)                                 &
-     &             increment = i_step_ucd_ctl%intvalue
+        if(tctl1%i_step_init_ctl%iflag .gt. 0)                          &
+     &             istart = tctl1%i_step_init_ctl%intvalue
+        if(tctl1%i_step_number_ctl%iflag .gt. 0)                        &
+     &             iend = tctl1%i_step_number_ctl%intvalue
+        if(tctl1%i_step_ucd_ctl%iflag .gt. 0)                           &
+     &             increment = tctl1%i_step_ucd_ctl%intvalue
 !
       end subroutine set_control_diff_sph_field
 !

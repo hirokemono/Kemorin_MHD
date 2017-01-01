@@ -37,28 +37,28 @@
 !
 !
       start_time_pg = 0.0d0
-      if(time_init_ctl%iflag .gt. 0) then
-        start_time_pg = time_init_ctl%realvalue
+      if(tctl1%time_init_ctl%iflag .gt. 0) then
+        start_time_pg = tctl1%time_init_ctl%realvalue
       end if
 !
       delta_time_pg = 0.0d0
-      if(dt_ctl%iflag .gt. 0) then
-        delta_time_pg = dt_ctl%realvalue
+      if(tctl1%dt_ctl%iflag .gt. 0) then
+        delta_time_pg = tctl1%dt_ctl%realvalue
       end if
 !
       ist_pg = 1
-      if(i_step_init_ctl%iflag .gt. 0) then
-        ist_pg = i_step_init_ctl%intvalue
+      if(tctl1%i_step_init_ctl%iflag .gt. 0) then
+        ist_pg = tctl1%i_step_init_ctl%intvalue
       end if
 !
       ied_pg = 1
-      if(i_step_number_ctl%iflag .gt. 0) then
-        ied_pg = i_step_number_ctl%intvalue
+      if(tctl1%i_step_number_ctl%iflag .gt. 0) then
+        ied_pg = tctl1%i_step_number_ctl%intvalue
       end if
 !
       inc_pg = 1
-      if(i_step_psf_ctl%iflag .gt. 0) then
-        inc_pg = i_step_psf_ctl%intvalue
+      if(tctl1%i_step_psf_ctl%iflag .gt. 0) then
+        inc_pg = tctl1%i_step_psf_ctl%intvalue
       end if
 !
 !

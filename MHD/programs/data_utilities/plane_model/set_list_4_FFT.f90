@@ -60,18 +60,18 @@
       num_spectr = kx_max*ky_max*iz_max
 !
       ist = 0
-      if(i_step_init_ctl%iflag .gt. 0) then
-        ist = i_step_init_ctl%intvalue
+      if(tctl1%i_step_init_ctl%iflag .gt. 0) then
+        ist = tctl1%i_step_init_ctl%intvalue
       end if
 !
       ied = 0
-      if(i_step_number_ctl%iflag .gt. 0) then
-        ied = i_step_number_ctl%intvalue
+      if(tctl1%i_step_number_ctl%iflag .gt. 0) then
+        ied = tctl1%i_step_number_ctl%intvalue
       end if
 !
       iint = 1
-      if(i_step_ucd_ctl%iflag .gt. 0) then
-        iint = i_step_ucd_ctl%intvalue
+      if(tctl1%i_step_ucd_ctl%iflag .gt. 0) then
+        iint = tctl1%i_step_ucd_ctl%intvalue
       end if
 !
       end subroutine set_parameters_4_FFT
@@ -135,33 +135,33 @@
      &        * ndomain_plane2_ctl%intvalue(3)
 !
       ist = 0
-      if(i_step_init_ctl%iflag .gt. 0) then
-        ist = i_step_init_ctl%intvalue
+      if(tctl1%i_step_init_ctl%iflag .gt. 0) then
+        ist = tctl1%i_step_init_ctl%intvalue
       end if
 !
       ied = 0
-      if(i_step_number_ctl%iflag .gt. 0) then
-        ied = i_step_number_ctl%intvalue
+      if(tctl1%i_step_number_ctl%iflag .gt. 0) then
+        ied = tctl1%i_step_number_ctl%intvalue
       end if
 !
       ifactor_step = 1
-      if(i_step_ucd_ctl%iflag .gt. 0) then
-        ifactor_step = i_step_ucd_ctl%intvalue
+      if(tctl1%i_step_ucd_ctl%iflag .gt. 0) then
+        ifactor_step = tctl1%i_step_ucd_ctl%intvalue
       end if
 !
       ifactor_rst = 1
-      if(i_step_rst_ctl%iflag .gt. 0) then
-        ifactor_rst = i_step_rst_ctl%intvalue
+      if(tctl1%i_step_rst_ctl%iflag .gt. 0) then
+        ifactor_rst = tctl1%i_step_rst_ctl%intvalue
       end if
 !
       dt = 0.0d0
-      if(dt_ctl%iflag .gt. 0) then
-        t_init = dt_ctl%realvalue
+      if(tctl1%dt_ctl%iflag .gt. 0) then
+        t_init = tctl1%dt_ctl%realvalue
       end if
 !
       t_init = 0.0d0
-      if(time_init_ctl%iflag .gt. 0) then
-        t_init = time_init_ctl%realvalue
+      if(tctl1%time_init_ctl%iflag .gt. 0) then
+        t_init = tctl1%time_init_ctl%realvalue
       end if
 !
       end subroutine set_parameters_rst_by_spec

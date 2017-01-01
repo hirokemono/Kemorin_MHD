@@ -105,7 +105,7 @@
 !
 !      stepping parameter
 !
-      call s_set_fixed_time_step_params(ierr, e_message)
+      call s_set_fixed_time_step_params(tctl1, ierr, e_message)
 !
 !    file header for field data
 !

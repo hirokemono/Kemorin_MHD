@@ -142,167 +142,19 @@
       module m_ctl_data_4_time_steps
 !
       use m_precision
-      use t_control_elements
+      use m_machine_parameter
+      use t_ctl_data_4_time_steps
 !
       implicit  none
 !
 !
-      type(read_integer_item), save :: i_step_init_ctl
-!   First step
-      type(read_integer_item), save :: i_step_number_ctl
-!   End step
-      type(read_real_item), save :: elapsed_time_ctl
-!   Elapsed time for finish
-! 
-      type(read_integer_item), save :: i_step_check_ctl
-!   Monitoring interval
-      type(read_integer_item), save :: i_step_rst_ctl
-!   Interval for restart
-      type(read_integer_item), save :: i_step_pvr_ctl
-      type(read_integer_item), save :: i_step_psf_ctl
-      type(read_integer_item), save :: i_step_iso_ctl
-      type(read_integer_item), save :: i_step_ucd_ctl
-      type(read_integer_item), save :: i_step_fline_ctl
-      type(read_integer_item), save :: i_step_monitor_ctl
-!
-      type(read_integer_item), save :: i_step_sgs_coefs_ctl
-!   Interval to evaluate model coefficients
-      type(read_integer_item), save :: i_step_boundary_ctl
-! 
-      type(read_real_item), save :: dt_ctl
-!   Delta t
-      type(read_real_item), save :: time_init_ctl
-!   Initial time (If there is no initial field data)
-!
-      type(read_integer_item), save :: i_diff_steps_ctl
-!
-!
-      type(read_character_item), save :: flexible_step_ctl
-!
-      type(read_integer_item), save :: start_rst_step_ctl
-      type(read_integer_item), save :: end_rst_step_ctl
-!
-      type(read_real_item), save :: min_delta_t_ctl
-      type(read_real_item), save :: max_delta_t_ctl
-      type(read_real_item), save :: max_eps_to_shrink_ctl
-      type(read_real_item), save :: min_eps_to_expand_ctl
-!
-      type(read_real_item), save :: delta_t_check_ctl
-      type(read_real_item), save :: delta_t_rst_ctl
-      type(read_real_item), save :: delta_t_field_ctl
-      type(read_real_item), save :: delta_t_psf_ctl
-      type(read_real_item), save :: delta_t_iso_ctl
-      type(read_real_item), save :: delta_t_pvr_ctl
-      type(read_real_item), save :: delta_t_fline_ctl
-      type(read_real_item), save :: delta_t_monitor_ctl
-      type(read_real_item), save :: delta_t_sgs_coefs_ctl
-      type(read_real_item), save :: delta_t_boundary_ctl
+      type(time_data_control), save :: tctl1
 !
 !   entry label
 !
       character(len=kchara), parameter                                  &
      &      :: hd_time_step = 'time_step_ctl'
-      integer (kind=kint) :: i_time_step =      0
-!
-!   4th level for time steps
-!
-      character(len=kchara), parameter                                  &
-     &       :: hd_elapsed_time =     'elapsed_time_ctl'
-!
-      character(len=kchara), parameter                                  &
-     &       :: hd_flexible_step =     'flexible_step_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_min_delta_t =       'min_delta_t_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_max_delta_t =       'max_delta_t_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_max_eps_to_shrink = 'max_eps_to_shrink_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_min_eps_to_expand = 'min_eps_to_expand_ctl'
-!
-      character(len=kchara), parameter                                  &
-     &       :: hd_start_rst_step =    'start_rst_step_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_end_rst_step =      'end_rst_step_ctl'
-!
-      character(len=kchara), parameter                                  &
-     &       :: hd_delta_t_check =     'delta_t_check_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_delta_t_rst =       'delta_t_rst_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_delta_t_psf =       'delta_t_psf_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_delta_t_iso =       'delta_t_iso_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_delta_t_pvr =       'delta_t_pvr_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_delta_t_fline =     'delta_t_fline_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_delta_t_ucd =       'delta_t_field_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_delta_t_monitor =   'delta_t_monitor_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_delta_t_sgs_coefs = 'delta_t_sgs_coefs_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_delta_t_boundary =  'delta_t_boundary_ctl'
-!
-      character(len=kchara), parameter                                  &
-     &       :: hd_i_step_init =      'i_step_init_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_i_step_number =    'i_step_number_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_i_finish_number =  'i_step_finish_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_i_step_check =     'i_step_check_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_i_step_rst =       'i_step_rst_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_i_step_section =   'i_step_sectioning_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_i_step_isosurf =   'i_step_isosurface_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_i_step_psf =       'i_step_psf_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_i_step_iso =       'i_step_iso_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_i_step_pvr =       'i_step_pvr_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_i_step_fline =     'i_step_fline_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_i_step_ucd =       'i_step_field_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_i_step_snap =      'i_step_snapshot_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_i_step_monitor =   'i_step_monitor_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_i_step_sgs_coefs = 'i_step_sgs_coefs_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_i_step_boundary =  'i_step_boundary_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_i_diff_steps =     'i_diff_steps_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_dt =               'dt_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_time_init =        'time_init_ctl'
-!
-      private :: hd_time_step, i_time_step
-      private :: hd_flexible_step, hd_min_delta_t, hd_max_delta_t
-      private :: hd_max_eps_to_shrink, hd_min_eps_to_expand
-      private :: hd_start_rst_step, hd_end_rst_step
-      private :: hd_delta_t_check, hd_delta_t_rst, hd_delta_t_ucd
-      private :: hd_delta_t_psf, hd_delta_t_iso
-      private :: hd_delta_t_pvr, hd_delta_t_fline
-      private :: hd_delta_t_monitor, hd_delta_t_sgs_coefs
-      private :: hd_delta_t_boundary
-!
-      private :: hd_elapsed_time, hd_i_step_init
-      private :: hd_i_step_number, hd_i_step_check, hd_i_step_rst
-      private :: hd_i_step_psf, hd_i_step_section
-      private :: hd_i_step_iso, hd_i_step_isosurf, hd_i_finish_number
-      private :: hd_i_step_pvr, hd_i_step_fline, hd_i_step_snap
-      private :: hd_i_step_ucd, hd_i_step_monitor, hd_i_step_sgs_coefs
-      private :: hd_i_step_boundary, hd_dt, hd_time_init
-      private :: hd_i_diff_steps
+      integer (kind=kint) :: i_tstep =      0
 !
 ! -----------------------------------------------------------------------
 !
@@ -312,80 +164,8 @@
 !
       subroutine read_time_step_ctl
 !
-      use m_machine_parameter
-      use m_read_control_elements
-      use skip_comment_f
 !
-!
-      if(right_begin_flag(hd_time_step) .eq. 0) return
-      if (i_time_step .gt. 0) return
-      do
-        call load_ctl_label_and_line
-!
-        call find_control_end_flag(hd_time_step, i_time_step)
-        if(i_time_step .gt. 0) exit
-!
-!
-        call read_real_ctl_type(hd_elapsed_time, elapsed_time_ctl)
-!
-        call read_real_ctl_type(hd_dt, dt_ctl)
-        call read_real_ctl_type(hd_time_init, time_init_ctl)
-!
-        call read_real_ctl_type(hd_min_delta_t, min_delta_t_ctl)
-        call read_real_ctl_type(hd_max_delta_t, max_delta_t_ctl)
-        call read_real_ctl_type(hd_max_eps_to_shrink,                   &
-     &      max_eps_to_shrink_ctl)
-        call read_real_ctl_type(hd_min_eps_to_expand,                   &
-     &      min_eps_to_expand_ctl)
-!
-        call read_real_ctl_type(hd_delta_t_check, delta_t_check_ctl)
-        call read_real_ctl_type(hd_delta_t_rst, delta_t_rst_ctl)
-        call read_real_ctl_type(hd_delta_t_psf, delta_t_psf_ctl)
-        call read_real_ctl_type(hd_delta_t_iso, delta_t_iso_ctl)
-        call read_real_ctl_type(hd_delta_t_pvr, delta_t_pvr_ctl)
-        call read_real_ctl_type(hd_delta_t_fline, delta_t_fline_ctl)
-        call read_real_ctl_type(hd_delta_t_ucd, delta_t_field_ctl)
-        call read_real_ctl_type(hd_delta_t_monitor,                     &
-     &      delta_t_monitor_ctl)
-        call read_real_ctl_type(hd_delta_t_sgs_coefs,                   &
-     &      delta_t_sgs_coefs_ctl)
-        call read_real_ctl_type(hd_delta_t_boundary,                    &
-     &      delta_t_boundary_ctl)
-!
-!
-        call read_integer_ctl_type(hd_i_step_init, i_step_init_ctl)
-        call read_integer_ctl_type(hd_i_step_number,                    &
-     &      i_step_number_ctl)
-        call read_integer_ctl_type(hd_i_finish_number,                  &
-     &      i_step_number_ctl)
-!
-        call read_integer_ctl_type(hd_i_step_check, i_step_check_ctl)
-        call read_integer_ctl_type(hd_i_step_rst, i_step_rst_ctl)
-        call read_integer_ctl_type(hd_i_step_section, i_step_psf_ctl)
-        call read_integer_ctl_type(hd_i_step_isosurf, i_step_iso_ctl)
-        call read_integer_ctl_type(hd_i_step_psf, i_step_psf_ctl)
-        call read_integer_ctl_type(hd_i_step_iso, i_step_iso_ctl)
-        call read_integer_ctl_type(hd_i_step_pvr, i_step_pvr_ctl)
-        call read_integer_ctl_type(hd_i_step_fline, i_step_fline_ctl)
-!
-        call read_integer_ctl_type(hd_i_step_ucd, i_step_ucd_ctl)
-        call read_integer_ctl_type(hd_i_step_monitor,                   &
-     &      i_step_monitor_ctl)
-!
-        call read_integer_ctl_type(hd_i_step_sgs_coefs,                 &
-     &      i_step_sgs_coefs_ctl)
-        call read_integer_ctl_type(hd_i_step_boundary,                  &
-     &      i_step_boundary_ctl)
-!
-        call read_integer_ctl_type(hd_i_diff_steps, i_diff_steps_ctl)
-!
-        call read_integer_ctl_type(hd_start_rst_step,                   &
-     &      start_rst_step_ctl)
-        call read_integer_ctl_type(hd_end_rst_step, end_rst_step_ctl)
-!
-!
-        call read_chara_ctl_type(hd_flexible_step, flexible_step_ctl)
-      end do
+      call read_control_time_step_data(hd_time_step, i_tstep, tctl1)
 !
       end subroutine read_time_step_ctl
 !
