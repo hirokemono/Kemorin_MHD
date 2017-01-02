@@ -90,6 +90,7 @@
       use m_ctl_data_4_platforms
       use m_ctl_data_4_time_steps
       use m_ctl_data_4_sphere_model
+      use m_ctl_data_4_pickup_sph
       use m_read_ctl_gen_sph_shell
       use sph_mhd_rms_IO
 !
@@ -211,8 +212,8 @@
       call set_ctl_params_pick_sph                                      &
      &   (pickup_sph_head, pick_list1, pick1)
 !
-      call set_ctl_params_pick_gauss                                    &
-     &   (gauss_coefs_file_head, gauss_list1, gauss1)
+      call set_ctl_params_pick_gauss(gauss_coef_ctl1,                   &
+     &    gauss_coefs_file_head, gauss_list1, gauss1)
 !
       call set_ctl_params_no_heat_Nu(rj_fld, Nu_type1)
 !

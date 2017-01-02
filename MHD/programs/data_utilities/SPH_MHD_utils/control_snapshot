@@ -515,9 +515,6 @@
     layered_pwr_spectr_prefix    'sph_pwr_layer'
 !
     picked_sph_prefix            'sph_spectr/picked_mode'
-    gauss_coefs_prefix           'sph_spectr/gauss_coefs'
-!
-    gauss_coefs_radius_ctl    2.91
 !
 !
 !   if num_pick_layer_ctl = 0 or negative: 
@@ -544,20 +541,25 @@
     end array pick_sph_order_ctl
 !
 !
-    array pick_gauss_coefs_ctl  2
-      pick_gauss_coefs_ctl   2  -2
-      pick_gauss_coefs_ctl   2   2
-    end array pick_gauss_coefs_ctl
+    begin gauss_coefficient_ctl
+      gauss_coefs_prefix       'sph_spectr/gauss_coefs'
+      gauss_coefs_radius_ctl    2.91
 !
-    array pick_gauss_coef_degree_ctl  2
-      pick_gauss_coef_degree_ctl   2
-      pick_gauss_coef_degree_ctl   2
-    end array pick_gauss_coef_degree_ctl
+      array pick_gauss_coefs_ctl  2
+        pick_gauss_coefs_ctl   2  -2
+        pick_gauss_coefs_ctl   2   2
+      end array pick_gauss_coefs_ctl
 !
-    array pick_gauss_coef_order_ctl  2
-      pick_gauss_coef_order_ctl   -2
-      pick_gauss_coef_order_ctl    2
-    end array pick_gauss_coef_order_ctl
+      array pick_gauss_coef_degree_ctl  2
+        pick_gauss_coef_degree_ctl   2
+        pick_gauss_coef_degree_ctl   2
+      end array pick_gauss_coef_degree_ctl
+!
+      array pick_gauss_coef_order_ctl  2
+        pick_gauss_coef_order_ctl   -2
+        pick_gauss_coef_order_ctl    2
+      end array pick_gauss_coef_order_ctl
+    end gauss_coefficient_ctl
 !
     pick_circle_coord_ctl         spherical
     nphi_mid_eq_ctl         500

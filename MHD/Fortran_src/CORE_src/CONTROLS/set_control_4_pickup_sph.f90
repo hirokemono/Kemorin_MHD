@@ -15,7 +15,8 @@
 !!        type(pickup_mode_list), intent(inout) :: pick_list
 !!        type(picked_spectrum_data), intent(inout) :: picked_sph
 !!      subroutine set_ctl_params_pick_gauss                            &
-!!     &         (gauss_coefs_file_head, gauss_list, gauss_coef)
+!!     &         (g_pwr, gauss_coefs_file_head, gauss_list, gauss_coef)
+!!        type(gauss_spectr_control), intent(inout) :: g_pwr
 !!        type(pickup_mode_list), intent(inout) :: gauss_list
 !!        type(picked_spectrum_data), intent(inout) :: gauss_coef
 !!        character(len = kchara), intent(inout) :: gauss_coefs_file_head
@@ -220,11 +221,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_ctl_params_pick_gauss                              &
-     &         (gauss_coefs_file_head, gauss_list, gauss_coef)
+     &         (g_pwr, gauss_coefs_file_head, gauss_list, gauss_coef)
 !
-      use m_ctl_data_4_pickup_sph
+      use t_ctl_data_sph_vol_spectr
       use t_pickup_sph_spectr_data
 !
+      type(gauss_spectr_control), intent(inout) :: g_pwr
       type(pickup_mode_list), intent(inout) :: gauss_list
       type(picked_spectrum_data), intent(inout) :: gauss_coef
       character(len = kchara), intent(inout) :: gauss_coefs_file_head
@@ -234,8 +236,8 @@
 !
 !   set pickup gauss coefficients
 !
-      if(gauss_coefs_prefix%iflag .gt. 0) then
-        gauss_coefs_file_head = gauss_coefs_prefix%charavalue
+      if(g_pwr%gauss_coefs_prefix%iflag .gt. 0) then
+        gauss_coefs_file_head = g_pwr%gauss_coefs_prefix%charavalue
       else
         gauss_list%num_modes =  0
         gauss_list%num_degree = 0
@@ -250,39 +252,46 @@
       call alloc_num_pick_layer(gauss_coef)
       gauss_coef%radius_gl(1) = 2.91
 !
-      if(gauss_coefs_radius_ctl%iflag .gt. 0) then
-        gauss_coef%radius_gl(1) = gauss_coefs_radius_ctl%realvalue
+      if(g_pwr%gauss_coefs_radius_ctl%iflag .gt. 0) then
+        gauss_coef%radius_gl(1)                                         &
+     &        = g_pwr%gauss_coefs_radius_ctl%realvalue
       end if
 !
-      gauss_list%num_modes = idx_gauss_ctl%num
+      gauss_list%num_modes = g_pwr%idx_gauss_ctl%num
       call alloc_pick_sph_mode(gauss_list)
 !
       do inum = 1, gauss_list%num_modes
-        gauss_list%idx_pick_mode(inum,1) = idx_gauss_ctl%int1(inum)
-        gauss_list%idx_pick_mode(inum,2) = idx_gauss_ctl%int2(inum)
+        gauss_list%idx_pick_mode(inum,1)                                &
+     &        = g_pwr%idx_gauss_ctl%int1(inum)
+        gauss_list%idx_pick_mode(inum,2)                                &
+     &        = g_pwr%idx_gauss_ctl%int2(inum)
       end do
 !
-      if(gauss_list%num_modes .gt. 0) call deallocate_pick_gauss_ctl
+      if(gauss_list%num_modes .gt. 0) then
+        call dealloc_pick_gauss_ctl(g_pwr)
+      end if
 !
 !
-      gauss_list%num_order = idx_gauss_m_ctl%num
+      gauss_list%num_order = g_pwr%idx_gauss_m_ctl%num
       call alloc_pick_sph_m(gauss_list)
 !
       do inum = 1, gauss_list%num_order
-        gauss_list%idx_pick_m(inum) = idx_gauss_m_ctl%ivec(inum)
+        gauss_list%idx_pick_m(inum)                                     &
+     &        = g_pwr%idx_gauss_m_ctl%ivec(inum)
       end do
-      call deallocate_pick_gauss_m_ctl
+      call dealloc_pick_gauss_m_ctl(g_pwr)
 !
 !
-      gauss_list%num_degree = idx_gauss_l_ctl%num
+      gauss_list%num_degree = g_pwr%idx_gauss_l_ctl%num
       if(gauss_list%num_degree .gt. 0) then
         call alloc_pick_sph_l(gauss_list)
 !
         do inum = 1, gauss_list%num_degree
-          gauss_list%idx_pick_l(inum) = idx_gauss_l_ctl%ivec(inum)
+          gauss_list%idx_pick_l(inum)                                   &
+     &          = g_pwr%idx_gauss_l_ctl%ivec(inum)
         end do
-        call deallocate_pick_gauss_l_ctl
-      else if(gauss_coefs_prefix%iflag .gt. 0                           &
+        call dealloc_pick_gauss_l_ctl(g_pwr)
+      else if(g_pwr%gauss_coefs_prefix%iflag .gt. 0                     &
      &   .and. gauss_list%num_order .le. 0                              &
      &   .and. gauss_list%num_modes .le. 0) then
        gauss_list%num_degree = -9999

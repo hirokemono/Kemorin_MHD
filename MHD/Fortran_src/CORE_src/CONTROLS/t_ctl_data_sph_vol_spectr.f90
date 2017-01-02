@@ -12,7 +12,7 @@
 !!      subroutine dealloc_pick_gauss_l_ctl(g_pwr)
 !!      subroutine dealloc_pick_gauss_m_ctl(g_pwr)
 !!
-!!      subroutine read_each_vol_spectr_ctl(v_pwr)
+!!      subroutine read_each_vol_spectr_ctl(hd_block, iflag, v_pwr)
 !!      subroutine read_gauss_spectr_ctl(g_pwr)
 !!
 !! -----------------------------------------------------------------
@@ -55,7 +55,7 @@
 !!        pick_gauss_coef_order_ctl    2
 !!      end array pick_gauss_coef_order_ctl
 !!    end   gauss_coefficient_ctl
-!
+!!
 !! -----------------------------------------------------------------
 !!@endverbatim
 !
@@ -108,12 +108,6 @@
 !
 !
 !   labels for item
-!
-      character(len=kchara), parameter                                  &
-     &            :: hd_vol_spec_block =   'volume_spectrum_ctl'
-      character(len=kchara), parameter                                  &
-     &            :: hd_gauss_spec_block = 'gauss_coefficient_ctl'
-!
 !
       character(len=kchara), parameter                                  &
      &            :: hd_vol_pwr = 'volume_pwr_spectr_prefix'
@@ -177,16 +171,20 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_each_vol_spectr_ctl(v_pwr)
+      subroutine read_each_vol_spectr_ctl(hd_block, iflag, v_pwr)
 !
+      character(len=kchara), intent(in) :: hd_block
+!
+      integer(kind = kint), intent(inout) :: iflag
       type(volume_spectr_control), intent(inout) :: v_pwr
-      integer (kind=kint) :: iflag = 0
 !
 !
+      if(right_begin_flag(hd_block) .eq. 0) return
+      if(iflag .gt. 0) return
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_vol_spec_block, iflag)
+        call find_control_end_flag(hd_block, iflag)
         if(iflag .gt. 0) exit
 !
         call read_chara_ctl_type(hd_vol_pwr, v_pwr%volume_spec_file_ctl)
@@ -199,18 +197,20 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine read_gauss_spectr_ctl(g_pwr)
+      subroutine read_gauss_spectr_ctl(hd_block, iflag, g_pwr)
 !
+      character(len=kchara), intent(in) :: hd_block
+!
+      integer(kind = kint), intent(inout) :: iflag
       type(gauss_spectr_control), intent(inout) :: g_pwr
-      integer (kind=kint) :: iflag = 0
 !
 !
-      if(right_begin_flag(hd_gauss_spec_block) .eq. 0) return
+      if(right_begin_flag(hd_block) .eq. 0) return
       if (iflag .gt. 0) return
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_gauss_spec_block, iflag)
+        call find_control_end_flag(hd_block, iflag)
         if(iflag .gt. 0) exit
 !
 !

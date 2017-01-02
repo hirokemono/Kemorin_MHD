@@ -39,10 +39,7 @@
 !!
 !!    nusselt_number_prefix        'Nusselt'
 !!    picked_sph_prefix            'sph_spectr/picked_mode'
-!!    gauss_coefs_prefix           'sph_spectr/gauss_coefs'
-!!
-!!    gauss_coefs_radius_ctl        2.91
-!!
+!!!
 !!   if num_pick_layer_ctl = 0 or negative: 
 !!           No output
 !!    array spectr_layer_ctl  1
@@ -69,21 +66,13 @@
 !!      pick_sph_order_ctl   2
 !!    end array pick_sph_order_ctl
 !!
+!!    begin gauss_coefficient_ctl
+!!      ...
+!!    end   gauss_coefficient_ctl
 !!
-!!    array pick_gauss_coefs_ctl  2
-!!      pick_gauss_coefs_ctl   2  -2
-!!      pick_gauss_coefs_ctl   2   2
-!!    end array pick_gauss_coefs_ctl
-!!
-!!    array pick_gauss_coef_degree_ctl  2
-!!      pick_gauss_coef_degree_ctl   2
-!!      pick_gauss_coef_degree_ctl   2
-!!    end array pick_gauss_coef_degree_ctl
-!!
-!!    array pick_gauss_coef_order_ctl  2
-!!      pick_gauss_coef_order_ctl   -2
-!!      pick_gauss_coef_order_ctl    2
-!!    end array pick_gauss_coef_order_ctl
+!!    array volume_spectrum_ctl      2
+!!      ...
+!!    end array volume_spectrum_ctl
 !!
 !!    pick_circle_coord_ctl         spherical
 !!    nphi_mid_eq_ctl               500
@@ -110,6 +99,8 @@
       type(volume_spectr_control), allocatable, save                    &
      &                            :: vol_pwr_spectr_ctl(:)
 !
+      type(gauss_spectr_control), save :: gauss_coef_ctl1
+!
 !>      Structure for layered spectrum file prefix
       type(read_character_item), save :: volume_average_prefix
 !
@@ -124,12 +115,6 @@
 !
 !>      Structure for picked spectrum file prefix
       type(read_character_item), save :: picked_mode_head_ctl
-!
-!>      Structure for gauss coefficient file prefix
-      type(read_character_item), save :: gauss_coefs_prefix
-!
-!>      Structure for reference radus 
-      type(read_real_item), save :: gauss_coefs_radius_ctl
 !
 !
 !>      Structure for degree spectrum switch
@@ -170,23 +155,6 @@
       type(ctl_array_int), save :: idx_pick_sph_m_ctl
 !
 !
-!>      Structure for list of mode of Gauss coefficients output
-!!@n      idx_gauss_ctl%num:   Number of mode
-!!@n      idx_gauss_ctl%int1: list of degree of Gauss coefficients
-!!@n      idx_gauss_ctl%int2: list of order of Gauss coefficients
-      type(ctl_array_i2), save :: idx_gauss_ctl
-!
-!>      Structure for list of degree of Gauss coefficient output
-!!@n      idx_gauss_l_ctl%num:   Number of degree
-!!@n      idx_gauss_l_ctl%ivec: list of degree of gauss coefficient
-      type(ctl_array_int), save :: idx_gauss_l_ctl
-!
-!>      Structure for list of order of Gauss coefficient output
-!!@n      idx_gauss_m_ctl%num:   Number of order
-!!@n      idx_gauss_m_ctl%ivec: list of order of gauss coefficient
-      type(ctl_array_int), save :: idx_gauss_m_ctl
-!
-!
 !>      Structure for coordiniate system for circled data
       type(read_character_item), save :: pick_circle_coord_ctl
 !
@@ -206,6 +174,12 @@
       integer(kind = kint) :: i_pick_sph = 0
       integer(kind = kint) :: i_vol_spectr_ctl = 0
 !
+      character(len=kchara), parameter                                  &
+     &            :: hd_vol_spec_block =   'volume_spectrum_ctl'
+      character(len=kchara), parameter                                  &
+     &            :: hd_gauss_spec_block = 'gauss_coefficient_ctl'
+      integer(kind = kint) :: i_gauss_pwr_ctl = 0
+!
 !   labels for item
 !
       character(len=kchara), parameter                                  &
@@ -216,8 +190,6 @@
      &           :: hd_layer_rms_head = 'layered_pwr_spectr_prefix'
       character(len=kchara), parameter                                  &
      &           :: hd_picked_mode_head = 'picked_sph_prefix'
-      character(len=kchara), parameter                                  &
-     &           :: hd_gauss_coefs_head = 'gauss_coefs_prefix'
       character(len=kchara), parameter                                  &
      &           :: hd_Nusselt_file_head = 'nusselt_number_prefix'
 !
@@ -232,9 +204,6 @@
      &           :: hd_axis_spectr_switch = 'diff_lm_spectr_switch'
 !
       character(len=kchara), parameter                                  &
-     &           :: hd_gauss_coefs_r =    'gauss_coefs_radius_ctl'
-!
-      character(len=kchara), parameter                                  &
      &           :: hd_spctr_layer = 'spectr_layer_ctl'
       character(len=kchara), parameter                                  &
      &           :: hd_pick_layer =  'pick_layer_ctl'
@@ -247,13 +216,6 @@
      &            :: hd_pick_sph_m =     'pick_sph_order_ctl'
 !
       character(len=kchara), parameter                                  &
-     &            :: hd_pick_gauss_lm =   'pick_gauss_coefs_ctl'
-      character(len=kchara), parameter                                  &
-     &            :: hd_pick_gauss_l = 'pick_gauss_coef_degree_ctl'
-      character(len=kchara), parameter                                  &
-     &            :: hd_pick_gauss_m = 'pick_gauss_coef_order_ctl'
-!
-      character(len=kchara), parameter                                  &
      &            :: hd_nphi_mid_eq = 'nphi_mid_eq_ctl'
       character(len=kchara), parameter                                  &
      &            :: hd_pick_s_ctl = 'pick_cylindrical_radius_ctl'
@@ -264,11 +226,9 @@
 !
 !
       private :: hd_pick_sph, i_pick_sph, hd_pick_layer, hd_spctr_layer
-      private :: hd_gauss_coefs_head, hd_gauss_coefs_r
       private :: hd_picked_mode_head, hd_Nusselt_file_head
-      private :: hd_pick_sph_lm, hd_pick_gauss_lm
+      private :: hd_pick_sph_lm
       private :: hd_pick_sph_l, hd_pick_sph_m
-      private :: hd_pick_gauss_l, hd_pick_gauss_m
       private :: hd_voume_ave_head, hd_voume_rms_head
       private :: hd_layer_rms_head, hd_nphi_mid_eq
       private :: hd_pick_s_ctl, hd_pick_z_ctl, hd_diff_lm_spectr_switch
@@ -323,31 +283,6 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine deallocate_pick_gauss_ctl
-!
-      call dealloc_control_array_i2(idx_gauss_ctl)
-!
-      end subroutine deallocate_pick_gauss_ctl
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_pick_gauss_l_ctl
-!
-      call dealloc_control_array_int(idx_gauss_l_ctl)
-!
-      end subroutine deallocate_pick_gauss_l_ctl
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_pick_gauss_m_ctl
-!
-      call dealloc_control_array_int(idx_gauss_m_ctl)
-!
-      end subroutine deallocate_pick_gauss_m_ctl
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
       subroutine read_pickup_sph_ctl
 !
 !
@@ -358,6 +293,9 @@
 !
         call find_control_end_flag(hd_pick_sph, i_pick_sph)
         if(i_pick_sph .gt. 0) exit
+!
+        call read_gauss_spectr_ctl                                      &
+     &     (hd_gauss_spec_block, i_gauss_pwr_ctl, gauss_coef_ctl1)
 !
         call find_control_array_flag                                    &
      &     (hd_vol_spec_block, num_vol_spectr_ctl)
@@ -372,20 +310,11 @@
         call read_control_array_i1(hd_pick_sph_m, idx_pick_sph_m_ctl)
 !
 !
-        call read_control_array_i2(hd_pick_gauss_lm, idx_gauss_ctl)
-        call read_control_array_i1(hd_pick_gauss_l, idx_gauss_l_ctl)
-        call read_control_array_i1(hd_pick_gauss_m, idx_gauss_m_ctl)
-!
-!
-        call read_real_ctl_type(hd_gauss_coefs_r,                       &
-     &      gauss_coefs_radius_ctl)
         call read_real_ctl_type(hd_pick_s_ctl, pick_s_ctl)
         call read_real_ctl_type(hd_pick_z_ctl, pick_z_ctl)
 !
         call read_integer_ctl_type(hd_nphi_mid_eq, nphi_mid_eq_ctl)
 !
-        call read_chara_ctl_type(hd_gauss_coefs_head,                   &
-     &          gauss_coefs_prefix)
         call read_chara_ctl_type(hd_picked_mode_head,                   &
      &          picked_mode_head_ctl)
 !
@@ -418,6 +347,8 @@
 !
       subroutine read_volume_spectr_ctl
 !
+      integer(kind = kint) :: iflag
+!
 !
       if (i_vol_spectr_ctl .gt. 0) return
       allocate(vol_pwr_spectr_ctl(num_vol_spectr_ctl))
@@ -430,8 +361,9 @@
 !
         if(right_begin_flag(hd_vol_spec_block) .gt. 0) then
           i_vol_spectr_ctl = i_vol_spectr_ctl + 1
-          call read_each_vol_spectr_ctl                                 &
-     &      (vol_pwr_spectr_ctl(i_vol_spectr_ctl))
+          iflag = 0
+          call read_each_vol_spectr_ctl(hd_vol_spec_block, iflag,       &
+     &        vol_pwr_spectr_ctl(i_vol_spectr_ctl))
         end if
       end do
 !
