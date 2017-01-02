@@ -623,8 +623,6 @@ begin MHD_control
     axisymmetric_spectr_switch   'On'
 !
     nusselt_number_prefix        'Nusselt'
-    picked_sph_prefix            'sph_spectr/picked_mode'
-!
 !
 !
 !   if num_pick_layer_ctl = 0 or negative: 
@@ -636,31 +634,29 @@ begin MHD_control
 !   if num_pick_layer_ctl = 0 or negative: 
 !           output all layer and volume average
 !
-    array pick_layer_ctl  1
-      pick_layer_ctl  62
-    end array pick_layer_ctl
+    begin pickup_spectr_ctl
+      picked_sph_prefix            'sph_spectr/picked_mode'
+!
+      array pick_layer_ctl  1
+        pick_layer_ctl  62
+      end array pick_layer_ctl
 !
 !
-    array pick_sph_spectr_ctl  2
-      pick_sph_spectr_ctl   2  -2
-      pick_sph_spectr_ctl   2   2
-    end array pick_sph_spectr_ctl
+      array pick_sph_spectr_ctl  2
+        pick_sph_spectr_ctl   2  -2
+        pick_sph_spectr_ctl   2   2
+      end array pick_sph_spectr_ctl
 !
-    array pick_sph_degree_ctl  2
-      pick_sph_degree_ctl   2
-      pick_sph_degree_ctl   2
-    end array pick_sph_degree_ctl
+      array pick_sph_degree_ctl  2
+        pick_sph_degree_ctl   2
+        pick_sph_degree_ctl   2
+      end array pick_sph_degree_ctl
 !
-    array pick_sph_order_ctl  2
-      pick_sph_order_ctl  -2
-      pick_sph_order_ctl   2
-    end array pick_sph_order_ctl
-!
-!
-    pick_circle_coord_ctl         spherical
-    nphi_mid_eq_ctl         500
-    pick_cylindrical_radius_ctl   0.75
-    pick_vertical_position_ctl    0.6
+      array pick_sph_order_ctl  2
+        pick_sph_order_ctl  -2
+        pick_sph_order_ctl   2
+      end array pick_sph_order_ctl
+    end pickup_spectr_ctl
 !
     begin gauss_coefficient_ctl
       gauss_coefs_prefix           'sph_spectr/gauss_coefs'
@@ -697,6 +693,11 @@ begin MHD_control
         outer_radius_ctl           0.538
       end volume_spectrum_ctl
     end array volume_spectrum_ctl
+!
+    pick_circle_coord_ctl         spherical
+    nphi_mid_eq_ctl         500
+    pick_cylindrical_radius_ctl   0.75
+    pick_vertical_position_ctl    0.6
   end sph_monitor_ctl
 !
 end MHD_control

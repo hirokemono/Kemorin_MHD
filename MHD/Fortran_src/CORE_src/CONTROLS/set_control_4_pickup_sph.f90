@@ -10,8 +10,9 @@
 !!@verbatim
 !!      subroutine set_ctl_params_sph_spectr(pwr)
 !!        type(sph_mean_squares), intent(inout) :: pwr
-!!      subroutine set_ctl_params_pick_sph(pwr,                         &
-!!     &          pickup_sph_head, pick_list, picked_sph)
+!!      subroutine set_ctl_params_pick_sph                              &
+!!     &         (pspec_ctl, pickup_sph_head, pick_list, picked_sph)
+!!        type(pick_spectr_control), intent(inout) :: pspec_ctl
 !!        type(pickup_mode_list), intent(inout) :: pick_list
 !!        type(picked_spectrum_data), intent(inout) :: picked_sph
 !!      subroutine set_ctl_params_pick_gauss                            &
@@ -137,14 +138,15 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_ctl_params_pick_sph                                &
-     &         (pickup_sph_head, pick_list, picked_sph)
+     &         (pspec_ctl, pickup_sph_head, pick_list, picked_sph)
 !
-      use m_ctl_data_4_pickup_sph
+      use t_ctl_data_pick_sph_spectr
       use t_pickup_sph_spectr_data
       use t_rms_4_sph_spectr
       use output_sph_m_square_file
       use skip_comment_f
 !
+      type(pick_spectr_control), intent(inout) :: pspec_ctl
       type(pickup_mode_list), intent(inout) :: pick_list
       type(picked_spectrum_data), intent(inout) :: picked_sph
       character(len = kchara), intent(inout) :: pickup_sph_head
@@ -153,8 +155,8 @@
 !
 !   Define spectr pick up
 !
-      if(picked_mode_head_ctl%iflag .gt. 0) then
-        pickup_sph_head = picked_mode_head_ctl%charavalue
+      if(pspec_ctl%picked_mode_head_ctl%iflag .gt. 0) then
+        pickup_sph_head = pspec_ctl%picked_mode_head_ctl%charavalue
       else
         pick_list%num_modes =  0
         pick_list%num_degree = 0
@@ -169,33 +171,37 @@
 !
 !   set pickup mode
 !
-      pick_list%num_modes = idx_pick_sph_ctl%num
+      pick_list%num_modes = pspec_ctl%idx_pick_sph_ctl%num
       call alloc_pick_sph_mode(pick_list)
 !
       do inum = 1, pick_list%num_modes
-        pick_list%idx_pick_mode(inum,1) = idx_pick_sph_ctl%int1(inum)
-        pick_list%idx_pick_mode(inum,2) = idx_pick_sph_ctl%int2(inum)
+        pick_list%idx_pick_mode(inum,1)                                 &
+     &        = pspec_ctl%idx_pick_sph_ctl%int1(inum)
+        pick_list%idx_pick_mode(inum,2)                                 &
+     &        = pspec_ctl%idx_pick_sph_ctl%int2(inum)
       end do
-      call deallocate_pick_sph_ctl
+      call dealloc_pick_sph_ctl(pspec_ctl)
 !
-      pick_list%num_order = idx_pick_sph_m_ctl%num
+      pick_list%num_order = pspec_ctl%idx_pick_sph_m_ctl%num
       call alloc_pick_sph_m(pick_list)
 !
       do inum = 1, pick_list%num_order
-        pick_list%idx_pick_m(inum) = idx_pick_sph_m_ctl%ivec(inum)
+        pick_list%idx_pick_m(inum)                                      &
+     &        = pspec_ctl%idx_pick_sph_m_ctl%ivec(inum)
       end do
-      call deallocate_pick_sph_m_ctl
+      call dealloc_pick_sph_m_ctl(pspec_ctl)
 !
 !
-      pick_list%num_degree = idx_pick_sph_l_ctl%num
+      pick_list%num_degree = pspec_ctl%idx_pick_sph_l_ctl%num
       if(pick_list%num_degree .gt. 0) then
         call alloc_pick_sph_l(pick_list)
 !
         do inum = 1, pick_list%num_degree
-          pick_list%idx_pick_l(inum) = idx_pick_sph_l_ctl%ivec(inum)
+          pick_list%idx_pick_l(inum)                                    &
+     &          = pspec_ctl%idx_pick_sph_l_ctl%ivec(inum)
         end do
-      call deallocate_pick_sph_l_ctl
-      else if(picked_mode_head_ctl%iflag .gt. 0                         &
+      call dealloc_pick_sph_l_ctl(pspec_ctl)
+      else if(pspec_ctl%picked_mode_head_ctl%iflag .gt. 0               &
      &   .and. pick_list%num_order .le. 0                               &
      &   .and. pick_list%num_modes .le. 0) then
         pick_list%num_degree = -9999
@@ -205,15 +211,16 @@
 !
 !   set pickup layer
       picked_sph%num_layer = 0
-      if(idx_pick_layer_ctl%num .gt. 0) then
-        picked_sph%num_layer = idx_pick_layer_ctl%num
+      if(pspec_ctl%idx_pick_layer_ctl%num .gt. 0) then
+        picked_sph%num_layer = pspec_ctl%idx_pick_layer_ctl%num
         call alloc_num_pick_layer(picked_sph)
 !
         do inum = 1, picked_sph%num_layer
-          picked_sph%id_radius(inum) = idx_pick_layer_ctl%ivec(inum)
+          picked_sph%id_radius(inum)                                    &
+     &          = pspec_ctl%idx_pick_layer_ctl%ivec(inum)
         end do
 !
-        call deallocate_num_pick_layer_ctl
+        call dealloc_pick_sph_ctl(pspec_ctl)
       end if
 !
       end subroutine set_ctl_params_pick_sph

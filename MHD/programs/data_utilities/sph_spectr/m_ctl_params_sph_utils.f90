@@ -153,8 +153,8 @@
 !   set pickup mode
 !
       call set_ctl_params_sph_spectr(pwr)
-      call set_ctl_params_pick_sph                                      &
-     &   (pickup_sph_head, pick_list_u, pick_sph_u)
+      call set_ctl_params_pick_sph(pick_spetr_ctl1,                     &
+     &    pickup_sph_head, pick_list_u, pick_sph_u)
       call set_ctl_params_pick_gauss(gauss_coef_ctl1,                   &
      &    gauss_coefs_file_prefix, gauss_list_u, gauss_u)
 !
