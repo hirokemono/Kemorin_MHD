@@ -41,18 +41,28 @@
 !
       subroutine read_control_4_gen_shell_grids
 !
+      use calypso_mpi
       use m_read_control_elements
+      use m_ctl_data_4_platforms
+      use m_ctl_data_4_sphere_model
       use skip_comment_f
+      use bcast_4_platform_ctl
+      use bcast_4_sphere_ctl
 !
 !
-      ctl_file_code = control_file_code
+      if(my_rank .gt. 0) then
+        ctl_file_code = control_file_code
+        open(ctl_file_code, file = control_file_name)
 !
-      open (ctl_file_code, file = control_file_name)
+        call load_ctl_label_and_line
+        call read_control_data_4_shell
 !
-      call load_ctl_label_and_line
-      call read_control_data_4_shell
+        close(ctl_file_code)
+      end if
 !
-      close(ctl_file_code)
+      call bcast_ctl_data_4_platform(plt1)
+      call bcast_ctl_4_shell_define(spctl1)
+      call bcast_ctl_ndomain_4_shell(sdctl1)
 !
       end subroutine read_control_4_gen_shell_grids
 !

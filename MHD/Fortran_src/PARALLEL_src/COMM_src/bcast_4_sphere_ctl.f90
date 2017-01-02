@@ -9,12 +9,15 @@
 !!@verbatim
 !!      subroutine bcast_ctl_4_shell_define(spctl)
 !!        type(sphere_data_control), intent(inout) :: spctl
+!!      subroutine bcast_ctl_ndomain_4_shell(sdctl)
+!!        type(sphere_domain_control), intent(inout) :: sdctl
 !!@endverbatim
 !
       module bcast_4_sphere_ctl
 !
       use m_precision
       use t_ctl_data_4_sphere_model
+      use t_ctl_data_4_divide_sphere
 !
       implicit  none
 !
@@ -65,5 +68,24 @@
       end subroutine bcast_ctl_4_shell_define
 !
 !   --------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine bcast_ctl_ndomain_4_shell(sdctl)
+!
+      use bcast_control_arrays
+!
+      type(sphere_domain_control), intent(inout) :: sdctl
+!
+!
+      call bcast_ctl_type_i1(sdctl%num_radial_domain_ctl)
+      call bcast_ctl_type_i1(sdctl%num_horiz_domain_ctl)
+!
+      call bcast_ctl_array_ci(sdctl%ndomain_sph_grid_ctl)
+      call bcast_ctl_array_ci(sdctl%ndomain_legendre_ctl)
+      call bcast_ctl_array_ci(sdctl%ndomain_spectr_ctl)
+!
+      end subroutine bcast_ctl_ndomain_4_shell
+!
+!  ---------------------------------------------------------------------
 !
       end module bcast_4_sphere_ctl
