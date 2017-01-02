@@ -63,7 +63,6 @@
       use m_read_control_elements
       use m_ctl_data_4_platforms
       use m_ctl_data_4_sphere_model
-      use m_ctl_data_4_divide_sphere
       use skip_comment_f
 !
 !
@@ -90,7 +89,6 @@
 !
       use m_read_control_elements
       use m_ctl_data_4_sphere_model
-      use m_ctl_data_4_divide_sphere
       use skip_comment_f
 !
 !

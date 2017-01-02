@@ -8,14 +8,15 @@
 !!
 !!@verbatim
 !!      subroutine s_set_control_4_gen_shell_grids                      &
-!!     &         (plt, spctl, sph, mesh_file, sph_file_param, ierr)
+!!     &        (plt, spctl, sdctl, sph, mesh_file, sph_file_param, ierr)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(sphere_data_control), intent(inout) :: spctl
+!!        type(sphere_domain_control), intent(inout) :: sdctl
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(field_IO_params), intent(inout) ::  mesh_file
 !!        type(field_IO_params), intent(inout) :: sph_file_param
 !!      subroutine set_control_4_shell_grids                            &
-!!     &         (nprocs_check, spctl, sph, ierr)
+!!     &         (nprocs_check, spctl, sdctl, sph, ierr)
 !!        type(field_IO_params), intent(inout) :: sph_file_param
 !!        type(sph_grids), intent(inout) :: sph
 !!@endverbatim
@@ -28,6 +29,7 @@
       use t_file_IO_parameter
       use t_ctl_data_4_platforms
       use t_ctl_data_4_sphere_model
+      use t_ctl_data_4_divide_sphere
 !
       implicit  none
 !
@@ -45,10 +47,11 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_set_control_4_gen_shell_grids                        &
-     &         (plt, spctl, sph, mesh_file, sph_file_param, ierr)
+     &        (plt, spctl, sdctl, sph, mesh_file, sph_file_param, ierr)
 !
       type(platform_data_control), intent(in) :: plt
       type(sphere_data_control), intent(inout) :: spctl
+      type(sphere_domain_control), intent(inout) :: sdctl
       type(sph_grids), intent(inout) :: sph
       type(field_IO_params), intent(inout) ::  mesh_file
       type(field_IO_params), intent(inout) :: sph_file_param
@@ -60,7 +63,8 @@
       call set_control_4_shell_filess                                   &
      &   (plt, nprocs_check, mesh_file, sph_file_param)
 !
-      call set_control_4_shell_grids(nprocs_check, spctl, sph, ierr)
+      call set_control_4_shell_grids                                    &
+     &   (nprocs_check, spctl, sdctl, sph, ierr)
 !
       end subroutine s_set_control_4_gen_shell_grids
 !
@@ -94,7 +98,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_control_4_shell_grids                              &
-     &         (nprocs_check, spctl, sph, ierr)
+     &         (nprocs_check, spctl, sdctl, sph, ierr)
 !
       use m_constants
       use m_machine_parameter
@@ -112,6 +116,7 @@
 !
       integer(kind = kint), intent(in) :: nprocs_check
       type(sphere_data_control), intent(inout) :: spctl
+      type(sphere_domain_control), intent(inout) :: sdctl
       type(sph_grids), intent(inout) :: sph
       integer(kind = kint), intent(inout) :: ierr
 !
@@ -136,19 +141,20 @@
       end if
 !
       if (spctl%ngrid_elevation_ctl%iflag .gt. 0) then
-        sph%sph_rtp%nidx_global_rtp(2)                                 &
+        sph%sph_rtp%nidx_global_rtp(2)                                  &
      &          = spctl%ngrid_elevation_ctl%intvalue
       end if
 !
 !      if (spctl%ngrid_azimuth_ctl%iflag .gt. 0) then
-!        sph%sph_rtp%nidx_global_rtp(3)                                &
+!        sph%sph_rtp%nidx_global_rtp(3)                                 &
 !     &         = spctl%ngrid_azimuth_ctl%intvalue
 !      end if
 !
-      call set_ctl_radius_4_shell                                      &
+      call set_ctl_radius_4_shell                                       &
      &   (spctl, sph%sph_params, sph%sph_rtp, sph%sph_rj, ierr)
 !
-      call set_subdomains_4_sph_shell(nprocs_check, ierr, e_message)
+      call set_subdomains_4_sph_shell                                   &
+     &    (nprocs_check, sdctl, ierr, e_message)
       if (ierr .gt. 0) return
 !
 !
@@ -157,7 +163,8 @@
 !
 !  Check
       if    (sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_pole     &
-     &  .or. sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_center) then
+     &  .or. sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_center)  &
+     &      then
         if(mod(sph%sph_rtp%nidx_global_rtp(3),2) .ne. 0) then
           write(*,*) 'Set even number for the number of zonal grids'
           ierr = ierr_mesh

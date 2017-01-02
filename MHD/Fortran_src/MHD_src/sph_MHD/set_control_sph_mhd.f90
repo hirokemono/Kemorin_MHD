@@ -147,7 +147,8 @@
       iflag_make_SPH = i_sph_shell
       if(iflag_make_SPH .gt. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_control_4_shell_grids'
-        call set_control_4_shell_grids(nprocs, spctl1, sph_gen, ierr)
+        call set_control_4_shell_grids                                  &
+     &     (nprocs, spctl1, sdctl1, sph_gen, ierr)
       end if
 !
 !   set forces

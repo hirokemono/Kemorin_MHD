@@ -60,7 +60,7 @@
 !
       call start_eleps_time(1)
       call read_control_4_gen_shell_grids
-      call s_set_control_4_gen_shell_grids(plt1, spctl1,                &
+      call s_set_control_4_gen_shell_grids(plt1, spctl1, sdctl1,        &
      &    sph_const, fem_mesh_file, sph_file_prm_const, ierr_MPI)
       if(ierr_MPI .gt. 0) call calypso_mpi_abort(ierr_MPI, e_message)
 !

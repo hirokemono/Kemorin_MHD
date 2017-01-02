@@ -8,6 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine read_ctl_4_shell_define
+!!      subroutine read_ctl_ndomain_4_shell
 !!
 !! =======================================================
 !!    example of control section
@@ -74,16 +75,41 @@
 !!  end num_grid_sph
 !!
 !! =======================================================
+!!  ---------------------------------------------------------------------
+!!    example of control data
+!!
+!!  begin num_domain_ctl
+!!    num_radial_domain_ctl         2
+!!    num_horizontal_domain_ctl     2
+!!
+!!    array  num_domain_sph_grid   2
+!!      num_domain_sph_grid    radial       2   end
+!!      num_domain_sph_grid   meridional    3   end
+!!    end array num_domain_sph_grid
+!!
+!!    array num_domain_legendre   2
+!!      num_domain_legendre   radial        2   end
+!!      num_domain_legendre   zonal         3   end
+!!    end array num_domain_legendre
+!!
+!!    array num_domain_spectr     1
+!!      num_domain_spectr     modes         6   end
+!!    end array num_domain_spectr
+!!  end num_domain_ctl
+!!
+!!  ---------------------------------------------------------------------
 !!@endverbatim
 !
       module m_ctl_data_4_sphere_model
 !
       use m_precision
       use t_ctl_data_4_sphere_model
+      use t_ctl_data_4_divide_sphere
 !
       implicit  none
 !
       type(sphere_data_control), save :: spctl1
+      type(sphere_domain_control), save :: sdctl1
 !
 !   labels of data field
 !
@@ -92,8 +118,13 @@
       character(len=kchara), parameter :: hd_shell_def = 'num_grid_sph'
       integer(kind = kint) :: i_shell_def =   0
 !
+      character(len=kchara), parameter                                  &
+     &                     :: hd_domains_sph = 'num_domain_ctl'
+      integer(kind = kint) :: i_domains_sph = 0
+!
 !
       private :: hd_sph_def, hd_shell_def, i_shell_def
+      private :: hd_domains_sph, i_domains_sph
 !
 !  ---------------------------------------------------------------------
 !
@@ -109,6 +140,16 @@
 !
       end subroutine read_ctl_4_shell_define
 !
-!   --------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine read_ctl_ndomain_4_shell
+!
+!
+      call read_control_shell_domain                                    &
+     &   (hd_domains_sph, i_domains_sph, sdctl1)
+!
+      end subroutine read_ctl_ndomain_4_shell
+!
+!  ---------------------------------------------------------------------
 !
       end module m_ctl_data_4_sphere_model
