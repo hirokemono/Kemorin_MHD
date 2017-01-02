@@ -44,6 +44,8 @@
       subroutine init_gen_sph_grids
 !
       use m_read_ctl_gen_sph_shell
+      use m_ctl_data_4_platforms
+      use m_ctl_data_4_sphere_model
       use set_ctl_gen_shell_grids
 !
 !
@@ -58,8 +60,8 @@
 !
       call start_eleps_time(1)
       call read_control_4_gen_shell_grids
-      call s_set_control_4_gen_shell_grids                              &
-     &   (sph_const, fem_mesh_file, sph_file_prm_const, ierr_MPI)
+      call s_set_control_4_gen_shell_grids(plt1, spctl1,                &
+     &    sph_const, fem_mesh_file, sph_file_prm_const, ierr_MPI)
       if(ierr_MPI .gt. 0) call calypso_mpi_abort(ierr_MPI, e_message)
 !
       end subroutine init_gen_sph_grids

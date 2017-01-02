@@ -7,7 +7,7 @@
 !>@brief  Subroutines to read control arrays
 !!
 !!@verbatim
-!!      subroutine bcast_ctl_type_r1(int_item)
+!!      subroutine bcast_ctl_type_r1(real_item)
 !!        type(read_real_item), intent(inout) :: real_item
 !!      subroutine bcast_ctl_type_i1(int_item)
 !!        type(read_integer_item), intent(inout) :: int_item

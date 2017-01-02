@@ -250,7 +250,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call set_FEM_mesh_mode_4_SPH(sph_params%iflag_shell_mode)
+      call set_FEM_mesh_mode_4_SPH(spctl1, sph_params%iflag_shell_mode)
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &     write(*,*) 'copy_rj_spec_name_to_nod_fld'

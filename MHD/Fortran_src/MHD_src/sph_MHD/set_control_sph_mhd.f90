@@ -89,6 +89,7 @@
       use m_ucd_data
       use m_ctl_data_4_platforms
       use m_ctl_data_4_time_steps
+      use m_ctl_data_4_sphere_model
       use m_read_ctl_gen_sph_shell
       use sph_mhd_rms_IO
 !
@@ -146,7 +147,7 @@
       iflag_make_SPH = i_sph_shell
       if(iflag_make_SPH .gt. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_control_4_shell_grids'
-        call set_control_4_shell_grids(nprocs, sph_gen, ierr)
+        call set_control_4_shell_grids(nprocs, spctl1, sph_gen, ierr)
       end if
 !
 !   set forces
