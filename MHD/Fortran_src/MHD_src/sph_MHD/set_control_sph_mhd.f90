@@ -207,16 +207,17 @@
 !
 !   set_pickup modes
 !
-      call set_ctl_params_layered_spectr(layer_pwr_spectr_ctl1, pwr)
-      call set_ctl_params_sph_spectr(pwr)
+      call set_ctl_params_layered_spectr(smonitor_ctl1%lp_ctl, pwr)
+      call set_ctl_params_sph_spectr(smonitor_ctl1, pwr)
 !
-      call set_ctl_params_pick_sph(pick_spetr_ctl1,                     &
+      call set_ctl_params_pick_sph(smonitor_ctl1%pspec_ctl,             &
      &    pickup_sph_head, pick_list1, pick1)
 !
-      call set_ctl_params_pick_gauss(gauss_coef_ctl1,                   &
+      call set_ctl_params_pick_gauss(smonitor_ctl1%g_pwr,               &
      &    gauss_coefs_file_head, gauss_list1, gauss1)
 !
-      call set_ctl_params_no_heat_Nu(rj_fld, Nu_type1)
+      call set_ctl_params_no_heat_Nu(smonitor_ctl1%Nusselt_file_prefix, &
+     &    rj_fld, Nu_type1)
 !
       end subroutine set_control_4_SPH_MHD
 !

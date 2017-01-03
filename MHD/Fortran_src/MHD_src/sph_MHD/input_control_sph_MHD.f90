@@ -228,7 +228,7 @@
       call set_control_4_SPH_MHD(sph_gen, rj_fld,                       &
      &    mesh1_file, sph_file_param1, MHD1_org_files, sph_fst_IO, pwr)
       call set_control_4_SPH_to_FEM(sph%sph_params, rj_fld, nod_fld)
-      call set_ctl_params_dynamobench(mid_eq_monitor_ctl1)
+      call set_ctl_params_dynamobench(smonitor_ctl1%meq_ctl)
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
       call load_para_sph_mesh(sph, comms_sph, sph_grps)

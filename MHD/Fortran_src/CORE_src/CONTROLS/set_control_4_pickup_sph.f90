@@ -8,7 +8,8 @@
 !> @brief Set control parameter for monitoring spectrum
 !!
 !!@verbatim
-!!      subroutine set_ctl_params_sph_spectr(pwr)
+!!      subroutine set_ctl_params_sph_spectr(smonitor_ctl, pwr)
+!!        type(sph_monitor_control), intent(inout) :: smonitor_ctl
 !!        type(sph_mean_squares), intent(inout) :: pwr
 !!      subroutine set_ctl_params_layered_spectr(lp_ctl, pwr)
 !!        type(layerd_spectr_control), intent(inout) :: lp_ctl
@@ -25,7 +26,9 @@
 !!        type(picked_spectrum_data), intent(inout) :: gauss_coef
 !!        character(len = kchara), intent(inout) :: gauss_coefs_file_head
 !!
-!!      subroutine set_ctl_params_no_heat_Nu(rj_fld, Nu_type)
+!!      subroutine set_ctl_params_no_heat_Nu                            &
+!!     &         (Nusselt_file_prefix, rj_fld, Nu_type)
+!!        type(read_character_item), intent(in) :: Nusselt_file_prefix
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(nusselt_number_data), intent(inout) :: Nu_type
 !!@endverbatim
@@ -42,68 +45,75 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_ctl_params_sph_spectr(pwr)
+      subroutine set_ctl_params_sph_spectr(smonitor_ctl, pwr)
 !
-      use m_ctl_data_4_pickup_sph
+      use t_ctl_data_4_sph_monitor
       use t_pickup_sph_spectr_data
       use t_rms_4_sph_spectr
       use output_sph_m_square_file
       use skip_comment_f
 !
+      type(sph_monitor_control), intent(inout) :: smonitor_ctl
       type(sph_mean_squares), intent(inout) :: pwr
 !
       integer(kind = kint) :: i, j
 !
 !
-      if(num_vol_spectr_ctl .lt. 0) num_vol_spectr_ctl = 0
-      call alloc_volume_spectr_data((num_vol_spectr_ctl+1), pwr)
+      if(smonitor_ctl%num_vspec_ctl .lt. 0) then
+        smonitor_ctl%num_vspec_ctl = 0
+      end if
+      call alloc_volume_spectr_data                                     &
+     &  ((smonitor_ctl%num_vspec_ctl+1), pwr)
 !
       pwr%v_spectr(1)%iflag_volume_rms_spec                             &
-     &        = volume_pwr_spectr_prefix%iflag
+     &        = smonitor_ctl%volume_pwr_spectr_prefix%iflag
       if(pwr%v_spectr(1)%iflag_volume_rms_spec .gt. 0) then
         pwr%v_spectr(1)%fhead_rms_v                                     &
-     &       = volume_pwr_spectr_prefix%charavalue
+     &        = smonitor_ctl%volume_pwr_spectr_prefix%charavalue
       end if
 !
       pwr%v_spectr(1)%iflag_volume_ave_sph                              &
-     &        =  volume_average_prefix%iflag
+     &         =  smonitor_ctl%volume_average_prefix%iflag
       if(pwr%v_spectr(1)%iflag_volume_ave_sph .gt. 0) then
-        pwr%v_spectr(1)%fhead_ave = volume_average_prefix%charavalue
+        pwr%v_spectr(1)%fhead_ave                                       &
+     &         = smonitor_ctl%volume_average_prefix%charavalue
       end if
       pwr%v_spectr(1)%r_inside =  -1.0
       pwr%v_spectr(1)%r_outside = -1.0
 !
-      do i = 1, num_vol_spectr_ctl
+      do i = 1, smonitor_ctl%num_vspec_ctl
         j = i + 1
         pwr%v_spectr(j)%iflag_volume_rms_spec                           &
-     &        = vol_pwr_spectr_ctl(i)%volume_spec_file_ctl%iflag
+     &        = smonitor_ctl%v_pwr(i)%volume_spec_file_ctl%iflag
         if(pwr%v_spectr(j)%iflag_volume_rms_spec .gt. 0) then
           pwr%v_spectr(j)%fhead_rms_v                                   &
-     &       = vol_pwr_spectr_ctl(i)%volume_spec_file_ctl%charavalue
+     &       = smonitor_ctl%v_pwr(i)%volume_spec_file_ctl%charavalue
         end if
 !
         pwr%v_spectr(j)%iflag_volume_ave_sph                            &
-     &        =  vol_pwr_spectr_ctl(i)%volume_ave_file_ctl%iflag
+     &        =  smonitor_ctl%v_pwr(i)%volume_ave_file_ctl%iflag
         if(pwr%v_spectr(j)%iflag_volume_ave_sph .gt. 0) then
           pwr%v_spectr(j)%fhead_ave                                     &
-     &        = vol_pwr_spectr_ctl(i)%volume_ave_file_ctl%charavalue
+     &        = smonitor_ctl%v_pwr(i)%volume_ave_file_ctl%charavalue
         end if
 !
-        if(vol_pwr_spectr_ctl(i)%inner_radius_ctl%iflag .gt. 0) then
+        if(smonitor_ctl%v_pwr(i)%inner_radius_ctl%iflag .gt. 0) then
           pwr%v_spectr(j)%r_inside                                      &
-     &        = vol_pwr_spectr_ctl(i)%inner_radius_ctl%realvalue
+     &        = smonitor_ctl%v_pwr(i)%inner_radius_ctl%realvalue
         else
           pwr%v_spectr(j)%r_inside = -1.0
         end if
 !
-        if(vol_pwr_spectr_ctl(i)%outer_radius_ctl%iflag .gt. 0) then
+        if(smonitor_ctl%v_pwr(i)%outer_radius_ctl%iflag .gt. 0) then
           pwr%v_spectr(j)%r_outside                                     &
-     &        = vol_pwr_spectr_ctl(i)%outer_radius_ctl%realvalue
+     &        = smonitor_ctl%v_pwr(i)%outer_radius_ctl%realvalue
         else
           pwr%v_spectr(j)%r_outside = -1.0
         end if
       end do
-      if(num_vol_spectr_ctl .gt. 0) call deallocate_vol_sopectr_ctl
+      if(smonitor_ctl%num_vspec_ctl .gt. 0) then
+        call dealloc_vol_sopectr_ctl(smonitor_ctl)
+      end if
 !
       end subroutine set_ctl_params_sph_spectr
 !
@@ -327,14 +337,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_ctl_params_no_heat_Nu(rj_fld, Nu_type)
+      subroutine set_ctl_params_no_heat_Nu                              &
+     &         (Nusselt_file_prefix, rj_fld, Nu_type)
 !
-      use t_phys_data
-!
-      use m_ctl_data_4_pickup_sph
       use m_phys_labels
       use t_no_heat_Nusselt
+      use t_phys_data
+      use t_control_elements
 !
+      type(read_character_item), intent(in) :: Nusselt_file_prefix
       type(phys_data), intent(in) :: rj_fld
       type(nusselt_number_data), intent(inout) :: Nu_type
 !

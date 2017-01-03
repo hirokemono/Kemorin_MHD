@@ -73,7 +73,7 @@
       call set_control_SGS_SPH_MHD(sph_gen, rj_fld1,                    &
      &    mesh_file_circ, sph_file_param1, MHD1_org_files,              &
      &    sph_fst_IO, pwr1, trns_WK1%dynamic_SPH%sph_filters)
-      call set_ctl_params_pick_circle(mid_eq_monitor_ctl1)
+      call set_ctl_params_pick_circle(smonitor_ctl1%meq_ctl)
 !
 !   Load spherical harmonics data
 !
