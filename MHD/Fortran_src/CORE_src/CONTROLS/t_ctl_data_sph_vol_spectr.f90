@@ -13,6 +13,8 @@
 !!      subroutine read_layerd_spectr_ctl(hd_block, iflag, lp_ctl)
 !!      subroutine dealloc_num_spec_layer_ctl(lp_ctl)
 !!        type(layerd_spectr_control), intent(inout) :: lp_ctl
+!!      subroutine read_mid_eq_monitor_ctl(hd_block, iflag, meq_ctl)
+!!        type(mid_equator_control), intent(inout) :: meq_ctl
 !!
 !! -----------------------------------------------------------------
 !!
@@ -50,6 +52,13 @@
 !!    end array spectr_layer_ctl
 !!
 !!  end layered_spectrum_ctl
+!!
+!!  begin mid_equator_monitor_ctl
+!!    pick_circle_coord_ctl         spherical
+!!    nphi_mid_eq_ctl               500
+!!    pick_cylindrical_radius_ctl   0.75
+!!    pick_vertical_position_ctl    0.6
+!!  end mid_equator_monitor_ctl
 !!
 !! -----------------------------------------------------------------
 !!@endverbatim
@@ -98,6 +107,21 @@
       end type layerd_spectr_control
 !
 !
+      type mid_equator_control
+!>        Structure for coordiniate system for circled data
+        type(read_character_item) :: pick_circle_coord_ctl
+!
+!>        Structure for Number of zonal points for benchamek check
+        type(read_integer_item) :: nphi_mid_eq_ctl
+!
+!>        Structure for position for s
+        type(read_real_item) :: pick_s_ctl
+!
+!>        Structure for position for z
+        type(read_real_item) :: pick_z_ctl
+      end type mid_equator_control
+!
+!
 !   labels for item
 !
       character(len=kchara), parameter                                  &
@@ -126,9 +150,20 @@
       character(len=kchara), parameter                                  &
      &           :: hd_axis_spectr_switch = 'diff_lm_spectr_switch'
 !
+      character(len=kchara), parameter                                  &
+     &            :: hd_nphi_mid_eq = 'nphi_mid_eq_ctl'
+      character(len=kchara), parameter                                  &
+     &            :: hd_pick_s_ctl = 'pick_cylindrical_radius_ctl'
+      character(len=kchara), parameter                                  &
+     &            :: hd_pick_z_ctl =  'pick_vertical_position_ctl'
+      character(len=kchara), parameter                                  &
+     &            :: hd_circle_coord = 'pick_circle_coord_ctl'
+!
       private :: hd_vol_pwr, hd_vol_ave, hd_inner_r, hd_outer_r
       private :: hd_axis_spectr_switch, hd_diff_lm_spectr_switch
       private :: hd_degree_spectr_switch, hd_order_spectr_switch
+      private :: hd_nphi_mid_eq, hd_pick_s_ctl, hd_pick_z_ctl
+      private :: hd_circle_coord
 !
 ! -----------------------------------------------------------------------
 !
@@ -207,6 +242,38 @@
       call dealloc_control_array_int(lp_ctl%idx_spec_layer_ctl)
 !
       end subroutine dealloc_num_spec_layer_ctl
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine read_mid_eq_monitor_ctl(hd_block, iflag, meq_ctl)
+!
+      character(len=kchara), intent(in) :: hd_block
+!
+      integer(kind = kint), intent(inout) :: iflag
+      type(mid_equator_control), intent(inout) :: meq_ctl
+!
+!
+      if(right_begin_flag(hd_block) .eq. 0) return
+      if (iflag .gt. 0) return
+      do
+        call load_ctl_label_and_line
+!
+        call find_control_end_flag(hd_block, iflag)
+        if(iflag .gt. 0) exit
+!
+!
+        call read_real_ctl_type(hd_pick_s_ctl, meq_ctl%pick_s_ctl)
+        call read_real_ctl_type(hd_pick_z_ctl, meq_ctl%pick_z_ctl)
+!
+        call read_integer_ctl_type(hd_nphi_mid_eq,                      &
+     &      meq_ctl%nphi_mid_eq_ctl)
+!
+        call read_chara_ctl_type(hd_circle_coord,                       &
+     &      meq_ctl%pick_circle_coord_ctl)
+      end do
+!
+      end subroutine read_mid_eq_monitor_ctl
 !
 ! -----------------------------------------------------------------------
 !

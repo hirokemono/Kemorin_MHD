@@ -12,8 +12,10 @@
 !!       type(field_IO_params), intent(in) :: rj_org_param
 !!       type(field_IO_params), intent(in) :: rst_org_param
 !!       type(phys_data), intent(inout) :: rj_fld
-!!     subroutine set_ctl_params_pick_circle
-!!     subroutine set_ctl_params_dynamobench
+!!     subroutine set_ctl_params_pick_circle(meq_ctl)
+!!        type(mid_equator_control), intent(in) :: meq_ctl
+!!     subroutine set_ctl_params_dynamobench(meq_ctl)
+!!        type(mid_equator_control), intent(in) :: meq_ctl
 !!@endverbatim
 !
       module set_control_sph_data_MHD
@@ -120,9 +122,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_ctl_params_dynamobench
+      subroutine set_ctl_params_dynamobench(meq_ctl)
 !
-      use m_ctl_data_4_pickup_sph
+      use t_ctl_data_sph_vol_spectr
       use m_ctl_data_4_fields
       use m_phys_labels
       use m_phys_constants
@@ -130,14 +132,16 @@
       use m_circle_transform
       use m_field_at_mid_equator
 !
+      type(mid_equator_control), intent(in) :: meq_ctl
+!
       integer(kind = kint) :: ifld
 !
 !
       iflag_circle_coord = iflag_circle_sph
 !
       mphi_circle = -1
-      if(nphi_mid_eq_ctl%iflag .gt. 0) then
-        mphi_circle = nphi_mid_eq_ctl%intvalue
+      if(meq_ctl%nphi_mid_eq_ctl%iflag .gt. 0) then
+        mphi_circle = meq_ctl%nphi_mid_eq_ctl%intvalue
       end if
 !
       do ifld = 1, field_ctl%num
@@ -183,9 +187,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_ctl_params_pick_circle
+      subroutine set_ctl_params_pick_circle(meq_ctl)
 !
-      use m_ctl_data_4_pickup_sph
+      use t_ctl_data_sph_vol_spectr
       use m_ctl_data_4_fields
       use m_field_on_circle
       use m_circle_transform
@@ -193,12 +197,14 @@
       use ordering_field_by_viz
       use skip_comment_f
 !
+      type(mid_equator_control), intent(in) :: meq_ctl
+!
       character(len = kchara) :: tmpchara
 !
 !
       iflag_circle_coord = iflag_circle_sph
-      if (pick_circle_coord_ctl%iflag .ne. 0) then
-        tmpchara = pick_circle_coord_ctl%charavalue
+      if (meq_ctl%pick_circle_coord_ctl%iflag .ne. 0) then
+        tmpchara = meq_ctl%pick_circle_coord_ctl%charavalue
         if(    cmp_no_case(tmpchara,'spherical')                        &
      &    .or. cmp_no_case(tmpchara,'rtp')) then
           iflag_circle_coord = iflag_circle_sph
@@ -209,15 +215,19 @@
       end if
 !
       mphi_circle = -1
-      if(nphi_mid_eq_ctl%iflag .gt. 0) then
-        mphi_circle = nphi_mid_eq_ctl%intvalue
+      if(meq_ctl%nphi_mid_eq_ctl%iflag .gt. 0) then
+        mphi_circle = meq_ctl%nphi_mid_eq_ctl%intvalue
       end if
 !
       s_circle = 7.0d0/13.0d0 + 0.5d0
-      if(pick_s_ctl%iflag .gt. 0) s_circle = pick_s_ctl%realvalue
+      if(meq_ctl%pick_s_ctl%iflag .gt. 0) then
+        s_circle = meq_ctl%pick_s_ctl%realvalue
+      end if
 !
       z_circle = 0.0d0
-      if(pick_z_ctl%iflag .gt. 0) z_circle = pick_z_ctl%realvalue
+      if(meq_ctl%pick_z_ctl%iflag .gt. 0) then
+        z_circle = meq_ctl%pick_z_ctl%realvalue
+      end if
 !
       d_circle%num_phys = field_ctl%num
       call alloc_phys_name_type(d_circle)

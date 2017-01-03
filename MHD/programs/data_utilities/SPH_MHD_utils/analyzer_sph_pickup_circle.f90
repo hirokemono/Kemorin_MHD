@@ -44,6 +44,7 @@
       subroutine initialize_sph_pick_circle
 !
       use m_ctl_data_sph_MHD_noviz
+      use m_ctl_data_4_pickup_sph
       use m_node_phys_data
       use m_spheric_parameter
       use m_sph_spectr_data
@@ -72,7 +73,7 @@
       call set_control_SGS_SPH_MHD(sph_gen, rj_fld1,                    &
      &    mesh_file_circ, sph_file_param1, MHD1_org_files,              &
      &    sph_fst_IO, pwr1, trns_WK1%dynamic_SPH%sph_filters)
-      call set_ctl_params_pick_circle
+      call set_ctl_params_pick_circle(mid_eq_monitor_ctl1)
 !
 !   Load spherical harmonics data
 !

@@ -49,10 +49,9 @@
 !!      ...
 !!    end   pickup_spectr_ctl
 !!
-!!    pick_circle_coord_ctl         spherical
-!!    nphi_mid_eq_ctl               500
-!!    pick_cylindrical_radius_ctl   0.75
-!!    pick_vertical_position_ctl    0.6
+!!    begin mid_equator_monitor_ctl
+!!      ...
+!!    end   mid_equator_monitor_ctl
 !!  end sph_monitor_ctl
 !!
 !! -----------------------------------------------------------------
@@ -82,6 +81,8 @@
 !>      Structure for spectr data pickup
       type(pick_spectr_control), save :: pick_spetr_ctl1
 !
+      type(mid_equator_control), save :: mid_eq_monitor_ctl1
+!
 !
 !>      Structure for layered spectrum file prefix
       type(read_character_item), save :: volume_average_prefix
@@ -92,19 +93,6 @@
 !>      Structure for picked spectrum file prefix
       type(read_character_item), save :: Nusselt_file_prefix
 !
-!
-!
-!>      Structure for coordiniate system for circled data
-      type(read_character_item), save :: pick_circle_coord_ctl
-!
-!>      Structure for Number of zonal points for benchamek check
-      type(read_integer_item), save :: nphi_mid_eq_ctl
-!
-!>      Structure for position for s
-      type(read_real_item), save :: pick_s_ctl
-!
-!>      Structure for position for z
-      type(read_real_item), save :: pick_z_ctl
 !
 !    label for entry
 !
@@ -120,10 +108,13 @@
      &            :: hd_gauss_spec_block = 'gauss_coefficient_ctl'
       character(len=kchara), parameter                                  &
      &            :: hd_pick_sph_ctl =     'pickup_spectr_ctl'
+      character(len=kchara), parameter                                  &
+     &            :: hd_mid_eq_monitor_ctl = 'mid_equator_monitor_ctl'
       integer(kind = kint) :: i_vol_spectr_ctl =   0
       integer(kind = kint) :: i_layer_spectr_ctl = 0
       integer(kind = kint) :: i_gauss_pwr_ctl = 0
       integer(kind = kint) :: i_pick_sph_ctl =  0
+      integer(kind = kint) :: i_mid_eq_monitor_ctl =  0
 !
 !   labels for item
 !
@@ -134,24 +125,14 @@
       character(len=kchara), parameter                                  &
      &           :: hd_Nusselt_file_head = 'nusselt_number_prefix'
 !
-      character(len=kchara), parameter                                  &
-     &            :: hd_nphi_mid_eq = 'nphi_mid_eq_ctl'
-      character(len=kchara), parameter                                  &
-     &            :: hd_pick_s_ctl = 'pick_cylindrical_radius_ctl'
-      character(len=kchara), parameter                                  &
-     &            :: hd_pick_z_ctl =  'pick_vertical_position_ctl'
-      character(len=kchara), parameter                                  &
-     &            :: hd_circle_coord = 'pick_circle_coord_ctl'
-!
 !
       private :: hd_pick_sph, i_pick_sph
-      private :: hd_vol_spec_block, hd_layer_spec_block
-      private :: i_vol_spectr_ctl, i_layer_spectr_ctl
+      private :: hd_vol_spec_block, i_vol_spectr_ctl
+      private :: hd_layer_spec_block, i_layer_spectr_ctl
       private :: hd_gauss_spec_block, i_gauss_pwr_ctl
       private :: hd_pick_sph_ctl, i_pick_sph_ctl
       private :: hd_Nusselt_file_head
       private :: hd_voume_ave_head, hd_voume_rms_head
-      private :: hd_nphi_mid_eq, hd_pick_s_ctl, hd_pick_z_ctl
 !
 ! -----------------------------------------------------------------------
 !
@@ -177,27 +158,20 @@
         call read_layerd_spectr_ctl                                     &
      &     (hd_layer_spec_block, i_layer_spectr_ctl,                    &
      &      layer_pwr_spectr_ctl1)
+        call read_mid_eq_monitor_ctl                                    &
+     &     (hd_mid_eq_monitor_ctl, i_mid_eq_monitor_ctl,                &
+     &      mid_eq_monitor_ctl1)
 !
         call find_control_array_flag                                    &
      &     (hd_vol_spec_block, num_vol_spectr_ctl)
         if(num_vol_spectr_ctl .gt. 0) call read_volume_spectr_ctl
 !
-!
-        call read_real_ctl_type(hd_pick_s_ctl, pick_s_ctl)
-        call read_real_ctl_type(hd_pick_z_ctl, pick_z_ctl)
-!
-        call read_integer_ctl_type(hd_nphi_mid_eq, nphi_mid_eq_ctl)
-!
         call read_chara_ctl_type(hd_Nusselt_file_head,                  &
      &          Nusselt_file_prefix)
-!
         call read_chara_ctl_type(hd_voume_ave_head,                     &
      &          volume_average_prefix)
         call read_chara_ctl_type(hd_voume_rms_head,                     &
      &          volume_pwr_spectr_prefix)
-!
-        call read_chara_ctl_type(hd_circle_coord,                       &
-     &          pick_circle_coord_ctl)
       end do
 !
       end subroutine read_pickup_sph_ctl
