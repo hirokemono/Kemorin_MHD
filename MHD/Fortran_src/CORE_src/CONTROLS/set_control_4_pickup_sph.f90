@@ -10,6 +10,9 @@
 !!@verbatim
 !!      subroutine set_ctl_params_sph_spectr(pwr)
 !!        type(sph_mean_squares), intent(inout) :: pwr
+!!      subroutine set_ctl_params_layered_spectr(lp_ctl, pwr)
+!!        type(layerd_spectr_control), intent(inout) :: lp_ctl
+!!        type(sph_mean_squares), intent(inout) :: pwr
 !!      subroutine set_ctl_params_pick_sph                              &
 !!     &         (pspec_ctl, pickup_sph_head, pick_list, picked_sph)
 !!        type(pick_spectr_control), intent(inout) :: pspec_ctl
@@ -50,37 +53,6 @@
       type(sph_mean_squares), intent(inout) :: pwr
 !
       integer(kind = kint) :: i, j
-!
-!
-      if(no_flag(degree_spectr_switch%charavalue))                      &
-     &                                      pwr%iflag_spectr_l = 0
-      if(no_flag(order_spectr_switch%charavalue))                       &
-     &                                      pwr%iflag_spectr_m = 0
-      if(no_flag(diff_lm_spectr_switch%charavalue))                     &
-     &                                      pwr%iflag_spectr_lm = 0
-      if(no_flag(axis_spectr_switch%charavalue))                        &
-     &                                      pwr%iflag_spectr_m0 = 0
-!
-!
-      pwr%iflag_layer_rms_spec =  layered_pwr_spectr_prefix%iflag
-      if(pwr%iflag_layer_rms_spec .gt. 0) then
-        pwr%fhead_rms_layer = layered_pwr_spectr_prefix%charavalue
-      end if
-!
-!   set pickup layer
-      if(idx_spec_layer_ctl%num .eq. 1                                  &
-        .and. idx_spec_layer_ctl%ivec(1) .lt. 0) then
-        pwr%nri_rms = -1
-      else if(idx_spec_layer_ctl%num .gt. 0) then
-        call alloc_num_spec_layer(idx_spec_layer_ctl%num, pwr)
-!
-        pwr%kr_4_rms(1:pwr%nri_rms)                                     &
-     &         = idx_spec_layer_ctl%ivec(1:pwr%nri_rms)
-!
-        call deallocate_num_spec_layer_ctl
-      else
-        call alloc_num_spec_layer(izero, pwr)
-      end if
 !
 !
       if(num_vol_spectr_ctl .lt. 0) num_vol_spectr_ctl = 0
@@ -134,6 +106,53 @@
       if(num_vol_spectr_ctl .gt. 0) call deallocate_vol_sopectr_ctl
 !
       end subroutine set_ctl_params_sph_spectr
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_ctl_params_layered_spectr(lp_ctl, pwr)
+!
+      use t_ctl_data_sph_vol_spectr
+      use t_pickup_sph_spectr_data
+      use t_rms_4_sph_spectr
+      use output_sph_m_square_file
+      use skip_comment_f
+!
+      type(layerd_spectr_control), intent(inout) :: lp_ctl
+      type(sph_mean_squares), intent(inout) :: pwr
+!
+!
+      if(no_flag(lp_ctl%degree_spectr_switch%charavalue))               &
+     &                                      pwr%iflag_spectr_l = 0
+      if(no_flag(lp_ctl%order_spectr_switch%charavalue))                &
+     &                                      pwr%iflag_spectr_m = 0
+      if(no_flag(lp_ctl%diff_lm_spectr_switch%charavalue))              &
+     &                                      pwr%iflag_spectr_lm = 0
+      if(no_flag(lp_ctl%axis_spectr_switch%charavalue))                 &
+     &                                      pwr%iflag_spectr_m0 = 0
+!
+!
+      pwr%iflag_layer_rms_spec = lp_ctl%layered_pwr_spectr_prefix%iflag
+      if(pwr%iflag_layer_rms_spec .gt. 0) then
+        pwr%fhead_rms_layer                                             &
+     &        = lp_ctl%layered_pwr_spectr_prefix%charavalue
+      end if
+!
+!   set pickup layer
+      if(lp_ctl%idx_spec_layer_ctl%num .eq. 1                           &
+        .and. lp_ctl%idx_spec_layer_ctl%ivec(1) .lt. 0) then
+        pwr%nri_rms = -1
+      else if(lp_ctl%idx_spec_layer_ctl%num .gt. 0) then
+        call alloc_num_spec_layer(lp_ctl%idx_spec_layer_ctl%num, pwr)
+!
+        pwr%kr_4_rms(1:pwr%nri_rms)                                     &
+     &         = lp_ctl%idx_spec_layer_ctl%ivec(1:pwr%nri_rms)
+!
+        call dealloc_num_spec_layer_ctl(lp_ctl)
+      else
+        call alloc_num_spec_layer(izero, pwr)
+      end if
+!
+      end subroutine set_ctl_params_layered_spectr
 !
 ! -----------------------------------------------------------------------
 !
@@ -230,7 +249,7 @@
       subroutine set_ctl_params_pick_gauss                              &
      &         (g_pwr, gauss_coefs_file_head, gauss_list, gauss_coef)
 !
-      use t_ctl_data_sph_vol_spectr
+      use t_ctl_data_pick_sph_spectr
       use t_pickup_sph_spectr_data
 !
       type(gauss_spectr_control), intent(inout) :: g_pwr

@@ -30,24 +30,16 @@
 !!  begin sph_monitor_ctl
 !!    volume_average_prefix        'sph_ave_volume'
 !!    volume_pwr_spectr_prefix     'sph_pwr_volume'
-!!    layered_pwr_spectr_prefix    'sph_pwr_layer'
-!!
-!!    degree_spectr_switch         'On'
-!!    order_spectr_switch          'On'
-!!    diff_lm_spectr_switch        'On'
-!!    axisymmetric_spectr_switch   'On'
 !!
 !!    nusselt_number_prefix        'Nusselt'
 !!!
-!!   if spectr_layer_ctl = 0 or negative: 
-!!           No output
-!!    array spectr_layer_ctl  1
-!!      spectr_layer_ctl  62
-!!    end array spectr_layer_ctl
-!!
 !!    array volume_spectrum_ctl      2
 !!      ...
 !!    end array volume_spectrum_ctl
+!!
+!!    begin layered_spectrum_ctl
+!!      ...
+!!    end   layered_spectrum_ctl
 !!
 !!    begin gauss_coefficient_ctl
 !!      ...
@@ -83,6 +75,8 @@
       type(volume_spectr_control), allocatable, save                    &
      &                            :: vol_pwr_spectr_ctl(:)
 !
+      type(layerd_spectr_control), save :: layer_pwr_spectr_ctl1
+!
       type(gauss_spectr_control), save :: gauss_coef_ctl1
 !
 !>      Structure for spectr data pickup
@@ -95,29 +89,9 @@
 !>      Structure for layered spectrum file prefix
       type(read_character_item), save :: volume_pwr_spectr_prefix
 !
-!>      Structure for layered spectrum file prefix
-      type(read_character_item), save :: layered_pwr_spectr_prefix
-!
 !>      Structure for picked spectrum file prefix
       type(read_character_item), save :: Nusselt_file_prefix
 !
-!
-!>      Structure for degree spectrum switch
-      type(read_character_item), save :: degree_spectr_switch
-!
-!>      Structure for order spectrum switch
-      type(read_character_item), save :: order_spectr_switch
-!
-!>      Structure for l-m spectrum switch
-      type(read_character_item), save :: diff_lm_spectr_switch
-!>      Structure for l-m spectrum switch
-      type(read_character_item), save :: axis_spectr_switch
-!
-!
-!>      Structure for list of radial grid of spectr energy data output
-!!@n      idx_spec_layer_ctl%num:   Number of grid
-!!@n      idx_spec_layer_ctl%ivec: list of radial ID of spectr data
-       type(ctl_array_int), save :: idx_spec_layer_ctl
 !
 !
 !>      Structure for coordiniate system for circled data
@@ -137,14 +111,17 @@
       character(len=kchara), parameter                                  &
      &                     :: hd_pick_sph = 'sph_monitor_ctl'
       integer(kind = kint) :: i_pick_sph = 0
-      integer(kind = kint) :: i_vol_spectr_ctl = 0
 !
       character(len=kchara), parameter                                  &
      &            :: hd_vol_spec_block =   'volume_spectrum_ctl'
       character(len=kchara), parameter                                  &
+     &            :: hd_layer_spec_block = 'layered_spectrum_ctl'
+      character(len=kchara), parameter                                  &
      &            :: hd_gauss_spec_block = 'gauss_coefficient_ctl'
       character(len=kchara), parameter                                  &
      &            :: hd_pick_sph_ctl =     'pickup_spectr_ctl'
+      integer(kind = kint) :: i_vol_spectr_ctl =   0
+      integer(kind = kint) :: i_layer_spectr_ctl = 0
       integer(kind = kint) :: i_gauss_pwr_ctl = 0
       integer(kind = kint) :: i_pick_sph_ctl =  0
 !
@@ -155,22 +132,7 @@
       character(len=kchara), parameter                                  &
      &           :: hd_voume_rms_head = 'volume_pwr_spectr_prefix'
       character(len=kchara), parameter                                  &
-     &           :: hd_layer_rms_head = 'layered_pwr_spectr_prefix'
-      character(len=kchara), parameter                                  &
      &           :: hd_Nusselt_file_head = 'nusselt_number_prefix'
-!
-      character(len=kchara), parameter                                  &
-     &           :: hd_degree_spectr_switch = 'degree_spectr_switch'
-      character(len=kchara), parameter                                  &
-     &           :: hd_order_spectr_switch = 'order_spectr_switch'
-      character(len=kchara), parameter                                  &
-     &           :: hd_diff_lm_spectr_switch                            &
-     &                              = 'axisymmetric_spectr_switch'
-      character(len=kchara), parameter                                  &
-     &           :: hd_axis_spectr_switch = 'diff_lm_spectr_switch'
-!
-      character(len=kchara), parameter                                  &
-     &           :: hd_spctr_layer = 'spectr_layer_ctl'
 !
       character(len=kchara), parameter                                  &
      &            :: hd_nphi_mid_eq = 'nphi_mid_eq_ctl'
@@ -182,29 +144,19 @@
      &            :: hd_circle_coord = 'pick_circle_coord_ctl'
 !
 !
-      private :: hd_pick_sph, i_pick_sph, hd_spctr_layer
+      private :: hd_pick_sph, i_pick_sph
+      private :: hd_vol_spec_block, hd_layer_spec_block
+      private :: i_vol_spectr_ctl, i_layer_spectr_ctl
       private :: hd_gauss_spec_block, i_gauss_pwr_ctl
       private :: hd_pick_sph_ctl, i_pick_sph_ctl
       private :: hd_Nusselt_file_head
       private :: hd_voume_ave_head, hd_voume_rms_head
-      private :: hd_layer_rms_head, hd_nphi_mid_eq
-      private :: hd_pick_s_ctl, hd_pick_z_ctl, hd_diff_lm_spectr_switch
-      private :: hd_axis_spectr_switch
-      private :: hd_degree_spectr_switch, hd_order_spectr_switch
+      private :: hd_nphi_mid_eq, hd_pick_s_ctl, hd_pick_z_ctl
 !
 ! -----------------------------------------------------------------------
 !
       contains
 !
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_num_spec_layer_ctl
-!
-      call dealloc_control_array_int(idx_spec_layer_ctl)
-!
-      end subroutine deallocate_num_spec_layer_ctl
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine read_pickup_sph_ctl
@@ -222,13 +174,13 @@
      &     (hd_gauss_spec_block, i_gauss_pwr_ctl, gauss_coef_ctl1)
         call read_pickup_spectr_ctl                                     &
      &     (hd_pick_sph_ctl, i_pick_sph_ctl, pick_spetr_ctl1)
+        call read_layerd_spectr_ctl                                     &
+     &     (hd_layer_spec_block, i_layer_spectr_ctl,                    &
+     &      layer_pwr_spectr_ctl1)
 !
         call find_control_array_flag                                    &
      &     (hd_vol_spec_block, num_vol_spectr_ctl)
         if(num_vol_spectr_ctl .gt. 0) call read_volume_spectr_ctl
-!
-!
-        call read_control_array_i1(hd_spctr_layer, idx_spec_layer_ctl)
 !
 !
         call read_real_ctl_type(hd_pick_s_ctl, pick_s_ctl)
@@ -243,17 +195,6 @@
      &          volume_average_prefix)
         call read_chara_ctl_type(hd_voume_rms_head,                     &
      &          volume_pwr_spectr_prefix)
-        call read_chara_ctl_type(hd_layer_rms_head,                     &
-     &          layered_pwr_spectr_prefix)
-!
-        call read_chara_ctl_type(hd_degree_spectr_switch,               &
-     &          degree_spectr_switch)
-        call read_chara_ctl_type(hd_order_spectr_switch,                &
-     &          order_spectr_switch)
-        call read_chara_ctl_type(hd_diff_lm_spectr_switch,              &
-     &          diff_lm_spectr_switch)
-        call read_chara_ctl_type(hd_axis_spectr_switch,                 &
-     &          axis_spectr_switch)
 !
         call read_chara_ctl_type(hd_circle_coord,                       &
      &          pick_circle_coord_ctl)

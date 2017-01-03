@@ -207,6 +207,7 @@
 !
 !   set_pickup modes
 !
+      call set_ctl_params_layered_spectr(layer_pwr_spectr_ctl1, pwr)
       call set_ctl_params_sph_spectr(pwr)
 !
       call set_ctl_params_pick_sph(pick_spetr_ctl1,                     &

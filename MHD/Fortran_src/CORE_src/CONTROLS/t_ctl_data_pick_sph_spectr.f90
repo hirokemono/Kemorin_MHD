@@ -14,8 +14,15 @@
 !!      subroutine dealloc_pick_sph_l_ctl(pspec_ctl)
 !!      subroutine dealloc_pick_sph_m_ctl(pspec_ctl)
 !!
+!!      subroutine dealloc_pick_gauss_ctl(g_pwr)
+!!      subroutine dealloc_pick_gauss_l_ctl(g_pwr)
+!!      subroutine dealloc_pick_gauss_m_ctl(g_pwr)
+!!
 !!      subroutine read_pickup_spectr_ctl(hd_block, iflag, pspec_ctl)
 !!        type(pick_spectr_control), intent(inout) :: pspec_ctl
+!!
+!!      subroutine read_gauss_spectr_ctl(g_pwr)
+!!        type(gauss_spectr_control), intent(inout) :: g_pwr
 !!
 !! -----------------------------------------------------------------
 !!
@@ -45,6 +52,27 @@
 !!      pick_sph_order_ctl   2
 !!    end array pick_sph_order_ctl
 !!  end pickup_spectr_ctl
+!!
+!!
+!!    begin gauss_coefficient_ctl
+!!      gauss_coefs_prefix           'sph_spectr/gauss_coefs'
+!!      gauss_coefs_radius_ctl    2.91
+!!
+!!      array pick_gauss_coefs_ctl  2
+!!        pick_gauss_coefs_ctl   2  -2
+!!        pick_gauss_coefs_ctl   2   2
+!!      end array pick_gauss_coefs_ctl
+!!
+!!      array pick_gauss_coef_degree_ctl  2
+!!        pick_gauss_coef_degree_ctl   2
+!!        pick_gauss_coef_degree_ctl   2
+!!      end array pick_gauss_coef_degree_ctl
+!!
+!!      array pick_gauss_coef_order_ctl  2
+!!        pick_gauss_coef_order_ctl   -2
+!!        pick_gauss_coef_order_ctl    2
+!!      end array pick_gauss_coef_order_ctl
+!!    end   gauss_coefficient_ctl
 !!
 !! -----------------------------------------------------------------
 !!@endverbatim
@@ -87,6 +115,30 @@
         type(ctl_array_int) :: idx_pick_sph_m_ctl
       end type pick_spectr_control
 !
+      type gauss_spectr_control
+!>        Structure for gauss coefficient file prefix
+        type(read_character_item) :: gauss_coefs_prefix
+!
+!>        Structure for reference radus 
+        type(read_real_item) :: gauss_coefs_radius_ctl
+!
+!>        Structure for list of mode of Gauss coefficients output
+!!@n        idx_gauss_ctl%num:   Number of mode
+!!@n        idx_gauss_ctl%int1: list of degree of Gauss coefficients
+!!@n        idx_gauss_ctl%int2: list of order of Gauss coefficients
+        type(ctl_array_i2) :: idx_gauss_ctl
+!
+!>        Structure for list of degree of Gauss coefficient output
+!!@n        idx_gauss_l_ctl%num:   Number of degree
+!!@n        idx_gauss_l_ctl%ivec: list of degree of gauss coefficient
+        type(ctl_array_int) :: idx_gauss_l_ctl
+!
+!>        Structure for list of order of Gauss coefficient output
+!!@n        idx_gauss_m_ctl%num:   Number of order
+!!@n        idx_gauss_m_ctl%ivec: list of order of gauss coefficient
+        type(ctl_array_int) :: idx_gauss_m_ctl
+      end type gauss_spectr_control
+!
 !
 !   labels for item
 !
@@ -103,8 +155,22 @@
       character(len=kchara), parameter                                  &
      &            :: hd_pick_sph_m =     'pick_sph_order_ctl'
 !
+      character(len=kchara), parameter                                  &
+     &           :: hd_gauss_coefs_head = 'gauss_coefs_prefix'
+      character(len=kchara), parameter                                  &
+     &           :: hd_gauss_coefs_r =    'gauss_coefs_radius_ctl'
+      character(len=kchara), parameter                                  &
+     &            :: hd_pick_gauss_lm =   'pick_gauss_coefs_ctl'
+      character(len=kchara), parameter                                  &
+     &            :: hd_pick_gauss_l = 'pick_gauss_coef_degree_ctl'
+      character(len=kchara), parameter                                  &
+     &            :: hd_pick_gauss_m = 'pick_gauss_coef_order_ctl'
+!
+!
       private :: hd_picked_mode_head, hd_pick_layer
       private :: hd_pick_sph_lm, hd_pick_sph_l, hd_pick_sph_m
+      private :: hd_gauss_coefs_head, hd_gauss_coefs_r
+      private :: hd_pick_gauss_lm, hd_pick_gauss_l, hd_pick_gauss_m
 !
 ! -----------------------------------------------------------------------
 !
@@ -154,6 +220,37 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
+      subroutine dealloc_pick_gauss_ctl(g_pwr)
+!
+      type(gauss_spectr_control), intent(inout) :: g_pwr
+!
+      call dealloc_control_array_i2(g_pwr%idx_gauss_ctl)
+!
+      end subroutine dealloc_pick_gauss_ctl
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_pick_gauss_l_ctl(g_pwr)
+!
+      type(gauss_spectr_control), intent(inout) :: g_pwr
+!
+      call dealloc_control_array_int(g_pwr%idx_gauss_l_ctl)
+!
+      end subroutine dealloc_pick_gauss_l_ctl
+!
+! -----------------------------------------------------------------------
+!
+      subroutine dealloc_pick_gauss_m_ctl(g_pwr)
+!
+      type(gauss_spectr_control), intent(inout) :: g_pwr
+!
+      call dealloc_control_array_int(g_pwr%idx_gauss_m_ctl)
+!
+      end subroutine dealloc_pick_gauss_m_ctl
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
       subroutine read_pickup_spectr_ctl(hd_block, iflag, pspec_ctl)
 !
       character(len=kchara), intent(in) :: hd_block
@@ -186,6 +283,40 @@
       end do
 !
       end subroutine read_pickup_spectr_ctl
+!
+! -----------------------------------------------------------------------
+!
+      subroutine read_gauss_spectr_ctl(hd_block, iflag, g_pwr)
+!
+      character(len=kchara), intent(in) :: hd_block
+!
+      integer(kind = kint), intent(inout) :: iflag
+      type(gauss_spectr_control), intent(inout) :: g_pwr
+!
+!
+      if(right_begin_flag(hd_block) .eq. 0) return
+      if (iflag .gt. 0) return
+      do
+        call load_ctl_label_and_line
+!
+        call find_control_end_flag(hd_block, iflag)
+        if(iflag .gt. 0) exit
+!
+!
+        call read_control_array_i2                                      &
+     &     (hd_pick_gauss_lm, g_pwr%idx_gauss_ctl)
+        call read_control_array_i1                                      &
+     &     (hd_pick_gauss_l, g_pwr%idx_gauss_l_ctl)
+        call read_control_array_i1                                      &
+     &     (hd_pick_gauss_m, g_pwr%idx_gauss_m_ctl)
+!
+        call read_real_ctl_type(hd_gauss_coefs_r,                       &
+     &      g_pwr%gauss_coefs_radius_ctl)
+        call read_chara_ctl_type(hd_gauss_coefs_head,                   &
+     &      g_pwr%gauss_coefs_prefix)
+      end do
+!
+      end subroutine read_gauss_spectr_ctl
 !
 ! -----------------------------------------------------------------------
 !
