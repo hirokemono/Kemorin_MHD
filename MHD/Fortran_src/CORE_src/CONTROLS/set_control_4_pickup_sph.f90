@@ -249,7 +249,7 @@
      &          = pspec_ctl%idx_pick_layer_ctl%ivec(inum)
         end do
 !
-        call dealloc_pick_sph_ctl(pspec_ctl)
+        call dealloc_num_pick_layer_ctl(pspec_ctl)
       end if
 !
       end subroutine set_ctl_params_pick_sph
