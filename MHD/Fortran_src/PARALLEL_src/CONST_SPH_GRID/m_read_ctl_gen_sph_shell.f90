@@ -50,7 +50,7 @@
       use bcast_4_sphere_ctl
 !
 !
-      if(my_rank .gt. 0) then
+      if(my_rank .eq. 0) then
         ctl_file_code = control_file_code
         open(ctl_file_code, file = control_file_name)
 !
