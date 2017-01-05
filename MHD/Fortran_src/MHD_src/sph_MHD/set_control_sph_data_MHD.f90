@@ -79,10 +79,10 @@
 !
 !     add fields for simulation
 !
-        call add_field_name_4_mhd
-        call add_field_name_4_sph_mhd
-        call add_field_name_4_SGS
-        call add_field_name_dynamic_SGS
+        call add_field_name_4_mhd(field_ctl)
+        call add_field_name_4_sph_mhd(field_ctl)
+        call add_field_name_4_SGS(field_ctl)
+        call add_field_name_dynamic_SGS(field_ctl)
         if (iflag_debug.eq.1) write(*,*)                                &
      &    'field_ctl%num after modified ', field_ctl%num
 !
@@ -231,7 +231,7 @@
 !
       d_circle%num_phys = field_ctl%num
       call alloc_phys_name_type(d_circle)
-      call s_ordering_field_by_viz(d_circle%num_phys,                   &
+      call s_ordering_field_by_viz(field_ctl, d_circle%num_phys,        &
      &    d_circle%num_phys_viz, d_circle%num_component,                &
      &    d_circle%phys_name, d_circle%iflag_monitor)
 !

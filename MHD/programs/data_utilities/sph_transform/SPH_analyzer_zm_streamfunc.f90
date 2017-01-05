@@ -12,6 +12,8 @@
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(time_params_IO), intent(inout) :: t_IO
 !!        type(field_IO), intent(inout) :: fld_IO
+!!      subroutine set_ctl_data_4_zm_streamline(field_ctl)
+!!        type(ctl_array_c3), intent(inout) :: field_ctl
 !
       module SPH_analyzer_zm_streamfunc
 !
@@ -105,11 +107,12 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_ctl_data_4_zm_streamline
+      subroutine set_ctl_data_4_zm_streamline(field_ctl)
 !
-      use m_ctl_data_4_fields
+      use t_read_control_arrays
       use m_phys_labels
 !
+      type(ctl_array_c3), intent(inout) :: field_ctl
       integer(kind = kint) :: ifld, iflag_velo, iflag_magne
 !
       iflag_velo =  0
@@ -119,7 +122,7 @@
         if(field_ctl%c1_tbl(ifld) .eq. fhd_magne) iflag_magne = 2
       end do
 !
-      call deallocate_phys_control
+      call dealloc_control_array_c3(field_ctl)
 !
       field_ctl%num = iflag_velo + iflag_magne
       call alloc_control_array_c3(field_ctl)

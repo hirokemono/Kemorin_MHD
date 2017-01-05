@@ -7,8 +7,9 @@
 !> @brief Chenge order of field by element type
 !!
 !!@verbatim
-!!      subroutine s_set_orders_of_field(nnod_4_ele,                    &
+!!      subroutine s_set_orders_of_field(fld_ctl, nnod_4_ele,           &
 !!     &          num_nod_phys, phys_nod_name, iorder_nod_phys)
+!!        type(field_control), intent(in) :: fld_ctl
 !!@endverbatim
 !
       module set_orders_of_field
@@ -23,12 +24,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_orders_of_field(nnod_4_ele,                      &
+      subroutine s_set_orders_of_field(fld_ctl, nnod_4_ele,             &
      &          num_nod_phys, phys_nod_name, iorder_nod_phys)
 !
       use m_geometry_constants
-      use m_ctl_data_4_fields
+      use t_ctl_data_4_fields
 !
+      type(field_control), intent(in) :: fld_ctl
       integer(kind = kint), intent(in) :: nnod_4_ele
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len = kchara), intent(in)                               &
@@ -45,15 +47,17 @@
       if(nnod_4_ele .eq. num_t_quad) then
 !
         do i = 1, num_nod_phys
-          do j = 1, quad_phys_ctl%num
-            if (phys_nod_name(i) .eq. quad_phys_ctl%c_tbl(j)) then
+          do j = 1, fld_ctl%quad_phys_ctl%num
+            if(phys_nod_name(i) .eq. fld_ctl%quad_phys_ctl%c_tbl(j))    &
+     &       then
               iorder_nod_phys(i) = num_t_quad
               exit
             end if
           end do
 !
-          do j = 1, linear_phys_ctl%num
-            if (phys_nod_name(i) .eq. linear_phys_ctl%c_tbl(j)) then
+          do j = 1, fld_ctl%linear_phys_ctl%num
+            if(phys_nod_name(i) .eq. fld_ctl%linear_phys_ctl%c_tbl(j))  &
+     &       then
               iorder_nod_phys(i) = num_t_linear
               exit
             end if

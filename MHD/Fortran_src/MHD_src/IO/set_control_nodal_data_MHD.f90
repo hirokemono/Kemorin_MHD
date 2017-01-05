@@ -37,6 +37,7 @@
 !
       use set_control_nodal_data
       use add_nodal_fields_4_MHD
+      use add_nodal_fields_4_SGS
 !
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -48,7 +49,7 @@
         e_message = 'Set field for simulation'
         call calypso_MPI_abort(ierr_fld, e_message)
       end if
-      if (iflag_debug .ge. iflag_routine_msg) write(*,*)               &
+      if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &    'original field_ctl%num ', field_ctl%num
 !
 !
@@ -56,8 +57,13 @@
 !
 !     add terms for MHD
 !
-        call add_field_name_4_mhd
-        call add_field_name_4_fem_mhd
+        call add_field_name_4_mhd(field_ctl)
+!
+!     set work fields for SGS models
+        if (iflag_debug .ge. iflag_routine_msg)                         &
+     &               write(*,*) 'add_work_area_4_sgs_model'
+        call add_work_area_4_sgs_model(field_ctl)
+!
         if (iflag_debug .ge. iflag_routine_msg) write(*,*)              &
      &    'num_nod_phys after modified ', field_ctl%num
 !
@@ -69,21 +75,6 @@
       call set_ele_field_names_MHD(nod_fld)
 !
       end subroutine set_control_4_fields
-!
-! -----------------------------------------------------------------------
-!
-      subroutine add_field_name_4_fem_mhd
-!
-      use add_nodal_fields_4_SGS
-!
-!
-!     set work fields for SGS models
-!
-      if (iflag_debug .ge. iflag_routine_msg)                           &
-     &               write(*,*) 'add_work_area_4_sgs_model'
-      call add_work_area_4_sgs_model
-!
-      end subroutine add_field_name_4_fem_mhd
 !
 ! -----------------------------------------------------------------------
 !

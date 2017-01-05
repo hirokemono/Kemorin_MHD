@@ -11,7 +11,6 @@
 !!        type(phys_data), intent(inout) :: rj_fld
 !!      subroutine set_ctl_data_4_zm_trans
 !!      subroutine set_ctl_data_4_pick_zm
-!!      subroutine set_ctl_data_4_zm_streamline
 !
       module m_ctl_params_sph_trans
 !

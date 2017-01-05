@@ -46,7 +46,7 @@
 !
       if ( fld%num_phys .gt. 0 ) then
         call alloc_phys_name_type(fld)
-        call ordering_field_type_by_viz(fld)
+        call ordering_field_type_by_viz(field_ctl, fld)
 !
         if (iflag_debug .ge. iflag_routine_msg)                         &
      &                 call check_nodal_field_name_type(6, fld)
@@ -58,16 +58,19 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine ordering_field_type_by_viz(fld)
+      subroutine ordering_field_type_by_viz(field_ctl, fld)
 !
       use t_phys_data
+      use t_read_control_arrays
       use node_monitor_IO
       use ordering_field_by_viz
 !
+      type(ctl_array_c3), intent(in) :: field_ctl
       type(phys_data), intent(inout) :: fld
 !
 !
-      call s_ordering_field_by_viz(fld%num_phys, fld%num_phys_viz,      &
+      call s_ordering_field_by_viz                                      &
+     &   (field_ctl, fld%num_phys, fld%num_phys_viz,                    &
      &    fld%num_component, fld%phys_name, fld%iflag_monitor)
 !
       call set_istack_4_nodal_field(fld%num_phys, fld%num_phys_viz,     &
@@ -78,16 +81,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine ordering_field_type_by_comp_viz(fld)
+      subroutine ordering_field_type_by_comp_viz(field_ctl, fld)
 !
       use t_phys_data
+      use t_read_control_arrays
       use node_monitor_IO
       use ordering_field_by_viz
 !
+      type(ctl_array_c3), intent(in) :: field_ctl
       type(phys_data), intent(inout) :: fld
 !
 !
-      call ordering_field_by_comp_viz(fld%num_phys, fld%num_phys_viz,   &
+      call ordering_field_by_comp_viz                                   &
+     &   (field_ctl, fld%num_phys, fld%num_phys_viz,                    &
      &    fld%num_component, fld%phys_name, fld%iflag_monitor)
 !
       call set_istack_4_nodal_field(fld%num_phys, fld%num_phys_viz,     &
