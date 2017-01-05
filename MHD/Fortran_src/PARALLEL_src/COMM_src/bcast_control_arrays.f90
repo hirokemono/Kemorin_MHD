@@ -125,7 +125,7 @@
 !
       call MPI_BCAST(chara_item%iflag, ione,                            &
      &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(chara_item%charavalue, ione,                       &
+      call MPI_BCAST(chara_item%charavalue, kchara,                     &
      &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine bcast_ctl_type_c1
@@ -181,7 +181,7 @@
 !
       call MPI_BCAST(chara3_item%iflag, ione,                           &
      &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(chara3_item%charavalue, ithree,                    &
+      call MPI_BCAST(chara3_item%charavalue, ithree*kchara,             &
      &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine bcast_ctl_type_c3
@@ -304,7 +304,7 @@
 !
       if(my_rank .ne. 0) call alloc_control_array_chara(array_chara)
 !
-      call MPI_BCAST(array_chara%c_tbl, array_chara%num,                &
+      call MPI_BCAST(array_chara%c_tbl, array_chara%num*kchara,         &
      &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine bcast_ctl_array_c1
@@ -323,9 +323,9 @@
 !
       if(my_rank .ne. 0) call alloc_control_array_c2(array_c2)
 !
-      call MPI_BCAST(array_c2%c1_tbl, array_c2%num,                     &
+      call MPI_BCAST(array_c2%c1_tbl, array_c2%num*kchara,              &
      &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_c2%c2_tbl, array_c2%num,                     &
+      call MPI_BCAST(array_c2%c2_tbl, array_c2%num*kchara,              &
      &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine bcast_ctl_array_c2
@@ -344,11 +344,11 @@
 !
       if(my_rank .ne. 0) call alloc_control_array_c3(array_c3)
 !
-      call MPI_BCAST(array_c3%c1_tbl, array_c3%num,                     &
+      call MPI_BCAST(array_c3%c1_tbl, array_c3%num*kchara,              &
      &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_c3%c2_tbl, array_c3%num,                     &
+      call MPI_BCAST(array_c3%c2_tbl, array_c3%num*kchara,              &
      &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_c3%c3_tbl, array_c3%num,                     &
+      call MPI_BCAST(array_c3%c3_tbl, array_c3%num*kchara,              &
      &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine bcast_ctl_array_c3
@@ -367,7 +367,7 @@
 !
       if(my_rank .ne. 0) call alloc_control_array_c_r(array_cr)
 !
-      call MPI_BCAST(array_cr%c_tbl, array_cr%num,                      &
+      call MPI_BCAST(array_cr%c_tbl, array_cr%num*kchara,               &
      &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(array_cr%vect, array_cr%num,                       &
      &               CALYPSO_REAL, izero, CALYPSO_COMM, ierr_MPI)
@@ -388,7 +388,7 @@
 !
       if(my_rank .ne. 0) call alloc_control_array_c_i(array_ci)
 !
-      call MPI_BCAST(array_ci%c_tbl, array_ci%num,                      &
+      call MPI_BCAST(array_ci%c_tbl, array_ci%num*kchara,               &
      &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(array_ci%ivec, array_ci%num,                       &
      &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
@@ -409,7 +409,7 @@
 !
       if(my_rank .ne. 0) call alloc_control_array_c_r2(array_cr2)
 !
-      call MPI_BCAST(array_cr2%c_tbl, array_cr2%num,                    &
+      call MPI_BCAST(array_cr2%c_tbl, array_cr2%num*kchara,             &
      &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(array_cr2%vec1, array_cr2%num,                     &
      &               CALYPSO_REAL, izero, CALYPSO_COMM, ierr_MPI)
@@ -432,9 +432,9 @@
 !
       if(my_rank .ne. 0) call alloc_control_array_c2_r(array_c2r)
 !
-      call MPI_BCAST(array_c2r%c1_tbl, array_c2r%num,                   &
+      call MPI_BCAST(array_c2r%c1_tbl, array_c2r%num*kchara,            &
      &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_c2r%c2_tbl, array_c2r%num,                   &
+      call MPI_BCAST(array_c2r%c2_tbl, array_c2r%num*kchara,            &
      &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(array_c2r%vect, array_c2r%num,                     &
      &               CALYPSO_REAL, izero, CALYPSO_COMM, ierr_MPI)
@@ -457,7 +457,7 @@
 !
       call MPI_BCAST(array_icr%ivec, array_icr%num,                     &
      &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(array_icr%c_tbl, array_icr%num,                    &
+      call MPI_BCAST(array_icr%c_tbl, array_icr%num*kchara,             &
      &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(array_icr%vect, array_icr%num,                     &
      &               CALYPSO_REAL, izero, CALYPSO_COMM, ierr_MPI)
