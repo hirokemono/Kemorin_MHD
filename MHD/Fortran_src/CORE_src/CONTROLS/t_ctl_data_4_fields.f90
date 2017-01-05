@@ -73,19 +73,19 @@
 !!@n       field_ctl%c1_tbl: Name of field
 !!@n       field_ctl%c2_tbl: flag for visualization output
 !!@n       field_ctl%c3_tbl: flag for time series output
-        type(ctl_array_c3), save :: field_ctl
+        type(ctl_array_c3) :: field_ctl
 !
 !>        Structure for list of field on quadrature elements
 !!@n       quad_phys_ctl%icou:  Read flag for 'quad_field_name_ctl'
 !!@n       quad_phys_ctl%num:   Number of field
 !!@n       quad_phys_ctl%c_tbl: Name list of field
-        type(ctl_array_chara), save :: quad_phys_ctl
+        type(ctl_array_chara) :: quad_phys_ctl
 !
 !>        Structure for list of field on linear elements
 !!@n       linear_phys_ctl%icou:  Read flag for 'linear_field_name_ctl'
 !!@n       linear_phys_ctl%num:   Number of field
 !!@n       linear_phys_ctl%c_tbl: Name list of field
-        type(ctl_array_chara), save :: linear_phys_ctl
+        type(ctl_array_chara) :: linear_phys_ctl
       end type field_control
 !
 !   4th level for fields
@@ -111,7 +111,7 @@
 !
        subroutine dealloc_phys_control(fld_ctl)
 !
-      type(field_control), intent(inonut) :: fld_ctl
+      type(field_control), intent(inout) :: fld_ctl
 !
        call dealloc_control_array_c3(fld_ctl%field_ctl)
 !
@@ -121,7 +121,7 @@
 !
       subroutine dealloc_quad_phys_control(fld_ctl)
 !
-      type(field_control), intent(inonut) :: fld_ctl
+      type(field_control), intent(inout) :: fld_ctl
 !
       call dealloc_control_array_chara(fld_ctl%quad_phys_ctl)
 !
@@ -131,7 +131,7 @@
 !
       subroutine dealloc_linear_phys_control(fld_ctl)
 !
-      type(field_control), intent(inonut) :: fld_ctl
+      type(field_control), intent(inout) :: fld_ctl
 !
       call dealloc_control_array_chara(fld_ctl%linear_phys_ctl)
 !
@@ -149,7 +149,7 @@
       character(len=kchara), intent(in) :: hd_block
 !
       integer(kind = kint), intent(inout) :: iflag
-      type(field_control), intent(inonut) :: fld_ctl
+      type(field_control), intent(inout) :: fld_ctl
 !
 !
       if(right_begin_flag(hd_block) .eq. 0) return

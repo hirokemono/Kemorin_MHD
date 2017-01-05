@@ -12,6 +12,7 @@
       use m_spectr_4_ispack
       use m_control_plane_fft
       use m_ctl_data_4_plane_model
+      use m_ctl_data_4_fields
       use m_geometry_data_4_merge
 !
       use t_time_data_IO
@@ -71,7 +72,7 @@
       write(*,*) 'init_ucd_data_4_FFT'
       call init_ucd_data_4_FFT(ist, fft_t_IO, fft_ucd)
 !
-      call set_fields_4_FFT
+      call set_fields_4_FFT(field_ctl)
 !
       write(*,*) 'internal_node, ele',                                  &
      &           merge_tbl%inter_nod_m,  merge_tbl%inter_ele_m

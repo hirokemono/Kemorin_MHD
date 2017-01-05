@@ -3,9 +3,10 @@
 !
 !      Written by H. Matsui on Feb., 2007
 !
-!      subroutine init_ucd_data_4_FFT(istep, t_IO, ucd)
-!      subroutine s_read_udt_data_4_FFT(istep, t_IO, ucd)
-!      subroutine set_fields_4_FFT
+!!      subroutine init_ucd_data_4_FFT(istep, t_IO, ucd)
+!!      subroutine s_read_udt_data_4_FFT(istep, t_IO, ucd)
+!!      subroutine set_fields_4_FFT(field_ctl)
+!!        type(ctl_array_c3), intent(in) :: field_ctl
 !
       module read_udt_data_4_FFT
 !
@@ -81,11 +82,13 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_fields_4_FFT
+      subroutine set_fields_4_FFT(field_ctl)
 !
       use m_spectr_4_ispack
-      use m_ctl_data_4_fields
+      use t_read_control_arrays
       use skip_comment_f
+!
+      type(ctl_array_c3), intent(in) :: field_ctl
 !
       integer (kind = kint) :: i, j, ii, jj, icomp
 !

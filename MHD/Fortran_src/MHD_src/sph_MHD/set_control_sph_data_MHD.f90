@@ -8,14 +8,18 @@
 !!
 !!@verbatim
 !!      subroutine s_set_control_sph_data_MHD                           &
-!!     &         (plt, rj_org_param, rst_org_param, rj_fld)
+!!     &         (plt, field_ctl, rj_org_param, rst_org_param, rj_fld)
+!!       type(platform_data_control), intent(in) :: plt
+!!       type(ctl_array_c3), intent(inout) :: field_ctl
 !!       type(field_IO_params), intent(in) :: rj_org_param
 !!       type(field_IO_params), intent(in) :: rst_org_param
 !!       type(phys_data), intent(inout) :: rj_fld
-!!     subroutine set_ctl_params_pick_circle(meq_ctl)
-!!        type(mid_equator_control), intent(in) :: meq_ctl
-!!     subroutine set_ctl_params_dynamobench(meq_ctl)
-!!        type(mid_equator_control), intent(in) :: meq_ctl
+!!     subroutine set_ctl_params_pick_circle(field_ctl, meq_ctl)
+!!       type(ctl_array_c3), intent(in) :: field_ctl
+!!       type(mid_equator_control), intent(in) :: meq_ctl
+!!     subroutine set_ctl_params_dynamobench(field_ctl, meq_ctl)
+!!       type(ctl_array_c3), intent(in) :: field_ctl
+!!       type(mid_equator_control), intent(in) :: meq_ctl
 !!@endverbatim
 !
       module set_control_sph_data_MHD
@@ -31,13 +35,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_sph_data_MHD                             &
-     &         (plt, rj_org_param, rst_org_param, rj_fld)
+     &         (plt, field_ctl, rj_org_param, rst_org_param, rj_fld)
 !
       use calypso_mpi
       use m_error_IDs
       use m_machine_parameter
       use t_ctl_data_4_platforms
-      use m_ctl_data_4_fields
+      use t_read_control_arrays
       use m_ctl_data_mhd_forces
       use m_ctl_data_mhd_evo_scheme
       use m_physical_property
@@ -58,6 +62,7 @@
       use sph_mhd_rst_IO_control
 !
       type(platform_data_control), intent(in) :: plt
+      type(ctl_array_c3), intent(inout) :: field_ctl
       type(field_IO_params), intent(in) :: rj_org_param, rst_org_param
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -89,7 +94,7 @@
 !    set nodal data
 !
         if (iflag_debug.gt.0) write(*,*) 's_set_control_sph_data'
-        call s_set_control_sph_data(rj_fld, ierr)
+        call s_set_control_sph_data(field_ctl, rj_fld, ierr)
       end if
 !
 !
@@ -122,16 +127,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_ctl_params_dynamobench(meq_ctl)
+      subroutine set_ctl_params_dynamobench(field_ctl, meq_ctl)
 !
       use t_ctl_data_sph_vol_spectr
-      use m_ctl_data_4_fields
+      use t_read_control_arrays
       use m_phys_labels
       use m_phys_constants
       use m_field_on_circle
       use m_circle_transform
       use m_field_at_mid_equator
 !
+      type(ctl_array_c3), intent(in) :: field_ctl
       type(mid_equator_control), intent(in) :: meq_ctl
 !
       integer(kind = kint) :: ifld
@@ -187,16 +193,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_ctl_params_pick_circle(meq_ctl)
+      subroutine set_ctl_params_pick_circle(field_ctl, meq_ctl)
 !
       use t_ctl_data_sph_vol_spectr
-      use m_ctl_data_4_fields
+      use t_read_control_arrays
       use m_field_on_circle
       use m_circle_transform
       use t_phys_data
       use ordering_field_by_viz
       use skip_comment_f
 !
+      type(ctl_array_c3), intent(in) :: field_ctl
       type(mid_equator_control), intent(in) :: meq_ctl
 !
       character(len = kchara) :: tmpchara

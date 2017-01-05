@@ -161,8 +161,8 @@
 !
 !   set physical values
 !
-      call s_set_control_sph_data(rj_fld, ierr)
-      call s_set_control_nodal_data(nod_fld, ierr)
+      call s_set_control_sph_data(field_ctl, rj_fld, ierr)
+      call s_set_control_nodal_data(field_ctl, nod_fld, ierr)
 !
       if(i_buo_ratio .gt. 0) then
         buo_ratio = buoyancy_ratio_ctl

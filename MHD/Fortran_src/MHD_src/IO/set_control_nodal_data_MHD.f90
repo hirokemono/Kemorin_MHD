@@ -17,7 +17,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_ctl_data_4_fields
 !
       use t_phys_data
 !
@@ -34,6 +33,7 @@
       use calypso_mpi
       use m_error_IDs
       use m_element_phys_data
+      use m_ctl_data_4_fields
 !
       use set_control_nodal_data
       use add_nodal_fields_4_MHD
@@ -69,7 +69,7 @@
 !
 !    set nodal data
 !
-        call s_set_control_nodal_data(nod_fld, ierr)
+        call s_set_control_nodal_data(field_ctl, nod_fld, ierr)
       end if
 !
       call set_ele_field_names_MHD(nod_fld)

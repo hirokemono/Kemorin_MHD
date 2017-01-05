@@ -4,7 +4,10 @@
 !     Written by H. Matsui
 !
 !      subroutine set_ctl_params_correlate(ist, ied, iint)
-!      subroutine s_set_list_4_correlate(ref_phys, cor_phys)
+!      subroutine s_set_list_4_correlate(field_ctl, ref_phys, cor_phys)
+!!       type(ctl_array_c3), intent(in) :: field_ctl
+!!       type(phys_data), intent(inout) :: cor_phys
+!!       type(phys_data), intent(inout) :: ref_phys
 !
       module set_list_4_correlate
 !
@@ -56,14 +59,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_list_4_correlate(ref_phys, cor_phys)
+      subroutine s_set_list_4_correlate(field_ctl, ref_phys, cor_phys)
 !
       use m_correlate_4_plane
-      use m_ctl_data_4_fields
 !
+      use t_read_control_arrays
       use t_phys_data
       use skip_comment_f
 !
+      type(ctl_array_c3), intent(in) :: field_ctl
       type(phys_data), intent(inout) :: cor_phys
       type(phys_data), intent(inout) :: ref_phys
 !

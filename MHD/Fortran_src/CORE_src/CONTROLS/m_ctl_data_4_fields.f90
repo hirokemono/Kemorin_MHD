@@ -115,14 +115,6 @@
 !
 ! -----------------------------------------------------------------------
 !
-       subroutine deallocate_phys_control
-!
-       call dealloc_control_array_c3(field_ctl)
-!
-       end subroutine deallocate_phys_control
-!
-! -----------------------------------------------------------------------
-!
       subroutine deallocate_quad_phys_control
 !
       call dealloc_control_array_chara(quad_phys_ctl)

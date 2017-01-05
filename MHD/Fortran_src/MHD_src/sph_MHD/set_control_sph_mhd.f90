@@ -88,6 +88,7 @@
       use m_spheric_global_ranks
       use m_ucd_data
       use m_ctl_data_4_platforms
+      use m_ctl_data_4_fields
       use m_ctl_data_4_time_steps
       use m_ctl_data_4_sphere_model
       use m_ctl_data_4_pickup_sph
@@ -160,7 +161,7 @@
 !   set parameters for general information
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_sph_data_MHD'
-      call s_set_control_sph_data_MHD(plt1,                             &
+      call s_set_control_sph_data_MHD(plt1, field_ctl,                  &
      &    MHD_org_files%rj_file_param, MHD_org_files%rst_file_param,    &
      &    rj_fld)
 !

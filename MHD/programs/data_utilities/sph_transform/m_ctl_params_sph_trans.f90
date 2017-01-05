@@ -68,6 +68,7 @@
 !
       use m_sel_spherical_SRs
       use m_ctl_data_4_platforms
+      use m_ctl_data_4_fields
       use m_ctl_data_4_time_steps
       use m_ctl_data_4_sph_trans
 !
@@ -118,8 +119,8 @@
 !
 !   set physical values
 !
-      call s_set_control_sph_data(rj_fld, ierr)
-      call s_set_control_nodal_data(field_STR, ierr)
+      call s_set_control_sph_data(field_ctl, rj_fld, ierr)
+      call s_set_control_nodal_data(field_ctl, field_STR, ierr)
 !
 !
       if(i_cmb_grp .gt. 0) then
@@ -223,8 +224,8 @@
 !
 !   set physical values
 !
-      call s_set_control_sph_data(rj_fld, ierr)
-      call s_set_control_nodal_data(field_STR, ierr)
+      call s_set_control_sph_data(field_ctl, rj_fld, ierr)
+      call s_set_control_nodal_data(field_ctl, field_STR, ierr)
 !
 !
       if(i_cmb_grp .gt. 0) then

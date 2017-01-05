@@ -4,7 +4,6 @@
 !      Written by H. Matsui
 !
 !      subroutine set_parameters_4_FFT(num_pe, ist, ied, iint)
-!      subroutine set_fields_4_FFT
 !      subroutine set_parameters_data_by_spec(num_pe,                   &
 !     &          kx_org, ky_org, iz_org, ucd)
 !        type(ucd_data), intent(inout) :: ucd

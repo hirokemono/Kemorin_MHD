@@ -8,8 +8,9 @@
 !> @brief Load control data for sphrical dynamo
 !!
 !!@verbatim
-!!      subroutine s_set_control_sph_data(rj_fld, ierr)
+!!      subroutine s_set_control_sph_data(field_ctl, rj_fld, ierr)
 !!      subroutine ordering_sph_field_by_viz_comp(rj_fld)
+!!        type(ctl_array_c3), intent(in) :: field_ctl
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !
@@ -30,12 +31,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_sph_data(rj_fld, ierr)
+      subroutine s_set_control_sph_data(field_ctl, rj_fld, ierr)
 !
       use m_machine_parameter
-      use m_ctl_data_4_fields
+      use t_read_control_arrays
       use cal_minmax_and_stacks
 !
+      type(ctl_array_c3), intent(in) :: field_ctl
       type(phys_data), intent(inout) :: rj_fld
       integer (kind = kint), intent(inout) :: ierr
 !

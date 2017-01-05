@@ -3,9 +3,10 @@
 !
 !        programmed by H.Matsui on Sep., 2006
 !
-!     subroutine s_set_control_nodal_data(fld, ierr)
-!        type(phys_data), intent(inout) :: fld
-!        integer (kind = kint), intent(inout) :: ierr
+!!     subroutine s_set_control_nodal_data(field_ctl, fld, ierr)
+!!        type(ctl_array_c3), intent(inout) :: field_ctl
+!!        type(phys_data), intent(inout) :: fld
+!!        integer (kind = kint), intent(inout) :: ierr
 !
 !     subroutine ordering_field_type_by_viz(fld)
 !     subroutine ordering_field_type_by_comp_viz(fld)
@@ -13,6 +14,8 @@
       module set_control_nodal_data
 !
       use m_precision
+      use t_phys_data
+      use t_read_control_arrays
 !
       implicit  none
 !
@@ -22,13 +25,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_nodal_data(fld, ierr)
+      subroutine s_set_control_nodal_data(field_ctl, fld, ierr)
 !
       use m_machine_parameter
       use m_error_IDs
-      use m_ctl_data_4_fields
-      use t_phys_data
 !
+      type(ctl_array_c3), intent(inout) :: field_ctl
       type(phys_data), intent(inout) :: fld
       integer (kind = kint), intent(inout) :: ierr
 !
@@ -50,7 +52,7 @@
 !
         if (iflag_debug .ge. iflag_routine_msg)                         &
      &                 call check_nodal_field_name_type(6, fld)
-        call deallocate_phys_control
+        call dealloc_control_array_c3(field_ctl)
       end if
 !
       end subroutine s_set_control_nodal_data
@@ -60,8 +62,6 @@
 !
       subroutine ordering_field_type_by_viz(field_ctl, fld)
 !
-      use t_phys_data
-      use t_read_control_arrays
       use node_monitor_IO
       use ordering_field_by_viz
 !
@@ -83,8 +83,6 @@
 !
       subroutine ordering_field_type_by_comp_viz(field_ctl, fld)
 !
-      use t_phys_data
-      use t_read_control_arrays
       use node_monitor_IO
       use ordering_field_by_viz
 !

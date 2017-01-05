@@ -32,6 +32,7 @@
      &         (mesh_file, udt_org_param, nod_fld, ucd)
 !
       use t_ucd_data
+      use m_ctl_data_4_fields
       use m_ctl_data_4_fem_int_pts
       use m_fem_gauss_int_coefs
       use set_control_nodal_data
@@ -51,7 +52,7 @@
       call s_set_control_ele_layering
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_control_nodal_data'
-      call s_set_control_nodal_data(nod_fld, ierr)
+      call s_set_control_nodal_data(field_ctl, nod_fld, ierr)
       if (ierr .ne. 0) call calypso_MPI_abort(ierr, e_message)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_ctl_4_diff_udt_steps'
