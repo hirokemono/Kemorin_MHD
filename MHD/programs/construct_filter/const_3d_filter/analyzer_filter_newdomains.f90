@@ -35,6 +35,7 @@
 !
       subroutine filter_to_newdomain_init
 !
+      use m_ctl_data_filter_files
       use m_ctl_data_newdomain_filter
       use m_ctl_param_newdom_filter
       use const_domain_tbl_by_file
@@ -64,7 +65,7 @@
       call read_control_filter_newdomain
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_filter_newdomain'
-      call set_control_filter_newdomain(ierr)
+      call set_control_filter_newdomain(ffile_ctl1, ierr)
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'bcast_parallel_domain_tbl'

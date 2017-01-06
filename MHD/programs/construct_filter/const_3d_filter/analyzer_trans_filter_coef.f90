@@ -24,6 +24,7 @@
       subroutine init_analyzer
 !
       use m_2nd_pallalel_vector
+      use m_ctl_data_filter_files
       use m_ctl_data_newdomain_filter
       use m_ctl_param_newdom_filter
       use bcast_nodes_for_trans
@@ -41,7 +42,7 @@
       call read_control_filter_newdomain
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_filter_newdomain'
-      call set_control_filter_newdomain(ierr)
+      call set_control_filter_newdomain(ffile_ctl1, ierr)
 !
 !     --------------------- 
 !

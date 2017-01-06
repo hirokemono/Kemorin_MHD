@@ -8,7 +8,8 @@
 !!        from control data
 !!
 !!@verbatim
-!!     subroutine s_set_control_4_filtering
+!!      subroutine s_set_control_4_filtering(ffile_ctl)
+!!        type(filter_file_control), intent(in) :: ffile_ctl
 !!@endverbatim
 !
       module set_control_4_filtering
@@ -24,7 +25,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_4_filtering
+      subroutine s_set_control_4_filtering(ffile_ctl)
 !
       use calypso_mpi
       use m_constants
@@ -35,10 +36,12 @@
       use m_control_parameter
       use m_ctl_data_SGS_model
       use m_filter_file_names
-      use m_ctl_data_filter_files
+      use t_ctl_data_filter_files
       use sgs_ini_model_coefs_IO
       use set_control_ele_layering
       use skip_comment_f
+!
+      type(filter_file_control), intent(in) :: ffile_ctl
 !
       integer(kind = kint) :: i
       character(len=kchara) :: tmpchara
@@ -173,16 +176,18 @@
 !
 !     set filter file header
 !
-        if (filter_head_ctl%iflag .eq. 1) then
-          filter_3d_head = filter_head_ctl%charavalue
+        if (ffile_ctl%filter_head_ctl%iflag .eq. 1) then
+          filter_3d_head = ffile_ctl%filter_head_ctl%charavalue
         end if
 !
-        if (filter_wide_head_ctl%iflag .eq. 1) then
-          filter_wide_head = filter_wide_head_ctl%charavalue
+        if (ffile_ctl%filter_wide_head_ctl%iflag .eq. 1) then
+          filter_wide_head = ffile_ctl%filter_wide_head_ctl%charavalue
         end if
 !
-        call choose_file_format(filter_3d_format, ifmt_3d_filter)
-        call choose_file_format(filter_wide_format, ifmt_wide_filter)
+        call choose_file_format                                         &
+     &     (ffile_ctl%filter_3d_format, ifmt_3d_filter)
+        call choose_file_format                                         &
+     &     (ffile_ctl%filter_wide_format, ifmt_wide_filter)
 !
         if (iflag_debug .gt. 0)  then
           write(*,*) 'filter_3d_head: ',     trim(filter_3d_head)
@@ -193,8 +198,8 @@
       end if
 !
       if (iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
-        if (filter_head_ctl%iflag .eq. 1) then
-          filter_line_head = filter_head_ctl%charavalue
+        if (ffile_ctl%filter_head_ctl%iflag .eq. 1) then
+          filter_line_head = ffile_ctl%filter_head_ctl%charavalue
         else
           filter_line_head = filter_l_def_hd
         end if

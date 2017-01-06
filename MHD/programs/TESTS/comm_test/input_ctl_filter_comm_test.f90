@@ -25,6 +25,7 @@
       use t_filter_file_data
       use t_filtering_data
       use m_machine_parameter
+      use m_ctl_data_filter_files
       use m_ctl_data_filter_comm_test
       use m_nod_filter_comm_table
       use m_filter_file_names
@@ -45,7 +46,7 @@
       call read_control_filter_comm_test
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_4_comm_test'
-      call set_ctl_param_filter_comm_test
+      call set_ctl_param_filter_comm_test(ffile_ctl1)
 !
 !  --  read filter geometry
 !
@@ -71,15 +72,17 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_ctl_param_filter_comm_test
+      subroutine set_ctl_param_filter_comm_test(ffile_ctl)
 !
       use m_filter_file_names
       use m_file_format_switch
-      use m_ctl_data_filter_files
+      use t_ctl_data_filter_files
+!
+      type(filter_file_control), intent(inout) :: ffile_ctl
 !
 !
-      if (filter_head_ctl%iflag .gt. 0) then
-        filter_3d_head = filter_head_ctl%charavalue
+      if (ffile_ctl%filter_head_ctl%iflag .gt. 0) then
+        filter_3d_head = ffile_ctl%filter_head_ctl%charavalue
       end if
       ifmt_filter_file = id_ascii_file_fmt
 !

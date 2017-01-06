@@ -33,6 +33,7 @@
       subroutine newdomain_filter_init
 !
       use calypso_mpi
+      use m_ctl_data_filter_files
       use m_ctl_data_newdomain_filter
       use m_ctl_param_newdom_filter
       use const_domain_tbl_by_file
@@ -55,7 +56,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_filter_newdomain'
       nprocs_2nd = 0
-      call set_control_filter_newdomain(ierr)
+      call set_control_filter_newdomain(ffile_ctl1, ierr)
       if(ierr .gt. 0) stop
 !
 !

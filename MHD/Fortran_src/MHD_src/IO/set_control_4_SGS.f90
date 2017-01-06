@@ -12,7 +12,8 @@
 !!@verbatim
 !!      subroutine set_control_SGS_model
 !!      subroutine set_control_SPH_SGS(sph_filters)
-!!      subroutine set_control_FEM_SGS
+!!      subroutine set_control_FEM_SGS(ffile_ctl)
+!!        type(filter_file_control), intent(in) :: ffile_ctl
 !!@endverbatim
 !
       module set_control_4_SGS
@@ -247,7 +248,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_FEM_SGS
+      subroutine set_control_FEM_SGS(ffile_ctl)
 !
       use m_machine_parameter
       use m_geometry_constants
@@ -256,9 +257,11 @@
       use m_control_parameter
       use m_ctl_data_SGS_model
       use m_filter_file_names
-      use m_ctl_data_filter_files
+      use t_ctl_data_filter_files
       use sgs_ini_model_coefs_IO
       use set_control_ele_layering
+!
+      type(filter_file_control), intent(in) :: ffile_ctl
 !
       character(len=kchara) :: tmpchara
 !
@@ -415,11 +418,12 @@
       end if
 !
       if (iflag_SGS_model .eq. id_SGS_NL_grad) then
-        if (filter_elen_head_ctl%iflag .eq. 1) then
-          filter_elen_head = filter_elen_head_ctl%charavalue
+        if (ffile_ctl%filter_elen_head_ctl%iflag .eq. 1) then
+          filter_elen_head = ffile_ctl%filter_elen_head_ctl%charavalue
         end if
 !
-        call choose_file_format(filter_elen_format, ifmt_filter_elen)
+        call choose_file_format                                         &
+     &     (ffile_ctl%filter_elen_format, ifmt_filter_elen)
 !
         if (iflag_debug .gt. 0)  then
           write(*,*) 'filter_elen_head: ', trim(filter_elen_head)
@@ -445,9 +449,11 @@
       end if
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
-        iflag_rst_sgs_coef_code = model_coef_ini_head_ctl%iflag
+        iflag_rst_sgs_coef_code                                         &
+     &          = ffile_ctl%model_coef_ini_head_ctl%iflag
         if(iflag_rst_sgs_coef_code .gt. 0) then
-          rst_sgs_coef_head = model_coef_ini_head_ctl%charavalue
+          rst_sgs_coef_head                                             &
+     &          = ffile_ctl%model_coef_ini_head_ctl%charavalue
         end if
 !
         if (iflag_debug .gt. 0)  then

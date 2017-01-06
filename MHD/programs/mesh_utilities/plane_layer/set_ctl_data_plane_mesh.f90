@@ -1,16 +1,16 @@
 !
 !      module set_ctl_data_plane_mesh
 !
-      module set_ctl_data_plane_mesh
-!
 !        programmed by H.Matsui on Aug., 2007
+!
+!      subroutine s_set_ctl_data_plane_mesh
+!
+      module set_ctl_data_plane_mesh
 !
       use m_precision
       use m_constants
 !
       implicit  none
-!
-!      subroutine s_set_ctl_data_plane_mesh
 !
 !  ---------------------------------------------------------------------
 !
@@ -40,8 +40,8 @@
         mesh_file_header = 'mesh/in'
       end if
 !
-      if (filter_head_ctl%iflag .eq. 1) then
-        filter_file_header = filter_head_ctl%charavalue
+      if (ffile_ctl1%filter_head_ctl%iflag .eq. 1) then
+        filter_file_header = ffile_ctl1%filter_head_ctl%charavalue
       else
         filter_file_header = 'mesh/filter_node_l'
       end if

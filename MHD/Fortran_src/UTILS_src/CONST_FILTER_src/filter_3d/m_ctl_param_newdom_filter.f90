@@ -3,8 +3,8 @@
 !
 !      modified by H. Matsui on Apr., 2008
 !
-!!      subroutine set_control_filter_newdomain(ierr)
-!!        type(field_IO_params), intent(inout) ::  mesh_file
+!!      subroutine set_control_filter_newdomain(ffile_ctl, ierr)
+!!        type(filter_file_control), intent(in) :: ffile_ctl
 !
       module m_ctl_param_newdom_filter
 !
@@ -38,7 +38,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_control_filter_newdomain(ierr)
+      subroutine set_control_filter_newdomain(ffile_ctl, ierr)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -48,11 +48,12 @@
 !
       use m_ctl_data_4_platforms
       use m_ctl_data_4_2nd_data
-      use m_ctl_data_filter_files
       use m_ctl_data_org_filter_name
+      use t_ctl_data_filter_files
       use set_control_platform_data
       use set_ctl_params_2nd_files
 !
+      type(filter_file_control), intent(in) :: ffile_ctl
       integer(kind = kint), intent(inout) :: ierr
 !
 !
@@ -102,22 +103,25 @@
       end if
 !
 !
-      if(filter_elen_head_ctl%iflag .gt. 0) then
-        new_filter_elen_head = filter_elen_head_ctl%charavalue
+      if(ffile_ctl%filter_elen_head_ctl%iflag .gt. 0) then
+        new_filter_elen_head                                            &
+     &         = ffile_ctl%filter_elen_head_ctl%charavalue
       else
         write(*,*) 'set target filter length file name'
         stop
       end if
 !
-      if(filter_coef_head_ctl%iflag .gt. 0) then
-        new_filter_coef_head = filter_coef_head_ctl%charavalue
+      if(ffile_ctl%filter_coef_head_ctl%iflag .gt. 0) then
+        new_filter_coef_head                                            &
+     &         = ffile_ctl%filter_coef_head_ctl%charavalue
       else if(iflag_set_filter_coef .gt. 0) then
         write(*,*) 'set target filter coefficient file name'
         stop
       end if
 !
-      if(filter_moms_head_ctl%iflag .gt. 0) then
-        new_filter_moms_head = filter_moms_head_ctl%charavalue
+      if(ffile_ctl%filter_moms_head_ctl%iflag .gt. 0) then
+        new_filter_moms_head                                            &
+     &         = ffile_ctl%filter_moms_head_ctl%charavalue
       else if(iflag_set_filter_moms .gt. 0) then
         write(*,*) 'set target filter moment file name'
         stop

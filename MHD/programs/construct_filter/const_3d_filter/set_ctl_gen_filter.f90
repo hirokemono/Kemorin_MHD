@@ -3,8 +3,9 @@
 !
 !     Written by H. Matsui on July, 2006
 !
-!      subroutine set_ctl_params_gen_filter(FEM_elen)
-!      subroutine set_file_heads_3d_comm_filter(mesh_file)
+!!      subroutine set_ctl_params_gen_filter(FEM_elen)
+!!      subroutine set_file_heads_3d_comm_filter(ffile_ctl, mesh_file)
+!!        type(filter_file_control), intent(in) :: ffile_ctl
 !
       module set_ctl_gen_filter
 !
@@ -14,7 +15,6 @@
       use m_ctl_data_4_platforms
       use m_ctl_data_gen_filter
       use m_ctl_data_gen_3d_filter
-      use m_ctl_data_filter_files
       use m_ctl_params_4_gen_filter
       use m_ctl_param_newdom_filter
 !
@@ -26,7 +26,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_ctl_params_gen_filter(mesh_file, FEM_elen)
+      subroutine set_ctl_params_gen_filter(FEM_elen)
 !
       use calypso_mpi
       use m_error_IDs
@@ -38,13 +38,10 @@
 !
       use skip_comment_f
 !
-      type(field_IO_params), intent(inout) :: mesh_file
       type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
       integer(kind = kint) :: i
 !
-!
-      call set_file_heads_3d_comm_filter(mesh_file)
 !
       np_smp = 1
       if(plt1%num_smp_ctl%iflag .gt. 0) then
@@ -333,12 +330,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_file_heads_3d_comm_filter(mesh_file)
+      subroutine set_file_heads_3d_comm_filter(ffile_ctl, mesh_file)
 !
+      use t_ctl_data_filter_files
       use m_file_format_switch
       use m_filter_file_names
       use set_control_platform_data
 !
+      type(filter_file_control), intent(in) :: ffile_ctl
       type(field_IO_params), intent(inout) :: mesh_file
 !
 !
@@ -346,26 +345,26 @@
       if (iflag_debug.gt.0) write(*,*)                                  &
      &                'mesh_file_head ', mesh_file%file_prefix
 !
-      if (filter_head_ctl%iflag .ne. 0) then
-        filter_3d_head = filter_head_ctl%charavalue
+      if (ffile_ctl%filter_head_ctl%iflag .ne. 0) then
+        filter_3d_head = ffile_ctl%filter_head_ctl%charavalue
         if (iflag_debug.gt.0)                                           &
      &     write(*,*) 'filter_3d_head ', filter_3d_head
       end if
 !
-      if (filter_coef_head_ctl%iflag .ne. 0) then
-        filter_coef_head = filter_coef_head_ctl%charavalue
+      if (ffile_ctl%filter_coef_head_ctl%iflag .ne. 0) then
+        filter_coef_head = ffile_ctl%filter_coef_head_ctl%charavalue
         if (iflag_debug.gt.0)                                           &
      &     write(*,*) 'filter_coef_head ', filter_coef_head
       end if
 !
-      if (filter_elen_head_ctl%iflag .ne. 0) then
-        filter_elen_head = filter_elen_head_ctl%charavalue
+      if (ffile_ctl%filter_elen_head_ctl%iflag .ne. 0) then
+        filter_elen_head = ffile_ctl%filter_elen_head_ctl%charavalue
         if (iflag_debug.gt.0)                                           &
      &     write(*,*) 'filter_elen_head ', filter_elen_head
       end if
 !
-      if (filter_moms_head_ctl%iflag .ne. 0) then
-        filter_moms_head = filter_moms_head_ctl%charavalue
+      if (ffile_ctl%filter_moms_head_ctl%iflag .ne. 0) then
+        filter_moms_head = ffile_ctl%filter_moms_head_ctl%charavalue
         if (iflag_debug.gt.0)                                           &
      &     write(*,*) 'filter_moms_head ', filter_moms_head
       end if
@@ -374,8 +373,10 @@
 !
 !   set data format
 !
-      call choose_file_format(filter_3d_format, ifmt_3d_filter)
-      call choose_file_format(filter_elen_format, ifmt_filter_elen)
+      call choose_file_format                                           &
+     &   (ffile_ctl%filter_3d_format, ifmt_3d_filter)
+      call choose_file_format                                           &
+     &   (ffile_ctl%filter_elen_format, ifmt_filter_elen)
       ifmt_filter_moms = ifmt_filter_elen
 !
       end subroutine set_file_heads_3d_comm_filter
