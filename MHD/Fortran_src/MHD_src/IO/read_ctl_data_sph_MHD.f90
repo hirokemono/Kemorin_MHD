@@ -70,8 +70,8 @@
         call read_bc_4_surf
 !
         call read_forces_control
-        call read_dimless_ctl
-        call read_coef_term_ctl
+        call read_dimless_control
+        call read_coef_term_control
 !
         call read_gravity_control
         call read_coriolis_control

@@ -3,8 +3,8 @@
 !
 !        programmed by H.Matsui on March. 2006
 !
-!      subroutine read_dimless_ctl
-!      subroutine read_coef_term_ctl
+!      subroutine read_dimless_control
+!      subroutine read_coef_term_control
 !
 !   --------------------------------------------------------------------
 !    example
@@ -86,14 +86,16 @@
       use m_read_control_elements
       use skip_comment_f
       use t_read_control_arrays
+      use t_ctl_data_mhd_normalize
 !
       implicit  none
 !
 !
-!>      Structure for list of dimensionless numbers
-!!@n      coef_4_dimless_ctl%c_tbl:  Name of each number 
-!!@n      coef_4_dimless_ctl%vect:   valus of each number
-      type(ctl_array_cr), save :: coef_4_dimless_ctl
+!>        Structure for list of dimensionless numbers
+      type(dimless_control), save :: dless_ctl1
+!
+!>      Structure for coefficients of governing equations
+      type(equations_control) :: eqs_ctl1
 !
 !   entry label
 !
@@ -105,12 +107,9 @@
      &      :: hd_coef_term_ctl ='coefficients_ctl'
       integer (kind=kint) :: i_coef_term_ctl = 0
 !
-!   4th level for dimensionless numbers
-!
-      character(len=kchara), parameter :: hd_dimless =  'dimless_ctl'
-!
       private :: hd_dimless_ctl, hd_coef_term_ctl
       private :: i_dimless_ctl,  i_coef_term_ctl
+!
 !
 !   --------------------------------------------------------------------
 !
@@ -118,47 +117,22 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_dimless_ctl
+      subroutine read_dimless_control
 !
 !
-      if(right_begin_flag(hd_dimless_ctl) .eq. 0) return
-      if (i_dimless_ctl .gt. 0) return
-      do
-        call load_ctl_label_and_line
+      call read_dimless_ctl(hd_dimless_ctl, i_dimless_ctl, dless_ctl1)
 !
-        call find_control_end_flag(hd_dimless_ctl, i_dimless_ctl)
-        if(i_dimless_ctl .gt. 0) exit
-!
-        call read_control_array_c_r(hd_dimless, coef_4_dimless_ctl)
-      end do
-!
-      end subroutine read_dimless_ctl
+      end subroutine read_dimless_control
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_coef_term_ctl
-!
-      use m_ctl_data_momentum_norm
-      use m_ctl_data_termal_norm
-      use m_ctl_data_induct_norm
-      use m_ctl_data_composite_norm
+      subroutine read_coef_term_control
 !
 !
-      if(right_begin_flag(hd_coef_term_ctl) .eq. 0) return
-      if (i_coef_term_ctl .gt. 0) return
-      do
-        call load_ctl_label_and_line
+      call read_coef_term_ctl                                           &
+     &   (hd_coef_term_ctl, i_coef_term_ctl, eqs_ctl1)
 !
-        call find_control_end_flag(hd_coef_term_ctl, i_coef_term_ctl)
-        if(i_coef_term_ctl .gt. 0) exit
-!
-        call read_thermal_ctl
-        call read_momentum_ctl
-        call read_induction_ctl
-        call read_composition_eq_ctl
-      end do
-!
-      end subroutine read_coef_term_ctl
+      end subroutine read_coef_term_control
 !
 !   --------------------------------------------------------------------
 !

@@ -37,18 +37,19 @@
 !
       use m_control_parameter
       use m_normalize_parameter
+      use m_ctl_data_mhd_normalize
 !
       integer (kind = kint) :: i
 !
 !
 !   set dimensionless numbers
 !
-      call set_dimensionless_numbers
+      call set_dimensionless_numbers(dless_ctl1)
 !
       if (iflag_debug .ge. iflag_routine_msg) then
         write(*,*) 'num_dimless ', MHD_coef_list%dimless_list%num
         do i = 1, MHD_coef_list%dimless_list%num
-          write(*,*) i, trim(MHD_coef_list%dimless_list%name(i)),      &
+          write(*,*) i, trim(MHD_coef_list%dimless_list%name(i)),       &
      &              ': ', MHD_coef_list%dimless_list%value(i)
         end do
       end if
@@ -60,7 +61,7 @@
         MHD_coef_list%coefs_t_diffuse%num = 0
         MHD_coef_list%coefs_h_source%num =  0
       else
-        call set_coefs_4_thermal_eq
+        call set_coefs_4_thermal_eq(eqs_ctl1%heat_ctl)
       end if
 !
 !    set coefficients for momentum equation
@@ -74,7 +75,7 @@
         MHD_coef_list%coefs_Coriolis%num =  0
         MHD_coef_list%coefs_Lorentz%num =   0
       else
-        call set_coefs_4_momentum_eq
+        call set_coefs_4_momentum_eq(eqs_ctl1%mom_ctl)
       end if
 !
 !
@@ -87,7 +88,7 @@
         MHD_coef_list%coefs_m_diffuse%num = 0
         MHD_coef_list%coefs_induction%num = 0
       else
-        call set_coefs_4_induction_eq
+        call set_coefs_4_induction_eq(eqs_ctl1%induct_ctl)
       end if
 !
 !    set normalization for composition
@@ -97,7 +98,7 @@
         MHD_coef_list%coefs_c_diffuse%num =   0
         MHD_coef_list%coefs_c_source%num =    0
       else
-        call set_coefs_4_composition_eq
+        call set_coefs_4_composition_eq(eqs_ctl1%comp_ctl)
       end if
 !
       end subroutine s_set_control_4_normalize
@@ -105,245 +106,263 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_dimensionless_numbers
+      subroutine set_dimensionless_numbers(dless_ctl)
 !
       use m_control_parameter
-      use m_ctl_data_mhd_normalize
       use m_normalize_parameter
+      use t_ctl_data_mhd_normalize
+!
+      type(dimless_control), intent(inout) :: dless_ctl
 !
 !
-      if (coef_4_dimless_ctl%icou .eq. 0) then
+      if (dless_ctl%dimless%icou .eq. 0) then
           e_message =                                                   &
      &     'Set dimensionless numbers'
           call calypso_MPI_abort(ierr_dless, e_message)
       else
-        MHD_coef_list%dimless_list%num = coef_4_dimless_ctl%num
+        MHD_coef_list%dimless_list%num = dless_ctl%dimless%num
       end if
 !
       call copy_dimless_from_ctl                                        &
-     &   (coef_4_dimless_ctl, MHD_coef_list%dimless_list)
+     &   (dless_ctl%dimless, MHD_coef_list%dimless_list)
 !
       end subroutine set_dimensionless_numbers
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_coefs_4_thermal_eq
+      subroutine set_coefs_4_thermal_eq(heat_ctl)
 !
       use m_control_parameter
       use m_normalize_parameter
-      use m_ctl_data_termal_norm
+      use t_ctl_data_termal_norm
+!
+      type(heat_equation_control), intent(inout) :: heat_ctl
 !
 !
-      if (coef_4_heat_flux_ctl%icou .eq. 0) then
+      if (heat_ctl%coef_4_adv_flux%icou .eq. 0) then
         e_message =                                                     &
      &     'Set coefficients for time stepping for temperature'
         call calypso_MPI_abort(ierr_dless, e_message)
       else
-        MHD_coef_list%coefs_termal%num = coef_4_heat_flux_ctl%num
+        MHD_coef_list%coefs_termal%num = heat_ctl%coef_4_adv_flux%num
       end if
 !
-      if (coef_4_t_diffuse_ctl%icou .eq. 0) then
+      if (heat_ctl%coef_4_diffuse%icou .eq. 0) then
         e_message =                                                     &
      &     'Set coefficients for time stepping for thermal diffusion'
         call calypso_MPI_abort(ierr_dless, e_message)
       else
-        MHD_coef_list%coefs_t_diffuse%num = coef_4_t_diffuse_ctl%num
+        MHD_coef_list%coefs_t_diffuse%num = heat_ctl%coef_4_diffuse%num
       end if
 !
-      if (coef_4_heat_src_ctl%icou .gt. 0) then
-        MHD_coef_list%coefs_h_source%num = coef_4_heat_src_ctl%num
+      if (heat_ctl%coef_4_source%icou .gt. 0) then
+        MHD_coef_list%coefs_h_source%num = heat_ctl%coef_4_source%num
       end if
 !
       call copy_power_and_names_from_ctl                                &
-     &   (coef_4_heat_flux_ctl, MHD_coef_list%coefs_termal)
+     &   (heat_ctl%coef_4_adv_flux, MHD_coef_list%coefs_termal)
       call copy_power_and_names_from_ctl                                &
-     &   (coef_4_t_diffuse_ctl, MHD_coef_list%coefs_t_diffuse)
+     &   (heat_ctl%coef_4_diffuse, MHD_coef_list%coefs_t_diffuse)
       call copy_power_and_names_from_ctl                                &
-     &   (coef_4_heat_src_ctl, MHD_coef_list%coefs_h_source)
+     &   (heat_ctl%coef_4_source, MHD_coef_list%coefs_h_source)
 !
       end subroutine set_coefs_4_thermal_eq
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_coefs_4_momentum_eq
+      subroutine set_coefs_4_momentum_eq(mom_ctl)
 !
       use m_control_parameter
       use m_normalize_parameter
-      use m_ctl_data_momentum_norm
+      use t_ctl_data_momentum_norm
+!
+      type(momentum_equation_control), intent(inout) :: mom_ctl
 !
 !
-      if (coef_4_intertia_ctl%icou .eq. 0) then
+      if (mom_ctl%coef_4_intertia%icou .eq. 0) then
         e_message =                                                     &
      &     'Set coefficients for time stepping for velocity'
         call calypso_MPI_abort(ierr_dless, e_message)
       else
-        MHD_coef_list%coefs_momentum%num = coef_4_intertia_ctl%num
+        MHD_coef_list%coefs_momentum%num = mom_ctl%coef_4_intertia%num
       end if
 !
-      if (coef_4_grad_p_ctl%icou .eq. 0) then
+      if (mom_ctl%coef_4_grad_p%icou .eq. 0) then
         e_message =                                                     &
      &     'Set coefficients for pressure gradient'
         call calypso_MPI_abort(ierr_dless, e_message)
       else
-        MHD_coef_list%coefs_pressure%num = coef_4_grad_p_ctl%num
+        MHD_coef_list%coefs_pressure%num = mom_ctl%coef_4_grad_p%num
       end if
 !
-      if (coef_4_viscous_ctl%icou .eq. 0) then
+      if (mom_ctl%coef_4_viscous%icou .eq. 0) then
         e_message =                                                     &
      &     'Set coefficients for viscosity'
         call calypso_MPI_abort(ierr_dless, e_message)
       else
-        MHD_coef_list%coefs_v_diffuse%num = coef_4_viscous_ctl%num
+        MHD_coef_list%coefs_v_diffuse%num = mom_ctl%coef_4_viscous%num
       end if
 !
       if(iflag_4_gravity .eq. id_turn_OFF                               &
      &      .and. iflag_4_filter_gravity .eq. id_turn_OFF) then
         MHD_coef_list%coefs_buoyancy%num = 0
       else
-        if (coef_4_termal_buo_ctl%icou .eq. 0) then
+        if (mom_ctl%coef_4_termal_buo%icou .eq. 0) then
           e_message = 'Set coefficients for buoyancy'
           call calypso_MPI_abort(ierr_dless, e_message)
         else
-          MHD_coef_list%coefs_buoyancy%num = coef_4_termal_buo_ctl%num
+          MHD_coef_list%coefs_buoyancy%num                              &
+     &              = mom_ctl%coef_4_termal_buo%num
         end if
       end if
 !
       if (iflag_4_composit_buo .eq. id_turn_OFF) then
         MHD_coef_list%coefs_comp_buo%num = 0
       else
-        if (coef_4_comp_buo_ctl%icou .eq. 0) then
+        if(mom_ctl%coef_4_comp_buo%icou .eq. 0) then
           e_message = 'Set coefficients for compiositional buoyancy'
           call calypso_MPI_abort(ierr_dless, e_message)
         else
-          MHD_coef_list%coefs_comp_buo%num = coef_4_comp_buo_ctl%num
+          MHD_coef_list%coefs_comp_buo%num                              &
+     &              = mom_ctl%coef_4_comp_buo%num
         end if
       end if
 !
       if (iflag_4_coriolis .eq. id_turn_OFF) then
         MHD_coef_list%coefs_Coriolis%num = 0
       else
-        if (coef_4_Coriolis_ctl%icou .eq. 0) then
+        if(mom_ctl%coef_4_Coriolis%icou .eq. 0) then
           e_message = 'Set coefficients for Coriolis force'
           call calypso_MPI_abort(ierr_dless, e_message)
         else
-          MHD_coef_list%coefs_Coriolis%num = coef_4_Coriolis_ctl%num
+          MHD_coef_list%coefs_Coriolis%num                              &
+     &              = mom_ctl%coef_4_Coriolis%num
         end if
       end if
 !
       if (iflag_4_lorentz .eq. id_turn_OFF) then
         MHD_coef_list%coefs_Lorentz%num = 0
       else
-        if (coef_4_Loreantz_ctl%icou .eq. 0) then
+        if(mom_ctl%coef_4_Lorentz%icou .eq. 0) then
           e_message = 'Set coefficients for Lorentz force'
           call calypso_MPI_abort(ierr_dless, e_message)
         else
-          MHD_coef_list%coefs_Lorentz%num = coef_4_Loreantz_ctl%num
+          MHD_coef_list%coefs_Lorentz%num = mom_ctl%coef_4_Lorentz%num
         end if
       end if
 !
 !
       call copy_power_and_names_from_ctl                                &
-     &   (coef_4_intertia_ctl, MHD_coef_list%coefs_momentum)
+     &   (mom_ctl%coef_4_intertia, MHD_coef_list%coefs_momentum)
       call copy_power_and_names_from_ctl                                &
-     &   (coef_4_grad_p_ctl, MHD_coef_list%coefs_pressure)
+     &   (mom_ctl%coef_4_grad_p, MHD_coef_list%coefs_pressure)
       call copy_power_and_names_from_ctl                                &
-     &   (coef_4_viscous_ctl, MHD_coef_list%coefs_v_diffuse)
+     &   (mom_ctl%coef_4_viscous, MHD_coef_list%coefs_v_diffuse)
       call copy_power_and_names_from_ctl                                &
-     &   (coef_4_termal_buo_ctl, MHD_coef_list%coefs_buoyancy)
+     &   (mom_ctl%coef_4_termal_buo, MHD_coef_list%coefs_buoyancy)
       call copy_power_and_names_from_ctl                                &
-     &   (coef_4_comp_buo_ctl, MHD_coef_list%coefs_comp_buo)
+     &   (mom_ctl%coef_4_comp_buo, MHD_coef_list%coefs_comp_buo)
       call copy_power_and_names_from_ctl                                &
-     &   (coef_4_Coriolis_ctl, MHD_coef_list%coefs_Coriolis)
+     &   (mom_ctl%coef_4_Coriolis, MHD_coef_list%coefs_Coriolis)
       call copy_power_and_names_from_ctl                                &
-     &   (coef_4_Loreantz_ctl, MHD_coef_list%coefs_Lorentz)
+     &   (mom_ctl%coef_4_Lorentz, MHD_coef_list%coefs_Lorentz)
 !
       end subroutine set_coefs_4_momentum_eq
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_coefs_4_induction_eq
+      subroutine set_coefs_4_induction_eq(induct_ctl)
 !
       use m_control_parameter
       use m_normalize_parameter
-      use m_ctl_data_induct_norm
+      use t_ctl_data_induct_norm
+!
+      type(induction_equation_control), intent(inout) :: induct_ctl
 !
 !
-      if (coef_4_magne_evo_ctl%icou .eq. 0) then
+      if (induct_ctl%coef_4_magne_evo%icou .eq. 0) then
         e_message =                                                     &
      &     'Set coefficients for integration for magnetic field'
         call calypso_MPI_abort(ierr_dless, e_message)
       else
-        MHD_coef_list%coefs_magnetic%num = coef_4_magne_evo_ctl%num
+        MHD_coef_list%coefs_magnetic%num                                &
+     &            = induct_ctl%coef_4_magne_evo%num
       end if
 !
-      if (coef_4_mag_potential_ctl%icou .eq. 0                          &
+      if (induct_ctl%coef_4_mag_potential%icou .eq. 0                   &
      &       .and. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         e_message =                                                     &
      &     'Set coefficients for integration for magnetic potential'
         call calypso_MPI_abort(ierr_dless, e_message)
       else
-        MHD_coef_list%coefs_magne_p%num = coef_4_mag_potential_ctl%num
+        MHD_coef_list%coefs_magne_p%num                                 &
+     &            = induct_ctl%coef_4_mag_potential%num
       end if
 !
-      if (coef_4_mag_diffuse_ctl%icou .eq. 0) then
+      if (induct_ctl%coef_4_mag_diffuse%icou .eq. 0) then
         e_message = 'Set coefficients for magnetic diffusion'
         call calypso_MPI_abort(ierr_dless, e_message)
       else
-        MHD_coef_list%coefs_m_diffuse%num = coef_4_mag_diffuse_ctl%num
+        MHD_coef_list%coefs_m_diffuse%num                               &
+     &            = induct_ctl%coef_4_mag_diffuse%num
       end if
 !
-      if (coef_4_induction_ctl%icou .eq. 0) then
+      if(induct_ctl%coef_4_induction%icou .eq. 0) then
         e_message = 'Set coefficients for induction term'
         call calypso_MPI_abort(ierr_dless, e_message)
       else
-        MHD_coef_list%coefs_induction%num = coef_4_induction_ctl%num
+        MHD_coef_list%coefs_induction%num                               &
+     &            = induct_ctl%coef_4_induction%num
       end if
 !
       call copy_power_and_names_from_ctl                                &
-     &   (coef_4_magne_evo_ctl, MHD_coef_list%coefs_magnetic)
+     &   (induct_ctl%coef_4_magne_evo, MHD_coef_list%coefs_magnetic)
       call copy_power_and_names_from_ctl                                &
-     &   (coef_4_mag_potential_ctl, MHD_coef_list%coefs_magne_p)
+     &   (induct_ctl%coef_4_mag_potential, MHD_coef_list%coefs_magne_p)
       call copy_power_and_names_from_ctl                                &
-     &   (coef_4_mag_diffuse_ctl, MHD_coef_list%coefs_m_diffuse)
+     &   (induct_ctl%coef_4_mag_diffuse, MHD_coef_list%coefs_m_diffuse)
       call copy_power_and_names_from_ctl                                &
-     &   (coef_4_induction_ctl, MHD_coef_list%coefs_induction)
+     &   (induct_ctl%coef_4_induction, MHD_coef_list%coefs_induction)
 !
       end subroutine set_coefs_4_induction_eq
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_coefs_4_composition_eq
+      subroutine set_coefs_4_composition_eq(comp_ctl)
 !
       use m_normalize_parameter
-      use m_ctl_data_composite_norm
+      use t_ctl_data_termal_norm
+!
+      type(heat_equation_control), intent(inout) :: comp_ctl
 !
 !
-      if (coef_4_comp_flux_ctl%icou .eq. 0) then
+      if (comp_ctl%coef_4_adv_flux%icou .eq. 0) then
         e_message =                                                     &
      &     'Set coefficients for time stepping for composition scalar'
         call calypso_MPI_abort(ierr_dless, e_message)
       else
-        MHD_coef_list%coefs_composition%num = coef_4_comp_flux_ctl%num
+        MHD_coef_list%coefs_composition%num                             &
+     &            = comp_ctl%coef_4_adv_flux%num
       end if
 !
-      if (coef_4_c_diffuse_ctl%icou .eq. 0) then
+      if (comp_ctl%coef_4_diffuse%icou .eq. 0) then
         e_message =                                                     &
      &     'Set coefficients for time stepping for scalar diffusion'
         call calypso_MPI_abort(ierr_dless, e_message)
       else
-        MHD_coef_list%coefs_c_diffuse%num = coef_4_c_diffuse_ctl%num
+        MHD_coef_list%coefs_c_diffuse%num = comp_ctl%coef_4_diffuse%num
       end if
 !
-      if (coef_4_comp_src_ctl%icou .gt. 0) then
-        MHD_coef_list%coefs_c_source%num = coef_4_comp_src_ctl%num
+      if (comp_ctl%coef_4_source%icou .gt. 0) then
+        MHD_coef_list%coefs_c_source%num = comp_ctl%coef_4_source%num
       end if
 !
       call copy_power_and_names_from_ctl                                &
-     &   (coef_4_comp_flux_ctl, MHD_coef_list%coefs_composition)
+     &   (comp_ctl%coef_4_adv_flux, MHD_coef_list%coefs_composition)
       call copy_power_and_names_from_ctl                                &
-     &   (coef_4_c_diffuse_ctl, MHD_coef_list%coefs_c_diffuse)
+     &   (comp_ctl%coef_4_diffuse, MHD_coef_list%coefs_c_diffuse)
       call copy_power_and_names_from_ctl                                &
-     &   (coef_4_comp_src_ctl, MHD_coef_list%coefs_c_source)
+     &   (comp_ctl%coef_4_source, MHD_coef_list%coefs_c_source)
 !
       end subroutine set_coefs_4_composition_eq
 !
