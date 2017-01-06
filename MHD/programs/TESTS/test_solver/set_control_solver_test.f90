@@ -83,20 +83,22 @@
       mat_crs%REALARRAY_crs(2) = sigma_diag
       mat_crs%REALARRAY_crs(3) = sigma
 !
-      if (cmp_no_case(order_method_ctl%charavalue, 'RCM_DJDS')) then 
+      if(cmp_no_case(DJDS_ctl1%order_method_ctl%charavalue,             &
+     &               'RCM_DJDS')) then 
         iflag_ordering = 1
         mc_color = 0
-        if (min_color_ctl%iflag .eq. 0) then
+        if (DJDS_ctl1%min_color_ctl%iflag .eq. 0) then
           min_color = 0
         else
-          min_color = min_color_ctl%intvalue
+          min_color = DJDS_ctl1%min_color_ctl%intvalue
         end if
-      else if(cmp_no_case(order_method_ctl%charavalue, 'MC_DJDS')) then
+      else if(cmp_no_case(DJDS_ctl1%order_method_ctl%charavalue,        &
+     &                    'MC_DJDS')) then
         iflag_ordering = 2
-        if (mc_color_ctl%iflag .eq. 0) then
+        if (DJDS_ctl1%mc_color_ctl%iflag .eq. 0) then
           mc_color = 0
         else
-          mc_color = mc_color_ctl%intvalue
+          mc_color = DJDS_ctl1%mc_color_ctl%intvalue
         end if
         min_color = 0
       end if

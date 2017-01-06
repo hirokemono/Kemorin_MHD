@@ -148,9 +148,14 @@
       module m_ctl_data_4_solvers
 !
       use m_precision
+      use t_ctl_data_4_solvers
       use t_control_elements
 !
       implicit  none
+!
+!>      Structure for DJDS solver control
+      type(DJDS_control), save :: DJDS_ctl1
+!DJDS_ctl1%min_color_ctl
 !
 !>      Structure for maximum iteration counts
       type(read_integer_item), save :: itr_ctl
@@ -167,14 +172,6 @@
 !>      Structure for preconditioning
       type(read_character_item), save :: precond_ctl
 !
-!
-!>      Structure for number of MC/RCM colorling
-      type(read_integer_item), save :: min_color_ctl
-!>      Structure for number of multi colorling
-      type(read_integer_item), save :: mc_color_ctl
-!>      Structure for ordering method
-      type(read_character_item), save :: order_method_ctl
-! 
 !
 !  labels for entry groups
 !
@@ -195,15 +192,6 @@
      &         :: hd_sigma_diag = 'sigma_diag_ctl'
       character(len=kchara), parameter :: hd_method =     'method_ctl'
       character(len=kchara), parameter :: hd_precond =    'precond_ctl'
-!
-!   4th level for SMP solver control
-!
-      character(len=kchara), parameter                                  &
-     &         :: hd_order_method = 'order_method'
-      character(len=kchara), parameter                                  &
-     &         :: hd_min_color =    'min_color_ctl'
-      character(len=kchara), parameter                                  &
-     &         :: hd_mc_color =     'mc_color_ctl'
 !
       private :: hd_solver_ctl, hd_DJDS_params
       private :: i_solver_ctl,  i_DJDS_params
@@ -258,20 +246,8 @@
       use skip_comment_f
 !
 !
-      if(right_begin_flag(hd_DJDS_params) .eq. 0) return
-      if (i_DJDS_params .gt. 0) return
-      do
-        call load_ctl_label_and_line
-!
-        call find_control_end_flag(hd_DJDS_params, i_DJDS_params)
-        if(i_DJDS_params .gt. 0) exit
-!
-!
-        call read_integer_ctl_type(hd_min_color, min_color_ctl)
-        call read_integer_ctl_type(hd_mc_color, mc_color_ctl)
-!
-        call read_chara_ctl_type(hd_order_method, order_method_ctl)
-      end do
+      call read_control_DJDS_solver                                     &
+     &   (hd_DJDS_params, i_DJDS_params, DJDS_ctl1)
 !
       end subroutine read_DJDS_solver_param_ctl
 !

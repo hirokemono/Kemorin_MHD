@@ -116,30 +116,30 @@
 !
 !   control for number of processores for DJDS solver
 !
-        if (order_method_ctl%iflag .eq. 0) then
+        if (DJDS_ctl1%order_method_ctl%iflag .eq. 0) then
               e_message                                                 &
      &         = 'Set ordering scheme for DJDS solver'
               call calypso_MPI_abort(ierr_CG, e_message)
         else
-          ordering_name = order_method_ctl%charavalue
+          ordering_name = DJDS_ctl1%order_method_ctl%charavalue
         end if
 !
         if (cmp_no_case(ordering_name, 'RCM_DJDS')) then 
           iflag_ordering = 1
           mc_color = 0
-          if (min_color_ctl%iflag .eq. 0) then
+          if (DJDS_ctl1%min_color_ctl%iflag .eq. 0) then
             min_color = 0
           else
-            min_color = min_color_ctl%intvalue
+            min_color = DJDS_ctl1%min_color_ctl%intvalue
           end if
         else if  (cmp_no_case(ordering_name,'MC_DJDS')) then
           iflag_ordering = 2
-          if (mc_color_ctl%iflag .eq. 0) then
+          if (DJDS_ctl1%mc_color_ctl%iflag .eq. 0) then
             mc_color = 0
           else
-            mc_color = mc_color_ctl%intvalue
+            mc_color = DJDS_ctl1%mc_color_ctl%intvalue
           end if
-          min_color = mc_color_ctl%intvalue
+          min_color = DJDS_ctl1%mc_color_ctl%intvalue
         end if
 !
         if (       precond_4_solver .eq. 'DIAG'                         &
