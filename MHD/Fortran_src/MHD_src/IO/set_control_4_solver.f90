@@ -40,49 +40,44 @@
 !
 !   control for solvers
 !
-        if ((method_ctl%iflag * precond_ctl%iflag) .eq. 0) then
+        if ((CG_ctl1%method_ctl%iflag * CG_ctl1%precond_ctl%iflag)      &
+     &    .eq. 0) then
           e_message                                                     &
      &    = 'Set CG method and preconditioning for Poisson solver'
             call calypso_MPI_abort(ierr_CG, e_message)
         else
-          precond_4_solver = precond_ctl%charavalue
-          method_4_solver  = method_ctl%charavalue
+          precond_4_solver = CG_ctl1%precond_ctl%charavalue
+          method_4_solver  = CG_ctl1%method_ctl%charavalue
         end if
 !
-        if (itr_ctl%iflag .eq. 0) then
+        if (CG_ctl1%itr_ctl%iflag .eq. 0) then
             e_message                                                   &
      &      = 'Set max iteration count for CG solver '
             call calypso_MPI_abort(ierr_CG, e_message)
         else
-          itr   = itr_ctl%intvalue
+          itr   = CG_ctl1%itr_ctl%intvalue
         end if
 !
-        if (eps_ctl%iflag .eq. 0) then
+        if (CG_ctl1%eps_ctl%iflag .eq. 0) then
             e_message                                                   &
      &      = 'Set conservation limit for CG solver '
             call calypso_MPI_abort(ierr_CG, e_message)
         else
-          eps   = eps_ctl%realvalue
+          eps   = CG_ctl1%eps_ctl%realvalue
         end if
 !
-        if (sigma_ctl%iflag .eq. 0) then
+        if (CG_ctl1%sigma_ctl%iflag .eq. 0) then
             e_message                                                   &
      &      = 'Set coefficient of diagonal for SSOR preconditioning'
             call calypso_MPI_abort(ierr_CG, e_message)
         else
-          sigma = sigma_ctl%realvalue
+          sigma = CG_ctl1%sigma_ctl%realvalue
         end if
 !
-        if (sigma_ctl%iflag .eq. 0) then
-          sigma = 1.0d0
-        else
-          sigma = sigma_ctl%realvalue
-        end if
-!
-        if (sigma_diag_ctl%iflag .eq. 0) then
+        if (CG_ctl1%sigma_diag_ctl%iflag .eq. 0) then
           sigma_diag = 1.0d0
         else
-          sigma_diag = sigma_diag_ctl%realvalue
+          sigma_diag = CG_ctl1%sigma_diag_ctl%realvalue
         end if
 !
 !   control for time evolution scheme
@@ -115,7 +110,7 @@
 !
 !   control for number of processores for DJDS solver
 !
-        call set_control_4_DJDS_solver(DJDS_ctl1)
+        call set_control_4_DJDS_solver(CG_ctl1%DJDS_ctl)
 !
         if (       precond_4_solver .eq. 'DIAG'                         &
      &       .and. iflag_ordering .eq. 2                                &
@@ -144,7 +139,7 @@
 !
       if (cmp_no_case(method_4_solver, 'MGCG')) then
         if (iflag_debug.eq.1) write(*,*) 'set_ctl_data_4_Multigrid'
-        call set_ctl_data_4_Multigrid(MG_ctl1)
+        call set_ctl_data_4_Multigrid(CG_ctl1%MG_ctl)
       end if
 !
       end subroutine s_set_control_4_solver

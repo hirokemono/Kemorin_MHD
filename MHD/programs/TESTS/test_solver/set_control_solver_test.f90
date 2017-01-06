@@ -66,13 +66,23 @@
         mat_crs%SOLVER_crs = 'block33'
       end if
 !
-      if(precond_ctl%iflag .gt. 0) precond = precond_ctl%charavalue
-      if(method_ctl%iflag .gt. 0)  method =  method_ctl%charavalue
-      if(eps_ctl%iflag .gt. 0) eps = eps_ctl%realvalue
-      if(itr_ctl%iflag .gt. 0) itr = itr_ctl%intvalue
-      if(sigma_ctl%iflag .gt. 0) sigma = sigma_ctl%realvalue
-      if(sigma_diag_ctl%iflag .gt. 0) then
-        sigma_diag =  sigma_diag_ctl%realvalue
+      if(CG_ctl1%precond_ctl%iflag .gt. 0) then
+        precond = CG_ctl1%precond_ctl%charavalue
+      end if
+      if(CG_ctl1%method_ctl%iflag .gt. 0)  then
+        method =  CG_ctl1%method_ctl%charavalue
+      end if
+      if(CG_ctl1%eps_ctl%iflag .gt. 0)   then
+        eps = CG_ctl1%eps_ctl%realvalue
+      end if
+      if(CG_ctl1%itr_ctl%iflag .gt. 0)   then
+        itr = CG_ctl1%itr_ctl%intvalue
+      end if
+      if(CG_ctl1%sigma_ctl%iflag .gt. 0) then
+        sigma = CG_ctl1%sigma_ctl%realvalue
+      end if
+      if(CG_ctl1%sigma_diag_ctl%iflag .gt. 0) then
+        sigma_diag =  CG_ctl1%sigma_diag_ctl%realvalue
       end if
 !
       mat_crs%METHOD_crs =       method
@@ -82,7 +92,7 @@
       mat_crs%REALARRAY_crs(2) = sigma_diag
       mat_crs%REALARRAY_crs(3) = sigma
 !
-      call set_control_4_DJDS_solver(DJDS_ctl1)
+      call set_control_4_DJDS_solver(CG_ctl1%DJDS_ctl)
 !
       if (iflag_debug .eq. 1) then
         write(*,*) 'np_smp       ', np_smp
@@ -103,7 +113,7 @@
       end if
 !
       if(cmp_no_case(mat_crs%METHOD_crs, 'MGCG')) then
-        call set_ctl_data_4_Multigrid(MG_ctl1)
+        call set_ctl_data_4_Multigrid(CG_ctl1%MG_ctl)
       end if
 !
       end subroutine set_ctl_params_4_solver_test

@@ -153,6 +153,7 @@
      &         :: hd_mc_color =     'mc_color_ctl'
 !
       private :: hd_DJDS_params,  i_DJDS_params
+      private :: hd_Multigrid_params,  i_Multigrid_params
       private :: hd_itr, hd_eps, hd_sigma, hd_sigma_diag
       private :: hd_method, hd_precond
 !

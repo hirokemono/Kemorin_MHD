@@ -139,28 +139,8 @@
 !
       implicit  none
 !
-!>      Structure for DJDS solver control
-      type(DJDS_control), save :: DJDS_ctl1
-!
-!>        Structure for MGCG control
-      type(MGCG_control), save :: MG_ctl1
-!
-!
-!>      Structure for maximum iteration counts
-      type(read_integer_item), save :: itr_ctl
-!
-!>      Structure for error torrance
-      type(read_real_item), save :: eps_ctl
-!>      Structure for coefficient for SSOR
-      type(read_real_item), save :: sigma_ctl
-!>      Structure for coefficient for diagonal
-      type(read_real_item), save :: sigma_diag_ctl
-! 
-!>      Structure for method
-      type(read_character_item), save :: method_ctl
-!>      Structure for preconditioning
-      type(read_character_item), save :: precond_ctl
-!
+!>      Structure for CG solver control
+      type(solver_control), save :: CG_ctl1
 !
 !  labels for entry groups
 !
@@ -168,28 +148,8 @@
      &       :: hd_solver_ctl =     'solver_ctl'
       integer (kind=kint) :: i_solver_ctl =     0
 !
-!      character(len=kchara) :: hd_Multigrid_params = 'MGCG_parameter_ctl'
-!      integer (kind=kint) :: i_Multigrid_params = 0
 !
-      character(len=kchara), parameter                                  &
-     &       :: hd_DJDS_params =      'DJDS_solver_ctl'
-      integer (kind=kint) :: i_DJDS_params = 0
-!
-!   4th level for ICCG
-!
-      character(len=kchara), parameter :: hd_itr =        'itr_ctl'
-      character(len=kchara), parameter :: hd_eps =        'eps_ctl'
-      character(len=kchara), parameter :: hd_sigma =      'sigma_ctl'
-      character(len=kchara), parameter                                  &
-     &         :: hd_sigma_diag = 'sigma_diag_ctl'
-      character(len=kchara), parameter :: hd_method =     'method_ctl'
-      character(len=kchara), parameter :: hd_precond =    'precond_ctl'
-!
-      private :: hd_solver_ctl, hd_DJDS_params
-      private :: i_solver_ctl,  i_DJDS_params
-      private :: hd_Multigrid_params, i_Multigrid_params
-      private :: hd_itr, hd_eps, hd_sigma, hd_sigma_diag
-      private :: hd_method, hd_precond
+      private :: hd_solver_ctl, i_solver_ctl
 !
 ! -----------------------------------------------------------------------
 !
@@ -199,35 +159,9 @@
 !
       subroutine read_crs_solver_param_ctl
 !
-      use m_machine_parameter
-      use m_read_control_elements
-      use skip_comment_f
 !
-!
-      if(right_begin_flag(hd_solver_ctl) .eq. 0) return
-      if (i_solver_ctl .gt. 0) return
-      do
-        call load_ctl_label_and_line
-!
-        call find_control_end_flag(hd_solver_ctl, i_solver_ctl)
-        if(i_solver_ctl .gt. 0) exit
-!
-!
-        call read_control_DJDS_solver                                   &
-     &     (hd_DJDS_params, i_DJDS_params, DJDS_ctl1)
-        call read_control_Multigrid                                     &
-     &     (hd_Multigrid_params, i_Multigrid_params, MG_ctl1)
-!
-!
-        call read_real_ctl_type(hd_eps, eps_ctl)
-        call read_real_ctl_type(hd_sigma, sigma_ctl)
-        call read_real_ctl_type(hd_sigma_diag, sigma_diag_ctl)
-!
-        call read_integer_ctl_type(hd_itr, itr_ctl)
-!
-        call read_chara_ctl_type(hd_method, method_ctl)
-        call read_chara_ctl_type(hd_precond, precond_ctl)
-      end do
+      call read_CG_solver_param_ctl                                     &
+     &   (hd_solver_ctl, i_solver_ctl, CG_ctl1)
 !
       end subroutine read_crs_solver_param_ctl
 !

@@ -167,13 +167,23 @@
 !
       mat_crs%SOLVER_crs =  f_solver_type_ctl
 !
-      if(precond_ctl%iflag .gt. 0) precond = precond_ctl%charavalue
-      if(method_ctl%iflag .gt. 0)  method =  method_ctl%charavalue
-      if(eps_ctl%iflag .gt. 0) eps = eps_ctl%realvalue
-      if(itr_ctl%iflag .gt. 0) itr = itr_ctl%intvalue
-      if(sigma_ctl%iflag .gt. 0) sigma = sigma_ctl%realvalue
-      if(sigma_diag_ctl%iflag .gt. 0) then
-        sigma_diag =  sigma_diag_ctl%realvalue
+      if(CG_ctl1%precond_ctl%iflag .gt. 0) then
+        precond = CG_ctl1%precond_ctl%charavalue
+      end if
+      if(CG_ctl1%method_ctl%iflag .gt. 0)  then
+        method =  CG_ctl1%method_ctl%charavalue
+      end if
+      if(CG_ctl1%eps_ctl%iflag .gt. 0)        then
+        eps = CG_ctl1%eps_ctl%realvalue
+      end if
+      if(CG_ctl1%itr_ctl%iflag .gt. 0)        then
+        itr = CG_ctl1%itr_ctl%intvalue
+      end if
+      if(CG_ctl1%sigma_ctl%iflag .gt. 0)      then
+        sigma = CG_ctl1%sigma_ctl%realvalue
+      end if
+      if(CG_ctl1%sigma_diag_ctl%iflag .gt. 0) then
+        sigma_diag =  CG_ctl1%sigma_diag_ctl%realvalue
       end if
 !
       mat_crs%METHOD_crs =       method
@@ -183,7 +193,7 @@
       mat_crs%REALARRAY_crs(2) = sigma_diag
       mat_crs%REALARRAY_crs(3) = sigma
 !
-      call set_control_4_DJDS_solver(DJDS_ctl1)
+      call set_control_4_DJDS_solver(CG_ctl1%DJDS_ctl)
 !
       end subroutine set_ctl_params_4_gen_z_filter
 !
