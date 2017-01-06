@@ -35,6 +35,7 @@
       use m_ucd_data
       use m_ctl_data_4_platforms
       use m_ctl_data_4_time_steps
+      use m_ctl_data_4_fields
 !
       use set_control_platform_data
       use set_control_nodal_data_MHD
@@ -101,7 +102,7 @@
 !
 !   set fields
 !
-      call set_control_4_fields(nod_fld)
+      call set_control_4_fields(fld_ctl1%field_ctl, nod_fld)
 !
 !   set control parameters
 !

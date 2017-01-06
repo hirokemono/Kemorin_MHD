@@ -7,10 +7,6 @@
 !>@brief  Control brog for field definition
 !!
 !!@verbatim
-!!      subroutine deallocate_phys_control
-!!      subroutine deallocate_quad_phys_control
-!!      subroutine deallocate_linear_phys_control
-!!
 !!      subroutine read_phys_values
 !!
 !! ---------------------------------------------------------------------
@@ -61,29 +57,12 @@
       module m_ctl_data_4_fields
 !
       use m_precision
-      use t_read_control_arrays
+      use t_ctl_data_4_fields
 !
       implicit  none
 !
-!>      Structure for list of field
-!!@n      field_ctl%icou:  Read flag for 'nod_value_ctl'
-!!@n      field_ctl%num:   Number of field
-!!@n      field_ctl%c1_tbl: Name of field
-!!@n      field_ctl%c2_tbl: flag for visualization output
-!!@n      field_ctl%c3_tbl: flag for time series output
-      type(ctl_array_c3), save :: field_ctl
-!
-!>      Structure for list of field on quadrature elements
-!!@n      quad_phys_ctl%icou:  Read flag for 'quad_field_name_ctl'
-!!@n      quad_phys_ctl%num:   Number of field
-!!@n      quad_phys_ctl%c_tbl: Name list of field
-      type(ctl_array_chara), save :: quad_phys_ctl
-!
-!>      Structure for list of field on linear elements
-!!@n      linear_phys_ctl%icou:  Read flag for 'linear_field_name_ctl'
-!!@n      linear_phys_ctl%num:   Number of field
-!!@n      linear_phys_ctl%c_tbl: Name list of field
-      type(ctl_array_chara), save :: linear_phys_ctl
+!>      Structure for field information control
+      type(field_control), save :: fld_ctl1
 !
 !   label for entry of group
 !
@@ -93,43 +72,12 @@
 !>      Number of field
       integer (kind=kint) :: i_phys_values =   0
 !
-!   4th level for fields
-!
-      character(len=kchara), parameter                                  &
-     &      :: hd_field_list = 'nod_value_ctl'
-!
-!   4th level for each order
-!
-      character(len=kchara), parameter                                  &
-     &      :: hd_quad_field =   'quad_field_name_ctl'
-      character(len=kchara), parameter                                  &
-     &      :: hd_linear_field = 'linear_field_name_ctl'
-!
       private :: hd_phys_values, i_phys_values
-      private :: hd_field_list
-      private :: hd_quad_field, hd_linear_field
 !
 ! -----------------------------------------------------------------------
 !
       contains
 !
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_quad_phys_control
-!
-      call dealloc_control_array_chara(quad_phys_ctl)
-!
-      end subroutine deallocate_quad_phys_control
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_linear_phys_control
-!
-      call dealloc_control_array_chara(linear_phys_ctl)
-!
-      end subroutine deallocate_linear_phys_control
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine read_phys_values
@@ -139,19 +87,8 @@
       use skip_comment_f
 !
 !
-      if(right_begin_flag(hd_phys_values) .eq. 0) return
-      if (i_phys_values .gt. 0) return
-      do
-        call load_ctl_label_and_line
-!
-        call find_control_end_flag(hd_phys_values, i_phys_values)
-        if(i_phys_values .gt. 0) exit
-!
-        call read_control_array_c3(hd_field_list, field_ctl)
-!
-        call read_control_array_c1(hd_quad_field, quad_phys_ctl)
-        call read_control_array_c1(hd_linear_field, linear_phys_ctl)
-      end do
+      call read_phys_data_control                                       &
+     &   (hd_phys_values, i_phys_values, fld_ctl1)
 !
       end subroutine read_phys_values
 !

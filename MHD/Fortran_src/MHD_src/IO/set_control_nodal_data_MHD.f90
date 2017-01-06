@@ -8,8 +8,9 @@
 !> @brief Set field information for MHD simulation from control data
 !!
 !!@verbatim
-!!     subroutine set_control_4_fields(nod_fld)
-!!     subroutine add_nodal_fields_2_ctl
+!!     subroutine set_control_4_fields(field_ctl, nod_fld)
+!!        type(ctl_array_c3), intent(inout) :: field_ctl
+!!        type(phys_data), intent(inout) :: nod_fld
 !!@endverbatim
 !
       module set_control_nodal_data_MHD
@@ -19,6 +20,7 @@
       use m_machine_parameter
 !
       use t_phys_data
+      use t_read_control_arrays
 !
       implicit  none
 !
@@ -28,17 +30,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_fields(nod_fld)
+      subroutine set_control_4_fields(field_ctl, nod_fld)
 !
       use calypso_mpi
       use m_error_IDs
       use m_element_phys_data
-      use m_ctl_data_4_fields
 !
       use set_control_nodal_data
       use add_nodal_fields_4_MHD
       use add_nodal_fields_4_SGS
 !
+      type(ctl_array_c3), intent(inout) :: field_ctl
       type(phys_data), intent(inout) :: nod_fld
 !
       integer(kind = kint) :: ierr

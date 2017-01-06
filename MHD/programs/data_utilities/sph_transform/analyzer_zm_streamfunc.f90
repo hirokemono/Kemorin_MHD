@@ -58,7 +58,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'read_control_data_sph_trans'
       call read_control_data_sph_trans
-      call set_ctl_data_4_zm_streamline(field_ctl)
+      call set_ctl_data_4_zm_streamline(fld_ctl1%field_ctl)
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_ctl_data_4_sph_trans'
       call s_set_ctl_data_4_sph_trans                                   &

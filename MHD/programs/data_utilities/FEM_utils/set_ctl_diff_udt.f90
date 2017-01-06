@@ -52,7 +52,7 @@
       call s_set_control_ele_layering
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_control_nodal_data'
-      call s_set_control_nodal_data(field_ctl, nod_fld, ierr)
+      call s_set_control_nodal_data(fld_ctl1%field_ctl, nod_fld, ierr)
       if (ierr .ne. 0) call calypso_MPI_abort(ierr, e_message)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_ctl_4_diff_udt_steps'

@@ -76,16 +76,16 @@
         type(ctl_array_c3) :: field_ctl
 !
 !>        Structure for list of field on quadrature elements
-!!@n       quad_phys_ctl%icou:  Read flag for 'quad_field_name_ctl'
-!!@n       quad_phys_ctl%num:   Number of field
-!!@n       quad_phys_ctl%c_tbl: Name list of field
-        type(ctl_array_chara) :: quad_phys_ctl
+!!@n       quad_phys%icou:  Read flag for 'quad_field_name_ctl'
+!!@n       quad_phys%num:   Number of field
+!!@n       quad_phys%c_tbl: Name list of field
+        type(ctl_array_chara) :: quad_phys
 !
 !>        Structure for list of field on linear elements
-!!@n       linear_phys_ctl%icou:  Read flag for 'linear_field_name_ctl'
-!!@n       linear_phys_ctl%num:   Number of field
-!!@n       linear_phys_ctl%c_tbl: Name list of field
-        type(ctl_array_chara) :: linear_phys_ctl
+!!@n       linear_phys%icou:  Read flag for 'linear_field_name_ctl'
+!!@n       linear_phys%num:   Number of field
+!!@n       linear_phys%c_tbl: Name list of field
+        type(ctl_array_chara) :: linear_phys
       end type field_control
 !
 !   4th level for fields
@@ -123,7 +123,7 @@
 !
       type(field_control), intent(inout) :: fld_ctl
 !
-      call dealloc_control_array_chara(fld_ctl%quad_phys_ctl)
+      call dealloc_control_array_chara(fld_ctl%quad_phys)
 !
       end subroutine dealloc_quad_phys_control
 !
@@ -133,7 +133,7 @@
 !
       type(field_control), intent(inout) :: fld_ctl
 !
-      call dealloc_control_array_chara(fld_ctl%linear_phys_ctl)
+      call dealloc_control_array_chara(fld_ctl%linear_phys)
 !
       end subroutine dealloc_linear_phys_control
 !
@@ -162,10 +162,9 @@
 !
         call read_control_array_c3(hd_field_list, fld_ctl%field_ctl)
 !
+        call read_control_array_c1(hd_quad_field, fld_ctl%quad_phys)
         call read_control_array_c1                                      &
-     &     (hd_quad_field, fld_ctl%quad_phys_ctl)
-        call read_control_array_c1                                      &
-     &     (hd_linear_field, fld_ctl%linear_phys_ctl)
+     &     (hd_linear_field, fld_ctl%linear_phys)
       end do
 !
       end subroutine read_phys_data_control

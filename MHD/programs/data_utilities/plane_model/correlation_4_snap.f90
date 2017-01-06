@@ -84,7 +84,8 @@
 !
       call init_udt_4_correlate(ist, cor_phys, plane_t_IO, plane_ucd)
 !
-       call s_set_list_4_correlate(field_ctl, ref_phys, cor_phys)
+       call s_set_list_4_correlate                                      &
+     &    (fld_ctl1%field_ctl, ref_phys, cor_phys)
 !
       write(*,*) 'internal_node, ele',                                  &
      &           merge_tbl%inter_nod_m,  merge_tbl%inter_ele_m

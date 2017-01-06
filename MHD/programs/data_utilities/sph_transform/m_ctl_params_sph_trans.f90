@@ -119,8 +119,9 @@
 !
 !   set physical values
 !
-      call s_set_control_sph_data(field_ctl, rj_fld, ierr)
-      call s_set_control_nodal_data(field_ctl, field_STR, ierr)
+      call s_set_control_sph_data(fld_ctl1%field_ctl, rj_fld, ierr)
+      call s_set_control_nodal_data                                     &
+     &   (fld_ctl1%field_ctl, field_STR, ierr)
 !
 !
       if(i_cmb_grp .gt. 0) then
@@ -224,8 +225,9 @@
 !
 !   set physical values
 !
-      call s_set_control_sph_data(field_ctl, rj_fld, ierr)
-      call s_set_control_nodal_data(field_ctl, field_STR, ierr)
+      call s_set_control_sph_data(fld_ctl1%field_ctl, rj_fld, ierr)
+      call s_set_control_nodal_data                                     &
+     &   (fld_ctl1%field_ctl, field_STR, ierr)
 !
 !
       if(i_cmb_grp .gt. 0) then

@@ -72,7 +72,7 @@
       write(*,*) 'init_ucd_data_4_FFT'
       call init_ucd_data_4_FFT(ist, fft_t_IO, fft_ucd)
 !
-      call set_fields_4_FFT(field_ctl)
+      call set_fields_4_FFT(fld_ctl1%field_ctl)
 !
       write(*,*) 'internal_node, ele',                                  &
      &           merge_tbl%inter_nod_m,  merge_tbl%inter_ele_m

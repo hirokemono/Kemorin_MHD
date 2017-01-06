@@ -123,7 +123,7 @@
       integer(kind = kint) :: ierr
 !
 !
-      call s_set_control_nodal_data(field_ctl, nod_fld, ierr)
+      call s_set_control_nodal_data(fld_ctl1%field_ctl, nod_fld, ierr)
       if (ierr .ne. 0) call calypso_MPI_abort(ierr, e_message)
 !
       end subroutine set_ctl_interpolate_udt
