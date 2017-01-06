@@ -37,6 +37,7 @@
       use m_ctl_data_4_time_steps
       use m_ctl_data_4_fields
       use m_ctl_data_filter_files
+      use m_ctl_data_ele_layering
 !
       use set_control_platform_data
       use set_control_nodal_data_MHD
@@ -95,7 +96,7 @@
 !   set parameters for SGS model
 !
       call set_control_SGS_model
-      call set_control_FEM_SGS(ffile_ctl1)
+      call set_control_FEM_SGS(ffile_ctl1, elayer_ctl1)
 !
 !   set parameters for filtering operation
 !

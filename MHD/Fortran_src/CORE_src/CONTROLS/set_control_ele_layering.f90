@@ -7,7 +7,8 @@
 !>@brief  Set parameters for radial grouping
 !!
 !!@verbatim
-!!      subroutine s_set_control_ele_layering
+!!      subroutine s_set_control_ele_layering(elayer_ctl)
+!!        type(layering_control), intent(inout) :: elayer_ctl
 !!@endverbatim
 !
       module set_control_ele_layering
@@ -24,16 +25,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_set_control_ele_layering
+      subroutine s_set_control_ele_layering(elayer_ctl)
 !
-      use m_ctl_data_ele_layering
+      use t_ctl_data_ele_layering
       use set_layer_list_by_table
       use skip_comment_f
+!
+      type(layering_control), intent(inout) :: elayer_ctl
 !
       character(len=kchara) :: tmpchara
 !
 !
-      tmpchara = layering_grp_type_ctl%charavalue
+      tmpchara = elayer_ctl%layering_grp_type_ctl%charavalue
       if     (cmp_no_case(tmpchara,'explicit')) then
         iflag_layering_type = 0
       else if(cmp_no_case(tmpchara,'ele_group_list')) then
@@ -49,29 +52,30 @@
 !
       if (iflag_layering_type .eq. 0) then
 !
-        ntotal_layer_grp = igrp_stack_layer_ctl%num
-        num_layer_grp = igrp_stack_layer_ctl%num
+        ntotal_layer_grp = elayer_ctl%igrp_stack_layer_ctl%num
+        num_layer_grp =    elayer_ctl%igrp_stack_layer_ctl%num
         call allocate_layering_ele_grp
 !
         if(num_layer_grp.gt. 0) then
           igrp_stack_each_layer(1:num_layer_grp)                        &
-     &        = igrp_stack_layer_ctl%ivec(1:num_layer_grp)
+     &        = elayer_ctl%igrp_stack_layer_ctl%ivec(1:num_layer_grp)
         end if
         if(ntotal_layer_grp .gt. 0) then
           dynamic_layer_grp_name(1:ntotal_layer_grp)                    &
-     &        = layer_grp_name_ctl%c_tbl(1:ntotal_layer_grp)
+     &        = elayer_ctl%layer_grp_name_ctl%c_tbl(1:ntotal_layer_grp)
         end if
 !
-        call dealloc_control_array_int(igrp_stack_layer_ctl)
-        call dealloc_control_array_chara(layer_grp_name_ctl)
+        call dealloc_control_array_int(elayer_ctl%igrp_stack_layer_ctl)
+        call dealloc_control_array_chara(elayer_ctl%layer_grp_name_ctl)
 !
       else if (iflag_layering_type .eq. 2) then
-        num_layering_grp =       num_layering_grp_ctl%intvalue
-        num_fluid_layering_grp = num_fl_layer_grp_ctl%intvalue
+        num_layering_grp = elayer_ctl%num_layering_grp_ctl%intvalue
+        num_fluid_layering_grp                                          &
+     &     = elayer_ctl%num_fl_layer_grp_ctl%intvalue
         start_layering_grp_name                                         &
-     &     = start_layering_grp_name_ctl%charavalue
+     &     = elayer_ctl%start_layering_grp_name_ctl%charavalue
         start_fluid_layering_grp_name                                   &
-     &     = start_fl_layer_grp_name_ctl%charavalue
+     &     = elayer_ctl%start_fl_layer_grp_name_ctl%charavalue
       end if
 !
       if(iflag_debug .gt. 0) then

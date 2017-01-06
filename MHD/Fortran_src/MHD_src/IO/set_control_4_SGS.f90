@@ -12,8 +12,9 @@
 !!@verbatim
 !!      subroutine set_control_SGS_model
 !!      subroutine set_control_SPH_SGS(sph_filters)
-!!      subroutine set_control_FEM_SGS(ffile_ctl)
+!!      subroutine set_control_FEM_SGS(ffile_ctl, elayer_ctl)
 !!        type(filter_file_control), intent(in) :: ffile_ctl
+!!        type(layering_control), intent(inout) :: elayer_ctl
 !!@endverbatim
 !
       module set_control_4_SGS
@@ -248,7 +249,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_FEM_SGS(ffile_ctl)
+      subroutine set_control_FEM_SGS(ffile_ctl, elayer_ctl)
 !
       use m_machine_parameter
       use m_geometry_constants
@@ -258,10 +259,12 @@
       use m_ctl_data_SGS_model
       use m_filter_file_names
       use t_ctl_data_filter_files
+      use t_ctl_data_ele_layering
       use sgs_ini_model_coefs_IO
       use set_control_ele_layering
 !
       type(filter_file_control), intent(in) :: ffile_ctl
+      type(layering_control), intent(inout) :: elayer_ctl
 !
       character(len=kchara) :: tmpchara
 !
@@ -414,7 +417,7 @@
 !
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
-        call s_set_control_ele_layering
+        call s_set_control_ele_layering(elayer_ctl)
       end if
 !
       if (iflag_SGS_model .eq. id_SGS_NL_grad) then

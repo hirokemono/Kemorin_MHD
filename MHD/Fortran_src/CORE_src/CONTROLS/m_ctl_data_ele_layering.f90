@@ -56,70 +56,18 @@
       module m_ctl_data_ele_layering
 !
       use m_precision
-      use t_control_elements
-      use t_read_control_arrays
+      use t_ctl_data_ele_layering
 !
       implicit  none
 !
-!>      Structure for group type
-      type(read_character_item), save :: layering_grp_type_ctl
-!
-!>      Structure for layering group names
-!!@n      layer_grp_name_ctl%num:   Number of layering group
-!!@n      layer_grp_name_ctl%c_tbl: layering group names
-        type(ctl_array_chara), save :: layer_grp_name_ctl
-!
-!>      Structure for layering stacks
-!!@n      igrp_stack_layer_ctl%ivec: layering stack array
-        type(ctl_array_int), save :: igrp_stack_layer_ctl
-!
-!>      Structure for number of group to start
-      type(read_integer_item), save :: num_layering_grp_ctl
-!>      Structure for number of fluid group to start
-      type(read_integer_item), save :: num_fl_layer_grp_ctl
-!>      Structure for group to start
-      type(read_character_item), save :: start_layering_grp_name_ctl
-!>      Structure for fluid group to start
-      type(read_character_item), save :: start_fl_layer_grp_name_ctl
-!
-!
-!>      Structure for number of groups on sphere
-      type(read_integer_item), save :: ngrp_SGS_on_sphere_ctl
+!>     Structure for element layering
+      type(layering_control), save :: elayer_ctl1
 !
 !   labels for entry
 !
       character(len=kchara), parameter :: hd_dynamic_layers             &
      &                        = 'dynamic_model_layer_ctl'
       integer (kind=kint) :: i_dynamic_layers = 0
-!
-!    labels for layering parameteres
-!
-      character(len=kchara), parameter :: hd_layering_data_ctl          &
-     &                        = 'layering_data_ctl'
-      character(len=kchara), parameter :: hd_ntotal_layer_grp_ctl       &
-     &                        = 'layer_grp_name_ctl'
-      character(len=kchara), parameter :: hd_num_layer_grp_ctl          &
-     &                        = 'grp_stack_each_layer_ctl'
-!
-      character(len=kchara), parameter :: hd_num_SGS_ele_grp            &
-     &                        = 'num_layering_grp_ctl'
-      character(len=kchara), parameter :: hd_start_SGS_ele_grp_name     &
-     &                        = 'start_layering_grp_name_ctl'
-      character(len=kchara), parameter :: hd_num_SGS_fluid_grp          &
-     &                        = 'num_fl_layer_grp_ctl'
-      character(len=kchara), parameter :: hd_start_SGS_fluid_grp_name   &
-     &                        = 'start_fl_layer_grp_name_ctl'
-!
-      character(len=kchara), parameter :: hd_ngrp_SGS_on_sphere         &
-     &                        = 'ngrp_SGS_on_sphere_ctl'
-!
-      private :: hd_dynamic_layers, i_dynamic_layers
-      private :: hd_layering_data_ctl, hd_ntotal_layer_grp_ctl
-      private :: hd_num_layer_grp_ctl
-!
-      private :: hd_num_SGS_ele_grp, hd_start_SGS_ele_grp_name
-      private :: hd_num_SGS_fluid_grp, hd_start_SGS_fluid_grp_name
-      private :: hd_ngrp_SGS_on_sphere
 !
 ! -----------------------------------------------------------------------
 !
@@ -129,42 +77,9 @@
 !
       subroutine read_ele_layers_grp_ctl
 !
-      use m_machine_parameter
-      use skip_comment_f
 !
-!
-      if(right_begin_flag(hd_dynamic_layers) .eq. 0) return
-      if (i_dynamic_layers .gt. 0) return
-      do
-        call load_ctl_label_and_line
-!
-        call find_control_end_flag(hd_dynamic_layers, i_dynamic_layers)
-        if(i_dynamic_layers .gt. 0) exit
-!
-!
-        call read_control_array_c1                                      &
-     &     (hd_ntotal_layer_grp_ctl, layer_grp_name_ctl)
-!
-        call read_control_array_i1                                      &
-     &     (hd_num_layer_grp_ctl, igrp_stack_layer_ctl)
-!
-!
-        call read_integer_ctl_type(hd_num_SGS_ele_grp,                  &
-     &      num_layering_grp_ctl)
-        call read_integer_ctl_type(hd_num_SGS_fluid_grp,                &
-     &      num_fl_layer_grp_ctl)
-!
-        call read_integer_ctl_type(hd_ngrp_SGS_on_sphere,               &
-     &      ngrp_SGS_on_sphere_ctl)
-!
-!
-        call read_chara_ctl_type                                        &
-     &     (hd_layering_data_ctl, layering_grp_type_ctl)
-        call read_chara_ctl_type                                        &
-     &     (hd_start_SGS_ele_grp_name, start_layering_grp_name_ctl)
-        call read_chara_ctl_type                                        &
-     &     (hd_start_SGS_fluid_grp_name, start_fl_layer_grp_name_ctl)
-      end do
+      call read_ele_layers_control                                      &
+     &   (hd_dynamic_layers, i_dynamic_layers, elayer_ctl1)
 !
       end subroutine read_ele_layers_grp_ctl
 !
