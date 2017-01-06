@@ -151,9 +151,6 @@
       real (kind=kreal) :: eps_4_magne
 !
 !
-!>      Ordering type for linear solver
-      character (len=kchara) :: ordering_name
-!
       integer (kind=kint) :: iflag_implicit_correct = 0
 !
       integer (kind=kint), parameter :: id_SGS_none =       0

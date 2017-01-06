@@ -27,7 +27,6 @@
       use m_ctl_parameter_Multigrid
       use m_ctl_data_solver_test
       use m_ctl_data_4_solvers
-      use m_ctl_data_4_Multigrid
       use crs_matrix_io
       use skip_comment_f
 !
@@ -83,25 +82,7 @@
       mat_crs%REALARRAY_crs(2) = sigma_diag
       mat_crs%REALARRAY_crs(3) = sigma
 !
-      if(cmp_no_case(DJDS_ctl1%order_method_ctl%charavalue,             &
-     &               'RCM_DJDS')) then 
-        iflag_ordering = 1
-        mc_color = 0
-        if (DJDS_ctl1%min_color_ctl%iflag .eq. 0) then
-          min_color = 0
-        else
-          min_color = DJDS_ctl1%min_color_ctl%intvalue
-        end if
-      else if(cmp_no_case(DJDS_ctl1%order_method_ctl%charavalue,        &
-     &                    'MC_DJDS')) then
-        iflag_ordering = 2
-        if (DJDS_ctl1%mc_color_ctl%iflag .eq. 0) then
-          mc_color = 0
-        else
-          mc_color = DJDS_ctl1%mc_color_ctl%intvalue
-        end if
-        min_color = 0
-      end if
+      call set_control_4_DJDS_solver(DJDS_ctl1)
 !
       if (iflag_debug .eq. 1) then
         write(*,*) 'np_smp       ', np_smp

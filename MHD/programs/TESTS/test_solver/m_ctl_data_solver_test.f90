@@ -102,9 +102,6 @@
 !
         call read_crs_solver_param_ctl
 !
-        call read_DJDS_solver_param_ctl
-!
-!
         call read_chara_ctl_type(hd_matrix_head_ctl, matrix_head_ctl)
         call read_chara_ctl_type                                        &
      &     (hd_solution_head_ctl,solution_head_ctl)

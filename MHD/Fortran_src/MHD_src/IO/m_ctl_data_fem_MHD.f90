@@ -185,9 +185,6 @@
         call read_fem_int_points_ctl
 !
         call read_crs_solver_param_ctl
-!
-        call read_DJDS_solver_param_ctl
-!
         call read_time_loop_ctl
       end do
 !

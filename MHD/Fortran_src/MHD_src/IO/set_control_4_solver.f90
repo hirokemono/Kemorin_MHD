@@ -35,7 +35,6 @@
       use m_error_IDs
       use m_iccg_parameter
       use m_ctl_data_4_solvers
-      use m_ctl_data_4_Multigrid
       use m_ctl_parameter_Multigrid
       use skip_comment_f
 !
@@ -116,31 +115,7 @@
 !
 !   control for number of processores for DJDS solver
 !
-        if (DJDS_ctl1%order_method_ctl%iflag .eq. 0) then
-              e_message                                                 &
-     &         = 'Set ordering scheme for DJDS solver'
-              call calypso_MPI_abort(ierr_CG, e_message)
-        else
-          ordering_name = DJDS_ctl1%order_method_ctl%charavalue
-        end if
-!
-        if (cmp_no_case(ordering_name, 'RCM_DJDS')) then 
-          iflag_ordering = 1
-          mc_color = 0
-          if (DJDS_ctl1%min_color_ctl%iflag .eq. 0) then
-            min_color = 0
-          else
-            min_color = DJDS_ctl1%min_color_ctl%intvalue
-          end if
-        else if  (cmp_no_case(ordering_name,'MC_DJDS')) then
-          iflag_ordering = 2
-          if (DJDS_ctl1%mc_color_ctl%iflag .eq. 0) then
-            mc_color = 0
-          else
-            mc_color = DJDS_ctl1%mc_color_ctl%intvalue
-          end if
-          min_color = DJDS_ctl1%mc_color_ctl%intvalue
-        end if
+        call set_control_4_DJDS_solver(DJDS_ctl1)
 !
         if (       precond_4_solver .eq. 'DIAG'                         &
      &       .and. iflag_ordering .eq. 2                                &
@@ -159,8 +134,6 @@
           write(*,*) 'method_4_solver:  ',  trim(method_4_solver)
           write(*,*) 'ordering_name: , iflag_ordering ',                &
      &                trim(ordering_name), iflag_ordering
-          write(*,*) 'min_color:         ', min_color
-          write(*,*) 'mc_color:          ', mc_color
           write(*,*) 'eps_4_velo:        ', eps_4_velo
           write(*,*) 'eps_4_magne:       ', eps_4_magne
           write(*,*) 'eps_4_crank:       ', eps_crank

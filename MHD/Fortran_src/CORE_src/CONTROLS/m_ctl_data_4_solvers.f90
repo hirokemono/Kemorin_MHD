@@ -77,7 +77,7 @@
 !!        order_method     RCM_DJDS
 !!        min_color_ctl    60
 !!        mc_color_ctl     100
-!!      end
+!!      end DJDS_solver_ctl
 !!
 !!      begin MGCG_parameter_ctl
 !!        MG_METHOD_ctl     CG
@@ -92,55 +92,40 @@
 !!        array num_MG_subdomain_ctl    2
 !!          num_MG_subdomain_ctl           8
 !!          num_MG_subdomain_ctl           2
-!!        end array
+!!        end array num_MG_subdomain_ctl
 !!
 !!        array MG_mesh_header_ctl    2
 !!          MG_mesh_header_ctl          'mesh_1st/in'
 !!          MG_mesh_header_ctl          'mesh_2nd/in'
-!!        end array
-!!
-!!        array MG_elem_header_ctl    2
-!!          MG_elem_header_ctl          'mesh_1st/in_element'
-!!          MG_elem_header_ctl          'mesh_2nd/in_element'
-!!        end array
-!!
-!!        array MG_surf_header_ctl    2
-!!          MG_surf_header_ctl          'mesh_1st/in_surface'
-!!          MG_surf_header_ctl          'mesh_2nd/in_surface'
-!!        end array
-!!
-!!        array MG_edge_header_ctl    2
-!!          MG_edge_header_ctl          'mesh_1st/in_edge'
-!!          MG_edge_header_ctl          'mesh_2nd/in_edge'
-!!        end array
+!!        end array MG_mesh_header_ctl
 !!
 !!
 !!        array MG_fine_2_coarse_tbl_ctl    2
 !!          MG_fine_2_coarse_tbl_ctl          'mesh_1st/fine_2_coarse'
 !!          MG_fine_2_coarse_tbl_ctl          'mesh_2nd/fine_2_coarse'
-!!        end array
+!!        end array MG_fine_2_coarse_tbl_ctl
 !!
 !!        array MG_coarse_2_fine_tbl_ctl    2
 !!          MG_coarse_2_fine_tbl_ctl          'mesh_1st/coarse_2_fine'
 !!          MG_coarse_2_fine_tbl_ctl          'mesh_2nd/coarse_2_fine'
-!!        end array
+!!        end array MG_coarse_2_fine_tbl_ctl
 !!
 !!        array MG_fine_2_coarse_ele_tbl_ctl    2
 !!          MG_fine_2_coarse_ele_tbl_ctl    'mesh_1st/fine_2_coarse_ele'
 !!          MG_fine_2_coarse_ele_tbl_ctl    'mesh_2nd/fine_2_coarse_ele'
-!!        end array
+!!        end array MG_fine_2_coarse_ele_tbl_ctl
 !!
 !!
 !!        array MG_mesh_file_fmt_ctl    2
 !!          MG_mesh_file_fmt_ctl           'ascii'
 !!          MG_mesh_file_fmt_ctl           'ascii'
-!!        end array
+!!        end array MG_mesh_file_fmt_ctl
 !!
 !!        array MG_table_file_fmt_ctl    2
 !!          MG_table_file_fmt_ctl           'ascii'
 !!          MG_table_file_fmt_ctl           'ascii'
-!!        end array
-!!      end
+!!        end array MG_table_file_fmt_ctl
+!!      end MGCG_parameter_ctl
 !!    end
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
@@ -149,13 +134,17 @@
 !
       use m_precision
       use t_ctl_data_4_solvers
+      use t_ctl_data_4_Multigrid
       use t_control_elements
 !
       implicit  none
 !
 !>      Structure for DJDS solver control
       type(DJDS_control), save :: DJDS_ctl1
-!DJDS_ctl1%min_color_ctl
+!
+!>        Structure for MGCG control
+      type(MGCG_control), save :: MG_ctl1
+!
 !
 !>      Structure for maximum iteration counts
       type(read_integer_item), save :: itr_ctl
@@ -179,6 +168,9 @@
      &       :: hd_solver_ctl =     'solver_ctl'
       integer (kind=kint) :: i_solver_ctl =     0
 !
+!      character(len=kchara) :: hd_Multigrid_params = 'MGCG_parameter_ctl'
+!      integer (kind=kint) :: i_Multigrid_params = 0
+!
       character(len=kchara), parameter                                  &
      &       :: hd_DJDS_params =      'DJDS_solver_ctl'
       integer (kind=kint) :: i_DJDS_params = 0
@@ -195,6 +187,7 @@
 !
       private :: hd_solver_ctl, hd_DJDS_params
       private :: i_solver_ctl,  i_DJDS_params
+      private :: hd_Multigrid_params, i_Multigrid_params
       private :: hd_itr, hd_eps, hd_sigma, hd_sigma_diag
       private :: hd_method, hd_precond
 !
@@ -208,7 +201,6 @@
 !
       use m_machine_parameter
       use m_read_control_elements
-      use m_ctl_data_4_Multigrid
       use skip_comment_f
 !
 !
@@ -221,8 +213,10 @@
         if(i_solver_ctl .gt. 0) exit
 !
 !
-        call read_DJDS_solver_param_ctl
-        call read_ctl_data_4_Multigrid
+        call read_control_DJDS_solver                                   &
+     &     (hd_DJDS_params, i_DJDS_params, DJDS_ctl1)
+        call read_control_Multigrid                                     &
+     &     (hd_Multigrid_params, i_Multigrid_params, MG_ctl1)
 !
 !
         call read_real_ctl_type(hd_eps, eps_ctl)
@@ -236,20 +230,6 @@
       end do
 !
       end subroutine read_crs_solver_param_ctl
-!
-! -----------------------------------------------------------------------
-!
-      subroutine read_DJDS_solver_param_ctl
-!
-      use m_machine_parameter
-      use m_read_control_elements
-      use skip_comment_f
-!
-!
-      call read_control_DJDS_solver                                     &
-     &   (hd_DJDS_params, i_DJDS_params, DJDS_ctl1)
-!
-      end subroutine read_DJDS_solver_param_ctl
 !
 ! -----------------------------------------------------------------------
 !

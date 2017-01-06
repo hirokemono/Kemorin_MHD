@@ -177,9 +177,6 @@
 !
         call read_crs_solver_param_ctl
 !
-        call read_DJDS_solver_param_ctl
-!
-!
         call read_control_array_i_c_r                                   &
      &     (hd_order_moments, ref_filter_mom_ctl)
 !
