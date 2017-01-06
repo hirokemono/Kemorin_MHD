@@ -70,7 +70,7 @@
 !
 !   set parameters for SGS model
 !
-      if (iflag_debug.gt.0) write(*,*) 's_set_control_4_force'
+      if (iflag_debug.gt.0) write(*,*) 'set_control_SGS_model'
       call set_control_SGS_model
       call set_control_SPH_SGS(sph_filters)
 !
@@ -92,6 +92,7 @@
       use m_ctl_data_4_time_steps
       use m_ctl_data_4_sphere_model
       use m_ctl_data_4_pickup_sph
+      use m_ctl_data_mhd_forces
       use m_read_ctl_gen_sph_shell
       use sph_mhd_rms_IO
 !
@@ -156,7 +157,7 @@
 !   set forces
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_force'
-      call s_set_control_4_force
+      call s_set_control_4_force(frc_ctl1, g_ctl1, cor_ctl1, mcv_ctl1)
 !
 !   set parameters for general information
 !

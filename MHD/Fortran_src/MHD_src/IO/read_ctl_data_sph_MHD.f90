@@ -69,13 +69,13 @@
         call read_bc_4_node
         call read_bc_4_surf
 !
-        call read_forces_ctl
+        call read_forces_control
         call read_dimless_ctl
         call read_coef_term_ctl
 !
-        call read_gravity_ctl
-        call read_coriolis_ctl
-        call read_magneto_ctl
+        call read_gravity_control
+        call read_coriolis_control
+        call read_magneto_control
         call read_temp_def
 !
         call read_sgs_ctl

@@ -36,6 +36,7 @@
       use m_ctl_data_4_platforms
       use m_ctl_data_4_time_steps
       use m_ctl_data_4_fields
+      use m_ctl_data_mhd_forces
       use m_ctl_data_filter_files
       use m_ctl_data_ele_layering
 !
@@ -91,7 +92,7 @@
 !
 !   set forces
 !
-      call s_set_control_4_force
+      call s_set_control_4_force(frc_ctl1, g_ctl1, cor_ctl1, mcv_ctl1)
 !
 !   set parameters for SGS model
 !

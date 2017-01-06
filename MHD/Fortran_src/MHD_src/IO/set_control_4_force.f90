@@ -7,7 +7,12 @@
 !> @brief Set parameters for forces from control data
 !!
 !!@verbatim
-!!     subroutine s_set_control_4_force
+!!      subroutine s_set_control_4_force                                &
+!!     &         (frc_ctl, g_ctl, cor_ctl, mcv_ctl)
+!!       type(forces_control), intent(inout) :: frc_ctl
+!!       type(gravity_control), intent(inout) :: g_ctl
+!!       type(coriolis_control), intent(inout) :: cor_ctl
+!!       type(magneto_convection_control), intent(inout) :: mcv_ctl
 !!@endverbatim
 !
       module set_control_4_force
@@ -23,15 +28,21 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_4_force
+      subroutine s_set_control_4_force                                  &
+     &         (frc_ctl, g_ctl, cor_ctl, mcv_ctl)
 !
       use calypso_mpi
       use m_error_IDs
       use m_machine_parameter
       use m_control_parameter
-      use m_ctl_data_mhd_forces
       use m_physical_property
+      use t_ctl_data_mhd_forces
       use skip_comment_f
+!
+      type(forces_control), intent(inout) :: frc_ctl
+      type(gravity_control), intent(inout) :: g_ctl
+      type(coriolis_control), intent(inout) :: cor_ctl
+      type(magneto_convection_control), intent(inout) :: mcv_ctl
 !
       integer (kind = kint) :: i, iflag
       character(len=kchara) :: tmpchara
@@ -47,8 +58,8 @@
       if (evo_velo%iflag_scheme .eq. id_no_evolution) then
         num_force = 0
       else
-        if (force_names_ctl%icou .gt. 0) then
-          num_force = force_names_ctl%num
+        if (frc_ctl%force_names%icou .gt. 0) then
+          num_force = frc_ctl%force_names%num
           if (iflag_debug .ge. iflag_routine_msg)                       &
      &      write(*,*) 'num_force ', num_force
         end if
@@ -57,8 +68,9 @@
       if (num_force .gt. 0) then
 !
         call allocate_force_list
-        name_force(1:num_force) = force_names_ctl%c_tbl(1:num_force)
-        call deallocate_name_force_ctl
+        name_force(1:num_force)                                         &
+     &          = frc_ctl%force_names%c_tbl(1:num_force)
+        call dealloc_name_force_ctl(frc_ctl)
 !
         do i = 1, num_force
           if(    cmp_no_case(name_force(i), 'Gravity')                  &
@@ -164,10 +176,10 @@
       iflag = iflag_4_gravity + iflag_4_composit_buo                    &
      &       + iflag_4_filter_gravity
       if (iflag .gt. 0) then
-        if (gravity_ctl%iflag .eq. 0) then
+        if (g_ctl%gravity%iflag .eq. 0) then
           i_grav = iflag_self_r_g
         else
-          tmpchara = gravity_ctl%charavalue
+          tmpchara = g_ctl%gravity%charavalue
 !
           if     (cmp_no_case(tmpchara, 'constant')) then
              i_grav = iflag_const_g
@@ -179,20 +191,20 @@
         end if
 !
         if (i_grav .eq. iflag_const_g) then
-          if (gravity_vector_ctl%icou .eq. 0) then
+          if (g_ctl%gravity_vector%icou .eq. 0) then
             e_message = 'Set gravity vector'
             call calypso_MPI_abort(ierr_force, e_message)
           else
 !
-            do i = 1, gravity_vector_ctl%num
-              if(cmp_no_case(gravity_vector_ctl%c_tbl(i),'X')           &
-     &            ) grav(1) = - gravity_vector_ctl%vect(i)
-              if(cmp_no_case(gravity_vector_ctl%c_tbl(i),'Y')           &
-     &            ) grav(2) = - gravity_vector_ctl%vect(i)
-              if(cmp_no_case(gravity_vector_ctl%c_tbl(i),'Z')           &
-     &            ) grav(3) = - gravity_vector_ctl%vect(i)
+            do i = 1, g_ctl%gravity_vector%num
+              if(cmp_no_case(g_ctl%gravity_vector%c_tbl(i),'X')         &
+     &            ) grav(1) = - g_ctl%gravity_vector%vect(i)
+              if(cmp_no_case(g_ctl%gravity_vector%c_tbl(i),'Y')         &
+     &            ) grav(2) = - g_ctl%gravity_vector%vect(i)
+              if(cmp_no_case(g_ctl%gravity_vector%c_tbl(i),'Z')         &
+     &            ) grav(3) = - g_ctl%gravity_vector%vect(i)
             end do
-            call dealloc_control_array_c_r(gravity_vector_ctl)
+            call dealloc_control_array_c_r(g_ctl%gravity_vector)
           end if
         end if
       end if
@@ -204,45 +216,45 @@
       angular(1:2) = zero
       angular(3) =   one
 !
-      if ((iflag_4_coriolis*system_rotation_ctl%icou) .gt. 0) then
-        do i = 1, system_rotation_ctl%num
-          if(cmp_no_case(system_rotation_ctl%c_tbl(i),'X')              &
-     &       )  angular(1) = system_rotation_ctl%vect(i)
-          if(cmp_no_case(system_rotation_ctl%c_tbl(i),'Y')              &
-     &       )  angular(2) = system_rotation_ctl%vect(i)
-          if(cmp_no_case(system_rotation_ctl%c_tbl(i),'Z')              &
-     &       )  angular(3) = system_rotation_ctl%vect(i)
+      if ((iflag_4_coriolis*cor_ctl%system_rotation%icou) .gt. 0) then
+        do i = 1, cor_ctl%system_rotation%num
+          if(cmp_no_case(cor_ctl%system_rotation%c_tbl(i),'X')          &
+     &       )  angular(1) = cor_ctl%system_rotation%vect(i)
+          if(cmp_no_case(cor_ctl%system_rotation%c_tbl(i),'Y')          &
+     &       )  angular(2) = cor_ctl%system_rotation%vect(i)
+          if(cmp_no_case(cor_ctl%system_rotation%c_tbl(i),'Z')          &
+     &       )  angular(3) = cor_ctl%system_rotation%vect(i)
         end do
-        call dealloc_control_array_c_r(system_rotation_ctl)
+        call dealloc_control_array_c_r(cor_ctl%system_rotation)
       end if
 !
 !
 !  setting for external mangnetic field
 !
-      if (magneto_cv_ctl%iflag .eq. 0) then
+      if (mcv_ctl%magneto_cv%iflag .eq. 0) then
         iflag_magneto_cv = id_turn_OFF
       else
-        if(yes_flag(magneto_cv_ctl%charavalue))                         &
+        if(yes_flag(mcv_ctl%magneto_cv%charavalue))                     &
      &                     iflag_magneto_cv = id_turn_ON
       end if
 !
       ex_magne(1:3) = 0.0d0
 !
       if (iflag_magneto_cv .gt. id_turn_OFF) then
-        if (ext_magne_ctl%icou .eq. 0) then
+        if (mcv_ctl%ext_magne%icou .eq. 0) then
           e_message = 'Set external magnetic field'
           call calypso_MPI_abort(ierr_force, e_message)
         else
 !
-          do i = 1, ext_magne_ctl%num
-            if(cmp_no_case(ext_magne_ctl%c_tbl(i),'X')                  &
-     &            ) ex_magne(1) = ext_magne_ctl%vect(i)
-            if(cmp_no_case(ext_magne_ctl%c_tbl(i),'Y')                  &
-     &            ) ex_magne(2) = ext_magne_ctl%vect(i)
-            if(cmp_no_case(ext_magne_ctl%c_tbl(i),'Z')                  &
-     &            ) ex_magne(3) = ext_magne_ctl%vect(i)
+          do i = 1, mcv_ctl%ext_magne%num
+            if(cmp_no_case(mcv_ctl%ext_magne%c_tbl(i),'X')              &
+     &            ) ex_magne(1) = mcv_ctl%ext_magne%vect(i)
+            if(cmp_no_case(mcv_ctl%ext_magne%c_tbl(i),'Y')              &
+     &            ) ex_magne(2) = mcv_ctl%ext_magne%vect(i)
+            if(cmp_no_case(mcv_ctl%ext_magne%c_tbl(i),'Z')              &
+     &            ) ex_magne(3) = mcv_ctl%ext_magne%vect(i)
           end do
-          call dealloc_control_array_c_r(ext_magne_ctl)
+          call dealloc_control_array_c_r(mcv_ctl%ext_magne)
         end if
       end if
 !
