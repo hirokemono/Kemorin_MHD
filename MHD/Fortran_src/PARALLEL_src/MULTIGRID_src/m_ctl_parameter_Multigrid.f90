@@ -3,7 +3,8 @@
 !
 !     Written by H. Matsui on Dec., 2008
 !
-!      subroutine set_ctl_data_4_Multigrid
+!!      subroutine set_ctl_data_4_Multigrid(MG_ctl)
+!!        type(MGCG_control), intent(inout) :: MG_ctl!
 !
       module m_ctl_parameter_Multigrid
 !
@@ -26,21 +27,23 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_ctl_data_4_Multigrid
+      subroutine set_ctl_data_4_Multigrid(MG_ctl)
 !
       use calypso_mpi
       use m_machine_parameter
       use m_file_format_switch
       use m_type_AMG_data
       use m_type_AMG_mesh
-      use m_ctl_data_4_Multigrid
+      use t_ctl_data_4_Multigrid
       use set_parallel_file_name
+!
+      type(MGCG_control), intent(inout) :: MG_ctl
 !
       integer(kind = kint) :: i
 !
 !
-      if (num_multigrid_level_ctl%iflag .gt. 0) then
-        num_MG_level = num_multigrid_level_ctl%intvalue
+      if (MG_ctl%num_multigrid_level_ctl%iflag .gt. 0) then
+        num_MG_level = MG_ctl%num_multigrid_level_ctl%intvalue
       else
         num_MG_level = 0
       end if
@@ -54,63 +57,63 @@
       end if
 !
       if (num_MG_level .gt. 0) then
-        if(num_MG_subdomain_ctl%num .ne. num_MG_level) then
+        if(MG_ctl%num_MG_subdomain_ctl%num .ne. num_MG_level) then
           write(e_message,'(a)')                                        &
      &            'set correct level for MG subdomains'
           call calypso_MPI_abort(ierr_CG, e_message)
         end if
 !
         MG_mpi(1:num_MG_level)%nprocs                                   &
-     &         = num_MG_subdomain_ctl%ivec(1:num_MG_level)
-        call dealloc_control_array_int(num_MG_subdomain_ctl)
+     &         = MG_ctl%num_MG_subdomain_ctl%ivec(1:num_MG_level)
+        call dealloc_control_array_int(MG_ctl%num_MG_subdomain_ctl)
 !
-        if (MG_mesh_prefix_ctl%num .eq. num_MG_level) then
+        if (MG_ctl%MG_mesh_prefix_ctl%num .eq. num_MG_level) then
           MG_mesh_file_head(1:num_MG_level)                             &
-     &              = MG_mesh_prefix_ctl%c_tbl(1:num_MG_level)
-          call dealloc_control_array_chara(MG_mesh_prefix_ctl)
+     &              = MG_ctl%MG_mesh_prefix_ctl%c_tbl(1:num_MG_level)
+          call dealloc_control_array_chara(MG_ctl%MG_mesh_prefix_ctl)
         else
           e_message = 'Set coarse mesh header'
           call calypso_MPI_abort(ierr_file, e_message)
         end if
 !
-        if (MG_fine_2_coarse_tbl_ctl%icou .eq. num_MG_level) then
+        if (MG_ctl%MG_fine_2_coarse_tbl%icou .eq. num_MG_level) then
           MG_f2c_tbl_head(1:num_MG_level)                               &
-     &              = MG_fine_2_coarse_tbl_ctl%c_tbl(1:num_MG_level)
-          call dealloc_control_array_chara(MG_fine_2_coarse_tbl_ctl)
+     &              = MG_ctl%MG_fine_2_coarse_tbl%c_tbl(1:num_MG_level)
+          call dealloc_control_array_chara(MG_ctl%MG_fine_2_coarse_tbl)
         else
           e_message = 'Set restriction table header'
           call calypso_MPI_abort(ierr_file, e_message)
         end if
 !
-        if (MG_coarse_2_fine_tbl_ctl%icou .eq. num_MG_level) then
+        if (MG_ctl%MG_coarse_2_fine_tbl%icou .eq. num_MG_level) then
           MG_c2f_tbl_head(1:num_MG_level)                               &
-     &              = MG_coarse_2_fine_tbl_ctl%c_tbl(1:num_MG_level)
-          call dealloc_control_array_chara(MG_coarse_2_fine_tbl_ctl)
+     &              = MG_ctl%MG_coarse_2_fine_tbl%c_tbl(1:num_MG_level)
+          call dealloc_control_array_chara(MG_ctl%MG_coarse_2_fine_tbl)
         else
           e_message = 'Set prolongation table header'
           call calypso_MPI_abort(ierr_file, e_message)
         end if
 !
-        if (MG_f2c_ele_tbl_ctl%icou .eq. num_MG_level) then
+        if (MG_ctl%MG_f2c_ele_tbl_ctl%icou .eq. num_MG_level) then
           MG_f2c_eletbl_head(1:num_MG_level)                            &
-     &              = MG_f2c_ele_tbl_ctl%c_tbl(1:num_MG_level)
-          call dealloc_control_array_chara(MG_f2c_ele_tbl_ctl)
+     &              = MG_ctl%MG_f2c_ele_tbl_ctl%c_tbl(1:num_MG_level)
+          call dealloc_control_array_chara(MG_ctl%MG_f2c_ele_tbl_ctl)
           iflag_MG_commute_by_ele = 1
         end if
 !
-        if (MG_mesh_fmt_ctl%icou .eq. num_MG_level) then
-          call choose_file_format_array(num_MG_level, MG_mesh_fmt_ctl,  &
-     &        ifmt_MG_mesh_file)
-          call dealloc_control_array_chara(MG_mesh_fmt_ctl)
+        if (MG_ctl%MG_mesh_fmt_ctl%icou .eq. num_MG_level) then
+          call choose_file_format_array(num_MG_level,                   &
+     &        MG_ctl%MG_mesh_fmt_ctl, ifmt_MG_mesh_file)
+          call dealloc_control_array_chara(MG_ctl%MG_mesh_fmt_ctl)
         else
           e_message = 'Set mesh file formats for MG'
           call calypso_MPI_abort(ierr_file, e_message)
         end if
 !
-        if(MG_table_fmt_ctl%icou .eq. num_MG_level) then
-          call choose_file_format_array(num_MG_level, MG_table_fmt_ctl, &
-     &        ifmt_MG_table_file)
-          call dealloc_control_array_chara(MG_table_fmt_ctl)
+        if(MG_ctl%MG_table_fmt_ctl%icou .eq. num_MG_level) then
+          call choose_file_format_array(num_MG_level,                   &
+     &        MG_ctl%MG_table_fmt_ctl, ifmt_MG_table_file)
+          call dealloc_control_array_chara(MG_ctl%MG_table_fmt_ctl)
         else
           e_message = 'Set interpolation table file formats for MG'
           call calypso_MPI_abort(ierr_file, e_message)
@@ -118,24 +121,24 @@
       end if
 !
 !
-      if (MG_METHOD_ctl%iflag .gt. 0) then
-        METHOD_MG =      MG_METHOD_ctl%charavalue
+      if (MG_ctl%MG_METHOD_ctl%iflag .gt. 0) then
+        METHOD_MG =     MG_ctl%MG_METHOD_ctl%charavalue
       end if
 !
-      if (MG_PRECOND_ctl%iflag .gt. 0) then
-        PRECOND_MG =    MG_PRECOND_ctl%charavalue
+      if (MG_ctl%MG_PRECOND_ctl%iflag .gt. 0) then
+        PRECOND_MG =    MG_ctl%MG_PRECOND_ctl%charavalue
       end if
 !
-      if (maxiter_mid_ctl%iflag .gt. 0) then
-        itr_MG_mid =    maxiter_mid_ctl%intvalue
+      if (MG_ctl%maxiter_mid_ctl%iflag .gt. 0) then
+        itr_MG_mid =    MG_ctl%maxiter_mid_ctl%intvalue
       end if
 !
-      if (MG_residual_ctl%iflag .gt. 0) then
-        EPS_MG = MG_residual_ctl%realvalue
+      if (MG_ctl%MG_residual_ctl%iflag .gt. 0) then
+        EPS_MG = MG_ctl%MG_residual_ctl%realvalue
       end if
 !
-      if (maxiter_coarsest_ctl%iflag .gt. 0) then
-        itr_MG_lowest = maxiter_coarsest_ctl%intvalue
+      if (MG_ctl%maxiter_coarsest_ctl%iflag .gt. 0) then
+        itr_MG_lowest = MG_ctl%maxiter_coarsest_ctl%intvalue
       end if
 !
 !

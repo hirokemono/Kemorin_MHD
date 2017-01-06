@@ -90,8 +90,8 @@
 !
       call bcast_ctl_array_c1(MG_ctl%MG_mesh_prefix_ctl)
 !
-      call bcast_ctl_array_c1(MG_ctl%MG_fine_2_coarse_tbl_ctl)
-      call bcast_ctl_array_c1(MG_ctl%MG_coarse_2_fine_tbl_ctl)
+      call bcast_ctl_array_c1(MG_ctl%MG_fine_2_coarse_tbl)
+      call bcast_ctl_array_c1(MG_ctl%MG_coarse_2_fine_tbl)
       call bcast_ctl_array_c1(MG_ctl%MG_f2c_ele_tbl_ctl)
 !
       call bcast_ctl_array_c1(MG_ctl%MG_mesh_fmt_ctl)

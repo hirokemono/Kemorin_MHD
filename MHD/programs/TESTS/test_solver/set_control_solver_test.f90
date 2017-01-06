@@ -27,6 +27,7 @@
       use m_ctl_parameter_Multigrid
       use m_ctl_data_solver_test
       use m_ctl_data_4_solvers
+      use m_ctl_data_4_Multigrid
       use crs_matrix_io
       use skip_comment_f
 !
@@ -118,7 +119,9 @@
         write(*,*) 'mc_color', mc_color
       end if
 !
-      if(mat_crs%METHOD_crs .eq. 'MGCG') call set_ctl_data_4_Multigrid
+      if(cmp_no_case(mat_crs%METHOD_crs, 'MGCG')) then
+        call set_ctl_data_4_Multigrid(MG_ctl1)
+      end if
 !
       end subroutine set_ctl_params_4_solver_test
 !

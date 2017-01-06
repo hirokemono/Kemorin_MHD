@@ -16,10 +16,10 @@
 !!   MG_mesh_header_ctl: mesh data for coarse mesh
 !!        (MG_mesh_header_ctl.domain#)
 !!
-!!   MG_coarse_2_fine_tbl_ctl: prolongation data
-!!        (MG_coarse_2_fine_tbl_ctl.domain#)
-!!   MG_fine_2_coarse_tbl_ctl: restriction table
-!!        (MG_fine_2_coarse_tbl_ctl.domain#)
+!!   MG_coarse_2_fine_tbl: prolongation data
+!!        (MG_coarse_2_fine_tbl.domain#)
+!!   MG_fine_2_coarse_tbl: restriction table
+!!        (MG_fine_2_coarse_tbl.domain#)
 !!
 !!   MG_fine_2_coarse_ele_tbl_ctl: element restriction table
 !!        (MG_fine_2_coarse_ele_tbl_ctl.domain#)
@@ -110,11 +110,11 @@
         type(ctl_array_chara) :: MG_mesh_prefix_ctl
 !
 !>        Structure for interpolation table from fine to course grid
-!!@n       MG_fine_2_coarse_tbl_ctl%c_tbl: file prefix for table data
-        type(ctl_array_chara) :: MG_fine_2_coarse_tbl_ctl
+!!@n       MG_fine_2_coarse_tbl%c_tbl: file prefix for table data
+        type(ctl_array_chara) :: MG_fine_2_coarse_tbl
 !>        Structure for interpolation table from course to fine grid
-!!@n       MG_coarse_2_fine_tbl_ctl%c_tbl: file prefix for table data
-        type(ctl_array_chara) :: MG_coarse_2_fine_tbl_ctl
+!!@n       MG_coarse_2_fine_tbl%c_tbl: file prefix for table data
+        type(ctl_array_chara) :: MG_coarse_2_fine_tbl
 !
 !>        Structure for interpolation table from fine to cource elements
 !!@n       MG_f2c_ele_tbl_ctl%c_tbl: file prefix for table data
@@ -234,9 +234,9 @@
      &     (hd_MG_mesh_header, MG_ctl%MG_mesh_prefix_ctl)
 !
         call read_control_array_c1                                      &
-     &     (hd_MG_fine_2_coarse_tbl, MG_ctl%MG_fine_2_coarse_tbl_ctl)
+     &     (hd_MG_fine_2_coarse_tbl, MG_ctl%MG_fine_2_coarse_tbl)
         call read_control_array_c1                                      &
-     &     (hd_MG_coarse_2_fine_tbl, MG_ctl%MG_coarse_2_fine_tbl_ctl)
+     &     (hd_MG_coarse_2_fine_tbl, MG_ctl%MG_coarse_2_fine_tbl)
         call read_control_array_c1                                      &
      &     (hd_MG_f2c_ele_tbl, MG_ctl%MG_f2c_ele_tbl_ctl)
 !

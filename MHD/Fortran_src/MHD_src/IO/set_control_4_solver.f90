@@ -35,6 +35,7 @@
       use m_error_IDs
       use m_iccg_parameter
       use m_ctl_data_4_solvers
+      use m_ctl_data_4_Multigrid
       use m_ctl_parameter_Multigrid
       use skip_comment_f
 !
@@ -170,7 +171,7 @@
 !
       if (cmp_no_case(method_4_solver, 'MGCG')) then
         if (iflag_debug.eq.1) write(*,*) 'set_ctl_data_4_Multigrid'
-        call set_ctl_data_4_Multigrid
+        call set_ctl_data_4_Multigrid(MG_ctl1)
       end if
 !
       end subroutine s_set_control_4_solver
