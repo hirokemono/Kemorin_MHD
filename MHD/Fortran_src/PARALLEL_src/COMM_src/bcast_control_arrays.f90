@@ -95,6 +95,8 @@
       type(read_real_item), intent(inout) :: real_item
 !
 !
+      if(nprocs .eq. 1) return
+!
       call MPI_BCAST(real_item%iflag, ione,                             &
      &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(real_item%realvalue, ione,                         &
@@ -108,6 +110,8 @@
 !
       type(read_integer_item), intent(inout) :: int_item
 !
+!
+      if(nprocs .eq. 1) return
 !
       call MPI_BCAST(int_item%iflag, ione,                              &
      &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
@@ -123,6 +127,8 @@
       type(read_character_item), intent(inout) :: chara_item
 !
 !
+      if(nprocs .eq. 1) return
+!
       call MPI_BCAST(chara_item%iflag, ione,                            &
      &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(chara_item%charavalue, kchara,                     &
@@ -136,6 +142,8 @@
 !
       type(read_real2_item), intent(inout) :: real2_item
 !
+!
+      if(nprocs .eq. 1) return
 !
       call MPI_BCAST(real2_item%iflag, ione,                            &
      &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
@@ -151,6 +159,8 @@
       type(read_real3_item), intent(inout) :: real3_item
 !
 !
+      if(nprocs .eq. 1) return
+!
       call MPI_BCAST(real3_item%iflag, ione,                            &
      &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(real3_item%realvalue, ithree,                      &
@@ -164,6 +174,8 @@
 !
       type(read_int3_item), intent(inout) :: int3_item
 !
+!
+      if(nprocs .eq. 1) return
 !
       call MPI_BCAST(int3_item%iflag, ione,                             &
      &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
@@ -179,6 +191,8 @@
       type(read_chara3_item), intent(inout) :: chara3_item
 !
 !
+      if(nprocs .eq. 1) return
+!
       call MPI_BCAST(chara3_item%iflag, ione,                           &
      &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(chara3_item%charavalue, ithree*kchara,             &
@@ -193,6 +207,8 @@
 !
       type(ctl_array_real), intent(inout) :: array_real
 !
+!
+      if(nprocs .eq. 1) return
 !
       call MPI_BCAST(array_real%num,  ione,                             &
      &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
@@ -212,6 +228,8 @@
 !
       type(ctl_array_r2), intent(inout) :: array_r2
 !
+!
+      if(nprocs .eq. 1) return
 !
       call MPI_BCAST(array_r2%num,  ione,                               &
      &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
@@ -233,6 +251,8 @@
 !
       type(ctl_array_r3), intent(inout) :: array_r3
 !
+!
+      if(nprocs .eq. 1) return
 !
       call MPI_BCAST(array_r3%num,  ione,                               &
      &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
@@ -257,6 +277,8 @@
       type(ctl_array_int), intent(inout) :: array_int
 !
 !
+      if(nprocs .eq. 1) return
+!
       call MPI_BCAST(array_int%num,  ione,                              &
      &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(array_int%icou, ione,                              &
@@ -275,6 +297,8 @@
 !
       type(ctl_array_i2), intent(inout) :: array_i2
 !
+!
+      if(nprocs .eq. 1) return
 !
       call MPI_BCAST(array_i2%num,  ione,                               &
      &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
@@ -297,6 +321,8 @@
       type(ctl_array_chara), intent(inout) :: array_chara
 !
 !
+      if(nprocs .eq. 1) return
+!
       call MPI_BCAST(array_chara%num,  ione,                            &
      &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(array_chara%icou, ione,                            &
@@ -315,6 +341,8 @@
 !
       type(ctl_array_c2), intent(inout) :: array_c2
 !
+!
+      if(nprocs .eq. 1) return
 !
       call MPI_BCAST(array_c2%num,  ione,                              &
      &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
@@ -336,6 +364,8 @@
 !
       type(ctl_array_c3), intent(inout) :: array_c3
 !
+!
+      if(nprocs .eq. 1) return
 !
       call MPI_BCAST(array_c3%num,  ione,                              &
      &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
@@ -360,6 +390,8 @@
       type(ctl_array_cr), intent(inout) :: array_cr
 !
 !
+      if(nprocs .eq. 1) return
+!
       call MPI_BCAST(array_cr%num,  ione,                              &
      &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(array_cr%icou, ione,                              &
@@ -381,6 +413,8 @@
       type(ctl_array_ci), intent(inout) :: array_ci
 !
 !
+      if(nprocs .eq. 1) return
+!
       call MPI_BCAST(array_ci%num,  ione,                              &
      &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(array_ci%icou, ione,                              &
@@ -401,6 +435,8 @@
 !
       type(ctl_array_cr2), intent(inout) :: array_cr2
 !
+!
+      if(nprocs .eq. 1) return
 !
       call MPI_BCAST(array_cr2%num,  ione,                              &
      &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
@@ -425,6 +461,8 @@
       type(ctl_array_c2r), intent(inout) :: array_c2r
 !
 !
+      if(nprocs .eq. 1) return
+!
       call MPI_BCAST(array_c2r%num,  ione,                              &
      &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(array_c2r%icou, ione,                              &
@@ -447,6 +485,8 @@
 !
       type(ctl_array_icr), intent(inout) :: array_icr
 !
+!
+      if(nprocs .eq. 1) return
 !
       call MPI_BCAST(array_icr%num,  ione,                              &
      &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
@@ -471,6 +511,8 @@
       type(ctl_array_ir), intent(inout) :: array_ir
 !
 !
+      if(nprocs .eq. 1) return
+!
       call MPI_BCAST(array_ir%num,  ione,                               &
      &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(array_ir%icou, ione,                               &
@@ -491,6 +533,8 @@
 !
       type(ctl_array_i2r), intent(inout) :: array_i2r
 !
+!
+      if(nprocs .eq. 1) return
 !
       call MPI_BCAST(array_i2r%num,  ione,                              &
      &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
@@ -514,6 +558,8 @@
 !
       type(ctl_array_i2r2), intent(inout) :: array_i2r2
 !
+!
+      if(nprocs .eq. 1) return
 !
       call MPI_BCAST(array_i2r2%num,  ione,                             &
      &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
