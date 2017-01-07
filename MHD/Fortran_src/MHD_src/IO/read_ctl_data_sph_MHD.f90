@@ -78,7 +78,7 @@
         call read_magneto_control
         call read_temp_def
 !
-        call read_sgs_ctl
+        call read_sgs_control
       end do
 !
       end subroutine read_sph_mhd_model

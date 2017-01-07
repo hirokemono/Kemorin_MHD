@@ -44,6 +44,7 @@
       use m_precision
 !
       use m_machine_parameter
+      use t_ctl_data_filter_files
 !
       implicit  none
 !
@@ -52,6 +53,9 @@
       character (len = kchara), parameter                               &
      &         :: control_file_name='ctl_plane_mesh'
 !
+!
+!>      Structure for filtering files
+      type(filter_file_control), save :: ffile_cub_ctl
 !
       integer(kind = kint) :: num_z_filter_ctl
       real(kind = kreal) ::   omitting_value_ctl
@@ -99,6 +103,12 @@
 !
       private :: read_plane_mesh_ctl_data, read_z_filter_mesh_ctl
 !
+      character(len=kchara), parameter :: hd_filter_fnames              &
+     &                        = 'filter_files_def'
+      integer (kind=kint) :: i_filter_fnames = 0
+!
+      private :: hd_filter_fnames, i_filter_fnames
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -129,7 +139,6 @@
       use skip_comment_f
       use m_ctl_data_4_platforms
       use m_ctl_data_4_plane_model
-      use m_ctl_data_filter_files
 !
 !
 !   1 begin phys_values_ctl
@@ -144,7 +153,8 @@
 !
 !
         call read_ctl_data_4_platform
-        call read_filter_fnames_ctl
+        call read_filter_fnames_control                                 &
+     &     (hd_filter_fnames, i_filter_fnames, ffile_cub_ctl)
 !
         call read_plane_model_param_ctl
         call read_z_filter_mesh_ctl

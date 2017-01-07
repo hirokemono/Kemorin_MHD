@@ -15,6 +15,7 @@
       module m_ctl_data_newdomain_filter
 !
       use m_precision
+      use t_ctl_data_filter_files
 !
       implicit  none
 !
@@ -22,6 +23,8 @@
       character(len = kchara), parameter                                &
      &             :: fname_trans_flt_ctl = "ctl_new_domain_filter"
 !
+!>      Structure for filtering files
+      type(filter_file_control), save :: ffile_ndom_ctl
 !
 !     Top level
 !
@@ -33,6 +36,12 @@
       private :: id_filter_ctl_file, fname_trans_flt_ctl
       private :: hd_filter_newdomain_ctl, i_filter_newdomain_ctl
       private :: read_ctl_filter_newdomain_data
+!
+      character(len=kchara), parameter :: hd_filter_fnames              &
+     &                        = 'filter_files_def'
+      integer (kind=kint) :: i_filter_fnames = 0
+!
+      private :: hd_filter_fnames, i_filter_fnames
 !
 !  ---------------------------------------------------------------------
 !
@@ -70,7 +79,6 @@
 !
       use m_ctl_data_4_platforms
       use m_ctl_data_4_2nd_data
-      use m_ctl_data_filter_files
       use m_ctl_data_org_filter_name
 !
 !
@@ -86,7 +94,8 @@
 !
         call read_ctl_data_4_platform
         call read_ctl_data_4_new_data
-        call read_filter_fnames_ctl
+        call read_filter_fnames_control                                 &
+     &     (hd_filter_fnames, i_filter_fnames, ffile_ndom_ctl)
         call read_org_filter_fnames_ctl
       end do
 !

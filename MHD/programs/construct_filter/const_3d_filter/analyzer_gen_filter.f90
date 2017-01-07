@@ -63,7 +63,6 @@
       use m_fem_gauss_int_coefs
       use m_filter_file_names
       use m_ctl_data_gen_3d_filter
-      use m_ctl_data_filter_files
 !
       use const_mesh_information
       use cal_1d_moments_4_fliter
@@ -98,7 +97,8 @@
       call read_control_4_gen_filter
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_gen_filter'
-      call set_file_heads_3d_comm_filter(ffile_ctl1, mesh_filter_file)
+      call set_file_heads_3d_comm_filter                                &
+     &   (ffile_3d_ctl, mesh_filter_file)
       call set_ctl_params_gen_filter(FEM_elen_f)
 !
 !  --  read geometry

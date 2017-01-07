@@ -34,7 +34,7 @@
       use t_ucd_data
       use m_ctl_data_4_fields
       use m_ctl_data_4_fem_int_pts
-      use m_ctl_data_ele_layering
+      use m_ctl_data_diff_udt
       use m_fem_gauss_int_coefs
       use set_control_nodal_data
       use set_control_ele_layering
@@ -50,7 +50,7 @@
       call set_ctl_params_diff_udt(mesh_file, udt_org_param, ucd)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_control_ele_layering'
-      call s_set_control_ele_layering(elayer_ctl1)
+      call s_set_control_ele_layering(elayer_d_ctl)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_control_nodal_data'
       call s_set_control_nodal_data(fld_ctl1%field_ctl, nod_fld, ierr)

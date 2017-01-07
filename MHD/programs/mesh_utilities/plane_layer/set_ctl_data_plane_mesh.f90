@@ -29,7 +29,6 @@
       use m_ctl_data_4_platforms
       use m_ctl_data_4_plane_model
       use m_ctl_data_4_cub_kemo
-      use m_ctl_data_filter_files
       use m_spheric_constants
       use skip_comment_f
 !
@@ -40,8 +39,8 @@
         mesh_file_header = 'mesh/in'
       end if
 !
-      if (ffile_ctl1%filter_head_ctl%iflag .eq. 1) then
-        filter_file_header = ffile_ctl1%filter_head_ctl%charavalue
+      if (ffile_cub_ctl%filter_head_ctl%iflag .eq. 1) then
+        filter_file_header = ffile_cub_ctl%filter_head_ctl%charavalue
       else
         filter_file_header = 'mesh/filter_node_l'
       end if

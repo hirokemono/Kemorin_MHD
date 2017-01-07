@@ -13,9 +13,10 @@
       module m_ctl_data_diff_udt
 !
       use m_precision
-      use calypso_mpi
       use m_machine_parameter
       use m_read_control_elements
+      use t_ctl_data_ele_layering
+      use calypso_mpi
       use skip_comment_f
 !
 !
@@ -23,6 +24,9 @@
 !
 !
       integer(kind = kint), parameter :: diff_ctl_file_code = 11
+!
+!>     Structure for element layering
+      type(layering_control), save :: elayer_d_ctl
 !
 !
       character(len = kchara), parameter                                &
@@ -119,6 +123,15 @@
 !
       private :: read_diff_control_data
       private :: read_diff_files_ctl, read_diff_model_ctl
+!
+!
+!   labels for entry
+!
+      character(len=kchara), parameter :: hd_dynamic_layers             &
+     &                        = 'dynamic_model_layer_ctl'
+      integer (kind=kint) :: i_dynamic_layers = 0
+!
+      private :: hd_dynamic_layers, i_dynamic_layers
 !
 !   --------------------------------------------------------------------
 !
@@ -241,7 +254,6 @@
 !
       use m_ctl_data_4_fields
       use m_ctl_data_4_time_steps
-      use m_ctl_data_ele_layering
       use m_ctl_data_4_fem_int_pts
 !
 !
@@ -256,7 +268,9 @@
 !
         call read_phys_values
         call read_time_step_ctl
-        call read_ele_layers_grp_ctl
+        call read_ele_layers_control                                    &
+     &     (hd_dynamic_layers, i_dynamic_layers, elayer_d_ctl)
+!
         call read_fem_int_points_ctl
 !
 !

@@ -31,7 +31,6 @@
       use m_ctl_params_4_gen_filter
 !
       use m_ctl_data_gen_3d_filter
-      use m_ctl_data_filter_files
       use set_ctl_gen_filter
 !
 !
@@ -46,7 +45,8 @@
       call read_control_4_sort_filter
 !
       if (iflag_debug.eq.1) write(*,*) 'set_file_heads_3d_comm_filter'
-      call set_file_heads_3d_comm_filter(ffile_ctl1, mesh_filter_file)
+      call set_file_heads_3d_comm_filter                                &
+     &   (ffile_3d_ctl, mesh_filter_file)
       call set_numdomain_3d_comm_filter(nprocs)
 !
 !

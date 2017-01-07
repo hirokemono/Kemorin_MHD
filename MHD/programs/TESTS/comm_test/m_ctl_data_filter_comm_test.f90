@@ -27,10 +27,14 @@
       use m_precision
 !
       use m_read_control_elements
+      use t_ctl_data_filter_files
       use skip_comment_f
 !
       implicit  none
 !
+!
+!>      Structure for filtering files
+      type(filter_file_control), save :: ffile_ctest_ctl
 !
       integer(kind = kint), parameter :: test_mest_ctl_file_code = 11
       character(len = kchara), parameter                                &
@@ -45,6 +49,13 @@
       private :: test_mest_ctl_file_code, fname_test_mesh_ctl
       private :: hd_filter_test_ctl, i_filter_test_ctl
       private :: read_filter_comm_test_data
+!
+!
+      character(len=kchara), parameter :: hd_filter_fnames              &
+     &                        = 'filter_files_def'
+      integer (kind=kint) :: i_filter_fnames = 0
+!
+      private :: hd_filter_fnames, i_filter_fnames
 !
 !   --------------------------------------------------------------------
 !
@@ -73,7 +84,6 @@
 !
       use m_machine_parameter
       use m_ctl_data_4_platforms
-      use m_ctl_data_filter_files
 !
 !
       if(right_begin_flag(hd_filter_test_ctl) .eq. 0) return
@@ -86,7 +96,8 @@
         if(i_filter_test_ctl .gt. 0) exit
 !
         call read_ctl_data_4_platform
-        call read_filter_fnames_ctl
+        call read_filter_fnames_control                                 &
+     &     (hd_filter_fnames, i_filter_fnames, ffile_ctest_ctl)
       end do
 !
       end subroutine read_filter_comm_test_data

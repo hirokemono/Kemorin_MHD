@@ -49,6 +49,7 @@
       use m_spheric_global_ranks
       use m_ucd_data
       use m_read_ctl_gen_sph_shell
+      use m_ctl_data_SGS_model
       use sph_mhd_rms_IO
 !
       use t_spheric_parameter
@@ -71,8 +72,13 @@
 !   set parameters for SGS model
 !
       if (iflag_debug.gt.0) write(*,*) 'set_control_SGS_model'
-      call set_control_SGS_model
-      call set_control_SPH_SGS(sph_filters)
+      call set_control_SGS_model(sgs_ctl1)
+      call set_control_SPH_SGS                                          &
+     &   (sgs_ctl1%num_sph_filter_ctl, sgs_ctl1%sph_filter_ctl(1),      &
+     &    sph_filters(1))
+      if(sgs_ctl1%num_sph_filter_ctl .gt. 0) then
+        call dealloc_sph_filter_ctl(sgs_ctl1)
+      end if
 !
       call set_control_4_SPH_MHD(sph_gen, rj_fld,                       &
      &    mesh_file, sph_file_param, MHD_org_files, sph_fst_IO, pwr)

@@ -15,6 +15,7 @@
       use m_ctl_data_gen_filter
       use m_read_control_elements
       use t_read_control_arrays
+      use t_ctl_data_filter_files
       use skip_comment_f
 !
       implicit  none
@@ -29,6 +30,9 @@
 !>      Structure for filtering groups
 !!@n      filter_area_ctl%c_tbl: Name of force
       type(ctl_array_chara), save :: filter_area_ctl
+!>      Structure for filtering files
+      type(filter_file_control), save :: ffile_3d_ctl
+!
 !
       character(len=kchara) :: mass_matrix_type_ctl =  'CONSIST'
       character(len=kchara) :: method_esize_ctl =      'GPBiCG'
@@ -98,6 +102,12 @@
       private :: hd_eps_esize, hd_sigma_esize, hd_sigma_diag_esize
       private :: i_esize_solver_ctl, i_deltax_ctl, i_filter_area_ctl
 !
+      character(len=kchara), parameter :: hd_filter_fnames              &
+     &                        = 'filter_files_def'
+      integer (kind=kint) :: i_filter_fnames = 0
+!
+      private :: hd_filter_fnames, i_filter_fnames
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -149,7 +159,6 @@
       subroutine read_const_filter_ctl_data
 !
       use m_ctl_data_gen_filter
-      use m_ctl_data_filter_files
       use m_ctl_data_org_filter_name
       use m_ctl_data_4_platforms
 !
@@ -166,7 +175,8 @@
         call read_ctl_data_4_platform
 !
         call read_filter_param_ctl
-        call read_filter_fnames_ctl
+        call read_filter_fnames_control                                 &
+     &     (hd_filter_fnames, i_filter_fnames, ffile_3d_ctl)
         call read_org_filter_fnames_ctl
 !
         call read_filter_area_ctl

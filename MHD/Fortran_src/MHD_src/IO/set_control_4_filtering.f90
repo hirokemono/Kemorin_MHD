@@ -8,8 +8,11 @@
 !!        from control data
 !!
 !!@verbatim
-!!      subroutine s_set_control_4_filtering(ffile_ctl)
+!!      subroutine s_set_control_4_filtering                            &
+!!     &         (SGS_filter_name_ctl, ffile_ctl, s3df_ctl)
+!!        type(read_character_item), intent(in) :: SGS_filter_name_ctl
 !!        type(filter_file_control), intent(in) :: ffile_ctl
+!!        type(SGS_3d_filter_control), intent(inout) :: s3df_ctl
 !!@endverbatim
 !
       module set_control_4_filtering
@@ -25,7 +28,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_4_filtering(ffile_ctl)
+      subroutine s_set_control_4_filtering                              &
+     &         (SGS_filter_name_ctl, ffile_ctl, s3df_ctl)
 !
       use calypso_mpi
       use m_constants
@@ -34,14 +38,17 @@
       use m_file_format_switch
       use m_phys_labels
       use m_control_parameter
-      use m_ctl_data_SGS_model
       use m_filter_file_names
+      use t_ctl_data_SGS_model
       use t_ctl_data_filter_files
+      use t_read_control_arrays
       use sgs_ini_model_coefs_IO
       use set_control_ele_layering
       use skip_comment_f
 !
+      type(read_character_item), intent(in) :: SGS_filter_name_ctl
       type(filter_file_control), intent(in) :: ffile_ctl
+      type(SGS_3d_filter_control), intent(inout) :: s3df_ctl
 !
       integer(kind = kint) :: i
       character(len=kchara) :: tmpchara
@@ -89,8 +96,8 @@
      &   .or. iflag_SGS_filter .eq. id_SGS_3D_EZ_FILTERING              &
      &   .or. iflag_SGS_filter .eq. id_SGS_3D_SMP_FILTERING             &
      &   .or. iflag_SGS_filter .eq. id_SGS_3D_EZ_SMP_FILTERING ) then
-        if (whole_filter_grp_ctl%icou .gt. 0) then
-          num_whole_filter_grp =   whole_filter_grp_ctl%num
+        if (s3df_ctl%whole_filter_grp_ctl%icou .gt. 0) then
+          num_whole_filter_grp =   s3df_ctl%whole_filter_grp_ctl%num
         else
           num_whole_filter_grp =   1
         end if
@@ -98,9 +105,11 @@
 !
         call allocate_whole_filter_groups
 !
-        if (whole_filter_grp_ctl%icou .gt. 0) then
-          whole_filter_grp(1:num_whole_filter_grp)                      &
-     &         = whole_filter_grp_ctl%c_tbl(1:num_whole_filter_grp)
+        if (s3df_ctl%whole_filter_grp_ctl%icou .gt. 0) then
+          do i = 1, num_whole_filter_grp
+            whole_filter_grp(i)                                         &
+     &         = s3df_ctl%whole_filter_grp_ctl%c_tbl(i)
+          end do
         else
           whole_filter_grp(1) =   'all'
           whole_w_filter_grp(1) = 'all'
@@ -108,10 +117,10 @@
         whole_w_filter_grp(1:num_whole_filter_grp)                      &
      &         = whole_filter_grp(1:num_whole_filter_grp)
 !
-        call dealloc_control_array_chara(whole_filter_grp_ctl)
+        call dealloc_control_array_chara(s3df_ctl%whole_filter_grp_ctl)
 !
-        if (fluid_filter_grp_ctl%icou .gt. 0) then
-          num_fluid_filter_grp = fluid_filter_grp_ctl%num
+        if (s3df_ctl%fluid_filter_grp_ctl%icou .gt. 0) then
+          num_fluid_filter_grp = s3df_ctl%fluid_filter_grp_ctl%num
         else
           num_fluid_filter_grp = 1
         end if
@@ -119,39 +128,41 @@
 !
         call allocate_fluid_filter_groups
 !
-        if (fluid_filter_grp_ctl%icou .gt. 0) then
-          fluid_filter_grp(1:num_fluid_filter_grp)                      &
-     &         = fluid_filter_grp_ctl%c_tbl(1:num_fluid_filter_grp)
+        if (s3df_ctl%fluid_filter_grp_ctl%icou .gt. 0) then
+          do i = 1, num_fluid_filter_grp
+            fluid_filter_grp(i)                                         &
+     &         = s3df_ctl%fluid_filter_grp_ctl%c_tbl(i)
+          end do
         else
           fluid_filter_grp(1) = 'all'
         end if
         fluid_w_filter_grp(1:num_fluid_filter_grp)                      &
      &         = fluid_filter_grp(1:num_fluid_filter_grp)
 !
-        call dealloc_control_array_chara(fluid_filter_grp_ctl)
+        call dealloc_control_array_chara(s3df_ctl%fluid_filter_grp_ctl)
 !
         if (evo_temp%iflag_scheme .gt. id_no_evolution) then
           iflag_heat_filtering = 0
-          if (cmp_no_case(heat_filter_ctl%charavalue,                   &
+          if (cmp_no_case(s3df_ctl%heat_filter_ctl%charavalue,          &
      &        'Whole_filtering')) iflag_heat_filtering = 0
-          if (cmp_no_case(heat_filter_ctl%charavalue,                   &
+          if (cmp_no_case(s3df_ctl%heat_filter_ctl%charavalue,          &
      &        'Fluid_filtering')) iflag_heat_filtering = 1
         end if
 !
         if ( evo_velo%iflag_scheme .gt. id_no_evolution) then
           iflag_momentum_filtering = 0
-          if (cmp_no_case(momentum_filter_ctl%charavalue,               &
+          if (cmp_no_case(s3df_ctl%momentum_filter_ctl%charavalue,      &
      &        'Whole_filtering')) iflag_momentum_filtering = 0
-          if (cmp_no_case(momentum_filter_ctl%charavalue,               &
+          if (cmp_no_case(s3df_ctl%momentum_filter_ctl%charavalue,      &
      &        'Fluid_filtering')) iflag_momentum_filtering = 1
         end if
 !
         if (evo_magne%iflag_scheme .gt. id_no_evolution                 &
      &      .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
           iflag_induction_filtering = 0
-          if (cmp_no_case(induction_filter_ctl%charavalue,              &
+          if (cmp_no_case(s3df_ctl%induction_filter_ctl%charavalue,     &
      &        'Whole_filtering')) iflag_induction_filtering = 0
-          if (cmp_no_case(induction_filter_ctl%charavalue,              &
+          if (cmp_no_case(s3df_ctl%induction_filter_ctl%charavalue,     &
      &        'Fluid_filtering')) iflag_induction_filtering = 1
         end if
 !
