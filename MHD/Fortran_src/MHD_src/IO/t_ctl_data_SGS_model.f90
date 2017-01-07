@@ -4,6 +4,7 @@
 !        programmed by H.Matsui on March. 2006
 !
 !!      subroutine read_sgs_ctl(hd_block, iflag, sgs_ctl)
+!!      subroutine bcast_sgs_ctl(sgs_ctl)
 !!        type(SGS_model_control), intent(inout) :: sgs_ctl
 !!      subroutine dealloc_sph_filter_ctl(sgs_ctl)
 !!
@@ -177,40 +178,18 @@
 !
       use m_precision
 !
+      use m_constants
       use m_machine_parameter
       use m_read_control_elements
       use skip_comment_f
       use t_control_elements
       use t_read_control_arrays
+      use t_ctl_data_SGS_filter
       use t_ctl_data_filter_files
       use t_ctl_data_ele_layering
 !
       implicit  none
 !
-!
-!>        Structure for spherical shell filter
-      type sph_filter_ctl_type
-!>        Structure for number of moments of filter
-        type(read_integer_item) :: maximum_moments_ctl
-!>        Structure for radial filter width
-        type(read_real_item) :: sphere_filter_width_ctl
-!>        Structure for horizontal filter width
-        type(read_real_item) :: radial_filter_width_ctl
-      end type sph_filter_ctl_type
-!
-!
-      type SGS_3d_filter_control
-!>        Structure for group list for filtering for whole area
-!!@n        whole_filter_grp_ctl%c_tbl: element group name
-        type(ctl_array_chara) :: whole_filter_grp_ctl
-!>                Structure for field list for filtering in fluid
-!!@n                fluid_filter_grp_ctl%c_tbl: element group name
-        type(ctl_array_chara) :: fluid_filter_grp_ctl
-!
-        type(read_character_item) :: momentum_filter_ctl
-        type(read_character_item) :: heat_filter_ctl
-        type(read_character_item) :: induction_filter_ctl
-      end type SGS_3d_filter_control
 !
       type SGS_model_control
         type(read_character_item) :: SGS_model_name_ctl
@@ -270,15 +249,6 @@
      &             :: hd_SGS_clips =   'negative_clip_ctl'
       character(len=kchara), parameter                                  &
      &             :: hd_SGS_clip_limit = 'clipping_limit_ctl'
-      integer (kind=kint) :: i_SGS_clips =            0
-      integer (kind=kint) :: i_SGS_clip_limit =       0
-!
-      character(len=kchara), parameter                                  &
-     &             :: hd_max_mom = 'number_of_moments'
-      character(len=kchara), parameter                                  &
-     &             :: hd_radial_filter_w = 'radial_filter_width'
-      character(len=kchara), parameter                                  &
-     &             :: hd_sphere_filter_w = 'sphere_filter_width'
 !
       character(len=kchara), parameter                                  &
      &             :: hd_SGS_hf_factor = 'SGS_hf_factor_ctl'
@@ -331,45 +301,29 @@
 !
 !    5th level for 3d filtering
 !
-      character(len=kchara) :: hd_whole_filter_grp                      &
-     &                        = 'whole_filtering_grp_ctl'
-      character(len=kchara) :: hd_fluid_filter_grp                      &
-     &                        = 'fluid_filtering_grp_ctl'
-!
-      character(len=kchara) :: hd_momentum_filter_ctl                   &
-     &                        = 'momentum_filter_ctl'
-      character(len=kchara) :: hd_heat_filter_ctl                       &
-     &                        =  'heat_filter_ctl'
-      character(len=kchara) :: hd_induction_filter_ctl                  &
-     &                        =  'induction_filter_ctl'
-!
       character(len=kchara), parameter :: hd_dynamic_layers             &
      &                        = 'dynamic_model_layer_ctl'
       integer (kind=kint) :: i_dynamic_layers = 0
+!
+      character(len=kchara), parameter :: hd_filter_fnames              &
+     &                        = 'filter_files_def'
+      integer (kind=kint) :: i_filter_fnames = 0
 !
       private :: hd_SGS_filter, hd_SGS_model
       private :: hd_SGS_clips, hd_SGS_clip_limit
       private :: hd_SGS_mf_factor, hd_SGS_mxwl_factor
       private :: hd_SGS_uxb_factor, hd_SGS_hf_factor
-      private :: hd_radial_filter_w, hd_sphere_filter_w, hd_max_mom
       private :: hd_SGS_marging, hd_DIFF_coefs, hd_3d_filtering
       private :: hd_min_step_dynamic, hd_max_step_dynamic
       private :: hd_delta_shrink_dynamic, hd_delta_extend_dynamic
       private :: hd_SGS_terms, hd_SGS_perturbation_ctl, hd_sph_filter
       private :: hd_model_coef_type_ctl, hd_model_coef_coord_ctl
-      private :: hd_whole_filter_grp, hd_fluid_filter_grp
-      private :: hd_momentum_filter_ctl, hd_heat_filter_ctl
-      private :: hd_induction_filter_ctl, hd_commutation_fld
+      private :: hd_commutation_fld
       private :: hd_hf_csim_type_ctl, hd_mf_csim_type_ctl
       private :: hd_mxwl_csim_type_ctl, hd_uxb_csim_type_ctl
 !
-      private :: read_3d_filtering_ctl, read_control_4_SGS_filters
-      private :: alloc_sph_filter_ctl, read_control_4_SGS_filter
+      private :: read_control_4_SGS_filters, alloc_sph_filter_ctl
       private :: hd_dynamic_layers, i_dynamic_layers
-!
-      character(len=kchara), parameter :: hd_filter_fnames              &
-     &                        = 'filter_files_def'
-      integer (kind=kint) :: i_filter_fnames = 0
 !
       private :: hd_filter_fnames, i_filter_fnames
 !
@@ -492,40 +446,6 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine read_3d_filtering_ctl(hd_block, iflag, s3df_ctl)
-!
-      character(len=kchara), intent(in) :: hd_block
-      integer(kind = kint), intent(inout) :: iflag
-!
-      type(SGS_3d_filter_control), intent(inout) :: s3df_ctl
-!
-!
-      if(right_begin_flag(hd_block) .eq. 0) return
-      if (iflag .gt. 0) return
-      do
-        call load_ctl_label_and_line
-!
-        call find_control_end_flag(hd_block, iflag)
-        if(iflag .gt. 0) exit
-!
-!
-        call read_control_array_c1                                      &
-     &     (hd_whole_filter_grp, s3df_ctl%whole_filter_grp_ctl)
-        call read_control_array_c1                                      &
-     &     (hd_fluid_filter_grp, s3df_ctl%fluid_filter_grp_ctl)
-!
-        call read_chara_ctl_type(hd_momentum_filter_ctl,                &
-     &      s3df_ctl%momentum_filter_ctl)
-        call read_chara_ctl_type(hd_heat_filter_ctl,                    &
-     &      s3df_ctl%heat_filter_ctl)
-        call read_chara_ctl_type(hd_induction_filter_ctl,               &
-     &      s3df_ctl%induction_filter_ctl)
-      end do
-!
-      end subroutine read_3d_filtering_ctl
-!
-!   --------------------------------------------------------------------
-!
       subroutine read_control_4_SGS_filters(hd_block, iflag, sgs_ctl)
 !
       character(len=kchara), intent(in) :: hd_block
@@ -555,32 +475,64 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_control_4_SGS_filter(hd_block, sphf_ctl)
+      subroutine bcast_sgs_ctl(sgs_ctl)
 !
-      character(len=kchara), intent(in) :: hd_block
+      use calypso_mpi
+      use bcast_4_filter_files_ctl
+      use bcast_control_arrays
 !
-      type(sph_filter_ctl_type), intent(inout) :: sphf_ctl
+      type(SGS_model_control), intent(inout) :: sgs_ctl
 !
-      integer(kind = kint) :: iflag
+      integer(kind = kint) :: i
 !
 !
-      iflag = 0
-      do
-        call load_ctl_label_and_line
+      call bcast_3d_filtering_ctl(sgs_ctl%s3df_ctl)
+      call bcast_ctl_data_4_filter_files(sgs_ctl%ffile_ctl)
+      call bcast_ele_layers_control(sgs_ctl%elayer_ctl)
 !
-        call find_control_end_flag(hd_block, iflag)
-        if(iflag .gt. 0) exit
 !
-        call read_integer_ctl_type(hd_max_mom,                          &
-     &      sphf_ctl%maximum_moments_ctl)
-!
-        call read_real_ctl_type(hd_radial_filter_w,                     &
-     &      sphf_ctl%radial_filter_width_ctl)
-        call read_real_ctl_type(hd_sphere_filter_w,                     &
-     &      sphf_ctl%sphere_filter_width_ctl)
+      call MPI_BCAST(sgs_ctl%num_sph_filter_ctl, ione,                  &
+     &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+      if(my_rank .gt. 0 .and. sgs_ctl%num_sph_filter_ctl.gt. 0) then
+        call alloc_sph_filter_ctl(sgs_ctl)
+      end if
+      do i = 1, sgs_ctl%num_sph_filter_ctl
+        call bcast_control_4_SGS_filter(sgs_ctl%sph_filter_ctl(i))
       end do
 !
-      end subroutine read_control_4_SGS_filter
+      call bcast_ctl_array_c1(sgs_ctl%SGS_terms_ctl)
+      call bcast_ctl_array_c1(sgs_ctl%commutate_fld_ctl)
+!
+      call bcast_ctl_type_c1(sgs_ctl%SGS_model_name_ctl)
+      call bcast_ctl_type_c1(sgs_ctl%SGS_filter_name_ctl)
+      call bcast_ctl_type_c1(sgs_ctl%DIFF_model_coef_ctl)
+!
+      call bcast_ctl_type_c1(sgs_ctl%SGS_negative_clip_ctl)
+      call bcast_ctl_type_c1(sgs_ctl%SGS_marging_ctl)
+      call bcast_ctl_type_c1(sgs_ctl%SGS_perturbation_ctl)
+      call bcast_ctl_type_c1(sgs_ctl%SGS_model_coef_type_ctl)
+!
+      call bcast_ctl_type_c1(sgs_ctl%heat_flux_csim_type_ctl)
+      call bcast_ctl_type_c1(sgs_ctl%mom_flux_csim_type_ctl)
+      call bcast_ctl_type_c1(sgs_ctl%maxwell_csim_type_ctl)
+      call bcast_ctl_type_c1(sgs_ctl%uxb_csim_type_ctl)
+      call bcast_ctl_type_c1(sgs_ctl%SGS_model_coef_coord_ctl)
+!
+!
+      call bcast_ctl_type_r1(sgs_ctl%delta_to_shrink_dynamic_ctl)
+      call bcast_ctl_type_r1(sgs_ctl%clipping_limit_ctl)
+!
+      call bcast_ctl_type_r1(sgs_ctl%SGS_hf_factor_ctl)
+      call bcast_ctl_type_r1(sgs_ctl%SGS_mf_factor_ctl)
+      call bcast_ctl_type_r1(sgs_ctl%SGS_mxwl_factor_ctl)
+      call bcast_ctl_type_r1(sgs_ctl%SGS_uxb_factor_ctl)
+!
+      call bcast_ctl_type_r1(sgs_ctl%delta_to_extend_dynamic_ctl)
+!
+      call bcast_ctl_type_i1(sgs_ctl%min_step_dynamic_ctl)
+      call bcast_ctl_type_i1(sgs_ctl%max_step_dynamic_ctl)
+!
+      end subroutine bcast_sgs_ctl
 !
 !   --------------------------------------------------------------------
 !

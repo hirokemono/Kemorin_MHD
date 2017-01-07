@@ -41,7 +41,7 @@
      &         (num_sph_filter_ctl, sph_filter_ctl, sph_filters)
 !
       use m_control_parameter
-      use t_ctl_data_SGS_model
+      use t_ctl_data_SGS_filter
       use t_sph_filtering_data
 !
       integer(kind = kint), intent(in) :: num_sph_filter_ctl

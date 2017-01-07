@@ -39,7 +39,7 @@
       use m_phys_labels
       use m_control_parameter
       use m_filter_file_names
-      use t_ctl_data_SGS_model
+      use t_ctl_data_SGS_filter
       use t_ctl_data_filter_files
       use t_read_control_arrays
       use sgs_ini_model_coefs_IO
