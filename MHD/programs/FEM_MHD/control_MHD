@@ -541,9 +541,11 @@ begin MHD_control
         end  high_temp_ctl
 !
       stratified_ctl            Off
-!      stratified_sigma_ctl         0.000   end
-!      stratified_width_ctl         0.000   end
-!      stratified_outer_r_ctl       0.000   end
+!      begin takepiro_model_ctl
+!        stratified_sigma_ctl         0.000   end
+!        stratified_width_ctl         0.000   end
+!        stratified_outer_r_ctl       0.000   end
+!      end takepiro_model_ctl
     end  temperature_define
 !!!!!!!!!  SGS Model !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !     SGS_model_ctl: gradient.........nonlinear gradient model
