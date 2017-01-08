@@ -44,23 +44,12 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_read_control_elements
-      use t_control_elements
-      use skip_comment_f
+      use t_ctl_data_temp_model
 !
       implicit  none
 !
 !
-      type(read_character_item) :: ref_temp_ctl
-      type(read_real_item) :: low_temp_ctl
-      type(read_real_item) :: high_temp_ctl
-      type(read_real_item) :: depth_low_t_ctl
-      type(read_real_item) :: depth_high_t_ctl
-!
-      type(read_character_item) :: stratified_ctl
-      type(read_real_item) :: stratified_sigma_ctl
-      type(read_real_item) :: stratified_width_ctl
-      type(read_real_item) :: stratified_outer_r_ctl
+      type(reference_temperature_ctl), save :: reft_ctl1
 !
 !   entry label
 !
@@ -68,49 +57,7 @@
      &      :: hd_temp_def =     'temperature_define'
       integer (kind=kint) :: i_temp_def =      0
 !
-!   4th level for temperature define
-!
-      character(len=kchara), parameter                                  &
-     &       :: hd_ref_temp =    'ref_temp_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_low_temp =    'low_temp_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_high_temp =   'high_temp_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_strat_ctl =   'stratified_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_strat_sigma = 'stratified_sigma_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_strat_width = 'stratified_width_ctl'
-      character(len=kchara), parameter                                  &
-     &       :: hd_strat_outer = 'stratified_outer_r_ctl'
-!
-      integer (kind=kint) :: i_low_temp = 0
-      integer (kind=kint) :: i_high_temp = 0
-!
-!    5th level for lower temp position
-!
-      character(len=kchara), parameter                                  &
-     &       :: hd_low_temp_posi =  'depth'
-      character(len=kchara), parameter                                  &
-     &       :: hd_low_temp_value = 'temperature'
-!
-!    5th level for higher temp position
-!
-      character(len=kchara), parameter                                  &
-     &       :: hd_high_temp_posi =  'depth'
-      character(len=kchara), parameter                                  &
-     &       :: hd_high_temp_value = 'temperature'
-!
       private :: hd_temp_def, i_temp_def
-      private :: hd_ref_temp, hd_low_temp, hd_high_temp
-      private :: hd_strat_ctl, hd_strat_sigma
-      private :: hd_strat_width, hd_strat_outer
-      private :: hd_low_temp_posi, hd_low_temp_value
-      private :: hd_high_temp_posi, hd_high_temp_value
-      private :: i_low_temp, i_high_temp
-!
-      private :: read_low_temp_ctl, read_high_temp_ctl
 !
 !   --------------------------------------------------------------------
 !
@@ -121,67 +68,9 @@
       subroutine read_temp_def
 !
 !
-      if(right_begin_flag(hd_temp_def) .eq. 0) return
-      if (i_temp_def .gt. 0) return
-      do
-        call load_ctl_label_and_line
-!
-        call find_control_end_flag(hd_temp_def, i_temp_def)
-        if(i_temp_def .gt. 0) exit
-!
-!
-        call  read_low_temp_ctl
-        call  read_high_temp_ctl
-!
-!
-        call read_chara_ctl_type(hd_ref_temp, ref_temp_ctl)
-        call read_chara_ctl_type(hd_strat_ctl, stratified_ctl)
-!
-        call read_real_ctl_type(hd_strat_sigma, stratified_sigma_ctl)
-        call read_real_ctl_type(hd_strat_width, stratified_width_ctl)
-        call read_real_ctl_type(hd_strat_outer, stratified_outer_r_ctl)
-      end do
+      call read_reftemp_ctl(hd_temp_def, i_temp_def, reft_ctl1)
 !
       end subroutine read_temp_def
-!
-!   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine read_low_temp_ctl
-!
-!
-      if(right_begin_flag(hd_low_temp) .eq. 0) return
-      if (i_low_temp .gt. 0) return
-      do
-        call load_ctl_label_and_line
-!
-        call find_control_end_flag(hd_low_temp, i_low_temp)
-        if(i_low_temp .gt. 0) exit
-!
-        call read_real_ctl_type(hd_low_temp_posi, depth_low_t_ctl)
-        call read_real_ctl_type(hd_low_temp_value, low_temp_ctl)
-      end do
-!
-      end subroutine read_low_temp_ctl
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_high_temp_ctl
-!
-!
-      if(right_begin_flag(hd_high_temp) .eq. 0) return
-      if (i_high_temp .gt. 0) return
-      do
-        call load_ctl_label_and_line
-!
-        call find_control_end_flag(hd_high_temp, i_high_temp)
-        if(i_high_temp .gt. 0) exit
-!
-        call read_real_ctl_type(hd_high_temp_posi, depth_high_t_ctl)
-        call read_real_ctl_type(hd_high_temp_value, high_temp_ctl)
-      end do
-!
-      end subroutine read_high_temp_ctl
 !
 !   --------------------------------------------------------------------
 !
