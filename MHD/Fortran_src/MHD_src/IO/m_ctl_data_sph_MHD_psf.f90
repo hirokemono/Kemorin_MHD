@@ -116,7 +116,7 @@
         call read_sph_mhd_model
         call read_sph_mhd_control
 !
-        call read_monitor_data_ctl
+        call read_monitor_data_control
         call read_pickup_sph_ctl
 !
         call read_sections_control_data

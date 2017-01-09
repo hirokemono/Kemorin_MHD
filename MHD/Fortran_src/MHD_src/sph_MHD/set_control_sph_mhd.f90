@@ -119,6 +119,7 @@
       use set_control_4_force
       use set_control_4_normalize
       use set_control_4_time_steps
+      use m_ctl_data_node_monitor
 !
       use set_control_4_velo
       use set_control_4_press
@@ -154,7 +155,8 @@
       call set_control_MHD_field_file
       call set_control_org_sph_files(MHD_org_files)
 !
-      call s_set_control_4_model(reft_ctl1, mevo_ctl1, evo_ctl1)
+      call s_set_control_4_model                                        &
+     &    (reft_ctl1, mevo_ctl1, evo_ctl1, nmtr_ctl1)
 !
 !   set spherical shell parameters
 !

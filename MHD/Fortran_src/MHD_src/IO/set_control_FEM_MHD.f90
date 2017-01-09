@@ -43,6 +43,7 @@
       use m_ctl_data_temp_model
       use m_ctl_data_mhd_evolution
       use m_ctl_data_mhd_evo_scheme
+      use m_ctl_data_node_monitor
 !
       use set_control_platform_data
       use set_control_nodal_data_MHD
@@ -88,7 +89,8 @@
 !
 !   set parameters for general information
 !
-      call s_set_control_4_model(reft_ctl1, mevo_ctl1, evo_ctl1)
+      call s_set_control_4_model                                        &
+     &   (reft_ctl1, mevo_ctl1, evo_ctl1, nmtr_ctl1)
 !
 !   set element groups for evolution
 !

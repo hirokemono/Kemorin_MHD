@@ -9,11 +9,13 @@
 !> @brief set models for MHD simulation from control data
 !!
 !!@verbatim
-!!     subroutine s_set_control_4_model(reft_ctl, mevo_ctl, evo_ctl)
+!!      subroutine s_set_control_4_model                                &
+!!     &          (reft_ctl, mevo_ctl, evo_ctl, nmtr_ctl)
 !!     subroutine s_set_control_4_crank(mevo_ctl)
 !!        type(reference_temperature_ctl), intent(in) :: reft_ctl
 !!        type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
 !!        type(mhd_evolution_control), intent(inout) :: evo_ctl
+!!        type(node_monitor_control), intent(inout) :: nmtr_ctl
 !!@endverbatim
 !
       module set_control_4_model
@@ -35,19 +37,21 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_4_model(reft_ctl, mevo_ctl, evo_ctl)
+      subroutine s_set_control_4_model                                  &
+     &          (reft_ctl, mevo_ctl, evo_ctl, nmtr_ctl)
 !
       use calypso_mpi
       use m_t_step_parameter
       use m_phys_labels
       use t_ctl_data_mhd_evolution
       use t_ctl_data_temp_model
-      use m_ctl_data_node_monitor
+      use t_ctl_data_node_monitor
       use node_monitor_IO
 !
       type(reference_temperature_ctl), intent(in) :: reft_ctl
       type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
       type(mhd_evolution_control), intent(inout) :: evo_ctl
+      type(node_monitor_control), intent(inout) :: nmtr_ctl
 !
       integer (kind = kint) :: i
       character(len=kchara) :: tmpchara
@@ -155,19 +159,19 @@
      &    reft_ctl%reference_ctl, reft_ctl%low_ctl, reft_ctl%high_ctl,  &
      &    reft_ctl%stratified_ctl, reft_ctl%takepiro_ctl)
 !
-        if (group_4_monitor_ctl%icou .eq. 0) then
+        if (nmtr_ctl%group_4_monitor_ctl%icou .eq. 0) then
           num_monitor = 0
         else
-          num_monitor = group_4_monitor_ctl%num
+          num_monitor = nmtr_ctl%group_4_monitor_ctl%num
         end if
 !
       if (num_monitor .ne. 0) then
         call allocate_monitor_group
 !
         do i = 1, num_monitor
-          monitor_grp(i) = group_4_monitor_ctl%c_tbl(i)
+          monitor_grp(i) = nmtr_ctl%group_4_monitor_ctl%c_tbl(i)
         end do
-        call dealloc_control_array_chara(group_4_monitor_ctl)
+        call dealloc_control_array_chara(nmtr_ctl%group_4_monitor_ctl)
 !
         if (iflag_debug .ge. iflag_routine_msg) then
           do i = 1, num_monitor

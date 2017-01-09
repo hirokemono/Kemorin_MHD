@@ -3,7 +3,7 @@
 !
 !        programmed by H.Matsui on March. 2006
 !
-!!      subroutine read_monitor_data_ctl
+!!      subroutine read_monitor_data_control
 !!
 !!   --------------------------------------------------------------------
 !!
@@ -20,14 +20,13 @@
       module m_ctl_data_node_monitor
 !
       use m_precision
-      use t_read_control_arrays
+      use t_ctl_data_node_monitor
 !
       implicit  none
 !
 !
 !>      Structure for monitoring plave list
-!!@n      group_4_monitor_ctl%c_tbl: Name of node group to monitor field
-      type(ctl_array_chara), save :: group_4_monitor_ctl
+      type(node_monitor_control), save :: nmtr_ctl1
 !
 !   entry label
 !
@@ -35,11 +34,7 @@
      &      :: hd_monitor_data = 'monitor_data_ctl'
       integer (kind=kint) :: i_monitor_data = 0
 !
-!   3rd level for monitor data
-!
-      character(len=kchara) :: hd_monitor_grp = 'monitor_grp_ctl'
-!
-      private :: hd_monitor_data, i_monitor_data, hd_monitor_grp
+      private :: hd_monitor_data, i_monitor_data
 !
 !   --------------------------------------------------------------------
 !
@@ -47,26 +42,13 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_monitor_data_ctl
-!
-      use m_machine_parameter
-      use m_read_control_elements
-      use skip_comment_f
+      subroutine read_monitor_data_control
 !
 !
-      if(right_begin_flag(hd_monitor_data) .eq. 0) return
-      if (i_monitor_data .gt. 0) return
-      do
-        call load_ctl_label_and_line
+      call read_monitor_data_ctl                                        &
+     &   (hd_monitor_data, i_monitor_data, nmtr_ctl1)
 !
-        call find_control_end_flag(hd_monitor_data, i_monitor_data)
-        if(i_monitor_data .gt. 0) exit
-!
-        call read_control_array_c1                                      &
-     &     (hd_monitor_grp, group_4_monitor_ctl)
-      end do
-!
-      end subroutine read_monitor_data_ctl
+      end subroutine read_monitor_data_control
 !
 !   --------------------------------------------------------------------
 !
