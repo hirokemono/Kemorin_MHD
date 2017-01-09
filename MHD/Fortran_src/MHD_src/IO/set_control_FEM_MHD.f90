@@ -36,6 +36,7 @@
       use m_ctl_data_4_platforms
       use m_ctl_data_4_time_steps
       use m_ctl_data_4_fields
+      use m_ctl_data_node_boundary
       use m_ctl_data_mhd_forces
       use m_ctl_data_SGS_model
       use m_ctl_data_temp_model
@@ -117,35 +118,35 @@
 !
 !   set boundary conditions for temperature
 !
-      call s_set_control_4_temp
+      call s_set_control_4_temp(nbc_ctl1%node_bc_T_ctl)
 !
 !   set boundary conditions for velocity
 !
-      call s_set_control_4_velo
+      call s_set_control_4_velo(nbc_ctl1%node_bc_U_ctl)
 !
 !  set boundary conditions for pressure
 !
-      call s_set_control_4_press
+      call s_set_control_4_press(nbc_ctl1%node_bc_P_ctl)
 !
 !   set boundary conditions for composition
 !
-      call s_set_control_4_composition
+      call s_set_control_4_composition(nbc_ctl1%node_bc_C_ctl)
 !
 !   set boundary_conditons for magnetic field
 !
-      call s_set_control_4_magne
+      call s_set_control_4_magne(nbc_ctl1%node_bc_B_ctl)
 !
 !   set boundary_conditons for magnetic potential
 !
-      call s_set_control_4_mag_p
+      call s_set_control_4_mag_p(nbc_ctl1%node_bc_MP_ctl)
 !
 !   set boundary_conditons for vector potential
 !
-      call s_set_control_4_vect_p
+      call s_set_control_4_vect_p(nbc_ctl1%node_bc_A_ctl)
 !
 !   set boundary_conditons for current density
 !
-      call s_set_control_4_current
+      call s_set_control_4_current(nbc_ctl1%node_bc_J_ctl)
 !
 !   set boundary_conditons for magnetic potential
 !

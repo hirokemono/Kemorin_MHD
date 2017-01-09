@@ -3,15 +3,6 @@
 !
 !        programmed by H.Matsui
 !
-!!      subroutine deallocate_bc_velo_ctl
-!!      subroutine deallocate_bc_velo_ctl
-!!      subroutine deallocate_bc_press_ctl
-!!      subroutine deallocate_bc_composit_ctl
-!!      subroutine deallocate_bc_magne_ctl
-!!      subroutine deallocate_bc_magne_p_ctl
-!!      subroutine deallocate_bc_vect_p_ctl
-!!      subroutine deallocate_bc_current_ctl
-!!
 !!      subroutine read_bc_4_node
 !!
 !! ------------------------------------------------------------------
@@ -110,9 +101,12 @@
       module m_ctl_data_node_boundary
 !
       use m_precision
-      use t_read_control_arrays
+      use t_ctl_data_node_boundary
 !
       implicit  none
+!
+!
+      type(node_bc_control), save :: nbc_ctl1
 !
 !>      Structure for nodal boundary conditions for temperature
 !!@n      node_bc_T_ctl%c1_tbl:  Type of boundary conditions
@@ -173,29 +167,7 @@
      &      :: hd_boundary_condition = 'boundary_condition'
       integer (kind=kint) :: i_bc_4_node =     0
 !
-!   4th level for nodal boundary
-!
-      character(len=kchara), parameter                                  &
-     &        :: hd_n_bc_temp =    'bc_temperature'
-      character(len=kchara), parameter                                  &
-     &        :: hd_n_bc_velo =    'bc_velocity'
-      character(len=kchara), parameter                                  &
-     &        :: hd_n_bc_press =   'bc_pressure'
-      character(len=kchara), parameter                                  &
-     &        :: hd_n_bc_composit = 'bc_composition'
-      character(len=kchara), parameter                                  &
-     &        :: hd_n_bc_magne =    'bc_magnetic_field'
-      character(len=kchara), parameter                                  &
-     &        :: hd_n_bc_mag_p =   'bc_electric_potential'
-      character(len=kchara), parameter                                  &
-     &        :: hd_n_bc_vect_p =  'bc_vector_potential'
-      character(len=kchara), parameter                                  &
-     &        :: hd_n_bc_currect = 'bc_current'
-!
       private :: hd_bc_4_node, hd_boundary_condition, i_bc_4_node
-      private :: hd_n_bc_temp, hd_n_bc_velo, hd_n_bc_press
-      private :: hd_n_bc_magne, hd_n_bc_mag_p, hd_n_bc_vect_p
-      private :: hd_n_bc_composit, hd_n_bc_currect
 !
 ! -----------------------------------------------------------------------
 !
@@ -203,99 +175,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine deallocate_bc_temp_ctl
-!
-      call dealloc_control_array_c2_r(node_bc_T_ctl)
-!
-      end subroutine deallocate_bc_temp_ctl
-!
-! -----------------------------------------------------------------------
-!
-       subroutine deallocate_bc_velo_ctl
-!
-      call dealloc_control_array_c2_r(node_bc_U_ctl)
-!
-       end subroutine deallocate_bc_velo_ctl
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_bc_press_ctl
-!
-      call dealloc_control_array_c2_r(node_bc_P_ctl)
-!
-      end subroutine deallocate_bc_press_ctl
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_bc_composit_ctl
-!
-      call dealloc_control_array_c2_r(node_bc_C_ctl)
-!
-      end subroutine deallocate_bc_composit_ctl
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_bc_magne_ctl
-!
-      call dealloc_control_array_c2_r(node_bc_B_ctl)
-!
-      end subroutine deallocate_bc_magne_ctl
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_bc_magne_p_ctl
-!
-      call dealloc_control_array_c2_r(node_bc_MP_ctl)
-!
-      end subroutine deallocate_bc_magne_p_ctl
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_bc_vect_p_ctl
-!
-      call dealloc_control_array_c2_r(node_bc_A_ctl)
-!
-      end subroutine deallocate_bc_vect_p_ctl
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_bc_current_ctl
-!
-      call dealloc_control_array_c2_r(node_bc_J_ctl)
-!
-      end subroutine deallocate_bc_current_ctl
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
       subroutine read_bc_4_node
 !
-      use m_machine_parameter
-      use m_read_control_elements
-      use skip_comment_f
 !
-!
-      if(       right_begin_flag(hd_boundary_condition) .eq. 0          &
-     &    .and. right_begin_flag(hd_bc_4_node).eq. 0) return
-      if(i_bc_4_node .gt. 0) return
-      do
-        call load_ctl_label_and_line
-!
-        call find_control_end_flag(hd_boundary_condition, i_bc_4_node)
-        if(i_bc_4_node .gt. 0) exit
-        call find_control_end_flag(hd_bc_4_node, i_bc_4_node)
-        if(i_bc_4_node .gt. 0) exit
-!
-!
-        call read_control_array_c2_r(hd_n_bc_temp, node_bc_T_ctl)
-        call read_control_array_c2_r(hd_n_bc_velo, node_bc_U_ctl)
-        call read_control_array_c2_r(hd_n_bc_press, node_bc_P_ctl)
-        call read_control_array_c2_r(hd_n_bc_composit, node_bc_C_ctl)
-        call read_control_array_c2_r(hd_n_bc_magne, node_bc_B_ctl)
-        call read_control_array_c2_r(hd_n_bc_mag_p, node_bc_MP_ctl)
-        call read_control_array_c2_r(hd_n_bc_vect_p, node_bc_A_ctl)
-        call read_control_array_c2_r(hd_n_bc_currect, node_bc_J_ctl)
-      end do
+      call read_bc_4_node_ctl                                           &
+     &   (hd_boundary_condition, i_bc_4_node, nbc_ctl1)
+      call read_bc_4_node_ctl(hd_bc_4_node, i_bc_4_node, nbc_ctl1)
 !
       end subroutine read_bc_4_node
 !

@@ -9,7 +9,8 @@
 !> @brief set boundary conditions for temperature from control data
 !!
 !!@verbatim
-!!     subroutine s_set_control_4_temp
+!!     subroutine s_set_control_4_temp(node_bc_T_ctl)
+!!        type(ctl_array_c2r), intent(inout) :: node_bc_T_ctl
 !!@endverbatim
 !
       module set_control_4_temp
@@ -24,17 +25,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_4_temp
+      subroutine s_set_control_4_temp(node_bc_T_ctl)
 !
       use m_machine_parameter
       use calypso_mpi
       use m_control_parameter
-      use m_ctl_data_node_boundary
+      use t_ctl_data_node_boundary
       use m_ctl_data_surf_boundary
       use m_bc_data_list
       use m_surf_data_list
       use set_node_group_types
       use set_surface_group_types
+!
+      type(ctl_array_c2r), intent(inout) :: node_bc_T_ctl
 !
       integer(kind = kint) :: i
 !
@@ -79,7 +82,7 @@
           end do
         end if
 !
-        call deallocate_bc_temp_ctl
+        call dealloc_control_array_c2_r(node_bc_T_ctl)
       end if
 !
 !   set boundary conditions for heat flux

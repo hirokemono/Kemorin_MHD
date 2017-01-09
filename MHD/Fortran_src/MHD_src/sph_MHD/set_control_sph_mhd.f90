@@ -98,6 +98,7 @@
       use m_ctl_data_4_time_steps
       use m_ctl_data_4_sphere_model
       use m_ctl_data_4_pickup_sph
+      use m_ctl_data_node_boundary
       use m_ctl_data_mhd_forces
       use m_ctl_data_temp_model
       use m_ctl_data_mhd_evolution
@@ -184,27 +185,27 @@
 !   set boundary conditions for temperature
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_temp'
-      call s_set_control_4_temp
+      call s_set_control_4_temp(nbc_ctl1%node_bc_T_ctl)
 !
 !   set boundary conditions for velocity
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_velo'
-      call s_set_control_4_velo
+      call s_set_control_4_velo(nbc_ctl1%node_bc_U_ctl)
 !
 !  set boundary conditions for pressure
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_press'
-      call s_set_control_4_press
+      call s_set_control_4_press(nbc_ctl1%node_bc_P_ctl)
 !
 !   set boundary conditions for composition variation
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_composition'
-      call s_set_control_4_composition
+      call s_set_control_4_composition(nbc_ctl1%node_bc_C_ctl)
 !
 !   set boundary_conditons for magnetic field
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_magne'
-      call s_set_control_4_magne
+      call s_set_control_4_magne(nbc_ctl1%node_bc_B_ctl)
 !
 !   set flag to read boundary condition file
 !

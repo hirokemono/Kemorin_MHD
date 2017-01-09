@@ -8,7 +8,8 @@
 !> @brief set boundary conditions for magnetic field from control data
 !!
 !!@verbatim
-!!     subroutine s_set_control_4_magne
+!!     subroutine s_set_control_4_magne(node_bc_B_ctl)
+!!        type(ctl_array_c2r), intent(inout) :: node_bc_B_ctl
 !!@endverbatim
 !
       module set_control_4_magne
@@ -23,17 +24,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_4_magne
+      subroutine s_set_control_4_magne(node_bc_B_ctl)
 !
       use m_machine_parameter
       use calypso_mpi
       use m_control_parameter
-      use m_ctl_data_node_boundary
+      use t_ctl_data_node_boundary
       use m_ctl_data_surf_boundary
       use m_bc_data_list
       use m_surf_data_list
       use set_node_group_types
       use set_surface_group_types
+!
+      type(ctl_array_c2r), intent(inout) :: node_bc_B_ctl
 !
       integer (kind = kint) :: i
 !
@@ -82,7 +85,7 @@
           end do
         end if
 !
-        call deallocate_bc_magne_ctl
+        call dealloc_control_array_c2_r(node_bc_B_ctl)
       end if
 !
 !
