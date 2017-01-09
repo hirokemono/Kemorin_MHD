@@ -8,7 +8,8 @@
 !> @brief set schemes for time integration from control
 !!
 !!@verbatim
-!!     subroutine set_control_4_FEM_params
+!!     subroutine set_control_4_FEM_params(mevo_ctl)
+!!        type(mhd_evolution_control), intent(in) :: mevo_ctl
 !!@endverbatim
 !
       module set_control_4_scheme
@@ -23,35 +24,37 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_FEM_params
+      subroutine set_control_4_FEM_params(mevo_ctl)
 !
       use calypso_mpi
       use m_error_IDs
       use m_machine_parameter
       use m_control_parameter
       use m_ctl_data_4_fem_int_pts
-      use m_ctl_data_mhd_evo_scheme
+      use t_ctl_data_mhd_evo_scheme
       use skip_comment_f
+!
+      type(mhd_evolution_control), intent(in) :: mevo_ctl
 !
       integer (kind=kint) :: iflag_4_supg = id_turn_OFF
 !
 !
-        if (num_multi_pass_ctl%iflag .eq. 0) then
+        if (mevo_ctl%num_multi_pass_ctl%iflag .eq. 0) then
           num_multi_pass = 1
         else
-          num_multi_pass = num_multi_pass_ctl%intvalue
+          num_multi_pass = mevo_ctl%num_multi_pass_ctl%intvalue
         end if
 !
-        if (maxiter_ctl%iflag .eq. 0) then
+        if (mevo_ctl%maxiter_ctl%iflag .eq. 0) then
           maxiter = 0
         else
-          maxiter = maxiter_ctl%intvalue
+          maxiter = mevo_ctl%maxiter_ctl%intvalue
         end if
         maxiter_vecp = maxiter
 !
         iflag_4_supg = id_turn_OFF
-        if (iflag_supg_ctl%iflag .gt. 0                                 &
-     &     .and. yes_flag(iflag_supg_ctl%charavalue)) then
+        if (mevo_ctl%iflag_supg_ctl%iflag .gt. 0                        &
+     &     .and. yes_flag(mevo_ctl%iflag_supg_ctl%charavalue)) then
           iflag_4_supg = id_turn_ON
         end if
 !
@@ -59,42 +62,42 @@
         iflag_temp_supg = iflag_4_supg
         iflag_mag_supg =  iflag_4_supg
         iflag_comp_supg = iflag_4_supg
-        if (iflag_supg_v_ctl%iflag .gt. 0                               &
-     &     .and. yes_flag(iflag_supg_v_ctl%charavalue)) then
+        if (mevo_ctl%iflag_supg_v_ctl%iflag .gt. 0                      &
+     &     .and. yes_flag(mevo_ctl%iflag_supg_v_ctl%charavalue)) then
           iflag_velo_supg = id_turn_ON
         end if
-        if (iflag_supg_t_ctl%iflag .gt. 0                               &
-     &    .and. yes_flag(iflag_supg_t_ctl%charavalue)) then
+        if (mevo_ctl%iflag_supg_t_ctl%iflag .gt. 0                      &
+     &    .and. yes_flag(mevo_ctl%iflag_supg_t_ctl%charavalue)) then
           iflag_temp_supg = id_turn_ON
         end if
-        if (iflag_supg_b_ctl%iflag .gt. 0                               &
-     &    .and. yes_flag(iflag_supg_b_ctl%charavalue)) then
+        if (mevo_ctl%iflag_supg_b_ctl%iflag .gt. 0                      &
+     &    .and. yes_flag(mevo_ctl%iflag_supg_b_ctl%charavalue)) then
           iflag_mag_supg = id_turn_ON
         end if
-        if (iflag_supg_c_ctl%iflag .gt. 0                               &
-     &    .and.  yes_flag(iflag_supg_c_ctl%charavalue)) then
+        if (mevo_ctl%iflag_supg_c_ctl%iflag .gt. 0                      &
+     &    .and.  yes_flag(mevo_ctl%iflag_supg_c_ctl%charavalue)) then
           iflag_comp_supg = id_turn_ON
         end if
 !
         if (maxiter.gt.1) then
           if (evo_velo%iflag_scheme .gt. id_no_evolution) then
-            if (eps_4_velo_ctl%iflag .eq. 0) then
+            if (mevo_ctl%eps_4_velo_ctl%iflag .eq. 0) then
               e_message                                                 &
      &         = 'Set convergence area for velocity iteration'
               call calypso_MPI_abort(ierr_CG, e_message)
             else
-              eps_4_velo = eps_4_velo_ctl%realvalue
+              eps_4_velo = mevo_ctl%eps_4_velo_ctl%realvalue
             end if
           end if
 !
           if (evo_magne%iflag_scheme .gt. id_no_evolution               &
      &        .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
-            if (eps_4_magne_ctl%iflag .eq. 0) then
+            if (mevo_ctl%eps_4_magne_ctl%iflag .eq. 0) then
               e_message                                                 &
      &         = 'Set convergence area for magnetic iteration'
               call calypso_MPI_abort(ierr_CG, e_message)
             else
-              eps_4_magne = eps_4_magne_ctl%realvalue
+              eps_4_magne = mevo_ctl%eps_4_magne_ctl%realvalue
             end if
           end if
         end if

@@ -100,8 +100,8 @@
      &     (Legendre_trans_loop_ctl%charavalue)
       end if
 !
-      if(FFT_library_ctl%iflag .gt. 0) then
-        call set_fft_library_ctl(FFT_library_ctl%charavalue)
+      if(FFT_lib_ctl%iflag .gt. 0) then
+        call set_fft_library_ctl(FFT_lib_ctl%charavalue)
       end if
       if(import_mode_ctl%iflag .gt. 0) then
         call set_import_table_ctl(import_mode_ctl%charavalue)
@@ -209,8 +209,8 @@
      &     (Legendre_trans_loop_ctl%charavalue)
       end if
 !
-      if(FFT_library_ctl%iflag .gt. 0) then
-        call set_fft_library_ctl(FFT_library_ctl%charavalue)
+      if(FFT_lib_ctl%iflag .gt. 0) then
+        call set_fft_library_ctl(FFT_lib_ctl%charavalue)
       end if
 !
 !     file header for reduced data

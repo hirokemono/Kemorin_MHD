@@ -7,7 +7,9 @@
 !> @brief Control flags for initial data
 !
 !!@verbatim
-!!      subroutine set_initial_field_id(tctl)
+!!      subroutine set_initial_field_id(restart_flag_ctl, tctl)
+!!        type(time_data_control), intent(in) :: tctl
+!!        type(read_character_item), intent(in) :: restart_flag_ctl
 !!@endverbatim
 !
       module m_initial_field_control
@@ -91,17 +93,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_field_id(tctl)
+      subroutine set_initial_field_id(restart_flag_ctl, tctl)
 !
       use calypso_mpi
       use m_error_IDs
       use m_machine_parameter
       use m_t_step_parameter
-      use m_ctl_data_mhd_evo_scheme
+      use t_control_elements
       use t_ctl_data_4_time_steps
       use skip_comment_f
 !
       type(time_data_control), intent(in) :: tctl
+      type(read_character_item), intent(in) :: restart_flag_ctl
 !
 !
       if(restart_flag_ctl%iflag .eq. 0) then

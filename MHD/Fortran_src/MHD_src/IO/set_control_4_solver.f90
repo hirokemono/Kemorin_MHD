@@ -10,7 +10,8 @@
 !!        from control data
 !!
 !!@verbatim
-!!     subroutine s_set_control_4_solver
+!!     subroutine s_set_control_4_solver(mevo_ctl)
+!!        type(mhd_evolution_control), intent(in) :: mevo_ctl
 !!@endverbatim
 !
       module set_control_4_solver
@@ -19,7 +20,6 @@
 !
       use m_machine_parameter
       use m_control_parameter
-      use m_ctl_data_mhd_evo_scheme
 !
       implicit  none
 !
@@ -29,14 +29,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_4_solver
+      subroutine s_set_control_4_solver(mevo_ctl)
 !
       use calypso_mpi
       use m_error_IDs
       use m_iccg_parameter
       use m_ctl_data_4_solvers
       use m_ctl_parameter_Multigrid
+      use t_ctl_data_mhd_evo_scheme
       use skip_comment_f
+!
+      type(mhd_evolution_control), intent(in) :: mevo_ctl
 !
 !   control for solvers
 !
@@ -85,26 +88,26 @@
         if ( iflag_scheme .eq. id_Crank_nicolson                        &
      &     .or. iflag_scheme .eq. id_Crank_nicolson) then
 !
-          if ((method_4_velo_ctl%iflag*precond_4_crank_ctl%iflag)       &
+          if((mevo_ctl%method_4_CN%iflag*mevo_ctl%precond_4_CN%iflag)   &
      &      .eq. 0) then
             e_message                                                   &
      &      = 'Set CG method and preconditioning for implicit solver'
             call calypso_MPI_abort(ierr_CG, e_message)
           else
-            method_4_velo =   method_4_velo_ctl%charavalue
-            precond_4_crank = precond_4_crank_ctl%charavalue
+            method_4_velo =   mevo_ctl%method_4_CN%charavalue
+            precond_4_crank = mevo_ctl%precond_4_CN%charavalue
           end if
 !
-          if (eps_crank_ctl%iflag .eq. 0) then
+          if (mevo_ctl%eps_crank_ctl%iflag .eq. 0) then
             e_message                                                   &
      &      = 'Set convergence area for implicit solver'
             call calypso_MPI_abort(ierr_CG, e_message)
           else
-            eps_crank  = eps_crank_ctl%realvalue
+            eps_crank  = mevo_ctl%eps_crank_ctl%realvalue
           end if
 !
-          if(eps_B_crank_ctl%iflag .gt. 0) then
-            eps_4_magne_crank = eps_B_crank_ctl%realvalue
+          if(mevo_ctl%eps_B_crank_ctl%iflag .gt. 0) then
+            eps_4_magne_crank = mevo_ctl%eps_B_crank_ctl%realvalue
           end if
         end if
 !

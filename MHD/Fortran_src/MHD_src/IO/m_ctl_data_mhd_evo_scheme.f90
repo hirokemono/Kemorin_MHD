@@ -7,8 +7,8 @@
 !> @brief Set initial data for spectrum dynamos
 !!
 !!@verbatim
-!!      subroutine read_restart_ctl
-!!      subroutine read_time_loop_ctl
+!!      subroutine read_restart_control
+!!      subroutine read_time_loop_control
 !!
 !! !!!!  control for initial and restart data  !!!!!!!!!!!!!!!!!!!!!!!!!!
 !!   no_data:             No initial values
@@ -92,47 +92,13 @@
       module m_ctl_data_mhd_evo_scheme
 !
       use m_precision
-      use t_control_elements
+      use t_ctl_data_mhd_evo_scheme
 !
       implicit  none
 !
 !
-      type(read_character_item) :: restart_flag_ctl
-!   control flage for restart data
-!
-      type(read_real_item) :: coef_imp_v_ctl
-      type(read_real_item) :: coef_imp_t_ctl
-      type(read_real_item) :: coef_imp_b_ctl
-      type(read_real_item) :: coef_imp_c_ctl
-!
-!
-      type(read_character_item) :: iflag_supg_ctl
-      type(read_character_item) :: iflag_supg_v_ctl
-      type(read_character_item) :: iflag_supg_t_ctl
-      type(read_character_item) :: iflag_supg_b_ctl
-      type(read_character_item) :: iflag_supg_c_ctl
-!
-      type(read_integer_item) :: num_multi_pass_ctl
-      type(read_integer_item) :: maxiter_ctl
-! 
-      type(read_real_item) :: eps_4_velo_ctl
-      type(read_real_item) :: eps_4_magne_ctl
-!
-      type(read_real_item) :: eps_crank_ctl
-      type(read_real_item) :: eps_B_crank_ctl
-! 
-      type(read_character_item) :: scheme_ctl
-      type(read_character_item) :: diffuse_correct_ctl
-! 
-      type(read_character_item) :: method_4_velo_ctl
-      type(read_character_item) :: precond_4_crank_ctl
-! 
-      type(read_character_item) :: Legendre_trans_loop_ctl
-      type(read_character_item) :: FFT_library_ctl
-      type(read_character_item) :: import_mode_ctl
-      type(read_character_item) :: SR_routine_ctl
-!
-      type(read_integer_item) :: legendre_vector_len_ctl
+      type(mhd_restart_control), save :: mr_ctl1
+      type(mhd_evolution_control), save :: mevo_ctl1
 !
 !     label for entry
 !
@@ -144,73 +110,9 @@
      &      :: hd_time_loop =      'time_loop_ctl'
       integer (kind=kint) :: i_time_loop =      0
 !
-!    4th level for restart
 !
-      character(len=kchara), parameter :: hd_rst_flag = 'rst_ctl'
-!
-!    4th level for time_loop_ctl
-!
-      character(len=kchara), parameter                                  &
-     &      :: hd_iflag_supg =     'iflag_supg_ctl'
-      character(len=kchara), parameter                                  &
-     &      :: hd_iflag_v_supg =   'iflag_supg_v_ctl'
-      character(len=kchara), parameter                                  &
-     &      :: hd_iflag_t_supg =   'iflag_supg_t_ctl'
-      character(len=kchara), parameter                                  &
-     &      :: hd_iflag_b_supg =   'iflag_supg_b_ctl'
-      character(len=kchara), parameter                                  &
-     &      :: hd_iflag_c_supg =   'iflag_supg_c_ctl'
-!
-      character(len=kchara), parameter                                  &
-     &      :: hd_num_multi_pass = 'num_multi_pass_ctl'
-      character(len=kchara), parameter                                  &
-     &      :: hd_maxiter =        'maxiter_ctl'
-      character(len=kchara), parameter                                  &
-     &      :: hd_eps_4_velo =     'eps_4_velo_ctl'
-      character(len=kchara), parameter                                  &
-     &      :: hd_eps_4_magne =    'eps_4_magne_ctl'
-      character(len=kchara), parameter                                  &
-     &      :: hd_scheme =         'scheme_ctl'
-      character(len=kchara), parameter                                  &
-     &      :: hd_diff_correct =   'diffuse_correct_ctl'
-      character(len=kchara), parameter                                  &
-     &      :: hd_coef_imp_v =     'coef_imp_v_ctl'
-      character(len=kchara), parameter                                  &
-     &      :: hd_coef_imp_t =     'coef_imp_t_ctl'
-      character(len=kchara), parameter                                  &
-     &      :: hd_coef_imp_b =     'coef_imp_b_ctl'
-      character(len=kchara), parameter                                  &
-     &      :: hd_coef_imp_c =     'coef_imp_c_ctl'
-      character(len=kchara), parameter                                  &
-     &      :: hd_eps_crank =      'eps_crank_ctl'
-      character(len=kchara), parameter                                  &
-     &      :: hd_eps_B_crank =    'eps_B_solver_ctl'
-      character(len=kchara), parameter                                  &
-     &      :: hd_method_4_velo =  'method_4_velo_ctl'
-      character(len=kchara), parameter                                  &
-     &      :: hd_precond_4_crank = 'precond_4_crank_ctl'
-      character(len=kchara), parameter                                  &
-     &      :: hd_sph_transform_mode =  'Legendre_trans_loop_ctl'
-      character(len=kchara), parameter                                  &
-     &      :: hd_FFT_package =  'FFT_library_ctl'
-      character(len=kchara), parameter                                  &
-     &      :: hd_import_mode =  'import_table_mode_ctl'
-      character(len=kchara), parameter                                  &
-     &      :: hd_SR_routine =   'send_recv_routine_ctl'
-      character(len=kchara), parameter                                  &
-     &      :: hd_legendre_vect_len = 'Legendre_vector_length_ctl'
-!
-      private :: hd_restart_file, hd_rst_flag, i_restart_file
+      private :: hd_restart_file, i_restart_file
       private :: hd_time_loop, i_time_loop
-      private :: hd_iflag_supg, hd_num_multi_pass, hd_maxiter
-      private :: hd_iflag_v_supg, hd_iflag_t_supg, hd_iflag_b_supg
-      private :: hd_iflag_c_supg, hd_eps_B_crank
-      private :: hd_eps_4_velo, hd_eps_4_magne, hd_scheme
-      private :: hd_diff_correct, hd_coef_imp_v, hd_coef_imp_t
-      private :: hd_coef_imp_b, hd_coef_imp_c, hd_eps_crank
-      private :: hd_method_4_velo, hd_precond_4_crank
-      private :: hd_sph_transform_mode, hd_legendre_vect_len
-      private :: hd_FFT_package, hd_import_mode, hd_SR_routine
 !
 !   --------------------------------------------------------------------
 !
@@ -218,77 +120,25 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_restart_ctl
-!
-      use m_machine_parameter
-      use m_read_control_elements
-      use skip_comment_f
+      subroutine read_restart_control
 !
 !
-      if(right_begin_flag(hd_restart_file) .eq. 0) return
-      if (i_restart_file .gt. 0) return
-      do
-        call load_ctl_label_and_line
+      call read_restart_ctl(hd_restart_file, i_restart_file, mr_ctl1)
 !
-        call find_control_end_flag(hd_restart_file, i_restart_file)
-        if(i_restart_file .gt. 0) exit
-!
-        call read_chara_ctl_type(hd_rst_flag, restart_flag_ctl)
-      end do
-!
-      end subroutine read_restart_ctl
+      end subroutine read_restart_control
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_time_loop_ctl
+      subroutine read_time_loop_control
 !
       use m_machine_parameter
       use m_read_control_elements
       use skip_comment_f
 !
 !
-      if(right_begin_flag(hd_time_loop) .eq. 0) return
-      if (i_time_loop .gt. 0) return
-      do
-        call load_ctl_label_and_line
+      call read_time_loop_ctl(hd_time_loop, i_time_loop, mevo_ctl1)
 !
-        call find_control_end_flag(hd_time_loop, i_time_loop)
-        if(i_time_loop .gt. 0) exit
-!
-        call read_chara_ctl_type(hd_scheme, scheme_ctl)
-        call read_chara_ctl_type(hd_diff_correct, diffuse_correct_ctl)
-        call read_chara_ctl_type(hd_method_4_velo, method_4_velo_ctl)
-        call read_chara_ctl_type(hd_precond_4_crank,                    &
-     &      precond_4_crank_ctl)
-        call read_chara_ctl_type(hd_sph_transform_mode,                 &
-     &      Legendre_trans_loop_ctl)
-        call read_chara_ctl_type(hd_FFT_package, FFT_library_ctl)
-        call read_chara_ctl_type(hd_import_mode, import_mode_ctl)
-        call read_chara_ctl_type(hd_SR_routine, SR_routine_ctl)
-!
-        call read_real_ctl_type(hd_eps_4_velo,  eps_4_velo_ctl)
-        call read_real_ctl_type(hd_eps_4_magne, eps_4_magne_ctl)
-        call read_real_ctl_type(hd_coef_imp_v,  coef_imp_v_ctl)
-        call read_real_ctl_type(hd_coef_imp_t,  coef_imp_t_ctl)
-        call read_real_ctl_type(hd_coef_imp_b,  coef_imp_b_ctl)
-        call read_real_ctl_type(hd_coef_imp_c,  coef_imp_c_ctl)
-        call read_real_ctl_type(hd_eps_crank,   eps_crank_ctl)
-        call read_real_ctl_type(hd_eps_B_crank, eps_B_crank_ctl)
-!
-        call read_chara_ctl_type(hd_iflag_supg,   iflag_supg_ctl)
-        call read_chara_ctl_type(hd_iflag_v_supg, iflag_supg_v_ctl)
-        call read_chara_ctl_type(hd_iflag_t_supg, iflag_supg_t_ctl)
-        call read_chara_ctl_type(hd_iflag_b_supg, iflag_supg_b_ctl)
-        call read_chara_ctl_type(hd_iflag_c_supg, iflag_supg_c_ctl)
-!
-        call read_integer_ctl_type(hd_num_multi_pass,                   &
-     &      num_multi_pass_ctl)
-        call read_integer_ctl_type(hd_maxiter, maxiter_ctl)
-        call read_integer_ctl_type(hd_legendre_vect_len,                &
-     &      legendre_vector_len_ctl)
-      end do
-!
-      end subroutine read_time_loop_ctl
+      end subroutine read_time_loop_control
 !
 !   --------------------------------------------------------------------
 !

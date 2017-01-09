@@ -154,7 +154,7 @@
         call read_gravity_control
         call read_coriolis_control
         call read_magneto_control
-        call read_temp_def
+        call read_temp_control
 !
         call read_sgs_control
       end do
@@ -181,11 +181,11 @@
 !
 !
         call read_time_step_ctl
-        call read_restart_ctl
+        call read_restart_control
         call read_fem_int_points_ctl
 !
         call read_crs_solver_param_ctl
-        call read_time_loop_ctl
+        call read_time_loop_control
       end do
 !
       end subroutine read_fem_mhd_control

@@ -7,8 +7,9 @@
 !>@brief  Set control parameters for spherical harmonics dynamo from IO
 !!
 !!@verbatim
-!!      subroutine s_set_control_sph_data_MHD                           &
-!!     &         (plt, field_ctl, rj_org_param, rst_org_param, rj_fld)
+!!     subroutine s_set_control_sph_data_MHD                            &
+!!    &         (plt, field_ctl, mevo_ctl,                              &
+!!    &          rj_org_param, rst_org_param, rj_fld)
 !!       type(platform_data_control), intent(in) :: plt
 !!       type(ctl_array_c3), intent(inout) :: field_ctl
 !!       type(field_IO_params), intent(in) :: rj_org_param
@@ -35,15 +36,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_sph_data_MHD                             &
-     &         (plt, field_ctl, rj_org_param, rst_org_param, rj_fld)
+     &         (plt, field_ctl, mevo_ctl,                               &
+     &          rj_org_param, rst_org_param, rj_fld)
 !
       use calypso_mpi
       use m_error_IDs
       use m_machine_parameter
       use t_ctl_data_4_platforms
       use t_read_control_arrays
+      use t_ctl_data_mhd_evo_scheme
       use m_ctl_data_mhd_forces
-      use m_ctl_data_mhd_evo_scheme
       use m_physical_property
       use m_file_format_switch
 !
@@ -63,6 +65,7 @@
 !
       type(platform_data_control), intent(in) :: plt
       type(ctl_array_c3), intent(inout) :: field_ctl
+      type(mhd_evolution_control), intent(in) :: mevo_ctl
       type(field_IO_params), intent(in) :: rj_org_param, rst_org_param
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -98,25 +101,25 @@
       end if
 !
 !
-      if(legendre_vector_len_ctl%iflag .gt. 0) then
-        nvector_legendre = legendre_vector_len_ctl%intvalue
+      if(mevo_ctl%leg_vector_len%iflag .gt. 0) then
+        nvector_legendre = mevo_ctl%leg_vector_len%intvalue
       else
         nvector_legendre = 0
       end if
 !      
-      if(Legendre_trans_loop_ctl%iflag .gt. 0) then
+      if(mevo_ctl%Legendre_trans_type%iflag .gt. 0) then
         call set_legendre_trans_mode_ctl                                &
-     &     (Legendre_trans_loop_ctl%charavalue)
+     &     (mevo_ctl%Legendre_trans_type%charavalue)
       end if
 !
-      if(FFT_library_ctl%iflag .gt. 0) then
-        call set_fft_library_ctl(FFT_library_ctl%charavalue)
+      if(mevo_ctl%FFT_library%iflag .gt. 0) then
+        call set_fft_library_ctl(mevo_ctl%FFT_library%charavalue)
       end if
-      if(import_mode_ctl%iflag .gt. 0) then
-        call set_import_table_ctl(import_mode_ctl%charavalue)
+      if(mevo_ctl%import_mode%iflag .gt. 0) then
+        call set_import_table_ctl(mevo_ctl%import_mode%charavalue)
       end if
-      if(SR_routine_ctl%iflag .gt. 0) then
-        call set_sph_comm_routine_ctl(SR_routine_ctl%charavalue)
+      if(mevo_ctl%SR_routine%iflag .gt. 0) then
+        call set_sph_comm_routine_ctl(mevo_ctl%SR_routine%charavalue)
       end if
 !
       if (plt%bc_data_file_name_ctl%iflag .gt. 0) then

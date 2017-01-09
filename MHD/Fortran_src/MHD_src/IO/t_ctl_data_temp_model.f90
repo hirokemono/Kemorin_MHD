@@ -3,7 +3,10 @@
 !
 !        programmed by H.Matsui on March. 2006
 !
-!      subroutine read_temp_def
+!!      subroutine read_reftemp_ctl(hd_block, iflag, reft_ctl)
+!!      subroutine read_refcomp_ctl(hd_block, iflag, refc_ctl)
+!!      subroutine bcast_ref_scalar_ctl(refs_ctl)
+!!        type(reference_temperature_ctl), intent(inout) :: refs_ctl
 !
 !!!!!!!!! model for stratification !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
@@ -68,6 +71,7 @@
       use m_read_control_elements
       use t_control_elements
       use skip_comment_f
+      use bcast_control_arrays
 !
       implicit  none
 !
@@ -146,6 +150,7 @@
       private :: hd_takepiro_ctl, i_takepiro_t_ctl
 !
       private :: read_ref_temp_ctl, read_ref_comp_ctl, read_takepiro_ctl
+      private :: bcast_ref_value_ctl, bcast_takepiro_ctl
 !
 !   --------------------------------------------------------------------
 !
@@ -218,6 +223,23 @@
       end do
 !
       end subroutine read_refcomp_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine bcast_ref_scalar_ctl(refs_ctl)
+!
+      type(reference_temperature_ctl), intent(inout) :: refs_ctl
+!
+!
+      call bcast_ref_value_ctl(refs_ctl%low_ctl)
+      call bcast_ref_value_ctl(refs_ctl%high_ctl)
+      call bcast_takepiro_ctl(refs_ctl%takepiro_ctl)
+!
+!
+      call bcast_ctl_type_c1(refs_ctl%reference_ctl)
+      call bcast_ctl_type_c1(refs_ctl%stratified_ctl)
+!
+      end subroutine bcast_ref_scalar_ctl
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
@@ -296,6 +318,32 @@
       end do
 !
       end subroutine read_takepiro_ctl
+!
+!   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine bcast_ref_value_ctl(ref_ctl)
+!
+      type(reference_point_control), intent(inout) :: ref_ctl
+!
+!
+      call bcast_ctl_type_r1(ref_ctl%depth)
+      call bcast_ctl_type_r1(ref_ctl%value)
+!
+      end subroutine bcast_ref_value_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine bcast_takepiro_ctl(takepiro_ctl)
+!
+      type(takepiro_model_control), intent(inout) :: takepiro_ctl
+!
+!
+      call bcast_ctl_type_r1(takepiro_ctl%stratified_sigma_ctl)
+      call bcast_ctl_type_r1(takepiro_ctl%stratified_width_ctl)
+      call bcast_ctl_type_r1(takepiro_ctl%stratified_outer_r_ctl)
+!
+      end subroutine bcast_takepiro_ctl
 !
 !   --------------------------------------------------------------------
 !

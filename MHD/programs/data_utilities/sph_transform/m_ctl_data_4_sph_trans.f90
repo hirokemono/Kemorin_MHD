@@ -25,7 +25,7 @@
       character(len=kchara) :: gauss_sph_fhead_ctl
 !
       type(read_character_item) :: Legendre_trans_loop_ctl
-      type(read_character_item) :: FFT_library_ctl
+      type(read_character_item) :: FFT_lib_ctl
       type(read_character_item) :: import_mode_ctl
 !
       type(read_integer_item) :: legendre_vector_len_ctl
@@ -190,7 +190,7 @@
 !
         call read_chara_ctl_type(hd_sph_transform_mode,                 &
      &      Legendre_trans_loop_ctl)
-        call read_chara_ctl_type(hd_FFT_package, FFT_library_ctl)
+        call read_chara_ctl_type(hd_FFT_package, FFT_lib_ctl)
         call read_chara_ctl_type(hd_import_mode, import_mode_ctl)
 !
         call read_character_ctl_item(hd_gauss_file_name,                &

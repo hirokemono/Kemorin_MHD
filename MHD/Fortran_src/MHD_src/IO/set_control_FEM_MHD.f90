@@ -38,6 +38,8 @@
       use m_ctl_data_4_fields
       use m_ctl_data_mhd_forces
       use m_ctl_data_SGS_model
+      use m_ctl_data_temp_model
+      use m_ctl_data_mhd_evo_scheme
 !
       use set_control_platform_data
       use set_control_nodal_data_MHD
@@ -83,7 +85,7 @@
 !
 !   set parameters for general information
 !
-      call s_set_control_4_model
+      call s_set_control_4_model(reft_ctl1, mevo_ctl1)
 !
 !   set element groups for evolution
 !
@@ -155,10 +157,10 @@
 !   set control parameters
 !
       call s_set_control_4_time_steps(tctl1)
-      call s_set_control_4_crank
+      call s_set_control_4_crank(mevo_ctl1)
 !
-      call s_set_control_4_solver
-      call set_control_4_FEM_params
+      call s_set_control_4_solver(mevo_ctl1)
+      call set_control_4_FEM_params(mevo_ctl1)
 !
       end subroutine set_control_4_FEM_MHD
 !

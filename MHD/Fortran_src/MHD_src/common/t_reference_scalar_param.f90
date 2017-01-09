@@ -12,12 +12,12 @@
 !!@verbatim
 !!      subroutine set_reference_scalar_ctl(charaflag,                  &
 !!     &          ref_temp_ctl, low_temp_ctl, high_temp_ctl,            &
-!!     &          stratified_ctl, takepiro_t_ctl, ref_param, takepiro)
+!!     &          stratified_ctl, takepiro_ctl, ref_param, takepiro)
 !!        type(read_character_item), intent(in) :: ref_temp_ctl
 !!        type(read_character_item), intent(in) :: stratified_ctl
 !!        type(reference_point_control), intent(in) :: low_temp_ctl
 !!        type(reference_point_control), intent(in) :: high_temp_ctl
-!!        type(reference_point_control), intent(in) :: takepiro_t_ctl
+!!        type(reference_point_control), intent(in) :: takepiro_ctl
 !!        type(reference_scalar_param), intent(inout) :: ref_param
 !!        type(takepiro_model_param), intent(inout) :: takepiro
 !!@endverbatim
@@ -69,7 +69,7 @@
 !
       subroutine set_reference_scalar_ctl(charaflag,                    &
      &          ref_temp_ctl, low_temp_ctl, high_temp_ctl,              &
-     &          stratified_ctl, takepiro_t_ctl, ref_param, takepiro)
+     &          stratified_ctl, takepiro_ctl, ref_param, takepiro)
 !
       use calypso_mpi
       use m_t_step_parameter
@@ -81,7 +81,7 @@
       type(read_character_item), intent(in) :: stratified_ctl
       type(reference_point_control), intent(in) :: low_temp_ctl
       type(reference_point_control), intent(in) :: high_temp_ctl
-      type(takepiro_model_control), intent(in) :: takepiro_t_ctl
+      type(takepiro_model_control), intent(in) :: takepiro_ctl
 !
       type(reference_scalar_param), intent(inout) :: ref_param
       type(takepiro_model_param), intent(inout) :: takepiro
@@ -92,7 +92,7 @@
 !   set control for temperature 
 !
       if (ref_temp_ctl%iflag .eq. 0) then
-        iflag_reference = id_no_ref_temp
+        ref_param%iflag_reference = id_no_ref_temp
       else
         tmpchara = ref_temp_ctl%charavalue
         if (cmp_no_case(tmpchara, 'spherical_shell')) then
@@ -150,20 +150,20 @@
         takepiro%stratified_width = 0.0d0
         takepiro%stratified_outer_r = 0.0d0
       else
-        iflag = takepiro_t_ctl%stratified_sigma_ctl%iflag               &
-     &         *takepiro_t_ctl%stratified_width_ctl%iflag               &
-     &         *takepiro_t_ctl%stratified_outer_r_ctl%iflag
+        iflag = takepiro_ctl%stratified_sigma_ctl%iflag                 &
+     &         *takepiro_ctl%stratified_width_ctl%iflag                 &
+     &         *takepiro_ctl%stratified_outer_r_ctl%iflag
         if(iflag .eq. 0) then
           e_message                                                     &
      &        = 'Set parameteres for stratification'
           call calypso_MPI_abort(ierr_fld, e_message)
         else
           takepiro%stratified_sigma                                     &
-     &          = takepiro_t_ctl%stratified_sigma_ctl%realvalue
+     &          = takepiro_ctl%stratified_sigma_ctl%realvalue
           takepiro%stratified_width                                     &
-     &          = takepiro_t_ctl%stratified_width_ctl%realvalue
+     &          = takepiro_ctl%stratified_width_ctl%realvalue
           takepiro%stratified_outer_r                                   &
-     &           = takepiro_t_ctl%stratified_outer_r_ctl%realvalue
+     &           = takepiro_ctl%stratified_outer_r_ctl%realvalue
         end if
       end if
 !

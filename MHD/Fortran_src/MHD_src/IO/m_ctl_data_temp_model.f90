@@ -3,7 +3,7 @@
 !
 !        programmed by H.Matsui on March. 2006
 !
-!      subroutine read_temp_def
+!      subroutine read_temp_control
 !
 !    begin temperature_define
 !!!!!!!!! model for stratification !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -65,12 +65,12 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_temp_def
+      subroutine read_temp_control
 !
 !
       call read_reftemp_ctl(hd_temp_def, i_temp_def, reft_ctl1)
 !
-      end subroutine read_temp_def
+      end subroutine read_temp_control
 !
 !   --------------------------------------------------------------------
 !
