@@ -151,6 +151,7 @@
       subroutine read_control_modelview(i_pvr)
 !
       use calypso_mpi
+      use m_error_IDs
       use t_ctl_data_4_view_transfer
 !
       integer(kind = kint), intent(in) :: i_pvr
@@ -161,13 +162,25 @@
         return
       end if
 !
-      if(my_rank .eq. 0) write(*,*) 'Modelview control:', i_pvr,':  ',  &
+      if(my_rank .eq. 0) then
+        write(*,*) 'Modelview control:', i_pvr,':  ',                   &
      &                 trim(pvr_ctl_struct(i_pvr)%view_file_ctl)
 !
-      open(pvr_ctl_file_code, file=pvr_ctl_struct(i_pvr)%view_file_ctl, &
-     &     status='old')
-      call read_control_data_modelview(pvr_ctl_struct(i_pvr)%mat)
-      close(pvr_ctl_file_code)
+        open(pvr_ctl_file_code,                                         &
+     &        file=pvr_ctl_struct(i_pvr)%view_file_ctl, status='old')
+!
+        call load_ctl_label_and_line
+!
+        if(right_begin_flag(hd_view_transform) .gt. 0) then
+          call read_view_transfer_ctl(pvr_ctl_struct(i_pvr)%mat)
+        else
+          call calypso_mpi_abort(ierr_PVR, 'Set view matrix file')
+        end if
+!
+        close(pvr_ctl_file_code)
+      end if
+!
+      call bcast_view_transfer_ctl(pvr_ctl_struct(i_pvr)%mat)
 !
       end subroutine read_control_modelview
 !
