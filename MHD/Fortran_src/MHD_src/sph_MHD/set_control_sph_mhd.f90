@@ -100,6 +100,7 @@
       use m_ctl_data_4_pickup_sph
       use m_ctl_data_mhd_forces
       use m_ctl_data_temp_model
+      use m_ctl_data_mhd_evolution
       use m_ctl_data_mhd_evo_scheme
       use m_read_ctl_gen_sph_shell
       use sph_mhd_rms_IO
@@ -151,7 +152,7 @@
       call set_control_MHD_field_file
       call set_control_org_sph_files(MHD_org_files)
 !
-      call s_set_control_4_model(reft_ctl1, mevo_ctl1)
+      call s_set_control_4_model(reft_ctl1, mevo_ctl1, evo_ctl1)
 !
 !   set spherical shell parameters
 !

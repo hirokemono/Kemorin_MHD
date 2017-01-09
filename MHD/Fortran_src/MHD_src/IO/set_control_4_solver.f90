@@ -11,7 +11,7 @@
 !!
 !!@verbatim
 !!     subroutine s_set_control_4_solver(mevo_ctl)
-!!        type(mhd_evolution_control), intent(in) :: mevo_ctl
+!!        type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
 !!@endverbatim
 !
       module set_control_4_solver
@@ -39,7 +39,7 @@
       use t_ctl_data_mhd_evo_scheme
       use skip_comment_f
 !
-      type(mhd_evolution_control), intent(in) :: mevo_ctl
+      type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
 !
 !   control for solvers
 !

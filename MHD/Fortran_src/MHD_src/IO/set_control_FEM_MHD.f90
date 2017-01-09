@@ -39,6 +39,7 @@
       use m_ctl_data_mhd_forces
       use m_ctl_data_SGS_model
       use m_ctl_data_temp_model
+      use m_ctl_data_mhd_evolution
       use m_ctl_data_mhd_evo_scheme
 !
       use set_control_platform_data
@@ -85,11 +86,11 @@
 !
 !   set parameters for general information
 !
-      call s_set_control_4_model(reft_ctl1, mevo_ctl1)
+      call s_set_control_4_model(reft_ctl1, mevo_ctl1, evo_ctl1)
 !
 !   set element groups for evolution
 !
-      call s_set_control_evo_layers
+      call s_set_control_evo_layers(earea_ctl1)
 !
 !   set forces
 !

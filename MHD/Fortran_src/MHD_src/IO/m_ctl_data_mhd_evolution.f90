@@ -11,8 +11,8 @@
 !!      subroutine dealloc_ele_fl_grp_ctl
 !!      subroutine dealloc_ele_cd_grp_ctl
 !!
-!!      subroutine read_mhd_time_evo_ctl
-!!      subroutine read_mhd_layer_ctl
+!!      subroutine read_mhd_time_evo_control
+!!      subroutine read_mhd_layer_control
 !!
 !! ----------------------------------------------------------------------
 !!
@@ -50,30 +50,12 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_read_control_elements
-      use t_read_control_arrays
-      use skip_comment_f
+      use t_ctl_data_mhd_evolution
 !
       implicit  none
 !
-!
-!>      Structure for list of field for time evolution
-!!@n      t_evo_field_ctl%icou:  Read flag for 'time_evolution_ctl'
-!!@n      t_evo_field_ctl%num:   Number of field
-!!@n      t_evo_field_ctl%c_tbl: Name list of field
-      type(ctl_array_chara), save :: t_evo_field_ctl
-! 
-!
-!>      Structure for list of element group for time evolution in fluid
-!!@n      evo_fluid_group_ctl%num:   Number of groups
-!!@n      evo_fluid_group_ctl%c_tbl: Name list of groups
-      type(ctl_array_chara), save :: evo_fluid_group_ctl
-!
-!>      Structure for list of element group for time evolution
-!!              of magnettic field
-!!@n      evo_conduct_group_ctl%num:   Number of groups
-!!@n      evo_conduct_group_ctl%c_tbl: Name list of groups
-      type(ctl_array_chara), save :: evo_conduct_group_ctl
+      type(mhd_evolution_control), save :: evo_ctl1
+      type(mhd_evo_area_control), save :: earea_ctl1
 !
 !
 !   entry label
@@ -85,22 +67,8 @@
       character(len=kchara), parameter :: hd_layers_ctl = 'layers_ctl'
       integer (kind=kint) :: i_layers_ctl =    0
 !
-!   4th level for time evolution
-!
-      character(len=kchara), parameter                                  &
-     &        :: hd_t_evo_field = 'time_evo_ctl'
-!
-!   4th level for layers
-!
-      character(len=kchara), parameter                                  &
-     &        :: hd_fluid_grp =   'fluid_ele_grp'
-      character(len=kchara), parameter                                  &
-     &        :: hd_conduct_grp = 'conduct_ele_grp'
-!
       private :: hd_time_evo, hd_layers_ctl
       private :: i_time_evo,  i_layers_ctl
-      private :: hd_t_evo_field
-      private :: hd_fluid_grp, hd_conduct_grp
 !
 !   --------------------------------------------------------------------
 !
@@ -108,67 +76,21 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine dealloc_t_evo_name_ctl
+      subroutine read_mhd_time_evo_control
 !
-      call dealloc_control_array_chara(t_evo_field_ctl)
 !
-      end subroutine dealloc_t_evo_name_ctl
+      call read_mhd_time_evo_ctl(hd_time_evo, i_time_evo, evo_ctl1)
 !
-!   --------------------------------------------------------------------
-!
-      subroutine dealloc_ele_fl_grp_ctl
-!
-      call dealloc_control_array_chara(evo_fluid_group_ctl)
-!
-      end subroutine dealloc_ele_fl_grp_ctl
+      end subroutine read_mhd_time_evo_control
 !
 !   --------------------------------------------------------------------
 !
-      subroutine dealloc_ele_cd_grp_ctl
-!
-      call dealloc_control_array_chara(evo_conduct_group_ctl)
-!
-      end subroutine dealloc_ele_cd_grp_ctl
-!
-!   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine read_mhd_time_evo_ctl
+      subroutine read_mhd_layer_control
 !
 !
-      if(right_begin_flag(hd_time_evo) .eq. 0) return
-      if (i_time_evo .gt. 0) return
-      do
-        call load_ctl_label_and_line
+      call read_mhd_layer_ctl(hd_layers_ctl, i_layers_ctl, earea_ctl1)
 !
-        call find_control_end_flag(hd_time_evo, i_time_evo)
-        if(i_time_evo .gt. 0) exit
-!
-        call read_control_array_c1(hd_t_evo_field, t_evo_field_ctl)
-      end do
-!
-      end subroutine read_mhd_time_evo_ctl
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_mhd_layer_ctl
-!
-!
-      if(right_begin_flag(hd_layers_ctl) .eq. 0) return
-      if (i_layers_ctl .gt. 0) return
-      do
-        call load_ctl_label_and_line
-!
-        call find_control_end_flag(hd_layers_ctl, i_layers_ctl)
-        if(i_layers_ctl .gt. 0) exit
-!
-        call read_control_array_c1                                      &
-     &      (hd_fluid_grp, evo_fluid_group_ctl)
-        call read_control_array_c1                                      &
-     &      (hd_conduct_grp, evo_conduct_group_ctl)
-      end do
-!
-      end subroutine read_mhd_layer_ctl
+      end subroutine read_mhd_layer_control
 !
 !   --------------------------------------------------------------------
 !

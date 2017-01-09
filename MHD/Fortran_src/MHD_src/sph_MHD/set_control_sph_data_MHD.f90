@@ -65,7 +65,7 @@
 !
       type(platform_data_control), intent(in) :: plt
       type(ctl_array_c3), intent(inout) :: field_ctl
-      type(mhd_evolution_control), intent(in) :: mevo_ctl
+      type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
       type(field_IO_params), intent(in) :: rj_org_param, rst_org_param
       type(phys_data), intent(inout) :: rj_fld
 !

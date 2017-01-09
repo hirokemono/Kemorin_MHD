@@ -9,9 +9,11 @@
 !> @brief set models for MHD simulation from control data
 !!
 !!@verbatim
-!!     subroutine s_set_control_4_model(reft_ctl, mevo_ctl)
+!!     subroutine s_set_control_4_model(reft_ctl, mevo_ctl, evo_ctl)
 !!     subroutine s_set_control_4_crank(mevo_ctl)
-!!        type(mhd_evolution_control), intent(in) :: mevo_ctl
+!!        type(reference_temperature_ctl), intent(in) :: reft_ctl
+!!        type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
+!!        type(mhd_evolution_control), intent(inout) :: evo_ctl
 !!@endverbatim
 !
       module set_control_4_model
@@ -33,18 +35,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_4_model(reft_ctl, mevo_ctl)
+      subroutine s_set_control_4_model(reft_ctl, mevo_ctl, evo_ctl)
 !
       use calypso_mpi
       use m_t_step_parameter
       use m_phys_labels
-      use m_ctl_data_mhd_evolution
+      use t_ctl_data_mhd_evolution
       use t_ctl_data_temp_model
       use m_ctl_data_node_monitor
       use node_monitor_IO
 !
       type(reference_temperature_ctl), intent(in) :: reft_ctl
-      type(mhd_evolution_control), intent(in) :: mevo_ctl
+      type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
+      type(mhd_evolution_control), intent(inout) :: evo_ctl
 !
       integer (kind = kint) :: i
       character(len=kchara) :: tmpchara
@@ -86,11 +89,11 @@
 !
 !   set control for time evolution
 !
-        if (t_evo_field_ctl%icou .eq. 0) then
+        if (evo_ctl%t_evo_field_ctl%icou .eq. 0) then
           e_message = 'Set field for time integration'
           call calypso_MPI_abort(ierr_evo, e_message)
         else
-          num_field_to_evolve = t_evo_field_ctl%num
+          num_field_to_evolve = evo_ctl%t_evo_field_ctl%num
           if (iflag_debug .ge. iflag_routine_msg)                       &
      &    write(*,*) 'num_field_to_evolve ',num_field_to_evolve
         end if
@@ -99,10 +102,10 @@
           allocate( t_evo_name(num_field_to_evolve) )
 !
           do i = 1, num_field_to_evolve
-            t_evo_name(i)  = t_evo_field_ctl%c_tbl(i)
+            t_evo_name(i)  = evo_ctl%t_evo_field_ctl%c_tbl(i)
           end do
 !
-          call dealloc_t_evo_name_ctl
+          call dealloc_t_evo_name_ctl(evo_ctl)
 !
           if (iflag_debug .ge. iflag_routine_msg) then
             write(*,*) 'num_field_to_evolve ',num_field_to_evolve
@@ -297,7 +300,7 @@
 !
       subroutine s_set_control_4_crank(mevo_ctl)
 !
-      type(mhd_evolution_control), intent(in) :: mevo_ctl
+      type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
 !
 !
       call set_implicit_coefs(mevo_ctl%coef_imp_v_ctl, evo_velo)

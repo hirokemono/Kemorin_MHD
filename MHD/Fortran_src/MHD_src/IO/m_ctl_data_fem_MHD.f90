@@ -141,8 +141,8 @@
 !
         call read_phys_values
 !
-        call read_mhd_time_evo_ctl
-        call read_mhd_layer_ctl
+        call read_mhd_time_evo_control
+        call read_mhd_layer_control
 !
         call read_bc_4_node
         call read_bc_4_surf

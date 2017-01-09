@@ -98,7 +98,7 @@
 !
 !
       type(mhd_restart_control), save :: mr_ctl1
-      type(mhd_evolution_control), save :: mevo_ctl1
+      type(mhd_evo_scheme_control), save :: mevo_ctl1
 !
 !     label for entry
 !

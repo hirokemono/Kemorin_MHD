@@ -7,7 +7,8 @@
 !> @brief Set parameters for simulation areas from control data
 !!
 !!@verbatim
-!!     subroutine s_set_control_evo_layers
+!!     subroutine s_set_control_evo_layers(earea_ctl)
+!!       type(mhd_evo_area_control), intent(inout) :: earea_ctl
 !!@endverbatim
 !
 !
@@ -17,6 +18,7 @@
 !
       use m_machine_parameter
       use m_control_parameter
+      use t_ctl_data_mhd_evolution
 !
       implicit  none
 !
@@ -29,9 +31,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_evo_layers
+      subroutine s_set_control_evo_layers(earea_ctl)
 !
-      use m_ctl_data_mhd_evolution
+      type(mhd_evo_area_control), intent(inout) :: earea_ctl
 !
 !
       if       (evo_velo%iflag_scheme .eq. id_no_evolution              &
@@ -42,10 +44,10 @@
           call allocate_fluid_ele_grp_name
           fl_ele_grp_name = 'none'
 !
-          call set_conduct_layer_egrp_name
+          call set_conduct_layer_egrp_name(earea_ctl)
 !
       else
-        call set_fluid_layer_egrp_name
+        call set_fluid_layer_egrp_name(earea_ctl)
 !
         if     (evo_magne%iflag_scheme .eq. id_no_evolution             &
      &    .and. evo_vect_p%iflag_scheme .eq. id_no_evolution) then
@@ -54,7 +56,7 @@
           cd_ele_grp_name = 'none'
 !
         else
-          call set_conduct_layer_egrp_name
+          call set_conduct_layer_egrp_name(earea_ctl)
         end if
       end if
 !
@@ -69,21 +71,21 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_fluid_layer_egrp_name
+      subroutine set_fluid_layer_egrp_name(earea_ctl)
 !
-      use m_ctl_data_mhd_evolution
+      type(mhd_evo_area_control), intent(inout) :: earea_ctl
 !
 !
-      if (evo_fluid_group_ctl%icou .eq. 0) then
+      if (earea_ctl%evo_fluid_group_ctl%icou .eq. 0) then
         num_fl_ele_grp = 1
         call allocate_fluid_ele_grp_name
         fl_ele_grp_name = 'all'
       else
-        num_fl_ele_grp =  evo_fluid_group_ctl%num
+        num_fl_ele_grp =  earea_ctl%evo_fluid_group_ctl%num
         if (num_fl_ele_grp .ne. 0 ) then
           call allocate_fluid_ele_grp_name
-          fl_ele_grp_name =  evo_fluid_group_ctl%c_tbl
-          call dealloc_ele_fl_grp_ctl
+          fl_ele_grp_name =  earea_ctl%evo_fluid_group_ctl%c_tbl
+          call dealloc_ele_fl_grp_ctl(earea_ctl)
         end if
       end if
 !
@@ -91,21 +93,21 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_conduct_layer_egrp_name
+      subroutine set_conduct_layer_egrp_name(earea_ctl)
 !
-      use m_ctl_data_mhd_evolution
+      type(mhd_evo_area_control), intent(inout) :: earea_ctl
 !
 !
-      if (evo_conduct_group_ctl%icou .eq. 0) then
+      if (earea_ctl%evo_conduct_group_ctl%icou .eq. 0) then
         num_cd_ele_grp = 1
         call allocate_conduct_ele_grp_name
         cd_ele_grp_name =  'all'
       else
-        num_cd_ele_grp =  evo_conduct_group_ctl%num
+        num_cd_ele_grp =  earea_ctl%evo_conduct_group_ctl%num
         if (num_cd_ele_grp .ne. 0 ) then
           call allocate_conduct_ele_grp_name
-          cd_ele_grp_name =  evo_conduct_group_ctl%c_tbl
-          call dealloc_ele_cd_grp_ctl
+          cd_ele_grp_name =  earea_ctl%evo_conduct_group_ctl%c_tbl
+          call dealloc_ele_cd_grp_ctl(earea_ctl)
         end if
       end if
 !

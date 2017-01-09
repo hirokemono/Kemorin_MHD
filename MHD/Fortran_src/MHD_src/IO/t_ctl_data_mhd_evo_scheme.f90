@@ -102,7 +102,7 @@
         type(read_character_item) :: restart_flag_ctl
       end type mhd_restart_control
 !
-      type mhd_evolution_control
+      type mhd_evo_scheme_control
         type(read_real_item) :: coef_imp_v_ctl
         type(read_real_item) :: coef_imp_t_ctl
         type(read_real_item) :: coef_imp_b_ctl
@@ -136,7 +136,7 @@
         type(read_character_item) :: SR_routine
 !
         type(read_integer_item) :: leg_vector_len
-      end type mhd_evolution_control
+      end type mhd_evo_scheme_control
 !
 !    4th level for restart
 !
@@ -247,7 +247,7 @@
       character(len=kchara), intent(in) :: hd_block
 !
       integer(kind = kint), intent(inout) :: iflag
-      type(mhd_evolution_control), intent(inout) :: mevo_ctl
+      type(mhd_evo_scheme_control), intent(inout) :: mevo_ctl
 !
 !
       if(right_begin_flag(hd_block) .eq. 0) return
@@ -329,7 +329,7 @@
 !
       use bcast_control_arrays
 !
-      type(mhd_evolution_control), intent(inout) :: mevo_ctl
+      type(mhd_evo_scheme_control), intent(inout) :: mevo_ctl
 !
 !
       call bcast_ctl_type_c1(mevo_ctl%scheme_ctl)
