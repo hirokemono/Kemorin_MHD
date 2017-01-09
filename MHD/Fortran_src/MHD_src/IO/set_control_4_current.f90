@@ -8,8 +8,10 @@
 !> @brief set boundary conditions for current density from control data
 !!
 !!@verbatim
-!!     subroutine s_set_control_4_current(node_bc_J_ctl)
+!!      subroutine s_set_control_4_current                              &
+!!     &         (node_bc_J_ctl, surf_bc_JN_ctl)
 !!       type(ctl_array_c2r), intent(inout) :: node_bc_J_ctl
+!!       type(ctl_array_c2r), intent(inout) :: surf_bc_JN_ctl
 !!@endverbatim
 !
       module set_control_4_current
@@ -24,12 +26,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_4_current(node_bc_J_ctl)
+      subroutine s_set_control_4_current                                &
+     &         (node_bc_J_ctl, surf_bc_JN_ctl)
 !
       use calypso_mpi
       use m_machine_parameter
       use m_control_parameter
-      use m_ctl_data_surf_boundary
       use m_bc_data_list
       use m_surf_data_list
       use t_read_control_arrays
@@ -37,6 +39,7 @@
       use set_surface_group_types
 !
       type(ctl_array_c2r), intent(inout) :: node_bc_J_ctl
+      type(ctl_array_c2r), intent(inout) :: surf_bc_JN_ctl
 !
       integer (kind = kint) :: i
 !
@@ -109,7 +112,7 @@
           end do
         end if
 !
-        call deallocate_bc_current_sf_ctl
+        call dealloc_control_array_c2_r(surf_bc_JN_ctl)
       end if
 !
       end subroutine s_set_control_4_current

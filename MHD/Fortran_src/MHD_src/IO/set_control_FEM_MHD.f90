@@ -37,6 +37,7 @@
       use m_ctl_data_4_time_steps
       use m_ctl_data_4_fields
       use m_ctl_data_node_boundary
+      use m_ctl_data_surf_boundary
       use m_ctl_data_mhd_forces
       use m_ctl_data_SGS_model
       use m_ctl_data_temp_model
@@ -118,39 +119,47 @@
 !
 !   set boundary conditions for temperature
 !
-      call s_set_control_4_temp(nbc_ctl1%node_bc_T_ctl)
+      call s_set_control_4_temp                                         &
+     &   (nbc_ctl1%node_bc_T_ctl, sbc_ctl1%surf_bc_HF_ctl)
 !
 !   set boundary conditions for velocity
 !
-      call s_set_control_4_velo(nbc_ctl1%node_bc_U_ctl)
+      call s_set_control_4_velo                                         &
+     &   (nbc_ctl1%node_bc_U_ctl, sbc_ctl1%surf_bc_ST_ctl)
 !
 !  set boundary conditions for pressure
 !
-      call s_set_control_4_press(nbc_ctl1%node_bc_P_ctl)
+      call s_set_control_4_press                                        &
+     &   (nbc_ctl1%node_bc_P_ctl, sbc_ctl1%surf_bc_PN_ctl)
 !
 !   set boundary conditions for composition
 !
-      call s_set_control_4_composition(nbc_ctl1%node_bc_C_ctl)
+      call s_set_control_4_composition                                  &
+     &   (nbc_ctl1%node_bc_C_ctl, sbc_ctl1%surf_bc_CF_ctl)
 !
 !   set boundary_conditons for magnetic field
 !
-      call s_set_control_4_magne(nbc_ctl1%node_bc_B_ctl)
+      call s_set_control_4_magne                                        &
+     &   (nbc_ctl1%node_bc_B_ctl, sbc_ctl1%surf_bc_BN_ctl)
 !
 !   set boundary_conditons for magnetic potential
 !
-      call s_set_control_4_mag_p(nbc_ctl1%node_bc_MP_ctl)
+      call s_set_control_4_mag_p                                        &
+     &   (nbc_ctl1%node_bc_MP_ctl, sbc_ctl1%surf_bc_MPN_ctl)
 !
 !   set boundary_conditons for vector potential
 !
-      call s_set_control_4_vect_p(nbc_ctl1%node_bc_A_ctl)
+      call s_set_control_4_vect_p                                       &
+     &   (nbc_ctl1%node_bc_A_ctl, sbc_ctl1%surf_bc_AN_ctl)
 !
 !   set boundary_conditons for current density
 !
-      call s_set_control_4_current(nbc_ctl1%node_bc_J_ctl)
+      call s_set_control_4_current                                      &
+     &   (nbc_ctl1%node_bc_J_ctl, sbc_ctl1%surf_bc_JN_ctl)
 !
 !   set boundary_conditons for magnetic potential
 !
-      call s_set_control_4_infty
+      call s_set_control_4_infty(sbc_ctl1%surf_bc_INF_ctl)
 !
 !   set flag to read boundary condition file
 !

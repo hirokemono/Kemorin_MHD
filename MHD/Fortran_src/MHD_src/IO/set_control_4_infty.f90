@@ -8,7 +8,8 @@
 !> @brief set infinite radius boundary from control data
 !!
 !!@verbatim
-!!     subroutine s_set_control_4_infty
+!!     subroutine s_set_control_4_infty(surf_bc_INF_ctl)
+!!        type(ctl_array_c2r), intent(inout) :: surf_bc_INF_ctl
 !!@endverbatim
 !
       module set_control_4_infty
@@ -23,13 +24,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_4_infty
+      subroutine s_set_control_4_infty(surf_bc_INF_ctl)
 !
       use calypso_mpi
       use m_control_parameter
-      use m_ctl_data_surf_boundary
+      use t_read_control_arrays
       use const_bc_infinity_surf
       use set_surface_group_types
+!
+      type(ctl_array_c2r), intent(inout) :: surf_bc_INF_ctl
 !
       integer (kind = kint) :: i
 !
@@ -57,7 +60,7 @@
      &       ibc_infty_type(i))
         end do
 !
-        call deallocate_sf_infty_ctl
+        call dealloc_control_array_c2_r(surf_bc_INF_ctl)
       end if
 !
       end subroutine s_set_control_4_infty

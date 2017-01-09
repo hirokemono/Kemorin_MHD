@@ -9,8 +9,9 @@
 !!        from control data
 !!
 !!@verbatim
-!!     subroutine s_set_control_4_mag_p(node_bc_MP_ctl)
+!!     subroutine s_set_control_4_mag_p(node_bc_MP_ctl, surf_bc_MPN_ctl)
 !!        type(ctl_array_c2r), intent(inout) :: node_bc_MP_ctl
+!!        type(ctl_array_c2r), intent(inout) :: surf_bc_MPN_ctl
 !!@endverbatim
 !
       module set_control_4_mag_p
@@ -25,19 +26,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_4_mag_p(node_bc_MP_ctl)
+      subroutine s_set_control_4_mag_p(node_bc_MP_ctl, surf_bc_MPN_ctl)
 !
       use m_machine_parameter
       use calypso_mpi
       use m_control_parameter
-      use t_ctl_data_node_boundary
-      use m_ctl_data_surf_boundary
+      use t_read_control_arrays
       use m_bc_data_list
       use m_surf_data_list
       use set_node_group_types
       use set_surface_group_types
 !
       type(ctl_array_c2r), intent(inout) :: node_bc_MP_ctl
+      type(ctl_array_c2r), intent(inout) :: surf_bc_MPN_ctl
 !
       integer (kind = kint) :: i
 !
@@ -94,7 +95,7 @@
      &        e_potential_surf%ibc_type(i) )
         end do
 !
-        call deallocate_bc_mag_p_sf_ctl
+        call dealloc_control_array_c2_r(surf_bc_MPN_ctl)
       end if
 !
       end subroutine s_set_control_4_mag_p

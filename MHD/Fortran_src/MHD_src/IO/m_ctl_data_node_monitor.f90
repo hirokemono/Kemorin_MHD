@@ -3,7 +3,6 @@
 !
 !        programmed by H.Matsui on March. 2006
 !
-!!      subroutine dealloc_monitor_grp_ctl
 !!      subroutine read_monitor_data_ctl
 !!
 !!   --------------------------------------------------------------------
@@ -46,15 +45,6 @@
 !
       contains
 !
-!   --------------------------------------------------------------------
-!
-      subroutine dealloc_monitor_grp_ctl
-!
-      call dealloc_control_array_chara(group_4_monitor_ctl)
-!
-      end subroutine dealloc_monitor_grp_ctl
-!
-!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
       subroutine read_monitor_data_ctl

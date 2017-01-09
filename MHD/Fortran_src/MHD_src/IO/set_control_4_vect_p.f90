@@ -9,8 +9,9 @@
 !!        from control data
 !!
 !!@verbatim
-!!     subroutine s_set_control_4_vect_p(node_bc_A_ctl)
+!!     subroutine s_set_control_4_vect_p(node_bc_A_ctl, surf_bc_AN_ctl)
 !!       type(ctl_array_c2r), intent(inout) :: node_bc_A_ctl
+!!        type(ctl_array_c2r), intent(inout) :: surf_bc_AN_ctl
 !!@endverbatim
 !
       module set_control_4_vect_p
@@ -25,13 +26,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_4_vect_p(node_bc_A_ctl)
+      subroutine s_set_control_4_vect_p(node_bc_A_ctl, surf_bc_AN_ctl)
 !
       use m_machine_parameter
       use calypso_mpi
       use m_control_parameter
-      use t_ctl_data_node_boundary
-      use m_ctl_data_surf_boundary
+      use t_read_control_arrays
       use m_bc_data_list
       use m_surf_data_list
       use set_node_group_types
@@ -39,6 +39,7 @@
       use skip_comment_f
 !
       type(ctl_array_c2r), intent(inout) :: node_bc_A_ctl
+      type(ctl_array_c2r), intent(inout) :: surf_bc_AN_ctl
 !
       integer (kind = kint) :: i
 !
@@ -117,7 +118,7 @@
           end do
         end if
 !
-        call deallocate_bc_vecp_sf_ctl
+        call dealloc_control_array_c2_r(surf_bc_AN_ctl)
       end if
 !
       end subroutine s_set_control_4_vect_p

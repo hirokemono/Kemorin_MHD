@@ -8,8 +8,10 @@
 !!        from control data
 !!
 !!@verbatim
-!!     subroutine s_set_control_4_composition(node_bc_C_ctl)
+!!      subroutine s_set_control_4_composition                          &
+!!     &         (node_bc_C_ctl, surf_bc_CF_ctl)
 !!        type(ctl_array_c2r), intent(inout) :: node_bc_C_ctl
+!!        type(ctl_array_c2r), intent(inout) :: surf_bc_CF_ctl
 !!@endverbatim
 !
       module set_control_4_composition
@@ -24,12 +26,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_4_composition(node_bc_C_ctl)
+      subroutine s_set_control_4_composition                            &
+     &         (node_bc_C_ctl, surf_bc_CF_ctl)
 !
       use m_machine_parameter
       use calypso_mpi
       use m_control_parameter
-      use m_ctl_data_surf_boundary
       use t_read_control_arrays
       use m_bc_data_list
       use m_surf_data_list
@@ -37,6 +39,7 @@
       use set_surface_group_types
 !
       type(ctl_array_c2r), intent(inout) :: node_bc_C_ctl
+      type(ctl_array_c2r), intent(inout) :: surf_bc_CF_ctl
 !
       integer (kind = kint) :: i
 !
@@ -114,7 +117,7 @@
           end do
         end if
 !
-        call deallocate_sf_comp_flux_ctl
+        call dealloc_control_array_c2_r(surf_bc_CF_ctl)
       end if
 !
       end subroutine s_set_control_4_composition

@@ -167,7 +167,7 @@
         do i = 1, num_monitor
           monitor_grp(i) = group_4_monitor_ctl%c_tbl(i)
         end do
-        call dealloc_monitor_grp_ctl
+        call dealloc_control_array_chara(group_4_monitor_ctl)
 !
         if (iflag_debug .ge. iflag_routine_msg) then
           do i = 1, num_monitor
