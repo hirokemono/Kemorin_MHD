@@ -149,8 +149,6 @@
       character(len=kchara) :: hd_output_field_def = 'output_field'
       character(len=kchara) :: hd_output_comp_def =  'output_component'
 !
-      character(len=kchara) :: hd_pvr_colordef =  'pvr_color_ctl'
-!
 !     3rd level for surface_define
 !
       character(len=kchara) :: hd_plot_area =   'plot_area_ctl'
@@ -162,11 +160,16 @@
 !
 !     3rd level for rotation
 !
+      character(len=kchara) :: hd_view_transform = 'view_transform_ctl'
+      character(len=kchara) :: hd_pvr_colordef =  'pvr_color_ctl'
+      character(len=kchara) :: hd_pvr_lighting =  'lighting_ctl'
+      private :: hd_view_transform, hd_pvr_colordef, hd_pvr_lighting
+!
       private :: hd_pvr_file_head, hd_pvr_out_type, hd_pvr_rgba_type
       private :: hd_pvr_streo, hd_pvr_anaglyph, hd_pvr_updated
       private :: hd_output_field_def, hd_pvr_monitor
       private :: hd_plot_area, hd_output_comp_def, hd_plot_grp
-      private :: hd_sf_enhanse, hd_pvr_colordef
+      private :: hd_sf_enhanse
 !
       private :: read_pvr_sections_ctl, read_pvr_isosurfs_ctl
       private :: read_plot_area_ctl
@@ -271,7 +274,7 @@
      &        pvr%view_file_ctl)
         else if(right_begin_flag(hd_view_transform) .gt. 0) then
           pvr%view_file_ctl = 'NO_FILE'
-          call read_view_transfer_ctl(pvr%mat)
+          call read_view_transfer_ctl(hd_view_transform, pvr%mat)
         end if
 !
         if(right_file_flag(hd_pvr_colordef) .gt. 0) then
@@ -279,7 +282,7 @@
      &        pvr%color_file_ctl)
         else if(right_begin_flag(hd_pvr_colordef) .gt. 0) then
           pvr%color_file_ctl = 'NO_FILE'
-          call read_pvr_colordef_ctl(pvr%color)
+          call read_pvr_colordef_ctl(hd_pvr_colordef, pvr%color)
         end if
 !
         call find_control_array_flag                                    &
@@ -291,7 +294,7 @@
         if(pvr%num_pvr_iso_ctl .gt. 0) call read_pvr_isosurfs_ctl(pvr)
 !
         call read_plot_area_ctl(pvr)
-        call read_lighting_ctl(pvr%color)
+        call read_lighting_ctl(hd_pvr_lighting, pvr%color)
         call read_pvr_colorbar_ctl(pvr%colorbar)
         call read_pvr_rotation_ctl(pvr%movie)
 !

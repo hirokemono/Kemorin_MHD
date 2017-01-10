@@ -5,10 +5,12 @@
 !
 !!      subroutine dealloc_pvr_color_crl(color)
 !!
-!!      subroutine read_control_data_colormap(color)
+!!      subroutine read_lighting_ctl(hd_block, color)
+!!      subroutine read_pvr_colordef_ctl(hd_block, color)
 !!
-!!      subroutine read_lighting_ctl(color)
-!!      subroutine read_pvr_colordef_ctl(color)
+!!      subroutine bcast_lighting_ctl(color)
+!!      subroutine bcast_pvr_colordef_ctl(color)
+!!
 !!      subroutine reset_pvr_colormap_flags(color)
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -127,11 +129,6 @@
       end type pvr_colormap_ctl
 !
 !
-!     2nd level for volume_rendering
-!
-      character(len=kchara) :: hd_pvr_lighting =  'lighting_ctl'
-      character(len=kchara) :: hd_pvr_colordef =  'pvr_color_ctl'
-!
 !     3rd level for lighting
 !
       character(len=kchara) :: hd_ambient =  'ambient_coef_ctl'
@@ -153,12 +150,12 @@
       character(len=kchara) :: hd_opacity_def =    'step_opacity_ctl'
 !
 !
-      private :: hd_pvr_lighting, hd_ambient, hd_diffuse, hd_specular
-      private :: hd_light_param
-      private :: hd_pvr_colordef, hd_colormap, hd_data_mapping
+      private :: hd_ambient, hd_diffuse, hd_specular
+      private :: hd_light_param, hd_colormap, hd_data_mapping
       private :: hd_pvr_range_min, hd_pvr_range_max
       private :: hd_colortable, hd_opacity_style
       private :: hd_constant_opacity, hd_opacity_def, hd_linear_opacity
+!
 !
 !  ---------------------------------------------------------------------
 !
@@ -190,38 +187,18 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine read_control_data_colormap(color)
+      subroutine read_lighting_ctl(hd_block, color)
 !
-      use calypso_mpi
-      use m_error_IDs
-!
-      type(pvr_colormap_ctl), intent(inout) :: color
-!
-      call load_ctl_label_and_line
-!
-      if(right_begin_flag(hd_pvr_colordef) .gt. 0) then
-        call read_pvr_colordef_ctl(color)
-      else
-        call calypso_mpi_abort(ierr_PVR, 'Set correct colormap file')
-      end if
-!
-      end subroutine read_control_data_colormap
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine read_lighting_ctl(color)
-!
+      character(len=kchara), intent(in) :: hd_block
       type(pvr_colormap_ctl), intent(inout) :: color
 !
 !
-      if(right_begin_flag(hd_pvr_lighting) .eq. 0) return
+      if(right_begin_flag(hd_block) .eq. 0) return
       if (color%i_pvr_lighting.gt.0) return
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag                                      &
-     &     (hd_pvr_lighting, color%i_pvr_lighting)
+        call find_control_end_flag(hd_block, color%i_pvr_lighting)
         if(color%i_pvr_lighting .gt. 0) exit
 !
         call read_control_array_r3                                      &
@@ -236,8 +213,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_pvr_colordef_ctl(color)
+      subroutine read_pvr_colordef_ctl(hd_block, color)
 !
+      character(len=kchara), intent(in) :: hd_block
       type(pvr_colormap_ctl), intent(inout) :: color
 !
 !
@@ -245,8 +223,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag                                      &
-     &     (hd_pvr_colordef, color%i_pvr_colordef)
+        call find_control_end_flag(hd_block, color%i_pvr_colordef)
         if(color%i_pvr_colordef .gt. 0) exit
 !
 !
@@ -271,6 +248,48 @@
       end do
 !
       end subroutine read_pvr_colordef_ctl
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine bcast_lighting_ctl(color)
+!
+      type(pvr_colormap_ctl), intent(inout) :: color
+!
+!
+      call MPI_BCAST(color%i_pvr_lighting,  ione,                       &
+     &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+!
+      call bcast_ctl_type_r1(color%ambient_coef_ctl )
+      call bcast_ctl_type_r1(color%diffuse_coef_ctl )
+      call bcast_ctl_type_r1(color%specular_coef_ctl)
+!
+      end subroutine bcast_lighting_ctl
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine bcast_pvr_colordef_ctl(color)
+!
+      type(pvr_colormap_ctl), intent(inout) :: color
+!
+!
+      call MPI_BCAST(color%i_pvr_colordef,  ione,                       &
+     &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+!
+      call bcast_ctl_array_r2(color%colortbl_ctl)
+      call bcast_ctl_array_r2(color%linear_opacity_ctl)
+!
+      call bcast_ctl_array_r3(color%step_opacity_ctl)
+!
+      call bcast_ctl_type_c1(color%colormap_ctl)
+      call bcast_ctl_type_c1(color%data_mapping_ctl)
+      call bcast_ctl_type_c1(color%opacity_style_ctl)
+!
+      call bcast_ctl_type_r1(color%range_min_ctl)
+      call bcast_ctl_type_r1(color%range_max_ctl)
+      call bcast_ctl_type_r1(color%fix_opacity_ctl)
+!
+      end subroutine bcast_pvr_colordef_ctl
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

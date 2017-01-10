@@ -23,6 +23,9 @@
 !
       integer(kind = kint), parameter :: pvr_ctl_file_code = 11
 !
+      character(len=kchara) :: hd_view_transform = 'view_transform_ctl'
+      character(len=kchara) :: hd_pvr_colordef =  'pvr_color_ctl'
+      private :: hd_view_transform, hd_pvr_colordef
 !
 !  ---------------------------------------------------------------------
 !
@@ -172,7 +175,8 @@
         call load_ctl_label_and_line
 !
         if(right_begin_flag(hd_view_transform) .gt. 0) then
-          call read_view_transfer_ctl(pvr_ctl_struct(i_pvr)%mat)
+          call read_view_transfer_ctl                                   &
+     &        (hd_view_transform, pvr_ctl_struct(i_pvr)%mat)
         else
           call calypso_mpi_abort(ierr_PVR, 'Set view matrix file')
         end if
@@ -189,6 +193,7 @@
       subroutine read_control_colormap(i_pvr)
 !
       use calypso_mpi
+      use m_error_IDs
       use t_ctl_data_pvr_colormap
 !
       integer(kind = kint), intent(in) :: i_pvr
@@ -199,13 +204,26 @@
         return
       end if
 !
-      if(my_rank .eq. 0) write(*,*) 'Colormap control:', i_pvr,':  ',   &
+      if(my_rank .eq. 0) then
+        write(*,*) 'Colormap control:', i_pvr,':  ',                    &
      &                 trim(pvr_ctl_struct(i_pvr)%color_file_ctl)
 !
-      open(pvr_ctl_file_code,                                           &
+        open(pvr_ctl_file_code,                                         &
      &     file=pvr_ctl_struct(i_pvr)%color_file_ctl,  status='old')
-      call read_control_data_colormap(pvr_ctl_struct(i_pvr)%color)
-      close(pvr_ctl_file_code)
+!
+        call load_ctl_label_and_line
+!
+        if(right_begin_flag(hd_pvr_colordef) .gt. 0) then
+          call read_pvr_colordef_ctl                                    &
+     &       (hd_pvr_colordef, pvr_ctl_struct(i_pvr)%color)
+        else
+          call calypso_mpi_abort(ierr_PVR, 'Set correct colormap file')
+        end if
+!
+        close(pvr_ctl_file_code)
+      end if
+!
+      call bcast_pvr_colordef_ctl(pvr_ctl_struct(i_pvr)%color)
 !
       end subroutine read_control_colormap
 !

@@ -7,8 +7,7 @@
 !>@brief Control inputs for PVR view parameter
 !!
 !!@verbatim
-!!      subroutine read_control_data_modelview(mat)
-!!      subroutine read_view_transfer_ctl(mat)
+!!      subroutine read_view_transfer_ctl(hd_block, mat)
 !!      subroutine bcast_view_transfer_ctl(mat)
 !!      subroutine dealloc_view_transfer_ctl(mat)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -105,6 +104,7 @@
       module t_ctl_data_4_view_transfer
 !
       use m_precision
+      use calypso_mpi
 !
       use m_constants
       use m_machine_parameter
@@ -193,10 +193,6 @@
       end type modeview_ctl
 !
 !
-!   entry label for this block
-!
-      character(len=kchara) :: hd_view_transform = 'view_transform_ctl'
-!
 !     3rd level for view_transform_define
       character(len=kchara) :: hd_image_size =    'image_size_ctl'
       character(len=kchara) :: hd_model_mat =   'modelview_matrix_ctl'
@@ -260,27 +256,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_control_data_modelview(mat)
+      subroutine read_view_transfer_ctl(hd_block, mat)
 !
-      use calypso_mpi
-      use m_error_IDs
-!
-      type(modeview_ctl), intent(inout) :: mat
-!
-      call load_ctl_label_and_line
-!
-      if(right_begin_flag(hd_view_transform) .gt. 0) then
-        call read_view_transfer_ctl(mat)
-      else
-        call calypso_mpi_abort(ierr_PVR, 'Set view matrix file')
-      end if
-!
-      end subroutine read_control_data_modelview
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine read_view_transfer_ctl(mat)
-!
+      character(len=kchara), intent(in) :: hd_block
       type(modeview_ctl), intent(inout) :: mat
 !
 !
@@ -288,8 +266,7 @@
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_view_transform,                   &
-     &      mat%i_view_transform)
+        call find_control_end_flag(hd_block, mat%i_view_transform)
         if(mat%i_view_transform .gt. 0) exit
 !
         call read_projection_mat_ctl(mat)
@@ -398,6 +375,9 @@
       type(modeview_ctl), intent(inout) :: mat
 !
 !
+      call MPI_BCAST(mat%i_view_transform,  ione,                       &
+     &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+!
       call bcast_projection_mat_ctl(mat)
       call bcast_image_size_ctl(mat)
       call bcast_stereo_view_ctl(mat)
@@ -425,6 +405,9 @@
       type(modeview_ctl), intent(inout) :: mat
 !
 !
+      call MPI_BCAST(mat%i_project_mat,  ione,                          &
+     &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+!
       call bcast_ctl_type_r1(mat%perspective_angle_ctl)
       call bcast_ctl_type_r1(mat%perspective_xy_ratio_ctl)
       call bcast_ctl_type_r1(mat%perspective_near_ctl)
@@ -439,6 +422,9 @@
       type(modeview_ctl), intent(inout) :: mat
 !
 !
+      call MPI_BCAST(mat%i_image_size,  ione,                           &
+     &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+!
       call bcast_ctl_type_i1(mat%num_xpixel_ctl)
       call bcast_ctl_type_i1(mat%num_ypixel_ctl)
 !
@@ -450,6 +436,9 @@
 !
       type(modeview_ctl), intent(inout) :: mat
 !
+!
+      call MPI_BCAST(mat%i_stereo_view,  ione,                          &
+     &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
 !
       call bcast_ctl_type_r1(mat%focalpoint_ctl)
       call bcast_ctl_type_r1(mat%eye_separation_ctl)
