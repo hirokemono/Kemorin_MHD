@@ -19,6 +19,9 @@
 !
       implicit none
 !
+      character(len=kchara) :: hd_fline_ctl = 'field_line'
+      private :: hd_fline_ctl
+!
       private :: read_control_4_fline
 !
 !  ---------------------------------------------------------------------
@@ -94,17 +97,24 @@
 !
       subroutine read_control_4_fline(i_fline)
 !
-      use m_control_data_4_fline
+      use calypso_mpi
+      use t_control_data_4_fline
 !
       integer(kind = kint), intent(in) :: i_fline
 !
       if(fname_fline_ctl(i_fline) .eq. 'NO_FILE') return
       call reset_fline_control_flags(fline_ctl_struct(i_fline))
 !
-      open(fline_ctl_file_code, file=fname_fline_ctl(i_fline),          &
+      if(my_rank .eq. 0) then
+        open(fline_ctl_file_code, file=fname_fline_ctl(i_fline),        &
      &         status='old')
-      call read_control_data_fline(fline_ctl_struct(i_fline))
-      close(fline_ctl_file_code)
+        call load_ctl_label_and_line
+        call read_field_line_ctl                                        &
+     &     (hd_fline_ctl, fline_ctl_struct(i_fline))
+        close(fline_ctl_file_code)
+      end if
+!
+      call bcast_field_line_ctl(fline_ctl_struct(i_fline))
 !
       end subroutine read_control_4_fline
 !

@@ -19,7 +19,7 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_control_data_4_fline
+      use t_control_data_4_fline
 !
       implicit  none
 !
@@ -33,7 +33,7 @@
       character(len=kchara), parameter :: hd_fline_ctl =  'fieldline'
       integer (kind=kint) :: i_fline_ctl =  0
 !
-      private :: i_fline_ctl
+      private :: hd_fline_ctl, i_fline_ctl
 !
       private :: allocate_fline_fhead_ctl
 !
@@ -94,7 +94,8 @@
         if(right_begin_flag(hd_fline_ctl) .gt. 0) then
           i_fline_ctl = i_fline_ctl + 1
           fname_fline_ctl(i_fline_ctl) = 'NO_FILE'
-          call read_field_line_ctl(fline_ctl_struct(i_fline_ctl))
+          call read_field_line_ctl                                      &
+     &        (hd_fline_ctl, fline_ctl_struct(i_fline_ctl))
         end if
       end do
 !

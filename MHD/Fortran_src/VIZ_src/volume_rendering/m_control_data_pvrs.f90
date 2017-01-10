@@ -53,8 +53,10 @@
      &             :: hd_psf_ctl = 'surface_rendering'
       character(len=kchara), parameter                                  &
      &             :: hd_iso_ctl = 'isosurf_rendering'
+      character(len=kchara), parameter :: hd_fline_ctl =  'fieldline'
       private :: hd_section_ctl, hd_psf_ctl
       private :: hd_isosurf_ctl, hd_iso_ctl
+      private :: hd_fline_ctl
 !
       private :: hd_viz_control, i_viz_control, hd_pvr_ctl, i_pvr_ctl
       private :: allocate_pvr_file_header_ctl

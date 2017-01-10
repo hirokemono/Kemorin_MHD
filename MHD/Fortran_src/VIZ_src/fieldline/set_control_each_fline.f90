@@ -21,7 +21,7 @@
       use m_constants
       use m_error_IDs
       use m_machine_parameter
-      use m_control_data_4_fline
+      use t_control_data_4_fline
       use m_control_params_4_fline
 !
       use set_area_4_viz
@@ -59,13 +59,13 @@
       character(len=kchara) :: character_256
 !
 !
-      if(fln%i_fline_file_head .gt. 0) then
-        fline_header(i_fln) =  fln%fline_file_head_ctl
+      if(fln%fline_file_head_ctl%iflag .gt. 0) then
+        fline_header(i_fln) =  fln%fline_file_head_ctl%charavalue
       else
         fline_header(i_fln) =  'field_line'
       end if
 !
-      character_256 = fln%fline_output_type_ctl
+      character_256 = fln%fline_output_type_ctl%charavalue
       if     (character_256 .eq. 'ucd'                                  &
      &   .or. character_256 .eq. 'UCD'                                  &
      &   .or. character_256 .eq. 'udt'                                  &
@@ -85,7 +85,7 @@
      &  call calypso_MPI_abort(ierr_mesh, 'set correct element group')
 !
 !
-      character_256 = fln%starting_type_ctl
+      character_256 = fln%starting_type_ctl%charavalue
       if      (character_256 .eq. 'surface_group'                       &
      &    .or. character_256 .eq. 'Surface_group'                       &
      &    .or. character_256 .eq. 'SURFACE_GROUP') then
@@ -101,7 +101,7 @@
       end if
 !
 !
-      character_256 = fln%line_direction_ctl
+      character_256 = fln%line_direction_ctl%charavalue
       if      (character_256 .eq. 'forward'                             &
      &    .or. character_256 .eq. 'Forward'                             &
      &    .or. character_256 .eq. 'Forward') then
@@ -118,7 +118,7 @@
 !
 !
       if(id_fline_start_type(i_fln) .eq.  0) then
-        character_256 = fln%starting_type_ctl
+        character_256 = fln%starting_type_ctl%charavalue
         if      (character_256 .eq. 'amplitude'                         &
      &      .or. character_256 .eq. 'Amplitude'                         &
      &      .or. character_256 .eq. 'AMPLITUDE') then
@@ -129,21 +129,22 @@
           id_fline_start_dist(i_fln) =  1
         end if
 !
-        if(fln%i_num_fieldline .gt. 0) then
-          num_each_field_line(i_fln) = fln%num_fieldline_ctl
+        if(fln%num_fieldline_ctl%iflag .gt. 0) then
+          num_each_field_line(i_fln) = fln%num_fieldline_ctl%intvalue
         else
           num_each_field_line(i_fln) = 8
         end if
 !
-        if(fln%i_max_line_stepping .gt. 0) then
-          max_line_stepping(i_fln) = fln%max_line_stepping_ctl
+        if(fln%max_line_stepping_ctl%iflag .gt. 0) then
+          max_line_stepping(i_fln) = fln%max_line_stepping_ctl%intvalue
         else
           max_line_stepping(i_fln) = 1000
         end if
 !
-        if(fln%i_start_surf_grp .gt. 0) then
+        if(fln%start_surf_grp_ctl%iflag .gt. 0) then
           call set_surf_grp_id_4_viz(num_surf, surf_name,               &
-     &        fln%start_surf_grp_ctl, igrp_start_fline_surf_grp(i_fln))
+     &        fln%start_surf_grp_ctl%charavalue,                        &
+     &        igrp_start_fline_surf_grp(i_fln))
         end if
 !
         call count_nsurf_for_starting(i_fln, numele, interior_ele,      &
@@ -191,12 +192,15 @@
       type(fline_ctl), intent(inout) :: fln
 !
       integer(kind = kint) :: i, ist, ncomp(1), ncomp_org(1)
+      character(len=kchara) :: tmpfield(1)
+      character(len=kchara) :: tmpcomp(1)
       character(len=kchara) :: tmpchara(1)
 !
 !
-      fln%fline_comp_ctl(1) = 'vector'
-      call set_components_4_viz(num_nod_phys, phys_nod_name,            &
-     &    ione, fln%fline_field_ctl, fln%fline_comp_ctl,                &
+      tmpfield(1) = fln%fline_field_ctl%charavalue
+      tmpcomp(1) =  'vector'
+      call set_components_4_viz                                         &
+     &   (num_nod_phys, phys_nod_name, ione, tmpfield, tmpcomp,         &
      &    ione, ifield_4_fline(i_fln), icomp_4_fline(i_fln),            &
      &    ncomp, ncomp_org, tmpchara)
       if(icomp_4_fline(i_fln) .ne. icomp_VECTOR) then
@@ -204,8 +208,10 @@
      &      'Choose vector field for field line')
       end if
 !
-      call set_components_4_viz(num_nod_phys, phys_nod_name,            &
-     &    ione, fln%fline_color_field_ctl, fln%fline_color_comp_ctl,    &
+      tmpfield(1) = fln%fline_color_field_ctl%charavalue
+      tmpcomp(1) = fln%fline_color_comp_ctl%charavalue
+      call set_components_4_viz                                         &
+     &   (num_nod_phys, phys_nod_name, ione, tmpfield, tmpcomp,         &
      &    ione, ifield_linecolor(i_fln), icomp_linecolor(i_fln),        &
      &    ncomp, ncomp_org, name_color_output(i_fln))
       if(ncomp(1) .ne. ione) then
