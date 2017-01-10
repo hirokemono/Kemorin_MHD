@@ -64,7 +64,7 @@
      &          num_nod_phys, phys_nod_name, psf_fld, psf_param, ierr)
 !
       use m_error_IDs
-      use m_control_data_4_psf
+      use t_control_data_4_psf
       use m_file_format_switch
       use t_phys_data
       use t_psf_patch_data
@@ -119,7 +119,7 @@
      &          psf_fld, psf_param, ierr)
 !
       use m_error_IDs
-      use m_control_data_4_psf
+      use t_control_data_4_psf
       use t_phys_data
       use t_psf_patch_data
       use set_cross_section_coefs

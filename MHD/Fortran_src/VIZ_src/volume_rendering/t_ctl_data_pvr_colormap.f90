@@ -78,6 +78,7 @@
       use t_control_elements
       use t_read_control_arrays
       use skip_comment_f
+      use bcast_control_arrays
 !
       implicit  none
 !

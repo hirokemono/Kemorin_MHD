@@ -38,7 +38,7 @@
 !
       use m_machine_parameter
       use m_read_control_elements
-      use m_control_data_4_psf
+      use t_control_data_4_psf
       use t_control_elements
       use t_read_control_arrays
       use skip_comment_f

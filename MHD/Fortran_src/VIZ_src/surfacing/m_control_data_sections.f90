@@ -30,7 +30,7 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_control_data_4_psf
+      use t_control_data_4_psf
       use m_control_data_4_iso
 !
       implicit  none
@@ -49,6 +49,14 @@
       character(len=kchara), parameter :: hd_viz_ctl = 'visual_control'
       integer (kind=kint) :: i_viz_ctl = 0
 !
+!     Top level
+      character(len=kchara), parameter                                  &
+     &                  :: hd_section_ctl = 'cross_section_ctl'
+!      Deprecated labels
+      character(len=kchara), parameter                                  &
+     &                  :: hd_psf_ctl = 'surface_rendering'
+!
+      private :: hd_section_ctl, hd_psf_ctl
       private :: hd_viz_ctl, i_viz_ctl
 !
 !   --------------------------------------------------------------------
@@ -163,7 +171,8 @@
         else if(right_begin_flag(hd_section_ctl) .gt. 0) then
           i_psf_ctl1 = i_psf_ctl1 + 1
           fname_psf_ctl(i_psf_ctl1) = 'NO_FILE'
-          call read_psf_control_data(psf_ctl_struct(i_psf_ctl1))
+          call read_psf_control_data                                    &
+     &       (hd_section_ctl, psf_ctl_struct(i_psf_ctl1))
 !
         else if(right_file_flag(hd_psf_ctl) .gt. 0) then
           call read_file_names_from_ctl_line(num_psf_ctl, i_psf_ctl2,   &
@@ -171,7 +180,8 @@
         else if(right_begin_flag(hd_psf_ctl) .gt. 0) then
           i_psf_ctl2 = i_psf_ctl2 + 1
           fname_psf_ctl(i_psf_ctl2) = 'NO_FILE'
-          call read_psf_control_data(psf_ctl_struct(i_psf_ctl2))
+          call read_psf_control_data                                    &
+     &        (hd_psf_ctl, psf_ctl_struct(i_psf_ctl2))
         end if
       end do
 !

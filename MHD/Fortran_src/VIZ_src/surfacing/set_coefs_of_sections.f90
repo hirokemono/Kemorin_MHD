@@ -33,7 +33,7 @@
      &         (psf, id_section_method, const_psf, ierr)
 !
       use m_error_IDs
-      use m_control_data_4_psf
+      use t_control_data_4_psf
       use t_psf_patch_data
       use set_cross_section_coefs
 !

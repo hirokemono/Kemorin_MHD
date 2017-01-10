@@ -1,5 +1,5 @@
-!>@file   m_control_data_4_psf.f90
-!!@brief  module m_control_data_4_psf
+!>@file   t_control_data_4_psf.f90
+!!@brief  module t_control_data_4_psf
 !!
 !!@author H. Matsui
 !!@date Programmed in May. 2006
@@ -10,8 +10,8 @@
 !!      subroutine deallocate_cont_dat_4_psf(psf)
 !!        type(psf_ctl), intent(inout) :: psf
 !!
-!!      subroutine read_control_data_4_psf(psf)
 !!      subroutine read_psf_control_data(psf)
+!!      subroutine bcast_psf_control_data(psf)
 !!        type(psf_ctl), intent(inout) :: psf
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -111,10 +111,11 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !
-      module m_control_data_4_psf
+      module t_control_data_4_psf
 !
       use m_precision
 !
+      use calypso_mpi
       use m_constants
       use m_machine_parameter
       use m_read_control_elements
@@ -180,10 +181,6 @@
       end type psf_ctl
 !
 !
-!     Top level
-      character(len=kchara), parameter                                  &
-     &                  :: hd_section_ctl = 'cross_section_ctl'
-!
 !     2nd level for cross_section_ctl
       character(len=kchara), parameter                                  &
      &                  :: hd_psf_file_prefix = 'section_file_prefix'
@@ -219,10 +216,6 @@
      &                  :: hd_psf_result_field = 'output_field'
 !
 !
-!      Deprecated labels
-!
-      character(len=kchara), parameter                                  &
-     &                  :: hd_psf_ctl = 'surface_rendering'
       character(len=kchara), parameter                                  &
      &                  :: hd_psf_file_head =   'psf_file_head'
 !
@@ -280,32 +273,19 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine read_control_data_4_psf(psf)
+      subroutine read_psf_control_data(hd_block, psf)
+!
+      character(len=kchara), intent(in) :: hd_block
 !
       type(psf_ctl), intent(inout) :: psf
 !
 !
-      call load_ctl_label_and_line
-      call read_psf_control_data(psf)
-!
-      end subroutine read_control_data_4_psf
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine read_psf_control_data(psf)
-!
-      type(psf_ctl), intent(inout) :: psf
-!
-!
-      if(right_begin_flag(hd_psf_ctl) .eq. 0                            &
-     &   .and. right_begin_flag(hd_section_ctl) .eq. 0) return
+      if(right_begin_flag(hd_block) .eq. 0) return
       if (psf%i_psf_ctl.gt.0) return
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_psf_ctl, psf%i_psf_ctl)
-        if(psf%i_psf_ctl .gt. 0) exit
-        call find_control_end_flag(hd_section_ctl, psf%i_psf_ctl)
+        call find_control_end_flag(hd_block, psf%i_psf_ctl)
         if(psf%i_psf_ctl .gt. 0) exit
 !
         if(right_begin_flag(hd_surface_define) .gt. 0) then
@@ -405,5 +385,44 @@
       end subroutine read_psf_plot_area_ctl
 !
 !   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
 !
-      end module m_control_data_4_psf
+      subroutine bcast_psf_control_data(psf)
+!
+      use bcast_control_arrays
+!
+      type(psf_ctl), intent(inout) :: psf
+!
+!
+      call MPI_BCAST(psf%i_psf_ctl,  ione,                              &
+     &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(psf%i_surface_define,  ione,                       &
+     &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(psf%i_output_field,  ione,                         &
+     &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(psf%i_plot_area,  ione,                            &
+     &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+!
+      call bcast_ctl_array_c2(psf%psf_out_field_ctl)
+!
+      call bcast_ctl_type_c1(psf%psf_file_head_ctl)
+      call bcast_ctl_type_c1(psf%psf_output_type_ctl)
+!
+      call bcast_ctl_array_cr(psf%psf_coefs_ctl)
+      call bcast_ctl_array_cr(psf%psf_center_ctl)
+      call bcast_ctl_array_cr(psf%psf_normal_ctl)
+      call bcast_ctl_array_cr(psf%psf_axis_ctl)
+!
+      call bcast_ctl_array_c1(psf%psf_area_ctl)
+!
+      call read_real_ctl_type(hd_radius, psf%radius_psf_ctl)
+!
+      call bcast_ctl_type_c1(psf%section_method_ctl)
+      call bcast_ctl_type_c1(psf%psf_group_name_ctl)
+      write(*,*) 'bcast_psf_control_data'
+!
+      end subroutine bcast_psf_control_data
+!
+!   --------------------------------------------------------------------
+!
+      end module t_control_data_4_psf

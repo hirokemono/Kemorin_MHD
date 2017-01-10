@@ -42,6 +42,14 @@
      &                    :: hd_pvr_ctl = 'volume_rendering'
       integer (kind=kint) :: i_pvr_ctl =   0
 !
+!     Top level
+      character(len=kchara), parameter                                  &
+     &                  :: hd_section_ctl = 'cross_section_ctl'
+!      Deprecated labels
+      character(len=kchara), parameter                                  &
+     &                  :: hd_psf_ctl = 'surface_rendering'
+      private :: hd_section_ctl, hd_psf_ctl
+!
       private :: hd_viz_control, i_viz_control, hd_pvr_ctl, i_pvr_ctl
       private :: allocate_pvr_file_header_ctl
       private :: read_files_4_pvr_ctl
@@ -84,7 +92,7 @@
 !
       use m_control_data_sections
       use m_control_data_flines
-      use m_control_data_4_psf
+      use t_control_data_4_psf
       use m_control_data_4_iso
 !
       use skip_comment_f
