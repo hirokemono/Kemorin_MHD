@@ -115,7 +115,6 @@
 !
       use m_precision
 !
-      use calypso_mpi
       use m_constants
       use m_machine_parameter
       use m_read_control_elements
@@ -389,6 +388,7 @@
 !
       subroutine bcast_psf_control_data(psf)
 !
+      use calypso_mpi
       use bcast_control_arrays
 !
       type(psf_ctl), intent(inout) :: psf

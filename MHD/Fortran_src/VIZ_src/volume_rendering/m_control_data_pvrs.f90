@@ -44,11 +44,17 @@
 !
 !     Top level
       character(len=kchara), parameter                                  &
-     &                  :: hd_section_ctl = 'cross_section_ctl'
+     &             :: hd_section_ctl = 'cross_section_ctl'
+      character(len=kchara), parameter                                  &
+     &             :: hd_isosurf_ctl = 'isosurface_ctl'
+!
 !      Deprecated labels
       character(len=kchara), parameter                                  &
-     &                  :: hd_psf_ctl = 'surface_rendering'
+     &             :: hd_psf_ctl = 'surface_rendering'
+      character(len=kchara), parameter                                  &
+     &             :: hd_iso_ctl = 'isosurf_rendering'
       private :: hd_section_ctl, hd_psf_ctl
+      private :: hd_isosurf_ctl, hd_iso_ctl
 !
       private :: hd_viz_control, i_viz_control, hd_pvr_ctl, i_pvr_ctl
       private :: allocate_pvr_file_header_ctl

@@ -73,9 +73,9 @@
      &          num_nod_phys, phys_nod_name, iso_fld, iso_param)
 !
       use m_file_format_switch
-      use m_control_data_4_iso
       use parallel_ucd_IO_select
       use set_field_comp_for_viz
+      use t_control_data_4_iso
       use t_phys_data
       use t_psf_patch_data
 !
@@ -140,9 +140,9 @@
       subroutine set_control_4_iso(i_iso, iso, num_mat, mat_name,       &
      &          num_nod_phys, phys_nod_name, iso_fld, iso_param)
 !
-      use m_control_data_4_iso
       use set_area_4_viz
       use set_field_comp_for_viz
+      use t_control_data_4_iso
       use t_phys_data
       use t_psf_patch_data
 !

@@ -1,13 +1,14 @@
 !
-!      module m_control_data_4_iso
+!      module t_control_data_4_iso
 !
 !        programmed by H.Matsui on May. 2006
 !
-!      subroutine deallocate_cont_dat_4_iso(iso)
-!        type(iso_ctl), intent(inout) :: iso
-!
-!      subroutine read_control_data_4_iso(iso)
-!        type(iso_ctl), intent(inout) :: iso
+!!      subroutine deallocate_cont_dat_4_iso(iso)
+!!        type(iso_ctl), intent(inout) :: iso
+!!
+!!      subroutine read_iso_control_data(hd_block, iso)
+!!      subroutine bcast_iso_control_data(iso)
+!!        type(iso_ctl), intent(inout) :: iso
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!     example of control for Kemo's surface rendering
@@ -60,7 +61,7 @@
 !!           x, y, z, radial, elevation, azimuth, cylinder_r, norm
 !!    isosurf_value:  value for isosurface
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      module m_control_data_4_iso
+      module t_control_data_4_iso
 !
       use m_precision
 !
@@ -112,10 +113,6 @@
         integer (kind=kint) :: i_iso_plot_area = 0
       end type iso_ctl
 !
-!     Top level
-      character(len=kchara), parameter                                  &
-     &             :: hd_isosurf_ctl = 'isosurface_ctl'
-!
 !     2nd level for isosurface_ctl
       character(len=kchara), parameter                                  &
      &             :: hd_isosurf_prefix = 'isosurface_file_prefix'
@@ -149,8 +146,6 @@
 !      Deprecated labels
 !
       character(len=kchara), parameter                                  &
-     &             :: hd_iso_ctl = 'isosurf_rendering'
-      character(len=kchara), parameter                                  &
      &             :: hd_iso_file_head = 'iso_file_head'
       character(len=kchara), parameter                                  &
      &             :: hd_iso_result = 'isosurf_result_define'
@@ -168,7 +163,7 @@
       private :: hd_isosurf_prefix, hd_iso_file_head
       private :: hd_iso_result_field
 !
-      private :: read_iso_define_data, read_iso_control_data
+      private :: read_iso_define_data
       private :: read_iso_result_control, read_iso_plot_area_ctl
 !
 !  ---------------------------------------------------------------------
@@ -193,35 +188,21 @@
       end subroutine deallocate_cont_dat_4_iso
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
+!   --------------------------------------------------------------------
 !
-      subroutine read_control_data_4_iso(iso)
+      subroutine read_iso_control_data(hd_block, iso)
+!
+      character(len=kchara), intent(in) :: hd_block
 !
       type(iso_ctl), intent(inout) :: iso
 !
 !
-      call load_ctl_label_and_line
-      call read_iso_control_data(iso)
-!
-      end subroutine read_control_data_4_iso
-!
-!   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine read_iso_control_data(iso)
-!
-      type(iso_ctl), intent(inout) :: iso
-!
-!
-      if(right_begin_flag(hd_iso_ctl) .eq. 0                            &
-     &   .and. right_begin_flag(hd_isosurf_ctl) .eq. 0) return
+      if(right_begin_flag(hd_block) .eq. 0) return
       if (iso%i_iso_ctl.gt.0) return
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_iso_ctl, iso%i_iso_ctl)
-        if(iso%i_iso_ctl .gt. 0) exit
-        call find_control_end_flag(hd_isosurf_ctl, iso%i_iso_ctl)
+        call find_control_end_flag(hd_block, iso%i_iso_ctl)
         if(iso%i_iso_ctl .gt. 0) exit
 !
         call read_iso_result_control(iso)
@@ -319,5 +300,43 @@
       end subroutine read_iso_plot_area_ctl
 !
 !   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
 !
-      end module m_control_data_4_iso
+      subroutine bcast_iso_control_data(iso)
+!
+      use calypso_mpi
+      use bcast_control_arrays
+!
+      type(iso_ctl), intent(inout) :: iso
+!
+!
+      call MPI_BCAST(iso%i_iso_ctl,  ione,                              &
+     &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(iso%i_iso_define,  ione,                           &
+     &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(iso%i_iso_result,  ione,                           &
+     &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(iso%i_iso_plot_area,  ione,                        &
+     &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+!
+      call bcast_ctl_type_c1(iso%iso_file_head_ctl)
+      call bcast_ctl_type_c1(iso%iso_file_head_ctl)
+      call bcast_ctl_type_c1(iso%iso_output_type_ctl)
+!
+      call bcast_ctl_type_c1(iso%isosurf_data_ctl)
+      call bcast_ctl_type_c1(iso%isosurf_comp_ctl)
+!
+      call bcast_ctl_type_r1(iso%isosurf_value_ctl)
+!
+      call bcast_ctl_array_c1(iso%iso_area_ctl)
+      call bcast_ctl_array_c2(iso%iso_out_field_ctl)
+!
+      call bcast_ctl_type_c1(iso%iso_result_type_ctl)
+!
+      call bcast_ctl_type_r1(iso%result_value_iso_ctl)
+!
+      end subroutine bcast_iso_control_data
+!
+!   --------------------------------------------------------------------
+!
+      end module t_control_data_4_iso

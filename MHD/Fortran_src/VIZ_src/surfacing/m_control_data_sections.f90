@@ -31,7 +31,7 @@
 !
       use m_machine_parameter
       use t_control_data_4_psf
-      use m_control_data_4_iso
+      use t_control_data_4_iso
 !
       implicit  none
 !
@@ -51,12 +51,18 @@
 !
 !     Top level
       character(len=kchara), parameter                                  &
-     &                  :: hd_section_ctl = 'cross_section_ctl'
+     &             :: hd_section_ctl = 'cross_section_ctl'
+      character(len=kchara), parameter                                  &
+     &             :: hd_isosurf_ctl = 'isosurface_ctl'
+!
 !      Deprecated labels
       character(len=kchara), parameter                                  &
-     &                  :: hd_psf_ctl = 'surface_rendering'
+     &             :: hd_psf_ctl = 'surface_rendering'
+      character(len=kchara), parameter                                  &
+     &             :: hd_iso_ctl = 'isosurf_rendering'
 !
       private :: hd_section_ctl, hd_psf_ctl
+      private :: hd_isosurf_ctl, hd_iso_ctl
       private :: hd_viz_ctl, i_viz_ctl
 !
 !   --------------------------------------------------------------------
@@ -216,7 +222,8 @@
         else if(right_begin_flag(hd_isosurf_ctl) .gt. 0) then
           i_iso_ctl1 = i_iso_ctl1 + 1
           fname_iso_ctl(i_iso_ctl1) = 'NO_FILE'
-          call read_control_data_4_iso(iso_ctl_struct(i_iso_ctl1))
+          call read_iso_control_data                                    &
+     &       (hd_isosurf_ctl, iso_ctl_struct(i_iso_ctl1))
 !
         else if(right_file_flag(hd_isosurf_ctl) .gt. 0                  &
      &     .or. right_file_flag(hd_iso_ctl) .gt. 0) then
@@ -226,7 +233,8 @@
      &     .or. right_begin_flag(hd_iso_ctl) .gt. 0) then
           i_iso_ctl2 = i_iso_ctl2 + 1
           fname_iso_ctl(i_iso_ctl2) = 'NO_FILE'
-          call read_control_data_4_iso(iso_ctl_struct(i_iso_ctl2))
+          call read_iso_control_data                                    &
+     &        (hd_iso_ctl, iso_ctl_struct(i_iso_ctl2))
         end if
 !
       end do

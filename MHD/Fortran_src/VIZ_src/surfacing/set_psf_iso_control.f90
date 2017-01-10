@@ -29,11 +29,17 @@
 !
 !     Top level
       character(len=kchara), parameter                                  &
-     &                  :: hd_section_ctl = 'cross_section_ctl'
+     &             :: hd_section_ctl = 'cross_section_ctl'
+      character(len=kchara), parameter                                  &
+     &             :: hd_isosurf_ctl = 'isosurface_ctl'
+!
 !      Deprecated labels
       character(len=kchara), parameter                                  &
-     &                  :: hd_psf_ctl = 'surface_rendering'
+     &             :: hd_psf_ctl = 'surface_rendering'
+      character(len=kchara), parameter                                  &
+     &             :: hd_iso_ctl = 'isosurf_rendering'
       private :: hd_section_ctl, hd_psf_ctl
+      private :: hd_isosurf_ctl, hd_iso_ctl
 !
       private :: psf_ctl_file_code, iso_ctl_file_code
 !
@@ -122,7 +128,7 @@
 !
       use calypso_mpi
       use m_control_data_sections
-      use m_control_data_4_iso
+      use t_control_data_4_iso
       use m_control_params_4_iso
       use m_read_control_elements
       use t_psf_patch_data
@@ -182,6 +188,7 @@
 !
       subroutine read_control_4_psf(i_psf)
 !
+      use calypso_mpi
       use m_read_control_elements
 !
       use t_control_data_4_psf
@@ -214,9 +221,10 @@
 !
       subroutine read_control_4_iso(i_iso)
 !
+      use calypso_mpi
       use m_read_control_elements
 !
-      use m_control_data_4_iso
+      use t_control_data_4_iso
       use m_control_params_4_iso
       use m_control_data_sections
 !
@@ -225,9 +233,18 @@
 !
       if(fname_iso_ctl(i_iso) .eq. 'NO_FILE') return
 !
-      open(iso_ctl_file_code, file=fname_iso_ctl(i_iso), status='old')
-      call read_control_data_4_iso(iso_ctl_struct(i_iso))
-      close(iso_ctl_file_code)
+      if(my_rank .eq. 0) then
+        ctl_file_code = iso_ctl_file_code
+        open(ctl_file_code, file=fname_iso_ctl(i_iso), status='old')
+!
+        call load_ctl_label_and_line
+        call read_iso_control_data                                      &
+     &     (hd_isosurf_ctl, iso_ctl_struct(i_iso))
+        call read_iso_control_data(hd_iso_ctl, iso_ctl_struct(i_iso))
+        close(ctl_file_code)
+      end if
+!
+      call bcast_iso_control_data(iso_ctl_struct(i_iso))
 !
       end subroutine read_control_4_iso
 !
