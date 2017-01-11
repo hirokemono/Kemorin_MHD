@@ -396,17 +396,32 @@
 !
       call MPI_BCAST(psf%i_psf_ctl,  ione,                              &
      &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(psf%i_surface_define,  ione,                       &
-     &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(psf%i_output_field,  ione,                         &
-     &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(psf%i_plot_area,  ione,                            &
      &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
 !
       call bcast_ctl_array_c2(psf%psf_out_field_ctl)
 !
       call bcast_ctl_type_c1(psf%psf_file_head_ctl)
       call bcast_ctl_type_c1(psf%psf_output_type_ctl)
+!
+      call bcast_section_def_control(psf)
+!
+      end subroutine bcast_psf_control_data
+!
+!   --------------------------------------------------------------------
+!
+      subroutine bcast_section_def_control(psf)
+!
+      use calypso_mpi
+      use bcast_control_arrays
+!
+      type(psf_ctl), intent(inout) :: psf
+!
+!
+      call MPI_BCAST(psf%i_surface_define,  ione,                       &
+     &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(psf%i_plot_area,  ione,                            &
+     &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
 !
       call bcast_ctl_array_cr(psf%psf_coefs_ctl)
       call bcast_ctl_array_cr(psf%psf_center_ctl)
@@ -419,9 +434,8 @@
 !
       call bcast_ctl_type_c1(psf%section_method_ctl)
       call bcast_ctl_type_c1(psf%psf_group_name_ctl)
-      write(*,*) 'bcast_psf_control_data'
 !
-      end subroutine bcast_psf_control_data
+      end subroutine bcast_section_def_control
 !
 !   --------------------------------------------------------------------
 !
