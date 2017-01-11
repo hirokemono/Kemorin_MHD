@@ -59,6 +59,7 @@
       use m_machine_parameter
       use m_read_control_elements
       use t_read_control_arrays
+      use t_control_elements
       use skip_comment_f
       use calypso_mpi
 !
@@ -85,7 +86,7 @@
 !
         type(read_character_item) :: start_surf_grp_ctl
 !
-        type(read_integer_item) :: num_fieldline_ctl = 3
+        type(read_integer_item) :: num_fieldline_ctl
         type(read_integer_item) :: max_line_stepping_ctl
 !
 !>      Structure for seed points
