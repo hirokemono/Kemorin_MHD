@@ -3,7 +3,9 @@
 !
 !        programmed by H.Matsui on May. 2006
 !
-!      subroutine deallocate_cont_dat_pvr(pvr)
+!!      subroutine bcast_vr_psf_ctl(pvr)
+!!      subroutine bcast_pvr_colordef_ctl(color)
+!!      subroutine bcast_view_transfer_ctl(mat)
 !
 !
       module bcast_control_data_4_pvr
@@ -14,14 +16,16 @@
       use t_control_data_4_pvr
       use t_ctl_data_pvr_colormap
       use t_control_data_pvr_misc
+      use t_ctl_data_4_view_transfer
+!
+      use bcast_control_arrays
 !
       implicit  none
 !
       private :: bcast_pvr_sections_ctl, bcast_pvr_isosurfs_ctl
       private :: bcast_pvr_section_ctl, bcast_pvr_isosurface_ctl
       private :: bcast_pvr_colorbar_ctl, bcast_pvr_rotation_ctl
-      private :: bcast_lighting_ctl, bcast_pvr_colordef_ctl
-      private :: bcast_view_transfer_ctl, bcast_projection_mat_ctl
+      private :: bcast_lighting_ctl, bcast_projection_mat_ctl
       private :: bcast_image_size_ctl, bcast_stereo_view_ctl
 !
 !  ---------------------------------------------------------------------
@@ -35,7 +39,7 @@
       type(pvr_ctl), intent(inout) :: pvr
 !
 !
-      call MPI_BCAST(color%i_pvr_ctl,  ione,                            &
+      call MPI_BCAST(pvr%i_pvr_ctl,  ione,                              &
      &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
 !
 !
@@ -51,15 +55,15 @@
         call bcast_pvr_colordef_ctl(pvr%color)
       end if
 !
-      call bcast_pvr_sections_ctl(pvr)
       call bcast_pvr_isosurfs_ctl(pvr)
-!
-      call bcast_ctl_array_c1(pvr%pvr_area_ctl)
-      call bcast_ctl_array_c2r(pvr%surf_enhanse_ctl)
+      call bcast_pvr_sections_ctl(pvr)
 !
       call bcast_lighting_ctl(pvr%color)
       call bcast_pvr_colorbar_ctl(pvr%colorbar)
       call bcast_pvr_rotation_ctl(pvr%movie)
+!
+      call bcast_ctl_array_c1(pvr%pvr_area_ctl)
+      call bcast_ctl_array_c2r(pvr%surf_enhanse_ctl)
 !
 !
       call bcast_ctl_type_c1(pvr%updated_ctl)
@@ -94,6 +98,8 @@
 !
       type(pvr_ctl), intent(inout) :: pvr
 !
+      integer(kind = kint) :: i
+!
 !
       call MPI_BCAST(pvr%num_pvr_sect_ctl,  ione,                       &
      &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
@@ -103,7 +109,7 @@
 !
       call MPI_BCAST(pvr%i_pvr_sect,  ione,                             &
      &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
-      do i = 1, pvr%num_pvr_iso_ctl
+      do i = 1, pvr%num_pvr_sect_ctl
         call bcast_pvr_section_ctl(pvr%pvr_sect_ctl(i))
       end do
 !
@@ -146,6 +152,7 @@
      &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(pvr_sect_ctl%psf%i_psf_ctl,  ione,                 &
      &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+!
       if(pvr_sect_ctl%fname_sect_ctl .eq. 'NO_FILE') then
         call bcast_section_def_control(pvr_sect_ctl%psf)
       end if
