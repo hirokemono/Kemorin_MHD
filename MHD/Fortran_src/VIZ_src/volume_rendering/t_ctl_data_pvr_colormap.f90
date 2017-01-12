@@ -8,9 +8,6 @@
 !!      subroutine read_lighting_ctl(hd_block, color)
 !!      subroutine read_pvr_colordef_ctl(hd_block, color)
 !!
-!!      subroutine bcast_lighting_ctl(color)
-!!      subroutine bcast_pvr_colordef_ctl(color)
-!!
 !!      subroutine reset_pvr_colormap_flags(color)
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -249,48 +246,6 @@
       end do
 !
       end subroutine read_pvr_colordef_ctl
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine bcast_lighting_ctl(color)
-!
-      type(pvr_colormap_ctl), intent(inout) :: color
-!
-!
-      call MPI_BCAST(color%i_pvr_lighting,  ione,                       &
-     &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
-!
-      call bcast_ctl_type_r1(color%ambient_coef_ctl )
-      call bcast_ctl_type_r1(color%diffuse_coef_ctl )
-      call bcast_ctl_type_r1(color%specular_coef_ctl)
-!
-      end subroutine bcast_lighting_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine bcast_pvr_colordef_ctl(color)
-!
-      type(pvr_colormap_ctl), intent(inout) :: color
-!
-!
-      call MPI_BCAST(color%i_pvr_colordef,  ione,                       &
-     &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
-!
-      call bcast_ctl_array_r2(color%colortbl_ctl)
-      call bcast_ctl_array_r2(color%linear_opacity_ctl)
-!
-      call bcast_ctl_array_r3(color%step_opacity_ctl)
-!
-      call bcast_ctl_type_c1(color%colormap_ctl)
-      call bcast_ctl_type_c1(color%data_mapping_ctl)
-      call bcast_ctl_type_c1(color%opacity_style_ctl)
-!
-      call bcast_ctl_type_r1(color%range_min_ctl)
-      call bcast_ctl_type_r1(color%range_max_ctl)
-      call bcast_ctl_type_r1(color%fix_opacity_ctl)
-!
-      end subroutine bcast_pvr_colordef_ctl
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

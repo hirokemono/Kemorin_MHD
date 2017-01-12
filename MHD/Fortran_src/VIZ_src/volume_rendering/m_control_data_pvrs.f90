@@ -159,7 +159,7 @@
         if(right_begin_flag(hd_pvr_ctl) .gt. 0) then
           i_pvr_ctl = i_pvr_ctl + 1
           fname_pvr_ctl(i_pvr_ctl) = 'NO_FILE'
-          call read_vr_psf_ctl(pvr_ctl_struct(i_pvr_ctl))
+          call read_vr_psf_ctl(hd_pvr_ctl, pvr_ctl_struct(i_pvr_ctl))
         end if
       end do
 !

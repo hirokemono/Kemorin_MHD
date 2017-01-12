@@ -83,9 +83,9 @@
 !
 !
       call calypso_mpi_barrier
-      if(my_rank .eq. izero) then
-        call read_control_pvr_update(ione)
+      call read_control_pvr_update(ione)
 !
+      if(my_rank .eq. izero) then
         check_PVR_update = IFLAG_THROUGH
         if(pvr_ctl_struct(1)%updated_ctl%iflag .gt. 0) then
           tmpchara = pvr_ctl_struct(1)%updated_ctl%charavalue

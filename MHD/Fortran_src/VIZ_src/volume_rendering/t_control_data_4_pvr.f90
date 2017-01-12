@@ -5,11 +5,9 @@
 !
 !      subroutine deallocate_cont_dat_pvr(pvr)
 !
-!!      subroutine read_control_data_pvr(pvr)
 !!      subroutine reset_pvr_update_flags(pvr)
-!!      subroutine read_control_data_colormap(pvr)
-!!      subroutine read_vr_psf_ctl(pvr)
-!!      subroutine read_pvr_update_flag(pvr)
+!!      subroutine read_vr_psf_ctl(hd_block, pvr)
+!!      subroutine read_pvr_update_flag(hd_block, pvr)
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!     example of control for Kemo's volume rendering
@@ -106,8 +104,8 @@
 !
         type(ctl_array_c2r) :: surf_enhanse_ctl
 !
-        character(len=kchara) :: pvr_field_ctl(1)
-        character(len=kchara) :: pvr_comp_ctl(1)
+        type(read_character_item) :: pvr_field_ctl
+        type(read_character_item) :: pvr_comp_ctl
 !
         integer(kind = kint) :: num_pvr_sect_ctl = 0
         type(pvr_sections_ctl), pointer :: pvr_sect_ctl(:)
@@ -123,17 +121,11 @@
         integer (kind=kint) :: i_color_file = 0
 !
 !     2nd level for volume rendering
-        integer (kind=kint) :: i_output_field_def =    0
-        integer (kind=kint) :: i_output_comp_def =     0
         integer (kind=kint) :: i_plot_area =           0
         integer (kind=kint) :: i_pvr_sect =            0
         integer (kind=kint) :: i_pvr_iso =             0
       end type pvr_ctl
 !
-!
-!     Top level
-!
-      character(len=kchara) :: hd_vr_psf_ctl = 'volume_rendering'
 !
 !     2nd level for volume_rendering
 !
@@ -180,18 +172,6 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_control_data_pvr(pvr)
-!
-      type(pvr_ctl), intent(inout) :: pvr
-!
-!
-      call load_ctl_label_and_line
-      call read_vr_psf_ctl(pvr)
-!
-      end subroutine read_control_data_pvr
-!
-!  ---------------------------------------------------------------------
-!
       subroutine deallocate_cont_dat_pvr(pvr)
 !
       type(pvr_ctl), intent(inout) :: pvr
@@ -233,8 +213,8 @@
       pvr%file_head_ctl%iflag =   0
       pvr%file_fmt_ctl%iflag =    0
       pvr%transparent_ctl%iflag = 0
-      pvr%i_output_field_def =    0
-      pvr%i_output_comp_def =     0
+      pvr%pvr_field_ctl%iflag =   0
+      pvr%pvr_comp_ctl%iflag =    0
 !
       pvr%i_pvr_ctl = 0
       pvr%i_plot_area =   0
@@ -255,17 +235,19 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine read_vr_psf_ctl(pvr)
+      subroutine read_vr_psf_ctl(hd_block, pvr)
+!
+      character(len=kchara), intent(in) :: hd_block
 !
       type(pvr_ctl), intent(inout) :: pvr
 !
 !
-      if(right_begin_flag(hd_vr_psf_ctl) .eq. 0) return
+      if(right_begin_flag(hd_block) .eq. 0) return
       if (pvr%i_pvr_ctl.gt.0) return
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_vr_psf_ctl, pvr%i_pvr_ctl)
+        call find_control_end_flag(hd_block, pvr%i_pvr_ctl)
         if(pvr%i_pvr_ctl .gt. 0) exit
 !
 !
@@ -308,28 +290,28 @@
         call read_chara_ctl_type(hd_pvr_streo, pvr%streo_ctl)
         call read_chara_ctl_type(hd_pvr_anaglyph, pvr%anaglyph_ctl)
 !
-        call read_character_ctl_item(hd_output_field_def,               &
-     &          pvr%i_output_field_def, pvr%pvr_field_ctl(1) )
-        call read_character_ctl_item(hd_output_comp_def,                &
-     &          pvr%i_output_comp_def, pvr%pvr_comp_ctl(1) )
+        call read_chara_ctl_type                                        &
+     &     (hd_output_field_def, pvr%pvr_field_ctl)
+        call read_chara_ctl_type(hd_output_comp_def, pvr%pvr_comp_ctl)
       end do
 !
       end subroutine read_vr_psf_ctl
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_pvr_update_flag(pvr)
+      subroutine read_pvr_update_flag(hd_block, pvr)
+!
+      character(len=kchara), intent(in) :: hd_block
 !
       type(pvr_ctl), intent(inout) :: pvr
 !
 !
-      call load_ctl_label_and_line
-      if(right_begin_flag(hd_vr_psf_ctl) .eq. 0) return
+      if(right_begin_flag(hd_block) .eq. 0) return
       if (pvr%i_pvr_ctl.gt.0) return
       do
         call load_ctl_label_and_line
 !
-        call find_control_end_flag(hd_vr_psf_ctl, pvr%i_pvr_ctl)
+        call find_control_end_flag(hd_block, pvr%i_pvr_ctl)
         if(pvr%i_pvr_ctl .gt. 0) exit
 !
         call read_chara_ctl_type(hd_pvr_updated, pvr%updated_ctl)
@@ -405,7 +387,6 @@
         call read_control_array_c2_r                                    &
      &     (hd_sf_enhanse, pvr%surf_enhanse_ctl)
       end do
-      call calypso_mpi_barrier
 !
       end subroutine read_plot_area_ctl
 !

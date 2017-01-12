@@ -23,8 +23,11 @@
 !
       integer(kind = kint), parameter :: pvr_ctl_file_code = 11
 !
+      character(len=kchara) :: hd_pvr_ctl = 'volume_rendering'
       character(len=kchara) :: hd_view_transform = 'view_transform_ctl'
       character(len=kchara) :: hd_pvr_colordef =  'pvr_color_ctl'
+!
+      private :: hd_pvr_ctl
       private :: hd_view_transform, hd_pvr_colordef
 !
 !  ---------------------------------------------------------------------
@@ -118,17 +121,24 @@
       subroutine read_control_pvr(i_pvr)
 !
       use calypso_mpi
+      use bcast_control_data_4_pvr
 !
       integer(kind = kint), intent(in) :: i_pvr
 !
       if(fname_pvr_ctl(i_pvr) .eq. 'NO_FILE') return
 !
-      if(my_rank .eq. 0) write(*,*) 'PVR control:', i_pvr,':  ',        &
+      if(my_rank .eq. 0) then
+         write(*,*) 'PVR control:', i_pvr,':  ',                        &
      &                      trim( fname_pvr_ctl(i_pvr) )
 !
-      open(pvr_ctl_file_code, file=fname_pvr_ctl(i_pvr), status='old')
-      call read_control_data_pvr(pvr_ctl_struct(i_pvr))
-      close(pvr_ctl_file_code)
+        open(pvr_ctl_file_code, file=fname_pvr_ctl(i_pvr),              &
+     &       status='old')
+        call load_ctl_label_and_line
+        call read_vr_psf_ctl(hd_pvr_ctl, pvr_ctl_struct(i_pvr))
+        close(pvr_ctl_file_code)
+      end if
+!
+      call bcast_vr_psf_ctl(pvr_ctl_struct(i_pvr))
 !
       end subroutine read_control_pvr
 !
@@ -137,15 +147,22 @@
       subroutine read_control_pvr_update(i_pvr)
 !
       use calypso_mpi
+      use bcast_control_data_4_pvr
 !
       integer(kind = kint), intent(in) :: i_pvr
 !
+!
       if(fname_pvr_ctl(i_pvr) .eq. 'NO_FILE') return
+      if(my_rank .eq. 0) then
+        open(pvr_ctl_file_code, file=fname_pvr_ctl(i_pvr),              &
+     &       status='old')
 !
+        call load_ctl_label_and_line
+        call read_pvr_update_flag(hd_pvr_ctl, pvr_ctl_struct(i_pvr))
+        close(pvr_ctl_file_code)
+      end if
 !
-      open(pvr_ctl_file_code, file=fname_pvr_ctl(i_pvr), status='old')
-      call read_pvr_update_flag(pvr_ctl_struct(i_pvr))
-      close(pvr_ctl_file_code)
+      call bcast_pvr_update_flag(pvr_ctl_struct(i_pvr))
 !
       end subroutine read_control_pvr_update
 !
@@ -156,6 +173,7 @@
       use calypso_mpi
       use m_error_IDs
       use t_ctl_data_4_view_transfer
+      use bcast_control_data_4_pvr
 !
       integer(kind = kint), intent(in) :: i_pvr
 !
@@ -195,6 +213,7 @@
       use calypso_mpi
       use m_error_IDs
       use t_ctl_data_pvr_colormap
+      use bcast_control_data_4_pvr
 !
       integer(kind = kint), intent(in) :: i_pvr
 !

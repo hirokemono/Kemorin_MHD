@@ -43,8 +43,8 @@
       type(pvr_ctl), intent(in) :: pvr
       type(pvr_output_parameter), intent(inout) :: file_param
 !
-!
       integer(kind = kint) :: num_field, num_phys_viz
+      character(len = kchara) :: tmpfield(1)
       character(len = kchara) :: tmpchara
 !
 !
@@ -88,8 +88,9 @@
         file_param%iflag_anaglyph = 1
       end if
 !
+      tmpfield(1) = pvr%pvr_field_ctl%charavalue
       call check_field_4_viz(num_nod_phys, phys_nod_name,               &
-     &    ione, pvr%pvr_field_ctl, num_field, num_phys_viz)
+     &    ione, tmpfield, num_field, num_phys_viz)
       if(num_field .eq. 0) then
         call calypso_MPI_abort(ierr_PVR,'set correct field name')
       end if
@@ -138,6 +139,7 @@
       integer(kind = kint) :: icheck_ncomp(1)
       integer(kind = kint) :: ifld_tmp(1), icomp_tmp(1), ncomp_tmp(1)
       character(len = kchara) :: fldname_tmp(1)
+      character(len = kchara) :: tmpfield(1), tmpcomp(1)
       character(len = kchara) :: tmpchara
 !
 !
@@ -146,10 +148,11 @@
         view_param%iflag_stereo_pvr = 1
       end if
 !
+      tmpfield(1) = pvr%pvr_field_ctl%charavalue
+      tmpcomp(1) =  pvr%pvr_comp_ctl%charavalue
       call set_components_4_viz                                         &
-     &   (num_nod_phys, phys_nod_name, ione, pvr%pvr_field_ctl,         &
-     &    pvr%pvr_comp_ctl, ione, ifld_tmp, icomp_tmp,                  &
-     &    icheck_ncomp, ncomp_tmp, fldname_tmp)
+     &   (num_nod_phys, phys_nod_name, ione, tmpfield, tmpcomp, ione,   &
+     &    ifld_tmp, icomp_tmp, icheck_ncomp, ncomp_tmp, fldname_tmp)
       fld_param%id_pvr_output =    ifld_tmp(1)
       fld_param%icomp_pvr_output = icomp_tmp(1)
       fld_param%ncomp_pvr_org =    ncomp_tmp(1)

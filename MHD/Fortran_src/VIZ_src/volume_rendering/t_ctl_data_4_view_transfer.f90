@@ -8,7 +8,6 @@
 !!
 !!@verbatim
 !!      subroutine read_view_transfer_ctl(hd_block, mat)
-!!      subroutine bcast_view_transfer_ctl(mat)
 !!      subroutine dealloc_view_transfer_ctl(mat)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!  Input example
@@ -246,9 +245,9 @@
       private :: hd_focalpoint,  hd_eye_separation
       private :: hd_view_rot_deg, hd_view_rot_dir, hd_scale_fac_dir
 !
-      private :: read_projection_mat_ctl, bcast_projection_mat_ctl
-      private :: read_stereo_view_ctl, bcast_image_size_ctl
-      private :: read_image_size_ctl, bcast_stereo_view_ctl
+      private :: read_projection_mat_ctl
+      private :: read_stereo_view_ctl
+      private :: read_image_size_ctl
 !
 !  ---------------------------------------------------------------------
 !
@@ -366,84 +365,6 @@
       end do
 !
       end subroutine read_stereo_view_ctl
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine bcast_view_transfer_ctl(mat)
-!
-      type(modeview_ctl), intent(inout) :: mat
-!
-!
-      call MPI_BCAST(mat%i_view_transform,  ione,                       &
-     &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
-!
-      call bcast_projection_mat_ctl(mat)
-      call bcast_image_size_ctl(mat)
-      call bcast_stereo_view_ctl(mat)
-!
-!
-      call bcast_ctl_array_cr(mat%lookpoint_ctl)
-      call bcast_ctl_array_cr(mat%viewpoint_ctl)
-      call bcast_ctl_array_cr(mat%up_dir_ctl)
-!
-      call bcast_ctl_array_cr(mat%view_rot_vec_ctl)
-      call bcast_ctl_array_cr(mat%scale_vector_ctl)
-      call bcast_ctl_array_cr(mat%viewpt_in_viewer_ctl)
-!
-      call bcast_ctl_array_c2r(mat%modelview_mat_ctl)
-!
-      call bcast_ctl_type_r1(mat%view_rotation_deg_ctl)
-      call bcast_ctl_type_r1(mat%scale_factor_ctl)
-!
-      end subroutine bcast_view_transfer_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine bcast_projection_mat_ctl(mat)
-!
-      type(modeview_ctl), intent(inout) :: mat
-!
-!
-      call MPI_BCAST(mat%i_project_mat,  ione,                          &
-     &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
-!
-      call bcast_ctl_type_r1(mat%perspective_angle_ctl)
-      call bcast_ctl_type_r1(mat%perspective_xy_ratio_ctl)
-      call bcast_ctl_type_r1(mat%perspective_near_ctl)
-      call bcast_ctl_type_r1(mat%perspective_far_ctl)
-!
-      end subroutine bcast_projection_mat_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine bcast_image_size_ctl(mat)
-!
-      type(modeview_ctl), intent(inout) :: mat
-!
-!
-      call MPI_BCAST(mat%i_image_size,  ione,                           &
-     &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
-!
-      call bcast_ctl_type_i1(mat%num_xpixel_ctl)
-      call bcast_ctl_type_i1(mat%num_ypixel_ctl)
-!
-      end subroutine bcast_image_size_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine bcast_stereo_view_ctl(mat)
-!
-      type(modeview_ctl), intent(inout) :: mat
-!
-!
-      call MPI_BCAST(mat%i_stereo_view,  ione,                          &
-     &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
-!
-      call bcast_ctl_type_r1(mat%focalpoint_ctl)
-      call bcast_ctl_type_r1(mat%eye_separation_ctl)
-!
-      end subroutine bcast_stereo_view_ctl
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
