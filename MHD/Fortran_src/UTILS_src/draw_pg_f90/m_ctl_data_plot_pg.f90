@@ -11,6 +11,7 @@
       module m_ctl_data_plot_pg
 !
       use m_precision
+      use t_ctl_data_4_time_steps
       use t_control_elements
       use t_read_control_arrays
 !
@@ -22,6 +23,10 @@
      &                 :: fname_pgplot_ctl = 'ctl_draw_pg'
       character(len = kchara), parameter                                &
      &                 :: fname_drmed_grp_ctl = 'ctl_draw_pg_grouped'
+!
+!
+!>      Structure for time stepping control
+      type(time_data_control), save :: t_pg_ctl
 !
       character(len=kchara) :: start_ele_grp_name_ctl
 !
@@ -103,12 +108,15 @@
      &                    :: hd_sphere_map_ctl = 'sphere_map_ctl'
       character(len=kchara), parameter                                  &
      &                    :: hd_grouping_plot = 'grouping_plot_ctl'
+      character(len=kchara), parameter                                  &
+     &      :: hd_time_step = 'time_step_ctl'
 !
       integer(kind= kint) :: i_pgplot_param =    0
       integer(kind= kint) :: i_sf_plotting =     0
       integer(kind= kint) :: i_z_plane_ctl =     0
       integer(kind= kint) :: i_sphere_map_ctl =  0
       integer(kind= kint) :: i_grouping_plot =   0
+      integer (kind=kint) :: i_tstep =      0
 !
 !     flags for pgplot paramter
 !
@@ -193,6 +201,7 @@
       private :: hd_z_plane_ctl,    i_z_plane_ctl
       private :: hd_sphere_map_ctl, i_sphere_map_ctl
       private :: hd_grouping_plot,  i_grouping_plot
+      private :: hd_time_step, i_tstep
       private :: hd_contour_type_ctl, hd_color_mode_ctl
       private :: hd_num_panels_ctl
       private :: hd_psf_data_fmt_ctl, hd_map_grid_file
@@ -259,7 +268,6 @@
       subroutine read_ctl_data_draw_pgplot
 !
       use m_machine_parameter
-      use m_ctl_data_4_time_steps
       use m_read_control_elements
       use skip_comment_f
 !
@@ -273,7 +281,8 @@
         if(i_draw_pgplot .gt. 0) exit
 !
 !
-        call read_time_step_ctl
+        call read_control_time_step_data                                &
+     &     (hd_time_step, i_tstep, t_pg_ctl)
 !
         call read_ctl_data_4_pgplot_param
         call read_ctl_data_4_surf_plot

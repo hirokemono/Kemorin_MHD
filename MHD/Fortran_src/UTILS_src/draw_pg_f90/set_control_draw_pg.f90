@@ -26,7 +26,6 @@
       subroutine s_set_control_draw_pg
 !
       use m_ctl_data_plot_pg
-      use m_ctl_data_4_time_steps
       use m_isoline_dat_pg
       use m_file_format_switch
       use m_field_file_format
@@ -37,28 +36,28 @@
 !
 !
       start_time_pg = 0.0d0
-      if(tctl1%time_init_ctl%iflag .gt. 0) then
-        start_time_pg = tctl1%time_init_ctl%realvalue
+      if(t_pg_ctl%time_init_ctl%iflag .gt. 0) then
+        start_time_pg = t_pg_ctl%time_init_ctl%realvalue
       end if
 !
       delta_time_pg = 0.0d0
-      if(tctl1%dt_ctl%iflag .gt. 0) then
-        delta_time_pg = tctl1%dt_ctl%realvalue
+      if(t_pg_ctl%dt_ctl%iflag .gt. 0) then
+        delta_time_pg = t_pg_ctl%dt_ctl%realvalue
       end if
 !
       ist_pg = 1
-      if(tctl1%i_step_init_ctl%iflag .gt. 0) then
-        ist_pg = tctl1%i_step_init_ctl%intvalue
+      if(t_pg_ctl%i_step_init_ctl%iflag .gt. 0) then
+        ist_pg = t_pg_ctl%i_step_init_ctl%intvalue
       end if
 !
       ied_pg = 1
-      if(tctl1%i_step_number_ctl%iflag .gt. 0) then
-        ied_pg = tctl1%i_step_number_ctl%intvalue
+      if(t_pg_ctl%i_step_number_ctl%iflag .gt. 0) then
+        ied_pg = t_pg_ctl%i_step_number_ctl%intvalue
       end if
 !
       inc_pg = 1
-      if(tctl1%i_step_psf_ctl%iflag .gt. 0) then
-        inc_pg = tctl1%i_step_psf_ctl%intvalue
+      if(t_pg_ctl%i_step_psf_ctl%iflag .gt. 0) then
+        inc_pg = t_pg_ctl%i_step_psf_ctl%intvalue
       end if
 !
 !

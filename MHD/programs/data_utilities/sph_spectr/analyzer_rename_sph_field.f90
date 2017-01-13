@@ -73,7 +73,7 @@
       call read_control_data_diff_spectr(ctl1)
 !
       call set_control_diff_sph_field                                   &
-     &   (ctl1%file_list, files1, istart, iend, increment)
+     &   (ctl1%tctl, ctl1%file_list, files1, istart, iend, increment)
       call set_control_rename_sph_fld(ctl1%field_list, rename1)
 !
       do istep_fld = istart, iend, increment

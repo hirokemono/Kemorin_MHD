@@ -8,6 +8,7 @@
       module m_ctl_data_ele_grp_udt
 !
       use m_precision
+      use t_ctl_data_4_time_steps
 !
       implicit none
 !
@@ -18,6 +19,9 @@
 !
 !
 !    parameter for grouping plots
+!
+!>      Structure for time stepping control
+      type(time_data_control), save :: t_egu_ctl
 !
       character(len=kchara) :: group_mesh_head_ctl = 'grouping_mesh'
       character(len=kchara) :: grp_evo_data_ctl = 'correlation.dat'
@@ -40,6 +44,11 @@
      &                    :: hd_grouping_plot = 'grouping_plot_ctl'
 !
       integer(kind= kint) :: i_grouping_plot =   0
+!
+      character(len=kchara), parameter                                  &
+     &      :: hd_time_step = 'time_step_ctl'
+      integer (kind=kint) :: i_tstep =      0
+!
 !
 !     flags for grouping plot
 !
@@ -70,6 +79,7 @@
       private :: hd_group_mesh_head, hd_group_data_name
       private :: hd_group_udt_head, hd_start_ele_grp_name
       private :: hd_ngrp_ele_grp
+      private :: hd_time_step, i_tstep
 !
       private :: read_ctl_data_ele_grp_udt
       private :: read_ctl_data_4_drmd_grp
@@ -103,7 +113,6 @@
       subroutine read_ctl_data_ele_grp_udt
 !
       use m_machine_parameter
-      use m_ctl_data_4_time_steps
       use m_read_control_elements
       use skip_comment_f
 !
@@ -116,7 +125,8 @@
         call find_control_end_flag(hd_udt_ele_grp, i_ele_grp_udt)
         if(i_ele_grp_udt .gt. 0) exit
 !
-        call  read_time_step_ctl
+        call read_control_time_step_data                                &
+     &     (hd_time_step, i_tstep, t_egu_ctl)
         call read_ctl_data_4_drmd_grp
       end do
 !

@@ -52,7 +52,6 @@
 !
       subroutine set_control_ele_grp_udt
 !
-      use m_ctl_data_4_time_steps
       use m_ctl_data_ele_grp_udt
       use set_parallel_file_name
 !
@@ -105,28 +104,28 @@
 !
 !
       start_time = 0.0d0
-      if(tctl1%time_init_ctl%iflag .gt. 0) then
-        start_time = tctl1%time_init_ctl%realvalue
+      if(t_egu_ctl%time_init_ctl%iflag .gt. 0) then
+        start_time = t_egu_ctl%time_init_ctl%realvalue
       end if
 !
       delta_t = 0.0d0
-      if(tctl1%dt_ctl%iflag .gt. 0) then
-        delta_t = tctl1%dt_ctl%realvalue
+      if(t_egu_ctl%dt_ctl%iflag .gt. 0) then
+        delta_t = t_egu_ctl%dt_ctl%realvalue
       end if
 !
       istep_start = 1
-      if(tctl1%i_step_init_ctl%iflag .gt. 0) then
-        istep_start = tctl1%i_step_init_ctl%intvalue
+      if(t_egu_ctl%i_step_init_ctl%iflag .gt. 0) then
+        istep_start = t_egu_ctl%i_step_init_ctl%intvalue
       end if
 !
       istep_end = 1
-      if(tctl1%i_step_number_ctl%iflag .gt. 0) then
-        istep_end = tctl1%i_step_number_ctl%intvalue
+      if(t_egu_ctl%i_step_number_ctl%iflag .gt. 0) then
+        istep_end = t_egu_ctl%i_step_number_ctl%intvalue
       end if
 !
       istep_inc = 1
-      if(tctl1%i_step_psf_ctl%iflag .gt. 0) then
-        istep_inc = tctl1%i_step_psf_ctl%intvalue
+      if(t_egu_ctl%i_step_psf_ctl%iflag .gt. 0) then
+        istep_inc = t_egu_ctl%i_step_psf_ctl%intvalue
       end if
 !
       call add_int_suffix(istep_start, grp_ucd_data_head, fhead_tmp)

@@ -11,6 +11,7 @@
       use calypso_mpi
       use m_machine_parameter
       use m_read_control_elements
+      use t_ctl_data_4_time_steps
       use skip_comment_f
 !
 !
@@ -23,6 +24,8 @@
       character(len = kchara), parameter                                &
      &                 :: fname_prod_ctl = "ctl_prod_udt"
 !
+!>      Structure for time stepping control
+      type(time_data_control), save :: t_pu_ctl
 !
       character(len = kchara) :: product_udt_1_head_ctl = "field/out"
       character(len = kchara) :: product_udt_2_head_ctl = "field/out"
@@ -61,6 +64,10 @@
 !     3rd level for fields
 !
       character(len=kchara), parameter                                  &
+     &      :: hd_time_step = 'time_step_ctl'
+      integer (kind=kint) :: i_tstep =      0
+!
+      character(len=kchara), parameter                                  &
      &      :: hd_product_field_1 = 'product_field_1_ctl'
       character(len=kchara), parameter                                  &
      &      :: hd_product_field_2 = 'product_field_2_ctl'
@@ -78,6 +85,7 @@
       private :: fname_prod_ctl
 !
       private :: i_prod_control, hd_prod_control
+      private :: hd_time_step, i_tstep
       private :: hd_prod_files, hd_prod_model
       private :: hd_product_udt_1, hd_product_udt_2
       private :: hd_product_type
@@ -163,8 +171,6 @@
 !
       subroutine read_product_model_ctl
 !
-      use m_ctl_data_4_time_steps
-!
 !
       if(right_begin_flag(hd_prod_model) .eq. 0) return
       if (i_prod_model.gt.0) return
@@ -175,7 +181,8 @@
         if(i_prod_model .gt. 0) exit
 !
 !
-        call read_time_step_ctl
+        call read_control_time_step_data                                &
+     &     (hd_time_step, i_tstep, t_pu_ctl)
 !
         call read_character_ctl_item(hd_result_field,                   &
      &            i_result_field, result_field_ctl)

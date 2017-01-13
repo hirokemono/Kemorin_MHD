@@ -8,6 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine evolution_diff_sph_spectr
+!!      subroutine set_control_diff_sph_field                           &
+!!     &         (tctl, f_ctl, files, istart, iend, increment)
+!!        type(time_data_control), intent(in) :: tctl
+!!        type(diff_spectrum_ctl), intent(in) :: f_ctl
+!!        type(diff_spectrum_file_param), intent(inout) :: files
 !!@endverbatim
 !
       module t_ctl_param_sph_data_utils
@@ -60,15 +65,16 @@
 ! -------------------------------------------------------------------
 !
       subroutine set_control_diff_sph_field                             &
-     &         (f_ctl, files, istart, iend, increment)
+     &         (tctl, f_ctl, files, istart, iend, increment)
 !
       use t_ctl_data_sph_data_utils
+      use t_ctl_data_4_time_steps
       use m_file_format_switch
       use m_ctl_data_4_platforms
-      use m_ctl_data_4_time_steps
       use set_ctl_parallel_platform
       use set_control_platform_data
 !
+      type(time_data_control), intent(in) :: tctl
       type(diff_spectrum_ctl), intent(in) :: f_ctl
       type(diff_spectrum_file_param), intent(inout) :: files
       integer(kind = kint), intent(inout) :: istart, iend, increment
@@ -105,12 +111,12 @@
       write(*,*) 'f_ctl%out_field_head_ctl%iflag',                      &
      &          f_ctl%out_field_head_ctl%iflag
 !
-        if(tctl1%i_step_init_ctl%iflag .gt. 0)                          &
-     &             istart = tctl1%i_step_init_ctl%intvalue
-        if(tctl1%i_step_number_ctl%iflag .gt. 0)                        &
-     &             iend = tctl1%i_step_number_ctl%intvalue
-        if(tctl1%i_step_ucd_ctl%iflag .gt. 0)                           &
-     &             increment = tctl1%i_step_ucd_ctl%intvalue
+        if(tctl%i_step_init_ctl%iflag .gt. 0)                           &
+     &             istart = tctl%i_step_init_ctl%intvalue
+        if(tctl%i_step_number_ctl%iflag .gt. 0)                         &
+     &             iend = tctl%i_step_number_ctl%intvalue
+        if(tctl%i_step_ucd_ctl%iflag .gt. 0)                            &
+     &             increment = tctl%i_step_ucd_ctl%intvalue
 !
       end subroutine set_control_diff_sph_field
 !

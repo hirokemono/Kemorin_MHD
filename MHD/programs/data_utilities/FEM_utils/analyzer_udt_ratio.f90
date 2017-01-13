@@ -30,7 +30,6 @@
 !
       use m_ctl_params_4_prod_udt
       use m_array_for_send_recv
-      use m_ctl_data_4_time_steps
       use m_ctl_data_product_udt
       use nod_phys_send_recv
       use product_udt_fields
@@ -52,7 +51,7 @@
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_prod_udt'
       call set_ctl_params_prod_udt                                      &
      &   (mesh_file_FUTIL, udt_param_FUTIL, ucd_FUTIL)
-      call s_set_fixed_time_step_params(tctl1, ierr, e_message)
+      call s_set_fixed_time_step_params(t_pu_ctl, ierr, e_message)
 !
 !     --------------------- 
 !

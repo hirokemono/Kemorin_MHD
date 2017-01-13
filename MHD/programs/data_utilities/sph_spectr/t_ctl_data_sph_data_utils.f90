@@ -44,6 +44,7 @@
       use calypso_mpi
 !
       use t_control_elements
+      use t_ctl_data_4_time_steps
       use t_read_control_arrays
 !
       type diff_spectrum_ctl
@@ -61,6 +62,8 @@
       end type rename_spectr_ctl
 !
       type spectr_data_util_ctl
+!>      Structure for time stepping control
+        type(time_data_control) :: tctl
         type(diff_spectrum_ctl) :: file_list
         type(rename_spectr_ctl) :: field_list
       end type spectr_data_util_ctl
@@ -73,6 +76,9 @@
      &       :: hd_file_def = 'file_definition'
       character(len=kchara), parameter                                  &
      &       :: hd_rename_def = 'rename_field_ctl'
+      character(len=kchara), parameter                                  &
+     &      :: hd_time_step = 'time_step_ctl'
+      integer (kind=kint) :: i_tstep =      0
 !
       character(len=kchara), parameter                                  &
      &      :: hd_org_field_prefix =     'org_sprctr_prefix'
@@ -95,6 +101,7 @@
       private :: hd_sub_field_prefix, hd_sub_field_format
       private :: hd_out_field_prefix, hd_out_field_format
       private :: hd_rename_def, hd_field_to_rename
+      private :: hd_time_step, i_tstep
 !
 ! -------------------------------------------------------------------
 !
@@ -105,7 +112,6 @@
       subroutine read_spectr_util_control(ctl)
 !
       use m_ctl_data_4_platforms
-      use m_ctl_data_4_time_steps
 !
       type(spectr_data_util_ctl), intent(inout) :: ctl
       integer(kind = kint) :: i_hard = 0
@@ -121,7 +127,8 @@
         if(i_hard .gt. 0) exit
 !
         call read_ctl_data_4_platform
-        call read_time_step_ctl
+        call read_control_time_step_data                                &
+     &     (hd_time_step, i_tstep, ctl%tctl)
         call read_diff_spectr_file_control(ctl%file_list)
         call read_rename_spectr_control(ctl%field_list)
       end do
