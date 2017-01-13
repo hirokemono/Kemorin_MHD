@@ -32,7 +32,6 @@
      &         (mesh_file, udt_org_param, nod_fld, ucd)
 !
       use t_ucd_data
-      use m_ctl_data_4_fields
       use m_ctl_data_diff_udt
       use m_fem_gauss_int_coefs
       use set_control_nodal_data
@@ -52,11 +51,11 @@
       call s_set_control_ele_layering(elayer_d_ctl)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_control_nodal_data'
-      call s_set_control_nodal_data(fld_ctl1%field_ctl, nod_fld, ierr)
+      call s_set_control_nodal_data(fld_d_ctl%field_ctl, nod_fld, ierr)
       if (ierr .ne. 0) call calypso_MPI_abort(ierr, e_message)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_ctl_4_diff_udt_steps'
-      call s_set_ctl_4_diff_udt_steps
+      call s_set_ctl_4_diff_udt_steps(t_d_ctl)
 !
       if(fint_d_ctl%integration_points_ctl%iflag .gt. 0) then
         call maximum_integration_points                                 &
@@ -180,42 +179,43 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_ctl_4_diff_udt_steps
+      subroutine s_set_ctl_4_diff_udt_steps(tctl)
 !
       use m_t_step_parameter
       use m_error_IDs
       use m_t_int_parameter
-      use m_ctl_data_4_time_steps
+      use t_ctl_data_4_time_steps
       use cal_num_digits
 !
+      type(time_data_control), intent(in) :: tctl
 !
 !   parameters for time evolution
 !
         i_step_init   = 0
-        if (tctl1%i_step_init_ctl%iflag .gt. 0) then
-          i_step_init   = tctl1%i_step_init_ctl%intvalue
+        if (tctl%i_step_init_ctl%iflag .gt. 0) then
+          i_step_init   = tctl%i_step_init_ctl%intvalue
         end if
 !
-        if (tctl1%i_step_number_ctl%iflag .eq. 0) then
+        if (tctl%i_step_number_ctl%iflag .eq. 0) then
           e_message = 'Set step number to finish'
             call calypso_MPI_abort(ierr_evo, e_message)
         else
-          i_step_number = tctl1%i_step_number_ctl%intvalue
+          i_step_number = tctl%i_step_number_ctl%intvalue
         end if
 !
         i_step_output_ucd = 1
-        if (tctl1%i_step_ucd_ctl%iflag .gt. 0) then
-          i_step_output_ucd = tctl1%i_step_ucd_ctl%intvalue
+        if (tctl%i_step_ucd_ctl%iflag .gt. 0) then
+          i_step_output_ucd = tctl%i_step_ucd_ctl%intvalue
         end if
 !
         i_diff_steps = 1
-        if (tctl1%i_diff_steps_ctl%iflag .gt. 0) then
-          i_diff_steps = tctl1%i_diff_steps_ctl%intvalue
+        if (tctl%i_diff_steps_ctl%iflag .gt. 0) then
+          i_diff_steps = tctl%i_diff_steps_ctl%intvalue
         end if
 !
         dt = 1.0d0
-        if (tctl1%dt_ctl%iflag .gt. 0) then
-          dt = tctl1%dt_ctl%realvalue
+        if (tctl%dt_ctl%iflag .gt. 0) then
+          dt = tctl%dt_ctl%realvalue
         end if
 !
         if (dt .eq. 0.0d0) then

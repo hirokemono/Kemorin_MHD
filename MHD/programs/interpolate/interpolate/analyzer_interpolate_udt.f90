@@ -50,6 +50,7 @@
 !
       subroutine initialize_itp_udt
 !
+      use m_ctl_data_gen_table
       use m_ctl_params_4_gen_table
       use m_t_step_parameter
 !
@@ -69,7 +70,7 @@
       call s_input_control_interpolate(org_femmesh, org_ele_mesh,       &
      &   new_femmesh, new_ele_mesh, itp_udt, ierr)
 !
-      call set_ctl_interpolate_udt(nod_fld_ITP)
+      call set_ctl_interpolate_udt(fld_gt_ctl, nod_fld_ITP)
 !
 !     --------------------- 
 !

@@ -4,7 +4,8 @@
 !     Written by H. Matsui on July, 2006
 !
 !!      subroutine set_ctl_params_interpolation
-!!      subroutine set_ctl_4_itp_steps
+!!      subroutine set_ctl_4_itp_steps(tctl)
+!!        type(time_data_control), save :: tctl
 !
       module set_ctl_interpolation
 !
@@ -139,34 +140,36 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_ctl_4_itp_steps
+      subroutine set_ctl_4_itp_steps(tctl)
 !
       use m_machine_parameter
       use m_t_step_parameter
-      use m_ctl_data_4_time_steps
+      use t_ctl_data_4_time_steps
+!
+      type(time_data_control), intent(in) :: tctl
 !
 !   parameters for time evolution
 !
         i_step_init   = 0
-        if (tctl1%i_step_init_ctl%iflag .gt. 0) then
-          i_step_init   = tctl1%i_step_init_ctl%intvalue
+        if (tctl%i_step_init_ctl%iflag .gt. 0) then
+          i_step_init   = tctl%i_step_init_ctl%intvalue
         end if
 !
-        if (tctl1%i_step_number_ctl%iflag .eq. 0) then
+        if (tctl%i_step_number_ctl%iflag .eq. 0) then
           e_message = 'Set step number to finish'
             call calypso_MPI_abort(ierr_evo, e_message)
         else
-          i_step_number = tctl1%i_step_number_ctl%intvalue
+          i_step_number = tctl%i_step_number_ctl%intvalue
         end if
 !
         i_step_output_rst = 0
-        if (tctl1%i_step_rst_ctl%intvalue .gt. 0) then
-          i_step_output_rst = tctl1%i_step_rst_ctl%intvalue
+        if (tctl%i_step_rst_ctl%intvalue .gt. 0) then
+          i_step_output_rst = tctl%i_step_rst_ctl%intvalue
         end if
 !
         i_step_output_ucd = 0
-        if (tctl1%i_step_ucd_ctl%iflag .gt. 0) then
-          i_step_output_ucd = tctl1%i_step_ucd_ctl%intvalue
+        if (tctl%i_step_ucd_ctl%iflag .gt. 0) then
+          i_step_output_ucd = tctl%i_step_ucd_ctl%intvalue
         end if
 !
         if (iflag_debug.eq.1) then

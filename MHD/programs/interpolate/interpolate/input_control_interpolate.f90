@@ -6,7 +6,9 @@
 !      subroutine s_input_control_interpolate                           &
 !     &         (org_femmesh, org_ele_mesh, new_femmesh, new_ele_mesh,  &
 !     &          itp_info, ierr)
-!      subroutine set_ctl_interpolate_udt(nod_fld)
+!      subroutine set_ctl_interpolate_udt(fld_ctl, nod_fld)
+!        type(field_control), intent(inout) :: fld_ctl
+!        type(phys_data), intent(inout) :: nod_fld
 !
       module input_control_interpolate
 !
@@ -59,7 +61,7 @@
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_interpolation'
       call set_ctl_params_interpolation
 !
-      call set_ctl_4_itp_steps
+      call set_ctl_4_itp_steps(t_gt_ctl)
 !
 !  --  read geometry for origin (if exist)
 !
@@ -112,18 +114,19 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_ctl_interpolate_udt(nod_fld)
+      subroutine set_ctl_interpolate_udt(fld_ctl, nod_fld)
 !
       use calypso_mpi
       use t_phys_data
-      use m_ctl_data_4_fields
+      use t_ctl_data_4_fields
       use set_control_nodal_data
 !
+      type(field_control), intent(inout) :: fld_ctl
       type(phys_data), intent(inout) :: nod_fld
       integer(kind = kint) :: ierr
 !
 !
-      call s_set_control_nodal_data(fld_ctl1%field_ctl, nod_fld, ierr)
+      call s_set_control_nodal_data(fld_ctl%field_ctl, nod_fld, ierr)
       if (ierr .ne. 0) call calypso_MPI_abort(ierr, e_message)
 !
       end subroutine set_ctl_interpolate_udt

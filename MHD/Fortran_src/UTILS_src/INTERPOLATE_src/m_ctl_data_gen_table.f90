@@ -20,6 +20,8 @@
 !
       use m_machine_parameter
       use m_read_control_elements
+      use t_ctl_data_4_fields
+      use t_ctl_data_4_time_steps
       use t_control_elements
       use t_read_control_arrays
       use skip_comment_f
@@ -36,6 +38,11 @@
       character(len = kchara), parameter                                &
      &                 :: fname_dist_itp_ctl = "ctl_distribute_itp"
 !
+!
+!>      Structure for field information control
+      type(field_control), save :: fld_gt_ctl
+!>      Structure for time stepping control
+      type(time_data_control), save :: t_gt_ctl
 !
 !>      file prefix for interpolation table
       type(read_character_item), save :: table_head_ctl
@@ -91,6 +98,15 @@
       character(len=kchara), parameter :: hd_distribute_itp             &
      &                   = 'parallel_table'
       integer (kind=kint) :: i_distribute_itp = 0
+!
+!>      label for block
+      character(len=kchara), parameter                                  &
+     &      :: hd_phys_values =  'phys_values_ctl'
+      character(len=kchara), parameter                                  &
+     &      :: hd_time_step = 'time_step_ctl'
+!>      Number of field
+      integer (kind=kint) :: i_phys_values =   0
+      integer (kind=kint) :: i_tstep =      0
 !
 !     2nd level for const_filter
 !
@@ -159,6 +175,8 @@
       private :: hd_reverse_ele_tbl, hd_single_itp_tbl
       private :: hd_eps_4_itp, hd_itr, hd_eps
       private :: hd_num_hash_x, hd_num_hash_y, hd_num_hash_z
+      private :: hd_phys_values, i_phys_values
+      private :: hd_time_step, i_tstep
 !
       private :: read_const_itp_tbl_ctl_data
       private :: read_control_dist_itp_data
@@ -299,9 +317,6 @@
 !
       subroutine read_itaration_model_ctl
 !
-      use m_ctl_data_4_fields
-      use m_ctl_data_4_time_steps
-!
 !
       if(right_begin_flag(hd_itp_model) .eq. 0) return
       if (i_itp_model.gt.0) return
@@ -311,8 +326,10 @@
         call find_control_end_flag(hd_itp_model, i_itp_model)
         if(i_itp_model .gt. 0) exit
 !
-        call read_phys_values
-        call read_time_step_ctl
+        call read_phys_data_control                                     &
+     &     (hd_phys_values, i_phys_values, fld_gt_ctl)
+        call read_control_time_step_data                                &
+     &     (hd_time_step, i_tstep, t_gt_ctl)
       end do
 !
       end subroutine read_itaration_model_ctl

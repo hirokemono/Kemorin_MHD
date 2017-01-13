@@ -39,7 +39,6 @@
 !
       use m_ctl_params_4_diff_udt
       use m_ctl_data_diff_udt
-      use m_ctl_data_4_fields
 !
       use set_ctl_diff_udt
       use set_control_nodal_data
@@ -58,11 +57,11 @@
       call set_ctl_params_diff_udt(mesh_file, udt_org_param, ucd)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_control_nodal_data'
-      call s_set_control_nodal_data(fld_ctl1%field_ctl, nod_fld, ierr)
+      call s_set_control_nodal_data(fld_d_ctl%field_ctl, nod_fld, ierr)
       if (ierr .ne. 0) call calypso_MPI_abort(ierr, e_message)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_ctl_4_diff_udt_steps'
-      call s_set_ctl_4_diff_udt_steps
+      call s_set_ctl_4_diff_udt_steps(t_d_ctl)
 !
       end subroutine s_input_control_udt_diff
 !
@@ -73,7 +72,6 @@
 !
       use m_ctl_params_4_diff_udt
       use m_ctl_data_diff_udt
-      use m_ctl_data_4_fields
 !
       use set_ctl_diff_udt
       use set_control_nodal_data
@@ -92,11 +90,11 @@
       call set_ctl_params_diff_udt(mesh_file, udt_org_param, ucd)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_control_nodal_data'
-      call s_set_control_nodal_data(fld_ctl1%field_ctl, nod_fld, ierr)
+      call s_set_control_nodal_data(fld_d_ctl%field_ctl, nod_fld, ierr)
       if (ierr .ne. 0) call calypso_MPI_abort(ierr, e_message)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_ctl_4_diff_udt_steps'
-      call s_set_ctl_4_diff_udt_steps
+      call s_set_ctl_4_diff_udt_steps(t_d_ctl)
 !
       end subroutine s_input_control_ave_udt
 !

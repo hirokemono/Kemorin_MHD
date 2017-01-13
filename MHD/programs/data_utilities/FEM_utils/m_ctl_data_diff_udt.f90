@@ -15,6 +15,8 @@
       use m_precision
       use m_machine_parameter
       use m_read_control_elements
+      use t_ctl_data_4_fields
+      use t_ctl_data_4_time_steps
       use t_ctl_data_ele_layering
       use t_ctl_data_4_fem_int_pts
       use calypso_mpi
@@ -26,6 +28,10 @@
 !
       integer(kind = kint), parameter :: diff_ctl_file_code = 11
 !
+!>      Structure for field information control
+      type(field_control), save :: fld_d_ctl
+!>      Structure for time stepping control
+      type(time_data_control), save :: t_d_ctl
 !>     Structure for element layering
       type(layering_control), save :: elayer_d_ctl
 !>     integeration points
@@ -130,15 +136,24 @@
 !
 !   labels for entry
 !
+!>      label for block
+      character(len=kchara), parameter                                  &
+     &      :: hd_phys_values =  'phys_values_ctl'
+      character(len=kchara), parameter                                  &
+     &      :: hd_time_step = 'time_step_ctl'
       character(len=kchara), parameter :: hd_dynamic_layers             &
      &                        = 'dynamic_model_layer_ctl'
       character(len=kchara), parameter                                  &
      &      :: hd_int_points = 'intg_point_num_ctl'
+!>      Number of field
+      integer (kind=kint) :: i_phys_values =   0
+      integer (kind=kint) :: i_tstep =      0
       integer (kind=kint) :: i_dynamic_layers = 0
       integer (kind=kint) :: i_int_points = 0
 !
       private :: hd_dynamic_layers, i_dynamic_layers
       private :: hd_int_points, i_int_points
+      private :: hd_phys_values, i_phys_values
 !
 !   --------------------------------------------------------------------
 !
@@ -259,7 +274,6 @@
 !
       subroutine read_diff_model_ctl
 !
-      use m_ctl_data_4_fields
       use m_ctl_data_4_time_steps
 !
 !
@@ -272,11 +286,13 @@
         if(i_diff_model .gt. 0) exit
 !
 !
-        call read_phys_values
-        call read_time_step_ctl
+        call read_phys_data_control                                     &
+     &     (hd_phys_values, i_phys_values, fld_d_ctl)
+        call read_control_time_step_data                                &
+     &     (hd_time_step, i_tstep, t_d_ctl)
         call read_ele_layers_control                                    &
      &     (hd_dynamic_layers, i_dynamic_layers, elayer_d_ctl)
-        call read_control_fem_int_points                                  &
+        call read_control_fem_int_points                                &
      &     (hd_int_points, i_int_points, fint_d_ctl)
 !
 !
