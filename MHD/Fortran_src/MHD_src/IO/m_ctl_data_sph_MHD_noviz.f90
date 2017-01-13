@@ -110,7 +110,7 @@
         call read_ctl_data_4_platform
         call read_ctl_data_4_org_data
 !
-        call read_control_data_4_shell_in_MHD
+        call read_ctl_data_4_shell_in_MHD
 !
         call read_sph_mhd_model
         call read_sph_mhd_control
@@ -118,6 +118,15 @@
         call read_monitor_data_control
         call read_pickup_sph_ctl
       end do
+!
+!      call bcast_ctl_data_4_platform(plt1)
+!      call bcast_ctl_data_4_platform(org_plt)
+!
+!      call bcast_ctl_4_shell_define(spctl1)
+!      call bcast_ctl_ndomain_4_shell(sdctl1)
+!
+!      call bcast_monitor_data_ctl(nmtr_ctl1)
+!      call bcast_sph_monitoring_ctl(smonitor_ctl1)
 !
       end subroutine read_sph_mhd_ctl_noviz
 !

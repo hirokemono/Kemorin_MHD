@@ -30,7 +30,7 @@
       use m_error_IDs
       use m_machine_parameter
       use m_control_parameter
-      use m_ctl_data_4_fem_int_pts
+      use m_ctl_data_fem_MHD
       use t_ctl_data_mhd_evo_scheme
       use skip_comment_f
 !

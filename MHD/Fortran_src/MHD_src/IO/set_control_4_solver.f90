@@ -34,7 +34,7 @@
       use calypso_mpi
       use m_error_IDs
       use m_iccg_parameter
-      use m_ctl_data_4_solvers
+      use m_ctl_data_fem_MHD
       use m_ctl_parameter_Multigrid
       use t_ctl_data_mhd_evo_scheme
       use skip_comment_f

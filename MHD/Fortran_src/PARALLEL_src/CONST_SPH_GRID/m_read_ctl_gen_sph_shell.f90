@@ -4,7 +4,7 @@
 !      Written by H. Matsui on July, 2007
 !
 !      subroutine read_control_4_gen_shell_grids
-!      subroutine read_control_data_4_shell_in_MHD
+!      subroutine read_ctl_data_4_shell_in_MHD
 !
       module m_read_ctl_gen_sph_shell
 !
@@ -95,7 +95,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_control_data_4_shell_in_MHD
+      subroutine read_ctl_data_4_shell_in_MHD
 !
       use m_read_control_elements
       use m_ctl_data_4_sphere_model
@@ -119,7 +119,7 @@
         call read_ctl_ndomain_4_shell
       end do
 !
-      end subroutine read_control_data_4_shell_in_MHD
+      end subroutine read_ctl_data_4_shell_in_MHD
 !
 !   --------------------------------------------------------------------
 !

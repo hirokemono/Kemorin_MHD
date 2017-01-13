@@ -13,6 +13,7 @@
 !!@verbatim
 !!      subroutine read_sph_mhd_model
 !!      subroutine read_sph_mhd_control
+!!      subroutine bcast_sph_mhd_control
 !!@endverbatim
 !
       module read_ctl_data_sph_MHD
@@ -107,6 +108,21 @@
       end do
 !
       end subroutine read_sph_mhd_control
+!
+!   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine bcast_sph_mhd_control
+!
+      use m_ctl_data_4_time_steps
+      use m_ctl_data_mhd_evo_scheme
+!
+!
+      call read_restart_ctl(mr_ctl1)
+      call read_time_loop_ctl(mevo_ctl1)
+      call bcast_ctl_data_4_time_step(tctl1)
+!
+      end subroutine bcast_sph_mhd_control
 !
 !   --------------------------------------------------------------------
 !

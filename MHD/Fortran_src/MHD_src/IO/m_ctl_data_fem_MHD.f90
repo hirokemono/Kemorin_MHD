@@ -17,6 +17,8 @@
       use calypso_mpi
       use m_machine_parameter
       use m_read_control_elements
+      use t_ctl_data_4_solvers
+      use t_ctl_data_4_fem_int_pts
       use skip_comment_f
 !
       implicit none
@@ -25,6 +27,12 @@
       character(len=kchara), parameter :: MHD_ctl_name =  'control_MHD'
       character(len=kchara), parameter                                  &
      &                      :: snap_ctl_name = 'control_snapshot'
+!
+!>      Structure for CG solver control
+      type(solver_control), save :: CG_ctl1
+!>      integeration points
+      type(fem_intergration_control), save  :: fint_ctl1
+!
 !
 !   Top level of label
 !
@@ -39,13 +47,26 @@
       integer (kind=kint) :: i_model =        0
       integer (kind=kint) :: i_control =      0
 !
+!  labels for entry groups
+!
+      character(len=kchara), parameter                                  &
+     &       :: hd_solver_ctl =     'solver_ctl'
+      character(len=kchara), parameter                                  &
+     &      :: hd_int_points = 'intg_point_num_ctl'
+!
+      integer (kind=kint) :: i_solver_ctl =     0
+      integer (kind=kint) :: i_int_points = 0
+!
+!
       private :: MHD_ctl_name, snap_ctl_name
       private :: hd_mhd_ctl, i_mhd_ctl
 !
       private :: hd_model, hd_control, i_model, i_control
+      private :: hd_solver_ctl, i_solver_ctl
+      private :: hd_int_points, i_int_points
 !
       private :: read_fem_mhd_control_data
-      private :: read_fem_mhd_model, read_fem_mhd_control
+      private :: read_fem_mhd_control
 !
 ! ----------------------------------------------------------------------
 !
@@ -92,6 +113,7 @@
       use m_ctl_data_node_monitor
       use m_ctl_data_4_pickup_sph
       use m_ctl_data_4_org_data
+      use read_ctl_data_sph_MHD
 !
 !
       if(right_begin_flag(hd_mhd_ctl) .eq. 0) return
@@ -106,7 +128,7 @@
         call read_ctl_data_4_platform
         call read_ctl_data_4_org_data
 !
-        call read_fem_mhd_model
+        call read_sph_mhd_model
         call read_fem_mhd_control
 !
         call read_monitor_data_control
@@ -114,60 +136,21 @@
         call read_sections_control_data
       end do
 !
+!      call bcast_ctl_data_4_platform(plt1)
+!      call bcast_ctl_data_4_platform(org_plt)
+!
+!      call bcast_monitor_data_ctl(nmtr_ctl1)
+!      call bcast_sph_monitoring_ctl(smonitor_ctl1)
+!      call bcast_files_4_psf_ctl
+!      call bcast_files_4_iso_ctl
+!
       end subroutine read_fem_mhd_control_data
-!
-!   --------------------------------------------------------------------
-!   --------------------------------------------------------------------
-!
-      subroutine read_fem_mhd_model
-!
-      use m_ctl_data_4_fields
-      use m_ctl_data_mhd_evolution
-      use m_ctl_data_node_boundary
-      use m_ctl_data_surf_boundary
-      use m_ctl_data_mhd_forces
-      use m_ctl_data_SGS_model
-      use m_ctl_data_mhd_normalize
-      use m_ctl_data_temp_model
-!
-!
-      if(right_begin_flag(hd_model) .eq. 0) return
-      if (i_model .gt. 0) return
-      do
-        call load_ctl_label_and_line
-!
-        call find_control_end_flag(hd_model, i_model)
-        if(i_model .gt. 0) exit
-!
-        call read_phys_values
-!
-        call read_mhd_time_evo_control
-        call read_mhd_layer_control
-!
-        call read_bc_4_node
-        call read_bc_4_surf
-!
-        call read_forces_control
-        call read_dimless_control
-        call read_coef_term_control
-!
-        call read_gravity_control
-        call read_coriolis_control
-        call read_magneto_control
-        call read_temp_control
-!
-        call read_sgs_control
-      end do
-!
-      end subroutine read_fem_mhd_model
 !
 !   --------------------------------------------------------------------
 !
       subroutine read_fem_mhd_control
 !
       use m_ctl_data_4_time_steps
-      use m_ctl_data_4_solvers
-      use m_ctl_data_4_fem_int_pts
       use m_ctl_data_mhd_evo_scheme
 !
 !
@@ -182,13 +165,32 @@
 !
         call read_time_step_ctl
         call read_restart_control
-        call read_fem_int_points_ctl
+        call read_control_fem_int_points                                &
+     &     (hd_int_points, i_int_points, fint_ctl1)
 !
-        call read_crs_solver_param_ctl
+        call read_CG_solver_param_ctl                                   &
+     &     (hd_solver_ctl, i_solver_ctl, CG_ctl1)
         call read_time_loop_control
       end do
 !
       end subroutine read_fem_mhd_control
+!
+!   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine bcast_fem_mhd_control
+!
+      use m_ctl_data_4_time_steps
+      use m_ctl_data_mhd_evo_scheme
+!
+!
+      call read_restart_ctl(mr_ctl1)
+      call read_time_loop_ctl(mevo_ctl1)
+      call bcast_ctl_data_4_time_step(tctl1)
+      call bcast_CG_solver_param_ctl(CG_ctl1)
+      call bcast_control_fem_int_points(fint_ctl)
+!
+      end subroutine bcast_fem_mhd_control
 !
 !   --------------------------------------------------------------------
 !

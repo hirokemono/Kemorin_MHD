@@ -15,8 +15,8 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_ctl_data_4_solvers
       use t_read_control_arrays
+      use t_ctl_data_4_solvers
 !
       implicit  none
 !
@@ -57,6 +57,9 @@
 !!@n      ref_filter_mom_ctl%c_tbl: Type of reference filter moments
 !!@n      ref_filter_mom_ctl%vect:  Value of filter moments
       type(ctl_array_icr), save :: ref_filter_mom_ctl
+!
+!>      Structure for CG solver control
+      type(solver_control), save :: CG_filter_ctl
 !
       character(len=kchara) :: f_solver_type_ctl = 'CRS'
 !
@@ -114,6 +117,10 @@
       character(len=kchara), parameter                                  &
      &         :: hd_solver_type =       'solver_type'
 !
+      character(len=kchara), parameter                                  &
+     &       :: hd_solver_ctl =     'solver_ctl'
+      integer (kind=kint) :: i_solver_ctl =     0
+!
       integer (kind=kint) :: i_num_int_points =     0
       integer (kind=kint) :: i_minimum_comp =       0
       integer (kind=kint) :: i_omitted_ratio =      0
@@ -135,6 +142,7 @@
       integer (kind=kint) :: i_solver_type =        0
 !
       private :: hd_filter_param_ctl, i_filter_param_ctl
+      private :: hd_solver_ctl, i_solver_ctl
 !
 !  ---------------------------------------------------------------------
 !
@@ -175,7 +183,8 @@
         if(i_filter_param_ctl .gt. 0) exit
 !
 !
-        call read_crs_solver_param_ctl
+        call read_CG_solver_param_ctl                                   &
+     &   (hd_solver_ctl, i_solver_ctl, CG_filter_ctl)
 !
         call read_control_array_i_c_r                                   &
      &     (hd_order_moments, ref_filter_mom_ctl)
