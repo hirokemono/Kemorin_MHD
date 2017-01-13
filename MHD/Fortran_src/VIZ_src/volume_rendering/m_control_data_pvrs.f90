@@ -60,7 +60,7 @@
       private :: hd_fline_ctl
 !
       private :: hd_viz_control, i_viz_control, hd_pvr_ctl, i_pvr_ctl
-      private :: allocate_pvr_file_header_ctl
+      private :: allocate_pvr_ctl_struct
       private :: read_files_4_pvr_ctl, bcast_files_4_pvr_ctl
 !
 !   --------------------------------------------------------------------
@@ -69,16 +69,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_pvr_file_header_ctl
-!
-      allocate(fname_pvr_ctl(num_pvr_ctl))
-!
-      end subroutine allocate_pvr_file_header_ctl
-!
-!  ---------------------------------------------------------------------
-!
       subroutine allocate_pvr_ctl_struct
 !
+      allocate(fname_pvr_ctl(num_pvr_ctl))
       allocate(pvr_ctl_struct(num_pvr_ctl))
 !
       end subroutine allocate_pvr_ctl_struct
@@ -160,7 +153,7 @@
 !
       if (i_pvr_ctl .gt. 0) return
 !
-      call allocate_pvr_file_header_ctl
+      call allocate_pvr_ctl_struct
       do
         call load_ctl_label_and_line
 !
@@ -191,6 +184,13 @@
 !
       integer (kind=kint) :: i_pvr
 !
+!
+      call MPI_BCAST(num_pvr_ctl,  ione,                                &
+     &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_barrier
+      if(num_pvr_ctl .le. 0) return
+!
+      if(my_rank .gt. 0)  call allocate_pvr_ctl_struct
 !
       call MPI_BCAST(fname_pvr_ctl, (kchara*num_pvr_ctl),               &
      &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)

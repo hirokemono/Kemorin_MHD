@@ -13,6 +13,8 @@
 !!@verbatim
 !!      subroutine read_sph_mhd_model
 !!      subroutine read_sph_mhd_control
+!!
+!!      subroutine bcast_sph_mhd_model
 !!      subroutine bcast_sph_mhd_control
 !!@endverbatim
 !
@@ -184,22 +186,6 @@
         call read_sgs_ctl(hd_sgs_ctl, i_sgs_ctl, sgs_ctl1)
       end do
 !
-!      call bcast_mhd_time_evo_ctl(evo_ctl1)
-!      call bcast_mhd_layer_ctl(earea_ctl1)
-!
-!      call bcast_bc_4_node_ctl(nbc_ctl1)
-!      call bcast_bc_4_surf_ctl(sbc_ctl1)
-!
-!      call bcast_dimless_ctl(dless_ctl1)
-!      call bcast_coef_term_ctl(eqs_ctl1)
-!      call bcast_forces_ctl(frc_ctl1)
-!      call bcast_gravity_ctl(g_ctl1)
-!      call bcast_coriolis_ctl(cor_ctl1)
-!      call bcast_magneto_ctl(mcv_ctl1)
-!      call bcast_ref_scalar_ctl(reft_ctl1)
-!      call bcast_ref_scalar_ctl(refc_ctl1)
-!      call bcast_sgs_ctl(sgs_ctl1)
-!
       end subroutine read_sph_mhd_model
 !
 !   --------------------------------------------------------------------
@@ -228,6 +214,33 @@
       end subroutine read_sph_mhd_control
 !
 !   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine bcast_sph_mhd_model
+!
+      use m_ctl_data_4_fields
+      use bcast_4_field_ctl
+!
+!
+      call bcast_phys_data_ctl(fld_ctl1)
+      call bcast_mhd_time_evo_ctl(evo_ctl1)
+      call bcast_mhd_layer_ctl(earea_ctl1)
+!
+      call bcast_bc_4_node_ctl(nbc_ctl1)
+      call bcast_bc_4_surf_ctl(sbc_ctl1)
+!
+      call bcast_dimless_ctl(dless_ctl1)
+      call bcast_coef_term_ctl(eqs_ctl1)
+      call bcast_forces_ctl(frc_ctl1)
+      call bcast_gravity_ctl(g_ctl1)
+      call bcast_coriolis_ctl(cor_ctl1)
+      call bcast_magneto_ctl(mcv_ctl1)
+      call bcast_ref_scalar_ctl(reft_ctl1)
+      call bcast_ref_scalar_ctl(refc_ctl1)
+      call bcast_sgs_ctl(sgs_ctl1)
+!
+      end subroutine bcast_sph_mhd_model
+!
 !   --------------------------------------------------------------------
 !
       subroutine bcast_sph_mhd_control

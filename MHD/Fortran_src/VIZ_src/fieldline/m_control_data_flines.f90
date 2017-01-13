@@ -105,9 +105,9 @@
 !
       call MPI_BCAST(num_fline_ctl,  ione,                              &
      &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
-      if(num_fline_ctl .gt. 0 .and. my_rank .gt. 0) then
-        call allocate_fline_ctl_struct
-      end if
+      if(num_fline_ctl .le. 0) return
+!
+      if(my_rank .gt. 0)  call allocate_fline_ctl_struct
 !
       call MPI_BCAST(fname_fline_ctl, (kchara*num_fline_ctl),           &
      &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)

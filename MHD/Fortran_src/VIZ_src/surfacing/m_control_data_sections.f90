@@ -257,9 +257,9 @@
 !
       call MPI_BCAST(num_psf_ctl,  ione,                                &
      &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
-      if(num_psf_ctl .gt. 0 .and. my_rank .gt. 0) then
-        call allocate_psf_ctl_stract
-      end if
+      if(num_psf_ctl .le. 0) return
+!
+      if(my_rank .gt. 0) call allocate_psf_ctl_stract
 !
       call MPI_BCAST(fname_psf_ctl, (kchara*num_psf_ctl),               &
      &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
@@ -283,9 +283,9 @@
 !
       call MPI_BCAST(num_iso_ctl,  ione,                                &
      &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
-      if(num_iso_ctl .gt. 0 .and. my_rank .gt. 0) then
-        call allocate_iso_ctl_stract
-      end if
+      if(num_iso_ctl .le. 0) return
+!
+      if(my_rank .gt. 0) call allocate_iso_ctl_stract
 !
       call MPI_BCAST(fname_iso_ctl, (kchara*num_iso_ctl),               &
      &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)

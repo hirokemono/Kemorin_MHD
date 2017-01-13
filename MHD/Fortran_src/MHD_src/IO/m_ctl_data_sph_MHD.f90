@@ -21,6 +21,7 @@
 !
       use m_machine_parameter
       use m_read_control_elements
+      use calypso_mpi
       use skip_comment_f
 !
       implicit none
@@ -51,13 +52,17 @@
       use m_read_ctl_gen_sph_shell
 !
 !
-      ctl_file_code = control_file_code
-      open ( ctl_file_code, file = MHD_ctl_name, status='old' )
+      if(my_rank .eq. 0) then
+        ctl_file_code = control_file_code
+        open ( ctl_file_code, file = MHD_ctl_name, status='old' )
 !
-      call load_ctl_label_and_line
-      call read_sph_mhd_control_data
+        call load_ctl_label_and_line
+        call read_sph_mhd_control_data
 !
-      close(ctl_file_code)
+        close(ctl_file_code)
+      end if
+!
+      call bcast_sph_mhd_control_data
 !
       if(ifile_sph_shell .gt. 0) call read_control_4_gen_shell_grids
 !
@@ -72,13 +77,17 @@
       character(len=kchara), intent(in) :: snap_ctl_name
 !
 !
-      ctl_file_code = control_file_code
-      open ( ctl_file_code, file = snap_ctl_name, status='old' )
+      if(my_rank .eq. 0) then
+        ctl_file_code = control_file_code
+        open ( ctl_file_code, file = snap_ctl_name, status='old' )
 !
-      call load_ctl_label_and_line
-      call read_sph_mhd_control_data
+        call load_ctl_label_and_line
+        call read_sph_mhd_control_data
 !
-      close(ctl_file_code)
+        close(ctl_file_code)
+      end if
+!
+      call bcast_sph_mhd_control_data
 !
       if(ifile_sph_shell .gt. 0) call read_control_4_gen_shell_grids
 !
@@ -89,7 +98,6 @@
 !
       subroutine read_sph_mhd_control_data
 !
-      use calypso_mpi
       use m_ctl_data_4_platforms
       use m_ctl_data_node_monitor
       use m_ctl_data_4_pickup_sph
@@ -124,18 +132,42 @@
         call read_viz_control_data
       end do
 !
-!      call bcast_ctl_data_4_platform(plt1)
-!      call bcast_ctl_data_4_platform(org_plt)
-!      call bcast_ctl_data_4_platform(new_plt)
-!
-!      call bcast_ctl_4_shell_define(spctl1)
-!      call bcast_ctl_ndomain_4_shell(sdctl1)
-!
-!      call bcast_monitor_data_ctl(nmtr_ctl1)
-!      call bcast_sph_monitoring_ctl(smonitor_ctl1)
-!      call bcast_viz_control_data
-!
       end subroutine read_sph_mhd_control_data
+!
+!   --------------------------------------------------------------------
+!
+      subroutine bcast_sph_mhd_control_data
+!
+      use m_ctl_data_4_platforms
+      use m_ctl_data_node_monitor
+      use m_ctl_data_4_pickup_sph
+      use m_ctl_data_4_org_data
+      use m_ctl_data_4_2nd_data
+      use m_ctl_data_4_sphere_model
+      use m_read_ctl_gen_sph_shell
+      use m_control_data_pvrs
+      use read_ctl_data_sph_MHD
+      use bcast_4_platform_ctl
+      use bcast_4_field_ctl
+      use bcast_4_sph_monitor_ctl
+      use bcast_4_sphere_ctl
+!
+!
+      call bcast_ctl_data_4_platform(plt1)
+      call bcast_ctl_data_4_platform(org_plt)
+      call bcast_ctl_data_4_platform(new_plt)
+!
+      call bcast_sph_mhd_model
+      call bcast_sph_mhd_control
+!
+      call bcast_ctl_4_shell_define(spctl1)
+      call bcast_ctl_ndomain_4_shell(sdctl1)
+!
+      call bcast_monitor_data_ctl(nmtr_ctl1)
+      call bcast_sph_monitoring_ctl(smonitor_ctl1)
+      call bcast_viz_control_data
+!
+      end subroutine bcast_sph_mhd_control_data
 !
 !   --------------------------------------------------------------------
 !

@@ -131,7 +131,6 @@
       call allocate_components_4_pvr(node, ele, group)
 !
       ctl_file_code = pvr_ctl_file_code
-      call allocate_pvr_ctl_struct
       if(iflag_debug .gt. 0) write(*,*) 's_set_pvr_control', num_pvr
       do i_pvr = 1, num_pvr
         call read_control_pvr(i_pvr)

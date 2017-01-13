@@ -77,13 +77,17 @@
       subroutine read_control_4_fem_MHD
 !
 !
-      ctl_file_code = control_file_code
-      open ( ctl_file_code, file = MHD_ctl_name, status='old' )
+      if(my_rank .eq. 0) then
+        ctl_file_code = control_file_code
+        open ( ctl_file_code, file = MHD_ctl_name, status='old' )
 !
-      call load_ctl_label_and_line
-      call read_fem_mhd_control_data
+        call load_ctl_label_and_line
+        call read_fem_mhd_control_data
 !
-      close(ctl_file_code)
+        close(ctl_file_code)
+      end if
+!
+      call bcast_fem_mhd_control_data
 !
       end subroutine read_control_4_fem_MHD
 !
@@ -92,13 +96,17 @@
       subroutine read_control_4_fem_snap
 !
 !
-      ctl_file_code = control_file_code
-      open ( ctl_file_code, file = snap_ctl_name, status='old' )
+      if(my_rank .eq. 0) then
+        ctl_file_code = control_file_code
+        open ( ctl_file_code, file = snap_ctl_name, status='old' )
 !
-      call load_ctl_label_and_line
-      call read_fem_mhd_control_data
+        call load_ctl_label_and_line
+        call read_fem_mhd_control_data
 !
-      close(ctl_file_code)
+        close(ctl_file_code)
+      end if
+!
+      call bcast_fem_mhd_control_data
 !
       end subroutine read_control_4_fem_snap
 !
@@ -136,16 +144,6 @@
         call read_sections_control_data
       end do
 !
-!      call bcast_fem_mhd_control
-!
-!      call bcast_ctl_data_4_platform(plt1)
-!      call bcast_ctl_data_4_platform(org_plt)
-!
-!      call bcast_monitor_data_ctl(nmtr_ctl1)
-!      call bcast_sph_monitoring_ctl(smonitor_ctl1)
-!      call bcast_files_4_psf_ctl
-!      call bcast_files_4_iso_ctl
-!
       end subroutine read_fem_mhd_control_data
 !
 !   --------------------------------------------------------------------
@@ -178,6 +176,34 @@
       end subroutine read_fem_mhd_control
 !
 !   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine bcast_fem_mhd_control_data
+!
+      use calypso_mpi
+      use m_ctl_data_4_platforms
+      use m_control_data_sections
+      use m_ctl_data_node_monitor
+      use m_ctl_data_4_pickup_sph
+      use m_ctl_data_4_org_data
+      use read_ctl_data_sph_MHD
+      use bcast_4_platform_ctl
+      use bcast_4_sph_monitor_ctl
+!
+!
+      call bcast_ctl_data_4_platform(plt1)
+      call bcast_ctl_data_4_platform(org_plt)
+!
+      call bcast_sph_mhd_model
+      call bcast_fem_mhd_control
+!
+      call bcast_monitor_data_ctl(nmtr_ctl1)
+      call bcast_sph_monitoring_ctl(smonitor_ctl1)
+      call bcast_files_4_psf_ctl
+      call bcast_files_4_iso_ctl
+!
+      end subroutine bcast_fem_mhd_control_data
+!
 !   --------------------------------------------------------------------
 !
       subroutine bcast_fem_mhd_control
