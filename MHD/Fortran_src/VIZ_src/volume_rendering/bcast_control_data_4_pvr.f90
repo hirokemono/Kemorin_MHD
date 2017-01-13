@@ -124,14 +124,14 @@
       integer(kind = kint) :: i
 !
 !
+      call MPI_BCAST(pvr%i_pvr_iso,  ione,                              &
+     &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(pvr%num_pvr_iso_ctl,  ione,                        &
      &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
       if(pvr%num_pvr_iso_ctl .gt. 0 .and. my_rank .gt. 0) then
         allocate(pvr%pvr_iso_ctl(pvr%num_pvr_iso_ctl))
       end if
 !
-      call MPI_BCAST(pvr%i_pvr_iso,  ione,                              &
-     &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
       do i = 1, pvr%num_pvr_iso_ctl
         call bcast_pvr_isosurface_ctl(pvr%pvr_iso_ctl(i))
       end do
@@ -228,6 +228,8 @@
 !
       call MPI_BCAST(color%i_pvr_lighting,  ione,                       &
      &              CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+!
+      call bcast_ctl_array_r3(color%light_position_ctl)
 !
       call bcast_ctl_type_r1(color%ambient_coef_ctl )
       call bcast_ctl_type_r1(color%diffuse_coef_ctl )
