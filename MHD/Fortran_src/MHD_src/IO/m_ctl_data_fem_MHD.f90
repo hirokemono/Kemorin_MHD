@@ -50,10 +50,13 @@
 !  labels for entry groups
 !
       character(len=kchara), parameter                                  &
+     &      :: hd_time_step = 'time_step_ctl'
+      character(len=kchara), parameter                                  &
      &       :: hd_solver_ctl =     'solver_ctl'
       character(len=kchara), parameter                                  &
      &      :: hd_int_points = 'intg_point_num_ctl'
 !
+      integer (kind=kint) :: i_tstep =      0
       integer (kind=kint) :: i_solver_ctl =     0
       integer (kind=kint) :: i_int_points = 0
 !
@@ -62,6 +65,7 @@
       private :: hd_mhd_ctl, i_mhd_ctl
 !
       private :: hd_model, hd_control, i_model, i_control
+      private :: hd_time_step, i_tstep
       private :: hd_solver_ctl, i_solver_ctl
       private :: hd_int_points, i_int_points
 !
@@ -150,8 +154,8 @@
 !
       subroutine read_fem_mhd_control
 !
-      use m_ctl_data_4_time_steps
       use m_ctl_data_mhd_evo_scheme
+      use read_ctl_data_sph_MHD
 !
 !
       if(right_begin_flag(hd_control) .eq. 0) return
@@ -163,7 +167,7 @@
         if(i_control .gt. 0) exit
 !
 !
-        call read_time_step_ctl
+        call read_control_time_step_data(hd_time_step, i_tstep, tctl1)
         call read_restart_control
         call read_control_fem_int_points                                &
      &     (hd_int_points, i_int_points, fint_ctl1)

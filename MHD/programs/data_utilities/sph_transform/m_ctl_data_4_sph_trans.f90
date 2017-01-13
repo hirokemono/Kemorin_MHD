@@ -161,8 +161,6 @@
 !
       subroutine read_sph_trans_model_ctl
 !
-      use m_ctl_data_4_time_steps
-!
 !
       if(right_begin_flag(hd_sph_trans_model) .eq. 0) return
       if (i_sph_trans_model .gt. 0) return

@@ -126,7 +126,6 @@
 !
       use t_ctl_data_sph_data_utils
       use m_file_format_switch
-      use m_ctl_data_4_time_steps
       use set_ctl_parallel_platform
       use set_control_platform_data
 !

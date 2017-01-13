@@ -297,7 +297,6 @@
       subroutine read_ctl_data_draw_grped_pg
 !
       use m_machine_parameter
-      use m_ctl_data_4_time_steps
       use m_read_control_elements
       use skip_comment_f
 !

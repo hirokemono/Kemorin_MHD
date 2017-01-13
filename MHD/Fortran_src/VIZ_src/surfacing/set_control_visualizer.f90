@@ -3,9 +3,9 @@
 !
 !     Written by H. Matsui on May., 2006
 !
-!!      subroutine set_control_params_4_viz                             &
-!!     &          (my_rank, mesh_file, rst_org_param, udt_org_param,    &
-!!     &           ucd, ierr)
+!!      subroutine set_control_params_4_viz(my_rank, tctl, mesh_file,     &
+!!     &          rst_org_param, udt_org_param, ucd, ierr)
+!!        type(time_data_control), intent(in) :: tctl
 !!        type(field_IO_params), intent(inout) :: mesh_file
 !!        type(field_IO_params), intent(inout) :: rst_org_param
 !!        type(field_IO_params), intent(inout) :: udt_org_param
@@ -24,15 +24,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_control_params_4_viz                               &
-     &          (my_rank, mesh_file, rst_org_param, udt_org_param,      &
-     &           ucd, ierr)
+      subroutine set_control_params_4_viz(my_rank, tctl, mesh_file,     &
+     &          rst_org_param, udt_org_param, ucd, ierr)
 !
       use t_ucd_data
       use t_file_IO_parameter
+      use t_ctl_data_4_time_steps
 !
       use m_ctl_data_4_platforms
-      use m_ctl_data_4_time_steps
       use m_file_format_switch
       use m_t_step_parameter
       use set_control_platform_data
@@ -41,6 +40,8 @@
       use ucd_IO_select
 !
       integer(kind = kint), intent(in) :: my_rank
+      type(time_data_control), intent(in) :: tctl
+!
       integer(kind = kint), intent(inout) :: ierr
       type(field_IO_params), intent(inout) :: mesh_file
       type(field_IO_params), intent(inout) :: rst_org_param
@@ -55,7 +56,7 @@
       call set_control_org_rst_file_def(rst_org_param)
       call set_control_org_udt_file_def(udt_org_param)
 !
-      call s_set_fixed_time_step_params(tctl1, ierr, e_message)
+      call s_set_fixed_time_step_params(tctl, ierr, e_message)
       if(ierr .gt. 0) return
 !
       end subroutine set_control_params_4_viz

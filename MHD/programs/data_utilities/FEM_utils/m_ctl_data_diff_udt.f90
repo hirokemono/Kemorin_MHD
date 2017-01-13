@@ -274,8 +274,6 @@
 !
       subroutine read_diff_model_ctl
 !
-      use m_ctl_data_4_time_steps
-!
 !
       if(right_begin_flag(hd_diff_model) .eq. 0) return
       if (i_diff_model .gt. 0) return

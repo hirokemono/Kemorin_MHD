@@ -29,6 +29,7 @@
       use m_precision
 !
       use m_machine_parameter
+      use t_ctl_data_4_time_steps
 !
       implicit  none
 !
@@ -36,11 +37,21 @@
       integer(kind = kint), parameter :: viz_ctl_file_code = 11
       character(len = kchara), parameter :: fname_viz_ctl = "ctl_viz"
 !
+!>      Structure for time stepping control
+      type(time_data_control), save :: t_sect_ctl
+!
 !     top level
 !
       character(len=kchara), parameter                                  &
      &                    :: hd_viz_only_file = 'visualizer'
       integer (kind=kint) :: i_viz_only_file = 0
+!
+      character(len=kchara), parameter                                  &
+     &      :: hd_time_step = 'time_step_ctl'
+      integer (kind=kint) :: i_tstep =      0
+!
+      private :: hd_viz_only_file, i_viz_only_file
+      private :: hd_time_step, i_tstep
 !
       private :: viz_ctl_file_code, fname_viz_ctl
 !
@@ -57,7 +68,6 @@
       use calypso_mpi
 !
       use m_ctl_data_4_platforms
-      use m_ctl_data_4_time_steps
       use m_control_data_sections
       use m_read_control_elements
       use skip_comment_f
@@ -76,7 +86,7 @@
       end if
 !
       call bcast_ctl_data_4_platform(plt1)
-      call bcast_ctl_data_4_time_step(tctl1)
+      call bcast_ctl_data_4_time_step(t_sect_ctl)
       call bcast_files_4_psf_ctl
       call bcast_files_4_iso_ctl
 !
@@ -87,7 +97,6 @@
       subroutine read_section_control_data
 !
       use m_ctl_data_4_platforms
-      use m_ctl_data_4_time_steps
       use m_control_data_sections
       use m_read_control_elements
 !
@@ -103,7 +112,8 @@
         if(i_viz_only_file .eq. 1) exit
 !
         call read_ctl_data_4_platform
-        call read_time_step_ctl
+        call read_control_time_step_data                                &
+     &     (hd_time_step, i_tstep, t_sect_ctl)
 !
         call read_sections_control_data
       end do

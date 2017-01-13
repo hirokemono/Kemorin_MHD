@@ -25,6 +25,7 @@
       use m_machine_parameter
       use m_read_control_elements
       use t_ctl_data_4_fields
+      use t_ctl_data_4_time_steps
       use t_ctl_data_mhd_evolution
       use t_ctl_data_node_boundary
       use t_ctl_data_surf_boundary
@@ -39,6 +40,8 @@
 !
 !>      Structure for field information control
       type(field_control), save :: fld_ctl1
+!>      Structure for time stepping control
+      type(time_data_control), save :: tctl1
 !
 !>        Structure for evolution fields control
       type(mhd_evolution_control), save :: evo_ctl1
@@ -133,6 +136,10 @@
       character(len=kchara), parameter :: hd_sgs_ctl = 'SGS_control'
       integer (kind=kint) :: i_sgs_ctl =       0
 !
+      character(len=kchara), parameter                                  &
+     &      :: hd_time_step = 'time_step_ctl'
+      integer (kind=kint) :: i_tstep =      0
+!
       private :: hd_model, hd_control, i_model, i_control
 !
       private :: hd_phys_values, i_phys_values
@@ -153,6 +160,7 @@
       private :: hd_temp_def, i_temp_def
       private :: hd_comp_def, i_comp_def
       private :: hd_sgs_ctl, i_sgs_ctl
+      private :: hd_time_step, i_tstep
 !
 ! ----------------------------------------------------------------------
 !
@@ -204,7 +212,6 @@
 !
       subroutine read_sph_mhd_control
 !
-      use m_ctl_data_4_time_steps
       use m_ctl_data_mhd_evo_scheme
 !
 !
@@ -217,7 +224,7 @@
         if(i_control .gt. 0) exit
 !
 !
-        call read_time_step_ctl
+        call read_control_time_step_data(hd_time_step, i_tstep, tctl1)
         call read_restart_control
 !
         call read_time_loop_control
@@ -256,7 +263,6 @@
 !
       subroutine bcast_sph_mhd_control
 !
-      use m_ctl_data_4_time_steps
       use m_ctl_data_mhd_evo_scheme
       use bcast_4_time_step_ctl
 !

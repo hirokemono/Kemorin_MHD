@@ -36,7 +36,6 @@
       use calypso_mpi
       use m_ucd_data
       use m_ctl_data_4_platforms
-      use m_ctl_data_4_time_steps
       use read_ctl_data_sph_MHD
       use m_ctl_data_fem_MHD
       use m_ctl_data_mhd_evo_scheme
