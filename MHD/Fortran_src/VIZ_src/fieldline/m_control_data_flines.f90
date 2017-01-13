@@ -7,6 +7,7 @@
 !      subroutine deallocate_fline_fhead_ctl
 !
 !      subroutine read_files_4_fline_ctl
+!      subroutine bcast_files_4_fline_ctl
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!    array  fieldline  1
@@ -17,6 +18,7 @@
       module m_control_data_flines
 !
       use m_precision
+      use m_constants
 !
       use m_machine_parameter
       use t_control_data_4_fline
@@ -35,24 +37,15 @@
 !
       private :: hd_fline_ctl, i_fline_ctl
 !
-      private :: allocate_fline_fhead_ctl
-!
 !   --------------------------------------------------------------------
 !
       contains
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_fline_fhead_ctl
-!
-      allocate(fname_fline_ctl(num_fline_ctl))
-!
-      end subroutine allocate_fline_fhead_ctl
-!
-!  ---------------------------------------------------------------------
-!
       subroutine allocate_fline_ctl_struct
 !
+      allocate(fname_fline_ctl(num_fline_ctl))
       allocate(fline_ctl_struct(num_fline_ctl))
 !
       end subroutine allocate_fline_ctl_struct
@@ -78,7 +71,7 @@
 !
       if (i_fline_ctl .gt. 0) return
 !
-      call allocate_fline_fhead_ctl
+      call allocate_fline_ctl_struct
       do
         call load_ctl_label_and_line
 !
@@ -100,6 +93,31 @@
       end do
 !
       end subroutine read_files_4_fline_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine bcast_files_4_fline_ctl
+!
+      use calypso_mpi
+!
+      integer (kind=kint) :: i_fline
+!
+!
+      call MPI_BCAST(num_fline_ctl,  ione,                              &
+     &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+      if(num_fline_ctl .gt. 0 .and. my_rank .gt. 0) then
+        call allocate_fline_ctl_struct
+      end if
+!
+      call MPI_BCAST(fname_fline_ctl, (kchara*num_fline_ctl),           &
+     &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
+      do i_fline = 1, num_fline_ctl
+        if(fname_fline_ctl(i_fline) .eq. 'NO_FILE') then
+          call bcast_field_line_ctl(fline_ctl_struct(i_fline))
+        end if
+      end do
+!
+      end subroutine bcast_files_4_fline_ctl
 !
 !   --------------------------------------------------------------------
 !

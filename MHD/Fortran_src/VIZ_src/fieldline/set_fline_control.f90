@@ -59,7 +59,6 @@
       ctl_file_code = fline_ctl_file_code
 !
       call allocate_control_params_fline
-      call allocate_fline_ctl_struct
       call allocate_local_start_grp_num
 !
       do i_fln = 1, num_fline

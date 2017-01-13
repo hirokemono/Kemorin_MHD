@@ -44,7 +44,7 @@
 !
       private :: viz_ctl_file_code, fname_viz_ctl
 !
-      private :: read_vizs_control_data
+      private :: read_section_control_data
 !
 !   --------------------------------------------------------------------
 !
@@ -54,30 +54,44 @@
 !
       subroutine read_control_data_section_only
 !
+      use calypso_mpi
+!
+      use m_ctl_data_4_platforms
+      use m_ctl_data_4_time_steps
+      use m_control_data_sections
       use m_read_control_elements
       use skip_comment_f
+      use bcast_4_platform_ctl
+      use bcast_4_time_step_ctl
 !
 !
-      ctl_file_code = viz_ctl_file_code
-      open (ctl_file_code, file=fname_viz_ctl, status='old' )
+      if(my_rank .eq. 0) then
+        ctl_file_code = viz_ctl_file_code
+        open (ctl_file_code, file=fname_viz_ctl, status='old' )
 !
-      call load_ctl_label_and_line
-      call read_vizs_control_data
+        call load_ctl_label_and_line
+        call read_section_control_data
 !
-      close(ctl_file_code)
+        close(ctl_file_code)
+      end if
+!
+      call bcast_ctl_data_4_platform(plt1)
+      call bcast_ctl_data_4_time_step(tctl1)
+      call bcast_files_4_psf_ctl
+      call bcast_files_4_iso_ctl
 !
       end subroutine read_control_data_section_only
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_vizs_control_data
+      subroutine read_section_control_data
 !
       use m_ctl_data_4_platforms
       use m_ctl_data_4_time_steps
+      use m_control_data_sections
       use m_read_control_elements
 !
       use skip_comment_f
-      use m_control_data_sections
 !
 !
       if(right_begin_flag(hd_viz_only_file) .eq. 0) return
@@ -94,7 +108,7 @@
         call read_sections_control_data
       end do
 !
-      end subroutine read_vizs_control_data
+      end subroutine read_section_control_data
 !
 !   --------------------------------------------------------------------
 !

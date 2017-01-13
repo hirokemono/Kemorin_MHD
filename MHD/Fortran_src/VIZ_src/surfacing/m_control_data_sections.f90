@@ -14,6 +14,9 @@
 !      subroutine read_files_4_psf_ctl
 !      subroutine read_files_4_iso_ctl
 !
+!      subroutine bcast_files_4_psf_ctl
+!      subroutine bcast_files_4_iso_ctl
+!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!    array cross_section_ctl  1
 !!      file   cross_section_ctl   'ctl_psf_eq'
@@ -240,6 +243,59 @@
       end do
 !
       end subroutine read_files_4_iso_ctl
+!
+!   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine bcast_files_4_psf_ctl
+!
+      use calypso_mpi
+      use t_control_data_4_psf
+!
+      integer (kind=kint) :: i_psf
+!
+!
+      call MPI_BCAST(num_psf_ctl,  ione,                                &
+     &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+      if(num_psf_ctl .gt. 0 .and. my_rank .gt. 0) then
+        call allocate_psf_ctl_stract
+      end if
+!
+      call MPI_BCAST(fname_psf_ctl, (kchara*num_psf_ctl),               &
+     &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
+      do i_psf = 1, num_psf_ctl
+        if(fname_psf_ctl(i_psf) .eq. 'NO_FILE') then
+          call bcast_psf_control_data(psf_ctl_struct(i_psf))
+        end if
+      end do
+!
+      end subroutine bcast_files_4_psf_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine bcast_files_4_iso_ctl
+!
+      use calypso_mpi
+      use t_control_data_4_iso
+!
+      integer (kind=kint) :: i_iso
+!
+!
+      call MPI_BCAST(num_iso_ctl,  ione,                                &
+     &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+      if(num_iso_ctl .gt. 0 .and. my_rank .gt. 0) then
+        call allocate_iso_ctl_stract
+      end if
+!
+      call MPI_BCAST(fname_iso_ctl, (kchara*num_iso_ctl),               &
+     &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
+      do i_iso = 1, num_iso_ctl
+        if(fname_iso_ctl(i_iso) .eq. 'NO_FILE') then
+          call bcast_iso_control_data(iso_ctl_struct(i_iso))
+        end if
+      end do
+!
+      end subroutine bcast_files_4_iso_ctl
 !
 !   --------------------------------------------------------------------
 !

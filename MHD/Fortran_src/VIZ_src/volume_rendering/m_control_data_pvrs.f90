@@ -7,6 +7,7 @@
 !      subroutine deallocate_pvr_file_header_ctl
 !
 !      subroutine read_viz_control_data
+!      subroutine bcast_viz_control_data
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!    array  volume_rendering  1
@@ -60,7 +61,7 @@
 !
       private :: hd_viz_control, i_viz_control, hd_pvr_ctl, i_pvr_ctl
       private :: allocate_pvr_file_header_ctl
-      private :: read_files_4_pvr_ctl
+      private :: read_files_4_pvr_ctl, bcast_files_4_pvr_ctl
 !
 !   --------------------------------------------------------------------
 !
@@ -135,6 +136,22 @@
 !
 !   --------------------------------------------------------------------
 !
+      subroutine bcast_viz_control_data
+!
+      use m_control_data_sections
+      use m_control_data_flines
+!
+!
+      call bcast_files_4_psf_ctl
+      call bcast_files_4_iso_ctl
+      call bcast_files_4_pvr_ctl
+      call bcast_files_4_fline_ctl
+!
+      end subroutine bcast_viz_control_data
+!
+!   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
       subroutine read_files_4_pvr_ctl
 !
       use m_read_control_elements
@@ -164,6 +181,26 @@
       end do
 !
       end subroutine read_files_4_pvr_ctl
+!
+!   --------------------------------------------------------------------
+!
+      subroutine bcast_files_4_pvr_ctl
+!
+      use calypso_mpi
+      use bcast_control_data_4_pvr
+!
+      integer (kind=kint) :: i_pvr
+!
+!
+      call MPI_BCAST(fname_pvr_ctl, (kchara*num_pvr_ctl),               &
+     &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
+      do i_pvr = 1, num_pvr_ctl
+        if(fname_pvr_ctl(i_pvr) .eq. 'NO_FILE') then
+          call bcast_vr_psf_ctl(pvr_ctl_struct(i_pvr))
+        end if
+      end do
+!
+      end subroutine bcast_files_4_pvr_ctl
 !
 !   --------------------------------------------------------------------
 !
