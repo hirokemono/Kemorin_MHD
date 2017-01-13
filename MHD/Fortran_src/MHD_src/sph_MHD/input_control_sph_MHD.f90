@@ -209,7 +209,7 @@
      &         (sph, comms_sph, sph_grps, rj_fld, nod_fld, pwr)
 !
       use m_control_parameter
-      use m_ctl_data_4_fields
+      use read_ctl_data_sph_MHD
       use m_ctl_data_4_pickup_sph
       use sph_mhd_rst_IO_control
       use set_control_sph_mhd

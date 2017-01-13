@@ -24,6 +24,7 @@
 !
       use m_machine_parameter
       use m_read_control_elements
+      use t_ctl_data_4_fields
       use t_ctl_data_mhd_evolution
       use t_ctl_data_node_boundary
       use t_ctl_data_surf_boundary
@@ -35,6 +36,9 @@
       use skip_comment_f
 !
       implicit none
+!
+!>      Structure for field information control
+      type(field_control), save :: fld_ctl1
 !
 !>        Structure for evolution fields control
       type(mhd_evolution_control), save :: evo_ctl1
@@ -76,6 +80,13 @@
       integer (kind=kint) :: i_control =      0
 !
 !    label for entry of group
+!
+!
+!>      label for block
+      character(len=kchara), parameter                                  &
+     &      :: hd_phys_values =  'phys_values_ctl'
+!>      Number of field
+      integer (kind=kint) :: i_phys_values =   0
 !
       character(len=kchara), parameter                                  &
      &      :: hd_time_evo =     'time_evolution_ctl'
@@ -124,6 +135,8 @@
 !
       private :: hd_model, hd_control, i_model, i_control
 !
+      private :: hd_phys_values, i_phys_values
+!
       private :: hd_time_evo, hd_layers_ctl
       private :: i_time_evo,  i_layers_ctl
 !
@@ -149,8 +162,6 @@
 !
       subroutine read_sph_mhd_model
 !
-      use m_ctl_data_4_fields
-!
 !
       if(right_begin_flag(hd_model) .eq. 0) return
       if (i_model .gt. 0) return
@@ -160,7 +171,8 @@
         call find_control_end_flag(hd_model, i_model)
         if(i_model .gt. 0) exit
 !
-        call read_phys_values
+        call read_phys_data_control                                     &
+     &     (hd_phys_values, i_phys_values, fld_ctl1)
 !
         call read_mhd_time_evo_ctl(hd_time_evo, i_time_evo, evo_ctl1)
         call read_mhd_layer_ctl                                         &
@@ -218,7 +230,6 @@
 !
       subroutine bcast_sph_mhd_model
 !
-      use m_ctl_data_4_fields
       use bcast_4_field_ctl
 !
 !

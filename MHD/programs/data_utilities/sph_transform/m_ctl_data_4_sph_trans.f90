@@ -9,6 +9,8 @@
 !
       use m_precision
       use m_read_control_elements
+      use t_ctl_data_4_fields
+      use t_ctl_data_4_time_steps
       use t_control_elements
       use skip_comment_f
 !
@@ -16,6 +18,11 @@
 !
       integer (kind = kint) :: control_file_code = 13
       character (len = kchara) :: control_file_name='ctl_sph_transform'
+!
+!>      Structure for field information control
+      type(field_control), save :: fld_st_ctl
+!>      Structure for time stepping control
+      type(time_data_control), save :: t_st_ctl
 !
       character(len = kchara) :: zm_spec_file_head_ctl
       character(len = kchara) :: zonal_udt_head_ctl
@@ -41,8 +48,17 @@
      &                    :: hd_sph_trans_model =  'model'
       character(len=kchara), parameter                                  &
      &                    :: hd_sph_trans_params = 'sph_transform_ctl'
+!>      label for block
+      character(len=kchara), parameter                                  &
+     &      :: hd_phys_values =  'phys_values_ctl'
+      character(len=kchara), parameter                                  &
+     &      :: hd_time_step = 'time_step_ctl'
+!
       integer (kind=kint) :: i_sph_trans_model =  0
       integer (kind=kint) :: i_sph_trans_params = 0
+!>      Number of field
+      integer (kind=kint) :: i_phys_values =   0
+      integer (kind=kint) :: i_tstep =      0
 !
 !   2nd level
 !
@@ -77,6 +93,8 @@
       private :: control_file_code, control_file_name
       private :: hd_sph_trans_ctl, i_sph_trans_ctl
       private :: hd_sph_trans_model, i_sph_trans_model
+      private :: hd_phys_values, i_phys_values
+      private :: hd_time_step, i_tstep
       private :: hd_FFT_package, hd_import_mode
       private :: hd_sph_trans_params, i_sph_trans_params
       private :: hd_zm_sph_spec_file, hd_zm_field_file
@@ -144,7 +162,6 @@
       subroutine read_sph_trans_model_ctl
 !
       use m_ctl_data_4_time_steps
-      use m_ctl_data_4_fields
 !
 !
       if(right_begin_flag(hd_sph_trans_model) .eq. 0) return
@@ -156,8 +173,10 @@
      &      i_sph_trans_model)
         if(i_sph_trans_model .gt. 0) exit
 !
-        call read_phys_values
-        call read_time_step_ctl
+        call read_phys_data_control                                     &
+     &     (hd_phys_values, i_phys_values, fld_st_ctl)
+        call read_control_time_step_data                                &
+     &     (hd_time_step, i_tstep, t_st_ctl)
       end do
 !
       end subroutine read_sph_trans_model_ctl

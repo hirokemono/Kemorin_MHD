@@ -44,7 +44,7 @@
       subroutine initialize_sph_pick_circle
 !
       use m_ctl_data_sph_MHD_noviz
-      use m_ctl_data_4_fields
+      use read_ctl_data_sph_MHD
       use m_ctl_data_4_pickup_sph
       use m_node_phys_data
       use m_spheric_parameter

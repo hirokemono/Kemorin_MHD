@@ -80,9 +80,7 @@
       use set_ctl_params_2nd_files
 !
       use m_ctl_data_4_platforms
-      use m_ctl_data_4_time_steps
       use m_ctl_data_4_sph_utils
-      use m_ctl_data_4_fields
       use m_ctl_data_4_pickup_sph
       use m_ctl_data_4_org_data
 !
@@ -105,7 +103,7 @@
 !
 !      stepping parameter
 !
-      call s_set_fixed_time_step_params(tctl1, ierr, e_message)
+      call s_set_fixed_time_step_params(t_su_ctl, ierr, e_message)
 !
 !    file header for field data
 !
@@ -161,8 +159,9 @@
 !
 !   set physical values
 !
-      call s_set_control_sph_data(fld_ctl1%field_ctl, rj_fld, ierr)
-      call s_set_control_nodal_data(fld_ctl1%field_ctl, nod_fld, ierr)
+      call s_set_control_sph_data(fld_su_ctl%field_ctl, rj_fld, ierr)
+      call s_set_control_nodal_data                                     &
+     &   (fld_su_ctl%field_ctl, nod_fld, ierr)
 !
       if(i_buo_ratio .gt. 0) then
         buo_ratio = buoyancy_ratio_ctl

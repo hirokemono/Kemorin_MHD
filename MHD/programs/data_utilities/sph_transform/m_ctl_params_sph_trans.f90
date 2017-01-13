@@ -68,8 +68,6 @@
 !
       use m_sel_spherical_SRs
       use m_ctl_data_4_platforms
-      use m_ctl_data_4_fields
-      use m_ctl_data_4_time_steps
       use m_ctl_data_4_sph_trans
 !
       type(field_IO_params), intent(inout) :: mesh_file
@@ -115,13 +113,13 @@
 !
 !      stepping parameter
 !
-      call s_set_fixed_time_step_params(tctl1, ierr, e_message)
+      call s_set_fixed_time_step_params(t_st_ctl, ierr, e_message)
 !
 !   set physical values
 !
-      call s_set_control_sph_data(fld_ctl1%field_ctl, rj_fld, ierr)
+      call s_set_control_sph_data(fld_st_ctl%field_ctl, rj_fld, ierr)
       call s_set_control_nodal_data                                     &
-     &   (fld_ctl1%field_ctl, field_STR, ierr)
+     &   (fld_st_ctl%field_ctl, field_STR, ierr)
 !
 !
       if(i_cmb_grp .gt. 0) then
@@ -155,9 +153,7 @@
       use legendre_transform_select
 !
       use m_ctl_data_4_platforms
-      use m_ctl_data_4_time_steps
       use m_ctl_data_4_sph_trans
-      use m_ctl_data_4_fields
       use skip_comment_f
       use parallel_ucd_IO_select
 !
@@ -221,13 +217,13 @@
 !
 !      stepping parameter
 !
-      call s_set_fixed_time_step_params(tctl1, ierr, e_message)
+      call s_set_fixed_time_step_params(t_st_ctl, ierr, e_message)
 !
 !   set physical values
 !
-      call s_set_control_sph_data(fld_ctl1%field_ctl, rj_fld, ierr)
+      call s_set_control_sph_data(fld_st_ctl%field_ctl, rj_fld, ierr)
       call s_set_control_nodal_data                                     &
-     &   (fld_ctl1%field_ctl, field_STR, ierr)
+     &   (fld_st_ctl%field_ctl, field_STR, ierr)
 !
 !
       if(i_cmb_grp .gt. 0) then
