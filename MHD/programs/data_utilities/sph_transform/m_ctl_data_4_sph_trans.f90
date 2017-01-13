@@ -135,6 +135,8 @@
         call read_viz_control_data
       end do
 !
+!      call bcast_viz_control_data
+!
       end subroutine read_sph_trans_control_data
 !
 ! -----------------------------------------------------------------------
