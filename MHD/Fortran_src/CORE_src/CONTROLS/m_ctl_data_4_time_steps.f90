@@ -148,6 +148,7 @@
       implicit  none
 !
 !
+!>      Structure for time stepping control
       type(time_data_control), save :: tctl1
 !
 !   entry label
@@ -155,6 +156,8 @@
       character(len=kchara), parameter                                  &
      &      :: hd_time_step = 'time_step_ctl'
       integer (kind=kint) :: i_tstep =      0
+!
+      private :: hd_time_step, i_tstep
 !
 ! -----------------------------------------------------------------------
 !

@@ -14,7 +14,6 @@
       use m_geometry_data_4_merge
       use m_2nd_geometry_4_merge
       use m_control_plane_correlate
-      use m_ctl_data_4_fields
 !
       use t_phys_data
       use t_time_data_IO
@@ -84,7 +83,7 @@
       call init_udt_4_correlate(ist, cor_phys, plane_t_IO, plane_ucd)
 !
       call s_set_list_4_correlate                                       &
-     &   (fld_ctl1%field_ctl, ref_phys, cor_phys)
+     &   (fld_pc_ctl%field_ctl, ref_phys, cor_phys)
 !
       write(*,*) 'internal_node, ele',                                  &
      &           merge_tbl%inter_nod_m,  merge_tbl%inter_ele_m

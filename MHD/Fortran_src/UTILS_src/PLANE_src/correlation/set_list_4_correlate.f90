@@ -26,25 +26,24 @@
       use m_default_file_prefix
       use m_control_plane_correlate
       use m_correlate_4_plane
-      use m_ctl_data_4_time_steps
       use set_control_platform_data
 !
       integer(kind=kint ), intent(inout) :: ist, ied, iint
 !
 !
       ist = 1
-      if(tctl1%i_step_init_ctl%iflag .gt. 0) then
-        ist = tctl1%i_step_init_ctl%intvalue
+      if(t_pc_ctl%i_step_init_ctl%iflag .gt. 0) then
+        ist = t_pc_ctl%i_step_init_ctl%intvalue
       end if
 !
       ied = 1
-      if(tctl1%i_step_number_ctl%iflag .gt. 0) then
-        ied = tctl1%i_step_number_ctl%intvalue
+      if(t_pc_ctl%i_step_number_ctl%iflag .gt. 0) then
+        ied = t_pc_ctl%i_step_number_ctl%intvalue
       end if
 !
       iint = 1
-      if (tctl1%i_step_ucd_ctl%iflag .gt. 0) then
-        iint = tctl1%i_step_ucd_ctl%intvalue
+      if (t_pc_ctl%i_step_ucd_ctl%iflag .gt. 0) then
+        iint = t_pc_ctl%i_step_ucd_ctl%intvalue
       end if
 !
       call set_file_control_params(def_mesh_file_head,                  &

@@ -118,8 +118,6 @@
       use m_control_data_4_merge
       use m_ctl_data_4_platforms
       use m_ctl_data_4_2nd_data
-      use m_ctl_data_4_fields
-      use m_ctl_data_4_time_steps
       use set_parallel_file_name
       use set_control_platform_data
       use ucd_IO_select
@@ -158,8 +156,8 @@
 !
 !
        num_nod_phys = 0
-       do i = 1, fld_ctl1%field_ctl%num
-         if (cmp_no_case(fld_ctl1%field_ctl%c2_tbl(i),'Viz_On')) then
+       do i = 1, fld_mge_ctl%field_ctl%num
+         if(cmp_no_case(fld_mge_ctl%field_ctl%c2_tbl(i),'Viz_On')) then
            num_nod_phys = num_nod_phys + 1
          end if
        end do
@@ -167,10 +165,10 @@
        call allocate_control_4_merge
 !
        icou = 0
-       do i = 1, fld_ctl1%field_ctl%num
-         if (cmp_no_case(fld_ctl1%field_ctl%c2_tbl(i),'Viz_On')) then
+       do i = 1, fld_mge_ctl%field_ctl%num
+         if(cmp_no_case(fld_mge_ctl%field_ctl%c2_tbl(i),'Viz_On')) then
            icou = icou + 1
-           ucd_on_label(icou) = fld_ctl1%field_ctl%c1_tbl(i)
+           ucd_on_label(icou) = fld_mge_ctl%field_ctl%c1_tbl(i)
          end if
        end do
 !
@@ -180,18 +178,18 @@
        end do
 !
       istep_start = 1
-      if(tctl1%i_step_init_ctl%iflag .gt. 0) then
-        istep_start = tctl1%i_step_init_ctl%intvalue
+      if(t_mge_ctl%i_step_init_ctl%iflag .gt. 0) then
+        istep_start = t_mge_ctl%i_step_init_ctl%intvalue
       end if
 !
       istep_end = 1
-      if(tctl1%i_step_number_ctl%iflag .gt. 0) then
-        istep_end = tctl1%i_step_number_ctl%intvalue
+      if(t_mge_ctl%i_step_number_ctl%iflag .gt. 0) then
+        istep_end = t_mge_ctl%i_step_number_ctl%intvalue
       end if
 !
       increment_step = 1
-      if(tctl1%i_step_ucd_ctl%iflag .gt. 0) then
-        increment_step = tctl1%i_step_ucd_ctl%intvalue
+      if(t_mge_ctl%i_step_ucd_ctl%iflag .gt. 0) then
+        increment_step = t_mge_ctl%i_step_ucd_ctl%intvalue
       end if
 !
       end subroutine set_control_4_merge
@@ -203,7 +201,6 @@
       use m_control_data_4_merge
       use m_ctl_data_4_platforms
       use m_ctl_data_4_2nd_data
-      use m_ctl_data_4_time_steps
       use m_geometry_data_4_merge
       use m_2nd_geometry_4_merge
       use m_file_format_switch
@@ -237,8 +234,8 @@
       end if
 !
       increment_step = 1
-      if (tctl1%i_step_rst_ctl%iflag .gt. 0) then
-        increment_step = tctl1%i_step_rst_ctl%intvalue
+      if (t_mge_ctl%i_step_rst_ctl%iflag .gt. 0) then
+        increment_step = t_mge_ctl%i_step_rst_ctl%intvalue
       end if
 !
       end subroutine set_control_4_newrst

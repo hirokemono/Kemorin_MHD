@@ -60,6 +60,7 @@
       use m_error_IDs
       use m_control_data_4_merge
 !
+      use bcast_4_assemble_sph_ctl
       use sph_file_IO_select
       use field_IO_select
       use parallel_sph_assemble
@@ -69,7 +70,8 @@
 !
       write(*,*) 'Simulation start: PE. ', my_rank
 !
-      call read_control_assemble_sph
+      if(my_rank .eq. 0) call read_control_assemble_sph
+      call bcast_merge_control_data
       call set_control_4_newsph
 !
       if(my_rank .eq. 0) write(*,*)                                     &
