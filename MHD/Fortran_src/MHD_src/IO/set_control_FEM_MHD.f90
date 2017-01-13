@@ -22,6 +22,8 @@
 !
       implicit  none
 !
+      private :: set_control_FEM_MHD_bcs
+!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -36,12 +38,8 @@
       use m_ctl_data_4_platforms
       use m_ctl_data_4_time_steps
       use m_ctl_data_4_fields
-      use m_ctl_data_node_boundary
-      use m_ctl_data_surf_boundary
-      use m_ctl_data_mhd_forces
-      use m_ctl_data_SGS_model
-      use m_ctl_data_temp_model
-      use m_ctl_data_mhd_evolution
+      use read_ctl_data_sph_MHD
+      use m_ctl_data_fem_MHD
       use m_ctl_data_mhd_evo_scheme
       use m_ctl_data_node_monitor
 !
@@ -60,17 +58,7 @@
       use set_control_4_solver
       use set_control_evo_layers
 !
-      use set_control_4_velo
-      use set_control_4_press
-      use set_control_4_temp
-      use set_control_4_vect_p
-      use set_control_4_magne
-      use set_control_4_mag_p
-      use set_control_4_current
-      use set_control_4_composition
-      use set_control_4_infty
       use fem_mhd_rst_IO_control
-      use check_read_bc_file
 !
       type(field_IO_params), intent(inout) :: mesh_file
       type(field_IO_params), intent(inout) :: udt_org_param
@@ -117,66 +105,95 @@
 !
 !   set control parameters
 !
-      call s_set_control_4_normalize
+      call s_set_control_4_normalize(dless_ctl1, eqs_ctl1)
 !
-!   set boundary conditions for temperature
+!   set boundary conditions
 !
-      call s_set_control_4_temp                                         &
-     &   (nbc_ctl1%node_bc_T_ctl, sbc_ctl1%surf_bc_HF_ctl)
-!
-!   set boundary conditions for velocity
-!
-      call s_set_control_4_velo                                         &
-     &   (nbc_ctl1%node_bc_U_ctl, sbc_ctl1%surf_bc_ST_ctl)
-!
-!  set boundary conditions for pressure
-!
-      call s_set_control_4_press                                        &
-     &   (nbc_ctl1%node_bc_P_ctl, sbc_ctl1%surf_bc_PN_ctl)
-!
-!   set boundary conditions for composition
-!
-      call s_set_control_4_composition                                  &
-     &   (nbc_ctl1%node_bc_C_ctl, sbc_ctl1%surf_bc_CF_ctl)
-!
-!   set boundary_conditons for magnetic field
-!
-      call s_set_control_4_magne                                        &
-     &   (nbc_ctl1%node_bc_B_ctl, sbc_ctl1%surf_bc_BN_ctl)
-!
-!   set boundary_conditons for magnetic potential
-!
-      call s_set_control_4_mag_p                                        &
-     &   (nbc_ctl1%node_bc_MP_ctl, sbc_ctl1%surf_bc_MPN_ctl)
-!
-!   set boundary_conditons for vector potential
-!
-      call s_set_control_4_vect_p                                       &
-     &   (nbc_ctl1%node_bc_A_ctl, sbc_ctl1%surf_bc_AN_ctl)
-!
-!   set boundary_conditons for current density
-!
-      call s_set_control_4_current                                      &
-     &   (nbc_ctl1%node_bc_J_ctl, sbc_ctl1%surf_bc_JN_ctl)
-!
-!   set boundary_conditons for magnetic potential
-!
-      call s_set_control_4_infty(sbc_ctl1%surf_bc_INF_ctl)
-!
-!   set flag to read boundary condition file
-!
-      call check_read_boundary_files
+      call set_control_FEM_MHD_bcs(nbc_ctl1, sbc_ctl1)
 !
 !   set control parameters
 !
       call s_set_control_4_time_steps(tctl1)
       call s_set_control_4_crank(mevo_ctl1)
 !
-      call s_set_control_4_solver(mevo_ctl1)
-      call set_control_4_FEM_params(mevo_ctl1)
+      call s_set_control_4_solver(mevo_ctl1, CG_ctl1)
+      call set_control_4_FEM_params(mevo_ctl1, fint_ctl1)
 !
       end subroutine set_control_4_FEM_MHD
 !
 ! -----------------------------------------------------------------------
+!
+      subroutine set_control_FEM_MHD_bcs(nbc_ctl, sbc_ctl)
+!
+      use t_ctl_data_node_boundary
+      use t_ctl_data_surf_boundary
+!
+      use set_control_4_velo
+      use set_control_4_press
+      use set_control_4_temp
+      use set_control_4_vect_p
+      use set_control_4_magne
+      use set_control_4_mag_p
+      use set_control_4_current
+      use set_control_4_composition
+      use set_control_4_infty
+!
+      use check_read_bc_file
+!
+      type(node_bc_control), intent(inout) :: nbc_ctl
+      type(surf_bc_control), intent(inout) :: sbc_ctl
+!
+!
+!   set boundary conditions for temperature
+!
+      call s_set_control_4_temp                                         &
+     &   (nbc_ctl%node_bc_T_ctl, sbc_ctl%surf_bc_HF_ctl)
+!
+!   set boundary conditions for velocity
+!
+      call s_set_control_4_velo                                         &
+     &   (nbc_ctl%node_bc_U_ctl, sbc_ctl%surf_bc_ST_ctl)
+!
+!  set boundary conditions for pressure
+!
+      call s_set_control_4_press                                        &
+     &   (nbc_ctl%node_bc_P_ctl, sbc_ctl%surf_bc_PN_ctl)
+!
+!   set boundary conditions for composition
+!
+      call s_set_control_4_composition                                  &
+     &   (nbc_ctl%node_bc_C_ctl, sbc_ctl%surf_bc_CF_ctl)
+!
+!   set boundary_conditons for magnetic field
+!
+      call s_set_control_4_magne                                        &
+     &   (nbc_ctl%node_bc_B_ctl, sbc_ctl%surf_bc_BN_ctl)
+!
+!   set boundary_conditons for magnetic potential
+!
+      call s_set_control_4_mag_p                                        &
+     &   (nbc_ctl%node_bc_MP_ctl, sbc_ctl%surf_bc_MPN_ctl)
+!
+!   set boundary_conditons for vector potential
+!
+      call s_set_control_4_vect_p                                       &
+     &   (nbc_ctl%node_bc_A_ctl, sbc_ctl%surf_bc_AN_ctl)
+!
+!   set boundary_conditons for current density
+!
+      call s_set_control_4_current                                      &
+     &   (nbc_ctl%node_bc_J_ctl, sbc_ctl%surf_bc_JN_ctl)
+!
+!   set boundary_conditons for magnetic potential
+!
+      call s_set_control_4_infty(sbc_ctl%surf_bc_INF_ctl)
+!
+!   set flag to read boundary condition file
+!
+      call check_read_boundary_files
+!
+      end subroutine set_control_FEM_MHD_bcs
+!
+! ----------------------------------------------------------------------
 !
       end module set_control_FEM_MHD

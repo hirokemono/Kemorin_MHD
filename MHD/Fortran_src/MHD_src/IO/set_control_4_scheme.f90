@@ -8,8 +8,9 @@
 !> @brief set schemes for time integration from control
 !!
 !!@verbatim
-!!     subroutine set_control_4_FEM_params(mevo_ctl)
+!!     subroutine set_control_4_FEM_params(mevo_ctl, fint_ctl)
 !!        type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
+!!        type(fem_intergration_control), intent(in)  :: fint_ctl
 !!@endverbatim
 !
       module set_control_4_scheme
@@ -24,17 +25,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_FEM_params(mevo_ctl)
+      subroutine set_control_4_FEM_params(mevo_ctl, fint_ctl)
 !
       use calypso_mpi
       use m_error_IDs
       use m_machine_parameter
       use m_control_parameter
-      use m_ctl_data_fem_MHD
       use t_ctl_data_mhd_evo_scheme
+      use t_ctl_data_4_fem_int_pts
       use skip_comment_f
 !
       type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
+      type(fem_intergration_control), intent(in)  :: fint_ctl
 !
       integer (kind=kint) :: iflag_4_supg = id_turn_OFF
 !
@@ -110,20 +112,20 @@
 !
 !  control for number of points for integration
 !
-        if (fint_ctl1%intg_point_poisson_ctl%iflag .eq. 0) then
+        if (fint_ctl%intg_point_poisson_ctl%iflag .eq. 0) then
           e_message  = 'Set number of integration points for Poisson'
           call calypso_MPI_abort(ierr_FEM, e_message)
         else
           intg_point_poisson                                            &
-     &        = fint_ctl1%intg_point_poisson_ctl%intvalue
+     &        = fint_ctl%intg_point_poisson_ctl%intvalue
         end if
 !
-        if (fint_ctl1%intg_point_t_evo_ctl%iflag .eq. 0) then
+        if (fint_ctl%intg_point_t_evo_ctl%iflag .eq. 0) then
           e_message                                                     &
      &       = 'Set number of integration points for time integration'
           call calypso_MPI_abort(ierr_FEM, e_message)
         else
-          intg_point_t_evo = fint_ctl1%intg_point_t_evo_ctl%intvalue
+          intg_point_t_evo = fint_ctl%intg_point_t_evo_ctl%intvalue
         end if
 !
         if (iflag_debug .gt. iflag_routine_msg) then

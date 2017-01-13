@@ -36,6 +36,8 @@
 !
       implicit none
 !
+      private :: set_control_SPH_MHD_bcs
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -49,7 +51,7 @@
       use m_spheric_global_ranks
       use m_ucd_data
       use m_read_ctl_gen_sph_shell
-      use m_ctl_data_SGS_model
+      use read_ctl_data_sph_MHD
       use sph_mhd_rms_IO
 !
       use t_spheric_parameter
@@ -98,11 +100,7 @@
       use m_ctl_data_4_time_steps
       use m_ctl_data_4_sphere_model
       use m_ctl_data_4_pickup_sph
-      use m_ctl_data_node_boundary
-      use m_ctl_data_surf_boundary
-      use m_ctl_data_mhd_forces
-      use m_ctl_data_temp_model
-      use m_ctl_data_mhd_evolution
+      use read_ctl_data_sph_MHD
       use m_ctl_data_mhd_evo_scheme
       use m_read_ctl_gen_sph_shell
       use sph_mhd_rms_IO
@@ -121,16 +119,9 @@
       use set_control_4_time_steps
       use m_ctl_data_node_monitor
 !
-      use set_control_4_velo
-      use set_control_4_press
-      use set_control_4_temp
-      use set_control_4_magne
-      use set_control_4_composition
       use set_control_4_pickup_sph
       use set_ctl_params_2nd_files
       use set_ctl_gen_shell_grids
-
-      use check_read_bc_file
 !
       type(sph_grids), intent(inout) :: sph_gen
       type(phys_data), intent(inout) :: rj_fld
@@ -183,42 +174,11 @@
 !   set control parameters
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_normalize'
-      call s_set_control_4_normalize
+      call s_set_control_4_normalize(dless_ctl1, eqs_ctl1)
 !
-!   set boundary conditions for temperature
+!   set boundary conditions
 !
-      if (iflag_debug.gt.0) write(*,*) 's_set_control_4_temp'
-      call s_set_control_4_temp                                         &
-     &   (nbc_ctl1%node_bc_T_ctl, sbc_ctl1%surf_bc_HF_ctl)
-!
-!   set boundary conditions for velocity
-!
-      if (iflag_debug.gt.0) write(*,*) 's_set_control_4_velo'
-      call s_set_control_4_velo                                         &
-     &   (nbc_ctl1%node_bc_U_ctl, sbc_ctl1%surf_bc_ST_ctl)
-!
-!  set boundary conditions for pressure
-!
-      if (iflag_debug.gt.0) write(*,*) 's_set_control_4_press'
-      call s_set_control_4_press                                        &
-     &   (nbc_ctl1%node_bc_P_ctl, sbc_ctl1%surf_bc_PN_ctl)
-!
-!   set boundary conditions for composition variation
-!
-      if (iflag_debug.gt.0) write(*,*) 's_set_control_4_composition'
-      call s_set_control_4_composition                                  &
-     &   (nbc_ctl1%node_bc_C_ctl, sbc_ctl1%surf_bc_CF_ctl)
-!
-!   set boundary_conditons for magnetic field
-!
-      if (iflag_debug.gt.0) write(*,*) 's_set_control_4_magne'
-      call s_set_control_4_magne                                        &
-     &   (nbc_ctl1%node_bc_B_ctl, sbc_ctl1%surf_bc_BN_ctl)
-!
-!   set flag to read boundary condition file
-!
-      if (iflag_debug.gt.0) write(*,*) 'check_read_boundary_files'
-      call check_read_boundary_files
+      call set_control_SPH_MHD_bcs(nbc_ctl1, sbc_ctl1)
 !
 !   set control parameters
 !
@@ -241,6 +201,62 @@
      &    rj_fld, Nu_type1)
 !
       end subroutine set_control_4_SPH_MHD
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_control_SPH_MHD_bcs(nbc_ctl, sbc_ctl)
+!
+      use t_ctl_data_node_boundary
+      use t_ctl_data_surf_boundary
+!
+      use set_control_4_velo
+      use set_control_4_press
+      use set_control_4_temp
+      use set_control_4_magne
+      use set_control_4_composition
+!
+      use check_read_bc_file
+!
+      type(node_bc_control), intent(inout) :: nbc_ctl
+      type(surf_bc_control), intent(inout) :: sbc_ctl
+!
+!
+!   set boundary conditions for temperature
+!
+      if (iflag_debug.gt.0) write(*,*) 's_set_control_4_temp'
+      call s_set_control_4_temp                                         &
+     &   (nbc_ctl%node_bc_T_ctl, sbc_ctl%surf_bc_HF_ctl)
+!
+!   set boundary conditions for velocity
+!
+      if (iflag_debug.gt.0) write(*,*) 's_set_control_4_velo'
+      call s_set_control_4_velo                                         &
+     &   (nbc_ctl%node_bc_U_ctl, sbc_ctl%surf_bc_ST_ctl)
+!
+!  set boundary conditions for pressure
+!
+      if (iflag_debug.gt.0) write(*,*) 's_set_control_4_press'
+      call s_set_control_4_press                                        &
+     &   (nbc_ctl%node_bc_P_ctl, sbc_ctl%surf_bc_PN_ctl)
+!
+!   set boundary conditions for composition variation
+!
+      if (iflag_debug.gt.0) write(*,*) 's_set_control_4_composition'
+      call s_set_control_4_composition                                  &
+     &   (nbc_ctl%node_bc_C_ctl, sbc_ctl%surf_bc_CF_ctl)
+!
+!   set boundary_conditons for magnetic field
+!
+      if (iflag_debug.gt.0) write(*,*) 's_set_control_4_magne'
+      call s_set_control_4_magne                                        &
+     &   (nbc_ctl%node_bc_B_ctl, sbc_ctl%surf_bc_BN_ctl)
+!
+!   set flag to read boundary condition file
+!
+      if (iflag_debug.gt.0) write(*,*) 'check_read_boundary_files'
+      call check_read_boundary_files
+!
+      end subroutine set_control_SPH_MHD_bcs
 !
 ! ----------------------------------------------------------------------
 !

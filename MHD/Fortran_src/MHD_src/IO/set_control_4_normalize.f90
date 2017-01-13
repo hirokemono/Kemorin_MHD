@@ -8,7 +8,9 @@
 !> @brief set normalizatios for MHD simulation from control data
 !!
 !!@verbatim
-!!     subroutine s_set_control_4_normalize
+!!     subroutine s_set_control_4_normalize(dless_ctl, eqs_ctl)
+!!       type(dimless_control), intent(inout) :: dless_ctl
+!!       type(equations_control), intent(inout) :: eqs_ctl
 !!@endverbatim
 !
       module set_control_4_normalize
@@ -19,6 +21,7 @@
       use m_error_IDs
 !
       use t_normalize_parameter
+      use t_ctl_data_mhd_normalize
 !
       implicit  none
 !
@@ -33,18 +36,20 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_4_normalize
+      subroutine s_set_control_4_normalize(dless_ctl, eqs_ctl)
 !
       use m_control_parameter
       use m_normalize_parameter
-      use m_ctl_data_mhd_normalize
+!
+      type(dimless_control), intent(inout) :: dless_ctl
+      type(equations_control), intent(inout) :: eqs_ctl
 !
       integer (kind = kint) :: i
 !
 !
 !   set dimensionless numbers
 !
-      call set_dimensionless_numbers(dless_ctl1)
+      call set_dimensionless_numbers(dless_ctl)
 !
       if (iflag_debug .ge. iflag_routine_msg) then
         write(*,*) 'num_dimless ', MHD_coef_list%dimless_list%num
@@ -61,7 +66,7 @@
         MHD_coef_list%coefs_t_diffuse%num = 0
         MHD_coef_list%coefs_h_source%num =  0
       else
-        call set_coefs_4_thermal_eq(eqs_ctl1%heat_ctl)
+        call set_coefs_4_thermal_eq(eqs_ctl%heat_ctl)
       end if
 !
 !    set coefficients for momentum equation
@@ -75,7 +80,7 @@
         MHD_coef_list%coefs_Coriolis%num =  0
         MHD_coef_list%coefs_Lorentz%num =   0
       else
-        call set_coefs_4_momentum_eq(eqs_ctl1%mom_ctl)
+        call set_coefs_4_momentum_eq(eqs_ctl%mom_ctl)
       end if
 !
 !
@@ -88,7 +93,7 @@
         MHD_coef_list%coefs_m_diffuse%num = 0
         MHD_coef_list%coefs_induction%num = 0
       else
-        call set_coefs_4_induction_eq(eqs_ctl1%induct_ctl)
+        call set_coefs_4_induction_eq(eqs_ctl%induct_ctl)
       end if
 !
 !    set normalization for composition
@@ -98,7 +103,7 @@
         MHD_coef_list%coefs_c_diffuse%num =   0
         MHD_coef_list%coefs_c_source%num =    0
       else
-        call set_coefs_4_composition_eq(eqs_ctl1%comp_ctl)
+        call set_coefs_4_composition_eq(eqs_ctl%comp_ctl)
       end if
 !
       end subroutine s_set_control_4_normalize
@@ -110,7 +115,6 @@
 !
       use m_control_parameter
       use m_normalize_parameter
-      use t_ctl_data_mhd_normalize
 !
       type(dimless_control), intent(inout) :: dless_ctl
 !

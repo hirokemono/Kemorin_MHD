@@ -10,8 +10,9 @@
 !!        from control data
 !!
 !!@verbatim
-!!     subroutine s_set_control_4_solver(mevo_ctl)
+!!     subroutine s_set_control_4_solver(mevo_ctl, CG_ctl)
 !!        type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
+!!        type(solver_control), intent(inout) :: CG_ctl
 !!@endverbatim
 !
       module set_control_4_solver
@@ -29,58 +30,59 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_4_solver(mevo_ctl)
+      subroutine s_set_control_4_solver(mevo_ctl, CG_ctl)
 !
       use calypso_mpi
       use m_error_IDs
       use m_iccg_parameter
-      use m_ctl_data_fem_MHD
       use m_ctl_parameter_Multigrid
+      use t_ctl_data_4_solvers
       use t_ctl_data_mhd_evo_scheme
       use skip_comment_f
 !
       type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
+      type(solver_control), intent(inout) :: CG_ctl
 !
 !   control for solvers
 !
-        if ((CG_ctl1%method_ctl%iflag * CG_ctl1%precond_ctl%iflag)      &
+        if ((CG_ctl%method_ctl%iflag * CG_ctl%precond_ctl%iflag)        &
      &    .eq. 0) then
           e_message                                                     &
      &    = 'Set CG method and preconditioning for Poisson solver'
             call calypso_MPI_abort(ierr_CG, e_message)
         else
-          precond_4_solver = CG_ctl1%precond_ctl%charavalue
-          method_4_solver  = CG_ctl1%method_ctl%charavalue
+          precond_4_solver = CG_ctl%precond_ctl%charavalue
+          method_4_solver  = CG_ctl%method_ctl%charavalue
         end if
 !
-        if (CG_ctl1%itr_ctl%iflag .eq. 0) then
+        if (CG_ctl%itr_ctl%iflag .eq. 0) then
             e_message                                                   &
      &      = 'Set max iteration count for CG solver '
             call calypso_MPI_abort(ierr_CG, e_message)
         else
-          itr   = CG_ctl1%itr_ctl%intvalue
+          itr   = CG_ctl%itr_ctl%intvalue
         end if
 !
-        if (CG_ctl1%eps_ctl%iflag .eq. 0) then
+        if (CG_ctl%eps_ctl%iflag .eq. 0) then
             e_message                                                   &
      &      = 'Set conservation limit for CG solver '
             call calypso_MPI_abort(ierr_CG, e_message)
         else
-          eps   = CG_ctl1%eps_ctl%realvalue
+          eps   = CG_ctl%eps_ctl%realvalue
         end if
 !
-        if (CG_ctl1%sigma_ctl%iflag .eq. 0) then
+        if (CG_ctl%sigma_ctl%iflag .eq. 0) then
             e_message                                                   &
      &      = 'Set coefficient of diagonal for SSOR preconditioning'
             call calypso_MPI_abort(ierr_CG, e_message)
         else
-          sigma = CG_ctl1%sigma_ctl%realvalue
+          sigma = CG_ctl%sigma_ctl%realvalue
         end if
 !
-        if (CG_ctl1%sigma_diag_ctl%iflag .eq. 0) then
+        if (CG_ctl%sigma_diag_ctl%iflag .eq. 0) then
           sigma_diag = 1.0d0
         else
-          sigma_diag = CG_ctl1%sigma_diag_ctl%realvalue
+          sigma_diag = CG_ctl%sigma_diag_ctl%realvalue
         end if
 !
 !   control for time evolution scheme
@@ -113,7 +115,7 @@
 !
 !   control for number of processores for DJDS solver
 !
-        call set_control_4_DJDS_solver(CG_ctl1%DJDS_ctl)
+        call set_control_4_DJDS_solver(CG_ctl%DJDS_ctl)
 !
         if (       precond_4_solver .eq. 'DIAG'                         &
      &       .and. iflag_ordering .eq. 2                                &
@@ -142,7 +144,7 @@
 !
       if (cmp_no_case(method_4_solver, 'MGCG')) then
         if (iflag_debug.eq.1) write(*,*) 'set_ctl_data_4_Multigrid'
-        call set_ctl_data_4_Multigrid(CG_ctl1%MG_ctl)
+        call set_ctl_data_4_Multigrid(CG_ctl%MG_ctl)
       end if
 !
       end subroutine s_set_control_4_solver

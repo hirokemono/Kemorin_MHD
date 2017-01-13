@@ -45,7 +45,6 @@
       use t_ctl_data_4_platforms
       use t_read_control_arrays
       use t_ctl_data_mhd_evo_scheme
-      use m_ctl_data_mhd_forces
       use m_physical_property
       use m_file_format_switch
 !

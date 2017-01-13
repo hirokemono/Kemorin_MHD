@@ -136,6 +136,8 @@
         call read_sections_control_data
       end do
 !
+!      call bcast_fem_mhd_control
+!
 !      call bcast_ctl_data_4_platform(plt1)
 !      call bcast_ctl_data_4_platform(org_plt)
 !
@@ -180,15 +182,14 @@
 !
       subroutine bcast_fem_mhd_control
 !
-      use m_ctl_data_4_time_steps
-      use m_ctl_data_mhd_evo_scheme
+      use read_ctl_data_sph_MHD
+      use bcast_4_solver_ctl
+      use bcast_4_fem_int_pts_ctl
 !
 !
-      call read_restart_ctl(mr_ctl1)
-      call read_time_loop_ctl(mevo_ctl1)
-      call bcast_ctl_data_4_time_step(tctl1)
+      call bcast_sph_mhd_control
       call bcast_CG_solver_param_ctl(CG_ctl1)
-      call bcast_control_fem_int_points(fint_ctl)
+      call bcast_control_fem_int_points(fint_ctl1)
 !
       end subroutine bcast_fem_mhd_control
 !
