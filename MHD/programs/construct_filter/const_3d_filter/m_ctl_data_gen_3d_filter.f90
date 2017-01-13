@@ -11,7 +11,6 @@
       module m_ctl_data_gen_3d_filter
 !
       use m_precision
-      use m_ctl_data_4_solvers
       use m_ctl_data_gen_filter
       use m_read_control_elements
       use t_read_control_arrays

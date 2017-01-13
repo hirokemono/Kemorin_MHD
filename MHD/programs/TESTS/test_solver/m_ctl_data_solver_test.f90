@@ -13,7 +13,7 @@
       module m_ctl_data_solver_test
 !
       use m_precision
-      use m_ctl_data_4_solvers
+      use t_ctl_data_4_solvers
       use t_control_elements
 !
       implicit  none
@@ -34,6 +34,8 @@
 !>      Solver type
       type(read_character_item), save :: solver_type_ctl
 !
+!>      Structure for CG solver control
+      type(solver_control), save :: CG_test_ctl
 !
 !     Top level
 !
@@ -51,10 +53,14 @@
      &         :: hd_ip_smp_p_ctl =     'num_smp_ctl'
       character(len=kchara), parameter                                  &
      &         :: hd_solver_type =      'solver_type'
+      character(len=kchara), parameter                                  &
+     &         :: hd_solver_ctl =     'solver_ctl'
+      integer (kind=kint) :: i_solver_ctl =     0
 !
       private :: hd_solver_test_ctl, i_solver_test_ctl
       private :: hd_matrix_head_ctl, hd_solution_head_ctl
       private :: hd_ip_smp_p_ctl,    hd_solver_type
+      private :: hd_solver_ctl, i_solver_ctl
 !
       private :: read_ctl_data_test
 !
@@ -100,7 +106,8 @@
      &      i_solver_test_ctl)
 !
 !
-        call read_crs_solver_param_ctl
+        call read_CG_solver_param_ctl                                   &
+     &   (hd_solver_ctl, i_solver_ctl, CG_test_ctl)
 !
         call read_chara_ctl_type(hd_matrix_head_ctl, matrix_head_ctl)
         call read_chara_ctl_type                                        &

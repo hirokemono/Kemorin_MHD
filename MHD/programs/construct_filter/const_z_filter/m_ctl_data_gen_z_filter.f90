@@ -9,7 +9,6 @@
       module m_ctl_data_gen_z_filter
 !
       use m_precision
-      use m_ctl_data_4_solvers
       use m_ctl_data_gen_filter
       use t_control_elements
 !

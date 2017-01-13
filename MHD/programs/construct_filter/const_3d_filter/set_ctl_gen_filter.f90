@@ -30,7 +30,6 @@
 !
       use calypso_mpi
       use m_error_IDs
-      use m_ctl_data_4_solvers
       use m_ctl_data_org_filter_name
       use m_reference_moments
 !
@@ -292,23 +291,23 @@
         ied_num_free = -1
       end if
 !
-      if(CG_ctl1%method_ctl%iflag .gt. 0)  then
-        method =  CG_ctl1%method_ctl%charavalue
+      if(CG_filter_ctl%method_ctl%iflag .gt. 0)  then
+        method =  CG_filter_ctl%method_ctl%charavalue
       end if
-      if(CG_ctl1%precond_ctl%iflag .gt. 0) then
-        precond = CG_ctl1%precond_ctl%charavalue
+      if(CG_filter_ctl%precond_ctl%iflag .gt. 0) then
+        precond = CG_filter_ctl%precond_ctl%charavalue
       end if
-      if(CG_ctl1%itr_ctl%iflag .gt. 0)        then
-        itr = CG_ctl1%itr_ctl%intvalue
+      if(CG_filter_ctl%itr_ctl%iflag .gt. 0)        then
+        itr = CG_filter_ctl%itr_ctl%intvalue
       end if
-      if(CG_ctl1%eps_ctl%iflag .gt. 0)        then
-        eps = CG_ctl1%eps_ctl%realvalue
+      if(CG_filter_ctl%eps_ctl%iflag .gt. 0)        then
+        eps = CG_filter_ctl%eps_ctl%realvalue
       end if
-      if(CG_ctl1%sigma_ctl%iflag .gt. 0)      then
-        sigma = CG_ctl1%sigma_ctl%realvalue
+      if(CG_filter_ctl%sigma_ctl%iflag .gt. 0)      then
+        sigma = CG_filter_ctl%sigma_ctl%realvalue
       end if
-      if(CG_ctl1%sigma_diag_ctl%iflag .gt. 0) then
-        sigma_diag =  CG_ctl1%sigma_diag_ctl%realvalue
+      if(CG_filter_ctl%sigma_diag_ctl%iflag .gt. 0) then
+        sigma_diag =  CG_filter_ctl%sigma_diag_ctl%realvalue
       end if
 !
 !
