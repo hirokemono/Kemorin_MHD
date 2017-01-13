@@ -33,7 +33,6 @@
 !
       use t_ucd_data
       use m_ctl_data_4_fields
-      use m_ctl_data_4_fem_int_pts
       use m_ctl_data_diff_udt
       use m_fem_gauss_int_coefs
       use set_control_nodal_data
@@ -59,9 +58,9 @@
       if (iflag_debug.eq.1) write(*,*) 's_set_ctl_4_diff_udt_steps'
       call s_set_ctl_4_diff_udt_steps
 !
-      if(fint_ctl1%integration_points_ctl%iflag .gt. 0) then
+      if(fint_d_ctl%integration_points_ctl%iflag .gt. 0) then
         call maximum_integration_points                                 &
-     &     (fint_ctl1%integration_points_ctl%intvalue)
+     &     (fint_d_ctl%integration_points_ctl%intvalue)
       end if
 !
       end subroutine set_ctl_params_correlate_udt

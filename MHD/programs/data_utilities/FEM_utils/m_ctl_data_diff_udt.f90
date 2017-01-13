@@ -16,6 +16,7 @@
       use m_machine_parameter
       use m_read_control_elements
       use t_ctl_data_ele_layering
+      use t_ctl_data_4_fem_int_pts
       use calypso_mpi
       use skip_comment_f
 !
@@ -27,6 +28,8 @@
 !
 !>     Structure for element layering
       type(layering_control), save :: elayer_d_ctl
+!>     integeration points
+      type(fem_intergration_control), save  :: fint_d_ctl
 !
 !
       character(len = kchara), parameter                                &
@@ -129,9 +132,13 @@
 !
       character(len=kchara), parameter :: hd_dynamic_layers             &
      &                        = 'dynamic_model_layer_ctl'
+      character(len=kchara), parameter                                  &
+     &      :: hd_int_points = 'intg_point_num_ctl'
       integer (kind=kint) :: i_dynamic_layers = 0
+      integer (kind=kint) :: i_int_points = 0
 !
       private :: hd_dynamic_layers, i_dynamic_layers
+      private :: hd_int_points, i_int_points
 !
 !   --------------------------------------------------------------------
 !
@@ -254,7 +261,6 @@
 !
       use m_ctl_data_4_fields
       use m_ctl_data_4_time_steps
-      use m_ctl_data_4_fem_int_pts
 !
 !
       if(right_begin_flag(hd_diff_model) .eq. 0) return
@@ -270,8 +276,9 @@
         call read_time_step_ctl
         call read_ele_layers_control                                    &
      &     (hd_dynamic_layers, i_dynamic_layers, elayer_d_ctl)
+        call read_control_fem_int_points                                  &
+     &     (hd_int_points, i_int_points, fint_d_ctl)
 !
-        call read_fem_int_points_ctl
 !
 !
         call read_character_ctl_item(hd_prod_name,                      &
