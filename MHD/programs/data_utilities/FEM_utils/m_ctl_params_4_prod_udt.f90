@@ -55,8 +55,8 @@
       use m_ctl_data_4_org_data
       use m_ctl_data_product_udt
       use m_file_format_switch
+      use m_default_file_prefix
       use set_control_platform_data
-      use set_ctl_params_2nd_files
       use ucd_IO_select
 !
       type(field_IO_params), intent(inout) ::  mesh_file
@@ -71,8 +71,9 @@
 !
       call set_control_smp_def(my_rank, plt1)
       call set_control_mesh_def(plt1, mesh_file)
-      call set_control_org_udt_file_def(udt_org_param)
       call set_ucd_file_define(plt1, ucd)
+      call set_control_mesh_file_def                                    &
+     &   (def_org_ucd_header, org_plt, udt_org_param)
 !
 !   set fiale name
 !

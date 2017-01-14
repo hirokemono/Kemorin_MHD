@@ -22,6 +22,7 @@
       use m_control_data_4_part
       use m_ctl_data_4_platforms
       use m_ctl_data_4_org_data
+      use m_default_file_prefix
 !
       use m_ctl_param_partitioner
       use m_partitioner_comm_table
@@ -31,7 +32,6 @@
       use m_file_format_switch
       use itp_table_IO_select_4_zlib
       use set_control_platform_data
-      use set_ctl_params_2nd_files
       use skip_comment_f
 !
       integer(kind = kint) :: i

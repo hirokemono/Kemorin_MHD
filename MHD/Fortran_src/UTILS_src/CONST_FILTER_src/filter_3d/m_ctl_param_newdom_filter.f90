@@ -46,12 +46,12 @@
       use m_2nd_pallalel_vector
       use m_file_format_switch
 !
+      use m_default_file_prefix
       use m_ctl_data_4_platforms
       use m_ctl_data_4_2nd_data
       use m_ctl_data_org_filter_name
       use t_ctl_data_filter_files
       use set_control_platform_data
-      use set_ctl_params_2nd_files
 !
       type(filter_file_control), intent(in) :: ffile_ctl
       integer(kind = kint), intent(inout) :: ierr
@@ -84,7 +84,8 @@
 !
 !
       call set_control_mesh_def(plt1, org_mesh_file)
-      call set_control_new_mesh_file_def(tgt_mesh_file)
+      call set_control_mesh_file_def                                    &
+     &   (def_new_mesh_head, new_plt, tgt_mesh_file)
 !
 !
       iflag_set_filter_elen = i_org_filter_elen_head

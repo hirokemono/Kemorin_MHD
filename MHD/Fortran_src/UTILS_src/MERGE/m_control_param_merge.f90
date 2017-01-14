@@ -249,8 +249,9 @@
       use m_ctl_data_4_2nd_data
       use m_2nd_geometry_4_merge
       use m_file_format_switch
-      use set_ctl_params_2nd_files
+      use m_default_file_prefix
       use skip_comment_f
+      use set_control_platform_data
 !
 !
       if (new_plt%ndomain_ctl%iflag .gt. 0) then
@@ -260,7 +261,8 @@
         stop
       end if
 !
-      call set_control_new_mesh_file_def(merged_mesh_file)
+      call set_control_mesh_file_def                                    &
+     &   (def_new_mesh_head, new_plt, merged_mesh_file)
 !
       if(new_plt%del_org_data_ctl%iflag .gt. 0) then
         if(yes_flag(new_plt%del_org_data_ctl%charavalue)) then

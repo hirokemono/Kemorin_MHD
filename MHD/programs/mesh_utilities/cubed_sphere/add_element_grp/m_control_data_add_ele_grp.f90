@@ -8,6 +8,7 @@
       use m_precision
 !
       use m_read_control_elements
+      use t_ctl_data_4_platforms
       use t_read_control_arrays
       use skip_comment_f
 !
@@ -16,6 +17,8 @@
       integer (kind = kint), parameter :: control_file_code = 13
       character (len = kchara), parameter                               &
      &         :: control_file_name = 'ctl_add_ele_grp'
+!
+      type(platform_data_control), save :: added_plt
 !
       character (len = kchara) :: sph_grp_direction_ctl
 !

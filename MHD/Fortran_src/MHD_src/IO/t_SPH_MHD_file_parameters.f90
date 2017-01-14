@@ -35,14 +35,19 @@
 !
       subroutine set_control_org_sph_files(MHD_files)
 !
-      use set_ctl_params_2nd_files
+      use m_default_file_prefix
+      use m_ctl_data_4_org_data
+      use set_control_platform_data
 !
       type(file_params_4_sph_mhd), intent(inout) :: MHD_files
 !
 !
-      call set_control_org_sph_mesh(MHD_files%rj_file_param)
-      call set_control_org_rst_file_def(MHD_files%rst_file_param)
-      call set_control_org_udt_file_def(MHD_files%udt_file_param)
+      call set_control_mesh_file_def                                    &
+     &   (def_org_sph_rj_head, org_plt, MHD_files%rj_file_param)
+      call set_control_mesh_file_def                                    &
+     &   (def_org_rst_header, org_plt, MHD_files%rst_file_param)
+      call set_control_mesh_file_def                                    &
+     &   (def_org_ucd_header, org_plt, MHD_files%udt_file_param)
 !
       end subroutine set_control_org_sph_files
 !

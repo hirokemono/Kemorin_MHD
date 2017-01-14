@@ -25,11 +25,11 @@
       use m_constants
       use m_ctl_data_4_platforms
       use m_ctl_data_4_2nd_data
+      use m_default_file_prefix
       use m_control_data_add_ele_grp
       use m_add_ele_grp_parameter
       use set_ctl_parallel_platform
       use set_control_platform_data
-      use set_ctl_params_2nd_files
 !
       real(kind = kreal) :: pi
 !
@@ -37,7 +37,8 @@
       call check_control_num_domains(plt1)
       call turn_off_debug_flag_by_ctl(my_rank, plt1)
       call set_control_mesh_def(plt1, original_mesh_file)
-      call set_control_new_mesh_file_def(modified_mesh_file)
+      call set_control_mesh_file_def                                    &
+     &   (def_new_mesh_head, new_plt, modified_mesh_file)
 !
       if (i_2nd_grp_direction .gt. 0) then
         if    (   sph_grp_direction_ctl .eq. 'sphere'                   &

@@ -149,11 +149,12 @@
       use set_control_sph_data
       use set_control_platform_data
       use set_fixed_time_step_params
-      use set_ctl_params_2nd_files
       use legendre_transform_select
 !
       use m_ctl_data_4_platforms
       use m_ctl_data_4_sph_trans
+      use m_ctl_data_4_org_data
+      use m_default_file_prefix
       use skip_comment_f
       use parallel_ucd_IO_select
 !
@@ -170,9 +171,12 @@
       call set_control_mesh_def(plt1, mesh_file)
       call set_control_sph_mesh(plt1, mesh_file, sph_file_trns_p)
       call set_merged_ucd_file_define(plt1, ucd)
-      call set_control_org_sph_mesh(rj_org_param)
-      call set_control_org_rst_file_def(rst_org_param)
-      call set_control_org_udt_file_def(udt_org_param)
+      call set_control_mesh_file_def                                    &
+     &   (def_org_sph_rj_head, org_plt, rj_org_param)
+      call set_control_mesh_file_def                                    &
+     &   (def_org_rst_header, org_plt, rst_org_param)
+      call set_control_mesh_file_def                                    &
+     &   (def_org_ucd_header, org_plt, udt_org_param)
 !
 !    file header for field data
 !

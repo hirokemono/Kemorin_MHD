@@ -35,5 +35,15 @@
 !>      Mesh file
       character(len=kchara), parameter                                  &
      &                   :: def_org_mesh_head = 'mesh_org/in'
+!>      file header for original spectrum indexing data
+      character(len=kchara) :: def_org_sph_rj_head =      "sph_org/in_rj"
+!>      file header for original field data
+      character(len=kchara) :: def_org_ucd_header =  "field_org/out"
+!>      file header for original restart data
+      character(len=kchara) :: def_org_rst_header =   "rst_org/rst"
+!
+!>      file header for new mesh data
+      character(len=kchara), parameter                                  &
+     &           :: def_new_mesh_head = 'mesh_target/in'
 !
       end module m_default_file_prefix

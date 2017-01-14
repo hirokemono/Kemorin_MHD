@@ -84,10 +84,11 @@
       use m_ctl_data_4_plane_model
       use m_ctl_data_2nd_plane
       use m_ctl_data_4_2nd_data
+      use m_default_file_prefix
       use m_size_4_plane
       use m_spectr_4_ispack
       use m_set_new_spectr
-      use set_ctl_params_2nd_files
+      use set_control_platform_data
 !
       type(field_IO_params),  intent(inout) ::  mesh_file
       integer(kind=kint ), intent(inout) :: num_pe, ist, ied
@@ -105,7 +106,8 @@
       write(*,*) 'nnod_plane2_ctl       ', nnod_plane2_ctl%intvalue
       write(*,*) 'ndomain_plane2_ctl    ', ndomain_plane2_ctl%intvalue
 !
-      call set_control_new_mesh_file_def(mesh_file)
+      call set_control_mesh_file_def                                    &
+     &   (def_new_mesh_head, new_plt, mesh_file)
 !
       if (new_plt%restart_file_prefix%iflag .gt. 0) then
         rst_head_plane = new_plt%restart_file_prefix%charavalue
@@ -172,13 +174,14 @@
       use m_ctl_data_4_plane_model
       use m_ctl_data_2nd_plane
       use m_ctl_data_4_2nd_data
+      use m_default_file_prefix
       use m_size_4_plane
       use m_spectr_4_ispack
       use m_set_new_spectr
       use m_field_file_format
       use t_ucd_data
       use set_parallel_file_name
-      use set_ctl_params_2nd_files
+      use set_control_platform_data
 !
       integer(kind=kint ), intent(inout) :: num_pe
       integer(kind=kint ), intent(inout) :: kx_org, ky_org, iz_org
@@ -192,7 +195,8 @@
       write(*,*) 'nnod_plane2_ctl       ', nnod_plane2_ctl%intvalue
       write(*,*) 'ndomain_plane2_ctl    ', ndomain_plane2_ctl%intvalue
 !
-      call set_control_new_mesh_file_def(mesh_file)
+      call set_control_mesh_file_def                                    &
+     &   (def_new_mesh_head, new_plt, mesh_file)
 !
       if (new_plt%field_file_prefix%iflag .gt. 0) then
         call choose_file_format                                         &

@@ -17,6 +17,13 @@
 !!      subroutine set_FEM_mesh_switch_4_SPH(plt, iflag_access_FEM)
 !!      subroutine set_control_restart_file_def(plt, fld_IO)
 !!        type(platform_data_control), intent(in) :: plt
+!!
+!!      subroutine set_control_mesh_file_def                            &
+!!     &         (default_prefix, plt_ctl, mesh_file)
+!!      subroutine set_file_control_params(default_prefix,              &
+!!     &          file_prefix_ctl, file_format_ctl,  file_params)
+!!      subroutine set_parallel_file_ctl_params(default_prefix,         &
+!!     &          file_prefix_ctl, file_format_ctl,  file_params)
 !!@endverbatim
 !!
 !!@param my_rank  preocess ID
@@ -27,6 +34,7 @@
 !
       use m_constants
       use t_ctl_data_4_platforms
+      use t_file_IO_parameter
 !
       implicit  none
 !
@@ -96,7 +104,6 @@
 !
       use m_default_file_prefix
       use m_file_format_switch
-      use t_file_IO_parameter
 !
       type(platform_data_control), intent(in) :: plt
       type(field_IO_params), intent(inout) :: mesh_file
@@ -112,7 +119,6 @@
       subroutine set_control_sph_mesh(plt, mesh_file, sph_file_param)
 !
       use m_file_format_switch
-      use t_file_IO_parameter
       use sph_file_IO_select
 !
       type(platform_data_control), intent(in) :: plt
@@ -189,10 +195,25 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
+      subroutine set_control_mesh_file_def                              &
+     &         (default_prefix, plt_ctl, mesh_file)
+!
+      character(len=kchara), intent(in) :: default_prefix
+      type(platform_data_control), intent(in) :: plt_ctl
+      type(field_IO_params), intent(inout) :: mesh_file
+!
+!
+      call set_file_control_params(default_prefix,                      &
+     &    plt_ctl%mesh_file_prefix, plt_ctl%mesh_file_fmt_ctl,          &
+     &    mesh_file)
+!
+      end subroutine set_control_mesh_file_def
+!
+! -----------------------------------------------------------------------
+!
       subroutine set_file_control_params(default_prefix,                &
      &          file_prefix_ctl, file_format_ctl,  file_params)
 !
-      use t_file_IO_parameter
       use t_control_elements
       use m_file_format_switch
 !
@@ -220,7 +241,6 @@
       subroutine set_parallel_file_ctl_params(default_prefix,           &
      &          file_prefix_ctl, file_format_ctl,  file_params)
 !
-      use t_file_IO_parameter
       use t_control_elements
       use m_file_format_switch
 !

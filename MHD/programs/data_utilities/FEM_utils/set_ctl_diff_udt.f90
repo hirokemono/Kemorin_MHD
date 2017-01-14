@@ -76,9 +76,9 @@
       use m_ctl_data_diff_udt
       use m_geometry_constants
       use m_file_format_switch
+      use m_default_file_prefix
       use set_ctl_parallel_platform
       use set_control_platform_data
-      use set_ctl_params_2nd_files
       use ucd_IO_select
 !
       type(field_IO_params), intent(inout) ::  mesh_file
@@ -90,7 +90,8 @@
       call check_control_num_domains(plt1)
       call set_control_smp_def(my_rank, plt1)
       call set_control_mesh_def(plt1, mesh_file)
-      call set_control_org_udt_file_def(udt_org_param)
+      call set_control_mesh_file_def                                    &
+     &   (def_org_ucd_header, org_plt, udt_org_param)
 !
 !
       call set_ucd_file_define(plt1, ucd)

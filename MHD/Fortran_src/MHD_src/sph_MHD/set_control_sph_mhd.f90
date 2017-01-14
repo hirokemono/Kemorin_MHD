@@ -130,7 +130,6 @@
       use set_control_4_time_steps
 !
       use set_control_4_pickup_sph
-      use set_ctl_params_2nd_files
       use set_ctl_gen_shell_grids
 !
       type(mhd_model_control), intent(inout) :: model_ctl

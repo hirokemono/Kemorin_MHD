@@ -91,9 +91,9 @@
       use m_ctl_data_4_2nd_data
       use m_search_bolck_4_itp
       use m_file_format_switch
+      use m_default_file_prefix
       use itp_table_IO_select_4_zlib
       use set_control_platform_data
-      use set_ctl_params_2nd_files
       use skip_comment_f
 !
 !
@@ -106,7 +106,8 @@
         table_file_head = table_head_ctl%charavalue
       end if
 !
-      call set_control_new_mesh_file_def(itp_dest_mesh_file)
+      call set_control_mesh_file_def                                    &
+     &   (def_new_mesh_head, new_plt, itp_dest_mesh_file)
       call choose_file_format                                           &
      &   (fmt_itp_table_file_ctl, ifmt_itp_table_file)
 !

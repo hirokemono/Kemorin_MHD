@@ -84,14 +84,15 @@
       use m_ctl_data_4_platforms
       use m_ctl_data_4_2nd_data
       use m_file_format_switch
+      use m_default_file_prefix
       use set_control_platform_data
-      use set_ctl_params_2nd_files
 !
 !
       call turn_off_debug_flag_by_ctl(my_rank, plt1)
       call set_control_smp_def(my_rank, plt1)
       call set_control_mesh_def(plt1, org_mesh_file)
-      call set_control_new_mesh_file_def(dest_mesh_file)
+      call set_control_mesh_file_def                                    &
+     &   (def_new_mesh_head, new_plt, dest_mesh_file)
 !
       nprocs_org = 1
       if(plt1%ndomain_ctl%iflag .gt. 0) then
