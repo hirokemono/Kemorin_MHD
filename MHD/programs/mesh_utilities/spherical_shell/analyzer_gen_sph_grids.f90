@@ -45,7 +45,6 @@
 !
       use m_read_ctl_gen_sph_shell
       use m_ctl_data_4_platforms
-      use m_ctl_data_4_sphere_model
       use set_ctl_gen_shell_grids
 !
 !

@@ -11,6 +11,7 @@
       use m_read_control_elements
       use t_ctl_data_4_fields
       use t_ctl_data_4_time_steps
+      use t_ctl_data_4_sph_monitor
       use skip_comment_f
 !
       implicit  none
@@ -22,6 +23,8 @@
       type(field_control), save :: fld_su_ctl
 !>      Structure for time stepping control
       type(time_data_control), save :: t_su_ctl
+!
+      type(sph_monitor_control), save :: smonitor_u_ctl
 !
       character(len = kchara) :: zm_spec_file_head_ctl
       character(len = kchara) :: tave_ene_spec_head_ctl
@@ -47,11 +50,14 @@
      &      :: hd_phys_values =  'phys_values_ctl'
       character(len=kchara), parameter                                  &
      &      :: hd_time_step = 'time_step_ctl'
-      integer (kind=kint) :: i_sph_trans_model =  0
-      integer (kind=kint) :: i_sph_trans_params = 0
-!>      Number of field
-      integer (kind=kint) :: i_phys_values =   0
-      integer (kind=kint) :: i_tstep =      0
+      character(len=kchara), parameter                                  &
+     &                     :: hd_pick_sph = 'sph_monitor_ctl'
+!
+      integer(kind=kint) :: i_sph_trans_model =  0
+      integer(kind=kint) :: i_sph_trans_params = 0
+      integer(kind=kint) :: i_phys_values =   0
+      integer(kind=kint) :: i_tstep =      0
+      integer(kind=kint) :: i_pick_sph = 0
 !
 !   2nd level
 !
@@ -84,6 +90,7 @@
       private :: hd_sph_trans_params, i_sph_trans_params
       private :: hd_phys_values, i_phys_values
       private :: hd_time_step, i_tstep
+      private :: hd_pick_sph, i_pick_sph
       private :: hd_tsph_esp_file
       private :: hd_ene_spec_head, hd_vol_ene_spec_head
       private :: hd_zm_sph_spec_file
@@ -121,7 +128,6 @@
       use m_machine_parameter
       use m_ctl_data_4_platforms
       use m_ctl_data_4_org_data
-      use m_ctl_data_4_pickup_sph
       use calypso_mpi
 !
 !   2 begin phys_values_ctl
@@ -141,7 +147,8 @@
         call read_sph_trans_model_ctl
         call read_sph_trans_params_ctl
 !
-        call read_pickup_sph_ctl
+        call read_sph_monitoring_ctl                                    &
+     &     (hd_pick_sph, i_pick_sph, smonitor_u_ctl)
       end do
 !
       end subroutine read_sph_trans_control_data

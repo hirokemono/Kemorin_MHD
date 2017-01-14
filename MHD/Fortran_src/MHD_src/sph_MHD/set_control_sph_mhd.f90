@@ -96,7 +96,6 @@
       use m_spheric_global_ranks
       use m_ucd_data
       use m_ctl_data_4_platforms
-      use m_ctl_data_4_sphere_model
       use m_ctl_data_4_pickup_sph
       use read_ctl_data_sph_MHD
       use m_ctl_data_mhd_evo_scheme

@@ -143,7 +143,6 @@
       use m_ctl_data_4_pickup_sph
       use m_ctl_data_4_org_data
       use m_ctl_data_4_2nd_data
-      use m_ctl_data_4_sphere_model
       use m_read_ctl_gen_sph_shell
       use m_control_data_pvrs
       use read_ctl_data_sph_MHD

@@ -81,7 +81,6 @@
 !
       use m_ctl_data_4_platforms
       use m_ctl_data_4_sph_utils
-      use m_ctl_data_4_pickup_sph
       use m_ctl_data_4_org_data
 !
       type(phys_data), intent(inout) :: rj_fld
@@ -150,11 +149,11 @@
 !
 !   set pickup mode
 !
-      call set_ctl_params_layered_spectr(smonitor_ctl1%lp_ctl, pwr)
-      call set_ctl_params_sph_spectr(smonitor_ctl1, pwr)
-      call set_ctl_params_pick_sph(smonitor_ctl1%pspec_ctl,             &
+      call set_ctl_params_layered_spectr(smonitor_u_ctl%lp_ctl, pwr)
+      call set_ctl_params_sph_spectr(smonitor_u_ctl, pwr)
+      call set_ctl_params_pick_sph(smonitor_u_ctl%pspec_ctl,            &
      &    pickup_sph_head, pick_list_u, pick_sph_u)
-      call set_ctl_params_pick_gauss(smonitor_ctl1%g_pwr,               &
+      call set_ctl_params_pick_gauss(smonitor_u_ctl%g_pwr,              &
      &    gauss_coefs_file_prefix, gauss_list_u, gauss_u)
 !
 !   set physical values

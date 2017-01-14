@@ -123,7 +123,6 @@
       use m_ctl_data_4_platforms
       use m_control_data_sections
       use m_ctl_data_node_monitor
-      use m_ctl_data_4_pickup_sph
       use m_ctl_data_4_org_data
       use read_ctl_data_sph_MHD
 !
@@ -144,7 +143,6 @@
         call read_fem_mhd_control
 !
         call read_monitor_data_control
-        call read_pickup_sph_ctl
         call read_sections_control_data
       end do
 !
@@ -188,7 +186,6 @@
       use m_ctl_data_4_platforms
       use m_control_data_sections
       use m_ctl_data_node_monitor
-      use m_ctl_data_4_pickup_sph
       use m_ctl_data_4_org_data
       use read_ctl_data_sph_MHD
       use bcast_4_platform_ctl
@@ -202,7 +199,6 @@
       call bcast_fem_mhd_control
 !
       call bcast_monitor_data_ctl(nmtr_ctl1)
-      call bcast_sph_monitoring_ctl(smonitor_ctl1)
       call bcast_files_4_psf_ctl
       call bcast_files_4_iso_ctl
 !

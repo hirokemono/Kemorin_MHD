@@ -76,6 +76,7 @@
       use m_sph_boundary_input_data
       use m_spheric_global_ranks
       use m_error_IDs
+      use m_read_ctl_gen_sph_shell
 !
       use sph_mhd_rst_IO_control
       use set_control_sph_mhd
@@ -103,7 +104,8 @@
       call set_control_SGS_SPH_MHD(sph_gen, rj_fld,                     &
      &    mesh1_file, sph_file_param1, MHD1_org_files,                  &
      &    sph_fst_IO, pwr, dynamic_SPH%sph_filters)
-      call set_control_4_SPH_to_FEM(sph%sph_params, rj_fld, nod_fld)
+      call set_control_4_SPH_to_FEM                                     &
+     &   (spctl1, sph%sph_params, rj_fld, nod_fld)
 !
 !
       iflag_lc = 0
@@ -210,6 +212,7 @@
 !
       use m_control_parameter
       use read_ctl_data_sph_MHD
+      use m_read_ctl_gen_sph_shell
       use m_ctl_data_4_pickup_sph
       use sph_mhd_rst_IO_control
       use set_control_sph_mhd
@@ -228,7 +231,8 @@
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
       call set_control_4_SPH_MHD(sph_gen, rj_fld,                       &
      &    mesh1_file, sph_file_param1, MHD1_org_files, sph_fst_IO, pwr)
-      call set_control_4_SPH_to_FEM(sph%sph_params, rj_fld, nod_fld)
+      call set_control_4_SPH_to_FEM                                     &
+     &   (spctl1, sph%sph_params, rj_fld, nod_fld)
       call set_ctl_params_dynamobench                                   &
      &   (fld_ctl1%field_ctl, smonitor_ctl1%meq_ctl)
 !
@@ -240,20 +244,22 @@
 ! ----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_SPH_to_FEM(sph_params, rj_fld, nod_fld)
+      subroutine set_control_4_SPH_to_FEM                               &
+     &         (spctl, sph_params, rj_fld, nod_fld)
 !
-      use m_ctl_data_4_sphere_model
+      use t_ctl_data_4_sphere_model
 !
       use ordering_field_by_viz
       use node_monitor_IO
       use set_controls_4_sph_shell
 !
+      type(sphere_data_control), intent(in) :: spctl
       type(sph_shell_parameters), intent(inout) :: sph_params
       type(phys_data), intent(inout) :: rj_fld
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call set_FEM_mesh_mode_4_SPH(spctl1, sph_params%iflag_shell_mode)
+      call set_FEM_mesh_mode_4_SPH(spctl, sph_params%iflag_shell_mode)
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &     write(*,*) 'copy_rj_spec_name_to_nod_fld'

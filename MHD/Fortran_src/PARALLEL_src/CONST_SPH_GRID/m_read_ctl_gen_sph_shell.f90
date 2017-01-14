@@ -13,14 +13,20 @@
       use m_constants
       use m_machine_parameter
 !
+      use t_ctl_data_4_sphere_model
+      use t_ctl_data_4_divide_sphere
+!
       implicit none
 !
       integer (kind = kint) :: control_file_code = 13
       character (len = kchara)                                          &
      &         :: control_file_name = 'control_sph_shell'
 !
+      type(sphere_data_control), save :: spctl1
+      type(sphere_domain_control), save :: sdctl1
+!
       character (len = kchara) :: tmp_character
-
+!
 !
 !   Top level
 !
@@ -29,8 +35,20 @@
       integer (kind=kint) :: i_sph_shell = 0
       integer (kind=kint) :: ifile_sph_shell = 0
 !
+      character(len=kchara), parameter                                  &
+     &                     :: hd_sph_def = 'shell_define_ctl'
+      character(len=kchara), parameter                                  &
+     &                     :: hd_domains_sph = 'num_domain_ctl'
+      integer(kind = kint) :: i_shell_def =   0
+      integer(kind = kint) :: i_domains_sph = 0
+!
+!  Deprecated
+      character(len=kchara), parameter :: hd_shell_def = 'num_grid_sph'
+!
       private :: control_file_code, control_file_name
       private :: hd_sph_shell
+      private :: hd_sph_def, hd_shell_def, i_shell_def
+      private :: hd_domains_sph, i_domains_sph
       private :: read_control_data_4_shell
 !
 !   --------------------------------------------------------------------
@@ -44,7 +62,6 @@
       use calypso_mpi
       use m_read_control_elements
       use m_ctl_data_4_platforms
-      use m_ctl_data_4_sphere_model
       use skip_comment_f
       use bcast_4_platform_ctl
       use bcast_4_sphere_ctl
@@ -72,7 +89,6 @@
 !
       use m_read_control_elements
       use m_ctl_data_4_platforms
-      use m_ctl_data_4_sphere_model
       use skip_comment_f
 !
 !
@@ -86,9 +102,12 @@
 !
 !
         call read_ctl_data_4_platform
-        call read_ctl_4_shell_define
+        call read_control_shell_define(hd_sph_def, i_shell_def, spctl1)
+        call read_control_shell_define                                  &
+     &     (hd_shell_def, i_shell_def, spctl1)
 !
-        call read_ctl_ndomain_4_shell
+        call read_control_shell_domain                                  &
+     &     (hd_domains_sph, i_domains_sph, sdctl1)
       end do
 !
       end subroutine read_control_data_4_shell
@@ -98,7 +117,6 @@
       subroutine read_ctl_data_4_shell_in_MHD
 !
       use m_read_control_elements
-      use m_ctl_data_4_sphere_model
       use skip_comment_f
 !
 !
@@ -115,8 +133,12 @@
         call find_control_end_flag(hd_sph_shell, i_sph_shell)
         if(i_sph_shell .gt. 0) exit
 !
-        call read_ctl_4_shell_define
-        call read_ctl_ndomain_4_shell
+        call read_control_shell_define(hd_sph_def, i_shell_def, spctl1)
+        call read_control_shell_define                                  &
+     &     (hd_shell_def, i_shell_def, spctl1)
+!
+        call read_control_shell_domain                                  &
+     &     (hd_domains_sph, i_domains_sph, sdctl1)
       end do
 !
       end subroutine read_ctl_data_4_shell_in_MHD
