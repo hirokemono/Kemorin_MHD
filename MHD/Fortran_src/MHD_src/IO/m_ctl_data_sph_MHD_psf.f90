@@ -36,8 +36,23 @@
 !
 !   2nd level for MHD
 !
+      character(len=kchara), parameter :: hd_model =   'model'
+      character(len=kchara), parameter :: hd_control = 'control'
+      character(len=kchara), parameter                                  &
+     &      :: hd_monitor_data = 'monitor_data_ctl'
+      character(len=kchara), parameter                                  &
+     &                     :: hd_pick_sph = 'sph_monitor_ctl'
+!
+      integer(kind=kint) :: i_model =        0
+      integer(kind=kint) :: i_control =      0
+      integer(kind=kint) :: i_monitor_data = 0
+      integer(kind=kint) :: i_pick_sph = 0
+!
       private :: MHD_ctl_name
       private :: hd_mhd_ctl, i_mhd_ctl
+      private :: hd_model, hd_control, i_model, i_control
+      private :: hd_pick_sph, i_pick_sph
+      private :: hd_monitor_data, i_monitor_data
 !
       private :: read_sph_mhd_ctl_w_psf
 !
@@ -99,8 +114,6 @@
       subroutine read_sph_mhd_ctl_w_psf
 !
       use m_ctl_data_4_platforms
-      use m_ctl_data_node_monitor
-      use m_ctl_data_4_pickup_sph
       use m_ctl_data_4_org_data
       use m_read_ctl_gen_sph_shell
       use m_control_data_sections
@@ -121,11 +134,13 @@
 !
         call read_ctl_data_4_shell_in_MHD
 !
-        call read_sph_mhd_model
-        call read_sph_mhd_control
+        call read_sph_mhd_model(hd_model, i_model, model_ctl1)
+        call read_sph_mhd_control(hd_control, i_control, ctl_ctl1)
 !
-        call read_monitor_data_control
-        call read_pickup_sph_ctl
+        call read_monitor_data_ctl                                      &
+     &     (hd_monitor_data, i_monitor_data, nmtr_ctl1)
+        call read_sph_monitoring_ctl                                    &
+     &     (hd_pick_sph, i_pick_sph, smonitor_ctl1)
 !
         call read_sections_control_data
       end do
@@ -137,8 +152,6 @@
       subroutine bcast_sph_mhd_ctl_w_psf
 !
       use m_ctl_data_4_platforms
-      use m_ctl_data_node_monitor
-      use m_ctl_data_4_pickup_sph
       use m_ctl_data_4_org_data
       use m_ctl_data_4_2nd_data
       use m_read_ctl_gen_sph_shell
@@ -153,8 +166,8 @@
       call bcast_ctl_data_4_platform(plt1)
       call bcast_ctl_data_4_platform(org_plt)
 !
-      call bcast_sph_mhd_model
-      call bcast_sph_mhd_control
+      call bcast_sph_mhd_model(model_ctl1)
+      call bcast_sph_mhd_control(ctl_ctl1)
 !
       call bcast_ctl_4_shell_define(spctl1)
       call bcast_ctl_ndomain_4_shell(sdctl1)

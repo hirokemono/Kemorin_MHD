@@ -8,7 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine set_control_4_FEM_MHD                                &
-!!     &         (mesh_file, udt_org_param, nod_fld)
+!!     &         (model_ctl, ctl_ctl, nmtr_ctl,                         &
+!!     &          mesh_file, udt_org_param, nod_fld)
+!!        type(mhd_model_control), intent(inout) :: model_ctl
+!!        type(mhd_control_control), intent(inout) :: ctl_ctl
+!!        type(node_monitor_control), intent(inout) :: nmtr_ctl
 !!        type(field_IO_params), intent(inout) :: mesh_file
 !!        type(field_IO_params), intent(inout) :: udt_org_param
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -19,6 +23,9 @@
       use m_precision
       use t_phys_data
       use t_file_IO_parameter
+      use t_ctl_data_MHD_model
+      use t_ctl_data_MHD_control
+      use t_ctl_data_node_monitor
 !
       implicit  none
 !
@@ -31,14 +38,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_control_4_FEM_MHD                                  &
-     &         (mesh_file, udt_org_param, nod_fld)
+     &         (model_ctl, ctl_ctl, nmtr_ctl,                           &
+     &          mesh_file, udt_org_param, nod_fld)
 !
       use calypso_mpi
       use m_ucd_data
       use m_ctl_data_4_platforms
-      use read_ctl_data_sph_MHD
       use m_ctl_data_fem_MHD
-      use m_ctl_data_node_monitor
 !
       use set_control_platform_data
       use set_control_nodal_data_MHD
@@ -57,6 +63,9 @@
 !
       use fem_mhd_rst_IO_control
 !
+      type(mhd_model_control), intent(inout) :: model_ctl
+      type(mhd_control_control), intent(inout) :: ctl_ctl
+      type(node_monitor_control), intent(inout) :: nmtr_ctl
       type(field_IO_params), intent(inout) :: mesh_file
       type(field_IO_params), intent(inout) :: udt_org_param
       type(phys_data), intent(inout) :: nod_fld
@@ -75,46 +84,51 @@
 !   set parameters for general information
 !
       call s_set_control_4_model                                        &
-     &   (reft_ctl1, ctl_ctl1%mevo_ctl, evo_ctl1, nmtr_ctl1)
+     &   (model_ctl%reft_ctl, ctl_ctl%mevo_ctl, model_ctl%evo_ctl,      &
+     &    nmtr_ctl)
 !
 !   set element groups for evolution
 !
-      call s_set_control_evo_layers(earea_ctl1)
+      call s_set_control_evo_layers(model_ctl%earea_ctl)
 !
 !   set forces
 !
-      call s_set_control_4_force(frc_ctl1, g_ctl1, cor_ctl1, mcv_ctl1)
+      call s_set_control_4_force(model_ctl%frc_ctl, model_ctl%g_ctl,    &
+     &    model_ctl%cor_ctl, model_ctl%mcv_ctl)
 !
 !   set parameters for SGS model
 !
-      call set_control_SGS_model(sgs_ctl1)
-      call set_control_FEM_SGS                                          &
-     &   (sgs_ctl1%ffile_ctl, sgs_ctl1, sgs_ctl1%elayer_ctl)
+      call set_control_SGS_model(model_ctl%sgs_ctl)
+      call set_control_FEM_SGS(model_ctl%sgs_ctl%ffile_ctl,             &
+     &    model_ctl%sgs_ctl, model_ctl%sgs_ctl%elayer_ctl)
 !
 !   set parameters for filtering operation
 !
-      call s_set_control_4_filtering(sgs_ctl1%SGS_filter_name_ctl,      &
-     &    sgs_ctl1%ffile_ctl, sgs_ctl1%s3df_ctl)
+      call s_set_control_4_filtering                                    &
+     &   (model_ctl%sgs_ctl%SGS_filter_name_ctl,                        &
+     &    model_ctl%sgs_ctl%ffile_ctl, model_ctl%sgs_ctl%s3df_ctl)
 !
 !   set fields
 !
-      call set_control_4_fields(fld_ctl1%field_ctl, nod_fld)
+      call set_control_4_fields(model_ctl%fld_ctl%field_ctl, nod_fld)
 !
 !   set control parameters
 !
-      call s_set_control_4_normalize(dless_ctl1, eqs_ctl1)
+      call s_set_control_4_normalize                                    &
+     &   (model_ctl%dless_ctl, model_ctl%eqs_ctl)
 !
 !   set boundary conditions
 !
-      call set_control_FEM_MHD_bcs(nbc_ctl1, sbc_ctl1)
+      call set_control_FEM_MHD_bcs                                      &
+     &   (model_ctl%nbc_ctl, model_ctl%sbc_ctl)
 !
 !   set control parameters
 !
-      call s_set_control_4_time_steps(ctl_ctl1%mrst_ctl, ctl_ctl1%tctl)
-      call s_set_control_4_crank(ctl_ctl1%mevo_ctl)
+      call s_set_control_4_time_steps(ctl_ctl%mrst_ctl, ctl_ctl%tctl)
+      call s_set_control_4_crank(ctl_ctl%mevo_ctl)
 !
-      call s_set_control_4_solver(ctl_ctl1%mevo_ctl, ctl_ctl1%CG_ctl)
-      call set_control_4_FEM_params(ctl_ctl1%mevo_ctl, ctl_ctl1%fint_ctl)
+      call s_set_control_4_solver(ctl_ctl%mevo_ctl, ctl_ctl%CG_ctl)
+      call set_control_4_FEM_params(ctl_ctl%mevo_ctl, ctl_ctl%fint_ctl)
 !
       end subroutine set_control_4_FEM_MHD
 !

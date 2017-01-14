@@ -77,6 +77,7 @@
       use m_spheric_global_ranks
       use m_error_IDs
       use m_read_ctl_gen_sph_shell
+      use read_ctl_data_sph_MHD
 !
       use sph_mhd_rst_IO_control
       use set_control_sph_mhd
@@ -101,8 +102,9 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_SGS_SPH_MHD'
-      call set_control_SGS_SPH_MHD(sph_gen, rj_fld,                     &
-     &    mesh1_file, sph_file_param1, MHD1_org_files,                  &
+      call set_control_SGS_SPH_MHD                                      &
+     &   (model_ctl1, ctl_ctl1, smonitor_ctl1, nmtr_ctl1,               &
+     &    sph_gen, rj_fld, mesh1_file, sph_file_param1, MHD1_org_files, &
      &    sph_fst_IO, pwr, dynamic_SPH%sph_filters)
       call set_control_4_SPH_to_FEM                                     &
      &   (spctl1, sph%sph_params, rj_fld, nod_fld)
@@ -147,6 +149,7 @@
 !
       use m_control_parameter
       use m_sph_boundary_input_data
+      use read_ctl_data_sph_MHD
       use sph_mhd_rst_IO_control
       use set_control_sph_mhd
       use parallel_load_data_4_sph
@@ -161,8 +164,9 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_SGS_SPH_MHD'
-      call set_control_SGS_SPH_MHD(sph_gen, rj_fld,                     &
-     &    mesh1_file, sph_file_param1, MHD1_org_files,                  &
+      call set_control_SGS_SPH_MHD                                      &
+     &   (model_ctl1, ctl_ctl1, smonitor_ctl1, nmtr_ctl1,               &
+     &    sph_gen, rj_fld, mesh1_file, sph_file_param1, MHD1_org_files, &
      &    sph_fst_IO, pwr, dynamic_SPH%sph_filters)
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
@@ -183,6 +187,7 @@
 !
       use m_control_parameter
       use m_sph_boundary_input_data
+      use read_ctl_data_sph_MHD
       use sph_mhd_rst_IO_control
       use set_control_sph_mhd
       use parallel_load_data_4_sph
@@ -196,8 +201,10 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
-      call set_control_4_SPH_MHD(sph_gen, rj_fld,                       &
-     &    mesh1_file, sph_file_param1, MHD1_org_files, sph_fst_IO, pwr)
+      call set_control_4_SPH_MHD                                        &
+     &   (model_ctl1, ctl_ctl1, smonitor_ctl1, nmtr_ctl1,               &
+     &    sph_gen, rj_fld, mesh1_file, sph_file_param1,                 &
+     &    MHD1_org_files, sph_fst_IO, pwr)
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
       call load_para_sph_mesh(sph, comms_sph, sph_grps)
@@ -213,7 +220,6 @@
       use m_control_parameter
       use read_ctl_data_sph_MHD
       use m_read_ctl_gen_sph_shell
-      use m_ctl_data_4_pickup_sph
       use sph_mhd_rst_IO_control
       use set_control_sph_mhd
       use set_control_sph_data_MHD
@@ -229,12 +235,14 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
-      call set_control_4_SPH_MHD(sph_gen, rj_fld,                       &
-     &    mesh1_file, sph_file_param1, MHD1_org_files, sph_fst_IO, pwr)
+      call set_control_4_SPH_MHD                                        &
+     &   (model_ctl1, ctl_ctl1, smonitor_ctl1, nmtr_ctl1,               &
+     &    sph_gen, rj_fld, mesh1_file, sph_file_param1,                 &
+     &    MHD1_org_files, sph_fst_IO, pwr)
       call set_control_4_SPH_to_FEM                                     &
      &   (spctl1, sph%sph_params, rj_fld, nod_fld)
       call set_ctl_params_dynamobench                                   &
-     &   (fld_ctl1%field_ctl, smonitor_ctl1%meq_ctl)
+     &   (model_ctl1%fld_ctl%field_ctl, smonitor_ctl1%meq_ctl)
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
       call load_para_sph_mesh(sph, comms_sph, sph_grps)

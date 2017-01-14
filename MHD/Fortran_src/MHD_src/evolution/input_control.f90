@@ -64,6 +64,7 @@
       use m_ctl_data_fem_MHD
       use m_iccg_parameter
       use m_flags_4_solvers
+      use read_ctl_data_sph_MHD
       use set_control_FEM_MHD
       use mpi_load_mesh_data
       use input_MG_data
@@ -87,7 +88,8 @@
       call read_control_4_fem_MHD
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_FEM_MHD'
       call set_control_4_FEM_MHD                                        &
-     &   (mesh1_file, FEM_udt_org_param, nod_fld)
+     &   (model_ctl1, ctl_ctl1, nmtr_ctl1,                              &
+     &    mesh1_file, FEM_udt_org_param, nod_fld)
 !
 !  --  load FEM mesh data
       call mpi_input_mesh(mesh1_file, mesh, group,                      &
@@ -118,6 +120,7 @@
      &          nod_fld, IO_bc, filtering, wide_filtering, wk_filter)
 !
       use m_ctl_data_fem_MHD
+      use read_ctl_data_sph_MHD
       use set_control_FEM_MHD
       use mpi_load_mesh_data
       use node_monitor_IO
@@ -138,7 +141,8 @@
       call read_control_4_fem_snap
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_FEM_MHD'
       call set_control_4_FEM_MHD                                        &
-     &   (mesh1_file, FEM_udt_org_param, nod_fld)
+     &   (model_ctl1, ctl_ctl1, nmtr_ctl1,                              &
+     &    mesh1_file, FEM_udt_org_param, nod_fld)
 !
 !  --  load FEM mesh data
       call mpi_input_mesh(mesh1_file, mesh, group,                      &
