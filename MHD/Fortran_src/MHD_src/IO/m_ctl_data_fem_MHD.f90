@@ -17,8 +17,6 @@
       use calypso_mpi
       use m_machine_parameter
       use m_read_control_elements
-      use t_ctl_data_4_solvers
-      use t_ctl_data_4_fem_int_pts
       use skip_comment_f
 !
       implicit none
@@ -27,11 +25,6 @@
       character(len=kchara), parameter :: MHD_ctl_name =  'control_MHD'
       character(len=kchara), parameter                                  &
      &                      :: snap_ctl_name = 'control_snapshot'
-!
-!>      Structure for CG solver control
-      type(solver_control), save :: CG_ctl1
-!>      integeration points
-      type(fem_intergration_control), save  :: fint_ctl1
 !
 !
 !   Top level of label
@@ -73,6 +66,7 @@
       private :: hd_model, hd_control, i_model, i_control
       private :: hd_time_step, i_tstep
       private :: hd_restart_file, i_restart_file
+      private :: hd_time_loop, i_time_loop
       private :: hd_solver_ctl, i_solver_ctl
       private :: hd_int_points, i_int_points
 !
@@ -171,14 +165,17 @@
         if(i_control .gt. 0) exit
 !
 !
-        call read_control_time_step_data(hd_time_step, i_tstep, tctl1)
-        call read_restart_ctl(hd_restart_file, i_restart_file, mr_ctl1)
+        call read_control_time_step_data                                &
+     &     (hd_time_step, i_tstep, ctl_ctl1%tctl)
+        call read_restart_ctl                                           &
+     &     (hd_restart_file, i_restart_file, ctl_ctl1%mrst_ctl)
         call read_control_fem_int_points                                &
-     &     (hd_int_points, i_int_points, fint_ctl1)
+     &     (hd_int_points, i_int_points, ctl_ctl1%fint_ctl)
 !
         call read_CG_solver_param_ctl                                   &
-     &     (hd_solver_ctl, i_solver_ctl, CG_ctl1)
-        call read_time_loop_ctl(hd_time_loop, i_time_loop, mevo_ctl1)
+     &     (hd_solver_ctl, i_solver_ctl, ctl_ctl1%CG_ctl)
+        call read_time_loop_ctl                                         &
+     &     (hd_time_loop, i_time_loop, ctl_ctl1%mevo_ctl)
       end do
 !
       end subroutine read_fem_mhd_control
@@ -220,8 +217,8 @@
 !
 !
       call bcast_sph_mhd_control
-      call bcast_CG_solver_param_ctl(CG_ctl1)
-      call bcast_control_fem_int_points(fint_ctl1)
+      call bcast_CG_solver_param_ctl(ctl_ctl1%CG_ctl)
+      call bcast_control_fem_int_points(ctl_ctl1%fint_ctl)
 !
       end subroutine bcast_fem_mhd_control
 !

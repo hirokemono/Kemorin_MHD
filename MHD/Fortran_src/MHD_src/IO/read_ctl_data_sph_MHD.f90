@@ -34,51 +34,65 @@
       use t_ctl_data_temp_model
       use t_ctl_data_SGS_model
       use t_ctl_data_mhd_evo_scheme
+      use t_ctl_data_4_solvers
+      use t_ctl_data_4_fem_int_pts
 !
       use skip_comment_f
 !
       implicit none
 !
-!>      Structure for field information control
-      type(field_control), save :: fld_ctl1
-!>      Structure for time stepping control
-      type(time_data_control), save :: tctl1
-!>      Structure for restart flag
-      type(mhd_restart_control), save :: mr_ctl1
+!      type mhd_model_control
+!>        Structure for field information control
+        type(field_control) :: fld_ctl1
 !
 !>        Structure for evolution fields control
-      type(mhd_evolution_control), save :: evo_ctl1
+        type(mhd_evolution_control) :: evo_ctl1
 !>        Structure for domain area controls
-      type(mhd_evo_area_control), save :: earea_ctl1
+        type(mhd_evo_area_control) :: earea_ctl1
 !
 !>        Structure for nodal boundary conditions
-      type(node_bc_control), save :: nbc_ctl1
+        type(node_bc_control) :: nbc_ctl1
 !>        Structure for surface boundary conditions
-      type(surf_bc_control), save :: sbc_ctl1
+        type(surf_bc_control) :: sbc_ctl1
 !
 !>        Structure for list of dimensionless numbers
-      type(dimless_control), save :: dless_ctl1
-!>      Structure for coefficients of governing equations
-      type(equations_control) :: eqs_ctl1
+        type(dimless_control) :: dless_ctl1
+!>        Structure for coefficients of governing equations
+        type(equations_control) :: eqs_ctl1
 !
-!>      Structure for force list
-      type(forces_control), save :: frc_ctl1
-!>      Structure for gravity definistion
-      type(gravity_control), save :: g_ctl1
-!>      Structure for Coriolis force
-      type(coriolis_control), save :: cor_ctl1
-!>      Structure for Coriolis force
-      type(magneto_convection_control), save :: mcv_ctl1
+!>        Structure for force list
+        type(forces_control) :: frc_ctl1
+!>        Structure for gravity definistion
+        type(gravity_control) :: g_ctl1
+!>        Structure for Coriolis force
+        type(coriolis_control) :: cor_ctl1
+!>        Structure for Coriolis force
+        type(magneto_convection_control) :: mcv_ctl1
 !
-!>      Structures for reference tempearature
-      type(reference_temperature_ctl), save :: reft_ctl1
-!>      Structures for reference composition
-      type(reference_temperature_ctl), save :: refc_ctl1
-!>      Structures for SGS controls
-      type(SGS_model_control), save :: sgs_ctl1
+!>        Structures for reference tempearature
+        type(reference_temperature_ctl) :: reft_ctl1
+!>        Structures for reference composition
+        type(reference_temperature_ctl) :: refc_ctl1
+!>        Structures for SGS controls
+        type(SGS_model_control) :: sgs_ctl1
+!      end type mhd_model_control
 !
-!>      Structures for time integration controls
-      type(mhd_evo_scheme_control), save :: mevo_ctl1
+      type mhd_control_control
+!>        Structure for time stepping control
+        type(time_data_control) :: tctl
+!>        Structure for restart flag
+        type(mhd_restart_control) :: mrst_ctl
+!>        Structures for time integration controls
+        type(mhd_evo_scheme_control) :: mevo_ctl
+!>        Structure for CG solver control
+        type(solver_control) :: CG_ctl
+!>        integeration points
+        type(fem_intergration_control)  :: fint_ctl
+      end type mhd_control_control
+!
+!      type(mhd_model_control), save :: model_ctl1
+      type(mhd_control_control), save :: ctl_ctl1
+!ctl_ctl1%tctl
 !
 !   2nd level for MHD
 !
@@ -237,10 +251,13 @@
         if(i_control .gt. 0) exit
 !
 !
-        call read_control_time_step_data(hd_time_step, i_tstep, tctl1)
-        call read_restart_ctl(hd_restart_file, i_restart_file, mr_ctl1)
+        call read_control_time_step_data                                &
+     &     (hd_time_step, i_tstep, ctl_ctl1%tctl)
+        call read_restart_ctl                                           &
+     &     (hd_restart_file, i_restart_file, ctl_ctl1%mrst_ctl)
 !
-        call read_time_loop_ctl(hd_time_loop, i_time_loop, mevo_ctl1)
+        call read_time_loop_ctl                                         &
+     &     (hd_time_loop, i_time_loop, ctl_ctl1%mevo_ctl)
       end do
 !
       end subroutine read_sph_mhd_control
@@ -279,9 +296,9 @@
       use bcast_4_time_step_ctl
 !
 !
-      call bcast_restart_ctl(mr_ctl1)
-      call bcast_time_loop_ctl(mevo_ctl1)
-      call bcast_ctl_data_4_time_step(tctl1)
+      call bcast_restart_ctl(ctl_ctl1%mrst_ctl)
+      call bcast_time_loop_ctl(ctl_ctl1%mevo_ctl)
+      call bcast_ctl_data_4_time_step(ctl_ctl1%tctl)
 !
       end subroutine bcast_sph_mhd_control
 !

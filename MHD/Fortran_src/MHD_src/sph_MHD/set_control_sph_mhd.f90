@@ -143,7 +143,7 @@
       call set_control_org_sph_files(MHD_org_files)
 !
       call s_set_control_4_model                                        &
-     &    (reft_ctl1, mevo_ctl1, evo_ctl1, nmtr_ctl1)
+     &    (reft_ctl1, ctl_ctl1%mevo_ctl, evo_ctl1, nmtr_ctl1)
 !
 !   set spherical shell parameters
 !
@@ -163,7 +163,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_sph_data_MHD'
       call s_set_control_sph_data_MHD                                   &
-     &   (plt1, fld_ctl1%field_ctl, mevo_ctl1,                          &
+     &   (plt1, fld_ctl1%field_ctl, ctl_ctl1%mevo_ctl,                  &
      &    MHD_org_files%rj_file_param, MHD_org_files%rst_file_param,    &
      &    rj_fld)
 !
@@ -179,8 +179,8 @@
 !   set control parameters
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_time_steps'
-      call s_set_control_4_time_steps(mr_ctl1, tctl1)
-      call s_set_control_4_crank(mevo_ctl1)
+      call s_set_control_4_time_steps(ctl_ctl1%mrst_ctl, ctl_ctl1%tctl)
+      call s_set_control_4_crank(ctl_ctl1%mevo_ctl)
 !
 !   set_pickup modes
 !
