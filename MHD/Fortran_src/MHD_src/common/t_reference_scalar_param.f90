@@ -29,7 +29,6 @@
 !
       use m_machine_parameter
       use m_control_parameter
-      use m_ctl_data_mhd_evo_scheme
       use m_t_int_parameter
 !
       implicit  none

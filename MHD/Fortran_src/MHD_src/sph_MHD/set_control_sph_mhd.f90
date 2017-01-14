@@ -98,7 +98,6 @@
       use m_ctl_data_4_platforms
       use m_ctl_data_4_pickup_sph
       use read_ctl_data_sph_MHD
-      use m_ctl_data_mhd_evo_scheme
       use m_read_ctl_gen_sph_shell
       use sph_mhd_rms_IO
 !
@@ -180,7 +179,7 @@
 !   set control parameters
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_time_steps'
-      call s_set_control_4_time_steps(tctl1)
+      call s_set_control_4_time_steps(mr_ctl1, tctl1)
       call s_set_control_4_crank(mevo_ctl1)
 !
 !   set_pickup modes

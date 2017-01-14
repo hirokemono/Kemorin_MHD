@@ -9,7 +9,9 @@
 !> @brief set parameters for time stepping
 !!
 !!@verbatim
-!!      subroutine s_set_control_4_time_steps(tctl)
+!!      subroutine s_set_control_4_time_steps(mr_ctl, tctl)
+!!        type(mhd_restart_control), intent(in) :: mr_ctl
+!!        type(time_data_control), intent(inout) :: tctl
 !!@endverbatim
 !
       module set_control_4_time_steps
@@ -36,19 +38,20 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_4_time_steps(tctl)
+      subroutine s_set_control_4_time_steps(mr_ctl, tctl)
 !
-      use m_ctl_data_mhd_evo_scheme
+      use t_ctl_data_mhd_evo_scheme
       use m_initial_field_control
       use cal_num_digits
       use skip_comment_f
 !
+      type(mhd_restart_control), intent(in) :: mr_ctl
       type(time_data_control), intent(inout) :: tctl
 !
 !
 !  control for restert
 !
-      call set_initial_field_id(mr_ctl1%restart_flag_ctl, tctl)
+      call set_initial_field_id(mr_ctl%restart_flag_ctl, tctl)
 !
         iflag_flexible_step = iflag_fixed_step
         if(tctl%flexible_step_ctl%iflag .gt. 0                          &

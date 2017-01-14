@@ -52,13 +52,19 @@
       character(len=kchara), parameter                                  &
      &      :: hd_time_step = 'time_step_ctl'
       character(len=kchara), parameter                                  &
+     &      :: hd_restart_file =   'restart_file_ctl'
+      character(len=kchara), parameter                                  &
      &       :: hd_solver_ctl =     'solver_ctl'
       character(len=kchara), parameter                                  &
      &      :: hd_int_points = 'intg_point_num_ctl'
+      character(len=kchara), parameter                                  &
+     &      :: hd_time_loop =      'time_loop_ctl'
 !
       integer (kind=kint) :: i_tstep =      0
+      integer (kind=kint) :: i_restart_file =   0
       integer (kind=kint) :: i_solver_ctl =     0
       integer (kind=kint) :: i_int_points = 0
+      integer (kind=kint) :: i_time_loop =      0
 !
 !
       private :: MHD_ctl_name, snap_ctl_name
@@ -66,6 +72,7 @@
 !
       private :: hd_model, hd_control, i_model, i_control
       private :: hd_time_step, i_tstep
+      private :: hd_restart_file, i_restart_file
       private :: hd_solver_ctl, i_solver_ctl
       private :: hd_int_points, i_int_points
 !
@@ -152,7 +159,6 @@
 !
       subroutine read_fem_mhd_control
 !
-      use m_ctl_data_mhd_evo_scheme
       use read_ctl_data_sph_MHD
 !
 !
@@ -166,13 +172,13 @@
 !
 !
         call read_control_time_step_data(hd_time_step, i_tstep, tctl1)
-        call read_restart_control
+        call read_restart_ctl(hd_restart_file, i_restart_file, mr_ctl1)
         call read_control_fem_int_points                                &
      &     (hd_int_points, i_int_points, fint_ctl1)
 !
         call read_CG_solver_param_ctl                                   &
      &     (hd_solver_ctl, i_solver_ctl, CG_ctl1)
-        call read_time_loop_control
+        call read_time_loop_ctl(hd_time_loop, i_time_loop, mevo_ctl1)
       end do
 !
       end subroutine read_fem_mhd_control

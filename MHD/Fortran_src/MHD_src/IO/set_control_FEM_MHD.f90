@@ -38,7 +38,6 @@
       use m_ctl_data_4_platforms
       use read_ctl_data_sph_MHD
       use m_ctl_data_fem_MHD
-      use m_ctl_data_mhd_evo_scheme
       use m_ctl_data_node_monitor
 !
       use set_control_platform_data
@@ -111,7 +110,7 @@
 !
 !   set control parameters
 !
-      call s_set_control_4_time_steps(tctl1)
+      call s_set_control_4_time_steps(mr_ctl1, tctl1)
       call s_set_control_4_crank(mevo_ctl1)
 !
       call s_set_control_4_solver(mevo_ctl1, CG_ctl1)

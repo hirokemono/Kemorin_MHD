@@ -33,6 +33,7 @@
       use t_ctl_data_mhd_forces
       use t_ctl_data_temp_model
       use t_ctl_data_SGS_model
+      use t_ctl_data_mhd_evo_scheme
 !
       use skip_comment_f
 !
@@ -42,6 +43,8 @@
       type(field_control), save :: fld_ctl1
 !>      Structure for time stepping control
       type(time_data_control), save :: tctl1
+!>      Structure for restart flag
+      type(mhd_restart_control), save :: mr_ctl1
 !
 !>        Structure for evolution fields control
       type(mhd_evolution_control), save :: evo_ctl1
@@ -73,6 +76,9 @@
       type(reference_temperature_ctl), save :: refc_ctl1
 !>      Structures for SGS controls
       type(SGS_model_control), save :: sgs_ctl1
+!
+!>      Structures for time integration controls
+      type(mhd_evo_scheme_control), save :: mevo_ctl1
 !
 !   2nd level for MHD
 !
@@ -138,7 +144,13 @@
 !
       character(len=kchara), parameter                                  &
      &      :: hd_time_step = 'time_step_ctl'
+      character(len=kchara), parameter                                  &
+     &      :: hd_restart_file =   'restart_file_ctl'
+      character(len=kchara), parameter                                  &
+     &      :: hd_time_loop =      'time_loop_ctl'
       integer (kind=kint) :: i_tstep =      0
+      integer (kind=kint) :: i_restart_file =   0
+      integer (kind=kint) :: i_time_loop =      0
 !
       private :: hd_model, hd_control, i_model, i_control
 !
@@ -161,6 +173,8 @@
       private :: hd_comp_def, i_comp_def
       private :: hd_sgs_ctl, i_sgs_ctl
       private :: hd_time_step, i_tstep
+      private :: hd_restart_file, i_restart_file
+      private :: hd_time_loop, i_time_loop
 !
 ! ----------------------------------------------------------------------
 !
@@ -187,12 +201,13 @@
      &     (hd_layers_ctl, i_layers_ctl, earea_ctl1)
 !
         call read_bc_4_node_ctl                                         &
-     &   (hd_boundary_condition, i_bc_4_node, nbc_ctl1)
+     &     (hd_boundary_condition, i_bc_4_node, nbc_ctl1)
         call read_bc_4_node_ctl(hd_bc_4_node, i_bc_4_node, nbc_ctl1)
         call read_bc_4_surf_ctl(hd_bc_4_surf, i_bc_4_surf, sbc_ctl1)
 !
         call read_forces_ctl(hd_forces_ctl, i_forces_ctl, frc_ctl1)
-        call read_dimless_ctl(hd_dimless_ctl, i_dimless_ctl, dless_ctl1)
+        call read_dimless_ctl                                           &
+     &     (hd_dimless_ctl, i_dimless_ctl, dless_ctl1)
         call read_coef_term_ctl                                         &
      &     (hd_coef_term_ctl, i_coef_term_ctl, eqs_ctl1)
 !
@@ -212,8 +227,6 @@
 !
       subroutine read_sph_mhd_control
 !
-      use m_ctl_data_mhd_evo_scheme
-!
 !
       if(right_begin_flag(hd_control) .eq. 0) return
       if (i_control .gt. 0) return
@@ -225,9 +238,9 @@
 !
 !
         call read_control_time_step_data(hd_time_step, i_tstep, tctl1)
-        call read_restart_control
+        call read_restart_ctl(hd_restart_file, i_restart_file, mr_ctl1)
 !
-        call read_time_loop_control
+        call read_time_loop_ctl(hd_time_loop, i_time_loop, mevo_ctl1)
       end do
 !
       end subroutine read_sph_mhd_control
@@ -263,7 +276,6 @@
 !
       subroutine bcast_sph_mhd_control
 !
-      use m_ctl_data_mhd_evo_scheme
       use bcast_4_time_step_ctl
 !
 !
