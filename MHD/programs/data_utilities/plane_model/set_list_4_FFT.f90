@@ -83,7 +83,6 @@
       use m_control_plane_fft
       use m_ctl_data_4_plane_model
       use m_ctl_data_2nd_plane
-      use m_ctl_data_4_2nd_data
       use m_default_file_prefix
       use m_size_4_plane
       use m_spectr_4_ispack
@@ -97,20 +96,20 @@
       real(kind = kreal), intent(inout) :: dt, t_init
 !
 !
-      write(*,*) 'new_mesh_prefix       ', new_plt%mesh_file_prefix
-!      write(*,*) 'new_restart_prefix    ', new_plt%restart_file_prefix
-!      write(*,*) 'new_udt_type_ctl     ', new_udt_type_ctl
-      write(*,*) 'nnod_plane_ctl       ', nnod_plane_ctl%intvalue
-      write(*,*) 'ndomain_plane_ctl    ', ndomain_plane_ctl%intvalue
-!      write(*,*) 'plane_size_ctl        ', plane_size_ctl
-      write(*,*) 'nnod_plane2_ctl       ', nnod_plane2_ctl%intvalue
-      write(*,*) 'ndomain_plane2_ctl    ', ndomain_plane2_ctl%intvalue
+      write(*,*) 'new_mesh_prefix    ', new_p_plt%mesh_file_prefix
+!      write(*,*) 'new_restart_prefix', new_p_plt%restart_file_prefix
+!      write(*,*) 'new_udt_type_ctl  ', new_udt_type_ctl
+      write(*,*) 'nnod_plane_ctl     ', nnod_plane_ctl%intvalue
+      write(*,*) 'ndomain_plane_ctl  ', ndomain_plane_ctl%intvalue
+!      write(*,*) 'plane_size_ctl    ', plane_size_ctl
+      write(*,*) 'nnod_plane2_ctl    ', nnod_plane2_ctl%intvalue
+      write(*,*) 'ndomain_plane2_ctl ', ndomain_plane2_ctl%intvalue
 !
       call set_control_mesh_file_def                                    &
-     &   (def_new_mesh_head, new_plt, mesh_file)
+     &   (def_new_mesh_head, new_p_plt, mesh_file)
 !
-      if (new_plt%restart_file_prefix%iflag .gt. 0) then
-        rst_head_plane = new_plt%restart_file_prefix%charavalue
+      if (new_p_plt%restart_file_prefix%iflag .gt. 0) then
+        rst_head_plane = new_p_plt%restart_file_prefix%charavalue
       else
         rst_head_plane = def_newrst_head
       end if
@@ -173,7 +172,6 @@
       use m_control_plane_fft
       use m_ctl_data_4_plane_model
       use m_ctl_data_2nd_plane
-      use m_ctl_data_4_2nd_data
       use m_default_file_prefix
       use m_size_4_plane
       use m_spectr_4_ispack
@@ -196,13 +194,13 @@
       write(*,*) 'ndomain_plane2_ctl    ', ndomain_plane2_ctl%intvalue
 !
       call set_control_mesh_file_def                                    &
-     &   (def_new_mesh_head, new_plt, mesh_file)
+     &   (def_new_mesh_head, new_p_plt, mesh_file)
 !
-      if (new_plt%field_file_prefix%iflag .gt. 0) then
+      if (new_p_plt%field_file_prefix%iflag .gt. 0) then
         call choose_file_format                                         &
-     &     (new_plt%field_file_fmt_ctl, ucd%ifmt_file)
+     &     (new_p_plt%field_file_fmt_ctl, ucd%ifmt_file)
         call set_ucd_file_prefix                                        &
-     &     (new_plt%field_file_prefix%charavalue, ucd)
+     &     (new_p_plt%field_file_prefix%charavalue, ucd)
       end if
 !
 !

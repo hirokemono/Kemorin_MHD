@@ -11,6 +11,7 @@
 !
       use m_machine_parameter
       use m_read_control_elements
+      use t_ctl_data_4_platforms
       use t_ctl_data_4_time_steps
       use t_ctl_data_4_fields
       use skip_comment_f
@@ -19,6 +20,8 @@
 !
       integer (kind = kint) :: control_file_code = 11
       character (len = kchara) :: control_file_name='ctl_fft'
+!
+      type(platform_data_control), save :: new_p_plt
 !
 !>      Structure for field information control
       type(field_control), save :: fld_zfft_ctl
@@ -38,6 +41,13 @@
       character(len=kchara), parameter :: hd_control = 'control'
       integer (kind=kint) :: i_control = 0
 !
+      character(len=kchara), parameter                                  &
+     &                    :: hd_platform = 'data_files_def'
+      character(len=kchara), parameter                                  &
+     &                    :: hd_new_data = 'new_data_files_def'
+      integer (kind=kint) :: i_platform =   0
+      integer (kind=kint) :: i_new_data =      0
+!
 !>      label for block
       character(len=kchara), parameter                                  &
      &      :: hd_phys_values =  'phys_values_ctl'
@@ -50,6 +60,7 @@
 !
       private :: hd_fft_plane_ctl, i_fft_plane_ctl
       private :: hd_model, hd_control, i_model, i_control
+      private :: hd_new_data, i_new_data
       private :: hd_phys_values, i_phys_values
       private :: hd_time_step, i_tstep
 !
@@ -80,7 +91,6 @@
 !
       subroutine read_fft_plane_control_data
 !
-      use m_ctl_data_4_platforms
       use m_ctl_data_4_plane_model
       use m_ctl_data_plane_spec_file
       use m_ctl_data_2nd_plane
@@ -96,8 +106,8 @@
         if(i_fft_plane_ctl .gt. 0) exit
 !
 !
-        call read_ctl_data_4_platform
-        call read_ctl_data_4_new_data
+        call read_control_platforms                                     &
+     &     (hd_new_data, i_new_data, new_p_plt)
 !
         call read_ctl_data_plane_spec_file
         call read_merge_field_data

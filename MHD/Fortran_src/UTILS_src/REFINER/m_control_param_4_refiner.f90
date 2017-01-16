@@ -83,16 +83,14 @@
       subroutine set_control_4_refiner
 !
       use m_control_data_4_refine
-      use m_ctl_data_4_platforms
-      use m_ctl_data_4_2nd_data
       use m_default_file_prefix
       use skip_comment_f
       use set_control_platform_data
 !
 !
-      call set_control_mesh_def(plt1, original_mesh_file)
+      call set_control_mesh_def(source_plt, original_mesh_file)
       call set_control_mesh_file_def                                    &
-     &   (def_new_mesh_head, new_plt, refined_mesh_file)
+     &   (def_new_mesh_head, refined_plt, refined_mesh_file)
 !
 !
       if (i_course_to_fine_ctl .gt. 0) then

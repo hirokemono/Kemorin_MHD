@@ -12,6 +12,7 @@
 !
       use m_precision
 !
+      use t_ctl_data_4_platforms
       use m_read_control_elements
       use skip_comment_f
 !
@@ -20,6 +21,10 @@
       integer (kind = kint), parameter :: control_file_code = 13
       character (len = kchara), parameter                               &
      &         :: control_file_name = 'ctl_refine'
+!
+!
+      type(platform_data_control), save :: source_plt
+      type(platform_data_control), save :: refined_plt
 !
       character (len = kchara) :: coarse_2_fine_head_ctl
       character (len = kchara) :: fine_2_course_head_ctl
@@ -49,8 +54,14 @@
      &                      = 'single_refined_table_ctl'
       character(len=kchara), parameter :: hd_refine_param               &
      &                      = 'refine_parameter_ctl'
+      character(len=kchara), parameter                                  &
+     &                    :: hd_platform = 'data_files_def'
+      character(len=kchara), parameter                                  &
+     &                    :: hd_new_data = 'new_data_files_def'
       integer (kind=kint) :: i_single_refine_files =  0
       integer (kind=kint) :: i_refine_param = 0
+      integer (kind=kint) :: i_platform =   0
+      integer (kind=kint) :: i_new_data =      0
 !
 !   3rd level for partitioner_control
 !
@@ -85,8 +96,9 @@
       private :: control_file_name
       private :: hd_refine_ctl, i_refine_ctl
       private :: hd_single_refine_files, i_single_refine_files
-      private :: hd_refine_param
+      private :: hd_refine_param, hd_new_data, i_new_data
       private :: i_refine_param
+      private :: hd_platform, i_platform
       private :: hd_course_to_fine_ctl, hd_fine_to_course_ctl
       private :: hd_refine_info_ctl, hd_old_refine_info_ctl
 !
@@ -157,9 +169,6 @@
 !
       subroutine read_refine_control_data
 !
-      use m_ctl_data_4_platforms
-      use m_ctl_data_4_2nd_data
-!
 !
       if(right_begin_flag(hd_refine_ctl) .eq. 0) return
       if (i_refine_ctl .gt. 0) return
@@ -169,8 +178,10 @@
         call find_control_end_flag(hd_refine_ctl, i_refine_ctl)
         if(i_refine_ctl .gt. 0) exit
 !
-        call read_ctl_data_4_platform
-        call read_ctl_data_4_new_data
+        call read_control_platforms                                     &
+     &     (hd_platform, i_platform, source_plt)
+        call read_control_platforms                                     &
+     &     (hd_new_data, i_new_data, refined_plt)
         call read_ctl_data_4_refine_mesh
         call read_ctl_data_4_refine_type
       end do

@@ -49,6 +49,7 @@
       character(len=kchara), parameter                                  &
      &                    :: hd_new_data = 'new_data_files_def'
       integer (kind=kint) :: i_new_data =      0
+      private :: hd_new_data, i_new_data
 !
 !
 !  ---------------------------------------------------------------------
@@ -60,7 +61,7 @@
       subroutine read_ctl_data_4_new_data
 !
 !
-      call read_control_platforms(hd_new_data, i_new_data, new_plt)
+        call read_control_platforms(hd_new_data, i_new_data, new_plt)
 !
       end subroutine read_ctl_data_4_new_data
 !

@@ -76,7 +76,7 @@
       subroutine read_ctl_data_4_platform
 !
 !
-      call read_control_platforms(hd_platform, i_platform, plt1)
+        call read_control_platforms(hd_platform, i_platform, plt1)
 !
       end subroutine read_ctl_data_4_platform
 !

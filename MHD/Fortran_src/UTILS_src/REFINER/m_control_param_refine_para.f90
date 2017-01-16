@@ -41,21 +41,20 @@
       use m_machine_parameter
       use m_file_format_switch
       use m_para_refine_itp_tables
-      use m_ctl_data_4_platforms
       use m_control_data_4_refine
       use m_control_data_refine_para
       use set_control_platform_data
 !
 !
-      call turn_off_debug_flag_by_ctl(izero, plt1)
+      call turn_off_debug_flag_by_ctl(izero, source_plt)
 !
-      if(plt1%ndomain_ctl%iflag .gt. 0) then
-        nprocs_fine = plt1%ndomain_ctl%intvalue
+      if(source_plt%ndomain_ctl%iflag .gt. 0) then
+        nprocs_fine = source_plt%ndomain_ctl%intvalue
       end if
 !
-      if(plt1%mesh_file_prefix%iflag .gt. 0) then
+      if(source_plt%mesh_file_prefix%iflag .gt. 0) then
         para_fine_mesh_file%file_prefix                                 &
-     &         = plt1%mesh_file_prefix%charavalue
+     &         = source_plt%mesh_file_prefix%charavalue
       else 
         para_fine_mesh_file%file_prefix = def_para_fine_mesh_head
       end if

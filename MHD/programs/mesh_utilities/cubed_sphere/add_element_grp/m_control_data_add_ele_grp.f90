@@ -1,9 +1,16 @@
 !m_control_data_add_ele_grp.f90
 !      module m_control_data_add_ele_grp
 !
-      module m_control_data_add_ele_grp
-!
 !      Written by H. Matsui on Mar., 2008
+!
+!       subroutine read_control_add_elegrp
+!
+!      subroutine dealloc_r_ele_grp_list_ctl
+!      subroutine dealloc_t_ele_grp_list_ctl
+!      subroutine dealloc_s_ele_grp_list_ctl
+!      subroutine dealloc_z_ele_grp_list_ctl
+!
+      module m_control_data_add_ele_grp
 !
       use m_precision
 !
@@ -18,6 +25,7 @@
       character (len = kchara), parameter                               &
      &         :: control_file_name = 'ctl_add_ele_grp'
 !
+      type(platform_data_control), save :: source_plt
       type(platform_data_control), save :: added_plt
 !
       character (len = kchara) :: sph_grp_direction_ctl
@@ -57,8 +65,14 @@
      &                      = 'file_name_ctl'
       character(len=kchara), parameter :: hd_add_ele_grp_para           &
      &                      = '2d_grouping_ctl'
+      character(len=kchara), parameter                                  &
+     &                    :: hd_platform = 'data_files_def'
+      character(len=kchara), parameter                                  &
+     &                    :: hd_new_data = 'new_data_files_def'
       integer (kind=kint) :: i_files_ctl =        0
       integer (kind=kint) :: i_add_ele_grp_para = 0
+      integer (kind=kint) :: i_platform =   0
+      integer (kind=kint) :: i_new_data =      0
 !
 !   3rd level for element_group_ctl
 !
@@ -80,18 +94,13 @@
       private :: hd_files_ctl, i_files_ctl
       private :: hd_add_ele_grp_para, i_add_ele_grp_para
       private :: hd_2nd_grp_direction
+      private :: hd_platform, i_platform
+      private :: hd_new_data, i_new_data
       private :: hd_num_r_ele_grping, hd_num_t_ele_grping
       private :: hd_num_s_ele_grping, hd_num_z_ele_grping
 !
       private :: read_control_4_add_egrp_data
       private :: read_ctl_data_4_add_2d_egrp
-!
-!       subroutine read_control_add_elegrp
-!
-!      subroutine dealloc_r_ele_grp_list_ctl
-!      subroutine dealloc_t_ele_grp_list_ctl
-!      subroutine dealloc_s_ele_grp_list_ctl
-!      subroutine dealloc_z_ele_grp_list_ctl
 !
 ! -----------------------------------------------------------------------
 !
@@ -116,8 +125,6 @@
 !
       subroutine read_control_4_add_egrp_data
 !
-      use m_ctl_data_4_platforms
-      use m_ctl_data_4_2nd_data
 !
       if(right_begin_flag(hd_add_ele_grp_ctl) .eq. 0) return
       if (i_add_ele_grp_ctl .gt. 0) return
@@ -128,8 +135,9 @@
      &      i_add_ele_grp_ctl)
         if(i_add_ele_grp_ctl .gt. 0) exit
 !
-        call read_ctl_data_4_platform
-        call read_ctl_data_4_new_data
+        call read_control_platforms                                     &
+     &     (hd_platform, i_platform, source_plt)
+        call read_control_platforms(hd_new_data, i_new_data, added_plt)
 !
         call read_ctl_data_4_add_2d_egrp
       end do
