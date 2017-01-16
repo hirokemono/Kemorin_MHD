@@ -94,7 +94,6 @@
       use m_ctl_data_4_plane_model
       use m_ctl_data_plane_spec_file
       use m_ctl_data_2nd_plane
-      use m_ctl_data_4_2nd_data
 !
 !
       if(right_begin_flag(hd_fft_plane_ctl) .eq. 0) return

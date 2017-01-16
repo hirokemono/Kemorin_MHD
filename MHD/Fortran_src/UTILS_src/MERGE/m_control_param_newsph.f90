@@ -92,53 +92,51 @@
       subroutine set_control_4_newsph
 !
       use m_control_data_4_merge
-      use m_ctl_data_4_platforms
-      use m_ctl_data_4_2nd_data
       use m_file_format_switch
       use set_control_platform_data
       use new_SPH_restart
       use skip_comment_f
 !
 !
-      if (plt1%ndomain_ctl%iflag .gt. 0) then
-        np_sph_org = plt1%ndomain_ctl%intvalue
+      if (source_plt%ndomain_ctl%iflag .gt. 0) then
+        np_sph_org = source_plt%ndomain_ctl%intvalue
       else
         write(*,*) 'Set number of subdomains'
         stop
       end if
 !
-      if (new_plt%ndomain_ctl%iflag .gt. 0) then
-        np_sph_new = new_plt%ndomain_ctl%intvalue
+      if (assemble_plt%ndomain_ctl%iflag .gt. 0) then
+        np_sph_new = assemble_plt%ndomain_ctl%intvalue
       else
         write(*,*) 'Set number of subdomains for new grid'
         stop
       end if
 !
-      if(plt1%sph_file_prefix%iflag .gt. 0) then
-        org_sph_head = plt1%sph_file_prefix%charavalue
+      if(source_plt%sph_file_prefix%iflag .gt. 0) then
+        org_sph_head = source_plt%sph_file_prefix%charavalue
       end if
-      if (new_plt%sph_file_prefix%iflag .gt. 0) then
-        new_sph_head = new_plt%sph_file_prefix%charavalue
-      end if
-!
-      call choose_para_file_format                                      &
-     &   (plt1%sph_file_fmt_ctl, ifmt_org_sph_file)
-      call choose_para_file_format                                      &
-     &   (new_plt%sph_file_fmt_ctl, ifmt_new_sph_file)
-!
-!
-      if (plt1%restart_file_prefix%iflag .gt. 0) then
-        org_sph_fst_head = plt1%restart_file_prefix%charavalue
-      end if
-!
-      if(new_plt%restart_file_prefix%iflag .gt. 0) then
-        new_sph_fst_head = new_plt%restart_file_prefix%charavalue
+      if (assemble_plt%sph_file_prefix%iflag .gt. 0) then
+        new_sph_head = assemble_plt%sph_file_prefix%charavalue
       end if
 !
       call choose_para_file_format                                      &
-     &   (plt1%restart_file_fmt_ctl, ifmt_org_sph_fst)
+     &   (source_plt%sph_file_fmt_ctl, ifmt_org_sph_file)
       call choose_para_file_format                                      &
-     &   (new_plt%restart_file_fmt_ctl, ifmt_new_sph_fst)
+     &   (assemble_plt%sph_file_fmt_ctl, ifmt_new_sph_file)
+!
+!
+      if (source_plt%restart_file_prefix%iflag .gt. 0) then
+        org_sph_fst_head = source_plt%restart_file_prefix%charavalue
+      end if
+!
+      if(assemble_plt%restart_file_prefix%iflag .gt. 0) then
+        new_sph_fst_head = assemble_plt%restart_file_prefix%charavalue
+      end if
+!
+      call choose_para_file_format                                      &
+     &   (source_plt%restart_file_fmt_ctl, ifmt_org_sph_fst)
+      call choose_para_file_format                                      &
+     &   (assemble_plt%restart_file_fmt_ctl, ifmt_new_sph_fst)
 !
       if((ifmt_new_sph_fst/iflag_single) .gt. 0                         &
      &     .and. np_sph_new .ne. nprocs) then
@@ -148,8 +146,8 @@
      &             'the number of target subdomains.'
       end if
 !
-      if(new_plt%del_org_data_ctl%iflag .gt. 0) then
-        if(yes_flag(new_plt%del_org_data_ctl%charavalue)) then
+      if(assemble_plt%del_org_data_ctl%iflag .gt. 0) then
+        if(yes_flag(assemble_plt%del_org_data_ctl%charavalue)) then
           iflag_delete_org_sph = 1
         end if
       end if

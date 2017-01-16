@@ -116,8 +116,6 @@
       use m_field_file_format
 !
       use m_control_data_4_merge
-      use m_ctl_data_4_platforms
-      use m_ctl_data_4_2nd_data
       use set_parallel_file_name
       use set_control_platform_data
       use ucd_IO_select
@@ -127,32 +125,33 @@
       integer(kind=kint ) :: i, icou
 !
 !
-      if (plt1%ndomain_ctl%iflag .gt. 0) then
-        num_pe = plt1%ndomain_ctl%intvalue
+      if (source_plt%ndomain_ctl%iflag .gt. 0) then
+        num_pe = source_plt%ndomain_ctl%intvalue
       else
         write(*,*) 'Set number of subdomains'
         stop
       end if
 !
-      call set_control_mesh_def(plt1, merge_org_mesh_file)
+      call set_control_mesh_def(source_plt, merge_org_mesh_file)
 !
-      call set_ucd_file_define(plt1, ucd)
+      call set_ucd_file_define(source_plt, ucd)
 !
-      if(plt1%field_file_prefix%iflag .gt. 0)                           &
-     &      udt_original_header = plt1%field_file_prefix%charavalue
-      call choose_ucd_file_format(plt1%field_file_fmt_ctl%charavalue,   &
-     &    plt1%field_file_fmt_ctl%iflag, itype_org_ucd_file)
+      if(source_plt%field_file_prefix%iflag .gt. 0)                     &
+     &    udt_original_header = source_plt%field_file_prefix%charavalue
+      call choose_ucd_file_format                                       &
+     &   (source_plt%field_file_fmt_ctl%charavalue,                     &
+     &    source_plt%field_file_fmt_ctl%iflag, itype_org_ucd_file)
 !
 !
-      if (new_plt%field_file_prefix%iflag .gt. 0) then
-        new_udt_head =     new_plt%field_file_prefix%charavalue
-        merged_data_head = new_plt%field_file_prefix%charavalue
+      if (assemble_plt%field_file_prefix%iflag .gt. 0) then
+        new_udt_head =     assemble_plt%field_file_prefix%charavalue
+        merged_data_head = assemble_plt%field_file_prefix%charavalue
       else
         new_udt_head = def_new_udt_head
       end if
       call choose_ucd_file_format                                       &
-     &   (new_plt%field_file_fmt_ctl%charavalue,                        &
-     &    new_plt%field_file_fmt_ctl%iflag, itype_assembled_data)
+     &   (assemble_plt%field_file_fmt_ctl%charavalue,                   &
+     &    assemble_plt%field_file_fmt_ctl%iflag, itype_assembled_data)
 !
 !
        num_nod_phys = 0
@@ -199,8 +198,6 @@
       subroutine set_control_4_newrst
 !
       use m_control_data_4_merge
-      use m_ctl_data_4_platforms
-      use m_ctl_data_4_2nd_data
       use m_geometry_data_4_merge
       use m_2nd_geometry_4_merge
       use m_file_format_switch
@@ -209,22 +206,22 @@
       call set_control_4_newudt
 !
 !
-      if (plt1%restart_file_prefix%iflag .gt. 0) then
-        org_rst_head = plt1%restart_file_prefix%charavalue
+      if (source_plt%restart_file_prefix%iflag .gt. 0) then
+        org_rst_head = source_plt%restart_file_prefix%charavalue
       else
         org_rst_head = org_rst_def_head
       end if
 !
-      if(new_plt%restart_file_prefix%iflag .gt. 0) then
-        new_rst_head = new_plt%restart_file_prefix%charavalue
+      if(assemble_plt%restart_file_prefix%iflag .gt. 0) then
+        new_rst_head = assemble_plt%restart_file_prefix%charavalue
       else
         new_rst_head = new_rst_def_head
       end if
 !
       call choose_para_file_format                                      &
-     &   (plt1%restart_file_fmt_ctl, iorg_rst_file_fmt)
+     &   (source_plt%restart_file_fmt_ctl, iorg_rst_file_fmt)
       call choose_para_file_format                                      &
-     &   (new_plt%restart_file_fmt_ctl, inew_rst_file_fmt)
+     &   (assemble_plt%restart_file_fmt_ctl, inew_rst_file_fmt)
 !
 !
       if (magnetic_ratio_ctl%iflag .gt. 0) then
@@ -246,7 +243,6 @@
 !
       use m_control_data_4_merge
       use m_ctl_data_4_platforms
-      use m_ctl_data_4_2nd_data
       use m_2nd_geometry_4_merge
       use m_file_format_switch
       use m_default_file_prefix
@@ -254,18 +250,18 @@
       use set_control_platform_data
 !
 !
-      if (new_plt%ndomain_ctl%iflag .gt. 0) then
-        num_pe2 = new_plt%ndomain_ctl%intvalue
+      if (assemble_plt%ndomain_ctl%iflag .gt. 0) then
+        num_pe2 = assemble_plt%ndomain_ctl%intvalue
       else
         write(*,*) 'Set number of subdomains for new grid'
         stop
       end if
 !
       call set_control_mesh_file_def                                    &
-     &   (def_new_mesh_head, new_plt, merged_mesh_file)
+     &   (def_new_mesh_head, assemble_plt, merged_mesh_file)
 !
-      if(new_plt%del_org_data_ctl%iflag .gt. 0) then
-        if(yes_flag(new_plt%del_org_data_ctl%charavalue)) then
+      if(assemble_plt%del_org_data_ctl%iflag .gt. 0) then
+        if(yes_flag(assemble_plt%del_org_data_ctl%charavalue)) then
           iflag_delete_org = 1
         end if
       end if

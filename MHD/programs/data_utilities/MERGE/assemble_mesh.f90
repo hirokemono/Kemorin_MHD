@@ -15,7 +15,6 @@
       use t_ucd_data
       use m_geometry_data_4_merge
       use m_control_data_4_merge
-      use m_ctl_data_4_2nd_data
       use m_control_param_merge
       use m_default_file_prefix
       use set_merged_geometry
@@ -34,7 +33,7 @@
       call read_control_4_merge
       call set_control_4_merge(fem_ucd)
       call set_control_mesh_file_def                                    &
-     &   (def_new_mesh_head, new_plt, merged_mesh_file)
+     &   (def_new_mesh_head, assemble_plt, merged_mesh_file)
 !
 !  read mesh information
 !

@@ -21,8 +21,6 @@
        subroutine bcast_merge_control_data
 !
       use m_machine_parameter
-      use m_ctl_data_4_platforms
-      use m_ctl_data_4_2nd_data
       use m_control_data_4_merge
       use bcast_4_platform_ctl
       use bcast_4_field_ctl
@@ -30,8 +28,8 @@
       use bcast_control_arrays
 !
 !
-      call bcast_ctl_data_4_platform(plt1)
-      call bcast_ctl_data_4_platform(new_plt)
+      call bcast_ctl_data_4_platform(source_plt)
+      call bcast_ctl_data_4_platform(assemble_plt)
 !
       call bcast_phys_data_ctl(fld_mge_ctl)
       call bcast_ctl_data_4_time_step(t_mge_ctl)

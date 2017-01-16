@@ -11,6 +11,7 @@
       use m_precision
       use m_machine_parameter
       use m_read_control_elements
+      use t_ctl_data_4_platforms
       use t_ctl_data_4_fields
       use t_ctl_data_4_time_steps
       use t_control_elements
@@ -24,6 +25,11 @@
       character (len = kchara), parameter                               &
      &         :: ctl_assemble_sph_name = 'control_assemble_sph'
 !
+!
+!>      Structure for file information for original data
+      type(platform_data_control), save :: source_plt
+!>      Structure for file information for assembled data
+      type(platform_data_control), save :: assemble_plt
 !
 !>      Structure for field information control
       type(field_control), save :: fld_mge_ctl
@@ -40,11 +46,17 @@
 !
 !   2nd level for assemble_control
 !
+      character(len=kchara), parameter                                  &
+     &                    :: hd_platform = 'data_files_def'
+      character(len=kchara), parameter                                  &
+     &                    :: hd_new_data = 'new_data_files_def'
       character(len=kchara), parameter :: hd_model =   'model'
       character(len=kchara), parameter :: hd_control = 'control'
       character(len=kchara), parameter                                  &
      &                    :: hd_newrst_magne = 'newrst_magne_ctl'
 !
+      integer (kind=kint) :: i_platform =      0
+      integer (kind=kint) :: i_new_data =      0
       integer (kind=kint) :: i_model =         0
       integer (kind=kint) :: i_control =       0
       integer (kind=kint) :: i_newrst_magne =  0
@@ -65,6 +77,8 @@
      &      :: hd_magnetic_field_ratio =  'magnetic_field_ratio_ctl'
 !
       private :: hd_assemble, i_assemble
+      private :: hd_platform, i_platform
+      private :: hd_new_data, i_new_data
       private :: hd_model, hd_control, i_model, i_control
       private :: hd_phys_values, i_phys_values
       private :: hd_time_step, i_tstep
@@ -113,10 +127,6 @@
 !
        subroutine read_merge_control_data
 !
-      use m_machine_parameter
-      use m_ctl_data_4_platforms
-      use m_ctl_data_4_2nd_data
-!
 !   2 begin phys_values_ctl
 !
       if(right_begin_flag(hd_assemble) .eq. 0) return
@@ -128,8 +138,10 @@
         if(i_assemble .gt. 0) exit
 !
 !
-        call read_ctl_data_4_platform
-        call read_ctl_data_4_new_data
+        call read_control_platforms                                     &
+     &     (hd_platform, i_platform, source_plt)
+        call read_control_platforms                                     &
+     &     (hd_new_data, i_new_data, assemble_plt)
 !
         call read_merge_field_data
         call read_merge_step_data
