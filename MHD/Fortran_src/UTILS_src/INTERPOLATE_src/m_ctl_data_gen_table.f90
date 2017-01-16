@@ -20,6 +20,7 @@
 !
       use m_machine_parameter
       use m_read_control_elements
+      use t_ctl_data_4_platforms
       use t_ctl_data_4_fields
       use t_ctl_data_4_time_steps
       use t_control_elements
@@ -38,6 +39,11 @@
       character(len = kchara), parameter                                &
      &                 :: fname_dist_itp_ctl = "ctl_distribute_itp"
 !
+!
+!>      Structure for original mesh file controls
+      type(platform_data_control), save :: src_plt
+!>      Structure for target mesh file controls
+      type(platform_data_control), save :: dst_plt
 !
 !>      Structure for field information control
       type(field_control), save :: fld_gt_ctl
@@ -99,12 +105,17 @@
      &                   = 'parallel_table'
       integer (kind=kint) :: i_distribute_itp = 0
 !
-!>      label for block
+      character(len=kchara), parameter                                  &
+     &                    :: hd_platform = 'data_files_def'
+      character(len=kchara), parameter                                  &
+     &                    :: hd_new_data = 'new_data_files_def'
       character(len=kchara), parameter                                  &
      &      :: hd_phys_values =  'phys_values_ctl'
       character(len=kchara), parameter                                  &
      &      :: hd_time_step = 'time_step_ctl'
-!>      Number of field
+!
+      integer (kind=kint) :: i_platform =   0
+      integer (kind=kint) :: i_new_data =      0
       integer (kind=kint) :: i_phys_values =   0
       integer (kind=kint) :: i_tstep =      0
 !
@@ -177,6 +188,8 @@
       private :: hd_num_hash_x, hd_num_hash_y, hd_num_hash_z
       private :: hd_phys_values, i_phys_values
       private :: hd_time_step, i_tstep
+      private :: hd_platform, i_platform
+      private :: hd_new_data, i_new_data
 !
       private :: read_const_itp_tbl_ctl_data
       private :: read_control_dist_itp_data
@@ -237,9 +250,6 @@
 !
       subroutine read_const_itp_tbl_ctl_data
 !
-      use m_ctl_data_4_platforms
-      use m_ctl_data_4_2nd_data
-!
 !
       if(right_begin_flag(hd_table_control) .eq. 0) return
       if (i_table_control.gt.0) return
@@ -249,8 +259,8 @@
         call find_control_end_flag(hd_table_control, i_table_control)
         if(i_table_control .gt. 0) exit
 !
-        call read_ctl_data_4_platform
-        call read_ctl_data_4_new_data
+        call read_control_platforms(hd_platform, i_platform, src_plt)
+        call read_control_platforms(hd_new_data, i_new_data, dst_plt)
 !
         call read_itp_files_ctl
         call read_element_hash_ctl
@@ -264,9 +274,6 @@
 !
       subroutine read_control_dist_itp_data
 !
-      use m_ctl_data_4_platforms
-      use m_ctl_data_4_2nd_data
-!
 !
       if(right_begin_flag(hd_distribute_itp) .eq. 0) return
       if (i_distribute_itp.gt.0) return
@@ -276,8 +283,8 @@
         call find_control_end_flag(hd_distribute_itp, i_distribute_itp)
         if(i_distribute_itp .gt. 0) exit
 !
-        call read_ctl_data_4_platform
-        call read_ctl_data_4_new_data
+        call read_control_platforms(hd_platform, i_platform, src_plt)
+        call read_control_platforms(hd_new_data, i_new_data, dst_plt)
 !
         call read_itp_files_ctl
       end do

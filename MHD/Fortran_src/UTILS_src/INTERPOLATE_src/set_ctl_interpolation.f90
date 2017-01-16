@@ -30,22 +30,20 @@
       use m_2nd_pallalel_vector
       use m_ctl_params_4_gen_table
       use m_ctl_data_gen_table
-      use m_ctl_data_4_platforms
-      use m_ctl_data_4_2nd_data
       use m_file_format_switch
       use m_field_file_format
       use itp_table_IO_select_4_zlib
       use set_control_platform_data
 !
 !
-      call turn_off_debug_flag_by_ctl(my_rank, plt1)
-      call set_control_smp_def(my_rank, plt1)
+      call turn_off_debug_flag_by_ctl(my_rank, src_plt)
+      call set_control_smp_def(my_rank, src_plt)
 !
-      call set_control_mesh_def(plt1, itp_org_mesh_file)
+      call set_control_mesh_def(src_plt, itp_org_mesh_file)
 !
-      if (new_plt%mesh_file_prefix%iflag .ne. 0) then
+      if (dst_plt%mesh_file_prefix%iflag .ne. 0) then
         itp_dest_mesh_file%file_prefix                                  &
-     &     = new_plt%mesh_file_prefix%charavalue
+     &     = dst_plt%mesh_file_prefix%charavalue
       end if
 !
       if (table_head_ctl%iflag .ne. 0) then
@@ -71,27 +69,27 @@
      &   write(*,*) 'itp_node_file_head: ', trim(itp_node_file_head)
       end if
 !
-      if(new_plt%restart_file_prefix%iflag .gt. 0) then
-        itp_rst_file_head = new_plt%restart_file_prefix%charavalue
+      if(dst_plt%restart_file_prefix%iflag .gt. 0) then
+        itp_rst_file_head = dst_plt%restart_file_prefix%charavalue
       end if
         if (iflag_debug.eq.1)                                           &
      &   write(*,*) 'itp_rst_file_head: ', trim(itp_rst_file_head)
 !
-      if (new_plt%field_file_prefix%iflag .gt. 0) then
-        itp_udt_file_head = new_plt%field_file_prefix%charavalue
+      if (dst_plt%field_file_prefix%iflag .gt. 0) then
+        itp_udt_file_head = dst_plt%field_file_prefix%charavalue
       end if
         if (iflag_debug.eq.1)                                           &
      &   write(*,*) 'itp_udt_file_head: ', trim(itp_udt_file_head)
 !
 !
-      if (plt1%restart_file_prefix%iflag .ne. 0) then
-        org_rst_file_head = plt1%restart_file_prefix%charavalue
+      if (src_plt%restart_file_prefix%iflag .ne. 0) then
+        org_rst_file_head = src_plt%restart_file_prefix%charavalue
       end if
         if (iflag_debug.eq.1)                                           &
      &   write(*,*) 'org_rst_file_head: ', trim(org_rst_file_head)
 !
-      if (plt1%field_file_prefix%iflag .ne. 0) then
-        org_udt_file_head = plt1%field_file_prefix%charavalue
+      if (src_plt%field_file_prefix%iflag .ne. 0) then
+        org_udt_file_head = src_plt%field_file_prefix%charavalue
       end if
         if (iflag_debug.eq.1)                                           &
      &   write(*,*) 'org_udt_file_head: ', trim(org_udt_file_head)
@@ -99,35 +97,36 @@
 !
 !
       ndomain_org = 1
-      if (plt1%ndomain_ctl%iflag .gt. 0) then
-        ndomain_org = plt1%ndomain_ctl%intvalue
+      if (src_plt%ndomain_ctl%iflag .gt. 0) then
+        ndomain_org = src_plt%ndomain_ctl%intvalue
       end if
 !
       nprocs_2nd = ndomain_org
       if (iflag_debug.eq.1)   write(*,*) 'ndomain_org', nprocs_2nd
 !
-      if (new_plt%ndomain_ctl%iflag .gt. 0) then
-        ndomain_dest = new_plt%ndomain_ctl%intvalue
+      if (dst_plt%ndomain_ctl%iflag .gt. 0) then
+        ndomain_dest = dst_plt%ndomain_ctl%intvalue
       else
         ndomain_dest = 1
       end if
 !
       call choose_file_format                                           &
-     &   (new_plt%mesh_file_fmt_ctl, itp_dest_mesh_file%iflag_format)
+     &   (dst_plt%mesh_file_fmt_ctl, itp_dest_mesh_file%iflag_format)
 !
       call choose_file_format                                           &
      &   (fmt_itp_table_file_ctl, ifmt_itp_table_file)
 !
       call choose_para_file_format                                      &
-     &   (plt1%restart_file_fmt_ctl, ifmt_org_rst_file)
+     &   (src_plt%restart_file_fmt_ctl, ifmt_org_rst_file)
       call choose_para_file_format                                      &
-     &   (new_plt%restart_file_fmt_ctl, ifmt_itp_rst_file)
+     &   (dst_plt%restart_file_fmt_ctl, ifmt_itp_rst_file)
 !
-      call choose_ucd_file_format(plt1%field_file_fmt_ctl%charavalue,   &
-     &    plt1%field_file_fmt_ctl%iflag, itype_org_udt_file)
       call choose_ucd_file_format                                       &
-     &   (new_plt%field_file_fmt_ctl%charavalue,                        &
-     &    new_plt%field_file_fmt_ctl%iflag, itype_itp_udt_file)
+     &   (src_plt%field_file_fmt_ctl%charavalue,                        &
+     &    src_plt%field_file_fmt_ctl%iflag, itype_org_udt_file)
+      call choose_ucd_file_format                                       &
+     &   (dst_plt%field_file_fmt_ctl%charavalue,                        &
+     &    dst_plt%field_file_fmt_ctl%iflag, itype_itp_udt_file)
 !
 !
       if (nprocs .ne. max(ndomain_org,ndomain_dest) ) then

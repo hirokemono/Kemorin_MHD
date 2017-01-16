@@ -55,7 +55,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_filter_newdomain'
       nprocs_2nd = 0
-      call set_control_filter_newdomain(ffile_ndom_ctl, ierr)
+      call set_control_filter_newdomain                                 &
+     &   (org_filter_plt, new_filter_plt, ffile_ndom_ctl, ierr)
       if(ierr .gt. 0) stop
 !
 !
@@ -68,7 +69,6 @@
 !
       subroutine newdomain_filter_analyze
 !
-      use m_ctl_data_newdomain_filter
       use local_newdomain_filter
       use filters_for_newdomains
       use trans_filter_moms_newdomain

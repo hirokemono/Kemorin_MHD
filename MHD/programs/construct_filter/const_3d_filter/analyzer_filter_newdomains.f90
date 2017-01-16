@@ -64,7 +64,8 @@
       call read_control_filter_newdomain
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_filter_newdomain'
-      call set_control_filter_newdomain(ffile_ndom_ctl, ierr)
+      call set_control_filter_newdomain                                 &
+     &   (org_filter_plt, new_filter_plt, ffile_ndom_ctl, ierr)
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'bcast_parallel_domain_tbl'
@@ -76,7 +77,6 @@
 !
       subroutine filter_to_newdomain_analyze
 !
-      use m_ctl_data_newdomain_filter
       use local_newdomain_filter
       use trans_filter_moms_newdomain
 !

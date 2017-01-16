@@ -81,27 +81,25 @@
       subroutine set_control_4_dist_itp
 !
       use m_ctl_data_gen_table
-      use m_ctl_data_4_platforms
-      use m_ctl_data_4_2nd_data
       use m_file_format_switch
       use m_default_file_prefix
       use set_control_platform_data
 !
 !
-      call turn_off_debug_flag_by_ctl(my_rank, plt1)
-      call set_control_smp_def(my_rank, plt1)
-      call set_control_mesh_def(plt1, org_mesh_file)
+      call turn_off_debug_flag_by_ctl(my_rank, src_plt)
+      call set_control_smp_def(my_rank, src_plt)
+      call set_control_mesh_def(src_plt, org_mesh_file)
       call set_control_mesh_file_def                                    &
-     &   (def_new_mesh_head, new_plt, dest_mesh_file)
+     &   (def_new_mesh_head, dst_plt, dest_mesh_file)
 !
       nprocs_org = 1
-      if(plt1%ndomain_ctl%iflag .gt. 0) then
-        nprocs_org = plt1%ndomain_ctl%intvalue
+      if(src_plt%ndomain_ctl%iflag .gt. 0) then
+        nprocs_org = src_plt%ndomain_ctl%intvalue
       end if
 !
       nprocs_dest = 1
-      if(new_plt%ndomain_ctl%iflag .gt. 0) then
-         nprocs_dest = new_plt%ndomain_ctl%intvalue
+      if(dst_plt%ndomain_ctl%iflag .gt. 0) then
+         nprocs_dest = dst_plt%ndomain_ctl%intvalue
       end if
 !
       if (table_head_ctl%iflag .ne. 0) then

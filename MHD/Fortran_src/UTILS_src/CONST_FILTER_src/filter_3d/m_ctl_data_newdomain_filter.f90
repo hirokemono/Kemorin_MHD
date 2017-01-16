@@ -15,6 +15,7 @@
       module m_ctl_data_newdomain_filter
 !
       use m_precision
+      use t_ctl_data_4_platforms
       use t_ctl_data_filter_files
 !
       implicit  none
@@ -22,6 +23,9 @@
       integer(kind = kint), parameter :: id_filter_ctl_file = 11
       character(len = kchara), parameter                                &
      &             :: fname_trans_flt_ctl = "ctl_new_domain_filter"
+!
+      type(platform_data_control), save :: org_filter_plt
+      type(platform_data_control), save :: new_filter_plt
 !
 !>      Structure for filtering files
       type(filter_file_control), save :: ffile_ndom_ctl
@@ -37,10 +41,19 @@
       private :: hd_filter_newdomain_ctl, i_filter_newdomain_ctl
       private :: read_ctl_filter_newdomain_data
 !
+      character(len=kchara), parameter                                  &
+     &                    :: hd_platform = 'data_files_def'
+!
+      character(len=kchara), parameter                                  &
+     &                    :: hd_new_data = 'new_data_files_def'
       character(len=kchara), parameter :: hd_filter_fnames              &
      &                        = 'filter_files_def'
+      integer (kind=kint) :: i_platform =   0
+      integer (kind=kint) :: i_new_data =      0
       integer (kind=kint) :: i_filter_fnames = 0
 !
+      private :: hd_platform, i_platform
+      private :: hd_new_data, i_new_data
       private :: hd_filter_fnames, i_filter_fnames
 !
 !  ---------------------------------------------------------------------
@@ -77,8 +90,6 @@
       use m_read_control_elements
       use skip_comment_f
 !
-      use m_ctl_data_4_platforms
-      use m_ctl_data_4_2nd_data
       use m_ctl_data_org_filter_name
 !
 !
@@ -92,8 +103,10 @@
         if(i_filter_newdomain_ctl .gt. 0) exit
 !
 !
-        call read_ctl_data_4_platform
-        call read_ctl_data_4_new_data
+        call read_control_platforms                                     &
+     &     (hd_platform, i_platform, org_filter_plt)
+        call read_control_platforms                                     &
+     &     (hd_new_data, i_new_data, new_filter_plt)
         call read_filter_fnames_control                                 &
      &     (hd_filter_fnames, i_filter_fnames, ffile_ndom_ctl)
         call read_org_filter_fnames_ctl

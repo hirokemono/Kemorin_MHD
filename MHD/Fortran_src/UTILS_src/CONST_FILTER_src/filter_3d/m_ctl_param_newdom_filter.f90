@@ -3,7 +3,9 @@
 !
 !      modified by H. Matsui on Apr., 2008
 !
-!!      subroutine set_control_filter_newdomain(ffile_ctl, ierr)
+!!      subroutine set_control_filter_newdomain                         &
+!!     &         (org_plt, new_plt, ffile_ctl, ierr)
+!!        type(platform_data_control), intent(in) :: org_plt, new_plt
 !!        type(filter_file_control), intent(in) :: ffile_ctl
 !
       module m_ctl_param_newdom_filter
@@ -38,7 +40,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_control_filter_newdomain(ffile_ctl, ierr)
+      subroutine set_control_filter_newdomain                           &
+     &         (org_plt, new_plt, ffile_ctl, ierr)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -47,12 +50,12 @@
       use m_file_format_switch
 !
       use m_default_file_prefix
-      use m_ctl_data_4_platforms
-      use m_ctl_data_4_2nd_data
       use m_ctl_data_org_filter_name
+      use t_ctl_data_4_platforms
       use t_ctl_data_filter_files
       use set_control_platform_data
 !
+      type(platform_data_control), intent(in) :: org_plt, new_plt
       type(filter_file_control), intent(in) :: ffile_ctl
       integer(kind = kint), intent(inout) :: ierr
 !
@@ -75,15 +78,15 @@
       end if
 !
 !
-      if(plt1%ndomain_ctl%iflag .gt. 0) then
-        nprocs = plt1%ndomain_ctl%intvalue
+      if(org_plt%ndomain_ctl%iflag .gt. 0) then
+        nprocs = org_plt%ndomain_ctl%intvalue
       else
         write(*,*) 'set original number of domain'
         stop
       end if
 !
 !
-      call set_control_mesh_def(plt1, org_mesh_file)
+      call set_control_mesh_def(org_plt, org_mesh_file)
       call set_control_mesh_file_def                                    &
      &   (def_new_mesh_head, new_plt, tgt_mesh_file)
 !

@@ -41,7 +41,8 @@
       call read_control_filter_newdomain
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_filter_newdomain'
-      call set_control_filter_newdomain(ffile_ndom_ctl, ierr)
+      call set_control_filter_newdomain                                 &
+     &   (org_filter_plt, new_filter_plt, ffile_ndom_ctl, ierr)
 !
 !     --------------------- 
 !

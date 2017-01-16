@@ -87,8 +87,6 @@
       use m_machine_parameter
       use m_2nd_pallalel_vector
       use m_ctl_data_gen_table
-      use m_ctl_data_4_platforms
-      use m_ctl_data_4_2nd_data
       use m_search_bolck_4_itp
       use m_file_format_switch
       use m_default_file_prefix
@@ -97,17 +95,17 @@
       use skip_comment_f
 !
 !
-      call turn_off_debug_flag_by_ctl(my_rank, plt1)
-      call set_control_smp_def(my_rank, plt1)
+      call turn_off_debug_flag_by_ctl(my_rank, src_plt)
+      call set_control_smp_def(my_rank, src_plt)
 !
-      call set_control_mesh_def(plt1, itp_org_mesh_file)
+      call set_control_mesh_def(src_plt, itp_org_mesh_file)
 !
       if (table_head_ctl%iflag .ne. 0) then
         table_file_head = table_head_ctl%charavalue
       end if
 !
       call set_control_mesh_file_def                                    &
-     &   (def_new_mesh_head, new_plt, itp_dest_mesh_file)
+     &   (def_new_mesh_head, dst_plt, itp_dest_mesh_file)
       call choose_file_format                                           &
      &   (fmt_itp_table_file_ctl, ifmt_itp_table_file)
 !
@@ -122,15 +120,15 @@
 !
 !
       ndomain_org = 1
-      if (plt1%ndomain_ctl%iflag .gt. 0) then
-        ndomain_org = plt1%ndomain_ctl%intvalue
+      if (src_plt%ndomain_ctl%iflag .gt. 0) then
+        ndomain_org = src_plt%ndomain_ctl%intvalue
       end if
 !
       nprocs_2nd = ndomain_org
       if (iflag_debug.eq.1)   write(*,*) 'ndomain_org', nprocs_2nd
 !
-      if (new_plt%ndomain_ctl%iflag .gt. 0) then
-        ndomain_dest = new_plt%ndomain_ctl%intvalue
+      if (dst_plt%ndomain_ctl%iflag .gt. 0) then
+        ndomain_dest = dst_plt%ndomain_ctl%intvalue
       else
         ndomain_dest = 1
       end if
