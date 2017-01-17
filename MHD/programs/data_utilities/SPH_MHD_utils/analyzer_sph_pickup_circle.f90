@@ -71,7 +71,7 @@
       call read_control_4_sph_snap_noviz(snap_ctl_name)
       if (iflag_debug.eq.1) write(*,*) 'set_control_SGS_SPH_MHD'
       call set_control_SGS_SPH_MHD(org_plt1,                            &
-     &    model_ctl1, ctl_ctl1, smonitor_ctl1, nmtr_ctl1,               &
+     &    model_ctl1, ctl_ctl1, smonitor_ctl1, nmtr_ctl1, psph_ctl1,    &
      &    sph_gen, rj_fld1, mesh_file_circ, sph_file_param1,            &
      &    MHD1_org_files, sph_fst_IO, pwr1,                             &
      &    trns_WK1%dynamic_SPH%sph_filters)

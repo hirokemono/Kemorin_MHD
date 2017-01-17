@@ -23,8 +23,15 @@
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
       use t_file_IO_parameter
+      use t_ctl_data_gen_sph_shell
 !
       implicit none
+!
+      character (len = kchara)                                          &
+     &         :: control_file_name = 'control_sph_shell'
+!
+!
+      type(parallel_sph_shell_control), save :: psph_gen_ctl
 !
 !>       Structure of grid and spectr data for spherical spectr method
       type(sph_grids), save :: sph_const
@@ -33,6 +40,7 @@
 !>      Structure of mesh file name and formats
       type(field_IO_params), save ::  fem_mesh_file
 !
+      private :: control_file_name, psph_gen_ctl
       private :: sph_const, sph_file_prm_const
 !
 ! ----------------------------------------------------------------------
@@ -43,7 +51,6 @@
 !
       subroutine init_gen_sph_grids
 !
-      use m_read_ctl_gen_sph_shell
       use m_ctl_data_4_platforms
       use set_ctl_gen_shell_grids
 !
@@ -58,8 +65,10 @@
 !
 !
       call start_eleps_time(1)
-      call read_control_4_gen_shell_grids
-      call s_set_control_4_gen_shell_grids(plt1, spctl1, sdctl1,        &
+      call read_ctl_file_gen_shell_grids                                &
+     &   (control_file_name, plt1, psph_gen_ctl)
+      call s_set_control_4_gen_shell_grids                              &
+     &   (plt1, psph_gen_ctl%spctl, psph_gen_ctl%sdctl,                 &
      &    sph_const, fem_mesh_file, sph_file_prm_const, ierr_MPI)
       if(ierr_MPI .gt. 0) call calypso_mpi_abort(ierr_MPI, e_message)
 !

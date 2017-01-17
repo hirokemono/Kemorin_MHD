@@ -8,11 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine set_control_SGS_SPH_MHD(org_plt,                     &
-!!     &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl,           &
+!!     &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl, &
 !!     &          sph_gen, rj_fld, mesh_file, sph_file_param,           &
 !!     &          MHD_org_files, sph_fst_IO, pwr, sph_filters)
 !!      subroutine set_control_4_SPH_MHD(org_plt,                       &
-!!     &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl,           &
+!!     &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl, &
 !!     &          sph_gen, rj_fld, mesh_file, sph_file_param,           &
 !!     &          sph_fst_IO, pwr)
 !!        type(platform_data_control), intent(in) :: org_plt
@@ -20,6 +20,7 @@
 !!        type(mhd_control_control), intent(inout) :: ctl_ctl
 !!        type(sph_monitor_control), intent(inout) :: smonitor_ctl
 !!        type(node_monitor_control), intent(inout) :: nmtr_ctl
+!!        type(parallel_sph_shell_control), intent(inout) :: psph_ctl
 !!        type(sph_grids), intent(inout) :: sph_gen
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(field_IO_params), intent(inout) :: mesh_file
@@ -45,6 +46,7 @@
       use t_ctl_data_MHD_control
       use t_ctl_data_4_sph_monitor
       use t_ctl_data_node_monitor
+      use t_ctl_data_gen_sph_shell
 !
       implicit none
 !
@@ -57,7 +59,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_control_SGS_SPH_MHD(org_plt,                       &
-     &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl,             &
+     &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,   &
      &          sph_gen, rj_fld, mesh_file, sph_file_param,             &
      &          MHD_org_files, sph_fst_IO, pwr, sph_filters)
 !
@@ -78,6 +80,7 @@
       type(mhd_control_control), intent(inout) :: ctl_ctl
       type(sph_monitor_control), intent(inout) :: smonitor_ctl
       type(node_monitor_control), intent(inout) :: nmtr_ctl
+      type(parallel_sph_shell_control), intent(inout) :: psph_ctl
       type(sph_grids), intent(inout) :: sph_gen
       type(phys_data), intent(inout) :: rj_fld
       type(field_IO_params), intent(inout) :: mesh_file
@@ -101,22 +104,22 @@
       end if
 !
       call set_control_4_SPH_MHD(org_plt,                               &
-     &    model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, sph_gen, rj_fld,  &
-     &    mesh_file, sph_file_param, MHD_org_files, sph_fst_IO, pwr)
+     &    model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,         &
+     &    sph_gen, rj_fld, mesh_file, sph_file_param,                   &
+     &    MHD_org_files, sph_fst_IO, pwr)
 !
       end subroutine set_control_SGS_SPH_MHD
 !
 ! ----------------------------------------------------------------------
 !
       subroutine set_control_4_SPH_MHD(org_plt,                         &
-     &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl,             &
+     &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,   &
      &          sph_gen, rj_fld, mesh_file, sph_file_param,             &
      &          MHD_org_files, sph_fst_IO, pwr)
 !
       use m_spheric_global_ranks
       use m_ucd_data
       use m_ctl_data_4_platforms
-      use m_read_ctl_gen_sph_shell
       use sph_mhd_rms_IO
 !
       use t_spheric_parameter
@@ -140,6 +143,7 @@
       type(mhd_control_control), intent(inout) :: ctl_ctl
       type(sph_monitor_control), intent(inout) :: smonitor_ctl
       type(node_monitor_control), intent(inout) :: nmtr_ctl
+      type(parallel_sph_shell_control), intent(inout) :: psph_ctl
       type(sph_grids), intent(inout) :: sph_gen
       type(phys_data), intent(inout) :: rj_fld
       type(field_IO_params), intent(inout) :: mesh_file
@@ -173,7 +177,7 @@
       if(iflag_make_SPH .gt. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_control_4_shell_grids'
         call set_control_4_shell_grids                                  &
-     &     (nprocs, spctl1, sdctl1, sph_gen, ierr)
+     &     (nprocs, psph_ctl%spctl, psph_ctl%sdctl, sph_gen, ierr)
       end if
 !
 !   set forces

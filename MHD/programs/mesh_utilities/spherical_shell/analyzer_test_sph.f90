@@ -18,6 +18,8 @@
       use t_sph_trans_comm_tbl
       use t_file_IO_parameter
 !
+      use t_ctl_data_gen_sph_shell
+!
       use calypso_mpi
 !
       implicit none
@@ -25,10 +27,15 @@
       integer(kind = kint), parameter :: id_check = 44
       character(len=kchara), parameter :: check_header = 'comm_errors'
 !
+      character (len = kchara)                                          &
+     &         :: control_file_name = 'control_sph_shell'
+!
+      type(parallel_sph_shell_control), save :: psph_test_ctl
       type(sph_mesh_data), save :: sph_mesh_t
       type(field_IO_params), save :: sph_file_param
       type(field_IO_params), save ::  test_mesh_file
 !
+      private :: control_file_name, psph_test_ctl
       private :: check_header, sph_mesh_t
 !
 ! ----------------------------------------------------------------------
@@ -40,7 +47,6 @@
       subroutine init_test_sph
 !
       use m_ctl_data_4_platforms
-      use m_read_ctl_gen_sph_shell
       use set_control_platform_data
       use parallel_load_data_4_sph
       use cmp_trans_sph_tests
@@ -56,7 +62,8 @@
 !     --------------------- 
 !
       call turn_off_debug_flag_by_ctl(my_rank, plt1)
-      call read_control_4_gen_shell_grids
+      call read_ctl_file_gen_shell_grids                                &
+     &   (control_file_name, plt1, psph_test_ctl)
       call set_control_sph_mesh(plt1, test_mesh_file, sph_file_param)
 !
       if (iflag_debug.gt.0) write(*,*) 'load_para_sph_mesh'

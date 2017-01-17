@@ -38,6 +38,8 @@
 !
       character(len=kchara), parameter                                  &
      &                    :: hd_org_data = 'org_data_files_def'
+      character(len=kchara), parameter                                  &
+     &      :: hd_sph_shell = 'spherical_shell_ctl'
       character(len=kchara), parameter :: hd_model =   'model'
       character(len=kchara), parameter :: hd_control = 'control'
       character(len=kchara), parameter                                  &
@@ -53,6 +55,7 @@
 !
       private :: MHD_ctl_name
       private :: hd_mhd_ctl, i_mhd_ctl
+      private :: hd_sph_shell
       private :: hd_org_data, i_org_data
       private :: hd_model, hd_control, i_model, i_control
       private :: hd_pick_sph, i_pick_sph
@@ -68,7 +71,7 @@
 !
       subroutine read_control_4_sph_MHD_noviz
 !
-      use m_read_ctl_gen_sph_shell
+      use read_ctl_data_sph_MHD
 !
 !
       if(my_rank .eq. 0) then
@@ -83,7 +86,9 @@
 !
       call bcast_sph_mhd_ctl_noviz
 !
-      if(ifile_sph_shell .gt. 0) call read_control_4_gen_shell_grids
+      if(psph_ctl1%ifile_sph_shell .gt. 0) then
+        call read_ctl_file_shell_in_MHD(psph_ctl1)
+      end if
 !
       end subroutine read_control_4_sph_MHD_noviz
 !
@@ -91,7 +96,7 @@
 !
       subroutine read_control_4_sph_snap_noviz(snap_ctl_name)
 !
-      use m_read_ctl_gen_sph_shell
+      use read_ctl_data_sph_MHD
 !
       character(len=kchara), intent(in) :: snap_ctl_name
 !
@@ -108,7 +113,9 @@
 !
       call bcast_sph_mhd_ctl_noviz
 !
-      if(ifile_sph_shell .gt. 0) call read_control_4_gen_shell_grids
+      if(psph_ctl1%ifile_sph_shell .gt. 0) then
+        call read_ctl_file_shell_in_MHD(psph_ctl1)
+      end if
 !
       end subroutine read_control_4_sph_snap_noviz
 !
@@ -118,7 +125,6 @@
       subroutine read_sph_mhd_ctl_noviz
 !
       use m_ctl_data_4_platforms
-      use m_read_ctl_gen_sph_shell
       use read_ctl_data_sph_MHD
 !
 !
@@ -134,7 +140,7 @@
         call read_ctl_data_4_platform
         call read_control_platforms(hd_org_data, i_org_data, org_plt1)
 !
-        call read_ctl_data_4_shell_in_MHD
+        call read_parallel_shell_in_MHD_ctl(hd_sph_shell, psph_ctl1)
 !
         call read_sph_mhd_model(hd_model, i_model, model_ctl1)
         call read_sph_mhd_control(hd_control, i_control, ctl_ctl1)
@@ -152,7 +158,6 @@
       subroutine bcast_sph_mhd_ctl_noviz
 !
       use m_ctl_data_4_platforms
-      use m_read_ctl_gen_sph_shell
       use read_ctl_data_sph_MHD
       use bcast_4_platform_ctl
       use bcast_4_field_ctl
@@ -166,8 +171,7 @@
       call bcast_sph_mhd_model(model_ctl1)
       call bcast_sph_mhd_control(ctl_ctl1)
 !
-      call bcast_ctl_4_shell_define(spctl1)
-      call bcast_ctl_ndomain_4_shell(sdctl1)
+      call bcast_parallel_shell_ctl(psph_ctl1)
 !
       call bcast_monitor_data_ctl(nmtr_ctl1)
       call bcast_sph_monitoring_ctl(smonitor_ctl1)

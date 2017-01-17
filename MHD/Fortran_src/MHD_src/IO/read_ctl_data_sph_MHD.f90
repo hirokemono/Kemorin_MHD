@@ -29,6 +29,7 @@
       use t_ctl_data_MHD_control
       use t_ctl_data_4_sph_monitor
       use t_ctl_data_node_monitor
+      use t_ctl_data_gen_sph_shell
 !
       use skip_comment_f
 !
@@ -39,6 +40,9 @@
       type(platform_data_control), save :: org_plt1
 !>      Control structure for new file informations
       type(platform_data_control), save :: new_plt1
+!
+!>      Control structure for parallel spherical shell
+      type(parallel_sph_shell_control), save :: psph_ctl1
 !
 !>      Control structure for MHD/model
       type(mhd_model_control), save :: model_ctl1
