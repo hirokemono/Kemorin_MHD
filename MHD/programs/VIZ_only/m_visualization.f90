@@ -28,10 +28,6 @@
 !
 !>      Structure for mesh file IO paramters
       type(field_IO_params), save :: mesh_file_VIZ
-!>      Structure for field file IO paramters
-      type(field_IO_params), save :: udt_org_param
-!>      Structure for original restart file  paramters
-      type(field_IO_params), save :: rst_org_param
 !
 !
 !>     Structure for mesh data
