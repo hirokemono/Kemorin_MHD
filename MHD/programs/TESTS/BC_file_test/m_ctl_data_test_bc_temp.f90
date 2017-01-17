@@ -31,6 +31,7 @@
       module m_ctl_data_test_bc_temp
 !
       use m_precision
+      use t_ctl_data_4_platforms
 !
       implicit  none
 !
@@ -38,6 +39,9 @@
       integer(kind = kint), parameter :: test_mest_ctl_file_code = 11
       character(len = kchara), parameter                                &
      &                        :: fname_test_mesh_ctl = "ctl_bc_temp"
+!
+!>      Structure for file settings
+      type(platform_data_control), save :: bc_test_plt
 !
       character(len = kchara) :: temp_nod_grp_name
       integer(kind = kint) :: hermonic_degree_ctl = 1
@@ -51,7 +55,11 @@
 !
 !     1st level
 !
+      character(len=kchara), parameter                                  &
+     &                    :: hd_platform = 'data_files_def'
       character(len=kchara), parameter :: hd_bc_def =   'boundary_ctl'
+!
+      integer (kind=kint) :: i_platform =   0
       integer (kind=kint) :: i_bc_def =    0
 !
 !     2nd level for boundary defeine
@@ -67,6 +75,8 @@
       integer (kind=kint) :: i_sph_order =    0
 !
       private :: test_mest_ctl_file_code, fname_test_mesh_ctl
+!
+      private :: hd_platform, i_platform
       private :: hd_bc_def, i_bc_def
       private :: read_test_mesh_ctl_data
       private :: hd_nod_grp_t, hd_sph_degree, hd_sph_order
@@ -103,7 +113,6 @@
       subroutine read_test_mesh_ctl_data
 !
       use m_machine_parameter
-      use m_ctl_data_4_platforms
       use m_read_control_elements
       use skip_comment_f
 !
@@ -117,7 +126,8 @@
         if(i_mesh_test_ctl .gt. 0) exit
 !
 !
-        call read_ctl_data_4_platform
+        call read_control_platforms                                     &
+     &     (hd_platform, i_platform, bc_test_plt)
         call read_ctl_data_4_temp_nod_bc
       end do
 !

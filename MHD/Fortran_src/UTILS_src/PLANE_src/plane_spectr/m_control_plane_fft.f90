@@ -28,6 +28,11 @@
 !>      Structure for time stepping control
       type(time_data_control), save :: t_zfft_ctl
 !
+      character(len=kchara) :: plane_spectr_mode_head_ctl
+      character(len=kchara) :: plane_spectr_data_head_ctl
+      character(len=kchara) :: plane_spectr_ene_head_ctl
+      character(len=kchara) :: plane_spectr_h_ene_head_ctl
+!
 !   Top level
 !
       character(len=kchara) :: hd_fft_plane_ctl = 'plane_fft_control'
@@ -51,12 +56,35 @@
 !>      label for block
       character(len=kchara), parameter                                  &
      &      :: hd_phys_values =  'phys_values_ctl'
-!>      Number of field
       integer (kind=kint) :: i_phys_values =   0
 !
       character(len=kchara), parameter                                  &
      &      :: hd_time_step = 'time_step_ctl'
       integer (kind=kint) :: i_tstep =      0
+!
+      character(len=kchara), parameter                                  &
+     &                      :: hd_spec_file = 'plane_spectr_file_def'
+      integer (kind=kint) :: i_spec_file = 0
+!
+!
+!   read flags
+!
+      character(len=kchara), parameter                                  &
+     &       :: hd_plane_spec_mode_head = 'plane_spectr_mode_head'
+      character(len=kchara), parameter                                  &
+     &       :: hd_plane_spec_data_head = 'plane_spectr_data_head'
+      character(len=kchara), parameter                                  &
+     &       :: hd_plane_spec_ene_head =  'plane_spectr_ene_head'
+      character(len=kchara), parameter                                  &
+     &       :: hd_plane_sp_h_ene_head =  'plane_spectr_horiz_ene_head'
+      integer(kind = kint) :: i_plane_spec_mode_head = 0
+      integer(kind = kint) :: i_plane_spec_data_head = 0
+      integer(kind = kint) :: i_plane_spec_ene_head =  0
+      integer(kind = kint) :: i_plane_sp_h_ene_head =  0
+!
+      private :: hd_spec_file, i_spec_file
+      private :: hd_plane_spec_mode_head, hd_plane_spec_data_head
+      private :: hd_plane_spec_ene_head, hd_plane_sp_h_ene_head
 !
       private :: hd_fft_plane_ctl, i_fft_plane_ctl
       private :: hd_model, hd_control, i_model, i_control
@@ -66,6 +94,7 @@
 !
       private :: read_fft_plane_control_data
       private :: read_merge_field_data, read_merge_step_data
+      private :: read_ctl_data_plane_spec_file
 !
 ! -----------------------------------------------------------------------
 !
@@ -92,7 +121,6 @@
       subroutine read_fft_plane_control_data
 !
       use m_ctl_data_4_plane_model
-      use m_ctl_data_plane_spec_file
       use m_ctl_data_2nd_plane
 !
 !
@@ -158,5 +186,30 @@
       end subroutine read_merge_step_data
 !
 ! -----------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine read_ctl_data_plane_spec_file
+!
+      if(right_begin_flag(hd_spec_file) .eq. 0) return
+      if (i_spec_file .gt. 0) return
+      do
+        call load_ctl_label_and_line
+!
+        call find_control_end_flag(hd_spec_file, i_spec_file)
+        if(i_spec_file .gt. 0) exit
+!
+        call read_character_ctl_item(hd_plane_spec_mode_head,           &
+     &        i_plane_spec_mode_head, plane_spectr_mode_head_ctl)
+        call read_character_ctl_item(hd_plane_spec_data_head,           &
+     &        i_plane_spec_data_head, plane_spectr_data_head_ctl)
+        call read_character_ctl_item(hd_plane_spec_ene_head,            &
+     &        i_plane_spec_ene_head, plane_spectr_ene_head_ctl)
+        call read_character_ctl_item(hd_plane_sp_h_ene_head,            &
+     &        i_plane_sp_h_ene_head, plane_spectr_h_ene_head_ctl)
+      end do
+!
+      end subroutine read_ctl_data_plane_spec_file
+!
+!  ---------------------------------------------------------------------
 !
       end module m_control_plane_fft

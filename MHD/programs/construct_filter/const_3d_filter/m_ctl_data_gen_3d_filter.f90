@@ -13,6 +13,7 @@
       use m_precision
       use m_ctl_data_gen_filter
       use m_read_control_elements
+      use t_ctl_data_4_platforms
       use t_read_control_arrays
       use t_ctl_data_filter_files
       use skip_comment_f
@@ -26,6 +27,8 @@
       character(len = kchara), parameter                                &
      &                        :: fname_sort_flt_ctl = "ctl_sort_filter"
 !
+!>      Structure for file settings
+      type(platform_data_control), save :: gen_filter_plt
 !>      Structure for filtering groups
 !!@n      filter_area_ctl%c_tbl: Name of force
       type(ctl_array_chara), save :: filter_area_ctl
@@ -52,9 +55,13 @@
 !     2nd level for const_filter
 !
       character(len=kchara), parameter                                  &
+     &                    :: hd_platform = 'data_files_def'
+      character(len=kchara), parameter                                  &
      &         :: hd_filter_area_ctl =  'filter_area_ctl'
       character(len=kchara), parameter                                  &
      &         :: hd_deltax_ctl =       'element_size_ctl'
+!
+      integer (kind=kint) :: i_platform =   0
       integer (kind=kint) :: i_filter_area_ctl =    0
       integer (kind=kint) :: i_deltax_ctl =         0
 !
@@ -96,6 +103,7 @@
 !
       private :: hd_filter_control, i_filter_control
       private :: hd_filter_area_ctl, hd_deltax_ctl
+      private :: hd_platform, i_platform
       private :: hd_mass_matrix_type, hd_esize_solver, hd_filter_area
       private :: hd_method_esize, hd_precond_esize, hd_itr_esize
       private :: hd_eps_esize, hd_sigma_esize, hd_sigma_diag_esize
@@ -159,7 +167,6 @@
 !
       use m_ctl_data_gen_filter
       use m_ctl_data_org_filter_name
-      use m_ctl_data_4_platforms
 !
 !
       if(right_begin_flag(hd_filter_control) .eq. 0) return
@@ -171,7 +178,8 @@
         if(i_filter_control .gt. 0) exit
 !
 !
-        call read_ctl_data_4_platform
+        call read_control_platforms                                     &
+     &     (hd_platform, i_platform, gen_filter_plt)
 !
         call read_filter_param_ctl
         call read_filter_fnames_control                                 &

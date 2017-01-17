@@ -43,8 +43,9 @@
       use m_precision
       use calypso_mpi
 !
-      use t_control_elements
+      use t_ctl_data_4_platforms
       use t_ctl_data_4_time_steps
+      use t_control_elements
       use t_read_control_arrays
 !
       type diff_spectrum_ctl
@@ -62,6 +63,8 @@
       end type rename_spectr_ctl
 !
       type spectr_data_util_ctl
+!>      Structure for file settings
+        type(platform_data_control) :: plt
 !>      Structure for time stepping control
         type(time_data_control) :: tctl
         type(diff_spectrum_ctl) :: file_list
@@ -77,7 +80,11 @@
       character(len=kchara), parameter                                  &
      &       :: hd_rename_def = 'rename_field_ctl'
       character(len=kchara), parameter                                  &
+     &                    :: hd_platform = 'data_files_def'
+      character(len=kchara), parameter                                  &
      &      :: hd_time_step = 'time_step_ctl'
+!
+      integer (kind=kint) :: i_platform =   0
       integer (kind=kint) :: i_tstep =      0
 !
       character(len=kchara), parameter                                  &
@@ -102,6 +109,7 @@
       private :: hd_out_field_prefix, hd_out_field_format
       private :: hd_rename_def, hd_field_to_rename
       private :: hd_time_step, i_tstep
+      private :: hd_platform, i_platform
 !
 ! -------------------------------------------------------------------
 !
@@ -110,8 +118,6 @@
 ! -------------------------------------------------------------------
 !
       subroutine read_spectr_util_control(ctl)
-!
-      use m_ctl_data_4_platforms
 !
       type(spectr_data_util_ctl), intent(inout) :: ctl
       integer(kind = kint) :: i_hard = 0
@@ -126,7 +132,7 @@
         call find_control_end_flag(hd_control_d_sph, i_hard)
         if(i_hard .gt. 0) exit
 !
-        call read_ctl_data_4_platform
+        call read_control_platforms(hd_platform, i_platform, ctl%plt)
         call read_control_time_step_data                                &
      &     (hd_time_step, i_tstep, ctl%tctl)
         call read_diff_spectr_file_control(ctl%file_list)

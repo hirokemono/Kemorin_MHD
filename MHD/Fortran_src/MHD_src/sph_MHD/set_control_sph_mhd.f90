@@ -156,7 +156,7 @@
       call set_FEM_mesh_switch_4_SPH(plt1, iflag_output_mesh)
       call set_control_sph_mesh(plt1, mesh_file, sph_file_param)
       call set_control_restart_file_def(plt1, sph_fst_IO)
-      call set_control_MHD_field_file
+      call set_control_MHD_field_file(plt1)
       call set_control_org_sph_files(MHD_org_files)
 !
       call s_set_control_4_model                                        &

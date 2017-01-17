@@ -27,14 +27,14 @@
 !
       subroutine s_input_control_test_MG(mesh, group, surf, edge)
 !
-        use calypso_mpi
-        use m_machine_parameter
+      use calypso_mpi
+      use m_machine_parameter
 !
-        use m_ctl_data_test_MG
-        use m_geometry_param_MG
-        use set_control_test_MG
-        use mpi_load_mesh_data
-        use set_MG_mesh_data
+      use m_ctl_data_test_MG
+      use m_geometry_param_MG
+      use set_control_test_MG
+      use mpi_load_mesh_data
+      use set_MG_mesh_data
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) :: group
@@ -49,7 +49,7 @@
       call read_control_4_MG_test
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_test_MG'
-      call set_ctl_test_MG(plt1, mesh_file_test)
+      call set_ctl_test_MG(MGtest_plt, mesh_file_test)
 !
 !  --  read geometry
 !

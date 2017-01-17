@@ -21,6 +21,7 @@
 !
       use m_precision
 !
+      use t_ctl_data_4_platforms
       use m_read_control_elements
       use skip_comment_f
 !
@@ -30,6 +31,17 @@
       integer(kind = kint), parameter :: test_mest_ctl_file_code = 11
       character(len = kchara), parameter                                &
      &                        :: fname_test_mesh_ctl = "ctl_mesh"
+!
+!>      Structure for file settings
+      type(platform_data_control), save :: comm_test_plt
+!
+!     Label for the entry
+!
+      character(len=kchara), parameter                                  &
+     &                    :: hd_platform = 'data_files_def'
+      integer (kind=kint) :: i_platform =   0
+!
+      private :: hd_platform, i_platform
 !
 !   --------------------------------------------------------------------
 !
@@ -41,7 +53,6 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_ctl_data_4_platforms
       use bcast_4_platform_ctl
 !
 !
@@ -50,13 +61,14 @@
         open(ctl_file_code, file = fname_test_mesh_ctl, status='old')
 !
         call load_ctl_label_and_line
-        call read_ctl_data_4_platform
+        call read_control_platforms                                     &
+     &     (hd_platform, i_platform, comm_test_plt)
 !
         close(ctl_file_code)
       end if
 !
       call calypso_mpi_barrier
-      call bcast_ctl_data_4_platform(plt1)
+      call bcast_ctl_data_4_platform(comm_test_plt)
 !
       end subroutine read_control_4_comm_test
 !

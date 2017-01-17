@@ -79,7 +79,7 @@
       call set_control_smp_def(my_rank, plt1)
       call set_control_mesh_def(plt1, mesh_file)
       call set_ctl_restart_4_fem_mhd(plt1)
-      call set_control_MHD_field_file
+      call set_control_MHD_field_file(plt1)
       call set_control_mesh_file_def                                    &
      &   (def_org_ucd_header, org_plt, udt_org_param)
 !

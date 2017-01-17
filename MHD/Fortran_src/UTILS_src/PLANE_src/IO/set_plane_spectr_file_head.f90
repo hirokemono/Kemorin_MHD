@@ -21,8 +21,7 @@
 !
       subroutine s_set_plane_spectr_file_head(mesh_file)
 !
-      use m_ctl_data_4_platforms
-      use m_ctl_data_plane_spec_file
+      use m_control_plane_fft
       use set_spectr_file_name
       use set_parallel_file_name
       use set_control_platform_data
@@ -30,10 +29,10 @@
       type(field_IO_params), intent(inout) :: mesh_file
 !
 !
-      call set_control_mesh_def(plt1, mesh_file)
+      call set_control_mesh_def(new_p_plt, mesh_file)
 !
-      if (plt1%field_file_prefix%iflag .gt. 0) then
-        plane_udt_header = plt1%field_file_prefix%charavalue
+      if (new_p_plt%field_file_prefix%iflag .gt. 0) then
+        plane_udt_header = new_p_plt%field_file_prefix%charavalue
       end if
 !
 !

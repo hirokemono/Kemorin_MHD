@@ -44,6 +44,7 @@
       use m_precision
 !
       use m_machine_parameter
+      use t_ctl_data_4_platforms
       use t_ctl_data_filter_files
 !
       implicit  none
@@ -53,6 +54,8 @@
       character (len = kchara), parameter                               &
      &         :: control_file_name='ctl_plane_mesh'
 !
+!
+      type(platform_data_control), save :: cubmesh_plt
 !
 !>      Structure for filtering files
       type(filter_file_control), save :: ffile_cub_ctl
@@ -73,7 +76,11 @@
 !   1st level
 !
       character(len=kchara), parameter                                  &
+     &                    :: hd_platform = 'data_files_def'
+      character(len=kchara), parameter                                  &
      &                    :: hd_l_filter_ctl = 'line_filter_ctl'
+!
+      integer (kind=kint) :: i_platform =   0
       integer (kind=kint) :: i_l_filter_ctl =  0
 !
 !   2nd level for filter data
@@ -96,8 +103,8 @@
 !
 !
       private :: hd_plane_mesh, i_plane_mesh
-      private :: hd_l_filter_ctl
-      private :: i_l_filter_ctl
+      private :: hd_l_filter_ctl, i_l_filter_ctl
+      private :: hd_platform, i_platform
       private :: hd_num_z_filter,     hd_z_filter_header
       private :: hd_vert_filter_type, hd_omitting_value
 !
@@ -137,7 +144,6 @@
 !
       use m_read_control_elements
       use skip_comment_f
-      use m_ctl_data_4_platforms
       use m_ctl_data_4_plane_model
 !
 !
@@ -152,7 +158,8 @@
         if(i_plane_mesh .gt. 0) exit
 !
 !
-        call read_ctl_data_4_platform
+        call read_control_platforms                                     &
+     &     (hd_platform, i_platform, cubmesh_plt)
         call read_filter_fnames_control                                 &
      &     (hd_filter_fnames, i_filter_fnames, ffile_cub_ctl)
 !

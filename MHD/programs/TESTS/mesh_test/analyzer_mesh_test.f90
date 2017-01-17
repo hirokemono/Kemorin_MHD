@@ -92,7 +92,7 @@
       call read_control_4_mesh_test
 !
       if (iflag_debug.gt.0) write(*,*) 'set_ctl_params_4_test_mesh'
-      call set_ctl_params_4_test_mesh(tested_mesh_file)
+      call set_ctl_params_4_test_mesh(mesh_test_plt, tested_mesh_file)
 !
 !  --  read geometry
 !

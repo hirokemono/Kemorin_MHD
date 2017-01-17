@@ -12,7 +12,6 @@
       use m_precision
       use m_machine_parameter
       use t_file_IO_parameter
-      use m_ctl_data_4_platforms
       use m_ctl_data_gen_filter
       use m_ctl_data_gen_3d_filter
       use m_ctl_params_4_gen_filter
@@ -43,8 +42,8 @@
 !
 !
       np_smp = 1
-      if(plt1%num_smp_ctl%iflag .gt. 0) then
-         np_smp = plt1%num_smp_ctl%intvalue
+      if(gen_filter_plt%num_smp_ctl%iflag .gt. 0) then
+         np_smp = gen_filter_plt%num_smp_ctl%intvalue
       end if
 !
       num_int_points = 4
@@ -350,7 +349,7 @@
       type(field_IO_params), intent(inout) :: mesh_file
 !
 !
-      call set_control_mesh_def(plt1, mesh_file)
+      call set_control_mesh_def(gen_filter_plt, mesh_file)
       if (iflag_debug.gt.0) write(*,*)                                  &
      &                'mesh_file_head ', mesh_file%file_prefix
 !
@@ -397,8 +396,8 @@
       integer(kind = kint), intent(inout) :: nprocs
 !
 !
-      if (plt1%ndomain_ctl%iflag .ne. 0) then
-        nprocs = plt1%ndomain_ctl%intvalue
+      if (gen_filter_plt%ndomain_ctl%iflag .ne. 0) then
+        nprocs = gen_filter_plt%ndomain_ctl%intvalue
       else
         write(*,*) 'set number of domains'
         stop

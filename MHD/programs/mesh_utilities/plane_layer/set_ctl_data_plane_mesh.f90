@@ -26,15 +26,14 @@
       use m_grp_data_cub_kemo
       use m_filtering_nod_4_cubmesh
       use m_cube_files_data
-      use m_ctl_data_4_platforms
       use m_ctl_data_4_plane_model
       use m_ctl_data_4_cub_kemo
       use m_spheric_constants
       use skip_comment_f
 !
 !
-      if (plt1%mesh_file_prefix%iflag .gt. 0) then
-        mesh_file_header = plt1%mesh_file_prefix%charavalue
+      if (cubmesh_plt%mesh_file_prefix%iflag .gt. 0) then
+        mesh_file_header = cubmesh_plt%mesh_file_prefix%charavalue
       else
         mesh_file_header = 'mesh/in'
       end if

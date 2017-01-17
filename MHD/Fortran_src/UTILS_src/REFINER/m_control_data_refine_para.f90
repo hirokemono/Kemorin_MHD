@@ -1,12 +1,15 @@
 !m_control_data_refine_para.f90
 !      module m_control_data_refine_para
 !
-      module m_control_data_refine_para
-!
 !      Written by Kemorin on Oct., 2007
+!
+!       subroutine read_control_data_ref_para_itp
+!
+      module m_control_data_refine_para
 !
       use m_precision
 !
+      use t_ctl_data_4_platforms
       use m_read_control_elements
       use skip_comment_f
 !
@@ -15,6 +18,8 @@
       integer (kind = kint), parameter :: control_file_code = 13
       character (len = kchara), parameter                               &
      &         :: control_file_name = 'ctl_para_refine_table'
+!
+      type(platform_data_control), save :: para_refine_plt
 !
       integer(kind = kint) :: nprocs_course_ctl = 0
       character (len = kchara) :: course_mesh_file_head_ctl
@@ -31,8 +36,11 @@
 !
 !   2nd level for para_refine_tbl_control
 !
+      character(len=kchara), parameter                                  &
+     &                    :: hd_platform = 'data_files_def'
       character(len=kchara), parameter :: hd_course_mesh_para_ctl       &
      &                      = 'parallel_course_mesh_ctl'
+      integer (kind=kint) :: i_platform =   0
       integer (kind=kint) :: i_course_mesh_para_ctl = 0
 !
 !   3rd level for parallel_course_mesh_ctl
@@ -60,10 +68,9 @@
       private :: hd_num_course_subdomain, hd_course_mesh_file_head
       private :: hd_fine_to_course_p_head,  hd_course_to_fine_p_head
       private :: hd_fine_to_course_ele_head
+      private :: hd_platform, i_platform
       private :: read_ref_para_itp_ctl_data
       private :: read_ctl_data_4_course_mesh
-!
-!       subroutine read_control_data_ref_para_itp
 !
 ! -----------------------------------------------------------------------
 !
@@ -89,7 +96,6 @@
 !
       subroutine read_ref_para_itp_ctl_data
 !
-      use m_ctl_data_4_platforms
       use m_control_data_4_refine
 !
 !
@@ -102,7 +108,8 @@
      &      i_para_refine_tbl_ctl)
 !
 !
-        call read_ctl_data_4_platform
+        call read_control_platforms                                     &
+     &     (hd_platform, i_platform, para_refine_plt)
 !
         call read_ctl_data_4_course_mesh
         call read_ctl_data_4_refine_mesh

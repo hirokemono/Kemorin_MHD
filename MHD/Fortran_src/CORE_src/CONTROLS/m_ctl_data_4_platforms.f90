@@ -57,6 +57,7 @@
       implicit  none
 !
 !
+!>      Structure for file settings
       type(platform_data_control), save :: plt1
 !
 !     Label for the entry

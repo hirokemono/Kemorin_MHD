@@ -9,7 +9,8 @@
 !!@verbatim
 !!      subroutine evolution_diff_sph_spectr
 !!      subroutine set_control_diff_sph_field                           &
-!!     &         (tctl, f_ctl, files, istart, iend, increment)
+!!     &         (plt, tctl, f_ctl, files, istart, iend, increment)
+!!        type(platform_data_control), intent(in) :: plt
 !!        type(time_data_control), intent(in) :: tctl
 !!        type(diff_spectrum_ctl), intent(in) :: f_ctl
 !!        type(diff_spectrum_file_param), intent(inout) :: files
@@ -65,23 +66,24 @@
 ! -------------------------------------------------------------------
 !
       subroutine set_control_diff_sph_field                             &
-     &         (tctl, f_ctl, files, istart, iend, increment)
+     &         (plt, tctl, f_ctl, files, istart, iend, increment)
 !
       use t_ctl_data_sph_data_utils
+      use t_ctl_data_4_platforms
       use t_ctl_data_4_time_steps
       use m_file_format_switch
-      use m_ctl_data_4_platforms
       use set_ctl_parallel_platform
       use set_control_platform_data
 !
+      type(platform_data_control), intent(in) :: plt
       type(time_data_control), intent(in) :: tctl
       type(diff_spectrum_ctl), intent(in) :: f_ctl
       type(diff_spectrum_file_param), intent(inout) :: files
       integer(kind = kint), intent(inout) :: istart, iend, increment
 !
 !
-      call turn_off_debug_flag_by_ctl(my_rank, plt1)
-!      call check_control_num_domains(plt1)
+      call turn_off_debug_flag_by_ctl(my_rank, plt)
+!      call check_control_num_domains(plt)
 !
       call choose_para_file_format(f_ctl%org_spec_file_fmt_ctl,         &
      &   files%org_file_param%iflag_format)

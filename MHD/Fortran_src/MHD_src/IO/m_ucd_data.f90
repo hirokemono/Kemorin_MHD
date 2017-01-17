@@ -9,7 +9,8 @@
 !>@brief Strucures for field data output
 !!
 !!@verbatim
-!!      subroutine set_control_MHD_field_file(ucd)
+!!      subroutine set_control_MHD_field_file(plt)
+!!        type(platform_data_control), intent(in) :: plt
 !!      subroutine s_output_ucd_file_control
 !!
 !!      subroutine output_grd_file_4_snapshot(mesh, nod_fld)
@@ -62,18 +63,20 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_control_MHD_field_file
+      subroutine set_control_MHD_field_file(plt)
 !
-      use m_ctl_data_4_platforms
+      use t_ctl_data_4_platforms
       use parallel_ucd_IO_select
 !
+      type(platform_data_control), intent(in) :: plt
 !
-      if(plt1%field_file_prefix%iflag .eq. 0) then
+!
+      if(plt%field_file_prefix%iflag .eq. 0) then
         fem_ucd%ifmt_file = -1
         return
       end if
 !
-      call set_merged_ucd_file_define(plt1, fem_ucd)
+      call set_merged_ucd_file_define(plt, fem_ucd)
 !
       end subroutine set_control_MHD_field_file
 !

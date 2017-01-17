@@ -242,7 +242,6 @@
       subroutine set_control_4_newudt
 !
       use m_control_data_4_merge
-      use m_ctl_data_4_platforms
       use m_2nd_geometry_4_merge
       use m_file_format_switch
       use m_default_file_prefix

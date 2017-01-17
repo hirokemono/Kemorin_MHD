@@ -36,24 +36,25 @@
       call read_control_4_comm_test
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_4_comm_test'
-      call set_ctl_params_4_comm_test(mesh_file)
+      call set_ctl_params_4_comm_test(comm_test_plt, mesh_file)
 !
       end subroutine s_input_control_comm_test
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_ctl_params_4_comm_test(mesh_file)
+      subroutine set_ctl_params_4_comm_test(plt, mesh_file)
 !
       use calypso_mpi
       use set_control_platform_data
-      use m_ctl_data_4_platforms
+      use t_ctl_data_4_platforms
 !
+      type(platform_data_control), intent(in) :: plt
       type(field_IO_params), intent(inout) ::  mesh_file
 !
-      call turn_off_debug_flag_by_ctl(my_rank, plt1)
-      call set_control_smp_def(my_rank, plt1)
-      call set_control_mesh_def(plt1, mesh_file)
+      call turn_off_debug_flag_by_ctl(my_rank, plt)
+      call set_control_smp_def(my_rank, plt)
+      call set_control_mesh_def(plt, mesh_file)
 !
       end subroutine set_ctl_params_4_comm_test
 !
