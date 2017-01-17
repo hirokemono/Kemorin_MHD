@@ -38,6 +38,8 @@
 !
       character(len=kchara), parameter                                  &
      &                    :: hd_org_data = 'org_data_files_def'
+      character(len=kchara), parameter                                  &
+     &                    :: hd_new_data = 'new_data_files_def'
       character(len=kchara), parameter :: hd_model =   'model'
       character(len=kchara), parameter :: hd_control = 'control'
       character(len=kchara), parameter                                  &
@@ -46,6 +48,7 @@
      &      :: hd_monitor_data = 'monitor_data_ctl'
 !
       integer (kind=kint) :: i_org_data =     0
+      integer (kind=kint) :: i_new_data =     0
       integer (kind=kint) :: i_model =        0
       integer (kind=kint) :: i_control =      0
       integer (kind=kint) :: i_pick_sph =     0
@@ -54,6 +57,7 @@
       private :: MHD_ctl_name
       private :: hd_mhd_ctl, i_mhd_ctl
       private :: hd_org_data, i_org_data
+      private :: hd_new_data, i_new_data
       private :: hd_model, hd_control, i_model, i_control
       private :: hd_pick_sph, i_pick_sph
       private :: hd_monitor_data, i_monitor_data
@@ -118,7 +122,6 @@
       subroutine read_sph_mhd_control_data
 !
       use m_ctl_data_4_platforms
-      use m_ctl_data_4_2nd_data
       use m_read_ctl_gen_sph_shell
       use m_control_data_pvrs
       use read_ctl_data_sph_MHD
@@ -135,7 +138,7 @@
 !
         call read_ctl_data_4_platform
         call read_control_platforms(hd_org_data, i_org_data, org_plt1)
-        call read_ctl_data_4_new_data
+        call read_control_platforms(hd_new_data, i_new_data, new_plt1)
 !
         call read_ctl_data_4_shell_in_MHD
 !
@@ -157,7 +160,6 @@
       subroutine bcast_sph_mhd_control_data
 !
       use m_ctl_data_4_platforms
-      use m_ctl_data_4_2nd_data
       use m_read_ctl_gen_sph_shell
       use m_control_data_pvrs
       use read_ctl_data_sph_MHD
@@ -169,7 +171,7 @@
 !
       call bcast_ctl_data_4_platform(plt1)
       call bcast_ctl_data_4_platform(org_plt1)
-      call bcast_ctl_data_4_platform(new_plt)
+      call bcast_ctl_data_4_platform(new_plt1)
 !
       call bcast_sph_mhd_model(model_ctl1)
       call bcast_sph_mhd_control(ctl_ctl1)

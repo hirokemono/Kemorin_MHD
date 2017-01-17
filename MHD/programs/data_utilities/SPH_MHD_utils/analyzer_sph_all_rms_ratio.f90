@@ -35,6 +35,8 @@
       character(len=kchara), parameter, private                         &
      &                      :: ratio_ctl_name = 'control_sph_rms_ratio'
 !
+       private :: set_ctl_4_second_spectr_data
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -43,6 +45,7 @@
 !
       subroutine initialize_sph_all_rms_ratio
 !
+      use read_ctl_data_sph_MHD
       use m_ctl_data_sph_MHD
       use m_spheric_parameter
       use m_sph_spectr_data
@@ -69,7 +72,7 @@
       call input_control_SPH_mesh                                       &
      &   (sph1, comms_sph1, sph_grps1, rj_fld1, nod_fld1, pwr1,         &
      &    trns_WK1%dynamic_SPH, mesh1, group1, ele_mesh1)
-      call set_ctl_4_second_spectr_data(sph_file_param2)
+      call set_ctl_4_second_spectr_data(new_plt1, sph_file_param2)
       call end_eleps_time(4)
 !
 !     --------------------- 
@@ -184,12 +187,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_ctl_4_second_spectr_data(sph_file_param2)
+      subroutine set_ctl_4_second_spectr_data(new_plt, sph_file_param2)
 !
       use t_file_IO_parameter
-      use m_ctl_data_4_2nd_data
+      use t_ctl_data_4_platforms
       use m_file_format_switch
 !
+      type(platform_data_control), intent(in) :: new_plt
       type(field_IO_params), intent(inout) :: sph_file_param2
 !
 !

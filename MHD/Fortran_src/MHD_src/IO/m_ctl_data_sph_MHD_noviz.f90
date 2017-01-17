@@ -152,7 +152,6 @@
       subroutine bcast_sph_mhd_ctl_noviz
 !
       use m_ctl_data_4_platforms
-      use m_ctl_data_4_2nd_data
       use m_read_ctl_gen_sph_shell
       use read_ctl_data_sph_MHD
       use bcast_4_platform_ctl

@@ -37,6 +37,8 @@
 !
 !>      Control structure for orginal file informations
       type(platform_data_control), save :: org_plt1
+!>      Control structure for new file informations
+      type(platform_data_control), save :: new_plt1
 !
 !>      Control structure for MHD/model
       type(mhd_model_control), save :: model_ctl1
