@@ -78,9 +78,7 @@
       use set_fixed_time_step_params
       use set_control_4_pickup_sph
 !
-      use m_ctl_data_4_platforms
       use m_ctl_data_4_sph_utils
-      use m_ctl_data_4_org_data
       use m_default_file_prefix
 !
       type(phys_data), intent(inout) :: rj_fld
@@ -93,14 +91,14 @@
       integer(kind = kint) :: ierr
 !
 !
-      call turn_off_debug_flag_by_ctl(my_rank, plt1)
-      call set_control_smp_def(my_rank, plt1)
-      call set_control_mesh_def(plt1, mesh_file)
-      call set_control_sph_mesh(plt1, mesh_file, sph_file_spec_p)
+      call turn_off_debug_flag_by_ctl(my_rank, su_plt)
+      call set_control_smp_def(my_rank, su_plt)
+      call set_control_mesh_def(su_plt, mesh_file)
+      call set_control_sph_mesh(su_plt, mesh_file, sph_file_spec_p)
       call set_control_mesh_file_def                                    &
-     &   (def_org_sph_rj_head, org_plt, rj_org_param)
+     &   (def_org_sph_rj_head, org_su_plt, rj_org_param)
       call set_control_mesh_file_def                                    &
-     &   (def_org_rst_header, org_plt, rst_org_param)
+     &   (def_org_rst_header, org_su_plt, rst_org_param)
 !
 !      stepping parameter
 !
@@ -108,10 +106,10 @@
 !
 !    file header for field data
 !
-      if(plt1%spectr_field_file_prefix%iflag .gt. 0) then
-        org_sph_file_head =  plt1%spectr_field_file_prefix%charavalue
+      if(su_plt%spectr_field_file_prefix%iflag .gt. 0) then
+        org_sph_file_head =  su_plt%spectr_field_file_prefix%charavalue
         call choose_para_file_format                                    &
-     &     (plt1%restart_file_fmt_ctl, iflag_org_sph_file_fmt)
+     &     (su_plt%restart_file_fmt_ctl, iflag_org_sph_file_fmt)
       end if
 !
       if(i_zm_sph_spec_file .gt. 0) then
@@ -120,10 +118,10 @@
 !
 !   using restart data for spherical dynamo
 !
-      if(plt1%restart_file_prefix%iflag .gt. 0) then
-        org_sph_file_head =  plt1%restart_file_prefix%charavalue
+      if(su_plt%restart_file_prefix%iflag .gt. 0) then
+        org_sph_file_head =  su_plt%restart_file_prefix%charavalue
         call choose_para_file_format                                    &
-     &     (plt1%restart_file_fmt_ctl, iflag_org_sph_file_fmt)
+     &     (su_plt%restart_file_fmt_ctl, iflag_org_sph_file_fmt)
         i_step_output_ucd =   i_step_output_rst
       end if
 !
@@ -131,7 +129,7 @@
         org_sph_file_head =  rst_org_param%file_prefix
         i_step_output_ucd =  i_step_output_rst
         call choose_file_format                                         &
-     &     (org_plt%sph_file_fmt_ctl, iflag_org_sph_file_fmt)
+     &     (org_su_plt%sph_file_fmt_ctl, iflag_org_sph_file_fmt)
       end if
 !
       write(tave_sph_file_head,'(a,a5)')                                &

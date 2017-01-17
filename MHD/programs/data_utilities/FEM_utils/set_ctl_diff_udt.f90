@@ -71,8 +71,6 @@
 !
       use t_ucd_data
       use t_field_data_IO
-      use m_ctl_data_4_platforms
-      use m_ctl_data_4_org_data
       use m_ctl_data_diff_udt
       use m_geometry_constants
       use m_file_format_switch
@@ -86,15 +84,15 @@
       type(ucd_data), intent(inout) :: ucd
 !
 !
-      call turn_off_debug_flag_by_ctl(my_rank, plt1)
-      call check_control_num_domains(plt1)
-      call set_control_smp_def(my_rank, plt1)
-      call set_control_mesh_def(plt1, mesh_file)
+      call turn_off_debug_flag_by_ctl(my_rank, d_plt)
+      call check_control_num_domains(d_plt)
+      call set_control_smp_def(my_rank, d_plt)
+      call set_control_mesh_def(d_plt, mesh_file)
       call set_control_mesh_file_def                                    &
-     &   (def_org_ucd_header, org_plt, udt_org_param)
+     &   (def_org_ucd_header, org_d_plt, udt_org_param)
 !
 !
-      call set_ucd_file_define(plt1, ucd)
+      call set_ucd_file_define(d_plt, ucd)
 !
 !   set field data name
 !
@@ -118,18 +116,18 @@
 !
 !   field setting
 !
-      if (plt1%field_file_prefix%iflag .ne. 0) then
-        diff_udt_file_head = plt1%field_file_prefix%charavalue
-        ave_udt_file_head =  plt1%field_file_prefix%charavalue
-        prod_udt_file_head = plt1%field_file_prefix%charavalue
+      if (d_plt%field_file_prefix%iflag .ne. 0) then
+        diff_udt_file_head = d_plt%field_file_prefix%charavalue
+        ave_udt_file_head =  d_plt%field_file_prefix%charavalue
+        prod_udt_file_head = d_plt%field_file_prefix%charavalue
       else
         diff_udt_file_head = "field_diff/out"
         ave_udt_file_head =  "out_average"
         prod_udt_file_head = "field_new/out"
       end if
 !
-      call choose_ucd_file_format(plt1%field_file_fmt_ctl%charavalue,   &
-     &    plt1%field_file_fmt_ctl%iflag, ifmt_diff_udt_file)
+      call choose_ucd_file_format(d_plt%field_file_fmt_ctl%charavalue,  &
+     &    d_plt%field_file_fmt_ctl%iflag, ifmt_diff_udt_file)
 !
       if (i_prod_name .ne. 0) then
         product_field_name = product_field_ctl

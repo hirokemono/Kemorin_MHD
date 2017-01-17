@@ -9,6 +9,7 @@
 !
       use m_precision
       use m_read_control_elements
+      use t_ctl_data_4_platforms
       use t_ctl_data_4_fields
       use t_ctl_data_4_time_steps
       use t_ctl_data_4_sph_monitor
@@ -19,6 +20,10 @@
       integer (kind = kint) :: control_file_code = 13
       character (len = kchara) :: control_file_name='ctl_sph_transform'
 !
+!>      Structure for file names
+      type(platform_data_control), save :: su_plt
+!>      Structure for original file names
+      type(platform_data_control), save :: org_su_plt
 !>      Structure for field information control
       type(field_control), save :: fld_su_ctl
 !>      Structure for time stepping control
@@ -45,7 +50,14 @@
      &                    :: hd_sph_trans_model =  'model'
       character(len=kchara), parameter                                  &
      &                    :: hd_sph_trans_params = 'sph_transform_ctl'
-!>      label for block
+!
+      integer(kind=kint) :: i_sph_trans_model =  0
+      integer(kind=kint) :: i_sph_trans_params = 0
+!
+      character(len=kchara), parameter                                  &
+     &                    :: hd_platform = 'data_files_def'
+      character(len=kchara), parameter                                  &
+     &                    :: hd_org_data = 'org_data_files_def'
       character(len=kchara), parameter                                  &
      &      :: hd_phys_values =  'phys_values_ctl'
       character(len=kchara), parameter                                  &
@@ -53,8 +65,8 @@
       character(len=kchara), parameter                                  &
      &                     :: hd_pick_sph = 'sph_monitor_ctl'
 !
-      integer(kind=kint) :: i_sph_trans_model =  0
-      integer(kind=kint) :: i_sph_trans_params = 0
+      integer(kind=kint) :: i_platform =   0
+      integer(kind=kint) :: i_org_data =      0
       integer(kind=kint) :: i_phys_values =   0
       integer(kind=kint) :: i_tstep =      0
       integer(kind=kint) :: i_pick_sph = 0
@@ -88,6 +100,8 @@
       private :: hd_sph_trans_ctl, i_sph_trans_ctl
       private :: hd_sph_trans_model, i_sph_trans_model
       private :: hd_sph_trans_params, i_sph_trans_params
+      private :: hd_platform, i_platform
+      private :: hd_org_data, i_org_data
       private :: hd_phys_values, i_phys_values
       private :: hd_time_step, i_tstep
       private :: hd_pick_sph, i_pick_sph
@@ -126,8 +140,6 @@
       subroutine read_sph_trans_control_data
 !
       use m_machine_parameter
-      use m_ctl_data_4_platforms
-      use m_ctl_data_4_org_data
       use calypso_mpi
 !
 !   2 begin phys_values_ctl
@@ -141,8 +153,9 @@
         if(i_sph_trans_ctl .gt. 0) exit
 !
 !
-        call read_ctl_data_4_platform
-        call read_ctl_data_4_org_data
+        call read_control_platforms(hd_platform, i_platform, su_plt)
+        call read_control_platforms                                     &
+     &     (hd_org_data, i_org_data, org_su_plt)
 !
         call read_sph_trans_model_ctl
         call read_sph_trans_params_ctl

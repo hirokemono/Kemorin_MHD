@@ -1,16 +1,19 @@
 !
 !      module m_ctl_data_product_udt
 !
-      module m_ctl_data_product_udt
-!
 !      Written by H. Matsui on Nov., 2006
 !
-!     required module for 3rd level
+!      subroutine read_control_4_diff_udt
+!      subroutine read_control_4_prod_udt
+!
+!
+      module m_ctl_data_product_udt
 !
       use m_precision
       use calypso_mpi
       use m_machine_parameter
       use m_read_control_elements
+      use t_ctl_data_4_platforms
       use t_ctl_data_4_time_steps
       use skip_comment_f
 !
@@ -24,6 +27,10 @@
       character(len = kchara), parameter                                &
      &                 :: fname_prod_ctl = "ctl_prod_udt"
 !
+!>      Structure for file names
+      type(platform_data_control), save :: pu_plt
+!>      Structure for original file names
+      type(platform_data_control), save :: org_pu_plt
 !>      Structure for time stepping control
       type(time_data_control), save :: t_pu_ctl
 !
@@ -64,8 +71,14 @@
 !     3rd level for fields
 !
       character(len=kchara), parameter                                  &
+     &                    :: hd_platform = 'data_files_def'
+      character(len=kchara), parameter                                  &
+     &                    :: hd_org_data = 'org_data_files_def'
+      character(len=kchara), parameter                                  &
      &      :: hd_time_step = 'time_step_ctl'
-      integer (kind=kint) :: i_tstep =      0
+      integer(kind=kint) :: i_platform =   0
+      integer(kind=kint) :: i_org_data =      0
+      integer(kind=kint) :: i_tstep =      0
 !
       character(len=kchara), parameter                                  &
      &      :: hd_product_field_1 = 'product_field_1_ctl'
@@ -84,7 +97,9 @@
       private :: prod_ctl_file_code
       private :: fname_prod_ctl
 !
-      private :: i_prod_control, hd_prod_control
+      private :: hd_prod_control, i_prod_control
+      private :: hd_platform, i_platform
+      private :: hd_org_data, i_org_data
       private :: hd_time_step, i_tstep
       private :: hd_prod_files, hd_prod_model
       private :: hd_product_udt_1, hd_product_udt_2
@@ -95,9 +110,6 @@
 !
       private :: read_prod_control_data
       private :: read_prod_files_ctl, read_product_model_ctl
-!
-!      subroutine read_control_4_diff_udt
-!      subroutine read_control_4_prod_udt
 !
 !   --------------------------------------------------------------------
 !
@@ -123,9 +135,6 @@
 !
       subroutine read_prod_control_data
 !
-      use m_ctl_data_4_platforms
-      use m_ctl_data_4_org_data
-!
 !
       if(right_begin_flag(hd_prod_control) .eq. 0) return
       if (i_prod_control.gt.0) return
@@ -135,8 +144,9 @@
         call find_control_end_flag(hd_prod_control, i_prod_control)
         if(i_prod_control .gt. 0) exit
 !
-        call read_ctl_data_4_platform
-        call read_ctl_data_4_org_data
+        call read_control_platforms(hd_platform, i_platform, pu_plt)
+        call read_control_platforms                                     &
+     &     (hd_org_data, i_org_data, org_pu_plt)
 !
         call read_prod_files_ctl
         call read_product_model_ctl

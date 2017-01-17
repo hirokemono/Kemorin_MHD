@@ -44,6 +44,7 @@
       character(len=kchara), parameter                                  &
      &                    :: hd_org_data = 'org_data_files_def'
       integer (kind=kint) :: i_org_data =      0
+      private :: hd_org_data, i_org_data
 !
 !  ---------------------------------------------------------------------
 !
@@ -54,7 +55,7 @@
       subroutine read_ctl_data_4_org_data
 !
 !
-      call read_control_platforms(hd_org_data, i_org_data, org_plt)
+        call read_control_platforms(hd_org_data, i_org_data, org_plt)
 !
       end subroutine read_ctl_data_4_org_data
 !

@@ -15,6 +15,7 @@
       use m_precision
       use m_machine_parameter
       use m_read_control_elements
+      use t_ctl_data_4_platforms
       use t_ctl_data_4_fields
       use t_ctl_data_4_time_steps
       use t_ctl_data_ele_layering
@@ -28,6 +29,10 @@
 !
       integer(kind = kint), parameter :: diff_ctl_file_code = 11
 !
+!>      Structure for file names
+      type(platform_data_control), save :: d_plt
+!>      Structure for original file names
+      type(platform_data_control), save :: org_d_plt
 !>      Structure for field information control
       type(field_control), save :: fld_d_ctl
 !>      Structure for time stepping control
@@ -136,7 +141,10 @@
 !
 !   labels for entry
 !
-!>      label for block
+      character(len=kchara), parameter                                  &
+     &                    :: hd_platform = 'data_files_def'
+      character(len=kchara), parameter                                  &
+     &                    :: hd_org_data = 'org_data_files_def'
       character(len=kchara), parameter                                  &
      &      :: hd_phys_values =  'phys_values_ctl'
       character(len=kchara), parameter                                  &
@@ -145,15 +153,19 @@
      &                        = 'dynamic_model_layer_ctl'
       character(len=kchara), parameter                                  &
      &      :: hd_int_points = 'intg_point_num_ctl'
-!>      Number of field
+!
+      integer(kind=kint) :: i_platform =   0
+      integer(kind=kint) :: i_org_data =      0
       integer (kind=kint) :: i_phys_values =   0
       integer (kind=kint) :: i_tstep =      0
       integer (kind=kint) :: i_dynamic_layers = 0
       integer (kind=kint) :: i_int_points = 0
 !
+      private :: hd_platform, i_platform
+      private :: hd_org_data, i_org_data
+      private :: hd_phys_values, i_phys_values
       private :: hd_dynamic_layers, i_dynamic_layers
       private :: hd_int_points, i_int_points
-      private :: hd_phys_values, i_phys_values
 !
 !   --------------------------------------------------------------------
 !
@@ -224,9 +236,6 @@
 !
       subroutine read_diff_control_data(hd_entry)
 !
-      use m_ctl_data_4_platforms
-      use m_ctl_data_4_org_data
-!
       character(len=kchara), intent(in) :: hd_entry
 !
 !
@@ -238,8 +247,9 @@
         call find_control_end_flag(hd_entry, i_diff_control)
         if(i_diff_control .gt. 0) exit
 !
-        call read_ctl_data_4_platform
-        call read_ctl_data_4_org_data
+        call read_control_platforms(hd_platform, i_platform, d_plt)
+        call read_control_platforms                                     &
+     &     (hd_org_data, i_org_data, org_d_plt)
 !
         call read_diff_files_ctl
         call read_diff_model_ctl

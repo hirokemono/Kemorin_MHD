@@ -20,8 +20,6 @@
       subroutine s_set_control_data_4_part
 !
       use m_control_data_4_part
-      use m_ctl_data_4_platforms
-      use m_ctl_data_4_org_data
       use m_default_file_prefix
 !
       use m_ctl_param_partitioner
@@ -37,29 +35,30 @@
       integer(kind = kint) :: i
 !
 !
-      call set_control_mesh_def(plt1, distribute_mesh_file)
+      call set_control_mesh_def(part_plt, distribute_mesh_file)
 !
 !   set local data format
 !
 !
       iflag_memory_conserve = 1
-      if(plt1%memory_conservation_ctl%iflag .gt. 0                      &
-     &  .and. no_flag(plt1%memory_conservation_ctl%charavalue)) then
+      if(part_plt%memory_conservation_ctl%iflag .gt. 0                  &
+     &  .and. no_flag(part_plt%memory_conservation_ctl%charavalue)      &
+     &   ) then
         iflag_memory_conserve = 0
       end if
 !
       write(*,*) 'iflag_memory_conserve', iflag_memory_conserve
 !
 !
-      if (org_plt%mesh_file_prefix%iflag .gt. 0) then
+      if (single_plt%mesh_file_prefix%iflag .gt. 0) then
         global_mesh_file%file_prefix                                    &
-     &      = org_plt%mesh_file_prefix%charavalue
+     &      = single_plt%mesh_file_prefix%charavalue
       else
         write(*,*) 'Set original mesh data'
         stop
       end if
       call choose_file_format                                           &
-     &   (org_plt%sph_file_fmt_ctl, global_mesh_file%iflag_format)
+     &   (single_plt%sph_file_fmt_ctl, global_mesh_file%iflag_format)
 !
       write(*,*) 'i_part_method', part_method_ctl%iflag
 !

@@ -67,7 +67,6 @@
       use ucd_IO_select
 !
       use m_sel_spherical_SRs
-      use m_ctl_data_4_platforms
       use m_ctl_data_4_sph_trans
 !
       type(field_IO_params), intent(inout) :: mesh_file
@@ -78,10 +77,10 @@
       integer(kind = kint) :: ierr
 !
 !
-      call turn_off_debug_flag_by_ctl(my_rank, plt1)
-      call set_control_smp_def(my_rank, plt1)
-      call set_control_sph_mesh(plt1, mesh_file, sph_file_trns_p)
-      call set_ucd_file_define(plt1, ucd)
+      call turn_off_debug_flag_by_ctl(my_rank, st_plt)
+      call set_control_smp_def(my_rank, st_plt)
+      call set_control_sph_mesh(st_plt, mesh_file, sph_file_trns_p)
+      call set_ucd_file_define(st_plt, ucd)
       field_file_param%file_prefix =  ucd%file_prefix
       field_file_param%iflag_format = ucd%ifmt_file
 !
@@ -105,11 +104,11 @@
         call set_import_table_ctl(import_mode_ctl%charavalue)
       end if
 !
-      if (plt1%restart_file_prefix%iflag .gt. 0) then
-        sph_rst_file_head = plt1%restart_file_prefix%charavalue
+      if (st_plt%restart_file_prefix%iflag .gt. 0) then
+        sph_rst_file_head = st_plt%restart_file_prefix%charavalue
       end if
       call choose_para_file_format                                      &
-     &   (plt1%restart_file_fmt_ctl, ifmt_sph_data)
+     &   (st_plt%restart_file_fmt_ctl, ifmt_sph_data)
 !
 !      stepping parameter
 !
@@ -151,9 +150,7 @@
       use set_fixed_time_step_params
       use legendre_transform_select
 !
-      use m_ctl_data_4_platforms
       use m_ctl_data_4_sph_trans
-      use m_ctl_data_4_org_data
       use m_default_file_prefix
       use skip_comment_f
       use parallel_ucd_IO_select
@@ -166,17 +163,17 @@
       integer(kind = kint) :: ierr
 !
 !
-      call turn_off_debug_flag_by_ctl(my_rank, plt1)
-      call set_control_smp_def(my_rank, plt1)
-      call set_control_mesh_def(plt1, mesh_file)
-      call set_control_sph_mesh(plt1, mesh_file, sph_file_trns_p)
-      call set_merged_ucd_file_define(plt1, ucd)
+      call turn_off_debug_flag_by_ctl(my_rank, st_plt)
+      call set_control_smp_def(my_rank, st_plt)
+      call set_control_mesh_def(st_plt, mesh_file)
+      call set_control_sph_mesh(st_plt, mesh_file, sph_file_trns_p)
+      call set_merged_ucd_file_define(st_plt, ucd)
       call set_control_mesh_file_def                                    &
-     &   (def_org_sph_rj_head, org_plt, rj_org_param)
+     &   (def_org_sph_rj_head, org_st_plt, rj_org_param)
       call set_control_mesh_file_def                                    &
-     &   (def_org_rst_header, org_plt, rst_org_param)
+     &   (def_org_rst_header, org_st_plt, rst_org_param)
       call set_control_mesh_file_def                                    &
-     &   (def_org_ucd_header, org_plt, udt_org_param)
+     &   (def_org_ucd_header, org_st_plt, udt_org_param)
 !
 !    file header for field data
 !
@@ -190,11 +187,11 @@
         sph_rst_file_head = rst_org_param%file_prefix
       end if
 !
-      if (plt1%restart_file_prefix%iflag .gt. 0) then
-        sph_rst_file_head = plt1%restart_file_prefix%charavalue
+      if (st_plt%restart_file_prefix%iflag .gt. 0) then
+        sph_rst_file_head = st_plt%restart_file_prefix%charavalue
       end if
       call choose_para_file_format                                      &
-     &   (plt1%restart_file_fmt_ctl, ifmt_sph_data)
+     &   (st_plt%restart_file_fmt_ctl, ifmt_sph_data)
 !
 !   setting for spherical transform
 !
@@ -259,12 +256,12 @@
 !
       subroutine set_ctl_data_4_pick_zm
 !
-      use m_ctl_data_4_platforms
+      use m_ctl_data_4_sph_trans
 !
 !
-      if(plt1%field_file_prefix%iflag .eq. 0) return
+      if(st_plt%field_file_prefix%iflag .eq. 0) return
       zm_source_file_param%file_prefix                                  &
-     &              = plt1%field_file_prefix%charavalue
+     &              = st_plt%field_file_prefix%charavalue
 !
       end subroutine set_ctl_data_4_pick_zm
 !

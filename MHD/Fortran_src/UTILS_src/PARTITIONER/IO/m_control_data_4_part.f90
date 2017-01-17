@@ -20,6 +20,7 @@
 !
       use m_read_control_elements
       use skip_comment_f
+      use t_ctl_data_4_platforms
       use t_read_control_arrays
       use t_control_elements
 !
@@ -31,6 +32,11 @@
 !
       integer (kind=kint), parameter :: my_rank = 0
 !
+!
+!>      Structure for file names
+      type(platform_data_control), save :: part_plt
+!>      Structure for original file names
+      type(platform_data_control), save :: single_plt
 !
 !>      Patitioning method
       type(read_character_item), save :: part_method_ctl
@@ -84,12 +90,20 @@
 !
 !   2nd level for partitioner_control
 !
+      character(len=kchara), parameter                                  &
+     &                    :: hd_platform = 'data_files_def'
+      character(len=kchara), parameter                                  &
+     &                    :: hd_org_data = 'org_data_files_def'
+!
       character(len=kchara), parameter :: hd_org_f_ctl                  &
      &                      = 'original_file_ctl'
       character(len=kchara), parameter :: hd_ele_ordering_ctl           &
      &                      = 'ordering_by_ele_grp'
       character(len=kchara), parameter :: hd_decomp_ctl                 &
      &                      = 'decompose_ctl'
+!
+      integer(kind=kint) :: i_platform =   0
+      integer(kind=kint) :: i_org_data =      0
 !
       integer (kind=kint) :: i_org_f_ctl =        0
       integer (kind=kint) :: i_ele_ordering_ctl = 0
@@ -150,6 +164,8 @@
       private :: my_rank
       private :: hd_part_ctl, i_part_ctl
       private :: hd_org_f_ctl
+      private :: hd_platform, i_platform
+      private :: hd_org_data, i_org_data
       private :: hd_ele_ordering_ctl, hd_decomp_ctl
       private :: i_ele_ordering_ctl, i_decomp_ctl
       private :: hd_nele_grp_ordering
@@ -219,9 +235,6 @@
 !
        subroutine read_part_control_data
 !
-      use m_ctl_data_4_platforms
-      use m_ctl_data_4_org_data
-!
 !
       if(right_begin_flag(hd_part_ctl) .eq. 0) return
       if (i_part_ctl .gt. 0) return
@@ -232,8 +245,9 @@
         if(i_part_ctl .gt. 0) exit
 !
 !
-        call read_ctl_data_4_platform
-        call read_ctl_data_4_org_data
+        call read_control_platforms(hd_platform, i_platform, part_plt)
+        call read_control_platforms                                     &
+     &     (hd_org_data, i_org_data, single_plt)
 !
         call read_ctl_data_4_decomp
         call read_ctl_data_4_ele_ordeirng

@@ -51,7 +51,6 @@
       use t_file_IO_parameter
       use t_ucd_data
       use m_error_IDs
-      use m_ctl_data_4_platforms
       use m_ctl_data_4_org_data
       use m_ctl_data_product_udt
       use m_file_format_switch
@@ -64,16 +63,16 @@
       type(ucd_data), intent(inout) :: ucd
 !
 !
-      if (nprocs .ne. plt1%ndomain_ctl%intvalue) then
+      if (nprocs .ne. pu_plt%ndomain_ctl%intvalue) then
         write(e_message,*) 'Number of processes should be num. of mesh'
         call  calypso_MPI_abort(ierr_P_MPI, e_message)
       end if
 !
-      call set_control_smp_def(my_rank, plt1)
-      call set_control_mesh_def(plt1, mesh_file)
-      call set_ucd_file_define(plt1, ucd)
+      call set_control_smp_def(my_rank, pu_plt)
+      call set_control_mesh_def(pu_plt, mesh_file)
+      call set_ucd_file_define(pu_plt, ucd)
       call set_control_mesh_file_def                                    &
-     &   (def_org_ucd_header, org_plt, udt_org_param)
+     &   (def_org_ucd_header, org_pu_plt, udt_org_param)
 !
 !   set fiale name
 !
@@ -89,14 +88,14 @@
      &   write(*,*) 'prod_udt_file2_head: ', trim(prod_udt_file2_head)
       end if
 !
-      if (plt1%field_file_prefix%iflag .ne. 0) then
-        result_udt_file_head = plt1%field_file_prefix%charavalue
+      if (pu_plt%field_file_prefix%iflag .ne. 0) then
+        result_udt_file_head = pu_plt%field_file_prefix%charavalue
       else
         result_udt_file_head = "field_new/out"
       end if
 !
-      call choose_ucd_file_format(plt1%field_file_fmt_ctl%charavalue,   &
-     &    plt1%field_file_fmt_ctl%iflag, ifmt_result_udt_file)
+      call choose_ucd_file_format(pu_plt%field_file_fmt_ctl%charavalue, &
+     &    pu_plt%field_file_fmt_ctl%iflag, ifmt_result_udt_file)
 !
 !
       if (i_product_udt_1 .ne. 0) then
