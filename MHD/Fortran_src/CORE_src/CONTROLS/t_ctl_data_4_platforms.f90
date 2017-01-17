@@ -7,8 +7,6 @@
 !> @brief Control input routine for data file headers
 !!
 !!@verbatim
-!!      subroutine read_ctl_data_4_platform(plt)
-!!        type(platform_data_control), intent(inout) :: plt
 !!      subroutine read_control_platforms(hd_block, iflag, plt)
 !!        type(platform_data_control), intent(inout) :: plt
 !!
