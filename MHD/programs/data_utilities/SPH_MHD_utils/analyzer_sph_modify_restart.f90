@@ -93,9 +93,6 @@
       use m_sph_spectr_data
       use m_rms_4_sph_spectr
 !
-      use m_ctl_data_4_platforms
-      use m_ctl_data_4_org_data
-!
       use cal_nonlinear
       use cal_sol_sph_MHD_crank
       use set_sph_restart_IO

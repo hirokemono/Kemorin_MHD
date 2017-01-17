@@ -7,13 +7,15 @@
 !>@brief Array for file parameters for spherical shell dynamo
 !!
 !!@verbatim
-!!      subroutine set_control_org_sph_files(MHD_files)
+!!      subroutine set_control_org_sph_files(org_plt, MHD_files)
+!!        type(platform_data_control), intent(in) :: org_plt
 !!@endverbatim
 !!
       module t_SPH_MHD_file_parameters
 !
       use m_precision
       use m_constants
+      use t_ctl_data_4_platforms
       use t_file_IO_parameter
 !
       implicit  none
@@ -33,12 +35,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_control_org_sph_files(MHD_files)
+      subroutine set_control_org_sph_files(org_plt, MHD_files)
 !
       use m_default_file_prefix
-      use m_ctl_data_4_org_data
       use set_control_platform_data
 !
+      type(platform_data_control), intent(in) :: org_plt
       type(file_params_4_sph_mhd), intent(inout) :: MHD_files
 !
 !

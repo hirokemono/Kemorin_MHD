@@ -7,14 +7,15 @@
 !>@brief Set control data for spherical transform MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine set_control_SGS_SPH_MHD                              &
-!!     &         (model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl,           &
+!!      subroutine set_control_SGS_SPH_MHD(org_plt,                     &
+!!     &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl,           &
 !!     &          sph_gen, rj_fld, mesh_file, sph_file_param,           &
 !!     &          MHD_org_files, sph_fst_IO, pwr, sph_filters)
-!!      subroutine set_control_4_SPH_MHD                                &
-!!     &         (model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl,           &
+!!      subroutine set_control_4_SPH_MHD(org_plt,                       &
+!!     &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl,           &
 !!     &          sph_gen, rj_fld, mesh_file, sph_file_param,           &
 !!     &          sph_fst_IO, pwr)
+!!        type(platform_data_control), intent(in) :: org_plt
 !!        type(mhd_model_control), intent(inout) :: model_ctl
 !!        type(mhd_control_control), intent(inout) :: ctl_ctl
 !!        type(sph_monitor_control), intent(inout) :: smonitor_ctl
@@ -39,6 +40,7 @@
       use t_file_IO_parameter
       use t_field_data_IO
       use t_SPH_MHD_file_parameters
+      use t_ctl_data_4_platforms
       use t_ctl_data_MHD_model
       use t_ctl_data_MHD_control
       use t_ctl_data_4_sph_monitor
@@ -54,8 +56,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_control_SGS_SPH_MHD                                &
-     &         (model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl,             &
+      subroutine set_control_SGS_SPH_MHD(org_plt,                       &
+     &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl,             &
      &          sph_gen, rj_fld, mesh_file, sph_file_param,             &
      &          MHD_org_files, sph_fst_IO, pwr, sph_filters)
 !
@@ -71,6 +73,7 @@
 !
       use set_control_4_SGS
 !
+      type(platform_data_control), intent(in) :: org_plt
       type(mhd_model_control), intent(inout) :: model_ctl
       type(mhd_control_control), intent(inout) :: ctl_ctl
       type(sph_monitor_control), intent(inout) :: smonitor_ctl
@@ -97,16 +100,16 @@
         call dealloc_sph_filter_ctl(model_ctl%sgs_ctl)
       end if
 !
-      call set_control_4_SPH_MHD                                        &
-     &   (model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, sph_gen, rj_fld,  &
+      call set_control_4_SPH_MHD(org_plt,                               &
+     &    model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, sph_gen, rj_fld,  &
      &    mesh_file, sph_file_param, MHD_org_files, sph_fst_IO, pwr)
 !
       end subroutine set_control_SGS_SPH_MHD
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_control_4_SPH_MHD                                  &
-     &         (model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl,             &
+      subroutine set_control_4_SPH_MHD(org_plt,                         &
+     &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl,             &
      &          sph_gen, rj_fld, mesh_file, sph_file_param,             &
      &          MHD_org_files, sph_fst_IO, pwr)
 !
@@ -132,6 +135,7 @@
       use set_control_4_pickup_sph
       use set_ctl_gen_shell_grids
 !
+      type(platform_data_control), intent(in) :: org_plt
       type(mhd_model_control), intent(inout) :: model_ctl
       type(mhd_control_control), intent(inout) :: ctl_ctl
       type(sph_monitor_control), intent(inout) :: smonitor_ctl
@@ -157,7 +161,7 @@
       call set_control_sph_mesh(plt1, mesh_file, sph_file_param)
       call set_control_restart_file_def(plt1, sph_fst_IO)
       call set_control_MHD_field_file(plt1)
-      call set_control_org_sph_files(MHD_org_files)
+      call set_control_org_sph_files(org_plt, MHD_org_files)
 !
       call s_set_control_4_model                                        &
      &    (model_ctl%reft_ctl, ctl_ctl%mevo_ctl, model_ctl%evo_ctl,     &

@@ -24,6 +24,7 @@
 !
       use m_machine_parameter
       use m_read_control_elements
+      use t_ctl_data_4_platforms
       use t_ctl_data_MHD_model
       use t_ctl_data_MHD_control
       use t_ctl_data_4_sph_monitor
@@ -33,6 +34,9 @@
 !
       implicit none
 !
+!
+!>      Control structure for orginal file informations
+      type(platform_data_control), save :: org_plt1
 !
 !>      Control structure for MHD/model
       type(mhd_model_control), save :: model_ctl1

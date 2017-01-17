@@ -8,8 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine set_control_4_FEM_MHD                                &
-!!     &         (model_ctl, ctl_ctl, nmtr_ctl,                         &
+!!     &         (org_plt, model_ctl, ctl_ctl, nmtr_ctl,                &
 !!     &          mesh_file, udt_org_param, nod_fld)
+!!        type(platform_data_control), intent(in) :: org_plt
 !!        type(mhd_model_control), intent(inout) :: model_ctl
 !!        type(mhd_control_control), intent(inout) :: ctl_ctl
 !!        type(node_monitor_control), intent(inout) :: nmtr_ctl
@@ -38,14 +39,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_control_4_FEM_MHD                                  &
-     &         (model_ctl, ctl_ctl, nmtr_ctl,                           &
+     &         (org_plt, model_ctl, ctl_ctl, nmtr_ctl,                  &
      &          mesh_file, udt_org_param, nod_fld)
 !
       use calypso_mpi
       use m_ucd_data
       use m_ctl_data_4_platforms
       use m_ctl_data_fem_MHD
-      use m_ctl_data_4_org_data
       use m_default_file_prefix
 !
       use set_control_platform_data
@@ -64,6 +64,7 @@
 !
       use fem_mhd_rst_IO_control
 !
+      type(platform_data_control), intent(in) :: org_plt
       type(mhd_model_control), intent(inout) :: model_ctl
       type(mhd_control_control), intent(inout) :: ctl_ctl
       type(node_monitor_control), intent(inout) :: nmtr_ctl

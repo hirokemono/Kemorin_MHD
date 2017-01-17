@@ -102,8 +102,8 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_SGS_SPH_MHD'
-      call set_control_SGS_SPH_MHD                                      &
-     &   (model_ctl1, ctl_ctl1, smonitor_ctl1, nmtr_ctl1,               &
+      call set_control_SGS_SPH_MHD(org_plt1,                            &
+     &    model_ctl1, ctl_ctl1, smonitor_ctl1, nmtr_ctl1,               &
      &    sph_gen, rj_fld, mesh1_file, sph_file_param1, MHD1_org_files, &
      &    sph_fst_IO, pwr, dynamic_SPH%sph_filters)
       call set_control_4_SPH_to_FEM                                     &
@@ -164,8 +164,8 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_SGS_SPH_MHD'
-      call set_control_SGS_SPH_MHD                                      &
-     &   (model_ctl1, ctl_ctl1, smonitor_ctl1, nmtr_ctl1,               &
+      call set_control_SGS_SPH_MHD(org_plt1,                            &
+     &    model_ctl1, ctl_ctl1, smonitor_ctl1, nmtr_ctl1,               &
      &    sph_gen, rj_fld, mesh1_file, sph_file_param1, MHD1_org_files, &
      &    sph_fst_IO, pwr, dynamic_SPH%sph_filters)
 !
@@ -201,8 +201,8 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
-      call set_control_4_SPH_MHD                                        &
-     &   (model_ctl1, ctl_ctl1, smonitor_ctl1, nmtr_ctl1,               &
+      call set_control_4_SPH_MHD(org_plt1,                              &
+     &    model_ctl1, ctl_ctl1, smonitor_ctl1, nmtr_ctl1,               &
      &    sph_gen, rj_fld, mesh1_file, sph_file_param1,                 &
      &    MHD1_org_files, sph_fst_IO, pwr)
 !
@@ -235,8 +235,8 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
-      call set_control_4_SPH_MHD                                        &
-     &   (model_ctl1, ctl_ctl1, smonitor_ctl1, nmtr_ctl1,               &
+      call set_control_4_SPH_MHD(org_plt1,                              &
+     &    model_ctl1, ctl_ctl1, smonitor_ctl1, nmtr_ctl1,               &
      &    sph_gen, rj_fld, mesh1_file, sph_file_param1,                 &
      &    MHD1_org_files, sph_fst_IO, pwr)
       call set_control_4_SPH_to_FEM                                     &
