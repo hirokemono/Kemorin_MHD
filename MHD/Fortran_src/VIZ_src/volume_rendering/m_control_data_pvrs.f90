@@ -94,8 +94,6 @@
 !
       use m_control_data_sections
       use m_control_data_flines
-      use t_control_data_4_psf
-      use m_control_data_4_iso
 !
       use skip_comment_f
 !
