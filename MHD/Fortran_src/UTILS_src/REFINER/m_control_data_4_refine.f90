@@ -3,8 +3,6 @@
 !
 !      Written by Kemorin on Oct., 2007
 !
-!      subroutine dealloc_refined_data_ctl
-!      subroutine dealloc_refined_code_ctl
 !      subroutine read_control_data_4_refiner
 !      subroutine read_ctl_data_4_refine_mesh
 !
@@ -13,6 +11,7 @@
       use m_precision
 !
       use t_ctl_data_4_platforms
+      use t_read_control_arrays
       use m_read_control_elements
       use skip_comment_f
 !
@@ -26,20 +25,15 @@
       type(platform_data_control), save :: source_plt
       type(platform_data_control), save :: refined_plt
 !
-      character (len = kchara) :: coarse_2_fine_head_ctl
-      character (len = kchara) :: fine_2_course_head_ctl
-      character (len = kchara) :: refine_info_head_ctl
-      character (len = kchara) :: old_refine_info_head_ctl
+      type(read_character_item), save :: coarse_2_fine_head_ctl
+      type(read_character_item), save :: fine_2_course_head_ctl
+      type(read_character_item), save :: refine_info_head_ctl
+      type(read_character_item), save :: old_refine_info_head_ctl
 !
-      character (len = kchara) :: interpolate_type_ctl
+      type(read_character_item), save :: interpolate_type_ctl
 !
-      integer(kind = kint) :: num_refine_type_ctl = 0
-      character (len = kchara), allocatable :: refined_ele_grp_ctl(:)
-      character (len = kchara), allocatable :: refined_ele_type_ctl(:)
-!
-      integer(kind = kint) :: num_refine_code_ctl = 0
-      character (len = kchara), allocatable :: refine_i_ele_grp_ctl(:)
-      integer (kind=kint), allocatable :: iflag_refine_type_ctl(:)
+      type(ctl_array_c2), save :: refined_ele_grp_ctl
+      type(ctl_array_ci), save :: refine_i_ele_grp_ctl
 !
 !
 !   Top level
@@ -74,11 +68,6 @@
       character(len=kchara), parameter :: hd_old_refine_info_ctl        &
      &                      = 'old_refine_info_head_ctl'
 !
-      integer (kind=kint) :: i_course_to_fine_ctl =  0
-      integer (kind=kint) :: i_fine_to_course_ctl =  0
-      integer (kind=kint) :: i_refine_info_ctl =     0
-      integer (kind=kint) :: i_old_refine_info_ctl = 0
-!
 !   3rd level for refine_parameter_ctl
 !
       character(len=kchara), parameter :: hd_itp_type                   &
@@ -87,10 +76,6 @@
      &                      = 'refine_data_ctl'
       character(len=kchara), parameter :: hd_num_ref_code               &
      &                      = 'refine_code_ctl'
-!
-      integer (kind=kint) :: i_itp_type = 0
-      integer (kind=kint) :: i_num_ref_type = 0
-      integer (kind=kint) :: i_num_ref_code = 0
 !
 !
       private :: control_file_name
@@ -102,7 +87,6 @@
       private :: hd_course_to_fine_ctl, hd_fine_to_course_ctl
       private :: hd_refine_info_ctl, hd_old_refine_info_ctl
 !
-      private :: alloc_refined_data_ctl, alloc_refined_code_ctl
       private :: read_refine_control_data
       private :: read_ctl_data_4_refine_type
 !
@@ -110,44 +94,6 @@
 !
       contains
 !
-! -----------------------------------------------------------------------
-!
-      subroutine alloc_refined_data_ctl
-!
-!
-      allocate( refined_ele_grp_ctl(num_refine_type_ctl) )
-      allocate( refined_ele_type_ctl(num_refine_type_ctl) )
-!
-      end subroutine alloc_refined_data_ctl
-!
-! -----------------------------------------------------------------------
-!
-      subroutine alloc_refined_code_ctl
-!
-!
-      allocate( refine_i_ele_grp_ctl(num_refine_code_ctl) )
-      allocate( iflag_refine_type_ctl(num_refine_code_ctl) )
-!
-      end subroutine alloc_refined_code_ctl
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine dealloc_refined_data_ctl
-!
-      deallocate(refined_ele_grp_ctl, refined_ele_type_ctl)
-!
-      end subroutine dealloc_refined_data_ctl
-!
-! -----------------------------------------------------------------------
-!
-      subroutine dealloc_refined_code_ctl
-!
-      deallocate(refine_i_ele_grp_ctl, iflag_refine_type_ctl)
-!
-      end subroutine dealloc_refined_code_ctl
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine read_control_data_4_refiner
@@ -204,15 +150,15 @@
         if(i_single_refine_files .gt. 0) exit
 !
 !
-        call read_character_ctl_item(hd_course_to_fine_ctl,             &
-     &           i_course_to_fine_ctl, coarse_2_fine_head_ctl)
-        call read_character_ctl_item(hd_fine_to_course_ctl,             &
-     &           i_fine_to_course_ctl, fine_2_course_head_ctl)
+        call read_chara_ctl_type(hd_course_to_fine_ctl,                 &
+     &      coarse_2_fine_head_ctl)
+        call read_chara_ctl_type(hd_fine_to_course_ctl,                 &
+     &      fine_2_course_head_ctl)
 !
-        call read_character_ctl_item(hd_refine_info_ctl,                &
-     &           i_refine_info_ctl, refine_info_head_ctl)
-        call read_character_ctl_item(hd_old_refine_info_ctl,            &
-     &           i_old_refine_info_ctl, old_refine_info_head_ctl)
+        call read_chara_ctl_type(hd_refine_info_ctl,                    &
+     &      refine_info_head_ctl)
+        call read_chara_ctl_type(hd_old_refine_info_ctl,                &
+     &      old_refine_info_head_ctl)
       end do
 !
       end subroutine read_ctl_data_4_refine_mesh
@@ -231,27 +177,13 @@
         if(i_refine_param .gt. 0) exit
 !
 !
-        call find_control_array_flag(hd_num_ref_type,                   &
-     &      num_refine_type_ctl)
-        if(num_refine_type_ctl.gt.0 .and. i_num_ref_type.eq.0) then
-          call alloc_refined_data_ctl
-          call read_control_array_chara2_list(hd_num_ref_type,          &
-     &        num_refine_type_ctl, i_num_ref_type,                      &
-     &        refined_ele_grp_ctl, refined_ele_type_ctl)
-        end if
+        call read_control_array_c2                                      &
+     &     (hd_num_ref_type, refined_ele_grp_ctl)
 !
-        call find_control_array_flag(hd_num_ref_code,                   &
-     &      num_refine_code_ctl)
-        if(num_refine_code_ctl.gt.0 .and. i_num_ref_code.eq.0) then
-          call alloc_refined_code_ctl
-          call read_control_array_int_v_list(hd_num_ref_code,           &
-     &        num_refine_code_ctl, i_num_ref_code,                      &
-     &        refine_i_ele_grp_ctl, iflag_refine_type_ctl)
-        end if
+        call read_control_array_c_i                                     &
+     &     (hd_num_ref_code, refine_i_ele_grp_ctl)
 !
-!
-        call read_character_ctl_item(hd_itp_type,                       &
-     &            i_itp_type, interpolate_type_ctl)
+        call read_chara_ctl_type(hd_itp_type, interpolate_type_ctl)
       end do
 !
       end subroutine read_ctl_data_4_refine_type

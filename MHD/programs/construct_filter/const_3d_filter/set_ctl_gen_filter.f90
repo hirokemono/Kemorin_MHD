@@ -39,6 +39,7 @@
       type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
       integer(kind = kint) :: i
+      character(len=kchara) :: tmpchara
 !
 !
       np_smp = 1
@@ -47,9 +48,14 @@
       end if
 !
       num_int_points = 4
-      if (i_num_int_points .ne. 0) num_int_points = num_int_points_ctl
+      if (num_int_points_ctl%iflag .ne. 0) then
+        num_int_points = num_int_points_ctl%intvalue
+      end if
 !
-      minimum_comp = minimum_comp_ctl
+      minimum_comp = 11
+      if(minimum_comp_ctl%iflag .gt. 0) then
+        minimum_comp = minimum_comp_ctl%intvalue
+      end if
 !
       num_filtering_grp = filter_area_ctl%num
       if (iflag_debug.gt.0) then
@@ -149,28 +155,29 @@
 !
       end if
 !
-      if (i_minimum_det .gt. 0) then
-        minimum_det_mat = minimum_det_ctl
+      if (minimum_det_ctl%iflag .gt. 0) then
+        minimum_det_mat = minimum_det_ctl%realvalue
       end if
 !
-      if (i_maximum_neighbour .gt. 0) then
-        maximum_neighbour = maximum_neighbour_ctl
+      if (maximum_neighbour_ctl%iflag .gt. 0) then
+        maximum_neighbour = maximum_neighbour_ctl%intvalue
       else
         maximum_neighbour = 2
       end if
 !
-      if (i_tgt_filter_type .gt. 0) then
-        if     (cmp_no_case(tgt_filter_type_ctl,'TOPHAT')) then
+      if (tgt_filter_type_ctl%iflag .gt. 0) then
+        tmpchara = tgt_filter_type_ctl%charavalue
+        if     (cmp_no_case(tmpchara,'TOPHAT')) then
           iflag_tgt_filter_type = 2
-        else if(cmp_no_case(tgt_filter_type_ctl,'LINEAR')) then
+        else if(cmp_no_case(tmpchara,'LINEAR')) then
           iflag_tgt_filter_type = 3
-        else if(cmp_no_case(tgt_filter_type_ctl,'GAUSSIAN')) then
+        else if(cmp_no_case(tmpchara,'GAUSSIAN')) then
           iflag_tgt_filter_type = 4
-        else if(cmp_no_case(tgt_filter_type_ctl,'COMMUTATIVE')) then
+        else if(cmp_no_case(tmpchara,'COMMUTATIVE')) then
           iflag_tgt_filter_type = 1
-        else if(cmp_no_case(tgt_filter_type_ctl,'NONE')) then
+        else if(cmp_no_case(tmpchara,'NONE')) then
           iflag_tgt_filter_type = -10
-        else if(cmp_no_case(tgt_filter_type_ctl,'NO')) then
+        else if(cmp_no_case(tmpchara,'NO')) then
           iflag_tgt_filter_type = -10
         else
           iflag_tgt_filter_type = 0
@@ -179,8 +186,8 @@
         iflag_tgt_filter_type = 0
       end if
 !
-      if (i_filter_corection .gt. 0) then
-        if      (yes_flag(filter_correction_ctl)) then
+      if (filter_correction_ctl%iflag .gt. 0) then
+        if      (yes_flag(filter_correction_ctl%charavalue)) then
           if (iflag_tgt_filter_type .gt. 0) then
             iflag_tgt_filter_type = -iflag_tgt_filter_type
           end if
@@ -197,8 +204,8 @@
       end if
 !
 !
-      if (i_filter_fixed_point .gt. 0) then
-        if      (yes_flag(filter_fixed_point_ctl)) then
+      if (filter_fixed_point_ctl%iflag .gt. 0) then
+        if      (yes_flag(filter_fixed_point_ctl%charavalue)) then
           iflag_use_fixed_points = 1
         else
           iflag_use_fixed_points = 0
@@ -207,8 +214,8 @@
         iflag_use_fixed_points = 0
       end if
 !
-      if (i_filter_negative_center .gt. 0) then
-        if      (yes_flag(negative_center_ctl)) then
+      if (negative_center_ctl%iflag .gt. 0) then
+        if      (yes_flag(negative_center_ctl%charavalue)) then
           iflag_negative_center = 0
         else
           iflag_negative_center = 1
@@ -217,20 +224,21 @@
         iflag_negative_center = 1
       end if
 !
-      if (i_err_level_commute .gt. 0) then
-        iflag_err_level_filter = ilevel_filter_error_info
+      if (ilevel_filter_error_info%iflag .gt. 0) then
+        iflag_err_level_filter = ilevel_filter_error_info%intvalue
       else
         iflag_err_level_filter = 0
       end if
 !
-      if (i_maximum_rms .gt. 0) then
-        max_rms_weight_limit = maximum_rms_ctl
+      if (maximum_rms_ctl%iflag .gt. 0) then
+        max_rms_weight_limit = maximum_rms_ctl%realvalue
       end if
 !
-      if (i_momentum_type .gt. 0) then
-        if     (cmp_no_case(momentum_type_ctl,'NO_CROSS')) then
+      if (momentum_type_ctl%iflag .gt. 0) then
+        tmpchara = momentum_type_ctl%charavalue
+        if     (cmp_no_case(tmpchara,'NO_CROSS')) then
           iflag_momentum_type = 1
-        else if(cmp_no_case(momentum_type_ctl,'NORMAL')) then
+        else if(cmp_no_case(tmpchara,'NORMAL')) then
           iflag_momentum_type = 0
         else
           iflag_momentum_type = 0
@@ -239,12 +247,14 @@
         iflag_momentum_type = 0
       end if
 !
-      if (i_ordering_list.gt.0 .and. iflag_tgt_filter_type.eq.0) then
-        if     (cmp_no_case(ordering_list_ctl,'CONNECTION')) then
+      if (ordering_list_ctl%iflag.gt.0                                  &
+     &     .and. iflag_tgt_filter_type.eq.0) then
+        tmpchara = ordering_list_ctl%charavalue
+        if     (cmp_no_case(tmpchara,'CONNECTION')) then
           iflag_ordering_list = 0
-        else if(cmp_no_case(ordering_list_ctl,'DISTANCE')) then
+        else if(cmp_no_case(tmpchara,'DISTANCE')) then
           iflag_ordering_list = 1
-        else if(cmp_no_case(ordering_list_ctl,'DISTANCE_RATIO')) then
+        else if(cmp_no_case(tmpchara,'DISTANCE_RATIO')) then
           iflag_ordering_list = 2
         end if 
       else
@@ -252,40 +262,40 @@
       end if
 !
 !
-      if     (cmp_no_case(mass_matrix_type_ctl,'CONSIST')) then
+      if(cmp_no_case(mass_matrix_type_ctl,'CONSIST')) then
         itype_mass_matrix = 1
       else
         itype_mass_matrix = 0
       end if
 !
 !
-      if     (cmp_no_case(f_solver_type_ctl,'ITERATIVE')) then
+      if(cmp_no_case(f_solver_type_ctl%charavalue,'ITERATIVE')) then
         id_solver_type = 1
       else
         id_solver_type = 0
       end if
 !
-      if (i_start_node_ctl .gt. 0) then
-        inod_start_filter = start_node_ctl
+      if (start_node_ctl%iflag .gt. 0) then
+        inod_start_filter = start_node_ctl%intvalue
       else
         inod_start_filter = 1
       end if
 !
-      if (i_end_node_ctl .gt. 0) then
-        inod_end_filter = end_node_ctl
+      if (end_node_ctl%iflag .gt. 0) then
+        inod_end_filter = end_node_ctl%intvalue
       else
         inod_end_filter = -1
       end if
 !
-      if (i_start_nfree_mat .gt. 0) then
-        ist_num_free = ist_num_free_ctl
+      if (ist_num_free_ctl%iflag .gt. 0) then
+        ist_num_free = ist_num_free_ctl%intvalue
       else
         ist_num_free = -1
       end if
 !
 !
-      if (i_end_nfree_mat .gt. 0) then
-        ied_num_free = ied_num_free_ctl
+      if (ied_num_free_ctl%iflag .gt. 0) then
+        ied_num_free = ied_num_free_ctl%intvalue
       else
         ied_num_free = -1
       end if
@@ -377,7 +387,10 @@
      &     write(*,*) 'filter_moms_head ', filter_moms_head
       end if
 !
-      omitted_ratio = omitted_ratio_ctl
+      omitted_ratio = 1.0d-30
+      if(omitted_ratio_ctl%iflag .gt. 0) then
+        omitted_ratio = omitted_ratio_ctl%realvalue
+      end if
 !
 !   set data format
 !

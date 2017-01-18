@@ -61,16 +61,16 @@
       para_fine_mesh_file%iflag_format = id_ascii_file_fmt
 !
 !
-      if(i_course_to_fine_ctl .gt. 0) then
-        course_2_fine_head = coarse_2_fine_head_ctl
+      if(coarse_2_fine_head_ctl%iflag .gt. 0) then
+        course_2_fine_head = coarse_2_fine_head_ctl%charavalue
       end if
 !
-      if(i_fine_to_course_ctl .gt. 0) then
-        fine_2_course_head = fine_2_course_head_ctl
+      if(fine_2_course_head_ctl%iflag .gt. 0) then
+        fine_2_course_head = fine_2_course_head_ctl%charavalue
       end if
 !
-      if(i_refine_info_ctl .gt. 0) then
-        refine_info_head = refine_info_head_ctl
+      if(refine_info_head_ctl%iflag .gt. 0) then
+        refine_info_head = refine_info_head_ctl%charavalue
       end if
 !
 !
@@ -92,7 +92,7 @@
         f2c_para_head = f2c_para_head_ctl
       end if
 !
-      if(i_refine_info_ctl .gt. 0) then
+      if(refine_info_head_ctl%iflag .gt. 0) then
         f2c_ele_para_head = refine_info_para_head_ctl
       end if
 !

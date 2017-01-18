@@ -87,47 +87,49 @@
       use skip_comment_f
       use set_control_platform_data
 !
+      character(len = kchara) :: tmpchara
+!
 !
       call set_control_mesh_def(source_plt, original_mesh_file)
       call set_control_mesh_file_def                                    &
      &   (def_new_mesh_head, refined_plt, refined_mesh_file)
 !
 !
-      if (i_course_to_fine_ctl .gt. 0) then
-        course_2_fine_head = coarse_2_fine_head_ctl
+      if (coarse_2_fine_head_ctl%iflag .gt. 0) then
+        course_2_fine_head = coarse_2_fine_head_ctl%charavalue
       end if
 !
-      if (i_fine_to_course_ctl .gt. 0) then
-        fine_2_course_head = fine_2_course_head_ctl
+      if (fine_2_course_head_ctl%iflag .gt. 0) then
+        fine_2_course_head = fine_2_course_head_ctl%charavalue
       end if
 !
-      if (i_refine_info_ctl .gt. 0) then
-        refine_info_head = refine_info_head_ctl
+      if (refine_info_head_ctl%iflag .gt. 0) then
+        refine_info_head = refine_info_head_ctl%charavalue
       end if
 !
-      iflag_read_old_refine_file = i_old_refine_info_ctl
+      iflag_read_old_refine_file = old_refine_info_head_ctl%iflag
       if (iflag_read_old_refine_file .gt. 0) then
-        old_refine_info_head = old_refine_info_head_ctl
+        old_refine_info_head = old_refine_info_head_ctl%charavalue
       end if
 !
 !
       iflag_interpolate_type = 0
-      if (i_itp_type .gt. 0) then
-        if (   cmp_no_case(interpolate_type_ctl, 'project_sphere')      &
-     &    .or. cmp_no_case(interpolate_type_ctl, 'project_to_sphere')   &
-     &     ) then
+      if (interpolate_type_ctl%iflag .gt. 0) then
+        tmpchara = interpolate_type_ctl%charavalue
+        if (   cmp_no_case(tmpchara, 'project_sphere')                  &
+     &    .or. cmp_no_case(tmpchara, 'project_to_sphere')) then
           iflag_interpolate_type = 2
-!        else if (cmp_no_case(interpolate_type_ctl, 'rtp')              &
-!     &      .or. cmp_no_case(interpolate_type_ctl, 'spherical')) then
+!        else if (cmp_no_case(tmpchara, 'rtp')                          &
+!     &      .or. cmp_no_case(tmpchara, 'spherical')) then
 !          iflag_interpolate_type = 1
         end if
       end if
 !
 !
-      if (i_num_ref_type .gt. 0) then
-        num_refine_type = num_refine_type_ctl
-      else if (i_num_ref_code .gt. 0) then
-        num_refine_type = num_refine_code_ctl
+      if (refined_ele_grp_ctl%icou .gt. 0) then
+        num_refine_type = refined_ele_grp_ctl%num
+      else if (refine_i_ele_grp_ctl%icou .gt. 0) then
+        num_refine_type = refine_i_ele_grp_ctl%num
       else
         write(*,*) 'set refine type and area'
         stop
@@ -136,26 +138,23 @@
       if (num_refine_type .gt. 0) then
         call allocate_refine_param
 !
-        if (i_num_ref_type .gt. 0) then
+        if (refined_ele_grp_ctl%icou .gt. 0) then
 !
           iflag_redefine_tri = 1
           refined_ele_grp(1:num_refine_type)                            &
-     &         = refined_ele_grp_ctl(1:num_refine_type)
+     &         = refined_ele_grp_ctl%c1_tbl(1:num_refine_type)
           refined_ele_type(1:num_refine_type)                           &
-     &         = refined_ele_type_ctl(1:num_refine_type)
-          deallocate(refined_ele_grp_ctl)
-          deallocate(refined_ele_type_ctl)
+     &         = refined_ele_grp_ctl%c2_tbl(1:num_refine_type)
+          call alloc_control_array_c2(refined_ele_grp_ctl)
 !
-        else if (i_num_ref_code .gt. 0) then
+        else if (refine_i_ele_grp_ctl%icou .gt. 0) then
 !
           iflag_redefine_tri = 0
           refined_ele_grp(1:num_refine_type)                            &
-     &         = refine_i_ele_grp_ctl(1:num_refine_type)
+     &         = refine_i_ele_grp_ctl%c_tbl(1:num_refine_type)
           iflag_refine_type(1:num_refine_type)                          &
-     &         = iflag_refine_type_ctl(1:num_refine_type)
-          deallocate(refine_i_ele_grp_ctl)
-          deallocate(iflag_refine_type_ctl)
-!
+     &         = refine_i_ele_grp_ctl%ivec(1:num_refine_type)
+          call dealloc_control_array_c_i(refine_i_ele_grp_ctl)
         end if
 !
       else

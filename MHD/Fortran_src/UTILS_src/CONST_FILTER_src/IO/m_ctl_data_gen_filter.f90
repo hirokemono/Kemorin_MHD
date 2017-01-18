@@ -15,32 +15,34 @@
 !
       use calypso_mpi
       use m_machine_parameter
+      use t_control_elements
       use t_read_control_arrays
       use t_ctl_data_4_solvers
+      use m_read_control_elements
 !
       implicit  none
 !
 !
-      integer(kind = kint) :: num_int_points_ctl =   3
-      integer(kind = kint) :: minimum_comp_ctl =    11
-      integer(kind = kint) :: num_ele_4_filter_ctl = 2
-      real(kind = kreal) :: omitted_ratio_ctl = 1.0d-30
-      real(kind = kreal) :: minimum_det_ctl =   1.0d+01
-      real(kind = kreal) :: maximum_rms_ctl =   2.0d+00
-      character(len=kchara) :: ordering_list_ctl =   'connection'
-      character(len=kchara) :: tgt_filter_type_ctl = 'Commutative'
-      character(len=kchara) :: momentum_type_ctl =   'Normal'
-      character(len=kchara) :: filter_correction_ctl =  'OFF'
-      character(len=kchara) :: filter_fixed_point_ctl = 'OFF'
-      character(len=kchara) :: negative_center_ctl =    'OFF'
+      type(read_integer_item), save :: num_int_points_ctl
+      type(read_integer_item), save :: minimum_comp_ctl
+      type(read_integer_item), save :: num_ele_4_filter_ctl
+      type(read_real_item), save :: omitted_ratio_ctl
+      type(read_real_item), save :: minimum_det_ctl
+      type(read_real_item), save :: maximum_rms_ctl
+      type(read_character_item), save :: ordering_list_ctl
+      type(read_character_item), save :: tgt_filter_type_ctl
+      type(read_character_item), save :: momentum_type_ctl
+      type(read_character_item), save :: filter_correction_ctl
+      type(read_character_item), save :: filter_fixed_point_ctl
+      type(read_character_item), save :: negative_center_ctl
 !
-      integer(kind = kint) :: maximum_neighbour_ctl = 2
-      integer(kind = kint) :: ilevel_filter_error_info = 0
+      type(read_integer_item), save :: maximum_neighbour_ctl
+      type(read_integer_item), save :: ilevel_filter_error_info
 !
-      integer(kind = kint) :: start_node_ctl = 1
-      integer(kind = kint) :: end_node_ctl =  -1
-      integer(kind = kint) :: ist_num_free_ctl =  -1
-      integer(kind = kint) :: ied_num_free_ctl =  -1
+      type(read_integer_item), save :: start_node_ctl
+      type(read_integer_item), save :: end_node_ctl
+      type(read_integer_item), save :: ist_num_free_ctl
+      type(read_integer_item), save :: ied_num_free_ctl
 !
 !>      Structure for list of reference filter mode
 !!@n      reference_filter_ctl%c_tbl: list of filter type
@@ -61,7 +63,7 @@
 !>      Structure for CG solver control
       type(solver_control), save :: CG_filter_ctl
 !
-      character(len=kchara) :: f_solver_type_ctl = 'CRS'
+      type(read_character_item), save :: f_solver_type_ctl
 !
 !
 !     label for entry
@@ -121,28 +123,18 @@
      &       :: hd_solver_ctl =     'solver_ctl'
       integer (kind=kint) :: i_solver_ctl =     0
 !
-      integer (kind=kint) :: i_num_int_points =     0
-      integer (kind=kint) :: i_minimum_comp =       0
-      integer (kind=kint) :: i_omitted_ratio =      0
-      integer (kind=kint) :: i_ordering_list =      0
-      integer (kind=kint) :: i_start_node_ctl =     0
-      integer (kind=kint) :: i_end_node_ctl =       0
-      integer (kind=kint) :: i_start_nfree_mat =    0
-      integer (kind=kint) :: i_end_nfree_mat =      0
-      integer (kind=kint) :: i_minimum_det =        0
-      integer (kind=kint) :: i_maximum_rms =        0
-      integer (kind=kint) :: i_nele_filtering =     0
-      integer (kind=kint) :: i_maximum_neighbour =  0
-      integer (kind=kint) :: i_tgt_filter_type =    0
-      integer (kind=kint) :: i_filter_corection =   0
-      integer (kind=kint) :: i_filter_fixed_point = 0
-      integer (kind=kint) :: i_filter_negative_center = 0
-      integer (kind=kint) :: i_err_level_commute =  0
-      integer (kind=kint) :: i_momentum_type =      0
-      integer (kind=kint) :: i_solver_type =        0
-!
       private :: hd_filter_param_ctl, i_filter_param_ctl
       private :: hd_solver_ctl, i_solver_ctl
+!
+      private :: hd_num_int_points, hd_minimum_comp, hd_omitted_ratio
+      private :: hd_ordering_list, hd_start_node_ctl, hd_end_node_ctl
+      private :: hd_start_nfree_mat, hd_end_nfree_mat, hd_minimum_det
+      private :: hd_maximum_rms, hd_nele_filtering, hd_order_moments
+      private :: hd_ref_filter, hd_maximum_neighbour
+      private :: hd_tgt_filter_type, hd_filter_corection
+      private :: hd_filter_fixed_point, hd_filter_negative_center
+      private :: hd_err_level_commute, hd_momentum_type
+      private :: hd_horiz_filter, hd_solver_type
 !
 !  ---------------------------------------------------------------------
 !
@@ -195,49 +187,42 @@
      &     (hd_horiz_filter, horizontal_filter_ctl)
 !
 !
-        call read_character_ctl_item(hd_solver_type,                    &
-     &          i_solver_type, f_solver_type_ctl)
-        call read_character_ctl_item(hd_ordering_list,                  &
-     &          i_ordering_list, ordering_list_ctl)
-        call read_character_ctl_item(hd_tgt_filter_type,                &
-     &          i_tgt_filter_type, tgt_filter_type_ctl)
-        call read_character_ctl_item(hd_momentum_type,                  &
-     &          i_momentum_type, momentum_type_ctl)
-        call read_character_ctl_item(hd_filter_corection,               &
-     &          i_filter_corection, filter_correction_ctl)
-        call read_character_ctl_item(hd_filter_fixed_point,             &
-     &          i_filter_fixed_point, filter_fixed_point_ctl)
-        call read_character_ctl_item(hd_filter_negative_center,         &
-     &          i_filter_negative_center, negative_center_ctl)
+        call read_chara_ctl_type(hd_solver_type, f_solver_type_ctl)
+        call read_chara_ctl_type(hd_ordering_list, ordering_list_ctl)
+        call read_chara_ctl_type(hd_tgt_filter_type,                    &
+     &       tgt_filter_type_ctl)
+        call read_chara_ctl_type(hd_momentum_type,                      &
+     &      momentum_type_ctl)
+        call read_chara_ctl_type(hd_filter_corection,                   &
+     &      filter_correction_ctl)
+        call read_chara_ctl_type(hd_filter_fixed_point,                 &
+     &      filter_fixed_point_ctl)
+        call read_chara_ctl_type(hd_filter_negative_center,             &
+     &      negative_center_ctl)
 !
 !
-        call read_real_ctl_item(hd_omitted_ratio,                       &
-     &          i_omitted_ratio, omitted_ratio_ctl)
-        call read_real_ctl_item(hd_minimum_det,                         &
-     &          i_minimum_det, minimum_det_ctl)
-        call read_real_ctl_item(hd_maximum_rms,                         &
-     &          i_maximum_rms, maximum_rms_ctl)
+        call read_real_ctl_type(hd_omitted_ratio, omitted_ratio_ctl)
+        call read_real_ctl_type(hd_minimum_det, minimum_det_ctl)
+        call read_real_ctl_type(hd_maximum_rms, maximum_rms_ctl)
 !
 !
-        call read_integer_ctl_item(hd_num_int_points,                   &
-     &          i_num_int_points, num_int_points_ctl)
-        call read_integer_ctl_item(hd_minimum_comp,                     &
-     &          i_minimum_comp, minimum_comp_ctl)
-        call read_integer_ctl_item(hd_nele_filtering,                   &
-     &          i_nele_filtering, num_ele_4_filter_ctl)
-        call read_integer_ctl_item(hd_maximum_neighbour,                &
-     &          i_maximum_neighbour, maximum_neighbour_ctl)
+        call read_integer_ctl_type(hd_num_int_points,                   &
+     &      num_int_points_ctl)
+        call read_integer_ctl_type(hd_minimum_comp,                     &
+     &      minimum_comp_ctl)
+        call read_integer_ctl_type(hd_nele_filtering,                   &
+     &      num_ele_4_filter_ctl)
+        call read_integer_ctl_type(hd_maximum_neighbour,                &
+     &      maximum_neighbour_ctl)
 !
-        call read_integer_ctl_item(hd_start_node_ctl,                   &
-     &          i_start_node_ctl, start_node_ctl)
-        call read_integer_ctl_item(hd_end_node_ctl,                     &
-     &          i_end_node_ctl, end_node_ctl)
-        call read_integer_ctl_item(hd_start_nfree_mat,                  &
-     &          i_start_nfree_mat, ist_num_free_ctl)
-        call read_integer_ctl_item(hd_end_nfree_mat,                    &
-     &          i_end_nfree_mat, ied_num_free_ctl)
-        call read_integer_ctl_item(hd_err_level_commute,                &
-     &          i_err_level_commute, ilevel_filter_error_info)
+        call read_integer_ctl_type(hd_start_node_ctl, start_node_ctl)
+        call read_integer_ctl_type(hd_end_node_ctl, end_node_ctl)
+        call read_integer_ctl_type(hd_start_nfree_mat,                  &
+     &      ist_num_free_ctl)
+        call read_integer_ctl_type(hd_end_nfree_mat,                    &
+     &      ied_num_free_ctl)
+        call read_integer_ctl_type(hd_err_level_commute,                &
+     &      ilevel_filter_error_info)
       end do
 !
       end subroutine read_filter_param_ctl

@@ -92,8 +92,8 @@
 !
 !   set number of integration points
 !
-      if (i_num_int_points .ne. 0) then
-        i_int_z_filter = num_int_points_ctl
+      if (num_int_points_ctl%iflag .ne. 0) then
+        i_int_z_filter = num_int_points_ctl%intvalue
       else
         i_int_z_filter = 6
       end if
@@ -139,8 +139,8 @@
       write(*,*) 'iflag_filter', iflag_filter, iflag_filter_h
       write(*,*) 'width', f_width, f_width_h
 !
-      if (i_nele_filtering .ne. 0) then
-        numfilter = num_ele_4_filter_ctl
+      if (num_ele_4_filter_ctl%iflag .ne. 0) then
+        numfilter = num_ele_4_filter_ctl%intvalue
       else
         numfilter = 2
       end if
@@ -164,7 +164,10 @@
 !
 !     set solver information
 !
-      mat_crs%SOLVER_crs =  f_solver_type_ctl
+      mat_crs%SOLVER_crs = 'CRS'
+      if(f_solver_type_ctl%iflag .gt. 0) then
+        mat_crs%SOLVER_crs =  f_solver_type_ctl%charavalue
+      end if
 !
       if(CG_filter_ctl%precond_ctl%iflag .gt. 0) then
         precond = CG_filter_ctl%precond_ctl%charavalue
