@@ -36,7 +36,8 @@
 !
       subroutine initialize_const_sph_initial
 !
-      use m_ctl_data_sph_MHD_noviz
+      use t_ctl_data_sph_MHD_psf
+      use m_ctl_data_sph_MHD
       use m_spheric_parameter
       use m_sph_spectr_data
       use m_rms_4_sph_spectr
@@ -54,11 +55,11 @@
       call start_eleps_time(1)
       call start_eleps_time(4)
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_MHD_noviz'
-      call read_control_4_sph_MHD_noviz
+      call read_control_4_sph_MHD_noviz(MHD_ctl_name, MHD_ctl1)
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_4_SPH_make_init'
       call input_control_4_SPH_make_init                                &
-     &   (sph1, comms_sph1, sph_grps1, rj_fld1, pwr1)
+     &   (MHD_ctl1, sph1, comms_sph1, sph_grps1, rj_fld1, pwr1)
       call end_eleps_time(4)
 !
 !        Initialize spherical transform dynamo

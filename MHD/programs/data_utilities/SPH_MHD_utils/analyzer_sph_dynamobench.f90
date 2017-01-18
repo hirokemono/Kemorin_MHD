@@ -38,10 +38,11 @@
 !
       subroutine initialize_sph_dynamobench
 !
+      use t_ctl_data_sph_MHD_psf
+      use m_ctl_data_sph_MHD
       use m_spheric_parameter
       use m_node_phys_data
       use m_sph_spectr_data
-      use m_ctl_data_sph_MHD_noviz
       use m_rms_4_sph_spectr
       use init_sph_MHD_elapsed_label
       use input_control_sph_MHD
@@ -55,12 +56,12 @@
 !
       call start_eleps_time(1)
       call start_eleps_time(4)
-      if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_snap_noviz'
-      call read_control_4_sph_snap_noviz(snap_ctl_name)
+      if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_MHD_noviz'
+      call read_control_4_sph_MHD_noviz(snap_ctl_name, MHD_ctl1)
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_dynamobench'
-      call input_control_SPH_dynamobench                                &
-     &   (sph1, comms_sph1, sph_grps1, rj_fld1, nod_fld1, pwr1)
+      call input_control_SPH_dynamobench(MHD_ctl1,                      &
+     &    sph1, comms_sph1, sph_grps1, rj_fld1, nod_fld1, pwr1)
       call end_eleps_time(4)
 !
 !    precondition elaps start

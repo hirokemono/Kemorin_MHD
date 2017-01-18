@@ -40,14 +40,22 @@
       use t_phys_data
       use t_file_IO_parameter
       use t_field_data_IO
+      use t_ctl_data_MHD
 !
       implicit none
 !
+      character(len=kchara), parameter :: MHD_ctl_name =  'control_MHD'
+      character(len=kchara), parameter                                  &
+     &                      :: snap_ctl_name = 'control_snapshot'
+!
+!>      Control struture for MHD simulation
+      type(mhd_simulation_control), save :: FEM_MHD_ctl
 !>      Structure for mesh file IO paramters
       type(field_IO_params), save ::  mesh1_file
 !>      Structure for field data IO paramters
       type(field_IO_params), save :: FEM_udt_org_param
 !
+      private :: FEM_MHD_ctl
       private :: mesh1_file
       private :: input_meshes_4_MHD
 !
@@ -61,10 +69,9 @@
      &          (mesh, group, ele_mesh, nod_fld, IO_bc,                 &
      &           filtering, wide_filtering, wk_filter, MHD_matrices)
 !
-      use m_ctl_data_fem_MHD
+      use t_ctl_data_sph_MHD_psf
       use m_iccg_parameter
       use m_flags_4_solvers
-      use read_ctl_data_sph_MHD
       use set_control_FEM_MHD
       use mpi_load_mesh_data
       use input_MG_data
@@ -85,10 +92,12 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_fem_MHD'
-      call read_control_4_fem_MHD
+      call read_control_4_fem_MHD(MHD_ctl_name, FEM_MHD_ctl)
+!
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_FEM_MHD'
       call set_control_4_FEM_MHD                                        &
-     &   (plt1, org_plt1, model_ctl1, ctl_ctl1, nmtr_ctl1,              &
+     &   (FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt, FEM_MHD_ctl%model_ctl,  &
+     &    FEM_MHD_ctl%ctl_ctl, FEM_MHD_ctl%nmtr_ctl,                    &
      &    mesh1_file, FEM_udt_org_param, nod_fld)
 !
 !  --  load FEM mesh data
@@ -119,8 +128,7 @@
       subroutine input_control_4_snapshot(mesh, group, ele_mesh,        &
      &          nod_fld, IO_bc, filtering, wide_filtering, wk_filter)
 !
-      use m_ctl_data_fem_MHD
-      use read_ctl_data_sph_MHD
+      use t_ctl_data_sph_MHD_psf
       use set_control_FEM_MHD
       use mpi_load_mesh_data
       use node_monitor_IO
@@ -138,10 +146,12 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_fem_snap'
-      call read_control_4_fem_snap
+      call read_control_4_fem_MHD(snap_ctl_name, FEM_MHD_ctl)
+!
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_FEM_MHD'
       call set_control_4_FEM_MHD                                        &
-     &   (plt1, org_plt1, model_ctl1, ctl_ctl1, nmtr_ctl1,              &
+     &   (FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt, FEM_MHD_ctl%model_ctl,  &
+     &    FEM_MHD_ctl%ctl_ctl, FEM_MHD_ctl%nmtr_ctl,                    &
      &    mesh1_file, FEM_udt_org_param, nod_fld)
 !
 !  --  load FEM mesh data

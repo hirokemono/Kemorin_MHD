@@ -43,8 +43,8 @@
 !
       subroutine initialize_sph_pick_circle
 !
-      use m_ctl_data_sph_MHD_noviz
-      use read_ctl_data_sph_MHD
+      use t_ctl_data_sph_MHD_psf
+      use m_ctl_data_sph_MHD
       use m_node_phys_data
       use m_spheric_parameter
       use m_sph_spectr_data
@@ -67,16 +67,18 @@
 !
       call start_eleps_time(1)
       call start_eleps_time(4)
-      if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_snap_noviz'
-      call read_control_4_sph_snap_noviz(snap_ctl_name)
+      if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_MHD_noviz'
+      call read_control_4_sph_MHD_noviz(snap_ctl_name, MHD_ctl1)
       if (iflag_debug.eq.1) write(*,*) 'set_control_SGS_SPH_MHD'
-      call set_control_SGS_SPH_MHD(plt1, org_plt1,                      &
-     &    model_ctl1, ctl_ctl1, smonitor_ctl1, nmtr_ctl1, psph_ctl1,    &
+      call set_control_SGS_SPH_MHD(MHD_ctl1%plt, MHD_ctl1%org_plt,      &
+     &    MHD_ctl1%model_ctl, MHD_ctl1%ctl_ctl, MHD_ctl1%smonitor_ctl,  &
+     &    MHD_ctl1%nmtr_ctl, MHD_ctl1%psph_ctl,                         &
      &    sph_gen, rj_fld1, mesh_file_circ, sph_file_param1,            &
      &    MHD1_org_files, sph_fst_IO, pwr1,                             &
      &    trns_WK1%dynamic_SPH%sph_filters)
       call set_ctl_params_pick_circle                                   &
-     &   (model_ctl1%fld_ctl%field_ctl, smonitor_ctl1%meq_ctl)
+     &   (MHD_ctl1%model_ctl%fld_ctl%field_ctl,                         &
+     &    MHD_ctl1%smonitor_ctl%meq_ctl)
 !
 !   Load spherical harmonics data
 !

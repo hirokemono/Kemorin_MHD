@@ -43,6 +43,7 @@
 !
       subroutine initialize_sph_back_trans
 !
+      use t_ctl_data_sph_MHD
       use m_ctl_data_sph_MHD
       use m_spheric_parameter
       use m_sph_spectr_data
@@ -61,13 +62,13 @@
 !
       call start_eleps_time(1)
       call start_eleps_time(4)
-      if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_snap'
-      call read_control_4_sph_snap(back_ctl_name)
+      if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_MHD'
+      call read_control_4_sph_MHD(back_ctl_name, MHD_ctl1)
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_mesh'
       call input_control_SPH_mesh                                       &
-     &   (sph1, comms_sph1, sph_grps1, rj_fld1, nod_fld1, pwr1,         &
-     &    trns_WK1%dynamic_SPH, mesh1, group1, ele_mesh1)
+     &   (MHD_ctl1, sph1, comms_sph1, sph_grps1, rj_fld1, nod_fld1,     &
+     &    pwr1, trns_WK1%dynamic_SPH, mesh1, group1, ele_mesh1)
       call end_eleps_time(4)
 !
 !     --------------------- 

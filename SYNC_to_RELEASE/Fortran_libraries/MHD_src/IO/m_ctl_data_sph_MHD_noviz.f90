@@ -1,1 +1,0 @@
-../../../../MHD/Fortran_src/MHD_src/IO/m_ctl_data_sph_MHD_noviz.f90

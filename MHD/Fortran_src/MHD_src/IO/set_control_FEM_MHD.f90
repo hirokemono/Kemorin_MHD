@@ -46,7 +46,6 @@
 !
       use calypso_mpi
       use m_ucd_data
-      use m_ctl_data_fem_MHD
       use m_default_file_prefix
 !
       use set_control_platform_data
