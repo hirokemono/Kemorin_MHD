@@ -37,6 +37,8 @@
 !   2nd level for MHD
 !
       character(len=kchara), parameter                                  &
+     &                    :: hd_platform = 'data_files_def'
+      character(len=kchara), parameter                                  &
      &                    :: hd_org_data = 'org_data_files_def'
       character(len=kchara), parameter                                  &
      &      :: hd_sph_shell = 'spherical_shell_ctl'
@@ -47,6 +49,7 @@
       character(len=kchara), parameter                                  &
      &                     :: hd_pick_sph = 'sph_monitor_ctl'
 !
+      integer (kind=kint) :: i_platform =   0
       integer (kind=kint) :: i_org_data =    0
       integer(kind=kint) :: i_model =        0
       integer(kind=kint) :: i_control =      0
@@ -55,6 +58,8 @@
 !
       private :: MHD_ctl_name
       private :: hd_mhd_ctl, i_mhd_ctl
+!
+      private :: hd_platform, i_platform
       private :: hd_org_data, i_org_data
       private :: hd_sph_shell
       private :: hd_model, hd_control, i_model, i_control
@@ -124,7 +129,6 @@
 !
       subroutine read_sph_mhd_ctl_w_psf
 !
-      use m_ctl_data_4_platforms
       use m_control_data_sections
       use read_ctl_data_sph_MHD
 !
@@ -138,7 +142,7 @@
         if(i_mhd_ctl .gt. 0) exit
 !
 !
-        call read_ctl_data_4_platform
+        call read_control_platforms(hd_platform, i_platform, plt1)
         call read_control_platforms(hd_org_data, i_org_data, org_plt1)
 !
         call read_parallel_shell_in_MHD_ctl(hd_sph_shell, psph_ctl1)
@@ -160,7 +164,6 @@
 !
       subroutine bcast_sph_mhd_ctl_w_psf
 !
-      use m_ctl_data_4_platforms
       use m_control_data_sections
       use read_ctl_data_sph_MHD
       use bcast_4_platform_ctl

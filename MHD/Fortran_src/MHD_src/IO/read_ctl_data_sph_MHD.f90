@@ -36,6 +36,8 @@
       implicit none
 !
 !
+!>      Structure for file settings
+      type(platform_data_control), save :: plt1
 !>      Control structure for orginal file informations
       type(platform_data_control), save :: org_plt1
 !>      Control structure for new file informations

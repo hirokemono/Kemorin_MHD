@@ -8,8 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine set_control_4_FEM_MHD                                &
-!!     &         (org_plt, model_ctl, ctl_ctl, nmtr_ctl,                &
+!!     &         (plt, org_plt, model_ctl, ctl_ctl, nmtr_ctl,           &
 !!     &          mesh_file, udt_org_param, nod_fld)
+!!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
 !!        type(mhd_model_control), intent(inout) :: model_ctl
 !!        type(mhd_control_control), intent(inout) :: ctl_ctl
@@ -24,6 +25,7 @@
       use m_precision
       use t_phys_data
       use t_file_IO_parameter
+      use t_ctl_data_4_platforms
       use t_ctl_data_MHD_model
       use t_ctl_data_MHD_control
       use t_ctl_data_node_monitor
@@ -39,12 +41,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_control_4_FEM_MHD                                  &
-     &         (org_plt, model_ctl, ctl_ctl, nmtr_ctl,                  &
+     &         (plt, org_plt, model_ctl, ctl_ctl, nmtr_ctl,             &
      &          mesh_file, udt_org_param, nod_fld)
 !
       use calypso_mpi
       use m_ucd_data
-      use m_ctl_data_4_platforms
       use m_ctl_data_fem_MHD
       use m_default_file_prefix
 !
@@ -64,6 +65,7 @@
 !
       use fem_mhd_rst_IO_control
 !
+      type(platform_data_control), intent(in) :: plt
       type(platform_data_control), intent(in) :: org_plt
       type(mhd_model_control), intent(inout) :: model_ctl
       type(mhd_control_control), intent(inout) :: ctl_ctl
@@ -75,12 +77,12 @@
 !
 !   set parameters for data files
 !
-      call turn_off_debug_flag_by_ctl(my_rank, plt1)
-      call check_control_num_domains(plt1)
-      call set_control_smp_def(my_rank, plt1)
-      call set_control_mesh_def(plt1, mesh_file)
-      call set_ctl_restart_4_fem_mhd(plt1)
-      call set_control_MHD_field_file(plt1)
+      call turn_off_debug_flag_by_ctl(my_rank, plt)
+      call check_control_num_domains(plt)
+      call set_control_smp_def(my_rank, plt)
+      call set_control_mesh_def(plt, mesh_file)
+      call set_ctl_restart_4_fem_mhd(plt)
+      call set_control_MHD_field_file(plt)
       call set_control_mesh_file_def                                    &
      &   (def_org_ucd_header, org_plt, udt_org_param)
 !

@@ -7,14 +7,15 @@
 !>@brief Set control data for spherical transform MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine set_control_SGS_SPH_MHD(org_plt,                     &
+!!      subroutine set_control_SGS_SPH_MHD(plt, org_plt,                &
 !!     &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl, &
 !!     &          sph_gen, rj_fld, mesh_file, sph_file_param,           &
 !!     &          MHD_org_files, sph_fst_IO, pwr, sph_filters)
-!!      subroutine set_control_4_SPH_MHD(org_plt,                       &
+!!      subroutine set_control_4_SPH_MHD(plt, org_plt,                  &
 !!     &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl, &
 !!     &          sph_gen, rj_fld, mesh_file, sph_file_param,           &
 !!     &          sph_fst_IO, pwr)
+!!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
 !!        type(mhd_model_control), intent(inout) :: model_ctl
 !!        type(mhd_control_control), intent(inout) :: ctl_ctl
@@ -58,14 +59,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_control_SGS_SPH_MHD(org_plt,                       &
+      subroutine set_control_SGS_SPH_MHD(plt, org_plt,                  &
      &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,   &
      &          sph_gen, rj_fld, mesh_file, sph_file_param,             &
      &          MHD_org_files, sph_fst_IO, pwr, sph_filters)
 !
       use m_spheric_global_ranks
       use m_ucd_data
-      use m_read_ctl_gen_sph_shell
       use sph_mhd_rms_IO
 !
       use t_spheric_parameter
@@ -75,6 +75,7 @@
 !
       use set_control_4_SGS
 !
+      type(platform_data_control), intent(in) :: plt
       type(platform_data_control), intent(in) :: org_plt
       type(mhd_model_control), intent(inout) :: model_ctl
       type(mhd_control_control), intent(inout) :: ctl_ctl
@@ -103,7 +104,7 @@
         call dealloc_sph_filter_ctl(model_ctl%sgs_ctl)
       end if
 !
-      call set_control_4_SPH_MHD(org_plt,                               &
+      call set_control_4_SPH_MHD(plt, org_plt,                          &
      &    model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,         &
      &    sph_gen, rj_fld, mesh_file, sph_file_param,                   &
      &    MHD_org_files, sph_fst_IO, pwr)
@@ -112,14 +113,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_control_4_SPH_MHD(org_plt,                         &
+      subroutine set_control_4_SPH_MHD(plt, org_plt,                    &
      &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,   &
      &          sph_gen, rj_fld, mesh_file, sph_file_param,             &
      &          MHD_org_files, sph_fst_IO, pwr)
 !
       use m_spheric_global_ranks
       use m_ucd_data
-      use m_ctl_data_4_platforms
       use sph_mhd_rms_IO
 !
       use t_spheric_parameter
@@ -138,6 +138,7 @@
       use set_control_4_pickup_sph
       use set_ctl_gen_shell_grids
 !
+      type(platform_data_control), intent(in) :: plt
       type(platform_data_control), intent(in) :: org_plt
       type(mhd_model_control), intent(inout) :: model_ctl
       type(mhd_control_control), intent(inout) :: ctl_ctl
@@ -157,14 +158,14 @@
 !
 !   set parameters for data files
 !
-      call turn_off_debug_flag_by_ctl(my_rank, plt1)
-      call check_control_num_domains(plt1)
-      call set_control_smp_def(my_rank, plt1)
-      call set_control_mesh_def(plt1, mesh_file)
-      call set_FEM_mesh_switch_4_SPH(plt1, iflag_output_mesh)
-      call set_control_sph_mesh(plt1, mesh_file, sph_file_param)
-      call set_control_restart_file_def(plt1, sph_fst_IO)
-      call set_control_MHD_field_file(plt1)
+      call turn_off_debug_flag_by_ctl(my_rank, plt)
+      call check_control_num_domains(plt)
+      call set_control_smp_def(my_rank, plt)
+      call set_control_mesh_def(plt, mesh_file)
+      call set_FEM_mesh_switch_4_SPH(plt, iflag_output_mesh)
+      call set_control_sph_mesh(plt, mesh_file, sph_file_param)
+      call set_control_restart_file_def(plt, sph_fst_IO)
+      call set_control_MHD_field_file(plt)
       call set_control_org_sph_files(org_plt, MHD_org_files)
 !
       call s_set_control_4_model                                        &
@@ -173,7 +174,7 @@
 !
 !   set spherical shell parameters
 !
-      iflag_make_SPH = i_sph_shell
+      iflag_make_SPH = psph_ctl%iflag_sph_shell
       if(iflag_make_SPH .gt. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_control_4_shell_grids'
         call set_control_4_shell_grids                                  &
@@ -190,7 +191,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_sph_data_MHD'
       call s_set_control_sph_data_MHD                                   &
-     &   (plt1, model_ctl%fld_ctl%field_ctl, ctl_ctl%mevo_ctl,          &
+     &   (plt, model_ctl%fld_ctl%field_ctl, ctl_ctl%mevo_ctl,           &
      &    MHD_org_files%rj_file_param, MHD_org_files%rst_file_param,    &
      &    rj_fld)
 !

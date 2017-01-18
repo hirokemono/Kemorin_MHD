@@ -37,6 +37,8 @@
 !   2nd level for MHD
 !
       character(len=kchara), parameter                                  &
+     &                    :: hd_platform = 'data_files_def'
+      character(len=kchara), parameter                                  &
      &                    :: hd_org_data = 'org_data_files_def'
       character(len=kchara), parameter                                  &
      &                    :: hd_new_data = 'new_data_files_def'
@@ -49,6 +51,7 @@
       character(len=kchara), parameter                                  &
      &      :: hd_monitor_data = 'monitor_data_ctl'
 !
+      integer (kind=kint) :: i_platform =   0
       integer (kind=kint) :: i_org_data =     0
       integer (kind=kint) :: i_new_data =     0
       integer (kind=kint) :: i_model =        0
@@ -58,6 +61,8 @@
 !
       private :: MHD_ctl_name
       private :: hd_mhd_ctl, i_mhd_ctl
+!
+      private :: hd_platform, i_platform
       private :: hd_org_data, i_org_data
       private :: hd_new_data, i_new_data
       private :: hd_sph_shell
@@ -128,7 +133,6 @@
 !
       subroutine read_sph_mhd_control_data
 !
-      use m_ctl_data_4_platforms
       use m_control_data_pvrs
       use read_ctl_data_sph_MHD
 !
@@ -142,7 +146,7 @@
         if(i_mhd_ctl .gt. 0) exit
 !
 !
-        call read_ctl_data_4_platform
+        call read_control_platforms(hd_platform, i_platform, plt1)
         call read_control_platforms(hd_org_data, i_org_data, org_plt1)
         call read_control_platforms(hd_new_data, i_new_data, new_plt1)
 !
@@ -165,7 +169,6 @@
 !
       subroutine bcast_sph_mhd_control_data
 !
-      use m_ctl_data_4_platforms
       use m_control_data_pvrs
       use read_ctl_data_sph_MHD
       use bcast_4_platform_ctl

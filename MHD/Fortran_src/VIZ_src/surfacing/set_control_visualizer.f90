@@ -28,7 +28,7 @@
 !
       use t_ucd_data
       use t_file_IO_parameter
-      use m_ctl_data_4_platforms
+      use t_ctl_data_4_platforms
       use t_ctl_data_4_time_steps
 !
       use m_file_format_switch
