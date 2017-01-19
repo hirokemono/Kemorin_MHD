@@ -25,7 +25,7 @@
       type(read_character_item), save :: cutshell_mesh_head_ctl
       type(read_character_item), save :: cutshell_mesh_fmt_ctl
 !
-      character (len = kchara) :: cutshell_type_ctl
+      type(read_character_item), save :: cutshell_type_ctl
 !
 !
 !   Top level
@@ -59,8 +59,6 @@
 !
       character(len=kchara), parameter :: hd_cutshell_type              &
      &                      = 'cutshell_type_ctl'
-      integer (kind=kint) :: i_cutshell_type = 0
-!
 !
       private :: control_file_name
       private :: hd_cutshell_ctl, i_cutshell_ctl
@@ -149,9 +147,7 @@
         call find_control_end_flag(hd_cutshell_param, i_cutshell_param)
         if(i_cutshell_param .gt. 0) exit
 !
-!
-        call read_character_ctl_item(hd_cutshell_type,                  &
-     &            i_cutshell_type, cutshell_type_ctl)
+        call read_chara_ctl_type(hd_cutshell_type, cutshell_type_ctl)
       end do
 !
       end subroutine read_ctl_data_4_cutshell_type

@@ -75,14 +75,16 @@
 !
 !   set fiale name
 !
-      if (i_product_udt_1 .ne. 0) then
-        prod_udt_file1_head = product_udt_1_head_ctl
+      prod_udt_file1_head = "field/out"
+      if (product_udt_1_head_ctl%iflag .ne. 0) then
+        prod_udt_file1_head = product_udt_1_head_ctl%charavalue
         if (iflag_debug.gt.0)                                           &
      &   write(*,*) 'prod_udt_file1_head: ', trim(prod_udt_file1_head)
       end if
 !
-      if (i_product_udt_2 .ne. 0) then
-        prod_udt_file2_head = product_udt_2_head_ctl
+      prod_udt_file2_head = "field/out"
+      if (product_udt_2_head_ctl%iflag .ne. 0) then
+        prod_udt_file2_head = product_udt_2_head_ctl%charavalue
         if (iflag_debug.gt.0)                                           &
      &   write(*,*) 'prod_udt_file2_head: ', trim(prod_udt_file2_head)
       end if
@@ -97,26 +99,30 @@
      &    pu_plt%field_file_fmt_ctl%iflag, ifmt_result_udt_file)
 !
 !
-      if (i_product_udt_1 .ne. 0) then
-        product_field_1_name = product_field_1_ctl
+      product_field_1_name = "velocity"
+      if (product_field_1_ctl%iflag .ne. 0) then
+        product_field_1_name = product_field_1_ctl%charavalue
         if (iflag_debug.gt.0)                                           &
      &   write(*,*) 'product_field_1_name ', trim(product_field_1_name)
       end if
 !
-      if (i_product_udt_2 .ne. 0) then
-        product_field_2_name = product_field_2_ctl
+      product_field_2_name = "magnetic_field"
+      if (product_field_2_ctl%iflag .ne. 0) then
+        product_field_2_name = product_field_2_ctl%charavalue
         if (iflag_debug.gt.0)                                           &
      &   write(*,*) 'product_field_2_name ', trim(product_field_2_name)
       end if
 !
-      if (i_result_field .ne. 0) then
-        result_field_name = result_field_ctl
+      result_field_name =  "velocity"
+      if (result_field_ctl%iflag .ne. 0) then
+        result_field_name = result_field_ctl%charavalue
         if (iflag_debug.gt.0)                                           &
      &   write(*,*) 'result_field_name ', trim(result_field_name)
       end if
 !
-      if (i_product_type .ne. 0) then
-        product_type = product_type_ctl
+      product_type = "Cartesian"
+      if (product_type_ctl%iflag .ne. 0) then
+        product_type = product_type_ctl%charavalue
         if (iflag_debug.gt.0)                                           &
      &   write(*,*) 'product_type ', trim(product_type)
       end if

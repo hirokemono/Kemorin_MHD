@@ -108,7 +108,7 @@
           FEM_elen%filter_conf%f_width(i) = ref_filter_width(i)
         end do
 !
-        call deallocate_ref_filter_ctl
+        call dealloc_control_array_c_r(reference_filter_ctl)
 !
         if (iflag_debug.gt.0)  then
           write(*,*) 'iref_filter_type', iref_filter_type

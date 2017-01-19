@@ -10,6 +10,7 @@
       use m_precision
 !
       use t_ctl_data_4_platforms
+      use t_control_elements
       use m_read_control_elements
       use skip_comment_f
 !
@@ -21,11 +22,12 @@
 !
       type(platform_data_control), save :: para_refine_plt
 !
-      integer(kind = kint) :: nprocs_course_ctl = 0
-      character (len = kchara) :: course_mesh_file_head_ctl
-      character (len = kchara) :: c2f_para_head_ctl
-      character (len = kchara) :: f2c_para_head_ctl
-      character (len = kchara) :: refine_info_para_head_ctl
+      type(read_integer_item), save :: nprocs_course_ctl
+!
+      type(read_character_item), save :: course_mesh_file_head_ctl
+      type(read_character_item), save :: c2f_para_head_ctl
+      type(read_character_item), save :: f2c_para_head_ctl
+      type(read_character_item), save :: refine_info_para_head_ctl
 !
 !
 !   Top level
@@ -55,12 +57,6 @@
      &                      = 'fine_to_course_head_ctl'
       character(len=kchara), parameter :: hd_fine_to_course_ele_head    &
      &                      = 'fine_to_course_ele_head_ctl'
-!
-      integer (kind=kint) :: i_num_course_subdomain =    0
-      integer (kind=kint) :: i_course_mesh_file_head =   0
-      integer (kind=kint) :: i_course_to_fine_p_head =   0
-      integer (kind=kint) :: i_fine_to_course_p_head =   0
-      integer (kind=kint) :: i_fine_to_course_ele_head = 0
 !
 !
       private :: hd_para_refine_tbl_ctl,  i_para_refine_tbl_ctl
@@ -132,19 +128,18 @@
         if(i_course_mesh_para_ctl .gt. 0) exit
 !
 !
-        call read_integer_ctl_item(hd_num_course_subdomain,             &
-     &            i_num_course_subdomain, nprocs_course_ctl)
+        call read_integer_ctl_type(hd_num_course_subdomain,             &
+     &      nprocs_course_ctl)
 !
+        call read_chara_ctl_type(hd_course_mesh_file_head,              &
+     &      course_mesh_file_head_ctl)
+        call read_chara_ctl_type(hd_course_to_fine_p_head,              &
+     &      c2f_para_head_ctl)
+        call read_chara_ctl_type(hd_fine_to_course_p_head,              &
+     &      f2c_para_head_ctl)
 !
-        call read_character_ctl_item(hd_course_mesh_file_head,          &
-     &           i_course_mesh_file_head, course_mesh_file_head_ctl)
-        call read_character_ctl_item(hd_course_to_fine_p_head,          &
-     &           i_course_to_fine_p_head, c2f_para_head_ctl)
-        call read_character_ctl_item(hd_fine_to_course_p_head,          &
-     &           i_fine_to_course_p_head, f2c_para_head_ctl)
-!
-        call read_character_ctl_item(hd_fine_to_course_ele_head,        &
-     &           i_fine_to_course_ele_head, refine_info_para_head_ctl)
+        call read_chara_ctl_type(hd_fine_to_course_ele_head,            &
+     &      refine_info_para_head_ctl)
       end do
 !
       end subroutine read_ctl_data_4_course_mesh

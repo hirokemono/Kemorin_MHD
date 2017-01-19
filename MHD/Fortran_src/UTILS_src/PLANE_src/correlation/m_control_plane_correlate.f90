@@ -33,8 +33,8 @@
       type(read_character_item), save :: ref_mesh_head_ctl
       type(read_character_item), save :: ref_mesh_fmt_ctl
 !
-      character(len = kchara) :: cor_udt_head_ctl = "field/out"
-      character(len = kchara) :: ref_udt_head_ctl = "field_ref/out"
+      type(read_character_item), save :: cor_udt_head_ctl
+      type(read_character_item), save :: ref_udt_head_ctl
 !
 !   Top level
 !
@@ -68,9 +68,6 @@
      &         :: hd_udt_head_ctl =     'correlated_udt_header'
       character(len=kchara), parameter                                  &
      &         :: hd_ref_udt_head_ctl = 'refered_udt_header'
-!
-      integer (kind=kint) :: i_udt_head_ctl =       0
-      integer (kind=kint) :: i_ref_udt_head_ctl =   0
 !
 !>      label for block
       character(len=kchara), parameter                                  &
@@ -165,10 +162,8 @@
      &     (hd_ref_mesh_head_ctl, ref_mesh_head_ctl)
         call read_chara_ctl_type(hd_ref_mesh_fmt_ctl, ref_mesh_fmt_ctl)
 !
-        call read_character_ctl_item(hd_udt_head_ctl,                   &
-     &        i_udt_head_ctl, cor_udt_head_ctl)
-        call read_character_ctl_item(hd_ref_udt_head_ctl,               &
-     &        i_ref_udt_head_ctl, ref_udt_head_ctl)
+        call read_chara_ctl_type(hd_udt_head_ctl, cor_udt_head_ctl)
+        call read_chara_ctl_type(hd_ref_udt_head_ctl, ref_udt_head_ctl)
       end do
 !
       end subroutine read_correlate_file_heads

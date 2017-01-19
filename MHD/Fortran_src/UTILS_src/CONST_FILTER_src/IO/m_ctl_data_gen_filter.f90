@@ -3,10 +3,6 @@
 !
 !      Written by H. Matsui on July, 2006
 !
-!      subroutine deallocate_mom_param_ctl
-!      subroutine deallocate_ref_filter_ctl
-!      subroutine deallocate_horiz_filter_ctl
-!
 !      subroutine read_filter_param_ctl
 !
       module m_ctl_data_gen_filter
@@ -141,23 +137,6 @@
       contains
 !
 !  ---------------------------------------------------------------------
-!
-      subroutine deallocate_ref_filter_ctl
-!
-      call dealloc_control_array_c_r(reference_filter_ctl)
-!
-      end subroutine deallocate_ref_filter_ctl
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine deallocate_horiz_filter_ctl
-!
-      call dealloc_control_array_c_r(horizontal_filter_ctl)
-!
-      end subroutine deallocate_horiz_filter_ctl
-!
-!  ---------------------------------------------------------------------
-!   --------------------------------------------------------------------
 !
       subroutine read_filter_param_ctl
 !

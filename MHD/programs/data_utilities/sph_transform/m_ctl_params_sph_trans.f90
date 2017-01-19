@@ -121,14 +121,16 @@
      &   (fld_st_ctl%field_ctl, field_STR, ierr)
 !
 !
-      if(i_cmb_grp .gt. 0) then
-        cmb_radial_grp = cmb_radial_grp_ctl
+      cmb_radial_grp =  'CMB'
+      if(cmb_radial_grp_ctl%iflag .gt. 0) then
+        cmb_radial_grp = cmb_radial_grp_ctl%charavalue
       end if
-      if(i_icb_grp .gt. 0) then
-        icb_radial_grp = icb_radial_grp_ctl
+      icb_radial_grp = 'ICB'
+      if(icb_radial_grp_ctl%iflag .gt. 0) then
+        icb_radial_grp = icb_radial_grp_ctl%charavalue
       end if
-      if(i_gauss_file_name .gt. 0) then
-        d_gauss%fhead_gauss = gauss_sph_fhead_ctl
+      if(gauss_sph_fhead_ctl%iflag .gt. 0) then
+        d_gauss%fhead_gauss = gauss_sph_fhead_ctl%charavalue
       end if
 !
       end subroutine set_control_4_sph_transform
@@ -177,8 +179,8 @@
 !
 !    file header for field data
 !
-      if(i_zm_sph_spec_file .gt. 0) then
-        zm_spec_file_head = zm_spec_file_head_ctl
+      if(zm_spec_file_head_ctl%iflag .gt. 0) then
+        zm_spec_file_head = zm_spec_file_head_ctl%charavalue
       end if
 !
 !   using rstart data for spherical dynamo
@@ -212,8 +214,8 @@
 !
 !     file header for reduced data
 !
-      if(i_zm_field_file .gt. 0) then
-        zonal_udt_head = zonal_udt_head_ctl
+      if(zonal_udt_head_ctl%iflag .gt. 0) then
+        zonal_udt_head = zonal_udt_head_ctl%charavalue
       end if
 !
 !      stepping parameter
@@ -227,14 +229,16 @@
      &   (fld_st_ctl%field_ctl, field_STR, ierr)
 !
 !
-      if(i_cmb_grp .gt. 0) then
-        cmb_radial_grp = cmb_radial_grp_ctl
+      cmb_radial_grp =  'CMB'
+      if(cmb_radial_grp_ctl%iflag .gt. 0) then
+        cmb_radial_grp = cmb_radial_grp_ctl%charavalue
       end if
-      if(i_icb_grp .gt. 0) then
-        icb_radial_grp = icb_radial_grp_ctl
+      icb_radial_grp = 'ICB'
+      if(icb_radial_grp_ctl%iflag .gt. 0) then
+        icb_radial_grp = icb_radial_grp_ctl%charavalue
       end if
-      if(i_gauss_file_name .gt. 0) then
-        d_gauss%fhead_gauss = gauss_sph_fhead_ctl
+      if(gauss_sph_fhead_ctl%iflag .gt. 0) then
+        d_gauss%fhead_gauss = gauss_sph_fhead_ctl%charavalue
       end if
 !
       end subroutine s_set_ctl_data_4_sph_trans
@@ -246,7 +250,7 @@
       use m_ctl_data_4_sph_trans
 !
 !
-      if(i_zm_sph_spec_file .gt. 0) then
+      if(zm_spec_file_head_ctl%iflag .gt. 0) then
         sph_rst_file_head =    zm_spec_file_head
       end if
 !

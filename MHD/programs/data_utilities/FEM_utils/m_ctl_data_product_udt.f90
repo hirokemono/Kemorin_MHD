@@ -15,6 +15,7 @@
       use m_read_control_elements
       use t_ctl_data_4_platforms
       use t_ctl_data_4_time_steps
+      use t_control_elements
       use skip_comment_f
 !
 !
@@ -34,15 +35,14 @@
 !>      Structure for time stepping control
       type(time_data_control), save :: t_pu_ctl
 !
-      character(len = kchara) :: product_udt_1_head_ctl = "field/out"
-      character(len = kchara) :: product_udt_2_head_ctl = "field/out"
+      type(read_character_item), save :: product_udt_1_head_ctl
+      type(read_character_item), save :: product_udt_2_head_ctl
 !
-      character(len = kchara) :: product_field_1_ctl = "velocity"
-      character(len = kchara) :: product_field_2_ctl = "magnetic_field"
-      character(len = kchara) :: result_field_ctl =  "velocity"
+      type(read_character_item), save :: product_field_1_ctl
+      type(read_character_item), save :: product_field_2_ctl
+      type(read_character_item), save :: result_field_ctl
 !
-      character(len = kchara) :: product_type_ctl = "Cartesian"
-!
+      type(read_character_item), save :: product_type_ctl
 !     Top level for products
       character(len=kchara), parameter ::                               &
      &                  hd_prod_control = 'products_udts'
@@ -65,9 +65,6 @@
       character(len=kchara), parameter                                  &
      &      :: hd_product_udt_2 =   'product_udt_2_head_ctl'
 !
-      integer (kind=kint) :: i_product_udt_1 =   0
-      integer (kind=kint) :: i_product_udt_2 =   0
-!
 !     3rd level for fields
 !
       character(len=kchara), parameter                                  &
@@ -88,11 +85,6 @@
      &      :: hd_result_field =    'result_field_ctl'
       character(len=kchara), parameter                                  &
      &      :: hd_product_type =    'product_type_ctl'
-!
-      integer (kind=kint) :: i_product_field_1 = 0
-      integer (kind=kint) :: i_product_field_2 = 0
-      integer (kind=kint) :: i_result_field =    0
-      integer (kind=kint) :: i_product_type =    0
 !
       private :: prod_ctl_file_code
       private :: fname_prod_ctl
@@ -169,10 +161,10 @@
         if(i_prod_files .gt. 0) exit
 !
 !
-        call read_character_ctl_item(hd_product_udt_1,                  &
-     &        i_product_udt_1, product_udt_1_head_ctl)
-        call read_character_ctl_item(hd_product_udt_2,                  &
-     &        i_product_udt_2, product_udt_2_head_ctl)
+        call read_chara_ctl_type(hd_product_udt_1,                      &
+     &      product_udt_1_head_ctl)
+        call read_chara_ctl_type(hd_product_udt_2,                      &
+     &      product_udt_2_head_ctl)
       end do
 !
       end subroutine read_prod_files_ctl
@@ -194,14 +186,12 @@
         call read_control_time_step_data                                &
      &     (hd_time_step, i_tstep, t_pu_ctl)
 !
-        call read_character_ctl_item(hd_result_field,                   &
-     &            i_result_field, result_field_ctl)
-        call read_character_ctl_item(hd_product_field_1,                &
-     &            i_product_field_1, product_field_1_ctl)
-        call read_character_ctl_item(hd_product_field_2,                &
-     &            i_product_field_2, product_field_2_ctl)
-        call read_character_ctl_item(hd_product_type,                   &
-     &            i_product_type, product_type_ctl)
+        call read_chara_ctl_type(hd_result_field, result_field_ctl)
+        call read_chara_ctl_type(hd_product_field_1,                    &
+     &      product_field_1_ctl)
+        call read_chara_ctl_type(hd_product_field_2,                    &
+     &      product_field_2_ctl)
+        call read_chara_ctl_type(hd_product_type, product_type_ctl)
       end do
 !
       end subroutine read_product_model_ctl

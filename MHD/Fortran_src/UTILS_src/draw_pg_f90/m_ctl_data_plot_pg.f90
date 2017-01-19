@@ -28,19 +28,17 @@
 !>      Structure for time stepping control
       type(time_data_control), save :: t_pg_ctl
 !
-      character(len=kchara) :: start_ele_grp_name_ctl
+      type(read_character_item), save :: start_ele_grp_name_ctl
 !
-      character(len=kchara) :: contour_type_ctl = 'Line'
-      character(len=kchara) :: color_mode_ctl =   'Rainbow'
+      type(read_character_item), save  :: contour_type_ctl
+      type(read_character_item), save  :: color_mode_ctl
 !
-      real(kind = kreal) :: time_pg
-!
-      integer(kind = kint) :: num_panels_ctl = 1
+      type(read_integer_item), save :: num_panels_ctl
 !
 !    parameter for z_plane
 !
-      real(kind = kreal) :: outer_radius_ctl
-      real(kind = kreal) :: ro_ri_ratio_ctl
+      type(read_real_item), save :: outer_radius_ctl
+      type(read_real_item), save :: ro_ri_ratio_ctl
 !
 !   parameter for plane model
 !
@@ -48,13 +46,13 @@
 !
 !   parameter for map
 !
-      integer(kind = kint) :: radial_ID_ctl
+      type(read_integer_item), save :: radial_ID_ctl
       type(read_character_item), save :: pg_grid_type_ctl
 !
 !
-      character(len=kchara) :: psf_data_fmt_ctl =   'ucd'
+      type(read_character_item), save :: psf_data_fmt_ctl
       type(read_character_item), save :: psf_file_head_ctl
-      character(len=kchara) :: map_grid_file_ctl
+      type(read_character_item), save :: map_grid_file_ctl
 !
 !>      Structure for list of field
 !!@n      plot_field_ctl%c1_tbl: Name of field
@@ -77,12 +75,13 @@
 !
 !    parameter for grouping plots
 !
-      character(len=kchara) :: group_mesh_head_ctl = 'grouping_mesh'
-      character(len=kchara) :: group_data_name_ctl = 'correlation.dat'
-      integer(kind = kint) :: istep_drmd_grp_ctl
-      integer(kind = kint) :: istart_ele_grp_ctl, ngrp_ele_grp_ctl
+      type(read_character_item), save :: group_mesh_head_ctl
+      type(read_character_item), save :: group_data_name_ctl
+      type(read_integer_item), save :: istep_drmd_grp_ctl
+      type(read_integer_item), save :: istart_ele_grp_ctl
+      type(read_integer_item), save ::ngrp_ele_grp_ctl
 !
-      character(len=kchara) :: time_average_data_ctl = 'NO'
+      type(read_character_item), save :: time_average_data_ctl
 !
 !     top level
 !
@@ -126,9 +125,6 @@
      &                    :: hd_color_mode_ctl =   'color_mode_ctl'
       character(len=kchara), parameter                                  &
      &                    :: hd_num_panels_ctl =   'num_panels_ctl'
-      integer(kind= kint) :: i_contour_type_ctl = 0
-      integer(kind= kint) :: i_color_mode_ctl =   0
-      integer(kind= kint) :: i_num_panels_ctl =   0
 !
 !     flags for plotting paramteres
 !
@@ -144,9 +140,7 @@
      &                    :: hd_ctr_range_ctl =    'contour_range_ctl'
       character(len=kchara), parameter                                  &
      &                    :: hd_vec_scale_ctl =    'vector_scale_ctl'
-      integer(kind= kint) :: i_psf_data_fmt_ctl =  0
       integer(kind= kint) :: i_psf_data_ctl =      0
-      integer(kind= kint) :: i_map_grid_file =     0
       integer(kind= kint) :: i_ntot_range_ctl =    0
       integer(kind= kint) :: i_ntot_scale_ctl =    0
 !
@@ -158,8 +152,6 @@
      &                    :: hd_ro_ri_ratio_ctl =  'ro_ri_ratio_ctl'
       character(len=kchara), parameter                                  &
      &                    :: hd_plane_size_ctl =   'plane_size_ctl'
-      integer(kind= kint) :: i_outer_radius_ctl = 0
-      integer(kind= kint) :: i_ro_ri_ratio_ctl =  0
 !
 !     flags for sphere map
 !
@@ -167,7 +159,6 @@
      &                    :: hd_radial_ID_ctl = 'radial_ID_ctl'
       character(len=kchara), parameter                                  &
      &                    :: hd_sph_grid_type = 'sph_grid_type_ctl'
-      integer(kind= kint) :: i_radial_ID_ctl = 0
 !
 !     flags for grouping plot
 !
@@ -183,13 +174,7 @@
      &                    :: hd_ngrp_ele_grp = 'num_element_grp_ctl'
       character(len=kchara), parameter :: hd_time_average_data          &
      &                     = 'time_average_data_ctl'
-      integer(kind= kint) :: i_group_mesh_head = 0
-      integer(kind= kint) :: i_group_data_name = 0
-      integer(kind= kint) :: i_istep_drmd_grp = 0
       integer(kind= kint) :: i_start_ele_grp =      0
-      integer(kind= kint) :: i_start_ele_grp_name = 0
-      integer(kind= kint) :: i_ngrp_ele_grp = 0
-      integer(kind= kint) :: i_time_average_data = 0
 !
 !
       private :: fname_pgplot_ctl, fname_drmed_grp_ctl
@@ -335,13 +320,10 @@
         if(i_pgplot_param .gt. 0) exit
 !
 !
-        call read_character_ctl_item(hd_contour_type_ctl,               &
-     &        i_contour_type_ctl, contour_type_ctl)
-        call read_character_ctl_item(hd_color_mode_ctl,                 &
-     &        i_color_mode_ctl, color_mode_ctl)
+        call read_chara_ctl_type(hd_contour_type_ctl, contour_type_ctl)
+        call read_chara_ctl_type(hd_color_mode_ctl, color_mode_ctl)
 !
-        call read_integer_ctl_item(hd_num_panels_ctl,                   &
-     &        i_num_panels_ctl, num_panels_ctl)
+        call read_integer_ctl_type(hd_num_panels_ctl, num_panels_ctl)
       end do
 !
       end subroutine read_ctl_data_4_pgplot_param
@@ -372,12 +354,11 @@
         call read_control_array_i2_r                                    &
      &     (hd_vec_scale_ctl, vector_scale_ctl)
 !
-        call read_character_ctl_item(hd_psf_data_fmt_ctl,               &
-     &          i_psf_data_fmt_ctl, psf_data_fmt_ctl)
-        call read_character_ctl_item(hd_psf_data_ctl,                   &
-     &          i_psf_data_ctl, psf_file_head_ctl%charavalue)
-        call read_character_ctl_item(hd_map_grid_file,                  &
-     &          i_map_grid_file, map_grid_file_ctl)
+        call read_chara_ctl_type(hd_psf_data_fmt_ctl,                   &
+     &      psf_data_fmt_ctl)
+        call read_chara_ctl_type(hd_psf_data_ctl, psf_file_head_ctl)
+        call read_chara_ctl_type(hd_map_grid_file,                      &
+     &      map_grid_file_ctl)
       end do
 !
       end subroutine read_ctl_data_4_surf_plot
@@ -400,10 +381,8 @@
         if(i_z_plane_ctl .gt. 0) exit
 !
 !
-        call read_real_ctl_item(hd_outer_radius_ctl,                    &
-     &        i_outer_radius_ctl, outer_radius_ctl)
-        call read_real_ctl_item(hd_ro_ri_ratio_ctl,                     &
-     &        i_ro_ri_ratio_ctl, ro_ri_ratio_ctl)
+        call read_real_ctl_type(hd_outer_radius_ctl, outer_radius_ctl)
+        call read_real_ctl_type(hd_ro_ri_ratio_ctl, ro_ri_ratio_ctl)
 !
         call read_real2_ctl_type(hd_plane_size_ctl, pg_plane_size_ctl)
       end do
@@ -430,8 +409,7 @@
 !
         call read_chara_ctl_type(hd_sph_grid_type, pg_grid_type_ctl)
 !
-        call read_integer_ctl_item(hd_radial_ID_ctl,                    &
-     &        i_radial_ID_ctl, radial_ID_ctl)
+        call read_integer_ctl_type(hd_radial_ID_ctl, radial_ID_ctl)
       end do
 !
       end subroutine read_ctl_data_4_sph_map
@@ -454,19 +432,18 @@
         if(i_grouping_plot .gt. 0) exit
 !
 !
-        call read_character_ctl_item(hd_group_mesh_head,                &
-     &        i_group_mesh_head, group_mesh_head_ctl)
-        call read_character_ctl_item(hd_group_data_name,                &
-     &        i_group_data_name, group_data_name_ctl)
-        call read_character_ctl_item(hd_start_ele_grp_name,             &
-     &        i_start_ele_grp_name, start_ele_grp_name_ctl)
-        call read_character_ctl_item(hd_time_average_data,              &
-     &        i_time_average_data, time_average_data_ctl)
+        call read_chara_ctl_type(hd_group_mesh_head,                    &
+     &      group_mesh_head_ctl)
+        call read_chara_ctl_type(hd_group_data_name,                    &
+     &      group_data_name_ctl)
+        call read_chara_ctl_type(hd_start_ele_grp_name,                 &
+     &      start_ele_grp_name_ctl)
+        call read_chara_ctl_type(hd_time_average_data,                  &
+     &      time_average_data_ctl)
 !
-        call read_integer_ctl_item(hd_istep_drmd_grp,                   &
-     &        i_istep_drmd_grp, istep_drmd_grp_ctl)
-        call read_integer_ctl_item(hd_ngrp_ele_grp,                     &
-     &        i_ngrp_ele_grp, ngrp_ele_grp_ctl)
+        call read_integer_ctl_type(hd_istep_drmd_grp,                   &
+     &      istep_drmd_grp_ctl)
+        call read_integer_ctl_type(hd_ngrp_ele_grp, ngrp_ele_grp_ctl)
       end do
 !
       end subroutine read_ctl_data_4_drmd_grp

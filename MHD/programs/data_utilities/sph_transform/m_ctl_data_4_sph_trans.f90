@@ -29,12 +29,12 @@
 !>      Structure for time stepping control
       type(time_data_control), save :: t_st_ctl
 !
-      character(len = kchara) :: zm_spec_file_head_ctl
-      character(len = kchara) :: zonal_udt_head_ctl
+      type(read_character_item), save :: zm_spec_file_head_ctl
+      type(read_character_item), save :: zonal_udt_head_ctl
 !
-      character(len=kchara) :: cmb_radial_grp_ctl =  'CMB'
-      character(len=kchara) :: icb_radial_grp_ctl =  'ICB'
-      character(len=kchara) :: gauss_sph_fhead_ctl
+      type(read_character_item), save :: cmb_radial_grp_ctl
+      type(read_character_item), save :: icb_radial_grp_ctl
+      type(read_character_item), save :: gauss_sph_fhead_ctl
 !
       type(read_character_item) :: Legendre_trans_loop_ctl
       type(read_character_item) :: FFT_lib_ctl
@@ -92,13 +92,6 @@
      &                        'radial_ICB_group_name'
       character(len=kchara), parameter :: hd_gauss_file_name            &
      &                        = 'sph_gauss_coefs_head_ctl'
-!
-      integer (kind=kint) :: i_zm_sph_spec_file =    0
-      integer (kind=kint) :: i_zm_field_file =       0
-!
-      integer (kind=kint) :: i_cmb_grp =         0
-      integer (kind=kint) :: i_icb_grp =         0
-      integer (kind=kint) :: i_gauss_file_name = 0
 !
       private :: control_file_code, control_file_name
       private :: hd_sph_trans_ctl, i_sph_trans_ctl
@@ -208,23 +201,19 @@
         call read_integer_ctl_type(hd_legendre_vect_len,                &
      &      legendre_vector_len_ctl)
 !
-        call read_character_ctl_item(hd_zm_sph_spec_file,               &
-     &          i_zm_sph_spec_file, zm_spec_file_head_ctl)
-        call read_character_ctl_item(hd_zm_field_file,                  &
-     &          i_zm_field_file, zonal_udt_head_ctl)
-        call read_character_ctl_item(hd_cmb_grp,                        &
-     &          i_cmb_grp, cmb_radial_grp_ctl)
-!
-        call read_character_ctl_item(hd_icb_grp,                        &
-     &          i_icb_grp, icb_radial_grp_ctl)
+        call read_chara_ctl_type(hd_zm_sph_spec_file,                   &
+     &      zm_spec_file_head_ctl)
+        call read_chara_ctl_type(hd_zm_field_file, zonal_udt_head_ctl)
+        call read_chara_ctl_type(hd_cmb_grp, cmb_radial_grp_ctl)
+        call read_chara_ctl_type(hd_icb_grp, icb_radial_grp_ctl)
 !
         call read_chara_ctl_type(hd_sph_transform_mode,                 &
      &      Legendre_trans_loop_ctl)
         call read_chara_ctl_type(hd_FFT_package, FFT_lib_ctl)
         call read_chara_ctl_type(hd_import_mode, import_mode_ctl)
 !
-        call read_character_ctl_item(hd_gauss_file_name,                &
-     &          i_gauss_file_name, gauss_sph_fhead_ctl)
+        call read_chara_ctl_type(hd_gauss_file_name,                    &
+     &      gauss_sph_fhead_ctl)
       end do
 !
       end subroutine read_sph_trans_params_ctl

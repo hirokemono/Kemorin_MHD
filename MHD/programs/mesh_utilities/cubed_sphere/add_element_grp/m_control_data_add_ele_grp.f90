@@ -17,6 +17,7 @@
       use m_read_control_elements
       use t_ctl_data_4_platforms
       use t_read_control_arrays
+      use t_control_elements
       use skip_comment_f
 !
       implicit    none
@@ -28,7 +29,7 @@
       type(platform_data_control), save :: source_plt
       type(platform_data_control), save :: added_plt
 !
-      character (len = kchara) :: sph_grp_direction_ctl
+      type(read_character_item), save :: sph_grp_direction_ctl
 !
 !>      Structure for element grouping in radial direction
 !!@n      r_ele_grouping_ctl%c_tbl: Name of each grouping
@@ -86,9 +87,6 @@
      &                      = 's_range_ctl'
       character(len=kchara), parameter :: hd_num_z_ele_grping           &
      &                      = 'z_range_ctl'
-!
-      integer (kind=kint) :: i_layered_mesh_head = 0
-      integer (kind=kint) :: i_2nd_grp_direction = 0
 !
       private :: hd_add_ele_grp_ctl, i_add_ele_grp_ctl
       private :: hd_files_ctl, i_files_ctl
@@ -169,8 +167,8 @@
      &      (hd_num_z_ele_grping, z_ele_grouping_ctl)
 !
 !
-        call read_character_ctl_item(hd_2nd_grp_direction,              &
-     &          i_2nd_grp_direction, sph_grp_direction_ctl)
+        call read_chara_ctl_type(hd_2nd_grp_direction,                  &
+     &      sph_grp_direction_ctl)
       end do
 !
       end subroutine read_ctl_data_4_add_2d_egrp

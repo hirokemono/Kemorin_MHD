@@ -28,8 +28,10 @@
       use m_add_ele_grp_parameter
       use set_ctl_parallel_platform
       use set_control_platform_data
+      use skip_comment_f
 !
       real(kind = kreal) :: pi
+      character(len=kchara) :: tmpchara
 !
 !
       call check_control_num_domains(source_plt)
@@ -38,41 +40,22 @@
       call set_control_mesh_file_def                                    &
      &   (def_new_mesh_head, added_plt, modified_mesh_file)
 !
-      if (i_2nd_grp_direction .gt. 0) then
-        if    (   sph_grp_direction_ctl .eq. 'sphere'                   &
-     &       .or. sph_grp_direction_ctl .eq. 'Sphere'                   &
-     &       .or. sph_grp_direction_ctl .eq. 'SPHERE'                   &
-     &       .or. sph_grp_direction_ctl .eq. 'r_theta'                  &
-     &       .or. sph_grp_direction_ctl .eq. 'R_Theta'                  &
-     &       .or. sph_grp_direction_ctl .eq. 'R_THETA'                  &
-     &       .or. sph_grp_direction_ctl .eq. 'Theta'                    &
-     &       .or. sph_grp_direction_ctl .eq. 'theta'                    &
-     &       .or. sph_grp_direction_ctl .eq. 'Theta'                    &
-     &       .or. sph_grp_direction_ctl .eq. 'THETA'                    &
-     &       .or. sph_grp_direction_ctl .eq. 'elevation'                &
-     &       .or. sph_grp_direction_ctl .eq. 'Elevation'                &
-     &       .or. sph_grp_direction_ctl .eq. 'ELEVATION') then
+      if (sph_grp_direction_ctl%iflag .gt. 0) then
+        tmpchara = sph_grp_direction_ctl%charavalue
+        if     (cmp_no_case(tmpchara, 'sphere')                         &
+     &     .or. cmp_no_case(tmpchara, 'r_theta')                        &
+     &     .or. cmp_no_case(tmpchara, 'theta')                          &
+     &     .or. cmp_no_case(tmpchara, 'elevation'))then
           iflag_grping_direction = 0
-        else if(  sph_grp_direction_ctl .eq. 'cylindrical_r_z'          &
-     &       .or. sph_grp_direction_ctl .eq. 'Cylindrical_R_Z'          &
-     &       .or. sph_grp_direction_ctl .eq. 'CYLINDRICAL_R_Z'          &
-     &       .or. sph_grp_direction_ctl .eq. 's_z'                      &
-     &       .or. sph_grp_direction_ctl .eq. 'S_Z'                      &
-     &       .or. sph_grp_direction_ctl .eq. 'cyrindrical'              &
-     &       .or. sph_grp_direction_ctl .eq. 'Cyrindrical'              &
-     &       .or. sph_grp_direction_ctl .eq. 'CYRINDRICAL'              &
-     &       .or. sph_grp_direction_ctl .eq. 's'                        &
-     &       .or. sph_grp_direction_ctl .eq. 'S') then
+        else if(cmp_no_case(tmpchara, 'cylindrical_r_z')                &
+     &     .or. cmp_no_case(tmpchara, 's_z')                            &
+     &     .or. cmp_no_case(tmpchara, 'cyrindrical')                    &
+     &     .or. cmp_no_case(tmpchara, 's')) then
           iflag_grping_direction = 2
-        else if(  sph_grp_direction_ctl .eq. 'z_theta'                  &
-     &       .or. sph_grp_direction_ctl .eq. 'Z_Theta'                  &
-     &       .or. sph_grp_direction_ctl .eq. 'Z_THETA') then
+        else if(cmp_no_case(tmpchara, 'z_theta')) then
           iflag_grping_direction = 3
-        else if(  sph_grp_direction_ctl .eq. 'r_cylindrical_r'          &
-     &       .or. sph_grp_direction_ctl .eq. 'R_Cylindrical_R'          &
-     &       .or. sph_grp_direction_ctl .eq. 'R_CYLINDRICAL_R'          &
-     &       .or. sph_grp_direction_ctl .eq. 'r_s'                      &
-     &       .or. sph_grp_direction_ctl .eq. 'r_s') then
+        else if(cmp_no_case(tmpchara, 'r_cylindrical_r')                &
+     &     .or. cmp_no_case(tmpchara, 'r_s')) then
           iflag_grping_direction = 1
         else
           call calypso_MPI_abort                                        &

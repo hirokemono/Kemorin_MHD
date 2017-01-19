@@ -54,51 +54,51 @@
 !
       use m_ctl_data_ele_grp_udt
       use set_parallel_file_name
+      use skip_comment_f
 !
       character(len = kchara) :: fhead_tmp
 !
 !
-      if(i_group_mesh_head .gt. 0) then
-        layerd_mesh_head = group_mesh_head_ctl
+      layerd_mesh_head =  "grouping_mesh"
+      if(group_mesh_head_ctl%iflag .gt. 0) then
+        layerd_mesh_head = group_mesh_head_ctl%charavalue
       end if
 !
-      if(i_group_data_name .gt. 0) then
-        group_data_file_name = grp_evo_data_ctl
+      if(grp_evo_data_ctl%iflag .gt. 0) then
+        group_data_file_name = grp_evo_data_ctl%charavalue
       else
         write(*,*) 'set grouping data file name'
         stop
       end if
 !
-      if(i_group_udt_head .gt. 0) then
-        grp_ucd_data_head = grp_ucd_data_head_ctl
+      if(grp_ucd_data_head_ctl%iflag .gt. 0) then
+        grp_ucd_data_head = grp_ucd_data_head_ctl%charavalue
       else
         grp_ucd_data_head = group_data_file_name
       end if
 !
-      if(i_ngrp_ele_grp .gt. 0) then
-        num_ele_grp_drmd = ngrp_ele_grp_ctl
+      if(ngrp_ele_grp_ctl%iflag .gt. 0) then
+        num_ele_grp_drmd = ngrp_ele_grp_ctl%intvalue
       else
         num_ele_grp_drmd = -2
       end if
 !
       iflag_time_averaged = 0
-      if(i_time_average_data .gt. 0) then
-        if(time_average_data_ctl .eq.     'yes'                         &
-     &    .or. time_average_data_ctl .eq. 'Yes'                         &
-     &    .or. time_average_data_ctl .eq. 'YES') then
+      if(time_average_data_ctl%iflag .gt. 0) then
+        if(yes_flag(time_average_data_ctl%charavalue )) then
           iflag_time_averaged = 1
         end if
       end if
 !
       call set_grp_data_mode_by_data_name
 !
-      if(i_start_ele_grp_name .gt. 0) then
-        start_ele_grp_name = start_ele_grp_name_ctl
+      if(start_ele_grp_name_ctl%iflag .gt. 0) then
+        start_ele_grp_name = start_ele_grp_name_ctl%charavalue
       else
         write(start_ele_grp_name,'(a)') 'all'
       end if
-      if(i_ngrp_ele_grp .gt. 0) then
-        num_ele_grp_drmd = ngrp_ele_grp_ctl
+      if(ngrp_ele_grp_ctl%iflag .gt. 0) then
+        num_ele_grp_drmd = ngrp_ele_grp_ctl%intvalue
       end if
 !
 !

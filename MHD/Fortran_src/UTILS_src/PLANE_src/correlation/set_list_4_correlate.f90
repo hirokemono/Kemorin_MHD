@@ -51,8 +51,15 @@
       call set_file_control_params(def_mesh_file_head,                  &
      &    ref_mesh_head_ctl, ref_mesh_fmt_ctl, ref_mesh_file)
 !
-      cor_udt_header = cor_udt_head_ctl
-      ref_udt_header = ref_udt_head_ctl
+      cor_udt_header = "field/out"
+      if(cor_udt_head_ctl%iflag .gt. 0) then
+        cor_udt_header = cor_udt_head_ctl%charavalue
+      end if
+!
+      ref_udt_header = "field_ref/out"
+      if(ref_udt_head_ctl%iflag .gt. 0) then
+        ref_udt_header = ref_udt_head_ctl%charavalue
+      end if
 !
       end subroutine set_ctl_params_correlate
 !

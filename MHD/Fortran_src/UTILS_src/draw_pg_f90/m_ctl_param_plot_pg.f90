@@ -19,7 +19,6 @@
       integer(kind = kint) :: ist_pg, ied_pg, inc_pg
       real(kind = kreal) :: start_time_pg
       real(kind = kreal) :: delta_time_pg
-      real(kind = kreal) :: time_pg
 !
       integer(kind = kint) :: npanel_window = 1
       real(kind = kreal) ::  flame

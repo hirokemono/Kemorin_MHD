@@ -117,8 +117,8 @@
       f_width =   reference_filter_ctl%vect(1)
       f_width_h = horizontal_filter_ctl%vect(1)
 !
-      call deallocate_ref_filter_ctl
-      call deallocate_horiz_filter_ctl
+      call dealloc_control_array_c_r(reference_filter_ctl)
+      call dealloc_control_array_c_r(horizontal_filter_ctl)
 !
       if      (cmp_no_case(type_filter_z, 'tophat')) then
        iflag_filter = 0

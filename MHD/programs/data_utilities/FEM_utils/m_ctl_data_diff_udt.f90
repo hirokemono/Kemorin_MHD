@@ -20,12 +20,24 @@
       use t_ctl_data_4_time_steps
       use t_ctl_data_ele_layering
       use t_ctl_data_4_fem_int_pts
+      use t_control_elements
       use calypso_mpi
       use skip_comment_f
 !
 !
       implicit  none
 !
+!
+      character(len = kchara), parameter                                &
+     &                 :: fname_diff_ctl = "ctl_diff_udt"
+      character(len = kchara), parameter                                &
+     &                 :: fname_ave_ctl =  "ctl_ave_udt"
+      character(len = kchara), parameter                                &
+     &                 :: fname_prod_ctl = "ctl_prod_udt"
+      character(len = kchara), parameter                                &
+     &                 :: fname_corr_ctl = "ctl_correlate_udt"
+      character(len = kchara), parameter                                &
+     &                 :: fname_grp_patch_ctl = "ctl_med_group_patch"
 !
       integer(kind = kint), parameter :: diff_ctl_file_code = 11
 !
@@ -43,28 +55,17 @@
       type(fem_intergration_control), save  :: fint_d_ctl
 !
 !
-      character(len = kchara), parameter                                &
-     &                 :: fname_diff_ctl = "ctl_diff_udt"
-      character(len = kchara), parameter                                &
-     &                 :: fname_ave_ctl =  "ctl_ave_udt"
-      character(len = kchara), parameter                                &
-     &                 :: fname_prod_ctl = "ctl_prod_udt"
-      character(len = kchara), parameter                                &
-     &                 :: fname_corr_ctl = "ctl_correlate_udt"
-      character(len = kchara), parameter                                &
-     &                 :: fname_grp_patch_ctl = "ctl_med_group_patch"
+      type(read_character_item), save :: ref_udt_head_ctl
+      type(read_character_item), save :: tgt_udt_head_ctl
 !
+      type(read_character_item), save :: product_field_ctl
+      type(read_character_item), save :: correlate_fld_ctl
+      type(read_character_item), save :: correlate_cmp_ctl
 !
-      character(len = kchara) :: ref_udt_head_ctl = "field/out"
-      character(len = kchara) :: tgt_udt_head_ctl = "field/out"
+      type(read_character_item), save :: correlate_coord_ctl
 !
-      character(len = kchara) :: product_field_ctl =  "velocity"
-      character(len = kchara) :: correlate_fld_ctl =  "velocity"
-      character(len = kchara) :: correlate_cmp_ctl =  "norm"
+      type(read_character_item), save :: group_mesh_head_ctl
 !
-      character(len = kchara) :: correlate_coord_ctl = "Cartesian"
-!
-      character(len = kchara) :: group_mesh_head_ctl = "grouping_mesh"
 !
 !     Top level for difference
       character(len=kchara), parameter ::                               &
@@ -100,9 +101,6 @@
       character(len=kchara), parameter                                  &
      &         :: hd_tgt_udt_head_ctl = 'target_field_header_ctl'
 !
-      integer (kind=kint) :: i_ref_udt_head_ctl = 0
-      integer (kind=kint) :: i_tgt_udt_head_ctl = 0
-!
 !     3rd level for fields
 !
       character(len=kchara), parameter                                  &
@@ -115,12 +113,6 @@
      &      :: hd_correlate_coord = 'correlate_coordinate_ctl'
       character(len=kchara), parameter                                  &
      &      :: hd_group_mesh_head = 'grouping_mesh_head_ctl'
-!
-      integer (kind=kint) :: i_prod_name =       0
-      integer (kind=kint) :: i_corr_fld_name =   0
-      integer (kind=kint) :: i_corr_cmp_name =   0
-      integer (kind=kint) :: i_correlate_coord = 0
-      integer (kind=kint) :: i_group_mesh_head = 0
 !
       private :: diff_ctl_file_code
       private :: fname_diff_ctl, fname_ave_ctl
@@ -272,10 +264,8 @@
         if(i_diff_files .gt. 0) exit
 !
 !
-        call read_character_ctl_item(hd_ref_udt_head_ctl,               &
-     &        i_ref_udt_head_ctl, ref_udt_head_ctl)
-        call read_character_ctl_item(hd_tgt_udt_head_ctl,               &
-     &        i_tgt_udt_head_ctl, tgt_udt_head_ctl)
+        call read_chara_ctl_type(hd_ref_udt_head_ctl, ref_udt_head_ctl)
+        call read_chara_ctl_type(hd_tgt_udt_head_ctl, tgt_udt_head_ctl)
       end do
 !
       end subroutine read_diff_files_ctl
@@ -305,16 +295,16 @@
 !
 !
 !
-        call read_character_ctl_item(hd_prod_name,                      &
-     &            i_prod_name, product_field_ctl)
-        call read_character_ctl_item(hd_corr_fld_name,                  &
-     &            i_corr_fld_name, correlate_fld_ctl)
-        call read_character_ctl_item(hd_corr_cmp_name,                  &
-     &            i_corr_cmp_name, correlate_cmp_ctl)
-        call read_character_ctl_item(hd_correlate_coord,                &
-     &            i_correlate_coord, correlate_coord_ctl)
-        call read_character_ctl_item(hd_group_mesh_head,                &
-     &            i_group_mesh_head, group_mesh_head_ctl)
+        call read_chara_ctl_type(hd_prod_name,                          &
+     &      product_field_ctl)
+        call read_chara_ctl_type(hd_corr_fld_name,                      &
+     &      correlate_fld_ctl)
+        call read_chara_ctl_type(hd_corr_cmp_name,                      &
+     &      correlate_cmp_ctl)
+        call read_chara_ctl_type(hd_correlate_coord,                    &
+     &      correlate_coord_ctl)
+        call read_chara_ctl_type(hd_group_mesh_head,                    &
+     &      group_mesh_head_ctl)
       end do
 !
       end subroutine read_diff_model_ctl

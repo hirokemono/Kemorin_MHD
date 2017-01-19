@@ -112,8 +112,8 @@
      &     (su_plt%restart_file_fmt_ctl, iflag_org_sph_file_fmt)
       end if
 !
-      if(i_zm_sph_spec_file .gt. 0) then
-        zm_sph_file_head = zm_spec_file_head_ctl
+      if(zm_spec_file_head_ctl%iflag .gt. 0) then
+        zm_sph_file_head = zm_spec_file_head_ctl%charavalue
       end if
 !
 !   using restart data for spherical dynamo
@@ -139,12 +139,12 @@
 !
 !     file header for reduced data
 !
-      if(i_ene_spec_head .gt. 0) then
-        ene_spec_head = ene_spec_head_ctl
+      if(ene_spec_head_ctl%iflag .gt. 0) then
+        ene_spec_head = ene_spec_head_ctl%charavalue
       end if
 !
-      if(i_vol_ene_spec_head .gt. 0) then
-        vol_ene_spec_head = vol_ene_spec_head_ctl
+      if(vol_ene_spec_head_ctl%iflag .gt. 0) then
+        vol_ene_spec_head = vol_ene_spec_head_ctl%charavalue
       end if
 !
 !   set pickup mode
@@ -162,12 +162,12 @@
       call s_set_control_nodal_data                                     &
      &   (fld_su_ctl%field_ctl, nod_fld, ierr)
 !
-      if(i_buo_ratio .gt. 0) then
-        buo_ratio = buoyancy_ratio_ctl
+      if(buoyancy_ratio_ctl%iflag .gt. 0) then
+        buo_ratio = buoyancy_ratio_ctl%realvalue
       end if
 !
-      if(i_thermal_buo .gt. 0) then
-        thermal_buo = thermal_buoyancy_ctl
+      if(thermal_buoyancy_ctl%iflag .gt. 0) then
+        thermal_buo = thermal_buoyancy_ctl%realvalue
       end if
 !
       end subroutine set_ctl_data_4_sph_utils

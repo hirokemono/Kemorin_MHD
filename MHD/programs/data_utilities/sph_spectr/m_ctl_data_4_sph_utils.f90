@@ -13,6 +13,7 @@
       use t_ctl_data_4_fields
       use t_ctl_data_4_time_steps
       use t_ctl_data_4_sph_monitor
+      use t_control_elements
       use skip_comment_f
 !
       implicit  none
@@ -31,13 +32,13 @@
 !
       type(sph_monitor_control), save :: smonitor_u_ctl
 !
-      character(len = kchara) :: zm_spec_file_head_ctl
-      character(len = kchara) :: tave_ene_spec_head_ctl
-      character(len = kchara) :: ene_spec_head_ctl
-      character(len = kchara) :: vol_ene_spec_head_ctl
+      type(read_character_item), save :: zm_spec_file_head_ctl
+      type(read_character_item), save :: tave_ene_spec_head_ctl
+      type(read_character_item), save :: ene_spec_head_ctl
+      type(read_character_item), save :: vol_ene_spec_head_ctl
 !
-      real(kind = kreal) :: buoyancy_ratio_ctl
-      real(kind = kreal) :: thermal_buoyancy_ctl
+      type(read_real_item), save :: buoyancy_ratio_ctl
+      type(read_real_item), save :: thermal_buoyancy_ctl
 !
 !   Top level
 !
@@ -86,15 +87,6 @@
       character(len=kchara) :: hd_buo_ratio =    'buoyancy_ratio_ctl'
       character(len=kchara) :: hd_thermal_buo =  'thermal_buoyancy_ctl'
 !
-      integer (kind=kint) :: i_ene_spec_head =          0
-      integer (kind=kint) :: i_vol_ene_spec_head =      0
-      integer (kind=kint) :: i_zm_sph_spec_file =       0
-      integer (kind=kint) :: i_tsph_esp_file =          0
-!
-      integer (kind=kint) :: i_buo_ratio =         0
-      integer (kind=kint) :: i_thermal_buo =       0
-!
-      integer (kind=kint) :: i_cmb_grp =         0
 !
       private :: control_file_code, control_file_name
       private :: hd_sph_trans_ctl, i_sph_trans_ctl
@@ -185,10 +177,8 @@
         call read_control_time_step_data                                &
      &     (hd_time_step, i_tstep, t_su_ctl)
 !
-        call read_real_ctl_item(hd_buo_ratio,                           &
-     &          i_buo_ratio, buoyancy_ratio_ctl)
-        call read_real_ctl_item(hd_thermal_buo,                         &
-     &          i_thermal_buo, thermal_buoyancy_ctl)
+        call read_real_ctl_type(hd_buo_ratio, buoyancy_ratio_ctl)
+        call read_real_ctl_type(hd_thermal_buo, thermal_buoyancy_ctl)
       end do
 !
       end subroutine read_sph_trans_model_ctl
@@ -208,14 +198,14 @@
         if(i_sph_trans_params .gt. 0) exit
 !
 !
-        call read_character_ctl_item(hd_ene_spec_head,                  &
-     &          i_ene_spec_head, ene_spec_head_ctl)
-        call read_character_ctl_item(hd_vol_ene_spec_head,              &
-     &          i_vol_ene_spec_head, vol_ene_spec_head_ctl)
-        call read_character_ctl_item(hd_zm_sph_spec_file,               &
-     &          i_zm_sph_spec_file, zm_spec_file_head_ctl)
-         call read_character_ctl_item(hd_tsph_esp_file,                 &
-     &          i_tsph_esp_file, tave_ene_spec_head_ctl)
+        call read_chara_ctl_type(hd_ene_spec_head,                      &
+     &      ene_spec_head_ctl)
+        call read_chara_ctl_type(hd_vol_ene_spec_head,                  &
+     &      vol_ene_spec_head_ctl)
+        call read_chara_ctl_type(hd_zm_sph_spec_file,                   &
+     &      zm_spec_file_head_ctl)
+        call read_chara_ctl_type(hd_tsph_esp_file,                      &
+     &      tave_ene_spec_head_ctl)
       end do
 !
       end subroutine read_sph_trans_params_ctl

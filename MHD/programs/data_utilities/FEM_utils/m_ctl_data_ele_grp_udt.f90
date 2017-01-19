@@ -9,6 +9,7 @@
 !
       use m_precision
       use t_ctl_data_4_time_steps
+      use t_control_elements
 !
       implicit none
 !
@@ -23,14 +24,14 @@
 !>      Structure for time stepping control
       type(time_data_control), save :: t_egu_ctl
 !
-      character(len=kchara) :: group_mesh_head_ctl = 'grouping_mesh'
-      character(len=kchara) :: grp_evo_data_ctl = 'correlation.dat'
-      character(len=kchara) :: grp_ucd_data_head_ctl = 'correlation'
+      type(read_character_item), save :: group_mesh_head_ctl
+      type(read_character_item), save :: grp_evo_data_ctl
+      type(read_character_item), save :: grp_ucd_data_head_ctl
 !
-      character(len=kchara) :: start_ele_grp_name_ctl
-      integer(kind = kint) :: ngrp_ele_grp_ctl
+      type(read_character_item), save :: start_ele_grp_name_ctl
+      type(read_integer_item), save :: ngrp_ele_grp_ctl
 !
-      character(len=kchara) :: time_average_data_ctl = 'NO'
+      type(read_character_item), save :: time_average_data_ctl
 !
 !     top level
 !
@@ -64,12 +65,6 @@
      &                    :: hd_ngrp_ele_grp = 'num_element_grp_ctl'
       character(len=kchara), parameter :: hd_time_average_data          &
      &                     = 'time_average_data_ctl'
-      integer(kind= kint) :: i_group_mesh_head = 0
-      integer(kind= kint) :: i_group_data_name = 0
-      integer(kind= kint) :: i_group_udt_head = 0
-      integer(kind= kint) :: i_start_ele_grp_name = 0
-      integer(kind= kint) :: i_ngrp_ele_grp = 0
-      integer(kind= kint) :: i_time_average_data = 0
 !
 !
       private :: fname_grp_data_ctl
@@ -151,19 +146,17 @@
         if(i_grouping_plot .gt. 0) exit
 !
 !
-        call read_character_ctl_item(hd_group_mesh_head,                &
-     &        i_group_mesh_head, group_mesh_head_ctl)
-        call read_character_ctl_item(hd_group_data_name,                &
-     &        i_group_data_name, grp_evo_data_ctl)
-        call read_character_ctl_item(hd_group_udt_head,                 &
-     &        i_group_udt_head, grp_ucd_data_head_ctl)
-        call read_character_ctl_item(hd_start_ele_grp_name,             &
-     &        i_start_ele_grp_name, start_ele_grp_name_ctl)
-        call read_character_ctl_item(hd_time_average_data,              &
-     &        i_time_average_data, time_average_data_ctl)
+        call read_chara_ctl_type(hd_group_mesh_head,                    &
+     &      group_mesh_head_ctl)
+        call read_chara_ctl_type(hd_group_data_name, grp_evo_data_ctl)
+        call read_chara_ctl_type(hd_group_udt_head,                     &
+     &      grp_ucd_data_head_ctl)
+        call read_chara_ctl_type(hd_start_ele_grp_name,                 &
+     &      start_ele_grp_name_ctl)
+        call read_chara_ctl_type(hd_time_average_data,                  &
+     &      time_average_data_ctl)
 !
-        call read_integer_ctl_item(hd_ngrp_ele_grp,                     &
-     &        i_ngrp_ele_grp, ngrp_ele_grp_ctl)
+        call read_integer_ctl_type(hd_ngrp_ele_grp, ngrp_ele_grp_ctl)
       end do
 !
       end subroutine read_ctl_data_4_drmd_grp

@@ -33,6 +33,7 @@
       use skip_comment_f
 !
       integer(kind= kint) :: i, j
+      character(len=kchara) :: tmpchara
 !
 !
       start_time_pg = 0.0d0
@@ -62,46 +63,50 @@
 !
 !
       npanel_window = 1
-      if(i_num_panels_ctl .gt. 0) then
-        npanel_window = num_panels_ctl
+      if(num_panels_ctl%iflag .gt. 0) then
+        npanel_window = num_panels_ctl%intvalue
       end if
 !
 !
-      if     (cmp_no_case(contour_type_ctl, 'Both')                     &
-     &   .or. cmp_no_case(contour_type_ctl, 'Line_and_Fill')) then
-        idisp_mode = 3
-      else if(cmp_no_case(contour_type_ctl, 'Fill')                     &
-     &   .or. cmp_no_case(contour_type_ctl, 'Filled')       ) then
-        idisp_mode = 2
-      else
-        idisp_mode = 1
+      idisp_mode = 1
+      if(contour_type_ctl%iflag .gt. 0) then
+        tmpchara = contour_type_ctl%charavalue
+        if     (cmp_no_case(tmpchara, 'Both')                           &
+     &     .or. cmp_no_case(tmpchara, 'Line_and_Fill')) then
+          idisp_mode = 3
+        else if(cmp_no_case(tmpchara, 'Fill')                           &
+     &     .or. cmp_no_case(tmpchara, 'Filled')       ) then
+          idisp_mode = 2
+        end if
       end if
 !
 !
-      if     (cmp_no_case(contour_type_ctl, 'Rainbow')                  &
-     &   .or. cmp_no_case(contour_type_ctl, 'Color')        ) then
-        icolor_mode = 1
-      else if(cmp_no_case(contour_type_ctl, 'Yellow_Green') ) then
-        icolor_mode = -1
-      else if(cmp_no_case(contour_type_ctl, 'Grayscale')                &
-     &   .or. cmp_no_case(contour_type_ctl, 'Gray')         ) then
-        icolor_mode = 0
-      else
-        icolor_mode = 1
+      icolor_mode = 1
+      if(color_mode_ctl%iflag .gt. 0) then
+        tmpchara = color_mode_ctl%charavalue
+        if     (cmp_no_case(tmpchara, 'Rainbow')                        &
+     &     .or. cmp_no_case(tmpchara, 'Color')        ) then
+          icolor_mode = 1
+        else if(cmp_no_case(tmpchara, 'Yellow_Green') ) then
+          icolor_mode = -1
+        else if(cmp_no_case(tmpchara, 'Grayscale')                      &
+     &     .or. cmp_no_case(tmpchara, 'Gray')         ) then
+          icolor_mode = 0
+        end if
       end if
 !
 !
-      if(i_psf_data_ctl .gt. 0) then
+      if(psf_file_head_ctl%iflag .gt. 0) then
         pg_psf_file_prefix = psf_file_head_ctl%charavalue
       else
         write(*,*) 'set file header for psf data'
         stop
       end if
-      call choose_ucd_file_format(psf_data_fmt_ctl,                     &
-     &    i_psf_data_fmt_ctl, iflag_pg_psf_fmt)
+      call choose_ucd_file_format(psf_data_fmt_ctl%charavalue,          &
+     &    psf_data_fmt_ctl%iflag, iflag_pg_psf_fmt)
 !
-      if(i_map_grid_file .gt. 0) then
-        fhead_map_grid =  map_grid_file_ctl
+      if(map_grid_file_ctl%iflag .gt. 0) then
+        fhead_map_grid =  map_grid_file_ctl%charavalue
       end if
 !
       if(plot_field_ctl%icou .gt. 0) then
@@ -189,14 +194,14 @@
       use m_ctl_data_plot_pg
 !
 !
-      if(i_outer_radius_ctl .gt. 0) then
-        shell_size = outer_radius_ctl
+      if(outer_radius_ctl%iflag .gt. 0) then
+        shell_size = outer_radius_ctl%realvalue
       else
         shell_size = 20.0d0 / 13.0d0
       end if
 !
-      if(i_ro_ri_ratio_ctl .gt. 0) then
-        shell_ratio = ro_ri_ratio_ctl
+      if(ro_ri_ratio_ctl%iflag .gt. 0) then
+        shell_ratio = ro_ri_ratio_ctl%realvalue
       else
         shell_ratio = 0.35d0
       end if
@@ -235,8 +240,8 @@
       end if
 !
 !
-      if(i_radial_ID_ctl .gt. 0) then
-        id_radial = radial_ID_ctl
+      if(radial_ID_ctl%iflag .gt. 0) then
+        id_radial = radial_ID_ctl%intvalue
       else
         id_radial = 1
       end if

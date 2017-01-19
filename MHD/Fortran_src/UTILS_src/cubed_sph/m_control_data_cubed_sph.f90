@@ -8,19 +8,20 @@
       use m_precision
       use m_read_control_elements
       use skip_comment_f
+      use t_control_elements
       use t_read_control_arrays
 !
       implicit none
 !
       character(len = kchara) :: name_ctl_shell = 'ctl_shell'
 !
-      character(len = kchara) :: domain_shape_ctl =  'sphere'
-      character(len = kchara) :: divide_type_ctl =   'sphere'
-      character(len = kchara) :: high_ele_type_ctl = 'quad'
-      integer(kind = kint) :: numele_4_90deg
-      integer(kind = kint) :: numele_4_vertical_ctl
-      integer(kind = kint) :: nend_adjust_ctl
-      integer(kind = kint) :: nstart_cube_ctl
+      type(read_character_item), save :: domain_shape_ctl
+      type(read_character_item), save :: divide_type_ctl
+      type(read_character_item), save :: high_ele_type_ctl
+      type(read_integer_item), save :: numele_4_90deg
+      type(read_integer_item), save :: numele_4_vertical_ctl
+      type(read_integer_item), save :: nend_adjust_ctl
+      type(read_integer_item), save :: nstart_cube_ctl
 !
 !>      Structure for radial points
 !!@n      radial_pnt_ctl%ivec:  radial address
@@ -28,8 +29,8 @@
       type(ctl_array_ir), save :: radial_pnt_ctl
 !
 !
-      integer(kind = kint) :: nlayer_ICB_ctl = 0
-      integer(kind = kint) :: nlayer_CMB_ctl = 0
+      type(read_integer_item), save :: nlayer_ICB_ctl
+      type(read_integer_item), save :: nlayer_CMB_ctl
 !
 !>      Structure for node group name and stack
 !!@n      node_grp_name_ctl%num:    Number of node group
@@ -99,13 +100,6 @@
      &             :: hd_cubed_sph_radius = 'r_layer'
       character(len=kchara), parameter                             &
      &             :: hd_edge_latitude =  'edge_latitude_ctl'
-      integer (kind=kint) :: i_domain_shape =   0
-      integer (kind=kint) :: i_divide_def =     0
-      integer (kind=kint) :: i_high_ele_type =  0
-      integer (kind=kint) :: i_numele_4_90deg = 0
-      integer (kind=kint) :: i_numele_4_vert =  0
-      integer (kind=kint) :: i_nend_adjust =    0
-      integer (kind=kint) :: i_nstart_cube =    0
 !
 !   3rd level for boundary define
 !
@@ -113,9 +107,6 @@
      &             :: hd_nlayer_ICB = 'nlayer_ICB'
       character(len=kchara), parameter                             &
      &             :: hd_nlayer_CMB = 'nlayer_CMB'
-!
-      integer (kind=kint) :: i_nlayer_ICB =     0
-      integer (kind=kint) :: i_nlayer_CMB =     0
 !
 !   3rd level for coarse grid
 !
@@ -246,21 +237,16 @@
        &   (hd_edge_latitude, edge_latitude_ctl)
 !
 !
-        call read_character_ctl_item(hd_domain_shape,                   &
-     &        i_domain_shape, domain_shape_ctl)
-        call read_character_ctl_item(hd_divide_def,                     &
-     &        i_divide_def, divide_type_ctl)
-        call read_character_ctl_item(hd_high_ele_type,                  &
-     &        i_high_ele_type, high_ele_type_ctl)
+        call read_chara_ctl_type(hd_domain_shape, domain_shape_ctl)
+        call read_chara_ctl_type(hd_divide_def, divide_type_ctl)
+        call read_chara_ctl_type(hd_high_ele_type,                      &
+     &      high_ele_type_ctl)
 !
-        call read_integer_ctl_item(hd_numele_4_90deg,                   &
-     &        i_numele_4_90deg, numele_4_90deg)
-        call read_integer_ctl_item(hd_numele_4_vert,                    &
-     &        i_numele_4_vert, numele_4_vertical_ctl)
-        call read_integer_ctl_item(hd_nend_adjust,                      &
-     &        i_nend_adjust, nend_adjust_ctl)
-        call read_integer_ctl_item(hd_nstart_cube,                      &
-     &        i_nstart_cube, nstart_cube_ctl)
+        call read_integer_ctl_type(hd_numele_4_90deg, numele_4_90deg)
+        call read_integer_ctl_type(hd_numele_4_vert,                    &
+     &      numele_4_vertical_ctl)
+        call read_integer_ctl_type(hd_nend_adjust, nend_adjust_ctl)
+        call read_integer_ctl_type(hd_nstart_cube, nstart_cube_ctl)
       end do
 !
       end subroutine read_ctl_4_shell_def
@@ -283,10 +269,8 @@
         call read_ctl_surf_bc_4_shell
 !
 !
-        call read_integer_ctl_item(hd_nlayer_ICB,                       &
-     &        i_nlayer_ICB, nlayer_ICB_ctl)
-        call read_integer_ctl_item(hd_nlayer_CMB,                       &
-     &        i_nlayer_CMB, nlayer_CMB_ctl)
+        call read_integer_ctl_type(hd_nlayer_ICB, nlayer_ICB_ctl)
+        call read_integer_ctl_type(hd_nlayer_CMB, nlayer_CMB_ctl)
       end do
 !
       end subroutine read_ctl_shell_boundary

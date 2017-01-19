@@ -74,26 +74,27 @@
       end if
 !
 !
-      if(i_num_course_subdomain .gt. 0) then
-        nprocs_course = nprocs_course_ctl
+      nprocs_course = 1
+      if(nprocs_course_ctl%iflag .gt. 0) then
+        nprocs_course = nprocs_course_ctl%intvalue
       end if
 !
-      if(i_course_mesh_file_head .gt. 0) then
-        para_course_mesh_file%file_prefix = course_mesh_file_head_ctl
-      else
-        para_course_mesh_file%file_prefix = def_para_course_mesh_head
+      para_course_mesh_file%file_prefix = def_para_course_mesh_head
+      if(course_mesh_file_head_ctl%iflag .gt. 0) then
+        para_course_mesh_file%file_prefix                               &
+     &          = course_mesh_file_head_ctl%charavalue
       end if
 !
-      if(i_course_to_fine_p_head .gt. 0) then
-        c2f_para_head = c2f_para_head_ctl
+      if(c2f_para_head_ctl%iflag .gt. 0) then
+        c2f_para_head = c2f_para_head_ctl%charavalue
       end if
 !
-      if(i_fine_to_course_p_head .gt. 0) then
-        f2c_para_head = f2c_para_head_ctl
+      if(f2c_para_head_ctl%iflag .gt. 0) then
+        f2c_para_head = f2c_para_head_ctl%charavalue
       end if
 !
-      if(refine_info_head_ctl%iflag .gt. 0) then
-        f2c_ele_para_head = refine_info_para_head_ctl
+      if(refine_info_para_head_ctl%iflag .gt. 0) then
+        f2c_ele_para_head = refine_info_para_head_ctl%charavalue
       end if
 !
       nprocs_larger = max(nprocs_fine, nprocs_course)

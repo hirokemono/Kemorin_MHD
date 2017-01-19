@@ -25,72 +25,72 @@
       use m_control_data_cubed_sph
 !
       integer(kind = kint) :: i, j, jst, jed
+      character(len=kchara) :: tmpchara
 !
 !
-!      if     (domain_shape_ctl .eq. 'sphere'                           &
-!     &   .or. domain_shape_ctl .eq. 'Sphere'                           &
-!     &   .or. domain_shape_ctl .eq. 'SPHERE') then
-!        iflag_domain_shell = 1
-!      else if(domain_shape_ctl .eq. 'spherical_shell'                  &
-!     &   .or. domain_shape_ctl .eq. 'Spherical_shell'                  &
-!     &   .or. domain_shape_ctl .eq. 'Spherical_Shell'                  &
-!     &   .or. domain_shape_ctl .eq. 'SPHERICAL_SHELL') then
-!        iflag_domain_shell = 2
-!      else
-        iflag_domain_shell = 1
+      iflag_domain_shell = 1
+!      if(domain_shape_ctl%iflag .gt. 0) then
+!        tmpchara = domain_shape_ctl%charavalue
+!        if     (cmp_no_case(tmpchara, 'sphere')) then
+!          iflag_domain_shell = 1
+!        else if(cmp_no_case(tmpchara, 'spherical_shell')) then
+!          iflag_domain_shell = 2
+!        end if
 !      end if
 !      write(*,*) 'domain type', iflag_domain_shell,                    &
-!     &            trim(domain_shape_ctl)
+!     &            trim(tmpchara)
 !
-      if     (divide_type_ctl .eq. 'cube'                               &
-     &   .or. divide_type_ctl .eq. 'Cube'                               &
-     &   .or. divide_type_ctl .eq. 'CUBE') then
-        iflag_mesh = 1
-      else if(divide_type_ctl .eq. 'sphere'                             &
-     &   .or. divide_type_ctl .eq. 'Sphere'                             &
-     &   .or. divide_type_ctl .eq. 'SPHERE') then
-        iflag_mesh = 2
-      else
-        iflag_mesh = 2
+      iflag_mesh = 2
+      if(divide_type_ctl%iflag .gt. 0) then
+        tmpchara = divide_type_ctl%charavalue
+        if     (cmp_no_case(tmpchara, 'cube')) then
+          iflag_mesh = 1
+        else if(cmp_no_case(tmpchara, 'sphere' )) then
+          iflag_mesh = 2
+        end if
       end if
-      write(*,*) 'divide_type_ctl', iflag_mesh, trim(divide_type_ctl)
+      write(*,*) 'divide_type_ctl', iflag_mesh, trim(tmpchara)
 !
 !
-      if     (high_ele_type_ctl .eq. 'quad'                             &
-     &   .or. high_ele_type_ctl .eq. 'Quad'                             &
-     &   .or. high_ele_type_ctl .eq. 'QUAD'                             &
-     &   .or. high_ele_type_ctl .eq. 'quadrature'                       &
-     &   .or. high_ele_type_ctl .eq. 'Quadrature'                       &
-     &   .or. high_ele_type_ctl .eq. 'QUADRATURE') then
-        iflag_quad = 1
-      else if(high_ele_type_ctl .eq. 'linear'                           &
-     &   .or. high_ele_type_ctl .eq. 'Linear'                           &
-     &   .or. high_ele_type_ctl .eq. 'LINEAR') then
-        iflag_quad = 0
-      else
-        iflag_quad = 1
+      iflag_quad = 1
+      if(high_ele_type_ctl%iflag .gt. 0) then
+        tmpchara = high_ele_type_ctl%charavalue
+        if     (cmp_no_case(tmpchara, 'quad')                           &
+     &     .or. cmp_no_case(tmpchara, 'quadrature')) then
+          iflag_quad = 1
+        else if(cmp_no_case(tmpchara, 'linear')) then
+          iflag_quad = 0
+        end if
       end if
-      write(*,*) iflag_quad, trim(high_ele_type_ctl)
+      write(*,*) iflag_quad, trim(tmpchara)
 !
 !
-      num_hemi =       numele_4_90deg
-      ncube_vertical = num_hemi
+      num_hemi = 4
+      if(numele_4_90deg%iflag .gt. 0) then
+        num_hemi =       numele_4_90deg%intvalue
+      end if
 !
       n_shell = radial_pnt_ctl%num
-      nr_adj =  nend_adjust_ctl
-      if(i_nstart_cube .gt. 0) then
-         nr_back = nstart_cube_ctl
+!
+      nr_adj = 1
+      if(nend_adjust_ctl%iflag .gt. 0) then
+        nr_adj =  nend_adjust_ctl%intvalue
+      end if
+
+      if(nstart_cube_ctl%iflag .gt. 0) then
+         nr_back = nstart_cube_ctl%intvalue
       else
          nr_back = n_shell
       end if
 !
-      if(i_numele_4_vert .gt. 0) then
-        ncube_vertical = numele_4_vertical_ctl
+      ncube_vertical = num_hemi
+      if(numele_4_vertical_ctl%iflag .gt. 0) then
+        ncube_vertical = numele_4_vertical_ctl%iflag
       end if
 !
       write(*,*) 'n_shell', n_shell
-      write(*,*) 'nr_adj', nr_adj, nend_adjust_ctl
-      write(*,*) 'nr_back', nr_back, nstart_cube_ctl
+      write(*,*) 'nr_adj', nr_adj
+      write(*,*) 'nr_back', nr_back
 !
       call allocate_shell_radius
 !
@@ -102,14 +102,14 @@
 !
 !   set ICB and CMB address
 !
-      if (i_nlayer_ICB .gt. 0) then
-        nlayer_ICB = nlayer_ICB_ctl
+      if (nlayer_ICB_ctl%iflag .gt. 0) then
+        nlayer_ICB = nlayer_ICB_ctl%intvalue
       else
         nlayer_ICB = 1
       end if
 !
-      if (i_nlayer_CMB .gt. 0) then
-        nlayer_CMB = nlayer_CMB_ctl
+      if (nlayer_CMB_ctl%iflag .gt. 0) then
+        nlayer_CMB = nlayer_CMB_ctl%intvalue
       else
         nlayer_CMB = n_shell
       end if
