@@ -16,6 +16,7 @@
       use t_ctl_data_4_platforms
       use t_read_control_arrays
       use t_ctl_data_filter_files
+      use t_control_elements
       use skip_comment_f
 !
       implicit  none
@@ -36,13 +37,13 @@
       type(filter_file_control), save :: ffile_3d_ctl
 !
 !
-      character(len=kchara) :: mass_matrix_type_ctl =  'CONSIST'
-      character(len=kchara) :: method_esize_ctl =      'GPBiCG'
-      character(len=kchara) :: precond_esize_ctl =     'DIAG'
-      integer (kind=kint) :: itr_esize_ctl =      20000
-      real (kind=kreal) :: eps_esize_ctl =        1.0d-15
-      real (kind=kreal) :: sigma_esize_ctl =      1.0d0
-      real (kind=kreal) :: sigma_diag_esize_ctl = 1.0d0
+      type(read_character_item), save :: mass_matrix_type_ctl
+      type(read_character_item), save :: method_esize_ctl
+      type(read_character_item), save :: precond_esize_ctl
+      type(read_integer_item), save :: itr_esize_ctl
+      type(read_real_item), save :: eps_esize_ctl
+      type(read_real_item), save :: sigma_esize_ctl
+      type(read_real_item), save :: sigma_diag_esize_ctl
 !
 !
 !
@@ -76,7 +77,6 @@
      &         :: hd_mass_matrix_type = 'mass_matrix_type_ctl'
       character(len=kchara), parameter                                  &
      &         :: hd_esize_solver = 'esize_solver_control'
-      integer (kind=kint) :: i_mass_matrix_type =  0
       integer (kind=kint) :: i_esize_solver_ctl =  0
 !
 !     4th level for solver_control for element size
@@ -93,13 +93,6 @@
      &         :: hd_sigma_esize =      'sigma_ctl'
       character(len=kchara), parameter                                  &
      &         :: hd_sigma_diag_esize = 'sigma_diag_ctl'
-!
-      integer (kind=kint) :: i_method_esize =       0
-      integer (kind=kint) :: i_precond_esize =      0
-      integer (kind=kint) :: i_itr_esize =          0
-      integer (kind=kint) :: i_eps_esize =          0
-      integer (kind=kint) :: i_sigma_esize =        0
-      integer (kind=kint) :: i_sigma_diag_esize =   0
 !
       private :: hd_filter_control, i_filter_control
       private :: hd_filter_area_ctl, hd_deltax_ctl
@@ -227,8 +220,8 @@
 !
         call read_dx_solver_param_ctl
 !
-        call read_character_ctl_item(hd_mass_matrix_type,               &
-     &          i_mass_matrix_type, mass_matrix_type_ctl)
+        call read_chara_ctl_type(hd_mass_matrix_type,                   &
+     &      mass_matrix_type_ctl)
       end do
 !
       end subroutine read_element_size_ctl
@@ -247,20 +240,15 @@
         if(i_esize_solver_ctl .gt. 0) exit
 !
 !
-        call read_character_ctl_item(hd_method_esize,                   &
-     &          i_method_esize, method_esize_ctl)
-        call read_character_ctl_item(hd_precond_esize,                  &
-     &          i_precond_esize, precond_esize_ctl)
+        call read_chara_ctl_type(hd_method_esize, method_esize_ctl)
+        call read_chara_ctl_type(hd_precond_esize, precond_esize_ctl)
 !
-        call read_real_ctl_item(hd_eps_esize,                           &
-     &          i_eps_esize, eps_esize_ctl)
-        call read_real_ctl_item(hd_sigma_esize,                         &
-     &          i_sigma_esize, sigma_esize_ctl)
-        call read_real_ctl_item(hd_sigma_diag_esize,                    &
-     &          i_sigma_diag_esize, sigma_diag_esize_ctl)
+        call read_real_ctl_type(hd_eps_esize, eps_esize_ctl)
+        call read_real_ctl_type(hd_sigma_esize, sigma_esize_ctl)
+        call read_real_ctl_type(hd_sigma_diag_esize,                    &
+     &      sigma_diag_esize_ctl)
 !
-        call read_integer_ctl_item(hd_itr_esize,                        &
-     &          i_itr_esize, itr_esize_ctl)
+        call read_integer_ctl_type(hd_itr_esize, itr_esize_ctl)
       end do
 !
       end subroutine read_dx_solver_param_ctl

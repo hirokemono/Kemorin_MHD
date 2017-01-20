@@ -15,18 +15,15 @@
       module m_ctl_data_org_filter_name
 !
       use m_precision
+      use t_control_elements
 !
       implicit  none
 !
 !
-      character(len = kchara) ::                                        &
-     &             org_filter_head_ctl =      "org/filter_node"
-      character(len = kchara) ::                                        &
-     &             org_filter_coef_head_ctl = "org/filter_coef"
-      character(len = kchara) ::                                        &
-     &             org_filter_elen_head_ctl = "org/filter_elength"
-      character(len = kchara) ::                                        &
-     &             org_filter_moms_head_ctl = "org/filter_moms"
+      type(read_character_item), save :: org_filter_head_ctl
+      type(read_character_item), save :: org_filter_coef_head_ctl
+      type(read_character_item), save :: org_filter_elen_head_ctl
+      type(read_character_item), save :: org_filter_moms_head_ctl
 !
 !     label for entry
 !
@@ -44,11 +41,6 @@
      &         :: hd_org_filter_moms_head = 'org_filter_moment_header'
       character(len=kchara), parameter                                  &
      &         :: hd_org_filter_coef_head = 'org_filter_coefs_header'
-!
-      integer (kind=kint) :: i_org_filter_head =       0
-      integer (kind=kint) :: i_org_filter_elen_head =  0
-      integer (kind=kint) :: i_org_filter_moms_head =  0
-      integer (kind=kint) :: i_org_filter_coef_head =  0
 !
 !
       private :: hd_org_filter_fnames, i_org_filter_fnames
@@ -78,14 +70,14 @@
         if(i_org_filter_fnames .gt. 0) exit
 !
 !
-        call read_character_ctl_item(hd_org_filter_head,                &
-     &        i_org_filter_head, org_filter_head_ctl)
-        call read_character_ctl_item(hd_org_filter_coef_head,           &
-     &        i_org_filter_coef_head, org_filter_coef_head_ctl)
-        call read_character_ctl_item(hd_org_filter_elen_head,           &
-     &        i_org_filter_elen_head, org_filter_elen_head_ctl)
-        call read_character_ctl_item(hd_org_filter_moms_head,           &
-     &        i_org_filter_moms_head, org_filter_moms_head_ctl)
+        call read_chara_ctl_type(hd_org_filter_head,                    &
+     &      org_filter_head_ctl)
+        call read_chara_ctl_type(hd_org_filter_coef_head,               &
+     &      org_filter_coef_head_ctl)
+        call read_chara_ctl_type(hd_org_filter_elen_head,               &
+     &      org_filter_elen_head_ctl)
+        call read_chara_ctl_type(hd_org_filter_moms_head,               &
+     &      org_filter_moms_head_ctl)
       end do
 !
       end subroutine read_org_filter_fnames_ctl

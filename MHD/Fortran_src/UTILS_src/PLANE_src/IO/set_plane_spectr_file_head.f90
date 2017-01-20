@@ -36,27 +36,27 @@
       end if
 !
 !
-      if (i_plane_spec_mode_head .gt. 0) then
-        call add_dat_extension(plane_spectr_mode_head_ctl,              &
+      if (plane_spectr_mode_head_ctl%iflag .gt. 0) then
+        call add_dat_extension(plane_spectr_mode_head_ctl%charavalue,   &
      &                      spec_mode_file_name)
       else
         spec_mode_file_name = spec_mode_def_name
       end if
 !
-      if (i_plane_spec_data_head .gt. 0) then
-        spec_header = plane_spectr_data_head_ctl
+      if (plane_spectr_data_head_ctl%iflag .gt. 0) then
+        spec_header = plane_spectr_data_head_ctl%charavalue
       else
         spec_header = spec_def_header
       end if
 !
-      if (i_plane_spec_ene_head .gt. 0) then
-        ene_header = plane_spectr_ene_head_ctl
+      if (plane_spectr_ene_head_ctl%iflag .gt. 0) then
+        ene_header = plane_spectr_ene_head_ctl%charavalue
       else
         ene_header = ene_spec_def_header
       end if
 !
-      if (i_plane_sp_h_ene_head .gt. 0) then
-        ene_h_header = plane_spectr_h_ene_head_ctl
+      if (plane_spectr_h_ene_head_ctl%iflag .gt. 0) then
+        ene_h_header = plane_spectr_h_ene_head_ctl%charavalue
       else
         ene_h_header = ene_h_spec_def_header
       end if

@@ -46,11 +46,17 @@
       if (iflag_debug.gt.0) write(*,*) 'np_smp', np_smp
 !
 !
-      l_sph_bc = hermonic_degree_ctl
-      m_sph_bc = hermonic_order_ctl
+      l_sph_bc = 1
+      m_sph_bc = 0
+      if(hermonic_degree_ctl%iflag .gt. 0) then
+        l_sph_bc = hermonic_degree_ctl%intvalue
+      end if
+      if(hermonic_degree_ctl%iflag .gt. 0) then
+        m_sph_bc = hermonic_order_ctl%intvalue
+      end if
 !
-      if(i_nod_grp_t .gt. 0) then
-        grp_name_nod_bc = temp_nod_grp_name
+      if(temp_nod_grp_name%iflag .gt. 0) then
+        grp_name_nod_bc = temp_nod_grp_name%charavalue
       end if
 !
       end subroutine set_ctl_params_sph_bc_temp

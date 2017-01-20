@@ -32,6 +32,7 @@
 !
       use m_precision
       use t_ctl_data_4_platforms
+      use t_control_elements
 !
       implicit  none
 !
@@ -43,9 +44,9 @@
 !>      Structure for file settings
       type(platform_data_control), save :: bc_test_plt
 !
-      character(len = kchara) :: temp_nod_grp_name
-      integer(kind = kint) :: hermonic_degree_ctl = 1
-      integer(kind = kint) :: hermonic_order_ctl =  0
+      type(read_character_item), save :: temp_nod_grp_name
+      type(read_integer_item), save :: hermonic_degree_ctl
+      type(read_integer_item), save :: hermonic_order_ctl
 !
 !     Top level
 !
@@ -70,9 +71,6 @@
      &                      :: hd_sph_degree = 'harmonics_degree_ctl'
       character(len=kchara), parameter                                  &
      &                      :: hd_sph_order =  'harmonics_order_ctl'
-      integer (kind=kint) :: i_nod_grp_t =    0
-      integer (kind=kint) :: i_sph_degree =   0
-      integer (kind=kint) :: i_sph_order =    0
 !
       private :: test_mest_ctl_file_code, fname_test_mesh_ctl
 !
@@ -151,13 +149,10 @@
         if(i_bc_def .gt. 0) exit
 !
 !
-        call read_character_ctl_item(hd_nod_grp_t,                      &
-     &        i_nod_grp_t, temp_nod_grp_name)
+        call read_chara_ctl_type(hd_nod_grp_t, temp_nod_grp_name)
 !
-        call read_integer_ctl_item(hd_sph_degree,                       &
-     &        i_sph_degree, hermonic_degree_ctl)
-        call read_integer_ctl_item(hd_sph_order,                        &
-     &        i_sph_order, hermonic_order_ctl)
+        call read_integer_ctl_type(hd_sph_degree, hermonic_degree_ctl)
+        call read_integer_ctl_type(hd_sph_order, hermonic_order_ctl)
       end do
 !
       end subroutine read_ctl_data_4_temp_nod_bc

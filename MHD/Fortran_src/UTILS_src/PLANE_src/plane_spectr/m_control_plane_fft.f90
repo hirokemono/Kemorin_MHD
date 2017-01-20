@@ -14,6 +14,7 @@
       use t_ctl_data_4_platforms
       use t_ctl_data_4_time_steps
       use t_ctl_data_4_fields
+      use t_control_elements
       use skip_comment_f
 !
       implicit    none
@@ -28,10 +29,10 @@
 !>      Structure for time stepping control
       type(time_data_control), save :: t_zfft_ctl
 !
-      character(len=kchara) :: plane_spectr_mode_head_ctl
-      character(len=kchara) :: plane_spectr_data_head_ctl
-      character(len=kchara) :: plane_spectr_ene_head_ctl
-      character(len=kchara) :: plane_spectr_h_ene_head_ctl
+      type(read_character_item), save :: plane_spectr_mode_head_ctl
+      type(read_character_item), save :: plane_spectr_data_head_ctl
+      type(read_character_item), save :: plane_spectr_ene_head_ctl
+      type(read_character_item), save :: plane_spectr_h_ene_head_ctl
 !
 !   Top level
 !
@@ -77,10 +78,6 @@
      &       :: hd_plane_spec_ene_head =  'plane_spectr_ene_head'
       character(len=kchara), parameter                                  &
      &       :: hd_plane_sp_h_ene_head =  'plane_spectr_horiz_ene_head'
-      integer(kind = kint) :: i_plane_spec_mode_head = 0
-      integer(kind = kint) :: i_plane_spec_data_head = 0
-      integer(kind = kint) :: i_plane_spec_ene_head =  0
-      integer(kind = kint) :: i_plane_sp_h_ene_head =  0
 !
       private :: hd_spec_file, i_spec_file
       private :: hd_plane_spec_mode_head, hd_plane_spec_data_head
@@ -198,14 +195,14 @@
         call find_control_end_flag(hd_spec_file, i_spec_file)
         if(i_spec_file .gt. 0) exit
 !
-        call read_character_ctl_item(hd_plane_spec_mode_head,           &
-     &        i_plane_spec_mode_head, plane_spectr_mode_head_ctl)
-        call read_character_ctl_item(hd_plane_spec_data_head,           &
-     &        i_plane_spec_data_head, plane_spectr_data_head_ctl)
-        call read_character_ctl_item(hd_plane_spec_ene_head,            &
-     &        i_plane_spec_ene_head, plane_spectr_ene_head_ctl)
-        call read_character_ctl_item(hd_plane_sp_h_ene_head,            &
-     &        i_plane_sp_h_ene_head, plane_spectr_h_ene_head_ctl)
+        call read_chara_ctl_type(hd_plane_spec_mode_head,               &
+     &      plane_spectr_mode_head_ctl)
+        call read_chara_ctl_type(hd_plane_spec_data_head,               &
+     &      plane_spectr_data_head_ctl)
+        call read_chara_ctl_type(hd_plane_spec_ene_head,                &
+     &      plane_spectr_ene_head_ctl)
+        call read_chara_ctl_type(hd_plane_sp_h_ene_head,                &
+     &      plane_spectr_h_ene_head_ctl)
       end do
 !
       end subroutine read_ctl_data_plane_spec_file

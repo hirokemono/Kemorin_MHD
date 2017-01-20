@@ -91,19 +91,22 @@
      &   (def_new_mesh_head, new_plt, tgt_mesh_file)
 !
 !
-      iflag_set_filter_elen = i_org_filter_elen_head
+      org_filter_elen_head = "org/filter_elength"
+      iflag_set_filter_elen = org_filter_elen_head_ctl%iflag
       if(iflag_set_filter_elen .gt. 0) then
-        org_filter_elen_head = org_filter_elen_head_ctl
+        org_filter_elen_head = org_filter_elen_head_ctl%charavalue
       end if
 !
-      iflag_set_filter_coef = i_org_filter_coef_head
+      org_filter_coef_head = "org/filter_coef"
+      iflag_set_filter_coef = org_filter_coef_head_ctl%iflag
       if(iflag_set_filter_coef .gt. 0) then
-        org_filter_coef_head = org_filter_coef_head_ctl
+        org_filter_coef_head = org_filter_coef_head_ctl%charavalue
       end if
 !
-      iflag_set_filter_moms = i_org_filter_moms_head
+      org_filter_moms_head = "org/filter_moms"
+      iflag_set_filter_moms = org_filter_moms_head_ctl%iflag
       if (iflag_set_filter_moms .gt. 0) then
-        org_filter_moms_head = org_filter_moms_head_ctl
+        org_filter_moms_head = org_filter_moms_head_ctl%charavalue
       end if
 !
 !

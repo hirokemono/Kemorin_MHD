@@ -46,6 +46,7 @@
       use m_machine_parameter
       use t_ctl_data_4_platforms
       use t_ctl_data_filter_files
+      use t_control_elements
 !
       implicit  none
 !
@@ -60,11 +61,11 @@
 !>      Structure for filtering files
       type(filter_file_control), save :: ffile_cub_ctl
 !
-      integer(kind = kint) :: num_z_filter_ctl
-      real(kind = kreal) ::   omitting_value_ctl
+      type(read_integer_item), save :: num_z_filter_ctl
+      type(read_real_item), save ::   omitting_value_ctl
 !
-      character(len = kchara) :: z_filter_head_ctl
-      character(len = kchara) :: vert_filter_type_ctl
+      type(read_character_item), save :: z_filter_head_ctl
+      type(read_character_item), save :: vert_filter_type_ctl
 !
 !
 !   Top level
@@ -94,13 +95,7 @@
       character(len=kchara), parameter                                  &
      &       :: hd_omitting_value =   'omitting_value_ctl'
 !
-      integer(kind = kint) :: i_num_z_filter =     0
-      integer(kind = kint) :: i_z_filter_header =  0
-      integer(kind = kint) :: i_vert_filter_type = 0
-      integer(kind = kint) :: i_omitting_value =   0
-!
       private :: control_file_name, control_file_code
-!
 !
       private :: hd_plane_mesh, i_plane_mesh
       private :: hd_l_filter_ctl, i_l_filter_ctl
@@ -186,16 +181,14 @@
         if(i_l_filter_ctl .gt. 0) exit
 !
 !
-        call read_character_ctl_item(hd_z_filter_header,                &
-     &        i_z_filter_header, z_filter_head_ctl)
-        call read_character_ctl_item(hd_vert_filter_type,               &
-     &        i_vert_filter_type, vert_filter_type_ctl)
+        call read_chara_ctl_type(hd_z_filter_header,                    &
+     &      z_filter_head_ctl)
+        call read_chara_ctl_type(hd_vert_filter_type,                   &
+     &      vert_filter_type_ctl)
 !
-        call read_real_ctl_item(hd_omitting_value,                      &
-     &        i_omitting_value, omitting_value_ctl)
+        call read_real_ctl_type(hd_omitting_value, omitting_value_ctl)
 !
-        call read_integer_ctl_item(hd_num_z_filter,                     &
-     &        i_num_z_filter, num_z_filter_ctl)
+        call read_integer_ctl_type(hd_num_z_filter, num_z_filter_ctl)
       end do
 !
       end subroutine read_z_filter_mesh_ctl

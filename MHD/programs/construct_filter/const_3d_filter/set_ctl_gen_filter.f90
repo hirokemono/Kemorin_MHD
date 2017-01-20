@@ -195,9 +195,10 @@
       end if
 !
 !
+      org_filter_coef_head = "org/filter_coef"
       if (iflag_tgt_filter_type .lt. 0) then
-        if(i_org_filter_coef_head .gt. 0) then
-          org_filter_coef_head = org_filter_coef_head_ctl
+        if(org_filter_coef_head_ctl%iflag .gt. 0) then
+          org_filter_coef_head = org_filter_coef_head_ctl%charavalue
         else
           write(*,*) 'set original filter coefs file name'
         end if
@@ -262,10 +263,11 @@
       end if
 !
 !
-      if(cmp_no_case(mass_matrix_type_ctl,'CONSIST')) then
-        itype_mass_matrix = 1
-      else
-        itype_mass_matrix = 0
+      itype_mass_matrix = 0
+      if(mass_matrix_type_ctl%iflag .gt. 0) then
+        if(cmp_no_case(mass_matrix_type_ctl%charavalue,'CONSIST')) then
+          itype_mass_matrix = 1
+        end if
       end if
 !
 !
@@ -320,12 +322,31 @@
       end if
 !
 !
-      method_elesize =      method_esize_ctl
-      precond_elesize =     precond_esize_ctl
-      itr_elesize =         itr_esize_ctl
-      eps_elesize =         eps_esize_ctl
-      sigma_elesize =       sigma_esize_ctl
-      sigma_diag_elesize =  sigma_diag_esize_ctl
+      method_elesize =     'GPBiCG'
+      precond_elesize =    'DIAG'
+      itr_elesize =         20000
+      eps_elesize =         1.0d-15
+      sigma_elesize =       1.0d0
+      sigma_diag_elesize  = 1.0d0
+!
+      if(method_esize_ctl%iflag .gt. 0) then
+        method_elesize =      method_esize_ctl%charavalue
+      end if
+      if(precond_esize_ctl%iflag .gt. 0) then
+        precond_elesize =     precond_esize_ctl%charavalue
+      end if
+      if(itr_esize_ctl%iflag .gt. 0) then
+        itr_elesize =         itr_esize_ctl%intvalue
+      end if
+      if(eps_esize_ctl%iflag .gt. 0) then
+        eps_elesize =         eps_esize_ctl%realvalue
+      end if
+      if(sigma_esize_ctl%iflag .gt. 0) then
+        sigma_elesize =       sigma_esize_ctl%realvalue
+      end if
+      if(sigma_diag_esize_ctl%iflag .gt. 0) then
+        sigma_diag_elesize =  sigma_diag_esize_ctl%realvalue
+      end if
 !
       if (iflag_debug.gt.0) then
           write(*,*) 'id_solver_type ', id_solver_type
@@ -339,7 +360,7 @@
         end if
 !
       if (iflag_tgt_filter_type .eq. -1                                 &
-     &  .and. i_org_filter_coef_head .eq. 0) then
+     &  .and. org_filter_coef_head_ctl%iflag .eq. 0) then
         e_message = "set original filter coefficient datafile"
         call calypso_MPI_abort(ierr_file, e_message)
       end if

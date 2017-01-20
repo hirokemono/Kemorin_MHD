@@ -44,8 +44,8 @@
         filter_file_header = 'mesh/filter_node_l'
       end if
 !
-      if (i_z_filter_header .eq. 1) then
-        z_filter_header = z_filter_head_ctl
+      if (z_filter_head_ctl%iflag .eq. 1) then
+        z_filter_header = z_filter_head_ctl%charavalue
       else
         z_filter_header = 'filter_info'
       end if
@@ -124,15 +124,15 @@
         stop ' ***** error : illegal input '
       end if
 !
-      if (num_of_sleeve_ctl%iflag .eq. 1) then
+      if (num_of_sleeve_ctl%iflag .gt. 0) then
         ndepth = num_of_sleeve_ctl%intvalue
       else
         ndepth = 1
       end if
 !
 !
-      if (i_num_z_filter.eq.1) then
-        iflag_filter = num_z_filter_ctl
+      if (num_z_filter_ctl%iflag .gt. 0) then
+        iflag_filter = num_z_filter_ctl%intvalue
       else
         iflag_filter = 0
       end if
@@ -145,8 +145,8 @@
 !
 !
 !
-      if (i_omitting_value .eq. 1) then
-        eps_filter = omitting_value_ctl
+      if (omitting_value_ctl%iflag .gt. 0) then
+        eps_filter = omitting_value_ctl%realvalue
       else
         eps_filter = 0.0d0
       end if
