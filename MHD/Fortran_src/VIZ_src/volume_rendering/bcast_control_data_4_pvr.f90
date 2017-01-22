@@ -37,7 +37,8 @@
       subroutine bcast_vr_psf_ctl(pvr)
 !
       type(pvr_ctl), intent(inout) :: pvr
-      integer :: i
+!
+      integer(kind = kint) :: i_psf
 !
 !
       call MPI_BCAST(pvr%i_pvr_ctl,  ione,                              &
@@ -46,15 +47,11 @@
 !
       call MPI_BCAST(pvr%view_file_ctl, kchara,                         &
      &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
-      if(pvr%view_file_ctl .eq. 'NO_FILE') then
-         call bcast_view_transfer_ctl(pvr%mat)
-      end if
+      call bcast_view_transfer_ctl(pvr%mat)
 !
       call MPI_BCAST(pvr%color_file_ctl, kchara,                        &
      &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
-      if(pvr%color_file_ctl .eq. 'NO_FILE') then
-        call bcast_pvr_colordef_ctl(pvr%color)
-      end if
+      call bcast_pvr_colordef_ctl(pvr%color)
 !
       call bcast_pvr_isosurfs_ctl(pvr)
       call bcast_pvr_sections_ctl(pvr)
@@ -78,12 +75,6 @@
 !
       call bcast_ctl_type_c1(pvr%pvr_field_ctl)
       call bcast_ctl_type_c1(pvr%pvr_comp_ctl)
-!
-      do i = 1, pvr%num_pvr_sect_ctl
-        write(*,*) 'bcast_vr_psf_ctl end', &
-     &    my_rank, pvr%pvr_sect_ctl(i)%fname_sect_ctl
-        call calypso_mpi_barrier
-      end do
 !
       end subroutine bcast_vr_psf_ctl
 !
@@ -123,9 +114,8 @@
         call MPI_BCAST(pvr%pvr_sect_ctl(i)%psf%i_psf_ctl,  ione,        &
      &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
 !
+        call bcast_section_def_control(pvr%pvr_sect_ctl(i)%psf)
         call bcast_ctl_type_r1(pvr%pvr_sect_ctl(i)%opacity_ctl)
-        write(*,*) 'bcast_pvr_section_ctl end', &
-     &    my_rank, pvr%pvr_sect_ctl(i)%fname_sect_ctl
       end do
 !
       end subroutine bcast_pvr_sections_ctl

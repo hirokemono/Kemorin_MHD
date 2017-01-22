@@ -114,6 +114,7 @@
       use cal_pvr_modelview_mat
       use cal_pvr_projection_mat
       use find_selected_domain_bd
+      use bcast_control_data_4_pvr
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -135,23 +136,16 @@
       if(iflag_debug .gt. 0) write(*,*) 's_set_pvr_control', num_pvr
       do i_pvr = 1, num_pvr
         call read_control_pvr(i_pvr)
-        do i_psf = 1, pvr_ctl_struct(i_pvr)%num_pvr_sect_ctl
-          write(*,*) 'read_control_pvr end', &
-     &      my_rank, pvr_ctl_struct(i_pvr)%pvr_sect_ctl(i_psf)%fname_sect_ctl
-          call calypso_mpi_barrier
-        end do
-!
         call read_control_modelview(i_pvr)
         call read_control_colormap(i_pvr)
-!
         do i_psf = 1, pvr_ctl_struct(i_pvr)%num_pvr_sect_ctl
-          write(*,*) 'pvr_ctl_struct(i_pvr)%pvr_sect_ctl(i_psf)%fname_sect_ctl', &
-     &      my_rank, pvr_ctl_struct(i_pvr)%pvr_sect_ctl(i_psf)%fname_sect_ctl
-          call calypso_mpi_barrier
           call read_control_pvr_section_def                             &
      &       (pvr_ctl_struct(i_pvr)%pvr_sect_ctl(i_psf))
         end do
 !
+        call bcast_vr_psf_ctl(pvr_ctl_struct(i_pvr))
+        call bcast_view_transfer_ctl(pvr_ctl_struct(i_pvr)%mat)
+        call bcast_pvr_colordef_ctl(pvr_ctl_struct(i_pvr)%color)
         do i_psf = 1, pvr_ctl_struct(i_pvr)%num_pvr_sect_ctl
           call bcast_section_def_control                                &
      &       (pvr_ctl_struct(i_pvr)%pvr_sect_ctl(i_psf)%psf)

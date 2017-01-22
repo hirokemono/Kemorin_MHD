@@ -132,8 +132,6 @@
         close(pvr_ctl_file_code)
       end if
 !
-      call bcast_vr_psf_ctl(pvr_ctl_struct(i_pvr))
-!
       end subroutine read_control_pvr
 !
 !  ---------------------------------------------------------------------
@@ -167,36 +165,33 @@
       use calypso_mpi
       use m_error_IDs
       use t_ctl_data_4_view_transfer
-      use bcast_control_data_4_pvr
 !
       integer(kind = kint), intent(in) :: i_pvr
 !
+!
+      if(my_rank .gt. 0) return
+!
       if(pvr_ctl_struct(i_pvr)%view_file_ctl .eq. 'NO_FILE') then
-        if(my_rank .eq. 0) write(*,*)  'Modelview control:', i_pvr,     &
-     &                               ' is included'
+        write(*,*)  'Modelview control:', i_pvr, ' is included'
         return
       end if
 !
-      if(my_rank .eq. 0) then
-        write(*,*) 'Modelview control:', i_pvr,':  ',                   &
-     &                 trim(pvr_ctl_struct(i_pvr)%view_file_ctl)
+      write(*,*) 'Modelview control:', i_pvr,':  ',                     &
+     &               trim(pvr_ctl_struct(i_pvr)%view_file_ctl)
 !
-        open(pvr_ctl_file_code,                                         &
+      open(pvr_ctl_file_code,                                           &
      &        file=pvr_ctl_struct(i_pvr)%view_file_ctl, status='old')
 !
-        call load_ctl_label_and_line
+      call load_ctl_label_and_line
 !
-        if(right_begin_flag(hd_view_transform) .gt. 0) then
-          call read_view_transfer_ctl                                   &
+      if(right_begin_flag(hd_view_transform) .gt. 0) then
+        call read_view_transfer_ctl                                     &
      &        (hd_view_transform, pvr_ctl_struct(i_pvr)%mat)
-        else
-          call calypso_mpi_abort(ierr_PVR, 'Set view matrix file')
-        end if
-!
-        close(pvr_ctl_file_code)
+      else
+        call calypso_mpi_abort(ierr_PVR, 'Set view matrix file')
       end if
 !
-      call bcast_view_transfer_ctl(pvr_ctl_struct(i_pvr)%mat)
+      close(pvr_ctl_file_code)
 !
       end subroutine read_control_modelview
 !
@@ -207,36 +202,33 @@
       use calypso_mpi
       use m_error_IDs
       use t_ctl_data_pvr_colormap
-      use bcast_control_data_4_pvr
 !
       integer(kind = kint), intent(in) :: i_pvr
 !
+!
+      if(my_rank .gt. 0) return
+!
       if(pvr_ctl_struct(i_pvr)%color_file_ctl .eq. 'NO_FILE') then
-        if(my_rank .eq. 0) write(*,*)  'Colormap control:', i_pvr,      &
-     &                               ' is included'
+        write(*,*)  'Colormap control:', i_pvr, ' is included'
         return
       end if
 !
-      if(my_rank .eq. 0) then
-        write(*,*) 'Colormap control:', i_pvr,':  ',                    &
+      write(*,*) 'Colormap control:', i_pvr,':  ',                      &
      &                 trim(pvr_ctl_struct(i_pvr)%color_file_ctl)
 !
-        open(pvr_ctl_file_code,                                         &
+      open(pvr_ctl_file_code,                                           &
      &     file=pvr_ctl_struct(i_pvr)%color_file_ctl,  status='old')
 !
-        call load_ctl_label_and_line
+      call load_ctl_label_and_line
 !
-        if(right_begin_flag(hd_pvr_colordef) .gt. 0) then
-          call read_pvr_colordef_ctl                                    &
+      if(right_begin_flag(hd_pvr_colordef) .gt. 0) then
+        call read_pvr_colordef_ctl                                      &
      &       (hd_pvr_colordef, pvr_ctl_struct(i_pvr)%color)
-        else
-          call calypso_mpi_abort(ierr_PVR, 'Set correct colormap file')
-        end if
-!
-        close(pvr_ctl_file_code)
+      else
+        call calypso_mpi_abort(ierr_PVR, 'Set correct colormap file')
       end if
 !
-      call bcast_pvr_colordef_ctl(pvr_ctl_struct(i_pvr)%color)
+      close(pvr_ctl_file_code)
 !
       end subroutine read_control_colormap
 !

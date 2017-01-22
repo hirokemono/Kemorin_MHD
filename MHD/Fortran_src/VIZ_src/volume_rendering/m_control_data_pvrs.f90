@@ -192,11 +192,6 @@
 !
       call MPI_BCAST(fname_pvr_ctl, (kchara*num_pvr_ctl),               &
      &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
-      do i_pvr = 1, num_pvr_ctl
-        if(fname_pvr_ctl(i_pvr) .eq. 'NO_FILE') then
-          call bcast_vr_psf_ctl(pvr_ctl_struct(i_pvr))
-        end if
-      end do
 !
       end subroutine bcast_files_4_pvr_ctl
 !

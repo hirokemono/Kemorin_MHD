@@ -141,25 +141,24 @@
       integer(kind = kint), parameter :: psf_ctl_file_code = 11
 !
 !
+      if(my_rank .gt. 0) return
       if(pvr_sect_ctl%fname_sect_ctl .eq. 'NO_FILE') return
-      if(my_rank .eq. 0) then
 !
-        ctl_file_code = psf_ctl_file_code
-        write(*,*) 'Read ',  trim(pvr_sect_ctl%fname_sect_ctl),         &
+      ctl_file_code = psf_ctl_file_code
+      write(*,*) 'Read ',  trim(pvr_sect_ctl%fname_sect_ctl),           &
      &             'for surface definition'
-        open(ctl_file_code, file=pvr_sect_ctl%fname_sect_ctl,           &
+      open(ctl_file_code, file=pvr_sect_ctl%fname_sect_ctl,             &
      &       status='old')
 !
-        do
-          call load_ctl_label_and_line
-          if(right_begin_flag(hd_surface_define) .gt. 0) then
-            call read_section_def_control(pvr_sect_ctl%psf)
-            exit
-          end if
-        end do
+      do
+        call load_ctl_label_and_line
+        if(right_begin_flag(hd_surface_define) .gt. 0) then
+          call read_section_def_control(pvr_sect_ctl%psf)
+          exit
+        end if
+      end do
 !
-        close(ctl_file_code)
-      end if
+      close(ctl_file_code)
 !
       end subroutine read_control_pvr_section_def
 !
