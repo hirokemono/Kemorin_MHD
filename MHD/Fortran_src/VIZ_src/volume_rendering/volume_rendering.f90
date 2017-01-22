@@ -144,14 +144,6 @@
         end do
 !
         call bcast_vr_psf_ctl(pvr_ctl_struct(i_pvr))
-        call bcast_view_transfer_ctl(pvr_ctl_struct(i_pvr)%mat)
-        call bcast_pvr_colordef_ctl(pvr_ctl_struct(i_pvr)%color)
-        do i_psf = 1, pvr_ctl_struct(i_pvr)%num_pvr_sect_ctl
-          call bcast_section_def_control                                &
-     &       (pvr_ctl_struct(i_pvr)%pvr_sect_ctl(i_psf)%psf)
-          write(*,*) 'bcast_section_def_control end', &
-     &      my_rank, pvr_ctl_struct(i_pvr)%pvr_sect_ctl(i_psf)%fname_sect_ctl
-        end do
 !
         call set_each_pvr_control(group%ele_grp, group%surf_grp,        &
      &      nod_fld%num_phys, nod_fld%phys_name,                        &
