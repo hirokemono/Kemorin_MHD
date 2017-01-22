@@ -23,7 +23,7 @@
       implicit  none
 !
       private :: bcast_pvr_sections_ctl, bcast_pvr_isosurfs_ctl
-      private :: bcast_pvr_section_ctl, bcast_pvr_isosurface_ctl
+      private :: bcast_pvr_isosurface_ctl
       private :: bcast_pvr_colorbar_ctl, bcast_pvr_rotation_ctl
       private :: bcast_lighting_ctl, bcast_projection_mat_ctl
       private :: bcast_image_size_ctl, bcast_stereo_view_ctl
@@ -37,6 +37,7 @@
       subroutine bcast_vr_psf_ctl(pvr)
 !
       type(pvr_ctl), intent(inout) :: pvr
+      integer :: i
 !
 !
       call MPI_BCAST(pvr%i_pvr_ctl,  ione,                              &
@@ -115,13 +116,16 @@
 !
       call MPI_BCAST(pvr%i_pvr_sect,  ione,                             &
      &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+!
       do i = 1, pvr%num_pvr_sect_ctl
-        call bcast_pvr_section_ctl(pvr%pvr_sect_ctl(i))
-      end do
-      do i = 1, pvr%num_pvr_sect_ctl
-        write(*,*) 'bcast_pvr_sections_ctl end', &
+        call MPI_BCAST(pvr%pvr_sect_ctl(i)%fname_sect_ctl, kchara,      &
+     &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
+        call MPI_BCAST(pvr%pvr_sect_ctl(i)%psf%i_psf_ctl,  ione,        &
+     &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+!
+        call bcast_ctl_type_r1(pvr%pvr_sect_ctl(i)%opacity_ctl)
+        write(*,*) 'bcast_pvr_section_ctl end', &
      &    my_rank, pvr%pvr_sect_ctl(i)%fname_sect_ctl
-        call calypso_mpi_barrier
       end do
 !
       end subroutine bcast_pvr_sections_ctl
@@ -150,31 +154,6 @@
       end subroutine bcast_pvr_isosurfs_ctl
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine bcast_pvr_section_ctl(pvr_sect_ctl)
-!
-      use bcast_control_arrays
-!
-      type(pvr_sections_ctl), intent(inout) :: pvr_sect_ctl
-!
-!
-      call MPI_BCAST(pvr_sect_ctl%fname_sect_ctl, kchara,               &
-     &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(pvr_sect_ctl%psf%i_psf_ctl,  ione,                 &
-     &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
-!
-      if(pvr_sect_ctl%fname_sect_ctl .eq. 'NO_FILE') then
-        call bcast_section_def_control(pvr_sect_ctl%psf)
-      end if
-!
-      call bcast_ctl_type_r1(pvr_sect_ctl%opacity_ctl)
-        write(*,*) 'bcast_pvr_section_ctl end', &
-     &    my_rank, pvr_sect_ctl%fname_sect_ctl
-        call calypso_mpi_barrier
-!
-      end subroutine bcast_pvr_section_ctl
-!
 !  ---------------------------------------------------------------------
 !
       subroutine bcast_pvr_isosurface_ctl(pvr_iso_ctl)

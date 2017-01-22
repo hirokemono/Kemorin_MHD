@@ -152,6 +152,12 @@
      &       (pvr_ctl_struct(i_pvr)%pvr_sect_ctl(i_psf))
         end do
 !
+        do i_psf = 1, pvr_ctl_struct(i_pvr)%num_pvr_sect_ctl
+          call bcast_section_def_control                                &
+     &       (pvr_ctl_struct(i_pvr)%pvr_sect_ctl(i_psf)%psf)
+          write(*,*) 'bcast_section_def_control end', &
+     &      my_rank, pvr_ctl_struct(i_pvr)%pvr_sect_ctl(i_psf)%fname_sect_ctl
+        end do
 !
         call set_each_pvr_control(group%ele_grp, group%surf_grp,        &
      &      nod_fld%num_phys, nod_fld%phys_name,                        &

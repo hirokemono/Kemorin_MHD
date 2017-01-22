@@ -65,8 +65,6 @@
       type(pvr_colormap_parameter), intent(inout) :: color_params
       type(pvr_colorbar_parameter), intent(inout) :: cbar_params
 !
-      integer(kind = kint) :: i_psf
-!
 !
       if(iflag_debug .gt. 0) write(*,*) 'PVR parameters for'
       call set_pvr_file_control(pvr_control,                            &

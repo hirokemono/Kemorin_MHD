@@ -161,8 +161,6 @@
         close(ctl_file_code)
       end if
 !
-      call bcast_section_def_control(pvr_sect_ctl%psf)
-!
       end subroutine read_control_pvr_section_def
 !
 !  ---------------------------------------------------------------------
