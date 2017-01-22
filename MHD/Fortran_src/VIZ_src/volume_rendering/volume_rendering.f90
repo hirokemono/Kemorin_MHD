@@ -109,6 +109,7 @@
       subroutine PVR_initialize(node, ele, surf, group, nod_fld)
 !
       use m_control_data_pvrs
+      use t_control_data_pvr_misc
       use set_pvr_control
       use cal_pvr_modelview_mat
       use cal_pvr_projection_mat
@@ -120,7 +121,7 @@
       type(mesh_groups), intent(in) :: group
       type(phys_data), intent(in) :: nod_fld
 !
-      integer(kind = kint) :: i_pvr
+      integer(kind = kint) :: i_pvr, i_psf
 !
 !
       num_pvr = num_pvr_ctl
@@ -136,6 +137,15 @@
         call read_control_pvr(i_pvr)
         call read_control_modelview(i_pvr)
         call read_control_colormap(i_pvr)
+!
+        do i_psf = 1, pvr_ctl_struct(i_pvr)%num_pvr_sect_ctl
+          write(*,*) 'pvr_ctl_struct(i_pvr)%pvr_sect_ctl(i_psf)%fname_sect_ctl', &
+     &      my_rank, pvr_ctl_struct(i_pvr)%pvr_sect_ctl(i_psf)
+          call calypso_mpi_barrier
+          call read_control_pvr_section_def                             &
+     &       (pvr_ctl_struct(i_pvr)%pvr_sect_ctl(i_psf))
+        end do
+!
 !
         call set_each_pvr_control(group%ele_grp, group%surf_grp,        &
      &      nod_fld%num_phys, nod_fld%phys_name,                        &

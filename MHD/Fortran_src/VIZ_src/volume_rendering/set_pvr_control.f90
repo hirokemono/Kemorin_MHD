@@ -8,8 +8,9 @@
 !!     &        pvr_control, file_params, fld_params, view_params,      &
 !!     &        field_pvr, color_params, cbar_params)
 !!      subroutine read_control_pvr_update(i_pvr)
-!!       subroutine flush_each_pvr_control                              &
-!!      &         (color_params, fld_params, field_pvr)
+!!      subroutine read_control_pvr(i_pvr)
+!!      subroutine flush_each_pvr_control                               &
+!!     &         (color_params, fld_params, field_pvr)
 !
       module set_pvr_control
 !
@@ -66,11 +67,6 @@
 !
       integer(kind = kint) :: i_psf
 !
-!
-      do i_psf = 1, pvr_control%num_pvr_sect_ctl
-        call read_control_pvr_section_def                               &
-     &     (pvr_control%pvr_sect_ctl(i_psf))
-      end do
 !
       if(iflag_debug .gt. 0) write(*,*) 'PVR parameters for'
       call set_pvr_file_control(pvr_control,                            &
