@@ -142,13 +142,6 @@
         end do
 !
         call read_control_modelview(i_pvr)
-        do i_psf = 1, pvr_ctl_struct(i_pvr)%num_pvr_sect_ctl
-          write(*,*) 'read_control_modelview end', &
-     &      my_rank, pvr_ctl_struct(i_pvr)%pvr_sect_ctl(i_psf)%fname_sect_ctl
-          call calypso_mpi_barrier
-        end do
-!
-!
         call read_control_colormap(i_pvr)
 !
         do i_psf = 1, pvr_ctl_struct(i_pvr)%num_pvr_sect_ctl

@@ -78,6 +78,12 @@
       call bcast_ctl_type_c1(pvr%pvr_field_ctl)
       call bcast_ctl_type_c1(pvr%pvr_comp_ctl)
 !
+      do i = 1, pvr%num_pvr_sect_ctl
+        write(*,*) 'bcast_vr_psf_ctl end', &
+     &    my_rank, pvr%pvr_sect_ctl(i)%fname_sect_ctl
+        call calypso_mpi_barrier
+      end do
+!
       end subroutine bcast_vr_psf_ctl
 !
 !  ---------------------------------------------------------------------
@@ -111,6 +117,11 @@
      &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
       do i = 1, pvr%num_pvr_sect_ctl
         call bcast_pvr_section_ctl(pvr%pvr_sect_ctl(i))
+      end do
+      do i = 1, pvr%num_pvr_sect_ctl
+        write(*,*) 'bcast_pvr_sections_ctl end', &
+     &    my_rank, pvr%pvr_sect_ctl(i)%fname_sect_ctl
+        call calypso_mpi_barrier
       end do
 !
       end subroutine bcast_pvr_sections_ctl
@@ -158,6 +169,9 @@
       end if
 !
       call bcast_ctl_type_r1(pvr_sect_ctl%opacity_ctl)
+        write(*,*) 'bcast_pvr_section_ctl end', &
+     &    my_rank, pvr_sect_ctl%fname_sect_ctl
+        call calypso_mpi_barrier
 !
       end subroutine bcast_pvr_section_ctl
 !
