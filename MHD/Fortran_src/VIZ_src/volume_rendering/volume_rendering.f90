@@ -140,7 +140,7 @@
 !
         do i_psf = 1, pvr_ctl_struct(i_pvr)%num_pvr_sect_ctl
           write(*,*) 'pvr_ctl_struct(i_pvr)%pvr_sect_ctl(i_psf)%fname_sect_ctl', &
-     &      my_rank, pvr_ctl_struct(i_pvr)%pvr_sect_ctl(i_psf)
+     &      my_rank, pvr_ctl_struct(i_pvr)%pvr_sect_ctl(i_psf)%fname_sect_ctl
           call calypso_mpi_barrier
           call read_control_pvr_section_def                             &
      &       (pvr_ctl_struct(i_pvr)%pvr_sect_ctl(i_psf))
