@@ -430,7 +430,7 @@
 !
       call bcast_ctl_array_c1(psf%psf_area_ctl)
 !
-      call read_real_ctl_type(hd_radius, psf%radius_psf_ctl)
+      call bcast_ctl_type_r1(psf%radius_psf_ctl)
 !
       call bcast_ctl_type_c1(psf%section_method_ctl)
       call bcast_ctl_type_c1(psf%psf_group_name_ctl)
