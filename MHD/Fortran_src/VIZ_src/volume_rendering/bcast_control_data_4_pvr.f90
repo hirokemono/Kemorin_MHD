@@ -142,11 +142,6 @@
         call bcast_ctl_type_r1(pvr%pvr_iso_ctl(i)%opacity_ctl)
       end do
 !
-      write(*,*) 'pvr%num_pvr_iso_ctl', my_rank, pvr%num_pvr_iso_ctl
-      do i = 1, pvr%num_pvr_iso_ctl
-        write(*,*) 'pvr%num_pvr_iso_ctl', my_rank, i, pvr%pvr_iso_ctl(i)%isosurf_value_ctl
-      end do
-!
       end subroutine bcast_pvr_isosurfs_ctl
 !
 !  ---------------------------------------------------------------------
