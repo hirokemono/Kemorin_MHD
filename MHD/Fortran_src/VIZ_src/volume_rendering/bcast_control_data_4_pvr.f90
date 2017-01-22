@@ -23,7 +23,6 @@
       implicit  none
 !
       private :: bcast_pvr_sections_ctl, bcast_pvr_isosurfs_ctl
-      private :: bcast_pvr_isosurface_ctl
       private :: bcast_pvr_colorbar_ctl, bcast_pvr_rotation_ctl
       private :: bcast_lighting_ctl, bcast_projection_mat_ctl
       private :: bcast_image_size_ctl, bcast_stereo_view_ctl
@@ -138,26 +137,17 @@
       end if
 !
       do i = 1, pvr%num_pvr_iso_ctl
-        call bcast_pvr_isosurface_ctl(pvr%pvr_iso_ctl(i))
+        call bcast_ctl_type_c1(pvr%pvr_iso_ctl(i)%isosurf_type_ctl)
+        call bcast_ctl_type_r1(pvr%pvr_iso_ctl(i)%isosurf_value_ctl)
+        call bcast_ctl_type_r1(pvr%pvr_iso_ctl(i)%opacity_ctl)
+      end do
+!
+      write(*,*) 'pvr%num_pvr_iso_ctl', my_rank, pvr%num_pvr_iso_ctl
+      do i = 1, pvr%num_pvr_iso_ctl
+        write(*,*) 'pvr%num_pvr_iso_ctl', my_rank, i, pvr%pvr_iso_ctl(i)%isosurf_value_ctl
       end do
 !
       end subroutine bcast_pvr_isosurfs_ctl
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine bcast_pvr_isosurface_ctl(pvr_iso_ctl)
-!
-      use bcast_control_arrays
-!
-      type(pvr_isosurf_ctl), intent(inout) :: pvr_iso_ctl
-!
-!
-      call bcast_ctl_type_c1(pvr_iso_ctl%isosurf_type_ctl)
-      call bcast_ctl_type_r1(pvr_iso_ctl%isosurf_value_ctl)
-      call bcast_ctl_type_r1(pvr_iso_ctl%opacity_ctl)
-!
-      end subroutine bcast_pvr_isosurface_ctl
 !
 !  ---------------------------------------------------------------------
 !
