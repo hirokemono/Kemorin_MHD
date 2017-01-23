@@ -94,7 +94,7 @@
 ! -------- loop for shape function for the physical values
       do k2 = 1, ele%nnod_4_ele
         call vector_cst_phys_2_each_ele(node, ele, nod_fld,             &
-     &      k2, i_magne, coef_lor, fem_wk%vector_1)
+     &      k2, i_magne, fl_prop1%coef_lor, fem_wk%vector_1)
         call fem_skv_vector_inertia_type(iele_fsmp_stack, n_int, k2,    &
      &      fem_wk%vector_1, mhd_fem_wk%magne_1, ele, jac_3d,           &
      &      fem_wk%sk6)
@@ -142,8 +142,8 @@
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_magne, fem_wk%vector_1)
         call fem_skv_lorentz_full_galerkin(iele_fsmp_stack, n_int, k2,  &
-     &      coef_lor, fem_wk%vector_1, d_ele(1,iele_magne), ex_magne,   &
-     &      ele, jac_3d, fem_wk%sk6)
+     &      fl_prop1%coef_lor, fem_wk%vector_1, d_ele(1,iele_magne),    &
+     &      ex_magne, ele, jac_3d, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &
@@ -192,7 +192,7 @@
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele%nnod_4_ele
         call vector_cst_phys_2_each_ele(node, ele, nod_fld,             &
-     &      k2, i_vecp, coef_lor, mhd_fem_wk%vecp_1)
+     &      k2, i_vecp, fl_prop1%coef_lor, mhd_fem_wk%vecp_1)
         call fem_skv_lorentz_rot_galerkin(iele_fsmp_stack,              &
      &      n_int, k2, mhd_fem_wk%vecp_1, fem_wk%vector_1,              &
      &      ele, jac_3d, fem_wk%sk6)
@@ -246,7 +246,7 @@
 ! -------- loop for shape function for the physical values
       do k2 = 1, ele%nnod_4_ele
         call vector_cst_phys_2_each_ele(node, ele, nod_fld,             &
-     &      k2, i_magne, coef_lor, fem_wk%vector_1)
+     &      k2, i_magne, fl_prop1%coef_lor, fem_wk%vector_1)
         call fem_skv_vector_inertia_upwind(iele_fsmp_stack, n_int, k2,  &
      &      fem_wk%vector_1, mhd_fem_wk%magne_1, d_ele(1,ie_upw),       &
      &      ele, jac_3d, fem_wk%sk6)
@@ -294,9 +294,9 @@
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_magne, fem_wk%vector_1)
         call fem_skv_lorentz_full_upwind(iele_fsmp_stack,               &
-     &      n_int, k2, coef_lor, fem_wk%vector_1, d_ele(1,ie_upw),      &
-     &      d_ele(1,iele_magne), ex_magne, ele, jac_3d,                 &
-     &      fem_wk%sk6)
+     &      n_int, k2, fl_prop1%coef_lor, fem_wk%vector_1,              &
+     &      d_ele(1,ie_upw), d_ele(1,iele_magne), ex_magne,             &
+     &      ele, jac_3d, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &

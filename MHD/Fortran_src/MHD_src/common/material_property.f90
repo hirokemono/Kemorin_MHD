@@ -74,7 +74,7 @@
         fl_prop1%coef_buo =      one
         fl_prop1%coef_comp_buo = one
         fl_prop1%coef_cor =      one
-        coef_lor =      one
+        fl_prop1%coef_lor =      one
         fl_prop1%coef_press =    one
         fl_prop1%acoef_press =   one
 !
@@ -116,7 +116,7 @@
         end if
 !
         if ( iflag_4_lorentz .gt. id_turn_OFF) then
-          call construct_coefficient(coef_lor,                          &
+          call construct_coefficient(fl_prop1%coef_lor,                 &
      &       MHD_coef_list%dimless_list, MHD_coef_list%coefs_Lorentz,   &
      &       depth_low_t, depth_high_t)
         end if
@@ -205,7 +205,8 @@
      &         'coefficient for coriolis force:      ',                 &
      &              fl_prop1%coef_cor
         if (iflag_4_lorentz .gt. id_turn_OFF)       write(*,*)          &
-     &         'coefficient for Lorentz force:       ', coef_lor
+     &         'coefficient for Lorentz force:       ',                 &
+     &              fl_prop1%coef_lor
         end if
 !
         if (evo_temp%iflag_scheme .gt. id_no_evolution) then

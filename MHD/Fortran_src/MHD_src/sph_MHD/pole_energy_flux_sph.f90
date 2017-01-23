@@ -60,7 +60,7 @@
       if( (iphys%i_lorentz*iflag_4_lorentz) .gt. 0) then
         call pole_fld_cst_cross_prod                                    &
      &     (node%numnod, node%internal_node, node%xx,                   &
-     &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), coef_lor,            &
+     &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), fl_prop1%coef_lor,   &
      &      nod_fld%ntot_phys, iphys%i_current, iphys%i_velo,           &
      &      iphys%i_lorentz, nod_fld%d_fld)
       end if

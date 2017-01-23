@@ -6,11 +6,11 @@
 !!      subroutine cal_sol_pressure                                     &
 !!     &         (numnod, inter_smp_stack, acoef_press,                 &
 !!     &          ncomp_nod, i_p_phi, i_press, d_nod)
-!!      subroutine cal_sol_pressure_w_mag_ene                           &
-!!     &         (numnod, inter_smp_stack, coef_press, acoef_press,     &
+!!      subroutine cal_sol_pressure_w_mag_ene(numnod, inter_smp_stack,  &
+!!     &          coef_press, acoef_press, coef_lor,                    &
 !!     &          ncomp_nod, i_p_phi, i_magne, i_press, d_nod)
-!!      subroutine cal_sol_pressure_mcv                                 &
-!!     &         (numnod, inter_smp_stack, coef_press, acoef_press,     &
+!!      subroutine cal_sol_pressure_mcv(numnod, inter_smp_stack,        &
+!!     &          coef_press, acoef_press, coef_lor, ex_magne,          &
 !!     &          ncomp_nod, i_p_phi, i_magne, i_press, d_nod)
 !!      subroutine cal_sol_pressure_crank                               &
 !!     &         (numnod, inter_smp_stack, acoef_press, coef_d_velo,    &
@@ -30,7 +30,6 @@
       use m_constants
       use m_machine_parameter
       use m_t_int_parameter
-      use m_physical_property
 !
       implicit none
 !
@@ -69,14 +68,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sol_pressure_w_mag_ene                             &
-     &         (numnod, inter_smp_stack, coef_press, acoef_press,       &
+      subroutine cal_sol_pressure_w_mag_ene(numnod, inter_smp_stack,    &
+     &          coef_press, acoef_press, coef_lor,                      &
      &          ncomp_nod, i_p_phi, i_magne, i_press, d_nod)
 !
       integer(kind = kint), intent(in) :: numnod, ncomp_nod
       integer(kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: i_p_phi, i_magne, i_press
       real(kind = kreal), intent(in) :: coef_press, acoef_press
+      real(kind = kreal), intent(in) :: coef_lor
 !
       real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
@@ -105,14 +105,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sol_pressure_mcv                                   &
-     &         (numnod, inter_smp_stack, coef_press, acoef_press,       &
+      subroutine cal_sol_pressure_mcv(numnod, inter_smp_stack,          &
+     &          coef_press, acoef_press, coef_lor, ex_magne,            &
      &          ncomp_nod, i_p_phi, i_magne, i_press, d_nod)
 !
       integer(kind = kint), intent(in) :: numnod, ncomp_nod
       integer(kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: i_p_phi, i_magne, i_press
       real(kind = kreal), intent(in) :: coef_press, acoef_press
+      real(kind = kreal), intent(in) :: coef_lor
+      real(kind = kreal), intent(in) :: ex_magne(3)
 !
       real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !

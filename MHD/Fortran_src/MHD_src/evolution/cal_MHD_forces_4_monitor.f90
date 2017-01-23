@@ -371,13 +371,13 @@
       if (iphys%i_ujb .gt. izero) then
         call cal_tri_product_4_scalar                                   &
      &     (iphys%i_velo, iphys%i_current, iphys%i_magne, iphys%i_ujb,  &
-     &      coef_lor, nod_fld)
+     &      fl_prop1%coef_lor, nod_fld)
       end if
 !
       if (iphys%i_nega_ujb .gt. izero) then
         call cal_tri_product_4_scalar                                   &
      &     (iphys%i_velo, iphys%i_magne, iphys%i_current,               &
-     &      iphys%i_nega_ujb, coef_lor, nod_fld)
+     &      iphys%i_nega_ujb, fl_prop1%coef_lor, nod_fld)
       end if
 !
       if (iphys%i_me_gen .gt. izero) then

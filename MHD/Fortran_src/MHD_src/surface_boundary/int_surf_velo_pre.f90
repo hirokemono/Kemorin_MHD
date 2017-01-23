@@ -105,7 +105,7 @@
      &        Bsf_bcs%sgs, intg_point_t_evo, ifilter_final,             &
      &        iphys%i_SGS_maxwell, iphys%i_magne, iphys%i_magne,        &
      &        diff_coefs%num_field, iak_diff_lor, diff_coefs%ak,        &
-     &        (-coef_lor), fem_wk, surf_wk, f_nl)
+     &        (-fl_prop1%coef_lor), fem_wk, surf_wk, f_nl)
         end if
       end if
 !
@@ -174,7 +174,7 @@
      &        Bsf_bcs%sgs, intg_point_t_evo, ifilter_final,             &
      &        iphys%i_SGS_maxwell, iphys%i_magne, iphys%i_magne,        &
      &        diff_coefs%num_field, iak_diff_lor, diff_coefs%ak,        &
-     &        (-coef_lor), fem_wk, surf_wk, f_nl)
+     &        (-fl_prop1%coef_lor), fem_wk, surf_wk, f_nl)
         end if
       end if
 !

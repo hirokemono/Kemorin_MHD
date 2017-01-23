@@ -67,7 +67,7 @@
 !
       if( (f_trns%i_lorentz*iflag_4_lorentz) .gt. 0) then
         call cal_cross_prod_w_coef_smp                                  &
-     &     (sph_rtp%nnod_pole, coef_lor,                                &
+     &     (sph_rtp%nnod_pole, fl_prop1%coef_lor,                       &
      &      fls_pl(1,bs_trns%i_current), fls_pl(1,bs_trns%i_magne),     &
      &      frc_pl(1,f_trns%i_lorentz) )
       end if

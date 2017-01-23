@@ -171,7 +171,7 @@
         call int_vol_div_tsr_w_const                                    &
      &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
      &      fluid%istack_ele_fld_smp, intg_point_t_evo,                 &
-     &      iphys%i_maxwell, coef_lor, fem_wk, f_nl)
+     &      iphys%i_maxwell, fl_prop1%coef_lor, fem_wk, f_nl)
 !
       else if(i_field .eq. iphys%i_SGS_div_m_flux) then
         if (iflag_commute_inertia .eq. id_SGS_commute_ON) then
@@ -194,12 +194,12 @@
      &        jac_3d, rhs_tbl, FEM_elens, diff_coefs,                   &
      &        fluid%istack_ele_fld_smp, intg_point_t_evo,               &
      &        iphys%i_magne, iphys%i_SGS_maxwell, ifilter_final,        &
-     &        iak_diff_lor, coef_lor, fem_wk, mhd_fem_wk, f_nl)
+     &        iak_diff_lor, fl_prop1%coef_lor, fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_div_tsr_w_const                                  &
      &       (node, ele, jac_3d, rhs_tbl, nod_fld,                      &
      &        fluid%istack_ele_fld_smp, intg_point_t_evo,               &
-     &        iphys%i_SGS_maxwell, coef_lor, fem_wk, f_nl)
+     &        iphys%i_SGS_maxwell, fl_prop1%coef_lor, fem_wk, f_nl)
         end if
       end if
 !
@@ -322,7 +322,7 @@
      &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
      &      fluid%istack_ele_fld_smp, intg_point_t_evo,                 &
      &      iphys%i_maxwell, ele_fld%ntot_phys, iv_upw,                 &
-     &      ele_fld%d_fld, coef_lor, fem_wk, f_nl)
+     &      ele_fld%d_fld, fl_prop1%coef_lor, fem_wk, f_nl)
 !
       else if(i_field .eq. iphys%i_SGS_div_m_flux) then 
         if (iflag_commute_inertia .eq. id_SGS_commute_ON) then
@@ -346,14 +346,14 @@
      &        jac_3d, rhs_tbl, FEM_elens, diff_coefs,                   &
      &        fluid%istack_ele_fld_smp, intg_point_t_evo,               &
      &        iphys%i_magne, iphys%i_SGS_maxwell, ifilter_final,        &
-     &        iak_diff_lor, ele_fld%ntot_phys, iv_upw,                  &
-     &        ele_fld%d_fld, coef_lor, fem_wk, mhd_fem_wk, f_nl)
+     &        iak_diff_lor, ele_fld%ntot_phys, iv_upw, ele_fld%d_fld,   &
+     &        fl_prop1%coef_lor, fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_div_tsr_w_const_upw                              &
      &       (node, ele, jac_3d, rhs_tbl, nod_fld,                      &
      &        fluid%istack_ele_fld_smp, intg_point_t_evo,               &
      &        iphys%i_SGS_maxwell, ele_fld%ntot_phys, iv_upw,           &
-     &        ele_fld%d_fld, coef_lor, fem_wk, f_nl)
+     &        ele_fld%d_fld, fl_prop1%coef_lor, fem_wk, f_nl)
         end if
       end if
 !

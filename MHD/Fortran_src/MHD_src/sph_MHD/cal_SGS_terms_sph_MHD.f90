@@ -70,7 +70,7 @@
 !
       if( (f_trns%i_SGS_Lorentz*iflag_SGS_lorentz) .gt. 0) then
         call cal_cross_prod_w_coef_smp                                  &
-     &     (sph_rtp%nnod_rtp, coef_lor,                                 &
+     &     (sph_rtp%nnod_rtp, fl_prop1%coef_lor,                        &
      &      fld_rtp(1,b_trns%i_filter_current),                         &
      &      fld_rtp(1,b_trns%i_filter_magne),                           &
      &      frc_rtp(1,f_trns%i_SGS_Lorentz) )
@@ -197,7 +197,8 @@
       end if
 !
       if(bg_trns%i_wide_SGS_Lorentz .gt. 0) then
-        call subcract_X_product_w_coef_smp(sph_rtp%nnod_rtp, coef_lor,  &
+        call subcract_X_product_w_coef_smp                              &
+     &     (sph_rtp%nnod_rtp, fl_prop1%coef_lor,                        &
      &      fld_rtp(1,b_trns%i_wide_fil_current),                       &
      &      fld_rtp(1,b_trns%i_wide_fil_magne),                         &
      &      fil_rtp(1,bg_trns%i_wide_SGS_Lorentz))
