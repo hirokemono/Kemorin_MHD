@@ -22,12 +22,12 @@
 !
 !>      Structure for thermal property
       type(scalar_property), save :: ht_prop1
-!ht_prop1%coef_advect
+!ht_prop1%coef_nega_adv
 !
 !>     coefficient for time evolution of temperature and heat flux
 !      real  (kind=kreal) :: coef_temp
 !>     coefficient for heat flux (-coef_temp)
-      real  (kind=kreal) :: coef_nega_t
+!      real  (kind=kreal) :: coef_nega_t
 !>     coefficient for time evolution of composition and composition flux
       real  (kind=kreal) :: coef_light
 !>     coefficient for composition flux (-coef_light)

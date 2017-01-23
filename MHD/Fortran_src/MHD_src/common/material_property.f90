@@ -62,7 +62,7 @@
         call set_implicit_4_inf_viscous(ht_prop1%coef_advect,           &
      &      evo_temp%coef_imp, evo_temp%coef_exp)
 !
-        coef_nega_t = - ht_prop1%coef_advect
+        ht_prop1%coef_nega_adv = - ht_prop1%coef_advect
       end if
 !
 !    For convection
