@@ -76,7 +76,7 @@
         coef_cor =      one
         coef_lor =      one
         fl_prop1%coef_press =    one
-        acoef_press =   one
+        fl_prop1%acoef_press =   one
 !
         call construct_coefficient(fl_prop1%coef_velo,                  &
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_momentum,   &
@@ -93,7 +93,7 @@
         call set_implicit_4_inf_viscous(fl_prop1%coef_velo,             &
      &      evo_velo%coef_imp, evo_velo%coef_exp)
 !
-        acoef_press = one / fl_prop1%coef_press
+        fl_prop1%acoef_press = one / fl_prop1%coef_press
         fl_prop1%coef_nega_v = - fl_prop1%coef_velo
 !
         if (iflag_4_gravity .gt. id_turn_OFF                            &

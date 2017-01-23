@@ -38,7 +38,7 @@
 !
 !>      Structure for fluid property
       type(fluid_property), save :: fl_prop1
-!fl_prop1%coef_press
+!fl_prop1%acoef_press
 !
 !>     coefficient for time evolution of velocity and advection
 !      real  (kind=kreal) :: coef_velo
@@ -60,7 +60,7 @@
       real  (kind=kreal) :: coef_nega_c
 !
 !>     1 / coef_press
-      real  (kind=kreal) :: acoef_press
+!      real  (kind=kreal) :: acoef_press
 !>     1 / coef_mag_p
       real  (kind=kreal) :: acoef_mag_p
 !
