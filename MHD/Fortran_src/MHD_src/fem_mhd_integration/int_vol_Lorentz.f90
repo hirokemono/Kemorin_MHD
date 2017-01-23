@@ -87,7 +87,7 @@
 !
 !$omp parallel
       call add_const_to_vector_smp(ele%numele,                          &
-     &    d_ele(1,iele_magne), ex_magne, mhd_fem_wk%magne_1)
+     &    d_ele(1,iele_magne), cd_prop1%ex_magne, mhd_fem_wk%magne_1)
 !$omp end parallel
 !
 !
@@ -143,7 +143,7 @@
      &      k2, i_magne, fem_wk%vector_1)
         call fem_skv_lorentz_full_galerkin(iele_fsmp_stack, n_int, k2,  &
      &      fl_prop1%coef_lor, fem_wk%vector_1, d_ele(1,iele_magne),    &
-     &      ex_magne, ele, jac_3d, fem_wk%sk6)
+     &      cd_prop1%ex_magne, ele, jac_3d, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &
@@ -186,7 +186,7 @@
 !
 !$omp parallel
       call add_const_to_vector_smp(ele%numele,                          &
-     &    d_ele(1,iele_magne), ex_magne, fem_wk%vector_1)
+     &    d_ele(1,iele_magne), cd_prop1%ex_magne, fem_wk%vector_1)
 !$omp end parallel
 !
 ! -------- loop for shape function for the phsical values
@@ -240,7 +240,7 @@
 !
 !$omp parallel
       call add_const_to_vector_smp(ele%numele,                          &
-     &    d_ele(1,iele_magne), ex_magne, mhd_fem_wk%magne_1)
+     &    d_ele(1,iele_magne), cd_prop1%ex_magne, mhd_fem_wk%magne_1)
 !$omp end parallel
 !
 ! -------- loop for shape function for the physical values
@@ -295,7 +295,7 @@
      &      k2, i_magne, fem_wk%vector_1)
         call fem_skv_lorentz_full_upwind(iele_fsmp_stack,               &
      &      n_int, k2, fl_prop1%coef_lor, fem_wk%vector_1,              &
-     &      d_ele(1,ie_upw), d_ele(1,iele_magne), ex_magne,             &
+     &      d_ele(1,ie_upw), d_ele(1,iele_magne), cd_prop1%ex_magne,    &
      &      ele, jac_3d, fem_wk%sk6)
       end do
 !

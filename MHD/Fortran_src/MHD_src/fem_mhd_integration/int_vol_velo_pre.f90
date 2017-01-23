@@ -193,7 +193,8 @@
      &          k2, iphys%i_vecp, fl_prop1%coef_lor, mhd_fem_wk%vecp_1)
 !$omp parallel
             call add_const_to_vector_smp(ele%numele,                    &
-     &          d_ele(1,iphys_ele%i_magne), ex_magne, fem_wk%vector_1)
+     &          d_ele(1,iphys_ele%i_magne), cd_prop1%ex_magne,          &
+     &          fem_wk%vector_1)
 !$omp end parallel
 !
             call fem_skv_lorentz_rot_galerkin                           &
@@ -205,7 +206,8 @@
      &          iphys%i_magne, fl_prop1%coef_lor, mhd_fem_wk%magne_1)
 !$omp parallel
             call add_const_to_vector_smp(ele%numele,                    &
-     &          d_ele(1,iphys_ele%i_magne), ex_magne, fem_wk%vector_1)
+     &          d_ele(1,iphys_ele%i_magne), cd_prop1%ex_magne,          &
+     &          fem_wk%vector_1)
 !$omp end parallel
 !
             call fem_skv_vector_inertia_type(fluid%istack_ele_fld_smp,  &
@@ -444,7 +446,8 @@
      &          k2, iphys%i_vecp, fl_prop1%coef_lor, mhd_fem_wk%vecp_1)
 !$omp parallel
             call add_const_to_vector_smp(ele%numele,                    &
-     &          d_ele(1,iphys_ele%i_magne), ex_magne, fem_wk%vector_1)
+     &          d_ele(1,iphys_ele%i_magne), cd_prop1%ex_magne,          &
+     &          fem_wk%vector_1)
 !$omp end parallel
 !
             call fem_skv_lorentz_rot_galerkin                           &
@@ -456,7 +459,8 @@
      &          iphys%i_magne, fl_prop1%coef_lor, mhd_fem_wk%magne_1)
 !$omp parallel
             call add_const_to_vector_smp(ele%numele,                    &
-     &          d_ele(1,iphys_ele%i_magne), ex_magne, fem_wk%vector_1)
+     &          d_ele(1,iphys_ele%i_magne), cd_prop1%ex_magne,          &
+     &          fem_wk%vector_1)
 !$omp end parallel
 !
             call fem_skv_vector_inertia_upwind                          &

@@ -146,8 +146,8 @@
          else if ( nod_fld%phys_name(i).eq.fhd_SGS_Lorentz_true) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
-           call cal_div_sgs_maxwell_true_pre                            &
-     &        (ifld_diff%i_mom_flux, ifld_diff%i_lorentz, ex_magne,     &
+           call cal_div_sgs_maxwell_true_pre(ifld_diff%i_mom_flux,      &
+     &         ifld_diff%i_lorentz, cd_prop1%ex_magne,                  &
      &         nod_comm, node, ele, surf, fluid, sf_grp,                &
      &         surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, iphys, iphys_ele,    &
      &         ak_MHD, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,          &

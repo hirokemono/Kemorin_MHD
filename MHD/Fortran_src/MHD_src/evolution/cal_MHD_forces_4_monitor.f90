@@ -111,7 +111,7 @@
       else if (iphys%i_maxwell .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_maxwell_t)
         call cal_maxwell_tensor                                         &
-     &     (ex_magne, iphys%i_magne, iphys%i_maxwell, nod_fld)
+     &     (cd_prop1%ex_magne, iphys%i_magne, iphys%i_maxwell, nod_fld)
       else if (iphys%i_induct_t .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_induct_t)
         call cal_induction_tensor                                       &

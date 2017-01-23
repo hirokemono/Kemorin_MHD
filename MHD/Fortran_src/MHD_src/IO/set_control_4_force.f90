@@ -238,7 +238,7 @@
      &                     iflag_magneto_cv = id_turn_ON
       end if
 !
-      ex_magne(1:3) = 0.0d0
+      cd_prop1%ex_magne(1:3) = 0.0d0
 !
       if (iflag_magneto_cv .gt. id_turn_OFF) then
         if (mcv_ctl%ext_magne%icou .eq. 0) then
@@ -248,11 +248,11 @@
 !
           do i = 1, mcv_ctl%ext_magne%num
             if(cmp_no_case(mcv_ctl%ext_magne%c_tbl(i),'X')              &
-     &            ) ex_magne(1) = mcv_ctl%ext_magne%vect(i)
+     &            ) cd_prop1%ex_magne(1) = mcv_ctl%ext_magne%vect(i)
             if(cmp_no_case(mcv_ctl%ext_magne%c_tbl(i),'Y')              &
-     &            ) ex_magne(2) = mcv_ctl%ext_magne%vect(i)
+     &            ) cd_prop1%ex_magne(2) = mcv_ctl%ext_magne%vect(i)
             if(cmp_no_case(mcv_ctl%ext_magne%c_tbl(i),'Z')              &
-     &            ) ex_magne(3) = mcv_ctl%ext_magne%vect(i)
+     &            ) cd_prop1%ex_magne(3) = mcv_ctl%ext_magne%vect(i)
           end do
           call dealloc_control_array_c_r(mcv_ctl%ext_magne)
         end if
@@ -269,7 +269,7 @@
         end if
 !
         write(*,*) 'magneto_cv ',iflag_magneto_cv
-        write(*,'(a,1p3E25.15e3)') 'ex_magne ',ex_magne
+        write(*,'(a,1p3E25.15e3)') 'ex_magne ',cd_prop1%ex_magne
         write(*,*) 'iflag_4_coriolis', iflag_4_coriolis
         if(iflag_4_coriolis .gt. id_turn_OFF) then
           write(*,'(a, 1p3E25.15e3)') 'rotation:', fl_prop1%sys_rot(1:3)

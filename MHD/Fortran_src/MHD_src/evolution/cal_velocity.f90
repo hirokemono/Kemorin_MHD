@@ -171,7 +171,7 @@
           call cal_sol_pressure_mcv                                     &
      &       (node%numnod, node%istack_internal_smp,                    &
      &        fl_prop1%coef_press, fl_prop1%acoef_press,                &
-     &        fl_prop1%coef_lor, ex_magne,                              &
+     &        fl_prop1%coef_lor, cd_prop1%ex_magne,                     &
      &        nod_fld%ntot_phys, iphys%i_p_phi, iphys%i_magne,          &
      &        iphys%i_press, nod_fld%d_fld)
         else
