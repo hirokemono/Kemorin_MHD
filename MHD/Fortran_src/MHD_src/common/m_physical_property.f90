@@ -74,7 +74,7 @@
       real  (kind=kreal) :: coef_d_light
 !
 !>     coefficient for thermal buoyancy
-      real  (kind=kreal) :: coef_buo
+!      real  (kind=kreal) :: coef_buo
 !>     coefficient for Coriolis force
       real  (kind=kreal) :: coef_cor
 !>     coefficient for chemical Lorentz force

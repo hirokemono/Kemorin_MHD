@@ -180,7 +180,7 @@
 !   lead SGS buoyancy flux
 !
       if(iflag_4_gravity .gt. id_turn_OFF) then
-        call cal_SGS_gravity_flux(node, coef_buo,                       &
+        call cal_SGS_gravity_flux(node, fl_prop1%coef_buo,              &
      &      iphys%i_SGS_h_flux, iphys%i_SGS_buo_wk, nod_fld)
       end if
       if(iflag_4_composit_buo .gt. id_turn_OFF) then

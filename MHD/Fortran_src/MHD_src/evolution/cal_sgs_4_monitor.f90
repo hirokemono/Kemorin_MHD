@@ -332,7 +332,7 @@
       if (iphys%i_SGS_buo_wk .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_buo_flux)
-        call cal_SGS_gravity_flux(node, coef_buo,                       &
+        call cal_SGS_gravity_flux(node, fl_prop1%coef_buo,              &
      &      iphys%i_SGS_h_flux, iphys%i_SGS_buo_wk, nod_fld)
       end if
 !

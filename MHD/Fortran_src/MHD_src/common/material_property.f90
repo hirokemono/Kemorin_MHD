@@ -71,7 +71,7 @@
 !
         fl_prop1%coef_velo =     one
         fl_prop1%coef_diffuse =  one
-        coef_buo =      one
+        fl_prop1%coef_buo =      one
         coef_comp_buo = one
         coef_cor =      one
         coef_lor =      one
@@ -98,7 +98,7 @@
 !
         if (iflag_4_gravity .gt. id_turn_OFF                            &
      &     .or. iflag_4_filter_gravity .gt. id_turn_OFF) then
-          call construct_coefficient(coef_buo,                          &
+          call construct_coefficient(fl_prop1%coef_buo,                 &
      &       MHD_coef_list%dimless_list, MHD_coef_list%coefs_buoyancy,  &
      &      depth_low_t, depth_high_t)
         end if
@@ -196,7 +196,8 @@
           write(*,*) 'coefficient for viscous diffusion:   ',           &
      &              fl_prop1%coef_diffuse
         if (iflag_4_gravity .gt. id_turn_OFF)       write(*,*)          &
-     &         'coefficient for buoyancy:            ', coef_buo
+     &         'coefficient for buoyancy:            ',                 &
+     &              fl_prop1%coef_buo
         if (iflag_4_composit_buo .gt. id_turn_OFF)  write(*,*)          &
      &         'coefficient for composit buoyancy:   ', coef_comp_buo
         if (iflag_4_coriolis .gt. id_turn_OFF)      write(*,*)          &
