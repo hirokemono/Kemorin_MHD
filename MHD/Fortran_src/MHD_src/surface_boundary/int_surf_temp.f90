@@ -95,7 +95,7 @@
      &      Tsf_bcs%sgs%ngrp_sf_dat, Tsf_bcs%sgs%id_grp_sf_dat,         &
      &      ifilter_final, iphys%i_SGS_h_flux, iphys%i_velo,            &
      &      iphys%i_temp, diff_coefs%num_field, iak_diff_hf,            &
-     &      diff_coefs%ak, coef_temp, fem_wk, surf_wk, f_nl)
+     &      diff_coefs%ak, ht_prop1%coef_advect, fem_wk, surf_wk, f_nl)
       end if
 !
       end subroutine int_surf_temp_ele
@@ -148,7 +148,7 @@
      &      Tsf_bcs%sgs%ngrp_sf_dat, Tsf_bcs%sgs%id_grp_sf_dat,         &
      &      ifilter_final, iphys%i_SGS_h_flux, iphys%i_velo,            &
      &      iphys%i_temp, diff_coefs%num_field, iak_diff_hf,            &
-     &      diff_coefs%ak, coef_temp, fem_wk, surf_wk, f_nl)
+     &      diff_coefs%ak, ht_prop1%coef_advect, fem_wk, surf_wk, f_nl)
       end if
 !
       end subroutine int_surf_temp_monitor

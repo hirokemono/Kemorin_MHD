@@ -75,10 +75,10 @@
       end type conductive_property
 !
 !>      Structure for thermal property
-      type thermal_property
+      type scalar_property
 !>       coefficient for time evolution of temperature and heat flux
         real  (kind=kreal) :: coef_advect
-!>       coefficient for heat flux (-coef_temp)
+!>       coefficient for heat flux (-coef_advect)
         real  (kind=kreal) :: coef_nega_adv
 !
 !>       coefficient for thermal diffusion
@@ -92,7 +92,7 @@
         real  (kind=kreal) :: stratified_width
 !>       Parameter for stratified layer (radius)
         real  (kind=kreal) :: stratified_outer_r
-      end type thermal_property
+      end type scalar_property
 !
 !>      Structure for compositional property
       type compositional_property

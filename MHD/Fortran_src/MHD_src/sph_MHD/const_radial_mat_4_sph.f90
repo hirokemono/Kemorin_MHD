@@ -115,7 +115,7 @@
         write(band_temp_evo%mat_name,'(a)') 'Temperature_evolution'
         call const_radial_mat_4_scalar_sph                              &
      &     (sph_rj, r_2nd, sph_bc_T, g_sph_rj, evo_temp%coef_imp,       &
-     &      coef_temp, coef_d_temp, band_temp_evo)
+     &      ht_prop1%coef_advect, coef_d_temp, band_temp_evo)
       end if
 !
       if (evo_magne%iflag_scheme .ge. id_Crank_nicolson) then
@@ -166,7 +166,7 @@
         write(band_temp_evo%mat_name,'(a)')                             &
      &                         'average_temperature_w_center'
         call const_radial_mat_scalar00_sph(sph_rj, sph_bc_T,            &
-     &      evo_temp%coef_imp, coef_temp, coef_d_temp,                  &
+     &      evo_temp%coef_imp, ht_prop1%coef_advect, coef_d_temp,       &
      &      band_temp_evo%n_vect, band_temp_evo%n_comp,                 &
      &      band_temp_evo%mat, band_temp00_evo)
       end if

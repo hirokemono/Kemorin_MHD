@@ -43,11 +43,11 @@
 !
       if (evo_temp%iflag_scheme .gt. id_no_evolution) then
 !
-        coef_temp =   one
+        ht_prop1%coef_advect =   one
         coef_d_temp = one
         coef_h_src =  one
 !
-        call construct_coefficient(coef_temp,                           &
+        call construct_coefficient(ht_prop1%coef_advect,                &
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_termal,     &
      &      depth_low_t, depth_high_t)
 !
@@ -59,10 +59,10 @@
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_h_source,   &
      &      depth_low_t, depth_high_t)
 !
-        call set_implicit_4_inf_viscous(coef_temp,                      &
+        call set_implicit_4_inf_viscous(ht_prop1%coef_advect,           &
      &      evo_temp%coef_imp, evo_temp%coef_exp)
 !
-        coef_nega_t = - coef_temp
+        coef_nega_t = - ht_prop1%coef_advect
       end if
 !
 !    For convection
@@ -211,7 +211,7 @@
 !
         if (evo_temp%iflag_scheme .gt. id_no_evolution) then
           write(*,*) 'coefficient for temperature:         ',           &
-     &              coef_temp
+     &              ht_prop1%coef_advect
           write(*,*) 'coefficient for thermal diffusion:   ',           &
      &              coef_d_temp
           if(iphys%i_heat_source .gt. 0) write(*,*)                     &

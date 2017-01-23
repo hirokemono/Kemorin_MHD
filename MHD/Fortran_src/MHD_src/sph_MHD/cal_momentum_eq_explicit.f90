@@ -110,8 +110,8 @@
         call sel_scalar_diff_adv_src_euler                              &
      &     (sph_bc_T%kr_in, sph_bc_T%kr_out,                            &
      &      ipol%i_t_diffuse, ipol%i_h_advect, ipol%i_heat_source,      &
-     &      ipol%i_temp, evo_temp%coef_exp, coef_temp, coef_h_src,      &
-     &      sph_rj, rj_fld)
+     &      ipol%i_temp, evo_temp%coef_exp, ht_prop1%coef_advect,       &
+     &      coef_h_src, sph_rj, rj_fld)
       end if
       if(evo_magne%iflag_scheme .gt.    id_no_evolution) then
         call cal_diff_induction_MHD_euler(evo_magne%coef_exp,           &

@@ -89,7 +89,7 @@
 !
       if( (f_trns%i_SGS_h_flux*iflag_SGS_heat) .gt. 0) then
         call cal_vec_scalar_prod_w_coef_smp                             &
-     &     (sph_rtp%nnod_rtp, coef_temp,                                &
+     &     (sph_rtp%nnod_rtp, ht_prop1%coef_advect,                     &
      &      fld_rtp(1,b_trns%i_filter_velo),                            &
      &      fld_rtp(1,b_trns%i_filter_temp),                            &
      &      frc_rtp(1,f_trns%i_SGS_h_flux) )
@@ -214,7 +214,7 @@
 !
       if(bg_trns%i_wide_SGS_h_flux .gt. 0) then
         call sub_vec_scalar_prod_w_coef_smp                             &
-     &     (sph_rtp%nnod_rtp, coef_temp,                                &
+     &     (sph_rtp%nnod_rtp, ht_prop1%coef_advect,                     &
      &      fld_rtp(1,b_trns%i_wide_fil_velo),                          &
      &      fld_rtp(1,b_trns%i_wide_fil_temp),                          &
      &      fil_rtp(1,bg_trns%i_wide_SGS_h_flux))

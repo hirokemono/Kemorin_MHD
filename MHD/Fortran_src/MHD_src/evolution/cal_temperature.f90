@@ -163,7 +163,8 @@
 !
 !  ----------  lead diffusion term
 !
-      if (coef_temp.gt.zero .and. evo_temp%coef_exp.gt.zero) then
+      if (ht_prop1%coef_advect .gt. zero                                &
+     &     .and. evo_temp%coef_exp.gt.zero) then
         call int_vol_scalar_diffuse_ele(fluid%istack_ele_fld_smp,       &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
      &      ifld_diff%i_temp, evo_temp%coef_exp, ak_d_temp,             &
@@ -330,7 +331,8 @@
 !
 !  ----------  lead diffusion term
 !
-      if (coef_temp.gt.zero .and. evo_temp%coef_exp.gt.zero) then
+      if (ht_prop1%coef_advect .gt. zero                                &
+     &     .and. evo_temp%coef_exp .gt. zero) then
         call int_vol_scalar_diffuse_ele(fluid%istack_ele_fld_smp,       &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
      &      ifld_diff%i_temp, evo_temp%coef_exp, ak_d_temp,             &

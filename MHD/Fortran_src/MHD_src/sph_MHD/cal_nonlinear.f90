@@ -69,6 +69,7 @@
      &          reftemp_rj, ipol, itor, WK, rj_fld)
 !
       use m_boundary_params_sph_MHD
+      use m_physical_property
       use cal_inner_core_rotation
 !
       use cal_nonlinear_sph_MHD
@@ -108,7 +109,7 @@
         call add_reftemp_advect_sph_MHD                                 &
      &     (sph_bc_T%kr_in, sph_bc_T%kr_out, sph%sph_rj%nidx_rj,        &
      &      sph%sph_rj%ar_1d_rj, trans_p%leg%g_sph_rj,                  &
-     &      ipol%i_h_advect, ipol%i_velo,                               &
+     &      ht_prop1%coef_advect, ipol%i_h_advect, ipol%i_velo,         &
      &      rj_fld%n_point, rj_fld%ntot_phys, reftemp_rj, rj_fld%d_fld)
       end if
 !
@@ -353,6 +354,7 @@
      &          ipol, itor, rj_fld)
 !
       use m_boundary_params_sph_MHD
+      use m_physical_property
       use sph_transforms_4_MHD
       use cal_nonlinear_sph_MHD
       use cal_vorticity_terms_adams
@@ -397,7 +399,7 @@
         call add_reftemp_advect_sph_MHD                                 &
      &     (sph_bc_T%kr_in, sph_bc_T%kr_out,                            &
      &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, leg%g_sph_rj,              &
-     &      ipol%i_h_advect, ipol%i_velo,                               &
+     &      ht_prop1%coef_advect, ipol%i_h_advect, ipol%i_velo,         &
      &      rj_fld%n_point, rj_fld%ntot_phys, reftemp_rj, rj_fld%d_fld)
       end if
 !

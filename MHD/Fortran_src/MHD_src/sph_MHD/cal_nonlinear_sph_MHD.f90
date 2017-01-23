@@ -11,8 +11,9 @@
 !!     &          ncomp_rj_2_rtp, ncomp_rtp_2_rj, fld_rtp, frc_rtp)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(phys_address), intent(in) :: b_trns, f_trns
-!!      subroutine add_reftemp_advect_sph_MHD(kr_in, kr_out,            &
-!!     &          nidx_rj, ar_1d_rj, g_sph_rj, is_h_advect, is_velo,    &
+!!      subroutine add_reftemp_advect_sph_MHD                           &
+!!     &         (kr_in, kr_out, nidx_rj, ar_1d_rj, g_sph_rj,           &
+!!     &          coef_advect, is_h_advect, is_velo,                    &
 !!     &          nnod_rj, ntot_phys_rj, reftemp_rj, d_rj)
 !!@endverbatim
 !!
@@ -25,7 +26,6 @@
 !
       use m_constants
       use m_control_parameter
-      use m_physical_property
 !
       use t_spheric_rtp_data
       use t_phys_address
@@ -42,6 +42,7 @@
      &          ncomp_rj_2_rtp, ncomp_rtp_2_rj, fld_rtp, frc_rtp)
 !
       use m_machine_parameter
+      use m_physical_property
       use const_wz_coriolis_rtp
       use cal_products_smp
 !
@@ -82,7 +83,7 @@
 !
       if( (f_trns%i_h_flux * evo_temp%iflag_scheme) .gt. 0) then
         call cal_vec_scalar_prod_w_coef_smp                             &
-     &     (sph_rtp%nnod_rtp, coef_temp,                                &
+     &     (sph_rtp%nnod_rtp, ht_prop1%coef_advect,                     &
      &      fld_rtp(1,b_trns%i_velo), fld_rtp(1,b_trns%i_temp),         &
      &      frc_rtp(1,f_trns%i_h_flux) )
       end if
@@ -106,14 +107,16 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine add_reftemp_advect_sph_MHD(kr_in, kr_out,              &
-     &          nidx_rj, ar_1d_rj, g_sph_rj, is_h_advect, is_velo,      &
+      subroutine add_reftemp_advect_sph_MHD                             &
+     &         (kr_in, kr_out, nidx_rj, ar_1d_rj, g_sph_rj,             &
+     &          coef_advect, is_h_advect, is_velo,                      &
      &          nnod_rj, ntot_phys_rj, reftemp_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_in, kr_out
       integer(kind = kint), intent(in) :: nidx_rj(2)
       integer(kind = kint), intent(in) :: is_h_advect, is_velo
       integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real(kind = kreal), intent(in) :: coef_advect
       real(kind = kreal), intent(in) :: g_sph_rj(nidx_rj(2),13)
       real(kind = kreal), intent(in) :: ar_1d_rj(nidx_rj(1),3)
       real(kind = kreal), intent(in) :: reftemp_rj(nidx_rj(1),0:1)
@@ -130,8 +133,8 @@
         k = 1 + (inod- j) / nidx_rj(2)
 !
         d_rj(inod,is_h_advect) = d_rj(inod,is_h_advect)                 &
-     &                      + coef_temp * g_sph_rj(j,3) * ar_1d_rj(k,2) &
-     &                       * reftemp_rj(k,1) * d_rj(inod,is_velo)
+     &                    + coef_advect * g_sph_rj(j,3) * ar_1d_rj(k,2) &
+     &                     * reftemp_rj(k,1) * d_rj(inod,is_velo)
       end do
 !$omp end parallel do
 !
