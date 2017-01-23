@@ -76,7 +76,7 @@
 !
       if( (f_trns%i_vp_induct * evo_magne%iflag_scheme) .gt. 0) then
         call cal_cross_prod_w_coef_smp                                  &
-     &     (sph_rtp%nnod_pole, coef_induct,                             &
+     &     (sph_rtp%nnod_pole, cd_prop1%coef_induct,                    &
      &      fls_pl(1,bs_trns%i_velo), fls_pl(1,bs_trns%i_magne),        &
      &      frc_pl(1,f_trns%i_vp_induct) )
       end if

@@ -69,7 +69,7 @@
       if( (iphys%i_vp_induct * evo_magne%iflag_scheme) .gt. 0) then
         call pole_fld_cst_cross_prod                                    &
      &     (node%numnod, node%internal_node, node%xx,                   &
-     &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), coef_induct,         &
+     &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), cd_prop1%coef_induct,&
      &      nod_fld%ntot_phys, iphys%i_velo, iphys%i_velo,              &
      &      iphys%i_vp_induct, nod_fld%d_fld)
       end if
@@ -78,7 +78,7 @@
       if( (iphys%i_h_flux * evo_temp%iflag_scheme) .gt. 0) then
         call pole_fld_cst_vec_scalar_prod                               &
      &     (node%numnod, node%internal_node, node%xx,                   &
-     &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), coef_induct,         &
+     &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), cd_prop1%coef_induct,&
      &      nod_fld%ntot_phys, iphys%i_velo, iphys%i_temp,              &
      &      iphys%i_h_flux, nod_fld%d_fld)
       end if
@@ -86,7 +86,7 @@
       if( (iphys%i_c_flux * evo_comp%iflag_scheme) .gt. 0) then
         call pole_fld_cst_vec_scalar_prod                               &
      &     (node%numnod, node%internal_node, node%xx,                   &
-     &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), coef_induct,         &
+     &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), cd_prop1%coef_induct,&
      &      nod_fld%ntot_phys, iphys%i_velo, iphys%i_light,             &
      &      iphys%i_c_flux, nod_fld%d_fld)
       end if

@@ -24,7 +24,7 @@
       type(fluid_property), save :: fl_prop1
 !>      Structure for manetic property
       type(conductive_property), save :: cd_prop1
-!cd_prop1%coef_mag_p
+!cd_prop1%coef_induct
 !
 !>     coefficient for time evolution of temperature and heat flux
       real  (kind=kreal) :: coef_temp
@@ -47,7 +47,7 @@
       real  (kind=kreal) :: coef_d_light
 !
 !>     coefficient for magnetic induction
-      real  (kind=kreal) :: coef_induct
+!      real  (kind=kreal) :: coef_induct
 !
 !>     coefficient for heat source term
       real  (kind=kreal) :: coef_h_src

@@ -93,7 +93,7 @@
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele%nnod_4_ele
         call vector_cst_phys_2_each_ele(node, ele, nod_fld,             &
-     &      k2, iphys%i_velo, coef_induct, mhd_fem_wk%velo_1)
+     &      k2, iphys%i_velo, cd_prop1%coef_induct, mhd_fem_wk%velo_1)
 !
         call fem_skv_rot_inertia_type(conduct%istack_ele_fld_smp,       &
      &      intg_point_t_evo, k2, mhd_fem_wk%velo_1, fem_wk%vector_1,   &
@@ -145,7 +145,7 @@
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele%nnod_4_ele
         call vector_cst_phys_2_each_ele(node, ele, nod_fld,             &
-     &      k2, iphys%i_velo, coef_induct, mhd_fem_wk%velo_1)
+     &      k2, iphys%i_velo, cd_prop1%coef_induct, mhd_fem_wk%velo_1)
 !
         call fem_skv_rot_inertia_upwind(conduct%istack_ele_fld_smp,     &
      &      intg_point_t_evo, k2, mhd_fem_wk%velo_1, fem_wk%vector_1,   &

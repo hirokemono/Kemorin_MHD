@@ -109,13 +109,13 @@
           call int_vol_div_SGS_idct_mod_pg(node, ele,                   &
      &        nod_fld, iphys, jac_3d, rhs_tbl, FEM_elen, diff_coefs,    &
      &        conduct%istack_ele_fld_smp, intg_point_t_evo,             &
-     &        ifilter_final, iak_diff_uxb, coef_induct,                 &
+     &        ifilter_final, iak_diff_uxb, cd_prop1%coef_induct,        &
      &        fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_div_as_tsr_w_const                               &
      &       (node, ele, jac_3d, rhs_tbl, nod_fld,                      &
      &        conduct%istack_ele_fld_smp, intg_point_t_evo,             &
-     &        iphys%i_SGS_induct_t, coef_induct, fem_wk, f_nl)
+     &        iphys%i_SGS_induct_t, cd_prop1%coef_induct, fem_wk, f_nl)
         end if
       end if
 !
@@ -171,7 +171,7 @@
           call int_vol_div_SGS_idct_mod_upm(node, ele,                  &
      &        nod_fld, iphys, jac_3d, rhs_tbl, FEM_elen, diff_coefs,    &
      &        conduct%istack_ele_fld_smp, intg_point_t_evo,             &
-     &        ifilter_final, iak_diff_uxb, coef_induct,                 &
+     &        ifilter_final, iak_diff_uxb, cd_prop1%coef_induct,        &
      &        ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,      &
      &        fem_wk, mhd_fem_wk, f_nl)
         else
@@ -179,7 +179,7 @@
      &       (node, ele, jac_3d, rhs_tbl, nod_fld,                      &
      &        conduct%istack_ele_fld_smp, intg_point_t_evo,             &
      &        iphys%i_SGS_induct_t, ele_fld%ntot_phys,                  &
-     &        iphys_ele%i_magne, ele_fld%d_fld, coef_induct,            &
+     &        iphys_ele%i_magne, ele_fld%d_fld, cd_prop1%coef_induct,   &
      &        fem_wk, f_nl)
         end if
       end if

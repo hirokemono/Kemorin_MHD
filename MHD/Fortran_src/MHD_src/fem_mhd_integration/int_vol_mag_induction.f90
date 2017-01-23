@@ -95,7 +95,7 @@
      &      k2, iphys_nod%i_magne, fem_wk%vector_1)
 !
         call fem_skv_induction_galerkin(iele_fsmp_stack, n_int, k2,     &
-     &      coef_induct, mhd_fem_wk%velo_1, fem_wk%vector_1,            &
+     &      cd_prop1%coef_induct, mhd_fem_wk%velo_1, fem_wk%vector_1,   &
      &      d_ele(1,iphys_ele%i_velo), mhd_fem_wk%magne_1,              &
      &      ele, jac_3d, fem_wk%sk6)
       end do
@@ -152,7 +152,7 @@
      &      k2, iphys_nod%i_magne, fem_wk%vector_1)
 !
         call fem_skv_induction_upmagne(iele_fsmp_stack, n_int, k2,      &
-     &      coef_induct, mhd_fem_wk%velo_1, fem_wk%vector_1,            &
+     &      cd_prop1%coef_induct, mhd_fem_wk%velo_1, fem_wk%vector_1,   &
      &      d_ele(1,iphys_ele%i_velo), mhd_fem_wk%magne_1,              &
      &      d_ele(1,iphys_ele%i_magne), ele, jac_3d, fem_wk%sk6)
       end do

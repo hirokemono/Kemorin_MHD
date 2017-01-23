@@ -98,7 +98,7 @@
      &    sgs_coefs%ntot_comp, icomp_sgs_uxb, sgs_coefs%ak, fem_wk%sk6)
 !
       call add3_skv_coef_to_ff_v_smp(node, ele, rhs_tbl,                &
-     &    coef_induct, fem_wk%sk6, f_nl%ff_smp)
+     &    cd_prop1%coef_induct, fem_wk%sk6, f_nl%ff_smp)
 !
       end subroutine cal_sgs_uxb_2_ff_grad
 !
@@ -144,7 +144,7 @@
      &    jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !
       call add3_skv_coef_to_ff_v_smp(node, ele, rhs_tbl,                &
-     &    coef_induct, fem_wk%sk6, f_l%ff_smp)
+     &    cd_prop1%coef_induct, fem_wk%sk6, f_l%ff_smp)
       call cal_ff_smp_2_vector(node, rhs_tbl,                           &
      &    f_l%ff_smp, mhd_fem_wk%mlump_cd%ml, nod_fld%ntot_phys,        &
      &    i_sgs, nod_fld%d_fld)

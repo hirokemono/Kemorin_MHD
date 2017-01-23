@@ -80,7 +80,7 @@
 !
       if( (f_trns%i_SGS_vp_induct*iflag_SGS_induction) .gt. 0) then
         call cal_cross_prod_w_coef_smp                                  &
-     &     (sph_rtp%nnod_rtp, coef_induct,                              &
+     &     (sph_rtp%nnod_rtp, cd_prop1%coef_induct,                     &
      &      fld_rtp(1,b_trns%i_filter_velo),                            &
      &      fld_rtp(1,b_trns%i_filter_magne),                           &
      &      frc_rtp(1,f_trns%i_SGS_vp_induct) )
@@ -206,7 +206,7 @@
 !
       if(bg_trns%i_wide_SGS_vp_induct .gt. 0) then
         call subcract_X_product_w_coef_smp                              &
-     &     (sph_rtp%nnod_rtp, coef_induct,                              &
+     &     (sph_rtp%nnod_rtp, cd_prop1%coef_induct,                     &
      &      fld_rtp(1,b_trns%i_wide_fil_velo),                          &
      &      fld_rtp(1,b_trns%i_wide_fil_magne),                         &
      &      fil_rtp(1,bg_trns%i_wide_SGS_vp_induct))
