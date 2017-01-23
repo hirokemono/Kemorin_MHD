@@ -4,9 +4,9 @@
 !      Written by H. Matsui on July, 2010
 !
 !!      subroutine set_gravity_2_each_node                              &
-!!     &          (i_field, i_res, coef, node, nod_fld)
+!!     &          (i_field, i_res, i_grav, coef, grav, node, nod_fld)
 !!      subroutine set_double_gravity_2_each_node(i_f1, i_f2, i_r1,     &
-!!     &          c1, c2, node, nod_fld)
+!!     &          i_grav, c1, c2, grav, node, nod_fld)
 !!      subroutine set_boussinesq_density_2_node(numnod, inod_smp_stack,&
 !!     &          c_t, c_d, ncomp_nod, i_t, i_d, i_rho, d_nod)
 !!
@@ -18,7 +18,7 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_physical_property
+!      use m_physical_property
 !
       implicit none
 !
@@ -34,20 +34,23 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_gravity_2_each_node                                &
-     &          (i_field, i_res, coef, node, nod_fld)
+     &          (i_field, i_res, i_grav, coef, grav, node, nod_fld)
 !
       use t_geometry_data
       use t_phys_data
+      use t_physical_property
 !
       integer(kind = kint), intent(in) :: i_field, i_res
+      integer(kind = kint), intent(in) :: i_grav
       real(kind = kreal), intent(in) :: coef
+      real(kind = kreal), intent(in) :: grav(3)
       type(node_data), intent(in) :: node
       type(phys_data), intent(inout) :: nod_fld
 !
 !
        if      (i_grav .eq. iflag_const_g) then
          call const_g_2_each_node                                       &
-     &      (node%numnod, node%istack_nod_smp, coef,                    &
+     &      (node%numnod, node%istack_nod_smp, coef, grav,              &
      &       nod_fld%ntot_phys, i_field, i_res, nod_fld%d_fld)
        else if (i_grav .eq. iflag_radial_g) then
          call radial_g_2_each_node                                      &
@@ -64,13 +67,16 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_double_gravity_2_each_node(i_f1, i_f2, i_res,      &
-     &          c1, c2, node, nod_fld)
+     &          i_grav, c1, c2, grav, node, nod_fld)
 !
       use t_geometry_data
       use t_phys_data
+      use t_physical_property
 !
       integer(kind = kint), intent(in) :: i_f1, i_f2, i_res
+      integer(kind = kint), intent(in) :: i_grav
       real(kind = kreal), intent(in) :: c1, c2
+      real(kind = kreal), intent(in) :: grav(3)
       type(node_data), intent(in) :: node
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -78,7 +84,7 @@
 !
        if     (i_grav .eq. iflag_const_g) then
          call const_double_g_2_each_node                                &
-     &      (node%numnod, node%istack_nod_smp, c1, c2,                  &
+     &      (node%numnod, node%istack_nod_smp, c1, c2, grav, &
      &       nod_fld%ntot_phys, i_f1, i_f2, i_res, nod_fld%d_fld)
        else if(i_grav .eq. iflag_radial_g) then
          call radial_double_g_2_each_node                               &
@@ -131,13 +137,14 @@
 !  ---------------------------------------------------------------------
 !
       subroutine const_g_2_each_node(numnod, inod_smp_stack,            &
-     &          coef, ncomp_nod, i_field, i_res, d_nod)
+     &          coef, grav, ncomp_nod, i_field, i_res, d_nod)
 !
       integer(kind = kint), intent(in) :: numnod, ncomp_nod
       integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
 !
       integer(kind = kint), intent(in) :: i_field, i_res
       real(kind = kreal), intent(in) :: coef
+      real(kind = kreal), intent(in) :: grav(3)
 !
       real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
@@ -234,13 +241,14 @@
 !  ---------------------------------------------------------------------
 !
       subroutine const_double_g_2_each_node(numnod, inod_smp_stack,     &
-     &          c1, c2, ncomp_nod, i_f1, i_f2, i_r1, d_nod)
+     &          c1, c2, grav, ncomp_nod, i_f1, i_f2, i_r1, d_nod)
 !
       integer(kind = kint), intent(in) :: numnod, ncomp_nod
       integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
 !
       integer(kind = kint), intent(in) :: i_f1, i_f2, i_r1
       real(kind = kreal), intent(in) :: c1, c2
+      real(kind = kreal), intent(in) :: grav(3)
 !
       real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !

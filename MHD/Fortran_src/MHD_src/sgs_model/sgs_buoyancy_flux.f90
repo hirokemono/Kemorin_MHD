@@ -4,7 +4,7 @@
 !      Written by H. Matsui on June, 2005
 !
 !!      subroutine cal_SGS_gravity_flux                                 &
-!!     &         (node, coef, i_sgs, i_flux, nod_fld)
+!!     &         (node, i_grav, coef, grav, i_sgs, i_flux, nod_fld)
 !!        type(node_data), intent(in) :: node
 !!        type(phys_data), intent(inout) :: nod_fld
 !
@@ -27,14 +27,15 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_SGS_gravity_flux                                   &
-     &         (node, coef, i_sgs, i_flux, nod_fld)
+     &         (node, i_grav, coef, grav, i_sgs, i_flux, nod_fld)
 !
-      use m_physical_property
       use t_geometry_data
       use t_phys_data
+      use t_physical_property
 !
-      integer (kind = kint), intent(in) :: i_sgs, i_flux
+      integer (kind = kint), intent(in) :: i_sgs, i_flux, i_grav
       real (kind = kreal), intent(in) :: coef
+      real (kind = kreal), intent(in) :: grav(3)
       type(node_data), intent(in) :: node
 !
       type(phys_data), intent(inout) :: nod_fld

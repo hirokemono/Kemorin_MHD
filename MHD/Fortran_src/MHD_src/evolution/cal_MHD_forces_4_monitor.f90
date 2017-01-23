@@ -392,22 +392,26 @@
       if (iphys%i_buo_gen .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_buoyancy_flux)
-        call cal_gravity_flux(node, fl_prop1%coef_buo, iphys%i_velo,    &
-     &      iphys%i_temp, iphys%i_buo_gen, nod_fld)
+        call cal_gravity_flux(node,                                     &
+     &      fl_prop1%i_grav, fl_prop1%coef_buo, fl_prop1%grav,          &
+     &      iphys%i_velo,  iphys%i_temp, iphys%i_buo_gen, nod_fld)
       end if
 !
       if (iphys%i_c_buo_gen .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_comp_buo_flux)
-        call cal_gravity_flux(node, fl_prop1%coef_comp_buo,             &
+        call cal_gravity_flux(node,                                     &
+     &      fl_prop1%i_grav, fl_prop1%coef_comp_buo, fl_prop1%grav,     &
      &      iphys%i_velo, iphys%i_light,  iphys%i_c_buo_gen, nod_fld)
       end if
 !
       if (iphys%i_f_buo_gen .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_filter_buo_flux)
-        call cal_gravity_flux(node, fl_prop1%coef_buo, iphys%i_velo,    &
-     &      iphys%i_filter_temp, iphys%i_f_buo_gen, nod_fld)
+        call cal_gravity_flux(node,                                     &
+     &      fl_prop1%i_grav, fl_prop1%coef_buo, fl_prop1%grav,          &
+     &      iphys%i_velo, iphys%i_filter_temp, iphys%i_f_buo_gen,       &
+     &      nod_fld)
       end if
 !
 !

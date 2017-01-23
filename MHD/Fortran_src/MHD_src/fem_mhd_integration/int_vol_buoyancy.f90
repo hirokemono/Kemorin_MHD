@@ -9,10 +9,22 @@
 !        modified by H. Matsui on Aug., 2007
 !        modified by H. Matsui on Aug., 2012
 !
-!      subroutine int_vol_buoyancy_pg(iele_fsmp_stack, n_int,           &
-!     &          i_source, ak_buo)
-!      subroutine int_vol_buoyancy_upw(iele_fsmp_stack, n_int,          &
-!     &          i_source, ak_buo, ncomp_ele, ie_upw, d_ele)
+!!      subroutine int_vol_buoyancy_pg                                  &
+!!     &         (node, ele, jac_3d, fl_prop, rhs_tbl, nod_fld,         &
+!!     &          iele_fsmp_stack, n_int, i_source, ak_buo,             &
+!!     &          fem_wk, f_nl)
+!!      subroutine int_vol_buoyancy_upw                                 &
+!!     &         (node, ele, jac_3d, fl_prop, rhs_tbl, nod_fld,         &
+!!     &          iele_fsmp_stack, n_int, i_source, ak_buo,             &
+!!     &          ncomp_ele, ie_upw, d_ele, fem_wk, f_nl)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(jacobians_3d), intent(in) :: jac_3d
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(phys_data),    intent(in) :: nod_fld
+!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(finite_ele_mat_node), intent(inout) :: f_nl
 !
       module int_vol_buoyancy
 !
@@ -25,6 +37,7 @@
       use t_phys_data
       use t_phys_data
       use t_jacobians
+      use t_physical_property
       use t_table_FEM_const
       use t_finite_element_mat
 !
@@ -37,8 +50,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_buoyancy_pg                                    &
-     &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack,   &
-     &          n_int, i_source, ak_buo, fem_wk, f_nl)
+     &         (node, ele, jac_3d, fl_prop, rhs_tbl, nod_fld,           &
+     &          iele_fsmp_stack, n_int, i_source, ak_buo,               &
+     &          fem_wk, f_nl)
 !
       use gravity_vec_each_ele
       use cal_skv_to_ff_smp
@@ -47,6 +61,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(jacobians_3d), intent(in) :: jac_3d
+      type(fluid_property), intent(in) :: fl_prop
       type(phys_data),    intent(in) :: nod_fld
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -65,8 +80,8 @@
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele%nnod_4_ele
-        call set_gravity_vec_each_ele(node, ele, nod_fld,               &
-     &      k2, i_source, ak_buo, fem_wk%vector_1)
+        call set_gravity_vec_each_ele(node, ele, nod_fld, k2, i_source, &
+     &      fl_prop%i_grav, fl_prop%grav, ak_buo, fem_wk%vector_1)
         call fem_skv_vector_type(iele_fsmp_stack, n_int, k2,            &
      &      ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
       end do
@@ -79,9 +94,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_buoyancy_upw                                   &
-     &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack,   &
-     &          n_int, i_source, ak_buo, ncomp_ele, ie_upw, d_ele,      &
-     &          fem_wk, f_nl)
+     &         (node, ele, jac_3d, fl_prop, rhs_tbl, nod_fld,           &
+     &          iele_fsmp_stack, n_int, i_source, ak_buo,               &
+     &          ncomp_ele, ie_upw, d_ele, fem_wk, f_nl)
 !
       use gravity_vec_each_ele
       use cal_skv_to_ff_smp
@@ -90,6 +105,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(jacobians_3d), intent(in) :: jac_3d
+      type(fluid_property), intent(in) :: fl_prop
       type(phys_data),    intent(in) :: nod_fld
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -111,8 +127,8 @@
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele%nnod_4_ele
-        call set_gravity_vec_each_ele(node, ele, nod_fld,               &
-     &      k2, i_source, ak_buo, fem_wk%vector_1)
+        call set_gravity_vec_each_ele(node, ele, nod_fld, k2, i_source, &
+     &      fl_prop%i_grav, fl_prop%grav, ak_buo, fem_wk%vector_1)
         call fem_skv_vector_field_upwind(iele_fsmp_stack, n_int, k2,    &
      &      d_ele(1,ie_upw), ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
       end do

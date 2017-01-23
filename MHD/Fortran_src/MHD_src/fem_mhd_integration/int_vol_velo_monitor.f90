@@ -130,17 +130,17 @@
 !
       if(i_field .eq. iphys%i_buoyancy) then
         call int_vol_buoyancy_pg                                        &
-     &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
+     &     (node, ele, jac_3d, fl_prop1, rhs_tbl, nod_fld,              &
      &      fluid%istack_ele_fld_smp, intg_point_t_evo, iphys%i_temp,   &
      &      ak_MHD%ak_buo, fem_wk, f_nl)
       else if(i_field .eq. iphys%i_comp_buo) then
         call int_vol_buoyancy_pg                                        &
-     &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
+     &     (node, ele, jac_3d, fl_prop1, rhs_tbl, nod_fld,              &
      &      fluid%istack_ele_fld_smp, intg_point_t_evo, iphys%i_light,  &
      &      ak_MHD%ak_comp_buo, fem_wk, f_nl)
       else if(i_field .eq. iphys%i_filter_buo) then
         call int_vol_buoyancy_pg                                        &
-     &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
+     &     (node, ele, jac_3d, fl_prop1, rhs_tbl, nod_fld,              &
      &      fluid%istack_ele_fld_smp, intg_point_t_evo,                 &
      &      iphys%i_filter_temp, ak_MHD%ak_buo, fem_wk, f_nl)
       end if
@@ -275,19 +275,19 @@
 !
       if(i_field .eq. iphys%i_buoyancy) then
         call int_vol_buoyancy_upw                                       &
-     &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
+     &     (node, ele, jac_3d, fl_prop1, rhs_tbl, nod_fld,              &
      &      fluid%istack_ele_fld_smp, intg_point_t_evo, iphys%i_temp,   &
      &      ak_MHD%ak_buo, ele_fld%ntot_phys, iv_upw, ele_fld%d_fld,    &
      &      fem_wk, f_nl)
       else if(i_field .eq. iphys%i_comp_buo) then
         call int_vol_buoyancy_upw                                       &
-     &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
+     &     (node, ele, jac_3d, fl_prop1, rhs_tbl, nod_fld,              &
      &      fluid%istack_ele_fld_smp, intg_point_t_evo, iphys%i_light,  &
      &      ak_MHD%ak_comp_buo, ele_fld%ntot_phys, iv_upw,              &
      &      ele_fld%d_fld, fem_wk, f_nl)
       else if(i_field .eq. iphys%i_filter_buo) then
         call int_vol_buoyancy_upw                                       &
-     &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
+     &     (node, ele, jac_3d, fl_prop1, rhs_tbl, nod_fld,              &
      &      fluid%istack_ele_fld_smp, intg_point_t_evo,                 &
      &      iphys%i_filter_temp, ak_MHD%ak_buo, ele_fld%ntot_phys,      &
      &      iv_upw, ele_fld%d_fld, fem_wk, f_nl)

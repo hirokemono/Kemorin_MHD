@@ -127,28 +127,33 @@
      &     .and. iflag_4_composit_buo .eq. id_FORCE_at_node) then
         call set_double_gravity_2_each_node                             &
      &     (iphys%i_temp, iphys%i_light, iphys%i_buoyancy,              &
-     &      fl_prop1%coef_buo, fl_prop1%coef_comp_buo, node, nod_fld)
+     &      fl_prop1%i_grav, fl_prop1%coef_buo, fl_prop1%coef_comp_buo, &
+     &      fl_prop1%grav, node, nod_fld)
         call int_vol_buoyancy_nod(node%numnod, node%istack_nod_smp,     &
      &      nod_fld%ntot_phys, iphys%i_buoyancy, nod_fld%d_fld,         &
      &      mhd_fem_wk%mlump_fl%ml_o, f_nl%ff)
 !
       else if (iflag_4_gravity .eq. id_FORCE_at_node) then
         call set_gravity_2_each_node(iphys%i_temp, iphys%i_buoyancy,    &
-     &      fl_prop1%coef_buo, node, nod_fld)
+     &      fl_prop1%i_grav, fl_prop1%coef_buo, fl_prop1%grav,          &
+     &      node, nod_fld)
         call int_vol_buoyancy_nod(node%numnod, node%istack_nod_smp,     &
      &      nod_fld%ntot_phys, iphys%i_buoyancy, nod_fld%d_fld,         &
      &      mhd_fem_wk%mlump_fl%ml_o, f_nl%ff)
 !
       else if (iflag_4_composit_buo .eq. id_FORCE_at_node) then
         call set_gravity_2_each_node(iphys%i_light, iphys%i_comp_buo,   &
-     &      fl_prop1%coef_comp_buo, node, nod_fld)
+     &      fl_prop1%i_grav, fl_prop1%coef_comp_buo, fl_prop1%grav,     &
+     &      node, nod_fld)
         call int_vol_buoyancy_nod(node%numnod, node%istack_nod_smp,     &
      &      nod_fld%ntot_phys, iphys%i_comp_buo, nod_fld%d_fld,         &
      &      mhd_fem_wk%mlump_fl%ml_o, f_nl%ff)
 !
       else if (iflag_4_filter_gravity .eq. id_FORCE_at_node) then
-        call set_gravity_2_each_node(iphys%i_filter_temp,               &
-     &      iphys%i_filter_buo, fl_prop1%coef_buo, node, nod_fld)
+        call set_gravity_2_each_node                                    &
+     &     (iphys%i_filter_temp, iphys%i_filter_buo,                    &
+     &      fl_prop1%i_grav, fl_prop1%coef_buo, fl_prop1%grav,          &
+     &      node, nod_fld)
         call int_vol_buoyancy_nod(node%numnod, node%istack_nod_smp,     &
      &      nod_fld%ntot_phys, iphys%i_filter_buo, nod_fld%d_fld,       &
      &      mhd_fem_wk%mlump_fl%ml_o, f_nl%ff)

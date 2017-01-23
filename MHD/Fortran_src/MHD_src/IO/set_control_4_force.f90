@@ -172,25 +172,25 @@
 !
 !  direction of gravity
 !
-      i_grav = iflag_no_gravity
+      fl_prop1%i_grav = iflag_no_gravity
       iflag = iflag_4_gravity + iflag_4_composit_buo                    &
      &       + iflag_4_filter_gravity
       if (iflag .gt. 0) then
         if (g_ctl%gravity%iflag .eq. 0) then
-          i_grav = iflag_self_r_g
+          fl_prop1%i_grav = iflag_self_r_g
         else
           tmpchara = g_ctl%gravity%charavalue
 !
           if     (cmp_no_case(tmpchara, 'constant')) then
-             i_grav = iflag_const_g
+             fl_prop1%i_grav = iflag_const_g
           else if(cmp_no_case(tmpchara, 'constant_radial')) then
-             i_grav = iflag_radial_g
+             fl_prop1%i_grav = iflag_radial_g
           else if(cmp_no_case(tmpchara, 'radial')) then
-             i_grav = iflag_self_r_g
+             fl_prop1%i_grav = iflag_self_r_g
            end if
         end if
 !
-        if (i_grav .eq. iflag_const_g) then
+        if (fl_prop1%i_grav .eq. iflag_const_g) then
           if (g_ctl%gravity_vector%icou .eq. 0) then
             e_message = 'Set gravity vector'
             call calypso_MPI_abort(ierr_force, e_message)
@@ -198,18 +198,18 @@
 !
             do i = 1, g_ctl%gravity_vector%num
               if(cmp_no_case(g_ctl%gravity_vector%c_tbl(i),'X')         &
-     &            ) grav(1) = - g_ctl%gravity_vector%vect(i)
+     &            ) fl_prop1%grav(1) = - g_ctl%gravity_vector%vect(i)
               if(cmp_no_case(g_ctl%gravity_vector%c_tbl(i),'Y')         &
-     &            ) grav(2) = - g_ctl%gravity_vector%vect(i)
+     &            ) fl_prop1%grav(2) = - g_ctl%gravity_vector%vect(i)
               if(cmp_no_case(g_ctl%gravity_vector%c_tbl(i),'Z')         &
-     &            ) grav(3) = - g_ctl%gravity_vector%vect(i)
+     &            ) fl_prop1%grav(3) = - g_ctl%gravity_vector%vect(i)
             end do
             call dealloc_control_array_c_r(g_ctl%gravity_vector)
           end if
         end if
       end if
       if (iflag_debug .eq. iflag_routine_msg)                           &
-     &               write(*,*) 'i_grav ',i_grav
+     &               write(*,*) 'i_grav ',fl_prop1%i_grav
 !
 !  direction of angular velocity of rotation
 !
@@ -264,8 +264,8 @@
           write(*,*) i, trim(name_force(i))
         end do
 !
-        if(i_grav .eq. iflag_const_g) then
-          write(*,'(a, 1p3E25.15e3)') 'gravity ', grav(1:3)
+        if(fl_prop1%i_grav .eq. iflag_const_g) then
+          write(*,'(a, 1p3E25.15e3)') 'gravity ', fl_prop1%grav(1:3)
         end if
 !
         write(*,*) 'magneto_cv ',iflag_magneto_cv
