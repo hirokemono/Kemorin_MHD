@@ -45,7 +45,7 @@
 !
         ht_prop1%coef_advect =  one
         ht_prop1%coef_diffuse = one
-        coef_h_src =  one
+        ht_prop1%coef_source =  one
 !
         call construct_coefficient(ht_prop1%coef_advect,                &
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_termal,     &
@@ -55,7 +55,7 @@
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_t_diffuse,  &
      &      depth_low_t, depth_high_t)
 !
-        call construct_coefficient(coef_h_src,                          &
+        call construct_coefficient(ht_prop1%coef_source,                &
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_h_source,   &
      &      depth_low_t, depth_high_t)
 !
@@ -216,7 +216,7 @@
      &              ht_prop1%coef_diffuse
           if(iphys%i_heat_source .gt. 0) write(*,*)                     &
      &         'coefficient for heat source:         ',                 &
-     &              coef_h_src
+     &              ht_prop1%coef_source
         end if
 !
         if (evo_magne%iflag_scheme .gt. id_no_evolution                 &

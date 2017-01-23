@@ -22,7 +22,7 @@
 !
 !>      Structure for thermal property
       type(scalar_property), save :: ht_prop1
-!ht_prop1%coef_diffuse
+!ht_prop1%coef_source
 !
 !>     coefficient for time evolution of temperature and heat flux
 !      real  (kind=kreal) :: coef_temp
@@ -39,7 +39,7 @@
       real  (kind=kreal) :: coef_d_light
 !
 !>     coefficient for heat source term
-      real  (kind=kreal) :: coef_h_src
+!      real  (kind=kreal) :: coef_h_src
 !>     coefficient for compositional source term
       real  (kind=kreal) :: coef_c_src
 !
