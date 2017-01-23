@@ -62,7 +62,7 @@
 !$omp parallel
       if( (f_trns%i_SGS_inertia*iflag_SGS_inertia) .gt. 0) then
         call cal_cross_prod_w_coef_smp                                  &
-     &     (sph_rtp%nnod_rtp, coef_velo,                                &
+     &     (sph_rtp%nnod_rtp, fl_prop1%coef_velo,                       &
      &      fld_rtp(1,b_trns%i_filter_vort),                            &
      &      fld_rtp(1,b_trns%i_filter_velo),                            &
      &      frc_rtp(1,f_trns%i_SGS_inertia) )
@@ -189,7 +189,8 @@
 !
 !$omp parallel
       if(bg_trns%i_wide_SGS_inertia .gt. 0) then
-        call subcract_X_product_w_coef_smp(sph_rtp%nnod_rtp, coef_velo, &
+        call subcract_X_product_w_coef_smp                              &
+     &     (sph_rtp%nnod_rtp, fl_prop1%coef_velo,                       &
      &      fld_rtp(1,b_trns%i_wide_fil_vort),                          &
      &      fld_rtp(1,b_trns%i_wide_fil_velo),                          &
      &      fil_rtp(1,bg_trns%i_wide_SGS_inertia))

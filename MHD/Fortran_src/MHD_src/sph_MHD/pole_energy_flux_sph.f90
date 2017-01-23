@@ -52,7 +52,7 @@
       if( (iphys%i_m_advect*evo_velo%iflag_scheme) .gt. 0) then
         call pole_fld_cst_cross_prod                                    &
      &     (node%numnod, node%internal_node, node%xx,                   &
-     &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), coef_velo,           &
+     &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), fl_prop1%coef_velo,  &
      &      nod_fld%ntot_phys, iphys%i_vort, iphys%i_velo,              &
      &      iphys%i_m_advect, nod_fld%d_fld)
       end if

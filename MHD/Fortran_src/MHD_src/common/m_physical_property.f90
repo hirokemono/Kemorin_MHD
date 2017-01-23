@@ -10,18 +10,19 @@
       module m_physical_property
 !
       use m_precision
+      use t_physical_property
 !
       implicit  none
 !
 !
 !>     flag for no gravity
-      integer (kind = kint), parameter :: iflag_no_gravity =  -1
+!      integer (kind = kint), parameter :: iflag_no_gravity =  -1
 !>     flag for constant gravity
-      integer (kind = kint), parameter :: iflag_const_g =      0
+!      integer (kind = kint), parameter :: iflag_const_g =      0
 !>     flag for radial gravity (amplitude is fixed)
-      integer (kind = kint), parameter :: iflag_radial_g =     1
+!      integer (kind = kint), parameter :: iflag_radial_g =     1
 !>     flag for self radial gravity
-      integer (kind = kint), parameter :: iflag_self_r_g =     2
+!      integer (kind = kint), parameter :: iflag_self_r_g =     2
 !
 !>     rotation vector for Coriolis force
       real (kind=kreal) :: angular(3)
@@ -35,8 +36,12 @@
 !
 !   Coefficients
 !
+!>      Structure for fluid property
+      type(fluid_property), save :: fl_prop1
+!fl_prop1%coef_velo
+!
 !>     coefficient for time evolution of velocity and advection
-      real  (kind=kreal) :: coef_velo
+!      real  (kind=kreal) :: coef_velo
 !>     coefficient for advection (-coef_velo)
       real  (kind=kreal) :: coef_nega_v
 !>     coefficient for time pressure gradient

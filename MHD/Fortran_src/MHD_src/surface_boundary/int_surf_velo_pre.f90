@@ -94,7 +94,7 @@
      &        Vsf_bcs%sgs, intg_point_t_evo, ifilter_final,             &
      &        iphys%i_SGS_m_flux, iphys%i_velo, iphys%i_velo,           &
      &        diff_coefs%num_field, iak_diff_mf, diff_coefs%ak,         &
-     &        coef_velo, fem_wk, surf_wk, f_nl)
+     &        fl_prop1%coef_velo, fem_wk, surf_wk, f_nl)
         end if
       end if
 !
@@ -163,7 +163,7 @@
      &        Vsf_bcs%sgs, intg_point_t_evo, ifilter_final,             &
      &        iphys%i_SGS_m_flux, iphys%i_velo, iphys%i_velo,           &
      &        diff_coefs%num_field, iak_diff_mf, diff_coefs%ak,         &
-     &        coef_velo, fem_wk, surf_wk, f_nl)
+     &        fl_prop1%coef_velo, fem_wk, surf_wk, f_nl)
         end if
       end if
 !

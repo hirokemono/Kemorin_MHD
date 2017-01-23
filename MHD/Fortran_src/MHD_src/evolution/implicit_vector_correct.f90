@@ -265,7 +265,7 @@
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl,                        &
      &      mhd_fem_wk, fem_wk, f_l, f_nl)
       else if (iflag_implicit_correct.eq.4) then
-        call cal_velo_co_consist_crank(i_velo, coef_velo,               &
+        call cal_velo_co_consist_crank(i_velo, fl_prop1%coef_velo,      &
      &      node, ele, fluid, Vnod_bcs, nod_fld, jac_3d,                &
      &      rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
       end if

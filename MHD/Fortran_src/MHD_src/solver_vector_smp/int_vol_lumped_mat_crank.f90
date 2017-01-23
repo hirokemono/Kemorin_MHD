@@ -70,7 +70,7 @@
 !
 !$omp parallel
       if (evo_velo%iflag_scheme .eq. id_Crank_nicolson                  &
-     &     .and. coef_velo .gt. zero) then
+     &     .and. fl_prop1%coef_velo .gt. zero) then
         call init_33_matrix_lump                                        &
      &     (mesh%node%numnod, fluid%numnod_fld, fluid%inod_fld,         &
      &      DJDS_table_fluid%OLDtoNEW, mlump_fl%ml_o,                   &

@@ -141,13 +141,13 @@
       call reset_ff_t_smp(node%max_nod_smp, mhd_fem_wk)
 !
       call int_vol_initial_vector                                       &
-     &   (fluid%istack_ele_fld_smp, i_velo, coef_velo,                  &
+     &   (fluid%istack_ele_fld_smp, i_velo, fl_prop1%coef_velo,         &
      &    node, ele, nod_fld, jac_3d, rhs_tbl, fem_wk, mhd_fem_wk)
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
 !
       call set_boundary_velo_4_rhs(node, Vnod_bcs, f_l, f_nl)
 !
-      call cal_vector_pre_consist(node, coef_velo,                      &
+      call cal_vector_pre_consist(node, fl_prop1%coef_velo,             &
      &    n_vector, i_pre_mom, nod_fld, rhs_tbl, mhd_fem_wk, f_nl, f_l)
 !
       call solver_crank_vector(node, Vmatrix%nlevel_MG,                 &

@@ -60,7 +60,7 @@
 !$omp parallel
       if( (f_trns%i_m_advect*evo_velo%iflag_scheme) .gt. 0) then
         call cal_cross_prod_w_coef_smp                                  &
-     &     (sph_rtp%nnod_pole, coef_velo,                               &
+     &     (sph_rtp%nnod_pole, fl_prop1%coef_velo,                      &
      &      fls_pl(1,bs_trns%i_vort), fls_pl(1,bs_trns%i_velo),         &
      &      frc_pl(1,f_trns%i_m_advect) )
       end if
