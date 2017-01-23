@@ -213,17 +213,17 @@
 !
 !  direction of angular velocity of rotation
 !
-      angular(1:2) = zero
-      angular(3) =   one
+      fl_prop1%sys_rot(1:2) = zero
+      fl_prop1%sys_rot(3) =   one
 !
       if ((iflag_4_coriolis*cor_ctl%system_rotation%icou) .gt. 0) then
         do i = 1, cor_ctl%system_rotation%num
           if(cmp_no_case(cor_ctl%system_rotation%c_tbl(i),'X')          &
-     &       )  angular(1) = cor_ctl%system_rotation%vect(i)
+     &       )  fl_prop1%sys_rot(1) = cor_ctl%system_rotation%vect(i)
           if(cmp_no_case(cor_ctl%system_rotation%c_tbl(i),'Y')          &
-     &       )  angular(2) = cor_ctl%system_rotation%vect(i)
+     &       )  fl_prop1%sys_rot(2) = cor_ctl%system_rotation%vect(i)
           if(cmp_no_case(cor_ctl%system_rotation%c_tbl(i),'Z')          &
-     &       )  angular(3) = cor_ctl%system_rotation%vect(i)
+     &       )  fl_prop1%sys_rot(3) = cor_ctl%system_rotation%vect(i)
         end do
         call dealloc_control_array_c_r(cor_ctl%system_rotation)
       end if
@@ -272,7 +272,7 @@
         write(*,'(a,1p3E25.15e3)') 'ex_magne ',ex_magne
         write(*,*) 'iflag_4_coriolis', iflag_4_coriolis
         if(iflag_4_coriolis .gt. id_turn_OFF) then
-          write(*,'(a, 1p3E25.15e3)') 'rotation ', angular(1:3)
+          write(*,'(a, 1p3E25.15e3)') 'rotation:', fl_prop1%sys_rot(1:3)
         end if
       end if
 !

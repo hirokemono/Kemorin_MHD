@@ -78,7 +78,7 @@
         call vector_cst_phys_2_each_ele(node, ele, nod_fld,             &
      &      k2, i_velo, fl_prop1%coef_cor, fem_wk%vector_1)
         call fem_skv_coriolis_type(iele_fsmp_stack, n_int, k2,          &
-     &      fem_wk%vector_1, angular, ele, jac_3d, fem_wk%sk6)
+     &      fem_wk%vector_1, fl_prop1%sys_rot, ele, jac_3d, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &
@@ -122,7 +122,7 @@
         call vector_cst_phys_2_each_ele(node, ele, nod_fld,             &
      &      k2, i_velo, fl_prop1%coef_cor, fem_wk%vector_1)
         call fem_skv_coriolis_upwind(iele_fsmp_stack, n_int, k2,        &
-     &      fem_wk%vector_1, angular, d_ele(1,ie_upw),                  &
+     &      fem_wk%vector_1, fl_prop1%sys_rot, d_ele(1,ie_upw),         &
      &      ele, jac_3d, fem_wk%sk6)
       end do
 !

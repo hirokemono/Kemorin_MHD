@@ -25,7 +25,7 @@
 !      integer (kind = kint), parameter :: iflag_self_r_g =     2
 !
 !>     rotation vector for Coriolis force
-      real (kind=kreal) :: angular(3)
+!      real (kind=kreal) :: angular(3)
 !>     external magnetic field (Constant)
       real (kind=kreal) :: ex_magne(3)
 !
@@ -38,7 +38,7 @@
 !
 !>      Structure for fluid property
       type(fluid_property), save :: fl_prop1
-!fl_prop1%coef_lor
+!fl_prop1%sys_rot
 !
 !>     coefficient for time evolution of velocity and advection
 !      real  (kind=kreal) :: coef_velo

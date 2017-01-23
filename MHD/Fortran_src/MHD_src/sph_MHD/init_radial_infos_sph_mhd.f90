@@ -111,8 +111,8 @@
 !*  ----------  rotation of earth  ---------------
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &                write(*,*) 'set_rot_earth_4_sph'
-      call set_rot_earth_4_sph(sph%sph_rlm, sph%sph_rj, angular,        &
-     &    omega_sph)
+      call set_rot_earth_4_sph(sph%sph_rlm, sph%sph_rj,                 &
+     &    fl_prop1%sys_rot, omega_sph)
 !
 !*  ---------- boudary conditions  ---------------
       if(iflag_debug.gt.0) write(*,*) 's_set_bc_sph_mhd'

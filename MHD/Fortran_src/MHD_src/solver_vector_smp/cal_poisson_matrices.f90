@@ -134,7 +134,7 @@
      &    rhs_tbl%inod_ele_max, rhs_tbl%num_sort_smp,                   &
      &    rhs_tbl%nod_stack_smp, rhs_tbl%iele_sort_smp,                 &
      &    rhs_tbl%iconn_sort_smp, MG_mat_tbl%idx_4_mat, k2,             &
-     &    fl_prop1%coef_cor, angular, evo_velo%coef_imp,                &
+     &    fl_prop1%coef_cor, fl_prop1%sys_rot, evo_velo%coef_imp,       &
      &    fem_wk%sk6, mat33%num_non0, mat33%aiccg)
 !
       end subroutine cal_consist_coriolis_mat

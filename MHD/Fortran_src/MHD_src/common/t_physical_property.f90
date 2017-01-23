@@ -53,7 +53,7 @@
 !>       gravity direction for constant gravity
         real (kind=kreal) :: grav(3)
 !>       rotation vector for Coriolis force
-        real (kind=kreal) :: angular(3)
+        real (kind=kreal) :: sys_rot(3)
       end type fluid_property
 !
 !>      Structure for manetic property

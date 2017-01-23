@@ -244,7 +244,7 @@
      &        k2, iphys%i_velo, fl_prop1%coef_cor, mhd_fem_wk%velo_1)
           call fem_skv_coriolis_type                                    &
      &       (fluid%istack_ele_fld_smp, num_int, k2,                    &
-     &        mhd_fem_wk%velo_1, angular, ele, jac_3d,                  &
+     &        mhd_fem_wk%velo_1, fl_prop1%sys_rot, ele, jac_3d,         &
      &        fem_wk%sk6)
         end if
 !
@@ -491,7 +491,7 @@
           call vector_cst_phys_2_each_ele(node, ele, nod_fld,           &
      &        k2, iphys%i_velo, fl_prop1%coef_cor, mhd_fem_wk%velo_1)
           call fem_skv_coriolis_upwind(fluid%istack_ele_fld_smp,        &
-     &        num_int, k2, mhd_fem_wk%velo_1, angular,                  &
+     &        num_int, k2, mhd_fem_wk%velo_1, fl_prop1%sys_rot,         &
      &        d_ele(1,ie_upw), ele, jac_3d, fem_wk%sk6)
         end if
 !
