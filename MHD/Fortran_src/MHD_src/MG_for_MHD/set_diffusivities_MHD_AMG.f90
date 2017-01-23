@@ -61,7 +61,7 @@
 !
       if (ele%numele .gt. 0) then
         if (evo_temp%iflag_scheme .gt. id_no_evolution) then
-          ak_AMG%ak_d_temp(1:ele%numele) = coef_d_temp
+          ak_AMG%ak_d_temp(1:ele%numele) = ht_prop1%coef_diffuse
         end if
 !
 !    For convection

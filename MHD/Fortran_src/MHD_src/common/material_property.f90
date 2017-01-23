@@ -43,15 +43,15 @@
 !
       if (evo_temp%iflag_scheme .gt. id_no_evolution) then
 !
-        ht_prop1%coef_advect =   one
-        coef_d_temp = one
+        ht_prop1%coef_advect =  one
+        ht_prop1%coef_diffuse = one
         coef_h_src =  one
 !
         call construct_coefficient(ht_prop1%coef_advect,                &
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_termal,     &
      &      depth_low_t, depth_high_t)
 !
-        call construct_coefficient(coef_d_temp,                         &
+        call construct_coefficient(ht_prop1%coef_diffuse,               &
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_t_diffuse,  &
      &      depth_low_t, depth_high_t)
 !
@@ -213,9 +213,10 @@
           write(*,*) 'coefficient for temperature:         ',           &
      &              ht_prop1%coef_advect
           write(*,*) 'coefficient for thermal diffusion:   ',           &
-     &              coef_d_temp
+     &              ht_prop1%coef_diffuse
           if(iphys%i_heat_source .gt. 0) write(*,*)                     &
-     &         'coefficient for heat source:         ', coef_h_src
+     &         'coefficient for heat source:         ',                 &
+     &              coef_h_src
         end if
 !
         if (evo_magne%iflag_scheme .gt. id_no_evolution                 &
@@ -236,7 +237,8 @@
           write(*,*) 'coefficient for composite diffusion: ',           &
      &              coef_d_light
           if(iphys%i_light_source .gt. 0) write(*,*)                    &
-     &         'coefficient for light element source:', coef_c_src
+     &         'coefficient for light element source:',                 &
+     &              coef_c_src
           write(*,*)''
         end if
       end if

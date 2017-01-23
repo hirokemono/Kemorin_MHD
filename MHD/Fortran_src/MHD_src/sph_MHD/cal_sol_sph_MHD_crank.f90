@@ -274,8 +274,8 @@
         if(iflag_debug .gt. 0)  write(*,*)                              &
      &           'const_sph_scalar_diffusion', ipol%i_t_diffuse
         call const_sph_scalar_diffusion(sph_rj, r_2nd, sph_bc_T,        &
-     &      leg%g_sph_rj, coef_d_temp, ipol%i_temp, ipol%i_t_diffuse,   &
-     &      rj_fld)
+     &      leg%g_sph_rj, ht_prop1%coef_diffuse,                        &
+     &      ipol%i_temp, ipol%i_t_diffuse, rj_fld)
       end if
 !
       end subroutine update_after_heat_sph

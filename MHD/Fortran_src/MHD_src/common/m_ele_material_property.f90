@@ -36,7 +36,7 @@
 !
       if (evo_temp%iflag_scheme .gt. id_no_evolution) then
         call alloc_temp_diff_MHD_AMG(numele, ak_MHD)
-        ak_MHD%ak_d_temp(1:numele) = coef_d_temp
+        ak_MHD%ak_d_temp(1:numele) = ht_prop1%coef_diffuse
       end if
 !
 !    For convection

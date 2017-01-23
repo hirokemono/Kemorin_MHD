@@ -22,7 +22,7 @@
 !
 !>      Structure for thermal property
       type(scalar_property), save :: ht_prop1
-!ht_prop1%coef_nega_adv
+!ht_prop1%coef_diffuse
 !
 !>     coefficient for time evolution of temperature and heat flux
 !      real  (kind=kreal) :: coef_temp
@@ -34,7 +34,7 @@
       real  (kind=kreal) :: coef_nega_c
 !
 !>     coefficient for thermal diffusion
-      real  (kind=kreal) :: coef_d_temp
+!      real  (kind=kreal) :: coef_d_temp
 !>     coefficient for chemical diffusion
       real  (kind=kreal) :: coef_d_light
 !
