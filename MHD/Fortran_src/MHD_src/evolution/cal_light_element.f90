@@ -113,7 +113,8 @@
 !
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
-      if (coef_light.gt.zero .and. evo_comp%coef_exp.gt.zero) then
+      if (cp_prop1%coef_advect .gt. zero                                &
+     &     .and. evo_comp%coef_exp.gt.zero) then
         call int_vol_scalar_diffuse_ele(fluid%istack_ele_fld_smp,       &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
      &      ifld_diff%i_light, evo_comp%coef_exp, ak_d_composit,        &

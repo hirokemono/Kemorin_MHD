@@ -97,7 +97,7 @@
 !
       if( (f_trns%i_SGS_c_flux*iflag_SGS_comp_flux) .gt. 0) then
         call cal_vec_scalar_prod_w_coef_smp                             &
-     &     (sph_rtp%nnod_rtp, coef_light,                               &
+     &     (sph_rtp%nnod_rtp, cp_prop1%coef_advect,                     &
      &      fld_rtp(1,b_trns%i_filter_velo),                            &
      &      fld_rtp(1,b_trns%i_filter_comp),                            &
      &      frc_rtp(1,f_trns%i_SGS_c_flux) )
@@ -222,7 +222,7 @@
 !
       if(bg_trns%i_wide_SGS_c_flux .gt. 0) then
         call sub_vec_scalar_prod_w_coef_smp                             &
-     &     (sph_rtp%nnod_rtp, coef_light,                               &
+     &     (sph_rtp%nnod_rtp, cp_prop1%coef_advect,                     &
      &      fld_rtp(1,b_trns%i_wide_fil_velo),                          &
      &      fld_rtp(1,b_trns%i_wide_fil_comp),                          &
      &      fil_rtp(1,bg_trns%i_wide_SGS_c_flux))

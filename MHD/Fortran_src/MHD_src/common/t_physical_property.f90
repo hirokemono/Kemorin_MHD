@@ -85,13 +85,6 @@
         real  (kind=kreal) :: coef_diffuse
 !>       coefficient for heat source term
         real  (kind=kreal) :: coef_source
-!
-!>       Parameter for stratified layer (amplitude)
-        real  (kind=kreal) :: stratified_sigma
-!>       Parameter for stratified layer (thckness)
-        real  (kind=kreal) :: stratified_width
-!>       Parameter for stratified layer (radius)
-        real  (kind=kreal) :: stratified_outer_r
       end type scalar_property
 !
       end module t_physical_property

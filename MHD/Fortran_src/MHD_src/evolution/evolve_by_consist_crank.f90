@@ -433,13 +433,13 @@
       call reset_ff_t_smp(node%max_nod_smp, mhd_fem_wk)
 !
       call int_vol_initial_scalar                                       &
-     &   (fluid%istack_ele_fld_smp, i_light, coef_light,                &
+     &   (fluid%istack_ele_fld_smp, i_light, cp_prop1%coef_advect,      &
      &    node, ele, nod_fld, jac_3d, rhs_tbl, fem_wk, mhd_fem_wk)
       call set_ff_nl_smp_2_ff(n_scalar, node, rhs_tbl, f_l, f_nl)
 !
       call set_boundary_rhs_scalar(node, Cnod_bcs%nod_bc_s, f_l, f_nl)
 !
-      call cal_vector_pre_consist(node, coef_light,                     &
+      call cal_vector_pre_consist(node, cp_prop1%coef_advect,           &
      &    n_scalar, i_pre_composit, nod_fld, rhs_tbl,                   &
      &    mhd_fem_wk, f_nl, f_l)
 !

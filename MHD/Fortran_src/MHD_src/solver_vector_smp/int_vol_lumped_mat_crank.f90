@@ -102,7 +102,7 @@
       end if
 !
       if (evo_comp%iflag_scheme .eq. id_Crank_nicolson                  &
-     &     .and. coef_light .gt. zero) then
+     &     .and. cp_prop1%coef_advect .gt. zero) then
         call init_11_matrix_lump                                        &
      &     (mesh%node%numnod, fluid%numnod_fld, fluid%inod_fld,         &
      &      DJDS_table_fluid%OLDtoNEW, mlump_fl%ml_o,                   &

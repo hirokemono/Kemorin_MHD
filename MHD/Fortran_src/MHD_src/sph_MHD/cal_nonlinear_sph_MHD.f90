@@ -90,7 +90,7 @@
 !
       if( (f_trns%i_c_flux * evo_comp%iflag_scheme) .gt. 0) then
         call cal_vec_scalar_prod_w_coef_smp                             &
-     &     (sph_rtp%nnod_rtp, coef_light,                               &
+     &     (sph_rtp%nnod_rtp, cp_prop1%coef_advect,                     &
      &      fld_rtp(1,b_trns%i_velo), fld_rtp(1,b_trns%i_light),        &
      &      frc_rtp(1,f_trns%i_c_flux) )
       end if

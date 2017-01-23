@@ -86,7 +86,7 @@
         end if
 !
         if ( evo_comp%iflag_scheme .eq. id_Crank_nicolson_cmass         &
-     &      .and. coef_light .gt. 0.0d0) then
+     &      .and. cp_prop1%coef_advect .gt. 0.0d0) then
           call add_skv1_to_crs_matrix11(mesh%ele, rhs_tbl,              &
      &        MG_mat_fl_q, k2, fem_wk%sk6,                              &
      &        mat_light%num_non0, mat_light%aiccg)

@@ -22,30 +22,8 @@
 !
 !>      Structure for thermal property
       type(scalar_property), save :: ht_prop1
-!ht_prop1%coef_source
-!
 !>      Structure for compositon property
       type(scalar_property), save :: cp_prop1
-!cp_prop1%coef_nega_adv
-!
-!>     coefficient for time evolution of temperature and heat flux
-!      real  (kind=kreal) :: coef_temp
-!>     coefficient for heat flux (-coef_temp)
-!      real  (kind=kreal) :: coef_nega_t
-!>     coefficient for time evolution of composition and composition flux
-      real  (kind=kreal) :: coef_light
-!>     coefficient for composition flux (-coef_light)
-!      real  (kind=kreal) :: coef_nega_c
-!
-!>     coefficient for thermal diffusion
-!      real  (kind=kreal) :: coef_d_temp
-!>     coefficient for chemical diffusion
-!      real  (kind=kreal) :: coef_d_light
-!
-!>     coefficient for heat source term
-!      real  (kind=kreal) :: coef_h_src
-!>     coefficient for compositional source term
-!      real  (kind=kreal) :: coef_c_src
 !
 !>     Parameter for stratified layer (amplitude)
       real  (kind=kreal) :: stratified_sigma

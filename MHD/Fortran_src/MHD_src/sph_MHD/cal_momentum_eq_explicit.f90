@@ -121,7 +121,7 @@
         call sel_scalar_diff_adv_src_euler                              &
      &     (sph_bc_C%kr_in, sph_bc_C%kr_out,                            &
      &      ipol%i_c_diffuse, ipol%i_c_advect, ipol%i_light_source,     &
-     &      ipol%i_light, evo_comp%coef_exp, coef_light,                &
+     &      ipol%i_light, evo_comp%coef_exp, cp_prop1%coef_advect,      &
      &      cp_prop1%coef_source, sph_rj, rj_fld)
       end if
 !
