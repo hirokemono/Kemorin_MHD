@@ -94,7 +94,7 @@
      &      evo_velo%coef_imp, evo_velo%coef_exp)
 !
         acoef_press = one / coef_press
-        coef_nega_v = - fl_prop1%coef_velo
+        fl_prop1%coef_nega_v = - fl_prop1%coef_velo
 !
         if (iflag_4_gravity .gt. id_turn_OFF                            &
      &     .or. iflag_4_filter_gravity .gt. id_turn_OFF) then

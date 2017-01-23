@@ -38,12 +38,12 @@
 !
 !>      Structure for fluid property
       type(fluid_property), save :: fl_prop1
-!fl_prop1%coef_velo
+!fl_prop1%coef_nega_v
 !
 !>     coefficient for time evolution of velocity and advection
 !      real  (kind=kreal) :: coef_velo
 !>     coefficient for advection (-coef_velo)
-      real  (kind=kreal) :: coef_nega_v
+!      real  (kind=kreal) :: coef_nega_v
 !>     coefficient for time pressure gradient
       real  (kind=kreal) :: coef_press
 !>     coefficient for time evolution of temperature and heat flux
