@@ -76,7 +76,7 @@
      &     (sph_bc_C%kr_in, sph_bc_C%kr_out,                            &
      &      ipol%i_c_diffuse, ipol%i_c_advect, ipol%i_light_source,     &
      &      ipol%i_light, ipol%i_pre_composit,                          &
-     &      evo_comp%coef_exp, coef_c_src, sph_rj, rj_fld)
+     &      evo_comp%coef_exp, cp_prop1%coef_source, sph_rj, rj_fld)
       end if
 !$omp end parallel
 !
@@ -121,8 +121,8 @@
         call sel_scalar_diff_adv_src_euler                              &
      &     (sph_bc_C%kr_in, sph_bc_C%kr_out,                            &
      &      ipol%i_c_diffuse, ipol%i_c_advect, ipol%i_light_source,     &
-     &      ipol%i_light, evo_comp%coef_exp, coef_light, coef_c_src,    &
-     &      sph_rj, rj_fld)
+     &      ipol%i_light, evo_comp%coef_exp, coef_light,                &
+     &      cp_prop1%coef_source, sph_rj, rj_fld)
       end if
 !
       if (i_step .eq. 1) then
@@ -144,7 +144,7 @@
           call sel_ini_adams_scalar_w_src                               &
      &       (sph_bc_C%kr_in, sph_bc_C%kr_out, ipol%i_c_advect,         &
      &        ipol%i_light_source, ipol%i_pre_composit,                 &
-     &        coef_c_src, sph_rj, rj_fld)
+     &        cp_prop1%coef_source, sph_rj, rj_fld)
         end if
       end if
 !$omp end parallel

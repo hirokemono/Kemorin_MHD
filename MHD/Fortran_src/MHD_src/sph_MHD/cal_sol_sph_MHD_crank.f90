@@ -306,7 +306,7 @@
         if(iflag_debug .gt. 0)  write(*,*)                              &
      &           'const_sph_scalar_diffusion', ipol%i_c_diffuse
         call const_sph_scalar_diffusion(sph_rj, r_2nd, sph_bc_C,        &
-     &      leg%g_sph_rj, coef_d_light, ipol%i_light,                   &
+     &      leg%g_sph_rj, cp_prop1%coef_diffuse, ipol%i_light,          &
      &      ipol%i_c_diffuse, rj_fld)
       end if
 !

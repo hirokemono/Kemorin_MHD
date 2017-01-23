@@ -69,7 +69,7 @@
 !
       if (evo_comp%iflag_scheme .gt. id_no_evolution) then
         call alloc_dscalar_diff_MHD_AMG(numele, ak_MHD)
-        ak_MHD%ak_d_composit(1:numele) = coef_d_light
+        ak_MHD%ak_d_composit(1:numele) = cp_prop1%coef_diffuse
       end if
 !
 !  check

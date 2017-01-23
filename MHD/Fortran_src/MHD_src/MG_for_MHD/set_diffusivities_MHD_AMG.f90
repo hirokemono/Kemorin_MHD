@@ -80,7 +80,7 @@
 !   For dummy scalar
 !
         if (evo_comp%iflag_scheme .gt. id_no_evolution) then
-          ak_AMG%ak_d_composit(1:ele%numele) = coef_d_light
+          ak_AMG%ak_d_composit(1:ele%numele) = cp_prop1%coef_diffuse
         end if
       end if
 !

@@ -94,18 +94,4 @@
         real  (kind=kreal) :: stratified_outer_r
       end type scalar_property
 !
-!>      Structure for compositional property
-      type compositional_property
-!>       coefficient for time evolution of composition
-!!@n      and composition flux
-        real  (kind=kreal) :: coef_light
-!>       coefficient for composition flux (-coef_light)
-        real  (kind=kreal) :: coef_nega_c
-!
-!>       coefficient for chemical diffusion
-        real  (kind=kreal) :: coef_d_light
-!>       coefficient for compositional source term
-        real  (kind=kreal) :: coef_c_src
-      end type compositional_property
-!
       end module t_physical_property

@@ -163,18 +163,18 @@
 !
       if (evo_comp%iflag_scheme .gt. id_no_evolution) then
         coef_light =    one
-        coef_d_light =  one
-        coef_c_src =    one
+        cp_prop1%coef_diffuse =  one
+        cp_prop1%coef_source =   one
 !
         call construct_coefficient(coef_light,                          &
      &     MHD_coef_list%dimless_list, MHD_coef_list%coefs_composition, &
      &     depth_low_t, depth_high_t)
 !
-        call construct_coefficient(coef_d_light,                        &
+        call construct_coefficient(cp_prop1%coef_diffuse,               &
      &     MHD_coef_list%dimless_list, MHD_coef_list%coefs_c_diffuse,   &
      &     depth_low_t, depth_high_t)
 !
-        call construct_coefficient(coef_c_src,                          &
+        call construct_coefficient(cp_prop1%coef_source,                &
      &     MHD_coef_list%dimless_list, MHD_coef_list%coefs_c_source,    &
      &     depth_low_t, depth_high_t)
 !
@@ -235,10 +235,10 @@
           write(*,*) 'coefficient for composition:         ',           &
      &              coef_light
           write(*,*) 'coefficient for composite diffusion: ',           &
-     &              coef_d_light
+     &              cp_prop1%coef_diffuse
           if(iphys%i_light_source .gt. 0) write(*,*)                    &
      &         'coefficient for light element source:',                 &
-     &              coef_c_src
+     &              cp_prop1%coef_source
           write(*,*)''
         end if
       end if
