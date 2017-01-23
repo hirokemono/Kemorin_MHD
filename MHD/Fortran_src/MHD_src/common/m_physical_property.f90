@@ -24,7 +24,7 @@
       type(fluid_property), save :: fl_prop1
 !>      Structure for manetic property
       type(conductive_property), save :: cd_prop1
-!cd_prop1%coef_magne
+!cd_prop1%coef_mag_p
 !
 !>     coefficient for time evolution of temperature and heat flux
       real  (kind=kreal) :: coef_temp
@@ -33,14 +33,11 @@
 !>     coefficient for time evolution of magnetic field
 !      real  (kind=kreal) :: coef_magne
 !>     coefficient for time electric potentia
-      real  (kind=kreal) :: coef_mag_p
+!      real  (kind=kreal) :: coef_mag_p
 !>     coefficient for time evolution of composition and composition flux
       real  (kind=kreal) :: coef_light
 !>     coefficient for composition flux (-coef_light)
       real  (kind=kreal) :: coef_nega_c
-!
-!>     1 / coef_mag_p
-      real  (kind=kreal) :: acoef_mag_p
 !
 !>     coefficient for thermal diffusion
       real  (kind=kreal) :: coef_d_temp

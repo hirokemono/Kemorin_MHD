@@ -153,8 +153,8 @@
 !
 !
       call init_sol_potential(node%numnod, node%istack_nod_smp,         &
-     &    coef_mag_p, nod_fld%ntot_phys, iphys%i_m_phi, iphys%i_mag_p,  &
-     &    nod_fld%d_fld)
+     &    cd_prop1%coef_mag_p, nod_fld%ntot_phys,                       &
+     &    iphys%i_m_phi, iphys%i_mag_p, nod_fld%d_fld)
 !
 !     --------------------- 
 !
@@ -176,8 +176,8 @@
 !     &    iphys, nod_fld, jac_3d_q, fem_wk, rel_correct)
 !
       call init_sol_potential(node%numnod, node%istack_nod_smp,         &
-     &    coef_mag_p, nod_fld%ntot_phys, iphys%i_m_phi, iphys%i_mag_p,  &
-     &    nod_fld%d_fld)
+     &    cd_prop1%coef_mag_p, nod_fld%ntot_phys,                       &
+     &    iphys%i_m_phi, iphys%i_mag_p,nod_fld%d_fld)
 !
       do iloop = 0, maxiter_vecp
 !
@@ -296,8 +296,8 @@
       end if
 !
       call init_sol_potential(node%numnod, node%istack_nod_smp,         &
-     &    coef_mag_p, nod_fld%ntot_phys, iphys%i_m_phi, iphys%i_mag_p,  &
-     &    nod_fld%d_fld)
+     &    cd_prop1%coef_mag_p, nod_fld%ntot_phys,                       &
+     &    iphys%i_m_phi, iphys%i_mag_p, nod_fld%d_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_magnetic_field_pre'
       call cal_magnetic_field_pre(icomp_sgs%i_induction,                &

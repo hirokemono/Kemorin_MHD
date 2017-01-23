@@ -129,7 +129,7 @@
      &     .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
 !
         cd_prop1%coef_magne =   one
-        coef_mag_p =   one
+        cd_prop1%coef_mag_p =   one
         coef_d_magne = one
         coef_induct =  one
 !
@@ -137,7 +137,7 @@
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_magnetic,   &
      &      depth_low_t, depth_high_t)
 !
-        call construct_coefficient(coef_mag_p,                          &
+        call construct_coefficient(cd_prop1%coef_mag_p,                 &
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_magne_p,    &
      &      depth_low_t, depth_high_t)
 !
@@ -223,7 +223,7 @@
           write(*,*) 'coefficient for magnetic field:      ',           &
      &              cd_prop1%coef_magne
           write(*,*) 'coefficient for magnetic potential:  ',           &
-     &              coef_mag_p
+     &              cd_prop1%coef_mag_p
           write(*,*) 'coefficient for magnetic diffusion:  ',           &
      &              coef_d_magne
           write(*,*) 'coefficient for induction:           ',           &
