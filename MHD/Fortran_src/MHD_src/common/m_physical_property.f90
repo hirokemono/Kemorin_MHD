@@ -38,7 +38,7 @@
 !
 !>      Structure for fluid property
       type(fluid_property), save :: fl_prop1
-!fl_prop1%coef_comp_buo
+!fl_prop1%coef_cor
 !
 !>     coefficient for time evolution of velocity and advection
 !      real  (kind=kreal) :: coef_velo
@@ -76,7 +76,7 @@
 !>     coefficient for thermal buoyancy
 !      real  (kind=kreal) :: coef_buo
 !>     coefficient for Coriolis force
-      real  (kind=kreal) :: coef_cor
+!      real  (kind=kreal) :: coef_cor
 !>     coefficient for chemical Lorentz force
       real  (kind=kreal) :: coef_lor
 !>     coefficient for magnetic induction

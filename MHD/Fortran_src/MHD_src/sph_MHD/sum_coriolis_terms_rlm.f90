@@ -11,17 +11,17 @@
 !!************************************************
 !!
 !!      subroutine sum_rot_coriolis_rlm_10(b_trns, nnod_rlm, nidx_rlm,  &
-!!     &          a_r_1d_rlm_r, g_sph_rlm, omega_rlm,                   &
+!!     &          a_r_1d_rlm_r, g_sph_rlm, omega_rlm, coef_cor,         &
 !!     &          NB, n_WR, irev_sr_rlm, WR)
 !!      subroutine sum_div_coriolis_rlm_10(b_trns, nnod_rlm, nidx_rlm,  &
-!!     &          idx_gl_1d_rlm_j, a_r_1d_rlm_r, omega_rlm,             &
+!!     &          idx_gl_1d_rlm_j, a_r_1d_rlm_r, omega_rlm, coef_cor,   &
 !!     &          NB, n_WR, irev_sr_rlm, WR)
 !!      subroutine sum_r_coriolis_bc_rlm_10(b_trns, nnod_rlm, nidx_rlm, &
-!!     &          idx_gl_1d_rlm_j, a_r_1d_rlm_r, omega_rlm,             &
+!!     &          idx_gl_1d_rlm_j, a_r_1d_rlm_r, omega_rlm, coef_cor,   &
 !!     &          NB, kr, n_WR, irev_sr_rlm,  WR, d_cor_bc)
 !!      subroutine inner_core_rot_z_coriolis_rlm                        &
 !!     &         (b_trns, nnod_rlm, nidx_rlm, radius_1d_rlm_r,          &
-!!     &          omega_rlm, NB, n_WR, irev_sr_rlm, WR)
+!!     &          omega_rlm, coef_cor, NB, n_WR, irev_sr_rlm, WR)
 !!
 !!************************************************
 !!
@@ -76,7 +76,6 @@
       use m_machine_parameter
       use m_constants
 !
-      use m_physical_property
       use m_gaunt_coriolis_rlm
 !
       use t_phys_address
@@ -90,7 +89,7 @@
 !   ------------------------------------------------------------------
 !
       subroutine sum_rot_coriolis_rlm_10(b_trns, nnod_rlm, nidx_rlm,    &
-     &          a_r_1d_rlm_r, g_sph_rlm, omega_rlm,                     &
+     &          a_r_1d_rlm_r, g_sph_rlm, omega_rlm, coef_cor,           &
      &          NB, n_WR, irev_sr_rlm, WR)
 !
       use m_coriolis_terms_rlm
@@ -102,6 +101,7 @@
       real(kind = kreal), intent(in) :: a_r_1d_rlm_r(nidx_rlm(1))
       real(kind = kreal), intent(in) :: g_sph_rlm(nidx_rlm(2),17)
       real(kind = kreal), intent(in) :: omega_rlm(nidx_rlm(1),0:2)
+      real(kind = kreal), intent(in) :: coef_cor
 !
       integer(kind = kint), intent(in) :: NB, n_WR
       integer(kind = kint), intent(in) :: irev_sr_rlm(nnod_rlm)
@@ -180,7 +180,7 @@
 !*   ------------------------------------------------------------------
 !*
       subroutine sum_div_coriolis_rlm_10(b_trns, nnod_rlm, nidx_rlm,    &
-     &          idx_gl_1d_rlm_j, a_r_1d_rlm_r, omega_rlm,               &
+     &          idx_gl_1d_rlm_j, a_r_1d_rlm_r, omega_rlm, coef_cor,     &
      &          NB, n_WR, irev_sr_rlm, WR)
 !
       use m_coriolis_terms_rlm
@@ -192,6 +192,7 @@
       integer(kind = kint), intent(in) :: idx_gl_1d_rlm_j(nidx_rlm(2),3)
       real(kind = kreal), intent(in) :: a_r_1d_rlm_r(nidx_rlm(1))
       real(kind = kreal), intent(in) :: omega_rlm(nidx_rlm(1),0:2)
+      real(kind = kreal), intent(in) :: coef_cor
 !
       integer(kind = kint), intent(in) :: NB, n_WR
       integer(kind = kint), intent(in) :: irev_sr_rlm(nnod_rlm)
@@ -270,7 +271,7 @@
 !*   ------------------------------------------------------------------
 !*
       subroutine sum_r_coriolis_bc_rlm_10(b_trns, nnod_rlm, nidx_rlm,   &
-     &          idx_gl_1d_rlm_j, a_r_1d_rlm_r, omega_rlm,               &
+     &          idx_gl_1d_rlm_j, a_r_1d_rlm_r, omega_rlm, coef_cor,     &
      &          NB, kr, n_WR, irev_sr_rlm,  WR, d_cor_bc)
 !
       use m_coriolis_terms_rlm
@@ -282,6 +283,7 @@
       integer(kind = kint), intent(in) :: idx_gl_1d_rlm_j(nidx_rlm(2),3)
       real(kind = kreal), intent(in) :: a_r_1d_rlm_r(nidx_rlm(1))
       real(kind = kreal), intent(in) :: omega_rlm(nidx_rlm(1),0:2)
+      real(kind = kreal), intent(in) :: coef_cor
 !
       integer(kind = kint), intent(in) :: NB, kr, n_WR
       integer(kind = kint), intent(in) :: irev_sr_rlm(nnod_rlm)
@@ -346,7 +348,7 @@
 !
       subroutine inner_core_rot_z_coriolis_rlm                          &
      &         (b_trns, nnod_rlm, nidx_rlm, radius_1d_rlm_r,            &
-     &          omega_rlm, NB, n_WR, irev_sr_rlm, WR)
+     &          omega_rlm, coef_cor, NB, n_WR, irev_sr_rlm, WR)
 !
       use m_coriolis_terms_rlm
 !
@@ -356,6 +358,7 @@
       integer(kind = kint), intent(in) :: nidx_rlm(2)
       real(kind = kreal), intent(in) :: radius_1d_rlm_r(nidx_rlm(2))
       real(kind = kreal), intent(in) :: omega_rlm(nidx_rlm(1),0:2)
+      real(kind = kreal), intent(in) :: coef_cor
 !
       integer(kind = kint), intent(in) :: NB, n_WR
       integer(kind = kint), intent(in) :: irev_sr_rlm(nnod_rlm)

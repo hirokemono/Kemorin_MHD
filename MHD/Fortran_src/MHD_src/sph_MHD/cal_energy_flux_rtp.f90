@@ -97,7 +97,8 @@
       end if
 !
 !      if( (f_trns%i_Coriolis*iflag_4_coriolis) .gt. 0) then
-!        call cal_wz_coriolis_rtp(nnod_pole, sph_rtp%nidx_rtp,          &
+!        call cal_wz_coriolis_rtp                                       &
+!     &     (nnod_pole, sph_rtp%nidx_rtp, fl_prop1%coef_cor,            &
 !     &      fls_pl(1,bs_trns%i_velo), frc_pl(1,f_trns%i_Coriolis))
 !      end if
 !$omp end parallel
@@ -140,7 +141,8 @@
 !
 !$omp parallel
 !      if(fs_trns%i_coriolis .gt. 0) then
-!        call cal_wz_coriolis_rtp(sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,   &
+!        call cal_wz_coriolis_rtp                                       &
+!     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, fl_prop1%coef_cor,     &
 !     &      fls_rtp(1,bs_trns%i_velo), frs_rtp(1,fs_trns%i_Coriolis))
 !      end if
 !

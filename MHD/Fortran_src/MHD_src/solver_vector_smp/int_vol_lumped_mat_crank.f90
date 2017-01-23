@@ -128,8 +128,8 @@
 !
 !
       call cal_lumped_coriolis_matrix                                   &
-     &   (mesh%node%numnod, fluid%numnod_fld,                           &
-     &    fluid%inod_fld, DJDS_table_fluid%OLDtoNEW, coef_cor, angular, &
+     &   (mesh%node%numnod, fluid%numnod_fld, fluid%inod_fld,           &
+     &    DJDS_table_fluid%OLDtoNEW, fl_prop1%coef_cor, angular,        &
      &    evo_velo%coef_imp, mlump_fl%ml_o, mat_velo%num_non0,          &
      &    mat_velo%aiccg)
 !

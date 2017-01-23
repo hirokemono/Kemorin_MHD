@@ -53,11 +53,11 @@
 !
       if ( iflag_4_coriolis .eq. id_FORCE_at_node) then
         call cal_coriolis_nod(node%numnod, node%istack_nod_smp,         &
-     &      angular, coef_cor, mhd_fem_wk%mlump_fl%ml_o,                &
+     &      angular, fl_prop1%coef_cor, mhd_fem_wk%mlump_fl%ml_o,       &
      &      nod_fld%ntot_phys, i_velo, nod_fld%d_fld, f1_nl%ff)
       else if ( iflag_4_coriolis .eq. id_Coriolis_nod_imp) then
         call cal_coriolis_nod(node%numnod, node%istack_nod_smp,         &
-     &      angular, coef_cor, mhd_fem_wk%mlump_fl%ml_o,                &
+     &      angular, fl_prop1%coef_cor, mhd_fem_wk%mlump_fl%ml_o,       &
      &      nod_fld%ntot_phys, i_velo, nod_fld%d_fld, f_l%ff)
       end if
 !
@@ -94,7 +94,7 @@
 !
       do k2 = 1, ele%nnod_4_ele
         call vector_cst_phys_2_each_ele(node, ele, nod_fld,             &
-     &      k2, i_velo, coef_cor, fem_wk%vector_1)
+     &      k2, i_velo, fl_prop1%coef_cor, fem_wk%vector_1)
         call fem_skv_coriolis_type                                      &
      &     (fluid%istack_ele_fld_smp, intg_point_t_evo,                 &
      &      k2, fem_wk%vector_1, angular, ele, jac_3d, fem_wk%sk6)
