@@ -159,13 +159,13 @@
         if(iflag_4_ref_temp .eq. id_sphere_ref_temp) then
           call pole_sph_buoyancy_flux                                   &
      &       (node%numnod, node%internal_node, node%xx,                 &
-     &        sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), coef_buo,          &
+     &        sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), fl_prop1%coef_buo, &
      &        nod_fld%ntot_phys, iphys%i_par_temp, iphys%i_velo,        &
      &        iphys%i_buo_gen, nod_fld%d_fld)
         else
           call pole_sph_buoyancy_flux                                   &
      &       (node%numnod, node%internal_node, node%xx,                 &
-     &        sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), coef_buo,          &
+     &        sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), fl_prop1%coef_buo, &
      &        nod_fld%ntot_phys, iphys%i_temp ,iphys%i_velo,            &
      &        iphys%i_buo_gen, nod_fld%d_fld)
         end if
@@ -182,7 +182,7 @@
       if(iphys%i_f_buo_gen .gt. 0) then
         call pole_sph_buoyancy_flux                                     &
      &       (node%numnod, node%internal_node, node%xx,                 &
-     &        sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), coef_buo,          &
+     &        sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), fl_prop1%coef_buo, &
      &        nod_fld%ntot_phys, iphys%i_filter_temp, iphys%i_velo,     &
      &        iphys%i_f_buo_gen, nod_fld%d_fld)
       end if

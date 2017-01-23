@@ -59,8 +59,8 @@
           if (iflag_debug.eq.1)                                         &
      &      write(*,*)'cal_div_double_cst_buo_sph', ipol%i_temp
           call cal_div_double_cst_buo_sph                               &
-     &       (sph_bc_U%kr_in, sph_bc_U%kr_out,                          &
-     &        coef_buo, ipol%i_temp, ipol%i_grad_t, coef_comp_buo,      &
+     &       (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop1%coef_buo,       &
+     &        ipol%i_temp, ipol%i_grad_t, coef_comp_buo,                &
      &        ipol%i_light, ipol%i_grad_composit, ipol%i_div_buoyancy,  &
      &        sph_rj%nidx_rj, sph_rj%a_r_1d_rj_r,                       &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
@@ -68,7 +68,7 @@
           if (iflag_debug.eq.1)                                         &
      &      write(*,*)'cal_div_double_cst_buo_sph', ipol%i_par_temp
           call cal_div_double_cst_buo_sph                               &
-     &       (sph_bc_U%kr_in, sph_bc_U%kr_out, coef_buo,                &
+     &       (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop1%coef_buo,       &
      &        ipol%i_par_temp, ipol%i_grad_part_t, coef_comp_buo,       &
      &        ipol%i_light, ipol%i_grad_composit, ipol%i_div_buoyancy,  &
      &        sph_rj%nidx_rj, sph_rj%a_r_1d_rj_r,                       &
@@ -80,14 +80,14 @@
         if(iflag_4_ref_temp .ne. id_sphere_ref_temp) then
           if (iflag_debug.eq.1) write(*,*) 'cal_div_cst_buo_sph'
           call cal_div_cst_buo_sph                                      &
-     &       (sph_bc_U%kr_in, sph_bc_U%kr_out, coef_buo,                &
+     &       (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop1%coef_buo,       &
      &        ipol%i_temp, ipol%i_grad_t, ipol%i_div_buoyancy,          &
      &        sph_rj%nidx_rj, sph_rj%a_r_1d_rj_r,                       &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         else
           if (iflag_debug.eq.1) write(*,*) 'cal_div_cst_buo_sph'
           call cal_div_cst_buo_sph(sph_bc_U%kr_in, sph_bc_U%kr_out,     &
-     &       coef_buo, ipol%i_par_temp, ipol%i_grad_part_t,             &
+     &       fl_prop1%coef_buo, ipol%i_par_temp, ipol%i_grad_part_t,    &
      &       ipol%i_div_buoyancy, sph_rj%nidx_rj, sph_rj%a_r_1d_rj_r,   &
      &       rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
@@ -101,10 +101,11 @@
 !
       else if(iflag_4_filter_gravity .gt. id_turn_OFF) then
         if (iflag_debug.eq.1) write(*,*) 'cal_div_cst_buo_sph'
-        call cal_div_cst_buo_sph(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
-     &     coef_buo, ipol%i_filter_temp, ipol%i_grad_filter_temp,       &
-     &     ipol%i_div_filter_buo, sph_rj%nidx_rj, sph_rj%a_r_1d_rj_r,   &
-     &     rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+        call cal_div_cst_buo_sph                                        &
+     &     (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop1%coef_buo,         &
+     &      ipol%i_filter_temp, ipol%i_grad_filter_temp,                &
+     &      ipol%i_div_filter_buo, sph_rj%nidx_rj, sph_rj%a_r_1d_rj_r,  &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
       end subroutine cal_div_radial_const_gravity

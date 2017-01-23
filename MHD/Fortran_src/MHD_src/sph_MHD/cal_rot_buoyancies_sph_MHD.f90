@@ -13,7 +13,8 @@
 !!        type(phys_address), intent(in) :: ipol, itor
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
 !!        type(phys_data), intent(inout) :: rj_fld
-!!      subroutine cal_boussinesq_density_sph(ipol, kr_in, kr_out,      &
+!!      subroutine cal_boussinesq_density_sph                           &
+!!     &         (ipol, kr_in, kr_out, coef_buo, coef_comp_buo,         &
 !!     &          nidx_rj, nnod_rj, ntot_phys_rj, d_rj)
 !!        type(phys_address), intent(in) :: ipol
 !!@endverbatim
@@ -63,7 +64,8 @@
         if (iflag_debug.eq.1)                                           &
      &      write(*,*)'cal_rot_double_buoyancy_sph_MHD', ipol%i_temp
           call cal_rot_double_buoyancy_sph_MHD                          &
-     &       (sph_bc_U%kr_in, sph_bc_U%kr_out, coef_buo, ipol%i_temp,   &
+     &       (sph_bc_U%kr_in, sph_bc_U%kr_out,                          &
+     &        fl_prop1%coef_buo, ipol%i_temp,                           &
      &        coef_comp_buo, ipol%i_light, itor%i_rot_buoyancy,         &
      &        sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                    &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
@@ -73,7 +75,7 @@
         if (iflag_debug.eq.1) write(*,*)                                &
      &      'cal_rot_buoyancy_sph_MHD', ipol%i_temp
         call cal_rot_buoyancy_sph_MHD(sph_bc_U%kr_in, sph_bc_U%kr_out,  &
-     &      coef_buo, ipol%i_temp, itor%i_rot_buoyancy,                 &
+     &      fl_prop1%coef_buo, ipol%i_temp, itor%i_rot_buoyancy,        &
      &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
@@ -89,9 +91,10 @@
         if (iflag_debug.eq.1) write(*,*)                                &
      &      'cal_rot_buoyancy_sph_MHD', ipol%i_filter_temp
         call cal_rot_buoyancy_sph_MHD(sph_bc_U%kr_in, sph_bc_U%kr_out,  &
-     &      coef_buo, ipol%i_filter_temp, itor%i_rot_filter_buo,        &
-     &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
-     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &      fl_prop1%coef_buo, ipol%i_filter_temp,                      &
+     &      itor%i_rot_filter_buo, sph_rj%nidx_rj,                      &
+     &      sph_rj%radius_1d_rj_r, rj_fld%n_point, rj_fld%ntot_phys,    &
+     &      rj_fld%d_fld)
       end if
 !
       end subroutine cal_rot_radial_self_gravity
@@ -163,7 +166,8 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine cal_boussinesq_density_sph(ipol, kr_in, kr_out,        &
+      subroutine cal_boussinesq_density_sph                             &
+     &         (ipol, kr_in, kr_out, coef_buo, coef_comp_buo,           &
      &          nidx_rj, nnod_rj, ntot_phys_rj, d_rj)
 !
       use t_phys_address
@@ -172,6 +176,8 @@
       integer(kind = kint), intent(in) :: kr_in, kr_out
       integer(kind = kint), intent(in) :: nidx_rj(2)
       integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real(kind = kreal) , intent(in) :: coef_buo, coef_comp_buo
+!
       real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind= kint) :: ist, ied, inod, j, k
@@ -185,7 +191,7 @@
         k = 1 + (inod- j) / nidx_rj(2)
         d_rj(inod,ipol%i_density)                                       &
      &          = -(d_rj(inod,ipol%i_temp)                              &
-     &           + coef_comp_buo/coef_buo* d_rj(inod,ipol%i_light)  )
+     &           + coef_comp_buo/coef_buo * d_rj(inod,ipol%i_light))
       end do
 !$omp end parallel do
 !

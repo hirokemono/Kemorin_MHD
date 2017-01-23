@@ -183,13 +183,13 @@
           call cal_buoyancy_flux_rtp_smp                                &
      &       (np_smp, sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1),            &
      &        sph_rtp%istack_inod_rtp_smp, sph_rtp%radius_1d_rtp_r,     &
-     &        coef_buo, fls_rtp(1,bs_trns%i_par_temp),                  &
+     &        fl_prop1%coef_buo, fls_rtp(1,bs_trns%i_par_temp),         &
      &        fls_rtp(1,bs_trns%i_velo), frs_rtp(1,fs_trns%i_buo_gen))
         else
           call cal_buoyancy_flux_rtp_smp                                &
      &       (np_smp, sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1),            &
      &        sph_rtp%istack_inod_rtp_smp, sph_rtp%radius_1d_rtp_r,     &
-     &        coef_buo, fls_rtp(1,bs_trns%i_temp),                      &
+     &        fl_prop1%coef_buo, fls_rtp(1,bs_trns%i_temp),             &
      &        fls_rtp(1,bs_trns%i_velo), frs_rtp(1,fs_trns%i_buo_gen))
         end if
       end if
@@ -206,7 +206,7 @@
         call cal_buoyancy_flux_rtp_smp                                  &
      &     (np_smp, sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1),              &
      &      sph_rtp%istack_inod_rtp_smp, sph_rtp%radius_1d_rtp_r,       &
-     &      coef_buo, fls_rtp(1,bs_trns%i_filter_temp),                 &
+     &      fl_prop1%coef_buo, fls_rtp(1,bs_trns%i_filter_temp),        &
      &      fls_rtp(1,bs_trns%i_velo), frs_rtp(1,fs_trns%i_f_buo_gen) )
       end if
 !

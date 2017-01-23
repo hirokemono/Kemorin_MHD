@@ -38,7 +38,7 @@
 !
 !>      Structure for fluid property
       type(fluid_property), save :: fl_prop1
-!fl_prop1%coef_diffuse
+!fl_prop1%coef_buo
 !
 !>     coefficient for time evolution of velocity and advection
 !      real  (kind=kreal) :: coef_velo

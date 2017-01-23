@@ -53,14 +53,16 @@
           if (iflag_debug.eq.1)                                         &
      &      write(*,*)'cal_r_double_buoyancy_on_sph', ipol%i_temp
           call cal_r_double_buoyancy_on_sph                             &
-     &       (kr, ipol%i_temp, ipol%i_light, ipol%i_div_buoyancy,       &
+     &       (kr, fl_prop1%coef_buo, coef_comp_buo,                     &
+     &        ipol%i_temp, ipol%i_light, ipol%i_div_buoyancy,           &
      &        sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                    &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         else
           if (iflag_debug.eq.1)                                         &
      &      write(*,*)'cal_r_double_buoyancy_on_sph', ipol%i_par_temp
           call cal_r_double_buoyancy_on_sph                             &
-     &       (kr, ipol%i_par_temp, ipol%i_light, ipol%i_div_buoyancy,   &
+     &       (kr, fl_prop1%coef_buo, coef_comp_buo,                     &
+     &        ipol%i_par_temp, ipol%i_light, ipol%i_div_buoyancy,       &
      &        sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                    &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
@@ -70,13 +72,13 @@
         if(iflag_4_ref_temp .ne. id_sphere_ref_temp) then
           if (iflag_debug.eq.1) write(*,*) 'cal_r_buoyancy_on_sph'
           call cal_r_buoyancy_on_sph                                    &
-     &       (kr, coef_buo, ipol%i_temp, ipol%i_div_buoyancy,           &
+     &       (kr, fl_prop1%coef_buo, ipol%i_temp, ipol%i_div_buoyancy,  &
      &        sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                    &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         else
           if (iflag_debug.eq.1) write(*,*) 'cal_r_buoyancy_on_sph'
-          call cal_r_buoyancy_on_sph                                    &
-     &       (kr, coef_buo, ipol%i_par_temp, ipol%i_div_buoyancy,       &
+          call cal_r_buoyancy_on_sph(kr, fl_prop1%coef_buo,             &
+     &        ipol%i_par_temp, ipol%i_div_buoyancy,                     &
      &        sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                    &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
@@ -90,8 +92,8 @@
 !
       else if (iflag_4_filter_gravity .gt. id_turn_OFF) then
         if (iflag_debug.eq.1) write(*,*) 'cal_r_buoyancy_on_sph'
-        call cal_r_buoyancy_on_sph                                      &
-     &     (kr, coef_buo, ipol%i_filter_temp, ipol%i_div_filter_buo,    &
+        call cal_r_buoyancy_on_sph(kr, fl_prop1%coef_buo,               &
+     &      ipol%i_filter_temp, ipol%i_div_filter_buo,                  &
      &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
@@ -101,15 +103,15 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine cal_r_double_buoyancy_on_sph(kr, is_t, is_c, is_fr,    &
+      subroutine cal_r_double_buoyancy_on_sph                           &
+     &         (kr, coef_buo, coef_comp_buo, is_t, is_c, is_fr,         &
      &          nidx_rj, radius_1d_rj_r, nnod_rj, ntot_phys_rj, d_rj)
-!
-      use m_physical_property
 !
       integer(kind= kint), intent(in) :: is_t, is_c, is_fr, kr
       integer(kind = kint), intent(in) :: nidx_rj(2)
       integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real(kind = kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
+      real(kind = kreal), intent(in) :: coef_buo, coef_comp_buo
       real(kind = kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
       integer(kind= kint) :: inod, j
@@ -130,8 +132,6 @@
 !
       subroutine cal_r_buoyancy_on_sph(kr, coef, is_fld, is_fr,         &
      &          nidx_rj, radius_1d_rj_r, nnod_rj, ntot_phys_rj, d_rj)
-!
-      use m_physical_property
 !
       integer(kind= kint), intent(in) :: is_fld, is_fr, kr
       integer(kind = kint), intent(in) :: nidx_rj(2)
