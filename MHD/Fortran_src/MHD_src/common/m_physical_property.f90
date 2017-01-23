@@ -38,7 +38,7 @@
 !
 !>      Structure for fluid property
       type(fluid_property), save :: fl_prop1
-!fl_prop1%acoef_press
+!fl_prop1%coef_diffuse
 !
 !>     coefficient for time evolution of velocity and advection
 !      real  (kind=kreal) :: coef_velo
@@ -65,7 +65,7 @@
       real  (kind=kreal) :: acoef_mag_p
 !
 !>     coefficient for viscous diffusion
-      real  (kind=kreal) :: coef_d_velo
+!      real  (kind=kreal) :: coef_d_velo
 !>     coefficient for thermal diffusion
       real  (kind=kreal) :: coef_d_temp
 !>     coefficient for magnetic diffusion

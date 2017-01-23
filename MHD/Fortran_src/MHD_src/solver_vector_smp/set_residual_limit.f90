@@ -29,7 +29,7 @@
 !
 !
       if (evo_velo%iflag_scheme .ge. id_Crank_nicolson) then
-        eps_4_velo_crank = eps_crank * coef_d_velo * dt**2
+        eps_4_velo_crank = eps_crank * fl_prop1%coef_diffuse * dt**2
         if(iflag_debug.eq.1)                                            &
      &     write(12,*) 'eps_4_velo', eps_4_velo_crank
       end if

@@ -43,7 +43,7 @@
 !
       if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         call alloc_velo_diff_MHD_AMG(numele, ak_MHD)
-        ak_MHD%ak_d_velo(1:numele) = coef_d_velo
+        ak_MHD%ak_d_velo(1:numele) = fl_prop1%coef_diffuse
 !
         if (iflag_4_gravity .gt. id_turn_OFF                            &
      &     .or. iflag_4_filter_gravity .gt. id_turn_OFF) then

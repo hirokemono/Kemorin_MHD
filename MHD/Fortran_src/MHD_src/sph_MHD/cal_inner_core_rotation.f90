@@ -101,15 +101,15 @@
 !
       call set_rotate_icb_vt_sph_mat(sph_rj%idx_rj_degree_one(-1),      &
      &    kr_in, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj, &
-     &    fdm1_fix_fld_ICB, evo_velo%coef_imp, coef_d_velo,             &
+     &    fdm1_fix_fld_ICB, evo_velo%coef_imp, fl_prop1%coef_diffuse,   &
      &    band_vt_evo%mat)
       call set_rotate_icb_vt_sph_mat(sph_rj%idx_rj_degree_one( 0),      &
      &    kr_in, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj, &
-     &    fdm1_fix_fld_ICB, evo_velo%coef_imp, coef_d_velo,             &
+     &    fdm1_fix_fld_ICB, evo_velo%coef_imp, fl_prop1%coef_diffuse,   &
      &    band_vt_evo%mat)
       call set_rotate_icb_vt_sph_mat(sph_rj%idx_rj_degree_one( 1),      &
      &    kr_in, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj, &
-     &    fdm1_fix_fld_ICB, evo_velo%coef_imp, coef_d_velo,             &
+     &    fdm1_fix_fld_ICB, evo_velo%coef_imp, fl_prop1%coef_diffuse,   &
      &    band_vt_evo%mat)
 !!
       end subroutine set_icore_viscous_matrix

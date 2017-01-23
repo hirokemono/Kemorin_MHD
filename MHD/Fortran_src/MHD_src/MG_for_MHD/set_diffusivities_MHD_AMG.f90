@@ -67,7 +67,7 @@
 !    For convection
 !
         if (evo_velo%iflag_scheme .gt. id_no_evolution) then
-          ak_AMG%ak_d_velo(1:ele%numele) = coef_d_velo
+          ak_AMG%ak_d_velo(1:ele%numele) = fl_prop1%coef_diffuse
         end if
 !
 !   For Induction

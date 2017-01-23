@@ -54,7 +54,7 @@
 !
         write(12,*) ' Delta t: ', dt
         if (evo_velo%iflag_scheme .gt. id_no_evolution) then
-         cfl_diffuse = cfl_advect / coef_d_velo
+         cfl_diffuse = cfl_advect / fl_prop1%coef_diffuse
          write(12,*) 'estimated limit for Delta t for velovity:      ', &
      &    cfl_diffuse
         end if

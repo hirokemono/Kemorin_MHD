@@ -86,7 +86,7 @@
       call set_unit_on_diag(band_vt_evo)
       call set_unit_on_diag(band_wt_evo)
 !
-      if(coef_d_velo .eq. zero) then
+      if(fl_prop1%coef_diffuse .eq. zero) then
         coef_dvt = one
         call set_unit_mat_4_poisson                                     &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
@@ -95,7 +95,7 @@
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
      &      sph_bc_U%kr_in, sph_bc_U%kr_out, band_wt_evo%mat)
       else
-        coef_dvt = evo_velo%coef_imp * coef_d_velo * dt
+        coef_dvt = evo_velo%coef_imp * fl_prop1%coef_diffuse * dt
         call set_unit_mat_4_time_evo                                    &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), band_vt_evo%mat)
         call set_unit_mat_4_time_evo                                    &

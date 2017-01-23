@@ -37,7 +37,7 @@
         real  (kind=kreal) :: acoef_press
 !
 !>       coefficient for viscous diffusion
-        real  (kind=kreal) :: coef_d_velo
+        real  (kind=kreal) :: coef_diffuse
 !
 !>       coefficient for thermal buoyancy
         real  (kind=kreal) :: coef_buo

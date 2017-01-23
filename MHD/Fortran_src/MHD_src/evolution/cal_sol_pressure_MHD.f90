@@ -13,7 +13,7 @@
 !!     &         (numnod, inter_smp_stack, coef_press, acoef_press,     &
 !!     &          ncomp_nod, i_p_phi, i_magne, i_press, d_nod)
 !!      subroutine cal_sol_pressure_crank                               &
-!!     &         (numnod, inter_smp_stack, acoef_press,                 &
+!!     &         (numnod, inter_smp_stack, acoef_press, coef_d_velo,    &
 !!     &          ml_fl, ff, ncomp_nod, i_p_phi, i_press, d_nod)
 !!      subroutine cal_sol_pressure_rotate(numnod, inter_smp_stack,     &
 !!     &          ncomp_nod, i_velo, i_press, d_nod)
@@ -143,14 +143,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sol_pressure_crank                                 &
-     &         (numnod, inter_smp_stack, acoef_press,                   &
+     &         (numnod, inter_smp_stack, acoef_press, coef_d_velo,      &
      &          ml_fl, ff, ncomp_nod, i_p_phi, i_press, d_nod)
 !
       integer(kind = kint), intent(in) :: numnod, ncomp_nod
       integer(kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: ml_fl(numnod)
       real(kind = kreal), intent(in) :: ff(numnod,1)
-      real(kind = kreal), intent(in) :: acoef_press
+      real(kind = kreal), intent(in) :: acoef_press, coef_d_velo
 !
       integer(kind = kint), intent(in) :: i_p_phi, i_press
       real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
