@@ -88,7 +88,7 @@
         call sel_SGS_buoyancy_flux_rtp                                  &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), nnod_med,            &
      &      sph_rtp%nidx_rtp(3), sph_rtp%radius_1d_rtp_r,               &
-     &      coef_comp_buo, fSGS_rtp(1,fg_trns%i_SGS_c_flux),            &
+     &      fl_prop1%coef_comp_buo, fSGS_rtp(1,fg_trns%i_SGS_c_flux),   &
      &      frs_rtp(1,fs_trns%i_SGS_comp_buo_wk) )
       end if
 !
@@ -160,7 +160,7 @@
         call cal_buoyancy_flux_rtp_pout                                 &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), nnod_med,            &
      &      sph_rtp%nidx_rtp(3), sph_rtp%radius_1d_rtp_r,               &
-     &      coef_comp_buo, fSGS_rtp(1,fg_trns%i_SGS_c_flux),            &
+     &      fl_prop1%coef_comp_buo, fSGS_rtp(1,fg_trns%i_SGS_c_flux),   &
      &      frs_rtp(1,fs_trns%i_SGS_comp_buo_wk) )
       end if
 !$omp end parallel

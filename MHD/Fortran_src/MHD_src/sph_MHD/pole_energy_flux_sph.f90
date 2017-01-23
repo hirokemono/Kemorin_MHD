@@ -174,9 +174,10 @@
       if(iphys%i_c_buo_gen .gt. 0) then
         call pole_sph_buoyancy_flux                                     &
      &       (node%numnod, node%internal_node, node%xx,                 &
-     &        sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), coef_comp_buo,     &
-     &        nod_fld%ntot_phys, iphys%i_light, iphys%i_velo,           &
-     &        iphys%i_c_buo_gen, nod_fld%d_fld)
+     &        sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1),                    &
+     &        fl_prop1%coef_comp_buo, nod_fld%ntot_phys,                &
+     &        iphys%i_light, iphys%i_velo, iphys%i_c_buo_gen,           &
+     &        nod_fld%d_fld)
       end if
 !
       if(iphys%i_f_buo_gen .gt. 0) then

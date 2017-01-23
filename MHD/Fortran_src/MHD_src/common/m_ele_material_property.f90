@@ -53,7 +53,7 @@
 !
         if ( iflag_4_composit_buo .gt. id_turn_OFF) then
           call alloc_comp_buo_coef_ele(numele, ak_MHD)
-          ak_MHD%ak_comp_buo(1:numele) = coef_comp_buo
+          ak_MHD%ak_comp_buo(1:numele) = fl_prop1%coef_comp_buo
         end if
       end if
 !

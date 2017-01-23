@@ -60,7 +60,7 @@
      &      write(*,*)'cal_rot_double_cst_buo_sph', ipol%i_temp
           call cal_rot_double_cst_buo_sph                               &
      &       (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop1%coef_buo,       &
-     &        ipol%i_temp, coef_comp_buo, ipol%i_light,                 &
+     &        ipol%i_temp, fl_prop1%coef_comp_buo, ipol%i_light,        &
      &        itor%i_rot_buoyancy, sph_rj%nidx_rj,                      &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
@@ -75,7 +75,7 @@
       else if ( iflag_4_composit_buo .gt. id_turn_OFF) then
         if (iflag_debug.eq.1) write(*,*) 'cal_rot_cst_buo_sph'
         call cal_rot_cst_buo_sph(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
-     &      coef_comp_buo, ipol%i_light,                                &
+     &      fl_prop1%coef_comp_buo, ipol%i_light,                       &
      &      itor%i_rot_comp_buo, sph_rj%nidx_rj,                        &
      &       rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !

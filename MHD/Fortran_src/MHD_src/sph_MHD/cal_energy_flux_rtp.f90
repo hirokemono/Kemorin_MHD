@@ -197,7 +197,7 @@
       if(fs_trns%i_c_buo_gen .gt. 0) then
         call cal_buoyancy_flux_rtp_smp(np_smp, sph_rtp%nnod_rtp,        &
      &      sph_rtp%nidx_rtp(1), sph_rtp%istack_inod_rtp_smp,           &
-     &      sph_rtp%radius_1d_rtp_r, coef_comp_buo,                     &
+     &      sph_rtp%radius_1d_rtp_r, fl_prop1%coef_comp_buo,            &
      &      fls_rtp(1,bs_trns%i_light), fls_rtp(1,bs_trns%i_velo),      &
      &      frs_rtp(1,fs_trns%i_c_buo_gen) )
       end if

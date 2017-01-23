@@ -72,7 +72,7 @@
         fl_prop1%coef_velo =     one
         fl_prop1%coef_diffuse =  one
         fl_prop1%coef_buo =      one
-        coef_comp_buo = one
+        fl_prop1%coef_comp_buo = one
         coef_cor =      one
         coef_lor =      one
         fl_prop1%coef_press =    one
@@ -104,7 +104,7 @@
         end if
 !
         if (iflag_4_composit_buo .gt. id_turn_OFF) then
-          call construct_coefficient(coef_comp_buo,                     &
+          call construct_coefficient(fl_prop1%coef_comp_buo,            &
      &       MHD_coef_list%dimless_list, MHD_coef_list%coefs_comp_buo,  &
      &       depth_low_t, depth_high_t)
         end if
@@ -199,7 +199,8 @@
      &         'coefficient for buoyancy:            ',                 &
      &              fl_prop1%coef_buo
         if (iflag_4_composit_buo .gt. id_turn_OFF)  write(*,*)          &
-     &         'coefficient for composit buoyancy:   ', coef_comp_buo
+     &         'coefficient for composit buoyancy:   ',                 &
+     &              fl_prop1%coef_comp_buo
         if (iflag_4_coriolis .gt. id_turn_OFF)      write(*,*)          &
      &         'coefficient for coriolis force:      ', coef_cor
         if (iflag_4_lorentz .gt. id_turn_OFF)       write(*,*)          &

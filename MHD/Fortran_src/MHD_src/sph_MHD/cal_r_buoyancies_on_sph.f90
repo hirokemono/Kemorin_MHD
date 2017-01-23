@@ -53,7 +53,7 @@
           if (iflag_debug.eq.1)                                         &
      &      write(*,*)'cal_r_double_buoyancy_on_sph', ipol%i_temp
           call cal_r_double_buoyancy_on_sph                             &
-     &       (kr, fl_prop1%coef_buo, coef_comp_buo,                     &
+     &       (kr, fl_prop1%coef_buo, fl_prop1%coef_comp_buo,            &
      &        ipol%i_temp, ipol%i_light, ipol%i_div_buoyancy,           &
      &        sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                    &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
@@ -61,7 +61,7 @@
           if (iflag_debug.eq.1)                                         &
      &      write(*,*)'cal_r_double_buoyancy_on_sph', ipol%i_par_temp
           call cal_r_double_buoyancy_on_sph                             &
-     &       (kr, fl_prop1%coef_buo, coef_comp_buo,                     &
+     &       (kr, fl_prop1%coef_buo, fl_prop1%coef_comp_buo,            &
      &        ipol%i_par_temp, ipol%i_light, ipol%i_div_buoyancy,       &
      &        sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                    &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
@@ -85,8 +85,8 @@
 !
       else if (iflag_4_composit_buo .gt. id_turn_OFF) then
         if (iflag_debug.eq.1) write(*,*) 'cal_r_buoyancy_on_sph'
-        call cal_r_buoyancy_on_sph                                      &
-     &     (kr, coef_comp_buo, ipol%i_light, ipol%i_div_comp_buo,       &
+        call cal_r_buoyancy_on_sph(kr, fl_prop1%coef_comp_buo,          &
+     &      ipol%i_light, ipol%i_div_comp_buo,                          &
      &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
