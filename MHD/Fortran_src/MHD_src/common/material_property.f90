@@ -128,12 +128,12 @@
       if (evo_magne%iflag_scheme .gt. id_no_evolution                   &
      &     .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
 !
-        coef_magne =   one
+        cd_prop1%coef_magne =   one
         coef_mag_p =   one
         coef_d_magne = one
         coef_induct =  one
 !
-        call construct_coefficient(coef_magne,                          &
+        call construct_coefficient(cd_prop1%coef_magne,                 &
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_magnetic,   &
      &      depth_low_t, depth_high_t)
 !
@@ -151,11 +151,11 @@
       end if
 !
       if(evo_magne%iflag_scheme .gt. id_no_evolution) then
-        call set_implicit_4_inf_viscous(coef_magne,                     &
+        call set_implicit_4_inf_viscous(cd_prop1%coef_magne,            &
      &      evo_magne%coef_imp, evo_magne%coef_exp)
       end if
       if(evo_vect_p%iflag_scheme .gt. id_no_evolution) then
-        call set_implicit_4_inf_viscous(coef_magne,                     &
+        call set_implicit_4_inf_viscous(cd_prop1%coef_magne,            &
      &      evo_vect_p%coef_imp, evo_vect_p%coef_exp)
       end if
 !
@@ -221,7 +221,7 @@
         if (evo_magne%iflag_scheme .gt. id_no_evolution                 &
      &     .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
           write(*,*) 'coefficient for magnetic field:      ',           &
-     &              coef_magne
+     &              cd_prop1%coef_magne
           write(*,*) 'coefficient for magnetic potential:  ',           &
      &              coef_mag_p
           write(*,*) 'coefficient for magnetic diffusion:  ',           &

@@ -149,7 +149,8 @@
 !
 !   lead diffusion term
 !
-      if (coef_magne.gt.zero .and. evo_vect_p%coef_exp.gt.zero) then
+      if (cd_prop1%coef_magne .gt. zero                                 &
+     &     .and. evo_vect_p%coef_exp .gt. zero) then
         call int_vol_vector_diffuse_ele(ele%istack_ele_smp,             &
      &      node, ele, nod_fld, jac_3d_q, rhs_tbl, FEM_elens,           &
      &      diff_coefs, iak_diff_b, evo_vect_p%coef_exp, ak_d_magne,    &

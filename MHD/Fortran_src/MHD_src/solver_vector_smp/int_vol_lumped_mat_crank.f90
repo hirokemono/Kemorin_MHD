@@ -86,7 +86,7 @@
       end if
 !
       if (evo_magne%iflag_scheme .eq. id_Crank_nicolson                 &
-     &     .and. coef_magne .gt. zero) then
+     &     .and. cd_prop1%coef_magne .gt. zero) then
         call init_33_matrix_lump                                        &
      &     (mesh%node%numnod, conduct%numnod_fld, conduct%inod_fld,     &
      &      DJDS_table%OLDtoNEW, mlump_cd%ml_o,                         &
@@ -94,7 +94,7 @@
       end if
 !
       if (evo_vect_p%iflag_scheme .eq. id_Crank_nicolson                &
-     &     .and. coef_magne .gt. zero) then
+     &     .and. cd_prop1%coef_magne .gt. zero) then
         call init_33_matrix_lump                                        &
      &     (mesh%node%numnod, conduct%numnod_fld, conduct%inod_fld,     &
      &      DJDS_table%OLDtoNEW, mlump_cd%ml_o,                         &

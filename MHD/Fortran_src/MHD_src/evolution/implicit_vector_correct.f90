@@ -349,7 +349,7 @@
      &      iphys_ele, ele_fld, Bnod_bcs%nod_bc_a, jac_3d, rhs_tbl,     &
      &      m_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
       else if (iflag_implicit_correct.eq.4) then
-        call cal_magne_co_consist_crank(i_vecp, coef_magne,             &
+        call cal_magne_co_consist_crank(i_vecp, cd_prop1%coef_magne,    &
      &      node, ele, conduct, nod_fld, Bnod_bcs%nod_bc_a, jac_3d,     &
      &      rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
       end if
@@ -431,7 +431,7 @@
      &      iphys_ele, ele_fld, Bnod_bcs%nod_bc_b, jac_3d, rhs_tbl,     &
      &      m_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
       else if(iflag_implicit_correct.eq.4) then
-        call cal_magne_co_consist_crank(i_magne, coef_magne,            &
+        call cal_magne_co_consist_crank(i_magne, cd_prop1%coef_magne,   &
      &      node, ele, conduct, nod_fld, Bnod_bcs%nod_bc_b, jac_3d,     &
      &      rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
       end if
