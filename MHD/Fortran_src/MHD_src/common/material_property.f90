@@ -181,7 +181,7 @@
         call set_implicit_4_inf_viscous(coef_light,                     &
      &      evo_comp%coef_imp, evo_comp%coef_exp)
 !
-        coef_nega_c = - coef_light
+        cp_prop1%coef_nega_adv = - coef_light
       end if
 !
 !  Check

@@ -26,7 +26,7 @@
 !
 !>      Structure for compositon property
       type(scalar_property), save :: cp_prop1
-!cp_prop1%coef_diffuse
+!cp_prop1%coef_nega_adv
 !
 !>     coefficient for time evolution of temperature and heat flux
 !      real  (kind=kreal) :: coef_temp
@@ -35,7 +35,7 @@
 !>     coefficient for time evolution of composition and composition flux
       real  (kind=kreal) :: coef_light
 !>     coefficient for composition flux (-coef_light)
-      real  (kind=kreal) :: coef_nega_c
+!      real  (kind=kreal) :: coef_nega_c
 !
 !>     coefficient for thermal diffusion
 !      real  (kind=kreal) :: coef_d_temp
