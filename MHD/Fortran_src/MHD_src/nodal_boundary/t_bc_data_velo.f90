@@ -134,6 +134,7 @@
       subroutine set_bc_press_id                                        &
      &          (IO_bc, node, ele, fluid, nod_grp, Vnod_bcs)
 !
+      use m_physical_property
       use m_bc_data_list
       use count_num_nod_bc_MHD
       use set_bc_scalars
@@ -160,8 +161,10 @@
       call set_bc_fixed_temp_id(IO_bc, node, nod_grp, press_nod,        &
      &    Vnod_bcs%nod_bc_p, Vnod_bcs%sgs_bc_p)
 !
-      call set_potential_4_fixed_press(Vnod_bcs%nod_bc_p)
-      call set_potential_4_fixed_press(Vnod_bcs%sgs_bc_p)
+      call set_potential_4_fixed_press                                  &
+     &   (fl_prop1%coef_press, Vnod_bcs%nod_bc_p)
+      call set_potential_4_fixed_press                                  &
+     &   (fl_prop1%coef_press, Vnod_bcs%sgs_bc_p)
 !
 !   set node id in an element for the pressure boundary
 !

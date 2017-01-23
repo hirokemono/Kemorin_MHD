@@ -60,7 +60,7 @@
       real(kind = kreal) :: coef_p
 !
 !
-      coef_p = - coef_press
+      coef_p = - fl_prop1%coef_press
       call alloc_band_mat_sph(ithree, sph_rj, band_p_poisson)
 
       call set_unit_mat_4_poisson                                       &

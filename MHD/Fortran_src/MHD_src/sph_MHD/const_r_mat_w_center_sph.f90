@@ -54,7 +54,7 @@
       real(kind = kreal) :: coef_p
 !
 !
-      coef_p = - coef_press
+      coef_p = - fl_prop1%coef_press
 !
 !      write(*,*) 'alloc_ctr_band_mat'
       call alloc_ctr_band_mat(ithree, sph_rj, band_p00_poisson)

@@ -280,7 +280,7 @@
 !
 !$omp parallel
       call ovwrt_rj_coef_prod_vect_smp                                  &
-     &   (sph_rj, (-coef_press), is_grad,                               &
+     &   (sph_rj, (-fl_prop1%coef_press), is_grad,                      &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !$omp end parallel
 !

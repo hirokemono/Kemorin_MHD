@@ -75,14 +75,14 @@
         coef_comp_buo = one
         coef_cor =      one
         coef_lor =      one
-        coef_press =    one
+        fl_prop1%coef_press =    one
         acoef_press =   one
 !
         call construct_coefficient(fl_prop1%coef_velo,                  &
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_momentum,   &
      &      depth_low_t, depth_high_t)
 !
-        call construct_coefficient(coef_press,                          &
+        call construct_coefficient(fl_prop1%coef_press,                 &
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_pressure,   &
      &      depth_low_t, depth_high_t)
 !
@@ -93,7 +93,7 @@
         call set_implicit_4_inf_viscous(fl_prop1%coef_velo,             &
      &      evo_velo%coef_imp, evo_velo%coef_exp)
 !
-        acoef_press = one / coef_press
+        acoef_press = one / fl_prop1%coef_press
         fl_prop1%coef_nega_v = - fl_prop1%coef_velo
 !
         if (iflag_4_gravity .gt. id_turn_OFF                            &
@@ -192,7 +192,7 @@
           write(*,*) 'coefficient for velocity:            ',           &
      &              fl_prop1%coef_velo
           write(*,*) 'coefficient for pressure:            ',           &
-     &              coef_press
+     &              fl_prop1%coef_press
           write(*,*) 'coefficient for viscous diffusion:   ',           &
      &              coef_d_velo
         if (iflag_4_gravity .gt. id_turn_OFF)       write(*,*)          &

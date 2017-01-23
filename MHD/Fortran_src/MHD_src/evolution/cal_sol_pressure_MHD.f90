@@ -5,9 +5,11 @@
 !
 !!      subroutine cal_sol_pressure(numnod, inter_smp_stack,            &
 !!     &          ncomp_nod, i_p_phi, i_press, d_nod)
-!!      subroutine cal_sol_pressure_w_mag_ene(numnod, inter_smp_stack,  &
+!!      subroutine cal_sol_pressure_w_mag_ene                           &
+!!     &         (numnod, inter_smp_stack, coef_press,                  &
 !!     &          ncomp_nod, i_p_phi, i_magne, i_press, d_nod)
-!!      subroutine cal_sol_pressure_mcv(numnod, inter_smp_stack,        &
+!!      subroutine cal_sol_pressure_mcv                                 &
+!!     &         (numnod, inter_smp_stack, coef_press,                  &
 !!     &          ncomp_nod, i_p_phi, i_magne, i_press, d_nod)
 !!      subroutine cal_sol_pressure_crank(numnod, inter_smp_stack,      &
 !!     &          ml_fl, ff, ncomp_nod, i_p_phi, i_press, d_nod)
@@ -63,12 +65,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sol_pressure_w_mag_ene(numnod, inter_smp_stack,    &
+      subroutine cal_sol_pressure_w_mag_ene                             &
+     &         (numnod, inter_smp_stack, coef_press,                    &
      &          ncomp_nod, i_p_phi, i_magne, i_press, d_nod)
 !
       integer(kind = kint), intent(in) :: numnod, ncomp_nod
       integer(kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: i_p_phi, i_magne, i_press
+      real(kind = kreal), intent(in) :: coef_press
 !
       real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
@@ -97,12 +101,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sol_pressure_mcv(numnod, inter_smp_stack,          &
+      subroutine cal_sol_pressure_mcv                                   &
+     &         (numnod, inter_smp_stack, coef_press,                    &
      &          ncomp_nod, i_p_phi, i_magne, i_press, d_nod)
 !
       integer(kind = kint), intent(in) :: numnod, ncomp_nod
       integer(kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: i_p_phi, i_magne, i_press
+      real(kind = kreal), intent(in) :: coef_press
 !
       real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
