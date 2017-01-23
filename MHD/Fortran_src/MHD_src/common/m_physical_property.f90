@@ -11,6 +11,7 @@
 !
       use m_precision
       use t_physical_property
+      use t_reference_scalar_param
 !
       implicit  none
 !
@@ -25,11 +26,9 @@
 !>      Structure for compositon property
       type(scalar_property), save :: cp_prop1
 !
-!>     Parameter for stratified layer (amplitude)
-      real  (kind=kreal) :: stratified_sigma
-!>     Parameter for stratified layer (thckness)
-      real  (kind=kreal) :: stratified_width
-!>     Parameter for stratified layer (radius)
-      real  (kind=kreal) :: stratified_outer_r
+!>      Takepiro stratified temperature
+      type(takepiro_model_param), save :: takepito_T1
+!>      Takepiro stratified composition
+      type(takepiro_model_param), save :: takepito_C1
 !
       end module m_physical_property

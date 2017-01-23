@@ -109,8 +109,6 @@
      &       = id_no_boundary_file
 !
 !
-!>      Thermal stratification flag
-      integer (kind=kint) :: iflag_t_strat
 !>      Magneto convectio flag
       integer (kind=kint) :: iflag_magneto_cv = id_turn_OFF
 !

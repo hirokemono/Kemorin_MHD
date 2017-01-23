@@ -13,6 +13,10 @@
 !!      subroutine set_reference_scalar_ctl(charaflag,                  &
 !!     &          ref_temp_ctl, low_temp_ctl, high_temp_ctl,            &
 !!     &          stratified_ctl, takepiro_ctl, ref_param, takepiro)
+!!      subroutine set_linear_ref_scalar_ctl                            &
+!!     &         (ref_temp_ctl, low_temp_ctl, high_temp_ctl, ref_param)
+!!      subroutine set_takepiro_scalar_ctl                              &
+!!     &         (stratified_ctl, takepiro_ctl, takepiro)
 !!        type(read_character_item), intent(in) :: ref_temp_ctl
 !!        type(read_character_item), intent(in) :: stratified_ctl
 !!        type(reference_point_control), intent(in) :: low_temp_ctl
@@ -71,7 +75,6 @@
      &          stratified_ctl, takepiro_ctl, ref_param, takepiro)
 !
       use calypso_mpi
-      use m_t_step_parameter
       use t_ctl_data_temp_model
       use t_control_elements
 !
@@ -84,6 +87,31 @@
 !
       type(reference_scalar_param), intent(inout) :: ref_param
       type(takepiro_model_param), intent(inout) :: takepiro
+!
+      if (iflag_debug .ge. iflag_routine_msg) write(*,*) trim(charaflag)
+!
+      call set_linear_ref_scalar_ctl                                    &
+     &   (ref_temp_ctl, low_temp_ctl, high_temp_ctl, ref_param)
+      call set_takepiro_scalar_ctl                                      &
+     &   (stratified_ctl, takepiro_ctl, takepiro)
+!
+      end subroutine set_reference_scalar_ctl
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_linear_ref_scalar_ctl                              &
+     &         (ref_temp_ctl, low_temp_ctl, high_temp_ctl, ref_param)
+!
+      use calypso_mpi
+!      use m_t_step_parameter
+      use t_ctl_data_temp_model
+      use t_control_elements
+!
+      type(read_character_item), intent(in) :: ref_temp_ctl
+      type(reference_point_control), intent(in) :: low_temp_ctl
+      type(reference_point_control), intent(in) :: high_temp_ctl
+!
+      type(reference_scalar_param), intent(inout) :: ref_param
 !
       integer (kind = kint) :: iflag
       character(len=kchara) :: tmpchara
@@ -137,6 +165,33 @@
         ref_param%depth_high = high_temp_ctl%depth%realvalue
       end if
 !
+      if (iflag_debug .ge. iflag_routine_msg) then
+        write(*,*) 'iflag_reference ', ref_param%iflag_reference
+        write(*,*) 'low_value ',       ref_param%low_value
+        write(*,*) 'high_value ',      ref_param%high_value
+        write(*,*) 'depth_low ',       ref_param%depth_low
+        write(*,*) 'depth_high ',      ref_param%depth_high
+      end if
+!
+      end subroutine set_linear_ref_scalar_ctl
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_takepiro_scalar_ctl                                &
+     &         (stratified_ctl, takepiro_ctl, takepiro)
+!
+      use calypso_mpi
+      use t_ctl_data_temp_model
+      use t_control_elements
+!
+      type(read_character_item), intent(in) :: stratified_ctl
+      type(takepiro_model_control), intent(in) :: takepiro_ctl
+!
+      type(takepiro_model_param), intent(inout) :: takepiro
+!
+      integer (kind = kint) :: iflag
+!
+!      set control for Takepiro model
 !
       takepiro%iflag_stratified = id_turn_OFF
       if (stratified_ctl%iflag .gt. id_turn_OFF                         &
@@ -167,22 +222,13 @@
       end if
 !
       if (iflag_debug .ge. iflag_routine_msg) then
-        write(*,*) trim(charaflag)
-        write(*,*) 'iflag_reference ', ref_param%iflag_reference
-        write(*,*) 'low_value ',       ref_param%low_value
-        write(*,*) 'high_value ',      ref_param%high_value
-        write(*,*) 'depth_low ',       ref_param%depth_low
-        write(*,*) 'depth_high ',      ref_param%depth_high
-      end if
-!
-      if (iflag_debug .ge. iflag_routine_msg) then
-        write(*,*) 'iflag_t_strat ',      takepiro%iflag_stratified
+        write(*,*) 'iflag_stratified ',   takepiro%iflag_stratified
         write(*,*) 'stratified_sigma ',   takepiro%stratified_sigma
         write(*,*) 'stratified_width ',   takepiro%stratified_width
         write(*,*) 'stratified_outer_r ', takepiro%stratified_outer_r
       end if
 !
-      end subroutine set_reference_scalar_ctl
+      end subroutine set_takepiro_scalar_ctl
 !
 ! -----------------------------------------------------------------------
 !

@@ -199,7 +199,7 @@
 !      call check_ff_smp(my_rank, n_scalar, node%max_nod_smp, f_l)
 !      call check_ff_smp(my_rank, n_scalar, node%max_nod_smp, f_nl)
 !
-      if (iflag_t_strat .gt. id_turn_OFF) then
+      if (takepito_T1%iflag_stratified .gt. id_turn_OFF) then
         if (iflag_temp_supg .gt. id_turn_OFF) then
           call cal_stratified_layer_upw                                 &
      &       (node, ele, fluid, iphys, nod_fld,                         &
@@ -367,7 +367,7 @@
 !      call check_ff_smp(my_rank, n_scalar, node%max_nod_smp, f_l)
 !      call check_ff_smp(my_rank, n_scalar, node%max_nod_smp, f_nl)
 !
-      if (iflag_t_strat .gt. id_turn_OFF) then
+      if (takepito_T1%iflag_stratified .gt. id_turn_OFF) then
         if (iflag_temp_supg .gt. id_turn_OFF) then
           call cal_stratified_layer_upw                                 &
      &       (node, ele, fluid, iphys, nod_fld,                         &

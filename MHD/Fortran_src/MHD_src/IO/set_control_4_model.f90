@@ -192,6 +192,7 @@
       use calypso_mpi
       use t_ctl_data_temp_model
       use t_control_elements
+      use t_reference_scalar_param
 !
       character(len = kchara), intent(in) :: charaflag
       type(read_character_item), intent(in) :: ref_temp_ctl
@@ -253,34 +254,6 @@
       end if
 !
 !
-      iflag_t_strat = id_turn_OFF
-      if (stratified_ctl%iflag .gt. id_turn_OFF                         &
-        .and. yes_flag(stratified_ctl%charavalue))  then
-         iflag_t_strat = id_turn_ON
-      end if
-!
-      if (iflag_t_strat .eq. id_turn_OFF) then
-        stratified_sigma = 0.0d0
-        stratified_width = 0.0d0
-        stratified_outer_r = 0.0d0
-      else
-        iflag = takepiro_ctl%stratified_sigma_ctl%iflag                 &
-     &         *takepiro_ctl%stratified_width_ctl%iflag                 &
-     &         *takepiro_ctl%stratified_outer_r_ctl%iflag
-        if(iflag .eq. 0) then
-          e_message                                                     &
-     &        = 'Set parameteres for stratification'
-          call calypso_MPI_abort(ierr_fld, e_message)
-        else
-          stratified_sigma                                              &
-     &          = takepiro_ctl%stratified_sigma_ctl%realvalue
-          stratified_width                                              &
-     &          = takepiro_ctl%stratified_width_ctl%realvalue
-          stratified_outer_r                                            &
-     &           = takepiro_ctl%stratified_outer_r_ctl%realvalue
-        end if
-      end if
-!
       if (iflag_debug .ge. iflag_routine_msg) then
         write(*,*) trim(charaflag)
         write(*,*) 'iflag_reference ', iflag_4_ref_temp
@@ -290,12 +263,8 @@
         write(*,*) 'depth_high ',      depth_high_t
       end if
 !
-      if (iflag_debug .ge. iflag_routine_msg) then
-        write(*,*) 'iflag_t_strat ',      iflag_t_strat
-        write(*,*) 'stratified_sigma ',   stratified_sigma
-        write(*,*) 'stratified_width ',   stratified_width
-        write(*,*) 'stratified_outer_r ', stratified_outer_r
-      end if
+      call set_takepiro_scalar_ctl                                      &
+     &   (stratified_ctl, takepiro_ctl, takepito_T1)
 !
       end subroutine set_reference_temp_ctl
 !

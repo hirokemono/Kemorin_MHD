@@ -199,11 +199,8 @@
       call s_init_check_delta_t_data(iphys, flex_data)
 !
       if (iflag_debug.eq.1) write(*,*)' set_reference_temp'
-      call set_reference_temp(mesh%node%numnod,                         &
-     &    MHD_mesh%fluid%numnod_fld, MHD_mesh%fluid%inod_fld,           &
-     &    mesh%node%xx, mesh%node%rr, mesh%node%a_r,                    &
-     &    nod_fld%ntot_phys, iphys%i_ref_t, iphys%i_gref_t,             &
-     &    nod_fld%d_fld)
+      call set_reference_temp(mesh%node, MHD_mesh%fluid,                &
+     &    iphys%i_ref_t, iphys%i_gref_t, nod_fld)
 !
       if (iflag_debug.eq.1) write(*,*)' set_material_property'
       call set_material_property(iphys)
