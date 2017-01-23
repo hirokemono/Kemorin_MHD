@@ -62,7 +62,7 @@
       if (evo_magne%iflag_scheme .gt. id_no_evolution                   &
      &    .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         call alloc_magne_diff_MHD_AMG(numele, ak_MHD)
-        ak_MHD%ak_d_magne(1:numele) = coef_d_magne
+        ak_MHD%ak_d_magne(1:numele) = cd_prop1%coef_diffuse
       end if
 !
 !   For dummy scalar

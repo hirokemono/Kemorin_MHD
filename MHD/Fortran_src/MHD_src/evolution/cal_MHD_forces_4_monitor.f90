@@ -363,9 +363,9 @@
       if (iphys%i_electric .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_e_field)
-        call cal_nod_electric_field_smp                                 &
-     &     (node, coef_d_magne, nod_fld%ntot_phys, iphys%i_current,     &
-     &      iphys%i_vp_induct, iphys%i_electric, nod_fld%d_fld)
+        call cal_nod_electric_field_smp(node, cd_prop1%coef_diffuse,    &
+     &      nod_fld%ntot_phys, iphys%i_current, iphys%i_vp_induct,      &
+     &      iphys%i_electric, nod_fld%d_fld)
       end if
 !
       if (iphys%i_ujb .gt. izero) then
@@ -459,10 +459,9 @@
       end if
 !
       if (iphys%i_poynting .gt. izero) then
-        call cal_nod_poynting_flux_smp                                  &
-     &     (node, coef_d_magne, nod_fld%ntot_phys, iphys%i_current,     &
-     &      iphys%i_vp_induct, iphys%i_magne, iphys%i_poynting,         &
-     &      nod_fld%d_fld)
+        call cal_nod_poynting_flux_smp(node, cd_prop1%coef_diffuse,     &
+     &      nod_fld%ntot_phys, iphys%i_current, iphys%i_vp_induct,      &
+     &      iphys%i_magne, iphys%i_poynting, nod_fld%d_fld)
       end if
 !$omp end parallel
 !

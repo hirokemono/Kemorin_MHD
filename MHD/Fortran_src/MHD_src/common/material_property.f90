@@ -130,7 +130,7 @@
 !
         cd_prop1%coef_magne =   one
         cd_prop1%coef_mag_p =   one
-        coef_d_magne = one
+        cd_prop1%coef_diffuse = one
         cd_prop1%coef_induct =  one
 !
         call construct_coefficient(cd_prop1%coef_magne,                 &
@@ -141,7 +141,7 @@
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_magne_p,    &
      &      depth_low_t, depth_high_t)
 !
-        call construct_coefficient(coef_d_magne,                        &
+        call construct_coefficient(cd_prop1%coef_diffuse,               &
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_m_diffuse,  &
      &      depth_low_t, depth_high_t)
 !
@@ -225,7 +225,7 @@
           write(*,*) 'coefficient for magnetic potential:  ',           &
      &              cd_prop1%coef_mag_p
           write(*,*) 'coefficient for magnetic diffusion:  ',           &
-     &              coef_d_magne
+     &              cd_prop1%coef_diffuse
           write(*,*) 'coefficient for induction:           ',           &
      &              cd_prop1%coef_induct
         end if

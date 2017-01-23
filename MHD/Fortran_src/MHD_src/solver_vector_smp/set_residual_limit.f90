@@ -44,14 +44,14 @@
      &  .or. evo_vect_p%iflag_scheme .ge. id_Crank_nicolson) then
 !
         if(eps_4_magne_crank .le. 0.0d0) then
-          eps_4_magne_crank = eps_crank * coef_d_magne * dt**2
+          eps_4_magne_crank = eps_crank * cd_prop1%coef_diffuse * dt**2
         end if
         if(iflag_debug.eq.1)                                            &
      &     write(12,*) 'eps_4_magne_crank', eps_4_magne_crank
       end if
 !
       if (evo_comp%iflag_scheme .ge. id_Crank_nicolson) then
-        eps_4_comp_crank = eps_crank * coef_d_magne * dt**2
+        eps_4_comp_crank = eps_crank * cd_prop1%coef_diffuse * dt**2
         if(iflag_debug.eq.1)                                            &
      &     write(12,*) 'iflag_t_evo_4_composit', evo_comp%iflag_scheme
       end if

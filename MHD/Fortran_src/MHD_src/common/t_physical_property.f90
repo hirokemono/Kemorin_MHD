@@ -66,7 +66,7 @@
         real  (kind=kreal) :: acoef_mag_p
 !
 !>       coefficient for magnetic diffusion
-        real  (kind=kreal) :: coef_d_magne
+        real  (kind=kreal) :: coef_diffuse
 !>       coefficient for magnetic induction
         real  (kind=kreal) :: coef_induct
 !

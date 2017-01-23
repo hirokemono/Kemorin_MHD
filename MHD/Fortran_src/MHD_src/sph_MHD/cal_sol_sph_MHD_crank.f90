@@ -240,8 +240,8 @@
 !       Solution: ipol%i_b_diffuse, itor%i_b_diffuse, idpdr%i_b_diffuse
       if(ipol%i_b_diffuse .gt. 0) then
         if(iflag_debug .gt. 0) write(*,*) 'const_sph_mag_diffuse_by_j'
-        call const_sph_mag_diffuse_by_j                                 &
-     &     (sph_rj, r_2nd, sph_bc_B, leg%g_sph_rj, coef_d_magne,        &
+        call const_sph_mag_diffuse_by_j(sph_rj, r_2nd, sph_bc_B,        &
+     &      leg%g_sph_rj, cd_prop1%coef_diffuse,                        &
      &      ipol%i_magne, ipol%i_current, ipol%i_b_diffuse, rj_fld)
       end if
 !

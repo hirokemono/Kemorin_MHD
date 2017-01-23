@@ -140,18 +140,19 @@
      &     then
         call cal_pole_electric_field_smp                                &
      &     (node%numnod, node%internal_node, node%xx,                   &
-     &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), coef_d_magne,        &
-     &      nod_fld%ntot_phys, iphys%i_current, iphys%i_vp_induct,      &
-     &      iphys%i_electric, nod_fld%d_fld)
+     &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1),                      &
+     &      cd_prop1%coef_diffuse, nod_fld%ntot_phys, iphys%i_current,  &
+     &      iphys%i_vp_induct, iphys%i_electric, nod_fld%d_fld)
       end if
 !
       if((iphys%i_current*iphys%i_vp_induct*iphys%i_poynting) .gt. 0)   &
      &     then
         call cal_pole_poynting_flux_smp                                 &
      &     (node%numnod, node%internal_node, node%xx,                   &
-     &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), coef_d_magne,        &
-     &      nod_fld%ntot_phys, iphys%i_current, iphys%i_vp_induct,      &
-     &      iphys%i_magne, iphys%i_poynting, nod_fld%d_fld)
+     &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1),                      &
+     &      cd_prop1%coef_diffuse, nod_fld%ntot_phys, iphys%i_current,  &
+     &      iphys%i_vp_induct, iphys%i_magne, iphys%i_poynting,         &
+     &      nod_fld%d_fld)
       end if
 !
 !

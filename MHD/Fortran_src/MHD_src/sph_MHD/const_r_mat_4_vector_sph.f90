@@ -259,7 +259,7 @@
       call set_unit_on_diag(band_bp_evo)
       call set_unit_on_diag(band_bt_evo)
 !
-      if(coef_d_magne .eq. zero) then
+      if(cd_prop1%coef_diffuse .eq. zero) then
         coef_dbt = one
         call set_unit_mat_4_poisson                                     &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
@@ -268,7 +268,7 @@
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
      &      sph_bc_B%kr_in, sph_bc_B%kr_out, band_bt_evo%mat)
       else
-        coef_dbt = evo_magne%coef_imp * coef_d_magne * dt
+        coef_dbt = evo_magne%coef_imp * cd_prop1%coef_diffuse * dt
         call set_unit_mat_4_time_evo                                    &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), band_bp_evo%mat)
         call set_unit_mat_4_time_evo                                    &

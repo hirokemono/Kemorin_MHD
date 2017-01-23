@@ -74,7 +74,7 @@
 !
         if (evo_magne%iflag_scheme .gt. id_no_evolution                 &
      &      .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
-          ak_AMG%ak_d_magne(1:ele%numele) = coef_d_magne
+          ak_AMG%ak_d_magne(1:ele%numele) = cd_prop1%coef_diffuse
         end if
 !
 !   For dummy scalar

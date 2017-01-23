@@ -167,7 +167,7 @@
       if(fs_trns%i_electric .gt. 0) then
         call cal_electric_field_smp                                     &
      &     (np_smp, sph_rtp%nnod_rtp, sph_rtp%istack_inod_rtp_smp,      &
-     &      coef_d_magne, fls_rtp(1,bs_trns%i_current),                 &
+     &      cd_prop1%coef_diffuse, fls_rtp(1,bs_trns%i_current),        &
      &      frc_rtp(1,f_trns%i_vp_induct),                              &
      &      frs_rtp(1,fs_trns%i_electric))
       end if
@@ -175,7 +175,7 @@
       if(fs_trns%i_poynting .gt. 0) then
         call cal_poynting_flux_smp                                      &
      &     (np_smp, sph_rtp%nnod_rtp, sph_rtp%istack_inod_rtp_smp,      &
-     &      coef_d_magne, fls_rtp(1,bs_trns%i_current),                 &
+     &      cd_prop1%coef_diffuse, fls_rtp(1,bs_trns%i_current),        &
      &      frc_rtp(1,f_trns%i_vp_induct), fls_rtp(1,bs_trns%i_magne),  &
      &      frs_rtp(1,fs_trns%i_poynting))
       end if
