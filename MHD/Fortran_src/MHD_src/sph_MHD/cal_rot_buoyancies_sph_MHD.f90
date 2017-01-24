@@ -8,7 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine cal_rot_radial_self_gravity                          &
-!!     &         (sph_rj, ipol, itor, sph_bc_U, rj_fld)
+!!     &         (sph_rj, ipol, itor, fl_prop, sph_bc_U, rj_fld)
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_address), intent(in) :: ipol, itor
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
@@ -28,9 +29,9 @@
 !
       use m_precision
 !
+      use m_machine_parameter
       use m_constants
       use m_control_parameter
-      use m_physical_property
 !
       implicit  none
 !
@@ -44,15 +45,15 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_rot_radial_self_gravity                            &
-     &         (sph_rj, ipol, itor, sph_bc_U, rj_fld)
+     &         (sph_rj, ipol, itor, fl_prop, sph_bc_U, rj_fld)
 !
-      use m_machine_parameter
-!
+      use t_physical_property
       use t_spheric_rj_data
       use t_phys_address
       use t_phys_data
       use t_boundary_params_sph_MHD
 !
+      type(fluid_property), intent(in) :: fl_prop
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_address), intent(in) :: ipol, itor
       type(sph_boundary_type), intent(in) :: sph_bc_U
@@ -65,8 +66,8 @@
      &      write(*,*)'cal_rot_double_buoyancy_sph_MHD', ipol%i_temp
           call cal_rot_double_buoyancy_sph_MHD                          &
      &       (sph_bc_U%kr_in, sph_bc_U%kr_out,                          &
-     &        fl_prop1%coef_buo, ipol%i_temp,                           &
-     &        fl_prop1%coef_comp_buo, ipol%i_light, itor%i_rot_buoyancy,&
+     &        fl_prop%coef_buo, ipol%i_temp,                            &
+     &        fl_prop%coef_comp_buo, ipol%i_light, itor%i_rot_buoyancy, &
      &        sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                    &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
@@ -75,7 +76,7 @@
         if (iflag_debug.eq.1) write(*,*)                                &
      &      'cal_rot_buoyancy_sph_MHD', ipol%i_temp
         call cal_rot_buoyancy_sph_MHD(sph_bc_U%kr_in, sph_bc_U%kr_out,  &
-     &      fl_prop1%coef_buo, ipol%i_temp, itor%i_rot_buoyancy,        &
+     &      fl_prop%coef_buo, ipol%i_temp, itor%i_rot_buoyancy,         &
      &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
@@ -83,7 +84,7 @@
         if (iflag_debug.eq.1) write(*,*)                                &
      &      'cal_rot_buoyancy_sph_MHD', ipol%i_light
         call cal_rot_buoyancy_sph_MHD(sph_bc_U%kr_in, sph_bc_U%kr_out,  &
-     &      fl_prop1%coef_comp_buo, ipol%i_light, itor%i_rot_comp_buo,  &
+     &      fl_prop%coef_comp_buo, ipol%i_light, itor%i_rot_comp_buo,   &
      &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
@@ -91,7 +92,7 @@
         if (iflag_debug.eq.1) write(*,*)                                &
      &      'cal_rot_buoyancy_sph_MHD', ipol%i_filter_temp
         call cal_rot_buoyancy_sph_MHD(sph_bc_U%kr_in, sph_bc_U%kr_out,  &
-     &      fl_prop1%coef_buo, ipol%i_filter_temp,                      &
+     &      fl_prop%coef_buo, ipol%i_filter_temp,                       &
      &      itor%i_rot_filter_buo, sph_rj%nidx_rj,                      &
      &      sph_rj%radius_1d_rj_r, rj_fld%n_point, rj_fld%ntot_phys,    &
      &      rj_fld%d_fld)

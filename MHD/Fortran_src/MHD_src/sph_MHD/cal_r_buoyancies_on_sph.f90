@@ -7,7 +7,11 @@
 !>@brief Evaluate buoyancy at specific radius
 !!
 !!@verbatim
-!!      subroutine s_cal_r_buoyancies_on_sph(kr, sph_rj, ipol, rj_fld)
+!!      subroutine s_cal_r_buoyancies_on_sph(kr, sph_rj, ipol,          &
+!!     &          fl_prop, ref_param_T, ref_param_C, rj_fld)
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(reference_scalar_param), intent(in) :: ref_param_T
+!!        type(reference_scalar_param), intent(in) :: ref_param_C
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_address), intent(in) :: ipol
 !!        type(phys_data), intent(inout) :: rj_fld
@@ -20,6 +24,7 @@
       use m_precision
 !
       use m_constants
+      use m_machine_parameter
       use m_control_parameter
 !
       implicit  none
@@ -32,67 +37,66 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_r_buoyancies_on_sph(kr, sph_rj, ipol, rj_fld)
+      subroutine s_cal_r_buoyancies_on_sph(kr, sph_rj, ipol,            &
+     &          fl_prop, ref_param_T, ref_param_C, rj_fld)
 !
-      use m_machine_parameter
-      use m_physical_property
-!
+      use t_physical_property
+      use t_reference_scalar_param
       use t_spheric_rj_data
       use t_phys_address
       use t_phys_data
 !
       integer(kind= kint), intent(in) :: kr
+      type(fluid_property), intent(in) :: fl_prop
+      type(reference_scalar_param), intent(in) :: ref_param_T
+      type(reference_scalar_param), intent(in) :: ref_param_C
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_address), intent(in) :: ipol
       type(phys_data), intent(inout) :: rj_fld
 !
+      integer(kind = kint) :: ipol_temp,  ipol_comp
+!
+!
+      if    (ref_param_T%iflag_reference .eq. id_sphere_ref_temp        &
+     &  .or. ref_param_T%iflag_reference .eq. id_takepiro_temp) then
+        ipol_temp =  ipol%i_temp
+      else
+        ipol_temp =  ipol%i_par_temp
+      end if
+!
+      if    (ref_param_C%iflag_reference .eq. id_sphere_ref_temp        &
+     &  .or. ref_param_C%iflag_reference .eq. id_takepiro_temp) then
+        ipol_comp =  ipol%i_light
+      else
+        ipol_comp =  ipol%i_par_light
+      end if
 !
       if ((iflag_4_gravity*iflag_4_composit_buo) .gt. id_turn_OFF) then
-!
-        if(ref_param_T1%iflag_reference .ne. id_sphere_ref_temp) then
-          if (iflag_debug.eq.1)                                         &
-     &      write(*,*)'cal_r_double_buoyancy_on_sph', ipol%i_temp
-          call cal_r_double_buoyancy_on_sph                             &
-     &       (kr, fl_prop1%coef_buo, fl_prop1%coef_comp_buo,            &
-     &        ipol%i_temp, ipol%i_light, ipol%i_div_buoyancy,           &
-     &        sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                    &
-     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-        else
-          if (iflag_debug.eq.1)                                         &
-     &      write(*,*)'cal_r_double_buoyancy_on_sph', ipol%i_par_temp
-          call cal_r_double_buoyancy_on_sph                             &
-     &       (kr, fl_prop1%coef_buo, fl_prop1%coef_comp_buo,            &
-     &        ipol%i_par_temp, ipol%i_light, ipol%i_div_buoyancy,       &
-     &        sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                    &
-     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-        end if
+        if (iflag_debug.eq.1)                                           &
+     &      write(*,*)'cal_r_double_buoyancy_on_sph', ipol_temp
+        call cal_r_double_buoyancy_on_sph                               &
+     &     (kr, fl_prop%coef_buo, fl_prop%coef_comp_buo,                &
+     &      ipol_temp, ipol_comp, ipol%i_div_buoyancy,                  &
+     &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       else if ( iflag_4_gravity .gt. id_turn_OFF) then
-!
-        if(ref_param_T1%iflag_reference .ne. id_sphere_ref_temp) then
-          if (iflag_debug.eq.1) write(*,*) 'cal_r_buoyancy_on_sph'
-          call cal_r_buoyancy_on_sph                                    &
-     &       (kr, fl_prop1%coef_buo, ipol%i_temp, ipol%i_div_buoyancy,  &
-     &        sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                    &
-     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-        else
-          if (iflag_debug.eq.1) write(*,*) 'cal_r_buoyancy_on_sph'
-          call cal_r_buoyancy_on_sph(kr, fl_prop1%coef_buo,             &
-     &        ipol%i_par_temp, ipol%i_div_buoyancy,                     &
-     &        sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                    &
-     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-        end if
+        if (iflag_debug.eq.1) write(*,*) 'cal_r_buoyancy_on_sph'
+        call cal_r_buoyancy_on_sph(kr, fl_prop%coef_buo,                &
+     &      ipol_temp, ipol%i_div_buoyancy,                             &
+     &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       else if (iflag_4_composit_buo .gt. id_turn_OFF) then
         if (iflag_debug.eq.1) write(*,*) 'cal_r_buoyancy_on_sph'
-        call cal_r_buoyancy_on_sph(kr, fl_prop1%coef_comp_buo,          &
-     &      ipol%i_light, ipol%i_div_comp_buo,                          &
+        call cal_r_buoyancy_on_sph(kr, fl_prop%coef_comp_buo,           &
+     &      ipol_comp, ipol%i_div_comp_buo,                             &
      &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       else if (iflag_4_filter_gravity .gt. id_turn_OFF) then
         if (iflag_debug.eq.1) write(*,*) 'cal_r_buoyancy_on_sph'
-        call cal_r_buoyancy_on_sph(kr, fl_prop1%coef_buo,               &
+        call cal_r_buoyancy_on_sph(kr, fl_prop%coef_buo,                &
      &      ipol%i_filter_temp, ipol%i_div_filter_buo,                  &
      &      sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)

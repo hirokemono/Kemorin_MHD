@@ -8,8 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine cal_rot_radial_const_gravity                         &
-!!     &         (sph_rj, ipol, itor, sph_bc_U, rj_fld)
-!
+!!     &         (sph_rj, ipol, itor, fl_prop, ref_param_T, ref_param_C,&
+!!     &          sph_bc_U, rj_fld)
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(reference_scalar_param), intent(in) :: ref_param_T
+!!        type(reference_scalar_param), intent(in) :: ref_param_C
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_address), intent(in) :: ipol, itor
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
@@ -22,10 +25,10 @@
       module cal_rot_r_const_buo_sph
 !
       use m_precision
+      use m_machine_parameter
 !
       use m_constants
       use m_control_parameter
-      use m_physical_property
 !
       implicit  none
 !
@@ -39,50 +42,69 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_rot_radial_const_gravity                           &
-     &         (sph_rj, ipol, itor, sph_bc_U, rj_fld)
+     &         (sph_rj, ipol, itor, fl_prop, ref_param_T, ref_param_C,  &
+     &          sph_bc_U, rj_fld)
 !
-      use m_machine_parameter
-!
+      use t_physical_property
+      use t_reference_scalar_param
       use t_spheric_rj_data
       use t_phys_address
       use t_phys_data
       use t_boundary_params_sph_MHD
 !
+      type(fluid_property), intent(in) :: fl_prop
+      type(reference_scalar_param), intent(in) :: ref_param_T
+      type(reference_scalar_param), intent(in) :: ref_param_C
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_address), intent(in) :: ipol, itor
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(phys_data), intent(inout) :: rj_fld
 !
+      integer(kind = kint) :: ipol_temp,  ipol_comp
+!
+!
+      if    (ref_param_T%iflag_reference .eq. id_sphere_ref_temp        &
+     &  .or. ref_param_T%iflag_reference .eq. id_takepiro_temp) then
+        ipol_temp =  ipol%i_temp
+      else
+        ipol_temp =  ipol%i_par_temp
+      end if
+!
+      if    (ref_param_C%iflag_reference .eq. id_sphere_ref_temp        &
+     &  .or. ref_param_C%iflag_reference .eq. id_takepiro_temp) then
+        ipol_comp =  ipol%i_light
+      else
+        ipol_comp =  ipol%i_par_light
+      end if
+!
 !
       if ((iflag_4_gravity*iflag_4_composit_buo) .gt. id_turn_OFF) then
-!
         if (iflag_debug.eq.1)                                           &
-     &      write(*,*)'cal_rot_double_cst_buo_sph', ipol%i_temp
+     &    write(*,*)'cal_rot_double_cst_buo_sph', ipol_temp, ipol_comp
           call cal_rot_double_cst_buo_sph                               &
-     &       (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop1%coef_buo,       &
-     &        ipol%i_temp, fl_prop1%coef_comp_buo, ipol%i_light,        &
+     &       (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_buo,        &
+     &        ipol_temp, fl_prop%coef_comp_buo, ipol_comp,              &
      &        itor%i_rot_buoyancy, sph_rj%nidx_rj,                      &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       else if ( iflag_4_gravity .gt. id_turn_OFF) then
-!
         if (iflag_debug.eq.1) write(*,*) 'cal_rot_cst_buo_sph'
         call cal_rot_cst_buo_sph(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
-     &      fl_prop1%coef_buo, ipol%i_temp,                             &
+     &      fl_prop%coef_buo, ipol_temp,                                &
      &      itor%i_rot_buoyancy, sph_rj%nidx_rj,                        &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       else if ( iflag_4_composit_buo .gt. id_turn_OFF) then
         if (iflag_debug.eq.1) write(*,*) 'cal_rot_cst_buo_sph'
         call cal_rot_cst_buo_sph(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
-     &      fl_prop1%coef_comp_buo, ipol%i_light,                       &
+     &      fl_prop%coef_comp_buo, ipol_comp,                           &
      &      itor%i_rot_comp_buo, sph_rj%nidx_rj,                        &
      &       rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       else if (iflag_4_filter_gravity .gt. id_turn_OFF) then
         if (iflag_debug.eq.1) write(*,*) 'cal_rot_cst_buo_sph'
         call cal_rot_cst_buo_sph(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
-     &      fl_prop1%coef_buo, ipol%i_filter_temp,                      &
+     &      fl_prop%coef_buo, ipol%i_filter_temp,                       &
      &      itor%i_rot_filter_buo, sph_rj%nidx_rj,                      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if

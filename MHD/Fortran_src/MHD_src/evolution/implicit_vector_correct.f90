@@ -58,6 +58,7 @@
       use m_control_parameter
       use m_t_step_parameter
       use m_phys_constants
+      use m_physical_property
 !
       use t_comm_table
       use t_geometry_data_MHD
@@ -254,8 +255,8 @@
 !
       if ( iflag_4_coriolis .eq. id_Coriolis_ele_imp) then
         if (iflag_debug.eq.1) write(*,*) 'int_vol_coriolis_crank_ele'
-        call int_vol_coriolis_crank_ele(node, ele, fluid, jac_3d,       &
-     &      rhs_tbl, i_velo, nod_fld, fem_wk, f_l)
+        call int_vol_coriolis_crank_ele(node, ele, fluid, fl_prop1,     &
+     &      jac_3d, rhs_tbl, i_velo, nod_fld, fem_wk, f_l)
       end if
 !
 !

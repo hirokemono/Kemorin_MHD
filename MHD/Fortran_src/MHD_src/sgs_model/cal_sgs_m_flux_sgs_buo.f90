@@ -5,7 +5,7 @@
 !
 !!      subroutine cal_sgs_mom_flux_with_sgs_buo                        &
 !!     &         (nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,  &
-!!     &          Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD,           &
+!!     &          fl_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD,  &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
 !!     &          FEM_elens, filtering, ifld_sgs, icomp_sgs,            &
 !!     &          ifld_diff, iphys_elediff, sgs_coefs_nod, diff_coefs,  &
@@ -20,6 +20,7 @@
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(field_geometry_data), intent(in) :: fluid
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
@@ -72,6 +73,7 @@
       use t_SGS_model_coefs
       use t_layering_ele_list
       use t_surface_bc_data
+      use t_physical_property
 !
       implicit none
 !
@@ -85,7 +87,7 @@
 !
       subroutine cal_sgs_mom_flux_with_sgs_buo                          &
      &         (nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,    &
-     &          Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD,             &
+     &          fl_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD,    &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
      &          FEM_elens, filtering, ifld_sgs, icomp_sgs,              &
      &          ifld_diff, iphys_elediff, sgs_coefs_nod, diff_coefs,    &
@@ -94,7 +96,6 @@
 !
       use m_control_parameter
       use m_phys_constants
-      use m_physical_property
 !
       use cal_sgs_fluxes
       use cal_momentum_terms
@@ -115,6 +116,7 @@
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(field_geometry_data), intent(in) :: fluid
+      type(fluid_property), intent(in) :: fl_prop
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(layering_tbl), intent(in) :: layer_tbl
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
@@ -181,12 +183,12 @@
 !
       if(iflag_4_gravity .gt. id_turn_OFF) then
         call cal_SGS_gravity_flux                                       &
-     &     (node, fl_prop1%i_grav, fl_prop1%coef_buo, fl_prop1%grav,    &
+     &     (node, fl_prop%i_grav, fl_prop%coef_buo, fl_prop%grav,       &
      &      iphys%i_SGS_h_flux, iphys%i_SGS_buo_wk, nod_fld)
       end if
       if(iflag_4_composit_buo .gt. id_turn_OFF) then
         call cal_SGS_gravity_flux                                       &
-     &     (node, fl_prop1%i_grav, fl_prop1%coef_comp_buo, fl_prop1%grav,&
+     &     (node, fl_prop%i_grav, fl_prop%coef_comp_buo, fl_prop%grav,  &
      &      iphys%i_SGS_c_flux, iphys%i_SGS_comp_buo_wk, nod_fld)
        end if
 !

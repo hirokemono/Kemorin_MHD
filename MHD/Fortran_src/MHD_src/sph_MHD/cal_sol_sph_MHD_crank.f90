@@ -115,7 +115,7 @@
         call update_after_vorticity_sph                                 &
      &     (sph_rj, r_2nd, leg, ipol, itor, rj_fld)
         call cal_rot_radial_self_gravity                                &
-     &     (sph_rj, ipol, itor, sph_bc_U, rj_fld)
+     &     (sph_rj, ipol, itor, fl_prop1, sph_bc_U, rj_fld)
       end if
 !
       if(evo_temp%iflag_scheme .gt. id_no_evolution) then
@@ -160,7 +160,7 @@
      &     (sph_rj, r_2nd, leg, ipol, itor, rj_fld)
         if(iflag_debug.gt.0) write(*,*) 'cal_rot_radial_self_gravity'
         call cal_rot_radial_self_gravity                                &
-     &     (sph_rj, ipol, itor, sph_bc_U, rj_fld)
+     &     (sph_rj, ipol, itor, fl_prop1, sph_bc_U, rj_fld)
       end if
 !
       if(iflag_debug.gt.0) write(*,*) 'update_after_heat_sph'

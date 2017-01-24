@@ -177,7 +177,7 @@
       if (iflag_SGS_gravity .ne. id_SGS_none) then
         call cal_sgs_mom_flux_with_sgs_buo                              &
      &     (nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,        &
-     &      Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD,                 &
+     &      fl_prop1, Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD,       &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,       &
      &      filtering, ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,   &
      &      sgs_coefs_nod, diff_coefs, wk_filter, wk_lsq, wk_sgs,       &
@@ -219,29 +219,29 @@
 !
       if ( iflag_4_coriolis .eq. id_Coriolis_ele_imp) then
          if (iflag_debug.eq.1) write(*,*) 'int_vol_coriolis_crank_ele'
-        call int_vol_coriolis_crank_ele(node, ele, fluid, jac_3d_q,     &
-     &      rhs_tbl, iphys%i_velo, nod_fld, fem_wk, f_l)
+        call int_vol_coriolis_crank_ele(node, ele, fluid, fl_prop1,     &
+     &      jac_3d_q, rhs_tbl, iphys%i_velo, nod_fld, fem_wk, f_l)
       end if
 !
 ! -------     advection and forces
 !
       if (iflag_velo_supg .eq. id_turn_ON) then
-        call int_vol_velo_pre_ele_upwind                                &
-     &     (node, ele, fluid, iphys, nod_fld, ak_MHD,                   &
+        call int_vol_velo_pre_ele_upwind(node, ele, fluid,              &
+     &      fl_prop1, cd_prop1, iphys, nod_fld, ak_MHD,                 &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
      &      iphys_ele, ifld_diff%i_mom_flux, ifld_diff%i_lorentz,       &
      &      jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,                   &
      &      mhd_fem_wk, fem_wk, f_nl)
       else if (iflag_velo_supg .eq. id_magnetic_SUPG) then
-        call int_vol_velo_pre_ele_upwind                                &
-     &     (node, ele, fluid, iphys, nod_fld, ak_MHD,                   &
+        call int_vol_velo_pre_ele_upwind(node, ele, fluid,              &
+     &      fl_prop1, cd_prop1, iphys, nod_fld, ak_MHD,                 &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
      &      iphys_ele, ifld_diff%i_mom_flux, ifld_diff%i_lorentz,       &
      &      jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,                   &
      &      mhd_fem_wk, fem_wk, f_nl)
       else
-        call int_vol_velo_pre_ele                                       &
-     &     (node, ele, fluid, iphys, nod_fld, ak_MHD,                   &
+        call int_vol_velo_pre_ele(node, ele, fluid,                     &
+     &      fl_prop1, cd_prop1, iphys, nod_fld, ak_MHD,                 &
      &      ele_fld%ntot_phys, ele_fld%d_fld, iphys_ele,                &
      &      ifld_diff%i_mom_flux, ifld_diff%i_lorentz,                  &
      &      jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,                   &
@@ -252,8 +252,8 @@
 !
       call int_surf_velo_pre_ele                                        &
      &   (ifld_diff%i_mom_flux, ifld_diff%i_lorentz, ak_MHD%ak_d_velo,  &
-     &    node, ele, surf, sf_grp, Vsf_bcs, Bsf_bcs, iphys, nod_fld,    &
-     &    jac_sf_grp_q, rhs_tbl, FEM_elens, diff_coefs,                 &
+     &    node, ele, surf, sf_grp, fl_prop1, Vsf_bcs, Bsf_bcs,          &
+     &    iphys, nod_fld, jac_sf_grp_q, rhs_tbl, FEM_elens, diff_coefs, &
      &    fem_wk, surf_wk, f_l, f_nl)
 !
 !

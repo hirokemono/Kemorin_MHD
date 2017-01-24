@@ -39,6 +39,7 @@
       use m_control_parameter
       use m_t_int_parameter
       use m_phys_constants
+      use m_physical_property
 !
       use t_comm_table
       use t_geometry_data_MHD
@@ -93,11 +94,11 @@
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_coriolis_nod_exp'
-      call int_coriolis_nod_exp(node, mhd_fem_wk,                       &
+      call int_coriolis_nod_exp(node, fl_prop1, mhd_fem_wk,             &
      &    iphys%i_velo, nod_fld, f_l, f_nl)
       if (iflag_debug.eq.1)  write(*,*) 'int_buoyancy_nod_exp'
       call int_buoyancy_nod_exp                                         &
-     &   (node, mhd_fem_wk, iphys, nod_fld, f_nl)
+     &   (node, fl_prop1, mhd_fem_wk, iphys, nod_fld, f_nl)
 !
       call cal_sol_vect_pre_fluid_adams                                 &
      &   (node%numnod, node%istack_internal_smp,                        &

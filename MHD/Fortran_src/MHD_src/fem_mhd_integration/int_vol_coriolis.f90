@@ -9,14 +9,15 @@
 !        modified by H. Matsui on Aug., 2007
 !
 !!      subroutine int_vol_coriolis_pg                                  &
-!!     &         (node, ele, jac_3d, rhs_tbl, nod_fld,                  &
+!!     &         (node, ele, fl_prop, jac_3d, rhs_tbl, nod_fld,         &
 !!     &          iele_fsmp_stack, n_int, fem_wk, f_nl)
 !!      subroutine int_vol_coriolis_upw                                 &
-!!     &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack, &
-!!     &          n_int, i_velo, ncomp_ele, ie_upw, d_ele,              &
-!!     &          fem_wk, f_nl)
+!!     &         (node, ele, fl_prop, jac_3d, rhs_tbl, nod_fld,         &
+!!     &          iele_fsmp_stack, n_int, i_velo, ncomp_ele, ie_upw,    &
+!!     &          d_ele, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(phys_data),    intent(in) :: nod_fld
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -32,8 +33,8 @@
 !
       use m_machine_parameter
       use m_phys_constants
-      use m_physical_property
 !
+      use t_physical_property
       use t_geometry_data
       use t_phys_data
       use t_table_FEM_const
@@ -49,7 +50,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_coriolis_pg                                    &
-     &         (node, ele, jac_3d, rhs_tbl, nod_fld,                    &
+     &         (node, ele, fl_prop, jac_3d, rhs_tbl, nod_fld,           &
      &          iele_fsmp_stack, n_int, i_velo, fem_wk, f_nl)
 !
       use nodal_fld_cst_to_element
@@ -58,6 +59,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(fluid_property), intent(in) :: fl_prop
       type(jacobians_3d), intent(in) :: jac_3d
       type(phys_data),    intent(in) :: nod_fld
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -76,9 +78,9 @@
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele%nnod_4_ele
         call vector_cst_phys_2_each_ele(node, ele, nod_fld,             &
-     &      k2, i_velo, fl_prop1%coef_cor, fem_wk%vector_1)
+     &      k2, i_velo, fl_prop%coef_cor, fem_wk%vector_1)
         call fem_skv_coriolis_type(iele_fsmp_stack, n_int, k2,          &
-     &      fem_wk%vector_1, fl_prop1%sys_rot, ele, jac_3d, fem_wk%sk6)
+     &      fem_wk%vector_1, fl_prop%sys_rot, ele, jac_3d, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &
@@ -89,9 +91,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_coriolis_upw                                   &
-     &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack,   &
-     &          n_int, i_velo, ncomp_ele, ie_upw, d_ele,                &
-     &          fem_wk, f_nl)
+     &         (node, ele, fl_prop, jac_3d, rhs_tbl, nod_fld,           &
+     &          iele_fsmp_stack, n_int, i_velo, ncomp_ele, ie_upw,      &
+     &          d_ele, fem_wk, f_nl)
 !
       use nodal_fld_cst_to_element
       use cal_skv_to_ff_smp
@@ -99,6 +101,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(fluid_property), intent(in) :: fl_prop
       type(jacobians_3d), intent(in) :: jac_3d
       type(phys_data),    intent(in) :: nod_fld
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -120,9 +123,9 @@
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele%nnod_4_ele
         call vector_cst_phys_2_each_ele(node, ele, nod_fld,             &
-     &      k2, i_velo, fl_prop1%coef_cor, fem_wk%vector_1)
+     &      k2, i_velo, fl_prop%coef_cor, fem_wk%vector_1)
         call fem_skv_coriolis_upwind(iele_fsmp_stack, n_int, k2,        &
-     &      fem_wk%vector_1, fl_prop1%sys_rot, d_ele(1,ie_upw),         &
+     &      fem_wk%vector_1, fl_prop%sys_rot, d_ele(1,ie_upw),          &
      &      ele, jac_3d, fem_wk%sk6)
       end do
 !
