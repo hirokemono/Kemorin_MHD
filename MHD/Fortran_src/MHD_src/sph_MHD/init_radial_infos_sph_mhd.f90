@@ -189,8 +189,14 @@
      &   (ref_param_T1%low_value, ref_param_T1%depth_top,               &
      &    ref_param_T1%high_value, ref_param_T1%depth_bottom,           &
      &    sph_rj%nidx_rj, sph_params%radius_ICB, sph_params%radius_CMB, &
-     &    sph_rj%ar_1d_rj, sph_bc_T%kr_in, sph_bc_T%kr_out,             &
-     &    ref_temp%t_rj)
+     &    sph_rj%radius_1d_rj_r, sph_rj%ar_1d_rj, ref_temp%t_rj)
+!
+      call set_stratified_sph_mhd                                       &
+     &   (takepito_T1%iflag_stratified, takepito_T1%stratified_sigma,   &
+     &    takepito_T1%stratified_width, takepito_T1%stratified_outer_r, &
+     &    sph_rj%nidx_rj, sph_params%radius_ICB, sph_params%radius_CMB, &
+     &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
+     &     sph_rj%radius_1d_rj_r, ref_temp%t_rj)
 !
       call adjust_sph_temp_bc_by_reftemp                                &
      &   (sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj(1),                 &

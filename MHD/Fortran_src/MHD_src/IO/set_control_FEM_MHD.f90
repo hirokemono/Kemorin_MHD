@@ -88,8 +88,8 @@
 !   set parameters for general information
 !
       call s_set_control_4_model                                        &
-     &   (model_ctl%reft_ctl, ctl_ctl%mevo_ctl, model_ctl%evo_ctl,      &
-     &    nmtr_ctl)
+     &   (model_ctl%reft_ctl, model_ctl%refc_ctl, ctl_ctl%mevo_ctl,     &
+     &    model_ctl%evo_ctl, nmtr_ctl)
 !
 !   set element groups for evolution
 !

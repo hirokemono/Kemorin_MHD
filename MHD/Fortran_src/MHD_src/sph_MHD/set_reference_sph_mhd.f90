@@ -11,10 +11,6 @@
 !!     &          idx_rj_degree_zero, nidx_rj, i_press,                 &
 !!     &          n_point, ntot_phys_rj, d_rj)
 !!
-!!      subroutine set_ref_temp_sph_mhd                                 &
-!!     &         (low_temp, depth_top, high_temp, depth_bottom,         &
-!!     &          nidx_rj, r_ICB, r_CMB, ar_1d_rj, kr_ICB, kr_CMB,      &
-!!     &          reftemp_rj)
 !!      subroutine adjust_sph_temp_bc_by_reftemp                        &
 !!     &         (idx_rj_degree_zero, nri, reftemp_rj, sph_bc_T)
 !!
@@ -92,57 +88,6 @@
       end subroutine adjust_by_ave_pressure_on_CMB
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine set_ref_temp_sph_mhd                                   &
-     &         (low_temp, depth_top, high_temp, depth_bottom,           &
-     &          nidx_rj, r_ICB, r_CMB, ar_1d_rj, kr_ICB, kr_CMB,        &
-     &          reftemp_rj)
-!
-      use m_physical_property
-!
-      real (kind = kreal), intent(in) :: low_temp, high_temp
-      real (kind = kreal), intent(inout) :: depth_top, depth_bottom
-!
-      integer(kind = kint), intent(in) :: nidx_rj(2)
-      integer(kind = kint), intent(in) :: kr_ICB, kr_CMB
-      real(kind = kreal), intent(in) :: r_ICB, r_CMB
-      real(kind=kreal), intent(in) :: ar_1d_rj(nidx_rj(1),3)
-!
-      real(kind=kreal), intent(inout) :: reftemp_rj(nidx_rj(1),0:1)
-!
-      integer (kind = kint) :: k
-!
-! set reference temperature (for spherical shell)
-!
-      if (ref_param_T1%iflag_reference .eq. id_sphere_ref_temp) then
-        do k = 1, kr_ICB-1
-          reftemp_rj(k,0) = high_temp
-          reftemp_rj(k,1) = zero
-        end do
-        do k = kr_ICB, kr_CMB
-          reftemp_rj(k,0) = (depth_bottom*depth_top*ar_1d_rj(k,1)       &
-     &                   * (high_temp - low_temp)                       &
-     &                    - depth_bottom*high_temp                      &
-     &                    + depth_top* low_temp )                       &
-     &                     / (depth_top - depth_bottom)
-          reftemp_rj(k,1) = - depth_bottom*depth_top*ar_1d_rj(k,2)      &
-     &                   * (high_temp - low_temp)                       &
-     &                     / (depth_top - depth_bottom)
-        end do
-        do k = kr_CMB+1, nidx_rj(1)
-          reftemp_rj(k,0) = low_temp
-          reftemp_rj(k,1) = zero
-        end do
-      else
-        reftemp_rj(1:nidx_rj(1),0) = zero
-        reftemp_rj(1:nidx_rj(1),1) = zero
-        depth_bottom = r_ICB
-        depth_top =    r_CMB
-      end if
-!
-      end subroutine set_ref_temp_sph_mhd
-!
 ! -----------------------------------------------------------------------
 !
       subroutine adjust_sph_temp_bc_by_reftemp                          &

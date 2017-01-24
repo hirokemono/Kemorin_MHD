@@ -10,9 +10,10 @@
 !!
 !!@verbatim
 !!      subroutine s_set_control_4_model                                &
-!!     &          (reft_ctl, mevo_ctl, evo_ctl, nmtr_ctl)
+!!     &          (reft_ctl, refc_ctl, mevo_ctl, evo_ctl, nmtr_ctl)
 !!     subroutine s_set_control_4_crank(mevo_ctl)
 !!        type(reference_temperature_ctl), intent(in) :: reft_ctl
+!!        type(reference_temperature_ctl), intent(in) :: refc_ctl
 !!        type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
 !!        type(mhd_evolution_control), intent(inout) :: evo_ctl
 !!        type(node_monitor_control), intent(inout) :: nmtr_ctl
@@ -38,7 +39,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_4_model                                  &
-     &          (reft_ctl, mevo_ctl, evo_ctl, nmtr_ctl)
+     &          (reft_ctl, refc_ctl, mevo_ctl, evo_ctl, nmtr_ctl)
 !
       use calypso_mpi
       use m_t_step_parameter
@@ -50,6 +51,7 @@
       use node_monitor_IO
 !
       type(reference_temperature_ctl), intent(in) :: reft_ctl
+      type(reference_temperature_ctl), intent(in) :: refc_ctl
       type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
       type(mhd_evolution_control), intent(inout) :: evo_ctl
       type(node_monitor_control), intent(inout) :: nmtr_ctl
@@ -158,6 +160,12 @@
       write(tmpchara,'(a)') 'Reference temperature'
       call set_reference_scalar_ctl                                     &
      &   (tmpchara, reft_ctl, ref_param_T1, takepito_T1)
+!
+!   set control for reference  
+!
+      write(tmpchara,'(a)') 'Reference temperature'
+      call set_reference_scalar_ctl                                     &
+     &   (tmpchara, refc_ctl, ref_param_C1, takepito_C1)
 !
 !
       if (nmtr_ctl%group_4_monitor_ctl%icou .eq. 0) then

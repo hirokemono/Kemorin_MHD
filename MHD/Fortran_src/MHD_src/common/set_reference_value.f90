@@ -72,7 +72,7 @@
      &  (takepito_T1%iflag_stratified, takepito_T1%stratified_sigma,    &
      &   takepito_T1%stratified_width, takepito_T1%stratified_outer_r,  &
      &   node%numnod, fluid%numnod_fld, fluid%inod_fld, node%rr,        &
-     &   node%a_r, nod_fld%d_fld(1,i_ref_t), nod_fld%d_fld(1,i_gref_t))
+     &   nod_fld%d_fld(1,i_ref_t), nod_fld%d_fld(1,i_gref_t))
 !
       end subroutine set_reference_temp
 !
@@ -201,7 +201,7 @@
 !
       subroutine set_takepiro_temp(iflag_stratified,                    &
      &          stratified_sigma, stratified_width, stratified_outer_r, &
-     &          numnod, nnod_fl, inod_fluid, radius, a_radius,          &
+     &          numnod, nnod_fl, inod_fluid, radius,                    &
      &          ref_remp, gref_remp)
 !
       use m_control_parameter
@@ -213,36 +213,37 @@
 !
       integer(kind = kint), intent(in) :: numnod, nnod_fl
       real(kind = kreal), intent(in) :: radius(numnod)
-      real(kind = kreal), intent(in) :: a_radius(numnod)
       integer (kind = kint), intent(in) :: inod_fluid(nnod_fl)
 !
       real(kind = kreal), intent(inout) :: ref_remp(numnod)
       real(kind = kreal), intent(inout) :: gref_remp(numnod)
 !
       integer (kind = kint) :: inod, inum
+      real(kind = kreal) :: alpha, beta
 !
 !
 ! set reference temperature (for spherical shell)
 !
-      if (iflag_stratified .gt. id_turn_OFF) then
+      if (iflag_stratified .eq. id_turn_OFF) return
 !$omp parallel workshare
-        ref_remp(1:numnod) = zero
-        gref_remp(1:numnod) = zero
+      ref_remp(1:numnod) = zero
+      gref_remp(1:numnod) = zero
 !$omp end parallel workshare
 !
 !$omp parallel do private(inum,inod)
-        do inum = 1, nnod_fl
-          inod = inod_fluid(inum)
+      do inum = 1, nnod_fl
+        inod = inod_fluid(inum)
+        alpha = (radius(inod)-stratified_outer_r) / stratified_width
+        beta =  (radius(inod) + stratified_sigma) / stratified_width
 !
-          ref_remp(inod)                                                &
-     &         = - half * ( radius(inod) + stratified_sigma )           &
-     &          * (one - tanh( (radius(inod)-stratified_outer_r)        &
-     &           / stratified_width ) ) + stratified_sigma
+        ref_remp(inod) = - half * (radius(inod) + stratified_sigma)     &
+     &          * (one - tanh(alpha)) + stratified_sigma
 !
-          gref_remp(inod) = ref_remp(inod) * a_radius(inod)
-        end do
+        gref_remp(inod) =  half * (-one + beta)                         &
+     &                     + half * tanh(alpha)                         &
+     &                     - half * beta * tanh(alpha) * tanh(alpha)
+      end do
 !$omp end parallel do
-      end if
 !
       end subroutine set_takepiro_temp
 !
