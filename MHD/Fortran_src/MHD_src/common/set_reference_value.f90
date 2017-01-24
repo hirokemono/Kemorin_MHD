@@ -41,25 +41,29 @@
 !
 ! set reference temperature (for spherical shell)
 !
-      if ( iflag_4_ref_temp .eq. id_sphere_ref_temp) then
+      if ( ref_param_T1%iflag_reference .eq. id_sphere_ref_temp) then
         call set_sph_shell_reftemp                                      &
-     &     (low_temp, depth_low_t, high_temp, depth_high_t,             &
+     &     (ref_param_T1%low_value, ref_param_T1%depth_top,             &
+     &      ref_param_T1%high_value, ref_param_T1%depth_bottom,         &
      &      node%numnod, fluid%numnod_fld,                              &
      &      fluid%inod_fld, node%rr, node%a_r,                          &
      &      nod_fld%d_fld(1,i_ref_t), nod_fld%d_fld(1,i_gref_t))
       end if
 !
-      if ( iflag_4_ref_temp .eq. id_linear_r_ref_temp) then
+      if ( ref_param_T1%iflag_reference .eq. id_linear_r_ref_temp) then
         call set_linear_r_reftemp                                       &
-     &     (low_temp, depth_low_t, high_temp, depth_high_t,             &
+     &     (ref_param_T1%low_value, ref_param_T1%depth_top,             &
+     &      ref_param_T1%high_value, ref_param_T1%depth_bottom,         &
      &      node%numnod, fluid%numnod_fld, fluid%inod_fld, node%rr,     &
      &      nod_fld%d_fld(1,i_ref_t), nod_fld%d_fld(1,i_gref_t))
       end if
 !
 !
-      if (iflag_4_ref_temp .ge. 1 .and. iflag_4_ref_temp .le. 3) then
-        call set_linear_reftemp(iflag_4_ref_temp,                       &
-     &      low_temp, depth_low_t, high_temp, depth_high_t,             &
+      if (ref_param_T1%iflag_reference .ge. 1                           &
+     &     .and. ref_param_T1%iflag_reference .le. 3) then
+        call set_linear_reftemp(ref_param_T1%iflag_reference,           &
+     &      ref_param_T1%low_value, ref_param_T1%depth_top,             &
+     &      ref_param_T1%high_value, ref_param_T1%depth_bottom,         &
      &      node%numnod, fluid%numnod_fld, fluid%inod_fld, node%xx,     &
      &      nod_fld%d_fld(1,i_ref_t), nod_fld%d_fld(1,i_gref_t))
       end if
@@ -76,12 +80,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_sph_shell_reftemp                                  &
-     &         (low_temp, depth_low_t, high_temp, depth_high_t,         &
+     &         (low_temp, depth_top, high_temp, depth_bottom,           &
      &          numnod, nnod_fl, inod_fluid, radius, a_radius,          &
      &          ref_remp, gref_remp)
 !
-      real (kind = kreal), intent(in) :: low_temp,  depth_low_t
-      real (kind = kreal), intent(in) :: high_temp, depth_high_t
+      real (kind = kreal), intent(in) :: low_temp,  depth_top
+      real (kind = kreal), intent(in) :: high_temp, depth_bottom
 !
       integer(kind = kint), intent(in) :: numnod, nnod_fl
       real(kind = kreal), intent(in) :: radius(numnod)
@@ -103,13 +107,13 @@
         do inum = 1, nnod_fl
           inod = inod_fluid(inum)
           ref_remp(inod) = ( (high_temp - low_temp)                     &
-     &                        * depth_high_t*depth_low_t*a_radius(inod) &
-     &                        - depth_high_t*high_temp                  &
-     &                        + depth_low_t* low_temp )                 &
-     &                         / ( depth_low_t - depth_high_t )
+     &                        * depth_bottom*depth_top*a_radius(inod)   &
+     &                        - depth_bottom*high_temp                  &
+     &                        + depth_top* low_temp )                   &
+     &                         / ( depth_top - depth_bottom )
           gref_remp(inod) = (-(high_temp - low_temp)                    &
-     &                           * depth_high_t*depth_low_t)            &
-     &                          / ( (depth_low_t-depth_high_t)          &
+     &                           * depth_bottom*depth_top)              &
+     &                          / ( (depth_top-depth_bottom)            &
      &                           * radius(inod)**2 )
         end do
 !$omp end parallel do
@@ -119,12 +123,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_linear_r_reftemp                                   &
-     &         (low_temp, depth_low_t, high_temp, depth_high_t,         &
+     &         (low_temp, depth_top, high_temp, depth_bottom,           &
      &          numnod, nnod_fl, inod_fluid, radius,                    &
      &          ref_remp, gref_remp)
 !
-      real (kind = kreal), intent(in) :: low_temp,  depth_low_t
-      real (kind = kreal), intent(in) :: high_temp, depth_high_t
+      real (kind = kreal), intent(in) :: low_temp,  depth_top
+      real (kind = kreal), intent(in) :: high_temp, depth_bottom
 !
       integer(kind = kint), intent(in) :: numnod, nnod_fl
       real(kind = kreal), intent(in) :: radius(numnod)
@@ -146,10 +150,10 @@
           inod = inod_fluid(inum)
           ref_remp(inod) = high_temp                                    &
      &                     - (high_temp - low_temp)                     &
-     &                     * (radius(inod) - depth_high_t)              &
-     &                     / (depth_low_t - depth_high_t)
+     &                     * (radius(inod) - depth_bottom)              &
+     &                     / (depth_top - depth_bottom)
           gref_remp(inod) = -(high_temp - low_temp)                     &
-     &                     / (depth_low_t - depth_high_t)
+     &                     / (depth_top - depth_bottom)
         end do
 !$omp end parallel do
 !
@@ -158,12 +162,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_linear_reftemp(iflag_dir,                          &
-     &          low_temp, depth_low_t, high_temp, depth_high_t,         &
+     &          low_temp, depth_top, high_temp, depth_bottom,           &
      &          numnod, nnod_fl, inod_fluid, xx, ref_remp, gref_remp)
 !
       integer(kind = kint), intent(in) :: iflag_dir
-      real (kind = kreal), intent(in) :: low_temp,  depth_low_t
-      real (kind = kreal), intent(in) :: high_temp, depth_high_t
+      real (kind = kreal), intent(in) :: low_temp,  depth_top
+      real (kind = kreal), intent(in) :: high_temp, depth_bottom
 !
       integer(kind = kint), intent(in) :: numnod, nnod_fl
       real(kind = kreal), intent(in) :: xx(numnod,3)
@@ -184,10 +188,10 @@
         do inum = 1, nnod_fl
           inod = inod_fluid(inum)
           ref_remp(inod) = (high_temp - low_temp)                       &
-     &        * ( xx(inod,iflag_dir) - depth_low_t )                    &
-     &         / ( depth_high_t - depth_low_t ) + low_temp
+     &        * ( xx(inod,iflag_dir) - depth_top )                      &
+     &         / ( depth_bottom - depth_top ) + low_temp
           gref_remp(inod) = (high_temp - low_temp)                      &
-     &         / ( depth_high_t - depth_low_t )
+     &         / ( depth_bottom - depth_top )
         end do
 !$omp end parallel do
 !

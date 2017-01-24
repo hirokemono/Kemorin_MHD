@@ -46,6 +46,7 @@
       use t_ctl_data_mhd_evolution
       use t_ctl_data_temp_model
       use t_ctl_data_node_monitor
+      use t_reference_scalar_param
       use node_monitor_IO
 !
       type(reference_temperature_ctl), intent(in) :: reft_ctl
@@ -152,18 +153,18 @@
         write(*,*) 'iflag_implicit_correct ', iflag_implicit_correct
       end if
 !
-!   set control for temperature 
+!   set control for reference temperature 
 !
       write(tmpchara,'(a)') 'Reference temperature'
-      call set_reference_temp_ctl(tmpchara,                             &
-     &    reft_ctl%reference_ctl, reft_ctl%low_ctl, reft_ctl%high_ctl,  &
-     &    reft_ctl%stratified_ctl, reft_ctl%takepiro_ctl)
+      call set_reference_scalar_ctl                                     &
+     &   (tmpchara, reft_ctl, ref_param_T1, takepito_T1)
 !
-        if (nmtr_ctl%group_4_monitor_ctl%icou .eq. 0) then
-          num_monitor = 0
-        else
-          num_monitor = nmtr_ctl%group_4_monitor_ctl%num
-        end if
+!
+      if (nmtr_ctl%group_4_monitor_ctl%icou .eq. 0) then
+        num_monitor = 0
+      else
+        num_monitor = nmtr_ctl%group_4_monitor_ctl%num
+      end if
 !
       if (num_monitor .ne. 0) then
         call allocate_monitor_group
@@ -182,91 +183,6 @@
 !
 !
       end subroutine s_set_control_4_model
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_reference_temp_ctl(charaflag,                      &
-     &          ref_temp_ctl, low_temp_ctl, high_temp_ctl,              &
-     &          stratified_ctl, takepiro_ctl)
-!
-      use calypso_mpi
-      use t_ctl_data_temp_model
-      use t_control_elements
-      use t_reference_scalar_param
-!
-      character(len = kchara), intent(in) :: charaflag
-      type(read_character_item), intent(in) :: ref_temp_ctl
-      type(read_character_item), intent(in) :: stratified_ctl
-      type(reference_point_control), intent(in) :: low_temp_ctl
-      type(reference_point_control), intent(in) :: high_temp_ctl
-      type(takepiro_model_control), intent(in) :: takepiro_ctl
-!
-      integer (kind = kint) :: iflag
-      character(len=kchara) :: tmpchara
-!
-!   set control for temperature 
-!
-      if (ref_temp_ctl%iflag .eq. 0) then
-        iflag_4_ref_temp = id_no_ref_temp
-      else
-        tmpchara = ref_temp_ctl%charavalue
-        if (cmp_no_case(tmpchara, 'spherical_shell')) then
-          iflag_4_ref_temp = id_sphere_ref_temp
-        else if (cmp_no_case(tmpchara, 'sph_constant_heat')) then
-          iflag_4_ref_temp = id_linear_r_ref_temp
-        else if (cmp_no_case(tmpchara, 'linear_x')) then
-          iflag_4_ref_temp = id_x_ref_temp
-        else if (cmp_no_case(tmpchara, 'linear_y')) then
-          iflag_4_ref_temp = id_y_ref_temp
-        else if (cmp_no_case(tmpchara, 'linear_z')) then
-          iflag_4_ref_temp = id_z_ref_temp
-        end if
-      end if
-!
-      iflag = low_temp_ctl%depth%iflag*low_temp_ctl%value%iflag
-      if (iflag .eq. 0) then
-        if (iflag_4_ref_temp .eq. id_no_ref_temp) then
-          low_temp  =  0.0d0
-          depth_low_t  =  0.0d0
-        else
-          e_message                                                     &
-     &          = 'Set lower temperature and its position'
-          call calypso_MPI_abort(ierr_fld, e_message)
-        end if
-      else
-        low_temp  = low_temp_ctl%value%realvalue
-        depth_low_t  = low_temp_ctl%depth%realvalue
-      end if
-!
-      iflag = high_temp_ctl%depth%iflag*high_temp_ctl%value%iflag
-      if (iflag .eq. 0) then
-        if (iflag_4_ref_temp .eq. id_no_ref_temp) then
-          high_temp =  0.0d0
-          depth_high_t =  0.0d0
-        else
-          e_message                                                     &
-     &         = 'Set lower temperature and its position'
-          call calypso_MPI_abort(ierr_fld, e_message)
-        end if
-      else
-        high_temp = high_temp_ctl%value%realvalue
-        depth_high_t = high_temp_ctl%depth%realvalue
-      end if
-!
-!
-      if (iflag_debug .ge. iflag_routine_msg) then
-        write(*,*) trim(charaflag)
-        write(*,*) 'iflag_reference ', iflag_4_ref_temp
-        write(*,*) 'low_value ',       low_temp
-        write(*,*) 'high_value ',      high_temp
-        write(*,*) 'depth_low ',       depth_low_t
-        write(*,*) 'depth_high ',      depth_high_t
-      end if
-!
-      call set_takepiro_scalar_ctl                                      &
-     &   (stratified_ctl, takepiro_ctl, takepito_T1)
-!
-      end subroutine set_reference_temp_ctl
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

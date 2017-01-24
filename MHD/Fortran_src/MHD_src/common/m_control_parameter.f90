@@ -274,31 +274,6 @@
 !>      filter ID to obtain SGS terms
       integer (kind=kint) :: ifilter_final = ifilter_2delta
 !
-!>      flag for solving full temperature
-      integer (kind=kint), parameter :: id_no_ref_temp = 0
-!>      flag to use referece temperature as a function of @f$ x @f$
-      integer (kind=kint), parameter :: id_x_ref_temp = 0
-!>      flag to use referece temperature as a function of @f$ y @f$
-      integer (kind=kint), parameter :: id_y_ref_temp = 0
-!>      flag to use referece temperature as a function of @f$ z @f$
-      integer (kind=kint), parameter :: id_z_ref_temp = 0
-!>      flag to use referece temperature as a function of @f$ r @f$
-      integer (kind=kint), parameter :: id_sphere_ref_temp = 100
-!>      flag to use linearly decrease referece temperature 
-!!      as a function of @f$ r @f$
-      integer (kind=kint), parameter :: id_linear_r_ref_temp = 200
-!>      temperature setting
-      integer (kind=kint) :: iflag_4_ref_temp
-!
-!>      reference lowest temperature (at upper boundary)
-      real (kind = kreal) :: low_temp
-!>      reference highest temperature (at lower boundary)
-      real (kind = kreal) :: high_temp
-!>      position at lowest temperature (upper boundary)
-      real (kind = kreal) :: depth_low_t
-!>      position at highest temperature (lower boundary)
-      real (kind = kreal) :: depth_high_t
-!
 !  ---------------------------------------------------------------------
 !
       contains

@@ -37,6 +37,7 @@
       use m_control_parameter
       use m_t_step_parameter
 !
+      use m_physical_property
       use m_ele_material_property
       use m_mean_square_values
       use m_jacobians
@@ -183,7 +184,8 @@
      &    iphys%i_ref_t, iphys%i_gref_t, nod_fld)
 !
       if (iflag_debug.eq.1) write(*,*)' set_material_property'
-      call set_material_property(iphys)
+      call set_material_property                                        &
+     &   (iphys, ref_param_T1%depth_top, ref_param_T1%depth_bottom)
       call init_ele_material_property(mesh%ele%numele)
       call define_sgs_components                                        &
      &   (mesh%node%numnod, mesh%ele%numele, layer_tbl,                 &

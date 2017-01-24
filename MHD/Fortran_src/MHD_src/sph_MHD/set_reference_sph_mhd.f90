@@ -11,8 +11,10 @@
 !!     &          idx_rj_degree_zero, nidx_rj, i_press,                 &
 !!     &          n_point, ntot_phys_rj, d_rj)
 !!
-!!      subroutine set_ref_temp_sph_mhd(nidx_rj, r_ICB, r_CMB, ar_1d_rj,&
-!!     &          kr_ICB, kr_CMB, reftemp_rj)
+!!      subroutine set_ref_temp_sph_mhd                                 &
+!!     &         (low_temp, depth_top, high_temp, depth_bottom,         &
+!!     &          nidx_rj, r_ICB, r_CMB, ar_1d_rj, kr_ICB, kr_CMB,      &
+!!     &          reftemp_rj)
 !!      subroutine adjust_sph_temp_bc_by_reftemp                        &
 !!     &         (idx_rj_degree_zero, nri, reftemp_rj, sph_bc_T)
 !!
@@ -51,7 +53,6 @@
 !
       use m_constants
       use calypso_mpi
-      use m_control_parameter
       use t_phys_address
 !
       implicit none
@@ -93,8 +94,15 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_ref_temp_sph_mhd(nidx_rj, r_ICB, r_CMB, ar_1d_rj,  &
-     &          kr_ICB, kr_CMB, reftemp_rj)
+      subroutine set_ref_temp_sph_mhd                                   &
+     &         (low_temp, depth_top, high_temp, depth_bottom,           &
+     &          nidx_rj, r_ICB, r_CMB, ar_1d_rj, kr_ICB, kr_CMB,        &
+     &          reftemp_rj)
+!
+      use m_physical_property
+!
+      real (kind = kreal), intent(in) :: low_temp, high_temp
+      real (kind = kreal), intent(inout) :: depth_top, depth_bottom
 !
       integer(kind = kint), intent(in) :: nidx_rj(2)
       integer(kind = kint), intent(in) :: kr_ICB, kr_CMB
@@ -107,20 +115,20 @@
 !
 ! set reference temperature (for spherical shell)
 !
-      if (iflag_4_ref_temp .eq. id_sphere_ref_temp) then
+      if (ref_param_T1%iflag_reference .eq. id_sphere_ref_temp) then
         do k = 1, kr_ICB-1
           reftemp_rj(k,0) = high_temp
           reftemp_rj(k,1) = zero
         end do
         do k = kr_ICB, kr_CMB
-          reftemp_rj(k,0) = (depth_high_t*depth_low_t*ar_1d_rj(k,1)     &
+          reftemp_rj(k,0) = (depth_bottom*depth_top*ar_1d_rj(k,1)       &
      &                   * (high_temp - low_temp)                       &
-     &                    - depth_high_t*high_temp                      &
-     &                    + depth_low_t* low_temp )                     &
-     &                     / (depth_low_t - depth_high_t)
-          reftemp_rj(k,1) = - depth_high_t*depth_low_t*ar_1d_rj(k,2)    &
+     &                    - depth_bottom*high_temp                      &
+     &                    + depth_top* low_temp )                       &
+     &                     / (depth_top - depth_bottom)
+          reftemp_rj(k,1) = - depth_bottom*depth_top*ar_1d_rj(k,2)      &
      &                   * (high_temp - low_temp)                       &
-     &                     / (depth_low_t - depth_high_t)
+     &                     / (depth_top - depth_bottom)
         end do
         do k = kr_CMB+1, nidx_rj(1)
           reftemp_rj(k,0) = low_temp
@@ -129,8 +137,8 @@
       else
         reftemp_rj(1:nidx_rj(1),0) = zero
         reftemp_rj(1:nidx_rj(1),1) = zero
-        depth_high_t = r_ICB
-        depth_low_t =  r_CMB
+        depth_bottom = r_ICB
+        depth_top =    r_CMB
       end if
 !
       end subroutine set_ref_temp_sph_mhd
@@ -141,6 +149,7 @@
      &         (idx_rj_degree_zero, nri, reftemp_rj, sph_bc_T)
 !
       use t_boundary_params_sph_MHD
+      use m_physical_property
 !
       integer(kind = kint), intent(in) :: idx_rj_degree_zero
       integer(kind = kint), intent(in) :: nri
@@ -149,8 +158,8 @@
       type(sph_boundary_type), intent(inout) :: sph_bc_T
 !
 !
-      if(idx_rj_degree_zero .gt. 0                                      &
-     &      .and. iflag_4_ref_temp .eq. id_sphere_ref_temp) then
+      if(ref_param_T1%iflag_reference .eq. id_sphere_ref_temp           &
+     &       .and. idx_rj_degree_zero .gt. 0) then
         sph_bc_T%ICB_fld(idx_rj_degree_zero)                            &
      &   = sph_bc_T%ICB_fld(idx_rj_degree_zero)                         &
      &    - reftemp_rj(sph_bc_T%kr_in,0)
@@ -174,6 +183,8 @@
      &         nidx_rj, radius_1d_rj_r, reftemp_rj, ipol, idpdr,        &
      &         n_point, ntot_phys_rj, d_rj)
 !
+      use m_physical_property
+!
       type(phys_address), intent(in) :: ipol, idpdr
       integer(kind = kint), intent(in) :: idx_rj_degree_zero
       integer(kind = kint), intent(in) :: nidx_rj(2)
@@ -186,7 +197,7 @@
       integer(kind = kint) :: k, inod
 !
 !
-      if (iflag_4_ref_temp .ne. id_sphere_ref_temp) return
+      if (ref_param_T1%iflag_reference .ne. id_sphere_ref_temp) return
 !
       if (idx_rj_degree_zero .gt. 0) then
         do k = 1, nidx_rj(1)
@@ -215,6 +226,8 @@
      &          nidx_rj, radius_1d_rj_r, reftemp_rj, ipol, idpdr,       &
      &          n_point, ntot_phys_rj, d_rj)
 !
+      use m_physical_property
+!
       type(phys_address), intent(in) :: ipol, idpdr
       integer(kind = kint), intent(in) :: idx_rj_degree_zero
       integer(kind = kint), intent(in) :: nidx_rj(2)
@@ -227,7 +240,7 @@
       integer(kind = kint) :: k, inod
 !
 !
-      if (iflag_4_ref_temp .ne. id_sphere_ref_temp) return
+      if (ref_param_T1%iflag_reference .ne. id_sphere_ref_temp) return
 !
 !$omp parallel do
       do inod = 1, n_point

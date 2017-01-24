@@ -55,7 +55,7 @@
 !
       if ((iflag_4_gravity*iflag_4_composit_buo) .gt. id_turn_OFF) then
 !
-        if(iflag_4_ref_temp .ne. id_sphere_ref_temp) then
+        if(ref_param_T1%iflag_reference .ne. id_sphere_ref_temp) then
           if (iflag_debug.eq.1)                                         &
      &      write(*,*)'cal_div_double_cst_buo_sph', ipol%i_temp
           call cal_div_double_cst_buo_sph                               &
@@ -78,7 +78,7 @@
 !
       else if (iflag_4_gravity .gt. id_turn_OFF) then
 !
-        if(iflag_4_ref_temp .ne. id_sphere_ref_temp) then
+        if(ref_param_T1%iflag_reference .ne. id_sphere_ref_temp) then
           if (iflag_debug.eq.1) write(*,*) 'cal_div_cst_buo_sph'
           call cal_div_cst_buo_sph                                      &
      &       (sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop1%coef_buo,       &

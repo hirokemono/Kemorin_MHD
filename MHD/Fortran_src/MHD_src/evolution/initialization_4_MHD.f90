@@ -203,7 +203,8 @@
      &    iphys%i_ref_t, iphys%i_gref_t, nod_fld)
 !
       if (iflag_debug.eq.1) write(*,*)' set_material_property'
-      call set_material_property(iphys)
+      call set_material_property                                        &
+     &   (iphys, ref_param_T1%depth_top, ref_param_T1%depth_bottom)
       call init_ele_material_property(mesh%ele%numele)
       call define_sgs_components                                        &
      &   (mesh%node%numnod, mesh%ele%numele, layer_tbl,                 &
@@ -235,7 +236,7 @@
 !
 !  -------------------------------
 !
-      if (iflag_4_ref_temp .ne. id_no_ref_temp) then
+      if (ref_param_T1%iflag_reference .ne. id_no_ref_temp) then
         if (iflag_debug.eq.1) write(*,*)' set_2_perturbation_temp'
         call subtract_2_nod_scalars(nod_fld,                            &
      &      iphys%i_temp, iphys%i_ref_t, iphys%i_par_temp)

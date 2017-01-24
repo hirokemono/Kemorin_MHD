@@ -181,7 +181,7 @@
       end if
 !
       if(fs_trns%i_buo_gen .gt. 0) then
-        if(iflag_4_ref_temp .eq. id_sphere_ref_temp) then
+        if(ref_param_T1%iflag_reference .eq. id_sphere_ref_temp) then
           call cal_buoyancy_flux_rtp_smp                                &
      &       (np_smp, sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1),            &
      &        sph_rtp%istack_inod_rtp_smp, sph_rtp%radius_1d_rtp_r,     &

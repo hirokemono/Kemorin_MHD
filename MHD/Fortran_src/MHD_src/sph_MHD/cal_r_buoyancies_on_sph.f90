@@ -49,7 +49,7 @@
 !
       if ((iflag_4_gravity*iflag_4_composit_buo) .gt. id_turn_OFF) then
 !
-        if(iflag_4_ref_temp .ne. id_sphere_ref_temp) then
+        if(ref_param_T1%iflag_reference .ne. id_sphere_ref_temp) then
           if (iflag_debug.eq.1)                                         &
      &      write(*,*)'cal_r_double_buoyancy_on_sph', ipol%i_temp
           call cal_r_double_buoyancy_on_sph                             &
@@ -69,7 +69,7 @@
 !
       else if ( iflag_4_gravity .gt. id_turn_OFF) then
 !
-        if(iflag_4_ref_temp .ne. id_sphere_ref_temp) then
+        if(ref_param_T1%iflag_reference .ne. id_sphere_ref_temp) then
           if (iflag_debug.eq.1) write(*,*) 'cal_r_buoyancy_on_sph'
           call cal_r_buoyancy_on_sph                                    &
      &       (kr, fl_prop1%coef_buo, ipol%i_temp, ipol%i_div_buoyancy,  &

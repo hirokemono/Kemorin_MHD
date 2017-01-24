@@ -64,10 +64,12 @@
 !
       subroutine add_ctl_4_ref_temp(field_ctl)
 !
+      use m_physical_property
+!
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !
-      if ( iflag_4_ref_temp .ne. id_no_ref_temp) then
+      if (ref_param_T1%iflag_reference .ne. id_no_ref_temp) then
         call add_phys_name_ctl(fhd_part_temp, field_ctl)
         call add_phys_name_ctl(fhd_ref_temp, field_ctl)
         call add_phys_name_ctl(fhd_grad_ref_temp, field_ctl)

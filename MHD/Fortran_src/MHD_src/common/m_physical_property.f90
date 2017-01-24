@@ -26,6 +26,12 @@
 !>      Structure for compositon property
       type(scalar_property), save :: cp_prop1
 !
+!>      reference paramter for temperature
+      type(reference_scalar_param), save :: ref_param_T1
+!ref_param_T1%iflag_reference
+!>      Takepiro stratified composition
+      type(reference_scalar_param), save :: ref_param_C1
+!
 !>      Takepiro stratified temperature
       type(takepiro_model_param), save :: takepito_T1
 !>      Takepiro stratified composition

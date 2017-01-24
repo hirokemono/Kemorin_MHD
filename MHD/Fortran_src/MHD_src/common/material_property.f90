@@ -8,7 +8,7 @@
 !>@brief  Subroutines to set coeffiecient of each term
 !!
 !!@verbatim
-!!      subroutine set_material_property(iphys)
+!!      subroutine set_material_property(iphys, depth_top, depth_bottom)
 !!        type(phys_address), intent(in) :: iphys
 !!@endverbatim
 !!
@@ -28,7 +28,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_material_property(iphys)
+      subroutine set_material_property(iphys, depth_top, depth_bottom)
 !
       use calypso_mpi
       use m_control_parameter
@@ -38,6 +38,7 @@
       use construct_MHD_coefficient
 !
       type(phys_address), intent(in) :: iphys
+      real(kind = kreal), intent(in) :: depth_top, depth_bottom
 !
 !    For thermal
 !
@@ -49,15 +50,15 @@
 !
         call construct_coefficient(ht_prop1%coef_advect,                &
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_termal,     &
-     &      depth_low_t, depth_high_t)
+     &      depth_top, depth_bottom)
 !
         call construct_coefficient(ht_prop1%coef_diffuse,               &
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_t_diffuse,  &
-     &      depth_low_t, depth_high_t)
+     &      depth_top, depth_bottom)
 !
         call construct_coefficient(ht_prop1%coef_source,                &
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_h_source,   &
-     &      depth_low_t, depth_high_t)
+     &      depth_top, depth_bottom)
 !
         call set_implicit_4_inf_viscous(ht_prop1%coef_advect,           &
      &      evo_temp%coef_imp, evo_temp%coef_exp)
@@ -80,15 +81,15 @@
 !
         call construct_coefficient(fl_prop1%coef_velo,                  &
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_momentum,   &
-     &      depth_low_t, depth_high_t)
+     &      depth_top, depth_bottom)
 !
         call construct_coefficient(fl_prop1%coef_press,                 &
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_pressure,   &
-     &      depth_low_t, depth_high_t)
+     &      depth_top, depth_bottom)
 !
         call construct_coefficient(fl_prop1%coef_diffuse,               &
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_v_diffuse,  &
-     &      depth_low_t, depth_high_t)
+     &      depth_top, depth_bottom)
 !
         call set_implicit_4_inf_viscous(fl_prop1%coef_velo,             &
      &      evo_velo%coef_imp, evo_velo%coef_exp)
@@ -100,25 +101,25 @@
      &     .or. iflag_4_filter_gravity .gt. id_turn_OFF) then
           call construct_coefficient(fl_prop1%coef_buo,                 &
      &       MHD_coef_list%dimless_list, MHD_coef_list%coefs_buoyancy,  &
-     &      depth_low_t, depth_high_t)
+     &      depth_top, depth_bottom)
         end if
 !
         if (iflag_4_composit_buo .gt. id_turn_OFF) then
           call construct_coefficient(fl_prop1%coef_comp_buo,            &
      &       MHD_coef_list%dimless_list, MHD_coef_list%coefs_comp_buo,  &
-     &       depth_low_t, depth_high_t)
+     &       depth_top, depth_bottom)
         end if
 !
         if (iflag_4_coriolis .gt. id_turn_OFF) then
           call construct_coefficient(fl_prop1%coef_cor,                 &
      &       MHD_coef_list%dimless_list, MHD_coef_list%coefs_Coriolis,  &
-     &       depth_low_t, depth_high_t)
+     &       depth_top, depth_bottom)
         end if
 !
         if ( iflag_4_lorentz .gt. id_turn_OFF) then
           call construct_coefficient(fl_prop1%coef_lor,                 &
      &       MHD_coef_list%dimless_list, MHD_coef_list%coefs_Lorentz,   &
-     &       depth_low_t, depth_high_t)
+     &       depth_top, depth_bottom)
         end if
 !
       end if
@@ -135,19 +136,19 @@
 !
         call construct_coefficient(cd_prop1%coef_magne,                 &
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_magnetic,   &
-     &      depth_low_t, depth_high_t)
+     &      depth_top, depth_bottom)
 !
         call construct_coefficient(cd_prop1%coef_mag_p,                 &
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_magne_p,    &
-     &      depth_low_t, depth_high_t)
+     &      depth_top, depth_bottom)
 !
         call construct_coefficient(cd_prop1%coef_diffuse,               &
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_m_diffuse,  &
-     &      depth_low_t, depth_high_t)
+     &      depth_top, depth_bottom)
 !
         call construct_coefficient(cd_prop1%coef_induct,                &
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_induction,  &
-     &      depth_low_t, depth_high_t)
+     &      depth_top, depth_bottom)
       end if
 !
       if(evo_magne%iflag_scheme .gt. id_no_evolution) then
@@ -168,15 +169,15 @@
 !
         call construct_coefficient(cp_prop1%coef_advect,                &
      &     MHD_coef_list%dimless_list, MHD_coef_list%coefs_composition, &
-     &     depth_low_t, depth_high_t)
+     &     depth_top, depth_bottom)
 !
         call construct_coefficient(cp_prop1%coef_diffuse,               &
      &     MHD_coef_list%dimless_list, MHD_coef_list%coefs_c_diffuse,   &
-     &     depth_low_t, depth_high_t)
+     &     depth_top, depth_bottom)
 !
         call construct_coefficient(cp_prop1%coef_source,                &
      &     MHD_coef_list%dimless_list, MHD_coef_list%coefs_c_source,    &
-     &     depth_low_t, depth_high_t)
+     &     depth_top, depth_bottom)
 !
         call set_implicit_4_inf_viscous(cp_prop1%coef_advect,           &
      &      evo_comp%coef_imp, evo_comp%coef_exp)

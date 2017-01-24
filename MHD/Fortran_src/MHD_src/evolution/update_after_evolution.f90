@@ -124,6 +124,7 @@
      &        mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                   &
      &        nod_fld, ele_fld, sgs_coefs, diff_coefs)
 !
+      use m_physical_property
       use cal_temperature
       use cal_velocity
       use cal_magnetic_field
@@ -232,7 +233,7 @@
 !     ---- temperature update
 !
       if ( evo_temp%iflag_scheme .gt. id_no_evolution) then
-        if( iflag_4_ref_temp .ne. id_no_ref_temp) then
+        if( ref_param_T1%iflag_reference .ne. id_no_ref_temp) then
           if (iflag_debug.eq.1) write(*,*) 'cal_parturbation_temp'
           call cal_parturbation_temp                                    &
      &      (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,         &
@@ -457,6 +458,7 @@
      &        mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                   &
      &        nod_fld, ele_fld, sgs_coefs, diff_coefs)
 !
+      use m_physical_property
       use cal_temperature
       use cal_velocity
       use cal_light_element
@@ -509,7 +511,7 @@
 !     ---- temperature update
 !
       if ( evo_temp%iflag_scheme .gt. id_no_evolution) then
-        if( iflag_4_ref_temp .ne. id_no_ref_temp) then
+        if( ref_param_T1%iflag_reference .ne. id_no_ref_temp) then
           if (iflag_debug.eq.1) write(*,*) 'cal_parturbation_temp'
           call cal_parturbation_temp                                    &
      &       (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf, fluid, &

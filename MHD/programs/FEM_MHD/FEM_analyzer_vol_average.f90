@@ -56,6 +56,7 @@
       subroutine FEM_analyze_vol_average(i_step)
 !
       use m_control_parameter
+      use m_physical_property
       use m_mesh_data
       use m_node_phys_data
       use m_geometry_data_MHD
@@ -86,7 +87,7 @@
 !
 !     ---- magnetic field update
 !
-      if (iflag_4_ref_temp .ne. id_no_ref_temp) then
+      if (ref_param_T1%iflag_reference .ne. id_no_ref_temp) then
         if (iflag_debug.eq.1)  write(*,*) 'set_2_perturbation_temp'
         call subtract_2_nod_scalars(nod_fld1,                           &
      &      iphys%i_temp, iphys%i_ref_t, iphys%i_par_temp)

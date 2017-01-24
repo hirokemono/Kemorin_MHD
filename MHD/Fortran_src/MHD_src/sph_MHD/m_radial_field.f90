@@ -38,6 +38,7 @@
 !
       use m_phys_constants
       use m_control_parameter
+      use m_physical_property
       use m_phys_labels
       use m_radial_parameter_input
       use skip_comment_f
@@ -56,7 +57,7 @@
      &       d_rad%num_phys = d_rad%num_phys + 1
       if(iflag_magneto_cv .eq. id_turn_ON)                              &
      &       d_rad%num_phys = d_rad%num_phys + 1
-      if(iflag_4_ref_temp .eq. id_sphere_ref_temp)                      &
+      if(ref_param_T1%iflag_reference .eq. id_sphere_ref_temp)          &
      &       d_rad%num_phys = d_rad%num_phys + 1
 !
       call alloc_phys_name_type(d_rad)
@@ -97,7 +98,7 @@
      &                                + d_rad%num_component(icou)
         irad%i_back_B = d_rad%istack_component(icou-1) + 1
       end if
-      if(iflag_4_ref_temp .eq. id_sphere_ref_temp) then
+      if(ref_param_T1%iflag_reference .eq. id_sphere_ref_temp) then
         icou = icou + 1
         d_rad%phys_name(icou) = fhd_ref_temp
         d_rad%num_component(icou) = n_vector

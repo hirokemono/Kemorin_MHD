@@ -105,7 +105,7 @@
      &      WK%dynamic_SPH, ipol, itor, rj_fld)
       end if
 !
-      if (iflag_4_ref_temp .eq. id_sphere_ref_temp) then
+      if (ref_param_T1%iflag_reference .eq. id_sphere_ref_temp) then
         call add_reftemp_advect_sph_MHD                                 &
      &     (sph_bc_T%kr_in, sph_bc_T%kr_out, sph%sph_rj%nidx_rj,        &
      &      sph%sph_rj%ar_1d_rj, trans_p%leg%g_sph_rj,                  &
@@ -395,7 +395,7 @@
       end if
 !
 !
-      if (iflag_4_ref_temp .eq. id_sphere_ref_temp) then
+      if (ref_param_T1%iflag_reference .eq. id_sphere_ref_temp) then
         call add_reftemp_advect_sph_MHD                                 &
      &     (sph_bc_T%kr_in, sph_bc_T%kr_out,                            &
      &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, leg%g_sph_rj,              &

@@ -53,7 +53,7 @@
 !
 !
       if ((iflag_4_gravity*iflag_4_composit_buo) .gt. id_turn_OFF) then
-        if(iflag_4_ref_temp .ne. id_sphere_ref_temp) then
+        if(ref_param_T1%iflag_reference .ne. id_sphere_ref_temp) then
           if (iflag_debug.ge.1) write(*,*)                              &
      &        'cal_div_double_buoyancy_sph_MHD by temp', ipol%i_temp
           call cal_div_double_buoyancy_sph_MHD                          &
@@ -76,7 +76,7 @@
         end if
 !
       else if (iflag_4_gravity .gt. id_turn_OFF) then
-        if(iflag_4_ref_temp .ne. id_sphere_ref_temp) then
+        if(ref_param_T1%iflag_reference .ne. id_sphere_ref_temp) then
           if (iflag_debug.ge.1)  write(*,*)                             &
      &      'cal_div_buoyancy_sph_MHD by temperature'
           call cal_div_buoyancy_sph_MHD                                 &

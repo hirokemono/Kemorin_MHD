@@ -123,7 +123,8 @@
       if (iflag_restart .eq. i_rst_dbench0) then
         isig = 400
         call set_initial_temp                                           &
-     &     (isig, node, fluid%numnod_fld, fluid%inod_fld,               &
+     &     (isig, ref_param_T1%depth_top, ref_param_T1%depth_bottom,    &
+     &      node, fluid%numnod_fld, fluid%inod_fld,                     &
      &      nod_fld%ntot_phys, iphys%i_velo, iphys%i_press,             &
      &      iphys%i_temp, nod_fld%d_fld)
 !
@@ -133,7 +134,8 @@
      &    .or. iflag_restart .eq. i_rst_dbench2) then
         isig = 400
         call set_initial_temp                                           &
-     &     (isig, node, fluid%numnod_fld, fluid%inod_fld,               &
+     &     (isig, ref_param_T1%depth_top, ref_param_T1%depth_bottom,    &
+     &      node, fluid%numnod_fld, fluid%inod_fld,                     &
      &      nod_fld%ntot_phys, iphys%i_velo, iphys%i_press,             &
      &      iphys%i_temp, nod_fld%d_fld)
         isig = 0
@@ -147,8 +149,9 @@
         end if
 !
       else if (iflag_restart .le. -100) then
-        call set_initial_temp                                           &
-     &     (iflag_restart, node, fluid%numnod_fld, fluid%inod_fld,      &
+        call set_initial_temp(iflag_restart,                            &
+     &     ref_param_T1%depth_top, ref_param_T1%depth_bottom,           &
+     &      node, fluid%numnod_fld, fluid%inod_fld,                     &
      &      nod_fld%ntot_phys, iphys%i_velo, iphys%i_press,             &
      &      iphys%i_temp, nod_fld%d_fld)
 !
@@ -184,8 +187,9 @@
         end if
 !
       else if ( iflag_restart .ge. 1000  ) then
-        call set_initial_temp                                           &
-     &     (iflag_restart, node, fluid%numnod_fld, fluid%inod_fld,      &
+        call set_initial_temp(iflag_restart,                            &
+     &      ref_param_T1%depth_top, ref_param_T1%depth_bottom,          &
+     &      node, fluid%numnod_fld, fluid%inod_fld,                     &
      &      nod_fld%ntot_phys, iphys%i_velo, iphys%i_press,             &
      &      iphys%i_temp, nod_fld%d_fld)
         if (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
