@@ -47,6 +47,7 @@
       use calypso_mpi
       use m_ucd_data
       use m_default_file_prefix
+      use m_physical_property
 !
       use set_control_platform_data
       use set_control_nodal_data_MHD
@@ -98,7 +99,7 @@
 !   set forces
 !
       call s_set_control_4_force(model_ctl%frc_ctl, model_ctl%g_ctl,    &
-     &    model_ctl%cor_ctl, model_ctl%mcv_ctl)
+     &    model_ctl%cor_ctl, model_ctl%mcv_ctl, fl_prop1, cd_prop1)
 !
 !   set parameters for SGS model
 !

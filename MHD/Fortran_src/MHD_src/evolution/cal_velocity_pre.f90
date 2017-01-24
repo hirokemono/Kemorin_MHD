@@ -5,8 +5,8 @@
 !                                    on July 2000 (ver 1.1)
 !        modieied by H. Matsui on Sep., 2005
 !
-!!      subroutine s_cal_velocity_pre                                   &
-!!     &         (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod, &
+!!      subroutine s_cal_velocity_pre(nod_comm, node, ele, surf,        &
+!!     &          fluid, sf_grp, sf_grp_nod, fl_prop, cd_prop,          &
 !!     &          Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD, &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens, &
 !!     &          ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,        &
@@ -27,6 +27,8 @@
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(surface_node_grp_data), intent(in) :: sf_grp_nod
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in) :: cd_prop
 !!        type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
 !!        type(velocity_surf_bc_type), intent(in)  :: Vsf_bcs
 !!        type(vector_surf_bc_type), intent(in) :: Bsf_bcs
@@ -96,6 +98,7 @@
       use t_vector_for_solver
       use t_bc_data_velo
       use t_surface_bc_data
+      use t_physical_property
 !
       implicit none
 !
@@ -105,8 +108,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_cal_velocity_pre                                     &
-     &         (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,   &
+      subroutine s_cal_velocity_pre(nod_comm, node, ele, surf,          &
+     &          fluid, sf_grp, sf_grp_nod, fl_prop, cd_prop,            &
      &          Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD,   &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,   &
      &          ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,          &
@@ -137,6 +140,8 @@
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_node_grp_data), intent(in) :: sf_grp_nod
       type(field_geometry_data), intent(in) :: fluid
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
       type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
       type(velocity_surf_bc_type), intent(in)  :: Vsf_bcs
       type(vector_surf_bc_type), intent(in) :: Bsf_bcs
@@ -177,7 +182,7 @@
       if (iflag_SGS_gravity .ne. id_SGS_none) then
         call cal_sgs_mom_flux_with_sgs_buo                              &
      &     (nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,        &
-     &      fl_prop1, Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD,       &
+     &      fl_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD,        &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,       &
      &      filtering, ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,   &
      &      sgs_coefs_nod, diff_coefs, wk_filter, wk_lsq, wk_sgs,       &
@@ -209,7 +214,7 @@
 !
 ! --------   loop for direction of velocity ---------------
 !
-      if (fl_prop1%coef_velo .gt. zero                                  &
+      if (fl_prop%coef_velo .gt. zero                                   &
      &        .and. evo_velo%coef_exp.gt.zero) then
         call int_vol_vector_diffuse_ele(fluid%istack_ele_fld_smp,       &
      &      node, ele, nod_fld, jac_3d_q, rhs_tbl, FEM_elens,           &
@@ -219,7 +224,7 @@
 !
       if ( iflag_4_coriolis .eq. id_Coriolis_ele_imp) then
          if (iflag_debug.eq.1) write(*,*) 'int_vol_coriolis_crank_ele'
-        call int_vol_coriolis_crank_ele(node, ele, fluid, fl_prop1,     &
+        call int_vol_coriolis_crank_ele(node, ele, fluid, fl_prop,      &
      &      jac_3d_q, rhs_tbl, iphys%i_velo, nod_fld, fem_wk, f_l)
       end if
 !
@@ -227,21 +232,21 @@
 !
       if (iflag_velo_supg .eq. id_turn_ON) then
         call int_vol_velo_pre_ele_upwind(node, ele, fluid,              &
-     &      fl_prop1, cd_prop1, iphys, nod_fld, ak_MHD,                 &
+     &      fl_prop, cd_prop, iphys, nod_fld, ak_MHD,                   &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
      &      iphys_ele, ifld_diff%i_mom_flux, ifld_diff%i_lorentz,       &
      &      jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,                   &
      &      mhd_fem_wk, fem_wk, f_nl)
       else if (iflag_velo_supg .eq. id_magnetic_SUPG) then
         call int_vol_velo_pre_ele_upwind(node, ele, fluid,              &
-     &      fl_prop1, cd_prop1, iphys, nod_fld, ak_MHD,                 &
+     &      fl_prop, cd_prop, iphys, nod_fld, ak_MHD,                   &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
      &      iphys_ele, ifld_diff%i_mom_flux, ifld_diff%i_lorentz,       &
      &      jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,                   &
      &      mhd_fem_wk, fem_wk, f_nl)
       else
         call int_vol_velo_pre_ele(node, ele, fluid,                     &
-     &      fl_prop1, cd_prop1, iphys, nod_fld, ak_MHD,                 &
+     &      fl_prop, cd_prop, iphys, nod_fld, ak_MHD,                   &
      &      ele_fld%ntot_phys, ele_fld%d_fld, iphys_ele,                &
      &      ifld_diff%i_mom_flux, ifld_diff%i_lorentz,                  &
      &      jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,                   &
@@ -252,7 +257,7 @@
 !
       call int_surf_velo_pre_ele                                        &
      &   (ifld_diff%i_mom_flux, ifld_diff%i_lorentz, ak_MHD%ak_d_velo,  &
-     &    node, ele, surf, sf_grp, fl_prop1, Vsf_bcs, Bsf_bcs,          &
+     &    node, ele, surf, sf_grp, fl_prop, Vsf_bcs, Bsf_bcs,           &
      &    iphys, nod_fld, jac_sf_grp_q, rhs_tbl, FEM_elens, diff_coefs, &
      &    fem_wk, surf_wk, f_l, f_nl)
 !

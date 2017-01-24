@@ -41,6 +41,7 @@
       use m_control_parameter
       use calypso_mpi
 !
+      use m_physical_property
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
       use t_poloidal_rotation
@@ -69,7 +70,6 @@
      &          reftemp_rj, refcomp_rj, ipol, itor, WK, rj_fld)
 !
       use m_boundary_params_sph_MHD
-      use m_physical_property
       use cal_inner_core_rotation
 !
       use cal_nonlinear_sph_MHD
@@ -254,8 +254,9 @@
 !
       if(iflag_SGS_model .gt. 0) then
         if (iflag_debug.ge.1) write(*,*) 'filtered_nonlinear_in_rtp'
-        call filtered_nonlinear_in_rtp                                  &
-     &     (sph%sph_rtp, trns_MHD%b_trns, trns_MHD%f_trns,              &
+        call filtered_nonlinear_in_rtp(sph%sph_rtp,                     &
+     &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
+     &      trns_MHD%b_trns, trns_MHD%f_trns,                           &
      &      trns_MHD%ncomp_rj_2_rtp, trns_MHD%ncomp_rtp_2_rj,           &
      &      trns_MHD%fld_rtp, trns_MHD%frc_rtp)
       end if
@@ -328,6 +329,7 @@
         if(iflag_dynamic_SGS .eq. id_SGS_DYNAMIC_ON) then
           if (iflag_debug.eq.1) write(*,*) 'wider_similarity_SGS_rtp'
           call wider_similarity_SGS_rtp(sph%sph_rtp,                    &
+     &        fl_prop1, cd_prop1, ht_prop1, cp_prop1,                   &
      &        trns_MHD%b_trns, trns_SGS%b_trns,                         &
      &        trns_MHD%ncomp_rj_2_rtp, trns_SGS%ncomp_rj_2_rtp,         &
      &        trns_MHD%fld_rtp, trns_SGS%fld_rtp)
@@ -365,7 +367,6 @@
      &          ipol, itor, rj_fld)
 !
       use m_boundary_params_sph_MHD
-      use m_physical_property
       use sph_transforms_4_MHD
       use cal_nonlinear_sph_MHD
       use cal_vorticity_terms_adams

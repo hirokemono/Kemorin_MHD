@@ -188,8 +188,8 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1)  write(*,*) 's_cal_velocity_pre'
-      call s_cal_velocity_pre                                           &
-     &   (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,         &
+      call s_cal_velocity_pre(nod_comm, node, ele, surf,                &
+     &    fluid, sf_grp, sf_grp_nod, fl_prop1, cd_prop1,                &
      &    Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD,         &
      &    jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,         &
      &    ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,                &
