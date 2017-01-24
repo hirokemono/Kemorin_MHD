@@ -75,6 +75,12 @@
         call add_phys_name_ctl(fhd_grad_ref_temp, field_ctl)
       end if
 !
+      if (ref_param_C1%iflag_reference .ne. id_no_ref_temp) then
+        call add_phys_name_ctl(fhd_part_light, field_ctl)
+        call add_phys_name_ctl(fhd_ref_light, field_ctl)
+        call add_phys_name_ctl(fhd_grad_ref_light, field_ctl)
+      end if
+!
       if (iflag_4_coriolis .gt. id_turn_OFF)                            &
      &              call add_phys_name_ctl(fhd_Coriolis, field_ctl)
       if (iflag_4_gravity .eq. id_FORCE_at_node)                        &

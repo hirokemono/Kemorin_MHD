@@ -58,6 +58,8 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_grad_par_temp      )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_grad_ref_temp      )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_grad_composit      )           &
+     &  .or. (phys_nod_name_ctl .eq. fhd_grad_par_light     )           &
+     &  .or. (phys_nod_name_ctl .eq. fhd_grad_ref_light     )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_grad_filter_temp   )           &
      &      )   iflag = 1
 !
@@ -199,6 +201,7 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_press_work          )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_m_potential_work    )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_density             )         &
+     &   .or. (phys_nod_name_ctl .eq. fhd_ref_light           )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_part_light          )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_per_density         )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_ref_density         )         &

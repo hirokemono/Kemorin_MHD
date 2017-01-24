@@ -154,6 +154,8 @@
      &    itor%i_grad_composit, idpdr%i_grad_composit)
       call set_vect_sph_address(ipol%i_grad_filter_temp,                &
      &    itor%i_grad_filter_temp, idpdr%i_grad_filter_temp)
+      call set_vect_sph_address(ipol%i_grad_part_c,                     &
+     &    itor%i_grad_part_c, idpdr%i_grad_part_c)
 !
 !
       call set_vect_sph_address(ipol%i_grad_vx, itor%i_grad_vx,         &

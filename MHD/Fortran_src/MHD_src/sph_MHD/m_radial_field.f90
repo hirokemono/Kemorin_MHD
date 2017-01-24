@@ -59,6 +59,8 @@
      &       d_rad%num_phys = d_rad%num_phys + 1
       if(ref_param_T1%iflag_reference .eq. id_sphere_ref_temp)          &
      &       d_rad%num_phys = d_rad%num_phys + 1
+      if(ref_param_C1%iflag_reference .eq. id_sphere_ref_temp)          &
+     &       d_rad%num_phys = d_rad%num_phys + 1
 !
       call alloc_phys_name_type(d_rad)
 !
@@ -101,6 +103,14 @@
       if(ref_param_T1%iflag_reference .eq. id_sphere_ref_temp) then
         icou = icou + 1
         d_rad%phys_name(icou) = fhd_ref_temp
+        d_rad%num_component(icou) = n_vector
+        d_rad%istack_component(icou) = d_rad%istack_component(icou-1)   &
+     &                                + d_rad%num_component(icou)
+        irad%i_ref_t = d_rad%istack_component(icou-1) + 1
+      end if
+      if(ref_param_C1%iflag_reference .eq. id_sphere_ref_temp) then
+        icou = icou + 1
+        d_rad%phys_name(icou) = fhd_ref_light
         d_rad%num_component(icou) = n_vector
         d_rad%istack_component(icou) = d_rad%istack_component(icou-1)   &
      &                                + d_rad%num_component(icou)

@@ -62,6 +62,8 @@
 !   gradient of dummy scalar flag
       if(evo_comp%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_ctl(fhd_grad_composit, field_ctl)
+        call add_phys_name_ctl(fhd_part_light, field_ctl)
+        call add_phys_name_ctl(fhd_grad_par_light, field_ctl)
       end if
 !
 !

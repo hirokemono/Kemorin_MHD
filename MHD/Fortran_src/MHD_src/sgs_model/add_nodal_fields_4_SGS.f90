@@ -99,6 +99,8 @@
             call add_phys_name_ctl(fhd_grad_par_temp, field_ctl)
           else if(field_ctl%c1_tbl(i) .eq. fhd_light) then
             call add_phys_name_ctl(fhd_grad_composit, field_ctl)
+          else if(field_ctl%c1_tbl(i) .eq. fhd_ref_light) then
+            call add_phys_name_ctl(fhd_grad_par_light, field_ctl)
           end if
         end do
       end if
