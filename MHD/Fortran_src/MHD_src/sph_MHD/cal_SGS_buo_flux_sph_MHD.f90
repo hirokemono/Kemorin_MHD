@@ -8,11 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine SGS_fluxes_for_buo_coefs                             &
-!!     &         (nnod_med, sph_rtp, fl_prop1, b_trns, fg_trns, fs_trns,&
+!!     &         (nnod_med, sph_rtp, fl_prop, b_trns, fg_trns, fs_trns, &
 !!     &          ncomp_rj_2_rtp, nc_SGS_rtp_2_rj, ncomp_snap_rtp_2_rj, &
 !!     &          fld_rtp, fSGS_rtp, frs_rtp)
 !!      subroutine SGS_fluxes_for_snapshot                              &
-!!     &         (sph_rtp, fl_prop1, b_trns, fg_trns, bs_trns, fs_trns, &
+!!     &         (sph_rtp, fl_prop, b_trns, fg_trns, bs_trns, fs_trns,  &
 !!     &          ncomp_rj_2_rtp, nc_SGS_rtp_2_rj,                      &
 !!     &          ncomp_snap_rj_2_rtp, ncomp_snap_rtp_2_rj,             &
 !!     &          fld_rtp, fSGS_rtp, fls_rtp, frs_rtp)
