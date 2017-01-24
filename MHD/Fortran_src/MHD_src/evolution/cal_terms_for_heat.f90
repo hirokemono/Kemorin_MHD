@@ -42,6 +42,7 @@
 !
       use m_control_parameter
       use m_phys_constants
+      use m_physical_property
 !
       use t_geometry_data_MHD
       use t_geometry_data
@@ -114,13 +115,13 @@
 !
       if (iflag_temp_supg .gt. id_turn_OFF) then
        call int_vol_ene_monitor_upw(i_field, iak_diff_hf,               &
-     &     node, ele, fluid, iphys, nod_fld, iphys_ele, ele_fld,        &
-     &     jac_3d, rhs_tbl, FEM_elens, diff_coefs,                      &
+     &     node, ele, fluid, ht_prop1, iphys, nod_fld,                  &
+     &     iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,  &
      &     mhd_fem_wk, fem_wk, f_nl)
       else
        call int_vol_ene_monitor(i_field, iak_diff_hf,                   &
-     &     node, ele, fluid, iphys, nod_fld, iphys_ele, ele_fld,        &
-     &     jac_3d, rhs_tbl, FEM_elens, diff_coefs,                      &
+     &     node, ele, fluid, ht_prop1, iphys, nod_fld,                  &
+     &     iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,  &
      &     mhd_fem_wk, fem_wk, f_nl)
       end if
 !

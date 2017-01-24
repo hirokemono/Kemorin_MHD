@@ -5,11 +5,11 @@
 !
 !!      subroutine int_surf_temp_ele(iak_diff_hf, ak_d_temp,            &
 !!     &          node, ele, surf, sf_grp, iphys, nod_fld,              &
-!!     &          Tsf_bcs, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,  &
+!!     &          surf_bc, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,  &
 !!     &          fem_wk, surf_wk, f_l, f_nl)
 !!      subroutine int_surf_temp_monitor                                &
 !!     &         (i_field, iak_diff_hf, ak_d_temp,                      &
-!!     &          node, ele, surf, sf_grp, iphys, nod_fld, Tsf_bcs,     &
+!!     &          node, ele, surf, sf_grp, iphys, nod_fld, surf_bc,     &
 !!     &          jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,           &
 !!     &          fem_wk, surf_wk, f_l, f_nl)
 !!        type(node_data), intent(in) :: node
@@ -22,7 +22,7 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
-!!        type(scaler_surf_bc_type), intent(in) :: Tsf_bcs
+!!        type(scaler_surf_bc_type), intent(in) :: surf_bc
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -55,7 +55,7 @@
 !
       subroutine int_surf_temp_ele(iak_diff_hf, ak_d_temp,              &
      &          node, ele, surf, sf_grp, iphys, nod_fld,                &
-     &          Tsf_bcs, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,    &
+     &          surf_bc, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,    &
      &          fem_wk, surf_wk, f_l, f_nl)
 !
       use int_surf_div_fluxes_sgs
@@ -71,7 +71,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
-      type(scaler_surf_bc_type), intent(in) :: Tsf_bcs
+      type(scaler_surf_bc_type), intent(in) :: surf_bc
 !
       integer(kind = kint), intent(in)  :: iak_diff_hf
       real(kind = kreal), intent(in) :: ak_d_temp(ele%numele)
@@ -86,13 +86,13 @@
       num_int = intg_point_t_evo
 !
       call int_sf_h_flux(node, ele, surf, sf_grp, jac_sf_grp, rhs_tbl,  &
-     &    Tsf_bcs%flux, num_int, ak_d_temp, fem_wk, f_l)
+     &    surf_bc%flux, num_int, ak_d_temp, fem_wk, f_l)
 !
       if (iflag_SGS_heat .ne. id_SGS_none                               &
      &     .and. iflag_commute_temp .eq. id_SGS_commute_ON) then
         call int_sf_skv_sgs_div_v_flux(node, ele, surf, sf_grp,         &
      &      nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, num_int,           &
-     &      Tsf_bcs%sgs%ngrp_sf_dat, Tsf_bcs%sgs%id_grp_sf_dat,         &
+     &      surf_bc%sgs%ngrp_sf_dat, surf_bc%sgs%id_grp_sf_dat,         &
      &      ifilter_final, iphys%i_SGS_h_flux, iphys%i_velo,            &
      &      iphys%i_temp, diff_coefs%num_field, iak_diff_hf,            &
      &      diff_coefs%ak, ht_prop1%coef_advect, fem_wk, surf_wk, f_nl)
@@ -104,7 +104,7 @@
 !
       subroutine int_surf_temp_monitor                                  &
      &         (i_field, iak_diff_hf, ak_d_temp,                        &
-     &          node, ele, surf, sf_grp, iphys, nod_fld, Tsf_bcs,       &
+     &          node, ele, surf, sf_grp, iphys, nod_fld, surf_bc,       &
      &          jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,             &
      &          fem_wk, surf_wk, f_l, f_nl)
 !
@@ -122,7 +122,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
-      type(scaler_surf_bc_type), intent(in) :: Tsf_bcs
+      type(scaler_surf_bc_type), intent(in) :: surf_bc
 !
       integer(kind = kint), intent(in)  :: iak_diff_hf
       real(kind = kreal), intent(in) :: ak_d_temp(ele%numele)
@@ -138,14 +138,14 @@
 !
       if (i_field .eq. iphys%i_t_diffuse) then
         call int_sf_h_flux(node, ele, surf, sf_grp, jac_sf_grp,         &
-     &      rhs_tbl, Tsf_bcs%flux, num_int, ak_d_temp, fem_wk, f_l)
+     &      rhs_tbl, surf_bc%flux, num_int, ak_d_temp, fem_wk, f_l)
       end if
 !
       if (iflag_commute_heat .eq. id_SGS_commute_ON                     &
         .and. i_field .eq. iphys%i_SGS_div_h_flux) then
         call int_sf_skv_sgs_div_v_flux(node, ele, surf, sf_grp,         &
      &      nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, num_int,           &
-     &      Tsf_bcs%sgs%ngrp_sf_dat, Tsf_bcs%sgs%id_grp_sf_dat,         &
+     &      surf_bc%sgs%ngrp_sf_dat, surf_bc%sgs%id_grp_sf_dat,         &
      &      ifilter_final, iphys%i_SGS_h_flux, iphys%i_velo,            &
      &      iphys%i_temp, diff_coefs%num_field, iak_diff_hf,            &
      &      diff_coefs%ak, ht_prop1%coef_advect, fem_wk, surf_wk, f_nl)
