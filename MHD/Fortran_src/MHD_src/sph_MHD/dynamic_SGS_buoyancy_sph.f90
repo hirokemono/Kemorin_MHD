@@ -7,10 +7,10 @@
 !>@brief Least square for model coefficients
 !!
 !!@verbatim
-!!      subroutine const_dynamic_SGS_4_buo_sph(sph_rtp, trns_MHD,       &
-!!     &          trns_snap, trns_SGS, dynamic_SPH)
+!!      subroutine const_dynamic_SGS_4_buo_sph(sph_rtp, fl_prop,        &
+!!     &          trns_MHD, trns_snap, trns_SGS, dynamic_SPH)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
-!!        type(SGS_terms_address), intent(in) :: ifld_sgs, icomp_sgs
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(address_4_sph_trans), intent(in) :: trns_MHD
 !!        type(address_4_sph_trans), intent(inout) :: trns_snap
 !!        type(address_4_sph_trans), intent(inout) :: trns_SGS
@@ -44,12 +44,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine const_dynamic_SGS_4_buo_sph(sph_rtp, trns_MHD,         &
-     &          trns_snap, trns_SGS, dynamic_SPH)
+      subroutine const_dynamic_SGS_4_buo_sph(sph_rtp, fl_prop,          &
+     &          trns_MHD, trns_snap, trns_SGS, dynamic_SPH)
 !
+      use t_physical_property
       use cal_SGS_buo_flux_sph_MHD
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(fluid_property), intent(in) :: fl_prop
       type(address_4_sph_trans), intent(in) :: trns_MHD
 !
       type(address_4_sph_trans), intent(inout) :: trns_snap
@@ -64,7 +66,7 @@
       call calypso_mpi_barrier
       write(*,*) 'SGS_fluxes_for_buo_coefs'
       nnod_med = sph_rtp%nidx_rtp(1) * sph_rtp%nidx_rtp(2)
-      call SGS_fluxes_for_buo_coefs(sph_rtp, nnod_med,                  &
+      call SGS_fluxes_for_buo_coefs(nnod_med, sph_rtp, fl_prop,         &
      &    trns_MHD%b_trns, trns_SGS%f_trns, trns_snap%f_trns,           &
      &    trns_MHD%ncomp_rj_2_rtp, trns_SGS%ncomp_rtp_2_rj,             &
      &    trns_snap%ncomp_rtp_2_rj, trns_MHD%fld_rtp, trns_SGS%frc_rtp, &

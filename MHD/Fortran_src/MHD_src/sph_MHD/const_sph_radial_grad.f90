@@ -34,7 +34,7 @@
 !!        Solution: idpdr%i_magne
 !!
 !!      subroutine const_pressure_gradient(sph_rj, r_2nd, sph_bc_U,     &
-!!     &          g_sph_rj, is_press, is_grad, rj_fld)
+!!     &          g_sph_rj, coef_press, is_press, is_grad, rj_fld)
 !!        Input:    ipol%i_press
 !!        Solution: ipol%i_press_grad
 !!
@@ -250,9 +250,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_pressure_gradient(sph_rj, r_2nd, sph_bc_U,       &
-     &          g_sph_rj, is_press, is_grad, rj_fld)
+     &          g_sph_rj, coef_press, is_press, is_grad, rj_fld)
 !
-      use m_physical_property
       use cal_sph_exp_nod_none_bc
       use const_wz_coriolis_rtp
 !
@@ -260,6 +259,7 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(sph_boundary_type), intent(in) :: sph_bc_U
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
+      real(kind = kreal), intent(in) :: coef_press
       integer(kind = kint), intent(in) :: is_press, is_grad
 !
       type(phys_data), intent(inout) :: rj_fld
@@ -279,8 +279,7 @@
      &    is_grad, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
 !$omp parallel
-      call ovwrt_rj_coef_prod_vect_smp                                  &
-     &   (sph_rj, (-fl_prop1%coef_press), is_grad,                      &
+      call ovwrt_rj_coef_prod_vect_smp(sph_rj, (-coef_press), is_grad,  &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !$omp end parallel
 !

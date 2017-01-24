@@ -296,6 +296,7 @@
       use t_phys_data
       use t_fdm_coefs
       use t_sph_trans_arrays_MHD
+      use m_physical_property
       use m_schmidt_poly_on_rtm
       use output_viz_file_control
       use lead_fields_4_sph_mhd
@@ -316,7 +317,8 @@
       call s_lead_fields_4_sph_mhd                                      &
      &   (sph, comms_sph, r_2nd, trans_p1, ipol, rj_fld, trns_WK)
 !
-      call sph_back_trans_4_MHD(sph, comms_sph, omega_sph, trans_p1,    &
+      call sph_back_trans_4_MHD                                         &
+     &   (sph, comms_sph, fl_prop1, omega_sph, trans_p1,                &
      &    ipol, rj_fld, trns_WK%trns_MHD, trns_WK%MHD_mul_FFTW)
 !
       call sph_forward_trans_snapshot_MHD                               &

@@ -10,13 +10,14 @@
 !!
 !!@verbatim
 !!      subroutine sph_b_trans_w_coriolis(ncomp_trans, nvector, nscalar,&
-!!     &          sph, comms_sph, omega_sph, trans_p,                   &
+!!     &          sph, comms_sph, fl_prop, omega_sph, trans_p,          &
 !!     &          n_WS, n_WR, WS, WR, trns_MHD, MHD_mul_FFTW)
 !!      subroutine sph_f_trans_w_coriolis(ncomp_trans, nvector, nscalar,&
 !!     &          sph, comms_sph, trans_p, trns_MHD,                    &
 !!     &          n_WS, n_WR, WS, WR, MHD_mul_FFTW)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(sph_rotation), intent(in) :: omega_sph
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(address_4_sph_trans), intent(inout) :: trns_MHD
@@ -36,13 +37,14 @@
 !!        type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !!
 !!      subroutine sph_b_trans_licv(ncomp_trans,                        &
-!!     &          sph_rlm, comm_rlm, comm_rj, omega_sph,                &
+!!     &          sph_rlm, comm_rlm, comm_rj, fl_prop, omega_sph,       &
 !!     &          leg, trns_MHD, n_WR, WR)
 !!      subroutine sph_f_trans_licv(ncomp_trans,                        &
 !!     &         sph_rlm, comm_rlm, comm_rj, trns_MHD, n_WS, WS)
 !!        type(sph_rlm_grid), intent(in) :: sph_rlm
 !!        type(sph_comm_tbl), intent(in) :: comm_rlm
 !!        type(sph_comm_tbl), intent(in) :: comm_rj
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(sph_rotation), intent(in) :: omega_sph
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(address_4_sph_trans), intent(in) :: trns_MHD
@@ -80,6 +82,7 @@
       use spherical_SRs_N
       use const_coriolis_sph_rlm
 !
+      use t_physical_property
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
       use t_poloidal_rotation
@@ -97,11 +100,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sph_b_trans_w_coriolis(ncomp_trans, nvector, nscalar,  &
-     &          sph, comms_sph, omega_sph, trans_p,                     &
+     &          sph, comms_sph, fl_prop, omega_sph, trans_p,            &
      &          n_WS, n_WR, WS, WR, trns_MHD, MHD_mul_FFTW)
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
+      type(fluid_property), intent(in) :: fl_prop
       type(sph_rotation), intent(in) :: omega_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
 !
@@ -124,8 +128,8 @@
       call start_eleps_time(13)
       if(iflag_debug .gt. 0) write(*,*) 'sum_coriolis_rlm'
       call sum_coriolis_rlm                                             &
-     &   (ncomp_trans, sph%sph_rlm, comms_sph%comm_rlm, omega_sph,      &
-     &    trns_MHD, trans_p%leg, n_WR, WR)
+     &   (ncomp_trans, sph%sph_rlm, comms_sph%comm_rlm,                 &
+     &    fl_prop, omega_sph, trns_MHD, trans_p%leg, n_WR, WR)
       call finish_send_recv_sph(comms_sph%comm_rj)
       call end_eleps_time(13)
 !
@@ -332,12 +336,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sph_b_trans_licv(ncomp_trans,                          &
-     &          sph_rlm, comm_rlm, comm_rj, omega_sph,                  &
+     &          sph_rlm, comm_rlm, comm_rj, fl_prop, omega_sph,         &
      &          leg, trns_MHD, n_WR, WR)
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rlm
       type(sph_comm_tbl), intent(in) :: comm_rj
+      type(fluid_property), intent(in) :: fl_prop
       type(sph_rotation), intent(in) :: omega_sph
       type(legendre_4_sph_trans), intent(in) :: leg
       type(address_4_sph_trans), intent(in) :: trns_MHD
@@ -356,7 +361,7 @@
       call start_eleps_time(13)
       if(iflag_debug .gt. 0) write(*,*) 'sum_coriolis_rlm'
       call sum_coriolis_rlm(ncomp_trans, sph_rlm, comm_rlm,             &
-     &    omega_sph, trns_MHD, leg, n_WR, WR)
+     &    fl_prop, omega_sph, trns_MHD, leg, n_WR, WR)
       call end_eleps_time(13)
 !
       call finish_send_recv_sph(comm_rj)

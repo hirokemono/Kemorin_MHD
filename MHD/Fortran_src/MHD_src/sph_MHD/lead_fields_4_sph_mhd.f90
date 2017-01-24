@@ -22,6 +22,7 @@
 !
       use m_precision
       use m_machine_parameter
+      use m_physical_property
 !
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
@@ -176,8 +177,9 @@
 !
       if(ipol%i_press_grad .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'const_pressure_gradient'
-        call const_pressure_gradient(sph_rj, r_2nd, sph_bc_U,           &
-     &      leg%g_sph_rj, ipol%i_press, ipol%i_press_grad, rj_fld)
+        call const_pressure_gradient                                    &
+     &     (sph_rj, r_2nd, sph_bc_U, leg%g_sph_rj, fl_prop1%coef_press, &
+     &      ipol%i_press, ipol%i_press_grad, rj_fld)
       end if
 !
       end subroutine pressure_4_sph_mhd
@@ -224,7 +226,8 @@
 !      Work of SGS terms
       if(iflag_SGS_model .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'SGS_fluxes_for_snapshot'
-        call SGS_fluxes_for_snapshot(sph%sph_rtp, trns_MHD%b_trns,      &
+        call SGS_fluxes_for_snapshot                                    &
+     &     (sph%sph_rtp, fl_prop1, trns_MHD%b_trns,                     &
      &      trns_SGS%f_trns, trns_snap%b_trns, trns_snap%f_trns,        &
      &      trns_MHD%ncomp_rj_2_rtp, trns_SGS%ncomp_rtp_2_rj,           &
      &      trns_snap%ncomp_rj_2_rtp, trns_snap%ncomp_rtp_2_rj,         &

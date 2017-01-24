@@ -240,14 +240,15 @@
 !
       call start_eleps_time(14)
       if (iflag_debug.ge.1) write(*,*) 'sph_back_trans_4_MHD'
-      call sph_back_trans_4_MHD(sph, comms_sph, omega_sph, trans_p,     &
-     &    ipol, rj_fld, trns_MHD, MHD_mul_FFTW)
+      call sph_back_trans_4_MHD(sph, comms_sph, fl_prop1, omega_sph,    &
+     &    trans_p, ipol, rj_fld, trns_MHD, MHD_mul_FFTW)
       call end_eleps_time(14)
 !
       call start_eleps_time(15)
       if (iflag_debug.ge.1) write(*,*) 'nonlinear_terms_in_rtp'
       call nonlinear_terms_in_rtp                                       &
-     &   (sph%sph_rtp, trns_MHD%b_trns, trns_MHD%f_trns,                &
+     &   (sph%sph_rtp, fl_prop1, cd_prop1, ht_prop1, cp_prop1,          &
+     &    trns_MHD%b_trns, trns_MHD%f_trns,                             &
      &    trns_MHD%ncomp_rj_2_rtp, trns_MHD%ncomp_rtp_2_rj,             &
      &    trns_MHD%fld_rtp, trns_MHD%frc_rtp)
 !
@@ -337,8 +338,8 @@
      &        dynamic_SPH%wk_sgs, trns_SGS)
 !
           if (iflag_debug.eq.1) write(*,*) 'const_dynamic_SGS_4_buo_sph'
-          call const_dynamic_SGS_4_buo_sph(sph%sph_rtp, trns_MHD,       &
-     &        trns_snap, trns_SGS, dynamic_SPH)
+          call const_dynamic_SGS_4_buo_sph(sph%sph_rtp, fl_prop1,       &
+     &        trns_MHD, trns_snap, trns_SGS, dynamic_SPH)
         end if
         call end_eleps_time(15)
 !
@@ -389,7 +390,7 @@
       if (iflag_debug.eq.1) write(*,*) 'sph_transform_4_licv'
       if(iflag_4_coriolis .ne. id_turn_OFF) then
         call sph_transform_4_licv                                       &
-     &     (sph_rlm, comm_rlm, comm_rj, omega_sph, leg,                 &
+     &     (sph_rlm, comm_rlm, comm_rj, fl_prop1, omega_sph, leg,       &
      &      trns_MHD, ipol, rj_fld)
       end if
 !

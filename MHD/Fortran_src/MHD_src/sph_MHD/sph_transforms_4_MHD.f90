@@ -7,13 +7,15 @@
 !>@brief Perform spherical harmonics transform for MHD dynamo model
 !!
 !!@verbatim
-!!      subroutine sph_back_trans_4_MHD(sph, comms_sph, omega_sph,      &
+!!      subroutine sph_back_trans_4_MHD                                 &
+!!     &         (sph, comms_sph, fl_prop, omega_sph,                   &
 !!     &          trans_p, ipol, rj_fld, trns_MHD, MHD_mul_FFTW)
 !!      subroutine sph_pole_trans_4_MHD(sph, comms_sph,                 &
 !!     &          trans_p, ipol, rj_fld, trns_MHD)
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
-!!        type(sph_comm_tables), intent(inout) :: comms_sph
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(sph_rotation), intent(in) :: omega_sph
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(phys_address), intent(in) :: ipol
 !!        type(phys_data), intent(in) :: rj_fld
@@ -23,7 +25,6 @@
 !!     &          ipol, trns_MHD, MHD_mul_FFTW, rj_fld)
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
-!!        type(sph_rotation), intent(in) :: omega_sph
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(phys_address), intent(in) :: ipol
 !!        type(address_4_sph_trans), intent(in) :: trns_MHD
@@ -31,7 +32,8 @@
 !!        type(phys_data), intent(inout) :: rj_fld
 !!
 !!      subroutine sph_transform_4_licv(sph_rlm, comm_rlm, comm_rj,     &
-!!     &          omega_sph, leg, trns_MHD, ipol, rj_fld)
+!!     &          fl_prop, omega_sph, leg, trns_MHD, ipol, rj_fld)
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !!
@@ -44,6 +46,7 @@
 !
       use calypso_mpi
 !
+      use t_physical_property
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
       use t_phys_address
@@ -66,7 +69,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sph_back_trans_4_MHD(sph, comms_sph, omega_sph,        &
+      subroutine sph_back_trans_4_MHD                                   &
+     &         (sph, comms_sph, fl_prop, omega_sph,                     &
      &          trans_p, ipol, rj_fld, trns_MHD, MHD_mul_FFTW)
 !
       use m_solver_SR
@@ -76,6 +80,7 @@
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
+      type(fluid_property), intent(in) :: fl_prop
       type(sph_rotation), intent(in) :: omega_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(phys_address), intent(in) :: ipol
@@ -100,7 +105,7 @@
       if(trns_MHD%ncomp_rj_2_rtp .eq. 0) return
       call sph_b_trans_w_coriolis(trns_MHD%ncomp_rj_2_rtp,              &
      &    trns_MHD%nvector_rj_2_rtp, trns_MHD%nscalar_rj_2_rtp,         &
-     &    sph, comms_sph, omega_sph, trans_p,                           &
+     &    sph, comms_sph, fl_prop, omega_sph, trans_p,                  &
      &    n_WS, n_WR, WS(1), WR(1), trns_MHD, MHD_mul_FFTW)
 !
       end subroutine sph_back_trans_4_MHD
@@ -184,7 +189,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine sph_transform_4_licv(sph_rlm, comm_rlm, comm_rj,       &
-     &          omega_sph, leg, trns_MHD, ipol, rj_fld)
+     &          fl_prop, omega_sph, leg, trns_MHD, ipol, rj_fld)
 !
       use m_solver_SR
       use sph_trans_w_coriols
@@ -194,6 +199,7 @@
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rlm
       type(sph_comm_tbl), intent(in) :: comm_rj
+      type(fluid_property), intent(in) :: fl_prop
       type(sph_rotation), intent(in) :: omega_sph
       type(legendre_4_sph_trans), intent(in) :: leg
       type(address_4_sph_trans), intent(in) :: trns_MHD
@@ -214,7 +220,7 @@
      &    trns_MHD%b_trns, comm_rj, ipol, rj_fld, n_WS, WS(1))
 !
       call sph_b_trans_licv(trns_MHD%ncomp_rj_2_rtp,                    &
-     &    sph_rlm, comm_rlm, comm_rj, omega_sph,                        &
+     &    sph_rlm, comm_rlm, comm_rj, fl_prop, omega_sph,               &
      &    leg, trns_MHD, n_WR, WR(1))
       call sph_f_trans_licv(trns_MHD%ncomp_rtp_2_rj,                    &
      &    sph_rlm, comm_rlm, comm_rj, trns_MHD, n_WS, WS(1))

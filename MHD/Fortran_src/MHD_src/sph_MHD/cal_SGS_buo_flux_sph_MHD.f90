@@ -8,15 +8,16 @@
 !!
 !!@verbatim
 !!      subroutine SGS_fluxes_for_buo_coefs                             &
-!!     &         (sph_rtp, nnod_med, b_trns, fg_trns, fs_trns,          &
+!!     &         (nnod_med, sph_rtp, fl_prop1, b_trns, fg_trns, fs_trns,&
 !!     &          ncomp_rj_2_rtp, nc_SGS_rtp_2_rj, ncomp_snap_rtp_2_rj, &
 !!     &          fld_rtp, fSGS_rtp, frs_rtp)
 !!      subroutine SGS_fluxes_for_snapshot                              &
-!!     &         (sph_rtp, b_trns, fg_trns, bs_trns, fs_trns,           &
+!!     &         (sph_rtp, fl_prop1, b_trns, fg_trns, bs_trns, fs_trns, &
 !!     &          ncomp_rj_2_rtp, nc_SGS_rtp_2_rj,                      &
 !!     &          ncomp_snap_rj_2_rtp, ncomp_snap_rtp_2_rj,             &
 !!     &          fld_rtp, fSGS_rtp, fls_rtp, frs_rtp)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(phys_address), intent(in) :: b_trns
 !!        type(phys_address), intent(in) :: fg_trns
 !!        type(phys_address), intent(in) :: bs_trns, fs_trns
@@ -29,8 +30,8 @@
       use m_constants
       use m_machine_parameter
       use m_control_parameter
-      use m_physical_property
 !
+      use t_physical_property
       use t_spheric_rtp_data
       use t_phys_address
 !
@@ -46,7 +47,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine SGS_fluxes_for_buo_coefs                               &
-     &         (sph_rtp, nnod_med, b_trns, fg_trns, fs_trns,            &
+     &         (nnod_med, sph_rtp, fl_prop, b_trns, fg_trns, fs_trns,   &
      &          ncomp_rj_2_rtp, nc_SGS_rtp_2_rj, ncomp_snap_rtp_2_rj,   &
      &          fld_rtp, fSGS_rtp, frs_rtp)
 !
@@ -54,6 +55,7 @@
 !
       integer(kind = kint), intent(in) :: nnod_med
       type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(fluid_property), intent(in) :: fl_prop
       type(phys_address), intent(in) :: b_trns
       type(phys_address), intent(in) :: fg_trns
       type(phys_address), intent(in) :: fs_trns
@@ -81,14 +83,14 @@
         call sel_SGS_buoyancy_flux_rtp                                  &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), nnod_med,            &
      &      sph_rtp%nidx_rtp(3), sph_rtp%radius_1d_rtp_r,               &
-     &      fl_prop1%coef_buo, fSGS_rtp(1,fg_trns%i_SGS_h_flux),        &
+     &      fl_prop%coef_buo, fSGS_rtp(1,fg_trns%i_SGS_h_flux),         &
      &      frs_rtp(1,fs_trns%i_SGS_buo_wk))
       end if
       if(iflag_4_composit_buo .gt. id_turn_OFF) then
         call sel_SGS_buoyancy_flux_rtp                                  &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), nnod_med,            &
      &      sph_rtp%nidx_rtp(3), sph_rtp%radius_1d_rtp_r,               &
-     &      fl_prop1%coef_comp_buo, fSGS_rtp(1,fg_trns%i_SGS_c_flux),   &
+     &      fl_prop%coef_comp_buo, fSGS_rtp(1,fg_trns%i_SGS_c_flux),    &
      &      frs_rtp(1,fs_trns%i_SGS_comp_buo_wk) )
       end if
 !
@@ -97,7 +99,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine SGS_fluxes_for_snapshot                                &
-     &         (sph_rtp, b_trns, fg_trns, bs_trns, fs_trns,             &
+     &         (sph_rtp, fl_prop, b_trns, fg_trns, bs_trns, fs_trns,    &
      &          ncomp_rj_2_rtp, nc_SGS_rtp_2_rj,                        &
      &          ncomp_snap_rj_2_rtp, ncomp_snap_rtp_2_rj,               &
      &          fld_rtp, fSGS_rtp, fls_rtp, frs_rtp)
@@ -105,6 +107,7 @@
       use cal_products_smp
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(fluid_property), intent(in) :: fl_prop
       type(phys_address), intent(in) :: b_trns
       type(phys_address), intent(in) :: fg_trns
       type(phys_address), intent(in) :: bs_trns, fs_trns
@@ -153,14 +156,14 @@
         call cal_buoyancy_flux_rtp_pout                                 &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), nnod_med,            &
      &      sph_rtp%nidx_rtp(3), sph_rtp%radius_1d_rtp_r,               &
-     &      fl_prop1%coef_buo, fSGS_rtp(1,fg_trns%i_SGS_h_flux),        &
+     &      fl_prop%coef_buo, fSGS_rtp(1,fg_trns%i_SGS_h_flux),         &
      &      frs_rtp(1,fs_trns%i_SGS_buo_wk))
       end if
       if(fs_trns%i_SGS_comp_buo_wk .gt. 0) then
         call cal_buoyancy_flux_rtp_pout                                 &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), nnod_med,            &
      &      sph_rtp%nidx_rtp(3), sph_rtp%radius_1d_rtp_r,               &
-     &      fl_prop1%coef_comp_buo, fSGS_rtp(1,fg_trns%i_SGS_c_flux),   &
+     &      fl_prop%coef_comp_buo, fSGS_rtp(1,fg_trns%i_SGS_c_flux),    &
      &      frs_rtp(1,fs_trns%i_SGS_comp_buo_wk) )
       end if
 !$omp end parallel
