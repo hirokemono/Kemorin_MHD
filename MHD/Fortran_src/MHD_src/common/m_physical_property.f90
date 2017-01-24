@@ -28,7 +28,6 @@
 !
 !>      reference paramter for temperature
       type(reference_scalar_param), save :: ref_param_T1
-!ref_param_T1%iflag_reference
 !>      Takepiro stratified composition
       type(reference_scalar_param), save :: ref_param_C1
 !

@@ -11,7 +11,7 @@
 !!     &          ii, i, ibc_id, ibc, ibc2, bc_id_apt, field_name)
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(group_data), intent(in) :: nod_grp
-!!      subroutine set_fixed_bc_4_par_temp                              &
+!!      subroutine set_fixed_bc_per_scalar                              &
 !!     &         (numnod, ncomp_nod, i_ref_t, d_nod, nod_bc_t)
 !!      subroutine set_potential_4_fixed_press(coef_press, nod_bc_p)
 !
@@ -117,7 +117,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_fixed_bc_4_par_temp                                &
+      subroutine set_fixed_bc_per_scalar                                &
      &         (numnod, ncomp_nod, i_ref_t, d_nod, nod_bc_t)
 !
       use t_nodal_bc_data
@@ -134,7 +134,7 @@
      &                          - d_nod(inod,i_ref_t)
       end do
 !
-      end subroutine set_fixed_bc_4_par_temp
+      end subroutine set_fixed_bc_per_scalar
 !
 !  ---------------------------------------------------------------------
 !

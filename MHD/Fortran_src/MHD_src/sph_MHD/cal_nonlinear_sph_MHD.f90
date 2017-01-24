@@ -25,7 +25,6 @@
       use m_precision
 !
       use m_constants
-      use m_control_parameter
 !
       use t_spheric_rtp_data
       use t_phys_address

@@ -180,8 +180,12 @@
      &    f1_l, f1_nl, label_sim)
 !
       if (iflag_debug.eq.1) write(*,*)' set_reference_temp'
-      call set_reference_temp(mesh%node, MHD_mesh%fluid,                &
+      call set_reference_temp                                           &
+     &   (ref_param_T1, takepito_T1, mesh%node, MHD_mesh%fluid,         &
      &    iphys%i_ref_t, iphys%i_gref_t, nod_fld)
+      call set_reference_temp                                           &
+     &   (ref_param_C1, takepito_C1, mesh%node, MHD_mesh%fluid,         &
+     &   iphys%i_ref_c, iphys%i_gref_c, nod_fld)
 !
       if (iflag_debug.eq.1) write(*,*)' set_material_property'
       call set_material_property                                        &

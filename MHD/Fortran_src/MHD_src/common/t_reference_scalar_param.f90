@@ -53,6 +53,8 @@
 !>      flag to use linearly decrease referece temperature 
 !!      as a function of @f$ r @f$
       integer (kind=kint), parameter :: id_linear_r_ref_temp = 200
+!>      takepiro model flag
+      integer (kind=kint), parameter :: id_takepiro_temp = 1000
 !
       type reference_scalar_param
 !>      temperature setting
@@ -70,9 +72,6 @@
 !
 !
       type takepiro_model_param
-!>      temperature setting
-        integer (kind=kint) :: iflag_stratified
-!
 !>       Parameter for stratified layer (amplitude)
         real  (kind=kreal) :: stratified_sigma
 !>       Parameter for stratified layer (thckness)
@@ -109,7 +108,8 @@
      &   (ref_ctl%reference_ctl, ref_ctl%low_ctl, ref_ctl%high_ctl,     &
      &    ref_param)
       call set_takepiro_scalar_ctl                                      &
-     &   (ref_ctl%stratified_ctl, ref_ctl%takepiro_ctl, takepiro)
+     &   (ref_ctl%stratified_ctl, ref_ctl%takepiro_ctl,                 &
+     &    ref_param%iflag_reference, takepiro)
 !
       end subroutine set_reference_scalar_ctl
 !
@@ -190,7 +190,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_takepiro_scalar_ctl                                &
-     &         (stratified_ctl, takepiro_ctl, takepiro)
+     &         (stratified_ctl, takepiro_ctl, iflag_ref, takepiro)
 !
       use calypso_mpi
       use t_ctl_data_temp_model
@@ -199,23 +199,19 @@
       type(read_character_item), intent(in) :: stratified_ctl
       type(takepiro_model_control), intent(in) :: takepiro_ctl
 !
+      integer(kind = kint), intent(inout) :: iflag_ref
       type(takepiro_model_param), intent(inout) :: takepiro
 !
       integer (kind = kint) :: iflag
 !
 !      set control for Takepiro model
 !
-      takepiro%iflag_stratified = id_turn_OFF
       if (stratified_ctl%iflag .gt. id_turn_OFF                         &
         .and. yes_flag(stratified_ctl%charavalue))  then
-         takepiro%iflag_stratified = id_turn_ON
+         iflag_ref = id_takepiro_temp
       end if
 !
-      if (takepiro%iflag_stratified .eq. id_turn_OFF) then
-        takepiro%stratified_sigma = 0.0d0
-        takepiro%stratified_width = 0.0d0
-        takepiro%stratified_outer_r = 0.0d0
-      else
+      if (iflag_ref .eq. id_takepiro_temp) then
         iflag = takepiro_ctl%stratified_sigma_ctl%iflag                 &
      &         *takepiro_ctl%stratified_width_ctl%iflag                 &
      &         *takepiro_ctl%stratified_outer_r_ctl%iflag
@@ -231,10 +227,14 @@
           takepiro%stratified_outer_r                                   &
      &           = takepiro_ctl%stratified_outer_r_ctl%realvalue
         end if
+      else
+        takepiro%stratified_sigma = 0.0d0
+        takepiro%stratified_width = 0.0d0
+        takepiro%stratified_outer_r = 0.0d0
       end if
 !
       if (iflag_debug .ge. iflag_routine_msg) then
-        write(*,*) 'iflag_stratified ',   takepiro%iflag_stratified
+        write(*,*) 'iflag_stratified ',   iflag_ref
         write(*,*) 'stratified_sigma ',   takepiro%stratified_sigma
         write(*,*) 'stratified_width ',   takepiro%stratified_width
         write(*,*) 'stratified_outer_r ', takepiro%stratified_outer_r

@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine nonlinear(sph, comms_sph, omega_sph, r_2nd, trans_p, &
-!!     &          reftemp_rj, ipol, itor, WK, rj_fld)
+!!     &          reftemp_rj, refcomp_rj, ipol, itor, WK, rj_fld)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(sph_rotation), intent(in) :: omega_sph
@@ -17,7 +17,7 @@
 !!        type(phys_address), intent(in) :: ipol, itor
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
 !!        type(phys_data), intent(inout) :: rj_fld
-!!      subroutine licv_exp(reftemp_rj, sph_rlm, sph_rj,                &
+!!      subroutine licv_exp(reftemp_rj, refcomp_rj, sph_rlm, sph_rj,    &
 !!     &          comm_rlm, comm_rj, leg, trns_MHD, ipol, itor, rj_fld)
 !!        type(sph_rlm_grid), intent(in) :: sph_rlm
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
@@ -66,7 +66,7 @@
 !*   ------------------------------------------------------------------
 !*
       subroutine nonlinear(sph, comms_sph, omega_sph, r_2nd, trans_p,   &
-     &          reftemp_rj, ipol, itor, WK, rj_fld)
+     &          reftemp_rj, refcomp_rj, ipol, itor, WK, rj_fld)
 !
       use m_boundary_params_sph_MHD
       use m_physical_property
@@ -84,7 +84,9 @@
       type(phys_address), intent(in) :: ipol, itor
 !
       real(kind = kreal), intent(in)                                    &
-     &      :: reftemp_rj(sph%sph_rj%nidx_rj(1),0:1)
+     &                   :: reftemp_rj(sph%sph_rj%nidx_rj(1),0:1)
+      real(kind = kreal), intent(in)                                    &
+     &                   :: refcomp_rj(sph%sph_rj%nidx_rj(1),0:1)
 !
       type(works_4_sph_trans_MHD), intent(inout) :: WK
       type(phys_data), intent(inout) :: rj_fld
@@ -105,12 +107,20 @@
      &      WK%dynamic_SPH, ipol, itor, rj_fld)
       end if
 !
+!   ----  Lead advection of reference field
       if (ref_param_T1%iflag_reference .eq. id_sphere_ref_temp) then
         call add_reftemp_advect_sph_MHD                                 &
      &     (sph_bc_T%kr_in, sph_bc_T%kr_out, sph%sph_rj%nidx_rj,        &
      &      sph%sph_rj%ar_1d_rj, trans_p%leg%g_sph_rj,                  &
      &      ht_prop1%coef_advect, ipol%i_h_advect, ipol%i_velo,         &
      &      rj_fld%n_point, rj_fld%ntot_phys, reftemp_rj, rj_fld%d_fld)
+      end if
+      if (ref_param_C1%iflag_reference .eq. id_sphere_ref_temp) then
+        call add_reftemp_advect_sph_MHD                                 &
+     &     (sph_bc_C%kr_in, sph_bc_T%kr_out, sph%sph_rj%nidx_rj,        &
+     &      sph%sph_rj%ar_1d_rj, trans_p%leg%g_sph_rj,                  &
+     &      cp_prop1%coef_advect, ipol%i_c_advect, ipol%i_velo,         &
+     &      rj_fld%n_point, rj_fld%ntot_phys, refcomp_rj, rj_fld%d_fld)
       end if
 !
 !*  ----  copy coriolis term for inner core rotation
@@ -349,7 +359,7 @@
 !*   ------------------------------------------------------------------
 !*   ------------------------------------------------------------------
 !*
-      subroutine licv_exp(reftemp_rj, sph_rlm, sph_rj,                  &
+      subroutine licv_exp(reftemp_rj, refcomp_rj, sph_rlm, sph_rj,      &
      &          comm_rlm, comm_rj, omega_sph, leg, trns_MHD,            &
      &          ipol, itor, rj_fld)
 !
@@ -370,6 +380,8 @@
 !
       real(kind = kreal), intent(in)                                    &
      &                   :: reftemp_rj(sph_rj%nidx_rj(1),0:1)
+      real(kind = kreal), intent(in)                                    &
+     &                   :: refcomp_rj(sph_rj%nidx_rj(1),0:1)
       type(phys_data), intent(inout) :: rj_fld
 !
 !*  ----  copy velocity for coriolis term ------------------
@@ -383,16 +395,25 @@
 !
 !   ----  lead nonlinear terms by phesdo spectrum
 !
-!$omp parallel workshare
-      rj_fld%d_fld(1:sph_rj%nnod_rj,ipol%i_h_advect) = zero
-!$omp end parallel workshare
+!$omp parallel
+      if(ipol%i_h_advect .gt. 0) then
+!$omp workshare
+        rj_fld%d_fld(1:sph_rj%nnod_rj,ipol%i_h_advect) = zero
+!$omp end workshare
+      end if
+      if(ipol%i_c_advect .gt. 0) then
+!$omp workshare
+        rj_fld%d_fld(1:sph_rj%nnod_rj,ipol%i_c_advect) = zero
+!$omp end workshare
+      end if
 !
       if(ipol%i_forces .gt. 0) then
-!$omp parallel workshare
+!$omp workshare
         rj_fld%d_fld(1:sph_rj%nnod_rj,ipol%i_forces) = zero
         rj_fld%d_fld(1:sph_rj%nnod_rj,itor%i_forces) = zero
-!$omp end parallel workshare
+!$omp end workshare
       end if
+!$omp end parallel
 !
 !
       if (ref_param_T1%iflag_reference .eq. id_sphere_ref_temp) then
@@ -402,6 +423,14 @@
      &      ht_prop1%coef_advect, ipol%i_h_advect, ipol%i_velo,         &
      &      rj_fld%n_point, rj_fld%ntot_phys, reftemp_rj, rj_fld%d_fld)
       end if
+      if (ref_param_C1%iflag_reference .eq. id_sphere_ref_temp) then
+        call add_reftemp_advect_sph_MHD                                 &
+     &     (sph_bc_C%kr_in, sph_bc_T%kr_out,                            &
+     &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, leg%g_sph_rj,              &
+     &      cp_prop1%coef_advect, ipol%i_c_advect, ipol%i_velo,         &
+     &      rj_fld%n_point, rj_fld%ntot_phys, refcomp_rj, rj_fld%d_fld)
+      end if
+!
 !
 !$omp parallel
       if(iflag_4_coriolis .ne. id_turn_OFF) then

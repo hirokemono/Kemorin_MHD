@@ -10,7 +10,7 @@
 !!
 !!@verbatim
 !!      subroutine init_r_infos_sph_mhd_evo(sph_grps, ipol,             &
-!!     &          sph, omega_sph, ref_temp, r_2nd, rj_fld)
+!!     &          sph, omega_sph, ref_temp, ref_comp, r_2nd, rj_fld)
 !!      subroutine init_r_infos_sph_mhd(sph_grps, ipol, sph,            &
 !!     &          omega_sph, ref_temp, rj_fld)
 !!        type(sph_group_data), intent(in) :: sph_grps
@@ -57,7 +57,7 @@
 !  -------------------------------------------------------------------
 !
       subroutine init_r_infos_sph_mhd_evo(sph_grps, ipol,               &
-     &          sph, omega_sph, ref_temp, r_2nd, rj_fld)
+     &          sph, omega_sph, ref_temp, ref_comp, r_2nd, rj_fld)
 !
       use calypso_mpi
       use const_fdm_coefs
@@ -68,13 +68,13 @@
 !
       type(sph_grids), intent(inout) :: sph
       type(sph_rotation), intent(inout) :: omega_sph
-      type(reference_temperature), intent(inout) :: ref_temp
+      type(reference_temperature), intent(inout) :: ref_temp, ref_comp
       type(fdm_matrices), intent(inout) :: r_2nd
       type(phys_data), intent(inout) :: rj_fld
 !
 !
       call init_r_infos_sph_mhd                                         &
-     &  (sph_grps, ipol, sph, omega_sph, ref_temp, rj_fld)
+     &  (sph_grps, ipol, sph, omega_sph, ref_temp, ref_comp, rj_fld)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_2nd_fdm_matrices'
       call const_2nd_fdm_matrices(sph%sph_params, sph%sph_rj, r_2nd)
@@ -88,7 +88,7 @@
 !  -------------------------------------------------------------------
 !
       subroutine init_r_infos_sph_mhd(sph_grps, ipol, sph,              &
-     &          omega_sph, ref_temp, rj_fld)
+     &          omega_sph, ref_temp, ref_comp, rj_fld)
 !
       use m_physical_property
       use m_boundary_params_sph_MHD
@@ -100,7 +100,7 @@
 !
       type(sph_grids), intent(inout) :: sph
       type(sph_rotation), intent(inout) :: omega_sph
-      type(reference_temperature), intent(inout) :: ref_temp
+      type(reference_temperature), intent(inout) :: ref_temp, ref_comp
       type(phys_data), intent(inout) :: rj_fld
 !
 !
@@ -109,6 +109,7 @@
      &   (sph_grps%radial_rj_grp, sph%sph_params, sph%sph_rj)
 !
 !*  ----------  rotation of earth  ---------------
+!
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &                write(*,*) 'set_rot_earth_4_sph'
       call set_rot_earth_4_sph(sph%sph_rlm, sph%sph_rj,                 &
@@ -120,8 +121,12 @@
      &   (sph%sph_params, sph%sph_rj, sph_grps%radial_rj_grp,           &
      &    CTR_nod_grp_name, CTR_sf_grp_name)
 !
-      call init_reference_temps                                         &
-     &   (sph%sph_params, sph%sph_rj, ipol, ref_temp, rj_fld)
+      call init_reference_temps(ref_param_T1, takepito_T1,              &
+     &    sph%sph_params, sph%sph_rj, ipol%i_ref_t, ipol%i_gref_t,      &
+     &    ref_temp, rj_fld, sph_bc_T)
+      call init_reference_temps(ref_param_C1, takepito_C1,              &
+     &    sph%sph_params, sph%sph_rj, ipol%i_ref_c, ipol%i_gref_c,      &
+     &    ref_comp, rj_fld, sph_bc_C)
 !
       end subroutine init_r_infos_sph_mhd
 !
@@ -163,48 +168,60 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine init_reference_temps                                   &
-     &         (sph_params, sph_rj, ipol, ref_temp, rj_fld)
+      subroutine init_reference_temps(ref_param, takepito,              &
+     &          sph_params, sph_rj, i_ref, i_gref,                      &
+     &          ref_fld, rj_fld, sph_bc_S)
 !
-      use m_physical_property
-      use m_boundary_params_sph_MHD
-      use m_machine_parameter
+      use t_boundary_params_sph_MHD
+      use t_reference_scalar_param
       use set_reference_sph_mhd
       use set_reference_temp_sph
 !
+      integer(kind = kint), intent(in) :: i_ref, i_gref
+      type(reference_scalar_param), intent(inout) :: ref_param
+      type(takepiro_model_param), intent(in) :: takepito
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
-      type(phys_address), intent(in) :: ipol
 !
-      type(reference_temperature), intent(inout) :: ref_temp
+      type(reference_temperature), intent(inout) :: ref_fld
       type(phys_data), intent(inout) :: rj_fld
+      type(sph_boundary_type), intent(inout) :: sph_bc_S
 !
 !      Set reference temperature and adjust boundary conditions
 !
       if(iflag_debug .gt. 0) write(*,*) 'alloc_reft_rj_data'
-      call alloc_reft_rj_data(sph_rj%nidx_rj(1), ref_temp)
+      call alloc_reft_rj_data(sph_rj%nidx_rj(1), ref_fld)
 !
-      if(iflag_debug .gt. 0) write(*,*) 'set_ref_temp_sph_mhd'
-      call set_ref_temp_sph_mhd                                         &
-     &   (ref_param_T1%low_value, ref_param_T1%depth_top,               &
-     &    ref_param_T1%high_value, ref_param_T1%depth_bottom,           &
-     &    sph_rj%nidx_rj, sph_params%radius_ICB, sph_params%radius_CMB, &
-     &    sph_rj%radius_1d_rj_r, sph_rj%ar_1d_rj, ref_temp%t_rj)
+      if (ref_param%iflag_reference .eq. id_sphere_ref_temp) then
+        if(iflag_debug .gt. 0) write(*,*) 'set_ref_temp_sph_mhd'
+        call set_ref_temp_sph_mhd                                       &
+     &   (ref_param%low_value, ref_param%depth_top,                     &
+     &    ref_param%high_value, ref_param%depth_bottom,                 &
+     &    sph_rj%nidx_rj, sph_rj%radius_1d_rj_r, sph_rj%ar_1d_rj,       &
+     &    ref_fld%t_rj)
+        call adjust_sph_temp_bc_by_reftemp                              &
+     &     (sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj(1),               &
+     &      ref_fld%t_rj, sph_bc_S)
 !
-      call set_stratified_sph_mhd                                       &
-     &   (takepito_T1%iflag_stratified, takepito_T1%stratified_sigma,   &
-     &    takepito_T1%stratified_width, takepito_T1%stratified_outer_r, &
+      else if(ref_param%iflag_reference .eq. id_takepiro_temp) then
+        call set_stratified_sph_mhd(takepito%stratified_sigma,          &
+     &    takepito%stratified_width, takepito%stratified_outer_r,       &
      &    sph_rj%nidx_rj, sph_params%radius_ICB, sph_params%radius_CMB, &
      &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
-     &     sph_rj%radius_1d_rj_r, ref_temp%t_rj)
+     &    sph_rj%radius_1d_rj_r, ref_fld%t_rj)
+        call adjust_sph_temp_bc_by_reftemp                              &
+     &     (sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj(1),               &
+     &      ref_fld%t_rj, sph_bc_S)
 !
-      call adjust_sph_temp_bc_by_reftemp                                &
-     &   (sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj(1),                 &
-     &    ref_temp%t_rj, sph_bc_T)
+      else
+        call no_ref_temp_sph_mhd(ref_param%depth_top,                   &
+     &      ref_param%depth_bottom, sph_rj%nidx_rj(1),                  &
+     &      sph_params%radius_ICB, sph_params%radius_CMB, ref_fld%t_rj)
+      end if
 !
-      call set_reftemp_4_sph(sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj, &
-     &    ref_temp%t_rj, ipol%i_ref_t, ipol%i_gref_t,                   &
-     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+!      call set_reftemp_4_sph(sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj,&
+!     &    ref_fld%t_rj, i_ref, i_gref,                                 &
+!     &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       end subroutine init_reference_temps
 !

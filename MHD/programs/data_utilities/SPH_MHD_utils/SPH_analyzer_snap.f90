@@ -70,7 +70,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd_evo'
       call init_r_infos_sph_mhd_evo(sph_grps1, ipol, sph1,              &
-     &    omega_sph1, ref_temp1, r_2nd, rj_fld1)
+     &    omega_sph1, ref_temp1, ref_comp1, r_2nd, rj_fld1)
 !
 !  -------------------------------
 !
@@ -145,7 +145,7 @@
 !*
       call start_eleps_time(8)
       call nonlinear(sph1, comms_sph1, omega_sph1, r_2nd, trans_p1,     &
-     &    ref_temp1%t_rj, ipol, itor, trns_WK1, rj_fld1)
+     &   ref_temp1%t_rj, ref_comp1%t_rj, ipol, itor, trns_WK1, rj_fld1)
       call end_eleps_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=

@@ -4,8 +4,10 @@
 !      Written by H.Matsui
 !      Modified by H.Matsui on Sep., 2007
 !
-!!      subroutine set_reference_temp                                   &
-!!     &         (node, fluid, i_ref_t, i_gref_t, nod_fld)
+!!      subroutine set_reference_temp(ref_param, takepito,              &
+!!     &          node, fluid, i_ref, i_gref, nod_fld)
+!!        type(reference_scalar_param), intent(in) :: ref_param
+!!        type(takepiro_model_param), intent(in) :: takepito
 !!        type(node_data), intent(in) :: node
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -23,56 +25,59 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_reference_temp                                     &
-     &         (node, fluid, i_ref_t, i_gref_t, nod_fld)
+      subroutine set_reference_temp(ref_param, takepito,                &
+     &          node, fluid, i_ref, i_gref, nod_fld)
 !
-      use m_physical_property
       use m_control_parameter
+      use t_reference_scalar_param
       use t_geometry_data
       use t_phys_data
       use t_geometry_data_MHD
 !
+      type(reference_scalar_param), intent(in) :: ref_param
+      type(takepiro_model_param), intent(in) :: takepito
       type(node_data), intent(in) :: node
       type(field_geometry_data), intent(in) :: fluid
-      integer(kind = kint), intent(in) :: i_ref_t, i_gref_t
+      integer(kind = kint), intent(in) :: i_ref, i_gref
 !
       type(phys_data), intent(inout) :: nod_fld
 !
 !
 ! set reference temperature (for spherical shell)
 !
-      if ( ref_param_T1%iflag_reference .eq. id_sphere_ref_temp) then
+      if ( ref_param%iflag_reference .eq. id_sphere_ref_temp) then
         call set_sph_shell_reftemp                                      &
-     &     (ref_param_T1%low_value, ref_param_T1%depth_top,             &
-     &      ref_param_T1%high_value, ref_param_T1%depth_bottom,         &
+     &     (ref_param%low_value, ref_param%depth_top,                   &
+     &      ref_param%high_value, ref_param%depth_bottom,               &
      &      node%numnod, fluid%numnod_fld,                              &
      &      fluid%inod_fld, node%rr, node%a_r,                          &
-     &      nod_fld%d_fld(1,i_ref_t), nod_fld%d_fld(1,i_gref_t))
+     &      nod_fld%d_fld(1,i_ref), nod_fld%d_fld(1,i_gref))
       end if
 !
-      if ( ref_param_T1%iflag_reference .eq. id_linear_r_ref_temp) then
+      if ( ref_param%iflag_reference .eq. id_linear_r_ref_temp) then
         call set_linear_r_reftemp                                       &
-     &     (ref_param_T1%low_value, ref_param_T1%depth_top,             &
-     &      ref_param_T1%high_value, ref_param_T1%depth_bottom,         &
+     &     (ref_param%low_value, ref_param%depth_top,                   &
+     &      ref_param%high_value, ref_param%depth_bottom,               &
      &      node%numnod, fluid%numnod_fld, fluid%inod_fld, node%rr,     &
-     &      nod_fld%d_fld(1,i_ref_t), nod_fld%d_fld(1,i_gref_t))
+     &      nod_fld%d_fld(1,i_ref), nod_fld%d_fld(1,i_gref))
       end if
 !
 !
-      if (ref_param_T1%iflag_reference .ge. 1                           &
-     &     .and. ref_param_T1%iflag_reference .le. 3) then
-        call set_linear_reftemp(ref_param_T1%iflag_reference,           &
-     &      ref_param_T1%low_value, ref_param_T1%depth_top,             &
-     &      ref_param_T1%high_value, ref_param_T1%depth_bottom,         &
+      if (ref_param%iflag_reference .ge. 1                              &
+     &     .and. ref_param%iflag_reference .le. 3) then
+        call set_linear_reftemp(ref_param%iflag_reference,              &
+     &      ref_param%low_value, ref_param%depth_top,                   &
+     &      ref_param%high_value, ref_param%depth_bottom,               &
      &      node%numnod, fluid%numnod_fld, fluid%inod_fld, node%xx,     &
-     &      nod_fld%d_fld(1,i_ref_t), nod_fld%d_fld(1,i_gref_t))
+     &      nod_fld%d_fld(1,i_ref), nod_fld%d_fld(1,i_gref))
       end if
 !
-      call set_takepiro_temp                                            &
-     &  (takepito_T1%iflag_stratified, takepito_T1%stratified_sigma,    &
-     &   takepito_T1%stratified_width, takepito_T1%stratified_outer_r,  &
-     &   node%numnod, fluid%numnod_fld, fluid%inod_fld, node%rr,        &
-     &   nod_fld%d_fld(1,i_ref_t), nod_fld%d_fld(1,i_gref_t))
+      if (ref_param%iflag_reference .eq. id_takepiro_temp) then
+        call set_takepiro_temp(takepito%stratified_sigma,               &
+     &     takepito%stratified_width, takepito%stratified_outer_r,      &
+     &     node%numnod, fluid%numnod_fld, fluid%inod_fld, node%rr,      &
+     &     nod_fld%d_fld(1,i_ref), nod_fld%d_fld(1,i_gref))
+      end if
 !
       end subroutine set_reference_temp
 !
@@ -199,14 +204,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_takepiro_temp(iflag_stratified,                    &
-     &          stratified_sigma, stratified_width, stratified_outer_r, &
+      subroutine set_takepiro_temp                                      &
+     &         (stratified_sigma, stratified_width, stratified_outer_r, &
      &          numnod, nnod_fl, inod_fluid, radius,                    &
      &          ref_remp, gref_remp)
 !
-      use m_control_parameter
-!
-      integer(kind = kint), intent(in) :: iflag_stratified
       real  (kind=kreal) :: stratified_sigma
       real  (kind=kreal) :: stratified_width
       real  (kind=kreal) :: stratified_outer_r
@@ -222,9 +224,6 @@
       real(kind = kreal) :: alpha, beta
 !
 !
-! set reference temperature (for spherical shell)
-!
-      if (iflag_stratified .eq. id_turn_OFF) return
 !$omp parallel workshare
       ref_remp(1:numnod) = zero
       gref_remp(1:numnod) = zero

@@ -128,6 +128,11 @@
         call subtract_2_nod_scalars(nod_fld1,                           &
      &      iphys%i_temp, iphys%i_ref_t, iphys%i_par_temp)
       end if
+      if (ref_param_C1%iflag_reference .ne. id_no_ref_temp) then
+        if (iflag_debug.eq.1)  write(*,*) 'set_2_perturbation_comp'
+        call subtract_2_nod_scalars(nod_fld1,                           &
+     &      iphys%i_light, iphys%i_ref_c, iphys%i_par_light)
+      end if
 !
 !     ---------------------
 !

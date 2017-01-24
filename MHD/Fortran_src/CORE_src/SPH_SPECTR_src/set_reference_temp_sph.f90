@@ -9,11 +9,13 @@
 !!@n      with fixed temperature boundary
 !!
 !!@verbatim
+!!      subroutine no_ref_temp_sph_mhd(depth_top, depth_bottom,         &
+!!     &          nri, r_ICB, r_CMB, reftemp_rj)
 !!      subroutine set_ref_temp_sph_mhd                                 &
 !!     &         (low_temp, depth_top, high_temp, depth_bottom,         &
-!!     &          nidx_rj, r_ICB, r_CMB, r_1d_rj, ar_1d_rj, reftemp_rj)
-!!      subroutine set_stratified_sph_mhd(iflag_stratified,             &
-!!     &         stratified_sigma, stratified_width, stratified_outer_r,&
+!!     &          nidx_rj, r_1d_rj, ar_1d_rj, reftemp_rj)
+!!      subroutine set_stratified_sph_mhd                               &
+!!     &        (stratified_sigma, stratified_width, stratified_outer_r,&
 !!     &         nidx_rj, r_ICB, r_CMB, kr_ICB, kr_CMB, r_1d_rj,        &
 !!     &         reftemp_rj)
 !!
@@ -55,17 +57,34 @@
 !
 !  -------------------------------------------------------------------
 !
+      subroutine no_ref_temp_sph_mhd(depth_top, depth_bottom,           &
+     &          nri, r_ICB, r_CMB, reftemp_rj)
+!
+      real (kind = kreal), intent(inout) :: depth_top, depth_bottom
+!
+      integer(kind = kint), intent(in) :: nri
+      real(kind = kreal), intent(in) :: r_ICB, r_CMB
+!
+      real(kind=kreal), intent(inout) :: reftemp_rj(nri,0:1)
+!
+!
+      reftemp_rj(1:nri,0) = zero
+      reftemp_rj(1:nri,1) = zero
+      depth_bottom = r_ICB
+      depth_top =    r_CMB
+!
+      end subroutine no_ref_temp_sph_mhd
+!
+! -----------------------------------------------------------------------
+!
       subroutine set_ref_temp_sph_mhd                                   &
      &         (low_temp, depth_top, high_temp, depth_bottom,           &
-     &          nidx_rj, r_ICB, r_CMB, r_1d_rj, ar_1d_rj, reftemp_rj)
-!
-      use m_physical_property
+     &          nidx_rj, r_1d_rj, ar_1d_rj, reftemp_rj)
 !
       real (kind = kreal), intent(in) :: low_temp, high_temp
       real (kind = kreal), intent(inout) :: depth_top, depth_bottom
 !
       integer(kind = kint), intent(in) :: nidx_rj(2)
-      real(kind = kreal), intent(in) :: r_ICB, r_CMB
       real(kind=kreal), intent(in) :: r_1d_rj(nidx_rj(1))
       real(kind=kreal), intent(in) :: ar_1d_rj(nidx_rj(1),3)
 !
@@ -75,47 +94,39 @@
 !
 ! set reference temperature (for spherical shell)
 !
-      if (ref_param_T1%iflag_reference .eq. id_sphere_ref_temp) then
-        do k = 1, nidx_rj(1)
-          if(r_1d_rj(k) .lt. depth_bottom) then
-            reftemp_rj(k,0) = high_temp
-            reftemp_rj(k,1) = zero
-          else if(r_1d_rj(k) .gt. depth_top) then
-            reftemp_rj(k,0) = low_temp
-            reftemp_rj(k,1) = zero
-          else
-            reftemp_rj(k,0) = (depth_bottom*depth_top*ar_1d_rj(k,1)     &
+      do k = 1, nidx_rj(1)
+        if(r_1d_rj(k) .lt. depth_bottom) then
+          reftemp_rj(k,0) = high_temp
+          reftemp_rj(k,1) = zero
+        else if(r_1d_rj(k) .gt. depth_top) then
+          reftemp_rj(k,0) = low_temp
+          reftemp_rj(k,1) = zero
+        else
+          reftemp_rj(k,0) = (depth_bottom*depth_top*ar_1d_rj(k,1)       &
      &                   * (high_temp - low_temp)                       &
      &                    - depth_bottom*high_temp                      &
      &                    + depth_top* low_temp )                       &
      &                     / (depth_top - depth_bottom)
-            reftemp_rj(k,1) = - depth_bottom*depth_top*ar_1d_rj(k,2)    &
+          reftemp_rj(k,1) = - depth_bottom*depth_top*ar_1d_rj(k,2)      &
      &                   * (high_temp - low_temp)                       &
      &                     / (depth_top - depth_bottom)
-          end if
-        end do
-      else
-        reftemp_rj(1:nidx_rj(1),0) = zero
-        reftemp_rj(1:nidx_rj(1),1) = zero
-        depth_bottom = r_ICB
-        depth_top =    r_CMB
-      end if
+        end if
+      end do
 !
       end subroutine set_ref_temp_sph_mhd
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_stratified_sph_mhd(iflag_stratified,               &
-     &         stratified_sigma, stratified_width, stratified_outer_r,  &
+      subroutine set_stratified_sph_mhd                                 &
+     &        (stratified_sigma, stratified_width, stratified_outer_r,  &
      &         nidx_rj, r_ICB, r_CMB, kr_ICB, kr_CMB, r_1d_rj,          &
      &         reftemp_rj)
 !
       use m_physical_property
 !
-      integer(kind = kint), intent(in) :: iflag_stratified
-      real  (kind=kreal) :: stratified_sigma
-      real  (kind=kreal) :: stratified_width
-      real  (kind=kreal) :: stratified_outer_r
+      real  (kind=kreal), intent(in) :: stratified_sigma
+      real  (kind=kreal), intent(in) :: stratified_width
+      real  (kind=kreal), intent(in) :: stratified_outer_r
 !
       integer(kind = kint), intent(in) :: nidx_rj(2)
       integer(kind = kint), intent(in) :: kr_ICB, kr_CMB
@@ -127,8 +138,6 @@
       integer (kind = kint) :: k
       real(kind = kreal) :: alpha, beta
 !
-!
-      if (iflag_stratified .eq. id_turn_OFF) return
 !
       do k = 1, nidx_rj(1)
         if(k .lt. kr_ICB) then
