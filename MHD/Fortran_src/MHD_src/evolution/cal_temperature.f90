@@ -174,12 +174,14 @@
 !  ----------  lead advection term
 !
       if (iflag_temp_supg .gt. id_turn_OFF) then
-        call int_vol_temp_ele_upw(node, ele, fluid, iphys, nod_fld,     &
+        call int_vol_temp_ele_upw                                       &
+     &     (node, ele, fluid, ht_prop1, iphys, nod_fld,                 &
      &      jac_3d, rhs_tbl, FEM_elens, diff_coefs,                     &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
      &      ifld_diff%i_heat_flux, mhd_fem_wk, fem_wk, f_nl)
       else
-        call int_vol_temp_ele(node, ele, fluid, iphys, nod_fld,         &
+        call int_vol_temp_ele                                           &
+     &     (node, ele, fluid, ht_prop1, iphys, nod_fld,                 &
      &      jac_3d, rhs_tbl, FEM_elens, diff_coefs,                     &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
      &      ifld_diff%i_heat_flux, mhd_fem_wk, fem_wk, f_nl)
@@ -342,12 +344,14 @@
 !  ----------  lead advection term
 !
       if (iflag_temp_supg .gt. id_turn_OFF) then
-        call int_vol_temp_ele_upw(node, ele, fluid, iphys, nod_fld,     &
+        call int_vol_temp_ele_upw                                       &
+     &     (node, ele, fluid, ht_prop1, iphys, nod_fld,                 &
      &      jac_3d, rhs_tbl, FEM_elens, diff_coefs,                     &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
      &      ifld_diff%i_heat_flux, mhd_fem_wk, fem_wk, f_nl)
       else
-        call int_vol_temp_ele(node, ele, fluid, iphys, nod_fld,         &
+        call int_vol_temp_ele                                           &
+     &     (node, ele, fluid, ht_prop1, iphys, nod_fld,                 &
      &      jac_3d, rhs_tbl, FEM_elens, diff_coefs,                     &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
      &      ifld_diff%i_heat_flux, mhd_fem_wk, fem_wk, f_nl)

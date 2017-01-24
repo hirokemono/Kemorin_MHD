@@ -122,13 +122,13 @@
       end if
 !
       if (iflag_comp_supg .gt. id_turn_OFF) then
-        call int_vol_composition_ele_upw                                &
-     &     (node, ele, fluid, iphys, nod_fld, jac_3d, rhs_tbl,          &
+        call int_vol_composition_ele_upw(node, ele, fluid,              &
+     &     cp_prop1, iphys, nod_fld, jac_3d, rhs_tbl,                   &
      &     ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,          &
      &     fem_wk, f_nl)
       else
-        call int_vol_composition_ele                                    &
-     &     (node, ele, fluid, iphys, nod_fld, jac_3d, rhs_tbl,          &
+        call int_vol_composition_ele(node, ele, fluid,                  &
+     &      cp_prop1, iphys, nod_fld, jac_3d, rhs_tbl,                  &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
      &      fem_wk, f_nl)
       end if

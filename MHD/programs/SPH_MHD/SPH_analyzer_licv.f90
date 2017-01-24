@@ -91,7 +91,8 @@
 !  -------------------------------
 !
       if(iflag_debug.gt.0) write(*,*)' const_radial_mat_sph_mhd'
-      call const_radial_mat_sph_mhd(sph1%sph_rj, r_2nd, trans_p1%leg)
+      call const_radial_mat_sph_mhd                                     &
+     &   (ht_prop1, cp_prop1, sph1%sph_rj, r_2nd, trans_p1%leg)
 !*
 !* obtain linear terms for starting
 !*

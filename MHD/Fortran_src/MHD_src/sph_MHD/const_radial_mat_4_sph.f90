@@ -7,8 +7,10 @@
 !>@brief Construct 1D matrices for MHD dynamo simulaiton
 !!
 !!@verbatim
-!!      subroutine const_radial_mat_sph_mhd(sph_rj, r_2nd, leg)
+!!      subroutine const_radial_mat_sph_mhd                             &
+!!     &          (ht_prop, cp_prop, sph_rj, r_2nd, leg)
 !!      subroutine const_radial_mat_sph_snap(sph_rj, r_2nd, leg)
+!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(legendre_4_sph_trans), intent(in) :: leg
@@ -24,6 +26,7 @@
       use t_spheric_rj_data
       use t_fdm_coefs
       use t_schmidt_poly_on_rtm
+      use t_physical_property
 !
       use calypso_mpi
 !
@@ -38,17 +41,20 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_sph_mhd(sph_rj, r_2nd, leg)
+      subroutine const_radial_mat_sph_mhd                               &
+     &          (ht_prop, cp_prop, sph_rj, r_2nd, leg)
 !
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(legendre_4_sph_trans), intent(in) :: leg
 !
 !
-      call const_radial_matrices_sph(sph_rj, r_2nd, leg%g_sph_rj)
+      call const_radial_matrices_sph                                    &
+     &   (ht_prop, cp_prop, sph_rj, r_2nd, leg%g_sph_rj)
 !
       if(sph_rj%inod_rj_center .gt. 0) then
-        call const_radial_mat_sph_w_center(sph_rj)
+        call const_radial_mat_sph_w_center(ht_prop, cp_prop, sph_rj)
       end if
 !
       end subroutine const_radial_mat_sph_mhd
@@ -86,15 +92,16 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_matrices_sph(sph_rj, r_2nd, g_sph_rj)
+      subroutine const_radial_matrices_sph                              &
+     &         (ht_prop, cp_prop, sph_rj, r_2nd, g_sph_rj)
 !
       use m_control_parameter
       use m_radial_matrices_sph
       use m_boundary_params_sph_MHD
-      use m_physical_property
       use const_r_mat_4_scalar_sph
       use const_r_mat_4_vector_sph
 !
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
@@ -115,7 +122,7 @@
         write(band_temp_evo%mat_name,'(a)') 'Temperature_evolution'
         call const_radial_mat_4_scalar_sph                              &
      &     (sph_rj, r_2nd, sph_bc_T, g_sph_rj, evo_temp%coef_imp,       &
-     &      ht_prop1%coef_advect, ht_prop1%coef_diffuse, band_temp_evo)
+     &      ht_prop%coef_advect, ht_prop%coef_diffuse, band_temp_evo)
       end if
 !
       if (evo_magne%iflag_scheme .ge. id_Crank_nicolson) then
@@ -131,23 +138,24 @@
         write(band_comp_evo%mat_name,'(a)') 'Composition_evolution'
         call const_radial_mat_4_scalar_sph                              &
      &     (sph_rj, r_2nd, sph_bc_C, g_sph_rj, evo_comp%coef_imp,       &
-     &      cp_prop1%coef_advect, cp_prop1%coef_diffuse, band_comp_evo)
+     &      cp_prop%coef_advect, cp_prop%coef_diffuse, band_comp_evo)
       end if
 !
       end subroutine const_radial_matrices_sph
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_sph_w_center(sph_rj)
+      subroutine const_radial_mat_sph_w_center                          &
+     &         (ht_prop, cp_prop, sph_rj)
 !
       use m_control_parameter
       use m_radial_matrices_sph
       use m_radial_mat_sph_w_center
       use m_boundary_params_sph_MHD
-      use m_physical_property
       use const_r_mat_w_center_sph
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
 !
 !
       call allocate_average_w_center(sph_rj)
@@ -166,7 +174,7 @@
         write(band_temp_evo%mat_name,'(a)')                             &
      &                         'average_temperature_w_center'
         call const_radial_mat_scalar00_sph(sph_rj, sph_bc_T,            &
-     &    evo_temp%coef_imp, ht_prop1%coef_advect, ht_prop1%coef_diffuse,&
+     &    evo_temp%coef_imp, ht_prop%coef_advect, ht_prop%coef_diffuse, &
      &    band_temp_evo%n_vect, band_temp_evo%n_comp,                   &
      &    band_temp_evo%mat, band_temp00_evo)
       end if
@@ -177,7 +185,7 @@
      &                        'average_composition_w_center'
         call const_radial_mat_scalar00_sph                              &
      &     (sph_rj, sph_bc_C, evo_comp%coef_imp,                        &
-     &      cp_prop1%coef_advect, cp_prop1%coef_diffuse,                &
+     &      cp_prop%coef_advect, cp_prop%coef_diffuse,                  &
      &      band_comp_evo%n_vect, band_comp_evo%n_comp,                 &
      &      band_comp_evo%mat, band_comp00_evo)
       end if
