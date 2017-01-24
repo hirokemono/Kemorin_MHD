@@ -114,7 +114,7 @@
         d_rad%num_component(icou) = n_vector
         d_rad%istack_component(icou) = d_rad%istack_component(icou-1)   &
      &                                + d_rad%num_component(icou)
-        irad%i_ref_t = d_rad%istack_component(icou-1) + 1
+        irad%i_ref_c = d_rad%istack_component(icou-1) + 1
       end if
       d_rad%ntot_phys = d_rad%istack_component(d_rad%num_phys)
 !
