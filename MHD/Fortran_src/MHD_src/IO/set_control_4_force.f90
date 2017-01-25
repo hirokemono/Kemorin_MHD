@@ -237,15 +237,15 @@
 !  setting for external mangnetic field
 !
       if (mcv_ctl%magneto_cv%iflag .eq. 0) then
-        iflag_magneto_cv = id_turn_OFF
+        cd_prop%iflag_magneto_cv = id_turn_OFF
       else
         if(yes_flag(mcv_ctl%magneto_cv%charavalue))                     &
-     &                     iflag_magneto_cv = id_turn_ON
+     &              cd_prop%iflag_magneto_cv = id_turn_ON
       end if
 !
       cd_prop%ex_magne(1:3) = 0.0d0
 !
-      if (iflag_magneto_cv .gt. id_turn_OFF) then
+      if (cd_prop%iflag_magneto_cv .gt. id_turn_OFF) then
         if (mcv_ctl%ext_magne%icou .eq. 0) then
           e_message = 'Set external magnetic field'
           call calypso_MPI_abort(ierr_force, e_message)
@@ -273,7 +273,7 @@
           write(*,'(a, 1p3E25.15e3)') 'gravity ', fl_prop%grav(1:3)
         end if
 !
-        write(*,*) 'magneto_cv ',iflag_magneto_cv
+        write(*,*) 'magneto_cv ', cd_prop%iflag_magneto_cv
         write(*,'(a,1p3E25.15e3)') 'ex_magne ',cd_prop%ex_magne
         write(*,*) 'iflag_4_coriolis', iflag_4_coriolis
         if(iflag_4_coriolis .gt. id_turn_OFF) then

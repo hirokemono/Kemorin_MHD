@@ -55,7 +55,7 @@
 !
       if(iflag_4_coriolis .eq. id_turn_ON)                              &
      &       d_rad%num_phys = d_rad%num_phys + 1
-      if(iflag_magneto_cv .eq. id_turn_ON)                              &
+      if(cd_prop1%iflag_magneto_cv .eq. id_turn_ON)                     &
      &       d_rad%num_phys = d_rad%num_phys + 1
       if(ref_param_T1%iflag_reference .eq. id_sphere_ref_temp)          &
      &       d_rad%num_phys = d_rad%num_phys + 1
@@ -92,7 +92,7 @@
      &                                + d_rad%num_component(icou)
         irad%i_omega = d_rad%istack_component(icou-1) + 1
       end if
-      if(iflag_magneto_cv .eq. id_turn_ON) then
+      if(cd_prop1%iflag_magneto_cv .eq. id_turn_ON) then
         icou = icou + 1
         d_rad%phys_name(icou) = fhd_back_B
         d_rad%num_component(icou) = n_vector

@@ -109,9 +109,6 @@
      &       = id_no_boundary_file
 !
 !
-!>      Magneto convectio flag
-      integer (kind=kint) :: iflag_magneto_cv = id_turn_OFF
-!
 !  Parameters for FEM dynamo
 !
 !>      Using rotation form for inertia and Lorentz force

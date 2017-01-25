@@ -170,7 +170,7 @@
      &     fl_prop%coef_press, fl_prop%acoef_press, fl_prop%coef_lor,   &
      &       nod_fld%ntot_phys, iphys%i_p_phi, iphys%i_magne,           &
      &       iphys%i_press, nod_fld%d_fld)
-        else if (iflag_magneto_cv .eq. id_turn_ON                       &
+        else if (cd_prop%iflag_magneto_cv .eq. id_turn_ON               &
      &     .and. iflag_4_rotate .eq. id_turn_OFF) then
           call cal_sol_pressure_mcv                                     &
      &       (node%numnod, node%istack_internal_smp,                    &

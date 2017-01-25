@@ -13,6 +13,8 @@
 !
       implicit  none
 !
+!>      Turn OFF flag
+      integer (kind=kint), parameter, private :: id_turn_OFF = 0
 !
 !>     flag for no gravity
       integer (kind = kint), parameter :: iflag_no_gravity =  -1
@@ -70,6 +72,8 @@
 !>       coefficient for magnetic induction
         real  (kind=kreal) :: coef_induct
 !
+!>        Magneto convectio flag
+        integer (kind=kint) :: iflag_magneto_cv = id_turn_OFF
 !>       external magnetic field (Constant)
         real (kind=kreal) :: ex_magne(3)
       end type conductive_property
