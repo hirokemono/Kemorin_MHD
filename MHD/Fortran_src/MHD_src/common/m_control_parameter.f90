@@ -83,8 +83,6 @@
 !
 !>      Turn ON and including magnetic pressure
       integer (kind=kint), parameter :: id_Lorentz_w_Emag = 2
-!>      Force flag for Lorentz force
-      integer (kind=kint) :: iflag_4_lorentz =        id_turn_OFF
 !
 !
       integer (kind=kint) :: num_fl_ele_grp

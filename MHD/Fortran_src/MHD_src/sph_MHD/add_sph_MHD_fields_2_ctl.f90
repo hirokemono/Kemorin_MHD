@@ -7,7 +7,7 @@
 !>@brief Add fields in control list for MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine add_field_name_4_sph_mhd(field_ctl)
+!!      subroutine add_field_name_4_sph_mhd(fl_prop, field_ctl)
 !!      subroutine add_field_name_4_SGS(field_ctl)
 !!      subroutine add_field_name_dynamic_SGS(field_ctl)
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
@@ -20,6 +20,7 @@
       use m_control_parameter
       use m_phys_labels
       use t_read_control_arrays
+      use t_physical_property
 !
       implicit  none
 !
@@ -29,10 +30,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_field_name_4_sph_mhd(field_ctl)
+      subroutine add_field_name_4_sph_mhd(fl_prop, field_ctl)
 !
       use add_nodal_fields_ctl
 !
+      type(fluid_property), intent(in) :: fl_prop
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !
@@ -47,7 +49,7 @@
       end if
 !   magnetic field flag
       if(evo_magne%iflag_scheme .gt. id_no_evolution                    &
-     &     .or. iflag_4_lorentz .gt. id_turn_OFF) then
+     &     .or. fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
         call add_phys_name_ctl(fhd_magne, field_ctl)
         call add_phys_name_ctl(fhd_current, field_ctl)
       end if
@@ -85,7 +87,7 @@
           call add_phys_name_ctl(fhd_div_Coriolis, field_ctl)
         end if
 !   Lorentz flag
-        if(iflag_4_lorentz .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
           call add_phys_name_ctl(fhd_Lorentz, field_ctl)
           call add_phys_name_ctl(fhd_rot_Lorentz, field_ctl)
           call add_phys_name_ctl(fhd_div_Lorentz, field_ctl)

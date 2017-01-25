@@ -190,8 +190,8 @@
 !
 !  -----   set Lorentz force  --------
 !
-        if (iflag_4_lorentz .gt. id_turn_OFF) then
-          if (iflag_4_lorentz .eq. id_turn_ON                           &
+        if (fl_prop%iflag_4_lorentz .ne. id_turn_OFF) then
+          if (fl_prop%iflag_4_lorentz .eq. id_turn_ON                   &
      &         .and. iflag_4_rotate .eq. id_turn_ON) then
             call vector_cst_phys_2_each_ele(node, ele, nod_fld,         &
      &          k2, iphys%i_vecp, fl_prop%coef_lor, mhd_fem_wk%vecp_1)
@@ -446,7 +446,7 @@
 !
 !  -----   set Lorentz force  --------
 !
-        if (iflag_4_lorentz .gt. id_turn_OFF) then
+        if (fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
           if (iflag_4_rotate .eq. id_turn_ON) then
             call vector_cst_phys_2_each_ele(node, ele, nod_fld,         &
      &          k2, iphys%i_vecp, fl_prop%coef_lor, mhd_fem_wk%vecp_1)

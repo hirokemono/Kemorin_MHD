@@ -39,6 +39,7 @@
       subroutine s_set_control_4_normalize(dless_ctl, eqs_ctl)
 !
       use m_control_parameter
+      use m_physical_property
       use m_normalize_parameter
 !
       type(dimless_control), intent(inout) :: dless_ctl
@@ -80,7 +81,7 @@
         MHD_coef_list%coefs_Coriolis%num =  0
         MHD_coef_list%coefs_Lorentz%num =   0
       else
-        call set_coefs_4_momentum_eq(eqs_ctl%mom_ctl)
+        call set_coefs_4_momentum_eq(fl_prop1, eqs_ctl%mom_ctl)
       end if
 !
 !
@@ -174,12 +175,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_coefs_4_momentum_eq(mom_ctl)
+      subroutine set_coefs_4_momentum_eq(fl_prop, mom_ctl)
 !
       use m_control_parameter
       use m_normalize_parameter
       use t_ctl_data_momentum_norm
+      use t_physical_property
 !
+      type(fluid_property), intent(in) :: fl_prop
       type(momentum_equation_control), intent(inout) :: mom_ctl
 !
 !
@@ -244,7 +247,7 @@
         end if
       end if
 !
-      if (iflag_4_lorentz .eq. id_turn_OFF) then
+      if (fl_prop%iflag_4_lorentz .eq. id_turn_OFF) then
         MHD_coef_list%coefs_Lorentz%num = 0
       else
         if(mom_ctl%coef_4_Lorentz%icou .eq. 0) then

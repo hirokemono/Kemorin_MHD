@@ -67,7 +67,7 @@
      &      iphys%i_m_advect, nod_fld%d_fld)
       end if
 !
-      if( (iphys%i_lorentz*iflag_4_lorentz) .gt. 0) then
+      if( (iphys%i_lorentz * fl_prop%iflag_4_lorentz) .gt. 0) then
         call pole_fld_cst_cross_prod                                    &
      &     (node%numnod, node%internal_node, node%xx,                   &
      &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), fl_prop%coef_lor,    &

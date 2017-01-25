@@ -121,7 +121,7 @@
      &       depth_top, depth_bottom)
         end if
 !
-        if ( iflag_4_lorentz .gt. id_turn_OFF) then
+        if ( fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
           call construct_coefficient(fl_prop%coef_lor,                  &
      &       MHD_coef_list%dimless_list, MHD_coef_list%coefs_Lorentz,   &
      &       depth_top, depth_bottom)
@@ -148,7 +148,7 @@
         if (iflag_4_coriolis .gt. id_turn_OFF)      write(*,*)          &
      &         'coefficient for coriolis force:      ',                 &
      &              fl_prop%coef_cor
-        if (iflag_4_lorentz .gt. id_turn_OFF)       write(*,*)          &
+        if (fl_prop%iflag_4_lorentz .gt. id_turn_OFF) write(*,*)        &
      &         'coefficient for Lorentz force:       ',                 &
      &              fl_prop%coef_lor
         end if

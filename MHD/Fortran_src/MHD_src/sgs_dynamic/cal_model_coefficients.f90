@@ -234,7 +234,7 @@
       end if
 !
 !
-      if (iflag_4_lorentz .ne. id_turn_OFF) then
+      if (fl_prop1%iflag_4_lorentz .ne. id_turn_OFF) then
 !
         if (iflag_SGS_lorentz .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)                                         &

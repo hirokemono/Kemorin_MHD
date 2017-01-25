@@ -94,7 +94,7 @@
      &      frc_rtp(1,f_trns%i_m_advect) )
       end if
 !
-      if( (f_trns%i_lorentz*iflag_4_lorentz) .gt. 0) then
+      if( (f_trns%i_lorentz * fl_prop%iflag_4_lorentz) .gt. 0) then
         call cal_cross_prod_w_coef_smp                                  &
      &     (sph_rtp%nnod_rtp, fl_prop%coef_lor,                         &
      &      fld_rtp(1,b_trns%i_current), fld_rtp(1,b_trns%i_magne),     &

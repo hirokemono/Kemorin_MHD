@@ -163,7 +163,7 @@
       real(kind = kreal) :: rel_correct
 !
 !
-      if (iflag_4_lorentz .eq. id_turn_ON) then
+      if (fl_prop%iflag_4_lorentz .eq. id_turn_ON) then
         if (iflag_4_rotate .eq. id_turn_OFF) then
           call cal_sol_pressure_w_mag_ene                               &
      &      (node%numnod, node%istack_internal_smp,                     &

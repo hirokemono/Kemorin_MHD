@@ -10,6 +10,7 @@
       module t_physical_property
 !
       use m_precision
+      use m_constants
 !
       implicit  none
 !
@@ -41,21 +42,24 @@
 !>       coefficient for viscous diffusion
         real  (kind=kreal) :: coef_diffuse
 !
+!>      Force flag for Lorentz force
+        integer (kind=kint) :: iflag_4_lorentz = id_turn_OFF
+!
 !>       coefficient for thermal buoyancy
-        real  (kind=kreal) :: coef_buo
+        real  (kind=kreal) :: coef_buo = zero
 !>       coefficient for Coriolis force
-        real  (kind=kreal) :: coef_cor
+        real  (kind=kreal) :: coef_cor = zero
 !>       coefficient for chemical Lorentz force
-        real  (kind=kreal) :: coef_lor
+        real  (kind=kreal) :: coef_lor = zero
 !>       coefficient for chemical buoyancy
-        real  (kind=kreal) :: coef_comp_buo
+        real  (kind=kreal) :: coef_comp_buo = zero
 !
 !>       flag for gravity type
         integer (kind=kint) :: i_grav
 !>       gravity direction for constant gravity
-        real (kind=kreal) :: grav(3)
+        real (kind=kreal) :: grav(3) = (/zero, zero, one/)
 !>       rotation vector for Coriolis force
-        real (kind=kreal) :: sys_rot(3)
+        real (kind=kreal) :: sys_rot(3) = (/zero, zero, one/)
       end type fluid_property
 !
 !>      Structure for manetic property
@@ -75,7 +79,7 @@
 !>        Magneto convectio flag
         integer (kind=kint) :: iflag_magneto_cv = id_turn_OFF
 !>       external magnetic field (Constant)
-        real (kind=kreal) :: ex_magne(3)
+        real (kind=kreal) :: ex_magne(3) = (/zero, zero, zero/)
       end type conductive_property
 !
 !>      Structure for thermal property
@@ -88,7 +92,7 @@
 !>       coefficient for thermal diffusion
         real  (kind=kreal) :: coef_diffuse
 !>       coefficient for heat source term
-        real  (kind=kreal) :: coef_source
+        real  (kind=kreal) :: coef_source = zero
       end type scalar_property
 !
       end module t_physical_property

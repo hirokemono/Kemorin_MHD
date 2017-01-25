@@ -129,7 +129,7 @@
       call const_sph_div_force(sph_rj, r_2nd, sph_bc_U, g_sph_rj,       &
      &    ipol%i_m_advect, ipol%i_div_inertia, rj_fld)
 !
-      if(iflag_4_lorentz .gt. id_turn_OFF) then
+      if(fl_prop1%iflag_4_lorentz .gt. id_turn_OFF) then
         call const_sph_div_force(sph_rj, r_2nd, sph_bc_U, g_sph_rj,     &
      &      ipol%i_lorentz, ipol%i_div_Lorentz, rj_fld)
       end if
