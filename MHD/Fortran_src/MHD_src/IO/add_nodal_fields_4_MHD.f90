@@ -8,9 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine add_field_name_4_mhd                                 &
-!!     &         (ref_param_T, ref_param_C, field_ctl)
+!!     &         (fl_prop, ref_param_T, ref_param_C, field_ctl)
 !!      subroutine add_ctl_4_ref_temp                                   &
-!!     &        (ref_param_T, ref_param_C, field_ctl)
+!!     &         (ref_param_T, ref_param_C, field_ctl)
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(reference_scalar_param), intent(in) :: ref_param_T
 !!        type(reference_scalar_param), intent(in) :: ref_param_C
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
@@ -24,6 +25,7 @@
       use m_control_parameter
       use m_phys_labels
       use t_read_control_arrays
+      use t_physical_property
       use add_nodal_fields_ctl
 !
       implicit  none
@@ -38,10 +40,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_field_name_4_mhd                                   &
-     &         (ref_param_T, ref_param_C, field_ctl)
+     &         (fl_prop, ref_param_T, ref_param_C, field_ctl)
 !
       use t_reference_scalar_param
 !
+      type(fluid_property), intent(in) :: fl_prop
       type(reference_scalar_param), intent(in) :: ref_param_T
       type(reference_scalar_param), intent(in) :: ref_param_C
       type(ctl_array_c3), intent(inout) :: field_ctl
@@ -54,7 +57,8 @@
 !    set work fields for reference temperature
 !
       if (iflag_debug.eq.1) write(*,*) 'add_ctl_4_forces'
-      call add_ctl_4_forces(ref_param_T, ref_param_C, field_ctl)
+      call add_ctl_4_forces                                             &
+     &   (fl_prop, ref_param_T, ref_param_C, field_ctl)
 !
 !     set work fields for adams-bashforth
 !
@@ -96,10 +100,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_ctl_4_forces                                       &
-     &         (ref_param_T, ref_param_C, field_ctl)
+     &         (fl_prop, ref_param_T, ref_param_C, field_ctl)
 !
       use t_reference_scalar_param
 !
+      type(fluid_property), intent(in) :: fl_prop
       type(reference_scalar_param), intent(in) :: ref_param_T
       type(reference_scalar_param), intent(in) :: ref_param_C
       type(ctl_array_c3), intent(inout) :: field_ctl
@@ -113,7 +118,7 @@
         call add_phys_name_ctl(fhd_part_light, field_ctl)
       end if
 !
-      if (iflag_4_coriolis .gt. id_turn_OFF)                            &
+      if (fl_prop%iflag_4_coriolis .gt. id_turn_OFF)                    &
      &              call add_phys_name_ctl(fhd_Coriolis, field_ctl)
       if (iflag_4_gravity .eq. id_FORCE_at_node)                        &
      &              call add_phys_name_ctl(fhd_buoyancy, field_ctl)

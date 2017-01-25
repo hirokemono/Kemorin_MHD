@@ -53,7 +53,7 @@
         d_rad%num_phys = d_rad%num_phys + num_r_param_ctl
       end if
 !
-      if(iflag_4_coriolis .eq. id_turn_ON)                              &
+      if(fl_prop1%iflag_4_coriolis .eq. id_turn_ON)                     &
      &       d_rad%num_phys = d_rad%num_phys + 1
       if(cd_prop1%iflag_magneto_cv .eq. id_turn_ON)                     &
      &       d_rad%num_phys = d_rad%num_phys + 1
@@ -84,7 +84,7 @@
      &      irad%i_ref_density =   d_rad%istack_component(icou-1) + 1
       end do
 !
-      if(iflag_4_coriolis .eq. id_turn_ON) then
+      if(fl_prop1%iflag_4_coriolis .eq. id_turn_ON) then
         icou = icou + 1
         d_rad%phys_name(icou) = fhd_omega
         d_rad%num_component(icou) = n_vector

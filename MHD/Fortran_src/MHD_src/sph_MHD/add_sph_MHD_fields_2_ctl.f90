@@ -81,7 +81,7 @@
         call add_phys_name_ctl(fhd_div_inertia, field_ctl)
 !
 !   Coriolis flag
-        if(iflag_4_coriolis .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_coriolis .gt. id_turn_OFF) then
           call add_phys_name_ctl(fhd_Coriolis, field_ctl)
           call add_phys_name_ctl(fhd_rot_Coriolis, field_ctl)
           call add_phys_name_ctl(fhd_div_Coriolis, field_ctl)

@@ -63,8 +63,8 @@
       call f_trans_address_vector_MHD                                   &
      &   (fl_prop1, ipol, trns_MHD%nvector_rtp_2_rj, trns_MHD%f_trns)
       call f_trans_address_scalar_MHD                                   &
-     &   (trns_MHD%nvector_rtp_2_rj, trns_MHD%nscalar_rtp_2_rj,         &
-     &    trns_MHD%f_trns)
+     &   (fl_prop1, trns_MHD%nvector_rtp_2_rj,                          &
+     &    trns_MHD%nscalar_rtp_2_rj, trns_MHD%f_trns)
       trns_MHD%ntensor_rtp_2_rj = 0
 !
       nscltsr_rtp_2_rj                                                  &
@@ -237,11 +237,11 @@
         nvector_rtp_2_rj = nvector_rtp_2_rj + 1
         f_trns%i_m_advect = 3*nvector_rtp_2_rj - 2
 !   Coriolis flag
-        if(iflag_4_coriolis .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_coriolis .gt. id_turn_OFF) then
           nvector_rtp_2_rj = nvector_rtp_2_rj + 1
           f_trns%i_coriolis = 3*nvector_rtp_2_rj - 2
         end if
-        if(iflag_4_coriolis .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_coriolis .gt. id_turn_OFF) then
           nvector_rtp_2_rj =      nvector_rtp_2_rj + 1
           f_trns%i_rot_Coriolis = 3*nvector_rtp_2_rj - 2
         end if
@@ -295,11 +295,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine f_trans_address_scalar_MHD(nvector_rtp_2_rj,           &
-     &          nscalar_rtp_2_rj, f_trns)
+      subroutine f_trans_address_scalar_MHD(fl_prop,                    &
+     &          nvector_rtp_2_rj, nscalar_rtp_2_rj, f_trns)
 !
-      use m_control_parameter
-!
+      type(fluid_property), intent(in) :: fl_prop
       integer(kind = kint), intent(in) :: nvector_rtp_2_rj
       integer(kind = kint), intent(inout) :: nscalar_rtp_2_rj
       type(phys_address), intent(inout) :: f_trns
@@ -307,7 +306,7 @@
 !
       nscalar_rtp_2_rj = 0
 !   divergence of Coriolis flux flag
-      call add_scalar_trans_flag(iflag_4_coriolis,                      &
+      call add_scalar_trans_flag(fl_prop%iflag_4_coriolis,              &
      &    nvector_rtp_2_rj, nscalar_rtp_2_rj, f_trns%i_div_Coriolis)
 !
       end subroutine f_trans_address_scalar_MHD

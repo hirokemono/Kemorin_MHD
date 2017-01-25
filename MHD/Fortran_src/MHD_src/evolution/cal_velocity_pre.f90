@@ -222,7 +222,7 @@
      &      ak_MHD%ak_d_velo, iphys%i_velo, fem_wk, f_l)
       end if
 !
-      if ( iflag_4_coriolis .eq. id_Coriolis_ele_imp) then
+      if (fl_prop%iflag_4_coriolis .eq. id_Coriolis_ele_imp) then
          if (iflag_debug.eq.1) write(*,*) 'int_vol_coriolis_crank_ele'
         call int_vol_coriolis_crank_ele(node, ele, fluid, fl_prop,      &
      &      jac_3d_q, rhs_tbl, iphys%i_velo, nod_fld, fem_wk, f_l)

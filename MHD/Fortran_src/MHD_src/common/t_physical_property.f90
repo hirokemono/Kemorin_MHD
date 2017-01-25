@@ -42,7 +42,9 @@
 !>       coefficient for viscous diffusion
         real  (kind=kreal) :: coef_diffuse
 !
-!>      Force flag for Lorentz force
+!>        Force flag for Coriolis force
+        integer (kind=kint) :: iflag_4_coriolis = id_turn_OFF
+!>        Force flag for Lorentz force
         integer (kind=kint) :: iflag_4_lorentz = id_turn_OFF
 !
 !>       coefficient for thermal buoyancy
@@ -57,7 +59,7 @@
 !>       flag for gravity type
         integer (kind=kint) :: i_grav
 !>       gravity direction for constant gravity
-        real (kind=kreal) :: grav(3) = (/zero, zero, one/)
+        real (kind=kreal) :: grav(3) = (/zero, zero, -one/)
 !>       rotation vector for Coriolis force
         real (kind=kreal) :: sys_rot(3) = (/zero, zero, one/)
       end type fluid_property

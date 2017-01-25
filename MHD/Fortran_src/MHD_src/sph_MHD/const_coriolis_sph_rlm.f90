@@ -11,8 +11,8 @@
 !!      subroutine init_sum_coriolis_rlm(l_truncation, sph_rlm, leg)
 !!      subroutine sum_coriolis_rlm(ncomp_trans, sph_rlm, comm_rlm,     &
 !!     &          fl_prop, omega_sph, trns_MHD, leg, n_WR, WR)
-!!      subroutine copy_coriolis_terms_rlm                              &
-!!     &         (ncomp_trans, sph_rlm, comm_rlm, trns_MHD, n_WS, WS)
+!!      subroutine copy_coriolis_terms_rlm(ncomp_trans,                 &
+!!     &          sph_rlm, comm_rlm, fl_prop, trns_MHD, n_WS, WS)
 !!        type(sph_rlm_grid), intent(in)  :: sph_rlm
 !!        type(sph_comm_tbl), intent(inout) :: comm_rlm
 !!        type(fluid_property), intent(in) :: fl_prop
@@ -34,6 +34,8 @@
       use t_poloidal_rotation
       use t_addresses_sph_transform
       use t_schmidt_poly_on_rtm
+      use t_physical_property
+
 !
       implicit none
 !
@@ -108,7 +110,7 @@
       real(kind = kreal), intent(in) :: WR(n_WR)
 !
 !
-      if( iflag_4_coriolis .eq. id_turn_OFF) return
+      if(fl_prop%iflag_4_coriolis .eq. id_turn_OFF) return
 !
       call sum_rot_coriolis_rlm_10(trns_MHD%b_trns,                     &
      &    sph_rlm%nnod_rlm, sph_rlm%nidx_rlm, sph_rlm%a_r_1d_rlm_r,     &
@@ -142,8 +144,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_coriolis_terms_rlm                                &
-     &         (ncomp_trans, sph_rlm, comm_rlm, trns_MHD, n_WS, WS)
+      subroutine copy_coriolis_terms_rlm(ncomp_trans,                   &
+     &          sph_rlm, comm_rlm, fl_prop, trns_MHD, n_WS, WS)
 !
       use m_sph_communicators
       use m_sel_spherical_SRs
@@ -152,13 +154,14 @@
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rlm
+      type(fluid_property), intent(in) :: fl_prop
       type(address_4_sph_trans), intent(in) :: trns_MHD
 !
       integer(kind = kint), intent(in) :: ncomp_trans, n_WS
       real(kind = kreal), intent(inout) :: WS(n_WS)
 !
 !
-      if( iflag_4_coriolis .eq. id_turn_OFF) return
+      if(fl_prop%iflag_4_coriolis .eq. id_turn_OFF) return
 !
       call sel_calypso_to_send_scalar                                   &
      &   (ncomp_trans, sph_rlm%nnod_rlm, n_WS,                          &

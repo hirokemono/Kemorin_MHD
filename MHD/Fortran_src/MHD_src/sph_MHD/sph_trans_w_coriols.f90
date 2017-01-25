@@ -13,7 +13,7 @@
 !!     &          sph, comms_sph, fl_prop, omega_sph, trans_p,          &
 !!     &          n_WS, n_WR, WS, WR, trns_MHD, MHD_mul_FFTW)
 !!      subroutine sph_f_trans_w_coriolis(ncomp_trans, nvector, nscalar,&
-!!     &          sph, comms_sph, trans_p, trns_MHD,                    &
+!!     &          sph, comms_sph, fl_prop, trans_p, trns_MHD,           &
 !!     &          n_WS, n_WR, WS, WR, MHD_mul_FFTW)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
@@ -39,8 +39,8 @@
 !!      subroutine sph_b_trans_licv(ncomp_trans,                        &
 !!     &          sph_rlm, comm_rlm, comm_rj, fl_prop, omega_sph,       &
 !!     &          leg, trns_MHD, n_WR, WR)
-!!      subroutine sph_f_trans_licv(ncomp_trans,                        &
-!!     &         sph_rlm, comm_rlm, comm_rj, trns_MHD, n_WS, WS)
+!!      subroutine sph_f_trans_licv(ncomp_trans, sph_rlm, comm_rlm,     &
+!!     &          comm_rj, fl_prop, trns_MHD, n_WS, WS)
 !!        type(sph_rlm_grid), intent(in) :: sph_rlm
 !!        type(sph_comm_tbl), intent(in) :: comm_rlm
 !!        type(sph_comm_tbl), intent(in) :: comm_rj
@@ -169,11 +169,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sph_f_trans_w_coriolis(ncomp_trans, nvector, nscalar,  &
-     &          sph, comms_sph, trans_p, trns_MHD,                      &
+     &          sph, comms_sph, fl_prop, trans_p, trns_MHD,             &
      &          n_WS, n_WR, WS, WR, MHD_mul_FFTW)
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
+      type(fluid_property), intent(in) :: fl_prop
       type(parameters_4_sph_trans), intent(in) :: trans_p
 !
       integer(kind = kint), intent(in) :: ncomp_trans, nvector, nscalar
@@ -209,7 +210,7 @@
       call start_eleps_time(13)
       if(iflag_debug .gt. 0) write(*,*) 'copy_coriolis_terms_rlm'
       call copy_coriolis_terms_rlm(ncomp_trans,                         &
-     &   sph%sph_rlm, comms_sph%comm_rlm, trns_MHD, n_WS, WS)
+     &   sph%sph_rlm, comms_sph%comm_rlm, fl_prop, trns_MHD, n_WS, WS)
       call end_eleps_time(13)
 !
       START_SRtime= MPI_WTIME()
@@ -370,12 +371,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sph_f_trans_licv(ncomp_trans,                          &
-     &         sph_rlm, comm_rlm, comm_rj, trns_MHD, n_WS, WS)
+      subroutine sph_f_trans_licv(ncomp_trans, sph_rlm, comm_rlm,       &
+     &          comm_rj, fl_prop, trns_MHD, n_WS, WS)
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rlm
       type(sph_comm_tbl), intent(in) :: comm_rj
+      type(fluid_property), intent(in) :: fl_prop
       type(address_4_sph_trans), intent(in) :: trns_MHD
 !
       integer(kind = kint), intent(in) :: ncomp_trans
@@ -386,7 +388,7 @@
       call start_eleps_time(13)
       if(iflag_debug .gt. 0) write(*,*) 'copy_coriolis_terms_rlm'
       call copy_coriolis_terms_rlm                                      &
-     &   (ncomp_trans, sph_rlm, comm_rlm, trns_MHD, n_WS, WS)
+     &   (ncomp_trans, sph_rlm, comm_rlm, fl_prop, trns_MHD, n_WS, WS)
       call end_eleps_time(24)
 !
       START_SRtime= MPI_WTIME()

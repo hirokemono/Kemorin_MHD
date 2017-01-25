@@ -283,7 +283,7 @@
         starttime = MPI_WTIME()
         call sph_back_trans_4_MHD(sph, comms_sph, fl_prop1, omega_sph,  &
      &      trans_p, ipol, rj_fld, trns_MHD, MHD_mul_FFTW)
-        call sph_forward_trans_4_MHD(sph, comms_sph, trans_p,           &
+        call sph_forward_trans_4_MHD(sph, comms_sph, fl_prop1, trans_p, &
      &      ipol, trns_MHD, MHD_mul_FFTW, rj_fld)
         endtime(id_legendre_transfer) = MPI_WTIME() - starttime
 !

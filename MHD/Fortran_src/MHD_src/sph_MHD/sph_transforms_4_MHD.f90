@@ -21,10 +21,12 @@
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(address_4_sph_trans), intent(inout) :: trns_MHD
 !!        type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
-!!      subroutine sph_forward_trans_4_MHD(sph, comms_sph, trans_p,     &
+!!      subroutine sph_forward_trans_4_MHD                              &
+!!     &         (sph, comms_sph, fl_prop, trans_p,                     &
 !!     &          ipol, trns_MHD, MHD_mul_FFTW, rj_fld)
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(phys_address), intent(in) :: ipol
 !!        type(address_4_sph_trans), intent(in) :: trns_MHD
@@ -112,7 +114,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sph_forward_trans_4_MHD(sph, comms_sph, trans_p,       &
+      subroutine sph_forward_trans_4_MHD                                &
+     &         (sph, comms_sph, fl_prop, trans_p,                       &
      &          ipol, trns_MHD, MHD_mul_FFTW, rj_fld)
 !
       use m_solver_SR
@@ -122,6 +125,7 @@
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
+      type(fluid_property), intent(in) :: fl_prop
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(phys_address), intent(in) :: ipol
 !
@@ -138,7 +142,7 @@
       if(trns_MHD%ncomp_rtp_2_rj .eq. 0) return
       call sph_f_trans_w_coriolis(trns_MHD%ncomp_rtp_2_rj,              &
      &    trns_MHD%nvector_rtp_2_rj, trns_MHD%nscalar_rtp_2_rj,         &
-     &    sph, comms_sph, trans_p, trns_MHD,                            &
+     &    sph, comms_sph, fl_prop, trans_p, trns_MHD,                   &
      &    n_WS, n_WR, WS(1), WR(1), MHD_mul_FFTW)
 !
       call copy_mhd_spectr_from_recv(trns_MHD%ncomp_rtp_2_rj,           &
@@ -223,7 +227,7 @@
      &    sph_rlm, comm_rlm, comm_rj, fl_prop, omega_sph,               &
      &    leg, trns_MHD, n_WR, WR(1))
       call sph_f_trans_licv(trns_MHD%ncomp_rtp_2_rj,                    &
-     &    sph_rlm, comm_rlm, comm_rj, trns_MHD, n_WS, WS(1))
+     &    sph_rlm, comm_rlm, comm_rj, fl_prop, trns_MHD, n_WS, WS(1))
 !
       call copy_mhd_spectr_from_recv                                    &
      &   (trns_MHD%ncomp_rtp_2_rj, trns_MHD%f_trns, comm_rj, ipol,      &

@@ -61,7 +61,7 @@
 !     add terms for MHD
 !
         call add_field_name_4_mhd                                       &
-     &     (ref_param_T1, ref_param_C1, field_ctl)
+     &     (fl_prop1, ref_param_T1, ref_param_C1, field_ctl)
         call add_ctl_4_ref_temp                                         &
      &     (ref_param_T1, ref_param_C1, field_ctl)
 !

@@ -235,7 +235,7 @@
         end if
       end if
 !
-      if (iflag_4_coriolis .eq. id_turn_OFF) then
+      if (fl_prop%iflag_4_coriolis .eq. id_turn_OFF) then
         MHD_coef_list%coefs_Coriolis%num = 0
       else
         if(mom_ctl%coef_4_Coriolis%icou .eq. 0) then

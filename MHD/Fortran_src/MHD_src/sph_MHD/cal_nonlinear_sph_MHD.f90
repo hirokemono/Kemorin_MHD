@@ -125,7 +125,7 @@
      &      frc_rtp(1,f_trns%i_c_flux) )
       end if
 !
-!      if( (f_trns%i_Coriolis*iflag_4_coriolis) .gt. 0) then
+!      if( (f_trns%i_Coriolis * fl_prop%iflag_4_coriolis) .gt. 0) then
 !        call cal_wz_coriolis_rtp                                       &
 !     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, fl_prop%coef_cor,      &
 !     &      fld_rtp(1,b_trns%i_velo), frc_rtp(1,f_trns%i_Coriolis))

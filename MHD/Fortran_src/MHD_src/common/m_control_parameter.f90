@@ -78,8 +78,6 @@
       integer (kind=kint), parameter :: id_Coriolis_ele_imp = 11
 !>      Turn ON and evaluate implicitly at node flag
       integer (kind=kint), parameter :: id_Coriolis_nod_imp = 12
-!>      Force flag for Coriolis force
-      integer (kind=kint) :: iflag_4_coriolis =       id_turn_OFF
 !
 !>      Turn ON and including magnetic pressure
       integer (kind=kint), parameter :: id_Lorentz_w_Emag = 2

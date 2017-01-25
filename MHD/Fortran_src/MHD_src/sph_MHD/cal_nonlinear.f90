@@ -142,24 +142,24 @@
 !
 !$omp parallel
       if(      iflag_4_gravity  .ne. id_turn_OFF                        &
-     &   .and. iflag_4_coriolis .ne. id_turn_OFF                        &
+     &   .and. fl_prop1%iflag_4_coriolis .ne. id_turn_OFF               &
      &   .and. fl_prop1%iflag_4_lorentz  .ne. id_turn_OFF) then
         call set_MHD_terms_to_force(ipol, itor, itor%i_rot_buoyancy,    &
      &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
       else if( iflag_4_gravity  .eq.     id_turn_OFF                    &
      &   .and. iflag_4_composit_buo .ne. id_turn_OFF                    &
-     &   .and. iflag_4_coriolis .ne.     id_turn_OFF                    &
+     &   .and. fl_prop1%iflag_4_coriolis .ne.     id_turn_OFF           &
      &   .and. fl_prop1%iflag_4_lorentz  .ne.     id_turn_OFF) then
         call set_MHD_terms_to_force(ipol, itor, itor%i_rot_comp_buo,    &
      &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
       else if( iflag_4_gravity  .ne. id_turn_OFF                        &
-     &   .and. iflag_4_coriolis .ne. id_turn_OFF                        &
+     &   .and. fl_prop1%iflag_4_coriolis .ne. id_turn_OFF               &
      &   .and. fl_prop1%iflag_4_lorentz  .eq. id_turn_OFF) then
         call set_rot_cv_terms_to_force(ipol, itor, itor%i_rot_buoyancy, &
      &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
       else if( iflag_4_gravity  .eq.     id_turn_OFF                    &
      &   .and. iflag_4_composit_buo .ne. id_turn_OFF                    &
-     &   .and. iflag_4_coriolis .ne.     id_turn_OFF                    &
+     &   .and. fl_prop1%iflag_4_coriolis .ne.     id_turn_OFF           &
      &   .and. fl_prop1%iflag_4_lorentz  .eq.     id_turn_OFF) then
         call set_rot_cv_terms_to_force(ipol, itor, itor%i_rot_comp_buo, &
      &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
@@ -168,7 +168,7 @@
           call set_rot_advection_to_force                               &
      &     (ipol, itor, sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
-        if(iflag_4_coriolis .ne. id_turn_OFF) then
+        if(fl_prop1%iflag_4_coriolis .ne. id_turn_OFF) then
           call add_coriolis_to_vort_force(ipol, itor,                   &
      &        sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
@@ -255,7 +255,7 @@
 !
       call start_eleps_time(16)
       if (iflag_debug.ge.1) write(*,*) 'sph_forward_trans_4_MHD'
-      call sph_forward_trans_4_MHD(sph, comms_sph, trans_p,             &
+      call sph_forward_trans_4_MHD(sph, comms_sph, fl_prop1, trans_p,   &
      &    ipol, trns_MHD, MHD_mul_FFTW, rj_fld)
       call end_eleps_time(16)
 !
@@ -377,8 +377,8 @@
 !
 !*  ----  copy velocity for coriolis term ------------------
 !*
-      if (iflag_debug.eq.1) write(*,*) 'sph_transform_4_licv'
-      if(iflag_4_coriolis .ne. id_turn_OFF) then
+      if(iflag_debug.eq.1) write(*,*) 'sph_transform_4_licv'
+      if(fl_prop1%iflag_4_coriolis .ne. id_turn_OFF) then
         call sph_transform_4_licv                                       &
      &     (sph_rlm, comm_rlm, comm_rj, fl_prop1, omega_sph, leg,       &
      &      trns_MHD, ipol, rj_fld)
@@ -413,7 +413,7 @@
 !
 !
 !$omp parallel
-      if(iflag_4_coriolis .ne. id_turn_OFF) then
+      if(fl_prop1%iflag_4_coriolis .ne. id_turn_OFF) then
         call add_coriolis_to_vort_force(ipol, itor,                     &
      &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
       end if

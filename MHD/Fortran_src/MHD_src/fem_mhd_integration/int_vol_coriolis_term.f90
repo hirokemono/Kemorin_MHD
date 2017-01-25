@@ -54,12 +54,12 @@
       type(finite_ele_mat_node), intent(inout) :: f_l, f1_nl
 !
 !
-      if ( iflag_4_coriolis .eq. id_FORCE_at_node) then
+      if (fl_prop%iflag_4_coriolis .eq. id_FORCE_at_node) then
         call cal_coriolis_nod(node%numnod, node%istack_nod_smp,         &
      &      fl_prop%sys_rot, fl_prop%coef_cor,                          &
      &      mhd_fem_wk%mlump_fl%ml_o, nod_fld%ntot_phys,                &
      &      i_velo, nod_fld%d_fld, f1_nl%ff)
-      else if ( iflag_4_coriolis .eq. id_Coriolis_nod_imp) then
+      else if (fl_prop%iflag_4_coriolis .eq. id_Coriolis_nod_imp) then
         call cal_coriolis_nod(node%numnod, node%istack_nod_smp,         &
      &      fl_prop%sys_rot, fl_prop%coef_cor,                          &
      &      mhd_fem_wk%mlump_fl%ml_o, nod_fld%ntot_phys, i_velo,        &

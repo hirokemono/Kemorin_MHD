@@ -54,7 +54,7 @@
 !
 !
       iflag_4_gravity =        id_turn_OFF
-      iflag_4_coriolis =       id_turn_OFF
+      fl_prop%iflag_4_coriolis =       id_turn_OFF
       fl_prop%iflag_4_lorentz =        id_turn_OFF
       iflag_4_rotate =         id_turn_OFF
       iflag_4_composit_buo =   id_turn_OFF
@@ -133,35 +133,35 @@
      &       ) iflag_4_filter_gravity =  id_FORCE_ele_int
 !
           if (cmp_no_case(name_force(i), 'Coriolis')                    &
-     &        )  iflag_4_coriolis = id_FORCE_ele_int
+     &        )  fl_prop%iflag_4_coriolis = id_FORCE_ele_int
 !
           if (cmp_no_case(name_force(i), 'Coriolis_node')) then
             if(evo_velo%iflag_scheme .eq. id_Crank_nicolson_cmass) then
-              iflag_4_coriolis = id_FORCE_ele_int
+              fl_prop%iflag_4_coriolis = id_FORCE_ele_int
             else
-              iflag_4_coriolis = id_FORCE_at_node
+              fl_prop%iflag_4_coriolis = id_FORCE_at_node
             end if
           end if
 !
           if(cmp_no_case(name_force(i), 'Coriolis_imp')) then
             if(evo_velo%iflag_scheme .eq. id_Crank_nicolson) then
-              iflag_4_coriolis = id_Coriolis_ele_imp
+              fl_prop%iflag_4_coriolis = id_Coriolis_ele_imp
             else if(evo_velo%iflag_scheme .eq. id_Crank_nicolson_cmass) &
      &          then
-              iflag_4_coriolis = id_Coriolis_ele_imp
+              fl_prop%iflag_4_coriolis = id_Coriolis_ele_imp
             else
-              iflag_4_coriolis = id_FORCE_ele_int
+              fl_prop%iflag_4_coriolis = id_FORCE_ele_int
             end if
           end if
 !
           if(cmp_no_case(name_force(i), 'Coriolis_node_imp')) then
             if(evo_velo%iflag_scheme .eq. id_Crank_nicolson) then
-              iflag_4_coriolis = id_Coriolis_nod_imp
+              fl_prop%iflag_4_coriolis = id_Coriolis_nod_imp
             else if(evo_velo%iflag_scheme .eq. id_Crank_nicolson_cmass) &
      &               then
-              iflag_4_coriolis = id_Coriolis_ele_imp
+              fl_prop%iflag_4_coriolis = id_Coriolis_ele_imp
             else
-              iflag_4_coriolis = id_FORCE_ele_int
+              fl_prop%iflag_4_coriolis = id_FORCE_ele_int
             end if
           end if
 !
@@ -221,7 +221,8 @@
       fl_prop%sys_rot(1:2) = zero
       fl_prop%sys_rot(3) =   one
 !
-      if ((iflag_4_coriolis*cor_ctl%system_rotation%icou) .gt. 0) then
+      if ((fl_prop%iflag_4_coriolis * cor_ctl%system_rotation%icou)     &
+     &      .gt. 0) then
         do i = 1, cor_ctl%system_rotation%num
           if(cmp_no_case(cor_ctl%system_rotation%c_tbl(i),'X')          &
      &       )  fl_prop%sys_rot(1) = cor_ctl%system_rotation%vect(i)
@@ -275,8 +276,8 @@
 !
         write(*,*) 'magneto_cv ', cd_prop%iflag_magneto_cv
         write(*,'(a,1p3E25.15e3)') 'ex_magne ',cd_prop%ex_magne
-        write(*,*) 'iflag_4_coriolis', iflag_4_coriolis
-        if(iflag_4_coriolis .gt. id_turn_OFF) then
+        write(*,*) 'iflag_4_coriolis', fl_prop%iflag_4_coriolis
+        if(fl_prop%iflag_4_coriolis .gt. id_turn_OFF) then
           write(*,'(a, 1p3E25.15e3)') 'rotation:', fl_prop%sys_rot(1:3)
         end if
       end if
