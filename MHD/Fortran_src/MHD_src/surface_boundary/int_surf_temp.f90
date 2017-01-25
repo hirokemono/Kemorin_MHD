@@ -4,18 +4,19 @@
 !     Written by H. Matsui on June, 2005
 !
 !!      subroutine int_surf_temp_ele(iak_diff_hf, ak_d_temp,            &
-!!     &          node, ele, surf, sf_grp, iphys, nod_fld,              &
+!!     &          node, ele, surf, sf_grp, property, iphys, nod_fld,    &
 !!     &          surf_bc, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,  &
 !!     &          fem_wk, surf_wk, f_l, f_nl)
 !!      subroutine int_surf_temp_monitor                                &
 !!     &         (i_field, iak_diff_hf, ak_d_temp,                      &
-!!     &          node, ele, surf, sf_grp, iphys, nod_fld, surf_bc,     &
-!!     &          jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,           &
+!!     &          node, ele, surf, sf_grp, property, iphys, nod_fld,    &
+!!     &          surf_bc, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,  &
 !!     &          fem_wk, surf_wk, f_l, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(scalar_property), intent(in) :: property
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
@@ -32,6 +33,7 @@
       use m_precision
       use m_control_parameter
 !
+      use t_physical_property
       use t_geometry_data
       use t_surface_data
       use t_group_data
@@ -54,7 +56,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_surf_temp_ele(iak_diff_hf, ak_d_temp,              &
-     &          node, ele, surf, sf_grp, iphys, nod_fld,                &
+     &          node, ele, surf, sf_grp, property, iphys, nod_fld,      &
      &          surf_bc, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,    &
      &          fem_wk, surf_wk, f_l, f_nl)
 !
@@ -65,6 +67,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(scalar_property), intent(in) :: property
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_2d), intent(in) :: jac_sf_grp
@@ -95,7 +98,7 @@
      &      surf_bc%sgs%ngrp_sf_dat, surf_bc%sgs%id_grp_sf_dat,         &
      &      ifilter_final, iphys%i_SGS_h_flux, iphys%i_velo,            &
      &      iphys%i_temp, diff_coefs%num_field, iak_diff_hf,            &
-     &      diff_coefs%ak, ht_prop1%coef_advect, fem_wk, surf_wk, f_nl)
+     &      diff_coefs%ak, property%coef_advect, fem_wk, surf_wk, f_nl)
       end if
 !
       end subroutine int_surf_temp_ele
@@ -104,8 +107,8 @@
 !
       subroutine int_surf_temp_monitor                                  &
      &         (i_field, iak_diff_hf, ak_d_temp,                        &
-     &          node, ele, surf, sf_grp, iphys, nod_fld, surf_bc,       &
-     &          jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,             &
+     &          node, ele, surf, sf_grp, property, iphys, nod_fld,      &
+     &          surf_bc, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,    &
      &          fem_wk, surf_wk, f_l, f_nl)
 !
       use int_surf_div_fluxes_sgs
@@ -115,6 +118,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(scalar_property), intent(in) :: property
       integer(kind= kint), intent(in) :: i_field
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
@@ -148,7 +152,7 @@
      &      surf_bc%sgs%ngrp_sf_dat, surf_bc%sgs%id_grp_sf_dat,         &
      &      ifilter_final, iphys%i_SGS_h_flux, iphys%i_velo,            &
      &      iphys%i_temp, diff_coefs%num_field, iak_diff_hf,            &
-     &      diff_coefs%ak, ht_prop1%coef_advect, fem_wk, surf_wk, f_nl)
+     &      diff_coefs%ak, property%coef_advect, fem_wk, surf_wk, f_nl)
       end if
 !
       end subroutine int_surf_temp_monitor

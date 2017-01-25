@@ -9,8 +9,8 @@
 !!     &          icomp_sgs, iphys_elediff, sgs_coefs, sgs_coefs_nod,   &
 !!     &          filtering, wk_filter, mhd_fem_wk, fem_wk,             &
 !!     &          f_l, f_nl, nod_fld)
-!!      subroutine cal_diff_of_sgs_terms(nod_comm, node, ele,           &
-!!     &          surf, sf_grp, fluid, conduct, fl_prop, cd_prop,       &
+!!      subroutine cal_diff_of_sgs_terms(nod_comm, node, ele, surf,     &
+!!     &          sf_grp, fluid, conduct, fl_prop, cd_prop, ht_prop,    &
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,          &
 !!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,               &
 !!     &          ifld_diff, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,   &
@@ -175,8 +175,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_diff_of_sgs_terms(nod_comm, node, ele,             &
-     &          surf, sf_grp, fluid, conduct, fl_prop, cd_prop,         &
+      subroutine cal_diff_of_sgs_terms(nod_comm, node, ele, surf,       &
+     &          sf_grp, fluid, conduct, fl_prop, cd_prop, ht_prop,      &
      &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,            &
      &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                 &
      &          ifld_diff, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,     &
@@ -193,6 +193,7 @@
       type(field_geometry_data), intent(in) :: fluid, conduct
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop
       type(surface_group_data), intent(in) :: sf_grp
       type(nodal_boundarty_conditions), intent(in) :: nod_bcs
       type(surface_boundarty_conditions), intent(in) :: surf_bcs
@@ -221,7 +222,7 @@
      &        'lead ', trim(fhd_div_SGS_h_flux)
         call cal_terms_4_heat(iphys%i_SGS_div_h_flux,                   &
      &      ifld_diff%i_heat_flux, ak_MHD%ak_d_temp,                    &
-     &      nod_comm, node, ele, surf, fluid, sf_grp,                   &
+     &      nod_comm, node, ele, surf, fluid, sf_grp, ht_prop,          &
      &      nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,                  &
      &      iphys_ele, ele_fld,  jac_3d, jac_sf_grp, rhs_tbl,           &
      &      FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,         &
@@ -251,7 +252,7 @@
      &        'lead ', trim(fhd_SGS_induction)
         call cal_terms_4_magnetic(iphys%i_SGS_induction,                &
      &      ifld_diff%i_induction, ak_MHD%ak_d_magne,                   &
-     &      nod_comm, node, ele, surf, conduct, sf_grp,                 &
+     &      nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,        &
      &      nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,       &
      &      iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,     &
      &      FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,         &

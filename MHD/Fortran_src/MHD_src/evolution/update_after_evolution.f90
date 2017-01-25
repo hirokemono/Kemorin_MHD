@@ -185,7 +185,7 @@
       if ( evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'cal_magne_vector_potential'
         call cal_vector_potential(mesh%nod_comm, mesh%node, mesh%ele,   &
-     &     ele_mesh%surf, MHD_mesh%conduct, group%surf_grp,             &
+     &     ele_mesh%surf, MHD_mesh%conduct, group%surf_grp, cd_prop1,   &
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Fsf_bcs,        &
      &     iphys, iphys_ele, ele_fld,                                   &
      &     jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,     &
@@ -206,11 +206,11 @@
 !
       else if(evo_magne%iflag_scheme .gt. id_no_evolution) then
 !
-!        call check_surface_param_smp('cal_magnetic_field_pre start',   &
+!        call check_surface_param_smp('cal_magnetic_field start',       &
 !     &      my_rank, sf_grp, group%surf_nod_grp)
         if (iflag_debug.eq.1) write(*,*) 's_cal_magnetic_field'
         call s_cal_magnetic_field(mesh%nod_comm, mesh%node, mesh%ele,   &
-     &     ele_mesh%surf, MHD_mesh%conduct, group%surf_grp,             &
+     &     ele_mesh%surf, MHD_mesh%conduct, group%surf_grp, cd_prop1,   &
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,        &
      &     surf_bcs%Fsf_bcs, iphys, iphys_ele, ele_fld,                 &
      &     jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,     &
@@ -237,10 +237,10 @@
           if (iflag_debug.eq.1) write(*,*) 'cal_parturbation_temp'
           call cal_parturbation_temp                                    &
      &      (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,         &
-     &       MHD_mesh%fluid, group%surf_grp, nod_bcs%Tnod_bcs,          &
-     &       surf_bcs%Tsf_bcs, iphys, iphys_ele, ele_fld,               &
-     &       jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,                &
-     &       icomp_sgs, ifld_diff, iphys_elediff,                       &
+     &       MHD_mesh%fluid, group%surf_grp, ht_prop1,                  &
+     &       nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,                 &
+     &       iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl,       &
+     &       FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,            &
      &       sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,           &
      &       s_package%Tmatrix, ak_MHD%ak_d_temp, wk_filter,            &
      &       mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
@@ -250,10 +250,10 @@
           if (iflag_debug.eq.1) write(*,*) 'cal_temperature_field'
           call cal_temperature_field                                    &
      &      (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,         &
-     &       MHD_mesh%fluid, group%surf_grp, nod_bcs%Tnod_bcs,          &
-     &       surf_bcs%Tsf_bcs, iphys, iphys_ele, ele_fld,               &
-     &       jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,                &
-     &       icomp_sgs, ifld_diff, iphys_elediff,                       &
+     &       MHD_mesh%fluid, group%surf_grp, ht_prop1,                  &
+     &       nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,                 &
+     &       iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl,       &
+     &       FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,            &
      &       sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,           &
      &       s_package%Tmatrix, ak_MHD%ak_d_temp, wk_filter,            &
      &       mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
@@ -514,8 +514,9 @@
         if( ref_param_T1%iflag_reference .ne. id_no_ref_temp) then
           if (iflag_debug.eq.1) write(*,*) 'cal_parturbation_temp'
           call cal_parturbation_temp                                    &
-     &       (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf, fluid, &
-     &        group%surf_grp, nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,       &
+     &       (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
+     &        fluid, group%surf_grp, ht_prop1,                          &
+     &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                       &
      &        iphys, iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q,        &
      &        rhs_tbl, FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,  &
      &        sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,          &
@@ -524,8 +525,9 @@
         else
           if (iflag_debug.eq.1) write(*,*) 'cal_temperature_field'
           call cal_temperature_field                                    &
-     &       (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf, fluid, &
-     &        group%surf_grp, nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,       &
+     &       (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
+     &        fluid, group%surf_grp, ht_prop1,                          &
+     &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                       &
      &        iphys, iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q,        &
      &        rhs_tbl, FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,  &
      &        sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,          &

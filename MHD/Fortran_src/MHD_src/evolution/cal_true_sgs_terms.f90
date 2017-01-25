@@ -3,8 +3,8 @@
 !
 !      Written by H. Matsui on Oct., 2005
 !
-!!      subroutine cal_true_sgs_terms_pre(nod_comm, node, ele,          &
-!!     &          surf, sf_grp, fluid, conduct, fl_prop, cd_prop,       &
+!!      subroutine cal_true_sgs_terms_pre(nod_comm, node, ele, surf,    &
+!!     &          sf_grp, fluid, conduct, fl_prop, cd_prop, ht_prop,    &
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,          &
 !!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,               &
 !!     &          ifld_diff, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,   &
@@ -19,6 +19,7 @@
 !!        type(field_geometry_data), intent(in) :: fluid, conduct
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in)  :: cd_prop
+!!        type(scalar_property), intent(in) :: ht_prop
 !!        type(nodal_boundarty_conditions), intent(in) :: nod_bcs
 !!        type(surface_boundarty_conditions), intent(in) :: surf_bcs
 !!        type(phys_address), intent(in) :: iphys
@@ -87,8 +88,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_true_sgs_terms_pre(nod_comm, node, ele,            &
-     &          surf, sf_grp, fluid, conduct, fl_prop, cd_prop,         &
+      subroutine cal_true_sgs_terms_pre(nod_comm, node, ele, surf,      &
+     &          sf_grp, fluid, conduct, fl_prop, cd_prop, ht_prop,      &
      &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,            &
      &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                 &
      &          ifld_diff, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,     &
@@ -105,6 +106,7 @@
       type(field_geometry_data), intent(in) :: fluid, conduct
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in)  :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop
       type(nodal_boundarty_conditions), intent(in) :: nod_bcs
       type(surface_boundarty_conditions), intent(in) :: surf_bcs
       type(phys_address), intent(in) :: iphys
@@ -131,7 +133,7 @@
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_h_flux_true_pre(ifld_diff%i_heat_flux,      &
-     &         nod_comm, node, ele, surf, sf_grp, fluid,                &
+     &         nod_comm, node, ele, surf, sf_grp, fluid, ht_prop,       &
      &         nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,               &
      &         iphys_ele, ele_fld, ak_MHD, jac_3d, jac_sf_grp, rhs_tbl, &
      &         FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,      &
@@ -162,7 +164,7 @@
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_induct_true_pre(ifld_diff%i_induction,      &
-     &        nod_comm, node, ele, surf, sf_grp, conduct,               &
+     &        nod_comm, node, ele, surf, sf_grp, conduct, cd_prop,      &
      &        nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,     &
      &        iphys, iphys_ele, ele_fld, ak_MHD, jac_3d, jac_sf_grp,    &
      &        rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk, fem_wk,       &
@@ -225,7 +227,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_div_sgs_h_flux_true_pre(iak_diff_hf,               &
-     &         nod_comm, node, ele, surf, sf_grp, fluid,                &
+     &         nod_comm, node, ele, surf, sf_grp, fluid, property,      &
      &         Tnod_bcs, Tsf_bcs, iphys, iphys_ele, ele_fld, ak_MHD,    &
      &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,      &
      &         mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
@@ -243,6 +245,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(field_geometry_data), intent(in) :: fluid
+      type(scalar_property), intent(in) :: property
       type(nodal_bcs_4_scalar_type), intent(in) :: Tnod_bcs
       type(scaler_surf_bc_type), intent(in) :: Tsf_bcs
       type(phys_address), intent(in) :: iphys
@@ -269,10 +272,10 @@
 !$omp end parallel
       call cal_terms_4_heat                                             &
      &   (iphys%i_h_flux_div, iak_diff_hf, ak_MHD%ak_d_temp,            &
-     &    nod_comm, node, ele, surf, fluid, sf_grp, Tnod_bcs, Tsf_bcs,  &
-     &    iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp,                &
-     &    rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,  &
-     &    f_l, f_nl, nod_fld)
+     &    nod_comm, node, ele, surf, fluid, sf_grp, property,           &
+     &    Tnod_bcs, Tsf_bcs, iphys, iphys_ele, ele_fld,                 &
+     &    jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,           &
+     &    mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
       call copy_scalar_component(nod_fld,                               &
      &    iphys%i_h_flux_div, iphys%i_SGS_div_hf_true)
 !
@@ -353,7 +356,7 @@
       type(surface_data), intent(in) :: surf
       type(field_geometry_data), intent(in) :: fluid
       type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in)  :: cd_prop
+      type(conductive_property), intent(in) :: cd_prop
       type(surface_group_data), intent(in) :: sf_grp
       type(velocity_surf_bc_type), intent(in)  :: Vsf_bcs
       type(vector_surf_bc_type), intent(in) :: Bsf_bcs
@@ -390,7 +393,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_div_sgs_induct_true_pre(iak_diff_uxb,              &
-     &         nod_comm, node, ele, surf,  sf_grp, conduct,             &
+     &         nod_comm, node, ele, surf, sf_grp, conduct, cd_prop,     &
      &         Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,   &
      &         ak_MHD, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,          &
      &         diff_coefs, mhd_fem_wk, fem_wk, surf_wk,                 &
@@ -407,6 +410,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(field_geometry_data), intent(in) :: conduct
+      type(conductive_property), intent(in) :: cd_prop
       type(surface_group_data), intent(in) :: sf_grp
       type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
       type(velocity_surf_bc_type), intent(in) :: Asf_bcs
@@ -433,7 +437,7 @@
      &    nod_fld)
       call cal_terms_4_magnetic                                         &
      &   (iphys%i_induct_div, iak_diff_uxb, ak_MHD%ak_d_magne,          &
-     &    nod_comm, node, ele, surf, conduct, sf_grp,                   &
+     &    nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,          &
      &    Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,        &
      &    jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,           &
      &    mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)

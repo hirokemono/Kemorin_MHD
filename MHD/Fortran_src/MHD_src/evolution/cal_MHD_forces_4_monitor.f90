@@ -5,10 +5,10 @@
 !
 !!      subroutine cal_fluxes_4_monitor                                 &
 !!     &         (node, fl_prop, cd_prop, iphys, nod_fld)
-!!      subroutine cal_forces_4_monitor                                 &
-!!     &         (nod_comm, node, ele, surf, fluid, conduct, sf_grp,    &
-!!     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,          &
-!!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,               &
+!!      subroutine cal_forces_4_monitor(nod_comm, node, ele, surf,      &
+!!     &          fluid, conduct, sf_grp, fl_prop, cd_prop, ht_prop,    &
+!!     &          nod_bcs, surf_bcs, iphys, iphys_ele,                  &
+!!     &          ak_MHD, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,       &
 !!     &          ifld_diff, diff_coefs, m_lump, mhd_fem_wk, fem_wk,    &
 !!     &          surf_wk, f_l, f_nl, nod_fld, ele_fld)
 !!      subroutine cal_work_4_forces                                    &
@@ -131,10 +131,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_forces_4_monitor                                   &
-     &         (nod_comm, node, ele, surf, fluid, conduct, sf_grp,      &
-     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,            &
-     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                 &
+      subroutine cal_forces_4_monitor(nod_comm, node, ele, surf,        &
+     &          fluid, conduct, sf_grp, fl_prop, cd_prop, ht_prop,      &
+     &          nod_bcs, surf_bcs, iphys, iphys_ele,                    &
+     &          ak_MHD, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,         &
      &          ifld_diff, diff_coefs, m_lump, mhd_fem_wk, fem_wk,      &
      &          surf_wk, f_l, f_nl, nod_fld, ele_fld)
 !
@@ -150,6 +150,9 @@
       type(surface_data), intent(in) :: surf
       type(field_geometry_data), intent(in) :: fluid, conduct
       type(surface_group_data), intent(in) :: sf_grp
+      type(fluid_property),  intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop
       type(nodal_boundarty_conditions), intent(in) :: nod_bcs
       type(surface_boundarty_conditions), intent(in) :: surf_bcs
       type(phys_address), intent(in) :: iphys
@@ -183,7 +186,7 @@
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call cal_terms_4_heat                                         &
      &       (i_fld, ifld_diff%i_heat_flux, ak_MHD%ak_d_temp,           &
-     &        nod_comm, node, ele, surf, fluid, sf_grp,                 &
+     &        nod_comm, node, ele, surf, fluid, sf_grp, ht_prop,        &
      &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,                &
      &        iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,          &
      &        FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,       &
@@ -208,7 +211,7 @@
           call cal_terms_4_momentum                                     &
      &       (i_fld, ifld_diff%i_velo, ifld_diff%i_lorentz,             &
      &        nod_comm, node, ele, surf, sf_grp, fluid,                 &
-     &        fl_prop1, cd_prop1, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,   &
+     &        fl_prop, cd_prop, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,     &
      &        iphys, iphys_ele, ak_MHD, jac_3d, jac_sf_grp, rhs_tbl,    &
      &        FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,       &
      &        f_l, f_nl, nod_fld, ele_fld)
@@ -225,7 +228,7 @@
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call cal_terms_4_magnetic                                     &
      &       (i_fld, ifld_diff%i_induction, ak_MHD%ak_d_magne,          &
-     &        nod_comm, node, ele, surf, conduct, sf_grp,               &
+     &        nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,      &
      &        nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,     &
      &        iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,   &
      &        FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,       &
@@ -237,7 +240,7 @@
       if (iphys%i_vp_induct .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_vp_induct)
-        call cal_vecp_induction(nod_comm, node, ele, conduct,           &
+        call cal_vecp_induction(nod_comm, node, ele, conduct, cd_prop,  &
      &       nod_bcs%Bnod_bcs, iphys, iphys_ele, ele_fld, jac_3d,       &
      &       rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
@@ -248,7 +251,7 @@
      &             write(*,*) 'lead  ', trim(fhd_thermal_diffusion)
         call cal_thermal_diffusion                                      &
      &     (ifld_diff%i_heat_flux, ifld_diff%i_temp, ak_MHD%ak_d_temp,  &
-     &      nod_comm, node, ele, surf, fluid, sf_grp,                   &
+     &      nod_comm, node, ele, surf, fluid, sf_grp, ht_prop,          &
      &      nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,                  &
      &      jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,         &
      &      mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
@@ -259,7 +262,7 @@
 !     &             write(*,*) 'lead  ', trim(fhd_thermal_diffusion)
 !        call cal_thermal_diffusion                                     &
 !     &     (ifld_diff%i_heat_flux, ifld_diff%i_temp, ak_MHD%ak_d_temp, &
-!     &      nod_comm, node, ele, surf, fluid, sf_grp,                  &
+!     &      nod_comm, node, ele, surf, fluid, sf_grp, ht_prop,         &
 !     &      nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,                 &
 !     &      jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,        &
 !     &      mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
@@ -270,7 +273,7 @@
      &             write(*,*) 'lead  ', trim(fhd_viscous)
         call cal_viscous_diffusion                                      &
      &     (ifld_diff%i_velo, ifld_diff%i_velo, ifld_diff%i_lorentz,    &
-     &      nod_comm, node, ele, surf, sf_grp, fluid, fl_prop1,         &
+     &      nod_comm, node, ele, surf, sf_grp, fluid, fl_prop,          &
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,       &
      &      iphys, ak_MHD, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,      &
      &      diff_coefs, mhd_fem_wk, fem_wk, surf_wk,                    &

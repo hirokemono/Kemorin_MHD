@@ -3,7 +3,8 @@
 !
 !     Written by H. Matsui on June, 2005
 !
-!!      subroutine cal_vecp_induction(nod_comm, node, ele, conduct,     &
+!!      subroutine cal_vecp_induction                                   &
+!!     &         (nod_comm, node, ele, conduct, cd_prop,                &
 !!     &          Bnod_bcs, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_vecp_diffusion(iak_diff_b, ak_d_magne,           &
@@ -15,6 +16,7 @@
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(field_geometry_data), intent(in) :: conduct
+!!        type(conductive_property), intent(in) :: cd_prop
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
 !!        type(velocity_surf_bc_type), intent(in) :: Asf_bcs
@@ -36,8 +38,8 @@
 !
       use m_phys_constants
       use m_control_parameter
-      use m_physical_property
 !
+      use t_physical_property
       use t_comm_table
       use t_geometry_data_MHD
       use t_geometry_data
@@ -68,7 +70,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_vecp_induction(nod_comm, node, ele, conduct,       &
+      subroutine cal_vecp_induction                                     &
+     &         (nod_comm, node, ele, conduct, cd_prop,                  &
      &          Bnod_bcs, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl,   &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
@@ -80,6 +83,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: conduct
+      type(conductive_property), intent(in) :: cd_prop
       type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
@@ -97,12 +101,12 @@
 !
       if (iflag_mag_supg .gt. id_turn_OFF) then
         call int_vol_vect_p_pre_ele_upm                                 &
-     &     (node, ele, conduct, cd_prop1, iphys, nod_fld,               &
+     &     (node, ele, conduct, cd_prop, iphys, nod_fld,                &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
      &      jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
       else
         call int_vol_vect_p_pre_ele                                     &
-     &     (node, ele, conduct, cd_prop1, iphys, nod_fld,               &
+     &     (node, ele, conduct, cd_prop, iphys, nod_fld,                &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
      &      jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
       end if

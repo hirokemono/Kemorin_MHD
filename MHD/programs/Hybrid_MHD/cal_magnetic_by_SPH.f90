@@ -124,7 +124,6 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call cal_vecp_induction
       call cal_sgs_uxb_2_monitor
      &   (icomp_sgs%i_induction, iphys_elediff%i_velo,                  &
      &    mesh1%nod_comm, mesh1%node, mesh1%ele, conduct, cd_prop1,     &

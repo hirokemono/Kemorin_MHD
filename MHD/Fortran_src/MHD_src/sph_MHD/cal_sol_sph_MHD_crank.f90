@@ -87,14 +87,14 @@
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_temperature_sph_crank'
       if(evo_temp%iflag_scheme .gt. id_no_evolution) then
         call cal_sol_temperature_sph_crank                              &
-     &     (sph_rj, band_temp_evo, ipol, rj_fld)
+     &     (sph_rj, ht_prop1, band_temp_evo, ipol, rj_fld)
       end if
 !g
 !  Input: ipol%i_light,  Solution: ipol%i_light
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_composition_sph_crank'
       if(evo_comp%iflag_scheme .gt. id_no_evolution) then
         call cal_sol_composition_sph_crank                              &
-     &     (sph_rj, band_comp_evo, ipol, rj_fld)
+     &     (sph_rj, cp_prop1, band_comp_evo, ipol, rj_fld)
       end if
 !
 !  Input: ipol%i_magne, itor%i_magne

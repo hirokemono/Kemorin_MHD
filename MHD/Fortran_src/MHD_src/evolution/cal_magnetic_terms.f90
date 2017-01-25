@@ -5,7 +5,7 @@
 !
 !!      subroutine cal_terms_4_magnetic                                 &
 !!     &        (i_field, iak_diff_uxb, ak_d_magne,                     &
-!!     &         nod_comm, node, ele, surf, conduct, sf_grp,            &
+!!     &         nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,   &
 !!     &         Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld, &
 !!     &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,    &
 !!     &         mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
@@ -21,6 +21,7 @@
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(field_geometry_data), intent(in) :: conduct
+!!        type(conductive_property), intent(in) :: cd_prop
 !!        type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
 !!        type(velocity_surf_bc_type), intent(in) :: Asf_bcs
 !!        type(vector_surf_bc_type), intent(in) :: Bsf_bcs
@@ -45,8 +46,8 @@
 !
       use m_phys_constants
       use m_control_parameter
-      use m_physical_property
 !
+      use t_physical_property
       use t_comm_table
       use t_geometry_data_MHD
       use t_geometry_data
@@ -81,7 +82,7 @@
 !
       subroutine cal_terms_4_magnetic                                   &
      &        (i_field, iak_diff_uxb, ak_d_magne,                       &
-     &         nod_comm, node, ele, surf, conduct, sf_grp,              &
+     &         nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,     &
      &         Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,   &
      &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,      &
      &         mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
@@ -95,6 +96,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(field_geometry_data), intent(in) :: conduct
+      type(conductive_property), intent(in) :: cd_prop
       type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
       type(velocity_surf_bc_type), intent(in) :: Asf_bcs
       type(vector_surf_bc_type), intent(in) :: Bsf_bcs
@@ -121,12 +123,12 @@
 !
       if (iflag_mag_supg .gt. id_turn_OFF) then
         call int_vol_magne_monitor_upm                                  &
-     &     (i_field, iak_diff_uxb, node, ele, conduct, cd_prop1,        &
+     &     (i_field, iak_diff_uxb, node, ele, conduct, cd_prop,         &
      &      iphys, nod_fld, iphys_ele, ele_fld, jac_3d, rhs_tbl,        &
      &      FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, f_nl)
       else
         call int_vol_magne_monitor_pg                                   &
-     &     (i_field, iak_diff_uxb, node, ele, conduct, cd_prop1,        &
+     &     (i_field, iak_diff_uxb, node, ele, conduct, cd_prop,         &
      &      iphys, nod_fld, iphys_ele, ele_fld, jac_3d, rhs_tbl,        &
      &      FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, f_nl)
       end if
