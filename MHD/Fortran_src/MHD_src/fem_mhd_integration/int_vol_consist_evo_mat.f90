@@ -5,10 +5,14 @@
 !                                    on July 2000 (ver 1.1)
 !      Modified by H. Matsui on Aug, 2007
 !
-!!      subroutine int_vol_crank_mat_consist(mesh, jac_3d, rhs_tbl,     &
-!!     &          MG_mat_fl_q, MG_mat_full_cd_q, fem_wk,                &
-!!     &          mat_velo, mat_magne, mat_temp, mat_light)
+!!      subroutine int_vol_crank_mat_consist                            &
+!!     &        (mesh, fl_prop, cd_prop, ht_prop, cp_prop,              &
+!!     &         jac_3d, rhs_tbl, MG_mat_fl_q, MG_mat_full_cd_q, fem_wk,&
+!!     &         mat_velo, mat_magne, mat_temp, mat_light)
 !!        type(mesh_geometry), intent(in) :: mesh
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in) :: cd_prop
+!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(table_mat_const), intent(in) :: MG_mat_fl_q
@@ -23,6 +27,7 @@
 !
       use m_precision
 !
+      use t_physical_property
       use t_mesh_data
       use t_geometry_data
       use t_jacobians
@@ -39,12 +44,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_vol_crank_mat_consist(mesh, jac_3d, rhs_tbl,       &
-     &          MG_mat_fl_q, MG_mat_full_cd_q, fem_wk,                  &
+      subroutine int_vol_crank_mat_consist                              &
+     &         (mesh, fl_prop, cd_prop, ht_prop, cp_prop,               &
+     &          jac_3d, rhs_tbl, MG_mat_fl_q, MG_mat_full_cd_q, fem_wk, &
      &          mat_velo, mat_magne, mat_temp, mat_light)
 !
       use m_control_parameter
-      use m_physical_property
       use m_phys_constants
 !
       use fem_skv_mass_mat_type
@@ -52,6 +57,9 @@
       use add_skv1_to_crs_matrix
 !
       type(mesh_geometry), intent(in) :: mesh
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(table_mat_const), intent(in) :: MG_mat_fl_q
@@ -72,35 +80,35 @@
      &      intg_point_t_evo, k2, mesh%ele, jac_3d, fem_wk%sk6)
 !
         if (evo_velo%iflag_scheme .eq. id_Crank_nicolson_cmass          &
-     &      .and. fl_prop1%coef_velo.gt.0.0d0 ) then
+     &      .and. fl_prop%coef_velo.gt.0.0d0 ) then
           call add_skv1_to_crs_matrix33(mesh%ele, rhs_tbl,              &
      &        MG_mat_fl_q, k2, fem_wk%sk6,                              &
      &        mat_velo%num_non0, mat_velo%aiccg)
         end if
 !
         if ( evo_temp%iflag_scheme .eq. id_Crank_nicolson_cmass         &
-     &      .and. ht_prop1%coef_advect.gt.0.0d0 ) then
+     &      .and. ht_prop%coef_advect.gt.0.0d0 ) then
           call add_skv1_to_crs_matrix11(mesh%ele, rhs_tbl,              &
      &        MG_mat_fl_q, k2, fem_wk%sk6,                              &
      &        mat_temp%num_non0, mat_temp%aiccg)
         end if
 !
         if ( evo_comp%iflag_scheme .eq. id_Crank_nicolson_cmass         &
-     &      .and. cp_prop1%coef_advect .gt. 0.0d0) then
+     &      .and. cp_prop%coef_advect .gt. 0.0d0) then
           call add_skv1_to_crs_matrix11(mesh%ele, rhs_tbl,              &
      &        MG_mat_fl_q, k2, fem_wk%sk6,                              &
      &        mat_light%num_non0, mat_light%aiccg)
         end if
 !
         if ( evo_magne%iflag_scheme .eq. id_Crank_nicolson_cmass        &
-     &      .and. cd_prop1%coef_magne.gt.0.0d0) then
+     &      .and. cd_prop%coef_magne.gt.0.0d0) then
           call add_skv1_to_crs_matrix33                                 &
      &       (mesh%ele, rhs_tbl, MG_mat_full_cd_q,                      &
      &        k2, fem_wk%sk6, mat_magne%num_non0, mat_magne%aiccg)
         end if
 !
         if ( evo_vect_p%iflag_scheme .eq. id_Crank_nicolson_cmass       &
-     &      .and. cd_prop1%coef_magne.gt.0.0d0) then
+     &      .and. cd_prop%coef_magne.gt.0.0d0) then
           call add_skv1_to_crs_matrix33                                 &
      &       (mesh%ele, rhs_tbl, MG_mat_full_cd_q,                      &
      &        k2, fem_wk%sk6, mat_magne%num_non0, mat_magne%aiccg)

@@ -77,8 +77,8 @@
 !
       if ( (iflag*mod(istep_max_dt,i_step_output_rst)) .eq.0 ) then
         if(evo_velo%iflag_scheme .gt. id_no_evolution) then
-          call pressure_4_sph_mhd(sph%sph_rj, r_2nd, trans_p%leg,       &
-     &       band_p_poisson, ipol, rj_fld)
+          call pressure_4_sph_mhd(sph%sph_rj, fl_prop1, r_2nd,          &
+     &        trans_p%leg, band_p_poisson, ipol, rj_fld)
         end if
       end if
 !
@@ -136,8 +136,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine pressure_4_sph_mhd                                     &
-     &         (sph_rj, r_2nd, leg, band_p_poisson, ipol, rj_fld)
+      subroutine pressure_4_sph_mhd(sph_rj, fl_prop, r_2nd,             &
+     &          leg, band_p_poisson, ipol, rj_fld)
 !
       use m_boundary_params_sph_MHD
       use cal_sol_sph_fluid_crank
@@ -148,6 +148,7 @@
       use const_sph_radial_grad
       use cal_sph_rotation_of_SGS
 !
+      type(fluid_property), intent(in) :: fl_prop
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(legendre_4_sph_trans), intent(in) :: leg
@@ -179,7 +180,7 @@
       if(ipol%i_press_grad .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'const_pressure_gradient'
         call const_pressure_gradient                                    &
-     &     (sph_rj, r_2nd, sph_bc_U, leg%g_sph_rj, fl_prop1%coef_press, &
+     &     (sph_rj, r_2nd, sph_bc_U, leg%g_sph_rj, fl_prop%coef_press,  &
      &      ipol%i_press, ipol%i_press_grad, rj_fld)
       end if
 !

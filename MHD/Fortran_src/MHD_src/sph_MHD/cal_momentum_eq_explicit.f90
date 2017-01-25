@@ -7,11 +7,13 @@
 !>@brief Time integration for momentum equation by explicit scheme
 !!
 !!@verbatim
-!!      subroutine cal_expricit_sph_adams(sph_rj, ipol, itor, rj_fld)
+!!      subroutine cal_expricit_sph_adams                               &
+!!     &         (sph_rj, ht_prop, cp_prop, ipol, itor, rj_fld)
 !!      subroutine cal_expricit_sph_euler                               &
-!!     &         (i_step, sph_rj, ipol, itor, rj_fld)
+!!     &         (i_step, sph_rj, ht_prop, cp_prop, ipol, itor, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
+!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(phys_address), intent(in) :: ipol, itor
 !!        type(phys_data), intent(inout) :: rj_fld
@@ -24,6 +26,7 @@
       use m_precision
       use m_control_parameter
 !
+      use t_physical_property
       use t_spheric_rj_data
       use t_phys_address
       use t_phys_data
@@ -38,16 +41,17 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_expricit_sph_adams(sph_rj, ipol, itor, rj_fld)
+      subroutine cal_expricit_sph_adams                                 &
+     &         (sph_rj, ht_prop, cp_prop, ipol, itor, rj_fld)
 !
       use m_boundary_params_sph_MHD
-      use m_physical_property
       use cal_explicit_terms
       use cal_vorticity_terms_adams
       use cal_nonlinear_sph_MHD
       use select_diff_adv_source
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(phys_address), intent(in) :: ipol, itor
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -69,14 +73,14 @@
      &     (sph_bc_T%kr_in, sph_bc_T%kr_out,                            &
      &      ipol%i_t_diffuse, ipol%i_h_advect, ipol%i_heat_source,      &
      &      ipol%i_temp, ipol%i_pre_heat, evo_temp%coef_exp,            &
-     &      ht_prop1%coef_source, sph_rj, rj_fld)
+     &      ht_prop%coef_source, sph_rj, rj_fld)
       end if
       if(evo_comp%iflag_scheme .gt. id_no_evolution) then
         call sel_scalar_diff_adv_src_adams                              &
      &     (sph_bc_C%kr_in, sph_bc_C%kr_out,                            &
      &      ipol%i_c_diffuse, ipol%i_c_advect, ipol%i_light_source,     &
      &      ipol%i_light, ipol%i_pre_composit,                          &
-     &      evo_comp%coef_exp, cp_prop1%coef_source, sph_rj, rj_fld)
+     &      evo_comp%coef_exp, cp_prop%coef_source, sph_rj, rj_fld)
       end if
 !$omp end parallel
 !
@@ -85,16 +89,16 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_expricit_sph_euler                                 &
-     &         (i_step, sph_rj, ipol, itor, rj_fld)
+     &         (i_step, sph_rj, ht_prop, cp_prop, ipol, itor, rj_fld)
 !
       use m_boundary_params_sph_MHD
-      use m_physical_property
       use cal_explicit_terms
       use cal_vorticity_terms_adams
       use select_diff_adv_source
 !
       integer(kind = kint), intent(in) :: i_step
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(phys_address), intent(in) :: ipol, itor
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -110,8 +114,8 @@
         call sel_scalar_diff_adv_src_euler                              &
      &     (sph_bc_T%kr_in, sph_bc_T%kr_out,                            &
      &      ipol%i_t_diffuse, ipol%i_h_advect, ipol%i_heat_source,      &
-     &      ipol%i_temp, evo_temp%coef_exp, ht_prop1%coef_advect,       &
-     &      ht_prop1%coef_source, sph_rj, rj_fld)
+     &      ipol%i_temp, evo_temp%coef_exp, ht_prop%coef_advect,        &
+     &      ht_prop%coef_source, sph_rj, rj_fld)
       end if
       if(evo_magne%iflag_scheme .gt.    id_no_evolution) then
         call cal_diff_induction_MHD_euler(evo_magne%coef_exp,           &
@@ -121,8 +125,8 @@
         call sel_scalar_diff_adv_src_euler                              &
      &     (sph_bc_C%kr_in, sph_bc_C%kr_out,                            &
      &      ipol%i_c_diffuse, ipol%i_c_advect, ipol%i_light_source,     &
-     &      ipol%i_light, evo_comp%coef_exp, cp_prop1%coef_advect,      &
-     &      cp_prop1%coef_source, sph_rj, rj_fld)
+     &      ipol%i_light, evo_comp%coef_exp, cp_prop%coef_advect,       &
+     &      cp_prop%coef_source, sph_rj, rj_fld)
       end if
 !
       if (i_step .eq. 1) then
@@ -134,7 +138,7 @@
           call sel_ini_adams_scalar_w_src                               &
      &       (sph_bc_T%kr_in, sph_bc_T%kr_out, ipol%i_h_advect,         &
      &        ipol%i_heat_source, ipol%i_pre_heat,                      &
-     &        ht_prop1%coef_source, sph_rj, rj_fld)
+     &        ht_prop%coef_source, sph_rj, rj_fld)
         end if
         if(evo_magne%iflag_scheme .gt.    id_no_evolution) then
           call set_ini_adams_mag_induct(ipol, itor,                     &
@@ -144,7 +148,7 @@
           call sel_ini_adams_scalar_w_src                               &
      &       (sph_bc_C%kr_in, sph_bc_C%kr_out, ipol%i_c_advect,         &
      &        ipol%i_light_source, ipol%i_pre_composit,                 &
-     &        cp_prop1%coef_source, sph_rj, rj_fld)
+     &        cp_prop%coef_source, sph_rj, rj_fld)
         end if
       end if
 !$omp end parallel

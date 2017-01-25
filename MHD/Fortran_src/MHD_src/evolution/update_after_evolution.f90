@@ -274,7 +274,7 @@
       if ( evo_comp%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_light_element'
         call s_cal_light_element(mesh%nod_comm, mesh%node, mesh%ele,    &
-     &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
+     &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp, cp_prop1,    &
      &      nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys,                  &
      &      iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl,        &
      &      FEM_elens, ifld_diff, diff_coefs, s_package%Cmatrix,        &
@@ -550,7 +550,7 @@
       if ( evo_comp%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_light_element'
         call s_cal_light_element(mesh%nod_comm, mesh%node, mesh%ele,    &
-     &      ele_mesh%surf, fluid, group%surf_grp,                       &
+     &      ele_mesh%surf, fluid, group%surf_grp, cp_prop1,             &
      &      nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys, iphys_ele,       &
      &      ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,        &
      &      ifld_diff, diff_coefs, s_package%Cmatrix,                   &

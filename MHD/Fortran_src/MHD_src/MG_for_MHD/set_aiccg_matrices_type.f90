@@ -63,6 +63,8 @@
      &         mat_press, mat_magp)
 !
       use m_control_parameter
+      use m_physical_property
+!
       use t_mesh_data
       use t_geometry_data_MHD
       use t_surface_group_geometry
@@ -135,6 +137,7 @@
       if (iflag_scheme .eq. id_Crank_nicolson) then
         call int_vol_crank_mat_lump                                     &
      &     (mesh, MHD_mesh%fluid, MHD_mesh%conduct,                     &
+     &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
      &      djds_tbl, djds_tbl_fl, mlump_fl, mlump_cd,                  &
      &      mat_velo, mat_magne, mat_temp, mat_light)
 !
@@ -144,8 +147,9 @@
      &      mat_velo, mat_magne, mat_temp, mat_light)
 !
       else if (iflag_scheme .eq. id_Crank_nicolson_cmass) then
-        call int_vol_crank_mat_consist(mesh, jac_3d_q, rhs_tbl,         &
-     &       MG_mat_fl_q, MG_mat_full_cd_q, fem_wk,                     &
+        call int_vol_crank_mat_consist                                  &
+     &      (mesh, fl_prop1, cd_prop1, ht_prop1, cp_prop1,              &
+     &       jac_3d_q, rhs_tbl, MG_mat_fl_q, MG_mat_full_cd_q, fem_wk,  &
      &      mat_velo, mat_magne, mat_temp, mat_light)
         call int_MHD_crank_matrices(mesh, ak_MHD, jac_3d_q, rhs_tbl,    &
      &      MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,                    &

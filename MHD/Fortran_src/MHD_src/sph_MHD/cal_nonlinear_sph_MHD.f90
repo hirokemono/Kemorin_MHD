@@ -16,7 +16,18 @@
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(phys_address), intent(in) :: b_trns, f_trns
-!!      subroutine add_reftemp_advect_sph_MHD                           &
+!!      subroutine add_ref_advect_sph_MHD(sph_rj,                       &
+!!     &          ht_prop, cp_prop, ref_param_T, ref_param_C,           &
+!!     &          leg, reftemp_rj, refcomp_rj, ipol, rj_fld)
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(scalar_property), intent(in) :: ht_prop
+!!        type(scalar_property), intent(in) :: cp_prop
+!!        type(reference_scalar_param), intent(in) :: ref_param_T
+!!        type(reference_scalar_param), intent(in) :: ref_param_C
+!!        type(legendre_4_sph_trans), intent(in) :: leg
+!!        type(phys_address), intent(in) :: ipol
+!!        type(phys_data), intent(inout) :: rj_fld
+!!      subroutine add_reference_advect_sph                             &
 !!     &         (kr_in, kr_out, nidx_rj, ar_1d_rj, g_sph_rj,           &
 !!     &          coef_advect, is_h_advect, is_velo,                    &
 !!     &          nnod_rj, ntot_phys_rj, reftemp_rj, d_rj)
@@ -32,11 +43,17 @@
       use m_machine_parameter
       use m_constants
 !
+      use t_physical_property
+      use t_reference_scalar_param
+      use t_spheric_rj_data
       use t_spheric_rtp_data
       use t_phys_address
-      use t_physical_property
+      use t_phys_data
+      use t_schmidt_poly_on_rtm
 !
       implicit none
+!
+      private :: add_reference_advect_sph
 !
 !-----------------------------------------------------------------------
 !
@@ -115,9 +132,49 @@
       end subroutine nonlinear_terms_in_rtp
 !
 !-----------------------------------------------------------------------
+!
+      subroutine add_ref_advect_sph_MHD(sph_rj,                         &
+     &          ht_prop, cp_prop, ref_param_T, ref_param_C,             &
+     &          leg, reftemp_rj, refcomp_rj, ipol, rj_fld)
+!
+      use m_boundary_params_sph_MHD
+!
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(scalar_property), intent(in) :: ht_prop
+      type(scalar_property), intent(in) :: cp_prop
+      type(reference_scalar_param), intent(in) :: ref_param_T
+      type(reference_scalar_param), intent(in) :: ref_param_C
+      type(legendre_4_sph_trans), intent(in) :: leg
+      type(phys_address), intent(in) :: ipol
+!
+      real(kind = kreal), intent(in)                                    &
+     &                   :: reftemp_rj(sph_rj%nidx_rj(1),0:1)
+      real(kind = kreal), intent(in)                                    &
+     &                   :: refcomp_rj(sph_rj%nidx_rj(1),0:1)
+!
+      type(phys_data), intent(inout) :: rj_fld
+!
+!
+!   ----  Lead advection of reference field
+      if (ref_param_T%iflag_reference .eq. id_sphere_ref_temp) then
+        call add_reference_advect_sph(sph_bc_T%kr_in, sph_bc_T%kr_out,  &
+     &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, leg%g_sph_rj,              &
+     &      ht_prop%coef_advect, ipol%i_h_advect, ipol%i_velo,          &
+     &      rj_fld%n_point, rj_fld%ntot_phys, reftemp_rj, rj_fld%d_fld)
+      end if
+      if (ref_param_C%iflag_reference .eq. id_sphere_ref_temp) then
+        call add_reference_advect_sph(sph_bc_C%kr_in, sph_bc_T%kr_out,  &
+     &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, leg%g_sph_rj,              &
+     &      cp_prop%coef_advect, ipol%i_c_advect, ipol%i_velo,          &
+     &      rj_fld%n_point, rj_fld%ntot_phys, refcomp_rj, rj_fld%d_fld)
+      end if
+!
+      end subroutine add_ref_advect_sph_MHD
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine add_reftemp_advect_sph_MHD                             &
+      subroutine add_reference_advect_sph                               &
      &         (kr_in, kr_out, nidx_rj, ar_1d_rj, g_sph_rj,             &
      &          coef_advect, is_h_advect, is_velo,                      &
      &          nnod_rj, ntot_phys_rj, reftemp_rj, d_rj)
@@ -148,7 +205,7 @@
       end do
 !$omp end parallel do
 !
-      end subroutine add_reftemp_advect_sph_MHD
+      end subroutine add_reference_advect_sph
 !
 !-----------------------------------------------------------------------
 !

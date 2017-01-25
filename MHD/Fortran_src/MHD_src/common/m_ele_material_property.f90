@@ -5,7 +5,11 @@
 !
 !     Written by H. Matsui
 !
-!      subroutine init_ele_material_property(numele)
+!!      subroutine init_ele_material_property                           &
+!!     &         (numele, fl_prop, cd_prop, ht_prop, cp_prop)
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in)  :: cd_prop
+!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !
       module m_ele_material_property
 !
@@ -24,36 +28,40 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine init_ele_material_property(numele)
+      subroutine init_ele_material_property                             &
+     &         (numele, fl_prop, cd_prop, ht_prop, cp_prop)
 !
       use m_machine_parameter
       use m_control_parameter
-      use m_physical_property
+      use t_physical_property
 !
       integer(kind = kint), intent(in) :: numele
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in)  :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
 !
 !    For thermal
 !
       if (evo_temp%iflag_scheme .gt. id_no_evolution) then
         call alloc_temp_diff_MHD_AMG(numele, ak_MHD)
-        ak_MHD%ak_d_temp(1:numele) = ht_prop1%coef_diffuse
+        ak_MHD%ak_d_temp(1:numele) = ht_prop%coef_diffuse
       end if
 !
 !    For convection
 !
       if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         call alloc_velo_diff_MHD_AMG(numele, ak_MHD)
-        ak_MHD%ak_d_velo(1:numele) = fl_prop1%coef_diffuse
+        ak_MHD%ak_d_velo(1:numele) = fl_prop%coef_diffuse
 !
         if (iflag_4_gravity .gt. id_turn_OFF                            &
      &     .or. iflag_4_filter_gravity .gt. id_turn_OFF) then
           call alloc_buoyancy_coef_ele(numele, ak_MHD)
-          ak_MHD%ak_buo(1:numele) = fl_prop1%coef_buo
+          ak_MHD%ak_buo(1:numele) = fl_prop%coef_buo
         end if
 !
         if ( iflag_4_composit_buo .gt. id_turn_OFF) then
           call alloc_comp_buo_coef_ele(numele, ak_MHD)
-          ak_MHD%ak_comp_buo(1:numele) = fl_prop1%coef_comp_buo
+          ak_MHD%ak_comp_buo(1:numele) = fl_prop%coef_comp_buo
         end if
       end if
 !
@@ -62,14 +70,14 @@
       if (evo_magne%iflag_scheme .gt. id_no_evolution                   &
      &    .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         call alloc_magne_diff_MHD_AMG(numele, ak_MHD)
-        ak_MHD%ak_d_magne(1:numele) = cd_prop1%coef_diffuse
+        ak_MHD%ak_d_magne(1:numele) = cd_prop%coef_diffuse
       end if
 !
 !   For dummy scalar
 !
       if (evo_comp%iflag_scheme .gt. id_no_evolution) then
         call alloc_dscalar_diff_MHD_AMG(numele, ak_MHD)
-        ak_MHD%ak_d_composit(1:numele) = cp_prop1%coef_diffuse
+        ak_MHD%ak_d_composit(1:numele) = cp_prop%coef_diffuse
       end if
 !
 !  check

@@ -7,11 +7,12 @@
 !!      subroutine set_bc_velo_id                                       &
 !!     &          (IO_bc, node, ele, fluid, nod_grp, Vnod_bcs)
 !!      subroutine set_bc_press_id                                      &
-!!     &          (IO_bc, node, ele, fluid, nod_grp, Vnod_bcs)
+!!     &          (IO_bc, node, ele, fluid, nod_grp, fl_prop, Vnod_bcs)
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: fluid
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(group_data), intent(in) :: nod_grp
 !!        type(nodal_bcs_4_momentum_type), intent(inout) :: Vnod_bcs
 !
@@ -132,10 +133,10 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_bc_press_id                                        &
-     &          (IO_bc, node, ele, fluid, nod_grp, Vnod_bcs)
+     &          (IO_bc, node, ele, fluid, nod_grp, fl_prop, Vnod_bcs)
 !
-      use m_physical_property
       use m_bc_data_list
+      use t_physical_property
       use count_num_nod_bc_MHD
       use set_bc_scalars
       use set_ele_nod_bc_vectors
@@ -145,6 +146,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
+      type(fluid_property), intent(in) :: fl_prop
       type(group_data), intent(in) :: nod_grp
 !
       type(nodal_bcs_4_momentum_type), intent(inout) :: Vnod_bcs
@@ -162,9 +164,9 @@
      &    Vnod_bcs%nod_bc_p, Vnod_bcs%sgs_bc_p)
 !
       call set_potential_4_fixed_press                                  &
-     &   (fl_prop1%coef_press, Vnod_bcs%nod_bc_p)
+     &   (fl_prop%coef_press, Vnod_bcs%nod_bc_p)
       call set_potential_4_fixed_press                                  &
-     &   (fl_prop1%coef_press, Vnod_bcs%sgs_bc_p)
+     &   (fl_prop%coef_press, Vnod_bcs%sgs_bc_p)
 !
 !   set node id in an element for the pressure boundary
 !

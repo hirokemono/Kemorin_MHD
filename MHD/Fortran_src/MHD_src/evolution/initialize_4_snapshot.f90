@@ -190,7 +190,8 @@
       if (iflag_debug.eq.1) write(*,*)' set_material_property'
       call set_material_property                                        &
      &   (iphys, ref_param_T1%depth_top, ref_param_T1%depth_bottom)
-      call init_ele_material_property(mesh%ele%numele)
+      call init_ele_material_property(mesh%ele%numele,                  &
+     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1)
       call define_sgs_components                                        &
      &   (mesh%node%numnod, mesh%ele%numele, layer_tbl,                 &
      &    ifld_sgs, icomp_sgs, wk_sgs1, sgs_coefs, sgs_coefs_nod)
@@ -241,7 +242,7 @@
 !
       if (iflag_debug.eq.1) write(*,*)' set_boundary_data'
       call set_boundary_data(IO_bc, mesh, ele_mesh, MHD_mesh, group,    &
-     &    iphys, nod_fld)
+     &    fl_prop1, iphys, nod_fld)
 !
 !     ---------------------
 !

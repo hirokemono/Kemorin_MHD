@@ -9,10 +9,11 @@
 !!        by finite difference method
 !!
 !!@verbatim
-!!      subroutine init_r_infos_sph_mhd_evo(sph_grps, ipol,             &
+!!      subroutine init_r_infos_sph_mhd_evo(fl_prop, sph_grps, ipol,  &
 !!     &          sph, omega_sph, ref_temp, ref_comp, r_2nd, rj_fld)
-!!      subroutine init_r_infos_sph_mhd(sph_grps, ipol, sph,            &
+!!      subroutine init_r_infos_sph_mhd(fl_prop, sph_grps, ipol, sph, &
 !!     &          omega_sph, ref_temp, rj_fld)
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(sph_group_data), intent(in) :: sph_grps
 !!        type(phys_address), intent(in) :: ipol
 !!        type(sph_grids), intent(inout) :: sph
@@ -36,6 +37,7 @@
       use m_constants
       use m_machine_parameter
       use m_spheric_constants
+      use m_physical_property
 !
       use t_spheric_parameter
       use t_spheric_mesh
@@ -73,8 +75,8 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call init_r_infos_sph_mhd                                         &
-     &  (sph_grps, ipol, sph, omega_sph, ref_temp, ref_comp, rj_fld)
+      call init_r_infos_sph_mhd(sph_grps, ipol, sph,                    &
+     &    omega_sph, ref_temp, ref_comp, rj_fld)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_2nd_fdm_matrices'
       call const_2nd_fdm_matrices(sph%sph_params, sph%sph_rj, r_2nd)
@@ -90,7 +92,6 @@
       subroutine init_r_infos_sph_mhd(sph_grps, ipol, sph,              &
      &          omega_sph, ref_temp, ref_comp, rj_fld)
 !
-      use m_physical_property
       use m_boundary_params_sph_MHD
 !
       use set_bc_sph_mhd
@@ -113,7 +114,7 @@
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &                write(*,*) 'set_rot_earth_4_sph'
       call set_rot_earth_4_sph(sph%sph_rlm, sph%sph_rj,                 &
-     &    fl_prop1%sys_rot, omega_sph)
+     &    fl_prop1, omega_sph)
 !
 !*  ---------- boudary conditions  ---------------
       if(iflag_debug.gt.0) write(*,*) 's_set_bc_sph_mhd'

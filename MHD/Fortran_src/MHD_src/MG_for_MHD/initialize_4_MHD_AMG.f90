@@ -21,6 +21,7 @@
       use m_type_AMG_data_4_MHD
       use m_type_AMG_data
 !
+      use m_physical_property
       use t_solver_djds_MHD
       use t_material_property
       use t_SGS_model_coefs
@@ -119,7 +120,7 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &            's_set_diffusivities_MHD_AMG', i_level
         call s_set_diffusivities_MHD_AMG(MG_mesh(i_level)%mesh%ele,     &
-     &      ak_MHD_AMG(i_level) )
+     &      fl_prop1, cd_prop1, ht_prop1, cp_prop1, ak_MHD_AMG(i_level))
         if(iflag_debug .gt. 0) write(*,*)                               &
      &            's_set_sgs_diff_array_MHD_AMG', i_level
 !
@@ -271,7 +272,7 @@
       do i_level = 1, num_MG_level
         call set_bc_id_data                                             &
      &     (IO_MG_bc(i_level), MG_mesh(i_level)%mesh,                   &
-     &      MG_mesh(i_level)%group, MG_MHD_mesh(i_level),               &
+     &      MG_mesh(i_level)%group, MG_MHD_mesh(i_level), fl_prop1,     &
      &      MG_node_bc(i_level))
 !
         call set_bc_surface_data(IO_MG_bc(i_level),                     &

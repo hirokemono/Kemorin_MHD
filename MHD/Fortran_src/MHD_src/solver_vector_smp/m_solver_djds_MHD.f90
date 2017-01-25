@@ -33,6 +33,8 @@
 !>      Communication table structure for fluid
       type(communication_table), save :: DJDS_comm_fl
 !
+      private :: set_residual_4_crank
+!
 !-----------------------------------------------------------------------
 !
       contains
@@ -41,13 +43,14 @@
 !
       subroutine allocate_aiccg_matrices(node)
 !
-      use set_residual_limit
+      use m_physical_property
       use allocate_MHD_AMG_array
 !
       type(node_data), intent(in) :: node
 !
 !
-      call set_residual_4_crank
+      call set_residual_4_crank                                         &
+     &   (fl_prop1, cd_prop1, ht_prop1)
 !
       call alloc_aiccg_matrices(node, MHD1_matrices%MG_DJDS_table(0),   &
      &    MHD1_matrices%MG_DJDS_fluid(0),                               &
@@ -62,8 +65,6 @@
 ! ----------------------------------------------------------------------
 !
       subroutine deallocate_aiccg_matrices
-!
-      use set_residual_limit
 !
 !
       call dealloc_aiccg_matrices(MHD1_matrices%Vmat_MG_DJDS(0),        &
@@ -152,5 +153,52 @@
       end subroutine set_MHD_layerd_connectivity
 !
 !-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine set_residual_4_crank                                   &
+     &         (fl_prop, cd_prop, ht_prop)
+!
+      use m_machine_parameter
+      use m_control_parameter
+      use m_t_int_parameter
+      use m_iccg_parameter
+!
+      use t_physical_property
+!
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop
+!
+      if (evo_velo%iflag_scheme .ge. id_Crank_nicolson) then
+        eps_4_velo_crank = eps_crank * fl_prop%coef_diffuse * dt**2
+        if(iflag_debug.eq.1)                                            &
+     &     write(12,*) 'eps_4_velo', eps_4_velo_crank
+      end if
+!
+      if (evo_temp%iflag_scheme .ge. id_Crank_nicolson) then
+        eps_4_temp_crank = eps_crank * ht_prop%coef_diffuse * dt**2
+        if(iflag_debug.eq.1)                                            &
+     &     write(12,*) 'eps_4_temp_crank', eps_4_temp_crank
+      end if
+!
+      if (   evo_magne%iflag_scheme .ge. id_Crank_nicolson              &
+     &  .or. evo_vect_p%iflag_scheme .ge. id_Crank_nicolson) then
+!
+        if(eps_4_magne_crank .le. 0.0d0) then
+          eps_4_magne_crank = eps_crank * cd_prop%coef_diffuse * dt**2
+        end if
+        if(iflag_debug.eq.1)                                            &
+     &     write(12,*) 'eps_4_magne_crank', eps_4_magne_crank
+      end if
+!
+      if (evo_comp%iflag_scheme .ge. id_Crank_nicolson) then
+        eps_4_comp_crank = eps_crank * cd_prop%coef_diffuse * dt**2
+        if(iflag_debug.eq.1)                                            &
+     &     write(12,*) 'iflag_t_evo_4_composit', evo_comp%iflag_scheme
+      end if
+!
+      end subroutine set_residual_4_crank
+!
+! ----------------------------------------------------------------------
 !
       end module m_solver_djds_MHD

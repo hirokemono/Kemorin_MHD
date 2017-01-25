@@ -27,7 +27,7 @@
 !!        type(DJDS_MATRIX),  intent(inout) :: mat33
 !!
 !!      subroutine cal_consist_coriolis_mat                             &
-!!     &         (ele, rhs_tbl, MG_mat_tbl, fem_wk, k2, mat33)
+!!     &         (ele, fl_prop, rhs_tbl, MG_mat_tbl, fem_wk, k2, mat33)
 !
       module cal_poisson_matrices
 !
@@ -112,14 +112,15 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_consist_coriolis_mat                               &
-     &         (ele, rhs_tbl, MG_mat_tbl, fem_wk, k2, mat33)
+     &         (ele, fl_prop, rhs_tbl, MG_mat_tbl, fem_wk, k2, mat33)
 !
       use t_coefs_element_4_MHD
+      use t_physical_property
       use m_t_int_parameter
-      use m_physical_property
       use cal_coriolis_mat33
 !
       type(element_data), intent(in) :: ele
+      type(fluid_property), intent(in) :: fl_prop
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(table_mat_const), intent(in) :: MG_mat_tbl
       type(work_finite_element_mat), intent(in) :: fem_wk
@@ -134,7 +135,7 @@
      &    rhs_tbl%inod_ele_max, rhs_tbl%num_sort_smp,                   &
      &    rhs_tbl%nod_stack_smp, rhs_tbl%iele_sort_smp,                 &
      &    rhs_tbl%iconn_sort_smp, MG_mat_tbl%idx_4_mat, k2,             &
-     &    fl_prop1%coef_cor, fl_prop1%sys_rot, evo_velo%coef_imp,       &
+     &    fl_prop%coef_cor, fl_prop%sys_rot, evo_velo%coef_imp,         &
      &    fem_wk%sk6, mat33%num_non0, mat33%aiccg)
 !
       end subroutine cal_consist_coriolis_mat
