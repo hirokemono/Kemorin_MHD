@@ -16,17 +16,17 @@
 !!     &          f_l, f_nl, nod_fld)
 !!
 !!      subroutine cal_velocity_co_imp(i_velo, iak_diff_v, ak_d_velo,   &
-!!     &          nod_comm, node, ele, fluid, Vnod_bcs,                 &
+!!     &          nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,        &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
 !!     &          diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,   &
 !!     &          f_l, f_nl, nod_fld)
 !!      subroutine cal_vector_p_co_imp(i_vecp, iak_diff_b, ak_d_magne,  &
-!!     &          nod_comm, node, ele, conduct, Bnod_bcs,               &
+!!     &          nod_comm, node, ele, conduct, cd_prop, Bnod_bcs,      &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
 !!     &          diff_coefs, m_lump, Bmatrix, MG_vector,               &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_magnetic_co_imp(i_magne, iak_diff_b, ak_d_magne, &
-!!     &          nod_comm, node, ele, conduct, Bnod_bcs,               &
+!!     &          nod_comm, node, ele, conduct, cd_prop, Bnod_bcs,      &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
 !!     &          diff_coefs,m_lump,  Bmatrix, MG_vector,               &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -35,6 +35,8 @@
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(field_geometry_data), intent(in) :: conduct
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in) :: cd_prop
 !!        type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
 !!        type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
 !!        type(phys_address), intent(in) :: iphys_ele
@@ -58,8 +60,8 @@
       use m_control_parameter
       use m_t_step_parameter
       use m_phys_constants
-      use m_physical_property
 !
+      use t_physical_property
       use t_comm_table
       use t_geometry_data_MHD
       use t_geometry_data
@@ -196,7 +198,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_velocity_co_imp(i_velo, iak_diff_v, ak_d_velo,     &
-     &          nod_comm, node, ele, fluid, Vnod_bcs,                   &
+     &          nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,          &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
      &          diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,     &
      &          f_l, f_nl, nod_fld)
@@ -217,6 +219,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
+      type(fluid_property), intent(in) :: fl_prop
       type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -255,18 +258,18 @@
 !
       if ( iflag_4_coriolis .eq. id_Coriolis_ele_imp) then
         if (iflag_debug.eq.1) write(*,*) 'int_vol_coriolis_crank_ele'
-        call int_vol_coriolis_crank_ele(node, ele, fluid, fl_prop1,     &
+        call int_vol_coriolis_crank_ele(node, ele, fluid, fl_prop,      &
      &      jac_3d, rhs_tbl, i_velo, nod_fld, fem_wk, f_l)
       end if
 !
 !
       if (     iflag_implicit_correct.eq.3) then
         call cal_velo_co_lumped_crank                                   &
-     &     (i_velo, nod_comm, node, ele, fluid, Vnod_bcs, nod_fld,      &
-     &      iphys_ele, ele_fld, jac_3d, rhs_tbl,                        &
+     &     (i_velo, nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,      &
+     &      nod_fld, iphys_ele, ele_fld, jac_3d, rhs_tbl,               &
      &      mhd_fem_wk, fem_wk, f_l, f_nl)
       else if (iflag_implicit_correct.eq.4) then
-        call cal_velo_co_consist_crank(i_velo, fl_prop1%coef_velo,      &
+        call cal_velo_co_consist_crank(i_velo, fl_prop%coef_velo,       &
      &      node, ele, fluid, Vnod_bcs, nod_fld, jac_3d,                &
      &      rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
       end if
@@ -284,7 +287,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_vector_p_co_imp(i_vecp, iak_diff_b, ak_d_magne,    &
-     &          nod_comm, node, ele, conduct, Bnod_bcs,                 &
+     &          nod_comm, node, ele, conduct, cd_prop, Bnod_bcs,        &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
      &          diff_coefs, m_lump, Bmatrix, MG_vector,                 &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -307,6 +310,7 @@
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: conduct
       type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
+      type(conductive_property), intent(in) :: cd_prop
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
       type(jacobians_3d), intent(in) :: jac_3d
@@ -350,7 +354,7 @@
      &      iphys_ele, ele_fld, Bnod_bcs%nod_bc_a, jac_3d, rhs_tbl,     &
      &      m_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
       else if (iflag_implicit_correct.eq.4) then
-        call cal_magne_co_consist_crank(i_vecp, cd_prop1%coef_magne,    &
+        call cal_magne_co_consist_crank(i_vecp, cd_prop%coef_magne,     &
      &      node, ele, conduct, nod_fld, Bnod_bcs%nod_bc_a, jac_3d,     &
      &      rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
       end if
@@ -367,7 +371,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_magnetic_co_imp(i_magne, iak_diff_b, ak_d_magne,   &
-     &          nod_comm, node, ele, conduct, Bnod_bcs,                 &
+     &          nod_comm, node, ele, conduct, cd_prop, Bnod_bcs,        &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
      &          diff_coefs,m_lump,  Bmatrix, MG_vector,                 &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -388,6 +392,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: conduct
+      type(conductive_property), intent(in) :: cd_prop
       type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -432,7 +437,7 @@
      &      iphys_ele, ele_fld, Bnod_bcs%nod_bc_b, jac_3d, rhs_tbl,     &
      &      m_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
       else if(iflag_implicit_correct.eq.4) then
-        call cal_magne_co_consist_crank(i_magne, cd_prop1%coef_magne,   &
+        call cal_magne_co_consist_crank(i_magne, cd_prop%coef_magne,    &
      &      node, ele, conduct, nod_fld, Bnod_bcs%nod_bc_b, jac_3d,     &
      &      rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
       end if

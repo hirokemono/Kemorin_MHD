@@ -81,6 +81,7 @@
       use t_material_property
       use t_bc_data_magne
       use t_surface_bc_data
+      use m_physical_property
 !
       implicit none
 !
@@ -160,19 +161,20 @@
 !  lead induction terms
 !
       if ( iflag_SGS_induction .ne. id_SGS_none) then
-        call cal_sgs_uxb_2_evo(icomp_sgs_uxb, ie_dvx,                   &
-     &     nod_comm, node, ele, conduct, iphys, iphys_ele, ele_fld,     &
-     &     jac_3d_q, rhs_tbl, FEM_elens, filtering, sgs_coefs,          &
-     &     wk_filter, mhd_fem_wk, fem_wk, f_nl, nod_fld)
+        call cal_sgs_uxb_2_evo                                          &
+     &     (icomp_sgs_uxb, ie_dvx, nod_comm, node, ele, conduct,        &
+     &      cd_prop1, iphys, iphys_ele, ele_fld, jac_3d_q, rhs_tbl,     &
+     &      FEM_elens, filtering, sgs_coefs, wk_filter,                 &
+     &      mhd_fem_wk, fem_wk, f_nl, nod_fld)
       end if
 !
       if (iflag_mag_supg .gt. id_turn_OFF) then
-        call int_vol_vect_p_pre_ele_upm(node, ele, conduct, iphys,      &
-     &      nod_fld, ele_fld%ntot_phys, iphys_ele%i_magne,              &
+        call int_vol_vect_p_pre_ele_upm(node, ele, conduct, cd_prop1,   &
+     &      iphys, nod_fld, ele_fld%ntot_phys, iphys_ele%i_magne,       &
      &      ele_fld%d_fld, jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
       else
-        call int_vol_vect_p_pre_ele(node, ele, conduct, iphys,          &
-     &      nod_fld, ele_fld%ntot_phys, iphys_ele%i_magne,              &
+        call int_vol_vect_p_pre_ele(node, ele, conduct, cd_prop1,       &
+     &      iphys, nod_fld, ele_fld%ntot_phys, iphys_ele%i_magne,       &
      &      ele_fld%d_fld, jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
       end if
 !
@@ -213,7 +215,7 @@
       else if (evo_vect_p%iflag_scheme.eq.id_Crank_nicolson_cmass) then
         call cal_vect_p_pre_consist_crank                               &
      &     (iphys%i_vecp, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,      &
-     &      Bnod_bcs%nod_bc_a, node, ele, conduct,                      &
+     &      Bnod_bcs%nod_bc_a, node, ele, conduct, cd_prop1,            &
      &      jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,                   &
      &      Bmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
@@ -302,9 +304,10 @@
       if (   iflag_implicit_correct.eq.3                                &
      &  .or. iflag_implicit_correct.eq.4) then
         call cal_vector_p_co_imp(iphys%i_vecp, iak_diff_b, ak_d_magne,  &
-     &      nod_comm, node, ele, conduct, Bnod_bcs, iphys_ele, ele_fld, &
-     &      jac_3d_q, rhs_tbl, FEM_elens, diff_coefs, m_lump,           &
-     &      Bmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      nod_comm, node, ele, conduct, cd_prop1, Bnod_bcs,           &
+     &      iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,           &
+     &      diff_coefs, m_lump, Bmatrix, MG_vector,                     &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
         call clear_field_data(nod_fld, n_scalar, iphys%i_m_phi)
       else
         call cal_vector_p_co_exp(iphys%i_vecp, nod_comm, node, ele,     &

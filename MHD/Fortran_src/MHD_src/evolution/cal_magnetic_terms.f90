@@ -45,6 +45,7 @@
 !
       use m_phys_constants
       use m_control_parameter
+      use m_physical_property
 !
       use t_comm_table
       use t_geometry_data_MHD
@@ -119,15 +120,15 @@
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
       if (iflag_mag_supg .gt. id_turn_OFF) then
-        call int_vol_magne_monitor_upm(i_field, iak_diff_uxb,           &
-     &     node, ele, conduct, iphys, nod_fld, iphys_ele, ele_fld,      &
-     &     jac_3d, rhs_tbl, FEM_elens, diff_coefs,                      &
-     &     mhd_fem_wk, fem_wk, f_nl)
+        call int_vol_magne_monitor_upm                                  &
+     &     (i_field, iak_diff_uxb, node, ele, conduct, cd_prop1,        &
+     &      iphys, nod_fld, iphys_ele, ele_fld, jac_3d, rhs_tbl,        &
+     &      FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, f_nl)
       else
-        call int_vol_magne_monitor_pg(i_field, iak_diff_uxb,            &
-     &     node, ele, conduct, iphys, nod_fld, iphys_ele, ele_fld,      &
-     &     jac_3d, rhs_tbl, FEM_elens, diff_coefs,                      &
-     &     mhd_fem_wk, fem_wk, f_nl)
+        call int_vol_magne_monitor_pg                                   &
+     &     (i_field, iak_diff_uxb, node, ele, conduct, cd_prop1,        &
+     &      iphys, nod_fld, iphys_ele, ele_fld, jac_3d, rhs_tbl,        &
+     &      FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, f_nl)
       end if
 !
       call int_surf_magne_monitor(i_field, iak_diff_uxb, ak_d_magne,    &

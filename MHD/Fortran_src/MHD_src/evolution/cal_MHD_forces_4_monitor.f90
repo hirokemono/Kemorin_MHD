@@ -207,11 +207,11 @@
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call cal_terms_4_momentum                                     &
      &       (i_fld, ifld_diff%i_velo, ifld_diff%i_lorentz,             &
-     &        nod_comm, node, ele, surf, fluid, sf_grp,                 &
-     &        surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, iphys, iphys_ele,     &
-     &        ak_MHD, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,           &
-     &        diff_coefs, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,       &
-     &        nod_fld, ele_fld)
+     &        nod_comm, node, ele, surf, sf_grp, fluid,                 &
+     &        fl_prop1, cd_prop1, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,   &
+     &        iphys, iphys_ele, ak_MHD, jac_3d, jac_sf_grp, rhs_tbl,    &
+     &        FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,       &
+     &        f_l, f_nl, nod_fld, ele_fld)
         end if
       end do
 !
@@ -270,7 +270,7 @@
      &             write(*,*) 'lead  ', trim(fhd_viscous)
         call cal_viscous_diffusion                                      &
      &     (ifld_diff%i_velo, ifld_diff%i_velo, ifld_diff%i_lorentz,    &
-     &      nod_comm, node, ele, surf, fluid, sf_grp,                   &
+     &      nod_comm, node, ele, surf, sf_grp, fluid, fl_prop1,         &
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,       &
      &      iphys, ak_MHD, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,      &
      &      diff_coefs, mhd_fem_wk, fem_wk, surf_wk,                    &

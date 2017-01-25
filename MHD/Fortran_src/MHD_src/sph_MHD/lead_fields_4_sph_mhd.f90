@@ -99,7 +99,8 @@
      &     (sph, comms_sph, trans_p, ipol, rj_fld, WK%trns_MHD)
 !
         if (iflag_debug.eq.1) write(*,*) 'cal_nonlinear_pole_MHD'
-        call cal_nonlinear_pole_MHD(sph%sph_rtp,                        &
+        call cal_nonlinear_pole_MHD                                     &
+     &     (sph%sph_rtp, fl_prop1, cd_prop1, ht_prop1, cp_prop1,        &
      &      WK%trns_MHD%f_trns, WK%trns_MHD%b_trns,                     &
      &      WK%trns_MHD%ncomp_rj_2_rtp, WK%trns_MHD%ncomp_rtp_2_rj,     &
      &      WK%trns_MHD%fld_pole, WK%trns_MHD%frc_pole)
@@ -218,10 +219,12 @@
 !
 !      Evaluate fields for output in grid space
       if (iflag_debug.eq.1) write(*,*) 's_cal_energy_flux_rtp'
-      call s_cal_energy_flux_rtp(sph%sph_rtp, trns_MHD%f_trns,          &
-     &    trns_snap%b_trns, trns_snap%f_trns, trns_MHD%ncomp_rtp_2_rj,  &
-     &    trns_snap%ncomp_rj_2_rtp, trns_snap%ncomp_rtp_2_rj,           &
-     &    trns_MHD%frc_rtp, trns_snap%fld_rtp, trns_snap%frc_rtp)
+      call s_cal_energy_flux_rtp                                        &
+     &   (sph%sph_rtp, fl_prop1, cd_prop1, ref_param_T1, ref_param_C1,  &
+     &    trns_MHD%f_trns, trns_snap%b_trns, trns_snap%f_trns,          &
+     &    trns_MHD%ncomp_rtp_2_rj, trns_snap%ncomp_rj_2_rtp,            &
+     &    trns_snap%ncomp_rtp_2_rj, trns_MHD%frc_rtp,                   &
+     &    trns_snap%fld_rtp, trns_snap%frc_rtp)
 !
 !      Work of SGS terms
       if(iflag_SGS_model .gt. 0) then

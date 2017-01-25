@@ -95,6 +95,7 @@
       subroutine const_radial_matrices_sph                              &
      &         (ht_prop, cp_prop, sph_rj, r_2nd, g_sph_rj)
 !
+      use m_physical_property
       use m_control_parameter
       use m_radial_matrices_sph
       use m_boundary_params_sph_MHD
@@ -110,7 +111,8 @@
       if (evo_velo%iflag_scheme .ge. id_Crank_nicolson) then
         if(iflag_debug .gt. 0)                                          &
      &          write(*,*) 'const_radial_mat_vort_2step'
-        call const_radial_mat_vort_2step(sph_rj, r_2nd, g_sph_rj,       &
+        call const_radial_mat_vort_2step                                &
+     &     (sph_rj, r_2nd, fl_prop1, g_sph_rj,                          &
      &      band_vs_poisson, band_vp_evo, band_vt_evo, band_wt_evo)
         call const_radial_mat_4_press_sph                               &
      &     (sph_rj, r_2nd, g_sph_rj, band_p_poisson)
@@ -128,8 +130,8 @@
       if (evo_magne%iflag_scheme .ge. id_Crank_nicolson) then
           if(iflag_debug .gt. 0)                                        &
      &          write(*,*) 'const_radial_mat_4_magne_sph'
-        call const_radial_mat_4_magne_sph                               &
-     &     (sph_rj, r_2nd, g_sph_rj, band_bp_evo, band_bt_evo)
+        call const_radial_mat_4_magne_sph(sph_rj, r_2nd, cd_prop1,      &
+     &      g_sph_rj, band_bp_evo, band_bt_evo)
       end if
 !
       if(evo_comp%iflag_scheme .ge. id_Crank_nicolson) then

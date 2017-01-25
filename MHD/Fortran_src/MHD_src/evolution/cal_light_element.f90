@@ -159,9 +159,9 @@
       else if(evo_comp%iflag_scheme .eq. id_Crank_nicolson_cmass) then
         call cal_composit_pre_consist_crank(iphys%i_light,              &
      &      iphys%i_pre_composit, ifld_diff%i_light, ak_d_composit,     &
-     &      node, ele, fluid, Cnod_bcs, jac_3d, rhs_tbl, FEM_elens,     &
-     &      diff_coefs, Cmatrix, MG_vector, mhd_fem_wk, fem_wk,         &
-     &      f_l, f_nl, nod_fld)
+     &      node, ele, fluid, evo_comp, cp_prop1, Cnod_bcs,             &
+     &      jac_3d, rhs_tbl, FEM_elens, diff_coefs, Cmatrix, MG_vector, &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       call set_boundary_scalar                                          &

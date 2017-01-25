@@ -233,9 +233,9 @@
       else if (evo_temp%iflag_scheme .eq. id_Crank_nicolson_cmass) then 
         call cal_temp_pre_consist_crank(iphys%i_temp, iphys%i_pre_heat, &
      &      ifld_diff%i_temp, ak_d_temp,                                &
-     &      node, ele, fluid, Tnod_bcs, jac_3d, rhs_tbl, FEM_elens,     &
-     &      diff_coefs, Tmatrix, MG_vector, mhd_fem_wk, fem_wk,         &
-     &      f_l, f_nl, nod_fld)
+     &      node, ele, fluid, evo_temp, ht_prop1, Tnod_bcs,             &
+     &      jac_3d, rhs_tbl, FEM_elens, diff_coefs, Tmatrix, MG_vector, &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       call set_boundary_scalar                                          &
@@ -403,9 +403,9 @@
       else if (evo_temp%iflag_scheme .eq. id_Crank_nicolson_cmass) then 
         call cal_temp_pre_consist_crank(iphys%i_par_temp,               &
      &      iphys%i_pre_heat, ifld_diff%i_temp, ak_d_temp,              &
-     &      node, ele, fluid, Tnod_bcs, jac_3d, rhs_tbl, FEM_elens,     &
-     &      diff_coefs, Tmatrix, MG_vector, mhd_fem_wk, fem_wk,         &
-     &      f_l, f_nl, nod_fld)
+     &      node, ele, fluid, evo_temp, ht_prop1, Tnod_bcs,             &
+     &      jac_3d, rhs_tbl, FEM_elens, diff_coefs, Tmatrix, MG_vector, &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       call set_boundary_scalar                                          &

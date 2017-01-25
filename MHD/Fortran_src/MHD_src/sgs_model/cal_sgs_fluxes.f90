@@ -20,17 +20,20 @@
 !!     &          f_l, f_nl, nod_fld)
 !!      subroutine cal_sgs_magne_induction                              &
 !!     &         (icomp_sgs_uxb, ie_dvx, ie_dbx, nod_comm, node, ele,   &
-!!     &          conduct, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl,  &
-!!     &          FEM_elens, filtering, sgs_coefs, sgs_coefs_nod,       &
-!!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, nod_fld)
-!!      subroutine cal_sgs_uxb_2_evo(icomp_sgs_uxb, ie_dvx,             &
-!!     &        nod_comm, node, ele, conduct, iphys, iphys_ele, ele_fld,&
-!!     &        jac_3d, rhs_tbl, FEM_elens, filtering, sgs_coefs,       &
-!!     &        wk_filter, mhd_fem_wk, fem_wk, f_nl, nod_fld)
+!!     &          conduct, cd_prop, iphys, iphys_ele, ele_fld,          &
+!!     &          jac_3d, rhs_tbl,  FEM_elens, filtering,               &
+!!     &          sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk,      &
+!!     &          fem_wk, f_l, nod_fld)
+!!      subroutine cal_sgs_uxb_2_evo                                    &
+!!     &         (icomp_sgs_uxb, ie_dvx, nod_comm, node, ele, conduct,  &
+!!     &          cd_prop, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl,  &
+!!     &          FEM_elens, filtering, sgs_coefs, wk_filter,           &
+!!     &          mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(field_geometry_data), intent(in) :: conduct
+!!        type(conductive_property), intent(in) :: cd_prop
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
@@ -54,6 +57,7 @@
       use m_control_parameter
       use m_t_step_parameter
 !
+      use t_physical_property
       use t_geometry_data
       use t_phys_data
       use t_phys_address
@@ -268,9 +272,10 @@
 !
       subroutine cal_sgs_magne_induction                                &
      &         (icomp_sgs_uxb, ie_dvx, ie_dbx, nod_comm, node, ele,     &
-     &          conduct, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl,    &
-     &          FEM_elens, filtering, sgs_coefs, sgs_coefs_nod,         &
-     &          wk_filter, mhd_fem_wk, fem_wk, f_l, nod_fld)
+     &          conduct, cd_prop, iphys, iphys_ele, ele_fld,            &
+     &          jac_3d, rhs_tbl,  FEM_elens, filtering,                 &
+     &          sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk,        &
+     &          fem_wk, f_l, nod_fld)
 !
       use cal_sgs_inductions_grad
 !
@@ -281,6 +286,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: conduct
+      type(conductive_property), intent(in) :: cd_prop
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -304,7 +310,7 @@
         call cal_sgs_induct_t_grad_w_coef                               &
      &     (ifilter_final, icomp_sgs_uxb, iphys%i_SGS_induct_t,         &
      &      iphys%i_velo, iphys%i_magne, ie_dvx, ie_dbx,                &
-     &      nod_comm, node, ele, conduct, iphys_ele, ele_fld,           &
+     &      nod_comm, node, ele, conduct, cd_prop, iphys_ele, ele_fld,  &
      &      jac_3d, rhs_tbl, FEM_elens, sgs_coefs, fem_wk, mhd_fem_wk,  &
      &      f_l, nod_fld)
 !
@@ -322,10 +328,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_sgs_uxb_2_evo(icomp_sgs_uxb, ie_dvx,               &
-     &        nod_comm, node, ele, conduct, iphys, iphys_ele, ele_fld,  &
-     &        jac_3d, rhs_tbl, FEM_elens, filtering, sgs_coefs,         &
-     &        wk_filter, mhd_fem_wk, fem_wk, f_nl, nod_fld)
+      subroutine cal_sgs_uxb_2_evo                                      &
+     &         (icomp_sgs_uxb, ie_dvx, nod_comm, node, ele, conduct,    &
+     &          cd_prop, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl,    &
+     &          FEM_elens, filtering, sgs_coefs, wk_filter,             &
+     &          mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !
       use cal_rotation
       use cal_sgs_uxb_grad
@@ -337,6 +344,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: conduct
+      type(conductive_property), intent(in) :: cd_prop
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -358,7 +366,7 @@
      &      write(*,*) 'cal_sgs_uxb_2_ff_grad', ifilter_final
         call cal_sgs_uxb_2_ff_grad                                      &
      &     (ifilter_final, icomp_sgs_uxb, ie_dvx, node, ele, conduct,   &
-     &      iphys, nod_fld, iphys_ele, ele_fld, jac_3d,                 &
+     &      cd_prop, iphys, nod_fld, iphys_ele, ele_fld, jac_3d,        &
      &      rhs_tbl, FEM_elens, sgs_coefs, mhd_fem_wk, fem_wk, f_nl)
 !
       else if(iflag_SGS_induction .eq. id_SGS_similarity) then

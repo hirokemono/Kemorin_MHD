@@ -66,6 +66,7 @@
       use m_machine_parameter
       use m_control_parameter
       use m_phys_constants
+      use m_physical_property
 !
       use t_comm_table
       use t_geometry_data_MHD
@@ -159,8 +160,8 @@
 !
       if ( iflag_SGS_induction .ne. id_SGS_none) then
         call cal_sgs_magne_induction(icomp_sgs_uxb, ie_dvx, ie_dbx,     &
-     &     nod_comm, node, ele, conduct, iphys, iphys_ele, ele_fld,     &
-     &     jac_3d_q, rhs_tbl, FEM_elens, filtering,                     &
+     &     nod_comm, node, ele, conduct, cd_prop1, iphys,               &
+     &     iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens, filtering, &
      &     sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,     &
      &     f_l, nod_fld)
       end if
@@ -182,12 +183,13 @@
       if (iflag_debug .eq. 0 ) write(*,*) 'coefs_4_time_evolution'
       if (iflag_mag_supg .gt. id_turn_OFF) then
        call int_vol_magne_pre_ele_upm                                   &
-     &    (node, ele, conduct, iphys, nod_fld,                          &
+     &    (node, ele, conduct, cd_prop1, iphys, nod_fld,                &
      &     ele_fld%ntot_phys, ele_fld%d_fld, iphys_ele, iak_diff_uxb,   &
      &     jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,                    &
      &     mhd_fem_wk, fem_wk, f_nl)
       else
-       call int_vol_magne_pre_ele(node, ele, conduct, iphys, nod_fld,   &
+       call int_vol_magne_pre_ele                                       &
+     &    (node, ele, conduct, cd_prop1, iphys, nod_fld,                &
      &     ele_fld%ntot_phys, ele_fld%d_fld, iphys_ele, iak_diff_uxb,   &
      &     jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,                    &
      &     mhd_fem_wk, fem_wk, f_nl)
@@ -218,8 +220,8 @@
       else if(evo_magne%iflag_scheme .eq. id_Crank_nicolson_cmass) then 
         call cal_magne_pre_consist_crank                                &
      &     (iphys%i_magne, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,     &
-     &      Bnod_bcs%nod_bc_b, node, ele, conduct, jac_3d_q, rhs_tbl,   &
-     &      FEM_elens, diff_coefs, Bmatrix, MG_vector,                  &
+     &      Bnod_bcs%nod_bc_b, node, ele, conduct, cd_prop1, jac_3d_q,  &
+     &      rhs_tbl, FEM_elens, diff_coefs, Bmatrix, MG_vector,         &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
@@ -304,9 +306,10 @@
       if (   iflag_implicit_correct.eq.3                                &
      &  .or. iflag_implicit_correct.eq.4) then
         call cal_magnetic_co_imp(iphys%i_magne, iak_diff_b, ak_d_magne, &
-     &      nod_comm, node, ele, conduct, Bnod_bcs, iphys_ele, ele_fld, &
-     &      jac_3d_q, rhs_tbl, FEM_elens, diff_coefs, m_lump,           &
-     &      Bmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      nod_comm, node, ele, conduct, cd_prop1, Bnod_bcs,           &
+     &      iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,           &
+     &      diff_coefs, m_lump, Bmatrix, MG_vector,                     &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else
         call cal_magnetic_co_exp(iphys%i_magne, nod_comm, node, ele,    &
      &      jac_3d_q, rhs_tbl, m_lump, mhd_fem_wk, fem_wk,              &

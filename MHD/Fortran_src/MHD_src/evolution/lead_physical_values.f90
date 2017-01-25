@@ -237,16 +237,16 @@
       call cal_true_sgs_terms_pre                                       &
      &   (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,            &
      &    group%surf_grp, MHD_mesh%fluid, MHD_mesh%conduct,             &
-     &    nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,                  &
-     &    jac_3d_q, jac_sf_grp, rhs_tbl, FEM_elens,                     &
+     &    fl_prop1, cd_prop1, nod_bcs, surf_bcs, iphys, iphys_ele,      &
+     &    ak_MHD,  jac_3d_q, jac_sf_grp, rhs_tbl, FEM_elens,            &
      &    ifld_diff, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,           &
      &    f_l, f_nl, nod_fld, ele_fld)
 !
       call cal_sgs_terms_4_monitor(mesh%nod_comm, mesh%node, mesh%ele,  &
-     &    MHD_mesh%fluid, MHD_mesh%conduct, iphys, iphys_ele, ele_fld,  &
-     &    jac_3d_q, rhs_tbl, FEM_elens, icomp_sgs, iphys_elediff,       &
-     &    sgs_coefs, sgs_coefs_nod, filtering, wk_filter,               &
-     &    mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &    MHD_mesh%fluid, MHD_mesh%conduct, cd_prop1, iphys,            &
+     &    iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,             &
+     &    icomp_sgs, iphys_elediff, sgs_coefs, sgs_coefs_nod,           &
+     &    filtering, wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       call cal_fluxes_4_monitor                                         &
      &   (mesh%node, fl_prop1, cd_prop1, iphys, nod_fld)
@@ -260,9 +260,9 @@
      &    f_l, f_nl, nod_fld, ele_fld)
       call cal_diff_of_sgs_terms                                        &
      &   (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,            &
-     &    MHD_mesh%fluid, MHD_mesh%conduct, group%surf_grp,             &
-     &    nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,                  &
-     &    jac_3d_q, jac_sf_grp, rhs_tbl, FEM_elens,                     &
+     &    group%surf_grp, MHD_mesh%fluid, MHD_mesh%conduct,             &
+     &    fl_prop1, cd_prop1, nod_bcs, surf_bcs, iphys, iphys_ele,      &
+     &    ak_MHD, jac_3d_q, jac_sf_grp, rhs_tbl, FEM_elens,             &
      &    ifld_diff, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,           &
      &    f_l, f_nl, nod_fld, ele_fld)
 !
@@ -275,7 +275,8 @@
 !
       call cal_work_4_sgs_terms                                         &
      &   (mesh%nod_comm, mesh%node, mesh%ele, MHD_mesh%conduct,         &
-     &    iphys, jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_nl, nod_fld)
+     &    fl_prop1, iphys, jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk,       &
+     &    f_nl, nod_fld)
 ! 
       end subroutine cal_energy_fluxes
 !

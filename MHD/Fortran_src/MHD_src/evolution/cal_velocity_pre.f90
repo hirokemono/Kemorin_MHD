@@ -14,11 +14,11 @@
 !!     &          Vmatrix, MG_vector, wk_lsq, wk_sgs, wk_filter,        &
 !!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,               &
 !!     &          nod_fld, ele_fld, sgs_coefs)
-!!      subroutine cal_velocity_co                                      &
-!!     &        (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,  &
-!!     &         Vnod_bcs, Vsf_bcs, Psf_bcs, iphys, iphys_ele, ele_fld, &
-!!     &         ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,&
-!!     &         rhs_tbl, FEM_elens, ifld_diff, diff_coefs,             &
+!!      subroutine cal_velocity_co(nod_comm, node, ele, surf,             &
+!!     &         fluid, sf_grp, sf_grp_nod, fl_prop,                      &
+!!     &         Vnod_bcs, Vsf_bcs, Psf_bcs, iphys, iphys_ele, ele_fld,   &
+!!     &         ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,  &
+!!     &         rhs_tbl, FEM_elens, ifld_diff, diff_coefs,               &
 !!     &         Vmatrix, MG_vector, mhd_fem_wk, fem_wk, surf_wk,       &
 !!     &         f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
@@ -182,12 +182,12 @@
       if (iflag_SGS_gravity .ne. id_SGS_none) then
         call cal_sgs_mom_flux_with_sgs_buo                              &
      &     (nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,        &
-     &      fl_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD,        &
-     &      jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,       &
-     &      filtering, ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,   &
-     &      sgs_coefs_nod, diff_coefs, wk_filter, wk_lsq, wk_sgs,       &
-     &      mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                     &
-     &      nod_fld, ele_fld, sgs_coefs)
+     &      fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,       &
+     &      ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,          &
+     &      FEM_elens, filtering, ifld_sgs, icomp_sgs,                  &
+     &      ifld_diff, iphys_elediff, sgs_coefs_nod, diff_coefs,        &
+     &      wk_filter, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk, surf_wk,     &
+     &      f_l, f_nl, nod_fld, ele_fld, sgs_coefs)
       end if
 !
       if ( iflag_SGS_inertia .ne. id_SGS_none) then
@@ -263,13 +263,13 @@
 !
 !
       if (evo_velo%iflag_scheme .eq. id_explicit_euler) then
-        call cal_velo_pre_euler(iflag_velo_supg,                        &
-     &     nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,       &
+        call cal_velo_pre_euler(iflag_velo_supg, nod_comm, node, ele,   &
+     &     fluid, fl_prop, iphys, iphys_ele, ele_fld,                   &
      &     jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       else if(evo_velo%iflag_scheme .eq. id_explicit_adams2) then
-        call cal_velo_pre_adams(iflag_velo_supg,                        &
-     &     nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,       &
+        call cal_velo_pre_adams(iflag_velo_supg, nod_comm, node, ele,   &
+     &     fluid, fl_prop, iphys, iphys_ele, ele_fld,                   &
      &     jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       else if(evo_velo%iflag_scheme .eq. id_Crank_nicolson) then
@@ -283,9 +283,9 @@
       else if(evo_velo%iflag_scheme .eq. id_Crank_nicolson_cmass) then 
         call cal_velo_pre_consist_crank(iphys%i_velo,                   &
      &      iphys%i_pre_mom, ifld_diff%i_velo, ak_MHD%ak_d_velo,        &
-     &      node, ele, fluid, Vnod_bcs, jac_3d_q, rhs_tbl, FEM_elens,   &
-     &      diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,         &
-     &      f_l, f_nl, nod_fld)
+     &      node, ele, fluid, fl_prop, Vnod_bcs, jac_3d_q, rhs_tbl,     &
+     &      FEM_elens, diff_coefs, Vmatrix, MG_vector,                  &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       call set_boundary_velo(node, Vnod_bcs, iphys%i_velo, nod_fld)
@@ -298,8 +298,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_velocity_co                                        &
-     &        (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,    &
+      subroutine cal_velocity_co(nod_comm, node, ele, surf,             &
+     &         fluid, sf_grp, sf_grp_nod, fl_prop,                      &
      &         Vnod_bcs, Vsf_bcs, Psf_bcs, iphys, iphys_ele, ele_fld,   &
      &         ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,  &
      &         rhs_tbl, FEM_elens, ifld_diff, diff_coefs,               &
@@ -324,6 +324,7 @@
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_node_grp_data), intent(in) :: sf_grp_nod
       type(field_geometry_data), intent(in) :: fluid
+      type(fluid_property), intent(in) :: fl_prop
       type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
       type(velocity_surf_bc_type), intent(in)  :: Vsf_bcs
       type(potential_surf_bc_type), intent(in) :: Psf_bcs
@@ -373,7 +374,7 @@
      &  .or. iflag_implicit_correct.eq.4) then
         call cal_velocity_co_imp                                        &
      &     (iphys%i_velo, ifld_diff%i_velo, ak_MHD%ak_d_velo,           &
-     &      nod_comm, node, ele, fluid, Vnod_bcs,                       &
+     &      nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,              &
      &      iphys_ele, ele_fld,  jac_3d_q, rhs_tbl, FEM_elens,          &
      &      diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,         &
      &      f_l, f_nl, nod_fld)

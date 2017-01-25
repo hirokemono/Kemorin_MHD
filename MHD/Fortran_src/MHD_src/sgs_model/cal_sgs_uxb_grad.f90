@@ -5,12 +5,12 @@
 !
 !!      subroutine cal_sgs_uxb_2_ff_grad                                &
 !!     &         (i_filter, icomp_sgs_uxb, ie_dvx, node, ele, conduct,  &
-!!     &          iphys, nod_fld, iphys_ele, ele_fld, jac_3d,           &
+!!     &          cd_prop, iphys, nod_fld, iphys_ele, ele_fld, jac_3d,  &
 !!     &          rhs_tbl, FEM_elens, sgs_coefs, mhd_fem_wk,            &
 !!     &          fem_wk, f_nl)
 !!      subroutine cal_sgs_vp_induct_grad_no_coef(i_filter,             &
-!!     &          i_sgs, i_field, id_dx, nod_comm, node, ele,           &
-!!     &          conduct, iphys_ele, ele_fld, jac_3d, rhs_tbl,         &
+!!     &          i_sgs, i_field, id_dx, nod_comm, node, ele, conduct,  &
+!!     &          cd_prop, iphys_ele, ele_fld, jac_3d, rhs_tbl,         &
 !!     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, nod_fld)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -19,6 +19,7 @@
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(field_geometry_data), intent(in) :: conduct
+!!        type(conductive_property), intent(in) :: cd_prop
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -32,8 +33,8 @@
       use m_precision
 !
       use m_phys_constants
-      use m_physical_property
 !
+      use t_physical_property
       use t_geometry_data_MHD
       use t_comm_table
       use t_geometry_data
@@ -56,7 +57,7 @@
 !
       subroutine cal_sgs_uxb_2_ff_grad                                  &
      &         (i_filter, icomp_sgs_uxb, ie_dvx, node, ele, conduct,    &
-     &          iphys, nod_fld, iphys_ele, ele_fld, jac_3d,             &
+     &          cd_prop, iphys, nod_fld, iphys_ele, ele_fld, jac_3d,    &
      &          rhs_tbl, FEM_elens, sgs_coefs, mhd_fem_wk,              &
      &          fem_wk, f_nl)
 !
@@ -76,6 +77,7 @@
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
       type(field_geometry_data), intent(in) :: conduct
+      type(conductive_property), intent(in) :: cd_prop
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -98,15 +100,15 @@
      &    sgs_coefs%ntot_comp, icomp_sgs_uxb, sgs_coefs%ak, fem_wk%sk6)
 !
       call add3_skv_coef_to_ff_v_smp(node, ele, rhs_tbl,                &
-     &    cd_prop1%coef_induct, fem_wk%sk6, f_nl%ff_smp)
+     &    cd_prop%coef_induct, fem_wk%sk6, f_nl%ff_smp)
 !
       end subroutine cal_sgs_uxb_2_ff_grad
 !
 !-----------------------------------------------------------------------
 !
       subroutine cal_sgs_vp_induct_grad_no_coef(i_filter,               &
-     &          i_sgs, i_field, id_dx, nod_comm, node, ele,             &
-     &          conduct, iphys_ele, ele_fld, jac_3d, rhs_tbl,           &
+     &          i_sgs, i_field, id_dx, nod_comm, node, ele, conduct,    &
+     &          cd_prop, iphys_ele, ele_fld, jac_3d, rhs_tbl,           &
      &          FEM_elens, mhd_fem_wk, fem_wk, f_l, nod_fld)
 !
       use cal_ff_smp_to_ffs
@@ -121,6 +123,7 @@
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
       type(field_geometry_data), intent(in) :: conduct
+      type(conductive_property), intent(in) :: cd_prop
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -144,7 +147,7 @@
      &    jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !
       call add3_skv_coef_to_ff_v_smp(node, ele, rhs_tbl,                &
-     &    cd_prop1%coef_induct, fem_wk%sk6, f_l%ff_smp)
+     &    cd_prop%coef_induct, fem_wk%sk6, f_l%ff_smp)
       call cal_ff_smp_2_vector(node, rhs_tbl,                           &
      &    f_l%ff_smp, mhd_fem_wk%mlump_cd%ml, nod_fld%ntot_phys,        &
      &    i_sgs, nod_fld%d_fld)

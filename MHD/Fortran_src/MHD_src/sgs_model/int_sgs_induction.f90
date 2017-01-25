@@ -8,7 +8,7 @@
 !!     &         (nod_comm, node, ele, conduct, iphys, jac_3d,          &
 !!     &          rhs_tbl, mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !!      subroutine cal_sgs_uxb_2_monitor(icomp_sgs_uxb, ie_dvx,         &
-!!     &          nod_comm, node, ele, conduct, iphys,                  &
+!!     &          nod_comm, node, ele, conduct, cd_prop, iphys,         &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elen,        &
 !!     &          filtering, sgs_coefs, wk_filter, mhd_fem_wk, fem_wk,  &
 !!     &          f_l, f_nl, nod_fld)
@@ -16,6 +16,7 @@
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: conduct
+!!        type(conductive_property), intent(in) :: cd_prop
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
@@ -38,6 +39,7 @@
       use m_control_parameter
       use m_phys_constants
 !
+      use t_physical_property
       use t_geometry_data_MHD
       use t_geometry_data
       use t_phys_data
@@ -105,7 +107,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_sgs_uxb_2_monitor(icomp_sgs_uxb, ie_dvx,           &
-     &          nod_comm, node, ele, conduct, iphys,                    &
+     &          nod_comm, node, ele, conduct, cd_prop, iphys,           &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elen,          &
      &          filtering, sgs_coefs, wk_filter, mhd_fem_wk, fem_wk,    &
      &          f_l, f_nl, nod_fld)
@@ -121,6 +123,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: conduct
+      type(conductive_property), intent(in) :: cd_prop
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -138,10 +141,11 @@
 !
 !
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
-      call cal_sgs_uxb_2_evo(icomp_sgs_uxb, ie_dvx,                     &
-     &    nod_comm, node, ele, conduct, iphys, iphys_ele, ele_fld,      &
-     &    jac_3d, rhs_tbl, FEM_elen, filtering, sgs_coefs,              &
-     &    wk_filter, mhd_fem_wk, fem_wk, f_nl, nod_fld)
+      call cal_sgs_uxb_2_evo                                            &
+     &   (icomp_sgs_uxb, ie_dvx, nod_comm, node, ele, conduct,          &
+     &    cd_prop, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl,          &
+     &    FEM_elen, filtering, sgs_coefs, wk_filter,                    &
+     &    mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
       call cal_ff_2_vector(node%numnod, node%istack_nod_smp,            &

@@ -294,9 +294,9 @@
 !
       if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'velocity_evolution'
-        call velocity_evolution                                         &
-     &     (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &
-     &      MHD_mesh%fluid, group%surf_grp, group%surf_nod_grp,         &
+        call velocity_evolution(mesh%nod_comm, mesh%node, mesh%ele,     &
+     &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
+     &      group%surf_nod_grp, fl_prop1, cd_prop1,                     &
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,       &
      &      surf_bcs%Psf_bcs, iphys, iphys_ele, ak_MHD,                 &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &
@@ -569,7 +569,8 @@
       if ( evo_velo%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'velocity_evolution'
         call velocity_evolution(mesh%nod_comm, mesh%node, mesh%ele,     &
-     &      ele_mesh%surf, fluid, group%surf_grp, group%surf_nod_grp,   &
+     &      ele_mesh%surf, fluid, group%surf_grp,                       &
+     &      group%surf_nod_grp, fl_prop1, cd_prop1,                     &
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,       &
      &      surf_bcs%Psf_bcs, iphys, iphys_ele, ak_MHD,                 &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &
