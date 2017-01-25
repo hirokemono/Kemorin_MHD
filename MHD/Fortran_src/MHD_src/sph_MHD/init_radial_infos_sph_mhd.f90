@@ -210,9 +210,9 @@
      &    sph_rj%nidx_rj, sph_params%radius_ICB, sph_params%radius_CMB, &
      &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
      &    sph_rj%radius_1d_rj_r, ref_fld%t_rj)
-        call adjust_sph_temp_bc_by_reftemp                              &
-     &     (sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj(1),               &
-     &      ref_fld%t_rj, sph_bc_S)
+!!        call adjust_sph_temp_bc_by_reftemp                            &
+!!     &     (sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj(1),             &
+!!     &      ref_fld%t_rj, sph_bc_S)
 !
       else
         call no_ref_temp_sph_mhd(ref_param%depth_top,                   &
