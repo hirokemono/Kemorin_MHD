@@ -57,7 +57,7 @@
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
-      real(kind=kreal), intent(in) :: reftemp_rj(sph_rj%nidx_rj(1),0:1)
+      real(kind=kreal), intent(in) :: reftemp_rj(sph_rj%nidx_rj(1),0:2)
       type(phys_address), intent(in) :: ipol, idpdr, itor
 !
       type(phys_data), intent(inout) :: rj_fld

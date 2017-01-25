@@ -10,10 +10,8 @@
 !!@verbatim
 !!      subroutine alloc_phys_rj_name_t(sph_phys)
 !!      subroutine alloc_phys_rj_data_t(nnod_rj, sph_phys)
-!!      subroutine alloc_reft_rj_data_t(nri, sph_phys)
 !!
 !!      subroutine dealloc_phys_rj_name_t(sph_phys)
-!!      subroutine dealloc_reft_rj_data_t(sph_phys)
 !!
 !!      subroutine check_rj_spectr_name_t(sph_phys)
 !!      subroutine check_rj_spectr_data_t(my_rank, sph_phys)
@@ -54,13 +52,6 @@
       type sph_phys_data
 !>        Structure for spectr data @f$ f(r,j) @f$
         type(phys_data) :: rj_fld
-!
-!>    reference temerature spectr @f$ f(r,j) @f$
-!!@verbatim
-!!        reftemp_rj(kr,0) ... T_0
-!!        reftemp_rj(kr,1) ... d T_0 / dr
-!!@endverbatim
-        real (kind=kreal), allocatable :: reftemp_rj(:,:)
       end type sph_phys_data
 !
 ! -------------------------------------------------------------------
@@ -93,19 +84,6 @@
 !
 !  --------------------------------------------------------------------
 !
-      subroutine alloc_reft_rj_data_t(nri, sph_phys)
-!
-      integer(kind = kint), intent(in) :: nri
-      type(sph_phys_data), intent(inout) :: sph_phys
-!
-      allocate( sph_phys%reftemp_rj(nri,0:1)   )
-      sph_phys%reftemp_rj =  0.0d0
-!
-      end subroutine alloc_reft_rj_data_t
-!
-!  --------------------------------------------------------------------
-!  --------------------------------------------------------------------
-!
       subroutine dealloc_phys_rj_name_t(sph_phys)
 !
       type(sph_phys_data), intent(inout) :: sph_phys
@@ -115,16 +93,6 @@
       call dealloc_phys_name_type(sph_phys%rj_fld)
 !
       end subroutine dealloc_phys_rj_name_t
-!
-!  --------------------------------------------------------------------
-!
-      subroutine dealloc_reft_rj_data_t(sph_phys)
-!
-      type(sph_phys_data), intent(inout) :: sph_phys
-!
-      deallocate( sph_phys%reftemp_rj )
-!
-      end subroutine dealloc_reft_rj_data_t
 !
 !  --------------------------------------------------------------------
 !  --------------------------------------------------------------------

@@ -26,6 +26,7 @@
 !!*
 !!*     ref_temp(k,0) : reference of temperature  (output)
 !!*     ref_temp(k,1) : dT_0 / dr
+!!*     ref_temp(k,2) : d^2 T_0 / dr^2
 !!*
 !!*                          c2
 !!*      ref_temp(k) = c1 + ------
@@ -65,11 +66,12 @@
       integer(kind = kint), intent(in) :: nri
       real(kind = kreal), intent(in) :: r_ICB, r_CMB
 !
-      real(kind=kreal), intent(inout) :: reftemp_rj(nri,0:1)
+      real(kind=kreal), intent(inout) :: reftemp_rj(nri,0:2)
 !
 !
       reftemp_rj(1:nri,0) = zero
       reftemp_rj(1:nri,1) = zero
+      reftemp_rj(1:nri,2) = zero
       depth_bottom = r_ICB
       depth_top =    r_CMB
 !
@@ -88,7 +90,7 @@
       real(kind=kreal), intent(in) :: r_1d_rj(nidx_rj(1))
       real(kind=kreal), intent(in) :: ar_1d_rj(nidx_rj(1),3)
 !
-      real(kind=kreal), intent(inout) :: reftemp_rj(nidx_rj(1),0:1)
+      real(kind=kreal), intent(inout) :: reftemp_rj(nidx_rj(1),0:2)
 !
       integer (kind = kint) :: k
 !
@@ -98,9 +100,11 @@
         if(r_1d_rj(k) .lt. depth_bottom) then
           reftemp_rj(k,0) = high_temp
           reftemp_rj(k,1) = zero
+          reftemp_rj(k,2) = zero
         else if(r_1d_rj(k) .gt. depth_top) then
           reftemp_rj(k,0) = low_temp
           reftemp_rj(k,1) = zero
+          reftemp_rj(k,2) = zero
         else
           reftemp_rj(k,0) = (depth_bottom*depth_top*ar_1d_rj(k,1)       &
      &                   * (high_temp - low_temp)                       &
@@ -108,6 +112,10 @@
      &                    + depth_top* low_temp )                       &
      &                     / (depth_top - depth_bottom)
           reftemp_rj(k,1) = - depth_bottom*depth_top*ar_1d_rj(k,2)      &
+     &                   * (high_temp - low_temp)                       &
+     &                     / (depth_top - depth_bottom)
+          reftemp_rj(k,2) = two * depth_bottom*depth_top                &
+     &                   * ar_1d_rj(k,2)*ar_1d_rj(k,1)                  &
      &                   * (high_temp - low_temp)                       &
      &                     / (depth_top - depth_bottom)
         end if
@@ -133,7 +141,7 @@
       real(kind = kreal), intent(in) :: r_ICB, r_CMB
       real(kind=kreal), intent(in) :: r_1d_rj(nidx_rj(1))
 !
-      real(kind=kreal), intent(inout) :: reftemp_rj(nidx_rj(1),0:1)
+      real(kind=kreal), intent(inout) :: reftemp_rj(nidx_rj(1),0:2)
 !
       integer (kind = kint) :: k
       real(kind = kreal) :: alpha, beta
@@ -146,12 +154,14 @@
           reftemp_rj(k,0) = - half * (r_ICB + stratified_sigma)         &
      &                     * (one - tanh(alpha)) + stratified_sigma
           reftemp_rj(k,1) = zero
+          reftemp_rj(k,2) = zero
         else if(k .gt. kr_CMB) then
           alpha = (r_CMB-stratified_outer_r) / stratified_width
           beta =  (r_CMB + stratified_sigma) / stratified_width
           reftemp_rj(k,0) = - half * (r_CMB + stratified_sigma)         &
      &                     * (one - tanh(alpha)) + stratified_sigma
           reftemp_rj(k,1) = zero
+          reftemp_rj(k,2) = zero
         else
           alpha = (r_1d_rj(k)-stratified_outer_r) / stratified_width
           beta =  (r_1d_rj(k) + stratified_sigma) / stratified_width
@@ -160,6 +170,9 @@
           reftemp_rj(k,1) = half * (-one + beta)                        &
      &                     + half * tanh(alpha)                         &
      &                     - half * beta * tanh(alpha) * tanh(alpha)
+          reftemp_rj(k,2) = (one - tanh(alpha)*tanh(alpha))             &
+     &                     * (one - beta * tanh(alpha))                 &
+     &                     / stratified_width
         end if
       end do
 !

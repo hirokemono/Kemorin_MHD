@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine nonlinear(sph, comms_sph, omega_sph, r_2nd, trans_p, &
-!!     &          reftemp_rj, refcomp_rj, ipol, itor, WK, rj_fld)
+!!     &          ref_temp, ref_comp, ipol, itor, WK, rj_fld)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(sph_rotation), intent(in) :: omega_sph
@@ -17,7 +17,9 @@
 !!        type(phys_address), intent(in) :: ipol, itor
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
 !!        type(phys_data), intent(inout) :: rj_fld
-!!      subroutine licv_exp(reftemp_rj, refcomp_rj, sph_rlm, sph_rj,    &
+!!        type(reference_temperature), intent(in) :: ref_temp
+!!        type(reference_temperature), intent(in) :: ref_comp
+!!      subroutine licv_exp(ref_temp, ref_comp, sph_rlm, sph_rj,        &
 !!     &          comm_rlm, comm_rj, leg, trns_MHD, ipol, itor, rj_fld)
 !!        type(sph_rlm_grid), intent(in) :: sph_rlm
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
@@ -27,6 +29,8 @@
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(phys_address), intent(in) :: ipol, itor
+!!        type(reference_temperature), intent(in) :: ref_temp
+!!        type(reference_temperature), intent(in) :: ref_comp
 !!        type(address_4_sph_trans), intent(inout) :: trns_MHD
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
@@ -53,6 +57,7 @@
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
       use t_sph_filtering_data
+      use t_radial_reference_temp
       use sph_filtering
 !
       implicit none
@@ -67,7 +72,7 @@
 !*   ------------------------------------------------------------------
 !*
       subroutine nonlinear(sph, comms_sph, omega_sph, r_2nd, trans_p,   &
-     &          reftemp_rj, refcomp_rj, ipol, itor, WK, rj_fld)
+     &          ref_temp, ref_comp, ipol, itor, WK, rj_fld)
 !
       use m_boundary_params_sph_MHD
       use cal_inner_core_rotation
@@ -82,11 +87,8 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(phys_address), intent(in) :: ipol, itor
-!
-      real(kind = kreal), intent(in)                                    &
-     &                   :: reftemp_rj(sph%sph_rj%nidx_rj(1),0:1)
-      real(kind = kreal), intent(in)                                    &
-     &                   :: refcomp_rj(sph%sph_rj%nidx_rj(1),0:1)
+      type(reference_temperature), intent(in) :: ref_temp
+      type(reference_temperature), intent(in) :: ref_comp
 !
       type(works_4_sph_trans_MHD), intent(inout) :: WK
       type(phys_data), intent(inout) :: rj_fld
@@ -110,7 +112,7 @@
 !   ----  Lead advection of reference field
       call add_ref_advect_sph_MHD(sph%sph_rj,                           &
      &    ht_prop1, cp_prop1, ref_param_T1, ref_param_C1,               &
-     &    trans_p%leg, reftemp_rj, refcomp_rj, ipol, rj_fld)
+     &    trans_p%leg, ref_temp, ref_comp, ipol, rj_fld)
 !
 !*  ----  copy coriolis term for inner core rotation
 !*
@@ -351,7 +353,7 @@
 !*   ------------------------------------------------------------------
 !*   ------------------------------------------------------------------
 !*
-      subroutine licv_exp(reftemp_rj, refcomp_rj, sph_rlm, sph_rj,      &
+      subroutine licv_exp(ref_temp, ref_comp, sph_rlm, sph_rj,          &
      &          comm_rlm, comm_rj, omega_sph, leg, trns_MHD,            &
      &          ipol, itor, rj_fld)
 !
@@ -368,11 +370,9 @@
       type(address_4_sph_trans), intent(in) :: trns_MHD
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_address), intent(in) :: ipol, itor
+      type(reference_temperature), intent(in) :: ref_temp
+      type(reference_temperature), intent(in) :: ref_comp
 !
-      real(kind = kreal), intent(in)                                    &
-     &                   :: reftemp_rj(sph_rj%nidx_rj(1),0:1)
-      real(kind = kreal), intent(in)                                    &
-     &                   :: refcomp_rj(sph_rj%nidx_rj(1),0:1)
       type(phys_data), intent(inout) :: rj_fld
 !
 !*  ----  copy velocity for coriolis term ------------------
@@ -409,7 +409,7 @@
 !
       call add_ref_advect_sph_MHD(sph_rj,                               &
      &    ht_prop1, cp_prop1, ref_param_T1, ref_param_C1,               &
-     &    leg, reftemp_rj, refcomp_rj, ipol, rj_fld)
+     &    leg, ref_temp, ref_comp, ipol, rj_fld)
 !
 !
 !$omp parallel

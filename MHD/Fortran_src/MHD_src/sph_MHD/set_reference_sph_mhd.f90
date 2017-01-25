@@ -12,32 +12,35 @@
 !!     &          n_point, ntot_phys_rj, d_rj)
 !!
 !!      subroutine adjust_sph_temp_bc_by_reftemp                        &
-!!     &         (idx_rj_degree_zero, nri, reftemp_rj, sph_bc_T)
+!!     &         (idx_rj_degree_zero, nri, reftemp_rj, sph_bc_S)
 !!
 !!      subroutine chenge_temp_to_per_temp_sph(idx_rj_degree_zero,      &
-!!     &         nidx_rj, radius_1d_rj_r, reftemp_rj, ipol, idpdr,      &
-!!     &         n_point, ntot_phys_rj, d_rj)
+!!     &          nidx_rj, radius_1d_rj_r, reftemp_rj,                  &
+!!     &          is_temp, is_grad_t, ids_grad_t,                       &
+!!     &          is_par_temp, is_grad_part_t, ids_grad_part_t,         &
+!!     &          n_point, ntot_phys_rj, d_rj)
 !!        d_rj(inod,ipol%i_temp):        T => \Theta = T - T0
-!!        d_rj(inod,ipol%i_par_temp):    \Theta = T - T0
-!!        d_rj(inod,ipol%i_grad_t):      T => d \Theta / dr
-!!        d_rj(inod,ipol%i_grad_part_t): d \Theta / dr
-!!
+!!        d_rj(inod,is_par_temp):    \Theta = T - T0
+!!        d_rj(inod,is_grad_t):      T => d \Theta / dr
+!!        d_rj(inod,is_grad_part_t): d \Theta / dr
 !!
 !!      subroutine transfer_per_temp_to_temp_sph(idx_rj_degree_zero,    &
-!!     &          nidx_rj, radius_1d_rj_r, reftemp_rj, ipol, idpdr,     &
+!!     &          nidx_rj, radius_1d_rj_r, reftemp_rj,                  &
+!!     &          is_temp, is_grad_t, ids_grad_t,                       &
+!!     &          is_par_temp, is_grad_part_t, ids_grad_part_t,         &
 !!     &          n_point, ntot_phys_rj, d_rj)
 !!        type(phys_address), intent(in) :: ipol, idpdr
 !!        d_rj(inod,ipol%i_temp):        \Theta = T - T0 => T
-!!        d_rj(inod,ipol%i_par_temp):    \Theta = T - T0
-!!        d_rj(inod,ipol%i_grad_t):      d \Theta / dr   => dT / dr
-!!        d_rj(inod,ipol%i_grad_part_t): d \Theta / dr
+!!        d_rj(inod,is_par_temp):    \Theta = T - T0
+!!        d_rj(inod,is_grad_t):      d \Theta / dr   => dT / dr
+!!        d_rj(inod,is_grad_part_t): d \Theta / dr
 !!
 !!      subroutine delete_zero_degree_comp(is_fld, idx_rj_degree_zero,  &
 !!     &          n_point, nidx_rj, ntot_phys_rj, d_rj)
 !!@endverbatim
 !!
-!!@param sph_bc_T  Structure for basic boundary condition parameters
-!!                 for temperature
+!!@param sph_bc_S  Structure for basic boundary condition parameters
+!!                 for scalar
 !!@n @param is_fld Address of poloidal component
 !!
 !!@n @param ntot_phys_rj   Total number of components
@@ -91,32 +94,30 @@
 ! -----------------------------------------------------------------------
 !
       subroutine adjust_sph_temp_bc_by_reftemp                          &
-     &         (idx_rj_degree_zero, nri, reftemp_rj, sph_bc_T)
+     &         (idx_rj_degree_zero, nri, reftemp_rj, sph_bc_S)
 !
       use t_boundary_params_sph_MHD
-      use m_physical_property
 !
       integer(kind = kint), intent(in) :: idx_rj_degree_zero
       integer(kind = kint), intent(in) :: nri
-      real(kind=kreal), intent(in) :: reftemp_rj(nri,0:1)
+      real(kind=kreal), intent(in) :: reftemp_rj(nri,0:2)
 !
-      type(sph_boundary_type), intent(inout) :: sph_bc_T
+      type(sph_boundary_type), intent(inout) :: sph_bc_S
 !
 !
-      if(ref_param_T1%iflag_reference .eq. id_sphere_ref_temp           &
-     &       .and. idx_rj_degree_zero .gt. 0) then
-        sph_bc_T%ICB_fld(idx_rj_degree_zero)                            &
-     &   = sph_bc_T%ICB_fld(idx_rj_degree_zero)                         &
-     &    - reftemp_rj(sph_bc_T%kr_in,0)
-        sph_bc_T%CMB_fld(idx_rj_degree_zero)                            &
-     &   = sph_bc_T%CMB_fld(idx_rj_degree_zero)                         &
-     &     - reftemp_rj(sph_bc_T%kr_out,0)
-        sph_bc_T%ICB_flux(idx_rj_degree_zero)                           &
-     &   = sph_bc_T%ICB_flux(idx_rj_degree_zero)                        &
-     &    - reftemp_rj(sph_bc_T%kr_in,1)
-        sph_bc_T%CMB_flux(idx_rj_degree_zero)                           &
-     &   = sph_bc_T%CMB_flux(idx_rj_degree_zero)                        &
-     &    - reftemp_rj(sph_bc_T%kr_out,1)
+      if(idx_rj_degree_zero .gt. 0) then
+        sph_bc_S%ICB_fld(idx_rj_degree_zero)                            &
+     &   = sph_bc_S%ICB_fld(idx_rj_degree_zero)                         &
+     &    - reftemp_rj(sph_bc_S%kr_in,0)
+        sph_bc_S%CMB_fld(idx_rj_degree_zero)                            &
+     &   = sph_bc_S%CMB_fld(idx_rj_degree_zero)                         &
+     &     - reftemp_rj(sph_bc_S%kr_out,0)
+        sph_bc_S%ICB_flux(idx_rj_degree_zero)                           &
+     &   = sph_bc_S%ICB_flux(idx_rj_degree_zero)                        &
+     &    - reftemp_rj(sph_bc_S%kr_in,1)
+        sph_bc_S%CMB_flux(idx_rj_degree_zero)                           &
+     &   = sph_bc_S%CMB_flux(idx_rj_degree_zero)                        &
+     &    - reftemp_rj(sph_bc_S%kr_out,1)
       end if
 !
       end subroutine adjust_sph_temp_bc_by_reftemp
@@ -125,41 +126,44 @@
 ! -----------------------------------------------------------------------
 !
       subroutine chenge_temp_to_per_temp_sph(idx_rj_degree_zero,        &
-     &         nidx_rj, radius_1d_rj_r, reftemp_rj, ipol, idpdr,        &
-     &         n_point, ntot_phys_rj, d_rj)
+     &          nidx_rj, radius_1d_rj_r, reftemp_rj,                    &
+     &          is_temp, is_grad_t, ids_grad_t,                         &
+     &          is_par_temp, is_grad_part_t, ids_grad_part_t,           &
+     &          n_point, ntot_phys_rj, d_rj)
 !
-      use m_physical_property
-!
-      type(phys_address), intent(in) :: ipol, idpdr
       integer(kind = kint), intent(in) :: idx_rj_degree_zero
       integer(kind = kint), intent(in) :: nidx_rj(2)
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+!
+      integer(kind = kint), intent(in) :: is_temp, is_par_temp
+      integer(kind = kint), intent(in) :: is_grad_t, is_grad_part_t
+      integer(kind = kint), intent(in) :: ids_grad_t, ids_grad_part_t
+!
       real(kind=kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
-      real(kind=kreal), intent(in) :: reftemp_rj(nidx_rj(1),0:1)
+      real(kind=kreal), intent(in) :: reftemp_rj(nidx_rj(1),0:2)
 !
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       integer(kind = kint) :: k, inod
 !
 !
-      if (ref_param_T1%iflag_reference .ne. id_sphere_ref_temp) return
-!
       if (idx_rj_degree_zero .gt. 0) then
         do k = 1, nidx_rj(1)
           inod = idx_rj_degree_zero + (k-1)*nidx_rj(2)
-          d_rj(inod,ipol%i_temp) = d_rj(inod,ipol%i_temp)               &
-     &                    - reftemp_rj(k,0)
-          d_rj(inod,ipol%i_grad_t) = d_rj(inod,ipol%i_grad_t)           &
-     &                    - two*reftemp_rj(k,1) * radius_1d_rj_r(k)**2
-          d_rj(inod,idpdr%i_grad_t) = d_rj(inod,ipol%i_temp)
+          d_rj(inod,is_temp) = d_rj(inod,is_temp) - reftemp_rj(k,0)
+          d_rj(inod,is_grad_t) = d_rj(inod,is_grad_t)                   &
+     &                 - two*reftemp_rj(k,1) * radius_1d_rj_r(k)**2
+          d_rj(inod,ids_grad_t) = d_rj(inod,ids_grad_t)                 &
+     &                 - (reftemp_rj(k,2) * radius_1d_rj_r(k)           &
+     &                  + two*reftemp_rj(k,1)) * two*radius_1d_rj_r(k)
         end do
       end if
 !
 !$omp parallel do
       do inod = 1, n_point
-        d_rj(inod,ipol%i_par_temp) =     d_rj(inod,ipol%i_temp)
-        d_rj(inod,ipol%i_grad_part_t) =  d_rj(inod,ipol%i_grad_t)
-        d_rj(inod,idpdr%i_grad_part_t) = d_rj(inod,ipol%i_temp)
+        d_rj(inod,is_par_temp) =     d_rj(inod,is_temp)
+        d_rj(inod,is_grad_part_t) =  d_rj(inod,is_grad_t)
+        d_rj(inod,ids_grad_part_t) = d_rj(inod,ids_grad_t)
       end do
 !$omp end parallel do
 !
@@ -168,40 +172,44 @@
 ! -----------------------------------------------------------------------
 !
       subroutine transfer_per_temp_to_temp_sph(idx_rj_degree_zero,      &
-     &          nidx_rj, radius_1d_rj_r, reftemp_rj, ipol, idpdr,       &
+     &          nidx_rj, radius_1d_rj_r, reftemp_rj,                    &
+     &          is_temp, is_grad_t, ids_grad_t,                         &
+     &          is_par_temp, is_grad_part_t, ids_grad_part_t,           &
      &          n_point, ntot_phys_rj, d_rj)
 !
-      use m_physical_property
-!
-      type(phys_address), intent(in) :: ipol, idpdr
       integer(kind = kint), intent(in) :: idx_rj_degree_zero
       integer(kind = kint), intent(in) :: nidx_rj(2)
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
+!
+      integer(kind = kint), intent(in) :: is_temp, is_par_temp
+      integer(kind = kint), intent(in) :: is_grad_t, is_grad_part_t
+      integer(kind = kint), intent(in) :: ids_grad_t, ids_grad_part_t
+!
       real(kind=kreal), intent(in) :: radius_1d_rj_r(nidx_rj(1))
-      real(kind=kreal), intent(in) :: reftemp_rj(nidx_rj(1),0:1)
+      real(kind=kreal), intent(in) :: reftemp_rj(nidx_rj(1),0:2)
 !
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
       integer(kind = kint) :: k, inod
 !
 !
-      if (ref_param_T1%iflag_reference .ne. id_sphere_ref_temp) return
-!
 !$omp parallel do
       do inod = 1, n_point
-        d_rj(inod,ipol%i_par_temp) =    d_rj(inod,ipol%i_temp)
-        d_rj(inod,ipol%i_grad_part_t) = d_rj(inod,ipol%i_grad_t)
+        d_rj(inod,is_par_temp) =     d_rj(inod,is_temp)
+        d_rj(inod,is_grad_part_t) =  d_rj(inod,is_grad_t)
+        d_rj(inod,ids_grad_part_t) = d_rj(inod,ids_grad_t)
       end do
 !$omp end parallel do
 !
       if (idx_rj_degree_zero .gt. 0) then
         do k = 1, nidx_rj(1)
           inod = idx_rj_degree_zero + (k-1)*nidx_rj(2)
-          d_rj(inod,ipol%i_temp) = d_rj(inod,ipol%i_temp)               &
-     &                            + reftemp_rj(k,0)
-          d_rj(inod,ipol%i_grad_t) = d_rj(inod,ipol%i_grad_part_t)      &
+          d_rj(inod,is_temp) = d_rj(inod,is_temp) + reftemp_rj(k,0)
+          d_rj(inod,is_grad_t) = d_rj(inod,is_grad_part_t)              &
      &                 + two*reftemp_rj(k,1) * radius_1d_rj_r(k)**2
-          d_rj(inod,idpdr%i_grad_t) = d_rj(inod,ipol%i_temp)
+          d_rj(inod,ids_grad_t) = d_rj(inod,ids_grad_part_t)            &
+     &                 + (reftemp_rj(k,2) * radius_1d_rj_r(k)           &
+     &                  + two*reftemp_rj(k,1)) * two*radius_1d_rj_r(k)
         end do
       end if
 !

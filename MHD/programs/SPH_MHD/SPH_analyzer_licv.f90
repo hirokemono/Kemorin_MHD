@@ -86,7 +86,8 @@
 !
       if(iflag_debug.gt.0) write(*,*)' sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph                                    &
-      &  (ref_temp1%t_rj, sph1%sph_rj, ipol, idpdr, rj_fld1)
+     &   (ref_param_T1, ref_param_C1, ref_temp1, ref_comp1,             &
+     &    sph1%sph_rj, ipol, idpdr, rj_fld1)
 !
 !  -------------------------------
 !
@@ -104,7 +105,7 @@
 !*
       if(iflag_debug .gt. 0) write(*,*) 'first licv_exp'
       call licv_exp                                                     &
-     &   (ref_temp1%t_rj, ref_comp1%t_rj, sph1%sph_rlm, sph1%sph_rj,    &
+     &   (ref_temp1, ref_comp1, sph1%sph_rlm, sph1%sph_rj,              &
      &    comms_sph1%comm_rlm, comms_sph1%comm_rj, omega_sph1,          &
      &    trans_p1%leg, trns_WK1%trns_MHD, ipol, itor, rj_fld1)
 !
@@ -163,7 +164,8 @@
       call start_eleps_time(9)
       if(iflag_debug.gt.0) write(*,*) 'trans_per_temp_to_temp_sph'
       call trans_per_temp_to_temp_sph                                   &
-     &   (ref_temp1%t_rj, sph1%sph_rj, ipol, idpdr, rj_fld1)
+     &   (ref_param_T1, ref_param_C1, ref_temp1, ref_comp1,             &
+     &    sph1%sph_rj, ipol, idpdr, rj_fld1)
 !*
       if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
       call s_lead_fields_4_sph_mhd                                      &
@@ -173,7 +175,7 @@
 !*  ----------------lead nonlinear term ... ----------
 !*
         call licv_exp                                                   &
-     &     (ref_temp1%t_rj, ref_comp1%t_rj, sph1%sph_rlm, sph1%sph_rj,  &
+     &     (ref_temp1, ref_comp1, sph1%sph_rlm, sph1%sph_rj,            &
      &      comms_sph1%comm_rlm, comms_sph1%comm_rj, omega_sph1,        &
      &      trans_p1%leg, trns_WK1%trns_MHD, ipol, itor, rj_fld1)
 !
@@ -202,7 +204,8 @@
 !
       if(iflag_debug.gt.0) write(*,*) 'sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph                                    &
-     &   (ref_temp1%t_rj, sph1%sph_rj, ipol, idpdr, rj_fld1)
+     &   (ref_param_T1, ref_param_C1, ref_temp1, ref_comp1,             &
+     &    sph1%sph_rj, ipol, idpdr, rj_fld1)
       call end_eleps_time(4)
 !
       if(i_step .ge. i_step_number .and. i_step_number.gt.0) then
