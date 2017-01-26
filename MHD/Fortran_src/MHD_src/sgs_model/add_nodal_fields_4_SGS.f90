@@ -3,7 +3,7 @@
 !
 !        programmed by H.Matsui on Sep., 2006
 !
-!!      subroutine add_work_area_4_sgs_model(field_ctl)
+!!      subroutine add_work_area_4_sgs_model(fl_prop, field_ctl)
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
 !
       module add_nodal_fields_4_SGS
@@ -12,6 +12,7 @@
 !
       use m_control_parameter
       use m_phys_labels
+      use t_physical_property
       use add_nodal_fields_ctl
 !
       implicit  none
@@ -23,10 +24,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_work_area_4_sgs_model(field_ctl)
+      subroutine add_work_area_4_sgs_model(fl_prop, field_ctl)
 !
       use t_read_control_arrays
 !
+      type(fluid_property), intent(in) :: fl_prop
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
       integer(kind = kint) :: i
@@ -45,7 +47,7 @@
         call add_phys_name_ctl(fhd_div_SGS_m_flux, field_ctl)
         call add_phys_name_ctl(fhd_Reynolds_work, field_ctl)
 !
-        if(iflag_4_gravity .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
           call add_phys_name_ctl(fhd_SGS_h_flux, field_ctl)
           call add_phys_name_ctl(fhd_SGS_buo_flux, field_ctl)
         end if

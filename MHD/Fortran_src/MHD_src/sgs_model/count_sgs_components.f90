@@ -33,6 +33,7 @@
       use calypso_mpi
       use m_phys_labels
       use m_control_parameter
+      use m_physical_property
 !
       use t_layering_ele_list
       use t_ele_info_4_dynamic
@@ -49,7 +50,7 @@
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs_nod
 !
 !
-      call s_count_sgs_components(sgs_coefs)
+      call s_count_sgs_components(fl_prop1, sgs_coefs)
 !
 !   set index for model coefficients
 !
@@ -60,7 +61,7 @@
       call alloc_SGS_coefs(numele, sgs_coefs)
 !
       call set_sgs_addresses                                            &
-     &   (ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
+     &   (fl_prop1, ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
       call check_sgs_addresses                                          &
      &   (ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
 !
@@ -74,7 +75,7 @@
 !
 !  ------------------------------------------------------------------
 !
-      subroutine s_count_sgs_components(sgs_coefs)
+      subroutine s_count_sgs_components(fl_prop, sgs_coefs)
 !
       use calypso_mpi
       use m_phys_labels
@@ -82,9 +83,11 @@
 !
       use t_layering_ele_list
       use t_ele_info_4_dynamic
+      use t_physical_property
       use t_material_property
       use t_SGS_model_coefs
 !
+      type(fluid_property), intent(in) :: fl_prop
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
 !
 !    count coefficients for SGS terms
@@ -110,7 +113,7 @@
         end if
 !
         if (iflag_SGS_gravity .ne. id_SGS_none) then
-          if(iflag_4_gravity .gt. id_turn_OFF) then
+          if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
             sgs_coefs%num_field = sgs_coefs%num_field + 1
             sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 6
           end if
@@ -146,7 +149,7 @@
 !  ------------------------------------------------------------------
 !
       subroutine set_sgs_addresses                                      &
-     &         (ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
+     &         (fl_prop, ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
 !
       use calypso_mpi
       use m_phys_labels
@@ -154,11 +157,13 @@
 !
       use t_layering_ele_list
       use t_ele_info_4_dynamic
+      use t_physical_property
       use t_material_property
       use t_SGS_model_coefs
 !
-      type(SGS_terms_address), intent(inout) :: ifld_sgs, icomp_sgs
+      type(fluid_property), intent(in) :: fl_prop
 !
+      type(SGS_terms_address), intent(inout) :: ifld_sgs, icomp_sgs
       type(dynamic_model_data), intent(inout) :: wk_sgs
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
 !
@@ -200,7 +205,7 @@
          end if
 !
         if (iflag_SGS_gravity .ne. id_SGS_none) then
-          if(iflag_4_gravity .gt. 0) then
+          if(fl_prop%iflag_4_gravity .gt. 0) then
             icomp_sgs%i_buoyancy = i
             ifld_sgs%i_buoyancy =  j
             wk_sgs%name(j) = fhd_SGS_buoyancy

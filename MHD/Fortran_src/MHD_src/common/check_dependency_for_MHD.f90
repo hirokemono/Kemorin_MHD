@@ -58,7 +58,7 @@
       call check_dependencies_by_id(iphys, nod_fld)
       call check_dependence_FEM_MHD_by_id(iphys, nod_fld)
       call check_dependence_FEM_evo(iphys, nod_fld)
-      call check_dependence_4_FEM_SGS(iphys, nod_fld)
+      call check_dependence_4_FEM_SGS(fl_prop1, iphys, nod_fld)
 !
       end subroutine set_FEM_MHD_field_data
 !
@@ -85,7 +85,7 @@
       call check_dependencies_by_id(ipol, rj_fld)
       call check_dependence_SPH_MHD_by_id(ipol, rj_fld)
       call check_dependence_SPH_evo(ipol, rj_fld)
-      call check_dependence_4_SPH_SGS(ipol, rj_fld)
+      call check_dependence_4_SPH_SGS(fl_prop1, ipol, rj_fld)
 !
       end subroutine set_sph_MHD_sprctr_data
 !
@@ -147,7 +147,7 @@
 !
 !
       if ( evo_velo%iflag_scheme .gt. id_no_evolution) then
-        if ( iflag_4_gravity .gt. id_turn_OFF) then
+        if (fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
           msg = 'Buoyancy needs'
           call check_missing_field_w_msg(fld, msg, iphys%i_temp)
         end if
@@ -209,8 +209,9 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_dependence_4_FEM_SGS(iphys, fld)
+      subroutine check_dependence_4_FEM_SGS(fl_prop, iphys, fld)
 !
+      type(fluid_property), intent(in) :: fl_prop
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: fld
 !
@@ -282,12 +283,12 @@
       end if
 !
       if(iflag_SGS_gravity .gt. id_SGS_none) then
-        if(iflag_4_gravity .eq. id_turn_OFF                             &
+        if(fl_prop%iflag_4_gravity .eq. id_turn_OFF                     &
      &     .and. iflag_4_composit_buo .eq. id_turn_OFF) then
           call calypso_MPI_abort(ierr_fld,                              &
      &       'set one of buoyancy sources')
         end if
-        if(iflag_4_gravity .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
           if(iflag_SGS_inertia.eq.id_SGS_none                           &
      &       .or. iflag_SGS_heat.eq.id_SGS_none) then
             call calypso_MPI_abort(ierr_fld,                            &
@@ -337,8 +338,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_dependence_4_SPH_SGS(iphys, fld)
+      subroutine check_dependence_4_SPH_SGS(fl_prop, iphys, fld)
 !
+      type(fluid_property), intent(in) :: fl_prop
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: fld
 !
@@ -401,12 +403,12 @@
       end if
 !
       if(iflag_SGS_gravity .gt. id_SGS_none) then
-        if(iflag_4_gravity .eq. id_turn_OFF                             &
+        if(fl_prop%iflag_4_gravity .eq. id_turn_OFF                     &
      &     .and. iflag_4_composit_buo .eq. id_turn_OFF) then
           call calypso_MPI_abort(ierr_fld,                              &
      &       'set one of buoyancy sources')
         end if
-        if(iflag_4_gravity .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
           if(iflag_SGS_inertia.eq.id_SGS_none                           &
      &       .or. iflag_SGS_heat.eq.id_SGS_none) then
             call calypso_MPI_abort(ierr_fld,                            &

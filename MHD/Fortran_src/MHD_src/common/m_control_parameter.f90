@@ -67,8 +67,6 @@
       integer (kind=kint), parameter :: id_FORCE_ele_int =  1
 !>      Turn ON and evaluate at node flag
       integer (kind=kint), parameter :: id_FORCE_at_node =  2
-!>      Force flag for thermal buoyancy
-      integer (kind=kint) :: iflag_4_gravity =        id_turn_OFF
 !>      Force flag for compositional buoyancy
       integer (kind=kint) :: iflag_4_composit_buo =   id_turn_OFF
 !>      Force flag for filtered thermal buoyancy

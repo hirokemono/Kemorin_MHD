@@ -7,6 +7,7 @@
 !!     &          ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
 !!        type(element_data), intent(in) :: ele
 !!        type(group_data), intent(in) :: layer_egrp
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(SGS_terms_address), intent(in) :: ifld_sgs
 !!        type(SGS_terms_address), intent(in) :: icomp_sgs
 !!        type(dynamic_model_data), intent(in) :: wk_sgs
@@ -33,11 +34,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine mod_Csim_by_SGS_buoyancy_ele(ele, layer_egrp,          &
-     &          ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
+     &          fl_prop, ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
 !
       use m_control_parameter
       use t_geometry_data
       use t_group_data
+      use t_physical_property
       use t_material_property
       use t_SGS_model_coefs
       use t_ele_info_4_dynamic
@@ -45,6 +47,7 @@
 !
       type(element_data), intent(in) :: ele
       type(group_data), intent(in) :: layer_egrp
+      type(fluid_property), intent(in) :: fl_prop
       type(SGS_terms_address), intent(in) :: ifld_sgs
       type(SGS_terms_address), intent(in) :: icomp_sgs
       type(dynamic_model_data), intent(in) :: wk_sgs
@@ -54,7 +57,7 @@
       call clear_model_coefs_2_ele(ele, n_sym_tensor,                   &
      &    icomp_sgs%i_mom_flux, sgs_coefs%ntot_comp, sgs_coefs%ak)
 !
-      if(iflag_4_gravity .gt. id_turn_OFF                               &
+      if(fl_prop%iflag_4_gravity .gt. id_turn_OFF                       &
      &     .and. iflag_4_composit_buo .gt. id_turn_OFF) then
         if(itype_SGS_m_flux_coef .eq. 1) then
           call modify_cmpCsim_by_SGS_dbuo_ele(ifld_sgs%i_comp_buoyancy, &
@@ -72,7 +75,7 @@
      &        ele%numele, sgs_coefs%num_field, sgs_coefs%ntot_comp,     &
      &        wk_sgs%fld_coef, wk_sgs%fld_clip, sgs_coefs%ak)
         end if
-      else if(iflag_4_gravity .gt. id_turn_OFF) then
+      else if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
         if(itype_SGS_m_flux_coef .eq. 1) then
           call modify_cmpCsim_by_SGS_buo_ele                            &
      &       (ifld_sgs%i_buoyancy, icomp_sgs%i_mom_flux,                &

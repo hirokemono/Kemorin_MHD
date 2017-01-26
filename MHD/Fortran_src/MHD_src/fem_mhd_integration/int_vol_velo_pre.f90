@@ -256,7 +256,7 @@
 !
 ! ---------  set buoyancy
 !
-        if(iflag_4_gravity .eq. id_FORCE_ele_int                        &
+        if(fl_prop%iflag_4_gravity .eq. id_FORCE_ele_int                &
      &     .and. iflag_4_composit_buo .eq. id_FORCE_ele_int) then
           call set_double_gvec_each_ele                                 &
      &       (node, ele, nod_fld, k2, iphys%i_temp, iphys%i_light,      &
@@ -265,7 +265,7 @@
           call fem_skv_vector_type                                      &
      &       (fluid%istack_ele_fld_smp, num_int, k2,                    &
      &        ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
-        else if (iflag_4_gravity .eq. id_FORCE_ele_int) then
+        else if (fl_prop%iflag_4_gravity .eq. id_FORCE_ele_int) then
           call set_gravity_vec_each_ele(node, ele, nod_fld, k2,         &
      &        iphys%i_temp, fl_prop%i_grav, fl_prop%grav,               &
      &        ak_MHD%ak_buo, fem_wk%vector_1)
@@ -511,7 +511,7 @@
 !
 ! ---------  set buoyancy
 !
-        if(iflag_4_gravity .eq. id_FORCE_ele_int                        &
+        if(fl_prop%iflag_4_gravity .eq. id_FORCE_ele_int                &
      &     .and. iflag_4_composit_buo .eq. id_FORCE_ele_int) then
           call set_double_gvec_each_ele                                 &
      &       (node, ele, nod_fld, k2, iphys%i_temp, iphys%i_light,      &
@@ -520,7 +520,7 @@
           call fem_skv_vector_field_upwind(fluid%istack_ele_fld_smp,    &
      &        num_int, k2, d_ele(1,ie_upw), ele, jac_3d,                &
      &        fem_wk%vector_1, fem_wk%sk6)
-        else if (iflag_4_gravity .eq. id_FORCE_ele_int) then
+        else if (fl_prop%iflag_4_gravity .eq. id_FORCE_ele_int) then
           call set_gravity_vec_each_ele(node, ele, nod_fld, k2,         &
      &        iphys%i_temp, fl_prop%i_grav, fl_prop%grav,               &
      &        ak_MHD%ak_buo, fem_wk%vector_1)

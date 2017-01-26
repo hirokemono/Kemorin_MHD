@@ -9,7 +9,8 @@
 !!@verbatim
 !!      subroutine add_field_name_4_sph_mhd(fl_prop, field_ctl)
 !!      subroutine add_field_name_4_SGS(field_ctl)
-!!      subroutine add_field_name_dynamic_SGS(field_ctl)
+!!      subroutine add_field_name_dynamic_SGS(fl_prop, field_ctl)
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
 !!@endverbatim
 !
@@ -93,7 +94,7 @@
           call add_phys_name_ctl(fhd_div_Lorentz, field_ctl)
         end if
 !   buoyancy flag
-        if(iflag_4_gravity .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
           call add_phys_name_ctl(fhd_buoyancy, field_ctl)
           call add_phys_name_ctl(fhd_rot_buoyancy, field_ctl)
           call add_phys_name_ctl(fhd_div_buoyancy, field_ctl)
@@ -191,10 +192,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_field_name_dynamic_SGS(field_ctl)
+      subroutine add_field_name_dynamic_SGS(fl_prop, field_ctl)
 !
       use add_nodal_fields_ctl
 !
+      type(fluid_property), intent(in) :: fl_prop
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !
@@ -243,7 +245,7 @@
       if(iflag_SGS_gravity .gt. id_SGS_none) then
         call add_phys_name_ctl(fhd_Reynolds_work, field_ctl)
 !
-        if(iflag_4_gravity .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
           call add_phys_name_ctl(fhd_SGS_buo_flux, field_ctl)
           call add_phys_name_ctl(fhd_Csim_SGS_buoyancy, field_ctl)
         end if

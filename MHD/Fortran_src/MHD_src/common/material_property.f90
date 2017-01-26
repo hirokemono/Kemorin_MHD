@@ -102,7 +102,7 @@
         fl_prop%acoef_press = one / fl_prop%coef_press
         fl_prop%coef_nega_v = - fl_prop%coef_velo
 !
-        if (iflag_4_gravity .gt. id_turn_OFF                            &
+        if (fl_prop%iflag_4_gravity .gt. id_turn_OFF                    &
      &     .or. iflag_4_filter_gravity .gt. id_turn_OFF) then
           call construct_coefficient(fl_prop%coef_buo,                  &
      &       MHD_coef_list%dimless_list, MHD_coef_list%coefs_buoyancy,  &
@@ -139,7 +139,7 @@
      &              fl_prop%coef_press
           write(*,*) 'coefficient for viscous diffusion:   ',           &
      &              fl_prop%coef_diffuse
-        if (iflag_4_gravity .gt. id_turn_OFF)       write(*,*)          &
+        if (fl_prop%iflag_4_gravity .gt. id_turn_OFF) write(*,*)        &
      &         'coefficient for buoyancy:            ',                 &
      &              fl_prop%coef_buo
         if (iflag_4_composit_buo .gt. id_turn_OFF)  write(*,*)          &

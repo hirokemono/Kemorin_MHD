@@ -182,7 +182,7 @@
 !
 !   lead SGS buoyancy flux
 !
-      if(iflag_4_gravity .gt. id_turn_OFF) then
+      if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
         call cal_SGS_gravity_flux                                       &
      &     (node, fl_prop%i_grav, fl_prop%coef_buo, fl_prop%grav,       &
      &      iphys%i_SGS_h_flux, iphys%i_SGS_buo_wk, nod_fld)
@@ -194,7 +194,7 @@
        end if
 !
 !   take RMS of SGS buoyancy flux and work of Reynolds stress
-      call select_int_vol_sgs_buoyancy(node, ele, layer_tbl,            &
+      call select_int_vol_sgs_buoyancy(node, ele, fl_prop, layer_tbl,   &
      &    iphys, nod_fld, jac_3d_q, jac_3d_l,                           &
      &    wk_lsq%nlayer, wk_lsq%slocal)
 !
@@ -202,7 +202,7 @@
 !
 !   Parameterize model coeffisient including SGS Buoyancy
 !
-      if(iflag_4_gravity .gt. id_turn_OFF) then
+      if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
 !        call cal_Csim_buo_by_Reynolds_ratio(wk_sgs%nlayer, ifive,      &
 !     &      wk_sgs%num_kinds, wk_sgs%ntot_comp,                        &
 !     &      ifld_sgs%i_buoyancy, icomp_sgs%i_buoyancy, wk_lsq%slsq,    &
@@ -227,8 +227,8 @@
      &      ifld_sgs%i_buoyancy, icomp_sgs%i_buoyancy, wk_sgs)
       end if
 !
-      call mod_Csim_by_SGS_buoyancy_ele                                 &
-     &   (ele, layer_tbl%e_grp, ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
+      call mod_Csim_by_SGS_buoyancy_ele(ele, layer_tbl%e_grp,           &
+     &    fl_prop, ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
 !
 !      if(iflag_debug .gt. 0) then
 !        write(*,*) 'sgs_f_coef, icomp_sgs_tbuo', ifld_sgs%i_buoyancy
@@ -248,8 +248,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine select_int_vol_sgs_buoyancy(node, ele, layer_tbl,      &
-     &          iphys, nod_fld, jac_3d_q, jac_3d_l, n_layer_d, sgs_l)
+      subroutine select_int_vol_sgs_buoyancy                            &
+     &         (node, ele, fl_prop, layer_tbl, iphys, nod_fld,          &
+     &          jac_3d_q, jac_3d_l, n_layer_d, sgs_l)
 !
       use m_control_parameter
 !
@@ -257,6 +258,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(fluid_property), intent(in) :: fl_prop
       type(phys_address), intent(in) :: iphys
       type(layering_tbl), intent(in) :: layer_tbl
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
@@ -268,7 +270,7 @@
 !
 !
 !   take RMS of SGS buoyancy flux and work of Reynolds stress
-      if(iflag_4_gravity .gt. id_turn_OFF) then
+      if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
         call int_vol_2rms_ave_ele_grps                                  &
      &     (node, ele, layer_tbl%e_grp, jac_3d_q, jac_3d_l,             &
      &      intg_point_t_evo, nod_fld%ntot_phys, iphys%i_reynolds_wk,   &

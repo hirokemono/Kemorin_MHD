@@ -41,23 +41,23 @@
 !
 !
 !$omp parallel
-      if(      iflag_4_gravity  .ne. id_turn_OFF                        &
+      if(      fl_prop%iflag_4_gravity  .ne. id_turn_OFF                &
      &   .and. fl_prop%iflag_4_coriolis .ne. id_turn_OFF                &
      &   .and. fl_prop%iflag_4_lorentz  .ne. id_turn_OFF) then
         call set_MHD_terms_to_div_force(ipol, ipol%i_div_buoyancy,      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      else if( iflag_4_gravity  .eq.     id_turn_OFF                    &
+      else if( fl_prop%iflag_4_gravity  .eq.     id_turn_OFF            &
      &   .and. iflag_4_composit_buo .ne. id_turn_OFF                    &
      &   .and. fl_prop%iflag_4_coriolis .ne.     id_turn_OFF            &
      &   .and. fl_prop%iflag_4_lorentz  .ne.     id_turn_OFF) then
         call set_MHD_terms_to_div_force(ipol, ipol%i_div_comp_buo,      &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      else if( iflag_4_gravity  .ne. id_turn_OFF                        &
+      else if( fl_prop%iflag_4_gravity  .ne. id_turn_OFF                &
      &   .and. fl_prop%iflag_4_coriolis .ne. id_turn_OFF                &
      &   .and. fl_prop%iflag_4_lorentz  .eq. id_turn_OFF) then
         call set_div_cv_terms_to_force(ipol, ipol%i_div_buoyancy,       &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      else if( iflag_4_gravity  .eq.     id_turn_OFF                    &
+      else if( fl_prop%iflag_4_gravity  .eq.     id_turn_OFF            &
      &   .and. iflag_4_composit_buo .ne. id_turn_OFF                    &
      &   .and. fl_prop%iflag_4_coriolis .ne.     id_turn_OFF            &
      &   .and. fl_prop%iflag_4_lorentz  .eq.     id_turn_OFF) then
@@ -75,7 +75,7 @@
           call add_term_to_div_force(ipol, ipol%i_div_Lorentz,          &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
-        if(iflag_4_gravity .ne. id_turn_OFF) then
+        if(fl_prop%iflag_4_gravity .ne. id_turn_OFF) then
           call add_term_to_div_force(ipol, ipol%i_div_buoyancy,         &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         else if(iflag_4_composit_buo .ne. id_turn_OFF) then
