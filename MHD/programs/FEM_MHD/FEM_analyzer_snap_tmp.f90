@@ -205,13 +205,14 @@
 !
       subroutine FEM_finalize_snap_tmp
 !
-      use m_t_step_parameter
       use m_cal_max_indices
 !
 !
-      call finalize_output_ucd
-      call dealloc_phys_range(range)
-!        call close_boundary_monitor(my_rank)
+      if(i_step_output_ucd.gt.0) then
+        call finalize_output_ucd
+        call dealloc_phys_range(range)
+      end if
+!      call close_boundary_monitor(my_rank)
 !
       end subroutine FEM_finalize_snap_tmp
 !
