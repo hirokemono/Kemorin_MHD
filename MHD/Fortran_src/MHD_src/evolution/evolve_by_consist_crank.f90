@@ -7,36 +7,39 @@
 !
 !!      subroutine cal_velo_pre_consist_crank                           &
 !!     &         (i_velo, i_pre_mom, iak_diff_v, ak_d_velo,             &
-!!     &          node, ele, fluid, Vnod_bcs, jac_3d, rhs_tbl,          &
+!!     &          node, ele, fluid, fl_prop, Vnod_bcs, jac_3d, rhs_tbl, &
 !!     &          FEM_elens, diff_coefs, Vmatrix, MG_vector,            &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_vect_p_pre_consist_crank                         &
 !!     &         (i_vecp, i_pre_uxb, iak_diff_b, ak_d_magne, nod_bc_a,  &
-!!     &          node, ele, conduct, jac_3d, rhs_tbl, FEM_elens,       &
-!!     &          diff_coefs,Bmatrix, MG_vector, mhd_fem_wk, fem_wk,    &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          node, ele, conduct, cd_prop, jac_3d, rhs_tbl,         &
+!!     &          FEM_elens, diff_coefs, Bmatrix, MG_vector,            &
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!       subroutine cal_magne_pre_consist_crank                         &
 !!     &         (i_magne, i_pre_uxb, iak_diff_b, ak_d_magne, nod_bc_b, &
-!!     &          node, ele, conduct, jac_3d, rhs_tbl, FEM_elens,       &
-!!     &          diff_coefs, Bmatrix, MG_vector, mhd_fem_wk, fem_wk,   &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          node, ele, conduct, cd_prop, jac_3d, rhs_tbl,         &
+!!     &          FEM_elens,  diff_coefs, Bmatrix, MG_vector,           &
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!
 !!      subroutine cal_temp_pre_consist_crank                           &
-!!     &         (i_temp, i_pre_heat, iak_diff_t, ak_d_temp,            &
-!!     &          node, ele, fluid, Tnod_bcs, jac_3d, rhs_tbl,          &
-!!     &          FEM_elens, diff_coefs, Tmatrix, MG_vector,            &
-!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &         (i_field, i_pre_advect, iak_diff_t, ak_d_temp,         &
+!!     &          node, ele, fluid, evo, property, nod_bcs,             &
+!!     &          jac_3d, rhs_tbl,FEM_elens, diff_coefs, matrix,        &
+!!     &          MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_composit_pre_consist_crank                       &
-!!     &         (i_light, i_pre_composit, iak_diff_c, ak_d_composit,   &
-!!     &          node, ele, fluid, Cnod_bcs, jac_3d, rhs_tbl,          &
-!!     &          FEM_elens, diff_coefs, Cmatrix, MG_vector,            &
-!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &         (i_field, i_pre_advect, iak_diff_c, ak_d_composit,     &
+!!     &          node, ele, fluid, evo, property, nod_bcs,             &
+!!     &          jac_3d, rhs_tbl, FEM_elens, diff_coefs, matrix,       &
+!!     &          MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(field_geometry_data), intent(in) :: conduct
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in) :: cd_prop
+!!        type(scalar_property), intent(in) :: property
 !!        type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
-!!        type(nodal_bcs_4_scalar_type), intent(in) :: Tnod_bcs
+!!        type(nodal_bcs_4_scalar_type), intent(in) :: nod_bcs
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -46,7 +49,7 @@
 !!        type(MHD_MG_matrix), intent(in) :: Vmatrix
 !!        type(MHD_MG_matrix), intent(in) :: Bmatrix
 !!        type(MHD_MG_matrix), intent(in) :: Tmatrix
-!!        type(MHD_MG_matrix), intent(in) :: Cmatrix
+!!        type(MHD_MG_matrix), intent(in) :: matrix
 !!        type(vectors_4_solver), intent(inout)                         &
 !!       &           :: MG_vector(0:num_MG_level)
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -60,11 +63,13 @@
       use calypso_mpi
 !
       use m_machine_parameter
+      use m_phys_constants
       use m_control_parameter
-      use m_physical_property
       use m_t_int_parameter
       use m_t_step_parameter
 !
+      use t_time_stepping_parameter
+      use t_physical_property
       use t_comm_table
       use t_geometry_data_MHD
       use t_geometry_data
@@ -91,11 +96,10 @@
 !
       subroutine cal_velo_pre_consist_crank                             &
      &         (i_velo, i_pre_mom, iak_diff_v, ak_d_velo,               &
-     &          node, ele, fluid, Vnod_bcs, jac_3d, rhs_tbl,            &
+     &          node, ele, fluid, fl_prop, Vnod_bcs, jac_3d, rhs_tbl,   &
      &          FEM_elens, diff_coefs, Vmatrix, MG_vector,              &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
-      use m_phys_constants
       use m_iccg_parameter
       use m_array_for_send_recv
 !
@@ -114,6 +118,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
+      type(fluid_property), intent(in) :: fl_prop
       type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -141,13 +146,13 @@
       call reset_ff_t_smp(node%max_nod_smp, mhd_fem_wk)
 !
       call int_vol_initial_vector                                       &
-     &   (fluid%istack_ele_fld_smp, i_velo, coef_velo,                  &
+     &   (fluid%istack_ele_fld_smp, i_velo, fl_prop%coef_velo,          &
      &    node, ele, nod_fld, jac_3d, rhs_tbl, fem_wk, mhd_fem_wk)
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
 !
       call set_boundary_velo_4_rhs(node, Vnod_bcs, f_l, f_nl)
 !
-      call cal_vector_pre_consist(node, coef_velo,                      &
+      call cal_vector_pre_consist(node, fl_prop%coef_velo,              &
      &    n_vector, i_pre_mom, nod_fld, rhs_tbl, mhd_fem_wk, f_nl, f_l)
 !
       call solver_crank_vector(node, Vmatrix%nlevel_MG,                 &
@@ -162,11 +167,10 @@
 !
       subroutine cal_vect_p_pre_consist_crank                           &
      &         (i_vecp, i_pre_uxb, iak_diff_b, ak_d_magne, nod_bc_a,    &
-     &          node, ele, conduct, jac_3d, rhs_tbl, FEM_elens,         &
-     &          diff_coefs, Bmatrix, MG_vector, mhd_fem_wk, fem_wk,     &
-     &          f_l, f_nl, nod_fld)
+     &          node, ele, conduct, cd_prop, jac_3d, rhs_tbl,           &
+     &          FEM_elens, diff_coefs, Bmatrix, MG_vector,              &
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
-      use m_phys_constants
       use m_iccg_parameter
       use m_array_for_send_recv
 !
@@ -184,6 +188,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: conduct
+      type(conductive_property), intent(in) :: cd_prop
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -211,13 +216,13 @@
       call reset_ff_t_smp(node%max_nod_smp, mhd_fem_wk)
 !
       call int_vol_initial_vector                                       &
-     &   (conduct%istack_ele_fld_smp, i_vecp, coef_magne,               &
+     &   (conduct%istack_ele_fld_smp, i_vecp, cd_prop%coef_magne,       &
      &    node, ele, nod_fld, jac_3d, rhs_tbl, fem_wk,  mhd_fem_wk)
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
 !
       call delete_vector_ffs_on_bc(node, nod_bc_a, f_l, f_nl)
 !
-      call cal_vector_pre_consist(node, coef_magne,                     &
+      call cal_vector_pre_consist(node, cd_prop%coef_magne,             &
      &    n_vector, i_pre_uxb, nod_fld, rhs_tbl,                        &
      &    mhd_fem_wk, f_nl, f_l)
 !
@@ -234,11 +239,10 @@
 !
        subroutine cal_magne_pre_consist_crank                           &
      &         (i_magne, i_pre_uxb, iak_diff_b, ak_d_magne, nod_bc_b,   &
-     &          node, ele, conduct, jac_3d, rhs_tbl, FEM_elens,         &
-     &          diff_coefs, Bmatrix, MG_vector, mhd_fem_wk, fem_wk,     &
-     &          f_l, f_nl, nod_fld)
+     &          node, ele, conduct, cd_prop, jac_3d, rhs_tbl,           &
+     &          FEM_elens,  diff_coefs, Bmatrix, MG_vector,             &
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
-      use m_phys_constants
       use m_iccg_parameter
       use m_array_for_send_recv
 !
@@ -255,6 +259,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: conduct
+      type(conductive_property), intent(in) :: cd_prop
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -281,14 +286,14 @@
 !
       call reset_ff_t_smp(node%max_nod_smp, mhd_fem_wk)
       call int_vol_initial_vector                                       &
-     &   (conduct%istack_ele_fld_smp, i_magne, coef_magne,              &
+     &   (conduct%istack_ele_fld_smp, i_magne, cd_prop%coef_magne,      &
      &    node, ele, nod_fld, jac_3d, rhs_tbl, fem_wk, mhd_fem_wk)
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'bc_4_magne_rhs'
       call delete_vector_ffs_on_bc(node, nod_bc_b, f_l, f_nl)
 !
-      call cal_vector_pre_consist(node, coef_magne,                     &
+      call cal_vector_pre_consist(node, cd_prop%coef_magne,             &
      &    n_vector, i_pre_uxb, nod_fld, rhs_tbl,                        &
      &    mhd_fem_wk, f_nl, f_l)
 !
@@ -306,12 +311,10 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_temp_pre_consist_crank                             &
-     &         (i_temp, i_pre_heat, iak_diff_t, ak_d_temp,              &
-     &          node, ele, fluid, Tnod_bcs, jac_3d, rhs_tbl,            &
-     &          FEM_elens, diff_coefs, Tmatrix, MG_vector,              &
-     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-!
-      use m_phys_constants
+     &         (i_field, i_pre_advect, iak_diff_t, ak_d_temp,           &
+     &          node, ele, fluid, evo, property, nod_bcs,               &
+     &          jac_3d, rhs_tbl,FEM_elens, diff_coefs, matrix,          &
+     &          MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_iccg_parameter
       use m_array_for_send_recv
@@ -325,67 +328,69 @@
       use int_vol_initial_MHD
       use cal_solver_MHD
 !
-      integer(kind = kint), intent(in) :: i_temp, i_pre_heat
+      integer(kind = kint), intent(in) :: i_field, i_pre_advect
       integer(kind = kint), intent(in) :: iak_diff_t
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
-      type(nodal_bcs_4_scalar_type), intent(in) :: Tnod_bcs
+      type(time_evolution_params), intent(in) :: evo
+      type(scalar_property), intent(in) :: property
+      type(nodal_bcs_4_scalar_type), intent(in) :: nod_bcs
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
-      type(MHD_MG_matrix), intent(in) :: Tmatrix
+      type(MHD_MG_matrix), intent(in) :: matrix
 !
       real(kind = kreal), intent(in) :: ak_d_temp(ele%numele)
 !
       type(vectors_4_solver), intent(inout)                             &
-     &           :: MG_vector(0:Tmatrix%nlevel_MG)
+     &           :: MG_vector(0:matrix%nlevel_MG)
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if (evo_temp%coef_imp .gt. zero) then
-        call int_sk_fixed_temp(iflag_commute_temp, i_temp, iak_diff_t,  &
+      if (evo%coef_imp .gt. zero) then
+        call int_sk_fixed_temp                                          &
+     &     (iflag_commute_temp, i_field, iak_diff_t,                    &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
-     &      Tnod_bcs%nod_bc_s, ak_d_temp, evo_temp%coef_imp,            &
-     &      fem_wk, f_l)
-        if (iflag_initial_step.eq.1) then
-          evo_temp%coef_imp = 1.0d0 / evo_temp%coef_imp
-        end if
+     &      nod_bcs%nod_bc_s, ak_d_temp, evo%coef_imp, fem_wk, f_l)
+!        if (iflag_initial_step.eq.1) then
+!          evo%coef_imp = 1.0d0 / evo%coef_imp
+!        end if
       end if
 !
       call reset_ff_t_smp(node%max_nod_smp, mhd_fem_wk)
 !
       call int_vol_initial_scalar                                       &
-     &   (fluid%istack_ele_fld_smp, i_temp, coef_temp,                  &
+     &   (fluid%istack_ele_fld_smp, i_field, property%coef_advect,      &
      &    node, ele, nod_fld, jac_3d, rhs_tbl, fem_wk, mhd_fem_wk)
       call set_ff_nl_smp_2_ff(n_scalar, node, rhs_tbl, f_l, f_nl)
 !
-      call set_boundary_rhs_scalar(node, Tnod_bcs%nod_bc_s, f_l, f_nl)
+      call set_boundary_rhs_scalar(node, nod_bcs%nod_bc_s, f_l, f_nl)
 !
-      call cal_vector_pre_consist(node, coef_temp,                      &
-     &    n_scalar, i_pre_heat, nod_fld, rhs_tbl,                       &
+      call cal_vector_pre_consist(node, property%coef_advect,           &
+     &    n_scalar, i_pre_advect, nod_fld, rhs_tbl,                     &
      &    mhd_fem_wk, f_nl, f_l)
 !
-      call solver_crank_scalar(node, Tmatrix%nlevel_MG,                 &
-     &    Tmatrix%MG_interpolate, Tmatrix%MG_comm_table,                &
-     &    Tmatrix%MG_DJDS_table, Tmatrix%mat_MG_DJDS,                   &
+      call solver_crank_scalar(node, matrix%nlevel_MG,                  &
+     &    matrix%MG_interpolate, matrix%MG_comm_table,                  &
+     &    matrix%MG_DJDS_table, matrix%mat_MG_DJDS,                     &
      &    method_4_solver, precond_4_solver, eps_4_temp_crank, itr,     &
-     &    i_temp, MG_vector, f_l, b_vec, x_vec, nod_fld)
+     &    i_field, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !
       end subroutine cal_temp_pre_consist_crank
 !
 ! ----------------------------------------------------------------------
 !
       subroutine cal_composit_pre_consist_crank                         &
-     &         (i_light, i_pre_composit, iak_diff_c, ak_d_composit,     &
-     &          node, ele, fluid, Cnod_bcs, jac_3d, rhs_tbl,            &
-     &          FEM_elens, diff_coefs, Cmatrix, MG_vector,              &
-     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &         (i_field, i_pre_advect, iak_diff_c, ak_d_composit,       &
+     &          node, ele, fluid, evo, property, nod_bcs,               &
+     &          jac_3d, rhs_tbl, FEM_elens, diff_coefs, matrix,         &
+     &          MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_iccg_parameter
       use m_array_for_send_recv
@@ -399,55 +404,60 @@
       use int_vol_initial_MHD
       use cal_solver_MHD
 !
-      integer(kind = kint), intent(in) :: i_light, i_pre_composit
+      integer(kind = kint), intent(in) :: i_field, i_pre_advect
       integer(kind = kint), intent(in) :: iak_diff_c
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
-      type(nodal_bcs_4_scalar_type), intent(in) :: Cnod_bcs
+      type(time_evolution_params), intent(in) :: evo
+      type(scalar_property), intent(in) :: property
+      type(nodal_bcs_4_scalar_type), intent(in) :: nod_bcs
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
-      type(MHD_MG_matrix), intent(in) :: Cmatrix
+      type(MHD_MG_matrix), intent(in) :: matrix
 !
       real(kind = kreal), intent(in) :: ak_d_composit(ele%numele)
 !
       type(vectors_4_solver), intent(inout)                             &
-     &           :: MG_vector(0:Cmatrix%nlevel_MG)
+     &           :: MG_vector(0:matrix%nlevel_MG)
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if (evo_comp%coef_imp .gt. zero) then
+      if (evo%coef_imp .gt. zero) then
         call int_sk_fixed_temp                                          &
-     &     (iflag_commute_composit, i_light, iak_diff_c,                &
+     &     (iflag_commute_composit, i_field, iak_diff_c,                &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
-     &      Cnod_bcs%nod_bc_s, ak_d_composit, evo_comp%coef_imp,        &
+     &      nod_bcs%nod_bc_s, ak_d_composit, evo%coef_imp,              &
      &      fem_wk, f_l)
+!        if (iflag_initial_step.eq.1) then
+!          evo%coef_imp = 1.0d0 / evo%coef_imp
+!        end if
        end if
 !
       call reset_ff_t_smp(node%max_nod_smp, mhd_fem_wk)
 !
       call int_vol_initial_scalar                                       &
-     &   (fluid%istack_ele_fld_smp, i_light, coef_light,                &
+     &   (fluid%istack_ele_fld_smp, i_field, property%coef_advect,      &
      &    node, ele, nod_fld, jac_3d, rhs_tbl, fem_wk, mhd_fem_wk)
       call set_ff_nl_smp_2_ff(n_scalar, node, rhs_tbl, f_l, f_nl)
 !
-      call set_boundary_rhs_scalar(node, Cnod_bcs%nod_bc_s, f_l, f_nl)
+      call set_boundary_rhs_scalar(node, nod_bcs%nod_bc_s, f_l, f_nl)
 !
-      call cal_vector_pre_consist(node, coef_light,                     &
-     &    n_scalar, i_pre_composit, nod_fld, rhs_tbl,                   &
+      call cal_vector_pre_consist(node, property%coef_advect,           &
+     &    n_scalar, i_pre_advect, nod_fld, rhs_tbl,                     &
      &    mhd_fem_wk, f_nl, f_l)
 !
-      call solver_crank_scalar(node, Cmatrix%nlevel_MG,                 &
-     &    Cmatrix%MG_interpolate, Cmatrix%MG_comm_table,                &
-     &    Cmatrix%MG_DJDS_table, Cmatrix%mat_MG_DJDS,                   &
+      call solver_crank_scalar(node, matrix%nlevel_MG,                  &
+     &    matrix%MG_interpolate, matrix%MG_comm_table,                  &
+     &    matrix%MG_DJDS_table, matrix%mat_MG_DJDS,                     &
      &    method_4_solver, precond_4_solver, eps_4_comp_crank, itr,     &
-     &    i_light, MG_vector, f_l, b_vec, x_vec, nod_fld)
+     &    i_field, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !
        end subroutine cal_composit_pre_consist_crank
 !

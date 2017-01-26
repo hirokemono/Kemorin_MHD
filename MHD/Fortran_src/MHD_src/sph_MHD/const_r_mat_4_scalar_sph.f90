@@ -7,9 +7,10 @@
 !!
 !!@verbatim
 !!      subroutine const_radial_mat_4_press_sph                         &
-!!     &         (sph_rj, r_2nd, g_sph_rj, band_p_poisson)
+!!     &         (fl_prop, sph_rj, r_2nd, g_sph_rj, band_p_poisson)
 !!      subroutine const_radial_mat_4_scalar_sph(sph_rj, r_2nd, sph_bc, &
 !!     &          g_sph_rj, coef_imp, coef_f, coef_d, band_s_evo)
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!@endverbatim
@@ -23,6 +24,7 @@
       use m_machine_parameter
       use m_t_int_parameter
 !
+      use t_physical_property
       use t_spheric_rj_data
       use t_sph_matrices
       use t_fdm_coefs
@@ -36,9 +38,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_radial_mat_4_press_sph                           &
-     &         (sph_rj, r_2nd, g_sph_rj, band_p_poisson)
+     &         (fl_prop, sph_rj, r_2nd, g_sph_rj, band_p_poisson)
 !
-      use m_physical_property
       use m_boundary_params_sph_MHD
       use m_coef_fdm_to_center
       use m_coef_fdm_free_ICB
@@ -51,6 +52,7 @@
       use set_radial_mat_sph
       use check_sph_radial_mat
 !
+      type(fluid_property), intent(in) :: fl_prop
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
@@ -60,7 +62,7 @@
       real(kind = kreal) :: coef_p
 !
 !
-      coef_p = - coef_press
+      coef_p = - fl_prop%coef_press
       call alloc_band_mat_sph(ithree, sph_rj, band_p_poisson)
 
       call set_unit_mat_4_poisson                                       &

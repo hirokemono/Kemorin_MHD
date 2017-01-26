@@ -63,29 +63,6 @@
 !>      Name of forces
       character (len=kchara), allocatable :: name_force(:)
 !
-!>      Turn ON and evaluate over elements flag
-      integer (kind=kint), parameter :: id_FORCE_ele_int =  1
-!>      Turn ON and evaluate at node flag
-      integer (kind=kint), parameter :: id_FORCE_at_node =  2
-!>      Force flag for thermal buoyancy
-      integer (kind=kint) :: iflag_4_gravity =        id_turn_OFF
-!>      Force flag for compositional buoyancy
-      integer (kind=kint) :: iflag_4_composit_buo =   id_turn_OFF
-!>      Force flag for filtered thermal buoyancy
-      integer (kind=kint) :: iflag_4_filter_gravity = id_turn_OFF
-!
-!>      Turn ON and evaluate implicitly over elements flag
-      integer (kind=kint), parameter :: id_Coriolis_ele_imp = 11
-!>      Turn ON and evaluate implicitly at node flag
-      integer (kind=kint), parameter :: id_Coriolis_nod_imp = 12
-!>      Force flag for Coriolis force
-      integer (kind=kint) :: iflag_4_coriolis =       id_turn_OFF
-!
-!>      Turn ON and including magnetic pressure
-      integer (kind=kint), parameter :: id_Lorentz_w_Emag = 2
-!>      Force flag for Lorentz force
-      integer (kind=kint) :: iflag_4_lorentz =        id_turn_OFF
-!
 !
       integer (kind=kint) :: num_fl_ele_grp
       integer (kind=kint) :: num_cd_ele_grp
@@ -109,16 +86,11 @@
      &       = id_no_boundary_file
 !
 !
-!>      Thermal stratification flag
-      integer (kind=kint) :: iflag_t_strat
-!>      Magneto convectio flag
-      integer (kind=kint) :: iflag_magneto_cv = id_turn_OFF
-!
 !  Parameters for FEM dynamo
 !
 !>      Using rotation form for inertia and Lorentz force
+!!@N      (FEM only)
       integer (kind=kint) :: iflag_4_rotate =        id_turn_OFF
-!
 !
 !>      Number of quadrature points for time evolution
       integer (kind=kint)  :: intg_point_t_evo =   2
@@ -275,31 +247,6 @@
       integer (kind=kint), parameter :: ifilter_4delta = 2
 !>      filter ID to obtain SGS terms
       integer (kind=kint) :: ifilter_final = ifilter_2delta
-!
-!>      flag for solving full temperature
-      integer (kind=kint), parameter :: id_no_ref_temp = 0
-!>      flag to use referece temperature as a function of @f$ x @f$
-      integer (kind=kint), parameter :: id_x_ref_temp = 0
-!>      flag to use referece temperature as a function of @f$ y @f$
-      integer (kind=kint), parameter :: id_y_ref_temp = 0
-!>      flag to use referece temperature as a function of @f$ z @f$
-      integer (kind=kint), parameter :: id_z_ref_temp = 0
-!>      flag to use referece temperature as a function of @f$ r @f$
-      integer (kind=kint), parameter :: id_sphere_ref_temp = 100
-!>      flag to use linearly decrease referece temperature 
-!!      as a function of @f$ r @f$
-      integer (kind=kint), parameter :: id_linear_r_ref_temp = 200
-!>      temperature setting
-      integer (kind=kint) :: iflag_4_ref_temp
-!
-!>      reference lowest temperature (at upper boundary)
-      real (kind = kreal) :: low_temp
-!>      reference highest temperature (at lower boundary)
-      real (kind = kreal) :: high_temp
-!>      position at lowest temperature (upper boundary)
-      real (kind = kreal) :: depth_low_t
-!>      position at highest temperature (lower boundary)
-      real (kind = kreal) :: depth_high_t
 !
 !  ---------------------------------------------------------------------
 !

@@ -5,12 +5,12 @@
 !
 !!      subroutine int_surf_velo_pre_ele                                &
 !!     &         (iak_diff_mf, iak_diff_lor, ak_d_velo,                 &
-!!     &          node, ele, surf, sf_grp, Vsf_bcs, Bsf_bcs,            &
+!!     &          node, ele, surf, sf_grp, fl_prop, Vsf_bcs, Bsf_bcs,   &
 !!     &          iphys, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,       &
 !!     &          diff_coefs, fem_wk, surf_wk, f_l, f_nl)
 !!      subroutine int_surf_velo_monitor                                &
 !!     &         (i_field, iak_diff_mf, iak_diff_lor, ak_d_velo,        &
-!!     &          node, ele, surf, sf_grp, Vsf_bcs, Bsf_bcs,            &
+!!     &          node, ele, surf, sf_grp, fl_prop, Vsf_bcs, Bsf_bcs,   &
 !!     &          iphys, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,       &
 !!     &          fem_wk, surf_wk, f_l, f_nl)
 !!        type(node_data), intent(in) :: node
@@ -45,6 +45,7 @@
       use t_surface_bc_data
       use t_material_property
       use t_SGS_model_coefs
+      use t_physical_property
 !
       use m_control_parameter
 !
@@ -62,7 +63,7 @@
 !
       subroutine int_surf_velo_pre_ele                                  &
      &         (iak_diff_mf, iak_diff_lor, ak_d_velo,                   &
-     &          node, ele, surf, sf_grp, Vsf_bcs, Bsf_bcs,              &
+     &          node, ele, surf, sf_grp, fl_prop, Vsf_bcs, Bsf_bcs,     &
      &          iphys, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,         &
      &          diff_coefs, fem_wk, surf_wk, f_l, f_nl)
 !
@@ -70,6 +71,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(fluid_property), intent(in) :: fl_prop
       type(velocity_surf_bc_type), intent(in)  :: Vsf_bcs
       type(vector_surf_bc_type), intent(in) :: Bsf_bcs
       type(phys_address), intent(in) :: iphys
@@ -94,7 +96,7 @@
      &        Vsf_bcs%sgs, intg_point_t_evo, ifilter_final,             &
      &        iphys%i_SGS_m_flux, iphys%i_velo, iphys%i_velo,           &
      &        diff_coefs%num_field, iak_diff_mf, diff_coefs%ak,         &
-     &        coef_velo, fem_wk, surf_wk, f_nl)
+     &        fl_prop%coef_velo, fem_wk, surf_wk, f_nl)
         end if
       end if
 !
@@ -105,7 +107,7 @@
      &        Bsf_bcs%sgs, intg_point_t_evo, ifilter_final,             &
      &        iphys%i_SGS_maxwell, iphys%i_magne, iphys%i_magne,        &
      &        diff_coefs%num_field, iak_diff_lor, diff_coefs%ak,        &
-     &        (-coef_lor), fem_wk, surf_wk, f_nl)
+     &        (-fl_prop%coef_lor), fem_wk, surf_wk, f_nl)
         end if
       end if
 !
@@ -130,7 +132,7 @@
 !
       subroutine int_surf_velo_monitor                                  &
      &         (i_field, iak_diff_mf, iak_diff_lor, ak_d_velo,          &
-     &          node, ele, surf, sf_grp, Vsf_bcs, Bsf_bcs,              &
+     &          node, ele, surf, sf_grp, fl_prop, Vsf_bcs, Bsf_bcs,     &
      &          iphys, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,         &
      &          diff_coefs, fem_wk, surf_wk, f_l, f_nl)
 !
@@ -138,6 +140,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(fluid_property), intent(in) :: fl_prop
       type(velocity_surf_bc_type), intent(in)  :: Vsf_bcs
       type(vector_surf_bc_type), intent(in) :: Bsf_bcs
       type(phys_address), intent(in) :: iphys
@@ -163,7 +166,7 @@
      &        Vsf_bcs%sgs, intg_point_t_evo, ifilter_final,             &
      &        iphys%i_SGS_m_flux, iphys%i_velo, iphys%i_velo,           &
      &        diff_coefs%num_field, iak_diff_mf, diff_coefs%ak,         &
-     &        coef_velo, fem_wk, surf_wk, f_nl)
+     &        fl_prop%coef_velo, fem_wk, surf_wk, f_nl)
         end if
       end if
 !
@@ -174,7 +177,7 @@
      &        Bsf_bcs%sgs, intg_point_t_evo, ifilter_final,             &
      &        iphys%i_SGS_maxwell, iphys%i_magne, iphys%i_magne,        &
      &        diff_coefs%num_field, iak_diff_lor, diff_coefs%ak,        &
-     &        (-coef_lor), fem_wk, surf_wk, f_nl)
+     &        (-fl_prop%coef_lor), fem_wk, surf_wk, f_nl)
         end if
       end if
 !

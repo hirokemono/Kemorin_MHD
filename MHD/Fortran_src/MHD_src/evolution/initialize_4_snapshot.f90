@@ -37,6 +37,7 @@
       use m_control_parameter
       use m_t_step_parameter
 !
+      use m_physical_property
       use m_ele_material_property
       use m_mean_square_values
       use m_jacobians
@@ -179,15 +180,18 @@
      &    f1_l, f1_nl, label_sim)
 !
       if (iflag_debug.eq.1) write(*,*)' set_reference_temp'
-      call set_reference_temp(mesh%node%numnod,                         &
-     &    MHD_mesh%fluid%numnod_fld, MHD_mesh%fluid%inod_fld,           &
-     &    mesh%node%xx, mesh%node%rr, mesh%node%a_r,                    &
-     &    nod_fld%ntot_phys, iphys%i_ref_t, iphys%i_gref_t,             &
-     &    nod_fld%d_fld)
+      call set_reference_temp                                           &
+     &   (ref_param_T1, takepito_T1, mesh%node, MHD_mesh%fluid,         &
+     &    iphys%i_ref_t, iphys%i_gref_t, nod_fld)
+      call set_reference_temp                                           &
+     &   (ref_param_C1, takepito_C1, mesh%node, MHD_mesh%fluid,         &
+     &   iphys%i_ref_c, iphys%i_gref_c, nod_fld)
 !
       if (iflag_debug.eq.1) write(*,*)' set_material_property'
-      call set_material_property(iphys)
-      call init_ele_material_property(mesh%ele%numele)
+      call set_material_property                                        &
+     &   (iphys, ref_param_T1%depth_top, ref_param_T1%depth_bottom)
+      call init_ele_material_property(mesh%ele%numele,                  &
+     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1)
       call define_sgs_components                                        &
      &   (mesh%node%numnod, mesh%ele%numele, layer_tbl,                 &
      &    ifld_sgs, icomp_sgs, wk_sgs1, sgs_coefs, sgs_coefs_nod)
@@ -238,7 +242,7 @@
 !
       if (iflag_debug.eq.1) write(*,*)' set_boundary_data'
       call set_boundary_data(IO_bc, mesh, ele_mesh, MHD_mesh, group,    &
-     &    iphys, nod_fld)
+     &    fl_prop1, iphys, nod_fld)
 !
 !     ---------------------
 !

@@ -5,8 +5,8 @@
 !
 !!      subroutine cal_sgs_mom_flux_with_sgs_buo                        &
 !!     &         (nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,  &
-!!     &          Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD,           &
-!!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
+!!     &          fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele, &
+!!     &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,    &
 !!     &          FEM_elens, filtering, ifld_sgs, icomp_sgs,            &
 !!     &          ifld_diff, iphys_elediff, sgs_coefs_nod, diff_coefs,  &
 !!     &          wk_filter, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,        &
@@ -20,6 +20,7 @@
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(field_geometry_data), intent(in) :: fluid
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
@@ -72,6 +73,7 @@
       use t_SGS_model_coefs
       use t_layering_ele_list
       use t_surface_bc_data
+      use t_physical_property
 !
       implicit none
 !
@@ -85,8 +87,8 @@
 !
       subroutine cal_sgs_mom_flux_with_sgs_buo                          &
      &         (nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,    &
-     &          Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD,             &
-     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
+     &          fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,   &
+     &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,      &
      &          FEM_elens, filtering, ifld_sgs, icomp_sgs,              &
      &          ifld_diff, iphys_elediff, sgs_coefs_nod, diff_coefs,    &
      &          wk_filter, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,          &
@@ -94,7 +96,6 @@
 !
       use m_control_parameter
       use m_phys_constants
-      use m_physical_property
 !
       use cal_sgs_fluxes
       use cal_momentum_terms
@@ -115,6 +116,8 @@
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(field_geometry_data), intent(in) :: fluid
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(layering_tbl), intent(in) :: layer_tbl
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
@@ -166,10 +169,10 @@
 !
       call cal_terms_4_momentum(iphys%i_SGS_div_m_flux,                 &
      &    ifld_diff%i_mom_flux, ifld_diff%i_lorentz,                    &
-     &    nod_comm, node, ele, surf, fluid, sf_grp, Vsf_bcs, Bsf_bcs,   &
-     &    iphys, iphys_ele, ak_MHD, jac_3d_q, jac_sf_grp_q, rhs_tbl,    &
-     &    FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,           &
-     &    f_l, f_nl, nod_fld, ele_fld)
+     &    nod_comm, node, ele, surf, sf_grp, fluid, fl_prop, cd_prop,   &
+     &    Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD,                   &
+     &    jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens, diff_coefs,       &
+     &    mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld, ele_fld)
 !
 !$omp parallel
       call cal_phys_dot_product                                         &
@@ -179,17 +182,19 @@
 !
 !   lead SGS buoyancy flux
 !
-      if(iflag_4_gravity .gt. id_turn_OFF) then
-        call cal_SGS_gravity_flux(node, coef_buo,                       &
+      if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
+        call cal_SGS_gravity_flux                                       &
+     &     (node, fl_prop%i_grav, fl_prop%coef_buo, fl_prop%grav,       &
      &      iphys%i_SGS_h_flux, iphys%i_SGS_buo_wk, nod_fld)
       end if
-      if(iflag_4_composit_buo .gt. id_turn_OFF) then
-        call cal_SGS_gravity_flux(node, coef_comp_buo,                  &
+      if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
+        call cal_SGS_gravity_flux                                       &
+     &     (node, fl_prop%i_grav, fl_prop%coef_comp_buo, fl_prop%grav,  &
      &      iphys%i_SGS_c_flux, iphys%i_SGS_comp_buo_wk, nod_fld)
        end if
 !
 !   take RMS of SGS buoyancy flux and work of Reynolds stress
-      call select_int_vol_sgs_buoyancy(node, ele, layer_tbl,            &
+      call select_int_vol_sgs_buoyancy(node, ele, fl_prop, layer_tbl,   &
      &    iphys, nod_fld, jac_3d_q, jac_3d_l,                           &
      &    wk_lsq%nlayer, wk_lsq%slocal)
 !
@@ -197,7 +202,7 @@
 !
 !   Parameterize model coeffisient including SGS Buoyancy
 !
-      if(iflag_4_gravity .gt. id_turn_OFF) then
+      if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
 !        call cal_Csim_buo_by_Reynolds_ratio(wk_sgs%nlayer, ifive,      &
 !     &      wk_sgs%num_kinds, wk_sgs%ntot_comp,                        &
 !     &      ifld_sgs%i_buoyancy, icomp_sgs%i_buoyancy, wk_lsq%slsq,    &
@@ -209,7 +214,7 @@
         call clippging_sgs_diff_coefs(ncomp_sgs_buo,                    &
      &      ifld_sgs%i_buoyancy, icomp_sgs%i_buoyancy, wk_sgs)
       end if
-      if(iflag_4_composit_buo .gt. id_turn_OFF) then
+      if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
 !        call cal_Csim_buo_by_Reynolds_ratio(wk_sgs%nlayer, isix,       &
 !     &      wk_sgs%num_kinds, wk_sgs%ntot_comp,                        &
 !     &      ifld_sgs%i_comp_buoyancy, icomp_sgs%i_comp_buoyancy,       &
@@ -222,8 +227,8 @@
      &      ifld_sgs%i_buoyancy, icomp_sgs%i_buoyancy, wk_sgs)
       end if
 !
-      call mod_Csim_by_SGS_buoyancy_ele                                 &
-     &   (ele, layer_tbl%e_grp, ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
+      call mod_Csim_by_SGS_buoyancy_ele(ele, layer_tbl%e_grp,           &
+     &    fl_prop, ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
 !
 !      if(iflag_debug .gt. 0) then
 !        write(*,*) 'sgs_f_coef, icomp_sgs_tbuo', ifld_sgs%i_buoyancy
@@ -243,8 +248,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine select_int_vol_sgs_buoyancy(node, ele, layer_tbl,      &
-     &          iphys, nod_fld, jac_3d_q, jac_3d_l, n_layer_d, sgs_l)
+      subroutine select_int_vol_sgs_buoyancy                            &
+     &         (node, ele, fl_prop, layer_tbl, iphys, nod_fld,          &
+     &          jac_3d_q, jac_3d_l, n_layer_d, sgs_l)
 !
       use m_control_parameter
 !
@@ -252,6 +258,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(fluid_property), intent(in) :: fl_prop
       type(phys_address), intent(in) :: iphys
       type(layering_tbl), intent(in) :: layer_tbl
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
@@ -263,7 +270,7 @@
 !
 !
 !   take RMS of SGS buoyancy flux and work of Reynolds stress
-      if(iflag_4_gravity .gt. id_turn_OFF) then
+      if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
         call int_vol_2rms_ave_ele_grps                                  &
      &     (node, ele, layer_tbl%e_grp, jac_3d_q, jac_3d_l,             &
      &      intg_point_t_evo, nod_fld%ntot_phys, iphys%i_reynolds_wk,   &
@@ -271,14 +278,14 @@
      &      nod_fld%d_fld, sgs_l(1,1), sgs_l(1,4), sgs_l(1,2),          &
      &      sgs_l(1,5) )
 !
-        if(iflag_4_composit_buo .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
           call int_vol_rms_ave_ele_grps                                 &
      &       (node, ele, layer_tbl%e_grp, jac_3d_q, jac_3d_l,           &
      &        intg_point_t_evo, nod_fld%ntot_phys,                      &
      &        iphys%i_SGS_comp_buo_wk, nod_fld%d_fld,                   &
      &        sgs_l(1,3), sgs_l(1,6))
         end if
-      else if(iflag_4_composit_buo .gt. id_turn_OFF) then
+      else if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
         call int_vol_2rms_ave_ele_grps                                  &
      &     (node, ele, layer_tbl%e_grp, jac_3d_q, jac_3d_l,             &
      &      intg_point_t_evo, nod_fld%ntot_phys, iphys%i_reynolds_wk,   &

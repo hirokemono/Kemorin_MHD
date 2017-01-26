@@ -98,6 +98,13 @@
 !!         @f$  \partial T_{0} / dz@f$
 !>         or @f$  \partial T_{0} / dr@f$
         integer (kind=kint) :: i_gref_t =          izero
+!>        start address for reference temperature
+!!         @f$  C_{0} @f$
+        integer (kind=kint) :: i_ref_c =           izero
+!>        start address for gradient of reference temperature
+!!         @f$  \partial C_{0} / dz@f$
+!>         or @f$  \partial C_{0} / dr@f$
+        integer (kind=kint) :: i_gref_c =          izero
 !>        start address for reference density
 !!         @f$  \rho_{0} @f$
         integer (kind=kint) :: i_ref_density =     izero
@@ -478,6 +485,8 @@
         integer (kind=kint) :: i_grad_filter_temp = izero
 !>        start address for gradient of @f$ \tilde{C} @f$
         integer (kind=kint) :: i_grad_composit =    izero
+!>        start address for gradient of perturbation of composition
+        integer (kind=kint) :: i_grad_part_c =      izero
 !
 !>        start address for SGS term by scale similarity method
         integer (kind=kint) :: i_sgs_simi =        izero

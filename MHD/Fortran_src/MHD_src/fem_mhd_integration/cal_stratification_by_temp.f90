@@ -32,15 +32,6 @@
 !
 !*****************************************************
 !
-!*****************************************************
-!
-!   Paramters
-!      stratified_sigma:   intensity of stratification
-!      stratified_width:   width of stratified layer
-!      stratified_outer_r: radius of outer boundary of stratified layer
-!
-!*****************************************************
-!
       module cal_stratification_by_temp
 !
       use m_precision

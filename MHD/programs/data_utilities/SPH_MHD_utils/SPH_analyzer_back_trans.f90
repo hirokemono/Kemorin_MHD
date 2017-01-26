@@ -71,7 +71,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd_evo'
       call init_r_infos_sph_mhd_evo(sph_grps1, ipol, sph1,              &
-     &    omega_sph1, ref_temp1, r_2nd, rj_fld1)
+     &    omega_sph1, ref_temp1, ref_comp1, r_2nd, rj_fld1)
 !
 !  -------------------------------
 !

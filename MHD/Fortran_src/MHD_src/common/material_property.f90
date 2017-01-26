@@ -8,7 +8,7 @@
 !>@brief  Subroutines to set coeffiecient of each term
 !!
 !!@verbatim
-!!      subroutine set_material_property(iphys)
+!!      subroutine set_material_property(iphys, depth_top, depth_bottom)
 !!        type(phys_address), intent(in) :: iphys
 !!@endverbatim
 !!
@@ -19,8 +19,13 @@
       use m_constants
 !
       use t_phys_address
+      use t_physical_property
+      use calypso_mpi
 !
       implicit none
+!
+      private :: set_fluid_property, set_thermal_property
+      private :: set_conductive_property, set_composition_property
 !
 ! -----------------------------------------------------------------------
 !
@@ -28,216 +33,306 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_material_property(iphys)
+      subroutine set_material_property(iphys, depth_top, depth_bottom)
 !
-      use calypso_mpi
-      use m_control_parameter
-      use m_normalize_parameter
       use m_physical_property
-      use m_t_int_parameter
       use construct_MHD_coefficient
 !
       type(phys_address), intent(in) :: iphys
+      real(kind = kreal), intent(in) :: depth_top, depth_bottom
 !
 !    For thermal
+      if (my_rank .eq. 0) write(*,*) ''
+      call set_thermal_property                                         &
+     &   (iphys, depth_top, depth_bottom, ht_prop1)
 !
-      if (evo_temp%iflag_scheme .gt. id_no_evolution) then
+!    For convection
+      call set_fluid_property(depth_top, depth_bottom, fl_prop1)
 !
-        coef_temp =   one
-        coef_d_temp = one
-        coef_h_src =  one
+!   For Induction
+      call set_conductive_property(depth_top, depth_bottom, cd_prop1)
 !
-        call construct_coefficient(coef_temp,                           &
-     &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_termal,     &
-     &      depth_low_t, depth_high_t)
+!   For light element
+      call set_composition_property                                     &
+     &   (iphys, depth_top, depth_bottom, cp_prop1)
+      if (my_rank .eq. 0) write(*,*) ''
 !
-        call construct_coefficient(coef_d_temp,                         &
-     &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_t_diffuse,  &
-     &      depth_low_t, depth_high_t)
+      end subroutine set_material_property
 !
-        call construct_coefficient(coef_h_src,                          &
-     &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_h_source,   &
-     &      depth_low_t, depth_high_t)
+! -----------------------------------------------------------------------
 !
-        call set_implicit_4_inf_viscous(coef_temp,                      &
-     &      evo_temp%coef_imp, evo_temp%coef_exp)
+      subroutine set_fluid_property(depth_top, depth_bottom, fl_prop)
 !
-        coef_nega_t = - coef_temp
-      end if
+      use m_control_parameter
+      use m_normalize_parameter
+      use m_t_int_parameter
+      use construct_MHD_coefficient
+!
+      real(kind = kreal), intent(in) :: depth_top, depth_bottom
+      type(fluid_property), intent(inout) :: fl_prop
 !
 !    For convection
 !
       if(evo_velo%iflag_scheme .gt. id_no_evolution) then
 !
-        coef_velo =     one
-        coef_d_velo =   one
-        coef_buo =      one
-        coef_comp_buo = one
-        coef_cor =      one
-        coef_lor =      one
-        coef_press =    one
-        acoef_press =   one
+        fl_prop%coef_velo =     one
+        fl_prop%coef_diffuse =  one
+        fl_prop%coef_buo =      one
+        fl_prop%coef_comp_buo = one
+        fl_prop%coef_cor =      one
+        fl_prop%coef_lor =      one
+        fl_prop%coef_press =    one
+        fl_prop%acoef_press =   one
 !
-        call construct_coefficient(coef_velo,                           &
+        call construct_coefficient(fl_prop%coef_velo,                   &
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_momentum,   &
-     &      depth_low_t, depth_high_t)
+     &      depth_top, depth_bottom)
 !
-        call construct_coefficient(coef_press,                          &
+        call construct_coefficient(fl_prop%coef_press,                  &
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_pressure,   &
-     &      depth_low_t, depth_high_t)
+     &      depth_top, depth_bottom)
 !
-        call construct_coefficient(coef_d_velo,                         &
+        call construct_coefficient(fl_prop%coef_diffuse,                &
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_v_diffuse,  &
-     &      depth_low_t, depth_high_t)
+     &      depth_top, depth_bottom)
 !
-        call set_implicit_4_inf_viscous(coef_velo,                      &
+        call set_implicit_4_inf_viscous(fl_prop%coef_velo,              &
      &      evo_velo%coef_imp, evo_velo%coef_exp)
 !
-        acoef_press = one / coef_press
-        coef_nega_v = - coef_velo
+        fl_prop%acoef_press = one / fl_prop%coef_press
+        fl_prop%coef_nega_v = - fl_prop%coef_velo
 !
-        if (iflag_4_gravity .gt. id_turn_OFF                            &
-     &     .or. iflag_4_filter_gravity .gt. id_turn_OFF) then
-          call construct_coefficient(coef_buo,                          &
+        if (fl_prop%iflag_4_gravity .gt. id_turn_OFF                    &
+     &     .or. fl_prop%iflag_4_filter_gravity .gt. id_turn_OFF) then
+          call construct_coefficient(fl_prop%coef_buo,                  &
      &       MHD_coef_list%dimless_list, MHD_coef_list%coefs_buoyancy,  &
-     &      depth_low_t, depth_high_t)
+     &      depth_top, depth_bottom)
         end if
 !
-        if (iflag_4_composit_buo .gt. id_turn_OFF) then
-          call construct_coefficient(coef_comp_buo,                     &
+        if (fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
+          call construct_coefficient(fl_prop%coef_comp_buo,             &
      &       MHD_coef_list%dimless_list, MHD_coef_list%coefs_comp_buo,  &
-     &       depth_low_t, depth_high_t)
+     &       depth_top, depth_bottom)
         end if
 !
-        if (iflag_4_coriolis .gt. id_turn_OFF) then
-          call construct_coefficient(coef_cor,                          &
+        if (fl_prop%iflag_4_coriolis .gt. id_turn_OFF) then
+          call construct_coefficient(fl_prop%coef_cor,                  &
      &       MHD_coef_list%dimless_list, MHD_coef_list%coefs_Coriolis,  &
-     &       depth_low_t, depth_high_t)
+     &       depth_top, depth_bottom)
         end if
 !
-        if ( iflag_4_lorentz .gt. id_turn_OFF) then
-          call construct_coefficient(coef_lor,                          &
+        if (fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
+          call construct_coefficient(fl_prop%coef_lor,                  &
      &       MHD_coef_list%dimless_list, MHD_coef_list%coefs_Lorentz,   &
-     &       depth_low_t, depth_high_t)
+     &       depth_top, depth_bottom)
         end if
 !
       end if
+!
+!  Check
+!
+      if (my_rank .eq. 0) then
+        if(evo_velo%iflag_scheme .gt. id_no_evolution) then
+          write(*,*) 'coefficient for velocity:            ',           &
+     &              fl_prop%coef_velo
+          write(*,*) 'coefficient for pressure:            ',           &
+     &              fl_prop%coef_press
+          write(*,*) 'coefficient for viscous diffusion:   ',           &
+     &              fl_prop%coef_diffuse
+        if (fl_prop%iflag_4_gravity .gt. id_turn_OFF) write(*,*)        &
+     &         'coefficient for buoyancy:            ',                 &
+     &              fl_prop%coef_buo
+        if (fl_prop%iflag_4_composit_buo .gt. id_turn_OFF)  write(*,*)  &
+     &         'coefficient for composit buoyancy:   ',                 &
+     &              fl_prop%coef_comp_buo
+        if (fl_prop%iflag_4_coriolis .gt. id_turn_OFF) write(*,*)       &
+     &         'coefficient for coriolis force:      ',                 &
+     &              fl_prop%coef_cor
+        if (fl_prop%iflag_4_lorentz .gt. id_turn_OFF) write(*,*)        &
+     &         'coefficient for Lorentz force:       ',                 &
+     &              fl_prop%coef_lor
+        end if
+      end if
+!
+      end subroutine set_fluid_property
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_conductive_property                                &
+     &         (depth_top, depth_bottom, cd_prop)
+!
+      use m_control_parameter
+      use m_normalize_parameter
+      use m_t_int_parameter
+      use construct_MHD_coefficient
+!
+      real(kind = kreal), intent(in) :: depth_top, depth_bottom
+      type(conductive_property), intent(inout) :: cd_prop
 !
 !   For Induction
 !
       if (evo_magne%iflag_scheme .gt. id_no_evolution                   &
      &     .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
 !
-        coef_magne =   one
-        coef_mag_p =   one
-        coef_d_magne = one
-        coef_induct =  one
+        cd_prop%coef_magne =   one
+        cd_prop%coef_mag_p =   one
+        cd_prop%coef_diffuse = one
+        cd_prop%coef_induct =  one
 !
-        call construct_coefficient(coef_magne,                          &
+        call construct_coefficient(cd_prop%coef_magne,                  &
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_magnetic,   &
-     &      depth_low_t, depth_high_t)
+     &      depth_top, depth_bottom)
 !
-        call construct_coefficient(coef_mag_p,                          &
+        call construct_coefficient(cd_prop%coef_mag_p,                  &
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_magne_p,    &
-     &      depth_low_t, depth_high_t)
+     &      depth_top, depth_bottom)
 !
-        call construct_coefficient(coef_d_magne,                        &
+        call construct_coefficient(cd_prop%coef_diffuse,                &
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_m_diffuse,  &
-     &      depth_low_t, depth_high_t)
+     &      depth_top, depth_bottom)
 !
-        call construct_coefficient(coef_induct,                         &
+        call construct_coefficient(cd_prop%coef_induct,                 &
      &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_induction,  &
-     &      depth_low_t, depth_high_t)
+     &      depth_top, depth_bottom)
       end if
 !
       if(evo_magne%iflag_scheme .gt. id_no_evolution) then
-        call set_implicit_4_inf_viscous(coef_magne,                     &
+        call set_implicit_4_inf_viscous(cd_prop%coef_magne,            &
      &      evo_magne%coef_imp, evo_magne%coef_exp)
       end if
       if(evo_vect_p%iflag_scheme .gt. id_no_evolution) then
-        call set_implicit_4_inf_viscous(coef_magne,                     &
+        call set_implicit_4_inf_viscous(cd_prop%coef_magne,            &
      &      evo_vect_p%coef_imp, evo_vect_p%coef_exp)
-      end if
-!
-!   For light element
-!
-      if (evo_comp%iflag_scheme .gt. id_no_evolution) then
-        coef_light =    one
-        coef_d_light =  one
-        coef_c_src =    one
-!
-        call construct_coefficient(coef_light,                          &
-     &     MHD_coef_list%dimless_list, MHD_coef_list%coefs_composition, &
-     &     depth_low_t, depth_high_t)
-!
-        call construct_coefficient(coef_d_light,                        &
-     &     MHD_coef_list%dimless_list, MHD_coef_list%coefs_c_diffuse,   &
-     &     depth_low_t, depth_high_t)
-!
-        call construct_coefficient(coef_c_src,                          &
-     &     MHD_coef_list%dimless_list, MHD_coef_list%coefs_c_source,    &
-     &     depth_low_t, depth_high_t)
-!
-        call set_implicit_4_inf_viscous(coef_light,                     &
-     &      evo_comp%coef_imp, evo_comp%coef_exp)
-!
-        coef_nega_c = - coef_light
       end if
 !
 !  Check
 !
       if (my_rank .eq. 0) then
-        write(*,*)''
-        if(evo_velo%iflag_scheme .gt. id_no_evolution) then
-          write(*,*) 'coefficient for velocity:            ',           &
-     &              coef_velo
-          write(*,*) 'coefficient for pressure:            ',           &
-     &              coef_press
-          write(*,*) 'coefficient for viscous diffusion:   ',           &
-     &              coef_d_velo
-        if (iflag_4_gravity .gt. id_turn_OFF)       write(*,*)          &
-     &         'coefficient for buoyancy:            ', coef_buo
-        if (iflag_4_composit_buo .gt. id_turn_OFF)  write(*,*)          &
-     &         'coefficient for composit buoyancy:   ', coef_comp_buo
-        if (iflag_4_coriolis .gt. id_turn_OFF)      write(*,*)          &
-     &         'coefficient for coriolis force:      ', coef_cor
-        if (iflag_4_lorentz .gt. id_turn_OFF)       write(*,*)          &
-     &         'coefficient for Lorentz force:       ', coef_lor
-        end if
-!
-        if (evo_temp%iflag_scheme .gt. id_no_evolution) then
-          write(*,*) 'coefficient for temperature:         ',           &
-     &              coef_temp
-          write(*,*) 'coefficient for thermal diffusion:   ',           &
-     &              coef_d_temp
-          if(iphys%i_heat_source .gt. 0) write(*,*)                     &
-     &         'coefficient for heat source:         ', coef_h_src
-        end if
-!
         if (evo_magne%iflag_scheme .gt. id_no_evolution                 &
      &     .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
           write(*,*) 'coefficient for magnetic field:      ',           &
-     &              coef_magne
+     &              cd_prop%coef_magne
           write(*,*) 'coefficient for magnetic potential:  ',           &
-     &              coef_mag_p
+     &              cd_prop%coef_mag_p
           write(*,*) 'coefficient for magnetic diffusion:  ',           &
-     &              coef_d_magne
+     &              cd_prop%coef_diffuse
           write(*,*) 'coefficient for induction:           ',           &
-     &              coef_induct
+     &              cd_prop%coef_induct
         end if
 !
-        if (evo_comp%iflag_scheme .gt. id_no_evolution) then
-          write(*,*) 'coefficient for composition:         ',           &
-     &              coef_light
-          write(*,*) 'coefficient for composite diffusion: ',           &
-     &              coef_d_light
-          if(iphys%i_light_source .gt. 0) write(*,*)                    &
-     &         'coefficient for light element source:', coef_c_src
-          write(*,*)''
+      end if
+!
+      end subroutine set_conductive_property
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine set_thermal_property                                   &
+     &         (iphys, depth_top, depth_bottom, ht_prop)
+!
+      use m_control_parameter
+      use m_normalize_parameter
+      use m_t_int_parameter
+      use construct_MHD_coefficient
+!
+      type(phys_address), intent(in) :: iphys
+      real(kind = kreal), intent(in) :: depth_top, depth_bottom
+      type(scalar_property), intent(inout) :: ht_prop
+!
+!    For thermal
+!
+      if (evo_temp%iflag_scheme .gt. id_no_evolution) then
+!
+        ht_prop%coef_advect =  one
+        ht_prop%coef_diffuse = one
+        ht_prop%coef_source =  one
+!
+        call construct_coefficient(ht_prop%coef_advect,                 &
+     &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_termal,     &
+     &      depth_top, depth_bottom)
+!
+        call construct_coefficient(ht_prop%coef_diffuse,                &
+     &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_t_diffuse,  &
+     &      depth_top, depth_bottom)
+!
+        call construct_coefficient(ht_prop%coef_source,                 &
+     &      MHD_coef_list%dimless_list, MHD_coef_list%coefs_h_source,   &
+     &      depth_top, depth_bottom)
+!
+        call set_implicit_4_inf_viscous(ht_prop%coef_advect,            &
+     &      evo_temp%coef_imp, evo_temp%coef_exp)
+!
+        ht_prop%coef_nega_adv = - ht_prop%coef_advect
+      end if
+!
+      if (my_rank .eq. 0) then
+        if (evo_temp%iflag_scheme .gt. id_no_evolution) then
+          write(*,*) 'coefficient for temperature:         ',           &
+     &              ht_prop%coef_advect
+          write(*,*) 'coefficient for thermal diffusion:   ',           &
+     &              ht_prop%coef_diffuse
+          if(iphys%i_heat_source .gt. 0) write(*,*)                     &
+     &         'coefficient for heat source:         ',                 &
+     &              ht_prop%coef_source
         end if
       end if
 !
-      end subroutine set_material_property
+      end subroutine set_thermal_property
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_composition_property                               &
+     &         (iphys, depth_top, depth_bottom, cp_prop)
+!
+      use m_control_parameter
+      use m_normalize_parameter
+      use m_t_int_parameter
+      use construct_MHD_coefficient
+!
+      type(phys_address), intent(in) :: iphys
+      real(kind = kreal), intent(in) :: depth_top, depth_bottom
+      type(scalar_property), intent(inout) :: cp_prop
+!
+!   For light element
+!
+      if (evo_comp%iflag_scheme .gt. id_no_evolution) then
+        cp_prop%coef_advect =   one
+        cp_prop%coef_diffuse =  one
+        cp_prop%coef_source =   one
+!
+        call construct_coefficient(cp_prop%coef_advect,                 &
+     &     MHD_coef_list%dimless_list, MHD_coef_list%coefs_composition, &
+     &     depth_top, depth_bottom)
+!
+        call construct_coefficient(cp_prop%coef_diffuse,                &
+     &     MHD_coef_list%dimless_list, MHD_coef_list%coefs_c_diffuse,   &
+     &     depth_top, depth_bottom)
+!
+        call construct_coefficient(cp_prop%coef_source,                 &
+     &     MHD_coef_list%dimless_list, MHD_coef_list%coefs_c_source,    &
+     &     depth_top, depth_bottom)
+!
+        call set_implicit_4_inf_viscous(cp_prop%coef_advect,            &
+     &      evo_comp%coef_imp, evo_comp%coef_exp)
+!
+        cp_prop%coef_nega_adv = - cp_prop%coef_advect
+      end if
+!
+!  Check
+!
+      if (my_rank .eq. 0) then
+        if (evo_comp%iflag_scheme .gt. id_no_evolution) then
+          write(*,*) 'coefficient for composition:         ',           &
+     &              cp_prop%coef_advect
+          write(*,*) 'coefficient for composite diffusion: ',           &
+     &              cp_prop%coef_diffuse
+          if(iphys%i_light_source .gt. 0) write(*,*)                    &
+     &         'coefficient for light element source:',                 &
+     &              cp_prop%coef_source
+        end if
+      end if
+!
+      end subroutine set_composition_property
 !
 ! -----------------------------------------------------------------------
 !

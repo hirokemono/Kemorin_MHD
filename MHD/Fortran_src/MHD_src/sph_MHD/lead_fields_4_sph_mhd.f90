@@ -22,6 +22,7 @@
 !
       use m_precision
       use m_machine_parameter
+      use m_physical_property
 !
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
@@ -76,8 +77,8 @@
 !
       if ( (iflag*mod(istep_max_dt,i_step_output_rst)) .eq.0 ) then
         if(evo_velo%iflag_scheme .gt. id_no_evolution) then
-          call pressure_4_sph_mhd(sph%sph_rj, r_2nd, trans_p%leg,       &
-     &       band_p_poisson, ipol, rj_fld)
+          call pressure_4_sph_mhd(sph%sph_rj, fl_prop1, r_2nd,          &
+     &        trans_p%leg, band_p_poisson, ipol, rj_fld)
         end if
       end if
 !
@@ -98,7 +99,8 @@
      &     (sph, comms_sph, trans_p, ipol, rj_fld, WK%trns_MHD)
 !
         if (iflag_debug.eq.1) write(*,*) 'cal_nonlinear_pole_MHD'
-        call cal_nonlinear_pole_MHD(sph%sph_rtp,                        &
+        call cal_nonlinear_pole_MHD                                     &
+     &     (sph%sph_rtp, fl_prop1, cd_prop1, ht_prop1, cp_prop1,        &
      &      WK%trns_MHD%f_trns, WK%trns_MHD%b_trns,                     &
      &      WK%trns_MHD%ncomp_rj_2_rtp, WK%trns_MHD%ncomp_rtp_2_rj,     &
      &      WK%trns_MHD%fld_pole, WK%trns_MHD%frc_pole)
@@ -134,8 +136,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine pressure_4_sph_mhd                                     &
-     &         (sph_rj, r_2nd, leg, band_p_poisson, ipol, rj_fld)
+      subroutine pressure_4_sph_mhd(sph_rj, fl_prop, r_2nd,             &
+     &          leg, band_p_poisson, ipol, rj_fld)
 !
       use m_boundary_params_sph_MHD
       use cal_sol_sph_fluid_crank
@@ -146,6 +148,7 @@
       use const_sph_radial_grad
       use cal_sph_rotation_of_SGS
 !
+      type(fluid_property), intent(in) :: fl_prop
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(legendre_4_sph_trans), intent(in) :: leg
@@ -168,7 +171,7 @@
       call s_const_radial_forces_on_bc                                  &
      &   (sph_rj, leg%g_sph_rj, ipol, rj_fld)
 !
-      call sum_div_of_forces(ipol, rj_fld)
+      call sum_div_of_forces(fl_prop, ipol, rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_pressure_by_div_v'
       call cal_sol_pressure_by_div_v                                    &
@@ -176,8 +179,9 @@
 !
       if(ipol%i_press_grad .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'const_pressure_gradient'
-        call const_pressure_gradient(sph_rj, r_2nd, sph_bc_U,           &
-     &      leg%g_sph_rj, ipol%i_press, ipol%i_press_grad, rj_fld)
+        call const_pressure_gradient                                    &
+     &     (sph_rj, r_2nd, sph_bc_U, leg%g_sph_rj, fl_prop%coef_press,  &
+     &      ipol%i_press, ipol%i_press_grad, rj_fld)
       end if
 !
       end subroutine pressure_4_sph_mhd
@@ -216,15 +220,18 @@
 !
 !      Evaluate fields for output in grid space
       if (iflag_debug.eq.1) write(*,*) 's_cal_energy_flux_rtp'
-      call s_cal_energy_flux_rtp(sph%sph_rtp, trns_MHD%f_trns,          &
-     &    trns_snap%b_trns, trns_snap%f_trns, trns_MHD%ncomp_rtp_2_rj,  &
-     &    trns_snap%ncomp_rj_2_rtp, trns_snap%ncomp_rtp_2_rj,           &
-     &    trns_MHD%frc_rtp, trns_snap%fld_rtp, trns_snap%frc_rtp)
+      call s_cal_energy_flux_rtp                                        &
+     &   (sph%sph_rtp, fl_prop1, cd_prop1, ref_param_T1, ref_param_C1,  &
+     &    trns_MHD%f_trns, trns_snap%b_trns, trns_snap%f_trns,          &
+     &    trns_MHD%ncomp_rtp_2_rj, trns_snap%ncomp_rj_2_rtp,            &
+     &    trns_snap%ncomp_rtp_2_rj, trns_MHD%frc_rtp,                   &
+     &    trns_snap%fld_rtp, trns_snap%frc_rtp)
 !
 !      Work of SGS terms
       if(iflag_SGS_model .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'SGS_fluxes_for_snapshot'
-        call SGS_fluxes_for_snapshot(sph%sph_rtp, trns_MHD%b_trns,      &
+        call SGS_fluxes_for_snapshot                                    &
+     &     (sph%sph_rtp, fl_prop1, trns_MHD%b_trns,                     &
      &      trns_SGS%f_trns, trns_snap%b_trns, trns_snap%f_trns,        &
      &      trns_MHD%ncomp_rj_2_rtp, trns_SGS%ncomp_rtp_2_rj,           &
      &      trns_snap%ncomp_rj_2_rtp, trns_snap%ncomp_rtp_2_rj,         &

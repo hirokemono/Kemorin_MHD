@@ -4,8 +4,8 @@
 !      Written by H. Matsui on March, 2006
 !
 !!      subroutine cal_velo_co_lumped_crank                             &
-!!     &         (i_velo, nod_comm, node, ele, fluid, Vnod_bcs, nod_fld,&
-!!     &          iphys_ele, fld_ele1, jac_3d, rhs_tbl,                 &
+!!     &         (i_velo, nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,&
+!!     &          nod_fld, iphys_ele, fld_ele1, jac_3d, rhs_tbl,        &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl)
 !!      subroutine cal_magne_co_lumped_crank                            &
 !!     &         (i_magne, nod_comm, node, ele, nod_fld,                &
@@ -40,6 +40,7 @@
       use m_t_int_parameter
       use m_t_step_parameter
 !
+      use t_physical_property
       use t_comm_table
       use t_geometry_data_MHD
       use t_geometry_data
@@ -60,8 +61,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_velo_co_lumped_crank                               &
-     &         (i_velo, nod_comm, node, ele, fluid, Vnod_bcs, nod_fld,  &
-     &          iphys_ele, fld_ele1, jac_3d, rhs_tbl,                   &
+     &         (i_velo, nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,  &
+     &          nod_fld, iphys_ele, fld_ele1, jac_3d, rhs_tbl,          &
      &          mhd_fem_wk, fem_wk, f_l, f_nl)
 !
       use int_vol_coriolis_term
@@ -75,6 +76,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
+      type(fluid_property), intent(in) :: fl_prop
       type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
       type(phys_data), intent(in) :: nod_fld
       type(phys_address), intent(in) :: iphys_ele
@@ -94,7 +96,7 @@
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'int_coriolis_nod_exp'
-      call int_coriolis_nod_exp(node, mhd_fem_wk,                       &
+      call int_coriolis_nod_exp(node, fl_prop, mhd_fem_wk,              &
      &    i_velo, nod_fld, f_l, f_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_velo_4_rhs'

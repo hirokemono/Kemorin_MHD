@@ -64,6 +64,7 @@
      &          istep_pvr, istep_fline, visval)
 !
       use m_control_parameter
+      use m_physical_property
       use m_geometry_data_MHD
       use m_node_phys_data
       use m_element_phys_data
@@ -122,10 +123,15 @@
 !
 !     ---- magnetic field update
 !
-      if (iflag_4_ref_temp .ne. id_no_ref_temp) then
+      if (ref_param_T1%iflag_reference .ne. id_no_ref_temp) then
         if (iflag_debug.eq.1)  write(*,*) 'set_2_perturbation_temp'
         call subtract_2_nod_scalars(nod_fld1,                           &
      &      iphys%i_temp, iphys%i_ref_t, iphys%i_par_temp)
+      end if
+      if (ref_param_C1%iflag_reference .ne. id_no_ref_temp) then
+        if (iflag_debug.eq.1)  write(*,*) 'set_2_perturbation_comp'
+        call subtract_2_nod_scalars(nod_fld1,                           &
+     &      iphys%i_light, iphys%i_ref_c, iphys%i_par_light)
       end if
 !
 !     ---------------------
@@ -222,6 +228,7 @@
       subroutine lead_specital_SGS
 !
       use m_constants
+      use m_physical_property
       use m_phys_constants
       use m_phys_labels
       use m_geometry_data_MHD
@@ -270,7 +277,7 @@
         call cal_terms_4_momentum(iphys%i_SGS_div_m_flux,               &
      &      ifld_diff%i_mom_flux, ifld_diff%i_lorentz,                  &
      &      mesh1%nod_comm, mesh1%node, mesh1%ele, ele_mesh1%surf,      &
-     &      MHD_mesh1%fluid, group1%surf_grp,                           &
+     &      group1%surf_grp, MHD_mesh1%fluid, fl_prop1, cd_prop1,       &
      &      sf1_bcs%Vsf_bcs, sf1_bcs%Bsf_bcs, iphys,                    &
      &      iphys_ele, ak_MHD, jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1,   &
      &      FEM1_elen, diff_coefs, mhd_fem1_wk, fem1_wk, surf1_wk,      &
@@ -303,9 +310,9 @@
         call cal_sgs_uxb_2_monitor                                      &
      &     (icomp_sgs%i_induction, iphys_elediff%i_velo,                &
      &     mesh1%nod_comm, mesh1%node, mesh1%ele, MHD_mesh1%conduct,    &
-     &     iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen,  &
-     &     filtering1, sgs_coefs, wk_filter1, mhd_fem1_wk, fem1_wk,     &
-     &     f1_l, f1_nl, nod_fld1)
+     &     cd_prop1, iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,   &
+     &     FEM1_elen, filtering1, sgs_coefs, wk_filter1,                &
+     &     mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
 
       end if
 !

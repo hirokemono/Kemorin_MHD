@@ -10,11 +10,12 @@
 !!@verbatim
 !!      subroutine init_sum_coriolis_rlm(l_truncation, sph_rlm, leg)
 !!      subroutine sum_coriolis_rlm(ncomp_trans, sph_rlm, comm_rlm,     &
-!!     &          omega_sph, trns_MHD, leg, n_WR, WR)
-!!      subroutine copy_coriolis_terms_rlm                              &
-!!     &         (ncomp_trans, sph_rlm, comm_rlm, trns_MHD, n_WS, WS)
+!!     &          fl_prop, omega_sph, trns_MHD, leg, n_WR, WR)
+!!      subroutine copy_coriolis_terms_rlm(ncomp_trans,                 &
+!!     &          sph_rlm, comm_rlm, fl_prop, trns_MHD, n_WS, WS)
 !!        type(sph_rlm_grid), intent(in)  :: sph_rlm
 !!        type(sph_comm_tbl), intent(inout) :: comm_rlm
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(sph_rotation), intent(in) :: omega_sph
 !!        type(address_4_sph_trans), intent(in) :: trns_MHD
 !!        type(legendre_4_sph_trans), intent(in) :: leg
@@ -27,13 +28,14 @@
       use m_constants
       use m_machine_parameter
       use m_control_parameter
-      use m_physical_property
 !
       use t_spheric_rlm_data
       use t_sph_trans_comm_tbl
       use t_poloidal_rotation
       use t_addresses_sph_transform
       use t_schmidt_poly_on_rtm
+      use t_physical_property
+
 !
       implicit none
 !
@@ -89,8 +91,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sum_coriolis_rlm(ncomp_trans, sph_rlm, comm_rlm,       &
-     &          omega_sph, trns_MHD, leg, n_WR, WR)
+     &          fl_prop, omega_sph, trns_MHD, leg, n_WR, WR)
 !
+      use t_physical_property
       use t_boundary_params_sph_MHD
       use m_boundary_params_sph_MHD
       use m_coriolis_terms_rlm
@@ -98,6 +101,7 @@
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rlm
+      type(fluid_property), intent(in) :: fl_prop
       type(sph_rotation), intent(in) :: omega_sph
       type(address_4_sph_trans), intent(in) :: trns_MHD 
       type(legendre_4_sph_trans), intent(in) :: leg
@@ -106,41 +110,42 @@
       real(kind = kreal), intent(in) :: WR(n_WR)
 !
 !
-      if( iflag_4_coriolis .eq. id_turn_OFF) return
+      if(fl_prop%iflag_4_coriolis .eq. id_turn_OFF) return
 !
       call sum_rot_coriolis_rlm_10(trns_MHD%b_trns,                     &
      &    sph_rlm%nnod_rlm, sph_rlm%nidx_rlm, sph_rlm%a_r_1d_rlm_r,     &
-     &    leg%g_sph_rlm, omega_sph%ws_rlm, ncomp_trans,                 &
-     &    n_WR, comm_rlm%irev_sr, WR)
+     &    leg%g_sph_rlm, omega_sph%ws_rlm, fl_prop%coef_cor,            &
+     &    ncomp_trans, n_WR, comm_rlm%irev_sr, WR)
 !
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call inner_core_rot_z_coriolis_rlm                              &
      &     (trns_MHD%b_trns, sph_rlm%nnod_rlm, sph_rlm%nidx_rlm,        &
-     &      sph_rlm%radius_1d_rlm_r, omega_sph%ws_rlm, ncomp_trans,     &
-     &      n_WR, comm_rlm%irev_sr, WR)
+     &      sph_rlm%radius_1d_rlm_r, omega_sph%ws_rlm,                  &
+     &      fl_prop%coef_cor, ncomp_trans, n_WR, comm_rlm%irev_sr, WR)
       end if
 !
 !      call sum_div_coriolis_rlm_10                                     &
 !     &   (trns_MHD%b_trns, sph_rlm%nnod_rlm, sph_rlm%nidx_rlm,         &
 !     &    sph_rlm%idx_gl_1d_rlm_j, sph_rlm%a_r_1d_rlm_r,               &
-!     &    omega_sph%ws_rlm, ncomp_trans, n_WR, comm_rlm%irev_sr, WR)
+!     &    omega_sph%ws_rlm, fl_prop%coef_cor, ncomp_trans,             &
+!     &    n_WR, comm_rlm%irev_sr, WR)
 !      call sum_r_coriolis_bc_rlm_10                                    &
 !     &   (trns_MHD%b_trns, sph_rlm%nnod_rlm, sph_rlm%nidx_rlm,         &
 !     &    sph_rlm%idx_gl_1d_rlm_j, sph_rlm%a_r_1d_rlm_r,               &
-!     &    omega_sph%ws_rlm, ncomp_trans, kr_in_U_rlm, n_WR,            &
-!     &    comm_rlm%irev_sr, WR, d_cor_in_rlm)
+!     &    omega_sph%ws_rlm, fl_prop%coef_cor, ncomp_trans,             &
+!     &    kr_in_U_rlm, n_WR, comm_rlm%irev_sr, WR, d_cor_in_rlm)
 !      call sum_r_coriolis_bc_rlm_10                                    &
 !     &   (trns_MHD%b_trns, sph_rlm%nnod_rlm, sph_rlm%nidx_rlm,         &
 !     &    sph_rlm%idx_gl_1d_rlm_j, sph_rlm%a_r_1d_rlm_r,               &
-!     &    omega_sph%ws_rlm, ncomp_trans, kr_out_U_rlm, n_WR,           &
-!     &    comm_rlm%irev_sr, WR, d_cor_out_rlm)
+!     &    omega_sph%ws_rlm, fl_prop%coef_cor, ncomp_trans,             &
+!     &    kr_out_U_rlm, n_WR, comm_rlm%irev_sr, WR, d_cor_out_rlm)
 !
       end subroutine sum_coriolis_rlm
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_coriolis_terms_rlm                                &
-     &         (ncomp_trans, sph_rlm, comm_rlm, trns_MHD, n_WS, WS)
+      subroutine copy_coriolis_terms_rlm(ncomp_trans,                   &
+     &          sph_rlm, comm_rlm, fl_prop, trns_MHD, n_WS, WS)
 !
       use m_sph_communicators
       use m_sel_spherical_SRs
@@ -149,13 +154,14 @@
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rlm
+      type(fluid_property), intent(in) :: fl_prop
       type(address_4_sph_trans), intent(in) :: trns_MHD
 !
       integer(kind = kint), intent(in) :: ncomp_trans, n_WS
       real(kind = kreal), intent(inout) :: WS(n_WS)
 !
 !
-      if( iflag_4_coriolis .eq. id_turn_OFF) return
+      if(fl_prop%iflag_4_coriolis .eq. id_turn_OFF) return
 !
       call sel_calypso_to_send_scalar                                   &
      &   (ncomp_trans, sph_rlm%nnod_rlm, n_WS,                          &

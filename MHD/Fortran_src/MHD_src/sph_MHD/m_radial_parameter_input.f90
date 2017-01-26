@@ -263,14 +263,15 @@
       integer(kind = kint), intent(inout) :: ncomp
 !
 !
-      if(    cmp_no_case(field_name, fhd_K_viscosity)            &
-     &  .or. cmp_no_case(field_name, fhd_T_diffusivity)          &
-     &  .or. cmp_no_case(field_name, fhd_C_diffusivity)          &
-     &  .or. cmp_no_case(field_name, fhd_B_diffusivity)          &
-     &  .or. cmp_no_case(field_name, fhd_ref_density))           &
+      if(    cmp_no_case(field_name, fhd_K_viscosity)                   &
+     &  .or. cmp_no_case(field_name, fhd_T_diffusivity)                 &
+     &  .or. cmp_no_case(field_name, fhd_C_diffusivity)                 &
+     &  .or. cmp_no_case(field_name, fhd_B_diffusivity)                 &
+     &  .or. cmp_no_case(field_name, fhd_ref_density))                  &
      &      ncomp = 3
 !
-      if(    cmp_no_case(field_name, fhd_ref_temp))              &
+      if(    cmp_no_case(field_name, fhd_ref_temp)                      &
+     &  .or. cmp_no_case(field_name, fhd_ref_light))                    &
      &      ncomp = 1
 !
       end subroutine set_num_comp_r_params

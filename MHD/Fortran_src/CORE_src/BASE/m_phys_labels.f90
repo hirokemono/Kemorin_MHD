@@ -398,6 +398,10 @@
 !!         @f$  C - C_{0} @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_part_light = 'parturbation_composition'
+!>        Field label for reference composition
+!!         @f$  C_{0} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_ref_light =  'reference_composition'
 !
 !>        Field label for entropy
 !!         @f$ S @f$
@@ -767,6 +771,14 @@
 !>        Field label for gradient of @f$ \tilde{C} @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_grad_composit = 'grad_composition'
+!>        Field label for gradient of perturbation of composition
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_par_light = 'grad_part_composition'
+!>        Field label for gradient of reference temperature
+!!         @f$  \partial C_{0} / dz@f$
+!>         or @f$  \partial C_{0} / dr@f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_ref_light = 'grad_reference_composition'
 !
 !  wider filtered field
 !

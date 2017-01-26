@@ -65,6 +65,7 @@
 !
 !>      Structure of reference temperature
       type(reference_temperature), save :: ref_temp1
-!ref_temp1%t_rj
+!>      Structure of reference temperature
+      type(reference_temperature), save :: ref_comp1
 !
       end module m_sph_spectr_data

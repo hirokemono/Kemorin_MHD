@@ -4,13 +4,13 @@
 !     Written by H. Matsui on June, 2005
 !
 !!      subroutine cal_terms_4_heat(i_field, iak_diff_hf, ak_d_temp,    &
-!!     &          nod_comm, node, ele, surf, fluid, sf_grp,             &
+!!     &          nod_comm, node, ele, surf, fluid, sf_grp, property,   &
 !!     &          Tnod_bcs, Tsf_bcs, iphys, iphys_ele, ele_fld,         &
 !!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,   &
 !!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_thermal_diffusion                                &
 !!     &         (iak_diff_hf, iak_diff_t, ak_d_temp,                   &
-!!     &          nod_comm, node, ele, surf, fluid, sf_grp,             &
+!!     &          nod_comm, node, ele, surf, fluid, sf_grp, property,   &
 !!     &          Tnod_bcs, Tsf_bcs, iphys, jac_3d, jac_sf_grp,         &
 !!     &          rhs_tbl, FEM_elens, diff_coefs,                       &
 !!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
@@ -18,6 +18,7 @@
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
+!!        type(scalar_property), intent(in) :: property
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(nodal_bcs_4_scalar_type), intent(in) :: Tnod_bcs
 !!        type(scaler_surf_bc_type), intent(in) :: Tsf_bcs
@@ -43,6 +44,7 @@
       use m_control_parameter
       use m_phys_constants
 !
+      use t_physical_property
       use t_geometry_data_MHD
       use t_geometry_data
       use t_surface_data
@@ -76,7 +78,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_terms_4_heat(i_field, iak_diff_hf, ak_d_temp,      &
-     &          nod_comm, node, ele, surf, fluid, sf_grp,               &
+     &          nod_comm, node, ele, surf, fluid, sf_grp, property,     &
      &          Tnod_bcs, Tsf_bcs, iphys, iphys_ele, ele_fld,           &
      &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,     &
      &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
@@ -88,6 +90,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(scalar_property), intent(in) :: property
       type(nodal_bcs_4_scalar_type), intent(in) :: Tnod_bcs
       type(scaler_surf_bc_type), intent(in) :: Tsf_bcs
       type(phys_address), intent(in) :: iphys
@@ -114,19 +117,20 @@
 !
       if (iflag_temp_supg .gt. id_turn_OFF) then
        call int_vol_ene_monitor_upw(i_field, iak_diff_hf,               &
-     &     node, ele, fluid, iphys, nod_fld, iphys_ele, ele_fld,        &
-     &     jac_3d, rhs_tbl, FEM_elens, diff_coefs,                      &
+     &     node, ele, fluid, property, iphys, nod_fld,                  &
+     &     iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,  &
      &     mhd_fem_wk, fem_wk, f_nl)
       else
        call int_vol_ene_monitor(i_field, iak_diff_hf,                   &
-     &     node, ele, fluid, iphys, nod_fld, iphys_ele, ele_fld,        &
-     &     jac_3d, rhs_tbl, FEM_elens, diff_coefs,                      &
+     &     node, ele, fluid, property, iphys, nod_fld,                  &
+     &     iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,  &
      &     mhd_fem_wk, fem_wk, f_nl)
       end if
 !
       call int_surf_temp_monitor(i_field, iak_diff_hf, ak_d_temp,       &
-     &    node, ele, surf, sf_grp, iphys, nod_fld, Tsf_bcs, jac_sf_grp, &
-     &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, surf_wk, f_l, f_nl)
+     &    node, ele, surf, sf_grp, property, iphys, nod_fld, Tsf_bcs,   &
+     &    jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,                   &
+     &    fem_wk, surf_wk, f_l, f_nl)
 !
       call cal_t_evo_4_scalar(iflag_temp_supg,                          &
      &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl, nod_comm,      &
@@ -151,7 +155,7 @@
 !
       subroutine cal_thermal_diffusion                                  &
      &         (iak_diff_hf, iak_diff_t, ak_d_temp,                     &
-     &          nod_comm, node, ele, surf, fluid, sf_grp,               &
+     &          nod_comm, node, ele, surf, fluid, sf_grp, property,     &
      &          Tnod_bcs, Tsf_bcs, iphys, jac_3d, jac_sf_grp,           &
      &          rhs_tbl, FEM_elens, diff_coefs,                         &
      &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
@@ -165,6 +169,7 @@
       type(phys_address), intent(in) :: iphys
       type(surface_group_data), intent(in) :: sf_grp
       type(field_geometry_data), intent(in) :: fluid
+      type(scalar_property), intent(in) :: property
       type(nodal_bcs_4_scalar_type), intent(in) :: Tnod_bcs
       type(scaler_surf_bc_type), intent(in) :: Tsf_bcs
       type(jacobians_3d), intent(in) :: jac_3d
@@ -191,8 +196,9 @@
 !
       call int_surf_temp_monitor                                        &
      &   (iphys%i_t_diffuse, iak_diff_hf, ak_d_temp,                    &
-     &    node, ele, surf, sf_grp, iphys, nod_fld, Tsf_bcs, jac_sf_grp, &
-     &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, surf_wk, f_l, f_nl)
+     &    node, ele, surf, sf_grp, property, iphys, nod_fld, Tsf_bcs,   &
+     &    jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,                   &
+     &    fem_wk, surf_wk, f_l, f_nl)
 !
       call set_ff_nl_smp_2_ff(n_scalar, node, rhs_tbl, f_l, f_nl)
 !

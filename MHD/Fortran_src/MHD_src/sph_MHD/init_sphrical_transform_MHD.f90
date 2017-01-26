@@ -63,6 +63,7 @@
      &          sph, comms_sph, omega_sph, trans_p, WK, rj_fld)
 !
       use m_control_parameter
+      use m_physical_property
       use set_address_sph_trans_MHD
       use set_address_sph_trans_SGS
       use set_address_sph_trans_snap
@@ -241,6 +242,7 @@
      &          ncomp_max_trans, nvector_max_trans, nscalar_max_trans,  &
      &          rj_fld, trns_MHD, MHD_mul_FFTW)
 !
+      use m_physical_property
       use sph_transforms_4_MHD
 !
       type(sph_grids), intent(in) :: sph
@@ -279,9 +281,9 @@
      &      sph%sph_rtm, sph%sph_rlm, trans_p%leg, trans_p%idx_trns)
 !
         starttime = MPI_WTIME()
-        call sph_back_trans_4_MHD(sph, comms_sph, omega_sph,            &
+        call sph_back_trans_4_MHD(sph, comms_sph, fl_prop1, omega_sph,  &
      &      trans_p, ipol, rj_fld, trns_MHD, MHD_mul_FFTW)
-        call sph_forward_trans_4_MHD(sph, comms_sph, trans_p,           &
+        call sph_forward_trans_4_MHD(sph, comms_sph, fl_prop1, trans_p, &
      &      ipol, trns_MHD, MHD_mul_FFTW, rj_fld)
         endtime(id_legendre_transfer) = MPI_WTIME() - starttime
 !

@@ -7,15 +7,15 @@
 !
 !!      subroutine cal_magnetic_field_pre(icomp_sgs_uxb,                &
 !!     &        iak_diff_b, iak_diff_uxb, ie_dvx, ie_dbx, ak_d_magne,   &
-!!     &        nod_comm, node, ele, surf, conduct, sf_grp,             &
+!!     &        nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,    &
 !!     &        Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,  &
 !!     &        jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,             &
 !!     &        sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,        &
 !!     &        Bmatrix, MG_vector, wk_filter, mhd_fem_wk, fem_wk,      &
 !!     &        surf_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_magnetic_co(iak_diff_b, ak_d_magne,              &
-!!     &          nod_comm, node, ele, surf, conduct,                   &
-!!     &          sf_grp, Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld, &
+!!     &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,  &
+!!     &          Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,         &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
 !!     &          rhs_tbl, FEM_elens, diff_coefs, m_lump,               &
 !!     &          Bmatrix, MG_vector, mhd_fem_wk, fem_wk, surf_wk,      &
@@ -31,6 +31,7 @@
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(field_geometry_data), intent(in) :: conduct
+!!        type(conductive_property), intent(in) :: cd_prop
 !!        type(field_geometry_data), intent(in) :: insulate
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
@@ -67,6 +68,7 @@
       use m_control_parameter
       use m_phys_constants
 !
+      use t_physical_property
       use t_comm_table
       use t_geometry_data_MHD
       use t_geometry_data
@@ -99,7 +101,7 @@
 !
       subroutine cal_magnetic_field_pre(icomp_sgs_uxb,                  &
      &        iak_diff_b, iak_diff_uxb, ie_dvx, ie_dbx, ak_d_magne,     &
-     &        nod_comm, node, ele, surf, conduct, sf_grp,               &
+     &        nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,      &
      &        Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,    &
      &        jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,               &
      &        sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,          &
@@ -125,6 +127,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(field_geometry_data), intent(in) :: conduct
+      type(conductive_property), intent(in) :: cd_prop
       type(surface_group_data), intent(in) :: sf_grp
       type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
       type(velocity_surf_bc_type), intent(in) :: Asf_bcs
@@ -159,8 +162,8 @@
 !
       if ( iflag_SGS_induction .ne. id_SGS_none) then
         call cal_sgs_magne_induction(icomp_sgs_uxb, ie_dvx, ie_dbx,     &
-     &     nod_comm, node, ele, conduct, iphys, iphys_ele, ele_fld,     &
-     &     jac_3d_q, rhs_tbl, FEM_elens, filtering,                     &
+     &     nod_comm, node, ele, conduct, cd_prop, iphys,                &
+     &     iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens, filtering, &
      &     sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,     &
      &     f_l, nod_fld)
       end if
@@ -169,7 +172,8 @@
 !
 ! lead diffusion term
 !
-      if (coef_magne.gt.zero .and. evo_magne%coef_exp.gt.zero) then
+      if (cd_prop%coef_magne .gt. zero                                  &
+     &      .and. evo_magne%coef_exp .gt. zero) then
         call int_vol_vector_diffuse_ele(conduct%istack_ele_fld_smp,     &
      &      node, ele, nod_fld, jac_3d_q, rhs_tbl, FEM_elens,           &
      &      diff_coefs, iak_diff_b, evo_magne%coef_exp, ak_d_magne,     &
@@ -181,12 +185,13 @@
       if (iflag_debug .eq. 0 ) write(*,*) 'coefs_4_time_evolution'
       if (iflag_mag_supg .gt. id_turn_OFF) then
        call int_vol_magne_pre_ele_upm                                   &
-     &    (node, ele, conduct, iphys, nod_fld,                          &
+     &    (node, ele, conduct, cd_prop, iphys, nod_fld,                 &
      &     ele_fld%ntot_phys, ele_fld%d_fld, iphys_ele, iak_diff_uxb,   &
      &     jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,                    &
      &     mhd_fem_wk, fem_wk, f_nl)
       else
-       call int_vol_magne_pre_ele(node, ele, conduct, iphys, nod_fld,   &
+       call int_vol_magne_pre_ele                                       &
+     &    (node, ele, conduct, cd_prop, iphys, nod_fld,                 &
      &     ele_fld%ntot_phys, ele_fld%d_fld, iphys_ele, iak_diff_uxb,   &
      &     jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,                    &
      &     mhd_fem_wk, fem_wk, f_nl)
@@ -214,11 +219,11 @@
      &      iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,           &
      &      diff_coefs, Bmatrix, MG_vector, mhd_fem_wk, fem_wk,         &
      &      f_l, f_nl, nod_fld)
-      else if(evo_magne%iflag_scheme .eq. id_Crank_nicolson_cmass) then 
+      else if(evo_magne%iflag_scheme .eq. id_Crank_nicolson_cmass) then
         call cal_magne_pre_consist_crank                                &
      &     (iphys%i_magne, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,     &
-     &      Bnod_bcs%nod_bc_b, node, ele, conduct, jac_3d_q, rhs_tbl,   &
-     &      FEM_elens, diff_coefs, Bmatrix, MG_vector,                  &
+     &      Bnod_bcs%nod_bc_b, node, ele, conduct, cd_prop, jac_3d_q,   &
+     &      rhs_tbl, FEM_elens, diff_coefs, Bmatrix, MG_vector,         &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
@@ -232,8 +237,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_magnetic_co(iak_diff_b, ak_d_magne,                &
-     &          nod_comm, node, ele, surf, conduct,                     &
-     &          sf_grp, Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,   &
+     &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,    &
+     &          Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,           &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
      &          rhs_tbl, FEM_elens, diff_coefs, m_lump,                 &
      &          Bmatrix, MG_vector, mhd_fem_wk, fem_wk, surf_wk,        &
@@ -253,6 +258,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(field_geometry_data), intent(in) :: conduct
+      type(conductive_property), intent(in) :: cd_prop
       type(nodal_bcs_4_induction_type), intent(in) :: Bnod_bcs
       type(potential_surf_bc_type), intent(in) :: Fsf_bcs
       type(phys_address), intent(in) :: iphys
@@ -303,9 +309,10 @@
       if (   iflag_implicit_correct.eq.3                                &
      &  .or. iflag_implicit_correct.eq.4) then
         call cal_magnetic_co_imp(iphys%i_magne, iak_diff_b, ak_d_magne, &
-     &      nod_comm, node, ele, conduct, Bnod_bcs, iphys_ele, ele_fld, &
-     &      jac_3d_q, rhs_tbl, FEM_elens, diff_coefs, m_lump,           &
-     &      Bmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      nod_comm, node, ele, conduct, cd_prop, Bnod_bcs,            &
+     &      iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,           &
+     &      diff_coefs, m_lump, Bmatrix, MG_vector,                     &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else
         call cal_magnetic_co_exp(iphys%i_magne, nod_comm, node, ele,    &
      &      jac_3d_q, rhs_tbl, m_lump, mhd_fem_wk, fem_wk,              &

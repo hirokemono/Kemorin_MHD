@@ -7,9 +7,10 @@
 !>@brief Add fields in control list for MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine add_field_name_4_sph_mhd(field_ctl)
+!!      subroutine add_field_name_4_sph_mhd(fl_prop, field_ctl)
 !!      subroutine add_field_name_4_SGS(field_ctl)
-!!      subroutine add_field_name_dynamic_SGS(field_ctl)
+!!      subroutine add_field_name_dynamic_SGS(fl_prop, field_ctl)
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
 !!@endverbatim
 !
@@ -20,6 +21,7 @@
       use m_control_parameter
       use m_phys_labels
       use t_read_control_arrays
+      use t_physical_property
 !
       implicit  none
 !
@@ -29,10 +31,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_field_name_4_sph_mhd(field_ctl)
+      subroutine add_field_name_4_sph_mhd(fl_prop, field_ctl)
 !
       use add_nodal_fields_ctl
 !
+      type(fluid_property), intent(in) :: fl_prop
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !
@@ -47,7 +50,7 @@
       end if
 !   magnetic field flag
       if(evo_magne%iflag_scheme .gt. id_no_evolution                    &
-     &     .or. iflag_4_lorentz .gt. id_turn_OFF) then
+     &     .or. fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
         call add_phys_name_ctl(fhd_magne, field_ctl)
         call add_phys_name_ctl(fhd_current, field_ctl)
       end if
@@ -62,6 +65,8 @@
 !   gradient of dummy scalar flag
       if(evo_comp%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_ctl(fhd_grad_composit, field_ctl)
+        call add_phys_name_ctl(fhd_part_light, field_ctl)
+        call add_phys_name_ctl(fhd_grad_par_light, field_ctl)
       end if
 !
 !
@@ -77,31 +82,31 @@
         call add_phys_name_ctl(fhd_div_inertia, field_ctl)
 !
 !   Coriolis flag
-        if(iflag_4_coriolis .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_coriolis .gt. id_turn_OFF) then
           call add_phys_name_ctl(fhd_Coriolis, field_ctl)
           call add_phys_name_ctl(fhd_rot_Coriolis, field_ctl)
           call add_phys_name_ctl(fhd_div_Coriolis, field_ctl)
         end if
 !   Lorentz flag
-        if(iflag_4_lorentz .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
           call add_phys_name_ctl(fhd_Lorentz, field_ctl)
           call add_phys_name_ctl(fhd_rot_Lorentz, field_ctl)
           call add_phys_name_ctl(fhd_div_Lorentz, field_ctl)
         end if
 !   buoyancy flag
-        if(iflag_4_gravity .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
           call add_phys_name_ctl(fhd_buoyancy, field_ctl)
           call add_phys_name_ctl(fhd_rot_buoyancy, field_ctl)
           call add_phys_name_ctl(fhd_div_buoyancy, field_ctl)
         end if
 !   compositional buoyancy flag
-        if(iflag_4_composit_buo .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
           call add_phys_name_ctl(fhd_comp_buo, field_ctl)
           call add_phys_name_ctl(fhd_div_comp_buo, field_ctl)
           call add_phys_name_ctl(fhd_rot_comp_buo, field_ctl)
         end if
 !   filtered buoyancy flag
-        if(iflag_4_filter_gravity .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_filter_gravity .gt. id_turn_OFF) then
           call add_phys_name_ctl(fhd_filter_buo, field_ctl)
           call add_phys_name_ctl(fhd_div_filter_buo, field_ctl)
           call add_phys_name_ctl(fhd_rot_filter_buo, field_ctl)
@@ -187,10 +192,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_field_name_dynamic_SGS(field_ctl)
+      subroutine add_field_name_dynamic_SGS(fl_prop, field_ctl)
 !
       use add_nodal_fields_ctl
 !
+      type(fluid_property), intent(in) :: fl_prop
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !
@@ -239,12 +245,12 @@
       if(iflag_SGS_gravity .gt. id_SGS_none) then
         call add_phys_name_ctl(fhd_Reynolds_work, field_ctl)
 !
-        if(iflag_4_gravity .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
           call add_phys_name_ctl(fhd_SGS_buo_flux, field_ctl)
           call add_phys_name_ctl(fhd_Csim_SGS_buoyancy, field_ctl)
         end if
 !
-        if(iflag_4_composit_buo .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
           call add_phys_name_ctl(fhd_SGS_comp_buo_flux, field_ctl)
           call add_phys_name_ctl(fhd_Csim_SGS_comp_buo, field_ctl)
         end if

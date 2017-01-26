@@ -9,12 +9,12 @@
 !        modified by H. Matsui on Aug., 2007
 !
 !!      subroutine int_vol_magne_pre_ele                                &
-!!     &         (node, ele, conduct, iphys, nod_fld,                   &
+!!     &         (node, ele, conduct, cd_prop, iphys, nod_fld,          &
 !!     &          ncomp_ele, d_ele, iphys_ele, iak_diff_uxb,            &
 !!     &          jac_3d, rhs_tbl, FEM_elens, diff_coefs,               &
 !!     &          mhd_fem_wk, fem_wk, f_nl)
 !!      subroutine int_vol_magne_pre_ele_upm                            &
-!!     &         (node, ele, conduct, iphys, nod_fld,                   &
+!!     &         (node, ele, conduct, cd_prop, iphys, nod_fld,          &
 !!     &          ncomp_ele, d_ele, iphys_ele, iak_diff_uxb,            &
 !!     &          jac_3d, rhs_tbl, FEM_elens, diff_coefs,               &
 !!     &          mhd_fem_wk, fem_wk, f_nl)
@@ -23,6 +23,7 @@
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(field_geometry_data), intent(in) :: conduct
+!!        type(conductive_property), intent(in) :: cd_prop
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -39,8 +40,8 @@
       use m_machine_parameter
       use m_phys_constants
       use m_fem_gauss_int_coefs
-      use m_physical_property
 !
+      use t_physical_property
       use t_geometry_data_MHD
       use t_geometry_data
       use t_phys_data
@@ -63,7 +64,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_magne_pre_ele                                  &
-     &         (node, ele, conduct, iphys, nod_fld,                     &
+     &         (node, ele, conduct, cd_prop, iphys, nod_fld,            &
      &          ncomp_ele, d_ele, iphys_ele, iak_diff_uxb,              &
      &          jac_3d, rhs_tbl, FEM_elens, diff_coefs,                 &
      &          mhd_fem_wk, fem_wk, f_nl)
@@ -82,6 +83,7 @@
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
       type(field_geometry_data), intent(in) :: conduct
+      type(conductive_property), intent(in) :: cd_prop
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -113,13 +115,14 @@
      &      k2, iphys%i_magne, mhd_fem_wk%magne_1)
 !
 !$omp parallel
-        call add_const_to_vector_smp(ele%numele,                        &
-     &      d_ele(1,iphys_ele%i_magne), ex_magne, fem_wk%vector_1)
+        call add_const_to_vector_smp                                    &
+     &     (ele%numele, d_ele(1,iphys_ele%i_magne),                     &
+     &      cd_prop%ex_magne, fem_wk%vector_1)
 !$omp end parallel
 !
         call fem_skv_induction_galerkin                                 &
      &     (conduct%istack_ele_fld_smp, num_int, k2,                    &
-     &      coef_induct, mhd_fem_wk%velo_1, mhd_fem_wk%magne_1,         &
+     &      cd_prop%coef_induct, mhd_fem_wk%velo_1, mhd_fem_wk%magne_1, &
      &      d_ele(1,iphys_ele%i_velo),  fem_wk%vector_1,                &
      &      ele, jac_3d, fem_wk%sk6)
 !
@@ -127,7 +130,7 @@
      &    .and. iflag_commute_induction .eq. id_SGS_commute_ON) then
            call SGS_const_induct_each_ele(node, ele, nod_fld,           &
      &         k2, iphys%i_magne, iphys%i_velo, iphys%i_SGS_induct_t,   &
-     &         coef_induct, mhd_fem_wk%sgs_v1, fem_wk%vector_1)
+     &         cd_prop%coef_induct, mhd_fem_wk%sgs_v1, fem_wk%vector_1)
            call fem_skv_div_sgs_asym_tsr                                &
      &        (conduct%istack_ele_fld_smp, num_int, k2, ifilter_final,  &
      &         diff_coefs%num_field, iak_diff_uxb, diff_coefs%ak,       &
@@ -135,7 +138,8 @@
      &         fem_wk%vector_1, fem_wk%sk6)
         else if (iflag_SGS_induction .ne. id_SGS_none) then
           call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,       &
-     &        iphys%i_SGS_induct_t, coef_induct, mhd_fem_wk%sgs_v1)
+     &        iphys%i_SGS_induct_t, cd_prop%coef_induct,                &
+     &        mhd_fem_wk%sgs_v1)
           call fem_skv_div_asym_tsr                                     &
      &       (conduct%istack_ele_fld_smp, num_int, k2,                  &
      &        ele, jac_3d, mhd_fem_wk%sgs_v1, fem_wk%sk6)
@@ -150,7 +154,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_magne_pre_ele_upm                              &
-     &         (node, ele, conduct, iphys, nod_fld,                     &
+     &         (node, ele, conduct, cd_prop, iphys, nod_fld,            &
      &          ncomp_ele, d_ele, iphys_ele, iak_diff_uxb,              &
      &          jac_3d, rhs_tbl, FEM_elens, diff_coefs,                 &
      &          mhd_fem_wk, fem_wk, f_nl)
@@ -170,6 +174,7 @@
       type(phys_data), intent(in) :: nod_fld
       type(field_geometry_data), intent(in) :: conduct
       type(jacobians_3d), intent(in) :: jac_3d
+      type(conductive_property), intent(in) :: cd_prop
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
@@ -199,13 +204,14 @@
      &      k2, iphys%i_magne, mhd_fem_wk%magne_1)
 !
 !$omp parallel
-        call add_const_to_vector_smp(ele%numele,                        &
-     &      d_ele(1,iphys_ele%i_magne), ex_magne, fem_wk%vector_1)
+        call add_const_to_vector_smp                                    &
+     &     (ele%numele, d_ele(1,iphys_ele%i_magne),                     &
+     &      cd_prop%ex_magne, fem_wk%vector_1)
 !$omp end parallel
 !
         call fem_skv_induction_upmagne                                  &
      &     (conduct%istack_ele_fld_smp, num_int, k2,                    &
-     &      coef_induct, mhd_fem_wk%velo_1, mhd_fem_wk%magne_1,         &
+     &      cd_prop%coef_induct, mhd_fem_wk%velo_1, mhd_fem_wk%magne_1, &
      &      d_ele(1,iphys_ele%i_velo), fem_wk%vector_1,                 &
      &      d_ele(1,iphys_ele%i_magne), ele, jac_3d, fem_wk%sk6)
 !
@@ -213,7 +219,7 @@
      &    .and. iflag_commute_induction .eq. id_SGS_commute_ON) then
           call SGS_const_induct_each_ele(node, ele, nod_fld,            &
      &        k2, iphys%i_magne, iphys%i_velo, iphys%i_SGS_induct_t,    &
-     &        coef_induct, mhd_fem_wk%sgs_v1, fem_wk%vector_1)
+     &        cd_prop%coef_induct, mhd_fem_wk%sgs_v1, fem_wk%vector_1)
           call fem_skv_div_sgs_asym_t_upwind                            &
      &       (conduct%istack_ele_fld_smp, num_int, k2, ifilter_final,   &
      &        diff_coefs%num_field, iak_diff_uxb, diff_coefs%ak,        &
@@ -221,7 +227,8 @@
      &        mhd_fem_wk%sgs_v1, fem_wk%vector_1, fem_wk%sk6)
         else if (iflag_SGS_induction .ne. id_SGS_none) then
           call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,       &
-     &        iphys%i_SGS_induct_t, coef_induct, mhd_fem_wk%sgs_v1)
+     &        iphys%i_SGS_induct_t, cd_prop%coef_induct,                &
+     &        mhd_fem_wk%sgs_v1)
           call fem_skv_div_as_tsr_upw                                   &
      &       (conduct%istack_ele_fld_smp, num_int, k2,                  &
      &        d_ele(1,iphys_ele%i_magne), ele, jac_3d,                  &

@@ -58,7 +58,6 @@
 !!************************************************
 !!@endverbatim
 !!
-!!@n @param coef_cor  Coefficient for the Coriolis term
 !
 !
       module m_coriolis_terms_rlm

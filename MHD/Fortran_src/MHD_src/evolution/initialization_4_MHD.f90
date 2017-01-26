@@ -35,6 +35,7 @@
       use calypso_mpi
       use m_machine_parameter
       use m_control_parameter
+      use m_physical_property
       use m_iccg_parameter
       use m_t_step_parameter
       use m_flexible_time_step
@@ -199,15 +200,18 @@
       call s_init_check_delta_t_data(iphys, flex_data)
 !
       if (iflag_debug.eq.1) write(*,*)' set_reference_temp'
-      call set_reference_temp(mesh%node%numnod,                         &
-     &    MHD_mesh%fluid%numnod_fld, MHD_mesh%fluid%inod_fld,           &
-     &    mesh%node%xx, mesh%node%rr, mesh%node%a_r,                    &
-     &    nod_fld%ntot_phys, iphys%i_ref_t, iphys%i_gref_t,             &
-     &    nod_fld%d_fld)
+      call set_reference_temp                                           &
+     &   (ref_param_T1, takepito_T1, mesh%node, MHD_mesh%fluid,         &
+     &    iphys%i_ref_t, iphys%i_gref_t, nod_fld)
+      call set_reference_temp                                           &
+     &   (ref_param_C1, takepito_C1, mesh%node, MHD_mesh%fluid,         &
+      &   iphys%i_ref_c, iphys%i_gref_c, nod_fld)
 !
       if (iflag_debug.eq.1) write(*,*)' set_material_property'
-      call set_material_property(iphys)
-      call init_ele_material_property(mesh%ele%numele)
+      call set_material_property                                        &
+     &   (iphys, ref_param_T1%depth_top, ref_param_T1%depth_bottom)
+      call init_ele_material_property(mesh%ele%numele,                  &
+     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1)
       call define_sgs_components                                        &
      &   (mesh%node%numnod, mesh%ele%numele, layer_tbl,                 &
      &    ifld_sgs, icomp_sgs, wk_sgs1, sgs_coefs, sgs_coefs_nod)
@@ -231,17 +235,22 @@
 !
 !  -------------------------------
 !
-      if (iflag_debug.eq.1) write(*,*)' initial_data_control'
-      call initial_data_control(mesh%node, mesh%ele, MHD_mesh%fluid,    &
-     &    iphys, layer_tbl, wk_sgs1, wk_diff1, sgs_coefs, diff_coefs,   &
-     &    nod_fld)
+      if (iflag_debug.eq.1) write(*,*)' initial_data_control'                 
+      call initial_data_control                                         &
+     &   (ref_param_T1, mesh%node, mesh%ele, MHD_mesh%fluid, iphys,     &
+     &    layer_tbl, wk_sgs1, wk_diff1, sgs_coefs, diff_coefs, nod_fld)
 !
 !  -------------------------------
 !
-      if (iflag_4_ref_temp .ne. id_no_ref_temp) then
+      if (ref_param_T1%iflag_reference .ne. id_no_ref_temp) then
         if (iflag_debug.eq.1) write(*,*)' set_2_perturbation_temp'
         call subtract_2_nod_scalars(nod_fld,                            &
      &      iphys%i_temp, iphys%i_ref_t, iphys%i_par_temp)
+      end if
+      if (ref_param_C1%iflag_reference .ne. id_no_ref_temp) then
+        if (iflag_debug.eq.1) write(*,*)' set_2_perturbation_comp'
+        call subtract_2_nod_scalars(nod_fld,                            &
+     &      iphys%i_light, iphys%i_ref_c, iphys%i_par_light)
       end if
 !
 !  -------------------------------
@@ -283,7 +292,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_data'
       call set_boundary_data(IO_bc, mesh, ele_mesh, MHD_mesh, group,    &
-     &    iphys, nod_fld)
+     &    fl_prop1, iphys, nod_fld)
 !
 !     ---------------------
 !
@@ -304,7 +313,8 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_stability_4_diffuse'
-      call cal_stability_4_diffuse(mesh%ele)
+      call cal_stability_4_diffuse                                      &
+     &   (mesh%ele, fl_prop1, cd_prop1, ht_prop1, cp_prop1)
 ! 
       call deallocate_surf_bc_lists
 !

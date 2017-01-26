@@ -93,7 +93,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd_evo'
       call init_r_infos_sph_mhd_evo(sph_grps1, ipol, sph1,              &
-     &    omega_sph1, ref_temp1, r_2nd, rj_fld1)
+     &    omega_sph1, ref_temp1, ref_comp1, r_2nd, rj_fld1)
 !
 !  -------------------------------
 !
@@ -106,13 +106,14 @@
       if(iflag_SGS_model .gt. 0) then
       if(iflag_debug.gt.0) write(*,*)' init_SGS_model_sph_mhd'
         call init_SGS_model_sph_mhd                                     &
-     &     (sph1, sph_grps1, trns_WK1%dynamic_SPH)
+     &     (sph1, sph_grps1, fl_prop1, trns_WK1%dynamic_SPH)
       end if
 !
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*) 'const_radial_mat_sph_snap'
-      call const_radial_mat_sph_snap(sph1%sph_rj, r_2nd, trans_p1%leg)
+      call const_radial_mat_sph_snap                                    &
+     &   (fl_prop1, sph1%sph_rj, r_2nd, trans_p1%leg)
 !
 !     --------------------- 
 !  set original spectr mesh data for extension of B
@@ -156,7 +157,8 @@
      &    ipol, rj_fld1)
 !
       call sync_temp_by_per_temp_sph                                    &
-     &   (ref_temp1%t_rj, sph1%sph_rj, ipol, idpdr, rj_fld1)
+     &   (ref_param_T1, ref_param_C1, ref_temp1, ref_comp1,             &
+     &    sph1%sph_rj, ipol, idpdr, rj_fld1)
 !
 !* obtain linear terms for starting
 !*
@@ -168,7 +170,7 @@
 !*
       call start_eleps_time(8)
       call nonlinear(sph1, comms_sph1, omega_sph1, r_2nd, trans_p1,     &
-     &    ref_temp1%t_rj, ipol, itor, trns_WK1, rj_fld1)
+     &   ref_temp1, ref_comp1, ipol, itor, trns_WK1, rj_fld1)
       call end_eleps_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=
@@ -176,7 +178,8 @@
       call start_eleps_time(9)
       if(iflag_debug.gt.0) write(*,*) 'trans_per_temp_to_temp_sph'
       call trans_per_temp_to_temp_sph                                   &
-     &   (ref_temp1%t_rj, sph1%sph_rj, ipol, idpdr, rj_fld1)
+     &   (ref_param_T1, ref_param_C1, ref_temp1, ref_comp1,             &
+     &    sph1%sph_rj, ipol, idpdr, rj_fld1)
 !*
       if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
       call s_lead_fields_4_sph_mhd                                      &

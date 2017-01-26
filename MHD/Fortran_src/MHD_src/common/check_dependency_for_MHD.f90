@@ -24,6 +24,7 @@
 !
       use t_phys_data
       use t_phys_address
+      use t_physical_property
 !
       implicit none
 !
@@ -40,6 +41,7 @@
 !
       subroutine set_FEM_MHD_field_data(node, iphys, nod_fld)
 !
+      use m_physical_property
       use t_geometry_data
       use t_FEM_phys_data
       use check_MHD_dependency_by_id
@@ -52,11 +54,11 @@
       if (iflag_debug.ge.1)  write(*,*) 'init_field_address'
       call init_field_address(node%numnod, nod_fld, iphys)
 !
-      call check_field_dependencies(iphys, nod_fld)
+      call check_field_dependencies(fl_prop1, iphys, nod_fld)
       call check_dependencies_by_id(iphys, nod_fld)
       call check_dependence_FEM_MHD_by_id(iphys, nod_fld)
       call check_dependence_FEM_evo(iphys, nod_fld)
-      call check_dependence_4_FEM_SGS(iphys, nod_fld)
+      call check_dependence_4_FEM_SGS(fl_prop1, iphys, nod_fld)
 !
       end subroutine set_FEM_MHD_field_data
 !
@@ -65,6 +67,7 @@
       subroutine set_sph_MHD_sprctr_data                                &
      &         (sph_rj, ipol, idpdr, itor, rj_fld)
 !
+      use m_physical_property
       use t_spheric_rj_data
 !
       use set_sph_phys_address
@@ -78,19 +81,20 @@
       call set_sph_sprctr_data_address                                  &
      &   (sph_rj, ipol, idpdr, itor, rj_fld)
 !
-      call check_field_dependencies(ipol, rj_fld)
+      call check_field_dependencies(fl_prop1, ipol, rj_fld)
       call check_dependencies_by_id(ipol, rj_fld)
       call check_dependence_SPH_MHD_by_id(ipol, rj_fld)
       call check_dependence_SPH_evo(ipol, rj_fld)
-      call check_dependence_4_SPH_SGS(ipol, rj_fld)
+      call check_dependence_4_SPH_SGS(fl_prop1, ipol, rj_fld)
 !
       end subroutine set_sph_MHD_sprctr_data
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_field_dependencies(iphys, fld)
+      subroutine check_field_dependencies(fl_prop, iphys, fld)
 !
+      type(fluid_property), intent(in) :: fl_prop
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: fld
 !
@@ -143,22 +147,22 @@
 !
 !
       if ( evo_velo%iflag_scheme .gt. id_no_evolution) then
-        if ( iflag_4_gravity .gt. id_turn_OFF) then
+        if (fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
           msg = 'Buoyancy needs'
           call check_missing_field_w_msg(fld, msg, iphys%i_temp)
         end if
 !
-        if ( iflag_4_composit_buo .gt. id_turn_OFF) then
+        if (fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
           msg = 'Compositional buoyancy needs'
           call check_missing_field_w_msg(fld, msg, iphys%i_light)
         end if
 !
-        if ( iflag_4_filter_gravity .gt. id_turn_OFF) then
+        if (fl_prop%iflag_4_filter_gravity .gt. id_turn_OFF) then
           msg = 'Filtered buoyancy needs'
           call check_missing_field_w_msg(fld, msg, iphys%i_filter_temp)
         end if
 !
-        if ( iflag_4_lorentz .gt. id_turn_OFF) then
+        if (fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
           msg = 'Lorentz force needs'
           call check_missing_field_w_msg(fld, msg, iphys%i_magne)
         end if
@@ -205,8 +209,9 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_dependence_4_FEM_SGS(iphys, fld)
+      subroutine check_dependence_4_FEM_SGS(fl_prop, iphys, fld)
 !
+      type(fluid_property), intent(in) :: fl_prop
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: fld
 !
@@ -278,19 +283,19 @@
       end if
 !
       if(iflag_SGS_gravity .gt. id_SGS_none) then
-        if(iflag_4_gravity .eq. id_turn_OFF                             &
-     &     .and. iflag_4_composit_buo .eq. id_turn_OFF) then
+        if(fl_prop%iflag_4_gravity .eq. id_turn_OFF                     &
+     &     .and. fl_prop%iflag_4_composit_buo .eq. id_turn_OFF) then
           call calypso_MPI_abort(ierr_fld,                              &
      &       'set one of buoyancy sources')
         end if
-        if(iflag_4_gravity .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
           if(iflag_SGS_inertia.eq.id_SGS_none                           &
      &       .or. iflag_SGS_heat.eq.id_SGS_none) then
             call calypso_MPI_abort(ierr_fld,                            &
      &          'Turn on SGS momentum flux and heat flux')
           end if
         end if
-        if(iflag_4_composit_buo .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
           if(iflag_SGS_inertia.eq.id_SGS_none                           &
      &       .or. iflag_SGS_comp_flux.eq.id_SGS_none) then
               call calypso_MPI_abort(ierr_fld,                          &
@@ -333,8 +338,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_dependence_4_SPH_SGS(iphys, fld)
+      subroutine check_dependence_4_SPH_SGS(fl_prop, iphys, fld)
 !
+      type(fluid_property), intent(in) :: fl_prop
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: fld
 !
@@ -397,19 +403,19 @@
       end if
 !
       if(iflag_SGS_gravity .gt. id_SGS_none) then
-        if(iflag_4_gravity .eq. id_turn_OFF                             &
-     &     .and. iflag_4_composit_buo .eq. id_turn_OFF) then
+        if(fl_prop%iflag_4_gravity .eq. id_turn_OFF                     &
+     &     .and. fl_prop%iflag_4_composit_buo .eq. id_turn_OFF) then
           call calypso_MPI_abort(ierr_fld,                              &
      &       'set one of buoyancy sources')
         end if
-        if(iflag_4_gravity .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
           if(iflag_SGS_inertia.eq.id_SGS_none                           &
      &       .or. iflag_SGS_heat.eq.id_SGS_none) then
             call calypso_MPI_abort(ierr_fld,                            &
      &          'Turn on SGS momentum flux and heat flux')
           end if
         end if
-        if(iflag_4_composit_buo .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
           if(iflag_SGS_inertia.eq.id_SGS_none                           &
      &       .or. iflag_SGS_comp_flux.eq.id_SGS_none) then
               call calypso_MPI_abort(ierr_fld,                          &

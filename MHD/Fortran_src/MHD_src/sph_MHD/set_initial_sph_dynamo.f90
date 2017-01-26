@@ -57,7 +57,7 @@
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
-      real(kind=kreal), intent(in) :: reftemp_rj(sph_rj%nidx_rj(1),0:1)
+      real(kind=kreal), intent(in) :: reftemp_rj(sph_rj%nidx_rj(1),0:2)
       type(phys_address), intent(in) :: ipol, idpdr, itor
 !
       type(phys_data), intent(inout) :: rj_fld
@@ -193,6 +193,7 @@
      &          n_point, ntot_phys_rj, d_rj)
 !
       use m_control_parameter
+      use m_physical_property
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       integer(kind = kint), intent(in) :: is_temp
@@ -213,7 +214,7 @@
 !
 !   set reference temperature (l = m = 0)
       if (sph_rj%idx_rj_degree_zero .gt. 0) then
-        if ( iflag_4_ref_temp .eq. id_sphere_ref_temp ) then
+        if (ref_param_T1%iflag_reference .eq. id_sphere_ref_temp) then
           do k = 1, sph_rj%nidx_rj(1)
             inod = sph_rj%idx_rj_degree_zero + (k-1) * sph_rj%nidx_rj(2)
             d_rj(inod,is_temp) = reftemp_rj(k,0)
@@ -493,6 +494,7 @@
      &          n_point, ntot_phys_rj, d_rj)
 !
       use m_control_parameter
+      use m_physical_property
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
@@ -518,7 +520,7 @@
 !
 !
       if (sph_rj%idx_rj_degree_zero .gt. 0) then
-        if ( iflag_4_ref_temp .eq. id_sphere_ref_temp ) then
+        if(ref_param_T1%iflag_reference .eq. id_sphere_ref_temp) then
           do k = 1, sph_rj%nidx_rj(1)
             inod = sph_rj%idx_rj_degree_zero + (k-1)*sph_rj%nidx_rj(2)
             d_rj(inod,is_fld) = reftemp_rj(k,0)

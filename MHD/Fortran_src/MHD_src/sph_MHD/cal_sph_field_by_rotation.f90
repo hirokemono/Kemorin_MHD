@@ -129,17 +129,18 @@
       call const_sph_div_force(sph_rj, r_2nd, sph_bc_U, g_sph_rj,       &
      &    ipol%i_m_advect, ipol%i_div_inertia, rj_fld)
 !
-      if(iflag_4_lorentz .gt. id_turn_OFF) then
+      if(fl_prop1%iflag_4_lorentz .gt. id_turn_OFF) then
         call const_sph_div_force(sph_rj, r_2nd, sph_bc_U, g_sph_rj,     &
      &      ipol%i_lorentz, ipol%i_div_Lorentz, rj_fld)
       end if
 !
-      if(iflag_4_coriolis .gt. id_turn_OFF) then
+      if(fl_prop1%iflag_4_coriolis .gt. id_turn_OFF) then
         call const_sph_div_force(sph_rj, r_2nd, sph_bc_U, g_sph_rj,     &
      &      ipol%i_coriolis, ipol%i_div_Coriolis, rj_fld)
       end if
 !
-      call sel_div_buoyancies_sph_MHD(sph_rj, ipol, sph_bc_U, rj_fld)
+      call sel_div_buoyancies_sph_MHD(sph_rj, ipol,                     &           
+     &    fl_prop1, ref_param_T1, ref_param_C1, sph_bc_U, rj_fld)
 !
       end subroutine cal_div_of_forces_sph_2
 !

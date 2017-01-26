@@ -5,14 +5,14 @@
 !
 !!      subroutine cal_terms_4_momentum                                 &
 !!     &        (i_field, iak_diff_mf, iak_diff_lor,                    &
-!!     &         nod_comm, node, ele, surf, fluid, sf_grp,              &
-!!     &         Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD,            &
-!!     &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,    &
-!!     &         mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                &
+!!     &         nod_comm, node, ele, surf, sf_grp, fluid,              &
+!!     &         fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,  &
+!!     &         ak_MHD, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,        &
+!!     &         diff_coefs, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,    &
 !!     &         nod_fld, ele_fld)
 !!      subroutine cal_viscous_diffusion                                &
 !!     &         (iak_diff_v, iak_diff_mf, iak_diff_lor,                &
-!!     &          nod_comm, node, ele, surf, fluid, sf_grp,             &
+!!     &          nod_comm, node, ele, surf, sf_grp, fluid, fl_prop,    &
 !!     &          Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys, ak_MHD,            &
 !!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,   &
 !!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
@@ -21,6 +21,8 @@
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(field_geometry_data), intent(in) :: fluid
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in) :: cd_prop
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
 !!        type(velocity_surf_bc_type), intent(in)  :: Vsf_bcs
@@ -47,6 +49,7 @@
       use m_control_parameter
       use m_phys_constants
 !
+      use t_physical_property
       use t_comm_table
       use t_geometry_data_MHD
       use t_geometry_data
@@ -81,10 +84,10 @@
 !
       subroutine cal_terms_4_momentum                                   &
      &        (i_field, iak_diff_mf, iak_diff_lor,                      &
-     &         nod_comm, node, ele, surf, fluid, sf_grp,                &
-     &         Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD,              &
-     &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,      &
-     &         mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                  &
+     &         nod_comm, node, ele, surf, sf_grp, fluid,                &
+     &         fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,    &
+     &         ak_MHD, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,          &
+     &         diff_coefs, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,      &
      &         nod_fld, ele_fld)
 !
       use int_vol_velo_monitor
@@ -98,6 +101,8 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(field_geometry_data), intent(in) :: fluid
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
       type(surface_group_data), intent(in) :: sf_grp
       type(velocity_surf_bc_type), intent(in)  :: Vsf_bcs
       type(vector_surf_bc_type), intent(in) :: Bsf_bcs
@@ -123,26 +128,26 @@
       if (iflag_velo_supg .eq. id_turn_ON) then
         call int_vol_velo_monitor_upwind                                &
      &     (i_field, iak_diff_mf, iak_diff_lor, iphys_ele%i_velo,       &
-     &      node, ele, fluid, iphys, nod_fld, iphys_ele, ak_MHD,        &
-     &      jac_3d, rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, &
-     &      f_nl, ele_fld)
+     &      node, ele, fluid, fl_prop, cd_prop, iphys, nod_fld,         &
+     &      iphys_ele, ak_MHD, jac_3d, rhs_tbl, FEM_elens, diff_coefs,  &
+     &      mhd_fem_wk, fem_wk, f_nl, ele_fld)
       else if (iflag_velo_supg .eq. id_magnetic_SUPG) then
         call int_vol_velo_monitor_upwind                                &
      &     (i_field, iak_diff_mf, iak_diff_lor, iphys_ele%i_magne,      &
-     &      node, ele, fluid, iphys, nod_fld, iphys_ele, ak_MHD,        &
-     &      jac_3d, rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, &
-     &      f_nl, ele_fld)
+     &      node, ele, fluid, fl_prop, cd_prop, iphys, nod_fld,         &
+     &      iphys_ele, ak_MHD, jac_3d, rhs_tbl, FEM_elens, diff_coefs,  &
+     &      mhd_fem_wk, fem_wk, f_nl, ele_fld)
       else
        call int_vol_velo_monitor_pg(i_field, iak_diff_mf, iak_diff_lor, &
-     &     node, ele, fluid, iphys, nod_fld, iphys_ele, ak_MHD,         &
-     &     jac_3d, rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk, fem_wk,  &
-     &     f_nl, ele_fld)
+     &     node, ele, fluid, fl_prop, cd_prop, iphys, nod_fld,          &
+     &     iphys_ele, ak_MHD,  jac_3d, rhs_tbl, FEM_elens, diff_coefs,  &
+     &     mhd_fem_wk, fem_wk, f_nl, ele_fld)
       end if
 !
       call int_surf_velo_monitor                                        &
      &   (i_field, iak_diff_mf, iak_diff_lor, ak_MHD%ak_d_velo,         &
-     &    node, ele, surf, sf_grp, Vsf_bcs, Bsf_bcs, iphys, nod_fld,    &
-     &    jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,                   &
+     &    node, ele, surf, sf_grp, fl_prop, Vsf_bcs, Bsf_bcs,           &
+     &    iphys, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,   &
      &    fem_wk, surf_wk, f_l, f_nl)
 !
       call cal_t_evo_4_vector(iflag_velo_supg,                          &
@@ -162,7 +167,7 @@
 !
       subroutine cal_viscous_diffusion                                  &
      &         (iak_diff_v, iak_diff_mf, iak_diff_lor,                  &
-     &          nod_comm, node, ele, surf, fluid, sf_grp,               &
+     &          nod_comm, node, ele, surf, sf_grp, fluid, fl_prop,      &
      &          Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys, ak_MHD,              &
      &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,     &
      &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
@@ -182,6 +187,7 @@
       type(velocity_surf_bc_type), intent(in)  :: Vsf_bcs
       type(vector_surf_bc_type), intent(in) :: Bsf_bcs
       type(field_geometry_data), intent(in) :: fluid
+      type(fluid_property), intent(in) :: fl_prop
       type(phys_address), intent(in) :: iphys
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(jacobians_3d), intent(in) :: jac_3d
@@ -205,8 +211,8 @@
 !
       call int_surf_velo_monitor(iphys%i_v_diffuse,                     &
      &    iak_diff_mf, iak_diff_lor, ak_MHD%ak_d_velo,                  &
-     &    node, ele, surf, sf_grp, Vsf_bcs, Bsf_bcs, iphys, nod_fld,    &
-     &    jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,                   &
+     &    node, ele, surf, sf_grp, fl_prop, Vsf_bcs, Bsf_bcs,           &
+     &    iphys, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,   &
      &    fem_wk, surf_wk, f_l, f_nl)
 !
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)

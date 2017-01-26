@@ -34,6 +34,7 @@
 !
       use calypso_mpi
       use m_error_IDs
+      use m_physical_property
       use m_element_phys_data
 !
       use set_control_nodal_data
@@ -59,12 +60,15 @@
 !
 !     add terms for MHD
 !
-        call add_field_name_4_mhd(field_ctl)
+        call add_field_name_4_mhd                                       &
+     &     (fl_prop1, ref_param_T1, ref_param_C1, field_ctl)
+        call add_ctl_4_ref_temp                                         &
+     &     (ref_param_T1, ref_param_C1, field_ctl)
 !
 !     set work fields for SGS models
         if (iflag_debug .ge. iflag_routine_msg)                         &
      &               write(*,*) 'add_work_area_4_sgs_model'
-        call add_work_area_4_sgs_model(field_ctl)
+        call add_work_area_4_sgs_model(fl_prop1, field_ctl)
 !
         if (iflag_debug .ge. iflag_routine_msg) write(*,*)              &
      &    'num_nod_phys after modified ', field_ctl%num

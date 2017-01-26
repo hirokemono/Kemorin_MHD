@@ -344,6 +344,8 @@
           iphys%i_m_phi = i0
         else if ( field_name(i) .eq. fhd_ref_temp ) then
           iphys%i_ref_t = i0
+        else if ( field_name(i) .eq. fhd_ref_light ) then
+          iphys%i_ref_c = i0
 !
         else if ( field_name(i) .eq. fhd_grad_v_1 ) then
           iphys%i_grad_vx =      i0
@@ -376,16 +378,20 @@
         else if ( field_name(i) .eq. fhd_grad_j_3 ) then
           iphys%i_grad_jz =      i0
 !
-        else if ( field_name(i) .eq. fhd_grad_ref_temp ) then
-          iphys%i_gref_t =           i0
         else if ( field_name(i) .eq. fhd_grad_temp ) then
           iphys%i_grad_t =           i0
-        else if ( field_name(i) .eq. fhd_grad_composit ) then
-          iphys%i_grad_composit =    i0
         else if ( field_name(i) .eq. fhd_grad_par_temp ) then
           iphys%i_grad_part_t =      i0
+        else if ( field_name(i) .eq. fhd_grad_ref_temp ) then
+          iphys%i_gref_t =           i0
         else if ( field_name(i) .eq. fhd_grad_filter_temp ) then
           iphys%i_grad_filter_temp = i0
+        else if ( field_name(i) .eq. fhd_grad_composit ) then
+          iphys%i_grad_composit =    i0
+        else if ( field_name(i) .eq. fhd_grad_par_light ) then
+          iphys%i_grad_part_c =      i0
+        else if ( field_name(i) .eq. fhd_grad_ref_light) then
+          iphys%i_gref_c =           i0
         end if
 !
         if ( field_name(i) .eq. fhd_SGS_simi ) then

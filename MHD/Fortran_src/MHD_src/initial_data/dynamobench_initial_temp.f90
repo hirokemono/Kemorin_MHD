@@ -4,7 +4,8 @@
 !      programmed by H.Matsui and H.Okuda on July 2000 (ver 1.1)
 !      modified by H. Matsui on July, 2006
 !
-!!      subroutine set_initial_temp(isig, node, ncomp_nod,              &
+!!      subroutine set_initial_temp(isig, depth_top, depth_bottom,      &
+!!     &          node, nnod_fl, inod_fluid, ncomp_nod,                 &
 !!     &          i_velo, i_press, i_temp, d_nod)
 !
 !
@@ -21,18 +22,20 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_temp(isig, node, nnod_fl, inod_fluid,      &
-     &          ncomp_nod, i_velo, i_press, i_temp, d_nod)
+      subroutine set_initial_temp(isig, depth_top, depth_bottom,        &
+     &          node, nnod_fl, inod_fluid, ncomp_nod,                   &
+     &          i_velo, i_press, i_temp, d_nod)
 !
       use t_geometry_data
-      use m_control_parameter
 !
       type(node_data), intent(in) :: node
+      real (kind = kreal), intent(in) :: depth_top, depth_bottom
       integer ( kind = kint), intent(in) :: isig
       integer (kind = kint), intent(in) :: nnod_fl
       integer (kind = kint), intent(in) :: inod_fluid(nnod_fl)
       integer (kind = kint), intent(in) :: ncomp_nod
       integer (kind = kint), intent(in) :: i_velo, i_press, i_temp
+!
       real(kind = kreal), intent(inout) :: d_nod(node%numnod,ncomp_nod)
 !
       integer ( kind = kint) :: inod, inum
@@ -55,9 +58,9 @@
 !
 !$omp parallel do
       do inod = 1, node%numnod
-        if(node%rr(inod) .lt. depth_high_t)                             &
+        if(node%rr(inod) .lt. depth_bottom)                             &
      &                 d_nod(inod,i_temp) = one
-        if(node%rr(inod) .gt. depth_low_t)                              &
+        if(node%rr(inod) .gt. depth_top)                                &
      &                 d_nod(inod,i_temp) = zero
       end do
 !$omp end parallel do
@@ -67,15 +70,15 @@
         inod = inod_fluid(inum)
 !
         xr = two * node%rr(inod)                                        &
-     &      - one * (depth_low_t+depth_high_t)                          &
-     &       / (depth_low_t-depth_high_t)
+     &      - one * (depth_top+depth_bottom)                            &
+     &       / (depth_top-depth_bottom)
         sit = sin( node%theta(inod) )
         csp = cos( real_m*node%phi(inod) )
 !
         d_nod(inod,i_temp) =                                            &
-     &            - depth_high_t/(depth_low_t-depth_high_t)             &
-     &             + (depth_high_t*depth_low_t)*one                     &
-     &           / ( ( depth_low_t-depth_high_t )**2 * node%rr(inod) )  &
+     &            - depth_bottom/(depth_top-depth_bottom)               &
+     &             + (depth_bottom*depth_top)*one                       &
+     &           / ( ( depth_top-depth_bottom )**2 * node%rr(inod) )    &
      &            + 0.1d0 * ( one - 3.0d0*xr**2 + 3.0d0*xr**4           &
      &             - xr**6) * sit**4 * csp                              &
      &           * 2.10d2 / (sqrt( 1.792d4 *pi ))

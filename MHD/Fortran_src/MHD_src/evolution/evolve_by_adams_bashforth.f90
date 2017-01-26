@@ -5,10 +5,9 @@
 !                                    on July 2000 (ver 1.1)
 !        modieied by H. Matsui on Sep., 2005
 !
-!!      subroutine cal_velo_pre_adams(iflag_supg,                       &
-!!     &          nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,
-!!     &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,                  &
-!!     &          f_l, f_nl, nod_fld)
+!!      subroutine cal_velo_pre_adams(iflag_supg, nod_comm, node, ele,  &
+!!     &          fluid, fl_prop, iphys, iphys_ele, ele_fld, jac_3d,    &
+!!     &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_magne_pre_adams(iflag_supg, i_field, i_previous, &
 !!     &          nod_comm, node, ele, conduct, iphys_ele, ele_fld,     &
 !!     &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,                  &
@@ -40,6 +39,7 @@
       use m_t_int_parameter
       use m_phys_constants
 !
+      use t_physical_property
       use t_comm_table
       use t_geometry_data_MHD
       use t_geometry_data
@@ -60,10 +60,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_velo_pre_adams(iflag_supg,                         &
-     &          nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,  &
-     &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,                    &
-     &          f_l, f_nl, nod_fld)
+      subroutine cal_velo_pre_adams(iflag_supg, nod_comm, node, ele,    &
+     &          fluid, fl_prop, iphys, iphys_ele, ele_fld, jac_3d,      &
+     &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use cal_multi_pass
       use cal_sol_field_explicit
@@ -75,6 +74,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
+      type(fluid_property), intent(in) :: fl_prop
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -93,11 +93,11 @@
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_coriolis_nod_exp'
-      call int_coriolis_nod_exp(node, mhd_fem_wk,                       &
+      call int_coriolis_nod_exp(node, fl_prop, mhd_fem_wk,              &
      &    iphys%i_velo, nod_fld, f_l, f_nl)
       if (iflag_debug.eq.1)  write(*,*) 'int_buoyancy_nod_exp'
       call int_buoyancy_nod_exp                                         &
-     &   (node, mhd_fem_wk, iphys, nod_fld, f_nl)
+     &   (node, fl_prop, mhd_fem_wk, iphys, nod_fld, f_nl)
 !
       call cal_sol_vect_pre_fluid_adams                                 &
      &   (node%numnod, node%istack_internal_smp,                        &

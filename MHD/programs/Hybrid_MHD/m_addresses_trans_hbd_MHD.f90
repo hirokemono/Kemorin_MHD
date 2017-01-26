@@ -103,12 +103,12 @@
       nvector_rj_2_xyz = 0
 !   magnetic field flag
       if(       evo_magne%iflag_scheme .gt. id_no_evolution             &
-     &     .or. iflag_4_lorentz .gt.     id_turn_OFF) then
+     &     .or. fl_prop1%iflag_4_lorentz .gt. id_turn_OFF) then
         nvector_rj_2_xyz = nvector_rj_2_xyz + 1
         b_hbd_trns%i_magne = 3*nvector_rj_2_xyz - 2
       end if
 !   current density flag
-      if(iflag_4_lorentz .gt. id_turn_OFF) then
+      if(fl_prop1%iflag_4_lorentz .gt. id_turn_OFF) then
         nvector_rj_2_xyz = nvector_rj_2_xyz + 1
         b_hbd_trns%i_current = 3*nvector_rj_2_xyz - 2
       end if

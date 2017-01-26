@@ -119,6 +119,7 @@
      &          MHD_org_files, sph_fst_IO, pwr)
 !
       use m_spheric_global_ranks
+      use m_physical_property
       use m_ucd_data
       use sph_mhd_rms_IO
 !
@@ -169,8 +170,8 @@
       call set_control_org_sph_files(org_plt, MHD_org_files)
 !
       call s_set_control_4_model                                        &
-     &    (model_ctl%reft_ctl, ctl_ctl%mevo_ctl, model_ctl%evo_ctl,     &
-     &     nmtr_ctl)
+     &    (model_ctl%reft_ctl, model_ctl%refc_ctl, ctl_ctl%mevo_ctl,    &
+     &     model_ctl%evo_ctl, nmtr_ctl)
 !
 !   set spherical shell parameters
 !
@@ -185,7 +186,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_force'
       call s_set_control_4_force(model_ctl%frc_ctl, model_ctl%g_ctl,    &
-     &    model_ctl%cor_ctl, model_ctl%mcv_ctl)
+     &    model_ctl%cor_ctl, model_ctl%mcv_ctl, fl_prop1, cd_prop1)
 !
 !   set parameters for general information
 !

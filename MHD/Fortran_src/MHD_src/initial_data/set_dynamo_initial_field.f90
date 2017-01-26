@@ -5,9 +5,10 @@
 !      modified by H. Matsui on July, 2006
 !      modified by H. Matsui on Dec., 2007
 !
-!!      subroutine initial_data_control(node, ele, fluid, iphys,        &
-!!     &          layer_tbl, wk_sgs, wk_diff, sgs_coefs, diff_coefs,    &
-!!     &          nod_fld)
+!!      subroutine initial_data_control                                 &
+!!     &         (ref_param_T, node, ele, fluid, iphys, layer_tbl,      &
+!!     &          wk_sgs, wk_diff, sgs_coefs, diff_coefs, nod_fld)
+!!        type(reference_scalar_param), intent(in) :: ref_param_T
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: fluid
@@ -33,6 +34,7 @@
       use t_phys_address
       use t_SGS_model_coefs
       use t_ele_info_4_dynamic
+      use t_reference_scalar_param
 !
       implicit none
 !
@@ -44,9 +46,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine initial_data_control(node, ele, fluid, iphys,          &
-     &          layer_tbl, wk_sgs, wk_diff, sgs_coefs, diff_coefs,      &
-     &          nod_fld)
+      subroutine initial_data_control                                   &
+     &         (ref_param_T, node, ele, fluid, iphys, layer_tbl,        &
+     &          wk_sgs, wk_diff, sgs_coefs, diff_coefs, nod_fld)
 !
       use m_initial_field_control
       use m_t_int_parameter
@@ -57,6 +59,7 @@
       use fem_mhd_rst_IO_control
       use set_restart_data
 !
+      type(reference_scalar_param), intent(in) :: ref_param_T
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
@@ -73,7 +76,7 @@
         call input_MHD_restart_file_ctl(layer_tbl, node, ele,           &
      &      fluid, wk_sgs, wk_diff, sgs_coefs, diff_coefs, nod_fld)
       else
-        call set_initial_data(node, fluid, iphys, nod_fld)
+        call set_initial_data(ref_param_T, node, fluid, iphys, nod_fld)
       end if
       iflag_initial_step = 0
 !
@@ -97,19 +100,20 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_data(node, fluid, iphys, nod_fld)
+      subroutine set_initial_data                                       &
+     &         (ref_param_T, node, fluid, iphys, nod_fld)
 !
       use calypso_mpi
       use m_error_IDs
       use m_control_parameter
       use m_initial_field_control
       use m_t_step_parameter
-      use m_physical_property
 !
       use set_initial_rotation
       use dynamobench_initial_temp
       use set_initial_for_MHD
 !
+      type(reference_scalar_param), intent(in) :: ref_param_T
       type(node_data), intent(in) :: node
       type(field_geometry_data), intent(in) :: fluid
       type(phys_address), intent(in) :: iphys
@@ -123,7 +127,8 @@
       if (iflag_restart .eq. i_rst_dbench0) then
         isig = 400
         call set_initial_temp                                           &
-     &     (isig, node, fluid%numnod_fld, fluid%inod_fld,               &
+     &     (isig, ref_param_T%depth_top, ref_param_T%depth_bottom,      &
+     &      node, fluid%numnod_fld, fluid%inod_fld,                     &
      &      nod_fld%ntot_phys, iphys%i_velo, iphys%i_press,             &
      &      iphys%i_temp, nod_fld%d_fld)
 !
@@ -133,22 +138,26 @@
      &    .or. iflag_restart .eq. i_rst_dbench2) then
         isig = 400
         call set_initial_temp                                           &
-     &     (isig, node, fluid%numnod_fld, fluid%inod_fld,               &
+     &     (isig, ref_param_T%depth_top, ref_param_T%depth_bottom,      &
+     &      node, fluid%numnod_fld, fluid%inod_fld,                     &
      &      nod_fld%ntot_phys, iphys%i_velo, iphys%i_press,             &
      &      iphys%i_temp, nod_fld%d_fld)
         isig = 0
         if (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
-          call set_initial_vect_p(isig, node, nod_fld%ntot_phys,        &
+          call set_initial_vect_p                                       &
+     &       (isig, ref_param_T, node, nod_fld%ntot_phys,               &
      &        iphys%i_vecp, iphys%i_magne, iphys%i_mag_p,               &
      &        nod_fld%d_fld)
         else
-          call set_initial_magne(isig, node, nod_fld%ntot_phys,         &
+          call set_initial_magne                                        &
+     &       (isig, ref_param_T, node, nod_fld%ntot_phys,               &
      &        iphys%i_magne, iphys%i_mag_p, nod_fld%d_fld)
         end if
 !
       else if (iflag_restart .le. -100) then
-        call set_initial_temp                                           &
-     &     (iflag_restart, node, fluid%numnod_fld, fluid%inod_fld,      &
+        call set_initial_temp(iflag_restart,                            &
+     &     ref_param_T%depth_top, ref_param_T%depth_bottom,             &
+     &      node, fluid%numnod_fld, fluid%inod_fld,                     &
      &      nod_fld%ntot_phys, iphys%i_velo, iphys%i_press,             &
      &      iphys%i_temp, nod_fld%d_fld)
 !
@@ -175,25 +184,29 @@
      &      iphys%i_velo, iphys%i_press, iphys%i_magne, nod_fld%d_fld)
         isig = 2000
         if (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
-          call set_initial_vect_p(isig, node, nod_fld%ntot_phys,        &
+          call set_initial_vect_p                                       &
+     &       (isig, ref_param_T, node, nod_fld%ntot_phys,               &
      &        iphys%i_vecp, iphys%i_magne, iphys%i_mag_p,               &
      &        nod_fld%d_fld)
         else
-          call set_initial_magne(isig, node, nod_fld%ntot_phys,         &
+          call set_initial_magne                                        &
+     &       (isig, ref_param_T, node, nod_fld%ntot_phys,               &
      &        iphys%i_magne, iphys%i_mag_p, nod_fld%d_fld)
         end if
 !
       else if ( iflag_restart .ge. 1000  ) then
-        call set_initial_temp                                           &
-     &     (iflag_restart, node, fluid%numnod_fld, fluid%inod_fld,      &
+        call set_initial_temp(iflag_restart,                            &
+     &      ref_param_T%depth_top, ref_param_T%depth_bottom,            &
+     &      node, fluid%numnod_fld, fluid%inod_fld,                     &
      &      nod_fld%ntot_phys, iphys%i_velo, iphys%i_press,             &
      &      iphys%i_temp, nod_fld%d_fld)
         if (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
-          call set_initial_vect_p(iflag_restart, node,                  &
+          call set_initial_vect_p                                       &
+     &       (iflag_restart, ref_param_T, node,                         &
      &        nod_fld%ntot_phys, iphys%i_vecp, iphys%i_magne,           &
      &        iphys%i_mag_p, nod_fld%d_fld)
         else
-          call set_initial_magne(iflag_restart, node,                   &
+          call set_initial_magne(iflag_restart, ref_param_T, node,      &
      &        nod_fld%ntot_phys, iphys%i_magne, iphys%i_mag_p,          &
      &        nod_fld%d_fld)
         end if

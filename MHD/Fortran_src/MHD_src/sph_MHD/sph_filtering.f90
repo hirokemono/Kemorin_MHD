@@ -7,7 +7,12 @@
 !>@brief  Evaluate horizontal filtering in spectrunm space
 !!
 !!@verbatim
-!!      subroutine init_SGS_model_sph_mhd(sph, sph_grps, dynamic_SPH)
+!!      subroutine init_SGS_model_sph_mhd                               &
+!!     &         (sph, sph_grps, fl_prop, dynamic_SPH)
+!!        type(sph_grids), intent(in) ::  sph
+!!        type(sph_group_data), intent(in) :: sph_grps
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !!
 !!      subroutine vector_sph_filter(i_field, i_filter,                 &
 !!     &          sph_rj, r_filter, sph_filter, rj_fld)
@@ -46,26 +51,31 @@
         type(sph_filters_type) :: sph_filters(1)
       end type dynamic_SGS_data_4_sph
 !
+      private :: init_work_4_SGS_sph_mhd
+!
 ! ----------------------------------------------------------------------
 !
       contains
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_SGS_model_sph_mhd(sph, sph_grps, dynamic_SPH)
+      subroutine init_SGS_model_sph_mhd                                 &
+     &         (sph, sph_grps, fl_prop, dynamic_SPH)
 !
       use calypso_mpi
+      use t_physical_property
 !
       type(sph_grids), intent(in) ::  sph
       type(sph_group_data), intent(in) :: sph_grps
+      type(fluid_property), intent(in) :: fl_prop
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !
 !
       call init_filter_4_SPH_MHD(sph%sph_params, sph%sph_rj, sph_grps,  &
      &    dynamic_SPH%sph_filters)
 !
-      call init_work_4_SGS_sph_mhd                                      &
-     &   (sph%sph_rtp, dynamic_SPH%ifld_sgs, dynamic_SPH%icomp_sgs,     &
+      call init_work_4_SGS_sph_mhd(sph%sph_rtp, fl_prop,                &
+     &    dynamic_SPH%ifld_sgs, dynamic_SPH%icomp_sgs,                  &
      &    dynamic_SPH%sgs_coefs, dynamic_SPH%wk_sgs)
 !
       end subroutine init_SGS_model_sph_mhd
@@ -126,12 +136,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_work_4_SGS_sph_mhd                                &
-     &         (sph_rtp, ifld_sgs, icomp_sgs, sgs_coefs, wk_sgs)
+      subroutine init_work_4_SGS_sph_mhd(sph_rtp, fl_prop,              &
+     &          ifld_sgs, icomp_sgs, sgs_coefs, wk_sgs)
 !
+      use t_physical_property
       use count_sgs_components
 !
       type(sph_rtp_grid), intent(in) ::  sph_rtp
+      type(fluid_property), intent(in) :: fl_prop
       type(SGS_terms_address), intent(inout) :: ifld_sgs, icomp_sgs
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
       type(dynamic_model_data), intent(inout) :: wk_sgs
@@ -140,14 +152,14 @@
 !
 !
       num_med = sph_rtp%nidx_rtp(1) * sph_rtp%nidx_rtp(2)
-      call s_count_sgs_components(sgs_coefs)
+      call s_count_sgs_components(fl_prop, sgs_coefs)
       call alloc_sgs_coefs_layer(num_med,                               &
      &    sgs_coefs%num_field, sgs_coefs%ntot_comp, wk_sgs)
 !
       call alloc_SGS_num_coefs(sgs_coefs)
 !
       call set_sgs_addresses                                            &
-     &   (ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
+     &   (fl_prop, ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
       call check_sgs_addresses                                          &
      &   (ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
 !
