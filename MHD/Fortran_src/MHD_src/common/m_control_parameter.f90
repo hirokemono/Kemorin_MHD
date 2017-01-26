@@ -63,19 +63,6 @@
 !>      Name of forces
       character (len=kchara), allocatable :: name_force(:)
 !
-!>      Turn ON and evaluate over elements flag
-      integer (kind=kint), parameter :: id_FORCE_ele_int =  1
-!>      Turn ON and evaluate at node flag
-      integer (kind=kint), parameter :: id_FORCE_at_node =  2
-!
-!>      Turn ON and evaluate implicitly over elements flag
-      integer (kind=kint), parameter :: id_Coriolis_ele_imp = 11
-!>      Turn ON and evaluate implicitly at node flag
-      integer (kind=kint), parameter :: id_Coriolis_nod_imp = 12
-!
-!>      Turn ON and including magnetic pressure
-      integer (kind=kint), parameter :: id_Lorentz_w_Emag = 2
-!
 !
       integer (kind=kint) :: num_fl_ele_grp
       integer (kind=kint) :: num_cd_ele_grp
@@ -102,8 +89,8 @@
 !  Parameters for FEM dynamo
 !
 !>      Using rotation form for inertia and Lorentz force
+!!@N      (FEM only)
       integer (kind=kint) :: iflag_4_rotate =        id_turn_OFF
-!
 !
 !>      Number of quadrature points for time evolution
       integer (kind=kint)  :: intg_point_t_evo =   2

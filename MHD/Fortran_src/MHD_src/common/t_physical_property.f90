@@ -26,6 +26,20 @@
 !>     flag for self radial gravity
       integer (kind = kint), parameter :: iflag_self_r_g =     2
 !
+!
+!>      Turn ON and evaluate over elements flag
+      integer (kind=kint), parameter :: id_FORCE_ele_int =  1
+!>      Turn ON and evaluate at node flag
+      integer (kind=kint), parameter :: id_FORCE_at_node =  2
+!
+!>      Turn ON and evaluate implicitly over elements flag
+      integer (kind=kint), parameter :: id_Coriolis_ele_imp = 11
+!>      Turn ON and evaluate implicitly at node flag
+      integer (kind=kint), parameter :: id_Coriolis_nod_imp = 12
+!
+!>      Turn ON and including magnetic pressure
+      integer (kind=kint), parameter :: id_Lorentz_w_Emag = 2
+!
 !   Coefficients
 !
 !>      Structure for fluid property
