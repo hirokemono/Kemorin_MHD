@@ -67,8 +67,6 @@
       integer (kind=kint), parameter :: id_FORCE_ele_int =  1
 !>      Turn ON and evaluate at node flag
       integer (kind=kint), parameter :: id_FORCE_at_node =  2
-!>      Force flag for filtered thermal buoyancy
-      integer (kind=kint) :: iflag_4_filter_gravity = id_turn_OFF
 !
 !>      Turn ON and evaluate implicitly over elements flag
       integer (kind=kint), parameter :: id_Coriolis_ele_imp = 11

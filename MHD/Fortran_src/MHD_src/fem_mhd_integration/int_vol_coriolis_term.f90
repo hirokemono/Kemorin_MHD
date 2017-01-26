@@ -153,7 +153,8 @@
      &      nod_fld%ntot_phys, iphys%i_comp_buo, nod_fld%d_fld,         &
      &      mhd_fem_wk%mlump_fl%ml_o, f_nl%ff)
 !
-      else if (iflag_4_filter_gravity .eq. id_FORCE_at_node) then
+      else if(fl_prop%iflag_4_filter_gravity .eq. id_FORCE_at_node)     &
+     &    then
         call set_gravity_2_each_node                                    &
      &     (iphys%i_filter_temp, iphys%i_filter_buo,                    &
      &      fl_prop%i_grav, fl_prop%coef_buo, fl_prop%grav,             &

@@ -182,7 +182,7 @@
         else if(fl_prop1%iflag_4_composit_buo .ne. id_turn_OFF) then
           call add_buoyancy_to_vort_force(itor, itor%i_rot_comp_buo,    &
      &        sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
-        else if(iflag_4_filter_gravity .ne. id_turn_OFF) then
+        else if(fl_prop1%iflag_4_filter_gravity .ne. id_turn_OFF) then
           call add_buoyancy_to_vort_force(itor, itor%i_rot_filter_buo,  &
      &        sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
         end if

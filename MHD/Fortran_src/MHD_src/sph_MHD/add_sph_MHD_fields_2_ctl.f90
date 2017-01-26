@@ -106,7 +106,7 @@
           call add_phys_name_ctl(fhd_rot_comp_buo, field_ctl)
         end if
 !   filtered buoyancy flag
-        if(iflag_4_filter_gravity .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_filter_gravity .gt. id_turn_OFF) then
           call add_phys_name_ctl(fhd_filter_buo, field_ctl)
           call add_phys_name_ctl(fhd_div_filter_buo, field_ctl)
           call add_phys_name_ctl(fhd_rot_filter_buo, field_ctl)

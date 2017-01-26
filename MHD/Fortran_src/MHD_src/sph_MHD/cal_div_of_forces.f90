@@ -81,7 +81,7 @@
         else if(fl_prop%iflag_4_composit_buo .ne. id_turn_OFF) then
           call add_term_to_div_force(ipol, ipol%i_div_comp_buo,         &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-        else if(iflag_4_filter_gravity .ne. id_turn_OFF) then
+        else if(fl_prop%iflag_4_filter_gravity .ne. id_turn_OFF) then
           call add_term_to_div_force(ipol, ipol%i_div_filter_buo,       &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if

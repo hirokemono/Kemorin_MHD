@@ -103,7 +103,7 @@
         fl_prop%coef_nega_v = - fl_prop%coef_velo
 !
         if (fl_prop%iflag_4_gravity .gt. id_turn_OFF                    &
-     &     .or. iflag_4_filter_gravity .gt. id_turn_OFF) then
+     &     .or. fl_prop%iflag_4_filter_gravity .gt. id_turn_OFF) then
           call construct_coefficient(fl_prop%coef_buo,                  &
      &       MHD_coef_list%dimless_list, MHD_coef_list%coefs_buoyancy,  &
      &      depth_top, depth_bottom)
