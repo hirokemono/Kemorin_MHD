@@ -152,7 +152,7 @@
           call check_missing_field_w_msg(fld, msg, iphys%i_temp)
         end if
 !
-        if ( iflag_4_composit_buo .gt. id_turn_OFF) then
+        if (fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
           msg = 'Compositional buoyancy needs'
           call check_missing_field_w_msg(fld, msg, iphys%i_light)
         end if
@@ -284,7 +284,7 @@
 !
       if(iflag_SGS_gravity .gt. id_SGS_none) then
         if(fl_prop%iflag_4_gravity .eq. id_turn_OFF                     &
-     &     .and. iflag_4_composit_buo .eq. id_turn_OFF) then
+     &     .and. fl_prop%iflag_4_composit_buo .eq. id_turn_OFF) then
           call calypso_MPI_abort(ierr_fld,                              &
      &       'set one of buoyancy sources')
         end if
@@ -295,7 +295,7 @@
      &          'Turn on SGS momentum flux and heat flux')
           end if
         end if
-        if(iflag_4_composit_buo .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
           if(iflag_SGS_inertia.eq.id_SGS_none                           &
      &       .or. iflag_SGS_comp_flux.eq.id_SGS_none) then
               call calypso_MPI_abort(ierr_fld,                          &
@@ -404,7 +404,7 @@
 !
       if(iflag_SGS_gravity .gt. id_SGS_none) then
         if(fl_prop%iflag_4_gravity .eq. id_turn_OFF                     &
-     &     .and. iflag_4_composit_buo .eq. id_turn_OFF) then
+     &     .and. fl_prop%iflag_4_composit_buo .eq. id_turn_OFF) then
           call calypso_MPI_abort(ierr_fld,                              &
      &       'set one of buoyancy sources')
         end if
@@ -415,7 +415,7 @@
      &          'Turn on SGS momentum flux and heat flux')
           end if
         end if
-        if(iflag_4_composit_buo .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
           if(iflag_SGS_inertia.eq.id_SGS_none                           &
      &       .or. iflag_SGS_comp_flux.eq.id_SGS_none) then
               call calypso_MPI_abort(ierr_fld,                          &

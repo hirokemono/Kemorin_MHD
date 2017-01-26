@@ -51,7 +51,7 @@
           call add_phys_name_ctl(fhd_SGS_h_flux, field_ctl)
           call add_phys_name_ctl(fhd_SGS_buo_flux, field_ctl)
         end if
-        if(iflag_4_composit_buo .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
           call add_phys_name_ctl(fhd_SGS_c_flux, field_ctl)
           call add_phys_name_ctl(fhd_SGS_comp_buo_flux, field_ctl)
         end if

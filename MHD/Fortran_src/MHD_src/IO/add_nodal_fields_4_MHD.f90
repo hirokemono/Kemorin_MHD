@@ -122,7 +122,7 @@
      &              call add_phys_name_ctl(fhd_Coriolis, field_ctl)
       if (fl_prop%iflag_4_gravity .eq. id_FORCE_at_node)                &
      &              call add_phys_name_ctl(fhd_buoyancy, field_ctl)
-      if (iflag_4_composit_buo .eq. id_FORCE_at_node)                   &
+      if (fl_prop%iflag_4_composit_buo .eq. id_FORCE_at_node)           &
      &              call add_phys_name_ctl(fhd_comp_buo, field_ctl)
       if (iflag_4_filter_gravity .eq. id_FORCE_at_node)                 &
      &              call add_phys_name_ctl(fhd_filter_buo, field_ctl)

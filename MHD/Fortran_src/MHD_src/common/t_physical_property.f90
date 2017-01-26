@@ -48,6 +48,8 @@
         integer (kind=kint) :: iflag_4_lorentz = id_turn_OFF
 !>        Force flag for thermal buoyancy
         integer (kind=kint) :: iflag_4_gravity = id_turn_OFF
+!>        Force flag for compositional buoyancy
+        integer (kind=kint) :: iflag_4_composit_buo = id_turn_OFF
 !
 !>       coefficient for Coriolis force
         real  (kind=kreal) :: coef_cor = zero

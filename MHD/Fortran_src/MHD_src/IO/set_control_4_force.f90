@@ -57,7 +57,7 @@
       fl_prop%iflag_4_coriolis =       id_turn_OFF
       fl_prop%iflag_4_lorentz =        id_turn_OFF
       iflag_4_rotate =         id_turn_OFF
-      iflag_4_composit_buo =   id_turn_OFF
+      fl_prop%iflag_4_composit_buo =   id_turn_OFF
       iflag_4_filter_gravity = id_turn_OFF
 !
       if (evo_velo%iflag_scheme .eq. id_no_evolution) then
@@ -114,7 +114,7 @@
      &    .or. cmp_no_case(name_force(i), 'Composite_gravity')          &
      &    .or. cmp_no_case(name_force(i), 'Composite_gravity_ele')      &
      &    .or. cmp_no_case(name_force(i), 'Composite_gravity_element')  &
-     &       ) iflag_4_composit_buo =  id_FORCE_ele_int
+     &       ) fl_prop%iflag_4_composit_buo =  id_FORCE_ele_int
 !
           if(     cmp_no_case(name_force(i), 'Composite_buoyancy_nod')  &
      &       .or. cmp_no_case(name_force(i), 'Composite_gravity_nod')   &
@@ -122,9 +122,9 @@
      &       .or. cmp_no_case(name_force(i), 'Composite_gravity_node')  &
      &       ) then
             if(evo_velo%iflag_scheme .eq. id_Crank_nicolson_cmass) then
-              iflag_4_composit_buo = id_FORCE_ele_int
+              fl_prop%iflag_4_composit_buo = id_FORCE_ele_int
             else
-              iflag_4_composit_buo = id_FORCE_at_node
+              fl_prop%iflag_4_composit_buo = id_FORCE_at_node
             end if
           end if
 !
@@ -178,7 +178,7 @@
 !  direction of gravity
 !
       fl_prop%i_grav = iflag_no_gravity
-      iflag = fl_prop%iflag_4_gravity + iflag_4_composit_buo             &
+      iflag = fl_prop%iflag_4_gravity + fl_prop%iflag_4_composit_buo    &
      &       + iflag_4_filter_gravity
       if (iflag .gt. 0) then
         if (g_ctl%gravity%iflag .eq. 0) then

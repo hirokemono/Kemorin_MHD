@@ -100,7 +100,7 @@
           call add_phys_name_ctl(fhd_div_buoyancy, field_ctl)
         end if
 !   compositional buoyancy flag
-        if(iflag_4_composit_buo .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
           call add_phys_name_ctl(fhd_comp_buo, field_ctl)
           call add_phys_name_ctl(fhd_div_comp_buo, field_ctl)
           call add_phys_name_ctl(fhd_rot_comp_buo, field_ctl)
@@ -250,7 +250,7 @@
           call add_phys_name_ctl(fhd_Csim_SGS_buoyancy, field_ctl)
         end if
 !
-        if(iflag_4_composit_buo .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
           call add_phys_name_ctl(fhd_SGS_comp_buo_flux, field_ctl)
           call add_phys_name_ctl(fhd_Csim_SGS_comp_buo, field_ctl)
         end if

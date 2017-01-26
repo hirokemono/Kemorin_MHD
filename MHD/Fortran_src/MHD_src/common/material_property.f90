@@ -109,7 +109,7 @@
      &      depth_top, depth_bottom)
         end if
 !
-        if (iflag_4_composit_buo .gt. id_turn_OFF) then
+        if (fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
           call construct_coefficient(fl_prop%coef_comp_buo,             &
      &       MHD_coef_list%dimless_list, MHD_coef_list%coefs_comp_buo,  &
      &       depth_top, depth_bottom)
@@ -142,7 +142,7 @@
         if (fl_prop%iflag_4_gravity .gt. id_turn_OFF) write(*,*)        &
      &         'coefficient for buoyancy:            ',                 &
      &              fl_prop%coef_buo
-        if (iflag_4_composit_buo .gt. id_turn_OFF)  write(*,*)          &
+        if (fl_prop%iflag_4_composit_buo .gt. id_turn_OFF)  write(*,*)  &
      &         'coefficient for composit buoyancy:   ',                 &
      &              fl_prop%coef_comp_buo
         if (fl_prop%iflag_4_coriolis .gt. id_turn_OFF) write(*,*)       &

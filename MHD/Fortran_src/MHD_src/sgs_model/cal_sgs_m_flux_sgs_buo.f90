@@ -187,7 +187,7 @@
      &     (node, fl_prop%i_grav, fl_prop%coef_buo, fl_prop%grav,       &
      &      iphys%i_SGS_h_flux, iphys%i_SGS_buo_wk, nod_fld)
       end if
-      if(iflag_4_composit_buo .gt. id_turn_OFF) then
+      if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
         call cal_SGS_gravity_flux                                       &
      &     (node, fl_prop%i_grav, fl_prop%coef_comp_buo, fl_prop%grav,  &
      &      iphys%i_SGS_c_flux, iphys%i_SGS_comp_buo_wk, nod_fld)
@@ -214,7 +214,7 @@
         call clippging_sgs_diff_coefs(ncomp_sgs_buo,                    &
      &      ifld_sgs%i_buoyancy, icomp_sgs%i_buoyancy, wk_sgs)
       end if
-      if(iflag_4_composit_buo .gt. id_turn_OFF) then
+      if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
 !        call cal_Csim_buo_by_Reynolds_ratio(wk_sgs%nlayer, isix,       &
 !     &      wk_sgs%num_kinds, wk_sgs%ntot_comp,                        &
 !     &      ifld_sgs%i_comp_buoyancy, icomp_sgs%i_comp_buoyancy,       &
@@ -278,14 +278,14 @@
      &      nod_fld%d_fld, sgs_l(1,1), sgs_l(1,4), sgs_l(1,2),          &
      &      sgs_l(1,5) )
 !
-        if(iflag_4_composit_buo .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
           call int_vol_rms_ave_ele_grps                                 &
      &       (node, ele, layer_tbl%e_grp, jac_3d_q, jac_3d_l,           &
      &        intg_point_t_evo, nod_fld%ntot_phys,                      &
      &        iphys%i_SGS_comp_buo_wk, nod_fld%d_fld,                   &
      &        sgs_l(1,3), sgs_l(1,6))
         end if
-      else if(iflag_4_composit_buo .gt. id_turn_OFF) then
+      else if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
         call int_vol_2rms_ave_ele_grps                                  &
      &     (node, ele, layer_tbl%e_grp, jac_3d_q, jac_3d_l,             &
      &      intg_point_t_evo, nod_fld%ntot_phys, iphys%i_reynolds_wk,   &
