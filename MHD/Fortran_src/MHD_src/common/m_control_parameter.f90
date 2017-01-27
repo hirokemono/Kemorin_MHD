@@ -126,7 +126,6 @@
       integer (kind=kint) :: iflag_SGS_model = id_SGS_none
       integer (kind=kint) :: iflag_dynamic_SGS = id_SGS_DYNAMIC_OFF
 !
-      integer (kind=kint) :: iset_DIFF_model_coefs =  0
       integer (kind=kint) :: iset_SGS_nagetive_clip = 0
       integer (kind=kint) :: iset_SGS_coef_marging =  0
       real (kind = kreal) :: SGS_clipping_limit = 0.0d0
@@ -157,16 +156,6 @@
       integer (kind=kint) :: itype_SGS_m_flux_coef =   0
       integer (kind=kint) :: itype_SGS_maxwell_coef =  0
       integer (kind=kint) :: itype_SGS_uxb_coef =      0
-!
-!>      commutation error correction flag for system
-      integer (kind=kint) :: iflag_commute_correction                   &
-     &                      = 0
-!>      commutation error correction flag for linear terms
-      integer (kind=kint) :: iflag_commute_linear                       &
-     &                      = 0
-!>      commutation error correction flag for nonlinear terms
-      integer (kind=kint) :: iflag_commute_nonlinar                     &
-     &                      = 0
 !
 !>      commutation error correction flag for magnetic induction
 !>      filter ID to obtain SGS terms

@@ -326,7 +326,7 @@
 !
 !
       if ( evo_vect_p%iflag_scheme .gt. id_no_evolution) then
-        if ( iflag_commute_correction .gt. id_SGS_commute_OFF           &
+        if ( cmt_param1%iflag_commute .gt. id_SGS_commute_OFF           &
      &       .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'filterd A is required for dynamic model'
           call check_missing_field_w_msg(fld, msg, iphys%i_filter_vecp)

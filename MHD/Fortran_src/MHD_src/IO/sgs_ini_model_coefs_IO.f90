@@ -92,7 +92,7 @@
      &       wk_sgs%fld_clip(inum,1:wk_sgs%num_kinds)
         end do
 !
-        if (iflag_commute_correction .gt. id_SGS_commute_OFF) then
+        if (cmt_param1%iflag_commute .gt. id_SGS_commute_OFF) then
 !
           write(rst_sgs_coef_code,'(a)')  '! num. of commute coefs'
           write(rst_sgs_coef_code,'(2i16)')                             &
@@ -103,7 +103,7 @@
           write(rst_sgs_coef_code,1000) i_step_MHD, time, izero,        &
      &          wk_diff%fld_whole_clip(1:wk_diff%num_kinds)
 !
-          if (iset_DIFF_model_coefs .eq. 1 ) then
+          if (cmt_param1%iset_DIFF_coefs .eq. 1 ) then
             do inum = 1, wk_diff%nlayer
               write(rst_sgs_coef_code,1000)  i_step_MHD, time, inum,    &
      &              wk_diff%fld_clip(inum,1:wk_diff%num_kinds)
@@ -173,7 +173,7 @@
       call read_sgs_layerd_data(rst_sgs_coef_code, i_step,              &
      &    (n_layer_d_IO+1), num_sgs_kinds_IO, coef_sgs_IO(0,1) )
 !
-      if (iflag_commute_correction .gt. id_SGS_commute_OFF) then
+      if (cmt_param1%iflag_commute .gt. id_SGS_commute_OFF) then
 !
         call skip_comment(character_4_read, rst_sgs_coef_code)
         read(character_4_read,*) num_diff_kinds_IO, itmp
@@ -181,7 +181,7 @@
         allocate( name_ak_diff_IO(num_diff_kinds_IO) )
         read(rst_sgs_coef_code,*) name_ak_diff_IO(1:num_diff_kinds_IO)
 !
-        if (iset_DIFF_model_coefs .eq. 0) then
+        if (cmt_param1%iset_DIFF_coefs .eq. 0) then
 !
           allocate( coef_diff_IO(0:n_layer_d_IO,num_diff_kinds_IO) )
           coef_diff_IO = 0.0d0
@@ -207,7 +207,7 @@
       num_sgs_kinds_IO = 0
       allocate( name_ak_sgs_IO(num_sgs_kinds_IO) )
       allocate( coef_sgs_IO(0:n_layer_d_IO,num_sgs_kinds_IO) )
-      if (iflag_commute_correction .gt. id_SGS_commute_OFF) then
+      if (cmt_param1%iflag_commute .gt. id_SGS_commute_OFF) then
         num_diff_kinds_IO = 0
         allocate( name_ak_diff_IO(num_diff_kinds_IO) )
         allocate( coef_diff_IO(0:n_layer_d_IO,num_diff_kinds_IO) )
@@ -239,12 +239,12 @@
       deallocate(name_ak_sgs_IO)
       deallocate(coef_sgs_IO)
 !
-      if (iflag_commute_correction .gt. id_SGS_commute_OFF) then
+      if (cmt_param1%iflag_commute .gt. id_SGS_commute_OFF) then
         do i = 1, wk_diff%num_kinds
           do j = 1, num_diff_kinds_IO
             if ( wk_diff%name(i) .eq. name_ak_diff_IO(j) ) then
               wk_diff%fld_whole_clip(i) = coef_diff_IO(0,j)
-              if (iset_DIFF_model_coefs .eq. 1) then
+              if (cmt_param1%iset_DIFF_coefs .eq. 1) then
                 wk_diff%fld_clip(1:wk_diff%nlayer,i)                    &
      &                   = coef_diff_IO(1:wk_diff%nlayer,j)
               end if
@@ -291,8 +291,8 @@
      &       wk_sgs%fld_clip, wk_sgs%comp_clip, sgs_coefs%ak)
       end do
 !
-      if (iflag_commute_correction .gt. id_SGS_commute_OFF) then
-        if (iset_DIFF_model_coefs .eq. 0) then
+      if (cmt_param1%iflag_commute .gt. id_SGS_commute_OFF) then
+        if (cmt_param1%iset_DIFF_coefs .eq. 0) then
           do i = 1, diff_coefs%num_field
             call set_diff_coefs_whole_ele                               &
      &         (ele, fluid%istack_ele_fld_smp, i, diff_coefs%ntot_comp, &

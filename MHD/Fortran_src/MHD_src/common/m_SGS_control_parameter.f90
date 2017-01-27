@@ -21,7 +21,7 @@
 !      type(SGS_model_control_params), save :: SGS_param1
 !
       type(commutation_control_params), save :: cmt_param1
-!cmt_param1%iflag_c_temp
+!cmt_param1%iflag_commute
 !
       type(SGS_filtering_params), save :: filter_param1
 !

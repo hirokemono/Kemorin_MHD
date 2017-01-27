@@ -78,17 +78,14 @@
       integer (kind=kint), parameter :: id_SGS_commute_ON =  1
 !
       type commutation_control_params
-        integer (kind=kint) :: iset_DIFF_model_coefs =  0
+        integer (kind=kint) :: iset_DIFF_coefs =  0
 !
 !>      commutation error correction flag for system
-        integer (kind=kint) ::                                          &
-     &                    iflag_commute_correction = id_SGS_commute_OFF
+        integer (kind=kint) :: iflag_commute = id_SGS_commute_OFF
 !>      commutation error correction flag for linear terms
-        integer (kind=kint) ::                                          &
-     &                    iflag_commute_linear = id_SGS_commute_OFF
+        integer (kind=kint) :: iflag_c_linear = id_SGS_commute_OFF
 !>      commutation error correction flag for nonlinear terms
-        integer (kind=kint) ::                                          &
-     &                    iflag_commute_nonlinar = id_SGS_commute_OFF
+        integer (kind=kint) :: iflag_c_nonlinars = id_SGS_commute_OFF
 !
 !>      commutation error correction flag for temperature
         integer (kind=kint) :: iflag_c_temp = id_SGS_commute_OFF

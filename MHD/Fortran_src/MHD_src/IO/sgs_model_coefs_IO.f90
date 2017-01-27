@@ -138,10 +138,10 @@
       call output_layered_model_coefs_file(wk_sgs)
       call output_whole_model_coefs_file(wk_sgs)
 !
-      if (iflag_commute_correction .gt. id_SGS_commute_OFF) then
+      if (cmt_param1%iflag_commute .gt. id_SGS_commute_OFF) then
         call output_whole_diff_coefs_file(wk_diff)
 !
-        if (iset_DIFF_model_coefs .eq. 1 ) then
+        if (cmt_param1%iset_DIFF_coefs .eq. 1 ) then
           call output_layered_diff_coefs_file(wk_diff)
         end if
       end if

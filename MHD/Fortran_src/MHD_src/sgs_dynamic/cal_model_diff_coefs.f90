@@ -147,7 +147,7 @@
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
 !
-      if (iset_DIFF_model_coefs .eq. 1) then
+      if (cmt_param1%iset_DIFF_coefs .eq. 1) then
         call cal_layerd_diff_coef(layer_tbl,                            &
      &      node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,              &
      &      numdir, ifield_d, icomp_f, n_int,                           &
@@ -186,7 +186,7 @@
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
 !
-      if (iset_DIFF_model_coefs .eq. 1) then
+      if (cmt_param1%iset_DIFF_coefs .eq. 1) then
         call cal_layerd_diff_coef(layer_tbl,                            &
      &      node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,              &
      &      numdir, ifield_d, icomp_f, n_int,                           &
@@ -225,7 +225,7 @@
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
 !
-      if (iset_DIFF_model_coefs .eq. 1) then
+      if (cmt_param1%iset_DIFF_coefs .eq. 1) then
         call cal_layerd_diff_coef(layer_tbl,                            &
      &      node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,              &
      &      numdir, ifield_d, icomp_f, n_int,                           &

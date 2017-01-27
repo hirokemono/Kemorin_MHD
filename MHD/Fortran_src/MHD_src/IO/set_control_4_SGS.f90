@@ -224,15 +224,15 @@
 !
           call dealloc_control_array_chara(sgs_ctl%commutate_fld_ctl)
 !
-          iflag_commute_linear                                          &
+          cmt_param1%iflag_c_linear                                     &
      &        =  cmt_param1%iflag_c_temp +  cmt_param1%iflag_c_velo     &
      &         + cmt_param1%iflag_c_magne + cmt_param1%iflag_c_light
-          iflag_commute_nonlinar                                        &
+          cmt_param1%iflag_c_nonlinars                                  &
      &        =  cmt_param1%iflag_c_hf                                  &
      &         + cmt_param1%iflag_c_mf + cmt_param1%iflag_c_lorentz     &
      &         + cmt_param1%iflag_c_uxb + cmt_param1%iflag_c_cf
-          iflag_commute_correction                                      &
-     &        =  iflag_commute_linear + iflag_commute_nonlinar
+          cmt_param1%iflag_commute = cmt_param1%iflag_c_linear          &
+     &                              + cmt_param1%iflag_c_nonlinars
         end if
       end if
 !
@@ -287,14 +287,14 @@
       ifilter_final = ifilter_2delta
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
-        iset_DIFF_model_coefs = 0
+        cmt_param1%iset_DIFF_coefs = 0
         if (sgs_ctl%DIFF_model_coef_ctl%iflag .ne. 0) then
           tmpchara = sgs_ctl%DIFF_model_coef_ctl%charavalue
 !
           if (cmp_no_case(tmpchara, 'whole_domain')) then
-            iset_DIFF_model_coefs = 0
+            cmt_param1%iset_DIFF_coefs = 0
           else if (cmp_no_case(tmpchara, 'layerd')) then
-            iset_DIFF_model_coefs = 1
+            cmt_param1%iset_DIFF_coefs = 1
           end if
         end if
 !

@@ -172,8 +172,8 @@
         end do
       end do
 !
-      if (iflag_commute_linear .gt. id_SGS_commute_OFF) then
-        if (iset_DIFF_model_coefs .eq. 1) then
+      if (cmt_param1%iflag_c_linear .gt. id_SGS_commute_OFF) then
+        if (cmt_param1%iset_DIFF_coefs .eq. 1) then
           do j = 1, num_diff_kind
             do i = 1, nlayer_diff
               diff_r = abs(diff_f_coef(i,j) - coef_diff_p(i,j))
@@ -221,8 +221,8 @@
         end do
       end do
 !
-      if (iflag_commute_linear .gt. id_SGS_commute_OFF) then
-        if (iset_DIFF_model_coefs .eq. 1) then
+      if (cmt_param1%iflag_c_linear .gt. id_SGS_commute_OFF) then
+        if (cmt_param1%iset_DIFF_coefs .eq. 1) then
           do j = 1, num_diff_kind
             do i = 1, nlayer_diff
               coef_diff_p(i,j) = diff_f_coef(i,j)
