@@ -168,19 +168,6 @@
       integer (kind=kint) :: iflag_commute_nonlinar                     &
      &                      = 0
 !
-!>      commutation error correction flag for temperature
-      integer (kind=kint) :: iflag_commute_temp                         &
-     &                      = 0
-!>      commutation error correction flag for velocity
-      integer (kind=kint) :: iflag_commute_velo                         &
-     &                      = 0
-!>      commutation error correction flag for magnetic field
-      integer (kind=kint) :: iflag_commute_magne                        &
-     &                      = 0
-!>      commutation error correction flag for composition variation
-      integer (kind=kint) :: iflag_commute_composit                     &
-     &                      = 0
-!
 !>      commutation error correction flag for magnetic induction
 !>      filter ID to obtain SGS terms
       integer (kind=kint) :: ifilter_final = ifilter_2delta

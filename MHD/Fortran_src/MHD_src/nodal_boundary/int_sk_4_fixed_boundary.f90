@@ -85,7 +85,7 @@
       type(finite_ele_mat_node), intent(inout) :: f_l
 !
 !
-      if (iflag_commute_velo .eq. id_SGS_commute_ON) then
+      if (cmt_param1%iflag_c_velo .eq. id_SGS_commute_ON) then
         call int_vol_fixed_sgs_poisson_surf                             &
      &     (node, ele, nod_fld, jac_3d_l, rhs_tbl, FEM_elens,           &
      &      intg_point_poisson, nod_bc_p%ibc_end,                       &
@@ -130,7 +130,7 @@
       type(finite_ele_mat_node), intent(inout) :: f_l
 !
 !
-      if (iflag_commute_magne .eq. id_SGS_commute_ON) then
+      if (cmt_param1%iflag_c_magne .eq. id_SGS_commute_ON) then
         call int_vol_fixed_sgs_poisson_surf                             &
      &     (node, ele, nod_fld, jac_3d_l, rhs_tbl, FEM_elens,           &
      &      intg_point_poisson,  nod_bc_f%ibc_end,                      &
@@ -176,7 +176,7 @@
       type(finite_ele_mat_node), intent(inout) :: f_l
 !
 !
-      if (iflag_commute_magne .eq. id_SGS_commute_ON) then
+      if (cmt_param1%iflag_c_magne .eq. id_SGS_commute_ON) then
         call int_vol_fixed_sgs_poisson_surf(node, ele, nod_fld,         &
      &      jac_3d_l, rhs_tbl, FEM_elens, intg_point_poisson,           &
      &      nod_bc_fins%ibc_end, nod_bc_fins%num_idx_ibc,               &
@@ -270,11 +270,11 @@
       type(finite_ele_mat_node), intent(inout) :: f_l
 !
 !
-      call int_sk_4_fixed_vector(iflag_commute_velo, i_velo,            &
+      call int_sk_4_fixed_vector(cmt_param1%iflag_c_velo, i_velo,       &
      &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,   &
      &    nod_bc_v, ak_d, evo_velo%coef_imp, iak_diff_v, fem_wk, f_l)
 !
-      if (iflag_commute_velo .eq. id_SGS_commute_ON) then
+      if (cmt_param1%iflag_c_velo .eq. id_SGS_commute_ON) then
         call int_vol_fixed_rotate_sgs_surf                              &
      &     (node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,             &
      &      intg_point_t_evo, nod_bc_rot%ibc_end,                       &

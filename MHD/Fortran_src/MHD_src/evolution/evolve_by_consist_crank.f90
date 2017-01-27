@@ -207,7 +207,7 @@
 !
 !
       if (evo_vect_p%coef_imp .gt. 0.0d0) then
-        call int_sk_4_fixed_vector(iflag_commute_magne,                 &
+        call int_sk_4_fixed_vector(cmt_param1%iflag_c_magne,            &
      &      i_vecp, node, ele, nod_fld, jac_3d, rhs_tbl,                &
      &      FEM_elens, diff_coefs, nod_bc_a, ak_d_magne,                &
      &      evo_vect_p%coef_imp, iak_diff_b, fem_wk, f_l)
@@ -278,7 +278,7 @@
 !
 !
       if (evo_magne%coef_imp .gt. 0.0d0) then
-        call int_sk_4_fixed_vector(iflag_commute_magne,                 &
+        call int_sk_4_fixed_vector(cmt_param1%iflag_c_magne,            &
      &      i_magne, node, ele, nod_fld, jac_3d, rhs_tbl,               &
      &      FEM_elens, diff_coefs, nod_bc_b, ak_d_magne,                &
      &      evo_magne%coef_imp, iak_diff_b, fem_wk, f_l)
@@ -355,7 +355,7 @@
 !
       if (evo%coef_imp .gt. zero) then
         call int_sk_fixed_temp                                          &
-     &     (iflag_commute_temp, i_field, iak_diff_t,                    &
+     &     (cmt_param1%iflag_c_temp, i_field, iak_diff_t,               &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
      &      nod_bcs%nod_bc_s, ak_d_temp, evo%coef_imp, fem_wk, f_l)
 !        if (iflag_initial_step.eq.1) then
@@ -431,7 +431,7 @@
 !
       if (evo%coef_imp .gt. zero) then
         call int_sk_fixed_temp                                          &
-     &     (iflag_commute_composit, i_field, iak_diff_c,                &
+     &     (cmt_param1%iflag_c_light, i_field, iak_diff_c,              &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
      &      nod_bcs%nod_bc_s, ak_d_composit, evo%coef_imp,              &
      &      fem_wk, f_l)

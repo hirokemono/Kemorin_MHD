@@ -291,7 +291,7 @@
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l,                       &
      &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_nl)
 !
-      if (iflag_commute_magne .eq. id_SGS_commute_ON                    &
+      if (cmt_param1%iflag_c_magne .eq. id_SGS_commute_ON               &
      &     .and. Fsf_bcs%sgs%ngrp_sf_dat .gt. 0) then
         if (iflag_debug.eq.1) write(*,*)                                &
                              'int_surf_sgs_velo_co_ele', iphys%i_m_phi

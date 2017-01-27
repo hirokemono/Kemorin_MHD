@@ -152,7 +152,7 @@
 !
 !
       if (iflag_dynamic.eq.0 .and.  iphys%i_filter_vecp.ne.0            &
-     &     .and. iflag_commute_magne .eq. id_SGS_commute_ON) then
+     &     .and. cmt_param1%iflag_c_magne .eq. id_SGS_commute_ON) then
 !
         if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
           if (iflag_debug.gt.0) write(*,*) 'cal_filtered_vector_p'
@@ -200,7 +200,7 @@
       if (iphys%i_magne .ne. 0) then
         if (iflag_debug.gt.0) write(*,*) 'cal_magnetic_f_by_vect_p'
         call choose_cal_rotation_sgs                                    &
-     &     (iflag_commute_magne, iflag_mag_supg,                        &
+     &     (cmt_param1%iflag_c_magne, iflag_mag_supg,                   &
      &      iak_diff_b, iphys%i_vecp, iphys%i_magne,                    &
      &      ele%istack_ele_smp, m_lump,                                 &
      &      nod_comm, node, ele, surf, sf_grp, iphys_ele, ele_fld,      &

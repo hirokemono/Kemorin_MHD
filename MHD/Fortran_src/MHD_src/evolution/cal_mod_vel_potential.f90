@@ -145,7 +145,7 @@
      &    node, ele, surf, sf_grp, nod_fld, jac_sf_grp_l, rhs_tbl,      &
      &    fem_wk, surf_wk, f_l)
 !
-!      if (iflag_commute_velo .eq. id_SGS_commute_ON) then
+!      if (cmt_param1%iflag_c_velo .eq. id_SGS_commute_ON) then
 !        call int_surf_sgs_div_velo_ele                                 &
 !     &     (node, ele, surf, sf_grp, nod_fld,                          &
 !     &      jac_sf_grp_q, jac_sf_grp_l, rhs_tbl, FEM_elens,            &
@@ -235,7 +235,7 @@
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l,                       &
      &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_l)
 !
-!      if (iflag_commute_magne .eq. id_SGS_commute_ON) then
+!      if (cmt_param1%iflag_c_magne .eq. id_SGS_commute_ON) then
 !        call int_surf_sgs_div_velo_ele                                 &
 !     &     (node, ele, surf, sf_grp, nod_fld,                          &
 !     &      jac_sf_grp_q, jac_sf_grp_l, rhs_tbl, FEM_elens,            &
@@ -321,7 +321,7 @@
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l,                       &
      &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_l)
 !
-!      if (iflag_commute_magne .eq. id_SGS_commute_ON) then
+!      if (cmt_param1%iflag_c_magne .eq. id_SGS_commute_ON) then
 !        call int_surf_sgs_div_velo_ele(node, ele, surf, sf_grp,        &
 !     &      nod_fld, jac_sf_grp_q, jac_sf_grp_l,                       &
 !     &      rhs_tbl, FEM_elens, intg_point_poisson,                    &

@@ -214,7 +214,7 @@
      &         node, ele, nod_fld, jac_3d_q, jac_3d_l, mhd_fem_wk)
          end if
 !
-        if (iflag_commute_velo .eq. id_SGS_commute_ON                   &
+        if (cmt_param1%iflag_c_velo .eq. id_SGS_commute_ON              &
      &         .and. diff_coefs%iflag_field(iak_diff_v) .eq. 0) then
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &                 write(*,*) 's_cal_diff_coef_velo'

@@ -199,13 +199,13 @@
           do i = 1, sgs_ctl%commutate_fld_ctl%num
             tmpchara = sgs_ctl%commutate_fld_ctl%c_tbl(i)
             if(     tmpchara .eq. fhd_temp) then
-              iflag_commute_temp =      id_SGS_commute_ON
+              cmt_param1%iflag_c_temp =      id_SGS_commute_ON
             else if(tmpchara .eq. fhd_velo) then
-              iflag_commute_velo =      id_SGS_commute_ON
+              cmt_param1%iflag_c_velo =      id_SGS_commute_ON
             else if(tmpchara .eq. fhd_magne) then
-              iflag_commute_magne =     id_SGS_commute_ON
+              cmt_param1%iflag_c_magne =     id_SGS_commute_ON
             else if(tmpchara .eq. fhd_vecp) then
-              iflag_commute_magne =     id_SGS_commute_ON
+              cmt_param1%iflag_c_magne =     id_SGS_commute_ON
             else if(tmpchara .eq. fhd_light) then
               cmt_param1%iflag_c_cf =    id_SGS_commute_ON
 !
@@ -218,15 +218,15 @@
             else if(tmpchara .eq. thd_induction) then
               cmt_param1%iflag_c_uxb = id_SGS_commute_ON
             else if(tmpchara .eq. thd_comp_flux) then
-              iflag_commute_composit =  id_SGS_commute_ON
+              cmt_param1%iflag_c_light =  id_SGS_commute_ON
             end if
           end do
 !
           call dealloc_control_array_chara(sgs_ctl%commutate_fld_ctl)
 !
           iflag_commute_linear                                          &
-     &        =  iflag_commute_temp +  iflag_commute_velo               &
-     &         + iflag_commute_magne + iflag_commute_composit
+     &        =  cmt_param1%iflag_c_temp +  cmt_param1%iflag_c_velo     &
+     &         + cmt_param1%iflag_c_magne + cmt_param1%iflag_c_light
           iflag_commute_nonlinar                                        &
      &        =  cmt_param1%iflag_c_hf                                  &
      &         + cmt_param1%iflag_c_mf + cmt_param1%iflag_c_lorentz     &
@@ -244,17 +244,18 @@
           write(*,*) 'iflag_SGS_induction:    ',iflag_SGS_induction
           write(*,*) 'iflag_SGS_gravity:      ',iflag_SGS_gravity
 !
-          write(*,*) 'iflag_commute_temp:     ',iflag_commute_temp
-          write(*,*) 'iflag_commute_velo:     ',iflag_commute_velo
-          write(*,*) 'iflag_commute_magne:    ',iflag_commute_magne
-          write(*,*) 'iflag_commute_c_flux:   ',                        &
-     &              cmt_param1%iflag_c_cf
+          write(*,*) 'iflag_commute_temp:     ', cmt_param1%iflag_c_temp
+          write(*,*) 'iflag_commute_velo:     ', cmt_param1%iflag_c_velo
+          write(*,*) 'iflag_commute_magne:    ',                        &
+     &              cmt_param1%iflag_c_magne
+          write(*,*) 'iflag_commute_composit: ',                        &
+     &              cmt_param1%iflag_c_light
           write(*,*) 'iflag_commute_heat:     ', cmt_param1%iflag_c_hf
           write(*,*) 'iflag_commute_inertia:  ', cmt_param1%iflag_c_mf
           write(*,*) 'iflag_commute_lorentz:  ',                        &
      &              cmt_param1%iflag_c_lorentz
           write(*,*) 'iflag_commute_induction:', cmt_param1%iflag_c_uxb
-          write(*,*) 'iflag_commute_composit: ', cmt_param1%iflag_c_cf
+          write(*,*) 'iflag_commute_c_flux:   ', cmt_param1%iflag_c_cf
         end if
       end if
 !

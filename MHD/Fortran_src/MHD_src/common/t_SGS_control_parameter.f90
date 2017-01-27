@@ -91,33 +91,24 @@
      &                    iflag_commute_nonlinar = id_SGS_commute_OFF
 !
 !>      commutation error correction flag for temperature
-        integer (kind=kint) ::                                          &
-     &                    iflag_commute_temp = id_SGS_commute_OFF
+        integer (kind=kint) :: iflag_c_temp = id_SGS_commute_OFF
 !>      commutation error correction flag for velocity
-        integer (kind=kint) ::                                          &
-     &                    iflag_commute_velo = id_SGS_commute_OFF
+        integer (kind=kint) :: iflag_c_velo = id_SGS_commute_OFF
 !>      commutation error correction flag for magnetic field
-        integer (kind=kint) ::                                          &
-     &                    iflag_commute_magne = id_SGS_commute_OFF
+        integer (kind=kint) :: iflag_c_magne = id_SGS_commute_OFF
 !>      commutation error correction flag for composition variation
-        integer (kind=kint) ::                                          &
-     &                    iflag_commute_composit = id_SGS_commute_OFF
+        integer (kind=kint) :: iflag_c_light = id_SGS_commute_OFF
 !
 !>      commutation error correction flag for heat flux
-        integer (kind=kint) ::                                          &
-     &                     iflag_c_hf = id_SGS_commute_OFF
+        integer (kind=kint) :: iflag_c_hf = id_SGS_commute_OFF
 !>      commutation error correction flag for momentum flux
-        integer (kind=kint) ::                                          &
-     &                     iflag_c_mf = id_SGS_commute_OFF
+        integer (kind=kint) :: iflag_c_mf = id_SGS_commute_OFF
 !>      commutation error correction flag for heat flux
-        integer (kind=kint) ::                                          &
-     &                     iflag_c_lorentz = id_SGS_commute_OFF
+        integer (kind=kint) :: iflag_c_lorentz = id_SGS_commute_OFF
 !>      commutation error correction flag for magnetic induction
-        integer (kind=kint) ::                                          &
-     &                     iflag_c_uxb = id_SGS_commute_OFF
+        integer (kind=kint) :: iflag_c_uxb = id_SGS_commute_OFF
 !>      commutation error correction flag for composition flux
-        integer (kind=kint) ::                                          &
-     &                     iflag_c_cf  = id_SGS_commute_OFF
+        integer (kind=kint) :: iflag_c_cf  = id_SGS_commute_OFF
       end type commutation_control_params
 !
 !

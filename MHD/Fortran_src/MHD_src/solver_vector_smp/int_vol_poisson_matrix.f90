@@ -194,7 +194,7 @@
       type(DJDS_MATRIX), intent(inout) :: mat11_DJDS
 !
 !
-      if (iflag_commute_magne .eq. id_SGS_commute_ON) then
+      if (cmt_param1%iflag_c_magne .eq. id_SGS_commute_ON) then
         call int_vol_poisson_sgs_mat11                                  &
      &     (ele, jac_3d_l, rhs_tbl, MG_mat_tbl, FEM_elens, n_int,       &
      &      i_filter, ak_diff(1,iak_diff), fem_wk, mat11_DJDS)
