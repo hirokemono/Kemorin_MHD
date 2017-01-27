@@ -78,6 +78,8 @@
       integer (kind=kint), parameter :: id_SGS_commute_ON =  1
 !
       type commutation_control_params
+        integer (kind=kint) :: iset_DIFF_model_coefs =  0
+!
 !>      commutation error correction flag for system
         integer (kind=kint) :: iflag_commute_correction                 &
      &                      = id_SGS_commute_OFF
@@ -157,10 +159,9 @@
         integer (kind=kint) :: iflag_momentum_filtering =    0
         integer (kind=kint) :: iflag_induction_filtering =   0
 !
-        integer (kind=kint) :: ifilter_final = ifilter_2delta
+!        integer (kind=kint) :: ifilter_final = ifilter_2delta
 !
         integer (kind=kint) :: iflag_SGS_filter = id_SGS_3D_FILTERING
-        integer (kind=kint) :: iset_DIFF_model_coefs =  0
       end type SGS_filtering_params
 !
 !  ---------------------------------------------------------------------
