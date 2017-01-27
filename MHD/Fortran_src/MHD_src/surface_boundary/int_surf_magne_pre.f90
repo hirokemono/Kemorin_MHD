@@ -92,7 +92,7 @@
      &    intg_point_t_evo, ak_d_magne, fem_wk, f_l)
 !
        if (iflag_SGS_induction .ne. id_SGS_none                         &
-     &     .and. iflag_commute_induction .eq. id_SGS_commute_ON) then
+     &    .and. cmt_param1%iflag_c_uxb .eq. id_SGS_commute_ON) then
          call int_surf_div_induct_t_sgs                                 &
      &      (node, ele, surf, sf_grp, nod_fld, jac_sf_grp,              &
      &       rhs_tbl1, FEM_elens, Bsf_bcs%sgs, intg_point_t_evo,        &
@@ -151,7 +151,7 @@
 !
       if (i_field .eq. iphys%i_SGS_induction) then
         if (iflag_SGS_induction .ne. id_SGS_none                        &
-     &     .and. iflag_commute_induction .eq. id_SGS_commute_ON) then
+     &    .and. cmt_param1%iflag_c_uxb .eq. id_SGS_commute_ON) then
           call int_surf_div_induct_t_sgs                                &
      &       (node, ele, surf, sf_grp, nod_fld, jac_sf_grp,             &
      &        rhs_tbl1, FEM_elens, Bsf_bcs%sgs, intg_point_t_evo,       &

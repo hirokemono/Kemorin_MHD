@@ -145,7 +145,7 @@
      &      rhs_tbl, surf_bc%flux, num_int, ak_d_temp, fem_wk, f_l)
       end if
 !
-      if (iflag_commute_heat .eq. id_SGS_commute_ON                     &
+      if (cmt_param1%iflag_c_hf .eq. id_SGS_commute_ON                  &
         .and. i_field .eq. iphys%i_SGS_div_h_flux) then
         call int_sf_skv_sgs_div_v_flux(node, ele, surf, sf_grp,         &
      &      nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, num_int,           &

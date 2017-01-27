@@ -127,7 +127,7 @@
      &      ele, jac_3d, fem_wk%sk6)
 !
         if (iflag_SGS_induction .ne. id_SGS_none                        &
-     &    .and. iflag_commute_induction .eq. id_SGS_commute_ON) then
+     &    .and. cmt_param1%iflag_c_uxb .eq. id_SGS_commute_ON) then
            call SGS_const_induct_each_ele(node, ele, nod_fld,           &
      &         k2, iphys%i_magne, iphys%i_velo, iphys%i_SGS_induct_t,   &
      &         cd_prop%coef_induct, mhd_fem_wk%sgs_v1, fem_wk%vector_1)
@@ -216,7 +216,7 @@
      &      d_ele(1,iphys_ele%i_magne), ele, jac_3d, fem_wk%sk6)
 !
         if (iflag_SGS_induction .ne. id_SGS_none                        &
-     &    .and. iflag_commute_induction .eq. id_SGS_commute_ON) then
+     &    .and. cmt_param1%iflag_c_uxb .eq. id_SGS_commute_ON) then
           call SGS_const_induct_each_ele(node, ele, nod_fld,            &
      &        k2, iphys%i_magne, iphys%i_velo, iphys%i_SGS_induct_t,    &
      &        cd_prop%coef_induct, mhd_fem_wk%sgs_v1, fem_wk%vector_1)

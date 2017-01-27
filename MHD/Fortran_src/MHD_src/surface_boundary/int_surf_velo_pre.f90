@@ -90,7 +90,7 @@
 !
 !
       if (iflag_SGS_inertia  .ne. id_SGS_none) then
-        if (iflag_commute_inertia .eq. id_SGS_commute_ON) then
+        if (cmt_param1%iflag_c_mf .eq. id_SGS_commute_ON) then
           call int_sf_skv_sgs_div_t_flux(node, ele, surf, sf_grp,       &
      &        nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,                  &
      &        Vsf_bcs%sgs, intg_point_t_evo, ifilter_final,             &
@@ -101,7 +101,7 @@
       end if
 !
       if (iflag_SGS_lorentz .ne. id_SGS_none) then
-        if (iflag_commute_lorentz .eq. id_SGS_commute_ON) then
+        if (cmt_param1%iflag_c_lorentz .eq. id_SGS_commute_ON) then
           call int_sf_skv_sgs_div_t_flux(node, ele, surf, sf_grp,       &
      &        nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,                  &
      &        Bsf_bcs%sgs, intg_point_t_evo, ifilter_final,             &
@@ -160,7 +160,7 @@
 !
 !
       if (i_field .eq. iphys%i_SGS_div_m_flux) then
-        if (iflag_commute_inertia .eq. id_SGS_commute_ON) then
+        if (cmt_param1%iflag_c_mf .eq. id_SGS_commute_ON) then
           call int_sf_skv_sgs_div_t_flux(node, ele, surf, sf_grp,       &
      &        nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,                  &
      &        Vsf_bcs%sgs, intg_point_t_evo, ifilter_final,             &
@@ -171,7 +171,7 @@
       end if
 !
       if (i_field .eq. iphys%i_SGS_Lorentz) then
-        if (iflag_commute_lorentz .eq. id_SGS_commute_ON) then
+        if (cmt_param1%iflag_c_lorentz .eq. id_SGS_commute_ON) then
           call int_sf_skv_sgs_div_t_flux(node, ele, surf, sf_grp,       &
      &        nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,                  &
      &        Bsf_bcs%sgs, intg_point_t_evo, ifilter_final,             &

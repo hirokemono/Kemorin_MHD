@@ -89,7 +89,7 @@
      &      k2, iphys%i_light, property%coef_nega_adv, fem_wk%scalar_1)
 !
 !        if(iflag_SGS_comp_flux .ne. id_SGS_none                        &
-!     &    .and. iflag_commute_c_flux .eq. id_SGS_commute_ON) then
+!     &    .and. cmt_param1%iflag_c_cf .eq. id_SGS_commute_ON) then
 !          call  SGS_const_vector_each_ele(node, ele, nod_fld,          &
 !     &         k2, iphys%i_velo, iphys%i_light, iphys%i_SGS_c_flux,    &
 !     &         property%coef_nega_adv, mhd_fem1_wk%sgs_v1,             &
@@ -163,7 +163,7 @@
      &      k2, iphys%i_light, property%coef_nega_adv, fem_wk%scalar_1)
 !
 !        if(iflag_SGS_comp_flux .ne. id_SGS_none                        &
-!     &    .and. iflag_commute_c_flux .eq. id_SGS_commute_ON) then
+!     &    .and. cmt_param1%iflag_c_cf .eq. id_SGS_commute_ON) then
 !          call SGS_const_vector_each_ele(node, ele, nod_fld,           &
 !     &        k2, iphys%i_velo, iphys%i_light, iphys%i_SGS_c_flux,     &
 !     &        property%coef_nega_adv, mhd_fem1_wk%sgs_v1,              &

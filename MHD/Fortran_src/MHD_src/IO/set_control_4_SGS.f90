@@ -207,16 +207,16 @@
             else if(tmpchara .eq. fhd_vecp) then
               iflag_commute_magne =     id_SGS_commute_ON
             else if(tmpchara .eq. fhd_light) then
-              iflag_commute_c_flux =    id_SGS_commute_ON
+              cmt_param1%iflag_c_cf =    id_SGS_commute_ON
 !
             else if(tmpchara .eq. thd_heat_flux) then
-              iflag_commute_heat =      id_SGS_commute_ON
+              cmt_param1%iflag_c_hf =   id_SGS_commute_ON
             else if(tmpchara .eq. thd_advection) then
-              iflag_commute_inertia =   id_SGS_commute_ON
+              cmt_param1%iflag_c_mf =   id_SGS_commute_ON
             else if(tmpchara .eq. thd_lorentz) then
-              iflag_commute_lorentz =   id_SGS_commute_ON
+              cmt_param1%iflag_c_lorentz = id_SGS_commute_ON
             else if(tmpchara .eq. thd_induction) then
-              iflag_commute_induction = id_SGS_commute_ON
+              cmt_param1%iflag_c_uxb = id_SGS_commute_ON
             else if(tmpchara .eq. thd_comp_flux) then
               iflag_commute_composit =  id_SGS_commute_ON
             end if
@@ -228,9 +228,9 @@
      &        =  iflag_commute_temp +  iflag_commute_velo               &
      &         + iflag_commute_magne + iflag_commute_composit
           iflag_commute_nonlinar                                        &
-     &        =  iflag_commute_heat +    iflag_commute_inertia          &
-     &         + iflag_commute_lorentz + iflag_commute_induction        &
-     &         + iflag_commute_c_flux
+     &        =  cmt_param1%iflag_c_hf                                  &
+     &         + cmt_param1%iflag_c_mf + cmt_param1%iflag_c_lorentz     &
+     &         + cmt_param1%iflag_c_uxb + cmt_param1%iflag_c_cf
           iflag_commute_correction                                      &
      &        =  iflag_commute_linear + iflag_commute_nonlinar
         end if
@@ -247,12 +247,14 @@
           write(*,*) 'iflag_commute_temp:     ',iflag_commute_temp
           write(*,*) 'iflag_commute_velo:     ',iflag_commute_velo
           write(*,*) 'iflag_commute_magne:    ',iflag_commute_magne
-          write(*,*) 'iflag_commute_c_flux:   ',iflag_commute_c_flux
-          write(*,*) 'iflag_commute_heat:     ',iflag_commute_heat
-          write(*,*) 'iflag_commute_inertia:  ',iflag_commute_inertia
-          write(*,*) 'iflag_commute_lorentz:  ',iflag_commute_lorentz
-          write(*,*) 'iflag_commute_induction:',iflag_commute_induction
-          write(*,*) 'iflag_commute_composit: ',iflag_commute_composit
+          write(*,*) 'iflag_commute_c_flux:   ',                        &
+     &              cmt_param1%iflag_c_cf
+          write(*,*) 'iflag_commute_heat:     ', cmt_param1%iflag_c_hf
+          write(*,*) 'iflag_commute_inertia:  ', cmt_param1%iflag_c_mf
+          write(*,*) 'iflag_commute_lorentz:  ',                        &
+     &              cmt_param1%iflag_c_lorentz
+          write(*,*) 'iflag_commute_induction:', cmt_param1%iflag_c_uxb
+          write(*,*) 'iflag_commute_composit: ', cmt_param1%iflag_c_cf
         end if
       end if
 !

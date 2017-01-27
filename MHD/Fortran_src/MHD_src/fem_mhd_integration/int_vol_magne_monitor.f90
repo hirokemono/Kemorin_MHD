@@ -107,7 +107,7 @@
      &      iphys%i_induct_t, fem_wk, f_nl)
 !
       else if (i_field .eq. iphys%i_SGS_induction) then
-        if(iflag_commute_induction .eq. id_SGS_commute_ON) then
+        if(cmt_param1%iflag_c_uxb .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_idct_mod_pg(node, ele,                   &
      &        nod_fld, iphys, jac_3d, rhs_tbl, FEM_elen, diff_coefs,    &
      &        conduct%istack_ele_fld_smp, intg_point_t_evo,             &
@@ -170,7 +170,7 @@
      &      ele_fld%d_fld, fem_wk, f_nl)
 !
       else if (i_field .eq. iphys%i_SGS_induction) then
-        if(iflag_commute_induction .eq. id_SGS_commute_ON) then
+        if(cmt_param1%iflag_c_uxb .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_idct_mod_upm(node, ele,                  &
      &        nod_fld, iphys, jac_3d, rhs_tbl, FEM_elen, diff_coefs,    &
      &        conduct%istack_ele_fld_smp, intg_point_t_evo,             &

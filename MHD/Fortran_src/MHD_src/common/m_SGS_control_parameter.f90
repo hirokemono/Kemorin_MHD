@@ -20,10 +20,10 @@
 !
 !      type(SGS_model_control_params), save :: SGS_param1
 !
-!      type(commutation_control_params), save :: f_commute1
+      type(commutation_control_params), save :: cmt_param1
+!cmt_param1%iflag_c_hf
 !
       type(SGS_filtering_params), save :: filter_param1
-!filter_param1%whole%num_f_group
 !
 !
       end module m_SGS_control_parameter

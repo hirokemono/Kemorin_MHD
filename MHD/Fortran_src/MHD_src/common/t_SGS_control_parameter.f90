@@ -81,44 +81,45 @@
         integer (kind=kint) :: iset_DIFF_model_coefs =  0
 !
 !>      commutation error correction flag for system
-        integer (kind=kint) :: iflag_commute_correction                 &
-     &                      = id_SGS_commute_OFF
+        integer (kind=kint) ::                                          &
+     &                    iflag_commute_correction = id_SGS_commute_OFF
 !>      commutation error correction flag for linear terms
-        integer (kind=kint) :: iflag_commute_linear                     &
-     &                      = id_SGS_commute_OFF
+        integer (kind=kint) ::                                          &
+     &                    iflag_commute_linear = id_SGS_commute_OFF
 !>      commutation error correction flag for nonlinear terms
-        integer (kind=kint) :: iflag_commute_nonlinar                   &
-     &                      = id_SGS_commute_OFF
+        integer (kind=kint) ::                                          &
+     &                    iflag_commute_nonlinar = id_SGS_commute_OFF
 !
 !>      commutation error correction flag for temperature
-        integer (kind=kint) :: iflag_commute_temp                       &
-     &                      = id_SGS_commute_OFF
+        integer (kind=kint) ::                                          &
+     &                    iflag_commute_temp = id_SGS_commute_OFF
 !>      commutation error correction flag for velocity
-        integer (kind=kint) :: iflag_commute_velo                       &
-     &                      = id_SGS_commute_OFF
+        integer (kind=kint) ::                                          &
+     &                    iflag_commute_velo = id_SGS_commute_OFF
 !>      commutation error correction flag for magnetic field
-        integer (kind=kint) :: iflag_commute_magne                      &
-     &                      = id_SGS_commute_OFF
+        integer (kind=kint) ::                                          &
+     &                    iflag_commute_magne = id_SGS_commute_OFF
 !>      commutation error correction flag for composition variation
-        integer (kind=kint) :: iflag_commute_composit                   &
-     &                      = id_SGS_commute_OFF
+        integer (kind=kint) ::                                          &
+     &                    iflag_commute_composit = id_SGS_commute_OFF
 !
 !>      commutation error correction flag for heat flux
-        integer (kind=kint) :: iflag_commute_heat                       &
-     &                      = id_SGS_commute_OFF
+        integer (kind=kint) ::                                          &
+     &                     iflag_c_hf = id_SGS_commute_OFF
 !>      commutation error correction flag for momentum flux
-        integer (kind=kint) :: iflag_commute_inertia                    &
-     &                      = id_SGS_commute_OFF
+        integer (kind=kint) ::                                          &
+     &                     iflag_c_mf = id_SGS_commute_OFF
 !>      commutation error correction flag for heat flux
-        integer (kind=kint) :: iflag_commute_lorentz                    &
-     &                      = id_SGS_commute_OFF
+        integer (kind=kint) ::                                          &
+     &                     iflag_c_lorentz = id_SGS_commute_OFF
 !>      commutation error correction flag for magnetic induction
-        integer (kind=kint) :: iflag_commute_induction                  &
-     &                      = id_SGS_commute_OFF
+        integer (kind=kint) ::                                          &
+     &                     iflag_c_uxb = id_SGS_commute_OFF
 !>      commutation error correction flag for composition flux
-        integer (kind=kint) :: iflag_commute_c_flux                     &
-     &                      = id_SGS_commute_OFF
+        integer (kind=kint) ::                                          &
+     &                     iflag_c_cf  = id_SGS_commute_OFF
       end type commutation_control_params
+!
 !
       integer (kind=kint), parameter :: id_SGS_NO_FILTERING =         0
       integer (kind=kint), parameter :: id_SGS_3D_FILTERING =         1
@@ -135,8 +136,6 @@
 !>      filter ID for @f$ 4\Delta @f$  filter
       integer (kind=kint), parameter :: ifilter_4delta = 2
 !>      filter ID to obtain SGS terms
-!
-!
 !
 !
       type SGS_filter_area_params

@@ -24,6 +24,7 @@
       use m_precision
       use t_time_stepping_parameter
       use t_SGS_control_parameter
+      use m_SGS_control_parameter
 !
       implicit  none
 !
@@ -180,22 +181,7 @@
       integer (kind=kint) :: iflag_commute_composit                     &
      &                      = 0
 !
-!>      commutation error correction flag for heat flux
-      integer (kind=kint) :: iflag_commute_heat                         &
-     &                      = 0
-!>      commutation error correction flag for momentum flux
-      integer (kind=kint) :: iflag_commute_inertia                      &
-     &                      = 0
-!>      commutation error correction flag for heat flux
-      integer (kind=kint) :: iflag_commute_lorentz                      &
-     &                      = 0
 !>      commutation error correction flag for magnetic induction
-      integer (kind=kint) :: iflag_commute_induction                    &
-     &                      = 0
-!>      commutation error correction flag for composition flux
-      integer (kind=kint) :: iflag_commute_c_flux                       &
-     &                      = 0
-!
 !>      filter ID to obtain SGS terms
       integer (kind=kint) :: ifilter_final = ifilter_2delta
 !

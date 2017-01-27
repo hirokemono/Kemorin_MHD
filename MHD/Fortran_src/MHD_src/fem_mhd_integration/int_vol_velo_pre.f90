@@ -126,7 +126,8 @@
           if (iflag_4_rotate .eq. id_turn_ON) then
 !
             if(iflag_SGS_inertia .ne. id_SGS_none                       &
-     &        .and. iflag_commute_inertia .eq. id_SGS_commute_ON) then
+     &        .and. cmt_param1%iflag_c_mf .eq. id_SGS_commute_ON)       &
+     &       then
               call SGS_const_tensor_each_ele(node, ele, nod_fld, k2,    &
      &           iphys%i_velo, iphys%i_SGS_m_flux, fl_prop%coef_nega_v, &
      &           mhd_fem_wk%sgs_t1, fem_wk%tensor_1)
@@ -160,7 +161,7 @@
 !
           else
             if(iflag_SGS_inertia .ne. id_SGS_none                       &
-     &        .and. iflag_commute_inertia .eq. id_SGS_commute_ON) then
+     &        .and. cmt_param1%iflag_c_mf .eq. id_SGS_commute_ON) then
               call SGS_const_tensor_each_ele(node, ele, nod_fld, k2,    &
      &           iphys%i_velo, iphys%i_SGS_m_flux, fl_prop%coef_nega_v, &
      &           mhd_fem_wk%sgs_t1, fem_wk%tensor_1)
@@ -222,7 +223,7 @@
 !    set SGS Lorentz force
 !
           if ( iflag_SGS_lorentz .ne. id_SGS_none) then
-            if (iflag_commute_lorentz .eq. id_SGS_commute_ON) then
+            if(cmt_param1%iflag_c_lorentz .eq. id_SGS_commute_ON) then
               call SGS_const_tensor_each_ele(node, ele, nod_fld, k2,    &
      &            iphys%i_magne, iphys%i_SGS_maxwell, fl_prop%coef_lor, &
      &            mhd_fem_wk%sgs_t1, fem_wk%tensor_1)
@@ -360,7 +361,7 @@
 !
           if (iflag_4_rotate .eq. id_turn_ON) then
             if(iflag_SGS_inertia .ne. id_SGS_none                       &
-     &        .and. iflag_commute_inertia .eq. id_SGS_commute_ON) then
+     &        .and. cmt_param1%iflag_c_mf .eq. id_SGS_commute_ON) then
               call SGS_const_tensor_each_ele(node, ele, nod_fld, k2,    &
      &           iphys%i_velo, iphys%i_SGS_m_flux, fl_prop%coef_nega_v, &
      &           mhd_fem_wk%sgs_t1, fem_wk%tensor_1)
@@ -394,7 +395,7 @@
 !
           else
             if(iflag_SGS_inertia .ne. id_SGS_none                       &
-     &        .and. iflag_commute_inertia .eq. id_SGS_commute_ON) then
+     &        .and. cmt_param1%iflag_c_mf .eq. id_SGS_commute_ON) then
               call SGS_const_tensor_each_ele(node, ele, nod_fld, k2,    &
      &           iphys%i_velo, iphys%i_SGS_m_flux, fl_prop%coef_nega_v, &
      &           mhd_fem_wk%sgs_t1, fem_wk%tensor_1)
@@ -425,7 +426,7 @@
 !    set Reynolds stress
 !
           if ( iflag_SGS_inertia .ne. id_SGS_none) then
-            if (iflag_commute_inertia .eq. id_SGS_commute_ON) then
+            if (cmt_param1%iflag_c_mf .eq. id_SGS_commute_ON) then
               call SGS_const_tensor_each_ele(node, ele, nod_fld, k2,    &
      &           iphys%i_velo, iphys%i_SGS_m_flux, fl_prop%coef_nega_v, &
      &           mhd_fem_wk%sgs_t1, fem_wk%tensor_1)
@@ -480,7 +481,7 @@
 !    set SGS Lorentz force
 !
           if ( iflag_SGS_lorentz .ne. id_SGS_none) then
-            if (iflag_commute_lorentz .eq. id_SGS_commute_ON) then
+            if (cmt_param1%iflag_c_lorentz .eq. id_SGS_commute_ON) then
               call SGS_const_tensor_each_ele(node, ele, nod_fld, k2,    &
      &            iphys%i_magne, iphys%i_SGS_maxwell, fl_prop%coef_lor, &
      &            mhd_fem_wk%sgs_t1, fem_wk%tensor_1)

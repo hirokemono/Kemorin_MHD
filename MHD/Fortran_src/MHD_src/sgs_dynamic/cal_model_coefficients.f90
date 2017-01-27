@@ -179,7 +179,7 @@
      &        f_l, nod_fld, sgs_coefs, sgs_coefs_nod)
         end if
 !
-        if ( iflag_commute_heat .eq. id_SGS_commute_ON) then
+        if ( cmt_param1%iflag_c_hf .eq. id_SGS_commute_ON) then
           if (iflag_debug.eq.1)  write(*,*) 's_cal_diff_coef_sgs_hf'
           call s_cal_diff_coef_sgs_hf                                   &
      &       (ifld_diff%i_heat_flux, icomp_sgs%i_heat_flux,             &
@@ -218,7 +218,7 @@
      &        f_l, nod_fld, sgs_coefs, sgs_coefs_nod)
         end if
 !
-        if (iflag_commute_inertia .eq. id_SGS_commute_ON) then
+        if (cmt_param1%iflag_c_mf .eq. id_SGS_commute_ON) then
           if (iflag_debug.eq.1)  write(*,*) 's_cal_diff_coef_sgs_mf'
           call s_cal_diff_coef_sgs_mf                                   &
      &       (ifld_diff%i_mom_flux, icomp_sgs%i_mom_flux,               &
@@ -258,7 +258,7 @@
      &        f_l, nod_fld, sgs_coefs, sgs_coefs_nod)
         end if
 !
-        if (iflag_commute_lorentz .eq. id_SGS_commute_ON) then
+        if (cmt_param1%iflag_c_lorentz .eq. id_SGS_commute_ON) then
           if (iflag_debug.eq.1) write(*,*) 's_cal_diff_coef_sgs_mxwl'
           call s_cal_diff_coef_sgs_mxwl                                 &
      &       (ifld_diff%i_lorentz, icomp_sgs%i_lorentz,                 &
@@ -299,7 +299,7 @@
      &        f_l, nod_fld, sgs_coefs, sgs_coefs_nod)
         end if
 !
-        if (iflag_commute_induction .eq. id_SGS_commute_ON) then
+        if (cmt_param1%iflag_c_uxb .eq. id_SGS_commute_ON) then
           if(iflag_debug.eq.1)  write(*,*) 's_cal_diff_coef_sgs_induct'
           call s_cal_diff_coef_sgs_induct(ifld_diff%i_induction,        &
      &       icomp_sgs%i_induction, icomp_diff%i_induction,             &
