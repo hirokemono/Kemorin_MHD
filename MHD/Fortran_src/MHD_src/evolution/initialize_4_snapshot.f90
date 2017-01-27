@@ -35,6 +35,7 @@
       use calypso_mpi
       use m_machine_parameter
       use m_control_parameter
+      use m_SGS_control_parameter
       use m_t_step_parameter
 !
       use m_physical_property
@@ -98,6 +99,8 @@
       type(time_params_IO), intent(inout) :: t_IO
       character(len=kchara), intent(inout)   :: label_sim
 !
+integer(kind = kint) :: iflag
+!
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*)' reordering_by_layers_snap'
@@ -134,22 +137,23 @@
 !
 !     ---------------------
 !
+      iflag = filter_param1%iflag_SGS_filter
       if( (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                    &
      &       .or. iflag_SGS_model.eq.id_SGS_similarity)) then
 !
-        if   (iflag_SGS_filter .eq. id_SGS_3D_FILTERING                 &
-     &   .or. iflag_SGS_filter .eq. id_SGS_3D_EZ_FILTERING) then
+        if   (iflag .eq. id_SGS_3D_FILTERING                            &
+     &   .or. iflag .eq. id_SGS_3D_EZ_FILTERING) then
           if (iflag_debug .gt. 0)                                       &
      &      write(*,*)' s_set_istart_3d_filtering'
           call s_set_istart_3d_filtering(filtering1%filter)
 !
-        else if (iflag_SGS_filter.eq.id_SGS_3D_SMP_FILTERING            &
-     &     .or. iflag_SGS_filter.eq.id_SGS_3D_EZ_SMP_FILTERING) then
+        else if (iflag.eq.id_SGS_3D_SMP_FILTERING                       &
+     &     .or. iflag.eq.id_SGS_3D_EZ_SMP_FILTERING) then
           if (iflag_debug .gt. 0)                                       &
      &      write(*,*) ' const_tbl_3d_filtering_smp'
           call const_tbl_3d_filtering_smp(filtering1)
 !
-        else if (iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
+        else if (iflag .eq. id_SGS_LINE_FILTERING) then
           if (iflag_debug.gt.0) write(*,*)' ordering_l_filter_smp'
           call ordering_l_filter_smp(mesh%node%istack_nod_smp,          &
      &        filtering1%fil_l, filtering1%fil_l_smp)
@@ -158,13 +162,13 @@
 !
       if( (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                    &
      &      .and. iflag_SGS_model.eq.id_SGS_similarity) ) then
-        if    (iflag_SGS_filter .eq. id_SGS_3D_FILTERING                &
-     &    .or. iflag_SGS_filter .eq. id_SGS_3D_EZ_FILTERING) then
+        if    (iflag .eq. id_SGS_3D_FILTERING                           &
+     &    .or. iflag .eq. id_SGS_3D_EZ_FILTERING) then
           if (iflag_debug .gt. 0) write(*,*)' s_set_istart_w_filtering'
           call s_set_istart_3d_filtering(wide_filtering%filter)
 !
-        else if (iflag_SGS_filter.eq.id_SGS_3D_SMP_FILTERING            &
-     &     .or. iflag_SGS_filter.eq.id_SGS_3D_EZ_SMP_FILTERING) then
+        else if (iflag.eq.id_SGS_3D_SMP_FILTERING                       &
+     &     .or. iflag.eq.id_SGS_3D_EZ_SMP_FILTERING) then
 !
           if (iflag_debug .gt. 0)                                       &
      &      write(*,*) 'const_tbl_3d_filtering_smp'

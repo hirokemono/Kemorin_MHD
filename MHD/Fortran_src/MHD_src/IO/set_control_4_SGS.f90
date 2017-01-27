@@ -107,6 +107,7 @@
       use m_geometry_constants
       use m_phys_labels
       use m_control_parameter
+      use m_SGS_control_parameter
       use t_ctl_data_SGS_model
 !
       type(SGS_model_control), intent(inout) :: sgs_ctl
@@ -119,7 +120,7 @@
 !
        iflag_SGS_model =      id_SGS_none
        iflag_dynamic_SGS =    id_SGS_DYNAMIC_OFF
-       iflag_SGS_filter =     id_SGS_NO_FILTERING
+       filter_param1%iflag_SGS_filter = id_SGS_NO_FILTERING
 !
       if (sgs_ctl%SGS_model_name_ctl%iflag .eq. 0) then
         iflag_SGS_model =   id_SGS_none

@@ -12,29 +12,26 @@
 !!      subroutine allocate_fluid_ele_grp_name
 !!      subroutine allocate_conduct_ele_grp_name
 !!      subroutine allocate_icore_ele_grp_name
-!!      subroutine allocate_whole_filter_groups
-!!      subroutine allocate_fluid_filter_groups
 !!
 !!      subroutine deallocate_force_list
 !!      subroutine deallocate_fluid_ele_grp_name
 !!      subroutine deallocate_conduct_ele_grp_name
 !!      subroutine deallocate_icore_ele_grp_name
-!!      subroutine deallocate_whole_filter_groups
-!!      subroutine deallocate_fluid_filter_groups
 !!@endverbatim
 !
       module   m_control_parameter
 !
       use m_precision
       use t_time_stepping_parameter
+      use t_SGS_control_parameter
 !
       implicit  none
 !
 !
 !>      Turn OFF flag
-      integer (kind=kint), parameter :: id_turn_OFF = 0
+!      integer (kind=kint), parameter :: id_turn_OFF = 0
 !>      Turn ON flag
-      integer (kind=kint), parameter :: id_turn_ON =  1
+!      integer (kind=kint), parameter :: id_turn_ON =  1
 !
 !>      Number of fields for time evolution
       integer (kind=kint)  :: num_field_to_evolve
@@ -125,27 +122,9 @@
 !
       integer (kind=kint) :: iflag_implicit_correct = 0
 !
-      integer (kind=kint), parameter :: id_SGS_none =       0
-      integer (kind=kint), parameter :: id_SGS_NL_grad =    1
-      integer (kind=kint), parameter :: id_SGS_similarity = 2
-      integer (kind=kint), parameter :: id_SGS_diffusion =  3
       integer (kind=kint) :: iflag_SGS_model = id_SGS_none
-!
-      integer (kind=kint), parameter :: id_SGS_DYNAMIC_OFF =   0
-      integer (kind=kint), parameter :: id_SGS_DYNAMIC_ON =    1
       integer (kind=kint) :: iflag_dynamic_SGS = id_SGS_DYNAMIC_OFF
 !
-      integer (kind=kint), parameter :: id_SGS_NO_FILTERING =         0
-      integer (kind=kint), parameter :: id_SGS_3D_FILTERING =         1
-      integer (kind=kint), parameter :: id_SGS_3D_EZ_FILTERING =     11
-      integer (kind=kint), parameter :: id_SGS_3D_SMP_FILTERING =    21
-      integer (kind=kint), parameter :: id_SGS_3D_EZ_SMP_FILTERING = 31
-!
-      integer (kind=kint), parameter :: id_SGS_LINE_FILTERING =       2
-      integer (kind=kint), parameter :: id_SGS_PLANE_FILTERING =      3
-      integer (kind=kint), parameter :: id_SGS_IDEAL_SPH_LOWPASS =    4
-!
-      integer (kind=kint) :: iflag_SGS_filter = id_SGS_3D_FILTERING
       integer (kind=kint) :: iset_DIFF_model_coefs =  0
       integer (kind=kint) :: iset_SGS_nagetive_clip = 0
       integer (kind=kint) :: iset_SGS_coef_marging =  0
@@ -161,12 +140,12 @@
       real (kind = kreal) :: delta_to_shrink_dynamic = 1.0d5
       real (kind = kreal) :: delta_to_extend_dynamic = 1.0d-5
 !
-      integer (kind=kint) :: iflag_SGS_heat =      id_SGS_none
-      integer (kind=kint) :: iflag_SGS_inertia =   id_SGS_none
-      integer (kind=kint) :: iflag_SGS_lorentz =   id_SGS_none
-      integer (kind=kint) :: iflag_SGS_induction = id_SGS_none
-      integer (kind=kint) :: iflag_SGS_comp_flux = id_SGS_none
-      integer (kind=kint) :: iflag_SGS_gravity =   id_SGS_none
+      integer (kind=kint) :: iflag_SGS_heat =      0
+      integer (kind=kint) :: iflag_SGS_inertia =   0
+      integer (kind=kint) :: iflag_SGS_lorentz =   0
+      integer (kind=kint) :: iflag_SGS_induction = 0
+      integer (kind=kint) :: iflag_SGS_comp_flux = 0
+      integer (kind=kint) :: iflag_SGS_gravity =   0
 !
       integer (kind=kint) :: iflag_SGS_parterbuation = 0
 !
@@ -178,73 +157,45 @@
       integer (kind=kint) :: itype_SGS_maxwell_coef =  0
       integer (kind=kint) :: itype_SGS_uxb_coef =      0
 !
-!>      ID not to apply commutation error correction
-      integer (kind=kint), parameter :: id_SGS_commute_OFF = 0
-!>      ID to apply commutation error correction
-      integer (kind=kint), parameter :: id_SGS_commute_ON =  1
-!
 !>      commutation error correction flag for system
       integer (kind=kint) :: iflag_commute_correction                   &
-     &                      = id_SGS_commute_OFF
+     &                      = 0
 !>      commutation error correction flag for linear terms
       integer (kind=kint) :: iflag_commute_linear                       &
-     &                      = id_SGS_commute_OFF
+     &                      = 0
 !>      commutation error correction flag for nonlinear terms
       integer (kind=kint) :: iflag_commute_nonlinar                     &
-     &                      = id_SGS_commute_OFF
+     &                      = 0
 !
 !>      commutation error correction flag for temperature
       integer (kind=kint) :: iflag_commute_temp                         &
-     &                      = id_SGS_commute_OFF
+     &                      = 0
 !>      commutation error correction flag for velocity
       integer (kind=kint) :: iflag_commute_velo                         &
-     &                      = id_SGS_commute_OFF
+     &                      = 0
 !>      commutation error correction flag for magnetic field
       integer (kind=kint) :: iflag_commute_magne                        &
-     &                      = id_SGS_commute_OFF
+     &                      = 0
 !>      commutation error correction flag for composition variation
       integer (kind=kint) :: iflag_commute_composit                     &
-     &                      = id_SGS_commute_OFF
+     &                      = 0
 !
 !>      commutation error correction flag for heat flux
       integer (kind=kint) :: iflag_commute_heat                         &
-     &                      = id_SGS_commute_OFF
+     &                      = 0
 !>      commutation error correction flag for momentum flux
       integer (kind=kint) :: iflag_commute_inertia                      &
-     &                      = id_SGS_commute_OFF
+     &                      = 0
 !>      commutation error correction flag for heat flux
       integer (kind=kint) :: iflag_commute_lorentz                      &
-     &                      = id_SGS_commute_OFF
+     &                      = 0
 !>      commutation error correction flag for magnetic induction
       integer (kind=kint) :: iflag_commute_induction                    &
-     &                      = id_SGS_commute_OFF
+     &                      = 0
 !>      commutation error correction flag for composition flux
       integer (kind=kint) :: iflag_commute_c_flux                       &
-     &                      = id_SGS_commute_OFF
+     &                      = 0
 !
-      integer (kind=kint) :: num_whole_filter_grp = 0
-      integer (kind=kint) :: num_fluid_filter_grp = 0
-      integer (kind=kint), allocatable :: id_whole_filter_grp(:)
-      integer (kind=kint), allocatable :: id_fluid_filter_grp(:)
-      character (len=kchara), allocatable :: whole_filter_grp(:)
-      character (len=kchara), allocatable :: fluid_filter_grp(:)
-!
-      integer (kind=kint) :: num_whole_w_filter_grp = 0
-      integer (kind=kint) :: num_fluid_w_filter_grp = 0
-      integer (kind=kint), allocatable :: id_whole_w_filter_grp(:)
-      integer (kind=kint), allocatable :: id_fluid_w_filter_grp(:)
-      character (len=kchara), allocatable :: whole_w_filter_grp(:)
-      character (len=kchara), allocatable :: fluid_w_filter_grp(:)
-!
-      integer (kind=kint) :: iflag_heat_filtering = 0
-      integer (kind=kint) :: iflag_momentum_filtering = 0
-      integer (kind=kint) :: iflag_induction_filtering = 0
-!
-!
-!>      filter ID for @f$ s\Delta @f$  filter
-      integer (kind=kint), parameter :: ifilter_2delta = 1
-!>      filter ID for @f$ 4\Delta @f$  filter
-      integer (kind=kint), parameter :: ifilter_4delta = 2
 !>      filter ID to obtain SGS terms
       integer (kind=kint) :: ifilter_final = ifilter_2delta
 !
@@ -285,34 +236,6 @@
       end subroutine allocate_icore_ele_grp_name
 !
 !  ---------------------------------------------------------------------
-!
-      subroutine allocate_whole_filter_groups
-!
-!
-      allocate(whole_filter_grp(num_whole_filter_grp))
-      allocate(id_whole_filter_grp(num_whole_filter_grp))
-      allocate(whole_w_filter_grp(num_whole_w_filter_grp))
-      allocate(id_whole_w_filter_grp(num_whole_w_filter_grp))
-      id_whole_filter_grp =   0
-      id_whole_w_filter_grp = 0
-!
-      end subroutine allocate_whole_filter_groups
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_fluid_filter_groups
-!
-!
-      allocate(fluid_filter_grp(num_fluid_filter_grp))
-      allocate(id_fluid_filter_grp(num_fluid_filter_grp))
-      allocate(fluid_w_filter_grp(num_fluid_w_filter_grp))
-      allocate(id_fluid_w_filter_grp(num_fluid_w_filter_grp))
-      id_fluid_filter_grp =   0
-      id_fluid_w_filter_grp = 0
-!
-      end subroutine allocate_fluid_filter_groups
-!
-!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine deallocate_force_list
@@ -344,26 +267,6 @@
       deallocate(in_core_ele_grp_name)
 !
       end subroutine deallocate_icore_ele_grp_name
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine deallocate_whole_filter_groups
-!
-!
-      deallocate(whole_filter_grp,   id_whole_filter_grp)
-      deallocate(whole_w_filter_grp, id_whole_w_filter_grp)
-!
-      end subroutine deallocate_whole_filter_groups
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine deallocate_fluid_filter_groups
-!
-!
-      deallocate(fluid_filter_grp,   id_fluid_filter_grp)
-      deallocate(fluid_w_filter_grp, id_fluid_w_filter_grp)
-!
-      end subroutine deallocate_fluid_filter_groups
 !
 !  ---------------------------------------------------------------------
 !

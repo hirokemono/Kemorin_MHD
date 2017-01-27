@@ -38,6 +38,7 @@
      &         (node, ele, filtering, wide_filtering, wk_filter)
 !
       use m_control_parameter
+      use m_SGS_control_parameter
       use m_nod_filter_comm_table
       use m_filter_elength
       use m_filter_file_names
@@ -51,13 +52,13 @@
       type(filtering_work_type), intent(inout) :: wk_filter
 !
 !
-      if (iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
+      if(filter_param1%iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
         call read_line_filtering_data                                   &
      &     (node%numnod, ele%numele, FEM1_elen, filtering%fil_l)
       else
         call read_3d_filter_moments                                     &
      &     (node%numnod, ele%numele, FEM1_elen)
-        if(iflag_SGS_filter .gt. 0) then
+        if(filter_param1%iflag_SGS_filter .gt. id_turn_OFF) then
           call read_3d_filtering_data                                   &
      &       (filter_3d_head, ifmt_3d_filter, filtering)
           call alloc_nod_data_4_filter(nnod_filtering, wk_filter)

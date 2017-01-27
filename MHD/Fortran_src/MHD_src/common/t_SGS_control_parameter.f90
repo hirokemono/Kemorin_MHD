@@ -8,19 +8,14 @@
 !> @brief control flags for MHD dynamo model
 !!
 !!@verbatim
-!!      subroutine alloc_icore_ele_grp_name
-!!      subroutine alloc_whole_filter_groups
-!!      subroutine alloc_fluid_filter_groups
-!!
-!!      subroutine dealloc_icore_ele_grp_name
-!!      subroutine dealloc_whole_filter_groups
-!!      subroutine dealloc_fluid_filter_groups
+!!      subroutine alloc_filter_group_param(num_grp, f_area)
+!!      subroutine dealloc_SGS_filter_groups(filter_param)
+!!      subroutine dealloc_filter_group_param(f_area)
 !!@endverbatim
 !
-      module   m_control_parameter
+      module   t_SGS_control_parameter
 !
       use m_precision
-      use t_time_stepping_parameter
 !
       implicit  none
 !
@@ -140,18 +135,16 @@
 !>      filter ID to obtain SGS terms
 !
 !
-        integer (kind=kint) :: ifilter_final = ifilter_2delta
-!
-        integer (kind=kint) :: iflag_SGS_filter = id_SGS_3D_FILTERING
-        integer (kind=kint) :: iset_DIFF_model_coefs =  0
 !
 !
       type SGS_filter_area_params
         integer (kind=kint) :: num_f_group = 0
         integer (kind=kint), allocatable :: id_f_group(:)
-        character (len=kchara), allocatable :: gourp_name(:)
+        character (len=kchara), allocatable :: f_gourp_name(:)
       end type SGS_filter_area_params
 !
+!
+!>      Structure for contriol parameters for filtering
       type SGS_filtering_params
         type(SGS_filter_area_params) :: whole
         type(SGS_filter_area_params) :: fluid
@@ -163,31 +156,16 @@
         integer (kind=kint) :: iflag_composition_filtering = 0
         integer (kind=kint) :: iflag_momentum_filtering =    0
         integer (kind=kint) :: iflag_induction_filtering =   0
+!
+        integer (kind=kint) :: ifilter_final = ifilter_2delta
+!
+        integer (kind=kint) :: iflag_SGS_filter = id_SGS_3D_FILTERING
+        integer (kind=kint) :: iset_DIFF_model_coefs =  0
       end type SGS_filtering_params
 !
 !  ---------------------------------------------------------------------
 !
       contains
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine alloc_whole_filter_groups
-!
-!
-      call alloc_filter_group_param(num_whole_filter_grp, whole)
-      call alloc_filter_group_param(num_whole_w_filter_grp, fluid_wide)
-!
-      end subroutine alloc_whole_filter_groups
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine alloc_fluid_filter_groups
-!
-!
-      call alloc_filter_group_param(num_fluid_filter_grp, fluid)
-      call alloc_filter_group_param(num_fluid_w_filter_grp, fluid_wide)
-!
-      end subroutine alloc_fluid_filter_groups
 !
 !  ---------------------------------------------------------------------
 !
@@ -198,38 +176,27 @@
 !
 !
       f_area%num_f_group = num_grp
-      allocate(f_area%gourp_name(f_area%num_f_group))
+      allocate(f_area%f_gourp_name(f_area%num_f_group))
       allocate(f_area%id_f_group(f_area%num_f_group))
       if(f_area%num_f_group .gt. 0) f_area%id_f_group = 0
 !
-      end subroutine alloc_icore_ele_grp_name
+      end subroutine alloc_filter_group_param
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_whole_filter_groups(filter_param)
+      subroutine dealloc_SGS_filter_groups(filter_param)
 !
       type(SGS_filtering_params), intent(inout) :: filter_param
 !
 !
-      call dealloc_filter_group_param(num_whole_filter_grp, whole)
-      call dealloc_filter_group_param                                   &
-     &   (num_whole_w_filter_grp, fluid_wide)
+      call dealloc_filter_group_param(filter_param%whole)
+      call dealloc_filter_group_param(filter_param%fluid_wide)
 !
-      end subroutine dealloc_whole_filter_groups
+      call dealloc_filter_group_param(filter_param%whole_wide)
+      call dealloc_filter_group_param(filter_param%fluid_wide)
 !
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_fluid_filter_groups(filter_param)
-!
-      type(SGS_filtering_params), intent(inout) :: filter_param
-!
-!
-      call dealloc_filter_group_param(num_fluid_filter_grp, fluid)
-      call dealloc_filter_group_param                                   &
-     &   (num_fluid_w_filter_grp, fluid_wide)
-!
-      end subroutine dealloc_fluid_filter_groups
+      end subroutine dealloc_SGS_filter_groups
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -239,9 +206,27 @@
       type(SGS_filter_area_params), intent(inout) :: f_area
 !
 !
-      deallocate(f_area%gourp_name, f_area%id_f_group)
+      deallocate(f_area%f_gourp_name, f_area%id_f_group)
 !
-      end subroutine dealloc_icore_ele_grp_name
+      end subroutine dealloc_filter_group_param
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_filter_group_param(f_area_org, f_area_new)
+!
+      type(SGS_filter_area_params), intent(in) :: f_area_org
+      type(SGS_filter_area_params), intent(inout) :: f_area_new
+!
+!
+      call alloc_filter_group_param(f_area_org%num_f_group, f_area_new)
+      if(f_area_new%num_f_group .gt. 0) then
+        f_area_new%f_gourp_name(1:f_area_new%num_f_group)               &
+     &        = f_area_org%f_gourp_name(1:f_area_new%num_f_group)
+        f_area_new%id_f_group(1:f_area_new%num_f_group)                 &
+     &        = f_area_org%id_f_group(1:f_area_new%num_f_group)
+      end if
+!
+      end subroutine copy_filter_group_param
 !
 !  ---------------------------------------------------------------------
 !

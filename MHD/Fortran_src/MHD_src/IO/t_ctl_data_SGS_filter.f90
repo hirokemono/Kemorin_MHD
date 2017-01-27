@@ -21,6 +21,7 @@
 !!          momentum_filter_ctl:     momentum equation
 !!          heat_filter_ctl:         heat equation
 !!          induction_filter_ctl:    inducition equation
+!!          composition_filter_ctl:  composition equation
 !!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!      array sph_filter_ctl    2
@@ -50,6 +51,7 @@
 !!        momentum_filter_ctl      fluid_filtering
 !!        heat_filter_ctl          fluid_filtering
 !!        induction_filter_ctl     whole_filtering
+!!        composition_filter_ctl   fluid_filtering
 !!      end 3d_filtering_ctl
 !! 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -90,6 +92,7 @@
         type(read_character_item) :: momentum_filter_ctl
         type(read_character_item) :: heat_filter_ctl
         type(read_character_item) :: induction_filter_ctl
+        type(read_character_item) :: compostion_filter_ctl
       end type SGS_3d_filter_control
 !
 !
@@ -115,11 +118,13 @@
      &                        =  'heat_filter_ctl'
       character(len=kchara) :: hd_induction_filter_ctl                  &
      &                        =  'induction_filter_ctl'
+      character(len=kchara) :: hd_comp_filter_ctl                       &
+     &                        =  'composition_filter_ctl'
 !
       private :: hd_radial_filter_w, hd_sphere_filter_w, hd_max_mom
       private :: hd_whole_filter_grp, hd_fluid_filter_grp
       private :: hd_momentum_filter_ctl, hd_heat_filter_ctl
-      private :: hd_induction_filter_ctl
+      private :: hd_induction_filter_ctl, hd_comp_filter_ctl
 !
 !   --------------------------------------------------------------------
 !
@@ -155,6 +160,8 @@
      &      s3df_ctl%heat_filter_ctl)
         call read_chara_ctl_type(hd_induction_filter_ctl,               &
      &      s3df_ctl%induction_filter_ctl)
+        call read_chara_ctl_type(hd_comp_filter_ctl,                    &
+     &      s3df_ctl%compostion_filter_ctl)
       end do
 !
       end subroutine read_3d_filtering_ctl
@@ -204,6 +211,7 @@
       call bcast_ctl_type_c1(s3df_ctl%momentum_filter_ctl)
       call bcast_ctl_type_c1(s3df_ctl%heat_filter_ctl)
       call bcast_ctl_type_c1(s3df_ctl%induction_filter_ctl)
+      call bcast_ctl_type_c1(s3df_ctl%compostion_filter_ctl)
 !
       end subroutine bcast_3d_filtering_ctl
 !

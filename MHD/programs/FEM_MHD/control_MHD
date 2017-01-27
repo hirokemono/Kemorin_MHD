@@ -676,6 +676,7 @@ begin MHD_control
         momentum_filter_ctl      fluid_filtering
         heat_filter_ctl          fluid_filtering
         induction_filter_ctl     whole_filtering
+        composition_filter_ctl   fluid_filtering
       end 3d_filtering_ctl
 !
       begin dynamic_model_layer_ctl

@@ -38,7 +38,7 @@
 !> data structure for filter communication table
         integer(kind = kint) :: nnod_fil
 !> Work array for filtering
-        real(kind = kreal), pointer :: x_fil(:)
+        real(kind = kreal), allocatable :: x_fil(:)
       end type filtering_work_type
 !
       private :: s_const_tbl_3d_filtering_smp

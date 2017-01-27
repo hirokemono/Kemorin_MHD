@@ -48,6 +48,7 @@
       use m_ucd_data
       use m_default_file_prefix
       use m_physical_property
+      use m_SGS_control_parameter
 !
       use set_control_platform_data
       use set_control_nodal_data_MHD
@@ -111,7 +112,8 @@
 !
       call s_set_control_4_filtering                                    &
      &   (model_ctl%sgs_ctl%SGS_filter_name_ctl,                        &
-     &    model_ctl%sgs_ctl%ffile_ctl, model_ctl%sgs_ctl%s3df_ctl)
+     &    model_ctl%sgs_ctl%ffile_ctl, model_ctl%sgs_ctl%s3df_ctl,      &
+     &    filter_param1)
 !
 !   set fields
 !

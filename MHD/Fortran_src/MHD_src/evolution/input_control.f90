@@ -175,6 +175,7 @@
 !
       use m_machine_parameter
       use m_control_parameter
+      use m_SGS_control_parameter
 !
       use set_3d_filtering_group_id
       use read_filtering_data
@@ -190,6 +191,7 @@
       type(filtering_data_type), intent(inout) :: wide_filtering
       type(filtering_work_type), intent(inout) :: wk_filter
 !
+      integer(kind = kint) :: iflag
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &      write(*,*) 'set_local_node_id_4_monitor'
@@ -209,19 +211,24 @@
       call s_read_filtering_data                                        &
      &   (mesh%node, mesh%ele, filtering, wide_filtering, wk_filter)
 !
-      if     (iflag_SGS_filter .eq. id_SGS_3D_FILTERING                 &
-     &   .or. iflag_SGS_filter .eq. id_SGS_3D_EZ_FILTERING              &
-     &   .or. iflag_SGS_filter .eq. id_SGS_3D_SMP_FILTERING             &
-     &   .or. iflag_SGS_filter .eq. id_SGS_3D_EZ_SMP_FILTERING ) then
+      iflag = filter_param1%iflag_SGS_filter
+      if     (iflag .eq. id_SGS_3D_FILTERING                            &
+     &  .or.  iflag .eq. id_SGS_3D_EZ_FILTERING                         &
+     &  .or.  iflag .eq. id_SGS_3D_SMP_FILTERING                        &
+     &  .or.  iflag .eq. id_SGS_3D_EZ_SMP_FILTERING ) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &       write(*,*) 's_set_3d_filtering_group_id'
-        call s_set_3d_filtering_group_id(filtering%filter)
+        call s_set_3d_filtering_group_id                                &
+     &     (filtering%filter, filter_param1)
 !
         if (iflag_SGS_model .eq. id_SGS_similarity                      &
      &       .and. iflag_dynamic_SGS .eq. id_SGS_DYNAMIC_ON) then
           if (iflag_debug .ge. iflag_routine_msg)                       &
      &         write(*,*) 's_set_w_filtering_group_id'
-          call s_set_w_filtering_group_id(wide_filtering%filter)
+          call copy_filter_group_param                                  &
+     &       (filter_param1%whole, filter_param1%whole_wide)
+          call copy_filter_group_param                                  &
+     &       (filter_param1%fluid, filter_param1%fluid_wide)
         end if
       end if
 !
