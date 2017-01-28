@@ -69,6 +69,7 @@
 !
       use m_machine_parameter
       use m_control_parameter
+      use m_SGS_control_parameter
       use m_t_int_parameter
 !
       use t_comm_table
@@ -231,21 +232,21 @@
 ! -------     advection and forces
 !
       if (iflag_velo_supg .eq. id_turn_ON) then
-        call int_vol_velo_pre_ele_upwind(node, ele, fluid,              &
+        call int_vol_velo_pre_ele_upwind(cmt_param1, node, ele, fluid,  &
      &      fl_prop, cd_prop, iphys, nod_fld, ak_MHD,                   &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
      &      iphys_ele, ifld_diff%i_mom_flux, ifld_diff%i_lorentz,       &
      &      jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,                   &
      &      mhd_fem_wk, fem_wk, f_nl)
       else if (iflag_velo_supg .eq. id_magnetic_SUPG) then
-        call int_vol_velo_pre_ele_upwind(node, ele, fluid,              &
+        call int_vol_velo_pre_ele_upwind(cmt_param1, node, ele, fluid,  &
      &      fl_prop, cd_prop, iphys, nod_fld, ak_MHD,                   &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
      &      iphys_ele, ifld_diff%i_mom_flux, ifld_diff%i_lorentz,       &
      &      jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,                   &
      &      mhd_fem_wk, fem_wk, f_nl)
       else
-        call int_vol_velo_pre_ele(node, ele, fluid,                     &
+        call int_vol_velo_pre_ele(cmt_param1, node, ele, fluid,         &
      &      fl_prop, cd_prop, iphys, nod_fld, ak_MHD,                   &
      &      ele_fld%ntot_phys, ele_fld%d_fld, iphys_ele,                &
      &      ifld_diff%i_mom_flux, ifld_diff%i_lorentz,                  &
@@ -257,9 +258,9 @@
 !
       call int_surf_velo_pre_ele                                        &
      &   (ifld_diff%i_mom_flux, ifld_diff%i_lorentz, ak_MHD%ak_d_velo,  &
-     &    node, ele, surf, sf_grp, fl_prop, Vsf_bcs, Bsf_bcs,           &
-     &    iphys, nod_fld, jac_sf_grp_q, rhs_tbl, FEM_elens, diff_coefs, &
-     &    fem_wk, surf_wk, f_l, f_nl)
+     &    cmt_param1, node, ele, surf, sf_grp, fl_prop,                 &
+     &    Vsf_bcs, Bsf_bcs, iphys, nod_fld, jac_sf_grp_q, rhs_tbl,      &
+     &    FEM_elens, diff_coefs, fem_wk, surf_wk, f_l, f_nl)
 !
 !
       if (evo_velo%iflag_scheme .eq. id_explicit_euler) then

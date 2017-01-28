@@ -336,8 +336,8 @@
 !
       if ( retval .ne. 0 ) then
         if (iflag_debug.eq.1) write(*,*) 'update_matrices'
-        call update_matrices                                            &
-     &    (mesh1, group1, ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs,      &
+        call update_matrices(cmt_param1,                                &
+     &     mesh1, group1, ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs,      &
      &     ak_MHD, jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, FEM1_elen,   &
      &     ifld_diff, diff_coefs, rhs_tbl1, MHD1_mat_tbls,              &
      &     surf1_wk, mhd_fem1_wk, fem1_wk, MHD1_matrices, solver_pack1)

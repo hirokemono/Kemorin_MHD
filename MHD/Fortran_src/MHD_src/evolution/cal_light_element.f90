@@ -136,7 +136,8 @@
       end if
 !
 !
-      call int_sf_h_flux(node, ele, surf, sf_grp, jac_sf_grp, rhs_tbl,  &
+      call int_sf_scalar_flux                                           &
+     &   (node, ele, surf, sf_grp, jac_sf_grp, rhs_tbl,                 &
      &    sf_bcs%flux, intg_point_t_evo, ak_d_composit, fem_wk, f_l)
 !
 !

@@ -102,8 +102,9 @@
       use cal_sgs_fluxes
       use set_boundary_scalars
       use int_vol_diffusion_ele
-      use int_surf_temp
       use int_vol_thermal_ele
+      use int_surf_div_fluxes_sgs
+      use int_surf_fixed_gradients
       use cal_stratification_by_temp
       use copy_nodal_fields
       use evolve_by_1st_euler
@@ -193,15 +194,24 @@
 !      call check_ff_smp(my_rank, n_scalar, node%max_nod_smp, f_l)
 !      call check_ff_smp(my_rank, n_scalar, node%max_nod_smp, f_nl)
 !
-      call int_surf_temp_ele(ifld_diff%i_heat_flux, ak_d_temp,          &
-     &    node, ele, surf, sf_grp, property, iphys, nod_fld, Tsf_bcs,   &
-     &    jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,                   &
-     &    fem_wk, surf_wk, f_l, f_nl)
+      call int_sf_scalar_flux                                           &
+     &   (node, ele, surf, sf_grp, jac_sf_grp, rhs_tbl,                 &
+     &    Tsf_bcs%flux, intg_point_t_evo, ak_d_temp, fem_wk, f_l)
+!
+      if(cmt_param1%iflag_c_temp .ne. id_SGS_commute_OFF                &
+          .and. iflag_SGS_heat .ne. id_SGS_none) then
+        call int_sf_skv_sgs_div_v_flux(node, ele, surf, sf_grp,         &
+     &      nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, intg_point_t_evo,  &
+     &      Tsf_bcs%sgs%ngrp_sf_dat, Tsf_bcs%sgs%id_grp_sf_dat,         &
+     &      ifilter_final, iphys%i_SGS_h_flux, iphys%i_velo,            &
+     &      iphys%i_temp, diff_coefs%num_field, ifld_diff%i_heat_flux,  &
+     &      diff_coefs%ak, property%coef_advect, fem_wk, surf_wk, f_nl)
+      end if
 !
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_scalar, iphys%i_temp)
 !      call check_nodal_data                                            &
-!     &   ((50+my_rank), ele_fld,  n_vector, iphys_ele%i_velo)
+!     &   ((50+my_rank), ele_fld, n_vector, iphys_ele%i_velo)
 !      call check_ff_smp(my_rank, n_scalar, node%max_nod_smp, f_l)
 !      call check_ff_smp(my_rank, n_scalar, node%max_nod_smp, f_nl)
 !
@@ -273,8 +283,9 @@
       use cal_sgs_fluxes
       use set_boundary_scalars
       use int_vol_diffusion_ele
-      use int_surf_temp
       use int_vol_thermal_ele
+      use int_surf_fixed_gradients
+      use int_surf_div_fluxes_sgs
       use cal_stratification_by_temp
       use copy_nodal_fields
       use evolve_by_1st_euler
@@ -365,10 +376,19 @@
 !      call check_ff_smp(my_rank, n_scalar, node%max_nod_smp, f_l)
 !      call check_ff_smp(my_rank, n_scalar, node%max_nod_smp, f_nl)
 !
-      call int_surf_temp_ele(ifld_diff%i_heat_flux, ak_d_temp,          &
-     &    node, ele, surf, sf_grp, property, iphys, nod_fld, Tsf_bcs,   &
-     &    jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,                   &
-     &    fem_wk, surf_wk, f_l, f_nl)
+      call int_sf_scalar_flux                                           &
+     &   (node, ele, surf, sf_grp, jac_sf_grp, rhs_tbl,                 &
+     &    Tsf_bcs%flux, intg_point_t_evo, ak_d_temp, fem_wk, f_l)
+!
+      if(cmt_param1%iflag_c_temp .ne. id_SGS_commute_OFF                &
+          .and. iflag_SGS_heat .ne. id_SGS_none) then
+        call int_sf_skv_sgs_div_v_flux(node, ele, surf, sf_grp,         &
+     &      nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, intg_point_t_evo,  &
+     &      Tsf_bcs%sgs%ngrp_sf_dat, Tsf_bcs%sgs%id_grp_sf_dat,         &
+     &      ifilter_final, iphys%i_SGS_h_flux, iphys%i_velo,            &
+     &      iphys%i_temp, diff_coefs%num_field, ifld_diff%i_heat_flux,  &
+     &      diff_coefs%ak, property%coef_advect, fem_wk, surf_wk, f_nl)
+      end if
 !
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_scalar, iphys%i_temp)

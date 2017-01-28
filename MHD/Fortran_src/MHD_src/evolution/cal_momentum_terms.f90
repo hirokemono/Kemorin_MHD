@@ -47,6 +47,7 @@
       use m_precision
 !
       use m_control_parameter
+      use m_SGS_control_parameter
       use m_phys_constants
 !
       use t_physical_property
@@ -146,9 +147,9 @@
 !
       call int_surf_velo_monitor                                        &
      &   (i_field, iak_diff_mf, iak_diff_lor, ak_MHD%ak_d_velo,         &
-     &    node, ele, surf, sf_grp, fl_prop, Vsf_bcs, Bsf_bcs,           &
-     &    iphys, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,   &
-     &    fem_wk, surf_wk, f_l, f_nl)
+     &    cmt_param1, node, ele, surf, sf_grp, fl_prop,                 &
+     &    Vsf_bcs, Bsf_bcs, iphys, nod_fld, jac_sf_grp, rhs_tbl,        &
+     &    FEM_elens, diff_coefs, fem_wk, surf_wk, f_l, f_nl)
 !
       call cal_t_evo_4_vector(iflag_velo_supg,                          &
      &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl, nod_comm,      &
@@ -210,7 +211,7 @@
      &    iak_diff_v, one, ak_MHD%ak_d_velo, iphys%i_velo, fem_wk, f_l)
 !
       call int_surf_velo_monitor(iphys%i_v_diffuse,                     &
-     &    iak_diff_mf, iak_diff_lor, ak_MHD%ak_d_velo,                  &
+     &    iak_diff_mf, iak_diff_lor, ak_MHD%ak_d_velo, cmt_param1,      &
      &    node, ele, surf, sf_grp, fl_prop, Vsf_bcs, Bsf_bcs,           &
      &    iphys, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,   &
      &    fem_wk, surf_wk, f_l, f_nl)

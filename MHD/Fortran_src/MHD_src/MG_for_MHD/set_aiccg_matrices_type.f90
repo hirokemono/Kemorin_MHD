@@ -63,6 +63,7 @@
      &         mat_press, mat_magp)
 !
       use m_control_parameter
+      use m_SGS_control_parameter
       use m_physical_property
 !
       use t_mesh_data
@@ -130,9 +131,10 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'matrix assemble'
 !
-      call int_MHD_poisson_matrices(mesh, jac_3d_l, rhs_tbl,            &
-     &    MG_mat_linear, MG_mat_fl_l, FEM_elens, ifld_diff, diff_coefs, &
-     &    fem_wk, mat_press, mat_magp)
+      call int_MHD_poisson_matrices(cmt_param1%iflag_c_magne,           &
+     &    mesh, jac_3d_l, rhs_tbl, MG_mat_linear, MG_mat_fl_l,          &
+     &    FEM_elens, ifld_diff, diff_coefs, fem_wk,                     &
+     &    mat_press, mat_magp)
 !
       if (iflag_scheme .eq. id_Crank_nicolson) then
         call int_vol_crank_mat_lump                                     &

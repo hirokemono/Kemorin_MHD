@@ -8,9 +8,10 @@
 !        modifired by H. Matsui on June, 2005
 !        modifired by H. Matsui on Nov., 2007
 !
-!!      subroutine int_MHD_poisson_matrices(mesh, jac_3d_l, rhs_tbl,    &
-!!     &          MG_mat_linear, MG_mat_fl_l, FEM_elens,                &
-!!     &          ifld_diff, diff_coefs, fem_wk, mat_press, mat_magp)
+!!      subroutine int_MHD_poisson_matrices(iflag_commute_magne,        &
+!!     &          mesh, jac_3d_l, rhs_tbl, MG_mat_linear, MG_mat_fl_l,  &
+!!     &          FEM_elens, ifld_diff, diff_coefs, fem_wk,             &
+!!     &          mat_press, mat_magp)
 !!      subroutine int_MHD_crank_matrices(mesh, ak_MHD, jac_3d, rhs_tbl,&
 !!     &          MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,              &
 !!     &          FEM_elens, ifld_diff, diff_coefs, fem_wk,             &
@@ -63,10 +64,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_MHD_poisson_matrices(mesh, jac_3d_l, rhs_tbl,      &
-     &          MG_mat_linear, MG_mat_fl_l, FEM_elens,                  &
-     &          ifld_diff, diff_coefs, fem_wk, mat_press, mat_magp)
+      subroutine int_MHD_poisson_matrices(iflag_commute_magne,          &
+     &          mesh, jac_3d_l, rhs_tbl, MG_mat_linear, MG_mat_fl_l,    &
+     &          FEM_elens, ifld_diff, diff_coefs, fem_wk,               &
+     &          mat_press, mat_magp)
 !
+      integer(kind = kint), intent(in) :: iflag_commute_magne
       type(mesh_geometry), intent(in) :: mesh
       type(jacobians_3d), intent(in) :: jac_3d_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -82,16 +85,18 @@
 !
 !
       if (evo_velo%iflag_scheme .gt. id_no_evolution) then
-        call sel_int_poisson_mat(mesh%ele, jac_3d_l,                    &
-     &      rhs_tbl, MG_mat_fl_l, FEM_elens, intg_point_poisson,        &
+        call sel_int_poisson_mat                                        &
+     &     (mesh%ele, jac_3d_l, rhs_tbl, MG_mat_fl_l, FEM_elens,        &
+     &      iflag_commute_magne, intg_point_poisson,                    &
      &      diff_coefs%num_field, ifld_diff%i_velo, diff_coefs%ak,      &
      &      ifilter_final, fem_wk, mat_press)
       end if
 !
       if (     evo_magne%iflag_scheme .gt.  id_no_evolution             &
      &    .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
-        call sel_int_poisson_mat(mesh%ele, jac_3d_l,                    &
-     &      rhs_tbl, MG_mat_linear, FEM_elens, intg_point_poisson,      &
+        call sel_int_poisson_mat                                        &
+     &     (mesh%ele, jac_3d_l, rhs_tbl, MG_mat_linear, FEM_elens,      &
+     &      iflag_commute_magne, intg_point_poisson,                    &
      &      diff_coefs%num_field, ifld_diff%i_magne, diff_coefs%ak,     &
      &      ifilter_final, fem_wk, mat_magp)
       end if
@@ -172,9 +177,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sel_int_poisson_mat                                    &
-     &         (ele, jac_3d_l, rhs_tbl, MG_mat_tbl, FEM_elens, n_int,   &
-     &          num_diff_kinds, iak_diff, ak_diff,                      &
-     &          i_filter, fem_wk, mat11_DJDS)
+     &         (ele, jac_3d_l, rhs_tbl, MG_mat_tbl, FEM_elens,          &
+     &          iflag_commute_magne, n_int, num_diff_kinds,             &
+     &          iak_diff, ak_diff, i_filter, fem_wk, mat11_DJDS)
 !
       use int_vol_poisson_mat
       use int_vol_poisson_sgs_matrix
@@ -185,6 +190,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(table_mat_const), intent(in) :: MG_mat_tbl
 !
+      integer(kind = kint), intent(in) :: iflag_commute_magne
       integer(kind = kint), intent(in) :: n_int, i_filter
       integer(kind = kint), intent(in) :: num_diff_kinds, iak_diff
       real(kind = kreal), intent(in)                                    &
@@ -194,7 +200,7 @@
       type(DJDS_MATRIX), intent(inout) :: mat11_DJDS
 !
 !
-      if (cmt_param1%iflag_c_magne .eq. id_SGS_commute_ON) then
+      if (iflag_commute_magne .eq. id_SGS_commute_ON) then
         call int_vol_poisson_sgs_mat11                                  &
      &     (ele, jac_3d_l, rhs_tbl, MG_mat_tbl, FEM_elens, n_int,       &
      &      i_filter, ak_diff(1,iak_diff), fem_wk, mat11_DJDS)

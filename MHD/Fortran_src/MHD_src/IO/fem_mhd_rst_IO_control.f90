@@ -302,6 +302,7 @@
 !
       subroutine output_model_coef_file(index_rst, wk_sgs, wk_diff)
 !
+      use m_SGS_control_parameter
       use t_ele_info_4_dynamic
 !
       use sgs_ini_model_coefs_IO
@@ -322,7 +323,7 @@
       end if
       call add_dat_extension(fn_tmp, rst_sgs_coef_name)
 !
-      call output_ini_model_coefs(wk_sgs, wk_diff)
+      call output_ini_model_coefs(cmt_param1, wk_sgs, wk_diff)
 !
       end subroutine output_model_coef_file
 !
@@ -332,6 +333,7 @@
      &         wk_sgs, wk_diff, sgs_coefs, diff_coefs)
 !
       use m_control_parameter
+      use m_SGS_control_parameter
       use t_geometry_data_MHD
       use t_SGS_model_coefs
       use t_ele_info_4_dynamic
@@ -360,7 +362,7 @@
       end if
 !
       call add_dat_extension(fn_tmp, rst_sgs_coef_name)
-      call input_ini_model_coefs(ele, fluid, layer_tbl,                 &
+      call input_ini_model_coefs(cmt_param1, ele, fluid, layer_tbl,     &
      &   wk_sgs, wk_diff, sgs_coefs, diff_coefs)
 !
       end subroutine input_model_coef_file

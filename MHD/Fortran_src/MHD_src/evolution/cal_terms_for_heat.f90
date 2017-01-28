@@ -67,7 +67,6 @@
       use cal_for_ffs
       use nod_phys_send_recv
       use set_boundary_scalars
-      use int_surf_temp
 !
       implicit none
 !
@@ -84,6 +83,7 @@
      &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
       use int_vol_temp_monitor
+      use int_surf_div_fluxes_sgs
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -127,10 +127,16 @@
      &     mhd_fem_wk, fem_wk, f_nl)
       end if
 !
-      call int_surf_temp_monitor(i_field, iak_diff_hf, ak_d_temp,       &
-     &    node, ele, surf, sf_grp, property, iphys, nod_fld, Tsf_bcs,   &
-     &    jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,                   &
-     &    fem_wk, surf_wk, f_l, f_nl)
+      if(cmt_param1%iflag_c_temp .ne. id_SGS_commute_OFF                &
+          .and. iflag_SGS_heat .ne. id_SGS_none                         &
+          .and. i_field .eq. iphys%i_SGS_div_h_flux) then
+        call int_sf_skv_sgs_div_v_flux(node, ele, surf, sf_grp,         &
+     &      nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, intg_point_t_evo,  &
+     &      Tsf_bcs%sgs%ngrp_sf_dat, Tsf_bcs%sgs%id_grp_sf_dat,         &
+     &      ifilter_final, iphys%i_SGS_h_flux, iphys%i_velo,            &
+     &      iphys%i_temp, diff_coefs%num_field, iak_diff_hf,            &
+     &      diff_coefs%ak, property%coef_advect, fem_wk, surf_wk, f_nl)
+      end if
 !
       call cal_t_evo_4_scalar(iflag_temp_supg,                          &
      &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl, nod_comm,      &
@@ -161,6 +167,7 @@
      &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
       use int_vol_diffusion_ele
+      use int_surf_fixed_gradients
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -194,11 +201,9 @@
      &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,   &
      &    iak_diff_t, one, ak_d_temp, iphys%i_temp, fem_wk, f_l)
 !
-      call int_surf_temp_monitor                                        &
-     &   (iphys%i_t_diffuse, iak_diff_hf, ak_d_temp,                    &
-     &    node, ele, surf, sf_grp, property, iphys, nod_fld, Tsf_bcs,   &
-     &    jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,                   &
-     &    fem_wk, surf_wk, f_l, f_nl)
+      call int_sf_scalar_flux                                           &
+     &   (node, ele, surf, sf_grp, jac_sf_grp, rhs_tbl,                 &
+     &    Tsf_bcs%flux, intg_point_t_evo, ak_d_temp, fem_wk, f_l)
 !
       call set_ff_nl_smp_2_ff(n_scalar, node, rhs_tbl, f_l, f_nl)
 !

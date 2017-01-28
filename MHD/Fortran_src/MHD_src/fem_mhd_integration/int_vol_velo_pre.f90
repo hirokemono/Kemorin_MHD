@@ -8,16 +8,17 @@
 !        modified by H. Matsui on Oct., 2005
 !        modified by H. Matsui on Aug., 2007
 !
-!!      subroutine int_vol_velo_pre_ele                                 &
-!!     &        (node, ele, fluid, fl_prop, cd_prop, iphys, nod_fld,    &
+!!      subroutine int_vol_velo_pre_ele(cmt_param,                      &
+!!     &         node, ele, fluid, fl_prop, cd_prop, iphys, nod_fld,    &
 !!     &         ak_MHD, ncomp_ele, d_ele, iphys_ele,                   &
 !!     &         iak_diff_mf, iak_diff_lor, jac_3d, rhs_tbl, FEM_elens, &
 !!     &         diff_coefs, mhd_fem_wk, fem_wk, f_nl)
-!!      subroutine int_vol_velo_pre_ele_upwind                          &
-!!     &         (node, ele, fluid, fl_prop, cd_prop, iphys, nod_fld,   &
+!!      subroutine int_vol_velo_pre_ele_upwind(cmt_param,               &
+!!     &          node, ele, fluid, fl_prop, cd_prop, iphys, nod_fld,   &
 !!     &          ak_MHD, ncomp_ele, ie_upw, d_ele, iphys_ele,          &
 !!     &          iak_diff_mf, iak_diff_lor, jac_3d, rhs_tbl, FEM_elens,&
 !!     &          diff_coefs, mhd_fem_wk, fem_wk, f_nl)
+!!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_address), intent(in) :: iphys
@@ -43,6 +44,7 @@
       use m_phys_constants
       use m_fem_gauss_int_coefs
 !
+      use t_SGS_control_parameter
       use t_physical_property
       use t_geometry_data_MHD
       use t_geometry_data
@@ -65,8 +67,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_velo_pre_ele                                   &
-     &        (node, ele, fluid, fl_prop, cd_prop, iphys, nod_fld,      &
+      subroutine int_vol_velo_pre_ele(cmt_param,                        &
+     &         node, ele, fluid, fl_prop, cd_prop, iphys, nod_fld,      &
      &         ak_MHD, ncomp_ele, d_ele, iphys_ele,                     &
      &         iak_diff_mf, iak_diff_lor, jac_3d, rhs_tbl, FEM_elens,   &
      &         diff_coefs, mhd_fem_wk, fem_wk, f_nl)
@@ -82,6 +84,7 @@
       use fem_skv_div_sgs_flux_type
       use fem_skv_lorentz_full_type
 !
+      type(commutation_control_params), intent(in) :: cmt_param
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_address), intent(in) :: iphys
@@ -126,7 +129,7 @@
           if (iflag_4_rotate .eq. id_turn_ON) then
 !
             if(iflag_SGS_inertia .ne. id_SGS_none                       &
-     &        .and. cmt_param1%iflag_c_mf .eq. id_SGS_commute_ON)       &
+     &        .and. cmt_param%iflag_c_mf .eq. id_SGS_commute_ON)        &
      &       then
               call SGS_const_tensor_each_ele(node, ele, nod_fld, k2,    &
      &           iphys%i_velo, iphys%i_SGS_m_flux, fl_prop%coef_nega_v, &
@@ -161,7 +164,7 @@
 !
           else
             if(iflag_SGS_inertia .ne. id_SGS_none                       &
-     &        .and. cmt_param1%iflag_c_mf .eq. id_SGS_commute_ON) then
+     &        .and. cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
               call SGS_const_tensor_each_ele(node, ele, nod_fld, k2,    &
      &           iphys%i_velo, iphys%i_SGS_m_flux, fl_prop%coef_nega_v, &
      &           mhd_fem_wk%sgs_t1, fem_wk%tensor_1)
@@ -223,7 +226,7 @@
 !    set SGS Lorentz force
 !
           if ( iflag_SGS_lorentz .ne. id_SGS_none) then
-            if(cmt_param1%iflag_c_lorentz .eq. id_SGS_commute_ON) then
+            if(cmt_param%iflag_c_lorentz .eq. id_SGS_commute_ON) then
               call SGS_const_tensor_each_ele(node, ele, nod_fld, k2,    &
      &            iphys%i_magne, iphys%i_SGS_maxwell, fl_prop%coef_lor, &
      &            mhd_fem_wk%sgs_t1, fem_wk%tensor_1)
@@ -301,8 +304,8 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_velo_pre_ele_upwind                            &
-     &         (node, ele, fluid, fl_prop, cd_prop, iphys, nod_fld,     &
+      subroutine int_vol_velo_pre_ele_upwind(cmt_param,                 &
+     &          node, ele, fluid, fl_prop, cd_prop, iphys, nod_fld,     &
      &          ak_MHD, ncomp_ele, ie_upw, d_ele, iphys_ele,            &
      &          iak_diff_mf, iak_diff_lor, jac_3d, rhs_tbl, FEM_elens,  &
      &          diff_coefs, mhd_fem_wk, fem_wk, f_nl)
@@ -318,6 +321,7 @@
       use fem_skv_div_sgs_flux_upw
       use fem_skv_lorentz_full_type
 !
+      type(commutation_control_params), intent(in) :: cmt_param
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_address), intent(in) :: iphys
@@ -361,7 +365,7 @@
 !
           if (iflag_4_rotate .eq. id_turn_ON) then
             if(iflag_SGS_inertia .ne. id_SGS_none                       &
-     &        .and. cmt_param1%iflag_c_mf .eq. id_SGS_commute_ON) then
+     &        .and. cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
               call SGS_const_tensor_each_ele(node, ele, nod_fld, k2,    &
      &           iphys%i_velo, iphys%i_SGS_m_flux, fl_prop%coef_nega_v, &
      &           mhd_fem_wk%sgs_t1, fem_wk%tensor_1)
@@ -395,7 +399,7 @@
 !
           else
             if(iflag_SGS_inertia .ne. id_SGS_none                       &
-     &        .and. cmt_param1%iflag_c_mf .eq. id_SGS_commute_ON) then
+     &        .and. cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
               call SGS_const_tensor_each_ele(node, ele, nod_fld, k2,    &
      &           iphys%i_velo, iphys%i_SGS_m_flux, fl_prop%coef_nega_v, &
      &           mhd_fem_wk%sgs_t1, fem_wk%tensor_1)
@@ -426,7 +430,7 @@
 !    set Reynolds stress
 !
           if ( iflag_SGS_inertia .ne. id_SGS_none) then
-            if (cmt_param1%iflag_c_mf .eq. id_SGS_commute_ON) then
+            if (cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
               call SGS_const_tensor_each_ele(node, ele, nod_fld, k2,    &
      &           iphys%i_velo, iphys%i_SGS_m_flux, fl_prop%coef_nega_v, &
      &           mhd_fem_wk%sgs_t1, fem_wk%tensor_1)
@@ -481,7 +485,7 @@
 !    set SGS Lorentz force
 !
           if ( iflag_SGS_lorentz .ne. id_SGS_none) then
-            if (cmt_param1%iflag_c_lorentz .eq. id_SGS_commute_ON) then
+            if (cmt_param%iflag_c_lorentz .eq. id_SGS_commute_ON) then
               call SGS_const_tensor_each_ele(node, ele, nod_fld, k2,    &
      &            iphys%i_magne, iphys%i_SGS_maxwell, fl_prop%coef_lor, &
      &            mhd_fem_wk%sgs_t1, fem_wk%tensor_1)

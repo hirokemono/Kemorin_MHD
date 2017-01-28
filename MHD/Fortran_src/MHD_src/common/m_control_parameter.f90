@@ -157,7 +157,6 @@
       integer (kind=kint) :: itype_SGS_maxwell_coef =  0
       integer (kind=kint) :: itype_SGS_uxb_coef =      0
 !
-!>      commutation error correction flag for magnetic induction
 !>      filter ID to obtain SGS terms
       integer (kind=kint) :: ifilter_final = ifilter_2delta
 !

@@ -5,7 +5,7 @@
 !
 !!      subroutine set_data_4_const_matrices(mesh, MHD_mesh, rhs_tbl,   &
 !!     &          MHD_mat_tbls, MHD_matrices, s_package)
-!!      subroutine update_matrices                                      &
+!!      subroutine update_matrices(cmt_param,                           &
 !!     &         (mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,   &
 !!     &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,  &
 !!     &          ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,         &
@@ -106,15 +106,17 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine update_matrices                                        &
-     &         (mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,     &
+      subroutine update_matrices(cmt_param,                             &
+     &          mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,     &
      &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,    &
      &          ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,           &
      &          surf_wk, mhd_fem_wk, fem_wk, MHD_matrices, s_package)
 !
+      use t_SGS_control_parameter
       use m_control_parameter
       use m_t_step_parameter
 !
+      type(commutation_control_params), intent(in) :: cmt_param
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
       type(element_geometry), intent(in) :: ele_mesh
@@ -140,7 +142,7 @@
 !
       iflag = 0
       if (    iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                 &
-     &  .and. cmt_param1%iflag_c_linear .gt. id_SGS_commute_OFF         &
+     &  .and. cmt_param%iflag_c_linear .gt. id_SGS_commute_OFF          &
      &  .and. mod(i_step_MHD,i_step_sgs_coefs) .eq. 0) iflag = 1
       iflag = iflag + iflag_flex_step_changed
 !
