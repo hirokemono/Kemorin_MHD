@@ -50,6 +50,7 @@
 !
       use m_precision
       use m_machine_parameter
+      use m_SGS_control_parameter
       use m_phys_constants
 !
       use m_array_for_send_recv
@@ -163,9 +164,10 @@
 !
 !   add boundary term for fixed velocity
 !
-      call int_vol_sk_po_bc(iphys%i_p_phi, iak_diff_v, node, ele,       &
-     &     nod_fld, jac_3d_l, rhs_tbl, FEM_elens, diff_coefs,           &
-     &     Vnod_bcs%nod_bc_p, fem_wk, f_l)
+      call int_vol_sk_po_bc                                             &
+     &   (cmt_param1%iflag_c_velo, iphys%i_p_phi, iak_diff_v,           &
+     &    node, ele, nod_fld, jac_3d_l, rhs_tbl, FEM_elens, diff_coefs, &
+     &    Vnod_bcs%nod_bc_p, fem_wk, f_l)
 !
 !   add boundary term for fixed pressure
 !
@@ -250,9 +252,10 @@
      &    node, ele, surf, sf_grp, nod_fld, jac_sf_grp_l, rhs_tbl,      &
      &    fem_wk, surf_wk, f_l)
 !
-      call int_vol_sk_mp_bc(iphys%i_m_phi, iak_diff_b, node, ele,       &
-     &     nod_fld, jac_3d_l, rhs_tbl, FEM_elens, diff_coefs,           &
-     &     Bnod_bcs%nod_bc_f, fem_wk, f_l)
+      call int_vol_sk_mp_bc                                             &
+     &   (cmt_param1%iflag_c_magne, iphys%i_m_phi, iak_diff_b,          &
+     &    node, ele, nod_fld, jac_3d_l, rhs_tbl, FEM_elens, diff_coefs, &
+     &    Bnod_bcs%nod_bc_f, fem_wk, f_l)
 !
       call set_boundary_ff(node, Bnod_bcs%nod_bc_f, f_l)
 !
@@ -338,8 +341,9 @@
       call int_sf_grad_press(node, ele, surf, sf_grp, jac_sf_grp_l,     &
      &    rhs_tbl, Fsf_bcs%grad, intg_point_poisson, fem_wk, f_l)
 !
-      call int_vol_sk_mp_bc(iphys%i_m_phi, iak_diff_b, node, ele,       &
-     &    nod_fld, jac_3d_l, rhs_tbl, FEM_elens, diff_coefs,            &
+      call int_vol_sk_mp_bc                                             &
+     &   (cmt_param1%iflag_c_magne, iphys%i_m_phi, iak_diff_b,          &
+     &    node, ele, nod_fld, jac_3d_l, rhs_tbl, FEM_elens, diff_coefs, &
      &    Bnod_bcs%nod_bc_f, fem_wk, f_l)
 !
       call set_boundary_ff(node, Bnod_bcs%nod_bc_f, f_l)

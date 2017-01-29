@@ -3,20 +3,24 @@
 !
 !      Written by H. Matsui on Oct., 2005
 !
-!!      subroutine int_vol_sk_po_bc(i_p_phi, iak_diff_v, node, ele,     &
+!!      subroutine int_vol_sk_po_bc                                     &
+!!     &         (iflag_commute_velo, i_p_phi, iak_diff_v, node, ele,   &
 !!     &          nod_fld, jac_3d_l, rhs_tbl, FEM_elens, diff_coefs,    &
 !!     &          nod_bc_p,fem_wk, f_l)
-!!      subroutine int_vol_sk_mp_bc(i_m_phi, iak_diff_b, node, ele,     &
+!!      subroutine int_vol_sk_mp_bc                                     &
+!!     &         (iflag_commute_magne, i_m_phi, iak_diff_b, node, ele,  &
 !!     &          nod_fld, jac_3d_l, rhs_tbl, FEM_elens, diff_coefs,    &
 !!     &          nod_bc_f, fem_wk, f_l)
-!!      subroutine int_vol_sk_mag_p_ins_bc(i_m_phi, iak_diff_b,         &
+!!      subroutine int_vol_sk_mag_p_ins_bc                              &
+!!     &         (iflag_commute_magne, i_m_phi, iak_diff_b,             &
 !!     &          node, ele, nod_fld, jac_3d_l, rhs_tbl, FEM_elens,     &
 !!     &          diff_coefs, nod_bc_fins, fem_wk, f_l)
 !!
 !!      subroutine int_sk_fixed_temp(iflag_commute, i_temp, iak_diff_t, &
 !!     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,       &
 !!     &          diff_coefs, nod_bc_t, ak_d, coef_imp, fem_wk, f_l)
-!!      subroutine int_sk_4_fixed_velo(i_velo, iak_diff_v, node, ele,   &
+!!      subroutine int_sk_4_fixed_velo                                  &
+!!     &         (iflag_commute_velo, i_velo, iak_diff_v, node, ele,    &
 !!     &          nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,      &
 !!     &          nod_bc_v, nod_bc_rot, ak_d, fem_wk, f_l)
 !!      subroutine int_sk_4_fixed_vector(iflag_commute, i_field,        &
@@ -45,6 +49,7 @@
       use m_control_parameter
       use m_t_int_parameter
 !
+      use t_SGS_control_parameter
       use t_geometry_data
       use t_phys_data
       use t_jacobian_3d
@@ -63,7 +68,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_vol_sk_po_bc(i_p_phi, iak_diff_v, node, ele,       &
+      subroutine int_vol_sk_po_bc                                       &
+     &         (iflag_commute_velo, i_p_phi, iak_diff_v, node, ele,     &
      &          nod_fld, jac_3d_l, rhs_tbl, FEM_elens, diff_coefs,      &
      &          nod_bc_p,fem_wk, f_l)
 !
@@ -71,6 +77,7 @@
       use int_vol_fixed_fld_sgs_ele
       use cal_ff_smp_to_ffs
 !
+      integer(kind = kint), intent(in) :: iflag_commute_velo
       integer(kind = kint), intent(in) :: i_p_phi, iak_diff_v
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -85,7 +92,7 @@
       type(finite_ele_mat_node), intent(inout) :: f_l
 !
 !
-      if (cmt_param1%iflag_c_velo .eq. id_SGS_commute_ON) then
+      if (iflag_commute_velo .eq. id_SGS_commute_ON) then
         call int_vol_fixed_sgs_poisson_surf                             &
      &     (node, ele, nod_fld, jac_3d_l, rhs_tbl, FEM_elens,           &
      &      intg_point_poisson, nod_bc_p%ibc_end,                       &
@@ -108,7 +115,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine int_vol_sk_mp_bc(i_m_phi, iak_diff_b, node, ele,       &
+      subroutine int_vol_sk_mp_bc                                       &
+     &         (iflag_commute_magne, i_m_phi, iak_diff_b, node, ele,    &
      &          nod_fld, jac_3d_l, rhs_tbl, FEM_elens, diff_coefs,      &
      &          nod_bc_f, fem_wk, f_l)
 !
@@ -116,6 +124,7 @@
       use int_vol_fixed_fld_sgs_ele
       use cal_ff_smp_to_ffs
 !
+      integer(kind = kint), intent(in) :: iflag_commute_magne
       integer(kind = kint), intent(in) :: i_m_phi, iak_diff_b
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -130,7 +139,7 @@
       type(finite_ele_mat_node), intent(inout) :: f_l
 !
 !
-      if (cmt_param1%iflag_c_magne .eq. id_SGS_commute_ON) then
+      if (iflag_commute_magne .eq. id_SGS_commute_ON) then
         call int_vol_fixed_sgs_poisson_surf                             &
      &     (node, ele, nod_fld, jac_3d_l, rhs_tbl, FEM_elens,           &
      &      intg_point_poisson,  nod_bc_f%ibc_end,                      &
@@ -154,7 +163,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine int_vol_sk_mag_p_ins_bc(i_m_phi, iak_diff_b,           &
+      subroutine int_vol_sk_mag_p_ins_bc                                &
+     &         (iflag_commute_magne, i_m_phi, iak_diff_b,               &
      &          node, ele, nod_fld, jac_3d_l, rhs_tbl, FEM_elens,       &
      &          diff_coefs, nod_bc_fins, fem_wk, f_l)
 !
@@ -162,6 +172,7 @@
       use int_vol_fixed_fld_sgs_ele
       use cal_ff_smp_to_ffs
 !
+      integer(kind = kint), intent(in) :: iflag_commute_magne
       integer(kind = kint), intent(in) :: i_m_phi, iak_diff_b
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -176,7 +187,7 @@
       type(finite_ele_mat_node), intent(inout) :: f_l
 !
 !
-      if (cmt_param1%iflag_c_magne .eq. id_SGS_commute_ON) then
+      if (iflag_commute_magne .eq. id_SGS_commute_ON) then
         call int_vol_fixed_sgs_poisson_surf(node, ele, nod_fld,         &
      &      jac_3d_l, rhs_tbl, FEM_elens, intg_point_poisson,           &
      &      nod_bc_fins%ibc_end, nod_bc_fins%num_idx_ibc,               &
@@ -246,13 +257,15 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine int_sk_4_fixed_velo(i_velo, iak_diff_v, node, ele,     &
+      subroutine int_sk_4_fixed_velo                                    &
+     &         (iflag_commute_velo, i_velo, iak_diff_v, node, ele,      &
      &          nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,        &
      &          nod_bc_v, nod_bc_rot, ak_d, fem_wk, f_l)
 !
       use int_vol_fixed_field_ele
       use int_vol_fixed_fld_sgs_ele
 !
+      integer(kind = kint), intent(in) :: iflag_commute_velo
       integer(kind = kint), intent(in) :: i_velo, iak_diff_v
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -270,11 +283,11 @@
       type(finite_ele_mat_node), intent(inout) :: f_l
 !
 !
-      call int_sk_4_fixed_vector(cmt_param1%iflag_c_velo, i_velo,       &
+      call int_sk_4_fixed_vector(iflag_commute_velo, i_velo,            &
      &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,   &
      &    nod_bc_v, ak_d, evo_velo%coef_imp, iak_diff_v, fem_wk, f_l)
 !
-      if (cmt_param1%iflag_c_velo .eq. id_SGS_commute_ON) then
+      if (iflag_commute_velo .eq. id_SGS_commute_ON) then
         call int_vol_fixed_rotate_sgs_surf                              &
      &     (node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,             &
      &      intg_point_t_evo, nod_bc_rot%ibc_end,                       &

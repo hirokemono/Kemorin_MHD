@@ -3,13 +3,13 @@
 !
 !     Written by H. Matsui on June, 2005
 !
-!!      subroutine int_surf_magne_pre_ele                               &
-!!     &         (iak_diff_uxb, ak_d_magne, node, ele, surf, sf_grp,    &
+!!      subroutine int_surf_magne_pre_ele(iflag_commute_induct,         &
+!!     &          iak_diff_uxb, ak_d_magne, node, ele, surf, sf_grp,    &
 !!     &          Asf_bcs, Bsf_bcs, iphys, nod_fld, jac_sf_grp,         &
 !!     &          rhs_tbl1, FEM_elens, diff_coefs, fem_wk, surf_wk,     &
 !!     &          f_l, f_nl)
-!!      subroutine int_surf_magne_monitor                               &
-!!     &         (i_field, iak_diff_uxb, ak_d_magne,                    &
+!!      subroutine int_surf_magne_monitor(iflag_commute_induct,         &
+!!     &          i_field, iak_diff_uxb, ak_d_magne,                    &
 !!     &          node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs,            &
 !!     &          iphys, nod_fld, jac_sf_grp, rhs_tbl1, FEM_elens,      &
 !!     &          diff_coefs, fem_wk, surf_wk, f_l, f_nl)
@@ -33,6 +33,7 @@
 !
       use m_precision
 !
+      use t_SGS_control_parameter
       use t_geometry_data
       use t_surface_data
       use t_group_data
@@ -60,12 +61,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_surf_magne_pre_ele                                 &
-     &         (iak_diff_uxb, ak_d_magne, node, ele, surf, sf_grp,      &
+      subroutine int_surf_magne_pre_ele(iflag_commute_induct,           &
+     &          iak_diff_uxb, ak_d_magne, node, ele, surf, sf_grp,      &
      &          Asf_bcs, Bsf_bcs, iphys, nod_fld, jac_sf_grp,           &
      &          rhs_tbl1, FEM_elens, diff_coefs, fem_wk, surf_wk,       &
      &          f_l, f_nl)
 !
+      integer(kind = kint), intent(in) :: iflag_commute_induct
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
@@ -92,7 +94,7 @@
      &    intg_point_t_evo, ak_d_magne, fem_wk, f_l)
 !
        if (iflag_SGS_induction .ne. id_SGS_none                         &
-     &    .and. cmt_param1%iflag_c_uxb .eq. id_SGS_commute_ON) then
+     &    .and. iflag_commute_induct .eq. id_SGS_commute_ON) then
          call int_surf_div_induct_t_sgs                                 &
      &      (node, ele, surf, sf_grp, nod_fld, jac_sf_grp,              &
      &       rhs_tbl1, FEM_elens, Bsf_bcs%sgs, intg_point_t_evo,        &
@@ -116,12 +118,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_surf_magne_monitor                                 &
-     &         (i_field, iak_diff_uxb, ak_d_magne,                      &
+      subroutine int_surf_magne_monitor(iflag_commute_induct,           &
+     &          i_field, iak_diff_uxb, ak_d_magne,                      &
      &          node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs,              &
      &          iphys, nod_fld, jac_sf_grp, rhs_tbl1, FEM_elens,        &
      &          diff_coefs, fem_wk, surf_wk, f_l, f_nl)
 !
+      integer(kind = kint), intent(in) :: iflag_commute_induct
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
@@ -151,7 +154,7 @@
 !
       if (i_field .eq. iphys%i_SGS_induction) then
         if (iflag_SGS_induction .ne. id_SGS_none                        &
-     &    .and. cmt_param1%iflag_c_uxb .eq. id_SGS_commute_ON) then
+     &    .and. iflag_commute_induct .eq. id_SGS_commute_ON) then
           call int_surf_div_induct_t_sgs                                &
      &       (node, ele, surf, sf_grp, nod_fld, jac_sf_grp,             &
      &        rhs_tbl1, FEM_elens, Bsf_bcs%sgs, intg_point_t_evo,       &

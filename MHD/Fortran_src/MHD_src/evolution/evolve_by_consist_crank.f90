@@ -65,6 +65,7 @@
       use m_machine_parameter
       use m_phys_constants
       use m_control_parameter
+      use m_SGS_control_parameter
       use m_t_int_parameter
       use m_t_step_parameter
 !
@@ -137,7 +138,8 @@
 !
 !
       if (evo_velo%coef_imp .gt. zero) then
-        call int_sk_4_fixed_velo(i_velo, iak_diff_v, node, ele,         &
+        call int_sk_4_fixed_velo                                        &
+     &     (cmt_param1%iflag_c_velo, i_velo, iak_diff_v, node, ele,     &
      &      nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,            &
      &      Vnod_bcs%nod_bc_v, Vnod_bcs%nod_bc_rot, ak_d_velo,          &
      &      fem_wk, f_l)

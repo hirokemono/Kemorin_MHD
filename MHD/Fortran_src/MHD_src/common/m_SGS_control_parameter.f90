@@ -10,7 +10,7 @@
 !!@verbatim
 !!@endverbatim
 !
-      module   m_SGS_control_parameter
+      module m_SGS_control_parameter
 !
       use m_precision
       use t_SGS_control_parameter
