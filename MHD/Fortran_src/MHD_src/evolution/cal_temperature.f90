@@ -180,16 +180,22 @@
 !
       if (iflag_temp_supg .gt. id_turn_OFF) then
         call int_vol_temp_ele_upw                                       &
-     &     (node, ele, fluid, property, iphys, nod_fld,                 &
+     &     (iflag_SGS_heat, cmt_param1%iflag_c_hf,                      &
+     &      iphys%i_temp, iphys%i_velo,                                 &
+     &      iphys%i_SGS_h_flux, ifld_diff%i_heat_flux,                  &
+     &      node, ele, fluid, property, nod_fld,                        &
      &      jac_3d, rhs_tbl, FEM_elens, diff_coefs,                     &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
-     &      ifld_diff%i_heat_flux, mhd_fem_wk, fem_wk, f_nl)
+     &      mhd_fem_wk, fem_wk, f_nl)
       else
         call int_vol_temp_ele                                           &
-     &     (node, ele, fluid, property, iphys, nod_fld,                 &
+     &     (iflag_SGS_heat, cmt_param1%iflag_c_hf,                      &
+     &      iphys%i_temp, iphys%i_velo,                                 &
+     &      iphys%i_SGS_h_flux, ifld_diff%i_heat_flux,                  &
+     &      node, ele, fluid, property, nod_fld,                        &
      &      jac_3d, rhs_tbl, FEM_elens, diff_coefs,                     &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
-     &      ifld_diff%i_heat_flux, mhd_fem_wk, fem_wk, f_nl)
+     &      mhd_fem_wk, fem_wk, f_nl)
       end if
 !
 !      call check_ff_smp(my_rank, n_scalar, node%max_nod_smp, f_l)
@@ -365,16 +371,22 @@
 !
       if (iflag_temp_supg .gt. id_turn_OFF) then
         call int_vol_temp_ele_upw                                       &
-     &     (node, ele, fluid, property, iphys, nod_fld,                 &
+     &     (iflag_SGS_heat, cmt_param1%iflag_c_hf,                      &
+     &      iphys%i_temp, iphys%i_velo,                                 &
+     &      iphys%i_SGS_h_flux, ifld_diff%i_heat_flux,                  &
+     &      node, ele, fluid, property, nod_fld,                        &
      &      jac_3d, rhs_tbl, FEM_elens, diff_coefs,                     &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
-     &      ifld_diff%i_heat_flux, mhd_fem_wk, fem_wk, f_nl)
+     &      mhd_fem_wk, fem_wk, f_nl)
       else
         call int_vol_temp_ele                                           &
-     &     (node, ele, fluid, property, iphys, nod_fld,                 &
+     &     (iflag_SGS_heat, cmt_param1%iflag_c_hf,                      &
+     &      iphys%i_temp, iphys%i_velo,                                 &
+     &      iphys%i_SGS_h_flux, ifld_diff%i_heat_flux,                  &
+     &      node, ele, fluid, property, nod_fld,                        &
      &      jac_3d, rhs_tbl, FEM_elens, diff_coefs,                     &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
-     &      ifld_diff%i_heat_flux, mhd_fem_wk, fem_wk, f_nl)
+     &      mhd_fem_wk, fem_wk, f_nl)
       end if
 !
 !      call check_ff_smp(my_rank, n_scalar, node%max_nod_smp, f_l)

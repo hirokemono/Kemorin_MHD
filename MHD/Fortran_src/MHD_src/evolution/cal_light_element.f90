@@ -80,7 +80,7 @@
       use set_boundary_scalars
       use int_surf_fixed_gradients
       use int_vol_diffusion_ele
-      use int_vol_light_comp_ele
+      use int_vol_thermal_ele
       use evolve_by_1st_euler
       use evolve_by_adams_bashforth
       use evolve_by_lumped_crank
@@ -125,15 +125,23 @@
       end if
 !
       if (iflag_comp_supg .gt. id_turn_OFF) then
-        call int_vol_composition_ele_upw(node, ele, fluid,              &
-     &     property, iphys, nod_fld, jac_3d, rhs_tbl,                   &
-     &     ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,          &
-     &     fem_wk, f_nl)
-      else
-        call int_vol_composition_ele(node, ele, fluid,                  &
-     &      property, iphys, nod_fld, jac_3d, rhs_tbl,                  &
+        call int_vol_temp_ele_upw                                       &
+     &     (iflag_SGS_comp_flux, cmt_param1%iflag_c_cf,                 &
+     &      iphys%i_light, iphys%i_velo,                                &
+     &      iphys%i_SGS_c_flux, ifld_diff%i_comp_flux,                  &
+     &      node, ele, fluid, property, nod_fld,                        &
+     &      jac_3d, rhs_tbl, FEM_elens, diff_coefs,                     &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
-     &      fem_wk, f_nl)
+     &      mhd_fem_wk, fem_wk, f_nl)
+      else
+        call int_vol_temp_ele                                           &
+     &     (iflag_SGS_comp_flux, cmt_param1%iflag_c_cf,                 &
+     &      iphys%i_light, iphys%i_velo,                                &
+     &      iphys%i_SGS_c_flux, ifld_diff%i_comp_flux,                  &
+     &      node, ele, fluid, property, nod_fld,                        &
+     &      jac_3d, rhs_tbl, FEM_elens, diff_coefs,                     &
+     &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
+     &      mhd_fem_wk, fem_wk, f_nl)
       end if
 !
 !

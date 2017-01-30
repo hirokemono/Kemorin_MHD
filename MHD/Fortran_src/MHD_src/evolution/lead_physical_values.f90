@@ -100,6 +100,7 @@
      &          nod_fld, ele_fld, diff_coefs)
 !
       use m_machine_parameter
+      use m_SGS_control_parameter
       use m_t_step_parameter
 !
       use update_after_evolution
@@ -163,8 +164,8 @@
      &      wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,     &
      &      surf_wk, f_l, f_nl, nod_fld, ele_fld, diff_coefs)
 !
-        call cal_field_by_rotation                                      &
-     &     (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &
+        call cal_field_by_rotation(cmt_param1,                          &
+     &      mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &
      &      MHD_mesh%fluid, MHD_mesh%conduct, group%surf_grp,           &
      &      nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,               &
      &      jac_3d_q, jac_sf_grp, rhs_tbl, FEM_elens,                   &
