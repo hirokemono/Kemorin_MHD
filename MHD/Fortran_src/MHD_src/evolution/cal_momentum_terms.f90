@@ -129,20 +129,20 @@
       if (iflag_velo_supg .eq. id_turn_ON) then
         call int_vol_velo_monitor_upwind                                &
      &     (i_field, iak_diff_mf, iak_diff_lor, iphys_ele%i_velo,       &
-     &      node, ele, fluid, fl_prop, cd_prop, iphys, nod_fld,         &
-     &      iphys_ele, ak_MHD, jac_3d, rhs_tbl, FEM_elens, diff_coefs,  &
-     &      mhd_fem_wk, fem_wk, f_nl, ele_fld)
+     &      cmt_param1, node, ele, fluid, fl_prop, cd_prop,             &
+     &      iphys, nod_fld, iphys_ele, ak_MHD, jac_3d, rhs_tbl,         &
+     &      FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, f_nl, ele_fld)
       else if (iflag_velo_supg .eq. id_magnetic_SUPG) then
         call int_vol_velo_monitor_upwind                                &
      &     (i_field, iak_diff_mf, iak_diff_lor, iphys_ele%i_magne,      &
-     &      node, ele, fluid, fl_prop, cd_prop, iphys, nod_fld,         &
-     &      iphys_ele, ak_MHD, jac_3d, rhs_tbl, FEM_elens, diff_coefs,  &
-     &      mhd_fem_wk, fem_wk, f_nl, ele_fld)
+     &      cmt_param1, node, ele, fluid, fl_prop, cd_prop,             &
+     &      iphys, nod_fld, iphys_ele, ak_MHD, jac_3d, rhs_tbl,         &
+     &      FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, f_nl, ele_fld)
       else
        call int_vol_velo_monitor_pg(i_field, iak_diff_mf, iak_diff_lor, &
-     &     node, ele, fluid, fl_prop, cd_prop, iphys, nod_fld,          &
-     &     iphys_ele, ak_MHD,  jac_3d, rhs_tbl, FEM_elens, diff_coefs,  &
-     &     mhd_fem_wk, fem_wk, f_nl, ele_fld)
+     &     cmt_param1, node, ele, fluid, fl_prop, cd_prop,              &
+     &     iphys, nod_fld, iphys_ele, ak_MHD, jac_3d, rhs_tbl,          &
+     &     FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, f_nl, ele_fld)
       end if
 !
       call int_surf_velo_monitor                                        &

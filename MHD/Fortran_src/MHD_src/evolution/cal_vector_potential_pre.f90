@@ -56,6 +56,7 @@
 !
       use m_machine_parameter
       use m_control_parameter
+      use m_SGS_control_parameter
       use m_t_int_parameter
       use m_phys_constants
 !
@@ -208,16 +209,16 @@
 !
 !  -----for Ceank-nicolson
       else if (evo_vect_p%iflag_scheme .eq. id_Crank_nicolson) then
-        call cal_vect_p_pre_lumped_crank                                &
-     &     (iphys%i_vecp, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,      &
-     &      Bnod_bcs%nod_bc_a, nod_comm, node, ele,                     &
-     &      conduct, iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,  &
-     &      diff_coefs, Bmatrix, MG_vector, mhd_fem_wk, fem_wk,         &
-     &      f_l, f_nl, nod_fld)
+        call cal_vect_p_pre_lumped_crank(cmt_param1%iflag_c_magne,      &
+     &      iphys%i_vecp, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,      &
+     &      Bnod_bcs%nod_bc_a, nod_comm, node, ele, conduct,            &
+     &      evo_vect_p, iphys_ele, ele_fld, jac_3d_q, rhs_tbl,          &
+     &      FEM_elens, diff_coefs, Bmatrix, MG_vector,                  &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if (evo_vect_p%iflag_scheme.eq.id_Crank_nicolson_cmass) then
-        call cal_vect_p_pre_consist_crank                               &
-     &     (iphys%i_vecp, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,      &
-     &      Bnod_bcs%nod_bc_a, node, ele, conduct, cd_prop,             &
+        call cal_vect_p_pre_consist_crank(cmt_param1%iflag_c_magne,     &
+     &      iphys%i_vecp, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,      &
+     &      Bnod_bcs%nod_bc_a, node, ele, conduct, evo_vect_p, cd_prop, &
      &      jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,                   &
      &      Bmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if

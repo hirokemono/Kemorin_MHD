@@ -13,6 +13,8 @@
       use m_precision
       use m_work_time
       use m_machine_parameter
+!
+      use m_SGS_control_parameter
       use m_t_step_parameter
       use m_t_int_parameter
       use m_mesh_data
@@ -80,7 +82,7 @@
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 'copy_model_coef_2_previous'
-        call copy_model_coef_2_previous                                 &
+        call copy_model_coef_2_previous(cmt_param1,                     &
      &     (wk_sgs1%nlayer, wk_sgs1%num_kinds, wk_sgs1%fld_coef,        &
      &      wk_diff1%nlayer, wk_diff1%num_kinds,                        &
      &      wk_diff1%fld_coef, wk_diff1%fld_whole,                      &
@@ -323,7 +325,8 @@
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_chenge_step_4_dynamic'
-        call s_chenge_step_4_dynamic(my_rank, wk_sgs1, wk_diff1)
+        call s_chenge_step_4_dynamic                                    &
+     &     (my_rank, cmt_param1, wk_sgs1, wk_diff1)
       end if
 !
       if ( retval .ne. 0 ) then

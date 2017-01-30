@@ -95,6 +95,7 @@
 !
       use m_phys_constants
       use m_control_parameter
+      use m_SGS_control_parameter
       use m_t_int_parameter
       use m_type_AMG_data
 !
@@ -240,13 +241,15 @@
      &      rhs_tbl, mhd_fem_wk, fem_wk,  f_l, f_nl,  nod_fld)
       else if (evo_temp%iflag_scheme .eq. id_Crank_nicolson) then
         call cal_temp_pre_lumped_crank                                  &
-     &     (iphys%i_temp, iphys%i_pre_heat, ifld_diff%i_temp,           &
-     &      ak_d_temp, nod_comm, node, ele, fluid, Tnod_bcs,            &
+     &     (cmt_param1%iflag_c_temp, iphys%i_temp,                      &
+     &      iphys%i_pre_heat, ifld_diff%i_temp, ak_d_temp,              &
+     &      nod_comm, node, ele, fluid, evo_temp, Tnod_bcs,             &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
      &      Tmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if (evo_temp%iflag_scheme .eq. id_Crank_nicolson_cmass) then 
-        call cal_temp_pre_consist_crank(iphys%i_temp, iphys%i_pre_heat, &
-     &      ifld_diff%i_temp, ak_d_temp,                                &
+        call cal_temp_pre_consist_crank                                 &
+     &     (cmt_param1%iflag_c_temp, iphys%i_temp,                      &
+     &      iphys%i_pre_heat, ifld_diff%i_temp, ak_d_temp,              &
      &      node, ele, fluid, evo_temp, property, Tnod_bcs,             &
      &      jac_3d, rhs_tbl, FEM_elens, diff_coefs, Tmatrix, MG_vector, &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -276,6 +279,7 @@
 !
       use m_phys_constants
       use m_control_parameter
+      use m_SGS_control_parameter
       use m_t_int_parameter
       use m_type_AMG_data
 !
@@ -421,13 +425,15 @@
      &      nod_comm, node, ele, fluid, iphys_ele, ele_fld,  jac_3d,    &
      &      rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if (evo_temp%iflag_scheme .eq. id_Crank_nicolson) then
-        call cal_temp_pre_lumped_crank(iphys%i_par_temp,                &
+        call cal_temp_pre_lumped_crank                                  &
+     &     (cmt_param1%iflag_c_temp, iphys%i_par_temp,                  &
      &      iphys%i_pre_heat, ifld_diff%i_temp, ak_d_temp,              &
-     &      nod_comm, node, ele, fluid, Tnod_bcs, iphys_ele, ele_fld,   &
-     &      jac_3d, rhs_tbl, FEM_elens, diff_coefs, Tmatrix, MG_vector, &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      nod_comm, node, ele, fluid, evo_temp, Tnod_bcs,             &
+     &      iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
+     &      Tmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if (evo_temp%iflag_scheme .eq. id_Crank_nicolson_cmass) then 
-        call cal_temp_pre_consist_crank(iphys%i_par_temp,               &
+        call cal_temp_pre_consist_crank                                 &
+     &     (cmt_param1%iflag_c_temp, iphys%i_par_temp,                  &
      &      iphys%i_pre_heat, ifld_diff%i_temp, ak_d_temp,              &
      &      node, ele, fluid, evo_temp, property, Tnod_bcs,             &
      &      jac_3d, rhs_tbl, FEM_elens, diff_coefs, Tmatrix, MG_vector, &

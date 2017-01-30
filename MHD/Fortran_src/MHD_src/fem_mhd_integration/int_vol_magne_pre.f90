@@ -8,13 +8,13 @@
 !        modified by H. Matsui on Oct., 2005
 !        modified by H. Matsui on Aug., 2007
 !
-!!      subroutine int_vol_magne_pre_ele                                &
-!!     &         (node, ele, conduct, cd_prop, iphys, nod_fld,          &
+!!      subroutine int_vol_magne_pre_ele(cmt_param,                     &
+!!     &          node, ele, conduct, cd_prop, iphys, nod_fld,          &
 !!     &          ncomp_ele, d_ele, iphys_ele, iak_diff_uxb,            &
 !!     &          jac_3d, rhs_tbl, FEM_elens, diff_coefs,               &
 !!     &          mhd_fem_wk, fem_wk, f_nl)
-!!      subroutine int_vol_magne_pre_ele_upm                            &
-!!     &         (node, ele, conduct, cd_prop, iphys, nod_fld,          &
+!!      subroutine int_vol_magne_pre_ele_upm(cmt_param,                 &
+!!     &          node, ele, conduct, cd_prop, iphys, nod_fld,          &
 !!     &          ncomp_ele, d_ele, iphys_ele, iak_diff_uxb,            &
 !!     &          jac_3d, rhs_tbl, FEM_elens, diff_coefs,               &
 !!     &          mhd_fem_wk, fem_wk, f_nl)
@@ -41,6 +41,7 @@
       use m_phys_constants
       use m_fem_gauss_int_coefs
 !
+      use t_SGS_control_parameter
       use t_physical_property
       use t_geometry_data_MHD
       use t_geometry_data
@@ -63,8 +64,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_magne_pre_ele                                  &
-     &         (node, ele, conduct, cd_prop, iphys, nod_fld,            &
+      subroutine int_vol_magne_pre_ele(cmt_param,                       &
+     &          node, ele, conduct, cd_prop, iphys, nod_fld,            &
      &          ncomp_ele, d_ele, iphys_ele, iak_diff_uxb,              &
      &          jac_3d, rhs_tbl, FEM_elens, diff_coefs,                 &
      &          mhd_fem_wk, fem_wk, f_nl)
@@ -78,6 +79,7 @@
       use fem_skv_lorentz_full_type
       use fem_skv_div_sgs_flux_type
 !
+      type(commutation_control_params), intent(in) :: cmt_param
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_address), intent(in) :: iphys
@@ -127,7 +129,7 @@
      &      ele, jac_3d, fem_wk%sk6)
 !
         if (iflag_SGS_induction .ne. id_SGS_none                        &
-     &    .and. cmt_param1%iflag_c_uxb .eq. id_SGS_commute_ON) then
+     &    .and. cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
            call SGS_const_induct_each_ele(node, ele, nod_fld,           &
      &         k2, iphys%i_magne, iphys%i_velo, iphys%i_SGS_induct_t,   &
      &         cd_prop%coef_induct, mhd_fem_wk%sgs_v1, fem_wk%vector_1)
@@ -153,8 +155,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_magne_pre_ele_upm                              &
-     &         (node, ele, conduct, cd_prop, iphys, nod_fld,            &
+      subroutine int_vol_magne_pre_ele_upm(cmt_param,                   &
+     &          node, ele, conduct, cd_prop, iphys, nod_fld,            &
      &          ncomp_ele, d_ele, iphys_ele, iak_diff_uxb,              &
      &          jac_3d, rhs_tbl, FEM_elens, diff_coefs,                 &
      &          mhd_fem_wk, fem_wk, f_nl)
@@ -168,6 +170,7 @@
       use fem_skv_div_sgs_flux_upw
       use fem_skv_vect_diff_upw_type
 !
+      type(commutation_control_params), intent(in) :: cmt_param
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_address), intent(in) :: iphys
@@ -216,7 +219,7 @@
      &      d_ele(1,iphys_ele%i_magne), ele, jac_3d, fem_wk%sk6)
 !
         if (iflag_SGS_induction .ne. id_SGS_none                        &
-     &    .and. cmt_param1%iflag_c_uxb .eq. id_SGS_commute_ON) then
+     &    .and. cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
           call SGS_const_induct_each_ele(node, ele, nod_fld,            &
      &        k2, iphys%i_magne, iphys%i_velo, iphys%i_SGS_induct_t,    &
      &        cd_prop%coef_induct, mhd_fem_wk%sgs_v1, fem_wk%vector_1)

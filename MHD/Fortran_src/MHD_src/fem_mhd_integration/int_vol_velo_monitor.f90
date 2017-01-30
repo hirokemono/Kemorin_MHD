@@ -10,14 +10,17 @@
 !
 !!      subroutine int_vol_velo_monitor_pg                              &
 !!     &         (i_field, iak_diff_mf, iak_diff_lor,                   &
-!!     &          node, ele, fluid, fl_prop, cd_prop, iphys, nod_fld,   &
-!!     &          iphys_ele, ak_MHD, jac_3d, rhs_tbl, FEM_elens,        &
-!!     &          diff_coefs, mhd_fem_wk, fem_wk, f_nl, ele_fld)
+!!     &          cmt_param, node, ele, fluid, fl_prop, cd_prop,        &
+!!     &          iphys, nod_fld, iphys_ele, ak_MHD, jac_3d, rhs_tbl,   &
+!!     &          FEM_elens, diff_coefs, mhd_fem_wk, fem_wk,            &
+!!     &          f_nl, ele_fld)
 !!      subroutine int_vol_velo_monitor_upwind                          &
 !!     &         (i_field, iak_diff_mf, iak_diff_lor, iv_upw,           &
-!!     &          node, ele, fluid, fl_prop, cd_prop, iphys, nod_fld,   &
-!!     &          iphys_ele, ak_MHD, jac_3d, rhs_tbl, FEM_elens,        &
-!!     &          diff_coefs, mhd_fem_wk, fem_wk, f_nl, ele_fld)
+!!     &          cmt_param, node, ele, fluid, fl_prop, cd_prop,        &
+!!     &          iphys, nod_fld, iphys_ele, ak_MHD, jac_3d, rhs_tbl,   &
+!!     &          FEM_elens, diff_coefs, mhd_fem_wk, fem_wk,            &
+!!     &          f_nl, ele_fld)
+!!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_address), intent(in) :: iphys
@@ -68,9 +71,10 @@
 !
       subroutine int_vol_velo_monitor_pg                                &
      &         (i_field, iak_diff_mf, iak_diff_lor,                     &
-     &          node, ele, fluid, fl_prop, cd_prop, iphys, nod_fld,     &
-     &          iphys_ele, ak_MHD, jac_3d, rhs_tbl, FEM_elens,          &
-     &          diff_coefs, mhd_fem_wk, fem_wk, f_nl, ele_fld)
+     &          cmt_param, node, ele, fluid, fl_prop, cd_prop,          &
+     &          iphys, nod_fld, iphys_ele, ak_MHD, jac_3d, rhs_tbl,     &
+     &          FEM_elens, diff_coefs, mhd_fem_wk, fem_wk,              &
+     &          f_nl, ele_fld)
 !
       use int_vol_inertia
       use int_vol_vect_cst_difference
@@ -82,6 +86,7 @@
       integer(kind=kint), intent(in) :: i_field
       integer(kind= kint), intent(in) :: iak_diff_mf, iak_diff_lor
 !
+      type(commutation_control_params), intent(in) :: cmt_param
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_address), intent(in) :: iphys
@@ -178,7 +183,7 @@
      &      iphys%i_maxwell, fl_prop%coef_lor, fem_wk, f_nl)
 !
       else if(i_field .eq. iphys%i_SGS_div_m_flux) then
-        if (cmt_param1%iflag_c_mf .eq. id_SGS_commute_ON) then
+        if (cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_tsr_flux(node, ele, nod_fld,             &
      &        jac_3d, rhs_tbl, FEM_elens, diff_coefs,                   &
      &        fluid%istack_ele_fld_smp, intg_point_t_evo,               &
@@ -193,7 +198,7 @@
         end if
 !
       else if(i_field .eq. iphys%i_SGS_Lorentz) then
-        if (cmt_param1%iflag_c_lorentz .eq. id_SGS_commute_ON) then
+        if (cmt_param%iflag_c_lorentz .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_tsr_flux(node, ele, nod_fld,             &
      &        jac_3d, rhs_tbl, FEM_elens, diff_coefs,                   &
      &        fluid%istack_ele_fld_smp, intg_point_t_evo,               &
@@ -213,9 +218,10 @@
 !
       subroutine int_vol_velo_monitor_upwind                            &
      &         (i_field, iak_diff_mf, iak_diff_lor, iv_upw,             &
-     &          node, ele, fluid, fl_prop, cd_prop, iphys, nod_fld,     &
-     &          iphys_ele, ak_MHD, jac_3d, rhs_tbl, FEM_elens,          &
-     &          diff_coefs, mhd_fem_wk, fem_wk, f_nl, ele_fld)
+     &          cmt_param, node, ele, fluid, fl_prop, cd_prop,          &
+     &          iphys, nod_fld, iphys_ele, ak_MHD, jac_3d, rhs_tbl,     &
+     &          FEM_elens, diff_coefs, mhd_fem_wk, fem_wk,              &
+     &          f_nl, ele_fld)
 !
       use int_vol_inertia
       use int_vol_vect_cst_diff_upw
@@ -227,6 +233,7 @@
       integer(kind = kint), intent(in) :: i_field, iv_upw
       integer(kind= kint), intent(in) :: iak_diff_mf, iak_diff_lor
 !
+      type(commutation_control_params), intent(in) :: cmt_param
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_address), intent(in) :: iphys
@@ -331,7 +338,7 @@
      &      ele_fld%d_fld, fl_prop%coef_lor, fem_wk, f_nl)
 !
       else if(i_field .eq. iphys%i_SGS_div_m_flux) then 
-        if (cmt_param1%iflag_c_mf .eq. id_SGS_commute_ON) then
+        if (cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_tsr_flux_upw(node, ele, nod_fld,         &
      &        jac_3d, rhs_tbl, FEM_elens, diff_coefs,                   &
      &        fluid%istack_ele_fld_smp, intg_point_t_evo,               &
@@ -347,7 +354,7 @@
         end if
 !
       else if(i_field .eq. iphys%i_SGS_Lorentz) then
-        if (cmt_param1%iflag_c_lorentz .eq. id_SGS_commute_ON) then
+        if (cmt_param%iflag_c_lorentz .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_tsr_flux_upw(node, ele, nod_fld,         &
      &        jac_3d, rhs_tbl, FEM_elens, diff_coefs,                   &
      &        fluid%istack_ele_fld_smp, intg_point_t_evo,               &

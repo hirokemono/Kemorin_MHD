@@ -186,13 +186,13 @@
       if (iflag_debug .eq. 0 ) write(*,*) 'coefs_4_time_evolution'
       if (iflag_mag_supg .gt. id_turn_OFF) then
        call int_vol_magne_pre_ele_upm                                   &
-     &    (node, ele, conduct, cd_prop, iphys, nod_fld,                 &
+     &    (cmt_param1, node, ele, conduct, cd_prop, iphys, nod_fld,     &
      &     ele_fld%ntot_phys, ele_fld%d_fld, iphys_ele, iak_diff_uxb,   &
      &     jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,                    &
      &     mhd_fem_wk, fem_wk, f_nl)
       else
        call int_vol_magne_pre_ele                                       &
-     &    (node, ele, conduct, cd_prop, iphys, nod_fld,                 &
+     &    (cmt_param1, node, ele, conduct, cd_prop, iphys, nod_fld,     &
      &     ele_fld%ntot_phys, ele_fld%d_fld, iphys_ele, iak_diff_uxb,   &
      &     jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,                    &
      &     mhd_fem_wk, fem_wk, f_nl)
@@ -215,18 +215,18 @@
      &      nod_comm, node, ele, conduct, iphys_ele, ele_fld,           &
      &      jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if(evo_magne%iflag_scheme .eq. id_Crank_nicolson) then
-        call cal_magne_pre_lumped_crank                                 &
-     &     (iphys%i_magne, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,     &
-     &      Bnod_bcs%nod_bc_b, nod_comm, node, ele, conduct,            &
+        call cal_magne_pre_lumped_crank(cmt_param1%iflag_c_magne,       &
+     &      iphys%i_magne, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,     &
+     &      Bnod_bcs%nod_bc_b, nod_comm, node, ele, conduct, evo_magne, &
      &      iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,           &
      &      diff_coefs, Bmatrix, MG_vector, mhd_fem_wk, fem_wk,         &
      &      f_l, f_nl, nod_fld)
       else if(evo_magne%iflag_scheme .eq. id_Crank_nicolson_cmass) then
-        call cal_magne_pre_consist_crank                                &
-     &     (iphys%i_magne, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,     &
-     &      Bnod_bcs%nod_bc_b, node, ele, conduct, cd_prop, jac_3d_q,   &
-     &      rhs_tbl, FEM_elens, diff_coefs, Bmatrix, MG_vector,         &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+        call cal_magne_pre_consist_crank(cmt_param1%iflag_c_magne,      &
+     &      iphys%i_magne, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,     &
+     &      Bnod_bcs%nod_bc_b, node, ele, conduct, evo_magne, cd_prop,  &
+     &      jac_3d_q, rhs_tbl, FEM_elens, diff_coefs, Bmatrix,          &
+     &      MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       call set_boundary_vect                                            &

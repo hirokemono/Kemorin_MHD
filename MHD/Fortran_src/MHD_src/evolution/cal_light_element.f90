@@ -40,6 +40,7 @@
 !
       use calypso_mpi
       use m_control_parameter
+      use m_SGS_control_parameter
       use m_phys_constants
 !
       use t_comm_table
@@ -153,14 +154,16 @@
      &      rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       else if(evo_comp%iflag_scheme .eq. id_Crank_nicolson) then
-        call cal_composit_pre_lumped_crank(iphys%i_light,               &
+        call cal_composit_pre_lumped_crank                              &
+     &     (cmt_param1%iflag_c_light, iphys%i_light,                    &
      &      iphys%i_pre_composit, ifld_diff%i_light, ak_d_composit,     &
-     &      nod_comm, node, ele, fluid, nod_bcs,                        &
+     &      nod_comm, node, ele, fluid, evo_comp, nod_bcs,              &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
      &      Cmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       else if(evo_comp%iflag_scheme .eq. id_Crank_nicolson_cmass) then
-        call cal_composit_pre_consist_crank(iphys%i_light,              &
+        call cal_composit_pre_consist_crank                             &
+     &     (cmt_param1%iflag_c_light, iphys%i_light,                    &
      &      iphys%i_pre_composit, ifld_diff%i_light, ak_d_composit,     &
      &      node, ele, fluid, evo_comp, property, nod_bcs,              &
      &      jac_3d, rhs_tbl, FEM_elens, diff_coefs, Cmatrix, MG_vector, &

@@ -3,8 +3,13 @@
 !
 !        Written by H. Matsui on Aug., 2007
 !
-!!      subroutine s_chenge_step_4_dynamic(my_rank, wk_sgs, wk_diff)
-!!      subroutine copy_model_coef_2_previous
+!!      subroutine s_chenge_step_4_dynamic                              &
+!!     &         (my_rank, cmt_param, wk_sgs, wk_diff)
+!!      subroutine copy_model_coef_2_previous(cmt_param,                &
+!!     &          nlayer_SGS, num_sgs_kind,  sgs_f_coef,                &
+!!     &          nlayer_diff, num_diff_kind, diff_f_coef, diff_f_whole,&
+!!     &          coef_sgs_p, coef_diff_p, coef_diff_wp)
+!!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!        type(dynamic_model_data), intent(inout) :: wk_diff
 !
@@ -14,6 +19,7 @@
 !
       use m_control_parameter
       use m_t_step_parameter
+      use t_SGS_control_parameter
 !
       implicit none
 !
@@ -22,6 +28,8 @@
      &           :: sgs_diff_max_name = "SGS_step_monitor.dat"
 !
       private :: sgs_diff_max_code, sgs_diff_max_name
+!
+      private :: find_maximum_model_ceoefs
 !
 !-----------------------------------------------------------------------
 !
@@ -48,10 +56,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_chenge_step_4_dynamic(my_rank, wk_sgs, wk_diff)
+      subroutine s_chenge_step_4_dynamic                                &
+     &         (my_rank, cmt_param, wk_sgs, wk_diff)
 !
       use t_ele_info_4_dynamic
 !
+      type(commutation_control_params), intent(in) :: cmt_param
       integer(kind = kint), intent(in) :: my_rank
       type(dynamic_model_data), intent(inout) :: wk_sgs, wk_diff
 !
@@ -61,15 +71,15 @@
       if(mod(i_step_MHD, i_step_sgs_coefs) .eq. 0) then
         call open_sgs_diff_monitor(my_rank)
 !
-        call find_maximum_model_ceoefs                                  &
-     &     (wk_sgs%nlayer, wk_sgs%num_kinds,                            &
+        call find_maximum_model_ceoefs(cmt_param,                       &
+     &      wk_sgs%nlayer, wk_sgs%num_kinds,                            &
      &      wk_sgs%fld_coef, wk_sgs%coef_p,                             &
      &      wk_diff%nlayer, wk_diff%num_kinds,                          &
      &      wk_diff%fld_coef, wk_diff%fld_whole,                        &
      &      wk_diff%coef_p, wk_diff%coef_wp, diff_max)
 !
-        call copy_model_coef_2_previous                                 &
-     &     (wk_sgs%nlayer, wk_sgs%num_kinds, wk_sgs%fld_coef,           &
+        call copy_model_coef_2_previous(cmt_param,                      &
+     &      wk_sgs%nlayer, wk_sgs%num_kinds, wk_sgs%fld_coef,           &
      &      wk_diff%nlayer, wk_diff%num_kinds,                          &
      &      wk_diff%fld_coef, wk_diff%fld_whole,                        &
      &      wk_sgs%coef_p, wk_diff%coef_p, wk_diff%coef_wp)
@@ -137,11 +147,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine find_maximum_model_ceoefs                              &
-     &         (nlayer_sgs, num_sgs_kind, sgs_f_coef, coef_sgs_p,       &
+      subroutine find_maximum_model_ceoefs(cmt_param,                   &
+     &          nlayer_sgs, num_sgs_kind, sgs_f_coef, coef_sgs_p,       &
      &          nlayer_diff, num_diff_kind, diff_f_coef, diff_f_whole,  &
      &          coef_diff_p, coef_diff_wp, diff_max)
 !
+      type(commutation_control_params), intent(in) :: cmt_param
       integer(kind = kint), intent(in) :: nlayer_sgs, num_sgs_kind
       real(kind = kreal), intent(in)                                    &
      &                    :: sgs_f_coef(nlayer_SGS,num_sgs_kind)
@@ -172,8 +183,8 @@
         end do
       end do
 !
-      if (cmt_param1%iflag_c_linear .gt. id_SGS_commute_OFF) then
-        if (cmt_param1%iset_DIFF_coefs .eq. 1) then
+      if (cmt_param%iflag_c_linear .gt. id_SGS_commute_OFF) then
+        if (cmt_param%iset_DIFF_coefs .eq. 1) then
           do j = 1, num_diff_kind
             do i = 1, nlayer_diff
               diff_r = abs(diff_f_coef(i,j) - coef_diff_p(i,j))
@@ -192,11 +203,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_model_coef_2_previous                             &
-     &         (nlayer_SGS, num_sgs_kind,  sgs_f_coef,                  &
+      subroutine copy_model_coef_2_previous(cmt_param,                  &
+     &          nlayer_SGS, num_sgs_kind,  sgs_f_coef,                  &
      &          nlayer_diff, num_diff_kind, diff_f_coef, diff_f_whole,  &
      &          coef_sgs_p, coef_diff_p, coef_diff_wp)
 !
+      type(commutation_control_params), intent(in) :: cmt_param
       integer(kind = kint), intent(in) :: nlayer_sgs, num_sgs_kind
       real(kind = kreal), intent(in)                                    &
      &                    :: sgs_f_coef(nlayer_SGS,num_sgs_kind)
@@ -221,8 +233,8 @@
         end do
       end do
 !
-      if (cmt_param1%iflag_c_linear .gt. id_SGS_commute_OFF) then
-        if (cmt_param1%iset_DIFF_coefs .eq. 1) then
+      if (cmt_param%iflag_c_linear .gt. id_SGS_commute_OFF) then
+        if (cmt_param%iset_DIFF_coefs .eq. 1) then
           do j = 1, num_diff_kind
             do i = 1, nlayer_diff
               coef_diff_p(i,j) = diff_f_coef(i,j)

@@ -274,18 +274,19 @@
      &     jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       else if(evo_velo%iflag_scheme .eq. id_Crank_nicolson) then
-        call cal_velo_pre_lumped_crank                                  &
-     &     (ifld_diff%i_velo, ak_MHD%ak_d_velo,                         &
-     &      nod_comm, node, ele, fluid, Vnod_bcs,                       &
+        call cal_velo_pre_lumped_crank(cmt_param1%iflag_c_velo,         &
+     &     ifld_diff%i_velo, ak_MHD%ak_d_velo,                          &
+     &      nod_comm, node, ele, fluid, evo_velo, Vnod_bcs,             &
      &      iphys, iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,    &
      &      diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,         &
      &      f_l, f_nl, nod_fld)
 !
       else if(evo_velo%iflag_scheme .eq. id_Crank_nicolson_cmass) then 
-        call cal_velo_pre_consist_crank(iphys%i_velo,                   &
+        call cal_velo_pre_consist_crank                                 &
+     &     (cmt_param1%iflag_c_velo, iphys%i_velo,                      &
      &      iphys%i_pre_mom, ifld_diff%i_velo, ak_MHD%ak_d_velo,        &
-     &      node, ele, fluid, fl_prop, Vnod_bcs, jac_3d_q, rhs_tbl,     &
-     &      FEM_elens, diff_coefs, Vmatrix, MG_vector,                  &
+     &      node, ele, fluid, evo_velo, fl_prop, Vnod_bcs, jac_3d_q,    &
+     &      rhs_tbl, FEM_elens, diff_coefs, Vmatrix, MG_vector,         &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
