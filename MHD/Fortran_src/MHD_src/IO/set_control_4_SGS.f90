@@ -242,16 +242,19 @@
         else
           tmpchara = sgs_ctl%SGS_negative_clip_ctl%charavalue
 !
-          if (cmp_no_case(tmpchara, 'none')) iset_SGS_nagetive_clip = 0
-          if (cmp_no_case(tmpchara, 'zero')) iset_SGS_nagetive_clip = 1
-          if (cmp_no_case(tmpchara, 'keep')) iset_SGS_nagetive_clip = 2
+          if (cmp_no_case(tmpchara, 'none'))                            &
+     &      SGS_param1%iflag_nagetive_clip = id_SGS_NO_CLIP
+          if (cmp_no_case(tmpchara, 'zero'))                            &
+     &      SGS_param1%iflag_nagetive_clip = id_SGS_ZERO_CLIP
+          if (cmp_no_case(tmpchara, 'keep'))                            &
+     &      SGS_param1%iflag_nagetive_clip = id_SGS_KEEP_PREVIOUS
         end if
 !
 !
+        SGS_param1%clipping_limit = 0.0d0
         if (sgs_ctl%clipping_limit_ctl%iflag .gt. 0) then
-          SGS_clipping_limit = sgs_ctl%clipping_limit_ctl%realvalue
-        else
-          SGS_clipping_limit = 0.0d0
+          SGS_param1%clipping_limit                                     &
+     &        = sgs_ctl%clipping_limit_ctl%realvalue
         end if
 !
         if (sgs_ctl%SGS_hf_factor_ctl%iflag .gt. 0) then
@@ -279,38 +282,37 @@
         end if
 !
 !
-        if (sgs_ctl%SGS_marging_ctl%iflag .eq. 0) then
-          iset_SGS_coef_marging = 0
-        else
+        SGS_param1%iflag_Csim_marging = id_SGS_DIR_LSQ
+        if (sgs_ctl%SGS_marging_ctl%iflag .gt. 0) then
           tmpchara = sgs_ctl%SGS_marging_ctl%charavalue
 !
           if      (cmp_no_case(tmpchara, 'lsq_over_directions')         &
      &        .or. cmp_no_case(tmpchara, 'lsq')) then
-             iset_SGS_coef_marging = 0
+             SGS_param1%iflag_Csim_marging = id_SGS_DIR_LSQ
           else if (cmp_no_case(tmpchara, 'average_over_directions')     &
      &        .or. cmp_no_case(tmpchara, 'average')) then
-             iset_SGS_coef_marging = 1
+             SGS_param1%iflag_Csim_marging = id_SGS_DIR_AVERAGE
           else if (cmp_no_case(tmpchara, 'weighting_by_correlation')    &
      &        .or. cmp_no_case(tmpchara, 'weighting')) then
-             iset_SGS_coef_marging = 2
+             SGS_param1%iflag_Csim_marging = id_SGS_DIR_CORRELATE
           end if
         end if
 !
+        SGS_param1%min_step_dynamic = 1
         if (sgs_ctl%min_step_dynamic_ctl%iflag .gt. 0) then
-          min_step_dynamic = sgs_ctl%min_step_dynamic_ctl%intvalue
-        else
-          min_step_dynamic = 1
+          SGS_param1%min_step_dynamic                                   &
+     &      = sgs_ctl%min_step_dynamic_ctl%intvalue
         end if
 !
+        SGS_param1%max_step_dynamic = 50
         if (sgs_ctl%max_step_dynamic_ctl%iflag .gt. 0) then
-          max_step_dynamic = sgs_ctl%max_step_dynamic_ctl%intvalue
-        else
-          max_step_dynamic = 50
+          SGS_param1%max_step_dynamic                                   &
+     &      = sgs_ctl%max_step_dynamic_ctl%intvalue
         end if
 !
-        delta_to_shrink_dynamic                                         &
+        SGS_param1%extend_SGS_dt                                        &
      &      = sgs_ctl%delta_to_shrink_dynamic_ctl%realvalue
-        delta_to_extend_dynamic                                         &
+        SGS_param1%extend_SGS_dt                                        &
      &      = sgs_ctl%delta_to_extend_dynamic_ctl%realvalue
       end if
 !

@@ -47,10 +47,11 @@
       call cal_each_components_m_coefs                                  &
      &   (numdir, n_layer, sgs_les, c_comps)
 !
-      if      (iset_SGS_coef_marging .eq. 1) then
+      if(SGS_param1%iflag_Csim_marging .eq. id_SGS_DIR_AVERAGE) then
         call ave_by_direction_4_dynamic(numdir, n_layer,                &
      &      sgs_les, c_comps, c_fields, dnum)
-      else if (iset_SGS_coef_marging .eq. 2) then
+      else if (SGS_param1%iflag_Csim_marging .eq. id_SGS_DIR_CORRELATE) &
+     & then
         call ave_by_correlate_4_dynamic(numdir, n_layer,                &
      &      sgs_les, cor, c_comps, c_fields, dnum)
       else

@@ -87,7 +87,7 @@
         if (my_rank .eq. 0) write(sgs_diff_max_code,*)                  &
      &    'difference from previous step: ', i_step_MHD, diff_max
 !
-        if (diff_max .gt. delta_to_shrink_dynamic) then
+        if (diff_max .gt. SGS_param1%extend_SGS_dt) then
           if      (i_step_sgs_coefs .eq. 1) then
             i_step_sgs_coefs = 1
           else if (i_step_sgs_coefs .eq. 2) then
@@ -104,10 +104,11 @@
             i_step_sgs_coefs = i_step_sgs_coefs / 2
           end if
 !
-          if (i_step_sgs_coefs .gt. max_step_dynamic) then
-            i_step_sgs_coefs = max_step_dynamic
-          else if (i_step_sgs_coefs .lt. min_step_dynamic) then
-            i_step_sgs_coefs = min_step_dynamic
+          if (i_step_sgs_coefs .gt. SGS_param1%max_step_dynamic) then
+            i_step_sgs_coefs = SGS_param1%max_step_dynamic
+          else if(i_step_sgs_coefs .lt. SGS_param1%min_step_dynamic)    &
+     &     then
+            i_step_sgs_coefs = SGS_param1%min_step_dynamic
           end if
 !
           if (my_rank .eq. 0) write(sgs_diff_max_code,*)                &
@@ -115,7 +116,7 @@
         end if
 !
 !
-        if (diff_max .lt. delta_to_extend_dynamic) then
+        if (diff_max .lt. SGS_param1%extend_SGS_dt) then
           if      (i_step_sgs_coefs .eq. 1) then
             i_step_sgs_coefs = 2
           else if (i_step_sgs_coefs .eq. 2) then
@@ -130,10 +131,11 @@
             i_step_sgs_coefs = 2*i_step_sgs_coefs
           end if
 !
-          if (i_step_sgs_coefs .gt. max_step_dynamic) then
-            i_step_sgs_coefs = max_step_dynamic
-          else if (i_step_sgs_coefs .lt. min_step_dynamic) then
-            i_step_sgs_coefs = min_step_dynamic
+          if (i_step_sgs_coefs .gt. SGS_param1%max_step_dynamic) then
+            i_step_sgs_coefs = SGS_param1%max_step_dynamic
+          else if(i_step_sgs_coefs .lt. SGS_param1%min_step_dynamic)    &
+     &     then
+            i_step_sgs_coefs = SGS_param1%min_step_dynamic
           end if
 !
           if (my_rank .eq. 0) write(sgs_diff_max_code,*)                &

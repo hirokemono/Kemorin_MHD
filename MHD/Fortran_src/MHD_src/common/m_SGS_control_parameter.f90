@@ -18,10 +18,10 @@
       implicit  none
 !
 !
-!      type(SGS_model_control_params), save :: SGS_param1
+      type(SGS_model_control_params), save :: SGS_param1
+!SGS_param1%iflag_nagetive_clip
 !
       type(commutation_control_params), save :: cmt_param1
-!cmt_param1%iset_DIFF_coefs
 !
       type(SGS_filtering_params), save :: filter_param1
 !

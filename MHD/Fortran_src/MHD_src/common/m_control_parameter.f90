@@ -126,19 +126,10 @@
       integer (kind=kint) :: iflag_SGS_model = id_SGS_none
       integer (kind=kint) :: iflag_dynamic_SGS = id_SGS_DYNAMIC_OFF
 !
-      integer (kind=kint) :: iset_SGS_nagetive_clip = 0
-      integer (kind=kint) :: iset_SGS_coef_marging =  0
-      real (kind = kreal) :: SGS_clipping_limit = 0.0d0
-!
       real (kind = kreal) :: SGS_hf_factor =      1.0d0
       real (kind = kreal) :: SGS_mf_factor =      1.0d0
       real (kind = kreal) :: SGS_mawell_factor =  1.0d0
       real (kind = kreal) :: SGS_uxb_factor =     1.0d0
-!
-      integer (kind=kint) :: min_step_dynamic =  1
-      integer (kind=kint) :: max_step_dynamic =  1
-      real (kind = kreal) :: delta_to_shrink_dynamic = 1.0d5
-      real (kind = kreal) :: delta_to_extend_dynamic = 1.0d-5
 !
       integer (kind=kint) :: iflag_SGS_heat =      0
       integer (kind=kint) :: iflag_SGS_inertia =   0

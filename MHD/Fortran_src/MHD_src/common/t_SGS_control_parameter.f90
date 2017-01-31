@@ -34,6 +34,14 @@
       integer (kind=kint), parameter :: id_SGS_DYNAMIC_OFF =   0
       integer (kind=kint), parameter :: id_SGS_DYNAMIC_ON =    1
 !
+      integer (kind=kint), parameter :: id_SGS_NO_CLIP =       0
+      integer (kind=kint), parameter :: id_SGS_ZERO_CLIP =     1
+      integer (kind=kint), parameter :: id_SGS_KEEP_PREVIOUS = 2
+!
+      integer (kind=kint), parameter :: id_SGS_DIR_LSQ =       0
+      integer (kind=kint), parameter :: id_SGS_DIR_AVERAGE =   1
+      integer (kind=kint), parameter :: id_SGS_DIR_CORRELATE = 2
+!
       type SGS_model_control_params
         integer (kind=kint) :: iflag_SGS_model = id_SGS_none
         integer (kind=kint) :: iflag_dynamic_SGS = id_SGS_DYNAMIC_OFF
@@ -53,8 +61,8 @@
 !
         integer (kind=kint) :: min_step_dynamic =  1
         integer (kind=kint) :: max_step_dynamic =  1
-        real (kind = kreal) :: delta_to_shrink_dynamic = 1.0d5
-        real (kind = kreal) :: delta_to_extend_dynamic = 1.0d-5
+        real (kind = kreal) :: shrink_SGS_dt = 1.0d5
+        real (kind = kreal) :: extend_SGS_dt = 1.0d-5
 !
         integer (kind=kint) :: iflag_SGS_parterbuation = 0
 !
@@ -67,9 +75,12 @@
         integer (kind=kint) :: itype_SGS_maxwell_coef =  0
         integer (kind=kint) :: itype_SGS_uxb_coef =      0
 !
-        integer (kind=kint) :: iset_SGS_nagetive_clip = 0
-        integer (kind=kint) :: iset_SGS_coef_marging =  0
-        real (kind = kreal) :: SGS_clipping_limit = 0.0d0
+!>        fla to clip negative model coefficients
+        integer (kind=kint) :: iflag_nagetive_clip = id_SGS_NO_CLIP
+!>        Merging mode for model coefficients in direction
+        integer (kind=kint) :: iflag_Csim_marging =  id_SGS_DIR_LSQ
+!>        maximum value to clip model coefficients
+        real (kind = kreal) :: clipping_limit = 0.0d0
       end type SGS_model_control_params
 !
 !>      ID not to apply commutation error correction
