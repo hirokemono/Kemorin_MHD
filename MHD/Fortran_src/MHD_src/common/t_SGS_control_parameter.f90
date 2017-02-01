@@ -59,18 +59,16 @@
         integer (kind=kint) :: iflag_SGS_comp_flux = id_SGS_none
         integer (kind=kint) :: iflag_SGS_gravity =   id_SGS_none
 !
-        real (kind = kreal) :: SGS_hf_factor =      1.0d0
-        real (kind = kreal) :: SGS_mf_factor =      1.0d0
-        real (kind = kreal) :: SGS_mawell_factor =  1.0d0
-        real (kind = kreal) :: SGS_uxb_factor =     1.0d0
-        real (kind = kreal) :: SGS_cf_factor =      1.0d0
+        real(kind = kreal) :: SGS_hf_factor =      1.0d0
+        real(kind = kreal) :: SGS_mf_factor =      1.0d0
+        real(kind = kreal) :: SGS_mawell_factor =  1.0d0
+        real(kind = kreal) :: SGS_uxb_factor =     1.0d0
+        real(kind = kreal) :: SGS_cf_factor =      1.0d0
 !
         integer (kind=kint) :: min_step_dynamic =  1
         integer (kind=kint) :: max_step_dynamic =  1
         real (kind = kreal) :: shrink_SGS_dt = 1.0d5
         real (kind = kreal) :: extend_SGS_dt = 1.0d-5
-!
-        integer (kind=kint) :: iflag_parterbuation = id_turn_OFF
 !
 !>        Model coefficient type
         integer (kind=kint) :: itype_Csym =  id_CSIM_FIELD
@@ -82,6 +80,9 @@
         integer (kind=kint) :: itype_Csym_m_flux =   id_CSIM_FIELD
         integer (kind=kint) :: itype_Csym_maxwell =  id_CSIM_FIELD
         integer (kind=kint) :: itype_Csym_uxb =      id_CSIM_FIELD
+!
+!>        Flag to treat perturbation of SGSheat flux
+        integer (kind=kint) :: iflag_parterbuation = id_turn_OFF
 !
 !>        fla to clip negative model coefficients
         integer (kind=kint) :: iflag_nagetive_clip = id_SGS_NO_CLIP

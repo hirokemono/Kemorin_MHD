@@ -126,11 +126,6 @@
       integer (kind=kint) :: iflag_SGS_model = id_SGS_none
       integer (kind=kint) :: iflag_dynamic_SGS = id_SGS_DYNAMIC_OFF
 !
-      real (kind = kreal) :: SGS_hf_factor =      1.0d0
-      real (kind = kreal) :: SGS_mf_factor =      1.0d0
-      real (kind = kreal) :: SGS_mawell_factor =  1.0d0
-      real (kind = kreal) :: SGS_uxb_factor =     1.0d0
-!
       integer (kind=kint) :: iflag_SGS_heat =      0
       integer (kind=kint) :: iflag_SGS_inertia =   0
       integer (kind=kint) :: iflag_SGS_lorentz =   0

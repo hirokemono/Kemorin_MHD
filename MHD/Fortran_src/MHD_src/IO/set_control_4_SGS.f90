@@ -253,35 +253,19 @@
         end if
 !
 !
-        SGS_param1%clipping_limit = 0.0d0
-        if (sgs_ctl%clipping_limit_ctl%iflag .gt. 0) then
-          SGS_param1%clipping_limit                                     &
-     &        = sgs_ctl%clipping_limit_ctl%realvalue
-        end if
+        SGS_param1%clipping_limit                                       &
+     &        = set_fixed_Csim(zero, sgs_ctl%clipping_limit_ctl)
 !
-        if (sgs_ctl%SGS_hf_factor_ctl%iflag .gt. 0) then
-          SGS_hf_factor = sgs_ctl%SGS_hf_factor_ctl%realvalue
-        else
-          SGS_hf_factor = 1.0d0
-        end if
-!
-        if (sgs_ctl%SGS_mf_factor_ctl%iflag .gt. 0) then
-          SGS_mf_factor = sgs_ctl%SGS_mf_factor_ctl%realvalue
-        else
-          SGS_mf_factor = 1.0d0
-        end if
-!
-        if (sgs_ctl%SGS_mxwl_factor_ctl%iflag .gt. 0) then
-          SGS_mawell_factor = sgs_ctl%SGS_mxwl_factor_ctl%realvalue
-        else
-          SGS_mawell_factor = 1.0d0
-        end if
-!
-        if (sgs_ctl%SGS_uxb_factor_ctl%iflag .gt. 0) then
-          SGS_uxb_factor = sgs_ctl%SGS_uxb_factor_ctl%realvalue
-        else
-          SGS_uxb_factor = 1.0d0
-        end if
+        SGS_param1%SGS_hf_factor                                        &
+     &        = set_fixed_Csim(one, sgs_ctl%SGS_hf_factor_ctl)
+        SGS_param1%SGS_mf_factor                                        &
+     &        = set_fixed_Csim(one, sgs_ctl%SGS_mf_factor_ctl)
+        SGS_param1%SGS_mawell_factor                                    &
+     &        = set_fixed_Csim(one, sgs_ctl%SGS_mxwl_factor_ctl)
+        SGS_param1%SGS_uxb_factor                                       &
+     &        = set_fixed_Csim(one, sgs_ctl%SGS_uxb_factor_ctl)
+        SGS_param1%SGS_cf_factor                                        &
+     &        = set_fixed_Csim(one, sgs_ctl%SGS_cf_factor_ctl)
 !
 !
         SGS_param1%iflag_Csim_marging = id_SGS_DIR_LSQ
@@ -386,10 +370,12 @@
           write(*,*) 'itype_SGS_model_coef: ',  SGS_param1%itype_Csym
           write(*,*) 'icoord_SGS_model_coef: ', SGS_param1%icoord_Csim
 !
-          write(*,*) 'SGS_hf_factor:     ', SGS_hf_factor
-          write(*,*) 'SGS_mf_factor:     ', SGS_mf_factor
-          write(*,*) 'SGS_mawell_factor: ', SGS_mawell_factor
-          write(*,*) 'SGS_uxb_factor:    ', SGS_uxb_factor
+          write(*,*) 'SGS_hf_factor:     ', SGS_param1%SGS_hf_factor
+          write(*,*) 'SGS_mf_factor:     ', SGS_param1%SGS_mf_factor
+          write(*,*) 'SGS_mawell_factor: ',                             &
+     &               SGS_param1%SGS_mawell_factor
+          write(*,*) 'SGS_uxb_factor:    ', SGS_param1%SGS_uxb_factor
+          write(*,*) 'SGS_cf_factor:     ', SGS_param1%SGS_cf_factor
 !
           write(*,*) 'itype_SGS_h_flux_coef:  ',                        &
      &              SGS_param1%itype_Csym_h_flux
@@ -528,6 +514,23 @@
      &        set_Csim_type = id_CSIM_COMPONENT
 !
       end function set_Csim_type
+!
+! -----------------------------------------------------------------------
+!
+      real(kind = kreal) function set_fixed_Csim                        &
+     &                          (default, csim_fact_ctl)
+!
+      use t_control_elements
+!
+      real(kind = kreal), intent(in) :: default
+      type(read_real_item), intent(in) :: csim_fact_ctl
+!
+      set_fixed_Csim = default
+!
+      if(csim_fact_ctl%iflag .eq. 0) return
+      set_fixed_Csim = csim_fact_ctl%realvalue
+!
+      end function set_fixed_Csim
 !
 ! -----------------------------------------------------------------------
 !

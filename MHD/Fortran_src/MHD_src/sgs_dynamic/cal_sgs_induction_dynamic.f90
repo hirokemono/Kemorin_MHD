@@ -280,10 +280,10 @@
      &    icomp_sgs_uxb, intg_point_t_evo,                              &
      &    wk_cor, wk_lsq, wk_sgs, sgs_coefs)
 !
-      call reduce_model_coefs_layer(SGS_uxb_factor,                     &
+      call reduce_model_coefs_layer(SGS_param1%SGS_uxb_factor,          &
      &    wk_sgs%nlayer, wk_sgs%num_kinds, iak_sgs_uxb,                 &
      &    wk_sgs%fld_clip, wk_sgs%fld_whole_clip)
-      call reduce_ele_vect_model_coefs(ele, SGS_uxb_factor,             &
+      call reduce_ele_vect_model_coefs(ele, SGS_param1%SGS_uxb_factor,  &
      &    sgs_coefs%ntot_comp, icomp_sgs_uxb, sgs_coefs%ak)
 !
       end subroutine cal_sgs_induct_t_dynamic

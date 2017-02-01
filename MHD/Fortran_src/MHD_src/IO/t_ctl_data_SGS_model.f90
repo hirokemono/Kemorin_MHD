@@ -80,6 +80,7 @@
 !!
 !!
 !!      SGS_hf_factor_ctl        0.5
+!!      SGS_cf_factor_ctl        0.5
 !!
 !!      begin filter_files_def
 !!        filter_elength_header   'filter_elen'
@@ -217,6 +218,7 @@
         type(read_real_item) :: clipping_limit_ctl
 !
         type(read_real_item) :: SGS_hf_factor_ctl
+        type(read_real_item) :: SGS_cf_factor_ctl
         type(read_real_item) :: SGS_mf_factor_ctl
         type(read_real_item) :: SGS_mxwl_factor_ctl
         type(read_real_item) :: SGS_uxb_factor_ctl
@@ -253,6 +255,8 @@
 !
       character(len=kchara), parameter                                  &
      &             :: hd_SGS_hf_factor = 'SGS_hf_factor_ctl'
+      character(len=kchara), parameter                                  &
+     &             :: hd_SGS_cf_factor = 'SGS_cf_factor_ctl'
       character(len=kchara), parameter                                  &
      &             :: hd_SGS_mf_factor = 'SGS_mf_factor_ctl'
       character(len=kchara), parameter                                  &
@@ -430,6 +434,8 @@
 !
         call read_real_ctl_type(hd_SGS_hf_factor,                       &
      &      sgs_ctl%SGS_hf_factor_ctl)
+        call read_real_ctl_type(hd_SGS_cf_factor,                       &
+     &      sgs_ctl%SGS_cf_factor_ctl)
         call read_real_ctl_type(hd_SGS_mf_factor,                       &
      &      sgs_ctl%SGS_mf_factor_ctl)
         call read_real_ctl_type(hd_SGS_mxwl_factor,                     &
@@ -529,6 +535,7 @@
       call bcast_ctl_type_r1(sgs_ctl%clipping_limit_ctl)
 !
       call bcast_ctl_type_r1(sgs_ctl%SGS_hf_factor_ctl)
+      call bcast_ctl_type_r1(sgs_ctl%SGS_cf_factor_ctl)
       call bcast_ctl_type_r1(sgs_ctl%SGS_mf_factor_ctl)
       call bcast_ctl_type_r1(sgs_ctl%SGS_mxwl_factor_ctl)
       call bcast_ctl_type_r1(sgs_ctl%SGS_uxb_factor_ctl)

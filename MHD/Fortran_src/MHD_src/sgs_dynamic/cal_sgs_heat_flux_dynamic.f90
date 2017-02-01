@@ -166,10 +166,10 @@
      &    icomp_sgs_hf, intg_point_t_evo, wk_cor, wk_lsq, wk_sgs,       &
      &    sgs_coefs)
 !
-      call reduce_model_coefs_layer(SGS_hf_factor,                      &
+      call reduce_model_coefs_layer(SGS_param1%SGS_hf_factor,           &
      &    wk_sgs%nlayer, wk_sgs%num_kinds, iak_sgs_hf,                  &
      &    wk_sgs%fld_clip, wk_sgs%fld_whole_clip)
-      call reduce_ele_vect_model_coefs(ele, SGS_hf_factor,              &
+      call reduce_ele_vect_model_coefs(ele, SGS_param1%SGS_hf_factor,   &
      &    sgs_coefs%ntot_comp, icomp_sgs_hf, sgs_coefs%ak)
 !
       end subroutine cal_sgs_hf_dynamic

@@ -170,10 +170,10 @@
      &    iak_sgs_mf, icomp_sgs_mf, intg_point_t_evo,                   &
      &    wk_cor, wk_lsq, wk_sgs, sgs_coefs)
 !
-      call reduce_model_coefs_layer(SGS_mf_factor,                      &
+      call reduce_model_coefs_layer(SGS_param1%SGS_mf_factor,           &
      &    wk_sgs%nlayer, wk_sgs%num_kinds, iak_sgs_mf,                  &
      &    wk_sgs%fld_clip, wk_sgs%fld_whole_clip)
-      call reduce_ele_tensor_model_coefs(ele, SGS_mf_factor,            &
+      call reduce_ele_tensor_model_coefs(ele, SGS_param1%SGS_mf_factor, &
      &    sgs_coefs%ntot_comp, icomp_sgs_mf, sgs_coefs%ak)
 !
       end subroutine cal_sgs_m_flux_dynamic

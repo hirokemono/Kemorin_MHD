@@ -607,6 +607,7 @@ begin MHD_control
       direction_marging_ctl         lsq
 !
       SGS_hf_factor_ctl        1.0
+      SGS_cf_factor_ctl        1.0
       SGS_mf_factor_ctl        2.0
       SGS_mxwl_factor_ctl      1.0
       SGS_uxb_factor_ctl       1.5
@@ -685,6 +686,7 @@ begin MHD_control
       direction_marging_ctl         lsq
 !
       SGS_hf_factor_ctl        1.0
+      SGS_cf_factor_ctl        1.0
       SGS_mf_factor_ctl        2.0
       SGS_mxwl_factor_ctl      1.0
       SGS_uxb_factor_ctl       1.5

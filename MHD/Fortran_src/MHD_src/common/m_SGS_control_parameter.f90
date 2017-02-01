@@ -19,7 +19,7 @@
 !
 !
       type(SGS_model_control_params), save :: SGS_param1
-!SGS_param1%iflag_parterbuation
+!SGS_param1%SGS_hf_factor
 !
       type(commutation_control_params), save :: cmt_param1
 !
