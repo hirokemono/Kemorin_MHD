@@ -55,7 +55,7 @@
         integer (kind=kint) :: iflag_SGS_heat =      id_SGS_none
         integer (kind=kint) :: iflag_SGS_inertia =   id_SGS_none
         integer (kind=kint) :: iflag_SGS_lorentz =   id_SGS_none
-        integer (kind=kint) :: iflag_SGS_induction = id_SGS_none
+        integer (kind=kint) :: iflag_SGS_uxb =       id_SGS_none
         integer (kind=kint) :: iflag_SGS_comp_flux = id_SGS_none
         integer (kind=kint) :: iflag_SGS_gravity =   id_SGS_none
 !

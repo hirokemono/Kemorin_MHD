@@ -61,7 +61,7 @@
       integer(kind = kint) :: nnod_med
 !
 !
-      if(iflag_SGS_gravity .eq. id_SGS_none) return
+      if(SGS_param1%iflag_SGS_gravity .eq. id_SGS_none) return
 !
       call calypso_mpi_barrier
       write(*,*) 'SGS_fluxes_for_buo_coefs'

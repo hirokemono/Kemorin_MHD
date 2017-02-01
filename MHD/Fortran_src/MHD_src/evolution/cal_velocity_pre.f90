@@ -180,7 +180,7 @@
 !   ----  set SGS fluxes
 !
 !
-      if (iflag_SGS_gravity .ne. id_SGS_none) then
+      if(SGS_param1%iflag_SGS_gravity .ne. id_SGS_none) then
         call cal_sgs_mom_flux_with_sgs_buo                              &
      &     (nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,        &
      &      fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,       &
@@ -191,7 +191,7 @@
      &      f_l, f_nl, nod_fld, ele_fld, sgs_coefs)
       end if
 !
-      if ( iflag_SGS_inertia .ne. id_SGS_none) then
+      if(iflag_SGS_inertia .ne. id_SGS_none) then
         call cal_sgs_momentum_flux                                      &
      &     (icomp_sgs%i_mom_flux, iphys_elediff%i_velo,                 &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
@@ -200,7 +200,7 @@
      &      f_l, f_nl, nod_fld)
       end if
 !
-      if ( iflag_SGS_lorentz .ne. id_SGS_none) then
+      if(SGS_param1%iflag_SGS_lorentz .ne. id_SGS_none) then
         call cal_sgs_maxwell                                            &
      &     (icomp_sgs%i_lorentz, iphys_elediff%i_magne,                 &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &

@@ -153,18 +153,18 @@
 !
        if(iflag_dynamic.eq.0                                            &
      &       .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
-         if (        iflag_SGS_lorentz .eq. id_SGS_similarity           &
-     &       .or.  iflag_SGS_induction .eq. id_SGS_similarity) then
+         if (     SGS_param1%iflag_SGS_lorentz .eq. id_SGS_similarity   &
+     &       .or. SGS_param1%iflag_SGS_uxb .eq. id_SGS_similarity) then
            iflag2 = 3
-         else if (   iflag_SGS_lorentz .eq. id_SGS_NL_grad              &
-     &       .or.  iflag_SGS_induction .eq. id_SGS_NL_grad) then
+         else if (SGS_param1%iflag_SGS_lorentz .eq. id_SGS_NL_grad      &
+     &       .or. SGS_param1%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
            iflag2 = 2
          else
            iflag2 = 2
          end if
        else
-         if (        iflag_SGS_lorentz .eq. id_SGS_similarity           &
-     &       .or.  iflag_SGS_induction .eq. id_SGS_similarity) then
+         if (     SGS_param1%iflag_SGS_lorentz .eq. id_SGS_similarity   &
+     &       .or. SGS_param1%iflag_SGS_uxb .eq. id_SGS_similarity) then
            iflag2 = 1
          else
            iflag2 = 0
@@ -226,8 +226,8 @@
        end if
  !
  !
-       if (  iflag_SGS_lorentz .eq.   id_SGS_NL_grad                    &
-     &  .or. iflag_SGS_induction .eq. id_SGS_NL_grad) then
+       if (  SGS_param1%iflag_SGS_lorentz .eq. id_SGS_NL_grad           &
+     &  .or. SGS_param1%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
         if ( ie_dbx.ne.0 ) then
            if (iflag_debug.gt.0) write(*,*) 'diff_magne_on_ele'
             call sel_int_diff_vector_on_ele                             &

@@ -103,7 +103,7 @@
         end if
       end if
 !
-      if (iflag_SGS_lorentz .ne. id_SGS_none) then
+      if (SGS_param1%iflag_SGS_lorentz .ne. id_SGS_none) then
         if (cmt_param%iflag_c_lorentz .eq. id_SGS_commute_ON) then
           call int_sf_skv_sgs_div_t_flux(node, ele, surf, sf_grp,       &
      &        nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,                  &

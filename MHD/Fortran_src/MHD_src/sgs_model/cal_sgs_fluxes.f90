@@ -238,7 +238,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if (     iflag_SGS_lorentz .eq. id_SGS_NL_grad) then
+      if (    SGS_param1%iflag_SGS_lorentz .eq. id_SGS_NL_grad) then
         if (iflag_debug.eq.1)                                           &
      &    write(*,*) 'cal_sgs_maxwell_grad', ifilter_final
         call cal_sgs_m_flux_grad_w_coef                                 &
@@ -249,7 +249,7 @@
      &      mhd_fem_wk, nod_fld)
 !
 !
-      else if (iflag_SGS_lorentz .eq. id_SGS_similarity) then
+      else if(SGS_param1%iflag_SGS_lorentz .eq. id_SGS_similarity) then
         if (iflag_debug.eq.1)                                           &
      &     write(*,*) 'cal_sgs_mf_simi',  iphys%i_SGS_maxwell
         call cal_sgs_mf_simi(iphys%i_SGS_maxwell, iphys%i_magne,        &
@@ -257,7 +257,7 @@
      &      nod_comm, node, filtering, sgs_coefs_nod,                   &
      &      wk_filter, nod_fld)
 !
-      else if (iflag_SGS_lorentz .eq. id_SGS_diffusion) then
+      else if(SGS_param1%iflag_SGS_lorentz .eq. id_SGS_diffusion) then
         if (iflag_debug.eq.1)                                           &
      &     write(*,*) 'cal_sgs_m_flux_diffuse', iphys%i_SGS_maxwell
         call cal_sgs_m_flux_diffuse                                     &
@@ -304,7 +304,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if     (iflag_SGS_induction .eq. id_SGS_NL_grad) then
+      if     (SGS_param1%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
         if (iflag_debug.eq.1)                                           &
      &    write(*,*) 'cal_sgs_induct_t_grad'
         call cal_sgs_induct_t_grad_w_coef                               &
@@ -314,7 +314,7 @@
      &      jac_3d, rhs_tbl, FEM_elens, sgs_coefs, fem_wk, mhd_fem_wk,  &
      &      f_l, nod_fld)
 !
-      else if(iflag_SGS_induction .eq. id_SGS_similarity) then
+      else if(SGS_param1%iflag_SGS_uxb .eq. id_SGS_similarity) then
         if (iflag_debug.eq.1)                                           &
      &      write(*,*) 'cal_sgs_induct_t_simi'
         call cal_sgs_induct_t_simi                                      &
@@ -361,7 +361,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if     (iflag_SGS_induction .eq. id_SGS_NL_grad) then
+      if     (SGS_param1%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
         if (iflag_debug.eq.1)                                           &
      &      write(*,*) 'cal_sgs_uxb_2_ff_grad', ifilter_final
         call cal_sgs_uxb_2_ff_grad                                      &
@@ -369,7 +369,7 @@
      &      cd_prop, iphys, nod_fld, iphys_ele, ele_fld, jac_3d,        &
      &      rhs_tbl, FEM_elens, sgs_coefs, mhd_fem_wk, fem_wk, f_nl)
 !
-      else if(iflag_SGS_induction .eq. id_SGS_similarity) then
+      else if(SGS_param1%iflag_SGS_uxb .eq. id_SGS_similarity) then
         if (iflag_debug.eq.1)                                           &
      &      write(*,*) 'cal_sgs_uxb_2_ff_simi', ifilter_final
         call cal_sgs_uxb_2_ff_simi                                      &
@@ -377,7 +377,7 @@
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, filtering, sgs_coefs,  &
      &      wk_filter, fem_wk, f_nl, nod_fld)
 !
-      else if(iflag_SGS_induction .eq. id_SGS_diffusion) then
+      else if(SGS_param1%iflag_SGS_uxb .eq. id_SGS_diffusion) then
          if (iflag_debug.eq.1)                                          &
      &      write(*,*) 'choose_int_vol_rotations'
          call choose_int_vol_rotations(iflag_mag_supg,                  &

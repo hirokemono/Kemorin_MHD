@@ -52,7 +52,7 @@
       sph_fld%num_phys =   5
       sph_fld%ntot_phys = 15
 !
-      if ( iflag_SGS_induction .ne. id_SGS_none) then
+      if ( SGS_param1%iflag_SGS_uxb .ne. id_SGS_none) then
         iphys_sph%i_SGS_vp_induct = 16
         iphys_sph%i_SGS_induction = 19
         sph_fld%num_phys =   7
@@ -234,7 +234,7 @@
 !
       type(phys_data), intent(in) :: rj_fld
 !
-      if ( iflag_SGS_induction .ne. id_SGS_none) then
+      if ( SGS_param1%iflag_SGS_uxb .ne. id_SGS_none) then
         call cal_diff_induction_MHD_adams(evo_magne%coef_exp,           &
      &      ipol, itor, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else
@@ -261,7 +261,7 @@
      &    ipol%i_b_diffuse, b_hbd_trns%i_b_diffuse, rj_fld, n_WS, WS)
       call sel_sph_rj_vector_to_send(ncomp_rj_2_xyz,                    &
      &    ipol%i_induction, b_hbd_trns%i_induction, rj_fld, n_WS, WS)
-      if (iflag_SGS_induction .ne. id_SGS_none) then
+      if (SGS_param1%iflag_SGS_uxb .ne. id_SGS_none) then
         call sel_sph_rj_vector_to_send(ncomp_rj_2_xyz,                  &
      &      ipol%i_SGS_induction, b_hbd_trns%i_SGS_induction, rj_fld,   &
      &      n_WS, WS)
@@ -289,7 +289,7 @@
      &   (sph%sph_rtp, sph%sph_params%m_folding, nvector_rj_2_xyz,      &
      &    b_hbd_trns%i_induction, fld_hbd_rtp(1,1), fld_hbd_pole,       &
      &    iphys_sph%i_induction, mesh_sph%node, sph_fld)
-      if ( iflag_SGS_induction .ne. id_SGS_none) then
+      if ( SGS_param1%iflag_SGS_uxb .ne. id_SGS_none) then
         call copy_nod_vec_from_trans_wpole                              &
      &   (sph%sph_rtp, sph%sph_params%m_folding, nvector_rj_2_xyz,      &
      &    b_hbd_trns%i_SGS_induction, fld_hbd_rtp(1,1), fld_hbd_pole,   &
@@ -309,7 +309,7 @@
       call interpolate_vector_type                                      &
      &   (iphys_sph%i_induction, iphys%i_induction,                     &
      &    itp_SPH_2_FEM, mesh_sph, mesh_fem, sph_fld, fem_fld)
-      if ( iflag_SGS_induction .ne. id_SGS_none) then
+      if ( SGS_param1%iflag_SGS_uxb .ne. id_SGS_none) then
         call interpolate_vector_type                                    &
      &   (iphys_sph%i_SGS_induction, iphys%i_SGS_induction,             &
      &    itp_SPH_2_FEM, mesh_sph, mesh_fem, sph_fld, fem_fld)

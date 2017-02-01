@@ -128,7 +128,7 @@
      &      d_ele(1,iphys_ele%i_velo),  fem_wk%vector_1,                &
      &      ele, jac_3d, fem_wk%sk6)
 !
-        if (iflag_SGS_induction .ne. id_SGS_none                        &
+        if (SGS_param1%iflag_SGS_uxb .ne. id_SGS_none                   &
      &    .and. cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
            call SGS_const_induct_each_ele(node, ele, nod_fld,           &
      &         k2, iphys%i_magne, iphys%i_velo, iphys%i_SGS_induct_t,   &
@@ -138,7 +138,7 @@
      &         diff_coefs%num_field, iak_diff_uxb, diff_coefs%ak,       &
      &         ele, jac_3d, FEM_elens, mhd_fem_wk%sgs_v1,               &
      &         fem_wk%vector_1, fem_wk%sk6)
-        else if (iflag_SGS_induction .ne. id_SGS_none) then
+        else if (SGS_param1%iflag_SGS_uxb .ne. id_SGS_none) then
           call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,       &
      &        iphys%i_SGS_induct_t, cd_prop%coef_induct,                &
      &        mhd_fem_wk%sgs_v1)
@@ -218,7 +218,7 @@
      &      d_ele(1,iphys_ele%i_velo), fem_wk%vector_1,                 &
      &      d_ele(1,iphys_ele%i_magne), ele, jac_3d, fem_wk%sk6)
 !
-        if (iflag_SGS_induction .ne. id_SGS_none                        &
+        if (SGS_param1%iflag_SGS_uxb .ne. id_SGS_none                   &
      &    .and. cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
           call SGS_const_induct_each_ele(node, ele, nod_fld,            &
      &        k2, iphys%i_magne, iphys%i_velo, iphys%i_SGS_induct_t,    &
@@ -228,7 +228,7 @@
      &        diff_coefs%num_field, iak_diff_uxb, diff_coefs%ak,        &
      &        ele, jac_3d, FEM_elens, d_ele(1,iphys_ele%i_magne),       &
      &        mhd_fem_wk%sgs_v1, fem_wk%vector_1, fem_wk%sk6)
-        else if (iflag_SGS_induction .ne. id_SGS_none) then
+        else if (SGS_param1%iflag_SGS_uxb .ne. id_SGS_none) then
           call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,       &
      &        iphys%i_SGS_induct_t, cd_prop%coef_induct,                &
      &        mhd_fem_wk%sgs_v1)

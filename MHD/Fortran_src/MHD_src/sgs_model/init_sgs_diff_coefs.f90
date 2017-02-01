@@ -114,7 +114,7 @@
           end if
         end if
 !
-        if (iflag_SGS_lorentz .ne. id_SGS_none) then
+        if (SGS_param1%iflag_SGS_lorentz .ne. id_SGS_none) then
           if (cmt_param%iflag_c_lorentz .eq. id_SGS_commute_ON) then
             diff_coefs%num_field = diff_coefs%num_field + 1
             ntot_diff_comp = ntot_diff_comp + 9
@@ -123,7 +123,7 @@
       end if
 !
       if (evo_magne%iflag_scheme .gt. id_no_evolution) then
-        if (iflag_SGS_induction .ne. id_SGS_none) then
+        if (SGS_param1%iflag_SGS_uxb .ne. id_SGS_none) then
           if(cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
             diff_coefs%num_field = diff_coefs%num_field + 1
             ntot_diff_comp = ntot_diff_comp + 9
@@ -231,7 +231,7 @@
            end if
          end if
 !
-         if (iflag_SGS_lorentz .ne. id_SGS_none) then
+         if (SGS_param1%iflag_SGS_lorentz .ne. id_SGS_none) then
            if (cmt_param%iflag_c_lorentz .eq. id_SGS_commute_ON) then
              icomp_diff%i_lorentz = id
              ifld_diff%i_lorentz = jd
@@ -244,7 +244,7 @@
        end if
 !
        if (evo_magne%iflag_scheme .gt. id_no_evolution) then
-         if (iflag_SGS_induction .ne. id_SGS_none) then
+         if (SGS_param1%iflag_SGS_uxb .ne. id_SGS_none) then
            if (cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
              icomp_diff%i_induction = id
              ifld_diff%i_induction =  jd

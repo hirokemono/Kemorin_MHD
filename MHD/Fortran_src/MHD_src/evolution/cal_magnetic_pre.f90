@@ -161,7 +161,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if ( iflag_SGS_induction .ne. id_SGS_none) then
+      if ( SGS_param1%iflag_SGS_uxb .ne. id_SGS_none) then
         call cal_sgs_magne_induction(icomp_sgs_uxb, ie_dvx, ie_dbx,     &
      &     nod_comm, node, ele, conduct, cd_prop, iphys,                &
      &     iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens, filtering, &

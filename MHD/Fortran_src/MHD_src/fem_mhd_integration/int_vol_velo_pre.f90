@@ -225,7 +225,7 @@
 !
 !    set SGS Lorentz force
 !
-          if ( iflag_SGS_lorentz .ne. id_SGS_none) then
+          if (SGS_param1%iflag_SGS_lorentz .ne. id_SGS_none) then
             if(cmt_param%iflag_c_lorentz .eq. id_SGS_commute_ON) then
               call SGS_const_tensor_each_ele(node, ele, nod_fld, k2,    &
      &            iphys%i_magne, iphys%i_SGS_maxwell, fl_prop%coef_lor, &
@@ -484,7 +484,7 @@
 !
 !    set SGS Lorentz force
 !
-          if ( iflag_SGS_lorentz .ne. id_SGS_none) then
+          if (SGS_param1%iflag_SGS_lorentz .ne. id_SGS_none) then
             if (cmt_param%iflag_c_lorentz .eq. id_SGS_commute_ON) then
               call SGS_const_tensor_each_ele(node, ele, nod_fld, k2,    &
      &            iphys%i_magne, iphys%i_SGS_maxwell, fl_prop%coef_lor, &

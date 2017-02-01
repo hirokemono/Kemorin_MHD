@@ -116,13 +116,13 @@
       if ( iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (  iflag_SGS_heat .ne.      id_SGS_none                      &
      &   .or. iflag_SGS_inertia .ne.   id_SGS_none                      &
-     &   .or. iflag_SGS_induction .ne. id_SGS_none) then
+     &   .or. SGS_param1%iflag_SGS_uxb .ne. id_SGS_none) then
          mhd_fem_wk%n_dvx = mhd_fem_wk%n_dvx + 18
         end if
 !
-        if ( iflag_SGS_lorentz .ne. id_SGS_none) then
+        if ( SGS_param1%iflag_SGS_lorentz .ne. id_SGS_none) then
          mhd_fem_wk%n_dvx = mhd_fem_wk%n_dvx + 18
-        else if (iflag_SGS_induction .ne. id_SGS_none                   &
+        else if (SGS_param1%iflag_SGS_uxb .ne. id_SGS_none              &
      &     .and. evo_magne%iflag_scheme .gt. id_no_evolution) then
          mhd_fem_wk%n_dvx = mhd_fem_wk%n_dvx + 18
         end if
@@ -130,13 +130,13 @@
       else if (iflag_SGS_model .ne. id_SGS_none) then
         if (  iflag_SGS_heat .ne.      id_SGS_none                      &
      &   .or. iflag_SGS_inertia .ne.   id_SGS_none                      &
-     &   .or. iflag_SGS_induction .ne. id_SGS_none ) then
+     &   .or. SGS_param1%iflag_SGS_uxb .ne. id_SGS_none ) then
          mhd_fem_wk%n_dvx = mhd_fem_wk%n_dvx + 9
         end if
 !
-        if ( iflag_SGS_lorentz .ne. id_SGS_none) then
+        if ( SGS_param1%iflag_SGS_lorentz .ne. id_SGS_none) then
          mhd_fem_wk%n_dvx = mhd_fem_wk%n_dvx + 9
-        else if (iflag_SGS_induction .ne. id_SGS_none                   &
+        else if (SGS_param1%iflag_SGS_uxb .ne. id_SGS_none              &
      &     .and. evo_magne%iflag_scheme .gt. id_no_evolution) then
          mhd_fem_wk%n_dvx = mhd_fem_wk%n_dvx + 9
         end if

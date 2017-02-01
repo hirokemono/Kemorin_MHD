@@ -107,12 +107,12 @@
           sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 6
         end if
 !
-        if (iflag_SGS_lorentz .ne. id_SGS_none) then
+        if (SGS_param1%iflag_SGS_lorentz .ne. id_SGS_none) then
           sgs_coefs%num_field = sgs_coefs%num_field + 1
           sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 6
         end if
 !
-        if (iflag_SGS_gravity .ne. id_SGS_none) then
+        if (SGS_param1%iflag_SGS_gravity .ne. id_SGS_none) then
           if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
             sgs_coefs%num_field = sgs_coefs%num_field + 1
             sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 6
@@ -125,13 +125,13 @@
       end if
 !
       if (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
-        if (iflag_SGS_induction .ne. id_SGS_none) then
+        if (SGS_param1%iflag_SGS_uxb .ne. id_SGS_none) then
           sgs_coefs%num_field = sgs_coefs%num_field + 1
           sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 3
         end if
       end if
       if (evo_magne%iflag_scheme .gt. id_no_evolution) then
-        if (iflag_SGS_induction .ne. id_SGS_none) then
+        if (SGS_param1%iflag_SGS_uxb .ne. id_SGS_none) then
           sgs_coefs%num_field = sgs_coefs%num_field + 1
           sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 3
         end if
@@ -195,7 +195,7 @@
            j = j + 1
          end if
 !
-         if (iflag_SGS_lorentz .ne. id_SGS_none) then
+         if (SGS_param1%iflag_SGS_lorentz .ne. id_SGS_none) then
            icomp_sgs%i_lorentz = i
            ifld_sgs%i_lorentz =  j
            wk_sgs%name(j) = fhd_SGS_maxwell_t
@@ -204,7 +204,7 @@
            j = j + 1
          end if
 !
-        if (iflag_SGS_gravity .ne. id_SGS_none) then
+        if (SGS_param1%iflag_SGS_gravity .ne. id_SGS_none) then
           if(fl_prop%iflag_4_gravity .gt. 0) then
             icomp_sgs%i_buoyancy = i
             ifld_sgs%i_buoyancy =  j
@@ -225,7 +225,7 @@
        end if
 !
        if (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
-         if (iflag_SGS_induction .ne. id_SGS_none) then
+         if (SGS_param1%iflag_SGS_uxb .ne. id_SGS_none) then
            icomp_sgs%i_induction = i
            ifld_sgs%i_induction =  j
            wk_sgs%name(j) = fhd_SGS_induction
@@ -235,7 +235,7 @@
          end if
        end if
        if (evo_magne%iflag_scheme .gt. id_no_evolution) then
-         if (iflag_SGS_induction .ne. id_SGS_none) then
+         if (SGS_param1%iflag_SGS_uxb .ne. id_SGS_none) then
            icomp_sgs%i_induction = i
            ifld_sgs%i_induction =  j
            wk_sgs%name(j) = fhd_SGS_induction
@@ -280,17 +280,17 @@
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (  iflag_SGS_heat .ne.      id_SGS_none                      &
      &   .or. iflag_SGS_inertia .ne.   id_SGS_none                      &
-     &   .or. iflag_SGS_induction .ne. id_SGS_none ) then
+     &   .or. SGS_param1%iflag_SGS_uxb .ne. id_SGS_none ) then
          iphys_elediff%i_velo = i
          iphys_elediff%i_filter_velo = i + 9
          i = i + 18
         end if
 !
-        if ( iflag_SGS_lorentz .ne. id_SGS_none) then
+        if ( SGS_param1%iflag_SGS_lorentz .ne. id_SGS_none) then
          iphys_elediff%i_magne = i
          iphys_elediff%i_filter_magne = i + 9
          i = i + 18
-        else if (iflag_SGS_induction .ne. id_SGS_none                   &
+        else if (SGS_param1%iflag_SGS_uxb .ne. id_SGS_none              &
      &     .and. evo_magne%iflag_scheme .gt. id_no_evolution) then
          iphys_elediff%i_magne = i
          iphys_elediff%i_filter_magne = i + 9
@@ -301,15 +301,15 @@
      &   .and. iflag_dynamic_SGS .eq. id_SGS_DYNAMIC_OFF) then
         if (   iflag_SGS_heat .ne.     id_SGS_none                      &
      &   .or. iflag_SGS_inertia .ne.   id_SGS_none                      &
-     &   .or. iflag_SGS_induction .ne. id_SGS_none) then
+     &   .or. SGS_param1%iflag_SGS_uxb .ne. id_SGS_none) then
          iphys_elediff%i_velo = i
          i = i + 9
         end if
 !
-        if ( iflag_SGS_lorentz .ne. id_SGS_none) then
+        if ( SGS_param1%iflag_SGS_lorentz .ne. id_SGS_none) then
          iphys_elediff%i_magne = i
          i = i + 9
-        else if (iflag_SGS_induction .ne. id_SGS_none                   &
+        else if (SGS_param1%iflag_SGS_uxb .ne. id_SGS_none              &
      &     .and. evo_magne%iflag_scheme .gt. id_no_evolution) then
          iphys_elediff%i_magne = i
          i = i + 9

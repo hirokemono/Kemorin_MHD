@@ -123,7 +123,7 @@
         b_hbd_trns%i_induction = 3*nvector_rj_2_xyz - 2
       end if
 !    SGS magnetic induction flag
-      if(iflag_SGS_induction .gt. id_SGS_none) then
+      if(SGS_param1%iflag_SGS_uxb .gt. id_SGS_none) then
         nvector_rj_2_xyz = nvector_rj_2_xyz + 1
         b_hbd_trns%i_SGS_induction = 3*nvector_rj_2_xyz - 2
       end if
@@ -141,7 +141,7 @@
         f_hbd_trns%i_vp_induct =  3*nvector_xyz_2_rj - 2
       end if
 !    SGS magnetic induction flag
-      if(iflag_SGS_induction .gt. id_SGS_none) then
+      if(SGS_param1%iflag_SGS_uxb .gt. id_SGS_none) then
         nvector_xyz_2_rj = nvector_xyz_2_rj + 1
         f_hbd_trns%i_SGS_vp_induct =  3*nvector_xyz_2_rj - 2
       end if

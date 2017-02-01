@@ -171,7 +171,7 @@
         call add_phys_name_ctl(fhd_SGS_div_inertia, field_ctl)
       end if
 !
-      if(iflag_SGS_lorentz .gt. id_SGS_none) then
+      if(SGS_param1%iflag_SGS_lorentz .gt. id_SGS_none) then
         call add_phys_name_ctl(fhd_filter_magne, field_ctl)
         call add_phys_name_ctl(fhd_filter_current, field_ctl)
 !
@@ -180,7 +180,7 @@
         call add_phys_name_ctl(fhd_SGS_div_Lorentz, field_ctl)
       end if
 !
-      if(iflag_SGS_induction .gt. id_SGS_none) then
+      if(SGS_param1%iflag_SGS_uxb .gt. id_SGS_none) then
         call add_phys_name_ctl(fhd_filter_velo, field_ctl)
         call add_phys_name_ctl(fhd_filter_magne, field_ctl)
 !
@@ -226,7 +226,7 @@
         call add_phys_name_ctl(fhd_Csim_SGS_m_flux, field_ctl)
       end if
 !
-      if(iflag_SGS_lorentz .gt. id_SGS_none) then
+      if(SGS_param1%iflag_SGS_lorentz .gt. id_SGS_none) then
         call add_phys_name_ctl(fhd_w_filter_magne, field_ctl)
         call add_phys_name_ctl(fhd_w_filter_current, field_ctl)
 !
@@ -234,7 +234,7 @@
         call add_phys_name_ctl(fhd_Csim_SGS_Lorentz, field_ctl)
       end if
 !
-      if(iflag_SGS_induction .gt. id_SGS_none) then
+      if(SGS_param1%iflag_SGS_uxb .gt. id_SGS_none) then
         call add_phys_name_ctl(fhd_w_filter_velo, field_ctl)
         call add_phys_name_ctl(fhd_w_filter_magne, field_ctl)
 !
@@ -242,7 +242,7 @@
         call add_phys_name_ctl(fhd_Csim_SGS_induction, field_ctl)
       end if
 !
-      if(iflag_SGS_gravity .gt. id_SGS_none) then
+      if(SGS_param1%iflag_SGS_gravity .gt. id_SGS_none) then
         call add_phys_name_ctl(fhd_Reynolds_work, field_ctl)
 !
         if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
@@ -256,7 +256,7 @@
         end if
       end if
 !
-!      if(iflag_SGS_gravity .gt. id_SGS_none) then
+!      if(SGS_param1%iflag_SGS_gravity .gt. id_SGS_none) then
 !        call add_phys_name_ctl(fhd_filter_velo, field_ctl)
 !        call add_phys_name_ctl(fhd_filter_temp, field_ctl)
 !

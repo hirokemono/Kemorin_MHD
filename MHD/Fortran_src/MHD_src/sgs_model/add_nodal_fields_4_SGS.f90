@@ -42,7 +42,7 @@
         call add_phys_name_ctl(fhd_SGS_comp, field_ctl)
       end if
 !
-      if (iflag_SGS_gravity .ne. id_SGS_none) then
+      if (SGS_param1%iflag_SGS_gravity .ne. id_SGS_none) then
         call add_phys_name_ctl(fhd_SGS_m_flux, field_ctl)
         call add_phys_name_ctl(fhd_div_SGS_m_flux, field_ctl)
         call add_phys_name_ctl(fhd_Reynolds_work, field_ctl)

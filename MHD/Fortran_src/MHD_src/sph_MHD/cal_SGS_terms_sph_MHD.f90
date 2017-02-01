@@ -81,7 +81,8 @@
      &      frc_rtp(1,f_trns%i_SGS_inertia) )
       end if
 !
-      if( (f_trns%i_SGS_Lorentz*iflag_SGS_lorentz) .gt. 0) then
+      if( (f_trns%i_SGS_Lorentz * SGS_param1%iflag_SGS_lorentz) .gt. 0) &
+     & then
         call cal_cross_prod_w_coef_smp                                  &
      &     (sph_rtp%nnod_rtp, fl_prop%coef_lor,                         &
      &      fld_rtp(1,b_trns%i_filter_current),                         &
@@ -91,7 +92,8 @@
 !
 !
 !
-      if( (f_trns%i_SGS_vp_induct*iflag_SGS_induction) .gt. 0) then
+      if((f_trns%i_SGS_vp_induct * SGS_param1%iflag_SGS_uxb) .gt. 0)    &
+     & then
         call cal_cross_prod_w_coef_smp                                  &
      &     (sph_rtp%nnod_rtp, cd_prop%coef_induct,                      &
      &      fld_rtp(1,b_trns%i_filter_velo),                            &

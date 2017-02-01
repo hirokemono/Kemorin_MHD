@@ -236,7 +236,7 @@
 !
       if (fl_prop1%iflag_4_lorentz .ne. id_turn_OFF) then
 !
-        if (iflag_SGS_lorentz .eq. id_SGS_NL_grad) then
+        if(SGS_param1%iflag_SGS_lorentz .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)                                         &
      &       write(*,*) 'cal_sgs_maxwell_t_dynamic'
           call cal_sgs_maxwell_t_dynamic                                &
@@ -247,7 +247,8 @@
      &        jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,        &
      &        sgs_coefs_nod, wk_filter, wk_cor, wk_lsq, wk_sgs,         &
      &        mhd_fem_wk, fem_wk, nod_fld, sgs_coefs)
-        else if (iflag_SGS_lorentz .eq. id_SGS_similarity) then
+        else if(SGS_param1%iflag_SGS_lorentz .eq. id_SGS_similarity)    &
+     &   then
           if (iflag_debug.eq.1)                                         &
      &       write(*,*) 'cal_sgs_maxwell_dynamic_simi'
           call cal_sgs_maxwell_dynamic_simi                             &
@@ -276,7 +277,7 @@
 !
 !
       if(evo_magne%iflag_scheme .gt. id_no_evolution) then
-        if(iflag_SGS_induction .eq. id_SGS_NL_grad) then
+        if(SGS_param1%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'cal_sgs_induct_t_dynamic'
           call cal_sgs_induct_t_dynamic                                 &
@@ -288,7 +289,7 @@
      &       jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,         &
      &       sgs_coefs_nod, wk_filter, wk_cor, wk_lsq, wk_sgs,          &
      &       mhd_fem_wk, fem_wk, f_l, nod_fld, sgs_coefs)
-        else if(iflag_SGS_induction .eq. id_SGS_similarity) then
+        else if(SGS_param1%iflag_SGS_uxb .eq. id_SGS_similarity) then
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'cal_sgs_induct_t_dynamic_simi'
           call cal_sgs_induct_t_dynamic_simi                            &
@@ -315,7 +316,7 @@
 !
       else if(evo_vect_p%iflag_scheme .gt. id_no_evolution) then
 !
-        if(iflag_SGS_induction .eq. id_SGS_NL_grad) then
+        if(SGS_param1%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_uxb_dynamic'
           call cal_sgs_uxb_dynamic                                      &
      &       (ifld_sgs%i_induction, icomp_sgs%i_induction,              &
@@ -325,7 +326,7 @@
      &        jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,        &
      &        wk_filter, wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,    &
      &        f_l, nod_fld, sgs_coefs)
-        else if(iflag_SGS_induction .eq. id_SGS_similarity) then
+        else if(SGS_param1%iflag_SGS_uxb .eq. id_SGS_similarity) then
           if (iflag_debug.eq.1)  write(*,*)                             &
      &                          's_cal_sgs_uxb_dynamic_simi'
           call s_cal_sgs_uxb_dynamic_simi                               &

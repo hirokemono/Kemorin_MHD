@@ -163,7 +163,7 @@
 !
 !  lead induction terms
 !
-      if ( iflag_SGS_induction .ne. id_SGS_none) then
+      if ( SGS_param1%iflag_SGS_uxb .ne. id_SGS_none) then
         call cal_sgs_uxb_2_evo                                          &
      &     (icomp_sgs_uxb, ie_dvx, nod_comm, node, ele, conduct,        &
      &      cd_prop, iphys, iphys_ele, ele_fld, jac_3d_q, rhs_tbl,      &
