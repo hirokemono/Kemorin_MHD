@@ -126,10 +126,6 @@
       integer (kind=kint) :: iflag_SGS_model = id_SGS_none
       integer (kind=kint) :: iflag_dynamic_SGS = id_SGS_DYNAMIC_OFF
 !
-      integer (kind=kint) :: iflag_SGS_heat =      0
-      integer (kind=kint) :: iflag_SGS_inertia =   0
-      integer (kind=kint) :: iflag_SGS_comp_flux = 0
-!
 !>      filter ID to obtain SGS terms
       integer (kind=kint) :: ifilter_final = ifilter_2delta
 !

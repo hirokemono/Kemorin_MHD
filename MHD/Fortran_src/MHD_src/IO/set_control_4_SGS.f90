@@ -165,9 +165,9 @@
 !
 !  set applied terms
 !
-      iflag_SGS_heat      = id_SGS_none
-      iflag_SGS_comp_flux = id_SGS_none
-      iflag_SGS_inertia   = id_SGS_none
+      SGS_param1%iflag_SGS_h_flux =  id_SGS_none
+      SGS_param1%iflag_SGS_c_flux =  id_SGS_none
+      SGS_param1%iflag_SGS_m_flux =  id_SGS_none
       SGS_param1%iflag_SGS_lorentz = id_SGS_none
       SGS_param1%iflag_SGS_uxb =     id_SGS_none
       SGS_param1%iflag_SGS_gravity = id_SGS_none
@@ -181,15 +181,17 @@
           do i = 1, sgs_ctl%SGS_terms_ctl%num
             tmpchara = sgs_ctl%SGS_terms_ctl%c_tbl(i)
             if(     tmpchara .eq. thd_heat_flux) then
-              iflag_SGS_heat =      iflag_SGS_model
+              SGS_param1%iflag_SGS_h_flux =  iflag_SGS_model
             else if(tmpchara .eq. thd_advection) then
-              iflag_SGS_inertia =   iflag_SGS_model
+              SGS_param1%iflag_SGS_m_flux =  iflag_SGS_model
             else if(tmpchara .eq. thd_lorentz) then
               SGS_param1%iflag_SGS_lorentz = iflag_SGS_model
             else if(tmpchara .eq. thd_induction) then
               SGS_param1%iflag_SGS_uxb =     iflag_SGS_model
             else if(tmpchara .eq. thd_gravity) then
               SGS_param1%iflag_SGS_gravity = iflag_SGS_model
+            else if(tmpchara .eq. thd_comp_flux) then
+              SGS_param1%iflag_SGS_c_flux = iflag_SGS_model
             end if
           end do
 !
@@ -199,8 +201,12 @@
 !
       if (iflag_SGS_model .ne. id_SGS_none) then
         if (iflag_debug .gt. 0)  then
-          write(*,*) 'iflag_SGS_heat:         ',iflag_SGS_heat
-          write(*,*) 'iflag_SGS_inertia:      ',iflag_SGS_inertia
+          write(*,*) 'iflag_SGS_heat:         ',                        &
+     &              SGS_param1%iflag_SGS_h_flux
+          write(*,*) 'iflag_SGS_comp_flux:    ',                        &
+     &              SGS_param1%iflag_SGS_c_flux
+          write(*,*) 'iflag_SGS_inertia:      ',                        &
+     &              SGS_param1%iflag_SGS_m_flux
           write(*,*) 'iflag_SGS_lorentz:      ',                        &
      &              SGS_param1%iflag_SGS_lorentz
           write(*,*) 'iflag_SGS_induction:    ',                        &

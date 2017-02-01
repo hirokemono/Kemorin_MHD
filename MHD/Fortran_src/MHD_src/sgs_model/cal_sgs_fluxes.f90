@@ -114,7 +114,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if (     iflag_SGS_heat .eq. id_SGS_NL_grad) then
+      if (     SGS_param1%iflag_SGS_h_flux .eq. id_SGS_NL_grad) then
         if (iflag_debug.eq.1)                                           &
      &     write(*,*) 'cal_sgs_h_flux_grad', ifilter_final
       call cal_sgs_h_flux_grad_w_coef(ifilter_final, icomp_sgs_hf,      &
@@ -123,14 +123,14 @@
      &    rhs_tbl, FEM_elens, sgs_coefs, mhd_fem_wk, fem_wk,            &
      &    f_l, nod_fld)
 !
-      else if (iflag_SGS_heat .eq. id_SGS_similarity) then
+      else if (SGS_param1%iflag_SGS_h_flux .eq. id_SGS_similarity) then
         if (iflag_debug.eq.1) write(*,*) 'cal_sgs_hf_simi'
         call cal_sgs_hf_simi(iphys%i_SGS_h_flux, iphys%i_sgs_temp,      &
      &      iphys%i_filter_temp, icomp_sgs_hf,                          &
      &      nod_comm, node, iphys, filtering, sgs_coefs_nod,            &
      &      wk_filter, nod_fld)
 !
-      else if (iflag_SGS_heat .eq. id_SGS_diffusion) then
+      else if (SGS_param1%iflag_SGS_h_flux .eq. id_SGS_diffusion) then
         if (iflag_debug.eq.1) write(*,*) 'cal_sgs_h_flux_diffuse'
         call choose_cal_gradient_w_const(iflag_temp_supg,               &
      &      iphys%i_sgs_temp, iphys%i_SGS_h_flux, dminus,               &
@@ -175,7 +175,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if (  iflag_SGS_inertia .eq. id_SGS_NL_grad) then
+      if (  SGS_param1%iflag_SGS_m_flux .eq. id_SGS_NL_grad) then
         if (iflag_debug.eq.1)                                           &
      &    write(*,*) 'cal_sgs_m_flux_grad', ifilter_final
         call cal_sgs_m_flux_grad_w_coef                                 &
@@ -185,7 +185,7 @@
      &      jac_3d, FEM_elens, sgs_coefs, rhs_tbl, fem_wk,              &
      &      mhd_fem_wk, nod_fld)
 !
-      else if (iflag_SGS_inertia .eq. id_SGS_similarity) then
+      else if (SGS_param1%iflag_SGS_m_flux .eq. id_SGS_similarity) then
         if (iflag_debug.eq.1)                                           &
      &    write(*,*) 'cal_sgs_mf_simi', iphys%i_SGS_m_flux
         call cal_sgs_mf_simi(iphys%i_SGS_m_flux, iphys%i_velo,          &
@@ -193,7 +193,7 @@
      &      nod_comm, node, filtering, sgs_coefs_nod,                   &
      &      wk_filter, nod_fld)
 !
-      else if (iflag_SGS_inertia .eq. id_SGS_diffusion) then
+      else if (SGS_param1%iflag_SGS_m_flux .eq. id_SGS_diffusion) then
         if (iflag_debug.eq.1)                                           &
      &    write(*,*) 'cal_sgs_m_flux_diffuse', iphys%i_SGS_m_flux
         call cal_sgs_m_flux_diffuse                                     &

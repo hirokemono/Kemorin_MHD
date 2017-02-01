@@ -19,7 +19,7 @@
 !
 !
       type(SGS_model_control_params), save :: SGS_param1
-!SGS_param1%iflag_SGS_lorentz
+!SGS_param1%iflag_SGS_c_flux
 !
       type(commutation_control_params), save :: cmt_param1
 !

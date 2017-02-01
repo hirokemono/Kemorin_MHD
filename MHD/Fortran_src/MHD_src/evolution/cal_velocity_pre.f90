@@ -191,7 +191,7 @@
      &      f_l, f_nl, nod_fld, ele_fld, sgs_coefs)
       end if
 !
-      if(iflag_SGS_inertia .ne. id_SGS_none) then
+      if(SGS_param1%iflag_SGS_m_flux .ne. id_SGS_none) then
         call cal_sgs_momentum_flux                                      &
      &     (icomp_sgs%i_mom_flux, iphys_elediff%i_velo,                 &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &

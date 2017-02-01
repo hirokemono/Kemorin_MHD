@@ -35,10 +35,10 @@
 !
 !   work area for SGS model
 !
-      if (iflag_SGS_heat .ne. id_SGS_none) then
+      if (SGS_param1%iflag_SGS_h_flux .ne. id_SGS_none) then
         call add_phys_name_ctl(fhd_SGS_temp, field_ctl)
       end if
-      if (iflag_SGS_comp_flux .ne. id_SGS_none) then
+      if (SGS_param1%iflag_SGS_c_flux .ne. id_SGS_none) then
         call add_phys_name_ctl(fhd_SGS_comp, field_ctl)
       end if
 !

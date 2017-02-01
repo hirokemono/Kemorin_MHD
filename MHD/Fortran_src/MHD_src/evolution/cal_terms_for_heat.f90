@@ -128,7 +128,7 @@
       end if
 !
       if(cmt_param1%iflag_c_temp .ne. id_SGS_commute_OFF                &
-          .and. iflag_SGS_heat .ne. id_SGS_none                         &
+          .and. SGS_param1%iflag_SGS_h_flux .ne. id_SGS_none            &
           .and. i_field .eq. iphys%i_SGS_div_h_flux) then
         call int_sf_skv_sgs_div_v_flux(node, ele, surf, sf_grp,         &
      &      nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, intg_point_t_evo,  &

@@ -92,7 +92,7 @@
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !
 !
-      if (iflag_SGS_inertia  .ne. id_SGS_none) then
+      if(SGS_param1%iflag_SGS_m_flux  .ne. id_SGS_none) then
         if (cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
           call int_sf_skv_sgs_div_t_flux(node, ele, surf, sf_grp,       &
      &        nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,                  &

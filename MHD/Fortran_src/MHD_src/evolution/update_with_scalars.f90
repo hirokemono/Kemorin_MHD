@@ -160,9 +160,9 @@
       if(iflag_debug .ge. iflag_routine_msg) write(*,*)                 &
      &            'i_filter_temp', iphys%i_filter_temp
       if(iflag_debug .ge. iflag_routine_msg) write(*,*)                 &
-                  'iflag_SGS_heat', iflag_SGS_heat
+                  'iflag_SGS_heat', SGS_param1%iflag_SGS_h_flux
       if (iphys%i_filter_temp .gt. 0) then
-        if(iflag_SGS_heat .ne. id_SGS_none) then
+        if(SGS_param1%iflag_SGS_h_flux .ne. id_SGS_none) then
 !
           if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                 &
      &         .and. iflag_dynamic.eq.0) then
@@ -211,7 +211,7 @@
        if (iflag_dynamic.eq.0                                           &
      &       .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
 !
-!         if (iflag_SGS_heat .eq. id_SGS_NL_grad) then
+!         if (SGS_param1%iflag_SGS_h_flux .eq. id_SGS_NL_grad) then
 !           if (ie_dftx .ne. 0) then
 !             if (iflag_debug.gt.0) write(*,*) 'diff_filter_t_on_ele'
 !             call sel_int_diff_scalar_on_ele                           &
@@ -224,7 +224,7 @@
          if (cmt_param1%iflag_c_temp .eq. id_SGS_commute_ON) then
            if ( diff_coefs%iflag_field(iak_diff_t) .eq. 0) then
 !
-             if (iflag_SGS_heat .eq. id_SGS_NL_grad) then
+             if (SGS_param1%iflag_SGS_h_flux .eq. id_SGS_NL_grad) then
                if (iflag_debug.gt.0)  write(*,*) 's_cal_diff_coef_temp'
                call s_cal_diff_coef_temp(iak_diff_t, icomp_diff_t,      &
      &             nod_comm, node, ele, surf, sf_grp, Tsf_bcs,          &
@@ -308,7 +308,7 @@
       iflag2 = 0
 !
       if (iphys%i_filter_comp .ne. 0                                    &
-     &       .and. iflag_SGS_heat.ne.id_SGS_none) then
+     &       .and. SGS_param1%iflag_SGS_c_flux .ne. id_SGS_none) then
         if (iflag2.eq.1) then
           if (iflag_debug.gt.0)   write(*,*) 'cal_filtered_composition'
           call cal_filtered_scalar_whole(nod_comm, node, filtering,     &
@@ -332,7 +332,7 @@
 !         if (cmt_param1%iflag_c_light .eq. id_SGS_commute_ON) then
 !           if ( diff_coefs%iflag_field(iak_diff_c) .eq. 0) then
 !
-!             if (iflag_SGS_heat .eq. id_SGS_NL_grad) then
+!             if (SGS_param1%iflag_SGS_c_flux .eq. id_SGS_NL_grad) then
 !               if (iflag_debug.gt.0)  write(*,*) 's_cal_diff_coef_temp'
 !               call s_cal_diff_coef_temp(iak_diff_c, icomp_diff_c,     &
 !     &             nod_comm, node, ele, surf, sf_grp, Csf_bcs,         &

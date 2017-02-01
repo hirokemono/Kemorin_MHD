@@ -98,7 +98,7 @@
       diff_coefs%num_field = 0
       ntot_diff_comp = 0
       if (evo_temp%iflag_scheme .gt. id_no_evolution) then
-        if (iflag_SGS_heat .ne. id_SGS_none) then
+        if (SGS_param1%iflag_SGS_h_flux .ne. id_SGS_none) then
           if (cmt_param%iflag_c_hf .eq. id_SGS_commute_ON) then
             diff_coefs%num_field = diff_coefs%num_field + 1
             ntot_diff_comp = ntot_diff_comp + 3
@@ -107,7 +107,7 @@
       end if
 !
       if (evo_velo%iflag_scheme .gt. id_no_evolution) then
-        if (iflag_SGS_inertia .ne. id_SGS_none) then
+        if (SGS_param1%iflag_SGS_m_flux .ne. id_SGS_none) then
           if (cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
             diff_coefs%num_field = diff_coefs%num_field + 1
             ntot_diff_comp = ntot_diff_comp + 9
@@ -132,7 +132,7 @@
       end if
 !
       if (evo_comp%iflag_scheme .gt. id_no_evolution) then
-        if (iflag_SGS_comp_flux .ne. id_SGS_none) then
+        if (SGS_param1%iflag_SGS_c_flux .ne. id_SGS_none) then
           if (cmt_param%iflag_c_cf .eq. id_SGS_commute_ON) then
             diff_coefs%num_field = diff_coefs%num_field + 1
             ntot_diff_comp = ntot_diff_comp + 3
@@ -207,7 +207,7 @@
        id = 1
        jd = 1
        if (evo_temp%iflag_scheme .gt. id_no_evolution) then
-         if (iflag_SGS_heat .ne. id_SGS_none) then
+         if (SGS_param1%iflag_SGS_h_flux .ne. id_SGS_none) then
            if (cmt_param%iflag_c_hf .eq. id_SGS_commute_ON) then
              icomp_diff%i_heat_flux = id
              ifld_diff%i_heat_flux =  jd
@@ -220,7 +220,7 @@
        end if
 !
        if (evo_velo%iflag_scheme .gt. id_no_evolution) then
-         if (iflag_SGS_inertia .ne. id_SGS_none) then
+         if (SGS_param1%iflag_SGS_m_flux .ne. id_SGS_none) then
            if (cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
              icomp_diff%i_mom_flux = id
              ifld_diff%i_mom_flux = jd
@@ -257,7 +257,7 @@
        end if
 !
        if (evo_comp%iflag_scheme .gt. id_no_evolution) then
-         if (iflag_SGS_comp_flux .ne. id_SGS_none) then
+         if (SGS_param1%iflag_SGS_c_flux .ne. id_SGS_none) then
            if(cmt_param%iflag_c_cf .eq. id_SGS_commute_ON) then
              icomp_diff%i_comp_flux = id
              ifld_diff%i_comp_flux =  jd

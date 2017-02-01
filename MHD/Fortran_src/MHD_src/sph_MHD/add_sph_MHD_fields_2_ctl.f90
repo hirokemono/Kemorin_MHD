@@ -146,7 +146,7 @@
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !
-      if(iflag_SGS_heat .gt. id_SGS_none) then
+      if(SGS_param1%iflag_SGS_h_flux .gt. id_SGS_none) then
         call add_phys_name_ctl(fhd_filter_velo, field_ctl)
         call add_phys_name_ctl(fhd_filter_temp, field_ctl)
 !
@@ -154,7 +154,7 @@
         call add_phys_name_ctl(fhd_div_SGS_h_flux, field_ctl)
       end if
 !
-      if(iflag_SGS_comp_flux .gt. id_SGS_none) then
+      if(SGS_param1%iflag_SGS_c_flux .gt. id_SGS_none) then
         call add_phys_name_ctl(fhd_filter_velo, field_ctl)
         call add_phys_name_ctl(fhd_filter_comp, field_ctl)
 !
@@ -162,7 +162,7 @@
         call add_phys_name_ctl(fhd_div_SGS_c_flux, field_ctl)
       end if
 !
-      if(iflag_SGS_inertia .gt. id_SGS_none) then
+      if(SGS_param1%iflag_SGS_m_flux .gt. id_SGS_none) then
         call add_phys_name_ctl(fhd_filter_velo, field_ctl)
         call add_phys_name_ctl(fhd_filter_vort, field_ctl)
 !
@@ -202,7 +202,7 @@
 !
       if(iflag_dynamic_SGS .eq. id_SGS_DYNAMIC_OFF) return
 !
-      if(iflag_SGS_heat .gt. id_SGS_none) then
+      if(SGS_param1%iflag_SGS_h_flux .gt. id_SGS_none) then
         call add_phys_name_ctl(fhd_w_filter_velo, field_ctl)
         call add_phys_name_ctl(fhd_w_filter_temp, field_ctl)
 !
@@ -210,7 +210,7 @@
         call add_phys_name_ctl(fhd_Csim_SGS_h_flux, field_ctl)
       end if
 !
-      if(iflag_SGS_comp_flux .gt. id_SGS_none) then
+      if(SGS_param1%iflag_SGS_c_flux .gt. id_SGS_none) then
         call add_phys_name_ctl(fhd_w_filter_velo, field_ctl)
         call add_phys_name_ctl(fhd_w_filter_comp, field_ctl)
 !
@@ -218,7 +218,7 @@
         call add_phys_name_ctl(fhd_Csim_SGS_c_flux, field_ctl)
       end if
 !
-      if(iflag_SGS_inertia .gt. id_SGS_none) then
+      if(SGS_param1%iflag_SGS_m_flux .gt. id_SGS_none) then
         call add_phys_name_ctl(fhd_w_filter_velo, field_ctl)
         call add_phys_name_ctl(fhd_w_filter_vort, field_ctl)
 !

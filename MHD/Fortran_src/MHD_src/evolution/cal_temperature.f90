@@ -150,7 +150,7 @@
 !
 !      call check_jacobians_triquad(ele, jac_3d)
 !
-      if (iflag_SGS_heat .ne. id_SGS_none) then
+      if (SGS_param1%iflag_SGS_h_flux .ne. id_SGS_none) then
         call cal_sgs_heat_flux                                          &
      &     (icomp_sgs%i_heat_flux, iphys_elediff%i_velo,                &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
@@ -180,7 +180,7 @@
 !
       if (iflag_temp_supg .gt. id_turn_OFF) then
         call int_vol_temp_ele_upw                                       &
-     &     (iflag_SGS_heat, cmt_param1%iflag_c_hf,                      &
+     &     (SGS_param1%iflag_SGS_h_flux, cmt_param1%iflag_c_hf,         &
      &      iphys%i_temp, iphys%i_velo,                                 &
      &      iphys%i_SGS_h_flux, ifld_diff%i_heat_flux,                  &
      &      node, ele, fluid, property, nod_fld,                        &
@@ -189,7 +189,7 @@
      &      mhd_fem_wk, fem_wk, f_nl)
       else
         call int_vol_temp_ele                                           &
-     &     (iflag_SGS_heat, cmt_param1%iflag_c_hf,                      &
+     &     (SGS_param1%iflag_SGS_h_flux, cmt_param1%iflag_c_hf,         &
      &      iphys%i_temp, iphys%i_velo,                                 &
      &      iphys%i_SGS_h_flux, ifld_diff%i_heat_flux,                  &
      &      node, ele, fluid, property, nod_fld,                        &
@@ -206,7 +206,7 @@
      &    Tsf_bcs%flux, intg_point_t_evo, ak_d_temp, fem_wk, f_l)
 !
       if(cmt_param1%iflag_c_temp .ne. id_SGS_commute_OFF                &
-          .and. iflag_SGS_heat .ne. id_SGS_none) then
+          .and. SGS_param1%iflag_SGS_h_flux .ne. id_SGS_none) then
         call int_sf_skv_sgs_div_v_flux(node, ele, surf, sf_grp,         &
      &      nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, intg_point_t_evo,  &
      &      Tsf_bcs%sgs%ngrp_sf_dat, Tsf_bcs%sgs%id_grp_sf_dat,         &
@@ -341,7 +341,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if (iflag_SGS_heat .ne. id_SGS_none) then
+      if (SGS_param1%iflag_SGS_h_flux .ne. id_SGS_none) then
         call cal_sgs_heat_flux                                          &
      &     (icomp_sgs%i_heat_flux, iphys_elediff%i_velo,                &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
@@ -371,7 +371,7 @@
 !
       if (iflag_temp_supg .gt. id_turn_OFF) then
         call int_vol_temp_ele_upw                                       &
-     &     (iflag_SGS_heat, cmt_param1%iflag_c_hf,                      &
+     &     (SGS_param1%iflag_SGS_h_flux, cmt_param1%iflag_c_hf,         &
      &      iphys%i_temp, iphys%i_velo,                                 &
      &      iphys%i_SGS_h_flux, ifld_diff%i_heat_flux,                  &
      &      node, ele, fluid, property, nod_fld,                        &
@@ -380,7 +380,7 @@
      &      mhd_fem_wk, fem_wk, f_nl)
       else
         call int_vol_temp_ele                                           &
-     &     (iflag_SGS_heat, cmt_param1%iflag_c_hf,                      &
+     &     (SGS_param1%iflag_SGS_h_flux, cmt_param1%iflag_c_hf,         &
      &      iphys%i_temp, iphys%i_velo,                                 &
      &      iphys%i_SGS_h_flux, ifld_diff%i_heat_flux,                  &
      &      node, ele, fluid, property, nod_fld,                        &
@@ -397,7 +397,7 @@
      &    Tsf_bcs%flux, intg_point_t_evo, ak_d_temp, fem_wk, f_l)
 !
       if(cmt_param1%iflag_c_temp .ne. id_SGS_commute_OFF                &
-          .and. iflag_SGS_heat .ne. id_SGS_none) then
+          .and. SGS_param1%iflag_SGS_h_flux .ne. id_SGS_none) then
         call int_sf_skv_sgs_div_v_flux(node, ele, surf, sf_grp,         &
      &      nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, intg_point_t_evo,  &
      &      Tsf_bcs%sgs%ngrp_sf_dat, Tsf_bcs%sgs%id_grp_sf_dat,         &

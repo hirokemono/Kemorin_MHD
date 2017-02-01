@@ -73,7 +73,8 @@
 !
 !
 !$omp parallel
-      if( (f_trns%i_SGS_inertia*iflag_SGS_inertia) .gt. 0) then
+      if( (f_trns%i_SGS_inertia * SGS_param1%iflag_SGS_m_flux) .gt. 0)  &
+     & then
         call cal_cross_prod_w_coef_smp                                  &
      &     (sph_rtp%nnod_rtp, fl_prop%coef_velo,                        &
      &      fld_rtp(1,b_trns%i_filter_vort),                            &
@@ -102,7 +103,8 @@
       end if
 !
 !
-      if( (f_trns%i_SGS_h_flux*iflag_SGS_heat) .gt. 0) then
+      if( (f_trns%i_SGS_h_flux * SGS_param1%iflag_SGS_h_flux) .gt. 0)   &
+     & then
         call cal_vec_scalar_prod_w_coef_smp                             &
      &     (sph_rtp%nnod_rtp, ht_prop%coef_advect,                      &
      &      fld_rtp(1,b_trns%i_filter_velo),                            &
@@ -110,7 +112,8 @@
      &      frc_rtp(1,f_trns%i_SGS_h_flux) )
       end if
 !
-      if( (f_trns%i_SGS_c_flux*iflag_SGS_comp_flux) .gt. 0) then
+      if( (f_trns%i_SGS_c_flux * SGS_param1%iflag_SGS_c_flux) .gt. 0)   &
+     & then
         call cal_vec_scalar_prod_w_coef_smp                             &
      &     (sph_rtp%nnod_rtp, cp_prop%coef_advect,                      &
      &      fld_rtp(1,b_trns%i_filter_velo),                            &

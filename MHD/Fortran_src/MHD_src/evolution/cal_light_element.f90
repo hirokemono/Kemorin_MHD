@@ -126,7 +126,7 @@
 !
       if (iflag_comp_supg .gt. id_turn_OFF) then
         call int_vol_temp_ele_upw                                       &
-     &     (iflag_SGS_comp_flux, cmt_param1%iflag_c_cf,                 &
+     &     (SGS_param1%iflag_SGS_c_flux, cmt_param1%iflag_c_cf,         &
      &      iphys%i_light, iphys%i_velo,                                &
      &      iphys%i_SGS_c_flux, ifld_diff%i_comp_flux,                  &
      &      node, ele, fluid, property, nod_fld,                        &
@@ -135,7 +135,7 @@
      &      mhd_fem_wk, fem_wk, f_nl)
       else
         call int_vol_temp_ele                                           &
-     &     (iflag_SGS_comp_flux, cmt_param1%iflag_c_cf,                 &
+     &     (SGS_param1%iflag_SGS_c_flux, cmt_param1%iflag_c_cf,         &
      &      iphys%i_light, iphys%i_velo,                                &
      &      iphys%i_SGS_c_flux, ifld_diff%i_comp_flux,                  &
      &      node, ele, fluid, property, nod_fld,                        &

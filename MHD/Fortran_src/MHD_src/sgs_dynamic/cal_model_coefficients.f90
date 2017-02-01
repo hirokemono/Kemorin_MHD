@@ -157,7 +157,7 @@
      &            'set Csim', i_step_MHD, i_step_sgs_coefs
 !
       if(evo_temp%iflag_scheme .ne. id_no_evolution) then
-        if (iflag_SGS_heat .eq. id_SGS_NL_grad) then
+        if(SGS_param1%iflag_SGS_h_flux .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_hf_dynamic'
           call cal_sgs_hf_dynamic                                       &
      &       (ifld_sgs%i_heat_flux, icomp_sgs%i_heat_flux,              &
@@ -168,7 +168,7 @@
      &        sgs_coefs_nod, wk_filter, wk_cor, wk_lsq, wk_sgs,         &
      &        mhd_fem_wk, fem_wk, f_l, nod_fld, sgs_coefs)
 !
-        else if (iflag_SGS_heat .eq. id_SGS_similarity) then
+        else if(SGS_param1%iflag_SGS_h_flux .eq. id_SGS_similarity) then
           if (iflag_debug.eq.1)                                         &
      &          write(*,*) 's_cal_sgs_h_flux_dynamic_simi'
           call s_cal_sgs_h_flux_dynamic_simi                            &
@@ -197,7 +197,7 @@
 !
       if(evo_velo%iflag_scheme .ne. id_no_evolution) then
 !
-        if (iflag_SGS_inertia .eq. id_SGS_NL_grad) then
+        if (SGS_param1%iflag_SGS_m_flux .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_m_flux_dynamic'
           call cal_sgs_m_flux_dynamic                                   &
      &       (ifld_sgs%i_mom_flux, icomp_sgs%i_mom_flux,                &
@@ -207,7 +207,7 @@
      &        jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,        &
      &        sgs_coefs_nod, wk_filter, wk_cor, wk_lsq, wk_sgs,         &
      &        mhd_fem_wk, fem_wk, nod_fld, sgs_coefs)
-        else if (iflag_SGS_inertia .eq. id_SGS_similarity) then
+        else if(SGS_param1%iflag_SGS_m_flux .eq. id_SGS_similarity) then
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 's_cal_sgs_m_flux_dynamic_simi'
           call s_cal_sgs_m_flux_dynamic_simi                            &
