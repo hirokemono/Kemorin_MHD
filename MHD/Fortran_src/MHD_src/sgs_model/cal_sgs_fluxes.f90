@@ -179,7 +179,7 @@
         if (iflag_debug.eq.1)                                           &
      &    write(*,*) 'cal_sgs_m_flux_grad', ifilter_final
         call cal_sgs_m_flux_grad_w_coef                                 &
-     &     (itype_SGS_m_flux_coef, ifilter_final,                       &
+     &     (SGS_param1%itype_Csym_m_flux, ifilter_final,                &
      &      icomp_sgs_mf, iphys%i_SGS_m_flux, iphys%i_velo, ie_dvx,     &
      &      nod_comm, node, ele, fluid, iphys_ele, ele_fld,             &
      &      jac_3d, FEM_elens, sgs_coefs, rhs_tbl, fem_wk,              &
@@ -242,7 +242,7 @@
         if (iflag_debug.eq.1)                                           &
      &    write(*,*) 'cal_sgs_maxwell_grad', ifilter_final
         call cal_sgs_m_flux_grad_w_coef                                 &
-     &     (itype_SGS_maxwell_coef, ifilter_final,                      &
+     &     (SGS_param1%itype_Csym_maxwell, ifilter_final,               &
      &      icomp_sgs_lor, iphys%i_SGS_maxwell, iphys%i_magne, ie_dbx,  &
      &      nod_comm, node, ele, fluid, iphys_ele, ele_fld,             &
      &      jac_3d, FEM_elens, sgs_coefs, rhs_tbl, fem_wk,              &

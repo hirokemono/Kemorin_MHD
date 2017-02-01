@@ -138,16 +138,6 @@
       integer (kind=kint) :: iflag_SGS_comp_flux = 0
       integer (kind=kint) :: iflag_SGS_gravity =   0
 !
-      integer (kind=kint) :: iflag_SGS_parterbuation = 0
-!
-      integer (kind=kint) :: itype_SGS_model_coef =  0
-      integer (kind=kint) :: icoord_SGS_model_coef = 0
-!
-      integer (kind=kint) :: itype_SGS_h_flux_coef =   0
-      integer (kind=kint) :: itype_SGS_m_flux_coef =   0
-      integer (kind=kint) :: itype_SGS_maxwell_coef =  0
-      integer (kind=kint) :: itype_SGS_uxb_coef =      0
-!
 !>      filter ID to obtain SGS terms
       integer (kind=kint) :: ifilter_final = ifilter_2delta
 !

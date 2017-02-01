@@ -50,7 +50,7 @@
 !
 !$omp parallel private(k1)
       if(itype_csim .eq. 1) then
-        if(icoord_SGS_model_coef .eq. iflag_spherical) then
+        if(SGS_param1%icoord_Csim .eq. iflag_spherical) then
           do k1 = 1, ele%nnod_4_ele
             call overwrite_sph_tensor_smp                               &
      &         (np_smp, ele%numele, ele%istack_ele_smp, sk6(1,1,k1),    &
@@ -67,7 +67,7 @@
      &          ele%r_ele, ele%s_ele, ele%ar_ele, ele%as_ele)
           end do
 !
-        else if(icoord_SGS_model_coef .eq. iflag_cylindrical) then
+        else if(SGS_param1%icoord_Csim .eq. iflag_cylindrical) then
           do k1 = 1, ele%nnod_4_ele
             call overwrite_cyl_tensor_smp                               &
      &         (np_smp, ele%numele, ele%istack_ele_smp, sk6(1,1,k1),    &
@@ -122,7 +122,7 @@
 !
 !$omp parallel private(k1)
       if(itype_csim .eq. 1) then
-        if(icoord_SGS_model_coef .eq. iflag_spherical) then
+        if(SGS_param1%icoord_Csim .eq. iflag_spherical) then
           do k1 = 1, ele%nnod_4_ele
             call overwrite_vector_2_sph_smp                             &
      &         (np_smp, ele%numele, ele%istack_ele_smp, sk6(1,1,k1),    &
@@ -137,7 +137,7 @@
      &          sk6(1,1,k1), ele%theta_ele, ele%phi_ele)
           end do
 !
-        else if(icoord_SGS_model_coef .eq. iflag_cylindrical) then
+        else if(SGS_param1%icoord_Csim .eq. iflag_cylindrical) then
           do k1 = 1, ele%nnod_4_ele
             call overwrite_vector_2_cyl_smp                             &
      &         (np_smp, ele%numele, ele%istack_ele_smp, sk6(1,1,k1),    &
@@ -191,7 +191,7 @@
 !
 !$omp parallel private(k1)
       if(itype_csim .eq. 1) then
-        if(icoord_SGS_model_coef .eq. iflag_spherical) then
+        if(SGS_param1%icoord_Csim .eq. iflag_spherical) then
           do k1 = 1, ele%nnod_4_ele
             call overwrite_sph_asym_t_smp                               &
      &         (np_smp, ele%numele, ele%istack_ele_smp, sk6(1,1,k1),    &
@@ -208,7 +208,7 @@
      &          ele%r_ele, ele%s_ele, ele%ar_ele, ele%as_ele)
           end do
 !
-        else if(icoord_SGS_model_coef .eq. iflag_cylindrical) then
+        else if(SGS_param1%icoord_Csim .eq. iflag_cylindrical) then
           do k1 = 1, ele%nnod_4_ele
             call overwrite_cyl_asym_t_smp                               &
      &         (np_smp, ele%numele, ele%istack_ele_smp, sk6(1,1,k1),    &

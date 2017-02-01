@@ -160,7 +160,7 @@
      & 'cal_model_coefs', n_sym_tensor, iak_sgs_lor, icomp_sgs_lor
       call cal_model_coefs(layer_tbl,                                   &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
-     &    itype_SGS_maxwell_coef, n_sym_tensor,                         &
+     &    SGS_param1%itype_Csym_maxwell, n_sym_tensor,                  &
      &    iak_sgs_lor, icomp_sgs_lor, intg_point_t_evo,                 &
      &    wk_cor, wk_lsq, wk_sgs, sgs_coefs)
 !

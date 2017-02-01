@@ -19,7 +19,7 @@
 !
 !
       type(SGS_model_control_params), save :: SGS_param1
-!SGS_param1%iflag_nagetive_clip
+!SGS_param1%iflag_parterbuation
 !
       type(commutation_control_params), save :: cmt_param1
 !

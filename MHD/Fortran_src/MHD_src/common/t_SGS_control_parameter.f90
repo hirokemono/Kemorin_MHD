@@ -34,6 +34,12 @@
       integer (kind=kint), parameter :: id_SGS_DYNAMIC_OFF =   0
       integer (kind=kint), parameter :: id_SGS_DYNAMIC_ON =    1
 !
+      integer (kind=kint), parameter :: id_CSIM_FIELD =        0
+      integer (kind=kint), parameter :: id_CSIM_COMPONENT =    1
+!
+      integer (kind=kint), parameter :: id_SGS_REFERENCE =   1
+      integer (kind=kint), parameter :: id_SGS_REF_AVERAGE = 2
+!
       integer (kind=kint), parameter :: id_SGS_NO_CLIP =       0
       integer (kind=kint), parameter :: id_SGS_ZERO_CLIP =     1
       integer (kind=kint), parameter :: id_SGS_KEEP_PREVIOUS = 2
@@ -64,16 +70,18 @@
         real (kind = kreal) :: shrink_SGS_dt = 1.0d5
         real (kind = kreal) :: extend_SGS_dt = 1.0d-5
 !
-        integer (kind=kint) :: iflag_SGS_parterbuation = 0
+        integer (kind=kint) :: iflag_parterbuation = id_turn_OFF
 !
-        integer (kind=kint) :: itype_SGS_model_coef =  0
-        integer (kind=kint) :: icoord_SGS_model_coef = 0
+!>        Model coefficient type
+        integer (kind=kint) :: itype_Csym =  id_CSIM_FIELD
+!>        Direction to evaluate model coefficients
+        integer (kind=kint) :: icoord_Csim = 0
 !
-        integer (kind=kint) :: itype_SGS_h_flux_coef =   0
-        integer (kind=kint) :: itype_SGS_c_flux_coef =   0
-        integer (kind=kint) :: itype_SGS_m_flux_coef =   0
-        integer (kind=kint) :: itype_SGS_maxwell_coef =  0
-        integer (kind=kint) :: itype_SGS_uxb_coef =      0
+        integer (kind=kint) :: itype_Csym_h_flux =   id_CSIM_FIELD
+        integer (kind=kint) :: itype_Csym_c_flux =   id_CSIM_FIELD
+        integer (kind=kint) :: itype_Csym_m_flux =   id_CSIM_FIELD
+        integer (kind=kint) :: itype_Csym_maxwell =  id_CSIM_FIELD
+        integer (kind=kint) :: itype_Csym_uxb =      id_CSIM_FIELD
 !
 !>        fla to clip negative model coefficients
         integer (kind=kint) :: iflag_nagetive_clip = id_SGS_NO_CLIP

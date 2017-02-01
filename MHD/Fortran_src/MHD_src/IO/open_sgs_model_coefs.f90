@@ -339,46 +339,46 @@
 !
       do i = 1, wk_sgs%num_kinds
         if ( wk_sgs%name(i) .eq. fhd_SGS_h_flux ) then
-          call sel_coord_vector_comp_labels(icoord_SGS_model_coef,      &
+          call sel_coord_vector_comp_labels(SGS_param1%icoord_Csim,     &
      &        fhd_SGS_h_flux, lab(1) )
           call write_vector_label(file_id, lab(1))
 !
         else if ( wk_sgs%name(i) .eq. fhd_SGS_m_flux ) then
-          call sel_coord_tensor_comp_labels(icoord_SGS_model_coef,      &
+          call sel_coord_tensor_comp_labels(SGS_param1%icoord_Csim,     &
      &        fhd_SGS_m_flux, lab(1) )
           call write_sym_tensor_label(file_id, lab(1))
 !
         else if ( wk_sgs%name(i) .eq. fhd_SGS_maxwell_t ) then
-          call sel_coord_tensor_comp_labels(icoord_SGS_model_coef,      &
+          call sel_coord_tensor_comp_labels(SGS_param1%icoord_Csim,     &
      &        fhd_SGS_maxwell_t, lab(1) )
           call write_sym_tensor_label(file_id, lab(1))
 !
         else if ( wk_sgs%name(i) .eq. fhd_SGS_induction ) then
           if(evo_vect_p%iflag_scheme .gt. id_no_evolution) then
             write(label,'(a)') 'SGS_uxB'
-            call sel_coord_vector_comp_labels(icoord_SGS_model_coef,    &
+            call sel_coord_vector_comp_labels(SGS_param1%icoord_Csim,   &
      &          label, lab(1) )
             call write_vector_label(file_id, lab(1))
 !
           else
             write(label,'(a)') 'SGS_induction'
-            call sel_coord_tensor_comp_labels(icoord_SGS_model_coef,    &
+            call sel_coord_tensor_comp_labels(SGS_param1%icoord_Csim,   &
      &          label, lab(1) )
             call write_sym_tensor_label(file_id, lab(1))
           end if
 !
         else if ( wk_sgs%name(i) .eq. fhd_SGS_buoyancy ) then
-          call sel_coord_tensor_comp_labels(icoord_SGS_model_coef,      &
+          call sel_coord_tensor_comp_labels(SGS_param1%icoord_Csim,     &
      &          fhd_SGS_buoyancy, lab(1) )
           call write_sym_tensor_label(file_id, lab(1))
 !
         else if ( wk_sgs%name(i) .eq. fhd_SGS_comp_buo ) then
-          call sel_coord_tensor_comp_labels(icoord_SGS_model_coef,      &
+          call sel_coord_tensor_comp_labels(SGS_param1%icoord_Csim,     &
      &          fhd_SGS_comp_buo, lab(1) )
           call write_sym_tensor_label(file_id, lab(1))
 !
         else if ( wk_sgs%name(i) .eq. fhd_SGS_c_flux ) then
-          call sel_coord_vector_comp_labels(icoord_SGS_model_coef,      &
+          call sel_coord_vector_comp_labels(SGS_param1%icoord_Csim,     &
      &        fhd_SGS_c_flux, lab(1) )
           call write_vector_label(file_id, lab(1))
 !

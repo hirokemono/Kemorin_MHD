@@ -162,8 +162,9 @@
      &   'cal_model_coefs', n_vector, iak_sgs_hf, icomp_sgs_hf
       call cal_model_coefs(layer_tbl,                                   &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
-     &    itype_SGS_h_flux_coef, n_vector, iak_sgs_hf, icomp_sgs_hf,    &
-     &    intg_point_t_evo, wk_cor, wk_lsq, wk_sgs, sgs_coefs)
+     &    SGS_param1%itype_Csym_h_flux, n_vector, iak_sgs_hf,           &
+     &    icomp_sgs_hf, intg_point_t_evo, wk_cor, wk_lsq, wk_sgs,       &
+     &    sgs_coefs)
 !
       call reduce_model_coefs_layer(SGS_hf_factor,                      &
      &    wk_sgs%nlayer, wk_sgs%num_kinds, iak_sgs_hf,                  &

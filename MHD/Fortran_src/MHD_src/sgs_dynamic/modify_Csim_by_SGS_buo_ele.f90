@@ -59,7 +59,7 @@
 !
       if(fl_prop%iflag_4_gravity .gt. id_turn_OFF                       &
      &     .and. fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
-        if(itype_SGS_m_flux_coef .eq. 1) then
+        if(SGS_param1%itype_Csym_m_flux .eq. id_CSIM_COMPONENT) then
           call modify_cmpCsim_by_SGS_dbuo_ele(ifld_sgs%i_comp_buoyancy, &
      &        ifld_sgs%i_buoyancy, icomp_sgs%i_mom_flux,                &
      &        layer_egrp%num_grp, layer_egrp%num_item,                  &
@@ -76,7 +76,7 @@
      &        wk_sgs%fld_coef, wk_sgs%fld_clip, sgs_coefs%ak)
         end if
       else if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
-        if(itype_SGS_m_flux_coef .eq. 1) then
+        if(SGS_param1%itype_Csym_m_flux .eq. id_CSIM_COMPONENT) then
           call modify_cmpCsim_by_SGS_buo_ele                            &
      &       (ifld_sgs%i_buoyancy, icomp_sgs%i_mom_flux,                &
      &        layer_egrp%num_grp, layer_egrp%num_item,                  &
@@ -92,7 +92,7 @@
      &        wk_sgs%fld_coef, wk_sgs%fld_clip, sgs_coefs%ak)
         end if
       else if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
-        if(itype_SGS_m_flux_coef .eq. 1) then
+        if(SGS_param1%itype_Csym_m_flux .eq. id_CSIM_COMPONENT) then
           call modify_cmpCsim_by_SGS_buo_ele                            &
      &       (ifld_sgs%i_comp_buoyancy, icomp_sgs%i_mom_flux,           &
      &        layer_egrp%num_grp, layer_egrp%num_item,                  &

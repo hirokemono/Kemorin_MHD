@@ -202,6 +202,7 @@
         type(read_character_item) :: SGS_model_coef_type_ctl
 !
         type(read_character_item) :: heat_flux_csim_type_ctl
+        type(read_character_item) :: comp_flux_csim_type_ctl
         type(read_character_item) :: mom_flux_csim_type_ctl
         type(read_character_item) :: maxwell_csim_type_ctl
         type(read_character_item) :: uxb_csim_type_ctl
@@ -281,6 +282,8 @@
      &                        = 'model_coef_type_ctl'
       character(len=kchara), parameter :: hd_hf_csim_type_ctl           &
      &                        = 'heat_flux_csim_type_ctl'
+      character(len=kchara), parameter :: hd_cf_csim_type_ctl           &
+     &                        = 'comp_flux_csim_type_ctl'
       character(len=kchara), parameter :: hd_mf_csim_type_ctl           &
      &                        = 'mom_flux_csim_type_ctl'
       character(len=kchara), parameter :: hd_mxwl_csim_type_ctl         &
@@ -408,6 +411,8 @@
 !
         call read_chara_ctl_type(hd_hf_csim_type_ctl,                   &
      &      sgs_ctl%heat_flux_csim_type_ctl)
+        call read_chara_ctl_type(hd_cf_csim_type_ctl,                   &
+     &      sgs_ctl%comp_flux_csim_type_ctl)
         call read_chara_ctl_type(hd_mf_csim_type_ctl,                   &
      &      sgs_ctl%mom_flux_csim_type_ctl)
         call read_chara_ctl_type(hd_mxwl_csim_type_ctl,                 &
@@ -513,6 +518,7 @@
       call bcast_ctl_type_c1(sgs_ctl%SGS_model_coef_type_ctl)
 !
       call bcast_ctl_type_c1(sgs_ctl%heat_flux_csim_type_ctl)
+      call bcast_ctl_type_c1(sgs_ctl%comp_flux_csim_type_ctl)
       call bcast_ctl_type_c1(sgs_ctl%mom_flux_csim_type_ctl)
       call bcast_ctl_type_c1(sgs_ctl%maxwell_csim_type_ctl)
       call bcast_ctl_type_c1(sgs_ctl%uxb_csim_type_ctl)

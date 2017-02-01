@@ -609,6 +609,7 @@ begin MHD_control
 !      model_coef_type_ctl         field
       mom_flux_csim_type_ctl      field
       heat_flux_csim_type_ctl     components
+      comp_flux_csim_type_ctl     components
       maxwell_csim_type_ctl       field
       uxb_csim_type_ctl           field
 !

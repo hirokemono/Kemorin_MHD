@@ -32,6 +32,8 @@
 !
       implicit  none
 !
+      private :: set_Csim_type
+!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -317,54 +319,46 @@
       end if
 !
 !
-      iflag_SGS_parterbuation = 0
+      SGS_param1%iflag_parterbuation = id_turn_OFF
       if(sgs_ctl%SGS_perturbation_ctl%iflag .gt. 0) then
           tmpchara = sgs_ctl%SGS_perturbation_ctl%charavalue
           if (cmp_no_case(tmpchara, 'reference')                        &
-     &       )               iflag_SGS_parterbuation = 1
+     &       ) SGS_param1%iflag_parterbuation = id_SGS_REFERENCE
           if (cmp_no_case(tmpchara, 'average')                          &
-     &       )               iflag_SGS_parterbuation = 2
+     &       ) SGS_param1%iflag_parterbuation = id_SGS_REF_AVERAGE
       end if
 !
 !
-      if(sgs_ctl%heat_flux_csim_type_ctl%iflag .gt. 0                   &
-     &   .and. cmp_no_case(sgs_ctl%heat_flux_csim_type_ctl%charavalue,  &
-     &                    'components')) itype_SGS_h_flux_coef = 1
+      SGS_param1%itype_Csym                                             &
+     &      = set_Csim_type(id_CSIM_FIELD,                              &
+     &                      sgs_ctl%SGS_model_coef_type_ctl)
 !
-      if(sgs_ctl%mom_flux_csim_type_ctl%iflag .gt. 0                    &
-         .and. cmp_no_case(sgs_ctl%mom_flux_csim_type_ctl%charavalue,   &
-     &                     'components')) itype_SGS_m_flux_coef = 1
+      SGS_param1%itype_Csym_h_flux                                      &
+     &      = set_Csim_type(SGS_param1%itype_Csym,                      &
+     &                      sgs_ctl%heat_flux_csim_type_ctl)
+      SGS_param1%itype_Csym_c_flux                                      &
+     &      = set_Csim_type(SGS_param1%itype_Csym,                      &
+     &                      sgs_ctl%comp_flux_csim_type_ctl)
+      SGS_param1%itype_Csym_m_flux                                      &
+     &      = set_Csim_type(SGS_param1%itype_Csym,                      &
+     &                      sgs_ctl%mom_flux_csim_type_ctl)
+      SGS_param1%itype_Csym_maxwell                                     &
+     &      = set_Csim_type(SGS_param1%itype_Csym,                      &
+     &                      sgs_ctl%maxwell_csim_type_ctl)
+      SGS_param1%itype_Csym_uxb                                         &
+     &      = set_Csim_type(SGS_param1%itype_Csym,                      &
+     &                      sgs_ctl%uxb_csim_type_ctl)
 !
-      if(sgs_ctl%maxwell_csim_type_ctl%iflag .gt. 0                     &
-     &   .and. cmp_no_case(sgs_ctl%maxwell_csim_type_ctl%charavalue,    &
-     &                    'components')) itype_SGS_maxwell_coef = 1
-!
-      if(sgs_ctl%uxb_csim_type_ctl%iflag .gt. 0                         &
-        .and. cmp_no_case(sgs_ctl%uxb_csim_type_ctl%charavalue,         &
-     &                    'components')) itype_SGS_uxb_coef = 1
-!
-      itype_SGS_model_coef = 0
-      if(sgs_ctl%SGS_model_coef_type_ctl%iflag .gt. 0                   &
-     &  .and. cmp_no_case(sgs_ctl%SGS_model_coef_type_ctl%charavalue,   &
-     &                    'components') ) then
-        itype_SGS_model_coef = 1
-!
-        itype_SGS_h_flux_coef =   1
-        itype_SGS_m_flux_coef =   1
-        itype_SGS_maxwell_coef =  1
-        itype_SGS_uxb_coef =      1
-      end if
-!
-      icoord_SGS_model_coef = 0
+      SGS_param1%icoord_Csim = 0
       if(sgs_ctl%SGS_model_coef_coord_ctl%iflag .gt. 0) then
           tmpchara = sgs_ctl%SGS_model_coef_coord_ctl%charavalue
           if(   cmp_no_case(tmpchara, 'spherical')                      &
      &     .or. cmp_no_case(tmpchara, 'sph')) then
-             icoord_SGS_model_coef = iflag_spherical
+             SGS_param1%icoord_Csim = iflag_spherical
           end if
           if(   cmp_no_case(tmpchara, 'cylindrical')                    &
      &     .or. cmp_no_case(tmpchara, 'spz')) then
-            icoord_SGS_model_coef = iflag_cylindrical
+            SGS_param1%icoord_Csim = iflag_cylindrical
           end if
       end if
 !
@@ -389,18 +383,24 @@
 !
       if (iflag_SGS_model .ne. id_SGS_none) then
         if (iflag_debug .gt. 0)  then
-          write(*,*) 'itype_SGS_model_coef: ',  itype_SGS_model_coef
-          write(*,*) 'icoord_SGS_model_coef: ', icoord_SGS_model_coef
+          write(*,*) 'itype_SGS_model_coef: ',  SGS_param1%itype_Csym
+          write(*,*) 'icoord_SGS_model_coef: ', SGS_param1%icoord_Csim
 !
           write(*,*) 'SGS_hf_factor:     ', SGS_hf_factor
           write(*,*) 'SGS_mf_factor:     ', SGS_mf_factor
           write(*,*) 'SGS_mawell_factor: ', SGS_mawell_factor
           write(*,*) 'SGS_uxb_factor:    ', SGS_uxb_factor
 !
-          write(*,*) 'itype_SGS_h_flux_coef:  ', itype_SGS_h_flux_coef
-          write(*,*) 'itype_SGS_m_flux_coef:  ', itype_SGS_m_flux_coef
-          write(*,*) 'itype_SGS_maxwell_coef: ', itype_SGS_maxwell_coef
-          write(*,*) 'itype_SGS_uxb_coef:     ', itype_SGS_uxb_coef
+          write(*,*) 'itype_SGS_h_flux_coef:  ',                        &
+     &              SGS_param1%itype_Csym_h_flux
+          write(*,*) 'itype_SGS_c_flux_coef:  ',                        &
+     &              SGS_param1%itype_Csym_c_flux
+          write(*,*) 'itype_SGS_m_flux_coef:  ',                        &
+     &              SGS_param1%itype_Csym_m_flux
+          write(*,*) 'itype_SGS_maxwell_coef: ',                        &
+     &              SGS_param1%itype_Csym_maxwell
+          write(*,*) 'itype_SGS_uxb_coef:     ',                        &
+     &              SGS_param1%itype_Csym_uxb
         end if
       end if
 !
@@ -508,6 +508,26 @@
       end if
 !
       end subroutine set_control_SGS_commute
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      integer(kind = kint) function set_Csim_type(i_default,            &
+     &                                            csim_type_ctl)
+!
+      use t_control_elements
+      use t_SGS_control_parameter
+      use skip_comment_f
+!
+      integer(kind = kint), intent(in) :: i_default
+      type(read_character_item), intent(in) :: csim_type_ctl
+!
+      set_Csim_type = i_default
+      if(csim_type_ctl%iflag .eq. 0) return 
+      if(cmp_no_case(csim_type_ctl%charavalue, 'components'))           &
+     &        set_Csim_type = id_CSIM_COMPONENT
+!
+      end function set_Csim_type
 !
 ! -----------------------------------------------------------------------
 !

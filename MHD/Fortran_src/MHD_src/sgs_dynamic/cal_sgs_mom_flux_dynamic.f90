@@ -166,7 +166,7 @@
      &   'cal_model_coefs', n_sym_tensor, iak_sgs_mf, icomp_sgs_mf
       call cal_model_coefs(layer_tbl,                                   &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
-     &    itype_SGS_m_flux_coef, n_sym_tensor,                          &
+     &    SGS_param1%itype_Csym_m_flux, n_sym_tensor,                   &
      &    iak_sgs_mf, icomp_sgs_mf, intg_point_t_evo,                   &
      &    wk_cor, wk_lsq, wk_sgs, sgs_coefs)
 !

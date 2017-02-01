@@ -151,7 +151,7 @@
       call clear_model_coefs_2_ele                                      &
      &   (ele, n_sym_tensor, icomp_sgs%i_mom_flux, sgs_coefs%ntot_comp, &
      &    sgs_coefs%ak)
-      call set_model_coefs_2_ele(ele, itype_SGS_m_flux_coef,            &
+      call set_model_coefs_2_ele(ele, SGS_param1%itype_Csym_m_flux,     &
      &    n_sym_tensor, ifld_sgs%i_mom_flux, icomp_sgs%i_mom_flux,      &
      &    layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,            &
      &    layer_tbl%e_grp%istack_grp_smp, layer_tbl%e_grp%item_grp,     &

@@ -167,8 +167,9 @@
      &        'cal_model_coefs', n_vector, iak_sgs_uxb, icomp_sgs_uxb
       call cal_model_coefs(layer_tbl,                                   &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
-     &    itype_SGS_uxb_coef, n_vector, iak_sgs_uxb, icomp_sgs_uxb,     &
-     &    intg_point_t_evo, wk_cor, wk_lsq, wk_sgs, sgs_coefs)
+     &    SGS_param1%itype_Csym_uxb, n_vector, iak_sgs_uxb,             &
+     &    icomp_sgs_uxb, intg_point_t_evo, wk_cor, wk_lsq, wk_sgs,      &
+     &    sgs_coefs)
 !
       end subroutine cal_sgs_uxb_dynamic
 !
@@ -275,7 +276,7 @@
      &     'cal_model_coefs', n_asym_tensor, iak_sgs_uxb, icomp_sgs_uxb
       call cal_model_coefs(layer_tbl,                                   &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
-     &    itype_SGS_uxb_coef, n_asym_tensor, iak_sgs_uxb,               &
+     &    SGS_param1%itype_Csym_uxb, n_asym_tensor, iak_sgs_uxb,        &
      &    icomp_sgs_uxb, intg_point_t_evo,                              &
      &    wk_cor, wk_lsq, wk_sgs, sgs_coefs)
 !

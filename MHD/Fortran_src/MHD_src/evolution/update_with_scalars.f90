@@ -147,8 +147,8 @@
 !
       if (iphys%i_sgs_temp .gt. 0) then
         if(iflag_debug .ge. iflag_routine_msg) write(*,*)               &
-     &          'iflag_SGS_parterbuation', iflag_SGS_parterbuation
-        if(iflag_SGS_parterbuation .eq. 1) then
+     &        'iflag_SGS_parterbuation', SGS_param1%iflag_parterbuation
+        if(SGS_param1%iflag_parterbuation .eq. id_SGS_REFERENCE) then
           call copy_scalar_component(nod_fld,                           &
      &        iphys%i_par_temp, iphys%i_sgs_temp)
         else
