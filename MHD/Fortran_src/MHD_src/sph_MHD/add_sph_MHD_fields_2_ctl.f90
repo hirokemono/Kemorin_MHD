@@ -200,7 +200,7 @@
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !
-      if(iflag_dynamic_SGS .eq. id_SGS_DYNAMIC_OFF) return
+      if(SGS_param1%iflag_dynamic .eq. id_SGS_DYNAMIC_OFF) return
 !
       if(SGS_param1%iflag_SGS_h_flux .gt. id_SGS_none) then
         call add_phys_name_ctl(fhd_w_filter_velo, field_ctl)

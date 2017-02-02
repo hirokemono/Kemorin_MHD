@@ -113,7 +113,7 @@
 !
 !
       mhd_fem_wk%n_dvx = 0
-      if ( iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+      if ( SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         if (  SGS_param1%iflag_SGS_h_flux .ne. id_SGS_none              &
      &   .or. SGS_param1%iflag_SGS_m_flux .ne. id_SGS_none              &
      &   .or. SGS_param1%iflag_SGS_c_flux .ne. id_SGS_none              &
@@ -128,7 +128,7 @@
          mhd_fem_wk%n_dvx = mhd_fem_wk%n_dvx + 18
         end if
 !
-      else if (iflag_SGS_model .ne. id_SGS_none) then
+      else if(SGS_param1%iflag_SGS .ne. id_SGS_none) then
         if (  SGS_param1%iflag_SGS_h_flux .ne. id_SGS_none              &
      &   .or. SGS_param1%iflag_SGS_m_flux .ne. id_SGS_none              &
      &   .or. SGS_param1%iflag_SGS_c_flux .ne. id_SGS_none              &

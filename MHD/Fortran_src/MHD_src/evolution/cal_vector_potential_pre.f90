@@ -155,7 +155,8 @@
 !
       if (cd_prop%coef_magne .gt. zero                                  &
      &     .and. evo_vect_p%coef_exp .gt. zero) then
-        call int_vol_vector_diffuse_ele(ele%istack_ele_smp,             &
+        call int_vol_vector_diffuse_ele(SGS_param1%ifilter_final,       &
+     &      ele%istack_ele_smp, intg_point_t_evo,                       &
      &      node, ele, nod_fld, jac_3d_q, rhs_tbl, FEM_elens,           &
      &      diff_coefs, iak_diff_b, evo_vect_p%coef_exp, ak_d_magne,    &
      &      iphys%i_vecp, fem_wk, f_l)
@@ -209,14 +210,16 @@
 !
 !  -----for Ceank-nicolson
       else if (evo_vect_p%iflag_scheme .eq. id_Crank_nicolson) then
-        call cal_vect_p_pre_lumped_crank(cmt_param1%iflag_c_magne,      &
+        call cal_vect_p_pre_lumped_crank(iflag_mag_supg,                &
+     &      cmt_param1%iflag_c_magne, SGS_param1%ifilter_final,         &
      &      iphys%i_vecp, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,      &
      &      Bnod_bcs%nod_bc_a, nod_comm, node, ele, conduct,            &
      &      evo_vect_p, iphys_ele, ele_fld, jac_3d_q, rhs_tbl,          &
      &      FEM_elens, diff_coefs, Bmatrix, MG_vector,                  &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if (evo_vect_p%iflag_scheme.eq.id_Crank_nicolson_cmass) then
-        call cal_vect_p_pre_consist_crank(cmt_param1%iflag_c_magne,     &
+        call cal_vect_p_pre_consist_crank                               &
+     &     (cmt_param1%iflag_c_magne, SGS_param1%ifilter_final,         &
      &      iphys%i_vecp, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,      &
      &      Bnod_bcs%nod_bc_a, node, ele, conduct, evo_vect_p, cd_prop, &
      &      jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,                   &
@@ -300,8 +303,9 @@
      &       nod_fld, jac_sf_grp_q, jac_sf_grp_l,                       &
      &       rhs_tbl, FEM_elens, intg_point_poisson,                    &
      &       Fsf_bcs%sgs%ngrp_sf_dat, Fsf_bcs%sgs%id_grp_sf_dat,        &
-     &       ifilter_final, diff_coefs%num_field, iak_diff_b,           &
-     &       diff_coefs%ak, iphys%i_m_phi, fem_wk, surf_wk, f_nl)
+     &       SGS_param1%ifilter_final, diff_coefs%num_field,            &
+     &       iak_diff_b, diff_coefs%ak, iphys%i_m_phi,                  &
+     &       fem_wk, surf_wk, f_nl)
       end if
 !
 !

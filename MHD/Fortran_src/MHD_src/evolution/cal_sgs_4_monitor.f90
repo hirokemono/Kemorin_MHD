@@ -220,13 +220,12 @@
       if (iphys%i_SGS_div_h_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_div_SGS_h_flux)
-        call cal_terms_4_heat(iphys%i_SGS_div_h_flux,                   &
-     &      ifld_diff%i_heat_flux, ak_MHD%ak_d_temp,                    &
+        call cal_terms_4_heat(iphys%i_SGS_div_h_flux, ak_MHD%ak_d_temp, &
      &      nod_comm, node, ele, surf, fluid, sf_grp, ht_prop,          &
      &      nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,                  &
      &      iphys_ele, ele_fld,  jac_3d, jac_sf_grp, rhs_tbl,           &
-     &      FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,         &
-     &      f_l, f_nl, nod_fld)
+     &      FEM_elens, ifld_diff, diff_coefs, mhd_fem_wk, fem_wk,       &
+     &      surf_wk, f_l, f_nl, nod_fld)
       end if
 !
       do i = 1, nod_fld%num_phys

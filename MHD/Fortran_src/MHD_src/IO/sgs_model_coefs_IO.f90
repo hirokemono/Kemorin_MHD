@@ -128,7 +128,7 @@
       integer (kind = kint) :: i_coef
 !
 !
-      if (iflag_dynamic_SGS .eq. id_SGS_DYNAMIC_OFF) return
+      if(SGS_param1%iflag_dynamic .eq. id_SGS_DYNAMIC_OFF) return
 !
       if (mod(istep_max_dt,i_step_sgs_output) .ne. 0) return
 !

@@ -86,8 +86,8 @@
      &       'iflag_SGS_filter', filter_param%iflag_SGS_filter
       end if
 !
-      if (iflag_SGS_model.eq.id_SGS_similarity                          &
-     &     .or. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+      if       (SGS_param1%iflag_SGS.eq.id_SGS_similarity               &
+     &     .or. SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         if(filter_param%iflag_SGS_filter .eq. id_SGS_NO_FILTERING) then
           e_message = 'Set filtering type for dynamic model'
           call calypso_MPI_abort(ierr_SGS, e_message)

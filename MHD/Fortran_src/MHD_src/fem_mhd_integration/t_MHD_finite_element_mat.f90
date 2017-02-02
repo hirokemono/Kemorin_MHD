@@ -117,7 +117,7 @@
         end if
       end do
 !
-      if (iflag_SGS_model .ne. id_SGS_none) then
+      if (SGS_param1%iflag_SGS .ne. id_SGS_none) then
         allocate(mhd_fem_wk%sgs_v1(numele,3))
         allocate(mhd_fem_wk%sgs_t1(numele,6))
         if(numele .gt. 0) mhd_fem_wk%sgs_v1 = 0.0d0

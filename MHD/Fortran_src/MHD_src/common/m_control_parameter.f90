@@ -123,12 +123,6 @@
 !
       integer (kind=kint) :: iflag_implicit_correct = 0
 !
-      integer (kind=kint) :: iflag_SGS_model = id_SGS_none
-      integer (kind=kint) :: iflag_dynamic_SGS = id_SGS_DYNAMIC_OFF
-!
-!>      filter ID to obtain SGS terms
-      integer (kind=kint) :: ifilter_final = ifilter_2delta
-!
 !  ---------------------------------------------------------------------
 !
       contains

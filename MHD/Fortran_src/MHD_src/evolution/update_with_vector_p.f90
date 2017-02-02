@@ -140,21 +140,22 @@
       type(phys_data), intent(inout) :: ele_fld
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
-      integer (kind = kint) :: iflag_dynamic, iflag2
+      integer (kind = kint) :: iflag_dmc, iflag2
 !
 !   set model coefficients for vector potential
 !
       if (i_step_sgs_coefs.eq.0) then
-        iflag_dynamic = 1
+        iflag_dmc = 1
       else
-        iflag_dynamic = mod(i_step_MHD, i_step_sgs_coefs)
+        iflag_dmc = mod(i_step_MHD, i_step_sgs_coefs)
       end if
 !
 !
-      if (iflag_dynamic.eq.0 .and.  iphys%i_filter_vecp.ne.0            &
+      if (iflag_dmc .eq. 0                                              &
+     &     .and. iphys%i_filter_vecp .ne. 0                             &
      &     .and. cmt_param1%iflag_c_magne .eq. id_SGS_commute_ON) then
 !
-        if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+        if (SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           if (iflag_debug.gt.0) write(*,*) 'cal_filtered_vector_p'
           call cal_filtered_vector_whole(nod_comm, node, filtering,     &
      &        iphys%i_filter_vecp, iphys%i_vecp, wk_filter, nod_fld)
@@ -163,8 +164,8 @@
           nod_fld%iflag_update(iphys%i_filter_vecp+2) = 1
         end if
 !
-        if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                   &
-     &    .and. iflag_SGS_model.eq.id_SGS_similarity                    &
+        if     (SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF        &
+     &    .and. SGS_param1%iflag_SGS.eq.id_SGS_similarity               &
      &    .and. iphys%i_wide_fil_vecp.ne. 0) then
           if (iflag_debug.gt.0)                                         &
      &         write(*,*) 'cal_filtered_vector_p i_wide_fil_vecp'
@@ -179,9 +180,9 @@
 !
 !
         if ( diff_coefs%iflag_field(iak_diff_b) .eq. 0) then
-          if(iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
-            if (iflag_SGS_model .eq. id_SGS_NL_grad                     &
-     &        .or. iflag_SGS_model .eq. id_SGS_similarity) then
+          if(SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
+            if    (SGS_param1%iflag_SGS .eq. id_SGS_NL_grad             &
+     &        .or. SGS_param1%iflag_SGS .eq. id_SGS_similarity) then
               call s_cal_diff_coef_vector_p(iak_diff_b, icomp_diff_b,   &
      &            nod_comm, node, ele, surf, fluid, layer_tbl,          &
      &            sf_grp, Asf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,  &
@@ -229,10 +230,10 @@
 !
 !   required field for explicit filtering
 !
-       if(iflag_dynamic.eq.0                                            &
-     &      .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
-         if (     SGS_param1%iflag_SGS_lorentz .eq. id_SGS_similarity   &
-     &       .or. SGS_param1%iflag_SGS_uxb .eq. id_SGS_similarity) then
+       if(iflag_dmc .eq. 0                                              &
+     &     .and. SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
+         if (    SGS_param1%iflag_SGS_lorentz .eq. id_SGS_similarity    &
+     &      .or. SGS_param1%iflag_SGS_uxb .eq. id_SGS_similarity) then
            iflag2 = 3
          else if (SGS_param1%iflag_SGS_lorentz .eq. id_SGS_NL_grad      &
      &       .or. SGS_param1%iflag_SGS_uxb .eq. id_SGS_NL_grad) then

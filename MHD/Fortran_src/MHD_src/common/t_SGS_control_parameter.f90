@@ -48,9 +48,14 @@
       integer (kind=kint), parameter :: id_SGS_DIR_AVERAGE =   1
       integer (kind=kint), parameter :: id_SGS_DIR_CORRELATE = 2
 !
+!>      filter ID for @f$ s\Delta @f$  filter
+      integer (kind=kint), parameter :: ifilter_2delta = 1
+!>      filter ID for @f$ 4\Delta @f$  filter
+      integer (kind=kint), parameter :: ifilter_4delta = 2
+!
       type SGS_model_control_params
-        integer (kind=kint) :: iflag_SGS_model = id_SGS_none
-        integer (kind=kint) :: iflag_dynamic_SGS = id_SGS_DYNAMIC_OFF
+        integer (kind=kint) :: iflag_SGS =     id_SGS_none
+        integer (kind=kint) :: iflag_dynamic = id_SGS_DYNAMIC_OFF
 !
         integer (kind=kint) :: iflag_SGS_h_flux =  id_SGS_none
         integer (kind=kint) :: iflag_SGS_m_flux =  id_SGS_none
@@ -90,6 +95,9 @@
         integer (kind=kint) :: iflag_Csim_marging =  id_SGS_DIR_LSQ
 !>        maximum value to clip model coefficients
         real (kind = kreal) :: clipping_limit = 0.0d0
+!
+!>        filter ID to obtain SGS terms
+        integer (kind=kint) :: ifilter_final = ifilter_2delta
       end type SGS_model_control_params
 !
 !>      ID not to apply commutation error correction
@@ -139,12 +147,6 @@
       integer (kind=kint), parameter :: id_SGS_PLANE_FILTERING =      3
       integer (kind=kint), parameter :: id_SGS_IDEAL_SPH_LOWPASS =    4
 !
-!>      filter ID for @f$ s\Delta @f$  filter
-      integer (kind=kint), parameter :: ifilter_2delta = 1
-!>      filter ID for @f$ 4\Delta @f$  filter
-      integer (kind=kint), parameter :: ifilter_4delta = 2
-!>      filter ID to obtain SGS terms
-!
 !
       type SGS_filter_area_params
         integer (kind=kint) :: num_f_group = 0
@@ -165,8 +167,6 @@
         integer (kind=kint) :: iflag_composition_filtering = 0
         integer (kind=kint) :: iflag_momentum_filtering =    0
         integer (kind=kint) :: iflag_induction_filtering =   0
-!
-!        integer (kind=kint) :: ifilter_final = ifilter_2delta
 !
         integer (kind=kint) :: iflag_SGS_filter = id_SGS_3D_FILTERING
       end type SGS_filtering_params

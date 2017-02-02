@@ -124,7 +124,7 @@
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
      &    trans_p, WK, rj_fld)
 !
-      if(iflag_SGS_model .gt. 0) then
+      if(SGS_param1%iflag_SGS .gt. 0) then
         call init_MHD_FFT_select(my_rank, sph%sph_rtp, ncomp_max_trans, &
      &      WK%trns_SGS%ncomp_rtp_2_rj,                                 &
      &      WK%trns_SGS%ncomp_rj_2_rtp, WK%SGS_mul_FFTW)

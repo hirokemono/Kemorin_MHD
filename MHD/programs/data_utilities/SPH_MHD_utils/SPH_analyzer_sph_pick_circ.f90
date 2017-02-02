@@ -103,8 +103,8 @@
 !
 ! ---------------------------------
 !
-      if(iflag_SGS_model .gt. 0) then
-      if(iflag_debug.gt.0) write(*,*)' init_SGS_model_sph_mhd'
+      if(SGS_param1%iflag_SGS .gt. 0) then
+        if(iflag_debug.gt.0) write(*,*)' init_SGS_model_sph_mhd'
         call init_SGS_model_sph_mhd                                     &
      &     (sph1, sph_grps1, fl_prop1, trns_WK1%dynamic_SPH)
       end if

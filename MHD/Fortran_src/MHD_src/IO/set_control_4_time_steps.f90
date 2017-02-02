@@ -157,7 +157,7 @@
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
       i_step_sgs_coefs = 1
-      if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+      if(SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         call set_monitor_param_4_fixed_step(ione,                       &
      &      tctl%i_step_sgs_coefs_ctl, tctl%delta_t_sgs_coefs_ctl,      &
      &      i_step_sgs_output, delta_t_sgs_output)
@@ -221,7 +221,7 @@
 !
 !
       i_step_sgs_coefs = 1
-      if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+      if(SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         call set_monitor_param_4_flex_step(ione,                        &
      &      tctl%i_step_sgs_coefs_ctl, tctl%delta_t_sgs_coefs_ctl,      &
      &      i_step_sgs_output, delta_t_sgs_output)

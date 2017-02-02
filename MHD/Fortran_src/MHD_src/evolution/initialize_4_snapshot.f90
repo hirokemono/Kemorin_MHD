@@ -109,7 +109,7 @@ integer(kind = kint) :: iflag
       if (iflag_debug.eq.1) write(*,*)' set_layers'
       call set_layers(mesh%node, mesh%ele, group%ele_grp, MHD_mesh)
 !
-      if (iflag_dynamic_SGS  .ne. id_SGS_DYNAMIC_OFF) then
+      if (SGS_param1%iflag_dynamic  .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*)' const_layers_4_dynamic'
         call const_layers_4_dynamic(group%ele_grp, layer_tbl)
         call alloc_work_4_dynamic(layer_tbl%e_grp%num_grp, wk_lsq1)
@@ -138,8 +138,8 @@ integer(kind = kint) :: iflag
 !     ---------------------
 !
       iflag = filter_param1%iflag_SGS_filter
-      if( (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                    &
-     &       .or. iflag_SGS_model.eq.id_SGS_similarity)) then
+      if(     (SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF         &
+     &    .or. SGS_param1%iflag_SGS.eq.id_SGS_similarity)) then
 !
         if   (iflag .eq. id_SGS_3D_FILTERING                            &
      &   .or. iflag .eq. id_SGS_3D_EZ_FILTERING) then
@@ -160,8 +160,8 @@ integer(kind = kint) :: iflag
         end if
       end if
 !
-      if( (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                    &
-     &      .and. iflag_SGS_model.eq.id_SGS_similarity) ) then
+      if(      (SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF        &
+     &    .and. SGS_param1%iflag_SGS.eq.id_SGS_similarity) ) then
         if    (iflag .eq. id_SGS_3D_FILTERING                           &
      &    .or. iflag .eq. id_SGS_3D_EZ_FILTERING) then
           if (iflag_debug .gt. 0) write(*,*)' s_set_istart_w_filtering'

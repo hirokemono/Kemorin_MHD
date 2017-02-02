@@ -269,13 +269,13 @@
 !
       if ( evo_velo%iflag_scheme .gt. id_no_evolution) then
         if ( SGS_param1%iflag_SGS_m_flux .eq. id_SGS_similarity         &
-     &     .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+     &     .and. SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS momentum flux needs'
           call check_missing_field_w_msg(fld, msg, iphys%i_filter_velo)
         end if
 !
         if (     SGS_param1%iflag_SGS_lorentz .eq. id_SGS_similarity    &
-     &     .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+     &     .and. SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS Lorentz term needs'
           call check_missing_field_w_msg                                &
      &       (fld, msg, iphys%i_filter_magne)
@@ -305,8 +305,8 @@
       end if
 !
       if ( evo_temp%iflag_scheme .gt. id_no_evolution) then
-        if (SGS_param1%iflag_SGS_h_flux .eq. id_SGS_similarity          &
-     &          .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+        if    (SGS_param1%iflag_SGS_h_flux .eq. id_SGS_similarity       &
+     &   .and. SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS heat flux needs'
           call check_missing_field_w_msg(fld, msg, iphys%i_filter_temp)
         end if
@@ -315,8 +315,8 @@
 !
       if (    evo_magne%iflag_scheme .gt. id_no_evolution               &
      &   .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
-        if ( SGS_param1%iflag_SGS_uxb .eq. id_SGS_similarity            &
-     &      .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+        if    (SGS_param1%iflag_SGS_uxb .eq. id_SGS_similarity          &
+     &   .and. SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS induction needs'
           call check_missing_field_w_msg(fld, msg, iphys%i_filter_velo)
           call check_missing_field_w_msg                                &
@@ -326,8 +326,8 @@
 !
 !
       if ( evo_vect_p%iflag_scheme .gt. id_no_evolution) then
-        if ( cmt_param1%iflag_commute .gt. id_SGS_commute_OFF           &
-     &       .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+        if (   cmt_param1%iflag_commute .gt. id_SGS_commute_OFF         &
+     &   .and. SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'filterd A is required for dynamic model'
           call check_missing_field_w_msg(fld, msg, iphys%i_filter_vecp)
         end if
@@ -388,14 +388,14 @@
 !
 !
       if ( evo_velo%iflag_scheme .gt. id_no_evolution) then
-        if ( SGS_param1%iflag_SGS_m_flux .eq. id_SGS_similarity         &
-     &     .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+        if    (SGS_param1%iflag_SGS_m_flux .eq. id_SGS_similarity       &
+     &   .and. SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS momentum flux needs'
           call check_missing_field_w_msg(fld, msg, iphys%i_filter_velo)
         end if
 !
-        if (     SGS_param1%iflag_SGS_lorentz .eq. id_SGS_similarity    &
-     &     .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+        if    (SGS_param1%iflag_SGS_lorentz .eq. id_SGS_similarity      &
+     &   .and. SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS Lorentz term needs'
           call check_missing_field_w_msg                                &
      &       (fld, msg, iphys%i_filter_magne)
@@ -425,8 +425,8 @@
       end if
 !
       if ( evo_temp%iflag_scheme .gt. id_no_evolution) then
-        if (SGS_param1%iflag_SGS_h_flux .eq. id_SGS_similarity          &
-     &          .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+        if    (SGS_param1%iflag_SGS_h_flux .eq. id_SGS_similarity       &
+     &   .and. SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS heat flux needs'
           call check_missing_field_w_msg(fld, msg, iphys%i_filter_temp)
         end if
@@ -434,8 +434,8 @@
 !
 !
       if ( evo_magne%iflag_scheme .gt. id_no_evolution) then
-        if ( SGS_param1%iflag_SGS_uxb .eq. id_SGS_similarity            &
-     &      .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+        if    (SGS_param1%iflag_SGS_uxb .eq. id_SGS_similarity          &
+     &   .and. SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS induction needs'
           call check_missing_field_w_msg(fld, msg, iphys%i_filter_velo)
           call check_missing_field_w_msg                                &

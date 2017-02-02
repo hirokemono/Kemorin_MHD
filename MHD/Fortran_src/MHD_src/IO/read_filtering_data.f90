@@ -64,8 +64,8 @@
           call alloc_nod_data_4_filter(nnod_filtering, wk_filter)
         end if
 !
-        if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                   &
-     &      .and. iflag_SGS_model.eq.id_SGS_similarity) then
+        if       (SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF      &
+     &      .and. SGS_param1%iflag_SGS.eq.id_SGS_similarity) then
           call read_3d_filtering_data                                   &
      &       (filter_wide_head, ifmt_wide_filter, wide_filtering)
         end if
@@ -138,7 +138,7 @@
       integer(kind = kint) :: ierr
 !
 !
-      if(iflag_SGS_model .ne. id_SGS_NL_grad) return
+      if(SGS_param1%iflag_SGS .ne. id_SGS_NL_grad) return
       ifmt_filter_file = ifmt_filter_elen
       filter_file_head = filter_elen_head
       call sel_read_filter_elen_file                                    &
@@ -199,8 +199,8 @@
       end if
 !
 !
-      if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                     &
-     &      .or. iflag_SGS_model.eq.id_SGS_similarity) then
+      if        (SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF       &
+     &      .or. SGS_param1%iflag_SGS.eq.id_SGS_similarity) then
         call read_line_filter_data_a(filter_file_code, numnod, fil_l)
       end if
       close(filter_file_code)

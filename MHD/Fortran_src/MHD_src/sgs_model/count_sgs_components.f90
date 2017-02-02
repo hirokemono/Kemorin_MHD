@@ -65,8 +65,8 @@
       call check_sgs_addresses                                          &
      &   (ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
 !
-      if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                     &
-     &      .or. iflag_SGS_model.eq.id_SGS_similarity)  then
+      if(     SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF          &
+     &   .or. SGS_param1%iflag_SGS.eq.id_SGS_similarity)  then
         call copy_SGS_num_coefs(sgs_coefs, sgs_coefs_nod)
         call alloc_SGS_coefs(numnod, sgs_coefs_nod)
       end if
@@ -277,7 +277,7 @@
       integer(kind = kint) :: i
 !
       i = 1
-      if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+      if(SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         if (  SGS_param1%iflag_SGS_h_flux .ne.   id_SGS_none            &
      &   .or. SGS_param1%iflag_SGS_m_flux .ne.   id_SGS_none            &
      &   .or. SGS_param1%iflag_SGS_c_flux .ne.   id_SGS_none            &
@@ -298,8 +298,8 @@
          i = i + 18
         end if
 !
-      else if (iflag_SGS_model .ne. id_SGS_none                         &
-     &   .and. iflag_dynamic_SGS .eq. id_SGS_DYNAMIC_OFF) then
+      else if (SGS_param1%iflag_SGS .ne. id_SGS_none                    &
+     &   .and. SGS_param1%iflag_dynamic .eq. id_SGS_DYNAMIC_OFF) then
         if (  SGS_param1%iflag_SGS_h_flux .ne. id_SGS_none              &
      &   .or. SGS_param1%iflag_SGS_m_flux .ne. id_SGS_none              &
      &   .or. SGS_param1%iflag_SGS_c_flux .ne. id_SGS_none              &

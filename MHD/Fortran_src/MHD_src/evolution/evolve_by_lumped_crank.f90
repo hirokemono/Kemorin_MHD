@@ -6,32 +6,30 @@
 !        modieied by H. Matsui on Sep., 2005
 !
 !!      subroutine cal_velo_pre_lumped_crank                            &
-!!     &         (iflag_commute_velo, iak_diff_v, ak_d_velo,            &
+!!     &         (iflag_supg, iflag_commute_velo,                       &
+!!     &          ifilter_final, iak_diff_v, ak_d_velo,                 &
 !!     &          nod_comm, node, ele, fluid, evo_v, Vnod_bcs,          &
 !!     &          iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,&
 !!     &          diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,   &
 !!     &          f_l, f_nl, nod_fld)
-!!      subroutine cal_vect_p_pre_lumped_crank(iflag_commute_magne,     &
+!!      subroutine cal_vect_p_pre_lumped_crank                          &
+!!     &         (iflag_supg, iflag_commute_magne, ifilter_final,       &
 !!     &          i_vecp, i_pre_uxb, iak_diff_b, ak_d_magne, nod_bc_a,  &
 !!     &          nod_comm, node, ele, conduct, evo_a,                  &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
 !!     &          diff_coefs, Bmatrix, MG_vector, mhd_fem_wk, fem_wk,   &
 !!     &          f_l, f_nl, nod_fld)
-!!      subroutine cal_magne_pre_lumped_crank(iflag_commute_magne,      &
+!!      subroutine cal_magne_pre_lumped_crank                           &
+!!     &         (iflag_supg, iflag_commute_magne, ifilter_final,       &
 !!     &          i_magne, i_pre_uxb, iak_diff_b, ak_d_magne, nod_bc_b, &
 !!     &          nod_comm, node, ele, conduct, evo_b,                  &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
 !!     &          diff_coefs, Bmatrix, MG_vector, mhd_fem_wk, fem_wk,   &
 !!     &          f_l, f_nl, nod_fld)
 !!
-!!      subroutine cal_temp_pre_lumped_crank(iflag_commute_field,       &
-!!     &          i_field, i_pre_advect, iak_diff, ak_diffuese,         &
-!!     &          nod_comm, node, ele, fluid, evo, nod_bcs, iphys_ele,  &
-!!     &          ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,      &
-!!     &          matrix, MG_vector, mhd_fem_wk, fem_wk,                &
-!!     &          f_l, f_nl, nod_fld)
-!!      subroutine cal_composit_pre_lumped_crank(iflag_commute_field,   &
-!!     &          i_field, i_pre_advect, iak_diff, ak_diffuese,         &
+!!      subroutine cal_temp_pre_lumped_crank(iflag_supg,                &
+!!     &          iflag_commute_field, ifilter_final, i_field,          &
+!!     &          i_pre_advect, iak_diff, ak_diffuese, eps_4_crank,     &
 !!     &          nod_comm, node, ele, fluid, evo, nod_bcs, iphys_ele,  &
 !!     &          ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,      &
 !!     &          matrix, MG_vector, mhd_fem_wk, fem_wk,                &
@@ -70,7 +68,7 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_control_parameter
+!      use m_control_parameter
       use m_t_int_parameter
       use m_t_step_parameter
       use m_phys_constants
@@ -102,7 +100,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_velo_pre_lumped_crank                              &
-     &         (iflag_commute_velo, iak_diff_v, ak_d_velo,              &
+     &         (iflag_supg, iflag_commute_velo,                         &
+     &          ifilter_final, iak_diff_v, ak_d_velo,                   &
      &          nod_comm, node, ele, fluid, evo_v, Vnod_bcs,            &
      &          iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,  &
      &          diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,     &
@@ -120,7 +119,9 @@
       use int_vol_coriolis_term
       use cal_sol_field_explicit
 !
+      integer(kind = kint), intent(in) :: iflag_supg
       integer(kind = kint), intent(in) :: iflag_commute_velo
+      integer(kind = kint), intent(in) :: ifilter_final
       integer(kind = kint), intent(in) :: iak_diff_v
 !
       type(communication_table), intent(in) :: nod_comm
@@ -150,13 +151,14 @@
 !
       if (evo_v%coef_imp .gt. zero) then
         call int_sk_4_fixed_velo                                        &
-     &     (iflag_commute_velo, iphys%i_velo, iak_diff_v,               &
-     &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
+     &     (iflag_commute_velo, ifilter_final, intg_point_t_evo,        &
+     &      iphys%i_velo, iak_diff_v, evo_velo, node, ele, nod_fld,     &
+     &      jac_3d, rhs_tbl, FEM_elens, diff_coefs,                     &
      &      Vnod_bcs%nod_bc_v, Vnod_bcs%nod_bc_rot, ak_d_velo,          &
      &      fem_wk, f_l)
       end if
 !
-      call cal_t_evo_4_vector(iflag_velo_supg,                          &
+      call cal_t_evo_4_vector(iflag_supg,                               &
      &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl, nod_comm,      &
      &    node, ele, iphys_ele, ele_fld, jac_3d, rhs_tbl,               &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
@@ -186,7 +188,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_vect_p_pre_lumped_crank(iflag_commute_magne,       &
+      subroutine cal_vect_p_pre_lumped_crank                            &
+     &         (iflag_supg, iflag_commute_magne, ifilter_final,         &
      &          i_vecp, i_pre_uxb, iak_diff_b, ak_d_magne, nod_bc_a,    &
      &          nod_comm, node, ele, conduct, evo_a,                    &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
@@ -203,7 +206,9 @@
       use copy_nodal_fields
       use cal_sol_field_explicit
 !
+      integer(kind = kint), intent(in) :: iflag_supg
       integer(kind = kint), intent(in) :: iflag_commute_magne
+      integer(kind = kint), intent(in) :: ifilter_final
       integer(kind = kint), intent(in) :: i_vecp, i_pre_uxb
       integer(kind = kint), intent(in) :: iak_diff_b
 !
@@ -232,13 +237,14 @@
 !
 !
       if (evo_a%coef_imp .gt. 0.0d0) then
-        call int_sk_4_fixed_vector(iflag_commute_magne,                 &
+        call int_sk_4_fixed_vector                                      &
+     &     (iflag_commute_magne, ifilter_final, intg_point_t_evo,       &
      &      i_vecp, node, ele, nod_fld, jac_3d, rhs_tbl,                &
      &      FEM_elens, diff_coefs, nod_bc_a, ak_d_magne,                &
      &      evo_a%coef_imp, iak_diff_b, fem_wk, f_l)
       end if
 !
-      call cal_t_evo_4_vector_cd(iflag_mag_supg,                        &
+      call cal_t_evo_4_vector_cd(iflag_supg,                            &
      &    conduct%istack_ele_fld_smp, mhd_fem_wk%mlump_cd,              &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,              &
      &    rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
@@ -262,7 +268,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_magne_pre_lumped_crank(iflag_commute_magne,        &
+      subroutine cal_magne_pre_lumped_crank                             &
+     &         (iflag_supg, iflag_commute_magne, ifilter_final,         &
      &          i_magne, i_pre_uxb, iak_diff_b, ak_d_magne, nod_bc_b,   &
      &          nod_comm, node, ele, conduct, evo_b,                    &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
@@ -278,7 +285,9 @@
       use cal_sol_field_explicit
       use set_boundary_scalars
 !
+      integer(kind = kint), intent(in) :: iflag_supg
       integer(kind = kint), intent(in) :: iflag_commute_magne
+      integer(kind = kint), intent(in) :: ifilter_final
       integer(kind = kint), intent(in) :: i_magne, i_pre_uxb
       integer(kind = kint), intent(in) :: iak_diff_b
 !
@@ -307,14 +316,15 @@
 !
 !
       if (evo_b%coef_imp .gt. 0.0d0) then
-        call int_sk_4_fixed_vector(iflag_commute_magne,                 &
+        call int_sk_4_fixed_vector                                      &
+     &     (iflag_commute_magne, ifilter_final, intg_point_t_evo,       &
      &      i_magne, node, ele, nod_fld, jac_3d, rhs_tbl,               &
      &      FEM_elens, diff_coefs, nod_bc_b, ak_d_magne,                &
      &      evo_b%coef_imp, iak_diff_b, fem_wk, f_l)
       end if
 !
-      call cal_t_evo_4_vector_cd(iflag_mag_supg,                        &
-     &    conduct%istack_ele_fld_smp, mhd_fem_wk%mlump_cd,              &
+      call cal_t_evo_4_vector_cd                                        &
+     &   (iflag_supg, conduct%istack_ele_fld_smp, mhd_fem_wk%mlump_cd,  &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,              &
      &    rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
@@ -340,8 +350,9 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_temp_pre_lumped_crank(iflag_commute_field,         &
-     &          i_field, i_pre_advect, iak_diff, ak_diffuese,           &
+      subroutine cal_temp_pre_lumped_crank(iflag_supg,                  &
+     &          iflag_commute_field, ifilter_final, i_field,            &
+     &          i_pre_advect, iak_diff, ak_diffuese, eps_4_crank,       &
      &          nod_comm, node, ele, fluid, evo, nod_bcs, iphys_ele,    &
      &          ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,        &
      &          matrix, MG_vector, mhd_fem_wk, fem_wk,                  &
@@ -358,7 +369,9 @@
       use cal_solver_MHD
       use cal_sol_field_explicit
 !
+      integer(kind = kint), intent(in) :: iflag_supg
       integer(kind = kint), intent(in) :: iflag_commute_field
+      integer(kind = kint), intent(in) :: ifilter_final
       integer(kind = kint), intent(in) :: i_field, i_pre_advect
       integer(kind = kint), intent(in) :: iak_diff
 !
@@ -376,6 +389,7 @@
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(MHD_MG_matrix), intent(in) :: matrix
 !
+      real(kind = kreal), intent(in) :: eps_4_crank
       real(kind = kreal), intent(in) :: ak_diffuese(ele%numele)
 !
       type(vectors_4_solver), intent(inout)                             &
@@ -386,9 +400,9 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if (iflag_commute_field .gt. zero) then
-        call int_sk_fixed_temp                                          &
-     &     (cmt_param1%iflag_c_temp, i_field, iak_diff,                 &
+      if (evo%coef_imp .gt. zero) then
+        call int_sk_fixed_temp(iflag_commute_field,                     &
+     &      ifilter_final, intg_point_t_evo, i_field, iak_diff,         &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
      &      nod_bcs%nod_bc_s, ak_diffuese, evo%coef_imp, fem_wk, f_l)
 !        if (iflag_initial_step.eq.1) then
@@ -397,7 +411,7 @@
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'multi_pass temp'
-      call cal_t_evo_4_scalar(iflag_temp_supg,                          &
+      call cal_t_evo_4_scalar(iflag_supg,                               &
      &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl, nod_comm,      &
      &    node, ele, iphys_ele, ele_fld, jac_3d, rhs_tbl,               &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
@@ -411,83 +425,10 @@
       call solver_crank_scalar(node, matrix%nlevel_MG,                  &
      &    matrix%MG_interpolate, matrix%MG_comm_table,                  &
      &    matrix%MG_DJDS_table, matrix%mat_MG_DJDS,                     &
-     &    method_4_solver, precond_4_solver, eps_4_temp_crank, itr,     &
+     &    method_4_solver, precond_4_solver, eps_4_crank, itr,          &
      &    i_field, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !
       end subroutine cal_temp_pre_lumped_crank
-!
-! ----------------------------------------------------------------------
-!
-      subroutine cal_composit_pre_lumped_crank(iflag_commute_field,     &
-     &          i_field, i_pre_advect, iak_diff, ak_diffuese,           &
-     &          nod_comm, node, ele, fluid, evo, nod_bcs, iphys_ele,    &
-     &          ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,        &
-     &          matrix, MG_vector, mhd_fem_wk, fem_wk,                  &
-     &          f_l, f_nl, nod_fld)
-!
-      use m_iccg_parameter
-      use m_array_for_send_recv
-!
-      use t_bc_data_temp
-!
-      use cal_multi_pass
-      use set_boundary_scalars
-      use cal_sol_field_explicit
-      use int_sk_4_fixed_boundary
-      use cal_solver_MHD
-!
-      integer(kind = kint), intent(in) :: iflag_commute_field
-      integer(kind = kint), intent(in) :: i_field, i_pre_advect
-      integer(kind = kint), intent(in) :: iak_diff
-!
-      type(communication_table), intent(in) :: nod_comm
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(field_geometry_data), intent(in) :: fluid
-      type(time_evolution_params), intent(in) :: evo
-      type(nodal_bcs_4_scalar_type), intent(in) :: nod_bcs
-      type(phys_address), intent(in) :: iphys_ele
-      type(phys_data), intent(in) :: ele_fld
-      type(jacobians_3d), intent(in) :: jac_3d
-      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_coefficients_type), intent(in) :: diff_coefs
-      type(MHD_MG_matrix), intent(in) :: matrix
-!
-      real(kind = kreal), intent(in) :: ak_diffuese(ele%numele)
-!
-      type(vectors_4_solver), intent(inout)                             &
-     &           :: MG_vector(0:matrix%nlevel_MG)
-      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
-      type(work_finite_element_mat), intent(inout) :: fem_wk
-      type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
-      type(phys_data), intent(inout) :: nod_fld
-!
-!
-      if (evo%coef_imp .gt. zero) then
-        call int_sk_fixed_temp                                          &
-     &     (iflag_commute_field, i_field, iak_diff,                     &
-     &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
-     &      nod_bcs%nod_bc_s, ak_diffuese, evo%coef_imp, fem_wk, f_l)
-      end if
-!
-      call cal_t_evo_4_scalar(iflag_comp_supg,                          &
-     &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl, nod_comm,      &
-     &    node, ele, iphys_ele, ele_fld, jac_3d, rhs_tbl,               &
-     &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
-!
-      call set_boundary_rhs_scalar(node, nod_bcs%nod_bc_s, f_l, f_nl)
-      call cal_sol_vec_fluid_linear(node%numnod, node%istack_nod_smp,   &
-     &    mhd_fem_wk%mlump_fl%ml_o, f_nl%ff, nod_fld%ntot_phys,         &
-     &    n_scalar, i_field, i_pre_advect,  nod_fld%d_fld, f_l%ff)
-!
-      call solver_crank_scalar(node, matrix%nlevel_MG,                  &
-     &    matrix%MG_interpolate, matrix%MG_comm_table,                  &
-     &    matrix%MG_DJDS_table, matrix%mat_MG_DJDS,                     &
-     &    method_4_solver, precond_4_solver, eps_4_comp_crank, itr,     &
-     &    i_field, MG_vector, f_l, b_vec, x_vec, nod_fld)
-!
-      end subroutine cal_composit_pre_lumped_crank
 !
 ! ----------------------------------------------------------------------
 !

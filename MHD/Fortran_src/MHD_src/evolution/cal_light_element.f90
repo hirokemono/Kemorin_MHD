@@ -42,6 +42,7 @@
       use m_control_parameter
       use m_SGS_control_parameter
       use m_phys_constants
+      use m_iccg_parameter
 !
       use t_comm_table
       use t_geometry_data_MHD
@@ -118,7 +119,8 @@
 !
       if (property%coef_advect .gt. zero                                &
      &     .and. evo_comp%coef_exp.gt.zero) then
-        call int_vol_scalar_diffuse_ele(fluid%istack_ele_fld_smp,       &
+        call int_vol_scalar_diffuse_ele(SGS_param1%ifilter_final,       &
+     &      fluid%istack_ele_fld_smp, intg_point_t_evo,                 &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
      &      ifld_diff%i_light, evo_comp%coef_exp, ak_d_composit,        &
      &      iphys%i_light, fem_wk, f_l)
@@ -127,6 +129,7 @@
       if (iflag_comp_supg .gt. id_turn_OFF) then
         call int_vol_temp_ele_upw                                       &
      &     (SGS_param1%iflag_SGS_c_flux, cmt_param1%iflag_c_cf,         &
+     &      SGS_param1%ifilter_final, intg_point_t_evo,                 &
      &      iphys%i_light, iphys%i_velo,                                &
      &      iphys%i_SGS_c_flux, ifld_diff%i_comp_flux,                  &
      &      node, ele, fluid, property, nod_fld,                        &
@@ -136,6 +139,7 @@
       else
         call int_vol_temp_ele                                           &
      &     (SGS_param1%iflag_SGS_c_flux, cmt_param1%iflag_c_cf,         &
+     &      SGS_param1%ifilter_final, intg_point_t_evo,                 &
      &      iphys%i_light, iphys%i_velo,                                &
      &      iphys%i_SGS_c_flux, ifld_diff%i_comp_flux,                  &
      &      node, ele, fluid, property, nod_fld,                        &
@@ -162,17 +166,19 @@
      &      rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       else if(evo_comp%iflag_scheme .eq. id_Crank_nicolson) then
-        call cal_composit_pre_lumped_crank                              &
-     &     (cmt_param1%iflag_c_light, iphys%i_light,                    &
-     &      iphys%i_pre_composit, ifld_diff%i_light, ak_d_composit,     &
+        call cal_temp_pre_lumped_crank(iflag_comp_supg,                 &
+     &      cmt_param1%iflag_c_light, SGS_param1%ifilter_final,         &
+     &      iphys%i_light, iphys%i_pre_composit, ifld_diff%i_light,     &
+     &      ak_d_composit, eps_4_comp_crank,                            &
      &      nod_comm, node, ele, fluid, evo_comp, nod_bcs,              &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
      &      Cmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       else if(evo_comp%iflag_scheme .eq. id_Crank_nicolson_cmass) then
-        call cal_composit_pre_consist_crank                             &
-     &     (cmt_param1%iflag_c_light, iphys%i_light,                    &
-     &      iphys%i_pre_composit, ifld_diff%i_light, ak_d_composit,     &
+        call cal_temp_pre_consist_crank                                 &
+     &     (cmt_param1%iflag_c_light, SGS_param1%ifilter_final,         &
+     &      iphys%i_light, iphys%i_pre_composit, ifld_diff%i_light,     &
+     &      ak_d_composit, eps_4_comp_crank,                            &
      &      node, ele, fluid, evo_comp, property, nod_bcs,              &
      &      jac_3d, rhs_tbl, FEM_elens, diff_coefs, Cmatrix, MG_vector, &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)

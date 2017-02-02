@@ -96,7 +96,7 @@
         if (cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
           call int_sf_skv_sgs_div_t_flux(node, ele, surf, sf_grp,       &
      &        nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,                  &
-     &        Vsf_bcs%sgs, intg_point_t_evo, ifilter_final,             &
+     &        Vsf_bcs%sgs, intg_point_t_evo, SGS_param1%ifilter_final,  &
      &        iphys%i_SGS_m_flux, iphys%i_velo, iphys%i_velo,           &
      &        diff_coefs%num_field, iak_diff_mf, diff_coefs%ak,         &
      &        fl_prop%coef_velo, fem_wk, surf_wk, f_nl)
@@ -107,7 +107,7 @@
         if (cmt_param%iflag_c_lorentz .eq. id_SGS_commute_ON) then
           call int_sf_skv_sgs_div_t_flux(node, ele, surf, sf_grp,       &
      &        nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,                  &
-     &        Bsf_bcs%sgs, intg_point_t_evo, ifilter_final,             &
+     &        Bsf_bcs%sgs, intg_point_t_evo, SGS_param1%ifilter_final,  &
      &        iphys%i_SGS_maxwell, iphys%i_magne, iphys%i_magne,        &
      &        diff_coefs%num_field, iak_diff_lor, diff_coefs%ak,        &
      &        (-fl_prop%coef_lor), fem_wk, surf_wk, f_nl)
@@ -167,7 +167,7 @@
         if (cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
           call int_sf_skv_sgs_div_t_flux(node, ele, surf, sf_grp,       &
      &        nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,                  &
-     &        Vsf_bcs%sgs, intg_point_t_evo, ifilter_final,             &
+     &        Vsf_bcs%sgs, intg_point_t_evo, SGS_param1%ifilter_final,  &
      &        iphys%i_SGS_m_flux, iphys%i_velo, iphys%i_velo,           &
      &        diff_coefs%num_field, iak_diff_mf, diff_coefs%ak,         &
      &        fl_prop%coef_velo, fem_wk, surf_wk, f_nl)
@@ -178,7 +178,7 @@
         if (cmt_param%iflag_c_lorentz .eq. id_SGS_commute_ON) then
           call int_sf_skv_sgs_div_t_flux(node, ele, surf, sf_grp,       &
      &        nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,                  &
-     &        Bsf_bcs%sgs, intg_point_t_evo, ifilter_final,             &
+     &        Bsf_bcs%sgs, intg_point_t_evo, SGS_param1%ifilter_final,  &
      &        iphys%i_SGS_maxwell, iphys%i_magne, iphys%i_magne,        &
      &        diff_coefs%num_field, iak_diff_lor, diff_coefs%ak,        &
      &        (-fl_prop%coef_lor), fem_wk, surf_wk, f_nl)

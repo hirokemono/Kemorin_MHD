@@ -314,7 +314,7 @@
       character(len=kchara) :: fn_tmp
 !
 !
-      if(iflag_dynamic_SGS .eq. id_SGS_DYNAMIC_OFF) return
+      if(SGS_param1%iflag_dynamic .eq. id_SGS_DYNAMIC_OFF) return
 !
       if(index_rst .lt. 0) then
         call add_elaps_postfix(rst_sgs_coef_head, fn_tmp)
@@ -352,7 +352,7 @@
       character(len=kchara) :: fn_tmp
 !
 !
-      if(iflag_dynamic_SGS .eq. id_SGS_DYNAMIC_OFF) return
+      if(SGS_param1%iflag_dynamic .eq. id_SGS_DYNAMIC_OFF) return
       if(iflag_rst_sgs_coef_code .eq. 0) return
 !
       if (i_step_init .eq. -1) then

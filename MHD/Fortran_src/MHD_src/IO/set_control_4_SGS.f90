@@ -52,7 +52,7 @@
       type(sph_filters_type), intent(inout) :: sph_filters(1)
 !
 !
-      if(iflag_SGS_model .eq. 0) return
+      if(SGS_param1%iflag_SGS .eq. id_SGS_none) return
       if(num_sph_filter_ctl .le. 0) then
         call calypso_mpi_abort(1, 'Set filter configrations')
       end if
@@ -120,46 +120,43 @@
 !
 !   set control parameters for SGS model
 !
-       iflag_SGS_model =      id_SGS_none
-       iflag_dynamic_SGS =    id_SGS_DYNAMIC_OFF
+       SGS_param1%iflag_SGS =      id_SGS_none
+       SGS_param1%iflag_dynamic =  id_SGS_DYNAMIC_OFF
        filter_param1%iflag_SGS_filter = id_SGS_NO_FILTERING
 !
-      if (sgs_ctl%SGS_model_name_ctl%iflag .eq. 0) then
-        iflag_SGS_model =   id_SGS_none
-        iflag_dynamic_SGS = id_SGS_DYNAMIC_OFF
-      else
+      if (sgs_ctl%SGS_model_name_ctl%iflag .gt. 0) then
         tmpchara = sgs_ctl%SGS_model_name_ctl%charavalue
 !
         if      (no_flag(tmpchara)) then
-          iflag_SGS_model =   id_SGS_none
-          iflag_dynamic_SGS = id_SGS_DYNAMIC_OFF
+          SGS_param1%iflag_SGS =     id_SGS_none
+          SGS_param1%iflag_dynamic = id_SGS_DYNAMIC_OFF
 !
         else if (cmp_no_case(tmpchara, 'gradient')) then
-          iflag_SGS_model =   id_SGS_NL_grad
-          iflag_dynamic_SGS = id_SGS_DYNAMIC_OFF
+          SGS_param1%iflag_SGS =     id_SGS_NL_grad
+          SGS_param1%iflag_dynamic = id_SGS_DYNAMIC_OFF
 !
         else if (cmp_no_case(tmpchara, 'similarity')) then
-          iflag_SGS_model =   id_SGS_similarity
-          iflag_dynamic_SGS = id_SGS_DYNAMIC_OFF
+          SGS_param1%iflag_SGS =     id_SGS_similarity
+          SGS_param1%iflag_dynamic = id_SGS_DYNAMIC_OFF
 !
         else if (cmp_no_case(tmpchara, 'dynamic')) then
-          iflag_SGS_model =   id_SGS_NL_grad
-          iflag_dynamic_SGS = id_SGS_DYNAMIC_ON
+          SGS_param1%iflag_SGS =     id_SGS_NL_grad
+          SGS_param1%iflag_dynamic = id_SGS_DYNAMIC_ON
 !
         else if (cmp_no_case(tmpchara, 'dynamic_similarity')            &
      &      .or. cmp_no_case(tmpchara, 'dynamic_simi')) then
-          iflag_SGS_model =   id_SGS_similarity
-          iflag_dynamic_SGS = id_SGS_DYNAMIC_ON
+          SGS_param1%iflag_SGS =     id_SGS_similarity
+          SGS_param1%iflag_dynamic = id_SGS_DYNAMIC_ON
 !
         else if (cmp_no_case(tmpchara,'diffusion')) then
-          iflag_SGS_model =   id_SGS_diffusion
-          iflag_dynamic_SGS = id_SGS_DYNAMIC_ON
+          SGS_param1%iflag_SGS =     id_SGS_diffusion
+          SGS_param1%iflag_dynamic = id_SGS_DYNAMIC_ON
         end if
       end if
 !
       if (iflag_debug .gt. 0) then
-        write(*,*) 'iflag_SGS_model',   iflag_SGS_model
-        write(*,*) 'iflag_dynamic_SGS', iflag_dynamic_SGS
+        write(*,*) 'iflag_SGS_model',   SGS_param1%iflag_SGS
+        write(*,*) 'iflag_dynamic_SGS', SGS_param1%iflag_dynamic
       end if
 !
 !
@@ -172,7 +169,7 @@
       SGS_param1%iflag_SGS_uxb =     id_SGS_none
       SGS_param1%iflag_SGS_gravity = id_SGS_none
 !
-      if (iflag_SGS_model .ne. id_SGS_none) then
+      if (SGS_param1%iflag_SGS .ne. id_SGS_none) then
         if (sgs_ctl%SGS_terms_ctl%icou .eq. izero) then
             e_message = 'Set equations to apply SGS model'
             call calypso_MPI_abort(ierr_SGS, e_message)
@@ -181,17 +178,17 @@
           do i = 1, sgs_ctl%SGS_terms_ctl%num
             tmpchara = sgs_ctl%SGS_terms_ctl%c_tbl(i)
             if(     tmpchara .eq. thd_heat_flux) then
-              SGS_param1%iflag_SGS_h_flux =  iflag_SGS_model
+              SGS_param1%iflag_SGS_h_flux =  SGS_param1%iflag_SGS
             else if(tmpchara .eq. thd_advection) then
-              SGS_param1%iflag_SGS_m_flux =  iflag_SGS_model
+              SGS_param1%iflag_SGS_m_flux =  SGS_param1%iflag_SGS
             else if(tmpchara .eq. thd_lorentz) then
-              SGS_param1%iflag_SGS_lorentz = iflag_SGS_model
+              SGS_param1%iflag_SGS_lorentz = SGS_param1%iflag_SGS
             else if(tmpchara .eq. thd_induction) then
-              SGS_param1%iflag_SGS_uxb =     iflag_SGS_model
+              SGS_param1%iflag_SGS_uxb =     SGS_param1%iflag_SGS
             else if(tmpchara .eq. thd_gravity) then
-              SGS_param1%iflag_SGS_gravity = iflag_SGS_model
+              SGS_param1%iflag_SGS_gravity = SGS_param1%iflag_SGS
             else if(tmpchara .eq. thd_comp_flux) then
-              SGS_param1%iflag_SGS_c_flux = iflag_SGS_model
+              SGS_param1%iflag_SGS_c_flux =  SGS_param1%iflag_SGS
             end if
           end do
 !
@@ -199,7 +196,7 @@
         end if
       end if
 !
-      if (iflag_SGS_model .ne. id_SGS_none) then
+      if (SGS_param1%iflag_SGS .ne. id_SGS_none) then
         if (iflag_debug .gt. 0)  then
           write(*,*) 'iflag_SGS_heat:         ',                        &
      &              SGS_param1%iflag_SGS_h_flux
@@ -242,10 +239,10 @@
       character(len=kchara) :: tmpchara
 !
 !
-      ifilter_final = ifilter_2delta
+      SGS_param1%ifilter_final = ifilter_2delta
 !
 !
-      if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+      if (SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         if (sgs_ctl%SGS_negative_clip_ctl%iflag .eq. 0) then
           e_message                                                     &
      &      = 'Set cliping method for model coefficient'
@@ -356,11 +353,11 @@
       end if
 !
 !
-      if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+      if (SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         call s_set_control_ele_layering(elayer_ctl)
       end if
 !
-      if (iflag_SGS_model .eq. id_SGS_NL_grad) then
+      if (SGS_param1%iflag_SGS .eq. id_SGS_NL_grad) then
         if (ffile_ctl%filter_elen_head_ctl%iflag .eq. 1) then
           filter_elen_head = ffile_ctl%filter_elen_head_ctl%charavalue
         end if
@@ -374,7 +371,7 @@
         end if
       end if
 !
-      if (iflag_SGS_model .ne. id_SGS_none) then
+      if (SGS_param1%iflag_SGS .ne. id_SGS_none) then
         if (iflag_debug .gt. 0)  then
           write(*,*) 'itype_SGS_model_coef: ',  SGS_param1%itype_Csym
           write(*,*) 'icoord_SGS_model_coef: ', SGS_param1%icoord_Csim
@@ -399,7 +396,7 @@
         end if
       end if
 !
-      if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+      if (SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         iflag_rst_sgs_coef_code                                         &
      &          = ffile_ctl%model_coef_ini_head_ctl%iflag
         if(iflag_rst_sgs_coef_code .gt. 0) then
@@ -430,7 +427,7 @@
       character(len=kchara) :: tmpchara
 !
 !
-      if (iflag_SGS_model .eq. id_SGS_none) return
+      if (SGS_param1%iflag_SGS .eq. id_SGS_none) return
 !
       if (sgs_ctl%commutate_fld_ctl%icou .gt. 0) then
         do i = 1, sgs_ctl%commutate_fld_ctl%num
@@ -472,7 +469,7 @@
      &                              + cmt_param%iflag_c_nonlinars
       end if
 !
-      if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+      if (SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         cmt_param%iset_DIFF_coefs = 0
         if (sgs_ctl%DIFF_model_coef_ctl%iflag .ne. 0) then
           tmpchara = sgs_ctl%DIFF_model_coef_ctl%charavalue

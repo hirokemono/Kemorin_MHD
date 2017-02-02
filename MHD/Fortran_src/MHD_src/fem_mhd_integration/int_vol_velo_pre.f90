@@ -139,8 +139,8 @@
      &           (fluid%istack_ele_fld_smp, num_int, k2,                &
      &            mhd_fem_wk%velo_1, d_ele(1,iphys_ele%i_vort),         &
      &            ele, jac_3d, fem_wk%sk6)
-              call fem_skv_div_sgs_tensor                               &
-     &           (fluid%istack_ele_fld_smp, num_int, k2, ifilter_final, &
+              call fem_skv_div_sgs_tensor(fluid%istack_ele_fld_smp,     &
+     &            num_int, k2, SGS_param1%ifilter_final,                &
      &            diff_coefs%num_field, iak_diff_mf, diff_coefs%ak,     &
      &            ele, jac_3d, FEM_elens, mhd_fem_wk%sgs_t1,            &
      &            fem_wk%tensor_1, fem_wk%sk6)
@@ -169,7 +169,8 @@
      &           iphys%i_velo, iphys%i_SGS_m_flux, fl_prop%coef_nega_v, &
      &           mhd_fem_wk%sgs_t1, fem_wk%tensor_1)
               call fem_skv_vec_inertia_modsgs_pg                        &
-     &           (fluid%istack_ele_fld_smp, num_int, k2, ifilter_final, &
+     &           (fluid%istack_ele_fld_smp, num_int,                    &
+     &            k2, SGS_param1%ifilter_final,                         &
      &            diff_coefs%num_field, iak_diff_mf, diff_coefs%ak,     &
      &            ele, jac_3d, FEM_elens, mhd_fem_wk%velo_1,            &
      &            mhd_fem_wk%sgs_t1, fem_wk%tensor_1,                   &
@@ -230,8 +231,8 @@
               call SGS_const_tensor_each_ele(node, ele, nod_fld, k2,    &
      &            iphys%i_magne, iphys%i_SGS_maxwell, fl_prop%coef_lor, &
      &            mhd_fem_wk%sgs_t1, fem_wk%tensor_1)
-              call fem_skv_div_sgs_tensor                               &
-     &           (fluid%istack_ele_fld_smp, num_int, k2, ifilter_final, &
+              call fem_skv_div_sgs_tensor(fluid%istack_ele_fld_smp,     &
+     &            num_int, k2, SGS_param1%ifilter_final,                &
      &            diff_coefs%num_field, iak_diff_lor, diff_coefs%ak,    &
      &            ele, jac_3d, FEM_elens, mhd_fem_wk%sgs_t1,            &
      &            fem_wk%tensor_1, fem_wk%sk6)
@@ -375,7 +376,8 @@
      &            mhd_fem_wk%velo_1, d_ele(1,iphys_ele%i_vort),         &
      &            d_ele(1,ie_upw), ele, jac_3d, fem_wk%sk6)
               call fem_skv_div_sgs_tensor_upwind                        &
-     &           (fluid%istack_ele_fld_smp, num_int, k2, ifilter_final, &
+     &           (fluid%istack_ele_fld_smp, num_int,                    &
+     &            k2, SGS_param1%ifilter_final,                         &
      &            diff_coefs%num_field, iak_diff_mf, diff_coefs%ak,     &
      &            ele, jac_3d, FEM_elens, d_ele(1,ie_upw),              &
      &            mhd_fem_wk%sgs_t1, fem_wk%tensor_1, fem_wk%sk6)
@@ -404,7 +406,8 @@
      &           iphys%i_velo, iphys%i_SGS_m_flux, fl_prop%coef_nega_v, &
      &           mhd_fem_wk%sgs_t1, fem_wk%tensor_1)
               call fem_skv_vec_inertia_msgs_upw                         &
-     &           (fluid%istack_ele_fld_smp, num_int, k2, ifilter_final, &
+     &           (fluid%istack_ele_fld_smp, num_int,                    &
+     &            k2, SGS_param1%ifilter_final,                         &
      &            diff_coefs%num_field, iak_diff_mf, diff_coefs%ak,     &
      &            ele, jac_3d, FEM_elens, mhd_fem_wk%velo_1,            &
      &            mhd_fem_wk%sgs_t1, fem_wk%tensor_1,                   &
@@ -435,7 +438,8 @@
      &           iphys%i_velo, iphys%i_SGS_m_flux, fl_prop%coef_nega_v, &
      &           mhd_fem_wk%sgs_t1, fem_wk%tensor_1)
               call fem_skv_div_sgs_tensor_upwind                        &
-     &           (fluid%istack_ele_fld_smp, num_int, k2, ifilter_final, &
+     &           (fluid%istack_ele_fld_smp, num_int,                    &
+     &            k2, SGS_param1%ifilter_final,                         &
      &            diff_coefs%num_field, iak_diff_mf, diff_coefs%ak,     &
      &            ele, jac_3d, FEM_elens, d_ele(1,ie_upw),              &
      &            mhd_fem_wk%sgs_t1, fem_wk%tensor_1, fem_wk%sk6)
@@ -490,7 +494,8 @@
      &            iphys%i_magne, iphys%i_SGS_maxwell, fl_prop%coef_lor, &
      &            mhd_fem_wk%sgs_t1, fem_wk%tensor_1)
               call fem_skv_div_sgs_tensor_upwind                        &
-     &           (fluid%istack_ele_fld_smp, num_int, k2, ifilter_final, &
+     &           (fluid%istack_ele_fld_smp, num_int,                    &
+     &            k2, SGS_param1%ifilter_final,                         &
      &            diff_coefs%num_field, iak_diff_lor, diff_coefs%ak,    &
      &            ele, jac_3d, FEM_elens, d_ele(1,ie_upw),              &
      &            mhd_fem_wk%sgs_t1, fem_wk%tensor_1, fem_wk%sk6)

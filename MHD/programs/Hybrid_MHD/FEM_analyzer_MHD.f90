@@ -80,7 +80,7 @@
      &    wk_cor1, wk_lsq1, wk_diff1, wk_filter1, mhd_fem1_wk, fem1_wk, &
      &    surf1_wk, f1_l, f1_nl, nod_fld1, fld_ele1, diff_coefs)
 !
-      if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+      if (SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 'copy_model_coef_2_previous'
         call copy_model_coef_2_previous(cmt_param1,                     &
      &     (wk_sgs1%nlayer, wk_sgs1%num_kinds, wk_sgs1%fld_coef,        &
@@ -103,7 +103,7 @@
 !
 !   time evolution loop start!
 !
-      if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+      if (SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
         call s_cal_model_coefficients                                   &
      &     (mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,            &
@@ -215,7 +215,7 @@
 !
 !     ----- Evaluate model coefficients
 !
-      if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+      if (SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
         call s_cal_model_coefficients                                   &
      &     (mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,            &
@@ -323,7 +323,7 @@
 !
 !     --------------------- 
 !
-      if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+      if (SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_chenge_step_4_dynamic'
         call s_chenge_step_4_dynamic                                    &
      &     (my_rank, cmt_param1, wk_sgs1, wk_diff1)

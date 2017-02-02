@@ -102,7 +102,7 @@
      &    WK%trns_MHD, WK%MHD_mul_FFTW, ipol, itor, rj_fld)
 !
 !   ----  Lead SGS terms
-      if(iflag_SGS_model .gt. 0) then
+      if(SGS_param1%iflag_SGS .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'SGS_by_pseudo_sph'
         call SGS_by_pseudo_sph(sph, comms_sph, r_2nd, trans_p,          &
      &      WK%trns_MHD, WK%trns_snap, WK%trns_SGS, WK%SGS_mul_FFTW,    &
@@ -219,7 +219,7 @@
 !
 !
 !   ----  Lead filtered field for SGS terms
-      if(iflag_SGS_model .gt. 0) then
+      if(SGS_param1%iflag_SGS .gt. 0) then
         if (iflag_debug.ge.1) write(*,*) 'cal_filtered_sph_rj_fields'
         call start_eleps_time(81)
         call cal_filtered_sph_rj_fields                                 &
@@ -243,7 +243,7 @@
      &    trns_MHD%ncomp_rj_2_rtp, trns_MHD%ncomp_rtp_2_rj,             &
      &    trns_MHD%fld_rtp, trns_MHD%frc_rtp)
 !
-      if(iflag_SGS_model .gt. 0) then
+      if(SGS_param1%iflag_SGS .gt. 0) then
         if (iflag_debug.ge.1) write(*,*) 'filtered_nonlinear_in_rtp'
         call filtered_nonlinear_in_rtp(sph%sph_rtp,                     &
      &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
@@ -317,7 +317,7 @@
      &      trns_SGS%ncomp_rtp_2_rj, trns_MHD%frc_rtp,                  &
      &      trns_SGS%fld_rtp, trns_SGS%frc_rtp)
 !
-        if(iflag_dynamic_SGS .eq. id_SGS_DYNAMIC_ON) then
+        if(SGS_param1%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
           if (iflag_debug.eq.1) write(*,*) 'wider_similarity_SGS_rtp'
           call wider_similarity_SGS_rtp(sph%sph_rtp,                    &
      &        fl_prop1, cd_prop1, ht_prop1, cp_prop1,                   &

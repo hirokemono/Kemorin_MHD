@@ -94,7 +94,7 @@
       if (iflag_debug.eq.1) write(*,*) 'cal_volume_4_insulate'
       call cal_volume_4_area(ele, MHD_mesh%insulate)
 !
-       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+       if (SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
          if (iflag_debug.eq.1) write(*,*) 's_cal_layered_volumes'
          call s_cal_layered_volumes(ele, layer_tbl)
        end if

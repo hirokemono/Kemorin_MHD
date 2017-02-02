@@ -141,7 +141,7 @@
       integer (kind = kint) :: iflag
 !
       iflag = 0
-      if (    iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                 &
+      if (    SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF          &
      &  .and. cmt_param%iflag_c_linear .gt. id_SGS_commute_OFF          &
      &  .and. mod(i_step_MHD,i_step_sgs_coefs) .eq. 0) iflag = 1
       iflag = iflag + iflag_flex_step_changed

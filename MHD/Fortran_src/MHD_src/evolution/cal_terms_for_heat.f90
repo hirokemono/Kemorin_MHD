@@ -3,11 +3,12 @@
 !
 !     Written by H. Matsui on June, 2005
 !
-!!      subroutine cal_terms_4_heat(i_field, iak_diff_hf, ak_d_temp,    &
+!!      subroutine cal_terms_4_heat(i_field, ak_d_temp,                 &
 !!     &          nod_comm, node, ele, surf, fluid, sf_grp, property,   &
 !!     &          Tnod_bcs, Tsf_bcs, iphys, iphys_ele, ele_fld,         &
 !!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,   &
-!!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+!!     &          ifld_diff, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,   &
+!!     &          f_l, f_nl, nod_fld)
 !!      subroutine cal_thermal_diffusion                                &
 !!     &         (iak_diff_hf, iak_diff_t, ak_d_temp,                   &
 !!     &          nod_comm, node, ele, surf, fluid, sf_grp, property,   &
@@ -76,11 +77,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_terms_4_heat(i_field, iak_diff_hf, ak_d_temp,      &
+      subroutine cal_terms_4_heat(i_field, ak_d_temp,                   &
      &          nod_comm, node, ele, surf, fluid, sf_grp, property,     &
      &          Tnod_bcs, Tsf_bcs, iphys, iphys_ele, ele_fld,           &
-     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,     &
-     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                 &
+     &          ifld_diff, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,     &
+     &          f_l, f_nl, nod_fld)
 !
       use int_vol_temp_monitor
       use int_surf_div_fluxes_sgs
@@ -101,9 +103,10 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(SGS_terms_address), intent(in) :: ifld_diff
       type(SGS_coefficients_type), intent(in) :: diff_coefs
 !
-      integer (kind=kint), intent(in) :: i_field, iak_diff_hf
+      integer (kind=kint), intent(in) :: i_field
       real(kind = kreal), intent(in) :: ak_d_temp(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -116,15 +119,15 @@
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
       if (iflag_temp_supg .gt. id_turn_OFF) then
-       call int_vol_ene_monitor_upw(i_field, iak_diff_hf,               &
+       call int_vol_ene_monitor_upw(i_field,                            &
      &     node, ele, fluid, property, iphys, nod_fld,                  &
-     &     iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,  &
-     &     mhd_fem_wk, fem_wk, f_nl)
+     &     iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,              &
+     &     ifld_diff, diff_coefs, mhd_fem_wk, fem_wk, f_nl)
       else
-       call int_vol_ene_monitor(i_field, iak_diff_hf,                   &
+       call int_vol_ene_monitor(i_field,                                &
      &     node, ele, fluid, property, iphys, nod_fld,                  &
-     &     iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,  &
-     &     mhd_fem_wk, fem_wk, f_nl)
+     &     iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,              &
+     &     ifld_diff, diff_coefs, mhd_fem_wk, fem_wk, f_nl)
       end if
 !
       if(cmt_param1%iflag_c_temp .ne. id_SGS_commute_OFF                &
@@ -133,8 +136,8 @@
         call int_sf_skv_sgs_div_v_flux(node, ele, surf, sf_grp,         &
      &      nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, intg_point_t_evo,  &
      &      Tsf_bcs%sgs%ngrp_sf_dat, Tsf_bcs%sgs%id_grp_sf_dat,         &
-     &      ifilter_final, iphys%i_SGS_h_flux, iphys%i_velo,            &
-     &      iphys%i_temp, diff_coefs%num_field, iak_diff_hf,            &
+     &      SGS_param1%ifilter_final, iphys%i_SGS_h_flux, iphys%i_velo, &
+     &      iphys%i_temp, diff_coefs%num_field, ifld_diff%i_heat_flux,  &
      &      diff_coefs%ak, property%coef_advect, fem_wk, surf_wk, f_nl)
       end if
 !
@@ -197,7 +200,8 @@
 !
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
-      call int_vol_scalar_diffuse_ele(fluid%istack_ele_fld_smp,         &
+      call int_vol_scalar_diffuse_ele(SGS_param1%ifilter_final,         &
+     &    fluid%istack_ele_fld_smp, intg_point_t_evo,                   &
      &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,   &
      &    iak_diff_t, one, ak_d_temp, iphys%i_temp, fem_wk, f_l)
 !

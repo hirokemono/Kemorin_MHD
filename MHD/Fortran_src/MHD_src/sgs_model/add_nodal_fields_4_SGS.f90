@@ -57,13 +57,13 @@
         end if
       end if
 !
-      if (iflag_dynamic_SGS.eq.id_SGS_DYNAMIC_OFF                       &
-     &      .and. iflag_SGS_model.eq.id_SGS_NL_grad) then
+      if(      SGS_param1%iflag_dynamic.eq.id_SGS_DYNAMIC_OFF           &
+     &   .and. SGS_param1%iflag_SGS.eq.id_SGS_NL_grad) then
         call add_phys_name_ctl(fhd_SGS_grad, field_ctl)
-      else if (iflag_dynamic_SGS.eq.id_SGS_DYNAMIC_OFF                  &
-     &     .and. iflag_SGS_model.eq.id_SGS_similarity) then
+      else if (SGS_param1%iflag_dynamic.eq.id_SGS_DYNAMIC_OFF           &
+     &     .and. SGS_param1%iflag_SGS.eq.id_SGS_similarity) then
         call add_phys_name_ctl(fhd_SGS_simi, field_ctl)
-      else if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+      else if (SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         call add_phys_name_ctl(fhd_SGS_grad, field_ctl)
         call add_phys_name_ctl(fhd_SGS_simi, field_ctl)
         call add_phys_name_ctl(fhd_SGS_grad_f, field_ctl)
@@ -72,8 +72,8 @@
 !
 !   field labels for nonlinear gradient model
 !
-      if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                     &
-     &      .or. iflag_SGS_model.eq.id_SGS_similarity) then
+      if(      SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF         &
+     &    .or. SGS_param1%iflag_SGS.eq.id_SGS_similarity) then
         do i = 1, field_ctl%num
           if(      field_ctl%c1_tbl(i) .eq. fhd_velo) then
             call add_phys_name_ctl(fhd_grad_v_1, field_ctl)
@@ -109,8 +109,8 @@
 !
 !   field labels for filtered field
 !
-      if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                     &
-     &     .or. iflag_SGS_model.eq.id_SGS_similarity) then
+      if(       SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF        &
+     &     .or. SGS_param1%iflag_SGS.eq.id_SGS_similarity) then
         do i = 1, field_ctl%num
           if(      field_ctl%c1_tbl(i) .eq. fhd_velo) then
             call add_phys_name_ctl(fhd_filter_velo, field_ctl)
@@ -128,8 +128,8 @@
 !
 !   field labels for wider filtered field
 !
-      if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                     &
-     &       .and. iflag_SGS_model.eq.id_SGS_similarity) then
+      if(        SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF       &
+     &     .and. SGS_param1%iflag_SGS.eq.id_SGS_similarity) then
         do i = 1, field_ctl%num
           if(      field_ctl%c1_tbl(i) .eq. fhd_filter_velo) then
             call add_phys_name_ctl(fhd_w_filter_velo, field_ctl)
@@ -145,7 +145,7 @@
 !
 !   field labels for turbulence diffusivity
 !
-      if (iflag_SGS_model .eq. id_SGS_diffusion) then
+      if (SGS_param1%iflag_SGS .eq. id_SGS_diffusion) then
         call add_phys_name_ctl(fhd_SGS_diffuse, field_ctl)
       end if
 !

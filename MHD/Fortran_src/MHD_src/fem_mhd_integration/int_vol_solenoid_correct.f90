@@ -66,7 +66,7 @@
       if (iak_diff .gt. 0) then
         call int_vol_sgs_solenoidal_co(node, ele, jac_3d_q, jac_3d_l,   &
      &     rhs_tbl, FEM_elen, nod_fld, iele_fsmp_stack,                 &
-     &     intg_point_poisson, i_scalar, ifilter_final,                 &
+     &     intg_point_poisson, i_scalar, SGS_param1%ifilter_final,      &
      &     diff_coefs%num_field, iak_diff, diff_coefs%ak, fem_wk, f_nl)
       else
         call int_vol_solenoidal_co                                      &

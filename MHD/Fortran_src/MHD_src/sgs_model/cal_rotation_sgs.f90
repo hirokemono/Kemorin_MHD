@@ -58,6 +58,8 @@
       use cal_for_ffs
       use nod_phys_send_recv
 !
+      implicit none
+!
       private :: choose_int_vol_rot_sgs
 !
 !-----------------------------------------------------------------------
@@ -101,10 +103,10 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if(iflag_SGS_model .ne. id_SGS_none                               &
+      if(SGS_param1%iflag_SGS .ne. id_SGS_none                          &
      &     .and. iflag_commute .eq. id_SGS_commute_ON) then
-        call choose_int_vol_rot_sgs                                     &
-     &     (iflag_4_supg, iele_fsmp_stack, iak_diff, i_vector,          &
+        call choose_int_vol_rot_sgs(iflag_4_supg, iele_fsmp_stack,      &
+     &      SGS_param1%ifilter_final, iak_diff, i_vector,               &
      &      node, ele, surf, sf_grp, nod_fld, iphys_ele, ele_fld,       &
      &      jac_3d, jac_sf_grp, FEM_elens, diff_coefs, sgs_sf, rhs_tbl, &
      &      fem_wk, surf_wk, f_nl)
@@ -127,8 +129,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine choose_int_vol_rot_sgs                                 &
-     &         (iflag_4_supg, iele_fsmp_stack, iak_diff, i_vector,      &
+      subroutine choose_int_vol_rot_sgs(iflag_4_supg,                   &
+     &          iele_fsmp_stack, ifilter_final, iak_diff, i_vector,     &
      &          node, ele, surf, sf_grp, nod_fld, iphys_ele, ele_fld,   &
      &          jac_3d, jac_sf_grp, FEM_elens, diff_coefs,              &
      &          sgs_sf, rhs_tbl, fem_wk, surf_wk, f_nl)
@@ -151,7 +153,7 @@
       type(scaler_surf_bc_data_type), intent(in) :: sgs_sf(3)
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
-      integer(kind = kint), intent(in) :: iflag_4_supg
+      integer(kind = kint), intent(in) :: iflag_4_supg, ifilter_final
       integer(kind = kint), intent(in) :: iak_diff, i_vector
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
@@ -162,14 +164,14 @@
 !
       call reset_ff_smp(node%max_nod_smp, f_nl)
 !
-      if ( iflag_4_supg .eq. id_magnetic_SUPG) then
+      if(iflag_4_supg .eq. id_magnetic_SUPG) then
         call int_sgs_rotation_upw                                       &
      &     (node, ele, jac_3d, rhs_tbl, nod_fld, FEM_elens,             &
      &      iele_fsmp_stack, intg_point_t_evo, ifilter_final,           &
      &      diff_coefs%num_field, iak_diff, diff_coefs%ak, i_vector,    &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
      &      fem_wk, f_nl)
-      else if ( iflag_4_supg .eq. id_turn_ON) then
+      else if(iflag_4_supg .eq. id_turn_ON) then
         call int_sgs_rotation_upw                                       &
      &     (node, ele, jac_3d, rhs_tbl, nod_fld, FEM_elens,             &
      &      iele_fsmp_stack, intg_point_t_evo, ifilter_final,           &

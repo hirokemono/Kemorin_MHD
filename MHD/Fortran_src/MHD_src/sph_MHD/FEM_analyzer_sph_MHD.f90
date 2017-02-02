@@ -214,7 +214,7 @@
      &   (sph_params%m_folding, sph_rtp, WK%trns_snap,                  &
      &    mesh%node, iphys, nod_fld)
 !
-      if(iflag_SGS_model .eq. 0) return
+      if(SGS_param1%iflag_SGS .eq. 0) return
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_filtered_field_from_trans'
       call copy_filtered_field_from_trans                               &

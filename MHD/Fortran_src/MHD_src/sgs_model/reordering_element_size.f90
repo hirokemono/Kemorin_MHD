@@ -100,7 +100,7 @@
         call deallocate_dx_ordering_tmp
 !
 !
-!      if ( iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+!      if(SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
 !        call reordering_layer_info(numele, old2newele_layer(1),        &
 !     &      layer_tbl1%e_grp%num_item, item_layer(1) )
 !      end if

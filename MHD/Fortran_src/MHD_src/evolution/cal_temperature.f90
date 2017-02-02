@@ -54,6 +54,7 @@
 !
       use m_precision
       use m_machine_parameter
+      use m_iccg_parameter
 !
       use t_physical_property
       use t_comm_table
@@ -170,7 +171,8 @@
 !
       if (property%coef_advect .gt. zero                                &
      &     .and. evo_temp%coef_exp.gt.zero) then
-        call int_vol_scalar_diffuse_ele(fluid%istack_ele_fld_smp,       &
+        call int_vol_scalar_diffuse_ele(SGS_param1%ifilter_final,       &
+     &      fluid%istack_ele_fld_smp, intg_point_t_evo,                 &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
      &      ifld_diff%i_temp, evo_temp%coef_exp, ak_d_temp,             &
      &      iphys%i_temp, fem_wk, f_l)
@@ -181,6 +183,7 @@
       if (iflag_temp_supg .gt. id_turn_OFF) then
         call int_vol_temp_ele_upw                                       &
      &     (SGS_param1%iflag_SGS_h_flux, cmt_param1%iflag_c_hf,         &
+     &      SGS_param1%ifilter_final, intg_point_t_evo,                 &
      &      iphys%i_temp, iphys%i_velo,                                 &
      &      iphys%i_SGS_h_flux, ifld_diff%i_heat_flux,                  &
      &      node, ele, fluid, property, nod_fld,                        &
@@ -190,6 +193,7 @@
       else
         call int_vol_temp_ele                                           &
      &     (SGS_param1%iflag_SGS_h_flux, cmt_param1%iflag_c_hf,         &
+     &      SGS_param1%ifilter_final, intg_point_t_evo,                 &
      &      iphys%i_temp, iphys%i_velo,                                 &
      &      iphys%i_SGS_h_flux, ifld_diff%i_heat_flux,                  &
      &      node, ele, fluid, property, nod_fld,                        &
@@ -210,7 +214,7 @@
         call int_sf_skv_sgs_div_v_flux(node, ele, surf, sf_grp,         &
      &      nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, intg_point_t_evo,  &
      &      Tsf_bcs%sgs%ngrp_sf_dat, Tsf_bcs%sgs%id_grp_sf_dat,         &
-     &      ifilter_final, iphys%i_SGS_h_flux, iphys%i_velo,            &
+     &      SGS_param1%ifilter_final, iphys%i_SGS_h_flux, iphys%i_velo, &
      &      iphys%i_temp, diff_coefs%num_field, ifld_diff%i_heat_flux,  &
      &      diff_coefs%ak, property%coef_advect, fem_wk, surf_wk, f_nl)
       end if
@@ -246,16 +250,18 @@
      &      nod_comm, node, ele, fluid, iphys_ele, ele_fld, jac_3d,     &
      &      rhs_tbl, mhd_fem_wk, fem_wk,  f_l, f_nl,  nod_fld)
       else if (evo_temp%iflag_scheme .eq. id_Crank_nicolson) then
-        call cal_temp_pre_lumped_crank                                  &
-     &     (cmt_param1%iflag_c_temp, iphys%i_temp,                      &
-     &      iphys%i_pre_heat, ifld_diff%i_temp, ak_d_temp,              &
+        call cal_temp_pre_lumped_crank(iflag_temp_supg,                 &
+     &      cmt_param1%iflag_c_temp, SGS_param1%ifilter_final,          &
+     &      iphys%i_temp, iphys%i_pre_heat, ifld_diff%i_temp,           &
+     &      ak_d_temp, eps_4_temp_crank,                                &
      &      nod_comm, node, ele, fluid, evo_temp, Tnod_bcs,             &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
      &      Tmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if (evo_temp%iflag_scheme .eq. id_Crank_nicolson_cmass) then 
         call cal_temp_pre_consist_crank                                 &
-     &     (cmt_param1%iflag_c_temp, iphys%i_temp,                      &
-     &      iphys%i_pre_heat, ifld_diff%i_temp, ak_d_temp,              &
+     &     (cmt_param1%iflag_c_temp, SGS_param1%ifilter_final,          &
+     &      iphys%i_temp, iphys%i_pre_heat, ifld_diff%i_temp,           &
+     &      ak_d_temp, eps_4_temp_crank,                                &
      &      node, ele, fluid, evo_temp, property, Tnod_bcs,             &
      &      jac_3d, rhs_tbl, FEM_elens, diff_coefs, Tmatrix, MG_vector, &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -361,7 +367,8 @@
 !
       if (property%coef_advect .gt. zero                                &
      &     .and. evo_temp%coef_exp .gt. zero) then
-        call int_vol_scalar_diffuse_ele(fluid%istack_ele_fld_smp,       &
+        call int_vol_scalar_diffuse_ele(SGS_param1%ifilter_final,       &
+     &      fluid%istack_ele_fld_smp, intg_point_t_evo,                 &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
      &      ifld_diff%i_temp, evo_temp%coef_exp, ak_d_temp,             &
      &      iphys%i_par_temp, fem_wk, f_l)
@@ -372,6 +379,7 @@
       if (iflag_temp_supg .gt. id_turn_OFF) then
         call int_vol_temp_ele_upw                                       &
      &     (SGS_param1%iflag_SGS_h_flux, cmt_param1%iflag_c_hf,         &
+     &      SGS_param1%ifilter_final, intg_point_t_evo,                 &
      &      iphys%i_temp, iphys%i_velo,                                 &
      &      iphys%i_SGS_h_flux, ifld_diff%i_heat_flux,                  &
      &      node, ele, fluid, property, nod_fld,                        &
@@ -381,6 +389,7 @@
       else
         call int_vol_temp_ele                                           &
      &     (SGS_param1%iflag_SGS_h_flux, cmt_param1%iflag_c_hf,         &
+     &      SGS_param1%ifilter_final, intg_point_t_evo,                 &
      &      iphys%i_temp, iphys%i_velo,                                 &
      &      iphys%i_SGS_h_flux, ifld_diff%i_heat_flux,                  &
      &      node, ele, fluid, property, nod_fld,                        &
@@ -401,7 +410,7 @@
         call int_sf_skv_sgs_div_v_flux(node, ele, surf, sf_grp,         &
      &      nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, intg_point_t_evo,  &
      &      Tsf_bcs%sgs%ngrp_sf_dat, Tsf_bcs%sgs%id_grp_sf_dat,         &
-     &      ifilter_final, iphys%i_SGS_h_flux, iphys%i_velo,            &
+     &      SGS_param1%ifilter_final, iphys%i_SGS_h_flux, iphys%i_velo, &
      &      iphys%i_temp, diff_coefs%num_field, ifld_diff%i_heat_flux,  &
      &      diff_coefs%ak, property%coef_advect, fem_wk, surf_wk, f_nl)
       end if
@@ -437,16 +446,18 @@
      &      nod_comm, node, ele, fluid, iphys_ele, ele_fld,  jac_3d,    &
      &      rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if (evo_temp%iflag_scheme .eq. id_Crank_nicolson) then
-        call cal_temp_pre_lumped_crank                                  &
-     &     (cmt_param1%iflag_c_temp, iphys%i_par_temp,                  &
-     &      iphys%i_pre_heat, ifld_diff%i_temp, ak_d_temp,              &
+        call cal_temp_pre_lumped_crank(iflag_temp_supg,                 &
+     &      cmt_param1%iflag_c_temp, SGS_param1%ifilter_final,          &
+     &      iphys%i_par_temp, iphys%i_pre_heat, ifld_diff%i_temp,       &
+     &      ak_d_temp, eps_4_temp_crank,                                &
      &      nod_comm, node, ele, fluid, evo_temp, Tnod_bcs,             &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
      &      Tmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if (evo_temp%iflag_scheme .eq. id_Crank_nicolson_cmass) then 
         call cal_temp_pre_consist_crank                                 &
-     &     (cmt_param1%iflag_c_temp, iphys%i_par_temp,                  &
-     &      iphys%i_pre_heat, ifld_diff%i_temp, ak_d_temp,              &
+     &     (cmt_param1%iflag_c_temp, SGS_param1%ifilter_final,          &
+     &      iphys%i_par_temp, iphys%i_pre_heat, ifld_diff%i_temp,       &
+     &      ak_d_temp, eps_4_temp_crank,                                &
      &      node, ele, fluid, evo_temp, property, Tnod_bcs,             &
      &      jac_3d, rhs_tbl, FEM_elens, diff_coefs, Tmatrix, MG_vector, &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)

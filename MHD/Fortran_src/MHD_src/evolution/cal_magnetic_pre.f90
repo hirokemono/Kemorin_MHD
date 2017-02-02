@@ -175,7 +175,8 @@
 !
       if (cd_prop%coef_magne .gt. zero                                  &
      &      .and. evo_magne%coef_exp .gt. zero) then
-        call int_vol_vector_diffuse_ele(conduct%istack_ele_fld_smp,     &
+        call int_vol_vector_diffuse_ele(SGS_param1%ifilter_final,       &
+     &      conduct%istack_ele_fld_smp, intg_point_t_evo,               &
      &      node, ele, nod_fld, jac_3d_q, rhs_tbl, FEM_elens,           &
      &      diff_coefs, iak_diff_b, evo_magne%coef_exp, ak_d_magne,     &
      &      iphys%i_magne, fem_wk, f_l)
@@ -215,14 +216,16 @@
      &      nod_comm, node, ele, conduct, iphys_ele, ele_fld,           &
      &      jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if(evo_magne%iflag_scheme .eq. id_Crank_nicolson) then
-        call cal_magne_pre_lumped_crank(cmt_param1%iflag_c_magne,       &
+        call cal_magne_pre_lumped_crank(iflag_mag_supg,                 &
+     &      cmt_param1%iflag_c_magne, SGS_param1%ifilter_final,         &
      &      iphys%i_magne, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,     &
      &      Bnod_bcs%nod_bc_b, nod_comm, node, ele, conduct, evo_magne, &
      &      iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,           &
      &      diff_coefs, Bmatrix, MG_vector, mhd_fem_wk, fem_wk,         &
      &      f_l, f_nl, nod_fld)
       else if(evo_magne%iflag_scheme .eq. id_Crank_nicolson_cmass) then
-        call cal_magne_pre_consist_crank(cmt_param1%iflag_c_magne,      &
+        call cal_magne_pre_consist_crank                                &
+     &     (cmt_param1%iflag_c_magne, SGS_param1%ifilter_final,         &
      &      iphys%i_magne, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,     &
      &      Bnod_bcs%nod_bc_b, node, ele, conduct, evo_magne, cd_prop,  &
      &      jac_3d_q, rhs_tbl, FEM_elens, diff_coefs, Bmatrix,          &
@@ -302,8 +305,9 @@
      &       nod_fld, jac_sf_grp_q, jac_sf_grp_l,                       &
      &       rhs_tbl, FEM_elens, intg_point_poisson,                    &
      &       Fsf_bcs%sgs%ngrp_sf_dat, Fsf_bcs%sgs%id_grp_sf_dat,        &
-     &       ifilter_final, diff_coefs%num_field, iak_diff_b,           &
-     &       diff_coefs%ak, iphys%i_m_phi, fem_wk, surf_wk, f_nl)
+     &       SGS_param1%ifilter_final, diff_coefs%num_field,            &
+     &       iak_diff_b, diff_coefs%ak, iphys%i_m_phi,                  &
+     &       fem_wk, surf_wk, f_nl)
       end if
 !
 !
@@ -384,11 +388,11 @@
         if (iflag_debug.eq.1) write(*,*)                                &
                              'int_surf_sgs_velo_co_ele', iphys%i_m_phi
          call int_surf_sgs_velo_co_ele(node, ele, surf, sf_grp,         &
-     &       nod_fld, jac_sf_grp_q, jac_sf_grp_l,                       &
-     &       rhs_tbl, FEM_elens, intg_point_poisson,                    &
-     &       Fsf_bcs%sgs%ngrp_sf_dat, Fsf_bcs%sgs%id_grp_sf_dat,        &
-     &       ifilter_final, diff_coefs%num_field, iak_diff_b,           &
-     &       diff_coefs%ak, iphys%i_m_phi, fem_wk, surf_wk, f_nl)
+     &      nod_fld, jac_sf_grp_q, jac_sf_grp_l,                        &
+     &      rhs_tbl, FEM_elens, intg_point_poisson,                     &
+     &      Fsf_bcs%sgs%ngrp_sf_dat, Fsf_bcs%sgs%id_grp_sf_dat,         &
+     &      SGS_param1%ifilter_final, diff_coefs%num_field, iak_diff_b, &
+     &      diff_coefs%ak, iphys%i_m_phi, fem_wk, surf_wk, f_nl)
       end if
 !
 !

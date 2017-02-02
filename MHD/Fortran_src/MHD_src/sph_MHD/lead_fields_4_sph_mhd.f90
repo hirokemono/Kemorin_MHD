@@ -106,7 +106,7 @@
      &      WK%trns_MHD%fld_pole, WK%trns_MHD%frc_pole)
       end if
 !
-      if(iflag_SGS_model .gt. 0) then
+      if(SGS_param1%iflag_SGS .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'swap_phi_from_trans'
         call swap_phi_from_trans(WK%trns_SGS%ncomp_rj_2_rtp,            &
      &      sph%sph_rtp%nnod_rtp, sph%sph_rtp%nidx_rtp,                 &
@@ -119,7 +119,7 @@
         call sph_pole_trans_SGS_MHD                                     &
      &     (sph, comms_sph, trans_p, ipol, rj_fld, WK%trns_SGS)
 !
-        if(iflag_dynamic_SGS .gt. 0) then
+        if(SGS_param1%iflag_dynamic .gt. 0) then
           if(iflag_debug.eq.1) write(*,*) 'copy_model_coefs_4_sph_snap'
           call copy_model_coefs_4_sph_snap(sph%sph_rtp,                 &
      &        WK%dynamic_SPH%ifld_sgs, WK%dynamic_SPH%wk_sgs,           &
@@ -163,7 +163,7 @@
      &   (sph_rj, r_2nd, leg%g_sph_rj, ipol, rj_fld)
 !
 !   ----  Lead SGS terms
-      if(iflag_SGS_model .gt. 0) then
+      if(SGS_param1%iflag_SGS .gt. 0) then
         call cal_div_of_SGS_forces_sph_2                                &
      &     (sph_rj, r_2nd, leg%g_sph_rj, ipol, rj_fld)
       end if
@@ -228,7 +228,7 @@
      &    trns_snap%fld_rtp, trns_snap%frc_rtp)
 !
 !      Work of SGS terms
-      if(iflag_SGS_model .gt. 0) then
+      if(SGS_param1%iflag_SGS .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'SGS_fluxes_for_snapshot'
         call SGS_fluxes_for_snapshot                                    &
      &     (sph%sph_rtp, fl_prop1, trns_MHD%b_trns,                     &

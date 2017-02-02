@@ -147,7 +147,7 @@
 !
 !     ----- Evaluate model coefficients
 !
-      if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+      if (SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
         call s_cal_model_coefficients                                   &
      &     (mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,            &

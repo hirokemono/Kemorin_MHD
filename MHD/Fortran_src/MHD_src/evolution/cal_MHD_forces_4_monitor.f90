@@ -184,13 +184,12 @@
      &     .or. i_fld .eq. iphys%i_ph_flux_div) then
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
-          call cal_terms_4_heat                                         &
-     &       (i_fld, ifld_diff%i_heat_flux, ak_MHD%ak_d_temp,           &
+          call cal_terms_4_heat(i_fld, ak_MHD%ak_d_temp,                &
      &        nod_comm, node, ele, surf, fluid, sf_grp, ht_prop,        &
      &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,                &
      &        iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,          &
-     &        FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,       &
-     &        f_l, f_nl, nod_fld)
+     &        FEM_elens, ifld_diff, diff_coefs, mhd_fem_wk, fem_wk,     &
+     &        surf_wk, f_l, f_nl, nod_fld)
         end if
       end do
 !

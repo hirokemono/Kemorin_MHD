@@ -150,7 +150,7 @@
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
 !
-      if(iflag_dynamic_SGS .eq. id_SGS_DYNAMIC_OFF) return
+      if(SGS_param1%iflag_dynamic .eq. id_SGS_DYNAMIC_OFF) return
       if(mod(i_step_MHD, i_step_sgs_coefs) .ne. 0) return
 !
       if(my_rank .eq. 0) write(*,*)                                     &

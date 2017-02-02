@@ -133,8 +133,8 @@
            call SGS_const_induct_each_ele(node, ele, nod_fld,           &
      &         k2, iphys%i_magne, iphys%i_velo, iphys%i_SGS_induct_t,   &
      &         cd_prop%coef_induct, mhd_fem_wk%sgs_v1, fem_wk%vector_1)
-           call fem_skv_div_sgs_asym_tsr                                &
-     &        (conduct%istack_ele_fld_smp, num_int, k2, ifilter_final,  &
+           call fem_skv_div_sgs_asym_tsr(conduct%istack_ele_fld_smp,    &
+     &         num_int, k2, SGS_param1%ifilter_final,                   &
      &         diff_coefs%num_field, iak_diff_uxb, diff_coefs%ak,       &
      &         ele, jac_3d, FEM_elens, mhd_fem_wk%sgs_v1,               &
      &         fem_wk%vector_1, fem_wk%sk6)
@@ -224,7 +224,8 @@
      &        k2, iphys%i_magne, iphys%i_velo, iphys%i_SGS_induct_t,    &
      &        cd_prop%coef_induct, mhd_fem_wk%sgs_v1, fem_wk%vector_1)
           call fem_skv_div_sgs_asym_t_upwind                            &
-     &       (conduct%istack_ele_fld_smp, num_int, k2, ifilter_final,   &
+     &       (conduct%istack_ele_fld_smp, num_int,                      &
+     &        k2, SGS_param1%ifilter_final,                             &
      &        diff_coefs%num_field, iak_diff_uxb, diff_coefs%ak,        &
      &        ele, jac_3d, FEM_elens, d_ele(1,iphys_ele%i_magne),       &
      &        mhd_fem_wk%sgs_v1, fem_wk%vector_1, fem_wk%sk6)

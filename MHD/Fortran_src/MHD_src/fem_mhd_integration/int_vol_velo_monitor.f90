@@ -10,16 +10,17 @@
 !
 !!      subroutine int_vol_velo_monitor_pg                              &
 !!     &         (i_field, iak_diff_mf, iak_diff_lor,                   &
-!!     &          cmt_param, node, ele, fluid, fl_prop, cd_prop,        &
-!!     &          iphys, nod_fld, iphys_ele, ak_MHD, jac_3d, rhs_tbl,   &
-!!     &          FEM_elens, diff_coefs, mhd_fem_wk, fem_wk,            &
-!!     &          f_nl, ele_fld)
+!!     &          SGS_param, cmt_param, node, ele, fluid,               &
+!!     &          fl_prop, cd_prop, iphys, nod_fld, iphys_ele, ak_MHD,  &
+!!     &          jac_3d, rhs_tbl, FEM_elens, diff_coefs,               &
+!!     &          mhd_fem_wk, fem_wk, f_nl, ele_fld)
 !!      subroutine int_vol_velo_monitor_upwind                          &
 !!     &         (i_field, iak_diff_mf, iak_diff_lor, iv_upw,           &
-!!     &          cmt_param, node, ele, fluid, fl_prop, cd_prop,        &
-!!     &          iphys, nod_fld, iphys_ele, ak_MHD, jac_3d, rhs_tbl,   &
-!!     &          FEM_elens, diff_coefs, mhd_fem_wk, fem_wk,            &
-!!     &          f_nl, ele_fld)
+!!     &          SGS_param, cmt_param, node, ele, fluid,               &
+!!     &          fl_prop, cd_prop, iphys, nod_fld, iphys_ele, ak_MHD,  &
+!!     &          jac_3d, rhs_tbl, FEM_elens, diff_coefs,               &
+!!     &          mhd_fem_wk, fem_wk, f_nl, ele_fld)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -47,6 +48,7 @@
       use m_machine_parameter
       use m_phys_constants
 !
+      use t_SGS_control_parameter
       use t_physical_property
       use t_geometry_data_MHD
       use t_geometry_data
@@ -71,10 +73,10 @@
 !
       subroutine int_vol_velo_monitor_pg                                &
      &         (i_field, iak_diff_mf, iak_diff_lor,                     &
-     &          cmt_param, node, ele, fluid, fl_prop, cd_prop,          &
-     &          iphys, nod_fld, iphys_ele, ak_MHD, jac_3d, rhs_tbl,     &
-     &          FEM_elens, diff_coefs, mhd_fem_wk, fem_wk,              &
-     &          f_nl, ele_fld)
+     &          SGS_param, cmt_param, node, ele, fluid,                 &
+     &          fl_prop, cd_prop, iphys, nod_fld, iphys_ele, ak_MHD,    &
+     &          jac_3d, rhs_tbl, FEM_elens, diff_coefs,                 &
+     &          mhd_fem_wk, fem_wk, f_nl, ele_fld)
 !
       use int_vol_inertia
       use int_vol_vect_cst_difference
@@ -86,6 +88,7 @@
       integer(kind=kint), intent(in) :: i_field
       integer(kind= kint), intent(in) :: iak_diff_mf, iak_diff_lor
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -187,9 +190,9 @@
           call int_vol_div_SGS_tsr_flux(node, ele, nod_fld,             &
      &        jac_3d, rhs_tbl, FEM_elens, diff_coefs,                   &
      &        fluid%istack_ele_fld_smp, intg_point_t_evo,               &
-     &        iphys%i_velo, iphys%i_SGS_m_flux, ifilter_final,          &
-     &        iak_diff_mf, fl_prop%coef_nega_v,                         &
-     &        fem_wk, mhd_fem_wk, f_nl)
+     &        iphys%i_velo, iphys%i_SGS_m_flux,                         &
+     &        SGS_param%ifilter_final, iak_diff_mf,                     &
+     &        fl_prop%coef_nega_v, fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_div_tsr_w_const                                  &
      &       (node, ele, jac_3d, rhs_tbl, nod_fld,                      &
@@ -202,8 +205,9 @@
           call int_vol_div_SGS_tsr_flux(node, ele, nod_fld,             &
      &        jac_3d, rhs_tbl, FEM_elens, diff_coefs,                   &
      &        fluid%istack_ele_fld_smp, intg_point_t_evo,               &
-     &        iphys%i_magne, iphys%i_SGS_maxwell, ifilter_final,        &
-     &        iak_diff_lor, fl_prop%coef_lor, fem_wk, mhd_fem_wk, f_nl)
+     &        iphys%i_magne, iphys%i_SGS_maxwell,                       &
+     &        SGS_param%ifilter_final, iak_diff_lor,                    &
+     &        fl_prop%coef_lor, fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_div_tsr_w_const                                  &
      &       (node, ele, jac_3d, rhs_tbl, nod_fld,                      &
@@ -218,10 +222,10 @@
 !
       subroutine int_vol_velo_monitor_upwind                            &
      &         (i_field, iak_diff_mf, iak_diff_lor, iv_upw,             &
-     &          cmt_param, node, ele, fluid, fl_prop, cd_prop,          &
-     &          iphys, nod_fld, iphys_ele, ak_MHD, jac_3d, rhs_tbl,     &
-     &          FEM_elens, diff_coefs, mhd_fem_wk, fem_wk,              &
-     &          f_nl, ele_fld)
+     &          SGS_param, cmt_param, node, ele, fluid,                 &
+     &          fl_prop, cd_prop, iphys, nod_fld, iphys_ele, ak_MHD,    &
+     &          jac_3d, rhs_tbl, FEM_elens, diff_coefs,                 &
+     &          mhd_fem_wk, fem_wk, f_nl, ele_fld)
 !
       use int_vol_inertia
       use int_vol_vect_cst_diff_upw
@@ -233,6 +237,7 @@
       integer(kind = kint), intent(in) :: i_field, iv_upw
       integer(kind= kint), intent(in) :: iak_diff_mf, iak_diff_lor
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -342,8 +347,9 @@
           call int_vol_div_SGS_tsr_flux_upw(node, ele, nod_fld,         &
      &        jac_3d, rhs_tbl, FEM_elens, diff_coefs,                   &
      &        fluid%istack_ele_fld_smp, intg_point_t_evo,               &
-     &        iphys%i_velo, iphys%i_SGS_m_flux, ifilter_final,          &
-     &        iak_diff_mf, ele_fld%ntot_phys, iv_upw, ele_fld%d_fld,    &
+     &        iphys%i_velo, iphys%i_SGS_m_flux,                         &
+     &        SGS_param%ifilter_final, iak_diff_mf,                     &
+     &        ele_fld%ntot_phys, iv_upw, ele_fld%d_fld,                 &
      &        fl_prop%coef_nega_v, fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_div_tsr_w_const_upw                              &
@@ -358,8 +364,9 @@
           call int_vol_div_SGS_tsr_flux_upw(node, ele, nod_fld,         &
      &        jac_3d, rhs_tbl, FEM_elens, diff_coefs,                   &
      &        fluid%istack_ele_fld_smp, intg_point_t_evo,               &
-     &        iphys%i_magne, iphys%i_SGS_maxwell, ifilter_final,        &
-     &        iak_diff_lor, ele_fld%ntot_phys, iv_upw, ele_fld%d_fld,   &
+     &        iphys%i_magne, iphys%i_SGS_maxwell,                       &
+     &        SGS_param%ifilter_final, iak_diff_lor,                    &
+     &        ele_fld%ntot_phys, iv_upw, ele_fld%d_fld,                 &
      &        fl_prop%coef_lor, fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_div_tsr_w_const_upw                              &

@@ -221,8 +221,8 @@
         call s_set_3d_filtering_group_id                                &
      &     (filtering%filter, filter_param1)
 !
-        if (iflag_SGS_model .eq. id_SGS_similarity                      &
-     &       .and. iflag_dynamic_SGS .eq. id_SGS_DYNAMIC_ON) then
+        if      (SGS_param1%iflag_SGS .eq. id_SGS_similarity            &
+     &     .and. SGS_param1%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
           if (iflag_debug .ge. iflag_routine_msg)                       &
      &         write(*,*) 's_set_w_filtering_group_id'
           call copy_filter_group_param                                  &

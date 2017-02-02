@@ -162,7 +162,7 @@
 !
 !   ordereing of element parameters for SGS model
 !
-      if ( iflag_SGS_model.eq.id_SGS_NL_grad) then
+      if(SGS_param1%iflag_SGS.eq.id_SGS_NL_grad) then
         call reordering_ele_size(ele%numele)
       end if
 !

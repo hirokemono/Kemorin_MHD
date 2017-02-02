@@ -217,7 +217,8 @@
 !
       if (fl_prop%coef_velo .gt. zero                                   &
      &        .and. evo_velo%coef_exp.gt.zero) then
-        call int_vol_vector_diffuse_ele(fluid%istack_ele_fld_smp,       &
+        call int_vol_vector_diffuse_ele(SGS_param1%ifilter_final,       &
+     &      fluid%istack_ele_fld_smp, intg_point_t_evo,                 &
      &      node, ele, nod_fld, jac_3d_q, rhs_tbl, FEM_elens,           &
      &      diff_coefs, ifld_diff%i_velo, evo_velo%coef_exp,            &
      &      ak_MHD%ak_d_velo, iphys%i_velo, fem_wk, f_l)
@@ -274,8 +275,9 @@
      &     jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       else if(evo_velo%iflag_scheme .eq. id_Crank_nicolson) then
-        call cal_velo_pre_lumped_crank(cmt_param1%iflag_c_velo,         &
-     &     ifld_diff%i_velo, ak_MHD%ak_d_velo,                          &
+        call cal_velo_pre_lumped_crank(iflag_velo_supg,                 &
+     &      cmt_param1%iflag_c_velo, SGS_param1%ifilter_final,          &
+     &      ifld_diff%i_velo, ak_MHD%ak_d_velo,                         &
      &      nod_comm, node, ele, fluid, evo_velo, Vnod_bcs,             &
      &      iphys, iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,    &
      &      diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,         &
@@ -283,11 +285,11 @@
 !
       else if(evo_velo%iflag_scheme .eq. id_Crank_nicolson_cmass) then 
         call cal_velo_pre_consist_crank                                 &
-     &     (cmt_param1%iflag_c_velo, iphys%i_velo,                      &
-     &      iphys%i_pre_mom, ifld_diff%i_velo, ak_MHD%ak_d_velo,        &
-     &      node, ele, fluid, evo_velo, fl_prop, Vnod_bcs, jac_3d_q,    &
-     &      rhs_tbl, FEM_elens, diff_coefs, Vmatrix, MG_vector,         &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &     (cmt_param1%iflag_c_velo, SGS_param1%ifilter_final,          &
+     &      iphys%i_velo, iphys%i_pre_mom, ifld_diff%i_velo,            &
+     &      ak_MHD%ak_d_velo, node, ele, fluid, evo_velo, fl_prop,      &
+     &      Vnod_bcs, jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,         &
+     &      Vmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       call set_boundary_velo(node, Vnod_bcs, iphys%i_velo, nod_fld)
@@ -367,8 +369,9 @@
      &      nod_fld, jac_sf_grp_q, jac_sf_grp_l,                        &
      &      rhs_tbl, FEM_elens, intg_point_poisson,                     &
      &      Psf_bcs%sgs%ngrp_sf_dat, Psf_bcs%sgs%id_grp_sf_dat,         &
-     &      ifilter_final, diff_coefs%num_field, ifld_diff%i_velo,      &
-     &      diff_coefs%ak, iphys%i_p_phi, fem_wk, surf_wk, f_nl)
+     &      SGS_param1%ifilter_final, diff_coefs%num_field,             &
+     &      ifld_diff%i_velo, diff_coefs%ak, iphys%i_p_phi,             &
+     &      fem_wk, surf_wk, f_nl)
       end if
 !
 !

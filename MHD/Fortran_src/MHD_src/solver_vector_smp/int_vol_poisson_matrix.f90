@@ -8,11 +8,13 @@
 !        modifired by H. Matsui on June, 2005
 !        modifired by H. Matsui on Nov., 2007
 !
-!!      subroutine int_MHD_poisson_matrices(iflag_commute_magne,        &
+!!      subroutine int_MHD_poisson_matrices                             &
+!!     &         (ifilter_final, iflag_commute_magne,                   &
 !!     &          mesh, jac_3d_l, rhs_tbl, MG_mat_linear, MG_mat_fl_l,  &
 !!     &          FEM_elens, ifld_diff, diff_coefs, fem_wk,             &
 !!     &          mat_press, mat_magp)
-!!      subroutine int_MHD_crank_matrices(mesh, ak_MHD, jac_3d, rhs_tbl,&
+!!      subroutine int_MHD_crank_matrices                               &
+!!     &         (ifilter_final, mesh, ak_MHD, jac_3d, rhs_tbl,         &
 !!     &          MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,              &
 !!     &          FEM_elens, ifld_diff, diff_coefs, fem_wk,             &
 !!     &          mat_velo, mat_magne, mat_temp, mat_light)
@@ -41,6 +43,7 @@
       use m_control_parameter
       use m_phys_constants
 !
+      use t_SGS_control_parameter
       use t_mesh_data
       use t_geometry_data
       use t_jacobians
@@ -64,11 +67,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_MHD_poisson_matrices(iflag_commute_magne,          &
+      subroutine int_MHD_poisson_matrices                               &
+     &         (ifilter_final, iflag_commute_magne,                     &
      &          mesh, jac_3d_l, rhs_tbl, MG_mat_linear, MG_mat_fl_l,    &
      &          FEM_elens, ifld_diff, diff_coefs, fem_wk,               &
      &          mat_press, mat_magp)
 !
+      integer(kind = kint), intent(in) :: ifilter_final
       integer(kind = kint), intent(in) :: iflag_commute_magne
       type(mesh_geometry), intent(in) :: mesh
       type(jacobians_3d), intent(in) :: jac_3d_l
@@ -106,13 +111,15 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine int_MHD_crank_matrices(mesh, ak_MHD, jac_3d, rhs_tbl,  &
+      subroutine int_MHD_crank_matrices                                 &
+     &         (ifilter_final, mesh, ak_MHD, jac_3d, rhs_tbl,           &
      &          MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,                &
      &          FEM_elens, ifld_diff, diff_coefs, fem_wk,               &
      &          mat_velo, mat_magne, mat_temp, mat_light)
 !
       use m_t_int_parameter
 !
+      integer(kind = kint), intent(in) :: ifilter_final
       type(mesh_geometry), intent(in) :: mesh
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(jacobians_3d), intent(in) :: jac_3d

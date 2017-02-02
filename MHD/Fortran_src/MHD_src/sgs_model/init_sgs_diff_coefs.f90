@@ -141,7 +141,7 @@
       end if
 !
       if (evo_temp%iflag_scheme .gt. id_no_evolution) then
-        if(iflag_SGS_model .ne. id_SGS_none                             &
+        if(SGS_param1%iflag_SGS .ne. id_SGS_none                        &
      &      .and. cmt_param%iflag_c_temp .eq. id_SGS_commute_ON) then
           diff_coefs%num_field = diff_coefs%num_field + 1
           ntot_diff_comp = ntot_diff_comp + 3
@@ -149,7 +149,7 @@
       end if
 !
       if (evo_comp%iflag_scheme .gt. id_no_evolution) then
-        if(iflag_SGS_model .ne. id_SGS_none                             &
+        if(SGS_param1%iflag_SGS .ne. id_SGS_none                        &
      &      .and. cmt_param%iflag_c_light .eq. id_SGS_commute_ON) then
           diff_coefs%num_field = diff_coefs%num_field + 1
           ntot_diff_comp = ntot_diff_comp + 3
@@ -157,7 +157,7 @@
       end if
 !
       if (evo_velo%iflag_scheme .gt. id_no_evolution) then
-        if(iflag_SGS_model .ne. id_SGS_none                             &
+        if(SGS_param1%iflag_SGS .ne. id_SGS_none                        &
      &       .and. cmt_param%iflag_c_velo .eq. id_SGS_commute_ON) then
           diff_coefs%num_field = diff_coefs%num_field + 1
           ntot_diff_comp = ntot_diff_comp + 9
@@ -165,7 +165,7 @@
       end if
 !
       if (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
-        if(iflag_SGS_model .ne. id_SGS_none                             &
+        if(SGS_param1%iflag_SGS .ne. id_SGS_none                        &
      &      .and. cmt_param%iflag_c_magne .eq. id_SGS_commute_ON) then
           diff_coefs%num_field = diff_coefs%num_field + 1
           ntot_diff_comp = ntot_diff_comp + 9
@@ -173,7 +173,7 @@
       end if
 !
       if (evo_magne%iflag_scheme .gt. id_no_evolution) then
-        if(iflag_SGS_model .gt. id_SGS_none                             &
+        if(SGS_param1%iflag_SGS .gt. id_SGS_none                        &
      &      .and. cmt_param%iflag_c_magne .eq. id_SGS_commute_ON) then
           diff_coefs%num_field = diff_coefs%num_field + 1
           ntot_diff_comp = ntot_diff_comp + 9
@@ -271,7 +271,7 @@
 !
 !
       if (evo_temp%iflag_scheme .gt. id_no_evolution) then
-        if(iflag_SGS_model .ne. id_SGS_none                             &
+        if(SGS_param1%iflag_SGS .ne. id_SGS_none                        &
      &      .and. cmt_param%iflag_c_temp .eq. id_SGS_commute_ON) then
             icomp_diff%i_temp = id
             ifld_diff%i_temp = jd
@@ -283,7 +283,7 @@
       end if
 !
       if (evo_comp%iflag_scheme .gt. id_no_evolution) then
-        if(iflag_SGS_model .ne. id_SGS_none                             &
+        if(SGS_param1%iflag_SGS .ne. id_SGS_none                        &
      &      .and. cmt_param%iflag_c_light .eq. id_SGS_commute_ON) then
             icomp_diff%i_light = id
             ifld_diff%i_light = jd
@@ -295,7 +295,7 @@
       end if
 !
       if (evo_velo%iflag_scheme .gt. id_no_evolution) then
-        if(iflag_SGS_model .ne. id_SGS_none                             &
+        if(SGS_param1%iflag_SGS .ne. id_SGS_none                        &
      &      .and. cmt_param%iflag_c_velo .eq. id_SGS_commute_ON) then
             icomp_diff%i_velo = id
             ifld_diff%i_velo = jd
@@ -307,7 +307,7 @@
       end if
 !
       if (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
-        if(iflag_SGS_model .ne. id_SGS_none                             &
+        if(SGS_param1%iflag_SGS .ne. id_SGS_none                        &
      &      .and. cmt_param%iflag_c_magne .eq. id_SGS_commute_ON) then
             icomp_diff%i_magne = id
             ifld_diff%i_magne = jd
@@ -319,7 +319,7 @@
       end if
 !
       if (evo_magne%iflag_scheme .gt. id_no_evolution) then
-        if(iflag_SGS_model .ne. id_SGS_none                             &
+        if(SGS_param1%iflag_SGS .ne. id_SGS_none                        &
      &      .and. cmt_param%iflag_c_magne .eq. id_SGS_commute_ON) then
             icomp_diff%i_magne = id
             ifld_diff%i_magne = jd

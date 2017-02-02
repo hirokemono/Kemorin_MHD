@@ -132,13 +132,13 @@
       type(phys_data), intent(inout) :: ele_fld
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
-      integer (kind = kint) :: iflag_dynamic, iflag2
+      integer (kind = kint) :: iflag_dmc, iflag2
 !
 !
       if (i_step_sgs_coefs.eq.0) then
-        iflag_dynamic = 1
+        iflag_dmc = 1
       else
-        iflag_dynamic = mod(i_step_MHD, i_step_sgs_coefs)
+        iflag_dmc = mod(i_step_MHD, i_step_sgs_coefs)
       end if
 !
 !
@@ -167,10 +167,10 @@
 !
       if (iphys%i_filter_velo .ne. 0) then
 !
-        if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                   &
-     &      .and. iflag_dynamic.eq.0) then
+        if (SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF            &
+     &      .and. iflag_dmc.eq.0) then
           iflag2 = 1
-        else if (iflag_SGS_model .eq. id_SGS_similarity) then
+        else if (SGS_param1%iflag_SGS .eq. id_SGS_similarity) then
           iflag2 = 1
         else
           iflag2 = 0
@@ -187,9 +187,9 @@
         end if
       end if
 !
-      if (iphys%i_wide_fil_velo.ne.0 .and. iflag_dynamic.eq.0) then
-        if (iflag_SGS_model.eq.id_SGS_similarity                        &
-     &    .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+      if (iphys%i_wide_fil_velo.ne.0 .and. iflag_dmc.eq.0) then
+        if (SGS_param1%iflag_SGS.eq.id_SGS_similarity                   &
+     &    .and. SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           call cal_filtered_vector_whole                                &
      &       (nod_comm, node, wide_filtering,                           &
      &        iphys%i_wide_fil_velo, iphys%i_filter_velo,               &
@@ -202,9 +202,9 @@
 !
 !    required field for vector potential
 !
-       if (iflag_SGS_model.eq.id_SGS_NL_grad                            &
-     &    .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF               &
-     &    .and. iflag_dynamic.eq.0) then
+       if (SGS_param1%iflag_SGS.eq.id_SGS_NL_grad                       &
+     &    .and. SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF        &
+     &    .and. iflag_dmc.eq.0) then
 !
          if (iphys_ele%i_filter_velo.ne.0) then
            if(iflag_debug .ge. iflag_routine_msg)                       &
@@ -232,7 +232,7 @@
 !   required field for gradient model
 !
        if (ie_dvx .ne. 0) then
-         if ( iflag_SGS_model .eq. id_SGS_NL_grad) then
+         if(SGS_param1%iflag_SGS .eq. id_SGS_NL_grad) then
            if(iflag_debug .ge. iflag_routine_msg)                       &
      &                 write(*,*) 'diff_velocity_on_ele'
            call sel_int_diff_vector_on_ele                              &

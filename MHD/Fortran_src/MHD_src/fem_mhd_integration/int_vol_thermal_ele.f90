@@ -4,13 +4,13 @@
 !     Written by H. Matsui on Aug., 2005
 !
 !!      subroutine int_vol_temp_ele                                     &
-!!     &         (iflug_SGS_flux, iflag_commute_flux,                   &
+!!     &         (iflug_SGS_term, iflag_commute, ifilter_final, num_int,&
 !!     &          i_field, i_velo, i_SGS_flux, iak_diff_flux,           &
 !!     &          node, ele, fluid, property, nod_fld, jac_3d, rhs_tbl, &
 !!     &          FEM_elens, diff_coefs, ncomp_ele, iele_velo, d_ele,   &
 !!     &          iak_diff_hf, mhd_fem_wk, fem_wk, f_nl)
 !!      subroutine int_vol_temp_ele_upw                                 &
-!!     &         (iflug_SGS_flux, iflag_commute_flux,                   &
+!!     &         (iflug_SGS_term, iflag_commute, ifilter_final, num_int,&
 !!     &          i_field, i_velo, i_SGS_flux, iak_diff_flux,           &
 !!     &          node, ele, fluid, property, nod_fld, jac_3d, rhs_tbl, &
 !!     &          FEM_elens, diff_coefs, ncomp_ele, iele_velo, d_ele,   &
@@ -34,10 +34,10 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_control_parameter
       use m_phys_constants
       use m_fem_gauss_int_coefs
 !
+      use t_SGS_control_parameter
       use t_physical_property
       use t_geometry_data_MHD
       use t_geometry_data
@@ -60,7 +60,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_temp_ele                                       &
-     &         (iflug_SGS_flux, iflag_commute_flux,                     &
+     &         (iflug_SGS_term, iflag_commute, ifilter_final, num_int,  &
      &          i_field, i_velo, i_SGS_flux, iak_diff_flux,             &
      &          node, ele, fluid, property, nod_fld, jac_3d, rhs_tbl,   &
      &          FEM_elens, diff_coefs, ncomp_ele, iele_velo, d_ele,     &
@@ -72,8 +72,9 @@
       use fem_skv_nonlinear_type
       use fem_skv_div_sgs_flux_type
 !
-      integer(kind = kint), intent(in) :: iflug_SGS_flux
-      integer(kind = kint), intent(in) :: iflag_commute_flux
+      integer(kind = kint), intent(in) :: iflug_SGS_term
+      integer(kind = kint), intent(in) :: iflag_commute
+      integer(kind = kint), intent(in) :: ifilter_final, num_int
       integer(kind = kint), intent(in) :: i_field, i_velo, i_SGS_flux
 !
       type(node_data), intent(in) :: node
@@ -94,12 +95,11 @@
       type(finite_ele_mat_node), intent(inout) :: f_nl
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
-      integer(kind=kint) :: k2, num_int
+      integer(kind=kint) :: k2
 !
 !
       if (property%coef_nega_adv .eq. 0.0d0 ) return
 !
-      num_int = intg_point_t_evo
       call reset_sk6(n_scalar, ele, fem_wk%sk6)
 !
 ! -------- loop for shape function for the phsical values
@@ -108,8 +108,8 @@
         call scalar_cst_phys_2_each_ele(node, ele, nod_fld,             &
      &      k2, i_field, property%coef_nega_adv, fem_wk%scalar_1)
 !
-        if(iflug_SGS_flux .ne. id_SGS_none                              &
-     &    .and. iflag_commute_flux .eq. id_SGS_commute_ON) then
+        if(iflug_SGS_term .ne. id_SGS_none                              &
+     &    .and. iflag_commute .eq. id_SGS_commute_ON) then
           call SGS_const_vector_each_ele(node, ele, nod_fld,            &
      &        k2, i_velo, i_field, i_SGS_flux,                          &
      &        property%coef_nega_adv, mhd_fem_wk%sgs_v1,                &
@@ -120,7 +120,7 @@
      &        ele, jac_3d, FEM_elens, fem_wk%scalar_1,                  &
      &        mhd_fem_wk%sgs_v1, fem_wk%vector_1, d_ele(1,iele_velo),   &
      &        fem_wk%sk6)
-        else if(iflug_SGS_flux .ne. id_SGS_none) then
+        else if(iflug_SGS_term .ne. id_SGS_none) then
           call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,       &
      &        i_SGS_flux, property%coef_nega_adv,                       &
      &        mhd_fem_wk%sgs_v1)
@@ -144,7 +144,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_temp_ele_upw                                   &
-     &         (iflug_SGS_flux, iflag_commute_flux,                     &
+     &         (iflug_SGS_term, iflag_commute, ifilter_final, num_int,  &
      &          i_field, i_velo, i_SGS_flux, iak_diff_flux,             &
      &          node, ele, fluid, property, nod_fld, jac_3d, rhs_tbl,   &
      &          FEM_elens, diff_coefs, ncomp_ele, iele_velo, d_ele,     &
@@ -156,8 +156,9 @@
       use fem_skv_nonlinear_upw_type
       use fem_skv_div_sgs_flux_upw
 !
-      integer(kind = kint), intent(in) :: iflug_SGS_flux
-      integer(kind = kint), intent(in) :: iflag_commute_flux
+      integer(kind = kint), intent(in) :: iflug_SGS_term
+      integer(kind = kint), intent(in) :: iflag_commute
+      integer(kind = kint), intent(in) :: ifilter_final, num_int
       integer(kind = kint), intent(in) :: i_field, i_velo, i_SGS_flux
 !
       type(node_data), intent(in) :: node
@@ -178,12 +179,11 @@
       type(finite_ele_mat_node), intent(inout) :: f_nl
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
-      integer(kind=kint) :: k2, num_int
+      integer(kind=kint) :: k2
 !
 !
       if (property%coef_nega_adv .eq. 0.0d0 ) return
 !
-      num_int = intg_point_t_evo
       call reset_sk6(n_scalar, ele, fem_wk%sk6)
 !
 ! -------- loop for shape function for the phsical values
@@ -192,8 +192,8 @@
         call scalar_cst_phys_2_each_ele(node, ele, nod_fld,             &
      &      k2, i_field, property%coef_nega_adv, fem_wk%scalar_1)
 !
-        if(iflug_SGS_flux .ne. id_SGS_none                              &
-     &    .and. iflag_commute_flux .eq. id_SGS_commute_ON) then
+        if(iflug_SGS_term .ne. id_SGS_none                              &
+     &    .and. iflag_commute .eq. id_SGS_commute_ON) then
           call SGS_const_vector_each_ele(node, ele, nod_fld,            &
      &        k2, i_velo, i_field, i_SGS_flux,                          &
      &        property%coef_nega_adv, mhd_fem_wk%sgs_v1,                &
@@ -204,7 +204,7 @@
      &        ele, jac_3d, FEM_elens, fem_wk%scalar_1,                  &
      &        mhd_fem_wk%sgs_v1, fem_wk%vector_1, d_ele(1,iele_velo),   &
      &        d_ele(1,iele_velo), fem_wk%sk6)
-        else if(iflug_SGS_flux .ne. id_SGS_none) then
+        else if(iflug_SGS_term .ne. id_SGS_none) then
           call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,       &
      &        i_SGS_flux, property%coef_nega_adv, mhd_fem_wk%sgs_v1)
           call fem_skv_scl_inertia_sgs_upwind                           &

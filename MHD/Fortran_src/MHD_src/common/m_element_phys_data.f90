@@ -126,8 +126,8 @@
         if ( iflag_4_rotate .eq. id_turn_ON ) then
           fld_ele1%num_phys = fld_ele1%num_phys + 1
         end if
-        if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                   &
-     &     .or. iflag_SGS_model.eq.id_SGS_similarity) then
+        if     (SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF        &
+     &     .or. SGS_param1%iflag_SGS.eq.id_SGS_similarity) then
           fld_ele1%num_phys = fld_ele1%num_phys + 1
         end if
        end if
@@ -150,8 +150,8 @@
             fld_ele1%phys_name(j) = fhd_vort
             j = j + 1
           end if
-          if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                 &
-     &         .or. iflag_SGS_model.eq.id_SGS_similarity) then
+          if     (SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF      &
+     &       .or. SGS_param1%iflag_SGS.eq.id_SGS_similarity) then
             fld_ele1%num_component(j) = 3
             fld_ele1%phys_name(j) = fhd_filter_velo
             j = j + 1
@@ -167,8 +167,8 @@
             fld_ele1%phys_name(j) = fhd_current
             j = j + 1
           end if
-          if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                 &
-     &         .or. iflag_SGS_model.eq.id_SGS_similarity) then
+          if     (SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF      &
+     &       .or. SGS_param1%iflag_SGS.eq.id_SGS_similarity) then
             fld_ele1%num_component(j) = 3
             fld_ele1%phys_name(j) = fhd_filter_magne
             j = j + 1
@@ -179,8 +179,8 @@
           fld_ele1%num_component(j) = 1
           fld_ele1%phys_name(j) = fhd_temp
           j = j + 1
-          if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                 &
-     &       .or.  iflag_SGS_model.eq.id_SGS_similarity) then
+          if    (SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF       &
+     &     .or.  SGS_param1%iflag_SGS.eq.id_SGS_similarity) then
             fld_ele1%num_component(j) = 1
             fld_ele1%phys_name(j) = fhd_filter_temp
             j = j + 1
@@ -191,8 +191,8 @@
           fld_ele1%num_component(j) = 1
           fld_ele1%phys_name(j) = fhd_light
           j = j + 1
-          if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                 &
-     &       .or. iflag_SGS_model.eq.id_SGS_similarity) then
+          if     (SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF      &
+     &       .or. SGS_param1%iflag_SGS.eq.id_SGS_similarity) then
             fld_ele1%num_component(j) = 1
             fld_ele1%phys_name(j) = fhd_filter_comp
             j = j + 1

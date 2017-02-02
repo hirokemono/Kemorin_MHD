@@ -193,7 +193,8 @@
 !
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
-      call int_vol_vector_diffuse_ele(conduct%istack_ele_fld_smp,       &
+      call int_vol_vector_diffuse_ele(SGS_param1%ifilter_final,         &
+     &    conduct%istack_ele_fld_smp, intg_point_t_evo,                 &
      &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,   &
      &    iak_diff_b, one, ak_d_magne, iphys%i_magne, fem_wk, f_l)
 !
