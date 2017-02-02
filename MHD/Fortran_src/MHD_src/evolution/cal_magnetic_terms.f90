@@ -134,8 +134,8 @@
      &      FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, f_nl)
       end if
 !
-      call int_surf_magne_monitor(cmt_param1%iflag_c_uxb,               &
-     &    i_field, iak_diff_uxb, ak_d_magne,                            &
+      call int_surf_magne_monitor(SGS_param1, cmt_param1,               &
+     &    intg_point_t_evo, i_field, iak_diff_uxb, ak_d_magne,          &
      &    node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs, iphys, nod_fld,    &
      &    jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,                   &
      &    fem_wk, surf_wk, f_l, f_nl)
@@ -198,11 +198,11 @@
      &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,   &
      &    iak_diff_b, one, ak_d_magne, iphys%i_magne, fem_wk, f_l)
 !
-      call int_surf_magne_monitor(cmt_param1%iflag_c_uxb,               &
-     &    iphys%i_b_diffuse, iak_diff_uxb, ak_d_magne,                  &
-     &    node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs, iphys, nod_fld,    &
-     &    jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,                   &
-     &    fem_wk, surf_wk, f_l, f_nl)
+      call int_surf_magne_monitor(SGS_param1, cmt_param1,               &
+     &   intg_point_t_evo, iphys%i_b_diffuse, iak_diff_uxb, ak_d_magne, &
+     &   node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs, iphys, nod_fld,     &
+     &   jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,                    &
+     &   fem_wk, surf_wk, f_l, f_nl)
 !
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
 !

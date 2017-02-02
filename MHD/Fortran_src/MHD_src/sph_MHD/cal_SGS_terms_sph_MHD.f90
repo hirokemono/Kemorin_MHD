@@ -7,10 +7,9 @@
 !>@brief  Evaluate nonlinear terms in spherical coordinate grid
 !!
 !!@verbatim
-!!      subroutine filtered_nonlinear_in_rtp                            &
-!!     &         (sph_rtp, fl_prop, cd_prop, ht_prop, cp_prop,          &
-!!     &          b_trns, f_trns, ncomp_rj_2_rtp, ncomp_rtp_2_rj,       &
-!!     &          fld_rtp, frc_rtp)
+!!      subroutine filtered_nonlinear_in_rtp(SGS_param, sph_rtp,        &
+!!     &          fl_prop, cd_prop, ht_prop, cp_prop, b_trns, f_trns,   &
+!!     &          ncomp_rj_2_rtp, ncomp_rtp_2_rj, fld_rtp, frc_rtp)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
@@ -34,8 +33,8 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_control_parameter
 !
+      use t_SGS_control_parameter
       use t_physical_property
       use t_spheric_rtp_data
       use t_phys_address
@@ -51,14 +50,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine filtered_nonlinear_in_rtp                              &
-     &         (sph_rtp, fl_prop, cd_prop, ht_prop, cp_prop,            &
-     &          b_trns, f_trns, ncomp_rj_2_rtp, ncomp_rtp_2_rj,         &
-     &          fld_rtp, frc_rtp)
+      subroutine filtered_nonlinear_in_rtp(SGS_param, sph_rtp,          &
+     &          fl_prop, cd_prop, ht_prop, cp_prop, b_trns, f_trns,     &
+     &          ncomp_rj_2_rtp, ncomp_rtp_2_rj, fld_rtp, frc_rtp)
 !
       use const_wz_coriolis_rtp
       use cal_products_smp
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
@@ -73,7 +72,7 @@
 !
 !
 !$omp parallel
-      if( (f_trns%i_SGS_inertia * SGS_param1%iflag_SGS_m_flux) .gt. 0)  &
+      if( (f_trns%i_SGS_inertia * SGS_param%iflag_SGS_m_flux) .gt. 0)   &
      & then
         call cal_cross_prod_w_coef_smp                                  &
      &     (sph_rtp%nnod_rtp, fl_prop%coef_velo,                        &
@@ -82,7 +81,7 @@
      &      frc_rtp(1,f_trns%i_SGS_inertia) )
       end if
 !
-      if( (f_trns%i_SGS_Lorentz * SGS_param1%iflag_SGS_lorentz) .gt. 0) &
+      if( (f_trns%i_SGS_Lorentz * SGS_param%iflag_SGS_lorentz) .gt. 0)  &
      & then
         call cal_cross_prod_w_coef_smp                                  &
      &     (sph_rtp%nnod_rtp, fl_prop%coef_lor,                         &
@@ -93,7 +92,7 @@
 !
 !
 !
-      if((f_trns%i_SGS_vp_induct * SGS_param1%iflag_SGS_uxb) .gt. 0)    &
+      if((f_trns%i_SGS_vp_induct * SGS_param%iflag_SGS_uxb) .gt. 0)     &
      & then
         call cal_cross_prod_w_coef_smp                                  &
      &     (sph_rtp%nnod_rtp, cd_prop%coef_induct,                      &
@@ -103,7 +102,7 @@
       end if
 !
 !
-      if( (f_trns%i_SGS_h_flux * SGS_param1%iflag_SGS_h_flux) .gt. 0)   &
+      if( (f_trns%i_SGS_h_flux * SGS_param%iflag_SGS_h_flux) .gt. 0)    &
      & then
         call cal_vec_scalar_prod_w_coef_smp                             &
      &     (sph_rtp%nnod_rtp, ht_prop%coef_advect,                      &
@@ -112,7 +111,7 @@
      &      frc_rtp(1,f_trns%i_SGS_h_flux) )
       end if
 !
-      if( (f_trns%i_SGS_c_flux * SGS_param1%iflag_SGS_c_flux) .gt. 0)   &
+      if( (f_trns%i_SGS_c_flux * SGS_param%iflag_SGS_c_flux) .gt. 0)    &
      & then
         call cal_vec_scalar_prod_w_coef_smp                             &
      &     (sph_rtp%nnod_rtp, cp_prop%coef_advect,                      &

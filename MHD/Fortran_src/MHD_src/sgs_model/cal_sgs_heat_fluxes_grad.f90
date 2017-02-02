@@ -33,7 +33,7 @@
 !
       use m_precision
 !
-      use m_control_parameter
+!      use m_control_parameter
       use m_phys_constants
 !
       use t_comm_table

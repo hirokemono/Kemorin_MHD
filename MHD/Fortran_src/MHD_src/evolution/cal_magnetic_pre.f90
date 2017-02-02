@@ -200,8 +200,8 @@
       end if
 !
 !
-      call int_surf_magne_pre_ele                                       &
-     &   (cmt_param1%iflag_c_uxb, iak_diff_uxb, ak_d_magne,             &
+      call int_surf_magne_pre_ele(SGS_param1, cmt_param1,               &
+     &    intg_point_t_evo, iak_diff_uxb, ak_d_magne,                   &
      &    node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs, iphys, nod_fld,    &
      &    jac_sf_grp_q, rhs_tbl, FEM_elens, diff_coefs,                 &
      &    fem_wk, surf_wk, f_l, f_nl)

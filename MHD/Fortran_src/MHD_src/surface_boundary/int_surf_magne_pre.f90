@@ -3,16 +3,18 @@
 !
 !     Written by H. Matsui on June, 2005
 !
-!!      subroutine int_surf_magne_pre_ele(iflag_commute_induct,         &
+!!      subroutine int_surf_magne_pre_ele(SGS_param, cmt_param, num_int,&
 !!     &          iak_diff_uxb, ak_d_magne, node, ele, surf, sf_grp,    &
 !!     &          Asf_bcs, Bsf_bcs, iphys, nod_fld, jac_sf_grp,         &
 !!     &          rhs_tbl1, FEM_elens, diff_coefs, fem_wk, surf_wk,     &
 !!     &          f_l, f_nl)
-!!      subroutine int_surf_magne_monitor(iflag_commute_induct,         &
+!!      subroutine int_surf_magne_monitor(SGS_param, cmt_param, num_int,&
 !!     &          i_field, iak_diff_uxb, ak_d_magne,                    &
 !!     &          node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs,            &
 !!     &          iphys, nod_fld, jac_sf_grp, rhs_tbl1, FEM_elens,      &
 !!     &          diff_coefs, fem_wk, surf_wk, f_l, f_nl)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -47,7 +49,7 @@
       use t_material_property
       use t_SGS_model_coefs
 !
-      use m_control_parameter
+!      use m_control_parameter
       use m_phys_constants
 !
       use int_surf_div_induct_tsr_sgs
@@ -61,13 +63,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_surf_magne_pre_ele(iflag_commute_induct,           &
+      subroutine int_surf_magne_pre_ele(SGS_param, cmt_param, num_int,  &
      &          iak_diff_uxb, ak_d_magne, node, ele, surf, sf_grp,      &
      &          Asf_bcs, Bsf_bcs, iphys, nod_fld, jac_sf_grp,           &
      &          rhs_tbl1, FEM_elens, diff_coefs, fem_wk, surf_wk,       &
      &          f_l, f_nl)
 !
-      integer(kind = kint), intent(in) :: iflag_commute_induct
+      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(commutation_control_params), intent(in) :: cmt_param
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
@@ -81,6 +84,7 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
 !
+      integer(kind= kint), intent(in) :: num_int
       integer(kind= kint), intent(in) :: iak_diff_uxb
       real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
 !
@@ -91,14 +95,14 @@
 !
       call int_sf_grad_velocity(node, ele, surf, sf_grp,                &
      &    jac_sf_grp, rhs_tbl1, Bsf_bcs%grad,                           &
-     &    intg_point_t_evo, ak_d_magne, fem_wk, f_l)
+     &    num_int, ak_d_magne, fem_wk, f_l)
 !
-       if (SGS_param1%iflag_SGS_uxb .ne. id_SGS_none                    &
-     &    .and. iflag_commute_induct .eq. id_SGS_commute_ON) then
+       if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none                     &
+     &    .and. cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
          call int_surf_div_induct_t_sgs                                 &
      &      (node, ele, surf, sf_grp, nod_fld, jac_sf_grp,              &
-     &       rhs_tbl1, FEM_elens, Bsf_bcs%sgs, intg_point_t_evo,        &
-     &       SGS_param1%ifilter_final, diff_coefs%num_field,            &
+     &       rhs_tbl1, FEM_elens, Bsf_bcs%sgs, num_int,                 &
+     &       SGS_param%ifilter_final, diff_coefs%num_field,             &
      &       iak_diff_uxb, diff_coefs%ak, iphys%i_SGS_induct_t,         &
      &       iphys%i_velo, iphys%i_magne, fem_wk, surf_wk, f_nl)
       end if
@@ -118,13 +122,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_surf_magne_monitor(iflag_commute_induct,           &
+      subroutine int_surf_magne_monitor(SGS_param, cmt_param, num_int,  &
      &          i_field, iak_diff_uxb, ak_d_magne,                      &
      &          node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs,              &
      &          iphys, nod_fld, jac_sf_grp, rhs_tbl1, FEM_elens,        &
      &          diff_coefs, fem_wk, surf_wk, f_l, f_nl)
 !
-      integer(kind = kint), intent(in) :: iflag_commute_induct
+      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(commutation_control_params), intent(in) :: cmt_param
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
@@ -138,6 +143,7 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
 !
+      integer(kind= kint), intent(in) :: num_int
       integer(kind= kint), intent(in) :: i_field, iak_diff_uxb
       real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
 !
@@ -147,18 +153,17 @@
 !
 !
       if (i_field .eq. iphys%i_b_diffuse) then
-        call int_sf_grad_velocity(node, ele, surf, sf_grp,              &
-     &      jac_sf_grp, rhs_tbl1, Bsf_bcs%grad,                         &
-     &      intg_point_t_evo, ak_d_magne, fem_wk, f_l)
+        call int_sf_grad_velocity(node, ele, surf, sf_grp, jac_sf_grp,  &
+     &      rhs_tbl1, Bsf_bcs%grad, num_int, ak_d_magne, fem_wk, f_l)
       end if
 !
       if (i_field .eq. iphys%i_SGS_induction) then
-        if (SGS_param1%iflag_SGS_uxb .ne. id_SGS_none                   &
-     &    .and. iflag_commute_induct .eq. id_SGS_commute_ON) then
+        if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none                    &
+     &    .and. cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
           call int_surf_div_induct_t_sgs                                &
      &       (node, ele, surf, sf_grp, nod_fld, jac_sf_grp,             &
-     &        rhs_tbl1, FEM_elens, Bsf_bcs%sgs, intg_point_t_evo,       &
-     &        SGS_param1%ifilter_final, diff_coefs%num_field,           &
+     &        rhs_tbl1, FEM_elens, Bsf_bcs%sgs, num_int,                &
+     &        SGS_param%ifilter_final, diff_coefs%num_field,            &
      &        iak_diff_uxb, diff_coefs%ak, iphys%i_SGS_induct_t,        &
      &        iphys%i_velo, iphys%i_magne, fem_wk, surf_wk, f_nl)
         end if

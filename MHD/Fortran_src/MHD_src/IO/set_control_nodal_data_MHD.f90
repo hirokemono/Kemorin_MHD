@@ -68,7 +68,7 @@
 !     set work fields for SGS models
         if (iflag_debug .ge. iflag_routine_msg)                         &
      &               write(*,*) 'add_work_area_4_sgs_model'
-        call add_work_area_4_sgs_model(fl_prop1, field_ctl)
+        call add_work_area_4_sgs_model(SGS_param1, fl_prop1, field_ctl)
 !
         if (iflag_debug .ge. iflag_routine_msg) write(*,*)              &
      &    'num_nod_phys after modified ', field_ctl%num

@@ -140,6 +140,7 @@
      &          ifld_sgs, icomp_sgs, sgs_coefs, wk_sgs)
 !
       use t_physical_property
+      use m_SGS_control_parameter
       use count_sgs_components
 !
       type(sph_rtp_grid), intent(in) ::  sph_rtp
@@ -159,7 +160,7 @@
       call alloc_SGS_num_coefs(sgs_coefs)
 !
       call set_sgs_addresses                                            &
-     &   (fl_prop, ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
+     &   (SGS_param1, fl_prop, ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
       call check_sgs_addresses                                          &
      &   (ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
 !

@@ -104,9 +104,9 @@
 !
 !   set parameters for SGS model
 !
-      call set_control_SGS_model(model_ctl%sgs_ctl)
+      call set_control_SGS_model(model_ctl%sgs_ctl, SGS_param1)
       call set_control_FEM_SGS(model_ctl%sgs_ctl%ffile_ctl,             &
-     &    model_ctl%sgs_ctl, model_ctl%sgs_ctl%elayer_ctl)
+     &    model_ctl%sgs_ctl, model_ctl%sgs_ctl%elayer_ctl, SGS_param1)
 !
 !   set parameters for filtering operation
 !

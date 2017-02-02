@@ -64,7 +64,7 @@
 !   Allocate spectr field data
 !
       call set_sph_MHD_sprctr_data                                      &
-     &   (sph1%sph_rj, ipol, idpdr, itor, rj_fld1)
+     &   (SGS_param1, sph1%sph_rj, ipol, idpdr, itor, rj_fld1)
 !
 ! ---------------------------------
 !

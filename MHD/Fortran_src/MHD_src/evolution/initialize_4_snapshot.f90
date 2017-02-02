@@ -197,7 +197,7 @@ integer(kind = kint) :: iflag
       call init_ele_material_property(mesh%ele%numele,                  &
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1)
       call define_sgs_components                                        &
-     &   (mesh%node%numnod, mesh%ele%numele, layer_tbl,                 &
+     &   (mesh%node%numnod, mesh%ele%numele, SGS_param1, layer_tbl,     &
      &    ifld_sgs, icomp_sgs, wk_sgs1, sgs_coefs, sgs_coefs_nod)
       call define_sgs_diff_coefs(mesh%ele%numele, layer_tbl,            &
      &    ifld_diff, icomp_diff, wk_diff1, diff_coefs)

@@ -137,7 +137,8 @@
 !    take divergence of velocity
 !
       call int_vol_fractional_div_ele                                   &
-     &   (fluid%istack_ele_fld_smp, iphys%i_velo, iak_diff_v,           &
+     &   (SGS_param1%ifilter_final, fluid%istack_ele_fld_smp,           &
+     &    intg_point_poisson, iphys%i_velo, iak_diff_v,                 &
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l,                       &
      &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_l)
 !
@@ -234,7 +235,8 @@
 !
       if (iflag_debug .gt. 0)  write(*,*) 'int_vol_divergence_vect_p'
       call int_vol_fractional_div_ele                                   &
-     &   (ele%istack_ele_smp, iphys%i_vecp, iak_diff_b,                 &
+     &   (SGS_param1%ifilter_final, ele%istack_ele_smp,                 &
+     &    intg_point_poisson, iphys%i_vecp, iak_diff_b,                 &
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l,                       &
      &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_l)
 !
@@ -322,7 +324,8 @@
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
       call int_vol_fractional_div_ele                                   &
-     &   (ele%istack_ele_smp, iphys%i_magne, iak_diff_b,                &
+     &   (SGS_param1%ifilter_final, ele%istack_ele_smp,                 &
+     &    intg_point_poisson, iphys%i_magne, iak_diff_b,                &
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l,                       &
      &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_l)
 !

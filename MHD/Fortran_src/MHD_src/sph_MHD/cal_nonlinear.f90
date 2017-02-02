@@ -245,7 +245,7 @@
 !
       if(SGS_param1%iflag_SGS .gt. 0) then
         if (iflag_debug.ge.1) write(*,*) 'filtered_nonlinear_in_rtp'
-        call filtered_nonlinear_in_rtp(sph%sph_rtp,                     &
+        call filtered_nonlinear_in_rtp(SGS_param1, sph%sph_rtp,         &
      &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
      &      trns_MHD%b_trns, trns_MHD%f_trns,                           &
      &      trns_MHD%ncomp_rj_2_rtp, trns_MHD%ncomp_rtp_2_rj,           &

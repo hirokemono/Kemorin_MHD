@@ -6,7 +6,9 @@
 !     Modified by H. Matsui on Nov., 2009
 !
 !!      subroutine clippging_sgs_diff_coefs                             &
-!!     &         (numdir, ifield_d, icomp_f, wk_sgs)
+!!     &         (numdir, ifield_d, icomp_f, SGS_param, wk_sgs)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!
 !!      subroutine clear_model_coefs_2_ele                              &
 !!     &         (ele, numdir, icomp_f, ntot_comp_ele, ak_sgs)
@@ -42,15 +44,17 @@
 !  ---------------------------------------------------------------------
 !
       subroutine clippging_sgs_diff_coefs                               &
-     &         (numdir, ifield_d, icomp_f, wk_sgs)
+     &         (numdir, ifield_d, icomp_f, SGS_param, wk_sgs)
 !
       use t_ele_info_4_dynamic
+      use t_SGS_control_parameter
 !
       integer(kind = kint), intent(in) :: numdir, ifield_d, icomp_f
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(dynamic_model_data), intent(inout) :: wk_sgs
 !
 !
-      call clippging_sgs_coefs(numdir, ifield_d, icomp_f,               &
+      call clippging_sgs_coefs(SGS_param, numdir, ifield_d, icomp_f,    &
      &    wk_sgs%nlayer, wk_sgs%num_kinds, wk_sgs%ntot_comp,            &
      &    wk_sgs%fld_coef, wk_sgs%comp_coef, wk_sgs%fld_whole,          &
      &    wk_sgs%comp_whole, wk_sgs%fld_clip, wk_sgs%comp_clip,         &
@@ -61,14 +65,17 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine clippging_sgs_coefs(numdir, ifield_d, icomp_f,         &
+      subroutine clippging_sgs_coefs                                    &
+     &         (SGS_param, numdir, ifield_d, icomp_f,                   &
      &          nlayer_SGS, num_sgs_kinds, num_sgs_coefs,               &
      &          sgs_f_coef, sgs_c_coef, sgs_f_whole, sgs_c_whole,       &
      &          sgs_f_clip, sgs_c_clip, sgs_fw_clip, sgs_cw_clip)
 !
       use calypso_mpi
-      use m_control_parameter
       use m_t_step_parameter
+      use t_SGS_control_parameter
+!
+      type(SGS_model_control_params), intent(in) :: SGS_param
 !
       integer(kind = kint), intent(in) :: numdir, ifield_d, icomp_f
       integer (kind = kint), intent(in) :: nlayer_SGS
@@ -97,41 +104,41 @@
 !      end do
 !
 !
-      if (SGS_param1%iflag_nagetive_clip .eq. id_SGS_ZERO_CLIP) then
+      if (SGS_param%iflag_nagetive_clip .eq. id_SGS_ZERO_CLIP) then
         do nd = 1, numdir
           call delete_negative_coefs                                    &
-     &       (nlayer_SGS, SGS_param1%clipping_limit,                    &
+     &       (nlayer_SGS, SGS_param%clipping_limit,                     &
      &        sgs_c_coef(1,icomp_f+nd-1), sgs_c_whole(icomp_f+nd-1),    &
      &        sgs_c_clip(1,icomp_f+nd-1), sgs_cw_clip(icomp_f+nd-1))
         end do
           call delete_negative_coefs                                    &
-     &       (nlayer_SGS, SGS_param1%clipping_limit,                    &
+     &       (nlayer_SGS, SGS_param%clipping_limit,                     &
      &        sgs_f_coef(1,ifield_d), sgs_f_whole(ifield_d),            &
      &        sgs_f_clip(1,ifield_d), sgs_fw_clip(ifield_d))
 !
 !
-      else if(SGS_param1%iflag_nagetive_clip .eq. id_SGS_KEEP_PREVIOUS) &
+      else if(SGS_param%iflag_nagetive_clip .eq. id_SGS_KEEP_PREVIOUS) &
      & then
         do nd = 1, numdir
           call ignore_negative_coefs                                    &
-     &       (nlayer_SGS, SGS_param1%clipping_limit,                    &
+     &       (nlayer_SGS, SGS_param%clipping_limit,                     &
      &        sgs_c_coef(1,icomp_f+nd-1), sgs_c_whole(icomp_f+nd-1),    &
      &        sgs_c_clip(1,icomp_f+nd-1), sgs_cw_clip(icomp_f+nd-1))
         end do
           call ignore_negative_coefs                                    &
-     &       (nlayer_SGS, SGS_param1%clipping_limit,                    &
+     &       (nlayer_SGS, SGS_param%clipping_limit,                     &
      &        sgs_f_coef(1,ifield_d), sgs_f_whole(ifield_d),            &
      &        sgs_f_clip(1,ifield_d), sgs_fw_clip(ifield_d))
 !
         if (iflag_SGS_initial .eq. 1) then
           do nd = 1, numdir
             call init_negative_coefs                                    &
-     &         (nlayer_SGS, SGS_param1%clipping_limit,                  &
+     &         (nlayer_SGS, SGS_param%clipping_limit,                   &
      &          sgs_c_coef(1,icomp_f+nd-1), sgs_c_whole(icomp_f+nd-1),  &
      &          sgs_c_clip(1,icomp_f+nd-1), sgs_cw_clip(icomp_f+nd-1))
           end do
             call init_negative_coefs                                    &
-     &         (nlayer_SGS, SGS_param1%clipping_limit,                  &
+     &         (nlayer_SGS, SGS_param%clipping_limit,                   &
      &          sgs_c_coef(1,icomp_f+nd-1), sgs_c_whole(icomp_f+nd-1),  &
      &          sgs_c_clip(1,icomp_f+nd-1), sgs_cw_clip(icomp_f+nd-1))
         end if

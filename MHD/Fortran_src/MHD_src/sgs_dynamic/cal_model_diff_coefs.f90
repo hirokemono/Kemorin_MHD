@@ -109,7 +109,7 @@
      &    wk_lsq)
 !
       call clippging_sgs_diff_coefs                                     &
-     &   (n_tensor, ifield_d, icomp_f, wk_sgs)
+     &   (n_tensor, ifield_d, icomp_f, SGS_param1, wk_sgs)
 !
       call clear_model_coefs_2_ele(ele, n_tensor, icomp_f,              &
      &    sgs_coefs%ntot_comp, sgs_coefs%ak)
@@ -289,7 +289,7 @@
      &    wk_diff%comp_coef, wk_diff%fld_whole, wk_diff%comp_whole,     &
      &    wk_lsq)
       call clippging_sgs_diff_coefs                                     &
-     &   (numdir, ifield_d, icomp_f, wk_diff)
+     &   (numdir, ifield_d, icomp_f, SGS_param1, wk_diff)
 !
       call set_diff_coefs_layer_ele(ele, ifield_d,                      &
      &    layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,            &
@@ -346,7 +346,7 @@
      &    wk_diff%num_kinds, wk_diff%ntot_comp, wk_diff%corrilate_w,    &
      &    wk_diff%fld_whole, wk_diff%comp_whole, wk_lsq)
       call clippging_sgs_diff_coefs                                     &
-     &   (numdir, ifield_d, icomp_f, wk_diff)
+     &   (numdir, ifield_d, icomp_f, SGS_param1, wk_diff)
       call set_diff_coefs_whole_ele(ele, iele_fsmp_stack, ifield_d,     &
      &    diff_coefs%ntot_comp, wk_diff%fld_whole_clip, diff_coefs%ak)
 !
