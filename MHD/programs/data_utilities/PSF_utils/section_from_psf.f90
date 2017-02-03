@@ -1,11 +1,11 @@
 !
 !     program section_from_psf
 !
-      program section_from_psf
-!
 !      program for pick data clong line
 !         programmed  by  H.Matsui (U. Chicago)  on Oct. 2003 (ver 1.0)
 !         Modified  by  H.Matsui (U. Chicago)  on Jan. 2007 (ver 2.0)
+!
+      program section_from_psf
 !
       use m_precision
       use m_constants
@@ -40,8 +40,22 @@
 ! . for local 
 !  ===========
 !
+      write(*,*) 'Choose psf format'
+      write(*,*) iflag_ucd, ': UCD'
+      write(*,*) iflag_udt, ': UDT'
+      write(*,*) iflag_vtk, ': VTK'
+      write(*,*) iflag_ucd_gz, ': gzipped_UCD'
+      write(*,*) iflag_udt_gz, ': gzipped_UDT'
+      write(*,*) iflag_vtk_gz, ': gzipped_VTK'
+!
+      read(*,*)  iflag_psf_fmt
+      write(*,*) 'iflag_psf_fmt', iflag_psf_fmt
+!
       write(*,*) 'input psf file name'
       read(*,*) psf_file_header
+!
+      psf_u%iflag_psf_fmt =   iflag_psf_fmt
+      psf_u%psf_file_header = psf_file_header
 !
       write(*,*) 'inputistep_start, istep_end, istep_int'
       read(*,*) istep_start, istep_end, istep_int
