@@ -134,7 +134,7 @@
 !   gradient model by filtered field
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_filter_hf_grad_4_dyn'
-      call cal_sgs_h_flux_grad_no_coef(ifilter_4delta,                  &
+      call cal_sgs_s_flux_grad_no_coef(iflag_temp_supg, ifilter_4delta, &
      &    iphys%i_sgs_grad_f, iphys%i_filter_temp, ie_dfvx,             &
      &    nod_comm, node, ele, fluid, iphys_ele, ele_fld, jac_3d_q,     &
      &    rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_l, nod_fld)
@@ -142,7 +142,7 @@
 !   gradient model by original field
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_h_flux_grad_4_dyn'
-      call cal_sgs_h_flux_grad_no_coef(ifilter_2delta,                  &
+      call cal_sgs_s_flux_grad_no_coef(iflag_temp_supg, ifilter_2delta, &
      &    iphys%i_SGS_h_flux, iphys%i_sgs_temp, ie_dvx,                 &
      &    nod_comm, node, ele, fluid, iphys_ele, ele_fld, jac_3d_q,     &
      &    rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_l, nod_fld)

@@ -85,12 +85,12 @@
       if ( field_ctl%num .ne. 0 ) then
 !
 !     add fields for simulation
-!
         call add_field_name_4_mhd                                       &
      &     (fl_prop1, ref_param_T1, ref_param_C1, field_ctl)
         call add_field_name_4_sph_mhd(fl_prop1, field_ctl)
-        call add_field_name_4_SGS(field_ctl)
-        call add_field_name_dynamic_SGS(fl_prop1, field_ctl)
+        call add_field_name_4_SGS(SGS_param1, field_ctl)
+        call add_field_name_dynamic_SGS                                 &
+     &     (SGS_param1, fl_prop1, field_ctl)
         if (iflag_debug.eq.1) write(*,*)                                &
      &    'field_ctl%num after modified ', field_ctl%num
 !

@@ -334,12 +334,12 @@
       if (SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_chenge_step_4_dynamic'
         call s_chenge_step_4_dynamic                                    &
-     &     (my_rank, cmt_param1, wk_sgs1, wk_diff1)
+     &     (my_rank, SGS_param1, cmt_param1, wk_sgs1, wk_diff1)
       end if
 !
       if ( retval .ne. 0 ) then
         if (iflag_debug.eq.1) write(*,*) 'update_matrices'
-        call update_matrices(cmt_param1,                                &
+        call update_matrices(SGS_param1, cmt_param1,                    &
      &     mesh1, group1, ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs,      &
      &     ak_MHD, jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, FEM1_elen,   &
      &     ifld_diff, diff_coefs, rhs_tbl1, MHD1_mat_tbls,              &
