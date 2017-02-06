@@ -125,10 +125,11 @@
      &    f_l, nod_fld)
 !
       else if (SGS_param1%iflag_SGS_h_flux .eq. id_SGS_similarity) then
-        if (iflag_debug.eq.1) write(*,*) 'cal_sgs_hf_simi'
-        call cal_sgs_hf_simi(iphys%i_SGS_h_flux, iphys%i_sgs_temp,      &
-     &      iphys%i_filter_temp, icomp_sgs_hf,                          &
-     &      nod_comm, node, iphys, filtering, sgs_coefs_nod,            &
+        if (iflag_debug.eq.1) write(*,*) 'cal_sgs_sf_simi'
+        call cal_sgs_sf_simi(iphys%i_SGS_h_flux,                        &
+     &      iphys%i_sgs_temp, iphys%i_filter_temp,                      &
+     &      iphys%i_velo, iphys%i_filter_velo, icomp_sgs_hf,            &
+     &      nod_comm, node, filtering, sgs_coefs_nod,                   &
      &      wk_filter, nod_fld)
 !
       else if (SGS_param1%iflag_SGS_h_flux .eq. id_SGS_diffusion) then

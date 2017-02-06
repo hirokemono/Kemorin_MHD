@@ -291,7 +291,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'int_vol_magne_co'
       call int_vol_solenoid_co                                          &
-     &   (ele%istack_ele_smp, iphys%i_m_phi, iak_diff_b,                &
+     &   (intg_point_poisson, SGS_param1%ifilter_final,                 &
+     &    ele%istack_ele_smp, iphys%i_m_phi, iak_diff_b,                &
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l,                       &
      &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_nl)
 !

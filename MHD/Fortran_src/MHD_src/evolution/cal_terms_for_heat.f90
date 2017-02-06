@@ -119,12 +119,12 @@
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
       if (iflag_temp_supg .gt. id_turn_OFF) then
-       call int_vol_ene_monitor_upw(i_field,                            &
+       call int_vol_ene_monitor_upw(i_field, SGS_param1, cmt_param1,    &
      &     node, ele, fluid, property, iphys, nod_fld,                  &
      &     iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,              &
      &     ifld_diff, diff_coefs, mhd_fem_wk, fem_wk, f_nl)
       else
-       call int_vol_ene_monitor(i_field,                                &
+       call int_vol_ene_monitor(i_field, SGS_param1, cmt_param1,        &
      &     node, ele, fluid, property, iphys, nod_fld,                  &
      &     iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,              &
      &     ifld_diff, diff_coefs, mhd_fem_wk, fem_wk, f_nl)

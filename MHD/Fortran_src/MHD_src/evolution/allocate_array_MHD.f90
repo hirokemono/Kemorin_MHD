@@ -84,7 +84,7 @@
 !
       if (iflag_debug.ge.1) write(*,*) 'allocate_int_vol_data'
       call alloc_int_vol_data                                           &
-     &   (ele%numele, node%max_nod_smp, nod_fld, mhd_fem_wk)
+     &  (ele%numele, node%max_nod_smp, SGS_param1, nod_fld, mhd_fem_wk)
       call count_int_vol_data(SGS_param1, evo_magne, mhd_fem_wk)
       call alloc_int_vol_dvx(ele%numele, mhd_fem_wk)
       call set_SGS_ele_fld_addresses(SGS_param1, iphys_elediff)

@@ -221,7 +221,7 @@ integer(kind = kint) :: iflag
 !
       if (iflag_debug.eq.1) write(*,*)' const_MHD_jacobian_and_volumes'
       call const_MHD_jacobian_and_volumes                               &
-     &   (mesh%node, mesh%ele, group%surf_grp, layer_tbl,               &
+     &   (SGS_param1, mesh%node, mesh%ele, group%surf_grp, layer_tbl,   &
      &    group%infty_grp, jac1_3d_l, jac1_3d_q, MHD_mesh)
 !
       call const_jacobian_sf_grp                                        &

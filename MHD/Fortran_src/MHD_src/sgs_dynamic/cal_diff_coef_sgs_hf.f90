@@ -5,7 +5,7 @@
 !
 !!      subroutine s_cal_diff_coef_sgs_hf                               &
 !!     &         (iak_diff_hf, icomp_sgs_hf, icomp_diff_hf, ie_dfvx,    &
-!!     &          nod_comm, node, ele, surf, sf_grp, Tnod_bcs, Tsf_bcs, &
+!!     &          nod_comm, node, ele, surf, sf_grp, nod_bcs, sf_bcs,   &
 !!     &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,          &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
 !!     &          FEM_elens, filtering, sgs_coefs, wk_filter,           &
@@ -20,8 +20,8 @@
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(field_geometry_data), intent(in) :: fluid
-!!        type(nodal_bcs_4_scalar_type), intent(in) :: Tnod_bcs
-!!        type(scaler_surf_bc_type), intent(in) :: Tsf_bcs
+!!        type(nodal_bcs_4_scalar_type), intent(in) :: nod_bcs
+!!        type(scaler_surf_bc_type), intent(in) :: sf_bcs
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp_q
@@ -76,7 +76,7 @@
 !
       subroutine s_cal_diff_coef_sgs_hf                                 &
      &         (iak_diff_hf, icomp_sgs_hf, icomp_diff_hf, ie_dfvx,      &
-     &          nod_comm, node, ele, surf, sf_grp, Tnod_bcs, Tsf_bcs,   &
+     &          nod_comm, node, ele, surf, sf_grp, nod_bcs, sf_bcs,     &
      &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,            &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
      &          FEM_elens, filtering, sgs_coefs, wk_filter,             &
@@ -111,8 +111,8 @@
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
       type(field_geometry_data), intent(in) :: fluid
-      type(nodal_bcs_4_scalar_type), intent(in) :: Tnod_bcs
-      type(scaler_surf_bc_type), intent(in) :: Tsf_bcs
+      type(nodal_bcs_4_scalar_type), intent(in) :: nod_bcs
+      type(scaler_surf_bc_type), intent(in) :: sf_bcs
       type(layering_tbl), intent(in) :: layer_tbl
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       type(jacobians_2d), intent(in) :: jac_sf_grp_q
@@ -175,8 +175,8 @@
 !
       call subtract_2_nod_scalars(nod_fld,                              &
      &    iphys%i_sgs_grad, iphys%i_sgs_simi, iphys%i_sgs_simi)
-      call delete_field_by_fixed_t_bc                                   &
-     &   (Tnod_bcs%nod_bc_s, iphys%i_sgs_simi, nod_fld)
+      call delete_field_by_fixed_s_bc                                   &
+     &   (nod_bcs%nod_bc_s, iphys%i_sgs_simi, nod_fld)
 !
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_scalar, iphys%i_sgs_simi)
@@ -186,11 +186,11 @@
       call cal_commute_error_4_hf                                       &
      &   (fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
-     &    rhs_tbl, FEM_elens, Tsf_bcs%sgs, ifilter_4delta,              &
+     &    rhs_tbl, FEM_elens, sf_bcs%sgs, ifilter_4delta,               &
      &    iphys%i_sgs_grad_f, iphys%i_sgs_grad_f, iphys%i_filter_velo,  &
      &    iphys%i_filter_temp, fem_wk, surf_wk, f_l, f_nl, nod_fld)
-      call delete_field_by_fixed_t_bc                                   &
-     &   (Tnod_bcs%nod_bc_s, iphys%i_sgs_grad_f, nod_fld)
+      call delete_field_by_fixed_s_bc                                   &
+     &   (nod_bcs%nod_bc_s, iphys%i_sgs_grad_f, nod_fld)
 !
       call scalar_send_recv(iphys%i_sgs_grad_f, nod_comm, nod_fld)
 !
@@ -202,7 +202,7 @@
       call cal_commute_error_4_hf                                       &
      &   (fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
-     &    rhs_tbl, FEM_elens, Tsf_bcs%sgs, ifilter_2delta,              &
+     &    rhs_tbl, FEM_elens, sf_bcs%sgs, ifilter_2delta,               &
      &    iphys%i_sgs_grad, iphys%i_SGS_h_flux, iphys%i_velo,           &
      &    iphys%i_sgs_temp, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
@@ -212,8 +212,8 @@
 !
       call cal_filtered_scalar_whole(nod_comm, node, filtering,         &
      &    iphys%i_sgs_grad, iphys%i_sgs_grad, wk_filter, nod_fld)
-      call delete_field_by_fixed_t_bc                                   &
-     &   (Tnod_bcs%nod_bc_s, iphys%i_sgs_grad, nod_fld)
+      call delete_field_by_fixed_s_bc                                   &
+     &   (nod_bcs%nod_bc_s, iphys%i_sgs_grad, nod_fld)
 !
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_scalar, iphys%i_sgs_grad)

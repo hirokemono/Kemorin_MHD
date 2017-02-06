@@ -6,8 +6,9 @@
 !!      subroutine cal_sgs_mf_simi(i_sgs, i_vect, i_vect_f, icm_sgs,    &
 !!     &          nod_comm, node, filtering, sgs_coefs_nod,             &
 !!     &          wk_filter, nod_fld)
-!!      subroutine cal_sgs_hf_simi(i_sgs, ifield, ifield_f, icm_sgs,    &
-!!     &          nod_comm, node, iphys, filtering, sgs_coefs_nod,      &
+!!      subroutine cal_sgs_sf_simi                                      &
+!!     &         (i_sgs, ifield, ifield_f, ivelo, ivelo_f, icm_sgs,     &
+!!     &          nod_comm, node, filtering, sgs_coefs_nod,             &
 !!     &          wk_filter, nod_fld)
 !!      subroutine cal_sgs_induct_t_simi                                &
 !!     &         (i_sgs, i_v, i_b, i_fil_v, i_fil_b, icm_sgs,           &
@@ -94,8 +95,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_sgs_hf_simi(i_sgs, ifield, ifield_f, icm_sgs,      &
-     &          nod_comm, node, iphys, filtering, sgs_coefs_nod,        &
+      subroutine cal_sgs_sf_simi                                        &
+     &         (i_sgs, ifield, ifield_f, ivelo, ivelo_f, icm_sgs,       &
+     &          nod_comm, node, filtering, sgs_coefs_nod,               &
      &          wk_filter, nod_fld)
 !
       use cal_fluxes
@@ -104,11 +106,11 @@
       use cal_filtering_scalars
 !
       integer (kind=kint), intent(in) :: i_sgs, ifield, ifield_f
+      integer (kind=kint), intent(in) :: ivelo, ivelo_f
       integer (kind=kint), intent(in) :: icm_sgs
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
-      type(phys_address), intent(in) :: iphys
       type(filtering_data_type), intent(in) :: filtering
       type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
 !
@@ -118,17 +120,17 @@
 !
 !$omp parallel
       call cal_phys_scalar_product_vector                               &
-     &   (iphys%i_velo, ifield, i_sgs, nod_fld)
+     &   (ivelo, ifield, i_sgs, nod_fld)
 !$omp end parallel
       call cal_filtered_vector_whole                                    &
      &   (nod_comm, node, filtering, i_sgs, i_sgs, wk_filter, nod_fld)
 !
       call cal_sgs_flux_vector(node%numnod, node%istack_nod_smp,        &
-     &    nod_fld%ntot_phys, i_sgs, iphys%i_filter_velo, ifield_f,      &
+     &    nod_fld%ntot_phys, i_sgs, ivelo_f, ifield_f,                  &
      &    sgs_coefs_nod%ntot_comp, icm_sgs, sgs_coefs_nod%ak,           &
      &    nod_fld%d_fld)
 !
-      end subroutine cal_sgs_hf_simi
+      end subroutine cal_sgs_sf_simi
 !
 !-----------------------------------------------------------------------
 !

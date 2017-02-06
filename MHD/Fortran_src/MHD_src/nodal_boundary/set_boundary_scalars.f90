@@ -18,7 +18,7 @@
 !!      subroutine set_boundary_specific_vect                           &
 !!     &         (node, vsp_bc, i_field, nod_fld)
 !!
-!!      subroutine delete_field_by_fixed_t_bc                           &
+!!      subroutine delete_field_by_fixed_s_bc                           &
 !!     &         (scalar_bc, i_field, nod_fld)
 !!      subroutine delete_vector_by_fixed_t_bc                          &
 !!     &         (scalar_bc, i_field, nod_fld)
@@ -274,7 +274,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine delete_field_by_fixed_t_bc                             &
+      subroutine delete_field_by_fixed_s_bc                             &
      &         (scalar_bc, i_field, nod_fld)
 !
       use t_phys_data
@@ -292,7 +292,7 @@
      &    (scalar_bc%num_bc_nod, scalar_bc%ibc_id,                      &
      &     nod_fld%n_point, nod_fld%ntot_phys, i_field, nod_fld%d_fld)
 !
-      end subroutine delete_field_by_fixed_t_bc
+      end subroutine delete_field_by_fixed_s_bc
 !
 !  ---------------------------------------------------------------------
 !

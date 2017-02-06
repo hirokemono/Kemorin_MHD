@@ -364,7 +364,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'int_vol_velo_co'
       call int_vol_solenoid_co                                          &
-     &   (fluid%istack_ele_fld_smp, iphys%i_p_phi, ifld_diff%i_velo,    &
+     &   (intg_point_poisson, SGS_param1%ifilter_final,                 &
+     &    fluid%istack_ele_fld_smp, iphys%i_p_phi, ifld_diff%i_velo,    &
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l,                       &
      &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_nl)
 !

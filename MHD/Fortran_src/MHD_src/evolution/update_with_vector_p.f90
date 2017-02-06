@@ -203,7 +203,7 @@
         call choose_cal_rotation_sgs                                    &
      &     (cmt_param1%iflag_c_magne, iflag_mag_supg,                   &
      &      iak_diff_b, iphys%i_vecp, iphys%i_magne,                    &
-     &      ele%istack_ele_smp, m_lump,                                 &
+     &      ele%istack_ele_smp, m_lump, SGS_param1,                     &
      &      nod_comm, node, ele, surf, sf_grp, iphys_ele, ele_fld,      &
      &      jac_3d_q, jac_sf_grp_q, FEM_elen, diff_coefs,               &
      &      Bnod_bcs%nod_bc_b, Asf_bcs%sgs, rhs_tbl, fem_wk, surf_wk,   &

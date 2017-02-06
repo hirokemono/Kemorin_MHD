@@ -8,14 +8,17 @@
 !     modified by H. Matsui on Aug., 2005
 !     modified by H. Matsui on Aug., 2007
 !
-!!      subroutine int_vol_ene_monitor(i_field,                         &
+!!      subroutine int_vol_ene_monitor(i_field, SGS_param, cmt_param,   &
 !!     &          node, ele, fluid, property, iphys, nod_fld,           &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
 !!     &          diff_coefs, mhd_fem_wk, fem_wk, f_nl)
-!!      subroutine int_vol_ene_monitor_upw(i_field,                     &
+!!      subroutine int_vol_ene_monitor_upw                              &
+!!     &         (i_field, SGS_param, cmt_param,                        &
 !!     &          node, ele, fluid, property, iphys, nod_fld,           &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
 !!     &          diff_coefs,  mhd_fem_wk, fem_wk, f_nl)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_address), intent(in) :: iphys
@@ -37,8 +40,7 @@
 !
       use m_precision
 !
-      use m_control_parameter
-!
+      use t_SGS_control_parameter
       use t_physical_property
       use t_geometry_data_MHD
       use t_geometry_data
@@ -60,7 +62,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_ene_monitor(i_field,                           &
+      subroutine int_vol_ene_monitor(i_field, SGS_param, cmt_param,     &
      &          node, ele, fluid, property, iphys, nod_fld,             &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
      &          ifld_diff, diff_coefs, mhd_fem_wk, fem_wk, f_nl)
@@ -71,6 +73,8 @@
 !
       integer (kind=kint), intent(in) :: i_field
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(commutation_control_params), intent(in) :: cmt_param
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_address), intent(in) :: iphys
@@ -117,12 +121,12 @@
      &      iphys%i_ph_flux, property%coef_nega_adv, fem_wk, f_nl)
 !
       else if (i_field .eq. iphys%i_SGS_div_h_flux) then
-        if(cmt_param1%iflag_c_hf .eq. id_SGS_commute_ON) then
+        if(cmt_param%iflag_c_hf .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_vec_flux(node, ele, nod_fld,             &
      &        jac_3d, rhs_tbl, FEM_elens, diff_coefs,                   &
      &        fluid%istack_ele_fld_smp, intg_point_t_evo,               &
      &        iphys%i_velo, iphys%i_temp, iphys%i_SGS_h_flux,           &
-     &        SGS_param1%ifilter_final, ifld_diff%i_heat_flux,          &
+     &        SGS_param%ifilter_final, ifld_diff%i_heat_flux,           &
      &        property%coef_nega_adv, fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_div_w_const                                      &
@@ -136,7 +140,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_ene_monitor_upw(i_field,                       &
+      subroutine int_vol_ene_monitor_upw                                &
+     &         (i_field, SGS_param, cmt_param,                          &
      &          node, ele, fluid, property, iphys, nod_fld,             &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
      &          ifld_diff, diff_coefs, mhd_fem_wk, fem_wk, f_nl)
@@ -147,6 +152,8 @@
 !
       integer (kind = kint), intent(in) :: i_field
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(commutation_control_params), intent(in) :: cmt_param
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_address), intent(in) :: iphys
@@ -196,12 +203,12 @@
      &      ele_fld%d_fld, property%coef_nega_adv, fem_wk, f_nl)
 !
       else if (i_field .eq. iphys%i_SGS_div_h_flux) then
-        if(cmt_param1%iflag_c_hf .eq. id_SGS_commute_ON) then
+        if(cmt_param%iflag_c_hf .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_vec_flux_upw(node, ele, nod_fld,         &
      &        jac_3d, rhs_tbl, FEM_elens, diff_coefs,                   &
      &        fluid%istack_ele_fld_smp, intg_point_t_evo,               &
      &        iphys%i_velo, iphys%i_temp, iphys%i_SGS_h_flux,           &
-     &        SGS_param1%ifilter_final, ifld_diff%i_heat_flux,          &
+     &        SGS_param%ifilter_final, ifld_diff%i_heat_flux,           &
      &        ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,       &
      &        property%coef_nega_adv, fem_wk, mhd_fem_wk, f_nl)
         else

@@ -8,14 +8,16 @@
 !        modified by H. Matsui on Oct., 2005
 !        modified by H. Matsui on Aug., 2007
 !
-!!      subroutine int_vol_magne_monitor_pg                             &
-!!     &         (i_field, iak_diff_uxb, node, ele, conduct, cd_prop,   &
+!!      subroutine int_vol_magne_monitor_pg(i_field, iak_diff_uxb,      &
+!!     &          SGS_param, cmt_param, node, ele, conduct, cd_prop,    &
 !!     &          iphys, nod_fld, iphys_ele, ele_fld, jac_3d, rhs_tbl,  &
 !!     &           FEM_elen, diff_coefs, mhd_fem_wk, fem_wk, f_nl)
-!!      subroutine int_vol_magne_monitor_upm                            &
-!!     &         (i_field, iak_diff_uxb, node, ele, conduct, cd_prop,   &
+!!      subroutine int_vol_magne_monitor_upm(i_field, iak_diff_uxb,     &
+!!     &          SGS_param, cmt_param, node, ele, conduct, cd_prop,    &
 !!     &          iphys, nod_fld, iphys_ele, ele_fld, jac_3d, rhs_tbl,  &
 !!     &          FEM_elen, diff_coefs, mhd_fem_wk, fem_wk, f_nl)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_address), intent(in) :: iphys
@@ -36,11 +38,13 @@
 !
       use m_precision
 !
-      use m_control_parameter
       use m_machine_parameter
       use m_phys_constants
       use m_fem_gauss_int_coefs
 !
+      use m_control_parameter
+!
+      use t_SGS_control_parameter
       use t_physical_property
       use t_geometry_data_MHD
       use t_geometry_data
@@ -63,10 +67,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_magne_monitor_pg                               &
-     &         (i_field, iak_diff_uxb, node, ele, conduct, cd_prop,     &
+      subroutine int_vol_magne_monitor_pg(i_field, iak_diff_uxb,        &
+     &          SGS_param, cmt_param, node, ele, conduct, cd_prop,      &
      &          iphys, nod_fld, iphys_ele, ele_fld, jac_3d, rhs_tbl,    &
-     &           FEM_elen, diff_coefs, mhd_fem_wk, fem_wk, f_nl)
+     &          FEM_elen, diff_coefs, mhd_fem_wk, fem_wk, f_nl)
 !
       use int_vol_vect_differences
       use int_vol_vect_cst_difference
@@ -75,6 +79,8 @@
 !
       integer(kind=kint), intent(in) :: i_field, iak_diff_uxb
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(commutation_control_params), intent(in) :: cmt_param
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_address), intent(in) :: iphys
@@ -107,11 +113,11 @@
      &      iphys%i_induct_t, fem_wk, f_nl)
 !
       else if (i_field .eq. iphys%i_SGS_induction) then
-        if(cmt_param1%iflag_c_uxb .eq. id_SGS_commute_ON) then
+        if(cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_idct_mod_pg(node, ele,                   &
      &        nod_fld, iphys, jac_3d, rhs_tbl, FEM_elen, diff_coefs,    &
      &        conduct%istack_ele_fld_smp, intg_point_t_evo,             &
-     &        SGS_param1%ifilter_final, iak_diff_uxb,                   &
+     &        SGS_param%ifilter_final, iak_diff_uxb,                    &
      &        cd_prop%coef_induct, fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_div_as_tsr_w_const                               &
@@ -125,8 +131,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_magne_monitor_upm                              &
-     &         (i_field, iak_diff_uxb, node, ele, conduct, cd_prop,     &
+      subroutine int_vol_magne_monitor_upm(i_field, iak_diff_uxb,       &
+     &          SGS_param, cmt_param, node, ele, conduct, cd_prop,      &
      &          iphys, nod_fld, iphys_ele, ele_fld, jac_3d, rhs_tbl,    &
      &          FEM_elen, diff_coefs, mhd_fem_wk, fem_wk, f_nl)
 !
@@ -137,6 +143,8 @@
 !
       integer(kind=kint), intent(in) :: i_field, iak_diff_uxb
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(commutation_control_params), intent(in) :: cmt_param
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_address), intent(in) :: iphys
@@ -170,11 +178,11 @@
      &      ele_fld%d_fld, fem_wk, f_nl)
 !
       else if (i_field .eq. iphys%i_SGS_induction) then
-        if(cmt_param1%iflag_c_uxb .eq. id_SGS_commute_ON) then
+        if(cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_idct_mod_upm(node, ele,                  &
      &        nod_fld, iphys, jac_3d, rhs_tbl, FEM_elen, diff_coefs,    &
      &        conduct%istack_ele_fld_smp, intg_point_t_evo,             &
-     &        SGS_param1%ifilter_final, iak_diff_uxb,                   &
+     &        SGS_param%ifilter_final, iak_diff_uxb,                    &
      &        cd_prop%coef_induct, ele_fld%ntot_phys,                   &
      &        iphys_ele%i_magne, ele_fld%d_fld, fem_wk,                 &
      &        mhd_fem_wk, f_nl)

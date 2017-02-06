@@ -6,7 +6,9 @@
 !
 !>    Structure for lumped mass matrix and RHS vector assembler for MHD
 !
-!!      subroutine alloc_int_vol_data(numele, max_nod_smp, mhd_fem_wk)
+!!      subroutine alloc_int_vol_data                                   &
+!!     &         (numele, max_nod_smp, SGS_param, nod_fld, mhd_fem_wk)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!      subroutine alloc_int_vol_dvx(numele, mhd_fem_wk)
 !!      subroutine alloc_mass_mat_fluid(numnod, mhd_fem_wk)
 !!      subroutine alloc_mass_mat_conduct(mhd_fem_wk)
@@ -79,13 +81,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine alloc_int_vol_data                                     &
-     &         (numele, max_nod_smp, nod_fld, mhd_fem_wk)
+     &         (numele, max_nod_smp, SGS_param, nod_fld, mhd_fem_wk)
 !
       use m_machine_parameter
-      use m_control_parameter
       use m_phys_labels
+      use t_SGS_control_parameter
       use t_phys_data
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       integer(kind = kint), intent(in) :: numele, max_nod_smp
       type(phys_data), intent(in) :: nod_fld
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -117,7 +120,7 @@
         end if
       end do
 !
-      if (SGS_param1%iflag_SGS .ne. id_SGS_none) then
+      if (SGS_param%iflag_SGS .ne. id_SGS_none) then
         allocate(mhd_fem_wk%sgs_v1(numele,3))
         allocate(mhd_fem_wk%sgs_t1(numele,6))
         if(numele .gt. 0) mhd_fem_wk%sgs_v1 = 0.0d0

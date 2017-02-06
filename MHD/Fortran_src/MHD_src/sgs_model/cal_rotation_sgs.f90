@@ -5,9 +5,11 @@
 !
 !!      subroutine choose_cal_rotation_sgs(iflag_commute, iflag_4_supg, &
 !!     &          iak_diff, i_vector, i_rot, iele_fsmp_stack, m_lump,   &
-!!     &          nod_comm, node, ele, surf, sf_grp, iphys_ele, ele_fld,&
-!!     &          jac_3d, jac_sf_grp, FEM_elens, diff_coefs, nod_bc,    &
-!!     &          sgs_sf, rhs_tbl, fem_wk, surf_wk, f_nl, nod_fld)
+!!     &          SGS_param, nod_comm, node, ele, surf, sf_grp,         &
+!!     &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, FEM_elens,    &
+!!     &          diff_coefs, nod_bc, sgs_sf, rhs_tbl,                  &
+!!     &          fem_wk, surf_wk, f_nl, nod_fld)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -36,6 +38,7 @@
       use m_control_parameter
       use m_phys_constants
 !
+      use t_SGS_control_parameter
       use t_comm_table
       use t_geometry_data
       use t_surface_data
@@ -70,13 +73,15 @@
 !
       subroutine choose_cal_rotation_sgs(iflag_commute, iflag_4_supg,   &
      &          iak_diff, i_vector, i_rot, iele_fsmp_stack, m_lump,     &
-     &          nod_comm, node, ele, surf, sf_grp, iphys_ele, ele_fld,  &
-     &          jac_3d, jac_sf_grp, FEM_elens, diff_coefs, nod_bc,      &
-     &          sgs_sf, rhs_tbl, fem_wk, surf_wk, f_nl, nod_fld)
+     &          SGS_param, nod_comm, node, ele, surf, sf_grp,           &
+     &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, FEM_elens,      &
+     &          diff_coefs, nod_bc, sgs_sf, rhs_tbl,                    &
+     &          fem_wk, surf_wk, f_nl, nod_fld)
 !
       use cal_rotation
       use set_boundary_scalars
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -103,10 +108,10 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if(SGS_param1%iflag_SGS .ne. id_SGS_none                          &
+      if(SGS_param%iflag_SGS .ne. id_SGS_none                           &
      &     .and. iflag_commute .eq. id_SGS_commute_ON) then
         call choose_int_vol_rot_sgs(iflag_4_supg, iele_fsmp_stack,      &
-     &      SGS_param1%ifilter_final, iak_diff, i_vector,               &
+     &      SGS_param%ifilter_final, iak_diff, i_vector,                &
      &      node, ele, surf, sf_grp, nod_fld, iphys_ele, ele_fld,       &
      &      jac_3d, jac_sf_grp, FEM_elens, diff_coefs, sgs_sf, rhs_tbl, &
      &      fem_wk, surf_wk, f_nl)

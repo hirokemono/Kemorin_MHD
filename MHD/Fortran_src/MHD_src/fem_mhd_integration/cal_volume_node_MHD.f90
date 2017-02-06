@@ -6,9 +6,9 @@
 !        Modified by H. Matsui on Aug., 2006
 !        Modified by H. Matsui on Aug., 2007
 !
-!!      subroutine const_MHD_jacobian_and_volumes(node, ele, sf_grp,    &
-!!     &          layer_tbl, infty_list, jac_3d_l, jac_3d_q,            &
-!!     &          MHD_mesh)
+!!      subroutine const_MHD_jacobian_and_volumes                       &
+!!     &         (SGS_param, node, ele, sf_grp,  layer_tbl,             &
+!!     &          infty_list, jac_3d_l, jac_3d_q, MHD_mesh)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(inout) :: ele
 !!        type(surface_group_data), intent(in) :: sf_grp
@@ -24,6 +24,7 @@
 !
       use calypso_mpi
       use m_machine_parameter
+      use t_SGS_control_parameter
       use t_geometry_data
       use t_group_data
       use t_surface_boundary
@@ -42,11 +43,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine const_MHD_jacobian_and_volumes(node, ele, sf_grp,      &
-     &          layer_tbl, infty_list, jac_3d_l, jac_3d_q,              &
-     &          MHD_mesh)
+      subroutine const_MHD_jacobian_and_volumes                         &
+     &         (SGS_param, node, ele, sf_grp,  layer_tbl,               &
+     &          infty_list, jac_3d_l, jac_3d_q, MHD_mesh)
 !
-      use m_control_parameter
+!      use m_control_parameter
       use m_mean_square_values
       use t_jacobians
       use t_layering_ele_list
@@ -56,6 +57,7 @@
       use cal_layered_volumes
       use sum_volume_of_domain
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(node_data), intent(in) :: node
       type(element_data), intent(inout) :: ele
       type(surface_group_data), intent(in) :: sf_grp
@@ -94,7 +96,7 @@
       if (iflag_debug.eq.1) write(*,*) 'cal_volume_4_insulate'
       call cal_volume_4_area(ele, MHD_mesh%insulate)
 !
-       if (SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
+       if (SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
          if (iflag_debug.eq.1) write(*,*) 's_cal_layered_volumes'
          call s_cal_layered_volumes(ele, layer_tbl)
        end if

@@ -187,13 +187,15 @@
       if (iflag_debug .eq. 0 ) write(*,*) 'coefs_4_time_evolution'
       if (iflag_mag_supg .gt. id_turn_OFF) then
        call int_vol_magne_pre_ele_upm                                   &
-     &    (cmt_param1, node, ele, conduct, cd_prop, iphys, nod_fld,     &
+     &    (intg_point_t_evo, SGS_param1, cmt_param1,                    &
+     &     node, ele, conduct, cd_prop, iphys, nod_fld,                 &
      &     ele_fld%ntot_phys, ele_fld%d_fld, iphys_ele, iak_diff_uxb,   &
      &     jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,                    &
      &     mhd_fem_wk, fem_wk, f_nl)
       else
        call int_vol_magne_pre_ele                                       &
-     &    (cmt_param1, node, ele, conduct, cd_prop, iphys, nod_fld,     &
+     &    (intg_point_t_evo, SGS_param1, cmt_param1,                    &
+     &     node, ele, conduct, cd_prop, iphys, nod_fld,                 &
      &     ele_fld%ntot_phys, ele_fld%d_fld, iphys_ele, iak_diff_uxb,   &
      &     jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,                    &
      &     mhd_fem_wk, fem_wk, f_nl)
@@ -293,7 +295,8 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_vol_magne_co'
       call int_vol_solenoid_co                                          &
-     &   (ele%istack_ele_smp, iphys%i_m_phi, iak_diff_b,                &
+     &   (intg_point_poisson, SGS_param1%ifilter_final,                 &
+     &    ele%istack_ele_smp, iphys%i_m_phi, iak_diff_b,                &
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l,                       &
      &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_nl)
 !
@@ -379,7 +382,8 @@
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
       call int_vol_solenoid_co                                          &
-     &   (insulate%istack_ele_fld_smp, iphys%i_mag_p, iak_diff_b,       &
+     &   (intg_point_poisson, SGS_param1%ifilter_final,                 &
+     &    insulate%istack_ele_fld_smp, iphys%i_mag_p, iak_diff_b,       &
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l,                       &
      &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_nl)
 !

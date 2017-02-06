@@ -123,13 +123,13 @@
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
       if (iflag_mag_supg .gt. id_turn_OFF) then
-        call int_vol_magne_monitor_upm                                  &
-     &     (i_field, iak_diff_uxb, node, ele, conduct, cd_prop,         &
+        call int_vol_magne_monitor_upm(i_field, iak_diff_uxb,           &
+     &      SGS_param1, cmt_param1, node, ele, conduct, cd_prop,        &
      &      iphys, nod_fld, iphys_ele, ele_fld, jac_3d, rhs_tbl,        &
      &      FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, f_nl)
       else
-        call int_vol_magne_monitor_pg                                   &
-     &     (i_field, iak_diff_uxb, node, ele, conduct, cd_prop,         &
+        call int_vol_magne_monitor_pg(i_field, iak_diff_uxb,            &
+     &      SGS_param1, cmt_param1, node, ele, conduct, cd_prop,        &
      &      iphys, nod_fld, iphys_ele, ele_fld, jac_3d, rhs_tbl,        &
      &      FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, f_nl)
       end if

@@ -158,9 +158,12 @@
 !
       if(evo_temp%iflag_scheme .ne. id_no_evolution) then
         if(SGS_param1%iflag_SGS_h_flux .eq. id_SGS_NL_grad) then
-          if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_hf_dynamic'
-          call cal_sgs_hf_dynamic                                       &
-     &       (ifld_sgs%i_heat_flux, icomp_sgs%i_heat_flux,              &
+          if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_sf_dynamic temp'
+          call cal_sgs_sf_dynamic                                       &
+     &       (SGS_param1%itype_Csym_h_flux, SGS_param1%SGS_hf_factor,   &
+     &        iphys%i_sgs_temp, iphys%i_filter_temp,                    &
+     &        iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_h_flux,    &
+     &        ifld_sgs%i_heat_flux, icomp_sgs%i_heat_flux,              &
      &        iphys_elediff%i_velo, iphys_elediff%i_filter_velo,        &
      &        mesh%nod_comm, mesh%node, mesh%ele, iphys,                &
      &        iphys_ele, ele_fld, MHD_mesh%fluid, layer_tbl,            &
@@ -170,9 +173,12 @@
 !
         else if(SGS_param1%iflag_SGS_h_flux .eq. id_SGS_similarity) then
           if (iflag_debug.eq.1)                                         &
-     &          write(*,*) 's_cal_sgs_h_flux_dynamic_simi'
-          call s_cal_sgs_h_flux_dynamic_simi                            &
-     &       (ifld_sgs%i_heat_flux, icomp_sgs%i_heat_flux,              &
+     &          write(*,*) 's_cal_sgs_s_flux_dynamic_simi temp'
+          call s_cal_sgs_s_flux_dynamic_simi                            &
+     &       (SGS_param1%itype_Csym_h_flux, iphys%i_sgs_temp,           &
+     &        iphys%i_filter_temp, iphys%i_wide_fil_temp,               &
+     &        iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_h_flux,    &
+     &        ifld_sgs%i_heat_flux, icomp_sgs%i_heat_flux,              &
      &        mesh%nod_comm, mesh%node, mesh%ele, iphys, layer_tbl,     &
      &        jac_3d_q, jac_3d_l, rhs_tbl, filtering, wide_filtering,   &
      &        m_lump, wk_filter, wk_cor, wk_lsq, wk_sgs, fem_wk,        &
@@ -195,8 +201,37 @@
       end if
 !
 !
-      if(evo_velo%iflag_scheme .ne. id_no_evolution) then
+      if(evo_comp%iflag_scheme .ne. id_no_evolution) then
+        if(SGS_param1%iflag_SGS_c_flux .eq. id_SGS_NL_grad) then
+          if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_sf_dynamic comp'
+          call cal_sgs_sf_dynamic                                       &
+     &       (SGS_param1%itype_Csym_c_flux, SGS_param1%SGS_cf_factor,   &
+     &        iphys%i_sgs_composit, iphys%i_filter_comp,                &
+     &        iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_c_flux,    &
+     &        ifld_sgs%i_comp_flux, icomp_sgs%i_comp_flux,              &
+     &        iphys_elediff%i_velo, iphys_elediff%i_filter_velo,        &
+     &        mesh%nod_comm, mesh%node, mesh%ele, iphys,                &
+     &        iphys_ele, ele_fld, MHD_mesh%fluid, layer_tbl,            &
+     &        jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,        &
+     &        sgs_coefs_nod, wk_filter, wk_cor, wk_lsq, wk_sgs,         &
+     &        mhd_fem_wk, fem_wk, f_l, nod_fld, sgs_coefs)
 !
+        else if(SGS_param1%iflag_SGS_c_flux .eq. id_SGS_similarity) then
+          if (iflag_debug.eq.1)                                         &
+     &          write(*,*) 's_cal_sgs_s_flux_dynamic_simi comp'
+          call s_cal_sgs_s_flux_dynamic_simi                            &
+     &       (SGS_param1%itype_Csym_c_flux, iphys%i_sgs_composit,       &
+     &        iphys%i_filter_comp, iphys%i_wide_fil_comp,               &
+     &        iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_c_flux,    &
+     &        ifld_sgs%i_heat_flux, icomp_sgs%i_heat_flux,              &
+     &        mesh%nod_comm, mesh%node, mesh%ele, iphys, layer_tbl,     &
+     &        jac_3d_q, jac_3d_l, rhs_tbl, filtering, wide_filtering,   &
+     &        m_lump, wk_filter, wk_cor, wk_lsq, wk_sgs, fem_wk,        &
+     &        f_l, nod_fld, sgs_coefs, sgs_coefs_nod)
+        end if
+      end if
+!
+      if(evo_velo%iflag_scheme .ne. id_no_evolution) then
         if (SGS_param1%iflag_SGS_m_flux .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_m_flux_dynamic'
           call cal_sgs_m_flux_dynamic                                   &
@@ -322,7 +357,7 @@
      &       (ifld_sgs%i_induction, icomp_sgs%i_induction,              &
      &        iphys_elediff%i_velo, iphys_elediff%i_filter_velo,        &
      &        mesh%nod_comm, mesh%node, mesh%ele, iphys,                &
-     &        iphys_ele, ele_fld, MHD_mesh%conduct, cd_prop1, layer_tbl, &
+     &        iphys_ele, ele_fld, MHD_mesh%conduct, cd_prop1, layer_tbl,&
      &        jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,        &
      &        wk_filter, wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,    &
      &        f_l, nod_fld, sgs_coefs)
@@ -335,7 +370,6 @@
      &        jac_3d_q, jac_3d_l, filtering, wide_filtering, wk_filter, &
      &        wk_cor, wk_lsq, wk_sgs, nod_fld, sgs_coefs)
         end if
-!
       end if
 !
       end subroutine s_cal_model_coefficients
