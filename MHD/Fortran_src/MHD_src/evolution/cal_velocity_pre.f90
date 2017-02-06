@@ -181,8 +181,8 @@
 !
 !
       if(SGS_param1%iflag_SGS_gravity .ne. id_SGS_none) then
-        call cal_sgs_mom_flux_with_sgs_buo                              &
-     &     (nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,        &
+        call cal_sgs_mom_flux_with_sgs_buo(SGS_param1,                  &
+     &      nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,        &
      &      fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,       &
      &      ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,          &
      &      FEM_elens, filtering, ifld_sgs, icomp_sgs,                  &
@@ -387,10 +387,10 @@
      &  .or. iflag_implicit_correct.eq.4) then
         call cal_velocity_co_imp                                        &
      &     (iphys%i_velo, ifld_diff%i_velo, ak_MHD%ak_d_velo,           &
-     &      nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,              &
-     &      iphys_ele, ele_fld,  jac_3d_q, rhs_tbl, FEM_elens,          &
-     &      diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,         &
-     &      f_l, f_nl, nod_fld)
+     &      SGS_param1, cmt_param1, nod_comm, node, ele, fluid,         &
+     &      fl_prop, Vnod_bcs, iphys_ele, ele_fld,  jac_3d_q, rhs_tbl,  &
+     &      FEM_elens, diff_coefs, Vmatrix, MG_vector,                  &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else
         call cal_velocity_co_exp(iphys%i_velo, iphys%i_p_phi,           &
      &      nod_comm, node, ele, fluid, jac_3d_q, rhs_tbl,              &

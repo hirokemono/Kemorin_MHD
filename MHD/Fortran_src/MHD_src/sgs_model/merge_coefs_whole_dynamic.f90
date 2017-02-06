@@ -3,8 +3,8 @@
 !
 !      written by H. Matsui on Nov., 2009
 !
-!!      subroutine s_merge_coefs_w_dynamic(numdir, cor, sgs_wg,         &
-!!     &          c_comps, c_fields)
+!!      subroutine s_merge_coefs_w_dynamic(iflag_Csim_marging,          &
+!!     &          numdir, cor, sgs_wg,c_comps, c_fields)
 !
       module merge_coefs_whole_dynamic
 !
@@ -23,11 +23,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_merge_coefs_w_dynamic(numdir, cor, sgs_wg,           &
-     &          c_comps, c_fields)
+      subroutine s_merge_coefs_w_dynamic(iflag_Csim_marging,            &
+     &          numdir, cor, sgs_wg,c_comps, c_fields)
 !
-      use m_control_parameter
+      use t_SGS_control_parameter
 !
+      integer (kind = kint), intent(in) :: iflag_Csim_marging
       integer (kind = kint), intent(in) :: numdir
       real(kind = kreal), intent(in) :: cor(numdir)
 !
@@ -38,10 +39,10 @@
 !
       call cal_each_components_w_coefs(numdir, sgs_wg, c_comps)
 !
-      if(SGS_param1%iflag_Csim_marging .eq. id_SGS_DIR_AVERAGE) then
+      if(iflag_Csim_marging .eq. id_SGS_DIR_AVERAGE) then
         call ave_by_direction_w_dynamic                                 &
      &     (numdir, sgs_wg, c_comps, c_fields)
-      else if (SGS_param1%iflag_Csim_marging .eq. id_SGS_DIR_CORRELATE) &
+      else if (iflag_Csim_marging .eq. id_SGS_DIR_CORRELATE) &
      & then
         call ave_by_correlate_w_dynamic                                 &
      &     (numdir, cor, sgs_wg, c_comps, c_fields)
@@ -55,7 +56,6 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_each_components_w_coefs(numdir, sgs_wg, c_comps)
-!
 !
       integer (kind = kint), intent(in) :: numdir
       real(kind=kreal), intent(in) ::  sgs_wg(18)

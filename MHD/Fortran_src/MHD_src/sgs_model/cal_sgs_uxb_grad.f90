@@ -3,8 +3,8 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine cal_sgs_uxb_2_ff_grad                                &
-!!     &         (i_filter, icomp_sgs_uxb, ie_dvx, node, ele, conduct,  &
+!!      subroutine cal_sgs_uxb_2_ff_grad(itype_Csym_uxb, icoord_Csim,   &
+!!     &          i_filter, icomp_sgs_uxb, ie_dvx, node, ele, conduct,  &
 !!     &          cd_prop, iphys, nod_fld, iphys_ele, ele_fld, jac_3d,  &
 !!     &          rhs_tbl, FEM_elens, sgs_coefs, mhd_fem_wk,            &
 !!     &          fem_wk, f_nl)
@@ -55,18 +55,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_sgs_uxb_2_ff_grad                                  &
-     &         (i_filter, icomp_sgs_uxb, ie_dvx, node, ele, conduct,    &
+      subroutine cal_sgs_uxb_2_ff_grad(itype_Csym_uxb, icoord_Csim,     &
+     &          i_filter, icomp_sgs_uxb, ie_dvx, node, ele, conduct,    &
      &          cd_prop, iphys, nod_fld, iphys_ele, ele_fld, jac_3d,    &
      &          rhs_tbl, FEM_elens, sgs_coefs, mhd_fem_wk,              &
      &          fem_wk, f_nl)
-!
-      use m_control_parameter
 !
       use int_vol_sgs_uxb
       use cal_skv_to_ff_smp
       use product_model_coefs_to_sk
 !
+      integer (kind=kint), intent(in) :: itype_Csym_uxb, icoord_Csim
       integer (kind=kint), intent(in) :: i_filter, icomp_sgs_uxb
       integer (kind=kint), intent(in) :: ie_dvx
 !
@@ -96,8 +95,7 @@
 !
 !     set elemental model coefficients
 !
-      call prod_model_coefs_4_vector                                    &
-     &   (ele, SGS_param1%itype_Csym_uxb, SGS_param1%icoord_Csim,       &
+      call prod_model_coefs_4_vector(ele, itype_Csym_uxb, icoord_Csim,  &
      &    sgs_coefs%ntot_comp, icomp_sgs_uxb, sgs_coefs%ak, fem_wk%sk6)
 !
       call add3_skv_coef_to_ff_v_smp(node, ele, rhs_tbl,                &

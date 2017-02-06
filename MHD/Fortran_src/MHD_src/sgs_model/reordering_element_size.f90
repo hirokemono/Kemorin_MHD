@@ -4,11 +4,12 @@
 !      Written by H. Matsui on Nov., 2006
 !      Modified by H. Matsui on Feb., 2008
 !
-!      subroutine reordering_ele_size(numele)
-!      subroutine reordering_scalar_by_layer
-!      subroutine reordering_vector_by_layer(numele, old2newele, elen)
-!      subroutine reordering_layer_info(numele, old2newele_layer,       &
-!     &          n_item_layer_d, item_layer)
+!!      subroutine reordering_ele_size(SGS_param, numele)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!      subroutine reordering_scalar_by_layer
+!!      subroutine reordering_vector_by_layer(numele, old2newele, elen)
+!!      subroutine reordering_layer_info(numele, old2newele_layer,      &
+!!     &          n_item_layer_d, item_layer)
 !
       module reordering_element_size
 !
@@ -47,15 +48,17 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine reordering_ele_size(numele)
+      subroutine reordering_ele_size(SGS_param, numele)
 !
-      use m_control_parameter
       use m_work_4_MHD_layering
       use m_filter_elength
+      use t_SGS_control_parameter
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       integer(kind = kint), intent(in) :: numele
 !
 !
+      if(SGS_param%iflag_SGS .ne. id_SGS_NL_grad) return
         call allocate_dx_ordering_tmp(numele)
 !
         call reordering_scalar_by_layer(numele, old2newele_layer(1),    &
@@ -100,7 +103,7 @@
         call deallocate_dx_ordering_tmp
 !
 !
-!      if(SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
+!      if(SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
 !        call reordering_layer_info(numele, old2newele_layer(1),        &
 !     &      layer_tbl1%e_grp%num_item, item_layer(1) )
 !      end if

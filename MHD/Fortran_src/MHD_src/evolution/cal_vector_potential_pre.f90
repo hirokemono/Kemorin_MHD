@@ -313,9 +313,9 @@
       if (   iflag_implicit_correct.eq.3                                &
      &  .or. iflag_implicit_correct.eq.4) then
         call cal_vector_p_co_imp(iphys%i_vecp, iak_diff_b, ak_d_magne,  &
-     &      nod_comm, node, ele, conduct, cd_prop, Bnod_bcs,            &
-     &      iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,           &
-     &      diff_coefs, m_lump, Bmatrix, MG_vector,                     &
+     &      SGS_param1, cmt_param1, nod_comm, node, ele, conduct,       &
+     &      cd_prop, Bnod_bcs, iphys_ele, ele_fld, jac_3d_q, rhs_tbl,   &
+     &      FEM_elens, diff_coefs, m_lump, Bmatrix, MG_vector,          &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
         call clear_field_data(nod_fld, n_scalar, iphys%i_m_phi)
       else

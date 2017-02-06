@@ -9,7 +9,8 @@
 !!     &          nlayer_SGS, num_sgs_kinds, num_sgs_coefs,             &
 !!     &          cor_sgs, cor_sgs_w, sgs_f_coef, sgs_c_coef,           &
 !!     &          sgs_f_whole, sgs_c_whole, wk_lsq)
-!!      subroutine cal_lsq_diff_coef(iele_fsmp_stack,                   &
+!!      subroutine cal_lsq_diff_coef                                    &
+!!     &         (iflag_Csim_marging, iele_fsmp_stack,                  &
 !!     &          node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,        &
 !!     &          numdir, ifield_d, icomp_f, n_int,                     &
 !!     &          num_diff_kinds, num_diff_coefs, cor_diff_w,           &
@@ -102,7 +103,7 @@
       call sum_lsq_whole_coefs(ncomp_lsq, wk_lsq)
 !
       call s_merge_coefs_w_dynamic                                      &
-     &   (numdir, cor_sgs_w(icomp_f), wk_lsq%wlsq,                      &
+     &   (iflag_Csim_marging, numdir, cor_sgs_w(icomp_f), wk_lsq%wlsq,  &
      &    sgs_c_whole(icomp_f), sgs_f_whole(ifield_d))
 !
       end subroutine cal_model_coef_4_flux
@@ -110,7 +111,8 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_lsq_diff_coef(iele_fsmp_stack,                     &
+      subroutine cal_lsq_diff_coef                                      &
+     &         (iflag_Csim_marging, iele_fsmp_stack,                    &
      &          node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,          &
      &          numdir, ifield_d, icomp_f, n_int,                       &
      &          num_diff_kinds, num_diff_coefs, cor_diff_w,             &
@@ -124,6 +126,7 @@
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !
+      integer (kind = kint), intent(in) :: iflag_Csim_marging
       integer(kind=kint), intent(in) :: numdir
       integer(kind=kint), intent(in) :: ifield_d, icomp_f, n_int
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -143,7 +146,7 @@
       call sum_lsq_whole_coefs(ncomp_lsq, wk_lsq)
 !
       call s_merge_coefs_w_dynamic                                      &
-     &   (numdir, cor_diff_w(icomp_f), wk_lsq%wlsq,                     &
+     &   (iflag_Csim_marging, numdir, cor_diff_w(icomp_f), wk_lsq%wlsq, &
      &    diff_c_whole(icomp_f), diff_f_whole(ifield_d))
 !
       end subroutine cal_lsq_diff_coef

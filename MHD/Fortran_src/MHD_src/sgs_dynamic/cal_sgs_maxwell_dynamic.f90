@@ -154,7 +154,8 @@
 !
 !   Change coordinate
 !
-      call cvt_tensor_dynamic_scheme_coord(node, iphys, nod_fld)
+      call cvt_tensor_dynamic_scheme_coord                              &
+     &   (SGS_param, node, iphys, nod_fld)
 !
 !     obtain model coefficient
 !

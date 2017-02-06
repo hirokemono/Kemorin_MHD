@@ -7,7 +7,9 @@
 !!     &        (ifld_diff, diff_coefs, node_1st, ele_1st, MHD_matrices)
 !!        type(node_data), intent(inout) :: node_1st
 !!        type(element_data), intent(inout) :: ele_1st
-!!      subroutine const_MGCG_MHD_matrices(ifld_diff, MHD_matrices)
+!!      subroutine const_MGCG_MHD_matrices                              &
+!!     &         (SGS_param, ifld_diff, MHD_matrices)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(SGS_terms_address), intent(in) :: ifld_diff
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(MHD_MG_matrices), intent(inout) :: MHD_matrices
@@ -342,12 +344,15 @@
 !
 ! ---------------------------------------------------------------------
 !
-      subroutine const_MGCG_MHD_matrices(ifld_diff, MHD_matrices)
+      subroutine const_MGCG_MHD_matrices                                &
+     &         (SGS_param, ifld_diff, MHD_matrices)
 !
       use m_ctl_parameter_Multigrid
+      use t_SGS_control_parameter
       use set_aiccg_matrices_type
       use matrices_precond_type
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(SGS_terms_address), intent(in) :: ifld_diff
       type(MHD_MG_matrices), intent(inout) :: MHD_matrices
 !
@@ -358,7 +363,7 @@
         if(my_rank .lt. MG_mpi(i_level)%nprocs) then
           if (iflag_debug.eq.1) write(*,*) 'set MG matrices', i_level
           call s_set_aiccg_matrices_type                                &
-     &     (MG_mesh(i_level)%mesh, MG_mesh(i_level)%group,              &
+     &     (SGS_param, MG_mesh(i_level)%mesh, MG_mesh(i_level)%group,   &
      &      MG_ele_mesh(i_level),  MG_MHD_mesh(i_level),                &
      &      MG_node_bc(i_level), MG_surf_bc(i_level),                   &
      &      ak_MHD_AMG(i_level), MG_jacobians(i_level)%jac_3d,          &

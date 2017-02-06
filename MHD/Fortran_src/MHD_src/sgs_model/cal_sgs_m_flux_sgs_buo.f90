@@ -3,14 +3,15 @@
 !
 !      written by H. Matsui on Aug., 2007
 !
-!!      subroutine cal_sgs_mom_flux_with_sgs_buo                        &
-!!     &         (nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,  &
+!!      subroutine cal_sgs_mom_flux_with_sgs_buo(SGS_param,             &
+!!     &          nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,  &
 !!     &          fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele, &
 !!     &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,    &
 !!     &          FEM_elens, filtering, ifld_sgs, icomp_sgs,            &
 !!     &          ifld_diff, iphys_elediff, sgs_coefs_nod, diff_coefs,  &
 !!     &          wk_filter, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,        &
 !!     &          surf_wk, f_l, f_nl, nod_fld, ele_fld, sgs_coefs)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -52,6 +53,7 @@
       use m_phys_constants
       use m_machine_parameter
 !
+      use t_SGS_control_parameter
       use t_comm_table
       use t_geometry_data_MHD
       use t_geometry_data
@@ -85,8 +87,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_sgs_mom_flux_with_sgs_buo                          &
-     &         (nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,    &
+      subroutine cal_sgs_mom_flux_with_sgs_buo(SGS_param,               &
+     &          nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,    &
      &          fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,   &
      &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,      &
      &          FEM_elens, filtering, ifld_sgs, icomp_sgs,              &
@@ -94,7 +96,6 @@
      &          wk_filter, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,          &
      &          surf_wk, f_l, f_nl, nod_fld, ele_fld, sgs_coefs)
 !
-      use m_control_parameter
       use m_phys_constants
 !
       use cal_sgs_fluxes
@@ -106,6 +107,7 @@
       use int_rms_ave_ele_grps
       use modify_Csim_by_SGS_buo_ele
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -151,7 +153,7 @@
       call clear_model_coefs_2_ele                                      &
      &   (ele, n_sym_tensor, icomp_sgs%i_mom_flux, sgs_coefs%ntot_comp, &
      &    sgs_coefs%ak)
-      call set_model_coefs_2_ele(ele, SGS_param1%itype_Csym_m_flux,     &
+      call set_model_coefs_2_ele(ele, SGS_param%itype_Csym_m_flux,      &
      &    n_sym_tensor, ifld_sgs%i_mom_flux, icomp_sgs%i_mom_flux,      &
      &    layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,            &
      &    layer_tbl%e_grp%istack_grp_smp, layer_tbl%e_grp%item_grp,     &
@@ -213,7 +215,7 @@
      &      wk_sgs%comp_coef, wk_sgs%fld_coef)
         call clippging_sgs_diff_coefs                                   &
      &     (ncomp_sgs_buo, ifld_sgs%i_buoyancy, icomp_sgs%i_buoyancy,   &
-     &      SGS_param1, wk_sgs)
+     &      SGS_param, wk_sgs)
       end if
       if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
 !        call cal_Csim_buo_by_Reynolds_ratio(wk_sgs%nlayer, isix,       &
@@ -226,11 +228,11 @@
      &      wk_lsq%slsq, wk_sgs%comp_coef, wk_sgs%fld_coef)
         call clippging_sgs_diff_coefs                                   &
      &     (ncomp_sgs_buo, ifld_sgs%i_buoyancy, icomp_sgs%i_buoyancy,   &
-     &      SGS_param1, wk_sgs)
+     &      SGS_param, wk_sgs)
       end if
 !
       call mod_Csim_by_SGS_buoyancy_ele                                 &
-     &   (SGS_param1, ele, layer_tbl%e_grp, fl_prop,                    &
+     &   (SGS_param, ele, layer_tbl%e_grp, fl_prop,                     &
      &    ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
 !
 !      if(iflag_debug .gt. 0) then

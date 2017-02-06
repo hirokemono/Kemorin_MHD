@@ -162,9 +162,7 @@
 !
 !   ordereing of element parameters for SGS model
 !
-      if(SGS_param1%iflag_SGS.eq.id_SGS_NL_grad) then
-        call reordering_ele_size(ele%numele)
-      end if
+      call reordering_ele_size(SGS_param1, ele%numele)
 !
       end subroutine s_reordering_by_layers
 !

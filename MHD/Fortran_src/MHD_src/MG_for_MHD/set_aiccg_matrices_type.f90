@@ -4,8 +4,8 @@
 !        programmed H.Matsui on Dec., 2008
 !
 !
-!!      subroutine s_set_aiccg_matrices_type(mesh, group, ele_mesh,     &
-!!     &         MHD_mesh, nod_bcs, surf_bcs, ak_MHD,                   &
+!!      subroutine s_set_aiccg_matrices_type(SGS_param, mesh, group,    &
+!!     &         ele_mesh, MHD_mesh, nod_bcs, surf_bcs, ak_MHD,         &
 !!     &         jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,           &
 !!     &         ifld_diff, diff_coefs, rhs_tbl,                        &
 !!     &         djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,      &
@@ -13,6 +13,7 @@
 !!     &         MG_mat_fl_l, mlump_fl, mlump_cd, surf_wk, fem_wk,      &
 !!     &         mat_velo, mat_magne, mat_temp, mat_light,              &
 !!     &         mat_press, mat_magp)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(element_geometry), intent(in) ::      ele_mesh
@@ -52,8 +53,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_aiccg_matrices_type(mesh, group, ele_mesh,       &
-     &         MHD_mesh, nod_bcs, surf_bcs, ak_MHD,                     &
+      subroutine s_set_aiccg_matrices_type(SGS_param, mesh, group,      &
+     &         ele_mesh, MHD_mesh, nod_bcs, surf_bcs, ak_MHD,           &
      &         jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,             &
      &         ifld_diff, diff_coefs, rhs_tbl,                          &
      &         djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,        &
@@ -62,10 +63,9 @@
      &         mat_velo, mat_magne, mat_temp, mat_light,                &
      &         mat_press, mat_magp)
 !
-      use m_control_parameter
-      use m_SGS_control_parameter
       use m_physical_property
 !
+      use t_SGS_control_parameter
       use t_mesh_data
       use t_geometry_data_MHD
       use t_surface_group_geometry
@@ -89,6 +89,7 @@
       use set_aiccg_bc_vectors
       use int_vol_consist_evo_mat
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
       type(element_geometry), intent(in) :: ele_mesh
@@ -132,7 +133,7 @@
       if (iflag_debug.eq.1) write(*,*) 'matrix assemble'
 !
       call int_MHD_poisson_matrices                                     &
-     &   (SGS_param1%ifilter_final, cmt_param1%iflag_c_magne,           &
+     &   (SGS_param%ifilter_final, cmt_param1%iflag_c_magne,            &
      &    mesh, jac_3d_l, rhs_tbl, MG_mat_linear, MG_mat_fl_l,          &
      &    FEM_elens, ifld_diff, diff_coefs, fem_wk,                     &
      &    mat_press, mat_magp)
@@ -144,7 +145,7 @@
      &      djds_tbl, djds_tbl_fl, mlump_fl, mlump_cd,                  &
      &      mat_velo, mat_magne, mat_temp, mat_light)
 !
-        call int_MHD_crank_matrices(SGS_param1%ifilter_final,           &
+        call int_MHD_crank_matrices(SGS_param%ifilter_final,            &
      &      mesh, ak_MHD, jac_3d_q, rhs_tbl,                            &
      &      MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,                    &
      &      FEM_elens, ifld_diff, diff_coefs, fem_wk,                   &
@@ -155,7 +156,7 @@
      &      (mesh, fl_prop1, cd_prop1, ht_prop1, cp_prop1,              &
      &       jac_3d_q, rhs_tbl, MG_mat_fl_q, MG_mat_full_cd_q, fem_wk,  &
      &      mat_velo, mat_magne, mat_temp, mat_light)
-        call int_MHD_crank_matrices(SGS_param1%ifilter_final,           &
+        call int_MHD_crank_matrices(SGS_param%ifilter_final,            &
      &      mesh, ak_MHD, jac_3d_q, rhs_tbl,                            &
      &      MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,                    &
      &      FEM_elens, ifld_diff, diff_coefs, fem_wk,                   &

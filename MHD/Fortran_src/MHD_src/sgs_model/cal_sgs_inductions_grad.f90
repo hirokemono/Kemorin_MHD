@@ -3,7 +3,8 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine cal_sgs_induct_t_grad_w_coef(i_filter, icomp_sgs_uxb,&
+!!      subroutine cal_sgs_induct_t_grad_w_coef                         &
+!!     &         (itype_Csym_uxb, icoord_Csim, i_filter, icomp_sgs_uxb, &
 !!     &          i_sgs, ifield_v, ifield_b, ie_dvx, ie_dbx,            &
 !!     &          nod_comm, node, ele, conduct, cd_prop,                &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elen,        &
@@ -33,8 +34,6 @@
 !
       use m_precision
 !
-      use m_control_parameter
-!
       use t_physical_property
       use t_comm_table
       use t_geometry_data_MHD
@@ -55,7 +54,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_sgs_induct_t_grad_w_coef(i_filter, icomp_sgs_uxb,  &
+      subroutine cal_sgs_induct_t_grad_w_coef                           &
+     &         (itype_Csym_uxb, icoord_Csim, i_filter, icomp_sgs_uxb,   &
      &          i_sgs, ifield_v, ifield_b, ie_dvx, ie_dbx,              &
      &          nod_comm, node, ele, conduct, cd_prop,                  &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elen,          &
@@ -79,6 +79,7 @@
       type(gradient_model_data_type), intent(in) :: FEM_elen
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
 !
+      integer (kind=kint), intent(in) :: itype_Csym_uxb, icoord_Csim
       integer (kind=kint), intent(in) :: i_filter, icomp_sgs_uxb
       integer (kind=kint), intent(in) :: i_sgs, ifield_v, ifield_b
       integer (kind=kint), intent(in) :: ie_dvx, ie_dbx
@@ -100,8 +101,7 @@
 !
 !     set elemental model coefficients
 !
-      call prod_model_coefs_4_asym_t                                    &
-     &   (ele, SGS_param1%itype_Csym_uxb, SGS_param1%icoord_Csim,       &
+      call prod_model_coefs_4_asym_t(ele, itype_Csym_uxb, icoord_Csim,  &
      &    sgs_coefs%ntot_comp, icomp_sgs_uxb, sgs_coefs%ak, fem_wk%sk6)
 !
       call add3_skv_coef_to_ff_v_smp(node, ele, rhs_tbl,                &

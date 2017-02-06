@@ -310,7 +310,8 @@
       if     (SGS_param1%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
         if (iflag_debug.eq.1)                                           &
      &    write(*,*) 'cal_sgs_induct_t_grad'
-        call cal_sgs_induct_t_grad_w_coef(SGS_param1%ifilter_final,     &
+        call cal_sgs_induct_t_grad_w_coef(SGS_param1%itype_Csym_uxb,    &
+     &      SGS_param1%icoord_Csim, SGS_param1%ifilter_final,           &
      &      icomp_sgs_uxb, iphys%i_SGS_induct_t,                        &
      &      iphys%i_velo, iphys%i_magne, ie_dvx, ie_dbx,                &
      &      nod_comm, node, ele, conduct, cd_prop, iphys_ele, ele_fld,  &
@@ -367,7 +368,8 @@
       if     (SGS_param1%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
         if (iflag_debug.eq.1)                                           &
      &    write(*,*) 'cal_sgs_uxb_2_ff_grad', SGS_param1%ifilter_final
-        call cal_sgs_uxb_2_ff_grad(SGS_param1%ifilter_final,            &
+        call cal_sgs_uxb_2_ff_grad(SGS_param1%itype_Csym_uxb,           &
+     &      SGS_param1%icoord_Csim, SGS_param1%ifilter_final,           &
      &      icomp_sgs_uxb, ie_dvx, node, ele, conduct,   &
      &      cd_prop, iphys, nod_fld, iphys_ele, ele_fld, jac_3d,        &
      &      rhs_tbl, FEM_elens, sgs_coefs, mhd_fem_wk, fem_wk, f_nl)

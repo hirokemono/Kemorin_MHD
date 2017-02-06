@@ -199,7 +199,8 @@ integer(kind = kint) :: iflag
       call define_sgs_components                                        &
      &   (mesh%node%numnod, mesh%ele%numele, SGS_param1, layer_tbl,     &
      &    ifld_sgs, icomp_sgs, wk_sgs1, sgs_coefs, sgs_coefs_nod)
-      call define_sgs_diff_coefs(mesh%ele%numele, layer_tbl,            &
+      call define_sgs_diff_coefs                                        &
+     &   (mesh%ele%numele, SGS_param1, cmt_param1, layer_tbl,           &
      &    ifld_diff, icomp_diff, wk_diff1, diff_coefs)
 !
       call deallocate_surface_geom_type(ele_mesh%surf)

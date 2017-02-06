@@ -360,7 +360,8 @@
      &    wk_diff%ave_simi_w, wk_diff%ave_grad_w,                       &
      &    wk_diff%corrilate_w, wk_diff%covariant_w, wk_cor)
 !
-      call cal_lsq_diff_coef(iele_fsmp_stack,                           &
+      call cal_lsq_diff_coef                                            &
+     &   (SGS_param%iflag_Csim_marging, iele_fsmp_stack,                &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
      &    numdir, ifield_d, icomp_f, n_int,                             &
      &    wk_diff%num_kinds, wk_diff%ntot_comp, wk_diff%corrilate_w,    &

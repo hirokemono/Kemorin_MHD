@@ -147,7 +147,8 @@
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_filter_induct_grad'
       call cal_sgs_induct_t_grad_w_coef                                 &
-     &   (ifilter_4delta, icomp_sgs_uxb, iphys%i_sgs_grad_f,            &
+     &   (SGS_param%itype_Csym_uxb, SGS_param%icoord_Csim,              &
+     &    ifilter_4delta, icomp_sgs_uxb, iphys%i_sgs_grad_f,            &
      &    iphys%i_filter_velo, iphys%i_filter_magne, ie_dfvx, ie_dfbx,  &
      &    nod_comm, node, ele, conduct, cd_prop, iphys_ele, ele_fld,    &
      &    jac_3d_q, rhs_tbl, FEM_elens, sgs_coefs, fem_wk, mhd_fem_wk,  &
