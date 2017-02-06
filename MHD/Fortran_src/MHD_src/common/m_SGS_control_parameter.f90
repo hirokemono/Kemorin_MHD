@@ -19,7 +19,6 @@
 !
 !
       type(SGS_model_control_params), save :: SGS_param1
-!SGS_param1%ifilter_final
 !
       type(commutation_control_params), save :: cmt_param1
 !

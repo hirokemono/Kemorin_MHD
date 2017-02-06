@@ -3,8 +3,8 @@
 !
 !     Written by H. Matsui
 !
-!!      subroutine s_cal_diff_coef_sgs_hf                               &
-!!     &         (iak_diff_hf, icomp_sgs_hf, icomp_diff_hf, ie_dfvx,    &
+!!      subroutine s_cal_diff_coef_sgs_sf                               &
+!!     &         (iak_diff_flux, icomp_sgs_flux, icomp_diff_sf, ie_dfvx,&
 !!     &          nod_comm, node, ele, surf, sf_grp, nod_bcs, sf_bcs,   &
 !!     &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,          &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
@@ -74,8 +74,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_diff_coef_sgs_hf                                 &
-     &         (iak_diff_hf, icomp_sgs_hf, icomp_diff_hf, ie_dfvx,      &
+      subroutine s_cal_diff_coef_sgs_sf(itype_Csym_flux,                &
+     &          ifield, ifield_f, ivelo, ivelo_f, i_sgs,                &
+     &          iak_diff_flux, icomp_sgs_flux, icomp_diff_sf, ie_dfvx,  &
      &          nod_comm, node, ele, surf, sf_grp, nod_bcs, sf_bcs,     &
      &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,            &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
@@ -98,8 +99,12 @@
       use set_boundary_scalars
       use nod_phys_send_recv
 !
-      integer(kind = kint), intent(in) :: iak_diff_hf
-      integer(kind = kint), intent(in) :: icomp_sgs_hf, icomp_diff_hf
+      integer(kind = kint), intent(in) :: itype_Csym_flux
+      integer (kind=kint), intent(in) :: i_sgs, ifield, ifield_f
+      integer (kind=kint), intent(in) :: ivelo, ivelo_f
+!
+      integer(kind = kint), intent(in) :: iak_diff_flux
+      integer(kind = kint), intent(in) :: icomp_sgs_flux, icomp_diff_sf
       integer(kind = kint), intent(in) :: ie_dfvx
 !
       type(communication_table), intent(in) :: nod_comm
@@ -135,16 +140,15 @@
 !    reset model coefficients
 !
       call reset_diff_model_coefs(ele%numele, ele%istack_ele_smp,       &
-     &    diff_coefs%num_field, iak_diff_hf, diff_coefs%ak)
+     &    diff_coefs%num_field, iak_diff_flux, diff_coefs%ak)
       call clear_work_4_dynamic_model(iphys, nod_fld)
 !
 !   gradient model by filtered field (to iphys%i_sgs_grad_f)
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_filter_hf_grad'
       call cal_sgs_s_flux_grad_w_coef                                   &
-     &   (iflag_temp_supg, SGS_param1%itype_Csym_h_flux,                &
-     &    ifilter_4delta, icomp_sgs_hf,                                 &
-     &    iphys%i_sgs_grad_f, iphys%i_filter_temp, ie_dfvx,             &
+     &   (iflag_temp_supg, itype_Csym_flux, ifilter_4delta,             &
+     &    icomp_sgs_flux, iphys%i_sgs_grad_f, ifield_f, ie_dfvx,        &
      &    nod_comm, node, ele, fluid, iphys_ele, ele_fld, jac_3d_q,     &
      &    rhs_tbl, FEM_elens, sgs_coefs, mhd_fem_wk, fem_wk,            &
      &    f_l, nod_fld)
@@ -152,16 +156,15 @@
 !   take divergence of filtered heat flux (to iphys%i_sgs_simi)
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_div_sgs_filter_hf_simi'
-      call cal_div_sgs_hf_simi(iphys%i_sgs_simi, iphys%i_sgs_grad_f,    &
-     &    iphys%i_filter_velo, iphys%i_filter_temp,                     &
+      call cal_div_sgs_sf_simi                                          &
+     &  (iphys%i_sgs_simi, iphys%i_sgs_grad_f, ivelo_f, ifield_f,       &
      &    nod_comm, node, ele, fluid, iphys_ele, ele_fld,               &
      &    jac_3d_q, rhs_tbl, fem_wk, mhd_fem_wk, f_l, f_nl, nod_fld)
 !
 !   take divergence of heat flux (to iphys%i_sgs_grad)
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_div_sgs_h_flux_simi'
-      call cal_div_sgs_hf_simi(iphys%i_sgs_grad, iphys%i_SGS_h_flux,    &
-     &    iphys%i_velo, iphys%i_sgs_temp,                               &
+      call cal_div_sgs_sf_simi(iphys%i_sgs_grad, i_sgs, ivelo, ifield,  &
      &    nod_comm, node, ele, fluid, iphys_ele, ele_fld,               &
      &    jac_3d_q, rhs_tbl, fem_wk, mhd_fem_wk, f_l, f_nl, nod_fld)
 !
@@ -183,12 +186,12 @@
 !
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad_f)
 !
-      call cal_commute_error_4_hf                                       &
+      call cal_commute_error_4_sf                                       &
      &   (fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
      &    rhs_tbl, FEM_elens, sf_bcs%sgs, ifilter_4delta,               &
-     &    iphys%i_sgs_grad_f, iphys%i_sgs_grad_f, iphys%i_filter_velo,  &
-     &    iphys%i_filter_temp, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &    iphys%i_sgs_grad_f, iphys%i_sgs_grad_f, ivelo_f, ifield_f,    &
+     &    fem_wk, surf_wk, f_l, f_nl, nod_fld)
       call delete_field_by_fixed_s_bc                                   &
      &   (nod_bcs%nod_bc_s, iphys%i_sgs_grad_f, nod_fld)
 !
@@ -199,12 +202,12 @@
 !
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad)
 !
-      call cal_commute_error_4_hf                                       &
+      call cal_commute_error_4_sf                                       &
      &   (fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
      &    rhs_tbl, FEM_elens, sf_bcs%sgs, ifilter_2delta,               &
-     &    iphys%i_sgs_grad, iphys%i_SGS_h_flux, iphys%i_velo,           &
-     &    iphys%i_sgs_temp, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &    iphys%i_sgs_grad, i_sgs, ivelo, ifield,                       &
+     &    fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
       call scalar_send_recv(iphys%i_sgs_grad, nod_comm, nod_fld)
 !
@@ -221,13 +224,13 @@
 !     obtain model coefficient
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
-     &   'cal_diff_coef_fluid', n_scalar, iak_diff_hf, icomp_diff_hf
+     &   'cal_diff_coef_fluid', n_scalar, iak_diff_flux, icomp_diff_sf
       call cal_diff_coef_fluid(layer_tbl,                               &
      &    node, ele, fluid, iphys, nod_fld, jac_3d_q, jac_3d_l,         &
-     &    n_scalar, iak_diff_hf, icomp_diff_hf, intg_point_t_evo,       &
+     &    n_scalar, iak_diff_flux, icomp_diff_sf, intg_point_t_evo,     &
      &    wk_cor, wk_lsq, wk_diff, diff_coefs)
 !
-      end subroutine s_cal_diff_coef_sgs_hf
+      end subroutine s_cal_diff_coef_sgs_sf
 !
 !-----------------------------------------------------------------------
 !

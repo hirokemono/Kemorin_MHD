@@ -7,7 +7,7 @@
 !!     &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,       &
 !!     &          jac_3d, rhs_tbl, fem_wk, mhd_fem_wk,                  &
 !!     &          f_l, f_nl, nod_fld)
-!!      subroutine cal_div_sgs_hf_simi(i_sgs, i_flux, i_vect, i_scalar, &
+!!      subroutine cal_div_sgs_sf_simi(i_sgs, i_flux, i_vect, i_scalar, &
 !!     &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,       &
 !!     &          jac_3d, rhs_tbl, fem_wk, mhd_fem_wk,                  &
 !!     &          f_l, f_nl, nod_fld)
@@ -113,7 +113,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_div_sgs_hf_simi(i_sgs, i_flux, i_vect, i_scalar,   &
+      subroutine cal_div_sgs_sf_simi(i_sgs, i_flux, i_vect, i_scalar,   &
      &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,         &
      &          jac_3d, rhs_tbl, fem_wk, mhd_fem_wk,                    &
      &          f_l, f_nl, nod_fld)
@@ -145,12 +145,12 @@
        call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
         if ( iflag_temp_supg .gt. id_turn_OFF) then
-          call int_div_sgs_hf_simi_upw(i_flux, i_vect, i_scalar,        &
+          call int_div_sgs_sf_simi_upw(i_flux, i_vect, i_scalar,        &
      &        node, ele, fluid, nod_fld, jac_3d, rhs_tbl,               &
      &        ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,       &
      &        fem_wk, f_nl)
         else
-          call int_div_sgs_hf_simi_pg(i_flux, i_vect, i_scalar,         &
+          call int_div_sgs_sf_simi_pg(i_flux, i_vect, i_scalar,         &
      &        node, ele, fluid, nod_fld, jac_3d, rhs_tbl, fem_wk, f_nl)
         end if
 !
@@ -163,7 +163,7 @@
 !
       call scalar_send_recv(i_sgs, nod_comm, nod_fld)
 !
-      end subroutine cal_div_sgs_hf_simi
+      end subroutine cal_div_sgs_sf_simi
 !
 !-----------------------------------------------------------------------
 !

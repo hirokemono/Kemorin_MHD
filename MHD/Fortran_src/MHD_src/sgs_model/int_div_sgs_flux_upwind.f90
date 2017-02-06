@@ -7,7 +7,7 @@
 !!      subroutine int_div_sgs_mf_simi_upwind(i_flux, i_vect,           &
 !!     &          node, ele, fluid, nod_fld, jac_3d, rhs_tbl,           &
 !!     &          ncomp_ele, ie_upw, d_ele, fem_wk, f_nl)
-!!      subroutine int_div_sgs_hf_simi_upw(i_flux, i_vect, i_scalar,    &
+!!      subroutine int_div_sgs_sf_simi_upw(i_flux, i_vect, i_scalar,    &
 !!     &          node, ele, fluid, nod_fld, jac_3d, rhs_tbl,           &
 !!     &          ncomp_ele, iele_velo, d_ele, fem_wk, f_nl)
 !!      subroutine int_div_sgs_idct_simi_upw(i_flux, i_v, i_b,          &
@@ -95,7 +95,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_div_sgs_hf_simi_upw(i_flux, i_vect, i_scalar,      &
+      subroutine int_div_sgs_sf_simi_upw(i_flux, i_vect, i_scalar,      &
      &          node, ele, fluid, nod_fld, jac_3d, rhs_tbl,             &
      &          ncomp_ele, iele_velo, d_ele, fem_wk, f_nl)
 !
@@ -137,7 +137,7 @@
       call add1_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
      &    fem_wk%sk6, f_nl%ff_smp)
 !
-      end subroutine int_div_sgs_hf_simi_upw
+      end subroutine int_div_sgs_sf_simi_upw
 !
 !-----------------------------------------------------------------------
 !

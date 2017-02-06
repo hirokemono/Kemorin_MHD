@@ -9,7 +9,7 @@
 !!      subroutine int_div_sgs_mf_simi_pg(i_flux, i_vect,               &
 !!     &          node, ele, fluid, nod_fld, jac_3d, rhs_tbl,           &
 !!     &          fem_wk, f_nl)
-!!      subroutine int_div_sgs_hf_simi_pg(i_flux, i_vect, i_scalar,     &
+!!      subroutine int_div_sgs_sf_simi_pg(i_flux, i_vect, i_scalar,     &
 !!     &          node, ele, fluid, nod_fld, jac_3d, rhs_tbl,           &
 !!     &          fem_wk, f_nl)
 !!      subroutine int_div_sgs_idct_simi_pg(i_flux, i_v, i_b,           &
@@ -91,7 +91,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_div_sgs_hf_simi_pg(i_flux, i_vect, i_scalar,       &
+      subroutine int_div_sgs_sf_simi_pg(i_flux, i_vect, i_scalar,       &
      &          node, ele, fluid, nod_fld, jac_3d, rhs_tbl,             &
      &          fem_wk, f_nl)
 !
@@ -131,7 +131,7 @@
       call add1_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
      &    fem_wk%sk6, f_nl%ff_smp)
 !
-      end subroutine int_div_sgs_hf_simi_pg
+      end subroutine int_div_sgs_sf_simi_pg
 !
 !-----------------------------------------------------------------------
 !

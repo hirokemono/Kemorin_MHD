@@ -3,7 +3,7 @@
 !
 !     Written by H. Matsui
 !
-!!      subroutine cal_commute_error_4_hf(iele_fsmp_stack, m_lump,      &
+!!      subroutine cal_commute_error_4_sf(iele_fsmp_stack, m_lump,      &
 !!     &          node, ele, surf, sf_grp, jac_3d, jac_sf_grp, rhs_tbl, &
 !!     &          FEM_elens, sgs_sf, i_filter, i_sgs, i_flux, i_vect,   &
 !!     &          i_scalar, fem_wk, surf_wk, f_l, f_nl, nod_fld)
@@ -64,7 +64,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_commute_error_4_hf(iele_fsmp_stack, m_lump,        &
+      subroutine cal_commute_error_4_sf(iele_fsmp_stack, m_lump,        &
      &          node, ele, surf, sf_grp, jac_3d, jac_sf_grp, rhs_tbl,   &
      &          FEM_elens, sgs_sf, i_filter, i_sgs, i_flux, i_vect,     &
      &          i_scalar, fem_wk, surf_wk, f_l, f_nl, nod_fld)
@@ -110,7 +110,7 @@
       call cal_ff_2_scalar(node%numnod, node%istack_nod_smp,            &
      &    f_nl%ff, m_lump%ml, nod_fld%ntot_phys, i_sgs, nod_fld%d_fld)
 !
-      end subroutine cal_commute_error_4_hf
+      end subroutine cal_commute_error_4_sf
 !
 !-----------------------------------------------------------------------
 !

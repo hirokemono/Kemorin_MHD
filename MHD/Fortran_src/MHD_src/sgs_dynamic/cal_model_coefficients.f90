@@ -186,9 +186,11 @@
         end if
 !
         if ( cmt_param1%iflag_c_hf .eq. id_SGS_commute_ON) then
-          if (iflag_debug.eq.1)  write(*,*) 's_cal_diff_coef_sgs_hf'
-          call s_cal_diff_coef_sgs_hf                                   &
-     &       (ifld_diff%i_heat_flux, icomp_sgs%i_heat_flux,             &
+          if (iflag_debug.eq.1)  write(*,*) 's_cal_diff_coef_sgs_sf'
+          call s_cal_diff_coef_sgs_sf(SGS_param1%itype_Csym_h_flux,     &
+     &        iphys%i_sgs_temp, iphys%i_filter_temp,                    &
+     &        iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_h_flux,    &
+     &        ifld_diff%i_heat_flux, icomp_sgs%i_heat_flux,             &
      &        icomp_diff%i_heat_flux, iphys_elediff%i_filter_velo,      &
      &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
      &        group%surf_grp, nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,       &
@@ -223,11 +225,27 @@
      &       (SGS_param1%itype_Csym_c_flux, iphys%i_sgs_composit,       &
      &        iphys%i_filter_comp, iphys%i_wide_fil_comp,               &
      &        iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_c_flux,    &
-     &        ifld_sgs%i_heat_flux, icomp_sgs%i_heat_flux,              &
+     &        ifld_sgs%i_comp_flux, icomp_sgs%i_comp_flux,              &
      &        mesh%nod_comm, mesh%node, mesh%ele, iphys, layer_tbl,     &
      &        jac_3d_q, jac_3d_l, rhs_tbl, filtering, wide_filtering,   &
      &        m_lump, wk_filter, wk_cor, wk_lsq, wk_sgs, fem_wk,        &
      &        f_l, nod_fld, sgs_coefs, sgs_coefs_nod)
+        end if
+!
+        if ( cmt_param1%iflag_c_hf .eq. id_SGS_commute_ON) then
+          if (iflag_debug.eq.1)  write(*,*) 's_cal_diff_coef_sgs_sf'
+          call s_cal_diff_coef_sgs_sf(SGS_param1%itype_Csym_c_flux,     &
+     &        iphys%i_sgs_composit, iphys%i_filter_comp,                &
+     &        iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_c_flux,    &
+     &        ifld_diff%i_comp_flux, icomp_sgs%i_comp_flux,             &
+     &        icomp_diff%i_comp_flux, iphys_elediff%i_filter_velo,      &
+     &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
+     &        group%surf_grp, nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,       &
+     &        iphys, iphys_ele, ele_fld, MHD_mesh%fluid, layer_tbl,     &
+     &        jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,                &
+     &        FEM_elens, filtering, sgs_coefs, wk_filter,               &
+     &        wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk, surf_wk,     &
+     &        f_l, f_nl, nod_fld, diff_coefs)
         end if
       end if
 !
