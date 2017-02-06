@@ -3,8 +3,8 @@
 !
 !      Written by H. Matsui on Apr., 2012
 !
-!!      subroutine cal_sgs_m_flux_grad_w_coef(itype_csim, i_filter,     &
-!!     &          icm_sgs, i_sgs, i_field, ie_dvx, nod_comm,            &
+!!      subroutine cal_sgs_m_flux_grad_w_coef(itype_csim, icoord_Csim,  &
+!!     &          i_filter, icm_sgs, i_sgs, i_field, ie_dvx, nod_comm,  &
 !!     &          node, ele, fluid, iphys_ele, ele_fld, jac_3d,         &
 !!     &          FEM_elens, sgs_coefs, rhs_tbl, fem_wk,                &
 !!     &          mhd_fem_wk, nod_fld)
@@ -55,8 +55,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_sgs_m_flux_grad_w_coef(itype_csim, i_filter,       &
-     &          icm_sgs, i_sgs, i_field, ie_dvx, nod_comm,              &
+      subroutine cal_sgs_m_flux_grad_w_coef(itype_csim, icoord_Csim,    &
+     &          i_filter, icm_sgs, i_sgs, i_field, ie_dvx, nod_comm,    &
      &          node, ele, fluid, iphys_ele, ele_fld, jac_3d,           &
      &          FEM_elens, sgs_coefs, rhs_tbl, fem_wk,                  &
      &          mhd_fem_wk, nod_fld)
@@ -78,7 +78,7 @@
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
-      integer (kind=kint), intent(in) :: itype_csim
+      integer (kind=kint), intent(in) :: itype_csim, icoord_Csim
       integer (kind=kint), intent(in) :: i_filter, icm_sgs
       integer (kind=kint), intent(in) :: i_sgs, i_field
       integer (kind=kint), intent(in) :: ie_dvx
@@ -98,7 +98,7 @@
 !
 !     set elemental model coefficients
 !
-      call prod_model_coefs_4_tensor(ele, itype_csim,                   &
+      call prod_model_coefs_4_tensor(ele, itype_csim, icoord_Csim,      &
      &    sgs_coefs%ntot_comp, icm_sgs, sgs_coefs%ak, fem_wk%sk6)
 !
       call add6_skv_to_ff_t_smp(node, ele, rhs_tbl,                     &

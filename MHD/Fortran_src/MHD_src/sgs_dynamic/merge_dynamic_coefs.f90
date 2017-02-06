@@ -3,14 +3,14 @@
 !
 !      written by H. Matsui on Aug., 2007
 !
-!      subroutine merge_coefs_4_dynamic(numdir, n_layer, cor, sgs_les,  &
-!     &          dnum, c_comps,  c_fields)
-!      subroutine cal_Csim_buo_by_Reynolds_ratio(n_layer, irms_buo,     &
-!     &          num_fld, num_comp, i_fld, i_comp,                      &
-!     &          sgs_les, sgs_c_coef, sgs_f_coef)
-!      subroutine single_Csim_buo_by_mf_ratio(n_layer, irms_buo,        &
-!     &          num_fld, num_comp, i_fld, i_comp,                      &
-!     &          sgs_les, sgs_c_coef, sgs_f_coef)
+!!      subroutine merge_coefs_4_dynamic(iflag_Csim_marging,            &
+!!     &         numdir, n_layer, cor, sgs_les, dnum, c_comps, c_fields)
+!!      subroutine cal_Csim_buo_by_Reynolds_ratio(n_layer, irms_buo,    &
+!!     &          num_fld, num_comp, i_fld, i_comp,                     &
+!!     &          sgs_les, sgs_c_coef, sgs_f_coef)
+!!      subroutine single_Csim_buo_by_mf_ratio(n_layer, irms_buo,       &
+!!     &          num_fld, num_comp, i_fld, i_comp,                     &
+!!     &          sgs_les, sgs_c_coef, sgs_f_coef)
 !
       module merge_dynamic_coefs
 !
@@ -29,12 +29,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine merge_coefs_4_dynamic(numdir, n_layer, cor, sgs_les,   &
-     &          dnum, c_comps, c_fields)
+      subroutine merge_coefs_4_dynamic(iflag_Csim_marging,              &
+     &         numdir, n_layer, cor, sgs_les, dnum, c_comps, c_fields)
 !
       use calypso_mpi
-      use m_control_parameter
+      use t_SGS_control_parameter
 !
+      integer (kind = kint), intent(in) :: iflag_Csim_marging
       integer (kind = kint), intent(in) :: numdir, n_layer
       real(kind = kreal), intent(in) :: cor(n_layer,numdir)
 !
@@ -47,11 +48,10 @@
       call cal_each_components_m_coefs                                  &
      &   (numdir, n_layer, sgs_les, c_comps)
 !
-      if(SGS_param1%iflag_Csim_marging .eq. id_SGS_DIR_AVERAGE) then
+      if(iflag_Csim_marging .eq. id_SGS_DIR_AVERAGE) then
         call ave_by_direction_4_dynamic(numdir, n_layer,                &
      &      sgs_les, c_comps, c_fields, dnum)
-      else if (SGS_param1%iflag_Csim_marging .eq. id_SGS_DIR_CORRELATE) &
-     & then
+      else if(iflag_Csim_marging .eq. id_SGS_DIR_CORRELATE) then
         call ave_by_correlate_4_dynamic(numdir, n_layer,                &
      &      sgs_les, cor, c_comps, c_fields, dnum)
       else

@@ -117,8 +117,9 @@
       if (     SGS_param1%iflag_SGS_h_flux .eq. id_SGS_NL_grad) then
         if (iflag_debug.eq.1)                                           &
      &     write(*,*) 'cal_sgs_h_flux_grad', SGS_param1%ifilter_final
-      call cal_sgs_s_flux_grad_w_coef(iflag_temp_supg,                  &
-     &    SGS_param1%itype_Csym_h_flux, SGS_param1%ifilter_final,       &
+      call cal_sgs_s_flux_grad_w_coef                                   &
+     &   (iflag_temp_supg, SGS_param1%itype_Csym_h_flux,                &
+     &    SGS_param1%icoord_Csim, SGS_param1%ifilter_final,             &
      &    icomp_sgs_hf, iphys%i_SGS_h_flux, iphys%i_sgs_temp, ie_dvx,   &
      &    nod_comm, node, ele, fluid, iphys_ele, ele_fld, jac_3d,       &
      &    rhs_tbl, FEM_elens, sgs_coefs, mhd_fem_wk, fem_wk,            &
@@ -180,8 +181,8 @@
       if (  SGS_param1%iflag_SGS_m_flux .eq. id_SGS_NL_grad) then
         if (iflag_debug.eq.1)                                           &
      &    write(*,*) 'cal_sgs_m_flux_grad', SGS_param1%ifilter_final
-        call cal_sgs_m_flux_grad_w_coef                                 &
-     &     (SGS_param1%itype_Csym_m_flux, SGS_param1%ifilter_final,     &
+        call cal_sgs_m_flux_grad_w_coef(SGS_param1%itype_Csym_m_flux,   &
+     &      SGS_param1%icoord_Csim, SGS_param1%ifilter_final,           &
      &      icomp_sgs_mf, iphys%i_SGS_m_flux, iphys%i_velo, ie_dvx,     &
      &      nod_comm, node, ele, fluid, iphys_ele, ele_fld,             &
      &      jac_3d, FEM_elens, sgs_coefs, rhs_tbl, fem_wk,              &
@@ -243,8 +244,8 @@
       if (    SGS_param1%iflag_SGS_lorentz .eq. id_SGS_NL_grad) then
         if (iflag_debug.eq.1)                                           &
      &    write(*,*) 'cal_sgs_maxwell_grad', SGS_param1%ifilter_final
-        call cal_sgs_m_flux_grad_w_coef                                 &
-     &     (SGS_param1%itype_Csym_maxwell, SGS_param1%ifilter_final,    &
+        call cal_sgs_m_flux_grad_w_coef(SGS_param1%itype_Csym_maxwell,  &
+     &      SGS_param1%icoord_Csim, SGS_param1%ifilter_final,           &
      &      icomp_sgs_lor, iphys%i_SGS_maxwell, iphys%i_magne, ie_dbx,  &
      &      nod_comm, node, ele, fluid, iphys_ele, ele_fld,             &
      &      jac_3d, FEM_elens, sgs_coefs, rhs_tbl, fem_wk,              &

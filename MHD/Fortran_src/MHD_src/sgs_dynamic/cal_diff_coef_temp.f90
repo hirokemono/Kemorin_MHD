@@ -3,13 +3,16 @@
 !
 !     Written by H. Matsui
 !
-!!      subroutine s_cal_diff_coef_temp(iak_diff_t, icomp_diff_t,       &
-!!     &         nod_comm, node, ele, surf, sf_grp, Tsf_bcs,            &
-!!     &         iphys, iphys_ele, ele_fld, fluid, layer_tbl,           &
-!!     &         jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,             &
-!!     &         FEM_elens, filtering, wk_filter,                       &
-!!     &         wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk, surf_wk,  &
-!!     &         f_l, f_nl, nod_fld, diff_coefs)
+!!      subroutine s_cal_diff_coef_scalar                               &
+!!     &         (ifield, ifield_f, iak_diff_t, icomp_diff_t,           &
+!!     &          SGS_param, cmt_param, nod_comm, node, ele, surf,      &
+!!     &          sf_grp, Tsf_bcs, iphys, iphys_ele, ele_fld, fluid,    &
+!!     &           layer_tbl, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,&
+!!     &          FEM_elens, filtering, wk_filter,                      &
+!!     &          wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk, surf_wk, &
+!!     &          f_l, f_nl, nod_fld, diff_coefs)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -41,6 +44,7 @@
 !
       use m_precision
 !
+      use t_SGS_control_parameter
       use t_comm_table
       use t_geometry_data_MHD
       use t_geometry_data
@@ -72,10 +76,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_diff_coef_temp(iak_diff_t, icomp_diff_t,         &
-     &          nod_comm, node, ele, surf, sf_grp, Tsf_bcs,             &
-     &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,            &
-     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
+      subroutine s_cal_diff_coef_scalar                                 &
+     &         (ifield, ifield_f, iak_diff_t, icomp_diff_t,             &
+     &          SGS_param, cmt_param, nod_comm, node, ele, surf,        &
+     &          sf_grp, Tsf_bcs, iphys, iphys_ele, ele_fld, fluid,      &
+     &           layer_tbl, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,  &
      &          FEM_elens, filtering, wk_filter,                        &
      &          wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk, surf_wk,   &
      &          f_l, f_nl, nod_fld, diff_coefs)
@@ -94,7 +99,10 @@
       use nod_phys_send_recv
 !
       integer (kind=kint), intent(in) :: iak_diff_t, icomp_diff_t
+      integer(kind = kint), intent(in) :: ifield, ifield_f
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(commutation_control_params), intent(in) :: cmt_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -132,9 +140,9 @@
 !   take gradient of filtered temperature (to iphys%i_sgs_simi)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_gradent_in_fluid',          &
-     &        iphys%i_sgs_simi, iphys%i_filter_temp
+     &        iphys%i_sgs_simi, ifield_f
       call choose_cal_gradient                                          &
-     &   (iflag_temp_supg, iphys%i_filter_temp, iphys%i_sgs_simi,       &
+     &   (iflag_temp_supg, ifield_f, iphys%i_sgs_simi,                  &
      &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d_q,            &
      &    rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
@@ -142,9 +150,9 @@
 !   take gradient of temperature (to iphys%i_sgs_grad)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_gradent_in_fluid',          &
-     &                     iphys%i_sgs_grad, iphys%i_sgs_temp
+     &                     iphys%i_sgs_grad, ifield
       call choose_cal_gradient                                          &
-     &   (iflag_temp_supg, iphys%i_sgs_temp, iphys%i_sgs_grad,          &
+     &   (iflag_temp_supg, ifield, iphys%i_sgs_grad,                    &
      &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d_q,            &
      &    rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
@@ -170,8 +178,8 @@
      &   (fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
      &    rhs_tbl, FEM_elens, Tsf_bcs%sgs, ifilter_4delta,              &
-     &    iphys%i_sgs_grad_f, iphys%i_filter_temp,                      &
-     &    fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &    iphys%i_sgs_grad_f, ifield_f, fem_wk, surf_wk, f_l, f_nl,     &
+     &    nod_fld)
 !
       call vector_send_recv                                             &
      &   (iphys%i_sgs_grad_f, nod_comm, nod_fld)
@@ -187,8 +195,8 @@
      &   (fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
      &    rhs_tbl, FEM_elens, Tsf_bcs%sgs, ifilter_2delta,              &
-     &    iphys%i_sgs_grad, iphys%i_sgs_temp,                           &
-     &    fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &    iphys%i_sgs_grad, ifield, fem_wk, surf_wk, f_l, f_nl,         &
+     &    nod_fld)
 !
       call vector_send_recv                                             &
      &   (iphys%i_sgs_grad, nod_comm, nod_fld)
@@ -205,14 +213,14 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_diff_coef_fluid', n_vector, iak_diff_t, icomp_diff_t
-      call cal_diff_coef_fluid(layer_tbl,                               &
+      call cal_diff_coef_fluid(SGS_param, cmt_param, layer_tbl,         &
      &    node, ele, fluid, iphys, nod_fld, jac_3d_q, jac_3d_l,         &
      &    n_vector, iak_diff_t, icomp_diff_t, intg_point_t_evo,         &
      &    wk_cor, wk_lsq, wk_diff, diff_coefs)
 !
       diff_coefs%iflag_field(iak_diff_t) = 1
 !
-      end subroutine s_cal_diff_coef_temp
+      end subroutine s_cal_diff_coef_scalar
 !
 !-----------------------------------------------------------------------
 !

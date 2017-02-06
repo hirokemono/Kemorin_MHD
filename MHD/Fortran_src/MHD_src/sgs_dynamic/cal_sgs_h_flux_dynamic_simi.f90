@@ -4,12 +4,13 @@
 !     Written by H. Matsui on May, 2009
 !
 !!      subroutine s_cal_sgs_s_flux_dynamic_simi(itype_Csym_flux,       &
-!!     &          ifield, ifield_f, ifield_w, ivelo, ivelo_f, i_sgs,    &
-!!     &          iak_sgs_hlux, icomp_sgs_flux, nod_comm, node, ele,    &
-!!     &          iphys, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,        &
-!!     &          filtering, wide_filtering, m_lump, wk_filter,         &
-!!     &          wk_cor, wk_lsq, wk_sgs, fem_wk, f_l, nod_fld,         &
-!!     &          sgs_coefs, sgs_coefs_nod)
+!!     &         ifield, ifield_f, ifield_w, ivelo, ivelo_f, i_sgs,     &
+!!     &         iak_sgs_hlux, icomp_sgs_flux, SGS_param,               &
+!!     &         nod_comm, node, ele, iphys, layer_tbl,                 &
+!!     &         jac_3d_q, jac_3d_l, rhs_tbl, filtering, wide_filtering,&
+!!     &         m_lump, wk_filter, wk_cor, wk_lsq, wk_sgs, fem_wk,     &
+!!     &         f_l, nod_fld, sgs_coefs, sgs_coefs_nod)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -39,6 +40,7 @@
       use m_machine_parameter
       use m_control_parameter
 !
+      use t_SGS_control_parameter
       use t_comm_table
       use t_geometry_data
       use t_phys_data
@@ -62,12 +64,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_cal_sgs_s_flux_dynamic_simi(itype_Csym_flux,         &
-     &          ifield, ifield_f, ifield_w, ivelo, ivelo_f, i_sgs,      &
-     &          iak_sgs_hlux, icomp_sgs_flux, nod_comm, node, ele,      &
-     &          iphys, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,          &
-     &          filtering, wide_filtering, m_lump, wk_filter,           &
-     &          wk_cor, wk_lsq, wk_sgs, fem_wk, f_l, nod_fld,           &
-     &          sgs_coefs, sgs_coefs_nod)
+     &         ifield, ifield_f, ifield_w, ivelo, ivelo_f, i_sgs,       &
+     &         iak_sgs_hlux, icomp_sgs_flux, SGS_param,                 &
+     &         nod_comm, node, ele, iphys, layer_tbl,                   &
+     &         jac_3d_q, jac_3d_l, rhs_tbl, filtering, wide_filtering,  &
+     &         m_lump, wk_filter, wk_cor, wk_lsq, wk_sgs, fem_wk,       &
+     &         f_l, nod_fld, sgs_coefs, sgs_coefs_nod)
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields
@@ -84,6 +86,7 @@
       integer (kind=kint), intent(in) :: ifield, ifield_f, ifield_w
       integer (kind=kint), intent(in) :: i_sgs, ivelo, ivelo_f
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -149,7 +152,7 @@
 !
       if (iflag_debug.eq.1)  write(*,*)' cal_model_coefs',              &
      &   n_vector, iak_sgs_hlux, icomp_sgs_flux
-      call cal_model_coefs(layer_tbl,                                   &
+      call cal_model_coefs(SGS_param, layer_tbl,                        &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
      &    itype_Csym_flux, n_vector, iak_sgs_hlux,                      &
      &    icomp_sgs_flux, intg_point_t_evo, wk_cor, wk_lsq, wk_sgs,     &

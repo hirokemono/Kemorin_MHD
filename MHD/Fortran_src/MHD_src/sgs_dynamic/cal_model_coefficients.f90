@@ -165,7 +165,7 @@
      &        iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_h_flux,    &
      &        ifld_sgs%i_heat_flux, icomp_sgs%i_heat_flux,              &
      &        iphys_elediff%i_velo, iphys_elediff%i_filter_velo,        &
-     &        mesh%nod_comm, mesh%node, mesh%ele, iphys,                &
+     &        SGS_param1, mesh%nod_comm, mesh%node, mesh%ele, iphys,    &
      &        iphys_ele, ele_fld, MHD_mesh%fluid, layer_tbl,            &
      &        jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,        &
      &        sgs_coefs_nod, wk_filter, wk_cor, wk_lsq, wk_sgs,         &
@@ -178,7 +178,7 @@
      &       (SGS_param1%itype_Csym_h_flux, iphys%i_sgs_temp,           &
      &        iphys%i_filter_temp, iphys%i_wide_fil_temp,               &
      &        iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_h_flux,    &
-     &        ifld_sgs%i_heat_flux, icomp_sgs%i_heat_flux,              &
+     &        ifld_sgs%i_heat_flux, icomp_sgs%i_heat_flux, SGS_param1,  &
      &        mesh%nod_comm, mesh%node, mesh%ele, iphys, layer_tbl,     &
      &        jac_3d_q, jac_3d_l, rhs_tbl, filtering, wide_filtering,   &
      &        m_lump, wk_filter, wk_cor, wk_lsq, wk_sgs, fem_wk,        &
@@ -192,6 +192,7 @@
      &        iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_h_flux,    &
      &        ifld_diff%i_heat_flux, icomp_sgs%i_heat_flux,             &
      &        icomp_diff%i_heat_flux, iphys_elediff%i_filter_velo,      &
+     &        SGS_param1, cmt_param1,                                   &
      &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
      &        group%surf_grp, nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,       &
      &        iphys, iphys_ele, ele_fld, MHD_mesh%fluid, layer_tbl,     &
@@ -212,7 +213,7 @@
      &        iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_c_flux,    &
      &        ifld_sgs%i_comp_flux, icomp_sgs%i_comp_flux,              &
      &        iphys_elediff%i_velo, iphys_elediff%i_filter_velo,        &
-     &        mesh%nod_comm, mesh%node, mesh%ele, iphys,                &
+     &        SGS_param1, mesh%nod_comm, mesh%node, mesh%ele, iphys,    &
      &        iphys_ele, ele_fld, MHD_mesh%fluid, layer_tbl,            &
      &        jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,        &
      &        sgs_coefs_nod, wk_filter, wk_cor, wk_lsq, wk_sgs,         &
@@ -225,7 +226,7 @@
      &       (SGS_param1%itype_Csym_c_flux, iphys%i_sgs_composit,       &
      &        iphys%i_filter_comp, iphys%i_wide_fil_comp,               &
      &        iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_c_flux,    &
-     &        ifld_sgs%i_comp_flux, icomp_sgs%i_comp_flux,              &
+     &        ifld_sgs%i_comp_flux, icomp_sgs%i_comp_flux, SGS_param1,  &
      &        mesh%nod_comm, mesh%node, mesh%ele, iphys, layer_tbl,     &
      &        jac_3d_q, jac_3d_l, rhs_tbl, filtering, wide_filtering,   &
      &        m_lump, wk_filter, wk_cor, wk_lsq, wk_sgs, fem_wk,        &
@@ -239,6 +240,7 @@
      &        iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_c_flux,    &
      &        ifld_diff%i_comp_flux, icomp_sgs%i_comp_flux,             &
      &        icomp_diff%i_comp_flux, iphys_elediff%i_filter_velo,      &
+     &        SGS_param1, cmt_param1,                                   &
      &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
      &        group%surf_grp, nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,       &
      &        iphys, iphys_ele, ele_fld, MHD_mesh%fluid, layer_tbl,     &
@@ -255,8 +257,8 @@
           call cal_sgs_m_flux_dynamic                                   &
      &       (ifld_sgs%i_mom_flux, icomp_sgs%i_mom_flux,                &
      &        iphys_elediff%i_velo, iphys_elediff%i_filter_velo,        &
-     &        mesh%nod_comm, mesh%node, mesh%ele, iphys,                &
-     &        iphys_ele, ele_fld, MHD_mesh%fluid, layer_tbl,            &
+     &        SGS_param1, mesh%nod_comm, mesh%node, mesh%ele,           &
+     &        iphys, iphys_ele, ele_fld, MHD_mesh%fluid, layer_tbl,     &
      &        jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,        &
      &        sgs_coefs_nod, wk_filter, wk_cor, wk_lsq, wk_sgs,         &
      &        mhd_fem_wk, fem_wk, nod_fld, sgs_coefs)
@@ -264,7 +266,7 @@
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 's_cal_sgs_m_flux_dynamic_simi'
           call s_cal_sgs_m_flux_dynamic_simi                            &
-     &       (ifld_sgs%i_mom_flux, icomp_sgs%i_mom_flux,                &
+     &       (ifld_sgs%i_mom_flux, icomp_sgs%i_mom_flux, SGS_param1,    &
      &        mesh%nod_comm, mesh%node, mesh%ele, iphys, layer_tbl,     &
      &        jac_3d_q, jac_3d_l, rhs_tbl, filtering, wide_filtering,   &
      &        m_lump, wk_filter, wk_cor, wk_lsq, wk_sgs, fem_wk,        &
@@ -276,6 +278,7 @@
           call s_cal_diff_coef_sgs_mf                                   &
      &       (ifld_diff%i_mom_flux, icomp_sgs%i_mom_flux,               &
      &        icomp_diff%i_mom_flux, iphys_elediff%i_filter_velo,       &
+     &        SGS_param1, cmt_param1,                                   &
      &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
      &        group%surf_grp, nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs,       &
      &        iphys, iphys_ele, ele_fld, MHD_mesh%fluid, layer_tbl,     &
@@ -295,7 +298,7 @@
           call cal_sgs_maxwell_t_dynamic                                &
      &       (ifld_sgs%i_lorentz, icomp_sgs%i_lorentz,                  &
      &        iphys_elediff%i_magne, iphys_elediff%i_filter_magne,      &
-     &        mesh%nod_comm, mesh%node, mesh%ele, iphys,                &
+     &        SGS_param1, mesh%nod_comm, mesh%node, mesh%ele, iphys,    &
      &        iphys_ele, ele_fld, MHD_mesh%fluid, layer_tbl,            &
      &        jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,        &
      &        sgs_coefs_nod, wk_filter, wk_cor, wk_lsq, wk_sgs,         &
@@ -305,7 +308,7 @@
           if (iflag_debug.eq.1)                                         &
      &       write(*,*) 'cal_sgs_maxwell_dynamic_simi'
           call cal_sgs_maxwell_dynamic_simi                             &
-     &       (ifld_sgs%i_lorentz, icomp_sgs%i_lorentz,                  &
+     &       (ifld_sgs%i_lorentz, icomp_sgs%i_lorentz, SGS_param1,      &
      &        mesh%nod_comm, mesh%node, mesh%ele, iphys, layer_tbl,     &
      &        jac_3d_q, jac_3d_l, rhs_tbl, filtering, wide_filtering,   &
      &        m_lump, wk_filter, wk_cor, wk_lsq, wk_sgs, fem_wk,        &
@@ -317,6 +320,7 @@
           call s_cal_diff_coef_sgs_mxwl                                 &
      &       (ifld_diff%i_lorentz, icomp_sgs%i_lorentz,                 &
      &        icomp_diff%i_lorentz, iphys_elediff%i_filter_magne,       &
+     &        SGS_param1, cmt_param1,                                   &
      &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
      &        MHD_mesh%fluid, layer_tbl, group%surf_grp,                &
      &        nod_bcs%Vnod_bcs, surf_bcs%Bsf_bcs, iphys,                &
@@ -337,7 +341,7 @@
      &      (ifld_sgs%i_induction, icomp_sgs%i_induction,               &
      &       iphys_elediff%i_velo, iphys_elediff%i_magne,               &
      &       iphys_elediff%i_filter_velo, iphys_elediff%i_filter_magne, &
-     &       mesh%nod_comm, mesh%node, mesh%ele, iphys,                 &
+     &       SGS_param1, mesh%nod_comm, mesh%node, mesh%ele, iphys,     &
      &       iphys_ele, ele_fld, MHD_mesh%conduct, cd_prop1, layer_tbl, &
      &       jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,         &
      &       sgs_coefs_nod, wk_filter, wk_cor, wk_lsq, wk_sgs,          &
@@ -346,10 +350,10 @@
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'cal_sgs_induct_t_dynamic_simi'
           call cal_sgs_induct_t_dynamic_simi                            &
-     &       (ifld_sgs%i_induction, icomp_sgs%i_induction,              &
+     &       (ifld_sgs%i_induction, icomp_sgs%i_induction, SGS_param1,  &
      &        mesh%nod_comm, mesh%node, mesh%ele, iphys, layer_tbl,     &
      &        jac_3d_q, jac_3d_l, rhs_tbl, filtering, wide_filtering,   &
-     &         m_lump, wk_filter, wk_cor, wk_lsq, wk_sgs, fem_wk,       &
+     &        m_lump, wk_filter, wk_cor, wk_lsq, wk_sgs, fem_wk,        &
      &        f_l, nod_fld, sgs_coefs, sgs_coefs_nod)
         end if
 !
@@ -358,7 +362,7 @@
           call s_cal_diff_coef_sgs_induct(ifld_diff%i_induction,        &
      &       icomp_sgs%i_induction, icomp_diff%i_induction,             &
      &       iphys_elediff%i_filter_velo, iphys_elediff%i_filter_magne, &
-     &       mesh%nod_comm, mesh%node, mesh%ele,                        &
+     &      SGS_param1, cmt_param1, mesh%nod_comm, mesh%node, mesh%ele, &
      &       ele_mesh%surf, MHD_mesh%fluid, MHD_mesh%conduct, cd_prop1, &
      &       layer_tbl, group%surf_grp, surf_bcs%Bsf_bcs, iphys,        &
      &       iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,      &
@@ -374,7 +378,7 @@
           call cal_sgs_uxb_dynamic                                      &
      &       (ifld_sgs%i_induction, icomp_sgs%i_induction,              &
      &        iphys_elediff%i_velo, iphys_elediff%i_filter_velo,        &
-     &        mesh%nod_comm, mesh%node, mesh%ele, iphys,                &
+     &        SGS_param1, mesh%nod_comm, mesh%node, mesh%ele, iphys,    &
      &        iphys_ele, ele_fld, MHD_mesh%conduct, cd_prop1, layer_tbl,&
      &        jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,        &
      &        wk_filter, wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,    &
@@ -383,7 +387,7 @@
           if (iflag_debug.eq.1)  write(*,*)                             &
      &                          's_cal_sgs_uxb_dynamic_simi'
           call s_cal_sgs_uxb_dynamic_simi                               &
-     &       (ifld_sgs%i_induction, icomp_sgs%i_induction,              &
+     &       (ifld_sgs%i_induction, icomp_sgs%i_induction, SGS_param1,  &
      &        mesh%nod_comm, mesh%node, mesh%ele, iphys, layer_tbl,     &
      &        jac_3d_q, jac_3d_l, filtering, wide_filtering, wk_filter, &
      &        wk_cor, wk_lsq, wk_sgs, nod_fld, sgs_coefs)

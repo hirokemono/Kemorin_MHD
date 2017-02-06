@@ -183,7 +183,8 @@
           if(SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
             if    (SGS_param1%iflag_SGS .eq. id_SGS_NL_grad             &
      &        .or. SGS_param1%iflag_SGS .eq. id_SGS_similarity) then
-              call s_cal_diff_coef_vector_p(iak_diff_b, icomp_diff_b,   &
+              call s_cal_diff_coef_vector_p                             &
+     &           (iak_diff_b, icomp_diff_b, SGS_param1, cmt_param1,     &
      &            nod_comm, node, ele, surf, fluid, layer_tbl,          &
      &            sf_grp, Asf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,  &
      &            jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,  &

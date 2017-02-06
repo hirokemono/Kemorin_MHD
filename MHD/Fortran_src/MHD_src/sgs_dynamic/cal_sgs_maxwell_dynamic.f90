@@ -6,11 +6,12 @@
 !
 !!      subroutine cal_sgs_maxwell_t_dynamic                            &
 !!     &         (iak_sgs_lor, icomp_sgs_lor, ie_dbx, ie_dfbx,          &
-!!     &          nod_comm, node, ele, iphys, iphys_ele, fld_ele,       &
-!!     &          fluid, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,        &
-!!     &          FEM_elens, filtering, sgs_coefs_nod, wk_filter,       &
-!!     &          wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,           &
+!!     &          SGS_param, nod_comm, node, ele, iphys, iphys_ele,     &
+!!     &          fld_ele, fluid, layer_tbl, jac_3d_q, jac_3d_l,        &
+!!     &          rhs_tbl, FEM_elens, filtering, sgs_coefs_nod,         &
+!!     &          wk_filter, wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,&
 !!     &          nod_fld, sgs_coefs)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -37,10 +38,10 @@
 !
       use m_precision
 !
-      use m_control_parameter
       use m_machine_parameter
       use m_phys_constants
 !
+      use t_SGS_control_parameter
       use t_comm_table
       use t_geometry_data_MHD
       use t_geometry_data
@@ -68,10 +69,10 @@
 !
       subroutine cal_sgs_maxwell_t_dynamic                              &
      &         (iak_sgs_lor, icomp_sgs_lor, ie_dbx, ie_dfbx,            &
-     &          nod_comm, node, ele, iphys, iphys_ele, fld_ele,         &
-     &          fluid, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,          &
-     &          FEM_elens, filtering, sgs_coefs_nod, wk_filter,         &
-     &          wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,             &
+     &          SGS_param, nod_comm, node, ele, iphys, iphys_ele,       &
+     &          fld_ele, fluid, layer_tbl, jac_3d_q, jac_3d_l,          &
+     &          rhs_tbl, FEM_elens, filtering, sgs_coefs_nod,           &
+     &          wk_filter, wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,  &
      &          nod_fld, sgs_coefs)
 !
       use reset_dynamic_model_coefs
@@ -86,6 +87,7 @@
       integer(kind = kint), intent(in) :: iak_sgs_lor, icomp_sgs_lor
       integer (kind=kint), intent(in) :: ie_dbx, ie_dfbx
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -158,11 +160,11 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      & 'cal_model_coefs', n_sym_tensor, iak_sgs_lor, icomp_sgs_lor
-      call cal_model_coefs(layer_tbl,                                   &
-     &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
-     &    SGS_param1%itype_Csym_maxwell, n_sym_tensor,                  &
-     &    iak_sgs_lor, icomp_sgs_lor, intg_point_t_evo,                 &
-     &    wk_cor, wk_lsq, wk_sgs, sgs_coefs)
+      call cal_model_coefs                                              &
+     &   (SGS_param, layer_tbl, node, ele, iphys, nod_fld,              &
+     &    jac_3d_q, jac_3d_l, SGS_param%itype_Csym_maxwell,             &
+     &    n_sym_tensor,  iak_sgs_lor, icomp_sgs_lor,                    &
+     &    intg_point_t_evo, wk_cor, wk_lsq, wk_sgs, sgs_coefs)
 !
       end subroutine cal_sgs_maxwell_t_dynamic
 !

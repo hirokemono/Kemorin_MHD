@@ -3,7 +3,8 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine cal_sgs_s_flux_grad_w_coef(itype_Csym_flux,          &
+!!      subroutine cal_sgs_s_flux_grad_w_coef                           &
+!!     &         (iflag_supg, itype_Csym_flux, icoord_Csim,             &
 !!     &          i_filter, icomp_sgs_hf, i_sgs, i_field, ie_dvx,       &
 !!     &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,       &
 !!     &          jac_3d, rhs_tbl, FEM_elens, sgs_coefs,                &
@@ -55,7 +56,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_sgs_s_flux_grad_w_coef(iflag_supg, itype_Csym_flux,            &
+      subroutine cal_sgs_s_flux_grad_w_coef                             &
+     &         (iflag_supg, itype_Csym_flux, icoord_Csim,               &
      &          i_filter, icomp_sgs_hf, i_sgs, i_field, ie_dvx,         &
      &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,         &
      &          jac_3d, rhs_tbl, FEM_elens, sgs_coefs,                  &
@@ -79,7 +81,7 @@
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
 !
       integer (kind=kint), intent(in) :: iflag_supg
-      integer (kind=kint), intent(in) :: itype_Csym_flux
+      integer (kind=kint), intent(in) :: itype_Csym_flux, icoord_Csim
       integer (kind=kint), intent(in) :: i_filter, icomp_sgs_hf
       integer (kind=kint), intent(in) :: i_sgs, i_field
       integer (kind=kint), intent(in) :: ie_dvx
@@ -100,7 +102,7 @@
 !
 !     set elemental model coefficients
 !
-      call prod_model_coefs_4_vector(ele, itype_Csym_flux,              &
+      call prod_model_coefs_4_vector(ele, itype_Csym_flux, icoord_Csim, &
      &    sgs_coefs%ntot_comp, icomp_sgs_hf, sgs_coefs%ak, fem_wk%sk6)
 !
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &

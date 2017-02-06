@@ -3,13 +3,16 @@
 !
 !     Written by H. Matsui
 !
-!!      subroutine s_cal_diff_coef_magne(iak_diff_b, icomp_diff_b,      &
+!!      subroutine s_cal_diff_coef_magne                                &
+!!     &         (iak_diff_b, icomp_diff_b, SGS_param, cmt_param,       &
 !!     &          nod_comm, node, ele, surf, sf_grp, Bsf_bcs, Fsf_bcs,  &
 !!     &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,          &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
 !!     &          FEM_elens, filtering, m_lump, wk_filter,              &
 !!     &          wk_cor, wk_lsq, wk_diff, fem_wk, surf_wk,             &
 !!     &          f_l, f_nl, nod_fld, diff_coefs)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -42,6 +45,7 @@
 !
       use m_precision
 !
+      use t_SGS_control_parameter
       use t_comm_table
       use t_geometry_data_MHD
       use t_geometry_data
@@ -72,7 +76,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_diff_coef_magne(iak_diff_b, icomp_diff_b,        &
+      subroutine s_cal_diff_coef_magne                                  &
+     &         (iak_diff_b, icomp_diff_b, SGS_param, cmt_param,         &
      &          nod_comm, node, ele, surf, sf_grp, Bsf_bcs, Fsf_bcs,    &
      &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,            &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
@@ -96,6 +101,8 @@
 !
       integer (kind=kint), intent(in) :: iak_diff_b, icomp_diff_b
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(commutation_control_params), intent(in) :: cmt_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -245,7 +252,7 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_diff_coef_fluid', n_sym_tensor, iak_diff_b, icomp_diff_b
-      call cal_diff_coef_fluid(layer_tbl,                               &
+      call cal_diff_coef_fluid(SGS_param, cmt_param, layer_tbl,         &
      &    node, ele, fluid, iphys, nod_fld, jac_3d_q, jac_3d_l,         &
      &    n_sym_tensor, iak_diff_b, icomp_diff_b, intg_point_t_evo,     &
      &    wk_cor, wk_lsq, wk_diff, diff_coefs)

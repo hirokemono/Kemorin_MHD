@@ -3,14 +3,16 @@
 !
 !     Written by H. Matsui
 !
-!!      subroutine s_cal_diff_coef_sgs_induct                           &
-!!     &        (iak_diff_uxb, icomp_sgs_uxb, icomp_diff_uxb,           &
-!!     &         ie_dfvx, ie_dfbx, nod_comm, node, ele, surf,           &
+!!      subroutine s_cal_diff_coef_sgs_induct(iak_diff_uxb,             &
+!!     &         icomp_sgs_uxb, icomp_diff_uxb, ie_dfvx, ie_dfbx,       &
+!!     &         SGS_param, cmt_param, nod_comm, node, ele, surf,       &
 !!     &         fluid, conduct, cd_prop, layer_tbl, sf_grp, Bsf_bcs,   &
 !!     &         iphys, iphys_ele, ele_fld, jac_3d_q, jac_3d_l,         &
 !!     &         jac_sf_grp_q, rhs_tbl, FEM_elens, sgs_coefs, filtering,&
 !!     &         wk_filter, wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk,&
 !!     &         surf_wk, f_l, f_nl, nod_fld, diff_coefs)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -43,6 +45,7 @@
 !
       use m_precision
 !
+      use t_SGS_control_parameter
       use t_comm_table
       use t_geometry_data_MHD
       use t_geometry_data
@@ -74,9 +77,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_diff_coef_sgs_induct                             &
-     &        (iak_diff_uxb, icomp_sgs_uxb, icomp_diff_uxb,             &
-     &         ie_dfvx, ie_dfbx, nod_comm, node, ele, surf,             &
+      subroutine s_cal_diff_coef_sgs_induct(iak_diff_uxb,               &
+     &         icomp_sgs_uxb, icomp_diff_uxb, ie_dfvx, ie_dfbx,         &
+     &         SGS_param, cmt_param, nod_comm, node, ele, surf,         &
      &         fluid, conduct, cd_prop, layer_tbl, sf_grp, Bsf_bcs,     &
      &         iphys, iphys_ele, ele_fld, jac_3d_q, jac_3d_l,           &
      &         jac_sf_grp_q, rhs_tbl, FEM_elens, sgs_coefs, filtering,  &
@@ -101,6 +104,8 @@
       integer(kind = kint), intent(in) :: icomp_sgs_uxb, icomp_diff_uxb
       integer(kind = kint), intent(in) :: ie_dfvx, ie_dfbx
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(commutation_control_params), intent(in) :: cmt_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -216,7 +221,7 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_diff_coef_fluid', n_vector, iak_diff_uxb, icomp_diff_uxb
-      call cal_diff_coef_fluid(layer_tbl,                               &
+      call cal_diff_coef_fluid(SGS_param, cmt_param, layer_tbl,         &
      &    node, ele, fluid, iphys, nod_fld, jac_3d_q, jac_3d_l,         &
      &    n_vector, iak_diff_uxb, icomp_diff_uxb, intg_point_t_evo,     &
      &    wk_cor, wk_lsq, wk_diff, diff_coefs)

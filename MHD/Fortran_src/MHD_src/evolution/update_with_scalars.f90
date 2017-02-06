@@ -200,33 +200,17 @@
         end if
       end if
 !
-!
-!       if (ie_dtx .ne. 0) then
-!         if (iflag_debug.gt.0) write(*,*) 'diff_temp_on_ele'
-!         call sel_int_diff_scalar_on_ele                               &
-!     &      (ele%istack_ele_smp, iphys%i_temp, ie_dtx,                 &
-!     &       node, ele, nod_fld, jac_3d_q, jac_3d_l, mhd_fem_wk)
-!       end if
-!
-       if (iflag_dmc .eq. 0                                             &
+      if (iflag_dmc .eq. 0                                              &
      &     .and. SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
-!
-!         if (SGS_param1%iflag_SGS_h_flux .eq. id_SGS_NL_grad) then
-!           if (ie_dftx .ne. 0) then
-!             if (iflag_debug.gt.0) write(*,*) 'diff_filter_t_on_ele'
-!             call sel_int_diff_scalar_on_ele                           &
-!     &          (ele%istack_ele_smp, iphys%i_filter_temp, ie_dftx,     &
-!     &           node, ele, nod_fld, jac_3d_q, jac_3d_l, mhd_fem_wk)
-!           end if
-!         end if
-!       end if
-!
          if (cmt_param1%iflag_c_temp .eq. id_SGS_commute_ON) then
            if ( diff_coefs%iflag_field(iak_diff_t) .eq. 0) then
 !
              if (SGS_param1%iflag_SGS_h_flux .eq. id_SGS_NL_grad) then
-               if (iflag_debug.gt.0)  write(*,*) 's_cal_diff_coef_temp'
-               call s_cal_diff_coef_temp(iak_diff_t, icomp_diff_t,      &
+               if (iflag_debug.gt.0)                                    &
+     &            write(*,*) 's_cal_diff_coef_scalar temp'
+               call s_cal_diff_coef_scalar                              &
+     &            (iphys%i_sgs_temp, iphys%i_filter_temp,               &
+     &             iak_diff_t, icomp_diff_t, SGS_param1, cmt_param1,    &
      &             nod_comm, node, ele, surf, sf_grp, Tsf_bcs,          &
      &             iphys, iphys_ele, ele_fld, fluid, layer_tbl,         &
      &             jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,           &
@@ -317,45 +301,39 @@
           nod_fld%iflag_update(iphys%i_filter_comp) = 1
         end if
 !
-!        if (iphys%i_wide_fil_temp.ne.0 .and. iflag_dmc .eq. 0) then
-!          if (iflag_debug.gt.0)                                        &
-!     &      write(*,*) 'cal_w_filtered_scalar', iphys%i_wide_fil_temp
-!          call cal_filtered_scalar_whole                               &
-!     &       (nod_comm, node, wide_filtering,                          &
-!     &        iphys%i_wide_fil_temp, iphys%i_filter_comp, nod_fld)
-!        end if
+        if (iphys%i_wide_fil_temp.ne.0 .and. iflag_dmc .eq. 0) then
+          if (iflag_debug.gt.0)                                         &
+     &      write(*,*) 'cal_w_filtered_scalar', iphys%i_wide_fil_temp
+          call cal_filtered_scalar_whole                                &
+     &       (nod_comm, node, wide_filtering,                           &
+     &        iphys%i_wide_fil_temp, iphys%i_filter_comp,               &
+     &        wk_filter, nod_fld)
+        end if
       end if
 !
 !
-!       if (iflag_dmc .eq. 0                                            &
-!     &   .and. SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
-!         if (cmt_param1%iflag_c_light .eq. id_SGS_commute_ON) then
-!           if ( diff_coefs%iflag_field(iak_diff_c) .eq. 0) then
+       if (iflag_dmc .eq. 0                                             &
+     &   .and. SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
+         if (cmt_param1%iflag_c_light .eq. id_SGS_commute_ON) then
+           if ( diff_coefs%iflag_field(iak_diff_c) .eq. 0) then
 !
-!             if (SGS_param1%iflag_SGS_c_flux .eq. id_SGS_NL_grad) then
-!               if (iflag_debug.gt.0)  write(*,*) 's_cal_diff_coef_temp'
-!               call s_cal_diff_coef_temp(iak_diff_c, icomp_diff_c,     &
-!     &             nod_comm, node, ele, surf, sf_grp, Csf_bcs,         &
-!     &             iphys, iphys_ele, ele_fld, fluid, layer_tbl,        &
-!     &             jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,          &
-!     &             FEM_elen, filtering, wk_filter,                     &
-!     &             wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk,        &
-!     &             surf_wk, f_l, f_nl, nod_fld, diff_coefs)
-!             end if
-!
-!           end if
-!         end if
-!       end if
-!
-!
-!      call sel_int_diff_scalar_on_ele                                  &
-!     &   (ele%istack_ele_smp, iphys%i_light, ie_dcx,                   &
-!     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, mhd_fem_wk)
-!
-!      call sel_int_diff_scalar_on_ele                                  &
-!     &   (ele%istack_ele_smp, iphys%i_filter_comp, ie_dfcx,            &
-!     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, mhd_fem_wk)
-!
+             if (SGS_param1%iflag_SGS_c_flux .eq. id_SGS_NL_grad) then
+               if (iflag_debug.gt.0)  write(*,*)                        &
+     &                        's_cal_diff_coef_scalar composition'
+               call s_cal_diff_coef_scalar                              &
+     &            (iphys%i_sgs_composit, iphys%i_filter_comp,           &
+     &             iak_diff_c, icomp_diff_c, SGS_param1, cmt_param1,    &
+     &             nod_comm, node, ele, surf, sf_grp, Csf_bcs,          &
+     &             iphys, iphys_ele, ele_fld, fluid, layer_tbl,         &
+     &             jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,           &
+     &             FEM_elen, filtering, wk_filter,                      &
+     &             wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk,         &
+     &             surf_wk, f_l, f_nl, nod_fld, diff_coefs)
+             end if
+
+           end if
+         end if
+       end if
 !
        end subroutine update_with_dummy_scalar
 !

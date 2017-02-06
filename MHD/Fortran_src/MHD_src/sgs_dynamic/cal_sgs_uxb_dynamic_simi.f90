@@ -5,16 +5,17 @@
 !     Modified by H. Matsui on Aug., 2007
 !
 !!      subroutine s_cal_sgs_uxb_dynamic_simi                           &
-!!     &         (iak_sgs_uxb, icomp_sgs_uxb, nod_comm, node, ele,      &
-!!     &          iphys, layer_tbl, jac_3d_q, jac_3d_l,                 &
+!!     &         (iak_sgs_uxb, icomp_sgs_uxb, SGS_param, nod_comm,      &
+!!     &          node, ele, iphys, layer_tbl, jac_3d_q, jac_3d_l,      &
 !!     &          filtering, wide_filtering, wk_filter,                 &
 !!     &          wk_cor, wk_lsq, wk_sgs, nod_fld, sgs_coefs)
 !!      subroutine cal_sgs_induct_t_dynamic_simi                        &
-!!     &         (iak_sgs_uxb, icomp_sgs_uxb, nod_comm, node, ele,      &
-!!     &          iphys, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,        &
-!!     &          filtering, wide_filtering, m_lump, wk_filter,         &
+!!     &         (iak_sgs_uxb, icomp_sgs_uxb, SGS_param, nod_comm,      &
+!!     &          node, ele, iphys, layer_tbl, jac_3d_q, jac_3d_l,      &
+!!     &          rhs_tbl, filtering, wide_filtering, m_lump, wk_filter,&
 !!     &          wk_cor, wk_lsq, wk_sgs, fem_wk, f_l, nod_fld,         &
 !!     &          sgs_coefs, sgs_coefs_nod)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -43,6 +44,7 @@
       use m_machine_parameter
       use m_phys_constants
 !
+      use t_SGS_control_parameter
       use t_comm_table
       use t_geometry_data
       use t_phys_data
@@ -67,8 +69,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_cal_sgs_uxb_dynamic_simi                             &
-     &         (iak_sgs_uxb, icomp_sgs_uxb, nod_comm, node, ele,        &
-     &          iphys, layer_tbl, jac_3d_q, jac_3d_l,                   &
+     &         (iak_sgs_uxb, icomp_sgs_uxb, SGS_param, nod_comm,        &
+     &          node, ele, iphys, layer_tbl, jac_3d_q, jac_3d_l,        &
      &          filtering, wide_filtering, wk_filter,                   &
      &          wk_cor, wk_lsq, wk_sgs, nod_fld, sgs_coefs)
 !
@@ -80,6 +82,7 @@
 !
       integer(kind = kint), intent(in) :: iak_sgs_uxb, icomp_sgs_uxb
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -134,9 +137,9 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      & 'cal_model_coefs', n_vector, iak_sgs_uxb, icomp_sgs_uxb
-      call cal_model_coefs(layer_tbl,                                   &
+      call cal_model_coefs(SGS_param, layer_tbl,                        &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
-     &    SGS_param1%itype_Csym_uxb, n_vector, iak_sgs_uxb,             &
+     &    SGS_param%itype_Csym_uxb, n_vector, iak_sgs_uxb,              &
      &    icomp_sgs_uxb, intg_point_t_evo,                              &
      &    wk_cor, wk_lsq, wk_sgs, sgs_coefs)
 !
@@ -145,9 +148,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_sgs_induct_t_dynamic_simi                          &
-     &         (iak_sgs_uxb, icomp_sgs_uxb, nod_comm, node, ele,        &
-     &          iphys, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,          &
-     &          filtering, wide_filtering, m_lump, wk_filter,           &
+     &         (iak_sgs_uxb, icomp_sgs_uxb, SGS_param, nod_comm,        &
+     &          node, ele, iphys, layer_tbl, jac_3d_q, jac_3d_l,        &
+     &          rhs_tbl, filtering, wide_filtering, m_lump, wk_filter,  &
      &          wk_cor, wk_lsq, wk_sgs, fem_wk, f_l, nod_fld,           &
      &          sgs_coefs, sgs_coefs_nod)
 !
@@ -162,6 +165,7 @@
 !
       integer(kind = kint), intent(in) :: iak_sgs_uxb, icomp_sgs_uxb
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -231,9 +235,9 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      & 'cal_model_coefs', n_asym_tensor, iak_sgs_uxb, icomp_sgs_uxb
-      call cal_model_coefs(layer_tbl,                                   &
+      call cal_model_coefs(SGS_param, layer_tbl,                        &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
-     &    SGS_param1%itype_Csym_uxb, n_asym_tensor,                     &
+     &    SGS_param%itype_Csym_uxb, n_asym_tensor,                      &
      &    iak_sgs_uxb, icomp_sgs_uxb, intg_point_t_evo,                 &
      &    wk_cor, wk_lsq, wk_sgs, sgs_coefs)
 !

@@ -6,18 +6,19 @@
 !
 !!      subroutine cal_sgs_uxb_dynamic                                  &
 !!     &         (iak_sgs_uxb, icomp_sgs_uxb, ie_dvx, ie_dfvx,          &
-!!     &          nod_comm, node, ele, iphys, iphys_ele, ele_fld,       &
-!!     &          conduct, cd_prop, layer_tbl, jac_3d_q, jac_3d_l,      &
-!!     &          rhs_tbl, FEM_elens, filtering, wk_filter,             &
-!!     &          wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk, f_l,      &
-!!     &          nod_fld, sgs_coefs)
+!!     &          SGS_param, nod_comm, node, ele, iphys, iphys_ele,     &
+!!     &          ele_fld, conduct, cd_prop, layer_tbl,                 &
+!!     &          jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,    &
+!!     &          wk_filter, wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,&
+!!     &          f_l, nod_fld, sgs_coefs)
 !!      subroutine cal_sgs_induct_t_dynamic(iak_sgs_uxb, icomp_sgs_uxb, &
 !!     &          ie_dvx, ie_dbx, ie_dfvx, ie_dfbx,                     &
-!!     &          nod_comm, node, ele, iphys, iphys_ele, ele_fld,       &
-!!     &          conduct, cd_prop, layer_tbl, jac_3d_q, jac_3d_l,      &
-!!     &          rhs_tbl, FEM_elens, filtering, sgs_coefs_nod,         &
-!!     &          wk_filter,  wk_cor, wk_lsq, wk_sgs,                   &
+!!     &          SGS_param, nod_comm, node, ele, iphys, iphys_ele,     &
+!!     &          ele_fld, conduct, cd_prop, layer_tbl,                 &
+!!     &          jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,    &
+!!     &          sgs_coefs_nod, wk_filter,  wk_cor, wk_lsq, wk_sgs,    &
 !!     &          mhd_fem_wk, fem_wk, f_l, nod_fld, sgs_coefs)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -51,6 +52,7 @@
       use m_machine_parameter
       use m_control_parameter
 !
+      use t_SGS_control_parameter
       use t_physical_property
       use t_comm_table
       use t_geometry_data_MHD
@@ -79,11 +81,11 @@
 !
       subroutine cal_sgs_uxb_dynamic                                    &
      &         (iak_sgs_uxb, icomp_sgs_uxb, ie_dvx, ie_dfvx,            &
-     &          nod_comm, node, ele, iphys, iphys_ele, ele_fld,         &
-     &          conduct, cd_prop, layer_tbl, jac_3d_q, jac_3d_l,        &
-     &          rhs_tbl, FEM_elens, filtering, wk_filter,               &
-     &          wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk, f_l,        &
-     &          nod_fld, sgs_coefs)
+     &          SGS_param, nod_comm, node, ele, iphys, iphys_ele,       &
+     &          ele_fld, conduct, cd_prop, layer_tbl,                   &
+     &          jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,      &
+     &          wk_filter, wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,  &
+     &          f_l, nod_fld, sgs_coefs)
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields
@@ -96,6 +98,7 @@
       integer(kind=kint), intent(in) :: iak_sgs_uxb, icomp_sgs_uxb
       integer(kind=kint), intent(in) :: ie_dvx, ie_dfvx
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -165,11 +168,11 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &        'cal_model_coefs', n_vector, iak_sgs_uxb, icomp_sgs_uxb
-      call cal_model_coefs(layer_tbl,                                   &
+      call cal_model_coefs(SGS_param, layer_tbl,                        &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
-     &    SGS_param1%itype_Csym_uxb, n_vector, iak_sgs_uxb,             &
-     &    icomp_sgs_uxb, intg_point_t_evo, wk_cor, wk_lsq, wk_sgs,      &
-     &    sgs_coefs)
+     &    SGS_param%itype_Csym_uxb, n_vector,                           &
+     &    iak_sgs_uxb, icomp_sgs_uxb, intg_point_t_evo, wk_cor,         &
+     &    wk_lsq, wk_sgs, sgs_coefs)
 !
       end subroutine cal_sgs_uxb_dynamic
 !
@@ -177,10 +180,10 @@
 !
       subroutine cal_sgs_induct_t_dynamic(iak_sgs_uxb, icomp_sgs_uxb,   &
      &          ie_dvx, ie_dbx, ie_dfvx, ie_dfbx,                       &
-     &          nod_comm, node, ele, iphys, iphys_ele, ele_fld,         &
-     &          conduct, cd_prop, layer_tbl, jac_3d_q, jac_3d_l,        &
-     &          rhs_tbl, FEM_elens, filtering, sgs_coefs_nod,           &
-     &          wk_filter,  wk_cor, wk_lsq, wk_sgs,                     &
+     &          SGS_param, nod_comm, node, ele, iphys, iphys_ele,       &
+     &          ele_fld, conduct, cd_prop, layer_tbl,                   &
+     &          jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,      &
+     &          sgs_coefs_nod, wk_filter,  wk_cor, wk_lsq, wk_sgs,      &
      &          mhd_fem_wk, fem_wk, f_l, nod_fld, sgs_coefs)
 !
       use reset_dynamic_model_coefs
@@ -196,6 +199,7 @@
       integer(kind=kint), intent(in) :: ie_dvx, ie_dfvx
       integer(kind=kint), intent(in) :: ie_dbx, ie_dfbx
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -274,16 +278,16 @@
 !
       if (iflag_debug.gt.0 )  write(*,*)                                &
      &     'cal_model_coefs', n_asym_tensor, iak_sgs_uxb, icomp_sgs_uxb
-      call cal_model_coefs(layer_tbl,                                   &
+      call cal_model_coefs(SGS_param, layer_tbl,                        &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
-     &    SGS_param1%itype_Csym_uxb, n_asym_tensor, iak_sgs_uxb,        &
-     &    icomp_sgs_uxb, intg_point_t_evo,                              &
+     &    SGS_param%itype_Csym_uxb, n_asym_tensor,                      &
+     &    iak_sgs_uxb, icomp_sgs_uxb, intg_point_t_evo,                 &
      &    wk_cor, wk_lsq, wk_sgs, sgs_coefs)
 !
-      call reduce_model_coefs_layer(SGS_param1%SGS_uxb_factor,          &
+      call reduce_model_coefs_layer(SGS_param%SGS_uxb_factor,           &
      &    wk_sgs%nlayer, wk_sgs%num_kinds, iak_sgs_uxb,                 &
      &    wk_sgs%fld_clip, wk_sgs%fld_whole_clip)
-      call reduce_ele_vect_model_coefs(ele, SGS_param1%SGS_uxb_factor,  &
+      call reduce_ele_vect_model_coefs(ele, SGS_param%SGS_uxb_factor,  &
      &    sgs_coefs%ntot_comp, icomp_sgs_uxb, sgs_coefs%ak)
 !
       end subroutine cal_sgs_induct_t_dynamic

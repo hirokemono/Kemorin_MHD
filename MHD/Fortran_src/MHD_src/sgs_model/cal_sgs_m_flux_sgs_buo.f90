@@ -229,8 +229,9 @@
      &      SGS_param1, wk_sgs)
       end if
 !
-      call mod_Csim_by_SGS_buoyancy_ele(ele, layer_tbl%e_grp,           &
-     &    fl_prop, ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
+      call mod_Csim_by_SGS_buoyancy_ele                                 &
+     &   (SGS_param1, ele, layer_tbl%e_grp, fl_prop,                    &
+     &    ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
 !
 !      if(iflag_debug .gt. 0) then
 !        write(*,*) 'sgs_f_coef, icomp_sgs_tbuo', ifld_sgs%i_buoyancy

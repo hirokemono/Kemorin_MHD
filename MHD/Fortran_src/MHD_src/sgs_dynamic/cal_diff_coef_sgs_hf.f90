@@ -3,14 +3,17 @@
 !
 !     Written by H. Matsui
 !
-!!      subroutine s_cal_diff_coef_sgs_sf                               &
-!!     &         (iak_diff_flux, icomp_sgs_flux, icomp_diff_sf, ie_dfvx,&
-!!     &          nod_comm, node, ele, surf, sf_grp, nod_bcs, sf_bcs,   &
-!!     &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,          &
-!!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
-!!     &          FEM_elens, filtering, sgs_coefs, wk_filter,           &
+!!      subroutine s_cal_diff_coef_sgs_sf(itype_Csym_flux,              &
+!!     &          ifield, ifield_f, ivelo, ivelo_f, i_sgs,              &
+!!     &          iak_diff_flux, icomp_sgs_flux, icomp_diff_sf, ie_dfvx,&
+!!     &          SGS_param, cmt_param, nod_comm, node, ele, surf,      &
+!!     &          sf_grp, nod_bcs, sf_bcs, iphys, iphys_ele, ele_fld,   &
+!!     &          fluid, layer_tbl, jac_3d_q, jac_3d_l, jac_sf_grp_q,   &
+!!     &          rhs_tbl, FEM_elens, filtering, sgs_coefs, wk_filter,  &
 !!     &          wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk, surf_wk, &
 !!     &          f_l, f_nl, nod_fld, diff_coefs)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -44,6 +47,7 @@
 !
       use m_precision
 !
+      use t_SGS_control_parameter
       use t_comm_table
       use t_geometry_data_MHD
       use t_geometry_data
@@ -77,10 +81,10 @@
       subroutine s_cal_diff_coef_sgs_sf(itype_Csym_flux,                &
      &          ifield, ifield_f, ivelo, ivelo_f, i_sgs,                &
      &          iak_diff_flux, icomp_sgs_flux, icomp_diff_sf, ie_dfvx,  &
-     &          nod_comm, node, ele, surf, sf_grp, nod_bcs, sf_bcs,     &
-     &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,            &
-     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
-     &          FEM_elens, filtering, sgs_coefs, wk_filter,             &
+     &          SGS_param, cmt_param, nod_comm, node, ele, surf,        &
+     &          sf_grp, nod_bcs, sf_bcs, iphys, iphys_ele, ele_fld,     &
+     &          fluid, layer_tbl, jac_3d_q, jac_3d_l, jac_sf_grp_q,     &
+     &          rhs_tbl, FEM_elens, filtering, sgs_coefs, wk_filter,    &
      &          wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk, surf_wk,   &
      &          f_l, f_nl, nod_fld, diff_coefs)
 !
@@ -107,6 +111,8 @@
       integer(kind = kint), intent(in) :: icomp_sgs_flux, icomp_diff_sf
       integer(kind = kint), intent(in) :: ie_dfvx
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(commutation_control_params), intent(in) :: cmt_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -146,8 +152,8 @@
 !   gradient model by filtered field (to iphys%i_sgs_grad_f)
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_filter_hf_grad'
-      call cal_sgs_s_flux_grad_w_coef                                   &
-     &   (iflag_temp_supg, itype_Csym_flux, ifilter_4delta,             &
+      call cal_sgs_s_flux_grad_w_coef(iflag_temp_supg,                  &
+     &    itype_Csym_flux, SGS_param%icoord_Csim, ifilter_4delta,       &
      &    icomp_sgs_flux, iphys%i_sgs_grad_f, ifield_f, ie_dfvx,        &
      &    nod_comm, node, ele, fluid, iphys_ele, ele_fld, jac_3d_q,     &
      &    rhs_tbl, FEM_elens, sgs_coefs, mhd_fem_wk, fem_wk,            &
@@ -225,7 +231,7 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_diff_coef_fluid', n_scalar, iak_diff_flux, icomp_diff_sf
-      call cal_diff_coef_fluid(layer_tbl,                               &
+      call cal_diff_coef_fluid(SGS_param, cmt_param, layer_tbl,         &
      &    node, ele, fluid, iphys, nod_fld, jac_3d_q, jac_3d_l,         &
      &    n_scalar, iak_diff_flux, icomp_diff_sf, intg_point_t_evo,     &
      &    wk_cor, wk_lsq, wk_diff, diff_coefs)
