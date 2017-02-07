@@ -125,7 +125,7 @@
 !
 !
       call cal_sgs_uxb_2_monitor
-     &   (icomp_sgs%i_induction, iphys_elediff%i_velo,                  &
+     &   (icomp_sgs%i_induction, iphys_elediff%i_velo, SGS_param1,      &
      &    mesh1%nod_comm, mesh1%node, mesh1%ele, conduct, cd_prop1,     &
      &    iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen,   &
      &    filtering1, wk_filter1, mhd_fem1_wk, fem1_wk,                 &

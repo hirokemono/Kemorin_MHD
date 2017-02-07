@@ -8,10 +8,11 @@
 !!     &         (nod_comm, node, ele, conduct, iphys, jac_3d,          &
 !!     &          rhs_tbl, mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !!      subroutine cal_sgs_uxb_2_monitor(icomp_sgs_uxb, ie_dvx,         &
-!!     &          nod_comm, node, ele, conduct, cd_prop, iphys,         &
-!!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elen,        &
+!!     &          SGS_param, nod_comm, node, ele, conduct, cd_prop,     &
+!!     &          iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elen, &
 !!     &          filtering, sgs_coefs, wk_filter, mhd_fem_wk, fem_wk,  &
 !!     &          f_l, f_nl, nod_fld)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -39,6 +40,7 @@
       use m_control_parameter
       use m_phys_constants
 !
+      use t_SGS_control_parameter
       use t_physical_property
       use t_geometry_data_MHD
       use t_geometry_data
@@ -107,8 +109,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_sgs_uxb_2_monitor(icomp_sgs_uxb, ie_dvx,           &
-     &          nod_comm, node, ele, conduct, cd_prop, iphys,           &
-     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elen,          &
+     &          SGS_param, nod_comm, node, ele, conduct, cd_prop,       &
+     &          iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elen,   &
      &          filtering, sgs_coefs, wk_filter, mhd_fem_wk, fem_wk,    &
      &          f_l, f_nl, nod_fld)
 !
@@ -119,6 +121,7 @@
 !
       integer(kind = kint), intent(in) :: icomp_sgs_uxb, ie_dvx
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -142,8 +145,8 @@
 !
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
       call cal_sgs_uxb_2_evo                                            &
-     &   (icomp_sgs_uxb, ie_dvx, nod_comm, node, ele, conduct,          &
-     &    cd_prop, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl,          &
+     &   (icomp_sgs_uxb, ie_dvx, SGS_param, nod_comm, node, ele,        &
+     &    conduct, cd_prop, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, &
      &    FEM_elen, filtering, sgs_coefs, wk_filter,                    &
      &    mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !

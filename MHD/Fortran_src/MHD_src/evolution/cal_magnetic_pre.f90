@@ -163,7 +163,7 @@
 !
       if ( SGS_param1%iflag_SGS_uxb .ne. id_SGS_none) then
         call cal_sgs_magne_induction(icomp_sgs_uxb, ie_dvx, ie_dbx,     &
-     &     nod_comm, node, ele, conduct, cd_prop, iphys,                &
+     &     SGS_param1, nod_comm, node, ele, conduct, cd_prop, iphys,    &
      &     iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens, filtering, &
      &     sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,     &
      &     f_l, nod_fld)

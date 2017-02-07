@@ -193,7 +193,7 @@
 !
       if(SGS_param1%iflag_SGS_m_flux .ne. id_SGS_none) then
         call cal_sgs_momentum_flux                                      &
-     &     (icomp_sgs%i_mom_flux, iphys_elediff%i_velo,                 &
+     &     (icomp_sgs%i_mom_flux, iphys_elediff%i_velo, SGS_param1,     &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
      &      jac_3d_q, rhs_tbl, FEM_elens, filtering,                    &
      &      sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,    &
@@ -202,7 +202,7 @@
 !
       if(SGS_param1%iflag_SGS_lorentz .ne. id_SGS_none) then
         call cal_sgs_maxwell                                            &
-     &     (icomp_sgs%i_lorentz, iphys_elediff%i_magne,                 &
+     &     (icomp_sgs%i_lorentz, iphys_elediff%i_magne, SGS_param1,     &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
      &      jac_3d_q, rhs_tbl, FEM_elens, filtering,                    &
      &      sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,    &

@@ -152,9 +152,12 @@
 !      call check_jacobians_triquad(ele, jac_3d)
 !
       if (SGS_param1%iflag_SGS_h_flux .ne. id_SGS_none) then
-        call cal_sgs_heat_flux                                          &
-     &     (icomp_sgs%i_heat_flux, iphys_elediff%i_velo,                &
-     &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
+        call cal_sgs_heat_flux(iflag_temp_supg,                         &
+     &      SGS_param1%iflag_SGS_h_flux, SGS_param1%itype_Csym_h_flux,  &
+     &      iphys%i_sgs_temp, iphys%i_filter_temp,                      &
+     &      iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_h_flux,      &
+     &      icomp_sgs%i_heat_flux, iphys_elediff%i_velo, SGS_param1,    &
+     &      nod_comm, node, ele, fluid, iphys_ele, ele_fld,             &
      &      jac_3d, rhs_tbl, FEM_elens, filtering, sgs_coefs,           &
      &      sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,               &
      &      f_l, f_nl, nod_fld)
@@ -348,9 +351,12 @@
 !
 !
       if (SGS_param1%iflag_SGS_h_flux .ne. id_SGS_none) then
-        call cal_sgs_heat_flux                                          &
-     &     (icomp_sgs%i_heat_flux, iphys_elediff%i_velo,                &
-     &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
+        call cal_sgs_heat_flux(iflag_temp_supg,                         &
+     &      SGS_param1%iflag_SGS_h_flux, SGS_param1%itype_Csym_h_flux,  &
+     &      iphys%i_sgs_temp, iphys%i_filter_temp,                      &
+     &      iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_h_flux,      &
+     &      icomp_sgs%i_heat_flux, iphys_elediff%i_velo, SGS_param1,    &
+     &      nod_comm, node, ele, fluid, iphys_ele, ele_fld,             &
      &      jac_3d, rhs_tbl, FEM_elens, filtering, sgs_coefs,           &
      &      sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,               &
      &      f_l, f_nl, nod_fld)

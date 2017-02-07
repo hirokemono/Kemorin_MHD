@@ -277,9 +277,10 @@
      &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp, cp_prop1,    &
      &      nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys,                  &
      &      iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl,        &
-     &      FEM_elens, ifld_diff, diff_coefs, s_package%Cmatrix,        &
-     &      ak_MHD%ak_d_composit, mhd_fem_wk, fem_wk,                   &
-     &      f_l, f_nl, nod_fld)
+     &      FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,             &
+     &      sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,            &
+     &      s_package%Cmatrix, ak_MHD%ak_d_composit, wk_filter,         &
+     &      mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
         call update_with_dummy_scalar                                   &
      &     (ifld_diff%i_light, icomp_diff%i_light,                      &
      &      mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &
@@ -553,9 +554,10 @@
      &      ele_mesh%surf, fluid, group%surf_grp, cp_prop1,             &
      &      nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys, iphys_ele,       &
      &      ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,        &
-     &      ifld_diff, diff_coefs, s_package%Cmatrix,                   &
-     &      ak_MHD%ak_d_composit, mhd_fem_wk, fem_wk,                   &
-     &      f_l, f_nl, nod_fld)
+     &      icomp_sgs, ifld_diff, iphys_elediff,                        &
+     &      sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,            &
+     &      s_package%Cmatrix, ak_MHD%ak_d_composit, wk_filter,         &
+     &      mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
         call update_with_dummy_scalar                                   &
      &     (ifld_diff%i_light, icomp_diff%i_light,                      &
      &      mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &

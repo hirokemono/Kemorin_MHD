@@ -308,7 +308,7 @@
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_vp_induct)
         call cal_sgs_uxb_2_monitor                                      &
-     &     (icomp_sgs%i_induction, iphys_elediff%i_velo,                &
+     &     (icomp_sgs%i_induction, iphys_elediff%i_velo, SGS_param1,    &
      &     mesh1%nod_comm, mesh1%node, mesh1%ele, MHD_mesh1%conduct,    &
      &     cd_prop1, iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,   &
      &     FEM1_elen, filtering1, sgs_coefs, wk_filter1,                &
