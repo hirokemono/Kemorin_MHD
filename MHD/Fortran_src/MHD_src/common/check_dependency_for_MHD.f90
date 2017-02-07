@@ -8,7 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine set_FEM_MHD_field_data                               &
-!!     &         (SGS_param, node, iphys, nod_fld)
+!!     &         (SGS_param, cmt_param, node, iphys, nod_fld)
+!!        type(commutation_control_params), intent(in) :: cmt_param
+!!        type(node_data), intent(in) :: node
+!!        type(phys_address), intent(inout) :: iphys
+!!        type(phys_data), intent(inout) :: nod_fld
 !!      subroutine set_sph_MHD_sprctr_data                              &
 !!     &         (SGS_param, sph_rj, ipol, idpdr, itor, rj_fld)
 !!@endverbatim
@@ -42,7 +46,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_FEM_MHD_field_data                                 &
-     &         (SGS_param, node, iphys, nod_fld)
+     &         (SGS_param, cmt_param, node, iphys, nod_fld)
 !
       use m_physical_property
       use t_geometry_data
@@ -50,6 +54,7 @@
       use check_MHD_dependency_by_id
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
+      type(commutation_control_params), intent(in) :: cmt_param
       type(node_data), intent(in) :: node
       type(phys_address), intent(inout) :: iphys
       type(phys_data), intent(inout) :: nod_fld
@@ -63,7 +68,7 @@
       call check_dependence_FEM_MHD_by_id(iphys, nod_fld)
       call check_dependence_FEM_evo(iphys, nod_fld)
       call check_dependence_4_FEM_SGS                                   &
-     &   (SGS_param, fl_prop1, iphys, nod_fld)
+     &   (SGS_param, cmt_param, fl_prop1, iphys, nod_fld)
 !
       end subroutine set_FEM_MHD_field_data
 !
@@ -217,9 +222,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine check_dependence_4_FEM_SGS                             &
-     &         (SGS_param, fl_prop, iphys, fld)
+     &         (SGS_param, cmt_param, fl_prop, iphys, fld)
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
+      type(commutation_control_params), intent(in) :: cmt_param
       type(fluid_property), intent(in) :: fl_prop
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: fld
@@ -335,7 +341,7 @@
 !
 !
       if ( evo_vect_p%iflag_scheme .gt. id_no_evolution) then
-        if (   cmt_param1%iflag_commute .gt. id_SGS_commute_OFF         &
+        if (   cmt_param%iflag_commute .gt. id_SGS_commute_OFF          &
      &   .and. SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'filterd A is required for dynamic model'
           call check_missing_field_w_msg(fld, msg, iphys%i_filter_vecp)

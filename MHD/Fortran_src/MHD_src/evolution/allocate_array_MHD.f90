@@ -91,7 +91,8 @@
 !
 !  allocation for field values
       if (iflag_debug.ge.1)  write(*,*) 'set_FEM_MHD_field_data'
-      call set_FEM_MHD_field_data(SGS_param1, node, iphys, nod_fld)
+      call set_FEM_MHD_field_data                                       &
+     &   (SGS_param1, cmt_param1, node, iphys, nod_fld)
       if (iflag_debug.ge.1)  write(*,*) 'initialize_ele_field_data'
       call initialize_ele_field_data(ele%numele)
 !
