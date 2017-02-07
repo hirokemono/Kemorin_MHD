@@ -9,8 +9,9 @@
 !> @brief set parameters for time stepping
 !!
 !!@verbatim
-!!      subroutine s_set_control_4_time_steps(mr_ctl, tctl)
+!!      subroutine s_set_control_4_time_steps(SGS_param, mr_ctl, tctl)
 !!        type(mhd_restart_control), intent(in) :: mr_ctl
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(time_data_control), intent(inout) :: tctl
 !!@endverbatim
 !
@@ -21,10 +22,10 @@
       use calypso_mpi
       use m_error_IDs
       use m_machine_parameter
-      use m_control_parameter
-      use t_ctl_data_4_time_steps
       use m_t_step_parameter
       use m_t_int_parameter
+      use t_SGS_control_parameter
+      use t_ctl_data_4_time_steps
 !
       implicit  none
 !
@@ -38,7 +39,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_4_time_steps(mr_ctl, tctl)
+      subroutine s_set_control_4_time_steps(SGS_param, mr_ctl, tctl)
 !
       use t_ctl_data_mhd_evo_scheme
       use m_initial_field_control
@@ -46,6 +47,7 @@
       use skip_comment_f
 !
       type(mhd_restart_control), intent(in) :: mr_ctl
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(time_data_control), intent(inout) :: tctl
 !
 !
@@ -112,11 +114,11 @@
       if(iflag_flexible_step .eq. iflag_flex_step) then
         if (iflag_debug .ge. iflag_routine_msg)                         &
      &    write(*,*) 'set_flex_time_step_controls'
-        call set_flex_time_step_controls(tctl)
+        call set_flex_time_step_controls(SGS_param, tctl)
       else
         if (iflag_debug .ge. iflag_routine_msg)                         &
      &    write(*,*) 'set_fixed_time_step_controls'
-        call set_fixed_time_step_controls(tctl)
+        call set_fixed_time_step_controls(SGS_param, tctl)
       end if
 !
       if (i_step_number.eq.-1) then
@@ -145,10 +147,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_fixed_time_step_controls(tctl)
+      subroutine set_fixed_time_step_controls(SGS_param, tctl)
 !
       use set_fixed_time_step_params
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(time_data_control), intent(inout) :: tctl
       integer(kind = kint) :: ierr
 !
@@ -157,7 +160,7 @@
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
       i_step_sgs_coefs = 1
-      if(SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
+      if(SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         call set_monitor_param_4_fixed_step(ione,                       &
      &      tctl%i_step_sgs_coefs_ctl, tctl%delta_t_sgs_coefs_ctl,      &
      &      i_step_sgs_output, delta_t_sgs_output)
@@ -175,8 +178,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_flex_time_step_controls(tctl)
+      subroutine set_flex_time_step_controls(SGS_param, tctl)
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(time_data_control), intent(inout) :: tctl
 !
 !
@@ -221,7 +225,7 @@
 !
 !
       i_step_sgs_coefs = 1
-      if(SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
+      if(SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         call set_monitor_param_4_flex_step(ione,                        &
      &      tctl%i_step_sgs_coefs_ctl, tctl%delta_t_sgs_coefs_ctl,      &
      &      i_step_sgs_output, delta_t_sgs_output)

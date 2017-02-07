@@ -111,7 +111,7 @@
 !   set parameters for filtering operation
 !
       call s_set_control_4_filtering                                    &
-     &   (model_ctl%sgs_ctl%SGS_filter_name_ctl,                        &
+     &   (SGS_param1, model_ctl%sgs_ctl%SGS_filter_name_ctl,            &
      &    model_ctl%sgs_ctl%ffile_ctl, model_ctl%sgs_ctl%s3df_ctl,      &
      &    filter_param1)
 !
@@ -131,7 +131,8 @@
 !
 !   set control parameters
 !
-      call s_set_control_4_time_steps(ctl_ctl%mrst_ctl, ctl_ctl%tctl)
+      call s_set_control_4_time_steps                                   &
+     &   (SGS_param1, ctl_ctl%mrst_ctl, ctl_ctl%tctl)
       call s_set_control_4_crank(ctl_ctl%mevo_ctl)
 !
       call s_set_control_4_solver(ctl_ctl%mevo_ctl, ctl_ctl%CG_ctl)

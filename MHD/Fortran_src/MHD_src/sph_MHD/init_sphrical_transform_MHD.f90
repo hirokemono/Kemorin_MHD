@@ -7,8 +7,9 @@
 !>@brief Perform spherical harmonics transform for MHD dynamo model
 !!
 !!@verbatim
-!!      subroutine init_sph_transform_MHD(ipol, idpdr, itor, iphys,     &
-!!     &          sph, comms_sph, omega_sph, trans_p, WK, rj_fld)
+!!      subroutine init_sph_transform_MHD(SGS_param, ipol, idpdr, itor, &
+!!     &          iphys, sph, comms_sph, omega_sph, trans_p, WK, rj_fld)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(phys_address), intent(in) :: ipol, idpdr, itor
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
@@ -26,6 +27,7 @@
 !
       use calypso_mpi
 !
+      use t_SGS_control_parameter
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
       use t_phys_address
@@ -59,8 +61,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine init_sph_transform_MHD(ipol, idpdr, itor, iphys,       &
-     &          sph, comms_sph, omega_sph, trans_p, WK, rj_fld)
+      subroutine init_sph_transform_MHD(SGS_param, ipol, idpdr, itor,   &
+     &          iphys, sph, comms_sph, omega_sph, trans_p, WK, rj_fld)
 !
       use m_control_parameter
       use m_physical_property
@@ -71,6 +73,7 @@
       use pole_sph_transform
       use MHD_FFT_selector
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(phys_address), intent(in) :: ipol, idpdr, itor
       type(phys_address), intent(in) :: iphys
 !
@@ -124,7 +127,7 @@
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
      &    trans_p, WK, rj_fld)
 !
-      if(SGS_param1%iflag_SGS .gt. 0) then
+      if(SGS_param%iflag_SGS .gt. 0) then
         call init_MHD_FFT_select(my_rank, sph%sph_rtp, ncomp_max_trans, &
      &      WK%trns_SGS%ncomp_rtp_2_rj,                                 &
      &      WK%trns_SGS%ncomp_rj_2_rtp, WK%SGS_mul_FFTW)

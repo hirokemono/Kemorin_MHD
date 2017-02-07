@@ -99,7 +99,7 @@
       call set_data_4_const_matrices(mesh1, MHD_mesh1, rhs_tbl1,        &
      &    MHD1_mat_tbls, MHD1_matrices, solver_pack1)
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
-      call set_aiccg_matrices(SGS_param1, mesh1, group1,                &
+      call set_aiccg_matrices(SGS_param1, cmt_param1, mesh1, group1,    &
      &    ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs,                      &
      &    ak_MHD, jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, FEM1_elen,    &
      &    ifld_diff, diff_coefs, rhs_tbl1, MHD1_mat_tbls,               &
@@ -271,7 +271,8 @@
         call output_monitor_control(mesh1%node, nod_fld1)
 !
         if (iflag_debug.eq.1) write(*,*) 's_output_sgs_model_coefs'
-        call s_output_sgs_model_coefs(wk_sgs1, wk_diff1)
+        call s_output_sgs_model_coefs                                   &
+     &     (SGS_param1, cmt_param1, wk_sgs1, wk_diff1)
 !
 !     ---- Output restart field data
 !

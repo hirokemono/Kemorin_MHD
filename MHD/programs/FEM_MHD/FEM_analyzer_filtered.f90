@@ -160,7 +160,8 @@
       call output_monitor_control(mesh1%node, nod_fld1)
 !
       if (iflag_debug.eq.1) write(*,*) 's_output_sgs_model_coefs'
-      call s_output_sgs_model_coefs(wk_sgs1, wk_diff1)
+      call s_output_sgs_model_coefs                                     &
+     &   (SGS_param1, cmt_param1, wk_sgs1, wk_diff1)
 !
 !     ---- Output voulme field data
 !

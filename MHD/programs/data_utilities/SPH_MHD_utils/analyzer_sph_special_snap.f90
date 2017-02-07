@@ -166,8 +166,9 @@
 !*  ----------------lead nonlinear term ... ----------
 !*
       call start_eleps_time(8)
-      call nonlinear(sph1, comms_sph1, omega_sph1, r_2nd, trans_p1,     &
-     &   ref_temp1, ref_comp1, ipol, itor, trns_WK1, rj_fld1)
+      call nonlinear                                                    &
+     &   (SGS_param1, sph1, comms_sph1, omega_sph1, r_2nd, trans_p1,    &
+     &    ref_temp1, ref_comp1, ipol, itor, trns_WK1, rj_fld1)
       call end_eleps_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=
@@ -316,8 +317,8 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call s_lead_fields_4_sph_mhd                                      &
-     &   (sph, comms_sph, r_2nd, trans_p1, ipol, rj_fld, trns_WK)
+      call s_lead_fields_4_sph_mhd(SGS_param1,                          &
+     &    sph, comms_sph, r_2nd, trans_p1, ipol, rj_fld, trns_WK)
 !
       call sph_back_trans_4_MHD                                         &
      &   (sph, comms_sph, fl_prop1, omega_sph, trans_p1,                &

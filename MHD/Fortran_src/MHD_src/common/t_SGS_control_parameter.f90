@@ -11,6 +11,10 @@
 !!      subroutine alloc_filter_group_param(num_grp, f_area)
 !!      subroutine dealloc_SGS_filter_groups(filter_param)
 !!      subroutine dealloc_filter_group_param(f_area)
+!!
+!!      subroutine copy_filter_group_param(f_area_org, f_area_new)
+!!        type(SGS_filter_area_params), intent(in) :: f_area_org
+!!        type(SGS_filter_area_params), intent(inout) :: f_area_new
 !!@endverbatim
 !
       module   t_SGS_control_parameter

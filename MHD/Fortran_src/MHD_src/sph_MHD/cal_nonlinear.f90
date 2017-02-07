@@ -7,8 +7,10 @@
 !>@brief Evaluate nonlinear terms by pseudo spectram scheme
 !!
 !!@verbatim
-!!      subroutine nonlinear(sph, comms_sph, omega_sph, r_2nd, trans_p, &
+!!      subroutine nonlinear                                            &
+!!     &         (SGS_param, sph, comms_sph, omega_sph, r_2nd, trans_p, &
 !!     &          ref_temp, ref_comp, ipol, itor, WK, rj_fld)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(sph_rotation), intent(in) :: omega_sph
@@ -46,6 +48,7 @@
       use calypso_mpi
 !
       use m_physical_property
+      use t_SGS_control_parameter
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
       use t_poloidal_rotation
@@ -71,7 +74,8 @@
 !*
 !*   ------------------------------------------------------------------
 !*
-      subroutine nonlinear(sph, comms_sph, omega_sph, r_2nd, trans_p,   &
+      subroutine nonlinear                                              &
+     &         (SGS_param, sph, comms_sph, omega_sph, r_2nd, trans_p,   &
      &          ref_temp, ref_comp, ipol, itor, WK, rj_fld)
 !
       use m_boundary_params_sph_MHD
@@ -81,6 +85,7 @@
 !
       use m_work_time
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(sph_rotation), intent(in) :: omega_sph
@@ -97,14 +102,15 @@
 !   ----  lead nonlinear terms by phesdo spectrum
 !
       if (iflag_debug.eq.1) write(*,*) 'nonlinear_by_pseudo_sph'
-      call nonlinear_by_pseudo_sph                                      &
-     &   (sph, comms_sph, omega_sph, r_2nd, trans_p, WK%dynamic_SPH,    &
+      call nonlinear_by_pseudo_sph(SGS_param, sph, comms_sph,           &
+     &    omega_sph, r_2nd, trans_p, WK%dynamic_SPH,                    &
      &    WK%trns_MHD, WK%MHD_mul_FFTW, ipol, itor, rj_fld)
 !
 !   ----  Lead SGS terms
-      if(SGS_param1%iflag_SGS .gt. 0) then
+      if(SGS_param%iflag_SGS .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'SGS_by_pseudo_sph'
-        call SGS_by_pseudo_sph(sph, comms_sph, r_2nd, trans_p,          &
+        call SGS_by_pseudo_sph                                          &
+     &     (SGS_param, sph, comms_sph, r_2nd, trans_p,                  &
      &      WK%trns_MHD, WK%trns_snap, WK%trns_SGS, WK%SGS_mul_FFTW,    &
      &      WK%dynamic_SPH, ipol, itor, rj_fld)
       end if
@@ -193,9 +199,9 @@
 !
 !*   ------------------------------------------------------------------
 !
-      subroutine nonlinear_by_pseudo_sph                                &
-     &         (sph, comms_sph, omega_sph, r_2nd, trans_p, dynamic_SPH, &
-     &          trns_MHD, MHD_mul_FFTW, ipol, itor, rj_fld)
+      subroutine nonlinear_by_pseudo_sph(SGS_param, sph, comms_sph,     &
+     &          omega_sph, r_2nd, trans_p, dynamic_SPH, trns_MHD,       &
+     &          MHD_mul_FFTW, ipol, itor, rj_fld)
 !
       use sph_transforms_4_MHD
       use cal_nonlinear_sph_MHD
@@ -205,6 +211,7 @@
 !
       use m_work_time
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(fdm_matrices), intent(in) :: r_2nd
@@ -219,7 +226,7 @@
 !
 !
 !   ----  Lead filtered field for SGS terms
-      if(SGS_param1%iflag_SGS .gt. 0) then
+      if(SGS_param%iflag_SGS .gt. 0) then
         if (iflag_debug.ge.1) write(*,*) 'cal_filtered_sph_rj_fields'
         call start_eleps_time(81)
         call cal_filtered_sph_rj_fields                                 &
@@ -243,9 +250,9 @@
      &    trns_MHD%ncomp_rj_2_rtp, trns_MHD%ncomp_rtp_2_rj,             &
      &    trns_MHD%fld_rtp, trns_MHD%frc_rtp)
 !
-      if(SGS_param1%iflag_SGS .gt. 0) then
+      if(SGS_param%iflag_SGS .gt. 0) then
         if (iflag_debug.ge.1) write(*,*) 'filtered_nonlinear_in_rtp'
-        call filtered_nonlinear_in_rtp(SGS_param1, sph%sph_rtp,         &
+        call filtered_nonlinear_in_rtp(SGS_param, sph%sph_rtp,          &
      &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
      &      trns_MHD%b_trns, trns_MHD%f_trns,                           &
      &      trns_MHD%ncomp_rj_2_rtp, trns_MHD%ncomp_rtp_2_rj,           &
@@ -270,7 +277,8 @@
 !*   ------------------------------------------------------------------
 !*   ------------------------------------------------------------------
 !
-      subroutine SGS_by_pseudo_sph(sph, comms_sph, r_2nd, trans_p,      &
+      subroutine SGS_by_pseudo_sph                                      &
+     &         (SGS_param, sph, comms_sph, r_2nd, trans_p,              &
      &          trns_MHD, trns_snap, trns_SGS, SGS_mul_FFTW,            &
      &          dynamic_SPH, ipol, itor, rj_fld)
 !
@@ -283,6 +291,7 @@
 !
       use m_work_time
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(fdm_matrices), intent(in) :: r_2nd
@@ -317,7 +326,7 @@
      &      trns_SGS%ncomp_rtp_2_rj, trns_MHD%frc_rtp,                  &
      &      trns_SGS%fld_rtp, trns_SGS%frc_rtp)
 !
-        if(SGS_param1%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
+        if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
           if (iflag_debug.eq.1) write(*,*) 'wider_similarity_SGS_rtp'
           call wider_similarity_SGS_rtp(sph%sph_rtp,                    &
      &        fl_prop1, cd_prop1, ht_prop1, cp_prop1,                   &
@@ -330,9 +339,12 @@
      &       (sph%sph_rtp, dynamic_SPH%ifld_sgs, dynamic_SPH%icomp_sgs, &
      &        dynamic_SPH%wk_sgs, trns_SGS)
 !
-          if (iflag_debug.eq.1) write(*,*) 'const_dynamic_SGS_4_buo_sph'
-          call const_dynamic_SGS_4_buo_sph(sph%sph_rtp, fl_prop1,       &
-     &        trns_MHD, trns_snap, trns_SGS, dynamic_SPH)
+          if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
+            if(iflag_debug .gt. 0) write(*,*)                           &
+     &           'const_dynamic_SGS_4_buo_sph'
+            call const_dynamic_SGS_4_buo_sph(sph%sph_rtp, fl_prop1,     &
+     &          trns_MHD, trns_snap, trns_SGS, dynamic_SPH)
+          end if
         end if
         call end_eleps_time(15)
 !

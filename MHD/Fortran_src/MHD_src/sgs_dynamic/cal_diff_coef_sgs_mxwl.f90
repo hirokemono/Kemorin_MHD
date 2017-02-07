@@ -5,7 +5,7 @@
 !
 !!      subroutine s_cal_diff_coef_sgs_mxwl                             &
 !!     &         (iak_diff_lor, icomp_sgs_lor, icomp_diff_lor, ie_dfbx, &
-!!     &          SGS_param, cmt_param1, nod_comm, node, ele, surf,     &
+!!     &          SGS_param, cmt_param, nod_comm, node, ele, surf,      &
 !!     &          fluid, layer_tbl, sf_grp, Vnod_bcs, Bsf_bcs, iphys,   &
 !!     &          iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q, &
 !!     &          rhs_tbl, FEM_elens, filtering, sgs_coefs, wk_filter,  &

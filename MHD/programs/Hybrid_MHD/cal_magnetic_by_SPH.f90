@@ -1,4 +1,12 @@
+!!
+!!      subroutine induction_SPH_initialize(SGS_param,                  &
+!!     &         ipol, idpdr, itor, comms_sph, sph, trans_p, rj_fld)
+!!      subroutine nonlinear_incuction_wSGS_SPH(SGS_param,              &
+!!     &          sph, comms_sph, trans_p, conduct, ipol, rj_fld)
+!!      subroutine cal_magneitc_field_by_SPH(SGS_param,                 &
+!!     &          sph, comms_sph, trans_p, ipol, itor, rj_fld)
 !
+      use t_SGS_control_parameter
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
       use t_phys_address
@@ -28,8 +36,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine induction_SPH_initialize                               &
-     &         (ipol, idpdr, itor, comms_sph, sph, trans_p, rj_fld)
+      subroutine induction_SPH_initialize(SGS_param,                    &
+     &         ipol, idpdr, itor, comms_sph, sph, trans_p, rj_fld)
 !
       use t_work_4_sph_trans
       use m_addresses_trans_hbd_MHD
@@ -37,6 +45,7 @@
       use const_element_comm_tables
       use mpi_load_mesh_data
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(phys_address), intent(in) :: ipol, idpdr, itor
       type(sph_comm_tables), intent(in) :: comms_sph
       type(sph_grids), intent(inout) :: sph
@@ -52,7 +61,7 @@
       sph_fld%num_phys =   5
       sph_fld%ntot_phys = 15
 !
-      if ( SGS_param1%iflag_SGS_uxb .ne. id_SGS_none) then
+      if ( SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
         iphys_sph%i_SGS_vp_induct = 16
         iphys_sph%i_SGS_induction = 19
         sph_fld%num_phys =   7
@@ -61,7 +70,7 @@
 !
       call init_pole_transform(sph%sph_rtp)
 !
-      call set_addresses_trans_hbd_MHD
+      call set_addresses_trans_hbd_MHD(SGS_param)
       call allocate_hbd_trans_rtp(sph%sph_rtp)
       call check_add_trans_hbd_MHD(ipol, idpdr, itor)
 !
@@ -104,8 +113,8 @@
 !
 !*   ------------------------------------------------------------------
 !
-      subroutine nonlinear_incuction_wSGS_SPH                           &
-     &         (sph, comms_sph, trans_p, conduct, ipol, rj_fld)
+      subroutine nonlinear_incuction_wSGS_SPH(SGS_param,                &
+     &          sph, comms_sph, trans_p, conduct, ipol, rj_fld)
 !
       use m_solver_SR
       use m_schmidt_poly_on_rtm
@@ -115,6 +124,7 @@
       use spherical_SRs_N
       use copy_nodal_fld_4_sph_trans
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
@@ -125,7 +135,7 @@
 !
 !
       call cal_sgs_uxb_2_monitor
-     &   (icomp_sgs%i_induction, iphys_elediff%i_velo, SGS_param1,      &
+     &   (icomp_sgs%i_induction, iphys_elediff%i_velo, SGS_param,       &
      &    mesh1%nod_comm, mesh1%node, mesh1%ele, conduct, cd_prop1,     &
      &    iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen,   &
      &    filtering1, wk_filter1, mhd_fem1_wk, fem1_wk,                 &
@@ -218,8 +228,8 @@
 !
 !*   ------------------------------------------------------------------
 !
-      subroutine cal_magneitc_field_by_SPH                              &
-     &         (sph, comms_sph, trans_p, ipol, itor, rj_fld)
+      subroutine cal_magneitc_field_by_SPH(SGS_param,                   &
+     &          sph, comms_sph, trans_p, ipol, itor, rj_fld)
 !
       use m_solver_SR
       use m_schmidt_poly_on_rtm
@@ -227,6 +237,7 @@
       use copy_spectr_4_sph_trans
       use copy_nodal_fld_4_sph_trans
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
@@ -234,7 +245,7 @@
 !
       type(phys_data), intent(in) :: rj_fld
 !
-      if ( SGS_param1%iflag_SGS_uxb .ne. id_SGS_none) then
+      if ( SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
         call cal_diff_induction_MHD_adams(evo_magne%coef_exp,           &
      &      ipol, itor, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else
@@ -261,7 +272,7 @@
      &    ipol%i_b_diffuse, b_hbd_trns%i_b_diffuse, rj_fld, n_WS, WS)
       call sel_sph_rj_vector_to_send(ncomp_rj_2_xyz,                    &
      &    ipol%i_induction, b_hbd_trns%i_induction, rj_fld, n_WS, WS)
-      if (SGS_param1%iflag_SGS_uxb .ne. id_SGS_none) then
+      if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
         call sel_sph_rj_vector_to_send(ncomp_rj_2_xyz,                  &
      &      ipol%i_SGS_induction, b_hbd_trns%i_SGS_induction, rj_fld,   &
      &      n_WS, WS)
@@ -289,7 +300,7 @@
      &   (sph%sph_rtp, sph%sph_params%m_folding, nvector_rj_2_xyz,      &
      &    b_hbd_trns%i_induction, fld_hbd_rtp(1,1), fld_hbd_pole,       &
      &    iphys_sph%i_induction, mesh_sph%node, sph_fld)
-      if ( SGS_param1%iflag_SGS_uxb .ne. id_SGS_none) then
+      if ( SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
         call copy_nod_vec_from_trans_wpole                              &
      &   (sph%sph_rtp, sph%sph_params%m_folding, nvector_rj_2_xyz,      &
      &    b_hbd_trns%i_SGS_induction, fld_hbd_rtp(1,1), fld_hbd_pole,   &
@@ -309,7 +320,7 @@
       call interpolate_vector_type                                      &
      &   (iphys_sph%i_induction, iphys%i_induction,                     &
      &    itp_SPH_2_FEM, mesh_sph, mesh_fem, sph_fld, fem_fld)
-      if ( SGS_param1%iflag_SGS_uxb .ne. id_SGS_none) then
+      if ( SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
         call interpolate_vector_type                                    &
      &   (iphys_sph%i_SGS_induction, iphys%i_SGS_induction,             &
      &    itp_SPH_2_FEM, mesh_sph, mesh_fem, sph_fld, fem_fld)

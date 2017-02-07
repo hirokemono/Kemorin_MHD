@@ -8,8 +8,8 @@
 !!        from control data
 !!
 !!@verbatim
-!!      subroutine s_set_control_4_filtering                            &
-!!     &         (SGS_filter_name_ctl, ffile_ctl, s3df_ctl, filter_param)
+!!      subroutine s_set_control_4_filtering(SGS_param,                 &
+!!     &          SGS_filter_name_ctl, ffile_ctl, s3df_ctl, filter_param)
 !!        type(read_character_item), intent(in) :: SGS_filter_name_ctl
 !!        type(filter_file_control), intent(in) :: ffile_ctl
 !!        type(SGS_3d_filter_control), intent(inout) :: s3df_ctl
@@ -34,13 +34,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_4_filtering                              &
-     &         (SGS_filter_name_ctl, ffile_ctl, s3df_ctl, filter_param)
+      subroutine s_set_control_4_filtering(SGS_param,                   &
+     &          SGS_filter_name_ctl, ffile_ctl, s3df_ctl, filter_param)
 !
       use m_file_format_switch
       use m_phys_labels
-      use m_control_parameter
       use m_filter_file_names
+      use t_SGS_control_parameter
       use t_ctl_data_SGS_filter
       use t_ctl_data_filter_files
       use t_read_control_arrays
@@ -49,12 +49,13 @@
       use set_control_ele_layering
       use skip_comment_f
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(read_character_item), intent(in) :: SGS_filter_name_ctl
       type(filter_file_control), intent(in) :: ffile_ctl
       type(SGS_3d_filter_control), intent(inout) :: s3df_ctl
       type(SGS_filtering_params), intent(inout) :: filter_param
 !
-      integer(kind = kint) :: i, iflag
+      integer(kind = kint) :: iflag
       character(len=kchara) :: tmpchara
 !
 !
@@ -86,8 +87,8 @@
      &       'iflag_SGS_filter', filter_param%iflag_SGS_filter
       end if
 !
-      if       (SGS_param1%iflag_SGS.eq.id_SGS_similarity               &
-     &     .or. SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
+      if       (SGS_param%iflag_SGS.eq.id_SGS_similarity                &
+     &     .or. SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         if(filter_param%iflag_SGS_filter .eq. id_SGS_NO_FILTERING) then
           e_message = 'Set filtering type for dynamic model'
           call calypso_MPI_abort(ierr_SGS, e_message)

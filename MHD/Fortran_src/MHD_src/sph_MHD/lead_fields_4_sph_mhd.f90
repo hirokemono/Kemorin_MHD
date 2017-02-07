@@ -7,8 +7,9 @@
 !>@brief  Evaluate pressure and energy fluxes for snapshots
 !!
 !!@verbatim
-!!      subroutine s_lead_fields_4_sph_mhd                              &
-!!     &         (sph, comms_sph, r_2nd, trans_p, ipol, rj_fld, WK)
+!!      subroutine s_lead_fields_4_sph_mhd(SGS_param,                   &
+!!     &          sph, comms_sph, r_2nd, trans_p, ipol, rj_fld, WK)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(fdm_matrices), intent(in) :: r_2nd
@@ -24,6 +25,7 @@
       use m_machine_parameter
       use m_physical_property
 !
+      use t_SGS_control_parameter
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
       use t_phys_address
@@ -47,10 +49,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_lead_fields_4_sph_mhd                                &
-     &         (sph, comms_sph, r_2nd, trans_p, ipol, rj_fld, WK)
+      subroutine s_lead_fields_4_sph_mhd(SGS_param,                     &
+     &          sph, comms_sph, r_2nd, trans_p, ipol, rj_fld, WK)
 !
-      use m_control_parameter
       use m_t_step_parameter
       use m_radial_matrices_sph
       use output_viz_file_control
@@ -61,6 +62,7 @@
       use swap_phi_4_sph_trans
       use dynamic_model_sph_MHD
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(fdm_matrices), intent(in) :: r_2nd
@@ -77,7 +79,8 @@
 !
       if ( (iflag*mod(istep_max_dt,i_step_output_rst)) .eq.0 ) then
         if(evo_velo%iflag_scheme .gt. id_no_evolution) then
-          call pressure_4_sph_mhd(sph%sph_rj, fl_prop1, r_2nd,          &
+          call pressure_4_sph_mhd                                       &
+     &       (SGS_param, sph%sph_rj, fl_prop1, r_2nd,                   &
      &        trans_p%leg, band_p_poisson, ipol, rj_fld)
         end if
       end if
@@ -106,7 +109,7 @@
      &      WK%trns_MHD%fld_pole, WK%trns_MHD%frc_pole)
       end if
 !
-      if(SGS_param1%iflag_SGS .gt. 0) then
+      if(SGS_param%iflag_SGS .gt. id_SGS_none) then
         if (iflag_debug.eq.1) write(*,*) 'swap_phi_from_trans'
         call swap_phi_from_trans(WK%trns_SGS%ncomp_rj_2_rtp,            &
      &      sph%sph_rtp%nnod_rtp, sph%sph_rtp%nidx_rtp,                 &
@@ -119,7 +122,7 @@
         call sph_pole_trans_SGS_MHD                                     &
      &     (sph, comms_sph, trans_p, ipol, rj_fld, WK%trns_SGS)
 !
-        if(SGS_param1%iflag_dynamic .gt. 0) then
+        if(SGS_param%iflag_dynamic .gt. id_SGS_none) then
           if(iflag_debug.eq.1) write(*,*) 'copy_model_coefs_4_sph_snap'
           call copy_model_coefs_4_sph_snap(sph%sph_rtp,                 &
      &        WK%dynamic_SPH%ifld_sgs, WK%dynamic_SPH%wk_sgs,           &
@@ -129,14 +132,15 @@
 !
       call gradients_of_vectors_sph(sph, comms_sph, r_2nd, trans_p,     &
      &    ipol, WK%trns_MHD, WK%trns_tmp, rj_fld)
-      call enegy_fluxes_4_sph_mhd(sph, comms_sph, r_2nd, trans_p, ipol, &
+      call enegy_fluxes_4_sph_mhd                                       &
+     &   (SGS_param, sph, comms_sph, r_2nd, trans_p, ipol,              &
      &    WK%trns_MHD, WK%trns_SGS, WK%trns_snap, rj_fld)
 !
       end subroutine s_lead_fields_4_sph_mhd
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine pressure_4_sph_mhd(sph_rj, fl_prop, r_2nd,             &
+      subroutine pressure_4_sph_mhd(SGS_param, sph_rj, fl_prop, r_2nd,  &
      &          leg, band_p_poisson, ipol, rj_fld)
 !
       use m_boundary_params_sph_MHD
@@ -148,6 +152,7 @@
       use const_sph_radial_grad
       use cal_sph_rotation_of_SGS
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(fluid_property), intent(in) :: fl_prop
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
@@ -163,7 +168,7 @@
      &   (sph_rj, r_2nd, leg%g_sph_rj, ipol, rj_fld)
 !
 !   ----  Lead SGS terms
-      if(SGS_param1%iflag_SGS .gt. 0) then
+      if(SGS_param%iflag_SGS .gt. id_SGS_none) then
         call cal_div_of_SGS_forces_sph_2                                &
      &     (sph_rj, r_2nd, leg%g_sph_rj, ipol, rj_fld)
       end if
@@ -189,7 +194,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine enegy_fluxes_4_sph_mhd                                 &
-     &          (sph, comms_sph, r_2nd, trans_p, ipol,                  &
+     &          (SGS_param, sph, comms_sph, r_2nd, trans_p, ipol,       &
      &           trns_MHD, trns_SGS, trns_snap, rj_fld)
 !
       use sph_transforms_snapshot
@@ -198,6 +203,7 @@
       use cal_SGS_terms_sph_MHD
       use cal_SGS_buo_flux_sph_MHD
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(fdm_matrices), intent(in) :: r_2nd
@@ -228,7 +234,7 @@
      &    trns_snap%fld_rtp, trns_snap%frc_rtp)
 !
 !      Work of SGS terms
-      if(SGS_param1%iflag_SGS .gt. 0) then
+      if(SGS_param%iflag_SGS .gt. id_SGS_none) then
         if (iflag_debug.eq.1) write(*,*) 'SGS_fluxes_for_snapshot'
         call SGS_fluxes_for_snapshot                                    &
      &     (sph%sph_rtp, fl_prop1, trns_MHD%b_trns,                     &
