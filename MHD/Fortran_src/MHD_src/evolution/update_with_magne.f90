@@ -9,12 +9,14 @@
 !!@verbatim
 !!       subroutine update_with_magnetic_field                          &
 !!     &        (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx,             &
-!!     &         nod_comm, node, ele, surf, fluid, conduct, layer_tbl,  &
-!!     &         sf_grp, Bsf_bcs, Fsf_bcs, iphys, iphys_ele,            &
-!!     &         jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,  &
-!!     &         filtering, wide_filtering, m_lump,                     &
+!!     &         SGS_param, cmt_param, nod_comm, node, ele, surf,       &
+!!     &         fluid, conduct, layer_tbl, sf_grp, Bsf_bcs, Fsf_bcs,   &
+!!     &         iphys, iphys_ele, jac_3d_q, jac_3d_l, jac_sf_grp_q,    &
+!!     &         rhs_tbl, FEM_elens, filtering, wide_filtering, m_lump, &
 !!     &         wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,&
 !!     &         surf_wk, f_l, f_nl, nod_fld, ele_fld, diff_coefs)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -51,8 +53,8 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_control_parameter
 !
+      use t_SGS_control_parameter
       use t_comm_table
       use t_geometry_data_MHD
       use t_geometry_data
@@ -84,10 +86,10 @@
 !
       subroutine update_with_magnetic_field                             &
      &        (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx,               &
-     &         nod_comm, node, ele, surf, fluid, conduct, layer_tbl,    &
-     &         sf_grp, Bsf_bcs, Fsf_bcs, iphys, iphys_ele,              &
-     &         jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,    &
-     &         filtering, wide_filtering, m_lump,                       &
+     &         SGS_param, cmt_param, nod_comm, node, ele, surf,         &
+     &         fluid, conduct, layer_tbl, sf_grp, Bsf_bcs, Fsf_bcs,     &
+     &         iphys, iphys_ele, jac_3d_q, jac_3d_l, jac_sf_grp_q,      &
+     &         rhs_tbl, FEM_elens, filtering, wide_filtering, m_lump,   &
      &         wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,  &
      &         surf_wk, f_l, f_nl, nod_fld, ele_fld, diff_coefs)
 !
@@ -102,6 +104,8 @@
       integer(kind = kint), intent(in) :: iak_diff_b, icomp_diff_b
       integer(kind = kint), intent(in) :: ie_dbx, ie_dfbx
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(commutation_control_params), intent(in) :: cmt_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -152,19 +156,19 @@
 !
 !
        if(iflag_dmc .eq. 0                                              &
-     &     .and. SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
-         if (     SGS_param1%iflag_SGS_lorentz .eq. id_SGS_similarity   &
-     &       .or. SGS_param1%iflag_SGS_uxb .eq. id_SGS_similarity) then
+     &     .and. SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
+         if (     SGS_param%iflag_SGS_lorentz .eq. id_SGS_similarity    &
+     &       .or. SGS_param%iflag_SGS_uxb .eq. id_SGS_similarity) then
            iflag2 = 3
-         else if (SGS_param1%iflag_SGS_lorentz .eq. id_SGS_NL_grad      &
-     &       .or. SGS_param1%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
+         else if (SGS_param%iflag_SGS_lorentz .eq. id_SGS_NL_grad       &
+     &       .or. SGS_param%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
            iflag2 = 2
          else
            iflag2 = 2
          end if
        else
-         if (     SGS_param1%iflag_SGS_lorentz .eq. id_SGS_similarity   &
-     &       .or. SGS_param1%iflag_SGS_uxb .eq. id_SGS_similarity) then
+         if (     SGS_param%iflag_SGS_lorentz .eq. id_SGS_similarity    &
+     &       .or. SGS_param%iflag_SGS_uxb .eq. id_SGS_similarity) then
            iflag2 = 1
          else
            iflag2 = 0
@@ -211,12 +215,12 @@
        end if
 !
 !
-      if(cmt_param1%iflag_c_magne .eq. id_SGS_commute_ON                &
+      if(cmt_param%iflag_c_magne .eq. id_SGS_commute_ON                 &
      &     .and. diff_coefs%iflag_field(iak_diff_b) .eq. 0) then
         if (iflag2.eq.2 .or. iflag2.eq.3) then
           if (iflag_debug.gt.0) write(*,*) 's_cal_diff_coef_magne'
           call s_cal_diff_coef_magne                                    &
-     &       (iak_diff_b, icomp_diff_b, SGS_param1, cmt_param1,         &
+     &       (iak_diff_b, icomp_diff_b, SGS_param, cmt_param,           &
      &        nod_comm, node, ele, surf, sf_grp, Bsf_bcs, Fsf_bcs,      &
      &        iphys, iphys_ele, ele_fld, fluid, layer_tbl,              &
      &        jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,                &
@@ -227,8 +231,8 @@
        end if
  !
  !
-       if (  SGS_param1%iflag_SGS_lorentz .eq. id_SGS_NL_grad           &
-     &  .or. SGS_param1%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
+       if (  SGS_param%iflag_SGS_lorentz .eq. id_SGS_NL_grad            &
+     &  .or. SGS_param%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
         if ( ie_dbx.ne.0 ) then
            if (iflag_debug.gt.0) write(*,*) 'diff_magne_on_ele'
             call sel_int_diff_vector_on_ele                             &

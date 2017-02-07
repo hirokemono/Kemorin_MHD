@@ -7,20 +7,22 @@
 !> @brief Evaluate field data for time integration for FEM dynamo model
 !!
 !!@verbatim
-!!      subroutine update_with_temperature                              &
-!!     &        (iak_diff_t, icomp_diff_t, nod_comm, node, ele, surf,   &
+!!      subroutine update_with_temperature(iak_diff_t, icomp_diff_t,    &
+!!     &         SGS_param, cmt_param, nod_comm, node, ele, surf,       &
 !!     &         fluid, sf_grp, Tsf_bcs, iphys, iphys_ele, ele_fld,     &
 !!     &         jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,   &
 !!     &         filtering, wide_filtering, layer_tbl,                  &
 !!     &         wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,&
 !!     &         surf_wk, f_l, f_nl, nod_fld, diff_coefs)
-!!      subroutine update_with_dummy_scalar                             &
-!!     &        (iak_diff_c, icomp_diff_c, nod_comm, node, ele, surf,   &
+!!      subroutine update_with_dummy_scalar(iak_diff_c, icomp_diff_c,   &
+!!     &         SGS_param, cmt_param, nod_comm, node, ele, surf,       &
 !!     &         fluid, sf_grp, Csf_bcs, iphys, iphys_ele, ele_fld,     &
 !!     &         jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,   &
 !!     &         filtering, wide_filtering, layer_tbl,                  &
 !!     &         wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,&
 !!     &         surf_wk, f_l, f_nl, nod_fld, diff_coefs)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -56,8 +58,8 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_control_parameter
 !
+      use t_SGS_control_parameter
       use t_comm_table
       use t_geometry_data_MHD
       use t_geometry_data
@@ -87,8 +89,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine update_with_temperature                                &
-     &        (iak_diff_t, icomp_diff_t, nod_comm, node, ele, surf,     &
+      subroutine update_with_temperature(iak_diff_t, icomp_diff_t,      &
+     &         SGS_param, cmt_param, nod_comm, node, ele, surf,         &
      &         fluid, sf_grp, Tsf_bcs, iphys, iphys_ele, ele_fld,       &
      &         jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,     &
      &         filtering, wide_filtering, layer_tbl,                    &
@@ -106,6 +108,8 @@
 !
       integer(kind = kint), intent(in) :: iak_diff_t, icomp_diff_t
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(commutation_control_params), intent(in) :: cmt_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -147,8 +151,8 @@
 !
       if (iphys%i_sgs_temp .gt. 0) then
         if(iflag_debug .ge. iflag_routine_msg) write(*,*)               &
-     &        'iflag_SGS_parterbuation', SGS_param1%iflag_parterbuation
-        if(SGS_param1%iflag_parterbuation .eq. id_SGS_REFERENCE) then
+     &        'iflag_SGS_parterbuation', SGS_param%iflag_parterbuation
+        if(SGS_param%iflag_parterbuation .eq. id_SGS_REFERENCE) then
           call copy_scalar_component(nod_fld,                           &
      &        iphys%i_par_temp, iphys%i_sgs_temp)
         else
@@ -160,14 +164,14 @@
       if(iflag_debug .ge. iflag_routine_msg) write(*,*)                 &
      &            'i_filter_temp', iphys%i_filter_temp
       if(iflag_debug .ge. iflag_routine_msg) write(*,*)                 &
-                  'iflag_SGS_heat', SGS_param1%iflag_SGS_h_flux
+                  'iflag_SGS_heat', SGS_param%iflag_SGS_h_flux
       if (iphys%i_filter_temp .gt. 0) then
-        if(SGS_param1%iflag_SGS_h_flux .ne. id_SGS_none) then
+        if(SGS_param%iflag_SGS_h_flux .ne. id_SGS_none) then
 !
-          if(SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF           &
+          if(SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF            &
      &         .and. iflag_dmc .eq. 0) then
             iflag2 = 1
-          else if (SGS_param1%iflag_SGS .eq. id_SGS_similarity) then
+          else if (SGS_param%iflag_SGS .eq. id_SGS_similarity) then
             iflag2 = 1
           else
             iflag2 = 0
@@ -201,16 +205,16 @@
       end if
 !
       if (iflag_dmc .eq. 0                                              &
-     &     .and. SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
-         if (cmt_param1%iflag_c_temp .eq. id_SGS_commute_ON) then
+     &     .and. SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
+         if (cmt_param%iflag_c_temp .eq. id_SGS_commute_ON) then
            if ( diff_coefs%iflag_field(iak_diff_t) .eq. 0) then
 !
-             if (SGS_param1%iflag_SGS_h_flux .eq. id_SGS_NL_grad) then
+             if (SGS_param%iflag_SGS_h_flux .eq. id_SGS_NL_grad) then
                if (iflag_debug.gt.0)                                    &
      &            write(*,*) 's_cal_diff_coef_scalar temp'
                call s_cal_diff_coef_scalar                              &
      &            (iphys%i_sgs_temp, iphys%i_filter_temp,               &
-     &             iak_diff_t, icomp_diff_t, SGS_param1, cmt_param1,    &
+     &             iak_diff_t, icomp_diff_t, SGS_param, cmt_param,      &
      &             nod_comm, node, ele, surf, sf_grp, Tsf_bcs,          &
      &             iphys, iphys_ele, ele_fld, fluid, layer_tbl,         &
      &             jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,           &
@@ -227,8 +231,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine update_with_dummy_scalar                               &
-     &        (iak_diff_c, icomp_diff_c, nod_comm, node, ele, surf,     &
+      subroutine update_with_dummy_scalar(iak_diff_c, icomp_diff_c,     &
+     &         SGS_param, cmt_param, nod_comm, node, ele, surf,         &
      &         fluid, sf_grp, Csf_bcs, iphys, iphys_ele, ele_fld,       &
      &         jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,     &
      &         filtering, wide_filtering, layer_tbl,                    &
@@ -246,6 +250,8 @@
 !
       integer(kind = kint), intent(in) :: iak_diff_c, icomp_diff_c
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(commutation_control_params), intent(in) :: cmt_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -286,8 +292,8 @@
 !
       if (iphys%i_sgs_composit .ne. 0) then
         if(iflag_debug .ge. iflag_routine_msg) write(*,*)               &
-     &        'iflag_SGS_parterbuation', SGS_param1%iflag_parterbuation
-        if(SGS_param1%iflag_parterbuation .eq. id_SGS_REFERENCE) then
+     &        'iflag_SGS_parterbuation', SGS_param%iflag_parterbuation
+        if(SGS_param%iflag_parterbuation .eq. id_SGS_REFERENCE) then
           call copy_scalar_component(nod_fld,                           &
      &        iphys%i_par_light, iphys%i_sgs_composit)
         else
@@ -299,7 +305,7 @@
       iflag2 = 0
 !
       if (iphys%i_filter_comp .ne. 0                                    &
-     &       .and. SGS_param1%iflag_SGS_c_flux .ne. id_SGS_none) then
+     &       .and. SGS_param%iflag_SGS_c_flux .ne. id_SGS_none) then
         if (iflag2.eq.1) then
           if (iflag_debug.gt.0)   write(*,*) 'cal_filtered_composition'
           call cal_filtered_scalar_whole(nod_comm, node, filtering,     &
@@ -320,16 +326,16 @@
 !
 !
        if (iflag_dmc .eq. 0                                             &
-     &   .and. SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
-         if (cmt_param1%iflag_c_light .eq. id_SGS_commute_ON) then
+     &   .and. SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
+         if (cmt_param%iflag_c_light .eq. id_SGS_commute_ON) then
            if ( diff_coefs%iflag_field(iak_diff_c) .eq. 0) then
 !
-             if (SGS_param1%iflag_SGS_c_flux .eq. id_SGS_NL_grad) then
+             if (SGS_param%iflag_SGS_c_flux .eq. id_SGS_NL_grad) then
                if (iflag_debug.gt.0)  write(*,*)                        &
      &                        's_cal_diff_coef_scalar composition'
                call s_cal_diff_coef_scalar                              &
      &            (iphys%i_sgs_composit, iphys%i_filter_comp,           &
-     &             iak_diff_c, icomp_diff_c, SGS_param1, cmt_param1,    &
+     &             iak_diff_c, icomp_diff_c, SGS_param, cmt_param,      &
      &             nod_comm, node, ele, surf, sf_grp, Csf_bcs,          &
      &             iphys, iphys_ele, ele_fld, fluid, layer_tbl,         &
      &             jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,           &

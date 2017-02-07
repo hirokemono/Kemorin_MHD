@@ -197,11 +197,12 @@
         call update_with_vector_potential                               &
      &    (ifld_diff%i_magne, icomp_diff%i_magne,                       &
      &     iphys_elediff%i_magne, iphys_elediff%i_filter_magne,         &
-     &     mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,           &
-     &     MHD_mesh%fluid, MHD_mesh%conduct, layer_tbl, group%surf_grp, &
-     &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Fsf_bcs,        &
-     &     iphys, iphys_ele, jac_3d_q, jac_3d_l, jac_sf_grp_q,          &
-     &     rhs_tbl, FEM_elens, filtering, wide_filtering, m_lump,       &
+     &     SGS_param1, cmt_param1, mesh%nod_comm, mesh%node, mesh%ele,  &
+     &     ele_mesh%surf, MHD_mesh%fluid, MHD_mesh%conduct, layer_tbl,  &
+     &     group%surf_grp, nod_bcs%Bnod_bcs,                            &
+     &     surf_bcs%Asf_bcs, surf_bcs%Fsf_bcs, iphys, iphys_ele,        &
+     &     jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,                   &
+     &     FEM_elens, filtering, wide_filtering, m_lump,                &
      &     wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,      &
      &     surf_wk, f_l, f_nl, nod_fld, ele_fld, diff_coefs)
 !
@@ -222,9 +223,9 @@
         call update_with_magnetic_field                                 &
      &    (ifld_diff%i_magne, icomp_diff%i_magne,                       &
      &     iphys_elediff%i_magne, iphys_elediff%i_filter_magne,         &
-     &     mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,           &
-     &     MHD_mesh%fluid, MHD_mesh%conduct, layer_tbl, group%surf_grp, &
-     &     surf_bcs%Bsf_bcs, surf_bcs%Fsf_bcs, iphys,                   &
+     &     SGS_param1, cmt_param1, mesh%nod_comm, mesh%node, mesh%ele,  &
+     &     ele_mesh%surf, MHD_mesh%fluid, MHD_mesh%conduct, layer_tbl,  &
+     &     group%surf_grp, surf_bcs%Bsf_bcs, surf_bcs%Fsf_bcs, iphys,   &
      &     iphys_ele, jac_3d_q, jac_3d_l, jac_sf_grp_q,                 &
      &     rhs_tbl, FEM_elens, filtering, wide_filtering, m_lump,       &
      &     wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,      &
@@ -272,10 +273,11 @@
 !
         call update_with_temperature                                    &
      &     (ifld_diff%i_temp, icomp_diff%i_temp,                        &
-     &      mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &
-     &      MHD_mesh%fluid, group%surf_grp, surf_bcs%Tsf_bcs, iphys,    &
-     &      iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,       &
-     &      rhs_tbl, FEM_elens, filtering, wide_filtering, layer_tbl,   &
+     &      SGS_param1, cmt_param1, mesh%nod_comm, mesh%node, mesh%ele, &
+     &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
+     &      surf_bcs%Tsf_bcs, iphys, iphys_ele, ele_fld,                &
+     &      jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,                  &
+     &      FEM_elens, filtering, wide_filtering, layer_tbl,            &
      &      wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,     &
      &      surf_wk, f_l, f_nl, nod_fld, diff_coefs)
       end if
@@ -319,10 +321,11 @@
 !
         call update_with_dummy_scalar                                   &
      &     (ifld_diff%i_light, icomp_diff%i_light,                      &
-     &      mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &
-     &      MHD_mesh%fluid, group%surf_grp, surf_bcs%Csf_bcs, iphys,    &
-     &      iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,       &
-     &      rhs_tbl, FEM_elens, filtering, wide_filtering, layer_tbl,   &
+     &      SGS_param1, cmt_param1, mesh%nod_comm, mesh%node, mesh%ele, &
+     &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
+     &      surf_bcs%Csf_bcs, iphys, iphys_ele, ele_fld,                &
+     &      jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,                  &
+     &      FEM_elens, filtering, wide_filtering, layer_tbl,            &
      &      wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,     &
      &      surf_wk, f_l, f_nl, nod_fld, diff_coefs)
       end if
@@ -345,7 +348,7 @@
         call update_with_velocity                                       &
      &     (ifld_diff%i_velo, icomp_diff%i_velo,                        &
      &      iphys_elediff%i_velo, iphys_elediff%i_filter_velo,          &
-     &      mesh%nod_comm, mesh%node, mesh%ele,                         &
+     &      SGS_param1, cmt_param1, mesh%nod_comm, mesh%node, mesh%ele, &
      &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
      &      surf_bcs%Vsf_bcs, surf_bcs%Psf_bcs, iphys,                  &
      &      iphys_ele, jac_3d_q, jac_3d_l, jac_sf_grp_q,                &
@@ -409,7 +412,7 @@
         call update_with_velocity                                       &
      &     (ifld_diff%i_velo, icomp_diff%i_velo,                        &
      &      iphys_elediff%i_velo, iphys_elediff%i_filter_velo,          &
-     &      mesh%nod_comm, mesh%node, mesh%ele,                         &
+     &      SGS_param1, cmt_param1, mesh%nod_comm, mesh%node, mesh%ele, &
      &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
      &      surf_bcs%Vsf_bcs, surf_bcs%Psf_bcs, iphys,                  &
      &      iphys_ele, jac_3d_q, jac_3d_l, jac_sf_grp_q,                &
@@ -421,10 +424,11 @@
       if (iphys%i_temp .ne. 0) then
         call update_with_temperature                                    &
      &     (ifld_diff%i_temp, icomp_diff%i_temp,                        &
-     &      mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &
-     &      MHD_mesh%fluid, group%surf_grp, surf_bcs%Tsf_bcs, iphys,    &
-     &      iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,       &
-     &      rhs_tbl, FEM_elens, filtering, wide_filtering, layer_tbl,   &
+     &      SGS_param1, cmt_param1, mesh%nod_comm, mesh%node, mesh%ele, &
+     &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
+     &      surf_bcs%Tsf_bcs, iphys, iphys_ele, ele_fld,                &
+     &      jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,                  &
+     &      FEM_elens, filtering, wide_filtering, layer_tbl,            &
      &      wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,     &
      &      surf_wk, f_l, f_nl, nod_fld, diff_coefs)
       end if
@@ -432,10 +436,11 @@
       if (iphys%i_light .ne. 0) then
         call update_with_dummy_scalar                                   &
      &     (ifld_diff%i_light, icomp_diff%i_light,                      &
-     &      mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &
-     &      MHD_mesh%fluid, group%surf_grp, surf_bcs%Csf_bcs, iphys,    &
-     &      iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,       &
-     &      rhs_tbl, FEM_elens, filtering, wide_filtering, layer_tbl,   &
+     &      SGS_param1, cmt_param1, mesh%nod_comm, mesh%node, mesh%ele, &
+     &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
+     &      surf_bcs%Csf_bcs, iphys, iphys_ele, ele_fld,                &
+     &      jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,                  &
+     &      FEM_elens, filtering, wide_filtering, layer_tbl,            &
      &      wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,     &
      &      surf_wk, f_l, f_nl, nod_fld, diff_coefs)
       end if
@@ -444,20 +449,21 @@
         call update_with_vector_potential                               &
      &    (ifld_diff%i_magne, icomp_diff%i_magne,                       &
      &     iphys_elediff%i_magne, iphys_elediff%i_filter_magne,         &
-     &     mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,           &
-     &     MHD_mesh%fluid, MHD_mesh%conduct, layer_tbl, group%surf_grp, &
-     &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Fsf_bcs,        &
-     &     iphys, iphys_ele, jac_3d_q, jac_3d_l, jac_sf_grp_q,          &
-     &     rhs_tbl, FEM_elens, filtering, wide_filtering, m_lump,       &
+     &     SGS_param1, cmt_param1, mesh%nod_comm, mesh%node, mesh%ele,  &
+     &     ele_mesh%surf, MHD_mesh%fluid, MHD_mesh%conduct, layer_tbl,  &
+     &     group%surf_grp, nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs,          &
+     &     surf_bcs%Fsf_bcs, iphys, iphys_ele,                          &
+     &     jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,                   &
+     &     FEM_elens, filtering, wide_filtering, m_lump,                &
      &     wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,      &
      &     surf_wk, f_l, f_nl, nod_fld, ele_fld, diff_coefs)
       else if (iphys%i_magne.ne.0) then
         call update_with_magnetic_field                                 &
      &    (ifld_diff%i_magne, icomp_diff%i_magne,                       &
      &     iphys_elediff%i_magne, iphys_elediff%i_filter_magne,         &
-     &     mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,           &
-     &     MHD_mesh%fluid, MHD_mesh%conduct, layer_tbl, group%surf_grp, &
-     &     surf_bcs%Bsf_bcs, surf_bcs%Fsf_bcs, iphys,                   &
+     &     SGS_param1, cmt_param1, mesh%nod_comm, mesh%node, mesh%ele,  &
+     &     ele_mesh%surf, MHD_mesh%fluid, MHD_mesh%conduct, layer_tbl,  &
+     &     group%surf_grp, surf_bcs%Bsf_bcs, surf_bcs%Fsf_bcs, iphys,   &
      &     iphys_ele, jac_3d_q, jac_3d_l, jac_sf_grp_q,                 &
      &     rhs_tbl, FEM_elens, filtering, wide_filtering, m_lump,       &
      &     wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,      &
@@ -584,13 +590,13 @@
         end if
 !
         call update_with_temperature                                    &
-     &     (ifld_diff%i_temp, icomp_diff%i_temp,                        &
-     &      mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &
-     &      fluid, group%surf_grp, surf_bcs%Tsf_bcs, iphys,             &
-     &      iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,       &
-     &      rhs_tbl, FEM_elens, filtering, wide_filtering, layer_tbl,   &
-     &      wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,     &
-     &      surf_wk, f_l, f_nl, nod_fld, diff_coefs)
+     &    (ifld_diff%i_temp, icomp_diff%i_temp,                         &
+     &     SGS_param1, cmt_param1, mesh%nod_comm, mesh%node, mesh%ele,  &
+     &     ele_mesh%surf, fluid, group%surf_grp, surf_bcs%Tsf_bcs,      &
+     &     iphys, iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q, &
+     &     rhs_tbl, FEM_elens, filtering, wide_filtering, layer_tbl,    &
+     &     wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,      &
+     &     surf_wk, f_l, f_nl, nod_fld, diff_coefs)
       end if
 !
 !     ----- composition update
@@ -631,13 +637,13 @@
         end if
 !
         call update_with_dummy_scalar                                   &
-     &     (ifld_diff%i_light, icomp_diff%i_light,                      &
-     &      mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &
-     &      fluid, group%surf_grp, surf_bcs%Csf_bcs, iphys,             &
-     &      iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,       &
-     &      rhs_tbl, FEM_elens, filtering, wide_filtering, layer_tbl,   &
-     &      wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,     &
-     &      surf_wk, f_l, f_nl, nod_fld, diff_coefs)
+     &    (ifld_diff%i_light, icomp_diff%i_light,                       &
+     &     SGS_param1, cmt_param1, mesh%nod_comm, mesh%node, mesh%ele,  &
+     &     ele_mesh%surf, fluid, group%surf_grp, surf_bcs%Csf_bcs,      &
+     &     iphys, iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q, &
+     &     rhs_tbl, FEM_elens, filtering, wide_filtering, layer_tbl,    &
+     &     wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,      &
+     &     surf_wk, f_l, f_nl, nod_fld, diff_coefs)
       end if
 !
 !     ---- velocity update
@@ -658,8 +664,9 @@
         call update_with_velocity                                       &
      &     (ifld_diff%i_velo, icomp_diff%i_velo,                        &
      &      iphys_elediff%i_velo, iphys_elediff%i_filter_velo,          &
-     &      mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf, fluid,   &
-     &      group%surf_grp, surf_bcs%Vsf_bcs, surf_bcs%Psf_bcs,         &
+     &      SGS_param1, cmt_param1, mesh%nod_comm, mesh%node, mesh%ele, &
+     &      ele_mesh%surf, fluid, group%surf_grp,                       &
+     &      surf_bcs%Vsf_bcs, surf_bcs%Psf_bcs,                         &
      &      iphys, iphys_ele, jac_3d_q, jac_3d_l, jac_sf_grp_q,         &
      &      rhs_tbl, FEM_elens, filtering, wide_filtering, layer_tbl,   &
      &      wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,     &
