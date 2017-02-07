@@ -285,8 +285,15 @@
       end if
 !
       if (iphys%i_sgs_composit .ne. 0) then
-        call copy_scalar_component(nod_fld,                             &
-     &      iphys%i_light, iphys%i_sgs_composit)
+        if(iflag_debug .ge. iflag_routine_msg) write(*,*)               &
+     &        'iflag_SGS_parterbuation', SGS_param1%iflag_parterbuation
+        if(SGS_param1%iflag_parterbuation .eq. id_SGS_REFERENCE) then
+          call copy_scalar_component(nod_fld,                           &
+     &        iphys%i_par_light, iphys%i_sgs_composit)
+        else
+          call copy_scalar_component(nod_fld,                           &
+     &        iphys%i_light, iphys%i_sgs_composit)
+        end if
       end if
 !
       iflag2 = 0

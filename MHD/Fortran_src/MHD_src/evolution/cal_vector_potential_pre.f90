@@ -7,18 +7,22 @@
 !
 !!      subroutine cal_vector_p_pre                                     &
 !!     &         (iak_diff_b, icomp_sgs_uxb, ie_dvx, ak_d_magne,        &
-!!     &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,  &
-!!     &          Bnod_bcs, Asf_bcs, iphys, iphys_ele, ele_fld,         &
-!!     &          jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,           &
-!!     &          sgs_coefs, diff_coefs, filtering, Bmatrix, MG_vector, &
-!!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-!!      subroutine cal_vector_p_co(iak_diff_b, ak_d_magne,              &
+!!     &          SGS_param, cmt_param, nod_comm, node, ele, surf,      &
+!!     &          conduct, sf_grp, cd_prop, Bnod_bcs, Asf_bcs, iphys,   &
+!!     &          iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl,  &
+!!     &          FEM_elens, sgs_coefs, diff_coefs, filtering,          &
+!!     &          Bmatrix, MG_vector, wk_filter, mhd_fem_wk, fem_wk,    &
+!!     &          f_l, f_nl, nod_fld)
+!!      subroutine cal_vector_p_co                                      &
+!!     &         (iak_diff_b, ak_d_magne, SGS_param, cmt_param,         &
 !!     &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,  &
 !!     &          Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,         &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
 !!     &          rhs_tbl, FEM_elens, diff_coefs, m_lump,               &
 !!     &          Bmatrix, MG_vector, mhd_fem_wk, fem_wk, surf_wk,      &
 !!     &          f_l, f_nl, nod_fld)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -55,11 +59,10 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_control_parameter
-      use m_SGS_control_parameter
       use m_t_int_parameter
       use m_phys_constants
 !
+      use t_SGS_control_parameter
       use t_comm_table
       use t_geometry_data_MHD
       use t_geometry_data
@@ -95,11 +98,12 @@
 !
       subroutine cal_vector_p_pre                                       &
      &         (iak_diff_b, icomp_sgs_uxb, ie_dvx, ak_d_magne,          &
-     &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,    &
-     &          Bnod_bcs, Asf_bcs, iphys, iphys_ele, ele_fld,           &
-     &          jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,             &
-     &          sgs_coefs, diff_coefs, filtering, Bmatrix, MG_vector,   &
-     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          SGS_param, cmt_param, nod_comm, node, ele, surf,        &
+     &          conduct, sf_grp, cd_prop, Bnod_bcs, Asf_bcs, iphys,     &
+     &          iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl,    &
+     &          FEM_elens, sgs_coefs, diff_coefs, filtering,            &
+     &          Bmatrix, MG_vector, wk_filter, mhd_fem_wk, fem_wk,      &
+     &          f_l, f_nl, nod_fld)
 !
       use calypso_mpi
 !
@@ -115,6 +119,8 @@
       use evolve_by_consist_crank
       use copy_nodal_fields
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(commutation_control_params), intent(in) :: cmt_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -155,7 +161,7 @@
 !
       if (cd_prop%coef_magne .gt. zero                                  &
      &     .and. evo_vect_p%coef_exp .gt. zero) then
-        call int_vol_vector_diffuse_ele(SGS_param1%ifilter_final,       &
+        call int_vol_vector_diffuse_ele(SGS_param%ifilter_final,        &
      &      ele%istack_ele_smp, intg_point_t_evo,                       &
      &      node, ele, nod_fld, jac_3d_q, rhs_tbl, FEM_elens,           &
      &      diff_coefs, iak_diff_b, evo_vect_p%coef_exp, ak_d_magne,    &
@@ -164,9 +170,9 @@
 !
 !  lead induction terms
 !
-      if ( SGS_param1%iflag_SGS_uxb .ne. id_SGS_none) then
+      if ( SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
         call cal_sgs_uxb_2_evo(icomp_sgs_uxb, ie_dvx,                   &
-     &      SGS_param1, nod_comm, node, ele, conduct,                   &
+     &      SGS_param, nod_comm, node, ele, conduct,                    &
      &      cd_prop, iphys, iphys_ele, ele_fld, jac_3d_q, rhs_tbl,      &
      &      FEM_elens, filtering, sgs_coefs, wk_filter,                 &
      &      mhd_fem_wk, fem_wk, f_nl, nod_fld)
@@ -211,7 +217,7 @@
 !  -----for Ceank-nicolson
       else if (evo_vect_p%iflag_scheme .eq. id_Crank_nicolson) then
         call cal_vect_p_pre_lumped_crank(iflag_mag_supg,                &
-     &      cmt_param1%iflag_c_magne, SGS_param1%ifilter_final,         &
+     &      cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
      &      iphys%i_vecp, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,      &
      &      Bnod_bcs%nod_bc_a, nod_comm, node, ele, conduct,            &
      &      evo_vect_p, iphys_ele, ele_fld, jac_3d_q, rhs_tbl,          &
@@ -219,7 +225,7 @@
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if (evo_vect_p%iflag_scheme.eq.id_Crank_nicolson_cmass) then
         call cal_vect_p_pre_consist_crank                               &
-     &     (cmt_param1%iflag_c_magne, SGS_param1%ifilter_final,         &
+     &     (cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
      &      iphys%i_vecp, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,      &
      &      Bnod_bcs%nod_bc_a, node, ele, conduct, evo_vect_p, cd_prop, &
      &      jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,                   &
@@ -238,7 +244,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_vector_p_co(iak_diff_b, ak_d_magne,                &
+      subroutine cal_vector_p_co                                        &
+     &         (iak_diff_b, ak_d_magne, SGS_param, cmt_param,           &
      &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,    &
      &          Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,           &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
@@ -255,6 +262,8 @@
       use cal_multi_pass
       use cal_sol_vector_co_crank
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(commutation_control_params), intent(in) :: cmt_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -291,12 +300,12 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'int_vol_magne_co'
       call int_vol_solenoid_co                                          &
-     &   (intg_point_poisson, SGS_param1%ifilter_final,                 &
+     &   (intg_point_poisson, SGS_param%ifilter_final,                  &
      &    ele%istack_ele_smp, iphys%i_m_phi, iak_diff_b,                &
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l,                       &
      &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_nl)
 !
-      if (cmt_param1%iflag_c_magne .eq. id_SGS_commute_ON               &
+      if (cmt_param%iflag_c_magne .eq. id_SGS_commute_ON                &
      &     .and. Fsf_bcs%sgs%ngrp_sf_dat .gt. 0) then
         if (iflag_debug.eq.1) write(*,*)                                &
                              'int_surf_sgs_velo_co_ele', iphys%i_m_phi
@@ -304,7 +313,7 @@
      &       nod_fld, jac_sf_grp_q, jac_sf_grp_l,                       &
      &       rhs_tbl, FEM_elens, intg_point_poisson,                    &
      &       Fsf_bcs%sgs%ngrp_sf_dat, Fsf_bcs%sgs%id_grp_sf_dat,        &
-     &       SGS_param1%ifilter_final, diff_coefs%num_field,            &
+     &       SGS_param%ifilter_final, diff_coefs%num_field,             &
      &       iak_diff_b, diff_coefs%ak, iphys%i_m_phi,                  &
      &       fem_wk, surf_wk, f_nl)
       end if
@@ -313,7 +322,7 @@
       if (   iflag_implicit_correct.eq.3                                &
      &  .or. iflag_implicit_correct.eq.4) then
         call cal_vector_p_co_imp(iphys%i_vecp, iak_diff_b, ak_d_magne,  &
-     &      SGS_param1, cmt_param1, nod_comm, node, ele, conduct,       &
+     &      SGS_param, cmt_param, nod_comm, node, ele, conduct,         &
      &      cd_prop, Bnod_bcs, iphys_ele, ele_fld, jac_3d_q, rhs_tbl,   &
      &      FEM_elens, diff_coefs, m_lump, Bmatrix, MG_vector,          &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)

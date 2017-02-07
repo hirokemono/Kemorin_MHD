@@ -62,6 +62,7 @@
 !
       use m_precision
 !
+      use m_SGS_control_parameter
       use t_physical_property
       use t_comm_table
       use t_geometry_data_MHD
@@ -164,9 +165,9 @@
       if (iflag_debug .gt. 0)  write(*,*) 'vector_p_pre'
       call cal_vector_p_pre(ifld_diff%i_magne,                          &
      &    icomp_sgs%i_induction, iphys_elediff%i_velo, ak_d_magne,      &
-     &    nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,          &
-     &    Bnod_bcs, Asf_bcs, iphys, iphys_ele, ele_fld,                 &
-     &    jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,                   &
+     &    SGS_param1, cmt_param1, nod_comm, node, ele, surf, conduct,   &
+     &    sf_grp, cd_prop, Bnod_bcs, Asf_bcs, iphys, iphys_ele,         &
+     &    ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,          &
      &    sgs_coefs, diff_coefs, filtering, Bmatrix, MG_vector,         &
      &    wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
@@ -185,7 +186,8 @@
       do iloop = 0, maxiter_vecp
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_electric_potential'
-        call cal_electric_potential(ifld_diff%i_magne,                  &
+        call cal_electric_potential                                     &
+     &     (ifld_diff%i_magne, SGS_param1, cmt_param1,                  &
      &      node, ele, surf, sf_grp, Bnod_bcs, Asf_bcs, Fsf_bcs,        &
      &      iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,           &
      &      FEM_elens, diff_coefs, Fmatrix, MG_vector,                  &
@@ -197,7 +199,8 @@
      &      iphys%i_m_phi, iphys%i_mag_p, nod_fld%d_fld)
 !
         if (iflag_debug.gt.0) write(*,*) 'vector_potential_correct'
-        call cal_vector_p_co(ifld_diff%i_magne, ak_d_magne,             &
+        call cal_vector_p_co                                            &
+     &     (ifld_diff%i_magne, ak_d_magne, SGS_param1, cmt_param1,      &
      &      nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,        &
      &      Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,               &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &
@@ -307,10 +310,10 @@
       call cal_magnetic_field_pre(icomp_sgs%i_induction,                &
      &    ifld_diff%i_magne, ifld_diff%i_induction,                     &
      &    iphys_elediff%i_velo, iphys_elediff%i_magne, ak_d_magne,      &
-     &    nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,          &
-     &    Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,        &
-     &    jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,                   &
-     &    sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,              &
+     &    SGS_param1, cmt_param1, nod_comm, node, ele, surf,            &
+     &    conduct, sf_grp, cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs,         &
+     &    iphys, iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl,   &
+     &    FEM_elens, sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,   &
      &    Bmatrix, MG_vector, wk_filter, mhd_fem_wk, fem_wk, surf_wk,   &
      &    f_l, f_nl, nod_fld)
 !
@@ -322,7 +325,7 @@
 !
 !
       do iloop = 0, maxiter
-        call cal_mag_potential(ifld_diff%i_magne,                       &
+        call cal_mag_potential(ifld_diff%i_magne, SGS_param1, cmt_param1,&
      &      node, ele, surf, sf_grp, Bnod_bcs, Bsf_bcs, Fsf_bcs,        &
      &      iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,           &
      &      FEM_elens, diff_coefs, Fmatrix, MG_vector,                  &
@@ -334,7 +337,8 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'magnetic_correction'
-        call cal_magnetic_co(ifld_diff%i_magne, ak_d_magne,             &
+        call cal_magnetic_co                                            &
+     &     (ifld_diff%i_magne, ak_d_magne, SGS_param1, cmt_param1,      &
      &      nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,        &
      &      Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,               &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &

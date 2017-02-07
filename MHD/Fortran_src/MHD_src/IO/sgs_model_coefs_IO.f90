@@ -160,17 +160,18 @@
       call open_SGS_model_coef_file(iflag_layered,                      &
      &    sgs_fld_coef_file_code, sgs_fld_coef_file_name, wk_sgs)
       call open_SGS_correlation_file(iflag_layered,                     &
-     &    sgs_comp_coef_file_code, sgs_comp_coef_file_name, wk_sgs)
+     &    sgs_comp_coef_file_code, sgs_comp_coef_file_name,             &
+     &    SGS_param1, wk_sgs)
 !
       call open_SGS_correlation_file(iflag_layered,                     &
-     &    sgs_cor_file_code, sgs_cor_file_name, wk_sgs)
+     &    sgs_cor_file_code, sgs_cor_file_name, SGS_param1, wk_sgs)
       call open_SGS_correlation_file(iflag_layered,                     &
-     &    sgs_cov_file_code, sgs_cov_file_name, wk_sgs)
+     &    sgs_cov_file_code, sgs_cov_file_name, SGS_param1, wk_sgs)
       call open_SGS_correlation_file(iflag_layered,                     &
-     &    sgs_ratio_file_code, sgs_ratio_file_name, wk_sgs)
+     &    sgs_ratio_file_code, sgs_ratio_file_name, SGS_param1, wk_sgs)
 !
       call open_SGS_rms_ratio_file(iflag_layered,                       &
-     &    sgs_rms_file_code, sgs_rms_file_name, wk_sgs)
+     &    sgs_rms_file_code, sgs_rms_file_name, SGS_param1, wk_sgs)
 !
 !
       do inum = 1, wk_sgs%nlayer
@@ -213,17 +214,19 @@
       call open_SGS_model_coef_file(iflag_whole,                        &
      &    sgs_fld_coef_file_code, sgs_fld_whole_file_name, wk_sgs)
       call open_SGS_correlation_file(iflag_whole,                       &
-     &    sgs_comp_coef_file_code, sgs_comp_whole_file_name, wk_sgs)
+     &    sgs_comp_coef_file_code, sgs_comp_whole_file_name,            &
+     &    SGS_param1, wk_sgs)
 !
       call open_SGS_correlation_file(iflag_whole,                       &
-     &    sgs_cor_file_code, sgs_w_cor_file_name, wk_sgs)
+     &    sgs_cor_file_code, sgs_w_cor_file_name, SGS_param1, wk_sgs)
       call open_SGS_correlation_file(iflag_whole,                       &
-     &    sgs_cov_file_code, sgs_w_cov_file_name, wk_sgs)
+     &    sgs_cov_file_code, sgs_w_cov_file_name, SGS_param1, wk_sgs)
       call open_SGS_correlation_file(iflag_whole,                       &
-     &    sgs_ratio_file_code, sgs_w_ratio_file_name, wk_sgs)
+     &    sgs_ratio_file_code, sgs_w_ratio_file_name,                   &
+     &    SGS_param1, wk_sgs)
 !
       call open_SGS_rms_ratio_file(iflag_whole,                         &
-     &    sgs_rms_file_code, sgs_w_rms_file_name, wk_sgs)
+     &    sgs_rms_file_code, sgs_w_rms_file_name, SGS_param1, wk_sgs)
 !
       write(sgs_fld_coef_file_code,1001)  i_step_MHD, time,             &
      &        wk_sgs%fld_whole_clip(1:wk_sgs%num_kinds)

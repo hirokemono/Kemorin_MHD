@@ -129,6 +129,7 @@
       use cal_velocity
       use cal_magnetic_field
       use cal_light_element
+      use copy_nodal_fields
 !
       use update_with_scalars
       use update_with_velo
@@ -234,9 +235,10 @@
 !
       if ( evo_temp%iflag_scheme .gt. id_no_evolution) then
         if( ref_param_T1%iflag_reference .ne. id_no_ref_temp) then
-          if (iflag_debug.eq.1) write(*,*) 'cal_parturbation_temp'
-          call cal_parturbation_temp                                    &
-     &      (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,         &
+          if(iflag_debug.eq.1) write(*,*) 'cal_temperature_field theta'
+          call cal_temperature_field                                    &
+     &      (iphys%i_par_temp, SGS_param1, cmt_param1,                  &
+     &       mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,         &
      &       MHD_mesh%fluid, group%surf_grp, ht_prop1,                  &
      &       nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,                 &
      &       iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl,       &
@@ -244,20 +246,29 @@
      &       sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,           &
      &       s_package%Tmatrix, ak_MHD%ak_d_temp, wk_filter,            &
      &       mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+!
+          call add_2_nod_scalars(nod_fld,                               &
+     &        iphys%i_ref_t, iphys%i_par_temp, iphys%i_temp)
         else
 !          call check_surface_param_smp('cal_temperature_field start',  &
 !     &        my_rank, sf_grp, group%surf_nod_grp)
-          if (iflag_debug.eq.1) write(*,*) 'cal_temperature_field'
+          if (iflag_debug.eq.1) write(*,*) 'cal_temperature_field T'
           call cal_temperature_field                                    &
-     &      (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,         &
-     &       MHD_mesh%fluid, group%surf_grp, ht_prop1,                  &
-     &       nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,                 &
-     &       iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl,       &
-     &       FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,            &
-     &       sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,           &
-     &       s_package%Tmatrix, ak_MHD%ak_d_temp, wk_filter,            &
-     &       mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &       (iphys%i_temp, SGS_param1, cmt_param1,                     &
+     &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
+     &        MHD_mesh%fluid, group%surf_grp, ht_prop1,                 &
+     &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,                &
+     &        iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl,      &
+     &        FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,           &
+     &        sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,          &
+     &        s_package%Tmatrix, ak_MHD%ak_d_temp, wk_filter,           &
+     &        mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+!
+        if (iphys%i_par_temp .gt. 0) then
+          call subtract_2_nod_scalars(nod_fld,                          &
+     &        iphys%i_temp, iphys%i_ref_t, iphys%i_par_temp)
         end if
+      end if
 !
         call update_with_temperature                                    &
      &     (ifld_diff%i_temp, icomp_diff%i_temp,                        &
@@ -272,15 +283,40 @@
 !     ----- composition update
 !
       if ( evo_comp%iflag_scheme .gt. id_no_evolution) then
-        if (iflag_debug.eq.1) write(*,*) 's_cal_light_element'
-        call s_cal_light_element(mesh%nod_comm, mesh%node, mesh%ele,    &
-     &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp, cp_prop1,    &
-     &      nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys,                  &
-     &      iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl,        &
-     &      FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,             &
-     &      sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,            &
-     &      s_package%Cmatrix, ak_MHD%ak_d_composit, wk_filter,         &
-     &      mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+        if( ref_param_C1%iflag_reference .ne. id_no_ref_temp) then
+          if(iflag_debug.eq.1) write(*,*) 's_cal_light_element part'
+          call s_cal_light_element                                      &
+     &       (iphys%i_par_light, SGS_param1, cmt_param1,                &
+     &        mesh%nod_comm, mesh%node, mesh%ele,                       &
+     &        ele_mesh%surf, MHD_mesh%fluid, group%surf_grp, cp_prop1,  &
+     &        nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys,                &
+     &        iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl,      &
+     &        FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,           &
+     &        sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,          &
+     &        s_package%Cmatrix, ak_MHD%ak_d_composit, wk_filter,       &
+     &        mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+!
+          call add_2_nod_scalars(nod_fld,                               &
+     &        iphys%i_ref_c, iphys%i_par_light, iphys%i_light)
+        else
+          if(iflag_debug.eq.1) write(*,*) 's_cal_light_element C'
+          call s_cal_light_element                                      &
+     &       (iphys%i_light, SGS_param1, cmt_param1,                    &
+     &        mesh%nod_comm, mesh%node, mesh%ele,                       &
+     &        ele_mesh%surf, MHD_mesh%fluid, group%surf_grp, cp_prop1,  &
+     &        nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys,                &
+     &        iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl,      &
+     &        FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,           &
+     &        sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,          &
+     &        s_package%Cmatrix, ak_MHD%ak_d_composit, wk_filter,       &
+     &        mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+!
+          if (iphys%i_par_light .gt. 0) then
+            call subtract_2_nod_scalars(nod_fld,                        &
+     &          iphys%i_light, iphys%i_ref_c, iphys%i_par_light)
+          end if
+        end if
+!
         call update_with_dummy_scalar                                   &
      &     (ifld_diff%i_light, icomp_diff%i_light,                      &
      &      mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &
@@ -463,6 +499,7 @@
       use cal_temperature
       use cal_velocity
       use cal_light_element
+      use copy_nodal_fields
 !
       use update_with_scalars
       use update_with_velo
@@ -513,9 +550,10 @@
 !
       if ( evo_temp%iflag_scheme .gt. id_no_evolution) then
         if( ref_param_T1%iflag_reference .ne. id_no_ref_temp) then
-          if (iflag_debug.eq.1) write(*,*) 'cal_parturbation_temp'
-          call cal_parturbation_temp                                    &
-     &       (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
+          if (iflag_debug.eq.1) write(*,*) 'cal_temperature_field'
+          call cal_temperature_field                                    &
+     &       (iphys%i_par_temp, SGS_param1, cmt_param1,                 &
+     &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
      &        fluid, group%surf_grp, ht_prop1,                          &
      &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                       &
      &        iphys, iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q,        &
@@ -523,10 +561,14 @@
      &        sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,          &
      &        s_package%Tmatrix, ak_MHD%ak_d_temp, wk_filter,           &
      &        mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+!
+          call add_2_nod_scalars(nod_fld,                               &
+     &        iphys%i_ref_t, iphys%i_par_temp, iphys%i_temp)
         else
           if (iflag_debug.eq.1) write(*,*) 'cal_temperature_field'
           call cal_temperature_field                                    &
-     &       (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
+     &       (iphys%i_temp, SGS_param1, cmt_param1,                     &
+     &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
      &        fluid, group%surf_grp, ht_prop1,                          &
      &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                       &
      &        iphys, iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q,        &
@@ -534,6 +576,11 @@
      &        sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,          &
      &        s_package%Tmatrix, ak_MHD%ak_d_temp, wk_filter,           &
      &        mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+!
+          if (iphys%i_par_temp .gt. 0) then
+            call subtract_2_nod_scalars(nod_fld,                        &
+     &          iphys%i_temp, iphys%i_ref_t, iphys%i_par_temp)
+          end if
         end if
 !
         call update_with_temperature                                    &
@@ -549,15 +596,40 @@
 !     ----- composition update
 !
       if ( evo_comp%iflag_scheme .gt. id_no_evolution) then
-        if (iflag_debug.eq.1) write(*,*) 's_cal_light_element'
-        call s_cal_light_element(mesh%nod_comm, mesh%node, mesh%ele,    &
-     &      ele_mesh%surf, fluid, group%surf_grp, cp_prop1,             &
-     &      nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys, iphys_ele,       &
-     &      ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,        &
-     &      icomp_sgs, ifld_diff, iphys_elediff,                        &
-     &      sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,            &
-     &      s_package%Cmatrix, ak_MHD%ak_d_composit, wk_filter,         &
-     &      mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+        if( ref_param_C1%iflag_reference .ne. id_no_ref_temp) then
+          if(iflag_debug.eq.1) write(*,*) 's_cal_light_element part'
+          call s_cal_light_element                                      &
+     &       (iphys%i_par_light, SGS_param1, cmt_param1,                &
+     &        mesh%nod_comm, mesh%node, mesh%ele,                       &
+     &        ele_mesh%surf, fluid, group%surf_grp, cp_prop1,           &
+     &        nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys,                &
+     &        iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl,      &
+     &        FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,           &
+     &        sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,          &
+     &        s_package%Cmatrix, ak_MHD%ak_d_composit, wk_filter,       &
+     &        mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+!
+          call add_2_nod_scalars(nod_fld,                               &
+     &        iphys%i_ref_c, iphys%i_par_light, iphys%i_light)
+        else
+          if (iflag_debug.eq.1) write(*,*) 's_cal_light_element'
+          call s_cal_light_element                                      &
+     &       (iphys%i_light, SGS_param1, cmt_param1,                    &
+     &        mesh%nod_comm, mesh%node, mesh%ele,                       &
+     &        ele_mesh%surf, fluid, group%surf_grp, cp_prop1,           &
+     &        nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys, iphys_ele,     &
+     &        ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,      &
+     &        icomp_sgs, ifld_diff, iphys_elediff,                      &
+     &        sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,          &
+     &        s_package%Cmatrix, ak_MHD%ak_d_composit, wk_filter,       &
+     &        mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+!
+          if (iphys%i_par_light .gt. 0) then
+            call subtract_2_nod_scalars(nod_fld,                        &
+     &          iphys%i_light, iphys%i_ref_c, iphys%i_par_light)
+          end if
+        end if
+!
         call update_with_dummy_scalar                                   &
      &     (ifld_diff%i_light, icomp_diff%i_light,                      &
      &      mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &

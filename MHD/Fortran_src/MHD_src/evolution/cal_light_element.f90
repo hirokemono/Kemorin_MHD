@@ -5,13 +5,16 @@
 !                                    on July 2000 (ver 1.1)
 !        modieied by H. Matsui on Sep., 2005
 !
-!!      subroutine s_cal_light_element(nod_comm, node, ele, surf,       &
+!!      subroutine s_cal_light_element(i_field,                         &
+!!     &          SGS_param, cmt_param, nod_comm, node, ele, surf,      &
 !!     &          fluid, sf_grp, property, nod_bcs, sf_bcs, iphys,      &
 !!     &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,      &
 !!     &          FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,       &
 !!     &          sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,      &
 !!     &          Cmatrix, ak_d_composit, wk_filter, mhd_fem_wk, fem_wk,&
 !!     &          surf_wk, f_l, f_nl, nod_fld)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -49,10 +52,10 @@
 !
       use calypso_mpi
       use m_control_parameter
-      use m_SGS_control_parameter
       use m_phys_constants
       use m_iccg_parameter
 !
+      use t_SGS_control_parameter
       use t_physical_property
       use t_comm_table
       use t_geometry_data_MHD
@@ -83,7 +86,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_cal_light_element(nod_comm, node, ele, surf,         &
+      subroutine s_cal_light_element(i_field,                           &
+     &          SGS_param, cmt_param, nod_comm, node, ele, surf,        &
      &          fluid, sf_grp, property, nod_bcs, sf_bcs, iphys,        &
      &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,        &
      &          FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,         &
@@ -107,6 +111,10 @@
       use evolve_by_lumped_crank
       use evolve_by_consist_crank
 !
+      integer(kind = kint), intent(in) :: i_field
+!
+      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(commutation_control_params), intent(in) :: cmt_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -143,12 +151,12 @@
 !
 !
 !
-      if (SGS_param1%iflag_SGS_h_flux .ne. id_SGS_none) then
+      if (SGS_param%iflag_SGS_h_flux .ne. id_SGS_none) then
         call cal_sgs_heat_flux(iflag_comp_supg,                         &
-     &      SGS_param1%iflag_SGS_c_flux, SGS_param1%itype_Csym_c_flux,  &
+     &      SGS_param%iflag_SGS_c_flux, SGS_param%itype_Csym_c_flux,    &
      &      iphys%i_sgs_composit, iphys%i_filter_comp,                  &
      &      iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_c_flux,      &
-     &      icomp_sgs%i_comp_flux, iphys_elediff%i_velo, SGS_param1,    &
+     &      icomp_sgs%i_comp_flux, iphys_elediff%i_velo, SGS_param,     &
      &      nod_comm, node, ele, fluid, iphys_ele, ele_fld,             &
      &      jac_3d, rhs_tbl, FEM_elens, filtering, sgs_coefs,           &
      &      sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,               &
@@ -162,17 +170,19 @@
 !
       if (property%coef_advect .gt. zero                                &
      &     .and. evo_comp%coef_exp.gt.zero) then
-        call int_vol_scalar_diffuse_ele(SGS_param1%ifilter_final,       &
+        call int_vol_scalar_diffuse_ele(SGS_param%ifilter_final,        &
      &      fluid%istack_ele_fld_smp, intg_point_t_evo,                 &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
      &      ifld_diff%i_light, evo_comp%coef_exp, ak_d_composit,        &
-     &      iphys%i_light, fem_wk, f_l)
+     &      i_field, fem_wk, f_l)
       end if
+!
+!  ----------  lead advection term
 !
       if (iflag_comp_supg .gt. id_turn_OFF) then
         call int_vol_temp_ele_upw                                       &
-     &     (SGS_param1%iflag_SGS_c_flux, cmt_param1%iflag_c_cf,         &
-     &      SGS_param1%ifilter_final, intg_point_t_evo,                 &
+     &     (SGS_param%iflag_SGS_c_flux, cmt_param%iflag_c_cf,           &
+     &      SGS_param%ifilter_final, intg_point_t_evo,                  &
      &      iphys%i_light, iphys%i_velo,                                &
      &      iphys%i_SGS_c_flux, ifld_diff%i_comp_flux,                  &
      &      node, ele, fluid, property, nod_fld,                        &
@@ -181,8 +191,8 @@
      &      mhd_fem_wk, fem_wk, f_nl)
       else
         call int_vol_temp_ele                                           &
-     &     (SGS_param1%iflag_SGS_c_flux, cmt_param1%iflag_c_cf,         &
-     &      SGS_param1%ifilter_final, intg_point_t_evo,                 &
+     &     (SGS_param%iflag_SGS_c_flux, cmt_param%iflag_c_cf,           &
+     &      SGS_param%ifilter_final, intg_point_t_evo,                  &
      &      iphys%i_light, iphys%i_velo,                                &
      &      iphys%i_SGS_c_flux, ifld_diff%i_comp_flux,                  &
      &      node, ele, fluid, property, nod_fld,                        &
@@ -196,34 +206,34 @@
      &   (node, ele, surf, sf_grp, jac_sf_grp, rhs_tbl,                 &
      &    sf_bcs%flux, intg_point_t_evo, ak_d_composit, fem_wk, f_l)
 !
-      if(cmt_param1%iflag_c_light .ne. id_SGS_commute_OFF               &
-          .and. SGS_param1%iflag_SGS_c_flux .ne. id_SGS_none) then
+      if(cmt_param%iflag_c_light .ne. id_SGS_commute_OFF                &
+          .and. SGS_param%iflag_SGS_c_flux .ne. id_SGS_none) then
         call int_sf_skv_sgs_div_v_flux(node, ele, surf, sf_grp,         &
      &      nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, intg_point_t_evo,  &
      &      sf_bcs%sgs%ngrp_sf_dat, sf_bcs%sgs%id_grp_sf_dat,           &
-     &      SGS_param1%ifilter_final, iphys%i_SGS_c_flux, iphys%i_velo, &
+     &      SGS_param%ifilter_final, iphys%i_SGS_c_flux, iphys%i_velo,  &
      &      iphys%i_light, diff_coefs%num_field, ifld_diff%i_comp_flux, &
      &      diff_coefs%ak, property%coef_advect, fem_wk, surf_wk, f_nl)
       end if
 !
 !      call check_nodal_data                                            &
-!     &   ((50+my_rank), nod_fld, n_scalar, iphys%i_light)
+!     &   ((50+my_rank), nod_fld, n_scalar, i_field)
 !
       if     (evo_comp%iflag_scheme .eq. id_explicit_euler) then
-        call cal_scalar_pre_euler(iflag_comp_supg, iphys%i_light,       &
+        call cal_scalar_pre_euler(iflag_comp_supg, i_field,             &
      &      nod_comm, node, ele, fluid, iphys_ele, ele_fld, jac_3d,     &
      &      rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       else if(evo_comp%iflag_scheme .eq. id_explicit_adams2) then
         call cal_scalar_pre_adams                                       &
-     &    (iflag_comp_supg, iphys%i_light, iphys%i_pre_composit,        &
+     &    (iflag_comp_supg, i_field, iphys%i_pre_composit,              &
      &      nod_comm, node, ele, fluid, iphys_ele, ele_fld, jac_3d,     &
      &      rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       else if(evo_comp%iflag_scheme .eq. id_Crank_nicolson) then
         call cal_temp_pre_lumped_crank(iflag_comp_supg,                 &
-     &      cmt_param1%iflag_c_light, SGS_param1%ifilter_final,         &
-     &      iphys%i_light, iphys%i_pre_composit, ifld_diff%i_light,     &
+     &      cmt_param%iflag_c_light, SGS_param%ifilter_final,           &
+     &      i_field, iphys%i_pre_composit, ifld_diff%i_light,           &
      &      ak_d_composit, eps_4_comp_crank,                            &
      &      nod_comm, node, ele, fluid, evo_comp, nod_bcs,              &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
@@ -231,8 +241,8 @@
 !
       else if(evo_comp%iflag_scheme .eq. id_Crank_nicolson_cmass) then
         call cal_temp_pre_consist_crank                                 &
-     &     (cmt_param1%iflag_c_light, SGS_param1%ifilter_final,         &
-     &      iphys%i_light, iphys%i_pre_composit, ifld_diff%i_light,     &
+     &     (cmt_param%iflag_c_light, SGS_param%ifilter_final,           &
+     &      i_field, iphys%i_pre_composit, ifld_diff%i_light,           &
      &      ak_d_composit, eps_4_comp_crank,                            &
      &      node, ele, fluid, evo_comp, property, nod_bcs,              &
      &      jac_3d, rhs_tbl, FEM_elens, diff_coefs, Cmatrix, MG_vector, &
@@ -240,14 +250,9 @@
       end if
 !
       call set_boundary_scalar                                          &
-     &   (nod_bcs%nod_bc_s, iphys%i_light, nod_fld)
+     &   (nod_bcs%nod_bc_s, i_field, nod_fld)
 !
-      call scalar_send_recv(iphys%i_light, nod_comm, nod_fld)
-!
-      if (iphys%i_par_light .gt. 0) then
-        call subtract_2_nod_scalars(nod_fld,                            &
-     &      iphys%i_light, iphys%i_ref_c, iphys%i_par_light)
-      end if
+      call scalar_send_recv(i_field, nod_comm, nod_fld)
 !
       end subroutine s_cal_light_element
 !

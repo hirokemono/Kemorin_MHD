@@ -78,7 +78,7 @@
         call s_set_control_nodal_data(field_ctl, nod_fld, ierr)
       end if
 !
-      call set_ele_field_names_MHD(nod_fld)
+      call set_ele_field_names_MHD(SGS_param1, nod_fld)
 !
       end subroutine set_control_4_fields
 !
