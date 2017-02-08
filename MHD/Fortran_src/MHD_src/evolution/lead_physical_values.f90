@@ -7,7 +7,8 @@
 !> @brief Evaluate many kind of field data
 !!
 !!@verbatim
-!!      subroutine lead_fields_by_FEM(mesh, group, ele_mesh, MHD_mesh,  &
+!!      subroutine lead_fields_by_FEM                                   &
+!!     &         (SGS_par, mesh, group, ele_mesh, MHD_mesh,             &
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,          &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp, rhs_tbl, FEM_elens,   &
 !!     &          icomp_sgs, icomp_diff, ifld_diff, iphys_elediff,      &
@@ -15,6 +16,7 @@
 !!     &          layer_tbl, m_lump, wk_cor, wk_lsq, wk_diff, wk_filter,&
 !!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,               &
 !!     &          nod_fld, ele_fld, diff_coefs)
+!!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(element_geometry), intent(in) :: ele_mesh
@@ -55,6 +57,7 @@
 !
       use m_precision
 !
+      use t_SGS_control_parameter
       use t_mesh_data
       use t_comm_table
       use t_geometry_data_MHD
@@ -90,7 +93,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine lead_fields_by_FEM(mesh, group, ele_mesh, MHD_mesh,    &
+      subroutine lead_fields_by_FEM                                     &
+     &         (SGS_par, mesh, group, ele_mesh, MHD_mesh,               &
      &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,            &
      &          jac_3d_q, jac_3d_l, jac_sf_grp, rhs_tbl, FEM_elens,     &
      &          icomp_sgs, icomp_diff, ifld_diff, iphys_elediff,        &
@@ -109,6 +113,7 @@
       use cal_helicities
       use output_viz_file_control
 !
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
       type(element_geometry), intent(in) :: ele_mesh
@@ -156,7 +161,7 @@
      &     (mesh%node, mesh%ele, ele_mesh%edge, iphys, nod_fld)
 !
         if (iflag_debug.gt.0) write(*,*) 'update_fields'
-        call update_fields(SGS_par1, mesh, group, ele_mesh, MHD_mesh,   &
+        call update_fields(SGS_par, mesh, group, ele_mesh, MHD_mesh,    &
      &      nod_bcs, surf_bcs, iphys, iphys_ele,                        &
      &      jac_3d_q, jac_3d_l, jac_sf_grp, rhs_tbl, FEM_elens,         &
      &      ifld_diff, icomp_diff, iphys_elediff,                       &
@@ -164,7 +169,7 @@
      &      wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,     &
      &      surf_wk, f_l, f_nl, nod_fld, ele_fld, diff_coefs)
 !
-        call cal_field_by_rotation(SGS_par1%commute_p,                  &
+        call cal_field_by_rotation(SGS_par%commute_p,                   &
      &      mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &
      &      MHD_mesh%fluid, MHD_mesh%conduct, group%surf_grp,           &
      &      nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,               &
@@ -176,8 +181,8 @@
         call cal_helicity(iphys, nod_fld)
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_energy_fluxes'
-        call cal_energy_fluxes                                          &
-     &     (mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs, iphys,  &
+        call cal_energy_fluxes(SGS_par,                                 &
+     &      mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs, iphys,  &
      &      iphys_ele, ak_MHD, jac_3d_q, jac_sf_grp, rhs_tbl,           &
      &      FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,             &
      &      sgs_coefs, sgs_coefs_nod, diff_coefs, filtering, m_lump,    &
@@ -189,7 +194,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_energy_fluxes(mesh, group, ele_mesh, MHD_mesh,     &
+      subroutine cal_energy_fluxes                                      &
+     &         (SGS_par, mesh, group, ele_mesh, MHD_mesh,               &
      &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,            &
      &          jac_3d_q, jac_sf_grp, rhs_tbl, FEM_elens,               &
      &          icomp_sgs, ifld_diff, iphys_elediff,                    &
@@ -204,6 +210,7 @@
       use cal_sgs_4_monitor
       use cal_true_sgs_terms
 !
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
       type(element_geometry), intent(in) :: ele_mesh
@@ -244,7 +251,7 @@
      &    surf_wk, f_l, f_nl, nod_fld, ele_fld)
 !
       call cal_sgs_terms_4_monitor                                      &
-     &   (SGS_par1%model_p, SGS_par1%filter_p,                          &
+     &   (SGS_par%model_p, SGS_par%filter_p,                            &
      &    mesh%nod_comm, mesh%node, mesh%ele,                           &
      &    MHD_mesh%fluid, MHD_mesh%conduct, cd_prop1, iphys,            &
      &    iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,             &
@@ -261,7 +268,7 @@
      &    iphys, iphys_ele, ak_MHD, jac_3d_q, jac_sf_grp, rhs_tbl,      &
      &    FEM_elens, ifld_diff, diff_coefs, m_lump,                     &
      &    mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld, ele_fld)
-      call cal_diff_of_sgs_terms(SGS_par1%model_p, SGS_par1%commute_p,  &
+      call cal_diff_of_sgs_terms(SGS_par%model_p, SGS_par%commute_p,    &
      &    mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,            &
      &    group%surf_grp, MHD_mesh%fluid, MHD_mesh%conduct,             &
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1, nod_bcs, surf_bcs,    &
@@ -270,7 +277,7 @@
      &    fem_wk, surf_wk, f_l, f_nl, nod_fld, ele_fld)
 !
       call cal_true_sgs_terms_post                                      &
-     &   (SGS_par1%filter_p, mesh%nod_comm, mesh%node, iphys,           &
+     &   (SGS_par%filter_p, mesh%nod_comm, mesh%node, iphys,            &
      &    filtering, wk_filter, nod_fld)
 !
       call cal_work_4_forces(mesh%nod_comm, mesh%node, mesh%ele,        &
