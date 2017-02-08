@@ -19,8 +19,5 @@
 !
 !
       type(SGS_paremeters), save :: SGS_par1
-!SGS_par1%model_p
-!SGS_par1%commute_p
-!SGS_par1%filter_p
 !
       end module m_SGS_control_parameter

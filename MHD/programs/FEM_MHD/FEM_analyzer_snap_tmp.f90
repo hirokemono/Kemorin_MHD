@@ -48,9 +48,9 @@
 !   matrix assembling
 !
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
-      call init_analyzer_snap(IO_bc1, mesh1, group1, ele_mesh1,         &
-     &    MHD_mesh1, layer_tbl1, iphys, nod_fld1,                       &
-     &    SNAP_time_IO, label_sim)
+      call init_analyzer_snap                                           &
+     &   (SGS_par1, IO_bc1, mesh1, group1, ele_mesh1, MHD_mesh1,        &
+     &    layer_tbl1, iphys, nod_fld1, SNAP_time_IO, label_sim)
 !
       call output_grd_file_w_org_connect(mesh1, MHD_mesh1, nod_fld1)
 !
