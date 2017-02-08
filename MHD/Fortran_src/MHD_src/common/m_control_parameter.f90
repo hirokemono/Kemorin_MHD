@@ -82,10 +82,6 @@
 !
 !  Parameters for FEM dynamo
 !
-!>      Using rotation form for inertia and Lorentz force
-!!@N      (FEM only)
-      integer (kind=kint) :: iflag_4_rotate =        id_turn_OFF
-!
 !>      Number of quadrature points for time evolution
       integer (kind=kint)  :: intg_point_t_evo =   2
 !>      Number of quadrature points for Poisson equation
@@ -117,7 +113,7 @@
       real (kind=kreal) :: eps_4_magne
 !
       type(FEM_MHD_paremeters), save :: FEM_prm1
-!FEM_prm1%iflag_imp_correct
+!FEM_prm1%iflag_rotate_form
 !
 !  ---------------------------------------------------------------------
 !

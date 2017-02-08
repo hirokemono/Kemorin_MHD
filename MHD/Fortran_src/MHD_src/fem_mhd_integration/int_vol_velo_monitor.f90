@@ -10,16 +10,17 @@
 !
 !!      subroutine int_vol_velo_monitor_pg                              &
 !!     &         (i_field, iak_diff_mf, iak_diff_lor,                   &
-!!     &          SGS_param, cmt_param, node, ele, fluid,               &
+!!     &          FEM_prm, SGS_param, cmt_param, node, ele, fluid,      &
 !!     &          fl_prop, cd_prop, iphys, nod_fld, iphys_ele, ak_MHD,  &
 !!     &          jac_3d, rhs_tbl, FEM_elens, diff_coefs,               &
 !!     &          mhd_fem_wk, fem_wk, f_nl, ele_fld)
 !!      subroutine int_vol_velo_monitor_upwind                          &
 !!     &         (i_field, iak_diff_mf, iak_diff_lor, iv_upw,           &
-!!     &          SGS_param, cmt_param, node, ele, fluid,               &
+!!     &          FEM_prm, SGS_param, cmt_param, node, ele, fluid,      &
 !!     &          fl_prop, cd_prop, iphys, nod_fld, iphys_ele, ak_MHD,  &
 !!     &          jac_3d, rhs_tbl, FEM_elens, diff_coefs,               &
 !!     &          mhd_fem_wk, fem_wk, f_nl, ele_fld)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(node_data), intent(in) :: node
@@ -44,10 +45,10 @@
 !
       use m_precision
 !
-      use m_control_parameter
       use m_machine_parameter
       use m_phys_constants
 !
+      use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_physical_property
       use t_geometry_data_MHD
@@ -73,7 +74,7 @@
 !
       subroutine int_vol_velo_monitor_pg                                &
      &         (i_field, iak_diff_mf, iak_diff_lor,                     &
-     &          SGS_param, cmt_param, node, ele, fluid,                 &
+     &          FEM_prm, SGS_param, cmt_param, node, ele, fluid,        &
      &          fl_prop, cd_prop, iphys, nod_fld, iphys_ele, ak_MHD,    &
      &          jac_3d, rhs_tbl, FEM_elens, diff_coefs,                 &
      &          mhd_fem_wk, fem_wk, f_nl, ele_fld)
@@ -88,6 +89,7 @@
       integer(kind=kint), intent(in) :: i_field
       integer(kind= kint), intent(in) :: iak_diff_mf, iak_diff_lor
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(node_data), intent(in) :: node
@@ -111,7 +113,7 @@
 !
 !
       if(i_field .eq. iphys%i_m_advect) then
-        if (iflag_4_rotate .eq. id_turn_ON) then
+        if (FEM_prm%iflag_rotate_form .eq. id_turn_ON) then
           call int_vol_rot_inertia                                      &
      &       (node, ele, jac_3d, rhs_tbl, nod_fld,                      &
      &        fluid%istack_ele_fld_smp, intg_point_t_evo,               &
@@ -164,7 +166,7 @@
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
      &      fem_wk, mhd_fem_wk, f_nl)
       else if(i_field .eq. iphys%i_lorentz) then
-        if (iflag_4_rotate .eq. id_turn_ON) then
+        if (FEM_prm%iflag_rotate_form .eq. id_turn_ON) then
           call int_vol_full_rot_Lorentz_pg                              &
      &       (node, ele, fl_prop, cd_prop, jac_3d, rhs_tbl, nod_fld,    &
      &        fluid%istack_ele_fld_smp, intg_point_t_evo,               &
@@ -222,7 +224,7 @@
 !
       subroutine int_vol_velo_monitor_upwind                            &
      &         (i_field, iak_diff_mf, iak_diff_lor, iv_upw,             &
-     &          SGS_param, cmt_param, node, ele, fluid,                 &
+     &          FEM_prm, SGS_param, cmt_param, node, ele, fluid,        &
      &          fl_prop, cd_prop, iphys, nod_fld, iphys_ele, ak_MHD,    &
      &          jac_3d, rhs_tbl, FEM_elens, diff_coefs,                 &
      &          mhd_fem_wk, fem_wk, f_nl, ele_fld)
@@ -237,6 +239,7 @@
       integer(kind = kint), intent(in) :: i_field, iv_upw
       integer(kind= kint), intent(in) :: iak_diff_mf, iak_diff_lor
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(node_data), intent(in) :: node
@@ -260,7 +263,7 @@
 !
 !
       if(i_field .eq. iphys%i_m_advect) then
-        if (iflag_4_rotate .eq. id_turn_ON) then
+        if (FEM_prm%iflag_rotate_form .eq. id_turn_ON) then
           call int_vol_rot_inertia_upw                                  &
      &       (node, ele, jac_3d, rhs_tbl, nod_fld,                      &
      &        fluid%istack_ele_fld_smp, intg_point_t_evo,               &
@@ -319,7 +322,7 @@
      &      ele_fld%ntot_phys, iphys_ele%i_magne, iv_upw,               &
      &      ele_fld%d_fld, fem_wk, mhd_fem_wk, f_nl)
       else if(i_field .eq. iphys%i_lorentz) then
-        if (iflag_4_rotate .eq. id_turn_ON) then
+        if (FEM_prm%iflag_rotate_form .eq. id_turn_ON) then
           call int_vol_full_rot_Lorentz_pg                              &
      &       (node, ele, fl_prop, cd_prop, jac_3d, rhs_tbl, nod_fld,    &
      &        fluid%istack_ele_fld_smp, intg_point_t_evo,               &

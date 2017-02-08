@@ -133,20 +133,23 @@
       if (iflag_velo_supg .eq. id_turn_ON) then
         call int_vol_velo_monitor_upwind                                &
      &     (i_field, iak_diff_mf, iak_diff_lor, iphys_ele%i_velo,       &
-     &      SGS_param, cmt_param, node, ele, fluid, fl_prop, cd_prop,   &
-     &      iphys, nod_fld, iphys_ele, ak_MHD, jac_3d, rhs_tbl,         &
-     &      FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, f_nl, ele_fld)
+     &      FEM_prm1, SGS_param, cmt_param, node, ele, fluid,           &
+     &      fl_prop, cd_prop, iphys, nod_fld, iphys_ele, ak_MHD,        &
+     &      jac_3d, rhs_tbl, FEM_elens, diff_coefs,                     &
+     &      mhd_fem_wk, fem_wk, f_nl, ele_fld)
       else if (iflag_velo_supg .eq. id_magnetic_SUPG) then
         call int_vol_velo_monitor_upwind                                &
      &     (i_field, iak_diff_mf, iak_diff_lor, iphys_ele%i_magne,      &
-     &      SGS_param, cmt_param, node, ele, fluid, fl_prop, cd_prop,   &
-     &      iphys, nod_fld, iphys_ele, ak_MHD, jac_3d, rhs_tbl,         &
-     &      FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, f_nl, ele_fld)
+     &      FEM_prm1, SGS_param, cmt_param, node, ele, fluid,           &
+     &      fl_prop, cd_prop, iphys, nod_fld, iphys_ele, ak_MHD,        &
+     &      jac_3d, rhs_tbl, FEM_elens, diff_coefs,                     &
+     &      mhd_fem_wk, fem_wk, f_nl, ele_fld)
       else
        call int_vol_velo_monitor_pg(i_field, iak_diff_mf, iak_diff_lor, &
-     &     SGS_param, cmt_param, node, ele, fluid, fl_prop, cd_prop,    &
-     &     iphys, nod_fld, iphys_ele, ak_MHD, jac_3d, rhs_tbl,          &
-     &     FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, f_nl, ele_fld)
+     &     FEM_prm1, SGS_param, cmt_param, node, ele, fluid,            &
+     &     fl_prop, cd_prop, iphys, nod_fld, iphys_ele, ak_MHD,         &
+     &     jac_3d, rhs_tbl, FEM_elens, diff_coefs,                      &
+     &     mhd_fem_wk, fem_wk, f_nl, ele_fld)
       end if
 !
       call int_surf_velo_monitor(i_field,                               &

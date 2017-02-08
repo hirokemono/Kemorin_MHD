@@ -6,7 +6,7 @@
 !        modieied by H. Matsui on Sep., 2005
 !
 !!      subroutine s_cal_velocity_pre                                   &
-!!     &         (SGS_param, cmt_param, filter_param,                   &
+!!     &         (FEM_prm, SGS_param, cmt_param, filter_param,          &
 !!     &          nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod, &
 !!     &          fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs,         &
 !!     &          iphys, iphys_ele, ak_MHD, jac_3d_q, jac_3d_l,         &
@@ -117,7 +117,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_cal_velocity_pre                                     &
-     &         (SGS_param, cmt_param, filter_param,                     &
+     &         (FEM_prm, SGS_param, cmt_param, filter_param,            &
      &          nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,   &
      &          fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs,           &
      &          iphys, iphys_ele, ak_MHD, jac_3d_q, jac_3d_l,           &
@@ -143,6 +143,7 @@
       use evolve_by_lumped_crank
       use evolve_by_consist_crank
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(SGS_filtering_params), intent(in) :: filter_param
@@ -247,7 +248,7 @@
 !
       if (iflag_velo_supg .eq. id_turn_ON) then
         call int_vol_velo_pre_ele_upwind                                &
-     &     (iflag_4_rotate, intg_point_t_evo,                           &
+     &     (FEM_prm%iflag_rotate_form, intg_point_t_evo,                &
      &      SGS_param, cmt_param, node, ele, fluid,                     &
      &      fl_prop, cd_prop, iphys, nod_fld, ak_MHD,                   &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
@@ -256,7 +257,7 @@
      &      mhd_fem_wk, fem_wk, f_nl)
       else if (iflag_velo_supg .eq. id_magnetic_SUPG) then
         call int_vol_velo_pre_ele_upwind                                &
-     &     (iflag_4_rotate, intg_point_t_evo,                           &
+     &     (FEM_prm%iflag_rotate_form, intg_point_t_evo,                &
      &      SGS_param, cmt_param, node, ele, fluid,                     &
      &      fl_prop, cd_prop, iphys, nod_fld, ak_MHD,                   &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
@@ -265,7 +266,7 @@
      &      mhd_fem_wk, fem_wk, f_nl)
       else
         call int_vol_velo_pre_ele                                       &
-     &     (iflag_4_rotate, intg_point_t_evo,                           &
+     &     (FEM_prm%iflag_rotate_form, intg_point_t_evo,                &
      &      SGS_param, cmt_param, node, ele, fluid,                     &
      &      fl_prop, cd_prop, iphys, nod_fld, ak_MHD,                   &
      &      ele_fld%ntot_phys, ele_fld%d_fld, iphys_ele,                &

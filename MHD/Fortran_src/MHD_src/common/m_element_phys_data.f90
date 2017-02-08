@@ -8,7 +8,8 @@
 !
 !!      subroutine initialize_ele_field_data(numele)
 !!      subroutine deallocate_ele_data_arrays
-!!      subroutine set_ele_field_names_MHD(SGS_param, nod_fld)
+!!      subroutine set_ele_field_names_MHD(FEM_prm, SGS_param, nod_fld)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(phys_data), intent(inout) :: nod_fld
 !
@@ -104,13 +105,14 @@
 !  --------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_ele_field_names_MHD(SGS_param, nod_fld)
+      subroutine set_ele_field_names_MHD(FEM_prm, SGS_param, nod_fld)
 !
       use m_machine_parameter
-      use m_control_parameter
       use m_phys_labels
+      use t_FEM_control_parameter
       use t_SGS_control_parameter
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -127,7 +129,7 @@
      &  .or. nod_fld%phys_name(i) .eq. fhd_light                        &
      &  .or. nod_fld%phys_name(i) .eq. fhd_temp     ) then
         fld_ele1%num_phys = fld_ele1%num_phys + 1
-        if ( iflag_4_rotate .eq. id_turn_ON ) then
+        if ( FEM_prm%iflag_rotate_form .eq. id_turn_ON ) then
           fld_ele1%num_phys = fld_ele1%num_phys + 1
         end if
         if     (SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF         &
@@ -149,7 +151,7 @@
           fld_ele1%phys_name(j) = fhd_velo
           j = j + 1
 !
-          if ( iflag_4_rotate .eq. id_turn_ON ) then
+          if ( FEM_prm%iflag_rotate_form .eq. id_turn_ON ) then
             fld_ele1%num_component(j) = 3
             fld_ele1%phys_name(j) = fhd_vort
             j = j + 1
@@ -166,7 +168,7 @@
           fld_ele1%num_component(j) = 3
           fld_ele1%phys_name(j) = fhd_magne
           j = j + 1
-          if ( iflag_4_rotate .eq. id_turn_ON ) then
+          if ( FEM_prm%iflag_rotate_form .eq. id_turn_ON ) then
             fld_ele1%num_component(j) = 3
             fld_ele1%phys_name(j) = fhd_current
             j = j + 1

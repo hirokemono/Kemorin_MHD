@@ -82,7 +82,7 @@
         call s_set_control_nodal_data(field_ctl, nod_fld, ierr)
       end if
 !
-      call set_ele_field_names_MHD(SGS_par%model_p, nod_fld)
+      call set_ele_field_names_MHD(FEM_prm1, SGS_par%model_p, nod_fld)
 !
       end subroutine set_control_4_fields
 !

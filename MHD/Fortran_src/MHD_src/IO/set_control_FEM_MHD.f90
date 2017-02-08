@@ -103,6 +103,7 @@
 !
       call s_set_control_4_force(model_ctl%frc_ctl, model_ctl%g_ctl,    &
      &    model_ctl%cor_ctl, model_ctl%mcv_ctl, fl_prop1, cd_prop1)
+      call set_control_rotation_form(FEM_prm1)
 !
 !   set parameters for SGS model
 !
@@ -218,6 +219,28 @@
       call check_read_boundary_files
 !
       end subroutine set_control_FEM_MHD_bcs
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_control_rotation_form(FEM_prm)
+!
+      use m_control_parameter
+      use t_FEM_control_parameter
+!
+      type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
+!
+      integer (kind = kint) :: i
+!
+!
+      FEM_prm%iflag_rotate_form = id_turn_OFF
+      do i = 1, num_force
+        if(cmp_no_case(name_force(i),cflag_rot_form)) then
+          FEM_prm%iflag_rotate_form =  id_turn_ON
+          exit
+        end if
+      end do
+!
+      end subroutine set_control_rotation_form
 !
 ! ----------------------------------------------------------------------
 !

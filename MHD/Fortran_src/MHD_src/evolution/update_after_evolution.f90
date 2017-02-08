@@ -192,7 +192,7 @@
       if ( evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'cal_magne_vector_potential'
         call cal_vector_potential                                       &
-     &    (SGS_par, mesh%nod_comm, mesh%node, mesh%ele,                 &
+     &    (FEM_prm1, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,       &
      &     ele_mesh%surf, MHD_mesh%conduct, group%surf_grp, cd_prop1,   &
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Fsf_bcs,        &
      &     iphys, iphys_ele, ele_fld,                                   &
@@ -204,7 +204,7 @@
         call update_with_vector_potential                               &
      &    (ifld_diff%i_magne, icomp_diff%i_magne,                       &
      &     iphys_elediff%i_magne, iphys_elediff%i_filter_magne,         &
-     &     SGS_par, mesh%nod_comm, mesh%node, mesh%ele,                 &
+     &     FEM_prm1, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,       &
      &     ele_mesh%surf, MHD_mesh%fluid, MHD_mesh%conduct, layer_tbl,  &
      &     group%surf_grp, nod_bcs%Bnod_bcs,                            &
      &     surf_bcs%Asf_bcs, surf_bcs%Fsf_bcs, iphys, iphys_ele,        &
@@ -219,7 +219,7 @@
 !     &      my_rank, sf_grp, group%surf_nod_grp)
         if (iflag_debug.eq.1) write(*,*) 's_cal_magnetic_field'
         call s_cal_magnetic_field                                       &
-     &    (SGS_par, mesh%nod_comm, mesh%node, mesh%ele,                 &
+     &    (FEM_prm1, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,       &
      &     ele_mesh%surf, MHD_mesh%conduct, group%surf_grp, cd_prop1,   &
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,        &
      &     surf_bcs%Fsf_bcs, iphys, iphys_ele, ele_fld,                 &
@@ -231,7 +231,7 @@
         call update_with_magnetic_field                                 &
      &    (ifld_diff%i_magne, icomp_diff%i_magne,                       &
      &     iphys_elediff%i_magne, iphys_elediff%i_filter_magne,         &
-     &     SGS_par, mesh%nod_comm, mesh%node, mesh%ele,                 &
+     &     FEM_prm1, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,       &
      &     ele_mesh%surf, MHD_mesh%fluid, MHD_mesh%conduct, layer_tbl,  &
      &     group%surf_grp, surf_bcs%Bsf_bcs, surf_bcs%Fsf_bcs, iphys,   &
      &     iphys_ele, jac_3d_q, jac_3d_l, jac_sf_grp_q,                 &
@@ -343,7 +343,7 @@
       if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'velocity_evolution'
         call velocity_evolution                                         &
-     &     (SGS_par, mesh%nod_comm, mesh%node, mesh%ele,                &
+     &     (FEM_prm1, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,      &
      &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
      &      group%surf_nod_grp, fl_prop1, cd_prop1,                     &
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,       &
@@ -357,7 +357,7 @@
         call update_with_velocity                                       &
      &     (ifld_diff%i_velo, icomp_diff%i_velo,                        &
      &      iphys_elediff%i_velo, iphys_elediff%i_filter_velo,          &
-     &      SGS_par, mesh%nod_comm, mesh%node, mesh%ele,                &
+     &      FEM_prm1, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,      &
      &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
      &      surf_bcs%Vsf_bcs, surf_bcs%Psf_bcs, iphys,                  &
      &      iphys_ele, jac_3d_q, jac_3d_l, jac_sf_grp_q,                &
@@ -423,7 +423,7 @@
         call update_with_velocity                                       &
      &     (ifld_diff%i_velo, icomp_diff%i_velo,                        &
      &      iphys_elediff%i_velo, iphys_elediff%i_filter_velo,          &
-     &      SGS_par, mesh%nod_comm, mesh%node, mesh%ele,                &
+     &      FEM_prm1, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,      &
      &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
      &      surf_bcs%Vsf_bcs, surf_bcs%Psf_bcs, iphys,                  &
      &      iphys_ele, jac_3d_q, jac_3d_l, jac_sf_grp_q,                &
@@ -460,7 +460,7 @@
         call update_with_vector_potential                               &
      &    (ifld_diff%i_magne, icomp_diff%i_magne,                       &
      &     iphys_elediff%i_magne, iphys_elediff%i_filter_magne,         &
-     &     SGS_par, mesh%nod_comm, mesh%node, mesh%ele,                 &
+     &     FEM_prm1, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,       &
      &     ele_mesh%surf, MHD_mesh%fluid, MHD_mesh%conduct, layer_tbl,  &
      &     group%surf_grp, nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs,          &
      &     surf_bcs%Fsf_bcs, iphys, iphys_ele,                          &
@@ -472,7 +472,7 @@
         call update_with_magnetic_field                                 &
      &    (ifld_diff%i_magne, icomp_diff%i_magne,                       &
      &     iphys_elediff%i_magne, iphys_elediff%i_filter_magne,         &
-     &     SGS_par, mesh%nod_comm, mesh%node, mesh%ele,                 &
+     &     FEM_prm1, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,       &
      &     ele_mesh%surf, MHD_mesh%fluid, MHD_mesh%conduct, layer_tbl,  &
      &     group%surf_grp, surf_bcs%Bsf_bcs, surf_bcs%Fsf_bcs, iphys,   &
      &     iphys_ele, jac_3d_q, jac_3d_l, jac_sf_grp_q,                 &
@@ -664,7 +664,7 @@
       if ( evo_velo%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'velocity_evolution'
         call velocity_evolution                                         &
-     &     (SGS_par, mesh%nod_comm, mesh%node, mesh%ele,                &
+     &     (FEM_prm1, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,      &
      &      ele_mesh%surf, fluid, group%surf_grp,                       &
      &      group%surf_nod_grp, fl_prop1, cd_prop1,                     &
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,       &
@@ -678,7 +678,7 @@
         call update_with_velocity                                       &
      &     (ifld_diff%i_velo, icomp_diff%i_velo,                        &
      &      iphys_elediff%i_velo, iphys_elediff%i_filter_velo,          &
-     &      SGS_par, mesh%nod_comm, mesh%node, mesh%ele,                &
+     &      FEM_prm1, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,      &
      &      ele_mesh%surf, fluid, group%surf_grp,                       &
      &      surf_bcs%Vsf_bcs, surf_bcs%Psf_bcs,                         &
      &      iphys, iphys_ele, jac_3d_q, jac_3d_l, jac_sf_grp_q,         &

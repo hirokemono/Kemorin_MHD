@@ -56,7 +56,6 @@
       fl_prop%iflag_4_gravity =        id_turn_OFF
       fl_prop%iflag_4_coriolis =       id_turn_OFF
       fl_prop%iflag_4_lorentz =        id_turn_OFF
-      iflag_4_rotate =         id_turn_OFF
       fl_prop%iflag_4_composit_buo =   id_turn_OFF
       fl_prop%iflag_4_filter_gravity = id_turn_OFF
 !
@@ -169,9 +168,6 @@
      &           )  fl_prop%iflag_4_lorentz = id_turn_ON
           if(cmp_no_case(name_force(i), 'Lorentz_full')                 &
      &           )  fl_prop%iflag_4_lorentz = id_Lorentz_w_Emag
-!
-          if(cmp_no_case(name_force(i), 'Rotation_form')                &
-     &           )  iflag_4_rotate =  id_turn_ON
         end do
       end if
 !

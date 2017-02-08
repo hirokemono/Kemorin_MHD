@@ -30,7 +30,14 @@
 !
       implicit  none
 !
+      character(len=kchara), parameter                                  &
+     &                      :: cflag_rot_form = 'Rotation_form'
+!
+!
       type FEM_MHD_paremeters
+!>          Using rotation form for inertia and Lorentz force
+        integer(kind = kint) :: iflag_rotate_form =  id_turn_OFF
+!>         Coriolist terms adjustment in implicit scheme
         integer(kind = kint) :: iflag_imp_correct = id_turn_OFF
       end type FEM_MHD_paremeters
 !

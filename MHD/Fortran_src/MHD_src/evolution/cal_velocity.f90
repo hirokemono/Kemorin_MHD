@@ -6,7 +6,7 @@
 !        modified by H.Matsui on July, 2006
 !
 !!      subroutine velocity_evolution                                   &
-!!     &        (SGS_par, nod_comm, node, ele, surf,                    &
+!!     &        (FEM_prm, SGS_par, nod_comm, node, ele, surf,           &
 !!     &         fluid, sf_grp, sf_grp_nod, fl_prop, cd_prop,           &
 !!     &         Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys, iphys_ele, &
 !!     &         ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,&
@@ -15,6 +15,7 @@
 !!     &         layer_tbl, Vmatrix, Pmatrix, wk_lsq, wk_sgs, wk_filter,&
 !!     &         mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                &
 !!     &         nod_fld, ele_fld, sgs_coefs)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -60,6 +61,7 @@
 !
       use m_precision
 !
+      use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_comm_table
       use t_geometry_data_MHD
@@ -99,7 +101,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine velocity_evolution                                     &
-     &        (SGS_par, nod_comm, node, ele, surf,                      &
+     &        (FEM_prm, SGS_par, nod_comm, node, ele, surf,             &
      &         fluid, sf_grp, sf_grp_nod, fl_prop, cd_prop,             &
      &         Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys, iphys_ele,   &
      &         ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,  &
@@ -120,6 +122,7 @@
       use int_norm_div_MHD
       use cal_rms_potentials
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -168,14 +171,14 @@
 !
 !
       if (fl_prop%iflag_4_lorentz .eq. id_turn_ON) then
-        if (iflag_4_rotate .eq. id_turn_OFF) then
+        if (FEM_prm%iflag_rotate_form .eq. id_turn_OFF) then
           call cal_sol_pressure_w_mag_ene                               &
      &      (node%numnod, node%istack_internal_smp,                     &
      &     fl_prop%coef_press, fl_prop%acoef_press, fl_prop%coef_lor,   &
      &       nod_fld%ntot_phys, iphys%i_p_phi, iphys%i_magne,           &
      &       iphys%i_press, nod_fld%d_fld)
         else if (cd_prop%iflag_magneto_cv .eq. id_turn_ON               &
-     &     .and. iflag_4_rotate .eq. id_turn_OFF) then
+     &     .and. FEM_prm%iflag_rotate_form .eq. id_turn_OFF) then
           call cal_sol_pressure_mcv                                     &
      &       (node%numnod, node%istack_internal_smp,                    &
      &        fl_prop%coef_press, fl_prop%acoef_press,                  &
@@ -196,8 +199,8 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1)  write(*,*) 's_cal_velocity_pre'
-      call s_cal_velocity_pre                                           &
-     &   (SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
+      call s_cal_velocity_pre(FEM_prm,                                  &
+     &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
      &    nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,         &
      &    fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys,          &
      &    iphys_ele, ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, &
@@ -229,7 +232,7 @@
      &      iphys%i_p_phi, iphys%i_press,  nod_fld%d_fld)
 !
         call cal_velocity_co                                            &
-     &     (FEM_prm1, SGS_par%model_p, SGS_par%commute_p,               &
+     &     (FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      nod_comm, node, ele, surf, fluid,                           &
      &      sf_grp, sf_grp_nod, fl_prop, Vnod_bcs, Vsf_bcs, Psf_bcs,    &
      &      iphys, iphys_ele, ele_fld, ak_MHD,                          &
@@ -259,7 +262,7 @@
       end do
  10   continue
 !
-      if (iflag_4_rotate .eq. id_turn_ON) then
+      if (FEM_prm%iflag_rotate_form .eq. id_turn_ON) then
         call cal_sol_pressure_rotate                                    &
      &     (node%numnod, node%istack_internal_smp, nod_fld%ntot_phys,   &
      &      iphys%i_velo, iphys%i_press, nod_fld%d_fld)

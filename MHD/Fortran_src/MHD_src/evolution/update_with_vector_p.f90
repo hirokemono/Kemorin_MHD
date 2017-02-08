@@ -8,14 +8,16 @@
 !!
 !!@verbatim
 !!      subroutine update_with_vector_potential                         &
-!!     &         (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx, SGS_par,   &
-!!     &          nod_comm, node, ele, surf, fluid, conduct, layer_tbl, &
-!!     &          sf_grp, Bnod_bcs, Asf_bcs, Fsf_bcs, iphys, iphys_ele, &
+!!     &         (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx,            &
+!!     &          FEM_prm, SGS_par, nod_comm, node, ele, surf,          &
+!!     &          fluid, conduct, layer_tbl, sf_grp,                    &
+!!     &          Bnod_bcs, Asf_bcs, Fsf_bcs, iphys, iphys_ele,         &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,  &
 !!     &          filtering, wide_filtering, m_lump,                    &
 !!     &          wk_cor, wk_lsq, wk_diff, wk_filter,                   &
 !!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,               &
 !!     &          nod_fld, ele_fld, diff_coefs)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -55,6 +57,7 @@
 !
       use m_machine_parameter
 !
+      use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_comm_table
       use t_geometry_data_MHD
@@ -87,9 +90,10 @@
 !-----------------------------------------------------------------------
 !
       subroutine update_with_vector_potential                           &
-     &         (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx, SGS_par,     &
-     &          nod_comm, node, ele, surf, fluid, conduct, layer_tbl,   &
-     &          sf_grp, Bnod_bcs, Asf_bcs, Fsf_bcs, iphys, iphys_ele,   &
+     &         (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx,              &
+     &          FEM_prm, SGS_par, nod_comm, node, ele, surf,            &
+     &          fluid, conduct, layer_tbl, sf_grp,                      &
+     &          Bnod_bcs, Asf_bcs, Fsf_bcs, iphys, iphys_ele,           &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,    &
      &          filtering, wide_filtering, m_lump,                      &
      &          wk_cor, wk_lsq, wk_diff, wk_filter,                     &
@@ -109,6 +113,7 @@
       integer(kind = kint), intent(in) :: iak_diff_b, icomp_diff_b
       integer(kind = kint), intent(in) :: ie_dbx, ie_dfbx
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -225,7 +230,7 @@
       end if
 !
       if (iphys_ele%i_current .ne. 0                                    &
-     &     .and. iflag_4_rotate .eq. id_turn_ON) then
+     &     .and. FEM_prm%iflag_rotate_form .eq. id_turn_ON) then
         if (iflag_debug.gt.0) write(*,*) 'current_on_element'
         call rotation_on_element_1st(node, ele, jac_3d_q,               &
      &      conduct%istack_ele_fld_smp, intg_point_t_evo,               &

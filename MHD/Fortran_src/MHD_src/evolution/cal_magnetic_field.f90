@@ -6,7 +6,7 @@
 !        modified by H.Matsui on July, 2006
 !
 !!      subroutine cal_vector_potential                                 &
-!!     &         (SGS_par, nod_comm, node, ele, surf, conduct,          &
+!!     &         (FEM_prm, SGS_par, nod_comm, node, ele, surf, conduct, &
 !!     &          sf_grp, cd_prop, Bnod_bcs, Asf_bcs, Fsf_bcs,          &
 !!     &          iphys, iphys_ele, ele_fld,                            &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
@@ -15,8 +15,8 @@
 !!     &          m_lump, Bmatrix, Fmatrix, ak_d_magne, wk_filter,      &
 !!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !!      subroutine s_cal_magnetic_field                                 &
-!!     &         (SGS_par, nod_comm, node, ele, surf, conduct, sf_grp,  &
-!!     &          cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs, Fsf_bcs,         &
+!!     &         (FEM_prm, SGS_par, nod_comm, node, ele, surf, conduct, &
+!!     &          sf_grp, cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs, Fsf_bcs, &
 !!     &          iphys, iphys_ele, ele_fld,                            &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
 !!     &          rhs_tbl, FEM_elens, icomp_sgs, ifld_diff,             &
@@ -24,6 +24,7 @@
 !!     &          diff_coefs, filtering, m_lump, Bmatrix, Fmatrix,      &
 !!     &          ak_d_magne, wk_filter, mhd_fem_wk, fem_wk, surf_wk,   &
 !!     &          f_l, f_nl, nod_fld)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -63,7 +64,9 @@
       module cal_magnetic_field
 !
       use m_precision
+      use m_machine_parameter
 !
+      use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_physical_property
       use t_comm_table
@@ -99,7 +102,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_vector_potential                                   &
-     &         (SGS_par, nod_comm, node, ele, surf, conduct,            &
+     &         (FEM_prm, SGS_par, nod_comm, node, ele, surf, conduct,   &
      &          sf_grp, cd_prop, Bnod_bcs, Asf_bcs, Fsf_bcs,            &
      &          iphys, iphys_ele, ele_fld,                              &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
@@ -107,9 +110,6 @@
      &          iphys_elediff, sgs_coefs, diff_coefs, filtering,        &
      &          m_lump, Bmatrix, Fmatrix, ak_d_magne, wk_filter,        &
      &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
-!
-      use m_machine_parameter
-      use m_control_parameter
 !
       use cal_vector_potential_pre
       use cal_mod_vel_potential
@@ -119,6 +119,7 @@
       use int_norm_div_MHD
       use cal_rms_potentials
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -205,7 +206,7 @@
 !
         if (iflag_debug.gt.0) write(*,*) 'vector_potential_correct'
         call cal_vector_p_co(ifld_diff%i_magne, ak_d_magne,             &
-     &      FEM_prm1, SGS_par%model_p, SGS_par%commute_p,               &
+     &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,        &
      &      Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,               &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &
@@ -237,8 +238,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_cal_magnetic_field                                   &
-     &         (SGS_par, nod_comm, node, ele, surf, conduct, sf_grp,    &
-     &          cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs, Fsf_bcs,           &
+     &         (FEM_prm, SGS_par, nod_comm, node, ele, surf, conduct,   &
+     &          sf_grp, cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs, Fsf_bcs,   &
      &          iphys, iphys_ele, ele_fld,                              &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
      &          rhs_tbl, FEM_elens, icomp_sgs, ifld_diff,               &
@@ -246,9 +247,6 @@
      &          diff_coefs, filtering, m_lump, Bmatrix, Fmatrix,        &
      &          ak_d_magne, wk_filter, mhd_fem_wk, fem_wk, surf_wk,     &
      &          f_l, f_nl, nod_fld)
-!
-      use m_machine_parameter
-      use m_control_parameter
 !
       use cal_magnetic_pre
       use cal_sol_pressure_MHD
@@ -258,6 +256,7 @@
       use cal_mod_vel_potential
       use cal_rms_potentials
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -346,7 +345,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'magnetic_correction'
         call cal_magnetic_co(ifld_diff%i_magne, ak_d_magne,             &
-     &      FEM_prm1, SGS_par%model_p, SGS_par%commute_p,               &
+     &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,        &
      &      Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,               &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &
