@@ -3,8 +3,9 @@
 !
 !      Written by H. Matsui on Oct., 2005
 !
-!!      subroutine cal_true_sgs_terms_pre(nod_comm, node, ele, surf,    &
-!!     &          sf_grp, fluid, conduct, fl_prop, cd_prop, ht_prop,    &
+!!      subroutine cal_true_sgs_terms_pre                               &
+!!     &         (nod_comm, node, ele, surf, sf_grp, fluid, conduct,    &
+!!     &          fl_prop, cd_prop, ht_prop, cp_prop,                   &
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,          &
 !!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,               &
 !!     &          ifld_diff, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,   &
@@ -19,7 +20,7 @@
 !!        type(field_geometry_data), intent(in) :: fluid, conduct
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in)  :: cd_prop
-!!        type(scalar_property), intent(in) :: ht_prop
+!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(nodal_boundarty_conditions), intent(in) :: nod_bcs
 !!        type(surface_boundarty_conditions), intent(in) :: surf_bcs
 !!        type(phys_address), intent(in) :: iphys
@@ -75,11 +76,11 @@
 !
       implicit none
 !
-      private :: cal_div_sgs_h_flux_true_pre
+      private :: cal_div_sgs_s_flux_true_pre
       private :: cal_div_sgs_m_flux_true_pre
       private :: cal_div_sgs_maxwell_true_pre
       private :: cal_div_sgs_induct_true_pre
-      private :: cal_div_sgs_h_flux_true_post
+      private :: cal_div_sgs_s_flux_true_post
       private :: cal_div_sgs_tensor_true_post
 !
 !-----------------------------------------------------------------------
@@ -88,8 +89,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_true_sgs_terms_pre(nod_comm, node, ele, surf,      &
-     &          sf_grp, fluid, conduct, fl_prop, cd_prop, ht_prop,      &
+      subroutine cal_true_sgs_terms_pre                                 &
+     &         (nod_comm, node, ele, surf, sf_grp, fluid, conduct,      &
+     &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
      &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,            &
      &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                 &
      &          ifld_diff, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,     &
@@ -106,7 +108,7 @@
       type(field_geometry_data), intent(in) :: fluid, conduct
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in)  :: cd_prop
-      type(scalar_property), intent(in) :: ht_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(nodal_boundarty_conditions), intent(in) :: nod_bcs
       type(surface_boundarty_conditions), intent(in) :: surf_bcs
       type(phys_address), intent(in) :: iphys
@@ -129,13 +131,26 @@
       integer(kind = kint) :: i
 !
        do i = 1, nod_fld%num_phys
-         if ( nod_fld%phys_name(i).eq.fhd_SGS_div_h_flux_true) then
+         if ( nod_fld%phys_name(i) .eq. fhd_SGS_div_h_flux_true) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
-           call cal_div_sgs_h_flux_true_pre                             &
-     &        (nod_comm, node, ele, fluid, ht_prop,                     &
-     &         nod_bcs%Tnod_bcs, iphys, iphys_ele, ele_fld, jac_3d,     &
-     &         rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+           call cal_div_sgs_s_flux_true_pre                             &
+     &        (iflag_temp_supg, iphys%i_SGS_div_hf_true,                &
+     &         iphys%i_h_flux, iphys%i_h_flux_div,                      &
+     &         iphys%i_filter_temp, iphys%i_filter_velo,                &
+     &         nod_comm, node, ele, fluid, ht_prop, nod_bcs%Tnod_bcs,   &
+     &         iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, &
+     &         f_l, f_nl, nod_fld)
+         else if(nod_fld%phys_name(i).eq.fhd_SGS_div_c_flux_true) then
+           if(iflag_debug.gt.0) write(*,*)                              &
+     &                         'lead  ', trim(nod_fld%phys_name(i) )
+           call cal_div_sgs_s_flux_true_pre                             &
+     &        (iflag_comp_supg, iphys%i_SGS_div_cf_true,                &
+     &         iphys%i_c_flux, iphys%i_c_flux_div,                      &
+     &         iphys%i_filter_comp, iphys%i_filter_velo,                &
+     &         nod_comm, node, ele, fluid, cp_prop, nod_bcs%Cnod_bcs,   &
+     &         iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, &
+     &         f_l, f_nl, nod_fld)
          else if ( nod_fld%phys_name(i).eq.fhd_SGS_div_m_flux_true)     &
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &
@@ -194,8 +209,15 @@
          if ( nod_fld%phys_name(i).eq.fhd_SGS_div_h_flux_true) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
-           call cal_div_sgs_h_flux_true_post                            &
-     &        (nod_comm, node, iphys, filtering, wk_filter, nod_fld)
+           call cal_div_sgs_s_flux_true_post(iphys%i_SGS_div_hf_true,   &
+     &         iphys%i_h_flux_div, iphys%i_sgs_simi,                    &
+     &         nod_comm, node, filtering, wk_filter, nod_fld)
+         else if(nod_fld%phys_name(i).eq.fhd_SGS_div_c_flux_true) then
+           if(iflag_debug.gt.0) write(*,*)                              &
+     &                         'lead  ', trim(nod_fld%phys_name(i) )
+           call cal_div_sgs_s_flux_true_post(iphys%i_SGS_div_cf_true,   &
+     &         iphys%i_c_flux_div, iphys%i_sgs_simi,                    &
+     &         nod_comm, node, filtering, wk_filter, nod_fld)
          else if ( nod_fld%phys_name(i).eq.fhd_SGS_div_m_flux_true)     &
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &
@@ -224,23 +246,28 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine cal_div_sgs_h_flux_true_pre                            &
-     &         (nod_comm, node, ele, fluid, property,                   &
-     &          Tnod_bcs, iphys, iphys_ele, ele_fld, jac_3d,            &
-     &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+      subroutine cal_div_sgs_s_flux_true_pre(iflag_supg,                &
+     &        i_div_flux_true, i_flux, i_div_flux, i_field_f, i_velo_f, &
+     &        nod_comm, node, ele, fluid, property, Snod_bcs,           &
+     &        iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,  &
+     &        f_l, f_nl, nod_fld)
 !
       use t_bc_data_temp
       use t_surface_bc_data
       use products_nodal_fields_smp
       use cal_terms_for_heat
 !
+      integer(kind = kint), intent(in) :: iflag_supg
+      integer(kind = kint), intent(in) :: i_div_flux_true
+      integer(kind = kint), intent(in) :: i_flux, i_div_flux
+      integer(kind = kint), intent(in) :: i_field_f, i_velo_f
+!
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
       type(scalar_property), intent(in) :: property
-      type(nodal_bcs_4_scalar_type), intent(in) :: Tnod_bcs
-      type(phys_address), intent(in) :: iphys
+      type(nodal_bcs_4_scalar_type), intent(in) :: Snod_bcs
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
       type(jacobians_3d), intent(in) :: jac_3d
@@ -254,18 +281,17 @@
 !
 !$omp parallel
       call cal_phys_scalar_product_vector                               &
-     &   (iphys%i_filter_velo, iphys%i_filter_temp, iphys%i_h_flux,     &
-     &    nod_fld)
+     &   (i_velo_f, i_field_f, i_flux, nod_fld)
 !$omp end parallel
       call cal_div_of_scalar_flux                                       &
-     &   (iphys%i_h_flux_div, iphys%i_h_flux, iflag_temp_supg,          &
-     &    nod_comm, node, ele, fluid, property, Tnod_bcs,               &
+     &   (i_div_flux, i_flux, iflag_supg,                               &
+     &    nod_comm, node, ele, fluid, property, Snod_bcs,               &
      &    iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,      &
      &    f_l, f_nl, nod_fld)
       call copy_scalar_component(nod_fld,                               &
-     &    iphys%i_h_flux_div, iphys%i_SGS_div_hf_true)
+     &    i_div_flux, i_div_flux_true)
 !
-      end subroutine cal_div_sgs_h_flux_true_pre
+      end subroutine cal_div_sgs_s_flux_true_pre
 !
 !-----------------------------------------------------------------------
 !
@@ -435,12 +461,15 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine cal_div_sgs_h_flux_true_post                           &
-     &          (nod_comm, node, iphys, filtering, wk_filter, nod_fld)
+      subroutine cal_div_sgs_s_flux_true_post                           &
+     &          (i_div_flux_true, i_div_flux, i_sgs_simi,               &
+     &           nod_comm, node, filtering, wk_filter, nod_fld)
+!
+      integer(kind = kint), intent(in) :: i_div_flux_true
+      integer(kind = kint), intent(in) :: i_div_flux, i_sgs_simi
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
-      type(phys_address), intent(in) :: iphys
       type(filtering_data_type), intent(in) :: filtering
 !
       type(filtering_work_type), intent(inout) :: wk_filter
@@ -448,15 +477,13 @@
 !
 !
       call copy_scalar_component(nod_fld,                               &
-     &    iphys%i_SGS_div_hf_true, iphys%i_sgs_simi)
+     &    i_div_flux_true, i_sgs_simi)
       call cal_filtered_scalar_whole(nod_comm, node, filtering,         &
-     &    iphys%i_SGS_div_hf_true, iphys%i_h_flux_div,                  &
-     &    wk_filter, nod_fld)
+     &    i_div_flux_true, i_div_flux, wk_filter, nod_fld)
       call subtract_2_nod_scalars(nod_fld,                              &
-     &    iphys%i_SGS_div_hf_true, iphys%i_sgs_simi,                    &
-     &    iphys%i_SGS_div_hf_true)
+     &    i_div_flux_true, i_sgs_simi, i_div_flux_true)
 !
-      end subroutine cal_div_sgs_h_flux_true_post
+      end subroutine cal_div_sgs_s_flux_true_post
 !
 !-----------------------------------------------------------------------
 !

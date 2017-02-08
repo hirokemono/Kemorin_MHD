@@ -13,18 +13,17 @@
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(nodal_bcs_4_scalar_type), intent(in) :: Snod_bcs
 !!
-!!      subroutine cal_terms_4_heat(i_field, ak_d_temp,                 &
+!!      subroutine cal_terms_4_heat(i_field,                            &
 !!     &          nod_comm, node, ele, surf, fluid, sf_grp, property,   &
 !!     &          Tnod_bcs, Tsf_bcs, iphys, iphys_ele, ele_fld,         &
 !!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,   &
 !!     &          ifld_diff, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,   &
 !!     &          f_l, f_nl, nod_fld)
-!!      subroutine cal_thermal_diffusion                                &
-!!     &         (iak_diff_hf, iak_diff_t, ak_d_temp,                   &
-!!     &          nod_comm, node, ele, surf, fluid, sf_grp, property,   &
+!!      subroutine cal_thermal_diffusion(iak_diff_t, ak_diffuse,        &
+!!     &          nod_comm, node, ele, surf, fluid, sf_grp,             &
 !!     &          Tnod_bcs, Tsf_bcs, iphys, jac_3d, jac_sf_grp,         &
 !!     &          rhs_tbl, FEM_elens, diff_coefs,                       &
-!!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -217,7 +216,7 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine cal_terms_4_heat(i_field, ak_d_temp,                   &
+      subroutine cal_terms_4_heat(i_field,                              &
      &          nod_comm, node, ele, surf, fluid, sf_grp, property,     &
      &          Tnod_bcs, Tsf_bcs, iphys, iphys_ele, ele_fld,           &
      &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                 &
@@ -247,7 +246,6 @@
       type(SGS_coefficients_type), intent(in) :: diff_coefs
 !
       integer (kind=kint), intent(in) :: i_field
-      real(kind = kreal), intent(in) :: ak_d_temp(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(work_surface_element_mat), intent(inout) :: surf_wk
@@ -302,12 +300,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_thermal_diffusion                                  &
-     &         (iak_diff_hf, iak_diff_t, ak_d_temp,                     &
-     &          nod_comm, node, ele, surf, fluid, sf_grp, property,     &
+      subroutine cal_thermal_diffusion(iak_diff_t, ak_diffuse,          &
+     &          nod_comm, node, ele, surf, fluid, sf_grp,               &
      &          Tnod_bcs, Tsf_bcs, iphys, jac_3d, jac_sf_grp,           &
      &          rhs_tbl, FEM_elens, diff_coefs,                         &
-     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use int_vol_diffusion_ele
       use int_surf_fixed_gradients
@@ -319,7 +316,6 @@
       type(phys_address), intent(in) :: iphys
       type(surface_group_data), intent(in) :: sf_grp
       type(field_geometry_data), intent(in) :: fluid
-      type(scalar_property), intent(in) :: property
       type(nodal_bcs_4_scalar_type), intent(in) :: Tnod_bcs
       type(scaler_surf_bc_type), intent(in) :: Tsf_bcs
       type(jacobians_3d), intent(in) :: jac_3d
@@ -329,11 +325,10 @@
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
 !
-      integer (kind=kint), intent(in) :: iak_diff_hf, iak_diff_t
-      real(kind = kreal), intent(in) :: ak_d_temp(ele%numele)
+      integer (kind=kint), intent(in) :: iak_diff_t
+      real(kind = kreal), intent(in) :: ak_diffuse(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
-      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -343,11 +338,11 @@
       call int_vol_scalar_diffuse_ele(SGS_param1%ifilter_final,         &
      &    fluid%istack_ele_fld_smp, intg_point_t_evo,                   &
      &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,   &
-     &    iak_diff_t, one, ak_d_temp, iphys%i_temp, fem_wk, f_l)
+     &    iak_diff_t, one, ak_diffuse, iphys%i_temp, fem_wk, f_l)
 !
       call int_sf_scalar_flux                                           &
      &   (node, ele, surf, sf_grp, jac_sf_grp, rhs_tbl,                 &
-     &    Tsf_bcs%flux, intg_point_t_evo, ak_d_temp, fem_wk, f_l)
+     &    Tsf_bcs%flux, intg_point_t_evo, ak_diffuse, fem_wk, f_l)
 !
       call set_ff_nl_smp_2_ff(n_scalar, node, rhs_tbl, f_l, f_nl)
 !

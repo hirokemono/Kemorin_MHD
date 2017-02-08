@@ -215,6 +215,9 @@
 !>        start address for compositinoal flux
 !!         @f$ u_{i} C @f$
         integer (kind=kint) :: i_c_flux =          izero
+!>        start address for compositinoal flux
+!!         @f$ u_{i} \Theta_{C} @f$
+        integer (kind=kint) :: i_pc_flux =          izero
 !>        start address for momentum flux
 !!         @f$ u_{i} u_{j} @f$
         integer (kind=kint) :: i_m_flux =          izero
@@ -240,6 +243,12 @@
 !>        start address for divergence of perturbation of heat flux
 !!         @f$ \partial_{i} \left( u_{i} \Theta \right) @f$
         integer (kind=kint) :: i_ph_flux_div =     izero
+!>        start address for divergence of heat flux
+!!         @f$ \partial_{i} \left( u_{i} C \right) @f$
+        integer (kind=kint) :: i_c_flux_div =      izero
+!>        start address for divergence of perturbation of heat flux
+!!         @f$ \partial_{i} \left( u_{i} \Theta_C \right) @f$
+        integer (kind=kint) :: i_pc_flux_div =     izero
 !>        start address for divergence of momentum flux
 !!         @f$ \partial_{j} \left( u_{i} u_{j} \right) @f$
         integer (kind=kint) :: i_m_flux_div =      izero
@@ -374,6 +383,9 @@
 !>        start address for true divergence of SGS heat flux
 !!         @f$ \partial_{i} \left( \overline{u_{i}T} - \bar{u}_{i}\bar{T} \right) @f$
         integer (kind=kint) :: i_SGS_div_hf_true = izero
+!>        start address for true divergence of SGS compostion flux
+!!         @f$ \partial_{i} \left( \overline{u_{i}C} - \bar{u}_{i}\bar{C} \right) @f$
+        integer (kind=kint) :: i_SGS_div_cf_true = izero
 !>        start address for true divergence of SGS momentum flux
 !!         @f$ \partial_{i} \left( \overline{u_{i}u_{j}} - \bar{u}_{i}\bar{u}_{j} \right) @f$
         integer (kind=kint) :: i_SGS_div_mf_true = izero
@@ -386,6 +398,8 @@
 !
 !>        start address for temperature generation by true SGS heat flux
         integer (kind=kint) :: i_SGS_t_gen_tr =    izero
+!>        start address for temperature generation by true SGS compostion flux
+        integer (kind=kint) :: i_SGS_c_gen_tr =    izero
 !>        start address for energy flux of true SGS induction
         integer (kind=kint) :: i_SGS_me_gen_tr =   izero
 !>        start address for work of true SGS Lorentz force

@@ -236,7 +236,7 @@
       if (iphys%i_SGS_div_h_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_div_SGS_h_flux)
-        call cal_terms_4_heat(iphys%i_SGS_div_h_flux, ak_MHD%ak_d_temp, &
+        call cal_terms_4_heat(iphys%i_SGS_div_h_flux,                   &
      &      nod_comm, node, ele, surf, fluid, sf_grp, ht_prop,          &
      &      nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,                  &
      &      iphys_ele, ele_fld,  jac_3d, jac_sf_grp, rhs_tbl,           &
@@ -387,6 +387,12 @@
           call cal_phys_product_4_scalar                                &
      &       (iphys%i_filter_temp, iphys%i_SGS_div_hf_true,             &
      &        iphys%i_SGS_t_gen_tr, nod_fld)
+      end if
+!
+      if (iphys%i_SGS_c_gen_tr .gt. 0) then
+          call cal_phys_product_4_scalar                                &
+     &       (iphys%i_filter_temp, iphys%i_SGS_div_cf_true,             &
+     &        iphys%i_SGS_c_gen_tr, nod_fld)
       end if
 !
       if (iphys%i_SGS_me_gen_tr .gt. 0) then

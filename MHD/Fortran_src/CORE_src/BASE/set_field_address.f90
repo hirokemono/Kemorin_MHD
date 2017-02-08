@@ -175,6 +175,8 @@
           iphys%i_ph_flux =  i0
         else if (field_name(i) .eq. fhd_c_flux ) then
           iphys%i_c_flux =   i0
+        else if (field_name(i) .eq. fhd_pc_flux ) then
+          iphys%i_pc_flux =   i0
         else if (field_name(i) .eq. fhd_mom_flux ) then
           iphys%i_m_flux =   i0
         else if (field_name(i) .eq. fhd_maxwell_t ) then
@@ -192,6 +194,10 @@
           iphys%i_h_flux_div =  i0
         else if (field_name(i) .eq. fhd_div_ph_flux ) then
           iphys%i_ph_flux_div = i0
+        else if (field_name(i) .eq. fhd_div_c_flux ) then
+          iphys%i_c_flux_div =  i0
+        else if (field_name(i) .eq. fhd_div_pc_flux ) then
+          iphys%i_pc_flux_div = i0
         else if (field_name(i) .eq. fhd_div_m_flux) then
           iphys%i_m_flux_div =  i0
         else if (field_name(i) .eq. fhd_div_maxwell_t) then
@@ -325,6 +331,8 @@
 !
         else if ( field_name(i) .eq. fhd_SGS_div_h_flux_true ) then
           iphys%i_SGS_div_hf_true = i0
+        else if ( field_name(i) .eq. fhd_SGS_div_c_flux_true ) then
+          iphys%i_SGS_div_cf_true = i0
         else if ( field_name(i) .eq. fhd_SGS_div_m_flux_true ) then
           iphys%i_SGS_div_mf_true = i0
         else if ( field_name(i) .eq. fhd_SGS_Lorentz_true ) then
@@ -338,6 +346,8 @@
           iphys%i_reynolds_wk_tr = i0
         else if ( field_name(i) .eq. fhd_SGS_temp_gen_true ) then
           iphys%i_SGS_t_gen_tr =   i0
+        else if ( field_name(i) .eq. fhd_SGS_comp_gen_true ) then
+          iphys%i_SGS_c_gen_tr =   i0
         else if ( field_name(i) .eq. fhd_SGS_m_ene_gen_true ) then
           iphys%i_SGS_me_gen_tr =  i0
         end if

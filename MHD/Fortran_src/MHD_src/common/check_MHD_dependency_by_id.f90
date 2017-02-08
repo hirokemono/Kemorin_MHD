@@ -132,6 +132,7 @@
         else if(i_start .eq. iphys%i_c_advect                           &
      &     .or. i_start .eq. iphys%i_pc_advect                          &
      &     .or. i_start .eq. iphys%i_c_flux                             &
+     &     .or. i_start .eq. iphys%i_pc_flux                            &
      &     .or. i_start .eq. iphys%i_c_buo_gen                          &
      &     .or. i_start .eq. iphys%i_SGS_c_flux) then 
           call check_missing_field(fld, i_start, iphys%i_velo)
@@ -238,11 +239,19 @@
           call check_missing_field(fld, i_start, iphys%i_h_flux)
         else if(i_start .eq. iphys%i_ph_flux_div) then 
           call check_missing_field(fld, i_start, iphys%i_ph_flux)
+        else if(i_start .eq. iphys%i_c_flux_div) then 
+          call check_missing_field(fld, i_start, iphys%i_c_flux)
+        else if(i_start .eq. iphys%i_pc_flux_div) then 
+          call check_missing_field(fld, i_start, iphys%i_pc_flux)
 !
         else if(i_start .eq. iphys%i_SGS_div_hf_true) then 
           call check_missing_field(fld, i_start, iphys%i_filter_velo)
           call check_missing_field(fld, i_start, iphys%i_filter_temp)
           call check_missing_field(fld, i_start, iphys%i_h_flux_div)
+        else if(i_start .eq. iphys%i_SGS_div_cf_true) then 
+          call check_missing_field(fld, i_start, iphys%i_filter_velo)
+          call check_missing_field(fld, i_start, iphys%i_filter_comp)
+          call check_missing_field(fld, i_start, iphys%i_c_flux_div)
         else if(i_start .eq. iphys%i_SGS_div_mf_true) then 
           call check_missing_field(fld, i_start, iphys%i_filter_velo)
           call check_missing_field(fld, i_start, iphys%i_m_flux_div)
@@ -264,6 +273,10 @@
           call check_missing_field(fld, i_start, iphys%i_temp)
           call check_missing_field                                      &
      &       (fld, i_start, iphys%i_SGS_div_hf_true)
+        else if(i_start .eq. iphys%i_SGS_c_gen_tr) then 
+          call check_missing_field(fld, i_start, iphys%i_light)
+          call check_missing_field                                      &
+     &       (fld, i_start, iphys%i_SGS_div_cf_true)
         else if(i_start .eq. iphys%i_SGS_idct_true) then 
           call check_missing_field(fld, i_start, iphys%i_magne)
           call check_missing_field(fld, i_start, iphys%i_SGS_idct_true)

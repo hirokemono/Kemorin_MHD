@@ -184,6 +184,8 @@
      &       .or. field_name .eq. fhd_part_c_advect                     &
      &       .or. field_name .eq. fhd_div_h_flux                        &
      &       .or. field_name .eq. fhd_div_ph_flux                       &
+     &       .or. field_name .eq. fhd_div_c_flux                        &
+     &       .or. field_name .eq. fhd_div_pc_flux                       &
      &       .or. field_name .eq. fhd_temp_generation                   &
      &       .or. field_name .eq. fhd_part_temp_gen                     &
      &       .or. field_name .eq. fhd_part_comp_gen                     &
@@ -199,9 +201,11 @@
      &       .or. field_name .eq. fhd_vis_ene_diffuse                   &
      &       .or. field_name .eq. fhd_mag_ene_diffuse                   &
      &       .or. field_name .eq. fhd_SGS_div_h_flux_true               &
+     &       .or. field_name .eq. fhd_SGS_div_c_flux_true               &
      &       .or. field_name .eq. fhd_SGS_Lorentz_wk_true               &
      &       .or. field_name .eq. fhd_Reynolds_work_true                &
      &       .or. field_name .eq. fhd_SGS_temp_gen_true                 &
+     &       .or. field_name .eq. fhd_SGS_comp_gen_true                 &
      &       .or. field_name .eq. fhd_SGS_m_ene_gen_true                &
      &       .or. field_name .eq. fhd_div_SGS_h_flux                    &
      &       .or. field_name .eq. fhd_div_SGS_c_flux                    &
@@ -229,6 +233,7 @@
      &       .or. field_name .eq. fhd_h_flux                            &
      &       .or. field_name .eq. fhd_ph_flux                           &
      &       .or. field_name .eq. fhd_c_flux                            &
+     &       .or. field_name .eq. fhd_pc_flux                           &
      &       .or. field_name .eq. fhd_e_field                           &
      &       .or. field_name .eq. fhd_poynting                          &
      &       .or. field_name .eq. fhd_grad_v_1                          &
@@ -684,6 +689,9 @@
           else if ( field_name .eq. fhd_c_flux ) then
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_c_flux, j_ave%i_c_flux)
+          else if ( field_name .eq. fhd_pc_flux ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_pc_flux, j_ave%i_pc_flux)
           else if ( field_name .eq. fhd_heat_advect ) then
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_h_advect, j_ave%i_h_advect)
@@ -699,6 +707,12 @@
           else if ( field_name .eq. fhd_div_ph_flux ) then
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_ph_flux_div, j_ave%i_ph_flux_div)
+          else if ( field_name .eq. fhd_div_c_flux ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_c_flux_div, j_ave%i_c_flux_div)
+          else if ( field_name .eq. fhd_div_pc_flux ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_pc_flux_div, j_ave%i_pc_flux_div)
           else if ( field_name .eq. fhd_temp_generation ) then
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_temp_gen, j_ave%i_temp_gen)
@@ -740,6 +754,9 @@
           if (field_name .eq. fhd_SGS_div_h_flux_true) then
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_SGS_div_hf_true, j_ave%i_SGS_div_hf_true)
+          else if (field_name .eq. fhd_SGS_div_c_flux_true) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_SGS_div_cf_true, j_ave%i_SGS_div_cf_true)
           else if (field_name .eq. fhd_SGS_div_m_flux_true) then
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_SGS_div_mf_true, j_ave%i_SGS_div_mf_true)
@@ -760,6 +777,9 @@
           else if ( field_name .eq. fhd_SGS_temp_gen_true ) then
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_SGS_t_gen_tr, j_ave%i_SGS_t_gen_tr)
+          else if ( field_name .eq. fhd_SGS_comp_gen_true ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_SGS_c_gen_tr, j_ave%i_SGS_c_gen_tr)
           else if ( field_name .eq. fhd_SGS_m_ene_gen_true ) then
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_SGS_me_gen_tr, j_ave%i_SGS_me_gen_tr)
