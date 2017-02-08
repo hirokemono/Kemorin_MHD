@@ -285,6 +285,7 @@
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call cal_terms_4_momentum                                     &
      &       (i_fld, ifld_diff%i_velo, ifld_diff%i_lorentz,             &
+     &        SGS_param1, cmt_param1,                                   &
      &        nod_comm, node, ele, surf, sf_grp, fluid,                 &
      &        fl_prop, cd_prop, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,     &
      &        iphys, iphys_ele, ak_MHD, jac_3d, jac_sf_grp, rhs_tbl,    &
@@ -303,6 +304,7 @@
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call cal_terms_4_magnetic                                     &
      &       (i_fld, ifld_diff%i_induction, ak_MHD%ak_d_magne,          &
+     &        SGS_param1, cmt_param1,                                   &
      &        nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,      &
      &        nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,     &
      &        iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,   &
@@ -324,28 +326,33 @@
       if (iphys%i_t_diffuse .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_thermal_diffusion)
-        call cal_thermal_diffusion(ifld_diff%i_temp, ak_MHD%ak_d_temp,  &
+        call cal_thermal_diffusion                                      &
+     &     (iphys%i_t_diffuse, iphys%i_temp, SGS_param1%ifilter_final,  &
+     &      ifld_diff%i_temp, ak_MHD%ak_d_temp,                         &
      &      nod_comm, node, ele, surf, fluid, sf_grp,                   &
-     &      nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,                  &
+     &      nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                         &
      &      jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,         &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
-!      if (iphys%i_t_diffuse .gt. izero) then
-!        if(iflag_debug .ge. iflag_routine_msg)                         &
-!     &             write(*,*) 'lead  ', trim(fhd_thermal_diffusion)
-!        call cal_thermal_diffusion(ifld_diff%i_temp, ak_MHD%ak_d_temp, &
-!     &      nod_comm, node, ele, surf, fluid, sf_grp,                  &
-!     &      nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,                 &
-!     &      jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,        &
-!     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-!      end if
+      if (iphys%i_c_diffuse .gt. izero) then
+        if(iflag_debug .ge. iflag_routine_msg)                          &
+     &             write(*,*) 'lead  ', trim(fhd_c_diffuse)
+        call cal_thermal_diffusion                                      &
+     &     (iphys%i_c_diffuse, iphys%i_light, SGS_param1%ifilter_final, &
+     &      ifld_diff%i_temp, ak_MHD%ak_d_composit,                     &
+     &      nod_comm, node, ele, surf, fluid, sf_grp,                   &
+     &      nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs,                         &
+     &      jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,         &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+      end if
 !
       if (iphys%i_v_diffuse .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_viscous)
         call cal_viscous_diffusion                                      &
      &     (ifld_diff%i_velo, ifld_diff%i_velo, ifld_diff%i_lorentz,    &
+     &      SGS_param1, cmt_param1,                                     &
      &      nod_comm, node, ele, surf, sf_grp, fluid, fl_prop,          &
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,       &
      &      iphys, ak_MHD, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,      &
@@ -356,7 +363,8 @@
       if (iphys%i_vp_diffuse .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_vecp_diffuse)
-        call cal_vecp_diffusion(ifld_diff%i_magne, ak_MHD%ak_d_magne,   &
+        call cal_vecp_diffusion(SGS_param1%ifilter_final,               &
+     &      ifld_diff%i_magne, ak_MHD%ak_d_magne,                       &
      &      nod_comm, node, ele, surf, sf_grp,                          &
      &      nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, iphys,                  &
      &      jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,         &
@@ -369,6 +377,7 @@
      &             write(*,*) 'lead  ', trim(fhd_mag_diffuse)
         call cal_magnetic_diffusion(ifld_diff%i_magne,                  &
      &      ifld_diff%i_induction, ak_MHD%ak_d_magne,                   &
+     &      SGS_param1, cmt_param1,                                     &
      &      nod_comm, node, ele, surf, conduct, sf_grp,                 &
      &      nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,       &
      &      iphys, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,  &

@@ -3,7 +3,7 @@
 !
 !      written by H. Matsui on Aug., 2007
 !
-!!      subroutine cal_sgs_mom_flux_with_sgs_buo(SGS_param,             &
+!!      subroutine cal_sgs_mom_flux_with_sgs_buo(SGS_param, cmt_param,  &
 !!     &          nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,  &
 !!     &          fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele, &
 !!     &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,    &
@@ -12,6 +12,7 @@
 !!     &          wk_filter, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,        &
 !!     &          surf_wk, f_l, f_nl, nod_fld, ele_fld, sgs_coefs)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -87,7 +88,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_sgs_mom_flux_with_sgs_buo(SGS_param,               &
+      subroutine cal_sgs_mom_flux_with_sgs_buo(SGS_param, cmt_param,    &
      &          nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,    &
      &          fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,   &
      &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,      &
@@ -108,6 +109,7 @@
       use modify_Csim_by_SGS_buo_ele
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
+      type(commutation_control_params), intent(in) :: cmt_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -171,10 +173,11 @@
 !
       call cal_terms_4_momentum(iphys%i_SGS_div_m_flux,                 &
      &    ifld_diff%i_mom_flux, ifld_diff%i_lorentz,                    &
-     &    nod_comm, node, ele, surf, sf_grp, fluid, fl_prop, cd_prop,   &
-     &    Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD,                   &
-     &    jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens, diff_coefs,       &
-     &    mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld, ele_fld)
+     &    SGS_param, cmt_param, nod_comm, node, ele, surf, sf_grp,      &
+     &    fluid, fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,  &
+     &    ak_MHD, jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,           &
+     &    diff_coefs, mhd_fem_wk, fem_wk, surf_wk,                      &
+     &    f_l, f_nl, nod_fld, ele_fld)
 !
 !$omp parallel
       call cal_phys_dot_product                                         &
