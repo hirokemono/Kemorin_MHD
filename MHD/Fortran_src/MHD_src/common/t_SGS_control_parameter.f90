@@ -17,17 +17,12 @@
 !!        type(SGS_filter_area_params), intent(inout) :: f_area_new
 !!@endverbatim
 !
-      module   t_SGS_control_parameter
+      module t_SGS_control_parameter
 !
       use m_precision
+      use m_constants
 !
       implicit  none
-!
-!
-!>      Turn OFF flag
-      integer (kind=kint), parameter :: id_turn_OFF = 0
-!>      Turn ON flag
-      integer (kind=kint), parameter :: id_turn_ON =  1
 !
 !
       integer (kind=kint), parameter :: id_SGS_none =       0

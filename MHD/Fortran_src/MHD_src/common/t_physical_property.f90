@@ -14,9 +14,6 @@
 !
       implicit  none
 !
-!>      Turn OFF flag
-      integer (kind=kint), parameter, private :: id_turn_OFF = 0
-!
 !>     flag for no gravity
       integer (kind = kint), parameter :: iflag_no_gravity =  -1
 !>     flag for constant gravity

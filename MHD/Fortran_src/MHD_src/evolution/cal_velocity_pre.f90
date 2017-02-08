@@ -17,13 +17,14 @@
 !!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,               &
 !!     &          nod_fld, ele_fld, sgs_coefs)
 !!      subroutine cal_velocity_co                                      &
-!!     &        (SGS_param, cmt_param, nod_comm, node, ele, surf,       &
-!!     &         fluid, sf_grp, sf_grp_nod, fl_prop,                    &
+!!     &        (FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,    &
+!!     &         surf, fluid, sf_grp, sf_grp_nod, fl_prop,              &
 !!     &         Vnod_bcs, Vsf_bcs, Psf_bcs, iphys, iphys_ele, ele_fld, &
 !!     &         ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,&
 !!     &         rhs_tbl, FEM_elens, ifld_diff, diff_coefs,             &
 !!     &         Vmatrix, MG_vector, mhd_fem_wk, fem_wk, surf_wk,       &
 !!     &         f_l, f_nl, nod_fld)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(SGS_filtering_params), intent(in) :: filter_param
@@ -76,6 +77,7 @@
       use m_machine_parameter
       use m_t_int_parameter
 !
+      use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_comm_table
       use t_geometry_data_MHD
@@ -321,8 +323,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_velocity_co                                        &
-     &        (SGS_param, cmt_param, nod_comm, node, ele, surf,         &
-     &         fluid, sf_grp, sf_grp_nod, fl_prop,                      &
+     &        (FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,      &
+     &         surf, fluid, sf_grp, sf_grp_nod, fl_prop,                &
      &         Vnod_bcs, Vsf_bcs, Psf_bcs, iphys, iphys_ele, ele_fld,   &
      &         ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,  &
      &         rhs_tbl, FEM_elens, ifld_diff, diff_coefs,               &
@@ -340,6 +342,7 @@
       use cal_sol_vector_co_crank
       use implicit_vector_correct
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(communication_table), intent(in) :: nod_comm
@@ -397,11 +400,12 @@
       end if
 !
 !
-      if (   iflag_implicit_correct.eq.3                                &
-     &  .or. iflag_implicit_correct.eq.4) then
+      if (   FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson           &
+     &  .or. FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)    &
+     & then
         call cal_velocity_co_imp                                        &
      &     (iphys%i_velo, ifld_diff%i_velo, ak_MHD%ak_d_velo,           &
-     &      SGS_param, cmt_param, nod_comm, node, ele, fluid,           &
+     &      FEM_prm, SGS_param, cmt_param, nod_comm, node, ele, fluid,  &
      &      fl_prop, Vnod_bcs, iphys_ele, ele_fld,  jac_3d_q, rhs_tbl,  &
      &      FEM_elens, diff_coefs, Vmatrix, MG_vector,                  &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)

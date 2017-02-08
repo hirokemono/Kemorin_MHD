@@ -16,23 +16,27 @@
 !!     &          f_l, f_nl, nod_fld)
 !!
 !!      subroutine cal_velocity_co_imp                                  &
-!!     &         (i_velo, iak_diff_v, ak_d_velo, SGS_param, cmt_param,  &
+!!     &         (i_velo, iak_diff_v, ak_d_velo,                        &
+!!     &          FEM_prm, SGS_param, cmt_param,                        &
 !!     &          nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,        &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
 !!     &          diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,   &
 !!     &          f_l, f_nl, nod_fld)
 !!      subroutine cal_vector_p_co_imp                                  &
-!!     &         (i_vecp, iak_diff_b, ak_d_magne, SGS_param, cmt_param, &
+!!     &         (i_vecp, iak_diff_b, ak_d_magne,                       &
+!!     &          FEM_prm, SGS_param, cmt_param,                        &
 !!     &          nod_comm, node, ele, conduct, cd_prop, Bnod_bcs,      &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
 !!     &          diff_coefs, m_lump, Bmatrix, MG_vector,               &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_magnetic_co_imp                                  &
-!!     &         (i_magne, iak_diff_b, ak_d_magne, SGS_param, cmt_param,&
+!!     &         (i_magne, iak_diff_b, ak_d_magne,                      &
+!!     &          FEM_prm, SGS_param, cmt_param,                        &
 !!     &          nod_comm, node, ele, conduct, cd_prop, Bnod_bcs,      &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
 !!     &          diff_coefs,m_lump,  Bmatrix, MG_vector,               &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(communication_table), intent(in) :: nod_comm
@@ -65,6 +69,7 @@
       use m_t_step_parameter
       use m_phys_constants
 !
+      use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_physical_property
       use t_comm_table
@@ -203,7 +208,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_velocity_co_imp                                    &
-     &         (i_velo, iak_diff_v, ak_d_velo, SGS_param, cmt_param,    &
+     &         (i_velo, iak_diff_v, ak_d_velo,                          &
+     &          FEM_prm, SGS_param, cmt_param,                          &
      &          nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,          &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
      &          diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,     &
@@ -221,6 +227,7 @@
       use set_nodal_bc_id_data
       use cal_sol_vector_co_crank
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(communication_table), intent(in) :: nod_comm
@@ -274,12 +281,13 @@
       end if
 !
 !
-      if (     iflag_implicit_correct.eq.3) then
+      if (     FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson) then
         call cal_velo_co_lumped_crank                                   &
      &     (i_velo, nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,      &
      &      nod_fld, iphys_ele, ele_fld, jac_3d, rhs_tbl,               &
      &      mhd_fem_wk, fem_wk, f_l, f_nl)
-      else if (iflag_implicit_correct.eq.4) then
+      else if(FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)   &
+     & then
         call cal_velo_co_consist_crank(i_velo, fl_prop%coef_velo,       &
      &      node, ele, fluid, Vnod_bcs, nod_fld, jac_3d,                &
      &      rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
@@ -298,7 +306,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_vector_p_co_imp                                    &
-     &         (i_vecp, iak_diff_b, ak_d_magne, SGS_param, cmt_param,   &
+     &         (i_vecp, iak_diff_b, ak_d_magne,                         &
+     &          FEM_prm, SGS_param, cmt_param,                          &
      &          nod_comm, node, ele, conduct, cd_prop, Bnod_bcs,        &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
      &          diff_coefs, m_lump, Bmatrix, MG_vector,                 &
@@ -316,6 +325,7 @@
       use set_nodal_bc_id_data
       use cal_sol_vector_co_crank
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(communication_table), intent(in) :: nod_comm
@@ -363,12 +373,13 @@
       end if
 !
 !
-      if (     iflag_implicit_correct.eq.3) then
+      if (     FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson) then
         call cal_magne_co_lumped_crank                                  &
      &     (i_vecp, nod_comm, node, ele, nod_fld,                       &
      &      iphys_ele, ele_fld, Bnod_bcs%nod_bc_a, jac_3d, rhs_tbl,     &
      &      m_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
-      else if (iflag_implicit_correct.eq.4) then
+      else if(FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)   &
+     & then
         call cal_magne_co_consist_crank(i_vecp, cd_prop%coef_magne,     &
      &      node, ele, conduct, nod_fld, Bnod_bcs%nod_bc_a, jac_3d,     &
      &      rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
@@ -386,7 +397,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_magnetic_co_imp                                    &
-     &         (i_magne, iak_diff_b, ak_d_magne, SGS_param, cmt_param,  &
+     &         (i_magne, iak_diff_b, ak_d_magne,                        &
+     &          FEM_prm, SGS_param, cmt_param,                          &
      &          nod_comm, node, ele, conduct, cd_prop, Bnod_bcs,        &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
      &          diff_coefs,m_lump,  Bmatrix, MG_vector,                 &
@@ -403,6 +415,7 @@
       use set_nodal_bc_id_data
       use cal_sol_vector_co_crank
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(communication_table), intent(in) :: nod_comm
@@ -450,12 +463,13 @@
       end if
 !
 !
-      if     (iflag_implicit_correct.eq.3) then
+      if     (FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson) then
         call cal_magne_co_lumped_crank                                  &
      &     (i_magne, nod_comm, node, ele, nod_fld,                      &
      &      iphys_ele, ele_fld, Bnod_bcs%nod_bc_b, jac_3d, rhs_tbl,     &
      &      m_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
-      else if(iflag_implicit_correct.eq.4) then
+      else if(FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)   &
+     & then
         call cal_magne_co_consist_crank(i_magne, cd_prop%coef_magne,    &
      &      node, ele, conduct, nod_fld, Bnod_bcs%nod_bc_b, jac_3d,     &
      &      rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)

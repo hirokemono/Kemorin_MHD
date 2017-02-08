@@ -22,16 +22,13 @@
       module   m_control_parameter
 !
       use m_precision
+      use m_constants
       use t_time_stepping_parameter
-      use t_SGS_control_parameter
+      use t_FEM_control_parameter
 !
       implicit  none
 !
 !
-!>      Turn OFF flag
-!      integer (kind=kint), parameter :: id_turn_OFF = 0
-!>      Turn ON flag
-!      integer (kind=kint), parameter :: id_turn_ON =  1
 !
 !>      Number of fields for time evolution
       integer (kind=kint)  :: num_field_to_evolve
@@ -119,8 +116,8 @@
 !>      Error torrance for time integration
       real (kind=kreal) :: eps_4_magne
 !
-!
-      integer (kind=kint) :: iflag_implicit_correct = 0
+      type(FEM_MHD_paremeters), save :: FEM_prm1
+!FEM_prm1%iflag_imp_correct
 !
 !  ---------------------------------------------------------------------
 !

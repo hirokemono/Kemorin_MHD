@@ -14,13 +14,14 @@
 !!     &          sgs_coefs, diff_coefs, filtering, Bmatrix, MG_vector, &
 !!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_vector_p_co                                      &
-!!     &         (iak_diff_b, ak_d_magne, SGS_param, cmt_param,         &
+!!     &         (iak_diff_b, ak_d_magne, FEM_prm, SGS_param, cmt_param,&
 !!     &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,  &
 !!     &          Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,         &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
 !!     &          rhs_tbl, FEM_elens, diff_coefs, m_lump,               &
 !!     &          Bmatrix, MG_vector, mhd_fem_wk, fem_wk, surf_wk,      &
 !!     &          f_l, f_nl, nod_fld)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(SGS_filtering_params), intent(in) :: filter_param
@@ -63,6 +64,7 @@
       use m_t_int_parameter
       use m_phys_constants
 !
+      use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_comm_table
       use t_geometry_data_MHD
@@ -247,7 +249,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_vector_p_co                                        &
-     &         (iak_diff_b, ak_d_magne, SGS_param, cmt_param,           &
+     &         (iak_diff_b, ak_d_magne, FEM_prm, SGS_param, cmt_param,  &
      &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,    &
      &          Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,           &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
@@ -264,6 +266,7 @@
       use cal_multi_pass
       use cal_sol_vector_co_crank
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(communication_table), intent(in) :: nod_comm
@@ -321,12 +324,13 @@
       end if
 !
 !
-      if (   iflag_implicit_correct.eq.3                                &
-     &  .or. iflag_implicit_correct.eq.4) then
+      if (   FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson           &
+     &  .or. FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)    &
+     & then
         call cal_vector_p_co_imp(iphys%i_vecp, iak_diff_b, ak_d_magne,  &
-     &      SGS_param, cmt_param, nod_comm, node, ele, conduct,         &
-     &      cd_prop, Bnod_bcs, iphys_ele, ele_fld, jac_3d_q, rhs_tbl,   &
-     &      FEM_elens, diff_coefs, m_lump, Bmatrix, MG_vector,          &
+     &      FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,         &
+     &      conduct, cd_prop, Bnod_bcs, iphys_ele, ele_fld, jac_3d_q,   &
+     &      rhs_tbl, FEM_elens, diff_coefs, m_lump, Bmatrix, MG_vector, &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
         call clear_field_data(nod_fld, n_scalar, iphys%i_m_phi)
       else
