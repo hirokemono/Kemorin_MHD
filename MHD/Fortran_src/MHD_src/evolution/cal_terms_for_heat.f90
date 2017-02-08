@@ -3,6 +3,16 @@
 !
 !     Written by H. Matsui on June, 2005
 !
+!!      subroutine cal_terms_4_advect(i_field, i_scalar, iflag_supg,    &
+!!     &          nod_comm, node, ele, fluid, property, Snod_bcs,       &
+!!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                  &
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!      subroutine cal_div_of_scalar_flux(i_field, i_vector, iflag_supg,&
+!!     &          nod_comm, node, ele, fluid, property, Snod_bcs,       &
+!!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                  &
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!        type(nodal_bcs_4_scalar_type), intent(in) :: Snod_bcs
+!!
 !!      subroutine cal_terms_4_heat(i_field, ak_d_temp,                 &
 !!     &          nod_comm, node, ele, surf, fluid, sf_grp, property,   &
 !!     &          Tnod_bcs, Tsf_bcs, iphys, iphys_ele, ele_fld,         &
@@ -75,6 +85,136 @@
 !
       contains
 !
+!-----------------------------------------------------------------------
+!
+      subroutine cal_terms_4_advect(i_field, i_scalar, iflag_supg,      &
+     &          nod_comm, node, ele, fluid, property, Snod_bcs,         &
+     &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                    &
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!
+      use int_vol_inertia
+!
+      integer (kind=kint), intent(in) :: i_field, i_scalar
+      integer (kind=kint), intent(in) :: iflag_supg
+!
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(scalar_property), intent(in) :: property
+      type(nodal_bcs_4_scalar_type), intent(in) :: Snod_bcs
+      type(phys_address), intent(in) :: iphys_ele
+      type(phys_data), intent(in) :: ele_fld
+      type(field_geometry_data), intent(in) :: fluid
+      type(jacobians_3d), intent(in) :: jac_3d
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
+      type(phys_data), intent(inout) :: nod_fld
+!
+!
+      call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
+!
+      if (iflag_supg .gt. id_turn_OFF) then
+        call int_vol_scalar_inertia_upw                                 &
+     &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
+     &      fluid%istack_ele_fld_smp, intg_point_t_evo, i_scalar,       &
+     &      ele_fld%ntot_phys, iphys_ele%i_velo, iphys_ele%i_velo,      &
+     &      ele_fld%d_fld, property%coef_nega_adv, fem_wk, f_nl)
+      else
+        call int_vol_scalar_inertia                                     &
+     &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
+     &      fluid%istack_ele_fld_smp, intg_point_t_evo, i_scalar,       &
+     &      ele_fld%ntot_phys, iphys_ele%i_velo,                        &
+     &      ele_fld%d_fld, property%coef_nega_adv, fem_wk, f_nl)
+      end if
+!
+      call cal_t_evo_4_scalar(iflag_supg,                               &
+     &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl, nod_comm,      &
+     &    node, ele, iphys_ele, ele_fld, jac_3d, rhs_tbl,               &
+     &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
+!
+      call set_boundary_rhs_scalar(node, Snod_bcs%nod_bc_s, f_l, f_nl)
+!
+!       call check_ff(my_rank, n_scalar, node%numnod, f_nl)
+!
+      call cal_ff_2_scalar(node%numnod, node%istack_nod_smp,            &
+     &    f_nl%ff, mhd_fem_wk%mlump_fl%ml,                              &
+     &    nod_fld%ntot_phys, i_field, nod_fld%d_fld)
+!
+!   communication
+!
+      call scalar_send_recv(i_field, nod_comm, nod_fld)
+!
+      end subroutine cal_terms_4_advect
+!
+!-----------------------------------------------------------------------
+!
+      subroutine cal_div_of_scalar_flux(i_field, i_vector, iflag_supg,  &
+     &          nod_comm, node, ele, fluid, property, Snod_bcs,         &
+     &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                    &
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!
+      use int_vol_vect_cst_difference
+      use int_vol_vect_cst_diff_upw
+!
+      integer (kind=kint), intent(in) :: i_vector, i_field
+      integer (kind=kint), intent(in) :: iflag_supg
+!
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(scalar_property), intent(in) :: property
+      type(nodal_bcs_4_scalar_type), intent(in) :: Snod_bcs
+      type(phys_address), intent(in) :: iphys_ele
+      type(phys_data), intent(in) :: ele_fld
+      type(field_geometry_data), intent(in) :: fluid
+      type(jacobians_3d), intent(in) :: jac_3d
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
+      type(phys_data), intent(inout) :: nod_fld
+!
+!
+      call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
+!
+      if (iflag_supg .gt. id_turn_OFF) then
+        call int_vol_div_w_const                                        &
+     &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
+     &      fluid%istack_ele_fld_smp, intg_point_t_evo,                 &
+     &      i_vector, property%coef_nega_adv, fem_wk, f_nl)
+      else
+        call int_vol_div_w_const_upw                                    &
+     &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
+     &      fluid%istack_ele_fld_smp, intg_point_t_evo,                 &
+     &      i_vector, ele_fld%ntot_phys, iphys_ele%i_velo,              &
+     &      ele_fld%d_fld, property%coef_nega_adv, fem_wk, f_nl)
+      end if
+!
+      call cal_t_evo_4_scalar(iflag_temp_supg,                          &
+     &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl, nod_comm,      &
+     &    node, ele, iphys_ele, ele_fld, jac_3d, rhs_tbl,               &
+     &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
+!
+      call set_boundary_rhs_scalar(node, Snod_bcs%nod_bc_s, f_l, f_nl)
+!
+!       call check_ff(my_rank, n_scalar, node%numnod, f_nl)
+!
+      call cal_ff_2_scalar(node%numnod, node%istack_nod_smp,            &
+     &    f_nl%ff, mhd_fem_wk%mlump_fl%ml,                              &
+     &    nod_fld%ntot_phys, i_field, nod_fld%d_fld)
+!
+!   communication
+!
+      call scalar_send_recv(i_field, nod_comm, nod_fld)
+!
+      end subroutine cal_div_of_scalar_flux
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine cal_terms_4_heat(i_field, ak_d_temp,                   &

@@ -166,6 +166,8 @@
         integer (kind=kint) :: i_temp_gen =        izero
 !>        start address for perturbation temperature flux
         integer (kind=kint) :: i_par_t_gen =       izero
+!>        start address for perturbation composition flux
+        integer (kind=kint) :: i_par_c_gen =       izero
 !>        start address for work of Lorentz force
 !!         @f$ u_{i} \left( e_{ijk} J_{j} B_{k} \right) @f$
         integer (kind=kint) :: i_ujb =             izero
@@ -280,6 +282,9 @@
 !>        start address for advection for composition
 !!         @f$ u_{i} \partial_{i} C @f$
         integer (kind=kint) :: i_c_advect =        izero
+!>        start address for advection for perturbation of composition
+!!         @f$ u_{i} \partial_{i} \Theta_C @f$
+        integer (kind=kint) :: i_pc_advect =       izero
 !
 !>        start address for SGS heat flux
 !!         @f$ \overline{u_{i}T} - \bar{u}_{i}\bar{T} @f$

@@ -503,6 +503,10 @@
 !!         @f$ u_{i} \partial_{i} C @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_composit_advect =    'composition_advect'
+!>        Field label for advection for perturbation of composition
+!!         @f$ u_{i} \partial_{i} \Theta_C @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_part_c_advect =     'part_c_advect'
 !
 !   Energy fluxes
 !
@@ -620,6 +624,9 @@
 !>        Field label for perturbation temperature flux
       character(len=kchara), parameter                                  &
      &             :: fhd_part_temp_gen =     'part_temp_gen'
+!>        Field label for perturbation composition flux
+      character(len=kchara), parameter                                  &
+     &             :: fhd_part_comp_gen =     'part_comp_gen'
 !>        Field label for energy flux by viscous diffusion
 !!         @f$ u_{i} \left( \partial_{j}\partial_{j} u_{i} \right) @f$
       character(len=kchara), parameter                                  &

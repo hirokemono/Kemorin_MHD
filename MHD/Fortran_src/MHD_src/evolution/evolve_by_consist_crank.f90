@@ -27,7 +27,7 @@
 !!      subroutine cal_temp_pre_consist_crank                           &
 !!     &         (iflag_commute_field, ifilter_final, i_field,          &
 !!     &          i_pre_advect, iak_diff, ak_diffuese, eps_4_crank,     &
-!!     &          node, ele, fluid, evo, property, nod_bcs,             &
+!!     &          node, ele, fluid, evo, property, Snod_bcs,            &
 !!     &          jac_3d, rhs_tbl,FEM_elens, diff_coefs, matrix,        &
 !!     &          MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(node_data), intent(in) :: node
@@ -327,7 +327,7 @@
       subroutine cal_temp_pre_consist_crank                             &
      &         (iflag_commute_field, ifilter_final, i_field,            &
      &          i_pre_advect, iak_diff, ak_diffuese, eps_4_crank,       &
-     &          node, ele, fluid, evo, property, nod_bcs,               &
+     &          node, ele, fluid, evo, property, Snod_bcs,              &
      &          jac_3d, rhs_tbl,FEM_elens, diff_coefs, matrix,          &
      &          MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
@@ -353,7 +353,7 @@
       type(field_geometry_data), intent(in) :: fluid
       type(time_evolution_params), intent(in) :: evo
       type(scalar_property), intent(in) :: property
-      type(nodal_bcs_4_scalar_type), intent(in) :: nod_bcs
+      type(nodal_bcs_4_scalar_type), intent(in) :: Snod_bcs
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -375,7 +375,7 @@
         call int_sk_fixed_temp(iflag_commute_field,                     &
      &      ifilter_final, intg_point_t_evo, i_field, iak_diff,         &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
-     &      nod_bcs%nod_bc_s, ak_diffuese, evo%coef_imp, fem_wk, f_l)
+     &      Snod_bcs%nod_bc_s, ak_diffuese, evo%coef_imp, fem_wk, f_l)
 !        if (iflag_initial_step.eq.1) then
 !          evo%coef_imp = 1.0d0 / evo%coef_imp
 !        end if
@@ -388,7 +388,7 @@
      &    node, ele, nod_fld, jac_3d, rhs_tbl, fem_wk, mhd_fem_wk)
       call set_ff_nl_smp_2_ff(n_scalar, node, rhs_tbl, f_l, f_nl)
 !
-      call set_boundary_rhs_scalar(node, nod_bcs%nod_bc_s, f_l, f_nl)
+      call set_boundary_rhs_scalar(node, Snod_bcs%nod_bc_s, f_l, f_nl)
 !
       call cal_vector_pre_consist(node, property%coef_advect,           &
      &    n_scalar, i_pre_advect, nod_fld, rhs_tbl,                     &

@@ -130,6 +130,7 @@
           call check_missing_field(fld, i_start, iphys%i_grad_vz)
 !
         else if(i_start .eq. iphys%i_c_advect                           &
+     &     .or. i_start .eq. iphys%i_pc_advect                          &
      &     .or. i_start .eq. iphys%i_c_flux                             &
      &     .or. i_start .eq. iphys%i_c_buo_gen                          &
      &     .or. i_start .eq. iphys%i_SGS_c_flux) then 
@@ -144,6 +145,9 @@
         else if(i_start .eq. iphys%i_par_t_gen) then 
           call check_missing_field(fld, i_start, iphys%i_ph_advect)
           call check_missing_field(fld, i_start, iphys%i_temp)
+        else if(i_start .eq. iphys%i_par_c_gen) then 
+          call check_missing_field(fld, i_start, iphys%i_pc_advect)
+          call check_missing_field(fld, i_start, iphys%i_light)
         else if(i_start .eq. iphys%i_par_entropy) then 
           call check_missing_field(fld, i_start, iphys%i_entropy)
           call check_missing_field(fld, i_start, iphys%i_ref_entropy)

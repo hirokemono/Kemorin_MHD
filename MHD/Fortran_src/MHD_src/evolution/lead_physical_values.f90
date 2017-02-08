@@ -255,10 +255,10 @@
       call cal_forces_4_monitor                                         &
      &   (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,            &
      &    MHD_mesh%fluid, MHD_mesh%conduct, group%surf_grp,             &
-     &    fl_prop1, cd_prop1, ht_prop1, nod_bcs, surf_bcs, iphys,       &
-     &    iphys_ele, ak_MHD, jac_3d_q, jac_sf_grp, rhs_tbl, FEM_elens,  &
-     &    ifld_diff, diff_coefs, m_lump, mhd_fem_wk, fem_wk, surf_wk,   &
-     &    f_l, f_nl, nod_fld, ele_fld)
+     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1, nod_bcs, surf_bcs,    &
+     &    iphys, iphys_ele, ak_MHD, jac_3d_q, jac_sf_grp, rhs_tbl,      &
+     &    FEM_elens, ifld_diff, diff_coefs, m_lump,                     &
+     &    mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld, ele_fld)
       call cal_diff_of_sgs_terms                                        &
      &   (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,            &
      &    group%surf_grp, MHD_mesh%fluid, MHD_mesh%conduct,             &

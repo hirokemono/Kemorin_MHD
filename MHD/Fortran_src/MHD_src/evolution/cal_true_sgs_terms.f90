@@ -133,11 +133,9 @@
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_h_flux_true_pre                             &
-     &        (nod_comm, node, ele, surf, sf_grp, fluid, ht_prop,       &
-     &         nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,               &
-     &         iphys_ele, ele_fld, ak_MHD, jac_3d, jac_sf_grp, rhs_tbl, &
-     &         FEM_elens, ifld_diff, diff_coefs, mhd_fem_wk, fem_wk,    &
-     &         surf_wk, f_l, f_nl, nod_fld)
+     &        (nod_comm, node, ele, fluid, ht_prop,                     &
+     &         nod_bcs%Tnod_bcs, iphys, iphys_ele, ele_fld, jac_3d,     &
+     &         rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
          else if ( nod_fld%phys_name(i).eq.fhd_SGS_div_m_flux_true)     &
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &
@@ -227,11 +225,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_div_sgs_h_flux_true_pre                            &
-     &         (nod_comm, node, ele, surf, sf_grp, fluid, property,     &
-     &          Tnod_bcs, Tsf_bcs, iphys, iphys_ele, ele_fld, ak_MHD,   &
-     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, ifld_diff,      &
-     &          diff_coefs, mhd_fem_wk, fem_wk, surf_wk,                &
-     &          f_l, f_nl, nod_fld)
+     &         (nod_comm, node, ele, fluid, property,                   &
+     &          Tnod_bcs, iphys, iphys_ele, ele_fld, jac_3d,            &
+     &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use t_bc_data_temp
       use t_surface_bc_data
@@ -241,26 +237,17 @@
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
-      type(surface_data), intent(in) :: surf
-      type(surface_group_data), intent(in) :: sf_grp
       type(field_geometry_data), intent(in) :: fluid
       type(scalar_property), intent(in) :: property
       type(nodal_bcs_4_scalar_type), intent(in) :: Tnod_bcs
-      type(scaler_surf_bc_type), intent(in) :: Tsf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
-      type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(jacobians_3d), intent(in) :: jac_3d
-      type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(gradient_model_data_type), intent(in) :: FEM_elens
-      type(SGS_terms_address), intent(in) :: ifld_diff
-      type(SGS_coefficients_type), intent(in) :: diff_coefs
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
-      type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -270,11 +257,11 @@
      &   (iphys%i_filter_velo, iphys%i_filter_temp, iphys%i_h_flux,     &
      &    nod_fld)
 !$omp end parallel
-      call cal_terms_4_heat(iphys%i_h_flux_div, ak_MHD%ak_d_temp,       &
-     &    nod_comm, node, ele, surf, fluid, sf_grp, property,           &
-     &    Tnod_bcs, Tsf_bcs, iphys, iphys_ele, ele_fld,                 &
-     &    jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, ifld_diff,            &
-     &    diff_coefs, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+      call cal_div_of_scalar_flux                                       &
+     &   (iphys%i_h_flux_div, iphys%i_h_flux, iflag_temp_supg,          &
+     &    nod_comm, node, ele, fluid, property, Tnod_bcs,               &
+     &    iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,      &
+     &    f_l, f_nl, nod_fld)
       call copy_scalar_component(nod_fld,                               &
      &    iphys%i_h_flux_div, iphys%i_SGS_div_hf_true)
 !

@@ -229,6 +229,7 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_div_h_flux          )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_div_ph_flux         )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_composit_advect     )         &
+     &   .or. (phys_nod_name_ctl .eq. fhd_part_c_advect       )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_mag_ene_gen         )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_work_agst_Lorentz   )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_Lorentz_work        )         &
@@ -247,6 +248,7 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_temp_generation     )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_part_temp_gen       )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_part_temp           )         &
+     &   .or. (phys_nod_name_ctl .eq. fhd_part_comp_gen       )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_vis_ene_diffuse     )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_mag_ene_diffuse     )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_SGS_div_h_flux_true )         &

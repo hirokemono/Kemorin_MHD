@@ -190,6 +190,10 @@
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid%istack_ele_fld_smp, intg_point_t_evo,                   &
+     &    i_rms%i_pc_advect, j_ave%i_pc_advect, iphys%i_pc_advect,      &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
+      call int_all_4_scalar                                             &
+     &   (fluid%istack_ele_fld_smp, intg_point_t_evo,                   &
      &    i_rms%i_t_diffuse, j_ave%i_t_diffuse, iphys%i_t_diffuse,      &
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
@@ -212,6 +216,10 @@
       call int_all_4_scalar                                             &
      &   (fluid%istack_ele_fld_smp, intg_point_t_evo,                   &
      &    i_rms%i_par_t_gen, j_ave%i_par_t_gen, iphys%i_par_t_gen,      &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
+      call int_all_4_scalar                                             &
+     &   (fluid%istack_ele_fld_smp, intg_point_t_evo,                   &
+     &    i_rms%i_par_c_gen, j_ave%i_par_c_gen, iphys%i_par_c_gen,      &
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid%istack_ele_fld_smp, intg_point_t_evo,                   &

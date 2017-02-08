@@ -341,6 +341,12 @@
           call scalar_label_4_step                                      &
      &       (nod_fld%phys_name(i), fhd_part_temp_gen)
 !
+          call scalar_label_4_step                                      &
+     &       (nod_fld%phys_name(i), fhd_composit_advect)
+          call scalar_label_4_step                                      &
+     &       (nod_fld%phys_name(i), fhd_part_c_advect)
+          call scalar_label_4_step                                      &
+     &       (nod_fld%phys_name(i), fhd_part_comp_gen)
 !
           call scalar_label_4_step                                      &
      &       (nod_fld%phys_name(i), fhd_filter_temp)

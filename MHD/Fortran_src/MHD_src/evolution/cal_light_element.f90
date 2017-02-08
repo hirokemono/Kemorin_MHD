@@ -7,7 +7,7 @@
 !
 !!      subroutine s_cal_light_element(i_field,                         &
 !!     &          SGS_param, cmt_param, nod_comm, node, ele, surf,      &
-!!     &          fluid, sf_grp, property, nod_bcs, sf_bcs, iphys,      &
+!!     &          fluid, sf_grp, property, Snod_bcs, sf_bcs, iphys,     &
 !!     &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,      &
 !!     &          FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,       &
 !!     &          sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,      &
@@ -88,7 +88,7 @@
 !
       subroutine s_cal_light_element(i_field,                           &
      &          SGS_param, cmt_param, nod_comm, node, ele, surf,        &
-     &          fluid, sf_grp, property, nod_bcs, sf_bcs, iphys,        &
+     &          fluid, sf_grp, property, Snod_bcs, sf_bcs, iphys,       &
      &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,        &
      &          FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,         &
      &          sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,        &
@@ -122,7 +122,7 @@
       type(surface_group_data), intent(in) :: sf_grp
       type(field_geometry_data), intent(in) :: fluid
       type(scalar_property), intent(in) :: property
-      type(nodal_bcs_4_scalar_type), intent(in) :: nod_bcs
+      type(nodal_bcs_4_scalar_type), intent(in) :: Snod_bcs
       type(scaler_surf_bc_type), intent(in) :: sf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
@@ -235,7 +235,7 @@
      &      cmt_param%iflag_c_light, SGS_param%ifilter_final,           &
      &      i_field, iphys%i_pre_composit, ifld_diff%i_light,           &
      &      ak_d_composit, eps_4_comp_crank,                            &
-     &      nod_comm, node, ele, fluid, evo_comp, nod_bcs,              &
+     &      nod_comm, node, ele, fluid, evo_comp, Snod_bcs,             &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
      &      Cmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
@@ -244,13 +244,13 @@
      &     (cmt_param%iflag_c_light, SGS_param%ifilter_final,           &
      &      i_field, iphys%i_pre_composit, ifld_diff%i_light,           &
      &      ak_d_composit, eps_4_comp_crank,                            &
-     &      node, ele, fluid, evo_comp, property, nod_bcs,              &
+     &      node, ele, fluid, evo_comp, property, Snod_bcs,             &
      &      jac_3d, rhs_tbl, FEM_elens, diff_coefs, Cmatrix, MG_vector, &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       call set_boundary_scalar                                          &
-     &   (nod_bcs%nod_bc_s, i_field, nod_fld)
+     &   (Snod_bcs%nod_bc_s, i_field, nod_fld)
 !
       call scalar_send_recv(i_field, nod_comm, nod_fld)
 !

@@ -153,6 +153,8 @@
           iphys%i_temp_gen = i0
         else if (field_name(i) .eq. fhd_part_temp_gen) then
           iphys%i_par_t_gen = i0
+        else if (field_name(i) .eq. fhd_part_comp_gen) then
+          iphys%i_par_c_gen = i0
 !
         else if (field_name(i) .eq. fhd_thermal_diffusion) then
           iphys%i_t_diffuse =  i0
@@ -218,6 +220,8 @@
           iphys%i_filter_buo =  i0
         else if (field_name(i) .eq. fhd_composit_advect ) then
           iphys%i_c_advect =    i0
+        else if (field_name(i) .eq. fhd_part_c_advect ) then
+          iphys%i_pc_advect =   i0
         end if
 !
         if ( field_name(i) .eq. fhd_SGS_h_flux ) then

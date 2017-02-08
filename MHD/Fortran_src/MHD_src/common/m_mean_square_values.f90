@@ -181,10 +181,12 @@
      &       .or. field_name .eq. fhd_filter_buo_flux                   &
      &       .or. field_name .eq. fhd_heat_advect                       &
      &       .or. field_name .eq. fhd_part_h_advect                     &
+     &       .or. field_name .eq. fhd_part_c_advect                     &
      &       .or. field_name .eq. fhd_div_h_flux                        &
      &       .or. field_name .eq. fhd_div_ph_flux                       &
      &       .or. field_name .eq. fhd_temp_generation                   &
      &       .or. field_name .eq. fhd_part_temp_gen                     &
+     &       .or. field_name .eq. fhd_part_comp_gen                     &
      &       .or. field_name .eq. fhd_div_SGS_h_flux                    &
      &       .or. field_name .eq. fhd_SGS_temp_gen                      &
      &       .or. field_name .eq. fhd_SGS_m_ene_gen                     &
@@ -688,6 +690,9 @@
           else if ( field_name .eq. fhd_part_h_advect ) then
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_ph_advect, j_ave%i_ph_advect)
+          else if ( field_name .eq. fhd_part_c_advect ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_pc_advect, j_ave%i_pc_advect)
           else if ( field_name .eq. fhd_div_h_flux ) then
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_h_flux_div, j_ave%i_h_flux_div)
@@ -700,6 +705,9 @@
           else if ( field_name .eq. fhd_part_temp_gen ) then
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_par_t_gen, j_ave%i_par_t_gen)
+          else if ( field_name .eq. fhd_part_comp_gen ) then
+            call set_rms_address(num_comps, i0, j0,                     &
+     &          i_rms%i_par_c_gen, j_ave%i_par_c_gen)
           else if ( field_name .eq. fhd_SGS_h_flux ) then
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_SGS_h_flux, j_ave%i_SGS_h_flux)
