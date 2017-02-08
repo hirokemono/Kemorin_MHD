@@ -104,14 +104,17 @@
 !
 !   set parameters for SGS model
 !
-      call set_control_SGS_model(model_ctl%sgs_ctl, SGS_param1)
+      call set_control_SGS_model                                        &
+     &   (model_ctl%sgs_ctl, SGS_par1%model_p, SGS_par1%commute_p,      &
+     &    filter_param1)
       call set_control_FEM_SGS(model_ctl%sgs_ctl%ffile_ctl,             &
-     &    model_ctl%sgs_ctl, model_ctl%sgs_ctl%elayer_ctl, SGS_param1)
+     &    model_ctl%sgs_ctl, model_ctl%sgs_ctl%elayer_ctl,              &
+     &    SGS_par1%model_p)
 !
 !   set parameters for filtering operation
 !
       call s_set_control_4_filtering                                    &
-     &   (SGS_param1, model_ctl%sgs_ctl%SGS_filter_name_ctl,            &
+     &   (SGS_par1%model_p, model_ctl%sgs_ctl%SGS_filter_name_ctl,      &
      &    model_ctl%sgs_ctl%ffile_ctl, model_ctl%sgs_ctl%s3df_ctl,      &
      &    filter_param1)
 !
@@ -132,7 +135,7 @@
 !   set control parameters
 !
       call s_set_control_4_time_steps                                   &
-     &   (SGS_param1, ctl_ctl%mrst_ctl, ctl_ctl%tctl)
+     &   (SGS_par1%model_p, ctl_ctl%mrst_ctl, ctl_ctl%tctl)
       call s_set_control_4_crank(ctl_ctl%mevo_ctl)
 !
       call s_set_control_4_solver(ctl_ctl%mevo_ctl, ctl_ctl%CG_ctl)

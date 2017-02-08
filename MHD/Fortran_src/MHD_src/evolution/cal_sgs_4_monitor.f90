@@ -4,11 +4,11 @@
 !     Written by H. Matsui
 !
 !!      subroutine cal_sgs_terms_4_monitor                              &
-!!     &         (nod_comm, node, ele, fluid, conduct, cd_prop, iphys,  &
-!!     &          iphys_ele, ele_fld,  jac_3d, rhs_tbl, FEM_elens,      &
-!!     &          icomp_sgs, iphys_elediff, sgs_coefs, sgs_coefs_nod,   &
-!!     &          filtering, wk_filter, mhd_fem_wk, fem_wk,             &
-!!     &          f_l, f_nl, nod_fld)
+!!     &         (SGS_param, nod_comm, node, ele, fluid, conduct,       &
+!!     &          cd_prop, iphys, iphys_ele, ele_fld,  jac_3d, rhs_tbl, &
+!!     &          FEM_elens, icomp_sgs, iphys_elediff,                  &
+!!     &          sgs_coefs, sgs_coefs_nod, filtering, wk_filter,       &
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_diff_of_sgs_terms(SGS_param, cmt_param,          &
 !!     &          nod_comm, node, ele, surf, sf_grp, fluid, conduct,    &
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop,                   &
@@ -88,15 +88,16 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_sgs_terms_4_monitor                                &
-     &         (nod_comm, node, ele, fluid, conduct, cd_prop, iphys,    &
-     &          iphys_ele, ele_fld,  jac_3d, rhs_tbl, FEM_elens,        &
-     &          icomp_sgs, iphys_elediff, sgs_coefs, sgs_coefs_nod,     &
-     &          filtering, wk_filter, mhd_fem_wk, fem_wk,               &
-     &          f_l, f_nl, nod_fld)
+     &         (SGS_param, nod_comm, node, ele, fluid, conduct,         &
+     &          cd_prop, iphys, iphys_ele, ele_fld,  jac_3d, rhs_tbl,   &
+     &          FEM_elens, icomp_sgs, iphys_elediff,                    &
+     &          sgs_coefs, sgs_coefs_nod, filtering, wk_filter,         &
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use cal_sgs_fluxes
       use int_sgs_induction
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -124,10 +125,10 @@
       if (iphys%i_SGS_h_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*) 'lead ', trim(fhd_SGS_h_flux)
         call cal_sgs_heat_flux(iflag_temp_supg,                         &
-     &      SGS_param1%iflag_SGS_h_flux, SGS_param1%itype_Csym_h_flux,  &
+     &      SGS_param%iflag_SGS_h_flux, SGS_param%itype_Csym_h_flux,    &
      &      iphys%i_sgs_temp, iphys%i_filter_temp,                      &
      &      iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_h_flux,      &
-     &      icomp_sgs%i_heat_flux, iphys_elediff%i_velo, SGS_param1,    &
+     &      icomp_sgs%i_heat_flux, iphys_elediff%i_velo, SGS_param,     &
      &      nod_comm, node, ele, fluid, iphys_ele, ele_fld,             &
      &      jac_3d, rhs_tbl, FEM_elens, filtering,                      &
      &      sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,    &
@@ -137,10 +138,10 @@
       if (iphys%i_SGS_c_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*) 'lead ', trim(fhd_SGS_c_flux)
         call cal_sgs_heat_flux(iflag_comp_supg,                         &
-     &      SGS_param1%iflag_SGS_c_flux, SGS_param1%itype_Csym_c_flux,  &
+     &      SGS_param%iflag_SGS_c_flux, SGS_param%itype_Csym_c_flux,    &
      &      iphys%i_sgs_composit, iphys%i_filter_comp,                  &
      &      iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_c_flux,      &
-     &      icomp_sgs%i_comp_flux, iphys_elediff%i_velo, SGS_param1,    &
+     &      icomp_sgs%i_comp_flux, iphys_elediff%i_velo, SGS_param,     &
      &      nod_comm, node, ele, fluid, iphys_ele, ele_fld,             &
      &      jac_3d, rhs_tbl, FEM_elens, filtering,                      &
      &      sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,    &
@@ -150,7 +151,7 @@
       if (iphys%i_SGS_m_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*) 'lead ', trim(fhd_SGS_m_flux)
         call cal_sgs_momentum_flux                                      &
-     &     (icomp_sgs%i_mom_flux, iphys_elediff%i_velo, SGS_param1,     &
+     &     (icomp_sgs%i_mom_flux, iphys_elediff%i_velo, SGS_param,      &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
      &      jac_3d, rhs_tbl, FEM_elens, filtering,                      &
      &      sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,    &
@@ -161,7 +162,7 @@
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_maxwell_t)
         call cal_sgs_maxwell                                            &
-     &     (icomp_sgs%i_lorentz, iphys_elediff%i_magne, SGS_param1,     &
+     &     (icomp_sgs%i_lorentz, iphys_elediff%i_magne, SGS_param,      &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
      &      jac_3d, rhs_tbl, FEM_elens, filtering,                      &
      &      sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,    &
@@ -172,7 +173,7 @@
         if(iflag_debug.gt.0) write(*,*) 'lead ', trim(fhd_induct_t)
         call cal_sgs_magne_induction(icomp_sgs%i_induction,             &
      &      iphys_elediff%i_velo, iphys_elediff%i_magne,                &
-     &      SGS_param1, nod_comm, node, ele, conduct, cd_prop, iphys,   &
+     &      SGS_param, nod_comm, node, ele, conduct, cd_prop, iphys,    &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens, filtering,  &
      &      sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,    &
      &      f_l, nod_fld)
@@ -182,7 +183,7 @@
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_vp_induct)
         call cal_sgs_uxb_2_monitor                                      &
-     &     (icomp_sgs%i_induction, iphys_elediff%i_velo, SGS_param1,    &
+     &     (icomp_sgs%i_induction, iphys_elediff%i_velo, SGS_param,     &
      &      nod_comm, node, ele, conduct, cd_prop, iphys, iphys_ele,    &
      &      ele_fld, jac_3d, rhs_tbl, FEM_elens, filtering, sgs_coefs,  &
      &      wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -289,7 +290,7 @@
      &        'lead ', trim(fhd_SGS_induction)
         call cal_terms_4_magnetic(iphys%i_SGS_induction,                &
      &      ifld_diff%i_induction, ak_MHD%ak_d_magne,                   &
-     &      SGS_param1, cmt_param1,                                     &
+     &      SGS_par1%model_p, SGS_par1%commute_p,                       &
      &      nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,        &
      &      nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,       &
      &      iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,     &

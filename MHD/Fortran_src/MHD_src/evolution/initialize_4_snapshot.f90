@@ -109,7 +109,7 @@ integer(kind = kint) :: iflag
       if (iflag_debug.eq.1) write(*,*)' set_layers'
       call set_layers(mesh%node, mesh%ele, group%ele_grp, MHD_mesh)
 !
-      if (SGS_param1%iflag_dynamic  .ne. id_SGS_DYNAMIC_OFF) then
+      if (SGS_par1%model_p%iflag_dynamic  .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*)' const_layers_4_dynamic'
         call const_layers_4_dynamic(group%ele_grp, layer_tbl)
         call alloc_work_4_dynamic(layer_tbl%e_grp%num_grp, wk_lsq1)
@@ -138,8 +138,8 @@ integer(kind = kint) :: iflag
 !     ---------------------
 !
       iflag = filter_param1%iflag_SGS_filter
-      if(     (SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF         &
-     &    .or. SGS_param1%iflag_SGS.eq.id_SGS_similarity)) then
+      if(     (SGS_par1%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF   &
+     &    .or. SGS_par1%model_p%iflag_SGS.eq.id_SGS_similarity)) then
 !
         if   (iflag .eq. id_SGS_3D_FILTERING                            &
      &   .or. iflag .eq. id_SGS_3D_EZ_FILTERING) then
@@ -160,8 +160,8 @@ integer(kind = kint) :: iflag
         end if
       end if
 !
-      if(      (SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF        &
-     &    .and. SGS_param1%iflag_SGS.eq.id_SGS_similarity) ) then
+      if(      (SGS_par1%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF  &
+     &    .and. SGS_par1%model_p%iflag_SGS.eq.id_SGS_similarity) ) then
         if    (iflag .eq. id_SGS_3D_FILTERING                           &
      &    .or. iflag .eq. id_SGS_3D_EZ_FILTERING) then
           if (iflag_debug .gt. 0) write(*,*)' s_set_istart_w_filtering'
@@ -197,11 +197,12 @@ integer(kind = kint) :: iflag
       call init_ele_material_property(mesh%ele%numele,                  &
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1)
       call define_sgs_components                                        &
-     &   (mesh%node%numnod, mesh%ele%numele, SGS_param1, layer_tbl,     &
-     &    ifld_sgs, icomp_sgs, wk_sgs1, sgs_coefs, sgs_coefs_nod)
+     &   (mesh%node%numnod, mesh%ele%numele, SGS_par1%model_p,          &
+     &    layer_tbl, ifld_sgs, icomp_sgs, wk_sgs1,                      &
+     &    sgs_coefs, sgs_coefs_nod)
       call define_sgs_diff_coefs                                        &
-     &   (mesh%ele%numele, SGS_param1, cmt_param1, layer_tbl,           &
-     &    ifld_diff, icomp_diff, wk_diff1, diff_coefs)
+     &   (mesh%ele%numele, SGS_par1%model_p, SGS_par1%commute_p,        &
+     &    layer_tbl, ifld_diff, icomp_diff, wk_diff1, diff_coefs)
 !
       call deallocate_surface_geom_type(ele_mesh%surf)
       call deallocate_edge_geom_type(ele_mesh%edge)
@@ -221,8 +222,8 @@ integer(kind = kint) :: iflag
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*)' const_MHD_jacobian_and_volumes'
-      call const_MHD_jacobian_and_volumes                               &
-     &   (SGS_param1, mesh%node, mesh%ele, group%surf_grp, layer_tbl,   &
+      call const_MHD_jacobian_and_volumes(SGS_par1%model_p,             &
+     &    mesh%node, mesh%ele, group%surf_grp, layer_tbl,               &
      &    group%infty_grp, jac1_3d_l, jac1_3d_q, MHD_mesh)
 !
       call const_jacobian_sf_grp                                        &

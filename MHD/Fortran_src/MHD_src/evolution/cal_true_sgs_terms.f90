@@ -339,7 +339,8 @@
      &    nod_fld)
       call cal_terms_4_momentum                                         &
      &   (iphys%i_m_flux_div, iak_diff_mf, iak_diff_lor,                &
-     &    SGS_param1, cmt_param1, nod_comm, node, ele, surf, sf_grp,    &
+     &    SGS_par1%model_p, SGS_par1%commute_p,                         &
+     &    nod_comm, node, ele, surf, sf_grp,                            &
      &    fluid, fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,  &
      &    ak_MHD, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,   &
      &    mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld, ele_fld)
@@ -393,7 +394,8 @@
      &    iphys%i_filter_magne, iphys%i_maxwell, nod_fld)
       call cal_terms_4_momentum                                         &
      &   (iphys%i_maxwell_div, iak_diff_mf, iak_diff_lor,               &
-     &    SGS_param1, cmt_param1, nod_comm, node, ele, surf, sf_grp,    &
+     &    SGS_par1%model_p, SGS_par1%commute_p,                         &
+     &    nod_comm, node, ele, surf, sf_grp,                            &
      &    fluid, fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,  &
      &    ak_MHD, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,   &
      &    mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld, ele_fld)
@@ -449,7 +451,7 @@
      &    nod_fld)
       call cal_terms_4_magnetic                                         &
      &   (iphys%i_induct_div, iak_diff_uxb, ak_MHD%ak_d_magne,          &
-     &    SGS_param1, cmt_param1,                                       &
+     &    SGS_par1%model_p, SGS_par1%commute_p,                         &
      &    nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,          &
      &    Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,        &
      &    jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,           &

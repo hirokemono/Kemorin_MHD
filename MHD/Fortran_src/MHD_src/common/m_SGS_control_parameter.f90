@@ -18,9 +18,8 @@
       implicit  none
 !
 !
-      type(SGS_model_control_params), save :: SGS_param1
-!
-      type(commutation_control_params), save :: cmt_param1
+      type(SGS_paremeters), save :: SGS_par1
+!SGS_par1%filter_p
 !
       type(SGS_filtering_params), save :: filter_param1
 !

@@ -83,9 +83,9 @@
      &    wk_cor1, wk_lsq1, wk_diff1, wk_filter1, mhd_fem1_wk, fem1_wk, &
      &    surf1_wk, f1_l, f1_nl, nod_fld1, fld_ele1, diff_coefs)
 !
-      if (SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
+      if (SGS_par1%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 'copy_model_coef_2_previous'
-        call copy_model_coef_2_previous(cmt_param1,                     &
+        call copy_model_coef_2_previous(SGS_par1%commute_p,             &
      &      wk_sgs1%nlayer, wk_sgs1%num_kinds, wk_sgs1%fld_coef,        &
      &      wk_diff1%nlayer, wk_diff1%num_kinds,                        &
      &      wk_diff1%fld_coef, wk_diff1%fld_whole,                      &
@@ -99,7 +99,8 @@
       call set_data_4_const_matrices(mesh1, MHD_mesh1, rhs_tbl1,        &
      &    MHD1_mat_tbls, MHD1_matrices, solver_pack1)
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
-      call set_aiccg_matrices(SGS_param1, cmt_param1, mesh1, group1,    &
+      call set_aiccg_matrices                                           &
+     &   (SGS_par1%model_p, SGS_par1%commute_p, mesh1, group1,          &
      &    ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs,                      &
      &    ak_MHD, jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, FEM1_elen,    &
      &    ifld_diff, diff_coefs, rhs_tbl1, MHD1_mat_tbls,               &
@@ -107,9 +108,10 @@
 !
 !   time evolution loop start!
 !
-      if (SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
+      if (SGS_par1%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
-        call s_cal_model_coefficients(SGS_param1, cmt_param1,           &
+        call s_cal_model_coefficients                                   &
+     &     (SGS_par1%model_p, SGS_par1%commute_p,                       &
      &      mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,            &
      &      nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,              &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
@@ -223,9 +225,10 @@
 !
 !     ----- Evaluate model coefficients
 !
-      if (SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
+      if (SGS_par1%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
-        call s_cal_model_coefficients(SGS_param1, cmt_param1,           &
+        call s_cal_model_coefficients                                   &
+     &     (SGS_par1%model_p, SGS_par1%commute_p,                       &
      &      mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,            &
      &      nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,              &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
@@ -272,7 +275,7 @@
 !
         if (iflag_debug.eq.1) write(*,*) 's_output_sgs_model_coefs'
         call s_output_sgs_model_coefs                                   &
-     &     (SGS_param1, cmt_param1, wk_sgs1, wk_diff1)
+     &     (SGS_par1%model_p, SGS_par1%commute_p, wk_sgs1, wk_diff1)
 !
 !     ---- Output restart field data
 !
@@ -332,15 +335,16 @@
 !
 !     --------------------- 
 !
-      if (SGS_param1%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
+      if (SGS_par1%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_chenge_step_4_dynamic'
         call s_chenge_step_4_dynamic                                    &
-     &     (my_rank, SGS_param1, cmt_param1, wk_sgs1, wk_diff1)
+     &     (my_rank, SGS_par1%model_p, SGS_par1%commute_p,              &
+     &      wk_sgs1, wk_diff1)
       end if
 !
       if ( retval .ne. 0 ) then
         if (iflag_debug.eq.1) write(*,*) 'update_matrices'
-        call update_matrices(SGS_param1, cmt_param1,                    &
+        call update_matrices(SGS_par1%model_p, SGS_par1%commute_p,      &
      &     mesh1, group1, ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs,      &
      &     ak_MHD, jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, FEM1_elen,   &
      &     ifld_diff, diff_coefs, rhs_tbl1, MHD1_mat_tbls,              &

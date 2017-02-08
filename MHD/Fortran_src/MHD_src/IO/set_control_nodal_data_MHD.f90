@@ -68,7 +68,8 @@
 !     set work fields for SGS models
         if (iflag_debug .ge. iflag_routine_msg)                         &
      &               write(*,*) 'add_work_area_4_sgs_model'
-        call add_work_area_4_sgs_model(SGS_param1, fl_prop1, field_ctl)
+        call add_work_area_4_sgs_model                                  &
+     &     (SGS_par1%model_p, fl_prop1, field_ctl)
 !
         if (iflag_debug .ge. iflag_routine_msg) write(*,*)              &
      &    'num_nod_phys after modified ', field_ctl%num
@@ -78,7 +79,7 @@
         call s_set_control_nodal_data(field_ctl, nod_fld, ierr)
       end if
 !
-      call set_ele_field_names_MHD(SGS_param1, nod_fld)
+      call set_ele_field_names_MHD(SGS_par1%model_p, nod_fld)
 !
       end subroutine set_control_4_fields
 !

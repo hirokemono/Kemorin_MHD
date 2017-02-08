@@ -83,16 +83,16 @@
       call alloc_mass_mat_conduct(node%numnod, mhd_fem_wk)
 !
       if (iflag_debug.ge.1) write(*,*) 'allocate_int_vol_data'
-      call alloc_int_vol_data                                           &
-     &  (ele%numele, node%max_nod_smp, SGS_param1, nod_fld, mhd_fem_wk)
-      call count_int_vol_data(SGS_param1, evo_magne, mhd_fem_wk)
+      call alloc_int_vol_data(ele%numele, node%max_nod_smp,             &
+     &   SGS_par1%model_p, nod_fld, mhd_fem_wk)
+      call count_int_vol_data(SGS_par1%model_p, evo_magne, mhd_fem_wk)
       call alloc_int_vol_dvx(ele%numele, mhd_fem_wk)
-      call set_SGS_ele_fld_addresses(SGS_param1, iphys_elediff)
+      call set_SGS_ele_fld_addresses(SGS_par1%model_p, iphys_elediff)
 !
 !  allocation for field values
       if (iflag_debug.ge.1)  write(*,*) 'set_FEM_MHD_field_data'
       call set_FEM_MHD_field_data                                       &
-     &   (SGS_param1, cmt_param1, node, iphys, nod_fld)
+     &   (SGS_par1%model_p, SGS_par1%commute_p, node, iphys, nod_fld)
       if (iflag_debug.ge.1)  write(*,*) 'initialize_ele_field_data'
       call initialize_ele_field_data(ele%numele)
 !

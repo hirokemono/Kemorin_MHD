@@ -197,7 +197,8 @@
         call update_with_vector_potential                               &
      &    (ifld_diff%i_magne, icomp_diff%i_magne,                       &
      &     iphys_elediff%i_magne, iphys_elediff%i_filter_magne,         &
-     &     SGS_param1, cmt_param1, mesh%nod_comm, mesh%node, mesh%ele,  &
+     &     SGS_par1%model_p, SGS_par1%commute_p,                        &
+     &     mesh%nod_comm, mesh%node, mesh%ele,                          &
      &     ele_mesh%surf, MHD_mesh%fluid, MHD_mesh%conduct, layer_tbl,  &
      &     group%surf_grp, nod_bcs%Bnod_bcs,                            &
      &     surf_bcs%Asf_bcs, surf_bcs%Fsf_bcs, iphys, iphys_ele,        &
@@ -223,7 +224,8 @@
         call update_with_magnetic_field                                 &
      &    (ifld_diff%i_magne, icomp_diff%i_magne,                       &
      &     iphys_elediff%i_magne, iphys_elediff%i_filter_magne,         &
-     &     SGS_param1, cmt_param1, mesh%nod_comm, mesh%node, mesh%ele,  &
+     &     SGS_par1%model_p, SGS_par1%commute_p,                        &
+     &     mesh%nod_comm, mesh%node, mesh%ele,                          &
      &     ele_mesh%surf, MHD_mesh%fluid, MHD_mesh%conduct, layer_tbl,  &
      &     group%surf_grp, surf_bcs%Bsf_bcs, surf_bcs%Fsf_bcs, iphys,   &
      &     iphys_ele, jac_3d_q, jac_3d_l, jac_sf_grp_q,                 &
@@ -238,7 +240,7 @@
         if( ref_param_T1%iflag_reference .ne. id_no_ref_temp) then
           if(iflag_debug.eq.1) write(*,*) 'cal_temperature_field theta'
           call cal_temperature_field                                    &
-     &      (iphys%i_par_temp, SGS_param1, cmt_param1,                  &
+     &      (iphys%i_par_temp, SGS_par1%model_p, SGS_par1%commute_p,    &
      &       mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,         &
      &       MHD_mesh%fluid, group%surf_grp, ht_prop1,                  &
      &       nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,                 &
@@ -255,7 +257,7 @@
 !     &        my_rank, sf_grp, group%surf_nod_grp)
           if (iflag_debug.eq.1) write(*,*) 'cal_temperature_field T'
           call cal_temperature_field                                    &
-     &       (iphys%i_temp, SGS_param1, cmt_param1,                     &
+     &       (iphys%i_temp, SGS_par1%model_p, SGS_par1%commute_p,       &
      &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
      &        MHD_mesh%fluid, group%surf_grp, ht_prop1,                 &
      &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys,                &
@@ -273,7 +275,8 @@
 !
         call update_with_temperature                                    &
      &     (ifld_diff%i_temp, icomp_diff%i_temp,                        &
-     &      SGS_param1, cmt_param1, mesh%nod_comm, mesh%node, mesh%ele, &
+     &      SGS_par1%model_p, SGS_par1%commute_p,                       &
+     &      mesh%nod_comm, mesh%node, mesh%ele,                         &
      &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
      &      surf_bcs%Tsf_bcs, iphys, iphys_ele, ele_fld,                &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,                  &
@@ -288,7 +291,7 @@
         if( ref_param_C1%iflag_reference .ne. id_no_ref_temp) then
           if(iflag_debug.eq.1) write(*,*) 's_cal_light_element part'
           call s_cal_light_element                                      &
-     &       (iphys%i_par_light, SGS_param1, cmt_param1,                &
+     &       (iphys%i_par_light, SGS_par1%model_p, SGS_par1%commute_p,  &
      &        mesh%nod_comm, mesh%node, mesh%ele,                       &
      &        ele_mesh%surf, MHD_mesh%fluid, group%surf_grp, cp_prop1,  &
      &        nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys,                &
@@ -303,7 +306,7 @@
         else
           if(iflag_debug.eq.1) write(*,*) 's_cal_light_element C'
           call s_cal_light_element                                      &
-     &       (iphys%i_light, SGS_param1, cmt_param1,                    &
+     &       (iphys%i_light, SGS_par1%model_p, SGS_par1%commute_p,      &
      &        mesh%nod_comm, mesh%node, mesh%ele,                       &
      &        ele_mesh%surf, MHD_mesh%fluid, group%surf_grp, cp_prop1,  &
      &        nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys,                &
@@ -321,7 +324,8 @@
 !
         call update_with_dummy_scalar                                   &
      &     (ifld_diff%i_light, icomp_diff%i_light,                      &
-     &      SGS_param1, cmt_param1, mesh%nod_comm, mesh%node, mesh%ele, &
+     &      SGS_par1%model_p, SGS_par1%commute_p,                       &
+     &      mesh%nod_comm, mesh%node, mesh%ele,                         &
      &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
      &      surf_bcs%Csf_bcs, iphys, iphys_ele, ele_fld,                &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,                  &
@@ -348,7 +352,8 @@
         call update_with_velocity                                       &
      &     (ifld_diff%i_velo, icomp_diff%i_velo,                        &
      &      iphys_elediff%i_velo, iphys_elediff%i_filter_velo,          &
-     &      SGS_param1, cmt_param1, mesh%nod_comm, mesh%node, mesh%ele, &
+     &      SGS_par1%model_p, SGS_par1%commute_p,                       &
+     &      mesh%nod_comm, mesh%node, mesh%ele,                         &
      &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
      &      surf_bcs%Vsf_bcs, surf_bcs%Psf_bcs, iphys,                  &
      &      iphys_ele, jac_3d_q, jac_3d_l, jac_sf_grp_q,                &
@@ -412,7 +417,8 @@
         call update_with_velocity                                       &
      &     (ifld_diff%i_velo, icomp_diff%i_velo,                        &
      &      iphys_elediff%i_velo, iphys_elediff%i_filter_velo,          &
-     &      SGS_param1, cmt_param1, mesh%nod_comm, mesh%node, mesh%ele, &
+     &      SGS_par1%model_p, SGS_par1%commute_p,                       &
+     &      mesh%nod_comm, mesh%node, mesh%ele,                         &
      &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
      &      surf_bcs%Vsf_bcs, surf_bcs%Psf_bcs, iphys,                  &
      &      iphys_ele, jac_3d_q, jac_3d_l, jac_sf_grp_q,                &
@@ -424,7 +430,8 @@
       if (iphys%i_temp .ne. 0) then
         call update_with_temperature                                    &
      &     (ifld_diff%i_temp, icomp_diff%i_temp,                        &
-     &      SGS_param1, cmt_param1, mesh%nod_comm, mesh%node, mesh%ele, &
+     &      SGS_par1%model_p, SGS_par1%commute_p,                       &
+     &      mesh%nod_comm, mesh%node, mesh%ele,                         &
      &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
      &      surf_bcs%Tsf_bcs, iphys, iphys_ele, ele_fld,                &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,                  &
@@ -436,7 +443,8 @@
       if (iphys%i_light .ne. 0) then
         call update_with_dummy_scalar                                   &
      &     (ifld_diff%i_light, icomp_diff%i_light,                      &
-     &      SGS_param1, cmt_param1, mesh%nod_comm, mesh%node, mesh%ele, &
+     &      SGS_par1%model_p, SGS_par1%commute_p,                       &
+     &      mesh%nod_comm, mesh%node, mesh%ele,                         &
      &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
      &      surf_bcs%Csf_bcs, iphys, iphys_ele, ele_fld,                &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,                  &
@@ -449,7 +457,8 @@
         call update_with_vector_potential                               &
      &    (ifld_diff%i_magne, icomp_diff%i_magne,                       &
      &     iphys_elediff%i_magne, iphys_elediff%i_filter_magne,         &
-     &     SGS_param1, cmt_param1, mesh%nod_comm, mesh%node, mesh%ele,  &
+     &     SGS_par1%model_p, SGS_par1%commute_p,                        &
+     &     mesh%nod_comm, mesh%node, mesh%ele,                          &
      &     ele_mesh%surf, MHD_mesh%fluid, MHD_mesh%conduct, layer_tbl,  &
      &     group%surf_grp, nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs,          &
      &     surf_bcs%Fsf_bcs, iphys, iphys_ele,                          &
@@ -461,7 +470,8 @@
         call update_with_magnetic_field                                 &
      &    (ifld_diff%i_magne, icomp_diff%i_magne,                       &
      &     iphys_elediff%i_magne, iphys_elediff%i_filter_magne,         &
-     &     SGS_param1, cmt_param1, mesh%nod_comm, mesh%node, mesh%ele,  &
+     &     SGS_par1%model_p, SGS_par1%commute_p,                        &
+     &     mesh%nod_comm, mesh%node, mesh%ele,                          &
      &     ele_mesh%surf, MHD_mesh%fluid, MHD_mesh%conduct, layer_tbl,  &
      &     group%surf_grp, surf_bcs%Bsf_bcs, surf_bcs%Fsf_bcs, iphys,   &
      &     iphys_ele, jac_3d_q, jac_3d_l, jac_sf_grp_q,                 &
@@ -558,7 +568,7 @@
         if( ref_param_T1%iflag_reference .ne. id_no_ref_temp) then
           if (iflag_debug.eq.1) write(*,*) 'cal_temperature_field'
           call cal_temperature_field                                    &
-     &       (iphys%i_par_temp, SGS_param1, cmt_param1,                 &
+     &       (iphys%i_par_temp, SGS_par1%model_p, SGS_par1%commute_p,   &
      &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
      &        fluid, group%surf_grp, ht_prop1,                          &
      &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                       &
@@ -573,7 +583,7 @@
         else
           if (iflag_debug.eq.1) write(*,*) 'cal_temperature_field'
           call cal_temperature_field                                    &
-     &       (iphys%i_temp, SGS_param1, cmt_param1,                     &
+     &       (iphys%i_temp, SGS_par1%model_p, SGS_par1%commute_p,       &
      &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
      &        fluid, group%surf_grp, ht_prop1,                          &
      &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                       &
@@ -591,7 +601,8 @@
 !
         call update_with_temperature                                    &
      &    (ifld_diff%i_temp, icomp_diff%i_temp,                         &
-     &     SGS_param1, cmt_param1, mesh%nod_comm, mesh%node, mesh%ele,  &
+     &     SGS_par1%model_p, SGS_par1%commute_p,                        &
+     &     mesh%nod_comm, mesh%node, mesh%ele,                          &
      &     ele_mesh%surf, fluid, group%surf_grp, surf_bcs%Tsf_bcs,      &
      &     iphys, iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q, &
      &     rhs_tbl, FEM_elens, filtering, wide_filtering, layer_tbl,    &
@@ -605,7 +616,7 @@
         if( ref_param_C1%iflag_reference .ne. id_no_ref_temp) then
           if(iflag_debug.eq.1) write(*,*) 's_cal_light_element part'
           call s_cal_light_element                                      &
-     &       (iphys%i_par_light, SGS_param1, cmt_param1,                &
+     &       (iphys%i_par_light, SGS_par1%model_p, SGS_par1%commute_p,  &
      &        mesh%nod_comm, mesh%node, mesh%ele,                       &
      &        ele_mesh%surf, fluid, group%surf_grp, cp_prop1,           &
      &        nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys,                &
@@ -620,7 +631,7 @@
         else
           if (iflag_debug.eq.1) write(*,*) 's_cal_light_element'
           call s_cal_light_element                                      &
-     &       (iphys%i_light, SGS_param1, cmt_param1,                    &
+     &       (iphys%i_light, SGS_par1%model_p, SGS_par1%commute_p,      &
      &        mesh%nod_comm, mesh%node, mesh%ele,                       &
      &        ele_mesh%surf, fluid, group%surf_grp, cp_prop1,           &
      &        nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys, iphys_ele,     &
@@ -638,7 +649,8 @@
 !
         call update_with_dummy_scalar                                   &
      &    (ifld_diff%i_light, icomp_diff%i_light,                       &
-     &     SGS_param1, cmt_param1, mesh%nod_comm, mesh%node, mesh%ele,  &
+     &     SGS_par1%model_p, SGS_par1%commute_p,                        &
+     &     mesh%nod_comm, mesh%node, mesh%ele,                          &
      &     ele_mesh%surf, fluid, group%surf_grp, surf_bcs%Csf_bcs,      &
      &     iphys, iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q, &
      &     rhs_tbl, FEM_elens, filtering, wide_filtering, layer_tbl,    &
@@ -664,7 +676,8 @@
         call update_with_velocity                                       &
      &     (ifld_diff%i_velo, icomp_diff%i_velo,                        &
      &      iphys_elediff%i_velo, iphys_elediff%i_filter_velo,          &
-     &      SGS_param1, cmt_param1, mesh%nod_comm, mesh%node, mesh%ele, &
+     &      SGS_par1%model_p, SGS_par1%commute_p,                       &
+     &      mesh%nod_comm, mesh%node, mesh%ele,                         &
      &      ele_mesh%surf, fluid, group%surf_grp,                       &
      &      surf_bcs%Vsf_bcs, surf_bcs%Psf_bcs,                         &
      &      iphys, iphys_ele, jac_3d_q, jac_3d_l, jac_sf_grp_q,         &

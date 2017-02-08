@@ -7,11 +7,11 @@
 !!     &         (nod_comm, node, ele, conduct, cd_prop,                &
 !!     &          Bnod_bcs, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-!!      subroutine cal_vecp_diffusion                                   &
-!!     &         (ifilter_final, iak_diff_b, ak_d_magne,                &
+!!      subroutine cal_vecp_diffusion(iak_diff_b, ak_d_magne, SGS_param,&
 !!     &          nod_comm, node, ele, surf, sf_grp, Bnod_bcs, Asf_bcs, &
 !!     &          iphys, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,        &
 !!     &          diff_coefs, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -127,18 +127,19 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_vecp_diffusion                                     &
-     &         (ifilter_final, iak_diff_b, ak_d_magne,                  &
+      subroutine cal_vecp_diffusion(iak_diff_b, ak_d_magne, SGS_param,  &
      &          nod_comm, node, ele, surf, sf_grp, Bnod_bcs, Asf_bcs,   &
      &          iphys, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,          &
      &          diff_coefs, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
+      use t_SGS_control_parameter
       use t_surface_bc_data
 !
       use int_vol_diffusion_ele
       use int_surf_fixed_gradients
       use set_boundary_scalars
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -153,7 +154,6 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
 !
-      integer (kind=kint), intent(in) :: ifilter_final
       integer(kind=kint), intent(in) :: iak_diff_b
       real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
 !
@@ -165,7 +165,7 @@
 !
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
-      call int_vol_vector_diffuse_ele(ifilter_final,                    &
+      call int_vol_vector_diffuse_ele(SGS_param%ifilter_final,          &
      &    ele%istack_ele_smp, intg_point_t_evo,                         &
      &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,   &
      &    iak_diff_b, one, ak_d_magne, iphys%i_vecp, fem_wk, f_l)

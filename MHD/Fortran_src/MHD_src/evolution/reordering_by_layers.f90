@@ -162,7 +162,7 @@
 !
 !   ordereing of element parameters for SGS model
 !
-      call reordering_ele_size(SGS_param1, ele%numele)
+      call reordering_ele_size(SGS_par1%model_p, ele%numele)
 !
       end subroutine s_reordering_by_layers
 !

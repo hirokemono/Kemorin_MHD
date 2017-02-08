@@ -10,8 +10,12 @@
 !!        from control data
 !!
 !!@verbatim
-!!      subroutine set_control_SGS_model(sgs_ctl)
+!!      subroutine set_control_SGS_model                                &
+!!     &         (sgs_ctl, SGS_param, cmt_param, filter_param)
 !!        type(SGS_model_control), intent(inout) :: sgs_ctl
+!!        type(SGS_model_control_params), intent(inout) :: SGS_param
+!!        type(commutation_control_params), intent(inout) :: cmt_param
+!!        type(SGS_filtering_params), intent(inout) :: filter_param
 !!      subroutine set_control_SPH_SGS                                  &
 !!     &         (num_sph_filter_ctl, sph_filter_ctl, sph_filters)
 !!        type(sph_filter_ctl_type), intent(in) :: sph_filter_ctl(1)
@@ -105,16 +109,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_SGS_model(sgs_ctl, SGS_param)
+      subroutine set_control_SGS_model                                  &
+     &         (sgs_ctl, SGS_param, cmt_param, filter_param)
 !
       use m_geometry_constants
       use m_phys_labels
-      use m_control_parameter
-      use m_SGS_control_parameter
+      use t_SGS_control_parameter
       use t_ctl_data_SGS_model
 !
       type(SGS_model_control), intent(inout) :: sgs_ctl
       type(SGS_model_control_params), intent(inout) :: SGS_param
+      type(commutation_control_params), intent(inout) :: cmt_param
+      type(SGS_filtering_params), intent(inout) :: filter_param
 !
       integer(kind = kint) :: i
       character(len=kchara) :: tmpchara
@@ -124,7 +130,7 @@
 !
        SGS_param%iflag_SGS =      id_SGS_none
        SGS_param%iflag_dynamic =  id_SGS_DYNAMIC_OFF
-       filter_param1%iflag_SGS_filter = id_SGS_NO_FILTERING
+       filter_param%iflag_SGS_filter = id_SGS_NO_FILTERING
 !
       if (sgs_ctl%SGS_model_name_ctl%iflag .gt. 0) then
         tmpchara = sgs_ctl%SGS_model_name_ctl%charavalue
@@ -215,7 +221,7 @@
         end if
       end if
 !
-      call set_control_SGS_commute(SGS_param, sgs_ctl, cmt_param1)
+      call set_control_SGS_commute(SGS_param, sgs_ctl, cmt_param)
 !
       end subroutine set_control_SGS_model
 !

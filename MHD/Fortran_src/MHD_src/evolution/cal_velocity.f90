@@ -193,8 +193,8 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 's_cal_velocity_pre'
       call s_cal_velocity_pre                                           &
-     &   (SGS_param1, cmt_param1, nod_comm, node, ele, surf,            &
-     &    fluid, sf_grp, sf_grp_nod, fl_prop, cd_prop,                  &
+     &   (SGS_par1%model_p, SGS_par1%commute_p, nod_comm, node, ele,    &
+     &    surf, fluid, sf_grp, sf_grp_nod, fl_prop, cd_prop,            &
      &    Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD,         &
      &    jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,         &
      &    ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,                &
@@ -212,7 +212,8 @@
 !     &    iphys, nod_fld, jac_3d_q, fem_wk, rel_correct)
 !
       do iloop = 0, maxiter
-        call cal_mod_potential(ifld_diff%i_velo, SGS_param1, cmt_param1,&
+        call cal_mod_potential                                          &
+     &     (ifld_diff%i_velo, SGS_par1%model_p, SGS_par1%commute_p,     &
      &      node, ele, surf, fluid, sf_grp, Vnod_bcs, Vsf_bcs, Psf_bcs, &
      &      iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,           &
      &      FEM_elens, diff_coefs, Pmatrix, MG_vector, fem_wk, surf_wk, &
@@ -223,8 +224,8 @@
      &      fl_prop%acoef_press, nod_fld%ntot_phys,                     &
      &      iphys%i_p_phi, iphys%i_press,  nod_fld%d_fld)
 !
-        call cal_velocity_co                                            &
-     &     (SGS_param1, cmt_param1, nod_comm, node, ele, surf, fluid,   &
+        call cal_velocity_co(SGS_par1%model_p, SGS_par1%commute_p,      &
+     &      nod_comm, node, ele, surf, fluid,                           &
      &      sf_grp, sf_grp_nod, fl_prop, Vnod_bcs, Vsf_bcs, Psf_bcs,    &
      &      iphys, iphys_ele, ele_fld, ak_MHD,                          &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &

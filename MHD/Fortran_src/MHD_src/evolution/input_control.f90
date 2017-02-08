@@ -105,7 +105,7 @@
       call mpi_input_mesh(mesh1_file, mesh, group,                      &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
-      call input_meshes_4_MHD(SGS_param1, mesh, group, IO_bc,           &
+      call input_meshes_4_MHD(SGS_par1%model_p, mesh, group, IO_bc,     &
      &    filter_param1, filtering, wide_filtering, wk_filter)
 !
       if(cmp_no_case(method_4_solver, cflag_mgcg)) then
@@ -160,7 +160,7 @@
       call mpi_input_mesh(mesh1_file, mesh, group,                      &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
-      call input_meshes_4_MHD(SGS_param1, mesh, group, IO_bc,           &
+      call input_meshes_4_MHD(SGS_par1%model_p, mesh, group, IO_bc,     &
      &    filter_param1, filtering, wide_filtering, wk_filter)
 !
       call count_field_4_monitor                                        &

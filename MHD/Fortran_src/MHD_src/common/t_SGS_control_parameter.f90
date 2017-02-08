@@ -57,6 +57,7 @@
 !>      filter ID for @f$ 4\Delta @f$  filter
       integer (kind=kint), parameter :: ifilter_4delta = 2
 !
+!>      Parameters for SGS model
       type SGS_model_control_params
         integer (kind=kint) :: iflag_SGS =     id_SGS_none
         integer (kind=kint) :: iflag_dynamic = id_SGS_DYNAMIC_OFF
@@ -109,6 +110,7 @@
 !>      ID to apply commutation error correction
       integer (kind=kint), parameter :: id_SGS_commute_ON =  1
 !
+!>      Parameters for ommutation error correction
       type commutation_control_params
         integer (kind=kint) :: iset_DIFF_coefs =  0
 !
@@ -174,6 +176,16 @@
 !
         integer (kind=kint) :: iflag_SGS_filter = id_SGS_3D_FILTERING
       end type SGS_filtering_params
+!
+!
+      type SGS_paremeters
+!>        Parameters for SGS model
+        type(SGS_model_control_params) :: model_p
+!>        Parameters for commutation error correction
+        type(commutation_control_params) :: commute_p
+!>        Structure for contriol parameters for filtering
+        type(SGS_filtering_params) :: filter_p
+      end type SGS_paremeters
 !
 !  ---------------------------------------------------------------------
 !

@@ -88,9 +88,9 @@
         call add_field_name_4_mhd                                       &
      &     (fl_prop1, ref_param_T1, ref_param_C1, field_ctl)
         call add_field_name_4_sph_mhd(fl_prop1, field_ctl)
-        call add_field_name_4_SGS(SGS_param1, field_ctl)
+        call add_field_name_4_SGS(SGS_par1%model_p, field_ctl)
         call add_field_name_dynamic_SGS                                 &
-     &     (SGS_param1, fl_prop1, field_ctl)
+     &     (SGS_par1%model_p, fl_prop1, field_ctl)
         if (iflag_debug.eq.1) write(*,*)                                &
      &    'field_ctl%num after modified ', field_ctl%num
 !

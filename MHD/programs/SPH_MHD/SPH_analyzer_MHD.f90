@@ -63,7 +63,7 @@
 !   Allocate spectr field data
 !
       call set_sph_MHD_sprctr_data                                      &
-     &   (SGS_param1, sph1%sph_rj, ipol, idpdr, itor, rj_fld1)
+     &   (SGS_par1%model_p, sph1%sph_rj, ipol, idpdr, itor, rj_fld1)
 !
 ! ---------------------------------
 !
@@ -74,7 +74,8 @@
 ! ---------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD'
-      call init_sph_transform_MHD(SGS_param1, ipol, idpdr, itor, iphys, &
+      call init_sph_transform_MHD                                       &
+     &   (SGS_par1%model_p, ipol, idpdr, itor, iphys,                   &
      &    sph1, comms_sph1, omega_sph1, trans_p1, trns_WK1, rj_fld1)
 !
 !  -------------------------------
@@ -91,7 +92,7 @@
 !
 !  -------------------------------
 !
-      if(SGS_param1%iflag_SGS .gt. 0) then
+      if(SGS_par1%model_p%iflag_SGS .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)' init_SGS_model_sph_mhd'
         call init_SGS_model_sph_mhd                                     &
      &     (sph1, sph_grps1, fl_prop1, trns_WK1%dynamic_SPH)
@@ -112,8 +113,8 @@
 !* obtain nonlinear terms for starting
 !*
       if(iflag_debug .gt. 0) write(*,*) 'first nonlinear'
-      call nonlinear                                                    &
-     &   (SGS_param1, sph1, comms_sph1, omega_sph1, r_2nd, trans_p1,    &
+      call nonlinear(SGS_par1%model_p,                                  &
+     &    sph1, comms_sph1, omega_sph1, r_2nd, trans_p1,                &
      &    ref_temp1, ref_comp1, ipol, itor, trns_WK1, rj_fld1)
 !
 !* -----  Open Volume integration data files -----------------
@@ -179,8 +180,8 @@
 !*  ----------------lead nonlinear term ... ----------
 !*
       call start_eleps_time(8)
-      call nonlinear                                                    &
-     &   (SGS_param1, sph1, comms_sph1, omega_sph1, r_2nd, trans_p1,    &
+      call nonlinear(SGS_par1%model_p,                                  &
+     &    sph1, comms_sph1, omega_sph1, r_2nd, trans_p1,                &
      &    ref_temp1, ref_comp1, ipol, itor, trns_WK1, rj_fld1)
       call end_eleps_time(8)
       call end_eleps_time(5)
@@ -194,7 +195,7 @@
      &    sph1%sph_rj, ipol, idpdr, rj_fld1)
 !*
       if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
-      call s_lead_fields_4_sph_mhd(SGS_param1,                          &
+      call s_lead_fields_4_sph_mhd(SGS_par1%model_p,                    &
      &    sph1, comms_sph1, r_2nd, trans_p1, ipol, rj_fld1, trns_WK1)
       call end_eleps_time(9)
 !

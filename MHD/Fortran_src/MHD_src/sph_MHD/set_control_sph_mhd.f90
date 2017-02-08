@@ -10,7 +10,8 @@
 !!      subroutine set_control_SGS_SPH_MHD(plt, org_plt,                &
 !!     &         model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,  &
 !!     &         sph_gen, rj_fld, mesh_file, sph_file_param,            &
-!!     &         MHD_org_files, sph_fst_IO, pwr, SGS_param, sph_filters)
+!!     &         MHD_org_files, sph_fst_IO, pwr,                        &
+!!     &         SGS_param, cmt_param, filter_param, sph_filters)
 !!      subroutine set_control_4_SPH_MHD(SGS_param, plt, org_plt,       &
 !!     &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl, &
 !!     &          sph_gen, rj_fld, mesh_file, sph_file_param,           &
@@ -30,6 +31,8 @@
 !!        type(field_IO), intent(inout) :: sph_fst_IO
 !!        type(sph_mean_squares), intent(inout) :: pwr
 !!        type(SGS_model_control_params), intent(inout) :: SGS_param
+!!        type(commutation_control_params), intent(inout) :: cmt_param
+!!        type(SGS_filtering_params), intent(inout) :: filter_param
 !!        type(sph_filters_type), intent(inout) :: sph_filters(1)
 !!@endverbatim
 !
@@ -63,7 +66,8 @@
       subroutine set_control_SGS_SPH_MHD(plt, org_plt,                  &
      &         model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,    &
      &         sph_gen, rj_fld, mesh_file, sph_file_param,              &
-     &         MHD_org_files, sph_fst_IO, pwr, SGS_param, sph_filters)
+     &         MHD_org_files, sph_fst_IO, pwr,                          &
+     &         SGS_param, cmt_param, filter_param, sph_filters)
 !
       use m_spheric_global_ranks
       use m_ucd_data
@@ -92,13 +96,16 @@
       type(field_IO), intent(inout) :: sph_fst_IO
       type(sph_mean_squares), intent(inout) :: pwr
       type(SGS_model_control_params), intent(inout) :: SGS_param
+      type(commutation_control_params), intent(inout) :: cmt_param
+      type(SGS_filtering_params), intent(inout) :: filter_param
       type(sph_filters_type), intent(inout) :: sph_filters(1)
 !
 !
 !   set parameters for SGS model
 !
       if (iflag_debug.gt.0) write(*,*) 'set_control_SGS_model'
-      call set_control_SGS_model(model_ctl%sgs_ctl, SGS_param)
+      call set_control_SGS_model                                        &
+     &   (model_ctl%sgs_ctl, SGS_param, cmt_param, filter_param)
 !
       if(SGS_param%iflag_SGS .ne. id_SGS_none) then
         call set_control_SPH_SGS                                        &

@@ -146,7 +146,8 @@
       call output_restart_files                                         &
      &   (index_rst, node, nod_comm, iphys, nod_fld)
       call output_model_coef_file                                       &
-     &   (index_rst, SGS_param1, cmt_param1, wk_sgs, wk_diff)
+     &   (index_rst, SGS_par1%model_p, SGS_par1%commute_p,              &
+     &    wk_sgs, wk_diff)
 !
       end subroutine output_MHD_restart_file_ctl
 !
@@ -170,7 +171,8 @@
       call output_restart_files                                         &
      &   (index_rst, node, nod_comm, iphys, nod_fld)
       call output_model_coef_file                                       &
-     &   (index_rst, SGS_param1, cmt_param1, wk_sgs, wk_diff)
+     &   (index_rst, SGS_par1%model_p, SGS_par1%commute_p,              &
+     &    wk_sgs, wk_diff)
 !
       end subroutine elspased_MHD_restart_ctl
 !
@@ -198,7 +200,7 @@
 !
       call input_restart_files(node, nod_fld)
       call input_model_coef_file                                        &
-     &   (SGS_param1, cmt_param1, ele, fluid, layer_tbl,                &
+     &   (SGS_par1%model_p, SGS_par1%commute_p, ele, fluid, layer_tbl,  &
      &    wk_sgs, wk_diff, sgs_coefs, diff_coefs)
 !
       end subroutine input_MHD_restart_file_ctl
