@@ -5,9 +5,10 @@
 !      modified by H. Matsui on July, 2006
 !      modified by H. Matsui on Dec., 2007
 !
-!!      subroutine initial_data_control                                 &
-!!     &         (ref_param_T, node, ele, fluid, iphys, layer_tbl,      &
+!!      subroutine initial_data_control(SGS_par, ref_param_T,           &
+!!     &          node, ele, fluid, iphys, layer_tbl,                   &
 !!     &          wk_sgs, wk_diff, sgs_coefs, diff_coefs, nod_fld)
+!!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(reference_scalar_param), intent(in) :: ref_param_T
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -46,19 +47,21 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine initial_data_control                                   &
-     &         (ref_param_T, node, ele, fluid, iphys, layer_tbl,        &
+      subroutine initial_data_control(SGS_par, ref_param_T,             &
+     &          node, ele, fluid, iphys, layer_tbl,                     &
      &          wk_sgs, wk_diff, sgs_coefs, diff_coefs, nod_fld)
 !
       use m_initial_field_control
       use m_t_int_parameter
       use m_t_step_parameter
 !
+      use t_SGS_control_parameter
       use t_layering_ele_list
 !
       use fem_mhd_rst_IO_control
       use set_restart_data
 !
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(reference_scalar_param), intent(in) :: ref_param_T
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -73,7 +76,7 @@
 !
 !
       if(iflag_restart .eq. i_rst_by_file) then
-        call input_MHD_restart_file_ctl(layer_tbl, node, ele,           &
+        call input_MHD_restart_file_ctl(SGS_par, layer_tbl, node, ele,  &
      &      fluid, wk_sgs, wk_diff, sgs_coefs, diff_coefs, nod_fld)
       else
         call set_initial_data(ref_param_T, node, fluid, iphys, nod_fld)

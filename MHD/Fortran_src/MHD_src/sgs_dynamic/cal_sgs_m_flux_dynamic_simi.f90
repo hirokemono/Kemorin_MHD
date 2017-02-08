@@ -127,7 +127,7 @@
      &     write(*,*) 'cal_sgs_mf_simi_wide i_wide_fil_velo'
       call cal_sgs_mf_simi(iphys%i_sgs_grad_f,                          &
      &    iphys%i_filter_velo, iphys%i_wide_fil_velo, icomp_sgs_mf,     &
-     &    SGS_par1%filter_p, nod_comm, node, wide_filtering,            &
+     &    SGS_par%filter_p, nod_comm, node, wide_filtering,             &
      &    sgs_coefs_nod, wk_filter, nod_fld)
 !
 !    SGS term by similarity model
@@ -136,7 +136,7 @@
      &     write(*,*) 'cal_sgs_mf_simi iphys%i_SGS_m_flux'
       call cal_sgs_mf_simi(iphys%i_SGS_m_flux, iphys%i_velo,            &
      &    iphys%i_filter_velo, icomp_sgs_mf,                            &
-     &    SGS_par1%filter_p, nod_comm, node, filtering,                 &
+     &    SGS_par%filter_p, nod_comm, node, filtering,                  &
      &    sgs_coefs_nod, wk_filter, nod_fld)
 !
 !    copy to work array
@@ -149,7 +149,7 @@
 !      filtering
 !
       call cal_filtered_sym_tensor_whole                                &
-     &   (SGS_par1%filter_p, nod_comm, node, filtering,                 &
+     &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
      &    iphys%i_sgs_grad, iphys%i_SGS_m_flux, wk_filter, nod_fld)
 !
 !      call check_nodal_data                                            &
@@ -158,15 +158,15 @@
 !   Change coordinate
 !
       call cvt_tensor_dynamic_scheme_coord                              &
-     &   (SGS_par1%model_p, node, iphys, nod_fld)
+     &   (SGS_par%model_p, node, iphys, nod_fld)
 !
 !     obtain model coefficient
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &    'cal_model_coefs', n_sym_tensor, iak_sgs_mf, icomp_sgs_mf
-      call cal_model_coefs(SGS_par1%model_p, layer_tbl,                 &
+      call cal_model_coefs(SGS_par%model_p, layer_tbl,                  &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
-     &    SGS_par1%model_p%itype_Csym_m_flux, n_sym_tensor,             &
+     &    SGS_par%model_p%itype_Csym_m_flux, n_sym_tensor,              &
      &    iak_sgs_mf, icomp_sgs_mf, intg_point_t_evo,                   &
      &    wk_cor, wk_lsq, wk_sgs, sgs_coefs)
 !
@@ -238,7 +238,7 @@
      &     write(*,*) 'cal_sgs_mf_simi_wide i_wide_fil_magne'
       call cal_sgs_mf_simi(iphys%i_sgs_grad_f,                          &
      &    iphys%i_filter_magne, iphys%i_wide_fil_magne, icomp_sgs_lor,  &
-     &    SGS_par1%filter_p, nod_comm, node, wide_filtering,            &
+     &    SGS_par%filter_p, nod_comm, node, wide_filtering,             &
      &    sgs_coefs_nod, wk_filter, nod_fld)
 !
 !      call check_nodal_data                                            &
@@ -250,7 +250,7 @@
      &     write(*,*) 'cal_sgs_mf_simi iphys%i_SGS_maxwell'
       call cal_sgs_mf_simi(iphys%i_SGS_maxwell, iphys%i_magne,          &
      &    iphys%i_filter_magne, icomp_sgs_lor,                          &
-     &    SGS_par1%filter_p, nod_comm, node, filtering, sgs_coefs_nod,  &
+     &    SGS_par%filter_p, nod_comm, node, filtering, sgs_coefs_nod,   &
      &    wk_filter, nod_fld)
 !
 !    copy to work array
@@ -261,21 +261,21 @@
 !    filtering
 !
       call cal_filtered_sym_tensor_whole                                &
-     &   (SGS_par1%filter_p, nod_comm, node, filtering,                 &
+     &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
      &    iphys%i_sgs_grad, iphys%i_SGS_maxwell, wk_filter, nod_fld)
 !
 !   Change coordinate
 !
       call cvt_tensor_dynamic_scheme_coord                              &
-     &   (SGS_par1%model_p, node, iphys, nod_fld)
+     &   (SGS_par%model_p, node, iphys, nod_fld)
 !
 !     obtain model coefficient
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_model_coefs', n_sym_tensor, iak_sgs_lor, icomp_sgs_lor
-      call cal_model_coefs(SGS_par1%model_p, layer_tbl,                 &
+      call cal_model_coefs(SGS_par%model_p, layer_tbl,                  &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
-     &    SGS_par1%model_p%itype_Csym_maxwell, n_sym_tensor,            &
+     &    SGS_par%model_p%itype_Csym_maxwell, n_sym_tensor,             &
      &    iak_sgs_lor, icomp_sgs_lor, intg_point_t_evo,                 &
      &    wk_cor, wk_lsq, wk_sgs, sgs_coefs)
 !

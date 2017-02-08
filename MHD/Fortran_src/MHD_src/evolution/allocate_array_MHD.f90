@@ -6,9 +6,10 @@
 !        Modified by H. Matsui on July, 2006
 !        Modified by H. Matsui on May, 2007
 !
-!!      subroutine allocate_array(node, ele, iphys, nod_fld,            &
+!!      subroutine allocate_array(SGS_par, node, ele, iphys, nod_fld,   &
 !!     &          iphys_elediff, m_lump, mhd_fem_wk, fem_wk,            &
 !!     &          f_l, f_nl, label_sim)
+!!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_address), intent(inout) :: iphys
@@ -42,15 +43,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_array(node, ele, iphys, nod_fld,              &
+      subroutine allocate_array(SGS_par, node, ele, iphys, nod_fld,     &
      &          iphys_elediff, m_lump, mhd_fem_wk, fem_wk,              &
      &          f_l, f_nl, label_sim)
 !
-      use m_control_parameter
       use m_element_phys_data
       use m_phys_constants
       use m_mean_square_values
 !
+      use t_SGS_control_parameter
       use t_geometry_data
       use t_finite_element_mat
       use t_FEM_phys_data
@@ -61,6 +62,7 @@
       use node_monitor_IO
       use check_dependency_for_MHD
 !
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_address), intent(inout) :: iphys
@@ -84,15 +86,15 @@
 !
       if (iflag_debug.ge.1) write(*,*) 'allocate_int_vol_data'
       call alloc_int_vol_data(ele%numele, node%max_nod_smp,             &
-     &   SGS_par1%model_p, nod_fld, mhd_fem_wk)
-      call count_int_vol_data(SGS_par1%model_p, evo_magne, mhd_fem_wk)
+     &   SGS_par%model_p, nod_fld, mhd_fem_wk)
+      call count_int_vol_data(SGS_par%model_p, evo_magne, mhd_fem_wk)
       call alloc_int_vol_dvx(ele%numele, mhd_fem_wk)
-      call set_SGS_ele_fld_addresses(SGS_par1%model_p, iphys_elediff)
+      call set_SGS_ele_fld_addresses(SGS_par%model_p, iphys_elediff)
 !
 !  allocation for field values
       if (iflag_debug.ge.1)  write(*,*) 'set_FEM_MHD_field_data'
       call set_FEM_MHD_field_data                                       &
-     &   (SGS_par1%model_p, SGS_par1%commute_p, node, iphys, nod_fld)
+     &   (SGS_par%model_p, SGS_par%commute_p, node, iphys, nod_fld)
       if (iflag_debug.ge.1)  write(*,*) 'initialize_ele_field_data'
       call initialize_ele_field_data(ele%numele)
 !

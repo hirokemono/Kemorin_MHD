@@ -118,8 +118,8 @@
 !
 !  -----   ordering by regions ---------------------------------------
 !
-      call reordering_by_layers_MHD(mesh%ele, group, MHD_mesh,          &
-     &    MHD1_matrices%MG_interpolate)
+      call reordering_by_layers_MHD(SGS_par1, mesh%ele, group,          &
+     &    MHD_mesh, MHD1_matrices%MG_interpolate)
 !
       call set_layers(mesh%node, mesh%ele, group%ele_grp, MHD_mesh)
 !
@@ -196,7 +196,7 @@
 !     ---------------------
 !
       if (iflag_debug.eq.1) write(*,*)' allocate_array'
-      call allocate_array(mesh%node, mesh%ele, iphys, nod_fld,          &
+      call allocate_array(SGS_par1, mesh%node, mesh%ele, iphys, nod_fld,&
      &    iphys_elediff, m1_lump, mhd_fem1_wk, fem1_wk,                 &
      &    f1_l, f1_nl, label_sim)
 !
@@ -242,9 +242,9 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*)' initial_data_control'                 
-      call initial_data_control                                         &
-     &   (ref_param_T1, mesh%node, mesh%ele, MHD_mesh%fluid, iphys,     &
-     &    layer_tbl, wk_sgs1, wk_diff1, sgs_coefs, diff_coefs, nod_fld)
+      call initial_data_control(SGS_par1, ref_param_T1,                 &
+     &    mesh%node, mesh%ele, MHD_mesh%fluid, iphys, layer_tbl,        &
+     &    wk_sgs1, wk_diff1, sgs_coefs, diff_coefs, nod_fld)
 !
 !  -------------------------------
 !

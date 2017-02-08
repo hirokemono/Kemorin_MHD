@@ -8,8 +8,9 @@
 !!
 !!@verbatim
 !!     subroutine s_set_control_sph_data_MHD                            &
-!!    &         (plt, field_ctl, mevo_ctl,                              &
+!!    &         (SGS_param, plt, field_ctl, mevo_ctl,                   &
 !!    &          rj_org_param, rst_org_param, rj_fld)
+!!       type(SGS_model_control_params), intent(in) :: SGS_param
 !!       type(platform_data_control), intent(in) :: plt
 !!       type(ctl_array_c3), intent(inout) :: field_ctl
 !!       type(field_IO_params), intent(in) :: rj_org_param
@@ -36,15 +37,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_sph_data_MHD                             &
-     &         (plt, field_ctl, mevo_ctl,                               &
+     &         (SGS_param, plt, field_ctl, mevo_ctl,                    &
      &          rj_org_param, rst_org_param, rj_fld)
 !
       use calypso_mpi
       use m_error_IDs
       use m_machine_parameter
-      use t_ctl_data_4_platforms
-      use t_read_control_arrays
-      use t_ctl_data_mhd_evo_scheme
       use m_physical_property
       use m_file_format_switch
 !
@@ -52,6 +50,10 @@
       use m_sel_spherical_SRs
       use m_FFT_selector
 !
+      use t_SGS_control_parameter
+      use t_ctl_data_4_platforms
+      use t_read_control_arrays
+      use t_ctl_data_mhd_evo_scheme
       use t_phys_data
       use t_field_data_IO
 !
@@ -62,6 +64,7 @@
       use add_sph_MHD_fields_2_ctl
       use sph_mhd_rst_IO_control
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(platform_data_control), intent(in) :: plt
       type(ctl_array_c3), intent(inout) :: field_ctl
       type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
@@ -88,9 +91,9 @@
         call add_field_name_4_mhd                                       &
      &     (fl_prop1, ref_param_T1, ref_param_C1, field_ctl)
         call add_field_name_4_sph_mhd(fl_prop1, field_ctl)
-        call add_field_name_4_SGS(SGS_par1%model_p, field_ctl)
+        call add_field_name_4_SGS(SGS_param, field_ctl)
         call add_field_name_dynamic_SGS                                 &
-     &     (SGS_par1%model_p, fl_prop1, field_ctl)
+     &     (SGS_param, fl_prop1, field_ctl)
         if (iflag_debug.eq.1) write(*,*)                                &
      &    'field_ctl%num after modified ', field_ctl%num
 !

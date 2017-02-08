@@ -8,7 +8,8 @@
 !> @brief Set field information for MHD simulation from control data
 !!
 !!@verbatim
-!!     subroutine set_control_4_fields(field_ctl, nod_fld)
+!!     subroutine set_control_4_fields(SGS_par, field_ctl, nod_fld)
+!!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
 !!        type(phys_data), intent(inout) :: nod_fld
 !!@endverbatim
@@ -30,17 +31,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_fields(field_ctl, nod_fld)
+      subroutine set_control_4_fields(SGS_par, field_ctl, nod_fld)
 !
       use calypso_mpi
       use m_error_IDs
       use m_physical_property
       use m_element_phys_data
+      use t_SGS_control_parameter
 !
       use set_control_nodal_data
       use add_nodal_fields_4_MHD
       use add_nodal_fields_4_SGS
 !
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(ctl_array_c3), intent(inout) :: field_ctl
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -69,7 +72,7 @@
         if (iflag_debug .ge. iflag_routine_msg)                         &
      &               write(*,*) 'add_work_area_4_sgs_model'
         call add_work_area_4_sgs_model                                  &
-     &     (SGS_par1%model_p, fl_prop1, field_ctl)
+     &     (SGS_par%model_p, fl_prop1, field_ctl)
 !
         if (iflag_debug .ge. iflag_routine_msg) write(*,*)              &
      &    'num_nod_phys after modified ', field_ctl%num
@@ -79,7 +82,7 @@
         call s_set_control_nodal_data(field_ctl, nod_fld, ierr)
       end if
 !
-      call set_ele_field_names_MHD(SGS_par1%model_p, nod_fld)
+      call set_ele_field_names_MHD(SGS_par%model_p, nod_fld)
 !
       end subroutine set_control_4_fields
 !

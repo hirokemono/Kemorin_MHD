@@ -169,7 +169,7 @@
      &      wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,     &
      &      surf_wk, f_l, f_nl, nod_fld, ele_fld, diff_coefs)
 !
-        call cal_field_by_rotation(SGS_par%commute_p,                   &
+        call cal_field_by_rotation(SGS_par%model_p, SGS_par%commute_p,  &
      &      mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &
      &      MHD_mesh%fluid, MHD_mesh%conduct, group%surf_grp,           &
      &      nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,               &
@@ -243,7 +243,7 @@
 !
 !
       call cal_true_sgs_terms_pre                                       &
-     &   (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,            &
+     &   (SGS_par, mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,   &
      &    group%surf_grp, MHD_mesh%fluid, MHD_mesh%conduct,             &
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1, nod_bcs, surf_bcs,    &
      &    iphys, iphys_ele, ak_MHD,  jac_3d_q, jac_sf_grp, rhs_tbl,     &
@@ -262,7 +262,7 @@
      &   (mesh%node, fl_prop1, cd_prop1, iphys, nod_fld)
 !
       call cal_forces_4_monitor                                         &
-     &   (mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,            &
+     &   (SGS_par, mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,   &
      &    MHD_mesh%fluid, MHD_mesh%conduct, group%surf_grp,             &
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1, nod_bcs, surf_bcs,    &
      &    iphys, iphys_ele, ak_MHD, jac_3d_q, jac_sf_grp, rhs_tbl,      &

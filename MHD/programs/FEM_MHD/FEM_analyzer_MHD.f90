@@ -279,7 +279,8 @@
 !     ---- Output restart field data
 !
         if (iflag_debug.eq.1) write(*,*) 'output_MHD_restart_file_ctl'
-        call output_MHD_restart_file_ctl(mesh1%node, mesh1%nod_comm,    &
+        call output_MHD_restart_file_ctl                                &
+     &     (SGS_par1, mesh1%node, mesh1%nod_comm,                       &
      &      iphys, wk_sgs1, wk_diff1, nod_fld1)
 !
 !     ---- Output voulme field data
@@ -304,7 +305,8 @@
         if      (istep_rst_end.eq.-1                                    &
      &       .and. total_max.gt.elapsed_time) then
           call start_eleps_time(4)
-          call elspased_MHD_restart_ctl(mesh1%node, mesh1%nod_comm,     &
+          call elspased_MHD_restart_ctl                                 &
+     &       (SGS_par1, mesh1%node, mesh1%nod_comm,                     &
      &        iphys, wk_sgs1, wk_diff1, nod_fld1)
           call end_eleps_time(4)
           retval = 0
@@ -319,7 +321,8 @@
         if      (i_step_number.eq.-1                                    &
      &       .and. total_max.gt.elapsed_time) then
           call start_eleps_time(4)
-          call elspased_MHD_restart_ctl(mesh1%node, mesh1%nod_comm,     &
+          call elspased_MHD_restart_ctl                                 &
+     &       (SGS_par1, mesh1%node, mesh1%nod_comm,                     &
      &        iphys, wk_sgs1, wk_diff1, nod_fld1)
           call end_eleps_time(4)
           retval = 0

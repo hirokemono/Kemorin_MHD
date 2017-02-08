@@ -99,7 +99,7 @@
       call set_control_4_FEM_MHD                                        &
      &   (FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt, FEM_MHD_ctl%model_ctl,  &
      &    FEM_MHD_ctl%ctl_ctl, FEM_MHD_ctl%nmtr_ctl,                    &
-     &    mesh1_file, FEM_udt_org_param, nod_fld)
+     &    mesh1_file, FEM_udt_org_param, SGS_par1, nod_fld)
 !
 !  --  load FEM mesh data
       call mpi_input_mesh(mesh1_file, mesh, group,                      &
@@ -154,7 +154,7 @@
       call set_control_4_FEM_MHD                                        &
      &   (FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt, FEM_MHD_ctl%model_ctl,  &
      &    FEM_MHD_ctl%ctl_ctl, FEM_MHD_ctl%nmtr_ctl,                    &
-     &    mesh1_file, FEM_udt_org_param, nod_fld)
+     &    mesh1_file, FEM_udt_org_param, SGS_par1, nod_fld)
 !
 !  --  load FEM mesh data
       call mpi_input_mesh(mesh1_file, mesh, group,                      &

@@ -7,12 +7,13 @@
 !>@brief Evaluate vorticity and current density
 !!
 !!@verbatim
-!!      subroutine cal_field_by_rotation                                &
-!!     &         (cmt_param, nod_comm, node, ele, surf, fluid, conduct, &
+!!      subroutine cal_field_by_rotation(SGS_param, cmt_param,          &
+!!     &          nod_comm, node, ele, surf, fluid, conduct,            &
 !!     &          sf_grp, nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld, &
 !!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,               &
 !!     &          ifld_diff, diff_coefs, m_lump, mhd_fem_wk, fem_wk,    &
 !!     &          surf_wk, f_l, f_nl, nod_fld)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -73,8 +74,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_field_by_rotation                                  &
-     &         (cmt_param, nod_comm, node, ele, surf, fluid, conduct,   &
+      subroutine cal_field_by_rotation(SGS_param, cmt_param,            &
+     &          nod_comm, node, ele, surf, fluid, conduct,              &
      &          sf_grp, nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,   &
      &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                 &
      &          ifld_diff, diff_coefs, m_lump, mhd_fem_wk, fem_wk,      &
@@ -82,6 +83,7 @@
 !
       use cal_rotation_sgs
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -117,7 +119,7 @@
      &      (cmt_param%iflag_c_velo, iflag_velo_supg,                   &
      &       ifld_diff%i_velo, iphys%i_velo, iphys%i_vort,              &
      &       fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,             &
-     &       SGS_par1%model_p, nod_comm, node, ele, surf, sf_grp,       &
+     &       SGS_param, nod_comm, node, ele, surf, sf_grp,              &
      &       iphys_ele, ele_fld, jac_3d, jac_sf_grp, FEM_elens,         &
      &       diff_coefs, nod_bcs%Vnod_bcs%nod_bc_w,                     &
      &       surf_bcs%Vsf_bcs%sgs, rhs_tbl, fem_wk, surf_wk,            &
@@ -133,7 +135,7 @@
               call choose_cal_rotation_sgs                              &
      &           (cmt_param%iflag_c_magne, iflag_mag_supg,              &
      &            ifld_diff%i_magne, iphys%i_magne, iphys%i_current,    &
-     &            ele%istack_ele_smp, m_lump, SGS_par1%model_p,         &
+     &            ele%istack_ele_smp, m_lump, SGS_param,                &
      &            nod_comm, node, ele, surf, sf_grp, iphys_ele,         &
      &            ele_fld, jac_3d, jac_sf_grp, FEM_elens, diff_coefs,   &
      &            nod_bcs%Bnod_bcs%nod_bc_j, surf_bcs%Bsf_bcs%sgs,      &
@@ -143,7 +145,7 @@
 !     &          (cmt_param%iflag_c_magne, iflag_mag_supg,              &
 !     &           ifld_diff%i_magne, iphys%i_magne, iphys%i_current,    &
 !     &           conduct%istack_ele_fld_smp, mhd_fem_wk%mlump_cd,      &
-!     &           SGS_par1%model_p, nod_comm, node, ele, surf, sf_grp,  &
+!     &           SGS_param, nod_comm, node, ele, surf, sf_grp,         &
 !     &           iphys_ele, ele_fld, jac_3d, jac_sf_grp, FEM_elens,    &
 !     &           diff_coefs, nod_bcs%Bnod_bcs%nod_bc_j,                &
 !     &           surf_bcs%Bsf_bcs%sgs, rhs_tbl, fem_wk, surf_wk,       &
@@ -158,7 +160,7 @@
             call choose_cal_rotation_sgs(cmt_param%iflag_c_magne,       &
                 iflag_mag_supg, ifld_diff%i_magne,                      &
      &          iphys%i_magne, iphys%i_current, ele%istack_ele_smp,     &
-     &          m_lump, SGS_par1%model_p, nod_comm, node, ele, surf,    &
+     &          m_lump, SGS_param, nod_comm, node, ele, surf,           &
      &          sf_grp, iphys_ele, ele_fld, jac_3d, jac_sf_grp,         &
      &          FEM_elens, diff_coefs, nod_bcs%Bnod_bcs%nod_bc_j,       &
      &          surf_bcs%Bsf_bcs%sgs, rhs_tbl, fem_wk, surf_wk,         &
@@ -167,7 +169,7 @@
 !     &        (cmt_param%iflag_c_magne, iflag_mag_supg,                &
 !     &         ifld_diff%i_magne, iphys%i_magne, iphys%i_current,      &
 !     &         conduct%istack_ele_fld_smp, mhd_fem_wk%mlump_cd,        &
-!     &         SGS_par1%model_p, nod_comm, node, ele, surf, sf_grp,    &
+!     &         SGS_param, nod_comm, node, ele, surf, sf_grp,           &
 !     &         iphys_ele, ele_fld, jac_3d, jac_sf_grp, FEM_elens,      &
 !     &         diff_coefs, nod_bcs%Bnod_bcs%nod_bc_j,                  &
 !     &         surf_bcs%Bsf_bcs%sgs, rhs_tbl, fem_wk, surf_wk,         &

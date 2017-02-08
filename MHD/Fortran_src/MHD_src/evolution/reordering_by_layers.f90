@@ -5,9 +5,11 @@
 !      Modified by H. Matsui on Sep., 2007
 !      Modified by H. Matsui on Feb., 2008
 !
-!!      subroutine reordering_by_layers_snap(ele, group, MHD_mesh)
+!!      subroutine reordering_by_layers_snap                            &
+!!     &         (SGS_par, ele, group, MHD_mesh)
 !!      subroutine reordering_by_layers_MHD                             &
-!!     &         (ele, group, MHD_mesh, MG_interpolate)
+!!     &         (SGS_par, ele, group, MHD_mesh, MG_interpolate)
+!!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(element_data), intent(inout) :: ele
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(mesh_data_MHD), intent(inout) :: MHD_mesh
@@ -28,6 +30,7 @@
 !
       use m_work_4_MHD_layering
 !
+      use t_SGS_control_parameter
       use t_mesh_data
       use t_geometry_data
       use t_group_data
@@ -43,8 +46,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine reordering_by_layers_snap(ele, group, MHD_mesh)
+      subroutine reordering_by_layers_snap                              &
+     &         (SGS_par, ele, group, MHD_mesh)
 !
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(element_data), intent(inout) :: ele
       type(mesh_groups), intent(inout) ::   group
       type(mesh_data_MHD), intent(inout) :: MHD_mesh
@@ -52,7 +57,7 @@
 !
       call allocate_lists_4_layer(ele%numele)
       call s_reordering_by_layers                                       &
-     &   (ele, group%ele_grp, group%surf_grp, MHD_mesh)
+     &   (SGS_par, ele, group%ele_grp, group%surf_grp, MHD_mesh)
       call deallocate_lists_4_layer
 !
       end subroutine reordering_by_layers_snap
@@ -60,7 +65,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine reordering_by_layers_MHD                               &
-     &         (ele, group, MHD_mesh, MG_interpolate)
+     &         (SGS_par, ele, group, MHD_mesh, MG_interpolate)
 !
       use m_iccg_parameter
       use m_work_4_MHD_layering
@@ -71,6 +76,7 @@
       use reordering_MG_ele_by_layers
       use skip_comment_f
 !
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(element_data), intent(inout) :: ele
       type(mesh_groups), intent(inout) ::   group
       type(mesh_data_MHD), intent(inout) :: MHD_mesh
@@ -79,7 +85,7 @@
 !
       call allocate_lists_4_layer(ele%numele)
       call s_reordering_by_layers                                       &
-     &   (ele, group%ele_grp, group%surf_grp, MHD_mesh)
+     &   (SGS_par, ele, group%ele_grp, group%surf_grp, MHD_mesh)
 !
 !   ordereing of element parameters for AMG (for first grid)
 !
@@ -96,15 +102,16 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine s_reordering_by_layers(ele, ele_grp, sf_grp, MHD_mesh)
+      subroutine s_reordering_by_layers                                 &
+     &         (SGS_par, ele, ele_grp, sf_grp, MHD_mesh)
 !
       use calypso_mpi
-      use m_control_parameter
 !
       use const_layering_table
       use reordering_element_MHD
       use reordering_element_size
 !
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(element_data), intent(inout) :: ele
       type(group_data), intent(inout) :: ele_grp
       type(surface_group_data), intent(inout) :: sf_grp
@@ -162,7 +169,7 @@
 !
 !   ordereing of element parameters for SGS model
 !
-      call reordering_ele_size(SGS_par1%model_p, ele%numele)
+      call reordering_ele_size(SGS_par%model_p, ele%numele)
 !
       end subroutine s_reordering_by_layers
 !

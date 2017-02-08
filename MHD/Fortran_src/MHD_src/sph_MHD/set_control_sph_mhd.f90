@@ -206,8 +206,8 @@
 !   set parameters for general information
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_sph_data_MHD'
-      call s_set_control_sph_data_MHD                                   &
-     &   (plt, model_ctl%fld_ctl%field_ctl, ctl_ctl%mevo_ctl,           &
+      call s_set_control_sph_data_MHD(SGS_param, plt,                   &
+     &    model_ctl%fld_ctl%field_ctl, ctl_ctl%mevo_ctl,                &
      &    MHD_org_files%rj_file_param, MHD_org_files%rst_file_param,    &
      &    rj_fld)
 !

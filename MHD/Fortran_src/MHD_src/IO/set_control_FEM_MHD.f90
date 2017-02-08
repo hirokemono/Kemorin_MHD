@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine set_control_4_FEM_MHD                                &
 !!     &         (plt, org_plt, model_ctl, ctl_ctl, nmtr_ctl,           &
-!!     &          mesh_file, udt_org_param, nod_fld)
+!!     &          mesh_file, udt_org_param, SGS_par, nod_fld)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
 !!        type(mhd_model_control), intent(inout) :: model_ctl
@@ -17,6 +17,7 @@
 !!        type(node_monitor_control), intent(inout) :: nmtr_ctl
 !!        type(field_IO_params), intent(inout) :: mesh_file
 !!        type(field_IO_params), intent(inout) :: udt_org_param
+!!        type(SGS_paremeters), intent(inout) :: SGS_par
 !!        type(phys_data), intent(inout) :: nod_fld
 !!@endverbatim
 !
@@ -42,13 +43,13 @@
 !
       subroutine set_control_4_FEM_MHD                                  &
      &         (plt, org_plt, model_ctl, ctl_ctl, nmtr_ctl,             &
-     &          mesh_file, udt_org_param, nod_fld)
+     &          mesh_file, udt_org_param, SGS_par, nod_fld)
 !
       use calypso_mpi
       use m_ucd_data
       use m_default_file_prefix
       use m_physical_property
-      use m_SGS_control_parameter
+      use t_SGS_control_parameter
 !
       use set_control_platform_data
       use set_control_nodal_data_MHD
@@ -73,6 +74,7 @@
       type(node_monitor_control), intent(inout) :: nmtr_ctl
       type(field_IO_params), intent(inout) :: mesh_file
       type(field_IO_params), intent(inout) :: udt_org_param
+      type(SGS_paremeters), intent(inout) :: SGS_par
       type(phys_data), intent(inout) :: nod_fld
 !
 !
@@ -105,22 +107,23 @@
 !   set parameters for SGS model
 !
       call set_control_SGS_model                                        &
-     &   (model_ctl%sgs_ctl, SGS_par1%model_p, SGS_par1%commute_p,      &
-     &    SGS_par1%filter_p)
+     &   (model_ctl%sgs_ctl, SGS_par%model_p, SGS_par%commute_p,        &
+     &    SGS_par%filter_p)
       call set_control_FEM_SGS(model_ctl%sgs_ctl%ffile_ctl,             &
      &    model_ctl%sgs_ctl, model_ctl%sgs_ctl%elayer_ctl,              &
-     &    SGS_par1%model_p)
+     &    SGS_par%model_p)
 !
 !   set parameters for filtering operation
 !
       call s_set_control_4_filtering                                    &
-     &   (SGS_par1%model_p, model_ctl%sgs_ctl%SGS_filter_name_ctl,      &
+     &   (SGS_par%model_p, model_ctl%sgs_ctl%SGS_filter_name_ctl,       &
      &    model_ctl%sgs_ctl%ffile_ctl, model_ctl%sgs_ctl%s3df_ctl,      &
-     &    SGS_par1%filter_p)
+     &    SGS_par%filter_p)
 !
 !   set fields
 !
-      call set_control_4_fields(model_ctl%fld_ctl%field_ctl, nod_fld)
+      call set_control_4_fields                                         &
+     &   (SGS_par, model_ctl%fld_ctl%field_ctl, nod_fld)
 !
 !   set control parameters
 !
@@ -135,7 +138,7 @@
 !   set control parameters
 !
       call s_set_control_4_time_steps                                   &
-     &   (SGS_par1%model_p, ctl_ctl%mrst_ctl, ctl_ctl%tctl)
+     &   (SGS_par%model_p, ctl_ctl%mrst_ctl, ctl_ctl%tctl)
       call s_set_control_4_crank(ctl_ctl%mevo_ctl)
 !
       call s_set_control_4_solver(ctl_ctl%mevo_ctl, ctl_ctl%CG_ctl)

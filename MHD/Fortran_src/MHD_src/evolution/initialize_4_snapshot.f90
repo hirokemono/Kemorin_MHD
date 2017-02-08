@@ -104,7 +104,8 @@ integer(kind = kint) :: iflag
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*)' reordering_by_layers_snap'
-      call reordering_by_layers_snap(mesh%ele, group, MHD_mesh)
+      call reordering_by_layers_snap                                    &
+     &   (SGS_par1, mesh%ele, group, MHD_mesh)
 !
       if (iflag_debug.eq.1) write(*,*)' set_layers'
       call set_layers(mesh%node, mesh%ele, group%ele_grp, MHD_mesh)
@@ -179,7 +180,7 @@ integer(kind = kint) :: iflag
 !     ---------------------
 !
       if (iflag_debug.eq.1) write(*,*)' allocate_array'
-      call allocate_array(mesh%node, mesh%ele, iphys, nod_fld,          &
+      call allocate_array(SGS_par1, mesh%node, mesh%ele, iphys, nod_fld,&
      &    iphys_elediff, m1_lump, mhd_fem1_wk, fem1_wk,                 &
      &    f1_l, f1_nl, label_sim)
 !

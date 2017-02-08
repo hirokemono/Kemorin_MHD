@@ -4,14 +4,15 @@
 !      Written by H. Matsui on Oct., 2005
 !
 !!      subroutine cal_true_sgs_terms_pre                               &
-!!     &         (nod_comm, node, ele, surf, sf_grp, fluid, conduct,    &
-!!     &          fl_prop, cd_prop, ht_prop, cp_prop,                   &
+!!     &         (SGS_par, nod_comm, node, ele, surf, sf_grp,           &
+!!     &          fluid, conduct, fl_prop, cd_prop, ht_prop, cp_prop,   &
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,          &
 !!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,               &
 !!     &          ifld_diff, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,   &
 !!     &          f_l, f_nl, nod_fld, ele_fld)
 !!      subroutine cal_true_sgs_terms_post(filter_param,                &
 !!     &          nod_comm, node, iphys, filtering, wk_filter, nod_fld)
+!!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -91,8 +92,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_true_sgs_terms_pre                                 &
-     &         (nod_comm, node, ele, surf, sf_grp, fluid, conduct,      &
-     &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
+     &         (SGS_par, nod_comm, node, ele, surf, sf_grp,             &
+     &          fluid, conduct, fl_prop, cd_prop, ht_prop, cp_prop,     &
      &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,            &
      &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                 &
      &          ifld_diff, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,     &
@@ -101,6 +102,7 @@
       use calypso_mpi
       use m_phys_labels
 !
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -157,27 +159,28 @@
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_m_flux_true_pre                             &
-     &        (ifld_diff%i_mom_flux, ifld_diff%i_lorentz, nod_comm,     &
-     &         node, ele, surf, sf_grp, fluid, fl_prop, cd_prop,        &
-     &         surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, iphys, iphys_ele,    &
-     &         ak_MHD, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,          &
-     &         diff_coefs, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,      &
-     &         nod_fld, ele_fld)
+     &        (ifld_diff%i_mom_flux, ifld_diff%i_lorentz,               &
+     &         SGS_par, nod_comm, node, ele, surf, sf_grp, fluid,       &
+     &         fl_prop, cd_prop, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,    &
+     &         iphys, iphys_ele, ak_MHD, jac_3d, jac_sf_grp, rhs_tbl,   &
+     &         FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,      &
+     &         f_l, f_nl, nod_fld, ele_fld)
          else if ( nod_fld%phys_name(i).eq.fhd_SGS_Lorentz_true) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_maxwell_true_pre                            &
-     &        (ifld_diff%i_mom_flux, ifld_diff%i_lorentz, nod_comm,     &
-     &         node, ele, surf, sf_grp, fluid, fl_prop, cd_prop,        &
-     &         surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, iphys, iphys_ele,    &
-     &         ak_MHD, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,          &
-     &         diff_coefs, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,      &
-     &         nod_fld, ele_fld)
+     &        (ifld_diff%i_mom_flux, ifld_diff%i_lorentz,               &
+     &         SGS_par, nod_comm, node, ele, surf, sf_grp, fluid,       &
+     &         fl_prop, cd_prop, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,    &
+     &         iphys, iphys_ele, ak_MHD, jac_3d, jac_sf_grp, rhs_tbl,   &
+     &         FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,      &
+     &         f_l, f_nl, nod_fld, ele_fld)
          else if ( nod_fld%phys_name(i).eq.fhd_SGS_mag_induct_true)     &
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
-           call cal_div_sgs_induct_true_pre(ifld_diff%i_induction,      &
+           call cal_div_sgs_induct_true_pre                             &
+     &       (ifld_diff%i_induction, SGS_par,                           &
      &        nod_comm, node, ele, surf, sf_grp, conduct, cd_prop,      &
      &        nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,     &
      &        iphys, iphys_ele, ele_fld, ak_MHD, jac_3d, jac_sf_grp,    &
@@ -297,18 +300,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_div_sgs_m_flux_true_pre                            &
-     &         (iak_diff_mf, iak_diff_lor, nod_comm, node, ele,         &
-     &          surf, sf_grp, fluid, fl_prop, cd_prop,                  &
-     &          Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD,             &
-     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,     &
-     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                 &
+      subroutine cal_div_sgs_m_flux_true_pre(iak_diff_mf, iak_diff_lor, &
+     &          SGS_par, nod_comm, node, ele, surf, sf_grp, fluid,      &
+     &          fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,   &
+     &          ak_MHD, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,         &
+     &          diff_coefs, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,     &
      &          nod_fld, ele_fld)
 !
       use cal_momentum_terms
 !
       integer(kind = kint), intent(in) :: iak_diff_mf, iak_diff_lor
 !
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -341,11 +344,11 @@
      &    nod_fld)
       call cal_terms_4_momentum                                         &
      &   (iphys%i_m_flux_div, iak_diff_mf, iak_diff_lor,                &
-     &    SGS_par1%model_p, SGS_par1%commute_p,                         &
-     &    nod_comm, node, ele, surf, sf_grp,                            &
-     &    fluid, fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,  &
-     &    ak_MHD, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,   &
-     &    mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld, ele_fld)
+     &    SGS_par%model_p, SGS_par%commute_p, nod_comm, node, ele,      &
+     &    surf, sf_grp, fluid, fl_prop, cd_prop, Vsf_bcs, Bsf_bcs,      &
+     &    iphys, iphys_ele, ak_MHD, jac_3d, jac_sf_grp, rhs_tbl,        &
+     &    FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,           &
+     &    f_l, f_nl, nod_fld, ele_fld)
       call copy_vector_component(nod_fld,                               &
      &    iphys%i_m_flux_div, iphys%i_SGS_div_mf_true)
 !
@@ -354,7 +357,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_div_sgs_maxwell_true_pre                           &
-     &        (iak_diff_mf, iak_diff_lor, nod_comm,                     &
+     &        (iak_diff_mf, iak_diff_lor, SGS_par, nod_comm,            &
      &         node, ele, surf, sf_grp, fluid, fl_prop, cd_prop,        &
      &         Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD,              &
      &         jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,      &
@@ -365,6 +368,7 @@
 !
       integer(kind = kint), intent(in) :: iak_diff_mf, iak_diff_lor
 !
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -396,10 +400,10 @@
      &    iphys%i_filter_magne, iphys%i_maxwell, nod_fld)
       call cal_terms_4_momentum                                         &
      &   (iphys%i_maxwell_div, iak_diff_mf, iak_diff_lor,               &
-     &    SGS_par1%model_p, SGS_par1%commute_p,                         &
-     &    nod_comm, node, ele, surf, sf_grp,                            &
-     &    fluid, fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,  &
-     &    ak_MHD, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,   &
+     &    SGS_par%model_p, SGS_par%commute_p,                           &
+     &    nod_comm, node, ele, surf, sf_grp, fluid, fl_prop, cd_prop,   &
+     &    Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD,                   &
+     &    jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,           &
      &    mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld, ele_fld)
       call copy_vector_component(nod_fld,                               &
      &   iphys%i_maxwell_div, iphys%i_SGS_Lor_true)
@@ -408,7 +412,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_div_sgs_induct_true_pre(iak_diff_uxb,              &
+      subroutine cal_div_sgs_induct_true_pre(iak_diff_uxb, SGS_par,     &
      &         nod_comm, node, ele, surf, sf_grp, conduct, cd_prop,     &
      &         Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,   &
      &         ak_MHD, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,          &
@@ -421,6 +425,7 @@
 !
       integer(kind = kint), intent(in) :: iak_diff_uxb
 !
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -453,7 +458,7 @@
      &    nod_fld)
       call cal_terms_4_magnetic                                         &
      &   (iphys%i_induct_div, iak_diff_uxb, ak_MHD%ak_d_magne,          &
-     &    SGS_par1%model_p, SGS_par1%commute_p,                         &
+     &    SGS_par%model_p, SGS_par%commute_p,                           &
      &    nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,          &
      &    Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,        &
      &    jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,           &

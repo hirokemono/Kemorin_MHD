@@ -191,7 +191,8 @@
 !
       if ( evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'cal_magne_vector_potential'
-        call cal_vector_potential(mesh%nod_comm, mesh%node, mesh%ele,   &
+        call cal_vector_potential                                       &
+     &    (SGS_par, mesh%nod_comm, mesh%node, mesh%ele,                 &
      &     ele_mesh%surf, MHD_mesh%conduct, group%surf_grp, cd_prop1,   &
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Fsf_bcs,        &
      &     iphys, iphys_ele, ele_fld,                                   &
@@ -217,7 +218,8 @@
 !        call check_surface_param_smp('cal_magnetic_field start',       &
 !     &      my_rank, sf_grp, group%surf_nod_grp)
         if (iflag_debug.eq.1) write(*,*) 's_cal_magnetic_field'
-        call s_cal_magnetic_field(mesh%nod_comm, mesh%node, mesh%ele,   &
+        call s_cal_magnetic_field                                       &
+     &    (SGS_par, mesh%nod_comm, mesh%node, mesh%ele,                 &
      &     ele_mesh%surf, MHD_mesh%conduct, group%surf_grp, cd_prop1,   &
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,        &
      &     surf_bcs%Fsf_bcs, iphys, iphys_ele, ele_fld,                 &
@@ -340,7 +342,8 @@
 !
       if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'velocity_evolution'
-        call velocity_evolution(mesh%nod_comm, mesh%node, mesh%ele,     &
+        call velocity_evolution                                         &
+     &     (SGS_par, mesh%nod_comm, mesh%node, mesh%ele,                &
      &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
      &      group%surf_nod_grp, fl_prop1, cd_prop1,                     &
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,       &
@@ -660,7 +663,8 @@
 !
       if ( evo_velo%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'velocity_evolution'
-        call velocity_evolution(mesh%nod_comm, mesh%node, mesh%ele,     &
+        call velocity_evolution                                         &
+     &     (SGS_par, mesh%nod_comm, mesh%node, mesh%ele,                &
      &      ele_mesh%surf, fluid, group%surf_grp,                       &
      &      group%surf_nod_grp, fl_prop1, cd_prop1,                     &
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,       &
