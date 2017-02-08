@@ -3,7 +3,8 @@
 !
 !      written by H. Matsui on Aug., 2007
 !
-!!      subroutine cal_sgs_mom_flux_with_sgs_buo(SGS_param, cmt_param,  &
+!!      subroutine cal_sgs_mom_flux_with_sgs_buo                        &
+!!     &         (SGS_param, cmt_param, filter_param,                   &
 !!     &          nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,  &
 !!     &          fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele, &
 !!     &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,    &
@@ -13,6 +14,7 @@
 !!     &          surf_wk, f_l, f_nl, nod_fld, ele_fld, sgs_coefs)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
+!!        type(SGS_filtering_params), intent(in) :: filter_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -88,7 +90,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_sgs_mom_flux_with_sgs_buo(SGS_param, cmt_param,    &
+      subroutine cal_sgs_mom_flux_with_sgs_buo                          &
+     &         (SGS_param, cmt_param, filter_param,                     &
      &          nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,    &
      &          fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,   &
      &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,      &
@@ -110,6 +113,7 @@
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
+      type(SGS_filtering_params), intent(in) :: filter_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -163,11 +167,11 @@
      &    wk_sgs%fld_clip, wk_sgs%comp_clip, sgs_coefs%ak)
 !
       call cal_sgs_momentum_flux                                        &
-     &   (icomp_sgs%i_mom_flux, iphys_elediff%i_velo, SGS_param,        &
-     &    nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,        &
-     &    jac_3d_q, rhs_tbl, FEM_elens, filtering,                      &
-     &    sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,      &
-     &    f_l, f_nl, nod_fld)
+     &   (icomp_sgs%i_mom_flux, iphys_elediff%i_velo,                   &
+     &    SGS_param, filter_param, nod_comm, node, ele, fluid,          &
+     &    iphys, iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,      &
+     &    filtering, sgs_coefs, sgs_coefs_nod, wk_filter,               &
+     &    mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
 !   lead work of Reynolds stress
 !

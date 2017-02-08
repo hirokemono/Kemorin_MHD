@@ -6,19 +6,19 @@
 !
 !!      subroutine cal_sgs_uxb_dynamic                                  &
 !!     &         (iak_sgs_uxb, icomp_sgs_uxb, ie_dvx, ie_dfvx,          &
-!!     &          SGS_param, nod_comm, node, ele, iphys, iphys_ele,     &
+!!     &          SGS_par, nod_comm, node, ele, iphys, iphys_ele,       &
 !!     &          ele_fld, conduct, cd_prop, layer_tbl,                 &
 !!     &          jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,    &
 !!     &          wk_filter, wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,&
 !!     &          f_l, nod_fld, sgs_coefs)
 !!      subroutine cal_sgs_induct_t_dynamic(iak_sgs_uxb, icomp_sgs_uxb, &
 !!     &          ie_dvx, ie_dbx, ie_dfvx, ie_dfbx,                     &
-!!     &          SGS_param, nod_comm, node, ele, iphys, iphys_ele,     &
+!!     &          SGS_par, nod_comm, node, ele, iphys, iphys_ele,       &
 !!     &          ele_fld, conduct, cd_prop, layer_tbl,                 &
 !!     &          jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,    &
 !!     &          sgs_coefs_nod, wk_filter,  wk_cor, wk_lsq, wk_sgs,    &
 !!     &          mhd_fem_wk, fem_wk, f_l, nod_fld, sgs_coefs)
-!!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -81,7 +81,7 @@
 !
       subroutine cal_sgs_uxb_dynamic                                    &
      &         (iak_sgs_uxb, icomp_sgs_uxb, ie_dvx, ie_dfvx,            &
-     &          SGS_param, nod_comm, node, ele, iphys, iphys_ele,       &
+     &          SGS_par, nod_comm, node, ele, iphys, iphys_ele,         &
      &          ele_fld, conduct, cd_prop, layer_tbl,                   &
      &          jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,      &
      &          wk_filter, wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,  &
@@ -98,7 +98,7 @@
       integer(kind=kint), intent(in) :: iak_sgs_uxb, icomp_sgs_uxb
       integer(kind=kint), intent(in) :: ie_dvx, ie_dfvx
 !
-      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -135,7 +135,8 @@
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_uxb_simi'
       call cal_sgs_uxb_simi(iphys%i_sgs_simi, iphys%i_velo,             &
      &    iphys%i_magne, iphys%i_filter_velo, iphys%i_filter_magne,     &
-     &    nod_comm, node, filtering, wk_filter, nod_fld)
+     &    SGS_par%filter_p, nod_comm, node, filtering,                  &
+     &    wk_filter, nod_fld)
 !
 !   gradient model by filtered field
 !
@@ -157,21 +158,22 @@
 !
 !      filtering
 !
-      call cal_filtered_vector_whole(nod_comm, node, filtering,         &
+      call cal_filtered_vector_whole                                    &
+     &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
      &    iphys%i_sgs_grad, iphys%i_SGS_vp_induct, wk_filter, nod_fld)
 !
 !   Change coordinate
 !
       call cvt_vector_dynamic_scheme_coord                              &
-     &   (SGS_param, node, iphys, nod_fld)
+     &   (SGS_par%model_p, node, iphys, nod_fld)
 !
 !     obtain model coefficient
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &        'cal_model_coefs', n_vector, iak_sgs_uxb, icomp_sgs_uxb
-      call cal_model_coefs(SGS_param, layer_tbl,                        &
+      call cal_model_coefs(SGS_par%model_p, layer_tbl,                  &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
-     &    SGS_param%itype_Csym_uxb, n_vector,                           &
+     &    SGS_par%model_p%itype_Csym_uxb, n_vector,                     &
      &    iak_sgs_uxb, icomp_sgs_uxb, intg_point_t_evo, wk_cor,         &
      &    wk_lsq, wk_sgs, sgs_coefs)
 !
@@ -181,7 +183,7 @@
 !
       subroutine cal_sgs_induct_t_dynamic(iak_sgs_uxb, icomp_sgs_uxb,   &
      &          ie_dvx, ie_dbx, ie_dfvx, ie_dfbx,                       &
-     &          SGS_param, nod_comm, node, ele, iphys, iphys_ele,       &
+     &          SGS_par, nod_comm, node, ele, iphys, iphys_ele,         &
      &          ele_fld, conduct, cd_prop, layer_tbl,                   &
      &          jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,      &
      &          sgs_coefs_nod, wk_filter,  wk_cor, wk_lsq, wk_sgs,      &
@@ -200,7 +202,7 @@
       integer(kind=kint), intent(in) :: ie_dvx, ie_dfvx
       integer(kind=kint), intent(in) :: ie_dbx, ie_dfbx
 !
-      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -239,7 +241,8 @@
       call cal_sgs_induct_t_simi                                        &
      &   (iphys%i_SGS_induct_t, iphys%i_velo, iphys%i_magne,            &
      &    iphys%i_filter_velo, iphys%i_filter_magne, icomp_sgs_uxb,     &
-     &    nod_comm, node, filtering, sgs_coefs_nod, wk_filter, nod_fld)
+     &    SGS_par%filter_p, nod_comm, node, filtering, sgs_coefs_nod,   &
+     &    wk_filter, nod_fld)
 !
 !    copy to work array
 !
@@ -268,28 +271,30 @@
 !
 !      filtering
 !
-      call cal_filtered_vector_whole(nod_comm, node, filtering,         &
+      call cal_filtered_vector_whole                                    &
+     &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
      &    iphys%i_sgs_grad, iphys%i_SGS_induct_t, wk_filter, nod_fld)
 !
 !   Change coordinate
 !
       call cvt_vector_dynamic_scheme_coord                              &
-     &   (SGS_param, node, iphys, nod_fld)
+     &   (SGS_par%model_p, node, iphys, nod_fld)
 !
 !     obtain model coefficient
 !
       if (iflag_debug.gt.0 )  write(*,*)                                &
      &     'cal_model_coefs', n_asym_tensor, iak_sgs_uxb, icomp_sgs_uxb
-      call cal_model_coefs(SGS_param, layer_tbl,                        &
+      call cal_model_coefs(SGS_par%model_p, layer_tbl,                  &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
-     &    SGS_param%itype_Csym_uxb, n_asym_tensor,                      &
+     &    SGS_par%model_p%itype_Csym_uxb, n_asym_tensor,                &
      &    iak_sgs_uxb, icomp_sgs_uxb, intg_point_t_evo,                 &
      &    wk_cor, wk_lsq, wk_sgs, sgs_coefs)
 !
-      call reduce_model_coefs_layer(SGS_param%SGS_uxb_factor,           &
+      call reduce_model_coefs_layer(SGS_par%model_p%SGS_uxb_factor,     &
      &    wk_sgs%nlayer, wk_sgs%num_kinds, iak_sgs_uxb,                 &
      &    wk_sgs%fld_clip, wk_sgs%fld_whole_clip)
-      call reduce_ele_vect_model_coefs(ele, SGS_param%SGS_uxb_factor,  &
+      call reduce_ele_vect_model_coefs                                  &
+     &   (ele, SGS_par%model_p%SGS_uxb_factor,                          &
      &    sgs_coefs%ntot_comp, icomp_sgs_uxb, sgs_coefs%ak)
 !
       end subroutine cal_sgs_induct_t_dynamic

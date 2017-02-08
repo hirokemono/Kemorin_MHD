@@ -5,12 +5,13 @@
 !
 !!      subroutine s_cal_diff_coef_scalar                               &
 !!     &         (ifield, ifield_f, iak_diff_t, icomp_diff_t,           &
-!!     &          SGS_param, cmt_param, nod_comm, node, ele, surf,      &
-!!     &          sf_grp, Tsf_bcs, iphys, iphys_ele, ele_fld, fluid,    &
-!!     &           layer_tbl, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,&
+!!     &          SGS_par, nod_comm, node, ele, surf, sf_grp,           &
+!!     &          Tsf_bcs, iphys, iphys_ele, ele_fld, fluid,            &
+!!     &          layer_tbl, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, &
 !!     &          FEM_elens, filtering, wk_filter,                      &
 !!     &          wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk, surf_wk, &
 !!     &          f_l, f_nl, nod_fld, diff_coefs)
+!!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(communication_table), intent(in) :: nod_comm
@@ -78,15 +79,14 @@
 !
       subroutine s_cal_diff_coef_scalar                                 &
      &         (ifield, ifield_f, iak_diff_t, icomp_diff_t,             &
-     &          SGS_param, cmt_param, nod_comm, node, ele, surf,        &
-     &          sf_grp, Tsf_bcs, iphys, iphys_ele, ele_fld, fluid,      &
-     &           layer_tbl, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,  &
+     &          SGS_par, nod_comm, node, ele, surf, sf_grp,             &
+     &          Tsf_bcs, iphys, iphys_ele, ele_fld, fluid,              &
+     &          layer_tbl, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,   &
      &          FEM_elens, filtering, wk_filter,                        &
      &          wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk, surf_wk,   &
      &          f_l, f_nl, nod_fld, diff_coefs)
 !
       use m_machine_parameter
-      use m_control_parameter
       use m_phys_constants
 !
       use reset_dynamic_model_coefs
@@ -101,8 +101,7 @@
       integer (kind=kint), intent(in) :: iak_diff_t, icomp_diff_t
       integer(kind = kint), intent(in) :: ifield, ifield_f
 !
-      type(SGS_model_control_params), intent(in) :: SGS_param
-      type(commutation_control_params), intent(in) :: cmt_param
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -159,7 +158,8 @@
 !
 !    filtering (to iphys%i_sgs_grad)
 !
-      call cal_filtered_vector_whole(nod_comm, node, filtering,         &
+      call cal_filtered_vector_whole                                    &
+     &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
      &    iphys%i_sgs_grad, iphys%i_sgs_grad, wk_filter, nod_fld)
 !
 !    take difference (to iphys%i_sgs_simi)
@@ -203,7 +203,8 @@
 !
 !    filtering (to iphys%i_sgs_grad)
 !
-      call cal_filtered_vector_whole(nod_comm, node, filtering,         &
+      call cal_filtered_vector_whole                                    &
+     &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
      &    iphys%i_sgs_grad, iphys%i_sgs_grad, wk_filter, nod_fld)
 !
 !      call check_nodal_data                                            &
@@ -213,7 +214,8 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_diff_coef_fluid', n_vector, iak_diff_t, icomp_diff_t
-      call cal_diff_coef_fluid(SGS_param, cmt_param, layer_tbl,         &
+      call cal_diff_coef_fluid                                          &
+     &   (SGS_par%model_p, SGS_par%commute_p, layer_tbl,                &
      &    node, ele, fluid, iphys, nod_fld, jac_3d_q, jac_3d_l,         &
      &    n_vector, iak_diff_t, icomp_diff_t, intg_point_t_evo,         &
      &    wk_cor, wk_lsq, wk_diff, diff_coefs)

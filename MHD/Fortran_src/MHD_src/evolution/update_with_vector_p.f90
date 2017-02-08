@@ -8,17 +8,15 @@
 !!
 !!@verbatim
 !!      subroutine update_with_vector_potential                         &
-!!     &         (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx,            &
-!!     &          SGS_param, cmt_param, nod_comm, node, ele, surf,      &
-!!     &          fluid, conduct, layer_tbl, sf_grp, Bnod_bcs,          &
-!!     &          Asf_bcs, Fsf_bcs, iphys, iphys_ele,                   &
+!!     &         (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx, SGS_par,   &
+!!     &          nod_comm, node, ele, surf, fluid, conduct, layer_tbl, &
+!!     &          sf_grp, Bnod_bcs, Asf_bcs, Fsf_bcs, iphys, iphys_ele, &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,  &
 !!     &          filtering, wide_filtering, m_lump,                    &
 !!     &          wk_cor, wk_lsq, wk_diff, wk_filter,                   &
 !!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,               &
 !!     &          nod_fld, ele_fld, diff_coefs)
-!!        type(SGS_model_control_params), intent(in) :: SGS_param
-!!        type(commutation_control_params), intent(in) :: cmt_param
+!!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -89,10 +87,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine update_with_vector_potential                           &
-     &         (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx,              &
-     &          SGS_param, cmt_param, nod_comm, node, ele, surf,        &
-     &          fluid, conduct, layer_tbl, sf_grp, Bnod_bcs,            &
-     &          Asf_bcs, Fsf_bcs, iphys, iphys_ele,                     &
+     &         (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx, SGS_par,     &
+     &          nod_comm, node, ele, surf, fluid, conduct, layer_tbl,   &
+     &          sf_grp, Bnod_bcs, Asf_bcs, Fsf_bcs, iphys, iphys_ele,   &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,    &
      &          filtering, wide_filtering, m_lump,                      &
      &          wk_cor, wk_lsq, wk_diff, wk_filter,                     &
@@ -112,8 +109,7 @@
       integer(kind = kint), intent(in) :: iak_diff_b, icomp_diff_b
       integer(kind = kint), intent(in) :: ie_dbx, ie_dfbx
 !
-      type(SGS_model_control_params), intent(in) :: SGS_param
-      type(commutation_control_params), intent(in) :: cmt_param
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -157,26 +153,27 @@
       end if
 !
 !
-      if (iflag_dmc .eq. 0                                              &
+      if (SGS_par%commute_p%iflag_c_magne .eq. id_SGS_commute_ON        &
      &     .and. iphys%i_filter_vecp .ne. 0                             &
-     &     .and. cmt_param%iflag_c_magne .eq. id_SGS_commute_ON) then
+     &     .and. iflag_dmc .eq. 0) then
 !
-        if (SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
+        if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           if (iflag_debug.gt.0) write(*,*) 'cal_filtered_vector_p'
-          call cal_filtered_vector_whole(nod_comm, node, filtering,     &
+          call cal_filtered_vector_whole                                &
+     &       (SGS_par%filter_p, nod_comm, node, filtering,              &
      &        iphys%i_filter_vecp, iphys%i_vecp, wk_filter, nod_fld)
           nod_fld%iflag_update(iphys%i_filter_vecp  ) = 1
           nod_fld%iflag_update(iphys%i_filter_vecp+1) = 1
           nod_fld%iflag_update(iphys%i_filter_vecp+2) = 1
         end if
 !
-        if     (SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF         &
-     &    .and. SGS_param%iflag_SGS.eq.id_SGS_similarity                &
+        if     (SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF   &
+     &    .and. SGS_par%model_p%iflag_SGS.eq.id_SGS_similarity          &
      &    .and. iphys%i_wide_fil_vecp.ne. 0) then
           if (iflag_debug.gt.0)                                         &
      &         write(*,*) 'cal_filtered_vector_p i_wide_fil_vecp'
           call cal_filtered_vector_whole                                &
-     &       (nod_comm, node, wide_filtering,                           &
+     &       (SGS_par%filter_p, nod_comm, node, wide_filtering,         &
      &        iphys%i_wide_fil_vecp, iphys%i_filter_vecp,               &
      &        wk_filter, nod_fld)
           nod_fld%iflag_update(iphys%i_wide_fil_vecp  ) = 1
@@ -186,11 +183,13 @@
 !
 !
         if ( diff_coefs%iflag_field(iak_diff_b) .eq. 0) then
-          if(SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
-            if    (SGS_param%iflag_SGS .eq. id_SGS_NL_grad              &
-     &        .or. SGS_param%iflag_SGS .eq. id_SGS_similarity) then
+          if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF)     &
+     &     then
+            if    (SGS_par%model_p%iflag_SGS .eq. id_SGS_NL_grad        &
+     &        .or. SGS_par%model_p%iflag_SGS .eq. id_SGS_similarity)    &
+     &       then
               call s_cal_diff_coef_vector_p                             &
-     &           (iak_diff_b, icomp_diff_b, SGS_param, cmt_param,       &
+     &           (iak_diff_b, icomp_diff_b, SGS_par,                    &
      &            nod_comm, node, ele, surf, fluid, layer_tbl,          &
      &            sf_grp, Asf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,  &
      &            jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,  &
@@ -208,9 +207,9 @@
       if (iphys%i_magne .ne. 0) then
         if (iflag_debug.gt.0) write(*,*) 'cal_magnetic_f_by_vect_p'
         call choose_cal_rotation_sgs                                    &
-     &     (cmt_param%iflag_c_magne, iflag_mag_supg,                    &
+     &     (SGS_par%commute_p%iflag_c_magne, iflag_mag_supg,            &
      &      iak_diff_b, iphys%i_vecp, iphys%i_magne,                    &
-     &      ele%istack_ele_smp, m_lump, SGS_param,                      &
+     &      ele%istack_ele_smp, m_lump, SGS_par%model_p,                &
      &      nod_comm, node, ele, surf, sf_grp, iphys_ele, ele_fld,      &
      &      jac_3d_q, jac_sf_grp_q, FEM_elen, diff_coefs,               &
      &      Bnod_bcs%nod_bc_b, Asf_bcs%sgs, rhs_tbl, fem_wk, surf_wk,   &
@@ -237,20 +236,23 @@
 !
 !   required field for explicit filtering
 !
-       if(iflag_dmc .eq. 0                                              &
-     &     .and. SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
-         if (    SGS_param%iflag_SGS_lorentz .eq. id_SGS_similarity     &
-     &      .or. SGS_param%iflag_SGS_uxb .eq. id_SGS_similarity) then
+       if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF         &
+     &     .and. iflag_dmc .eq. 0) then
+         if (SGS_par%model_p%iflag_SGS_lorentz .eq. id_SGS_similarity   &
+     &      .or. SGS_par%model_p%iflag_SGS_uxb .eq. id_SGS_similarity)  &
+     &    then
            iflag2 = 3
-         else if (SGS_param%iflag_SGS_lorentz .eq. id_SGS_NL_grad       &
-     &       .or. SGS_param%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
+         else if(SGS_par%model_p%iflag_SGS_lorentz .eq. id_SGS_NL_grad  &
+     &       .or. SGS_par%model_p%iflag_SGS_uxb .eq. id_SGS_NL_grad)    &
+     &    then
            iflag2 = 2
          else
            iflag2 = 2
          end if
        else
-         if (     SGS_param%iflag_SGS_lorentz .eq. id_SGS_similarity    &
-     &       .or. SGS_param%iflag_SGS_uxb .eq. id_SGS_similarity) then
+         if(SGS_par%model_p%iflag_SGS_lorentz .eq. id_SGS_similarity    &
+     &     .or. SGS_par%model_p%iflag_SGS_uxb .eq. id_SGS_similarity)   &
+     &    then
            iflag2 = 1
          else
            iflag2 = 0
@@ -264,7 +266,8 @@
          if (iphys%i_filter_magne .ne. 0) then
            if (iflag_debug.gt.0)                                        &
      &        write(*,*) 'cal_filtered_vector', iphys%i_filter_magne
-           call cal_filtered_vector_whole(nod_comm, node, filtering,    &
+           call cal_filtered_vector_whole                               &
+     &        (SGS_par%filter_p, nod_comm, node, filtering,             &
      &         iphys%i_filter_magne, iphys%i_magne, wk_filter, nod_fld)
            nod_fld%iflag_update(iphys%i_filter_magne  ) = 1
            nod_fld%iflag_update(iphys%i_filter_magne+1) = 1
@@ -292,7 +295,7 @@
 !
          if(iflag2.eq.3 .and. iphys%i_wide_fil_magne.ne.0) then
            call cal_filtered_vector_whole                               &
-     &        (nod_comm, node, wide_filtering,                          &
+     &        (SGS_par%filter_p, nod_comm, node, wide_filtering,        &
      &         iphys%i_wide_fil_magne, iphys%i_filter_magne,            &
      &         wk_filter, nod_fld)
            nod_fld%iflag_update(iphys%i_wide_fil_magne  ) = 1
@@ -305,8 +308,8 @@
 !   required field for gradient model
 !
 !
-       if (  SGS_param%iflag_SGS_lorentz .eq.   id_SGS_NL_grad          &
-     &  .or. SGS_param%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
+       if (  SGS_par%model_p%iflag_SGS_lorentz .eq. id_SGS_NL_grad      &
+     &  .or. SGS_par%model_p%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
          if ( ie_dbx.ne.0 ) then
            if (iflag_debug.gt.0) write(*,*) 'diff_magne_on_ele'
            call sel_int_diff_vector_on_ele                              &

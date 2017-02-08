@@ -5,9 +5,9 @@
 !                                    on July 2000 (ver 1.1)
 !        modieied by H. Matsui on Sep., 2005
 !
-!!      subroutine cal_magnetic_field_pre                               &
-!!     &         (icomp_sgs_uxb, iak_diff_b, iak_diff_uxb,              &
-!!     &          ie_dvx, ie_dbx, ak_d_magne, SGS_param, cmt_param,     &
+!!      subroutine cal_magnetic_field_pre(icomp_sgs_uxb, iak_diff_b,    &
+!!     &          iak_diff_uxb, ie_dvx, ie_dbx, ak_d_magne,             &
+!!     &          SGS_param, cmt_param, filter_param,                   &
 !!     &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,  &
 !!     &          Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,&
 !!     &          jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,           &
@@ -30,6 +30,7 @@
 !!     &          surf_wk, f_l, f_nl, nod_fld)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
+!!        type(SGS_filtering_params), intent(in) :: filter_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -103,9 +104,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_magnetic_field_pre                                 &
-     &         (icomp_sgs_uxb, iak_diff_b, iak_diff_uxb,                &
-     &          ie_dvx, ie_dbx, ak_d_magne, SGS_param, cmt_param,       &
+      subroutine cal_magnetic_field_pre(icomp_sgs_uxb, iak_diff_b,      &
+     &          iak_diff_uxb, ie_dvx, ie_dbx, ak_d_magne,               &
+     &          SGS_param, cmt_param, filter_param,                     &
      &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,    &
      &          Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,  &
      &          jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,             &
@@ -129,6 +130,7 @@
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
+      type(SGS_filtering_params), intent(in) :: filter_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -169,10 +171,10 @@
 !
       if ( SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
         call cal_sgs_magne_induction(icomp_sgs_uxb, ie_dvx, ie_dbx,     &
-     &     SGS_param, nod_comm, node, ele, conduct, cd_prop, iphys,     &
-     &     iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens, filtering, &
-     &     sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,     &
-     &     f_l, nod_fld)
+     &     SGS_param, filter_param, nod_comm, node, ele, conduct,       &
+     &     cd_prop, iphys, iphys_ele, ele_fld, jac_3d_q, rhs_tbl,       &
+     &     FEM_elens, filtering, sgs_coefs, sgs_coefs_nod, wk_filter,   &
+     &     mhd_fem_wk, fem_wk, f_l, nod_fld)
       end if
 !
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)

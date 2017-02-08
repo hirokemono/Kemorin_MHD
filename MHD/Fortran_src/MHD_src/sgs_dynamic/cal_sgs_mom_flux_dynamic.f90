@@ -5,13 +5,13 @@
 !     Modified by H. Matsui on Aug., 2007
 !
 !!      subroutine cal_sgs_m_flux_dynamic                               &
-!!     &         (iak_sgs_mf, icomp_sgs_mf, ie_dvx, ie_dfvx, SGS_param, &
+!!     &         (iak_sgs_mf, icomp_sgs_mf, ie_dvx, ie_dfvx, SGS_par,   &
 !!     &          nod_comm, node, ele, iphys, iphys_ele, ele_fld,       &
 !!     &          fluid, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,        &
 !!     &          FEM_elens, filtering, sgs_coefs_nod,                  &
 !!     &          wk_filter, wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,&
 !!     &          nod_fld, sgs_coefs)
-!!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -68,7 +68,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_sgs_m_flux_dynamic                                 &
-     &         (iak_sgs_mf, icomp_sgs_mf, ie_dvx, ie_dfvx, SGS_param,   &
+     &         (iak_sgs_mf, icomp_sgs_mf, ie_dvx, ie_dfvx, SGS_par,     &
      &          nod_comm, node, ele, iphys, iphys_ele, ele_fld,         &
      &          fluid, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,          &
      &          FEM_elens, filtering, sgs_coefs_nod,                    &
@@ -88,7 +88,7 @@
       integer(kind = kint), intent(in) :: iak_sgs_mf, icomp_sgs_mf
       integer (kind=kint), intent(in) :: ie_dvx, ie_dfvx
 !
-      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -124,7 +124,8 @@
      &     write(*,*) 'cal_sgs_mf_simi iphys%i_SGS_m_flux'
       call cal_sgs_mf_simi(iphys%i_SGS_m_flux, iphys%i_velo,            &
      &    iphys%i_filter_velo, icomp_sgs_mf,                            &
-     &    nod_comm, node, filtering, sgs_coefs_nod, wk_filter, nod_fld)
+     &    SGS_par%filter_p, nod_comm, node, filtering, sgs_coefs_nod,   &
+     &    wk_filter, nod_fld)
 !
 !    copy to work array
 !
@@ -153,7 +154,8 @@
 !
 !      filtering
 !
-      call cal_filtered_sym_tensor_whole(nod_comm, node, filtering,     &
+      call cal_filtered_sym_tensor_whole                                &
+     &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
      &    iphys%i_sgs_grad, iphys%i_SGS_m_flux, wk_filter, nod_fld)
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys%i_sgs_grad)
@@ -161,22 +163,23 @@
 !   Change coordinate
 !
       call cvt_tensor_dynamic_scheme_coord                              &
-     &   (SGS_param, node, iphys, nod_fld)
+     &   (SGS_par%model_p, node, iphys, nod_fld)
 !
 !     obtain model coefficient
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_model_coefs', n_sym_tensor, iak_sgs_mf, icomp_sgs_mf
-      call cal_model_coefs(SGS_param, layer_tbl,                        &
+      call cal_model_coefs(SGS_par%model_p, layer_tbl,                  &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
-     &    SGS_param%itype_Csym_m_flux, n_sym_tensor,                    &
+     &    SGS_par%model_p%itype_Csym_m_flux, n_sym_tensor,              &
      &    iak_sgs_mf, icomp_sgs_mf, intg_point_t_evo,                   &
      &    wk_cor, wk_lsq, wk_sgs, sgs_coefs)
 !
-      call reduce_model_coefs_layer(SGS_param%SGS_mf_factor,            &
+      call reduce_model_coefs_layer(SGS_par%model_p%SGS_mf_factor,      &
      &    wk_sgs%nlayer, wk_sgs%num_kinds, iak_sgs_mf,                  &
      &    wk_sgs%fld_clip, wk_sgs%fld_whole_clip)
-      call reduce_ele_tensor_model_coefs(ele, SGS_param%SGS_mf_factor,  &
+      call reduce_ele_tensor_model_coefs                                &
+     &   (ele, SGS_par%model_p%SGS_mf_factor,                           &
      &    sgs_coefs%ntot_comp, icomp_sgs_mf, sgs_coefs%ak)
 !
       end subroutine cal_sgs_m_flux_dynamic

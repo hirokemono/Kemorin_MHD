@@ -156,7 +156,7 @@
      &     (mesh%node, mesh%ele, ele_mesh%edge, iphys, nod_fld)
 !
         if (iflag_debug.gt.0) write(*,*) 'update_fields'
-        call update_fields(mesh, group, ele_mesh, MHD_mesh,             &
+        call update_fields(SGS_par1, mesh, group, ele_mesh, MHD_mesh,   &
      &      nod_bcs, surf_bcs, iphys, iphys_ele,                        &
      &      jac_3d_q, jac_3d_l, jac_sf_grp, rhs_tbl, FEM_elens,         &
      &      ifld_diff, icomp_diff, iphys_elediff,                       &
@@ -244,7 +244,8 @@
      &    surf_wk, f_l, f_nl, nod_fld, ele_fld)
 !
       call cal_sgs_terms_4_monitor                                      &
-     &   (SGS_par1%model_p, mesh%nod_comm, mesh%node, mesh%ele,         &
+     &   (SGS_par1%model_p, SGS_par1%filter_p,                          &
+     &    mesh%nod_comm, mesh%node, mesh%ele,                           &
      &    MHD_mesh%fluid, MHD_mesh%conduct, cd_prop1, iphys,            &
      &    iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,             &
      &    icomp_sgs, iphys_elediff, sgs_coefs, sgs_coefs_nod,           &
@@ -268,7 +269,8 @@
      &    FEM_elens, ifld_diff, diff_coefs, mhd_fem_wk,                 &
      &    fem_wk, surf_wk, f_l, f_nl, nod_fld, ele_fld)
 !
-      call cal_true_sgs_terms_post(mesh%nod_comm, mesh%node, iphys,     &
+      call cal_true_sgs_terms_post                                      &
+     &   (SGS_par1%filter_p, mesh%nod_comm, mesh%node, iphys,           &
      &    filtering, wk_filter, nod_fld)
 !
       call cal_work_4_forces(mesh%nod_comm, mesh%node, mesh%ele,        &

@@ -7,12 +7,12 @@
 !
 !!      subroutine cal_vector_p_pre                                     &
 !!     &         (iak_diff_b, icomp_sgs_uxb, ie_dvx, ak_d_magne,        &
-!!     &          SGS_param, cmt_param, nod_comm, node, ele, surf,      &
-!!     &          conduct, sf_grp, cd_prop, Bnod_bcs, Asf_bcs, iphys,   &
-!!     &          iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl,  &
-!!     &          FEM_elens, sgs_coefs, diff_coefs, filtering,          &
-!!     &          Bmatrix, MG_vector, wk_filter, mhd_fem_wk, fem_wk,    &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          SGS_param, cmt_param, filter_param,                   &
+!!     &          nod_comm, node, ele, surf, conduct, sf_grp,           &
+!!     &          cd_prop, Bnod_bcs, Asf_bcs, iphys, iphys_ele, ele_fld,&
+!!     &          jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,           &
+!!     &          sgs_coefs, diff_coefs, filtering, Bmatrix, MG_vector, &
+!!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_vector_p_co                                      &
 !!     &         (iak_diff_b, ak_d_magne, SGS_param, cmt_param,         &
 !!     &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,  &
@@ -23,6 +23,7 @@
 !!     &          f_l, f_nl, nod_fld)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
+!!        type(SGS_filtering_params), intent(in) :: filter_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -98,12 +99,12 @@
 !
       subroutine cal_vector_p_pre                                       &
      &         (iak_diff_b, icomp_sgs_uxb, ie_dvx, ak_d_magne,          &
-     &          SGS_param, cmt_param, nod_comm, node, ele, surf,        &
-     &          conduct, sf_grp, cd_prop, Bnod_bcs, Asf_bcs, iphys,     &
-     &          iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl,    &
-     &          FEM_elens, sgs_coefs, diff_coefs, filtering,            &
-     &          Bmatrix, MG_vector, wk_filter, mhd_fem_wk, fem_wk,      &
-     &          f_l, f_nl, nod_fld)
+     &          SGS_param, cmt_param, filter_param,                     &
+     &          nod_comm, node, ele, surf, conduct, sf_grp,             &
+     &          cd_prop, Bnod_bcs, Asf_bcs, iphys, iphys_ele, ele_fld,  &
+     &          jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,             &
+     &          sgs_coefs, diff_coefs, filtering, Bmatrix, MG_vector,   &
+     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use calypso_mpi
 !
@@ -121,6 +122,7 @@
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
+      type(SGS_filtering_params), intent(in) :: filter_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -172,7 +174,7 @@
 !
       if ( SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
         call cal_sgs_uxb_2_evo(icomp_sgs_uxb, ie_dvx,                   &
-     &      SGS_param, nod_comm, node, ele, conduct,                    &
+     &      SGS_param, filter_param, nod_comm, node, ele, conduct,      &
      &      cd_prop, iphys, iphys_ele, ele_fld, jac_3d_q, rhs_tbl,      &
      &      FEM_elens, filtering, sgs_coefs, wk_filter,                 &
      &      mhd_fem_wk, fem_wk, f_nl, nod_fld)

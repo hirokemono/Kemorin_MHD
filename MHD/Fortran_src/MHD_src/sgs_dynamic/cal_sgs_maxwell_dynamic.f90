@@ -6,12 +6,12 @@
 !
 !!      subroutine cal_sgs_maxwell_t_dynamic                            &
 !!     &         (iak_sgs_lor, icomp_sgs_lor, ie_dbx, ie_dfbx,          &
-!!     &          SGS_param, nod_comm, node, ele, iphys, iphys_ele,     &
+!!     &          SGS_par, nod_comm, node, ele, iphys, iphys_ele,       &
 !!     &          fld_ele, fluid, layer_tbl, jac_3d_q, jac_3d_l,        &
 !!     &          rhs_tbl, FEM_elens, filtering, sgs_coefs_nod,         &
 !!     &          wk_filter, wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,&
 !!     &          nod_fld, sgs_coefs)
-!!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -69,7 +69,7 @@
 !
       subroutine cal_sgs_maxwell_t_dynamic                              &
      &         (iak_sgs_lor, icomp_sgs_lor, ie_dbx, ie_dfbx,            &
-     &          SGS_param, nod_comm, node, ele, iphys, iphys_ele,       &
+     &          SGS_par, nod_comm, node, ele, iphys, iphys_ele,         &
      &          fld_ele, fluid, layer_tbl, jac_3d_q, jac_3d_l,          &
      &          rhs_tbl, FEM_elens, filtering, sgs_coefs_nod,           &
      &          wk_filter, wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,  &
@@ -87,7 +87,7 @@
       integer(kind = kint), intent(in) :: iak_sgs_lor, icomp_sgs_lor
       integer (kind=kint), intent(in) :: ie_dbx, ie_dfbx
 !
-      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -124,7 +124,8 @@
      &        'cal_sgs_mf_simi i_SGS_maxwell', iphys%i_SGS_maxwell
       call cal_sgs_mf_simi(iphys%i_SGS_maxwell, iphys%i_magne,          &
      &    iphys%i_filter_magne, icomp_sgs_lor,                          &
-     &    nod_comm, node, filtering, sgs_coefs_nod, wk_filter, nod_fld)
+     &    SGS_par%filter_p, nod_comm, node, filtering, sgs_coefs_nod,   &
+     &    wk_filter, nod_fld)
 !
 !    copy to work array
 !
@@ -149,21 +150,22 @@
 !
 !      filtering
 !
-      call cal_filtered_sym_tensor_whole(nod_comm, node, filtering,     &
+      call cal_filtered_sym_tensor_whole                                &
+     &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
      &    iphys%i_sgs_grad, iphys%i_SGS_maxwell, wk_filter, nod_fld)
 !
 !   Change coordinate
 !
       call cvt_tensor_dynamic_scheme_coord                              &
-     &   (SGS_param, node, iphys, nod_fld)
+     &   (SGS_par%model_p, node, iphys, nod_fld)
 !
 !     obtain model coefficient
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      & 'cal_model_coefs', n_sym_tensor, iak_sgs_lor, icomp_sgs_lor
       call cal_model_coefs                                              &
-     &   (SGS_param, layer_tbl, node, ele, iphys, nod_fld,              &
-     &    jac_3d_q, jac_3d_l, SGS_param%itype_Csym_maxwell,             &
+     &   (SGS_par%model_p, layer_tbl, node, ele, iphys, nod_fld,        &
+     &    jac_3d_q, jac_3d_l, SGS_par%model_p%itype_Csym_maxwell,       &
      &    n_sym_tensor,  iak_sgs_lor, icomp_sgs_lor,                    &
      &    intg_point_t_evo, wk_cor, wk_lsq, wk_sgs, sgs_coefs)
 !

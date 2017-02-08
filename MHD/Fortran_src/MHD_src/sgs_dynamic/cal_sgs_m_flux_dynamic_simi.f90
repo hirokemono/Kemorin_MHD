@@ -6,18 +6,18 @@
 !
 !!      subroutine s_cal_sgs_m_flux_dynamic_simi                        &
 !!     &         (iak_sgs_mf, icomp_sgs_mf,                             &
-!!     &          SGS_param, nod_comm, node, ele, iphys,                &
+!!     &          SGS_par, nod_comm, node, ele, iphys,                  &
 !!     &          layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,               &
 !!     &          filtering, wide_filtering, m_lump, wk_filter,         &
 !!     &          wk_cor, wk_lsq, wk_sgs, fem_wk, f_l, nod_fld,         &
 !!     &          sgs_coefs, sgs_coefs_nod)
 !!      subroutine cal_sgs_maxwell_dynamic_simi                         &
-!!     &        (iak_sgs_lor, icomp_sgs_lor, SGS_param,                 &
+!!     &        (iak_sgs_lor, icomp_sgs_lor, SGS_par,                   &
 !!     &         nod_comm, node, ele, iphys, layer_tbl,                 &
 !!     &         jac_3d_q, jac_3d_l, rhs_tbl, filtering, wide_filtering,&
 !!     &         m_lump, wk_filter, wk_cor, wk_lsq, wk_sgs, fem_wk, f_l,&
 !!     &         nod_fld, sgs_coefs, sgs_coefs_nod)
-!!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -71,7 +71,7 @@
 !
       subroutine s_cal_sgs_m_flux_dynamic_simi                          &
      &         (iak_sgs_mf, icomp_sgs_mf,                               &
-     &          SGS_param, nod_comm, node, ele, iphys,                  &
+     &          SGS_par, nod_comm, node, ele, iphys,                    &
      &          layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,                 &
      &          filtering, wide_filtering, m_lump, wk_filter,           &
      &          wk_cor, wk_lsq, wk_sgs, fem_wk, f_l, nod_fld,           &
@@ -89,7 +89,7 @@
 !
       integer(kind = kint), intent(in) :: iak_sgs_mf, icomp_sgs_mf
 !
-      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -127,8 +127,8 @@
      &     write(*,*) 'cal_sgs_mf_simi_wide i_wide_fil_velo'
       call cal_sgs_mf_simi(iphys%i_sgs_grad_f,                          &
      &    iphys%i_filter_velo, iphys%i_wide_fil_velo, icomp_sgs_mf,     &
-     &    nod_comm, node, wide_filtering, sgs_coefs_nod,                &
-     &    wk_filter, nod_fld)
+     &    SGS_par1%filter_p, nod_comm, node, wide_filtering,            &
+     &    sgs_coefs_nod, wk_filter, nod_fld)
 !
 !    SGS term by similarity model
 !
@@ -136,7 +136,8 @@
      &     write(*,*) 'cal_sgs_mf_simi iphys%i_SGS_m_flux'
       call cal_sgs_mf_simi(iphys%i_SGS_m_flux, iphys%i_velo,            &
      &    iphys%i_filter_velo, icomp_sgs_mf,                            &
-     &    nod_comm, node, filtering, sgs_coefs_nod, wk_filter, nod_fld)
+     &    SGS_par1%filter_p, nod_comm, node, filtering,                 &
+     &    sgs_coefs_nod, wk_filter, nod_fld)
 !
 !    copy to work array
 !
@@ -147,7 +148,8 @@
 !
 !      filtering
 !
-      call cal_filtered_sym_tensor_whole(nod_comm, node, filtering,     &
+      call cal_filtered_sym_tensor_whole                                &
+     &   (SGS_par1%filter_p, nod_comm, node, filtering,                 &
      &    iphys%i_sgs_grad, iphys%i_SGS_m_flux, wk_filter, nod_fld)
 !
 !      call check_nodal_data                                            &
@@ -156,15 +158,15 @@
 !   Change coordinate
 !
       call cvt_tensor_dynamic_scheme_coord                              &
-     &   (SGS_param, node, iphys, nod_fld)
+     &   (SGS_par1%model_p, node, iphys, nod_fld)
 !
 !     obtain model coefficient
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &    'cal_model_coefs', n_sym_tensor, iak_sgs_mf, icomp_sgs_mf
-      call cal_model_coefs(SGS_param, layer_tbl,                        &
+      call cal_model_coefs(SGS_par1%model_p, layer_tbl,                 &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
-     &    SGS_param%itype_Csym_m_flux, n_sym_tensor,                    &
+     &    SGS_par1%model_p%itype_Csym_m_flux, n_sym_tensor,             &
      &    iak_sgs_mf, icomp_sgs_mf, intg_point_t_evo,                   &
      &    wk_cor, wk_lsq, wk_sgs, sgs_coefs)
 !
@@ -179,7 +181,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_sgs_maxwell_dynamic_simi                           &
-     &        (iak_sgs_lor, icomp_sgs_lor, SGS_param,                   &
+     &        (iak_sgs_lor, icomp_sgs_lor, SGS_par,                     &
      &         nod_comm, node, ele, iphys, layer_tbl,                   &
      &         jac_3d_q, jac_3d_l, rhs_tbl, filtering, wide_filtering,  &
      &         m_lump, wk_filter, wk_cor, wk_lsq, wk_sgs, fem_wk, f_l,  &
@@ -197,7 +199,7 @@
 !
       integer(kind = kint), intent(in) :: iak_sgs_lor, icomp_sgs_lor
 !
-      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -236,8 +238,8 @@
      &     write(*,*) 'cal_sgs_mf_simi_wide i_wide_fil_magne'
       call cal_sgs_mf_simi(iphys%i_sgs_grad_f,                          &
      &    iphys%i_filter_magne, iphys%i_wide_fil_magne, icomp_sgs_lor,  &
-     &    nod_comm, node, wide_filtering, sgs_coefs_nod,                &
-     &    wk_filter, nod_fld)
+     &    SGS_par1%filter_p, nod_comm, node, wide_filtering,            &
+     &    sgs_coefs_nod, wk_filter, nod_fld)
 !
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys%i_sgs_grad_f)
@@ -248,7 +250,8 @@
      &     write(*,*) 'cal_sgs_mf_simi iphys%i_SGS_maxwell'
       call cal_sgs_mf_simi(iphys%i_SGS_maxwell, iphys%i_magne,          &
      &    iphys%i_filter_magne, icomp_sgs_lor,                          &
-     &    nod_comm, node, filtering, sgs_coefs_nod, wk_filter, nod_fld)
+     &    SGS_par1%filter_p, nod_comm, node, filtering, sgs_coefs_nod,  &
+     &    wk_filter, nod_fld)
 !
 !    copy to work array
 !
@@ -257,21 +260,22 @@
 !
 !    filtering
 !
-      call cal_filtered_sym_tensor_whole(nod_comm, node, filtering,     &
+      call cal_filtered_sym_tensor_whole                                &
+     &   (SGS_par1%filter_p, nod_comm, node, filtering,                 &
      &    iphys%i_sgs_grad, iphys%i_SGS_maxwell, wk_filter, nod_fld)
 !
 !   Change coordinate
 !
       call cvt_tensor_dynamic_scheme_coord                              &
-     &   (SGS_param, node, iphys, nod_fld)
+     &   (SGS_par1%model_p, node, iphys, nod_fld)
 !
 !     obtain model coefficient
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_model_coefs', n_sym_tensor, iak_sgs_lor, icomp_sgs_lor
-      call cal_model_coefs(SGS_param, layer_tbl,                        &
+      call cal_model_coefs(SGS_par1%model_p, layer_tbl,                 &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
-     &    SGS_param%itype_Csym_maxwell, n_sym_tensor,                   &
+     &    SGS_par1%model_p%itype_Csym_maxwell, n_sym_tensor,            &
      &    iak_sgs_lor, icomp_sgs_lor, intg_point_t_evo,                 &
      &    wk_cor, wk_lsq, wk_sgs, sgs_coefs)
 !

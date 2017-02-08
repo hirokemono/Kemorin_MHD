@@ -5,16 +5,17 @@
 !                                    on July 2000 (ver 1.1)
 !        modieied by H. Matsui on Sep., 2005
 !
-!!      subroutine cal_temperature_field(i_field,                       &
-!!     &          SGS_param, cmt_param, nod_comm, node, ele, surf,      &
-!!     &          fluid, sf_grp, property, Tnod_bcs, Tsf_bcs, iphys,    &
-!!     &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,      &
-!!     &          FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,       &
-!!     &          sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,      &
-!!     &          Tmatrix, ak_d_temp, wk_filter, mhd_fem_wk, fem_wk,    &
-!!     &          surf_wk, f_l, f_nl, nod_fld)
+!!      subroutine cal_temperature_field                                &
+!!     &         (i_field, SGS_param, cmt_param, filter_param,          &
+!!     &          nod_comm, node, ele, surf, fluid, sf_grp, property,   &
+!!     &          Tnod_bcs, Tsf_bcs, iphys, iphys_ele, ele_fld,         &
+!!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, icomp_sgs,    &
+!!     &          ifld_diff, iphys_elediff, sgs_coefs, sgs_coefs_nod,   &
+!!     &          diff_coefs, filtering, Tmatrix, ak_d_temp, wk_filter, &
+!!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
+!!        type(SGS_filtering_params), intent(in) :: filter_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -83,14 +84,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_temperature_field(i_field,                         &
-     &          SGS_param, cmt_param, nod_comm, node, ele, surf,        &
-     &          fluid, sf_grp, property, Tnod_bcs, Tsf_bcs, iphys,      &
-     &          iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,        &
-     &          FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,         &
-     &          sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,        &
-     &          Tmatrix, ak_d_temp, wk_filter, mhd_fem_wk, fem_wk,      &
-     &          surf_wk, f_l, f_nl, nod_fld)
+      subroutine cal_temperature_field                                  &
+     &         (i_field, SGS_param, cmt_param, filter_param,            &
+     &          nod_comm, node, ele, surf, fluid, sf_grp, property,     &
+     &          Tnod_bcs, Tsf_bcs, iphys, iphys_ele, ele_fld,           &
+     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, icomp_sgs,      &
+     &          ifld_diff, iphys_elediff, sgs_coefs, sgs_coefs_nod,     &
+     &          diff_coefs, filtering, Tmatrix, ak_d_temp, wk_filter,   &
+     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
       use m_phys_constants
       use m_t_int_parameter
@@ -113,6 +114,7 @@
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
+      type(SGS_filtering_params), intent(in) :: filter_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -155,10 +157,10 @@
      &      SGS_param%iflag_SGS_h_flux, SGS_param%itype_Csym_h_flux,    &
      &      i_field, iphys%i_filter_temp,                               &
      &      iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_h_flux,      &
-     &      icomp_sgs%i_heat_flux, iphys_elediff%i_velo, SGS_param,     &
-     &      nod_comm, node, ele, fluid, iphys_ele, ele_fld,             &
-     &      jac_3d, rhs_tbl, FEM_elens, filtering, sgs_coefs,           &
-     &      sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,               &
+     &      icomp_sgs%i_heat_flux, iphys_elediff%i_velo,                &
+     &      SGS_param, filter_param, nod_comm, node, ele, fluid,        &
+     &      iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens, filtering,  &
+     &      sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,    &
      &      f_l, f_nl, nod_fld)
       end if
 !

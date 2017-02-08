@@ -4,14 +4,15 @@
 !      Written by H. Matsui
 !
 !!      subroutine cal_filtered_scalar_whole                            &
-!!     &         (nod_comm, node, filtering, i_filter, i_scalar,        &
-!!     &          wk_filter, nod_fld)
+!!     &         (filter_param, nod_comm, node, filtering,              &
+!!     &          i_filter, i_scalar, wk_filter, nod_fld)
 !!      subroutine cal_filtered_vector_whole                            &
-!!     &         (nod_comm, node, filtering, i_filter, i_vect,          &
-!!     &          wk_filter, nod_fld)
+!!     &         (filter_param, nod_comm, node, filtering,              &
+!!     &          i_filter, i_vect, wk_filter, nod_fld)
 !!      subroutine cal_filtered_sym_tensor_whole                        &
-!!     &         (nod_comm, node, filtering, i_filter, i_vect,          &
-!!     &          wk_filter, nod_fld)
+!!     &         (filter_param, nod_comm, node, filtering,              &
+!!     &          i_filter, i_vect, wk_filter, nod_fld)
+!!        type(SGS_filtering_params), intent(in) :: filter_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(filtering_data_type), intent(in) :: filtering
@@ -24,8 +25,8 @@
 !
       use m_precision
 !
-      use m_SGS_control_parameter
       use m_nod_filter_comm_table
+      use t_SGS_control_parameter
       use t_comm_table
       use t_geometry_data
       use t_phys_data
@@ -40,11 +41,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_filtered_scalar_whole                              &
-     &         (nod_comm, node, filtering, i_filter, i_scalar,          &
-     &          wk_filter, nod_fld)
+     &         (filter_param, nod_comm, node, filtering,                &
+     &          i_filter, i_scalar, wk_filter, nod_fld)
 !
       use select_filtering
 !
+      type(SGS_filtering_params), intent(in) :: filter_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(filtering_data_type), intent(in) :: filtering
@@ -55,7 +57,7 @@
 !
 !
       call cal_filtered_scalar                                          &
-     &   (filter_param1%iflag_SGS_filter, filter_param1%whole,          &
+     &   (filter_param%iflag_SGS_filter, filter_param%whole,            &
      &    nod_comm, node, filtering, i_filter, i_scalar,                &
      &    wk_filter, nod_fld)
 !
@@ -64,11 +66,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_filtered_vector_whole                              &
-     &         (nod_comm, node, filtering, i_filter, i_vect,            &
-     &          wk_filter, nod_fld)
+     &         (filter_param, nod_comm, node, filtering,                &
+     &          i_filter, i_vect, wk_filter, nod_fld)
 !
       use select_filtering
 !
+      type(SGS_filtering_params), intent(in) :: filter_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(filtering_data_type), intent(in) :: filtering
@@ -79,7 +82,7 @@
 !
 !
       call cal_filtered_vector                                          &
-     &   (filter_param1%iflag_SGS_filter, filter_param1%whole,          &
+     &   (filter_param%iflag_SGS_filter, filter_param%whole,            &
      &    nod_comm, node, filtering, i_filter, i_vect,                  &
      &    wk_filter, nod_fld)
 !
@@ -88,11 +91,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_filtered_sym_tensor_whole                          &
-     &         (nod_comm, node, filtering, i_filter, i_vect,            &
-     &          wk_filter, nod_fld)
+     &         (filter_param, nod_comm, node, filtering,                &
+     &          i_filter, i_vect, wk_filter, nod_fld)
 !
       use select_filtering
 !
+      type(SGS_filtering_params), intent(in) :: filter_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(filtering_data_type), intent(in) :: filtering
@@ -103,7 +107,7 @@
 !
 !
       call cal_filtered_sym_tensor                                      &
-     &   (filter_param1%iflag_SGS_filter, filter_param1%whole,          &
+     &   (filter_param%iflag_SGS_filter, filter_param%whole,            &
      &    nod_comm, node, filtering, i_filter, i_vect,                  &
      &    wk_filter, nod_fld)
 !

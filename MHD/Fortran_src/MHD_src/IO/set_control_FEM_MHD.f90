@@ -106,7 +106,7 @@
 !
       call set_control_SGS_model                                        &
      &   (model_ctl%sgs_ctl, SGS_par1%model_p, SGS_par1%commute_p,      &
-     &    filter_param1)
+     &    SGS_par1%filter_p)
       call set_control_FEM_SGS(model_ctl%sgs_ctl%ffile_ctl,             &
      &    model_ctl%sgs_ctl, model_ctl%sgs_ctl%elayer_ctl,              &
      &    SGS_par1%model_p)
@@ -116,7 +116,7 @@
       call s_set_control_4_filtering                                    &
      &   (SGS_par1%model_p, model_ctl%sgs_ctl%SGS_filter_name_ctl,      &
      &    model_ctl%sgs_ctl%ffile_ctl, model_ctl%sgs_ctl%s3df_ctl,      &
-     &    filter_param1)
+     &    SGS_par1%filter_p)
 !
 !   set fields
 !

@@ -5,12 +5,12 @@
 !
 !!      subroutine s_cal_sgs_s_flux_dynamic_simi(itype_Csym_flux,       &
 !!     &         ifield, ifield_f, ifield_w, ivelo, ivelo_f, i_sgs,     &
-!!     &         iak_sgs_hlux, icomp_sgs_flux, SGS_param,               &
+!!     &         iak_sgs_hlux, icomp_sgs_flux, SGS_par,                 &
 !!     &         nod_comm, node, ele, iphys, layer_tbl,                 &
 !!     &         jac_3d_q, jac_3d_l, rhs_tbl, filtering, wide_filtering,&
 !!     &         m_lump, wk_filter, wk_cor, wk_lsq, wk_sgs, fem_wk,     &
 !!     &         f_l, nod_fld, sgs_coefs, sgs_coefs_nod)
-!!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -65,7 +65,7 @@
 !
       subroutine s_cal_sgs_s_flux_dynamic_simi(itype_Csym_flux,         &
      &         ifield, ifield_f, ifield_w, ivelo, ivelo_f, i_sgs,       &
-     &         iak_sgs_hlux, icomp_sgs_flux, SGS_param,                 &
+     &         iak_sgs_hlux, icomp_sgs_flux, SGS_par,                   &
      &         nod_comm, node, ele, iphys, layer_tbl,                   &
      &         jac_3d_q, jac_3d_l, rhs_tbl, filtering, wide_filtering,  &
      &         m_lump, wk_filter, wk_cor, wk_lsq, wk_sgs, fem_wk,       &
@@ -86,7 +86,7 @@
       integer (kind=kint), intent(in) :: ifield, ifield_f, ifield_w
       integer (kind=kint), intent(in) :: i_sgs, ivelo, ivelo_f
 !
-      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -123,8 +123,8 @@
      &     write(*,*) 'cal_sgs_sf_simi i_wide_fil_temp'
       call cal_sgs_sf_simi(iphys%i_sgs_grad_f,                          &
      &    ifield_f, ifield_w, ivelo, ivelo_f, icomp_sgs_flux,           &
-     &    nod_comm, node, wide_filtering, sgs_coefs_nod,                &
-     &    wk_filter, nod_fld)
+     &    SGS_par%filter_p, nod_comm, node, wide_filtering,             &
+     &    sgs_coefs_nod, wk_filter, nod_fld)
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_vector, iphys%i_sgs_grad_f)
 !
@@ -133,7 +133,8 @@
       if (iflag_debug.eq.1) write(*,*) 'cal_sgs_sf_simi'
       call cal_sgs_sf_simi                                              &
      &   (i_sgs, ifield, ifield_f, ivelo, ivelo_f, icomp_sgs_flux,      &
-     &    nod_comm, node, filtering, sgs_coefs_nod, wk_filter, nod_fld)
+     &    SGS_par%filter_p, nod_comm, node, filtering, sgs_coefs_nod,   &
+     &    wk_filter, nod_fld)
 !
 !    copy to work array
 !
@@ -141,19 +142,20 @@
 !
 !      filtering
 !
-      call cal_filtered_vector_whole(nod_comm, node, filtering,         &
+      call cal_filtered_vector_whole                                    &
+     &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
      &    iphys%i_sgs_grad, i_sgs, wk_filter, nod_fld)
 !
 !   Change coordinate
 !
       call cvt_vector_dynamic_scheme_coord                              &
-     &   (SGS_param, node, iphys, nod_fld)
+     &   (SGS_par%model_p, node, iphys, nod_fld)
 !
 !     obtain model coefficient
 !
       if (iflag_debug.eq.1)  write(*,*)' cal_model_coefs',              &
      &   n_vector, iak_sgs_hlux, icomp_sgs_flux
-      call cal_model_coefs(SGS_param, layer_tbl,                        &
+      call cal_model_coefs(SGS_par%model_p, layer_tbl,                  &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
      &    itype_Csym_flux, n_vector, iak_sgs_hlux,                      &
      &    icomp_sgs_flux, intg_point_t_evo, wk_cor, wk_lsq, wk_sgs,     &

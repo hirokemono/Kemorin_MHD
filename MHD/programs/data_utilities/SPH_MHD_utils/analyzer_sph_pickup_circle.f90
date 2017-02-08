@@ -75,7 +75,7 @@
      &    MHD_ctl1%nmtr_ctl, MHD_ctl1%psph_ctl,                         &
      &    sph_gen, rj_fld1, mesh_file_circ, sph_file_param1,            &
      &    MHD1_org_files, sph_fst_IO, pwr1,                             &
-     &    SGS_par1%model_p, SGS_par1%commute_p, filter_param1,          &
+     &    SGS_par1%model_p, SGS_par1%commute_p, SGS_par1%filter_p,      &
      &    trns_WK1%dynamic_SPH%sph_filters)
       call set_ctl_params_pick_circle                                   &
      &   (MHD_ctl1%model_ctl%fld_ctl%field_ctl,                         &

@@ -9,15 +9,14 @@
 !!@verbatim
 !!      subroutine update_with_velocity                                 &
 !!     &         (iak_diff_v, icomp_diff_v, ie_dvx, ie_dfvx,            &
-!!     &          SGS_param, cmt_param, nod_comm, node, ele, surf,      &
-!!     &          fluid, sf_grp, Vsf_bcs, Psf_bcs, iphys, iphys_ele,    &
+!!     &          SGS_par, nod_comm, node, ele, surf, fluid, sf_grp,    &
+!!     &          Vsf_bcs, Psf_bcs, iphys, iphys_ele,                   &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
 !!     &          FEM_elens, filtering, wide_filtering, layer_tbl,      &
 !!     &          wk_cor, wk_lsq, wk_diff, wk_filter,                   &
 !!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,               &
 !!     &          nod_fld, ele_fld, diff_coefs)
-!!        type(SGS_model_control_params), intent(in) :: SGS_param
-!!        type(commutation_control_params), intent(in) :: cmt_param
+!!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -86,8 +85,8 @@
 !
       subroutine update_with_velocity                                   &
      &         (iak_diff_v, icomp_diff_v, ie_dvx, ie_dfvx,              &
-     &          SGS_param, cmt_param, nod_comm, node, ele, surf,        &
-     &          fluid, sf_grp, Vsf_bcs, Psf_bcs, iphys, iphys_ele,      &
+     &          SGS_par, nod_comm, node, ele, surf, fluid, sf_grp,      &
+     &          Vsf_bcs, Psf_bcs, iphys, iphys_ele,                     &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
      &          FEM_elens, filtering, wide_filtering, layer_tbl,        &
      &          wk_cor, wk_lsq, wk_diff, wk_filter,                     &
@@ -104,8 +103,7 @@
       integer(kind = kint), intent(in) :: iak_diff_v, icomp_diff_v
       integer(kind = kint), intent(in) :: ie_dvx, ie_dfvx
 !
-      type(SGS_model_control_params), intent(in) :: SGS_param
-      type(commutation_control_params), intent(in) :: cmt_param
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -171,10 +169,10 @@
 !
       if (iphys%i_filter_velo .ne. 0) then
 !
-        if (SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF             &
+        if (SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF       &
      &      .and. iflag_dmc.eq.0) then
           iflag2 = 1
-        else if (SGS_param%iflag_SGS .eq. id_SGS_similarity) then
+        else if(SGS_par%model_p%iflag_SGS .eq. id_SGS_similarity) then
           iflag2 = 1
         else
           iflag2 = 0
@@ -183,7 +181,8 @@
         if (iflag2 .eq. 1) then
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &      write(*,*) 'cal_filtered_vector', iphys%i_filter_velo
-          call cal_filtered_vector_whole(nod_comm, node, filtering,     &
+          call cal_filtered_vector_whole                                &
+     &       (SGS_par%filter_p, nod_comm, node, filtering,              &
      &        iphys%i_filter_velo, iphys%i_velo, wk_filter, nod_fld)
           nod_fld%iflag_update(iphys%i_filter_velo  ) = 1
           nod_fld%iflag_update(iphys%i_filter_velo+1) = 1
@@ -192,10 +191,11 @@
       end if
 !
       if (iphys%i_wide_fil_velo.ne.0 .and. iflag_dmc.eq.0) then
-        if (SGS_param%iflag_SGS.eq.id_SGS_similarity                    &
-     &    .and. SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
+        if (SGS_par%model_p%iflag_SGS.eq.id_SGS_similarity              &
+     &    .and. SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF)  &
+     &   then
           call cal_filtered_vector_whole                                &
-     &       (nod_comm, node, wide_filtering,                           &
+     &       (SGS_par%filter_p, nod_comm, node, wide_filtering,         &
      &        iphys%i_wide_fil_velo, iphys%i_filter_velo,               &
      &        wk_filter, nod_fld)
           nod_fld%iflag_update(iphys%i_wide_fil_velo  ) = 1
@@ -206,8 +206,8 @@
 !
 !    required field for vector potential
 !
-       if (SGS_param%iflag_SGS.eq.id_SGS_NL_grad                        &
-     &    .and. SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF         &
+       if (SGS_par%model_p%iflag_SGS.eq.id_SGS_NL_grad                  &
+     &    .and. SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF   &
      &    .and. iflag_dmc.eq.0) then
 !
          if (iphys_ele%i_filter_velo.ne.0) then
@@ -218,12 +218,11 @@
      &         node, ele, nod_fld, jac_3d_q, jac_3d_l, mhd_fem_wk)
          end if
 !
-        if (cmt_param%iflag_c_velo .eq. id_SGS_commute_ON               &
+        if (SGS_par%commute_p%iflag_c_velo .eq. id_SGS_commute_ON       &
      &         .and. diff_coefs%iflag_field(iak_diff_v) .eq. 0) then
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &                 write(*,*) 's_cal_diff_coef_velo'
-          call s_cal_diff_coef_velo                                     &
-     &       (iak_diff_v, icomp_diff_v, SGS_param, cmt_param,           &
+          call s_cal_diff_coef_velo(iak_diff_v, icomp_diff_v, SGS_par,  &
      &        nod_comm, node, ele, surf, sf_grp, Vsf_bcs, Psf_bcs,      &
      &        iphys, iphys_ele, ele_fld, fluid, layer_tbl,              &
      &        jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,     &
@@ -237,7 +236,7 @@
 !   required field for gradient model
 !
        if (ie_dvx .ne. 0) then
-         if(SGS_param%iflag_SGS .eq. id_SGS_NL_grad) then
+         if(SGS_par%model_p%iflag_SGS .eq. id_SGS_NL_grad) then
            if(iflag_debug .ge. iflag_routine_msg)                       &
      &                 write(*,*) 'diff_velocity_on_ele'
            call sel_int_diff_vector_on_ele                              &

@@ -106,7 +106,7 @@
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
       call input_meshes_4_MHD(SGS_par1%model_p, mesh, group, IO_bc,     &
-     &    filter_param1, filtering, wide_filtering, wk_filter)
+     &    SGS_par1%filter_p, filtering, wide_filtering, wk_filter)
 !
       if(cmp_no_case(method_4_solver, cflag_mgcg)) then
         call alloc_MHD_MG_DJDS_mat(num_MG_level, MHD_matrices)
@@ -161,7 +161,7 @@
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
       call input_meshes_4_MHD(SGS_par1%model_p, mesh, group, IO_bc,     &
-     &    filter_param1, filtering, wide_filtering, wk_filter)
+     &    SGS_par1%filter_p, filtering, wide_filtering, wk_filter)
 !
       call count_field_4_monitor                                        &
      &   (nod_fld%num_phys, nod_fld%num_component,                      &

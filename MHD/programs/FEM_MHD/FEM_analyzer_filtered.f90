@@ -110,7 +110,7 @@
       call nod_fields_send_recv(mesh1%nod_comm, nod_fld1)
 !
       if (iflag_debug.eq.1)  write(*,*) 'update_fields'
-      call update_fields(mesh1, group1, ele_mesh1, MHD_mesh1,           &
+      call update_fields(SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1, &
      &    nod1_bcs, sf1_bcs, iphys, iphys_ele,                          &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,  &
      &      ifld_diff, icomp_diff, iphys_elediff,                       &
@@ -123,8 +123,7 @@
       if (SGS_par1%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
         call s_cal_model_coefficients                                   &
-     &     (SGS_par1%model_p, SGS_par1%commute_p,                       &
-     &      mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,            &
+     &     (SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,  &
      &      nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,              &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, ifld_sgs, icomp_sgs, ifld_diff, icomp_diff,      &
@@ -147,8 +146,8 @@
 !
 !     ----Filtering
       if (iflag_debug.eq.1) write(*,*) 'filtering_all_fields'
-      call filtering_all_fields                                         &
-     &   (mesh1%nod_comm, mesh1%node, filtering1, wk_filter1, nod_fld1)
+      call filtering_all_fields(SGS_par1%filter_p,                      &
+     &    mesh1%nod_comm, mesh1%node, filtering1, wk_filter1, nod_fld1)
 !
 !     -----Output monitor date
 !

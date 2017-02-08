@@ -193,11 +193,11 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 's_cal_velocity_pre'
       call s_cal_velocity_pre                                           &
-     &   (SGS_par1%model_p, SGS_par1%commute_p, nod_comm, node, ele,    &
-     &    surf, fluid, sf_grp, sf_grp_nod, fl_prop, cd_prop,            &
-     &    Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD,         &
-     &    jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,         &
-     &    ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,                &
+     &   (SGS_par1%model_p, SGS_par1%commute_p, SGS_par1%filter_p,      &
+     &    nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,         &
+     &    fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys,          &
+     &    iphys_ele, ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, &
+     &    FEM_elens, ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,     &
      &    sgs_coefs_nod, diff_coefs, filtering, layer_tbl,              &
      &    Vmatrix, MG_vector, wk_lsq, wk_sgs,                           &
      &    wk_filter, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,            &

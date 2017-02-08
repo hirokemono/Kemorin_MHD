@@ -137,7 +137,7 @@ integer(kind = kint) :: iflag
 !
 !     ---------------------
 !
-      iflag = filter_param1%iflag_SGS_filter
+      iflag = SGS_par1%filter_p%iflag_SGS_filter
       if(     (SGS_par1%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF   &
      &    .or. SGS_par1%model_p%iflag_SGS.eq.id_SGS_similarity)) then
 !

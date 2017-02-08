@@ -3,15 +3,16 @@
 !
 !      Written by H. Matsui on Apr., 2012
 !
-!!      subroutine cal_sgs_m_flux_grad_w_coef(itype_csim, icoord_Csim,  &
-!!     &          i_filter, icm_sgs, i_sgs, i_field, ie_dvx, nod_comm,  &
-!!     &          node, ele, fluid, iphys_ele, ele_fld, jac_3d,         &
-!!     &          FEM_elens, sgs_coefs, rhs_tbl, fem_wk,                &
-!!     &          mhd_fem_wk, nod_fld)
+!!      subroutine cal_sgs_m_flux_grad_w_coef                           &
+!!     &         (i_filter, icm_sgs, i_sgs, i_field, ie_dvx,            &
+!!     &          SGS_param, nod_comm, node, ele, fluid,                &
+!!     &          iphys_ele, ele_fld, jac_3d, FEM_elens, sgs_coefs,     &
+!!     &          rhs_tbl, fem_wk, mhd_fem_wk, nod_fld)
 !!      subroutine cal_sgs_m_flux_grad_no_coef                          &
 !!     &         (i_filter, i_sgs, i_field, ie_dvx, nod_comm,           &
 !!     &          node, ele, fluid, iphys_ele, ele_fld, jac_3d,         &
 !!     &          FEM_elens, rhs_tbl, fem_wk, mhd_fem_wk, nod_fld)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -34,6 +35,7 @@
       use m_control_parameter
       use m_phys_constants
 !
+      use t_SGS_control_parameter
       use t_comm_table
       use t_geometry_data_MHD
       use t_geometry_data
@@ -55,11 +57,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_sgs_m_flux_grad_w_coef(itype_csim, icoord_Csim,    &
-     &          i_filter, icm_sgs, i_sgs, i_field, ie_dvx, nod_comm,    &
-     &          node, ele, fluid, iphys_ele, ele_fld, jac_3d,           &
-     &          FEM_elens, sgs_coefs, rhs_tbl, fem_wk,                  &
-     &          mhd_fem_wk, nod_fld)
+      subroutine cal_sgs_m_flux_grad_w_coef                             &
+     &         (i_filter, icm_sgs, i_sgs, i_field, ie_dvx,              &
+     &          SGS_param, nod_comm, node, ele, fluid,                  &
+     &          iphys_ele, ele_fld, jac_3d, FEM_elens, sgs_coefs,       &
+     &          rhs_tbl, fem_wk, mhd_fem_wk, nod_fld)
 !
       use cal_ff_smp_to_ffs
       use cal_skv_to_ff_smp
@@ -67,6 +69,7 @@
       use int_vol_sgs_flux
       use product_model_coefs_to_sk
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -78,7 +81,6 @@
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
-      integer (kind=kint), intent(in) :: itype_csim, icoord_Csim
       integer (kind=kint), intent(in) :: i_filter, icm_sgs
       integer (kind=kint), intent(in) :: i_sgs, i_field
       integer (kind=kint), intent(in) :: ie_dvx
@@ -98,7 +100,8 @@
 !
 !     set elemental model coefficients
 !
-      call prod_model_coefs_4_tensor(ele, itype_csim, icoord_Csim,      &
+      call prod_model_coefs_4_tensor                                    &
+     &   (ele, SGS_param%itype_Csym_m_flux, SGS_param%icoord_Csim,      &
      &    sgs_coefs%ntot_comp, icm_sgs, sgs_coefs%ak, fem_wk%sk6)
 !
       call add6_skv_to_ff_t_smp(node, ele, rhs_tbl,                     &

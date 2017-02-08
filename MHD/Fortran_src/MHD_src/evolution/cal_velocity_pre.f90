@@ -6,10 +6,11 @@
 !        modieied by H. Matsui on Sep., 2005
 !
 !!      subroutine s_cal_velocity_pre                                   &
-!!     &         (SGS_param, cmt_param, nod_comm, node, ele, surf,      &
-!!     &          fluid, sf_grp, sf_grp_nod, fl_prop, cd_prop,          &
-!!     &          Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD, &
-!!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens, &
+!!     &         (SGS_param, cmt_param, filter_param,                   &
+!!     &          nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod, &
+!!     &          fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs,         &
+!!     &          iphys, iphys_ele, ak_MHD, jac_3d_q, jac_3d_l,         &
+!!     &          jac_sf_grp_q,  rhs_tbl, FEM_elens,                    &
 !!     &          ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,        &
 !!     &          sgs_coefs_nod, diff_coefs, filtering, layer_tbl,      &
 !!     &          Vmatrix, MG_vector, wk_lsq, wk_sgs, wk_filter,        &
@@ -25,6 +26,7 @@
 !!     &         f_l, f_nl, nod_fld)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
+!!        type(SGS_filtering_params), intent(in) :: filter_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -113,10 +115,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_cal_velocity_pre                                     &
-     &         (SGS_param, cmt_param, nod_comm, node, ele, surf,        &
-     &          fluid, sf_grp, sf_grp_nod, fl_prop, cd_prop,            &
-     &          Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD,   &
-     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,   &
+     &         (SGS_param, cmt_param, filter_param,                     &
+     &          nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,   &
+     &          fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs,           &
+     &          iphys, iphys_ele, ak_MHD, jac_3d_q, jac_3d_l,           &
+     &          jac_sf_grp_q,  rhs_tbl, FEM_elens,                      &
      &          ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,          &
      &          sgs_coefs_nod, diff_coefs, filtering, layer_tbl,        &
      &          Vmatrix, MG_vector, wk_lsq, wk_sgs, wk_filter,          &
@@ -140,6 +143,7 @@
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
+      type(SGS_filtering_params), intent(in) :: filter_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -187,7 +191,8 @@
 !
 !
       if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
-        call cal_sgs_mom_flux_with_sgs_buo(SGS_param, cmt_param,        &
+        call cal_sgs_mom_flux_with_sgs_buo                              &
+     &     (SGS_param, cmt_param, filter_param,                         &
      &      nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,        &
      &      fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,       &
      &      ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,          &
@@ -199,20 +204,20 @@
 !
       if(SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
         call cal_sgs_momentum_flux                                      &
-     &     (icomp_sgs%i_mom_flux, iphys_elediff%i_velo, SGS_param,      &
-     &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
-     &      jac_3d_q, rhs_tbl, FEM_elens, filtering,                    &
-     &      sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,    &
-     &      f_l, f_nl, nod_fld)
+     &     (icomp_sgs%i_mom_flux, iphys_elediff%i_velo,                 &
+     &      SGS_param, filter_param, nod_comm, node, ele, fluid,        &
+     &      iphys, iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,    &
+     &      filtering, sgs_coefs, sgs_coefs_nod, wk_filter,             &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       if(SGS_param%iflag_SGS_lorentz .ne. id_SGS_none) then
         call cal_sgs_maxwell                                            &
-     &     (icomp_sgs%i_lorentz, iphys_elediff%i_magne, SGS_param,      &
-     &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
-     &      jac_3d_q, rhs_tbl, FEM_elens, filtering,                    &
-     &      sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,    &
-     &      f_l, f_nl, nod_fld)
+     &     (icomp_sgs%i_lorentz, iphys_elediff%i_magne,                 &
+     &      SGS_param, filter_param, nod_comm, node, ele, fluid,        &
+     &      iphys, iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,    &
+     &      filtering, sgs_coefs, sgs_coefs_nod, wk_filter,             &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
 !   --- reset work array for time evolution

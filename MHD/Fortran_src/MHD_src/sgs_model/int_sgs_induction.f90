@@ -8,11 +8,12 @@
 !!     &         (nod_comm, node, ele, conduct, iphys, jac_3d,          &
 !!     &          rhs_tbl, mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !!      subroutine cal_sgs_uxb_2_monitor(icomp_sgs_uxb, ie_dvx,         &
-!!     &          SGS_param, nod_comm, node, ele, conduct, cd_prop,     &
-!!     &          iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elen, &
-!!     &          filtering, sgs_coefs, wk_filter, mhd_fem_wk, fem_wk,  &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          SGS_param, filter_param, nod_comm, node, ele, conduct,&
+!!     &          cd_prop, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl,  &
+!!     &          FEM_elen, filtering, sgs_coefs, wk_filter,            &
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!        type(SGS_filtering_params), intent(in) :: filter_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -109,10 +110,10 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_sgs_uxb_2_monitor(icomp_sgs_uxb, ie_dvx,           &
-     &          SGS_param, nod_comm, node, ele, conduct, cd_prop,       &
-     &          iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elen,   &
-     &          filtering, sgs_coefs, wk_filter, mhd_fem_wk, fem_wk,    &
-     &          f_l, f_nl, nod_fld)
+     &          SGS_param, filter_param, nod_comm, node, ele, conduct,  &
+     &          cd_prop, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl,    &
+     &          FEM_elen, filtering, sgs_coefs, wk_filter,              &
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use cal_sgs_fluxes
       use cal_ff_smp_to_ffs
@@ -122,6 +123,7 @@
       integer(kind = kint), intent(in) :: icomp_sgs_uxb, ie_dvx
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
+      type(SGS_filtering_params), intent(in) :: filter_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -144,8 +146,8 @@
 !
 !
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
-      call cal_sgs_uxb_2_evo                                            &
-     &   (icomp_sgs_uxb, ie_dvx, SGS_param, nod_comm, node, ele,        &
+      call cal_sgs_uxb_2_evo(icomp_sgs_uxb, ie_dvx,                     &
+     &    SGS_param, filter_param, nod_comm, node, ele,                 &
      &    conduct, cd_prop, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, &
      &    FEM_elen, filtering, sgs_coefs, wk_filter,                    &
      &    mhd_fem_wk, fem_wk, f_nl, nod_fld)

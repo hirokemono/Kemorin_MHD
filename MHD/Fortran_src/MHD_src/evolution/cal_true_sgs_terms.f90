@@ -10,8 +10,8 @@
 !!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,               &
 !!     &          ifld_diff, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,   &
 !!     &          f_l, f_nl, nod_fld, ele_fld)
-!!      subroutine cal_true_sgs_terms_post
-!!     &         (nod_comm, node, iphys, filtering, wk_filter, nod_fld)
+!!      subroutine cal_true_sgs_terms_post(filter_param,                &
+!!     &          nod_comm, node, iphys, filtering, wk_filter, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -48,6 +48,7 @@
       use m_machine_parameter
       use m_control_parameter
 !
+      use t_SGS_control_parameter
       use t_physical_property
       use t_comm_table
       use t_geometry_data_MHD
@@ -189,11 +190,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_true_sgs_terms_post                                &
-     &         (nod_comm, node, iphys, filtering, wk_filter, nod_fld)
+      subroutine cal_true_sgs_terms_post(filter_param,                  &
+     &          nod_comm, node, iphys, filtering, wk_filter, nod_fld)
 !
       use m_phys_labels
 !
+      type(SGS_filtering_params), intent(in) :: filter_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(phys_address), intent(in) :: iphys
@@ -210,33 +212,33 @@
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_s_flux_true_post(iphys%i_SGS_div_hf_true,   &
-     &         iphys%i_h_flux_div, iphys%i_sgs_simi,                    &
+     &         iphys%i_h_flux_div, iphys%i_sgs_simi, filter_param,      &
      &         nod_comm, node, filtering, wk_filter, nod_fld)
          else if(nod_fld%phys_name(i).eq.fhd_SGS_div_c_flux_true) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_s_flux_true_post(iphys%i_SGS_div_cf_true,   &
-     &         iphys%i_c_flux_div, iphys%i_sgs_simi,                    &
+     &         iphys%i_c_flux_div, iphys%i_sgs_simi, filter_param,      &
      &         nod_comm, node, filtering, wk_filter, nod_fld)
          else if ( nod_fld%phys_name(i).eq.fhd_SGS_div_m_flux_true)     &
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_tensor_true_post(iphys%i_SGS_div_mf_true,   &
-     &         iphys%i_m_flux_div, iphys%i_sgs_simi,                    &
+     &         iphys%i_m_flux_div, iphys%i_sgs_simi, filter_param,      &
      &         nod_comm, node, filtering, wk_filter, nod_fld)
          else if ( nod_fld%phys_name(i).eq.fhd_SGS_Lorentz_true) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_tensor_true_post(iphys%i_SGS_Lor_true,      &
-     &         iphys%i_maxwell_div, iphys%i_sgs_simi,                   &
+     &         iphys%i_maxwell_div, iphys%i_sgs_simi, filter_param,     &
      &         nod_comm, node, filtering, wk_filter, nod_fld)
          else if ( nod_fld%phys_name(i).eq.fhd_SGS_mag_induct_true)     &
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_tensor_true_post(iphys%i_SGS_idct_true,     &
-     &         iphys%i_induct_div, iphys%i_sgs_simi,                    &
+     &         iphys%i_induct_div, iphys%i_sgs_simi, filter_param,      &
      &         nod_comm, node, filtering, wk_filter, nod_fld)
          end if
        end do
@@ -466,11 +468,13 @@
 !
       subroutine cal_div_sgs_s_flux_true_post                           &
      &          (i_div_flux_true, i_div_flux, i_sgs_simi,               &
-     &           nod_comm, node, filtering, wk_filter, nod_fld)
+     &           filter_param, nod_comm, node, filtering,               &
+     &           wk_filter, nod_fld)
 !
       integer(kind = kint), intent(in) :: i_div_flux_true
       integer(kind = kint), intent(in) :: i_div_flux, i_sgs_simi
 !
+      type(SGS_filtering_params), intent(in) :: filter_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(filtering_data_type), intent(in) :: filtering
@@ -481,7 +485,8 @@
 !
       call copy_scalar_component(nod_fld,                               &
      &    i_div_flux_true, i_sgs_simi)
-      call cal_filtered_scalar_whole(nod_comm, node, filtering,         &
+      call cal_filtered_scalar_whole                                    &
+     &   (filter_param, nod_comm, node, filtering,                      &
      &    i_div_flux_true, i_div_flux, wk_filter, nod_fld)
       call subtract_2_nod_scalars(nod_fld,                              &
      &    i_div_flux_true, i_sgs_simi, i_div_flux_true)
@@ -492,10 +497,13 @@
 !
       subroutine cal_div_sgs_tensor_true_post                           &
      &         (i_sgs_true, i_sgs_div, i_sgs_simi,                      &
-     &          nod_comm, node, filtering, wk_filter, nod_fld)
+     &          filter_param, nod_comm, node, filtering,                &
+     &          wk_filter, nod_fld)
 !
       integer(kind = kint), intent(in) :: i_sgs_true, i_sgs_div
       integer(kind = kint), intent(in) :: i_sgs_simi
+!
+      type(SGS_filtering_params), intent(in) :: filter_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(filtering_data_type), intent(in) :: filtering
@@ -505,7 +513,8 @@
 !
 !
       call copy_vector_component(nod_fld, i_sgs_true, i_sgs_simi)
-      call cal_filtered_vector_whole(nod_comm, node, filtering,         &
+      call cal_filtered_vector_whole                                    &
+     &   (filter_param, nod_comm, node, filtering,                      &
      &    i_sgs_true, i_sgs_div, wk_filter, nod_fld)
       call subtract_2_nod_vectors(nod_fld,                              &
      &    i_sgs_true, i_sgs_simi, i_sgs_true)
