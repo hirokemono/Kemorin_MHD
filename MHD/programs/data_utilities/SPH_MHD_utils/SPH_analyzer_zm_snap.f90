@@ -29,6 +29,7 @@
       subroutine SPH_analyze_zm_snap(i_step)
 !
       use m_work_time
+      use m_SGS_control_parameter
       use m_spheric_parameter
       use m_sph_spectr_data
       use m_fdm_coefs

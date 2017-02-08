@@ -13,6 +13,7 @@
       use calypso_mpi
       use m_work_time
 !
+      use m_SGS_control_parameter
       use m_mesh_data
       use m_node_phys_data
 !

@@ -39,7 +39,6 @@
       use calypso_mpi
       use m_machine_parameter
       use m_control_parameter
-      use m_SGS_control_parameter
       use m_physical_property
       use m_iccg_parameter
       use m_t_step_parameter

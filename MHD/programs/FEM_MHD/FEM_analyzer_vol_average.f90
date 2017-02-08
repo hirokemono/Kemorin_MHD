@@ -13,6 +13,7 @@
       use m_work_time
       use m_t_step_parameter
       use m_t_int_parameter
+      use m_SGS_control_parameter
       use t_time_data_IO
 !
       use calypso_mpi

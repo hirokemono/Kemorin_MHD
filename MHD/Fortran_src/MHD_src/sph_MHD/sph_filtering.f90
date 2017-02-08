@@ -143,7 +143,6 @@
      &          ifld_sgs, icomp_sgs, sgs_coefs, wk_sgs)
 !
       use t_physical_property
-      use m_SGS_control_parameter
       use count_sgs_components
 !
       type(SGS_paremeters), intent(in) :: SGS_par

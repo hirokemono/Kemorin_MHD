@@ -25,6 +25,7 @@
 !
       subroutine FEM_check_MHD_mat
 !
+      use m_SGS_control_parameter
       use m_control_parameter
       use m_mesh_data
       use m_geometry_data_MHD

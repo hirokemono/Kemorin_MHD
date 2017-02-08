@@ -177,6 +177,7 @@
       use t_phys_address
       use t_sph_trans_arrays_MHD
       use m_control_parameter
+      use m_SGS_control_parameter
 !
       use output_viz_file_control
       use copy_snap_4_sph_trans

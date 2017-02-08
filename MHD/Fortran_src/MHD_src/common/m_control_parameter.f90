@@ -24,7 +24,6 @@
       use m_precision
       use t_time_stepping_parameter
       use t_SGS_control_parameter
-      use m_SGS_control_parameter
 !
       implicit  none
 !

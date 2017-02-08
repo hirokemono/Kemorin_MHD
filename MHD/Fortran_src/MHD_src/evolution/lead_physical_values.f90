@@ -104,7 +104,6 @@
      &          nod_fld, ele_fld, diff_coefs)
 !
       use m_machine_parameter
-      use m_SGS_control_parameter
       use m_t_step_parameter
 !
       use update_after_evolution

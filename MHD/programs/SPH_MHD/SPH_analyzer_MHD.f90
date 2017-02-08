@@ -15,6 +15,7 @@
       module SPH_analyzer_MHD
 !
       use m_precision
+      use m_SGS_control_parameter
       use t_phys_address
 !
       implicit none

@@ -42,6 +42,7 @@
 !
       use t_ctl_data_sph_MHD_psf
       use m_ctl_data_sph_MHD
+      use m_SGS_control_parameter
       use m_spheric_parameter
       use m_sph_spectr_data
       use m_mesh_data

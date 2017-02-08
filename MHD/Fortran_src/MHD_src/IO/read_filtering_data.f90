@@ -39,7 +39,6 @@
       subroutine s_read_filtering_data(SGS_param, filter_param,         &
      &          node, ele, filtering, wide_filtering, wk_filter)
 !
-      use m_SGS_control_parameter
       use m_nod_filter_comm_table
       use m_filter_elength
       use m_filter_file_names

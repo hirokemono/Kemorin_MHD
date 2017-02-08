@@ -18,6 +18,7 @@
       module SPH_analyzer_d_bench
 !
       use m_precision
+      use m_SGS_control_parameter
       use t_phys_address
 !
       implicit none
