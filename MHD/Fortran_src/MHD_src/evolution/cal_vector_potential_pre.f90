@@ -7,7 +7,7 @@
 !
 !!      subroutine cal_vector_p_pre                                     &
 !!     &         (iak_diff_b, icomp_sgs_uxb, ie_dvx, ak_d_magne,        &
-!!     &          SGS_param, cmt_param, filter_param,                   &
+!!     &          FEM_prm, SGS_param, cmt_param, filter_param,          &
 !!     &          nod_comm, node, ele, surf, conduct, sf_grp,           &
 !!     &          cd_prop, Bnod_bcs, Asf_bcs, iphys, iphys_ele, ele_fld,&
 !!     &          jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,           &
@@ -101,7 +101,7 @@
 !
       subroutine cal_vector_p_pre                                       &
      &         (iak_diff_b, icomp_sgs_uxb, ie_dvx, ak_d_magne,          &
-     &          SGS_param, cmt_param, filter_param,                     &
+     &          FEM_prm, SGS_param, cmt_param, filter_param,            &
      &          nod_comm, node, ele, surf, conduct, sf_grp,             &
      &          cd_prop, Bnod_bcs, Asf_bcs, iphys, iphys_ele, ele_fld,  &
      &          jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,             &
@@ -122,6 +122,7 @@
       use evolve_by_consist_crank
       use copy_nodal_fields
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(SGS_filtering_params), intent(in) :: filter_param
@@ -182,7 +183,7 @@
      &      mhd_fem_wk, fem_wk, f_nl, nod_fld)
       end if
 !
-      if (FEM_prm1%iflag_magne_supg .gt. id_turn_OFF) then
+      if (FEM_prm%iflag_magne_supg .gt. id_turn_OFF) then
         call int_vol_vect_p_pre_ele_upm(intg_point_t_evo,               &
      &      node, ele, conduct, cd_prop, iphys, nod_fld,                &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
@@ -210,13 +211,13 @@
 !  -----for explicit euler
       if (evo_vect_p%iflag_scheme .eq. id_explicit_euler) then
         call cal_magne_pre_euler(iphys%i_vecp,                          &
-     &      nod_comm, node, ele, conduct, iphys_ele, ele_fld,           &
+     &      FEM_prm, nod_comm, node, ele, conduct, iphys_ele, ele_fld,  &
      &      jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
 !  -----for Adams_Bashforth
       else if (evo_vect_p%iflag_scheme .eq. id_explicit_adams2) then
         call cal_magne_pre_adams(iphys%i_vecp, iphys%i_pre_uxb,         &
-     &      nod_comm, node, ele, conduct, iphys_ele, ele_fld,           &
+     &      FEM_prm, nod_comm, node, ele, conduct, iphys_ele, ele_fld,  &
      &      jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
 !  -----for Ceank-nicolson
@@ -224,7 +225,7 @@
         call cal_vect_p_pre_lumped_crank                                &
      &     (cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
      &      iphys%i_vecp, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,      &
-     &      Bnod_bcs%nod_bc_a, nod_comm, node, ele, conduct,            &
+     &      Bnod_bcs%nod_bc_a, FEM_prm, nod_comm, node, ele, conduct,   &
      &      evo_vect_p, iphys_ele, ele_fld, jac_3d_q, rhs_tbl,          &
      &      FEM_elens, diff_coefs, Bmatrix, MG_vector,                  &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)

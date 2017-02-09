@@ -294,7 +294,7 @@
      &        'lead ', trim(fhd_SGS_induction)
         call cal_terms_4_magnetic(iphys%i_SGS_induction,                &
      &      ifld_diff%i_induction, ak_MHD%ak_d_magne,                   &
-     &      SGS_param, cmt_param, nod_comm, node, ele,                  &
+     &      FEM_prm1, SGS_param, cmt_param, nod_comm, node, ele,        &
      &      surf, conduct, sf_grp, cd_prop,                             &
      &      nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,       &
      &      iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,     &

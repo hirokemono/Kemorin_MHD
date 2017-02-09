@@ -169,13 +169,13 @@
 !
       if (iflag_debug .gt. 0)  write(*,*) 'vector_p_pre'
       call cal_vector_p_pre(ifld_diff%i_magne,                          &
-     &    icomp_sgs%i_induction, iphys_elediff%i_velo, ak_d_magne,      &
-     &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
-     &    nod_comm, node, ele, surf, conduct,                           &
-     &    sf_grp, cd_prop, Bnod_bcs, Asf_bcs, iphys, iphys_ele,         &
-     &    ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,          &
-     &    sgs_coefs, diff_coefs, filtering, Bmatrix, MG_vector,         &
-     &    wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &   icomp_sgs%i_induction, iphys_elediff%i_velo, ak_d_magne,       &
+     &   FEM_prm, SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p, &
+     &   nod_comm, node, ele, surf, conduct,                            &
+     &   sf_grp, cd_prop, Bnod_bcs, Asf_bcs, iphys, iphys_ele,          &
+     &   ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,           &
+     &   sgs_coefs, diff_coefs, filtering, Bmatrix, MG_vector,          &
+     &   wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
 !     --------------------- 
 !
@@ -313,15 +313,15 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_magnetic_field_pre'
       call cal_magnetic_field_pre(icomp_sgs%i_induction,                &
-     &    ifld_diff%i_magne, ifld_diff%i_induction,                     &
-     &    iphys_elediff%i_velo, iphys_elediff%i_magne, ak_d_magne,      &
-     &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
-     &    nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,          &
-     &    Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,        &
-     &    jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,                   &
-     &    sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,              &
-     &    Bmatrix, MG_vector, wk_filter, mhd_fem_wk, fem_wk, surf_wk,   &
-     &    f_l, f_nl, nod_fld)
+     &   ifld_diff%i_magne, ifld_diff%i_induction,                      &
+     &   iphys_elediff%i_velo, iphys_elediff%i_magne, ak_d_magne,       &
+     &   FEM_prm, SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p, &
+     &   nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,           &
+     &   Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,         &
+     &   jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,                    &
+     &   sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,               &
+     &   Bmatrix, MG_vector, wk_filter, mhd_fem_wk, fem_wk, surf_wk,    &
+     &   f_l, f_nl, nod_fld)
 !
 !----  set magnetic field in insulate layer
 !

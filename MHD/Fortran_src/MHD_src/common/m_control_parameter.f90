@@ -104,7 +104,7 @@
       real (kind=kreal) :: eps_4_magne
 !
       type(FEM_MHD_paremeters), save :: FEM_prm1
-!FEM_prm1%iflag_magne_supg
+!FEM_prm1%å
 !
 !  ---------------------------------------------------------------------
 !

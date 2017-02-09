@@ -309,7 +309,7 @@
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call cal_terms_4_magnetic                                     &
      &       (i_fld, ifld_diff%i_induction, ak_MHD%ak_d_magne,          &
-     &        SGS_par%model_p, SGS_par%commute_p,                       &
+     &        FEM_prm, SGS_par%model_p, SGS_par%commute_p,              &
      &        nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,      &
      &        nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,     &
      &        iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,   &
@@ -322,9 +322,10 @@
       if (iphys%i_vp_induct .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_vp_induct)
-        call cal_vecp_induction(nod_comm, node, ele, conduct, cd_prop,  &
-     &       nod_bcs%Bnod_bcs, iphys, iphys_ele, ele_fld, jac_3d,       &
-     &       rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+        call cal_vecp_induction                                         &
+     &     (FEM_prm, nod_comm, node, ele, conduct, cd_prop,             &
+     &      nod_bcs%Bnod_bcs, iphys, iphys_ele, ele_fld, jac_3d,        &
+     &      rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
 !

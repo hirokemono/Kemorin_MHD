@@ -7,7 +7,7 @@
 !
 !!      subroutine cal_magnetic_field_pre(icomp_sgs_uxb, iak_diff_b,    &
 !!     &          iak_diff_uxb, ie_dvx, ie_dbx, ak_d_magne,             &
-!!     &          SGS_param, cmt_param, filter_param,                   &
+!!     &          FEM_prm, SGS_param, cmt_param, filter_param,          &
 !!     &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,  &
 !!     &          Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,&
 !!     &          jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,           &
@@ -22,8 +22,8 @@
 !!     &          rhs_tbl, FEM_elens, diff_coefs, m_lump,               &
 !!     &          Bmatrix, MG_vector, mhd_fem_wk, fem_wk, surf_wk,      &
 !!     &          f_l, f_nl, nod_fld)
-!!      subroutine cal_magnetic_co_outside                              &
-!!     &         (iak_diff_b, SGS_param, cmt_param, nod_comm, node, ele,&
+!!      subroutine cal_magnetic_co_outside(iak_diff_b, FEM_prm,         &
+!!     &          SGS_param, cmt_param, nod_comm, node, ele,            &
 !!     &          surf, insulate, sf_grp, Bnod_bcs, Fsf_bcs, iphys,     &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
 !!     &          rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk, fem_wk,   &
@@ -108,7 +108,7 @@
 !
       subroutine cal_magnetic_field_pre(icomp_sgs_uxb, iak_diff_b,      &
      &          iak_diff_uxb, ie_dvx, ie_dbx, ak_d_magne,               &
-     &          SGS_param, cmt_param, filter_param,                     &
+     &          FEM_prm, SGS_param, cmt_param, filter_param,            &
      &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,    &
      &          Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,  &
      &          jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,             &
@@ -130,6 +130,7 @@
       use evolve_by_lumped_crank
       use evolve_by_consist_crank
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(SGS_filtering_params), intent(in) :: filter_param
@@ -195,7 +196,7 @@
 ! lead induction terms
 !
       if (iflag_debug .eq. 0 ) write(*,*) 'coefs_4_time_evolution'
-      if (FEM_prm1%iflag_magne_supg .gt. id_turn_OFF) then
+      if (FEM_prm%iflag_magne_supg .gt. id_turn_OFF) then
        call int_vol_magne_pre_ele_upm                                   &
      &    (intg_point_t_evo, SGS_param, cmt_param,                      &
      &     node, ele, conduct, cd_prop, iphys, nod_fld,                 &
@@ -220,20 +221,20 @@
 !
       if(evo_magne%iflag_scheme .eq. id_explicit_euler) then
         call cal_magne_pre_euler(iphys%i_magne,                         &
-     &      nod_comm, node, ele, conduct, iphys_ele, ele_fld,           &
+     &      FEM_prm, nod_comm, node, ele, conduct, iphys_ele, ele_fld,  &
      &      jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if(evo_magne%iflag_scheme .eq. id_explicit_adams2) then
         call cal_magne_pre_adams(iphys%i_magne, iphys%i_pre_uxb,        &
-     &      nod_comm, node, ele, conduct, iphys_ele, ele_fld,           &
+     &      FEM_prm, nod_comm, node, ele, conduct, iphys_ele, ele_fld,  &
      &      jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if(evo_magne%iflag_scheme .eq. id_Crank_nicolson) then
         call cal_magne_pre_lumped_crank                                 &
      &     (cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
      &      iphys%i_magne, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,     &
-     &      Bnod_bcs%nod_bc_b, nod_comm, node, ele, conduct, evo_magne, &
-     &      iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,           &
-     &      diff_coefs, Bmatrix, MG_vector, mhd_fem_wk, fem_wk,         &
-     &      f_l, f_nl, nod_fld)
+     &      Bnod_bcs%nod_bc_b, FEM_prm, nod_comm, node, ele, conduct,   &
+     &      evo_magne, iphys_ele, ele_fld, jac_3d_q, rhs_tbl,           &
+     &      FEM_elens, diff_coefs, Bmatrix, MG_vector,                  &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if(evo_magne%iflag_scheme .eq. id_Crank_nicolson_cmass) then
         call cal_magne_pre_consist_crank                                &
      &     (cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
@@ -354,8 +355,8 @@
 ! ----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_magnetic_co_outside                                &
-     &         (iak_diff_b, SGS_param, cmt_param, nod_comm, node, ele,  &
+      subroutine cal_magnetic_co_outside(iak_diff_b, FEM_prm,           &
+     &          SGS_param, cmt_param, nod_comm, node, ele,              &
      &          surf, insulate, sf_grp, Bnod_bcs, Fsf_bcs, iphys,       &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
      &          rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk, fem_wk,     &
@@ -371,6 +372,7 @@
 !
       integer(kind = kint), intent(in) :: iak_diff_b
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(communication_table), intent(in) :: nod_comm
@@ -417,7 +419,7 @@
 !
 !
       call cal_multi_pass_4_vector_ff                                   &
-     &   (insulate%istack_ele_fld_smp, FEM_prm1, mhd_fem_wk%mlump_ins,  &
+     &   (insulate%istack_ele_fld_smp, FEM_prm, mhd_fem_wk%mlump_ins,   &
      &    nod_comm, node, ele, jac_3d_q, rhs_tbl,                       &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !

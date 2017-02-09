@@ -377,7 +377,7 @@
 !
       if (     FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson) then
         call cal_magne_co_lumped_crank                                  &
-     &     (i_vecp, nod_comm, node, ele, nod_fld,                       &
+     &     (i_vecp, FEM_prm, nod_comm, node, ele, nod_fld,              &
      &      iphys_ele, ele_fld, Bnod_bcs%nod_bc_a, jac_3d, rhs_tbl,     &
      &      m_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
       else if(FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)   &
@@ -467,7 +467,7 @@
 !
       if     (FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson) then
         call cal_magne_co_lumped_crank                                  &
-     &     (i_magne, nod_comm, node, ele, nod_fld,                      &
+     &     (i_magne, FEM_prm, nod_comm, node, ele, nod_fld,             &
      &      iphys_ele, ele_fld, Bnod_bcs%nod_bc_b, jac_3d, rhs_tbl,     &
      &      m_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
       else if(FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)   &

@@ -14,14 +14,14 @@
 !!      subroutine cal_vect_p_pre_lumped_crank                          &
 !!     &         (iflag_commute_magne, ifilter_final,                   &
 !!     &          i_vecp, i_pre_uxb, iak_diff_b, ak_d_magne, nod_bc_a,  &
-!!     &          nod_comm, node, ele, conduct, evo_a,                  &
+!!     &          FEM_prm, nod_comm, node, ele, conduct, evo_a,         &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
 !!     &          diff_coefs, Bmatrix, MG_vector, mhd_fem_wk, fem_wk,   &
 !!     &          f_l, f_nl, nod_fld)
 !!      subroutine cal_magne_pre_lumped_crank                           &
 !!     &         (iflag_commute_magne, ifilter_final,                   &
 !!     &          i_magne, i_pre_uxb, iak_diff_b, ak_d_magne, nod_bc_b, &
-!!     &          nod_comm, node, ele, conduct, evo_b,                  &
+!!     &          FEM_prm, nod_comm, node, ele, conduct, evo_b,         &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
 !!     &          diff_coefs, Bmatrix, MG_vector, mhd_fem_wk, fem_wk,   &
 !!     &          f_l, f_nl, nod_fld)
@@ -191,7 +191,7 @@
       subroutine cal_vect_p_pre_lumped_crank                            &
      &         (iflag_commute_magne, ifilter_final,                     &
      &          i_vecp, i_pre_uxb, iak_diff_b, ak_d_magne, nod_bc_a,    &
-     &          nod_comm, node, ele, conduct, evo_a,                    &
+     &          FEM_prm, nod_comm, node, ele, conduct, evo_a,           &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
      &          diff_coefs, Bmatrix, MG_vector, mhd_fem_wk, fem_wk,     &
      &          f_l, f_nl, nod_fld)
@@ -211,6 +211,7 @@
       integer(kind = kint), intent(in) :: i_vecp, i_pre_uxb
       integer(kind = kint), intent(in) :: iak_diff_b
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -244,8 +245,8 @@
       end if
 !
       call cal_t_evo_4_vector_cd                                        &
-     &   (FEM_prm1%iflag_magne_supg, conduct%istack_ele_fld_smp,        &
-     &    FEM_prm1, mhd_fem_wk%mlump_cd,                                &
+     &   (FEM_prm%iflag_magne_supg, conduct%istack_ele_fld_smp,         &
+     &    FEM_prm, mhd_fem_wk%mlump_cd,                                 &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,              &
      &    rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
@@ -271,7 +272,7 @@
       subroutine cal_magne_pre_lumped_crank                             &
      &         (iflag_commute_magne, ifilter_final,                     &
      &          i_magne, i_pre_uxb, iak_diff_b, ak_d_magne, nod_bc_b,   &
-     &          nod_comm, node, ele, conduct, evo_b,                    &
+     &          FEM_prm, nod_comm, node, ele, conduct, evo_b,           &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
      &          diff_coefs, Bmatrix, MG_vector, mhd_fem_wk, fem_wk,     &
      &          f_l, f_nl, nod_fld)
@@ -290,6 +291,7 @@
       integer(kind = kint), intent(in) :: i_magne, i_pre_uxb
       integer(kind = kint), intent(in) :: iak_diff_b
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -323,8 +325,8 @@
       end if
 !
       call cal_t_evo_4_vector_cd                                        &
-     &   (FEM_prm1%iflag_magne_supg, conduct%istack_ele_fld_smp,        &
-     &    FEM_prm1, mhd_fem_wk%mlump_cd,                                &
+     &   (FEM_prm%iflag_magne_supg, conduct%istack_ele_fld_smp,         &
+     &    FEM_prm, mhd_fem_wk%mlump_cd,                                 &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,              &
      &    rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !

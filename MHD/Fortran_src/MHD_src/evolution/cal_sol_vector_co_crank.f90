@@ -8,7 +8,7 @@
 !!     &          Vnod_bcs, nod_fld, iphys_ele, fld_ele, jac_3d,        &
 !!     &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
 !!      subroutine cal_magne_co_lumped_crank                            &
-!!     &         (i_magne, nod_comm, node, ele, nod_fld,                &
+!!     &         (i_magne, FEM_prm, nod_comm, node, ele, nod_fld,       &
 !!     &          iphys_ele, fld_ele, nod_bc_b, jac_3d, rhs_tbl,        &
 !!     &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
 !!
@@ -117,7 +117,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_magne_co_lumped_crank                              &
-     &         (i_magne, nod_comm, node, ele, nod_fld,                  &
+     &         (i_magne, FEM_prm, nod_comm, node, ele, nod_fld,         &
      &          iphys_ele, fld_ele, nod_bc_b, jac_3d, rhs_tbl,          &
      &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
 !
@@ -127,6 +127,7 @@
 !
       integer(kind = kint), intent(in) :: i_magne
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -144,8 +145,8 @@
 !
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_t_evo_4_vector'
-      call cal_t_evo_4_vector(FEM_prm1%iflag_magne_supg,                &
-     &    ele%istack_ele_smp, FEM_prm1, m_lump,                         &
+      call cal_t_evo_4_vector(FEM_prm%iflag_magne_supg,                 &
+     &    ele%istack_ele_smp, FEM_prm, m_lump,                          &
      &    nod_comm, node, ele, iphys_ele, fld_ele, jac_3d, rhs_tbl,     &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !

@@ -458,7 +458,7 @@
      &    nod_fld)
       call cal_terms_4_magnetic                                         &
      &   (iphys%i_induct_div, iak_diff_uxb, ak_MHD%ak_d_magne,          &
-     &    SGS_par%model_p, SGS_par%commute_p,                           &
+     &    FEM_prm1, SGS_par%model_p, SGS_par%commute_p,                 &
      &    nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,          &
      &    Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,        &
      &    jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,           &
