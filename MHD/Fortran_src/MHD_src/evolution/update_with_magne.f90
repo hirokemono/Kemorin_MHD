@@ -224,7 +224,8 @@
      &     .and. diff_coefs%iflag_field(iak_diff_b) .eq. 0) then
         if (iflag2.eq.2 .or. iflag2.eq.3) then
           if (iflag_debug.gt.0) write(*,*) 's_cal_diff_coef_magne'
-          call s_cal_diff_coef_magne(iak_diff_b, icomp_diff_b, SGS_par, &
+          call s_cal_diff_coef_magne                                    &
+     &       (iak_diff_b, icomp_diff_b, FEM_prm, SGS_par,               &
      &        nod_comm, node, ele, surf, sf_grp, Bsf_bcs, Fsf_bcs,      &
      &        iphys, iphys_ele, ele_fld, fluid, layer_tbl,              &
      &        jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,                &

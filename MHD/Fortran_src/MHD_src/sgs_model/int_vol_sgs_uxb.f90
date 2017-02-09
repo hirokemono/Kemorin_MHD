@@ -6,10 +6,20 @@
 !     Modified by H. Matsui on Apr., 2012
 !
 !!      subroutine sel_int_vol_sgs_uxb(i_filter, i_field, id_dx,        &
-!!     &          node, ele, conduct, nod_fld, jac_3d, FEM_elens,       &
+!!     &          FEM_prm, node, ele, conduct, nod_fld,                 &
+!!     &          iphys_ele, ele_fld, jac_3d, FEM_elens,                &
 !!     &          fem_wk, mhd_fem_wk)
-!        type(work_finite_element_mat), intent(inout) :: fem_wk
-!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
+!!       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
+!!       type(node_data), intent(in) :: node
+!!       type(element_data), intent(in) :: ele
+!!       type(phys_data), intent(in) :: nod_fld
+!!       type(phys_address), intent(in) :: iphys_ele
+!!       type(phys_data), intent(in) :: ele_fld
+!!       type(field_geometry_data), intent(in) :: conduct
+!!       type(jacobians_3d), intent(in) :: jac_3d
+!!       type(gradient_model_data_type), intent(in) :: FEM_elens
+!!       type(work_finite_element_mat), intent(inout) :: fem_wk
+!!       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
       module int_vol_sgs_uxb
 !
@@ -18,6 +28,7 @@
       use m_control_parameter
       use m_phys_constants
 !
+      use t_FEM_control_parameter
       use t_geometry_data_MHD
       use t_geometry_data
       use t_phys_data
@@ -37,9 +48,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine sel_int_vol_sgs_uxb(i_filter, i_field, id_dx,          &
-     &          node, ele, conduct, nod_fld, iphys_ele, ele_fld,        &
-     &          jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
+     &          FEM_prm, node, ele, conduct, nod_fld,                   &
+     &          iphys_ele, ele_fld, jac_3d, FEM_elens,                  &
+     &          fem_wk, mhd_fem_wk)
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
@@ -56,7 +69,7 @@
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
 !
-      if (FEM_prm1%iflag_magne_supg .eq. id_turn_ON) then
+      if (FEM_prm%iflag_magne_supg .eq. id_turn_ON) then
         call int_vol_sgs_uxb_upm(i_filter, i_field, intg_point_t_evo,   &
      &      node, ele, conduct, nod_fld, jac_3d, FEM_elens,             &
      &      mhd_fem_wk%n_dvx, id_dx, mhd_fem_wk%dvx,                    &

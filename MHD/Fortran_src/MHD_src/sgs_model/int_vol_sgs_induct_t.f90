@@ -6,9 +6,10 @@
 !     Modified by H. Matsui on Apr., 2012
 !
 !!      subroutine sel_int_vol_sgs_induct_t(i_filter, ie_dvx, ie_dbx,   &
-!!     &          ifield_v, ifield_b, node, ele, conduct,            &
-!!     &          nod_fld, iphys_ele, ele_fld, jac_3d, FEM_elens,  &
+!!     &          ifield_v, ifield_b, FEM_prm, node, ele, conduct,      &
+!!     &          nod_fld, iphys_ele, ele_fld, jac_3d, FEM_elens,       &
 !!     &          fem_wk, mhd_fem_wk)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_data), intent(in) :: nod_fld
@@ -27,6 +28,7 @@
       use m_control_parameter
       use m_phys_constants
 !
+      use t_FEM_control_parameter
       use t_geometry_data_MHD
       use t_geometry_data
       use t_phys_data
@@ -49,10 +51,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine sel_int_vol_sgs_induct_t(i_filter, ie_dvx, ie_dbx,     &
-     &          ifield_v, ifield_b, node, ele, conduct,                 &
+     &          ifield_v, ifield_b, FEM_prm, node, ele, conduct,        &
      &          nod_fld, iphys_ele, ele_fld, jac_3d, FEM_elens,         &
      &          fem_wk, mhd_fem_wk)
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
@@ -70,7 +73,7 @@
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
 !
-      if (FEM_prm1%iflag_magne_supg .gt. id_turn_OFF) then
+      if (FEM_prm%iflag_magne_supg .gt. id_turn_OFF) then
         call int_vol_sgs_induct_t_upm                                   &
      &     (i_filter, ifield_v, ifield_b, intg_point_t_evo,             &
      &      node, ele, conduct, nod_fld, jac_3d, FEM_elens,             &

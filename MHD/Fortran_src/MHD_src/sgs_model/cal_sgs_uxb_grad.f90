@@ -90,7 +90,7 @@
       call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
       call sel_int_vol_sgs_uxb(i_filter, iphys%i_magne, ie_dvx,         &
-     &    node, ele, conduct, nod_fld, iphys_ele, ele_fld,              &
+     &    FEM_prm1, node, ele, conduct, nod_fld, iphys_ele, ele_fld,    &
      &    jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !
 !     set elemental model coefficients
@@ -142,7 +142,7 @@
       call reset_ff_smp(node%max_nod_smp, f_l)
 !
       call sel_int_vol_sgs_uxb(i_filter, i_field, id_dx,                &
-     &    node, ele, conduct, nod_fld, iphys_ele, ele_fld,              &
+     &    FEM_prm1, node, ele, conduct, nod_fld, iphys_ele, ele_fld,    &
      &    jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !
       call add3_skv_coef_to_ff_v_smp(node, ele, rhs_tbl,                &

@@ -95,7 +95,7 @@
       call reset_ff_smp(node%max_nod_smp, f_l)
 !
       call sel_int_vol_sgs_induct_t(i_filter, ie_dvx, ie_dbx,           &
-     &    ifield_v, ifield_b, node, ele, conduct,                       &
+     &    ifield_v, ifield_b, FEM_prm1, node, ele, conduct,             &
      &    nod_fld, iphys_ele, ele_fld, jac_3d, FEM_elen,                &
      &    fem_wk, mhd_fem_wk)
 !
@@ -156,7 +156,7 @@
       call reset_ff_smp(node%max_nod_smp, f_l)
 !
       call sel_int_vol_sgs_induct_t(i_filter, ie_dvx, ie_dbx,           &
-     &    ifield_v, ifield_b, node, ele, conduct,                       &
+     &    ifield_v, ifield_b, FEM_prm1, node, ele, conduct,             &
      &    nod_fld, iphys_ele, ele_fld, jac_3d, FEM_elen,                &
      &    fem_wk, mhd_fem_wk)
 !

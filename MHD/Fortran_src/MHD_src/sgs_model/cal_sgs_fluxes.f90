@@ -31,9 +31,9 @@
 !!     &          sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk,      &
 !!     &          fem_wk, f_l, nod_fld)
 !!      subroutine cal_sgs_uxb_2_evo(icomp_sgs_uxb, ie_dvx,             &
-!!     &          SGS_param, filter_param, nod_comm, node, ele, conduct,&
-!!     &          cd_prop, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl,  &
-!!     &          FEM_elens, filtering, sgs_coefs, wk_filter,           &
+!!     &          FEM_prm, SGS_param, filter_param, nod_comm, node, ele,&
+!!     &          conduct, cd_prop, iphys, iphys_ele, ele_fld, jac_3d,  &
+!!     &          rhs_tbl, FEM_elens, filtering, sgs_coefs, wk_filter,  &
 !!     &          mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
@@ -360,9 +360,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_sgs_uxb_2_evo(icomp_sgs_uxb, ie_dvx,               &
-     &          SGS_param, filter_param, nod_comm, node, ele, conduct,  &
-     &          cd_prop, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl,    &
-     &          FEM_elens, filtering, sgs_coefs, wk_filter,             &
+     &          FEM_prm, SGS_param, filter_param, nod_comm, node, ele,  &
+     &          conduct, cd_prop, iphys, iphys_ele, ele_fld, jac_3d,    &
+     &          rhs_tbl, FEM_elens, filtering, sgs_coefs, wk_filter,    &
      &          mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !
       use cal_rotation
@@ -371,6 +371,7 @@
       integer(kind = kint), intent(in) :: icomp_sgs_uxb
       integer(kind = kint), intent(in) :: ie_dvx
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(SGS_filtering_params), intent(in) :: filter_param
       type(communication_table), intent(in) :: nod_comm
@@ -407,7 +408,7 @@
         if (iflag_debug.eq.1)                                           &
      &   write(*,*) 'cal_sgs_uxb_2_ff_simi', SGS_param%ifilter_final
         call cal_sgs_uxb_2_ff_simi(icomp_sgs_uxb,                       &
-     &      filter_param, nod_comm, node, ele, conduct, iphys,          &
+     &      FEM_prm, filter_param, nod_comm, node, ele, conduct, iphys, &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, filtering, sgs_coefs,  &
      &      wk_filter, fem_wk, f_nl, nod_fld)
 !
@@ -415,7 +416,7 @@
          if (iflag_debug.eq.1)                                          &
      &      write(*,*) 'choose_int_vol_rotations'
          call choose_int_vol_rotations                                  &
-     &      (FEM_prm1%iflag_magne_supg, intg_point_t_evo,               &
+     &      (FEM_prm%iflag_magne_supg, intg_point_t_evo,                &
      &       conduct%istack_ele_fld_smp, iphys%i_magne,                 &
      &       node, ele, nod_fld, iphys_ele, ele_fld,                    &
      &       jac_3d, rhs_tbl, fem_wk, f_nl)

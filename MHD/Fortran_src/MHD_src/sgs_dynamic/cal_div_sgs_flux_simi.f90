@@ -13,9 +13,9 @@
 !!     &          jac_3d, rhs_tbl, fem_wk, mhd_fem_wk,                  &
 !!     &          f_l, f_nl, nod_fld)
 !!      subroutine cal_div_sgs_idct_simi(i_sgs, i_flux, i_v, i_b,       &
-!!     &          nod_comm, node, ele, conduct, iphys_ele, ele_fld,     &
-!!     &          jac_3d, rhs_tbl, fem_wk, mhd_fem_wk,                  &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          FEM_prm, nod_comm, node, ele, conduct,                &
+!!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                  &
+!!     &          fem_wk, mhd_fem_wk, f_l, f_nl, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -178,9 +178,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_div_sgs_idct_simi(i_sgs, i_flux, i_v, i_b,         &
-     &          nod_comm, node, ele, conduct, iphys_ele, ele_fld,       &
-     &          jac_3d, rhs_tbl, fem_wk, mhd_fem_wk,                    &
-     &          f_l, f_nl, nod_fld)
+     &          FEM_prm, nod_comm, node, ele, conduct,                  &
+     &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                    &
+     &          fem_wk, mhd_fem_wk, f_l, f_nl, nod_fld)
 !
       use cal_ff_smp_to_ffs
       use cal_for_ffs
@@ -188,6 +188,7 @@
       use int_div_sgs_flux
       use int_div_sgs_flux_upwind
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -208,7 +209,7 @@
 !
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
-      if(FEM_prm1%iflag_magne_supg .gt. id_turn_OFF) then
+      if(FEM_prm%iflag_magne_supg .gt. id_turn_OFF) then
         call int_div_sgs_idct_simi_upw                                  &
      &     (i_flux, i_v, i_b, intg_point_t_evo,                         &
      &      node, ele, conduct, nod_fld, jac_3d, rhs_tbl,               &

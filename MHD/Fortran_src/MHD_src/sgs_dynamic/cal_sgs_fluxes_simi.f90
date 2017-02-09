@@ -19,9 +19,10 @@
 !!     &          wk_filter, nod_fld)
 !!
 !!      subroutine cal_sgs_uxb_2_ff_simi(icomp_sgs_uxb,                 &
-!!     &           filter_param, nod_comm, node, ele, conduct, iphys,   &
-!!     &           iphys_ele, ele_fld, jac_3d, rhs_tbl, filtering,      &
-!!     &           sgs_coefs, wk_filter, fem_wk, f_nl, nod_fld)
+!!     &          FEM_prm, filter_param, nod_comm, node, ele, conduct,  &
+!!     &          iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, filtering,&
+!!     &          sgs_coefs, wk_filter, fem_wk, f_nl, nod_fld)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_filtering_params), intent(in) :: filter_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -44,6 +45,7 @@
       use m_precision
 !
       use m_control_parameter
+      use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_geometry_data_MHD
       use t_geometry_data
@@ -219,14 +221,15 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_sgs_uxb_2_ff_simi(icomp_sgs_uxb,                   &
-     &           filter_param, nod_comm, node, ele, conduct, iphys,     &
-     &           iphys_ele, ele_fld, jac_3d, rhs_tbl, filtering,        &
-     &           sgs_coefs, wk_filter, fem_wk, f_nl, nod_fld)
+     &          FEM_prm, filter_param, nod_comm, node, ele, conduct,    &
+     &          iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, filtering,  &
+     &          sgs_coefs, wk_filter, fem_wk, f_nl, nod_fld)
 !
       use int_vol_similarity_uxb
 !
       integer (kind=kint), intent(in) :: icomp_sgs_uxb
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_filtering_params), intent(in) :: filter_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -251,7 +254,7 @@
      &    filter_param, nod_comm, node, filtering, wk_filter, nod_fld)
 !
 !
-      if (FEM_prm1%iflag_magne_supg .eq. id_turn_ON) then
+      if (FEM_prm%iflag_magne_supg .eq. id_turn_ON) then
         call int_simi_vp_induct_upm(intg_point_t_evo, icomp_sgs_uxb,    &
      &      node, ele, conduct, iphys, nod_fld,                         &
      &      jac_3d, rhs_tbl, sgs_coefs,                                 &

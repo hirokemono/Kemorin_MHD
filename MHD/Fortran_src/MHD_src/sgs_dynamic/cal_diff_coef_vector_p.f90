@@ -4,13 +4,14 @@
 !     Written by H. Matsui
 !
 !!      subroutine s_cal_diff_coef_vector_p                             &
-!!     &         (iak_diff_b, icomp_diff_b, SGS_par,                    &
+!!     &         (iak_diff_b, icomp_diff_b, FEM_prm, SGS_par,           &
 !!     &          nod_comm, node, ele, surf, fluid, layer_tbl,          &
 !!     &          sf_grp, Asf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,  &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
 !!     &          FEM_elens, filtering, m_lump, wk_filter,              &
 !!     &          wk_cor, wk_lsq, wk_diff, fem_wk, surf_wk,             &
 !!     &          f_l, f_nl, nod_fld, diff_coefs)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -43,6 +44,7 @@
 !
       use m_precision
 !
+      use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_comm_table
       use t_geometry_data_MHD
@@ -75,7 +77,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_cal_diff_coef_vector_p                               &
-     &         (iak_diff_b, icomp_diff_b, SGS_par,                      &
+     &         (iak_diff_b, icomp_diff_b, FEM_prm, SGS_par,             &
      &          nod_comm, node, ele, surf, fluid, layer_tbl,            &
      &          sf_grp, Asf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,    &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
@@ -98,6 +100,7 @@
 !
       integer (kind=kint), intent(in) :: iak_diff_b, icomp_diff_b
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -154,19 +157,19 @@
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_rotation_whole', iphys%i_sgs_simi, iphys%i_sgs_grad_f
       call choose_cal_rotation                                          &
-     &   (FEM_prm1%iflag_magne_supg, intg_point_t_evo,                  &
+     &   (FEM_prm%iflag_magne_supg, intg_point_t_evo,                   &
      &    iphys%i_sgs_grad_f, iphys%i_sgs_simi, ele%istack_ele_smp,     &
      &    m_lump, nod_comm, node, ele, iphys_ele, ele_fld, jac_3d_q,    &
      &    rhs_tbl, fem_wk, f_nl, nod_fld)
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_gradent_whole', i_sgs_simi_p, i_sgs_grad_fp
       call choose_cal_gradient                                          &
-     &   (FEM_prm1%iflag_magne_supg, intg_point_t_evo,                  &
+     &   (FEM_prm%iflag_magne_supg, intg_point_t_evo,                   &
      &    i_sgs_grad_fp, i_sgs_simi_p, ele%istack_ele_smp, m_lump,      &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d_q,            &
      &    rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !      call choose_cal_divergence                                       &
-!     &    FEM_prm1%iflag_magne_supg, intg_point_t_evo,                 &
+!     &    FEM_prm%iflag_magne_supg, intg_point_t_evo,                  &
 !     &    iphys%i_sgs_grad_f, iphys%i_sgs_simi+6, node%istack_nod_smp, &
 !     &    m_lump, )
 !
@@ -175,19 +178,19 @@
       if (iflag_debug.gt.0) write(*,*) 'cal_rotation_whole',            &
      &                     iphys%i_sgs_grad, iphys%i_vecp
       call choose_cal_rotation                                          &
-     &   (FEM_prm1%iflag_magne_supg, intg_point_t_evo,                  &
+     &   (FEM_prm%iflag_magne_supg, intg_point_t_evo,                   &
      &    iphys%i_vecp, iphys%i_sgs_grad, ele%istack_ele_smp,           &
      &    m_lump, nod_comm, node, ele, iphys_ele, ele_fld, jac_3d_q,    &
      &    rhs_tbl, fem_wk, f_nl, nod_fld)
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_gradent_in_fluid', i_sgs_grad_p, iphys%i_mag_p
       call choose_cal_gradient                                          &
-     &   (FEM_prm1%iflag_magne_supg, intg_point_t_evo,                  &
+     &   (FEM_prm%iflag_magne_supg, intg_point_t_evo,                   &
      &    iphys%i_mag_p, i_sgs_grad_p, ele%istack_ele_smp, m_lump,      &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d_q,            &
      &    rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !      call choose_cal_divergence                                       &
-!     &    FEM_prm1%iflag_magne_supg, intg_point_t_evo, iphys%i_vecp,   &
+!     &    FEM_prm%iflag_magne_supg, intg_point_t_evo, iphys%i_vecp,    &
 !     &    iphys%i_sgs_grad+6, node%istack_nod_smp, m_lump,)
 !
 !    filtering (to iphys%i_sgs_grad)

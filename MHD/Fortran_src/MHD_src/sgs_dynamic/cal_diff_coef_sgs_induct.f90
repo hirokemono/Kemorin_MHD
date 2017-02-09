@@ -156,7 +156,7 @@
       if (iflag_debug.gt.0) write(*,*) 'cal_div_sgs_filter_idct_simi'
       call cal_div_sgs_idct_simi(iphys%i_sgs_simi, iphys%i_sgs_grad_f,  &
      &    iphys%i_filter_velo, iphys%i_filter_magne,                    &
-     &    nod_comm, node, ele, conduct, iphys_ele, ele_fld,             &
+     &    FEM_prm1, nod_comm, node, ele, conduct, iphys_ele, ele_fld,   &
      &    jac_3d_q, rhs_tbl, fem_wk, mhd_fem_wk, f_l, f_nl, nod_fld)
 !
 !   take divergence of heat flux (to iphys%i_sgs_grad)
@@ -164,7 +164,7 @@
       if (iflag_debug.gt.0)  write(*,*) 'cal_div_sgs_induct_simi'
       call cal_div_sgs_idct_simi(iphys%i_sgs_grad,                      &
      &    iphys%i_SGS_induct_t, iphys%i_velo, iphys%i_magne,            &
-     &    nod_comm, node, ele, conduct, iphys_ele, ele_fld,             &
+     &    FEM_prm1, nod_comm, node, ele, conduct, iphys_ele, ele_fld,   &
      &    jac_3d_q, rhs_tbl, fem_wk, mhd_fem_wk, f_l, f_nl, nod_fld)
 !
 !    filtering (to iphys%i_sgs_grad)
