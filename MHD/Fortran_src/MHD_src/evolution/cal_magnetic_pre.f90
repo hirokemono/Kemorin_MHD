@@ -418,7 +418,7 @@
 !
 !
       call cal_multi_pass_4_vector_ff                                   &
-     &   (insulate%istack_ele_fld_smp, mhd_fem_wk%mlump_ins,            &
+     &   (insulate%istack_ele_fld_smp, FEM_prm1, mhd_fem_wk%mlump_ins,  &
      &    nod_comm, node, ele, jac_3d_q, rhs_tbl,                       &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !

@@ -8,9 +8,10 @@
 !> @brief set schemes for time integration from control
 !!
 !!@verbatim
-!!     subroutine set_control_4_FEM_params(mevo_ctl, fint_ctl)
+!!     subroutine set_control_4_FEM_params(mevo_ctl, fint_ctl, FEM_prm)
 !!        type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
 !!        type(fem_intergration_control), intent(in)  :: fint_ctl
+!!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!@endverbatim
 !
       module set_control_4_scheme
@@ -25,26 +26,28 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_FEM_params(mevo_ctl, fint_ctl)
+      subroutine set_control_4_FEM_params(mevo_ctl, fint_ctl, FEM_prm)
 !
       use calypso_mpi
       use m_error_IDs
       use m_machine_parameter
       use m_control_parameter
+      use t_FEM_control_parameter
       use t_ctl_data_mhd_evo_scheme
       use t_ctl_data_4_fem_int_pts
       use skip_comment_f
 !
       type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
       type(fem_intergration_control), intent(in)  :: fint_ctl
+      type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !
       integer (kind=kint) :: iflag_4_supg = id_turn_OFF
 !
 !
         if (mevo_ctl%num_multi_pass_ctl%iflag .eq. 0) then
-          num_multi_pass = 1
+          FEM_prm%num_multi_pass = 1
         else
-          num_multi_pass = mevo_ctl%num_multi_pass_ctl%intvalue
+          FEM_prm%num_multi_pass = mevo_ctl%num_multi_pass_ctl%intvalue
         end if
 !
         if (mevo_ctl%maxiter_ctl%iflag .eq. 0) then
@@ -105,7 +108,7 @@
         end if
 !
         if (iflag_debug .gt. iflag_routine_msg) then
-          write(*,*) 'num_multi_pass  ',num_multi_pass
+          write(*,*) 'num_multi_pass  ', FEM_prm%num_multi_pass
           write(*,*) 'maxiter ',        maxiter
           write(*,*) 'maxiter_vecp ',   maxiter_vecp
         end if

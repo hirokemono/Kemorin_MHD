@@ -86,8 +86,6 @@
       integer (kind=kint)  :: intg_point_t_evo =   2
 !>      Number of quadrature points for Poisson equation
       integer (kind=kint)  :: intg_point_poisson = 2
-!>      Number of iteration for Multi-pass scheme
-      integer (kind=kint)  :: num_multi_pass =     0
 !
 !>      ID for using SUPG by mangeitc field
       integer (kind=kint), parameter :: id_magnetic_SUPG =  2
@@ -113,7 +111,6 @@
       real (kind=kreal) :: eps_4_magne
 !
       type(FEM_MHD_paremeters), save :: FEM_prm1
-!FEM_prm1%npint_t_wvo_int
 !
 !  ---------------------------------------------------------------------
 !

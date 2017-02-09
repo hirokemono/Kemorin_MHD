@@ -36,8 +36,11 @@
 !
       type FEM_MHD_paremeters
 !>        Number of quadrature points for time evolution
-        integer (kind=kint)  :: npint_t_wvo_int =   2
+        integer(kind = kint)  :: npint_t_wvo_int =   2
 !FEM_prm%npint_t_wvo_int
+!
+!>        Number of iteration for Multi-pass scheme
+        integer(kind = kint)  :: num_multi_pass =     0
 !
 !>          Using rotation form for inertia and Lorentz force
         integer(kind = kint) :: iflag_rotate_form =  id_turn_OFF

@@ -112,8 +112,9 @@
      &      jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
       end if
 !
-      call cal_t_evo_4_vector_cd(iflag_mag_supg,                        &
-     &    conduct%istack_ele_fld_smp, mhd_fem_wk%mlump_cd,              &
+      call cal_t_evo_4_vector_cd                                        &
+     &   (iflag_mag_supg, conduct%istack_ele_fld_smp,                   &
+     &    FEM_prm1, mhd_fem_wk%mlump_cd,                                &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,              &
      &    rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
       call delete_vector_ffs_on_bc(node, Bnod_bcs%nod_bc_a, f_l, f_nl)

@@ -143,7 +143,8 @@
       call s_set_control_4_crank(ctl_ctl%mevo_ctl)
 !
       call s_set_control_4_solver(ctl_ctl%mevo_ctl, ctl_ctl%CG_ctl)
-      call set_control_4_FEM_params(ctl_ctl%mevo_ctl, ctl_ctl%fint_ctl)
+      call set_control_4_FEM_params                                     &
+     &   (ctl_ctl%mevo_ctl, ctl_ctl%fint_ctl, FEM_prm1)
 !
       end subroutine set_control_4_FEM_MHD
 !

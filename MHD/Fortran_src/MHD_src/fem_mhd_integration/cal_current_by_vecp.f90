@@ -120,9 +120,9 @@
      &    nod_fld, jac_sf_grp, rhs_tbl, Asf_bcs%torque_lead,            &
      &    intg_point_t_evo, iphys%i_vecp, fem_wk, surf_wk, f_l)
 !
-      call cal_multi_pass_4_vector_ff(ele%istack_ele_smp, m_lump,       &
-     &    nod_comm, node, ele, jac_3d, rhs_tbl,                         &
-     &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
+      call cal_multi_pass_4_vector_ff                                   &
+     &   (ele%istack_ele_smp, FEM_prm1, m_lump, nod_comm, node, ele,    &
+     &    jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
       call cal_ff_2_vector(node%numnod, node%istack_nod_smp,            &
      &    f_l%ff, m_lump%ml, nod_fld%ntot_phys,                         &
      &    iphys%i_current, nod_fld%d_fld)

@@ -5,12 +5,12 @@
 !
 !!      subroutine cal_velo_co_lumped_crank                             &
 !!     &         (i_velo, nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,&
-!!     &          nod_fld, iphys_ele, fld_ele1, jac_3d, rhs_tbl,        &
+!!     &          nod_fld, iphys_ele, fld_ele, jac_3d, rhs_tbl,         &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl)
 !!      subroutine cal_magne_co_lumped_crank                            &
 !!     &         (i_magne, nod_comm, node, ele, nod_fld,                &
-!!     &          iphys_ele, fld_ele1, nod_bc_b, jac_3d, rhs_tbl,       &
-!!     &          m1_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
+!!     &          iphys_ele, fld_ele, nod_bc_b, jac_3d, rhs_tbl,        &
+!!     &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
 !!
 !!      subroutine cal_velo_co_consist_crank(i_velo, coef_velo,         &
 !!     &          node, ele, fluid, Vnod_bcs, nod_fld, jac_3d,          &
@@ -62,7 +62,7 @@
 !
       subroutine cal_velo_co_lumped_crank                               &
      &         (i_velo, nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,  &
-     &          nod_fld, iphys_ele, fld_ele1, jac_3d, rhs_tbl,          &
+     &          nod_fld, iphys_ele, fld_ele, jac_3d, rhs_tbl,           &
      &          mhd_fem_wk, fem_wk, f_l, f_nl)
 !
       use int_vol_coriolis_term
@@ -80,7 +80,7 @@
       type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
       type(phys_data), intent(in) :: nod_fld
       type(phys_address), intent(in) :: iphys_ele
-      type(phys_data), intent(in) :: fld_ele1
+      type(phys_data), intent(in) :: fld_ele
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -90,9 +90,10 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_t_evo_4_vector_fl'
-      call cal_t_evo_4_vector(iflag_velo_supg,                          &
-     &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl, nod_comm,      &
-     &    node, ele, iphys_ele, fld_ele1, jac_3d, rhs_tbl,              &
+      call cal_t_evo_4_vector                                           &
+     &   (iflag_velo_supg, fluid%istack_ele_fld_smp,                    &
+     &    FEM_prm1, mhd_fem_wk%mlump_fl, nod_comm,                      &
+     &    node, ele, iphys_ele, fld_ele, jac_3d, rhs_tbl,               &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'int_coriolis_nod_exp'
@@ -114,8 +115,8 @@
 !
       subroutine cal_magne_co_lumped_crank                              &
      &         (i_magne, nod_comm, node, ele, nod_fld,                  &
-     &          iphys_ele, fld_ele1, nod_bc_b, jac_3d, rhs_tbl,         &
-     &          m1_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
+     &          iphys_ele, fld_ele, nod_bc_b, jac_3d, rhs_tbl,          &
+     &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
 !
       use cal_multi_pass
       use cal_sol_vector_correct
@@ -128,11 +129,11 @@
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
       type(phys_address), intent(in) :: iphys_ele
-      type(phys_data), intent(in) :: fld_ele1
+      type(phys_data), intent(in) :: fld_ele
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_b
-      type(lumped_mass_matrices), intent(in) :: m1_lump
+      type(lumped_mass_matrices), intent(in) :: m_lump
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -141,8 +142,8 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_t_evo_4_vector'
       call cal_t_evo_4_vector                                           &
-     &   (iflag_mag_supg, ele%istack_ele_smp, m1_lump, nod_comm,        &
-     &    node, ele, iphys_ele, fld_ele1, jac_3d, rhs_tbl,              &
+     &   (iflag_mag_supg, ele%istack_ele_smp, FEM_prm1, m_lump,         &
+     &    nod_comm, node, ele, iphys_ele, fld_ele, jac_3d, rhs_tbl,     &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
       if (iflag_debug.eq.1)   write(*,*) 'set_boundary_magne_4_rhs'
@@ -150,7 +151,7 @@
 !
       if (iflag_debug.eq.1)   write(*,*) 'cal_sol_magne_co_crank'
       call cal_sol_vect_co_crank                                        &
-     &   (nod_fld%n_point, node%istack_internal_smp, m1_lump%ml_o,      &
+     &   (nod_fld%n_point, node%istack_internal_smp, m_lump%ml_o,       &
      &    nod_fld%ntot_phys, i_magne, nod_fld%d_fld,                    &
      &    f_nl%ff, f_l%ff)
 !

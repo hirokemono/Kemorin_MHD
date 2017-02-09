@@ -158,8 +158,8 @@
      &      fem_wk, f_l)
       end if
 !
-      call cal_t_evo_4_vector(iflag_supg,                               &
-     &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl, nod_comm,      &
+      call cal_t_evo_4_vector(iflag_supg, fluid%istack_ele_fld_smp,     &
+     &    FEM_prm1, mhd_fem_wk%mlump_fl, nod_comm,                      &
      &    node, ele, iphys_ele, ele_fld, jac_3d, rhs_tbl,               &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
@@ -244,8 +244,9 @@
      &      evo_a%coef_imp, iak_diff_b, fem_wk, f_l)
       end if
 !
-      call cal_t_evo_4_vector_cd(iflag_supg,                            &
-     &    conduct%istack_ele_fld_smp, mhd_fem_wk%mlump_cd,              &
+      call cal_t_evo_4_vector_cd                                        &
+     &   (iflag_supg,  conduct%istack_ele_fld_smp,                      &
+     &    FEM_prm1, mhd_fem_wk%mlump_cd,                                &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,              &
      &    rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
@@ -324,7 +325,8 @@
       end if
 !
       call cal_t_evo_4_vector_cd                                        &
-     &   (iflag_supg, conduct%istack_ele_fld_smp, mhd_fem_wk%mlump_cd,  &
+     &   (iflag_supg, conduct%istack_ele_fld_smp,                       &
+     &    FEM_prm1, mhd_fem_wk%mlump_cd,                                &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,              &
      &    rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
@@ -411,8 +413,8 @@
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'multi_pass temp'
-      call cal_t_evo_4_scalar(iflag_supg,                               &
-     &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl, nod_comm,      &
+      call cal_t_evo_4_scalar(iflag_supg, fluid%istack_ele_fld_smp,     &
+     &    FEM_prm1, mhd_fem_wk%mlump_fl, nod_comm,                      &
      &    node, ele, iphys_ele, ele_fld, jac_3d, rhs_tbl,               &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
