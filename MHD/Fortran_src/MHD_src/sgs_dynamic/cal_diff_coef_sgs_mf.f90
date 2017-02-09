@@ -149,7 +149,7 @@
       call cal_sgs_m_flux_grad_w_coef                                   &
      &   (ifilter_4delta, icomp_sgs_mf,                                 &
      &    iphys%i_sgs_grad_f, iphys%i_filter_velo, ie_dfvx,             &
-     &    SGS_par%model_p, nod_comm, node, ele, fluid,                  &
+     &    FEM_prm1, SGS_par%model_p, nod_comm, node, ele, fluid,        &
      &    iphys_ele, ele_fld, jac_3d_q, FEM_elens, sgs_coefs, rhs_tbl,  &
      &    fem_wk, mhd_fem_wk, nod_fld)
 !
@@ -158,7 +158,7 @@
       if (iflag_debug.gt.0)  write(*,*) 'cal_div_sgs_filter_mf_simi'
       call cal_div_sgs_mf_simi                                          &
      &   (iphys%i_sgs_simi, iphys%i_sgs_grad_f, iphys%i_filter_velo,    &
-     &    nod_comm, node, ele, fluid, iphys_ele, ele_fld,               &
+     &    FEM_prm1, nod_comm, node, ele, fluid, iphys_ele, ele_fld,     &
      &    jac_3d_q, rhs_tbl, fem_wk, mhd_fem_wk, f_l, f_nl, nod_fld)
 !
 !   take divergence of heat flux (to iphys%i_sgs_grad)
@@ -166,7 +166,7 @@
       if (iflag_debug.gt.0)  write(*,*) 'cal_div_sgs_m_flux_simi'
       call cal_div_sgs_mf_simi                                          &
      &   (iphys%i_sgs_grad, iphys%i_SGS_m_flux, iphys%i_velo,           &
-     &    nod_comm, node, ele, fluid, iphys_ele, ele_fld,               &
+     &    FEM_prm1, nod_comm, node, ele, fluid, iphys_ele, ele_fld,     &
      &    jac_3d_q, rhs_tbl, fem_wk, mhd_fem_wk,                        &
      &    f_l, f_nl, nod_fld)
 !

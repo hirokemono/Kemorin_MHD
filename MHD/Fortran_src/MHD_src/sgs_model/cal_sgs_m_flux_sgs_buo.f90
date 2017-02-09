@@ -168,19 +168,19 @@
 !
       call cal_sgs_momentum_flux                                        &
      &   (icomp_sgs%i_mom_flux, iphys_elediff%i_velo,                   &
-     &    SGS_param, filter_param, nod_comm, node, ele, fluid,          &
-     &    iphys, iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,      &
-     &    filtering, sgs_coefs, sgs_coefs_nod, wk_filter,               &
+     &    FEM_prm1, SGS_param, filter_param, nod_comm, node, ele,       &
+     &    fluid, iphys, iphys_ele, ele_fld, jac_3d_q, rhs_tbl,          &
+     &    FEM_elens, filtering, sgs_coefs, sgs_coefs_nod, wk_filter,    &
      &    mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
 !   lead work of Reynolds stress
 !
       call cal_terms_4_momentum(iphys%i_SGS_div_m_flux,                 &
      &    ifld_diff%i_mom_flux, ifld_diff%i_lorentz,                    &
-     &    SGS_param, cmt_param, nod_comm, node, ele, surf, sf_grp,      &
-     &    fluid, fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,  &
-     &    ak_MHD, jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,           &
-     &    diff_coefs, mhd_fem_wk, fem_wk, surf_wk,                      &
+     &    FEM_prm1, SGS_param, cmt_param, nod_comm, node, ele, surf,    &
+     &    sf_grp, fluid, fl_prop, cd_prop, Vsf_bcs, Bsf_bcs,            &
+     &    iphys, iphys_ele, ak_MHD, jac_3d_q, jac_sf_grp_q, rhs_tbl,    &
+     &    FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,           &
      &    f_l, f_nl, nod_fld, ele_fld)
 !
 !$omp parallel

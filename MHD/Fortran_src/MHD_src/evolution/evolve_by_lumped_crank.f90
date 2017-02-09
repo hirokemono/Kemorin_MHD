@@ -7,7 +7,7 @@
 !
 !!      subroutine cal_velo_pre_lumped_crank(iflag_commute_velo,        &
 !!     &          ifilter_final, iak_diff_v, ak_d_velo,                 &
-!!     &          nod_comm, node, ele, fluid, evo_v, Vnod_bcs,          &
+!!     &          FEM_prm, nod_comm, node, ele, fluid, evo_v, Vnod_bcs, &
 !!     &          iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,&
 !!     &          diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,   &
 !!     &          f_l, f_nl, nod_fld)
@@ -33,6 +33,7 @@
 !!     &          ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,      &
 !!     &          matrix, MG_vector, mhd_fem_wk, fem_wk,                &
 !!     &          f_l, f_nl, nod_fld)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -67,12 +68,12 @@
       use m_precision
 !
       use m_machine_parameter
-!      use m_control_parameter
       use m_t_int_parameter
       use m_t_step_parameter
       use m_phys_constants
       use m_physical_property
 !
+      use t_FEM_control_parameter
       use t_comm_table
       use t_geometry_data_MHD
       use t_geometry_data
@@ -100,7 +101,7 @@
 !
       subroutine cal_velo_pre_lumped_crank(iflag_commute_velo,          &
      &          ifilter_final, iak_diff_v, ak_d_velo,                   &
-     &          nod_comm, node, ele, fluid, evo_v, Vnod_bcs,            &
+     &          FEM_prm, nod_comm, node, ele, fluid, evo_v, Vnod_bcs,   &
      &          iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,  &
      &          diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,     &
      &          f_l, f_nl, nod_fld)
@@ -121,6 +122,7 @@
       integer(kind = kint), intent(in) :: ifilter_final
       integer(kind = kint), intent(in) :: iak_diff_v
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -156,8 +158,8 @@
       end if
 !
       call cal_t_evo_4_vector                                           &
-     &   (FEM_prm1%iflag_velo_supg, fluid%istack_ele_fld_smp,           &
-     &    FEM_prm1, mhd_fem_wk%mlump_fl, nod_comm,                      &
+     &   (FEM_prm%iflag_velo_supg, fluid%istack_ele_fld_smp,            &
+     &    FEM_prm, mhd_fem_wk%mlump_fl, nod_comm,                       &
      &    node, ele, iphys_ele, ele_fld, jac_3d, rhs_tbl,               &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !

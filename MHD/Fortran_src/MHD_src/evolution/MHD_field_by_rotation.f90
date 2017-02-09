@@ -7,12 +7,13 @@
 !>@brief Evaluate vorticity and current density
 !!
 !!@verbatim
-!!      subroutine cal_field_by_rotation(SGS_param, cmt_param,          &
+!!      subroutine cal_field_by_rotation(FEM_prm, SGS_param, cmt_param, &
 !!     &          nod_comm, node, ele, surf, fluid, conduct,            &
 !!     &          sf_grp, nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld, &
 !!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,               &
 !!     &          ifld_diff, diff_coefs, m_lump, mhd_fem_wk, fem_wk,    &
 !!     &          surf_wk, f_l, f_nl, nod_fld)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(communication_table), intent(in) :: nod_comm
@@ -47,6 +48,7 @@
       use m_machine_parameter
       use m_control_parameter
 !
+      use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_comm_table
       use t_geometry_data_MHD
@@ -75,7 +77,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_field_by_rotation(SGS_param, cmt_param,            &
+      subroutine cal_field_by_rotation(FEM_prm, SGS_param, cmt_param,   &
      &          nod_comm, node, ele, surf, fluid, conduct,              &
      &          sf_grp, nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,   &
      &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                 &
@@ -84,6 +86,7 @@
 !
       use cal_rotation_sgs
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(communication_table), intent(in) :: nod_comm
@@ -117,7 +120,7 @@
           if (iflag_debug .ge. iflag_routine_msg)                       &
      &        write(*,*) 'cal_vorticity'
           call choose_cal_rotation_sgs(cmt_param%iflag_c_velo,          &
-     &       FEM_prm1%iflag_velo_supg, intg_point_t_evo,                &
+     &       FEM_prm%iflag_velo_supg, intg_point_t_evo,                 &
      &       ifld_diff%i_velo, iphys%i_velo, iphys%i_vort,              &
      &       fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,             &
      &       SGS_param, nod_comm, node, ele, surf, sf_grp,              &

@@ -285,8 +285,8 @@
 !
       if (     FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson) then
         call cal_velo_co_lumped_crank                                   &
-     &     (i_velo, nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,      &
-     &      nod_fld, iphys_ele, ele_fld, jac_3d, rhs_tbl,               &
+     &     (i_velo, FEM_prm, nod_comm, node, ele, fluid, fl_prop,       &
+     &      Vnod_bcs, nod_fld, iphys_ele, ele_fld, jac_3d, rhs_tbl,     &
      &      mhd_fem_wk, fem_wk, f_l, f_nl)
       else if(FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)   &
      & then

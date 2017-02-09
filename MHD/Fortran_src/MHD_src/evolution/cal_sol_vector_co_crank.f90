@@ -4,9 +4,9 @@
 !      Written by H. Matsui on March, 2006
 !
 !!      subroutine cal_velo_co_lumped_crank                             &
-!!     &         (i_velo, nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,&
-!!     &          nod_fld, iphys_ele, fld_ele, jac_3d, rhs_tbl,         &
-!!     &          mhd_fem_wk, fem_wk, f_l, f_nl)
+!!     &         (i_velo, FEM_prm, nod_comm, node, ele, fluid, fl_prop, &
+!!     &          Vnod_bcs, nod_fld, iphys_ele, fld_ele, jac_3d,        &
+!!     &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
 !!      subroutine cal_magne_co_lumped_crank                            &
 !!     &         (i_magne, nod_comm, node, ele, nod_fld,                &
 !!     &          iphys_ele, fld_ele, nod_bc_b, jac_3d, rhs_tbl,        &
@@ -18,6 +18,7 @@
 !!      subroutine cal_magne_co_consist_crank(i_magne, coef_magne,      &
 !!     &          node, ele, conduct, nod_fld, nod_bc_b, jac_3d,&
 !!     &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: fluid
@@ -40,6 +41,7 @@
       use m_t_int_parameter
       use m_t_step_parameter
 !
+      use t_FEM_control_parameter
       use t_physical_property
       use t_comm_table
       use t_geometry_data_MHD
@@ -61,9 +63,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_velo_co_lumped_crank                               &
-     &         (i_velo, nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,  &
-     &          nod_fld, iphys_ele, fld_ele, jac_3d, rhs_tbl,           &
-     &          mhd_fem_wk, fem_wk, f_l, f_nl)
+     &         (i_velo, FEM_prm, nod_comm, node, ele, fluid, fl_prop,   &
+     &          Vnod_bcs, nod_fld, iphys_ele, fld_ele, jac_3d,          &
+     &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
 !
       use int_vol_coriolis_term
       use cal_multi_pass
@@ -72,6 +74,7 @@
 !
       integer(kind = kint), intent(in) :: i_velo
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -91,8 +94,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_t_evo_4_vector_fl'
       call cal_t_evo_4_vector                                           &
-     &   (FEM_prm1%iflag_velo_supg, fluid%istack_ele_fld_smp,           &
-     &    FEM_prm1, mhd_fem_wk%mlump_fl, nod_comm,                      &
+     &   (FEM_prm%iflag_velo_supg, fluid%istack_ele_fld_smp,            &
+     &    FEM_prm, mhd_fem_wk%mlump_fl, nod_comm,                       &
      &    node, ele, iphys_ele, fld_ele, jac_3d, rhs_tbl,               &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !

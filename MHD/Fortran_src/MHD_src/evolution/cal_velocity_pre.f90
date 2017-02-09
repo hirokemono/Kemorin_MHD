@@ -208,18 +208,18 @@
       if(SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
         call cal_sgs_momentum_flux                                      &
      &     (icomp_sgs%i_mom_flux, iphys_elediff%i_velo,                 &
-     &      SGS_param, filter_param, nod_comm, node, ele, fluid,        &
-     &      iphys, iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,    &
-     &      filtering, sgs_coefs, sgs_coefs_nod, wk_filter,             &
+     &      FEM_prm, SGS_param, filter_param, nod_comm, node, ele,      &
+     &      fluid, iphys, iphys_ele, ele_fld, jac_3d_q, rhs_tbl,        &
+     &      FEM_elens, filtering, sgs_coefs, sgs_coefs_nod, wk_filter,  &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       if(SGS_param%iflag_SGS_lorentz .ne. id_SGS_none) then
         call cal_sgs_maxwell                                            &
      &     (icomp_sgs%i_lorentz, iphys_elediff%i_magne,                 &
-     &      SGS_param, filter_param, nod_comm, node, ele, fluid,        &
-     &      iphys, iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,    &
-     &      filtering, sgs_coefs, sgs_coefs_nod, wk_filter,             &
+     &      FEM_prm, SGS_param, filter_param, nod_comm, node, ele,      &
+     &      fluid, iphys, iphys_ele, ele_fld, jac_3d_q, rhs_tbl,        &
+     &      FEM_elens, filtering, sgs_coefs, sgs_coefs_nod, wk_filter,  &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
@@ -246,7 +246,7 @@
 !
 ! -------     advection and forces
 !
-      if (FEM_prm1%iflag_velo_supg .eq. id_turn_ON) then
+      if (FEM_prm%iflag_velo_supg .eq. id_turn_ON) then
         call int_vol_velo_pre_ele_upwind                                &
      &     (FEM_prm%iflag_rotate_form, intg_point_t_evo,                &
      &      SGS_param, cmt_param, node, ele, fluid,                     &
@@ -255,7 +255,7 @@
      &      iphys_ele, ifld_diff%i_mom_flux, ifld_diff%i_lorentz,       &
      &      jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,                   &
      &      mhd_fem_wk, fem_wk, f_nl)
-      else if (FEM_prm1%iflag_velo_supg .eq. id_magnetic_SUPG) then
+      else if (FEM_prm%iflag_velo_supg .eq. id_magnetic_SUPG) then
         call int_vol_velo_pre_ele_upwind                                &
      &     (FEM_prm%iflag_rotate_form, intg_point_t_evo,                &
      &      SGS_param, cmt_param, node, ele, fluid,                     &
@@ -286,12 +286,12 @@
 !
 !
       if (evo_velo%iflag_scheme .eq. id_explicit_euler) then
-        call cal_velo_pre_euler(nod_comm, node, ele,     &
+        call cal_velo_pre_euler(FEM_prm, nod_comm, node, ele,           &
      &     fluid, fl_prop, iphys, iphys_ele, ele_fld,                   &
      &     jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       else if(evo_velo%iflag_scheme .eq. id_explicit_adams2) then
-        call cal_velo_pre_adams(nod_comm, node, ele,   &
+        call cal_velo_pre_adams(FEM_prm, nod_comm, node, ele,           &
      &     fluid, fl_prop, iphys, iphys_ele, ele_fld,                   &
      &     jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
@@ -299,7 +299,7 @@
         call cal_velo_pre_lumped_crank                                  &
      &     (cmt_param%iflag_c_velo, SGS_param%ifilter_final,            &
      &      ifld_diff%i_velo, ak_MHD%ak_d_velo,                         &
-     &      nod_comm, node, ele, fluid, evo_velo, Vnod_bcs,             &
+     &      FEM_prm, nod_comm, node, ele, fluid, evo_velo, Vnod_bcs,    &
      &      iphys, iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,    &
      &      diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,         &
      &      f_l, f_nl, nod_fld)

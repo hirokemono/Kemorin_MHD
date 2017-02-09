@@ -138,9 +138,9 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_filter_mf_grad_4_dyn'
       call cal_sgs_m_flux_grad_no_coef(ifilter_4delta,                  &
-     &    iphys%i_sgs_grad_f, iphys%i_filter_velo, ie_dfvx, nod_comm,   &
-     &    node, ele, fluid, iphys_ele, ele_fld, jac_3d_q,               &
-     &    FEM_elens, rhs_tbl, fem_wk, mhd_fem_wk, nod_fld)
+     &    iphys%i_sgs_grad_f, iphys%i_filter_velo, ie_dfvx,             &
+     &    FEM_prm1, nod_comm, node, ele, fluid, iphys_ele, ele_fld,     &
+     &    jac_3d_q, FEM_elens, rhs_tbl, fem_wk, mhd_fem_wk, nod_fld)
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys%i_sgs_grad_f)
 !
@@ -148,9 +148,9 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_m_flux_grad_4_dyn'
       call cal_sgs_m_flux_grad_no_coef(ifilter_2delta,                  &
-     &    iphys%i_SGS_m_flux, iphys%i_velo, ie_dvx, nod_comm,           &
-     &    node, ele, fluid, iphys_ele, ele_fld, jac_3d_q,               &
-     &    FEM_elens, rhs_tbl, fem_wk, mhd_fem_wk, nod_fld)
+     &    iphys%i_SGS_m_flux, iphys%i_velo, ie_dvx,                     &
+     &    FEM_prm1, nod_comm, node, ele, fluid, iphys_ele, ele_fld,     &
+     &    jac_3d_q, FEM_elens, rhs_tbl, fem_wk, mhd_fem_wk, nod_fld)
 !
 !      filtering
 !

@@ -5,8 +5,8 @@
 !
 !!      subroutine cal_fluxes_4_monitor                                 &
 !!     &         (node, fl_prop, cd_prop, iphys, nod_fld)
-!!      subroutine cal_forces_4_monitor                                 &
-!!     &         (SGS_par, nod_comm, node, ele, surf, fluid, conduct,   &
+!!      subroutine cal_forces_4_monitor(FEM_prm, SGS_par,               &
+!!     &          nod_comm, node, ele, surf, fluid, conduct,            &
 !!     &          sf_grp, fl_prop, cd_prop, ht_prop, cp_prop,           &
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele,                  &
 !!     &          ak_MHD, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,       &
@@ -15,6 +15,7 @@
 !!      subroutine cal_work_4_forces                                    &
 !!     &         (nod_comm, node, ele, fl_prop, cd_prop, iphys,         &
 !!     &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl, nod_fld)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -50,6 +51,7 @@
       use m_control_parameter
       use m_phys_labels
 !
+      use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_comm_table
       use t_geometry_data_MHD
@@ -143,8 +145,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_forces_4_monitor                                   &
-     &         (SGS_par, nod_comm, node, ele, surf, fluid, conduct,     &
+      subroutine cal_forces_4_monitor(FEM_prm, SGS_par,                 &
+     &          nod_comm, node, ele, surf, fluid, conduct,              &
      &          sf_grp, fl_prop, cd_prop, ht_prop, cp_prop,             &
      &          nod_bcs, surf_bcs, iphys, iphys_ele,                    &
      &          ak_MHD, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,         &
@@ -157,6 +159,7 @@
       use cal_induction_terms
       use cal_gradient
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -287,7 +290,7 @@
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call cal_terms_4_momentum                                     &
      &       (i_fld, ifld_diff%i_velo, ifld_diff%i_lorentz,             &
-     &        SGS_par%model_p, SGS_par%commute_p,                       &
+     &        FEM_prm, SGS_par%model_p, SGS_par%commute_p,              &
      &        nod_comm, node, ele, surf, sf_grp, fluid,                 &
      &        fl_prop, cd_prop, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,     &
      &        iphys, iphys_ele, ak_MHD, jac_3d, jac_sf_grp, rhs_tbl,    &
@@ -395,7 +398,7 @@
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call choose_cal_gradient                                      &
-     &       (FEM_prm1%iflag_velo_supg, intg_point_t_evo, i_src, i_fld, &
+     &       (FEM_prm%iflag_velo_supg, intg_point_t_evo, i_src, i_fld,  &
      &        fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,            &
      &        nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,          &
      &        rhs_tbl, fem_wk, f_l, f_nl, nod_fld)

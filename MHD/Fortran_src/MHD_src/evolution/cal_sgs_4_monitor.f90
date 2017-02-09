@@ -155,10 +155,10 @@
         if(iflag_debug.gt.0) write(*,*) 'lead ', trim(fhd_SGS_m_flux)
         call cal_sgs_momentum_flux                                      &
      &     (icomp_sgs%i_mom_flux, iphys_elediff%i_velo,                 &
-     &      SGS_param, filter_param, nod_comm, node, ele, fluid, iphys, &
-     &      iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens, filtering,  &
-     &      sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,    &
-     &      f_l, f_nl, nod_fld)
+     &      FEM_prm1, SGS_param, filter_param, nod_comm, node, ele,     &
+     &      fluid, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl,          &
+     &      FEM_elens, filtering, sgs_coefs, sgs_coefs_nod, wk_filter,  &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       if (iphys%i_SGS_maxwell .gt. 0) then
@@ -166,10 +166,10 @@
      &        'lead ', trim(fhd_SGS_maxwell_t)
         call cal_sgs_maxwell                                            &
      &     (icomp_sgs%i_lorentz, iphys_elediff%i_magne,                 &
-     &      SGS_param, filter_param, nod_comm, node, ele, fluid, iphys, &
-     &      iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens, filtering,  &
-     &      sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,    &
-     &      f_l, f_nl, nod_fld)
+     &      FEM_prm1, SGS_param, filter_param, nod_comm, node, ele,     &
+     &      fluid, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl,          &
+     &      FEM_elens, filtering, sgs_coefs, sgs_coefs_nod, wk_filter,  &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       if (iphys%i_SGS_induct_t .gt. 0) then
@@ -279,7 +279,7 @@
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call cal_terms_4_momentum                                     &
      &       (i_fld, ifld_diff%i_mom_flux, ifld_diff%i_lorentz,         &
-     &        SGS_param, cmt_param, nod_comm, node, ele, surf,          &
+     &        FEM_prm1, SGS_param, cmt_param, nod_comm, node, ele, surf,&
      &        sf_grp, fluid, fl_prop, cd_prop,                          &
      &        surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, iphys, iphys_ele,     &
      &        ak_MHD, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,           &

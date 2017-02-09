@@ -136,17 +136,17 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_filter_mxwl_grad_4_dyn'
       call cal_sgs_m_flux_grad_no_coef(ifilter_4delta,                  &
-     &    iphys%i_sgs_grad_f, iphys%i_filter_magne, ie_dfbx, nod_comm,  &
-     &    node, ele, fluid, iphys_ele, fld_ele, jac_3d_q,               &
-     &    FEM_elens, rhs_tbl, fem_wk, mhd_fem_wk, nod_fld)
+     &    iphys%i_sgs_grad_f, iphys%i_filter_magne, ie_dfbx,            &
+     &    FEM_prm1, nod_comm, node, ele, fluid, iphys_ele, fld_ele,     &
+     &    jac_3d_q, FEM_elens, rhs_tbl, fem_wk, mhd_fem_wk, nod_fld)
 !
 !   gradient model by original field
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_maxwell_grad_4_dyn'
       call cal_sgs_m_flux_grad_no_coef(ifilter_2delta,                  &
-     &    iphys%i_SGS_maxwell, iphys%i_magne, ie_dbx, nod_comm,         &
-     &    node, ele, fluid, iphys_ele, fld_ele, jac_3d_q,               &
-     &    FEM_elens, rhs_tbl, fem_wk, mhd_fem_wk, nod_fld)
+     &    iphys%i_SGS_maxwell, iphys%i_magne, ie_dbx,                   &
+     &    FEM_prm1, nod_comm, node, ele, fluid, iphys_ele, fld_ele,     &
+     &    jac_3d_q, FEM_elens, rhs_tbl, fem_wk, mhd_fem_wk, nod_fld)
 !
 !      filtering
 !

@@ -148,7 +148,7 @@
       call cal_sgs_m_flux_grad_w_coef                                   &
      &   (ifilter_4delta, icomp_sgs_lor,                                &
      &    iphys%i_sgs_grad_f, iphys%i_filter_magne, ie_dfbx,            &
-     &    SGS_par%model_p, nod_comm, node, ele, fluid,                  &
+     &    FEM_prm1, SGS_par%model_p, nod_comm, node, ele, fluid,        &
      &    iphys_ele, ele_fld, jac_3d_q, FEM_elens, sgs_coefs, rhs_tbl,  &
      &    fem_wk, mhd_fem_wk, nod_fld)
 !
@@ -157,7 +157,7 @@
       if (iflag_debug.gt.0) write(*,*) 'cal_div_sgs_filter_mxwl_simi'
       call cal_div_sgs_mf_simi                                          &
      &   (iphys%i_sgs_simi, iphys%i_sgs_grad_f, iphys%i_filter_magne,   &
-     &    nod_comm, node, ele, fluid, iphys_ele, ele_fld,               &
+     &    FEM_prm1, nod_comm, node, ele, fluid, iphys_ele, ele_fld,     &
      &    jac_3d_q, rhs_tbl, fem_wk, mhd_fem_wk,                        &
      &    f_l, f_nl, nod_fld)
 !
@@ -166,7 +166,7 @@
       if (iflag_debug.gt.0)  write(*,*) 'cal_div_sgs_maxwell_simi'
       call cal_div_sgs_mf_simi                                          &
      &   (iphys%i_sgs_grad, iphys%i_SGS_maxwell, iphys%i_magne,         &
-     &    nod_comm, node, ele, fluid, iphys_ele, ele_fld,               &
+     &    FEM_prm1, nod_comm, node, ele, fluid, iphys_ele, ele_fld,     &
      &    jac_3d_q, rhs_tbl, fem_wk, mhd_fem_wk, f_l, f_nl, nod_fld)
 !
 !    filtering (to iphys%i_sgs_grad)

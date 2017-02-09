@@ -225,11 +225,11 @@
      &         .and. diff_coefs%iflag_field(iak_diff_v) .eq. 0) then
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &                 write(*,*) 's_cal_diff_coef_velo'
-          call s_cal_diff_coef_velo(iak_diff_v, icomp_diff_v, SGS_par,  &
-     &        nod_comm, node, ele, surf, sf_grp, Vsf_bcs, Psf_bcs,      &
-     &        iphys, iphys_ele, ele_fld, fluid, layer_tbl,              &
-     &        jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,     &
-     &        filtering, wk_filter, wk_cor, wk_lsq, wk_diff,            &
+          call s_cal_diff_coef_velo(iak_diff_v, icomp_diff_v,           &
+     &        FEM_prm, SGS_par, nod_comm, node, ele, surf, sf_grp,      &
+     &        Vsf_bcs, Psf_bcs, iphys, iphys_ele, ele_fld, fluid,       &
+     &        layer_tbl, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,     &
+     &        FEM_elens, filtering, wk_filter, wk_cor, wk_lsq, wk_diff, &
      &        mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                   &
      &        nod_fld, diff_coefs)
         end if

@@ -67,10 +67,10 @@
         iflag_mag_supg =  iflag_4_supg
         iflag_comp_supg = iflag_4_supg
 !
-        FEM_prm1%iflag_velo_supg = iflag_4_supg
+        FEM_prm%iflag_velo_supg = iflag_4_supg
         if (mevo_ctl%iflag_supg_v_ctl%iflag .gt. 0                      &
      &     .and. yes_flag(mevo_ctl%iflag_supg_v_ctl%charavalue)) then
-          FEM_prm1%iflag_velo_supg = id_turn_ON
+          FEM_prm%iflag_velo_supg = id_turn_ON
         end if
         if (mevo_ctl%iflag_supg_t_ctl%iflag .gt. 0                      &
      &    .and. yes_flag(mevo_ctl%iflag_supg_t_ctl%charavalue)) then

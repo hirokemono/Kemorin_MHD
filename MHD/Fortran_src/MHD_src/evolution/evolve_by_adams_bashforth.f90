@@ -5,7 +5,7 @@
 !                                    on July 2000 (ver 1.1)
 !        modieied by H. Matsui on Sep., 2005
 !
-!!      subroutine cal_velo_pre_adams(iflag_supg, nod_comm, node, ele,  &
+!!      subroutine cal_velo_pre_adams(FEM_prm, nod_comm, node, ele,     &
 !!     &          fluid, fl_prop, iphys, iphys_ele, ele_fld, jac_3d,    &
 !!     &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_magne_pre_adams(iflag_supg, i_field, i_previous, &
@@ -16,6 +16,7 @@
 !!     &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,       &
 !!     &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,                  &
 !!     &          f_l, f_nl, nod_fld)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -39,6 +40,7 @@
       use m_t_int_parameter
       use m_phys_constants
 !
+      use t_FEM_control_parameter
       use t_physical_property
       use t_comm_table
       use t_geometry_data_MHD
@@ -60,7 +62,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_velo_pre_adams(nod_comm, node, ele,    &
+      subroutine cal_velo_pre_adams(FEM_prm, nod_comm, node, ele,       &
      &          fluid, fl_prop, iphys, iphys_ele, ele_fld, jac_3d,      &
      &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
@@ -68,6 +70,7 @@
       use cal_sol_field_explicit
       use int_vol_coriolis_term
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -86,8 +89,8 @@
 !
 !
       call cal_t_evo_4_vector                                           &
-     &   (FEM_prm1%iflag_velo_supg, fluid%istack_ele_fld_smp,           &
-     &    FEM_prm1, mhd_fem_wk%mlump_fl, nod_comm,                      &
+     &   (FEM_prm%iflag_velo_supg, fluid%istack_ele_fld_smp,            &
+     &    FEM_prm, mhd_fem_wk%mlump_fl, nod_comm,                       &
      &    node, ele, iphys_ele, ele_fld, jac_3d, rhs_tbl,               &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
