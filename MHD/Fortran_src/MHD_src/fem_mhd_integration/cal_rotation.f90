@@ -3,12 +3,12 @@
 !
 !     Written by H. Matsui
 !
-!!      subroutine choose_cal_rotation                                  &
-!!     &        (iflag_4_supg, i_vector, i_rot, iele_fsmp_stack, m_lump,&
+!!      subroutine choose_cal_rotation(iflag_4_supg, num_int,           &
+!!     &         i_vector, i_rot, iele_fsmp_stack, m_lump,              &
 !!     &         nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,       &
 !!     &         rhs_tbl, fem_wk, f_nl, nod_fld)
 !!      subroutine choose_int_vol_rotations                             &
-!!     &         (iflag_4_supg, iele_fsmp_stack, i_vector,              &
+!!     &         (iflag_4_supg, num_int, iele_fsmp_stack, i_vector,     &
 !!     &          node, ele, nod_fld, iphys_ele, ele_fld, jac_3d,       &
 !!     &          rhs_tbl, fem_wk, f_nl)
 !!        type(communication_table), intent(in) :: nod_comm
@@ -26,10 +26,9 @@
       module cal_rotation
 !
       use m_precision
-!
       use m_machine_parameter
-      use m_control_parameter
 !
+      use t_FEM_control_parameter
       use t_geometry_data
       use t_phys_data
       use t_comm_table
@@ -48,8 +47,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine choose_cal_rotation                                    &
-     &        (iflag_4_supg, i_vector, i_rot, iele_fsmp_stack, m_lump,  &
+      subroutine choose_cal_rotation(iflag_4_supg, num_int,             &
+     &         i_vector, i_rot, iele_fsmp_stack, m_lump,                &
      &         nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,         &
      &         rhs_tbl, fem_wk, f_nl, nod_fld)
 !
@@ -66,7 +65,8 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
       type(lumped_mass_matrices), intent(in) :: m_lump
-      integer(kind = kint), intent(in) :: iflag_4_supg, i_vector, i_rot
+      integer(kind = kint), intent(in) :: iflag_4_supg, num_int
+      integer(kind = kint), intent(in) :: i_vector, i_rot
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -74,8 +74,9 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call choose_int_vol_rotations(iflag_4_supg, iele_fsmp_stack,      &
-     &    i_vector, node, ele, nod_fld, iphys_ele, ele_fld,            &
+      call choose_int_vol_rotations                                     &
+     &   (iflag_4_supg, num_int, iele_fsmp_stack, i_vector,             &
+     &    node, ele, nod_fld, iphys_ele, ele_fld,                       &
      &    jac_3d, rhs_tbl, fem_wk, f_nl)
 !
       call cal_ff_smp_2_vector(node, rhs_tbl, f_nl%ff_smp,              &
@@ -89,7 +90,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine choose_int_vol_rotations                               &
-     &         (iflag_4_supg, iele_fsmp_stack, i_vector,                &
+     &         (iflag_4_supg, num_int, iele_fsmp_stack, i_vector,       &
      &          node, ele, nod_fld, iphys_ele, ele_fld, jac_3d,         &
      &          rhs_tbl, fem_wk, f_nl)
 !
@@ -104,7 +105,8 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
-      integer(kind = kint), intent(in) :: iflag_4_supg, i_vector
+      integer(kind = kint), intent(in) :: i_vector
+      integer(kind = kint), intent(in) :: iflag_4_supg, num_int
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -115,18 +117,17 @@
 !
        if ( iflag_4_supg .eq. id_magnetic_SUPG) then
         call int_vol_rotation_upw(node, ele, jac_3d, rhs_tbl, nod_fld,  &
-     &      iele_fsmp_stack, intg_point_t_evo, i_vector,                &
+     &      iele_fsmp_stack, num_int, i_vector,                         &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
      &      fem_wk, f_nl)
        else if ( iflag_4_supg .eq. id_turn_ON) then
         call int_vol_rotation_upw(node, ele, jac_3d, rhs_tbl, nod_fld,  &
-     &      iele_fsmp_stack, intg_point_t_evo, i_vector,                &
+     &      iele_fsmp_stack, num_int, i_vector,                         &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
      &      fem_wk, f_nl)
        else
         call int_vol_rotation(node, ele, jac_3d, rhs_tbl, nod_fld,      &
-     &      iele_fsmp_stack, intg_point_t_evo, i_vector,                &
-     &      fem_wk, f_nl)
+     &      iele_fsmp_stack, num_int, i_vector, fem_wk, f_nl)
        end if
 !
       end subroutine choose_int_vol_rotations

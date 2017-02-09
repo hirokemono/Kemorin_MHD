@@ -216,8 +216,8 @@
      &        then
                if (iflag_debug.gt.0)                                    &
      &            write(*,*) 's_cal_diff_coef_scalar temp'
-               call s_cal_diff_coef_scalar                              &
-     &            (iphys%i_sgs_temp, iphys%i_filter_temp,               &
+               call s_cal_diff_coef_scalar(iflag_temp_supg,             &
+     &             iphys%i_sgs_temp, iphys%i_filter_temp,               &
      &             iak_diff_t, icomp_diff_t, SGS_par,                   &
      &             nod_comm, node, ele, surf, sf_grp, Tsf_bcs,          &
      &             iphys, iphys_ele, ele_fld, fluid, layer_tbl,         &
@@ -338,8 +338,8 @@
      &        then
                if (iflag_debug.gt.0)  write(*,*)                        &
      &                        's_cal_diff_coef_scalar composition'
-               call s_cal_diff_coef_scalar                              &
-     &            (iphys%i_sgs_composit, iphys%i_filter_comp,           &
+               call s_cal_diff_coef_scalar(iflag_comp_supg,             &
+     &             iphys%i_sgs_composit, iphys%i_filter_comp,           &
      &             iak_diff_c, icomp_diff_c, SGS_par,                   &
      &             nod_comm, node, ele, surf, sf_grp, Csf_bcs,          &
      &             iphys, iphys_ele, ele_fld, fluid, layer_tbl,         &

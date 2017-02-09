@@ -154,40 +154,40 @@
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_rotation_whole', iphys%i_sgs_simi, iphys%i_sgs_grad_f
       call choose_cal_rotation                                          &
-     &   (iflag_mag_supg, iphys%i_sgs_grad_f, iphys%i_sgs_simi,         &
-     &    ele%istack_ele_smp, m_lump,                                   &
-     &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d_q,            &
+     &   (iflag_mag_supg, intg_point_t_evo,                             &
+     &    iphys%i_sgs_grad_f, iphys%i_sgs_simi, ele%istack_ele_smp,     &
+     &    m_lump, nod_comm, node, ele, iphys_ele, ele_fld, jac_3d_q,    &
      &    rhs_tbl, fem_wk, f_nl, nod_fld)
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_gradent_whole', i_sgs_simi_p, i_sgs_grad_fp
       call choose_cal_gradient                                          &
-     &   (iflag_mag_supg, i_sgs_grad_fp, i_sgs_simi_p,                  &
-     &    ele%istack_ele_smp, m_lump,                                   &
+     &   (iflag_mag_supg, intg_point_t_evo,                             &
+     &    i_sgs_grad_fp, i_sgs_simi_p, ele%istack_ele_smp, m_lump,      &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d_q,            &
      &    rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !      call choose_cal_divergence                                       &
-!     &   (iflag_mag_supg, iphys%i_sgs_grad_f, iphys%i_sgs_simi+6,      &
-!     &    node%istack_nod_smp, m_lump,)
+!     &   (iflag_mag_supg, intg_point_t_evo, iphys%i_sgs_grad_f,        &
+!     &    iphys%i_sgs_simi+6, node%istack_nod_smp, m_lump,)
 !
 !   take rotation and gradient of B (to iphys%i_sgs_grad)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_rotation_whole',            &
      &                     iphys%i_sgs_grad, iphys%i_magne
       call choose_cal_rotation                                          &
-     &   (iflag_mag_supg, iphys%i_magne, iphys%i_sgs_grad,              &
-     &    ele%istack_ele_smp, m_lump,                                   &
-     &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d_q,            &
+     &   (iflag_mag_supg, intg_point_t_evo,                             &
+     &    iphys%i_magne, iphys%i_sgs_grad, ele%istack_ele_smp,          &
+     &    m_lump, nod_comm, node, ele, iphys_ele, ele_fld, jac_3d_q,    &
      &    rhs_tbl, fem_wk, f_nl, nod_fld)
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_gradent_in_fluid', i_sgs_grad_p, iphys%i_mag_p
       call choose_cal_gradient                                          &
-     &   (iflag_mag_supg, iphys%i_mag_p, i_sgs_grad_p,                  &
-     &    ele%istack_ele_smp, m_lump,                                   &
+     &   (iflag_mag_supg, intg_point_t_evo,                             &
+     &    iphys%i_mag_p, i_sgs_grad_p, ele%istack_ele_smp, m_lump,      &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d_q,            &
      &    rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !      call choose_cal_divergence                                       &
-!     &   (iflag_mag_supg, iphys%i_magne, iphys%i_sgs_grad+6,           &
-!     &    node%istack_nod_smp, m_lump, )
+!     &   (iflag_mag_supg, intg_point_t_evo, iphys%i_magne,             &
+!     &    iphys%i_sgs_grad+6, node%istack_nod_smp, m_lump, )
 !
 !    filtering (to iphys%i_sgs_grad)
 !

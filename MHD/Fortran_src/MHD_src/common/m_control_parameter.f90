@@ -87,9 +87,6 @@
 !>      Number of quadrature points for Poisson equation
       integer (kind=kint)  :: intg_point_poisson = 2
 !
-!>      ID for using SUPG by mangeitc field
-      integer (kind=kint), parameter :: id_magnetic_SUPG =  2
-!
 !>      SUPG flag for velocity
       integer (kind=kint) :: iflag_velo_supg = id_turn_OFF
 !>      SUPG flag for temperature

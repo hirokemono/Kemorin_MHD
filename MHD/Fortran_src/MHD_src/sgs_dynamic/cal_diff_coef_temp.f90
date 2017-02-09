@@ -3,8 +3,8 @@
 !
 !     Written by H. Matsui
 !
-!!      subroutine s_cal_diff_coef_scalar                               &
-!!     &         (ifield, ifield_f, iak_diff_t, icomp_diff_t,           &
+!!      subroutine s_cal_diff_coef_scalar(iflag_supg,                   &
+!!     &          ifield, ifield_f, iak_diff_t, icomp_diff_t,           &
 !!     &          SGS_par, nod_comm, node, ele, surf, sf_grp,           &
 !!     &          Tsf_bcs, iphys, iphys_ele, ele_fld, fluid,            &
 !!     &          layer_tbl, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, &
@@ -77,8 +77,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_diff_coef_scalar                                 &
-     &         (ifield, ifield_f, iak_diff_t, icomp_diff_t,             &
+      subroutine s_cal_diff_coef_scalar(iflag_supg,                     &
+     &          ifield, ifield_f, iak_diff_t, icomp_diff_t,             &
      &          SGS_par, nod_comm, node, ele, surf, sf_grp,             &
      &          Tsf_bcs, iphys, iphys_ele, ele_fld, fluid,              &
      &          layer_tbl, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,   &
@@ -98,7 +98,8 @@
       use set_boundary_scalars
       use nod_phys_send_recv
 !
-      integer (kind=kint), intent(in) :: iak_diff_t, icomp_diff_t
+      integer(kind = kint), intent(in) :: iflag_supg
+      integer(kind = kint), intent(in) :: iak_diff_t, icomp_diff_t
       integer(kind = kint), intent(in) :: ifield, ifield_f
 !
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -141,7 +142,7 @@
       if (iflag_debug.gt.0) write(*,*) 'cal_gradent_in_fluid',          &
      &        iphys%i_sgs_simi, ifield_f
       call choose_cal_gradient                                          &
-     &   (iflag_temp_supg, ifield_f, iphys%i_sgs_simi,                  &
+     &   (iflag_supg, intg_point_t_evo, ifield_f, iphys%i_sgs_simi,     &
      &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d_q,            &
      &    rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
@@ -151,7 +152,7 @@
       if (iflag_debug.gt.0) write(*,*) 'cal_gradent_in_fluid',          &
      &                     iphys%i_sgs_grad, ifield
       call choose_cal_gradient                                          &
-     &   (iflag_temp_supg, ifield, iphys%i_sgs_grad,                    &
+     &   (iflag_supg, intg_point_t_evo, ifield, iphys%i_sgs_grad,       &
      &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d_q,            &
      &    rhs_tbl, fem_wk, f_l, f_nl, nod_fld)

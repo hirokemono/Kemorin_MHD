@@ -43,6 +43,7 @@
 !
       use m_precision
 !
+      use m_control_parameter
       use t_SGS_control_parameter
       use t_geometry_data_MHD
       use t_geometry_data
@@ -249,9 +250,18 @@
      &    iphys%i_magne, iphys%i_filter_velo, iphys%i_filter_magne,     &
      &    filter_param, nod_comm, node, filtering, wk_filter, nod_fld)
 !
-      call sel_int_simi_vp_induct(icomp_sgs_uxb, node, ele, conduct,    &
-     &    iphys, nod_fld, iphys_ele, ele_fld, jac_3d, rhs_tbl,          &
-     &    sgs_coefs, fem_wk, f_nl)
+!
+      if (iflag_mag_supg .eq. id_turn_ON) then
+        call int_simi_vp_induct_upm(intg_point_t_evo, icomp_sgs_uxb,    &
+     &      node, ele, conduct, iphys, nod_fld,                         &
+     &      jac_3d, rhs_tbl, sgs_coefs,                                 &
+     &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
+     &      fem_wk, f_nl)
+      else
+        call int_simi_vp_induct(intg_point_t_evo, icomp_sgs_uxb,        &
+     &      node, ele, conduct, iphys, nod_fld, jac_3d, rhs_tbl,        &
+     &      sgs_coefs, fem_wk, f_nl)
+      end if
 !
       end subroutine cal_sgs_uxb_2_ff_simi
 !

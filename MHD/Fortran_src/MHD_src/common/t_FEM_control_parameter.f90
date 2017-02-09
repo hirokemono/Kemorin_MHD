@@ -33,6 +33,8 @@
       character(len=kchara), parameter                                  &
      &                      :: cflag_rot_form = 'Rotation_form'
 !
+!>      ID for using SUPG by mangeitc field
+      integer (kind=kint), parameter :: id_magnetic_SUPG =  2
 !
       type FEM_MHD_paremeters
 !>        Number of quadrature points for time evolution

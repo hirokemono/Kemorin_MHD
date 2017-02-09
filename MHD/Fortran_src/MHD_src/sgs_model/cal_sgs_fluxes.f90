@@ -63,6 +63,7 @@
       use m_constants
       use m_machine_parameter
       use m_t_step_parameter
+      use m_control_parameter
 !
       use t_SGS_control_parameter
       use t_physical_property
@@ -151,7 +152,7 @@
       else if(iflag_SGS_flux .eq. id_SGS_diffusion) then
         if (iflag_debug.eq.1) write(*,*) 'cal_sgs_h_flux_diffuse'
         call choose_cal_gradient_w_const                                &
-     &     (iflag_supg, ifleld, i_sgs, dminus,                          &
+     &     (iflag_supg, intg_point_t_evo, ifleld, i_sgs, dminus,        &
      &      fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,              &
      &      nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,            &
      &      rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
@@ -408,7 +409,8 @@
       else if(SGS_param%iflag_SGS_uxb .eq. id_SGS_diffusion) then
          if (iflag_debug.eq.1)                                          &
      &      write(*,*) 'choose_int_vol_rotations'
-         call choose_int_vol_rotations(iflag_mag_supg,                  &
+         call choose_int_vol_rotations                                  &
+     &      (iflag_mag_supg, intg_point_t_evo,                          &
      &       conduct%istack_ele_fld_smp, iphys%i_magne,                 &
      &       node, ele, nod_fld, iphys_ele, ele_fld,                    &
      &       jac_3d, rhs_tbl, fem_wk, f_nl)
@@ -443,20 +445,20 @@
 !
 !
       call choose_cal_gradient_w_const                                  &
-     &   (iflag_velo_supg, i_vect, i_sgs, dminus,                       &
+     &   (iflag_velo_supg, intg_point_t_evo, i_vect, i_sgs, dminus,     &
      &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,              &
      &    rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
       call choose_cal_gradient_w_const                                  &
-     &   (iflag_velo_supg, (i_vect+1), i_sgs_diffuse, dminus,           &
-     &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
-     &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,              &
-     &    rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
+     &   (iflag_velo_supg, intg_point_t_evo, (i_vect+1),                &
+     &    i_sgs_diffuse, dminus, fluid%istack_ele_fld_smp,              &
+     &    mhd_fem_wk%mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld, &
+     &    jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
       call choose_cal_gradient_w_const                                  &
-     &   (iflag_velo_supg, (i_vect+2), (i_sgs_diffuse+3), dminus,       &
-     &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
-     &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,              &
-     &    rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
+     &   (iflag_velo_supg, intg_point_t_evo, (i_vect+2),                &
+     &    (i_sgs_diffuse+3), dminus, fluid%istack_ele_fld_smp,          &
+     &    mhd_fem_wk%mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld, &
+     &    jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !
 !
       call const_viscosity_tensor(nod_fld%n_point, nod_fld%ntot_phys,   &
