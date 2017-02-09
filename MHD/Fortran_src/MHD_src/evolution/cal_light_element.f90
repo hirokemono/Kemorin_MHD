@@ -156,7 +156,7 @@
 !
 !
       if (SGS_param%iflag_SGS_h_flux .ne. id_SGS_none) then
-        call cal_sgs_heat_flux(iflag_comp_supg,                         &
+        call cal_sgs_heat_flux(iflag_comp_supg, intg_point_t_evo,       &
      &      SGS_param%iflag_SGS_c_flux, SGS_param%itype_Csym_c_flux,    &
      &      iphys%i_sgs_composit, iphys%i_filter_comp,                  &
      &      iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_c_flux,      &

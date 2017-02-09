@@ -4,7 +4,8 @@
 !     Written by H. Matsui on Oct. 2005
 !     Modified by H. Matsui on Aug., 2007
 !
-!!      subroutine cal_sgs_sf_dynamic(itype_Csym_flux, SGS_flux_factor, &
+!!      subroutine cal_sgs_sf_dynamic                                   &
+!!     &         (iflag_supg, num_int, itype_Csym_flux, SGS_flux_factor,&
 !!     &          ifield, ifield_f, ivelo, ivelo_f, i_sgs,              &
 !!     &          iak_sgs_hlux, icomp_sgs_flux, ie_dvx, ie_dfvx,        &
 !!     &          SGS_par, nod_comm, node, ele, iphys, iphys_ele,       &
@@ -41,7 +42,6 @@
 !
       use m_precision
 !
-      use m_control_parameter
       use m_machine_parameter
       use m_phys_constants
 !
@@ -71,7 +71,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_sgs_sf_dynamic(itype_Csym_flux, SGS_flux_factor,   &
+      subroutine cal_sgs_sf_dynamic                                     &
+     &         (iflag_supg, num_int, itype_Csym_flux, SGS_flux_factor,  &
      &          ifield, ifield_f, ivelo, ivelo_f, i_sgs,                &
      &          iak_sgs_hlux, icomp_sgs_flux, ie_dvx, ie_dfvx,          &
      &          SGS_par, nod_comm, node, ele, iphys, iphys_ele,         &
@@ -89,6 +90,7 @@
       use cvt_dynamic_scheme_coord
       use reduce_model_coefs
 !
+      integer(kind = kint), intent(in) :: iflag_supg, num_int
       integer(kind = kint), intent(in) :: itype_Csym_flux
       real(kind = kreal), intent(in) :: SGS_flux_factor
 !
@@ -144,7 +146,8 @@
 !   gradient model by filtered field
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_filter_hf_grad_4_dyn'
-      call cal_sgs_s_flux_grad_no_coef(iflag_temp_supg, ifilter_4delta, &
+      call cal_sgs_s_flux_grad_no_coef                                  &
+     &   (iflag_supg, num_int, ifilter_4delta,                          &
      &    iphys%i_sgs_grad_f, ifield_f, ie_dfvx,                        &
      &    nod_comm, node, ele, fluid, iphys_ele, ele_fld, jac_3d_q,     &
      &    rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_l, nod_fld)
@@ -153,7 +156,7 @@
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_h_flux_grad_4_dyn'
       call cal_sgs_s_flux_grad_no_coef                                  &
-     &   (iflag_temp_supg, ifilter_2delta, i_sgs, ifield, ie_dvx,       &
+     &   (iflag_supg, num_int, ifilter_2delta, i_sgs, ifield, ie_dvx,   &
      &    nod_comm, node, ele, fluid, iphys_ele, ele_fld, jac_3d_q,     &
      &    rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_l, nod_fld)
 !

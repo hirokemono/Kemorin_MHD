@@ -3,7 +3,8 @@
 !
 !     Written by H. Matsui
 !
-!!      subroutine s_cal_diff_coef_sgs_sf(itype_Csym_flux,              &
+!!      subroutine s_cal_diff_coef_sgs_sf                               &
+!!     &         (itype_Csym_flux, iflag_supg, num_int,                 &
 !!     &          ifield, ifield_f, ivelo, ivelo_f, i_sgs,              &
 !!     &          iak_diff_flux, icomp_sgs_flux, icomp_diff_sf, ie_dfvx,&
 !!     &          SGS_par, nod_comm, node, ele, surf,                   &
@@ -77,7 +78,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_diff_coef_sgs_sf(itype_Csym_flux,                &
+      subroutine s_cal_diff_coef_sgs_sf                                 &
+     &         (itype_Csym_flux, iflag_supg, num_int,                   &
      &          ifield, ifield_f, ivelo, ivelo_f, i_sgs,                &
      &          iak_diff_flux, icomp_sgs_flux, icomp_diff_sf, ie_dfvx,  &
      &          SGS_par, nod_comm, node, ele, surf,                     &
@@ -102,6 +104,7 @@
       use nod_phys_send_recv
 !
       integer(kind = kint), intent(in) :: itype_Csym_flux
+      integer(kind = kint), intent(in) :: iflag_supg, num_int
       integer (kind=kint), intent(in) :: i_sgs, ifield, ifield_f
       integer (kind=kint), intent(in) :: ivelo, ivelo_f
 !
@@ -149,7 +152,8 @@
 !   gradient model by filtered field (to iphys%i_sgs_grad_f)
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_filter_hf_grad'
-      call cal_sgs_s_flux_grad_w_coef(iflag_temp_supg,                  &
+      call cal_sgs_s_flux_grad_w_coef                                   &
+     &   (iflag_temp_supg, intg_point_t_evo,                            &
      &    itype_Csym_flux, SGS_par%model_p%icoord_Csim, ifilter_4delta, &
      &    icomp_sgs_flux, iphys%i_sgs_grad_f, ifield_f, ie_dfvx,        &
      &    nod_comm, node, ele, fluid, iphys_ele, ele_fld, jac_3d_q,     &
@@ -159,15 +163,16 @@
 !   take divergence of filtered heat flux (to iphys%i_sgs_simi)
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_div_sgs_filter_hf_simi'
-      call cal_div_sgs_sf_simi                                          &
-     &  (iphys%i_sgs_simi, iphys%i_sgs_grad_f, ivelo_f, ifield_f,       &
+      call cal_div_sgs_sf_simi(iphys%i_sgs_simi, iphys%i_sgs_grad_f,    &
+     &    ivelo_f, ifield_f, iflag_supg, num_int,                       &
      &    nod_comm, node, ele, fluid, iphys_ele, ele_fld,               &
      &    jac_3d_q, rhs_tbl, fem_wk, mhd_fem_wk, f_l, f_nl, nod_fld)
 !
 !   take divergence of heat flux (to iphys%i_sgs_grad)
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_div_sgs_h_flux_simi'
-      call cal_div_sgs_sf_simi(iphys%i_sgs_grad, i_sgs, ivelo, ifield,  &
+      call cal_div_sgs_sf_simi                                          &
+     &   (iphys%i_sgs_grad, i_sgs, ivelo, ifield, iflag_supg, num_int,  &
      &    nod_comm, node, ele, fluid, iphys_ele, ele_fld,               &
      &    jac_3d_q, rhs_tbl, fem_wk, mhd_fem_wk, f_l, f_nl, nod_fld)
 !

@@ -94,7 +94,8 @@
       call reset_ff_t_smp(node%max_nod_smp, mhd_fem_wk)
 !
       call sel_int_vol_sgs_flux                                         &
-     &   (iflag_velo_supg, i_filter, n_sym_tensor, i_field, ie_dvx,     &
+     &   (iflag_velo_supg, intg_point_t_evo,                            &
+     &    i_filter, n_sym_tensor, i_field, ie_dvx,                      &
      &    node, ele, fluid, nod_fld, iphys_ele, ele_fld,                &
      &    jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !
@@ -151,7 +152,8 @@
       call reset_ff_t_smp(node%max_nod_smp, mhd_fem_wk)
 !
       call sel_int_vol_sgs_flux                                         &
-     &   (iflag_velo_supg, i_filter, n_sym_tensor, i_field, ie_dvx,     &
+     &   (iflag_velo_supg, intg_point_t_evo,                            &
+     &    i_filter, n_sym_tensor, i_field, ie_dvx,                      &
      &    node, ele, fluid, nod_fld, iphys_ele, ele_fld,                &
      &    jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !

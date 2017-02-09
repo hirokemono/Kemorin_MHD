@@ -127,7 +127,7 @@
 !
       if (iphys%i_SGS_h_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*) 'lead ', trim(fhd_SGS_h_flux)
-        call cal_sgs_heat_flux(iflag_temp_supg,                         &
+        call cal_sgs_heat_flux(iflag_temp_supg, intg_point_t_evo,       &
      &      SGS_param%iflag_SGS_h_flux, SGS_param%itype_Csym_h_flux,    &
      &      iphys%i_sgs_temp, iphys%i_filter_temp,                      &
      &      iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_h_flux,      &
@@ -140,7 +140,7 @@
 !
       if (iphys%i_SGS_c_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*) 'lead ', trim(fhd_SGS_c_flux)
-        call cal_sgs_heat_flux(iflag_comp_supg,                         &
+        call cal_sgs_heat_flux(iflag_comp_supg, intg_point_t_evo,       &
      &      SGS_param%iflag_SGS_c_flux, SGS_param%itype_Csym_c_flux,    &
      &      iphys%i_sgs_composit, iphys%i_filter_comp,                  &
      &      iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_c_flux,      &

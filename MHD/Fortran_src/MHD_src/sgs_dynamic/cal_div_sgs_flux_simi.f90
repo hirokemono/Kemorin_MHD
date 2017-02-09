@@ -7,7 +7,8 @@
 !!     &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,       &
 !!     &          jac_3d, rhs_tbl, fem_wk, mhd_fem_wk,                  &
 !!     &          f_l, f_nl, nod_fld)
-!!      subroutine cal_div_sgs_sf_simi(i_sgs, i_flux, i_vect, i_scalar, &
+!!      subroutine cal_div_sgs_sf_simi                                  &
+!!     &         (i_sgs, i_flux, i_vect, i_scalar, iflag_supg, num_int, &
 !!     &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,       &
 !!     &          jac_3d, rhs_tbl, fem_wk, mhd_fem_wk,                  &
 !!     &          f_l, f_nl, nod_fld)
@@ -86,17 +87,19 @@
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
       if (iflag_velo_supg .eq. id_magnetic_SUPG) then
-        call int_div_sgs_mf_simi_upwind(i_flux, i_vect,                 &
+        call int_div_sgs_mf_simi_upwind                                 &
+     &     (i_flux, i_vect, intg_point_t_evo,                           &
      &      node, ele, fluid, nod_fld, jac_3d, rhs_tbl,                 &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
      &      fem_wk, f_nl)
       else if (iflag_velo_supg .eq. id_turn_ON) then
-        call int_div_sgs_mf_simi_upwind(i_flux, i_vect,                 &
+        call int_div_sgs_mf_simi_upwind                                 &
+     &     (i_flux, i_vect, intg_point_t_evo,                           &
      &      node, ele, fluid, nod_fld, jac_3d, rhs_tbl,                 &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
      &      fem_wk, f_nl)
       else
-        call int_div_sgs_mf_simi_pg(i_flux, i_vect,                     &
+        call int_div_sgs_mf_simi_pg(i_flux, i_vect, intg_point_t_evo,   &
      &      node, ele, fluid, nod_fld, jac_3d, rhs_tbl, fem_wk, f_nl)
       end if
 !
@@ -113,7 +116,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_div_sgs_sf_simi(i_sgs, i_flux, i_vect, i_scalar,   &
+      subroutine cal_div_sgs_sf_simi                                    &
+     &         (i_sgs, i_flux, i_vect, i_scalar, iflag_supg, num_int,   &
      &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,         &
      &          jac_3d, rhs_tbl, fem_wk, mhd_fem_wk,                    &
      &          f_l, f_nl, nod_fld)
@@ -136,6 +140,7 @@
 !
       integer(kind = kint), intent(in) :: i_flux, i_vect, i_scalar
       integer(kind = kint), intent(in) :: i_sgs
+      integer(kind = kint), intent(in) :: iflag_supg, num_int
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -144,13 +149,15 @@
 !
        call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
-        if ( iflag_temp_supg .gt. id_turn_OFF) then
-          call int_div_sgs_sf_simi_upw(i_flux, i_vect, i_scalar,        &
+        if(iflag_supg .gt. id_turn_OFF) then
+          call int_div_sgs_sf_simi_upw                                  &
+     &       (i_flux, i_vect, i_scalar, num_int,                        &
      &        node, ele, fluid, nod_fld, jac_3d, rhs_tbl,               &
      &        ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,       &
      &        fem_wk, f_nl)
         else
-          call int_div_sgs_sf_simi_pg(i_flux, i_vect, i_scalar,         &
+          call int_div_sgs_sf_simi_pg                                   &
+     &       (i_flux, i_vect, i_scalar, num_int,                        &
      &        node, ele, fluid, nod_fld, jac_3d, rhs_tbl, fem_wk, f_nl)
         end if
 !
@@ -198,13 +205,15 @@
 !
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
-      if ( iflag_mag_supg .gt. id_turn_OFF) then
-        call int_div_sgs_idct_simi_upw(i_flux, i_v, i_b,                &
+      if(iflag_mag_supg .gt. id_turn_OFF) then
+        call int_div_sgs_idct_simi_upw                                  &
+     &     (i_flux, i_v, i_b, intg_point_t_evo,                         &
      &      node, ele, conduct, nod_fld, jac_3d, rhs_tbl,               &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
      &      fem_wk, f_nl)
       else
-        call int_div_sgs_idct_simi_pg(i_flux, i_v, i_b,                 &
+        call int_div_sgs_idct_simi_pg                                   &
+     &     (i_flux, i_v, i_b, intg_point_t_evo,                         &
      &      node, ele, conduct, nod_fld, jac_3d, rhs_tbl, fem_wk, f_nl)
       end if
 !

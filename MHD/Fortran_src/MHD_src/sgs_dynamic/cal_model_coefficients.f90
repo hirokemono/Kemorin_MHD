@@ -163,8 +163,8 @@
       if(evo_temp%iflag_scheme .ne. id_no_evolution) then
         if(SGS_par%model_p%iflag_SGS_h_flux .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_sf_dynamic temp'
-          call cal_sgs_sf_dynamic                                       &
-     &       (SGS_par%model_p%itype_Csym_h_flux,                        &
+          call cal_sgs_sf_dynamic(iflag_temp_supg, intg_point_t_evo,    &
+     &        SGS_par%model_p%itype_Csym_h_flux,                        &
      &        SGS_par%model_p%SGS_hf_factor,                            &
      &        iphys%i_sgs_temp, iphys%i_filter_temp,                    &
      &        iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_h_flux,    &
@@ -195,6 +195,7 @@
           if (iflag_debug.eq.1)  write(*,*) 's_cal_diff_coef_sgs_sf'
           call s_cal_diff_coef_sgs_sf                                   &
      &       (SGS_par%model_p%itype_Csym_h_flux,                        &
+     &        iflag_temp_supg, intg_point_t_evo,                        &
      &        iphys%i_sgs_temp, iphys%i_filter_temp,                    &
      &        iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_h_flux,    &
      &        ifld_diff%i_heat_flux, icomp_sgs%i_heat_flux,             &
@@ -214,8 +215,8 @@
       if(evo_comp%iflag_scheme .ne. id_no_evolution) then
         if(SGS_par%model_p%iflag_SGS_c_flux .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_sf_dynamic comp'
-          call cal_sgs_sf_dynamic                                       &
-     &       (SGS_par%model_p%itype_Csym_c_flux,                        &
+          call cal_sgs_sf_dynamic(iflag_comp_supg, intg_point_t_evo,    &
+     &        SGS_par%model_p%itype_Csym_c_flux,                        &
      &        SGS_par%model_p%SGS_cf_factor,                            &
      &        iphys%i_sgs_composit, iphys%i_filter_comp,                &
      &        iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_c_flux,    &
@@ -246,6 +247,7 @@
           if (iflag_debug.eq.1)  write(*,*) 's_cal_diff_coef_sgs_sf'
           call s_cal_diff_coef_sgs_sf                                   &
      &       (SGS_par%model_p%itype_Csym_c_flux,                        &
+     &        iflag_comp_supg, intg_point_t_evo,                        &
      &        iphys%i_sgs_composit, iphys%i_filter_comp,                &
      &        iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_c_flux,    &
      &        ifld_diff%i_comp_flux, icomp_sgs%i_comp_flux,             &

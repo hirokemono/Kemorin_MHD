@@ -4,7 +4,7 @@
 !      Written by H. Matsui
 !
 !!      subroutine cal_sgs_heat_flux                                    &
-!!     &         (iflag_supg, iflag_SGS_flux, itype_Csym_flux,          &
+!!     &         (iflag_supg, num_int, iflag_SGS_flux, itype_Csym_flux, &
 !!     &          ifleld, ifield_f, ivelo, ivelo_f, i_sgs,              &
 !!     &          icomp_sgs_flux, ie_dvx, SGS_param, filter_param,      &
 !!     &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,       &
@@ -92,7 +92,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_sgs_heat_flux                                      &
-     &         (iflag_supg, iflag_SGS_flux, itype_Csym_flux,            &
+     &         (iflag_supg, num_int, iflag_SGS_flux, itype_Csym_flux,   &
      &          ifleld, ifield_f, ivelo, ivelo_f, i_sgs,                &
      &          icomp_sgs_flux, ie_dvx, SGS_param, filter_param,        &
      &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,         &
@@ -103,7 +103,7 @@
       use cal_sgs_heat_fluxes_grad
       use cal_gradient
 !
-      integer(kind = kint), intent(in) :: iflag_supg
+      integer(kind = kint), intent(in) :: iflag_supg, num_int
       integer(kind = kint), intent(in) :: iflag_SGS_flux
       integer(kind = kint), intent(in) :: itype_Csym_flux
       integer(kind = kint), intent(in) :: ifleld, ifield_f
@@ -135,7 +135,8 @@
       if(iflag_SGS_flux .eq. id_SGS_NL_grad) then
         if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_s_flux_grad_w_coef', &
      &                       SGS_param%ifilter_final
-      call cal_sgs_s_flux_grad_w_coef(iflag_supg, itype_Csym_flux,      &
+      call cal_sgs_s_flux_grad_w_coef                                   &
+     &   (iflag_supg, num_int, itype_Csym_flux,                         &
      &    SGS_param%icoord_Csim, SGS_param%ifilter_final,               &
      &    icomp_sgs_flux, i_sgs, ifleld, ie_dvx,                        &
      &    nod_comm, node, ele, fluid, iphys_ele, ele_fld, jac_3d,       &

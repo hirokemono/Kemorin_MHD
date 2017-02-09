@@ -153,7 +153,7 @@
 !      call check_jacobians_triquad(ele, jac_3d)
 !
       if (SGS_param%iflag_SGS_h_flux .ne. id_SGS_none) then
-        call cal_sgs_heat_flux(iflag_temp_supg,                         &
+        call cal_sgs_heat_flux(iflag_temp_supg, intg_point_t_evo,       &
      &      SGS_param%iflag_SGS_h_flux, SGS_param%itype_Csym_h_flux,    &
      &      i_field, iphys%i_filter_temp,                               &
      &      iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_h_flux,      &
