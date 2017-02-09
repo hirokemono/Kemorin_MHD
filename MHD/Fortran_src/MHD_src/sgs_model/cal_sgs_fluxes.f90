@@ -446,17 +446,17 @@
 !
 !
       call choose_cal_gradient_w_const                                  &
-     &   (iflag_velo_supg, intg_point_t_evo, i_vect, i_sgs, dminus,     &
-     &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
-     &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,              &
-     &    rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
-      call choose_cal_gradient_w_const                                  &
-     &   (iflag_velo_supg, intg_point_t_evo, (i_vect+1),                &
-     &    i_sgs_diffuse, dminus, fluid%istack_ele_fld_smp,              &
+     &   (FEM_prm1%iflag_velo_supg, intg_point_t_evo,                   &
+     &    i_vect, i_sgs, dminus, fluid%istack_ele_fld_smp,              &
      &    mhd_fem_wk%mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld, &
      &    jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
       call choose_cal_gradient_w_const                                  &
-     &   (iflag_velo_supg, intg_point_t_evo, (i_vect+2),                &
+     &   (FEM_prm1%iflag_velo_supg, intg_point_t_evo,                   &
+     &    (i_vect+1),  i_sgs_diffuse, dminus, fluid%istack_ele_fld_smp, &
+     &    mhd_fem_wk%mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld, &
+     &    jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
+      call choose_cal_gradient_w_const                                  &
+     &   (FEM_prm1%iflag_velo_supg, intg_point_t_evo, (i_vect+2),       &
      &    (i_sgs_diffuse+3), dminus, fluid%istack_ele_fld_smp,          &
      &    mhd_fem_wk%mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld, &
      &    jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)

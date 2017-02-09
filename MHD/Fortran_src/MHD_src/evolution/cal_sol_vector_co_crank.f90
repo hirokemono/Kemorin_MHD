@@ -91,7 +91,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_t_evo_4_vector_fl'
       call cal_t_evo_4_vector                                           &
-     &   (iflag_velo_supg, fluid%istack_ele_fld_smp,                    &
+     &   (FEM_prm1%iflag_velo_supg, fluid%istack_ele_fld_smp,           &
      &    FEM_prm1, mhd_fem_wk%mlump_fl, nod_comm,                      &
      &    node, ele, iphys_ele, fld_ele, jac_3d, rhs_tbl,               &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)

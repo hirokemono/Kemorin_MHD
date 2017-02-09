@@ -395,7 +395,7 @@
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call choose_cal_gradient                                      &
-     &       (iflag_velo_supg, intg_point_t_evo, i_src, i_fld,          &
+     &       (FEM_prm1%iflag_velo_supg, intg_point_t_evo, i_src, i_fld, &
      &        fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,            &
      &        nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,          &
      &        rhs_tbl, fem_wk, f_l, f_nl, nod_fld)

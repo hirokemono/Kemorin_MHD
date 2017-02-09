@@ -86,13 +86,13 @@
 !
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
-      if (iflag_velo_supg .eq. id_magnetic_SUPG) then
+      if (FEM_prm1%iflag_velo_supg .eq. id_magnetic_SUPG) then
         call int_div_sgs_mf_simi_upwind                                 &
      &     (i_flux, i_vect, intg_point_t_evo,                           &
      &      node, ele, fluid, nod_fld, jac_3d, rhs_tbl,                 &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
      &      fem_wk, f_nl)
-      else if (iflag_velo_supg .eq. id_turn_ON) then
+      else if (FEM_prm1%iflag_velo_supg .eq. id_turn_ON) then
         call int_div_sgs_mf_simi_upwind                                 &
      &     (i_flux, i_vect, intg_point_t_evo,                           &
      &      node, ele, fluid, nod_fld, jac_3d, rhs_tbl,                 &

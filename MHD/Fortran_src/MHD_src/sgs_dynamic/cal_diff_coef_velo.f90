@@ -158,7 +158,7 @@
       if (iflag_debug.gt.0)  write(*,*) 'cal_rotation_in_fluid',        &
      &                      iphys%i_sgs_simi, iphys%i_sgs_grad_f
       call choose_cal_rotation                                          &
-     &   (iflag_velo_supg, intg_point_t_evo,                            &
+     &   (FEM_prm1%iflag_velo_supg, intg_point_t_evo,                   &
      &    iphys%i_filter_velo, iphys%i_sgs_simi,                        &
      &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d_q,            &
@@ -166,7 +166,7 @@
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_gradent_in_fluid', i_sgs_simi_p, i_sgs_grad_fp
       call choose_cal_gradient                                          &
-     &   (iflag_velo_supg, intg_point_t_evo,                            &
+     &   (FEM_prm1%iflag_velo_supg, intg_point_t_evo,                   &
      &    i_sgs_grad_fp, i_sgs_simi_p,                                  &
      &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d_q,            &
@@ -175,7 +175,7 @@
 !     &    'cal_divergence_in_fluid', iphys%i_sgs_simi+6,               &
 !     &    iphys%i_filter_velo
 !      call choose_cal_divergence                                       &
-!     &   (iflag_velo_supg, intg_point_t_evo,                           &
+!     &   (FEM_prm1%iflag_velo_supg, intg_point_t_evo,                  &
 !     &    iphys%i_filter_velo, iphys%i_sgs_simi+6,                     &
 !     &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,               &
 !     &    nod_comm, node, ele, iphys_ele, ele_fld,                     &
@@ -186,7 +186,7 @@
       if (iflag_debug.gt.0) write(*,*) 'cal_rotation_in_fluid',         &
      &                     iphys%i_sgs_grad, iphys%i_velo
       call choose_cal_rotation                                          &
-     &   (iflag_velo_supg, intg_point_t_evo,                            &
+     &   (FEM_prm1%iflag_velo_supg, intg_point_t_evo,                   &
      &    iphys%i_velo, iphys%i_sgs_grad,                               &
      &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d_q,            &
@@ -194,7 +194,7 @@
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_gradent_in_fluid', i_sgs_grad_p, iphys%i_press
       call choose_cal_gradient                                          &
-     &   (iflag_velo_supg, intg_point_t_evo,                            &
+     &   (FEM_prm1%iflag_velo_supg, intg_point_t_evo,                   &
      &    iphys%i_press, i_sgs_grad_p,                                  &
      &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d_q,            &
@@ -203,7 +203,7 @@
 !     &   write(*,*) 'cal_divergence_in_fluid', iphys%i_sgs_grad+6,     &
 !     &               iphys%i_velo
 !      call choose_cal_divergence                                       &
-!     &   (iflag_velo_supg, intg_point_t_evo,                           &
+!     &   (FEM_prm1%iflag_velo_supg, intg_point_t_evo,                  &
 !     &    iphys%i_velo, iphys%i_sgs_grad+3,                            &
 !     &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,               &
 !     &    nod_comm, node, ele, iphys_ele, ele_fld,                     &

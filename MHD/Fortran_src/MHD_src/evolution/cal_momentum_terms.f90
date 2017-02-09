@@ -130,14 +130,14 @@
 !
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
-      if (iflag_velo_supg .eq. id_turn_ON) then
+      if(FEM_prm1%iflag_velo_supg .eq. id_turn_ON) then
         call int_vol_velo_monitor_upwind                                &
      &     (i_field, iak_diff_mf, iak_diff_lor, iphys_ele%i_velo,       &
      &      FEM_prm1, SGS_param, cmt_param, node, ele, fluid,           &
      &      fl_prop, cd_prop, iphys, nod_fld, iphys_ele, ak_MHD,        &
      &      jac_3d, rhs_tbl, FEM_elens, diff_coefs,                     &
      &      mhd_fem_wk, fem_wk, f_nl, ele_fld)
-      else if (iflag_velo_supg .eq. id_magnetic_SUPG) then
+      else if (FEM_prm1%iflag_velo_supg .eq. id_magnetic_SUPG) then
         call int_vol_velo_monitor_upwind                                &
      &     (i_field, iak_diff_mf, iak_diff_lor, iphys_ele%i_magne,      &
      &      FEM_prm1, SGS_param, cmt_param, node, ele, fluid,           &
@@ -159,7 +159,7 @@
      &   FEM_elens, diff_coefs, fem_wk, surf_wk, f_l, f_nl)
 !
       call cal_t_evo_4_vector                                           &
-     &   (iflag_velo_supg, fluid%istack_ele_fld_smp,                    &
+     &   (FEM_prm1%iflag_velo_supg, fluid%istack_ele_fld_smp,           &
      &    FEM_prm1, mhd_fem_wk%mlump_fl, nod_comm,                      &
      &    node, ele, iphys_ele, ele_fld, jac_3d, rhs_tbl,               &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)

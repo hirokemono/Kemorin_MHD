@@ -48,6 +48,9 @@
         integer(kind = kint) :: iflag_rotate_form =  id_turn_OFF
 !>         Coriolist terms adjustment in implicit scheme
         integer(kind = kint) :: iflag_imp_correct = id_turn_OFF
+!
+!>      SUPG flag for velocity
+      integer (kind=kint) :: iflag_velo_supg = id_turn_OFF
       end type FEM_MHD_paremeters
 !
       end module t_FEM_control_parameter

@@ -246,7 +246,7 @@
 !
 ! -------     advection and forces
 !
-      if (iflag_velo_supg .eq. id_turn_ON) then
+      if (FEM_prm1%iflag_velo_supg .eq. id_turn_ON) then
         call int_vol_velo_pre_ele_upwind                                &
      &     (FEM_prm%iflag_rotate_form, intg_point_t_evo,                &
      &      SGS_param, cmt_param, node, ele, fluid,                     &
@@ -255,7 +255,7 @@
      &      iphys_ele, ifld_diff%i_mom_flux, ifld_diff%i_lorentz,       &
      &      jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,                   &
      &      mhd_fem_wk, fem_wk, f_nl)
-      else if (iflag_velo_supg .eq. id_magnetic_SUPG) then
+      else if (FEM_prm1%iflag_velo_supg .eq. id_magnetic_SUPG) then
         call int_vol_velo_pre_ele_upwind                                &
      &     (FEM_prm%iflag_rotate_form, intg_point_t_evo,                &
      &      SGS_param, cmt_param, node, ele, fluid,                     &
@@ -286,18 +286,18 @@
 !
 !
       if (evo_velo%iflag_scheme .eq. id_explicit_euler) then
-        call cal_velo_pre_euler(iflag_velo_supg, nod_comm, node, ele,   &
+        call cal_velo_pre_euler(nod_comm, node, ele,     &
      &     fluid, fl_prop, iphys, iphys_ele, ele_fld,                   &
      &     jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       else if(evo_velo%iflag_scheme .eq. id_explicit_adams2) then
-        call cal_velo_pre_adams(iflag_velo_supg, nod_comm, node, ele,   &
+        call cal_velo_pre_adams(nod_comm, node, ele,   &
      &     fluid, fl_prop, iphys, iphys_ele, ele_fld,                   &
      &     jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       else if(evo_velo%iflag_scheme .eq. id_Crank_nicolson) then
-        call cal_velo_pre_lumped_crank(iflag_velo_supg,                 &
-     &      cmt_param%iflag_c_velo, SGS_param%ifilter_final,            &
+        call cal_velo_pre_lumped_crank                                  &
+     &     (cmt_param%iflag_c_velo, SGS_param%ifilter_final,            &
      &      ifld_diff%i_velo, ak_MHD%ak_d_velo,                         &
      &      nod_comm, node, ele, fluid, evo_velo, Vnod_bcs,             &
      &      iphys, iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,    &

@@ -87,8 +87,6 @@
 !>      Number of quadrature points for Poisson equation
       integer (kind=kint)  :: intg_point_poisson = 2
 !
-!>      SUPG flag for velocity
-      integer (kind=kint) :: iflag_velo_supg = id_turn_OFF
 !>      SUPG flag for temperature
       integer (kind=kint) :: iflag_temp_supg = id_turn_OFF
 !>      SUPG flag for magnetic field
@@ -108,6 +106,7 @@
       real (kind=kreal) :: eps_4_magne
 !
       type(FEM_MHD_paremeters), save :: FEM_prm1
+!FEM_prm1%iflag_velo_supg
 !
 !  ---------------------------------------------------------------------
 !

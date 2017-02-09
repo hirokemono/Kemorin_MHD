@@ -5,8 +5,7 @@
 !                                    on July 2000 (ver 1.1)
 !        modieied by H. Matsui on Sep., 2005
 !
-!!      subroutine cal_velo_pre_lumped_crank                            &
-!!     &         (iflag_supg, iflag_commute_velo,                       &
+!!      subroutine cal_velo_pre_lumped_crank(iflag_commute_velo,        &
 !!     &          ifilter_final, iak_diff_v, ak_d_velo,                 &
 !!     &          nod_comm, node, ele, fluid, evo_v, Vnod_bcs,          &
 !!     &          iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,&
@@ -99,8 +98,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_velo_pre_lumped_crank                              &
-     &         (iflag_supg, iflag_commute_velo,                         &
+      subroutine cal_velo_pre_lumped_crank(iflag_commute_velo,          &
      &          ifilter_final, iak_diff_v, ak_d_velo,                   &
      &          nod_comm, node, ele, fluid, evo_v, Vnod_bcs,            &
      &          iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,  &
@@ -119,7 +117,6 @@
       use int_vol_coriolis_term
       use cal_sol_field_explicit
 !
-      integer(kind = kint), intent(in) :: iflag_supg
       integer(kind = kint), intent(in) :: iflag_commute_velo
       integer(kind = kint), intent(in) :: ifilter_final
       integer(kind = kint), intent(in) :: iak_diff_v
@@ -158,7 +155,8 @@
      &      fem_wk, f_l)
       end if
 !
-      call cal_t_evo_4_vector(iflag_supg, fluid%istack_ele_fld_smp,     &
+      call cal_t_evo_4_vector                                           &
+     &   (FEM_prm1%iflag_velo_supg, fluid%istack_ele_fld_smp,           &
      &    FEM_prm1, mhd_fem_wk%mlump_fl, nod_comm,                      &
      &    node, ele, iphys_ele, ele_fld, jac_3d, rhs_tbl,               &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
