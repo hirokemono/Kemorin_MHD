@@ -415,7 +415,7 @@
          if (iflag_debug.eq.1)                                          &
      &      write(*,*) 'choose_int_vol_rotations'
          call choose_int_vol_rotations                                  &
-     &      (iflag_mag_supg, intg_point_t_evo,                          &
+     &      (FEM_prm1%iflag_magne_supg, intg_point_t_evo,               &
      &       conduct%istack_ele_fld_smp, iphys%i_magne,                 &
      &       node, ele, nod_fld, iphys_ele, ele_fld,                    &
      &       jac_3d, rhs_tbl, fem_wk, f_nl)

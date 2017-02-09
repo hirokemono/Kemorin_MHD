@@ -89,8 +89,6 @@
 !
 !>      SUPG flag for temperature
       integer (kind=kint) :: iflag_temp_supg = id_turn_OFF
-!>      SUPG flag for magnetic field
-      integer (kind=kint) :: iflag_mag_supg = id_turn_OFF
 !>      SUPG flag for light element
       integer (kind=kint) :: iflag_comp_supg = id_turn_OFF
 !
@@ -106,7 +104,7 @@
       real (kind=kreal) :: eps_4_magne
 !
       type(FEM_MHD_paremeters), save :: FEM_prm1
-!FEM_prm1%
+!FEM_prm1%iflag_magne_supg
 !
 !  ---------------------------------------------------------------------
 !

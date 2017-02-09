@@ -127,7 +127,7 @@
 !
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
-      if (iflag_mag_supg .gt. id_turn_OFF) then
+      if (FEM_prm1%iflag_magne_supg .gt. id_turn_OFF) then
         call int_vol_magne_monitor_upm                                  &
      &     (i_field, iak_diff_uxb, intg_point_t_evo,                    &
      &      SGS_param, cmt_param, node, ele, conduct, cd_prop,          &
@@ -148,7 +148,7 @@
      &    fem_wk, surf_wk, f_l, f_nl)
 !
       call cal_t_evo_4_vector_cd                                        &
-     &   (iflag_mag_supg, conduct%istack_ele_fld_smp,                   &
+     &   (FEM_prm1%iflag_magne_supg, conduct%istack_ele_fld_smp,        &
      &    FEM_prm1, mhd_fem_wk%mlump_cd,                                &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,              &
      &    rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)

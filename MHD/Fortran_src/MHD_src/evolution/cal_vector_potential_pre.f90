@@ -182,7 +182,7 @@
      &      mhd_fem_wk, fem_wk, f_nl, nod_fld)
       end if
 !
-      if (iflag_mag_supg .gt. id_turn_OFF) then
+      if (FEM_prm1%iflag_magne_supg .gt. id_turn_OFF) then
         call int_vol_vect_p_pre_ele_upm(intg_point_t_evo,               &
      &      node, ele, conduct, cd_prop, iphys, nod_fld,                &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &

@@ -38,8 +38,8 @@
 !
       type FEM_MHD_paremeters
 !>        Number of quadrature points for time evolution
-        integer(kind = kint)  :: npint_t_wvo_int =   2
-!FEM_prm%npint_t_wvo_int
+        integer(kind = kint)  :: npint_t_evo_int =   2
+!FEM_prm%npint_t_evo_int
 !
 !>        Number of iteration for Multi-pass scheme
         integer(kind = kint)  :: num_multi_pass =     0
@@ -49,8 +49,10 @@
 !>         Coriolist terms adjustment in implicit scheme
         integer(kind = kint) :: iflag_imp_correct = id_turn_OFF
 !
-!>      SUPG flag for velocity
-      integer (kind=kint) :: iflag_velo_supg = id_turn_OFF
+!>        SUPG flag for velocity
+        integer (kind=kint) :: iflag_velo_supg =  id_turn_OFF
+!>        SUPG flag for magnetic field
+        integer (kind=kint) :: iflag_magne_supg = id_turn_OFF
       end type FEM_MHD_paremeters
 !
       end module t_FEM_control_parameter

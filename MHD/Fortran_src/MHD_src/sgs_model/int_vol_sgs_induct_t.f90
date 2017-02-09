@@ -70,7 +70,7 @@
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
 !
-      if (iflag_mag_supg .gt. id_turn_OFF) then
+      if (FEM_prm1%iflag_magne_supg .gt. id_turn_OFF) then
         call int_vol_sgs_induct_t_upm                                   &
      &     (i_filter, ifield_v, ifield_b, intg_point_t_evo,             &
      &      node, ele, conduct, nod_fld, jac_3d, FEM_elens,             &

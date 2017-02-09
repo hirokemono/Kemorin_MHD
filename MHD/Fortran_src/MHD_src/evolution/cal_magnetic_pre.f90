@@ -195,7 +195,7 @@
 ! lead induction terms
 !
       if (iflag_debug .eq. 0 ) write(*,*) 'coefs_4_time_evolution'
-      if (iflag_mag_supg .gt. id_turn_OFF) then
+      if (FEM_prm1%iflag_magne_supg .gt. id_turn_OFF) then
        call int_vol_magne_pre_ele_upm                                   &
      &    (intg_point_t_evo, SGS_param, cmt_param,                      &
      &     node, ele, conduct, cd_prop, iphys, nod_fld,                 &

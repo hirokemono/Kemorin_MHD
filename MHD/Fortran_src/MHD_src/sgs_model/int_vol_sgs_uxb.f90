@@ -56,7 +56,7 @@
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
 !
-      if (iflag_mag_supg .eq. id_turn_ON) then
+      if (FEM_prm1%iflag_magne_supg .eq. id_turn_ON) then
         call int_vol_sgs_uxb_upm(i_filter, i_field, intg_point_t_evo,   &
      &      node, ele, conduct, nod_fld, jac_3d, FEM_elens,             &
      &      mhd_fem_wk%n_dvx, id_dx, mhd_fem_wk%dvx,                    &

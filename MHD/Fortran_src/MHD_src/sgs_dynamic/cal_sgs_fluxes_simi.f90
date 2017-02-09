@@ -251,7 +251,7 @@
      &    filter_param, nod_comm, node, filtering, wk_filter, nod_fld)
 !
 !
-      if (iflag_mag_supg .eq. id_turn_ON) then
+      if (FEM_prm1%iflag_magne_supg .eq. id_turn_ON) then
         call int_simi_vp_induct_upm(intg_point_t_evo, icomp_sgs_uxb,    &
      &      node, ele, conduct, iphys, nod_fld,                         &
      &      jac_3d, rhs_tbl, sgs_coefs,                                 &
