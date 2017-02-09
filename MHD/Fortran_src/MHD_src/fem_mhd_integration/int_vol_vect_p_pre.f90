@@ -9,11 +9,11 @@
 !        modified by H. Matsui on Aug., 2007
 !
 !!      subroutine int_vol_vect_p_pre_ele                               &
-!!     &         (node, ele, conduct, cd_prop, iphys, nod_fld,          &
+!!     &         (num_int, node, ele, conduct, cd_prop, iphys, nod_fld, &
 !!     &          ncomp_ele, iele_magne, d_ele,                         &
 !!     &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
 !!      subroutine int_vol_vect_p_pre_ele_upm                           &
-!!     &         (node, ele, conduct, cd_prop, iphys, nod_fld,          &
+!!     &         (num_int, node, ele, conduct, cd_prop, iphys, nod_fld, &
 !!     &          ncomp_ele, iele_magne, d_ele,                         &
 !!     &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
@@ -33,7 +33,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_control_parameter
       use m_phys_constants
 !
       use t_physical_property
@@ -56,7 +55,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_vect_p_pre_ele                                 &
-     &         (node, ele, conduct, cd_prop, iphys, nod_fld,            &
+     &         (num_int, node, ele, conduct, cd_prop, iphys, nod_fld,   &
      &          ncomp_ele, iele_magne, d_ele,                           &
      &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
 !
@@ -74,6 +73,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
+      integer(kind = kint), intent(in) :: num_int
       integer(kind = kint), intent(in) :: ncomp_ele, iele_magne
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
 !
@@ -98,7 +98,7 @@
      &      k2, iphys%i_velo, cd_prop%coef_induct, mhd_fem_wk%velo_1)
 !
         call fem_skv_rot_inertia_type(conduct%istack_ele_fld_smp,       &
-     &      intg_point_t_evo, k2, mhd_fem_wk%velo_1, fem_wk%vector_1,   &
+     &      num_int, k2, mhd_fem_wk%velo_1, fem_wk%vector_1,            &
      &      ele, jac_3d, fem_wk%sk6)
       end do
 !
@@ -110,7 +110,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_vect_p_pre_ele_upm                             &
-     &         (node, ele, conduct, cd_prop, iphys, nod_fld,            &
+     &         (num_int, node, ele, conduct, cd_prop, iphys, nod_fld,   &
      &          ncomp_ele, iele_magne, d_ele,                           &
      &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
 !
@@ -128,6 +128,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
+      integer(kind = kint), intent(in) :: num_int
       integer(kind = kint), intent(in) :: ncomp_ele, iele_magne
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
 !
@@ -151,7 +152,7 @@
      &      k2, iphys%i_velo, cd_prop%coef_induct, mhd_fem_wk%velo_1)
 !
         call fem_skv_rot_inertia_upwind(conduct%istack_ele_fld_smp,     &
-     &      intg_point_t_evo, k2, mhd_fem_wk%velo_1, fem_wk%vector_1,   &
+     &      num_int, k2, mhd_fem_wk%velo_1, fem_wk%vector_1,            &
      &      d_ele(1,iele_magne), ele, jac_3d, fem_wk%sk6)
       end do
 !

@@ -183,13 +183,15 @@
       end if
 !
       if (iflag_mag_supg .gt. id_turn_OFF) then
-        call int_vol_vect_p_pre_ele_upm(node, ele, conduct, cd_prop,    &
-     &      iphys, nod_fld, ele_fld%ntot_phys, iphys_ele%i_magne,       &
-     &      ele_fld%d_fld, jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
+        call int_vol_vect_p_pre_ele_upm(intg_point_t_evo,               &
+     &      node, ele, conduct, cd_prop, iphys, nod_fld,                &
+     &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
+     &      jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
       else
-        call int_vol_vect_p_pre_ele(node, ele, conduct, cd_prop,        &
-     &      iphys, nod_fld, ele_fld%ntot_phys, iphys_ele%i_magne,       &
-     &      ele_fld%d_fld, jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
+        call int_vol_vect_p_pre_ele(intg_point_t_evo,                   &
+     &      node, ele, conduct, cd_prop, iphys, nod_fld,                &
+     &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
+     &      jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
       end if
 !
       call int_sf_grad_velocity(node, ele, surf, sf_grp, jac_sf_grp_q,  &
@@ -207,21 +209,20 @@
 !
 !  -----for explicit euler
       if (evo_vect_p%iflag_scheme .eq. id_explicit_euler) then
-        call cal_magne_pre_euler(iflag_mag_supg, iphys%i_vecp,          &
+        call cal_magne_pre_euler(iphys%i_vecp,                          &
      &      nod_comm, node, ele, conduct, iphys_ele, ele_fld,           &
      &      jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
 !  -----for Adams_Bashforth
       else if (evo_vect_p%iflag_scheme .eq. id_explicit_adams2) then
-        call cal_magne_pre_adams                                        &
-     &     (iflag_mag_supg, iphys%i_vecp, iphys%i_pre_uxb,              &
+        call cal_magne_pre_adams(iphys%i_vecp, iphys%i_pre_uxb,         &
      &      nod_comm, node, ele, conduct, iphys_ele, ele_fld,           &
      &      jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
 !  -----for Ceank-nicolson
       else if (evo_vect_p%iflag_scheme .eq. id_Crank_nicolson) then
-        call cal_vect_p_pre_lumped_crank(iflag_mag_supg,                &
-     &      cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
+        call cal_vect_p_pre_lumped_crank                                &
+     &     (cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
      &      iphys%i_vecp, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,      &
      &      Bnod_bcs%nod_bc_a, nod_comm, node, ele, conduct,            &
      &      evo_vect_p, iphys_ele, ele_fld, jac_3d_q, rhs_tbl,          &

@@ -8,7 +8,7 @@
 !!      subroutine cal_velo_pre_adams(FEM_prm, nod_comm, node, ele,     &
 !!     &          fluid, fl_prop, iphys, iphys_ele, ele_fld, jac_3d,    &
 !!     &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-!!      subroutine cal_magne_pre_adams(iflag_supg, i_field, i_previous, &
+!!      subroutine cal_magne_pre_adams(i_field, i_previous,             &
 !!     &          nod_comm, node, ele, conduct, iphys_ele, ele_fld,     &
 !!     &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,                  &
 !!     &          f_l, f_nl, nod_fld)
@@ -111,7 +111,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_magne_pre_adams(iflag_supg, i_field, i_previous,   &
+      subroutine cal_magne_pre_adams(i_field, i_previous,               &
      &          nod_comm, node, ele, conduct, iphys_ele, ele_fld,       &
      &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,                    &
      &          f_l, f_nl, nod_fld)
@@ -119,7 +119,6 @@
       use cal_sol_field_explicit
       use cal_multi_pass
 !
-      integer(kind = kint), intent(in) :: iflag_supg
       integer(kind = kint), intent(in) :: i_field, i_previous
 !
       type(communication_table), intent(in) :: nod_comm
@@ -138,7 +137,7 @@
 !
 !
       call cal_t_evo_4_vector_cd                                        &
-     &   (iflag_supg, conduct%istack_ele_fld_smp,                       &
+     &   (iflag_mag_supg, conduct%istack_ele_fld_smp,                   &
      &    FEM_prm1, mhd_fem_wk%mlump_cd,                                &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,              &
      &    rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)

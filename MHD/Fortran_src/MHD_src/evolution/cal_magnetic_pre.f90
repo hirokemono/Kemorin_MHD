@@ -219,17 +219,16 @@
      &    fem_wk, surf_wk, f_l, f_nl)
 !
       if(evo_magne%iflag_scheme .eq. id_explicit_euler) then
-        call cal_magne_pre_euler(iflag_mag_supg, iphys%i_magne,         &
+        call cal_magne_pre_euler(iphys%i_magne,                         &
      &      nod_comm, node, ele, conduct, iphys_ele, ele_fld,           &
      &      jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if(evo_magne%iflag_scheme .eq. id_explicit_adams2) then
-        call cal_magne_pre_adams                                        &
-     &     (iflag_mag_supg, iphys%i_magne, iphys%i_pre_uxb,             &
+        call cal_magne_pre_adams(iphys%i_magne, iphys%i_pre_uxb,        &
      &      nod_comm, node, ele, conduct, iphys_ele, ele_fld,           &
      &      jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if(evo_magne%iflag_scheme .eq. id_Crank_nicolson) then
-        call cal_magne_pre_lumped_crank(iflag_mag_supg,                 &
-     &      cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
+        call cal_magne_pre_lumped_crank                                 &
+     &     (cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
      &      iphys%i_magne, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,     &
      &      Bnod_bcs%nod_bc_b, nod_comm, node, ele, conduct, evo_magne, &
      &      iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,           &

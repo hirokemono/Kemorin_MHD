@@ -71,13 +71,15 @@
 !
 !
       if (iflag_mag_supg .gt. id_turn_OFF) then
-        call int_vol_sgs_induct_t_upm(i_filter, ifield_v, ifield_b,     &
+        call int_vol_sgs_induct_t_upm                                   &
+     &     (i_filter, ifield_v, ifield_b, intg_point_t_evo,             &
      &      node, ele, conduct, nod_fld, jac_3d, FEM_elens,             &
      &      mhd_fem_wk%n_dvx, ie_dvx, ie_dbx, mhd_fem_wk%dvx,           &
      &      ele_fld%ntot_phys, iphys_ele%i_magne,                       &
      &      ele_fld%d_fld, fem_wk)
       else
-        call int_vol_sgs_induct_t_pg(i_filter, ifield_v, ifield_b,      &
+        call int_vol_sgs_induct_t_pg                                    &
+     &     (i_filter, ifield_v, ifield_b, intg_point_t_evo,             &
      &      node, ele, conduct, nod_fld, jac_3d, FEM_elens,             &
      &      mhd_fem_wk%n_dvx, ie_dvx, ie_dbx, mhd_fem_wk%dvx, fem_wk)
       end if
@@ -87,8 +89,9 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_sgs_induct_t_pg(i_filter, ifield_v, ifield_b,  &
-     &          node, ele, conduct, nod_fld, jac_3d, FEM_elens,  &
+      subroutine int_vol_sgs_induct_t_pg                                &
+     &         (i_filter, ifield_v, ifield_b, num_int,                  &
+     &          node, ele, conduct, nod_fld, jac_3d, FEM_elens,         &
      &          ncomp_dvx, ie_dvx, ie_dbx, diff_ele, fem_wk)
 !
       use nodal_fld_2_each_element
@@ -101,8 +104,10 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elens
 !
-      integer (kind = kint), intent(in) :: i_filter
-      integer (kind = kint), intent(in) :: ifield_v, ifield_b
+      integer(kind = kint), intent(in) :: i_filter
+      integer(kind = kint), intent(in) :: ifield_v, ifield_b
+      integer(kind = kint), intent(in) :: num_int
+!
       integer(kind = kint), intent(in) :: ncomp_dvx, ie_dvx, ie_dbx
       real(kind = kreal), intent(in) :: diff_ele(ele%numele,ncomp_dvx)
 !
@@ -134,7 +139,7 @@
      &        k2, icomp_v, fem_wk%vector_1(1:ele%numele,2) )
 !
           call fem_skv_sgs_induct_t_galerkin                            &
-     &       (conduct%istack_ele_fld_smp, intg_point_t_evo, k2,         &
+     &       (conduct%istack_ele_fld_smp, num_int, k2,                  &
      &        i_filter, nd, ele, jac_3d, FEM_elens,                     &
      &        fem_wk%vector_1, diff_ele(1,id_dvx2),                     &
      &        diff_ele(1,id_dbx2), fem_wk%sk6)
@@ -145,7 +150,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_sgs_induct_t_upm(i_filter, ifield_v, ifield_b, &
+      subroutine int_vol_sgs_induct_t_upm                               &
+     &         (i_filter, ifield_v, ifield_b, num_int,                  &
      &          node, ele, conduct, nod_fld, jac_3d, FEM_elens,         &
      &          ncomp_dvx, ie_dvx, ie_dbx, diff_ele,                    &
      &          ncomp_ele, i_magne, d_ele, fem_wk)
@@ -160,8 +166,9 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elens
 !
-      integer (kind = kint), intent(in) :: i_filter
-      integer (kind = kint), intent(in) :: ifield_v, ifield_b
+      integer(kind = kint), intent(in) :: i_filter
+      integer(kind = kint), intent(in) :: ifield_v, ifield_b
+      integer(kind = kint), intent(in) :: num_int
 !
       integer(kind = kint), intent(in) :: ncomp_dvx, ie_dvx, ie_dbx
       integer(kind = kint), intent(in) :: ncomp_ele, i_magne
@@ -191,7 +198,7 @@
      &        k2, icomp_b, fem_wk%vector_1(1:ele%numele,2) )
 !
           call fem_skv_sgs_induct_t_upwind                              &
-     &       (conduct%istack_ele_fld_smp, intg_point_t_evo, k2,         &
+     &       (conduct%istack_ele_fld_smp, num_int, k2,                  &
      &        i_filter, nd, ele, jac_3d, FEM_elens,                     &
      &        fem_wk%vector_1, d_ele(1,i_magne),                        &
      &        diff_ele(1,id_dvx2), diff_ele(1,id_dbx2), fem_wk%sk6)
