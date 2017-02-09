@@ -113,7 +113,7 @@
       real (kind=kreal) :: eps_4_magne
 !
       type(FEM_MHD_paremeters), save :: FEM_prm1
-!FEM_prm1%iflag_rotate_form
+!FEM_prm1%npint_t_wvo_int
 !
 !  ---------------------------------------------------------------------
 !

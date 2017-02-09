@@ -73,8 +73,8 @@
         if(my_rank .eq. 0) write(*,'(a10,i16,a10,e15.8)')               &
      &            'i_step=',i_step_MHD,'time=',time
 !
-      call s_int_mean_squares                                           &
-     &   (mesh%node, mesh%ele, MHD_mesh%fluid, MHD_mesh%conduct,        &
+      call s_int_mean_squares(intg_point_t_evo,                         &
+     &    mesh%node, mesh%ele, MHD_mesh%fluid, MHD_mesh%conduct,        &
      &    iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk, mhd_fem_wk)
       call int_no_evo_mean_squares(mesh%node, mesh%ele, iphys, nod_fld, &
      &    iphys_ele, ele_fld, MHD_mesh%fluid, jac_3d_q, fem_wk)

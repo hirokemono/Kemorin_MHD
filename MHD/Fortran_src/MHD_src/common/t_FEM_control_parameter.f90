@@ -35,6 +35,10 @@
 !
 !
       type FEM_MHD_paremeters
+!>        Number of quadrature points for time evolution
+        integer (kind=kint)  :: npint_t_wvo_int =   2
+!FEM_prm%npint_t_wvo_int
+!
 !>          Using rotation form for inertia and Lorentz force
         integer(kind = kint) :: iflag_rotate_form =  id_turn_OFF
 !>         Coriolist terms adjustment in implicit scheme

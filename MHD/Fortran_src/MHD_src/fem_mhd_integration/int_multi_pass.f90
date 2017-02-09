@@ -79,12 +79,14 @@
 !
 !
       call reset_ff(node%numnod, f_nl)
+!
       do imulti = 2, num_multi_pass
         call cal_ff_smp_2_vector(node, rhs_tbl,                         &
      &      f_nl%ff_smp, m_lump%ml, n_vector, ione, f_nl%ff)
         call nod_vector_send_recv(node%numnod, nod_comm, f_nl%ff)
 !
-        call int_vol_multi_pass_vector(iele_fsmp_stack,                 &
+        call int_vol_multi_pass_vector                                  &
+     &     (intg_point_t_evo, iele_fsmp_stack,                          &
      &      node, ele, jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_nl)
       end do
 !
@@ -118,12 +120,14 @@
 !
 !
       call reset_ff(node%numnod, f_nl)
+!
       do imulti = 2, num_multi_pass
         call cal_ff_smp_2_scalar(node, rhs_tbl,                         &
      &      f_nl%ff_smp, m_lump%ml, n_vector, ione, f_nl%ff)
         call nod_scalar_send_recv(node%numnod, nod_comm, f_nl%ff(1,1))
 !
-        call int_vol_multi_pass_scalar(iele_fsmp_stack,                 &
+        call int_vol_multi_pass_scalar                                  &
+     &     (intg_point_t_evo, iele_fsmp_stack,                          &
      &      node, ele, jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_nl)
       end do
 !
@@ -167,7 +171,8 @@
      &      f_nl%ff_smp, m_lump%ml, n_vector, ione, f_nl%ff)
         call nod_vector_send_recv(node%numnod, nod_comm, f_nl%ff)
 !
-        call int_vol_multi_pass_vector_upw(iele_fsmp_stack,             &
+        call int_vol_multi_pass_vector_upw                              &
+     &     (intg_point_t_evo, iele_fsmp_stack,                          &
      &      node, ele, jac_3d, rhs_tbl,                                 &
      &      ele_fld%ntot_phys, iphys_upw, ele_fld%d_fld,                &
      &      ff_m_smp, fem_wk, f_nl)
@@ -212,7 +217,8 @@
      &      f_nl%ff_smp, m_lump%ml, n_vector, ione, f_nl%ff)
         call nod_scalar_send_recv(node%numnod, nod_comm, f_nl%ff(1,1))
 !
-        call int_vol_multi_pass_scalar_upw(iele_fsmp_stack,             &
+        call int_vol_multi_pass_scalar_upw                              &
+     &     (intg_point_t_evo, iele_fsmp_stack,                          &
      &      node, ele, jac_3d, rhs_tbl,                                 &
      &      ele_fld%ntot_phys, iphys_upw, ele_fld%d_fld,                &
      &      ff_m_smp, fem_wk, f_nl)
