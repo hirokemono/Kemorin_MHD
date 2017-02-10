@@ -133,7 +133,7 @@
       if (iphys%i_SGS_h_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*) 'lead ', trim(fhd_SGS_h_flux)
         call cal_sgs_heat_flux                                          &
-     &     (FEM_prm%iflag_temp_supg, intg_point_t_evo,                  &
+     &     (FEM_prm%iflag_temp_supg, FEM_prm%npint_t_evo_int,           &
      &      SGS_param%iflag_SGS_h_flux, SGS_param%itype_Csym_h_flux,    &
      &      iphys%i_sgs_temp, iphys%i_filter_temp,                      &
      &      iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_h_flux,      &
@@ -147,7 +147,7 @@
       if (iphys%i_SGS_c_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*) 'lead ', trim(fhd_SGS_c_flux)
         call cal_sgs_heat_flux                                          &
-     &     (FEM_prm%iflag_comp_supg, intg_point_t_evo,                  &
+     &     (FEM_prm%iflag_comp_supg, FEM_prm%npint_t_evo_int,           &
      &      SGS_param%iflag_SGS_c_flux, SGS_param%itype_Csym_c_flux,    &
      &      iphys%i_sgs_composit, iphys%i_filter_comp,                  &
      &      iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_c_flux,      &
@@ -257,7 +257,7 @@
         call cal_terms_4_heat                                           &
      &     (iphys%i_SGS_div_h_flux, iphys%i_velo, iphys%i_temp,         &
      &      iphys%i_SGS_h_flux, ifld_diff%i_heat_flux,                  &
-     &      FEM_prm%iflag_temp_supg, intg_point_t_evo,                  &
+     &      FEM_prm%iflag_temp_supg, FEM_prm%npint_t_evo_int,           &
      &      SGS_param%ifilter_final, SGS_param%iflag_SGS_h_flux,        &
      &      cmt_param%iflag_c_hf, cmt_param%iflag_c_temp,               &
      &      nod_comm, node, ele, surf, fluid, sf_grp, ht_prop,          &
@@ -271,7 +271,7 @@
      &        'lead ', trim(fhd_div_SGS_h_flux)
         call cal_terms_4_heat(iphys%i_SGS_div_c_flux, iphys%i_velo,     &
      &      iphys%i_light, iphys%i_SGS_c_flux, ifld_diff%i_comp_flux,   &
-     &      FEM_prm%iflag_comp_supg, intg_point_t_evo,                  &
+     &      FEM_prm%iflag_comp_supg, FEM_prm%npint_t_evo_int,           &
      &      SGS_param%ifilter_final, SGS_param%iflag_SGS_c_flux,        &
      &      cmt_param%iflag_c_cf, cmt_param%iflag_c_light,              &
      &      nod_comm, node, ele, surf, fluid, sf_grp, cp_prop,          &

@@ -167,7 +167,7 @@
       if (cd_prop%coef_magne .gt. zero                                  &
      &     .and. evo_vect_p%coef_exp .gt. zero) then
         call int_vol_vector_diffuse_ele(SGS_param%ifilter_final,        &
-     &      ele%istack_ele_smp, intg_point_t_evo,                       &
+     &      ele%istack_ele_smp, FEM_prm%npint_t_evo_int,                &
      &      node, ele, nod_fld, jac_3d_q, rhs_tbl, FEM_elens,           &
      &      diff_coefs, iak_diff_b, evo_vect_p%coef_exp, ak_d_magne,    &
      &      iphys%i_vecp, fem_wk, f_l)
@@ -184,19 +184,19 @@
       end if
 !
       if (FEM_prm%iflag_magne_supg .gt. id_turn_OFF) then
-        call int_vol_vect_p_pre_ele_upm(intg_point_t_evo,               &
+        call int_vol_vect_p_pre_ele_upm(FEM_prm%npint_t_evo_int,        &
      &      node, ele, conduct, cd_prop, iphys, nod_fld,                &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
      &      jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
       else
-        call int_vol_vect_p_pre_ele(intg_point_t_evo,                   &
+        call int_vol_vect_p_pre_ele(FEM_prm%npint_t_evo_int,            &
      &      node, ele, conduct, cd_prop, iphys, nod_fld,                &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
      &      jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
       end if
 !
       call int_sf_grad_velocity(node, ele, surf, sf_grp, jac_sf_grp_q,  &
-     &    rhs_tbl, Asf_bcs%grad, intg_point_t_evo, ak_d_magne,          &
+     &    rhs_tbl, Asf_bcs%grad, FEM_prm%npint_t_evo_int, ak_d_magne,   &
      &    fem_wk, f_l)
 !
 !      call check_nodal_data                                            &

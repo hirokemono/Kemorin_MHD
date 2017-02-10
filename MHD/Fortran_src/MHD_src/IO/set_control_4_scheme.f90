@@ -131,12 +131,14 @@
      &       = 'Set number of integration points for time integration'
           call calypso_MPI_abort(ierr_FEM, e_message)
         else
-          intg_point_t_evo = fint_ctl%intg_point_t_evo_ctl%intvalue
+          FEM_prm%npint_t_evo_int                                       &
+     &       = fint_ctl%intg_point_t_evo_ctl%intvalue
+          intg_point_t_evo = FEM_prm%npint_t_evo_int
         end if
 !
         if (iflag_debug .gt. iflag_routine_msg) then
           write(*,*) 'intg_point_poisson ', FEM_prm%npoint_poisson_int
-          write(*,*) 'intg_point_t_evo ',   intg_point_t_evo
+          write(*,*) 'intg_point_t_evo ',   FEM_prm%npint_t_evo_int
         end if
 !
       end subroutine set_control_4_FEM_params

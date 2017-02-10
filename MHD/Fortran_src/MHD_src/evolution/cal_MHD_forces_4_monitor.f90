@@ -198,7 +198,7 @@
      &             write(*,*) 'lead  ', trim(fhd_heat_advect)
         call cal_terms_4_advect                                         &
      &     (iphys%i_h_advect, iphys%i_temp,                             &
-     &      FEM_prm%iflag_temp_supg, intg_point_t_evo,                  &
+     &      FEM_prm%iflag_temp_supg, FEM_prm%npint_t_evo_int,           &
      &      nod_comm, node, ele, fluid, ht_prop, nod_bcs%Tnod_bcs,      &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,    &
      &      f_l, f_nl, nod_fld)
@@ -209,7 +209,7 @@
      &             write(*,*) 'lead  ', trim(fhd_part_h_advect)
         call cal_terms_4_advect                                         &
      &     (iphys%i_ph_advect, iphys%i_par_temp,                        &
-     &      FEM_prm%iflag_temp_supg, intg_point_t_evo,                  &
+     &      FEM_prm%iflag_temp_supg, FEM_prm%npint_t_evo_int,           &
      &      nod_comm, node, ele, fluid, ht_prop, nod_bcs%Tnod_bcs,      &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,    &
      &      f_l, f_nl, nod_fld)
@@ -220,7 +220,7 @@
      &             write(*,*) 'lead  ', trim(fhd_div_h_flux)
         call cal_div_of_scalar_flux                                     &
      &     (iphys%i_h_flux_div, iphys%i_h_flux,                         &
-     &      FEM_prm%iflag_temp_supg, intg_point_t_evo,                  &
+     &      FEM_prm%iflag_temp_supg, FEM_prm%npint_t_evo_int,           &
      &      nod_comm, node, ele, fluid, ht_prop, nod_bcs%Tnod_bcs,      &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,    &
      &      f_l, f_nl, nod_fld)
@@ -231,7 +231,7 @@
      &             write(*,*) 'lead  ', trim(fhd_div_ph_flux)
         call cal_div_of_scalar_flux                                     &
      &     (iphys%i_ph_flux_div, iphys%i_ph_flux,                       &
-     &      FEM_prm%iflag_temp_supg, intg_point_t_evo,                  &
+     &      FEM_prm%iflag_temp_supg, FEM_prm%npint_t_evo_int,           &
      &      nod_comm, node, ele, fluid, ht_prop, nod_bcs%Tnod_bcs,      &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,    &
      &      f_l, f_nl, nod_fld)
@@ -243,7 +243,7 @@
      &             write(*,*) 'lead  ', trim(fhd_composit_advect)
         call cal_terms_4_advect                                         &
      &     (iphys%i_c_advect, iphys%i_light,                            &
-     &      FEM_prm%iflag_comp_supg, intg_point_t_evo,                  &
+     &      FEM_prm%iflag_comp_supg, FEM_prm%npint_t_evo_int,           &
      &      nod_comm, node, ele, fluid, cp_prop, nod_bcs%Tnod_bcs,      &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,    &
      &      f_l, f_nl, nod_fld)
@@ -254,7 +254,7 @@
      &             write(*,*) 'lead  ', trim(fhd_part_c_advect)
         call cal_terms_4_advect                                         &
      &     (iphys%i_pc_advect, iphys%i_par_light,                       &
-     &      FEM_prm%iflag_comp_supg, intg_point_t_evo,                  &
+     &      FEM_prm%iflag_comp_supg, FEM_prm%npint_t_evo_int,           &
      &      nod_comm, node, ele, fluid, cp_prop, nod_bcs%Tnod_bcs,      &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,    &
      &      f_l, f_nl, nod_fld)
@@ -265,7 +265,7 @@
      &             write(*,*) 'lead  ', trim(fhd_div_c_flux)
         call cal_div_of_scalar_flux                                     &
      &     (iphys%i_c_flux_div, iphys%i_c_flux,                         &
-     &      FEM_prm%iflag_comp_supg, intg_point_t_evo,                  &
+     &      FEM_prm%iflag_comp_supg, FEM_prm%npint_t_evo_int,           &
      &      nod_comm, node, ele, fluid, cp_prop, nod_bcs%Tnod_bcs,      &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,    &
      &      f_l, f_nl, nod_fld)
@@ -276,7 +276,7 @@
      &             write(*,*) 'lead  ', trim(fhd_div_pc_flux)
         call cal_div_of_scalar_flux                                     &
      &     (iphys%i_pc_flux_div, iphys%i_pc_flux,                       &
-     &      FEM_prm%iflag_comp_supg, intg_point_t_evo,                  &
+     &      FEM_prm%iflag_comp_supg, FEM_prm%npint_t_evo_int,           &
      &      nod_comm, node, ele, fluid, cp_prop, nod_bcs%Tnod_bcs,      &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,    &
      &      f_l, f_nl, nod_fld)
@@ -340,19 +340,21 @@
       if (iphys%i_t_diffuse .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_thermal_diffusion)
-        call cal_thermal_diffusion(iphys%i_t_diffuse, iphys%i_temp,     &
-     &      ifld_diff%i_temp, ak_MHD%ak_d_temp, intg_point_t_evo,       &
-     &      SGS_par%model_p, nod_comm, node, ele, surf, fluid, sf_grp,  &
-     &      nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                         &
-     &      jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,         &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+        call cal_thermal_diffusion                                      &
+          (iphys%i_t_diffuse, iphys%i_temp, ifld_diff%i_temp,           &
+     &     ak_MHD%ak_d_temp, FEM_prm%npint_t_evo_int,                   &
+     &     SGS_par%model_p, nod_comm, node, ele, surf, fluid, sf_grp,   &
+     &     nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,                          &
+     &     jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,          &
+     &     mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       if (iphys%i_c_diffuse .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_c_diffuse)
-        call cal_thermal_diffusion(iphys%i_c_diffuse, iphys%i_light,    &
-     &      ifld_diff%i_temp, ak_MHD%ak_d_composit, intg_point_t_evo,   &
+        call cal_thermal_diffusion                                      &
+     &     (iphys%i_c_diffuse, iphys%i_light, ifld_diff%i_light,        &
+     &      ak_MHD%ak_d_composit, FEM_prm%npint_t_evo_int,              &
      &      SGS_par%model_p, nod_comm, node, ele, surf, fluid, sf_grp,  &
      &      nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs,                         &
      &      jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,         &
@@ -407,8 +409,8 @@
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call choose_cal_gradient                                      &
-     &       (FEM_prm%iflag_velo_supg, intg_point_t_evo, i_src, i_fld,  &
-     &        fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,            &
+     &       (FEM_prm%iflag_velo_supg, FEM_prm%npint_t_evo_int, i_src,  &
+     &        i_fld, fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,     &
      &        nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,          &
      &        rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
         end if

@@ -153,11 +153,11 @@
      &     mhd_fem_wk, fem_wk, f_nl, ele_fld)
       end if
 !
-      call int_surf_velo_monitor(i_field,                               &
-     &   iak_diff_mf, iak_diff_lor, ak_MHD%ak_d_velo, intg_point_t_evo, &
-     &   SGS_param, cmt_param, node, ele, surf, sf_grp, fl_prop,        &
-     &   Vsf_bcs, Bsf_bcs, iphys, nod_fld, jac_sf_grp, rhs_tbl,         &
-     &   FEM_elens, diff_coefs, fem_wk, surf_wk, f_l, f_nl)
+      call int_surf_velo_monitor(i_field, iak_diff_mf, iak_diff_lor,    &
+     &    ak_MHD%ak_d_velo, FEM_prm%npint_t_evo_int,                    &
+     &    SGS_param, cmt_param, node, ele, surf, sf_grp, fl_prop,       &
+     &    Vsf_bcs, Bsf_bcs, iphys, nod_fld, jac_sf_grp, rhs_tbl,        &
+     &    FEM_elens, diff_coefs, fem_wk, surf_wk, f_l, f_nl)
 !
       call cal_t_evo_4_vector                                           &
      &   (FEM_prm%iflag_velo_supg, fluid%istack_ele_fld_smp,            &

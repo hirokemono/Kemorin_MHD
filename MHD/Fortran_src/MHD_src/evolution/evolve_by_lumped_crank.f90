@@ -150,7 +150,7 @@
 !
       if (evo_v%coef_imp .gt. zero) then
         call int_sk_4_fixed_velo                                        &
-     &     (iflag_commute_velo, ifilter_final, intg_point_t_evo,        &
+     &     (iflag_commute_velo, ifilter_final, FEM_prm%npint_t_evo_int, &
      &      iphys%i_velo, iak_diff_v, evo_velo, node, ele, nod_fld,     &
      &      jac_3d, rhs_tbl, FEM_elens, diff_coefs,                     &
      &      Vnod_bcs%nod_bc_v, Vnod_bcs%nod_bc_rot, ak_d_velo,          &
@@ -238,10 +238,10 @@
 !
       if (evo_a%coef_imp .gt. 0.0d0) then
         call int_sk_4_fixed_vector                                      &
-     &     (iflag_commute_magne, ifilter_final, intg_point_t_evo,       &
-     &      i_vecp, node, ele, nod_fld, jac_3d, rhs_tbl,                &
-     &      FEM_elens, diff_coefs, nod_bc_a, ak_d_magne,                &
-     &      evo_a%coef_imp, iak_diff_b, fem_wk, f_l)
+     &    (iflag_commute_magne, ifilter_final, FEM_prm%npint_t_evo_int, &
+     &     i_vecp, node, ele, nod_fld, jac_3d, rhs_tbl,                 &
+     &     FEM_elens, diff_coefs, nod_bc_a, ak_d_magne,                 &
+     &     evo_a%coef_imp, iak_diff_b, fem_wk, f_l)
       end if
 !
       call cal_t_evo_4_vector_cd                                        &
@@ -318,10 +318,10 @@
 !
       if (evo_b%coef_imp .gt. 0.0d0) then
         call int_sk_4_fixed_vector                                      &
-     &     (iflag_commute_magne, ifilter_final, intg_point_t_evo,       &
-     &      i_magne, node, ele, nod_fld, jac_3d, rhs_tbl,               &
-     &      FEM_elens, diff_coefs, nod_bc_b, ak_d_magne,                &
-     &      evo_b%coef_imp, iak_diff_b, fem_wk, f_l)
+     &    (iflag_commute_magne, ifilter_final, FEM_prm%npint_t_evo_int, &
+     &     i_magne, node, ele, nod_fld, jac_3d, rhs_tbl,                &
+     &     FEM_elens, diff_coefs, nod_bc_b, ak_d_magne,                 &
+     &     evo_b%coef_imp, iak_diff_b, fem_wk, f_l)
       end if
 !
       call cal_t_evo_4_vector_cd                                        &
@@ -405,7 +405,7 @@
 !
       if (evo%coef_imp .gt. zero) then
         call int_sk_fixed_temp(iflag_commute_field,                     &
-     &      ifilter_final, intg_point_t_evo, i_field, iak_diff,         &
+     &      ifilter_final, FEM_prm%npint_t_evo_int, i_field, iak_diff,  &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
      &      Snod_bcs%nod_bc_s, ak_diffuese, evo%coef_imp, fem_wk, f_l)
 !        if (iflag_initial_step.eq.1) then

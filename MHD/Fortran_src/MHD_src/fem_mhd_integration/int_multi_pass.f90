@@ -89,7 +89,7 @@
         call nod_vector_send_recv(node%numnod, nod_comm, f_nl%ff)
 !
         call int_vol_multi_pass_vector                                  &
-     &     (intg_point_t_evo, iele_fsmp_stack,                          &
+     &     (FEM_prm%npint_t_evo_int, iele_fsmp_stack,                   &
      &      node, ele, jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_nl)
       end do
 !
@@ -131,7 +131,7 @@
         call nod_scalar_send_recv(node%numnod, nod_comm, f_nl%ff(1,1))
 !
         call int_vol_multi_pass_scalar                                  &
-     &     (intg_point_t_evo, iele_fsmp_stack,                          &
+     &     (FEM_prm%npint_t_evo_int, iele_fsmp_stack,                   &
      &      node, ele, jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_nl)
       end do
 !
@@ -177,7 +177,7 @@
         call nod_vector_send_recv(node%numnod, nod_comm, f_nl%ff)
 !
         call int_vol_multi_pass_vector_upw                              &
-     &     (intg_point_t_evo, iele_fsmp_stack,                          &
+     &     (FEM_prm%npint_t_evo_int, iele_fsmp_stack,                   &
      &      node, ele, jac_3d, rhs_tbl,                                 &
      &      ele_fld%ntot_phys, iphys_upw, ele_fld%d_fld,                &
      &      ff_m_smp, fem_wk, f_nl)
@@ -224,7 +224,7 @@
         call nod_scalar_send_recv(node%numnod, nod_comm, f_nl%ff(1,1))
 !
         call int_vol_multi_pass_scalar_upw                              &
-     &     (intg_point_t_evo, iele_fsmp_stack,                          &
+     &     (FEM_prm%npint_t_evo_int, iele_fsmp_stack,                   &
      &      node, ele, jac_3d, rhs_tbl,                                 &
      &      ele_fld%ntot_phys, iphys_upw, ele_fld%d_fld,                &
      &      ff_m_smp, fem_wk, f_nl)
