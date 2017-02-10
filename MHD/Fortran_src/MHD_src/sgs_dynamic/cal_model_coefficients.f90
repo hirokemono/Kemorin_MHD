@@ -4,7 +4,7 @@
 !      Written by H. Matsui
 !
 !!      subroutine s_cal_model_coefficients                             &
-!!     &         (SGS_par, mesh, group, ele_mesh, MHD_mesh,             &
+!!     &         (FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh,    &
 !!     &          layer_tbl, nod_bcs, surf_bcs, iphys, iphys_ele,       &
 !!     &          ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,            &
 !!     &          rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs, ifld_diff,   &
@@ -12,6 +12,7 @@
 !!     &          m_lump, wk_cor, wk_lsq, wk_sgs, wk_diff, wk_filter,   &
 !!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,               &
 !!     &          nod_fld, sgs_coefs, sgs_coefs_nod, diff_coefs)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
@@ -58,6 +59,7 @@
       use m_machine_parameter
       use m_physical_property
 !
+      use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_mesh_data
       use t_comm_table
@@ -92,7 +94,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_cal_model_coefficients                               &
-     &         (SGS_par, mesh, group, ele_mesh, MHD_mesh,               &
+     &         (FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh,      &
      &          layer_tbl, nod_bcs, surf_bcs, iphys, iphys_ele,         &
      &          ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,              &
      &          rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs, ifld_diff,     &
@@ -115,6 +117,7 @@
       use cal_diff_coef_sgs_induct
       use cal_sgs_uxb_dynamic_simi
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
@@ -163,7 +166,8 @@
       if(evo_temp%iflag_scheme .ne. id_no_evolution) then
         if(SGS_par%model_p%iflag_SGS_h_flux .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_sf_dynamic temp'
-          call cal_sgs_sf_dynamic(iflag_temp_supg, intg_point_t_evo,    &
+          call cal_sgs_sf_dynamic                                       &
+     &       (FEM_prm%iflag_temp_supg, intg_point_t_evo,                &
      &        SGS_par%model_p%itype_Csym_h_flux,                        &
      &        SGS_par%model_p%SGS_hf_factor,                            &
      &        iphys%i_sgs_temp, iphys%i_filter_temp,                    &
@@ -195,7 +199,7 @@
           if (iflag_debug.eq.1)  write(*,*) 's_cal_diff_coef_sgs_sf'
           call s_cal_diff_coef_sgs_sf                                   &
      &       (SGS_par%model_p%itype_Csym_h_flux,                        &
-     &        iflag_temp_supg, intg_point_t_evo,                        &
+     &        FEM_prm%iflag_temp_supg, intg_point_t_evo,                &
      &        iphys%i_sgs_temp, iphys%i_filter_temp,                    &
      &        iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_h_flux,    &
      &        ifld_diff%i_heat_flux, icomp_sgs%i_heat_flux,             &

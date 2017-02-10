@@ -153,7 +153,7 @@
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_filter_hf_grad'
       call cal_sgs_s_flux_grad_w_coef                                   &
-     &   (iflag_temp_supg, intg_point_t_evo,                            &
+     &   (iflag_supg, intg_point_t_evo,                                 &
      &    itype_Csym_flux, SGS_par%model_p%icoord_Csim, ifilter_4delta, &
      &    icomp_sgs_flux, iphys%i_sgs_grad_f, ifield_f, ie_dfvx,        &
      &    nod_comm, node, ele, fluid, iphys_ele, ele_fld, jac_3d_q,     &

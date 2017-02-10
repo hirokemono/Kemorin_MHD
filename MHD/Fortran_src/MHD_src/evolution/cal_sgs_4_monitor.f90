@@ -3,13 +3,14 @@
 !
 !     Written by H. Matsui
 !
-!!      subroutine cal_sgs_terms_4_monitor(SGS_param, filter_param,     &
+!!      subroutine cal_sgs_terms_4_monitor                              &
+!!     &         (FEM_prm, SGS_param, filter_param,                     &
 !!     &          nod_comm, node, ele, fluid, conduct,                  &
 !!     &          cd_prop, iphys, iphys_ele, ele_fld,  jac_3d, rhs_tbl, &
 !!     &          FEM_elens, icomp_sgs, iphys_elediff,                  &
 !!     &          sgs_coefs, sgs_coefs_nod, filtering, wk_filter,       &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-!!      subroutine cal_diff_of_sgs_terms(SGS_param, cmt_param,          &
+!!      subroutine cal_diff_of_sgs_terms(FEM_prm, SGS_param, cmt_param, &
 !!     &          nod_comm, node, ele, surf, sf_grp, fluid, conduct,    &
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop,                   &
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,          &
@@ -19,6 +20,7 @@
 !!      subroutine cal_work_4_sgs_terms(nod_comm, node, ele, conduct,   &
 !!     &          fl_prop, iphys, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,  &
 !!     &          f_nl, nod_fld)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(SGS_filtering_params), intent(in) :: filter_param
 !!        type(communication_table), intent(in) :: nod_comm
@@ -59,6 +61,7 @@
       use m_machine_parameter
       use m_phys_labels
 !
+      use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_physical_property
       use t_comm_table
@@ -89,7 +92,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_sgs_terms_4_monitor(SGS_param, filter_param,       &
+      subroutine cal_sgs_terms_4_monitor                                &
+     &         (FEM_prm, SGS_param, filter_param,                       &
      &          nod_comm, node, ele, fluid, conduct,                    &
      &          cd_prop, iphys, iphys_ele, ele_fld,  jac_3d, rhs_tbl,   &
      &          FEM_elens, icomp_sgs, iphys_elediff,                    &
@@ -99,6 +103,7 @@
       use cal_sgs_fluxes
       use int_sgs_induction
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(SGS_filtering_params), intent(in) :: filter_param
       type(communication_table), intent(in) :: nod_comm
@@ -127,7 +132,8 @@
 !
       if (iphys%i_SGS_h_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*) 'lead ', trim(fhd_SGS_h_flux)
-        call cal_sgs_heat_flux(iflag_temp_supg, intg_point_t_evo,       &
+        call cal_sgs_heat_flux                                          &
+     &     (FEM_prm%iflag_temp_supg, intg_point_t_evo,                  &
      &      SGS_param%iflag_SGS_h_flux, SGS_param%itype_Csym_h_flux,    &
      &      iphys%i_sgs_temp, iphys%i_filter_temp,                      &
      &      iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_h_flux,      &
@@ -155,7 +161,7 @@
         if(iflag_debug.gt.0) write(*,*) 'lead ', trim(fhd_SGS_m_flux)
         call cal_sgs_momentum_flux                                      &
      &     (icomp_sgs%i_mom_flux, iphys_elediff%i_velo,                 &
-     &      FEM_prm1, SGS_param, filter_param, nod_comm, node, ele,     &
+     &      FEM_prm, SGS_param, filter_param, nod_comm, node, ele,      &
      &      fluid, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl,          &
      &      FEM_elens, filtering, sgs_coefs, sgs_coefs_nod, wk_filter,  &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -166,7 +172,7 @@
      &        'lead ', trim(fhd_SGS_maxwell_t)
         call cal_sgs_maxwell                                            &
      &     (icomp_sgs%i_lorentz, iphys_elediff%i_magne,                 &
-     &      FEM_prm1, SGS_param, filter_param, nod_comm, node, ele,     &
+     &      FEM_prm, SGS_param, filter_param, nod_comm, node, ele,      &
      &      fluid, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl,          &
      &      FEM_elens, filtering, sgs_coefs, sgs_coefs_nod, wk_filter,  &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -197,7 +203,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_diff_of_sgs_terms(SGS_param, cmt_param,            &
+      subroutine cal_diff_of_sgs_terms(FEM_prm, SGS_param, cmt_param,   &
      &          nod_comm, node, ele, surf, sf_grp, fluid, conduct,      &
      &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
      &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,            &
@@ -210,6 +216,7 @@
       use cal_magnetic_terms
       use int_vol_temp_monitor
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(communication_table), intent(in) :: nod_comm
@@ -246,9 +253,10 @@
       if (iphys%i_SGS_div_h_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_div_SGS_h_flux)
-        call cal_terms_4_heat(iphys%i_SGS_div_h_flux,                   &
-     &      iphys%i_velo, iphys%i_temp, iphys%i_SGS_h_flux,             &
-     &      ifld_diff%i_heat_flux, iflag_temp_supg, intg_point_t_evo,   &
+        call cal_terms_4_heat                                           &
+     &     (iphys%i_SGS_div_h_flux, iphys%i_velo, iphys%i_temp,         &
+     &      iphys%i_SGS_h_flux, ifld_diff%i_heat_flux,                  &
+     &      FEM_prm%iflag_temp_supg, intg_point_t_evo,                  &
      &      SGS_param%ifilter_final, SGS_param%iflag_SGS_h_flux,        &
      &      cmt_param%iflag_c_hf, cmt_param%iflag_c_temp,               &
      &      nod_comm, node, ele, surf, fluid, sf_grp, ht_prop,          &
@@ -279,7 +287,7 @@
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call cal_terms_4_momentum                                     &
      &       (i_fld, ifld_diff%i_mom_flux, ifld_diff%i_lorentz,         &
-     &        FEM_prm1, SGS_param, cmt_param, nod_comm, node, ele, surf,&
+     &        FEM_prm, SGS_param, cmt_param, nod_comm, node, ele, surf, &
      &        sf_grp, fluid, fl_prop, cd_prop,                          &
      &        surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, iphys, iphys_ele,     &
      &        ak_MHD, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,           &
@@ -294,7 +302,7 @@
      &        'lead ', trim(fhd_SGS_induction)
         call cal_terms_4_magnetic(iphys%i_SGS_induction,                &
      &      ifld_diff%i_induction, ak_MHD%ak_d_magne,                   &
-     &      FEM_prm1, SGS_param, cmt_param, nod_comm, node, ele,        &
+     &      FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,         &
      &      surf, conduct, sf_grp, cd_prop,                             &
      &      nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,       &
      &      iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,     &

@@ -245,7 +245,7 @@
       if ( evo_temp%iflag_scheme .gt. id_no_evolution) then
         if( ref_param_T1%iflag_reference .ne. id_no_ref_temp) then
           if(iflag_debug.eq.1) write(*,*) 'cal_temperature_field theta'
-          call cal_temperature_field(iphys%i_par_temp,                  &
+          call cal_temperature_field(iphys%i_par_temp, FEM_prm1,        &
      &       SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,      &
      &       mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,         &
      &       MHD_mesh%fluid, group%surf_grp, ht_prop1,                  &
@@ -262,7 +262,7 @@
 !          call check_surface_param_smp('cal_temperature_field start',  &
 !     &        my_rank, sf_grp, group%surf_nod_grp)
           if (iflag_debug.eq.1) write(*,*) 'cal_temperature_field T'
-          call cal_temperature_field(iphys%i_temp,                      &
+          call cal_temperature_field(iphys%i_temp, FEM_prm1,            &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
      &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
      &        MHD_mesh%fluid, group%surf_grp, ht_prop1,                 &
@@ -281,7 +281,7 @@
 !
         call update_with_temperature                                    &
      &     (ifld_diff%i_temp, icomp_diff%i_temp,                        &
-     &      SGS_par, mesh%nod_comm, mesh%node, mesh%ele,                &
+     &      FEM_prm1, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,      &
      &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
      &      surf_bcs%Tsf_bcs, iphys, iphys_ele, ele_fld,                &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,                  &
@@ -435,7 +435,7 @@
       if (iphys%i_temp .ne. 0) then
         call update_with_temperature                                    &
      &     (ifld_diff%i_temp, icomp_diff%i_temp,                        &
-     &      SGS_par, mesh%nod_comm, mesh%node, mesh%ele,                &
+     &      FEM_prm1, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,      &
      &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
      &      surf_bcs%Tsf_bcs, iphys, iphys_ele, ele_fld,                &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,                  &
@@ -570,7 +570,7 @@
       if ( evo_temp%iflag_scheme .gt. id_no_evolution) then
         if( ref_param_T1%iflag_reference .ne. id_no_ref_temp) then
           if (iflag_debug.eq.1) write(*,*) 'cal_temperature_field'
-          call cal_temperature_field(iphys%i_par_temp,                  &
+          call cal_temperature_field(iphys%i_par_temp, FEM_prm1,        &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
      &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
      &        fluid, group%surf_grp, ht_prop1,                          &
@@ -585,7 +585,7 @@
      &        iphys%i_ref_t, iphys%i_par_temp, iphys%i_temp)
         else
           if (iflag_debug.eq.1) write(*,*) 'cal_temperature_field'
-          call cal_temperature_field(iphys%i_temp,                      &
+          call cal_temperature_field(iphys%i_temp, FEM_prm1,            &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
      &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
      &        fluid, group%surf_grp, ht_prop1,                          &
@@ -604,7 +604,7 @@
 !
         call update_with_temperature                                    &
      &    (ifld_diff%i_temp, icomp_diff%i_temp,                         &
-     &     SGS_par, mesh%nod_comm, mesh%node, mesh%ele,                 &
+     &     FEM_prm1, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,       &
      &     ele_mesh%surf, fluid, group%surf_grp, surf_bcs%Tsf_bcs,      &
      &     iphys, iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q, &
      &     rhs_tbl, FEM_elens, filtering, wide_filtering, layer_tbl,    &

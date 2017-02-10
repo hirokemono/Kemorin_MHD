@@ -29,9 +29,9 @@
 !!      subroutine cal_temp_pre_lumped_crank(iflag_supg,                &
 !!     &          iflag_commute_field, ifilter_final, i_field,          &
 !!     &          i_pre_advect, iak_diff, ak_diffuese, eps_4_crank,     &
-!!     &          nod_comm, node, ele, fluid, evo, Snod_bcs, iphys_ele, &
-!!     &          ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,      &
-!!     &          matrix, MG_vector, mhd_fem_wk, fem_wk,                &
+!!     &          FEM_prm, nod_comm, node, ele, fluid, evo, Snod_bcs,   &
+!!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
+!!     &          diff_coefs, matrix, MG_vector, mhd_fem_wk, fem_wk,    &
 !!     &          f_l, f_nl, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(communication_table), intent(in) :: nod_comm
@@ -355,9 +355,9 @@
       subroutine cal_temp_pre_lumped_crank(iflag_supg,                  &
      &          iflag_commute_field, ifilter_final, i_field,            &
      &          i_pre_advect, iak_diff, ak_diffuese, eps_4_crank,       &
-     &          nod_comm, node, ele, fluid, evo, Snod_bcs, iphys_ele,   &
-     &          ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,        &
-     &          matrix, MG_vector, mhd_fem_wk, fem_wk,                  &
+     &          FEM_prm, nod_comm, node, ele, fluid, evo, Snod_bcs,     &
+     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
+     &          diff_coefs, matrix, MG_vector, mhd_fem_wk, fem_wk,      &
      &          f_l, f_nl, nod_fld)
 !
       use m_iccg_parameter
@@ -377,6 +377,7 @@
       integer(kind = kint), intent(in) :: i_field, i_pre_advect
       integer(kind = kint), intent(in) :: iak_diff
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -414,7 +415,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'multi_pass temp'
       call cal_t_evo_4_scalar(iflag_supg, fluid%istack_ele_fld_smp,     &
-     &    FEM_prm1, mhd_fem_wk%mlump_fl, nod_comm,                      &
+     &    FEM_prm, mhd_fem_wk%mlump_fl, nod_comm,                       &
      &    node, ele, iphys_ele, ele_fld, jac_3d, rhs_tbl,               &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !

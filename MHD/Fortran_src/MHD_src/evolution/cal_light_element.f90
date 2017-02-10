@@ -243,21 +243,21 @@
 !
       if     (evo_comp%iflag_scheme .eq. id_explicit_euler) then
         call cal_scalar_pre_euler(iflag_comp_supg, i_field,             &
-     &      nod_comm, node, ele, fluid, iphys_ele, ele_fld, jac_3d,     &
-     &      rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      FEM_prm1, nod_comm, node, ele, fluid, iphys_ele, ele_fld,   &
+     &      jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       else if(evo_comp%iflag_scheme .eq. id_explicit_adams2) then
         call cal_scalar_pre_adams                                       &
      &    (iflag_comp_supg, i_field, iphys%i_pre_composit,              &
-     &      nod_comm, node, ele, fluid, iphys_ele, ele_fld, jac_3d,     &
-     &      rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      FEM_prm1, nod_comm, node, ele, fluid, iphys_ele, ele_fld,   &
+     &      jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       else if(evo_comp%iflag_scheme .eq. id_Crank_nicolson) then
         call cal_temp_pre_lumped_crank(iflag_comp_supg,                 &
      &      cmt_param%iflag_c_light, SGS_param%ifilter_final,           &
      &      i_field, iphys%i_pre_composit, ifld_diff%i_light,           &
      &      ak_d_composit, eps_4_comp_crank,                            &
-     &      nod_comm, node, ele, fluid, evo_comp, Snod_bcs,             &
+     &      FEM_prm1, nod_comm, node, ele, fluid, evo_comp, Snod_bcs,   &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
      &      Cmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !

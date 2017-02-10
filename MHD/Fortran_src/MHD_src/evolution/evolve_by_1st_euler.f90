@@ -14,9 +14,9 @@
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                  &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_scalar_pre_euler(iflag_supg, i_field,            &
-!!     &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,       &
-!!     &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,                  &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          FEM_prm, nod_comm, node, ele, fluid,                  &
+!!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                  &
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -155,15 +155,16 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_scalar_pre_euler(iflag_supg, i_field,              &
-     &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,         &
-     &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,                    &
-     &          f_l, f_nl, nod_fld)
+     &          FEM_prm, nod_comm, node, ele, fluid,                    &
+     &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                    &
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use cal_multi_pass
       use cal_sol_field_explicit
 !
       integer(kind = kint), intent(in) :: iflag_supg, i_field
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -180,7 +181,7 @@
 !
 !
       call cal_t_evo_4_scalar(iflag_supg, fluid%istack_ele_fld_smp,     &
-     &    FEM_prm1, mhd_fem_wk%mlump_fl, nod_comm,                      &
+     &    FEM_prm, mhd_fem_wk%mlump_fl, nod_comm,                       &
      &    node, ele, iphys_ele, ele_fld, jac_3d, rhs_tbl,               &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
       call cal_sol_vect_pre_fluid_euler                                 &
