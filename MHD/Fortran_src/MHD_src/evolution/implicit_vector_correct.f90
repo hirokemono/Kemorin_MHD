@@ -260,7 +260,7 @@
       if (iflag_debug.eq.1) write(*,*) 'int_vol_viscosity_co'
       if (evo_velo%coef_imp .gt. zero) then
         call int_vol_vector_diffuse_ele(SGS_param%ifilter_final,        &
-     &      fluid%istack_ele_fld_smp, FEM_prm%npint_t_evo_int,          &
+     &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,             &
      &      diff_coefs, iak_diff_v, evo_velo%coef_imp, ak_d_velo,       &
      &      i_velo, fem_wk, f_l)
@@ -270,7 +270,7 @@
         if (iflag_debug.eq.1) write(*,*) 'int_sk_4_fixed_velo'
         call int_sk_4_fixed_velo                                        &
      &     (cmt_param%iflag_c_velo, SGS_param%ifilter_final,            &
-     &      FEM_prm%npint_t_evo_int, i_velo, iak_diff_v,                &
+     &      FEM_prm%npoint_t_evo_int, i_velo, iak_diff_v,               &
      &      evo_velo, node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,   &
      &      diff_coefs, Vnod_bcs%nod_bc_v, Vnod_bcs%nod_bc_rot,         &
      &      ak_d_velo, fem_wk, f_l)
@@ -359,7 +359,7 @@
       if (iflag_debug.eq.1) write(*,*) 'int_vol_vecp_diffuse_co'
       if (evo_vect_p%coef_imp .gt. zero) then
         call int_vol_vector_diffuse_ele(SGS_param%ifilter_final,        &
-     &      ele%istack_ele_smp, FEM_prm%npint_t_evo_int,                &
+     &      ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,               &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,             &
      &      diff_coefs, iak_diff_b, evo_vect_p%coef_imp, ak_d_magne,    &
      &      i_vecp, fem_wk, f_l)
@@ -368,7 +368,7 @@
       if (evo_vect_p%coef_imp .gt. 0.0d0) then
         if (iflag_debug.eq.1) write(*,*) 'int_sk_4_fixed_vector_p'
         call int_sk_4_fixed_vector(cmt_param%iflag_c_magne,             &
-     &      SGS_param%ifilter_final, FEM_prm%npint_t_evo_int,           &
+     &      SGS_param%ifilter_final, FEM_prm%npoint_t_evo_int,          &
      &      i_vecp, node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,     &
      &      diff_coefs, Bnod_bcs%nod_bc_a, ak_d_magne,                  &
      &      evo_vect_p%coef_imp, iak_diff_b, fem_wk, f_l)

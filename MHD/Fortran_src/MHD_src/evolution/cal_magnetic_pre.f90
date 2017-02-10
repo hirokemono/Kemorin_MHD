@@ -187,7 +187,7 @@
       if (cd_prop%coef_magne .gt. zero                                  &
      &      .and. evo_magne%coef_exp .gt. zero) then
         call int_vol_vector_diffuse_ele(SGS_param%ifilter_final,        &
-     &      conduct%istack_ele_fld_smp, FEM_prm%npint_t_evo_int,        &
+     &      conduct%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
      &      node, ele, nod_fld, jac_3d_q, rhs_tbl, FEM_elens,           &
      &      diff_coefs, iak_diff_b, evo_magne%coef_exp, ak_d_magne,     &
      &      iphys%i_magne, fem_wk, f_l)
@@ -198,14 +198,14 @@
       if (iflag_debug .eq. 0 ) write(*,*) 'coefs_4_time_evolution'
       if (FEM_prm%iflag_magne_supg .gt. id_turn_OFF) then
        call int_vol_magne_pre_ele_upm                                   &
-     &    (FEM_prm%npint_t_evo_int, SGS_param, cmt_param,               &
+     &    (FEM_prm%npoint_t_evo_int, SGS_param, cmt_param,              &
      &     node, ele, conduct, cd_prop, iphys, nod_fld,                 &
      &     ele_fld%ntot_phys, ele_fld%d_fld, iphys_ele, iak_diff_uxb,   &
      &     jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,                    &
      &     mhd_fem_wk, fem_wk, f_nl)
       else
        call int_vol_magne_pre_ele                                       &
-     &    (FEM_prm%npint_t_evo_int, SGS_param, cmt_param,               &
+     &    (FEM_prm%npoint_t_evo_int, SGS_param, cmt_param,              &
      &     node, ele, conduct, cd_prop, iphys, nod_fld,                 &
      &     ele_fld%ntot_phys, ele_fld%d_fld, iphys_ele, iak_diff_uxb,   &
      &     jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,                    &
@@ -214,7 +214,7 @@
 !
 !
       call int_surf_magne_pre_ele(SGS_param, cmt_param,                 &
-     &    FEM_prm%npint_t_evo_int, iak_diff_uxb, ak_d_magne,            &
+     &    FEM_prm%npoint_t_evo_int, iak_diff_uxb, ak_d_magne,           &
      &    node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs, iphys, nod_fld,    &
      &    jac_sf_grp_q, rhs_tbl, FEM_elens, diff_coefs,                 &
      &    fem_wk, surf_wk, f_l, f_nl)

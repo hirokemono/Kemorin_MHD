@@ -70,13 +70,15 @@
 !
 !
       if (FEM_prm%iflag_magne_supg .eq. id_turn_ON) then
-        call int_vol_sgs_uxb_upm(i_filter, i_field, intg_point_t_evo,   &
+        call int_vol_sgs_uxb_upm                                        &
+     &     (i_filter, i_field, FEM_prm%npoint_t_evo_int,                &
      &      node, ele, conduct, nod_fld, jac_3d, FEM_elens,             &
      &      mhd_fem_wk%n_dvx, id_dx, mhd_fem_wk%dvx,                    &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
      &      fem_wk)
       else
-        call int_vol_sgs_uxb_pg(i_filter, i_field, intg_point_t_evo,    &
+        call int_vol_sgs_uxb_pg                                         &
+     &     (i_filter, i_field, FEM_prm%npoint_t_evo_int,                &
      &      node, ele, conduct, nod_fld, jac_3d, FEM_elens,             &
      &      mhd_fem_wk%n_dvx, id_dx, mhd_fem_wk%dvx, fem_wk)
       end if

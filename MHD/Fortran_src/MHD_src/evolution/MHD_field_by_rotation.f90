@@ -120,7 +120,7 @@
           if (iflag_debug .ge. iflag_routine_msg)                       &
      &        write(*,*) 'cal_vorticity'
           call choose_cal_rotation_sgs(cmt_param%iflag_c_velo,          &
-     &       FEM_prm%iflag_velo_supg, intg_point_t_evo,                 &
+     &       FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int,         &
      &       ifld_diff%i_velo, iphys%i_velo, iphys%i_vort,              &
      &       fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,             &
      &       SGS_param, nod_comm, node, ele, surf, sf_grp,              &
@@ -137,7 +137,7 @@
             if (iflag_debug .ge. iflag_routine_msg)                     &
      &        write(*,*) 'cal_current_density'
               call choose_cal_rotation_sgs(cmt_param%iflag_c_magne,     &
-     &            FEM_prm%iflag_magne_supg, intg_point_t_evo,           &
+     &            FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int,   &
      &            ifld_diff%i_magne, iphys%i_magne, iphys%i_current,    &
      &            ele%istack_ele_smp, m_lump, SGS_param,                &
      &            nod_comm, node, ele, surf, sf_grp, iphys_ele,         &
@@ -146,7 +146,7 @@
      &            rhs_tbl, fem_wk, surf_wk, f_nl, nod_fld)
 !
 !             call choose_cal_rotation_sgs(cmt_param%iflag_c_magne,     &
-!     &           FEM_prm%iflag_magne_supg, intg_point_t_evo,           &
+!     &           FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int,   &
 !     &           ifld_diff%i_magne, iphys%i_magne, iphys%i_current,    &
 !     &           conduct%istack_ele_fld_smp, mhd_fem_wk%mlump_cd,      &
 !     &           SGS_param, nod_comm, node, ele, surf, sf_grp,         &
@@ -164,7 +164,7 @@
      &        write(*,*) 'cal_current_density'
             call choose_cal_rotation_sgs                                &
                (cmt_param%iflag_c_magne, FEM_prm%iflag_magne_supg,      &
-     &          intg_point_t_evo, ifld_diff%i_magne,                    &
+     &          FEM_prm%npoint_t_evo_int,ifld_diff%i_magne,             &
      &          iphys%i_magne, iphys%i_current, ele%istack_ele_smp,     &
      &          m_lump, SGS_param, nod_comm, node, ele, surf,           &
      &          sf_grp, iphys_ele, ele_fld, jac_3d, jac_sf_grp,         &
@@ -172,7 +172,7 @@
      &          surf_bcs%Bsf_bcs%sgs, rhs_tbl, fem_wk, surf_wk,         &
      &          f_nl, nod_fld)
 !           call choose_cal_rotation_sgs(cmt_param%iflag_c_magne,       &
-!     &         FEM_prm%iflag_magne_supg, intg_point_t_evo,             &
+!     &         FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int,     &
 !     &         ifld_diff%i_magne, iphys%i_magne, iphys%i_current,      &
 !     &         conduct%istack_ele_fld_smp, mhd_fem_wk%mlump_cd,        &
 !     &         SGS_param, nod_comm, node, ele, surf, sf_grp,           &

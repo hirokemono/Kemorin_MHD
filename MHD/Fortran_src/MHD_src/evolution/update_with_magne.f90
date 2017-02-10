@@ -149,7 +149,7 @@
 !
       if (iphys_ele%i_magne .ne. 0) then
         call vector_on_element_1st(node, ele, jac_3d_q,                 &
-     &      ele%istack_ele_smp, FEM_prm%npint_t_evo_int,                &
+     &      ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,               &
      &      nod_fld%ntot_phys, iphys%i_magne, nod_fld%d_fld,            &
      &      ele_fld%ntot_phys, iphys_ele%i_magne,                       &
      &      ele_fld%iflag_update, ele_fld%d_fld)
@@ -194,7 +194,7 @@
          if (iflag2.eq.2 .and. iphys_ele%i_filter_magne.ne.0) then
            if (iflag_debug.gt.0) write(*,*) 'filtered_magne_on_ele'
             call vector_on_element_1st(node, ele, jac_3d_q,             &
-     &          ele%istack_ele_smp, FEM_prm%npint_t_evo_int,            &
+     &          ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,           &
      &          nod_fld%ntot_phys, iphys%i_filter_magne,                &
      &          nod_fld%d_fld, ele_fld%ntot_phys,                       &
      &          iphys_ele%i_filter_magne, ele_fld%iflag_update,         &
@@ -250,14 +250,14 @@
      &     .and. FEM_prm%iflag_rotate_form .eq. id_turn_ON) then
          if (iflag_debug.gt.0)  write(*,*) 'current_on_element'
         call rotation_on_element_1st(node, ele, jac_3d_q,               &
-     &      conduct%istack_ele_fld_smp, FEM_prm%npint_t_evo_int,        &
+     &      conduct%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
      &      nod_fld%ntot_phys, iphys%i_magne, nod_fld%d_fld,            &
      &      ele_fld%ntot_phys, iphys_ele%i_current,                     &
      &      ele_fld%iflag_update, ele_fld%d_fld)
       end if
 !
 !      call rotation_on_element_1st(node, ele, jac_3d_q,                &
-!     &    ele%istack_ele_smp, FEM_prm%npint_t_evo_int,                 &
+!     &    ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,                &
 !     &    nod_fld%ntot_phys, iphys%i_filter_vecp, nod_fld%d_fld,       &
 !     &    ele_fld%ntot_phys, iphys_ele%i_filter_magne,                 &
 !     &    ele_fld%iflag_update, ele_fld%d_fld)

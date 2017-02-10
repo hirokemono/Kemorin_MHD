@@ -212,7 +212,7 @@
       if (iphys%i_magne .ne. 0) then
         if (iflag_debug.gt.0) write(*,*) 'cal_magnetic_f_by_vect_p'
         call choose_cal_rotation_sgs(SGS_par%commute_p%iflag_c_magne,   &
-     &      FEM_prm%iflag_magne_supg, FEM_prm%npint_t_evo_int,          &
+     &      FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int,         &
      &      iak_diff_b, iphys%i_vecp, iphys%i_magne,                    &
      &      ele%istack_ele_smp, m_lump, SGS_par%model_p,                &
      &      nod_comm, node, ele, surf, sf_grp, iphys_ele, ele_fld,      &
@@ -223,7 +223,7 @@
       if (iphys_ele%i_magne .ne. 0) then
         if (iflag_debug.gt.0) write(*,*) 'rot_magne_on_element'
         call rotation_on_element_1st(node, ele, jac_3d_q,               &
-     &      ele%istack_ele_smp, FEM_prm%npint_t_evo_int,                &
+     &      ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,               &
      &      nod_fld%ntot_phys, iphys%i_vecp, nod_fld%d_fld,             &
      &      ele_fld%ntot_phys, iphys_ele%i_magne,                       &
      &      ele_fld%iflag_update, ele_fld%d_fld)
@@ -233,7 +233,7 @@
      &     .and. FEM_prm%iflag_rotate_form .eq. id_turn_ON) then
         if (iflag_debug.gt.0) write(*,*) 'current_on_element'
         call rotation_on_element_1st(node, ele, jac_3d_q,               &
-     &      conduct%istack_ele_fld_smp, FEM_prm%npint_t_evo_int,        &
+     &      conduct%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
      &      nod_fld%ntot_phys, iphys%i_magne, nod_fld%d_fld,            &
      &      ele_fld%ntot_phys, iphys_ele%i_current,                     &
      &      ele_fld%iflag_update, ele_fld%d_fld)
@@ -283,7 +283,7 @@
            if (iflag_debug .ge. iflag_routine_msg) write(*,*)           &
      &                         'filtered_magne_on_ele'
             call vector_on_element_1st(node, ele, jac_3d_q,             &
-     &          ele%istack_ele_smp, FEM_prm%npint_t_evo_int,            &
+     &          ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,           &
      &          nod_fld%ntot_phys, iphys%i_filter_magne,                &
      &          nod_fld%d_fld, ele_fld%ntot_phys,                       &
      &          iphys_ele%i_filter_magne, ele_fld%iflag_update,         &

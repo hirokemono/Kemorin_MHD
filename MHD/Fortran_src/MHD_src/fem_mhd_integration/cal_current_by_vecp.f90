@@ -121,7 +121,7 @@
 !
       call int_surf_current_diffuse(node, ele, surf, sf_grp,            &
      &    nod_fld, jac_sf_grp, rhs_tbl, Asf_bcs%torque_lead,            &
-     &    intg_point_t_evo, iphys%i_vecp, fem_wk, surf_wk, f_l)
+     &    FEM_prm%npoint_t_evo_int, iphys%i_vecp, fem_wk, surf_wk, f_l)
 !
       call cal_multi_pass_4_vector_ff                                   &
      &   (ele%istack_ele_smp, FEM_prm, m_lump, nod_comm, node, ele,     &

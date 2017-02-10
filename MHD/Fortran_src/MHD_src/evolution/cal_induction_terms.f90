@@ -104,12 +104,12 @@
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
       if (FEM_prm%iflag_magne_supg .gt. id_turn_OFF) then
-        call int_vol_vect_p_pre_ele_upm(FEM_prm%npint_t_evo_int,        &
+        call int_vol_vect_p_pre_ele_upm(FEM_prm%npoint_t_evo_int,       &
      &      node, ele, conduct, cd_prop, iphys, nod_fld,                &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
      &      jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
       else
-        call int_vol_vect_p_pre_ele(FEM_prm%npint_t_evo_int,            &
+        call int_vol_vect_p_pre_ele(FEM_prm%npoint_t_evo_int,           &
      &      node, ele, conduct, cd_prop, iphys, nod_fld,                &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
      &      jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)

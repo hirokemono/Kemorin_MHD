@@ -162,7 +162,7 @@
       if (iflag_debug.gt.0)  write(*,*) 'cal_rotation_in_fluid',        &
      &                      iphys%i_sgs_simi, iphys%i_sgs_grad_f
       call choose_cal_rotation                                          &
-     &   (FEM_prm%iflag_velo_supg, intg_point_t_evo,                    &
+     &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int,            &
      &    iphys%i_filter_velo, iphys%i_sgs_simi,                        &
      &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d_q,            &
@@ -170,7 +170,7 @@
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_gradent_in_fluid', i_sgs_simi_p, i_sgs_grad_fp
       call choose_cal_gradient                                          &
-     &   (FEM_prm%iflag_velo_supg, intg_point_t_evo,                    &
+     &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int,            &
      &    i_sgs_grad_fp, i_sgs_simi_p,                                  &
      &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d_q,            &
@@ -179,7 +179,7 @@
 !     &    'cal_divergence_in_fluid', iphys%i_sgs_simi+6,               &
 !     &    iphys%i_filter_velo
 !      call choose_cal_divergence                                       &
-!     &   (FEM_prm%iflag_velo_supg, intg_point_t_evo,                   &
+!     &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int,           &
 !     &    iphys%i_filter_velo, iphys%i_sgs_simi+6,                     &
 !     &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,               &
 !     &    nod_comm, node, ele, iphys_ele, ele_fld,                     &
@@ -190,7 +190,7 @@
       if (iflag_debug.gt.0) write(*,*) 'cal_rotation_in_fluid',         &
      &                     iphys%i_sgs_grad, iphys%i_velo
       call choose_cal_rotation                                          &
-     &   (FEM_prm%iflag_velo_supg, intg_point_t_evo,                    &
+     &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int,            &
      &    iphys%i_velo, iphys%i_sgs_grad,                               &
      &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d_q,            &
@@ -198,7 +198,7 @@
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_gradent_in_fluid', i_sgs_grad_p, iphys%i_press
       call choose_cal_gradient                                          &
-     &   (FEM_prm%iflag_velo_supg, intg_point_t_evo,                    &
+     &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int,            &
      &    iphys%i_press, i_sgs_grad_p,                                  &
      &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d_q,            &
@@ -207,7 +207,7 @@
 !     &   write(*,*) 'cal_divergence_in_fluid', iphys%i_sgs_grad+6,     &
 !     &               iphys%i_velo
 !      call choose_cal_divergence                                       &
-!     &   (FEM_prm%iflag_velo_supg, intg_point_t_evo,                   &
+!     &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int,           &
 !     &    iphys%i_velo, iphys%i_sgs_grad+3,                            &
 !     &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,               &
 !     &    nod_comm, node, ele, iphys_ele, ele_fld,                     &
@@ -234,13 +234,13 @@
 !
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad_f)
 !
-      call cal_rotation_commute(intg_point_t_evo,                       &
+      call cal_rotation_commute(FEM_prm%npoint_t_evo_int,               &
      &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
      &    rhs_tbl, FEM_elen, Vsf_bcs%sgs, ifilter_4delta,               &
      &    iphys%i_sgs_grad_f, iphys%i_sgs_grad_f,                       &
      &    fem_wk, surf_wk, f_l, f_nl, nod_fld)
-      call cal_grad_commute(intg_point_t_evo,                           &
+      call cal_grad_commute(FEM_prm%npoint_t_evo_int,                   &
      &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
      &    rhs_tbl, FEM_elen, Psf_bcs%sgs, ifilter_4delta,               &
@@ -255,13 +255,13 @@
 !
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad)
 !
-      call cal_rotation_commute(intg_point_t_evo,                       &
+      call cal_rotation_commute(FEM_prm%npoint_t_evo_int,               &
      &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
      &    rhs_tbl, FEM_elen, Vsf_bcs%sgs, ifilter_2delta,               &
      &    iphys%i_sgs_grad, iphys%i_velo, fem_wk, surf_wk,              &
      &    f_l, f_nl, nod_fld)
-      call cal_grad_commute(intg_point_t_evo,                           &
+      call cal_grad_commute(FEM_prm%npoint_t_evo_int,                   &
      &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
      &    rhs_tbl, FEM_elen, Psf_bcs%sgs, ifilter_2delta,               &
@@ -287,8 +287,9 @@
       call cal_diff_coef_fluid                                          &
      &   (SGS_par%model_p, SGS_par%commute_p, layer_tbl,                &
      &    node, ele, fluid, iphys, nod_fld, jac_3d_q, jac_3d_l,         &
-     &    n_sym_tensor, iak_diff_v, icomp_diff_v, intg_point_t_evo,     &
-     &    wk_cor, wk_lsq, wk_diff, diff_coefs)
+     &    n_sym_tensor, iak_diff_v, icomp_diff_v,                       &
+     &    FEM_prm%npoint_t_evo_int, wk_cor, wk_lsq, wk_diff,            &
+     &    diff_coefs)
 !
       diff_coefs%iflag_field(iak_diff_v) = 1
 !

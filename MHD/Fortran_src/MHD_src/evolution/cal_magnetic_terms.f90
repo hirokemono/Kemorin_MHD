@@ -132,20 +132,20 @@
 !
       if (FEM_prm%iflag_magne_supg .gt. id_turn_OFF) then
         call int_vol_magne_monitor_upm                                  &
-     &     (i_field, iak_diff_uxb, FEM_prm%npint_t_evo_int,             &
+     &     (i_field, iak_diff_uxb, FEM_prm%npoint_t_evo_int,            &
      &      SGS_param, cmt_param, node, ele, conduct, cd_prop,          &
      &      iphys, nod_fld, iphys_ele, ele_fld, jac_3d, rhs_tbl,        &
      &      FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, f_nl)
       else
         call int_vol_magne_monitor_pg                                   &
-     &     (i_field, iak_diff_uxb, FEM_prm%npint_t_evo_int,             &
+     &     (i_field, iak_diff_uxb, FEM_prm%npoint_t_evo_int,            &
      &      SGS_param, cmt_param, node, ele, conduct, cd_prop,          &
      &      iphys, nod_fld, iphys_ele, ele_fld, jac_3d, rhs_tbl,        &
      &      FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, f_nl)
       end if
 !
       call int_surf_magne_monitor(SGS_param, cmt_param,                 &
-     &    FEM_prm%npint_t_evo_int, i_field, iak_diff_uxb, ak_d_magne,   &
+     &    FEM_prm%npoint_t_evo_int,i_field, iak_diff_uxb, ak_d_magne,   &
      &    node, ele, surf, sf_grp, Asf_bcs, Bsf_bcs, iphys, nod_fld,    &
      &    jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,                   &
      &    fem_wk, surf_wk, f_l, f_nl)

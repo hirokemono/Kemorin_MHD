@@ -156,7 +156,7 @@
 !
       if (SGS_param%iflag_SGS_h_flux .ne. id_SGS_none) then
         call cal_sgs_heat_flux                                          &
-     &     (FEM_prm%iflag_temp_supg, FEM_prm%npint_t_evo_int,           &
+     &     (FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,          &
      &      SGS_param%iflag_SGS_h_flux, SGS_param%itype_Csym_h_flux,    &
      &      i_field, iphys%i_filter_temp,                               &
      &      iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_h_flux,      &
@@ -179,7 +179,7 @@
       if (property%coef_advect .gt. zero                                &
      &     .and. evo_temp%coef_exp .gt. zero) then
         call int_vol_scalar_diffuse_ele(SGS_param%ifilter_final,        &
-     &      fluid%istack_ele_fld_smp, FEM_prm%npint_t_evo_int,          &
+     &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
      &      ifld_diff%i_temp, evo_temp%coef_exp, ak_d_temp,             &
      &      i_field, fem_wk, f_l)
@@ -190,7 +190,7 @@
       if (FEM_prm%iflag_temp_supg .gt. id_turn_OFF) then
         call int_vol_temp_ele_upw                                       &
      &     (SGS_param%iflag_SGS_h_flux, cmt_param%iflag_c_hf,           &
-     &      SGS_param%ifilter_final, FEM_prm%npint_t_evo_int,           &
+     &      SGS_param%ifilter_final, FEM_prm%npoint_t_evo_int,          &
      &      iphys%i_temp, iphys%i_velo,                                 &
      &      iphys%i_SGS_h_flux, ifld_diff%i_heat_flux,                  &
      &      node, ele, fluid, property, nod_fld,                        &
@@ -200,7 +200,7 @@
       else
         call int_vol_temp_ele                                           &
      &     (SGS_param%iflag_SGS_h_flux, cmt_param%iflag_c_hf,           &
-     &      SGS_param%ifilter_final, FEM_prm%npint_t_evo_int,           &
+     &      SGS_param%ifilter_final, FEM_prm%npoint_t_evo_int,          &
      &      iphys%i_temp, iphys%i_velo,                                 &
      &      iphys%i_SGS_h_flux, ifld_diff%i_heat_flux,                  &
      &      node, ele, fluid, property, nod_fld,                        &
@@ -214,14 +214,14 @@
 !
       call int_sf_scalar_flux                                           &
      &   (node, ele, surf, sf_grp, jac_sf_grp, rhs_tbl,                 &
-     &    Tsf_bcs%flux, FEM_prm%npint_t_evo_int, ak_d_temp,             &
+     &    Tsf_bcs%flux, FEM_prm%npoint_t_evo_int,ak_d_temp,             &
      &    fem_wk, f_l)
 !
       if(cmt_param%iflag_c_temp .ne. id_SGS_commute_OFF                 &
           .and. SGS_param%iflag_SGS_h_flux .ne. id_SGS_none) then
         call int_sf_skv_sgs_div_v_flux                                  &
      &     (node, ele, surf, sf_grp, nod_fld,                           &
-     &      jac_sf_grp, rhs_tbl, FEM_elens, FEM_prm%npint_t_evo_int,    &
+     &      jac_sf_grp, rhs_tbl, FEM_elens, FEM_prm%npoint_t_evo_int,   &
      &      Tsf_bcs%sgs%ngrp_sf_dat, Tsf_bcs%sgs%id_grp_sf_dat,         &
      &      SGS_param%ifilter_final, iphys%i_SGS_h_flux, iphys%i_velo,  &
      &      iphys%i_temp, diff_coefs%num_field, ifld_diff%i_heat_flux,  &
@@ -238,13 +238,13 @@
       if (ref_param_T1%iflag_reference .eq. id_takepiro_temp) then
         if (FEM_prm%iflag_temp_supg .gt. id_turn_OFF) then
           call cal_stratified_layer_upw                                 &
-     &       (iphys%i_gref_t, FEM_prm%npint_t_evo_int,                  &
+     &       (iphys%i_gref_t, FEM_prm%npoint_t_evo_int,                 &
      &        node, ele, fluid, nod_fld,                                &
      &        ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,       &
      &        jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
         else
           call cal_stratified_layer                                     &
-     &       (iphys%i_gref_t, FEM_prm%npint_t_evo_int,                  &
+     &       (iphys%i_gref_t, FEM_prm%npoint_t_evo_int,                 &
      &        node, ele, fluid, nod_fld,                                &
      &        ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,       &
      &        jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)

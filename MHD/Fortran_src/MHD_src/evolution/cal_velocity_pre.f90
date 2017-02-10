@@ -232,7 +232,7 @@
       if (fl_prop%coef_velo .gt. zero                                   &
      &        .and. evo_velo%coef_exp.gt.zero) then
         call int_vol_vector_diffuse_ele(SGS_param%ifilter_final,        &
-     &      fluid%istack_ele_fld_smp, intg_point_t_evo,                 &
+     &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &      node, ele, nod_fld, jac_3d_q, rhs_tbl, FEM_elens,           &
      &      diff_coefs, ifld_diff%i_velo, evo_velo%coef_exp,            &
      &      ak_MHD%ak_d_velo, iphys%i_velo, fem_wk, f_l)
@@ -248,7 +248,7 @@
 !
       if (FEM_prm%iflag_velo_supg .eq. id_turn_ON) then
         call int_vol_velo_pre_ele_upwind                                &
-     &     (FEM_prm%iflag_rotate_form, intg_point_t_evo,                &
+     &     (FEM_prm%iflag_rotate_form, FEM_prm%npoint_t_evo_int,        &
      &      SGS_param, cmt_param, node, ele, fluid,                     &
      &      fl_prop, cd_prop, iphys, nod_fld, ak_MHD,                   &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
@@ -257,7 +257,7 @@
      &      mhd_fem_wk, fem_wk, f_nl)
       else if (FEM_prm%iflag_velo_supg .eq. id_magnetic_SUPG) then
         call int_vol_velo_pre_ele_upwind                                &
-     &     (FEM_prm%iflag_rotate_form, intg_point_t_evo,                &
+     &     (FEM_prm%iflag_rotate_form, FEM_prm%npoint_t_evo_int,        &
      &      SGS_param, cmt_param, node, ele, fluid,                     &
      &      fl_prop, cd_prop, iphys, nod_fld, ak_MHD,                   &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
@@ -266,7 +266,7 @@
      &      mhd_fem_wk, fem_wk, f_nl)
       else
         call int_vol_velo_pre_ele                                       &
-     &     (FEM_prm%iflag_rotate_form, intg_point_t_evo,                &
+     &     (FEM_prm%iflag_rotate_form, FEM_prm%npoint_t_evo_int,        &
      &      SGS_param, cmt_param, node, ele, fluid,                     &
      &      fl_prop, cd_prop, iphys, nod_fld, ak_MHD,                   &
      &      ele_fld%ntot_phys, ele_fld%d_fld, iphys_ele,                &
@@ -279,7 +279,7 @@
 !
       call int_surf_velo_pre_ele                                        &
      &   (ifld_diff%i_mom_flux, ifld_diff%i_lorentz,                    &
-     &    ak_MHD%ak_d_velo, intg_point_t_evo,                           &
+     &    ak_MHD%ak_d_velo, FEM_prm%npoint_t_evo_int,                   &
      &    SGS_param, cmt_param, node, ele, surf, sf_grp, fl_prop,       &
      &    Vsf_bcs, Bsf_bcs, iphys, nod_fld, jac_sf_grp_q, rhs_tbl,      &
      &    FEM_elens, diff_coefs, fem_wk, surf_wk, f_l, f_nl)

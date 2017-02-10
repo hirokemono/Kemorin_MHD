@@ -167,7 +167,7 @@
         if(SGS_par%model_p%iflag_SGS_h_flux .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_sf_dynamic temp'
           call cal_sgs_sf_dynamic                                       &
-     &       (FEM_prm%iflag_temp_supg, intg_point_t_evo,                &
+     &       (FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,        &
      &        SGS_par%model_p%itype_Csym_h_flux,                        &
      &        SGS_par%model_p%SGS_hf_factor,                            &
      &        iphys%i_sgs_temp, iphys%i_filter_temp,                    &
@@ -199,7 +199,7 @@
           if (iflag_debug.eq.1)  write(*,*) 's_cal_diff_coef_sgs_sf'
           call s_cal_diff_coef_sgs_sf                                   &
      &       (SGS_par%model_p%itype_Csym_h_flux,                        &
-     &        FEM_prm%iflag_temp_supg, intg_point_t_evo,                &
+     &        FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,        &
      &        iphys%i_sgs_temp, iphys%i_filter_temp,                    &
      &        iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_h_flux,    &
      &        ifld_diff%i_heat_flux, icomp_sgs%i_heat_flux,             &
@@ -220,7 +220,7 @@
         if(SGS_par%model_p%iflag_SGS_c_flux .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_sf_dynamic comp'
           call cal_sgs_sf_dynamic                                       &
-     &       (FEM_prm%iflag_comp_supg, intg_point_t_evo,                &
+     &       (FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int,        &
      &        SGS_par%model_p%itype_Csym_c_flux,                        &
      &        SGS_par%model_p%SGS_cf_factor,                            &
      &        iphys%i_sgs_composit, iphys%i_filter_comp,                &
@@ -252,7 +252,7 @@
           if (iflag_debug.eq.1)  write(*,*) 's_cal_diff_coef_sgs_sf'
           call s_cal_diff_coef_sgs_sf                                   &
      &       (SGS_par%model_p%itype_Csym_c_flux,                        &
-     &        FEM_prm%iflag_comp_supg, intg_point_t_evo,                &
+     &        FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int,        &
      &        iphys%i_sgs_composit, iphys%i_filter_comp,                &
      &        iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_c_flux,    &
      &        ifld_diff%i_comp_flux, icomp_sgs%i_comp_flux,             &
