@@ -3,7 +3,7 @@
 !
 !     Written by H. Matsui
 !
-!!      subroutine s_cal_diff_coef_scalar(iflag_supg,                   &
+!!      subroutine s_cal_diff_coef_scalar(iflag_supg, num_int,          &
 !!     &          ifield, ifield_f, iak_diff_t, icomp_diff_t,           &
 !!     &          SGS_par, nod_comm, node, ele, surf, sf_grp,           &
 !!     &          Tsf_bcs, iphys, iphys_ele, ele_fld, fluid,            &
@@ -77,7 +77,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_diff_coef_scalar(iflag_supg,                     &
+      subroutine s_cal_diff_coef_scalar(iflag_supg, num_int,            &
      &          ifield, ifield_f, iak_diff_t, icomp_diff_t,             &
      &          SGS_par, nod_comm, node, ele, surf, sf_grp,             &
      &          Tsf_bcs, iphys, iphys_ele, ele_fld, fluid,              &
@@ -98,7 +98,7 @@
       use set_boundary_scalars
       use nod_phys_send_recv
 !
-      integer(kind = kint), intent(in) :: iflag_supg
+      integer(kind = kint), intent(in) :: iflag_supg, num_int
       integer(kind = kint), intent(in) :: iak_diff_t, icomp_diff_t
       integer(kind = kint), intent(in) :: ifield, ifield_f
 !
@@ -142,7 +142,7 @@
       if (iflag_debug.gt.0) write(*,*) 'cal_gradent_in_fluid',          &
      &        iphys%i_sgs_simi, ifield_f
       call choose_cal_gradient                                          &
-     &   (iflag_supg, intg_point_t_evo, ifield_f, iphys%i_sgs_simi,     &
+     &   (iflag_supg, num_int, ifield_f, iphys%i_sgs_simi,              &
      &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d_q,            &
      &    rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
@@ -152,7 +152,7 @@
       if (iflag_debug.gt.0) write(*,*) 'cal_gradent_in_fluid',          &
      &                     iphys%i_sgs_grad, ifield
       call choose_cal_gradient                                          &
-     &   (iflag_supg, intg_point_t_evo, ifield, iphys%i_sgs_grad,       &
+     &   (iflag_supg, num_int, ifield, iphys%i_sgs_grad,                &
      &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d_q,            &
      &    rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
@@ -176,7 +176,7 @@
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_commute_error_f_temp', iphys%i_sgs_grad_f
       call cal_grad_commute                                             &
-     &   (fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
+     &   (num_int, fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,       &
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
      &    rhs_tbl, FEM_elens, Tsf_bcs%sgs, ifilter_4delta,              &
      &    iphys%i_sgs_grad_f, ifield_f, fem_wk, surf_wk, f_l, f_nl,     &
@@ -193,7 +193,7 @@
       if (iflag_debug.gt.0)                                             &
      &     write(*,*) 'cal_commute_error_temp', iphys%i_sgs_grad
       call cal_grad_commute                                             &
-     &   (fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
+     &   (num_int, fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,       &
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
      &    rhs_tbl, FEM_elens, Tsf_bcs%sgs, ifilter_2delta,              &
      &    iphys%i_sgs_grad, ifield, fem_wk, surf_wk, f_l, f_nl,         &
@@ -218,7 +218,7 @@
       call cal_diff_coef_fluid                                          &
      &   (SGS_par%model_p, SGS_par%commute_p, layer_tbl,                &
      &    node, ele, fluid, iphys, nod_fld, jac_3d_q, jac_3d_l,         &
-     &    n_vector, iak_diff_t, icomp_diff_t, intg_point_t_evo,         &
+     &    n_vector, iak_diff_t, icomp_diff_t, num_int,                  &
      &    wk_cor, wk_lsq, wk_diff, diff_coefs)
 !
       diff_coefs%iflag_field(iak_diff_t) = 1

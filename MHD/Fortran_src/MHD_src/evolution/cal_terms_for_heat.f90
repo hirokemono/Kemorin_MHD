@@ -3,18 +3,20 @@
 !
 !     Written by H. Matsui on June, 2005
 !
-!!      subroutine cal_terms_4_advect(i_field, i_scalar, iflag_supg,    &
+!!      subroutine cal_terms_4_advect                                   &
+!!     &         (i_field, i_scalar, iflag_supg, num_int,               &
 !!     &          nod_comm, node, ele, fluid, property, Snod_bcs,       &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                  &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-!!      subroutine cal_div_of_scalar_flux(i_field, i_vector, iflag_supg,&
+!!      subroutine cal_div_of_scalar_flux                               &
+!!     &         (i_field, i_vector, iflag_supg, num_int,               &
 !!     &          nod_comm, node, ele, fluid, property, Snod_bcs,       &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                  &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(nodal_bcs_4_scalar_type), intent(in) :: Snod_bcs
 !!
 !!      subroutine cal_thermal_diffusion                                &
-!!     &         (i_field, i_scalar, iak_diffuse, ak_diffuse,           &
+!!     &         (i_field, i_scalar, iak_diffuse, ak_diffuse, num_int,  &
 !!     &          SGS_param, nod_comm, node, ele, surf, fluid, sf_grp,  &
 !!     &          Snod_bcs, Ssf_bcs, iphys, jac_3d, jac_sf_grp,         &
 !!     &          rhs_tbl, FEM_elens, diff_coefs,                       &
@@ -47,7 +49,6 @@
 !
       use m_precision
 !
-      use m_control_parameter
       use m_phys_constants
 !
       use t_physical_property
@@ -82,7 +83,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_terms_4_advect(i_field, i_scalar, iflag_supg,      &
+      subroutine cal_terms_4_advect                                     &
+     &         (i_field, i_scalar, iflag_supg, num_int,                 &
      &          nod_comm, node, ele, fluid, property, Snod_bcs,         &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                    &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -90,7 +92,7 @@
       use int_vol_inertia
 !
       integer (kind=kint), intent(in) :: i_field, i_scalar
-      integer (kind=kint), intent(in) :: iflag_supg
+      integer (kind=kint), intent(in) :: iflag_supg, num_int
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -114,13 +116,13 @@
       if (iflag_supg .gt. id_turn_OFF) then
         call int_vol_scalar_inertia_upw                                 &
      &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
-     &      fluid%istack_ele_fld_smp, intg_point_t_evo, i_scalar,       &
+     &      fluid%istack_ele_fld_smp, num_int, i_scalar,                &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, iphys_ele%i_velo,      &
      &      ele_fld%d_fld, property%coef_nega_adv, fem_wk, f_nl)
       else
         call int_vol_scalar_inertia                                     &
      &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
-     &      fluid%istack_ele_fld_smp, intg_point_t_evo, i_scalar,       &
+     &      fluid%istack_ele_fld_smp, num_int, i_scalar,                &
      &      ele_fld%ntot_phys, iphys_ele%i_velo,                        &
      &      ele_fld%d_fld, property%coef_nega_adv, fem_wk, f_nl)
       end if
@@ -146,7 +148,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_div_of_scalar_flux(i_field, i_vector, iflag_supg,  &
+      subroutine cal_div_of_scalar_flux                                 &
+     &         (i_field, i_vector, iflag_supg, num_int,                 &
      &          nod_comm, node, ele, fluid, property, Snod_bcs,         &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                    &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -155,7 +158,7 @@
       use int_vol_vect_cst_diff_upw
 !
       integer (kind=kint), intent(in) :: i_vector, i_field
-      integer (kind=kint), intent(in) :: iflag_supg
+      integer (kind=kint), intent(in) :: iflag_supg, num_int
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -180,18 +183,18 @@
       if (iflag_supg .gt. id_turn_OFF) then
         call int_vol_div_w_const                                        &
      &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
-     &      fluid%istack_ele_fld_smp, intg_point_t_evo,                 &
+     &      fluid%istack_ele_fld_smp, num_int,                          &
      &      i_vector, property%coef_nega_adv, fem_wk, f_nl)
       else
         call int_vol_div_w_const_upw                                    &
      &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
-     &      fluid%istack_ele_fld_smp, intg_point_t_evo,                 &
+     &      fluid%istack_ele_fld_smp, num_int,                          &
      &      i_vector, ele_fld%ntot_phys, iphys_ele%i_velo,              &
      &      ele_fld%d_fld, property%coef_nega_adv, fem_wk, f_nl)
       end if
 !
       call cal_t_evo_4_scalar                                           &
-     &   (iflag_temp_supg, fluid%istack_ele_fld_smp,                    &
+     &   (iflag_supg, fluid%istack_ele_fld_smp,                         &
      &    FEM_prm1, mhd_fem_wk%mlump_fl, nod_comm,                      &
      &    node, ele, iphys_ele, ele_fld, jac_3d, rhs_tbl,               &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
@@ -214,7 +217,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_thermal_diffusion                                  &
-     &         (i_field, i_scalar, iak_diffuse, ak_diffuse,             &
+     &         (i_field, i_scalar, iak_diffuse, ak_diffuse, num_int,    &
      &          SGS_param, nod_comm, node, ele, surf, fluid, sf_grp,    &
      &          Snod_bcs, Ssf_bcs, jac_3d, jac_sf_grp,                  &
      &          rhs_tbl, FEM_elens, diff_coefs,                         &
@@ -241,6 +244,7 @@
       type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
 !
       integer (kind=kint), intent(in) :: i_field, i_scalar
+      integer (kind=kint), intent(in) :: num_int
       integer (kind=kint), intent(in) :: iak_diffuse
       real(kind = kreal), intent(in) :: ak_diffuse(ele%numele)
 !
@@ -252,13 +256,13 @@
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
       call int_vol_scalar_diffuse_ele(SGS_param%ifilter_final,          &
-     &    fluid%istack_ele_fld_smp, intg_point_t_evo,                   &
+     &    fluid%istack_ele_fld_smp, num_int,                            &
      &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,   &
      &    iak_diffuse, one, ak_diffuse, i_scalar, fem_wk, f_l)
 !
       call int_sf_scalar_flux                                           &
      &   (node, ele, surf, sf_grp, jac_sf_grp, rhs_tbl,                 &
-     &    Ssf_bcs%flux, intg_point_t_evo, ak_diffuse, fem_wk, f_l)
+     &    Ssf_bcs%flux, num_int, ak_diffuse, fem_wk, f_l)
 !
       call set_ff_nl_smp_2_ff(n_scalar, node, rhs_tbl, f_l, f_nl)
 !

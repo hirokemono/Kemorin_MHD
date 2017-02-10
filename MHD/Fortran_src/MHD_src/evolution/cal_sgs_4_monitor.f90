@@ -248,7 +248,7 @@
      &        'lead ', trim(fhd_div_SGS_h_flux)
         call cal_terms_4_heat(iphys%i_SGS_div_h_flux,                   &
      &      iphys%i_velo, iphys%i_temp, iphys%i_SGS_h_flux,             &
-     &      ifld_diff%i_heat_flux, iflag_temp_supg,                     &
+     &      ifld_diff%i_heat_flux, iflag_temp_supg, intg_point_t_evo,   &
      &      SGS_param%ifilter_final, SGS_param%iflag_SGS_h_flux,        &
      &      cmt_param%iflag_c_hf, cmt_param%iflag_c_temp,               &
      &      nod_comm, node, ele, surf, fluid, sf_grp, ht_prop,          &
@@ -262,7 +262,7 @@
      &        'lead ', trim(fhd_div_SGS_h_flux)
         call cal_terms_4_heat(iphys%i_SGS_div_c_flux,                   &
      &      iphys%i_velo, iphys%i_light, iphys%i_SGS_c_flux,            &
-     &      ifld_diff%i_comp_flux, iflag_comp_supg,                     &
+     &      ifld_diff%i_comp_flux, iflag_comp_supg, intg_point_t_evo,   &
      &      SGS_param%ifilter_final, SGS_param%iflag_SGS_c_flux,        &
      &      cmt_param%iflag_c_cf, cmt_param%iflag_c_light,              &
      &      nod_comm, node, ele, surf, fluid, sf_grp, cp_prop,          &

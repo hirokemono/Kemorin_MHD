@@ -137,8 +137,8 @@
          if ( nod_fld%phys_name(i) .eq. fhd_SGS_div_h_flux_true) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
-           call cal_div_sgs_s_flux_true_pre                             &
-     &        (iflag_temp_supg, iphys%i_SGS_div_hf_true,                &
+           call cal_div_sgs_s_flux_true_pre(iflag_temp_supg,            &
+     &         intg_point_t_evo, iphys%i_SGS_div_hf_true,               &
      &         iphys%i_h_flux, iphys%i_h_flux_div,                      &
      &         iphys%i_filter_temp, iphys%i_filter_velo,                &
      &         nod_comm, node, ele, fluid, ht_prop, nod_bcs%Tnod_bcs,   &
@@ -147,8 +147,8 @@
          else if(nod_fld%phys_name(i).eq.fhd_SGS_div_c_flux_true) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
-           call cal_div_sgs_s_flux_true_pre                             &
-     &        (iflag_comp_supg, iphys%i_SGS_div_cf_true,                &
+           call cal_div_sgs_s_flux_true_pre(iflag_comp_supg,            &
+     &         intg_point_t_evo, iphys%i_SGS_div_cf_true,               &
      &         iphys%i_c_flux, iphys%i_c_flux_div,                      &
      &         iphys%i_filter_comp, iphys%i_filter_velo,                &
      &         nod_comm, node, ele, fluid, cp_prop, nod_bcs%Cnod_bcs,   &
@@ -251,7 +251,7 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine cal_div_sgs_s_flux_true_pre(iflag_supg,                &
+      subroutine cal_div_sgs_s_flux_true_pre(iflag_supg, num_int,       &
      &        i_div_flux_true, i_flux, i_div_flux, i_field_f, i_velo_f, &
      &        nod_comm, node, ele, fluid, property, Snod_bcs,           &
      &        iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,  &
@@ -262,7 +262,7 @@
       use products_nodal_fields_smp
       use cal_terms_for_heat
 !
-      integer(kind = kint), intent(in) :: iflag_supg
+      integer(kind = kint), intent(in) :: iflag_supg, num_int
       integer(kind = kint), intent(in) :: i_div_flux_true
       integer(kind = kint), intent(in) :: i_flux, i_div_flux
       integer(kind = kint), intent(in) :: i_field_f, i_velo_f
@@ -289,7 +289,7 @@
      &   (i_velo_f, i_field_f, i_flux, nod_fld)
 !$omp end parallel
       call cal_div_of_scalar_flux                                       &
-     &   (i_div_flux, i_flux, iflag_supg,                               &
+     &   (i_div_flux, i_flux, iflag_supg, num_int,                      &
      &    nod_comm, node, ele, fluid, property, Snod_bcs,               &
      &    iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,      &
      &    f_l, f_nl, nod_fld)

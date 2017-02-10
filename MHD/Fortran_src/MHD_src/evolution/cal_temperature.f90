@@ -233,11 +233,13 @@
       if (ref_param_T1%iflag_reference .eq. id_takepiro_temp) then
         if (iflag_temp_supg .gt. id_turn_OFF) then
           call cal_stratified_layer_upw                                 &
-     &       (node, ele, fluid, iphys, nod_fld,                         &
+     &       (iphys%i_gref_t, intg_point_t_evo,                         &
+     &        node, ele, fluid, nod_fld,                                &
      &        ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,       &
      &        jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
         else
-          call cal_stratified_layer(node, ele, fluid, iphys, nod_fld,   &
+          call cal_stratified_layer(iphys%i_gref_t, intg_point_t_evo,   &
+     &        node, ele, fluid, nod_fld,                                &
      &        ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,       &
      &        jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
         end if

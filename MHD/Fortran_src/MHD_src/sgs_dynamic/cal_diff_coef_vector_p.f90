@@ -43,6 +43,7 @@
       module cal_diff_coef_vector_p
 !
       use m_precision
+      use m_control_parameter
 !
       use t_FEM_control_parameter
       use t_SGS_control_parameter
@@ -214,13 +215,13 @@
 !
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad_f)
 !
-      call cal_rotation_commute(ele%istack_ele_smp, m_lump,             &
-     &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
+      call cal_rotation_commute(intg_point_t_evo, ele%istack_ele_smp,   &
+     &    m_lump, node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,      &
      &    rhs_tbl, FEM_elens, Asf_bcs%sgs, ifilter_4delta,              &
      &    iphys%i_sgs_grad_f, iphys%i_sgs_grad_f,                       &
      &    fem_wk, surf_wk, f_l, f_nl, nod_fld)
-      call cal_grad_commute(ele%istack_ele_smp, m_lump,                 &
-     &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
+      call cal_grad_commute(intg_point_t_evo, ele%istack_ele_smp,       &
+     &    m_lump, node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,      &
      &    rhs_tbl, FEM_elens, Fsf_bcs%sgs, ifilter_4delta,              &
      &    i_sgs_grad_fp, i_sgs_grad_fp, fem_wk, surf_wk,                &
      &    f_l, f_nl, nod_fld)
@@ -233,13 +234,13 @@
 !
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad)
 !
-      call cal_rotation_commute(ele%istack_ele_smp, m_lump,             &
-     &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
+      call cal_rotation_commute(intg_point_t_evo, ele%istack_ele_smp,   &
+     &    m_lump, node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,      &
      &    rhs_tbl, FEM_elens, Asf_bcs%sgs, ifilter_2delta,              &
      &    iphys%i_sgs_grad, iphys%i_vecp,                               &
      &    fem_wk, surf_wk, f_l, f_nl, nod_fld)
-      call cal_grad_commute(ele%istack_ele_smp, m_lump,                 &
-     &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
+      call cal_grad_commute(intg_point_t_evo, ele%istack_ele_smp,       &
+     &    m_lump, node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,      &
      &    rhs_tbl, FEM_elens, Fsf_bcs%sgs, ifilter_2delta,              &
      &    i_sgs_grad_p, iphys%i_mag_p, fem_wk, surf_wk,                 &
      &    f_l, f_nl, nod_fld)

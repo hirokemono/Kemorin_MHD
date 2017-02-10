@@ -109,6 +109,7 @@
       use int_vol_thermal_ele
       use cal_sgs_fluxes
       use copy_nodal_fields
+      use cal_stratification_by_temp
       use evolve_by_1st_euler
       use evolve_by_adams_bashforth
       use evolve_by_lumped_crank
@@ -222,6 +223,23 @@
 !
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_scalar, i_field)
+!
+!
+      if (ref_param_C1%iflag_reference .eq. id_takepiro_temp) then
+        if (iflag_comp_supg .gt. id_turn_OFF) then
+          call cal_stratified_layer_upw                                 &
+     &       (iphys%i_gref_c, intg_point_t_evo,                         &
+     &        node, ele, fluid, nod_fld,                                &
+     &        ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,       &
+     &        jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
+        else
+          call cal_stratified_layer(iphys%i_gref_t, intg_point_t_evo,   &
+     &        node, ele, fluid, nod_fld,                                &
+     &        ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,       &
+     &        jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
+        end if
+      end if
+!
 !
       if     (evo_comp%iflag_scheme .eq. id_explicit_euler) then
         call cal_scalar_pre_euler(iflag_comp_supg, i_field,             &
