@@ -243,7 +243,7 @@
      &             write(*,*) 'lead  ', trim(fhd_composit_advect)
         call cal_terms_4_advect                                         &
      &     (iphys%i_c_advect, iphys%i_light,                            &
-     &      iflag_comp_supg, intg_point_t_evo,                          &
+     &      FEM_prm%iflag_comp_supg, intg_point_t_evo,                  &
      &      nod_comm, node, ele, fluid, cp_prop, nod_bcs%Tnod_bcs,      &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,    &
      &      f_l, f_nl, nod_fld)
@@ -254,7 +254,7 @@
      &             write(*,*) 'lead  ', trim(fhd_part_c_advect)
         call cal_terms_4_advect                                         &
      &     (iphys%i_pc_advect, iphys%i_par_light,                       &
-     &      iflag_comp_supg, intg_point_t_evo,                          &
+     &      FEM_prm%iflag_comp_supg, intg_point_t_evo,                  &
      &      nod_comm, node, ele, fluid, cp_prop, nod_bcs%Tnod_bcs,      &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,    &
      &      f_l, f_nl, nod_fld)
@@ -265,7 +265,7 @@
      &             write(*,*) 'lead  ', trim(fhd_div_c_flux)
         call cal_div_of_scalar_flux                                     &
      &     (iphys%i_c_flux_div, iphys%i_c_flux,                         &
-     &      iflag_comp_supg, intg_point_t_evo,                          &
+     &      FEM_prm%iflag_comp_supg, intg_point_t_evo,                  &
      &      nod_comm, node, ele, fluid, cp_prop, nod_bcs%Tnod_bcs,      &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,    &
      &      f_l, f_nl, nod_fld)
@@ -276,7 +276,7 @@
      &             write(*,*) 'lead  ', trim(fhd_div_pc_flux)
         call cal_div_of_scalar_flux                                     &
      &     (iphys%i_pc_flux_div, iphys%i_pc_flux,                       &
-     &      iflag_comp_supg, intg_point_t_evo,                          &
+     &      FEM_prm%iflag_comp_supg, intg_point_t_evo,                  &
      &      nod_comm, node, ele, fluid, cp_prop, nod_bcs%Tnod_bcs,      &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,    &
      &      f_l, f_nl, nod_fld)

@@ -118,26 +118,6 @@
       type(mesh_data_MHD), intent(inout) :: MHD_mesh
 !
 !
-!      if (my_rank .eq. 0 ) then
-!        write(*,*) 'num_fl_ele_grp         ', num_fl_ele_grp
-!        if ( num_fl_ele_grp .gt.0 ) then
-!          write(*,*) 'fl_ele_grp_name        ', fl_ele_grp_name
-!        end if
-!        write(*,*) 'num_cd_ele_grp         ', num_cd_ele_grp
-!        if ( num_cd_ele_grp .gt.0 ) then
-!          write(*,*) 'cd_ele_grp_name        ', cd_ele_grp_name
-!        end if
-!        write(*,*) 'num_ins_ele_grp         ', num_ins_ele_grp
-!        if ( num_ins_ele_grp .gt.0 ) then
-!          write(*,*) 'ins_ele_grp_name        ', ins_ele_grp_name
-!        end if
-!        write(*,*) 'num_in_core_ele_grp   ', num_in_core_ele_grp
-!        if ( num_in_core_ele_grp .gt.0 ) then
-!          write(*,*) 'in_core_ele_grp_name  ', in_core_ele_grp_name
-!        end if
-!      end if
-!
-!
       call marking_by_layers                                            &
      &   (ele%numele, ele_grp%num_grp, ele_grp%num_item,                &
      &    ele_grp%istack_grp, ele_grp%grp_name, ele_grp%item_grp,       &

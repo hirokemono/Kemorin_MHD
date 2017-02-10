@@ -6,7 +6,7 @@
 !        modieied by H. Matsui on Sep., 2005
 !
 !!      subroutine s_cal_light_element                                  &
-!!     &         (i_field, SGS_param, cmt_param, filter_param,          &
+!!     &         (i_field, FEM_prm, SGS_param, cmt_param, filter_param, &
 !!     &          nod_comm, node, ele, surf, fluid, sf_grp,             &
 !!     &          property, Snod_bcs, sf_bcs, iphys, iphys_ele, ele_fld,&
 !!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, icomp_sgs,    &
@@ -14,6 +14,7 @@
 !!     &          diff_coefs, filtering, Cmatrix, ak_d_composit,        &
 !!     &          wk_filter, mhd_fem_wk, fem_wk, surf_wk,               &
 !!     &          f_l, f_nl, nod_fld)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(SGS_filtering_params), intent(in) :: filter_param
@@ -57,6 +58,7 @@
       use m_phys_constants
       use m_iccg_parameter
 !
+      use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_physical_property
       use t_comm_table
@@ -89,7 +91,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_cal_light_element                                    &
-     &         (i_field, SGS_param, cmt_param, filter_param,            &
+     &         (i_field, FEM_prm, SGS_param, cmt_param, filter_param,   &
      &          nod_comm, node, ele, surf, fluid, sf_grp,               &
      &          property, Snod_bcs, sf_bcs, iphys, iphys_ele, ele_fld,  &
      &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, icomp_sgs,      &
@@ -117,6 +119,7 @@
 !
       integer(kind = kint), intent(in) :: i_field
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(SGS_filtering_params), intent(in) :: filter_param
@@ -157,7 +160,8 @@
 !
 !
       if (SGS_param%iflag_SGS_h_flux .ne. id_SGS_none) then
-        call cal_sgs_heat_flux(iflag_comp_supg, intg_point_t_evo,       &
+        call cal_sgs_heat_flux                                          &
+     &     (FEM_prm%iflag_comp_supg, intg_point_t_evo,                  &
      &      SGS_param%iflag_SGS_c_flux, SGS_param%itype_Csym_c_flux,    &
      &      iphys%i_sgs_composit, iphys%i_filter_comp,                  &
      &      iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_c_flux,      &
@@ -184,7 +188,7 @@
 !
 !  ----------  lead advection term
 !
-      if (iflag_comp_supg .gt. id_turn_OFF) then
+      if (FEM_prm%iflag_comp_supg .gt. id_turn_OFF) then
         call int_vol_temp_ele_upw                                       &
      &     (SGS_param%iflag_SGS_c_flux, cmt_param%iflag_c_cf,           &
      &      SGS_param%ifilter_final, intg_point_t_evo,                  &
@@ -226,7 +230,7 @@
 !
 !
       if (ref_param_C1%iflag_reference .eq. id_takepiro_temp) then
-        if (iflag_comp_supg .gt. id_turn_OFF) then
+        if (FEM_prm%iflag_comp_supg .gt. id_turn_OFF) then
           call cal_stratified_layer_upw                                 &
      &       (iphys%i_gref_c, intg_point_t_evo,                         &
      &        node, ele, fluid, nod_fld,                                &
@@ -242,22 +246,22 @@
 !
 !
       if     (evo_comp%iflag_scheme .eq. id_explicit_euler) then
-        call cal_scalar_pre_euler(iflag_comp_supg, i_field,             &
-     &      FEM_prm1, nod_comm, node, ele, fluid, iphys_ele, ele_fld,   &
+        call cal_scalar_pre_euler(FEM_prm%iflag_comp_supg, i_field,     &
+     &      FEM_prm, nod_comm, node, ele, fluid, iphys_ele, ele_fld,    &
      &      jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       else if(evo_comp%iflag_scheme .eq. id_explicit_adams2) then
         call cal_scalar_pre_adams                                       &
-     &    (iflag_comp_supg, i_field, iphys%i_pre_composit,              &
-     &      FEM_prm1, nod_comm, node, ele, fluid, iphys_ele, ele_fld,   &
+     &    (FEM_prm%iflag_comp_supg, i_field, iphys%i_pre_composit,      &
+     &      FEM_prm, nod_comm, node, ele, fluid, iphys_ele, ele_fld,    &
      &      jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       else if(evo_comp%iflag_scheme .eq. id_Crank_nicolson) then
-        call cal_temp_pre_lumped_crank(iflag_comp_supg,                 &
+        call cal_temp_pre_lumped_crank(FEM_prm%iflag_comp_supg,         &
      &      cmt_param%iflag_c_light, SGS_param%ifilter_final,           &
      &      i_field, iphys%i_pre_composit, ifld_diff%i_light,           &
      &      ak_d_composit, eps_4_comp_crank,                            &
-     &      FEM_prm1, nod_comm, node, ele, fluid, evo_comp, Snod_bcs,   &
+     &      FEM_prm, nod_comm, node, ele, fluid, evo_comp, Snod_bcs,    &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
      &      Cmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !

@@ -240,8 +240,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine update_with_dummy_scalar(iak_diff_c, icomp_diff_c,     &
-     &         SGS_par, nod_comm, node, ele, surf, fluid, sf_grp,       &
-     &         Csf_bcs, iphys, iphys_ele, ele_fld,                      &
+     &         FEM_prm, SGS_par, nod_comm, node, ele, surf, fluid,      &
+     &         sf_grp, Csf_bcs, iphys, iphys_ele, ele_fld,              &
      &         jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,     &
      &         filtering, wide_filtering, layer_tbl,                    &
      &         wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,  &
@@ -258,6 +258,7 @@
 !
       integer(kind = kint), intent(in) :: iak_diff_c, icomp_diff_c
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -343,7 +344,7 @@
                if (iflag_debug.gt.0)  write(*,*)                        &
      &                        's_cal_diff_coef_scalar composition'
                call s_cal_diff_coef_scalar                              &
-     &            (iflag_comp_supg, intg_point_t_evo,                   &
+     &            (FEM_prm%iflag_comp_supg, intg_point_t_evo,           &
      &             iphys%i_sgs_composit, iphys%i_filter_comp,           &
      &             iak_diff_c, icomp_diff_c, SGS_par,                   &
      &             nod_comm, node, ele, surf, sf_grp, Csf_bcs,          &

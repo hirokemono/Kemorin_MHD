@@ -87,9 +87,6 @@
 !>      Number of quadrature points for Poisson equation
       integer (kind=kint)  :: intg_point_poisson = 2
 !
-!>      SUPG flag for light element
-      integer (kind=kint) :: iflag_comp_supg = id_turn_OFF
-!
 !
 !>      Maximum CG iteration count for Poisson equation
       integer (kind=kint) :: maxiter
@@ -102,7 +99,7 @@
       real (kind=kreal) :: eps_4_magne
 !
       type(FEM_MHD_paremeters), save :: FEM_prm1
-!FEM_prm1%iflag_temp_supg
+!FEM_prm1%iflag_comp_supg
 !
 !  ---------------------------------------------------------------------
 !

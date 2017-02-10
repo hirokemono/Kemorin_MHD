@@ -55,6 +55,8 @@
         integer (kind=kint) :: iflag_magne_supg = id_turn_OFF
 !>        SUPG flag for temperature
         integer (kind=kint) :: iflag_temp_supg = id_turn_OFF
+!>        SUPG flag for light element
+        integer (kind=kint) :: iflag_comp_supg = id_turn_OFF
       end type FEM_MHD_paremeters
 !
       end module t_FEM_control_parameter

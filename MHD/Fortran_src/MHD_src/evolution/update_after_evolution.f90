@@ -295,7 +295,7 @@
       if ( evo_comp%iflag_scheme .gt. id_no_evolution) then
         if( ref_param_C1%iflag_reference .ne. id_no_ref_temp) then
           if(iflag_debug.eq.1) write(*,*) 's_cal_light_element part'
-          call s_cal_light_element(iphys%i_par_light,                   &
+          call s_cal_light_element(iphys%i_par_light, FEM_prm1,         &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
      &        mesh%nod_comm, mesh%node, mesh%ele,                       &
      &        ele_mesh%surf, MHD_mesh%fluid, group%surf_grp, cp_prop1,  &
@@ -310,7 +310,7 @@
      &        iphys%i_ref_c, iphys%i_par_light, iphys%i_light)
         else
           if(iflag_debug.eq.1) write(*,*) 's_cal_light_element C'
-          call s_cal_light_element(iphys%i_light,                       &
+          call s_cal_light_element(iphys%i_light, FEM_prm1,             &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
      &        mesh%nod_comm, mesh%node, mesh%ele,                       &
      &        ele_mesh%surf, MHD_mesh%fluid, group%surf_grp, cp_prop1,  &
@@ -329,7 +329,7 @@
 !
         call update_with_dummy_scalar                                   &
      &     (ifld_diff%i_light, icomp_diff%i_light,                      &
-     &      SGS_par, mesh%nod_comm, mesh%node, mesh%ele,                &
+     &      FEM_prm1, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,      &
      &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
      &      surf_bcs%Csf_bcs, iphys, iphys_ele, ele_fld,                &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,                  &
@@ -447,7 +447,7 @@
       if (iphys%i_light .ne. 0) then
         call update_with_dummy_scalar                                   &
      &     (ifld_diff%i_light, icomp_diff%i_light,                      &
-     &      SGS_par, mesh%nod_comm, mesh%node, mesh%ele,                &
+     &      FEM_prm1, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,      &
      &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
      &      surf_bcs%Csf_bcs, iphys, iphys_ele, ele_fld,                &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,                  &
@@ -617,7 +617,7 @@
       if ( evo_comp%iflag_scheme .gt. id_no_evolution) then
         if( ref_param_C1%iflag_reference .ne. id_no_ref_temp) then
           if(iflag_debug.eq.1) write(*,*) 's_cal_light_element part'
-          call s_cal_light_element(iphys%i_par_light,                   &
+          call s_cal_light_element(iphys%i_par_light, FEM_prm1,         &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
      &        mesh%nod_comm, mesh%node, mesh%ele,                       &
      &        ele_mesh%surf, fluid, group%surf_grp, cp_prop1,           &
@@ -632,7 +632,7 @@
      &        iphys%i_ref_c, iphys%i_par_light, iphys%i_light)
         else
           if (iflag_debug.eq.1) write(*,*) 's_cal_light_element'
-          call s_cal_light_element(iphys%i_light,                       &
+          call s_cal_light_element(iphys%i_light, FEM_prm1,             &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
      &        mesh%nod_comm, mesh%node, mesh%ele,                       &
      &        ele_mesh%surf, fluid, group%surf_grp, cp_prop1,           &
@@ -651,7 +651,7 @@
 !
         call update_with_dummy_scalar                                   &
      &    (ifld_diff%i_light, icomp_diff%i_light,                       &
-     &     SGS_par, mesh%nod_comm, mesh%node, mesh%ele,                 &
+     &     FEM_prm1, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,       &
      &     ele_mesh%surf, fluid, group%surf_grp, surf_bcs%Csf_bcs,      &
      &     iphys, iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q, &
      &     rhs_tbl, FEM_elens, filtering, wide_filtering, layer_tbl,    &

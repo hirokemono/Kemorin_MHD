@@ -150,7 +150,7 @@
          else if(nod_fld%phys_name(i).eq.fhd_SGS_div_c_flux_true) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
-           call cal_div_sgs_s_flux_true_pre(iflag_comp_supg,            &
+           call cal_div_sgs_s_flux_true_pre(FEM_prm%iflag_comp_supg,    &
      &         intg_point_t_evo, iphys%i_SGS_div_cf_true,               &
      &         iphys%i_c_flux, iphys%i_c_flux_div,                      &
      &         iphys%i_filter_comp, iphys%i_filter_velo,                &
