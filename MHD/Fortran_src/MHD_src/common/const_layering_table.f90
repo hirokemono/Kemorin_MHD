@@ -123,14 +123,15 @@
 !
 !  ----   fluid layer .... all
 !
-      if (cmp_no_case(fl_ele_grp_name(1),'all')) then
+      if (cmp_no_case(FEM_prm1%fluid_group%group_name(1),'all')) then
         do iele = 1, numele
           mat_flag_mhd(iele) = mat_flag_mhd(iele) + 2
         end do
 !
 !  ------  entire solid
 !
-      else if (cmp_no_case(fl_ele_grp_name(1),'none')) then
+      else if(cmp_no_case(FEM_prm1%fluid_group%group_name(1),'none'))   &
+     & then
         do iele = 1, numele
           mat_flag_mhd(iele) = mat_flag_mhd(iele)
         end do
@@ -142,8 +143,9 @@
         do j = 1, num_mat
           iflag = 0
 !
-          do j2 = 1, num_fl_ele_grp
-            if ( mat_name(j) .eq. fl_ele_grp_name(j2) ) then
+          do j2 = 1, FEM_prm1%fluid_group%num_group
+            if (mat_name(j) .eq. FEM_prm1%fluid_group%group_name(j2))   &
+     &       then
               iflag = 2
             end if
           end do
