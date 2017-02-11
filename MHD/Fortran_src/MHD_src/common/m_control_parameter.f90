@@ -104,31 +104,6 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_fluid_ele_grp_name
-!
-      allocate(FEM_prm1%fluid_group%group_name(FEM_prm1%fluid_group%num_group))
-!
-      end subroutine allocate_fluid_ele_grp_name
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_conduct_ele_grp_name
-!
-      allocate(FEM_prm1%condutive_group%group_name(FEM_prm1%condutive_group%num_group))
-!
-      end subroutine allocate_conduct_ele_grp_name
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_icore_ele_grp_name
-!
-      allocate(FEM_prm1%inner_core_group%group_name(FEM_prm1%inner_core_group%num_group))
-!
-      end subroutine allocate_icore_ele_grp_name
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
       subroutine deallocate_force_list
 !
       deallocate(name_force)
