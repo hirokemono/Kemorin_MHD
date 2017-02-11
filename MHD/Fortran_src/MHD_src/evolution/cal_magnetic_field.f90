@@ -255,6 +255,7 @@
       use int_norm_div_MHD
       use cal_mod_vel_potential
       use cal_rms_potentials
+      use skip_comment_f
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -300,7 +301,7 @@
       real(kind = kreal) :: rel_correct
 !
 !
-      if (cmp_no_case(FEM_prm1%condutive_group%group_name(1), 'all')))  &
+      if (cmp_no_case(FEM_prm1%condutive_group%group_name(1), 'all'))   &
      & then
         maxiter_insulater = 0
       else
