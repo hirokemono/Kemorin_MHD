@@ -98,8 +98,9 @@
         do j = 1, num_mat
           iflag = 0
 !
-          do j2 = 1, num_ins_ele_grp
-            if ( mat_name(j) .eq. ins_ele_grp_name(j2) ) then
+          do j2 = 1, FEM_prm1%insulator_group%num_group
+            if (mat_name(j) .eq. FEM_prm1%insulator_group%group_name(j2)) &
+     &        then
               iflag = 0
               exit
             end if

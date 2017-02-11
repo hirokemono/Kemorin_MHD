@@ -58,10 +58,6 @@
       character (len=kchara), allocatable :: name_force(:)
 !
 !
-      integer (kind=kint) :: num_ins_ele_grp
-      character (len=kchara), allocatable :: ins_ele_grp_name(:)
-!
-!
 !>      ID not to read external boundary condition file
       integer (kind=kint), parameter :: id_no_boundary_file =   0
 !>      ID to read external boundary condition file
@@ -92,7 +88,7 @@
       real (kind=kreal) :: eps_4_magne
 !
       type(FEM_MHD_paremeters), save :: FEM_prm1
-!FEM_prm1%inner_core_group%num_group
+!FEM_prm1%insulator_group%num_group
 !
 !  ---------------------------------------------------------------------
 !
