@@ -14,13 +14,8 @@
 !> @brief control flags for FEM MHD dynamo model
 !!
 !!@verbatim
-!!      subroutine alloc_filter_group_param(num_grp, f_area)
-!!      subroutine dealloc_SGS_filter_groups(filter_param)
-!!      subroutine dealloc_filter_group_param(f_area)
-!!
-!!      subroutine copy_filter_group_param(f_area_org, f_area_new)
-!!        type(SGS_filter_area_params), intent(in) :: f_area_org
-!!        type(SGS_filter_area_params), intent(inout) :: f_area_new
+!!      subroutine alloc_area_group_name(ngrp, area_group)
+!!      subroutine dealloc_area_group_name(area_group)
 !!@endverbatim
 !
       module t_FEM_control_parameter
@@ -35,6 +30,13 @@
 !
 !>      ID for using SUPG by mangeitc field
       integer (kind=kint), parameter :: id_magnetic_SUPG =  2
+!
+!
+      type area_group_name_list
+        integer(kind = kint) :: num_group = 0
+        character(len=kchara), allocatable :: group_name(:)
+      end type area_group_name_list
+!
 !
       type FEM_MHD_paremeters
 !>        Number of quadrature points for time evolution
@@ -57,6 +59,41 @@
         integer (kind=kint) :: iflag_temp_supg = id_turn_OFF
 !>        SUPG flag for light element
         integer (kind=kint) :: iflag_comp_supg = id_turn_OFF
+!
+        type(area_group_name_list) :: fluid_group
+        type(area_group_name_list) :: condutive_group
+        type(area_group_name_list) :: insulator_group
+        type(area_group_name_list) :: inner_core_group
       end type FEM_MHD_paremeters
+!
+!  ---------------------------------------------------------------------
+!
+      contains
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine alloc_area_group_name(ngrp, area_group)
+!
+      integer(kind = kint), intent(in) :: ngrp
+      type(area_group_name_list), intent(inout) :: area_group
+!
+!
+      area_group%num_group = ngrp
+      allocate(area_group%group_name(area_group%num_group))
+!
+      end subroutine alloc_area_group_name
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_area_group_name(area_group)
+!
+      type(area_group_name_list), intent(inout) :: area_group
+!
+      deallocate(area_group%group_name)
+!
+      end subroutine dealloc_area_group_name
+!
+!  ---------------------------------------------------------------------
 !
       end module t_FEM_control_parameter
