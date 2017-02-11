@@ -4,7 +4,8 @@
 !        programmed H.Matsui on Dec., 2008
 !
 !
-!!      subroutine s_set_aiccg_matrices_type(SGS_param, cmt_param,      &
+!!      subroutine s_set_aiccg_matrices_type                            &
+!!     &        (FEM_prm, SGS_param, cmt_param,                         &
 !!     &         mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,    &
 !!     &         ak_MHD,  jac_3d_q, jac_3d_l, jac_sf_grp_q,             &
 !!     &         FEM_elens, ifld_diff, diff_coefs, rhs_tbl,             &
@@ -13,6 +14,7 @@
 !!     &         MG_mat_fl_l, mlump_fl, mlump_cd, surf_wk, fem_wk,      &
 !!     &         mat_velo, mat_magne, mat_temp, mat_light,              &
 !!     &         mat_press, mat_magp)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -54,7 +56,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_aiccg_matrices_type(SGS_param, cmt_param,        &
+      subroutine s_set_aiccg_matrices_type                              &
+     &        (FEM_prm, SGS_param, cmt_param,                           &
      &         mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,      &
      &         ak_MHD,  jac_3d_q, jac_3d_l, jac_sf_grp_q,               &
      &         FEM_elens, ifld_diff, diff_coefs, rhs_tbl,               &
@@ -66,6 +69,7 @@
 !
       use m_physical_property
 !
+      use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_mesh_data
       use t_geometry_data_MHD
@@ -90,6 +94,7 @@
       use set_aiccg_bc_vectors
       use int_vol_consist_evo_mat
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(mesh_geometry), intent(in) :: mesh
@@ -134,8 +139,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'matrix assemble'
 !
-      call int_MHD_poisson_matrices                                     &
-     &   (SGS_param%ifilter_final, cmt_param%iflag_c_magne,             &
+      call int_MHD_poisson_matrices(FEM_prm%npoint_poisson_int,         &
+     &    SGS_param%ifilter_final, cmt_param%iflag_c_magne,             &
      &    mesh, jac_3d_l, rhs_tbl, MG_mat_linear, MG_mat_fl_l,          &
      &    FEM_elens, ifld_diff, diff_coefs, fem_wk,                     &
      &    mat_press, mat_magp)

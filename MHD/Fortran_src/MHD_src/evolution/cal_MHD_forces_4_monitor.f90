@@ -13,7 +13,7 @@
 !!     &          ifld_diff, diff_coefs, m_lump, mhd_fem_wk, fem_wk,    &
 !!     &          surf_wk, f_l, f_nl, nod_fld, ele_fld)
 !!      subroutine cal_work_4_forces                                    &
-!!     &         (nod_comm, node, ele, fl_prop, cd_prop, iphys,         &
+!!     &         (FEM_prm, nod_comm, node, ele, fl_prop, cd_prop, iphys,&
 !!     &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(communication_table), intent(in) :: nod_comm
@@ -419,7 +419,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_work_4_forces                                      &
-     &         (nod_comm, node, ele, fl_prop, cd_prop, iphys,           &
+     &         (FEM_prm, nod_comm, node, ele, fl_prop, cd_prop, iphys,  &
      &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !
       use buoyancy_flux
@@ -429,6 +429,7 @@
       use int_magne_induction
       use nodal_poynting_flux_smp
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -448,17 +449,17 @@
      &      .and. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_mag_induct)
-          call s_int_magne_induction                                    &
-     &       (nod_comm, node, ele, iphys, jac_3d, rhs_tbl,              &
-     &        mhd_fem_wk, fem_wk, f_nl, nod_fld)
+        call s_int_magne_induction(FEM_prm%npoint_poisson_int,          &
+     &      nod_comm, node, ele, iphys, jac_3d, rhs_tbl,                &
+     &      mhd_fem_wk, fem_wk, f_nl, nod_fld)
       end if
 !
       if (iphys%i_b_diffuse .gt. izero                                  &
      &      .and. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_mag_diffuse)
-        call s_int_magne_diffusion                                      &
-     &     (nod_comm, node, ele, iphys, jac_3d, rhs_tbl,                &
+        call s_int_magne_diffusion(FEM_prm%npoint_poisson_int,          &
+     &      nod_comm, node, ele, iphys, jac_3d, rhs_tbl,                &
      &      mhd_fem_wk, fem_wk, f_nl, nod_fld)
       end if
 !

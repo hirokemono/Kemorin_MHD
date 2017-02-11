@@ -382,7 +382,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'int_vol_velo_co'
       call int_vol_solenoid_co                                          &
-     &   (intg_point_poisson, SGS_param%ifilter_final,                  &
+     &   (FEM_prm%npoint_poisson_int, SGS_param%ifilter_final,          &
      &    fluid%istack_ele_fld_smp, iphys%i_p_phi, ifld_diff%i_velo,    &
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l,                       &
      &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_nl)
@@ -393,7 +393,7 @@
                              'int_surf_sgs_velo_co_ele', iphys%i_p_phi
         call int_surf_sgs_velo_co_ele(node, ele, surf, sf_grp,          &
      &      nod_fld, jac_sf_grp_q, jac_sf_grp_l,                        &
-     &      rhs_tbl, FEM_elens, intg_point_poisson,                     &
+     &      rhs_tbl, FEM_elens, FEM_prm%npoint_poisson_int,             &
      &      Psf_bcs%sgs%ngrp_sf_dat, Psf_bcs%sgs%id_grp_sf_dat,         &
      &      SGS_param%ifilter_final, diff_coefs%num_field,              &
      &      ifld_diff%i_velo, diff_coefs%ak, iphys%i_p_phi,             &

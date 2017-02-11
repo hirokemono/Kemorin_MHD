@@ -309,7 +309,7 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_vol_magne_co'
       call int_vol_solenoid_co                                          &
-     &   (intg_point_poisson, SGS_param%ifilter_final,                  &
+     &   (FEM_prm%npoint_poisson_int, SGS_param%ifilter_final,          &
      &    ele%istack_ele_smp, iphys%i_m_phi, iak_diff_b,                &
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l,                       &
      &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_nl)
@@ -320,7 +320,7 @@
                              'int_surf_sgs_velo_co_ele', iphys%i_m_phi
          call int_surf_sgs_velo_co_ele(node, ele, surf, sf_grp,         &
      &       nod_fld, jac_sf_grp_q, jac_sf_grp_l,                       &
-     &       rhs_tbl, FEM_elens, intg_point_poisson,                    &
+     &       rhs_tbl, FEM_elens, FEM_prm%npoint_poisson_int,            &
      &       Fsf_bcs%sgs%ngrp_sf_dat, Fsf_bcs%sgs%id_grp_sf_dat,        &
      &       SGS_param%ifilter_final, diff_coefs%num_field,             &
      &       iak_diff_b, diff_coefs%ak, iphys%i_m_phi,                  &
@@ -400,7 +400,7 @@
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
       call int_vol_solenoid_co                                          &
-     &   (intg_point_poisson, SGS_param%ifilter_final,                  &
+     &   (FEM_prm%npoint_poisson_int, SGS_param%ifilter_final,          &
      &    insulate%istack_ele_fld_smp, iphys%i_mag_p, iak_diff_b,       &
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l,                       &
      &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_nl)
@@ -411,7 +411,7 @@
                              'int_surf_sgs_velo_co_ele', iphys%i_m_phi
          call int_surf_sgs_velo_co_ele(node, ele, surf, sf_grp,         &
      &      nod_fld, jac_sf_grp_q, jac_sf_grp_l,                        &
-     &      rhs_tbl, FEM_elens, intg_point_poisson,                     &
+     &      rhs_tbl, FEM_elens, FEM_prm%npoint_poisson_int,             &
      &      Fsf_bcs%sgs%ngrp_sf_dat, Fsf_bcs%sgs%id_grp_sf_dat,         &
      &      SGS_param%ifilter_final, diff_coefs%num_field, iak_diff_b,  &
      &      diff_coefs%ak, iphys%i_m_phi, fem_wk, surf_wk, f_nl)

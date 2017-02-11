@@ -73,8 +73,6 @@
 !
 !>      Number of quadrature points for time evolution
       integer (kind=kint)  :: intg_point_t_evo =   2
-!>      Number of quadrature points for Poisson equation
-      integer (kind=kint)  :: intg_point_poisson = 2
 !
 !
 !>      Maximum CG iteration count for Poisson equation
@@ -88,7 +86,6 @@
       real (kind=kreal) :: eps_4_magne
 !
       type(FEM_MHD_paremeters), save :: FEM_prm1
-!FEM_prm1%insulator_group%num_group
 !
 !  ---------------------------------------------------------------------
 !

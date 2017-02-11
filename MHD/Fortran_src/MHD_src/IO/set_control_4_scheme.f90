@@ -122,7 +122,7 @@
           e_message  = 'Set number of integration points for Poisson'
           call calypso_MPI_abort(ierr_FEM, e_message)
         else
-          intg_point_poisson                                            &
+          FEM_prm%npoint_poisson_int                                    &
      &        = fint_ctl%intg_point_poisson_ctl%intvalue
         end if
 !
@@ -135,7 +135,7 @@
         end if
 !
         if (iflag_debug .gt. iflag_routine_msg) then
-          write(*,*) 'intg_point_poisson ', intg_point_poisson
+          write(*,*) 'intg_point_poisson ', FEM_prm%npoint_poisson_int
           write(*,*) 'intg_point_t_evo ',   intg_point_t_evo
         end if
 !

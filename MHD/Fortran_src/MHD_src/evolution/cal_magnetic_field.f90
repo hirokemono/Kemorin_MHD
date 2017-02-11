@@ -192,8 +192,8 @@
       do iloop = 0, maxiter_vecp
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_electric_potential'
-        call cal_electric_potential                                     &
-     &     (ifld_diff%i_magne, SGS_par%model_p, SGS_par%commute_p,      &
+        call cal_electric_potential(ifld_diff%i_magne,                  &
+     &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      node, ele, surf, sf_grp, Bnod_bcs, Asf_bcs, Fsf_bcs,        &
      &      iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,           &
      &      FEM_elens, diff_coefs, Fmatrix, MG_vector,                  &
@@ -332,8 +332,8 @@
 !
 !
       do iloop = 0, maxiter
-        call cal_mag_potential                                          &
-     &     (ifld_diff%i_magne, SGS_par%model_p, SGS_par%commute_p,      &
+        call cal_mag_potential(ifld_diff%i_magne,                       &
+     &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      node, ele, surf, sf_grp, Bnod_bcs, Bsf_bcs, Fsf_bcs,        &
      &      iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,           &
      &      FEM_elens, diff_coefs, Fmatrix, MG_vector,                  &

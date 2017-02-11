@@ -155,9 +155,10 @@
 !     &           surf_bcs%Bsf_bcs%sgs, rhs_tbl, fem_wk, surf_wk,       &
 !     &           f_nl, nod_fld)
 !             call int_current_diffuse                                  &
-!     &         (nod_comm, node, ele, surf, sf_grp, surf_bcs%Asf_bcs,   &
-!     &          iphys, jac_3d, jac_sf_grp, rhs_tbl, m_lump,            &
-!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+!     &         (FEM_prm, nod_comm, node, ele, surf, sf_grp,            &
+!     &          surf_bcs%Asf_bcs, iphys, jac_3d, jac_sf_grp, rhs_tbl,  &
+!     &          m_lump, mhd_fem_wk, fem_wk, surf_wk,                   &
+!     &          f_l, f_nl, nod_fld)
           else
             if (iflag_debug .ge. iflag_routine_msg)                     &
      &        write(*,*) 'cal_current_density'

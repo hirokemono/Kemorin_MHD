@@ -40,11 +40,13 @@
 !
       type FEM_MHD_paremeters
 !>        Number of quadrature points for time evolution
-        integer(kind = kint)  :: npoint_t_evo_int =   2
+        integer(kind = kint) :: npoint_t_evo_int =   2
 !FEM_prm%npint_t_evo_int
+!>        Number of quadrature points for Poisson equation
+        integer(kind = kint) :: npoint_poisson_int = 2
 !
 !>        Number of iteration for Multi-pass scheme
-        integer(kind = kint)  :: num_multi_pass =     0
+        integer(kind = kint) :: num_multi_pass =     0
 !
 !>          Using rotation form for inertia and Lorentz force
         integer(kind = kint) :: iflag_rotate_form =  id_turn_OFF

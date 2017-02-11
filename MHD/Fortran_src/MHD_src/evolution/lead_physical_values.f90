@@ -281,7 +281,8 @@
      &   (SGS_par%filter_p, mesh%nod_comm, mesh%node, iphys,            &
      &    filtering, wk_filter, nod_fld)
 !
-      call cal_work_4_forces(mesh%nod_comm, mesh%node, mesh%ele,        &
+      call cal_work_4_forces                                            &
+     &   (FEM_prm1, mesh%nod_comm, mesh%node, mesh%ele,                 &
      &    fl_prop1, cd_prop1, iphys, jac_3d_q, rhs_tbl,                 &
      &    mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !

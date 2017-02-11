@@ -9,7 +9,7 @@
 !        modifired by H. Matsui on Nov., 2007
 !
 !!      subroutine int_MHD_poisson_matrices                             &
-!!     &         (ifilter_final, iflag_commute_magne,                   &
+!!     &         (num_int, ifilter_final, iflag_commute_magne,          &
 !!     &          mesh, jac_3d_l, rhs_tbl, MG_mat_linear, MG_mat_fl_l,  &
 !!     &          FEM_elens, ifld_diff, diff_coefs, fem_wk,             &
 !!     &          mat_press, mat_magp)
@@ -39,9 +39,8 @@
       module int_vol_poisson_matrix
 !
       use m_precision
-!
-      use m_control_parameter
       use m_phys_constants
+      use m_control_parameter
 !
       use t_SGS_control_parameter
       use t_mesh_data
@@ -68,11 +67,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_MHD_poisson_matrices                               &
-     &         (ifilter_final, iflag_commute_magne,                     &
+     &         (num_int, ifilter_final, iflag_commute_magne,            &
      &          mesh, jac_3d_l, rhs_tbl, MG_mat_linear, MG_mat_fl_l,    &
      &          FEM_elens, ifld_diff, diff_coefs, fem_wk,               &
      &          mat_press, mat_magp)
 !
+      integer(kind = kint), intent(in) :: num_int
       integer(kind = kint), intent(in) :: ifilter_final
       integer(kind = kint), intent(in) :: iflag_commute_magne
       type(mesh_geometry), intent(in) :: mesh
@@ -92,7 +92,7 @@
       if (evo_velo%iflag_scheme .gt. id_no_evolution) then
         call sel_int_poisson_mat                                        &
      &     (mesh%ele, jac_3d_l, rhs_tbl, MG_mat_fl_l, FEM_elens,        &
-     &      iflag_commute_magne, intg_point_poisson,                    &
+     &      iflag_commute_magne, num_int,                               &
      &      diff_coefs%num_field, ifld_diff%i_velo, diff_coefs%ak,      &
      &      ifilter_final, fem_wk, mat_press)
       end if
@@ -101,7 +101,7 @@
      &    .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
         call sel_int_poisson_mat                                        &
      &     (mesh%ele, jac_3d_l, rhs_tbl, MG_mat_linear, FEM_elens,      &
-     &      iflag_commute_magne, intg_point_poisson,                    &
+     &      iflag_commute_magne, num_int,                               &
      &      diff_coefs%num_field, ifld_diff%i_magne, diff_coefs%ak,     &
      &      ifilter_final, fem_wk, mat_magp)
       end if
