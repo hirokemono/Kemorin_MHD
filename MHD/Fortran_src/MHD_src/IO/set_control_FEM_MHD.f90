@@ -97,7 +97,7 @@
 !
 !   set element groups for evolution
 !
-      call s_set_control_evo_layers(model_ctl%earea_ctl)
+      call s_set_control_evo_layers(model_ctl%earea_ctl, FEM_prm1)
 !
 !   set forces
 !

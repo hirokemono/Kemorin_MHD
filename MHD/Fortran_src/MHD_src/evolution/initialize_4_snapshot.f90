@@ -109,10 +109,11 @@ integer(kind = kint) :: iflag
 !
       if (iflag_debug.eq.1) write(*,*)' reordering_by_layers_snap'
       call reordering_by_layers_snap                                    &
-     &   (SGS_par, mesh%ele, group, MHD_mesh)
+     &   (FEM_prm1, SGS_par, mesh%ele, group, MHD_mesh)
 !
       if (iflag_debug.eq.1) write(*,*)' set_layers'
-      call set_layers(mesh%node, mesh%ele, group%ele_grp, MHD_mesh)
+      call set_layers                                                   &
+     &   (FEM_prm1, mesh%node, mesh%ele, group%ele_grp, MHD_mesh)
 !
       if (SGS_par%model_p%iflag_dynamic  .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*)' const_layers_4_dynamic'

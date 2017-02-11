@@ -301,7 +301,7 @@
       real(kind = kreal) :: rel_correct
 !
 !
-      if (cmp_no_case(FEM_prm1%condutive_group%group_name(1), 'all'))   &
+      if (cmp_no_case(FEM_prm%condutive_group%group_name(1), 'all'))    &
      & then
         maxiter_insulater = 0
       else

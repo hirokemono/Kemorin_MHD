@@ -122,10 +122,11 @@
 !
 !  -----   ordering by regions ---------------------------------------
 !
-      call reordering_by_layers_MHD(SGS_par, mesh%ele, group,           &
+      call reordering_by_layers_MHD(FEM_prm1, SGS_par, mesh%ele, group, &
      &    MHD_mesh, MHD1_matrices%MG_interpolate)
 !
-      call set_layers(mesh%node, mesh%ele, group%ele_grp, MHD_mesh)
+      call set_layers                                                   &
+     &   (FEM_prm1, mesh%node, mesh%ele, group%ele_grp, MHD_mesh)
 !
       if (SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         call const_layers_4_dynamic(group%ele_grp, layer_tbl)

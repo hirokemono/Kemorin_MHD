@@ -3,13 +3,15 @@
 !
 !      Written by H. Matsui on Dec., 2008
 !
-!!      subroutine s_reordering_MG_ele_by_layers(MG_interpolate)
+!!      subroutine s_reordering_MG_ele_by_layers(FEM_prm, MG_interpolate)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(MG_itp_table), intent(inout)                             &
 !!       &               :: MG_interpolate(num_MG_level)
 !
       module reordering_MG_ele_by_layers
 !
       use m_precision
+      use t_FEM_control_parameter
 !
       implicit none
 !
@@ -21,12 +23,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-     subroutine s_reordering_MG_ele_by_layers(MG_interpolate)
+     subroutine s_reordering_MG_ele_by_layers(FEM_prm, MG_interpolate)
 !
       use m_type_AMG_mesh
       use m_type_AMG_data
       use m_type_AMG_data_4_MHD
 !
+      type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(MG_itp_table), intent(inout) :: MG_interpolate(num_MG_level)
 !
       integer(kind = kint) :: i_level, i_level_1, iflag_last_level
@@ -37,7 +40,7 @@
         if ( MG_mesh(i_level)%mesh%ele%numele .gt. 0) then
           i_level_1 = i_level + 1
 !
-          call reordering_ele_types_by_layer(iflag_last_level,          &
+          call reordering_ele_types_by_layer(iflag_last_level, FEM_prm, &
      &      MG_mesh(i_level), MG_MHD_mesh(i_level),                     &
      &      MG_interpolate(i_level_1)%f2c, MG_interpolate(i_level)%c2f)
 !
@@ -47,7 +50,7 @@
       if ( MG_mesh(num_MG_level)%mesh%ele%numele .gt. 0) then
         i_level = num_MG_level
         iflag_last_level = num_MG_level
-        call reordering_ele_types_by_layer(iflag_last_level,            &
+        call reordering_ele_types_by_layer(iflag_last_level, FEM_prm,   &
      &      MG_mesh(i_level), MG_MHD_mesh(i_level),                     &
      &      MG_interpolate(i_level)%f2c, MG_interpolate(i_level)%c2f)
       end if
@@ -57,7 +60,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine reordering_ele_types_by_layer(iflag_last_level,        &
-     &          MG_mesh, MG_MHD_mesh, f2c_table, c2f_table)
+     &          FEM_prm, MG_mesh, MG_MHD_mesh, f2c_table, c2f_table)
 !
       use calypso_mpi
       use t_mesh_data
@@ -70,6 +73,7 @@
 !
       integer(kind = kint), intent(in) :: iflag_last_level
 !
+      type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(mesh_data), intent(inout) ::         MG_mesh
       type(mesh_data_MHD), intent(inout) ::    MG_MHD_mesh
       type(interpolate_table), intent(inout) :: f2c_table
@@ -84,7 +88,7 @@
      &    MG_mesh%group%ele_grp%num_item,                               &
      &    MG_mesh%group%ele_grp%istack_grp,                             &
      &    MG_mesh%group%ele_grp%grp_name,                               &
-     &    MG_mesh%group%ele_grp%item_grp, mat_flag_mhd )
+     &    MG_mesh%group%ele_grp%item_grp, mat_flag_mhd, FEM_prm)
 !
 !  set list vector for ordering
 !
