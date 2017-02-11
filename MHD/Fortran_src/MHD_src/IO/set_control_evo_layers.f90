@@ -51,9 +51,9 @@
 !
         if     (evo_magne%iflag_scheme .eq. id_no_evolution             &
      &    .and. evo_vect_p%iflag_scheme .eq. id_no_evolution) then
-          num_cd_ele_grp =  1
+          FEM_prm1%condutive_group%num_group =  1
           call allocate_conduct_ele_grp_name
-          cd_ele_grp_name = 'none'
+          FEM_prm1%condutive_group%group_name = 'none'
 !
         else
           call set_conduct_layer_egrp_name(earea_ctl)
@@ -101,14 +101,16 @@
 !
 !
       if (earea_ctl%evo_conduct_group_ctl%icou .eq. 0) then
-        num_cd_ele_grp = 1
+        FEM_prm1%condutive_group%num_group = 1
         call allocate_conduct_ele_grp_name
-        cd_ele_grp_name =  'all'
+        FEM_prm1%condutive_group%group_name =  'all'
       else
-        num_cd_ele_grp =  earea_ctl%evo_conduct_group_ctl%num
-        if (num_cd_ele_grp .ne. 0 ) then
+        FEM_prm1%condutive_group%num_group                              &
+     &       =  earea_ctl%evo_conduct_group_ctl%num
+        if(FEM_prm1%condutive_group%num_group .ne. 0 ) then
           call allocate_conduct_ele_grp_name
-          cd_ele_grp_name =  earea_ctl%evo_conduct_group_ctl%c_tbl
+          FEM_prm1%condutive_group%group_name                           &
+     &            =  earea_ctl%evo_conduct_group_ctl%c_tbl
           call dealloc_ele_cd_grp_ctl(earea_ctl)
         end if
       end if

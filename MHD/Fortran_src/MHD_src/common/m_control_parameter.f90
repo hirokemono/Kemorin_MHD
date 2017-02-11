@@ -58,11 +58,9 @@
       character (len=kchara), allocatable :: name_force(:)
 !
 !
-      integer (kind=kint) :: num_cd_ele_grp
       integer (kind=kint) :: num_ins_ele_grp
       integer (kind=kint) :: num_in_core_ele_grp
 !
-      character (len=kchara), allocatable :: cd_ele_grp_name(:)
       character (len=kchara), allocatable :: ins_ele_grp_name(:)
       character (len=kchara), allocatable :: in_core_ele_grp_name(:)
 !
@@ -97,7 +95,7 @@
       real (kind=kreal) :: eps_4_magne
 !
       type(FEM_MHD_paremeters), save :: FEM_prm1
-!FEM_prm1%fluid_group%num_group
+!FEM_prm1%condutive_group%num_group
 !
 !  ---------------------------------------------------------------------
 !
@@ -123,7 +121,7 @@
 !
       subroutine allocate_conduct_ele_grp_name
 !
-      allocate(cd_ele_grp_name(num_cd_ele_grp))
+      allocate(FEM_prm1%condutive_group%group_name(FEM_prm1%condutive_group%num_group))
 !
       end subroutine allocate_conduct_ele_grp_name
 !
@@ -143,14 +141,6 @@
       deallocate(name_force)
 !
       end subroutine deallocate_force_list
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine deallocate_conduct_ele_grp_name
-!
-      deallocate(cd_ele_grp_name)
-!
-      end subroutine deallocate_conduct_ele_grp_name
 !
 !  ---------------------------------------------------------------------
 !

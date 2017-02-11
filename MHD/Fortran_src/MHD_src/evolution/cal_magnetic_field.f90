@@ -300,8 +300,8 @@
       real(kind = kreal) :: rel_correct
 !
 !
-      if ( cd_ele_grp_name(1) .eq. 'all'                                &
-     &       .or. cd_ele_grp_name(1) .eq. 'ALL' ) then
+      if (cmp_no_case(FEM_prm1%condutive_group%group_name(1), 'all')))  &
+     & then
         maxiter_insulater = 0
       else
         maxiter_insulater = 1

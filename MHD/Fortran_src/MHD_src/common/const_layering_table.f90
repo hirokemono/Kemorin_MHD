@@ -78,19 +78,18 @@
 !
 !  ----   conductive  layer .... all
 !
-      if(cmp_no_case(cd_ele_grp_name(1),'all')) then
-!
+      if(cmp_no_case(FEM_prm1%condutive_group%group_name(1),'all')) then
         do iele = 1, numele
           mat_flag_mhd(iele) = 1
         end do
 !
 !  ----   insulated  layer .... all
 !
-       else if (cmp_no_case(cd_ele_grp_name(1),'none')) then
-!
-        do iele = 1, numele
-          mat_flag_mhd(iele) = 0
-        end do
+       else if(cmp_no_case(FEM_prm1%condutive_group%group_name(1),'none')) &
+      & then
+         do iele = 1, numele
+           mat_flag_mhd(iele) = 0
+         end do
 !
 !    conductor and insulator exist
 !
@@ -106,8 +105,9 @@
             end if
           end do
 !
-          do j2 = 1, num_cd_ele_grp
-            if ( mat_name(j) .eq. cd_ele_grp_name(j2) ) then
+          do j2 = 1, FEM_prm1%condutive_group%num_group
+            if(mat_name(j) .eq. FEM_prm1%condutive_group%group_name(j2)) &
+      &      then
               iflag = 1
               do inum = mat_istack(j-1)+1, mat_istack(j)
                 iele = mat_item(inum)
