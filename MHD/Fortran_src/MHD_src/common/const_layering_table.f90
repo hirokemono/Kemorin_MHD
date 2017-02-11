@@ -57,6 +57,7 @@
      &          mat_istack, mat_name, mat_item, mat_flag_mhd)
 !
       use m_control_parameter
+      use skip_comment_f
 !
       integer (kind = kint), intent(in) :: numele
       integer (kind = kint), intent(in) :: num_mat, num_mat_bc
@@ -77,8 +78,7 @@
 !
 !  ----   conductive  layer .... all
 !
-      if ( cd_ele_grp_name(1) .eq. 'all' .or.                          &
-     &        cd_ele_grp_name(1) .eq. 'ALL') then
+      if(cmp_no_case(cd_ele_grp_name(1),'all')) then
 !
         do iele = 1, numele
           mat_flag_mhd(iele) = 1
@@ -86,8 +86,7 @@
 !
 !  ----   insulated  layer .... all
 !
-       else if ( cd_ele_grp_name(1) .eq. 'none'  .or.                  &
-     &        cd_ele_grp_name(1) .eq. 'NONE') then
+       else if (cmp_no_case(cd_ele_grp_name(1),'none')) then
 !
         do iele = 1, numele
           mat_flag_mhd(iele) = 0
@@ -124,16 +123,14 @@
 !
 !  ----   fluid layer .... all
 !
-      if ( fl_ele_grp_name(1) .eq. 'all' .or.                          &
-     &        fl_ele_grp_name(1) .eq. 'ALL' ) then
+      if (cmp_no_case(fl_ele_grp_name(1),'all')) then
         do iele = 1, numele
           mat_flag_mhd(iele) = mat_flag_mhd(iele) + 2
         end do
 !
 !  ------  entire solid
 !
-      else if ( fl_ele_grp_name(1) .eq. 'none'  .or.                   &
-     &        fl_ele_grp_name(1) .eq. 'NONE') then
+      else if (cmp_no_case(fl_ele_grp_name(1),'none')) then
         do iele = 1, numele
           mat_flag_mhd(iele) = mat_flag_mhd(iele)
         end do
