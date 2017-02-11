@@ -60,11 +60,11 @@
         end if
       end if
 !
-      num_in_core_ele_grp = 0
+      FEM_prm1%inner_core_group%num_group = 0
 !         =  num_ele_in_core_grp_ctl
-!      if (num_in_core_ele_grp .ne. 0 ) then
-!        allocate(in_core_ele_grp_name(num_in_core_ele_grp))
-!        in_core_ele_grp_name = num_ele_in_core_grp_ctl
+!      if (FEM_prm1%inner_core_group%num_group .ne. 0 ) then
+!        allocate(FEM_prm1%inner_core_group%group_name(FEM_prm1%inner_core_group%num_group))
+!        FEM_prm1%inner_core_group%group_name = num_ele_in_core_grp_ctl
 !      end if
 !
       end subroutine s_set_control_evo_layers

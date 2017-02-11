@@ -104,7 +104,8 @@
 !    count number of element for insulated core
 !
       call count_ele_4_layer(ele%numele, inner_core%numele_fld,         &
-     &    num_in_core_ele_grp, in_core_ele_grp_name,                    &
+     &    FEM_prm1%inner_core_group%num_group,                          &
+     &    FEM_prm1%inner_core_group%group_name,                         &
      &    ele_grp%num_grp, ele_grp%istack_grp, ele_grp%grp_name)
 !
 !    set node list for conductor

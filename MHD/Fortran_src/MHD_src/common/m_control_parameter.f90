@@ -59,10 +59,7 @@
 !
 !
       integer (kind=kint) :: num_ins_ele_grp
-      integer (kind=kint) :: num_in_core_ele_grp
-!
       character (len=kchara), allocatable :: ins_ele_grp_name(:)
-      character (len=kchara), allocatable :: in_core_ele_grp_name(:)
 !
 !
 !>      ID not to read external boundary condition file
@@ -95,7 +92,7 @@
       real (kind=kreal) :: eps_4_magne
 !
       type(FEM_MHD_paremeters), save :: FEM_prm1
-!FEM_prm1%condutive_group%num_group
+!FEM_prm1%inner_core_group%num_group
 !
 !  ---------------------------------------------------------------------
 !
@@ -129,7 +126,7 @@
 !
       subroutine allocate_icore_ele_grp_name
 !
-      allocate(in_core_ele_grp_name(num_in_core_ele_grp))
+      allocate(FEM_prm1%inner_core_group%group_name(FEM_prm1%inner_core_group%num_group))
 !
       end subroutine allocate_icore_ele_grp_name
 !
@@ -141,14 +138,6 @@
       deallocate(name_force)
 !
       end subroutine deallocate_force_list
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine deallocate_icore_ele_grp_name
-!
-      deallocate(in_core_ele_grp_name)
-!
-      end subroutine deallocate_icore_ele_grp_name
 !
 !  ---------------------------------------------------------------------
 !

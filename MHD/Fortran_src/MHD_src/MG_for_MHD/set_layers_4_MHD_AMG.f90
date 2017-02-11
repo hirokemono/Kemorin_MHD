@@ -50,7 +50,8 @@
 !
       call count_ele_4_layer(geom%ele%numele,                           &
      &    MHD_mesh%inner_core%numele_fld,                               &
-     &    num_in_core_ele_grp, in_core_ele_grp_name,                    &
+     &    FEM_prm1%inner_core_group%num_group,                          &
+     &    FEM_prm1%inner_core_group%group_name,                         &
      &    grps%ele_grp%num_grp, grps%ele_grp%istack_grp,                &
      &    grps%ele_grp%grp_name)
 !
