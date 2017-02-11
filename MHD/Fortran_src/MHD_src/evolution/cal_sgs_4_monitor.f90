@@ -183,10 +183,10 @@
         if(iflag_debug.gt.0) write(*,*) 'lead ', trim(fhd_induct_t)
         call cal_sgs_magne_induction(icomp_sgs%i_induction,             &
      &      iphys_elediff%i_velo, iphys_elediff%i_magne,                &
-     &      SGS_param, filter_param, nod_comm, node, ele, conduct,      &
-     &      cd_prop, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl,        &
-     &      FEM_elens, filtering, sgs_coefs, sgs_coefs_nod, wk_filter,  &
-     &      mhd_fem_wk, fem_wk, f_l, nod_fld)
+     &      FEM_prm, SGS_param, filter_param, nod_comm, node, ele,      &
+     &      conduct, cd_prop, iphys, iphys_ele, ele_fld, jac_3d,        &
+     &      rhs_tbl, FEM_elens, filtering, sgs_coefs, sgs_coefs_nod,    &
+     &      wk_filter, mhd_fem_wk, fem_wk, f_l, nod_fld)
       end if
 !
       if (iphys%i_SGS_vp_induct .gt. 0) then

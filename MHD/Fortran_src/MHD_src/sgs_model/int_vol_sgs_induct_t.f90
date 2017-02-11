@@ -25,7 +25,6 @@
 !
       use m_precision
 !
-      use m_control_parameter
       use m_phys_constants
 !
       use t_FEM_control_parameter
@@ -75,14 +74,14 @@
 !
       if (FEM_prm%iflag_magne_supg .gt. id_turn_OFF) then
         call int_vol_sgs_induct_t_upm                                   &
-     &     (i_filter, ifield_v, ifield_b, intg_point_t_evo,             &
+     &     (i_filter, ifield_v, ifield_b, FEM_prm%npoint_t_evo_int,     &
      &      node, ele, conduct, nod_fld, jac_3d, FEM_elens,             &
      &      mhd_fem_wk%n_dvx, ie_dvx, ie_dbx, mhd_fem_wk%dvx,           &
      &      ele_fld%ntot_phys, iphys_ele%i_magne,                       &
      &      ele_fld%d_fld, fem_wk)
       else
         call int_vol_sgs_induct_t_pg                                    &
-     &     (i_filter, ifield_v, ifield_b, intg_point_t_evo,             &
+     &     (i_filter, ifield_v, ifield_b, FEM_prm%npoint_t_evo_int,     &
      &      node, ele, conduct, nod_fld, jac_3d, FEM_elens,             &
      &      mhd_fem_wk%n_dvx, ie_dvx, ie_dbx, mhd_fem_wk%dvx, fem_wk)
       end if

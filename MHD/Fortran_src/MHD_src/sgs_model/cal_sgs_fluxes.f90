@@ -25,7 +25,7 @@
 !!     &          f_l, f_nl, nod_fld)
 !!      subroutine cal_sgs_magne_induction                              &
 !!     &         (icomp_sgs_uxb, ie_dvx, ie_dbx,                        &
-!!     &          SGS_param, filter_param, nod_comm, node, ele,         &
+!!     &          FEM_prm, SGS_param, filter_param, nod_comm, node, ele,&
 !!     &          conduct, cd_prop, iphys, iphys_ele, ele_fld,          &
 !!     &          jac_3d, rhs_tbl,  FEM_elens, filtering,               &
 !!     &          sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk,      &
@@ -64,7 +64,6 @@
       use m_constants
       use m_machine_parameter
       use m_t_step_parameter
-      use m_control_parameter
 !
       use t_FEM_control_parameter
       use t_SGS_control_parameter
@@ -155,7 +154,7 @@
       else if(iflag_SGS_flux .eq. id_SGS_diffusion) then
         if (iflag_debug.eq.1) write(*,*) 'cal_sgs_h_flux_diffuse'
         call choose_cal_gradient_w_const                                &
-     &     (iflag_supg, intg_point_t_evo, ifleld, i_sgs, dminus,        &
+     &     (iflag_supg, num_int, ifleld, i_sgs, dminus,                 &
      &      fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,              &
      &      nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,            &
      &      rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
@@ -300,7 +299,7 @@
 !
       subroutine cal_sgs_magne_induction                                &
      &         (icomp_sgs_uxb, ie_dvx, ie_dbx,                          &
-     &          SGS_param, filter_param, nod_comm, node, ele,           &
+     &          FEM_prm, SGS_param, filter_param, nod_comm, node, ele,  &
      &          conduct, cd_prop, iphys, iphys_ele, ele_fld,            &
      &          jac_3d, rhs_tbl,  FEM_elens, filtering,                 &
      &          sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk,        &
@@ -311,6 +310,7 @@
       integer(kind = kint), intent(in) :: icomp_sgs_uxb
       integer(kind = kint), intent(in) :: ie_dvx, ie_dbx
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(SGS_filtering_params), intent(in) :: filter_param
       type(communication_table), intent(in) :: nod_comm
@@ -341,7 +341,7 @@
         call cal_sgs_induct_t_grad_w_coef(SGS_param%ifilter_final,      &
      &      icomp_sgs_uxb, iphys%i_SGS_induct_t,                        &
      &      iphys%i_velo, iphys%i_magne, ie_dvx, ie_dbx,                &
-     &      SGS_param, nod_comm, node, ele, conduct, cd_prop,           &
+     &      FEM_prm, SGS_param, nod_comm, node, ele, conduct, cd_prop,  &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens, sgs_coefs,  &
      &      fem_wk, mhd_fem_wk, f_l, nod_fld)
 !

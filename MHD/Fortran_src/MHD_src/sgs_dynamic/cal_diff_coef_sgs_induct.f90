@@ -147,9 +147,9 @@
       call cal_sgs_induct_t_grad_w_coef                                 &
      &   (ifilter_4delta, icomp_sgs_uxb, iphys%i_sgs_grad_f,            &
      &    iphys%i_filter_velo, iphys%i_filter_magne, ie_dfvx, ie_dfbx,  &
-     &    SGS_par%model_p, nod_comm, node, ele, conduct, cd_prop,       &
-     &    iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens, sgs_coefs,  &
-     &    fem_wk, mhd_fem_wk, f_l, nod_fld)
+     &    FEM_prm1, SGS_par%model_p, nod_comm, node, ele, conduct,      &
+     &    cd_prop, iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,    &
+     &    sgs_coefs, fem_wk, mhd_fem_wk, f_l, nod_fld)
 !
 !   take divergence of filtered heat flux (to iphys%i_sgs_simi)
 !
@@ -183,8 +183,8 @@
 !
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad_f)
 !
-      call cal_commute_error_4_idct                                     &
-     &   (conduct%istack_ele_fld_smp, mhd_fem_wk%mlump_cd,              &
+      call cal_commute_error_4_idct(FEM_prm1%npoint_t_evo_int,          &
+     &    conduct%istack_ele_fld_smp, mhd_fem_wk%mlump_cd,              &
      &    node, ele, surf, sf_grp, Bsf_bcs, jac_3d_q, jac_sf_grp_q,     &
      &    rhs_tbl, FEM_elens, ifilter_4delta,                           &
      &    iphys%i_sgs_grad_f, iphys%i_sgs_grad_f, iphys%i_filter_velo,  &
@@ -198,8 +198,8 @@
 !
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad)
 !
-      call cal_commute_error_4_idct                                     &
-     &   (conduct%istack_ele_fld_smp, mhd_fem_wk%mlump_cd,              &
+      call cal_commute_error_4_idct(FEM_prm1%npoint_t_evo_int,          &
+     &    conduct%istack_ele_fld_smp, mhd_fem_wk%mlump_cd,              &
      &    node, ele, surf, sf_grp, Bsf_bcs, jac_3d_q, jac_sf_grp_q,     &
      &    rhs_tbl, FEM_elens, ifilter_2delta,                           &
      &    iphys%i_sgs_grad, iphys%i_SGS_induct_t, iphys%i_velo,         &
@@ -222,9 +222,9 @@
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_diff_coef_fluid', n_vector, iak_diff_uxb, icomp_diff_uxb
       call cal_diff_coef_fluid                                          &
-     &   (SGS_par%model_p, SGS_par%commute_p, layer_tbl,                &
-     &    node, ele, fluid, iphys, nod_fld, jac_3d_q, jac_3d_l,         &
-     &    n_vector, iak_diff_uxb, icomp_diff_uxb, intg_point_t_evo,     &
+     &   (SGS_par%model_p, SGS_par%commute_p, layer_tbl,  node, ele,    &
+     &   fluid, iphys, nod_fld, jac_3d_q, jac_3d_l, n_vector,           &
+     &    iak_diff_uxb, icomp_diff_uxb, FEM_prm1%npoint_t_evo_int,      &
      &    wk_cor, wk_lsq, wk_diff, diff_coefs)
 !
       end subroutine s_cal_diff_coef_sgs_induct

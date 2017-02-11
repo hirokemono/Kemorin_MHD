@@ -189,7 +189,7 @@
      &    cd_prop%coef_mag_p, nod_fld%ntot_phys,                        &
      &    iphys%i_m_phi, iphys%i_mag_p,nod_fld%d_fld)
 !
-      do iloop = 0, maxiter_vecp
+      do iloop = 0, FEM_prm%maxiter_coulomb
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_electric_potential'
         call cal_electric_potential(ifld_diff%i_magne,                  &
@@ -331,7 +331,7 @@
      &    iphys, nod_fld, jac_3d_q, fem_wk, rel_correct)
 !
 !
-      do iloop = 0, maxiter
+      do iloop = 0, FEM_prm%maxiter_coulomb
         call cal_mag_potential(ifld_diff%i_magne,                       &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      node, ele, surf, sf_grp, Bnod_bcs, Bsf_bcs, Fsf_bcs,        &

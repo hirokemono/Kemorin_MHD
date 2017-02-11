@@ -5,9 +5,10 @@
 !                                    on July 2000 (ver 1.1)
 !     modified by H. Matsui on Aug., 2007
 !
-!!      subroutine output_time_step_control(mesh, MHD_mesh,             &
+!!      subroutine output_time_step_control(FEM_prm, mesh, MHD_mesh,    &
 !!     &          iphys, nod_fld, iphys_ele, ele_fld,                   &
 !!     &          jac_3d_q, jac_3d_l, fem_wk, mhd_fem_wk)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_data_MHD), intent(in) :: MHD_mesh
 !!        type(phys_address), intent(in) :: iphys
@@ -22,6 +23,7 @@
 !
       use m_precision
 !
+      use t_FEM_control_parameter
       use t_mesh_data
       use t_geometry_data
       use t_geometry_data_MHD
@@ -39,12 +41,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine output_time_step_control(mesh, MHD_mesh,               &
+      subroutine output_time_step_control(FEM_prm, mesh, MHD_mesh,      &
      &          iphys, nod_fld, iphys_ele, ele_fld,                     &
      &          jac_3d_q, jac_3d_l, fem_wk, mhd_fem_wk)
 !
       use calypso_mpi
-      use m_control_parameter
       use m_t_step_parameter
       use m_t_int_parameter
       use m_mean_square_values
@@ -55,6 +56,7 @@
 !
       integer (kind = kint) :: nd, ii
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_data_MHD), intent(in) :: MHD_mesh
       type(phys_address), intent(in) :: iphys
@@ -73,7 +75,7 @@
         if(my_rank .eq. 0) write(*,'(a10,i16,a10,e15.8)')               &
      &            'i_step=',i_step_MHD,'time=',time
 !
-      call s_int_mean_squares(intg_point_t_evo,                         &
+      call s_int_mean_squares(FEM_prm%npoint_t_evo_int,                 &
      &    mesh%node, mesh%ele, MHD_mesh%fluid, MHD_mesh%conduct,        &
      &    iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk, mhd_fem_wk)
       call int_no_evo_mean_squares(mesh%node, mesh%ele, iphys, nod_fld, &

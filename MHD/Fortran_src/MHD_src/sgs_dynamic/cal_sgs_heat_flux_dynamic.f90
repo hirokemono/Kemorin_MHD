@@ -178,7 +178,7 @@
       call cal_model_coefs(SGS_par%model_p, layer_tbl,                  &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
      &    itype_Csym_flux, n_vector, iak_sgs_hlux, icomp_sgs_flux,      &
-     &    intg_point_t_evo, wk_cor, wk_lsq, wk_sgs, sgs_coefs)
+     &    num_int, wk_cor, wk_lsq, wk_sgs, sgs_coefs)
 !
       call reduce_model_coefs_layer(SGS_flux_factor,                    &
      &    wk_sgs%nlayer, wk_sgs%num_kinds, iak_sgs_hlux,                &

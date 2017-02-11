@@ -12,11 +12,12 @@
 !!     &        f_l, f_nl, nod_fld, ele_fld)
 !!      subroutine cal_viscous_diffusion                                &
 !!     &         (iak_diff_v, iak_diff_mf, iak_diff_lor,                &
-!!     &          SGS_param, cmt_param, nod_comm, node, ele, surf,      &
-!!     &          sf_grp, fluid, fl_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs,   &
-!!     &          iphys, ak_MHD, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,&
-!!     &          diff_coefs, mhd_fem_wk, fem_wk, surf_wk,              &
+!!     &          FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,   &
+!!     &          surf, sf_grp, fluid, fl_prop, Vnod_bcs, Vsf_bcs,      &
+!!     &          Bsf_bcs, iphys, ak_MHD, jac_3d, jac_sf_grp, rhs_tbl,  &
+!!     &          FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,   &
 !!     &          f_l, f_nl, nod_fld)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(communication_table), intent(in) :: nod_comm
@@ -177,10 +178,10 @@
 !
       subroutine cal_viscous_diffusion                                  &
      &         (iak_diff_v, iak_diff_mf, iak_diff_lor,                  &
-     &          SGS_param, cmt_param, nod_comm, node, ele, surf,        &
-     &          sf_grp, fluid, fl_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs,     &
-     &          iphys, ak_MHD, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,  &
-     &          diff_coefs, mhd_fem_wk, fem_wk, surf_wk,                &
+     &          FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,     &
+     &          surf, sf_grp, fluid, fl_prop, Vnod_bcs, Vsf_bcs,        &
+     &          Bsf_bcs, iphys, ak_MHD, jac_3d, jac_sf_grp, rhs_tbl,    &
+     &          FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,     &
      &          f_l, f_nl, nod_fld)
 !
       use int_vol_diffusion_ele
@@ -189,6 +190,7 @@
       integer (kind=kint), intent(in) :: iak_diff_v
       integer(kind= kint), intent(in) :: iak_diff_mf, iak_diff_lor
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(communication_table), intent(in) :: nod_comm
@@ -219,12 +221,13 @@
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
       call int_vol_vector_diffuse_ele(SGS_param%ifilter_final,          &
-     &    fluid%istack_ele_fld_smp, intg_point_t_evo,                   &
+     &    fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,           &
      &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,   &
      &    iak_diff_v, one, ak_MHD%ak_d_velo, iphys%i_velo, fem_wk, f_l)
 !
-      call int_surf_velo_monitor(iphys%i_v_diffuse,                     &
-     &   iak_diff_mf, iak_diff_lor, ak_MHD%ak_d_velo, intg_point_t_evo, &
+      call int_surf_velo_monitor                                        &
+     &  (iphys%i_v_diffuse, iak_diff_mf, iak_diff_lor,                  &
+     &   ak_MHD%ak_d_velo, FEM_prm%npoint_t_evo_int,                    &
      &   SGS_param, cmt_param, node, ele, surf, sf_grp, fl_prop,        &
      &   Vsf_bcs, Bsf_bcs, iphys, nod_fld, jac_sf_grp, rhs_tbl,         &
      &   FEM_elens, diff_coefs, fem_wk, surf_wk, f_l, f_nl)

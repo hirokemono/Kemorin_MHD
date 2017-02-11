@@ -278,8 +278,9 @@
 !
       if (fl_prop%iflag_4_coriolis .eq. id_Coriolis_ele_imp) then
         if (iflag_debug.eq.1) write(*,*) 'int_vol_coriolis_crank_ele'
-        call int_vol_coriolis_crank_ele(node, ele, fluid, fl_prop,      &
-     &      jac_3d, rhs_tbl, i_velo, nod_fld, fem_wk, f_l)
+        call int_vol_coriolis_crank_ele(FEM_prm%npoint_t_evo_int,       &
+     &      node, ele, fluid, fl_prop, jac_3d, rhs_tbl,                 &
+     &      i_velo, nod_fld, fem_wk, f_l)
       end if
 !
 !
@@ -291,7 +292,7 @@
       else if(FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)   &
      & then
         call cal_velo_co_consist_crank(i_velo, fl_prop%coef_velo,       &
-     &      node, ele, fluid, Vnod_bcs, nod_fld, jac_3d,                &
+     &      FEM_prm, node, ele, fluid, Vnod_bcs, nod_fld, jac_3d,       &
      &      rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
       end if
 !
@@ -383,8 +384,8 @@
       else if(FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)   &
      & then
         call cal_magne_co_consist_crank(i_vecp, cd_prop%coef_magne,     &
-     &      node, ele, conduct, nod_fld, Bnod_bcs%nod_bc_a, jac_3d,     &
-     &      rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
+     &      FEM_prm, node, ele, conduct, nod_fld, Bnod_bcs%nod_bc_a,    &
+     &      jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_vect_p_pre_crank'
@@ -449,7 +450,7 @@
       if (iflag_debug.eq.1)  write(*,*) 'int_vol_magne_diffuse_co'
       if (evo_magne%coef_imp .gt. zero) then
         call int_vol_vector_diffuse_ele(SGS_param%ifilter_final,        &
-     &      conduct%istack_ele_fld_smp, intg_point_t_evo,               &
+     &      conduct%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,             &
      &      diff_coefs, iak_diff_b, evo_magne%coef_imp, ak_d_magne,     &
      &      i_magne, fem_wk, f_l)
@@ -458,7 +459,7 @@
       if (evo_magne%coef_imp .gt. zero) then
         if (iflag_debug.eq.1)  write(*,*) 'int_sk_4_fixed_magne'
         call int_sk_4_fixed_vector(cmt_param%iflag_c_magne,             &
-     &      SGS_param%ifilter_final, intg_point_t_evo,                  &
+     &      SGS_param%ifilter_final, FEM_prm%npoint_t_evo_int,          &
      &      i_magne, node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,    &
      &      diff_coefs, Bnod_bcs%nod_bc_b, ak_d_magne,                  &
      &      evo_magne%coef_imp, iak_diff_b, fem_wk, f_l)
@@ -473,8 +474,8 @@
       else if(FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)   &
      & then
         call cal_magne_co_consist_crank(i_magne, cd_prop%coef_magne,    &
-     &      node, ele, conduct, nod_fld, Bnod_bcs%nod_bc_b, jac_3d,     &
-     &      rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
+     &      FEM_prm, node, ele, conduct, nod_fld, Bnod_bcs%nod_bc_b,    &
+     &      jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
       end if
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_sol_magne_pre_crank'

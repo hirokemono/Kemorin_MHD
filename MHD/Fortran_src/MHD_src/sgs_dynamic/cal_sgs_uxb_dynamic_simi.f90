@@ -5,16 +5,16 @@
 !     Modified by H. Matsui on Aug., 2007
 !
 !!      subroutine s_cal_sgs_uxb_dynamic_simi                           &
-!!     &         (iak_sgs_uxb, icomp_sgs_uxb, SGS_par, nod_comm,        &
-!!     &          node, ele, iphys, layer_tbl, jac_3d_q, jac_3d_l,      &
-!!     &          filtering, wide_filtering, wk_filter,                 &
-!!     &          wk_cor, wk_lsq, wk_sgs, nod_fld, sgs_coefs)
+!!     &        (iak_sgs_uxb, icomp_sgs_uxb, FEM_prm, SGS_par, nod_comm,&
+!!     &         node, ele, iphys, layer_tbl, jac_3d_q, jac_3d_l,       &
+!!     &         filtering, wide_filtering, wk_filter, wk_cor, wk_lsq,  &
+!!     &         wk_sgs, nod_fld, sgs_coefs)
 !!      subroutine cal_sgs_induct_t_dynamic_simi                        &
-!!     &         (iak_sgs_uxb, icomp_sgs_uxb, SGS_par, nod_comm,        &
-!!     &          node, ele, iphys, layer_tbl, jac_3d_q, jac_3d_l,      &
-!!     &          rhs_tbl, filtering, wide_filtering, m_lump, wk_filter,&
-!!     &          wk_cor, wk_lsq, wk_sgs, fem_wk, f_l, nod_fld,         &
-!!     &          sgs_coefs, sgs_coefs_nod)
+!!     &        (iak_sgs_uxb, icomp_sgs_uxb, FEM_prm, SGS_par, nod_comm,&
+!!     &         node, ele, iphys, layer_tbl, jac_3d_q, jac_3d_l,       &
+!!     &         rhs_tbl, filtering, wide_filtering, m_lump, wk_filter, &
+!!     &         wk_cor, wk_lsq, wk_sgs, fem_wk, f_l, nod_fld,          &
+!!     &         sgs_coefs, sgs_coefs_nod)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -40,10 +40,10 @@
 !
       use m_precision
 !
-      use m_control_parameter
       use m_machine_parameter
       use m_phys_constants
 !
+      use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_comm_table
       use t_geometry_data
@@ -69,10 +69,10 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_cal_sgs_uxb_dynamic_simi                             &
-     &         (iak_sgs_uxb, icomp_sgs_uxb, SGS_par, nod_comm,          &
-     &          node, ele, iphys, layer_tbl, jac_3d_q, jac_3d_l,        &
-     &          filtering, wide_filtering, wk_filter,                   &
-     &          wk_cor, wk_lsq, wk_sgs, nod_fld, sgs_coefs)
+     &        (iak_sgs_uxb, icomp_sgs_uxb, FEM_prm, SGS_par, nod_comm,  &
+     &         node, ele, iphys, layer_tbl, jac_3d_q, jac_3d_l,         &
+     &         filtering, wide_filtering, wk_filter, wk_cor, wk_lsq,    &
+     &         wk_sgs, nod_fld, sgs_coefs)
 !
       use reset_dynamic_model_coefs
       use cal_filtering_scalars
@@ -82,6 +82,7 @@
 !
       integer(kind = kint), intent(in) :: iak_sgs_uxb, icomp_sgs_uxb
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -144,7 +145,7 @@
       call cal_model_coefs(SGS_par%model_p, layer_tbl,                  &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
      &    SGS_par%model_p%itype_Csym_uxb, n_vector, iak_sgs_uxb,        &
-     &    icomp_sgs_uxb, intg_point_t_evo,                              &
+     &    icomp_sgs_uxb, FEM_prm%npoint_t_evo_int,                      &
      &    wk_cor, wk_lsq, wk_sgs, sgs_coefs)
 !
       end subroutine s_cal_sgs_uxb_dynamic_simi
@@ -152,11 +153,11 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_sgs_induct_t_dynamic_simi                          &
-     &         (iak_sgs_uxb, icomp_sgs_uxb, SGS_par, nod_comm,          &
-     &          node, ele, iphys, layer_tbl, jac_3d_q, jac_3d_l,        &
-     &          rhs_tbl, filtering, wide_filtering, m_lump, wk_filter,  &
-     &          wk_cor, wk_lsq, wk_sgs, fem_wk, f_l, nod_fld,           &
-     &          sgs_coefs, sgs_coefs_nod)
+     &        (iak_sgs_uxb, icomp_sgs_uxb, FEM_prm, SGS_par, nod_comm,  &
+     &         node, ele, iphys, layer_tbl, jac_3d_q, jac_3d_l,         &
+     &         rhs_tbl, filtering, wide_filtering, m_lump, wk_filter,   &
+     &         wk_cor, wk_lsq, wk_sgs, fem_wk, f_l, nod_fld,            &
+     &         sgs_coefs, sgs_coefs_nod)
 !
       use reset_dynamic_model_coefs
       use cal_filtering_scalars
@@ -169,6 +170,7 @@
 !
       integer(kind = kint), intent(in) :: iak_sgs_uxb, icomp_sgs_uxb
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -245,7 +247,7 @@
       call cal_model_coefs(SGS_par%model_p, layer_tbl,                  &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
      &    SGS_par%model_p%itype_Csym_uxb, n_asym_tensor,                &
-     &    iak_sgs_uxb, icomp_sgs_uxb, intg_point_t_evo,                 &
+     &    iak_sgs_uxb, icomp_sgs_uxb, FEM_prm%npoint_t_evo_int,         &
      &    wk_cor, wk_lsq, wk_sgs, sgs_coefs)
 !
       call cal_ele_vector_2_node                                        &

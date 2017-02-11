@@ -151,7 +151,7 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &                 write(*,*) 'velocity_on_element'
         call vector_on_element_1st(node, ele, jac_3d_q,                 &
-     &      fluid%istack_ele_fld_smp, intg_point_t_evo,                 &
+     &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &      nod_fld%ntot_phys, iphys%i_velo, nod_fld%d_fld,             &
      &      ele_fld%ntot_phys, iphys_ele%i_velo,                        &
      &      ele_fld%iflag_update, ele_fld%d_fld)
@@ -162,7 +162,7 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &                 write(*,*) 'vorticity_on_element'
         call rotation_on_element_1st(node, ele, jac_3d_q,               &
-     &      fluid%istack_ele_fld_smp, intg_point_t_evo,                 &
+     &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &      nod_fld%ntot_phys, iphys%i_velo, nod_fld%d_fld,             &
      &      ele_fld%ntot_phys, iphys_ele%i_vort,                        &
      &      ele_fld%iflag_update, ele_fld%d_fld)
@@ -216,8 +216,8 @@
          if (iphys_ele%i_filter_velo.ne.0) then
            if(iflag_debug .ge. iflag_routine_msg)                       &
      &                 write(*,*) 'diff_filter_v_on_ele'
-           call sel_int_diff_vector_on_ele                              &
-     &        (fluid%istack_ele_fld_smp, iphys%i_filter_velo, ie_dfvx,  &
+           call sel_int_diff_vector_on_ele(FEM_prm%npoint_t_evo_int,    &
+     &         fluid%istack_ele_fld_smp, iphys%i_filter_velo, ie_dfvx,  &
      &         node, ele, nod_fld, jac_3d_q, jac_3d_l, mhd_fem_wk)
          end if
 !
@@ -242,8 +242,8 @@
          if(SGS_par%model_p%iflag_SGS .eq. id_SGS_NL_grad) then
            if(iflag_debug .ge. iflag_routine_msg)                       &
      &                 write(*,*) 'diff_velocity_on_ele'
-           call sel_int_diff_vector_on_ele                              &
-     &        (fluid%istack_ele_fld_smp, iphys%i_velo, ie_dvx,          &
+           call sel_int_diff_vector_on_ele(FEM_prm%npoint_t_evo_int,    &
+     &         fluid%istack_ele_fld_smp, iphys%i_velo, ie_dvx,          &
      &         node, ele, nod_fld, jac_3d_q, jac_3d_l, mhd_fem_wk)
          end if
        end if

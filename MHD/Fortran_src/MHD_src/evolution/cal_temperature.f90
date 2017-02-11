@@ -274,7 +274,7 @@
      &     (cmt_param%iflag_c_temp, SGS_param%ifilter_final,            &
      &      i_field, iphys%i_pre_heat, ifld_diff%i_temp,                &
      &      ak_d_temp, eps_4_temp_crank,                                &
-     &      node, ele, fluid, evo_temp, property, Tnod_bcs,             &
+     &      FEM_prm, node, ele, fluid, evo_temp, property, Tnod_bcs,    &
      &      jac_3d, rhs_tbl, FEM_elens, diff_coefs, Tmatrix, MG_vector, &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if

@@ -7,7 +7,7 @@
 !     Modified by H. Matsui on Oct. 2005
 !     Modified by H. Matsui on Oct. 2006
 !
-!!      subroutine int_RHS_mass_matrices(node, ele, MHD_mesh,           &
+!!      subroutine int_RHS_mass_matrices(n_int, node, ele, MHD_mesh,    &
 !!     &           jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_l, m_lump)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -45,10 +45,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_RHS_mass_matrices(node, ele, MHD_mesh,             &
+      subroutine int_RHS_mass_matrices(n_int, node, ele, MHD_mesh,      &
      &           jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_l, m_lump)
 !
-      use m_control_parameter
+      integer(kind = kint), intent(in) :: n_int
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -64,11 +64,11 @@
 !
       if     (ele%nnod_4_ele.eq.num_t_quad                              &
      &   .or. ele%nnod_4_ele.eq.num_t_lag) then
-        call int_mass_matrices_quad(intg_point_t_evo, node, ele,        &
+        call int_mass_matrices_quad(n_int, node, ele,                   &
      &      MHD_mesh%fluid, MHD_mesh%conduct, MHD_mesh%insulate,        &
      &      jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_l, m_lump)
       else
-        call int_mass_matrix_trilinear(intg_point_t_evo, node, ele,     &
+        call int_mass_matrix_trilinear(n_int, node, ele,                &
      &      MHD_mesh%fluid, MHD_mesh%conduct, MHD_mesh%insulate,        &
      &      jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_l, m_lump)
       end if 

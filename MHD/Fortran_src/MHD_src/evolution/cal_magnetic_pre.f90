@@ -174,10 +174,10 @@
 !
       if ( SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
         call cal_sgs_magne_induction(icomp_sgs_uxb, ie_dvx, ie_dbx,     &
-     &     SGS_param, filter_param, nod_comm, node, ele, conduct,       &
-     &     cd_prop, iphys, iphys_ele, ele_fld, jac_3d_q, rhs_tbl,       &
-     &     FEM_elens, filtering, sgs_coefs, sgs_coefs_nod, wk_filter,   &
-     &     mhd_fem_wk, fem_wk, f_l, nod_fld)
+     &      FEM_prm, SGS_param, filter_param, nod_comm, node, ele,      &
+     &      conduct, cd_prop, iphys, iphys_ele, ele_fld, jac_3d_q,      &
+     &      rhs_tbl, FEM_elens, filtering, sgs_coefs, sgs_coefs_nod,    &
+     &      wk_filter, mhd_fem_wk, fem_wk, f_l, nod_fld)
       end if
 !
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
@@ -239,8 +239,8 @@
         call cal_magne_pre_consist_crank                                &
      &     (cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
      &      iphys%i_magne, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,     &
-     &      Bnod_bcs%nod_bc_b, node, ele, conduct, evo_magne, cd_prop,  &
-     &      jac_3d_q, rhs_tbl, FEM_elens, diff_coefs, Bmatrix,          &
+     &      Bnod_bcs%nod_bc_b, FEM_prm, node, ele, conduct, evo_magne,  &
+     &      cd_prop, jac_3d_q, rhs_tbl, FEM_elens, diff_coefs, Bmatrix, &
      &      MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !

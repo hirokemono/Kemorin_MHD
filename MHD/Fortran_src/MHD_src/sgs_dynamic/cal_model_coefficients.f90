@@ -184,8 +184,8 @@
      &                        .eq. id_SGS_similarity) then
           if (iflag_debug.eq.1)                                         &
      &          write(*,*) 's_cal_sgs_s_flux_dynamic_simi temp'
-          call s_cal_sgs_s_flux_dynamic_simi                            &
-     &       (SGS_par%model_p%itype_Csym_h_flux, iphys%i_sgs_temp,      &
+          call s_cal_sgs_s_flux_dynamic_simi(FEM_prm%npoint_t_evo_int,  &
+     &        SGS_par%model_p%itype_Csym_h_flux, iphys%i_sgs_temp,      &
      &        iphys%i_filter_temp, iphys%i_wide_fil_temp,               &
      &        iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_h_flux,    &
      &        ifld_sgs%i_heat_flux, icomp_sgs%i_heat_flux, SGS_par,     &
@@ -237,8 +237,8 @@
      &                       .eq. id_SGS_similarity) then
           if (iflag_debug.eq.1)                                         &
      &          write(*,*) 's_cal_sgs_s_flux_dynamic_simi comp'
-          call s_cal_sgs_s_flux_dynamic_simi                            &
-     &       (SGS_par%model_p%itype_Csym_c_flux, iphys%i_sgs_composit,  &
+          call s_cal_sgs_s_flux_dynamic_simi(FEM_prm%npoint_t_evo_int,  &
+     &        SGS_par%model_p%itype_Csym_c_flux, iphys%i_sgs_composit,  &
      &        iphys%i_filter_comp, iphys%i_wide_fil_comp,               &
      &        iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_c_flux,    &
      &        ifld_sgs%i_comp_flux, icomp_sgs%i_comp_flux, SGS_par,     &
@@ -274,7 +274,7 @@
           call cal_sgs_m_flux_dynamic                                   &
      &       (ifld_sgs%i_mom_flux, icomp_sgs%i_mom_flux,                &
      &        iphys_elediff%i_velo, iphys_elediff%i_filter_velo,        &
-     &        SGS_par, mesh%nod_comm, mesh%node, mesh%ele,              &
+     &        FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,     &
      &        iphys, iphys_ele, ele_fld, MHD_mesh%fluid, layer_tbl,     &
      &        jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,        &
      &        sgs_coefs_nod, wk_filter, wk_cor, wk_lsq, wk_sgs,         &
@@ -284,11 +284,12 @@
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 's_cal_sgs_m_flux_dynamic_simi'
           call s_cal_sgs_m_flux_dynamic_simi                            &
-     &       (ifld_sgs%i_mom_flux, icomp_sgs%i_mom_flux, SGS_par,       &
-     &        mesh%nod_comm, mesh%node, mesh%ele, iphys, layer_tbl,     &
-     &        jac_3d_q, jac_3d_l, rhs_tbl, filtering, wide_filtering,   &
-     &        m_lump, wk_filter, wk_cor, wk_lsq, wk_sgs, fem_wk,        &
-     &        f_l, nod_fld, sgs_coefs, sgs_coefs_nod)
+     &       (ifld_sgs%i_mom_flux, icomp_sgs%i_mom_flux,                &
+     &        FEM_prm, SGS_par, mesh%nod_comm, mesh%node,               &
+     &        mesh%ele, iphys, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,  &
+     &        filtering, wide_filtering, m_lump, wk_filter,             &
+     &        wk_cor, wk_lsq, wk_sgs, fem_wk, f_l, nod_fld,             &
+     &        sgs_coefs, sgs_coefs_nod)
         end if
 !
         if(SGS_par%commute_p%iflag_c_mf .eq. id_SGS_commute_ON) then
@@ -315,8 +316,8 @@
           call cal_sgs_maxwell_t_dynamic                                &
      &       (ifld_sgs%i_lorentz, icomp_sgs%i_lorentz,                  &
      &        iphys_elediff%i_magne, iphys_elediff%i_filter_magne,      &
-     &        SGS_par, mesh%nod_comm, mesh%node, mesh%ele, iphys,       &
-     &        iphys_ele, ele_fld, MHD_mesh%fluid, layer_tbl,            &
+     &        FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,     &
+     &        iphys, iphys_ele, ele_fld, MHD_mesh%fluid, layer_tbl,     &
      &        jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,        &
      &        sgs_coefs_nod, wk_filter, wk_cor, wk_lsq, wk_sgs,         &
      &        mhd_fem_wk, fem_wk, nod_fld, sgs_coefs)
@@ -325,11 +326,11 @@
           if (iflag_debug.eq.1)                                         &
      &       write(*,*) 'cal_sgs_maxwell_dynamic_simi'
           call cal_sgs_maxwell_dynamic_simi                             &
-     &       (ifld_sgs%i_lorentz, icomp_sgs%i_lorentz, SGS_par,         &
-     &        mesh%nod_comm, mesh%node, mesh%ele, iphys, layer_tbl,     &
-     &        jac_3d_q, jac_3d_l, rhs_tbl, filtering, wide_filtering,   &
-     &        m_lump, wk_filter, wk_cor, wk_lsq, wk_sgs, fem_wk,        &
-     &        f_l, nod_fld, sgs_coefs, sgs_coefs_nod)
+     &      (ifld_sgs%i_lorentz, icomp_sgs%i_lorentz, FEM_prm, SGS_par, &
+     &       mesh%nod_comm, mesh%node, mesh%ele, iphys, layer_tbl,      &
+     &       jac_3d_q, jac_3d_l, rhs_tbl, filtering, wide_filtering,    &
+     &       m_lump, wk_filter, wk_cor, wk_lsq, wk_sgs, fem_wk,         &
+     &       f_l, nod_fld, sgs_coefs, sgs_coefs_nod)
         end if
 !
         if(SGS_par%commute_p%iflag_c_lorentz .eq. id_SGS_commute_ON)    &
@@ -358,21 +359,22 @@
      &      (ifld_sgs%i_induction, icomp_sgs%i_induction,               &
      &       iphys_elediff%i_velo, iphys_elediff%i_magne,               &
      &       iphys_elediff%i_filter_velo, iphys_elediff%i_filter_magne, &
-     &       SGS_par, mesh%nod_comm, mesh%node, mesh%ele, iphys,        &
-     &       iphys_ele, ele_fld, MHD_mesh%conduct, cd_prop1, layer_tbl, &
-     &       jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,         &
-     &       sgs_coefs_nod, wk_filter, wk_cor, wk_lsq, wk_sgs,          &
-     &       mhd_fem_wk, fem_wk, f_l, nod_fld, sgs_coefs)
+     &       FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,      &
+     &       iphys, iphys_ele, ele_fld, MHD_mesh%conduct, cd_prop1,     &
+     &       layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens,         &
+     &       filtering, sgs_coefs_nod, wk_filter, wk_cor, wk_lsq,       &
+     &       wk_sgs, mhd_fem_wk, fem_wk, f_l, nod_fld, sgs_coefs)
         else if(SGS_par%model_p%iflag_SGS_uxb                           &
      &                            .eq. id_SGS_similarity) then
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'cal_sgs_induct_t_dynamic_simi'
           call cal_sgs_induct_t_dynamic_simi                            &
-     &       (ifld_sgs%i_induction, icomp_sgs%i_induction, SGS_par,     &
-     &        mesh%nod_comm, mesh%node, mesh%ele, iphys, layer_tbl,     &
-     &        jac_3d_q, jac_3d_l, rhs_tbl, filtering, wide_filtering,   &
-     &        m_lump, wk_filter, wk_cor, wk_lsq, wk_sgs, fem_wk,        &
-     &        f_l, nod_fld, sgs_coefs, sgs_coefs_nod)
+     &       (ifld_sgs%i_induction, icomp_sgs%i_induction,              &
+     &        FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,     &
+     &        iphys, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,            &
+     &        filtering, wide_filtering, m_lump, wk_filter,             &
+     &        wk_cor, wk_lsq, wk_sgs, fem_wk, f_l, nod_fld,             &
+     &        sgs_coefs, sgs_coefs_nod)
         end if
 !
         if(SGS_par%commute_p%iflag_c_uxb .eq. id_SGS_commute_ON) then
@@ -396,19 +398,20 @@
           call cal_sgs_uxb_dynamic                                      &
      &       (ifld_sgs%i_induction, icomp_sgs%i_induction,              &
      &        iphys_elediff%i_velo, iphys_elediff%i_filter_velo,        &
-     &        SGS_par, mesh%nod_comm, mesh%node, mesh%ele, iphys,       &
-     &        iphys_ele, ele_fld, MHD_mesh%conduct, cd_prop1, layer_tbl,&
-     &        jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,        &
-     &        wk_filter, wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,    &
-     &        f_l, nod_fld, sgs_coefs)
+     &        FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,     &
+     &        iphys, iphys_ele, ele_fld, MHD_mesh%conduct, cd_prop1,    &
+     &        layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens,        &
+     &        filtering, wk_filter, wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, &
+     &        fem_wk, f_l, nod_fld, sgs_coefs)
         else if(SGS_par%model_p%iflag_SGS_uxb                           &
      &                         .eq. id_SGS_similarity) then
           if (iflag_debug.eq.1)  write(*,*)                             &
      &                          's_cal_sgs_uxb_dynamic_simi'
           call s_cal_sgs_uxb_dynamic_simi                               &
-     &       (ifld_sgs%i_induction, icomp_sgs%i_induction, SGS_par,     &
-     &        mesh%nod_comm, mesh%node, mesh%ele, iphys, layer_tbl,     &
-     &        jac_3d_q, jac_3d_l, filtering, wide_filtering, wk_filter, &
+     &       (ifld_sgs%i_induction, icomp_sgs%i_induction,              &
+     &        FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,     &
+     &        iphys, layer_tbl, jac_3d_q, jac_3d_l,                     &
+     &        filtering, wide_filtering, wk_filter,                     &
      &        wk_cor, wk_lsq, wk_sgs, nod_fld, sgs_coefs)
         end if
       end if

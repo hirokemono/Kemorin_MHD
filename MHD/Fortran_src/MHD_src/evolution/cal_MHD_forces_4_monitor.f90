@@ -366,7 +366,7 @@
      &             write(*,*) 'lead  ', trim(fhd_viscous)
         call cal_viscous_diffusion                                      &
      &     (ifld_diff%i_velo, ifld_diff%i_velo, ifld_diff%i_lorentz,    &
-     &      SGS_par%model_p, SGS_par%commute_p,                         &
+     &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      nod_comm, node, ele, surf, sf_grp, fluid, fl_prop,          &
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,       &
      &      iphys, ak_MHD, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,      &
@@ -378,8 +378,8 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_vecp_diffuse)
         call cal_vecp_diffusion(ifld_diff%i_magne, ak_MHD%ak_d_magne,   &
-     &      SGS_par%model_p, nod_comm, node, ele, surf, sf_grp,         &
-     &      nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, iphys,                  &
+     &      FEM_prm, SGS_par%model_p, nod_comm, node, ele, surf,        &
+     &      sf_grp, nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, iphys,          &
      &      jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,         &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
@@ -390,7 +390,7 @@
      &             write(*,*) 'lead  ', trim(fhd_mag_diffuse)
         call cal_magnetic_diffusion(ifld_diff%i_magne,                  &
      &      ifld_diff%i_induction, ak_MHD%ak_d_magne,                   &
-     &      SGS_par%model_p, SGS_par%commute_p,                         &
+     &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      nod_comm, node, ele, surf, conduct, sf_grp,                 &
      &      nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,       &
      &      iphys, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,  &

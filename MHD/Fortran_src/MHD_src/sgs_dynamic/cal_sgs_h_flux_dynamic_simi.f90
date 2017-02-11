@@ -3,10 +3,10 @@
 !
 !     Written by H. Matsui on May, 2009
 !
-!!      subroutine s_cal_sgs_s_flux_dynamic_simi(itype_Csym_flux,       &
-!!     &         ifield, ifield_f, ifield_w, ivelo, ivelo_f, i_sgs,     &
-!!     &         iak_sgs_hlux, icomp_sgs_flux, SGS_par,                 &
-!!     &         nod_comm, node, ele, iphys, layer_tbl,                 &
+!!      subroutine s_cal_sgs_s_flux_dynamic_simi                        &
+!!     &        (num_int, itype_Csym_flux, ifield, ifield_f, ifield_w,  &
+!!     &         ivelo, ivelo_f, i_sgs, iak_sgs_hlux, icomp_sgs_flux,   &
+!!     &         SGS_par, nod_comm, node, ele, iphys, layer_tbl,        &
 !!     &         jac_3d_q, jac_3d_l, rhs_tbl, filtering, wide_filtering,&
 !!     &         m_lump, wk_filter, wk_cor, wk_lsq, wk_sgs, fem_wk,     &
 !!     &         f_l, nod_fld, sgs_coefs, sgs_coefs_nod)
@@ -38,7 +38,6 @@
       use m_phys_constants
 !
       use m_machine_parameter
-      use m_control_parameter
 !
       use t_SGS_control_parameter
       use t_comm_table
@@ -63,10 +62,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_cal_sgs_s_flux_dynamic_simi(itype_Csym_flux,         &
-     &         ifield, ifield_f, ifield_w, ivelo, ivelo_f, i_sgs,       &
-     &         iak_sgs_hlux, icomp_sgs_flux, SGS_par,                   &
-     &         nod_comm, node, ele, iphys, layer_tbl,                   &
+      subroutine s_cal_sgs_s_flux_dynamic_simi                          &
+     &        (num_int, itype_Csym_flux, ifield, ifield_f, ifield_w,    &
+     &         ivelo, ivelo_f, i_sgs, iak_sgs_hlux, icomp_sgs_flux,     &
+     &         SGS_par, nod_comm, node, ele, iphys, layer_tbl,          &
      &         jac_3d_q, jac_3d_l, rhs_tbl, filtering, wide_filtering,  &
      &         m_lump, wk_filter, wk_cor, wk_lsq, wk_sgs, fem_wk,       &
      &         f_l, nod_fld, sgs_coefs, sgs_coefs_nod)
@@ -80,7 +79,7 @@
       use cal_similarity_terms
       use cvt_dynamic_scheme_coord
 !
-      integer(kind = kint), intent(in) :: itype_Csym_flux
+      integer(kind = kint), intent(in) :: num_int, itype_Csym_flux
       integer(kind = kint), intent(in) :: iak_sgs_hlux, icomp_sgs_flux
 !
       integer (kind=kint), intent(in) :: ifield, ifield_f, ifield_w
@@ -158,8 +157,7 @@
       call cal_model_coefs(SGS_par%model_p, layer_tbl,                  &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
      &    itype_Csym_flux, n_vector, iak_sgs_hlux,                      &
-     &    icomp_sgs_flux, intg_point_t_evo, wk_cor, wk_lsq, wk_sgs,     &
-     &    sgs_coefs)
+     &    icomp_sgs_flux, num_int, wk_cor, wk_lsq, wk_sgs, sgs_coefs)
 !
       call cal_ele_vector_2_node(node, ele, jac_3d_q, rhs_tbl, m_lump,  &
      &    sgs_coefs%ntot_comp, icomp_sgs_flux, sgs_coefs%ak,            &

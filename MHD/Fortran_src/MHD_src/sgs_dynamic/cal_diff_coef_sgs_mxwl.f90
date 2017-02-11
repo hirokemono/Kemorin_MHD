@@ -187,8 +187,8 @@
 !
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad_f)
 !
-      call cal_commute_error_4_mf                                       &
-     &   (fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
+      call cal_commute_error_4_mf(FEM_prm1%npoint_t_evo_int,            &
+     &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
      &    rhs_tbl, FEM_elens, Bsf_bcs%sgs, ifilter_4delta,              &
      &    iphys%i_sgs_grad_f, iphys%i_sgs_grad_f, iphys%i_filter_magne, &
@@ -204,8 +204,8 @@
 !
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad)
 !
-      call cal_commute_error_4_mf                                       &
-     &   (fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
+      call cal_commute_error_4_mf(FEM_prm1%npoint_t_evo_int,            &
+     &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
      &    rhs_tbl, FEM_elens, Bsf_bcs%sgs, ifilter_2delta,              &
      &    iphys%i_sgs_grad, iphys%i_SGS_maxwell, iphys%i_magne,         &
@@ -230,9 +230,9 @@
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_diff_coef_fluid', n_vector, iak_diff_lor, icomp_diff_lor
       call cal_diff_coef_fluid                                          &
-     &   (SGS_par%model_p, SGS_par%commute_p, layer_tbl,                &
-     &    node, ele, fluid, iphys, nod_fld, jac_3d_q, jac_3d_l,         &
-     &    n_vector, iak_diff_lor, icomp_diff_lor, intg_point_t_evo,     &
+     &   (SGS_par%model_p, SGS_par%commute_p, layer_tbl, node, ele,     &
+     &    fluid, iphys, nod_fld, jac_3d_q, jac_3d_l, n_vector,          &
+     &    iak_diff_lor, icomp_diff_lor, FEM_prm1%npoint_t_evo_int,      &
      &    wk_cor, wk_lsq, wk_diff, diff_coefs)
 !
       end subroutine s_cal_diff_coef_sgs_mxwl

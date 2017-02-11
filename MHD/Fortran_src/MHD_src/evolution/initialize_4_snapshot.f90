@@ -258,8 +258,9 @@ integer(kind = kint) :: iflag
 !
 !     ---------------------
 !
-      call int_RHS_mass_matrices(mesh%node, mesh%ele, MHD_mesh,         &
-     &   jac1_3d_q, rhs_tbl1, mhd_fem1_wk, fem1_wk, f1_l, m1_lump)
+      call int_RHS_mass_matrices(FEM_prm1%npoint_t_evo_int,             &
+     &     mesh%node, mesh%ele, MHD_mesh, jac1_3d_q, rhs_tbl1,          &
+     &     mhd_fem1_wk, fem1_wk, f1_l, m1_lump)
 !
 !     ---------------------
 !

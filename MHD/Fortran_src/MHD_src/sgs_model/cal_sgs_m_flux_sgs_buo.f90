@@ -203,9 +203,9 @@
        end if
 !
 !   take RMS of SGS buoyancy flux and work of Reynolds stress
-      call select_int_vol_sgs_buoyancy(node, ele, fl_prop, layer_tbl,   &
-     &    iphys, nod_fld, jac_3d_q, jac_3d_l,                           &
-     &    wk_lsq%nlayer, wk_lsq%slocal)
+      call select_int_vol_sgs_buoyancy(FEM_prm1%npoint_t_evo_int,       &
+     &    node, ele, fl_prop, layer_tbl, iphys, nod_fld,                &
+     &    jac_3d_q, jac_3d_l, wk_lsq%nlayer, wk_lsq%slocal)
 !
       call sum_lsq_coefs_4_comps(ncomp_sgs_buo, wk_lsq)
 !
@@ -261,7 +261,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine select_int_vol_sgs_buoyancy                            &
-     &         (node, ele, fl_prop, layer_tbl, iphys, nod_fld,          &
+     &         (num_int, node, ele, fl_prop, layer_tbl, iphys, nod_fld, &
      &          jac_3d_q, jac_3d_l, n_layer_d, sgs_l)
 !
       use m_control_parameter
@@ -275,6 +275,8 @@
       type(layering_tbl), intent(in) :: layer_tbl
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       type(phys_data), intent(in) :: nod_fld
+!
+      integer(kind = kint), intent(in) :: num_int
       integer(kind = kint), intent(in) :: n_layer_d
 !
       real(kind= kreal), intent(inout) :: sgs_l(n_layer_d,18)
@@ -285,7 +287,7 @@
       if(fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
         call int_vol_2rms_ave_ele_grps                                  &
      &     (node, ele, layer_tbl%e_grp, jac_3d_q, jac_3d_l,             &
-     &      intg_point_t_evo, nod_fld%ntot_phys, iphys%i_reynolds_wk,   &
+     &      num_int, nod_fld%ntot_phys, iphys%i_reynolds_wk,            &
      &      nod_fld%d_fld, nod_fld%ntot_phys, iphys%i_SGS_buo_wk,       &
      &      nod_fld%d_fld, sgs_l(1,1), sgs_l(1,4), sgs_l(1,2),          &
      &      sgs_l(1,5) )
@@ -293,14 +295,14 @@
         if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
           call int_vol_rms_ave_ele_grps                                 &
      &       (node, ele, layer_tbl%e_grp, jac_3d_q, jac_3d_l,           &
-     &        intg_point_t_evo, nod_fld%ntot_phys,                      &
+     &        num_int, nod_fld%ntot_phys,                               &
      &        iphys%i_SGS_comp_buo_wk, nod_fld%d_fld,                   &
      &        sgs_l(1,3), sgs_l(1,6))
         end if
       else if(fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
         call int_vol_2rms_ave_ele_grps                                  &
      &     (node, ele, layer_tbl%e_grp, jac_3d_q, jac_3d_l,             &
-     &      intg_point_t_evo, nod_fld%ntot_phys, iphys%i_reynolds_wk,   &
+     &      num_int, nod_fld%ntot_phys, iphys%i_reynolds_wk,            &
      &      nod_fld%d_fld, nod_fld%ntot_phys,                           &
      &      iphys%i_SGS_comp_buo_wk, nod_fld%d_fld,                     &
      &      sgs_l(1,1), sgs_l(1,4), sgs_l(1,3), sgs_l(1,6))

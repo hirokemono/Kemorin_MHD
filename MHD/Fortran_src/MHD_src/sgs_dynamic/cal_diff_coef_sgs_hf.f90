@@ -152,8 +152,7 @@
 !   gradient model by filtered field (to iphys%i_sgs_grad_f)
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_filter_hf_grad'
-      call cal_sgs_s_flux_grad_w_coef                                   &
-     &   (iflag_supg, intg_point_t_evo,                                 &
+      call cal_sgs_s_flux_grad_w_coef(iflag_supg, num_int,              &
      &    itype_Csym_flux, SGS_par%model_p%icoord_Csim, ifilter_4delta, &
      &    icomp_sgs_flux, iphys%i_sgs_grad_f, ifield_f, ie_dfvx,        &
      &    nod_comm, node, ele, fluid, iphys_ele, ele_fld, jac_3d_q,     &
@@ -196,7 +195,7 @@
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad_f)
 !
       call cal_commute_error_4_sf                                       &
-     &   (fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
+     &   (num_int, fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,       &
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
      &    rhs_tbl, FEM_elens, sf_bcs%sgs, ifilter_4delta,               &
      &    iphys%i_sgs_grad_f, iphys%i_sgs_grad_f, ivelo_f, ifield_f,    &
@@ -212,7 +211,7 @@
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad)
 !
       call cal_commute_error_4_sf                                       &
-     &   (fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
+     &   (num_int, fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,       &
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
      &    rhs_tbl, FEM_elens, sf_bcs%sgs, ifilter_2delta,               &
      &    iphys%i_sgs_grad, i_sgs, ivelo, ifield,                       &
@@ -238,7 +237,7 @@
       call cal_diff_coef_fluid                                          &
      &   (SGS_par%model_p, SGS_par%commute_p, layer_tbl,                &
      &    node, ele, fluid, iphys, nod_fld, jac_3d_q, jac_3d_l,         &
-     &    n_scalar, iak_diff_flux, icomp_diff_sf, intg_point_t_evo,     &
+     &    n_scalar, iak_diff_flux, icomp_diff_sf, num_int,              &
      &    wk_cor, wk_lsq, wk_diff, diff_coefs)
 !
       end subroutine s_cal_diff_coef_sgs_sf

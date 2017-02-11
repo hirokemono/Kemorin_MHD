@@ -307,8 +307,9 @@
 !
 !     ---------------------
 !
-      call int_RHS_mass_matrices(mesh%node, mesh%ele, MHD_mesh,         &
-     &   jac1_3d_q, rhs_tbl1, mhd_fem1_wk, fem1_wk, f1_l, m1_lump)
+      call int_RHS_mass_matrices(FEM_prm1%npoint_t_evo_int,             &
+     &    mesh%node, mesh%ele, MHD_mesh, jac1_3d_q, rhs_tbl1,           &
+     &    mhd_fem1_wk, fem1_wk, f1_l, m1_lump)
 !
 !     ---------------------
 !
@@ -317,8 +318,8 @@
 !      call reset_aiccg_matrices(mesh%node, mesh%ele, MHD_mesh%fluid)
 !
       if(solver_iflag(method_4_solver) .eq. iflag_mgcg) then
-        call s_initialize_4_MHD_AMG                                     &
-     &     (ifld_diff, diff_coefs, mesh%node, mesh%ele, MHD1_matrices)
+        call s_initialize_4_MHD_AMG(FEM_prm1, mesh%node, mesh%ele,      &
+     &      ifld_diff, diff_coefs, MHD1_matrices)
       end if
 !
 !     --------------------- 

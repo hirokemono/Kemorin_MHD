@@ -5,14 +5,15 @@
 !
 !!      subroutine cal_sgs_induct_t_grad_w_coef(i_filter, icomp_sgs_uxb,&
 !!     &          i_sgs, ifield_v, ifield_b, ie_dvx, ie_dbx,            &
-!!     &          SGS_param, nod_comm, node, ele, conduct, cd_prop,     &
-!!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elen,        &
-!!     &          sgs_coefs, fem_wk, mhd_fem_wk, f_l, nod_fld)
+!!     &          FEM_prm, SGS_param, nod_comm, node, ele, conduct,     &
+!!     &          cd_prop, iphys_ele, ele_fld, jac_3d, rhs_tbl,         &
+!!     &          FEM_elen, sgs_coefs, fem_wk, mhd_fem_wk, f_l, nod_fld)
 !!      subroutine cal_sgs_induct_t_grad_no_coef                        &
 !!     &         (i_filter, i_sgs, ifield_v, ifield_b, ie_dvx, ie_dbx,  &
-!!     &          nod_comm, node, ele, conduct, cd_prop,                &
+!!     &          FEM_prm, nod_comm, node, ele, conduct, cd_prop,       &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elen,        &
 !!     &          fem_wk, mhd_fem_wk, f_l, nod_fld)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -34,6 +35,7 @@
 !
       use m_precision
 !
+      use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_physical_property
       use t_comm_table
@@ -57,9 +59,9 @@
 !
       subroutine cal_sgs_induct_t_grad_w_coef(i_filter, icomp_sgs_uxb,  &
      &          i_sgs, ifield_v, ifield_b, ie_dvx, ie_dbx,              &
-     &          SGS_param, nod_comm, node, ele, conduct, cd_prop,       &
-     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elen,          &
-     &          sgs_coefs, fem_wk, mhd_fem_wk, f_l, nod_fld)
+     &          FEM_prm, SGS_param, nod_comm, node, ele, conduct,       &
+     &          cd_prop, iphys_ele, ele_fld, jac_3d, rhs_tbl,           &
+     &          FEM_elen, sgs_coefs, fem_wk, mhd_fem_wk, f_l, nod_fld)
 !
       use int_vol_sgs_induct_t
       use cal_ff_smp_to_ffs
@@ -67,6 +69,7 @@
       use nod_phys_send_recv
       use product_model_coefs_to_sk
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -95,7 +98,7 @@
       call reset_ff_smp(node%max_nod_smp, f_l)
 !
       call sel_int_vol_sgs_induct_t(i_filter, ie_dvx, ie_dbx,           &
-     &    ifield_v, ifield_b, FEM_prm1, node, ele, conduct,             &
+     &    ifield_v, ifield_b, FEM_prm, node, ele, conduct,              &
      &    nod_fld, iphys_ele, ele_fld, jac_3d, FEM_elen,                &
      &    fem_wk, mhd_fem_wk)
 !
@@ -121,7 +124,7 @@
 !
       subroutine cal_sgs_induct_t_grad_no_coef                          &
      &         (i_filter, i_sgs, ifield_v, ifield_b, ie_dvx, ie_dbx,    &
-     &          nod_comm, node, ele, conduct, cd_prop,                  &
+     &          FEM_prm, nod_comm, node, ele, conduct, cd_prop,         &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elen,          &
      &          fem_wk, mhd_fem_wk, f_l, nod_fld)
 !
@@ -130,6 +133,7 @@
       use cal_skv_to_ff_smp
       use nod_phys_send_recv
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -156,7 +160,7 @@
       call reset_ff_smp(node%max_nod_smp, f_l)
 !
       call sel_int_vol_sgs_induct_t(i_filter, ie_dvx, ie_dbx,           &
-     &    ifield_v, ifield_b, FEM_prm1, node, ele, conduct,             &
+     &    ifield_v, ifield_b, FEM_prm, node, ele, conduct,              &
      &    nod_fld, iphys_ele, ele_fld, jac_3d, FEM_elen,                &
      &    fem_wk, mhd_fem_wk)
 !

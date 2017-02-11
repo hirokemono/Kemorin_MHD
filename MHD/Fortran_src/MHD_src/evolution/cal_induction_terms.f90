@@ -7,10 +7,11 @@
 !!     &         (FEM_prm, nod_comm, node, ele, conduct, cd_prop,       &
 !!     &          Bnod_bcs, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-!!      subroutine cal_vecp_diffusion(iak_diff_b, ak_d_magne, SGS_param,&
-!!     &          nod_comm, node, ele, surf, sf_grp, Bnod_bcs, Asf_bcs, &
-!!     &          iphys, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,        &
-!!     &          diff_coefs, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!      subroutine cal_vecp_diffusion(iak_diff_b, ak_d_magne,           &
+!!     &          FEM_prm, SGS_param, nod_comm, node, ele, surf, sf_grp,&
+!!     &          Bnod_bcs, Asf_bcs,iphys, jac_3d, jac_sf_grp, rhs_tbl, &
+!!     &          FEM_elens, diff_coefs, mhd_fem_wk, fem_wk,            &
+!!     &          f_l, f_nl, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(communication_table), intent(in) :: nod_comm
@@ -39,7 +40,6 @@
       use m_precision
 !
       use m_phys_constants
-      use m_control_parameter
 !
       use t_FEM_control_parameter
       use t_physical_property
@@ -131,10 +131,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_vecp_diffusion(iak_diff_b, ak_d_magne, SGS_param,  &
-     &          nod_comm, node, ele, surf, sf_grp, Bnod_bcs, Asf_bcs,   &
-     &          iphys, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,          &
-     &          diff_coefs, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+      subroutine cal_vecp_diffusion(iak_diff_b, ak_d_magne,             &
+     &          FEM_prm, SGS_param, nod_comm, node, ele, surf, sf_grp,  &
+     &          Bnod_bcs, Asf_bcs,iphys, jac_3d, jac_sf_grp, rhs_tbl,   &
+     &          FEM_elens, diff_coefs, mhd_fem_wk, fem_wk,              &
+     &          f_l, f_nl, nod_fld)
 !
       use t_SGS_control_parameter
       use t_surface_bc_data
@@ -143,6 +144,7 @@
       use int_surf_fixed_gradients
       use set_boundary_scalars
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -170,12 +172,12 @@
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
       call int_vol_vector_diffuse_ele(SGS_param%ifilter_final,          &
-     &    ele%istack_ele_smp, intg_point_t_evo,                         &
+     &    ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,                 &
      &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,   &
      &    iak_diff_b, one, ak_d_magne, iphys%i_vecp, fem_wk, f_l)
 !
       call int_sf_grad_velocity(node, ele, surf, sf_grp,                &
-     &    jac_sf_grp, rhs_tbl, Asf_bcs%grad, intg_point_t_evo,          &
+     &    jac_sf_grp, rhs_tbl, Asf_bcs%grad, FEM_prm%npoint_t_evo_int,  &
      &    ak_d_magne, fem_wk, f_l)
 !
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)

@@ -13,11 +13,11 @@
 !!     &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
 !!
 !!      subroutine cal_velo_co_consist_crank(i_velo, coef_velo,         &
-!!     &          node, ele, fluid, Vnod_bcs, nod_fld, jac_3d,          &
+!!     &          FEM_prm, node, ele, fluid, Vnod_bcs, nod_fld, jac_3d, &
 !!     &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
 !!      subroutine cal_magne_co_consist_crank(i_magne, coef_magne,      &
-!!     &          node, ele, conduct, nod_fld, nod_bc_b, jac_3d,&
-!!     &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
+!!     &         FEM_prm, node, ele, conduct, nod_fld, nod_bc_b, jac_3d,&
+!!     &         rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -165,7 +165,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_velo_co_consist_crank(i_velo, coef_velo,           &
-     &          node, ele, fluid, Vnod_bcs, nod_fld, jac_3d,            &
+     &          FEM_prm, node, ele, fluid, Vnod_bcs, nod_fld, jac_3d,   &
      &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
 !
       use int_vol_initial_MHD
@@ -176,6 +176,7 @@
       integer(kind = kint), intent(in) :: i_velo
       real(kind = kreal), intent(in) :: coef_velo
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
@@ -192,8 +193,8 @@
       call reset_ff_t_smp(node%max_nod_smp, mhd_fem_wk)
 !
       if (iflag_debug.eq.1) write(*,*) 'int_vol_initial_velo'
-      call int_vol_initial_vector                                       &
-     &   (fluid%istack_ele_fld_smp, i_velo, coef_velo,                  &
+      call int_vol_initial_vector(FEM_prm%npoint_t_evo_int,             &
+     &    fluid%istack_ele_fld_smp, i_velo, coef_velo,                  &
      &    node, ele, nod_fld, jac_3d, rhs_tbl, fem_wk, mhd_fem_wk)
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
 !
@@ -213,8 +214,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_magne_co_consist_crank(i_magne, coef_magne,        &
-     &          node, ele, conduct, nod_fld, nod_bc_b, jac_3d,          &
-     &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
+     &         FEM_prm, node, ele, conduct, nod_fld, nod_bc_b, jac_3d,  &
+     &         rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
 !
       use int_vol_initial_MHD
       use cal_ff_smp_to_ffs
@@ -224,6 +225,7 @@
       integer(kind = kint), intent(in) :: i_magne
       real(kind = kreal), intent(in) :: coef_magne
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: conduct
@@ -240,8 +242,8 @@
       call reset_ff_t_smp(node%max_nod_smp, mhd_fem_wk)
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_vol_initial_magne'
-      call int_vol_initial_vector                                       &
-     &   (conduct%istack_ele_fld_smp, i_magne, coef_magne,              &
+      call int_vol_initial_vector(FEM_prm%npoint_t_evo_int,             &
+     &    conduct%istack_ele_fld_smp, i_magne, coef_magne,              &
      &    node, ele, nod_fld, jac_3d, rhs_tbl, fem_wk, mhd_fem_wk)
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
 !

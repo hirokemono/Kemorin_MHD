@@ -6,18 +6,19 @@
 !
 !!      subroutine cal_sgs_uxb_dynamic                                  &
 !!     &         (iak_sgs_uxb, icomp_sgs_uxb, ie_dvx, ie_dfvx,          &
-!!     &          SGS_par, nod_comm, node, ele, iphys, iphys_ele,       &
-!!     &          ele_fld, conduct, cd_prop, layer_tbl,                 &
+!!     &          FEM_prm, SGS_par, nod_comm, node, ele, iphys,         &
+!!     &          iphys_ele, ele_fld, conduct, cd_prop, layer_tbl,      &
 !!     &          jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,    &
 !!     &          wk_filter, wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,&
 !!     &          f_l, nod_fld, sgs_coefs)
 !!      subroutine cal_sgs_induct_t_dynamic(iak_sgs_uxb, icomp_sgs_uxb, &
 !!     &          ie_dvx, ie_dbx, ie_dfvx, ie_dfbx,                     &
-!!     &          SGS_par, nod_comm, node, ele, iphys, iphys_ele,       &
-!!     &          ele_fld, conduct, cd_prop, layer_tbl,                 &
+!!     &          FEM_prm, SGS_par, nod_comm, node, ele, iphys,         &
+!!     &          iphys_ele, ele_fld, conduct, cd_prop, layer_tbl,      &
 !!     &          jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,    &
 !!     &          sgs_coefs_nod, wk_filter,  wk_cor, wk_lsq, wk_sgs,    &
 !!     &          mhd_fem_wk, fem_wk, f_l, nod_fld, sgs_coefs)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -50,8 +51,8 @@
 !
       use m_phys_constants
       use m_machine_parameter
-      use m_control_parameter
 !
+      use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_physical_property
       use t_comm_table
@@ -81,8 +82,8 @@
 !
       subroutine cal_sgs_uxb_dynamic                                    &
      &         (iak_sgs_uxb, icomp_sgs_uxb, ie_dvx, ie_dfvx,            &
-     &          SGS_par, nod_comm, node, ele, iphys, iphys_ele,         &
-     &          ele_fld, conduct, cd_prop, layer_tbl,                   &
+     &          FEM_prm, SGS_par, nod_comm, node, ele, iphys,           &
+     &          iphys_ele, ele_fld, conduct, cd_prop, layer_tbl,        &
      &          jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,      &
      &          wk_filter, wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,  &
      &          f_l, nod_fld, sgs_coefs)
@@ -98,6 +99,7 @@
       integer(kind=kint), intent(in) :: iak_sgs_uxb, icomp_sgs_uxb
       integer(kind=kint), intent(in) :: ie_dvx, ie_dfvx
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -174,7 +176,7 @@
       call cal_model_coefs(SGS_par%model_p, layer_tbl,                  &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
      &    SGS_par%model_p%itype_Csym_uxb, n_vector,                     &
-     &    iak_sgs_uxb, icomp_sgs_uxb, intg_point_t_evo, wk_cor,         &
+     &    iak_sgs_uxb, icomp_sgs_uxb, FEM_prm%npoint_t_evo_int, wk_cor, &
      &    wk_lsq, wk_sgs, sgs_coefs)
 !
       end subroutine cal_sgs_uxb_dynamic
@@ -183,8 +185,8 @@
 !
       subroutine cal_sgs_induct_t_dynamic(iak_sgs_uxb, icomp_sgs_uxb,   &
      &          ie_dvx, ie_dbx, ie_dfvx, ie_dfbx,                       &
-     &          SGS_par, nod_comm, node, ele, iphys, iphys_ele,         &
-     &          ele_fld, conduct, cd_prop, layer_tbl,                   &
+     &          FEM_prm, SGS_par, nod_comm, node, ele, iphys,           &
+     &          iphys_ele, ele_fld, conduct, cd_prop, layer_tbl,        &
      &          jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,      &
      &          sgs_coefs_nod, wk_filter,  wk_cor, wk_lsq, wk_sgs,      &
      &          mhd_fem_wk, fem_wk, f_l, nod_fld, sgs_coefs)
@@ -202,6 +204,7 @@
       integer(kind=kint), intent(in) :: ie_dvx, ie_dfvx
       integer(kind=kint), intent(in) :: ie_dbx, ie_dfbx
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -255,9 +258,9 @@
       call cal_sgs_induct_t_grad_no_coef                                &
      &   (ifilter_4delta, iphys%i_sgs_grad_f,                           &
      &    iphys%i_filter_velo, iphys%i_filter_magne, ie_dfvx, ie_dfbx,  &
-     &    nod_comm, node, ele, conduct, cd_prop, iphys_ele, ele_fld,    &
-     &    jac_3d_q, rhs_tbl, FEM_elens, fem_wk, mhd_fem_wk,             &
-     &    f_l, nod_fld)
+     &    FEM_prm, nod_comm, node, ele, conduct, cd_prop,               &
+     &    iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,             &
+     &    fem_wk, mhd_fem_wk, f_l, nod_fld)
 !
 !   gradient model by original field
 !
@@ -265,9 +268,9 @@
       call cal_sgs_induct_t_grad_no_coef                                &
      &   (ifilter_2delta,  iphys%i_SGS_induct_t,                        &
      &    iphys%i_velo, iphys%i_magne, ie_dvx, ie_dbx,                  &
-     &    nod_comm, node, ele, conduct, cd_prop, iphys_ele, ele_fld,    &
-     &    jac_3d_q, rhs_tbl, FEM_elens, fem_wk, mhd_fem_wk,             &
-     &    f_l, nod_fld)
+     &    FEM_prm, nod_comm, node, ele, conduct, cd_prop,               &
+     &    iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,             &
+     &    fem_wk, mhd_fem_wk, f_l, nod_fld)
 !
 !      filtering
 !
@@ -287,7 +290,7 @@
       call cal_model_coefs(SGS_par%model_p, layer_tbl,                  &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
      &    SGS_par%model_p%itype_Csym_uxb, n_asym_tensor,                &
-     &    iak_sgs_uxb, icomp_sgs_uxb, intg_point_t_evo,                 &
+     &    iak_sgs_uxb, icomp_sgs_uxb, FEM_prm%npoint_t_evo_int,         &
      &    wk_cor, wk_lsq, wk_sgs, sgs_coefs)
 !
       call reduce_model_coefs_layer(SGS_par%model_p%SGS_uxb_factor,     &

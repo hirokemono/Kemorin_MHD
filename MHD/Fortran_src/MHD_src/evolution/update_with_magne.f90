@@ -203,8 +203,8 @@
 !
          if (iflag2.eq.2 .and. ie_dfbx.ne.0) then
            if (iflag_debug.gt.0) write(*,*) 'diff_filter_b_on_ele'
-           call sel_int_diff_vector_on_ele                              &
-     &        (ele%istack_ele_smp, iphys%i_filter_magne, ie_dfbx,       &
+           call sel_int_diff_vector_on_ele(FEM_prm%npoint_t_evo_int,    &
+     &         ele%istack_ele_smp, iphys%i_filter_magne, ie_dfbx,       &
      &         node, ele, nod_fld, jac_3d_q, jac_3d_l, mhd_fem_wk)
          end if
 !
@@ -240,8 +240,8 @@
      &  .or. SGS_par%model_p%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
         if ( ie_dbx.ne.0 ) then
            if (iflag_debug.gt.0) write(*,*) 'diff_magne_on_ele'
-            call sel_int_diff_vector_on_ele                             &
-     &         (ele%istack_ele_smp, iphys%i_magne, ie_dbx,              &
+            call sel_int_diff_vector_on_ele(FEM_prm%npoint_t_evo_int,   &
+     &          ele%istack_ele_smp, iphys%i_magne, ie_dbx,              &
      &          node, ele, nod_fld, jac_3d_q, jac_3d_l, mhd_fem_wk)
         end if
        end if

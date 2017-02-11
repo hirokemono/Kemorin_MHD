@@ -48,7 +48,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_control_parameter
 !
       use t_FEM_control_parameter
       use t_SGS_control_parameter
@@ -141,7 +140,7 @@
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_s_flux_true_pre(FEM_prm%iflag_temp_supg,    &
-     &         intg_point_t_evo, iphys%i_SGS_div_hf_true,               &
+     &         FEM_prm%npoint_t_evo_int, iphys%i_SGS_div_hf_true,       &
      &         iphys%i_h_flux, iphys%i_h_flux_div,                      &
      &         iphys%i_filter_temp, iphys%i_filter_velo,                &
      &         nod_comm, node, ele, fluid, ht_prop, nod_bcs%Tnod_bcs,   &
@@ -151,7 +150,7 @@
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld%phys_name(i) )
            call cal_div_sgs_s_flux_true_pre(FEM_prm%iflag_comp_supg,    &
-     &         intg_point_t_evo, iphys%i_SGS_div_cf_true,               &
+     &         FEM_prm%npoint_t_evo_int, iphys%i_SGS_div_cf_true,       &
      &         iphys%i_c_flux, iphys%i_c_flux_div,                      &
      &         iphys%i_filter_comp, iphys%i_filter_velo,                &
      &         nod_comm, node, ele, fluid, cp_prop, nod_bcs%Cnod_bcs,   &

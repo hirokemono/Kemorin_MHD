@@ -6,7 +6,7 @@
 !      Modified by H. Matsui on Aug, 2007
 !
 !!      subroutine int_vol_crank_mat_consist                            &
-!!     &        (mesh, fl_prop, cd_prop, ht_prop, cp_prop,              &
+!!     &        (num_int, mesh, fl_prop, cd_prop, ht_prop, cp_prop,     &
 !!     &         jac_3d, rhs_tbl, MG_mat_fl_q, MG_mat_full_cd_q, fem_wk,&
 !!     &         mat_velo, mat_magne, mat_temp, mat_light)
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -45,7 +45,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_vol_crank_mat_consist                              &
-     &         (mesh, fl_prop, cd_prop, ht_prop, cp_prop,               &
+     &         (num_int, mesh, fl_prop, cd_prop, ht_prop, cp_prop,      &
      &          jac_3d, rhs_tbl, MG_mat_fl_q, MG_mat_full_cd_q, fem_wk, &
      &          mat_velo, mat_magne, mat_temp, mat_light)
 !
@@ -56,6 +56,7 @@
       use cal_skv_to_ff_smp
       use add_skv1_to_crs_matrix
 !
+      integer(kind = kint), intent(in) :: num_int
       type(mesh_geometry), intent(in) :: mesh
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
@@ -77,7 +78,7 @@
       do  k2 = 1, mesh%ele%nnod_4_ele
         call reset_sk6(n_scalar, mesh%ele, fem_wk%sk6)
         call fem_skv_mass_matrix_type(mesh%ele%istack_ele_smp,          &
-     &      intg_point_t_evo, k2, mesh%ele, jac_3d, fem_wk%sk6)
+     &      num_int, k2, mesh%ele, jac_3d, fem_wk%sk6)
 !
         if (evo_velo%iflag_scheme .eq. id_Crank_nicolson_cmass          &
      &      .and. fl_prop%coef_velo.gt.0.0d0 ) then

@@ -6,17 +6,18 @@
 !
 !!      subroutine s_cal_sgs_m_flux_dynamic_simi                        &
 !!     &         (iak_sgs_mf, icomp_sgs_mf,                             &
-!!     &          SGS_par, nod_comm, node, ele, iphys,                  &
+!!     &          FEM_prm, SGS_par, nod_comm, node, ele, iphys,         &
 !!     &          layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,               &
 !!     &          filtering, wide_filtering, m_lump, wk_filter,         &
 !!     &          wk_cor, wk_lsq, wk_sgs, fem_wk, f_l, nod_fld,         &
 !!     &          sgs_coefs, sgs_coefs_nod)
 !!      subroutine cal_sgs_maxwell_dynamic_simi                         &
-!!     &        (iak_sgs_lor, icomp_sgs_lor, SGS_par,                   &
+!!     &        (iak_sgs_lor, icomp_sgs_lor, FEM_prm, SGS_par,          &
 !!     &         nod_comm, node, ele, iphys, layer_tbl,                 &
 !!     &         jac_3d_q, jac_3d_l, rhs_tbl, filtering, wide_filtering,&
 !!     &         m_lump, wk_filter, wk_cor, wk_lsq, wk_sgs, fem_wk, f_l,&
 !!     &         nod_fld, sgs_coefs, sgs_coefs_nod)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -43,9 +44,9 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_control_parameter
       use m_phys_constants
 !
+      use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_comm_table
       use t_geometry_data
@@ -71,7 +72,7 @@
 !
       subroutine s_cal_sgs_m_flux_dynamic_simi                          &
      &         (iak_sgs_mf, icomp_sgs_mf,                               &
-     &          SGS_par, nod_comm, node, ele, iphys,                    &
+     &          FEM_prm, SGS_par, nod_comm, node, ele, iphys,           &
      &          layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,                 &
      &          filtering, wide_filtering, m_lump, wk_filter,           &
      &          wk_cor, wk_lsq, wk_sgs, fem_wk, f_l, nod_fld,           &
@@ -89,6 +90,7 @@
 !
       integer(kind = kint), intent(in) :: iak_sgs_mf, icomp_sgs_mf
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -167,7 +169,7 @@
       call cal_model_coefs(SGS_par%model_p, layer_tbl,                  &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
      &    SGS_par%model_p%itype_Csym_m_flux, n_sym_tensor,              &
-     &    iak_sgs_mf, icomp_sgs_mf, intg_point_t_evo,                   &
+     &    iak_sgs_mf, icomp_sgs_mf, FEM_prm%npoint_t_evo_int,           &
      &    wk_cor, wk_lsq, wk_sgs, sgs_coefs)
 !
       call cal_ele_sym_tensor_2_node                                    &
@@ -181,7 +183,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_sgs_maxwell_dynamic_simi                           &
-     &        (iak_sgs_lor, icomp_sgs_lor, SGS_par,                     &
+     &        (iak_sgs_lor, icomp_sgs_lor, FEM_prm, SGS_par,            &
      &         nod_comm, node, ele, iphys, layer_tbl,                   &
      &         jac_3d_q, jac_3d_l, rhs_tbl, filtering, wide_filtering,  &
      &         m_lump, wk_filter, wk_cor, wk_lsq, wk_sgs, fem_wk, f_l,  &
@@ -199,6 +201,7 @@
 !
       integer(kind = kint), intent(in) :: iak_sgs_lor, icomp_sgs_lor
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -276,7 +279,7 @@
       call cal_model_coefs(SGS_par%model_p, layer_tbl,                  &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
      &    SGS_par%model_p%itype_Csym_maxwell, n_sym_tensor,             &
-     &    iak_sgs_lor, icomp_sgs_lor, intg_point_t_evo,                 &
+     &    iak_sgs_lor, icomp_sgs_lor, FEM_prm%npoint_t_evo_int,         &
      &    wk_cor, wk_lsq, wk_sgs, sgs_coefs)
 !
       call cal_ele_sym_tensor_2_node                                    &

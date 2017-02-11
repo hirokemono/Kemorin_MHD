@@ -218,7 +218,7 @@
 !      call int_rms_div_v_monitor(iloop, node, ele, fluid,              &
 !     &    iphys, nod_fld, jac_3d_q, fem_wk, rel_correct)
 !
-      do iloop = 0, maxiter
+      do iloop = 0, FEM_prm%maxiter_stokes
         call cal_mod_potential(ifld_diff%i_velo,                        &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      node, ele, surf, fluid, sf_grp, Vnod_bcs, Vsf_bcs, Psf_bcs, &

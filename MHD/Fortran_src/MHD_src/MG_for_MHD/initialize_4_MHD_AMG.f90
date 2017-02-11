@@ -3,8 +3,9 @@
 !
 !        programmed H.Matsui on Dec., 2008
 !
-!!      subroutine s_initialize_4_MHD_AMG                               &
-!!     &        (ifld_diff, diff_coefs, node_1st, ele_1st, MHD_matrices)
+!!      subroutine s_initialize_4_MHD_AMG(FEM_prm, node_1st, ele_1st,   &
+!!     &          ifld_diff, diff_coefs, MHD_matrices)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(node_data), intent(inout) :: node_1st
 !!        type(element_data), intent(inout) :: ele_1st
 !!      subroutine const_MGCG_MHD_matrices                              &
@@ -26,6 +27,7 @@
       use m_type_AMG_data
 !
       use m_physical_property
+      use t_FEM_control_parameter
       use t_solver_djds_MHD
       use t_material_property
       use t_SGS_model_coefs
@@ -40,8 +42,8 @@
 !
 ! ---------------------------------------------------------------------
 !
-      subroutine s_initialize_4_MHD_AMG                                 &
-     &        (ifld_diff, diff_coefs, node_1st, ele_1st, MHD_matrices)
+      subroutine s_initialize_4_MHD_AMG(FEM_prm, node_1st, ele_1st,     &
+     &          ifld_diff, diff_coefs, MHD_matrices)
 !
       use t_geometry_data
       use t_edge_data
@@ -68,6 +70,7 @@
       use link_MG_MHD_mesh_data
       use const_element_comm_tables
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_terms_address), intent(in) :: ifld_diff
       type(SGS_coefficients_type), intent(in) :: diff_coefs
 !
@@ -291,7 +294,7 @@
 !
       do i_level = 1, num_MG_level
         if(iflag_debug .gt. 0) write(*,*) 's_int_type_mass_matrices'
-        call s_int_type_mass_matrices( MG_mesh(i_level)%mesh,           &
+        call s_int_type_mass_matrices(FEM_prm, MG_mesh(i_level)%mesh,   &
      &      MG_MHD_mesh(i_level), MG_jacobians(i_level),                &
      &      MG_FEM_tbl(i_level), MG_FEM_mat(i_level),                   &
      &      MG_mk_MHD(i_level) )

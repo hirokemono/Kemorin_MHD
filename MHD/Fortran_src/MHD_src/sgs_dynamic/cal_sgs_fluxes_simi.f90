@@ -44,7 +44,6 @@
 !
       use m_precision
 !
-      use m_control_parameter
       use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_geometry_data_MHD
@@ -255,13 +254,15 @@
 !
 !
       if (FEM_prm%iflag_magne_supg .eq. id_turn_ON) then
-        call int_simi_vp_induct_upm(intg_point_t_evo, icomp_sgs_uxb,    &
+        call int_simi_vp_induct_upm                                     &
+     &     (FEM_prm%npoint_t_evo_int, icomp_sgs_uxb,                    &
      &      node, ele, conduct, iphys, nod_fld,                         &
      &      jac_3d, rhs_tbl, sgs_coefs,                                 &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
      &      fem_wk, f_nl)
       else
-        call int_simi_vp_induct(intg_point_t_evo, icomp_sgs_uxb,        &
+        call int_simi_vp_induct                                         &
+     &     (FEM_prm%npoint_t_evo_int, icomp_sgs_uxb,                    &
      &      node, ele, conduct, iphys, nod_fld, jac_3d, rhs_tbl,        &
      &      sgs_coefs, fem_wk, f_nl)
       end if

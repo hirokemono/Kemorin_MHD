@@ -5,7 +5,8 @@
 !
 !!      subroutine int_coriolis_nod_exp(node, fl_prop, mhd_fem_wk,      &
 !!     &          i_velo, nod_fld, f_l, f1_nl)
-!!      subroutine int_vol_coriolis_crank_ele(node, ele, fluid, fl_prop,&
+!!      subroutine int_vol_coriolis_crank_ele                           &
+!!     &         (num_int, node, ele, fluid, fl_prop,                   &
 !!     &          jac_3d, rhs_tbl, i_velo, nod_fld, fem_wk, f_l)
 !!
 !!      subroutine int_buoyancy_nod_exp(node, fl_prop, mhd_fem_wk,      &
@@ -20,10 +21,7 @@
       module int_vol_coriolis_term
 !
       use m_precision
-!
       use m_phys_constants
-!
-      use m_control_parameter
 !
       use t_physical_property
       use t_geometry_data
@@ -71,7 +69,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine int_vol_coriolis_crank_ele(node, ele, fluid, fl_prop,  &
+      subroutine int_vol_coriolis_crank_ele                             &
+     &         (num_int, node, ele, fluid, fl_prop,                     &
      &          jac_3d, rhs_tbl, i_velo, nod_fld, fem_wk, f_l)
 !
       use t_geometry_data_MHD
@@ -82,7 +81,7 @@
       use cal_skv_to_ff_smp
       use fem_skv_nonlinear_type
 !
-      integer(kind = kint), intent(in) :: i_velo
+      integer(kind = kint), intent(in) :: i_velo, num_int
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
@@ -101,8 +100,8 @@
         call vector_cst_phys_2_each_ele(node, ele, nod_fld,             &
      &      k2, i_velo, fl_prop%coef_cor, fem_wk%vector_1)
         call fem_skv_coriolis_type                                      &
-     &     (fluid%istack_ele_fld_smp, intg_point_t_evo, k2,             &
-     &      fem_wk%vector_1, fl_prop%sys_rot, ele, jac_3d, fem_wk%sk6)
+     &     (fluid%istack_ele_fld_smp, num_int, k2, fem_wk%vector_1,     &
+     &      fl_prop%sys_rot, ele, jac_3d, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &

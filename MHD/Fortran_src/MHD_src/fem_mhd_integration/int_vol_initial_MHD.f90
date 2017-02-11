@@ -5,9 +5,11 @@
 !                                    on July 2000 (ver 1.1)
 !     Modified by H. Matsui on Oct. 2005
 !
-!!      subroutine int_vol_initial_scalar(iele_fsmp_stack, i_fld, coef, &
+!!      subroutine int_vol_initial_scalar                               &
+!!     &       (num_int, iele_fsmp_stack, i_fld, coef,                  &
 !!     &        node, ele, nod_fld, jac_3d, rhs_tbl, fem_wk, mhd_fem_wk)
-!!      subroutine int_vol_initial_vector(iele_fsmp_stack, i_fld, coef, &
+!!      subroutine int_vol_initial_vector                               &
+!!     &       (num_int, iele_fsmp_stack, i_fld, coef,                  &
 !!     &        node, ele, nod_fld, jac_3d, rhs_tbl, fem_wk, mhd_fem_wk)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -21,7 +23,6 @@
 !
       use m_precision
 !
-      use m_control_parameter
       use m_phys_constants
 !
       use t_geometry_data
@@ -40,14 +41,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_initial_scalar(iele_fsmp_stack, i_fld, coef,   &
+      subroutine int_vol_initial_scalar                                 &
+     &       (num_int, iele_fsmp_stack, i_fld, coef,                    &
      &        node, ele, nod_fld, jac_3d, rhs_tbl, fem_wk, mhd_fem_wk)
 !
       use nodal_fld_2_each_element
       use cal_skv_to_ff_smp
       use fem_skv_nodal_field_type
 !
-      integer(kind = kint), intent(in) :: i_fld
+      integer(kind = kint), intent(in) :: i_fld, num_int
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: coef
 !
@@ -70,7 +72,7 @@
       do k2 = 1, ele%nnod_4_ele
         call scalar_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_fld, fem_wk%scalar_1)
-        call fem_skv_scalar_type(iele_fsmp_stack, intg_point_t_evo,     &
+        call fem_skv_scalar_type(iele_fsmp_stack, num_int,              &
      &      k2, ele, jac_3d, fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
@@ -81,14 +83,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_initial_vector(iele_fsmp_stack, i_fld, coef,   &
+      subroutine int_vol_initial_vector                                 &
+     &       (num_int, iele_fsmp_stack, i_fld, coef,                    &
      &        node, ele, nod_fld, jac_3d, rhs_tbl, fem_wk, mhd_fem_wk)
 !
       use nodal_fld_2_each_element
       use cal_skv_to_ff_smp
       use fem_skv_nodal_field_type
 !
-      integer(kind = kint), intent(in) :: i_fld
+      integer(kind = kint), intent(in) :: i_fld, num_int
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: coef
 !
@@ -111,7 +114,7 @@
       do k2 = 1, ele%nnod_4_ele
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_fld, fem_wk%vector_1)
-        call fem_skv_vector_type(iele_fsmp_stack, intg_point_t_evo, k2, &
+        call fem_skv_vector_type(iele_fsmp_stack, num_int, k2,          &
      &      ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
       end do
 !

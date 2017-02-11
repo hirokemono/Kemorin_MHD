@@ -34,7 +34,6 @@
 !
       use m_precision
 !
-      use m_control_parameter
       use m_phys_constants
 !
       use t_FEM_control_parameter
@@ -98,7 +97,7 @@
       call reset_ff_t_smp(node%max_nod_smp, mhd_fem_wk)
 !
       call sel_int_vol_sgs_flux                                         &
-     &   (FEM_prm%iflag_velo_supg, intg_point_t_evo,                    &
+     &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int,            &
      &    i_filter, n_sym_tensor, i_field, ie_dvx,                      &
      &    node, ele, fluid, nod_fld, iphys_ele, ele_fld,                &
      &    jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
@@ -158,7 +157,7 @@
       call reset_ff_t_smp(node%max_nod_smp, mhd_fem_wk)
 !
       call sel_int_vol_sgs_flux                                         &
-     &   (FEM_prm%iflag_velo_supg, intg_point_t_evo,                    &
+     &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int,            &
      &    i_filter, n_sym_tensor, i_field, ie_dvx,                      &
      &    node, ele, fluid, nod_fld, iphys_ele, ele_fld,                &
      &    jac_3d, FEM_elens, fem_wk, mhd_fem_wk)

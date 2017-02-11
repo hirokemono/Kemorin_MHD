@@ -51,11 +51,11 @@
         end if
 !
         if (mevo_ctl%maxiter_ctl%iflag .eq. 0) then
-          maxiter = 0
+          FEM_prm%maxiter_stokes = 0
         else
-          maxiter = mevo_ctl%maxiter_ctl%intvalue
+          FEM_prm%maxiter_stokes = mevo_ctl%maxiter_ctl%intvalue
         end if
-        maxiter_vecp = maxiter
+        FEM_prm%maxiter_coulomb = FEM_prm%maxiter_stokes
 !
         iflag_4_supg = id_turn_OFF
         if (mevo_ctl%iflag_supg_ctl%iflag .gt. 0                        &
@@ -87,9 +87,9 @@
           FEM_prm%iflag_comp_supg = id_turn_ON
         end if
 !
-        if (maxiter.gt.1) then
-          if (evo_velo%iflag_scheme .gt. id_no_evolution) then
-            if (mevo_ctl%eps_4_velo_ctl%iflag .eq. 0) then
+        if(FEM_prm%maxiter_stokes.gt.1) then
+          if(evo_velo%iflag_scheme .gt. id_no_evolution) then
+            if(mevo_ctl%eps_4_velo_ctl%iflag .eq. 0) then
               e_message                                                 &
      &         = 'Set convergence area for velocity iteration'
               call calypso_MPI_abort(ierr_CG, e_message)
@@ -112,8 +112,8 @@
 !
         if (iflag_debug .gt. iflag_routine_msg) then
           write(*,*) 'num_multi_pass  ', FEM_prm%num_multi_pass
-          write(*,*) 'maxiter ',        maxiter
-          write(*,*) 'maxiter_vecp ',   maxiter_vecp
+          write(*,*) 'maxiter_stokes ',  FEM_prm%maxiter_stokes
+          write(*,*) 'maxiter_coulomb ',    FEM_prm%maxiter_coulomb
         end if
 !
 !  control for number of points for integration
@@ -133,7 +133,6 @@
         else
           FEM_prm%npoint_t_evo_int                                      &
      &       = fint_ctl%intg_point_t_evo_ctl%intvalue
-          intg_point_t_evo = FEM_prm%npoint_t_evo_int
         end if
 !
         if (iflag_debug .gt. iflag_routine_msg) then

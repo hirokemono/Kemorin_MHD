@@ -68,22 +68,13 @@
       integer (kind=kint) :: iflag_radial_param_file                    &
      &       = id_no_boundary_file
 !
-!
-!  Parameters for FEM dynamo
-!
-!>      Number of quadrature points for time evolution
-      integer (kind=kint)  :: intg_point_t_evo =   2
-!
-!
-!>      Maximum CG iteration count for Poisson equation
-      integer (kind=kint) :: maxiter
-!>      Maximum CG iteration count for time integration
-      integer (kind=kint) :: maxiter_vecp
-! 
 !>      Error torrance for Poisson equation
       real (kind=kreal) :: eps_4_velo
 !>      Error torrance for time integration
       real (kind=kreal) :: eps_4_magne
+!
+!
+!  Parameters for FEM dynamo
 !
       type(FEM_MHD_paremeters), save :: FEM_prm1
 !

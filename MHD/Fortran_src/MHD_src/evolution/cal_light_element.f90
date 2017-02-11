@@ -273,7 +273,7 @@
      &     (cmt_param%iflag_c_light, SGS_param%ifilter_final,           &
      &      i_field, iphys%i_pre_composit, ifld_diff%i_light,           &
      &      ak_d_composit, eps_4_comp_crank,                            &
-     &      node, ele, fluid, evo_comp, property, Snod_bcs,             &
+     &      FEM_prm, node, ele, fluid, evo_comp, property, Snod_bcs,    &
      &      jac_3d, rhs_tbl, FEM_elens, diff_coefs, Cmatrix, MG_vector, &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if

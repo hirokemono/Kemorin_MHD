@@ -14,7 +14,7 @@
 !!     &          FEM_elens, ifld_diff, diff_coefs, fem_wk,             &
 !!     &          mat_press, mat_magp)
 !!      subroutine int_MHD_crank_matrices                               &
-!!     &         (ifilter_final, mesh, ak_MHD, jac_3d, rhs_tbl,         &
+!!     &         (num_int, ifilter_final, mesh, ak_MHD, jac_3d, rhs_tbl,&
 !!     &          MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,              &
 !!     &          FEM_elens, ifld_diff, diff_coefs, fem_wk,             &
 !!     &          mat_velo, mat_magne, mat_temp, mat_light)
@@ -42,6 +42,7 @@
       use m_phys_constants
       use m_control_parameter
 !
+      use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_mesh_data
       use t_geometry_data
@@ -112,14 +113,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_MHD_crank_matrices                                 &
-     &         (ifilter_final, mesh, ak_MHD, jac_3d, rhs_tbl,           &
+     &         (num_int, ifilter_final, mesh, ak_MHD, jac_3d, rhs_tbl,  &
      &          MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,                &
      &          FEM_elens, ifld_diff, diff_coefs, fem_wk,               &
      &          mat_velo, mat_magne, mat_temp, mat_light)
 !
       use m_t_int_parameter
 !
-      integer(kind = kint), intent(in) :: ifilter_final
+      integer(kind = kint), intent(in) :: num_int, ifilter_final
       type(mesh_geometry), intent(in) :: mesh
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(jacobians_3d), intent(in) :: jac_3d
@@ -140,7 +141,7 @@
 !
       if (evo_velo%iflag_scheme .ge. id_Crank_nicolson) then
         call sel_int_diffuse3_crank_mat(mesh%ele, jac_3d,               &
-     &      rhs_tbl, MG_mat_fl_q, FEM_elens, intg_point_t_evo,          &
+     &      rhs_tbl, MG_mat_fl_q, FEM_elens, num_int,                   &
      &      diff_coefs%num_field, ifld_diff%i_velo, diff_coefs%ak,      &
      &      evo_velo%coef_imp, ak_MHD%ak_d_velo, ifilter_final,         &
      &      fem_wk, mat_velo)
@@ -148,7 +149,7 @@
 !
       if (evo_magne%iflag_scheme .ge. id_Crank_nicolson) then
         call sel_int_diffuse3_crank_mat(mesh%ele, jac_3d,               &
-     &      rhs_tbl, MG_mat_full_cd_q, FEM_elens, intg_point_t_evo,     &
+     &      rhs_tbl, MG_mat_full_cd_q, FEM_elens, num_int,              &
      &      diff_coefs%num_field, ifld_diff%i_magne, diff_coefs%ak,     &
      &      evo_magne%coef_imp, ak_MHD%ak_d_magne, ifilter_final,       &
      &      fem_wk, mat_magne)
@@ -156,7 +157,7 @@
 !
       if (evo_vect_p%iflag_scheme .ge. id_Crank_nicolson) then
         call sel_int_diffuse3_crank_mat(mesh%ele, jac_3d,               &
-     &      rhs_tbl, MG_mat_q, FEM_elens, intg_point_t_evo,             &
+     &      rhs_tbl, MG_mat_q, FEM_elens, num_int,                      &
      &      diff_coefs%num_field, ifld_diff%i_magne, diff_coefs%ak,     &
      &      evo_vect_p%coef_imp, ak_MHD%ak_d_magne, ifilter_final,      &
      &      fem_wk, mat_magne)
@@ -164,7 +165,7 @@
 !
       if (evo_temp%iflag_scheme .ge. id_Crank_nicolson) then
         call choose_int_diffuse1_crank_mat(mesh%ele, jac_3d,            &
-     &      rhs_tbl, MG_mat_fl_q, FEM_elens, intg_point_t_evo,          &
+     &      rhs_tbl, MG_mat_fl_q, FEM_elens, num_int,                   &
      &      diff_coefs%num_field, ifld_diff%i_temp, diff_coefs%ak,      &
      &      evo_temp%coef_imp, ak_MHD%ak_d_temp, ifilter_final,         &
      &      fem_wk, mat_temp)
@@ -172,7 +173,7 @@
 !
       if (evo_comp%iflag_scheme .ge. id_Crank_nicolson) then
         call choose_int_diffuse1_crank_mat(mesh%ele, jac_3d,            &
-     &      rhs_tbl, MG_mat_fl_q, FEM_elens, intg_point_t_evo,          &
+     &      rhs_tbl, MG_mat_fl_q, FEM_elens, num_int,                   &
      &      diff_coefs%num_field, ifld_diff%i_light, diff_coefs%ak,     &
      &      evo_comp%coef_imp, ak_MHD%ak_d_composit, ifilter_final,     &
      &      fem_wk, mat_light)
