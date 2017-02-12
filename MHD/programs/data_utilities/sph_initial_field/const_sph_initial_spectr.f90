@@ -414,21 +414,33 @@
       jj =  find_local_sph_mode_address(0, 0)
 !
       if (jj .gt. 0) then
-        do k = 1, nlayer_ICB()
+        do k = 1, nlayer_CMB()
           inod = local_sph_data_address(k,jj)
           rr = radius_1d_rj_r(k)
 !   Substitute initial heat source
-          d_rj(inod,ipol%i_heat_source)                                 &
-     &         = 0.35 * four*r_CMB()**2 / (four * r_ICB()**3 / three)
-!     &         = 1.0
+          d_rj(inod,ipol%i_heat_source)  = three / r_CMB()
         end do
       end if
-!
 !    Center
       if(inod_rj_center() .gt. 0) then
-        d_rj(inod_rj_center(),ipol%i_heat_source)                       &
-     &         = four*r_CMB()**2 / (four * r_ICB()**3 / three)
+        d_rj(inod_rj_center(),ipol%i_heat_source) = three / r_CMB()
       end if
+!
+!      if (jj .gt. 0) then
+!        do k = 1, nlayer_ICB()
+!          inod = local_sph_data_address(k,jj)
+!          rr = radius_1d_rj_r(k)
+!   Substitute initial heat source
+!          d_rj(inod,ipol%i_heat_source)                                &
+!     &         = four*r_CMB()**2 / (four * r_ICB()**3 / three)
+!        end do
+!      end if
+!
+!    Center
+!      if(inod_rj_center() .gt. 0) then
+!        d_rj(inod_rj_center(),ipol%i_heat_source)                      &
+!     &         = four*r_CMB()**2 / (four * r_ICB()**3 / three)
+!      end if
 !
       end subroutine set_initial_heat_source_sph
 !
