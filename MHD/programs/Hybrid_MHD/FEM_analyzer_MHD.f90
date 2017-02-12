@@ -72,10 +72,10 @@
 !
       call reset_update_flag(nod_fld1, sgs_coefs, diff_coefs)
       if (iflag_debug.eq.1) write(*,*) 'update_fields'
-      call update_fields(SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1, &
-     &    nod1_bcs, sf1_bcs, iphys, iphys_ele,                          &
+      call update_fields(FEM_prm1, , SGS_par1, mesh1, group1,           &
+     &    ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,    &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,  &
-     &      ifld_diff, icomp_diff, iphys_elediff,                       &
+     &    ifld_diff, icomp_diff, iphys_elediff,                         &
      &    filtering1, wide_filtering, layer_tbl1, m1_lump,              &
      &    wk_cor1, wk_lsq1, wk_diff1, wk_filter1, mhd_fem1_wk, fem1_wk, &
      &    surf1_wk, f1_l, f1_nl, nod_fld1, fld_ele1, diff_coefs)
@@ -118,7 +118,8 @@
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'lead_fields_by_FEM'
-      call lead_fields_by_FEM(SGS_par1, mesh1, group1, ele_mesh1,       &
+      call lead_fields_by_FEM                                           &
+     &   (FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1,                 &
      &    MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,       &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
      &    FEM1_elen, icomp_sgs, icomp_diff, ifld_diff, iphys_elediff,   &
@@ -203,8 +204,8 @@
       call set_new_time_and_step(mesh1%node, iphys, nod_fld1)
 !
       if (iflag_debug.eq.1) write(*,*) 'fields_evolution_4_FEM_SPH'
-      call fields_evolution_4_FEM_SPH                                   &
-     &   (SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1%fluid,          &
+      call fields_evolution_4_FEM_SPH(FEM_prm1, SGS_par1,               &
+     &    mesh1, group1, ele_mesh1, MHD_mesh1%fluid,                    &
      &    nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,                  &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, jac1_sf_grp_2d_l,     &
      &    rhs_tbl1, FEM1_elen, ifld_sgs, icomp_sgs, ifld_diff,          &
@@ -241,7 +242,8 @@
 !     ========  Data output
 !
       if(istep_flex_to_max .eq. 0) then
-        call lead_fields_by_FEM(SGS_par1, mesh1, group1, ele_mesh1,     &
+        call lead_fields_by_FEM                                         &
+     &    (FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1,                &
      &     MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,      &
      &     jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,            &
      &     FEM1_elen, icomp_sgs, icomp_diff, ifld_diff, iphys_elediff,  &

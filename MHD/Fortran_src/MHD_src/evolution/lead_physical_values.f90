@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine lead_fields_by_FEM                                   &
-!!     &         (SGS_par, mesh, group, ele_mesh, MHD_mesh,             &
+!!     &         (FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh,    &
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,          &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp, rhs_tbl, FEM_elens,   &
 !!     &          icomp_sgs, icomp_diff, ifld_diff, iphys_elediff,      &
@@ -16,6 +16,7 @@
 !!     &          layer_tbl, m_lump, wk_cor, wk_lsq, wk_diff, wk_filter,&
 !!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,               &
 !!     &          nod_fld, ele_fld, diff_coefs)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
@@ -57,6 +58,7 @@
 !
       use m_precision
 !
+      use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_mesh_data
       use t_comm_table
@@ -94,7 +96,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine lead_fields_by_FEM                                     &
-     &         (SGS_par, mesh, group, ele_mesh, MHD_mesh,               &
+     &         (FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh,      &
      &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,            &
      &          jac_3d_q, jac_3d_l, jac_sf_grp, rhs_tbl, FEM_elens,     &
      &          icomp_sgs, icomp_diff, ifld_diff, iphys_elediff,        &
@@ -112,6 +114,7 @@
       use cal_helicities
       use output_viz_file_control
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
@@ -160,8 +163,8 @@
      &     (mesh%node, mesh%ele, ele_mesh%edge, iphys, nod_fld)
 !
         if (iflag_debug.gt.0) write(*,*) 'update_fields'
-        call update_fields(SGS_par, mesh, group, ele_mesh, MHD_mesh,    &
-     &      nod_bcs, surf_bcs, iphys, iphys_ele,                        &
+        call update_fields(FEM_prm, SGS_par, mesh, group,               &
+     &      ele_mesh, MHD_mesh, nod_bcs, surf_bcs, iphys, iphys_ele,    &
      &      jac_3d_q, jac_3d_l, jac_sf_grp, rhs_tbl, FEM_elens,         &
      &      ifld_diff, icomp_diff, iphys_elediff,                       &
      &      filtering, wide_filtering, layer_tbl, m_lump,               &

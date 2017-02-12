@@ -195,7 +195,7 @@
 !
       if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
         call cal_sgs_mom_flux_with_sgs_buo                              &
-     &     (SGS_param, cmt_param, filter_param,                         &
+     &     (FEM_prm, SGS_param, cmt_param, filter_param,                &
      &      nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,        &
      &      fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,       &
      &      ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,          &

@@ -4,7 +4,7 @@
 !      written by H. Matsui on Aug., 2007
 !
 !!      subroutine cal_sgs_mom_flux_with_sgs_buo                        &
-!!     &         (SGS_param, cmt_param, filter_param,                   &
+!!     &         (FEM_prm, SGS_param, cmt_param, filter_param,          &
 !!     &          nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,  &
 !!     &          fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele, &
 !!     &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,    &
@@ -12,6 +12,7 @@
 !!     &          ifld_diff, iphys_elediff, sgs_coefs_nod, diff_coefs,  &
 !!     &          wk_filter, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,        &
 !!     &          surf_wk, f_l, f_nl, nod_fld, ele_fld, sgs_coefs)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(SGS_filtering_params), intent(in) :: filter_param
@@ -56,6 +57,7 @@
       use m_phys_constants
       use m_machine_parameter
 !
+      use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_comm_table
       use t_geometry_data_MHD
@@ -91,7 +93,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_sgs_mom_flux_with_sgs_buo                          &
-     &         (SGS_param, cmt_param, filter_param,                     &
+     &         (FEM_prm, SGS_param, cmt_param, filter_param,            &
      &          nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,    &
      &          fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,   &
      &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,      &
@@ -111,6 +113,7 @@
       use int_rms_ave_ele_grps
       use modify_Csim_by_SGS_buo_ele
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(SGS_filtering_params), intent(in) :: filter_param
@@ -168,7 +171,7 @@
 !
       call cal_sgs_momentum_flux                                        &
      &   (icomp_sgs%i_mom_flux, iphys_elediff%i_velo,                   &
-     &    FEM_prm1, SGS_param, filter_param, nod_comm, node, ele,       &
+     &    FEM_prm, SGS_param, filter_param, nod_comm, node, ele,        &
      &    fluid, iphys, iphys_ele, ele_fld, jac_3d_q, rhs_tbl,          &
      &    FEM_elens, filtering, sgs_coefs, sgs_coefs_nod, wk_filter,    &
      &    mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -177,7 +180,7 @@
 !
       call cal_terms_4_momentum(iphys%i_SGS_div_m_flux,                 &
      &    ifld_diff%i_mom_flux, ifld_diff%i_lorentz,                    &
-     &    FEM_prm1, SGS_param, cmt_param, nod_comm, node, ele, surf,    &
+     &    FEM_prm, SGS_param, cmt_param, nod_comm, node, ele, surf,     &
      &    sf_grp, fluid, fl_prop, cd_prop, Vsf_bcs, Bsf_bcs,            &
      &    iphys, iphys_ele, ak_MHD, jac_3d_q, jac_sf_grp_q, rhs_tbl,    &
      &    FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,           &
@@ -203,7 +206,7 @@
        end if
 !
 !   take RMS of SGS buoyancy flux and work of Reynolds stress
-      call select_int_vol_sgs_buoyancy(FEM_prm1%npoint_t_evo_int,       &
+      call select_int_vol_sgs_buoyancy(FEM_prm%npoint_t_evo_int,        &
      &    node, ele, fl_prop, layer_tbl, iphys, nod_fld,                &
      &    jac_3d_q, jac_3d_l, wk_lsq%nlayer, wk_lsq%slocal)
 !

@@ -339,8 +339,8 @@
           call s_cal_diff_coef_sgs_mxwl                                 &
      &     (ifld_diff%i_lorentz, icomp_sgs%i_lorentz,                   &
      &      icomp_diff%i_lorentz, iphys_elediff%i_filter_magne,         &
-     &      SGS_par, mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf, &
-     &      MHD_mesh%fluid, layer_tbl, group%surf_grp,                  &
+     &      FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,       &
+     &      ele_mesh%surf, MHD_mesh%fluid, layer_tbl, group%surf_grp,   &
      &      nod_bcs%Vnod_bcs, surf_bcs%Bsf_bcs, iphys,                  &
      &      iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,       &
      &      rhs_tbl, FEM_elens, filtering, sgs_coefs, wk_filter,        &
