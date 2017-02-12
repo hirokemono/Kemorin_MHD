@@ -40,6 +40,7 @@
 !
       use t_ctl_data_sph_MHD_psf
       use m_ctl_data_sph_MHD
+      use m_SGS_control_parameter
       use m_spheric_parameter
       use m_mesh_data
       use m_node_phys_data
@@ -64,7 +65,8 @@
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_mesh'
       call input_control_SPH_mesh                                       &
      &   (MHD_ctl1, sph1, comms_sph1, sph_grps1, rj_fld1, nod_fld1,     &
-     &    pwr1, trns_WK1%dynamic_SPH, mesh1, group1, ele_mesh1)
+     &    pwr1, SGS_par1, trns_WK1%dynamic_SPH,                         &
+     &    mesh1, group1, ele_mesh1)
       call end_eleps_time(4)
 !
 !        Initialize FEM mesh data for field data IO

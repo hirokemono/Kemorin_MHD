@@ -5,8 +5,9 @@
 !                                    on July 2000 (ver 1.1)
 !      Modified by H. Matsui on Aug, 2007
 !
-!!      subroutine s_cal_average_mag_potential(node, ele,               &
+!!      subroutine s_cal_average_mag_potential(FEM_prm, node, ele,      &
 !!     &          iphys, nod_fld, inner_core, jac_3d_l)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_address), intent(in) :: iphys
@@ -18,6 +19,7 @@
 !
       use m_precision
 !
+      use t_FEM_control_parameter
       use t_geometry_data_MHD
       use t_geometry_data
       use t_phys_address
@@ -33,13 +35,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_cal_average_mag_potential(node, ele,                 &
+      subroutine s_cal_average_mag_potential(FEM_prm, node, ele,        &
      &          iphys, nod_fld, inner_core, jac_3d_l)
 !
       use calypso_mpi
-      use m_control_parameter
       use m_mean_square_values
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_address), intent(in) :: iphys
@@ -53,8 +55,8 @@
         call fem_icore_mag_potential_icore(node%numnod,                 &
      &      ele%numele, ele%nnod_4_ele, ele%ie, ele%interior_ele,       &
      &      inner_core%numele_fld, inner_core%istack_ele_fld_smp,       &
-     &      inner_core%iele_fld, jac_3d_l%ntot_int, intg_point_t_evo,   &
-     &      jac_3d_l%xjac, jac_3d_l%an,                                 &
+     &      inner_core%iele_fld, jac_3d_l%ntot_int,                     &
+     &      FEM_prm%npoint_t_evo_int, jac_3d_l%xjac, jac_3d_l%an,       &
      &      nod_fld%ntot_phys, nod_fld%d_fld, iphys%i_mag_p,            &
      &      ave_mp_core_local)
 !

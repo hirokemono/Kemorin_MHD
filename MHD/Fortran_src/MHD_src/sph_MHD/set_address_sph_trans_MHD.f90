@@ -24,6 +24,7 @@
 !
       use t_phys_address
       use t_addresses_sph_transform
+      use t_physical_property
 !
       implicit none
 !
@@ -42,6 +43,7 @@
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
       use m_control_parameter
+      use m_physical_property
 !
       type(phys_address), intent(in) :: ipol
       type(address_4_sph_trans), intent(inout) :: trns_MHD
@@ -52,17 +54,17 @@
       integer(kind = kint) :: nscltsr_rtp_2_rj, nscltsr_rj_2_rtp
 !
       call b_trans_address_vector_MHD                                   &
-     &   (ipol, trns_MHD%nvector_rj_2_rtp, trns_MHD%b_trns)
+     &   (fl_prop1, ipol, trns_MHD%nvector_rj_2_rtp, trns_MHD%b_trns)
       call b_trans_address_scalar_MHD                                   &
      &   (ipol, trns_MHD%nvector_rj_2_rtp, trns_MHD%nscalar_rj_2_rtp,   &
      &    trns_MHD%b_trns)
       trns_MHD%ntensor_rj_2_rtp = 0
 !
       call f_trans_address_vector_MHD                                   &
-     &   (ipol, trns_MHD%nvector_rtp_2_rj, trns_MHD%f_trns)
+     &   (fl_prop1, ipol, trns_MHD%nvector_rtp_2_rj, trns_MHD%f_trns)
       call f_trans_address_scalar_MHD                                   &
-     &   (trns_MHD%nvector_rtp_2_rj, trns_MHD%nscalar_rtp_2_rj,         &
-     &    trns_MHD%f_trns)
+     &   (fl_prop1, trns_MHD%nvector_rtp_2_rj,                          &
+     &    trns_MHD%nscalar_rtp_2_rj, trns_MHD%f_trns)
       trns_MHD%ntensor_rtp_2_rj = 0
 !
       nscltsr_rtp_2_rj                                                  &
@@ -111,10 +113,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine b_trans_address_vector_MHD                             &
-     &         (ipol, nvector_rj_2_rtp, b_trns)
+     &         (fl_prop, ipol, nvector_rj_2_rtp, b_trns)
 !
       use m_control_parameter
 !
+      type(fluid_property), intent(in) :: fl_prop
       type(phys_address), intent(in) :: ipol
       integer(kind = kint), intent(inout) :: nvector_rj_2_rtp
       type(phys_address), intent(inout) :: b_trns
@@ -135,12 +138,12 @@
       end if
 !   magnetic field flag
       if(       evo_magne%iflag_scheme .gt. id_no_evolution             &
-     &     .or. iflag_4_lorentz .gt.     id_turn_OFF) then
+     &     .or. fl_prop%iflag_4_lorentz .gt.     id_turn_OFF) then
         nvector_rj_2_rtp = nvector_rj_2_rtp + 1
         b_trns%i_magne = 3*nvector_rj_2_rtp - 2
       end if
 !   current density flag
-      if(iflag_4_lorentz .gt. id_turn_OFF) then
+      if(fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
         nvector_rj_2_rtp = nvector_rj_2_rtp + 1
         b_trns%i_current = 3*nvector_rj_2_rtp - 2
       end if
@@ -218,10 +221,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine f_trans_address_vector_MHD                             &
-     &         (ipol, nvector_rtp_2_rj, f_trns)
+     &         (fl_prop, ipol, nvector_rtp_2_rj, f_trns)
 !
       use m_control_parameter
 !
+      type(fluid_property), intent(in) :: fl_prop
       type(phys_address), intent(in) :: ipol
       type(phys_address), intent(inout) :: f_trns
       integer(kind = kint), intent(inout) :: nvector_rtp_2_rj
@@ -233,16 +237,16 @@
         nvector_rtp_2_rj = nvector_rtp_2_rj + 1
         f_trns%i_m_advect = 3*nvector_rtp_2_rj - 2
 !   Coriolis flag
-        if(iflag_4_coriolis .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_coriolis .gt. id_turn_OFF) then
           nvector_rtp_2_rj = nvector_rtp_2_rj + 1
           f_trns%i_coriolis = 3*nvector_rtp_2_rj - 2
         end if
-        if(iflag_4_coriolis .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_coriolis .gt. id_turn_OFF) then
           nvector_rtp_2_rj =      nvector_rtp_2_rj + 1
           f_trns%i_rot_Coriolis = 3*nvector_rtp_2_rj - 2
         end if
 !   Lorentz flag
-        if(iflag_4_lorentz .gt. id_turn_OFF) then
+        if(fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
           nvector_rtp_2_rj = nvector_rtp_2_rj + 1
           f_trns%i_lorentz = 3*nvector_rtp_2_rj - 2
         end if
@@ -291,11 +295,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine f_trans_address_scalar_MHD(nvector_rtp_2_rj,           &
-     &          nscalar_rtp_2_rj, f_trns)
+      subroutine f_trans_address_scalar_MHD(fl_prop,                    &
+     &          nvector_rtp_2_rj, nscalar_rtp_2_rj, f_trns)
 !
-      use m_control_parameter
-!
+      type(fluid_property), intent(in) :: fl_prop
       integer(kind = kint), intent(in) :: nvector_rtp_2_rj
       integer(kind = kint), intent(inout) :: nscalar_rtp_2_rj
       type(phys_address), intent(inout) :: f_trns
@@ -303,7 +306,7 @@
 !
       nscalar_rtp_2_rj = 0
 !   divergence of Coriolis flux flag
-      call add_scalar_trans_flag(iflag_4_coriolis,                      &
+      call add_scalar_trans_flag(fl_prop%iflag_4_coriolis,              &
      &    nvector_rtp_2_rj, nscalar_rtp_2_rj, f_trns%i_div_Coriolis)
 !
       end subroutine f_trans_address_scalar_MHD

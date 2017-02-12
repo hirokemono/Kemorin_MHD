@@ -4,14 +4,14 @@
 !     programmed by H.Matsui
 !     modified by H. Matsui on Nov., 2008
 !
-!      subroutine cal_lumped_coriolis_matrix                            &
-!     &         (numnod, numnod_fluid, inod_fluid, OLDtoNEW,            &
+!!      subroutine cal_lumped_coriolis_matrix                           &
+!!     &         (numnod, numnod_fluid, inod_fluid, OLDtoNEW,           &
 !!     &          coef_cor, angular, coef_imp, ml_o, num_mat, aiccg33)
-!      subroutine cal_consist_coriolis_matrix                           &
-!     &         (np_smp, numele, nnod_4_e1, nnod_4_e2,                  &
-!     &          inod_ele_max, num_sort_smp, nod_stack_smp,             &
-!     &          iele_sort_smp, iconn_sort_smp, idx_4_mat, k2,          &
-!     &          coef_cor, angular, coef_imp, sk_v, num_mat, aiccg33)
+!!      subroutine cal_consist_coriolis_matrix                          &
+!!     &         (np_smp, numele, nnod_4_e1, nnod_4_e2,                 &
+!!     &          inod_ele_max, num_sort_smp, nod_stack_smp,            &
+!!     &          iele_sort_smp, iconn_sort_smp, idx_4_mat, k2,         &
+!!     &          coef_cor, angular, coef_imp, sk_v, num_mat, aiccg33)
 !
       module cal_coriolis_mat33
 !

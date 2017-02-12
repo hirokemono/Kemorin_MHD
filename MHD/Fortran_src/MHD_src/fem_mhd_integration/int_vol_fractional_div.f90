@@ -3,8 +3,8 @@
 !
 !      Written by H. Matsui on june, 2005
 !
-!!      subroutine int_vol_fractional_div_ele                           &
-!!     &         (iele_fsmp_stack, i_vector, iak_diff,                  &
+!!      subroutine int_vol_fractional_div_ele(ifilter_final,            &
+!!     &          iele_fsmp_stack, num_int, i_vector, iak_diff,         &
 !!     &          node, ele, nod_fld, jac_3d_q, jac_3d_l,               &
 !!     &          rhs_tbl, FEM_elen, diff_coefs, fem_wk, f_l)
 !!        type(node_data), intent(in) :: node
@@ -41,16 +41,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_vol_fractional_div_ele                             &
-     &         (iele_fsmp_stack, i_vector, iak_diff,                    &
+      subroutine int_vol_fractional_div_ele(ifilter_final,              &
+     &          iele_fsmp_stack, num_int, i_vector, iak_diff,           &
      &          node, ele, nod_fld, jac_3d_q, jac_3d_l,                 &
      &          rhs_tbl, FEM_elen, diff_coefs, fem_wk, f_l)
-!
-      use m_control_parameter
 !
       use int_vol_fractional
       use int_vol_sgs_fractional
 !
+      integer(kind = kint), intent(in) :: ifilter_final, num_int
       integer(kind = kint), intent(in) :: i_vector, iak_diff
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
@@ -69,13 +68,12 @@
       if (iak_diff .gt. 0) then
         call int_vol_sgs_div_v_linear(node, ele, jac_3d_q, jac_3d_l,    &
      &      rhs_tbl, FEM_elen, nod_fld, iele_fsmp_stack,                &
-     &      intg_point_poisson, i_vector, ifilter_final,                &
+     &      num_int, i_vector, ifilter_final,                           &
      &      diff_coefs%num_field, iak_diff, diff_coefs%ak, fem_wk, f_l)
       else
         call int_vol_div_vect_linear                                    &
      &     (node, ele, jac_3d_q, jac_3d_l, rhs_tbl, nod_fld,            &
-     &      iele_fsmp_stack, intg_point_poisson, i_vector,              &
-     &      fem_wk, f_l)
+     &      iele_fsmp_stack, num_int, i_vector, fem_wk, f_l)
       end if
 !
       end subroutine int_vol_fractional_div_ele

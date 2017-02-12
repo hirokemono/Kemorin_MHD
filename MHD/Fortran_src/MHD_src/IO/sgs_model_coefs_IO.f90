@@ -4,7 +4,10 @@
 !     programmed by H.Matsui in 2005
 !     modified by H. Matsui on Aug., 2007
 !
-!!      subroutine s_output_sgs_model_coefs(wk_sgs, wk_diff)
+!!      subroutine s_output_sgs_model_coefs                             &
+!!     &         (SGS_param, cmt_param, wk_sgs, wk_diff)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(dynamic_model_data), intent(in) :: wk_sgs, wk_diff
 !!
 !!      subroutine read_sgs_layerd_data(file_id, iflag, n_layer,        &
@@ -16,8 +19,8 @@
       use m_precision
 !
       use calypso_mpi
-      use m_control_parameter
       use m_t_step_parameter
+      use t_SGS_control_parameter
       use t_ele_info_4_dynamic
       use open_sgs_model_coefs
 !
@@ -119,29 +122,32 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_output_sgs_model_coefs(wk_sgs, wk_diff)
+      subroutine s_output_sgs_model_coefs                               &
+     &         (SGS_param, cmt_param, wk_sgs, wk_diff)
 !
       use set_exit_flag_4_visualizer
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(commutation_control_params), intent(in) :: cmt_param
       type(dynamic_model_data), intent(in) :: wk_sgs, wk_diff
 !
       integer (kind = kint) :: i_coef
 !
 !
-      if (iflag_dynamic_SGS .eq. id_SGS_DYNAMIC_OFF) return
+      if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_OFF) return
 !
       if (mod(istep_max_dt,i_step_sgs_output) .ne. 0) return
 !
       call set_output_flag(i_coef, istep_max_dt, i_step_sgs_output)
       if (i_coef.ne.0 .or. my_rank.ne.0) return
 !
-      call output_layered_model_coefs_file(wk_sgs)
-      call output_whole_model_coefs_file(wk_sgs)
+      call output_layered_model_coefs_file(SGS_param, wk_sgs)
+      call output_whole_model_coefs_file(SGS_param, wk_sgs)
 !
-      if (iflag_commute_correction .gt. id_SGS_commute_OFF) then
+      if (cmt_param%iflag_commute .gt. id_SGS_commute_OFF) then
         call output_whole_diff_coefs_file(wk_diff)
 !
-        if (iset_DIFF_model_coefs .eq. 1 ) then
+        if (cmt_param%iset_DIFF_coefs .eq. 1 ) then
           call output_layered_diff_coefs_file(wk_diff)
         end if
       end if
@@ -150,8 +156,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine output_layered_model_coefs_file(wk_sgs)
+      subroutine output_layered_model_coefs_file(SGS_param, wk_sgs)
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(dynamic_model_data), intent(in) :: wk_sgs
 !
       integer (kind = kint) :: inum
@@ -160,17 +167,18 @@
       call open_SGS_model_coef_file(iflag_layered,                      &
      &    sgs_fld_coef_file_code, sgs_fld_coef_file_name, wk_sgs)
       call open_SGS_correlation_file(iflag_layered,                     &
-     &    sgs_comp_coef_file_code, sgs_comp_coef_file_name, wk_sgs)
+     &    sgs_comp_coef_file_code, sgs_comp_coef_file_name,             &
+     &    SGS_param, wk_sgs)
 !
       call open_SGS_correlation_file(iflag_layered,                     &
-     &    sgs_cor_file_code, sgs_cor_file_name, wk_sgs)
+     &    sgs_cor_file_code, sgs_cor_file_name, SGS_param, wk_sgs)
       call open_SGS_correlation_file(iflag_layered,                     &
-     &    sgs_cov_file_code, sgs_cov_file_name, wk_sgs)
+     &    sgs_cov_file_code, sgs_cov_file_name, SGS_param, wk_sgs)
       call open_SGS_correlation_file(iflag_layered,                     &
-     &    sgs_ratio_file_code, sgs_ratio_file_name, wk_sgs)
+     &    sgs_ratio_file_code, sgs_ratio_file_name, SGS_param, wk_sgs)
 !
       call open_SGS_rms_ratio_file(iflag_layered,                       &
-     &    sgs_rms_file_code, sgs_rms_file_name, wk_sgs)
+     &    sgs_rms_file_code, sgs_rms_file_name, SGS_param, wk_sgs)
 !
 !
       do inum = 1, wk_sgs%nlayer
@@ -205,25 +213,28 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine output_whole_model_coefs_file(wk_sgs)
+      subroutine output_whole_model_coefs_file(SGS_param, wk_sgs)
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(dynamic_model_data), intent(in) :: wk_sgs
 !
 !
       call open_SGS_model_coef_file(iflag_whole,                        &
      &    sgs_fld_coef_file_code, sgs_fld_whole_file_name, wk_sgs)
       call open_SGS_correlation_file(iflag_whole,                       &
-     &    sgs_comp_coef_file_code, sgs_comp_whole_file_name, wk_sgs)
+     &    sgs_comp_coef_file_code, sgs_comp_whole_file_name,            &
+     &    SGS_param, wk_sgs)
 !
       call open_SGS_correlation_file(iflag_whole,                       &
-     &    sgs_cor_file_code, sgs_w_cor_file_name, wk_sgs)
+     &    sgs_cor_file_code, sgs_w_cor_file_name, SGS_param, wk_sgs)
       call open_SGS_correlation_file(iflag_whole,                       &
-     &    sgs_cov_file_code, sgs_w_cov_file_name, wk_sgs)
+     &    sgs_cov_file_code, sgs_w_cov_file_name, SGS_param, wk_sgs)
       call open_SGS_correlation_file(iflag_whole,                       &
-     &    sgs_ratio_file_code, sgs_w_ratio_file_name, wk_sgs)
+     &    sgs_ratio_file_code, sgs_w_ratio_file_name,                   &
+     &    SGS_param, wk_sgs)
 !
       call open_SGS_rms_ratio_file(iflag_whole,                         &
-     &    sgs_rms_file_code, sgs_w_rms_file_name, wk_sgs)
+     &    sgs_rms_file_code, sgs_w_rms_file_name, SGS_param, wk_sgs)
 !
       write(sgs_fld_coef_file_code,1001)  i_step_MHD, time,             &
      &        wk_sgs%fld_whole_clip(1:wk_sgs%num_kinds)

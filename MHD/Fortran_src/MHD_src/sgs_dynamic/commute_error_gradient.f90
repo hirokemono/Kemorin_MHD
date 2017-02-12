@@ -3,12 +3,12 @@
 !
 !     Written by H. Matsui
 !
-!!      subroutine cal_grad_commute(iele_fsmp_stack, m_lump,            &
-!!     &          node, ele, surf, sf_grp, jac_3d, jac_sf_grp,          &
+!!      subroutine cal_grad_commute(num_int, iele_fsmp_stack,           &
+!!     &          m_lump, node, ele, surf, sf_grp, jac_3d, jac_sf_grp,  &
 !!     &          rhs_tbl, FEM_elens, sgs_sf, i_filter, i_sgs, i_scalar,&
 !!     &          fem_wk, surf_wk, f_l, f_nl, nod_fld)
-!!      subroutine cal_rotation_commute(iele_fsmp_stack, m_lump,        &
-!!     &          node, ele, surf, sf_grp, jac_3d, jac_sf_grp,          &
+!!      subroutine cal_rotation_commute(num_int, iele_fsmp_stack,       &
+!!     &          m_lump, node, ele, surf, sf_grp, jac_3d, jac_sf_grp,  &
 !!     &          rhs_tbl, FEM_elens, sgs_sf, i_filter, i_sgs, i_vect,  &
 !!     &          fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !!        type(node_data), intent(in) :: node
@@ -34,7 +34,6 @@
       use m_precision
       use m_machine_parameter
 !
-      use m_control_parameter
       use m_phys_constants
 !
       use t_geometry_data
@@ -58,8 +57,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_grad_commute(iele_fsmp_stack, m_lump,              &
-     &          node, ele, surf, sf_grp, jac_3d, jac_sf_grp,            &
+      subroutine cal_grad_commute(num_int, iele_fsmp_stack,             &
+     &          m_lump, node, ele, surf, sf_grp, jac_3d, jac_sf_grp,    &
      &          rhs_tbl, FEM_elens, sgs_sf, i_filter, i_sgs, i_scalar,  &
      &          fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
@@ -80,7 +79,7 @@
       type(lumped_mass_matrices), intent(in) :: m_lump
       integer (kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
-      integer(kind = kint), intent(in) :: i_filter
+      integer(kind = kint), intent(in) :: i_filter, num_int
       integer(kind = kint), intent(in) :: i_sgs, i_scalar
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -91,12 +90,12 @@
 !
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
-      call int_vol_commute_grad(iele_fsmp_stack, intg_point_t_evo,      &
+      call int_vol_commute_grad(iele_fsmp_stack, num_int,               &
      &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,               &
      &    i_filter, i_scalar, fem_wk, f_nl)
 !
       call int_surf_grad_commute_sgs(node, ele, surf, sf_grp,           &
-     &    nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, intg_point_t_evo,    &
+     &    nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, num_int,             &
      &    sgs_sf%ngrp_sf_dat, sgs_sf%id_grp_sf_dat, i_filter, i_scalar, &
      &    fem_wk, surf_wk, f_nl)
 !
@@ -108,8 +107,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_rotation_commute(iele_fsmp_stack, m_lump,          &
-     &          node, ele, surf, sf_grp, jac_3d, jac_sf_grp,            &
+      subroutine cal_rotation_commute(num_int, iele_fsmp_stack,         &
+     &          m_lump, node, ele, surf, sf_grp, jac_3d, jac_sf_grp,    &
      &          rhs_tbl, FEM_elens, sgs_sf, i_filter, i_sgs, i_vect,    &
      &          fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
@@ -130,7 +129,7 @@
       type(lumped_mass_matrices), intent(in) :: m_lump
       integer (kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
-      integer(kind = kint), intent(in) :: i_filter
+      integer(kind = kint), intent(in) :: i_filter, num_int
       integer(kind = kint), intent(in) :: i_sgs, i_vect
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -143,12 +142,12 @@
 !
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
-      call int_vol_commute_rot(iele_fsmp_stack, intg_point_t_evo,       &
+      call int_vol_commute_rot(iele_fsmp_stack, num_int,                &
      &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,               &
      &    i_filter, i_vect, fem_wk, f_nl)
 !
       call int_surf_rot_commute_sgs(node, ele, surf, sf_grp, nod_fld,   &
-     &    jac_sf_grp, rhs_tbl, FEM_elens, sgs_sf, intg_point_t_evo,     &
+     &    jac_sf_grp, rhs_tbl, FEM_elens, sgs_sf, num_int,              &
      &    i_filter, i_vect, fem_wk, surf_wk, f_nl)
 !
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)

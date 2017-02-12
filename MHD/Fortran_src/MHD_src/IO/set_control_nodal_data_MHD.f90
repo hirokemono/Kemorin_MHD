@@ -8,7 +8,8 @@
 !> @brief Set field information for MHD simulation from control data
 !!
 !!@verbatim
-!!     subroutine set_control_4_fields(field_ctl, nod_fld)
+!!     subroutine set_control_4_fields(SGS_par, field_ctl, nod_fld)
+!!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
 !!        type(phys_data), intent(inout) :: nod_fld
 !!@endverbatim
@@ -30,16 +31,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_fields(field_ctl, nod_fld)
+      subroutine set_control_4_fields(SGS_par, field_ctl, nod_fld)
 !
       use calypso_mpi
       use m_error_IDs
+      use m_physical_property
       use m_element_phys_data
+      use t_SGS_control_parameter
 !
       use set_control_nodal_data
       use add_nodal_fields_4_MHD
       use add_nodal_fields_4_SGS
 !
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(ctl_array_c3), intent(inout) :: field_ctl
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -59,12 +63,16 @@
 !
 !     add terms for MHD
 !
-        call add_field_name_4_mhd(field_ctl)
+        call add_field_name_4_mhd                                       &
+     &     (fl_prop1, ref_param_T1, ref_param_C1, field_ctl)
+        call add_ctl_4_ref_temp                                         &
+     &     (ref_param_T1, ref_param_C1, field_ctl)
 !
 !     set work fields for SGS models
         if (iflag_debug .ge. iflag_routine_msg)                         &
      &               write(*,*) 'add_work_area_4_sgs_model'
-        call add_work_area_4_sgs_model(field_ctl)
+        call add_work_area_4_sgs_model                                  &
+     &     (SGS_par%model_p, fl_prop1, field_ctl)
 !
         if (iflag_debug .ge. iflag_routine_msg) write(*,*)              &
      &    'num_nod_phys after modified ', field_ctl%num
@@ -74,7 +82,7 @@
         call s_set_control_nodal_data(field_ctl, nod_fld, ierr)
       end if
 !
-      call set_ele_field_names_MHD(nod_fld)
+      call set_ele_field_names_MHD(FEM_prm1, SGS_par%model_p, nod_fld)
 !
       end subroutine set_control_4_fields
 !

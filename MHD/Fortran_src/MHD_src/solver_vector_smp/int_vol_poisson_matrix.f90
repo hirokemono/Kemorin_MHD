@@ -8,10 +8,13 @@
 !        modifired by H. Matsui on June, 2005
 !        modifired by H. Matsui on Nov., 2007
 !
-!!      subroutine int_MHD_poisson_matrices(mesh, jac_3d_l, rhs_tbl,    &
-!!     &          MG_mat_linear, MG_mat_fl_l, FEM_elens,                &
-!!     &          ifld_diff, diff_coefs, fem_wk, mat_press, mat_magp)
-!!      subroutine int_MHD_crank_matrices(mesh, ak_MHD, jac_3d, rhs_tbl,&
+!!      subroutine int_MHD_poisson_matrices                             &
+!!     &         (num_int, ifilter_final, iflag_commute_magne,          &
+!!     &          mesh, jac_3d_l, rhs_tbl, MG_mat_linear, MG_mat_fl_l,  &
+!!     &          FEM_elens, ifld_diff, diff_coefs, fem_wk,             &
+!!     &          mat_press, mat_magp)
+!!      subroutine int_MHD_crank_matrices                               &
+!!     &         (num_int, ifilter_final, mesh, ak_MHD, jac_3d, rhs_tbl,&
 !!     &          MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,              &
 !!     &          FEM_elens, ifld_diff, diff_coefs, fem_wk,             &
 !!     &          mat_velo, mat_magne, mat_temp, mat_light)
@@ -36,10 +39,11 @@
       module int_vol_poisson_matrix
 !
       use m_precision
-!
-      use m_control_parameter
       use m_phys_constants
+      use m_control_parameter
 !
+      use t_FEM_control_parameter
+      use t_SGS_control_parameter
       use t_mesh_data
       use t_geometry_data
       use t_jacobians
@@ -63,10 +67,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_MHD_poisson_matrices(mesh, jac_3d_l, rhs_tbl,      &
-     &          MG_mat_linear, MG_mat_fl_l, FEM_elens,                  &
-     &          ifld_diff, diff_coefs, fem_wk, mat_press, mat_magp)
+      subroutine int_MHD_poisson_matrices                               &
+     &         (num_int, ifilter_final, iflag_commute_magne,            &
+     &          mesh, jac_3d_l, rhs_tbl, MG_mat_linear, MG_mat_fl_l,    &
+     &          FEM_elens, ifld_diff, diff_coefs, fem_wk,               &
+     &          mat_press, mat_magp)
 !
+      integer(kind = kint), intent(in) :: num_int
+      integer(kind = kint), intent(in) :: ifilter_final
+      integer(kind = kint), intent(in) :: iflag_commute_magne
       type(mesh_geometry), intent(in) :: mesh
       type(jacobians_3d), intent(in) :: jac_3d_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -82,16 +91,18 @@
 !
 !
       if (evo_velo%iflag_scheme .gt. id_no_evolution) then
-        call sel_int_poisson_mat(mesh%ele, jac_3d_l,                    &
-     &      rhs_tbl, MG_mat_fl_l, FEM_elens, intg_point_poisson,        &
+        call sel_int_poisson_mat                                        &
+     &     (mesh%ele, jac_3d_l, rhs_tbl, MG_mat_fl_l, FEM_elens,        &
+     &      iflag_commute_magne, num_int,                               &
      &      diff_coefs%num_field, ifld_diff%i_velo, diff_coefs%ak,      &
      &      ifilter_final, fem_wk, mat_press)
       end if
 !
       if (     evo_magne%iflag_scheme .gt.  id_no_evolution             &
      &    .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
-        call sel_int_poisson_mat(mesh%ele, jac_3d_l,                    &
-     &      rhs_tbl, MG_mat_linear, FEM_elens, intg_point_poisson,      &
+        call sel_int_poisson_mat                                        &
+     &     (mesh%ele, jac_3d_l, rhs_tbl, MG_mat_linear, FEM_elens,      &
+     &      iflag_commute_magne, num_int,                               &
      &      diff_coefs%num_field, ifld_diff%i_magne, diff_coefs%ak,     &
      &      ifilter_final, fem_wk, mat_magp)
       end if
@@ -101,13 +112,15 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine int_MHD_crank_matrices(mesh, ak_MHD, jac_3d, rhs_tbl,  &
+      subroutine int_MHD_crank_matrices                                 &
+     &         (num_int, ifilter_final, mesh, ak_MHD, jac_3d, rhs_tbl,  &
      &          MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,                &
      &          FEM_elens, ifld_diff, diff_coefs, fem_wk,               &
      &          mat_velo, mat_magne, mat_temp, mat_light)
 !
       use m_t_int_parameter
 !
+      integer(kind = kint), intent(in) :: num_int, ifilter_final
       type(mesh_geometry), intent(in) :: mesh
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(jacobians_3d), intent(in) :: jac_3d
@@ -128,7 +141,7 @@
 !
       if (evo_velo%iflag_scheme .ge. id_Crank_nicolson) then
         call sel_int_diffuse3_crank_mat(mesh%ele, jac_3d,               &
-     &      rhs_tbl, MG_mat_fl_q, FEM_elens, intg_point_t_evo,          &
+     &      rhs_tbl, MG_mat_fl_q, FEM_elens, num_int,                   &
      &      diff_coefs%num_field, ifld_diff%i_velo, diff_coefs%ak,      &
      &      evo_velo%coef_imp, ak_MHD%ak_d_velo, ifilter_final,         &
      &      fem_wk, mat_velo)
@@ -136,7 +149,7 @@
 !
       if (evo_magne%iflag_scheme .ge. id_Crank_nicolson) then
         call sel_int_diffuse3_crank_mat(mesh%ele, jac_3d,               &
-     &      rhs_tbl, MG_mat_full_cd_q, FEM_elens, intg_point_t_evo,     &
+     &      rhs_tbl, MG_mat_full_cd_q, FEM_elens, num_int,              &
      &      diff_coefs%num_field, ifld_diff%i_magne, diff_coefs%ak,     &
      &      evo_magne%coef_imp, ak_MHD%ak_d_magne, ifilter_final,       &
      &      fem_wk, mat_magne)
@@ -144,7 +157,7 @@
 !
       if (evo_vect_p%iflag_scheme .ge. id_Crank_nicolson) then
         call sel_int_diffuse3_crank_mat(mesh%ele, jac_3d,               &
-     &      rhs_tbl, MG_mat_q, FEM_elens, intg_point_t_evo,             &
+     &      rhs_tbl, MG_mat_q, FEM_elens, num_int,                      &
      &      diff_coefs%num_field, ifld_diff%i_magne, diff_coefs%ak,     &
      &      evo_vect_p%coef_imp, ak_MHD%ak_d_magne, ifilter_final,      &
      &      fem_wk, mat_magne)
@@ -152,7 +165,7 @@
 !
       if (evo_temp%iflag_scheme .ge. id_Crank_nicolson) then
         call choose_int_diffuse1_crank_mat(mesh%ele, jac_3d,            &
-     &      rhs_tbl, MG_mat_fl_q, FEM_elens, intg_point_t_evo,          &
+     &      rhs_tbl, MG_mat_fl_q, FEM_elens, num_int,                   &
      &      diff_coefs%num_field, ifld_diff%i_temp, diff_coefs%ak,      &
      &      evo_temp%coef_imp, ak_MHD%ak_d_temp, ifilter_final,         &
      &      fem_wk, mat_temp)
@@ -160,7 +173,7 @@
 !
       if (evo_comp%iflag_scheme .ge. id_Crank_nicolson) then
         call choose_int_diffuse1_crank_mat(mesh%ele, jac_3d,            &
-     &      rhs_tbl, MG_mat_fl_q, FEM_elens, intg_point_t_evo,          &
+     &      rhs_tbl, MG_mat_fl_q, FEM_elens, num_int,                   &
      &      diff_coefs%num_field, ifld_diff%i_light, diff_coefs%ak,     &
      &      evo_comp%coef_imp, ak_MHD%ak_d_composit, ifilter_final,     &
      &      fem_wk, mat_light)
@@ -172,9 +185,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sel_int_poisson_mat                                    &
-     &         (ele, jac_3d_l, rhs_tbl, MG_mat_tbl, FEM_elens, n_int,   &
-     &          num_diff_kinds, iak_diff, ak_diff,                      &
-     &          i_filter, fem_wk, mat11_DJDS)
+     &         (ele, jac_3d_l, rhs_tbl, MG_mat_tbl, FEM_elens,          &
+     &          iflag_commute_magne, n_int, num_diff_kinds,             &
+     &          iak_diff, ak_diff, i_filter, fem_wk, mat11_DJDS)
 !
       use int_vol_poisson_mat
       use int_vol_poisson_sgs_matrix
@@ -185,6 +198,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(table_mat_const), intent(in) :: MG_mat_tbl
 !
+      integer(kind = kint), intent(in) :: iflag_commute_magne
       integer(kind = kint), intent(in) :: n_int, i_filter
       integer(kind = kint), intent(in) :: num_diff_kinds, iak_diff
       real(kind = kreal), intent(in)                                    &

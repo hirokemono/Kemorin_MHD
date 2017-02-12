@@ -22,7 +22,6 @@
 !
       use m_precision
       use m_machine_parameter
-      use m_physical_property
 !
       use t_phys_address
 !

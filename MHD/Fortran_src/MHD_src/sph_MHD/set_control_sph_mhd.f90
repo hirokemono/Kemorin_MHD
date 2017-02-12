@@ -8,10 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine set_control_SGS_SPH_MHD(plt, org_plt,                &
-!!     &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl, &
-!!     &          sph_gen, rj_fld, mesh_file, sph_file_param,           &
-!!     &          MHD_org_files, sph_fst_IO, pwr, sph_filters)
-!!      subroutine set_control_4_SPH_MHD(plt, org_plt,                  &
+!!     &         model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,  &
+!!     &         sph_gen, rj_fld, mesh_file, sph_file_param,            &
+!!     &         MHD_org_files, sph_fst_IO, pwr,                        &
+!!     &         SGS_param, cmt_param, filter_param, sph_filters)
+!!      subroutine set_control_4_SPH_MHD(SGS_param, plt, org_plt,       &
 !!     &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl, &
 !!     &          sph_gen, rj_fld, mesh_file, sph_file_param,           &
 !!     &          sph_fst_IO, pwr)
@@ -29,6 +30,9 @@
 !!        type(file_params_4_sph_mhd), intent(inout) :: MHD_org_files
 !!        type(field_IO), intent(inout) :: sph_fst_IO
 !!        type(sph_mean_squares), intent(inout) :: pwr
+!!        type(SGS_model_control_params), intent(inout) :: SGS_param
+!!        type(commutation_control_params), intent(inout) :: cmt_param
+!!        type(SGS_filtering_params), intent(inout) :: filter_param
 !!        type(sph_filters_type), intent(inout) :: sph_filters(1)
 !!@endverbatim
 !
@@ -60,14 +64,16 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_control_SGS_SPH_MHD(plt, org_plt,                  &
-     &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,   &
-     &          sph_gen, rj_fld, mesh_file, sph_file_param,             &
-     &          MHD_org_files, sph_fst_IO, pwr, sph_filters)
+     &         model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,    &
+     &         sph_gen, rj_fld, mesh_file, sph_file_param,              &
+     &         MHD_org_files, sph_fst_IO, pwr,                          &
+     &         SGS_param, cmt_param, filter_param, sph_filters)
 !
       use m_spheric_global_ranks
       use m_ucd_data
       use sph_mhd_rms_IO
 !
+      use t_SGS_control_parameter
       use t_spheric_parameter
       use t_phys_data
       use t_rms_4_sph_spectr
@@ -89,17 +95,23 @@
       type(file_params_4_sph_mhd), intent(inout) :: MHD_org_files
       type(field_IO), intent(inout) :: sph_fst_IO
       type(sph_mean_squares), intent(inout) :: pwr
+      type(SGS_model_control_params), intent(inout) :: SGS_param
+      type(commutation_control_params), intent(inout) :: cmt_param
+      type(SGS_filtering_params), intent(inout) :: filter_param
       type(sph_filters_type), intent(inout) :: sph_filters(1)
 !
 !
 !   set parameters for SGS model
 !
       if (iflag_debug.gt.0) write(*,*) 'set_control_SGS_model'
-      call set_control_SGS_model(model_ctl%sgs_ctl)
-      call set_control_SPH_SGS                                          &
-     &   (model_ctl%sgs_ctl%num_sph_filter_ctl,                         &
-     &    model_ctl%sgs_ctl%sph_filter_ctl(1),                          &
-     &    sph_filters(1))
+      call set_control_SGS_model                                        &
+     &   (model_ctl%sgs_ctl, SGS_param, cmt_param, filter_param)
+!
+      if(SGS_param%iflag_SGS .ne. id_SGS_none) then
+        call set_control_SPH_SGS                                        &
+     &     (model_ctl%sgs_ctl%num_sph_filter_ctl,                       &
+     &      model_ctl%sgs_ctl%sph_filter_ctl(1), sph_filters(1))
+      end if
       if(model_ctl%sgs_ctl%num_sph_filter_ctl .gt. 0) then
         call dealloc_sph_filter_ctl(model_ctl%sgs_ctl)
       end if
@@ -107,7 +119,7 @@
       call set_control_4_SPH_MHD(plt, org_plt,                          &
      &    model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,         &
      &    sph_gen, rj_fld, mesh_file, sph_file_param,                   &
-     &    MHD_org_files, sph_fst_IO, pwr)
+     &    MHD_org_files, sph_fst_IO, pwr, SGS_param)
 !
       end subroutine set_control_SGS_SPH_MHD
 !
@@ -116,12 +128,14 @@
       subroutine set_control_4_SPH_MHD(plt, org_plt,                    &
      &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,   &
      &          sph_gen, rj_fld, mesh_file, sph_file_param,             &
-     &          MHD_org_files, sph_fst_IO, pwr)
+     &          MHD_org_files, sph_fst_IO, pwr, SGS_param)
 !
       use m_spheric_global_ranks
+      use m_physical_property
       use m_ucd_data
       use sph_mhd_rms_IO
 !
+      use t_SGS_control_parameter
       use t_spheric_parameter
       use t_phys_data
       use t_rms_4_sph_spectr
@@ -140,6 +154,7 @@
 !
       type(platform_data_control), intent(in) :: plt
       type(platform_data_control), intent(in) :: org_plt
+!
       type(mhd_model_control), intent(inout) :: model_ctl
       type(mhd_control_control), intent(inout) :: ctl_ctl
       type(sph_monitor_control), intent(inout) :: smonitor_ctl
@@ -151,6 +166,7 @@
       type(field_IO_params), intent(inout) :: sph_file_param
       type(file_params_4_sph_mhd), intent(inout) :: MHD_org_files
       type(field_IO), intent(inout) :: sph_fst_IO
+      type(SGS_model_control_params), intent(inout) :: SGS_param
       type(sph_mean_squares), intent(inout) :: pwr
 !
       integer(kind = kint) :: ierr
@@ -169,8 +185,8 @@
       call set_control_org_sph_files(org_plt, MHD_org_files)
 !
       call s_set_control_4_model                                        &
-     &    (model_ctl%reft_ctl, ctl_ctl%mevo_ctl, model_ctl%evo_ctl,     &
-     &     nmtr_ctl)
+     &    (model_ctl%reft_ctl, model_ctl%refc_ctl, ctl_ctl%mevo_ctl,    &
+     &     model_ctl%evo_ctl, nmtr_ctl, FEM_prm1)
 !
 !   set spherical shell parameters
 !
@@ -185,13 +201,13 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_force'
       call s_set_control_4_force(model_ctl%frc_ctl, model_ctl%g_ctl,    &
-     &    model_ctl%cor_ctl, model_ctl%mcv_ctl)
+     &    model_ctl%cor_ctl, model_ctl%mcv_ctl, fl_prop1, cd_prop1)
 !
 !   set parameters for general information
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_sph_data_MHD'
-      call s_set_control_sph_data_MHD                                   &
-     &   (plt, model_ctl%fld_ctl%field_ctl, ctl_ctl%mevo_ctl,           &
+      call s_set_control_sph_data_MHD(SGS_param, plt,                   &
+     &    model_ctl%fld_ctl%field_ctl, ctl_ctl%mevo_ctl,                &
      &    MHD_org_files%rj_file_param, MHD_org_files%rst_file_param,    &
      &    rj_fld)
 !
@@ -209,7 +225,8 @@
 !   set control parameters
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_time_steps'
-      call s_set_control_4_time_steps(ctl_ctl%mrst_ctl, ctl_ctl%tctl)
+      call s_set_control_4_time_steps                                   &
+     &   (SGS_param, ctl_ctl%mrst_ctl, ctl_ctl%tctl)
       call s_set_control_4_crank(ctl_ctl%mevo_ctl)
 !
 !   set_pickup modes

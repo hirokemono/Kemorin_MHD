@@ -9,27 +9,38 @@
 !        modified by H. Matsui on Aug., 2007
 !
 !!      subroutine int_vol_Lorentz_pg                                   &
-!!     &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack, &
-!!     &          n_int, i_magne, ncomp_ele, iele_magne, d_ele,         &
-!!     &          fem_wk, mhd_fem_wk, f_nl)
+!!     &         (node, ele, fl_prop, cd_prop, jac_3d, rhs_tbl, nod_fld,&
+!!     &          iele_fsmp_stack, n_int, i_magne, ncomp_ele,           &
+!!     &          iele_magne, d_ele, fem_wk, mhd_fem_wk, f_nl)
 !!      subroutine int_vol_full_Lorentz_pg                              &
-!!     &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack, &
-!!     &          n_int, i_magne, ncomp_ele, iele_magne, d_ele,         &
-!!     &          fem_wk, f_nl)
+!!     &         (node, ele, fl_prop, cd_prop, jac_3d, rhs_tbl, nod_fld,&
+!!     &          iele_fsmp_stack, n_int, i_magne, ncomp_ele,           &
+!!     &          iele_magne, d_ele, fem_wk, f_nl)
 !!      subroutine int_vol_full_rot_Lorentz_pg                          &
-!!     &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack, &
-!!     &          n_int, i_vecp, ncomp_ele, iele_magne, d_ele,          &
-!!     &          fem_wk, mhd_fem_wk, f_nl)
+!!     &         (node, ele, fl_prop, cd_prop, jac_3d, rhs_tbl, nod_fld,&
+!!     &          iele_fsmp_stack, n_int, i_vecp, ncomp_ele,            &
+!!     &          iele_magne, d_ele, fem_wk, mhd_fem_wk, f_nl)
 !!
 !!
 !!      subroutine int_vol_Lorentz_upw                                  &
-!!     &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack, &
-!!     &          n_int, i_magne, ncomp_ele, iele_magne, ie_upw, d_ele, &
-!!     &          fem_wk, mhd_fem_wk, f_nl)
+!!     &         (node, ele, fl_prop, cd_prop, jac_3d, rhs_tbl, nod_fld,&
+!!     &          iele_fsmp_stack, n_int, i_magne, ncomp_ele,           &
+!!     &          iele_magne, ie_upw, d_ele, fem_wk, mhd_fem_wk, f_nl)
 !!      subroutine int_vol_full_Lorentz_upw                             &
-!!     &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack, &
-!!     &          n_int, ncomp_ele, iele_magne, ie_upw, d_ele,          &
-!!     &          fem_wk, f_nl)
+!!     &         (node, ele, fl_prop, cd_prop, jac_3d, rhs_tbl, nod_fld,&
+!!     &          iele_fsmp_stack, n_int, i_magne, ncomp_ele,           &
+!!     &          iele_magne, ie_upw, d_ele, fem_wk, f_nl)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in) :: cd_prop
+!!        type(jacobians_3d), intent(in) :: jac_3d
+!!        type(phys_data),    intent(in) :: nod_fld
+!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
+!!        type(finite_ele_mat_node), intent(inout) :: f_nl
+!
 !
       module int_vol_Lorentz
 !
@@ -37,7 +48,8 @@
 !
       use m_machine_parameter
       use m_phys_constants
-      use m_physical_property
+!
+      use t_physical_property
       use t_geometry_data
       use t_phys_data
       use t_jacobians
@@ -54,9 +66,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_Lorentz_pg                                     &
-     &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack,   &
-     &          n_int, i_magne, ncomp_ele, iele_magne, d_ele,           &
-     &          fem_wk, mhd_fem_wk, f_nl)
+     &         (node, ele, fl_prop, cd_prop, jac_3d, rhs_tbl, nod_fld,  &
+     &          iele_fsmp_stack, n_int, i_magne, ncomp_ele,             &
+     &          iele_magne, d_ele, fem_wk, mhd_fem_wk, f_nl)
 !
       use cal_add_smp
       use nodal_fld_2_each_element
@@ -66,6 +78,8 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
       type(jacobians_3d), intent(in) :: jac_3d
       type(phys_data),    intent(in) :: nod_fld
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -87,14 +101,14 @@
 !
 !$omp parallel
       call add_const_to_vector_smp(ele%numele,                          &
-     &    d_ele(1,iele_magne), ex_magne, mhd_fem_wk%magne_1)
+     &    d_ele(1,iele_magne), cd_prop%ex_magne, mhd_fem_wk%magne_1)
 !$omp end parallel
 !
 !
 ! -------- loop for shape function for the physical values
       do k2 = 1, ele%nnod_4_ele
         call vector_cst_phys_2_each_ele(node, ele, nod_fld,             &
-     &      k2, i_magne, coef_lor, fem_wk%vector_1)
+     &      k2, i_magne, fl_prop%coef_lor, fem_wk%vector_1)
         call fem_skv_vector_inertia_type(iele_fsmp_stack, n_int, k2,    &
      &      fem_wk%vector_1, mhd_fem_wk%magne_1, ele, jac_3d,           &
      &      fem_wk%sk6)
@@ -108,9 +122,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_full_Lorentz_pg                                &
-     &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack,   &
-     &          n_int, i_magne, ncomp_ele, iele_magne, d_ele,           &
-     &          fem_wk, f_nl)
+     &         (node, ele, fl_prop, cd_prop, jac_3d, rhs_tbl, nod_fld,  &
+     &          iele_fsmp_stack, n_int, i_magne, ncomp_ele,             &
+     &          iele_magne, d_ele, fem_wk, f_nl)
 !
       use cal_add_smp
       use nodal_fld_2_each_element
@@ -119,6 +133,8 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
       type(jacobians_3d), intent(in) :: jac_3d
       type(phys_data),    intent(in) :: nod_fld
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -142,8 +158,8 @@
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_magne, fem_wk%vector_1)
         call fem_skv_lorentz_full_galerkin(iele_fsmp_stack, n_int, k2,  &
-     &      coef_lor, fem_wk%vector_1, d_ele(1,iele_magne), ex_magne,   &
-     &      ele, jac_3d, fem_wk%sk6)
+     &      fl_prop%coef_lor, fem_wk%vector_1, d_ele(1,iele_magne),     &
+     &      cd_prop%ex_magne, ele, jac_3d, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &
@@ -154,9 +170,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_full_rot_Lorentz_pg                            &
-     &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack,   &
-     &          n_int, i_vecp, ncomp_ele, iele_magne, d_ele,            &
-     &          fem_wk, mhd_fem_wk, f_nl)
+     &         (node, ele, fl_prop, cd_prop, jac_3d, rhs_tbl, nod_fld,  &
+     &          iele_fsmp_stack, n_int, i_vecp, ncomp_ele,              &
+     &          iele_magne, d_ele, fem_wk, mhd_fem_wk, f_nl)
 !
       use cal_add_smp
       use nodal_fld_cst_to_element
@@ -165,6 +181,8 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
       type(jacobians_3d), intent(in) :: jac_3d
       type(phys_data),    intent(in) :: nod_fld
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -186,13 +204,13 @@
 !
 !$omp parallel
       call add_const_to_vector_smp(ele%numele,                          &
-     &    d_ele(1,iele_magne), ex_magne, fem_wk%vector_1)
+     &    d_ele(1,iele_magne), cd_prop%ex_magne, fem_wk%vector_1)
 !$omp end parallel
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele%nnod_4_ele
         call vector_cst_phys_2_each_ele(node, ele, nod_fld,             &
-     &      k2, i_vecp, coef_lor, mhd_fem_wk%vecp_1)
+     &      k2, i_vecp, fl_prop%coef_lor, mhd_fem_wk%vecp_1)
         call fem_skv_lorentz_rot_galerkin(iele_fsmp_stack,              &
      &      n_int, k2, mhd_fem_wk%vecp_1, fem_wk%vector_1,              &
      &      ele, jac_3d, fem_wk%sk6)
@@ -207,9 +225,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_Lorentz_upw                                    &
-     &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack,   &
-     &          n_int, i_magne, ncomp_ele, iele_magne, ie_upw, d_ele,   &
-     &          fem_wk, mhd_fem_wk, f_nl)
+     &         (node, ele, fl_prop, cd_prop, jac_3d, rhs_tbl, nod_fld,  &
+     &          iele_fsmp_stack, n_int, i_magne, ncomp_ele,             &
+     &          iele_magne, ie_upw, d_ele, fem_wk, mhd_fem_wk, f_nl)
 !
       use cal_add_smp
       use nodal_fld_2_each_element
@@ -219,6 +237,8 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
       type(jacobians_3d), intent(in) :: jac_3d
       type(phys_data),    intent(in) :: nod_fld
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -240,13 +260,13 @@
 !
 !$omp parallel
       call add_const_to_vector_smp(ele%numele,                          &
-     &    d_ele(1,iele_magne), ex_magne, mhd_fem_wk%magne_1)
+     &    d_ele(1,iele_magne), cd_prop%ex_magne, mhd_fem_wk%magne_1)
 !$omp end parallel
 !
 ! -------- loop for shape function for the physical values
       do k2 = 1, ele%nnod_4_ele
         call vector_cst_phys_2_each_ele(node, ele, nod_fld,             &
-     &      k2, i_magne, coef_lor, fem_wk%vector_1)
+     &      k2, i_magne, fl_prop%coef_lor, fem_wk%vector_1)
         call fem_skv_vector_inertia_upwind(iele_fsmp_stack, n_int, k2,  &
      &      fem_wk%vector_1, mhd_fem_wk%magne_1, d_ele(1,ie_upw),       &
      &      ele, jac_3d, fem_wk%sk6)
@@ -260,9 +280,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_full_Lorentz_upw                               &
-     &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack,   &
-     &          n_int, i_magne, ncomp_ele, iele_magne, ie_upw, d_ele,   &
-     &          fem_wk, f_nl)
+     &         (node, ele, fl_prop, cd_prop, jac_3d, rhs_tbl, nod_fld,  &
+     &          iele_fsmp_stack, n_int, i_magne, ncomp_ele,             &
+     &          iele_magne, ie_upw, d_ele, fem_wk, f_nl)
 !
       use cal_add_smp
       use nodal_fld_2_each_element
@@ -271,6 +291,8 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
       type(jacobians_3d), intent(in) :: jac_3d
       type(phys_data),    intent(in) :: nod_fld
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -294,9 +316,9 @@
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_magne, fem_wk%vector_1)
         call fem_skv_lorentz_full_upwind(iele_fsmp_stack,               &
-     &      n_int, k2, coef_lor, fem_wk%vector_1, d_ele(1,ie_upw),      &
-     &      d_ele(1,iele_magne), ex_magne, ele, jac_3d,                 &
-     &      fem_wk%sk6)
+     &      n_int, k2, fl_prop%coef_lor, fem_wk%vector_1,               &
+     &      d_ele(1,ie_upw), d_ele(1,iele_magne), cd_prop%ex_magne,     &
+     &      ele, jac_3d, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &

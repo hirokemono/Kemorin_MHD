@@ -13,6 +13,7 @@
       use m_work_time
       use m_t_step_parameter
       use m_t_int_parameter
+      use m_SGS_control_parameter
       use t_time_data_IO
 !
       use calypso_mpi
@@ -45,9 +46,9 @@
 !   matrix assembling
 !
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
-      call init_analyzer_snap(IO_bc1, mesh1, group1, ele_mesh1,         &
-     &    MHD_mesh1, layer_tbl1, iphys, nod_fld1,                       &
-     &   SNAP_time_IO, label_sim)
+      call init_analyzer_snap                                           &
+     &   (SGS_par1, IO_bc1, mesh1, group1, ele_mesh1, MHD_mesh1,        &
+     &    layer_tbl1, iphys, nod_fld1, SNAP_time_IO, label_sim)
 !
       end subroutine FEM_initialize_vol_average
 !
@@ -56,6 +57,7 @@
       subroutine FEM_analyze_vol_average(i_step)
 !
       use m_control_parameter
+      use m_physical_property
       use m_mesh_data
       use m_node_phys_data
       use m_geometry_data_MHD
@@ -86,10 +88,15 @@
 !
 !     ---- magnetic field update
 !
-      if (iflag_4_ref_temp .ne. id_no_ref_temp) then
+      if (ref_param_T1%iflag_reference .ne. id_no_ref_temp) then
         if (iflag_debug.eq.1)  write(*,*) 'set_2_perturbation_temp'
         call subtract_2_nod_scalars(nod_fld1,                           &
      &      iphys%i_temp, iphys%i_ref_t, iphys%i_par_temp)
+      end if
+      if (ref_param_C1%iflag_reference .ne. id_no_ref_temp) then
+        if (iflag_debug.eq.1)  write(*,*) 'set_2_perturbation_comp'
+        call subtract_2_nod_scalars(nod_fld1,                           &
+     &      iphys%i_light, iphys%i_ref_c, iphys%i_par_light)
       end if
 !
 !     ---------------------
@@ -100,7 +107,7 @@
 !     -----Output monitor date
 !
       if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
-      call output_time_step_control(mesh1, MHD_mesh1,                   &
+      call output_time_step_control(FEM_prm1, mesh1, MHD_mesh1,         &
      &    iphys, nod_fld1, iphys_ele, fld_ele1, jac1_3d_q, jac1_3d_l,   &
      &    fem1_wk, mhd_fem1_wk)
 !

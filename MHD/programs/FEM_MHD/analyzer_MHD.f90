@@ -13,6 +13,7 @@
       use calypso_mpi
       use m_work_time
 !
+      use m_SGS_control_parameter
       use m_mesh_data
       use m_node_phys_data
 !
@@ -66,7 +67,7 @@
 !
       call start_eleps_time(4)
       call input_control_4_MHD                                          &
-     &   (mesh1, group1, ele_mesh1, nod_fld1, IO_bc1,                   &
+     &   (SGS_par1, mesh1, group1, ele_mesh1, nod_fld1, IO_bc1,         &
      &    filtering1, wide_filtering, wk_filter1, MHD1_matrices)
       call end_eleps_time(4)
 !

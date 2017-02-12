@@ -5,8 +5,9 @@
 !                                    on July 2000 (ver 1.1)
 !        modified by H.Matsui on July, 2006
 !
-!!      subroutine velocity_evolution(nod_comm, node, ele, surf, fluid, &
-!!     &        (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,  &
+!!      subroutine velocity_evolution                                   &
+!!     &        (FEM_prm, SGS_par, nod_comm, node, ele, surf,           &
+!!     &         fluid, sf_grp, sf_grp_nod, fl_prop, cd_prop,           &
 !!     &         Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys, iphys_ele, &
 !!     &         ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,&
 !!     &         rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs, ifld_diff,    &
@@ -14,6 +15,8 @@
 !!     &         layer_tbl, Vmatrix, Pmatrix, wk_lsq, wk_sgs, wk_filter,&
 !!     &         mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                &
 !!     &         nod_fld, ele_fld, sgs_coefs)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
+!!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -21,6 +24,8 @@
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(surface_node_grp_data), intent(in) :: sf_grp_nod
 !!        type(field_geometry_data), intent(in) :: fluid
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in) :: cd_prop
 !!        type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
 !!        type(velocity_surf_bc_type), intent(in) :: Vsf_bcs
 !!        type(vector_surf_bc_type), intent(in) :: Bsf_bcs
@@ -56,6 +61,8 @@
 !
       use m_precision
 !
+      use t_FEM_control_parameter
+      use t_SGS_control_parameter
       use t_comm_table
       use t_geometry_data_MHD
       use t_geometry_data
@@ -80,6 +87,7 @@
       use t_ele_info_4_dynamic
       use t_work_4_dynamic_model
       use t_solver_djds_MHD
+      use t_physical_property
 !
       implicit none
 !
@@ -93,7 +101,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine velocity_evolution                                     &
-     &        (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,    &
+     &        (FEM_prm, SGS_par, nod_comm, node, ele, surf,             &
+     &         fluid, sf_grp, sf_grp_nod, fl_prop, cd_prop,             &
      &         Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys, iphys_ele,   &
      &         ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,  &
      &         rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs, ifld_diff,      &
@@ -102,9 +111,7 @@
      &         mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                  &
      &         nod_fld, ele_fld, sgs_coefs)
 !
-      use m_control_parameter
       use m_machine_parameter
-      use m_physical_property
       use m_type_AMG_data
 !
       use cal_velocity_pre
@@ -115,6 +122,8 @@
       use int_norm_div_MHD
       use cal_rms_potentials
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -122,6 +131,8 @@
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_node_grp_data), intent(in) :: sf_grp_nod
       type(field_geometry_data), intent(in) :: fluid
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
       type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
       type(velocity_surf_bc_type), intent(in) :: Vsf_bcs
       type(vector_surf_bc_type), intent(in) :: Bsf_bcs
@@ -159,37 +170,41 @@
       real(kind = kreal) :: rel_correct
 !
 !
-      if (iflag_4_lorentz .eq. id_turn_ON) then
-        if (iflag_4_rotate .eq. id_turn_OFF) then
+      if (fl_prop%iflag_4_lorentz .eq. id_turn_ON) then
+        if (FEM_prm%iflag_rotate_form .eq. id_turn_OFF) then
           call cal_sol_pressure_w_mag_ene                               &
-     &       (node%numnod, node%istack_internal_smp,                    &
-     &        nod_fld%ntot_phys, iphys%i_p_phi, iphys%i_magne,          &
-     &        iphys%i_press, nod_fld%d_fld)
-        else if (iflag_magneto_cv .eq. id_turn_ON                       &
-     &     .and. iflag_4_rotate .eq. id_turn_OFF) then
+     &      (node%numnod, node%istack_internal_smp,                     &
+     &     fl_prop%coef_press, fl_prop%acoef_press, fl_prop%coef_lor,   &
+     &       nod_fld%ntot_phys, iphys%i_p_phi, iphys%i_magne,           &
+     &       iphys%i_press, nod_fld%d_fld)
+        else if (cd_prop%iflag_magneto_cv .eq. id_turn_ON               &
+     &     .and. FEM_prm%iflag_rotate_form .eq. id_turn_OFF) then
           call cal_sol_pressure_mcv                                     &
      &       (node%numnod, node%istack_internal_smp,                    &
+     &        fl_prop%coef_press, fl_prop%acoef_press,                  &
+     &        fl_prop%coef_lor, cd_prop%ex_magne,                       &
      &        nod_fld%ntot_phys, iphys%i_p_phi, iphys%i_magne,          &
      &        iphys%i_press, nod_fld%d_fld)
         else
           call init_sol_potential(node%numnod, node%istack_nod_smp,     &
-     &        coef_press, nod_fld%ntot_phys, iphys%i_p_phi,             &
+     &        fl_prop%coef_press, nod_fld%ntot_phys, iphys%i_p_phi,     &
      &        iphys%i_press, nod_fld%d_fld)
         end if
       else
         call init_sol_potential(node%numnod, node%istack_nod_smp,       &
-     &      coef_press, nod_fld%ntot_phys, iphys%i_p_phi,               &
+     &      fl_prop%coef_press, nod_fld%ntot_phys, iphys%i_p_phi,       &
      &      iphys%i_press, nod_fld%d_fld)
       end if
 !
 !     --------------------- 
 !
       if (iflag_debug.eq.1)  write(*,*) 's_cal_velocity_pre'
-      call s_cal_velocity_pre                                           &
-     &   (nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,         &
-     &    Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD,         &
-     &    jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,         &
-     &    ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,                &
+      call s_cal_velocity_pre(FEM_prm,                                  &
+     &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
+     &    nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,         &
+     &    fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys,          &
+     &    iphys_ele, ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, &
+     &    FEM_elens, ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,     &
      &    sgs_coefs_nod, diff_coefs, filtering, layer_tbl,              &
      &    Vmatrix, MG_vector, wk_lsq, wk_sgs,                           &
      &    wk_filter, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,            &
@@ -203,19 +218,23 @@
 !      call int_rms_div_v_monitor(iloop, node, ele, fluid,              &
 !     &    iphys, nod_fld, jac_3d_q, fem_wk, rel_correct)
 !
-      do iloop = 0, maxiter
+      do iloop = 0, FEM_prm%maxiter_stokes
         call cal_mod_potential(ifld_diff%i_velo,                        &
+     &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      node, ele, surf, fluid, sf_grp, Vnod_bcs, Vsf_bcs, Psf_bcs, &
      &      iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,           &
      &      FEM_elens, diff_coefs, Pmatrix, MG_vector, fem_wk, surf_wk, &
      &      f_l, f_nl, nod_fld)
 !
         call cal_sol_pressure                                           &
-     &     (node%numnod, node%istack_internal_smp, nod_fld%ntot_phys,   &
+     &     (node%numnod, node%istack_internal_smp,                      &
+     &      fl_prop%acoef_press, nod_fld%ntot_phys,                     &
      &      iphys%i_p_phi, iphys%i_press,  nod_fld%d_fld)
 !
-        call cal_velocity_co(nod_comm, node, ele, surf, fluid,          &
-     &      sf_grp, sf_grp_nod, Vnod_bcs, Vsf_bcs, Psf_bcs,             &
+        call cal_velocity_co                                            &
+     &     (FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
+     &      nod_comm, node, ele, surf, fluid,                           &
+     &      sf_grp, sf_grp_nod, fl_prop, Vnod_bcs, Vsf_bcs, Psf_bcs,    &
      &      iphys, iphys_ele, ele_fld, ak_MHD,                          &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &
      &      FEM_elens, ifld_diff, diff_coefs, Vmatrix, MG_vector,       &
@@ -243,7 +262,7 @@
       end do
  10   continue
 !
-      if (iflag_4_rotate .eq. id_turn_ON) then
+      if (FEM_prm%iflag_rotate_form .eq. id_turn_ON) then
         call cal_sol_pressure_rotate                                    &
      &     (node%numnod, node%istack_internal_smp, nod_fld%ntot_phys,   &
      &      iphys%i_velo, iphys%i_press, nod_fld%d_fld)

@@ -80,6 +80,7 @@
 !!
 !!
 !!      SGS_hf_factor_ctl        0.5
+!!      SGS_cf_factor_ctl        0.5
 !!
 !!      begin filter_files_def
 !!        filter_elength_header   'filter_elen'
@@ -202,6 +203,7 @@
         type(read_character_item) :: SGS_model_coef_type_ctl
 !
         type(read_character_item) :: heat_flux_csim_type_ctl
+        type(read_character_item) :: comp_flux_csim_type_ctl
         type(read_character_item) :: mom_flux_csim_type_ctl
         type(read_character_item) :: maxwell_csim_type_ctl
         type(read_character_item) :: uxb_csim_type_ctl
@@ -216,6 +218,7 @@
         type(read_real_item) :: clipping_limit_ctl
 !
         type(read_real_item) :: SGS_hf_factor_ctl
+        type(read_real_item) :: SGS_cf_factor_ctl
         type(read_real_item) :: SGS_mf_factor_ctl
         type(read_real_item) :: SGS_mxwl_factor_ctl
         type(read_real_item) :: SGS_uxb_factor_ctl
@@ -253,6 +256,8 @@
       character(len=kchara), parameter                                  &
      &             :: hd_SGS_hf_factor = 'SGS_hf_factor_ctl'
       character(len=kchara), parameter                                  &
+     &             :: hd_SGS_cf_factor = 'SGS_cf_factor_ctl'
+      character(len=kchara), parameter                                  &
      &             :: hd_SGS_mf_factor = 'SGS_mf_factor_ctl'
       character(len=kchara), parameter                                  &
      &             :: hd_SGS_mxwl_factor = 'SGS_mxwl_factor_ctl'
@@ -281,6 +286,8 @@
      &                        = 'model_coef_type_ctl'
       character(len=kchara), parameter :: hd_hf_csim_type_ctl           &
      &                        = 'heat_flux_csim_type_ctl'
+      character(len=kchara), parameter :: hd_cf_csim_type_ctl           &
+     &                        = 'comp_flux_csim_type_ctl'
       character(len=kchara), parameter :: hd_mf_csim_type_ctl           &
      &                        = 'mom_flux_csim_type_ctl'
       character(len=kchara), parameter :: hd_mxwl_csim_type_ctl         &
@@ -408,6 +415,8 @@
 !
         call read_chara_ctl_type(hd_hf_csim_type_ctl,                   &
      &      sgs_ctl%heat_flux_csim_type_ctl)
+        call read_chara_ctl_type(hd_cf_csim_type_ctl,                   &
+     &      sgs_ctl%comp_flux_csim_type_ctl)
         call read_chara_ctl_type(hd_mf_csim_type_ctl,                   &
      &      sgs_ctl%mom_flux_csim_type_ctl)
         call read_chara_ctl_type(hd_mxwl_csim_type_ctl,                 &
@@ -425,6 +434,8 @@
 !
         call read_real_ctl_type(hd_SGS_hf_factor,                       &
      &      sgs_ctl%SGS_hf_factor_ctl)
+        call read_real_ctl_type(hd_SGS_cf_factor,                       &
+     &      sgs_ctl%SGS_cf_factor_ctl)
         call read_real_ctl_type(hd_SGS_mf_factor,                       &
      &      sgs_ctl%SGS_mf_factor_ctl)
         call read_real_ctl_type(hd_SGS_mxwl_factor,                     &
@@ -513,6 +524,7 @@
       call bcast_ctl_type_c1(sgs_ctl%SGS_model_coef_type_ctl)
 !
       call bcast_ctl_type_c1(sgs_ctl%heat_flux_csim_type_ctl)
+      call bcast_ctl_type_c1(sgs_ctl%comp_flux_csim_type_ctl)
       call bcast_ctl_type_c1(sgs_ctl%mom_flux_csim_type_ctl)
       call bcast_ctl_type_c1(sgs_ctl%maxwell_csim_type_ctl)
       call bcast_ctl_type_c1(sgs_ctl%uxb_csim_type_ctl)
@@ -523,6 +535,7 @@
       call bcast_ctl_type_r1(sgs_ctl%clipping_limit_ctl)
 !
       call bcast_ctl_type_r1(sgs_ctl%SGS_hf_factor_ctl)
+      call bcast_ctl_type_r1(sgs_ctl%SGS_cf_factor_ctl)
       call bcast_ctl_type_r1(sgs_ctl%SGS_mf_factor_ctl)
       call bcast_ctl_type_r1(sgs_ctl%SGS_mxwl_factor_ctl)
       call bcast_ctl_type_r1(sgs_ctl%SGS_uxb_factor_ctl)

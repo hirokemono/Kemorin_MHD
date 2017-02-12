@@ -34,7 +34,6 @@
 !
       use m_constants
       use m_t_int_parameter
-      use m_physical_property
 !
       implicit none
 !

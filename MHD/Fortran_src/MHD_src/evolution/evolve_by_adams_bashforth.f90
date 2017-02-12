@@ -5,18 +5,18 @@
 !                                    on July 2000 (ver 1.1)
 !        modieied by H. Matsui on Sep., 2005
 !
-!!      subroutine cal_velo_pre_adams(iflag_supg,                       &
-!!     &          nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,
-!!     &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,                  &
-!!     &          f_l, f_nl, nod_fld)
-!!      subroutine cal_magne_pre_adams(iflag_supg, i_field, i_previous, &
-!!     &          nod_comm, node, ele, conduct, iphys_ele, ele_fld,     &
-!!     &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,                  &
-!!     &          f_l, f_nl, nod_fld)
+!!      subroutine cal_velo_pre_adams(FEM_prm, nod_comm, node, ele,     &
+!!     &          fluid, fl_prop, iphys, iphys_ele, ele_fld, jac_3d,    &
+!!     &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!      subroutine cal_magne_pre_adams(i_field, i_previous,             &
+!!     &          FEM_prm, nod_comm, node, ele, conduct,                &
+!!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                  &
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_scalar_pre_adams(iflag_supg, i_field, i_previous,&
-!!     &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,       &
-!!     &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,                  &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          FEM_prm, nod_comm, node, ele, fluid,                  &
+!!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                  &
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -40,6 +40,8 @@
       use m_t_int_parameter
       use m_phys_constants
 !
+      use t_FEM_control_parameter
+      use t_physical_property
       use t_comm_table
       use t_geometry_data_MHD
       use t_geometry_data
@@ -60,21 +62,20 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_velo_pre_adams(iflag_supg,                         &
-     &          nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,  &
-     &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,                    &
-     &          f_l, f_nl, nod_fld)
+      subroutine cal_velo_pre_adams(FEM_prm, nod_comm, node, ele,       &
+     &          fluid, fl_prop, iphys, iphys_ele, ele_fld, jac_3d,      &
+     &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use cal_multi_pass
       use cal_sol_field_explicit
       use int_vol_coriolis_term
 !
-      integer(kind = kint), intent(in) :: iflag_supg
-!
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
+      type(fluid_property), intent(in) :: fl_prop
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -87,17 +88,18 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call cal_t_evo_4_vector(iflag_supg,                               &
-     &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl, nod_comm,      &
+      call cal_t_evo_4_vector                                           &
+     &   (FEM_prm%iflag_velo_supg, fluid%istack_ele_fld_smp,            &
+     &    FEM_prm, mhd_fem_wk%mlump_fl, nod_comm,                       &
      &    node, ele, iphys_ele, ele_fld, jac_3d, rhs_tbl,               &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_coriolis_nod_exp'
-      call int_coriolis_nod_exp(node, mhd_fem_wk,                       &
+      call int_coriolis_nod_exp(node, fl_prop, mhd_fem_wk,              &
      &    iphys%i_velo, nod_fld, f_l, f_nl)
       if (iflag_debug.eq.1)  write(*,*) 'int_buoyancy_nod_exp'
       call int_buoyancy_nod_exp                                         &
-     &   (node, mhd_fem_wk, iphys, nod_fld, f_nl)
+     &   (node, fl_prop, mhd_fem_wk, iphys, nod_fld, f_nl)
 !
       call cal_sol_vect_pre_fluid_adams                                 &
      &   (node%numnod, node%istack_internal_smp,                        &
@@ -109,17 +111,17 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_magne_pre_adams(iflag_supg, i_field, i_previous,   &
-     &          nod_comm, node, ele, conduct, iphys_ele, ele_fld,       &
-     &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,                    &
-     &          f_l, f_nl, nod_fld)
+      subroutine cal_magne_pre_adams(i_field, i_previous,               &
+     &          FEM_prm, nod_comm, node, ele, conduct,                  &
+     &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                    &
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use cal_sol_field_explicit
       use cal_multi_pass
 !
-      integer(kind = kint), intent(in) :: iflag_supg
       integer(kind = kint), intent(in) :: i_field, i_previous
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -135,8 +137,9 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call cal_t_evo_4_vector_cd(iflag_supg,                            &
-     &    conduct%istack_ele_fld_smp, mhd_fem_wk%mlump_cd,              &
+      call cal_t_evo_4_vector_cd                                        &
+     &   (FEM_prm%iflag_magne_supg, conduct%istack_ele_fld_smp,         &
+     &    FEM_prm, mhd_fem_wk%mlump_cd,                                 &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,              &
      &    rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
       call cal_sol_vect_pre_conduct_adams                               &
@@ -152,9 +155,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_scalar_pre_adams(iflag_supg, i_field, i_previous,  &
-     &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,         &
-     &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,                    &
-     &          f_l, f_nl, nod_fld)
+     &          FEM_prm, nod_comm, node, ele, fluid,                    &
+     &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                    &
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use cal_multi_pass
       use cal_sol_field_explicit
@@ -162,6 +165,7 @@
       integer(kind = kint), intent(in) :: iflag_supg
       integer(kind = kint), intent(in) :: i_field, i_previous
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -177,8 +181,8 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call cal_t_evo_4_scalar(iflag_supg,                               &
-     &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl, nod_comm,      &
+      call cal_t_evo_4_scalar(iflag_supg, fluid%istack_ele_fld_smp,     &
+     &    FEM_prm, mhd_fem_wk%mlump_fl, nod_comm,                       &
      &    node, ele, iphys_ele, ele_fld, jac_3d, rhs_tbl,               &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !      call check_ff(my_rank, n_scalar, node%numnod, f_l)

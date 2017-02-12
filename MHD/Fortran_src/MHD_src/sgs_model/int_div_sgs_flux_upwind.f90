@@ -4,13 +4,14 @@
 !     Written by H. Matsui on July, 2005
 !     modified by H. Matsui on July, 2007
 !
-!!      subroutine int_div_sgs_mf_simi_upwind(i_flux, i_vect,           &
+!!      subroutine int_div_sgs_mf_simi_upwind(i_flux, i_vect, num_int,  &
 !!     &          node, ele, fluid, nod_fld, jac_3d, rhs_tbl,           &
 !!     &          ncomp_ele, ie_upw, d_ele, fem_wk, f_nl)
-!!      subroutine int_div_sgs_hf_simi_upw(i_flux, i_vect, i_scalar,    &
+!!      subroutine int_div_sgs_sf_simi_upw                              &
+!!     &         (i_flux, i_vect, i_scalar, num_int,                    &
 !!     &          node, ele, fluid, nod_fld, jac_3d, rhs_tbl,           &
 !!     &          ncomp_ele, iele_velo, d_ele, fem_wk, f_nl)
-!!      subroutine int_div_sgs_idct_simi_upw(i_flux, i_v, i_b,          &
+!!      subroutine int_div_sgs_idct_simi_upw(i_flux, i_v, i_b, num_int, &
 !!     &          node, ele, conduct, nod_fld, jac_3d, rhs_tbl,         &
 !!     &          ncomp_ele, iele_velo, d_ele, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
@@ -30,7 +31,6 @@
 !
 !
       use m_machine_parameter
-      use m_control_parameter
       use m_phys_constants
 !
       use t_geometry_data_MHD
@@ -48,7 +48,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_div_sgs_mf_simi_upwind(i_flux, i_vect,             &
+      subroutine int_div_sgs_mf_simi_upwind(i_flux, i_vect, num_int,    &
      &          node, ele, fluid, nod_fld, jac_3d, rhs_tbl,             &
      &          ncomp_ele, ie_upw, d_ele, fem_wk, f_nl)
 !
@@ -64,6 +64,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
       integer(kind = kint), intent(in) :: i_flux, i_vect
+      integer(kind = kint), intent(in) :: num_int
       integer(kind = kint), intent(in) :: ncomp_ele, ie_upw
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
 !
@@ -83,9 +84,8 @@
      &     (node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,            &
      &      ele%istack_ele_smp, k2, nod_fld%ntot_phys,                  &
      &      i_vect, i_flux, nod_fld%d_fld, fem_wk%tensor_1)
-        call fem_skv_div_tsr_upw                                        &
-     &     (fluid%istack_ele_fld_smp, intg_point_t_evo,                 &
-     &      k2, d_ele(1,ie_upw), ele, jac_3d, fem_wk%tensor_1,          &
+        call fem_skv_div_tsr_upw(fluid%istack_ele_fld_smp, num_int, k2, &
+     &      d_ele(1,ie_upw), ele, jac_3d, fem_wk%tensor_1,              &
      &      fem_wk%sk6)
       end do
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
@@ -95,7 +95,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_div_sgs_hf_simi_upw(i_flux, i_vect, i_scalar,      &
+      subroutine int_div_sgs_sf_simi_upw                                &
+     &         (i_flux, i_vect, i_scalar, num_int,                      &
      &          node, ele, fluid, nod_fld, jac_3d, rhs_tbl,             &
      &          ncomp_ele, iele_velo, d_ele, fem_wk, f_nl)
 !
@@ -111,6 +112,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
       integer(kind = kint), intent(in) :: i_flux, i_vect, i_scalar
+      integer(kind = kint), intent(in) :: num_int
       integer(kind = kint), intent(in) :: ncomp_ele, iele_velo
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
 !
@@ -130,18 +132,18 @@
      &      ele%istack_ele_smp, k2, nod_fld%ntot_phys,                  &
      &      i_vect, i_scalar, i_flux, nod_fld%d_fld, fem_wk%vector_1)
         call fem_skv_divergence_upw(fluid%istack_ele_fld_smp,           &
-     &      intg_point_t_evo, k2, d_ele(1,iele_velo), ele, jac_3d,      &
+     &      num_int, k2, d_ele(1,iele_velo), ele, jac_3d,               &
      &      fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add1_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
      &    fem_wk%sk6, f_nl%ff_smp)
 !
-      end subroutine int_div_sgs_hf_simi_upw
+      end subroutine int_div_sgs_sf_simi_upw
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_div_sgs_idct_simi_upw(i_flux, i_v, i_b,            &
+      subroutine int_div_sgs_idct_simi_upw(i_flux, i_v, i_b, num_int,   &
      &          node, ele, conduct, nod_fld, jac_3d, rhs_tbl,           &
      &          ncomp_ele, iele_velo, d_ele, fem_wk, f_nl)
 !
@@ -157,6 +159,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
       integer(kind = kint), intent(in) :: i_flux, i_v, i_b
+      integer(kind = kint), intent(in) :: num_int
       integer(kind = kint), intent(in) :: ncomp_ele, iele_velo
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
 !
@@ -173,7 +176,7 @@
      &      ele%istack_ele_smp, k2, nod_fld%ntot_phys,                  &
      &      i_b, i_v, i_flux, nod_fld%d_fld, fem_wk%vector_1)
         call fem_skv_div_as_tsr_upw(conduct%istack_ele_fld_smp,         &
-     &      intg_point_t_evo, k2, d_ele(1,iele_velo), ele, jac_3d,      &
+     &      num_int, k2, d_ele(1,iele_velo), ele, jac_3d,               &
      &      fem_wk%vector_1, fem_wk%sk6)
       end do
 !

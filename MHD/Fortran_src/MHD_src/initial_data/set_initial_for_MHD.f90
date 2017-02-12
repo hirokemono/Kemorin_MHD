@@ -3,12 +3,14 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine set_initial_vect_p(isig, node, ncomp_nod,            &
-!!     &          i_vecp, i_magne, i_mag_p, d_nod)
-!!      subroutine set_initial_magne(isig, node, ncomp_nod,             &
-!!     &          i_magne, i_mag_p, d_nod)
+!!      subroutine set_initial_vect_p(isig, ref_param_T, node,          &
+!!     &          ncomp_nod, i_vecp, i_magne, i_mag_p, d_nod)
+!!      subroutine set_initial_magne(isig, ref_param_T, node,           &
+!!     &          ncomp_nod, i_magne, i_mag_p, d_nod)
 !!      subroutine set_initial_kinematic(numnod, nnod_fl, inod_fluid,   &
 !!     &          ncomp_nod, i_velo, i_press, i_magne, d_nod)
+!!       type(reference_scalar_param), intent(in) :: ref_param_T
+!!       type(node_data), intent(in) :: node
 !
       module set_initial_for_MHD
 !
@@ -20,6 +22,7 @@
       use t_geometry_data
       use t_schmidt_polynomial
       use t_spherical_harmonics
+      use t_reference_scalar_param
 !
       use spherical_harmonics
       use cvt_vector_2_cartecian
@@ -110,15 +113,15 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_initial_vect_p(isig, node, ncomp_nod,              &
-     &          i_vecp, i_magne, i_mag_p, d_nod)
+      subroutine set_initial_vect_p(isig, ref_param_T, node,            &
+     &          ncomp_nod, i_vecp, i_magne, i_mag_p, d_nod)
 !
-      use m_physical_property
       use spherical_harmonics
       use sph_spectr_2_vector
 !
       use dynamobench_r_func_sph_vecp
 !
+      type(reference_scalar_param), intent(in) :: ref_param_T
       type(node_data), intent(in) :: node
       integer(kind = kint), intent(in) :: isig
       integer(kind = kint), intent(in) :: ncomp_nod
@@ -126,13 +129,15 @@
       real(kind = kreal), intent(inout) :: d_nod(node%numnod,ncomp_nod)
 !
       integer(kind = kint) :: inod, ifl, j_rst, l_rst, m_rst
+      real(kind = kreal) :: rflag
 !
 !
       j_rst = ( isig-mod(isig,ikilo) )/ikilo
       call get_dgree_order_by_full_j(j_rst, l_rst, m_rst)
 !
       ifl = 1
-      if ( abs(depth_low_t/depth_high_t - 0.35) .lt. 1.0d-4) ifl = 2
+      rflag = ref_param_T%depth_top/ref_param_T%depth_bottom - 0.35
+      if (abs(rflag) .lt. 1.0d-4) ifl = 2
 !
       call init_sph_indices(ltr_ini, leg_ini, sph_ini)
       call alloc_spherical_harmonics(sph_ini)
@@ -144,7 +149,8 @@
 !
          call radial_function_sph_vecp                                  &
      &      (sph_ini%jmax_tri, ifl, j_rst, l_rst, node%rr(inod),        &
-     &       depth_high_t, depth_low_t, bp, bt, dbp, mp)
+     &       ref_param_T%depth_bottom, ref_param_T%depth_top,           &
+     &       bp, bt, dbp, mp)
 !
 !         d_nod(inod,i_mag_p) = 0.0d0
 !         do j = 1, sph_ini%jmax_tri
@@ -174,28 +180,29 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_magne(isig, node, ncomp_nod,               &
-     &          i_magne, i_mag_p, d_nod)
-!
-      use m_physical_property
+      subroutine set_initial_magne(isig, ref_param_T, node,             &
+     &          ncomp_nod, i_magne, i_mag_p, d_nod)
 !
       use radial_func_sph_magne
       use spherical_harmonics
       use sph_spectr_2_vector
 !
+      type(reference_scalar_param), intent(in) :: ref_param_T
       type(node_data), intent(in) :: node
       integer ( kind = kint), intent(in) :: isig
       integer(kind = kint), intent(in) :: ncomp_nod, i_magne, i_mag_p
       real(kind = kreal), intent(inout) :: d_nod(node%numnod,ncomp_nod)
 !
       integer ( kind = kint) :: inod, j, ifl, j_rst, l_rst, m_rst
+      real(kind = kreal) :: rflag
 !
 !
       j_rst = ( isig-mod(isig,ikilo) )/ikilo
       call get_dgree_order_by_full_j(j_rst, l_rst, m_rst)
 !
       ifl = 1
-      if ( abs(depth_low_t/depth_high_t - 0.35) .lt. 1.0d-4) ifl = 2
+      rflag = ref_param_T%depth_top/ref_param_T%depth_bottom - 0.35
+      if (abs(rflag) .lt. 1.0d-4) ifl = 2
 !
       call init_sph_indices(ltr_ini, leg_ini, sph_ini)
       call alloc_spherical_harmonics(sph_ini)
@@ -207,7 +214,8 @@
 !
          call radial_function_sph                                       &
      &      (sph_ini%jmax_tri, ifl, j_rst, l_rst, node%rr(inod),        &
-     &       depth_high_t, depth_low_t, bp, bt, dbp, mp)
+     &       ref_param_T%depth_bottom, ref_param_T%depth_top,           &
+     &       bp, bt, dbp, mp)
 !
          d_nod(inod,i_mag_p) = 0.0d0
          do j = 1, sph_ini%jmax_tri

@@ -45,6 +45,7 @@
 !
       use m_machine_parameter
       use m_control_parameter
+      use m_physical_property
 !
       use m_boundary_condition_IDs
       use m_bc_data_list
@@ -68,8 +69,8 @@
       end if
 !
       if (evo_temp%iflag_scheme .gt. id_no_evolution) then
-        if (iflag_4_ref_temp .ne. id_no_ref_temp) then
-          call set_fixed_bc_4_par_temp                                  &
+        if (ref_param_T1%iflag_reference .ne. id_no_ref_temp) then
+          call set_fixed_bc_per_scalar                                  &
      &       (mesh%node%numnod, nod_fld%ntot_phys,                      &
      &        iphys%i_ref_t, nod_fld%d_fld, nod_bcs%Tnod_bcs%nod_bc_s)
         end if
@@ -79,6 +80,12 @@
       end if
 !
       if (evo_comp%iflag_scheme .gt. id_no_evolution) then
+        if (ref_param_C1%iflag_reference .ne. id_no_ref_temp) then
+          call set_fixed_bc_per_scalar                                  &
+     &       (mesh%node%numnod, nod_fld%ntot_phys,                      &
+     &        iphys%i_ref_c, nod_fld%d_fld, nod_bcs%Cnod_bcs%nod_bc_s)
+        end if
+!
         call set_boundary_scalar                                        &
      &     (nod_bcs%Cnod_bcs%nod_bc_s, iphys%i_light, nod_fld)
       end if

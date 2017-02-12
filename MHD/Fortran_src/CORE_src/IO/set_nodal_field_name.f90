@@ -58,6 +58,8 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_grad_par_temp      )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_grad_ref_temp      )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_grad_composit      )           &
+     &  .or. (phys_nod_name_ctl .eq. fhd_grad_par_light     )           &
+     &  .or. (phys_nod_name_ctl .eq. fhd_grad_ref_light     )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_grad_filter_temp   )           &
      &      )   iflag = 1
 !
@@ -93,6 +95,7 @@
      &  .or. (phys_nod_name_ctl .eq. fhd_h_flux             )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_ph_flux            )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_c_flux             )           &
+     &  .or. (phys_nod_name_ctl .eq. fhd_pc_flux            )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_inertia            )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_div_m_flux         )           &
      &  .or. (phys_nod_name_ctl .eq. fhd_div_maxwell_t      )           &
@@ -199,6 +202,7 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_press_work          )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_m_potential_work    )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_density             )         &
+     &   .or. (phys_nod_name_ctl .eq. fhd_ref_light           )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_part_light          )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_per_density         )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_ref_density         )         &
@@ -226,6 +230,9 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_div_h_flux          )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_div_ph_flux         )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_composit_advect     )         &
+     &   .or. (phys_nod_name_ctl .eq. fhd_part_c_advect       )         &
+     &   .or. (phys_nod_name_ctl .eq. fhd_div_c_flux          )         &
+     &   .or. (phys_nod_name_ctl .eq. fhd_div_pc_flux         )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_mag_ene_gen         )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_work_agst_Lorentz   )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_Lorentz_work        )         &
@@ -244,12 +251,15 @@
      &   .or. (phys_nod_name_ctl .eq. fhd_temp_generation     )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_part_temp_gen       )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_part_temp           )         &
+     &   .or. (phys_nod_name_ctl .eq. fhd_part_comp_gen       )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_vis_ene_diffuse     )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_mag_ene_diffuse     )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_SGS_div_h_flux_true )         &
+     &   .or. (phys_nod_name_ctl .eq. fhd_SGS_div_c_flux_true )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_SGS_Lorentz_wk_true )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_Reynolds_work_true  )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_SGS_temp_gen_true   )         &
+     &   .or. (phys_nod_name_ctl .eq. fhd_SGS_comp_gen_true   )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_SGS_m_ene_gen_true  )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_SGS_div_inertia     )         &
      &   .or. (phys_nod_name_ctl .eq. fhd_SGS_div_Lorentz     )         &

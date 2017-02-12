@@ -11,10 +11,10 @@
 !!
 !!      subroutine set_colatitude_rtp(sph_rtp, sph_rj, leg)
 !!        type(legendre_4_sph_trans), intent(in) :: leg
-!!      subroutine cal_wz_coriolis_rtp                                  &
-!!     &         (nnod, nidx_rtp, velo_rtp, coriolis_rtp)
-!!      subroutine cal_wz_div_coriolis_rtp(nnod, nidx_rtp, velo_rtp,    &
-!!     &          div_coriolis_rtp)
+!!      subroutine cal_wz_coriolis_rtp(nnod, nidx_rtp, coef_cor,        &
+!!     &          velo_rtp, coriolis_rtp)
+!!      subroutine cal_wz_div_coriolis_rtp(nnod, nidx_rtp,              &
+!!     &          coef_cor, velo_rtp, div_coriolis_rtp)
 !!      subroutine subtract_sphere_ave_coriolis(sph_rtp, sph_rj,        &
 !!     &          is_coriolis, ntot_phys_rj, d_rj, coriolis_rtp)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -114,14 +114,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_wz_coriolis_rtp                                    &
-     &         (nnod, nidx_rtp, velo_rtp, coriolis_rtp)
-!
-      use m_physical_property
+      subroutine cal_wz_coriolis_rtp(nnod, nidx_rtp, coef_cor,          &
+     &          velo_rtp, coriolis_rtp)
 !
       integer(kind = kint), intent(in) :: nnod
       integer(kind = kint), intent(in) :: nidx_rtp(3)
+      real(kind = kreal), intent(in) :: coef_cor
       real(kind = kreal), intent(in) :: velo_rtp(nnod,3)
+!
       real(kind = kreal), intent(inout) :: coriolis_rtp(nnod,3)
 !
       integer(kind = kint) :: mphi, l_rtp, kr, inod
@@ -157,14 +157,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_wz_div_coriolis_rtp(nnod, nidx_rtp, velo_rtp,      &
-     &          div_coriolis_rtp)
-!
-      use m_physical_property
+      subroutine cal_wz_div_coriolis_rtp(nnod, nidx_rtp,                &
+     &          coef_cor, velo_rtp, div_coriolis_rtp)
 !
       integer(kind = kint), intent(in) :: nnod
       integer(kind = kint), intent(in) :: nidx_rtp(3)
+      real(kind = kreal), intent(in) :: coef_cor
       real(kind = kreal), intent(in) :: velo_rtp(nnod,3)
+!
       real(kind = kreal), intent(inout) :: div_coriolis_rtp(nnod)
 !
       integer(kind = kint) :: mphi, l_rtp, kr, inod

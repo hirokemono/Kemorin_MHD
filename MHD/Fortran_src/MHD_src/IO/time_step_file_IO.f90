@@ -323,9 +323,10 @@
      &       (nod_fld%phys_name(i), fhd_mom_flux)
           call sym_tensor_label_4_step                                  &
      &       (nod_fld%phys_name(i), fhd_maxwell_t)
-          call vector_label_4_step(nod_fld%phys_name(i), fhd_ph_flux)
           call vector_label_4_step(nod_fld%phys_name(i), fhd_h_flux)
+          call vector_label_4_step(nod_fld%phys_name(i), fhd_ph_flux)
           call vector_label_4_step(nod_fld%phys_name(i), fhd_c_flux)
+          call vector_label_4_step(nod_fld%phys_name(i), fhd_pc_flux)
 !
 !
           call scalar_label_4_step                                      &
@@ -341,6 +342,16 @@
           call scalar_label_4_step                                      &
      &       (nod_fld%phys_name(i), fhd_part_temp_gen)
 !
+          call scalar_label_4_step                                      &
+     &       (nod_fld%phys_name(i), fhd_composit_advect)
+          call scalar_label_4_step                                      &
+     &       (nod_fld%phys_name(i), fhd_part_c_advect)
+          call scalar_label_4_step                                      &
+     &       (nod_fld%phys_name(i), fhd_div_c_flux)
+          call scalar_label_4_step                                      &
+     &       (nod_fld%phys_name(i), fhd_div_pc_flux)
+          call scalar_label_4_step                                      &
+     &       (nod_fld%phys_name(i), fhd_part_comp_gen)
 !
           call scalar_label_4_step                                      &
      &       (nod_fld%phys_name(i), fhd_filter_temp)
@@ -460,11 +471,15 @@
           call scalar_label_4_step(nod_fld%phys_name(i),                &
      &        fhd_SGS_div_h_flux_true)
           call scalar_label_4_step(nod_fld%phys_name(i),                &
+     &        fhd_SGS_div_c_flux_true)
+          call scalar_label_4_step(nod_fld%phys_name(i),                &
      &        fhd_SGS_Lorentz_wk_true)
           call scalar_label_4_step(nod_fld%phys_name(i),                &
      &        fhd_Reynolds_work_true)
           call scalar_label_4_step(nod_fld%phys_name(i),                &
      &        fhd_SGS_temp_gen_true)
+          call scalar_label_4_step(nod_fld%phys_name(i),                &
+     &        fhd_SGS_comp_gen_true)
           call scalar_label_4_step(nod_fld%phys_name(i),                &
      &        fhd_SGS_m_ene_gen_true)
 !

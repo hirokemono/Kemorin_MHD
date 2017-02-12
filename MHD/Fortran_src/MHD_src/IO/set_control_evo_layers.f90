@@ -7,8 +7,9 @@
 !> @brief Set parameters for simulation areas from control data
 !!
 !!@verbatim
-!!     subroutine s_set_control_evo_layers(earea_ctl)
+!!     subroutine s_set_control_evo_layers(earea_ctl, FEM_prm)
 !!       type(mhd_evo_area_control), intent(inout) :: earea_ctl
+!!       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!@endverbatim
 !
 !
@@ -19,6 +20,7 @@
       use m_machine_parameter
       use m_control_parameter
       use t_ctl_data_mhd_evolution
+      use t_FEM_control_parameter
 !
       implicit  none
 !
@@ -31,84 +33,75 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_evo_layers(earea_ctl)
+      subroutine s_set_control_evo_layers(earea_ctl, FEM_prm)
 !
       type(mhd_evo_area_control), intent(inout) :: earea_ctl
+      type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !
 !
       if       (evo_velo%iflag_scheme .eq. id_no_evolution              &
      &    .and. evo_temp%iflag_scheme .eq. id_no_evolution              &
      &    .and. evo_comp%iflag_scheme .eq. id_no_evolution) then
+          call alloc_area_group_name(ione, FEM_prm%fluid_group)
+          FEM_prm%fluid_group%group_name = 'none'
 !
-          num_fl_ele_grp =  1
-          call allocate_fluid_ele_grp_name
-          fl_ele_grp_name = 'none'
-!
-          call set_conduct_layer_egrp_name(earea_ctl)
+          call set_conduct_layer_egrp_name(earea_ctl, FEM_prm)
 !
       else
-        call set_fluid_layer_egrp_name(earea_ctl)
+        call set_fluid_layer_egrp_name(earea_ctl, FEM_prm)
 !
         if     (evo_magne%iflag_scheme .eq. id_no_evolution             &
      &    .and. evo_vect_p%iflag_scheme .eq. id_no_evolution) then
-          num_cd_ele_grp =  1
-          call allocate_conduct_ele_grp_name
-          cd_ele_grp_name = 'none'
+          call alloc_area_group_name(ione, FEM_prm%condutive_group)
+          FEM_prm%condutive_group%group_name = 'none'
 !
         else
-          call set_conduct_layer_egrp_name(earea_ctl)
+          call set_conduct_layer_egrp_name(earea_ctl, FEM_prm)
         end if
       end if
 !
-      num_in_core_ele_grp = 0
-!         =  num_ele_in_core_grp_ctl
-!      if (num_in_core_ele_grp .ne. 0 ) then
-!        allocate(in_core_ele_grp_name(num_in_core_ele_grp))
-!        in_core_ele_grp_name = num_ele_in_core_grp_ctl
-!      end if
+      call alloc_area_group_name(izero, FEM_prm%inner_core_group)
 !
       end subroutine s_set_control_evo_layers
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_fluid_layer_egrp_name(earea_ctl)
+      subroutine set_fluid_layer_egrp_name(earea_ctl, FEM_prm)
 !
       type(mhd_evo_area_control), intent(inout) :: earea_ctl
+      type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !
 !
       if (earea_ctl%evo_fluid_group_ctl%icou .eq. 0) then
-        num_fl_ele_grp = 1
-        call allocate_fluid_ele_grp_name
-        fl_ele_grp_name = 'all'
+        call alloc_area_group_name(ione, FEM_prm%fluid_group)
+        FEM_prm%fluid_group%group_name = 'all'
       else
-        num_fl_ele_grp =  earea_ctl%evo_fluid_group_ctl%num
-        if (num_fl_ele_grp .ne. 0 ) then
-          call allocate_fluid_ele_grp_name
-          fl_ele_grp_name =  earea_ctl%evo_fluid_group_ctl%c_tbl
-          call dealloc_ele_fl_grp_ctl(earea_ctl)
-        end if
+        call alloc_area_group_name(earea_ctl%evo_fluid_group_ctl%num,   &
+     &      FEM_prm%fluid_group)
+        FEM_prm%fluid_group%group_name                                  &
+     &        =  earea_ctl%evo_fluid_group_ctl%c_tbl
+        call dealloc_ele_fl_grp_ctl(earea_ctl)
       end if
 !
       end subroutine set_fluid_layer_egrp_name
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_conduct_layer_egrp_name(earea_ctl)
+      subroutine set_conduct_layer_egrp_name(earea_ctl, FEM_prm)
 !
       type(mhd_evo_area_control), intent(inout) :: earea_ctl
+      type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !
 !
       if (earea_ctl%evo_conduct_group_ctl%icou .eq. 0) then
-        num_cd_ele_grp = 1
-        call allocate_conduct_ele_grp_name
-        cd_ele_grp_name =  'all'
+        call alloc_area_group_name(ione, FEM_prm%condutive_group)
+        FEM_prm%condutive_group%group_name =  'all'
       else
-        num_cd_ele_grp =  earea_ctl%evo_conduct_group_ctl%num
-        if (num_cd_ele_grp .ne. 0 ) then
-          call allocate_conduct_ele_grp_name
-          cd_ele_grp_name =  earea_ctl%evo_conduct_group_ctl%c_tbl
-          call dealloc_ele_cd_grp_ctl(earea_ctl)
-        end if
+        call alloc_area_group_name(earea_ctl%evo_conduct_group_ctl%num, &
+     &      FEM_prm%condutive_group)
+        FEM_prm%condutive_group%group_name                              &
+     &            =  earea_ctl%evo_conduct_group_ctl%c_tbl
+        call dealloc_ele_cd_grp_ctl(earea_ctl)
       end if
 !
       end subroutine set_conduct_layer_egrp_name

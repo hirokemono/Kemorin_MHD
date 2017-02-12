@@ -177,6 +177,7 @@
       use t_phys_address
       use t_sph_trans_arrays_MHD
       use m_control_parameter
+      use m_SGS_control_parameter
 !
       use output_viz_file_control
       use copy_snap_4_sph_trans
@@ -214,7 +215,7 @@
      &   (sph_params%m_folding, sph_rtp, WK%trns_snap,                  &
      &    mesh%node, iphys, nod_fld)
 !
-      if(iflag_SGS_model .eq. 0) return
+      if(SGS_par1%model_p%iflag_SGS .eq. 0) return
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_filtered_field_from_trans'
       call copy_filtered_field_from_trans                               &

@@ -9,13 +9,15 @@
 !!@verbatim
 !!      subroutine update_with_velocity                                 &
 !!     &         (iak_diff_v, icomp_diff_v, ie_dvx, ie_dfvx,            &
-!!     &          nod_comm, node, ele, surf, fluid, sf_grp,             &
-!!     &          Vsf_bcs, Psf_bcs, iphys, iphys_ele,                   &
+!!     &          FEM_prm, SGS_par, nod_comm, node, ele, surf, fluid,   &
+!!     &          sf_grp, Vsf_bcs, Psf_bcs, iphys, iphys_ele,           &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
 !!     &          FEM_elens, filtering, wide_filtering, layer_tbl,      &
 !!     &          wk_cor, wk_lsq, wk_diff, wk_filter,                   &
 !!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,               &
 !!     &          nod_fld, ele_fld, diff_coefs)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
+!!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -51,8 +53,9 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_control_parameter
 !
+      use t_FEM_control_parameter
+      use t_SGS_control_parameter
       use t_comm_table
       use t_geometry_data_MHD
       use t_geometry_data
@@ -84,8 +87,8 @@
 !
       subroutine update_with_velocity                                   &
      &         (iak_diff_v, icomp_diff_v, ie_dvx, ie_dfvx,              &
-     &          nod_comm, node, ele, surf, fluid, sf_grp,               &
-     &          Vsf_bcs, Psf_bcs, iphys, iphys_ele,                     &
+     &          FEM_prm, SGS_par, nod_comm, node, ele, surf, fluid,     &
+     &          sf_grp, Vsf_bcs, Psf_bcs, iphys, iphys_ele,             &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
      &          FEM_elens, filtering, wide_filtering, layer_tbl,        &
      &          wk_cor, wk_lsq, wk_diff, wk_filter,                     &
@@ -102,6 +105,8 @@
       integer(kind = kint), intent(in) :: iak_diff_v, icomp_diff_v
       integer(kind = kint), intent(in) :: ie_dvx, ie_dfvx
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -132,13 +137,13 @@
       type(phys_data), intent(inout) :: ele_fld
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
-      integer (kind = kint) :: iflag_dynamic, iflag2
+      integer (kind = kint) :: iflag_dmc, iflag2
 !
 !
       if (i_step_sgs_coefs.eq.0) then
-        iflag_dynamic = 1
+        iflag_dmc = 1
       else
-        iflag_dynamic = mod(i_step_MHD, i_step_sgs_coefs)
+        iflag_dmc = mod(i_step_MHD, i_step_sgs_coefs)
       end if
 !
 !
@@ -146,18 +151,18 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &                 write(*,*) 'velocity_on_element'
         call vector_on_element_1st(node, ele, jac_3d_q,                 &
-     &      fluid%istack_ele_fld_smp, intg_point_t_evo,                 &
+     &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &      nod_fld%ntot_phys, iphys%i_velo, nod_fld%d_fld,             &
      &      ele_fld%ntot_phys, iphys_ele%i_velo,                        &
      &      ele_fld%iflag_update, ele_fld%d_fld)
       end if
 !
-       if ( iflag_4_rotate .eq. id_turn_ON                              &
+      if( FEM_prm%iflag_rotate_form .eq. id_turn_ON                     &
      &      .and. iphys_ele%i_vort .ne. 0) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &                 write(*,*) 'vorticity_on_element'
         call rotation_on_element_1st(node, ele, jac_3d_q,               &
-     &      fluid%istack_ele_fld_smp, intg_point_t_evo,                 &
+     &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &      nod_fld%ntot_phys, iphys%i_velo, nod_fld%d_fld,             &
      &      ele_fld%ntot_phys, iphys_ele%i_vort,                        &
      &      ele_fld%iflag_update, ele_fld%d_fld)
@@ -167,10 +172,10 @@
 !
       if (iphys%i_filter_velo .ne. 0) then
 !
-        if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                   &
-     &      .and. iflag_dynamic.eq.0) then
+        if (SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF       &
+     &      .and. iflag_dmc.eq.0) then
           iflag2 = 1
-        else if (iflag_SGS_model .eq. id_SGS_similarity) then
+        else if(SGS_par%model_p%iflag_SGS .eq. id_SGS_similarity) then
           iflag2 = 1
         else
           iflag2 = 0
@@ -179,7 +184,8 @@
         if (iflag2 .eq. 1) then
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &      write(*,*) 'cal_filtered_vector', iphys%i_filter_velo
-          call cal_filtered_vector_whole(nod_comm, node, filtering,     &
+          call cal_filtered_vector_whole                                &
+     &       (SGS_par%filter_p, nod_comm, node, filtering,              &
      &        iphys%i_filter_velo, iphys%i_velo, wk_filter, nod_fld)
           nod_fld%iflag_update(iphys%i_filter_velo  ) = 1
           nod_fld%iflag_update(iphys%i_filter_velo+1) = 1
@@ -187,11 +193,12 @@
         end if
       end if
 !
-      if (iphys%i_wide_fil_velo.ne.0 .and. iflag_dynamic.eq.0) then
-        if (iflag_SGS_model.eq.id_SGS_similarity                        &
-     &    .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+      if (iphys%i_wide_fil_velo.ne.0 .and. iflag_dmc.eq.0) then
+        if (SGS_par%model_p%iflag_SGS.eq.id_SGS_similarity              &
+     &    .and. SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF)  &
+     &   then
           call cal_filtered_vector_whole                                &
-     &       (nod_comm, node, wide_filtering,                           &
+     &       (SGS_par%filter_p, nod_comm, node, wide_filtering,         &
      &        iphys%i_wide_fil_velo, iphys%i_filter_velo,               &
      &        wk_filter, nod_fld)
           nod_fld%iflag_update(iphys%i_wide_fil_velo  ) = 1
@@ -202,27 +209,27 @@
 !
 !    required field for vector potential
 !
-       if (iflag_SGS_model.eq.id_SGS_NL_grad                            &
-     &    .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF               &
-     &    .and. iflag_dynamic.eq.0) then
+       if (SGS_par%model_p%iflag_SGS.eq.id_SGS_NL_grad                  &
+     &    .and. SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF   &
+     &    .and. iflag_dmc.eq.0) then
 !
          if (iphys_ele%i_filter_velo.ne.0) then
            if(iflag_debug .ge. iflag_routine_msg)                       &
      &                 write(*,*) 'diff_filter_v_on_ele'
-           call sel_int_diff_vector_on_ele                              &
-     &        (fluid%istack_ele_fld_smp, iphys%i_filter_velo, ie_dfvx,  &
+           call sel_int_diff_vector_on_ele(FEM_prm%npoint_t_evo_int,    &
+     &         fluid%istack_ele_fld_smp, iphys%i_filter_velo, ie_dfvx,  &
      &         node, ele, nod_fld, jac_3d_q, jac_3d_l, mhd_fem_wk)
          end if
 !
-        if (iflag_commute_velo .eq. id_SGS_commute_ON                   &
+        if (SGS_par%commute_p%iflag_c_velo .eq. id_SGS_commute_ON       &
      &         .and. diff_coefs%iflag_field(iak_diff_v) .eq. 0) then
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &                 write(*,*) 's_cal_diff_coef_velo'
           call s_cal_diff_coef_velo(iak_diff_v, icomp_diff_v,           &
-     &        nod_comm, node, ele, surf, sf_grp, Vsf_bcs, Psf_bcs,      &
-     &        iphys, iphys_ele, ele_fld, fluid, layer_tbl,              &
-     &        jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,     &
-     &        filtering, wk_filter, wk_cor, wk_lsq, wk_diff,            &
+     &        FEM_prm, SGS_par, nod_comm, node, ele, surf, sf_grp,      &
+     &        Vsf_bcs, Psf_bcs, iphys, iphys_ele, ele_fld, fluid,       &
+     &        layer_tbl, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,     &
+     &        FEM_elens, filtering, wk_filter, wk_cor, wk_lsq, wk_diff, &
      &        mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                   &
      &        nod_fld, diff_coefs)
         end if
@@ -232,11 +239,11 @@
 !   required field for gradient model
 !
        if (ie_dvx .ne. 0) then
-         if ( iflag_SGS_model .eq. id_SGS_NL_grad) then
+         if(SGS_par%model_p%iflag_SGS .eq. id_SGS_NL_grad) then
            if(iflag_debug .ge. iflag_routine_msg)                       &
      &                 write(*,*) 'diff_velocity_on_ele'
-           call sel_int_diff_vector_on_ele                              &
-     &        (fluid%istack_ele_fld_smp, iphys%i_velo, ie_dvx,          &
+           call sel_int_diff_vector_on_ele(FEM_prm%npoint_t_evo_int,    &
+     &         fluid%istack_ele_fld_smp, iphys%i_velo, ie_dvx,          &
      &         node, ele, nod_fld, jac_3d_q, jac_3d_l, mhd_fem_wk)
          end if
        end if

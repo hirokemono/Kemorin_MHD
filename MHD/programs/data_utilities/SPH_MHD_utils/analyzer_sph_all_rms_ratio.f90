@@ -47,6 +47,7 @@
 !
       use t_ctl_data_sph_MHD
       use m_ctl_data_sph_MHD
+      use m_SGS_control_parameter
       use m_spheric_parameter
       use m_sph_spectr_data
       use m_rms_4_sph_spectr
@@ -71,7 +72,8 @@
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_mesh'
       call input_control_SPH_mesh                                       &
      &   (MHD_ctl1, sph1, comms_sph1, sph_grps1, rj_fld1, nod_fld1,     &
-     &    pwr1, trns_WK1%dynamic_SPH, mesh1, group1, ele_mesh1)
+     &    pwr1, SGS_par1, trns_WK1%dynamic_SPH,                         &
+     &    mesh1, group1, ele_mesh1)
       call set_ctl_4_second_spectr_data                                 &
      &   (MHD_ctl1%new_plt, sph_file_param2)
       call end_eleps_time(4)

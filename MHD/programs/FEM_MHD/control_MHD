@@ -609,6 +609,7 @@ begin MHD_control
 !      model_coef_type_ctl         field
       mom_flux_csim_type_ctl      field
       heat_flux_csim_type_ctl     components
+      comp_flux_csim_type_ctl     components
       maxwell_csim_type_ctl       field
       uxb_csim_type_ctl           field
 !
@@ -618,6 +619,7 @@ begin MHD_control
       direction_marging_ctl         lsq
 !
       SGS_hf_factor_ctl        1.0
+      SGS_cf_factor_ctl        1.0
       SGS_mf_factor_ctl        2.0
       SGS_mxwl_factor_ctl      1.0
       SGS_uxb_factor_ctl       1.5
@@ -676,6 +678,7 @@ begin MHD_control
         momentum_filter_ctl      fluid_filtering
         heat_filter_ctl          fluid_filtering
         induction_filter_ctl     whole_filtering
+        composition_filter_ctl   fluid_filtering
       end 3d_filtering_ctl
 !
       begin dynamic_model_layer_ctl

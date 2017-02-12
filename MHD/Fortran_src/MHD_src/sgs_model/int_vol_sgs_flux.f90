@@ -6,8 +6,8 @@
 !        modified by H. Matsui on July, 2007
 !        modified by H. Matsui on April, 2012
 !
-!!      subroutine sel_int_vol_sgs_flux                                 &
-!!     &         (iflag_4_supg, i_filter, numdir, i_field, id_dx,       &
+!!      subroutine sel_int_vol_sgs_flux(iflag_4_supg, num_int,          &
+!!     &          i_filter, numdir, i_field, id_dx,                     &
 !!     &          node, ele, fluid, nod_fld, iphys_ele, ele_fld,        &
 !!     &          jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !!        type(node_data), intent(in) :: node
@@ -25,9 +25,9 @@
 !
       use m_precision
 !
-      use m_control_parameter
       use m_phys_constants
 !
+      use t_FEM_control_parameter
       use t_geometry_data_MHD
       use t_geometry_data
       use t_phys_data
@@ -47,8 +47,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sel_int_vol_sgs_flux                                   &
-     &         (iflag_4_supg, i_filter, numdir, i_field, id_dx,         &
+      subroutine sel_int_vol_sgs_flux(iflag_4_supg, num_int,            &
+     &          i_filter, numdir, i_field, id_dx,                       &
      &          node, ele, fluid, nod_fld, iphys_ele, ele_fld,          &
      &          jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !
@@ -61,7 +61,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elens
 !
-      integer(kind = kint), intent(in) :: iflag_4_supg
+      integer(kind = kint), intent(in) :: iflag_4_supg, num_int
       integer (kind = kint), intent(in) :: id_dx, i_filter
       integer (kind = kint), intent(in) :: numdir, i_field
 !
@@ -70,19 +70,21 @@
 !
 !
       if ( iflag_4_supg .eq. id_magnetic_SUPG) then
-        call int_vol_sgs_flux_upwind(i_filter, numdir, i_field,         &
+        call int_vol_sgs_flux_upwind                                    &
+     &     (num_int, i_filter, numdir, i_field,                         &
      &      node, ele, fluid, nod_fld, jac_3d, FEM_elens,               &
      &      mhd_fem_wk%n_dvx, id_dx, mhd_fem_wk%dvx,                    &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
      &      fem_wk)
       else if ( iflag_4_supg .eq. id_turn_ON) then
-        call int_vol_sgs_flux_upwind(i_filter, numdir, i_field,         &
+        call int_vol_sgs_flux_upwind                                    &
+     &     (num_int, i_filter, numdir, i_field,                         &
      &      node, ele, fluid, nod_fld, jac_3d, FEM_elens,               &
      &      mhd_fem_wk%n_dvx, id_dx, mhd_fem_wk%dvx,                    &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
      &      fem_wk)
       else
-        call int_vol_sgs_flux_pg(i_filter, numdir, i_field,             &
+        call int_vol_sgs_flux_pg(num_int, i_filter, numdir, i_field,    &
      &      node, ele, fluid, nod_fld, jac_3d, FEM_elens,               &
      &      mhd_fem_wk%n_dvx, id_dx, mhd_fem_wk%dvx, fem_wk)
       end if
@@ -92,7 +94,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine int_vol_sgs_flux_pg(i_filter, numdir, i_field,         &
+      subroutine int_vol_sgs_flux_pg                                    &
+     &         (num_int, i_filter, numdir, i_field,                     &
      &          node, ele, fluid, nod_fld, jac_3d, FEM_elens,           &
      &          ncomp_dvx, id_dx, diff_ele, fem_wk)
 !
@@ -107,6 +110,7 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
 !
       integer (kind = kint), intent(in) :: i_filter, numdir, i_field
+      integer(kind = kint), intent(in) :: num_int
       integer(kind = kint), intent(in) :: ncomp_dvx, id_dx
       real(kind = kreal), intent(in) :: diff_ele(ele%numele,ncomp_dvx)
 !
@@ -128,8 +132,8 @@
           do k2 = 1, ele%nnod_4_ele
             call scalar_phys_2_each_element(node, ele, nod_fld,         &
      &          k2, icomp, fem_wk%scalar_1)
-            call fem_skv_sgs_flux_galerkin(fluid%istack_ele_fld_smp,    &
-     &          intg_point_t_evo, k2, i_filter, nd_t,                   &
+            call fem_skv_sgs_flux_galerkin                              &
+     &         (fluid%istack_ele_fld_smp, num_int, k2, i_filter, nd_t,  &
      &          ele, jac_3d, FEM_elens, fem_wk%scalar_1,                &
      &          diff_ele(1,id_dvx2), fem_wk%sk6)
           end do
@@ -141,7 +145,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_vol_sgs_flux_upwind(i_filter, numdir, i_field,     &
+      subroutine int_vol_sgs_flux_upwind                                &
+     &         (num_int, i_filter, numdir, i_field,                     &
      &          node, ele, fluid, nod_fld, jac_3d, FEM_elens,           &
      &          ncomp_dvx, id_dx, diff_ele, ncomp_ele, ie_upw, d_ele,   &
      &          fem_wk)
@@ -157,6 +162,7 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
 !
       integer (kind = kint), intent(in) :: i_filter, numdir, i_field
+      integer(kind = kint), intent(in) :: num_int
       integer(kind = kint), intent(in) :: ncomp_dvx, id_dx
       integer(kind = kint), intent(in) :: ncomp_ele, ie_upw
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
@@ -182,8 +188,8 @@
           do k2 = 1, ele%nnod_4_ele
             call scalar_phys_2_each_element(node, ele, nod_fld,         &
      &          k2, icomp, fem_wk%scalar_1)
-            call fem_skv_sgs_flux_upwind(fluid%istack_ele_fld_smp,      &
-     &          intg_point_t_evo, k2, i_filter, nd_t,                   &
+            call fem_skv_sgs_flux_upwind                                &
+     &         (fluid%istack_ele_fld_smp, num_int, k2, i_filter, nd_t,  &
      &          ele, jac_3d, FEM_elens, fem_wk%scalar_1,                &
      &          d_ele(1,ie_upw), diff_ele(1,id_dvx2), fem_wk%sk6)
           end do

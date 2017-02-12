@@ -16,14 +16,15 @@
 !!      subroutine init_MHD_restart_output
 !!      subroutine init_restart_4_snapshot(node, t_IO)
 !!
-!!      subroutine output_MHD_restart_file_ctl                          &
-!!     &         (node, nod_comm, iphys, wk_sgs, wk_diff, nod_fld)
-!!      subroutine elspased_MHD_restart_ctl                             &
-!!     &         (node, nod_comm, iphys, wk_sgs, wk_diff, nod_fld)
+!!      subroutine output_MHD_restart_file_ctl(SGS_par, node, nod_comm, &
+!!     &          iphys, wk_sgs, wk_diff, nod_fld)
+!!      subroutine elspased_MHD_restart_ctl(SGS_par, node, nod_comm,    &
+!!     &          iphys, wk_sgs, wk_diff, nod_fld)
 !!
 !!      subroutine input_MHD_restart_file_ctl(layer_tbl, node, ele,     &
 !!     &         fluid, wk_sgs, wk_diff, sgs_coefs, diff_coefs, nod_fld)
 !!      subroutine input_restart_4_snapshot(node, nod_fld)
+!!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!        type(dynamic_model_data), intent(inout) :: wk_diff
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
@@ -36,6 +37,7 @@
 !
       use calypso_mpi
 !
+      use t_SGS_control_parameter
       use t_comm_table
       use t_geometry_data
       use t_phys_data
@@ -125,9 +127,10 @@
 ! ----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine output_MHD_restart_file_ctl                            &
-     &          (node, nod_comm, iphys, wk_sgs, wk_diff, nod_fld)
+      subroutine output_MHD_restart_file_ctl(SGS_par, node, nod_comm,   &
+     &          iphys, wk_sgs, wk_diff, nod_fld)
 !
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
       type(phys_address), intent(in) :: iphys
@@ -143,15 +146,18 @@
       index_rst = istep_max_dt / i_step_output_rst
       call output_restart_files                                         &
      &   (index_rst, node, nod_comm, iphys, nod_fld)
-      call output_model_coef_file(index_rst, wk_sgs, wk_diff)
+      call output_model_coef_file                                       &
+     &   (index_rst, SGS_par%model_p, SGS_par%commute_p,                &
+     &    wk_sgs, wk_diff)
 !
       end subroutine output_MHD_restart_file_ctl
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine elspased_MHD_restart_ctl                               &
-     &         (node, nod_comm, iphys, wk_sgs, wk_diff, nod_fld)
+      subroutine elspased_MHD_restart_ctl(SGS_par, node, nod_comm,      &
+     &          iphys, wk_sgs, wk_diff, nod_fld)
 !
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
       type(phys_address), intent(in) :: iphys
@@ -164,19 +170,23 @@
 !
       call output_restart_files                                         &
      &   (index_rst, node, nod_comm, iphys, nod_fld)
-      call output_model_coef_file(index_rst, wk_sgs, wk_diff)
+      call output_model_coef_file                                       &
+     &   (index_rst, SGS_par%model_p, SGS_par%commute_p,                &
+     &    wk_sgs, wk_diff)
 !
       end subroutine elspased_MHD_restart_ctl
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine input_MHD_restart_file_ctl(layer_tbl, node, ele,       &
-     &         fluid, wk_sgs, wk_diff, sgs_coefs, diff_coefs, nod_fld)
+      subroutine input_MHD_restart_file_ctl                             &
+     &         (SGS_par, layer_tbl, node, ele, fluid, wk_sgs, wk_diff,  &
+     &          sgs_coefs, diff_coefs, nod_fld)
 !
       use t_geometry_data_MHD
       use t_SGS_model_coefs
 !
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
@@ -189,7 +199,8 @@
 !
 !
       call input_restart_files(node, nod_fld)
-      call input_model_coef_file(ele, fluid, layer_tbl,                 &
+      call input_model_coef_file                                        &
+     &   (SGS_par%model_p, SGS_par%commute_p, ele, fluid, layer_tbl,    &
      &    wk_sgs, wk_diff, sgs_coefs, diff_coefs)
 !
       end subroutine input_MHD_restart_file_ctl
@@ -300,7 +311,8 @@
 ! ----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine output_model_coef_file(index_rst, wk_sgs, wk_diff)
+      subroutine output_model_coef_file                                 &
+     &         (index_rst, SGS_param, cmt_param, wk_sgs, wk_diff)
 !
       use t_ele_info_4_dynamic
 !
@@ -308,12 +320,14 @@
       use set_parallel_file_name
 !
       integer(kind = kint), intent(in) :: index_rst
+      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(commutation_control_params), intent(in) :: cmt_param
       type(dynamic_model_data), intent(in) :: wk_sgs, wk_diff
 !
       character(len=kchara) :: fn_tmp
 !
 !
-      if(iflag_dynamic_SGS .eq. id_SGS_DYNAMIC_OFF) return
+      if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_OFF) return
 !
       if(index_rst .lt. 0) then
         call add_elaps_postfix(rst_sgs_coef_head, fn_tmp)
@@ -322,14 +336,15 @@
       end if
       call add_dat_extension(fn_tmp, rst_sgs_coef_name)
 !
-      call output_ini_model_coefs(wk_sgs, wk_diff)
+      call output_ini_model_coefs(cmt_param, wk_sgs, wk_diff)
 !
       end subroutine output_model_coef_file
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine input_model_coef_file(ele, fluid, layer_tbl,           &
-     &         wk_sgs, wk_diff, sgs_coefs, diff_coefs)
+      subroutine input_model_coef_file                                  &
+     &         (SGS_param, cmt_param, ele, fluid, layer_tbl,            &
+     &          wk_sgs, wk_diff, sgs_coefs, diff_coefs)
 !
       use m_control_parameter
       use t_geometry_data_MHD
@@ -339,6 +354,8 @@
       use set_parallel_file_name
       use sgs_ini_model_coefs_IO
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(commutation_control_params), intent(in) :: cmt_param
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
       type(layering_tbl), intent(in) :: layer_tbl
@@ -350,7 +367,7 @@
       character(len=kchara) :: fn_tmp
 !
 !
-      if(iflag_dynamic_SGS .eq. id_SGS_DYNAMIC_OFF) return
+      if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_OFF) return
       if(iflag_rst_sgs_coef_code .eq. 0) return
 !
       if (i_step_init .eq. -1) then
@@ -360,8 +377,8 @@
       end if
 !
       call add_dat_extension(fn_tmp, rst_sgs_coef_name)
-      call input_ini_model_coefs(ele, fluid, layer_tbl,                 &
-     &   wk_sgs, wk_diff, sgs_coefs, diff_coefs)
+      call input_ini_model_coefs(cmt_param, ele, fluid, layer_tbl,      &
+     &    wk_sgs, wk_diff, sgs_coefs, diff_coefs)
 !
       end subroutine input_model_coef_file
 !

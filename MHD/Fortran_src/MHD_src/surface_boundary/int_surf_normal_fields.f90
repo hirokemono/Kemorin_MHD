@@ -4,7 +4,7 @@
 !      Written by H. Matsui on Sep. 2005
 !
 !!      subroutine int_surf_normal_vector                               &
-!!     &         (i_field, sf_bc_wall, sf_bc_spin, sf_bc_spout          &
+!!     &         (i_field, num_int, sf_bc_wall, sf_bc_spin, sf_bc_spout,&
 !!     &          node, ele, surf, sf_grp, nod_fld, jac_sf_grp_l,       &
 !!     &          rhs_tbl, fem_wk, surf_wk, f_l)
 !!        type(node_data), intent(in) :: node
@@ -25,7 +25,6 @@
 !
       use m_precision
 !
-      use m_control_parameter
       use t_geometry_data
       use t_surface_data
       use t_group_data
@@ -44,13 +43,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_surf_normal_vector                                 &
-     &         (i_field, sf_bc_wall, sf_bc_spin, sf_bc_spout,           &
+     &         (i_field, num_int, sf_bc_wall, sf_bc_spin, sf_bc_spout,  &
      &          node, ele, surf, sf_grp, nod_fld, jac_sf_grp_l,         &
      &          rhs_tbl, fem_wk, surf_wk, f_l)
 !
       use int_surf_poisson_walls
 !
       integer(kind = kint), intent(in) :: i_field
+      integer(kind = kint), intent(in) :: num_int
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -71,21 +71,21 @@
 !
       if (sf_bc_wall%ngrp_sf_dat .gt. 0) then
         call int_surf_poisson_wall(node, ele, surf, sf_grp,             &
-     &      nod_fld, jac_sf_grp_l, rhs_tbl, intg_point_poisson,         &
+     &      nod_fld, jac_sf_grp_l, rhs_tbl, num_int,                    &
      &      sf_bc_wall%ngrp_sf_dat, sf_bc_wall%id_grp_sf_dat,           &
      &      i_field, fem_wk, surf_wk, f_l)
       end if
 !
       if (sf_bc_spin%ngrp_sf_dat .gt. 0) then
         call int_surf_poisson_sph_in(node, ele, surf, sf_grp,           &
-     &      nod_fld, jac_sf_grp_l, rhs_tbl, intg_point_poisson,         &
+     &      nod_fld, jac_sf_grp_l, rhs_tbl, num_int,                    &
      &      sf_bc_spin%ngrp_sf_dat, sf_bc_spin%id_grp_sf_dat,           &
      &      i_field, fem_wk, surf_wk, f_l)
       end if
 !
       if (sf_bc_spout%ngrp_sf_dat .gt. 0) then
         call int_surf_poisson_sph_out(node, ele, surf, sf_grp,          &
-     &      nod_fld, jac_sf_grp_l, rhs_tbl, intg_point_poisson,         &
+     &      nod_fld, jac_sf_grp_l, rhs_tbl, num_int,                    &
      &      sf_bc_spout%ngrp_sf_dat, sf_bc_spout%id_grp_sf_dat,         &
      &      i_field, fem_wk, surf_wk, f_l)
       end if

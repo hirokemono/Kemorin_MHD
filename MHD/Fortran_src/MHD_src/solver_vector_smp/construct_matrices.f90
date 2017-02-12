@@ -5,16 +5,19 @@
 !
 !!      subroutine set_data_4_const_matrices(mesh, MHD_mesh, rhs_tbl,   &
 !!     &          MHD_mat_tbls, MHD_matrices, s_package)
-!!      subroutine update_matrices                                      &
+!!      subroutine update_matrices(FEM_prm, SGS_param, cmt_param,       &
 !!     &         (mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,   &
 !!     &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,  &
 !!     &          ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,         &
 !!     &          surf_wk, mhd_fem_wk, fem_wk, MHD_matrices, s_package)
 !!      subroutine set_aiccg_matrices                                   &
-!!     &         (mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,   &
+!!     &         (FEM_prm, SGS_param, cmt_param, mesh, group,           &
+!!     &          ele_mesh, MHD_mesh, nod_bcs, surf_bcs,                &
 !!     &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,  &
 !!     &          ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,         &
 !!     &          surf_wk, mhd_fem_wk, fem_wk, MHD_matrices, s_package)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(element_geometry), intent(in) :: ele_mesh
@@ -42,6 +45,8 @@
       use m_machine_parameter
       use m_geometry_constants
 !
+      use t_FEM_control_parameter
+      use t_SGS_control_parameter
       use t_mesh_data
       use t_geometry_data_MHD
       use t_geometry_data
@@ -106,15 +111,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine update_matrices                                        &
-     &         (mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,     &
+      subroutine update_matrices(FEM_prm, SGS_param, cmt_param,         &
+     &          mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,     &
      &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,    &
      &          ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,           &
      &          surf_wk, mhd_fem_wk, fem_wk, MHD_matrices, s_package)
 !
-      use m_control_parameter
+      use t_SGS_control_parameter
       use m_t_step_parameter
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
+      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(commutation_control_params), intent(in) :: cmt_param
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
       type(element_geometry), intent(in) :: ele_mesh
@@ -139,15 +147,16 @@
       integer (kind = kint) :: iflag
 !
       iflag = 0
-      if (    iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                 &
-     &  .and. iflag_commute_linear .gt. id_SGS_commute_OFF              &
+      if (    SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF           &
+     &  .and. cmt_param%iflag_c_linear .gt. id_SGS_commute_OFF          &
      &  .and. mod(i_step_MHD,i_step_sgs_coefs) .eq. 0) iflag = 1
       iflag = iflag + iflag_flex_step_changed
 !
       if (iflag .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'matrix assemble again'
         call set_aiccg_matrices                                         &
-     &     (mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,         &
+     &     (FEM_prm, SGS_param, cmt_param, mesh, group,                 &
+     &      ele_mesh, MHD_mesh, nod_bcs, surf_bcs,                      &
      &      ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,        &
      &      ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,               &
      &      surf_wk, mhd_fem_wk, fem_wk, MHD_matrices, s_package)
@@ -159,12 +168,12 @@
 !  ----------------------------------------------------------------------
 !
       subroutine set_aiccg_matrices                                     &
-     &         (mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,     &
+     &         (FEM_prm, SGS_param, cmt_param, mesh, group,             &
+     &          ele_mesh, MHD_mesh, nod_bcs, surf_bcs,                  &
      &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,    &
      &          ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,           &
      &          surf_wk, mhd_fem_wk, fem_wk, MHD_matrices, s_package)
 !
-      use m_control_parameter
       use m_iccg_parameter
 !
       use set_aiccg_matrices_type
@@ -172,6 +181,9 @@
       use initialize_4_MHD_AMG
       use skip_comment_f
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
+      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(commutation_control_params), intent(in) :: cmt_param
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
       type(element_geometry), intent(in) :: ele_mesh
@@ -194,8 +206,8 @@
       type(MHD_matrices_pack), intent(inout) :: s_package
 !
 !
-      call s_set_aiccg_matrices_type                                    &
-     &   (mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,           &
+      call s_set_aiccg_matrices_type(FEM_prm, SGS_param, cmt_param,     &
+     &    mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,           &
      &    ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q,                     &
      &    FEM_elens, ifld_diff, diff_coefs, rhs_tbl,                    &
      &    MHD_matrices%MG_DJDS_table(0), MHD_matrices%MG_DJDS_fluid(0), &
@@ -211,7 +223,8 @@
 !     set marrix for the Multigrid
 !
       if(cmp_no_case(method_4_solver, 'MGCG')) then
-        call const_MGCG_MHD_matrices(ifld_diff, MHD_matrices)
+        call const_MGCG_MHD_matrices                                    &
+     &     (FEM_prm, SGS_param, cmt_param, ifld_diff, MHD_matrices)
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'preconditioning'

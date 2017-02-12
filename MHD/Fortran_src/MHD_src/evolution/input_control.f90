@@ -10,10 +10,12 @@
 !!
 !!@verbatim
 !!      subroutine input_control_4_MHD                                  &
-!!     &          (mesh, group, ele_mesh, nod_fld, IO_bc,               &
-!!     &           filtering, wide_filtering, wk_filter, MHD_matrices)
-!!      subroutine input_control_4_snapshot(mesh, group, ele_mesh,      &
-!!     &          nod_fld, IO_bc, filtering, wide_filtering, wk_filter)
+!!     &         (SGS_par, mesh, group, ele_mesh, nod_fld, IO_bc,       &
+!!     &          filtering, wide_filtering, wk_filter, MHD_matrices)
+!!      subroutine input_control_4_snapshot                             &
+!!     &         (SGS_par, mesh, group, ele_mesh, nod_fld, IO_bc,       &
+!!     &          filtering, wide_filtering, wk_filter)
+!!        type(SGS_paremeters), intent(inout) :: SGS_par
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(element_geometry), intent(inout) :: ele_mesh
@@ -33,6 +35,7 @@
       use m_machine_parameter
       use calypso_mpi
 !
+      use t_SGS_control_parameter
       use t_mesh_data
       use t_boundary_field_IO
       use t_filtering_data
@@ -66,8 +69,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine input_control_4_MHD                                    &
-     &          (mesh, group, ele_mesh, nod_fld, IO_bc,                 &
-     &           filtering, wide_filtering, wk_filter, MHD_matrices)
+     &         (SGS_par, mesh, group, ele_mesh, nod_fld, IO_bc,         &
+     &          filtering, wide_filtering, wk_filter, MHD_matrices)
 !
       use t_ctl_data_sph_MHD_psf
       use m_iccg_parameter
@@ -79,6 +82,7 @@
       use ordering_field_by_viz
       use node_monitor_IO
 !
+      type(SGS_paremeters), intent(inout) :: SGS_par
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
@@ -98,14 +102,14 @@
       call set_control_4_FEM_MHD                                        &
      &   (FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt, FEM_MHD_ctl%model_ctl,  &
      &    FEM_MHD_ctl%ctl_ctl, FEM_MHD_ctl%nmtr_ctl,                    &
-     &    mesh1_file, FEM_udt_org_param, nod_fld)
+     &    mesh1_file, FEM_udt_org_param, SGS_par, nod_fld)
 !
 !  --  load FEM mesh data
       call mpi_input_mesh(mesh1_file, mesh, group,                      &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
-      call input_meshes_4_MHD                                           &
-     &   (mesh, group, IO_bc, filtering, wide_filtering, wk_filter)
+      call input_meshes_4_MHD(SGS_par%model_p, mesh, group, IO_bc,      &
+     &    SGS_par%filter_p, filtering, wide_filtering, wk_filter)
 !
       if(cmp_no_case(method_4_solver, cflag_mgcg)) then
         call alloc_MHD_MG_DJDS_mat(num_MG_level, MHD_matrices)
@@ -125,8 +129,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine input_control_4_snapshot(mesh, group, ele_mesh,        &
-     &          nod_fld, IO_bc, filtering, wide_filtering, wk_filter)
+      subroutine input_control_4_snapshot                               &
+     &         (SGS_par, mesh, group, ele_mesh, nod_fld, IO_bc,         &
+     &          filtering, wide_filtering, wk_filter)
 !
       use t_ctl_data_sph_MHD_psf
       use set_control_FEM_MHD
@@ -134,6 +139,7 @@
       use node_monitor_IO
       use ordering_field_by_viz
 !
+      type(SGS_paremeters), intent(inout) :: SGS_par
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
@@ -152,14 +158,14 @@
       call set_control_4_FEM_MHD                                        &
      &   (FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt, FEM_MHD_ctl%model_ctl,  &
      &    FEM_MHD_ctl%ctl_ctl, FEM_MHD_ctl%nmtr_ctl,                    &
-     &    mesh1_file, FEM_udt_org_param, nod_fld)
+     &    mesh1_file, FEM_udt_org_param, SGS_par, nod_fld)
 !
 !  --  load FEM mesh data
       call mpi_input_mesh(mesh1_file, mesh, group,                      &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
-      call input_meshes_4_MHD                                           &
-     &   (mesh, group, IO_bc, filtering, wide_filtering, wk_filter)
+      call input_meshes_4_MHD(SGS_par%model_p, mesh, group, IO_bc,      &
+     &    SGS_par%filter_p, filtering, wide_filtering, wk_filter)
 !
       call count_field_4_monitor                                        &
      &   (nod_fld%num_phys, nod_fld%num_component,                      &
@@ -170,11 +176,10 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine input_meshes_4_MHD(mesh, group,                        &
-     &          IO_bc, filtering, wide_filtering, wk_filter)
+      subroutine input_meshes_4_MHD(SGS_param, mesh, group, IO_bc,      &
+     &          filter_param, filtering, wide_filtering, wk_filter)
 !
       use m_machine_parameter
-      use m_control_parameter
 !
       use set_3d_filtering_group_id
       use read_filtering_data
@@ -182,14 +187,17 @@
       use set_edge_data_4_IO
       use node_monitor_IO
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
 !
       type(IO_boundary), intent(inout) :: IO_bc
+      type(SGS_filtering_params), intent(inout) :: filter_param
       type(filtering_data_type), intent(inout) :: filtering
       type(filtering_data_type), intent(inout) :: wide_filtering
       type(filtering_work_type), intent(inout) :: wk_filter
 !
+      integer(kind = kint) :: iflag
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &      write(*,*) 'set_local_node_id_4_monitor'
@@ -206,22 +214,27 @@
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &      write(*,*) 's_read_filtering_data'
-      call s_read_filtering_data                                        &
-     &   (mesh%node, mesh%ele, filtering, wide_filtering, wk_filter)
+      call s_read_filtering_data(SGS_param, filter_param,               &
+     &    mesh%node, mesh%ele, filtering, wide_filtering, wk_filter)
 !
-      if     (iflag_SGS_filter .eq. id_SGS_3D_FILTERING                 &
-     &   .or. iflag_SGS_filter .eq. id_SGS_3D_EZ_FILTERING              &
-     &   .or. iflag_SGS_filter .eq. id_SGS_3D_SMP_FILTERING             &
-     &   .or. iflag_SGS_filter .eq. id_SGS_3D_EZ_SMP_FILTERING ) then
+      iflag = filter_param%iflag_SGS_filter
+      if     (iflag .eq. id_SGS_3D_FILTERING                            &
+     &  .or.  iflag .eq. id_SGS_3D_EZ_FILTERING                         &
+     &  .or.  iflag .eq. id_SGS_3D_SMP_FILTERING                        &
+     &  .or.  iflag .eq. id_SGS_3D_EZ_SMP_FILTERING ) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &       write(*,*) 's_set_3d_filtering_group_id'
-        call s_set_3d_filtering_group_id(filtering%filter)
+        call s_set_3d_filtering_group_id                                &
+     &     (filtering%filter, filter_param)
 !
-        if (iflag_SGS_model .eq. id_SGS_similarity                      &
-     &       .and. iflag_dynamic_SGS .eq. id_SGS_DYNAMIC_ON) then
+        if      (SGS_param%iflag_SGS .eq. id_SGS_similarity             &
+     &     .and. SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
           if (iflag_debug .ge. iflag_routine_msg)                       &
      &         write(*,*) 's_set_w_filtering_group_id'
-          call s_set_w_filtering_group_id(wide_filtering%filter)
+          call copy_filter_group_param                                  &
+     &       (filter_param%whole, filter_param%whole_wide)
+          call copy_filter_group_param                                  &
+     &       (filter_param%fluid, filter_param%fluid_wide)
         end if
       end if
 !

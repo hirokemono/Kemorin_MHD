@@ -153,6 +153,8 @@
           iphys%i_temp_gen = i0
         else if (field_name(i) .eq. fhd_part_temp_gen) then
           iphys%i_par_t_gen = i0
+        else if (field_name(i) .eq. fhd_part_comp_gen) then
+          iphys%i_par_c_gen = i0
 !
         else if (field_name(i) .eq. fhd_thermal_diffusion) then
           iphys%i_t_diffuse =  i0
@@ -173,6 +175,8 @@
           iphys%i_ph_flux =  i0
         else if (field_name(i) .eq. fhd_c_flux ) then
           iphys%i_c_flux =   i0
+        else if (field_name(i) .eq. fhd_pc_flux ) then
+          iphys%i_pc_flux =   i0
         else if (field_name(i) .eq. fhd_mom_flux ) then
           iphys%i_m_flux =   i0
         else if (field_name(i) .eq. fhd_maxwell_t ) then
@@ -190,6 +194,10 @@
           iphys%i_h_flux_div =  i0
         else if (field_name(i) .eq. fhd_div_ph_flux ) then
           iphys%i_ph_flux_div = i0
+        else if (field_name(i) .eq. fhd_div_c_flux ) then
+          iphys%i_c_flux_div =  i0
+        else if (field_name(i) .eq. fhd_div_pc_flux ) then
+          iphys%i_pc_flux_div = i0
         else if (field_name(i) .eq. fhd_div_m_flux) then
           iphys%i_m_flux_div =  i0
         else if (field_name(i) .eq. fhd_div_maxwell_t) then
@@ -218,6 +226,8 @@
           iphys%i_filter_buo =  i0
         else if (field_name(i) .eq. fhd_composit_advect ) then
           iphys%i_c_advect =    i0
+        else if (field_name(i) .eq. fhd_part_c_advect ) then
+          iphys%i_pc_advect =   i0
         end if
 !
         if ( field_name(i) .eq. fhd_SGS_h_flux ) then
@@ -321,6 +331,8 @@
 !
         else if ( field_name(i) .eq. fhd_SGS_div_h_flux_true ) then
           iphys%i_SGS_div_hf_true = i0
+        else if ( field_name(i) .eq. fhd_SGS_div_c_flux_true ) then
+          iphys%i_SGS_div_cf_true = i0
         else if ( field_name(i) .eq. fhd_SGS_div_m_flux_true ) then
           iphys%i_SGS_div_mf_true = i0
         else if ( field_name(i) .eq. fhd_SGS_Lorentz_true ) then
@@ -334,6 +346,8 @@
           iphys%i_reynolds_wk_tr = i0
         else if ( field_name(i) .eq. fhd_SGS_temp_gen_true ) then
           iphys%i_SGS_t_gen_tr =   i0
+        else if ( field_name(i) .eq. fhd_SGS_comp_gen_true ) then
+          iphys%i_SGS_c_gen_tr =   i0
         else if ( field_name(i) .eq. fhd_SGS_m_ene_gen_true ) then
           iphys%i_SGS_me_gen_tr =  i0
         end if
@@ -344,6 +358,8 @@
           iphys%i_m_phi = i0
         else if ( field_name(i) .eq. fhd_ref_temp ) then
           iphys%i_ref_t = i0
+        else if ( field_name(i) .eq. fhd_ref_light ) then
+          iphys%i_ref_c = i0
 !
         else if ( field_name(i) .eq. fhd_grad_v_1 ) then
           iphys%i_grad_vx =      i0
@@ -376,16 +392,20 @@
         else if ( field_name(i) .eq. fhd_grad_j_3 ) then
           iphys%i_grad_jz =      i0
 !
-        else if ( field_name(i) .eq. fhd_grad_ref_temp ) then
-          iphys%i_gref_t =           i0
         else if ( field_name(i) .eq. fhd_grad_temp ) then
           iphys%i_grad_t =           i0
-        else if ( field_name(i) .eq. fhd_grad_composit ) then
-          iphys%i_grad_composit =    i0
         else if ( field_name(i) .eq. fhd_grad_par_temp ) then
           iphys%i_grad_part_t =      i0
+        else if ( field_name(i) .eq. fhd_grad_ref_temp ) then
+          iphys%i_gref_t =           i0
         else if ( field_name(i) .eq. fhd_grad_filter_temp ) then
           iphys%i_grad_filter_temp = i0
+        else if ( field_name(i) .eq. fhd_grad_composit ) then
+          iphys%i_grad_composit =    i0
+        else if ( field_name(i) .eq. fhd_grad_par_light ) then
+          iphys%i_grad_part_c =      i0
+        else if ( field_name(i) .eq. fhd_grad_ref_light) then
+          iphys%i_gref_c =           i0
         end if
 !
         if ( field_name(i) .eq. fhd_SGS_simi ) then

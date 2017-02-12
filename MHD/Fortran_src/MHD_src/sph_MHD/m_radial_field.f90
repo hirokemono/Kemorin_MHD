@@ -38,6 +38,7 @@
 !
       use m_phys_constants
       use m_control_parameter
+      use m_physical_property
       use m_phys_labels
       use m_radial_parameter_input
       use skip_comment_f
@@ -52,11 +53,13 @@
         d_rad%num_phys = d_rad%num_phys + num_r_param_ctl
       end if
 !
-      if(iflag_4_coriolis .eq. id_turn_ON)                              &
+      if(fl_prop1%iflag_4_coriolis .eq. id_turn_ON)                     &
      &       d_rad%num_phys = d_rad%num_phys + 1
-      if(iflag_magneto_cv .eq. id_turn_ON)                              &
+      if(cd_prop1%iflag_magneto_cv .eq. id_turn_ON)                     &
      &       d_rad%num_phys = d_rad%num_phys + 1
-      if(iflag_4_ref_temp .eq. id_sphere_ref_temp)                      &
+      if(ref_param_T1%iflag_reference .eq. id_sphere_ref_temp)          &
+     &       d_rad%num_phys = d_rad%num_phys + 1
+      if(ref_param_C1%iflag_reference .eq. id_sphere_ref_temp)          &
      &       d_rad%num_phys = d_rad%num_phys + 1
 !
       call alloc_phys_name_type(d_rad)
@@ -81,7 +84,7 @@
      &      irad%i_ref_density =   d_rad%istack_component(icou-1) + 1
       end do
 !
-      if(iflag_4_coriolis .eq. id_turn_ON) then
+      if(fl_prop1%iflag_4_coriolis .eq. id_turn_ON) then
         icou = icou + 1
         d_rad%phys_name(icou) = fhd_omega
         d_rad%num_component(icou) = n_vector
@@ -89,7 +92,7 @@
      &                                + d_rad%num_component(icou)
         irad%i_omega = d_rad%istack_component(icou-1) + 1
       end if
-      if(iflag_magneto_cv .eq. id_turn_ON) then
+      if(cd_prop1%iflag_magneto_cv .eq. id_turn_ON) then
         icou = icou + 1
         d_rad%phys_name(icou) = fhd_back_B
         d_rad%num_component(icou) = n_vector
@@ -97,13 +100,21 @@
      &                                + d_rad%num_component(icou)
         irad%i_back_B = d_rad%istack_component(icou-1) + 1
       end if
-      if(iflag_4_ref_temp .eq. id_sphere_ref_temp) then
+      if(ref_param_T1%iflag_reference .eq. id_sphere_ref_temp) then
         icou = icou + 1
         d_rad%phys_name(icou) = fhd_ref_temp
         d_rad%num_component(icou) = n_vector
         d_rad%istack_component(icou) = d_rad%istack_component(icou-1)   &
      &                                + d_rad%num_component(icou)
         irad%i_ref_t = d_rad%istack_component(icou-1) + 1
+      end if
+      if(ref_param_C1%iflag_reference .eq. id_sphere_ref_temp) then
+        icou = icou + 1
+        d_rad%phys_name(icou) = fhd_ref_light
+        d_rad%num_component(icou) = n_vector
+        d_rad%istack_component(icou) = d_rad%istack_component(icou-1)   &
+     &                                + d_rad%num_component(icou)
+        irad%i_ref_c = d_rad%istack_component(icou-1) + 1
       end if
       d_rad%ntot_phys = d_rad%istack_component(d_rad%num_phys)
 !

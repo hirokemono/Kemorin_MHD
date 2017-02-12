@@ -5,7 +5,8 @@
 !     programmed H.Matsui in 2005
 !     Modified by H. Matsui on Dec., 2008
 !
-!!      subroutine set_layers(node, ele, ele_grp, MHD_mesh)
+!!      subroutine set_layers(FEM_prm, node, ele, ele_grp, MHD_mesh)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(group_data), intent(inout) :: ele_grp
@@ -18,6 +19,7 @@
 !
       use m_precision
 !
+      use t_FEM_control_parameter
       use t_geometry_data
       use t_group_data
       use t_geometry_data_MHD
@@ -32,8 +34,9 @@
 !
 ! ---------------------------------------------------------------------
 !
-      subroutine set_layers(node, ele, ele_grp, MHD_mesh)
+      subroutine set_layers(FEM_prm, node, ele, ele_grp, MHD_mesh)
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
 !
@@ -46,7 +49,7 @@
 !
 !    set node and element list for conductor
 !
-      call set_layers_4_induction(node, ele, ele_grp,                   &
+      call set_layers_4_induction(FEM_prm, node, ele, ele_grp,          &
      &    MHD_mesh%conduct, MHD_mesh%insulate, MHD_mesh%inner_core)
 !
       end subroutine set_layers
@@ -87,12 +90,12 @@
 !
 ! ---------------------------------------------------------------------
 !
-      subroutine set_layers_4_induction(node, ele, ele_grp,             &
+      subroutine set_layers_4_induction(FEM_prm, node, ele, ele_grp,    &
      &          conduct, insulate, inner_core)
 !
-      use m_control_parameter
       use m_set_layers
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(group_data), intent(in) :: ele_grp
@@ -104,7 +107,8 @@
 !    count number of element for insulated core
 !
       call count_ele_4_layer(ele%numele, inner_core%numele_fld,         &
-     &    num_in_core_ele_grp, in_core_ele_grp_name,                    &
+     &    FEM_prm%inner_core_group%num_group,                           &
+     &    FEM_prm%inner_core_group%group_name,                          &
      &    ele_grp%num_grp, ele_grp%istack_grp, ele_grp%grp_name)
 !
 !    set node list for conductor

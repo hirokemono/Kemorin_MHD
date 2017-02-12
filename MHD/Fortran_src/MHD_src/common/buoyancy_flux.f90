@@ -7,7 +7,8 @@
 !> @brief Evaluate buoyancy flux
 !!
 !!@verbatim
-!!      subroutine cal_gravity_flux(node, coef, i_scalar, i_flux)
+!!      subroutine cal_gravity_flux(node, i_grav, coef, grav,           &
+!!     &          i_velo, i_scalar, i_flux, nod_fld)
 !!        type(node_data), intent(in) :: node
 !!        type(phys_data), intent(inout) :: nod_fld
 !!@endverbatim
@@ -28,15 +29,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_gravity_flux(node, coef,                           &
+      subroutine cal_gravity_flux(node, i_grav, coef, grav,             &
      &          i_velo, i_scalar, i_flux, nod_fld)
 !
       use t_geometry_data
       use t_phys_data
-      use m_physical_property
+      use t_physical_property
 !
       type(node_data), intent(in) :: node
       integer (kind = kint), intent(in) :: i_scalar, i_flux, i_velo
+      integer(kind = kint), intent(in) :: i_grav
+      real(kind = kreal), intent(in) :: grav(3)
       real (kind = kreal), intent(in) :: coef
 !
       type(phys_data), intent(inout) :: nod_fld

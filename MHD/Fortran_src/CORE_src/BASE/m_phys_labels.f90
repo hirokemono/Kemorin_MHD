@@ -222,6 +222,9 @@
 !>        Field label for compositinoal flux
 !!         @f$ u_{i} C @f$
       character(len=kchara), parameter :: fhd_c_flux =  'composite_flux'
+!>        Field label for perturbation of composition flux
+!!         @f$ u_{i} \Theta_C @f$
+      character(len=kchara), parameter :: fhd_pc_flux = 'part_c_flux'
 !
 !>        Field label for advection for momentum
 !!         @f$ u_{j} \partial_{j} u_{i} @f$
@@ -398,6 +401,10 @@
 !!         @f$  C - C_{0} @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_part_light = 'parturbation_composition'
+!>        Field label for reference composition
+!!         @f$  C_{0} @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_ref_light =  'reference_composition'
 !
 !>        Field label for entropy
 !!         @f$ S @f$
@@ -499,6 +506,18 @@
 !!         @f$ u_{i} \partial_{i} C @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_composit_advect =    'composition_advect'
+!>        Field label for advection for perturbation of composition
+!!         @f$ u_{i} \partial_{i} \Theta_C @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_part_c_advect =     'part_c_advect'
+!>        Field label for divergence of composition flux
+!!         @f$ \partial_{i} \left( u_{i} C \right) @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_div_c_flux =        'div_c_flux'
+!>        Field label for divergence of perturbation of compopstion flux
+!!         @f$ \partial_{i} \left( u_{i} \Theta_C \right) @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_div_pc_flux =       'div_part_c_flux'
 !
 !   Energy fluxes
 !
@@ -616,6 +635,9 @@
 !>        Field label for perturbation temperature flux
       character(len=kchara), parameter                                  &
      &             :: fhd_part_temp_gen =     'part_temp_gen'
+!>        Field label for perturbation composition flux
+      character(len=kchara), parameter                                  &
+     &             :: fhd_part_comp_gen =     'part_comp_gen'
 !>        Field label for energy flux by viscous diffusion
 !!         @f$ u_{i} \left( \partial_{j}\partial_{j} u_{i} \right) @f$
       character(len=kchara), parameter                                  &
@@ -628,6 +650,10 @@
 !!         @f$ \partial_{i} \left( \overline{u_{i}T} - \bar{u}_{i}\bar{T} \right) @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_SGS_div_h_flux_true = 'SGS_div_h_flux_true'
+!>        Field label for true divergence of SGS heat flux
+!!         @f$ \partial_{i} \left( \overline{u_{i}C} - \bar{u}_{i}\bar{C} \right) @f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_SGS_div_c_flux_true = 'SGS_div_c_flux_true'
 !>        Field label for work of true SGS Lorentz force
       character(len=kchara), parameter                                  &
      &             :: fhd_SGS_Lorentz_wk_true = 'SGS_Lorentz_work_true'
@@ -637,6 +663,9 @@
 !>        Field label for temperature generation by true SGS heat flux
       character(len=kchara), parameter                                  &
      &             :: fhd_SGS_temp_gen_true =   'SGS_temp_gen_true'
+!>        Field label for composition generation by true SGS compostion flux
+      character(len=kchara), parameter                                  &
+     &             :: fhd_SGS_comp_gen_true =   'SGS_comp_gen_true'
 !>        Field label for energy flux of true SGS induction
       character(len=kchara), parameter                                  &
      &             :: fhd_SGS_m_ene_gen_true =  'SGS_m_ene_gen_true'
@@ -767,6 +796,14 @@
 !>        Field label for gradient of @f$ \tilde{C} @f$
       character(len=kchara), parameter                                  &
      &             :: fhd_grad_composit = 'grad_composition'
+!>        Field label for gradient of perturbation of composition
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_par_light = 'grad_part_composition'
+!>        Field label for gradient of reference temperature
+!!         @f$  \partial C_{0} / dz@f$
+!>         or @f$  \partial C_{0} / dr@f$
+      character(len=kchara), parameter                                  &
+     &             :: fhd_grad_ref_light = 'grad_reference_composition'
 !
 !  wider filtered field
 !

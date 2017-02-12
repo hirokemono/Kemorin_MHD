@@ -8,13 +8,21 @@
 !> @brief Evaluate energy fluxes for MHD dynamo in physical space
 !!
 !!@verbatim
-!!      subroutine cal_nonlinear_pole_MHD(sph_rtp, f_trns, bs_trns,     &
-!!     &          ncomp_snap_rj_2_rtp, ncomp_rtp_2_rj, fls_pl, frc_pl)
+!!      subroutine cal_nonlinear_pole_MHD                               &
+!!     &         (sph_rtp, fl_prop, cd_prop, ht_prop, cp_prop,          &
+!!     &          f_trns, bs_trns, ncomp_snap_rj_2_rtp, ncomp_rtp_2_rj, &
+!!     &          fls_pl, frc_pl)
 !!      subroutine s_cal_energy_flux_rtp                                &
-!!     &         (sph_rtp, f_trns, bs_trns, fs_trns, ncomp_rtp_2_rj,    &
+!!     &         (sph_rtp, fl_prop, cd_prop, ref_param_T, ref_param_C,  &
+!!     &          f_trns, bs_trns, fs_trns, ncomp_rtp_2_rj,             &
 !!     &          ncomp_snap_rj_2_rtp, ncomp_snap_rtp_2_rj,             &
 !!     &          frc_rtp, fls_rtp, frs_rtp)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in) :: cd_prop
+!!        type(reference_scalar_param), intent(in) :: ref_param_T
+!!        type(reference_scalar_param), intent(in) :: ref_param_C
+!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(phys_address), intent(in) :: f_trns
 !!        type(phys_address), intent(in) :: bs_trns, fs_trns
 !!@endverbatim
@@ -23,8 +31,12 @@
 !
       use m_precision
       use m_constants
+      use m_machine_parameter
 !
       use t_phys_address
+      use t_spheric_rtp_data
+      use t_physical_property
+      use t_reference_scalar_param
 !
       implicit  none
 !
@@ -36,17 +48,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_nonlinear_pole_MHD(sph_rtp, f_trns, bs_trns,       &
-     &          ncomp_snap_rj_2_rtp, ncomp_rtp_2_rj, fls_pl, frc_pl)
+      subroutine cal_nonlinear_pole_MHD                                 &
+     &         (sph_rtp, fl_prop, cd_prop, ht_prop, cp_prop,            &
+     &          f_trns, bs_trns, ncomp_snap_rj_2_rtp, ncomp_rtp_2_rj,   &
+     &          fls_pl, frc_pl)
 !
-      use t_spheric_rtp_data
-      use m_machine_parameter
       use m_control_parameter
-      use m_physical_property
       use const_wz_coriolis_rtp
       use cal_products_smp
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(phys_address), intent(in) :: f_trns
       type(phys_address), intent(in) :: bs_trns
       integer(kind = kint), intent(in) :: ncomp_snap_rj_2_rtp
@@ -60,14 +74,14 @@
 !$omp parallel
       if( (f_trns%i_m_advect*evo_velo%iflag_scheme) .gt. 0) then
         call cal_cross_prod_w_coef_smp                                  &
-     &     (sph_rtp%nnod_pole, coef_velo,                               &
+     &     (sph_rtp%nnod_pole, fl_prop%coef_velo,                       &
      &      fls_pl(1,bs_trns%i_vort), fls_pl(1,bs_trns%i_velo),         &
      &      frc_pl(1,f_trns%i_m_advect) )
       end if
 !
-      if( (f_trns%i_lorentz*iflag_4_lorentz) .gt. 0) then
+      if( (f_trns%i_lorentz * fl_prop%iflag_4_lorentz) .gt. 0) then
         call cal_cross_prod_w_coef_smp                                  &
-     &     (sph_rtp%nnod_pole, coef_lor,                                &
+     &     (sph_rtp%nnod_pole, fl_prop%coef_lor,                        &
      &      fls_pl(1,bs_trns%i_current), fls_pl(1,bs_trns%i_magne),     &
      &      frc_pl(1,f_trns%i_lorentz) )
       end if
@@ -76,7 +90,7 @@
 !
       if( (f_trns%i_vp_induct * evo_magne%iflag_scheme) .gt. 0) then
         call cal_cross_prod_w_coef_smp                                  &
-     &     (sph_rtp%nnod_pole, coef_induct,                             &
+     &     (sph_rtp%nnod_pole, cd_prop%coef_induct,                     &
      &      fls_pl(1,bs_trns%i_velo), fls_pl(1,bs_trns%i_magne),        &
      &      frc_pl(1,f_trns%i_vp_induct) )
       end if
@@ -84,20 +98,21 @@
 !
       if( (f_trns%i_h_flux * evo_temp%iflag_scheme) .gt. 0) then
         call cal_vec_scalar_prod_w_coef_smp                             &
-     &     (sph_rtp%nnod_pole, coef_temp,                               &
+     &     (sph_rtp%nnod_pole, ht_prop%coef_advect,                     &
      &      fls_pl(1,bs_trns%i_velo), fls_pl(1,bs_trns%i_temp),         &
      &      frc_pl(1,f_trns%i_h_flux) )
       end if
 !
       if( (f_trns%i_c_flux * evo_comp%iflag_scheme) .gt. 0) then
         call cal_vec_scalar_prod_w_coef_smp                             &
-     &     (sph_rtp%nnod_pole, coef_light,                              &
+     &     (sph_rtp%nnod_pole, cp_prop%coef_advect,                     &
      &      fls_pl(1,bs_trns%i_velo), fls_pl(1,bs_trns%i_light),        &
      &      frc_pl(1,f_trns%i_c_flux) )
       end if
 !
-!      if( (f_trns%i_Coriolis*iflag_4_coriolis) .gt. 0) then
-!        call cal_wz_coriolis_rtp(nnod_pole, sph_rtp%nidx_rtp,          &
+!      if( (f_trns%i_Coriolis*fl_prop%iflag_4_coriolis) .gt. 0) then
+!        call cal_wz_coriolis_rtp                                       &
+!     &     (nnod_pole, sph_rtp%nidx_rtp, fl_prop%coef_cor,             &
 !     &      fls_pl(1,bs_trns%i_velo), frc_pl(1,f_trns%i_Coriolis))
 !      end if
 !$omp end parallel
@@ -108,16 +123,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_cal_energy_flux_rtp                                  &
-     &         (sph_rtp, f_trns, bs_trns, fs_trns, ncomp_rtp_2_rj,      &
+     &         (sph_rtp, fl_prop, cd_prop, ref_param_T, ref_param_C,    &
+     &          f_trns, bs_trns, fs_trns, ncomp_rtp_2_rj,               &
      &          ncomp_snap_rj_2_rtp, ncomp_snap_rtp_2_rj,               &
      &          frc_rtp, fls_rtp, frs_rtp)
 !
-      use t_spheric_rtp_data
-      use t_phys_address
-!
-      use m_machine_parameter
       use m_control_parameter
-      use m_physical_property
       use poynting_flux_smp
       use sph_transforms_4_MHD
       use mag_of_field_smp
@@ -125,6 +136,10 @@
       use cal_products_smp
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
+      type(reference_scalar_param), intent(in) :: ref_param_T
+      type(reference_scalar_param), intent(in) :: ref_param_C
       type(phys_address), intent(in) :: f_trns
       type(phys_address), intent(in) :: bs_trns, fs_trns
       integer(kind = kint), intent(in) :: ncomp_rtp_2_rj
@@ -140,7 +155,8 @@
 !
 !$omp parallel
 !      if(fs_trns%i_coriolis .gt. 0) then
-!        call cal_wz_coriolis_rtp(sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,   &
+!        call cal_wz_coriolis_rtp                                       &
+!     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp, fl_prop%coef_cor,      &
 !     &      fls_rtp(1,bs_trns%i_velo), frs_rtp(1,fs_trns%i_Coriolis))
 !      end if
 !
@@ -165,7 +181,7 @@
       if(fs_trns%i_electric .gt. 0) then
         call cal_electric_field_smp                                     &
      &     (np_smp, sph_rtp%nnod_rtp, sph_rtp%istack_inod_rtp_smp,      &
-     &      coef_d_magne, fls_rtp(1,bs_trns%i_current),                 &
+     &      cd_prop%coef_diffuse, fls_rtp(1,bs_trns%i_current),         &
      &      frc_rtp(1,f_trns%i_vp_induct),                              &
      &      frs_rtp(1,fs_trns%i_electric))
       end if
@@ -173,40 +189,51 @@
       if(fs_trns%i_poynting .gt. 0) then
         call cal_poynting_flux_smp                                      &
      &     (np_smp, sph_rtp%nnod_rtp, sph_rtp%istack_inod_rtp_smp,      &
-     &      coef_d_magne, fls_rtp(1,bs_trns%i_current),                 &
+     &      cd_prop%coef_diffuse, fls_rtp(1,bs_trns%i_current),         &
      &      frc_rtp(1,f_trns%i_vp_induct), fls_rtp(1,bs_trns%i_magne),  &
      &      frs_rtp(1,fs_trns%i_poynting))
       end if
 !
       if(fs_trns%i_buo_gen .gt. 0) then
-        if(iflag_4_ref_temp .eq. id_sphere_ref_temp) then
+        if    (ref_param_T%iflag_reference .eq. id_sphere_ref_temp      &
+     &    .or. ref_param_T%iflag_reference .eq. id_takepiro_temp) then
           call cal_buoyancy_flux_rtp_smp                                &
      &       (np_smp, sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1),            &
      &        sph_rtp%istack_inod_rtp_smp, sph_rtp%radius_1d_rtp_r,     &
-     &        coef_buo, fls_rtp(1,bs_trns%i_par_temp),                  &
+     &        fl_prop%coef_buo, fls_rtp(1,bs_trns%i_par_temp),          &
      &        fls_rtp(1,bs_trns%i_velo), frs_rtp(1,fs_trns%i_buo_gen))
         else
           call cal_buoyancy_flux_rtp_smp                                &
      &       (np_smp, sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1),            &
      &        sph_rtp%istack_inod_rtp_smp, sph_rtp%radius_1d_rtp_r,     &
-     &        coef_buo, fls_rtp(1,bs_trns%i_temp),                      &
+     &        fl_prop%coef_buo, fls_rtp(1,bs_trns%i_temp),              &
      &        fls_rtp(1,bs_trns%i_velo), frs_rtp(1,fs_trns%i_buo_gen))
         end if
       end if
 !
       if(fs_trns%i_c_buo_gen .gt. 0) then
-        call cal_buoyancy_flux_rtp_smp(np_smp, sph_rtp%nnod_rtp,        &
-     &      sph_rtp%nidx_rtp(1), sph_rtp%istack_inod_rtp_smp,           &
-     &      sph_rtp%radius_1d_rtp_r, coef_comp_buo,                     &
-     &      fls_rtp(1,bs_trns%i_light), fls_rtp(1,bs_trns%i_velo),      &
-     &      frs_rtp(1,fs_trns%i_c_buo_gen) )
+        if    (ref_param_C%iflag_reference .eq. id_sphere_ref_temp      &
+     &    .or. ref_param_C%iflag_reference .eq. id_takepiro_temp) then
+          call cal_buoyancy_flux_rtp_smp(np_smp, sph_rtp%nnod_rtp,      &
+     &        sph_rtp%nidx_rtp(1), sph_rtp%istack_inod_rtp_smp,         &
+     &        sph_rtp%radius_1d_rtp_r, fl_prop%coef_comp_buo,           &
+     &        fls_rtp(1,bs_trns%i_par_light),                           &
+     &        fls_rtp(1,bs_trns%i_velo),                                &
+     &        frs_rtp(1,fs_trns%i_c_buo_gen))
+        else
+          call cal_buoyancy_flux_rtp_smp(np_smp, sph_rtp%nnod_rtp,      &
+     &        sph_rtp%nidx_rtp(1), sph_rtp%istack_inod_rtp_smp,         &
+     &        sph_rtp%radius_1d_rtp_r, fl_prop%coef_comp_buo,           &
+     &        fls_rtp(1,bs_trns%i_light), fls_rtp(1,bs_trns%i_velo),    &
+     &        frs_rtp(1,fs_trns%i_c_buo_gen) )
+        end if
       end if
 !
       if(fs_trns%i_f_buo_gen .gt. 0) then
         call cal_buoyancy_flux_rtp_smp                                  &
      &     (np_smp, sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1),              &
      &      sph_rtp%istack_inod_rtp_smp, sph_rtp%radius_1d_rtp_r,       &
-     &      coef_buo, fls_rtp(1,bs_trns%i_filter_temp),                 &
+     &      fl_prop%coef_buo, fls_rtp(1,bs_trns%i_filter_temp),         &
      &      fls_rtp(1,bs_trns%i_velo), frs_rtp(1,fs_trns%i_f_buo_gen) )
       end if
 !

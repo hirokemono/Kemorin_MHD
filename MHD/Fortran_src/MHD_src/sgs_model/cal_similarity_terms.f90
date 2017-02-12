@@ -12,7 +12,7 @@
 !!
 !!      subroutine subctract_maxwell_tensor(numnod, inod_smp_stack,     &
 !!     &          ncomp_nod, i_r, i_v1, ntot_comp_nod, icm_sgs,         &
-!!     &          ak_sgs_nod, d_nod)
+!!     &          ex_magne, ak_sgs_nod, d_nod)
 !!      subroutine subctract_uxb_vector(numnod, inod_smp_stack,         &
 !!     &         ncomp_nod, i_r, i_v1, i_v2, d_nod)
 !!      subroutine subctract_induction_tensor(numnod, inod_smp_stack,   &
@@ -126,14 +126,13 @@
 !
       subroutine subctract_maxwell_tensor(numnod, inod_smp_stack,       &
      &          ncomp_nod, i_r, i_v1, ntot_comp_nod, icm_sgs,           &
-     &          ak_sgs_nod, d_nod)
-!
-      use m_physical_property
+     &          ex_magne, ak_sgs_nod, d_nod)
 !
       integer (kind = kint), intent(in) :: numnod, ncomp_nod
       integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: i_r, i_v1
       integer(kind = kint), intent(in) :: ntot_comp_nod, icm_sgs
+      real(kind = kreal), intent(in) :: ex_magne(3)
       real(kind = kreal), intent(in)                                    &
      &                   :: ak_sgs_nod(numnod,ntot_comp_nod)
 !

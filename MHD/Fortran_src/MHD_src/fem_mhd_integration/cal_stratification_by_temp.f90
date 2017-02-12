@@ -5,17 +5,16 @@
 !        modified by H. Matsui on Aug., 2007
 !
 !!      subroutine cal_stratified_layer                                 &
-!!     &         (node, ele, fluid, iphys, nod_fld,                     &
+!!     &         (i_gref, num_int, , ele, fluid, nod_fld,               &
 !!     &          ncomp_ele, iele_velo, d_ele, jac_3d, rhs_tbl,         &
 !!     &          mhd_fem_wk, fem_wk, f_nl)
 !!      subroutine cal_stratified_layer_upw                             &
-!!     &         (node, ele, fluid, iphys, nod_fld,                     &
+!!     &         (i_gref, num_int, node, ele, fluid, nod_fld,           &
 !!     &          ncomp_ele, iele_velo, d_ele, jac_3d, rhs_tbl,         &
 !!     &          mhd_fem_wk, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: fluid
-!!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -32,20 +31,10 @@
 !
 !*****************************************************
 !
-!*****************************************************
-!
-!   Paramters
-!      stratified_sigma:   intensity of stratification
-!      stratified_width:   width of stratified layer
-!      stratified_outer_r: radius of outer boundary of stratified layer
-!
-!*****************************************************
-!
       module cal_stratification_by_temp
 !
       use m_precision
 !
-      use m_control_parameter
       use m_phys_constants
 !
       use t_geometry_data_MHD
@@ -66,7 +55,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_stratified_layer                                   &
-     &         (node, ele, fluid, iphys, nod_fld,                       &
+     &         (i_gref, num_int, node, ele, fluid, nod_fld,             &
      &          ncomp_ele, iele_velo, d_ele, jac_3d, rhs_tbl,           &
      &          mhd_fem_wk, fem_wk, f_nl)
 !
@@ -78,11 +67,11 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
-      type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
+      integer(kind = kint), intent(in) :: i_gref, num_int
       integer(kind = kint), intent(in) :: ncomp_ele, iele_velo
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
 !
@@ -102,10 +91,10 @@
        call position_2_each_element(node, ele,                          &
      &     k2, mhd_fem_wk%xx_e, mhd_fem_wk%rr_e)
        call scalar_phys_2_each_element(node, ele, nod_fld,              &
-     &     k2, iphys%i_gref_t, fem_wk%scalar_1)
+     &     k2, i_gref, fem_wk%scalar_1)
 !
         call fem_skv_stratified_galerkin(fluid%istack_ele_fld_smp,      &
-     &      intg_point_t_evo, k2, fem_wk%scalar_1, d_ele(1,iele_velo),  &
+     &      num_int, k2, fem_wk%scalar_1, d_ele(1,iele_velo),           &
      &      mhd_fem_wk%xx_e, ele, jac_3d, fem_wk%sk6)
       end do
 !
@@ -117,7 +106,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_stratified_layer_upw                               &
-     &         (node, ele, fluid, iphys, nod_fld,                       &
+     &         (i_gref, num_int, node, ele, fluid, nod_fld,             &
      &          ncomp_ele, iele_velo, d_ele, jac_3d, rhs_tbl,           &
      &          mhd_fem_wk, fem_wk, f_nl)
 !
@@ -129,11 +118,11 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
-      type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
+      integer(kind = kint), intent(in) :: i_gref, num_int
       integer(kind = kint), intent(in) :: ncomp_ele, iele_velo
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
 !
@@ -154,10 +143,10 @@
         call position_2_each_element(node, ele,                         &
      &      k2, mhd_fem_wk%xx_e, mhd_fem_wk%rr_e)
         call scalar_phys_2_each_element(node, ele, nod_fld,             &
-     &      k2, iphys%i_gref_t, fem_wk%scalar_1)
+     &      k2, i_gref, fem_wk%scalar_1)
 !
         call fem_skv_stratified_upwind(fluid%istack_ele_fld_smp,        &
-     &      intg_point_t_evo, k2, fem_wk%scalar_1, d_ele(1,iele_velo),  &
+     &      num_int, k2, fem_wk%scalar_1, d_ele(1,iele_velo),           &
      &      mhd_fem_wk%xx_e, ele, jac_3d, fem_wk%sk6)
       end do
 !

@@ -13,7 +13,7 @@
 !!        type(phys_address), intent(in) :: ipol, itor
 !!        type(phys_data), intent(inout) :: rj_fld
 !!      subroutine set_icore_viscous_matrix                             &
-!!     &         (kr_in, fdm1_fix_fld_ICB, sph_rj, band_vt_evo)
+!!     &         (kr_in, fdm1_fix_fld_ICB, sph_rj, fl_prop, band_vt_evo)
 !!      subroutine cal_icore_viscous_drag_explicit                      &
 !!     &         (kr_in, fdm1_fix_fld_ICB, sph_rj, coef_d,              &
 !!     &          it_velo, it_viscous, rj_fld)
@@ -22,11 +22,12 @@
 !!     &          n_point, ntot_phys_rj, d_rj)
 !!      subroutine inner_core_coriolis_rj                               &
 !!     &         (kr_in, idx_rj_degree_one,  nri, jmax, radius_1d_rj_r, &
-!!     &          omega_rj, ipol, n_point, ntot_phys_rj, d_rj)
+!!     &          omega_rj, coef_cor, ipol, n_point, ntot_phys_rj, d_rj)
 !!      subroutine int_icore_toroidal_lorentz                           &
 !!     &         (kr_in, sph_rj, ipol, itor, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_address), intent(in) :: ipol, itor
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(band_matrices_type), intent(inout) :: band_vt_evo
 !!@endverbatim
@@ -86,30 +87,32 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_icore_viscous_matrix                               &
-     &         (kr_in, fdm1_fix_fld_ICB, sph_rj, band_vt_evo)
+     &         (kr_in, fdm1_fix_fld_ICB, sph_rj, fl_prop, band_vt_evo)
 !
       use t_sph_matrices
+      use t_physical_property
       use m_control_parameter
       use m_t_int_parameter
-      use m_physical_property
 !
       integer(kind = kint), intent(in) :: kr_in
       real(kind = kreal), intent(in) :: fdm1_fix_fld_ICB(0:1,2)
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(fluid_property), intent(in) :: fl_prop
+!
       type(band_matrices_type), intent(inout) :: band_vt_evo
 !
 !
       call set_rotate_icb_vt_sph_mat(sph_rj%idx_rj_degree_one(-1),      &
      &    kr_in, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj, &
-     &    fdm1_fix_fld_ICB, evo_velo%coef_imp, coef_d_velo,             &
+     &    fdm1_fix_fld_ICB, evo_velo%coef_imp, fl_prop%coef_diffuse,    &
      &    band_vt_evo%mat)
       call set_rotate_icb_vt_sph_mat(sph_rj%idx_rj_degree_one( 0),      &
      &    kr_in, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj, &
-     &    fdm1_fix_fld_ICB, evo_velo%coef_imp, coef_d_velo,             &
+     &    fdm1_fix_fld_ICB, evo_velo%coef_imp, fl_prop%coef_diffuse,    &
      &    band_vt_evo%mat)
       call set_rotate_icb_vt_sph_mat(sph_rj%idx_rj_degree_one( 1),      &
      &    kr_in, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj, &
-     &    fdm1_fix_fld_ICB, evo_velo%coef_imp, coef_d_velo,             &
+     &    fdm1_fix_fld_ICB, evo_velo%coef_imp, fl_prop%coef_diffuse,    &
      &    band_vt_evo%mat)
 !!
       end subroutine set_icore_viscous_matrix
@@ -175,9 +178,7 @@
 !
       subroutine inner_core_coriolis_rj                                 &
      &         (kr_in, idx_rj_degree_one,  nri, jmax, radius_1d_rj_r,   &
-     &          omega_rj, ipol, n_point, ntot_phys_rj, d_rj)
-!
-      use m_physical_property
+     &          omega_rj, coef_cor, ipol, n_point, ntot_phys_rj, d_rj)
 !
       type(phys_address), intent(in) :: ipol
       integer(kind = kint), intent(in) :: idx_rj_degree_one(-1:1)
@@ -186,6 +187,7 @@
       integer(kind = kint), intent(in) :: ntot_phys_rj
       real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
       real(kind = kreal), intent(in) :: omega_rj(nri,0:2,3)
+      real(kind = kreal), intent(in) :: coef_cor
 !
       real(kind = kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !

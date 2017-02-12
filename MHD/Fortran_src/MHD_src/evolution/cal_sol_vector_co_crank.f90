@@ -4,20 +4,21 @@
 !      Written by H. Matsui on March, 2006
 !
 !!      subroutine cal_velo_co_lumped_crank                             &
-!!     &         (i_velo, nod_comm, node, ele, fluid, Vnod_bcs, nod_fld,&
-!!     &          iphys_ele, fld_ele1, jac_3d, rhs_tbl,                 &
-!!     &          mhd_fem_wk, fem_wk, f_l, f_nl)
+!!     &         (i_velo, FEM_prm, nod_comm, node, ele, fluid, fl_prop, &
+!!     &          Vnod_bcs, nod_fld, iphys_ele, fld_ele, jac_3d,        &
+!!     &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
 !!      subroutine cal_magne_co_lumped_crank                            &
-!!     &         (i_magne, nod_comm, node, ele, nod_fld,                &
-!!     &          iphys_ele, fld_ele1, nod_bc_b, jac_3d, rhs_tbl,       &
-!!     &          m1_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
+!!     &         (i_magne, FEM_prm, nod_comm, node, ele, nod_fld,       &
+!!     &          iphys_ele, fld_ele, nod_bc_b, jac_3d, rhs_tbl,        &
+!!     &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
 !!
 !!      subroutine cal_velo_co_consist_crank(i_velo, coef_velo,         &
-!!     &          node, ele, fluid, Vnod_bcs, nod_fld, jac_3d,          &
+!!     &          FEM_prm, node, ele, fluid, Vnod_bcs, nod_fld, jac_3d, &
 !!     &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
 !!      subroutine cal_magne_co_consist_crank(i_magne, coef_magne,      &
-!!     &          node, ele, conduct, nod_fld, nod_bc_b, jac_3d,&
-!!     &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
+!!     &         FEM_prm, node, ele, conduct, nod_fld, nod_bc_b, jac_3d,&
+!!     &         rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: fluid
@@ -40,6 +41,8 @@
       use m_t_int_parameter
       use m_t_step_parameter
 !
+      use t_FEM_control_parameter
+      use t_physical_property
       use t_comm_table
       use t_geometry_data_MHD
       use t_geometry_data
@@ -60,9 +63,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_velo_co_lumped_crank                               &
-     &         (i_velo, nod_comm, node, ele, fluid, Vnod_bcs, nod_fld,  &
-     &          iphys_ele, fld_ele1, jac_3d, rhs_tbl,                   &
-     &          mhd_fem_wk, fem_wk, f_l, f_nl)
+     &         (i_velo, FEM_prm, nod_comm, node, ele, fluid, fl_prop,   &
+     &          Vnod_bcs, nod_fld, iphys_ele, fld_ele, jac_3d,          &
+     &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
 !
       use int_vol_coriolis_term
       use cal_multi_pass
@@ -71,14 +74,16 @@
 !
       integer(kind = kint), intent(in) :: i_velo
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
+      type(fluid_property), intent(in) :: fl_prop
       type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
       type(phys_data), intent(in) :: nod_fld
       type(phys_address), intent(in) :: iphys_ele
-      type(phys_data), intent(in) :: fld_ele1
+      type(phys_data), intent(in) :: fld_ele
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -88,13 +93,14 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_t_evo_4_vector_fl'
-      call cal_t_evo_4_vector(iflag_velo_supg,                          &
-     &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl, nod_comm,      &
-     &    node, ele, iphys_ele, fld_ele1, jac_3d, rhs_tbl,              &
+      call cal_t_evo_4_vector                                           &
+     &   (FEM_prm%iflag_velo_supg, fluid%istack_ele_fld_smp,            &
+     &    FEM_prm, mhd_fem_wk%mlump_fl, nod_comm,                       &
+     &    node, ele, iphys_ele, fld_ele, jac_3d, rhs_tbl,               &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'int_coriolis_nod_exp'
-      call int_coriolis_nod_exp(node, mhd_fem_wk,                       &
+      call int_coriolis_nod_exp(node, fl_prop, mhd_fem_wk,              &
      &    i_velo, nod_fld, f_l, f_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_velo_4_rhs'
@@ -111,9 +117,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_magne_co_lumped_crank                              &
-     &         (i_magne, nod_comm, node, ele, nod_fld,                  &
-     &          iphys_ele, fld_ele1, nod_bc_b, jac_3d, rhs_tbl,         &
-     &          m1_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
+     &         (i_magne, FEM_prm, nod_comm, node, ele, nod_fld,         &
+     &          iphys_ele, fld_ele, nod_bc_b, jac_3d, rhs_tbl,          &
+     &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
 !
       use cal_multi_pass
       use cal_sol_vector_correct
@@ -121,16 +127,17 @@
 !
       integer(kind = kint), intent(in) :: i_magne
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
       type(phys_address), intent(in) :: iphys_ele
-      type(phys_data), intent(in) :: fld_ele1
+      type(phys_data), intent(in) :: fld_ele
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_b
-      type(lumped_mass_matrices), intent(in) :: m1_lump
+      type(lumped_mass_matrices), intent(in) :: m_lump
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -138,9 +145,9 @@
 !
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_t_evo_4_vector'
-      call cal_t_evo_4_vector                                           &
-     &   (iflag_mag_supg, ele%istack_ele_smp, m1_lump, nod_comm,        &
-     &    node, ele, iphys_ele, fld_ele1, jac_3d, rhs_tbl,              &
+      call cal_t_evo_4_vector(FEM_prm%iflag_magne_supg,                 &
+     &    ele%istack_ele_smp, FEM_prm, m_lump,                          &
+     &    nod_comm, node, ele, iphys_ele, fld_ele, jac_3d, rhs_tbl,     &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
       if (iflag_debug.eq.1)   write(*,*) 'set_boundary_magne_4_rhs'
@@ -148,7 +155,7 @@
 !
       if (iflag_debug.eq.1)   write(*,*) 'cal_sol_magne_co_crank'
       call cal_sol_vect_co_crank                                        &
-     &   (nod_fld%n_point, node%istack_internal_smp, m1_lump%ml_o,      &
+     &   (nod_fld%n_point, node%istack_internal_smp, m_lump%ml_o,       &
      &    nod_fld%ntot_phys, i_magne, nod_fld%d_fld,                    &
      &    f_nl%ff, f_l%ff)
 !
@@ -158,7 +165,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_velo_co_consist_crank(i_velo, coef_velo,           &
-     &          node, ele, fluid, Vnod_bcs, nod_fld, jac_3d,            &
+     &          FEM_prm, node, ele, fluid, Vnod_bcs, nod_fld, jac_3d,   &
      &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
 !
       use int_vol_initial_MHD
@@ -169,6 +176,7 @@
       integer(kind = kint), intent(in) :: i_velo
       real(kind = kreal), intent(in) :: coef_velo
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
@@ -185,8 +193,8 @@
       call reset_ff_t_smp(node%max_nod_smp, mhd_fem_wk)
 !
       if (iflag_debug.eq.1) write(*,*) 'int_vol_initial_velo'
-      call int_vol_initial_vector                                       &
-     &   (fluid%istack_ele_fld_smp, i_velo, coef_velo,                  &
+      call int_vol_initial_vector(FEM_prm%npoint_t_evo_int,             &
+     &    fluid%istack_ele_fld_smp, i_velo, coef_velo,                  &
      &    node, ele, nod_fld, jac_3d, rhs_tbl, fem_wk, mhd_fem_wk)
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
 !
@@ -206,8 +214,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_magne_co_consist_crank(i_magne, coef_magne,        &
-     &          node, ele, conduct, nod_fld, nod_bc_b, jac_3d,          &
-     &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
+     &         FEM_prm, node, ele, conduct, nod_fld, nod_bc_b, jac_3d,  &
+     &         rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
 !
       use int_vol_initial_MHD
       use cal_ff_smp_to_ffs
@@ -217,6 +225,7 @@
       integer(kind = kint), intent(in) :: i_magne
       real(kind = kreal), intent(in) :: coef_magne
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: conduct
@@ -233,8 +242,8 @@
       call reset_ff_t_smp(node%max_nod_smp, mhd_fem_wk)
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_vol_initial_magne'
-      call int_vol_initial_vector                                       &
-     &   (conduct%istack_ele_fld_smp, i_magne, coef_magne,              &
+      call int_vol_initial_vector(FEM_prm%npoint_t_evo_int,             &
+     &    conduct%istack_ele_fld_smp, i_magne, coef_magne,              &
      &    node, ele, nod_fld, jac_3d, rhs_tbl, fem_wk, mhd_fem_wk)
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
 !

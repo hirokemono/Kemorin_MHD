@@ -3,13 +3,14 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine cal_sgs_h_flux_grad_w_coef                           &
-!!     &         (i_filter, icomp_sgs_hf, i_sgs, i_field, ie_dvx,       &
+!!      subroutine cal_sgs_s_flux_grad_w_coef                           &
+!!     &         (iflag_supg, num_int, itype_Csym_flux, icoord_Csim,    &
+!!     &          i_filter, icomp_sgs_hf, i_sgs, i_field, ie_dvx,       &
 !!     &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,       &
 !!     &          jac_3d, rhs_tbl, FEM_elens, sgs_coefs,                &
 !!     &          mhd_fem_wk, fem_wk, f_l, nod_fld)
-!!      subroutine cal_sgs_h_flux_grad_no_coef                          &
-!!     &         (i_filter, i_sgs, i_field, ie_dvx,                     &
+!!      subroutine cal_sgs_s_flux_grad_no_coef                          &
+!!     &         (iflag_supg, num_int, i_filter, i_sgs, i_field, ie_dvx,&
 !!     &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,       &
 !!     &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,       &
 !!     &          f_l, nod_fld)
@@ -33,7 +34,6 @@
 !
       use m_precision
 !
-      use m_control_parameter
       use m_phys_constants
 !
       use t_comm_table
@@ -56,8 +56,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_sgs_h_flux_grad_w_coef                             &
-     &         (i_filter, icomp_sgs_hf, i_sgs, i_field, ie_dvx,         &
+      subroutine cal_sgs_s_flux_grad_w_coef                             &
+     &         (iflag_supg, num_int, itype_Csym_flux, icoord_Csim,      &
+     &          i_filter, icomp_sgs_hf, i_sgs, i_field, ie_dvx,         &
      &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,         &
      &          jac_3d, rhs_tbl, FEM_elens, sgs_coefs,                  &
      &          mhd_fem_wk, fem_wk, f_l, nod_fld)
@@ -79,6 +80,8 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
 !
+      integer (kind=kint), intent(in) :: iflag_supg, num_int
+      integer (kind=kint), intent(in) :: itype_Csym_flux, icoord_Csim
       integer (kind=kint), intent(in) :: i_filter, icomp_sgs_hf
       integer (kind=kint), intent(in) :: i_sgs, i_field
       integer (kind=kint), intent(in) :: ie_dvx
@@ -93,13 +96,13 @@
       call reset_ff_smp(node%max_nod_smp, f_l)
 !
       call sel_int_vol_sgs_flux                                         &
-     &   (iflag_temp_supg, i_filter, n_vector, i_field, ie_dvx,         &
+     &   (iflag_supg, num_int, i_filter, n_vector, i_field, ie_dvx,     &
      &    node, ele, fluid, nod_fld, iphys_ele, ele_fld,                &
      &    jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !
 !     set elemental model coefficients
 !
-      call prod_model_coefs_4_vector(ele, itype_SGS_h_flux_coef,        &
+      call prod_model_coefs_4_vector(ele, itype_Csym_flux, icoord_Csim, &
      &    sgs_coefs%ntot_comp, icomp_sgs_hf, sgs_coefs%ak, fem_wk%sk6)
 !
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
@@ -112,12 +115,12 @@
 !
       call vector_send_recv(i_sgs, nod_comm, nod_fld)
 !
-      end subroutine cal_sgs_h_flux_grad_w_coef
+      end subroutine cal_sgs_s_flux_grad_w_coef
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_sgs_h_flux_grad_no_coef                            &
-     &         (i_filter, i_sgs, i_field, ie_dvx,                       &
+      subroutine cal_sgs_s_flux_grad_no_coef                            &
+     &         (iflag_supg, num_int, i_filter, i_sgs, i_field, ie_dvx,  &
      &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,         &
      &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,         &
      &          f_l, nod_fld)
@@ -137,6 +140,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
 !
+      integer (kind=kint), intent(in) :: iflag_supg, num_int
       integer (kind=kint), intent(in) :: i_filter
       integer (kind=kint), intent(in) :: i_sgs, i_field
       integer (kind=kint), intent(in) :: ie_dvx
@@ -151,7 +155,7 @@
       call reset_ff_smp(node%max_nod_smp, f_l)
 !
       call sel_int_vol_sgs_flux                                         &
-     &   (iflag_temp_supg, i_filter, n_vector, i_field, ie_dvx,         &
+     &   (iflag_supg, num_int, i_filter, n_vector, i_field, ie_dvx,     &
      &    node, ele, fluid, nod_fld, iphys_ele, ele_fld,                &
      &    jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !
@@ -165,7 +169,7 @@
 !
       call vector_send_recv(i_sgs, nod_comm, nod_fld)
 !
-      end subroutine cal_sgs_h_flux_grad_no_coef
+      end subroutine cal_sgs_s_flux_grad_no_coef
 !
 !-----------------------------------------------------------------------
 !

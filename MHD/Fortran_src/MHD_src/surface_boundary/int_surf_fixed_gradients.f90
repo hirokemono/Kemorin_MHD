@@ -3,6 +3,9 @@
 !
 !      Written by H. Matsui on Sep., 2005
 !
+!!      subroutine int_sf_scalar_flux                                   &
+!!     &         (node, ele, surf, sf_grp, jac_sf_grp, rhs_tbl, grad_sf,&
+!!     &          n_int, ak_d, fem_wk, f_l)
 !!      subroutine int_sf_grad_velocity                                 &
 !!     &         (node, ele, surf, sf_grp, jac_sf_grp, rhs_tbl, grad_sf,&
 !!     &          n_int, ak_d, fem_wk, f_l)
@@ -48,7 +51,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_sf_h_flux                                          &
+      subroutine int_sf_scalar_flux                                     &
      &         (node, ele, surf, sf_grp, jac_sf_grp, rhs_tbl, grad_sf,  &
      &          n_int, ak_d, fem_wk, f_l)
 !
@@ -77,7 +80,7 @@
       call add1_skv_to_ff_v_smp                                         &
      &   (node, ele, rhs_tbl, fem_wk%sk6, f_l%ff_smp)
 !
-      end subroutine int_sf_h_flux
+      end subroutine int_sf_scalar_flux
 !
 !-----------------------------------------------------------------------
 !

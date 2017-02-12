@@ -4,11 +4,13 @@
 ! numerical integration for diffusion terms (Lapracians)
 !      Written by H. Matsui on July, 2005
 !
-!!      subroutine int_vol_scalar_diffuse_ele(iele_fsmp_stack,          &
+!!      subroutine int_vol_scalar_diffuse_ele                           &
+!!     &         (ifilter_final, iele_fsmp_stack, num_int,              &
 !!     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,       &
 !!     &          diff_coefs, iak_diff, coef_crank, ak_d,               &
 !!     &          i_scalar, fem_wk, f_l)
-!!      subroutine int_vol_vector_diffuse_ele(iele_fsmp_stack,          &
+!!      subroutine int_vol_vector_diffuse_ele                           &
+!!     &         (ifilter_final, iele_fsmp_stack, num_int,              &
 !!     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,       &
 !!     &          diff_coefs, iak_diff, coef_crank, ak_d,               &
 !!     &          i_vector, fem_wk, f_l)
@@ -29,7 +31,6 @@
       use m_machine_parameter
       use m_constants
       use m_phys_constants
-      use m_control_parameter
 !
       use t_geometry_data
       use t_phys_data
@@ -48,7 +49,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine int_vol_scalar_diffuse_ele(iele_fsmp_stack,            &
+      subroutine int_vol_scalar_diffuse_ele                             &
+     &         (ifilter_final, iele_fsmp_stack, num_int,                &
      &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,         &
      &          diff_coefs, iak_diff, coef_crank, ak_d,                 &
      &          i_scalar, fem_wk, f_l)
@@ -64,6 +66,7 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
 !
+      integer(kind = kint), intent(in) :: ifilter_final, num_int
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind=kint), intent(in) :: i_scalar, iak_diff
       real (kind=kreal), intent(in) :: coef_crank
@@ -76,21 +79,22 @@
       if (iak_diff .gt. 0) then
         call int_vol_scalar_sgs_diffuse                                 &
      &     (node, ele, jac_3d, rhs_tbl, FEM_elens, nod_fld,             &
-     &      iele_fsmp_stack, intg_point_t_evo, coef_crank, ak_d,        &
+     &      iele_fsmp_stack, num_int, coef_crank, ak_d,                 &
      &      i_scalar, ifilter_final, diff_coefs%num_field,              &
      &      iak_diff, diff_coefs%ak, fem_wk, f_l)
       else
         call int_vol_scalar_diffuse                                     &
      &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
-     &      iele_fsmp_stack, intg_point_t_evo, coef_crank,              &
-     &      ak_d, i_scalar, fem_wk, f_l)
+     &      iele_fsmp_stack, num_int, coef_crank, ak_d, i_scalar,       &
+     &      fem_wk, f_l)
       end if
 !
       end subroutine int_vol_scalar_diffuse_ele
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine int_vol_vector_diffuse_ele(iele_fsmp_stack,            &
+      subroutine int_vol_vector_diffuse_ele                             &
+     &         (ifilter_final, iele_fsmp_stack, num_int,                &
      &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,         &
      &          diff_coefs, iak_diff, coef_crank, ak_d,                 &
      &          i_vector, fem_wk, f_l)
@@ -106,6 +110,7 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
 !
+      integer(kind = kint), intent(in) :: ifilter_final, num_int
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind=kint), intent(in) :: i_vector, iak_diff
       real (kind=kreal), intent(in) :: coef_crank
@@ -118,14 +123,14 @@
       if (iak_diff .gt. 0) then
         call int_vol_vector_sgs_diffuse                                 &
      &     (node, ele, jac_3d, rhs_tbl, FEM_elens, nod_fld,             &
-     &      iele_fsmp_stack, intg_point_t_evo, coef_crank, ak_d,        &
+     &      iele_fsmp_stack, num_int, coef_crank, ak_d,                 &
      &      i_vector, ifilter_final, diff_coefs%num_field,              &
      &      iak_diff, diff_coefs%ak, fem_wk, f_l)
       else
         call int_vol_vector_diffuse                                     &
      &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
-     &      iele_fsmp_stack, intg_point_t_evo, coef_crank,              &
-     &      ak_d, i_vector, fem_wk, f_l)
+     &      iele_fsmp_stack, num_int, coef_crank, ak_d, i_vector,       &
+     &      fem_wk, f_l)
       end if
 !
       end subroutine int_vol_vector_diffuse_ele

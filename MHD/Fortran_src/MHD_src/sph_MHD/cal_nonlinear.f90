@@ -7,8 +7,10 @@
 !>@brief Evaluate nonlinear terms by pseudo spectram scheme
 !!
 !!@verbatim
-!!      subroutine nonlinear(sph, comms_sph, omega_sph, r_2nd, trans_p, &
-!!     &          reftemp_rj, ipol, itor, WK, rj_fld)
+!!      subroutine nonlinear                                            &
+!!     &         (SGS_param, sph, comms_sph, omega_sph, r_2nd, trans_p, &
+!!     &          ref_temp, ref_comp, ipol, itor, WK, rj_fld)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(sph_rotation), intent(in) :: omega_sph
@@ -17,7 +19,9 @@
 !!        type(phys_address), intent(in) :: ipol, itor
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
 !!        type(phys_data), intent(inout) :: rj_fld
-!!      subroutine licv_exp(reftemp_rj, sph_rlm, sph_rj,                &
+!!        type(reference_temperature), intent(in) :: ref_temp
+!!        type(reference_temperature), intent(in) :: ref_comp
+!!      subroutine licv_exp(ref_temp, ref_comp, sph_rlm, sph_rj,        &
 !!     &          comm_rlm, comm_rj, leg, trns_MHD, ipol, itor, rj_fld)
 !!        type(sph_rlm_grid), intent(in) :: sph_rlm
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
@@ -27,6 +31,8 @@
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(phys_address), intent(in) :: ipol, itor
+!!        type(reference_temperature), intent(in) :: ref_temp
+!!        type(reference_temperature), intent(in) :: ref_comp
 !!        type(address_4_sph_trans), intent(inout) :: trns_MHD
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
@@ -41,6 +47,8 @@
       use m_control_parameter
       use calypso_mpi
 !
+      use m_physical_property
+      use t_SGS_control_parameter
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
       use t_poloidal_rotation
@@ -52,6 +60,7 @@
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
       use t_sph_filtering_data
+      use t_radial_reference_temp
       use sph_filtering
 !
       implicit none
@@ -65,8 +74,9 @@
 !*
 !*   ------------------------------------------------------------------
 !*
-      subroutine nonlinear(sph, comms_sph, omega_sph, r_2nd, trans_p,   &
-     &          reftemp_rj, ipol, itor, WK, rj_fld)
+      subroutine nonlinear                                              &
+     &         (SGS_param, sph, comms_sph, omega_sph, r_2nd, trans_p,   &
+     &          ref_temp, ref_comp, ipol, itor, WK, rj_fld)
 !
       use m_boundary_params_sph_MHD
       use cal_inner_core_rotation
@@ -75,15 +85,15 @@
 !
       use m_work_time
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(sph_rotation), intent(in) :: omega_sph
       type(fdm_matrices), intent(in) :: r_2nd
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(phys_address), intent(in) :: ipol, itor
-!
-      real(kind = kreal), intent(in)                                    &
-     &      :: reftemp_rj(sph%sph_rj%nidx_rj(1),0:1)
+      type(reference_temperature), intent(in) :: ref_temp
+      type(reference_temperature), intent(in) :: ref_comp
 !
       type(works_4_sph_trans_MHD), intent(inout) :: WK
       type(phys_data), intent(inout) :: rj_fld
@@ -92,25 +102,23 @@
 !   ----  lead nonlinear terms by phesdo spectrum
 !
       if (iflag_debug.eq.1) write(*,*) 'nonlinear_by_pseudo_sph'
-      call nonlinear_by_pseudo_sph                                      &
-     &   (sph, comms_sph, omega_sph, r_2nd, trans_p, WK%dynamic_SPH,    &
+      call nonlinear_by_pseudo_sph(SGS_param, sph, comms_sph,           &
+     &    omega_sph, r_2nd, trans_p, WK%dynamic_SPH,                    &
      &    WK%trns_MHD, WK%MHD_mul_FFTW, ipol, itor, rj_fld)
 !
 !   ----  Lead SGS terms
-      if(iflag_SGS_model .gt. 0) then
+      if(SGS_param%iflag_SGS .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'SGS_by_pseudo_sph'
-        call SGS_by_pseudo_sph(sph, comms_sph, r_2nd, trans_p,          &
+        call SGS_by_pseudo_sph                                          &
+     &     (SGS_param, sph, comms_sph, r_2nd, trans_p,                  &
      &      WK%trns_MHD, WK%trns_snap, WK%trns_SGS, WK%SGS_mul_FFTW,    &
      &      WK%dynamic_SPH, ipol, itor, rj_fld)
       end if
 !
-      if (iflag_4_ref_temp .eq. id_sphere_ref_temp) then
-        call add_reftemp_advect_sph_MHD                                 &
-     &     (sph_bc_T%kr_in, sph_bc_T%kr_out, sph%sph_rj%nidx_rj,        &
-     &      sph%sph_rj%ar_1d_rj, trans_p%leg%g_sph_rj,                  &
-     &      ipol%i_h_advect, ipol%i_velo,                               &
-     &      rj_fld%n_point, rj_fld%ntot_phys, reftemp_rj, rj_fld%d_fld)
-      end if
+!   ----  Lead advection of reference field
+      call add_ref_advect_sph_MHD(sph%sph_rj,                           &
+     &    ht_prop1, cp_prop1, ref_param_T1, ref_param_C1,               &
+     &    trans_p%leg, ref_temp, ref_comp, ipol, rj_fld)
 !
 !*  ----  copy coriolis term for inner core rotation
 !*
@@ -139,26 +147,26 @@
 !
 !
 !$omp parallel
-      if(      iflag_4_gravity  .ne. id_turn_OFF                        &
-     &   .and. iflag_4_coriolis .ne. id_turn_OFF                        &
-     &   .and. iflag_4_lorentz  .ne. id_turn_OFF) then
+      if(      fl_prop1%iflag_4_gravity  .ne. id_turn_OFF               &
+     &   .and. fl_prop1%iflag_4_coriolis .ne. id_turn_OFF               &
+     &   .and. fl_prop1%iflag_4_lorentz  .ne. id_turn_OFF) then
         call set_MHD_terms_to_force(ipol, itor, itor%i_rot_buoyancy,    &
      &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
-      else if( iflag_4_gravity  .eq.     id_turn_OFF                    &
-     &   .and. iflag_4_composit_buo .ne. id_turn_OFF                    &
-     &   .and. iflag_4_coriolis .ne.     id_turn_OFF                    &
-     &   .and. iflag_4_lorentz  .ne.     id_turn_OFF) then
+      else if( fl_prop1%iflag_4_gravity  .eq.     id_turn_OFF           &
+     &   .and. fl_prop1%iflag_4_composit_buo .ne. id_turn_OFF           &
+     &   .and. fl_prop1%iflag_4_coriolis .ne.     id_turn_OFF           &
+     &   .and. fl_prop1%iflag_4_lorentz  .ne.     id_turn_OFF) then
         call set_MHD_terms_to_force(ipol, itor, itor%i_rot_comp_buo,    &
      &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
-      else if( iflag_4_gravity  .ne. id_turn_OFF                        &
-     &   .and. iflag_4_coriolis .ne. id_turn_OFF                        &
-     &   .and. iflag_4_lorentz  .eq. id_turn_OFF) then
+      else if( fl_prop1%iflag_4_gravity  .ne. id_turn_OFF               &
+     &   .and. fl_prop1%iflag_4_coriolis .ne. id_turn_OFF               &
+     &   .and. fl_prop1%iflag_4_lorentz  .eq. id_turn_OFF) then
         call set_rot_cv_terms_to_force(ipol, itor, itor%i_rot_buoyancy, &
      &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
-      else if( iflag_4_gravity  .eq.     id_turn_OFF                    &
-     &   .and. iflag_4_composit_buo .ne. id_turn_OFF                    &
-     &   .and. iflag_4_coriolis .ne.     id_turn_OFF                    &
-     &   .and. iflag_4_lorentz  .eq.     id_turn_OFF) then
+      else if( fl_prop1%iflag_4_gravity  .eq.     id_turn_OFF           &
+     &   .and. fl_prop1%iflag_4_composit_buo .ne. id_turn_OFF           &
+     &   .and. fl_prop1%iflag_4_coriolis .ne.     id_turn_OFF           &
+     &   .and. fl_prop1%iflag_4_lorentz  .eq.     id_turn_OFF) then
         call set_rot_cv_terms_to_force(ipol, itor, itor%i_rot_comp_buo, &
      &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
       else
@@ -166,21 +174,21 @@
           call set_rot_advection_to_force                               &
      &     (ipol, itor, sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
-        if(iflag_4_coriolis .ne. id_turn_OFF) then
+        if(fl_prop1%iflag_4_coriolis .ne. id_turn_OFF) then
           call add_coriolis_to_vort_force(ipol, itor,                   &
      &        sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
-        if(iflag_4_lorentz .ne.  id_turn_OFF) then
+        if(fl_prop1%iflag_4_lorentz .ne.  id_turn_OFF) then
           call add_lorentz_to_vort_force (ipol, itor,                   &
      &        sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
-        if(iflag_4_gravity .ne.  id_turn_OFF) then
+        if(fl_prop1%iflag_4_gravity .ne.  id_turn_OFF) then
           call add_buoyancy_to_vort_force(itor, itor%i_rot_buoyancy,    &
      &        sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
-        else if(iflag_4_composit_buo .ne. id_turn_OFF) then
+        else if(fl_prop1%iflag_4_composit_buo .ne. id_turn_OFF) then
           call add_buoyancy_to_vort_force(itor, itor%i_rot_comp_buo,    &
      &        sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
-        else if(iflag_4_filter_gravity .ne. id_turn_OFF) then
+        else if(fl_prop1%iflag_4_filter_gravity .ne. id_turn_OFF) then
           call add_buoyancy_to_vort_force(itor, itor%i_rot_filter_buo,  &
      &        sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
@@ -191,9 +199,9 @@
 !
 !*   ------------------------------------------------------------------
 !
-      subroutine nonlinear_by_pseudo_sph                                &
-     &         (sph, comms_sph, omega_sph, r_2nd, trans_p, dynamic_SPH, &
-     &          trns_MHD, MHD_mul_FFTW, ipol, itor, rj_fld)
+      subroutine nonlinear_by_pseudo_sph(SGS_param, sph, comms_sph,     &
+     &          omega_sph, r_2nd, trans_p, dynamic_SPH, trns_MHD,       &
+     &          MHD_mul_FFTW, ipol, itor, rj_fld)
 !
       use sph_transforms_4_MHD
       use cal_nonlinear_sph_MHD
@@ -203,6 +211,7 @@
 !
       use m_work_time
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(fdm_matrices), intent(in) :: r_2nd
@@ -217,7 +226,7 @@
 !
 !
 !   ----  Lead filtered field for SGS terms
-      if(iflag_SGS_model .gt. 0) then
+      if(SGS_param%iflag_SGS .gt. 0) then
         if (iflag_debug.ge.1) write(*,*) 'cal_filtered_sph_rj_fields'
         call start_eleps_time(81)
         call cal_filtered_sph_rj_fields                                 &
@@ -229,21 +238,23 @@
 !
       call start_eleps_time(14)
       if (iflag_debug.ge.1) write(*,*) 'sph_back_trans_4_MHD'
-      call sph_back_trans_4_MHD(sph, comms_sph, omega_sph, trans_p,     &
-     &    ipol, rj_fld, trns_MHD, MHD_mul_FFTW)
+      call sph_back_trans_4_MHD(sph, comms_sph, fl_prop1, omega_sph,    &
+     &    trans_p, ipol, rj_fld, trns_MHD, MHD_mul_FFTW)
       call end_eleps_time(14)
 !
       call start_eleps_time(15)
       if (iflag_debug.ge.1) write(*,*) 'nonlinear_terms_in_rtp'
       call nonlinear_terms_in_rtp                                       &
-     &   (sph%sph_rtp, trns_MHD%b_trns, trns_MHD%f_trns,                &
+     &   (sph%sph_rtp, fl_prop1, cd_prop1, ht_prop1, cp_prop1,          &
+     &    trns_MHD%b_trns, trns_MHD%f_trns,                             &
      &    trns_MHD%ncomp_rj_2_rtp, trns_MHD%ncomp_rtp_2_rj,             &
      &    trns_MHD%fld_rtp, trns_MHD%frc_rtp)
 !
-      if(iflag_SGS_model .gt. 0) then
+      if(SGS_param%iflag_SGS .gt. 0) then
         if (iflag_debug.ge.1) write(*,*) 'filtered_nonlinear_in_rtp'
-        call filtered_nonlinear_in_rtp                                  &
-     &     (sph%sph_rtp, trns_MHD%b_trns, trns_MHD%f_trns,              &
+        call filtered_nonlinear_in_rtp(SGS_param, sph%sph_rtp,          &
+     &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
+     &      trns_MHD%b_trns, trns_MHD%f_trns,                           &
      &      trns_MHD%ncomp_rj_2_rtp, trns_MHD%ncomp_rtp_2_rj,           &
      &      trns_MHD%fld_rtp, trns_MHD%frc_rtp)
       end if
@@ -251,7 +262,7 @@
 !
       call start_eleps_time(16)
       if (iflag_debug.ge.1) write(*,*) 'sph_forward_trans_4_MHD'
-      call sph_forward_trans_4_MHD(sph, comms_sph, trans_p,             &
+      call sph_forward_trans_4_MHD(sph, comms_sph, fl_prop1, trans_p,   &
      &    ipol, trns_MHD, MHD_mul_FFTW, rj_fld)
       call end_eleps_time(16)
 !
@@ -266,7 +277,8 @@
 !*   ------------------------------------------------------------------
 !*   ------------------------------------------------------------------
 !
-      subroutine SGS_by_pseudo_sph(sph, comms_sph, r_2nd, trans_p,      &
+      subroutine SGS_by_pseudo_sph                                      &
+     &         (SGS_param, sph, comms_sph, r_2nd, trans_p,              &
      &          trns_MHD, trns_snap, trns_SGS, SGS_mul_FFTW,            &
      &          dynamic_SPH, ipol, itor, rj_fld)
 !
@@ -279,6 +291,7 @@
 !
       use m_work_time
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(fdm_matrices), intent(in) :: r_2nd
@@ -313,9 +326,10 @@
      &      trns_SGS%ncomp_rtp_2_rj, trns_MHD%frc_rtp,                  &
      &      trns_SGS%fld_rtp, trns_SGS%frc_rtp)
 !
-        if(iflag_dynamic_SGS .eq. id_SGS_DYNAMIC_ON) then
+        if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
           if (iflag_debug.eq.1) write(*,*) 'wider_similarity_SGS_rtp'
           call wider_similarity_SGS_rtp(sph%sph_rtp,                    &
+     &        fl_prop1, cd_prop1, ht_prop1, cp_prop1,                   &
      &        trns_MHD%b_trns, trns_SGS%b_trns,                         &
      &        trns_MHD%ncomp_rj_2_rtp, trns_SGS%ncomp_rj_2_rtp,         &
      &        trns_MHD%fld_rtp, trns_SGS%fld_rtp)
@@ -325,9 +339,12 @@
      &       (sph%sph_rtp, dynamic_SPH%ifld_sgs, dynamic_SPH%icomp_sgs, &
      &        dynamic_SPH%wk_sgs, trns_SGS)
 !
-          if (iflag_debug.eq.1) write(*,*) 'const_dynamic_SGS_4_buo_sph'
-          call const_dynamic_SGS_4_buo_sph(sph%sph_rtp, trns_MHD,       &
-     &        trns_snap, trns_SGS, dynamic_SPH)
+          if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
+            if(iflag_debug .gt. 0) write(*,*)                           &
+     &           'const_dynamic_SGS_4_buo_sph'
+            call const_dynamic_SGS_4_buo_sph(sph%sph_rtp, fl_prop1,     &
+     &          trns_MHD, trns_snap, trns_SGS, dynamic_SPH)
+          end if
         end if
         call end_eleps_time(15)
 !
@@ -348,7 +365,7 @@
 !*   ------------------------------------------------------------------
 !*   ------------------------------------------------------------------
 !*
-      subroutine licv_exp(reftemp_rj, sph_rlm, sph_rj,                  &
+      subroutine licv_exp(ref_temp, ref_comp, sph_rlm, sph_rj,          &
      &          comm_rlm, comm_rj, omega_sph, leg, trns_MHD,            &
      &          ipol, itor, rj_fld)
 !
@@ -365,51 +382,57 @@
       type(address_4_sph_trans), intent(in) :: trns_MHD
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_address), intent(in) :: ipol, itor
+      type(reference_temperature), intent(in) :: ref_temp
+      type(reference_temperature), intent(in) :: ref_comp
 !
-      real(kind = kreal), intent(in)                                    &
-     &                   :: reftemp_rj(sph_rj%nidx_rj(1),0:1)
       type(phys_data), intent(inout) :: rj_fld
 !
 !*  ----  copy velocity for coriolis term ------------------
 !*
-      if (iflag_debug.eq.1) write(*,*) 'sph_transform_4_licv'
-      if(iflag_4_coriolis .ne. id_turn_OFF) then
+      if(iflag_debug.eq.1) write(*,*) 'sph_transform_4_licv'
+      if(fl_prop1%iflag_4_coriolis .ne. id_turn_OFF) then
         call sph_transform_4_licv                                       &
-     &     (sph_rlm, comm_rlm, comm_rj, omega_sph, leg,                 &
+     &     (sph_rlm, comm_rlm, comm_rj, fl_prop1, omega_sph, leg,       &
      &      trns_MHD, ipol, rj_fld)
       end if
 !
 !   ----  lead nonlinear terms by phesdo spectrum
 !
-!$omp parallel workshare
-      rj_fld%d_fld(1:sph_rj%nnod_rj,ipol%i_h_advect) = zero
-!$omp end parallel workshare
+!$omp parallel
+      if(ipol%i_h_advect .gt. 0) then
+!$omp workshare
+        rj_fld%d_fld(1:sph_rj%nnod_rj,ipol%i_h_advect) = zero
+!$omp end workshare
+      end if
+      if(ipol%i_c_advect .gt. 0) then
+!$omp workshare
+        rj_fld%d_fld(1:sph_rj%nnod_rj,ipol%i_c_advect) = zero
+!$omp end workshare
+      end if
 !
       if(ipol%i_forces .gt. 0) then
-!$omp parallel workshare
+!$omp workshare
         rj_fld%d_fld(1:sph_rj%nnod_rj,ipol%i_forces) = zero
         rj_fld%d_fld(1:sph_rj%nnod_rj,itor%i_forces) = zero
-!$omp end parallel workshare
+!$omp end workshare
       end if
+!$omp end parallel
 !
 !
-      if (iflag_4_ref_temp .eq. id_sphere_ref_temp) then
-        call add_reftemp_advect_sph_MHD                                 &
-     &     (sph_bc_T%kr_in, sph_bc_T%kr_out,                            &
-     &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, leg%g_sph_rj,              &
-     &      ipol%i_h_advect, ipol%i_velo,                               &
-     &      rj_fld%n_point, rj_fld%ntot_phys, reftemp_rj, rj_fld%d_fld)
-      end if
+      call add_ref_advect_sph_MHD(sph_rj,                               &
+     &    ht_prop1, cp_prop1, ref_param_T1, ref_param_C1,               &
+     &    leg, ref_temp, ref_comp, ipol, rj_fld)
+!
 !
 !$omp parallel
-      if(iflag_4_coriolis .ne. id_turn_OFF) then
+      if(fl_prop1%iflag_4_coriolis .ne. id_turn_OFF) then
         call add_coriolis_to_vort_force(ipol, itor,                     &
      &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
-      if(iflag_4_gravity .ne.  id_turn_OFF) then
+      if(fl_prop1%iflag_4_gravity .ne.  id_turn_OFF) then
         call add_buoyancy_to_vort_force(itor, itor%i_rot_buoyancy,      &
      &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
-      else if(iflag_4_composit_buo .ne. id_turn_OFF) then
+      else if(fl_prop1%iflag_4_composit_buo .ne. id_turn_OFF) then
         call add_buoyancy_to_vort_force(itor, itor%i_rot_comp_buo,      &
      &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
       end if

@@ -10,6 +10,7 @@
       module SPH_analyzer_licv
 !
       use m_precision
+      use m_SGS_control_parameter
       use t_phys_address
 !
       implicit none
@@ -59,7 +60,7 @@
 !   Allocate spectr field data
 !
       call set_sph_MHD_sprctr_data                                      &
-     &   (sph1%sph_rj, ipol, idpdr, itor, rj_fld1)
+     &   (SGS_par1%model_p, sph1%sph_rj, ipol, idpdr, itor, rj_fld1)
 !
 !
       if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
@@ -69,12 +70,13 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd_evo'
       call init_r_infos_sph_mhd_evo(sph_grps1, ipol, sph1,              &
-     &    omega_sph1, ref_temp1, r_2nd, rj_fld1)
+     &    omega_sph1, ref_temp1, ref_comp1, r_2nd, rj_fld1)
 !
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD'
-      call init_sph_transform_MHD(ipol, idpdr, itor, iphys,             &
+      call init_sph_transform_MHD                                       &
+     &   (SGS_par1%model_p, ipol, idpdr, itor, iphys,                   &
      &    sph1, comms_sph1, omega_sph1, trans_p1, trns_WK1, rj_fld1)
 !
 ! ---------------------------------
@@ -86,12 +88,14 @@
 !
       if(iflag_debug.gt.0) write(*,*)' sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph                                    &
-      &  (ref_temp1%t_rj, sph1%sph_rj, ipol, idpdr, rj_fld1)
+     &   (ref_param_T1, ref_param_C1, ref_temp1, ref_comp1,             &
+     &    sph1%sph_rj, ipol, idpdr, rj_fld1)
 !
 !  -------------------------------
 !
       if(iflag_debug.gt.0) write(*,*)' const_radial_mat_sph_mhd'
-      call const_radial_mat_sph_mhd(sph1%sph_rj, r_2nd, trans_p1%leg)
+      call const_radial_mat_sph_mhd                                     &
+     &   (fl_prop1, ht_prop1, cp_prop1, sph1%sph_rj, r_2nd, trans_p1%leg)
 !*
 !* obtain linear terms for starting
 !*
@@ -102,7 +106,8 @@
 !*  ----------------lead nonlinear term ... ----------
 !*
       if(iflag_debug .gt. 0) write(*,*) 'first licv_exp'
-      call licv_exp(ref_temp1%t_rj, sph1%sph_rlm, sph1%sph_rj,          &
+      call licv_exp                                                     &
+     &   (ref_temp1, ref_comp1, sph1%sph_rlm, sph1%sph_rj,              &
      &    comms_sph1%comm_rlm, comms_sph1%comm_rj, omega_sph1,          &
      &    trans_p1%leg, trns_WK1%trns_MHD, ipol, itor, rj_fld1)
 !
@@ -142,11 +147,12 @@
 !*
       if(i_step .eq. 1) then
         if(iflag_debug.gt.0) write(*,*) 'cal_expricit_sph_euler'
-        call cal_expricit_sph_euler                                     &
-     &     (i_step, sph1%sph_rj, ipol, itor, rj_fld1)
+        call cal_expricit_sph_euler(i_step, sph1%sph_rj,                &
+     &      ht_prop1, cp_prop1, ipol, itor, rj_fld1)
       else
         if(iflag_debug.gt.0) write(*,*) 'cal_expricit_sph_adams'
-        call cal_expricit_sph_adams(sph1%sph_rj, ipol, itor, rj_fld1)
+        call cal_expricit_sph_adams                                     &
+     &     (sph1%sph_rj, ht_prop1, cp_prop1, ipol, itor, rj_fld1)
       end if
 !*
 !*  ----------  time evolution by inplicit method ----------
@@ -160,16 +166,18 @@
       call start_eleps_time(9)
       if(iflag_debug.gt.0) write(*,*) 'trans_per_temp_to_temp_sph'
       call trans_per_temp_to_temp_sph                                   &
-     &   (ref_temp1%t_rj, sph1%sph_rj, ipol, idpdr, rj_fld1)
+     &   (ref_param_T1, ref_param_C1, ref_temp1, ref_comp1,             &
+     &    sph1%sph_rj, ipol, idpdr, rj_fld1)
 !*
       if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
-      call s_lead_fields_4_sph_mhd                                      &
-     &   (sph1, comms_sph1, r_2nd, trans_p1, ipol, rj_fld1, trns_WK1)
+      call s_lead_fields_4_sph_mhd(SGS_par1%model_p,                    &
+     &    sph1, comms_sph1, r_2nd, trans_p1, ipol, rj_fld1, trns_WK1)
       call end_eleps_time(9)
 !
 !*  ----------------lead nonlinear term ... ----------
 !*
-        call licv_exp(ref_temp1%t_rj, sph1%sph_rlm, sph1%sph_rj,        &
+        call licv_exp                                                   &
+     &     (ref_temp1, ref_comp1, sph1%sph_rlm, sph1%sph_rj,            &
      &      comms_sph1%comm_rlm, comms_sph1%comm_rj, omega_sph1,        &
      &      trans_p1%leg, trns_WK1%trns_MHD, ipol, itor, rj_fld1)
 !
@@ -198,7 +206,8 @@
 !
       if(iflag_debug.gt.0) write(*,*) 'sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph                                    &
-     &   (ref_temp1%t_rj, sph1%sph_rj, ipol, idpdr, rj_fld1)
+     &   (ref_param_T1, ref_param_C1, ref_temp1, ref_comp1,             &
+     &    sph1%sph_rj, ipol, idpdr, rj_fld1)
       call end_eleps_time(4)
 !
       if(i_step .ge. i_step_number .and. i_step_number.gt.0) then

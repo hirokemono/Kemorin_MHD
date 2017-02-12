@@ -6,7 +6,8 @@
 !      Moified by H. Matsui on Feb., 2008
 !
 !      subroutine marking_by_layers(numele, num_mat, num_mat_bc,        &
-!     &          mat_istack, mat_name, mat_item, mat_flag_mhd)
+!     &          mat_istack, mat_name, mat_item, mat_flag_mhd, FEM_prm)
+!!       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !
 !.......................................................................
 !
@@ -54,9 +55,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine marking_by_layers(numele, num_mat, num_mat_bc,         &
-     &          mat_istack, mat_name, mat_item, mat_flag_mhd)
+     &          mat_istack, mat_name, mat_item, mat_flag_mhd, FEM_prm)
 !
-      use m_control_parameter
+      use t_FEM_control_parameter
+      use skip_comment_f
 !
       integer (kind = kint), intent(in) :: numele
       integer (kind = kint), intent(in) :: num_mat, num_mat_bc
@@ -65,10 +67,12 @@
       character(len=kchara), intent(in) :: mat_name(num_mat)
 !
       integer (kind = kint), intent(inout) :: mat_flag_mhd(numele)
+      type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !
       integer (kind = kint) :: iflag
       integer (kind = kint) :: j, j2
       integer (kind = kint) :: iele, inum
+      character(len=kchara) :: tmpchara, tmpchara2
 !
 !
       do iele = 1, numele
@@ -77,21 +81,18 @@
 !
 !  ----   conductive  layer .... all
 !
-      if ( cd_ele_grp_name(1) .eq. 'all' .or.                          &
-     &        cd_ele_grp_name(1) .eq. 'ALL') then
-!
+      tmpchara = FEM_prm%condutive_group%group_name(1)
+      if(cmp_no_case(tmpchara,'all')) then
         do iele = 1, numele
           mat_flag_mhd(iele) = 1
         end do
 !
 !  ----   insulated  layer .... all
 !
-       else if ( cd_ele_grp_name(1) .eq. 'none'  .or.                  &
-     &        cd_ele_grp_name(1) .eq. 'NONE') then
-!
-        do iele = 1, numele
-          mat_flag_mhd(iele) = 0
-        end do
+      else if(cmp_no_case(tmpchara,'none')) then
+         do iele = 1, numele
+           mat_flag_mhd(iele) = 0
+         end do
 !
 !    conductor and insulator exist
 !
@@ -100,15 +101,17 @@
         do j = 1, num_mat
           iflag = 0
 !
-          do j2 = 1, num_ins_ele_grp
-            if ( mat_name(j) .eq. ins_ele_grp_name(j2) ) then
+          do j2 = 1, FEM_prm%insulator_group%num_group
+            tmpchara2 = FEM_prm%insulator_group%group_name(j2)
+            if (mat_name(j) .eq. tmpchara2) then
               iflag = 0
               exit
             end if
           end do
 !
-          do j2 = 1, num_cd_ele_grp
-            if ( mat_name(j) .eq. cd_ele_grp_name(j2) ) then
+          do j2 = 1, FEM_prm%condutive_group%num_group
+            tmpchara2 = FEM_prm%condutive_group%group_name(j2)
+            if(mat_name(j) .eq. tmpchara2) then
               iflag = 1
               do inum = mat_istack(j-1)+1, mat_istack(j)
                 iele = mat_item(inum)
@@ -124,16 +127,15 @@
 !
 !  ----   fluid layer .... all
 !
-      if ( fl_ele_grp_name(1) .eq. 'all' .or.                          &
-     &        fl_ele_grp_name(1) .eq. 'ALL' ) then
+      tmpchara = FEM_prm%fluid_group%group_name(1)
+      if (cmp_no_case(tmpchara,'all')) then
         do iele = 1, numele
           mat_flag_mhd(iele) = mat_flag_mhd(iele) + 2
         end do
 !
 !  ------  entire solid
 !
-      else if ( fl_ele_grp_name(1) .eq. 'none'  .or.                   &
-     &        fl_ele_grp_name(1) .eq. 'NONE') then
+      else if(cmp_no_case(tmpchara,'none')) then
         do iele = 1, numele
           mat_flag_mhd(iele) = mat_flag_mhd(iele)
         end do
@@ -145,10 +147,9 @@
         do j = 1, num_mat
           iflag = 0
 !
-          do j2 = 1, num_fl_ele_grp
-            if ( mat_name(j) .eq. fl_ele_grp_name(j2) ) then
-              iflag = 2
-            end if
+          do j2 = 1, FEM_prm%fluid_group%num_group
+            tmpchara2 = FEM_prm%fluid_group%group_name(j2)
+            if (mat_name(j) .eq. tmpchara2) iflag = 2
           end do
 !
           do inum = mat_istack(j-1)+1, mat_istack(j)

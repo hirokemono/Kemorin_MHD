@@ -10,9 +10,13 @@
 !
 !!@verbatim
 !!      subroutine set_rot_earth_4_sph                                  &
-!!     &         (sph_rlm, sph_rj, rotate, omega_sph)
+!!     &         (sph_rlm, sph_rj, fl_prop, omega_sph)
 !!      subroutine set_3dir_rot_earth_sph_rj                            &
-!!     &         (sph_rj, rotate, omega_sph)
+!!     &         (sph_rj, fl_prop, omega_sph)
+!!        type(sph_rlm_grid), intent(in) :: sph_rlm
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(sph_rotation), intent(inout) :: omega_sph
 !!
 !!      subroutine dealloc_rot_rlm_data
 !!      subroutine dealloc_rot_rj_data
@@ -91,14 +95,15 @@
 !  --------------------------------------------------------------------
 !
       subroutine set_rot_earth_4_sph                                    &
-     &         (sph_rlm, sph_rj, rotate, omega_sph)
+     &         (sph_rlm, sph_rj, fl_prop, omega_sph)
 !
       use t_spheric_rlm_data
       use t_spheric_rj_data
+      use t_physical_property
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_rj_grid), intent(in) :: sph_rj
-      real(kind = kreal), intent(in) :: rotate(3)
+      type(fluid_property), intent(in) :: fl_prop
 !
       type(sph_rotation), intent(inout) :: omega_sph
 !
@@ -108,7 +113,7 @@
 !
       call set_3dir_rot_earth_4_sph                                     &
      &   (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                     &
-     &    rotate, omega_sph%ws_rj)
+     &    fl_prop%sys_rot, omega_sph%ws_rj)
       call set_zdir_rot_earth_4_sph                                     &
      &   (sph_rlm%nidx_rlm(1), sph_rlm%radius_1d_rlm_r,                 &
      &    one, omega_sph%ws_rlm)
@@ -119,12 +124,13 @@
 !  -------------------------------------------------------------------
 !
       subroutine set_3dir_rot_earth_sph_rj                              &
-     &         (sph_rj, rotate, omega_sph)
+     &         (sph_rj, fl_prop, omega_sph)
 !
       use t_spheric_rj_data
+      use t_physical_property
 !
       type(sph_rj_grid), intent(in) :: sph_rj
-      real(kind = kreal), intent(in) :: rotate(3)
+      type(fluid_property), intent(in) :: fl_prop
 !
       type(sph_rotation), intent(inout) :: omega_sph
 !
@@ -132,7 +138,7 @@
       call alloc_rot_rj_data(sph_rj%nidx_rj(1), omega_sph)
       call set_3dir_rot_earth_4_sph                                     &
      &   (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                     &
-     &    rotate, omega_sph%ws_rj)
+     &    fl_prop%sys_rot, omega_sph%ws_rj)
 !
       end subroutine set_3dir_rot_earth_sph_rj
 !

@@ -3,8 +3,12 @@
 !
 !      Written by H.Matsui on Dec., 2008
 !
-!!      subroutine s_set_diffusivities_MHD_AMG(ele, ak_AMG)
+!!      subroutine s_set_diffusivities_MHD_AMG                          &
+!!     &         (ele, fl_prop, cd_prop, ht_prop, cp_prop, ak_AMG)
 !!        type(element_data), intent(in) :: ele
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in) :: cd_prop
+!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(coefs_4_MHD_type), intent(inout) :: ak_AMG
 !
       module set_diffusivities_MHD_AMG
@@ -13,7 +17,7 @@
 !
       use t_geometry_data
       use t_coefs_element_4_MHD
-      use m_physical_property
+      use t_physical_property
 !
       implicit none
 !
@@ -23,11 +27,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_diffusivities_MHD_AMG(ele, ak_AMG)
+      subroutine s_set_diffusivities_MHD_AMG                            &
+     &         (ele, fl_prop, cd_prop, ht_prop, cp_prop, ak_AMG)
 !
       use m_control_parameter
 !
       type(element_data), intent(in) :: ele
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
+!
       type(coefs_4_MHD_type), intent(inout) :: ak_AMG
 !
 !  allocate
@@ -61,26 +70,26 @@
 !
       if (ele%numele .gt. 0) then
         if (evo_temp%iflag_scheme .gt. id_no_evolution) then
-          ak_AMG%ak_d_temp(1:ele%numele) = coef_d_temp
+          ak_AMG%ak_d_temp(1:ele%numele) = ht_prop%coef_diffuse
         end if
 !
 !    For convection
 !
         if (evo_velo%iflag_scheme .gt. id_no_evolution) then
-          ak_AMG%ak_d_velo(1:ele%numele) = coef_d_velo
+          ak_AMG%ak_d_velo(1:ele%numele) = fl_prop%coef_diffuse
         end if
 !
 !   For Induction
 !
         if (evo_magne%iflag_scheme .gt. id_no_evolution                 &
      &      .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
-          ak_AMG%ak_d_magne(1:ele%numele) = coef_d_magne
+          ak_AMG%ak_d_magne(1:ele%numele) = cd_prop%coef_diffuse
         end if
 !
 !   For dummy scalar
 !
         if (evo_comp%iflag_scheme .gt. id_no_evolution) then
-          ak_AMG%ak_d_composit(1:ele%numele) = coef_d_light
+          ak_AMG%ak_d_composit(1:ele%numele) = cp_prop%coef_diffuse
         end if
       end if
 !

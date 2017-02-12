@@ -25,6 +25,7 @@
 !
       subroutine FEM_check_MHD_mat
 !
+      use m_SGS_control_parameter
       use m_control_parameter
       use m_mesh_data
       use m_geometry_data_MHD
@@ -50,7 +51,7 @@
 !   matrix assembling
 !
       if (iflag_debug.eq.1) write(*,*) 'init_analyzer_fl'
-      call init_analyzer_fl(IO_bc1, mesh1, group1, ele_mesh1,           &
+      call init_analyzer_fl(SGS_par1, IO_bc1, mesh1, group1, ele_mesh1, &
      &    MHD_mesh1, layer_tbl1, iphys, nod_fld1, label_sim)
 !
 !   construct matrix for Poisson and diffusion terms
@@ -60,7 +61,8 @@
      &    MHD1_mat_tbls, MHD1_matrices, solver_pack1)
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
       call set_aiccg_matrices                                           &
-     &   (mesh1, group1, ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs,       &
+     &   (FEM_prm1, SGS_par1%model_p, SGS_par1%commute_p,               &
+     &    mesh1, group1, ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs,       &
      &    ak_MHD, jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, FEM1_elen,    &
      &    ifld_diff, diff_coefs, rhs_tbl1, MHD1_mat_tbls,               &
      &    surf1_wk, mhd_fem1_wk, fem1_wk, MHD1_matrices, solver_pack1)

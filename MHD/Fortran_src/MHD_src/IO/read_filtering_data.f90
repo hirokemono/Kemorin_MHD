@@ -6,8 +6,8 @@
 !     modified by H. Matsui on Aug., 2007
 !     modified by H. Matsui on May, 2008
 !
-!!      subroutine s_read_filtering_data                                &
-!!     &         (node, ele, filtering, wide_filtering, wk_filter)
+!!      subroutine s_read_filtering_data(SGS_param, filter_param,       &
+!!     &          node, ele, filtering, wide_filtering, wk_filter)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(filtering_data_type), intent(inout) :: filtering
@@ -19,6 +19,8 @@
       use m_precision
       use m_machine_parameter
       use calypso_mpi
+!
+      use t_SGS_control_parameter
       use t_comm_table
       use t_geometry_data
       use t_filtering_data
@@ -34,15 +36,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_read_filtering_data                                  &
-     &         (node, ele, filtering, wide_filtering, wk_filter)
+      subroutine s_read_filtering_data(SGS_param, filter_param,         &
+     &          node, ele, filtering, wide_filtering, wk_filter)
 !
-      use m_control_parameter
       use m_nod_filter_comm_table
       use m_filter_elength
       use m_filter_file_names
       use t_geometry_data
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(SGS_filtering_params), intent(in) :: filter_param
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
 !
@@ -51,20 +54,20 @@
       type(filtering_work_type), intent(inout) :: wk_filter
 !
 !
-      if (iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
-        call read_line_filtering_data                                   &
-     &     (node%numnod, ele%numele, FEM1_elen, filtering%fil_l)
+      if(filter_param%iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
+        call read_line_filtering_data(node%numnod, ele%numele,          &
+     &     SGS_param, FEM1_elen, filtering%fil_l)
       else
         call read_3d_filter_moments                                     &
-     &     (node%numnod, ele%numele, FEM1_elen)
-        if(iflag_SGS_filter .gt. 0) then
+     &     (node%numnod, ele%numele, SGS_param, FEM1_elen)
+        if(filter_param%iflag_SGS_filter .gt. id_turn_OFF) then
           call read_3d_filtering_data                                   &
      &       (filter_3d_head, ifmt_3d_filter, filtering)
           call alloc_nod_data_4_filter(nnod_filtering, wk_filter)
         end if
 !
-        if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                   &
-     &      .and. iflag_SGS_model.eq.id_SGS_similarity) then
+        if       (SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF      &
+     &      .and. SGS_param%iflag_SGS.eq.id_SGS_similarity) then
           call read_3d_filtering_data                                   &
      &       (filter_wide_head, ifmt_wide_filter, wide_filtering)
         end if
@@ -78,7 +81,6 @@
       subroutine read_3d_filtering_data                                 &
      &         (filter_head, ifmt_filter, filtering)
 !
-      use m_control_parameter
       use t_filter_file_data
 !
       use filter_moment_IO_select
@@ -119,12 +121,12 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine read_3d_filter_moments(numnod, numele, FEM_elens)
+      subroutine read_3d_filter_moments                                 &
+     &         (numnod, numele, SGS_param, FEM_elens)
 !
       use calypso_mpi
       use m_machine_parameter
       use m_error_IDs
-      use m_control_parameter
       use m_filter_file_names
 !
       use t_filter_elength
@@ -132,12 +134,14 @@
       use filter_moment_IO_select
 !
       integer(kind = kint), intent(in) :: numnod, numele
+      type(SGS_model_control_params), intent(in) :: SGS_param
+!
       type(gradient_model_data_type), intent(inout) :: FEM_elens
 !
       integer(kind = kint) :: ierr
 !
 !
-      if(iflag_SGS_model .ne. id_SGS_NL_grad) return
+      if(SGS_param%iflag_SGS .ne. id_SGS_NL_grad) return
       ifmt_filter_file = ifmt_filter_elen
       filter_file_head = filter_elen_head
       call sel_read_filter_elen_file                                    &
@@ -159,11 +163,10 @@
 !-----------------------------------------------------------------------
 !
       subroutine read_line_filtering_data                               &
-     &         (numnod, numele, FEM_elens, fil_l)
+     &         (numnod, numele, SGS_param, FEM_elens, fil_l)
 !
       use m_machine_parameter
       use m_error_IDs
-      use m_control_parameter
       use m_filter_file_names
       use m_field_file_format
 !
@@ -174,6 +177,7 @@
       use filter_mom_type_data_IO
 !
       integer(kind = kint), intent(in) :: numnod, numele
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(gradient_model_data_type), intent(inout) :: FEM_elens
       type(line_filtering_type), intent(inout) :: fil_l
 !
@@ -198,8 +202,8 @@
       end if
 !
 !
-      if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                     &
-     &      .or. iflag_SGS_model.eq.id_SGS_similarity) then
+      if        (SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF        &
+     &      .or. SGS_param%iflag_SGS.eq.id_SGS_similarity) then
         call read_line_filter_data_a(filter_file_code, numnod, fil_l)
       end if
       close(filter_file_code)

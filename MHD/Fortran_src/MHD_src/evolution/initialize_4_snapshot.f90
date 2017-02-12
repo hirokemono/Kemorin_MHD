@@ -3,8 +3,10 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine init_analyzer_snap(IO_bc, mesh, group, ele_mesh,     &
+!!      subroutine init_analyzer_snap                                   &
+!!     &         (SGS_par, IO_bc, mesh, group, ele_mesh,                &
 !!     &          MHD_mesh, layer_tbl, iphys, nod_fld, t_IO, label_sim)
+!!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
@@ -18,6 +20,7 @@
       module initialize_4_snapshot
 !
       use m_precision
+      use t_SGS_control_parameter
       use t_phys_data
       use t_phys_address
 !
@@ -29,7 +32,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer_snap(IO_bc, mesh, group, ele_mesh,       &
+      subroutine init_analyzer_snap                                     &
+     &         (SGS_par, IO_bc, mesh, group, ele_mesh,                  &
      &          MHD_mesh, layer_tbl, iphys, nod_fld, t_IO, label_sim)
 !
       use calypso_mpi
@@ -37,6 +41,7 @@
       use m_control_parameter
       use m_t_step_parameter
 !
+      use m_physical_property
       use m_ele_material_property
       use m_mean_square_values
       use m_jacobians
@@ -85,6 +90,7 @@
 !
       use nod_phys_send_recv
 !
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(IO_boundary), intent(in) :: IO_bc
 !
       type(mesh_geometry), intent(inout) :: mesh
@@ -97,15 +103,19 @@
       type(time_params_IO), intent(inout) :: t_IO
       character(len=kchara), intent(inout)   :: label_sim
 !
+integer(kind = kint) :: iflag
+!
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*)' reordering_by_layers_snap'
-      call reordering_by_layers_snap(mesh%ele, group, MHD_mesh)
+      call reordering_by_layers_snap                                    &
+     &   (FEM_prm1, SGS_par, mesh%ele, group, MHD_mesh)
 !
       if (iflag_debug.eq.1) write(*,*)' set_layers'
-      call set_layers(mesh%node, mesh%ele, group%ele_grp, MHD_mesh)
+      call set_layers                                                   &
+     &   (FEM_prm1, mesh%node, mesh%ele, group%ele_grp, MHD_mesh)
 !
-      if (iflag_dynamic_SGS  .ne. id_SGS_DYNAMIC_OFF) then
+      if (SGS_par%model_p%iflag_dynamic  .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*)' const_layers_4_dynamic'
         call const_layers_4_dynamic(group%ele_grp, layer_tbl)
         call alloc_work_4_dynamic(layer_tbl%e_grp%num_grp, wk_lsq1)
@@ -133,37 +143,38 @@
 !
 !     ---------------------
 !
-      if( (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                    &
-     &       .or. iflag_SGS_model.eq.id_SGS_similarity)) then
+      iflag = SGS_par%filter_p%iflag_SGS_filter
+      if(     (SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF    &
+     &    .or. SGS_par%model_p%iflag_SGS.eq.id_SGS_similarity)) then
 !
-        if   (iflag_SGS_filter .eq. id_SGS_3D_FILTERING                 &
-     &   .or. iflag_SGS_filter .eq. id_SGS_3D_EZ_FILTERING) then
+        if   (iflag .eq. id_SGS_3D_FILTERING                            &
+     &   .or. iflag .eq. id_SGS_3D_EZ_FILTERING) then
           if (iflag_debug .gt. 0)                                       &
      &      write(*,*)' s_set_istart_3d_filtering'
           call s_set_istart_3d_filtering(filtering1%filter)
 !
-        else if (iflag_SGS_filter.eq.id_SGS_3D_SMP_FILTERING            &
-     &     .or. iflag_SGS_filter.eq.id_SGS_3D_EZ_SMP_FILTERING) then
+        else if (iflag.eq.id_SGS_3D_SMP_FILTERING                       &
+     &     .or. iflag.eq.id_SGS_3D_EZ_SMP_FILTERING) then
           if (iflag_debug .gt. 0)                                       &
      &      write(*,*) ' const_tbl_3d_filtering_smp'
           call const_tbl_3d_filtering_smp(filtering1)
 !
-        else if (iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
+        else if (iflag .eq. id_SGS_LINE_FILTERING) then
           if (iflag_debug.gt.0) write(*,*)' ordering_l_filter_smp'
           call ordering_l_filter_smp(mesh%node%istack_nod_smp,          &
      &        filtering1%fil_l, filtering1%fil_l_smp)
         end if
       end if
 !
-      if( (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                    &
-     &      .and. iflag_SGS_model.eq.id_SGS_similarity) ) then
-        if    (iflag_SGS_filter .eq. id_SGS_3D_FILTERING                &
-     &    .or. iflag_SGS_filter .eq. id_SGS_3D_EZ_FILTERING) then
+      if(      (SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF   &
+     &    .and. SGS_par%model_p%iflag_SGS.eq.id_SGS_similarity) ) then
+        if    (iflag .eq. id_SGS_3D_FILTERING                           &
+     &    .or. iflag .eq. id_SGS_3D_EZ_FILTERING) then
           if (iflag_debug .gt. 0) write(*,*)' s_set_istart_w_filtering'
           call s_set_istart_3d_filtering(wide_filtering%filter)
 !
-        else if (iflag_SGS_filter.eq.id_SGS_3D_SMP_FILTERING            &
-     &     .or. iflag_SGS_filter.eq.id_SGS_3D_EZ_SMP_FILTERING) then
+        else if (iflag.eq.id_SGS_3D_SMP_FILTERING                       &
+     &     .or. iflag.eq.id_SGS_3D_EZ_SMP_FILTERING) then
 !
           if (iflag_debug .gt. 0)                                       &
      &      write(*,*) 'const_tbl_3d_filtering_smp'
@@ -174,25 +185,30 @@
 !     ---------------------
 !
       if (iflag_debug.eq.1) write(*,*)' allocate_array'
-      call allocate_array(mesh%node, mesh%ele, iphys, nod_fld,          &
+      call allocate_array(SGS_par, mesh%node, mesh%ele, iphys, nod_fld, &
      &    iphys_elediff, m1_lump, mhd_fem1_wk, fem1_wk,                 &
      &    f1_l, f1_nl, label_sim)
 !
       if (iflag_debug.eq.1) write(*,*)' set_reference_temp'
-      call set_reference_temp(mesh%node%numnod,                         &
-     &    MHD_mesh%fluid%numnod_fld, MHD_mesh%fluid%inod_fld,           &
-     &    mesh%node%xx, mesh%node%rr, mesh%node%a_r,                    &
-     &    nod_fld%ntot_phys, iphys%i_ref_t, iphys%i_gref_t,             &
-     &    nod_fld%d_fld)
+      call set_reference_temp                                           &
+     &   (ref_param_T1, takepito_T1, mesh%node, MHD_mesh%fluid,         &
+     &    iphys%i_ref_t, iphys%i_gref_t, nod_fld)
+      call set_reference_temp                                           &
+     &   (ref_param_C1, takepito_C1, mesh%node, MHD_mesh%fluid,         &
+     &   iphys%i_ref_c, iphys%i_gref_c, nod_fld)
 !
       if (iflag_debug.eq.1) write(*,*)' set_material_property'
-      call set_material_property(iphys)
-      call init_ele_material_property(mesh%ele%numele)
+      call set_material_property                                        &
+     &   (iphys, ref_param_T1%depth_top, ref_param_T1%depth_bottom)
+      call init_ele_material_property(mesh%ele%numele,                  &
+     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1)
       call define_sgs_components                                        &
-     &   (mesh%node%numnod, mesh%ele%numele, layer_tbl,                 &
-     &    ifld_sgs, icomp_sgs, wk_sgs1, sgs_coefs, sgs_coefs_nod)
-      call define_sgs_diff_coefs(mesh%ele%numele, layer_tbl,            &
-     &    ifld_diff, icomp_diff, wk_diff1, diff_coefs)
+     &   (mesh%node%numnod, mesh%ele%numele, SGS_par%model_p,           &
+     &    layer_tbl, ifld_sgs, icomp_sgs, wk_sgs1,                      &
+     &    sgs_coefs, sgs_coefs_nod)
+      call define_sgs_diff_coefs                                        &
+     &   (mesh%ele%numele, SGS_par%model_p, SGS_par%commute_p,          &
+     &    layer_tbl, ifld_diff, icomp_diff, wk_diff1, diff_coefs)
 !
       call deallocate_surface_geom_type(ele_mesh%surf)
       call deallocate_edge_geom_type(ele_mesh%edge)
@@ -212,8 +228,8 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*)' const_MHD_jacobian_and_volumes'
-      call const_MHD_jacobian_and_volumes                               &
-     &   (mesh%node, mesh%ele, group%surf_grp, layer_tbl,               &
+      call const_MHD_jacobian_and_volumes(SGS_par%model_p,              &
+     &    mesh%node, mesh%ele, group%surf_grp, layer_tbl,               &
      &    group%infty_grp, jac1_3d_l, jac1_3d_q, MHD_mesh)
 !
       call const_jacobian_sf_grp                                        &
@@ -238,12 +254,13 @@
 !
       if (iflag_debug.eq.1) write(*,*)' set_boundary_data'
       call set_boundary_data(IO_bc, mesh, ele_mesh, MHD_mesh, group,    &
-     &    iphys, nod_fld)
+     &    fl_prop1, iphys, nod_fld)
 !
 !     ---------------------
 !
-      call int_RHS_mass_matrices(mesh%node, mesh%ele, MHD_mesh,         &
-     &   jac1_3d_q, rhs_tbl1, mhd_fem1_wk, fem1_wk, f1_l, m1_lump)
+      call int_RHS_mass_matrices(FEM_prm1%npoint_t_evo_int,             &
+     &     mesh%node, mesh%ele, MHD_mesh, jac1_3d_q, rhs_tbl1,          &
+     &     mhd_fem1_wk, fem1_wk, f1_l, m1_lump)
 !
 !     ---------------------
 !

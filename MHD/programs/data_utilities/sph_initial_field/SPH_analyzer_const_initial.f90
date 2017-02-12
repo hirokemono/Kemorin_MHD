@@ -20,6 +20,7 @@
       use calypso_mpi
       use m_machine_parameter
       use m_work_time
+      use m_SGS_control_parameter
       use m_control_parameter
       use m_t_int_parameter
       use m_t_step_parameter
@@ -58,8 +59,8 @@
       call read_control_4_sph_MHD_noviz(MHD_ctl_name, MHD_ctl1)
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_4_SPH_make_init'
-      call input_control_4_SPH_make_init                                &
-     &   (MHD_ctl1, sph1, comms_sph1, sph_grps1, rj_fld1, pwr1)
+      call input_control_4_SPH_make_init(MHD_ctl1, sph1, comms_sph1,    &
+     &    sph_grps1, rj_fld1, pwr1, SGS_par1)
       call end_eleps_time(4)
 !
 !        Initialize spherical transform dynamo
@@ -101,13 +102,13 @@
 !   Allocate spectr field data
 !
       call set_sph_MHD_sprctr_data                                      &
-     &   (sph1%sph_rj, ipol, idpdr, itor, rj_fld1)
+     &   (SGS_par1%model_p, sph1%sph_rj, ipol, idpdr, itor, rj_fld1)
 !
 ! ---------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd'
       call init_r_infos_sph_mhd(sph_grps1, ipol, sph1,                  &
-     &    omega_sph1, ref_temp1, rj_fld1)
+     &    omega_sph1, ref_temp1, ref_comp1, rj_fld1)
 !
 ! ---------------------------------
 !

@@ -7,8 +7,9 @@
 !>@brief  Evaluate pressure and energy fluxes for snapshots
 !!
 !!@verbatim
-!!      subroutine s_lead_fields_4_sph_mhd                              &
-!!     &         (sph, comms_sph, r_2nd, trans_p, ipol, rj_fld, WK)
+!!      subroutine s_lead_fields_4_sph_mhd(SGS_param,                   &
+!!     &          sph, comms_sph, r_2nd, trans_p, ipol, rj_fld, WK)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(fdm_matrices), intent(in) :: r_2nd
@@ -22,7 +23,9 @@
 !
       use m_precision
       use m_machine_parameter
+      use m_physical_property
 !
+      use t_SGS_control_parameter
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
       use t_phys_address
@@ -46,10 +49,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_lead_fields_4_sph_mhd                                &
-     &         (sph, comms_sph, r_2nd, trans_p, ipol, rj_fld, WK)
+      subroutine s_lead_fields_4_sph_mhd(SGS_param,                     &
+     &          sph, comms_sph, r_2nd, trans_p, ipol, rj_fld, WK)
 !
-      use m_control_parameter
       use m_t_step_parameter
       use m_radial_matrices_sph
       use output_viz_file_control
@@ -60,6 +62,7 @@
       use swap_phi_4_sph_trans
       use dynamic_model_sph_MHD
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(fdm_matrices), intent(in) :: r_2nd
@@ -76,8 +79,9 @@
 !
       if ( (iflag*mod(istep_max_dt,i_step_output_rst)) .eq.0 ) then
         if(evo_velo%iflag_scheme .gt. id_no_evolution) then
-          call pressure_4_sph_mhd(sph%sph_rj, r_2nd, trans_p%leg,       &
-     &       band_p_poisson, ipol, rj_fld)
+          call pressure_4_sph_mhd                                       &
+     &       (SGS_param, sph%sph_rj, fl_prop1, r_2nd,                   &
+     &        trans_p%leg, band_p_poisson, ipol, rj_fld)
         end if
       end if
 !
@@ -98,13 +102,14 @@
      &     (sph, comms_sph, trans_p, ipol, rj_fld, WK%trns_MHD)
 !
         if (iflag_debug.eq.1) write(*,*) 'cal_nonlinear_pole_MHD'
-        call cal_nonlinear_pole_MHD(sph%sph_rtp,                        &
+        call cal_nonlinear_pole_MHD                                     &
+     &     (sph%sph_rtp, fl_prop1, cd_prop1, ht_prop1, cp_prop1,        &
      &      WK%trns_MHD%f_trns, WK%trns_MHD%b_trns,                     &
      &      WK%trns_MHD%ncomp_rj_2_rtp, WK%trns_MHD%ncomp_rtp_2_rj,     &
      &      WK%trns_MHD%fld_pole, WK%trns_MHD%frc_pole)
       end if
 !
-      if(iflag_SGS_model .gt. 0) then
+      if(SGS_param%iflag_SGS .gt. id_SGS_none) then
         if (iflag_debug.eq.1) write(*,*) 'swap_phi_from_trans'
         call swap_phi_from_trans(WK%trns_SGS%ncomp_rj_2_rtp,            &
      &      sph%sph_rtp%nnod_rtp, sph%sph_rtp%nidx_rtp,                 &
@@ -117,7 +122,7 @@
         call sph_pole_trans_SGS_MHD                                     &
      &     (sph, comms_sph, trans_p, ipol, rj_fld, WK%trns_SGS)
 !
-        if(iflag_dynamic_SGS .gt. 0) then
+        if(SGS_param%iflag_dynamic .gt. id_SGS_none) then
           if(iflag_debug.eq.1) write(*,*) 'copy_model_coefs_4_sph_snap'
           call copy_model_coefs_4_sph_snap(sph%sph_rtp,                 &
      &        WK%dynamic_SPH%ifld_sgs, WK%dynamic_SPH%wk_sgs,           &
@@ -127,15 +132,16 @@
 !
       call gradients_of_vectors_sph(sph, comms_sph, r_2nd, trans_p,     &
      &    ipol, WK%trns_MHD, WK%trns_tmp, rj_fld)
-      call enegy_fluxes_4_sph_mhd(sph, comms_sph, r_2nd, trans_p, ipol, &
+      call enegy_fluxes_4_sph_mhd                                       &
+     &   (SGS_param, sph, comms_sph, r_2nd, trans_p, ipol,              &
      &    WK%trns_MHD, WK%trns_SGS, WK%trns_snap, rj_fld)
 !
       end subroutine s_lead_fields_4_sph_mhd
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine pressure_4_sph_mhd                                     &
-     &         (sph_rj, r_2nd, leg, band_p_poisson, ipol, rj_fld)
+      subroutine pressure_4_sph_mhd(SGS_param, sph_rj, fl_prop, r_2nd,  &
+     &          leg, band_p_poisson, ipol, rj_fld)
 !
       use m_boundary_params_sph_MHD
       use cal_sol_sph_fluid_crank
@@ -146,6 +152,8 @@
       use const_sph_radial_grad
       use cal_sph_rotation_of_SGS
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(fluid_property), intent(in) :: fl_prop
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(legendre_4_sph_trans), intent(in) :: leg
@@ -160,7 +168,7 @@
      &   (sph_rj, r_2nd, leg%g_sph_rj, ipol, rj_fld)
 !
 !   ----  Lead SGS terms
-      if(iflag_SGS_model .gt. 0) then
+      if(SGS_param%iflag_SGS .gt. id_SGS_none) then
         call cal_div_of_SGS_forces_sph_2                                &
      &     (sph_rj, r_2nd, leg%g_sph_rj, ipol, rj_fld)
       end if
@@ -168,7 +176,7 @@
       call s_const_radial_forces_on_bc                                  &
      &   (sph_rj, leg%g_sph_rj, ipol, rj_fld)
 !
-      call sum_div_of_forces(ipol, rj_fld)
+      call sum_div_of_forces(fl_prop, ipol, rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_pressure_by_div_v'
       call cal_sol_pressure_by_div_v                                    &
@@ -176,8 +184,9 @@
 !
       if(ipol%i_press_grad .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'const_pressure_gradient'
-        call const_pressure_gradient(sph_rj, r_2nd, sph_bc_U,           &
-     &      leg%g_sph_rj, ipol%i_press, ipol%i_press_grad, rj_fld)
+        call const_pressure_gradient                                    &
+     &     (sph_rj, r_2nd, sph_bc_U, leg%g_sph_rj, fl_prop%coef_press,  &
+     &      ipol%i_press, ipol%i_press_grad, rj_fld)
       end if
 !
       end subroutine pressure_4_sph_mhd
@@ -185,7 +194,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine enegy_fluxes_4_sph_mhd                                 &
-     &          (sph, comms_sph, r_2nd, trans_p, ipol,                  &
+     &          (SGS_param, sph, comms_sph, r_2nd, trans_p, ipol,       &
      &           trns_MHD, trns_SGS, trns_snap, rj_fld)
 !
       use sph_transforms_snapshot
@@ -194,6 +203,7 @@
       use cal_SGS_terms_sph_MHD
       use cal_SGS_buo_flux_sph_MHD
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(fdm_matrices), intent(in) :: r_2nd
@@ -216,15 +226,18 @@
 !
 !      Evaluate fields for output in grid space
       if (iflag_debug.eq.1) write(*,*) 's_cal_energy_flux_rtp'
-      call s_cal_energy_flux_rtp(sph%sph_rtp, trns_MHD%f_trns,          &
-     &    trns_snap%b_trns, trns_snap%f_trns, trns_MHD%ncomp_rtp_2_rj,  &
-     &    trns_snap%ncomp_rj_2_rtp, trns_snap%ncomp_rtp_2_rj,           &
-     &    trns_MHD%frc_rtp, trns_snap%fld_rtp, trns_snap%frc_rtp)
+      call s_cal_energy_flux_rtp                                        &
+     &   (sph%sph_rtp, fl_prop1, cd_prop1, ref_param_T1, ref_param_C1,  &
+     &    trns_MHD%f_trns, trns_snap%b_trns, trns_snap%f_trns,          &
+     &    trns_MHD%ncomp_rtp_2_rj, trns_snap%ncomp_rj_2_rtp,            &
+     &    trns_snap%ncomp_rtp_2_rj, trns_MHD%frc_rtp,                   &
+     &    trns_snap%fld_rtp, trns_snap%frc_rtp)
 !
 !      Work of SGS terms
-      if(iflag_SGS_model .gt. 0) then
+      if(SGS_param%iflag_SGS .gt. id_SGS_none) then
         if (iflag_debug.eq.1) write(*,*) 'SGS_fluxes_for_snapshot'
-        call SGS_fluxes_for_snapshot(sph%sph_rtp, trns_MHD%b_trns,      &
+        call SGS_fluxes_for_snapshot                                    &
+     &     (sph%sph_rtp, fl_prop1, trns_MHD%b_trns,                     &
      &      trns_SGS%f_trns, trns_snap%b_trns, trns_snap%f_trns,        &
      &      trns_MHD%ncomp_rj_2_rtp, trns_SGS%ncomp_rtp_2_rj,           &
      &      trns_snap%ncomp_rj_2_rtp, trns_snap%ncomp_rtp_2_rj,         &

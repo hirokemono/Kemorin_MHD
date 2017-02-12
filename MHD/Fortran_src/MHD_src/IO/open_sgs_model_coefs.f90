@@ -11,9 +11,10 @@
 !!      subroutine open_SGS_model_coef_file(iflag_type, id_file,        &
 !!     &          file_name, wk_sgs)
 !!      subroutine open_SGS_correlation_file(iflag_type, id_file,       &
-!!     &          file_name, wk_sgs)
+!!     &          file_name, SGS_param, wk_sgs)
 !!      subroutine open_SGS_rms_ratio_file(iflag_type, id_file,         &
-!!     &          file_name, wk_sgs)
+!!     &          file_name, SGS_param, wk_sgs)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!
 !!      subroutine open_SGS_diff_coef_file(iflag_type, id_file,         &
 !!     &          file_name, wk_diff)
@@ -25,6 +26,8 @@
       module open_sgs_model_coefs
 !
       use m_precision
+!
+      use m_control_parameter
 !
       use t_ele_info_4_dynamic
 !
@@ -71,11 +74,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine open_SGS_correlation_file(iflag_type, id_file,         &
-     &          file_name, wk_sgs)
+     &          file_name, SGS_param, wk_sgs)
+!
+      use t_SGS_control_parameter
 !
       integer(kind=kint), intent(in) :: id_file, iflag_type
       character(len=kchara), intent(in) :: file_name
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(dynamic_model_data), intent(in) :: wk_sgs
 !
 !
@@ -92,18 +98,22 @@
         call write_sgs_whole_time_head(id_file)
       end if
 !
-      call write_sgs_comps_head(id_file, wk_sgs)
+      call write_sgs_comps_head                                         &
+     &   (id_file, SGS_param%icoord_Csim, wk_sgs)
 !
       end subroutine open_SGS_correlation_file
 !
 !-----------------------------------------------------------------------
 !
       subroutine open_SGS_rms_ratio_file(iflag_type, id_file,           &
-     &          file_name, wk_sgs)
+     &          file_name, SGS_param, wk_sgs)
+!
+      use t_SGS_control_parameter
 !
       integer(kind=kint), intent(in) :: id_file, iflag_type
       character(len=kchara), intent(in) :: file_name
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(dynamic_model_data), intent(in) :: wk_sgs
 !
 !
@@ -120,8 +130,10 @@
         call write_sgs_whole_time_head(id_file)
       end if
 !
-      call write_sgs_comps_head(id_file, wk_sgs)
-      call write_sgs_comps_head(id_file, wk_sgs)
+      call write_sgs_comps_head                                         &
+     &    (id_file, SGS_param%icoord_Csim, wk_sgs)
+      call write_sgs_comps_head                                         &
+     &    (id_file, SGS_param%icoord_Csim, wk_sgs)
 !
       end subroutine open_SGS_rms_ratio_file
 !
@@ -320,9 +332,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_sgs_comps_head(file_id, wk_sgs)
+      subroutine write_sgs_comps_head(file_id, icoord_Csim, wk_sgs)
 !
-      use m_control_parameter
       use m_geometry_constants
       use m_phys_labels
 !
@@ -330,6 +341,7 @@
       use write_field_labels
       use sel_comp_labels_by_coord
 !
+      integer(kind = kint), intent(in) :: icoord_Csim
       integer(kind = kint), intent(in) :: file_id
       type(dynamic_model_data), intent(in) :: wk_sgs
 !
@@ -339,46 +351,46 @@
 !
       do i = 1, wk_sgs%num_kinds
         if ( wk_sgs%name(i) .eq. fhd_SGS_h_flux ) then
-          call sel_coord_vector_comp_labels(icoord_SGS_model_coef,      &
+          call sel_coord_vector_comp_labels(icoord_Csim,                &
      &        fhd_SGS_h_flux, lab(1) )
           call write_vector_label(file_id, lab(1))
 !
         else if ( wk_sgs%name(i) .eq. fhd_SGS_m_flux ) then
-          call sel_coord_tensor_comp_labels(icoord_SGS_model_coef,      &
+          call sel_coord_tensor_comp_labels(icoord_Csim,                &
      &        fhd_SGS_m_flux, lab(1) )
           call write_sym_tensor_label(file_id, lab(1))
 !
         else if ( wk_sgs%name(i) .eq. fhd_SGS_maxwell_t ) then
-          call sel_coord_tensor_comp_labels(icoord_SGS_model_coef,      &
+          call sel_coord_tensor_comp_labels(icoord_Csim,                &
      &        fhd_SGS_maxwell_t, lab(1) )
           call write_sym_tensor_label(file_id, lab(1))
 !
         else if ( wk_sgs%name(i) .eq. fhd_SGS_induction ) then
           if(evo_vect_p%iflag_scheme .gt. id_no_evolution) then
             write(label,'(a)') 'SGS_uxB'
-            call sel_coord_vector_comp_labels(icoord_SGS_model_coef,    &
+            call sel_coord_vector_comp_labels(icoord_Csim,              &
      &          label, lab(1) )
             call write_vector_label(file_id, lab(1))
 !
           else
             write(label,'(a)') 'SGS_induction'
-            call sel_coord_tensor_comp_labels(icoord_SGS_model_coef,    &
+            call sel_coord_tensor_comp_labels(icoord_Csim,              &
      &          label, lab(1) )
             call write_sym_tensor_label(file_id, lab(1))
           end if
 !
         else if ( wk_sgs%name(i) .eq. fhd_SGS_buoyancy ) then
-          call sel_coord_tensor_comp_labels(icoord_SGS_model_coef,      &
+          call sel_coord_tensor_comp_labels(icoord_Csim,                &
      &          fhd_SGS_buoyancy, lab(1) )
           call write_sym_tensor_label(file_id, lab(1))
 !
         else if ( wk_sgs%name(i) .eq. fhd_SGS_comp_buo ) then
-          call sel_coord_tensor_comp_labels(icoord_SGS_model_coef,      &
+          call sel_coord_tensor_comp_labels(icoord_Csim,                &
      &          fhd_SGS_comp_buo, lab(1) )
           call write_sym_tensor_label(file_id, lab(1))
 !
         else if ( wk_sgs%name(i) .eq. fhd_SGS_c_flux ) then
-          call sel_coord_vector_comp_labels(icoord_SGS_model_coef,      &
+          call sel_coord_vector_comp_labels(icoord_Csim,                &
      &        fhd_SGS_c_flux, lab(1) )
           call write_vector_label(file_id, lab(1))
 !

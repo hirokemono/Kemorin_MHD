@@ -39,6 +39,7 @@
 !
       use t_ctl_data_sph_MHD_psf
       use m_ctl_data_sph_MHD
+      use m_SGS_control_parameter
       use m_node_phys_data
       use m_spheric_parameter
       use m_sph_spectr_data
@@ -59,7 +60,7 @@
       call read_control_4_sph_MHD_noviz(MHD_ctl_name, MHD_ctl1)
 !
       call input_control_4_SPH_MHD_nosnap(MHD_ctl1, sph1, comms_sph1,   &
-     &    sph_grps1, rj_fld1, pwr1, trns_WK1%dynamic_SPH)
+     &    sph_grps1, rj_fld1, pwr1, SGS_par1, trns_WK1%dynamic_SPH)
       call end_eleps_time(4)
 !
 !    precondition elaps start

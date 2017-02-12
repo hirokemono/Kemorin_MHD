@@ -17,7 +17,6 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_control_parameter
       use m_mean_square_values
 !
       use t_geometry_data_MHD
@@ -28,6 +27,8 @@
       use t_finite_element_mat
 !
       implicit none
+!
+      integer(kind = kint), parameter, private :: nint_single = 1
 !
       real (kind=kreal) :: div_a_sig, div_a_sig0
       real (kind=kreal) :: div_b_sig, div_b_sig0
@@ -159,7 +160,6 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       real(kind = kreal), intent(inout) :: res_norm(1)
 !
-      integer(kind = kint), parameter :: num_int = 1
       integer(kind = kint) :: k2
 !
 !
@@ -176,7 +176,7 @@
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_field, fem_wk%vector_1)
         call fem_skv_div_normal_pg(ele%numele, ele%nnod_4_ele,          &
-     &      np_smp, iele_fsmp_stack, jac_3d%ntot_int, num_int,          &
+     &      np_smp, iele_fsmp_stack, jac_3d%ntot_int, nint_single,      &
      &      jac_3d%xjac, jac_3d%dnx, k2, fem_wk%vector_1,               &
      &      fem_wk%scalar_1)
       end do

@@ -4,7 +4,8 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine set_bc_id_data(IO_bc, mesh, group, MHD_mesh, nodal_bc)
+!!      subroutine set_bc_id_data                                       &
+!!     &         (IO_bc, mesh, group, MHD_mesh, fl_prop, nodal_bc)
 !!        type(IO_boundary),          intent(in) :: IO_bc
 !!        type(mesh_geometry),       intent(in) :: mesh
 !!        type(mesh_groups),         intent(in) :: group
@@ -39,21 +40,24 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_bc_id_data(IO_bc, mesh, group, MHD_mesh, nodal_bc)
+      subroutine set_bc_id_data                                         &
+     &         (IO_bc, mesh, group, MHD_mesh, fl_prop, nodal_bc)
 !
       use m_control_parameter
       use m_bc_data_list
       use m_boundary_condition_IDs
       use t_mesh_data
       use t_geometry_data_MHD
+      use t_physical_property
       use t_nodal_bc_data
       use t_boundary_field_IO
 !
 !
-      type(IO_boundary),          intent(in) :: IO_bc
-      type(mesh_geometry),       intent(in) :: mesh
-      type(mesh_groups),         intent(in) :: group
-      type(mesh_data_MHD),       intent(in) :: MHD_mesh
+      type(IO_boundary),    intent(in) :: IO_bc
+      type(mesh_geometry),  intent(in) :: mesh
+      type(mesh_groups),    intent(in) :: group
+      type(mesh_data_MHD),  intent(in) :: MHD_mesh
+      type(fluid_property), intent(in) :: fl_prop
       type(nodal_boundarty_conditions), intent(inout) :: nodal_bc
 !
 !
@@ -63,7 +67,7 @@
      &      MHD_mesh%fluid, group%nod_grp, nodal_bc%Vnod_bcs)
         if ( iflag_debug .eq.1) write(*,*)  'set boundary id 4 P'
         call set_bc_press_id(IO_bc, mesh%node, mesh%ele,                &
-     &      MHD_mesh%fluid, group%nod_grp, nodal_bc%Vnod_bcs)
+     &      MHD_mesh%fluid, group%nod_grp, fl_prop, nodal_bc%Vnod_bcs)
       end if
 !
       if (evo_temp%iflag_scheme .gt. id_no_evolution) then

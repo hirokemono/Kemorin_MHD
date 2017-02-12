@@ -7,8 +7,9 @@
 !>@brief Perform spherical harmonics transform for MHD dynamo model
 !!
 !!@verbatim
-!!      subroutine init_sph_transform_MHD(ipol, idpdr, itor, iphys,     &
-!!     &          sph, comms_sph, omega_sph, trans_p, WK, rj_fld)
+!!      subroutine init_sph_transform_MHD(SGS_param, ipol, idpdr, itor, &
+!!     &          iphys, sph, comms_sph, omega_sph, trans_p, WK, rj_fld)
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(phys_address), intent(in) :: ipol, idpdr, itor
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
@@ -26,6 +27,7 @@
 !
       use calypso_mpi
 !
+      use t_SGS_control_parameter
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
       use t_phys_address
@@ -59,10 +61,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine init_sph_transform_MHD(ipol, idpdr, itor, iphys,       &
-     &          sph, comms_sph, omega_sph, trans_p, WK, rj_fld)
+      subroutine init_sph_transform_MHD(SGS_param, ipol, idpdr, itor,   &
+     &          iphys, sph, comms_sph, omega_sph, trans_p, WK, rj_fld)
 !
       use m_control_parameter
+      use m_physical_property
       use set_address_sph_trans_MHD
       use set_address_sph_trans_SGS
       use set_address_sph_trans_snap
@@ -70,6 +73,7 @@
       use pole_sph_transform
       use MHD_FFT_selector
 !
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(phys_address), intent(in) :: ipol, idpdr, itor
       type(phys_address), intent(in) :: iphys
 !
@@ -123,7 +127,7 @@
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
      &    trans_p, WK, rj_fld)
 !
-      if(iflag_SGS_model .gt. 0) then
+      if(SGS_param%iflag_SGS .gt. 0) then
         call init_MHD_FFT_select(my_rank, sph%sph_rtp, ncomp_max_trans, &
      &      WK%trns_SGS%ncomp_rtp_2_rj,                                 &
      &      WK%trns_SGS%ncomp_rj_2_rtp, WK%SGS_mul_FFTW)
@@ -241,6 +245,7 @@
      &          ncomp_max_trans, nvector_max_trans, nscalar_max_trans,  &
      &          rj_fld, trns_MHD, MHD_mul_FFTW)
 !
+      use m_physical_property
       use sph_transforms_4_MHD
 !
       type(sph_grids), intent(in) :: sph
@@ -279,9 +284,9 @@
      &      sph%sph_rtm, sph%sph_rlm, trans_p%leg, trans_p%idx_trns)
 !
         starttime = MPI_WTIME()
-        call sph_back_trans_4_MHD(sph, comms_sph, omega_sph,            &
+        call sph_back_trans_4_MHD(sph, comms_sph, fl_prop1, omega_sph,  &
      &      trans_p, ipol, rj_fld, trns_MHD, MHD_mul_FFTW)
-        call sph_forward_trans_4_MHD(sph, comms_sph, trans_p,           &
+        call sph_forward_trans_4_MHD(sph, comms_sph, fl_prop1, trans_p, &
      &      ipol, trns_MHD, MHD_mul_FFTW, rj_fld)
         endtime(id_legendre_transfer) = MPI_WTIME() - starttime
 !
