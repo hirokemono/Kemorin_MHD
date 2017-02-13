@@ -12,10 +12,10 @@
 !!     &         sph_gen, rj_fld, mesh_file, sph_file_param,            &
 !!     &         MHD_org_files, sph_fst_IO, pwr,                        &
 !!     &         SGS_param, cmt_param, filter_param, sph_filters)
-!!      subroutine set_control_4_SPH_MHD(SGS_param, plt, org_plt,       &
+!!      subroutine set_control_4_SPH_MHD(plt, org_plt,                  &
 !!     &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl, &
 !!     &          sph_gen, rj_fld, mesh_file, sph_file_param,           &
-!!     &          sph_fst_IO, pwr)
+!!     &          MHD_org_files, sph_fst_IO, pwr, SGS_param)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
 !!        type(mhd_model_control), intent(inout) :: model_ctl
@@ -186,7 +186,7 @@
 !
       call s_set_control_4_model                                        &
      &    (model_ctl%reft_ctl, model_ctl%refc_ctl, ctl_ctl%mevo_ctl,    &
-     &     model_ctl%evo_ctl, nmtr_ctl, FEM_prm1)
+     &     model_ctl%evo_ctl, nmtr_ctl)
 !
 !   set spherical shell parameters
 !

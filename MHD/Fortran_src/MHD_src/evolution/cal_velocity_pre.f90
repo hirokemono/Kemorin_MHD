@@ -414,7 +414,7 @@
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else
         call cal_velocity_co_exp(iphys%i_velo, iphys%i_p_phi,           &
-     &      nod_comm, node, ele, fluid, jac_3d_q, rhs_tbl,              &
+     &      FEM_prm, nod_comm, node, ele, fluid, jac_3d_q, rhs_tbl,     &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !

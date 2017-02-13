@@ -5,12 +5,13 @@
 !
 !!      subroutine s_cal_diff_coef_sgs_induct(iak_diff_uxb,             &
 !!     &         icomp_sgs_uxb, icomp_diff_uxb, ie_dfvx, ie_dfbx,       &
-!!     &         SGS_par, nod_comm, node, ele, surf, fluid, conduct,    &
-!!     &         cd_prop, layer_tbl, sf_grp, Bsf_bcs,                   &
+!!     &         FEM_prm, SGS_par, nod_comm, node, ele, surf,           &
+!!     &         fluid, conduct, cd_prop, layer_tbl, sf_grp, Bsf_bcs,   &
 !!     &         iphys, iphys_ele, ele_fld, jac_3d_q, jac_3d_l,         &
 !!     &         jac_sf_grp_q, rhs_tbl, FEM_elens, sgs_coefs, filtering,&
 !!     &         wk_filter, wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk,&
 !!     &         surf_wk, f_l, f_nl, nod_fld, diff_coefs)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -44,6 +45,7 @@
 !
       use m_precision
 !
+      use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_comm_table
       use t_geometry_data_MHD
@@ -78,15 +80,14 @@
 !
       subroutine s_cal_diff_coef_sgs_induct(iak_diff_uxb,               &
      &         icomp_sgs_uxb, icomp_diff_uxb, ie_dfvx, ie_dfbx,         &
-     &         SGS_par, nod_comm, node, ele, surf, fluid, conduct,      &
-     &         cd_prop, layer_tbl, sf_grp, Bsf_bcs,                     &
+     &         FEM_prm, SGS_par, nod_comm, node, ele, surf,             &
+     &         fluid, conduct, cd_prop, layer_tbl, sf_grp, Bsf_bcs,     &
      &         iphys, iphys_ele, ele_fld, jac_3d_q, jac_3d_l,           &
      &         jac_sf_grp_q, rhs_tbl, FEM_elens, sgs_coefs, filtering,  &
      &         wk_filter, wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk,  &
      &         surf_wk, f_l, f_nl, nod_fld, diff_coefs)
 !
       use m_machine_parameter
-      use m_control_parameter
       use m_phys_constants
 !
       use reset_dynamic_model_coefs
@@ -103,6 +104,7 @@
       integer(kind = kint), intent(in) :: icomp_sgs_uxb, icomp_diff_uxb
       integer(kind = kint), intent(in) :: ie_dfvx, ie_dfbx
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -147,7 +149,7 @@
       call cal_sgs_induct_t_grad_w_coef                                 &
      &   (ifilter_4delta, icomp_sgs_uxb, iphys%i_sgs_grad_f,            &
      &    iphys%i_filter_velo, iphys%i_filter_magne, ie_dfvx, ie_dfbx,  &
-     &    FEM_prm1, SGS_par%model_p, nod_comm, node, ele, conduct,      &
+     &    FEM_prm, SGS_par%model_p, nod_comm, node, ele, conduct,       &
      &    cd_prop, iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,    &
      &    sgs_coefs, fem_wk, mhd_fem_wk, f_l, nod_fld)
 !
@@ -156,7 +158,7 @@
       if (iflag_debug.gt.0) write(*,*) 'cal_div_sgs_filter_idct_simi'
       call cal_div_sgs_idct_simi(iphys%i_sgs_simi, iphys%i_sgs_grad_f,  &
      &    iphys%i_filter_velo, iphys%i_filter_magne,                    &
-     &    FEM_prm1, nod_comm, node, ele, conduct, iphys_ele, ele_fld,   &
+     &    FEM_prm, nod_comm, node, ele, conduct, iphys_ele, ele_fld,    &
      &    jac_3d_q, rhs_tbl, fem_wk, mhd_fem_wk, f_l, f_nl, nod_fld)
 !
 !   take divergence of heat flux (to iphys%i_sgs_grad)
@@ -164,7 +166,7 @@
       if (iflag_debug.gt.0)  write(*,*) 'cal_div_sgs_induct_simi'
       call cal_div_sgs_idct_simi(iphys%i_sgs_grad,                      &
      &    iphys%i_SGS_induct_t, iphys%i_velo, iphys%i_magne,            &
-     &    FEM_prm1, nod_comm, node, ele, conduct, iphys_ele, ele_fld,   &
+     &    FEM_prm, nod_comm, node, ele, conduct, iphys_ele, ele_fld,    &
      &    jac_3d_q, rhs_tbl, fem_wk, mhd_fem_wk, f_l, f_nl, nod_fld)
 !
 !    filtering (to iphys%i_sgs_grad)
@@ -183,7 +185,7 @@
 !
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad_f)
 !
-      call cal_commute_error_4_idct(FEM_prm1%npoint_t_evo_int,          &
+      call cal_commute_error_4_idct(FEM_prm%npoint_t_evo_int,           &
      &    conduct%istack_ele_fld_smp, mhd_fem_wk%mlump_cd,              &
      &    node, ele, surf, sf_grp, Bsf_bcs, jac_3d_q, jac_sf_grp_q,     &
      &    rhs_tbl, FEM_elens, ifilter_4delta,                           &
@@ -198,7 +200,7 @@
 !
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad)
 !
-      call cal_commute_error_4_idct(FEM_prm1%npoint_t_evo_int,          &
+      call cal_commute_error_4_idct(FEM_prm%npoint_t_evo_int,           &
      &    conduct%istack_ele_fld_smp, mhd_fem_wk%mlump_cd,              &
      &    node, ele, surf, sf_grp, Bsf_bcs, jac_3d_q, jac_sf_grp_q,     &
      &    rhs_tbl, FEM_elens, ifilter_2delta,                           &
@@ -224,7 +226,7 @@
       call cal_diff_coef_fluid                                          &
      &   (SGS_par%model_p, SGS_par%commute_p, layer_tbl,  node, ele,    &
      &   fluid, iphys, nod_fld, jac_3d_q, jac_3d_l, n_vector,           &
-     &    iak_diff_uxb, icomp_diff_uxb, FEM_prm1%npoint_t_evo_int,      &
+     &    iak_diff_uxb, icomp_diff_uxb, FEM_prm%npoint_t_evo_int,       &
      &    wk_cor, wk_lsq, wk_diff, diff_coefs)
 !
       end subroutine s_cal_diff_coef_sgs_induct

@@ -336,7 +336,8 @@
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
         call clear_field_data(nod_fld, n_scalar, iphys%i_m_phi)
       else
-        call cal_vector_p_co_exp(iphys%i_vecp, nod_comm, node, ele,     &
+        call cal_vector_p_co_exp                                        &
+     &     (iphys%i_vecp, FEM_prm, nod_comm, node, ele,                 &
      &      jac_3d_q, rhs_tbl, m_lump, mhd_fem_wk, fem_wk,              &
      &      f_l, f_nl, nod_fld)
       end if

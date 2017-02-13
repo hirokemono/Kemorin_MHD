@@ -63,7 +63,8 @@
 !
 !   matrix assembling
 !
-      call init_analyzer_fl(SGS_par1, IO_bc1, mesh1, group1, ele_mesh1, &
+      call init_analyzer_fl                                             &
+     &   (FEM_prm1, SGS_par1, IO_bc1, mesh1, group1, ele_mesh1,         &
      &    MHD_mesh1, layer_tbl1, iphys, nod_fld1, label_sim)
 !
       call nod_fields_send_recv(mesh1%nod_comm, nod_fld1)
@@ -72,7 +73,7 @@
 !
       call reset_update_flag(nod_fld1, sgs_coefs, diff_coefs)
       if (iflag_debug.eq.1) write(*,*) 'update_fields'
-      call update_fields(FEM_prm1, , SGS_par1, mesh1, group1,           &
+      call update_fields(FEM_prm1, SGS_par1, mesh1, group1,             &
      &    ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,    &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,  &
      &    ifld_diff, icomp_diff, iphys_elediff,                         &

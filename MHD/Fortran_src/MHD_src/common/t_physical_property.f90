@@ -6,6 +6,12 @@
 !!@date Modified in Jan., 2007
 !
 !>@brief  Coeffiecients of each term
+!!
+!!@verbatim
+!!      subroutine alloc_force_list(num, fl_prop)
+!!      subroutine dealloc_force_list(fl_prop)
+!!        type(fluid_property), intent(inout) :: fl_prop
+!!@endverbatim
 !
       module t_physical_property
 !
@@ -79,6 +85,12 @@
         real (kind=kreal) :: grav(3) = (/zero, zero, -one/)
 !>       rotation vector for Coriolis force
         real (kind=kreal) :: sys_rot(3) = (/zero, zero, one/)
+!
+!
+!>        Number of forces
+        integer(kind=kint) :: num_force
+!>        Name of forces
+        character(len=kchara), allocatable :: name_force(:)
       end type fluid_property
 !
 !>      Structure for manetic property
@@ -113,5 +125,33 @@
 !>       coefficient for heat source term
         real  (kind=kreal) :: coef_source = zero
       end type scalar_property
+!
+!  ---------------------------------------------------------------------
+!
+      contains
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine alloc_force_list(fl_prop)
+!
+      type(fluid_property), intent(inout) :: fl_prop
+!
+!
+      allocate(fl_prop%name_force(fl_prop%num_force))
+!
+      end subroutine alloc_force_list
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_force_list(fl_prop)
+!
+      type(fluid_property), intent(inout) :: fl_prop
+!
+!
+      deallocate(fl_prop%name_force)
+!
+      end subroutine dealloc_force_list
+!
+!  ---------------------------------------------------------------------
 !
       end module t_physical_property

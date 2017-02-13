@@ -23,6 +23,7 @@
 !
       subroutine init_analyzer
 !
+      use m_control_parameter
       use m_SGS_control_parameter
       use m_mesh_data
       use m_node_phys_data
@@ -34,8 +35,8 @@
 !
         write(*,*) 'Simulation start: PE. ', my_rank
 !
-      call input_control_4_MHD                                          &
-     &   (SGS_par1, mesh1, group1, ele_mesh1, nod_fld1, IO_bc1,         &
+      call input_control_4_MHD(FEM_prm1, SGS_par1,                      &
+     &    mesh1, group1, ele_mesh1, nod_fld1, IO_bc1,                   &
      &    filtering1, wide_filtering, wk_filter1, MHD1_matrices)
 !
       call FEM_check_MHD_mat

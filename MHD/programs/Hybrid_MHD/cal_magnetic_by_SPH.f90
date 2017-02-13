@@ -1,11 +1,12 @@
 !!
 !!      subroutine induction_SPH_initialize(SGS_param,                  &
 !!     &         ipol, idpdr, itor, comms_sph, sph, trans_p, rj_fld)
-!!      subroutine nonlinear_incuction_wSGS_SPH(SGS_param,              &
+!!      subroutine nonlinear_incuction_wSGS_SPH(FEM_prm, SGS_param,     &
 !!     &          sph, comms_sph, trans_p, conduct, ipol, rj_fld)
 !!      subroutine cal_magneitc_field_by_SPH(SGS_param,                 &
 !!     &          sph, comms_sph, trans_p, ipol, itor, rj_fld)
 !
+      use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
@@ -113,7 +114,7 @@
 !
 !*   ------------------------------------------------------------------
 !
-      subroutine nonlinear_incuction_wSGS_SPH(SGS_param,                &
+      subroutine nonlinear_incuction_wSGS_SPH(FEM_prm, SGS_param,       &
      &          sph, comms_sph, trans_p, conduct, ipol, rj_fld)
 !
       use m_solver_SR
@@ -124,6 +125,7 @@
       use spherical_SRs_N
       use copy_nodal_fld_4_sph_trans
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
@@ -135,11 +137,11 @@
 !
 !
       call cal_sgs_uxb_2_monitor
-     &   (icomp_sgs%i_induction, iphys_elediff%i_velo, SGS_param,       &
-     &    mesh1%nod_comm, mesh1%node, mesh1%ele, conduct, cd_prop1,     &
-     &    iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen,   &
-     &    filtering1, wk_filter1, mhd_fem1_wk, fem1_wk,                 &
-     &    f1_l, f1_nl, nod_fld1)
+     &   (icomp_sgs%i_induction, iphys_elediff%i_velo,                  &
+     &    FEM_prm, SGS_param, mesh1%nod_comm, mesh1%node, mesh1%ele,    &
+     &    conduct, cd_prop1, iphys, iphys_ele, fld_ele1, jac1_3d_q,     &
+     &    rhs_tbl1, FEM1_elen, filtering1, wk_filter1, mhd_fem1_wk,     &
+     &    fem1_wk, f1_l, f1_nl, nod_fld1)
 !
       call interpolate_vector_type                                      &
      &   (iphys%i_vp_induct,  iphys_sph%i_vp_induct,                    &

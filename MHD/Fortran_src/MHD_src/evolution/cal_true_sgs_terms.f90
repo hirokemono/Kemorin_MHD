@@ -142,7 +142,7 @@
            call cal_div_sgs_s_flux_true_pre(FEM_prm%iflag_temp_supg,    &
      &         FEM_prm%npoint_t_evo_int, iphys%i_SGS_div_hf_true,       &
      &         iphys%i_h_flux, iphys%i_h_flux_div,                      &
-     &         iphys%i_filter_temp, iphys%i_filter_velo,                &
+     &         iphys%i_filter_temp, iphys%i_filter_velo, FEM_prm,       &
      &         nod_comm, node, ele, fluid, ht_prop, nod_bcs%Tnod_bcs,   &
      &         iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, &
      &         f_l, f_nl, nod_fld)
@@ -152,7 +152,7 @@
            call cal_div_sgs_s_flux_true_pre(FEM_prm%iflag_comp_supg,    &
      &         FEM_prm%npoint_t_evo_int, iphys%i_SGS_div_cf_true,       &
      &         iphys%i_c_flux, iphys%i_c_flux_div,                      &
-     &         iphys%i_filter_comp, iphys%i_filter_velo,                &
+     &         iphys%i_filter_comp, iphys%i_filter_velo, FEM_prm,       &
      &         nod_comm, node, ele, fluid, cp_prop, nod_bcs%Cnod_bcs,   &
      &         iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, &
      &         f_l, f_nl, nod_fld)
@@ -257,7 +257,7 @@
 !
       subroutine cal_div_sgs_s_flux_true_pre(iflag_supg, num_int,       &
      &        i_div_flux_true, i_flux, i_div_flux, i_field_f, i_velo_f, &
-     &        nod_comm, node, ele, fluid, property, Snod_bcs,           &
+     &        FEM_prm, nod_comm, node, ele, fluid, property, Snod_bcs,  &
      &        iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,  &
      &        f_l, f_nl, nod_fld)
 !
@@ -271,6 +271,7 @@
       integer(kind = kint), intent(in) :: i_flux, i_div_flux
       integer(kind = kint), intent(in) :: i_field_f, i_velo_f
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -294,7 +295,7 @@
 !$omp end parallel
       call cal_div_of_scalar_flux                                       &
      &   (i_div_flux, i_flux, iflag_supg, num_int,                      &
-     &    nod_comm, node, ele, fluid, property, Snod_bcs,               &
+     &    FEM_prm, nod_comm, node, ele, fluid, property, Snod_bcs,      &
      &    iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,      &
      &    f_l, f_nl, nod_fld)
       call copy_scalar_component(nod_fld,                               &

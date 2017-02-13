@@ -297,8 +297,9 @@
           call s_cal_diff_coef_sgs_mf                                   &
      &     (ifld_diff%i_mom_flux, icomp_sgs%i_mom_flux,                 &
      &      icomp_diff%i_mom_flux, iphys_elediff%i_filter_velo,         &
-     &      SGS_par, mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf, &
-     &      group%surf_grp, nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs,         &
+     &      FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,       &
+     &      ele_mesh%surf, group%surf_grp,                              &
+     &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs,                         &
      &      iphys, iphys_ele, ele_fld, MHD_mesh%fluid, layer_tbl,       &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,                  &
      &      FEM_elens, filtering, sgs_coefs, wk_filter,                 &
@@ -382,7 +383,7 @@
           call s_cal_diff_coef_sgs_induct(ifld_diff%i_induction,        &
      &       icomp_sgs%i_induction, icomp_diff%i_induction,             &
      &       iphys_elediff%i_filter_velo, iphys_elediff%i_filter_magne, &
-     &       SGS_par, mesh%nod_comm, mesh%node, mesh%ele,               &
+     &       FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,      &
      &       ele_mesh%surf, MHD_mesh%fluid, MHD_mesh%conduct, cd_prop1, &
      &       layer_tbl, group%surf_grp, surf_bcs%Bsf_bcs, iphys,        &
      &       iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,      &

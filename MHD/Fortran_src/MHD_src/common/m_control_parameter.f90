@@ -9,14 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine allocate_force_list
-!!      subroutine allocate_fluid_ele_grp_name
-!!      subroutine allocate_conduct_ele_grp_name
-!!      subroutine allocate_icore_ele_grp_name
-!!
 !!      subroutine deallocate_force_list
-!!      subroutine deallocate_fluid_ele_grp_name
-!!      subroutine deallocate_conduct_ele_grp_name
-!!      subroutine deallocate_icore_ele_grp_name
 !!@endverbatim
 !
       module   m_control_parameter
@@ -52,12 +45,6 @@
       type(time_evolution_params), save :: evo_comp
 !
 !
-!>      Number of forces
-      integer (kind=kint) :: num_force
-!>      Name of forces
-      character (len=kchara), allocatable :: name_force(:)
-!
-!
 !>      ID not to read external boundary condition file
       integer (kind=kint), parameter :: id_no_boundary_file =   0
 !>      ID to read external boundary condition file
@@ -77,27 +64,5 @@
 !  Parameters for FEM dynamo
 !
       type(FEM_MHD_paremeters), save :: FEM_prm1
-!
-!  ---------------------------------------------------------------------
-!
-      contains
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_force_list
-!
-      allocate(name_force(num_force))
-!
-      end subroutine allocate_force_list
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine deallocate_force_list
-!
-      deallocate(name_force)
-!
-      end subroutine deallocate_force_list
-!
-!  ---------------------------------------------------------------------
 !
       end module m_control_parameter

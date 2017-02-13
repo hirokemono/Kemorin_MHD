@@ -94,7 +94,7 @@
         if(my_rank .lt. MG_mpi(i_level)%nprocs ) then
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            'set_layers_type_4_MHD', i_level
-          call set_layers_type_4_MHD(MG_mesh(i_level)%mesh,             &
+          call set_layers_type_4_MHD(FEM_prm, MG_mesh(i_level)%mesh,    &
      &      MG_mesh(i_level)%group,  MG_MHD_mesh(i_level) )
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            'const_mesh_infos', i_level

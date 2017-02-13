@@ -338,7 +338,8 @@
      &      rhs_tbl, FEM_elens, diff_coefs, m_lump, Bmatrix, MG_vector, &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else
-        call cal_magnetic_co_exp(iphys%i_magne, nod_comm, node, ele,    &
+        call cal_magnetic_co_exp                                        &
+     &     (iphys%i_magne, FEM_prm, nod_comm, node, ele,                &
      &      jac_3d_q, rhs_tbl, m_lump, mhd_fem_wk, fem_wk,              &
      &      f_l, f_nl, nod_fld)
       end if

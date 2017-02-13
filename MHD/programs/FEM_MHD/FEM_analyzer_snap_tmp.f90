@@ -49,8 +49,8 @@
 !   matrix assembling
 !
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
-      call init_analyzer_snap                                           &
-     &   (SGS_par1, IO_bc1, mesh1, group1, ele_mesh1, MHD_mesh1,        &
+      call init_analyzer_snap(FEM_prm1, SGS_par1, IO_bc1,               &
+     &    mesh1, group1, ele_mesh1, MHD_mesh1,                          &
      &    layer_tbl1, iphys, nod_fld1, SNAP_time_IO, label_sim)
 !
       call output_grd_file_w_org_connect(mesh1, MHD_mesh1, nod_fld1)
@@ -313,7 +313,7 @@
      &        'lead ', trim(fhd_SGS_vp_induct)
         call cal_sgs_uxb_2_monitor                                      &
      &     (icomp_sgs%i_induction, iphys_elediff%i_velo,                &
-     &      SGS_par1%model_p, SGS_par1%filter_p,                        &
+     &      FEM_prm1, SGS_par1%model_p, SGS_par1%filter_p,              &
      &      mesh1%nod_comm, mesh1%node, mesh1%ele,                      &
      &      MHD_mesh1%conduct, cd_prop1, iphys, iphys_ele, fld_ele1,    &
      &      jac1_3d_q, rhs_tbl1, FEM1_elen, filtering1, sgs_coefs,      &
@@ -324,8 +324,8 @@
       if (iphys%i_SGS_induction .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_induction)
-        call int_vol_sgs_induction                                      &
-     &     (mesh1%nod_comm, mesh1%node, mesh1%ele, MHD_mesh1%conduct,   &
+        call int_vol_sgs_induction(FEM_prm1,                            &
+     &      mesh1%nod_comm, mesh1%node, mesh1%ele, MHD_mesh1%conduct,   &
      &      iphys, jac1_3d_q, rhs_tbl1, mhd_fem1_wk, fem1_wk,           &
      &      f1_nl, nod_fld1)
       end if

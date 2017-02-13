@@ -199,9 +199,9 @@
         call cal_terms_4_advect                                         &
      &     (iphys%i_h_advect, iphys%i_temp,                             &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,          &
-     &      nod_comm, node, ele, fluid, ht_prop, nod_bcs%Tnod_bcs,      &
-     &      iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,    &
-     &      f_l, f_nl, nod_fld)
+     &      FEM_prm, nod_comm, node, ele, fluid, ht_prop,               &
+     &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, jac_3d, rhs_tbl,      &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       if(iphys%i_ph_advect .gt. izero) then
@@ -210,9 +210,9 @@
         call cal_terms_4_advect                                         &
      &     (iphys%i_ph_advect, iphys%i_par_temp,                        &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,          &
-     &      nod_comm, node, ele, fluid, ht_prop, nod_bcs%Tnod_bcs,      &
-     &      iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,    &
-     &      f_l, f_nl, nod_fld)
+     &      FEM_prm, nod_comm, node, ele, fluid, ht_prop,               &
+     &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, jac_3d, rhs_tbl,      &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       if(iphys%i_h_flux_div .gt. izero) then
@@ -221,9 +221,9 @@
         call cal_div_of_scalar_flux                                     &
      &     (iphys%i_h_flux_div, iphys%i_h_flux,                         &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,          &
-     &      nod_comm, node, ele, fluid, ht_prop, nod_bcs%Tnod_bcs,      &
-     &      iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,    &
-     &      f_l, f_nl, nod_fld)
+     &      FEM_prm, nod_comm, node, ele, fluid, ht_prop,               &
+     &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, jac_3d, rhs_tbl,      &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       if(iphys%i_ph_flux_div .gt. izero) then
@@ -232,9 +232,9 @@
         call cal_div_of_scalar_flux                                     &
      &     (iphys%i_ph_flux_div, iphys%i_ph_flux,                       &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,          &
-     &      nod_comm, node, ele, fluid, ht_prop, nod_bcs%Tnod_bcs,      &
-     &      iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,    &
-     &      f_l, f_nl, nod_fld)
+     &      FEM_prm, nod_comm, node, ele, fluid, ht_prop,               &
+     &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, jac_3d, rhs_tbl,      &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
 !
@@ -244,9 +244,9 @@
         call cal_terms_4_advect                                         &
      &     (iphys%i_c_advect, iphys%i_light,                            &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int,          &
-     &      nod_comm, node, ele, fluid, cp_prop, nod_bcs%Tnod_bcs,      &
-     &      iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,    &
-     &      f_l, f_nl, nod_fld)
+     &      FEM_prm, nod_comm, node, ele, fluid, cp_prop,               &
+     &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, jac_3d, rhs_tbl,      &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       if(iphys%i_pc_advect .gt. izero) then
@@ -255,9 +255,9 @@
         call cal_terms_4_advect                                         &
      &     (iphys%i_pc_advect, iphys%i_par_light,                       &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int,          &
-     &      nod_comm, node, ele, fluid, cp_prop, nod_bcs%Tnod_bcs,      &
-     &      iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,    &
-     &      f_l, f_nl, nod_fld)
+     &      FEM_prm, nod_comm, node, ele, fluid, cp_prop,               &
+     &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, jac_3d, rhs_tbl,      &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       if(iphys%i_c_flux_div .gt. izero) then
@@ -266,9 +266,9 @@
         call cal_div_of_scalar_flux                                     &
      &     (iphys%i_c_flux_div, iphys%i_c_flux,                         &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int,          &
-     &      nod_comm, node, ele, fluid, cp_prop, nod_bcs%Tnod_bcs,      &
-     &      iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,    &
-     &      f_l, f_nl, nod_fld)
+     &      FEM_prm, nod_comm, node, ele, fluid, cp_prop,               &
+     &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, jac_3d, rhs_tbl,      &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       if(iphys%i_pc_flux_div .gt. izero) then
@@ -277,9 +277,9 @@
         call cal_div_of_scalar_flux                                     &
      &     (iphys%i_pc_flux_div, iphys%i_pc_flux,                       &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int,          &
-     &      nod_comm, node, ele, fluid, cp_prop, nod_bcs%Tnod_bcs,      &
-     &      iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,    &
-     &      f_l, f_nl, nod_fld)
+     &      FEM_prm, nod_comm, node, ele, fluid, cp_prop,               &
+     &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, jac_3d, rhs_tbl,      &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
 !

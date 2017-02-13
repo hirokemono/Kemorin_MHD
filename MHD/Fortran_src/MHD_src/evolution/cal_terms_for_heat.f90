@@ -5,13 +5,13 @@
 !
 !!      subroutine cal_terms_4_advect                                   &
 !!     &         (i_field, i_scalar, iflag_supg, num_int,               &
-!!     &          nod_comm, node, ele, fluid, property, Snod_bcs,       &
-!!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                  &
+!!     &          FEM_prm, nod_comm, node, ele, fluid, property,        &
+!!     &          Snod_bcs, iphys_ele, ele_fld, jac_3d, rhs_tbl,        &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_div_of_scalar_flux                               &
 !!     &         (i_field, i_vector, iflag_supg, num_int,               &
-!!     &          nod_comm, node, ele, fluid, property, Snod_bcs,       &
-!!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                  &
+!!     &          FEM_prm, nod_comm, node, ele, fluid, property,        &
+!!     &          Snod_bcs,  iphys_ele, ele_fld, jac_3d, rhs_tbl,       &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(nodal_bcs_4_scalar_type), intent(in) :: Snod_bcs
 !!
@@ -21,6 +21,7 @@
 !!     &          Snod_bcs, Ssf_bcs, iphys, jac_3d, jac_sf_grp,         &
 !!     &          rhs_tbl, FEM_elens, diff_coefs,                       &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -51,6 +52,8 @@
 !
       use m_phys_constants
 !
+      use t_FEM_control_parameter
+      use t_SGS_control_parameter
       use t_physical_property
       use t_geometry_data_MHD
       use t_geometry_data
@@ -85,8 +88,8 @@
 !
       subroutine cal_terms_4_advect                                     &
      &         (i_field, i_scalar, iflag_supg, num_int,                 &
-     &          nod_comm, node, ele, fluid, property, Snod_bcs,         &
-     &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                    &
+     &          FEM_prm, nod_comm, node, ele, fluid, property,          &
+     &          Snod_bcs, iphys_ele, ele_fld, jac_3d, rhs_tbl,          &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use int_vol_inertia
@@ -94,6 +97,7 @@
       integer (kind=kint), intent(in) :: i_field, i_scalar
       integer (kind=kint), intent(in) :: iflag_supg, num_int
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -128,7 +132,7 @@
       end if
 !
       call cal_t_evo_4_scalar(iflag_supg, fluid%istack_ele_fld_smp,     &
-     &    FEM_prm1, mhd_fem_wk%mlump_fl, nod_comm,                      &
+     &    FEM_prm, mhd_fem_wk%mlump_fl, nod_comm,                       &
      &    node, ele, iphys_ele, ele_fld, jac_3d, rhs_tbl,               &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
@@ -150,8 +154,8 @@
 !
       subroutine cal_div_of_scalar_flux                                 &
      &         (i_field, i_vector, iflag_supg, num_int,                 &
-     &          nod_comm, node, ele, fluid, property, Snod_bcs,         &
-     &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                    &
+     &          FEM_prm, nod_comm, node, ele, fluid, property,          &
+     &          Snod_bcs,  iphys_ele, ele_fld, jac_3d, rhs_tbl,         &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use int_vol_vect_cst_difference
@@ -160,6 +164,7 @@
       integer (kind=kint), intent(in) :: i_vector, i_field
       integer (kind=kint), intent(in) :: iflag_supg, num_int
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -195,7 +200,7 @@
 !
       call cal_t_evo_4_scalar                                           &
      &   (iflag_supg, fluid%istack_ele_fld_smp,                         &
-     &    FEM_prm1, mhd_fem_wk%mlump_fl, nod_comm,                      &
+     &    FEM_prm, mhd_fem_wk%mlump_fl, nod_comm,                       &
      &    node, ele, iphys_ele, ele_fld, jac_3d, rhs_tbl,               &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
@@ -223,7 +228,6 @@
      &          rhs_tbl, FEM_elens, diff_coefs,                         &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
-      use t_SGS_control_parameter
       use int_vol_diffusion_ele
       use int_surf_fixed_gradients
 !

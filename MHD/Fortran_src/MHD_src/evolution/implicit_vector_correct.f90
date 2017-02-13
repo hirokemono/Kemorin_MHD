@@ -6,12 +6,14 @@
 !        modieied by H. Matsui on March, 2006
 !
 !!      subroutine cal_velocity_co_exp(i_velo, i_p_phi,                 &
-!!     &          nod_comm, node, ele, fluid, jac_3d, rhs_tbl,          &
+!!     &          FEM_prm, nod_comm, node, ele, fluid, jac_3d, rhs_tbl, &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-!!      subroutine cal_vector_p_co_exp(i_vecp, nod_comm, node, ele,     &
+!!      subroutine cal_vector_p_co_exp                                  &
+!!     &         (i_vecp, FEM_prm, nod_comm, node, ele,                 &
 !!     &          jac_3d, rhs_tbl, m_lump, mhd_fem_wk, fem_wk,          &
 !!     &          f_l, f_nl, nod_fld)
-!!      subroutine cal_magnetic_co_exp(i_magne, nod_comm, node, ele,    &
+!!      subroutine cal_magnetic_co_exp                                  &
+!!     &         (i_magne, FEM_prm, nod_comm, node, ele,                &
 !!     &          jac_3d, rhs_tbl, m_lump, mhd_fem_wk, fem_wk,          &
 !!     &          f_l, f_nl, nod_fld)
 !!
@@ -97,7 +99,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_velocity_co_exp(i_velo, i_p_phi,                   &
-     &          nod_comm, node, ele, fluid, jac_3d, rhs_tbl,            &
+     &          FEM_prm, nod_comm, node, ele, fluid, jac_3d, rhs_tbl,   &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use cal_multi_pass
@@ -105,6 +107,7 @@
 !
       integer(kind=kint), intent(in) :: i_velo, i_p_phi
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -120,7 +123,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_multi_pass_4_vector_fl'
       call cal_multi_pass_4_vector_ff                                   &
-     &   (fluid%istack_ele_fld_smp, FEM_prm1, mhd_fem_wk%mlump_fl,      &
+     &   (fluid%istack_ele_fld_smp, FEM_prm, mhd_fem_wk%mlump_fl,       &
      &    nod_comm, node, ele, jac_3d, rhs_tbl,                         &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
@@ -134,7 +137,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_vector_p_co_exp(i_vecp, nod_comm, node, ele,       &
+      subroutine cal_vector_p_co_exp                                    &
+     &         (i_vecp, FEM_prm, nod_comm, node, ele,                   &
      &          jac_3d, rhs_tbl, m_lump, mhd_fem_wk, fem_wk,            &
      &          f_l, f_nl, nod_fld)
 !
@@ -143,6 +147,7 @@
 !
       integer(kind=kint), intent(in) :: i_vecp
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -158,7 +163,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_multi_pass_4_vector_ff'
       call cal_multi_pass_4_vector_ff                                   &
-     &   (ele%istack_ele_smp, FEM_prm1, m_lump,                         &
+     &   (ele%istack_ele_smp, FEM_prm, m_lump,                          &
      &    nod_comm, node, ele, jac_3d, rhs_tbl,                         &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
@@ -171,7 +176,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_magnetic_co_exp(i_magne, nod_comm, node, ele,      &
+      subroutine cal_magnetic_co_exp                                    &
+     &         (i_magne, FEM_prm, nod_comm, node, ele,                  &
      &          jac_3d, rhs_tbl, m_lump, mhd_fem_wk, fem_wk,            &
      &          f_l, f_nl, nod_fld)
 !
@@ -180,6 +186,7 @@
 !
       integer(kind=kint), intent(in) :: i_magne
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -195,7 +202,7 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_multi_pass_4_vector_ff'
       call cal_multi_pass_4_vector_ff                                   &
-     &   (ele%istack_ele_smp, FEM_prm1, m_lump,                         &
+     &   (ele%istack_ele_smp, FEM_prm, m_lump,                          &
      &    nod_comm, node, ele, jac_3d, rhs_tbl,                         &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !

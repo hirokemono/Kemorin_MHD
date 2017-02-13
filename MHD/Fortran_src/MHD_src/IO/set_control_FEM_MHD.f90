@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine set_control_4_FEM_MHD                                &
 !!     &         (plt, org_plt, model_ctl, ctl_ctl, nmtr_ctl,           &
-!!     &          mesh_file, udt_org_param, SGS_par, nod_fld)
+!!     &          mesh_file, udt_org_param, FEM_prm, SGS_par, nod_fld)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
 !!        type(mhd_model_control), intent(inout) :: model_ctl
@@ -17,6 +17,7 @@
 !!        type(node_monitor_control), intent(inout) :: nmtr_ctl
 !!        type(field_IO_params), intent(inout) :: mesh_file
 !!        type(field_IO_params), intent(inout) :: udt_org_param
+!!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
 !!        type(phys_data), intent(inout) :: nod_fld
 !!@endverbatim
@@ -34,6 +35,7 @@
       implicit  none
 !
       private :: set_control_FEM_MHD_bcs
+      private :: set_control_rotation_form
 !
 ! -----------------------------------------------------------------------
 !
@@ -43,12 +45,13 @@
 !
       subroutine set_control_4_FEM_MHD                                  &
      &         (plt, org_plt, model_ctl, ctl_ctl, nmtr_ctl,             &
-     &          mesh_file, udt_org_param, SGS_par, nod_fld)
+     &          mesh_file, udt_org_param, FEM_prm, SGS_par, nod_fld)
 !
       use calypso_mpi
       use m_ucd_data
       use m_default_file_prefix
       use m_physical_property
+      use t_FEM_control_parameter
       use t_SGS_control_parameter
 !
       use set_control_platform_data
@@ -74,6 +77,7 @@
       type(node_monitor_control), intent(inout) :: nmtr_ctl
       type(field_IO_params), intent(inout) :: mesh_file
       type(field_IO_params), intent(inout) :: udt_org_param
+      type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -93,17 +97,18 @@
 !
       call s_set_control_4_model                                        &
      &   (model_ctl%reft_ctl, model_ctl%refc_ctl, ctl_ctl%mevo_ctl,     &
-     &    model_ctl%evo_ctl, nmtr_ctl, FEM_prm1)
+     &    model_ctl%evo_ctl, nmtr_ctl)
 !
 !   set element groups for evolution
 !
-      call s_set_control_evo_layers(model_ctl%earea_ctl, FEM_prm1)
+      call s_set_control_evo_layers(model_ctl%earea_ctl, FEM_prm)
 !
 !   set forces
 !
       call s_set_control_4_force(model_ctl%frc_ctl, model_ctl%g_ctl,    &
      &    model_ctl%cor_ctl, model_ctl%mcv_ctl, fl_prop1, cd_prop1)
-      call set_control_rotation_form(FEM_prm1)
+      call set_control_rotation_form                                    &
+     &   (ctl_ctl%mevo_ctl, fl_prop1, FEM_prm)
 !
 !   set parameters for SGS model
 !
@@ -124,7 +129,7 @@
 !   set fields
 !
       call set_control_4_fields                                         &
-     &   (SGS_par, model_ctl%fld_ctl%field_ctl, nod_fld)
+     &   (FEM_prm, SGS_par, model_ctl%fld_ctl%field_ctl, nod_fld)
 !
 !   set control parameters
 !
@@ -144,7 +149,7 @@
 !
       call s_set_control_4_solver(ctl_ctl%mevo_ctl, ctl_ctl%CG_ctl)
       call set_control_4_FEM_params                                     &
-     &   (ctl_ctl%mevo_ctl, ctl_ctl%fint_ctl, FEM_prm1)
+     &   (ctl_ctl%mevo_ctl, ctl_ctl%fint_ctl, FEM_prm)
 !
       end subroutine set_control_4_FEM_MHD
 !
@@ -223,23 +228,46 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_control_rotation_form(FEM_prm)
+      subroutine set_control_rotation_form(mevo_ctl, fl_prop, FEM_prm)
 !
       use m_control_parameter
+      use t_ctl_data_mhd_evolution
       use t_FEM_control_parameter
+      use t_physical_property
 !
+      type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
+      type(fluid_property), intent(in) :: fl_prop
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !
       integer (kind = kint) :: i
 !
 !
+      if    (iflag_scheme .eq. id_explicit_euler                        &
+     &  .or. iflag_scheme .eq. id_explicit_adams2) then
+        FEM_prm%iflag_imp_correct = id_turn_OFF
+      else
+        FEM_prm%iflag_imp_correct = id_turn_On
+!
+        if (mevo_ctl%diffuse_correct%iflag .eq. 0) then
+          FEM_prm%iflag_imp_correct = id_turn_OFF
+        else
+          if (yes_flag(mevo_ctl%diffuse_correct%charavalue)) then
+            FEM_prm%iflag_imp_correct = iflag_scheme
+          end if
+        end if
+      end if
+!
       FEM_prm%iflag_rotate_form = id_turn_OFF
-      do i = 1, num_force
-        if(cmp_no_case(name_force(i),cflag_rot_form)) then
+      do i = 1, fl_prop%num_force
+        if(cmp_no_case(fl_prop%name_force(i),cflag_rot_form)) then
           FEM_prm%iflag_rotate_form =  id_turn_ON
           exit
         end if
       end do
+!
+      if (iflag_debug .ge. iflag_routine_msg) then
+        write(*,*) 'iflag_implicit_correct ', FEM_prm%iflag_imp_correct
+      end if
 !
       end subroutine set_control_rotation_form
 !

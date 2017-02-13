@@ -400,7 +400,7 @@
      &    write(*,*) 'cal_sgs_uxb_2_ff_grad', SGS_param%ifilter_final
         call cal_sgs_uxb_2_ff_grad(SGS_param%itype_Csym_uxb,            &
      &      SGS_param%icoord_Csim, SGS_param%ifilter_final,             &
-     &      icomp_sgs_uxb, ie_dvx, node, ele, conduct,                  &
+     &      icomp_sgs_uxb, ie_dvx, FEM_prm, node, ele, conduct,         &
      &      cd_prop, iphys, nod_fld, iphys_ele, ele_fld, jac_3d,        &
      &      rhs_tbl, FEM_elens, sgs_coefs, mhd_fem_wk, fem_wk, f_nl)
 !

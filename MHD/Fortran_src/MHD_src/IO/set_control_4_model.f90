@@ -10,15 +10,13 @@
 !!
 !!@verbatim
 !!      subroutine s_set_control_4_model                                &
-!!     &          (reft_ctl, refc_ctl, mevo_ctl, evo_ctl, nmtr_ctl,     &
-!!     &           FEM_prm)
+!!     &          (reft_ctl, refc_ctl, mevo_ctl, evo_ctl, nmtr_ctl)
 !!     subroutine s_set_control_4_crank(mevo_ctl)
 !!        type(reference_temperature_ctl), intent(in) :: reft_ctl
 !!        type(reference_temperature_ctl), intent(in) :: refc_ctl
 !!        type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
 !!        type(mhd_evolution_control), intent(inout) :: evo_ctl
 !!        type(node_monitor_control), intent(inout) :: nmtr_ctl
-!!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!@endverbatim
 !
       module set_control_4_model
@@ -41,13 +39,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_4_model                                  &
-     &          (reft_ctl, refc_ctl, mevo_ctl, evo_ctl, nmtr_ctl,       &
-     &           FEM_prm)
+     &          (reft_ctl, refc_ctl, mevo_ctl, evo_ctl, nmtr_ctl)
 !
       use calypso_mpi
       use m_t_step_parameter
       use m_phys_labels
-      use t_FEM_control_parameter
       use t_ctl_data_mhd_evolution
       use t_ctl_data_temp_model
       use t_ctl_data_node_monitor
@@ -59,8 +55,6 @@
       type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
       type(mhd_evolution_control), intent(inout) :: evo_ctl
       type(node_monitor_control), intent(inout) :: nmtr_ctl
-!
-      type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !
       integer (kind = kint) :: i
       character(len=kchara) :: tmpchara
@@ -75,28 +69,15 @@
           if (cmp_no_case(mevo_ctl%scheme_ctl%charavalue,               &
      &                    'explicit_Euler')) then
             iflag_scheme = id_explicit_euler
-            FEM_prm%iflag_imp_correct = id_turn_OFF
           else if (cmp_no_case(mevo_ctl%scheme_ctl%charavalue,          &
      &                         '2nd_Adams_Bashforth')) then
             iflag_scheme = id_explicit_adams2
-            FEM_prm%iflag_imp_correct = id_turn_OFF
           else if (cmp_no_case(mevo_ctl%scheme_ctl%charavalue,          &
      &                         'Crank_Nicolson')) then
             iflag_scheme = id_Crank_nicolson
           else if (cmp_no_case(mevo_ctl%scheme_ctl%charavalue,          &
      &                         'Crank_Nicolson_consist')) then
             iflag_scheme = id_Crank_nicolson_cmass
-          end if
-        end if
-!
-        if ( iflag_scheme .eq. id_Crank_nicolson                        &
-     &     .or. iflag_scheme .eq. id_Crank_nicolson_cmass) then
-          if (mevo_ctl%diffuse_correct%iflag .eq. 0) then
-            FEM_prm%iflag_imp_correct = id_turn_OFF
-          else
-            if (yes_flag(mevo_ctl%diffuse_correct%charavalue)) then
-              FEM_prm%iflag_imp_correct = iflag_scheme
-            end if
           end if
         end if
 !
@@ -158,7 +139,6 @@
         write(*,*) 'iflag_t_evo_4_composit ', evo_comp%iflag_scheme
         write(*,*) 'iflag_t_evo_4_magne    ', evo_magne%iflag_scheme
         write(*,*) 'iflag_t_evo_4_vect_p   ', evo_vect_p%iflag_scheme
-        write(*,*) 'iflag_implicit_correct ', FEM_prm%iflag_imp_correct
       end if
 !
 !   set control for reference temperature 
