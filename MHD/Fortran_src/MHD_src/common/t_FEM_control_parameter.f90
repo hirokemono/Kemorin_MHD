@@ -66,6 +66,10 @@
         integer (kind=kint) :: maxiter_stokes
 !>        Maximum CG iteration count for Coulomb Gauge
         integer (kind=kint) :: maxiter_coulomb
+!>        Error torrance for Poisson equation
+        real (kind=kreal) :: eps_4_stokes
+!>        Error torrance for time integration
+        real (kind=kreal) :: eps_4_coulomb
 !
         type(area_group_name_list) :: fluid_group
         type(area_group_name_list) :: condutive_group

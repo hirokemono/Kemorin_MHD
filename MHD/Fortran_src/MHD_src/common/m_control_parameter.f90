@@ -55,12 +55,6 @@
       integer (kind=kint) :: iflag_radial_param_file                    &
      &       = id_no_boundary_file
 !
-!>      Error torrance for Poisson equation
-      real (kind=kreal) :: eps_4_velo
-!>      Error torrance for time integration
-      real (kind=kreal) :: eps_4_magne
-!
-!
 !  Parameters for FEM dynamo
 !
       type(FEM_MHD_paremeters), save :: FEM_prm1

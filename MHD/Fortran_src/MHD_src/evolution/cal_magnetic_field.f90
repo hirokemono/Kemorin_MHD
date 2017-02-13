@@ -230,7 +230,7 @@
 !        call int_rms_div_a_monitor(iloop, node, ele,                   &
 !     &      iphys, nod_fld, jac_3d_q, fem_wk, rel_correct)
 !
-        if ( abs(rel_correct) .lt. eps_4_magne ) exit
+        if(abs(rel_correct) .lt. FEM_prm%eps_4_coulomb) exit
       end do
 !
       end subroutine cal_vector_potential
@@ -368,7 +368,7 @@
 !        call int_rms_div_b_monitor(iloop, node, ele,                   &
 !     &      iphys, nod_fld, jac_3d_q, fem_wk, rel_correct)
 !
-        if ( abs(rel_correct) .lt. eps_4_magne ) exit
+        if (abs(rel_correct) .lt. FEM_prm%eps_4_coulomb) exit
       end do
 !
       end subroutine s_cal_magnetic_field

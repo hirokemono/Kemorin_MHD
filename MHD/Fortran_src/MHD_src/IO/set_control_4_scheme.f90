@@ -94,7 +94,7 @@
      &         = 'Set convergence area for velocity iteration'
               call calypso_MPI_abort(ierr_CG, e_message)
             else
-              eps_4_velo = mevo_ctl%eps_4_velo_ctl%realvalue
+              FEM_prm%eps_4_stokes = mevo_ctl%eps_4_velo_ctl%realvalue
             end if
           end if
 !
@@ -105,7 +105,8 @@
      &         = 'Set convergence area for magnetic iteration'
               call calypso_MPI_abort(ierr_CG, e_message)
             else
-              eps_4_magne = mevo_ctl%eps_4_magne_ctl%realvalue
+              FEM_prm%eps_4_coulomb                                     &
+     &          = mevo_ctl%eps_4_magne_ctl%realvalue
             end if
           end if
         end if
@@ -114,6 +115,8 @@
           write(*,*) 'num_multi_pass  ', FEM_prm%num_multi_pass
           write(*,*) 'maxiter_stokes ',  FEM_prm%maxiter_stokes
           write(*,*) 'maxiter_coulomb ',    FEM_prm%maxiter_coulomb
+          write(*,*) 'eps_4_velo:        ', FEM_prm%eps_4_stokes
+          write(*,*) 'eps_4_magne:       ', FEM_prm%eps_4_coulomb
         end if
 !
 !  control for number of points for integration

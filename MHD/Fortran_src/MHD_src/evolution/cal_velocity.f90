@@ -257,7 +257,7 @@
 !        call int_rms_div_v_monitor(iloop, node, ele, fluid,            &
 !     &      iphys, nod_fld, jac_3d_q, fem_wk, rel_correct)
 !
-        if ( abs(rel_correct) .lt. eps_4_velo ) go to 10
+        if (abs(rel_correct) .lt. FEM_prm%eps_4_stokes) go to 10
 !
       end do
  10   continue
