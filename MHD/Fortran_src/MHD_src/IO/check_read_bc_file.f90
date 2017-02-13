@@ -1,15 +1,25 @@
-!check_read_bc_file.f90
-!      module check_read_bc_file
+!> @file  check_read_bc_file.f90
+!!      module check_read_bc_file
+!!
+!! @author  H. Matsui
+!! @date Programmed in July, 2005
 !
-!      Written by H. Matsui on July, 2005
-!
-!      subroutine check_read_boundary_files
+!> @brief Decide if boundary condition data field is read
+!!
+!!@verbatim
+!!      integer(kind = kint) function check_read_boundary_files()
+!!@endverbatim
 !
       module check_read_bc_file
 !
       use m_precision
 !
       implicit none
+!
+!>      ID not to read external boundary condition file
+      integer (kind=kint), parameter :: id_no_boundary_file =   0
+!>      ID to read external boundary condition file
+      integer (kind=kint), parameter :: id_read_boundary_file = 1
 !
       private :: set_serch_boundary_file_flag
 !
@@ -19,13 +29,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine check_read_boundary_files
+      integer(kind = kint) function check_read_boundary_files()
 !
       use calypso_mpi
       use m_control_parameter
       use m_bc_data_list
       use m_surf_data_list
 !
+      integer(kind = kint) :: iflag_boundary_file
 !
       iflag_boundary_file = 0
 !
@@ -101,7 +112,9 @@
      &      current_surf%num_bc, current_surf%ibc_type)
       end if
 !
-      end subroutine check_read_boundary_files
+      check_read_boundary_files = iflag_boundary_file
+!
+      end function check_read_boundary_files
 !
 ! -----------------------------------------------------------------------
 !

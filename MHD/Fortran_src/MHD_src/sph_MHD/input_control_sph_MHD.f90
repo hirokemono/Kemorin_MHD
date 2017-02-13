@@ -80,7 +80,6 @@
      &          pwr, SGS_par, dynamic_SPH, mesh, group, ele_mesh)
 !
       use m_control_parameter
-      use m_sph_boundary_input_data
       use m_spheric_global_ranks
       use m_error_IDs
 !
@@ -143,10 +142,7 @@
       call load_para_SPH_and_FEM_mesh                                   &
      &   (sph, comms_sph, sph_grps, mesh, group, ele_mesh, mesh1_file)
 !
-      if (iflag_boundary_file .eq. id_read_boundary_file) then
-        if (iflag_debug.eq.1) write(*,*) 'read_boundary_spectr_file'
-        call read_boundary_spectr_file
-      end if
+      call sph_boundary_IO_control
 !
       end subroutine input_control_SPH_mesh
 !
@@ -185,10 +181,7 @@
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
       call load_para_sph_mesh(sph, comms_sph, sph_grps)
 !
-      if (iflag_boundary_file .eq. id_read_boundary_file) then
-        if (iflag_debug.eq.1) write(*,*) 'read_boundary_spectr_file'
-        call read_boundary_spectr_file
-      end if
+      call sph_boundary_IO_control
 !
       end subroutine input_control_4_SPH_MHD_nosnap
 !
@@ -200,7 +193,6 @@
      &          rj_fld, pwr, SGS_par)
 !
       use m_control_parameter
-      use m_sph_boundary_input_data
       use sph_mhd_rst_IO_control
       use set_control_sph_mhd
       use parallel_load_data_4_sph
@@ -302,5 +294,20 @@
       end subroutine set_control_4_SPH_to_FEM
 !
 ! -----------------------------------------------------------------------
+!
+      subroutine sph_boundary_IO_control
+!
+      use m_sph_boundary_input_data
+      use check_read_bc_file
+!
+!
+      if (check_read_boundary_files() .eq. id_no_boundary_file) return
+!
+      if (iflag_debug.eq.1) write(*,*) 'read_boundary_spectr_file'
+      call read_boundary_spectr_file
+!
+      end subroutine sph_boundary_IO_control
+!
+! ----------------------------------------------------------------------
 !
       end module input_control_sph_MHD

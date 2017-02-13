@@ -258,8 +258,6 @@
       use set_control_4_magne
       use set_control_4_composition
 !
-      use check_read_bc_file
-!
       type(node_bc_control), intent(inout) :: nbc_ctl
       type(surf_bc_control), intent(inout) :: sbc_ctl
 !
@@ -293,11 +291,6 @@
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_magne'
       call s_set_control_4_magne                                        &
      &   (nbc_ctl%node_bc_B_ctl, sbc_ctl%surf_bc_BN_ctl)
-!
-!   set flag to read boundary condition file
-!
-      if (iflag_debug.gt.0) write(*,*) 'check_read_boundary_files'
-      call check_read_boundary_files
 !
       end subroutine set_control_SPH_MHD_bcs
 !

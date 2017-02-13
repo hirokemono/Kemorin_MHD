@@ -41,7 +41,6 @@
       type FEM_MHD_paremeters
 !>        Number of quadrature points for time evolution
         integer(kind = kint) :: npoint_t_evo_int =   2
-!FEM_prm%npoint_t_evo_int
 !>        Number of quadrature points for Poisson equation
         integer(kind = kint) :: npoint_poisson_int = 2
 !

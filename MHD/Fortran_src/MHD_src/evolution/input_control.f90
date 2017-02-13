@@ -62,7 +62,7 @@
 !
       private :: FEM_MHD_ctl
       private :: mesh1_file
-      private :: input_meshes_4_MHD
+      private :: input_meshes_4_MHD, boundary_file_IO_control
 !
 ! ----------------------------------------------------------------------
 !
@@ -209,10 +209,7 @@
 !
 ! ----  open data file for boundary data
 !
-      if (iflag_boundary_file .eq. id_read_boundary_file) then
-        call read_bc_condition_file                                     &
-     &     (my_rank, group%nod_grp, group%surf_grp, IO_bc)
-      end if
+      call boundary_file_IO_control(group, IO_bc)
 !
 ! ---------------------------------
 !
@@ -243,6 +240,23 @@
       end if
 !
       end subroutine input_meshes_4_MHD
+!
+! ----------------------------------------------------------------------
+!
+      subroutine boundary_file_IO_control(group, IO_bc)
+!
+      use check_read_bc_file
+!
+      type(mesh_groups), intent(in) ::   group
+      type(IO_boundary), intent(inout) :: IO_bc
+!
+!
+      if (check_read_boundary_files() .eq. id_no_boundary_file) return
+!
+      call read_bc_condition_file                                       &
+     &     (my_rank, group%nod_grp, group%surf_grp, IO_bc)
+!
+      end subroutine boundary_file_IO_control
 !
 ! ----------------------------------------------------------------------
 !

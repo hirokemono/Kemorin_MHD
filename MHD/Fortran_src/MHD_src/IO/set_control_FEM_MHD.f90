@@ -170,8 +170,6 @@
       use set_control_4_composition
       use set_control_4_infty
 !
-      use check_read_bc_file
-!
       type(node_bc_control), intent(inout) :: nbc_ctl
       type(surf_bc_control), intent(inout) :: sbc_ctl
 !
@@ -219,10 +217,6 @@
 !   set boundary_conditons for magnetic potential
 !
       call s_set_control_4_infty(sbc_ctl%surf_bc_INF_ctl)
-!
-!   set flag to read boundary condition file
-!
-      call check_read_boundary_files
 !
       end subroutine set_control_FEM_MHD_bcs
 !

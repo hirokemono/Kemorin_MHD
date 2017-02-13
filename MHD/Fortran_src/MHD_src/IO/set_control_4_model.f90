@@ -62,67 +62,50 @@
 !
 !  set time_evolution scheme
 !
-        if (mevo_ctl%scheme_ctl%iflag .eq. 0) then
-          e_message = 'Set time integration scheme'
-          call calypso_MPI_abort(ierr_evo, e_message)
-        else
-          if (cmp_no_case(mevo_ctl%scheme_ctl%charavalue,               &
+      if (mevo_ctl%scheme_ctl%iflag .eq. 0) then
+        e_message = 'Set time integration scheme'
+        call calypso_MPI_abort(ierr_evo, e_message)
+      else
+        if (cmp_no_case(mevo_ctl%scheme_ctl%charavalue,                 &
      &                    'explicit_Euler')) then
-            iflag_scheme = id_explicit_euler
-          else if (cmp_no_case(mevo_ctl%scheme_ctl%charavalue,          &
+          iflag_scheme = id_explicit_euler
+        else if (cmp_no_case(mevo_ctl%scheme_ctl%charavalue,            &
      &                         '2nd_Adams_Bashforth')) then
-            iflag_scheme = id_explicit_adams2
-          else if (cmp_no_case(mevo_ctl%scheme_ctl%charavalue,          &
+          iflag_scheme = id_explicit_adams2
+        else if (cmp_no_case(mevo_ctl%scheme_ctl%charavalue,            &
      &                         'Crank_Nicolson')) then
-            iflag_scheme = id_Crank_nicolson
-          else if (cmp_no_case(mevo_ctl%scheme_ctl%charavalue,          &
+          iflag_scheme = id_Crank_nicolson
+        else if (cmp_no_case(mevo_ctl%scheme_ctl%charavalue,            &
      &                         'Crank_Nicolson_consist')) then
-            iflag_scheme = id_Crank_nicolson_cmass
-          end if
+          iflag_scheme = id_Crank_nicolson_cmass
         end if
+      end if
 !
 !   set control for time evolution
 !
-        if (evo_ctl%t_evo_field_ctl%icou .eq. 0) then
-          e_message = 'Set field for time integration'
-          call calypso_MPI_abort(ierr_evo, e_message)
-        else
-          num_field_to_evolve = evo_ctl%t_evo_field_ctl%num
-          if (iflag_debug .ge. iflag_routine_msg)                       &
-     &    write(*,*) 'num_field_to_evolve ',num_field_to_evolve
+      if (evo_ctl%t_evo_field_ctl%icou .eq. 0) then
+        e_message = 'Set field for time integration'
+        call calypso_MPI_abort(ierr_evo, e_message)
+      end if
+!
+      do i = 1, evo_ctl%t_evo_field_ctl%num
+        tmpchara = evo_ctl%t_evo_field_ctl%c_tbl(i)
+        if (tmpchara .eq. fhd_velo ) then
+          evo_velo%iflag_scheme =   iflag_scheme
+        else if (tmpchara .eq. fhd_temp ) then
+          evo_temp%iflag_scheme =   iflag_scheme
+        else if (tmpchara .eq. fhd_light ) then
+          evo_comp%iflag_scheme =   iflag_scheme
+        else if (tmpchara .eq. fhd_magne ) then
+          evo_magne%iflag_scheme =  iflag_scheme
+        else if (tmpchara .eq. fhd_vecp ) then
+          evo_vect_p%iflag_scheme = iflag_scheme
         end if
+      end do
 !
-        if ( num_field_to_evolve .ne. 0 ) then
-          allocate( t_evo_name(num_field_to_evolve) )
-!
-          do i = 1, num_field_to_evolve
-            t_evo_name(i)  = evo_ctl%t_evo_field_ctl%c_tbl(i)
-          end do
-!
-          call dealloc_t_evo_name_ctl(evo_ctl)
-!
-          if (iflag_debug .ge. iflag_routine_msg) then
-            write(*,*) 'num_field_to_evolve ',num_field_to_evolve
-            do i = 1, num_field_to_evolve
-              write(*,*) i, trim(t_evo_name(i))
-            end do
-          end if
-!
-         do i = 1, num_field_to_evolve
-           if ( t_evo_name(i) .eq. fhd_velo ) then
-            evo_velo%iflag_scheme =   iflag_scheme
-           else if ( t_evo_name(i) .eq. fhd_temp ) then
-            evo_temp%iflag_scheme =   iflag_scheme
-           else if ( t_evo_name(i) .eq. fhd_light ) then
-            evo_comp%iflag_scheme =   iflag_scheme
-           else if ( t_evo_name(i) .eq. fhd_magne ) then
-            evo_magne%iflag_scheme =  iflag_scheme
-           else if ( t_evo_name(i) .eq. fhd_vecp ) then
-            evo_vect_p%iflag_scheme = iflag_scheme
-           end if
-         end do
-!
-        end if
+      if (evo_ctl%t_evo_field_ctl%num .gt. 0 ) then
+        call dealloc_t_evo_name_ctl(evo_ctl)
+      end if
 !
       if       (evo_velo%iflag_scheme     .eq. id_no_evolution          &
      &    .and. evo_temp%iflag_scheme     .eq. id_no_evolution          &
