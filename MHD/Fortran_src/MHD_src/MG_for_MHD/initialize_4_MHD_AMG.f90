@@ -322,7 +322,9 @@
       do i_level = 1, num_MG_level
         if(my_rank .lt. MG_mpi(i_level)%nprocs) then
           if(iflag_debug .gt. 0) write(*,*) 'alloc_aiccg_matrices'
-          call alloc_aiccg_matrices(MG_mesh(i_level)%mesh%node,         &
+          call alloc_aiccg_matrices                                     &
+     &       (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,      &
+     &        MG_mesh(i_level)%mesh%node,                               &
      &        MHD_matrices%MG_DJDS_table(i_level),                      &
      &        MHD_matrices%MG_DJDS_fluid(i_level),                      &
      &        MHD_matrices%MG_DJDS_linear(i_level),                     &
@@ -336,7 +338,8 @@
         else
           if(iflag_debug .gt. 0) write(*,*) 'alloc_MG_zero_matrices'
           call alloc_MG_zero_matrices                                   &
-     &     (MHD_matrices%Vmat_MG_DJDS(i_level),                         &
+     &     (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,        &
+     &      MHD_matrices%Vmat_MG_DJDS(i_level),                         &
      &      MHD_matrices%Bmat_MG_DJDS(i_level),                         &
      &      MHD_matrices%Tmat_MG_DJDS(i_level),                         &
      &      MHD_matrices%Cmat_MG_DJDS(i_level),                         &

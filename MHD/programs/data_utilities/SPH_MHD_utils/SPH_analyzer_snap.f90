@@ -92,7 +92,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'const_radial_mat_sph_snap'
       call const_radial_mat_sph_snap                                    &
-     &   (fl_prop1, sph1%sph_rj, r_2nd, trans_p1%leg)
+     &   (evo_velo, fl_prop1, sph1%sph_rj, r_2nd, trans_p1%leg)
 !
 !     --------------------- 
 !  set original spectr mesh data for extension of B

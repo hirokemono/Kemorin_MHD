@@ -8,8 +8,9 @@
 !        modified by H.Matsui on Nov. 2003
 !        modified by H.Matsui on Sep. 2005
 !
-!!      subroutine set_normal_velocity(sf_grp, sf_grp_nod, norm_sf,     &
-!!     &          i_velo, nod_fld)
+!!      subroutine set_normal_velocity(evo_V, sf_grp, sf_grp_nod,       &
+!!     &          norm_sf, i_velo, nod_fld)
+!!        type(time_evolution_params), intent(in) :: evo_V
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(surface_node_grp_data), intent(in) :: sf_grp_nod
 !!        type(scaler_surf_flux_bc_type), intent(in) :: norm_sf
@@ -30,21 +31,25 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_normal_velocity(sf_grp, sf_grp_nod, norm_sf,       &
-     &          i_velo, nod_fld)
+      subroutine set_normal_velocity(evo_V, sf_grp, sf_grp_nod,         &
+     &          norm_sf, i_velo, nod_fld)
 !
+      use t_time_stepping_parameter
       use t_phys_data
       use t_group_data
       use t_surface_group_connect
       use t_surface_bc_data
 !
       integer(kind = kint), intent(in) :: i_velo
+      type(time_evolution_params), intent(in) :: evo_V
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_node_grp_data), intent(in) :: sf_grp_nod
       type(scaler_surf_flux_bc_type), intent(in) :: norm_sf
 !
       type(phys_data), intent(inout) :: nod_fld
 !
+!
+      if (evo_V%iflag_scheme .eq. id_no_evolution) return
 !
       if (norm_sf%ngrp_sf_fix_fx .gt. 0) then
         call set_normal_comp(sf_grp%num_grp, sf_grp%num_grp_smp,        &

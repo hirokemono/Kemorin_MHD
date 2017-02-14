@@ -316,8 +316,8 @@
       end if
 !
       call set_boundary_velo(node, Vnod_bcs, iphys%i_velo, nod_fld)
-      call set_normal_velocity                                          &
-     &   (sf_grp, sf_grp_nod, Vsf_bcs%normal, iphys%i_velo, nod_fld)
+      call set_normal_velocity(evo_velo, sf_grp, sf_grp_nod,            &
+     &    Vsf_bcs%normal, iphys%i_velo, nod_fld)
 !
       call vector_send_recv(iphys%i_velo, nod_comm, nod_fld)
 !
@@ -422,8 +422,8 @@
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_velo'
       call set_boundary_velo(node, Vnod_bcs, iphys%i_velo, nod_fld)
       if (iflag_debug.eq.1) write(*,*) 'set_normal_velocity'
-      call set_normal_velocity                                          &
-     &   (sf_grp, sf_grp_nod, Vsf_bcs%normal, iphys%i_velo, nod_fld)
+      call set_normal_velocity(evo_velo, sf_grp, sf_grp_nod,            &
+     &    Vsf_bcs%normal, iphys%i_velo, nod_fld)
 !
       if(iflag_debug.eq.1) write(*,*) 'vector_send_recv(iphys%i_velo)'
       call vector_send_recv(iphys%i_velo, nod_comm, nod_fld)

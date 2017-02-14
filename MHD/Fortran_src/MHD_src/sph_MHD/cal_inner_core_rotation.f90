@@ -12,8 +12,8 @@
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_address), intent(in) :: ipol, itor
 !!        type(phys_data), intent(inout) :: rj_fld
-!!      subroutine set_icore_viscous_matrix                             &
-!!     &         (kr_in, fdm1_fix_fld_ICB, sph_rj, fl_prop, band_vt_evo)
+!!      subroutine set_icore_viscous_matrix(kr_in, fdm1_fix_fld_ICB,    &
+!!     &          evo_V, sph_rj, fl_prop, band_vt_evo)
 !!      subroutine cal_icore_viscous_drag_explicit                      &
 !!     &         (kr_in, fdm1_fix_fld_ICB, sph_rj, coef_d,              &
 !!     &          it_velo, it_viscous, rj_fld)
@@ -25,6 +25,7 @@
 !!     &          omega_rj, coef_cor, ipol, n_point, ntot_phys_rj, d_rj)
 !!      subroutine int_icore_toroidal_lorentz                           &
 !!     &         (kr_in, sph_rj, ipol, itor, rj_fld)
+!!        type(time_evolution_params), intent(in) :: evo_V
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_address), intent(in) :: ipol, itor
 !!        type(fluid_property), intent(in) :: fl_prop
@@ -86,16 +87,17 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_icore_viscous_matrix                               &
-     &         (kr_in, fdm1_fix_fld_ICB, sph_rj, fl_prop, band_vt_evo)
+      subroutine set_icore_viscous_matrix(kr_in, fdm1_fix_fld_ICB,      &
+     &          evo_V, sph_rj, fl_prop, band_vt_evo)
 !
       use t_sph_matrices
       use t_physical_property
-      use m_control_parameter
+      use t_time_stepping_parameter
       use m_t_int_parameter
 !
       integer(kind = kint), intent(in) :: kr_in
       real(kind = kreal), intent(in) :: fdm1_fix_fld_ICB(0:1,2)
+      type(time_evolution_params), intent(in) :: evo_V
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fluid_property), intent(in) :: fl_prop
 !
@@ -104,15 +106,15 @@
 !
       call set_rotate_icb_vt_sph_mat(sph_rj%idx_rj_degree_one(-1),      &
      &    kr_in, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj, &
-     &    fdm1_fix_fld_ICB, evo_velo%coef_imp, fl_prop%coef_diffuse,    &
+     &    fdm1_fix_fld_ICB, evo_V%coef_imp, fl_prop%coef_diffuse,       &
      &    band_vt_evo%mat)
       call set_rotate_icb_vt_sph_mat(sph_rj%idx_rj_degree_one( 0),      &
      &    kr_in, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj, &
-     &    fdm1_fix_fld_ICB, evo_velo%coef_imp, fl_prop%coef_diffuse,    &
+     &    fdm1_fix_fld_ICB, evo_V%coef_imp, fl_prop%coef_diffuse,       &
      &    band_vt_evo%mat)
       call set_rotate_icb_vt_sph_mat(sph_rj%idx_rj_degree_one( 1),      &
      &    kr_in, sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), sph_rj%ar_1d_rj, &
-     &    fdm1_fix_fld_ICB, evo_velo%coef_imp, fl_prop%coef_diffuse,    &
+     &    fdm1_fix_fld_ICB, evo_V%coef_imp, fl_prop%coef_diffuse,       &
      &    band_vt_evo%mat)
 !!
       end subroutine set_icore_viscous_matrix

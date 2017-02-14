@@ -39,6 +39,7 @@
 !
       use m_machine_parameter
 !
+      use m_control_parameter
       use t_mesh_data
       use t_geometry_data_MHD
       use t_surface_group_connect
@@ -78,10 +79,9 @@
      &    sf1_bcs)
 !
 !     set normal velocity
-      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
-        call set_normal_velocity(group%surf_grp, group%surf_nod_grp,    &
-     &      sf1_bcs%Vsf_bcs%normal, iphys%i_velo, nod_fld)
-      end if
+      call set_normal_velocity                                          &
+     &   (evo_velo, group%surf_grp, group%surf_nod_grp,                 &
+     &    sf1_bcs%Vsf_bcs%normal, iphys%i_velo, nod_fld)
 !
       end subroutine set_boundary_data
 !

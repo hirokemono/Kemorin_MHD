@@ -178,10 +178,10 @@
 !      matrix setting for free slip on sphere
       call set_aiccg_bc_free_sph_in(ele, surf, sf_grp,                  &
      &    free_in_sf, jac_sf_grp, rhs_tbl, MG_mat_fl_q, surf_wk,        &
-     &    num_int, ak_d_velo, fem_wk, Vmat_DJDS)
+     &    evo_velo%coef_imp, num_int, ak_d_velo, fem_wk, Vmat_DJDS)
       call set_aiccg_bc_free_sph_out(ele, surf, sf_grp,                 &
      &    free_out_sf, jac_sf_grp, rhs_tbl, MG_mat_fl_q, surf_wk,       &
-     &    num_int, ak_d_velo, fem_wk, Vmat_DJDS)
+     &    evo_velo%coef_imp, num_int, ak_d_velo, fem_wk, Vmat_DJDS)
 !
 !      matrix setting for fixed boundaries
       call set_aiccg_bc_vector_nod(ele, nod_bc_v, DJDS_tbl, Vmat_DJDS)

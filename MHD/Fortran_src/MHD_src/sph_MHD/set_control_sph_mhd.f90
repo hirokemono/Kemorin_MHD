@@ -201,7 +201,8 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_force'
       call s_set_control_4_force(model_ctl%frc_ctl, model_ctl%g_ctl,    &
-     &    model_ctl%cor_ctl, model_ctl%mcv_ctl, fl_prop1, cd_prop1)
+     &    model_ctl%cor_ctl, model_ctl%mcv_ctl,                         &
+     &    evo_velo, fl_prop1, cd_prop1)
 !
 !   set parameters for general information
 !

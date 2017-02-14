@@ -28,7 +28,6 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_control_parameter
       use m_radial_matrices_sph
       use m_schmidt_poly_on_rtm
       use const_sph_radial_grad

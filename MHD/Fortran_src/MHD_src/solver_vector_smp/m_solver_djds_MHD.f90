@@ -43,6 +43,7 @@
 !
       subroutine allocate_aiccg_matrices(node)
 !
+      use m_control_parameter
       use m_physical_property
       use allocate_MHD_AMG_array
 !
@@ -52,7 +53,9 @@
       call set_residual_4_crank                                         &
      &   (fl_prop1, cd_prop1, ht_prop1)
 !
-      call alloc_aiccg_matrices(node, MHD1_matrices%MG_DJDS_table(0),   &
+      call alloc_aiccg_matrices                                         &
+     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp, node,    &
+     &    MHD1_matrices%MG_DJDS_table(0),                               &
      &    MHD1_matrices%MG_DJDS_fluid(0),                               &
      &    MHD1_matrices%MG_DJDS_linear(0),                              &
      &    MHD1_matrices%MG_DJDS_lin_fl(0),                              &
@@ -66,11 +69,13 @@
 !
       subroutine deallocate_aiccg_matrices
 !
+      use m_control_parameter
 !
-      call dealloc_aiccg_matrices(MHD1_matrices%Vmat_MG_DJDS(0),        &
-     &    MHD1_matrices%Bmat_MG_DJDS(0), MHD1_matrices%Tmat_MG_DJDS(0), &
-     &    MHD1_matrices%Cmat_MG_DJDS(0), MHD1_matrices%Pmat_MG_DJDS(0), &
-     &    MHD1_matrices%Fmat_MG_DJDS(0))
+      call dealloc_aiccg_matrices                                       &
+     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
+     &    MHD1_matrices%Vmat_MG_DJDS(0), MHD1_matrices%Bmat_MG_DJDS(0), &
+     &    MHD1_matrices%Tmat_MG_DJDS(0), MHD1_matrices%Cmat_MG_DJDS(0), &
+     &    MHD1_matrices%Pmat_MG_DJDS(0), MHD1_matrices%Fmat_MG_DJDS(0))
 !
       end subroutine deallocate_aiccg_matrices
 !

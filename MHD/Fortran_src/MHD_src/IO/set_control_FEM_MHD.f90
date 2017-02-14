@@ -106,7 +106,8 @@
 !   set forces
 !
       call s_set_control_4_force(model_ctl%frc_ctl, model_ctl%g_ctl,    &
-     &    model_ctl%cor_ctl, model_ctl%mcv_ctl, fl_prop1, cd_prop1)
+     &    model_ctl%cor_ctl, model_ctl%mcv_ctl,                         &
+     &    evo_velo, fl_prop1, cd_prop1)
       call set_control_rotation_form                                    &
      &   (ctl_ctl%mevo_ctl, fl_prop1, FEM_prm)
 !

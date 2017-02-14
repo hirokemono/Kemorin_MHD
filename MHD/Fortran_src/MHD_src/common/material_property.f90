@@ -18,6 +18,7 @@
       use m_precision
       use m_constants
 !
+      use t_time_stepping_parameter
       use t_phys_address
       use t_physical_property
       use calypso_mpi
@@ -44,36 +45,39 @@
 !    For thermal
       if (my_rank .eq. 0) write(*,*) ''
       call set_thermal_property                                         &
-     &   (iphys, depth_top, depth_bottom, ht_prop1)
+     &   (iphys, depth_top, depth_bottom, evo_temp, ht_prop1)
 !
 !    For convection
-      call set_fluid_property(depth_top, depth_bottom, fl_prop1)
+      call set_fluid_property                                           &
+     &   (depth_top, depth_bottom, evo_velo, fl_prop1)
 !
 !   For Induction
-      call set_conductive_property(depth_top, depth_bottom, cd_prop1)
+      call set_conductive_property                                      &
+     &   (depth_top, depth_bottom, evo_magne, evo_vect_p, cd_prop1)
 !
 !   For light element
       call set_composition_property                                     &
-     &   (iphys, depth_top, depth_bottom, cp_prop1)
+     &   (iphys, depth_top, depth_bottom, evo_comp, cp_prop1)
       if (my_rank .eq. 0) write(*,*) ''
 !
       end subroutine set_material_property
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_fluid_property(depth_top, depth_bottom, fl_prop)
+      subroutine set_fluid_property                                     &
+     &         (depth_top, depth_bottom, evo_V, fl_prop)
 !
-      use m_control_parameter
       use m_normalize_parameter
       use m_t_int_parameter
       use construct_MHD_coefficient
 !
       real(kind = kreal), intent(in) :: depth_top, depth_bottom
+      type(time_evolution_params), intent(inout) :: evo_V
       type(fluid_property), intent(inout) :: fl_prop
 !
 !    For convection
 !
-      if(evo_velo%iflag_scheme .gt. id_no_evolution) then
+      if(evo_V%iflag_scheme .gt. id_no_evolution) then
 !
         fl_prop%coef_velo =     one
         fl_prop%coef_diffuse =  one
@@ -97,7 +101,7 @@
      &      depth_top, depth_bottom)
 !
         call set_implicit_4_inf_viscous(fl_prop%coef_velo,              &
-     &      evo_velo%coef_imp, evo_velo%coef_exp)
+     &      evo_V%coef_imp, evo_V%coef_exp)
 !
         fl_prop%acoef_press = one / fl_prop%coef_press
         fl_prop%coef_nega_v = - fl_prop%coef_velo
@@ -132,7 +136,7 @@
 !  Check
 !
       if (my_rank .eq. 0) then
-        if(evo_velo%iflag_scheme .gt. id_no_evolution) then
+        if(evo_V%iflag_scheme .gt. id_no_evolution) then
           write(*,*) 'coefficient for velocity:            ',           &
      &              fl_prop%coef_velo
           write(*,*) 'coefficient for pressure:            ',           &
@@ -159,20 +163,20 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_conductive_property                                &
-     &         (depth_top, depth_bottom, cd_prop)
+     &         (depth_top, depth_bottom,  evo_B, evo_A, cd_prop)
 !
-      use m_control_parameter
       use m_normalize_parameter
       use m_t_int_parameter
       use construct_MHD_coefficient
 !
       real(kind = kreal), intent(in) :: depth_top, depth_bottom
+      type(time_evolution_params), intent(inout) :: evo_B, evo_A
       type(conductive_property), intent(inout) :: cd_prop
 !
 !   For Induction
 !
-      if (evo_magne%iflag_scheme .gt. id_no_evolution                   &
-     &     .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+      if(    evo_B%iflag_scheme .gt. id_no_evolution                    &
+     &  .or. evo_A%iflag_scheme .gt. id_no_evolution) then
 !
         cd_prop%coef_magne =   one
         cd_prop%coef_mag_p =   one
@@ -196,20 +200,20 @@
      &      depth_top, depth_bottom)
       end if
 !
-      if(evo_magne%iflag_scheme .gt. id_no_evolution) then
+      if(evo_B%iflag_scheme .gt. id_no_evolution) then
         call set_implicit_4_inf_viscous(cd_prop%coef_magne,            &
-     &      evo_magne%coef_imp, evo_magne%coef_exp)
+     &      evo_B%coef_imp, evo_B%coef_exp)
       end if
-      if(evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+      if(evo_A%iflag_scheme .gt. id_no_evolution) then
         call set_implicit_4_inf_viscous(cd_prop%coef_magne,            &
-     &      evo_vect_p%coef_imp, evo_vect_p%coef_exp)
+     &      evo_A%coef_imp, evo_A%coef_exp)
       end if
 !
 !  Check
 !
       if (my_rank .eq. 0) then
-        if (evo_magne%iflag_scheme .gt. id_no_evolution                 &
-     &     .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+        if(     evo_B%iflag_scheme .gt. id_no_evolution                 &
+     &     .or. evo_A%iflag_scheme .gt. id_no_evolution) then
           write(*,*) 'coefficient for magnetic field:      ',           &
      &              cd_prop%coef_magne
           write(*,*) 'coefficient for magnetic potential:  ',           &
@@ -228,20 +232,20 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_thermal_property                                   &
-     &         (iphys, depth_top, depth_bottom, ht_prop)
+     &         (iphys, depth_top, depth_bottom, evo_T, ht_prop)
 !
-      use m_control_parameter
       use m_normalize_parameter
       use m_t_int_parameter
       use construct_MHD_coefficient
 !
       type(phys_address), intent(in) :: iphys
       real(kind = kreal), intent(in) :: depth_top, depth_bottom
+      type(time_evolution_params), intent(inout) :: evo_T
       type(scalar_property), intent(inout) :: ht_prop
 !
 !    For thermal
 !
-      if (evo_temp%iflag_scheme .gt. id_no_evolution) then
+      if (evo_T%iflag_scheme .gt. id_no_evolution) then
 !
         ht_prop%coef_advect =  one
         ht_prop%coef_diffuse = one
@@ -260,13 +264,13 @@
      &      depth_top, depth_bottom)
 !
         call set_implicit_4_inf_viscous(ht_prop%coef_advect,            &
-     &      evo_temp%coef_imp, evo_temp%coef_exp)
+     &      evo_T%coef_imp, evo_T%coef_exp)
 !
         ht_prop%coef_nega_adv = - ht_prop%coef_advect
       end if
 !
       if (my_rank .eq. 0) then
-        if (evo_temp%iflag_scheme .gt. id_no_evolution) then
+        if (evo_T%iflag_scheme .gt. id_no_evolution) then
           write(*,*) 'coefficient for temperature:         ',           &
      &              ht_prop%coef_advect
           write(*,*) 'coefficient for thermal diffusion:   ',           &
@@ -282,20 +286,20 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_composition_property                               &
-     &         (iphys, depth_top, depth_bottom, cp_prop)
+     &         (iphys, depth_top, depth_bottom, evo_C, cp_prop)
 !
-      use m_control_parameter
       use m_normalize_parameter
       use m_t_int_parameter
       use construct_MHD_coefficient
 !
       type(phys_address), intent(in) :: iphys
       real(kind = kreal), intent(in) :: depth_top, depth_bottom
+      type(time_evolution_params), intent(inout) :: evo_C
       type(scalar_property), intent(inout) :: cp_prop
 !
 !   For light element
 !
-      if (evo_comp%iflag_scheme .gt. id_no_evolution) then
+      if (evo_C%iflag_scheme .gt. id_no_evolution) then
         cp_prop%coef_advect =   one
         cp_prop%coef_diffuse =  one
         cp_prop%coef_source =   one
@@ -313,7 +317,7 @@
      &     depth_top, depth_bottom)
 !
         call set_implicit_4_inf_viscous(cp_prop%coef_advect,            &
-     &      evo_comp%coef_imp, evo_comp%coef_exp)
+     &      evo_C%coef_imp, evo_C%coef_exp)
 !
         cp_prop%coef_nega_adv = - cp_prop%coef_advect
       end if
@@ -321,7 +325,7 @@
 !  Check
 !
       if (my_rank .eq. 0) then
-        if (evo_comp%iflag_scheme .gt. id_no_evolution) then
+        if (evo_C%iflag_scheme .gt. id_no_evolution) then
           write(*,*) 'coefficient for composition:         ',           &
      &              cp_prop%coef_advect
           write(*,*) 'coefficient for composite diffusion: ',           &

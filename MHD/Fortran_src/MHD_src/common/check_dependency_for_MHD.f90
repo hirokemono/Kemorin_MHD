@@ -24,9 +24,9 @@
       use m_machine_parameter
 !
       use calypso_mpi
-      use m_control_parameter
       use m_phys_labels
 !
+      use t_time_stepping_parameter
       use t_SGS_control_parameter
       use t_phys_data
       use t_phys_address
@@ -48,6 +48,7 @@
       subroutine set_FEM_MHD_field_data                                 &
      &         (SGS_param, cmt_param, node, iphys, nod_fld)
 !
+      use m_control_parameter
       use m_physical_property
       use t_geometry_data
       use t_FEM_phys_data
@@ -63,12 +64,15 @@
       if (iflag_debug.ge.1)  write(*,*) 'init_field_address'
       call init_field_address(node%numnod, nod_fld, iphys)
 !
-      call check_field_dependencies(fl_prop1, iphys, nod_fld)
+      call check_field_dependencies                                     &
+     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
+     &    fl_prop1, iphys, nod_fld)
       call check_dependencies_by_id(iphys, nod_fld)
       call check_dependence_FEM_MHD_by_id(iphys, nod_fld)
-      call check_dependence_FEM_evo(iphys, nod_fld)
+      call check_dependence_FEM_evo(evo_velo, iphys, nod_fld)
       call check_dependence_4_FEM_SGS                                   &
-     &   (SGS_param, cmt_param, fl_prop1, iphys, nod_fld)
+     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
+     &    SGS_param, cmt_param, fl_prop1, iphys, nod_fld)
 !
       end subroutine set_FEM_MHD_field_data
 !
@@ -77,6 +81,7 @@
       subroutine set_sph_MHD_sprctr_data                                &
      &         (SGS_param, sph_rj, ipol, idpdr, itor, rj_fld)
 !
+      use m_control_parameter
       use m_physical_property
       use t_spheric_rj_data
 !
@@ -92,20 +97,26 @@
       call set_sph_sprctr_data_address                                  &
      &   (sph_rj, ipol, idpdr, itor, rj_fld)
 !
-      call check_field_dependencies(fl_prop1, ipol, rj_fld)
+      call check_field_dependencies                                     &
+     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
+     &    fl_prop1, ipol, rj_fld)
       call check_dependencies_by_id(ipol, rj_fld)
       call check_dependence_SPH_MHD_by_id(ipol, rj_fld)
-      call check_dependence_SPH_evo(ipol, rj_fld)
+      call check_dependence_SPH_evo(evo_velo, ipol, rj_fld)
       call check_dependence_4_SPH_SGS                                   &
-     &   (SGS_param, fl_prop1, ipol, rj_fld)
+     &   (evo_velo, evo_magne, evo_temp, evo_comp,                      &
+     &    SGS_param, fl_prop1, ipol, rj_fld)
 !
       end subroutine set_sph_MHD_sprctr_data
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_field_dependencies(fl_prop, iphys, fld)
+      subroutine check_field_dependencies                               &
+     &         (evo_V, evo_B, evo_A, evo_T, evo_C, fl_prop, iphys, fld)
 !
+      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: fld
@@ -115,50 +126,50 @@
 !
 !   check dependencies for time evolution
 !
-      if (evo_vect_p%iflag_scheme .gt. id_no_evolution                  &
-     &     .and. evo_magne%iflag_scheme .gt. id_no_evolution) then
+      if (evo_A%iflag_scheme .gt. id_no_evolution                       &
+     &     .and. evo_B%iflag_scheme .gt. id_no_evolution) then
          call calypso_MPI_abort(ierr_fld,                               &
      &        'You should choose vector potential OR magnetic field for &
      & time evolution')
       end if
 !
-      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
+      if (evo_V%iflag_scheme .gt. id_no_evolution) then
         msg = 'time integration for velocity needs'
         call check_missing_field_w_msg(fld, msg, iphys%i_velo)
         call check_missing_field_w_msg(fld, msg, iphys%i_press)
       end if
 !
-      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
+      if (evo_V%iflag_scheme .gt. id_no_evolution) then
         msg = 'time integration for velocity needs'
         call check_missing_field_w_msg(fld, msg, iphys%i_vort)
       end if
 !
-      if (evo_temp%iflag_scheme .gt. id_no_evolution) then
+      if (evo_T%iflag_scheme .gt. id_no_evolution) then
         msg = 'Time integration for temperature needs'
         call check_missing_field_w_msg(fld, msg, iphys%i_velo)
         call check_missing_field_w_msg(fld, msg, iphys%i_temp)
       end if
 !
-      if (evo_comp%iflag_scheme .ne. id_no_evolution) then
+      if (evo_C%iflag_scheme .ne. id_no_evolution) then
         msg =  'Time integration for composition needs'
         call check_missing_field_w_msg(fld, msg, iphys%i_velo)
         call check_missing_field_w_msg(fld, msg, iphys%i_light)
       end if
 !
-      if (evo_magne%iflag_scheme .ne. id_no_evolution) then
+      if (evo_B%iflag_scheme .ne. id_no_evolution) then
         msg = 'Time integration for magnetic field needs'
         call check_missing_field_w_msg(fld, msg, iphys%i_magne)
         call check_missing_field_w_msg(fld, msg, iphys%i_velo)
       end if
 !
-      if (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+      if (evo_A%iflag_scheme .gt. id_no_evolution) then
         msg = 'Time integration for vector potential needs'
         call check_missing_field_w_msg(fld, msg, iphys%i_vecp)
         call check_missing_field_w_msg(fld, msg, iphys%i_velo)
       end if
 !
 !
-      if ( evo_velo%iflag_scheme .gt. id_no_evolution) then
+      if ( evo_V%iflag_scheme .gt. id_no_evolution) then
         if (fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
           msg = 'Buoyancy needs'
           call check_missing_field_w_msg(fld, msg, iphys%i_temp)
@@ -185,15 +196,16 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_dependence_FEM_evo(iphys, fld)
+      subroutine check_dependence_FEM_evo(evo_V, iphys, fld)
 !
+      type(time_evolution_params), intent(in) :: evo_V
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: fld
 !
       character(len=kchara) :: msg
 !
 !
-      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
+      if (evo_V%iflag_scheme .gt. id_no_evolution) then
         msg = 'time integration for velocity needs'
         call check_missing_field_w_msg(fld, msg, iphys%i_velo)
         call check_missing_field_w_msg(fld, msg, iphys%i_press)
@@ -203,15 +215,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_dependence_SPH_evo(iphys, fld)
+      subroutine check_dependence_SPH_evo(evo_V, iphys, fld)
 !
+      type(time_evolution_params), intent(in) :: evo_V
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: fld
 !
       character(len=kchara) :: msg
 !
 !
-      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
+      if (evo_V%iflag_scheme .gt. id_no_evolution) then
         msg = 'time integration for velocity needs'
         call check_missing_field_w_msg(fld, msg, iphys%i_vort)
       end if
@@ -222,8 +235,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine check_dependence_4_FEM_SGS                             &
-     &         (SGS_param, cmt_param, fl_prop, iphys, fld)
+     &         (evo_V, evo_B, evo_A, evo_T, evo_C,                      &
+     &          SGS_param, cmt_param, fl_prop, iphys, fld)
 !
+      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(fluid_property), intent(in) :: fl_prop
@@ -234,7 +250,7 @@
       character(len=kchara) :: msg
 !
 !
-      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
+      if (evo_V%iflag_scheme .gt. id_no_evolution) then
         if ( SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
           msg = 'solving SGS momentum flux needs'
           call check_missing_field_w_msg(fld, msg, iphys%i_SGS_m_flux)
@@ -247,7 +263,7 @@
       end if
 !
 !
-      if ( evo_temp%iflag_scheme .gt. id_no_evolution) then
+      if ( evo_T%iflag_scheme .gt. id_no_evolution) then
         if ( SGS_param%iflag_SGS_h_flux .ne. id_SGS_none) then
           msg = 'solving SGS heat flux needs'
           call check_missing_field_w_msg(fld, msg, iphys%i_SGS_h_flux)
@@ -255,7 +271,7 @@
       end if
 !
 !
-      if ( evo_magne%iflag_scheme .gt. id_no_evolution) then
+      if ( evo_B%iflag_scheme .gt. id_no_evolution) then
         if ( SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
           msg = 'solving SGS magnetic induction needs'
           call check_missing_field_w_msg                                &
@@ -266,7 +282,7 @@
       end if
 !
 !
-      if ( evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+      if ( evo_A%iflag_scheme .gt. id_no_evolution) then
         if ( SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
           msg = 'solving SGS induction needs'
           call check_missing_field_w_msg                                &
@@ -275,14 +291,14 @@
       end if
 !
 !
-      if ( evo_comp%iflag_scheme .gt. id_no_evolution) then
+      if ( evo_C%iflag_scheme .gt. id_no_evolution) then
         if (SGS_param%iflag_SGS_c_flux .ne. id_SGS_none) then
           msg = 'solving SGS compsition flux needs'
           call check_missing_field_w_msg(fld, msg, iphys%i_SGS_c_flux)
         end if
       end if
 !
-      if ( evo_velo%iflag_scheme .gt. id_no_evolution) then
+      if ( evo_V%iflag_scheme .gt. id_no_evolution) then
         if ( SGS_param%iflag_SGS_m_flux .eq. id_SGS_similarity          &
      &     .and. SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS momentum flux needs'
@@ -319,7 +335,7 @@
         end if
       end if
 !
-      if ( evo_temp%iflag_scheme .gt. id_no_evolution) then
+      if ( evo_T%iflag_scheme .gt. id_no_evolution) then
         if    (SGS_param%iflag_SGS_h_flux .eq. id_SGS_similarity        &
      &   .and. SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS heat flux needs'
@@ -328,8 +344,8 @@
       end if
 !
 !
-      if (    evo_magne%iflag_scheme .gt. id_no_evolution               &
-     &   .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+      if (    evo_B%iflag_scheme .gt. id_no_evolution                   &
+     &   .or. evo_A%iflag_scheme .gt. id_no_evolution) then
         if    (SGS_param%iflag_SGS_uxb .eq. id_SGS_similarity           &
      &   .and. SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS induction needs'
@@ -340,7 +356,7 @@
       end if
 !
 !
-      if ( evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+      if ( evo_A%iflag_scheme .gt. id_no_evolution) then
         if (   cmt_param%iflag_commute .gt. id_SGS_commute_OFF          &
      &   .and. SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'filterd A is required for dynamic model'
@@ -353,9 +369,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_dependence_4_SPH_SGS                             &
-     &         (SGS_param, fl_prop, iphys, fld)
+      subroutine check_dependence_4_SPH_SGS(evo_V, evo_B, evo_T, evo_C, &
+                SGS_param, fl_prop, iphys, fld)
 !
+      type(time_evolution_params), intent(in) :: evo_V, evo_B
+      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(fluid_property), intent(in) :: fl_prop
       type(phys_address), intent(in) :: iphys
@@ -364,7 +382,7 @@
       character(len=kchara) :: msg
 !
 !
-      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
+      if (evo_V%iflag_scheme .gt. id_no_evolution) then
         if ( SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
           msg = 'solving SGS momentum flux needs'
           call check_missing_field_w_msg(fld, msg, iphys%i_SGS_inertia)
@@ -377,7 +395,7 @@
       end if
 !
 !
-      if ( evo_temp%iflag_scheme .gt. id_no_evolution) then
+      if ( evo_T%iflag_scheme .gt. id_no_evolution) then
         if ( SGS_param%iflag_SGS_h_flux .ne. id_SGS_none) then
           msg = 'solving SGS heat flux needs'
           call check_missing_field_w_msg(fld, msg, iphys%i_SGS_h_flux)
@@ -385,7 +403,7 @@
       end if
 !
 !
-      if ( evo_magne%iflag_scheme .gt. id_no_evolution) then
+      if ( evo_B%iflag_scheme .gt. id_no_evolution) then
         if ( SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
           msg = 'solving SGS magnetic induction needs'
           call check_missing_field_w_msg                                &
@@ -396,7 +414,7 @@
       end if
 !
 !
-      if ( evo_comp%iflag_scheme .gt. id_no_evolution) then
+      if ( evo_C%iflag_scheme .gt. id_no_evolution) then
         if (SGS_param%iflag_SGS_c_flux .ne. id_SGS_none) then
           msg = 'solving SGS compsition flux needs'
           call check_missing_field_w_msg(fld, msg, iphys%i_SGS_c_flux)
@@ -404,7 +422,7 @@
       end if
 !
 !
-      if ( evo_velo%iflag_scheme .gt. id_no_evolution) then
+      if ( evo_V%iflag_scheme .gt. id_no_evolution) then
         if    (SGS_param%iflag_SGS_m_flux .eq. id_SGS_similarity        &
      &   .and. SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS momentum flux needs'
@@ -441,7 +459,7 @@
         end if
       end if
 !
-      if ( evo_temp%iflag_scheme .gt. id_no_evolution) then
+      if ( evo_T%iflag_scheme .gt. id_no_evolution) then
         if    (SGS_param%iflag_SGS_h_flux .eq. id_SGS_similarity        &
      &   .and. SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS heat flux needs'
@@ -450,7 +468,7 @@
       end if
 !
 !
-      if ( evo_magne%iflag_scheme .gt. id_no_evolution) then
+      if ( evo_B%iflag_scheme .gt. id_no_evolution) then
         if    (SGS_param%iflag_SGS_uxb .eq. id_SGS_similarity           &
      &   .and. SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS induction needs'
