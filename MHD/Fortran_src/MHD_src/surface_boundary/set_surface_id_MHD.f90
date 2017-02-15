@@ -66,7 +66,9 @@
       if (iflag_debug.eq.1) write(*,*) 'count_num_surf_bc'
       call count_num_surf_bc(IO_bc, sf_grp, sf_grp_nod, surf_bcs)
 !
-      call alloc_surf_bc_data_type(surf_bcs)
+      call alloc_surf_bc_data_type                                      &
+     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
+     &    surf_bcs)
 !
       call set_surface_id                                               &
      &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp, IO_bc,   &

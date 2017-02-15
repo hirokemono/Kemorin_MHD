@@ -4,14 +4,17 @@
 !      Written by H. Matsui
 !
 !!      subroutine s_cal_model_coefficients                             &
-!!     &         (FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh,    &
-!!     &          layer_tbl, nod_bcs, surf_bcs, iphys, iphys_ele,       &
+!!     &         (evo_V, evo_B, evo_A, evo_T, evo_C, FEM_prm, SGS_par,  &
+!!     &          mesh, group, ele_mesh, MHD_mesh, layer_tbl,           &
+!!     &          nod_bcs, surf_bcs, iphys, iphys_ele,                  &
 !!     &          ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,            &
 !!     &          rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs, ifld_diff,   &
 !!     &          icomp_diff, iphys_elediff, filtering, wide_filtering, &
 !!     &          m_lump, wk_cor, wk_lsq, wk_sgs, wk_diff, wk_filter,   &
 !!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,               &
 !!     &          nod_fld, sgs_coefs, sgs_coefs_nod, diff_coefs)
+!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -59,6 +62,7 @@
       use m_machine_parameter
       use m_physical_property
 !
+      use t_time_stepping_parameter
       use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_mesh_data
@@ -94,8 +98,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_cal_model_coefficients                               &
-     &         (FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh,      &
-     &          layer_tbl, nod_bcs, surf_bcs, iphys, iphys_ele,         &
+     &         (evo_V, evo_B, evo_A, evo_T, evo_C, FEM_prm, SGS_par,    &
+     &          mesh, group, ele_mesh, MHD_mesh, layer_tbl,             &
+     &          nod_bcs, surf_bcs, iphys, iphys_ele,                    &
      &          ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,              &
      &          rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs, ifld_diff,     &
      &          icomp_diff, iphys_elediff, filtering, wide_filtering,   &
@@ -117,6 +122,8 @@
       use cal_diff_coef_sgs_induct
       use cal_sgs_uxb_dynamic_simi
 !
+      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
@@ -163,7 +170,7 @@
       if(my_rank .eq. 0) write(*,*)                                     &
      &            'set Csim', i_step_MHD, i_step_sgs_coefs
 !
-      if(evo_temp%iflag_scheme .ne. id_no_evolution) then
+      if(evo_T%iflag_scheme .ne. id_no_evolution) then
         if(SGS_par%model_p%iflag_SGS_h_flux .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_sf_dynamic temp'
           call cal_sgs_sf_dynamic                                       &
@@ -216,7 +223,7 @@
       end if
 !
 !
-      if(evo_comp%iflag_scheme .ne. id_no_evolution) then
+      if(evo_C%iflag_scheme .ne. id_no_evolution) then
         if(SGS_par%model_p%iflag_SGS_c_flux .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_sf_dynamic comp'
           call cal_sgs_sf_dynamic                                       &
@@ -268,7 +275,7 @@
         end if
       end if
 !
-      if(evo_velo%iflag_scheme .ne. id_no_evolution) then
+      if(evo_V%iflag_scheme .ne. id_no_evolution) then
         if (SGS_par%model_p%iflag_SGS_m_flux .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_m_flux_dynamic'
           call cal_sgs_m_flux_dynamic                                   &
@@ -352,7 +359,7 @@
 !
 !
 !
-      if(evo_magne%iflag_scheme .gt. id_no_evolution) then
+      if(evo_B%iflag_scheme .gt. id_no_evolution) then
         if(SGS_par%model_p%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'cal_sgs_induct_t_dynamic'
@@ -392,7 +399,7 @@
      &       f_l, f_nl, nod_fld, diff_coefs)
         end if
 !
-      else if(evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+      else if(evo_A%iflag_scheme .gt. id_no_evolution) then
 !
         if(SGS_par%model_p%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_uxb_dynamic'

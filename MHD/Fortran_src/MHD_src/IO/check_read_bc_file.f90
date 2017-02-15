@@ -7,7 +7,10 @@
 !> @brief Decide if boundary condition data field is read
 !!
 !!@verbatim
-!!      integer(kind = kint) function check_read_boundary_files()
+!!      integer(kind = kint) function check_read_boundary_files         &
+!!     &                   (evo_V, evo_B, evo_A, evo_T, evo_C)
+!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!@endverbatim
 !
       module check_read_bc_file
@@ -29,12 +32,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      integer(kind = kint) function check_read_boundary_files()
+      integer(kind = kint) function check_read_boundary_files           &
+     &                   (evo_V, evo_B, evo_A, evo_T, evo_C)
 !
       use calypso_mpi
-      use m_control_parameter
       use m_bc_data_list
       use m_surf_data_list
+      use t_time_stepping_parameter
+!
+      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_T, evo_C
 !
       integer(kind = kint) :: iflag_boundary_file
 !
@@ -42,7 +49,7 @@
 !
 ! ----  read boundary data for temperature
 !
-      if ( evo_temp%iflag_scheme .gt. id_no_evolution) then
+      if ( evo_T%iflag_scheme .gt. id_no_evolution) then
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
      &      temp_nod%num_bc, temp_nod%ibc_type)
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
@@ -51,7 +58,7 @@
 !
 ! ----  read boundary data for velocity
 !
-      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
+      if (evo_V%iflag_scheme .gt. id_no_evolution) then
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
      &      velo_nod%num_bc, velo_nod%ibc_type)
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
@@ -65,15 +72,15 @@
 !
 ! ----  read boundary data for dummy scalar
 !
-      if ( evo_comp%iflag_scheme .gt. id_no_evolution) then
+      if ( evo_C%iflag_scheme .gt. id_no_evolution) then
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
      &      light_nod%num_bc, light_nod%ibc_type)
       end if
 !
 ! ----  read boundary data for magnetic field
 !
-      if ( evo_magne%iflag_scheme .gt. id_no_evolution                  &
-     &      .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+      if (    evo_B%iflag_scheme .gt. id_no_evolution                   &
+     &   .or. evo_A%iflag_scheme .gt. id_no_evolution) then
 !
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
      &      magne_nod%num_bc, magne_nod%ibc_type)
@@ -88,7 +95,7 @@
 !
 ! ----  read boundary data for vector potential
 !
-      if ( evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+      if (evo_A%iflag_scheme .gt. id_no_evolution) then
 !
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
      &      a_potential_nod%num_bc, a_potential_nod%ibc_type)
@@ -103,8 +110,8 @@
 !
 ! ----  read boundary data for current density
 !
-      if ( evo_magne%iflag_scheme .gt. id_no_evolution                  &
-     &      .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+      if (     evo_B%iflag_scheme .gt. id_no_evolution                  &
+     &    .or. evo_A%iflag_scheme .gt. id_no_evolution) then
 !
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
      &      current_nod%num_bc, current_nod%ibc_type)

@@ -7,7 +7,11 @@
 !>    @brief flux boundary condition lists for MHD dynamo model
 !!
 !!@verbatim
-!!      subroutine alloc_surf_bc_data_type(surf_bcs)
+!!      subroutine alloc_surf_bc_data_type                              &
+!!     &         (evo_V, evo_B, evo_A, evo_T, evo_C, surf_bcs)
+!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
+!!        type(surface_boundarty_conditions), intent(inout) :: surf_bcs
 !!
 !!      subroutine alloc_surf_data_velo(Vsf_bcs)
 !!      subroutine alloc_surf_potential(Fsf_bcs)
@@ -47,34 +51,37 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine alloc_surf_bc_data_type(surf_bcs)
+      subroutine alloc_surf_bc_data_type                                &
+     &         (evo_V, evo_B, evo_A, evo_T, evo_C, surf_bcs)
 !
-      use m_control_parameter
+      use t_time_stepping_parameter
 !
+      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(surface_boundarty_conditions), intent(inout) :: surf_bcs
 !
 !
-      if (evo_temp%iflag_scheme .gt. id_no_evolution) then
+      if (evo_T%iflag_scheme .gt. id_no_evolution) then
         call alloc_surf_data_scalar(surf_bcs%Tsf_bcs)
       end if
 !
-      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
+      if (evo_V%iflag_scheme .gt. id_no_evolution) then
         call alloc_surf_data_velo(surf_bcs%Vsf_bcs)
         call alloc_surf_potential(surf_bcs%Psf_bcs)
       end if
 !
-      if (evo_magne%iflag_scheme .gt. id_no_evolution                   &
-     &      .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+      if     (evo_B%iflag_scheme .gt. id_no_evolution                   &
+     &   .or. evo_A%iflag_scheme .gt. id_no_evolution) then
         call alloc_surf_vector(surf_bcs%Bsf_bcs)
         call alloc_surf_vector(surf_bcs%Jsf_bcs)
         call alloc_surf_potential(surf_bcs%Fsf_bcs)
       end if
 !
-      if (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+      if (evo_A%iflag_scheme .gt. id_no_evolution) then
         call alloc_surf_data_velo(surf_bcs%Asf_bcs)
       end if
 ! 
-      if (evo_comp%iflag_scheme .gt. id_no_evolution) then
+      if (evo_C%iflag_scheme .gt. id_no_evolution) then
         call alloc_surf_data_scalar(surf_bcs%Csf_bcs)
       end if
 ! 

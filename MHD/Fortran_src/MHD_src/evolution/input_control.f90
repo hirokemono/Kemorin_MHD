@@ -245,13 +245,18 @@
 !
       subroutine boundary_file_IO_control(group, IO_bc)
 !
+      use m_control_parameter
       use check_read_bc_file
 !
       type(mesh_groups), intent(in) ::   group
       type(IO_boundary), intent(inout) :: IO_bc
 !
+      integer(kind = kint) :: iflag
 !
-      if (check_read_boundary_files() .eq. id_no_boundary_file) return
+!
+      iflag = check_read_boundary_files                                 &
+     &      (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp)
+      if (iflag .eq. id_no_boundary_file) return
 !
       call read_bc_condition_file                                       &
      &     (my_rank, group%nod_grp, group%surf_grp, IO_bc)

@@ -96,7 +96,9 @@
       type(MHD_matrices_pack), intent(inout) :: s_package
 !
 !
-      call s_set_MHD_idx_4_mat_type(mesh, MHD_mesh, rhs_tbl,            &
+      call s_set_MHD_idx_4_mat_type                                     &
+     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
+     &    mesh, MHD_mesh, rhs_tbl,                                      &
      &    MHD_matrices%MG_DJDS_table(0), MHD_matrices%MG_DJDS_fluid(0), &
      &    MHD_matrices%MG_DJDS_linear(0),                               &
      &    MHD_matrices%MG_DJDS_lin_fl(0),                               &
@@ -229,7 +231,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'preconditioning'
       call matrix_precondition                                          &
-     &   (s_package%Vmatrix, s_package%Pmatrix, s_package%Bmatrix,      &
+     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
+     &    s_package%Vmatrix, s_package%Pmatrix, s_package%Bmatrix,      &
      &    s_package%Fmatrix, s_package%Tmatrix, s_package%Cmatrix)
 !
       end subroutine set_aiccg_matrices

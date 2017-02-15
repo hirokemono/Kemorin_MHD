@@ -7,7 +7,10 @@
 !>@brief flux boundary condition lists for MHD dynamo model
 !!
 !!@verbatim
-!!      subroutine allocate_velo_surf_ctl
+!!      subroutine deallocate_surf_bc_lists                             &
+!!     &         (evo_V, evo_B, evo_A, evo_T, evo_C)
+!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!      subroutine allocate_press_surf_ctl
 !!      subroutine allocate_temp_surf_ctl
 !!      subroutine allocate_magne_surf_ctl
@@ -67,32 +70,36 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine deallocate_surf_bc_lists
+      subroutine deallocate_surf_bc_lists                               &
+     &         (evo_V, evo_B, evo_A, evo_T, evo_C)
 !
-      use m_control_parameter
+      use t_time_stepping_parameter
+!
+      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_T, evo_C
 !
 !
-      if (evo_temp%iflag_scheme .gt. id_no_evolution) then
+      if (evo_T%iflag_scheme .gt. id_no_evolution) then
         if(h_flux_surf%num_bc .gt. 0) call deallocate_temp_surf_ctl
       end if
 !
-      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
+      if (evo_V%iflag_scheme .gt. id_no_evolution) then
         if(torque_surf%num_bc.gt.0) call deallocate_velo_surf_ctl
         if(wall_surf%num_bc.gt.0)   call deallocate_press_surf_ctl
       end if
 !
-      if (evo_magne%iflag_scheme .gt. id_no_evolution                   &
-     &      .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+      if    (evo_B%iflag_scheme .gt. id_no_evolution                    &
+     &  .or. evo_A%iflag_scheme .gt. id_no_evolution) then
         if(magne_surf%num_bc .gt. 0)   call deallocate_magne_surf_ctl
         if(current_surf%num_bc .gt. 0) call deallocate_current_surf_ctl
         if(e_potential_surf%num_bc.gt.0) call deallocate_magp_surf_ctl
       end if
 !
-      if (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+      if (evo_A%iflag_scheme .gt. id_no_evolution) then
         if(a_potential_surf%num_bc.gt.0) call deallocate_vecp_surf_ctl
       end if
 ! 
-      if (evo_comp%iflag_scheme .gt. id_no_evolution) then
+      if (evo_C%iflag_scheme .gt. id_no_evolution) then
         if(light_surf%num_bc.gt.0) call deallocate_composit_surf_ctl
       end if
 !

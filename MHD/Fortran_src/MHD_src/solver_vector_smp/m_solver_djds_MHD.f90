@@ -11,6 +11,7 @@
 !!
       module m_solver_djds_MHD
 !
+      use t_time_stepping_parameter
       use m_precision
       use t_comm_table
       use t_solver_djds
@@ -51,7 +52,8 @@
 !
 !
       call set_residual_4_crank                                         &
-     &   (fl_prop1, cd_prop1, ht_prop1)
+     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
+     &    fl_prop1, cd_prop1, ht_prop1)
 !
       call alloc_aiccg_matrices                                         &
      &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp, node,    &
@@ -161,33 +163,35 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_residual_4_crank                                   &
-     &         (fl_prop, cd_prop, ht_prop)
+     &         (evo_V, evo_B, evo_A, evo_T, evo_C,                      &
+     &          fl_prop, cd_prop, ht_prop)
 !
       use m_machine_parameter
-      use m_control_parameter
       use m_t_int_parameter
       use m_iccg_parameter
 !
       use t_physical_property
 !
+      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
       type(scalar_property), intent(in) :: ht_prop
 !
-      if (evo_velo%iflag_scheme .ge. id_Crank_nicolson) then
+      if (evo_V%iflag_scheme .ge. id_Crank_nicolson) then
         eps_4_velo_crank = eps_crank * fl_prop%coef_diffuse * dt**2
         if(iflag_debug.eq.1)                                            &
      &     write(12,*) 'eps_4_velo', eps_4_velo_crank
       end if
 !
-      if (evo_temp%iflag_scheme .ge. id_Crank_nicolson) then
+      if (evo_T%iflag_scheme .ge. id_Crank_nicolson) then
         eps_4_temp_crank = eps_crank * ht_prop%coef_diffuse * dt**2
         if(iflag_debug.eq.1)                                            &
      &     write(12,*) 'eps_4_temp_crank', eps_4_temp_crank
       end if
 !
-      if (   evo_magne%iflag_scheme .ge. id_Crank_nicolson              &
-     &  .or. evo_vect_p%iflag_scheme .ge. id_Crank_nicolson) then
+      if (   evo_B%iflag_scheme .ge. id_Crank_nicolson                  &
+     &  .or. evo_A%iflag_scheme .ge. id_Crank_nicolson) then
 !
         if(eps_4_magne_crank .le. 0.0d0) then
           eps_4_magne_crank = eps_crank * cd_prop%coef_diffuse * dt**2
@@ -196,10 +200,10 @@
      &     write(12,*) 'eps_4_magne_crank', eps_4_magne_crank
       end if
 !
-      if (evo_comp%iflag_scheme .ge. id_Crank_nicolson) then
+      if (evo_C%iflag_scheme .ge. id_Crank_nicolson) then
         eps_4_comp_crank = eps_crank * cd_prop%coef_diffuse * dt**2
         if(iflag_debug.eq.1)                                            &
-     &     write(12,*) 'iflag_t_evo_4_composit', evo_comp%iflag_scheme
+     &     write(12,*) 'iflag_t_evo_4_composit', evo_C%iflag_scheme
       end if
 !
       end subroutine set_residual_4_crank

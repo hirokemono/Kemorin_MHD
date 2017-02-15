@@ -103,7 +103,8 @@
 !
         if (iflag_debug.eq.1) write(*,*) 'cal_nonlinear_pole_MHD'
         call cal_nonlinear_pole_MHD                                     &
-     &     (sph%sph_rtp, fl_prop1, cd_prop1, ht_prop1, cp_prop1,        &
+     &     (evo_velo, evo_magne, evo_temp, evo_comp, sph%sph_rtp,       &
+     &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
      &      WK%trns_MHD%f_trns, WK%trns_MHD%b_trns,                     &
      &      WK%trns_MHD%ncomp_rj_2_rtp, WK%trns_MHD%ncomp_rtp_2_rj,     &
      &      WK%trns_MHD%fld_pole, WK%trns_MHD%frc_pole)

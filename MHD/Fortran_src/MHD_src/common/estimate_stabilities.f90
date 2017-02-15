@@ -5,7 +5,14 @@
 !      Modified by H. Matsui on july, 2006
 !
 !!      subroutine cal_stability_4_diffuse                              &
-!!     &         (ele, fl_prop, cd_prop, ht_prop, cp_prop)
+!!     &         (evo_V, evo_B, evo_A, evo_T, evo_C, ele,               &
+!!     &          fl_prop, cd_prop, ht_prop, cp_prop)
+!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
+!!        type(element_data), intent(in) :: ele
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in)  :: cd_prop
+!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!      subroutine cal_stability_4_advect                               &
 !!     &         (ele, fluid, ncomp_ele, ivelo_ele, d_ele)
 !
@@ -14,11 +21,11 @@
       use m_precision
 !
       use calypso_mpi
-      use m_control_parameter
       use m_t_int_parameter
       use m_t_step_parameter
       use m_stability_data
 !
+      use t_time_stepping_parameter
       use t_physical_property
       use t_geometry_data
       use t_geometry_data_MHD
@@ -32,8 +39,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_stability_4_diffuse                                &
-     &         (ele, fl_prop, cd_prop, ht_prop, cp_prop)
+     &         (evo_V, evo_B, evo_A, evo_T, evo_C, ele,                 &
+     &          fl_prop, cd_prop, ht_prop, cp_prop)
 !
+      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(element_data), intent(in) :: ele
 !
       type(fluid_property), intent(in) :: fl_prop
@@ -59,26 +69,26 @@
       if ( my_rank .eq. 0 ) then
 !
         write(12,*) ' Delta t: ', dt
-        if (evo_velo%iflag_scheme .gt. id_no_evolution) then
+        if (evo_V%iflag_scheme .gt. id_no_evolution) then
          cfl_diffuse = cfl_advect / fl_prop%coef_diffuse
          write(12,*) 'estimated limit for Delta t for velovity:      ', &
      &    cfl_diffuse
         end if
 !
-        if (evo_temp%iflag_scheme .gt. id_no_evolution) then
+        if (evo_T%iflag_scheme .gt. id_no_evolution) then
          cfl_diffuse = cfl_advect / ht_prop%coef_diffuse
          write(12,*) 'estimated limit for Delta t for temperature:   ', &
      &    cfl_diffuse
         end if
 !
-        if (evo_magne%iflag_scheme .gt. id_no_evolution                 &
-     &        .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+        if     (evo_B%iflag_scheme .gt. id_no_evolution                 &
+     &     .or. evo_A%iflag_scheme .gt. id_no_evolution) then
          cfl_diffuse = cfl_advect / cd_prop%coef_diffuse
          write(12,*) 'estimated limit for Delta t for magnetic field:', &
      &    cfl_diffuse
         end if
 !
-        if (evo_comp%iflag_scheme .gt. id_no_evolution) then
+        if (evo_C%iflag_scheme .gt. id_no_evolution) then
          cfl_diffuse = cfl_advect / cp_prop%coef_diffuse
          write(12,*) 'estimated limit for Delta t for composition:   ', &
      &    cfl_diffuse

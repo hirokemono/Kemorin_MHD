@@ -6,7 +6,10 @@
 !     Written by H. Matsui
 !
 !!      subroutine init_ele_material_property                           &
-!!     &         (numele, fl_prop, cd_prop, ht_prop, cp_prop)
+!!     &         (numele, evo_V, evo_B, evo_A, evo_T, evo_C,            &
+!!     &          fl_prop, cd_prop, ht_prop, cp_prop)
+!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in)  :: cd_prop
 !!        type(scalar_property), intent(in) :: ht_prop, cp_prop
@@ -14,6 +17,7 @@
       module m_ele_material_property
 !
       use m_precision
+      use m_machine_parameter
       use t_material_property
 !
       implicit  none
@@ -29,27 +33,29 @@
 !-----------------------------------------------------------------------
 !
       subroutine init_ele_material_property                             &
-     &         (numele, fl_prop, cd_prop, ht_prop, cp_prop)
+     &         (numele, evo_V, evo_B, evo_A, evo_T, evo_C,              &
+     &          fl_prop, cd_prop, ht_prop, cp_prop)
 !
-      use m_machine_parameter
-      use m_control_parameter
+      use t_time_stepping_parameter
       use t_physical_property
 !
       integer(kind = kint), intent(in) :: numele
+      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in)  :: cd_prop
       type(scalar_property), intent(in) :: ht_prop, cp_prop
 !
 !    For thermal
 !
-      if (evo_temp%iflag_scheme .gt. id_no_evolution) then
+      if (evo_T%iflag_scheme .gt. id_no_evolution) then
         call alloc_temp_diff_MHD_AMG(numele, ak_MHD)
         ak_MHD%ak_d_temp(1:numele) = ht_prop%coef_diffuse
       end if
 !
 !    For convection
 !
-      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
+      if (evo_V%iflag_scheme .gt. id_no_evolution) then
         call alloc_velo_diff_MHD_AMG(numele, ak_MHD)
         ak_MHD%ak_d_velo(1:numele) = fl_prop%coef_diffuse
 !
@@ -67,15 +73,15 @@
 !
 !   For Induction
 !
-      if (evo_magne%iflag_scheme .gt. id_no_evolution                   &
-     &    .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+      if     (evo_B%iflag_scheme .gt. id_no_evolution                   &
+     &   .or. evo_A%iflag_scheme .gt. id_no_evolution) then
         call alloc_magne_diff_MHD_AMG(numele, ak_MHD)
         ak_MHD%ak_d_magne(1:numele) = cd_prop%coef_diffuse
       end if
 !
 !   For dummy scalar
 !
-      if (evo_comp%iflag_scheme .gt. id_no_evolution) then
+      if (evo_C%iflag_scheme .gt. id_no_evolution) then
         call alloc_dscalar_diff_MHD_AMG(numele, ak_MHD)
         ak_MHD%ak_d_composit(1:numele) = cp_prop%coef_diffuse
       end if

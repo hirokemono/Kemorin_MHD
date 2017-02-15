@@ -22,6 +22,7 @@
 !
       use m_precision
 !
+      use t_time_stepping_parameter
       use t_phys_address
       use t_addresses_sph_transform
       use t_physical_property
@@ -54,14 +55,16 @@
       integer(kind = kint) :: nscltsr_rtp_2_rj, nscltsr_rj_2_rtp
 !
       call b_trans_address_vector_MHD                                   &
-     &   (fl_prop1, ipol, trns_MHD%nvector_rj_2_rtp, trns_MHD%b_trns)
-      call b_trans_address_scalar_MHD                                   &
-     &   (ipol, trns_MHD%nvector_rj_2_rtp, trns_MHD%nscalar_rj_2_rtp,   &
+     &   (evo_velo, evo_magne, evo_temp, evo_comp,                      &
+     &    fl_prop1, ipol, trns_MHD%nvector_rj_2_rtp, trns_MHD%b_trns)
+      call b_trans_address_scalar_MHD(evo_temp, evo_comp,               &
+     &    ipol, trns_MHD%nvector_rj_2_rtp, trns_MHD%nscalar_rj_2_rtp,   &
      &    trns_MHD%b_trns)
       trns_MHD%ntensor_rj_2_rtp = 0
 !
       call f_trans_address_vector_MHD                                   &
-     &   (fl_prop1, ipol, trns_MHD%nvector_rtp_2_rj, trns_MHD%f_trns)
+     &   (evo_velo, evo_magne, evo_temp, evo_comp,                      &
+     &    fl_prop1, ipol, trns_MHD%nvector_rtp_2_rj, trns_MHD%f_trns)
       call f_trans_address_scalar_MHD                                   &
      &   (fl_prop1, trns_MHD%nvector_rtp_2_rj,                          &
      &    trns_MHD%nscalar_rtp_2_rj, trns_MHD%f_trns)
@@ -112,11 +115,11 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine b_trans_address_vector_MHD                             &
-     &         (fl_prop, ipol, nvector_rj_2_rtp, b_trns)
+      subroutine b_trans_address_vector_MHD(evo_V, evo_B, evo_T, evo_C, &
+     &          fl_prop, ipol, nvector_rj_2_rtp, b_trns)
 !
-      use m_control_parameter
-!
+      type(time_evolution_params), intent(in) :: evo_V, evo_B
+      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
       type(phys_address), intent(in) :: ipol
       integer(kind = kint), intent(inout) :: nvector_rj_2_rtp
@@ -124,20 +127,20 @@
 !
       nvector_rj_2_rtp = 0
 !   velocity flag
-      if(       evo_velo%iflag_scheme .gt.     id_no_evolution          &
-     &     .or. evo_magne%iflag_scheme .gt.    id_no_evolution          &
-     &     .or. evo_temp%iflag_scheme .gt.     id_no_evolution          &
-     &     .or. evo_comp%iflag_scheme .gt. id_no_evolution) then
+      if(       evo_V%iflag_scheme .gt. id_no_evolution                 &
+     &     .or. evo_B%iflag_scheme .gt. id_no_evolution                 &
+     &     .or. evo_T%iflag_scheme .gt. id_no_evolution                 &
+     &     .or. evo_C%iflag_scheme .gt. id_no_evolution) then
         nvector_rj_2_rtp = nvector_rj_2_rtp + 1
         b_trns%i_velo = 3*nvector_rj_2_rtp - 2
       end if
 !   vorticity flag
-      if(       evo_velo%iflag_scheme .gt. id_no_evolution) then
+      if(       evo_V%iflag_scheme .gt. id_no_evolution) then
         nvector_rj_2_rtp = nvector_rj_2_rtp + 1
         b_trns%i_vort = 3*nvector_rj_2_rtp - 2
       end if
 !   magnetic field flag
-      if(       evo_magne%iflag_scheme .gt. id_no_evolution             &
+      if(       evo_B%iflag_scheme .gt. id_no_evolution                 &
      &     .or. fl_prop%iflag_4_lorentz .gt.     id_turn_OFF) then
         nvector_rj_2_rtp = nvector_rj_2_rtp + 1
         b_trns%i_magne = 3*nvector_rj_2_rtp - 2
@@ -179,11 +182,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine b_trans_address_scalar_MHD                             &
-     &         (ipol, nvector_rj_2_rtp, nscalar_rj_2_rtp, b_trns)
+      subroutine b_trans_address_scalar_MHD(evo_T, evo_C,               &
+     &          ipol, nvector_rj_2_rtp, nscalar_rj_2_rtp, b_trns)
 !
-      use m_control_parameter
-!
+      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(phys_address), intent(in) :: ipol
       integer(kind = kint), intent(in) :: nvector_rj_2_rtp
       integer(kind = kint), intent(inout) :: nscalar_rj_2_rtp
@@ -192,12 +194,12 @@
 !
       nscalar_rj_2_rtp = 0
 !   temperature flag
-      if(evo_temp%iflag_scheme .gt. id_no_evolution) then
+      if(evo_T%iflag_scheme .gt. id_no_evolution) then
         nscalar_rj_2_rtp = nscalar_rj_2_rtp + 1
         b_trns%i_temp = nscalar_rj_2_rtp + 3*nvector_rj_2_rtp
       end if
 !   composition flag
-      if(evo_comp%iflag_scheme .gt. id_no_evolution) then
+      if(evo_C%iflag_scheme .gt. id_no_evolution) then
         nscalar_rj_2_rtp = nscalar_rj_2_rtp + 1
         b_trns%i_light = nscalar_rj_2_rtp + 3*nvector_rj_2_rtp
       end if
@@ -220,11 +222,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine f_trans_address_vector_MHD                             &
-     &         (fl_prop, ipol, nvector_rtp_2_rj, f_trns)
+      subroutine f_trans_address_vector_MHD(evo_V, evo_B, evo_T, evo_C, &
+     &          fl_prop, ipol, nvector_rtp_2_rj, f_trns)
 !
-      use m_control_parameter
-!
+      type(time_evolution_params), intent(in) :: evo_V, evo_B
+      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
       type(phys_address), intent(in) :: ipol
       type(phys_address), intent(inout) :: f_trns
@@ -233,7 +235,7 @@
 !
       nvector_rtp_2_rj = 0
 !   advection flag
-      if(evo_velo%iflag_scheme .gt. id_no_evolution) then
+      if(evo_V%iflag_scheme .gt. id_no_evolution) then
         nvector_rtp_2_rj = nvector_rtp_2_rj + 1
         f_trns%i_m_advect = 3*nvector_rtp_2_rj - 2
 !   Coriolis flag
@@ -253,19 +255,19 @@
       end if
 !
 !   induction flag
-      if(evo_magne%iflag_scheme .gt. id_no_evolution) then
+      if(evo_B%iflag_scheme .gt. id_no_evolution) then
         nvector_rtp_2_rj = nvector_rtp_2_rj + 1
         f_trns%i_vp_induct =  3*nvector_rtp_2_rj - 2
       end if
 !
 !   heat flux flag
-      if(evo_temp%iflag_scheme .gt. id_no_evolution) then
+      if(evo_T%iflag_scheme .gt. id_no_evolution) then
         nvector_rtp_2_rj = nvector_rtp_2_rj + 1
         f_trns%i_h_flux = 3*nvector_rtp_2_rj - 2
       end if
 !
 !   composition flux flag
-      if(evo_comp%iflag_scheme .gt. id_no_evolution) then
+      if(evo_C%iflag_scheme .gt. id_no_evolution) then
         nvector_rtp_2_rj = nvector_rtp_2_rj + 1
         f_trns%i_c_flux = 3*nvector_rtp_2_rj - 2
       end if

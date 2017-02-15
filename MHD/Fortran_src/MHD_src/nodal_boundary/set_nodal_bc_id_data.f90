@@ -5,7 +5,9 @@
 !                                    on July 2000 (ver 1.1)
 !        modified by H.Matsui on Aug., 2007
 !
-!!      subroutine set_bc_fields(mesh, iphys, nod_fld, nod_bcs)
+!!      subroutine set_bc_fields                                        &
+!!     &         (evo_V, evo_B, evo_A, evo_T, evo_C, mesh,              &
+!!     &          iphys, nod_fld, nod_bcs)
 !!      subroutine set_boundary_velo(node, i_velo, nod_fld)
 !!      subroutine set_boundary_velo_4_rhs(node, Vnod_bcs, f_l, f_nl)
 !!      subroutine delete_field_by_fixed_v_bc(Vnod_bcs, i_field, nod_fld)
@@ -24,6 +26,7 @@
       use m_precision
       use m_constants
 !
+      use t_time_stepping_parameter
       use t_mesh_data
       use t_geometry_data_MHD
       use t_geometry_data
@@ -41,10 +44,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_bc_fields(mesh, iphys, nod_fld, nod_bcs)
+      subroutine set_bc_fields                                          &
+     &         (evo_V, evo_B, evo_A, evo_T, evo_C, mesh,                &
+     &          iphys, nod_fld, nod_bcs)
 !
       use m_machine_parameter
-      use m_control_parameter
       use m_physical_property
 !
       use m_boundary_condition_IDs
@@ -54,6 +58,8 @@
       use set_nodal_boundary
       use set_boundary_scalars
 !
+      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(mesh_geometry), intent(in) :: mesh
 !
       type(phys_address), intent(in) :: iphys
@@ -62,13 +68,13 @@
 !
 !
 !
-      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
+      if (evo_V%iflag_scheme .gt. id_no_evolution) then
         if ( iflag_debug .eq.1) write(*,*)  'set boundary values 4 v'
         call set_boundary_velo                                          &
      &     (mesh%node, nod_bcs%Vnod_bcs, iphys%i_velo, nod_fld)
       end if
 !
-      if (evo_temp%iflag_scheme .gt. id_no_evolution) then
+      if (evo_T%iflag_scheme .gt. id_no_evolution) then
         if (ref_param_T1%iflag_reference .ne. id_no_ref_temp) then
           call set_fixed_bc_per_scalar                                  &
      &       (mesh%node%numnod, nod_fld%ntot_phys,                      &
@@ -79,7 +85,7 @@
      &     (nod_bcs%Tnod_bcs%nod_bc_s, iphys%i_temp, nod_fld)
       end if
 !
-      if (evo_comp%iflag_scheme .gt. id_no_evolution) then
+      if (evo_C%iflag_scheme .gt. id_no_evolution) then
         if (ref_param_C1%iflag_reference .ne. id_no_ref_temp) then
           call set_fixed_bc_per_scalar                                  &
      &       (mesh%node%numnod, nod_fld%ntot_phys,                      &
@@ -90,8 +96,8 @@
      &     (nod_bcs%Cnod_bcs%nod_bc_s, iphys%i_light, nod_fld)
       end if
 !
-      if (evo_magne%iflag_scheme .gt. id_no_evolution                   &
-     &  .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+      if    (evo_B%iflag_scheme .gt. id_no_evolution                    &
+     &  .or. evo_A%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1)  write(*,*) 'set_boundary_vect magne'
         call set_boundary_vect                                          &
      &     (nod_bcs%Bnod_bcs%nod_bc_b, iphys%i_magne, nod_fld)
@@ -103,7 +109,7 @@
      &     (nod_bcs%Bnod_bcs%nod_bc_j, iphys%i_current, nod_fld)
       end if
 !
-      if (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+      if (evo_A%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug .eq.1) write(*,*) 'set_boundary_vect vect_p'
         call set_boundary_vect                                          &
      &     (nod_bcs%Bnod_bcs%nod_bc_a, iphys%i_vecp, nod_fld)
@@ -115,8 +121,6 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_boundary_velo(node, Vnod_bcs, i_velo, nod_fld)
-!
-      use m_control_parameter
 !
       use t_bc_data_velo
 !

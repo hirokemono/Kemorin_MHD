@@ -8,8 +8,10 @@
 !!      subroutine s_int_mean_squares                                   &
 !!     &         (npoint_integrate, node, ele, fluid, conduct,          &
 !!     &          iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk, mhd_fem_wk)
-!!      subroutine int_no_evo_mean_squares(node, ele, iphys, nod_fld,   &
+!!      subroutine int_no_evo_mean_squares                              &
+!!     &         (evo_V, evo_B, evo_A, node, ele, iphys, nod_fld,       &
 !!     &          iphys_ele, ele_fld, fluid, jac_3d_q, fem_wk)
+!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: fluid, conduct
@@ -26,6 +28,7 @@
 !
       use m_precision
 !
+      use t_time_stepping_parameter
       use t_geometry_data_MHD
       use t_geometry_data
       use t_phys_data
@@ -579,13 +582,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_no_evo_mean_squares(node, ele, iphys, nod_fld,     &
+      subroutine int_no_evo_mean_squares                                &
+     &         (evo_V, evo_B, evo_A, node, ele, iphys, nod_fld,         &
      &          iphys_ele, ele_fld, fluid, jac_3d_q, fem_wk)
 !
       use int_norm_div_MHD
       use int_rms_div_MHD
       use estimate_stabilities
 !
+      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_address), intent(in) :: iphys
@@ -598,7 +603,7 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
 !
 !
-      if(evo_velo%iflag_scheme .gt. id_no_evolution) then
+      if(evo_V%iflag_scheme .gt. id_no_evolution) then
         call int_norm_divergence                                        &
      &     (fluid%istack_ele_fld_smp, iphys%i_velo,                     &
      &      node, ele, nod_fld, jac_3d_q, fem_wk, bulk_local(ja_divv))
@@ -609,15 +614,15 @@
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld)
       end if
 !
-      if  (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+      if  (evo_A%iflag_scheme .gt. id_no_evolution) then
         call int_norm_divergence(ele%istack_ele_smp, iphys%i_vecp,      &
      &      node, ele, nod_fld, jac_3d_q, fem_wk, bulk_local(ja_diva))
         call int_rms_divergence(ele%istack_ele_smp, iphys%i_vecp,       &
      &      node, ele, nod_fld, jac_3d_q, fem_wk, rms_local(ir_diva))
       end if
 !
-      if  (evo_magne%iflag_scheme .gt. id_no_evolution                  &
-     &         .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+      if      (evo_B%iflag_scheme .gt. id_no_evolution                  &
+     &    .or. evo_A%iflag_scheme .gt. id_no_evolution) then
         call int_norm_divergence(ele%istack_ele_smp, iphys%i_magne,     &
      &      node, ele, nod_fld, jac_3d_q, fem_wk, bulk_local(ja_divb))
         call int_rms_divergence(ele%istack_ele_smp, iphys%i_magne,      &

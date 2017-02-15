@@ -223,6 +223,7 @@
       call set_material_property                                        &
      &   (iphys, ref_param_T1%depth_top, ref_param_T1%depth_bottom)
       call init_ele_material_property(mesh%ele%numele,                  &
+     &    evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1)
       call define_sgs_components                                        &
      &   (mesh%node%numnod, mesh%ele%numele, SGS_par%model_p,           &
@@ -329,9 +330,11 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_stability_4_diffuse'
       call cal_stability_4_diffuse                                      &
-     &   (mesh%ele, fl_prop1, cd_prop1, ht_prop1, cp_prop1)
+     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
+     &    mesh%ele, fl_prop1, cd_prop1, ht_prop1, cp_prop1)
 ! 
-      call deallocate_surf_bc_lists
+      call deallocate_surf_bc_lists                                     &
+     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp)
 !
       end subroutine init_analyzer_fl
 !

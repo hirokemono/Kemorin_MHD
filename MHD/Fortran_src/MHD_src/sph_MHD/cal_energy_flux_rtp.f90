@@ -8,8 +8,8 @@
 !> @brief Evaluate energy fluxes for MHD dynamo in physical space
 !!
 !!@verbatim
-!!      subroutine cal_nonlinear_pole_MHD                               &
-!!     &         (sph_rtp, fl_prop, cd_prop, ht_prop, cp_prop,          &
+!!      subroutine cal_nonlinear_pole_MHD(evo_V, evo_B, evo_T, evo_C,   &
+!!     &          sph_rtp, fl_prop, cd_prop, ht_prop, cp_prop,          &
 !!     &          f_trns, bs_trns, ncomp_snap_rj_2_rtp, ncomp_rtp_2_rj, &
 !!     &          fls_pl, frc_pl)
 !!      subroutine s_cal_energy_flux_rtp                                &
@@ -17,6 +17,8 @@
 !!     &          f_trns, bs_trns, fs_trns, ncomp_rtp_2_rj,             &
 !!     &          ncomp_snap_rj_2_rtp, ncomp_snap_rtp_2_rj,             &
 !!     &          frc_rtp, fls_rtp, frs_rtp)
+!!        type(time_evolution_params), intent(in) :: evo_V, evo_B
+!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
@@ -33,6 +35,7 @@
       use m_constants
       use m_machine_parameter
 !
+      use t_time_stepping_parameter
       use t_phys_address
       use t_spheric_rtp_data
       use t_physical_property
@@ -48,15 +51,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_nonlinear_pole_MHD                                 &
-     &         (sph_rtp, fl_prop, cd_prop, ht_prop, cp_prop,            &
+      subroutine cal_nonlinear_pole_MHD(evo_V, evo_B, evo_T, evo_C,     &
+     &          sph_rtp, fl_prop, cd_prop, ht_prop, cp_prop,            &
      &          f_trns, bs_trns, ncomp_snap_rj_2_rtp, ncomp_rtp_2_rj,   &
      &          fls_pl, frc_pl)
 !
-      use m_control_parameter
       use const_wz_coriolis_rtp
       use cal_products_smp
 !
+      type(time_evolution_params), intent(in) :: evo_V, evo_B
+      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
@@ -72,7 +76,7 @@
 !
 !
 !$omp parallel
-      if( (f_trns%i_m_advect*evo_velo%iflag_scheme) .gt. 0) then
+      if( (f_trns%i_m_advect * evo_V%iflag_scheme) .gt. 0) then
         call cal_cross_prod_w_coef_smp                                  &
      &     (sph_rtp%nnod_pole, fl_prop%coef_velo,                       &
      &      fls_pl(1,bs_trns%i_vort), fls_pl(1,bs_trns%i_velo),         &
@@ -88,7 +92,7 @@
 !
 !
 !
-      if( (f_trns%i_vp_induct * evo_magne%iflag_scheme) .gt. 0) then
+      if( (f_trns%i_vp_induct * evo_B%iflag_scheme) .gt. 0) then
         call cal_cross_prod_w_coef_smp                                  &
      &     (sph_rtp%nnod_pole, cd_prop%coef_induct,                     &
      &      fls_pl(1,bs_trns%i_velo), fls_pl(1,bs_trns%i_magne),        &
@@ -96,14 +100,14 @@
       end if
 !
 !
-      if( (f_trns%i_h_flux * evo_temp%iflag_scheme) .gt. 0) then
+      if( (f_trns%i_h_flux * evo_T%iflag_scheme) .gt. 0) then
         call cal_vec_scalar_prod_w_coef_smp                             &
      &     (sph_rtp%nnod_pole, ht_prop%coef_advect,                     &
      &      fls_pl(1,bs_trns%i_velo), fls_pl(1,bs_trns%i_temp),         &
      &      frc_pl(1,f_trns%i_h_flux) )
       end if
 !
-      if( (f_trns%i_c_flux * evo_comp%iflag_scheme) .gt. 0) then
+      if( (f_trns%i_c_flux * evo_C%iflag_scheme) .gt. 0) then
         call cal_vec_scalar_prod_w_coef_smp                             &
      &     (sph_rtp%nnod_pole, cp_prop%coef_advect,                     &
      &      fls_pl(1,bs_trns%i_velo), fls_pl(1,bs_trns%i_light),        &
@@ -128,7 +132,6 @@
      &          ncomp_snap_rj_2_rtp, ncomp_snap_rtp_2_rj,               &
      &          frc_rtp, fls_rtp, frs_rtp)
 !
-      use m_control_parameter
       use poynting_flux_smp
       use sph_transforms_4_MHD
       use mag_of_field_smp

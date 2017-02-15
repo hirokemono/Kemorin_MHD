@@ -62,8 +62,8 @@
 !* obtain linear terms for starting
 !*
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
-      call set_sph_field_to_start                                       &
-     &   (sph1%sph_rj, r_2nd, trans_p1%leg, ipol, itor, rj_fld1)
+      call set_sph_field_to_start(evo_velo,                             &
+     &    sph1%sph_rj, r_2nd, trans_p1%leg, ipol, itor, rj_fld1)
 !
 !*  ----------------lead nonlinear term ... ----------
 !*

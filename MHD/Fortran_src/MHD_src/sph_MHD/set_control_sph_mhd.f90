@@ -216,7 +216,8 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_normalize'
       call s_set_control_4_normalize                                    &
-     &   (model_ctl%dless_ctl, model_ctl%eqs_ctl)
+     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
+     &    model_ctl%dless_ctl, model_ctl%eqs_ctl)
 !
 !   set boundary conditions
 !

@@ -29,6 +29,7 @@
       use m_precision
       use m_constants
       use m_machine_parameter
+      use m_control_parameter
 !
       use t_SGS_control_parameter
       use t_spheric_parameter
@@ -156,14 +157,18 @@
 !
 !
       num_med = sph_rtp%nidx_rtp(1) * sph_rtp%nidx_rtp(2)
-      call s_count_sgs_components(SGS_par%model_p, fl_prop, sgs_coefs)
+      call s_count_sgs_components                                       &
+     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
+     &    SGS_par%model_p, fl_prop, sgs_coefs)
       call alloc_sgs_coefs_layer(num_med,                               &
      &    sgs_coefs%num_field, sgs_coefs%ntot_comp, wk_sgs)
 !
       call alloc_SGS_num_coefs(sgs_coefs)
 !
-      call set_sgs_addresses(SGS_par%model_p,                           &
-     &    fl_prop, ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
+      call set_sgs_addresses                                            &
+     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
+     &    SGS_par%model_p, fl_prop, ifld_sgs, icomp_sgs, wk_sgs,        &
+     &    sgs_coefs)
       call check_sgs_addresses                                          &
      &   (ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
 !
