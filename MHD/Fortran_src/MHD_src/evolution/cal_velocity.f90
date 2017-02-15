@@ -199,7 +199,7 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1)  write(*,*) 's_cal_velocity_pre'
-      call s_cal_velocity_pre(FEM_prm,                                  &
+      call s_cal_velocity_pre(evo_velo, FEM_prm,                        &
      &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
      &    nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,         &
      &    fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys,          &

@@ -41,6 +41,7 @@
       use m_precision
 !
       use m_machine_parameter
+      use m_control_parameter
       use calypso_mpi
 !
       use t_file_IO_parameter
@@ -276,13 +277,13 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_velo'
       call s_set_control_4_velo                                         &
-     &   (nbc_ctl%node_bc_U_ctl, sbc_ctl%surf_bc_ST_ctl)
+     &   (evo_velo, nbc_ctl%node_bc_U_ctl, sbc_ctl%surf_bc_ST_ctl)
 !
 !  set boundary conditions for pressure
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_press'
       call s_set_control_4_press                                        &
-     &   (nbc_ctl%node_bc_P_ctl, sbc_ctl%surf_bc_PN_ctl)
+     &   (evo_velo, nbc_ctl%node_bc_P_ctl, sbc_ctl%surf_bc_PN_ctl)
 !
 !   set boundary conditions for composition variation
 !

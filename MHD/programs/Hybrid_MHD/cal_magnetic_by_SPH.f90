@@ -3,7 +3,7 @@
 !!     &         ipol, idpdr, itor, comms_sph, sph, trans_p, rj_fld)
 !!      subroutine nonlinear_incuction_wSGS_SPH(FEM_prm, SGS_param,     &
 !!     &          sph, comms_sph, trans_p, conduct, ipol, rj_fld)
-!!      subroutine cal_magneitc_field_by_SPH(SGS_param,                 &
+!!      subroutine cal_magneitc_field_by_SPH(evo_B, SGS_param,          &
 !!     &          sph, comms_sph, trans_p, ipol, itor, rj_fld)
 !
       use t_FEM_control_parameter
@@ -71,7 +71,7 @@
 !
       call init_pole_transform(sph%sph_rtp)
 !
-      call set_addresses_trans_hbd_MHD(SGS_param)
+      call set_addresses_trans_hbd_MHD(evo_magne, SGS_param)
       call allocate_hbd_trans_rtp(sph%sph_rtp)
       call check_add_trans_hbd_MHD(ipol, idpdr, itor)
 !
@@ -233,15 +233,17 @@
 !
 !*   ------------------------------------------------------------------
 !
-      subroutine cal_magneitc_field_by_SPH(SGS_param,                   &
+      subroutine cal_magneitc_field_by_SPH(evo_B, SGS_param,            &
      &          sph, comms_sph, trans_p, ipol, itor, rj_fld)
 !
       use m_solver_SR
       use m_schmidt_poly_on_rtm
+      use t_time_stepping_parameter
       use spherical_SRs_N
       use copy_spectr_4_sph_trans
       use copy_nodal_fld_4_sph_trans
 !
+      type(time_evolution_params), intent(in) :: evo_B
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
@@ -251,10 +253,10 @@
       type(phys_data), intent(in) :: rj_fld
 !
       if ( SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
-        call cal_diff_induction_MHD_adams(evo_magne%coef_exp,           &
+        call cal_diff_induction_MHD_adams(evo_B%coef_exp,               &
      &      ipol, itor, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else
-        call cal_diff_induction_wSGS_adams(evo_magne%coef_exp,          &
+        call cal_diff_induction_wSGS_adams(evo_B%coef_exp,              &
      &      ipol, itor, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !

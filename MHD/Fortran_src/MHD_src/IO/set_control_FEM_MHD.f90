@@ -25,6 +25,7 @@
       module set_control_FEM_MHD
 !
       use m_precision
+      use m_control_parameter
       use t_phys_data
       use t_file_IO_parameter
       use t_ctl_data_4_platforms
@@ -188,12 +189,12 @@
 !   set boundary conditions for velocity
 !
       call s_set_control_4_velo                                         &
-     &   (nbc_ctl%node_bc_U_ctl, sbc_ctl%surf_bc_ST_ctl)
+     &   (evo_velo, nbc_ctl%node_bc_U_ctl, sbc_ctl%surf_bc_ST_ctl)
 !
 !  set boundary conditions for pressure
 !
       call s_set_control_4_press                                        &
-     &   (nbc_ctl%node_bc_P_ctl, sbc_ctl%surf_bc_PN_ctl)
+     &   (evo_velo, nbc_ctl%node_bc_P_ctl, sbc_ctl%surf_bc_PN_ctl)
 !
 !   set boundary conditions for composition
 !
