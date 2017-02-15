@@ -206,7 +206,8 @@
       call set_new_time_and_step(mesh1%node, iphys, nod_fld1)
 !
       if (iflag_debug.eq.1) write(*,*) 'fields_evolution_4_FEM_SPH'
-      call fields_evolution_4_FEM_SPH(FEM_prm1, SGS_par1,               &
+      call fields_evolution_4_FEM_SPH                                   &
+     &   (evo_velo, evo_temp, evo_comp, FEM_prm1, SGS_par1,             &
      &    mesh1, group1, ele_mesh1, MHD_mesh1%fluid,                    &
      &    nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,                  &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, jac1_sf_grp_2d_l,     &

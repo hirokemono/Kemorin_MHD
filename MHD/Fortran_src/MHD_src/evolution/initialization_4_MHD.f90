@@ -246,7 +246,7 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*) 'init_MGCG_MHD'
-      call init_MGCG_MHD(mesh%node)
+      call init_MGCG_MHD(evo_velo, evo_magne, evo_vect_p, mesh%node)
 !
 !  -------------------------------
 !

@@ -8,15 +8,16 @@
 !!
 !!@verbatim
 !!      subroutine fields_evolution                                     &
-!!     &       (FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh,      &
-!!     &        nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,            &
-!!     &        jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
-!!     &        rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs, ifld_diff,     &
-!!     &        icomp_diff, iphys_elediff, sgs_coefs_nod,               &
-!!     &        filtering, wide_filtering, layer_tbl, m_lump, s_package,&
-!!     &        wk_cor, wk_lsq, wk_sgs, wk_diff, wk_filter,             &
-!!     &        mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                 &
-!!     &        nod_fld, ele_fld, sgs_coefs, diff_coefs)
+!!     &         (evo_V, evo_B, evo_A, evo_T, evo_C, FEM_prm, SGS_par,  &
+!!     &          mesh, group, ele_mesh, MHD_mesh,                      &
+!!     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,          &
+!!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
+!!     &          rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs, ifld_diff,   &
+!!     &          icomp_diff, iphys_elediff, sgs_coefs_nod,             &
+!!     &          filtering, wide_filtering, layer_tbl, m_lump,         &
+!!     &          s_package, wk_cor, wk_lsq, wk_sgs, wk_diff, wk_filter,&
+!!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,               &
+!!     &          nod_fld, ele_fld, sgs_coefs, diff_coefs)
 !!      subroutine update_fields                                        &
 !!     &       (FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh,      &
 !!     &        nod_bcs, surf_bcs, iphys, iphys_ele,                    &
@@ -27,8 +28,8 @@
 !!     &        surf_wk, f_l, f_nl, nod_fld, ele_fld, diff_coefs)
 !!      subroutine reset_update_flag(nod_fld, sgs_coefs, diff_coefs)
 !!
-!!      subroutine fields_evolution_4_FEM_SPH                           &
-!!     &         (FEM_prm, SGS_par, mesh, group, ele_mesh, fluid,       &
+!!      subroutine fields_evolution_4_FEM_SPH(evo_V, evo_T, evo_C,      &
+!!     &          FEM_prm, SGS_par, mesh, group, ele_mesh, fluid,       &
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,          &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
 !!     &          rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs, ifld_diff,   &
@@ -37,6 +38,8 @@
 !!     &          wk_cor, wk_lsq, wk_sgs, wk_diff, wk_filter,           &
 !!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,               &
 !!     &          nod_fld, ele_fld, sgs_coefs, diff_coefs)
+!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -84,6 +87,7 @@
 !
       use m_machine_parameter
 !
+      use t_time_stepping_parameter
       use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_mesh_data
@@ -121,15 +125,16 @@
 !-----------------------------------------------------------------------
 !
       subroutine fields_evolution                                       &
-     &       (FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh,        &
-     &        nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,              &
-     &        jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,           &
-     &        rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs, ifld_diff,       &
-     &        icomp_diff, iphys_elediff, sgs_coefs_nod,                 &
-     &        filtering, wide_filtering, layer_tbl, m_lump, s_package,  &
-     &        wk_cor, wk_lsq, wk_sgs, wk_diff, wk_filter,               &
-     &        mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                   &
-     &        nod_fld, ele_fld, sgs_coefs, diff_coefs)
+     &         (evo_V, evo_B, evo_A, evo_T, evo_C, FEM_prm, SGS_par,    &
+     &          mesh, group, ele_mesh, MHD_mesh,                        &
+     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,            &
+     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
+     &          rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs, ifld_diff,     &
+     &          icomp_diff, iphys_elediff, sgs_coefs_nod,               &
+     &          filtering, wide_filtering, layer_tbl, m_lump,           &
+     &          s_package, wk_cor, wk_lsq, wk_sgs, wk_diff, wk_filter,  &
+     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                 &
+     &          nod_fld, ele_fld, sgs_coefs, diff_coefs)
 !
       use m_physical_property
       use cal_temperature
@@ -145,6 +150,8 @@
 !
 !      use check_surface_groups
 !
+      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
@@ -192,7 +199,7 @@
 !
 !     ---- magnetic field update
 !
-      if ( evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+      if ( evo_A%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'cal_magne_vector_potential'
         call cal_vector_potential                                       &
      &    (FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,        &
@@ -216,7 +223,7 @@
      &     wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,      &
      &     surf_wk, f_l, f_nl, nod_fld, ele_fld, diff_coefs)
 !
-      else if(evo_magne%iflag_scheme .gt. id_no_evolution) then
+      else if(evo_B%iflag_scheme .gt. id_no_evolution) then
 !
 !        call check_surface_param_smp('cal_magnetic_field start',       &
 !     &      my_rank, sf_grp, group%surf_nod_grp)
@@ -245,7 +252,7 @@
 !
 !     ---- temperature update
 !
-      if ( evo_temp%iflag_scheme .gt. id_no_evolution) then
+      if ( evo_T%iflag_scheme .gt. id_no_evolution) then
         if( ref_param_T1%iflag_reference .ne. id_no_ref_temp) then
           if(iflag_debug.eq.1) write(*,*) 'cal_temperature_field theta'
           call cal_temperature_field(iphys%i_par_temp, FEM_prm,         &
@@ -295,7 +302,7 @@
 !
 !     ----- composition update
 !
-      if ( evo_comp%iflag_scheme .gt. id_no_evolution) then
+      if ( evo_C%iflag_scheme .gt. id_no_evolution) then
         if( ref_param_C1%iflag_reference .ne. id_no_ref_temp) then
           if(iflag_debug.eq.1) write(*,*) 's_cal_light_element part'
           call s_cal_light_element(iphys%i_par_light, FEM_prm,          &
@@ -343,7 +350,7 @@
 !
 !     ---- velocity update
 !
-      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
+      if (evo_V%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'velocity_evolution'
         call velocity_evolution                                         &
      &     (FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,       &
@@ -506,8 +513,8 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine fields_evolution_4_FEM_SPH                             &
-     &         (FEM_prm, SGS_par, mesh, group, ele_mesh, fluid,         &
+      subroutine fields_evolution_4_FEM_SPH(evo_V, evo_T, evo_C,        &
+     &          FEM_prm, SGS_par, mesh, group, ele_mesh, fluid,         &
      &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,            &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
      &          rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs, ifld_diff,     &
@@ -526,6 +533,8 @@
       use update_with_scalars
       use update_with_velo
 !
+      type(time_evolution_params), intent(in) :: evo_V
+      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
@@ -572,7 +581,7 @@
 !
 !     ---- temperature update
 !
-      if ( evo_temp%iflag_scheme .gt. id_no_evolution) then
+      if ( evo_T%iflag_scheme .gt. id_no_evolution) then
         if( ref_param_T1%iflag_reference .ne. id_no_ref_temp) then
           if (iflag_debug.eq.1) write(*,*) 'cal_temperature_field'
           call cal_temperature_field(iphys%i_par_temp, FEM_prm,         &
@@ -619,7 +628,7 @@
 !
 !     ----- composition update
 !
-      if ( evo_comp%iflag_scheme .gt. id_no_evolution) then
+      if ( evo_C%iflag_scheme .gt. id_no_evolution) then
         if( ref_param_C1%iflag_reference .ne. id_no_ref_temp) then
           if(iflag_debug.eq.1) write(*,*) 's_cal_light_element part'
           call s_cal_light_element(iphys%i_par_light, FEM_prm,          &
@@ -666,7 +675,7 @@
 !
 !     ---- velocity update
 !
-      if ( evo_velo%iflag_scheme .gt. id_no_evolution) then
+      if ( evo_V%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'velocity_evolution'
         call velocity_evolution                                         &
      &     (FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,       &

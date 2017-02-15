@@ -216,7 +216,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'fields_evolution'
       call fields_evolution                                             &
-     &  (FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1,       &
+     &  (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,           &
+     &   FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1,       &
      &   nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,                   &
      &   jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, jac1_sf_grp_2d_l,      &
      &   rhs_tbl1, FEM1_elen, ifld_sgs, icomp_sgs, ifld_diff,           &

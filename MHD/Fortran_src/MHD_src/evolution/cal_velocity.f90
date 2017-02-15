@@ -232,7 +232,7 @@
      &      iphys%i_p_phi, iphys%i_press,  nod_fld%d_fld)
 !
         call cal_velocity_co                                            &
-     &     (FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
+     &     (evo_velo, FEM_prm, SGS_par%model_p, SGS_par%commute_p,      &
      &      nod_comm, node, ele, surf, fluid,                           &
      &      sf_grp, sf_grp_nod, fl_prop, Vnod_bcs, Vsf_bcs, Psf_bcs,    &
      &      iphys, iphys_ele, ele_fld, ak_MHD,                          &

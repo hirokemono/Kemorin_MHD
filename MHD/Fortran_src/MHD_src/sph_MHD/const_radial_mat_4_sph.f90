@@ -126,7 +126,7 @@
         if(iflag_debug .gt. 0)                                          &
      &          write(*,*) 'const_radial_mat_vort_2step'
         call const_radial_mat_vort_2step                                &
-     &     (sph_rj, r_2nd, fl_prop, g_sph_rj,                           &
+     &     (evo_V, sph_rj, r_2nd, fl_prop, g_sph_rj,                    &
      &      band_vs_poisson, band_vp_evo, band_vt_evo, band_wt_evo)
         call const_radial_mat_4_press_sph                               &
      &     (fl_prop, sph_rj, r_2nd, g_sph_rj, band_p_poisson)
@@ -144,8 +144,8 @@
       if (evo_B%iflag_scheme .ge. id_Crank_nicolson) then
           if(iflag_debug .gt. 0)                                        &
      &          write(*,*) 'const_radial_mat_4_magne_sph'
-        call const_radial_mat_4_magne_sph(sph_rj, r_2nd, cd_prop1,      &
-     &      g_sph_rj, band_bp_evo, band_bt_evo)
+        call const_radial_mat_4_magne_sph(evo_B, sph_rj, r_2nd,         &
+     &      cd_prop1, g_sph_rj, band_bp_evo, band_bt_evo)
       end if
 !
       if(evo_C%iflag_scheme .ge. id_Crank_nicolson) then

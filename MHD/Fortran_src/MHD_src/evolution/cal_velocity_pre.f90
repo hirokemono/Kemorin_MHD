@@ -17,13 +17,14 @@
 !!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,               &
 !!     &          nod_fld, ele_fld, sgs_coefs)
 !!      subroutine cal_velocity_co                                      &
-!!     &        (FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,    &
-!!     &         surf, fluid, sf_grp, sf_grp_nod, fl_prop,              &
-!!     &         Vnod_bcs, Vsf_bcs, Psf_bcs, iphys, iphys_ele, ele_fld, &
-!!     &         ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,&
-!!     &         rhs_tbl, FEM_elens, ifld_diff, diff_coefs,             &
-!!     &         Vmatrix, MG_vector, mhd_fem_wk, fem_wk, surf_wk,       &
-!!     &         f_l, f_nl, nod_fld)
+!!     &        (evo_V, FEM_prm, SGS_param, cmt_param,                  &
+!!     &         nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,  &
+!!     &         fl_prop, Vnod_bcs, Vsf_bcs, Psf_bcs, iphys,            &
+!!     &         iphys_ele, ele_fld, ak_MHD, jac_3d_q, jac_3d_l,        &
+!!     &         jac_sf_grp_q, jac_sf_grp_l, rhs_tbl, FEM_elens,        &
+!!     &         ifld_diff, diff_coefs, Vmatrix, MG_vector,             &
+!!     &         mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+!!        type(time_evolution_params), intent(in) :: evo_V
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -77,6 +78,7 @@
       use m_machine_parameter
       use m_t_int_parameter
 !
+      use t_time_stepping_parameter
       use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_comm_table
@@ -326,13 +328,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_velocity_co                                        &
-     &        (FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,      &
-     &         surf, fluid, sf_grp, sf_grp_nod, fl_prop,                &
-     &         Vnod_bcs, Vsf_bcs, Psf_bcs, iphys, iphys_ele, ele_fld,   &
-     &         ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,  &
-     &         rhs_tbl, FEM_elens, ifld_diff, diff_coefs,               &
-     &         Vmatrix, MG_vector, mhd_fem_wk, fem_wk, surf_wk,         &
-     &         f_l, f_nl, nod_fld)
+     &        (evo_V, FEM_prm, SGS_param, cmt_param,                    &
+     &         nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,    &
+     &         fl_prop, Vnod_bcs, Vsf_bcs, Psf_bcs, iphys,              &
+     &         iphys_ele, ele_fld, ak_MHD, jac_3d_q, jac_3d_l,          &
+     &         jac_sf_grp_q, jac_sf_grp_l, rhs_tbl, FEM_elens,          &
+     &         ifld_diff, diff_coefs, Vmatrix, MG_vector,               &
+     &         mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
       use nod_phys_send_recv
       use int_vol_solenoid_correct
@@ -345,6 +347,7 @@
       use cal_sol_vector_co_crank
       use implicit_vector_correct
 !
+      type(time_evolution_params), intent(in) :: evo_V
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
@@ -408,10 +411,11 @@
      & then
         call cal_velocity_co_imp                                        &
      &     (iphys%i_velo, ifld_diff%i_velo, ak_MHD%ak_d_velo,           &
-     &      FEM_prm, SGS_param, cmt_param, nod_comm, node, ele, fluid,  &
-     &      fl_prop, Vnod_bcs, iphys_ele, ele_fld,  jac_3d_q, rhs_tbl,  &
-     &      FEM_elens, diff_coefs, Vmatrix, MG_vector,                  &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      evo_velo, FEM_prm, SGS_param, cmt_param,                    &
+     &      nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,              &
+     &      iphys_ele, ele_fld,  jac_3d_q, rhs_tbl, FEM_elens,          &
+     &      diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,         &
+     &      f_l, f_nl, nod_fld)
       else
         call cal_velocity_co_exp(iphys%i_velo, iphys%i_p_phi,           &
      &      FEM_prm, nod_comm, node, ele, fluid, jac_3d_q, rhs_tbl,     &

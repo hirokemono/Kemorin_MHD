@@ -96,12 +96,14 @@
 !   set parameters for general information
 !
       call s_set_control_4_model                                        &
-     &   (model_ctl%reft_ctl, model_ctl%refc_ctl, ctl_ctl%mevo_ctl,     &
-     &    model_ctl%evo_ctl, nmtr_ctl)
+     &   (model_ctl%reft_ctl, model_ctl%refc_ctl,                       &
+     &    ctl_ctl%mevo_ctl, model_ctl%evo_ctl, nmtr_ctl,                &
+     &    evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp)
 !
 !   set element groups for evolution
 !
-      call s_set_control_evo_layers(model_ctl%earea_ctl, FEM_prm)
+      call s_set_control_evo_layers(model_ctl%earea_ctl,                &
+     &    evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp, FEM_prm)
 !
 !   set forces
 !
@@ -123,7 +125,8 @@
 !   set parameters for filtering operation
 !
       call s_set_control_4_filtering                                    &
-     &   (SGS_par%model_p, model_ctl%sgs_ctl%SGS_filter_name_ctl,       &
+     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
+     &    SGS_par%model_p, model_ctl%sgs_ctl%SGS_filter_name_ctl,       &
      &    model_ctl%sgs_ctl%ffile_ctl, model_ctl%sgs_ctl%s3df_ctl,      &
      &    SGS_par%filter_p)
 !
@@ -147,11 +150,12 @@
 !
       call s_set_control_4_time_steps                                   &
      &   (SGS_par%model_p, ctl_ctl%mrst_ctl, ctl_ctl%tctl)
-      call s_set_control_4_crank(ctl_ctl%mevo_ctl)
+      call s_set_control_4_crank(ctl_ctl%mevo_ctl,                      &
+     &    evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp)
 !
       call s_set_control_4_solver(ctl_ctl%mevo_ctl, ctl_ctl%CG_ctl)
-      call set_control_4_FEM_params                                     &
-     &   (ctl_ctl%mevo_ctl, ctl_ctl%fint_ctl, FEM_prm)
+      call set_control_4_FEM_params(ctl_ctl%mevo_ctl, ctl_ctl%fint_ctl, &
+     &    evo_velo, evo_magne, evo_vect_p, FEM_prm)
 !
       end subroutine set_control_4_FEM_MHD
 !

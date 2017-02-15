@@ -8,7 +8,9 @@
 !> @brief set schemes for time integration from control
 !!
 !!@verbatim
-!!     subroutine set_control_4_FEM_params(mevo_ctl, fint_ctl, FEM_prm)
+!!      subroutine set_control_4_FEM_params                             &
+!!     &         (mevo_ctl, fint_ctl, evo_V, evo_B, evo_A, FEM_prm)
+!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
 !!        type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
 !!        type(fem_intergration_control), intent(in)  :: fint_ctl
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
@@ -26,17 +28,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_FEM_params(mevo_ctl, fint_ctl, FEM_prm)
+      subroutine set_control_4_FEM_params                               &
+     &         (mevo_ctl, fint_ctl, evo_V, evo_B, evo_A, FEM_prm)
 !
       use calypso_mpi
       use m_error_IDs
       use m_machine_parameter
-      use m_control_parameter
+      use t_time_stepping_parameter
       use t_FEM_control_parameter
       use t_ctl_data_mhd_evo_scheme
       use t_ctl_data_4_fem_int_pts
       use skip_comment_f
 !
+      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
       type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
       type(fem_intergration_control), intent(in)  :: fint_ctl
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
@@ -88,7 +92,7 @@
         end if
 !
         if(FEM_prm%maxiter_stokes.gt.1) then
-          if(evo_velo%iflag_scheme .gt. id_no_evolution) then
+          if(evo_V%iflag_scheme .gt. id_no_evolution) then
             if(mevo_ctl%eps_4_velo_ctl%iflag .eq. 0) then
               e_message                                                 &
      &         = 'Set convergence area for velocity iteration'
@@ -98,8 +102,8 @@
             end if
           end if
 !
-          if (evo_magne%iflag_scheme .gt. id_no_evolution               &
-     &        .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+          if     (evo_B%iflag_scheme .gt. id_no_evolution               &
+     &       .or. evo_A%iflag_scheme .gt. id_no_evolution) then
             if (mevo_ctl%eps_4_magne_ctl%iflag .eq. 0) then
               e_message                                                 &
      &         = 'Set convergence area for magnetic iteration'

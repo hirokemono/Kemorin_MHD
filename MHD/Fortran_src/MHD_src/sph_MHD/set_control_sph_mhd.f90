@@ -185,8 +185,9 @@
       call set_control_org_sph_files(org_plt, MHD_org_files)
 !
       call s_set_control_4_model                                        &
-     &    (model_ctl%reft_ctl, model_ctl%refc_ctl, ctl_ctl%mevo_ctl,    &
-     &     model_ctl%evo_ctl, nmtr_ctl)
+     &    (model_ctl%reft_ctl, model_ctl%refc_ctl,                      &
+     &     ctl_ctl%mevo_ctl, model_ctl%evo_ctl, nmtr_ctl,               &
+     &     evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp)
 !
 !   set spherical shell parameters
 !
@@ -229,7 +230,8 @@
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_time_steps'
       call s_set_control_4_time_steps                                   &
      &   (SGS_param, ctl_ctl%mrst_ctl, ctl_ctl%tctl)
-      call s_set_control_4_crank(ctl_ctl%mevo_ctl)
+      call s_set_control_4_crank(ctl_ctl%mevo_ctl,                      &
+     &    evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp)
 !
 !   set_pickup modes
 !

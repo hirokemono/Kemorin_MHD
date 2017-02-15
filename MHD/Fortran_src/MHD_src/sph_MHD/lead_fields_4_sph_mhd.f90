@@ -7,8 +7,11 @@
 !>@brief  Evaluate pressure and energy fluxes for snapshots
 !!
 !!@verbatim
-!!      subroutine s_lead_fields_4_sph_mhd(SGS_param,                   &
+!!      subroutine s_lead_fields_4_sph_mhd                              &
+!!     &         (evo_V, evo_B, evo_T, evo_C, SGS_param,                &
 !!     &          sph, comms_sph, r_2nd, trans_p, ipol, rj_fld, WK)
+!!        type(time_evolution_params), intent(in) :: evo_V, evo_B
+!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
@@ -25,6 +28,7 @@
       use m_machine_parameter
       use m_physical_property
 !
+      use t_time_stepping_parameter
       use t_SGS_control_parameter
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
@@ -49,7 +53,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_lead_fields_4_sph_mhd(SGS_param,                     &
+      subroutine s_lead_fields_4_sph_mhd                                &
+     &         (evo_V, evo_B, evo_T, evo_C, SGS_param,                  &
      &          sph, comms_sph, r_2nd, trans_p, ipol, rj_fld, WK)
 !
       use m_t_step_parameter
@@ -62,6 +67,8 @@
       use swap_phi_4_sph_trans
       use dynamic_model_sph_MHD
 !
+      type(time_evolution_params), intent(in) :: evo_V, evo_B
+      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
@@ -78,7 +85,7 @@
       call set_lead_physical_values_flag(iflag)
 !
       if ( (iflag*mod(istep_max_dt,i_step_output_rst)) .eq.0 ) then
-        if(evo_velo%iflag_scheme .gt. id_no_evolution) then
+        if(evo_V%iflag_scheme .gt. id_no_evolution) then
           call pressure_4_sph_mhd                                       &
      &       (SGS_param, sph%sph_rj, fl_prop1, r_2nd,                   &
      &        trans_p%leg, band_p_poisson, ipol, rj_fld)
@@ -103,7 +110,7 @@
 !
         if (iflag_debug.eq.1) write(*,*) 'cal_nonlinear_pole_MHD'
         call cal_nonlinear_pole_MHD                                     &
-     &     (evo_velo, evo_magne, evo_temp, evo_comp, sph%sph_rtp,       &
+     &     (evo_V, evo_B, evo_T, evo_C, sph%sph_rtp,                    &
      &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
      &      WK%trns_MHD%f_trns, WK%trns_MHD%b_trns,                     &
      &      WK%trns_MHD%ncomp_rj_2_rtp, WK%trns_MHD%ncomp_rtp_2_rj,     &
