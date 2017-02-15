@@ -10,7 +10,8 @@
 !!     &          FEM_elens, icomp_sgs, iphys_elediff,                  &
 !!     &          sgs_coefs, sgs_coefs_nod, filtering, wk_filter,       &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-!!      subroutine cal_diff_of_sgs_terms(FEM_prm, SGS_param, cmt_param, &
+!!      subroutine cal_diff_of_sgs_terms                                &
+!!     &         (evo_B, FEM_prm, SGS_param, cmt_param,                 &
 !!     &          nod_comm, node, ele, surf, sf_grp, fluid, conduct,    &
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop,                   &
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,          &
@@ -18,9 +19,11 @@
 !!     &          ifld_diff, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,   &
 !!     &          f_l, f_nl, nod_fld, ele_fld)
 !!      subroutine cal_work_4_sgs_terms                                 &
-!!     &         (FEM_prm, nod_comm, node, ele, conduct,                &
+!!     &         (evo_A, FEM_prm, nod_comm, node, ele, conduct,         &
 !!     &          fl_prop, iphys, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,  &
 !!     &          f_nl, nod_fld)
+!!        type(time_evolution_params), intent(in) :: evo_B
+!!        type(time_evolution_params), intent(in) :: evo_A
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(SGS_filtering_params), intent(in) :: filter_param
@@ -62,6 +65,7 @@
       use m_machine_parameter
       use m_phys_labels
 !
+      use t_time_stepping_parameter
       use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_physical_property
@@ -205,7 +209,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_diff_of_sgs_terms(FEM_prm, SGS_param, cmt_param,   &
+      subroutine cal_diff_of_sgs_terms                                  &
+     &         (evo_B, FEM_prm, SGS_param, cmt_param,                   &
      &          nod_comm, node, ele, surf, sf_grp, fluid, conduct,      &
      &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
      &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,            &
@@ -218,6 +223,7 @@
       use cal_magnetic_terms
       use int_vol_temp_monitor
 !
+      type(time_evolution_params), intent(in) :: evo_B
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
@@ -299,7 +305,7 @@
       end do
 !
       if (      iphys%i_SGS_induction .gt. 0                            &
-     &   .and. evo_magne%iflag_scheme .gt. id_no_evolution) then
+     &   .and. evo_B%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_induction)
         call cal_terms_4_magnetic(iphys%i_SGS_induction,                &
@@ -330,7 +336,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_work_4_sgs_terms                                   &
-     &         (FEM_prm, nod_comm, node, ele, conduct,                  &
+     &         (evo_A, FEM_prm, nod_comm, node, ele, conduct,           &
      &          fl_prop, iphys, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,    &
      &          f_nl, nod_fld)
 !
@@ -340,6 +346,7 @@
       use int_sgs_induction
       use sgs_buoyancy_flux
 !
+      type(time_evolution_params), intent(in) :: evo_A
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -357,7 +364,7 @@
 !
 !
       if (     iphys%i_SGS_induction .gt. 0                             &
-     &   .and. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+     &   .and. evo_A%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_induction)
         call int_vol_sgs_induction                                      &

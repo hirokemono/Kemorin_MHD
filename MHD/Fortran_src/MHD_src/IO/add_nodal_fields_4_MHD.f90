@@ -215,8 +215,8 @@
 !        call add_phys_name_ctl(fhd_chk_mom_2, field_ctl)
 !        call add_phys_name_ctl(fhd_chk_press_2, field_ctl)
 !      end if
-!      if(evo_magne%iflag_scheme .ge. id_Crank_nicolson                 &
-!     &     .or. evo_A%iflag_scheme .ge. id_Crank_nicolson) then
+!      if     (evo_B%iflag_scheme .ge. id_Crank_nicolson                 &
+!     &   .or. evo_A%iflag_scheme .ge. id_Crank_nicolson) then
 !        call add_phys_name_ctl(fhd_chk_uxb_2, field_ctl)
 !        call add_phys_name_ctl(fhd_chk_potential_2, field_ctl)
 !      end if

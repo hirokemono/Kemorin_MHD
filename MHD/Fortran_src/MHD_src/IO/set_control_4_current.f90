@@ -9,7 +9,8 @@
 !!
 !!@verbatim
 !!      subroutine s_set_control_4_current                              &
-!!     &         (node_bc_J_ctl, surf_bc_JN_ctl)
+!!     &         (evo_B, evo_A, node_bc_J_ctl, surf_bc_JN_ctl)
+!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
 !!       type(ctl_array_c2r), intent(inout) :: node_bc_J_ctl
 !!       type(ctl_array_c2r), intent(inout) :: surf_bc_JN_ctl
 !!@endverbatim
@@ -27,25 +28,26 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_4_current                                &
-     &         (node_bc_J_ctl, surf_bc_JN_ctl)
+     &         (evo_B, evo_A, node_bc_J_ctl, surf_bc_JN_ctl)
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_control_parameter
+      use t_time_stepping_parameter
+      use t_read_control_arrays
       use m_bc_data_list
       use m_surf_data_list
-      use t_read_control_arrays
       use set_node_group_types
       use set_surface_group_types
 !
+      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(ctl_array_c2r), intent(inout) :: node_bc_J_ctl
       type(ctl_array_c2r), intent(inout) :: surf_bc_JN_ctl
 !
       integer (kind = kint) :: i
 !
 !
-       if ( evo_magne%iflag_scheme .eq. id_no_evolution                 &
-      &     .and.  evo_vect_p%iflag_scheme .eq. id_no_evolution) then
+      if (      evo_B%iflag_scheme .eq. id_no_evolution                 &
+     &   .and.  evo_A%iflag_scheme .eq. id_no_evolution) then
         current_nod%num_bc =  0
         current_surf%num_bc = 0
       else

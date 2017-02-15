@@ -14,10 +14,10 @@
 !
       use m_precision
       use m_machine_parameter
-      use m_control_parameter
 !
       use calypso_mpi
 !
+      use t_time_stepping_parameter
       use t_phys_address
       use t_flex_delta_t_data
 !
@@ -33,26 +33,31 @@
 !
       subroutine s_init_check_delta_t_data(iphys, flex_data)
 !
+      use m_control_parameter
+!
       type(phys_address), intent(in) :: iphys
       type(flexible_steppind_data), intent(inout) :: flex_data
 !
 !
-      call count_check_delta_t_data(iphys, flex_data)
+      call count_check_delta_t_data                                     &
+     &   (evo_magne, evo_vect_p, iphys, flex_data)
 !
       call alloc_check_delta_t_name(flex_data)
       call alloc_check_delta_t_rms(flex_data)
       call alloc_check_delta_t_data(flex_data)
 !
-      call set_check_delta_t_data(iphys, flex_data)
+      call set_check_delta_t_data                                       &
+     &   (evo_magne, evo_vect_p, iphys, flex_data)
 !
       end subroutine s_init_check_delta_t_data
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine count_check_delta_t_data(iphys, flex_data)
+      subroutine count_check_delta_t_data                               &
+     &         (evo_B, evo_A, iphys, flex_data)
 !
-!
+      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(phys_address), intent(in) :: iphys
       type(flexible_steppind_data), intent(inout) :: flex_data
 !
@@ -70,14 +75,14 @@
       end if
 !
 !
-      if(evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+      if(evo_A%iflag_scheme .gt. id_no_evolution) then
         if( (iphys%i_vecp*iphys%i_chk_uxb) .gt. izero) then
           flex_data%num_fld = flex_data%num_fld + 1
           flex_data%ntot_comp = flex_data%ntot_comp + 3
         end if
       end if
 !
-      if(evo_magne%iflag_scheme .gt. id_no_evolution) then
+      if(evo_B%iflag_scheme .gt. id_no_evolution) then
         if( (iphys%i_magne*iphys%i_chk_uxb) .gt. izero) then
           flex_data%num_fld = flex_data%num_fld + 1
           flex_data%ntot_comp = flex_data%ntot_comp + 3
@@ -104,10 +109,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_check_delta_t_data(iphys, flex_data)
+      subroutine set_check_delta_t_data(evo_B, evo_A, iphys, flex_data)
 !
       use m_phys_labels
 !
+      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(phys_address), intent(in) :: iphys
       type(flexible_steppind_data), intent(inout) :: flex_data
 !
@@ -133,7 +139,7 @@
       end if
 !
 !
-      if(evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+      if(evo_A%iflag_scheme .gt. id_no_evolution) then
         if( (iphys%i_vecp*iphys%i_chk_uxb) .gt. izero) then
           icou = icou + 1
           flex_data%i_drmax_b = flex_data%istack_comp(icou-1) + 1
@@ -144,7 +150,7 @@
         end if
       end if
 !
-      if(evo_magne%iflag_scheme .gt. id_no_evolution) then
+      if(evo_B%iflag_scheme .gt. id_no_evolution) then
         if( (iphys%i_magne*iphys%i_chk_uxb) .gt. izero) then
           icou = icou + 1
           flex_data%i_drmax_b = flex_data%istack_comp(icou-1) + 1

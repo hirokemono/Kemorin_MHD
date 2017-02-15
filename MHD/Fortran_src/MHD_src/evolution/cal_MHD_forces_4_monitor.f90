@@ -5,7 +5,7 @@
 !
 !!      subroutine cal_fluxes_4_monitor                                 &
 !!     &         (node, fl_prop, cd_prop, iphys, nod_fld)
-!!      subroutine cal_forces_4_monitor(FEM_prm, SGS_par,               &
+!!      subroutine cal_forces_4_monitor(evo_B, FEM_prm, SGS_par,        &
 !!     &          nod_comm, node, ele, surf, fluid, conduct,            &
 !!     &          sf_grp, fl_prop, cd_prop, ht_prop, cp_prop,           &
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele,                  &
@@ -15,6 +15,7 @@
 !!      subroutine cal_work_4_forces                                    &
 !!     &         (FEM_prm, nod_comm, node, ele, fl_prop, cd_prop, iphys,&
 !!     &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl, nod_fld)
+!!        type(time_evolution_params), intent(in) :: evo_B
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -145,7 +146,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_forces_4_monitor(FEM_prm, SGS_par,                 &
+      subroutine cal_forces_4_monitor(evo_B, FEM_prm, SGS_par,          &
      &          nod_comm, node, ele, surf, fluid, conduct,              &
      &          sf_grp, fl_prop, cd_prop, ht_prop, cp_prop,             &
      &          nod_bcs, surf_bcs, iphys, iphys_ele,                    &
@@ -159,6 +160,7 @@
       use cal_induction_terms
       use cal_gradient
 !
+      type(time_evolution_params), intent(in) :: evo_B
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
@@ -312,7 +314,7 @@
         i_fld = nod_fld%istack_component(i-1) + 1
         if(     i_fld .eq. iphys%i_induct_div                           &
      &     .or. (i_fld.eq.iphys%i_induction                             &
-     &           .and. evo_magne%iflag_scheme.gt.id_no_evolution)) then
+     &           .and. evo_B%iflag_scheme.gt.id_no_evolution)) then
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call cal_terms_4_magnetic                                     &
@@ -385,7 +387,7 @@
       end if
 !
       if (iphys%i_b_diffuse .gt. izero                                  &
-     &      .and. evo_magne%iflag_scheme .gt. id_no_evolution) then
+     &      .and. evo_B%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_mag_diffuse)
         call cal_magnetic_diffusion(ifld_diff%i_magne,                  &

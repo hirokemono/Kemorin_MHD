@@ -7,7 +7,7 @@
 !
 !!      subroutine cal_magnetic_field_pre(icomp_sgs_uxb, iak_diff_b,    &
 !!     &          iak_diff_uxb, ie_dvx, ie_dbx, ak_d_magne,             &
-!!     &          FEM_prm, SGS_param, cmt_param, filter_param,          &
+!!     &          evo_B, FEM_prm, SGS_param, cmt_param, filter_param,   &
 !!     &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,  &
 !!     &          Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,&
 !!     &          jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,           &
@@ -28,6 +28,7 @@
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
 !!     &          rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk, fem_wk,   &
 !!     &          surf_wk, f_l, f_nl, nod_fld)
+!!        type(time_evolution_params), intent(in) :: evo_B
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -109,7 +110,7 @@
 !
       subroutine cal_magnetic_field_pre(icomp_sgs_uxb, iak_diff_b,      &
      &          iak_diff_uxb, ie_dvx, ie_dbx, ak_d_magne,               &
-     &          FEM_prm, SGS_param, cmt_param, filter_param,            &
+     &          evo_B, FEM_prm, SGS_param, cmt_param, filter_param,     &
      &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,    &
      &          Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,  &
      &          jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,             &
@@ -131,6 +132,7 @@
       use evolve_by_lumped_crank
       use evolve_by_consist_crank
 !
+      type(time_evolution_params), intent(in) :: evo_B
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
@@ -186,11 +188,11 @@
 ! lead diffusion term
 !
       if (cd_prop%coef_magne .gt. zero                                  &
-     &      .and. evo_magne%coef_exp .gt. zero) then
+     &      .and. evo_B%coef_exp .gt. zero) then
         call int_vol_vector_diffuse_ele(SGS_param%ifilter_final,        &
      &      conduct%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
      &      node, ele, nod_fld, jac_3d_q, rhs_tbl, FEM_elens,           &
-     &      diff_coefs, iak_diff_b, evo_magne%coef_exp, ak_d_magne,     &
+     &      diff_coefs, iak_diff_b, evo_B%coef_exp, ak_d_magne,         &
      &      iphys%i_magne, fem_wk, f_l)
       end if
 !
@@ -220,15 +222,15 @@
      &    jac_sf_grp_q, rhs_tbl, FEM_elens, diff_coefs,                 &
      &    fem_wk, surf_wk, f_l, f_nl)
 !
-      if(evo_magne%iflag_scheme .eq. id_explicit_euler) then
+      if(evo_B%iflag_scheme .eq. id_explicit_euler) then
         call cal_magne_pre_euler(iphys%i_magne,                         &
      &      FEM_prm, nod_comm, node, ele, conduct, iphys_ele, ele_fld,  &
      &      jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-      else if(evo_magne%iflag_scheme .eq. id_explicit_adams2) then
+      else if(evo_B%iflag_scheme .eq. id_explicit_adams2) then
         call cal_magne_pre_adams(iphys%i_magne, iphys%i_pre_uxb,        &
      &      FEM_prm, nod_comm, node, ele, conduct, iphys_ele, ele_fld,  &
      &      jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-      else if(evo_magne%iflag_scheme .eq. id_Crank_nicolson) then
+      else if(evo_B%iflag_scheme .eq. id_Crank_nicolson) then
         call cal_magne_pre_lumped_crank                                 &
      &     (cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
      &      iphys%i_magne, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,     &
@@ -236,7 +238,7 @@
      &      evo_magne, iphys_ele, ele_fld, jac_3d_q, rhs_tbl,           &
      &      FEM_elens, diff_coefs, Bmatrix, MG_vector,                  &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-      else if(evo_magne%iflag_scheme .eq. id_Crank_nicolson_cmass) then
+      else if(evo_B%iflag_scheme .eq. id_Crank_nicolson_cmass) then
         call cal_magne_pre_consist_crank                                &
      &     (cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
      &      iphys%i_magne, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,     &

@@ -265,7 +265,7 @@
       call cal_fluxes_4_monitor                                         &
      &   (mesh%node, fl_prop1, cd_prop1, iphys, nod_fld)
 !
-      call cal_forces_4_monitor(FEM_prm, SGS_par,                       &
+      call cal_forces_4_monitor(evo_magne, FEM_prm, SGS_par,            &
      &    mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,            &
      &    MHD_mesh%fluid, MHD_mesh%conduct, group%surf_grp,             &
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1, nod_bcs, surf_bcs,    &
@@ -273,7 +273,7 @@
      &    FEM_elens, ifld_diff, diff_coefs, m_lump,                     &
      &    mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld, ele_fld)
       call cal_diff_of_sgs_terms                                        &
-     &   (FEM_prm, SGS_par%model_p, SGS_par%commute_p,                  &
+     &   (evo_magne, FEM_prm, SGS_par%model_p, SGS_par%commute_p,       &
      &    mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,            &
      &    group%surf_grp, MHD_mesh%fluid, MHD_mesh%conduct,             &
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1, nod_bcs, surf_bcs,    &
@@ -290,8 +290,8 @@
      &    fl_prop1, cd_prop1, iphys, jac_3d_q, rhs_tbl,                 &
      &    mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !
-      call cal_work_4_sgs_terms                                         &
-     &  (FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, MHD_mesh%conduct, &
+      call cal_work_4_sgs_terms(evo_vect_p, FEM_prm,                    &
+     &   mesh%nod_comm, mesh%node, mesh%ele, MHD_mesh%conduct,          &
      &   fl_prop1, iphys, jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk,        &
      &   f_nl, nod_fld)
 ! 

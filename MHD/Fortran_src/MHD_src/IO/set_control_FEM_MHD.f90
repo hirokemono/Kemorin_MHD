@@ -203,23 +203,23 @@
 !
 !   set boundary_conditons for magnetic field
 !
-      call s_set_control_4_magne                                        &
-     &   (nbc_ctl%node_bc_B_ctl, sbc_ctl%surf_bc_BN_ctl)
+      call s_set_control_4_magne(evo_magne, evo_vect_p,                 &
+     &    nbc_ctl%node_bc_B_ctl, sbc_ctl%surf_bc_BN_ctl)
 !
 !   set boundary_conditons for magnetic potential
 !
-      call s_set_control_4_mag_p                                        &
-     &   (nbc_ctl%node_bc_MP_ctl, sbc_ctl%surf_bc_MPN_ctl)
+      call s_set_control_4_mag_p(evo_magne, evo_vect_p,                 &
+     &    nbc_ctl%node_bc_MP_ctl, sbc_ctl%surf_bc_MPN_ctl)
 !
 !   set boundary_conditons for vector potential
 !
-      call s_set_control_4_vect_p                                       &
-     &   (nbc_ctl%node_bc_A_ctl, sbc_ctl%surf_bc_AN_ctl)
+      call s_set_control_4_vect_p(evo_vect_p,                           &
+     &    nbc_ctl%node_bc_A_ctl, sbc_ctl%surf_bc_AN_ctl)
 !
 !   set boundary_conditons for current density
 !
-      call s_set_control_4_current                                      &
-     &   (nbc_ctl%node_bc_J_ctl, sbc_ctl%surf_bc_JN_ctl)
+      call s_set_control_4_current(evo_magne, evo_vect_p,               &
+     &    nbc_ctl%node_bc_J_ctl, sbc_ctl%surf_bc_JN_ctl)
 !
 !   set boundary_conditons for magnetic potential
 !

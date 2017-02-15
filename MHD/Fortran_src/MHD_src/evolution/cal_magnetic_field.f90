@@ -14,9 +14,9 @@
 !!     &          iphys_elediff, sgs_coefs, diff_coefs, filtering,      &
 !!     &          m_lump, Bmatrix, Fmatrix, ak_d_magne, wk_filter,      &
 !!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
-!!      subroutine s_cal_magnetic_field                                 &
-!!     &         (FEM_prm, SGS_par, nod_comm, node, ele, surf, conduct, &
-!!     &          sf_grp, cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs, Fsf_bcs, &
+!!      subroutine s_cal_magnetic_field(evo_B, FEM_prm, SGS_par,        &
+!!     &          nod_comm, node, ele, surf, conduct, sf_grp,           &
+!!     &          cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs, Fsf_bcs,         &
 !!     &          iphys, iphys_ele, ele_fld,                            &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
 !!     &          rhs_tbl, FEM_elens, icomp_sgs, ifld_diff,             &
@@ -24,6 +24,7 @@
 !!     &          diff_coefs, filtering, m_lump, Bmatrix, Fmatrix,      &
 !!     &          ak_d_magne, wk_filter, mhd_fem_wk, fem_wk, surf_wk,   &
 !!     &          f_l, f_nl, nod_fld)
+!!        type(time_evolution_params), intent(in) :: evo_B
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
@@ -66,6 +67,7 @@
       use m_precision
       use m_machine_parameter
 !
+      use t_time_stepping_parameter
       use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_physical_property
@@ -237,9 +239,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_magnetic_field                                   &
-     &         (FEM_prm, SGS_par, nod_comm, node, ele, surf, conduct,   &
-     &          sf_grp, cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs, Fsf_bcs,   &
+      subroutine s_cal_magnetic_field(evo_B, FEM_prm, SGS_par,          &
+     &          nod_comm, node, ele, surf, conduct, sf_grp,             &
+     &          cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs, Fsf_bcs,           &
      &          iphys, iphys_ele, ele_fld,                              &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
      &          rhs_tbl, FEM_elens, icomp_sgs, ifld_diff,               &
@@ -257,6 +259,7 @@
       use cal_rms_potentials
       use skip_comment_f
 !
+      type(time_evolution_params), intent(in) :: evo_B
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
@@ -313,16 +316,17 @@
      &    iphys%i_m_phi, iphys%i_mag_p, nod_fld%d_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_magnetic_field_pre'
-      call cal_magnetic_field_pre(icomp_sgs%i_induction,                &
-     &   ifld_diff%i_magne, ifld_diff%i_induction,                      &
-     &   iphys_elediff%i_velo, iphys_elediff%i_magne, ak_d_magne,       &
-     &   FEM_prm, SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p, &
-     &   nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,           &
-     &   Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,         &
-     &   jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,                    &
-     &   sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,               &
-     &   Bmatrix, MG_vector, wk_filter, mhd_fem_wk, fem_wk, surf_wk,    &
-     &   f_l, f_nl, nod_fld)
+      call cal_magnetic_field_pre                                       &
+     &   (icomp_sgs%i_induction, ifld_diff%i_magne,                     &
+     &    ifld_diff%i_induction, iphys_elediff%i_velo,                  &
+     &    iphys_elediff%i_magne, ak_d_magne, evo_B, FEM_prm,            &
+     &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
+     &    nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,          &
+     &    Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,        &
+     &    jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,                   &
+     &    sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,              &
+     &    Bmatrix, MG_vector, wk_filter, mhd_fem_wk, fem_wk, surf_wk,   &
+     &    f_l, f_nl, nod_fld)
 !
 !----  set magnetic field in insulate layer
 !
@@ -346,7 +350,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'magnetic_correction'
         call cal_magnetic_co(ifld_diff%i_magne, ak_d_magne,             &
-     &      evo_magne, FEM_prm, SGS_par%model_p, SGS_par%commute_p,     &
+     &      evo_B, FEM_prm, SGS_par%model_p, SGS_par%commute_p,         &
      &      nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,        &
      &      Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,               &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &

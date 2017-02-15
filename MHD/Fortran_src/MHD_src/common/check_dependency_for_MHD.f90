@@ -67,7 +67,7 @@
       call check_field_dependencies                                     &
      &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
      &    fl_prop1, iphys, nod_fld)
-      call check_dependencies_by_id(iphys, nod_fld)
+      call check_dependencies_by_id(evo_magne, iphys, nod_fld)
       call check_dependence_FEM_MHD_by_id(iphys, nod_fld)
       call check_dependence_FEM_evo(evo_velo, iphys, nod_fld)
       call check_dependence_4_FEM_SGS                                   &
@@ -100,7 +100,7 @@
       call check_field_dependencies                                     &
      &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
      &    fl_prop1, ipol, rj_fld)
-      call check_dependencies_by_id(ipol, rj_fld)
+      call check_dependencies_by_id(evo_magne, ipol, rj_fld)
       call check_dependence_SPH_MHD_by_id(ipol, rj_fld)
       call check_dependence_SPH_evo(evo_velo, ipol, rj_fld)
       call check_dependence_4_SPH_SGS                                   &

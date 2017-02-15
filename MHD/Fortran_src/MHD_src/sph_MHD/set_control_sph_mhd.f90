@@ -294,8 +294,8 @@
 !   set boundary_conditons for magnetic field
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_magne'
-      call s_set_control_4_magne                                        &
-     &   (nbc_ctl%node_bc_B_ctl, sbc_ctl%surf_bc_BN_ctl)
+      call s_set_control_4_magne(evo_magne, evo_vect_p,                 &
+     &    nbc_ctl%node_bc_B_ctl, sbc_ctl%surf_bc_BN_ctl)
 !
       end subroutine set_control_SPH_MHD_bcs
 !

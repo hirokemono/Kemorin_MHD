@@ -107,12 +107,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine count_int_vol_data(SGS_param, evo_magne, mhd_fem_wk)
+      subroutine count_int_vol_data(SGS_param, evo_B, mhd_fem_wk)
 !
       use m_phys_labels
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
-      type(time_evolution_params), intent(in) :: evo_magne
+      type(time_evolution_params), intent(in) :: evo_B
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
 !
@@ -128,7 +128,7 @@
         if ( SGS_param%iflag_SGS_lorentz .ne. id_SGS_none) then
          mhd_fem_wk%n_dvx = mhd_fem_wk%n_dvx + 18
         else if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none               &
-     &     .and. evo_magne%iflag_scheme .gt. id_no_evolution) then
+     &     .and. evo_B%iflag_scheme .gt. id_no_evolution) then
          mhd_fem_wk%n_dvx = mhd_fem_wk%n_dvx + 18
         end if
 !
@@ -143,7 +143,7 @@
         if ( SGS_param%iflag_SGS_lorentz .ne. id_SGS_none) then
          mhd_fem_wk%n_dvx = mhd_fem_wk%n_dvx + 9
         else if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none               &
-     &     .and. evo_magne%iflag_scheme .gt. id_no_evolution) then
+     &     .and. evo_B%iflag_scheme .gt. id_no_evolution) then
          mhd_fem_wk%n_dvx = mhd_fem_wk%n_dvx + 9
         end if
       end if
