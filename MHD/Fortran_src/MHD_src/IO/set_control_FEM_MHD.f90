@@ -184,7 +184,7 @@
 !   set boundary conditions for temperature
 !
       call s_set_control_4_temp                                         &
-     &   (nbc_ctl%node_bc_T_ctl, sbc_ctl%surf_bc_HF_ctl)
+     &   (evo_temp, nbc_ctl%node_bc_T_ctl, sbc_ctl%surf_bc_HF_ctl)
 !
 !   set boundary conditions for velocity
 !
@@ -199,7 +199,7 @@
 !   set boundary conditions for composition
 !
       call s_set_control_4_composition                                  &
-     &   (nbc_ctl%node_bc_C_ctl, sbc_ctl%surf_bc_CF_ctl)
+     &   (evo_comp, nbc_ctl%node_bc_C_ctl, sbc_ctl%surf_bc_CF_ctl)
 !
 !   set boundary_conditons for magnetic field
 !

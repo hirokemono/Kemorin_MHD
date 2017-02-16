@@ -9,7 +9,9 @@
 !> @brief set boundary conditions for temperature from control data
 !!
 !!@verbatim
-!!     subroutine s_set_control_4_temp(node_bc_T_ctl, surf_bc_HF_ctl)
+!!      subroutine s_set_control_4_temp                                 &
+!!     &         (evo_T, node_bc_T_ctl, surf_bc_HF_ctl)
+!!        type(time_evolution_params), intent(in) :: evo_T
 !!        type(ctl_array_c2r), intent(inout) :: node_bc_T_ctl
 !!        type(ctl_array_c2r), intent(inout) :: surf_bc_HF_ctl
 !!@endverbatim
@@ -26,24 +28,26 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_4_temp(node_bc_T_ctl, surf_bc_HF_ctl)
+      subroutine s_set_control_4_temp                                   &
+     &         (evo_T, node_bc_T_ctl, surf_bc_HF_ctl)
 !
       use m_machine_parameter
       use calypso_mpi
-      use m_control_parameter
+      use t_time_stepping_parameter
       use t_read_control_arrays
       use m_bc_data_list
       use m_surf_data_list
       use set_node_group_types
       use set_surface_group_types
 !
+      type(time_evolution_params), intent(in) :: evo_T
       type(ctl_array_c2r), intent(inout) :: node_bc_T_ctl
       type(ctl_array_c2r), intent(inout) :: surf_bc_HF_ctl
 !
       integer(kind = kint) :: i
 !
 !
-      if (evo_temp%iflag_scheme .eq. id_no_evolution) then
+      if (evo_T%iflag_scheme .eq. id_no_evolution) then
         temp_nod%num_bc =    0
         h_flux_surf%num_bc = 0
       else
