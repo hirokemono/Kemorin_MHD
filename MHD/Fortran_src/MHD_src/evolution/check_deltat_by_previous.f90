@@ -4,7 +4,12 @@
 !      Written by H. Matsui on Nov., 2009
 !
 !!      subroutine s_check_deltat_by_previous                           &
-!!   &           (node, iphys, nod_fld, flex_data)
+!!   &           (evo_A, node, iphys, nod_fld, flex_data)
+!!        type(time_evolution_params), intent(in) :: evo_A
+!!        type(node_data), intent(in) :: node
+!!        type(phys_address), intent(in) :: iphys
+!!        type(phys_data), intent(in) :: nod_fld
+!!        type(flexible_steppind_data), intent(inout) :: flex_data
 !
       module check_deltat_by_previous
 !
@@ -14,6 +19,7 @@
       use m_constants
       use m_machine_parameter
 !
+      use t_time_stepping_parameter
       use t_geometry_data
       use t_phys_data
       use t_phys_address
@@ -31,10 +37,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_check_deltat_by_previous                             &
-     &         (node, iphys, nod_fld, flex_data)
+     &         (evo_A, node, iphys, nod_fld, flex_data)
 !
-      use m_control_parameter
-!
+      type(time_evolution_params), intent(in) :: evo_A
       type(node_data), intent(in) :: node
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
@@ -64,7 +69,7 @@
 !
 !
       if(flex_data%i_drmax_b .gt. izero) then
-        if(evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+        if(evo_A%iflag_scheme .gt. id_no_evolution) then
           if(iflag_debug .gt. izero)                                    &
      &      write(*,*) 'check_vector_evo_by_previous vecp'
           call check_vector_evo_by_previous                             &

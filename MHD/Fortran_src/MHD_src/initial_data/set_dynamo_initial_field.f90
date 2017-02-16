@@ -51,6 +51,7 @@
      &          node, ele, fluid, iphys, layer_tbl,                     &
      &          wk_sgs, wk_diff, sgs_coefs, diff_coefs, nod_fld)
 !
+      use m_control_parameter
       use m_initial_field_control
       use m_t_int_parameter
       use m_t_step_parameter
@@ -79,7 +80,8 @@
         call input_MHD_restart_file_ctl(SGS_par, layer_tbl, node, ele,  &
      &      fluid, wk_sgs, wk_diff, sgs_coefs, diff_coefs, nod_fld)
       else
-        call set_initial_data(ref_param_T, node, fluid, iphys, nod_fld)
+        call set_initial_data                                           &
+     &     (evo_vect_p, ref_param_T, node, fluid, iphys, nod_fld)
       end if
       iflag_initial_step = 0
 !
@@ -104,18 +106,19 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_initial_data                                       &
-     &         (ref_param_T, node, fluid, iphys, nod_fld)
+     &         (evo_A, ref_param_T, node, fluid, iphys, nod_fld)
 !
       use calypso_mpi
       use m_error_IDs
-      use m_control_parameter
       use m_initial_field_control
       use m_t_step_parameter
+      use t_time_stepping_parameter
 !
       use set_initial_rotation
       use dynamobench_initial_temp
       use set_initial_for_MHD
 !
+      type(time_evolution_params), intent(in) :: evo_A
       type(reference_scalar_param), intent(in) :: ref_param_T
       type(node_data), intent(in) :: node
       type(field_geometry_data), intent(in) :: fluid
@@ -146,7 +149,7 @@
      &      nod_fld%ntot_phys, iphys%i_velo, iphys%i_press,             &
      &      iphys%i_temp, nod_fld%d_fld)
         isig = 0
-        if (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+        if (evo_A%iflag_scheme .gt. id_no_evolution) then
           call set_initial_vect_p                                       &
      &       (isig, ref_param_T, node, nod_fld%ntot_phys,               &
      &        iphys%i_vecp, iphys%i_magne, iphys%i_mag_p,               &
@@ -186,7 +189,7 @@
      &      fluid%inod_fld, nod_fld%ntot_phys,                          &
      &      iphys%i_velo, iphys%i_press, iphys%i_magne, nod_fld%d_fld)
         isig = 2000
-        if (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+        if (evo_A%iflag_scheme .gt. id_no_evolution) then
           call set_initial_vect_p                                       &
      &       (isig, ref_param_T, node, nod_fld%ntot_phys,               &
      &        iphys%i_vecp, iphys%i_magne, iphys%i_mag_p,               &
@@ -203,7 +206,7 @@
      &      node, fluid%numnod_fld, fluid%inod_fld,                     &
      &      nod_fld%ntot_phys, iphys%i_velo, iphys%i_press,             &
      &      iphys%i_temp, nod_fld%d_fld)
-        if (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+        if (evo_A%iflag_scheme .gt. id_no_evolution) then
           call set_initial_vect_p                                       &
      &       (iflag_restart, ref_param_T, node,                         &
      &        nod_fld%ntot_phys, iphys%i_vecp, iphys%i_magne,           &

@@ -19,6 +19,7 @@
       use m_precision
 !
       use calypso_mpi
+      use m_control_parameter
       use m_t_step_parameter
       use t_SGS_control_parameter
       use t_ele_info_4_dynamic
@@ -168,17 +169,21 @@
      &    sgs_fld_coef_file_code, sgs_fld_coef_file_name, wk_sgs)
       call open_SGS_correlation_file(iflag_layered,                     &
      &    sgs_comp_coef_file_code, sgs_comp_coef_file_name,             &
-     &    SGS_param, wk_sgs)
+     &    evo_vect_p, SGS_param, wk_sgs)
 !
       call open_SGS_correlation_file(iflag_layered,                     &
-     &    sgs_cor_file_code, sgs_cor_file_name, SGS_param, wk_sgs)
+     &    sgs_cor_file_code, sgs_cor_file_name,                         &
+     &    evo_vect_p, SGS_param, wk_sgs)
       call open_SGS_correlation_file(iflag_layered,                     &
-     &    sgs_cov_file_code, sgs_cov_file_name, SGS_param, wk_sgs)
+     &    sgs_cov_file_code, sgs_cov_file_name,                         &
+     &    evo_vect_p, SGS_param, wk_sgs)
       call open_SGS_correlation_file(iflag_layered,                     &
-     &    sgs_ratio_file_code, sgs_ratio_file_name, SGS_param, wk_sgs)
+     &    sgs_ratio_file_code, sgs_ratio_file_name,                     &
+     &    evo_vect_p, SGS_param, wk_sgs)
 !
       call open_SGS_rms_ratio_file(iflag_layered,                       &
-     &    sgs_rms_file_code, sgs_rms_file_name, SGS_param, wk_sgs)
+     &    sgs_rms_file_code, sgs_rms_file_name,                         &
+     &    evo_vect_p, SGS_param, wk_sgs)
 !
 !
       do inum = 1, wk_sgs%nlayer
@@ -223,18 +228,21 @@
      &    sgs_fld_coef_file_code, sgs_fld_whole_file_name, wk_sgs)
       call open_SGS_correlation_file(iflag_whole,                       &
      &    sgs_comp_coef_file_code, sgs_comp_whole_file_name,            &
-     &    SGS_param, wk_sgs)
+     &    evo_vect_p, SGS_param, wk_sgs)
 !
       call open_SGS_correlation_file(iflag_whole,                       &
-     &    sgs_cor_file_code, sgs_w_cor_file_name, SGS_param, wk_sgs)
+     &    sgs_cor_file_code, sgs_w_cor_file_name,                       &
+     &    evo_vect_p, SGS_param, wk_sgs)
       call open_SGS_correlation_file(iflag_whole,                       &
-     &    sgs_cov_file_code, sgs_w_cov_file_name, SGS_param, wk_sgs)
+     &    sgs_cov_file_code, sgs_w_cov_file_name,                       &
+     &    evo_vect_p, SGS_param, wk_sgs)
       call open_SGS_correlation_file(iflag_whole,                       &
      &    sgs_ratio_file_code, sgs_w_ratio_file_name,                   &
-     &    SGS_param, wk_sgs)
+     &    evo_vect_p, SGS_param, wk_sgs)
 !
       call open_SGS_rms_ratio_file(iflag_whole,                         &
-     &    sgs_rms_file_code, sgs_w_rms_file_name, SGS_param, wk_sgs)
+     &    sgs_rms_file_code, sgs_w_rms_file_name,                       &
+     &    evo_vect_p, SGS_param, wk_sgs)
 !
       write(sgs_fld_coef_file_code,1001)  i_step_MHD, time,             &
      &        wk_sgs%fld_whole_clip(1:wk_sgs%num_kinds)
@@ -275,14 +283,15 @@
      &      diff_comp_file_code, diff_comp_whole_file_name, wk_diff)
 !
       call open_diff_correlation_file(iflag_whole,                      &
-     &      diff_cor_file_code, diff_w_cor_file_name, wk_diff)
+     &   diff_cor_file_code, diff_w_cor_file_name, evo_vect_p, wk_diff)
       call open_diff_correlation_file(iflag_whole,                      &
-     &      diff_cov_file_code, diff_w_cov_file_name, wk_diff)
+     &   diff_cov_file_code, diff_w_cov_file_name, evo_vect_p, wk_diff)
       call open_diff_correlation_file(iflag_whole,                      &
-     &      diff_ratio_file_code, diff_w_ratio_file_name, wk_diff)
+     &   diff_ratio_file_code, diff_w_ratio_file_name,                  &
+     &   evo_vect_p, wk_diff)
 !
       call open_diff_rms_ratio_file(iflag_whole,                        &
-     &      diff_rms_file_code, diff_w_rms_file_name, wk_diff)
+     &   diff_rms_file_code, diff_w_rms_file_name, evo_vect_p, wk_diff)
 !
       write(diff_coef_file_code,1001) i_step_MHD, time,                 &
      &          wk_diff%fld_whole_clip(1:wk_diff%num_kinds)
@@ -323,14 +332,15 @@
      &             diff_coef_file_code, diff_coef_file_name, wk_diff)
 !
       call open_diff_correlation_file(iflag_layered,                    &
-     &             diff_cor_file_code, diff_cor_file_name, wk_diff)
+     &    diff_cor_file_code, diff_cor_file_name, evo_vect_p, wk_diff)
       call open_diff_correlation_file(iflag_layered,                    &
-     &             diff_cov_file_code, diff_cov_file_name, wk_diff)
+     &    diff_cov_file_code, diff_cov_file_name, evo_vect_p, wk_diff)
       call open_diff_correlation_file(iflag_layered,                    &
-     &             diff_ratio_file_code, diff_ratio_file_name, wk_diff)
+     &    diff_ratio_file_code, diff_ratio_file_name,                   &
+     &    evo_vect_p, wk_diff)
 !
       call open_diff_rms_ratio_file(iflag_layered,                      &
-     &             diff_rms_file_code, diff_rms_file_name, wk_diff)
+     &    diff_rms_file_code, diff_rms_file_name, evo_vect_p, wk_diff)
 !
       do inum = 1, wk_diff%nlayer
         write(diff_coef_file_code,1000)                                 &

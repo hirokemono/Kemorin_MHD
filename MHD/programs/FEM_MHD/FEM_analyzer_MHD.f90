@@ -143,7 +143,7 @@
      &     (mesh1%node, mesh1%ele, MHD_mesh1%fluid,                     &
      &      iphys, nod_fld1, jac1_3d_q, jac1_3d_l, fem1_wk, flex_data)
         call s_check_deltat_by_prev_rms                                 &
-     &     (mesh1%node, mesh1%ele, MHD_mesh1%fluid,                     &
+     &     (evo_vect_p, mesh1%node, mesh1%ele, MHD_mesh1%fluid,         &
      &      iphys, nod_fld1, jac1_3d_q, jac1_3d_l, fem1_wk, flex_data)
       end if
 !
@@ -210,7 +210,7 @@
 !     ---- step to next time!! --- 
 !
       if (iflag_debug.eq.1) write(*,*) 'set_new_time_and_step'
-      call set_new_time_and_step(mesh1%node, iphys, nod_fld1)
+      call set_new_time_and_step(iphys, nod_fld1)
 !
 !     ----- Time integration
 !

@@ -57,6 +57,7 @@
       module lead_physical_values
 !
       use m_precision
+      use m_control_parameter
 !
       use t_FEM_control_parameter
       use t_SGS_control_parameter
@@ -172,7 +173,7 @@
      &      surf_wk, f_l, f_nl, nod_fld, ele_fld, diff_coefs)
 !
         call cal_field_by_rotation                                      &
-     &     (FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
+     &     (evo_vect_p, FEM_prm, SGS_par%model_p, SGS_par%commute_p,    &
      &      mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &
      &      MHD_mesh%fluid, MHD_mesh%conduct, group%surf_grp,           &
      &      nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,               &
@@ -286,7 +287,7 @@
      &    filtering, wk_filter, nod_fld)
 !
       call cal_work_4_forces                                            &
-     &   (FEM_prm, mesh%nod_comm, mesh%node, mesh%ele,                  &
+     &   (evo_vect_p, FEM_prm, mesh%nod_comm, mesh%node, mesh%ele,      &
      &    fl_prop1, cd_prop1, iphys, jac_3d_q, rhs_tbl,                 &
      &    mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !

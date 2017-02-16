@@ -201,8 +201,8 @@
 !
       if ( evo_A%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'cal_magne_vector_potential'
-        call cal_vector_potential                                       &
-     &    (FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,        &
+        call cal_vector_potential(evo_vect_p, FEM_prm, SGS_par,         &
+     &     mesh%nod_comm, mesh%node, mesh%ele,                          &
      &     ele_mesh%surf, MHD_mesh%conduct, group%surf_grp, cd_prop1,   &
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Fsf_bcs,        &
      &     iphys, iphys_ele, ele_fld,                                   &

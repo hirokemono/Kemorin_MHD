@@ -3,8 +3,8 @@
 !
 !      Written by H. Matsui on Nov., 2009
 !
-!      subroutine s_copy_field_data_for_dt_check(node, iphys, nod_fld)
-!!        type(node_data), intent(in) :: node
+!!      subroutine s_copy_field_data_for_dt_check(evo_A, iphys, nod_fld)
+!!        type(time_evolution_params), intent(in) :: evo_A
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
 !
@@ -12,7 +12,7 @@
 !
       use m_constants
 !
-      use t_geometry_data
+      use t_time_stepping_parameter
       use t_phys_data
       use t_phys_address
 !
@@ -22,12 +22,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_copy_field_data_for_dt_check(node, iphys, nod_fld)
+      subroutine s_copy_field_data_for_dt_check(evo_A, iphys, nod_fld)
 !
-      use m_control_parameter
       use copy_nodal_fields
 !
-      type(node_data), intent(in) :: node
+      type(time_evolution_params), intent(in) :: evo_A
       type(phys_address), intent(in) :: iphys
 !
       type(phys_data), intent(inout) :: nod_fld
@@ -79,7 +78,7 @@
       end if
 !
 !
-      if(evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+      if(evo_A%iflag_scheme .gt. id_no_evolution) then
         if( (iphys%i_chk_uxb*iphys%i_vecp) .gt. izero) then
           call copy_vector_component(nod_fld,                           &
      &        iphys%i_vecp, iphys%i_chk_uxb)

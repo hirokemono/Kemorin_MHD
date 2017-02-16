@@ -12,9 +12,10 @@
 !!     &          ak_MHD, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,       &
 !!     &          ifld_diff, diff_coefs, m_lump, mhd_fem_wk, fem_wk,    &
 !!     &          surf_wk, f_l, f_nl, nod_fld, ele_fld)
-!!      subroutine cal_work_4_forces                                    &
-!!     &         (FEM_prm, nod_comm, node, ele, fl_prop, cd_prop, iphys,&
+!!      subroutine cal_work_4_forces(evo_A, FEM_prm,                    &
+!!     &           nod_comm, node, ele, fl_prop, cd_prop, iphys,        &
 !!     &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl, nod_fld)
+!!        type(time_evolution_params), intent(in) :: evo_A
 !!        type(time_evolution_params), intent(in) :: evo_B
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(communication_table), intent(in) :: nod_comm
@@ -49,9 +50,9 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_control_parameter
       use m_phys_labels
 !
+      use t_time_stepping_parameter
       use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_comm_table
@@ -422,8 +423,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_work_4_forces                                      &
-     &         (FEM_prm, nod_comm, node, ele, fl_prop, cd_prop, iphys,  &
+      subroutine cal_work_4_forces(evo_A, FEM_prm,                      &
+     &           nod_comm, node, ele, fl_prop, cd_prop, iphys,          &
      &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !
       use buoyancy_flux
@@ -433,6 +434,7 @@
       use int_magne_induction
       use nodal_poynting_flux_smp
 !
+      type(time_evolution_params), intent(in) :: evo_A
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -450,7 +452,7 @@
 !
 !
       if (iphys%i_induction .gt. izero                                  &
-     &      .and. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+     &      .and. evo_A%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_mag_induct)
         call s_int_magne_induction(FEM_prm%npoint_poisson_int,          &
@@ -459,7 +461,7 @@
       end if
 !
       if (iphys%i_b_diffuse .gt. izero                                  &
-     &      .and. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+     &      .and. evo_A%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_mag_diffuse)
         call s_int_magne_diffusion(FEM_prm%npoint_poisson_int,          &
