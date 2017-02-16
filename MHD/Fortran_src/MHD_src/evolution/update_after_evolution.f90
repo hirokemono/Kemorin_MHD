@@ -306,7 +306,8 @@
       if ( evo_C%iflag_scheme .gt. id_no_evolution) then
         if( ref_param_C1%iflag_reference .ne. id_no_ref_temp) then
           if(iflag_debug.eq.1) write(*,*) 's_cal_light_element part'
-          call s_cal_light_element(iphys%i_par_light, FEM_prm,          &
+          call s_cal_light_element                                      &
+     &       (iphys%i_par_light, evo_comp, FEM_prm,                     &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
      &        mesh%nod_comm, mesh%node, mesh%ele,                       &
      &        ele_mesh%surf, MHD_mesh%fluid, group%surf_grp, cp_prop1,  &
@@ -321,7 +322,7 @@
      &        iphys%i_ref_c, iphys%i_par_light, iphys%i_light)
         else
           if(iflag_debug.eq.1) write(*,*) 's_cal_light_element C'
-          call s_cal_light_element(iphys%i_light, FEM_prm,              &
+          call s_cal_light_element(iphys%i_light, evo_comp, FEM_prm,    &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
      &        mesh%nod_comm, mesh%node, mesh%ele,                       &
      &        ele_mesh%surf, MHD_mesh%fluid, group%surf_grp, cp_prop1,  &
@@ -633,7 +634,8 @@
       if ( evo_C%iflag_scheme .gt. id_no_evolution) then
         if( ref_param_C1%iflag_reference .ne. id_no_ref_temp) then
           if(iflag_debug.eq.1) write(*,*) 's_cal_light_element part'
-          call s_cal_light_element(iphys%i_par_light, FEM_prm,          &
+          call s_cal_light_element                                      &
+     &       (iphys%i_par_light, evo_comp, FEM_prm,                     &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
      &        mesh%nod_comm, mesh%node, mesh%ele,                       &
      &        ele_mesh%surf, fluid, group%surf_grp, cp_prop1,           &
@@ -648,7 +650,7 @@
      &        iphys%i_ref_c, iphys%i_par_light, iphys%i_light)
         else
           if (iflag_debug.eq.1) write(*,*) 's_cal_light_element'
-          call s_cal_light_element(iphys%i_light, FEM_prm,              &
+          call s_cal_light_element(iphys%i_light, evo_comp, FEM_prm,    &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
      &        mesh%nod_comm, mesh%node, mesh%ele,                       &
      &        ele_mesh%surf, fluid, group%surf_grp, cp_prop1,           &
