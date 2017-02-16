@@ -40,6 +40,7 @@
       use t_ctl_data_sph_MHD_psf
       use m_ctl_data_sph_MHD
       use m_spheric_parameter
+      use m_mesh_data
       use m_sph_spectr_data
       use m_rms_4_sph_spectr
       use set_control_sph_mhd
@@ -60,7 +61,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_4_SPH_make_init'
       call input_control_4_SPH_make_init(MHD_ctl1, sph1, comms_sph1,    &
-     &    sph_grps1, rj_fld1, pwr1, SGS_par1)
+     &    sph_grps1, rj_fld1, pwr1, SGS_par1, mesh1, group1, ele_mesh1)
       call end_eleps_time(4)
 !
 !        Initialize spherical transform dynamo

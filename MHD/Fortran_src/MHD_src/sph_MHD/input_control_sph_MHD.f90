@@ -15,8 +15,8 @@
 !!     &          pwr, SGS_par, dynamic_SPH)
 !!
 !!      subroutine input_control_4_SPH_make_init                        &
-!!     &         (MHD_ctl, sph, comms_sph, sph_grps,                    &
-!!     &          rj_fld, pwr, SGS_par)
+!! .   &         (MHD_ctl, sph, comms_sph, sph_grps, rj_fld,            &
+!!     &          pwr, SGS_par, mesh, group, ele_mesh)
 !!      subroutine input_control_SPH_dynamobench                        &
 !!     &          (MHD_ctl, sph, comms_sph, sph_grps,                   &
 !!     &           rj_fld, nod_fld, pwr, SGS_par)
@@ -68,6 +68,7 @@
       type(file_params_4_sph_mhd), save :: MHD1_org_files
 !
       private :: mesh1_file
+      private :: select_make_SPH_mesh
 !
 ! ----------------------------------------------------------------------
 !
@@ -85,8 +86,6 @@
 !
       use sph_mhd_rst_IO_control
       use set_control_sph_mhd
-      use parallel_load_data_4_sph
-      use parallel_gen_sph_grids
       use sph_file_IO_select
 !
       type(mhd_simulation_control), intent(inout) :: MHD_ctl
@@ -104,8 +103,6 @@
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
 !
-      integer(kind = kint) :: iflag_lc, iflag_gl
-!
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_SGS_SPH_MHD'
       call set_control_SGS_SPH_MHD(MHD_ctl%plt, MHD_ctl%org_plt,        &
@@ -118,25 +115,8 @@
      &   (MHD_ctl%psph_ctl%spctl, sph%sph_params, rj_fld, nod_fld)
 !
 !
-      iflag_lc = 0
-      if     (check_exsist_rtp_file(my_rank) .ne. 0                     &
-     &  .or. check_exsist_rtm_file(my_rank) .ne. 0                      &
-     &  .or. check_exsist_rlm_file(my_rank) .ne. 0                      &
-     &  .or. check_exsist_rj_file(my_rank) .ne.  0) iflag_lc = 1
-      call MPI_allREDUCE(iflag_lc, iflag_gl, ione, CALYPSO_INTEGER,     &
-     &    MPI_SUM, CALYPSO_COMM, ierr_MPI)
-!
-      if(iflag_gl.eq.0) then
-        if (my_rank.eq.0) write(*,*) 'spherical harmonics table exists'
-      else if(iflag_make_SPH .eq. 0) then
-        call calypso_mpi_abort(ierr_file,                               &
-     &     'Set parameters for spherical shell')
-      else
-        if (my_rank.eq.0) write(*,*) 'Make spherical harmonics table'
-        call para_gen_sph_grids(sph_gen)
-        call deallocate_gen_mesh_params
-      end if
-      call calypso_mpi_barrier
+      call select_make_SPH_mesh                                         &
+     &   (sph, comms_sph, sph_grps,  mesh, group, ele_mesh, mesh1_file)
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_SPH_and_FEM_mesh'
       call load_para_SPH_and_FEM_mesh                                   &
@@ -189,8 +169,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine input_control_4_SPH_make_init                          &
-     &         (MHD_ctl, sph, comms_sph, sph_grps,                      &
-     &          rj_fld, pwr, SGS_par)
+     &         (MHD_ctl, sph, comms_sph, sph_grps, rj_fld,              &
+     &          pwr, SGS_par, mesh, group, ele_mesh)
 !
       use m_control_parameter
       use sph_mhd_rst_IO_control
@@ -206,6 +186,10 @@
       type(sph_mean_squares), intent(inout) :: pwr
       type(SGS_paremeters), intent(inout) :: SGS_par
 !
+      type(mesh_geometry), intent(inout) :: mesh
+      type(mesh_groups), intent(inout) ::   group
+      type(element_geometry), intent(inout) :: ele_mesh
+!
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
       call set_control_4_SPH_MHD(MHD_ctl%plt, MHD_ctl%org_plt,          &
@@ -214,8 +198,8 @@
      &    sph_gen, rj_fld, mesh1_file, sph_file_param1,                 &
      &    MHD1_org_files, sph_fst_IO, pwr, SGS_par%model_p)
 !
-      if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
-      call load_para_sph_mesh(sph, comms_sph, sph_grps)
+      call select_make_SPH_mesh
+     &   (sph, comms_sph, sph_grps, mesh, group, ele_mesh, mesh1_file)
 !
       end subroutine input_control_4_SPH_make_init
 !
@@ -294,6 +278,53 @@
       end subroutine set_control_4_SPH_to_FEM
 !
 ! -----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine select_make_SPH_mesh(sph, comms_sph, sph_grps,         &
+     &          mesh, group, ele_mesh, mesh_file)
+!
+      use parallel_load_data_4_sph
+      use parallel_gen_sph_grids
+!
+      type(sph_grids), intent(inout) :: sph
+      type(sph_comm_tables), intent(inout) :: comms_sph
+      type(sph_group_data), intent(inout) ::  sph_grps
+!
+      type(mesh_geometry), intent(inout) :: mesh
+      type(mesh_groups), intent(inout) ::   group
+      type(element_geometry), intent(inout) :: ele_mesh
+      type(field_IO_params), intent(inout) ::  mesh_file
+!
+      integer(kind = kint) :: iflag_lc, iflag_gl
+!
+!
+      iflag_lc = 0
+      if     (check_exsist_rtp_file(my_rank) .ne. 0                     &
+     &  .or. check_exsist_rtm_file(my_rank) .ne. 0                      &
+     &  .or. check_exsist_rlm_file(my_rank) .ne. 0                      &
+     &  .or. check_exsist_rj_file(my_rank) .ne.  0) iflag_lc = 1
+      call MPI_allREDUCE(iflag_lc, iflag_gl, ione, CALYPSO_INTEGER,     &
+     &    MPI_SUM, CALYPSO_COMM, ierr_MPI)
+!
+      if(iflag_gl.eq.0) then
+        if (my_rank.eq.0) write(*,*) 'spherical harmonics table exists'
+      else if(iflag_make_SPH .eq. 0) then
+        call calypso_mpi_abort(ierr_file,                               &
+     &     'Set parameters for spherical shell')
+      else
+        if (my_rank.eq.0) write(*,*) 'Make spherical harmonics table'
+        call para_gen_sph_grids(sph_gen)
+        call deallocate_gen_mesh_params
+      end if
+      call calypso_mpi_barrier
+!
+      if (iflag_debug.eq.1) write(*,*) 'load_para_SPH_and_FEM_mesh'
+      call load_para_SPH_and_FEM_mesh                                   &
+     &   (sph, comms_sph, sph_grps, mesh, group, ele_mesh, mesh_file)
+!
+      end subroutine select_make_SPH_mesh
+!
+! ----------------------------------------------------------------------
 !
       subroutine sph_boundary_IO_control
 !
