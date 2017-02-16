@@ -297,10 +297,18 @@
 !
       subroutine bcast_parallel_shell_ctl(psph_ctl)
 !
+      use calypso_mpi
       use bcast_4_sphere_ctl
 !
       type(parallel_sph_shell_control), intent(inout) :: psph_ctl
 !
+!
+      call MPI_Bcast(psph_ctl%iflag_sph_shell, ione,                    &
+     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(psph_ctl%ifile_sph_shell, ione,                    &
+     &    CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_BCAST(psph_ctl%control_sph_file , kchara,                &
+     &    CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
 !
       call bcast_ctl_4_shell_define(psph_ctl%spctl)
       call bcast_ctl_ndomain_4_shell(psph_ctl%sdctl)
