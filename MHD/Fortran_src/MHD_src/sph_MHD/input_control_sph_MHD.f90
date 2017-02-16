@@ -117,10 +117,6 @@
       call select_make_SPH_mesh                                         &
      &   (sph, comms_sph, sph_grps,  mesh, group, ele_mesh, mesh1_file)
 !
-      if (iflag_debug.eq.1) write(*,*) 'load_para_SPH_and_FEM_mesh'
-      call load_para_SPH_and_FEM_mesh                                   &
-     &   (sph, comms_sph, sph_grps, mesh, group, ele_mesh, mesh1_file)
-!
       call sph_boundary_IO_control
 !
       end subroutine input_control_SPH_mesh
