@@ -81,7 +81,6 @@
      &          pwr, SGS_par, dynamic_SPH, mesh, group, ele_mesh)
 !
       use m_control_parameter
-      use m_spheric_global_ranks
       use m_error_IDs
 !
       use sph_mhd_rst_IO_control
@@ -198,7 +197,7 @@
      &    sph_gen, rj_fld, mesh1_file, sph_file_param1,                 &
      &    MHD1_org_files, sph_fst_IO, pwr, SGS_par%model_p)
 !
-      call select_make_SPH_mesh
+      call select_make_SPH_mesh                                         &
      &   (sph, comms_sph, sph_grps, mesh, group, ele_mesh, mesh1_file)
 !
       end subroutine input_control_4_SPH_make_init
@@ -283,6 +282,7 @@
       subroutine select_make_SPH_mesh(sph, comms_sph, sph_grps,         &
      &          mesh, group, ele_mesh, mesh_file)
 !
+      use m_spheric_global_ranks
       use parallel_load_data_4_sph
       use parallel_gen_sph_grids
 !
