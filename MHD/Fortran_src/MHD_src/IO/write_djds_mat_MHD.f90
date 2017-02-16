@@ -4,7 +4,10 @@
 !     Written by H. Matsui on Apr., 2008
 !
 !!      subroutine s_write_djds_mat_MHD                                 &
-!!     &         (Vmatrix, Pmatrix, Bmatrix, Fmatrix, Tmatrix, Cmatrix)
+!!     &         (evo_V, evo_B, evo_A, evo_T, evo_C,                    &
+!!     &          Vmatrix, Pmatrix, Bmatrix, Fmatrix, Tmatrix, Cmatrix)
+!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(MHD_MG_matrix), intent(in) :: Vmatrix, Bmatrix
 !!        type(MHD_MG_matrix), intent(in) :: Pmatrix, Fmatrix
 !!        type(MHD_MG_matrix), intent(in) :: Tmatrix, Cmatrix
@@ -49,49 +52,52 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_write_djds_mat_MHD                                   &
-     &         (Vmatrix, Pmatrix, Bmatrix, Fmatrix, Tmatrix, Cmatrix)
+     &         (evo_V, evo_B, evo_A, evo_T, evo_C,                      &
+     &          Vmatrix, Pmatrix, Bmatrix, Fmatrix, Tmatrix, Cmatrix)
 !
-      use m_control_parameter
+      use t_time_stepping_parameter
       use t_solver_djds_MHD
 !
+      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(MHD_MG_matrix), intent(in) :: Vmatrix, Bmatrix
       type(MHD_MG_matrix), intent(in) :: Pmatrix, Fmatrix
       type(MHD_MG_matrix), intent(in) :: Tmatrix, Cmatrix
 !
 !
-      if ( evo_velo%iflag_scheme .gt. id_no_evolution) then
+      if ( evo_V%iflag_scheme .gt. id_no_evolution) then
         call write_MHD_djds_mat11(fhead_press_mat,                      &
      &       Pmatrix%nlevel_MG, Pmatrix%MG_comm_table,                  &
      &       Pmatrix%MG_DJDS_table, Pmatrix%mat_MG_DJDS)
       end if
 !
-      if ( evo_velo%iflag_scheme .ge. id_Crank_nicolson) then
+      if ( evo_V%iflag_scheme .ge. id_Crank_nicolson) then
         call write_MHD_djds_mat33(fhead_velo_mat,                       &
      &       Vmatrix%nlevel_MG, Vmatrix%MG_comm_table,                  &
      &       Vmatrix%MG_DJDS_table, Vmatrix%mat_MG_DJDS)
       end if
 !
-      if ( evo_temp%iflag_scheme .ge. id_Crank_nicolson) then
+      if ( evo_T%iflag_scheme .ge. id_Crank_nicolson) then
         call write_MHD_djds_mat11(fhead_temp_mat,                       &
      &       Tmatrix%nlevel_MG, Tmatrix%MG_comm_table,                  &
      &       Tmatrix%MG_DJDS_table, Tmatrix%mat_MG_DJDS)
       end if
 !
-      if ( evo_comp%iflag_scheme .ge. id_Crank_nicolson) then
+      if ( evo_C%iflag_scheme .ge. id_Crank_nicolson) then
         call write_MHD_djds_mat11(fhead_dscalar_mat,                    &
      &       Cmatrix%nlevel_MG, Cmatrix%MG_comm_table,                  &
      &       Cmatrix%MG_DJDS_table, Cmatrix%mat_MG_DJDS)
       end if
 !
-      if (evo_vect_p%iflag_scheme .gt. id_no_evolution                  &
-     &     .or. evo_magne%iflag_scheme .gt. id_no_evolution) then
+      if    (evo_A%iflag_scheme .gt. id_no_evolution                    &
+     &  .or. evo_B%iflag_scheme .gt. id_no_evolution) then
         call write_MHD_djds_mat11(fhead_magp_mat, Fmatrix%nlevel_MG,    &
      &       Fmatrix%MG_comm_table, Fmatrix%MG_DJDS_table,              &
      &       Fmatrix%mat_MG_DJDS)
       end if
 !
-      if (evo_vect_p%iflag_scheme .gt. id_no_evolution                  &
-     &     .or. evo_magne%iflag_scheme .gt. id_no_evolution) then
+      if    (evo_A%iflag_scheme .gt. id_no_evolution                    &
+     &  .or. evo_B%iflag_scheme .gt. id_no_evolution) then
         call write_MHD_djds_mat33(fhead_magne_mat, Bmatrix%nlevel_MG,   &
      &      Bmatrix%MG_comm_table, Bmatrix%MG_DJDS_table,               &
      &      Bmatrix%mat_MG_DJDS)

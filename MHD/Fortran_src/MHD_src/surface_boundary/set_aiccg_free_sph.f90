@@ -6,10 +6,10 @@
 !
 !!      subroutine set_aiccg_bc_free_sph_in(ele, surf, sf_grp,          &
 !!     &          free_in_sf, jac_sf_grp, rhs_tbl, MG_mat_tbl, surf_wk, &
-!!     &          num_int, ak_d_velo, fem_wk, mat33)
+!!     &          coef_imp, num_int, ak_d_velo, fem_wk, mat33)
 !!      subroutine set_aiccg_bc_free_sph_out(ele, surf, sf_grp,         &
 !!     &          free_out_sf, jac_sf_grp, rhs_tbl, MG_mat_tbl, surf_wk,&
-!!     &          num_int, ak_d_velo, fem_wk, mat33)
+!!     &          coef_imp, num_int, ak_d_velo, fem_wk, mat33)
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
@@ -27,7 +27,6 @@
 !
       use m_precision
 !
-      use m_control_parameter
       use t_geometry_data
       use t_surface_data
       use t_group_data
@@ -48,7 +47,7 @@
 !
       subroutine set_aiccg_bc_free_sph_in(ele, surf, sf_grp,            &
      &          free_in_sf, jac_sf_grp, rhs_tbl, MG_mat_tbl, surf_wk,   &
-     &          num_int, ak_d_velo, fem_wk, mat33)
+     &          coef_imp, num_int, ak_d_velo, fem_wk, mat33)
 !
       use fem_surf_crank_free_sph
       use cal_skv_to_ff_smp
@@ -64,6 +63,7 @@
       type(work_surface_element_mat), intent(in) :: surf_wk
 !
       integer(kind = kint), intent(in) :: num_int
+      real(kind = kreal), intent(in) :: coef_imp
       real(kind = kreal), intent(in) :: ak_d_velo(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -88,7 +88,7 @@
      &          sf_grp%istack_grp_smp, sf_grp%item_sf_grp,              &
      &          jac_sf_grp%ntot_int, jac_sf_grp%an_sf,                  &
      &          jac_sf_grp%xj_sf, surf_wk%xe_sf,                        &
-     &          ak_d_velo, evo_velo%coef_imp, fem_wk%sk6)
+     &          ak_d_velo, coef_imp, fem_wk%sk6)
 !
             call add_skv1_to_crs_matrix33(ele, rhs_tbl, MG_mat_tbl,     &
      &          k2, fem_wk%sk6, mat33%num_non0, mat33%aiccg)
@@ -102,7 +102,7 @@
 !
       subroutine set_aiccg_bc_free_sph_out(ele, surf, sf_grp,           &
      &          free_out_sf, jac_sf_grp, rhs_tbl, MG_mat_tbl, surf_wk,  &
-     &          num_int, ak_d_velo, fem_wk, mat33)
+     &          coef_imp, num_int, ak_d_velo, fem_wk, mat33)
 !
       use fem_surf_crank_free_sph
       use cal_skv_to_ff_smp
@@ -118,6 +118,7 @@
       type(work_surface_element_mat), intent(in) :: surf_wk
 !
       integer (kind = kint), intent(in) :: num_int
+      real(kind = kreal), intent(in) :: coef_imp
       real(kind = kreal), intent(in) :: ak_d_velo(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -142,7 +143,7 @@
      &          sf_grp%istack_grp_smp, sf_grp%item_sf_grp,              &
      &          jac_sf_grp%ntot_int, jac_sf_grp%an_sf,                  &
      &          jac_sf_grp%xj_sf, surf_wk%xe_sf,                        &
-     &          ak_d_velo, evo_velo%coef_imp, fem_wk%sk6)
+     &          ak_d_velo, coef_imp, fem_wk%sk6)
 !
             call add_skv1_to_crs_matrix33(ele, rhs_tbl, MG_mat_tbl,     &
      &          k2, fem_wk%sk6, mat33%num_non0, mat33%aiccg)

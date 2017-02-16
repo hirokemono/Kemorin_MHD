@@ -7,10 +7,12 @@
 !>@brief  Update fields for MHD dynamo model
 !!
 !!@verbatim
-!!      subroutine s_cal_sol_sph_MHD_crank                              &
-!!     &         (sph_rj, r_2nd, leg, ipol, idpdr, itor, rj_fld)
+!!      subroutine s_cal_sol_sph_MHD_crank(evo_V, evo_B, evo_T, evo_C,  &
+!!     &          sph_rj, r_2nd, leg, ipol, idpdr, itor, rj_fld)
 !!      subroutine set_sph_field_to_start                               &
-!!     &         (sph_rj, r_2nd, leg, ipol, itor, rj_fld)
+!!     &         (evo_V, sph_rj, r_2nd, leg, ipol, itor, rj_fld)
+!!        type(time_evolution_params), intent(in) :: evo_V, evo_B
+!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(legendre_4_sph_trans), intent(in) :: leg
@@ -28,13 +30,13 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_control_parameter
       use m_radial_matrices_sph
       use m_schmidt_poly_on_rtm
       use const_sph_radial_grad
       use const_sph_rotation
       use const_sph_diffusion
 !
+      use t_time_stepping_parameter
       use t_spheric_rj_data
       use t_phys_address
       use t_phys_data
@@ -51,8 +53,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_cal_sol_sph_MHD_crank                                &
-     &         (sph_rj, r_2nd, leg, ipol, idpdr, itor, rj_fld)
+      subroutine s_cal_sol_sph_MHD_crank(evo_V, evo_B, evo_T, evo_C,    &
+     &          sph_rj, r_2nd, leg, ipol, idpdr, itor, rj_fld)
 !
       use m_physical_property
       use m_boundary_params_sph_MHD
@@ -60,6 +62,8 @@
       use cal_sol_sph_fluid_crank
       use const_sph_radial_grad
 !
+      type(time_evolution_params), intent(in) :: evo_V, evo_B
+      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(legendre_4_sph_trans), intent(in) :: leg
@@ -72,7 +76,7 @@
 !*
 !      call check_ws_spectr(sph_rj, ipol, idpdr, itor, rj_fld)
 !
-      if(evo_velo%iflag_scheme .gt. id_no_evolution) then
+      if(evo_V%iflag_scheme .gt. id_no_evolution) then
 !         Input:    ipol%i_vort, itor%i_vort
 !         Solution: ipol%i_velo, itor%i_velo, idpdr%i_velo
         if (iflag_debug .gt. 0)                                         &
@@ -85,22 +89,22 @@
 !
 !  Input: ipol%i_temp,  Solution: ipol%i_temp
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_temperature_sph_crank'
-      if(evo_temp%iflag_scheme .gt. id_no_evolution) then
+      if(evo_T%iflag_scheme .gt. id_no_evolution) then
         call cal_sol_temperature_sph_crank                              &
-     &     (sph_rj, ht_prop1, band_temp_evo, ipol, rj_fld)
+     &     (evo_T, sph_rj, ht_prop1, band_temp_evo, ipol, rj_fld)
       end if
 !g
 !  Input: ipol%i_light,  Solution: ipol%i_light
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_composition_sph_crank'
-      if(evo_comp%iflag_scheme .gt. id_no_evolution) then
+      if(evo_C%iflag_scheme .gt. id_no_evolution) then
         call cal_sol_composition_sph_crank                              &
-     &     (sph_rj, cp_prop1, band_comp_evo, ipol, rj_fld)
+     &     (evo_C, sph_rj, cp_prop1, band_comp_evo, ipol, rj_fld)
       end if
 !
 !  Input: ipol%i_magne, itor%i_magne
 !  Solution: ipol%i_magne, itor%i_magne, idpdr%i_magne
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_magne_sph_crank'
-      if(evo_magne%iflag_scheme .gt. id_no_evolution) then
+      if(evo_B%iflag_scheme .gt. id_no_evolution) then
         call cal_sol_magne_sph_crank                                    &
      &     (sph_rj, band_bp_evo, band_bt_evo, leg%g_sph_rj,             &
      &      ipol, itor, rj_fld)
@@ -111,22 +115,22 @@
 !*  ---- update after evolution ------------------
 !      call check_vs_spectr(sph_rj, ipol, idpdr, itor, rj_fld)
 !
-      if(evo_velo%iflag_scheme .gt. id_no_evolution) then
+      if(evo_V%iflag_scheme .gt. id_no_evolution) then
         call update_after_vorticity_sph                                 &
      &     (sph_rj, r_2nd, fl_prop1, leg, ipol, itor, rj_fld)
         call cal_rot_radial_self_gravity                                &
      &     (sph_rj, ipol, itor, fl_prop1, sph_bc_U, rj_fld)
       end if
 !
-      if(evo_temp%iflag_scheme .gt. id_no_evolution) then
+      if(evo_T%iflag_scheme .gt. id_no_evolution) then
         call update_after_heat_sph                                      &
      &     (sph_rj, r_2nd, ht_prop1, leg, ipol, rj_fld)
       end if
-      if(evo_comp%iflag_scheme .gt. id_no_evolution) then
+      if(evo_C%iflag_scheme .gt. id_no_evolution) then
         call update_after_composit_sph                                  &
      &     (sph_rj, r_2nd, cp_prop1, leg, ipol, rj_fld)
       end if
-      if(evo_magne%iflag_scheme .gt. id_no_evolution) then
+      if(evo_B%iflag_scheme .gt. id_no_evolution) then
         call update_after_magne_sph                                     &
      &     (sph_rj, r_2nd, cd_prop1, leg, ipol, itor, rj_fld)
       end if
@@ -137,13 +141,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_sph_field_to_start                                 &
-     &         (sph_rj, r_2nd, leg, ipol, itor, rj_fld)
+     &         (evo_V, sph_rj, r_2nd, leg, ipol, itor, rj_fld)
 !
       use m_physical_property
       use m_boundary_params_sph_MHD
       use const_sph_radial_grad
       use cal_rot_buoyancies_sph_MHD
 !
+      type(time_evolution_params), intent(in) :: evo_V
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(legendre_4_sph_trans), intent(in) :: leg
@@ -156,7 +161,7 @@
      &      ipol%i_velo, ipol%i_vort, rj_fld)
       end if
 !
-      if(evo_velo%iflag_scheme .gt. id_no_evolution) then
+      if(evo_V%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug.gt.0) write(*,*) 'update_after_vorticity_sph'
         call update_after_vorticity_sph                                 &
      &     (sph_rj, r_2nd, fl_prop1, leg, ipol, itor, rj_fld)

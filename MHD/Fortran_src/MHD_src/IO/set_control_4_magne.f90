@@ -8,7 +8,9 @@
 !> @brief set boundary conditions for magnetic field from control data
 !!
 !!@verbatim
-!!     subroutine s_set_control_4_magne(node_bc_B_ctl, surf_bc_BN_ctl)
+!!      subroutine s_set_control_4_magne                                &
+!!     &         (evo_B, evo_A, node_bc_B_ctl, surf_bc_BN_ctl)
+!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
 !!        type(ctl_array_c2r), intent(inout) :: node_bc_B_ctl
 !!        type(ctl_array_c2r), intent(inout) :: surf_bc_BN_ctl
 !!@endverbatim
@@ -25,25 +27,27 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_4_magne(node_bc_B_ctl, surf_bc_BN_ctl)
+      subroutine s_set_control_4_magne                                  &
+     &         (evo_B, evo_A, node_bc_B_ctl, surf_bc_BN_ctl)
 !
       use m_machine_parameter
       use calypso_mpi
-      use m_control_parameter
+      use t_time_stepping_parameter
       use t_read_control_arrays
       use m_bc_data_list
       use m_surf_data_list
       use set_node_group_types
       use set_surface_group_types
 !
+      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(ctl_array_c2r), intent(inout) :: node_bc_B_ctl
       type(ctl_array_c2r), intent(inout) :: surf_bc_BN_ctl
 !
       integer (kind = kint) :: i
 !
 !
-      if (evo_magne%iflag_scheme .eq. id_no_evolution                   &
-     &       .and.  evo_vect_p%iflag_scheme .eq. id_no_evolution) then
+      if (      evo_B%iflag_scheme .eq. id_no_evolution                 &
+     &   .and.  evo_A%iflag_scheme .eq. id_no_evolution) then
         magne_nod%num_bc =  0
         magne_surf%num_bc = 0
       else

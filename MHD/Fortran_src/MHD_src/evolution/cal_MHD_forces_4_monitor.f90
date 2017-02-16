@@ -5,16 +5,18 @@
 !
 !!      subroutine cal_fluxes_4_monitor                                 &
 !!     &         (node, fl_prop, cd_prop, iphys, nod_fld)
-!!      subroutine cal_forces_4_monitor(FEM_prm, SGS_par,               &
+!!      subroutine cal_forces_4_monitor(evo_B, FEM_prm, SGS_par,        &
 !!     &          nod_comm, node, ele, surf, fluid, conduct,            &
 !!     &          sf_grp, fl_prop, cd_prop, ht_prop, cp_prop,           &
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele,                  &
 !!     &          ak_MHD, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,       &
 !!     &          ifld_diff, diff_coefs, m_lump, mhd_fem_wk, fem_wk,    &
 !!     &          surf_wk, f_l, f_nl, nod_fld, ele_fld)
-!!      subroutine cal_work_4_forces                                    &
-!!     &         (FEM_prm, nod_comm, node, ele, fl_prop, cd_prop, iphys,&
+!!      subroutine cal_work_4_forces(evo_A, FEM_prm,                    &
+!!     &           nod_comm, node, ele, fl_prop, cd_prop, iphys,        &
 !!     &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl, nod_fld)
+!!        type(time_evolution_params), intent(in) :: evo_A
+!!        type(time_evolution_params), intent(in) :: evo_B
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -48,9 +50,9 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_control_parameter
       use m_phys_labels
 !
+      use t_time_stepping_parameter
       use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_comm_table
@@ -145,7 +147,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_forces_4_monitor(FEM_prm, SGS_par,                 &
+      subroutine cal_forces_4_monitor(evo_B, FEM_prm, SGS_par,          &
      &          nod_comm, node, ele, surf, fluid, conduct,              &
      &          sf_grp, fl_prop, cd_prop, ht_prop, cp_prop,             &
      &          nod_bcs, surf_bcs, iphys, iphys_ele,                    &
@@ -159,6 +161,7 @@
       use cal_induction_terms
       use cal_gradient
 !
+      type(time_evolution_params), intent(in) :: evo_B
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
@@ -199,9 +202,9 @@
         call cal_terms_4_advect                                         &
      &     (iphys%i_h_advect, iphys%i_temp,                             &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,          &
-     &      nod_comm, node, ele, fluid, ht_prop, nod_bcs%Tnod_bcs,      &
-     &      iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,    &
-     &      f_l, f_nl, nod_fld)
+     &      FEM_prm, nod_comm, node, ele, fluid, ht_prop,               &
+     &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, jac_3d, rhs_tbl,      &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       if(iphys%i_ph_advect .gt. izero) then
@@ -210,9 +213,9 @@
         call cal_terms_4_advect                                         &
      &     (iphys%i_ph_advect, iphys%i_par_temp,                        &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,          &
-     &      nod_comm, node, ele, fluid, ht_prop, nod_bcs%Tnod_bcs,      &
-     &      iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,    &
-     &      f_l, f_nl, nod_fld)
+     &      FEM_prm, nod_comm, node, ele, fluid, ht_prop,               &
+     &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, jac_3d, rhs_tbl,      &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       if(iphys%i_h_flux_div .gt. izero) then
@@ -221,9 +224,9 @@
         call cal_div_of_scalar_flux                                     &
      &     (iphys%i_h_flux_div, iphys%i_h_flux,                         &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,          &
-     &      nod_comm, node, ele, fluid, ht_prop, nod_bcs%Tnod_bcs,      &
-     &      iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,    &
-     &      f_l, f_nl, nod_fld)
+     &      FEM_prm, nod_comm, node, ele, fluid, ht_prop,               &
+     &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, jac_3d, rhs_tbl,      &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       if(iphys%i_ph_flux_div .gt. izero) then
@@ -232,9 +235,9 @@
         call cal_div_of_scalar_flux                                     &
      &     (iphys%i_ph_flux_div, iphys%i_ph_flux,                       &
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,          &
-     &      nod_comm, node, ele, fluid, ht_prop, nod_bcs%Tnod_bcs,      &
-     &      iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,    &
-     &      f_l, f_nl, nod_fld)
+     &      FEM_prm, nod_comm, node, ele, fluid, ht_prop,               &
+     &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, jac_3d, rhs_tbl,      &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
 !
@@ -244,9 +247,9 @@
         call cal_terms_4_advect                                         &
      &     (iphys%i_c_advect, iphys%i_light,                            &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int,          &
-     &      nod_comm, node, ele, fluid, cp_prop, nod_bcs%Tnod_bcs,      &
-     &      iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,    &
-     &      f_l, f_nl, nod_fld)
+     &      FEM_prm, nod_comm, node, ele, fluid, cp_prop,               &
+     &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, jac_3d, rhs_tbl,      &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       if(iphys%i_pc_advect .gt. izero) then
@@ -255,9 +258,9 @@
         call cal_terms_4_advect                                         &
      &     (iphys%i_pc_advect, iphys%i_par_light,                       &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int,          &
-     &      nod_comm, node, ele, fluid, cp_prop, nod_bcs%Tnod_bcs,      &
-     &      iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,    &
-     &      f_l, f_nl, nod_fld)
+     &      FEM_prm, nod_comm, node, ele, fluid, cp_prop,               &
+     &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, jac_3d, rhs_tbl,      &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       if(iphys%i_c_flux_div .gt. izero) then
@@ -266,9 +269,9 @@
         call cal_div_of_scalar_flux                                     &
      &     (iphys%i_c_flux_div, iphys%i_c_flux,                         &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int,          &
-     &      nod_comm, node, ele, fluid, cp_prop, nod_bcs%Tnod_bcs,      &
-     &      iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,    &
-     &      f_l, f_nl, nod_fld)
+     &      FEM_prm, nod_comm, node, ele, fluid, cp_prop,               &
+     &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, jac_3d, rhs_tbl,      &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       if(iphys%i_pc_flux_div .gt. izero) then
@@ -277,9 +280,9 @@
         call cal_div_of_scalar_flux                                     &
      &     (iphys%i_pc_flux_div, iphys%i_pc_flux,                       &
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int,          &
-     &      nod_comm, node, ele, fluid, cp_prop, nod_bcs%Tnod_bcs,      &
-     &      iphys_ele, ele_fld, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,    &
-     &      f_l, f_nl, nod_fld)
+     &      FEM_prm, nod_comm, node, ele, fluid, cp_prop,               &
+     &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, jac_3d, rhs_tbl,      &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
 !
@@ -312,7 +315,7 @@
         i_fld = nod_fld%istack_component(i-1) + 1
         if(     i_fld .eq. iphys%i_induct_div                           &
      &     .or. (i_fld.eq.iphys%i_induction                             &
-     &           .and. evo_magne%iflag_scheme.gt.id_no_evolution)) then
+     &           .and. evo_B%iflag_scheme.gt.id_no_evolution)) then
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call cal_terms_4_magnetic                                     &
@@ -385,7 +388,7 @@
       end if
 !
       if (iphys%i_b_diffuse .gt. izero                                  &
-     &      .and. evo_magne%iflag_scheme .gt. id_no_evolution) then
+     &      .and. evo_B%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_mag_diffuse)
         call cal_magnetic_diffusion(ifld_diff%i_magne,                  &
@@ -420,8 +423,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_work_4_forces                                      &
-     &         (FEM_prm, nod_comm, node, ele, fl_prop, cd_prop, iphys,  &
+      subroutine cal_work_4_forces(evo_A, FEM_prm,                      &
+     &           nod_comm, node, ele, fl_prop, cd_prop, iphys,          &
      &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !
       use buoyancy_flux
@@ -431,6 +434,7 @@
       use int_magne_induction
       use nodal_poynting_flux_smp
 !
+      type(time_evolution_params), intent(in) :: evo_A
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -448,7 +452,7 @@
 !
 !
       if (iphys%i_induction .gt. izero                                  &
-     &      .and. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+     &      .and. evo_A%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_mag_induct)
         call s_int_magne_induction(FEM_prm%npoint_poisson_int,          &
@@ -457,7 +461,7 @@
       end if
 !
       if (iphys%i_b_diffuse .gt. izero                                  &
-     &      .and. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+     &      .and. evo_A%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_mag_diffuse)
         call s_int_magne_diffusion(FEM_prm%npoint_poisson_int,          &

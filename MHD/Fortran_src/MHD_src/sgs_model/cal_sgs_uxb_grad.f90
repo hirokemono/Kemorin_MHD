@@ -4,14 +4,16 @@
 !      Written by H. Matsui
 !
 !!      subroutine cal_sgs_uxb_2_ff_grad(itype_Csym_uxb, icoord_Csim,   &
-!!     &          i_filter, icomp_sgs_uxb, ie_dvx, node, ele, conduct,  &
-!!     &          cd_prop, iphys, nod_fld, iphys_ele, ele_fld, jac_3d,  &
-!!     &          rhs_tbl, FEM_elens, sgs_coefs, mhd_fem_wk,            &
-!!     &          fem_wk, f_nl)
-!!      subroutine cal_sgs_vp_induct_grad_no_coef(i_filter,             &
-!!     &          i_sgs, i_field, id_dx, nod_comm, node, ele, conduct,  &
+!!     &          i_filter, icomp_sgs_uxb, ie_dvx,                      &
+!!     &          FEM_prm, node, ele, conduct, cd_prop, iphys, nod_fld, &
+!!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
+!!     &          sgs_coefs, mhd_fem_wk, fem_wk, f_nl)
+!!      subroutine cal_sgs_vp_induct_grad_no_coef                       &
+!!     &         (i_filter,  i_sgs, i_field, id_dx,                     &
+!!     &          FEM_prm, nod_comm, node, ele, conduct,                &
 !!     &          cd_prop, iphys_ele, ele_fld, jac_3d, rhs_tbl,         &
 !!     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, nod_fld)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_address), intent(in) :: iphys
@@ -34,6 +36,7 @@
 !
       use m_phys_constants
 !
+      use t_FEM_control_parameter
       use t_physical_property
       use t_geometry_data_MHD
       use t_comm_table
@@ -56,10 +59,10 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_sgs_uxb_2_ff_grad(itype_Csym_uxb, icoord_Csim,     &
-     &          i_filter, icomp_sgs_uxb, ie_dvx, node, ele, conduct,    &
-     &          cd_prop, iphys, nod_fld, iphys_ele, ele_fld, jac_3d,    &
-     &          rhs_tbl, FEM_elens, sgs_coefs, mhd_fem_wk,              &
-     &          fem_wk, f_nl)
+     &          i_filter, icomp_sgs_uxb, ie_dvx,                        &
+     &          FEM_prm, node, ele, conduct, cd_prop, iphys, nod_fld,   &
+     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
+     &          sgs_coefs, mhd_fem_wk, fem_wk, f_nl)
 !
       use int_vol_sgs_uxb
       use cal_skv_to_ff_smp
@@ -69,6 +72,7 @@
       integer (kind=kint), intent(in) :: i_filter, icomp_sgs_uxb
       integer (kind=kint), intent(in) :: ie_dvx
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_address), intent(in) :: iphys
@@ -90,7 +94,7 @@
       call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
       call sel_int_vol_sgs_uxb(i_filter, iphys%i_magne, ie_dvx,         &
-     &    FEM_prm1, node, ele, conduct, nod_fld, iphys_ele, ele_fld,    &
+     &    FEM_prm, node, ele, conduct, nod_fld, iphys_ele, ele_fld,     &
      &    jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !
 !     set elemental model coefficients
@@ -105,8 +109,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_sgs_vp_induct_grad_no_coef(i_filter,               &
-     &          i_sgs, i_field, id_dx, nod_comm, node, ele, conduct,    &
+      subroutine cal_sgs_vp_induct_grad_no_coef                         &
+     &         (i_filter,  i_sgs, i_field, id_dx,                       &
+     &          FEM_prm, nod_comm, node, ele, conduct,                  &
      &          cd_prop, iphys_ele, ele_fld, jac_3d, rhs_tbl,           &
      &          FEM_elens, mhd_fem_wk, fem_wk, f_l, nod_fld)
 !
@@ -116,6 +121,7 @@
       use nod_phys_send_recv
       use int_vol_sgs_uxb
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -142,7 +148,7 @@
       call reset_ff_smp(node%max_nod_smp, f_l)
 !
       call sel_int_vol_sgs_uxb(i_filter, i_field, id_dx,                &
-     &    FEM_prm1, node, ele, conduct, nod_fld, iphys_ele, ele_fld,    &
+     &    FEM_prm, node, ele, conduct, nod_fld, iphys_ele, ele_fld,     &
      &    jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !
       call add3_skv_coef_to_ff_v_smp(node, ele, rhs_tbl,                &

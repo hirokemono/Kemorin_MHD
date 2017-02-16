@@ -12,10 +12,10 @@
 !!     &         sph_gen, rj_fld, mesh_file, sph_file_param,            &
 !!     &         MHD_org_files, sph_fst_IO, pwr,                        &
 !!     &         SGS_param, cmt_param, filter_param, sph_filters)
-!!      subroutine set_control_4_SPH_MHD(SGS_param, plt, org_plt,       &
+!!      subroutine set_control_4_SPH_MHD(plt, org_plt,                  &
 !!     &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl, &
 !!     &          sph_gen, rj_fld, mesh_file, sph_file_param,           &
-!!     &          sph_fst_IO, pwr)
+!!     &          MHD_org_files, sph_fst_IO, pwr, SGS_param)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
 !!        type(mhd_model_control), intent(inout) :: model_ctl
@@ -41,6 +41,7 @@
       use m_precision
 !
       use m_machine_parameter
+      use m_control_parameter
       use calypso_mpi
 !
       use t_file_IO_parameter
@@ -185,8 +186,9 @@
       call set_control_org_sph_files(org_plt, MHD_org_files)
 !
       call s_set_control_4_model                                        &
-     &    (model_ctl%reft_ctl, model_ctl%refc_ctl, ctl_ctl%mevo_ctl,    &
-     &     model_ctl%evo_ctl, nmtr_ctl, FEM_prm1)
+     &    (model_ctl%reft_ctl, model_ctl%refc_ctl,                      &
+     &     ctl_ctl%mevo_ctl, model_ctl%evo_ctl, nmtr_ctl,               &
+     &     evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp)
 !
 !   set spherical shell parameters
 !
@@ -201,7 +203,8 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_force'
       call s_set_control_4_force(model_ctl%frc_ctl, model_ctl%g_ctl,    &
-     &    model_ctl%cor_ctl, model_ctl%mcv_ctl, fl_prop1, cd_prop1)
+     &    model_ctl%cor_ctl, model_ctl%mcv_ctl,                         &
+     &    evo_velo, fl_prop1, cd_prop1)
 !
 !   set parameters for general information
 !
@@ -215,7 +218,8 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_normalize'
       call s_set_control_4_normalize                                    &
-     &   (model_ctl%dless_ctl, model_ctl%eqs_ctl)
+     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
+     &    model_ctl%dless_ctl, model_ctl%eqs_ctl)
 !
 !   set boundary conditions
 !
@@ -227,7 +231,8 @@
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_time_steps'
       call s_set_control_4_time_steps                                   &
      &   (SGS_param, ctl_ctl%mrst_ctl, ctl_ctl%tctl)
-      call s_set_control_4_crank(ctl_ctl%mevo_ctl)
+      call s_set_control_4_crank(ctl_ctl%mevo_ctl,                      &
+     &    evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp)
 !
 !   set_pickup modes
 !
@@ -258,8 +263,6 @@
       use set_control_4_magne
       use set_control_4_composition
 !
-      use check_read_bc_file
-!
       type(node_bc_control), intent(inout) :: nbc_ctl
       type(surf_bc_control), intent(inout) :: sbc_ctl
 !
@@ -268,36 +271,31 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_temp'
       call s_set_control_4_temp                                         &
-     &   (nbc_ctl%node_bc_T_ctl, sbc_ctl%surf_bc_HF_ctl)
+     &   (evo_temp, nbc_ctl%node_bc_T_ctl, sbc_ctl%surf_bc_HF_ctl)
 !
 !   set boundary conditions for velocity
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_velo'
       call s_set_control_4_velo                                         &
-     &   (nbc_ctl%node_bc_U_ctl, sbc_ctl%surf_bc_ST_ctl)
+     &   (evo_velo, nbc_ctl%node_bc_U_ctl, sbc_ctl%surf_bc_ST_ctl)
 !
 !  set boundary conditions for pressure
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_press'
       call s_set_control_4_press                                        &
-     &   (nbc_ctl%node_bc_P_ctl, sbc_ctl%surf_bc_PN_ctl)
+     &   (evo_velo, nbc_ctl%node_bc_P_ctl, sbc_ctl%surf_bc_PN_ctl)
 !
 !   set boundary conditions for composition variation
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_composition'
       call s_set_control_4_composition                                  &
-     &   (nbc_ctl%node_bc_C_ctl, sbc_ctl%surf_bc_CF_ctl)
+     &   (evo_comp, nbc_ctl%node_bc_C_ctl, sbc_ctl%surf_bc_CF_ctl)
 !
 !   set boundary_conditons for magnetic field
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_magne'
-      call s_set_control_4_magne                                        &
-     &   (nbc_ctl%node_bc_B_ctl, sbc_ctl%surf_bc_BN_ctl)
-!
-!   set flag to read boundary condition file
-!
-      if (iflag_debug.gt.0) write(*,*) 'check_read_boundary_files'
-      call check_read_boundary_files
+      call s_set_control_4_magne(evo_magne, evo_vect_p,                 &
+     &    nbc_ctl%node_bc_B_ctl, sbc_ctl%surf_bc_BN_ctl)
 !
       end subroutine set_control_SPH_MHD_bcs
 !

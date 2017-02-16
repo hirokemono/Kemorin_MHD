@@ -7,10 +7,17 @@
 !!      subroutine define_sgs_components                                &
 !!     &         (numnod, numele, SGS_param, layer_tbl,                 &
 !!     &          ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs, sgs_coefs_nod)
-!!      subroutine set_sgs_addresses(SGS_param, fl_prop,                &
-!!     &          ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
-!!      subroutine s_count_sgs_components(SGS_param, fl_prop, sgs_coefs)
-!!      subroutine set_SGS_ele_fld_addresses(SGS_param, iphys_elediff)
+!!
+!!      subroutine set_sgs_addresses                                    &
+!!     &          (evo_V, evo_B, evo_A, evo_T, evo_C, SGS_param,        &
+!!     &           fl_prop, ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
+!!      subroutine s_count_sgs_components                               &
+!!     &         (evo_V, evo_B, evo_A, evo_T, evo_C, SGS_param,         &
+!!     &          fl_prop, sgs_coefs)
+!!      subroutine set_SGS_ele_fld_addresses                            &
+!!     &          (evo_B, SGS_param, iphys_elediff)
+!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(SGS_terms_address), intent(inout) :: ifld_sgs
@@ -38,8 +45,8 @@
 !
       use calypso_mpi
       use m_phys_labels
-      use m_control_parameter
       use m_physical_property
+      use m_control_parameter
 !
       use t_SGS_control_parameter
       use t_layering_ele_list
@@ -58,7 +65,9 @@
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs_nod
 !
 !
-      call s_count_sgs_components(SGS_param, fl_prop1, sgs_coefs)
+      call s_count_sgs_components                                       &
+     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
+     &    SGS_param, fl_prop1, sgs_coefs)
 !
 !   set index for model coefficients
 !
@@ -69,7 +78,8 @@
       call alloc_SGS_coefs(numele, sgs_coefs)
 !
       call set_sgs_addresses                                            &
-     &   (SGS_param, fl_prop1, ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
+     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
+     &    SGS_param, fl_prop1, ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
       call check_sgs_addresses                                          &
      &   (ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
 !
@@ -83,12 +93,14 @@
 !
 !  ------------------------------------------------------------------
 !
-      subroutine s_count_sgs_components(SGS_param, fl_prop, sgs_coefs)
+      subroutine s_count_sgs_components                                 &
+     &         (evo_V, evo_B, evo_A, evo_T, evo_C, SGS_param,           &
+     &          fl_prop, sgs_coefs)
 !
       use calypso_mpi
       use m_phys_labels
-      use m_control_parameter
 !
+      use t_time_stepping_parameter
       use t_SGS_control_parameter
       use t_layering_ele_list
       use t_ele_info_4_dynamic
@@ -96,6 +108,8 @@
       use t_material_property
       use t_SGS_model_coefs
 !
+      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(fluid_property), intent(in) :: fl_prop
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
@@ -104,14 +118,14 @@
 !
       sgs_coefs%num_field = 0
       sgs_coefs%ntot_comp = 0
-      if (evo_temp%iflag_scheme .gt. id_no_evolution) then
+      if (evo_T%iflag_scheme .gt. id_no_evolution) then
         if (SGS_param%iflag_SGS_h_flux .ne. id_SGS_none) then
           sgs_coefs%num_field = sgs_coefs%num_field + 1
           sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 3
         end if
       end if
 !
-      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
+      if (evo_V%iflag_scheme .gt. id_no_evolution) then
         if (SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
           sgs_coefs%num_field = sgs_coefs%num_field + 1
           sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 6
@@ -134,20 +148,20 @@
         end if
       end if
 !
-      if (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+      if (evo_A%iflag_scheme .gt. id_no_evolution) then
         if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
           sgs_coefs%num_field = sgs_coefs%num_field + 1
           sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 3
         end if
       end if
-      if (evo_magne%iflag_scheme .gt. id_no_evolution) then
+      if (evo_B%iflag_scheme .gt. id_no_evolution) then
         if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
           sgs_coefs%num_field = sgs_coefs%num_field + 1
           sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 3
         end if
       end if
 !
-      if (evo_comp%iflag_scheme .gt. id_no_evolution) then
+      if (evo_C%iflag_scheme .gt. id_no_evolution) then
         if (SGS_param%iflag_SGS_c_flux .ne. id_SGS_none) then
           sgs_coefs%num_field = sgs_coefs%num_field + 1
           sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 3
@@ -158,13 +172,14 @@
 !
 !  ------------------------------------------------------------------
 !
-      subroutine set_sgs_addresses(SGS_param, fl_prop,                  &
-     &          ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
+      subroutine set_sgs_addresses                                      &
+     &          (evo_V, evo_B, evo_A, evo_T, evo_C, SGS_param,          &
+     &           fl_prop, ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
 !
       use calypso_mpi
       use m_phys_labels
-      use m_control_parameter
 !
+      use t_time_stepping_parameter
       use t_SGS_control_parameter
       use t_layering_ele_list
       use t_ele_info_4_dynamic
@@ -172,6 +187,8 @@
       use t_material_property
       use t_SGS_model_coefs
 !
+      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(fluid_property), intent(in) :: fl_prop
 !
@@ -186,7 +203,7 @@
        j = 1
        id = 1
        jd = 1
-       if (evo_temp%iflag_scheme .gt. id_no_evolution) then
+       if (evo_T%iflag_scheme .gt. id_no_evolution) then
          if (SGS_param%iflag_SGS_h_flux .ne. id_SGS_none) then
            icomp_sgs%i_heat_flux = i
            ifld_sgs%i_heat_flux =  j
@@ -197,7 +214,7 @@
          end if
        end if
 !
-       if (evo_velo%iflag_scheme .gt. id_no_evolution) then
+       if (evo_V%iflag_scheme .gt. id_no_evolution) then
          if (SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
            icomp_sgs%i_mom_flux = i
            ifld_sgs%i_mom_flux =  j
@@ -236,7 +253,7 @@
         end if
        end if
 !
-       if (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+       if (evo_A%iflag_scheme .gt. id_no_evolution) then
          if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
            icomp_sgs%i_induction = i
            ifld_sgs%i_induction =  j
@@ -246,7 +263,7 @@
            j = j + 1
          end if
        end if
-       if (evo_magne%iflag_scheme .gt. id_no_evolution) then
+       if (evo_B%iflag_scheme .gt. id_no_evolution) then
          if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
            icomp_sgs%i_induction = i
            ifld_sgs%i_induction =  j
@@ -257,7 +274,7 @@
          end if
        end if
 !
-       if (evo_comp%iflag_scheme .gt. id_no_evolution) then
+       if (evo_C%iflag_scheme .gt. id_no_evolution) then
          if (SGS_param%iflag_SGS_c_flux .ne. id_SGS_none) then
            icomp_sgs%i_comp_flux = i
            ifld_sgs%i_comp_flux =  j
@@ -278,13 +295,15 @@
 !
 !  ------------------------------------------------------------------
 !
-      subroutine set_SGS_ele_fld_addresses(SGS_param, iphys_elediff)
+      subroutine set_SGS_ele_fld_addresses                              &
+     &          (evo_B, SGS_param, iphys_elediff)
 !
-      use m_control_parameter
+      use t_time_stepping_parameter
       use t_SGS_control_parameter
       use t_material_property
       use t_SGS_model_coefs
 !
+      type(time_evolution_params), intent(in) :: evo_B
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(SGS_terms_address), intent(inout) :: iphys_elediff
 !
@@ -306,7 +325,7 @@
          iphys_elediff%i_filter_magne = i + 9
          i = i + 18
         else if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none               &
-     &     .and. evo_magne%iflag_scheme .gt. id_no_evolution) then
+     &     .and. evo_B%iflag_scheme .gt. id_no_evolution) then
          iphys_elediff%i_magne = i
          iphys_elediff%i_filter_magne = i + 9
          i = i + 18
@@ -326,7 +345,7 @@
          iphys_elediff%i_magne = i
          i = i + 9
         else if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none               &
-     &     .and. evo_magne%iflag_scheme .gt. id_no_evolution) then
+     &     .and. evo_B%iflag_scheme .gt. id_no_evolution) then
          iphys_elediff%i_magne = i
          i = i + 9
         end if

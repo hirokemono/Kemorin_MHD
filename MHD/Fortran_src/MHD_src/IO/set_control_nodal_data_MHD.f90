@@ -8,7 +8,9 @@
 !> @brief Set field information for MHD simulation from control data
 !!
 !!@verbatim
-!!     subroutine set_control_4_fields(SGS_par, field_ctl, nod_fld)
+!!      subroutine set_control_4_fields                                 &
+!!     &         (FEM_prm, SGS_par, field_ctl, nod_fld)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -31,18 +33,21 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_fields(SGS_par, field_ctl, nod_fld)
+      subroutine set_control_4_fields                                   &
+     &         (FEM_prm, SGS_par, field_ctl, nod_fld)
 !
       use calypso_mpi
       use m_error_IDs
       use m_physical_property
       use m_element_phys_data
+      use t_FEM_control_parameter
       use t_SGS_control_parameter
 !
       use set_control_nodal_data
       use add_nodal_fields_4_MHD
       use add_nodal_fields_4_SGS
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(ctl_array_c3), intent(inout) :: field_ctl
       type(phys_data), intent(inout) :: nod_fld
@@ -82,7 +87,7 @@
         call s_set_control_nodal_data(field_ctl, nod_fld, ierr)
       end if
 !
-      call set_ele_field_names_MHD(FEM_prm1, SGS_par%model_p, nod_fld)
+      call set_ele_field_names_MHD(FEM_prm, SGS_par%model_p, nod_fld)
 !
       end subroutine set_control_4_fields
 !

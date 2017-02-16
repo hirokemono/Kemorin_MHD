@@ -5,12 +5,13 @@
 !
 !!      subroutine s_cal_diff_coef_sgs_mf                               &
 !!     &         (iak_diff_mf, icomp_sgs_mf, icomp_diff_mf, ie_dfvx,    &
-!!     &          SGS_par, nod_comm, node, ele, surf, sf_grp,           &
+!!     &          FEM_prm, SGS_par, nod_comm, node, ele, surf, sf_grp,  &
 !!     &          Vnod_bcs, Vsf_bcs, iphys, iphys_ele, ele_fld,         &
 !!     &          fluid, layer_tbl, jac_3d_q, jac_3d_l, jac_sf_grp_q,   &
 !!     &          rhs_tbl, FEM_elens, filtering, sgs_coefs, wk_filter,  &
 !!     &          wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk, surf_wk, &
 !!     &          f_l, f_nl, nod_fld, diff_coefs)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -45,6 +46,7 @@
 !
       use m_precision
 !
+      use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_comm_table
       use t_geometry_data_MHD
@@ -80,7 +82,7 @@
 !
       subroutine s_cal_diff_coef_sgs_mf                                 &
      &         (iak_diff_mf, icomp_sgs_mf, icomp_diff_mf, ie_dfvx,      &
-     &          SGS_par, nod_comm, node, ele, surf, sf_grp,             &
+     &          FEM_prm, SGS_par, nod_comm, node, ele, surf, sf_grp,    &
      &          Vnod_bcs, Vsf_bcs, iphys, iphys_ele, ele_fld,           &
      &          fluid, layer_tbl, jac_3d_q, jac_3d_l, jac_sf_grp_q,     &
      &          rhs_tbl, FEM_elens, filtering, sgs_coefs, wk_filter,    &
@@ -105,6 +107,7 @@
       integer(kind = kint), intent(in) :: icomp_sgs_mf, icomp_diff_mf
       integer(kind = kint), intent(in) :: ie_dfvx
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -149,7 +152,7 @@
       call cal_sgs_m_flux_grad_w_coef                                   &
      &   (ifilter_4delta, icomp_sgs_mf,                                 &
      &    iphys%i_sgs_grad_f, iphys%i_filter_velo, ie_dfvx,             &
-     &    FEM_prm1, SGS_par%model_p, nod_comm, node, ele, fluid,        &
+     &    FEM_prm, SGS_par%model_p, nod_comm, node, ele, fluid,         &
      &    iphys_ele, ele_fld, jac_3d_q, FEM_elens, sgs_coefs, rhs_tbl,  &
      &    fem_wk, mhd_fem_wk, nod_fld)
 !
@@ -158,7 +161,7 @@
       if (iflag_debug.gt.0)  write(*,*) 'cal_div_sgs_filter_mf_simi'
       call cal_div_sgs_mf_simi                                          &
      &   (iphys%i_sgs_simi, iphys%i_sgs_grad_f, iphys%i_filter_velo,    &
-     &    FEM_prm1, nod_comm, node, ele, fluid, iphys_ele, ele_fld,     &
+     &    FEM_prm, nod_comm, node, ele, fluid, iphys_ele, ele_fld,      &
      &    jac_3d_q, rhs_tbl, fem_wk, mhd_fem_wk, f_l, f_nl, nod_fld)
 !
 !   take divergence of heat flux (to iphys%i_sgs_grad)
@@ -166,7 +169,7 @@
       if (iflag_debug.gt.0)  write(*,*) 'cal_div_sgs_m_flux_simi'
       call cal_div_sgs_mf_simi                                          &
      &   (iphys%i_sgs_grad, iphys%i_SGS_m_flux, iphys%i_velo,           &
-     &    FEM_prm1, nod_comm, node, ele, fluid, iphys_ele, ele_fld,     &
+     &    FEM_prm, nod_comm, node, ele, fluid, iphys_ele, ele_fld,      &
      &    jac_3d_q, rhs_tbl, fem_wk, mhd_fem_wk,                        &
      &    f_l, f_nl, nod_fld)
 !
@@ -189,7 +192,7 @@
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad_f)
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_commute_error_4_filter_mf'
-      call cal_commute_error_4_mf(FEM_prm1%npoint_t_evo_int,            &
+      call cal_commute_error_4_mf(FEM_prm%npoint_t_evo_int,             &
      &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
      &    rhs_tbl, FEM_elens, Vsf_bcs%sgs, ifilter_4delta,              &
@@ -212,7 +215,7 @@
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad)
 !
       if (iflag_debug.gt.0)   write(*,*) 'cal_commute_error_4_m_flux'
-      call cal_commute_error_4_mf(FEM_prm1%npoint_t_evo_int,            &
+      call cal_commute_error_4_mf(FEM_prm%npoint_t_evo_int,             &
      &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
      &    rhs_tbl, FEM_elens, Vsf_bcs%sgs, ifilter_2delta,              &
@@ -240,7 +243,7 @@
       call cal_diff_coef_fluid                                          &
      &   (SGS_par%model_p, SGS_par%commute_p, layer_tbl, node, ele,     &
      &    fluid, iphys, nod_fld, jac_3d_q, jac_3d_l, n_vector,          &
-     &    iak_diff_mf, icomp_diff_mf, FEM_prm1%npoint_t_evo_int,        &
+     &    iak_diff_mf, icomp_diff_mf, FEM_prm%npoint_t_evo_int,         &
      &    wk_cor, wk_lsq, wk_diff, diff_coefs)
 !
       end subroutine s_cal_diff_coef_sgs_mf

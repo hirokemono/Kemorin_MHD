@@ -5,10 +5,6 @@
 !
 !!      subroutine set_bc_surface_data(IO_bc, node, ele, surf,          &
 !!     &          sf_grp, sf_grp_nod, sf_grp_v, surf_bcs)
-!!      subroutine count_num_surf_bc                                    &
-!!     &         (IO_bc, sf_grp, sf_grp_nod, surf_bcs)
-!!      subroutine set_surface_id(IO_bc, node, ele, surf,               &
-!!     &          sf_grp, sf_grp_nod, sf_grp_v, surf_bcs)
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -21,8 +17,8 @@
       module set_surface_id_MHD
 !
       use m_precision
-      use m_control_parameter
 !
+      use t_time_stepping_parameter
       use t_geometry_data
       use t_surface_data
       use t_group_data
@@ -47,14 +43,7 @@
      &          sf_grp, sf_grp_nod, sf_grp_v, surf_bcs)
 !
       use m_machine_parameter
-!
-      use t_geometry_data
-      use t_surface_data
-      use t_group_data
-      use t_surface_group_connect
-      use t_surface_group_geometry
-      use t_phys_data
-      use t_phys_address
+      use m_control_parameter
 !
       use set_surface_values
       use set_normal_field
@@ -77,10 +66,13 @@
       if (iflag_debug.eq.1) write(*,*) 'count_num_surf_bc'
       call count_num_surf_bc(IO_bc, sf_grp, sf_grp_nod, surf_bcs)
 !
-      call alloc_surf_bc_data_type(surf_bcs)
+      call alloc_surf_bc_data_type                                      &
+     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
+     &    surf_bcs)
 !
-      call set_surface_id(IO_bc, node, ele, surf, sf_grp, sf_grp_nod,   &
-     &    sf_grp_v, surf_bcs)
+      call set_surface_id                                               &
+     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp, IO_bc,   &
+     &    node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v, surf_bcs)
 !
       call deallocate_work_4_surf_bc_dat
 ! 
@@ -143,14 +135,17 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_surface_id(IO_bc, node, ele, surf,                 &
-     &          sf_grp, sf_grp_nod, sf_grp_v, surf_bcs)
+      subroutine set_surface_id(evo_V, evo_B, evo_A, evo_T, evo_C,      &
+     &          IO_bc, node, ele, surf, sf_grp,                         &
+     &          sf_grp_nod, sf_grp_v, surf_bcs)
 !
       use m_scalar_surf_id
       use m_vector_surf_id
 !
       use set_normal_field
 !
+      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -162,7 +157,7 @@
       type(surface_boundarty_conditions), intent(inout) :: surf_bcs
 !
 !
-      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
+      if (evo_V%iflag_scheme .gt. id_no_evolution) then
         call set_surf_grad_velo(name_svn, name_vg,                      &
      &      IO_bc, node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v,       &
      &      torque_surf, surf_bcs%Vsf_bcs)
@@ -171,8 +166,8 @@
      &     (IO_bc, sf_grp, wall_surf, surf_bcs%Psf_bcs)
       end if
 !
-      if (evo_magne%iflag_scheme .gt. id_no_evolution                   &
-     &      .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+      if (evo_B%iflag_scheme .gt. id_no_evolution                       &
+     &      .or. evo_A%iflag_scheme .gt. id_no_evolution) then
         call set_surf_grad_vector(name_sbn, name_bg,                    &
      &      IO_bc, node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v,       &
      &      magne_surf, surf_bcs%Bsf_bcs)
@@ -185,18 +180,18 @@
      &     (IO_bc, sf_grp, e_potential_surf, surf_bcs%Fsf_bcs)
       end if
 !
-      if (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+      if (evo_A%iflag_scheme .gt. id_no_evolution) then
         call set_surf_grad_velo(name_san, name_ag,                      &
      &      IO_bc, node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v,       &
      &      a_potential_surf, surf_bcs%Asf_bcs)
       end if
 ! 
-      if (evo_temp%iflag_scheme .gt. id_no_evolution) then
+      if (evo_T%iflag_scheme .gt. id_no_evolution) then
         call set_surf_grad_scalar_id                                    &
      &     (IO_bc, sf_grp, h_flux_surf, surf_bcs%Tsf_bcs)
       end if
 !
-      if (evo_comp%iflag_scheme .gt. id_no_evolution) then
+      if (evo_C%iflag_scheme .gt. id_no_evolution) then
         call set_surf_grad_scalar_id                                    &
      &     (IO_bc, sf_grp, light_surf, surf_bcs%Csf_bcs)
       end if

@@ -11,6 +11,7 @@
       use m_precision
       use calypso_mpi
 !
+      use m_control_parameter
       use m_SGS_control_parameter
       use m_mesh_data
       use m_node_phys_data
@@ -59,7 +60,7 @@
 !     --------------------- 
 !
       call input_control_4_snapshot                                     &
-     &   (SGS_par1, mesh1, group1, ele_mesh1, nod_fld1,                 &
+     &   (FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, nod_fld1,       &
      &    IO_bc1, filtering1, wide_filtering, wk_filter1)
 !
 !     --------------------- 

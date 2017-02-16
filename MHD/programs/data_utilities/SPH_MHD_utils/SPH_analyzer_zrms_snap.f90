@@ -64,8 +64,8 @@
 !* obtain linear terms for starting
 !*
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
-      call set_sph_field_to_start                                       &
-     &   (sph1%sph_rj, r_2nd, trans_p1%leg, ipol, itor, rj_fld1)
+      call set_sph_field_to_start(evo_velo,                             &
+     &    sph1%sph_rj, r_2nd, trans_p1%leg, ipol, itor, rj_fld1)
 !
 !*  ----------------lead nonlinear term ... ----------
 !*
@@ -84,7 +84,8 @@
      &    sph1%sph_rj, ipol, idpdr, rj_fld1)
 !*
       if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
-      call s_lead_fields_4_sph_mhd(SGS_par1%model_p,                    &
+      call s_lead_fields_4_sph_mhd                                      &
+     &   (evo_velo, evo_magne, evo_temp, evo_comp, SGS_par1%model_p,    &
      &    sph1, comms_sph1, r_2nd, trans_p1, ipol, rj_fld1, trns_WK1)
       call end_eleps_time(9)
 !

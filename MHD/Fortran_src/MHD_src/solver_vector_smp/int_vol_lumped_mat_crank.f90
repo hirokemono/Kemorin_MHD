@@ -9,12 +9,16 @@
 !>      DJDS matrix data
 !!
 !!@verbatim
-!!      subroutine int_vol_crank_mat_lump(mesh, fluid, conduct,         &
+!!      subroutine int_vol_crank_mat_lump(evo_V, evo_B, evo_A,          &
+!!     &          evo_T, evo_C, mesh, fluid, conduct,                   &
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop,                   &
 !!     &          DJDS_table, DJDS_table_fluid, mlump_fl, mlump_cd,     &
 !!     &          mat_velo, mat_magne, mat_temp, mat_light)
-!!      subroutine add_lumped_coriolis_matrix(mesh, fluid,              &
-!!     &          DJDS_table_fluid, mhd_fem_wk, Vmat_DJDS)
+!!      subroutine add_lumped_coriolis_matrix                           &
+!!     &         (evo_V, mesh, fluid, fl_prop,  DJDS_table_fluid,       &
+!!     &          mlump_fl, mat_velo)
+!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(mesh_data), intent(in) ::              mesh
 !!        type(field_geometry_data), intent(in) :: fluid, conduct
 !!        type(fluid_property), intent(in) :: fl_prop
@@ -35,8 +39,7 @@
       use m_precision
       use m_constants
 !
-      use m_control_parameter
-!
+      use t_time_stepping_parameter
       use t_physical_property
       use t_mesh_data
       use t_geometry_data
@@ -54,11 +57,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_vol_crank_mat_lump(mesh, fluid, conduct,           &
+      subroutine int_vol_crank_mat_lump(evo_V, evo_B, evo_A,            &
+     &          evo_T, evo_C, mesh, fluid, conduct,                     &
      &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
      &          DJDS_table, DJDS_table_fluid, mlump_fl, mlump_cd,       &
      &          mat_velo, mat_magne, mat_temp, mat_light)
 !
+      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(mesh_geometry), intent(in) :: mesh
       type(field_geometry_data), intent(in) :: fluid, conduct
       type(fluid_property), intent(in) :: fl_prop
@@ -75,7 +81,7 @@
 !
 !
 !$omp parallel
-      if (evo_velo%iflag_scheme .eq. id_Crank_nicolson                  &
+      if (evo_V%iflag_scheme .eq. id_Crank_nicolson                     &
      &     .and. fl_prop%coef_velo .gt. zero) then
         call init_33_matrix_lump                                        &
      &     (mesh%node%numnod, fluid%numnod_fld, fluid%inod_fld,         &
@@ -83,7 +89,7 @@
      &      mat_velo%num_non0, mat_velo%aiccg)
       end if
 !
-      if (evo_temp%iflag_scheme .eq. id_Crank_nicolson                  &
+      if (evo_T%iflag_scheme .eq. id_Crank_nicolson                     &
      &     .and. ht_prop%coef_advect .gt. zero) then
         call init_11_matrix_lump                                        &
      &     (mesh%node%numnod, fluid%numnod_fld, fluid%inod_fld,         &
@@ -91,7 +97,7 @@
      &      mat_temp%num_non0, mat_temp%aiccg)
       end if
 !
-      if (evo_magne%iflag_scheme .eq. id_Crank_nicolson                 &
+      if (evo_B%iflag_scheme .eq. id_Crank_nicolson                     &
      &     .and. cd_prop%coef_magne .gt. zero) then
         call init_33_matrix_lump                                        &
      &     (mesh%node%numnod, conduct%numnod_fld, conduct%inod_fld,     &
@@ -99,7 +105,7 @@
      &      mat_magne%num_non0, mat_magne%aiccg)
       end if
 !
-      if (evo_vect_p%iflag_scheme .eq. id_Crank_nicolson                &
+      if (evo_A%iflag_scheme .eq. id_Crank_nicolson                     &
      &     .and. cd_prop%coef_magne .gt. zero) then
         call init_33_matrix_lump                                        &
      &     (mesh%node%numnod, conduct%numnod_fld, conduct%inod_fld,     &
@@ -107,7 +113,7 @@
      &      mat_magne%num_non0, mat_magne%aiccg)
       end if
 !
-      if (evo_comp%iflag_scheme .eq. id_Crank_nicolson                  &
+      if (evo_C%iflag_scheme .eq. id_Crank_nicolson                     &
      &     .and. cp_prop%coef_advect .gt. zero) then
         call init_11_matrix_lump                                        &
      &     (mesh%node%numnod, fluid%numnod_fld, fluid%inod_fld,         &
@@ -120,11 +126,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine add_lumped_coriolis_matrix(mesh, fluid, fl_prop,       &
-     &          DJDS_table_fluid, mlump_fl, mat_velo)
+      subroutine add_lumped_coriolis_matrix                             &
+     &         (evo_V, mesh, fluid, fl_prop,  DJDS_table_fluid,         &
+     &          mlump_fl, mat_velo)
 !
       use cal_coriolis_mat33
 !
+      type(time_evolution_params), intent(in) :: evo_V
       type(mesh_geometry), intent(in) :: mesh
       type(field_geometry_data), intent(in) :: fluid
       type(fluid_property), intent(in) :: fl_prop
@@ -137,7 +145,7 @@
       call cal_lumped_coriolis_matrix                                   &
      &   (mesh%node%numnod, fluid%numnod_fld, fluid%inod_fld,           &
      &    DJDS_table_fluid%OLDtoNEW, fl_prop%coef_cor, fl_prop%sys_rot, &
-     &    evo_velo%coef_imp, mlump_fl%ml_o, mat_velo%num_non0,          &
+     &    evo_V%coef_imp, mlump_fl%ml_o, mat_velo%num_non0,             &
      &    mat_velo%aiccg)
 !
       end subroutine add_lumped_coriolis_matrix

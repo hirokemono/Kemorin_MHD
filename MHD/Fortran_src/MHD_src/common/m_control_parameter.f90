@@ -9,14 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine allocate_force_list
-!!      subroutine allocate_fluid_ele_grp_name
-!!      subroutine allocate_conduct_ele_grp_name
-!!      subroutine allocate_icore_ele_grp_name
-!!
 !!      subroutine deallocate_force_list
-!!      subroutine deallocate_fluid_ele_grp_name
-!!      subroutine deallocate_conduct_ele_grp_name
-!!      subroutine deallocate_icore_ele_grp_name
 !!@endverbatim
 !
       module   m_control_parameter
@@ -28,14 +21,6 @@
 !
       implicit  none
 !
-!
-!
-!>      Number of fields for time evolution
-      integer (kind=kint)  :: num_field_to_evolve
-!>      Field name for time evolution
-      character (len=kchara), allocatable :: t_evo_name(:)
-!>      Time evolution scheme for each field
-      character (len=kchara), allocatable :: time_evo_method(:)
 !
 !
       integer (kind=kint) :: iflag_scheme = id_Crank_nicolson
@@ -51,53 +36,8 @@
 !>      TIme evolution parameters for composition variation
       type(time_evolution_params), save :: evo_comp
 !
-!
-!>      Number of forces
-      integer (kind=kint) :: num_force
-!>      Name of forces
-      character (len=kchara), allocatable :: name_force(:)
-!
-!
-!>      ID not to read external boundary condition file
-      integer (kind=kint), parameter :: id_no_boundary_file =   0
-!>      ID to read external boundary condition file
-      integer (kind=kint), parameter :: id_read_boundary_file = 1
-!>      Flag to check external boundary condition file
-      integer (kind=kint) :: iflag_boundary_file = id_no_boundary_file
-!>      Flag to check external file for radial field
-      integer (kind=kint) :: iflag_radial_param_file                    &
-     &       = id_no_boundary_file
-!
-!>      Error torrance for Poisson equation
-      real (kind=kreal) :: eps_4_velo
-!>      Error torrance for time integration
-      real (kind=kreal) :: eps_4_magne
-!
-!
 !  Parameters for FEM dynamo
 !
       type(FEM_MHD_paremeters), save :: FEM_prm1
-!
-!  ---------------------------------------------------------------------
-!
-      contains
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_force_list
-!
-      allocate(name_force(num_force))
-!
-      end subroutine allocate_force_list
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine deallocate_force_list
-!
-      deallocate(name_force)
-!
-      end subroutine deallocate_force_list
-!
-!  ---------------------------------------------------------------------
 !
       end module m_control_parameter

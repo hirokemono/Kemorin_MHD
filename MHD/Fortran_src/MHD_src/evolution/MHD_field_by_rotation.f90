@@ -7,7 +7,8 @@
 !>@brief Evaluate vorticity and current density
 !!
 !!@verbatim
-!!      subroutine cal_field_by_rotation(FEM_prm, SGS_param, cmt_param, &
+!!      subroutine cal_field_by_rotation                                &
+!!     &         (evo_A, FEM_prm, SGS_param, cmt_param,                 &
 !!     &          nod_comm, node, ele, surf, fluid, conduct,            &
 !!     &          sf_grp, nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld, &
 !!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,               &
@@ -46,8 +47,8 @@
       use m_precision
       use m_constants
       use m_machine_parameter
-      use m_control_parameter
 !
+      use t_time_stepping_parameter
       use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_comm_table
@@ -77,7 +78,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_field_by_rotation(FEM_prm, SGS_param, cmt_param,   &
+      subroutine cal_field_by_rotation                                  &
+     &         (evo_A, FEM_prm, SGS_param, cmt_param,                   &
      &          nod_comm, node, ele, surf, fluid, conduct,              &
      &          sf_grp, nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,   &
      &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                 &
@@ -86,6 +88,7 @@
 !
       use cal_rotation_sgs
 !
+      type(time_evolution_params), intent(in) :: evo_A
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
@@ -133,7 +136,7 @@
 !
       if(iphys%i_current .gt. izero)then
         if(nod_fld%iflag_update(iphys%i_current) .eq.0 ) then
-          if(evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+          if(evo_A%iflag_scheme .gt. id_no_evolution) then
             if (iflag_debug .ge. iflag_routine_msg)                     &
      &        write(*,*) 'cal_current_density'
               call choose_cal_rotation_sgs(cmt_param%iflag_c_magne,     &

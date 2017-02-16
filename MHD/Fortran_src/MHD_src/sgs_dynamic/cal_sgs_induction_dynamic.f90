@@ -145,8 +145,8 @@
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_filter_uxb_grad_4_dyn'
       call cal_sgs_vp_induct_grad_no_coef(ifilter_4delta,               &
      &    iphys%i_sgs_grad_f, iphys%i_filter_magne, ie_dfvx,            &
-     &    nod_comm, node, ele, conduct, cd_prop, iphys_ele, ele_fld,    &
-     &    jac_3d_q, rhs_tbl, FEM_elens, mhd_fem_wk,                     &
+     &    FEM_prm, nod_comm, node, ele, conduct, cd_prop,               &
+     &    iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens, mhd_fem_wk, &
      &    fem_wk, f_l, nod_fld)
 !
 !   gradient model by original field
@@ -154,8 +154,8 @@
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_uxb_grad_4_dyn'
       call cal_sgs_vp_induct_grad_no_coef(ifilter_2delta,               &
      &    iphys%i_SGS_vp_induct, iphys%i_magne, ie_dvx,                 &
-     &    nod_comm, node, ele, conduct, cd_prop, iphys_ele, ele_fld,    &
-     &    jac_3d_q, rhs_tbl, FEM_elens, mhd_fem_wk,                     &
+     &    FEM_prm, nod_comm, node, ele, conduct, cd_prop,               &
+     &    iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens, mhd_fem_wk, &
      &    fem_wk, f_l, nod_fld)
 !
 !      filtering

@@ -3,9 +3,10 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine init_analyzer_fl                                     &
-!!     &         (SGS_par, IO_bc, mesh, group, ele_mesh, MHD_mesh,      &
-!!     &          layer_tbl, iphys, nod_fld, label_sim)
+!!      subroutine init_analyzer_fl(FEM_prm, SGS_par, IO_bc,            &
+!!     &          mesh, group, ele_mesh, MHD_mesh, layer_tbl,           &
+!!     &          iphys, nod_fld, label_sim)
+!!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(mesh_geometry), intent(inout) :: mesh
@@ -20,9 +21,16 @@
       module initialization_4_MHD
 !
       use m_precision
+      use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_phys_data
       use t_phys_address
+!
+      use t_mesh_data
+      use t_geometry_data_MHD
+      use t_layering_ele_list
+      use t_work_layer_correlate
+      use t_boundary_field_IO
 !
       implicit none
 !
@@ -32,9 +40,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer_fl                                       &
-     &         (SGS_par, IO_bc, mesh, group, ele_mesh, MHD_mesh,        &
-     &          layer_tbl, iphys, nod_fld, label_sim)
+      subroutine init_analyzer_fl(FEM_prm, SGS_par, IO_bc,              &
+     &          mesh, group, ele_mesh, MHD_mesh, layer_tbl,             &
+     &          iphys, nod_fld, label_sim)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -60,12 +68,6 @@
       use m_cal_max_indices
       use m_surf_data_list
       use m_bc_data_velo
-!
-      use t_mesh_data
-      use t_geometry_data_MHD
-      use t_layering_ele_list
-      use t_work_layer_correlate
-      use t_boundary_field_IO
 !
       use count_whole_num_element
 !
@@ -102,6 +104,7 @@
       use nod_phys_send_recv
       use solver_MGCG_MHD
 !
+      type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(IO_boundary), intent(in) :: IO_bc
 !
@@ -122,11 +125,11 @@
 !
 !  -----   ordering by regions ---------------------------------------
 !
-      call reordering_by_layers_MHD(FEM_prm1, SGS_par, mesh%ele, group, &
+      call reordering_by_layers_MHD(FEM_prm, SGS_par, mesh%ele, group,  &
      &    MHD_mesh, MHD1_matrices%MG_interpolate)
 !
       call set_layers                                                   &
-     &   (FEM_prm1, mesh%node, mesh%ele, group%ele_grp, MHD_mesh)
+     &   (FEM_prm, mesh%node, mesh%ele, group%ele_grp, MHD_mesh)
 !
       if (SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         call const_layers_4_dynamic(group%ele_grp, layer_tbl)
@@ -220,6 +223,7 @@
       call set_material_property                                        &
      &   (iphys, ref_param_T1%depth_top, ref_param_T1%depth_bottom)
       call init_ele_material_property(mesh%ele%numele,                  &
+     &    evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1)
       call define_sgs_components                                        &
      &   (mesh%node%numnod, mesh%ele%numele, SGS_par%model_p,           &
@@ -242,7 +246,7 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*) 'init_MGCG_MHD'
-      call init_MGCG_MHD(mesh%node)
+      call init_MGCG_MHD(evo_velo, evo_magne, evo_vect_p, mesh%node)
 !
 !  -------------------------------
 !
@@ -307,7 +311,7 @@
 !
 !     ---------------------
 !
-      call int_RHS_mass_matrices(FEM_prm1%npoint_t_evo_int,             &
+      call int_RHS_mass_matrices(FEM_prm%npoint_t_evo_int,              &
      &    mesh%node, mesh%ele, MHD_mesh, jac1_3d_q, rhs_tbl1,           &
      &    mhd_fem1_wk, fem1_wk, f1_l, m1_lump)
 !
@@ -318,7 +322,7 @@
 !      call reset_aiccg_matrices(mesh%node, mesh%ele, MHD_mesh%fluid)
 !
       if(solver_iflag(method_4_solver) .eq. iflag_mgcg) then
-        call s_initialize_4_MHD_AMG(FEM_prm1, mesh%node, mesh%ele,      &
+        call s_initialize_4_MHD_AMG(FEM_prm, mesh%node, mesh%ele,       &
      &      ifld_diff, diff_coefs, MHD1_matrices)
       end if
 !
@@ -326,9 +330,11 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_stability_4_diffuse'
       call cal_stability_4_diffuse                                      &
-     &   (mesh%ele, fl_prop1, cd_prop1, ht_prop1, cp_prop1)
+     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
+     &    mesh%ele, fl_prop1, cd_prop1, ht_prop1, cp_prop1)
 ! 
-      call deallocate_surf_bc_lists
+      call deallocate_surf_bc_lists                                     &
+     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp)
 !
       end subroutine init_analyzer_fl
 !

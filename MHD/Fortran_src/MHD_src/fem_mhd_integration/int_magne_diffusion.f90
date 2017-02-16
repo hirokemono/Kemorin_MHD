@@ -70,8 +70,8 @@
      &   ele%istack_ele_smp, num_int, iphys%i_vp_diffuse, fem_wk, f_nl)
 !
 !      call cal_multi_pass_4_vector_ff                                  &
-!     &   (ele%istack_ele_smp, FEM_prm1, m1_lump, nod_comm, node, ele,  &
-!     &    jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f1_l, f_nl)
+!     &   (ele%istack_ele_smp, FEM_prm, m_lump, nod_comm, node, ele,    &
+!     &    jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !      call cal_ff_2_vector(node%numnod, node%istack_nod_smp,           &
 !     &   ff, mhd_fem_wk%mlump_cd%ml, nod_fld%ntot_phys,                &
 !     &   iphys%i_magne, nod_fld%d_fld)

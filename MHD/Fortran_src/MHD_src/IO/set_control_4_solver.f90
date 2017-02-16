@@ -134,8 +134,6 @@
           write(*,*) 'method_4_solver:  ',  trim(method_4_solver)
           write(*,*) 'ordering_name: , iflag_ordering ',                &
      &                trim(ordering_name), iflag_ordering
-          write(*,*) 'eps_4_velo:        ', eps_4_velo
-          write(*,*) 'eps_4_magne:       ', eps_4_magne
           write(*,*) 'eps_4_crank:       ', eps_crank
           write(*,*) 'eps_4_magne_crank: ', eps_4_magne_crank
           write(*,*) 'method_4_velo:     ', trim(method_4_velo)

@@ -8,8 +8,11 @@
 !!        from control data
 !!
 !!@verbatim
-!!      subroutine s_set_control_4_filtering(SGS_param,                 &
+!!      subroutine s_set_control_4_filtering                            &
+!!     &         (evo_V, evo_B, evo_A, evo_T, evo_C, SGS_param,         &
 !!     &          SGS_filter_name_ctl, ffile_ctl, s3df_ctl, filter_param)
+!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(read_character_item), intent(in) :: SGS_filter_name_ctl
 !!        type(filter_file_control), intent(in) :: ffile_ctl
 !!        type(SGS_3d_filter_control), intent(inout) :: s3df_ctl
@@ -34,12 +37,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_4_filtering(SGS_param,                   &
+      subroutine s_set_control_4_filtering                              &
+     &         (evo_V, evo_B, evo_A, evo_T, evo_C, SGS_param,           &
      &          SGS_filter_name_ctl, ffile_ctl, s3df_ctl, filter_param)
 !
       use m_file_format_switch
       use m_phys_labels
       use m_filter_file_names
+      use t_time_stepping_parameter
       use t_SGS_control_parameter
       use t_ctl_data_SGS_filter
       use t_ctl_data_filter_files
@@ -49,6 +54,8 @@
       use set_control_ele_layering
       use skip_comment_f
 !
+      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(read_character_item), intent(in) :: SGS_filter_name_ctl
       type(filter_file_control), intent(in) :: ffile_ctl
@@ -112,23 +119,23 @@
      &         (s3df_ctl%fluid_filter_grp_ctl, filter_param%fluid)
 !
 !
-        if (evo_temp%iflag_scheme .gt. id_no_evolution) then
+        if (evo_T%iflag_scheme .gt. id_no_evolution) then
           filter_param%iflag_heat_filtering                             &
      &       = filter_area_4_each_field(s3df_ctl%heat_filter_ctl)
         end if
 !
-        if (evo_comp%iflag_scheme .gt. id_no_evolution) then
+        if (evo_C%iflag_scheme .gt. id_no_evolution) then
           filter_param%iflag_composition_filtering                      &
      &       = filter_area_4_each_field(s3df_ctl%compostion_filter_ctl)
         end if
 !
-        if ( evo_velo%iflag_scheme .gt. id_no_evolution) then
+        if ( evo_V%iflag_scheme .gt. id_no_evolution) then
           filter_param%iflag_momentum_filtering                         &
      &        = filter_area_4_each_field(s3df_ctl%momentum_filter_ctl)
         end if
 !
-        if (evo_magne%iflag_scheme .gt. id_no_evolution                 &
-     &      .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+        if (evo_B%iflag_scheme .gt. id_no_evolution                     &
+     &      .or. evo_A%iflag_scheme .gt. id_no_evolution) then
           filter_param%iflag_induction_filtering                        &
      &        = filter_area_4_each_field(s3df_ctl%induction_filter_ctl)
         end if

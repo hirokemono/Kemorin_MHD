@@ -8,13 +8,14 @@
 !>@brief  Wrapper for linear solvers for MHD dynmamo
 !!
 !!@verbatim
-!!      subroutine init_MGCG_MHD(node)
+!!      subroutine init_MGCG_MHD(evo_V, evo_B, evo_A, node)
 !!      subroutine solver_MGCG_vector(node, num_MG_level,               &
 !!     &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat,            &
 !!     &          METHOD, PRECOND, eps, itr, MG_vector, b_vec, x_vec)
 !!      subroutine solver_MGCG_scalar(node, num_MG_level,               &
 !!     &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat11,          &
 !!     &          METHOD, PRECOND, eps, itr, MG_vector, b_vec, x_vec)
+!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
 !!        type(node_data), intent(in) :: node
 !!        integer(kind = kint), intent(in) :: num_MG_level
 !!        type(MG_itp_table), intent(in) :: MG_itp(num_MG_level)
@@ -31,12 +32,12 @@
 !
       use m_precision
 !
-      use m_control_parameter
       use m_machine_parameter
       use m_work_time
       use m_ctl_parameter_Multigrid
       use calypso_mpi
 !
+      use t_time_stepping_parameter
       use t_geometry_data
       use t_vector_for_solver
       use t_interpolate_table
@@ -52,7 +53,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_MGCG_MHD(node)
+      subroutine init_MGCG_MHD(evo_V, evo_B, evo_A, node)
 !
       use m_iccg_parameter
       use solver_DJDS11_struct
@@ -61,6 +62,7 @@
       use solver_VMGCG33_DJDS_SMP
       use skip_comment_f
 !
+      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
       type(node_data), intent(in) :: node
       integer(kind = kint) :: ierr
 !
@@ -75,9 +77,9 @@
       end if
 !
 !
-      if(     evo_velo%iflag_scheme .ge.   id_Crank_nicolson            &
-     &   .or. evo_vect_p%iflag_scheme .ge. id_Crank_nicolson            &
-     &   .or. evo_magne%iflag_scheme .ge.  id_Crank_nicolson) then
+      if(     evo_V%iflag_scheme .ge. id_Crank_nicolson                 &
+     &   .or. evo_A%iflag_scheme .ge. id_Crank_nicolson                 &
+     &   .or. evo_B%iflag_scheme .ge. id_Crank_nicolson) then
         METHOD = method_4_velo
         if (cmp_no_case(METHOD, 'MGCG')) then
           call init_VMGCG33_DJDS_SMP(node%numnod, np_smp,               &

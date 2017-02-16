@@ -5,8 +5,8 @@
 !                                    on July 2000 (ver 1.1)
 !        modieied by H. Matsui on Sep., 2005
 !
-!!      subroutine s_cal_light_element                                  &
-!!     &         (i_field, FEM_prm, SGS_param, cmt_param, filter_param, &
+!!      subroutine s_cal_light_element(i_field, evo_C, FEM_prm,         &
+!!     &          SGS_param, cmt_param, filter_param,                   &
 !!     &          nod_comm, node, ele, surf, fluid, sf_grp,             &
 !!     &          property, Snod_bcs, sf_bcs, iphys, iphys_ele, ele_fld,&
 !!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, icomp_sgs,    &
@@ -14,6 +14,7 @@
 !!     &          diff_coefs, filtering, Cmatrix, ak_d_composit,        &
 !!     &          wk_filter, mhd_fem_wk, fem_wk, surf_wk,               &
 !!     &          f_l, f_nl, nod_fld)
+!!        type(time_evolution_params), intent(in) :: evo_C
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -54,10 +55,10 @@
       use m_precision
 !
       use calypso_mpi
-      use m_control_parameter
       use m_phys_constants
       use m_iccg_parameter
 !
+      use t_time_stepping_parameter
       use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_physical_property
@@ -90,8 +91,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_cal_light_element                                    &
-     &         (i_field, FEM_prm, SGS_param, cmt_param, filter_param,   &
+      subroutine s_cal_light_element(i_field, evo_C, FEM_prm,           &
+     &          SGS_param, cmt_param, filter_param,                     &
      &          nod_comm, node, ele, surf, fluid, sf_grp,               &
      &          property, Snod_bcs, sf_bcs, iphys, iphys_ele, ele_fld,  &
      &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, icomp_sgs,      &
@@ -119,6 +120,7 @@
 !
       integer(kind = kint), intent(in) :: i_field
 !
+      type(time_evolution_params), intent(in) :: evo_C
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
@@ -178,11 +180,11 @@
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
       if (property%coef_advect .gt. zero                                &
-     &     .and. evo_comp%coef_exp.gt.zero) then
+     &     .and. evo_C%coef_exp.gt.zero) then
         call int_vol_scalar_diffuse_ele(SGS_param%ifilter_final,        &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
-     &      ifld_diff%i_light, evo_comp%coef_exp, ak_d_composit,        &
+     &      ifld_diff%i_light, evo_C%coef_exp, ak_d_composit,           &
      &      i_field, fem_wk, f_l)
       end if
 !
@@ -248,32 +250,32 @@
       end if
 !
 !
-      if     (evo_comp%iflag_scheme .eq. id_explicit_euler) then
+      if     (evo_C%iflag_scheme .eq. id_explicit_euler) then
         call cal_scalar_pre_euler(FEM_prm%iflag_comp_supg, i_field,     &
      &      FEM_prm, nod_comm, node, ele, fluid, iphys_ele, ele_fld,    &
      &      jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
-      else if(evo_comp%iflag_scheme .eq. id_explicit_adams2) then
+      else if(evo_C%iflag_scheme .eq. id_explicit_adams2) then
         call cal_scalar_pre_adams                                       &
      &    (FEM_prm%iflag_comp_supg, i_field, iphys%i_pre_composit,      &
      &      FEM_prm, nod_comm, node, ele, fluid, iphys_ele, ele_fld,    &
      &      jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
-      else if(evo_comp%iflag_scheme .eq. id_Crank_nicolson) then
+      else if(evo_C%iflag_scheme .eq. id_Crank_nicolson) then
         call cal_temp_pre_lumped_crank(FEM_prm%iflag_comp_supg,         &
      &      cmt_param%iflag_c_light, SGS_param%ifilter_final,           &
      &      i_field, iphys%i_pre_composit, ifld_diff%i_light,           &
      &      ak_d_composit, eps_4_comp_crank,                            &
-     &      FEM_prm, nod_comm, node, ele, fluid, evo_comp, Snod_bcs,    &
+     &      FEM_prm, nod_comm, node, ele, fluid, evo_C, Snod_bcs,       &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
      &      Cmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
-      else if(evo_comp%iflag_scheme .eq. id_Crank_nicolson_cmass) then
+      else if(evo_C%iflag_scheme .eq. id_Crank_nicolson_cmass) then
         call cal_temp_pre_consist_crank                                 &
      &     (cmt_param%iflag_c_light, SGS_param%ifilter_final,           &
      &      i_field, iphys%i_pre_composit, ifld_diff%i_light,           &
      &      ak_d_composit, eps_4_comp_crank,                            &
-     &      FEM_prm, node, ele, fluid, evo_comp, property, Snod_bcs,    &
+     &      FEM_prm, node, ele, fluid, evo_C, property, Snod_bcs,       &
      &      jac_3d, rhs_tbl, FEM_elens, diff_coefs, Cmatrix, MG_vector, &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if

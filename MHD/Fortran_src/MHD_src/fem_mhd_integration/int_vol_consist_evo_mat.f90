@@ -6,9 +6,12 @@
 !      Modified by H. Matsui on Aug, 2007
 !
 !!      subroutine int_vol_crank_mat_consist                            &
-!!     &        (num_int, mesh, fl_prop, cd_prop, ht_prop, cp_prop,     &
+!!     &        (num_int, evo_V, evo_B, evo_A, evo_T, evo_C,            &
+!!     &         mesh, fl_prop, cd_prop, ht_prop, cp_prop,              &
 !!     &         jac_3d, rhs_tbl, MG_mat_fl_q, MG_mat_full_cd_q, fem_wk,&
 !!     &         mat_velo, mat_magne, mat_temp, mat_light)
+!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
@@ -27,6 +30,7 @@
 !
       use m_precision
 !
+      use t_time_stepping_parameter
       use t_physical_property
       use t_mesh_data
       use t_geometry_data
@@ -45,11 +49,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_vol_crank_mat_consist                              &
-     &         (num_int, mesh, fl_prop, cd_prop, ht_prop, cp_prop,      &
+     &         (num_int, evo_V, evo_B, evo_A, evo_T, evo_C,             &
+     &          mesh, fl_prop, cd_prop, ht_prop, cp_prop,               &
      &          jac_3d, rhs_tbl, MG_mat_fl_q, MG_mat_full_cd_q, fem_wk, &
      &          mat_velo, mat_magne, mat_temp, mat_light)
 !
-      use m_control_parameter
       use m_phys_constants
 !
       use fem_skv_mass_mat_type
@@ -57,6 +61,8 @@
       use add_skv1_to_crs_matrix
 !
       integer(kind = kint), intent(in) :: num_int
+      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(mesh_geometry), intent(in) :: mesh
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
@@ -80,35 +86,35 @@
         call fem_skv_mass_matrix_type(mesh%ele%istack_ele_smp,          &
      &      num_int, k2, mesh%ele, jac_3d, fem_wk%sk6)
 !
-        if (evo_velo%iflag_scheme .eq. id_Crank_nicolson_cmass          &
+        if (evo_V%iflag_scheme .eq. id_Crank_nicolson_cmass             &
      &      .and. fl_prop%coef_velo.gt.0.0d0 ) then
           call add_skv1_to_crs_matrix33(mesh%ele, rhs_tbl,              &
      &        MG_mat_fl_q, k2, fem_wk%sk6,                              &
      &        mat_velo%num_non0, mat_velo%aiccg)
         end if
 !
-        if ( evo_temp%iflag_scheme .eq. id_Crank_nicolson_cmass         &
+        if ( evo_T%iflag_scheme .eq. id_Crank_nicolson_cmass            &
      &      .and. ht_prop%coef_advect.gt.0.0d0 ) then
           call add_skv1_to_crs_matrix11(mesh%ele, rhs_tbl,              &
      &        MG_mat_fl_q, k2, fem_wk%sk6,                              &
      &        mat_temp%num_non0, mat_temp%aiccg)
         end if
 !
-        if ( evo_comp%iflag_scheme .eq. id_Crank_nicolson_cmass         &
+        if ( evo_C%iflag_scheme .eq. id_Crank_nicolson_cmass            &
      &      .and. cp_prop%coef_advect .gt. 0.0d0) then
           call add_skv1_to_crs_matrix11(mesh%ele, rhs_tbl,              &
      &        MG_mat_fl_q, k2, fem_wk%sk6,                              &
      &        mat_light%num_non0, mat_light%aiccg)
         end if
 !
-        if ( evo_magne%iflag_scheme .eq. id_Crank_nicolson_cmass        &
+        if ( evo_B%iflag_scheme .eq. id_Crank_nicolson_cmass            &
      &      .and. cd_prop%coef_magne.gt.0.0d0) then
           call add_skv1_to_crs_matrix33                                 &
      &       (mesh%ele, rhs_tbl, MG_mat_full_cd_q,                      &
      &        k2, fem_wk%sk6, mat_magne%num_non0, mat_magne%aiccg)
         end if
 !
-        if ( evo_vect_p%iflag_scheme .eq. id_Crank_nicolson_cmass       &
+        if ( evo_A%iflag_scheme .eq. id_Crank_nicolson_cmass            &
      &      .and. cd_prop%coef_magne.gt.0.0d0) then
           call add_skv1_to_crs_matrix33                                 &
      &       (mesh%ele, rhs_tbl, MG_mat_full_cd_q,                      &

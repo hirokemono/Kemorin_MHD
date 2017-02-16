@@ -7,11 +7,14 @@
 !        modified by H. Matsui on Oct. 2005
 !        modified by H. Matsui on Feb. 2009
 !
-!!      subroutine set_aiccg_bc_phys(ele, surf, sf_grp,                 &
+!!      subroutine set_aiccg_bc_phys(num_int,                           &
+!!     &          evo_V, evo_B, evo_A, evo_T, evo_C, ele, surf, sf_grp, &
 !!     &          jac_sf_grp, rhs_tbl, MG_mat_fl_q, node_bcs, surf_bcs, &
 !!     &          djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,     &
 !!     &          surf_wk, fem_wk, mat_velo, mat_magne,                 &
 !!     &          mat_temp, mat_light, mat_press, mat_magp)
+!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
@@ -29,7 +32,7 @@
 !!        type(DJDS_MATRIX),  intent(inout) :: mat_light
 !!        type(DJDS_MATRIX),  intent(inout) :: mat_press
 !!        type(DJDS_MATRIX),  intent(inout) :: mat_magp
-!!      subroutine set_aiccg_bc_velo(num_int, ele, surf, sf_grp,        &
+!!      subroutine set_aiccg_bc_velo(num_int, ele, surf, sf_grp, evo_V, &
 !!     &          nod_bc_v, nod_bc_rot, free_in_sf, free_out_sf,        &
 !!     &          jac_sf_grp, rhs_tbl, MG_mat_fl_q, DJDS_tbl, ak_d_velo,&
 !!     &          surf_wk, fem_wk, Vmat_DJDS)
@@ -41,8 +44,8 @@
       module set_aiccg_bc_vectors
 !
       use m_precision
-      use m_control_parameter
 !
+      use t_time_stepping_parameter
       use t_geometry_data
       use t_surface_data
       use t_group_data
@@ -57,13 +60,16 @@
 !
       implicit none
 !
+      private :: set_aiccg_bc_velo
+!
 ! -----------------------------------------------------------------------
 !
       contains
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_aiccg_bc_phys(num_int, ele, surf, sf_grp,          &
+      subroutine set_aiccg_bc_phys(num_int,                             &
+     &          evo_V, evo_B, evo_A, evo_T, evo_C, ele, surf, sf_grp,   &
      &          jac_sf_grp, rhs_tbl, MG_mat_fl_q, node_bcs, surf_bcs,   &
      &          djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,       &
      &          ak_d_velo, surf_wk, fem_wk, mat_velo, mat_magne,        &
@@ -71,8 +77,10 @@
 !
       use set_aiccg_bc_fixed
 !
+      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(element_data), intent(in) :: ele
-      type(surface_data), intent(in) ::   surf
+      type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(nodal_boundarty_conditions), intent(in) ::   node_bcs
       type(jacobians_2d), intent(in) ::         jac_sf_grp
@@ -99,12 +107,12 @@
 !
 !   set boundary conditions for matrix
 !
-      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
+      if (evo_V%iflag_scheme .gt. id_no_evolution) then
         call set_aiccg_bc_scalar_nod(num_t_linear, ele,                 &
      &      node_bcs%Vnod_bcs%nod_bc_p, djds_tbl_fl_l, mat_press)
 !
-        if (evo_velo%iflag_scheme .ge. id_Crank_nicolson) then
-          call set_aiccg_bc_velo(num_int, ele, surf, sf_grp,            &
+        if (evo_V%iflag_scheme .ge. id_Crank_nicolson) then
+          call set_aiccg_bc_velo(num_int, evo_V, ele, surf, sf_grp,     &
      &      node_bcs%Vnod_bcs%nod_bc_v, node_bcs%Vnod_bcs%nod_bc_rot,   &
      &      surf_bcs%Vsf_bcs%free_sph_in,                               &
      &      surf_bcs%Vsf_bcs%free_sph_out,                              &
@@ -113,28 +121,28 @@
         end if
       end if
 !
-      if (evo_temp%iflag_scheme .ge. id_Crank_nicolson) then
+      if (evo_T%iflag_scheme .ge. id_Crank_nicolson) then
         call set_aiccg_bc_scalar_nod(ele%nnod_4_ele,                    &
      &      ele, node_bcs%Tnod_bcs%nod_bc_s,  djds_tbl_fl, mat_temp)
       end if
 !
-      if (evo_comp%iflag_scheme .ge. id_Crank_nicolson) then
+      if (evo_C%iflag_scheme .ge. id_Crank_nicolson) then
         call set_aiccg_bc_scalar_nod(ele%nnod_4_ele,                    &
      &      ele, node_bcs%Cnod_bcs%nod_bc_s,                            &
      &      djds_tbl_fl, mat_light)
       end if
 !
-      if (evo_magne%iflag_scheme .gt. id_no_evolution                   &
-     &     .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+      if     (evo_B%iflag_scheme .gt. id_no_evolution                   &
+     &   .or. evo_A%iflag_scheme .gt. id_no_evolution) then
         call set_aiccg_bc_scalar_nod(num_t_linear, ele,                 &
      &      node_bcs%Bnod_bcs%nod_bc_f, djds_tbl_l, mat_magp)
 !
-        if (evo_magne%iflag_scheme .ge. id_Crank_nicolson) then
+        if (evo_B%iflag_scheme .ge. id_Crank_nicolson) then
           call set_aiccg_bc_vector_nod                                  &
      &       (ele, node_bcs%Bnod_bcs%nod_bc_b, djds_tbl, mat_magne)
         end if
 !
-        if (evo_vect_p%iflag_scheme .ge. id_Crank_nicolson) then
+        if (evo_A%iflag_scheme .ge. id_Crank_nicolson) then
           call set_aiccg_bc_vector_nod                                  &
      &       (ele, node_bcs%Bnod_bcs%nod_bc_a, djds_tbl, mat_magne)
         end if
@@ -145,7 +153,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_aiccg_bc_velo(num_int, ele, surf, sf_grp,          &
+      subroutine set_aiccg_bc_velo(num_int, evo_V, ele, surf, sf_grp,   &
      &          nod_bc_v, nod_bc_rot, free_in_sf, free_out_sf,          &
      &          jac_sf_grp, rhs_tbl, MG_mat_fl_q, DJDS_tbl, ak_d_velo,  &
      &          surf_wk, fem_wk, Vmat_DJDS)
@@ -153,6 +161,7 @@
       use set_aiccg_free_sph
       use set_aiccg_bc_fixed
 !
+      type(time_evolution_params), intent(in) :: evo_V
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
@@ -178,10 +187,10 @@
 !      matrix setting for free slip on sphere
       call set_aiccg_bc_free_sph_in(ele, surf, sf_grp,                  &
      &    free_in_sf, jac_sf_grp, rhs_tbl, MG_mat_fl_q, surf_wk,        &
-     &    num_int, ak_d_velo, fem_wk, Vmat_DJDS)
+     &    evo_V%coef_imp, num_int, ak_d_velo, fem_wk, Vmat_DJDS)
       call set_aiccg_bc_free_sph_out(ele, surf, sf_grp,                 &
      &    free_out_sf, jac_sf_grp, rhs_tbl, MG_mat_fl_q, surf_wk,       &
-     &    num_int, ak_d_velo, fem_wk, Vmat_DJDS)
+     &    evo_V%coef_imp, num_int, ak_d_velo, fem_wk, Vmat_DJDS)
 !
 !      matrix setting for fixed boundaries
       call set_aiccg_bc_vector_nod(ele, nod_bc_v, DJDS_tbl, Vmat_DJDS)

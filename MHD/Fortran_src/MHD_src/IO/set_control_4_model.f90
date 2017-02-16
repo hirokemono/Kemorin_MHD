@@ -11,14 +11,17 @@
 !!@verbatim
 !!      subroutine s_set_control_4_model                                &
 !!     &          (reft_ctl, refc_ctl, mevo_ctl, evo_ctl, nmtr_ctl,     &
-!!     &           FEM_prm)
-!!     subroutine s_set_control_4_crank(mevo_ctl)
+!!     &           evo_V, evo_B, evo_A, evo_T, evo_C)
+!!      subroutine s_set_control_4_crank                                &
+!!     &         (mevo_ctl, evo_V, evo_B, evo_A, evo_T, evo_C)
 !!        type(reference_temperature_ctl), intent(in) :: reft_ctl
 !!        type(reference_temperature_ctl), intent(in) :: refc_ctl
 !!        type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
 !!        type(mhd_evolution_control), intent(inout) :: evo_ctl
 !!        type(node_monitor_control), intent(inout) :: nmtr_ctl
-!!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
+!!        type(time_evolution_params), intent(inout) :: evo_V, evo_B
+!!        type(time_evolution_params), intent(inout) :: evo_A
+!!        type(time_evolution_params), intent(inout) :: evo_T, evo_C
 !!@endverbatim
 !
       module set_control_4_model
@@ -27,10 +30,10 @@
       use m_error_IDs
 !
       use m_machine_parameter
-!      use m_control_parameter
       use m_physical_property
       use m_t_int_parameter
       use t_ctl_data_mhd_evo_scheme
+      use t_time_stepping_parameter
 !
       implicit  none
 !
@@ -42,12 +45,11 @@
 !
       subroutine s_set_control_4_model                                  &
      &          (reft_ctl, refc_ctl, mevo_ctl, evo_ctl, nmtr_ctl,       &
-     &           FEM_prm)
+     &           evo_V, evo_B, evo_A, evo_T, evo_C)
 !
       use calypso_mpi
       use m_t_step_parameter
       use m_phys_labels
-      use t_FEM_control_parameter
       use t_ctl_data_mhd_evolution
       use t_ctl_data_temp_model
       use t_ctl_data_node_monitor
@@ -59,8 +61,8 @@
       type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
       type(mhd_evolution_control), intent(inout) :: evo_ctl
       type(node_monitor_control), intent(inout) :: nmtr_ctl
-!
-      type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
+      type(time_evolution_params), intent(inout) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(inout) :: evo_T, evo_C
 !
       integer (kind = kint) :: i
       character(len=kchara) :: tmpchara
@@ -68,97 +70,66 @@
 !
 !  set time_evolution scheme
 !
-        if (mevo_ctl%scheme_ctl%iflag .eq. 0) then
-          e_message = 'Set time integration scheme'
-          call calypso_MPI_abort(ierr_evo, e_message)
-        else
-          if (cmp_no_case(mevo_ctl%scheme_ctl%charavalue,               &
+      if (mevo_ctl%scheme_ctl%iflag .eq. 0) then
+        e_message = 'Set time integration scheme'
+        call calypso_MPI_abort(ierr_evo, e_message)
+      else
+        if (cmp_no_case(mevo_ctl%scheme_ctl%charavalue,                 &
      &                    'explicit_Euler')) then
-            iflag_scheme = id_explicit_euler
-            FEM_prm%iflag_imp_correct = id_turn_OFF
-          else if (cmp_no_case(mevo_ctl%scheme_ctl%charavalue,          &
+          iflag_scheme = id_explicit_euler
+        else if (cmp_no_case(mevo_ctl%scheme_ctl%charavalue,            &
      &                         '2nd_Adams_Bashforth')) then
-            iflag_scheme = id_explicit_adams2
-            FEM_prm%iflag_imp_correct = id_turn_OFF
-          else if (cmp_no_case(mevo_ctl%scheme_ctl%charavalue,          &
+          iflag_scheme = id_explicit_adams2
+        else if (cmp_no_case(mevo_ctl%scheme_ctl%charavalue,            &
      &                         'Crank_Nicolson')) then
-            iflag_scheme = id_Crank_nicolson
-          else if (cmp_no_case(mevo_ctl%scheme_ctl%charavalue,          &
+          iflag_scheme = id_Crank_nicolson
+        else if (cmp_no_case(mevo_ctl%scheme_ctl%charavalue,            &
      &                         'Crank_Nicolson_consist')) then
-            iflag_scheme = id_Crank_nicolson_cmass
-          end if
+          iflag_scheme = id_Crank_nicolson_cmass
         end if
-!
-        if ( iflag_scheme .eq. id_Crank_nicolson                        &
-     &     .or. iflag_scheme .eq. id_Crank_nicolson_cmass) then
-          if (mevo_ctl%diffuse_correct%iflag .eq. 0) then
-            FEM_prm%iflag_imp_correct = id_turn_OFF
-          else
-            if (yes_flag(mevo_ctl%diffuse_correct%charavalue)) then
-              FEM_prm%iflag_imp_correct = iflag_scheme
-            end if
-          end if
-        end if
+      end if
 !
 !   set control for time evolution
 !
-        if (evo_ctl%t_evo_field_ctl%icou .eq. 0) then
-          e_message = 'Set field for time integration'
-          call calypso_MPI_abort(ierr_evo, e_message)
-        else
-          num_field_to_evolve = evo_ctl%t_evo_field_ctl%num
-          if (iflag_debug .ge. iflag_routine_msg)                       &
-     &    write(*,*) 'num_field_to_evolve ',num_field_to_evolve
+      if (evo_ctl%t_evo_field_ctl%icou .eq. 0) then
+        e_message = 'Set field for time integration'
+        call calypso_MPI_abort(ierr_evo, e_message)
+      end if
+!
+      do i = 1, evo_ctl%t_evo_field_ctl%num
+        tmpchara = evo_ctl%t_evo_field_ctl%c_tbl(i)
+        if (tmpchara .eq. fhd_velo ) then
+          evo_V%iflag_scheme =   iflag_scheme
+        else if (tmpchara .eq. fhd_temp ) then
+          evo_T%iflag_scheme =   iflag_scheme
+        else if (tmpchara .eq. fhd_light ) then
+          evo_C%iflag_scheme =   iflag_scheme
+        else if (tmpchara .eq. fhd_magne ) then
+          evo_B%iflag_scheme =  iflag_scheme
+        else if (tmpchara .eq. fhd_vecp ) then
+          evo_A%iflag_scheme = iflag_scheme
         end if
+      end do
 !
-        if ( num_field_to_evolve .ne. 0 ) then
-          allocate( t_evo_name(num_field_to_evolve) )
+      if (evo_ctl%t_evo_field_ctl%num .gt. 0 ) then
+        call dealloc_t_evo_name_ctl(evo_ctl)
+      end if
 !
-          do i = 1, num_field_to_evolve
-            t_evo_name(i)  = evo_ctl%t_evo_field_ctl%c_tbl(i)
-          end do
-!
-          call dealloc_t_evo_name_ctl(evo_ctl)
-!
-          if (iflag_debug .ge. iflag_routine_msg) then
-            write(*,*) 'num_field_to_evolve ',num_field_to_evolve
-            do i = 1, num_field_to_evolve
-              write(*,*) i, trim(t_evo_name(i))
-            end do
-          end if
-!
-         do i = 1, num_field_to_evolve
-           if ( t_evo_name(i) .eq. fhd_velo ) then
-            evo_velo%iflag_scheme =   iflag_scheme
-           else if ( t_evo_name(i) .eq. fhd_temp ) then
-            evo_temp%iflag_scheme =   iflag_scheme
-           else if ( t_evo_name(i) .eq. fhd_light ) then
-            evo_comp%iflag_scheme =   iflag_scheme
-           else if ( t_evo_name(i) .eq. fhd_magne ) then
-            evo_magne%iflag_scheme =  iflag_scheme
-           else if ( t_evo_name(i) .eq. fhd_vecp ) then
-            evo_vect_p%iflag_scheme = iflag_scheme
-           end if
-         end do
-!
-        end if
-!
-      if       (evo_velo%iflag_scheme     .eq. id_no_evolution          &
-     &    .and. evo_temp%iflag_scheme     .eq. id_no_evolution          &
-     &    .and. evo_comp%iflag_scheme     .eq. id_no_evolution          &
-     &    .and. evo_magne%iflag_scheme    .eq. id_no_evolution          &
-     &    .and. evo_vect_p%iflag_scheme   .eq. id_no_evolution) then
+      if       (evo_V%iflag_scheme .eq. id_no_evolution                 &
+     &    .and. evo_T%iflag_scheme .eq. id_no_evolution                 &
+     &    .and. evo_C%iflag_scheme .eq. id_no_evolution                 &
+     &    .and. evo_B%iflag_scheme .eq. id_no_evolution                 &
+     &    .and. evo_A%iflag_scheme .eq. id_no_evolution) then
             e_message = 'Turn on field for time integration'
         call calypso_MPI_abort(ierr_evo, e_message)
       end if
 !
       if (iflag_debug .ge. iflag_routine_msg) then
-        write(*,*) 'iflag_t_evo_4_velo     ', evo_velo%iflag_scheme
-        write(*,*) 'iflag_t_evo_4_temp     ', evo_temp%iflag_scheme
-        write(*,*) 'iflag_t_evo_4_composit ', evo_comp%iflag_scheme
-        write(*,*) 'iflag_t_evo_4_magne    ', evo_magne%iflag_scheme
-        write(*,*) 'iflag_t_evo_4_vect_p   ', evo_vect_p%iflag_scheme
-        write(*,*) 'iflag_implicit_correct ', FEM_prm%iflag_imp_correct
+        write(*,*) 'iflag_t_evo_4_velo     ', evo_V%iflag_scheme
+        write(*,*) 'iflag_t_evo_4_temp     ', evo_T%iflag_scheme
+        write(*,*) 'iflag_t_evo_4_composit ', evo_C%iflag_scheme
+        write(*,*) 'iflag_t_evo_4_magne    ', evo_B%iflag_scheme
+        write(*,*) 'iflag_t_evo_4_vect_p   ', evo_A%iflag_scheme
       end if
 !
 !   set control for reference temperature 
@@ -201,23 +172,26 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_4_crank(mevo_ctl)
+      subroutine s_set_control_4_crank                                  &
+     &         (mevo_ctl, evo_V, evo_B, evo_A, evo_T, evo_C)
 !
       type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
+      type(time_evolution_params), intent(inout) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(inout) :: evo_T, evo_C
 !
 !
-      call set_implicit_coefs(mevo_ctl%coef_imp_v_ctl, evo_velo)
-      call set_implicit_coefs(mevo_ctl%coef_imp_t_ctl, evo_temp)
-      call set_implicit_coefs(mevo_ctl%coef_imp_b_ctl, evo_magne)
-      call set_implicit_coefs(mevo_ctl%coef_imp_b_ctl, evo_vect_p)
-      call set_implicit_coefs(mevo_ctl%coef_imp_c_ctl, evo_comp)
+      call set_implicit_coefs(mevo_ctl%coef_imp_v_ctl, evo_V)
+      call set_implicit_coefs(mevo_ctl%coef_imp_t_ctl, evo_T)
+      call set_implicit_coefs(mevo_ctl%coef_imp_b_ctl, evo_B)
+      call set_implicit_coefs(mevo_ctl%coef_imp_b_ctl, evo_A)
+      call set_implicit_coefs(mevo_ctl%coef_imp_c_ctl, evo_C)
 !
       if (iflag_debug .ge. iflag_routine_msg) then
-        write(*,*) 'coef_imp_v ', evo_velo%coef_imp
-        write(*,*) 'coef_imp_t ', evo_temp%coef_imp
-        write(*,*) 'coef_imp_b ', evo_magne%coef_imp
-        write(*,*) 'coef_imp_a ', evo_vect_p%coef_imp
-        write(*,*) 'coef_imp_c ', evo_comp%coef_imp
+        write(*,*) 'coef_imp_v ', evo_V%coef_imp
+        write(*,*) 'coef_imp_t ', evo_T%coef_imp
+        write(*,*) 'coef_imp_b ', evo_B%coef_imp
+        write(*,*) 'coef_imp_a ', evo_A%coef_imp
+        write(*,*) 'coef_imp_c ', evo_C%coef_imp
       end if
 !
       end subroutine s_set_control_4_crank

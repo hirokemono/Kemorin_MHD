@@ -66,7 +66,8 @@
 !
 !   matrix assembling
 !
-      call init_analyzer_fl(SGS_par1, IO_bc1, mesh1, group1, ele_mesh1, &
+      call init_analyzer_fl                                             &
+     &   (FEM_prm1, SGS_par1, IO_bc1, mesh1, group1, ele_mesh1,         &
      &    MHD_mesh1, layer_tbl1, iphys, nod_fld1, label_sim)
 !
       call nod_fields_send_recv(mesh1%nod_comm, nod_fld1)
@@ -111,7 +112,8 @@
       if (SGS_par1%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
         call s_cal_model_coefficients                                   &
-     &     (FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1,    &
+     &     (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,        &
+     &      FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1,    &
      &      layer_tbl1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,  &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, ifld_sgs, icomp_sgs, ifld_diff, icomp_diff,      &
@@ -141,7 +143,7 @@
      &     (mesh1%node, mesh1%ele, MHD_mesh1%fluid,                     &
      &      iphys, nod_fld1, jac1_3d_q, jac1_3d_l, fem1_wk, flex_data)
         call s_check_deltat_by_prev_rms                                 &
-     &     (mesh1%node, mesh1%ele, MHD_mesh1%fluid,                     &
+     &     (evo_vect_p, mesh1%node, mesh1%ele, MHD_mesh1%fluid,         &
      &      iphys, nod_fld1, jac1_3d_q, jac1_3d_l, fem1_wk, flex_data)
       end if
 !
@@ -208,13 +210,14 @@
 !     ---- step to next time!! --- 
 !
       if (iflag_debug.eq.1) write(*,*) 'set_new_time_and_step'
-      call set_new_time_and_step(mesh1%node, iphys, nod_fld1)
+      call set_new_time_and_step(iphys, nod_fld1)
 !
 !     ----- Time integration
 !
       if (iflag_debug.eq.1) write(*,*) 'fields_evolution'
       call fields_evolution                                             &
-     &  (FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1,       &
+     &  (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,           &
+     &   FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1,       &
      &   nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,                   &
      &   jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, jac1_sf_grp_2d_l,      &
      &   rhs_tbl1, FEM1_elen, ifld_sgs, icomp_sgs, ifld_diff,           &
@@ -229,7 +232,8 @@
       if (SGS_par1%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
         call s_cal_model_coefficients                                   &
-     &     (FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1,    &
+     &     (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,        &
+     &      FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1,    &
      &      layer_tbl1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,  &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, ifld_sgs, icomp_sgs, ifld_diff, icomp_diff,      &

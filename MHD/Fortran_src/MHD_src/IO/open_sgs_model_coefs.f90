@@ -11,24 +11,23 @@
 !!      subroutine open_SGS_model_coef_file(iflag_type, id_file,        &
 !!     &          file_name, wk_sgs)
 !!      subroutine open_SGS_correlation_file(iflag_type, id_file,       &
-!!     &          file_name, SGS_param, wk_sgs)
+!!     &          file_name, evo_A, SGS_param, wk_sgs)
 !!      subroutine open_SGS_rms_ratio_file(iflag_type, id_file,         &
-!!     &          file_name, SGS_param, wk_sgs)
+!!     &          file_name, evo_A, SGS_param, wk_sgs)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!
 !!      subroutine open_SGS_diff_coef_file(iflag_type, id_file,         &
 !!     &          file_name, wk_diff)
 !!      subroutine open_diff_correlation_file(iflag_type, id_file,      &
-!!     &          file_name, wk_diff)
+!!     &          file_name, evo_A, wk_diff)
 !!      subroutine open_diff_rms_ratio_file(iflag_type, id_file,        &
-!!     &          file_name, wk_diff)
+!!     &          file_name, evo_A, wk_diff)
 !
       module open_sgs_model_coefs
 !
       use m_precision
 !
-      use m_control_parameter
-!
+      use t_time_stepping_parameter
       use t_ele_info_4_dynamic
 !
       implicit none
@@ -74,14 +73,15 @@
 !-----------------------------------------------------------------------
 !
       subroutine open_SGS_correlation_file(iflag_type, id_file,         &
-     &          file_name, SGS_param, wk_sgs)
+     &          file_name, evo_A, SGS_param, wk_sgs)
 !
       use t_SGS_control_parameter
 !
       integer(kind=kint), intent(in) :: id_file, iflag_type
       character(len=kchara), intent(in) :: file_name
 !
-      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(time_evolution_params), intent(in) :: evo_A
+type(SGS_model_control_params), intent(in) :: SGS_param
       type(dynamic_model_data), intent(in) :: wk_sgs
 !
 !
@@ -99,20 +99,21 @@
       end if
 !
       call write_sgs_comps_head                                         &
-     &   (id_file, SGS_param%icoord_Csim, wk_sgs)
+     &   (id_file, SGS_param%icoord_Csim, evo_A, wk_sgs)
 !
       end subroutine open_SGS_correlation_file
 !
 !-----------------------------------------------------------------------
 !
       subroutine open_SGS_rms_ratio_file(iflag_type, id_file,           &
-     &          file_name, SGS_param, wk_sgs)
+     &          file_name, evo_A, SGS_param, wk_sgs)
 !
       use t_SGS_control_parameter
 !
       integer(kind=kint), intent(in) :: id_file, iflag_type
       character(len=kchara), intent(in) :: file_name
 !
+      type(time_evolution_params), intent(in) :: evo_A
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(dynamic_model_data), intent(in) :: wk_sgs
 !
@@ -131,9 +132,7 @@
       end if
 !
       call write_sgs_comps_head                                         &
-     &    (id_file, SGS_param%icoord_Csim, wk_sgs)
-      call write_sgs_comps_head                                         &
-     &    (id_file, SGS_param%icoord_Csim, wk_sgs)
+     &    (id_file, SGS_param%icoord_Csim, evo_A, wk_sgs)
 !
       end subroutine open_SGS_rms_ratio_file
 !
@@ -169,11 +168,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine open_diff_correlation_file(iflag_type, id_file,        &
-     &          file_name, wk_diff)
+     &          file_name, evo_A, wk_diff)
 !
       integer(kind=kint), intent(in) :: id_file, iflag_type
       character(len=kchara), intent(in) :: file_name
 !
+      type(time_evolution_params), intent(in) :: evo_A
       type(dynamic_model_data), intent(in) :: wk_diff
 !
 !
@@ -190,18 +190,19 @@
         call write_sgs_whole_time_head(id_file)
       end if
 !
-      call write_diff_comps_head(id_file, wk_diff)
+      call write_diff_comps_head(id_file, evo_A, wk_diff)
 !
       end subroutine open_diff_correlation_file
 !
 !-----------------------------------------------------------------------
 !
       subroutine open_diff_rms_ratio_file(iflag_type, id_file,          &
-     &          file_name, wk_diff)
+     &          file_name, evo_A, wk_diff)
 !
       integer(kind=kint), intent(in) :: id_file, iflag_type
       character(len=kchara), intent(in) :: file_name
 !
+      type(time_evolution_params), intent(in) :: evo_A
       type(dynamic_model_data), intent(in) :: wk_diff
 !
       open (id_file,file=file_name, status='old',                       &
@@ -217,8 +218,7 @@
         call write_sgs_whole_time_head(id_file)
       end if
 !
-      call write_diff_comps_head(id_file, wk_diff)
-      call write_diff_comps_head(id_file, wk_diff)
+      call write_diff_comps_head(id_file, evo_A, wk_diff)
 !
       end subroutine open_diff_rms_ratio_file
 !
@@ -332,7 +332,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_sgs_comps_head(file_id, icoord_Csim, wk_sgs)
+      subroutine write_sgs_comps_head                                   &
+     &         (file_id, icoord_Csim, evo_A, wk_sgs)
 !
       use m_geometry_constants
       use m_phys_labels
@@ -343,6 +344,7 @@
 !
       integer(kind = kint), intent(in) :: icoord_Csim
       integer(kind = kint), intent(in) :: file_id
+      type(time_evolution_params), intent(in) :: evo_A
       type(dynamic_model_data), intent(in) :: wk_sgs
 !
       integer ( kind=kint) :: i
@@ -366,7 +368,7 @@
           call write_sym_tensor_label(file_id, lab(1))
 !
         else if ( wk_sgs%name(i) .eq. fhd_SGS_induction ) then
-          if(evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+          if(evo_A%iflag_scheme .gt. id_no_evolution) then
             write(label,'(a)') 'SGS_uxB'
             call sel_coord_vector_comp_labels(icoord_Csim,              &
      &          label, lab(1) )
@@ -402,12 +404,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_diff_comps_head(file_id, wk_diff)
+      subroutine write_diff_comps_head(file_id, evo_A, wk_diff)
 !
-      use m_control_parameter
       use m_phys_labels
 !
       integer(kind = kint), intent(in) :: file_id
+      type(time_evolution_params), intent(in) :: evo_A
       type(dynamic_model_data), intent(in) :: wk_diff
 !
       integer ( kind=kint) :: i
@@ -447,7 +449,7 @@
           write(file_id,'(a)') 'SGS_lor_yx, SGS_lor_yy, SGS_lor_yz, '
           write(file_id,'(a)') 'SGS_lor_zx, SGS_lor_yz, SGS_lor_zz, '
         else if ( wk_diff%name(i) .eq. fhd_SGS_induction ) then
-          if(evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+          if(evo_A%iflag_scheme .gt. id_no_evolution) then
             write(file_id,'(a)')                                        &
      &        'SGS_uxB_x, SGS_uxB_y, SGS_uxB_z, '
           else

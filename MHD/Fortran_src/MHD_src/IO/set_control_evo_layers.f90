@@ -7,7 +7,10 @@
 !> @brief Set parameters for simulation areas from control data
 !!
 !!@verbatim
-!!     subroutine s_set_control_evo_layers(earea_ctl, FEM_prm)
+!!      subroutine s_set_control_evo_layers                             &
+!!     &         (earea_ctl, evo_V, evo_B, evo_A, evo_T, evo_C, FEM_prm)
+!!       type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!       type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!       type(mhd_evo_area_control), intent(inout) :: earea_ctl
 !!       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!@endverbatim
@@ -18,7 +21,7 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_control_parameter
+      use t_time_stepping_parameter
       use t_ctl_data_mhd_evolution
       use t_FEM_control_parameter
 !
@@ -33,15 +36,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_evo_layers(earea_ctl, FEM_prm)
+      subroutine s_set_control_evo_layers                               &
+     &         (earea_ctl, evo_V, evo_B, evo_A, evo_T, evo_C, FEM_prm)
 !
+      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(mhd_evo_area_control), intent(inout) :: earea_ctl
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !
 !
-      if       (evo_velo%iflag_scheme .eq. id_no_evolution              &
-     &    .and. evo_temp%iflag_scheme .eq. id_no_evolution              &
-     &    .and. evo_comp%iflag_scheme .eq. id_no_evolution) then
+      if       (evo_V%iflag_scheme .eq. id_no_evolution                 &
+     &    .and. evo_T%iflag_scheme .eq. id_no_evolution                 &
+     &    .and. evo_C%iflag_scheme .eq. id_no_evolution) then
           call alloc_area_group_name(ione, FEM_prm%fluid_group)
           FEM_prm%fluid_group%group_name = 'none'
 !
@@ -50,8 +56,8 @@
       else
         call set_fluid_layer_egrp_name(earea_ctl, FEM_prm)
 !
-        if     (evo_magne%iflag_scheme .eq. id_no_evolution             &
-     &    .and. evo_vect_p%iflag_scheme .eq. id_no_evolution) then
+        if     (evo_B%iflag_scheme .eq. id_no_evolution                 &
+     &    .and. evo_A%iflag_scheme .eq. id_no_evolution) then
           call alloc_area_group_name(ione, FEM_prm%condutive_group)
           FEM_prm%condutive_group%group_name = 'none'
 !

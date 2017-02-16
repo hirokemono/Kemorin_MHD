@@ -10,16 +10,20 @@
 !!     &          FEM_elens, icomp_sgs, iphys_elediff,                  &
 !!     &          sgs_coefs, sgs_coefs_nod, filtering, wk_filter,       &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-!!      subroutine cal_diff_of_sgs_terms(FEM_prm, SGS_param, cmt_param, &
+!!      subroutine cal_diff_of_sgs_terms                                &
+!!     &         (evo_B, FEM_prm, SGS_param, cmt_param,                 &
 !!     &          nod_comm, node, ele, surf, sf_grp, fluid, conduct,    &
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop,                   &
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,          &
 !!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,               &
 !!     &          ifld_diff, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,   &
 !!     &          f_l, f_nl, nod_fld, ele_fld)
-!!      subroutine cal_work_4_sgs_terms(nod_comm, node, ele, conduct,   &
+!!      subroutine cal_work_4_sgs_terms                                 &
+!!     &         (evo_A, FEM_prm, nod_comm, node, ele, conduct,         &
 !!     &          fl_prop, iphys, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,  &
 !!     &          f_nl, nod_fld)
+!!        type(time_evolution_params), intent(in) :: evo_B
+!!        type(time_evolution_params), intent(in) :: evo_A
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(SGS_filtering_params), intent(in) :: filter_param
@@ -61,6 +65,7 @@
       use m_machine_parameter
       use m_phys_labels
 !
+      use t_time_stepping_parameter
       use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_physical_property
@@ -194,17 +199,18 @@
      &        'lead ', trim(fhd_SGS_vp_induct)
         call cal_sgs_uxb_2_monitor                                      &
      &     (icomp_sgs%i_induction, iphys_elediff%i_velo,                &
-     &      SGS_param, filter_param, nod_comm, node, ele, conduct,      &
-     &      cd_prop, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl,        &
-     &      FEM_elens, filtering, sgs_coefs, wk_filter, mhd_fem_wk,     &
-     &      fem_wk, f_l, f_nl, nod_fld)
+     &      FEM_prm, SGS_param, filter_param, nod_comm, node, ele,      &
+     &      conduct, cd_prop, iphys, iphys_ele, ele_fld, jac_3d,        &
+     &      rhs_tbl, FEM_elens, filtering, sgs_coefs, wk_filter,        &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       end subroutine cal_sgs_terms_4_monitor
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_diff_of_sgs_terms(FEM_prm, SGS_param, cmt_param,   &
+      subroutine cal_diff_of_sgs_terms                                  &
+     &         (evo_B, FEM_prm, SGS_param, cmt_param,                   &
      &          nod_comm, node, ele, surf, sf_grp, fluid, conduct,      &
      &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
      &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,            &
@@ -217,6 +223,7 @@
       use cal_magnetic_terms
       use int_vol_temp_monitor
 !
+      type(time_evolution_params), intent(in) :: evo_B
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
@@ -260,7 +267,7 @@
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,          &
      &      SGS_param%ifilter_final, SGS_param%iflag_SGS_h_flux,        &
      &      cmt_param%iflag_c_hf, cmt_param%iflag_c_temp,               &
-     &      nod_comm, node, ele, surf, fluid, sf_grp, ht_prop,          &
+     &      FEM_prm, nod_comm, node, ele, surf, fluid, sf_grp, ht_prop, &
      &      nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys_ele, ele_fld,     &
      &      jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,         &
      &      mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
@@ -274,7 +281,7 @@
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int,          &
      &      SGS_param%ifilter_final, SGS_param%iflag_SGS_c_flux,        &
      &      cmt_param%iflag_c_cf, cmt_param%iflag_c_light,              &
-     &      nod_comm, node, ele, surf, fluid, sf_grp, cp_prop,          &
+     &      FEM_prm, nod_comm, node, ele, surf, fluid, sf_grp, cp_prop, &
      &      nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys_ele, ele_fld,     &
      &      jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,         &
      &      mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
@@ -298,7 +305,7 @@
       end do
 !
       if (      iphys%i_SGS_induction .gt. 0                            &
-     &   .and. evo_magne%iflag_scheme .gt. id_no_evolution) then
+     &   .and. evo_B%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_induction)
         call cal_terms_4_magnetic(iphys%i_SGS_induction,                &
@@ -328,7 +335,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_work_4_sgs_terms(nod_comm, node, ele, conduct,     &
+      subroutine cal_work_4_sgs_terms                                   &
+     &         (evo_A, FEM_prm, nod_comm, node, ele, conduct,           &
      &          fl_prop, iphys, jac_3d, rhs_tbl, mhd_fem_wk, fem_wk,    &
      &          f_nl, nod_fld)
 !
@@ -338,6 +346,8 @@
       use int_sgs_induction
       use sgs_buoyancy_flux
 !
+      type(time_evolution_params), intent(in) :: evo_A
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -354,11 +364,11 @@
 !
 !
       if (     iphys%i_SGS_induction .gt. 0                             &
-     &   .and. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+     &   .and. evo_A%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_induction)
         call int_vol_sgs_induction                                      &
-     &     (nod_comm, node, ele, conduct, iphys, jac_3d,                &
+     &     (FEM_prm, nod_comm, node, ele, conduct, iphys, jac_3d,       &
      &      rhs_tbl, mhd_fem_wk, fem_wk, f_nl, nod_fld)
       end if
 !

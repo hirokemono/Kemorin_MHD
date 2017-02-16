@@ -4,8 +4,9 @@
 !
 !        programmed H.Matsui on Dec., 2008
 !
-!      subroutine set_layers_type_4_MHD(geom, grps, MHD_mesh)
+!      subroutine set_layers_type_4_MHD(FEM_prm, geom, grps, MHD_mesh)
 !      subroutine set_empty_layers_type_4_MHD(MHD_mesh)
+!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !        type(mesh_geometry), intent(in) :: geom
 !        type(mesh_groups), intent(in) :: grps
 !
@@ -31,13 +32,14 @@
 !
 ! ---------------------------------------------------------------------
 !
-      subroutine set_layers_type_4_MHD(geom, grps, MHD_mesh)
+      subroutine set_layers_type_4_MHD(FEM_prm, geom, grps, MHD_mesh)
 !
-      use m_control_parameter
+      use t_FEM_control_parameter
       use t_mesh_data
       use t_geometry_data_MHD
       use m_set_layers
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(mesh_geometry), intent(in) :: geom
       type(mesh_groups), intent(in) :: grps
 !
@@ -50,8 +52,8 @@
 !
       call count_ele_4_layer(geom%ele%numele,                           &
      &    MHD_mesh%inner_core%numele_fld,                               &
-     &    FEM_prm1%inner_core_group%num_group,                          &
-     &    FEM_prm1%inner_core_group%group_name,                         &
+     &    FEM_prm%inner_core_group%num_group,                           &
+     &    FEM_prm%inner_core_group%group_name,                          &
      &    grps%ele_grp%num_grp, grps%ele_grp%istack_grp,                &
      &    grps%ele_grp%grp_name)
 !

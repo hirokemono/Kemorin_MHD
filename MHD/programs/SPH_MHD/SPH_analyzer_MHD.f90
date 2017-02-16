@@ -108,8 +108,8 @@
 !* obtain linear terms for starting
 !*
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
-      call set_sph_field_to_start                                       &
-     &   (sph1%sph_rj, r_2nd, trans_p1%leg, ipol, itor, rj_fld1)
+      call set_sph_field_to_start(evo_velo,                             &
+     &    sph1%sph_rj, r_2nd, trans_p1%leg, ipol, itor, rj_fld1)
 !
 !* obtain nonlinear terms for starting
 !*
@@ -162,19 +162,22 @@
       call start_eleps_time(6)
       if(i_step .eq. 1) then
         if(iflag_debug.gt.0) write(*,*) 'cal_expricit_sph_euler'
-        call cal_expricit_sph_euler(i_step, sph1%sph_rj,                &
-     &      ht_prop1, cp_prop1, ipol, itor, rj_fld1)
+        call cal_expricit_sph_euler                                     &
+     &     (i_step, evo_velo, evo_magne, evo_temp, evo_comp,            &
+     &      sph1%sph_rj, ht_prop1, cp_prop1, ipol, itor, rj_fld1)
       else
         if(iflag_debug.gt.0) write(*,*) 'cal_expricit_sph_adams'
         call cal_expricit_sph_adams                                     &
-     &     (sph1%sph_rj, ht_prop1, cp_prop1, ipol, itor, rj_fld1)
+     &     (evo_velo, evo_magne, evo_temp, evo_comp,                    &
+     &      sph1%sph_rj, ht_prop1, cp_prop1, ipol, itor, rj_fld1)
       end if
 !*
 !*  ----------  time evolution by inplicit method ----------
 !*
       call start_eleps_time(7)
       call s_cal_sol_sph_MHD_crank                                      &
-     &   (sph1%sph_rj, r_2nd, trans_p1%leg, ipol, idpdr, itor, rj_fld1)
+     &   (evo_velo, evo_magne, evo_temp, evo_comp,                      &
+     &    sph1%sph_rj, r_2nd, trans_p1%leg, ipol, idpdr, itor, rj_fld1)
       call end_eleps_time(7)
       call end_eleps_time(6)
 !*
@@ -196,7 +199,8 @@
      &    sph1%sph_rj, ipol, idpdr, rj_fld1)
 !*
       if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
-      call s_lead_fields_4_sph_mhd(SGS_par1%model_p,                    &
+      call s_lead_fields_4_sph_mhd                                      &
+     &   (evo_velo, evo_magne, evo_temp, evo_comp, SGS_par1%model_p,    &
      &    sph1, comms_sph1, r_2nd, trans_p1, ipol, rj_fld1, trns_WK1)
       call end_eleps_time(9)
 !

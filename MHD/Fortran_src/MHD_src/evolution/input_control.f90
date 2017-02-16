@@ -9,12 +9,13 @@
 !>@brief  Load mesh and filtering data for MHD simulation
 !!
 !!@verbatim
-!!      subroutine input_control_4_MHD                                  &
-!!     &         (SGS_par, mesh, group, ele_mesh, nod_fld, IO_bc,       &
+!!      subroutine input_control_4_MHD(FEM_prm, SGS_par,                &
+!!     &          mesh, group, ele_mesh, nod_fld, IO_bc,                &
 !!     &          filtering, wide_filtering, wk_filter, MHD_matrices)
-!!      subroutine input_control_4_snapshot                             &
-!!     &         (SGS_par, mesh, group, ele_mesh, nod_fld, IO_bc,       &
+!!      subroutine input_control_4_snapshot(FEM_prm, SGS_par,           &
+!!     &          mesh, group, ele_mesh, nod_fld, IO_bc,                &
 !!     &          filtering, wide_filtering, wk_filter)
+!!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
@@ -35,6 +36,7 @@
       use m_machine_parameter
       use calypso_mpi
 !
+      use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_mesh_data
       use t_boundary_field_IO
@@ -60,7 +62,7 @@
 !
       private :: FEM_MHD_ctl
       private :: mesh1_file
-      private :: input_meshes_4_MHD
+      private :: input_meshes_4_MHD, boundary_file_IO_control
 !
 ! ----------------------------------------------------------------------
 !
@@ -68,8 +70,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine input_control_4_MHD                                    &
-     &         (SGS_par, mesh, group, ele_mesh, nod_fld, IO_bc,         &
+      subroutine input_control_4_MHD(FEM_prm, SGS_par,                  &
+     &          mesh, group, ele_mesh, nod_fld, IO_bc,                  &
      &          filtering, wide_filtering, wk_filter, MHD_matrices)
 !
       use t_ctl_data_sph_MHD_psf
@@ -82,6 +84,7 @@
       use ordering_field_by_viz
       use node_monitor_IO
 !
+      type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
@@ -102,7 +105,7 @@
       call set_control_4_FEM_MHD                                        &
      &   (FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt, FEM_MHD_ctl%model_ctl,  &
      &    FEM_MHD_ctl%ctl_ctl, FEM_MHD_ctl%nmtr_ctl,                    &
-     &    mesh1_file, FEM_udt_org_param, SGS_par, nod_fld)
+     &    mesh1_file, FEM_udt_org_param, FEM_prm, SGS_par, nod_fld)
 !
 !  --  load FEM mesh data
       call mpi_input_mesh(mesh1_file, mesh, group,                      &
@@ -129,8 +132,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine input_control_4_snapshot                               &
-     &         (SGS_par, mesh, group, ele_mesh, nod_fld, IO_bc,         &
+      subroutine input_control_4_snapshot(FEM_prm, SGS_par,             &
+     &          mesh, group, ele_mesh, nod_fld, IO_bc,                  &
      &          filtering, wide_filtering, wk_filter)
 !
       use t_ctl_data_sph_MHD_psf
@@ -139,6 +142,7 @@
       use node_monitor_IO
       use ordering_field_by_viz
 !
+      type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
@@ -158,7 +162,7 @@
       call set_control_4_FEM_MHD                                        &
      &   (FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt, FEM_MHD_ctl%model_ctl,  &
      &    FEM_MHD_ctl%ctl_ctl, FEM_MHD_ctl%nmtr_ctl,                    &
-     &    mesh1_file, FEM_udt_org_param, SGS_par, nod_fld)
+     &    mesh1_file, FEM_udt_org_param, FEM_prm, SGS_par, nod_fld)
 !
 !  --  load FEM mesh data
       call mpi_input_mesh(mesh1_file, mesh, group,                      &
@@ -205,10 +209,7 @@
 !
 ! ----  open data file for boundary data
 !
-      if (iflag_boundary_file .eq. id_read_boundary_file) then
-        call read_bc_condition_file                                     &
-     &     (my_rank, group%nod_grp, group%surf_grp, IO_bc)
-      end if
+      call boundary_file_IO_control(group, IO_bc)
 !
 ! ---------------------------------
 !
@@ -239,6 +240,28 @@
       end if
 !
       end subroutine input_meshes_4_MHD
+!
+! ----------------------------------------------------------------------
+!
+      subroutine boundary_file_IO_control(group, IO_bc)
+!
+      use m_control_parameter
+      use check_read_bc_file
+!
+      type(mesh_groups), intent(in) ::   group
+      type(IO_boundary), intent(inout) :: IO_bc
+!
+      integer(kind = kint) :: iflag
+!
+!
+      iflag = check_read_boundary_files                                 &
+     &      (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp)
+      if (iflag .eq. id_no_boundary_file) return
+!
+      call read_bc_condition_file                                       &
+     &     (my_rank, group%nod_grp, group%surf_grp, IO_bc)
+!
+      end subroutine boundary_file_IO_control
 !
 ! ----------------------------------------------------------------------
 !

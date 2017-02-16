@@ -11,7 +11,9 @@
 !!      subroutine allocate_hbd_trans_rtp(sph_rtp)
 !!      subroutine deallocate_hbd_trans_rtp
 !!
-!!      subroutine set_addresses_trans_hbd_MHD(SGS_param)
+!!      subroutine set_addresses_trans_hbd_MHD(evo_B, SGS_param)
+!!        type(time_evolution_params), intent(in) :: evo_B
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!      subroutine check_add_trans_hbd_MHD
 !!@endverbatim
 !
@@ -95,16 +97,18 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_addresses_trans_hbd_MHD(SGS_param)
+      subroutine set_addresses_trans_hbd_MHD(evo_B, SGS_param)
 !
+      use t_time_stepping_parameter
       use t_SGS_control_parameter
 !
+      type(time_evolution_params), intent(in) :: evo_B
       type(SGS_model_control_params), intent(in) :: SGS_param
 !
 !
       nvector_rj_2_xyz = 0
 !   magnetic field flag
-      if(       evo_magne%iflag_scheme .gt. id_no_evolution             &
+      if(       evo_B%iflag_scheme .gt. id_no_evolution                 &
      &     .or. fl_prop1%iflag_4_lorentz .gt. id_turn_OFF) then
         nvector_rj_2_xyz = nvector_rj_2_xyz + 1
         b_hbd_trns%i_magne = 3*nvector_rj_2_xyz - 2
@@ -115,12 +119,12 @@
         b_hbd_trns%i_current = 3*nvector_rj_2_xyz - 2
       end if
 !   magnetic diffusion flag
-      if(evo_magne%iflag_scheme .gt. id_turn_OFF) then
+      if(evo_B%iflag_scheme .gt. id_turn_OFF) then
         nvector_rj_2_xyz = nvector_rj_2_xyz + 1
         b_hbd_trns%i_b_diffuse = 3*nvector_rj_2_xyz - 2
       end if
 !    magnetic induction flag
-      if(evo_magne%iflag_scheme .gt. id_turn_OFF) then
+      if(evo_B%iflag_scheme .gt. id_turn_OFF) then
         nvector_rj_2_xyz = nvector_rj_2_xyz + 1
         b_hbd_trns%i_induction = 3*nvector_rj_2_xyz - 2
       end if
@@ -138,7 +142,7 @@
 !
       nvector_xyz_2_rj = 0
 !   induction flag
-      if(evo_magne%iflag_scheme .gt. id_no_evolution) then
+      if(evo_B%iflag_scheme .gt. id_no_evolution) then
         nvector_xyz_2_rj = nvector_xyz_2_rj + 1
         f_hbd_trns%i_vp_induct =  3*nvector_xyz_2_rj - 2
       end if

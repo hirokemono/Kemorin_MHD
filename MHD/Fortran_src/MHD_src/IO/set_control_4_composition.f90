@@ -9,7 +9,8 @@
 !!
 !!@verbatim
 !!      subroutine s_set_control_4_composition                          &
-!!     &         (node_bc_C_ctl, surf_bc_CF_ctl)
+!!     &         (evo_C, node_bc_C_ctl, surf_bc_CF_ctl)
+!!        type(time_evolution_params), intent(in) :: evo_C
 !!        type(ctl_array_c2r), intent(inout) :: node_bc_C_ctl
 !!        type(ctl_array_c2r), intent(inout) :: surf_bc_CF_ctl
 !!@endverbatim
@@ -27,24 +28,25 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_4_composition                            &
-     &         (node_bc_C_ctl, surf_bc_CF_ctl)
+     &         (evo_C, node_bc_C_ctl, surf_bc_CF_ctl)
 !
       use m_machine_parameter
       use calypso_mpi
-      use m_control_parameter
+      use t_time_stepping_parameter
       use t_read_control_arrays
       use m_bc_data_list
       use m_surf_data_list
       use set_node_group_types
       use set_surface_group_types
 !
+      type(time_evolution_params), intent(in) :: evo_C
       type(ctl_array_c2r), intent(inout) :: node_bc_C_ctl
       type(ctl_array_c2r), intent(inout) :: surf_bc_CF_ctl
 !
       integer (kind = kint) :: i
 !
 !
-      if (evo_comp%iflag_scheme .eq. id_no_evolution) then
+      if (evo_C%iflag_scheme .eq. id_no_evolution) then
         light_nod%num_bc =  0
         light_surf%num_bc = 0
       else

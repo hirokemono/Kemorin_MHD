@@ -3,7 +3,7 @@
 !
 !      Written by H. Matsui on Nov., 2009
 !
-!!      subroutine set_new_time_and_step(node, iphys, nod_fld)
+!!      subroutine set_new_time_and_step(iphys, nod_fld)
 !!      subroutine s_check_flexible_time_step(node, ele, fluid,         &
 !!     &          iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
 !!        type(node_data), intent(in) :: node
@@ -23,6 +23,7 @@
       use m_machine_parameter
       use m_t_step_parameter
       use m_t_int_parameter
+      use m_control_parameter
 !
       use t_flex_delta_t_data
 !
@@ -50,15 +51,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_new_time_and_step(node, iphys, nod_fld)
+      subroutine set_new_time_and_step(iphys, nod_fld)
 !
-      use t_geometry_data
       use t_phys_data
       use t_phys_address
 !
       use copy_field_data_4_dt_check
 !
-      type(node_data), intent(in) :: node
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -75,7 +74,7 @@
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 's_copy_field_data_for_dt_check'
-      call s_copy_field_data_for_dt_check(node, iphys, nod_fld)
+      call s_copy_field_data_for_dt_check(evo_vect_p, iphys, nod_fld)
 !
       end subroutine set_new_time_and_step
 !
@@ -105,8 +104,9 @@
 !
 !
       if( mod(istep_flex_to_max,itwo) .eq. izero) then
-!        call s_check_deltat_by_previous(node, iphys, nod_fld)
-        call s_check_deltat_by_prev_rms(node, ele, fluid,               &
+!        call s_check_deltat_by_previous                                &
+!     &     (evo_vect_p, node, iphys, nod_fld)
+        call s_check_deltat_by_prev_rms(evo_vect_p, node, ele, fluid,   &
      &      iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk, flex_data)
 !
         if(flex_data%d_ratio_allmax .gt. min_eps_to_expand_dt) then

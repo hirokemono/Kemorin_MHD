@@ -12,10 +12,11 @@
 !!     &          i_velo, i_field, i_SGS_flux, iak_diff_flux,           &
 !!     &          iflag_supg, num_int, ifilter_final, iflag_SGS_flux,   &
 !!     &          iflag_commute_flux, iflag_commute_field,              &
-!!     &          nod_comm, node, ele, surf, fluid, sf_grp, property,   &
-!!     &          Snod_bcs, Ssf_bcs, iphys_ele, ele_fld,                &
+!!     &          FEM_prm, nod_comm, node, ele, surf, fluid, sf_grp,    &
+!!     &          property, Snod_bcs, Ssf_bcs, iphys_ele, ele_fld,      &
 !!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,   &
 !!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -42,6 +43,7 @@
 !
       use m_precision
 !
+      use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_physical_property
       use t_geometry_data_MHD
@@ -76,8 +78,8 @@
      &          i_velo, i_field, i_SGS_flux, iak_diff_flux,             &
      &          iflag_supg, num_int, ifilter_final, iflag_SGS_flux,     &
      &          iflag_commute_flux, iflag_commute_field,                &
-     &          nod_comm, node, ele, surf, fluid, sf_grp, property,     &
-     &          Snod_bcs, Ssf_bcs, iphys_ele, ele_fld,                  &
+     &          FEM_prm, nod_comm, node, ele, surf, fluid, sf_grp,      &
+     &          property, Snod_bcs, Ssf_bcs, iphys_ele, ele_fld,        &
      &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,     &
      &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
@@ -97,6 +99,7 @@
       integer(kind=kint), intent(in) :: i_velo, i_field, i_SGS_flux
       integer(kind=kint), intent(in) :: iak_diff_flux
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -140,7 +143,7 @@
       end if
 !
       call cal_t_evo_4_scalar(iflag_supg, fluid%istack_ele_fld_smp,     &
-     &    FEM_prm1, mhd_fem_wk%mlump_fl, nod_comm,                      &
+     &    FEM_prm, mhd_fem_wk%mlump_fl, nod_comm,                       &
      &    node, ele, iphys_ele, ele_fld, jac_3d, rhs_tbl,               &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !

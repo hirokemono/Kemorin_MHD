@@ -6,7 +6,7 @@
 !        modified by H.Matsui on July, 2006
 !
 !!      subroutine velocity_evolution                                   &
-!!     &        (FEM_prm, SGS_par, nod_comm, node, ele, surf,           &
+!!     &        (evo_V, FEM_prm, SGS_par, nod_comm, node, ele, surf,    &
 !!     &         fluid, sf_grp, sf_grp_nod, fl_prop, cd_prop,           &
 !!     &         Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys, iphys_ele, &
 !!     &         ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,&
@@ -15,6 +15,7 @@
 !!     &         layer_tbl, Vmatrix, Pmatrix, wk_lsq, wk_sgs, wk_filter,&
 !!     &         mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                &
 !!     &         nod_fld, ele_fld, sgs_coefs)
+!!        type(time_evolution_params), intent(in) :: evo_V
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
@@ -61,6 +62,7 @@
 !
       use m_precision
 !
+      use t_time_stepping_parameter
       use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_comm_table
@@ -101,7 +103,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine velocity_evolution                                     &
-     &        (FEM_prm, SGS_par, nod_comm, node, ele, surf,             &
+     &        (evo_V, FEM_prm, SGS_par, nod_comm, node, ele, surf,      &
      &         fluid, sf_grp, sf_grp_nod, fl_prop, cd_prop,             &
      &         Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys, iphys_ele,   &
      &         ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,  &
@@ -122,6 +124,7 @@
       use int_norm_div_MHD
       use cal_rms_potentials
 !
+      type(time_evolution_params), intent(in) :: evo_V
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
@@ -199,7 +202,7 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1)  write(*,*) 's_cal_velocity_pre'
-      call s_cal_velocity_pre(FEM_prm,                                  &
+      call s_cal_velocity_pre(evo_V, FEM_prm,                           &
      &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
      &    nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,         &
      &    fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys,          &
@@ -232,7 +235,7 @@
      &      iphys%i_p_phi, iphys%i_press,  nod_fld%d_fld)
 !
         call cal_velocity_co                                            &
-     &     (FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
+     &     (evo_V, FEM_prm, SGS_par%model_p, SGS_par%commute_p,         &
      &      nod_comm, node, ele, surf, fluid,                           &
      &      sf_grp, sf_grp_nod, fl_prop, Vnod_bcs, Vsf_bcs, Psf_bcs,    &
      &      iphys, iphys_ele, ele_fld, ak_MHD,                          &
@@ -257,7 +260,7 @@
 !        call int_rms_div_v_monitor(iloop, node, ele, fluid,            &
 !     &      iphys, nod_fld, jac_3d_q, fem_wk, rel_correct)
 !
-        if ( abs(rel_correct) .lt. eps_4_velo ) go to 10
+        if (abs(rel_correct) .lt. FEM_prm%eps_4_stokes) go to 10
 !
       end do
  10   continue

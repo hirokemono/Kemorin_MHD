@@ -7,8 +7,11 @@
 !>@brief Set boundary conditions for MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine s_set_bc_sph_mhd(sph_params, sph_rj, radial_rj_grp, &
-!!     &         CTR_nod_grp_name, CTR_sf_grp_name)
+!!      subroutine s_set_bc_sph_mhd(evo_V, evo_B, evo_T, evo_C,         &
+!!     &          sph_params, sph_rj, radial_rj_grp,                    &
+!!     &          CTR_nod_grp_name, CTR_sf_grp_name)
+!!        type(time_evolution_params), intent(in) :: evo_V, evo_B
+!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(group_data), intent(in) :: radial_rj_grp
@@ -19,10 +22,10 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_control_parameter
       use m_boundary_condition_IDs
       use m_phys_labels
 !
+      use t_time_stepping_parameter
       use t_spheric_parameter
       use t_group_data
 !
@@ -36,8 +39,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_bc_sph_mhd(sph_params, sph_rj, radial_rj_grp,   &
-     &         CTR_nod_grp_name, CTR_sf_grp_name)
+      subroutine s_set_bc_sph_mhd(evo_V, evo_B, evo_T, evo_C,           &
+     &          sph_params, sph_rj, radial_rj_grp,                      &
+     &          CTR_nod_grp_name, CTR_sf_grp_name)
 !
       use m_phys_labels
       use m_boundary_params_sph_MHD
@@ -49,6 +53,8 @@
       use m_coef_fdm_to_center
       use cal_fdm_coefs_4_boundaries
 !
+      type(time_evolution_params), intent(in) :: evo_V, evo_B
+      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(group_data), intent(in) :: radial_rj_grp
@@ -58,7 +64,7 @@
       integer(kind = kint) :: kst, ked
 !
 !
-      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
+      if (evo_V%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_velo_sph'
         call set_sph_bc_velo_sph(sph_rj, radial_rj_grp,                 &
      &      sph_params%radius_ICB, sph_params%radius_CMB)
@@ -77,14 +83,14 @@
         call cal_fdm2_CMB_free_vt(sph_rj%radius_1d_rj_r(kst:ked))
       end if
 !
-      if (evo_temp%iflag_scheme .gt. id_no_evolution) then
+      if (evo_T%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_temp_sph'
         call set_sph_bc_temp_sph(sph_rj, radial_rj_grp)
         call cal_fdm_coefs_4_BCs                                       &
      &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, sph_bc_T)
       end if
 !
-      if (evo_magne%iflag_scheme .gt. id_no_evolution) then
+      if (evo_B%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_magne_sph'
         call set_sph_bc_magne_sph(sph_rj, radial_rj_grp,               &
      &      CTR_nod_grp_name, CTR_sf_grp_name)
@@ -92,7 +98,7 @@
      &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, sph_bc_B)
       end if
 !
-      if (evo_comp%iflag_scheme .gt. id_no_evolution) then
+      if (evo_C%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_composition_sph'
         call set_sph_bc_composition_sph(sph_rj, radial_rj_grp)
         call cal_fdm_coefs_4_BCs                                       &
@@ -126,30 +132,30 @@
         write(*,*) 'sph_bc_C%iflag_cmb', sph_bc_C%kr_out,               &
      &          sph_bc_C%iflag_cmb
 !
-        if (evo_temp%iflag_scheme .gt. id_no_evolution) then
+        if (evo_T%iflag_scheme .gt. id_no_evolution) then
           call check_sph_boundary_spectra(fhd_temp,                     &
      &        sph_rj%nidx_rj(2), sph_rj%idx_gl_1d_rj_j, sph_bc_T)
         end if
-        if (evo_comp%iflag_scheme .gt. id_no_evolution) then
+        if (evo_C%iflag_scheme .gt. id_no_evolution) then
           call check_sph_boundary_spectra(fhd_light,                    &
      &        sph_rj%nidx_rj(2), sph_rj%idx_gl_1d_rj_j, sph_bc_C)
         end if
       end if
 !
       if (iflag_debug .eq. iflag_full_msg) then
-        if (evo_velo%iflag_scheme .gt. id_no_evolution) then
+        if (evo_V%iflag_scheme .gt. id_no_evolution) then
           call check_fdm_coefs_4_BC2(fhd_velo,  sph_bc_U)
           call check_coef_fdm_free_ICB
           call check_coef_fdm_free_CMB
         end if
 !
-        if (evo_magne%iflag_scheme .gt. id_no_evolution) then
+        if (evo_B%iflag_scheme .gt. id_no_evolution) then
           call check_fdm_coefs_4_BC2(fhd_magne, sph_bc_B)
         end if
-        if (evo_temp%iflag_scheme .gt. id_no_evolution) then
+        if (evo_T%iflag_scheme .gt. id_no_evolution) then
           call check_fdm_coefs_4_BC2(fhd_temp,  sph_bc_T)
         end if
-        if (evo_comp%iflag_scheme .gt. id_no_evolution) then
+        if (evo_C%iflag_scheme .gt. id_no_evolution) then
           call check_fdm_coefs_4_BC2(fhd_light, sph_bc_C)
         end if
 !

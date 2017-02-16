@@ -7,7 +7,8 @@
 !>@brief Add fields in control list for MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine add_field_name_4_sph_mhd(fl_prop, field_ctl)
+!!      subroutine add_field_name_4_sph_mhd                             &
+!!     &         (evo_V, evo_B, evo_T, evo_C, fl_prop, field_ctl)
 !!      subroutine add_field_name_4_SGS(SGS_param, field_ctl)
 !!      subroutine add_field_name_dynamic_SGS                           &
 !!     &         (SGS_param, fl_prop, field_ctl)
@@ -20,8 +21,8 @@
 !
       use m_precision
 !
-      use m_control_parameter
       use m_phys_labels
+      use t_time_stepping_parameter
       use t_SGS_control_parameter
       use t_read_control_arrays
       use t_physical_property
@@ -34,39 +35,42 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_field_name_4_sph_mhd(fl_prop, field_ctl)
+      subroutine add_field_name_4_sph_mhd                               &
+     &         (evo_V, evo_B, evo_T, evo_C, fl_prop, field_ctl)
 !
       use add_nodal_fields_ctl
 !
+      type(time_evolution_params), intent(in) :: evo_V, evo_B
+      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !
 !   velocity flag
-      if(evo_velo%iflag_scheme .gt. id_no_evolution                     &
-     &     .or. evo_magne%iflag_scheme .gt. id_no_evolution) then
+      if(evo_V%iflag_scheme .gt. id_no_evolution                        &
+     &     .or. evo_B%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
       end if
 !   vorticity flag
-      if(evo_velo%iflag_scheme .gt. id_no_evolution) then
+      if(evo_V%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_ctl(fhd_vort, field_ctl)
       end if
 !   magnetic field flag
-      if(evo_magne%iflag_scheme .gt. id_no_evolution                    &
+      if(evo_B%iflag_scheme .gt. id_no_evolution                        &
      &     .or. fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
         call add_phys_name_ctl(fhd_magne, field_ctl)
         call add_phys_name_ctl(fhd_current, field_ctl)
       end if
 !
 !   gradient of temperature flag
-      if(evo_temp%iflag_scheme .gt. id_no_evolution) then
+      if(evo_T%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_ctl(fhd_grad_temp, field_ctl)
         call add_phys_name_ctl(fhd_part_temp, field_ctl)
         call add_phys_name_ctl(fhd_grad_par_temp, field_ctl)
       end if
 !
 !   gradient of dummy scalar flag
-      if(evo_comp%iflag_scheme .gt. id_no_evolution) then
+      if(evo_C%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_ctl(fhd_grad_composit, field_ctl)
         call add_phys_name_ctl(fhd_part_light, field_ctl)
         call add_phys_name_ctl(fhd_grad_par_light, field_ctl)
@@ -75,7 +79,7 @@
 !
 !
 !   advection flag
-      if(evo_velo%iflag_scheme .gt. id_no_evolution) then
+      if(evo_V%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_ctl(fhd_viscous, field_ctl)
         call add_phys_name_ctl(fhd_div_viscous, field_ctl)
         call add_phys_name_ctl(fhd_w_viscous, field_ctl)
@@ -117,7 +121,7 @@
       end if
 !
 !   induction flag
-      if(evo_magne%iflag_scheme .gt. id_no_evolution) then
+      if(evo_B%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_ctl(fhd_mag_diffuse, field_ctl)
 !
         call add_phys_name_ctl(fhd_mag_induct, field_ctl)
@@ -125,14 +129,14 @@
       end if
 !
 !   divergence of heat flux flag
-      if(evo_temp%iflag_scheme .gt. id_no_evolution) then
+      if(evo_T%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_ctl(fhd_thermal_diffusion, field_ctl)
         call add_phys_name_ctl(fhd_h_flux, field_ctl)
         call add_phys_name_ctl(fhd_heat_advect, field_ctl)
       end if
 !
 !   divergence of dummy scalar flag
-      if(evo_comp%iflag_scheme .gt. id_no_evolution) then
+      if(evo_C%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_ctl(fhd_c_diffuse, field_ctl)
         call add_phys_name_ctl(fhd_c_flux, field_ctl)
         call add_phys_name_ctl(fhd_composit_advect, field_ctl)

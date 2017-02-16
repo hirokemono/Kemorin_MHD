@@ -9,9 +9,11 @@
 !!        from control data
 !!
 !!@verbatim
-!!     subroutine s_set_control_4_vect_p(node_bc_A_ctl, surf_bc_AN_ctl)
+!!      subroutine s_set_control_4_vect_p                               &
+!!     &         (evo_A, node_bc_A_ctl, surf_bc_AN_ctl)
+!!       type(time_evolution_params), intent(in) :: evo_A
 !!       type(ctl_array_c2r), intent(inout) :: node_bc_A_ctl
-!!        type(ctl_array_c2r), intent(inout) :: surf_bc_AN_ctl
+!!       type(ctl_array_c2r), intent(inout) :: surf_bc_AN_ctl
 !!@endverbatim
 !
       module set_control_4_vect_p
@@ -26,11 +28,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_4_vect_p(node_bc_A_ctl, surf_bc_AN_ctl)
+      subroutine s_set_control_4_vect_p                                 &
+     &         (evo_A, node_bc_A_ctl, surf_bc_AN_ctl)
 !
       use m_machine_parameter
       use calypso_mpi
-      use m_control_parameter
+      use t_time_stepping_parameter
       use t_read_control_arrays
       use m_bc_data_list
       use m_surf_data_list
@@ -38,13 +41,14 @@
       use set_surface_group_types
       use skip_comment_f
 !
+      type(time_evolution_params), intent(in) :: evo_A
       type(ctl_array_c2r), intent(inout) :: node_bc_A_ctl
       type(ctl_array_c2r), intent(inout) :: surf_bc_AN_ctl
 !
       integer (kind = kint) :: i
 !
 !
-      if (evo_vect_p%iflag_scheme .eq. id_no_evolution) then
+      if (evo_A%iflag_scheme .eq. id_no_evolution) then
         a_potential_nod%num_bc =  0
         a_potential_surf%num_bc = 0
       else

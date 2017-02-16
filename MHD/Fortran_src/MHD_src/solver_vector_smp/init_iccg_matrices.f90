@@ -4,10 +4,26 @@
 !        programmed by H.Matsui
 !                                    on June 2005
 !
-!!      subroutine reset_MHD_aiccg_mat_type(node, ele, fluid,           &
+!!      subroutine reset_MHD_aiccg_mat_type                             &
+!!     &         (evo_V, evo_B, evo_A, evo_T, evo_C, node, ele, fluid,  &
 !!     &          djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,     &
 !!     &          mat_velo, mat_magne, mat_temp, mat_light,             &
 !!     &          mat_press, mat_magp)
+!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(field_geometry_data), intent(in) :: fluid
+!!        type(DJDS_ordering_table),  intent(in) :: djds_tbl
+!!        type(DJDS_ordering_table),  intent(in) :: djds_tbl_fl
+!!        type(DJDS_ordering_table),  intent(in) :: djds_tbl_l
+!!        type(DJDS_ordering_table),  intent(in) :: djds_tbl_fl_l
+!!        type(DJDS_MATRIX),  intent(inout) :: mat_velo
+!!        type(DJDS_MATRIX),  intent(inout) :: mat_magne
+!!        type(DJDS_MATRIX),  intent(inout) :: mat_temp
+!!  s      type(DJDS_MATRIX),  intent(inout) :: mat_light
+!!        type(DJDS_MATRIX),  intent(inout) :: mat_press
+!!        type(DJDS_MATRIX),  intent(inout) :: mat_magp
 !
       module init_iccg_matrices
 !
@@ -15,9 +31,9 @@
       use m_constants
 !
       use calypso_mpi
-      use m_control_parameter
       use m_geometry_constants
 !
+      use t_time_stepping_parameter
       use t_geometry_data
       use t_geometry_data_MHD
       use t_solver_djds
@@ -33,11 +49,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine reset_MHD_aiccg_mat_type(node, ele, fluid,             &
+      subroutine reset_MHD_aiccg_mat_type                               &
+     &         (evo_V, evo_B, evo_A, evo_T, evo_C, node, ele, fluid,    &
      &          djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,       &
      &          mat_velo, mat_magne, mat_temp, mat_light,               &
      &          mat_press, mat_magp)
 !
+      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
@@ -54,49 +73,49 @@
       type(DJDS_MATRIX),  intent(inout) :: mat_magp
 !
 !
-      if (evo_velo%iflag_scheme .gt. id_no_evolution) then
+      if (evo_V%iflag_scheme .gt. id_no_evolution) then
         call reset_aiccg_11_MHD(node, ele,                              &
      &      fluid%iele_start_fld, fluid%iele_end_fld,                   &
      &      num_t_linear, djds_tbl_fl_l, mat_press)
 !
-        if (evo_velo%iflag_scheme .ge. id_Crank_nicolson) then
+        if (evo_V%iflag_scheme .ge. id_Crank_nicolson) then
           call reset_aiccg_33_MHD(node, ele,                            &
      &        fluid%iele_start_fld, fluid%iele_end_fld,                 &
      &        ele%nnod_4_ele, djds_tbl_fl, mat_velo)
         end if
       end if
 !
-      if (evo_temp%iflag_scheme .ge. id_Crank_nicolson) then
+      if (evo_T%iflag_scheme .ge. id_Crank_nicolson) then
         call reset_aiccg_11_MHD(node, ele,                              &
      &      fluid%iele_start_fld, fluid%iele_end_fld,                   &
      &      ele%nnod_4_ele, djds_tbl_fl, mat_temp)
       end if
 !
-      if (evo_comp%iflag_scheme .ge. id_Crank_nicolson) then
+      if (evo_C%iflag_scheme .ge. id_Crank_nicolson) then
         call reset_aiccg_11_MHD(node, ele,                              &
      &      fluid%iele_start_fld, fluid%iele_end_fld,                   &
      &      ele%nnod_4_ele, djds_tbl_fl, mat_light)
       end if
 !
-      if (evo_magne%iflag_scheme .gt. id_no_evolution                   &
-     &     .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+      if     (evo_B%iflag_scheme .gt. id_no_evolution                   &
+     &   .or. evo_A%iflag_scheme .gt. id_no_evolution) then
         call reset_aiccg_11_MHD(node, ele, ione, ele%numele,            &
      &      num_t_linear, djds_tbl_l, mat_magp)
       end if
 !
-      if (evo_magne%iflag_scheme .gt. id_no_evolution) then
+      if (evo_B%iflag_scheme .gt. id_no_evolution) then
         call reset_aiccg_11_MHD(node, ele, ione, ele%numele,            &
      &      num_t_linear, djds_tbl_l, mat_magp)
-        if (evo_magne%iflag_scheme .ge. id_Crank_nicolson) then
+        if (evo_B%iflag_scheme .ge. id_Crank_nicolson) then
           call reset_aiccg_33_MHD(node, ele, ione, ele%numele,          &
      &        ele%nnod_4_ele, djds_tbl, mat_magne)
         end if
       end if
 !
-      if (evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+      if (evo_A%iflag_scheme .gt. id_no_evolution) then
         call reset_aiccg_11_MHD(node, ele, ione, ele%numele,            &
      &      num_t_linear, djds_tbl_l, mat_magp)
-        if (evo_vect_p%iflag_scheme .ge. id_Crank_nicolson) then
+        if (evo_A%iflag_scheme .ge. id_Crank_nicolson) then
           call reset_aiccg_vector_p(mat_magne)
         end if
       end if

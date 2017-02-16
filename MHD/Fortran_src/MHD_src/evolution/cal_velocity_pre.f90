@@ -6,7 +6,7 @@
 !        modieied by H. Matsui on Sep., 2005
 !
 !!      subroutine s_cal_velocity_pre                                   &
-!!     &         (FEM_prm, SGS_param, cmt_param, filter_param,          &
+!!     &         (evo_V, FEM_prm, SGS_param, cmt_param, filter_param,   &
 !!     &          nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod, &
 !!     &          fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs,         &
 !!     &          iphys, iphys_ele, ak_MHD, jac_3d_q, jac_3d_l,         &
@@ -17,13 +17,14 @@
 !!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,               &
 !!     &          nod_fld, ele_fld, sgs_coefs)
 !!      subroutine cal_velocity_co                                      &
-!!     &        (FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,    &
-!!     &         surf, fluid, sf_grp, sf_grp_nod, fl_prop,              &
-!!     &         Vnod_bcs, Vsf_bcs, Psf_bcs, iphys, iphys_ele, ele_fld, &
-!!     &         ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,&
-!!     &         rhs_tbl, FEM_elens, ifld_diff, diff_coefs,             &
-!!     &         Vmatrix, MG_vector, mhd_fem_wk, fem_wk, surf_wk,       &
-!!     &         f_l, f_nl, nod_fld)
+!!     &        (evo_V, FEM_prm, SGS_param, cmt_param,                  &
+!!     &         nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,  &
+!!     &         fl_prop, Vnod_bcs, Vsf_bcs, Psf_bcs, iphys,            &
+!!     &         iphys_ele, ele_fld, ak_MHD, jac_3d_q, jac_3d_l,        &
+!!     &         jac_sf_grp_q, jac_sf_grp_l, rhs_tbl, FEM_elens,        &
+!!     &         ifld_diff, diff_coefs, Vmatrix, MG_vector,             &
+!!     &         mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+!!        type(time_evolution_params), intent(in) :: evo_V
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -77,6 +78,7 @@
       use m_machine_parameter
       use m_t_int_parameter
 !
+      use t_time_stepping_parameter
       use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_comm_table
@@ -117,7 +119,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_cal_velocity_pre                                     &
-     &         (FEM_prm, SGS_param, cmt_param, filter_param,            &
+     &         (evo_V, FEM_prm, SGS_param, cmt_param, filter_param,     &
      &          nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,   &
      &          fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs,           &
      &          iphys, iphys_ele, ak_MHD, jac_3d_q, jac_3d_l,           &
@@ -143,6 +145,7 @@
       use evolve_by_lumped_crank
       use evolve_by_consist_crank
 !
+      type(time_evolution_params), intent(in) :: evo_V
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
@@ -230,11 +233,11 @@
 ! --------   loop for direction of velocity ---------------
 !
       if (fl_prop%coef_velo .gt. zero                                   &
-     &        .and. evo_velo%coef_exp.gt.zero) then
+     &        .and. evo_V%coef_exp.gt.zero) then
         call int_vol_vector_diffuse_ele(SGS_param%ifilter_final,        &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &      node, ele, nod_fld, jac_3d_q, rhs_tbl, FEM_elens,           &
-     &      diff_coefs, ifld_diff%i_velo, evo_velo%coef_exp,            &
+     &      diff_coefs, ifld_diff%i_velo, evo_V%coef_exp,               &
      &      ak_MHD%ak_d_velo, iphys%i_velo, fem_wk, f_l)
       end if
 !
@@ -286,38 +289,38 @@
      &    FEM_elens, diff_coefs, fem_wk, surf_wk, f_l, f_nl)
 !
 !
-      if (evo_velo%iflag_scheme .eq. id_explicit_euler) then
+      if (evo_V%iflag_scheme .eq. id_explicit_euler) then
         call cal_velo_pre_euler(FEM_prm, nod_comm, node, ele,           &
      &     fluid, fl_prop, iphys, iphys_ele, ele_fld,                   &
      &     jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
-      else if(evo_velo%iflag_scheme .eq. id_explicit_adams2) then
+      else if(evo_V%iflag_scheme .eq. id_explicit_adams2) then
         call cal_velo_pre_adams(FEM_prm, nod_comm, node, ele,           &
      &     fluid, fl_prop, iphys, iphys_ele, ele_fld,                   &
      &     jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
-      else if(evo_velo%iflag_scheme .eq. id_Crank_nicolson) then
+      else if(evo_V%iflag_scheme .eq. id_Crank_nicolson) then
         call cal_velo_pre_lumped_crank                                  &
      &     (cmt_param%iflag_c_velo, SGS_param%ifilter_final,            &
      &      ifld_diff%i_velo, ak_MHD%ak_d_velo,                         &
-     &      FEM_prm, nod_comm, node, ele, fluid, evo_velo, Vnod_bcs,    &
+     &      FEM_prm, nod_comm, node, ele, fluid, evo_V, Vnod_bcs,       &
      &      iphys, iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,    &
      &      diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,         &
      &      f_l, f_nl, nod_fld)
 !
-      else if(evo_velo%iflag_scheme .eq. id_Crank_nicolson_cmass) then 
+      else if(evo_V%iflag_scheme .eq. id_Crank_nicolson_cmass) then 
         call cal_velo_pre_consist_crank                                 &
      &     (cmt_param%iflag_c_velo, SGS_param%ifilter_final,            &
      &      iphys%i_velo, iphys%i_pre_mom, ifld_diff%i_velo,            &
-     &      ak_MHD%ak_d_velo, FEM_prm, node, ele, fluid, evo_velo,      &
+     &      ak_MHD%ak_d_velo, FEM_prm, node, ele, fluid, evo_V,         &
      &      fl_prop, Vnod_bcs, jac_3d_q, rhs_tbl, FEM_elens,            &
      &      diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,         &
      &      f_l, f_nl, nod_fld)
       end if
 !
       call set_boundary_velo(node, Vnod_bcs, iphys%i_velo, nod_fld)
-      call set_normal_velocity                                          &
-     &   (sf_grp, sf_grp_nod, Vsf_bcs%normal, iphys%i_velo, nod_fld)
+      call set_normal_velocity(evo_V, sf_grp, sf_grp_nod,               &
+     &    Vsf_bcs%normal, iphys%i_velo, nod_fld)
 !
       call vector_send_recv(iphys%i_velo, nod_comm, nod_fld)
 !
@@ -326,13 +329,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_velocity_co                                        &
-     &        (FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,      &
-     &         surf, fluid, sf_grp, sf_grp_nod, fl_prop,                &
-     &         Vnod_bcs, Vsf_bcs, Psf_bcs, iphys, iphys_ele, ele_fld,   &
-     &         ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,  &
-     &         rhs_tbl, FEM_elens, ifld_diff, diff_coefs,               &
-     &         Vmatrix, MG_vector, mhd_fem_wk, fem_wk, surf_wk,         &
-     &         f_l, f_nl, nod_fld)
+     &        (evo_V, FEM_prm, SGS_param, cmt_param,                    &
+     &         nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,    &
+     &         fl_prop, Vnod_bcs, Vsf_bcs, Psf_bcs, iphys,              &
+     &         iphys_ele, ele_fld, ak_MHD, jac_3d_q, jac_3d_l,          &
+     &         jac_sf_grp_q, jac_sf_grp_l, rhs_tbl, FEM_elens,          &
+     &         ifld_diff, diff_coefs, Vmatrix, MG_vector,               &
+     &         mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
       use nod_phys_send_recv
       use int_vol_solenoid_correct
@@ -345,6 +348,7 @@
       use cal_sol_vector_co_crank
       use implicit_vector_correct
 !
+      type(time_evolution_params), intent(in) :: evo_V
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
@@ -408,13 +412,14 @@
      & then
         call cal_velocity_co_imp                                        &
      &     (iphys%i_velo, ifld_diff%i_velo, ak_MHD%ak_d_velo,           &
-     &      FEM_prm, SGS_param, cmt_param, nod_comm, node, ele, fluid,  &
-     &      fl_prop, Vnod_bcs, iphys_ele, ele_fld,  jac_3d_q, rhs_tbl,  &
-     &      FEM_elens, diff_coefs, Vmatrix, MG_vector,                  &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      evo_V, FEM_prm, SGS_param, cmt_param,                       &
+     &      nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,              &
+     &      iphys_ele, ele_fld,  jac_3d_q, rhs_tbl, FEM_elens,          &
+     &      diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,         &
+     &      f_l, f_nl, nod_fld)
       else
         call cal_velocity_co_exp(iphys%i_velo, iphys%i_p_phi,           &
-     &      nod_comm, node, ele, fluid, jac_3d_q, rhs_tbl,              &
+     &      FEM_prm, nod_comm, node, ele, fluid, jac_3d_q, rhs_tbl,     &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
@@ -422,8 +427,8 @@
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_velo'
       call set_boundary_velo(node, Vnod_bcs, iphys%i_velo, nod_fld)
       if (iflag_debug.eq.1) write(*,*) 'set_normal_velocity'
-      call set_normal_velocity                                          &
-     &   (sf_grp, sf_grp_nod, Vsf_bcs%normal, iphys%i_velo, nod_fld)
+      call set_normal_velocity(evo_V, sf_grp, sf_grp_nod,               &
+     &    Vsf_bcs%normal, iphys%i_velo, nod_fld)
 !
       if(iflag_debug.eq.1) write(*,*) 'vector_send_recv(iphys%i_velo)'
       call vector_send_recv(iphys%i_velo, nod_comm, nod_fld)

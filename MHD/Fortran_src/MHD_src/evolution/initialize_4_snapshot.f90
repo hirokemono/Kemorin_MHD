@@ -4,8 +4,9 @@
 !      Written by H. Matsui
 !
 !!      subroutine init_analyzer_snap                                   &
-!!     &         (SGS_par, IO_bc, mesh, group, ele_mesh,                &
+!!     &         (FEM_prm, SGS_par, IO_bc, mesh, group, ele_mesh,       &
 !!     &          MHD_mesh, layer_tbl, iphys, nod_fld, t_IO, label_sim)
+!!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(mesh_geometry), intent(inout) :: mesh
@@ -20,9 +21,17 @@
       module initialize_4_snapshot
 !
       use m_precision
+      use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_phys_data
       use t_phys_address
+!
+      use t_mesh_data
+      use t_geometry_data_MHD
+      use t_layering_ele_list
+      use t_work_layer_correlate
+      use t_time_data_IO
+      use t_boundary_field_IO
 !
       implicit none
 !
@@ -33,7 +42,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine init_analyzer_snap                                     &
-     &         (SGS_par, IO_bc, mesh, group, ele_mesh,                  &
+     &         (FEM_prm, SGS_par, IO_bc, mesh, group, ele_mesh,         &
      &          MHD_mesh, layer_tbl, iphys, nod_fld, t_IO, label_sim)
 !
       use calypso_mpi
@@ -54,13 +63,6 @@
       use m_bc_data_velo
       use m_3d_filter_coef_MHD
       use m_SGS_model_coefs
-!
-      use t_mesh_data
-      use t_geometry_data_MHD
-      use t_layering_ele_list
-      use t_work_layer_correlate
-      use t_time_data_IO
-      use t_boundary_field_IO
 !
       use count_whole_num_element
 !
@@ -90,6 +92,7 @@
 !
       use nod_phys_send_recv
 !
+      type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(IO_boundary), intent(in) :: IO_bc
 !
@@ -103,17 +106,17 @@
       type(time_params_IO), intent(inout) :: t_IO
       character(len=kchara), intent(inout)   :: label_sim
 !
-integer(kind = kint) :: iflag
+      integer(kind = kint) :: iflag
 !
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*)' reordering_by_layers_snap'
       call reordering_by_layers_snap                                    &
-     &   (FEM_prm1, SGS_par, mesh%ele, group, MHD_mesh)
+     &   (FEM_prm, SGS_par, mesh%ele, group, MHD_mesh)
 !
       if (iflag_debug.eq.1) write(*,*)' set_layers'
       call set_layers                                                   &
-     &   (FEM_prm1, mesh%node, mesh%ele, group%ele_grp, MHD_mesh)
+     &   (FEM_prm, mesh%node, mesh%ele, group%ele_grp, MHD_mesh)
 !
       if (SGS_par%model_p%iflag_dynamic  .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*)' const_layers_4_dynamic'
@@ -201,6 +204,7 @@ integer(kind = kint) :: iflag
       call set_material_property                                        &
      &   (iphys, ref_param_T1%depth_top, ref_param_T1%depth_bottom)
       call init_ele_material_property(mesh%ele%numele,                  &
+     &    evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1)
       call define_sgs_components                                        &
      &   (mesh%node%numnod, mesh%ele%numele, SGS_par%model_p,           &
@@ -264,7 +268,8 @@ integer(kind = kint) :: iflag
 !
 !     ---------------------
 !
-      call deallocate_surf_bc_lists
+      call deallocate_surf_bc_lists                                    &
+     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp)
 !
       end subroutine init_analyzer_snap
 !

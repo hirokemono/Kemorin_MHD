@@ -22,8 +22,8 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_control_parameter
       use m_phys_labels
+      use t_time_stepping_parameter
       use t_read_control_arrays
       use t_physical_property
       use add_nodal_fields_ctl
@@ -42,6 +42,7 @@
       subroutine add_field_name_4_mhd                                   &
      &         (fl_prop, ref_param_T, ref_param_C, field_ctl)
 !
+      use m_control_parameter
       use t_reference_scalar_param
 !
       type(fluid_property), intent(in) :: fl_prop
@@ -52,7 +53,8 @@
 !    set work fields for potentials
 !
       if (iflag_debug.eq.1) write(*,*) 'add_work_area_4_potentials'
-      call add_work_area_4_potentials(field_ctl)
+      call add_work_area_4_potentials                                   &
+     &   (evo_velo, evo_magne, evo_vect_p, field_ctl)
 !
 !    set work fields for reference temperature
 !
@@ -63,12 +65,16 @@
 !     set work fields for adams-bashforth
 !
       if (iflag_debug.eq.1) write(*,*) 'add_data_4_previous_step'
-      call add_data_4_previous_step(field_ctl)
+      call add_data_4_previous_step                                     &
+     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
+     &    field_ctl)
 !
 !     set work fields for evolution check
 !
       if (iflag_debug.eq.1) write(*,*) 'add_data_4_check_step'
-      call add_data_4_check_step(field_ctl)
+      call add_data_4_check_step                                        &
+     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
+     &    field_ctl)
 !
       end subroutine add_field_name_4_mhd
 !
@@ -131,17 +137,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_work_area_4_potentials(field_ctl)
+      subroutine add_work_area_4_potentials                             &
+     &         (evo_V, evo_B, evo_A, field_ctl)
 !
+      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !    set work fields for potentials
 !
-      if(evo_velo%iflag_scheme .gt. id_no_evolution) then
+      if(evo_V%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_ctl(fhd_press_work, field_ctl)
       end if
-      if (evo_magne%iflag_scheme .gt. id_no_evolution                   &
-     &     .or. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+      if (evo_B%iflag_scheme .gt. id_no_evolution                       &
+     &   .or. evo_A%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_ctl(fhd_m_potential_work, field_ctl)
       end if
 !
@@ -149,26 +157,29 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_data_4_previous_step(field_ctl)
+      subroutine add_data_4_previous_step                               &
+     &         (evo_V, evo_B, evo_A, evo_T, evo_C, field_ctl)
 !
+      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !
-      if(evo_velo%iflag_scheme .ne. id_no_evolution) then
+      if(evo_V%iflag_scheme .ne. id_no_evolution) then
         call add_phys_name_ctl(fhd_pre_mom, field_ctl)
         call add_phys_name_ctl(fhd_pre_press, field_ctl)
 !
         call add_phys_name_ctl(fhd_forces, field_ctl)
         call add_phys_name_ctl(fhd_div_forces, field_ctl)
       end if
-      if      (evo_magne%iflag_scheme .ne. id_no_evolution              &
-     &    .or. evo_vect_p%iflag_scheme .ne. id_no_evolution) then
+      if      (evo_B%iflag_scheme .ne. id_no_evolution                  &
+     &    .or. evo_A%iflag_scheme .ne. id_no_evolution) then
         call add_phys_name_ctl(fhd_pre_uxb, field_ctl)
       end if
-      if(evo_temp%iflag_scheme .ne.  id_no_evolution) then
+      if(evo_T%iflag_scheme .ne.  id_no_evolution) then
         call add_phys_name_ctl(fhd_pre_heat, field_ctl)
       end if
-      if(evo_comp%iflag_scheme .ne.  id_no_evolution) then
+      if(evo_C%iflag_scheme .ne.  id_no_evolution) then
         call add_phys_name_ctl(fhd_pre_composit, field_ctl)
       end if
 !
@@ -176,40 +187,43 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_data_4_check_step(field_ctl)
+      subroutine add_data_4_check_step                                  &
+     &         (evo_V, evo_B, evo_A, evo_T, evo_C, field_ctl)
 !
+      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !
-      if(evo_velo%iflag_scheme .ne. id_no_evolution) then
+      if(evo_V%iflag_scheme .ne. id_no_evolution) then
         call add_phys_name_ctl(fhd_chk_mom, field_ctl)
         call add_phys_name_ctl(fhd_chk_press, field_ctl)
       end if
-      if(evo_magne%iflag_scheme .ne. id_no_evolution                    &
-     &     .or. evo_vect_p%iflag_scheme .ne. id_no_evolution) then
+      if(evo_B%iflag_scheme .ne. id_no_evolution                        &
+     &     .or. evo_A%iflag_scheme .ne. id_no_evolution) then
         call add_phys_name_ctl(fhd_chk_uxb, field_ctl)
         call add_phys_name_ctl(fhd_chk_potential, field_ctl)
       end if
-      if(evo_temp%iflag_scheme .ne.  id_no_evolution) then
+      if(evo_T%iflag_scheme .ne.  id_no_evolution) then
         call add_phys_name_ctl(fhd_chk_heat, field_ctl)
       end if
-      if(evo_comp%iflag_scheme .ne.  id_no_evolution) then
+      if(evo_C%iflag_scheme .ne.  id_no_evolution) then
         call add_phys_name_ctl(fhd_chk_composit, field_ctl)
       end if
 !
-!      if(evo_velo%iflag_scheme .ge. id_Crank_nicolson) then
+!      if(evo_V%iflag_scheme .ge. id_Crank_nicolson) then
 !        call add_phys_name_ctl(fhd_chk_mom_2, field_ctl)
 !        call add_phys_name_ctl(fhd_chk_press_2, field_ctl)
 !      end if
-!      if(evo_magne%iflag_scheme .ge. id_Crank_nicolson                 &
-!     &     .or. evo_vect_p%iflag_scheme .ge. id_Crank_nicolson) then
+!      if     (evo_B%iflag_scheme .ge. id_Crank_nicolson                 &
+!     &   .or. evo_A%iflag_scheme .ge. id_Crank_nicolson) then
 !        call add_phys_name_ctl(fhd_chk_uxb_2, field_ctl)
 !        call add_phys_name_ctl(fhd_chk_potential_2, field_ctl)
 !      end if
-!      if(evo_temp%iflag_scheme .ge. id_Crank_nicolson) then
+!      if(evo_T%iflag_scheme .ge. id_Crank_nicolson) then
 !        call add_phys_name_ctl(fhd_chk_heat_2, field_ctl)
 !      end if
-!      if(evo_comp%iflag_scheme .ge. id_Crank_nicolson) then
+!      if(evo_C%iflag_scheme .ge. id_Crank_nicolson) then
 !        call add_phys_name_ctl(fhd_chk_composit_2, field_ctl)
 !      end if
 !

@@ -5,13 +5,14 @@
 !        modified by H.Matsui on AUg., 2007
 !
 !!      subroutine int_vol_sgs_induction                                &
-!!     &         (nod_comm, node, ele, conduct, iphys, jac_3d,          &
+!!     &         (FEM_prm, nod_comm, node, ele, conduct, iphys, jac_3d, &
 !!     &          rhs_tbl, mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !!      subroutine cal_sgs_uxb_2_monitor(icomp_sgs_uxb, ie_dvx,         &
-!!     &          SGS_param, filter_param, nod_comm, node, ele, conduct,&
-!!     &          cd_prop, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl,  &
-!!     &          FEM_elen, filtering, sgs_coefs, wk_filter,            &
+!!     &          FEM_prm, SGS_param, filter_param, nod_comm, node, ele,&
+!!     &          conduct, cd_prop, iphys, iphys_ele, ele_fld, jac_3d,  &
+!!     &          rhs_tbl, FEM_elen, filtering, sgs_coefs, wk_filter,   &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(SGS_filtering_params), intent(in) :: filter_param
 !!        type(communication_table), intent(in) :: nod_comm
@@ -38,9 +39,9 @@
       use m_precision
       use m_machine_parameter
 !
-      use m_control_parameter
       use m_phys_constants
 !
+      use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_physical_property
       use t_geometry_data_MHD
@@ -65,13 +66,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_sgs_induction                                  &
-     &         (nod_comm, node, ele, conduct, iphys, jac_3d,            &
+     &         (FEM_prm, nod_comm, node, ele, conduct, iphys, jac_3d,   &
      &          rhs_tbl, mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !
       use int_vol_vect_differences
       use cal_ff_smp_to_ffs
       use nod_phys_send_recv
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -89,11 +91,11 @@
       call reset_ff_smp(node%max_nod_smp, f_nl)
 !
       call int_vol_rotation(node, ele, jac_3d, rhs_tbl, nod_fld,        &
-     &    conduct%istack_ele_fld_smp, FEM_prm1%npoint_t_evo_int,        &
+     &    conduct%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &    iphys%i_SGS_vp_induct, fem_wk, f_nl)
 !
 !      call cal_multi_pass_4_vector_ff                                  &
-!     &   (ele%istack_ele_smp, FEM_prm1, m1_lump, nod_comm, node, ele,  &
+!     &   (ele%istack_ele_smp, FEM_prm, m1_lump, nod_comm, node, ele,   &
 !     &    jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !      call cal_ff_2_vector(node%numnod, node%istack_nod_smp,           &
 !     &    f_l%ff, mhd_fem_wk%mlump_cd%ml, nod_fld%ntot_phys,           &
@@ -110,9 +112,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_sgs_uxb_2_monitor(icomp_sgs_uxb, ie_dvx,           &
-     &          SGS_param, filter_param, nod_comm, node, ele, conduct,  &
-     &          cd_prop, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl,    &
-     &          FEM_elen, filtering, sgs_coefs, wk_filter,              &
+     &          FEM_prm, SGS_param, filter_param, nod_comm, node, ele,  &
+     &          conduct, cd_prop, iphys, iphys_ele, ele_fld, jac_3d,    &
+     &          rhs_tbl, FEM_elen, filtering, sgs_coefs, wk_filter,     &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use cal_sgs_fluxes
@@ -122,6 +124,7 @@
 !
       integer(kind = kint), intent(in) :: icomp_sgs_uxb, ie_dvx
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(SGS_filtering_params), intent(in) :: filter_param
       type(communication_table), intent(in) :: nod_comm
@@ -147,7 +150,7 @@
 !
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
       call cal_sgs_uxb_2_evo(icomp_sgs_uxb, ie_dvx,                     &
-     &    FEM_prm1, SGS_param, filter_param, nod_comm, node, ele,       &
+     &    FEM_prm, SGS_param, filter_param, nod_comm, node, ele,        &
      &    conduct, cd_prop, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, &
      &    FEM_elen, filtering, sgs_coefs, wk_filter,                    &
      &    mhd_fem_wk, fem_wk, f_nl, nod_fld)

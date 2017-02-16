@@ -8,7 +8,10 @@
 !> @brief set normalizatios for MHD simulation from control data
 !!
 !!@verbatim
-!!     subroutine s_set_control_4_normalize(dless_ctl, eqs_ctl)
+!      subroutine s_set_control_4_normalize                            &
+!!     &         (evo_V, evo_B, evo_A, evo_T, evo_C, dless_ctl, eqs_ctl)
+!!      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!      type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!       type(dimless_control), intent(inout) :: dless_ctl
 !!       type(equations_control), intent(inout) :: eqs_ctl
 !!@endverbatim
@@ -20,6 +23,7 @@
       use calypso_mpi
       use m_error_IDs
 !
+      use t_time_stepping_parameter
       use t_normalize_parameter
       use t_ctl_data_mhd_normalize
 !
@@ -36,12 +40,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_4_normalize(dless_ctl, eqs_ctl)
+      subroutine s_set_control_4_normalize                              &
+     &         (evo_V, evo_B, evo_A, evo_T, evo_C, dless_ctl, eqs_ctl)
 !
-      use m_control_parameter
       use m_physical_property
       use m_normalize_parameter
 !
+      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(dimless_control), intent(inout) :: dless_ctl
       type(equations_control), intent(inout) :: eqs_ctl
 !
@@ -62,7 +68,7 @@
 !
 !    set normalization for thermal
 !
-      if (evo_temp%iflag_scheme .eq. id_no_evolution) then
+      if (evo_T%iflag_scheme .eq. id_no_evolution) then
         MHD_coef_list%coefs_termal%num =    0
         MHD_coef_list%coefs_t_diffuse%num = 0
         MHD_coef_list%coefs_h_source%num =  0
@@ -72,7 +78,7 @@
 !
 !    set coefficients for momentum equation
 !
-      if (evo_velo%iflag_scheme .eq. id_no_evolution) then
+      if (evo_V%iflag_scheme .eq. id_no_evolution) then
         MHD_coef_list%coefs_momentum%num =  0
         MHD_coef_list%coefs_pressure%num =  0
         MHD_coef_list%coefs_v_diffuse%num = 0
@@ -87,19 +93,19 @@
 !
 !    coefficients for inducition equation
 !
-      if (evo_magne%iflag_scheme .eq. id_no_evolution                   &
-     &  .and. evo_vect_p%iflag_scheme .eq. id_no_evolution) then
+      if     (evo_B%iflag_scheme .eq. id_no_evolution                   &
+     &  .and. evo_A%iflag_scheme .eq. id_no_evolution) then
         MHD_coef_list%coefs_magnetic%num =  0
         MHD_coef_list%coefs_magne_p%num =   0
         MHD_coef_list%coefs_m_diffuse%num = 0
         MHD_coef_list%coefs_induction%num = 0
       else
-        call set_coefs_4_induction_eq(eqs_ctl%induct_ctl)
+        call set_coefs_4_induction_eq(evo_A, eqs_ctl%induct_ctl)
       end if
 !
 !    set normalization for composition
 !
-      if (evo_comp%iflag_scheme .eq. id_no_evolution) then
+      if (evo_C%iflag_scheme .eq. id_no_evolution) then
         MHD_coef_list%coefs_composition%num = 0
         MHD_coef_list%coefs_c_diffuse%num =   0
         MHD_coef_list%coefs_c_source%num =    0
@@ -114,7 +120,6 @@
 !
       subroutine set_dimensionless_numbers(dless_ctl)
 !
-      use m_control_parameter
       use m_normalize_parameter
 !
       type(dimless_control), intent(inout) :: dless_ctl
@@ -137,7 +142,6 @@
 !
       subroutine set_coefs_4_thermal_eq(heat_ctl)
 !
-      use m_control_parameter
       use m_normalize_parameter
       use t_ctl_data_termal_norm
 !
@@ -177,7 +181,6 @@
 !
       subroutine set_coefs_4_momentum_eq(fl_prop, mom_ctl)
 !
-      use m_control_parameter
       use m_normalize_parameter
       use t_ctl_data_momentum_norm
       use t_physical_property
@@ -278,12 +281,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_coefs_4_induction_eq(induct_ctl)
+      subroutine set_coefs_4_induction_eq(evo_A, induct_ctl)
 !
-      use m_control_parameter
       use m_normalize_parameter
       use t_ctl_data_induct_norm
 !
+      type(time_evolution_params), intent(in) :: evo_A
       type(induction_equation_control), intent(inout) :: induct_ctl
 !
 !
@@ -297,7 +300,7 @@
       end if
 !
       if (induct_ctl%coef_4_mag_potential%icou .eq. 0                   &
-     &       .and. evo_vect_p%iflag_scheme .gt. id_no_evolution) then
+     &       .and. evo_A%iflag_scheme .gt. id_no_evolution) then
         e_message =                                                     &
      &     'Set coefficients for integration for magnetic potential'
         call calypso_MPI_abort(ierr_dless, e_message)
