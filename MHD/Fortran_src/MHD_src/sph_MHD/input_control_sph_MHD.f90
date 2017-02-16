@@ -282,6 +282,7 @@
       subroutine select_make_SPH_mesh(sph, comms_sph, sph_grps,         &
      &          mesh, group, ele_mesh, mesh_file)
 !
+      use m_error_IDs
       use m_spheric_global_ranks
       use parallel_load_data_4_sph
       use parallel_gen_sph_grids
