@@ -47,6 +47,9 @@
 !
 !>      Structure for fluid property
       type fluid_property
+!>        Coefficient of explicit term
+        real(kind = kreal) :: coef_exp = half
+!
 !>        coefficient for time evolution of velocity and advection
         real  (kind=kreal) :: coef_velo
 !>       coefficient for advection (-coef_velo)
@@ -95,6 +98,9 @@
 !
 !>      Structure for manetic property
       type conductive_property
+!>        Coefficient of explicit term
+        real(kind = kreal) :: coef_exp = half
+!
 !>       coefficient for time evolution of magnetic field
         real  (kind=kreal) :: coef_magne
 !>       coefficient for time electric potentia
@@ -115,6 +121,9 @@
 !
 !>      Structure for thermal property
       type scalar_property
+!>        Coefficient of explicit term
+        real(kind = kreal) :: coef_exp = half
+!
 !>       coefficient for time evolution of temperature and heat flux
         real  (kind=kreal) :: coef_advect
 !>       coefficient for heat flux (-coef_advect)

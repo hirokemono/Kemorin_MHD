@@ -180,11 +180,11 @@
       type(time_evolution_params), intent(inout) :: evo_T, evo_C
 !
 !
-      call set_implicit_coefs(mevo_ctl%coef_imp_v_ctl, evo_V)
-      call set_implicit_coefs(mevo_ctl%coef_imp_t_ctl, evo_T)
-      call set_implicit_coefs(mevo_ctl%coef_imp_b_ctl, evo_B)
-      call set_implicit_coefs(mevo_ctl%coef_imp_b_ctl, evo_A)
-      call set_implicit_coefs(mevo_ctl%coef_imp_c_ctl, evo_C)
+      call set_implicit_coefs(mevo_ctl%coef_imp_v_ctl, evo_V, fl_prop1%coef_exp)
+      call set_implicit_coefs(mevo_ctl%coef_imp_t_ctl, evo_T, ht_prop1%coef_exp)
+      call set_implicit_coefs(mevo_ctl%coef_imp_b_ctl, evo_B, cd_prop1%coef_exp)
+      call set_implicit_coefs(mevo_ctl%coef_imp_b_ctl, evo_A, cd_prop1%coef_exp)
+      call set_implicit_coefs(mevo_ctl%coef_imp_c_ctl, evo_C, cp_prop1%coef_exp)
 !
       if (iflag_debug .ge. iflag_routine_msg) then
         write(*,*) 'coef_imp_v ', evo_V%coef_imp

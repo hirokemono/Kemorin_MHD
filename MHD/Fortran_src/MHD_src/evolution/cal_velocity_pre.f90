@@ -233,11 +233,11 @@
 ! --------   loop for direction of velocity ---------------
 !
       if (fl_prop%coef_velo .gt. zero                                   &
-     &        .and. evo_V%coef_exp.gt.zero) then
+     &        .and. fl_prop%coef_exp.gt.zero) then
         call int_vol_vector_diffuse_ele(SGS_param%ifilter_final,        &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &      node, ele, nod_fld, jac_3d_q, rhs_tbl, FEM_elens,           &
-     &      diff_coefs, ifld_diff%i_velo, evo_V%coef_exp,               &
+     &      diff_coefs, ifld_diff%i_velo, fl_prop%coef_exp,             &
      &      ak_MHD%ak_d_velo, iphys%i_velo, fem_wk, f_l)
       end if
 !

@@ -101,7 +101,7 @@
      &      depth_top, depth_bottom)
 !
         call set_implicit_4_inf_viscous(fl_prop%coef_velo,              &
-     &      evo_V%coef_imp, evo_V%coef_exp)
+     &      evo_V%coef_imp, fl_prop%coef_exp)
 !
         fl_prop%acoef_press = one / fl_prop%coef_press
         fl_prop%coef_nega_v = - fl_prop%coef_velo
@@ -202,11 +202,11 @@
 !
       if(evo_B%iflag_scheme .gt. id_no_evolution) then
         call set_implicit_4_inf_viscous(cd_prop%coef_magne,            &
-     &      evo_B%coef_imp, evo_B%coef_exp)
+     &      evo_B%coef_imp, cd_prop%coef_exp)
       end if
       if(evo_A%iflag_scheme .gt. id_no_evolution) then
         call set_implicit_4_inf_viscous(cd_prop%coef_magne,            &
-     &      evo_A%coef_imp, evo_A%coef_exp)
+     &      evo_A%coef_imp, cd_prop%coef_exp)
       end if
 !
 !  Check
@@ -264,7 +264,7 @@
      &      depth_top, depth_bottom)
 !
         call set_implicit_4_inf_viscous(ht_prop%coef_advect,            &
-     &      evo_T%coef_imp, evo_T%coef_exp)
+     &      evo_T%coef_imp, ht_prop%coef_exp)
 !
         ht_prop%coef_nega_adv = - ht_prop%coef_advect
       end if
@@ -317,7 +317,7 @@
      &     depth_top, depth_bottom)
 !
         call set_implicit_4_inf_viscous(cp_prop%coef_advect,            &
-     &      evo_C%coef_imp, evo_C%coef_exp)
+     &      evo_C%coef_imp, cp_prop%coef_exp)
 !
         cp_prop%coef_nega_adv = - cp_prop%coef_advect
       end if

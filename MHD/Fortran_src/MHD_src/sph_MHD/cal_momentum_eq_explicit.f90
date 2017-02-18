@@ -64,27 +64,27 @@
 !$omp parallel
       if(evo_V%iflag_scheme .gt.     id_no_evolution) then
         call cal_vorticity_eq_adams(ipol, itor,                         &
-     &      sph_bc_U%kr_in, sph_bc_U%kr_out, evo_V%coef_exp,            &
+     &      sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_exp,          &
      &      rj_fld%n_point,sph_rj%nidx_rj(2), rj_fld%ntot_phys,         &
      &      rj_fld%d_fld)
       end if
 !
       if(evo_B%iflag_scheme .gt.    id_no_evolution) then
-        call cal_diff_induction_MHD_adams(evo_B%coef_exp,               &
+        call cal_diff_induction_MHD_adams(cd_prop1%coef_exp,            &
      &      ipol, itor, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
       if(evo_T%iflag_scheme .gt.     id_no_evolution) then
         call sel_scalar_diff_adv_src_adams                              &
      &     (sph_bc_T%kr_in, sph_bc_T%kr_out,                            &
      &      ipol%i_t_diffuse, ipol%i_h_advect, ipol%i_heat_source,      &
-     &      ipol%i_temp, ipol%i_pre_heat, evo_T%coef_exp,               &
+     &      ipol%i_temp, ipol%i_pre_heat, ht_prop%coef_exp,             &
      &      ht_prop%coef_source, sph_rj, rj_fld)
       end if
       if(evo_C%iflag_scheme .gt. id_no_evolution) then
         call sel_scalar_diff_adv_src_adams                              &
      &     (sph_bc_C%kr_in, sph_bc_C%kr_out,                            &
      &      ipol%i_c_diffuse, ipol%i_c_advect, ipol%i_light_source,     &
-     &      ipol%i_light, ipol%i_pre_composit, evo_C%coef_exp,          &
+     &      ipol%i_light, ipol%i_pre_composit, cp_prop%coef_exp,        &
      &      cp_prop%coef_source, sph_rj, rj_fld)
       end if
 !$omp end parallel
@@ -113,7 +113,7 @@
 !$omp parallel
       if(evo_V%iflag_scheme .gt.     id_no_evolution) then
         call cal_vorticity_eq_euler(ipol, itor,                         &
-     &      sph_bc_U%kr_in, sph_bc_U%kr_out, evo_V%coef_exp,            &
+     &      sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_exp,          &
      &      rj_fld%n_point, sph_rj%nidx_rj(2), rj_fld%ntot_phys,        &
      &      rj_fld%d_fld)
       end if
@@ -122,18 +122,18 @@
         call sel_scalar_diff_adv_src_euler                              &
      &     (sph_bc_T%kr_in, sph_bc_T%kr_out,                            &
      &      ipol%i_t_diffuse, ipol%i_h_advect, ipol%i_heat_source,      &
-     &      ipol%i_temp, evo_T%coef_exp, ht_prop%coef_advect,           &
+     &      ipol%i_temp, ht_prop%coef_exp, ht_prop%coef_advect,         &
      &      ht_prop%coef_source, sph_rj, rj_fld)
       end if
       if(evo_B%iflag_scheme .gt.    id_no_evolution) then
-        call cal_diff_induction_MHD_euler(evo_B%coef_exp,               &
+        call cal_diff_induction_MHD_euler(cd_prop1%coef_exp,            &
      &      ipol, itor, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
       if(evo_C%iflag_scheme .gt. id_no_evolution) then
         call sel_scalar_diff_adv_src_euler                              &
      &     (sph_bc_C%kr_in, sph_bc_C%kr_out,                            &
      &      ipol%i_c_diffuse, ipol%i_c_advect, ipol%i_light_source,     &
-     &      ipol%i_light, evo_C%coef_exp, cp_prop%coef_advect,          &
+     &      ipol%i_light, cp_prop%coef_exp, cp_prop%coef_advect,        &
      &      cp_prop%coef_source, sph_rj, rj_fld)
       end if
 !

@@ -34,8 +34,6 @@
         integer (kind=kint) :: iflag_scheme = id_no_evolution
 !>        Coefficient of implicit term
         real(kind = kreal) :: coef_imp = half
-!>        Coefficient of explicit term
-        real(kind = kreal) :: coef_exp = half
       end type time_evolution_params
 !
 ! -----------------------------------------------------------------------
@@ -44,12 +42,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_implicit_coefs(coef_imp_ctl, evo)
+      subroutine set_implicit_coefs(coef_imp_ctl, evo, coef_exp)
 !
       use t_control_elements
 !
       type(read_real_item), intent(in) :: coef_imp_ctl
       type(time_evolution_params), intent(inout) :: evo
+      real(kind = kreal), intent(inout) :: coef_exp
 !
 !
         if(evo%iflag_scheme .ge. id_Crank_nicolson) then
@@ -61,7 +60,7 @@
         else
           evo%coef_imp = 0.0d0
         end if
-        evo%coef_exp = 1.0d0 - evo%coef_imp
+        coef_exp = 1.0d0 - evo%coef_imp
 !
       end subroutine set_implicit_coefs
 !
