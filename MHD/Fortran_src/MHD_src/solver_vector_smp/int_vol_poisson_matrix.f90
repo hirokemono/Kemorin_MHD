@@ -15,13 +15,17 @@
 !!     &          mat_press, mat_magp)
 !!      subroutine int_MHD_crank_matrices                               &
 !!     &         (evo_V, evo_B, evo_A, evo_T, evo_C,                    &
-!!     &          num_int, ifilter_final, mesh, ak_MHD, jac_3d, rhs_tbl,&
-!!     &          MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,              &
+!!     &          num_int, ifilter_final, mesh,                         &
+!!     &          fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD, jac_3d,   &
+!!     &          rhs_tbl, MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,     &
 !!     &          FEM_elens, ifld_diff, diff_coefs, fem_wk,             &
 !!     &          mat_velo, mat_magne, mat_temp, mat_light)
 !!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(mesh_geometry), intent(in) :: mesh
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in) :: cd_prop
+!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -45,6 +49,7 @@
       use m_phys_constants
 !
       use t_time_stepping_parameter
+      use t_physical_property
       use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_mesh_data
@@ -118,8 +123,9 @@
 !
       subroutine int_MHD_crank_matrices                                 &
      &         (evo_V, evo_B, evo_A, evo_T, evo_C,                      &
-     &          num_int, ifilter_final, mesh, ak_MHD, jac_3d, rhs_tbl,  &
-     &          MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,                &
+     &          num_int, ifilter_final, mesh,                           &
+     &          fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD, jac_3d,     &
+     &          rhs_tbl, MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,       &
      &          FEM_elens, ifld_diff, diff_coefs, fem_wk,               &
      &          mat_velo, mat_magne, mat_temp, mat_light)
 !
@@ -129,6 +135,9 @@
       type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(mesh_geometry), intent(in) :: mesh
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -150,7 +159,7 @@
         call sel_int_diffuse3_crank_mat(mesh%ele, jac_3d,               &
      &      rhs_tbl, MG_mat_fl_q, FEM_elens, num_int,                   &
      &      diff_coefs%num_field, ifld_diff%i_velo, diff_coefs%ak,      &
-     &      evo_V%coef_imp, ak_MHD%ak_d_velo, ifilter_final,            &
+     &      fl_prop%coef_imp, ak_MHD%ak_d_velo, ifilter_final,          &
      &      fem_wk, mat_velo)
       end if
 !
@@ -158,7 +167,7 @@
         call sel_int_diffuse3_crank_mat(mesh%ele, jac_3d,               &
      &      rhs_tbl, MG_mat_full_cd_q, FEM_elens, num_int,              &
      &      diff_coefs%num_field, ifld_diff%i_magne, diff_coefs%ak,     &
-     &      evo_B%coef_imp, ak_MHD%ak_d_magne, ifilter_final,           &
+     &      cd_prop%coef_imp, ak_MHD%ak_d_magne, ifilter_final,         &
      &      fem_wk, mat_magne)
       end if
 !
@@ -166,7 +175,7 @@
         call sel_int_diffuse3_crank_mat(mesh%ele, jac_3d,               &
      &      rhs_tbl, MG_mat_q, FEM_elens, num_int,                      &
      &      diff_coefs%num_field, ifld_diff%i_magne, diff_coefs%ak,     &
-     &      evo_A%coef_imp, ak_MHD%ak_d_magne, ifilter_final,           &
+     &      cd_prop%coef_imp, ak_MHD%ak_d_magne, ifilter_final,         &
      &      fem_wk, mat_magne)
       end if
 !
@@ -174,7 +183,7 @@
         call choose_int_diffuse1_crank_mat(mesh%ele, jac_3d,            &
      &      rhs_tbl, MG_mat_fl_q, FEM_elens, num_int,                   &
      &      diff_coefs%num_field, ifld_diff%i_temp, diff_coefs%ak,      &
-     &      evo_T%coef_imp, ak_MHD%ak_d_temp, ifilter_final,            &
+     &      ht_prop%coef_imp, ak_MHD%ak_d_temp, ifilter_final,          &
      &      fem_wk, mat_temp)
       end if
 !
@@ -182,7 +191,7 @@
         call choose_int_diffuse1_crank_mat(mesh%ele, jac_3d,            &
      &      rhs_tbl, MG_mat_fl_q, FEM_elens, num_int,                   &
      &      diff_coefs%num_field, ifld_diff%i_light, diff_coefs%ak,     &
-     &      evo_C%coef_imp, ak_MHD%ak_d_composit, ifilter_final,        &
+     &      cp_prop%coef_imp, ak_MHD%ak_d_composit, ifilter_final,      &
      &      fem_wk, mat_light)
       end if
 !

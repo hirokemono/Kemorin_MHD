@@ -6,8 +6,9 @@
 !
 !!      subroutine s_set_aiccg_matrices_type                            &
 !!     &        (FEM_prm, SGS_param, cmt_param,                         &
-!!     &         mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,    &
-!!     &         ak_MHD,  jac_3d_q, jac_3d_l, jac_sf_grp_q,             &
+!!     &         mesh, group, ele_mesh, MHD_mesh,                       &
+!!     &         nod_bcs, surf_bcs, fl_prop, cd_prop, ht_prop, cp_prop, &
+!!     &         ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q,              &
 !!     &         FEM_elens, ifld_diff, diff_coefs, rhs_tbl,             &
 !!     &         djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,      &
 !!     &         MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q, MG_mat_linear,&
@@ -23,6 +24,9 @@
 !!        type(mesh_data_MHD), intent(in) ::          MHD_mesh
 !!        type(nodal_boundarty_conditions), intent(in) ::   nod_bcs
 !!        type(surface_boundarty_conditions), intent(in) :: surf_bcs
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in) :: cd_prop
+!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp_q
@@ -58,8 +62,9 @@
 !
       subroutine s_set_aiccg_matrices_type                              &
      &        (FEM_prm, SGS_param, cmt_param,                           &
-     &         mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,      &
-     &         ak_MHD,  jac_3d_q, jac_3d_l, jac_sf_grp_q,               &
+     &         mesh, group, ele_mesh, MHD_mesh,                         &
+     &         nod_bcs, surf_bcs, fl_prop, cd_prop, ht_prop, cp_prop,   &
+     &         ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q,                &
      &         FEM_elens, ifld_diff, diff_coefs, rhs_tbl,               &
      &         djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,        &
      &         MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q, MG_mat_linear,  &
@@ -71,6 +76,7 @@
 !
       use t_FEM_control_parameter
       use t_SGS_control_parameter
+      use t_physical_property
       use t_mesh_data
       use t_geometry_data_MHD
       use t_surface_group_geometry
@@ -101,6 +107,9 @@
       type(mesh_groups), intent(in) ::   group
       type(element_geometry), intent(in) :: ele_mesh
       type(mesh_data_MHD), intent(in) :: MHD_mesh
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(nodal_boundarty_conditions), intent(in) ::   nod_bcs
       type(surface_boundarty_conditions), intent(in) :: surf_bcs
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
@@ -151,29 +160,29 @@
         call int_vol_crank_mat_lump                                     &
      &     (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,        &
      &      mesh, MHD_mesh%fluid, MHD_mesh%conduct,                     &
-     &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
+     &      fl_prop, cd_prop, ht_prop, cp_prop,                         &
      &      djds_tbl, djds_tbl_fl, mlump_fl, mlump_cd,                  &
      &      mat_velo, mat_magne, mat_temp, mat_light)
 !
         call int_MHD_crank_matrices                                     &
      &     (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,        &
      &      FEM_prm%npoint_t_evo_int, SGS_param%ifilter_final,          &
-     &      mesh, ak_MHD, jac_3d_q, rhs_tbl,                            &
-     &      MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,                    &
+     &      mesh, fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD,           &
+     &      jac_3d_q, rhs_tbl, MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q, &
      &      FEM_elens, ifld_diff, diff_coefs, fem_wk,                   &
      &      mat_velo, mat_magne, mat_temp, mat_light)
 !
       else if (iflag_scheme .eq. id_Crank_nicolson_cmass) then
         call int_vol_crank_mat_consist(FEM_prm%npoint_t_evo_int,        &
      &       evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,       &
-     &       mesh, fl_prop1, cd_prop1, ht_prop1, cp_prop1,              &
+     &       mesh, fl_prop, cd_prop, ht_prop, cp_prop,                  &
      &       jac_3d_q, rhs_tbl, MG_mat_fl_q, MG_mat_full_cd_q, fem_wk,  &
      &      mat_velo, mat_magne, mat_temp, mat_light)
         call int_MHD_crank_matrices                                     &
      &     (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,        &
      &      FEM_prm%npoint_t_evo_int, SGS_param%ifilter_final,          &
-     &      mesh, ak_MHD, jac_3d_q, rhs_tbl,                            &
-     &      MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,                    &
+     &      mesh, fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD,           &
+     &      jac_3d_q, rhs_tbl, MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q, &
      &      FEM_elens, ifld_diff, diff_coefs, fem_wk,                   &
      &      mat_velo, mat_magne, mat_temp, mat_light)
       end if
@@ -182,8 +191,8 @@
 !
       call set_aiccg_bc_phys(FEM_prm%npoint_t_evo_int,                  &
      &     evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,         &
-     &     mesh%ele, ele_mesh%surf, group%surf_grp, jac_sf_grp_q,       &
-     &     rhs_tbl, MG_mat_fl_q, nod_bcs, surf_bcs,                     &
+     &     mesh%ele, ele_mesh%surf, group%surf_grp, fl_prop1,           &
+     &     jac_sf_grp_q, rhs_tbl, MG_mat_fl_q, nod_bcs, surf_bcs,       &
      &     djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,            &
      &     ak_MHD%ak_d_velo, surf_wk, fem_wk, mat_velo, mat_magne,      &
      &     mat_temp, mat_light, mat_press, mat_magp)

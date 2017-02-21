@@ -24,8 +24,7 @@
 !!        Solution address: ipol%i_magne, itor%i_magne
 !!
 !!      subroutine cal_sol_temperature_sph_crank                        &
-!!     &         (evo_T, sph_rj, ht_prop, band_temp_evo, ipol, rj_fld)
-!!        type(time_evolution_params), intent(in) :: evo_T
+!!     &         (sph_rj, ht_prop, band_temp_evo, ipol, rj_fld)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(scalar_property), intent(in) :: ht_prop
 !!        type(band_matrices_type), intent(in) :: band_temp_evo
@@ -34,8 +33,7 @@
 !!       Input address:    ipol%i_temp
 !!       Solution address: ipol%i_temp
 !!      subroutine cal_sol_composition_sph_crank                        &
-!!     &         (evo_C, sph_rj, cp_prop, band_comp_evo, ipol, rj_fld)
-!!         type(time_evolution_params), intent(in) :: evo_C
+!!     &         (sph_rj, cp_prop, band_comp_evo, ipol, rj_fld)
 !!         type(sph_rj_grid), intent(in) :: sph_rj
 !!         type(scalar_property), intent(in) :: cp_prop
 !!         type(band_matrices_type), intent(in) :: band_comp_evo
@@ -55,7 +53,6 @@
       use calypso_mpi
       use m_machine_parameter
 !
-      use t_time_stepping_parameter
       use t_spheric_rj_data
       use t_phys_address
       use t_phys_data
@@ -162,14 +159,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sol_temperature_sph_crank                          &
-     &         (evo_T, sph_rj, ht_prop, band_temp_evo, ipol, rj_fld)
+     &         (sph_rj, ht_prop, band_temp_evo, ipol, rj_fld)
 !
       use t_physical_property
       use m_t_int_parameter
       use m_boundary_params_sph_MHD
       use m_radial_mat_sph_w_center
 !
-      type(time_evolution_params), intent(in) :: evo_T
       type(sph_rj_grid), intent(in) :: sph_rj
       type(scalar_property), intent(in) :: ht_prop
       type(band_matrices_type), intent(in) :: band_temp_evo
@@ -180,7 +176,7 @@
 !
       call cal_sol_scalar_sph_crank                                     &
      &   (sph_rj, sph_bc_T, band_temp_evo, band_temp00_evo,             &
-     &    ht_prop%coef_advect, ht_prop%coef_diffuse, evo_T%coef_imp,    &
+     &    ht_prop%coef_advect, ht_prop%coef_diffuse, ht_prop%coef_imp,  &
      &    ipol%i_temp, rj_fld)
 !
       end subroutine cal_sol_temperature_sph_crank
@@ -188,14 +184,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sol_composition_sph_crank                          &
-     &         (evo_C, sph_rj, cp_prop, band_comp_evo, ipol, rj_fld)
+     &         (sph_rj, cp_prop, band_comp_evo, ipol, rj_fld)
 !
       use t_physical_property
       use m_t_int_parameter
       use m_boundary_params_sph_MHD
       use m_radial_mat_sph_w_center
 !
-      type(time_evolution_params), intent(in) :: evo_C
       type(sph_rj_grid), intent(in) :: sph_rj
       type(scalar_property), intent(in) :: cp_prop
       type(band_matrices_type), intent(in) :: band_comp_evo
@@ -206,7 +201,7 @@
 !
       call cal_sol_scalar_sph_crank                                     &
      &   (sph_rj, sph_bc_C, band_comp_evo, band_comp00_evo,             &
-     &    cp_prop%coef_advect, cp_prop%coef_diffuse, evo_C%coef_imp,    &
+     &    cp_prop%coef_advect, cp_prop%coef_diffuse, cp_prop%coef_imp,  &
      &    ipol%i_light, rj_fld)
 !
       end subroutine cal_sol_composition_sph_crank

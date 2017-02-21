@@ -17,30 +17,24 @@
 !!     &          jac_3d, rhs_tbl, m_lump, mhd_fem_wk, fem_wk,          &
 !!     &          f_l, f_nl, nod_fld)
 !!
-!!      subroutine cal_velocity_co_imp                                  &
-!!     &         (i_velo, iak_diff_v, ak_d_velo,                        &
-!!     &          evo_V, FEM_prm, SGS_param, cmt_param,                 &
+!!      subroutine cal_velocity_co_imp(i_velo, iak_diff_v, ak_d_velo,   &
+!!     &          FEM_prm, SGS_param, cmt_param,                        &
 !!     &          nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,        &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
 !!     &          diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,   &
 !!     &          f_l, f_nl, nod_fld)
-!!      subroutine cal_vector_p_co_imp                                  &
-!!     &         (i_vecp, iak_diff_b, ak_d_magne,                       &
-!!     &          evo_A, FEM_prm, SGS_param, cmt_param,                 &
+!!      subroutine cal_vector_p_co_imp(i_vecp, iak_diff_b, ak_d_magne,  &
+!!     &          FEM_prm, SGS_param, cmt_param,                        &
 !!     &          nod_comm, node, ele, conduct, cd_prop, Bnod_bcs,      &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
 !!     &          diff_coefs, m_lump, Bmatrix, MG_vector,               &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-!!      subroutine cal_magnetic_co_imp                                  &
-!!     &         (i_magne, iak_diff_b, ak_d_magne,                      &
-!!     &          evo_B, FEM_prm, SGS_param, cmt_param,                 &
+!!      subroutine cal_magnetic_co_imp(i_magne, iak_diff_b, ak_d_magne, &
+!!     &          FEM_prm, SGS_param, cmt_param,                        &
 !!     &          nod_comm, node, ele, conduct, cd_prop, Bnod_bcs,      &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
 !!     &          diff_coefs,m_lump,  Bmatrix, MG_vector,               &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-!!        type(time_evolution_params), intent(in) :: evo_V
-!!        type(time_evolution_params), intent(in) :: evo_B
-!!        type(time_evolution_params), intent(in) :: evo_A
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -74,7 +68,6 @@
       use m_t_step_parameter
       use m_phys_constants
 !
-      use t_time_stepping_parameter
       use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_physical_property
@@ -220,9 +213,8 @@
 ! -----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_velocity_co_imp                                    &
-     &         (i_velo, iak_diff_v, ak_d_velo,                          &
-     &          evo_V, FEM_prm, SGS_param, cmt_param,                   &
+      subroutine cal_velocity_co_imp(i_velo, iak_diff_v, ak_d_velo,     &
+     &          FEM_prm, SGS_param, cmt_param,                          &
      &          nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,          &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
      &          diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,     &
@@ -240,7 +232,6 @@
       use set_nodal_bc_id_data
       use cal_sol_vector_co_crank
 !
-      type(time_evolution_params), intent(in) :: evo_V
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
@@ -270,20 +261,20 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'int_vol_viscosity_co'
-      if (evo_V%coef_imp .gt. zero) then
+      if (fl_prop%coef_imp .gt. zero) then
         call int_vol_vector_diffuse_ele(SGS_param%ifilter_final,        &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,             &
-     &      diff_coefs, iak_diff_v, evo_V%coef_imp, ak_d_velo,          &
+     &      diff_coefs, iak_diff_v, fl_prop%coef_imp, ak_d_velo,        &
      &      i_velo, fem_wk, f_l)
       end if
 !
-      if (evo_V%coef_imp .gt. zero) then
+      if (fl_prop%coef_imp .gt. zero) then
         if (iflag_debug.eq.1) write(*,*) 'int_sk_4_fixed_velo'
         call int_sk_4_fixed_velo                                        &
      &     (cmt_param%iflag_c_velo, SGS_param%ifilter_final,            &
      &      FEM_prm%npoint_t_evo_int, i_velo, iak_diff_v,               &
-     &      evo_V, node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,      &
+     &      node, ele, nod_fld, fl_prop, jac_3d, rhs_tbl, FEM_elens,    &
      &      diff_coefs, Vnod_bcs%nod_bc_v, Vnod_bcs%nod_bc_rot,         &
      &      ak_d_velo, fem_wk, f_l)
       end if
@@ -320,9 +311,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_vector_p_co_imp                                    &
-     &         (i_vecp, iak_diff_b, ak_d_magne,                         &
-     &          evo_A, FEM_prm, SGS_param, cmt_param,                   &
+      subroutine cal_vector_p_co_imp(i_vecp, iak_diff_b, ak_d_magne,    &
+     &          FEM_prm, SGS_param, cmt_param,                          &
      &          nod_comm, node, ele, conduct, cd_prop, Bnod_bcs,        &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
      &          diff_coefs, m_lump, Bmatrix, MG_vector,                 &
@@ -340,7 +330,6 @@
       use set_nodal_bc_id_data
       use cal_sol_vector_co_crank
 !
-      type(time_evolution_params), intent(in) :: evo_A
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
@@ -371,21 +360,21 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'int_vol_vecp_diffuse_co'
-      if (evo_A%coef_imp .gt. zero) then
+      if (cd_prop%coef_imp .gt. zero) then
         call int_vol_vector_diffuse_ele(SGS_param%ifilter_final,        &
      &      ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,               &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,             &
-     &      diff_coefs, iak_diff_b, evo_A%coef_imp, ak_d_magne,         &
+     &      diff_coefs, iak_diff_b, cd_prop%coef_imp, ak_d_magne,       &
      &      i_vecp, fem_wk, f_l)
       end if
 !
-      if (evo_A%coef_imp .gt. 0.0d0) then
+      if (cd_prop%coef_imp .gt. 0.0d0) then
         if (iflag_debug.eq.1) write(*,*) 'int_sk_4_fixed_vector_p'
         call int_sk_4_fixed_vector(cmt_param%iflag_c_magne,             &
      &      SGS_param%ifilter_final, FEM_prm%npoint_t_evo_int,          &
      &      i_vecp, node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,     &
      &      diff_coefs, Bnod_bcs%nod_bc_a, ak_d_magne,                  &
-     &      evo_A%coef_imp, iak_diff_b, fem_wk, f_l)
+     &      cd_prop%coef_imp, iak_diff_b, fem_wk, f_l)
       end if
 !
 !
@@ -412,9 +401,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_magnetic_co_imp                                    &
-     &         (i_magne, iak_diff_b, ak_d_magne,                        &
-     &          evo_B, FEM_prm, SGS_param, cmt_param,                   &
+      subroutine cal_magnetic_co_imp(i_magne, iak_diff_b, ak_d_magne,   &
+     &          FEM_prm, SGS_param, cmt_param,                          &
      &          nod_comm, node, ele, conduct, cd_prop, Bnod_bcs,        &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
      &          diff_coefs,m_lump,  Bmatrix, MG_vector,                 &
@@ -431,7 +419,6 @@
       use set_nodal_bc_id_data
       use cal_sol_vector_co_crank
 !
-      type(time_evolution_params), intent(in) :: evo_B
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
@@ -462,21 +449,21 @@
 !
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_vol_magne_diffuse_co'
-      if (evo_B%coef_imp .gt. zero) then
+      if (cd_prop%coef_imp .gt. zero) then
         call int_vol_vector_diffuse_ele(SGS_param%ifilter_final,        &
      &      conduct%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,             &
-     &      diff_coefs, iak_diff_b, evo_B%coef_imp, ak_d_magne,         &
+     &      diff_coefs, iak_diff_b, cd_prop%coef_imp, ak_d_magne,       &
      &      i_magne, fem_wk, f_l)
       end if
 !
-      if (evo_B%coef_imp .gt. zero) then
+      if (cd_prop%coef_imp .gt. zero) then
         if (iflag_debug.eq.1)  write(*,*) 'int_sk_4_fixed_magne'
         call int_sk_4_fixed_vector(cmt_param%iflag_c_magne,             &
      &      SGS_param%ifilter_final, FEM_prm%npoint_t_evo_int,          &
      &      i_magne, node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,    &
      &      diff_coefs, Bnod_bcs%nod_bc_b, ak_d_magne,                  &
-     &      evo_B%coef_imp, iak_diff_b, fem_wk, f_l)
+     &      cd_prop%coef_imp, iak_diff_b, fem_wk, f_l)
       end if
 !
 !

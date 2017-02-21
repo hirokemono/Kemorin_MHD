@@ -7,8 +7,8 @@
 !        modified by H. Matsui on Oct. 2005
 !        modified by H. Matsui on Feb. 2009
 !
-!!      subroutine set_aiccg_bc_phys(num_int,                           &
-!!     &          evo_V, evo_B, evo_A, evo_T, evo_C, ele, surf, sf_grp, &
+!!      subroutine set_aiccg_bc_phys(num_int, evo_V, evo_B, evo_A,      &
+!!     &          evo_T, evo_C, ele, surf, sf_grp, fl_prop,             &
 !!     &          jac_sf_grp, rhs_tbl, MG_mat_fl_q, node_bcs, surf_bcs, &
 !!     &          djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,     &
 !!     &          surf_wk, fem_wk, mat_velo, mat_magne,                 &
@@ -18,6 +18,7 @@
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(nodal_boundarty_conditions), intent(in) ::   node_bcs
 !!        type(surface_boundarty_conditions), intent(in) :: surf_bcs
 !!        type(jacobians_2d), intent(in) ::          jac_sf_grp
@@ -32,20 +33,13 @@
 !!        type(DJDS_MATRIX),  intent(inout) :: mat_light
 !!        type(DJDS_MATRIX),  intent(inout) :: mat_press
 !!        type(DJDS_MATRIX),  intent(inout) :: mat_magp
-!!      subroutine set_aiccg_bc_velo(num_int, ele, surf, sf_grp, evo_V, &
-!!     &          nod_bc_v, nod_bc_rot, free_in_sf, free_out_sf,        &
-!!     &          jac_sf_grp, rhs_tbl, MG_mat_fl_q, DJDS_tbl, ak_d_velo,&
-!!     &          surf_wk, fem_wk, Vmat_DJDS)
-!!        type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_v
-!!        type(scaler_rotaion_nod_bc_type), intent(in) :: nod_bc_rot
-!!        type(scaler_surf_bc_data_type), intent(in) :: free_in_sf
-!!        type(scaler_surf_bc_data_type), intent(in) :: free_out_sf
 !
       module set_aiccg_bc_vectors
 !
       use m_precision
 !
       use t_time_stepping_parameter
+      use t_physical_property
       use t_geometry_data
       use t_surface_data
       use t_group_data
@@ -68,8 +62,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_aiccg_bc_phys(num_int,                             &
-     &          evo_V, evo_B, evo_A, evo_T, evo_C, ele, surf, sf_grp,   &
+      subroutine set_aiccg_bc_phys(num_int, evo_V, evo_B, evo_A,        &
+     &          evo_T, evo_C, ele, surf, sf_grp, fl_prop,               &
      &          jac_sf_grp, rhs_tbl, MG_mat_fl_q, node_bcs, surf_bcs,   &
      &          djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,       &
      &          ak_d_velo, surf_wk, fem_wk, mat_velo, mat_magne,        &
@@ -82,6 +76,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(fluid_property), intent(in) :: fl_prop
       type(nodal_boundarty_conditions), intent(in) ::   node_bcs
       type(jacobians_2d), intent(in) ::         jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -112,7 +107,7 @@
      &      node_bcs%Vnod_bcs%nod_bc_p, djds_tbl_fl_l, mat_press)
 !
         if (evo_V%iflag_scheme .ge. id_Crank_nicolson) then
-          call set_aiccg_bc_velo(num_int, evo_V, ele, surf, sf_grp,     &
+          call set_aiccg_bc_velo(num_int, ele, surf, sf_grp, fl_prop,   &
      &      node_bcs%Vnod_bcs%nod_bc_v, node_bcs%Vnod_bcs%nod_bc_rot,   &
      &      surf_bcs%Vsf_bcs%free_sph_in,                               &
      &      surf_bcs%Vsf_bcs%free_sph_out,                              &
@@ -153,7 +148,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_aiccg_bc_velo(num_int, evo_V, ele, surf, sf_grp,   &
+      subroutine set_aiccg_bc_velo                                      &
+     &         (num_int, ele, surf, sf_grp, fl_prop,                    &
      &          nod_bc_v, nod_bc_rot, free_in_sf, free_out_sf,          &
      &          jac_sf_grp, rhs_tbl, MG_mat_fl_q, DJDS_tbl, ak_d_velo,  &
      &          surf_wk, fem_wk, Vmat_DJDS)
@@ -161,7 +157,7 @@
       use set_aiccg_free_sph
       use set_aiccg_bc_fixed
 !
-      type(time_evolution_params), intent(in) :: evo_V
+      type(fluid_property), intent(in) :: fl_prop
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
@@ -187,10 +183,10 @@
 !      matrix setting for free slip on sphere
       call set_aiccg_bc_free_sph_in(ele, surf, sf_grp,                  &
      &    free_in_sf, jac_sf_grp, rhs_tbl, MG_mat_fl_q, surf_wk,        &
-     &    evo_V%coef_imp, num_int, ak_d_velo, fem_wk, Vmat_DJDS)
+     &    fl_prop%coef_imp, num_int, ak_d_velo, fem_wk, Vmat_DJDS)
       call set_aiccg_bc_free_sph_out(ele, surf, sf_grp,                 &
      &    free_out_sf, jac_sf_grp, rhs_tbl, MG_mat_fl_q, surf_wk,       &
-     &    evo_V%coef_imp, num_int, ak_d_velo, fem_wk, Vmat_DJDS)
+     &    fl_prop%coef_imp, num_int, ak_d_velo, fem_wk, Vmat_DJDS)
 !
 !      matrix setting for fixed boundaries
       call set_aiccg_bc_vector_nod(ele, nod_bc_v, DJDS_tbl, Vmat_DJDS)

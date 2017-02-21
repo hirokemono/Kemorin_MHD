@@ -382,6 +382,7 @@
      &      MG_mesh(i_level)%mesh, MG_mesh(i_level)%group,              &
      &      MG_ele_mesh(i_level),  MG_MHD_mesh(i_level),                &
      &      MG_node_bc(i_level), MG_surf_bc(i_level),                   &
+     &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
      &      ak_MHD_AMG(i_level), MG_jacobians(i_level)%jac_3d,          &
      &      MG_jacobians(i_level)%jac_3d_l,                             &
      &      MG_jacobians(i_level)%jac_sf_grp, MG_filter_MHD(i_level),   &

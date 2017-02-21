@@ -266,7 +266,7 @@
      &      cmt_param%iflag_c_light, SGS_param%ifilter_final,           &
      &      i_field, iphys%i_pre_composit, ifld_diff%i_light,           &
      &      ak_d_composit, eps_4_comp_crank,                            &
-     &      FEM_prm, nod_comm, node, ele, fluid, evo_C, Snod_bcs,       &
+     &      FEM_prm, nod_comm, node, ele, fluid, property, Snod_bcs,    &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
      &      Cmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
@@ -275,8 +275,8 @@
      &     (cmt_param%iflag_c_light, SGS_param%ifilter_final,           &
      &      i_field, iphys%i_pre_composit, ifld_diff%i_light,           &
      &      ak_d_composit, eps_4_comp_crank,                            &
-     &      FEM_prm, node, ele, fluid, evo_C, property, Snod_bcs,       &
-     &      jac_3d, rhs_tbl, FEM_elens, diff_coefs, Cmatrix, MG_vector, &
+     &      FEM_prm, node, ele, fluid, property, Snod_bcs, jac_3d,      &
+     &      rhs_tbl, FEM_elens, diff_coefs, Cmatrix, MG_vector, &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !

@@ -47,6 +47,8 @@
 !
 !>      Structure for fluid property
       type fluid_property
+!>        Coefficient of implicit term
+        real(kind = kreal) :: coef_imp = half
 !>        Coefficient of explicit term
         real(kind = kreal) :: coef_exp = half
 !
@@ -98,6 +100,8 @@
 !
 !>      Structure for manetic property
       type conductive_property
+!>        Coefficient of implicit term
+        real(kind = kreal) :: coef_imp = half
 !>        Coefficient of explicit term
         real(kind = kreal) :: coef_exp = half
 !
@@ -121,6 +125,8 @@
 !
 !>      Structure for thermal property
       type scalar_property
+!>        Coefficient of implicit term
+        real(kind = kreal) :: coef_imp = half
 !>        Coefficient of explicit term
         real(kind = kreal) :: coef_exp = half
 !

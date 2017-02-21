@@ -22,7 +22,7 @@
 !!     &          diff_coefs, nod_bc_t, ak_d, coef_imp, fem_wk, f_l)
 !!      subroutine int_sk_4_fixed_velo(iflag_commute_velo,              &
 !!     &          ifilter_final, num_int, i_velo, iak_diff_v,           &
-!!     &          evo_V, node, ele, nod_fld, jac_3d, rhs_tbl,           &
+!!     &          node, ele, nod_fld, fl_prop, jac_3d, rhs_tbl,         &
 !!     &          FEM_elens, diff_coefs, nod_bc_v, nod_bc_rot, ak_d,    &
 !!     &          fem_wk, f_l)
 !!      subroutine int_sk_4_fixed_vector                                &
@@ -30,7 +30,7 @@
 !!     &          node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,       &
 !!     &          diff_coefs, nod_bc, ak_d, coef_imp, iak_diff,         &
 !!     &          fem_wk, f_l)
-!!        type(time_evolution_params), intent(in) :: evo_V
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_data), intent(in) :: nod_fld
@@ -52,7 +52,7 @@
       use m_phys_constants
       use m_t_int_parameter
 !
-      use t_time_stepping_parameter
+      use t_physical_property
       use t_SGS_control_parameter
       use t_geometry_data
       use t_phys_data
@@ -266,7 +266,7 @@
 !
       subroutine int_sk_4_fixed_velo(iflag_commute_velo,                &
      &          ifilter_final, num_int, i_velo, iak_diff_v,             &
-     &          evo_V, node, ele, nod_fld, jac_3d, rhs_tbl,             &
+     &          node, ele, nod_fld, fl_prop, jac_3d, rhs_tbl,           &
      &          FEM_elens, diff_coefs, nod_bc_v, nod_bc_rot, ak_d,      &
      &          fem_wk, f_l)
 !
@@ -276,9 +276,9 @@
       integer(kind = kint), intent(in) :: iflag_commute_velo
       integer(kind = kint), intent(in) :: ifilter_final, num_int
       integer(kind = kint), intent(in) :: i_velo, iak_diff_v
-      type(time_evolution_params), intent(in) :: evo_V
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(fluid_property), intent(in) :: fl_prop
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -296,7 +296,7 @@
       call int_sk_4_fixed_vector                                        &
      &   (iflag_commute_velo, ifilter_final, num_int, i_velo,           &
      &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs,   &
-     &    nod_bc_v, ak_d, evo_V%coef_imp, iak_diff_v, fem_wk, f_l)
+     &    nod_bc_v, ak_d, fl_prop%coef_imp, iak_diff_v, fem_wk, f_l)
 !
       if (iflag_commute_velo .eq. id_SGS_commute_ON) then
         call int_vol_fixed_rotate_sgs_surf(node, ele, nod_fld, jac_3d,  &
@@ -304,13 +304,13 @@
      &      nod_bc_rot%num_idx_ibc, nod_bc_rot%ele_bc_id,               &
      &      nod_bc_rot%ibc_stack_smp, nod_bc_rot%ibc_shape,             &
      &      ifilter_final, i_velo, diff_coefs%num_field, iak_diff_v,    &
-     &      diff_coefs%ak, ak_d, evo_V%coef_imp, fem_wk, f_l)
+     &      diff_coefs%ak, ak_d, fl_prop%coef_imp, fem_wk, f_l)
       else
         call int_vol_fixed_rotate_surf                                  &
      &     (node, ele, nod_fld, jac_3d, rhs_tbl, num_int,               &
      &      nod_bc_rot%ibc_end, nod_bc_rot%num_idx_ibc,                 &
      &      nod_bc_rot%ele_bc_id, nod_bc_rot%ibc_stack_smp,             &
-     &      nod_bc_rot%ibc_shape, i_velo, ak_d, evo_V%coef_imp,         &
+     &      nod_bc_rot%ibc_shape, i_velo, ak_d, fl_prop%coef_imp,       &
      &      fem_wk, f_l)
       end if
 !

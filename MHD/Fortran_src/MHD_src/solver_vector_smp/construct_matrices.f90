@@ -210,6 +210,7 @@
 !
       call s_set_aiccg_matrices_type(FEM_prm, SGS_param, cmt_param,     &
      &    mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,           &
+     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
      &    ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q,                     &
      &    FEM_elens, ifld_diff, diff_coefs, rhs_tbl,                    &
      &    MHD_matrices%MG_DJDS_table(0), MHD_matrices%MG_DJDS_fluid(0), &

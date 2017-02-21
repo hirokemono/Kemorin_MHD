@@ -302,8 +302,8 @@
       else if(evo_V%iflag_scheme .eq. id_Crank_nicolson) then
         call cal_velo_pre_lumped_crank                                  &
      &     (cmt_param%iflag_c_velo, SGS_param%ifilter_final,            &
-     &      ifld_diff%i_velo, ak_MHD%ak_d_velo,                         &
-     &      FEM_prm, nod_comm, node, ele, fluid, evo_V, Vnod_bcs,       &
+     &      ifld_diff%i_velo, ak_MHD%ak_d_velo, FEM_prm,                &
+     &      nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,              &
      &      iphys, iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,    &
      &      diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,         &
      &      f_l, f_nl, nod_fld)
@@ -312,10 +312,9 @@
         call cal_velo_pre_consist_crank                                 &
      &     (cmt_param%iflag_c_velo, SGS_param%ifilter_final,            &
      &      iphys%i_velo, iphys%i_pre_mom, ifld_diff%i_velo,            &
-     &      ak_MHD%ak_d_velo, FEM_prm, node, ele, fluid, evo_V,         &
-     &      fl_prop, Vnod_bcs, jac_3d_q, rhs_tbl, FEM_elens,            &
-     &      diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,         &
-     &      f_l, f_nl, nod_fld)
+     &      ak_MHD%ak_d_velo, FEM_prm, node, ele, fluid, fl_prop,       &
+     &      Vnod_bcs, jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,         &
+     &      Vmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       call set_boundary_velo(node, Vnod_bcs, iphys%i_velo, nod_fld)
@@ -412,7 +411,7 @@
      & then
         call cal_velocity_co_imp                                        &
      &     (iphys%i_velo, ifld_diff%i_velo, ak_MHD%ak_d_velo,           &
-     &      evo_V, FEM_prm, SGS_param, cmt_param,                       &
+     &      FEM_prm, SGS_param, cmt_param,                              &
      &      nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,              &
      &      iphys_ele, ele_fld,  jac_3d_q, rhs_tbl, FEM_elens,          &
      &      diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,         &

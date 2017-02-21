@@ -184,22 +184,21 @@
 !
 !
       call set_implicit_coefs(mevo_ctl%coef_imp_v_ctl,                  &
-     &    evo_V%iflag_scheme, evo_V%coef_imp, fl_prop1%coef_exp)
+     &    evo_V%iflag_scheme, fl_prop1%coef_imp, fl_prop1%coef_exp)
       call set_implicit_coefs(mevo_ctl%coef_imp_t_ctl,                  &
-     &    evo_T%iflag_scheme, evo_T%coef_imp, ht_prop1%coef_exp)
+     &    evo_T%iflag_scheme, ht_prop1%coef_imp, ht_prop1%coef_exp)
       call set_implicit_coefs(mevo_ctl%coef_imp_b_ctl,                  &
-     &    evo_B%iflag_scheme, evo_B%coef_imp, cd_prop1%coef_exp)
+     &    evo_B%iflag_scheme, cd_prop1%coef_imp, cd_prop1%coef_exp)
       call set_implicit_coefs(mevo_ctl%coef_imp_b_ctl,                  &
-     &    evo_A%iflag_scheme, evo_A%coef_imp, cd_prop1%coef_exp)
+     &    evo_A%iflag_scheme, cd_prop1%coef_imp, cd_prop1%coef_exp)
       call set_implicit_coefs(mevo_ctl%coef_imp_c_ctl,                  &
-     &    evo_C%iflag_scheme, evo_C%coef_imp, cp_prop1%coef_exp)
+     &    evo_C%iflag_scheme, cp_prop1%coef_imp, cp_prop1%coef_exp)
 !
       if (iflag_debug .ge. iflag_routine_msg) then
-        write(*,*) 'coef_imp_v ', evo_V%coef_imp
-        write(*,*) 'coef_imp_t ', evo_T%coef_imp
-        write(*,*) 'coef_imp_b ', evo_B%coef_imp
-        write(*,*) 'coef_imp_a ', evo_A%coef_imp
-        write(*,*) 'coef_imp_c ', evo_C%coef_imp
+        write(*,*) 'coef_imp_v ', fl_prop1%coef_imp
+        write(*,*) 'coef_imp_t ', ht_prop1%coef_imp
+        write(*,*) 'coef_imp_b ', cd_prop1%coef_imp
+        write(*,*) 'coef_imp_c ', cp_prop1%coef_imp
       end if
 !
       end subroutine s_set_control_4_crank

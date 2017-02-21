@@ -235,15 +235,15 @@
      &     (cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
      &      iphys%i_magne, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,     &
      &      Bnod_bcs%nod_bc_b, FEM_prm, nod_comm, node, ele, conduct,   &
-     &      evo_magne, iphys_ele, ele_fld, jac_3d_q, rhs_tbl,           &
+     &      cd_prop, iphys_ele, ele_fld, jac_3d_q, rhs_tbl,             &
      &      FEM_elens, diff_coefs, Bmatrix, MG_vector,                  &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if(evo_B%iflag_scheme .eq. id_Crank_nicolson_cmass) then
         call cal_magne_pre_consist_crank                                &
      &     (cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
      &      iphys%i_magne, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,     &
-     &      Bnod_bcs%nod_bc_b, FEM_prm, node, ele, conduct, evo_magne,  &
-     &      cd_prop, jac_3d_q, rhs_tbl, FEM_elens, diff_coefs, Bmatrix, &
+     &      Bnod_bcs%nod_bc_b, FEM_prm, node, ele, conduct, cd_prop,    &
+     &      jac_3d_q, rhs_tbl, FEM_elens, diff_coefs, Bmatrix,          &
      &      MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
@@ -337,7 +337,7 @@
      &  .or. FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)    &
      & then
         call cal_magnetic_co_imp(iphys%i_magne, iak_diff_b, ak_d_magne, &
-     &      evo_B, FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,  &
+     &      FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,         &
      &      conduct, cd_prop, Bnod_bcs, iphys_ele, ele_fld, jac_3d_q,   &
      &      rhs_tbl, FEM_elens, diff_coefs, m_lump, Bmatrix, MG_vector, &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)

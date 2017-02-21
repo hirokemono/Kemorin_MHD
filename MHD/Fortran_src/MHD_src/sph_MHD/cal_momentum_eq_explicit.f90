@@ -8,14 +8,18 @@
 !!
 !!@verbatim
 !!      subroutine cal_expricit_sph_adams(evo_V, evo_B, evo_T, evo_C,   &
+!!     &          sph_rj, fl_prop,cd_prop,  ht_prop, cp_prop,           &
+!!     &         ipol, itor, rj_fld)
 !!     &          sph_rj, ht_prop, cp_prop, ipol, itor, rj_fld)
 !!      subroutine cal_expricit_sph_euler                               &
-!!     &         (i_step, evo_V, evo_B, evo_T, evo_C,                   &
-!!     &         sph_rj, ht_prop, cp_prop, ipol, itor, rj_fld)
+!!     &        (i_step, evo_V, evo_B, evo_T, evo_C, sph_rj,            &
+!!     &         fl_prop, cd_prop, ht_prop, cp_prop, ipol, itor, rj_fld)
 !!        type(time_evolution_params), intent(in) :: evo_V, evo_B
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
+!!        type(scalar_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in) :: cd_prop
 !!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(phys_address), intent(in) :: ipol, itor
@@ -45,7 +49,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_expricit_sph_adams(evo_V, evo_B, evo_T, evo_C,     &
-     &          sph_rj, ht_prop, cp_prop, ipol, itor, rj_fld)
+     &          sph_rj, fl_prop,cd_prop,  ht_prop, cp_prop,             &
+     &         ipol, itor, rj_fld)
 !
       use m_boundary_params_sph_MHD
       use cal_explicit_terms
@@ -56,6 +61,8 @@
       type(time_evolution_params), intent(in) :: evo_V, evo_B
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
       type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(phys_address), intent(in) :: ipol, itor
       type(phys_data), intent(inout) :: rj_fld
@@ -70,7 +77,7 @@
       end if
 !
       if(evo_B%iflag_scheme .gt.    id_no_evolution) then
-        call cal_diff_induction_MHD_adams(cd_prop1%coef_exp,            &
+        call cal_diff_induction_MHD_adams(cd_prop%coef_exp,             &
      &      ipol, itor, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
       if(evo_T%iflag_scheme .gt.     id_no_evolution) then
@@ -94,8 +101,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_expricit_sph_euler                                 &
-     &         (i_step, evo_V, evo_B, evo_T, evo_C,                     &
-     &         sph_rj, ht_prop, cp_prop, ipol, itor, rj_fld)
+     &        (i_step, evo_V, evo_B, evo_T, evo_C, sph_rj,              &
+     &         fl_prop, cd_prop, ht_prop, cp_prop, ipol, itor, rj_fld)
 !
       use m_boundary_params_sph_MHD
       use cal_explicit_terms
@@ -106,6 +113,8 @@
       type(time_evolution_params), intent(in) :: evo_V, evo_B
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
       type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(phys_address), intent(in) :: ipol, itor
       type(phys_data), intent(inout) :: rj_fld
@@ -126,7 +135,7 @@
      &      ht_prop%coef_source, sph_rj, rj_fld)
       end if
       if(evo_B%iflag_scheme .gt.    id_no_evolution) then
-        call cal_diff_induction_MHD_euler(cd_prop1%coef_exp,            &
+        call cal_diff_induction_MHD_euler(cd_prop%coef_exp,             &
      &      ipol, itor, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
       if(evo_C%iflag_scheme .gt. id_no_evolution) then

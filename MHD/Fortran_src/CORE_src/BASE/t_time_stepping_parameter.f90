@@ -32,8 +32,6 @@
       type time_evolution_params
 !>        Time evolution flag for velocity
         integer (kind=kint) :: iflag_scheme = id_no_evolution
-!>        Coefficient of implicit term
-        real(kind = kreal) :: coef_imp = half
       end type time_evolution_params
 !
       end module  t_time_stepping_parameter

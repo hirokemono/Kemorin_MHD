@@ -229,14 +229,14 @@
      &     (cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
      &      iphys%i_vecp, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,      &
      &      Bnod_bcs%nod_bc_a, FEM_prm, nod_comm, node, ele, conduct,   &
-     &      evo_A, iphys_ele, ele_fld, jac_3d_q, rhs_tbl,               &
+     &      cd_prop, iphys_ele, ele_fld, jac_3d_q, rhs_tbl,             &
      &      FEM_elens, diff_coefs, Bmatrix, MG_vector,                  &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if (evo_A%iflag_scheme.eq.id_Crank_nicolson_cmass) then
         call cal_vect_p_pre_consist_crank                               &
      &     (cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
      &      iphys%i_vecp, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,      &
-     &      Bnod_bcs%nod_bc_a, FEM_prm, node, ele, conduct, evo_A,      &
+     &      Bnod_bcs%nod_bc_a, FEM_prm, node, ele, conduct,             &
      &      cd_prop, jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,          &
      &      Bmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
@@ -334,7 +334,7 @@
      &  .or. FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)    &
      & then
         call cal_vector_p_co_imp(iphys%i_vecp, iak_diff_b, ak_d_magne,  &
-     &      evo_A, FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,  &
+     &      FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,         &
      &      conduct, cd_prop, Bnod_bcs, iphys_ele, ele_fld, jac_3d_q,   &
      &      rhs_tbl, FEM_elens, diff_coefs, m_lump, Bmatrix, MG_vector, &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)

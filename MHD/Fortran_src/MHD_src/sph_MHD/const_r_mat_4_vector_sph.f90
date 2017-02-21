@@ -7,11 +7,10 @@
 !!
 !!@verbatim
 !!      subroutine const_radial_mat_vort_2step                          &
-!!     &        (evo_V, sph_rj, r_2nd, fl_prop, g_sph_rj,               &
+!!     &        (sph_rj, r_2nd, fl_prop, g_sph_rj,                      &
 !!     &         band_vs_poisson, band_vp_evo, band_vt_evo, band_wt_evo)
-!!      subroutine const_radial_mat_4_magne_sph(evo_B, sph_rj, r_2nd,   &
+!!      subroutine const_radial_mat_4_magne_sph(sph_rj, r_2nd,          &
 !!     &          cd_prop, g_sph_rj, band_bp_evo, band_bt_evo)
-!!        type(time_evolution_params), intent(in) :: evo_V
 !!        type(time_evolution_params), intent(in) :: evo_B
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
@@ -35,7 +34,6 @@
       use m_t_int_parameter
       use m_ludcmp_3band
 !
-      use t_time_stepping_parameter
       use t_physical_property
       use t_spheric_rj_data
       use t_sph_matrices
@@ -52,7 +50,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_radial_mat_vort_2step                            &
-     &        (evo_V, sph_rj, r_2nd, fl_prop, g_sph_rj,                 &
+     &        (sph_rj, r_2nd, fl_prop, g_sph_rj,                        &
      &         band_vs_poisson, band_vp_evo, band_vt_evo, band_wt_evo)
 !
       use m_boundary_params_sph_MHD
@@ -66,7 +64,6 @@
       use mat_product_3band_mul
       use check_sph_radial_mat
 !
-      type(time_evolution_params), intent(in) :: evo_V
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(fluid_property), intent(in) :: fl_prop
@@ -103,7 +100,7 @@
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
      &      sph_bc_U%kr_in, sph_bc_U%kr_out, band_wt_evo%mat)
       else
-        coef_dvt = evo_V%coef_imp * fl_prop%coef_diffuse * dt
+        coef_dvt = fl_prop%coef_imp * fl_prop%coef_diffuse * dt
         call set_unit_mat_4_time_evo                                    &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), band_vt_evo%mat)
         call set_unit_mat_4_time_evo                                    &
@@ -173,7 +170,7 @@
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call set_icore_viscous_matrix                                   &
      &     (sph_bc_U%kr_in, sph_bc_U%fdm1_fix_fld_ICB,                  &
-     &      evo_V, sph_rj, fl_prop, band_vt_evo)
+     &      sph_rj, fl_prop, band_vt_evo)
       end if
 !
 !   Boundary condition for CMB
@@ -238,7 +235,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_4_magne_sph(evo_B, sph_rj, r_2nd,     &
+      subroutine const_radial_mat_4_magne_sph(sph_rj, r_2nd,            &
      &          cd_prop, g_sph_rj, band_bp_evo, band_bt_evo)
 !
       use m_boundary_params_sph_MHD
@@ -248,7 +245,6 @@
       use center_sph_matrices
       use check_sph_radial_mat
 !
-      type(time_evolution_params), intent(in) :: evo_B
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(conductive_property), intent(in) :: cd_prop
@@ -278,7 +274,7 @@
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
      &      sph_bc_B%kr_in, sph_bc_B%kr_out, band_bt_evo%mat)
       else
-        coef_dbt = evo_B%coef_imp * cd_prop%coef_diffuse * dt
+        coef_dbt = cd_prop%coef_imp * cd_prop%coef_diffuse * dt
         call set_unit_mat_4_time_evo                                    &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), band_bp_evo%mat)
         call set_unit_mat_4_time_evo                                    &
