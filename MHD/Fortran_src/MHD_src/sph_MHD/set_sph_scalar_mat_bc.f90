@@ -29,7 +29,6 @@
 !!@n @param kr_out       Radial ID for outer boundary
 !!@n @param r_ICB(0:2)   Radius at ICB
 !!@n @param r_CMB(0:2)   Radius at CMB
-!!@n @param coef_imp   Coefficient for contribution of implicit term
 !!@n @param coef_d     Coefficient of diffusiotn term
 !!@n @param fdm2_fix_dr_ICB(-1:1,3)
 !!         Matrix to evaluate field at ICB with fixed radial derivative

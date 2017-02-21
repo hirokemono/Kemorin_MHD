@@ -53,7 +53,6 @@
 !!@n @param kr_ed   End radial address to construct matrix
 !!@n @param kr_in    Radial address for inner boundary
 !!@n @param kr_out   Radial address for outer boundary
-!!@n @param coef_imp   Coefficient for contribution of implicit term
 !!@n @param coef_d     Coefficient of diffusiotn term
 !!@n @param coef_p     Coefficient of pressure gradient
 !!
