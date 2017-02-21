@@ -27,6 +27,7 @@
       module set_control_4_model
 !
       use m_precision
+      use m_constants
       use m_error_IDs
 !
       use m_machine_parameter
@@ -36,6 +37,8 @@
       use t_time_stepping_parameter
 !
       implicit  none
+!
+      private :: set_implicit_coefs
 !
 ! -----------------------------------------------------------------------
 !
@@ -180,11 +183,16 @@
       type(time_evolution_params), intent(inout) :: evo_T, evo_C
 !
 !
-      call set_implicit_coefs(mevo_ctl%coef_imp_v_ctl, evo_V, fl_prop1%coef_exp)
-      call set_implicit_coefs(mevo_ctl%coef_imp_t_ctl, evo_T, ht_prop1%coef_exp)
-      call set_implicit_coefs(mevo_ctl%coef_imp_b_ctl, evo_B, cd_prop1%coef_exp)
-      call set_implicit_coefs(mevo_ctl%coef_imp_b_ctl, evo_A, cd_prop1%coef_exp)
-      call set_implicit_coefs(mevo_ctl%coef_imp_c_ctl, evo_C, cp_prop1%coef_exp)
+      call set_implicit_coefs(mevo_ctl%coef_imp_v_ctl,                  &
+     &    evo_V%iflag_scheme, evo_V%coef_imp, fl_prop1%coef_exp)
+      call set_implicit_coefs(mevo_ctl%coef_imp_t_ctl,                  &
+     &    evo_T%iflag_scheme, evo_T%coef_imp, ht_prop1%coef_exp)
+      call set_implicit_coefs(mevo_ctl%coef_imp_b_ctl,                  &
+     &    evo_B%iflag_scheme, evo_B%coef_imp, cd_prop1%coef_exp)
+      call set_implicit_coefs(mevo_ctl%coef_imp_b_ctl,                  &
+     &    evo_A%iflag_scheme, evo_A%coef_imp, cd_prop1%coef_exp)
+      call set_implicit_coefs(mevo_ctl%coef_imp_c_ctl,                  &
+     &    evo_C%iflag_scheme, evo_C%coef_imp, cp_prop1%coef_exp)
 !
       if (iflag_debug .ge. iflag_routine_msg) then
         write(*,*) 'coef_imp_v ', evo_V%coef_imp
@@ -197,5 +205,32 @@
       end subroutine s_set_control_4_crank
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine set_implicit_coefs                                     &
+     &         (coef_imp_ctl, iflag_scheme, coef_imp, coef_exp)
+!
+      use t_control_elements
+!
+      type(read_real_item), intent(in) :: coef_imp_ctl
+      integer(kind=kint), intent(in)  :: iflag_scheme
+      real(kind = kreal), intent(inout) :: coef_imp, coef_exp
+!
+!
+      if(iflag_scheme .ge. id_Crank_nicolson) then
+        if (coef_imp_ctl%iflag .eq. 0) then
+          coef_imp = half
+        else
+          coef_imp = coef_imp_ctl%realvalue
+        end if
+      else
+        coef_imp = zero
+      end if
+      coef_exp = one - coef_imp
+!
+      end subroutine set_implicit_coefs
+!
+! -----------------------------------------------------------------------
+!
 !
       end module set_control_4_model

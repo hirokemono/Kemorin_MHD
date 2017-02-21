@@ -36,34 +36,4 @@
         real(kind = kreal) :: coef_imp = half
       end type time_evolution_params
 !
-! -----------------------------------------------------------------------
-!
-      contains
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_implicit_coefs(coef_imp_ctl, evo, coef_exp)
-!
-      use t_control_elements
-!
-      type(read_real_item), intent(in) :: coef_imp_ctl
-      type(time_evolution_params), intent(inout) :: evo
-      real(kind = kreal), intent(inout) :: coef_exp
-!
-!
-        if(evo%iflag_scheme .ge. id_Crank_nicolson) then
-          if (coef_imp_ctl%iflag .eq. 0) then
-            evo%coef_imp = 0.5d0
-          else
-            evo%coef_imp = coef_imp_ctl%realvalue
-          end if
-        else
-          evo%coef_imp = 0.0d0
-        end if
-        coef_exp = 1.0d0 - evo%coef_imp
-!
-      end subroutine set_implicit_coefs
-!
-! -----------------------------------------------------------------------
-!
       end module  t_time_stepping_parameter
