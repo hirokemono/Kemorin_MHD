@@ -364,7 +364,7 @@
 !
 !
       if (     iphys%i_SGS_induction .gt. 0                             &
-     &   .and. evo_A%iflag_scheme .gt. id_no_evolution) then
+     &   .and. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_induction)
         call int_vol_sgs_induction                                      &

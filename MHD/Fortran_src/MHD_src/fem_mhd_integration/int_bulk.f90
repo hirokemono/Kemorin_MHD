@@ -617,7 +617,7 @@
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld)
       end if
 !
-      if  (evo_A%iflag_scheme .gt. id_no_evolution) then
+      if  (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         call int_norm_divergence(ele%istack_ele_smp, iphys%i_vecp,      &
      &      node, ele, nod_fld, jac_3d_q, fem_wk, bulk_local(ja_diva))
         call int_rms_divergence(ele%istack_ele_smp, iphys%i_vecp,       &
@@ -625,7 +625,7 @@
       end if
 !
       if      (evo_B%iflag_scheme .gt. id_no_evolution                  &
-     &    .or. evo_A%iflag_scheme .gt. id_no_evolution) then
+     &    .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         call int_norm_divergence(ele%istack_ele_smp, iphys%i_magne,     &
      &      node, ele, nod_fld, jac_3d_q, fem_wk, bulk_local(ja_divb))
         call int_rms_divergence(ele%istack_ele_smp, iphys%i_magne,      &

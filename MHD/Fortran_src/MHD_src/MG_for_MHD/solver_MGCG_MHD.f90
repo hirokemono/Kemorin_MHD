@@ -82,7 +82,7 @@
 !
 !
       if(     fl_prop%iflag_scheme .ge. id_Crank_nicolson               &
-     &   .or. evo_A%iflag_scheme .ge. id_Crank_nicolson                 &
+     &   .or. cd_prop%iflag_Aevo_scheme .ge. id_Crank_nicolson          &
      &   .or. evo_B%iflag_scheme .ge. id_Crank_nicolson) then
         METHOD = method_4_velo
         if (cmp_no_case(METHOD, 'MGCG')) then

@@ -191,7 +191,7 @@
       end if
 !
       if (   evo_B%iflag_scheme .ge. id_Crank_nicolson                  &
-     &  .or. evo_A%iflag_scheme .ge. id_Crank_nicolson) then
+     &  .or. cd_prop%iflag_Aevo_scheme .ge. id_Crank_nicolson) then
 !
         if(eps_4_magne_crank .le. 0.0d0) then
           eps_4_magne_crank = eps_crank * cd_prop%coef_diffuse * dt**2

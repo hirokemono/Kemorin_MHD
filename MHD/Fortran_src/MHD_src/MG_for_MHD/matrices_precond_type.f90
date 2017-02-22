@@ -93,13 +93,13 @@
      &     PRECOND_MG, sigma_diag)
       end if
 !
-      if    (evo_A%iflag_scheme .gt. id_no_evolution                    &
+      if    (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution             &
      &  .or. evo_B%iflag_scheme .gt. id_no_evolution) then
         call precond_DJDS11_struct(np_smp, djds_tbl_l, mat_magp,        &
      &     PRECOND_MG, sigma_diag)
       end if
 !
-      if    (evo_A%iflag_scheme .ge. id_Crank_nicolson                  &
+      if    (cd_prop%iflag_Aevo_scheme .ge. id_Crank_nicolson           &
      &  .or. evo_B%iflag_scheme .gt. id_no_evolution) then
         call precond_DJDS33_struct(np_smp, djds_tbl, mat_magne,         &
      &      PRECOND_MG, sigma_diag)

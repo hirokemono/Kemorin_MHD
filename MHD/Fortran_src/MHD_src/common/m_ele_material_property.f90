@@ -74,7 +74,7 @@
 !   For Induction
 !
       if     (evo_B%iflag_scheme .gt. id_no_evolution                   &
-     &   .or. evo_A%iflag_scheme .gt. id_no_evolution) then
+     &   .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         call alloc_magne_diff_MHD_AMG(numele, ak_MHD)
         ak_MHD%ak_d_magne(1:numele) = cd_prop%coef_diffuse
       end if

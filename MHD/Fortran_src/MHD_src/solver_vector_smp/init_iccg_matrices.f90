@@ -101,7 +101,7 @@
       end if
 !
       if     (evo_B%iflag_scheme .gt. id_no_evolution                   &
-     &   .or. evo_A%iflag_scheme .gt. id_no_evolution) then
+     &   .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         call reset_aiccg_11_MHD(node, ele, ione, ele%numele,            &
      &      num_t_linear, djds_tbl_l, mat_magp)
       end if
@@ -115,10 +115,10 @@
         end if
       end if
 !
-      if (evo_A%iflag_scheme .gt. id_no_evolution) then
+      if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         call reset_aiccg_11_MHD(node, ele, ione, ele%numele,            &
      &      num_t_linear, djds_tbl_l, mat_magp)
-        if (evo_A%iflag_scheme .ge. id_Crank_nicolson) then
+        if (cd_prop%iflag_Aevo_scheme .ge. id_Crank_nicolson) then
           call reset_aiccg_vector_p(mat_magne)
         end if
       end if

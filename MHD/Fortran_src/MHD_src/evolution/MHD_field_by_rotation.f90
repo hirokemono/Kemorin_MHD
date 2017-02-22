@@ -136,7 +136,7 @@
 !
       if(iphys%i_current .gt. izero)then
         if(nod_fld%iflag_update(iphys%i_current) .eq.0 ) then
-          if(evo_A%iflag_scheme .gt. id_no_evolution) then
+          if(cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
             if (iflag_debug .ge. iflag_routine_msg)                     &
      &        write(*,*) 'cal_current_density'
               call choose_cal_rotation_sgs(cmt_param%iflag_c_magne,     &

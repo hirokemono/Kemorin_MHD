@@ -212,19 +212,19 @@
       if (iflag_debug.eq.1) write(*,*) 'coefs_4_time_evolution_end'
 !
 !  -----for explicit euler
-      if (evo_A%iflag_scheme .eq. id_explicit_euler) then
+      if (cd_prop%iflag_Aevo_scheme .eq. id_explicit_euler) then
         call cal_magne_pre_euler(iphys%i_vecp,                          &
      &      FEM_prm, nod_comm, node, ele, conduct, iphys_ele, ele_fld,  &
      &      jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
 !  -----for Adams_Bashforth
-      else if (evo_A%iflag_scheme .eq. id_explicit_adams2) then
+      else if (cd_prop%iflag_Aevo_scheme .eq. id_explicit_adams2) then
         call cal_magne_pre_adams(iphys%i_vecp, iphys%i_pre_uxb,         &
      &      FEM_prm, nod_comm, node, ele, conduct, iphys_ele, ele_fld,  &
      &      jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
 !  -----for Ceank-nicolson
-      else if (evo_A%iflag_scheme .eq. id_Crank_nicolson) then
+      else if (cd_prop%iflag_Aevo_scheme .eq. id_Crank_nicolson) then
         call cal_vect_p_pre_lumped_crank                                &
      &     (cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
      &      iphys%i_vecp, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,      &
@@ -232,7 +232,8 @@
      &      cd_prop, iphys_ele, ele_fld, jac_3d_q, rhs_tbl,             &
      &      FEM_elens, diff_coefs, Bmatrix, MG_vector,                  &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-      else if (evo_A%iflag_scheme.eq.id_Crank_nicolson_cmass) then
+      else if(cd_prop%iflag_Aevo_scheme .eq. id_Crank_nicolson_cmass)   &
+     & then
         call cal_vect_p_pre_consist_crank                               &
      &     (cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
      &      iphys%i_vecp, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,      &

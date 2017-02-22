@@ -404,7 +404,7 @@
      &       f_l, f_nl, nod_fld, diff_coefs)
         end if
 !
-      else if(evo_A%iflag_scheme .gt. id_no_evolution) then
+      else if(cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
 !
         if(SGS_par%model_p%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_uxb_dynamic'

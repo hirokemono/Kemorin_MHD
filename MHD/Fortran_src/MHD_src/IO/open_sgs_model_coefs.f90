@@ -368,7 +368,7 @@ type(SGS_model_control_params), intent(in) :: SGS_param
           call write_sym_tensor_label(file_id, lab(1))
 !
         else if ( wk_sgs%name(i) .eq. fhd_SGS_induction ) then
-          if(evo_A%iflag_scheme .gt. id_no_evolution) then
+          if(cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
             write(label,'(a)') 'SGS_uxB'
             call sel_coord_vector_comp_labels(icoord_Csim,              &
      &          label, lab(1) )
@@ -449,7 +449,7 @@ type(SGS_model_control_params), intent(in) :: SGS_param
           write(file_id,'(a)') 'SGS_lor_yx, SGS_lor_yy, SGS_lor_yz, '
           write(file_id,'(a)') 'SGS_lor_zx, SGS_lor_yz, SGS_lor_zz, '
         else if ( wk_diff%name(i) .eq. fhd_SGS_induction ) then
-          if(evo_A%iflag_scheme .gt. id_no_evolution) then
+          if(cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
             write(file_id,'(a)')                                        &
      &        'SGS_uxB_x, SGS_uxB_y, SGS_uxB_z, '
           else

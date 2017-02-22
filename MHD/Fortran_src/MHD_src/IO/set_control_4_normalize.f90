@@ -97,7 +97,7 @@
 !    coefficients for inducition equation
 !
       if     (evo_B%iflag_scheme .eq. id_no_evolution                   &
-     &  .and. evo_A%iflag_scheme .eq. id_no_evolution) then
+     &  .and. cd_prop%iflag_Aevo_scheme .eq. id_no_evolution) then
         MHD_coef_list%coefs_magnetic%num =  0
         MHD_coef_list%coefs_magne_p%num =   0
         MHD_coef_list%coefs_m_diffuse%num = 0
@@ -303,7 +303,7 @@
       end if
 !
       if (induct_ctl%coef_4_mag_potential%icou .eq. 0                   &
-     &       .and. evo_A%iflag_scheme .gt. id_no_evolution) then
+     &     .and. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         e_message =                                                     &
      &     'Set coefficients for integration for magnetic potential'
         call calypso_MPI_abort(ierr_dless, e_message)

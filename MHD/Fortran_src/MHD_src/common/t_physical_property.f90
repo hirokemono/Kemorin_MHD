@@ -103,6 +103,10 @@
 !
 !>      Structure for manetic property
       type conductive_property
+!>        Time evolution flag for magnetic field
+        integer (kind=kint) :: iflag_Bevo_scheme = id_no_evolution
+!>        Time evolution flag for vector potential
+        integer (kind=kint) :: iflag_Aevo_scheme = id_no_evolution
 !>        Coefficient of implicit term
         real(kind = kreal) :: coef_imp = half
 !>        Coefficient of explicit term

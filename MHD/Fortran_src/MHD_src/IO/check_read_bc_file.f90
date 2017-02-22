@@ -83,7 +83,7 @@
 ! ----  read boundary data for magnetic field
 !
       if (    evo_B%iflag_scheme .gt. id_no_evolution                   &
-     &   .or. evo_A%iflag_scheme .gt. id_no_evolution) then
+     &   .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
 !
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
      &      magne_nod%num_bc, magne_nod%ibc_type)
@@ -98,7 +98,7 @@
 !
 ! ----  read boundary data for vector potential
 !
-      if (evo_A%iflag_scheme .gt. id_no_evolution) then
+      if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
 !
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
      &      a_potential_nod%num_bc, a_potential_nod%ibc_type)
@@ -114,7 +114,7 @@
 ! ----  read boundary data for current density
 !
       if (     evo_B%iflag_scheme .gt. id_no_evolution                  &
-     &    .or. evo_A%iflag_scheme .gt. id_no_evolution) then
+     &    .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
 !
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
      &      current_nod%num_bc, current_nod%ibc_type)

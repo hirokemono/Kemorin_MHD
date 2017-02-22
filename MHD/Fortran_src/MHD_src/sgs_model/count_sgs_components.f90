@@ -148,7 +148,7 @@
         end if
       end if
 !
-      if (evo_A%iflag_scheme .gt. id_no_evolution) then
+      if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
           sgs_coefs%num_field = sgs_coefs%num_field + 1
           sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 3
@@ -253,7 +253,7 @@
         end if
        end if
 !
-       if (evo_A%iflag_scheme .gt. id_no_evolution) then
+       if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
          if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
            icomp_sgs%i_induction = i
            ifld_sgs%i_induction =  j

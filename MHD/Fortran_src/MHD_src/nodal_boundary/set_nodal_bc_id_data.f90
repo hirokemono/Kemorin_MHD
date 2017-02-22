@@ -100,7 +100,7 @@
       end if
 !
       if    (evo_B%iflag_scheme .gt. id_no_evolution                    &
-     &  .or. evo_A%iflag_scheme .gt. id_no_evolution) then
+     &  .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1)  write(*,*) 'set_boundary_vect magne'
         call set_boundary_vect                                          &
      &     (nod_bcs%Bnod_bcs%nod_bc_b, iphys%i_magne, nod_fld)
@@ -112,7 +112,7 @@
      &     (nod_bcs%Bnod_bcs%nod_bc_j, iphys%i_current, nod_fld)
       end if
 !
-      if (evo_A%iflag_scheme .gt. id_no_evolution) then
+      if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         if (iflag_debug .eq.1) write(*,*) 'set_boundary_vect vect_p'
         call set_boundary_vect                                          &
      &     (nod_bcs%Bnod_bcs%nod_bc_a, iphys%i_vecp, nod_fld)

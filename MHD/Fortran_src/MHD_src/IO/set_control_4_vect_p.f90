@@ -48,7 +48,7 @@
       integer (kind = kint) :: i
 !
 !
-      if (evo_A%iflag_scheme .eq. id_no_evolution) then
+      if (cd_prop%iflag_Aevo_scheme .eq. id_no_evolution) then
         a_potential_nod%num_bc =  0
         a_potential_surf%num_bc = 0
       else

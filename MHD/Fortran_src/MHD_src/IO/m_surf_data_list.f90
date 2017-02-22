@@ -92,13 +92,13 @@
       end if
 !
       if    (evo_B%iflag_scheme .gt. id_no_evolution                    &
-     &  .or. evo_A%iflag_scheme .gt. id_no_evolution) then
+     &  .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         if(magne_surf%num_bc .gt. 0)   call deallocate_magne_surf_ctl
         if(current_surf%num_bc .gt. 0) call deallocate_current_surf_ctl
         if(e_potential_surf%num_bc.gt.0) call deallocate_magp_surf_ctl
       end if
 !
-      if (evo_A%iflag_scheme .gt. id_no_evolution) then
+      if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         if(a_potential_surf%num_bc.gt.0) call deallocate_vecp_surf_ctl
       end if
 ! 

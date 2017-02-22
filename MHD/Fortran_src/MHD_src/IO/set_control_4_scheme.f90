@@ -106,7 +106,7 @@
           end if
 !
           if     (evo_B%iflag_scheme .gt. id_no_evolution               &
-     &       .or. evo_A%iflag_scheme .gt. id_no_evolution) then
+     &       .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
             if (mevo_ctl%eps_4_magne_ctl%iflag .eq. 0) then
               e_message                                                 &
      &         = 'Set convergence area for magnetic iteration'

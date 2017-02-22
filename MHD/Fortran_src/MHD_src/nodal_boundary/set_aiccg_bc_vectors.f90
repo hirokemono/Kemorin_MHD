@@ -128,7 +128,7 @@
       end if
 !
       if     (evo_B%iflag_scheme .gt. id_no_evolution                   &
-     &   .or. evo_A%iflag_scheme .gt. id_no_evolution) then
+     &   .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         call set_aiccg_bc_scalar_nod(num_t_linear, ele,                 &
      &      node_bcs%Bnod_bcs%nod_bc_f, djds_tbl_l, mat_magp)
 !
@@ -137,7 +137,7 @@
      &       (ele, node_bcs%Bnod_bcs%nod_bc_b, djds_tbl, mat_magne)
         end if
 !
-        if (evo_A%iflag_scheme .ge. id_Crank_nicolson) then
+        if (cd_prop%iflag_Aevo_scheme .ge. id_Crank_nicolson) then
           call set_aiccg_bc_vector_nod                                  &
      &       (ele, node_bcs%Bnod_bcs%nod_bc_a, djds_tbl, mat_magne)
         end if

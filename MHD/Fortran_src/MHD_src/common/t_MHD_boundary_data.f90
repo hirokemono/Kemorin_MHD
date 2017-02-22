@@ -74,13 +74,13 @@
       end if
 !
       if     (evo_B%iflag_scheme .gt. id_no_evolution                   &
-     &   .or. evo_A%iflag_scheme .gt. id_no_evolution) then
+     &   .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         call alloc_surf_vector(surf_bcs%Bsf_bcs)
         call alloc_surf_vector(surf_bcs%Jsf_bcs)
         call alloc_surf_potential(surf_bcs%Fsf_bcs)
       end if
 !
-      if (evo_A%iflag_scheme .gt. id_no_evolution) then
+      if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         call alloc_surf_data_velo(surf_bcs%Asf_bcs)
       end if
 ! 

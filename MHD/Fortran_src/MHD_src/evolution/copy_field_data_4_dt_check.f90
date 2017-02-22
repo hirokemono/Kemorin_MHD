@@ -78,7 +78,7 @@
       end if
 !
 !
-      if(evo_A%iflag_scheme .gt. id_no_evolution) then
+      if(cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         if( (iphys%i_chk_uxb*iphys%i_vecp) .gt. izero) then
           call copy_vector_component(nod_fld,                           &
      &        iphys%i_vecp, iphys%i_chk_uxb)

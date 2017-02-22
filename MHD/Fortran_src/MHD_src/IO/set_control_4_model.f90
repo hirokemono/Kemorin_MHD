@@ -113,7 +113,7 @@
         else if (tmpchara .eq. fhd_magne ) then
           evo_B%iflag_scheme =  iflag_scheme
         else if (tmpchara .eq. fhd_vecp ) then
-          evo_A%iflag_scheme = iflag_scheme
+          cd_prop%iflag_Aevo_scheme = iflag_scheme
         end if
       end do
 !
@@ -125,7 +125,7 @@
      &    .and. evo_T%iflag_scheme .eq. id_no_evolution                 &
      &    .and. evo_C%iflag_scheme .eq. id_no_evolution                 &
      &    .and. evo_B%iflag_scheme .eq. id_no_evolution                 &
-     &    .and. evo_A%iflag_scheme .eq. id_no_evolution) then
+     &    .and. cd_prop%iflag_Aevo_scheme .eq. id_no_evolution) then
             e_message = 'Turn on field for time integration'
         call calypso_MPI_abort(ierr_evo, e_message)
       end if
@@ -135,7 +135,7 @@
         write(*,*) 'iflag_t_evo_4_temp     ', evo_T%iflag_scheme
         write(*,*) 'iflag_t_evo_4_composit ', evo_C%iflag_scheme
         write(*,*) 'iflag_t_evo_4_magne    ', evo_B%iflag_scheme
-        write(*,*) 'iflag_t_evo_4_vect_p   ', evo_A%iflag_scheme
+        write(*,*) 'iflag_t_evo_4_vect_p   ', cd_prop%iflag_Aevo_scheme
       end if
 !
 !   set control for reference temperature 
@@ -194,7 +194,8 @@
       call set_implicit_coefs(mevo_ctl%coef_imp_b_ctl,                  &
      &    evo_B%iflag_scheme, cd_prop1%coef_imp, cd_prop1%coef_exp)
       call set_implicit_coefs(mevo_ctl%coef_imp_b_ctl,                  &
-     &    evo_A%iflag_scheme, cd_prop1%coef_imp, cd_prop1%coef_exp)
+     &    cd_prop%iflag_Aevo_scheme, cd_prop1%coef_imp,                 &
+     &    cd_prop1%coef_exp)
       call set_implicit_coefs(mevo_ctl%coef_imp_c_ctl,                  &
      &    evo_C%iflag_scheme, cp_prop1%coef_imp, cp_prop1%coef_exp)
 !

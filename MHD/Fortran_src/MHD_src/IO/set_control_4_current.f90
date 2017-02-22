@@ -47,7 +47,7 @@
 !
 !
       if (      evo_B%iflag_scheme .eq. id_no_evolution                 &
-     &   .and.  evo_A%iflag_scheme .eq. id_no_evolution) then
+     &   .and.  cd_prop%iflag_Aevo_scheme .eq. id_no_evolution) then
         current_nod%num_bc =  0
         current_surf%num_bc = 0
       else

@@ -75,7 +75,7 @@
       end if
 !
 !
-      if(evo_A%iflag_scheme .gt. id_no_evolution) then
+      if(cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         if( (iphys%i_vecp*iphys%i_chk_uxb) .gt. izero) then
           flex_data%num_fld = flex_data%num_fld + 1
           flex_data%ntot_comp = flex_data%ntot_comp + 3
@@ -139,7 +139,7 @@
       end if
 !
 !
-      if(evo_A%iflag_scheme .gt. id_no_evolution) then
+      if(cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         if( (iphys%i_vecp*iphys%i_chk_uxb) .gt. izero) then
           icou = icou + 1
           flex_data%i_drmax_b = flex_data%istack_comp(icou-1) + 1

@@ -92,14 +92,14 @@
      &       Cmatrix%MG_DJDS_table, Cmatrix%mat_MG_DJDS)
       end if
 !
-      if    (evo_A%iflag_scheme .gt. id_no_evolution                    &
+      if    (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution             &
      &  .or. evo_B%iflag_scheme .gt. id_no_evolution) then
         call write_MHD_djds_mat11(fhead_magp_mat, Fmatrix%nlevel_MG,    &
      &       Fmatrix%MG_comm_table, Fmatrix%MG_DJDS_table,              &
      &       Fmatrix%mat_MG_DJDS)
       end if
 !
-      if    (evo_A%iflag_scheme .gt. id_no_evolution                    &
+      if    (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution             &
      &  .or. evo_B%iflag_scheme .gt. id_no_evolution) then
         call write_MHD_djds_mat33(fhead_magne_mat, Bmatrix%nlevel_MG,   &
      &      Bmatrix%MG_comm_table, Bmatrix%MG_DJDS_table,               &

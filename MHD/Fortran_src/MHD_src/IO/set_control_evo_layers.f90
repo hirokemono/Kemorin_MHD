@@ -60,7 +60,7 @@
         call set_fluid_layer_egrp_name(earea_ctl, FEM_prm)
 !
         if     (evo_B%iflag_scheme .eq. id_no_evolution                 &
-     &    .and. evo_A%iflag_scheme .eq. id_no_evolution) then
+     &    .and. cd_prop%iflag_Aevo_scheme .eq. id_no_evolution) then
           call alloc_area_group_name(ione, FEM_prm%condutive_group)
           FEM_prm%condutive_group%group_name = 'none'
 !
