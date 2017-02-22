@@ -52,7 +52,7 @@
 !
 ! ----  read boundary data for temperature
 !
-      if ( evo_T%iflag_scheme .gt. id_no_evolution) then
+      if ( ht_prop%iflag_scheme .gt. id_no_evolution) then
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
      &      temp_nod%num_bc, temp_nod%ibc_type)
         call set_serch_boundary_file_flag(iflag_boundary_file,          &

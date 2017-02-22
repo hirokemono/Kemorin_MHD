@@ -49,7 +49,7 @@
 !
 !
       if       (fl_prop%iflag_scheme .eq. id_no_evolution               &
-     &    .and. evo_T%iflag_scheme .eq. id_no_evolution                 &
+     &    .and. ht_prop%iflag_scheme .eq. id_no_evolution               &
      &    .and. cp_prop%iflag_scheme .eq. id_no_evolution) then
           call alloc_area_group_name(ione, FEM_prm%fluid_group)
           FEM_prm%fluid_group%group_name = 'none'

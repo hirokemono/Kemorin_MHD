@@ -86,7 +86,7 @@
         call cal_fdm2_CMB_free_vt(sph_rj%radius_1d_rj_r(kst:ked))
       end if
 !
-      if (evo_T%iflag_scheme .gt. id_no_evolution) then
+      if (ht_prop%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_temp_sph'
         call set_sph_bc_temp_sph(sph_rj, radial_rj_grp)
         call cal_fdm_coefs_4_BCs                                       &
@@ -135,7 +135,7 @@
         write(*,*) 'sph_bc_C%iflag_cmb', sph_bc_C%kr_out,               &
      &          sph_bc_C%iflag_cmb
 !
-        if (evo_T%iflag_scheme .gt. id_no_evolution) then
+        if (ht_prop%iflag_scheme .gt. id_no_evolution) then
           call check_sph_boundary_spectra(fhd_temp,                     &
      &        sph_rj%nidx_rj(2), sph_rj%idx_gl_1d_rj_j, sph_bc_T)
         end if
@@ -155,7 +155,7 @@
         if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
           call check_fdm_coefs_4_BC2(fhd_magne, sph_bc_B)
         end if
-        if (evo_T%iflag_scheme .gt. id_no_evolution) then
+        if (ht_prop%iflag_scheme .gt. id_no_evolution) then
           call check_fdm_coefs_4_BC2(fhd_temp,  sph_bc_T)
         end if
         if (cp_prop%iflag_scheme .gt. id_no_evolution) then

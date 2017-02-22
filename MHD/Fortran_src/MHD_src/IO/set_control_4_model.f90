@@ -106,7 +106,7 @@
         if (tmpchara .eq. fhd_velo ) then
           fl_prop%iflag_scheme =   iflag_scheme
         else if (tmpchara .eq. fhd_temp ) then
-          evo_T%iflag_scheme =   iflag_scheme
+          ht_prop%iflag_scheme =   iflag_scheme
         else if (tmpchara .eq. fhd_light ) then
           cp_prop%iflag_scheme =   iflag_scheme
         else if (tmpchara .eq. fhd_magne ) then
@@ -121,7 +121,7 @@
       end if
 !
       if       (fl_prop%iflag_scheme .eq. id_no_evolution               &
-     &    .and. evo_T%iflag_scheme .eq. id_no_evolution                 &
+     &    .and. ht_prop%iflag_scheme .eq. id_no_evolution               &
      &    .and. cp_prop%iflag_scheme .eq. id_no_evolution               &
      &    .and. cd_prop%iflag_Bevo_scheme .eq. id_no_evolution          &
      &    .and. cd_prop%iflag_Aevo_scheme .eq. id_no_evolution) then
@@ -131,7 +131,7 @@
 !
       if (iflag_debug .ge. iflag_routine_msg) then
         write(*,*) 'iflag_t_evo_4_velo     ', fl_prop%iflag_scheme
-        write(*,*) 'iflag_t_evo_4_temp     ', evo_T%iflag_scheme
+        write(*,*) 'iflag_t_evo_4_temp     ', ht_prop%iflag_scheme
         write(*,*) 'iflag_t_evo_4_composit ', cp_prop%iflag_scheme
         write(*,*) 'iflag_t_evo_4_magne    ', cd_prop%iflag_Bevo_scheme
         write(*,*) 'iflag_t_evo_4_vect_p   ', cd_prop%iflag_Aevo_scheme
@@ -189,7 +189,7 @@
       call set_implicit_coefs(mevo_ctl%coef_imp_v_ctl,                  &
      &    fl_prop%iflag_scheme, fl_prop%coef_imp, fl_prop%coef_exp)
       call set_implicit_coefs(mevo_ctl%coef_imp_t_ctl,                  &
-     &    evo_T%iflag_scheme, ht_prop1%coef_imp, ht_prop1%coef_exp)
+     &    ht_prop%iflag_scheme, ht_prop%coef_imp, ht_prop%coef_exp)
       call set_implicit_coefs(mevo_ctl%coef_imp_b_ctl,                  &
      &    cd_prop%iflag_Bevo_scheme, cd_prop1%coef_imp,                 &
      &    cd_prop1%coef_exp)
@@ -197,13 +197,13 @@
      &    cd_prop%iflag_Aevo_scheme, cd_prop1%coef_imp,                 &
      &    cd_prop1%coef_exp)
       call set_implicit_coefs(mevo_ctl%coef_imp_c_ctl,                  &
-     &    cp_prop%iflag_scheme, cp_prop1%coef_imp, cp_prop1%coef_exp)
+     &    cp_prop%iflag_scheme, cp_prop%coef_imp, cp_prop%coef_exp)
 !
       if (iflag_debug .ge. iflag_routine_msg) then
-        write(*,*) 'coef_imp_v ', fl_prop1%coef_imp
-        write(*,*) 'coef_imp_t ', ht_prop1%coef_imp
-        write(*,*) 'coef_imp_b ', cd_prop1%coef_imp
-        write(*,*) 'coef_imp_c ', cp_prop1%coef_imp
+        write(*,*) 'coef_imp_v ', fl_prop%coef_imp
+        write(*,*) 'coef_imp_t ', ht_prop%coef_imp
+        write(*,*) 'coef_imp_b ', cd_prop%coef_imp
+        write(*,*) 'coef_imp_c ', cp_prop%coef_imp
       end if
 !
       end subroutine s_set_control_4_crank

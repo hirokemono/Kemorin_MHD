@@ -78,7 +78,7 @@
      &     (mesh%node, nod_bcs%Vnod_bcs, iphys%i_velo, nod_fld)
       end if
 !
-      if (evo_T%iflag_scheme .gt. id_no_evolution) then
+      if (ht_prop%iflag_scheme .gt. id_no_evolution) then
         if (ref_param_T1%iflag_reference .ne. id_no_ref_temp) then
           call set_fixed_bc_per_scalar                                  &
      &       (mesh%node%numnod, nod_fld%ntot_phys,                      &

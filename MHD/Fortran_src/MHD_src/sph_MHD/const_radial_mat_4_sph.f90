@@ -131,7 +131,7 @@
      &     (fl_prop, sph_rj, r_2nd, g_sph_rj, band_p_poisson)
       end if
 !
-      if (evo_T%iflag_scheme .ge. id_Crank_nicolson) then
+      if (ht_prop%iflag_scheme .ge. id_Crank_nicolson) then
           if(iflag_debug .gt. 0)                                        &
      &          write(*,*) 'const_radial_mat_4_temp_sph'
         write(band_temp_evo%mat_name,'(a)') 'Temperature_evolution'
@@ -185,7 +185,7 @@
      &      band_p_poisson%mat, band_p00_poisson)
       end if
 !
-      if (evo_T%iflag_scheme .ge. id_Crank_nicolson) then
+      if (ht_prop%iflag_scheme .ge. id_Crank_nicolson) then
           if(i_debug .gt. 0) write(*,*) 'const_radial_mat_temp00_sph'
         write(band_temp_evo%mat_name,'(a)')                             &
      &                         'average_temperature_w_center'

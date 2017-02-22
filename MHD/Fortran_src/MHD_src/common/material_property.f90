@@ -243,7 +243,7 @@
 !
 !    For thermal
 !
-      if (evo_T%iflag_scheme .gt. id_no_evolution) then
+      if (ht_prop%iflag_scheme .gt. id_no_evolution) then
 !
         ht_prop%coef_advect =  one
         ht_prop%coef_diffuse = one
@@ -268,7 +268,7 @@
       end if
 !
       if (my_rank .eq. 0) then
-        if (evo_T%iflag_scheme .gt. id_no_evolution) then
+        if (ht_prop%iflag_scheme .gt. id_no_evolution) then
           write(*,*) 'coefficient for temperature:         ',           &
      &              ht_prop%coef_advect
           write(*,*) 'coefficient for thermal diffusion:   ',           &

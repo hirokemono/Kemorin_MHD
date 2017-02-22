@@ -64,7 +64,7 @@
       type(surface_boundarty_conditions), intent(inout) :: surf_bcs
 !
 !
-      if (evo_T%iflag_scheme .gt. id_no_evolution) then
+      if (ht_prop%iflag_scheme .gt. id_no_evolution) then
         call alloc_surf_data_scalar(surf_bcs%Tsf_bcs)
       end if
 !

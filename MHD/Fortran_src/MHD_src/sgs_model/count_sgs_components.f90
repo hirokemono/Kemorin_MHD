@@ -117,7 +117,7 @@
 !
       sgs_coefs%num_field = 0
       sgs_coefs%ntot_comp = 0
-      if (evo_T%iflag_scheme .gt. id_no_evolution) then
+      if (ht_prop%iflag_scheme .gt. id_no_evolution) then
         if (SGS_param%iflag_SGS_h_flux .ne. id_SGS_none) then
           sgs_coefs%num_field = sgs_coefs%num_field + 1
           sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 3
@@ -202,7 +202,7 @@
        j = 1
        id = 1
        jd = 1
-       if (evo_T%iflag_scheme .gt. id_no_evolution) then
+       if (ht_prop%iflag_scheme .gt. id_no_evolution) then
          if (SGS_param%iflag_SGS_h_flux .ne. id_SGS_none) then
            icomp_sgs%i_heat_flux = i
            ifld_sgs%i_heat_flux =  j

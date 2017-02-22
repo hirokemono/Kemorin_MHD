@@ -47,7 +47,7 @@
       integer(kind = kint) :: i
 !
 !
-      if (evo_T%iflag_scheme .eq. id_no_evolution) then
+      if (ht_prop%iflag_scheme .eq. id_no_evolution) then
         temp_nod%num_bc =    0
         h_flux_surf%num_bc = 0
       else

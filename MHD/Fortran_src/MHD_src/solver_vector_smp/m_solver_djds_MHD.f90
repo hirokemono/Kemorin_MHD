@@ -182,7 +182,7 @@
      &     write(12,*) 'eps_4_velo', eps_4_velo_crank
       end if
 !
-      if (evo_T%iflag_scheme .ge. id_Crank_nicolson) then
+      if (ht_prop%iflag_scheme .ge. id_Crank_nicolson) then
         eps_4_temp_crank = eps_crank * ht_prop%coef_diffuse * dt**2
         if(iflag_debug.eq.1)                                            &
      &     write(12,*) 'eps_4_temp_crank', eps_4_temp_crank

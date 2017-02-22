@@ -44,7 +44,7 @@
 !
 !    For thermal
 !
-      if (evo_T%iflag_scheme .gt. id_no_evolution) then
+      if (ht_prop%iflag_scheme .gt. id_no_evolution) then
         call alloc_temp_diff_MHD_AMG(numele, ak_MHD)
         ak_MHD%ak_d_temp(1:numele) = ht_prop%coef_diffuse
       end if

@@ -30,7 +30,7 @@
 !>      TIme evolution parameters for composition variation
       type(time_evolution_params), save :: evo_comp
 !
-!  cp_prop%iflag_scheme
+!  ht_prop%iflag_scheme
 !
 !  Parameters for FEM dynamo
 !

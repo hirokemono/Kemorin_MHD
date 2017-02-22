@@ -87,7 +87,7 @@
       end if
 !
 !
-      if( (iphys%i_h_flux * evo_T%iflag_scheme) .gt. 0) then
+      if( (iphys%i_h_flux * ht_prop%iflag_scheme) .gt. 0) then
         call pole_fld_cst_vec_scalar_prod                               &
      &     (node%numnod, node%internal_node, node%xx,                   &
      &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), cd_prop%coef_induct, &

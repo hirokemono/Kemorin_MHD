@@ -122,7 +122,7 @@
      &         (s3df_ctl%fluid_filter_grp_ctl, filter_param%fluid)
 !
 !
-        if (evo_T%iflag_scheme .gt. id_no_evolution) then
+        if (ht_prop%iflag_scheme .gt. id_no_evolution) then
           filter_param%iflag_heat_filtering                             &
      &       = filter_area_4_each_field(s3df_ctl%heat_filter_ctl)
         end if

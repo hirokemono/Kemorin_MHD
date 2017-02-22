@@ -76,7 +76,7 @@
         call cal_diff_induction_MHD_adams(cd_prop%coef_exp,             &
      &      ipol, itor, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
-      if(evo_T%iflag_scheme .gt.     id_no_evolution) then
+      if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
         call sel_scalar_diff_adv_src_adams                              &
      &     (sph_bc_T%kr_in, sph_bc_T%kr_out,                            &
      &      ipol%i_t_diffuse, ipol%i_h_advect, ipol%i_heat_source,      &
@@ -121,7 +121,7 @@
      &      rj_fld%d_fld)
       end if
 !
-      if(evo_T%iflag_scheme .gt.     id_no_evolution) then
+      if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
         call sel_scalar_diff_adv_src_euler                              &
      &     (sph_bc_T%kr_in, sph_bc_T%kr_out,                            &
      &      ipol%i_t_diffuse, ipol%i_h_advect, ipol%i_heat_source,      &
@@ -145,7 +145,7 @@
           call set_ini_adams_inertia(ipol, itor,                        &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
-        if(evo_T%iflag_scheme .gt.     id_no_evolution) then
+        if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
           call sel_ini_adams_scalar_w_src                               &
      &       (sph_bc_T%kr_in, sph_bc_T%kr_out, ipol%i_h_advect,         &
      &        ipol%i_heat_source, ipol%i_pre_heat,                      &

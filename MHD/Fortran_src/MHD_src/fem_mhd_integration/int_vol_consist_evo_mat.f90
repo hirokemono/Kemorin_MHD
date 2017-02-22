@@ -91,7 +91,7 @@
      &        mat_velo%num_non0, mat_velo%aiccg)
         end if
 !
-        if ( evo_T%iflag_scheme .eq. id_Crank_nicolson_cmass            &
+        if ( ht_prop%iflag_scheme .eq. id_Crank_nicolson_cmass          &
      &      .and. ht_prop%coef_advect.gt.0.0d0 ) then
           call add_skv1_to_crs_matrix11(mesh%ele, rhs_tbl,              &
      &        MG_mat_fl_q, k2, fem_wk%sk6,                              &

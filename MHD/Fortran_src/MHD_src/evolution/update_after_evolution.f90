@@ -248,7 +248,7 @@
 !
 !     ---- temperature update
 !
-      if ( evo_T%iflag_scheme .gt. id_no_evolution) then
+      if ( ht_prop%iflag_scheme .gt. id_no_evolution) then
         if( ref_param_T1%iflag_reference .ne. id_no_ref_temp) then
           if(iflag_debug.eq.1) write(*,*) 'cal_temperature_field theta'
           call cal_temperature_field                                    &
@@ -578,7 +578,7 @@
 !
 !     ---- temperature update
 !
-      if ( evo_T%iflag_scheme .gt. id_no_evolution) then
+      if ( ht_prop%iflag_scheme .gt. id_no_evolution) then
         if( ref_param_T1%iflag_reference .ne. id_no_ref_temp) then
           if (iflag_debug.eq.1) write(*,*) 'cal_temperature_field'
           call cal_temperature_field                                    &

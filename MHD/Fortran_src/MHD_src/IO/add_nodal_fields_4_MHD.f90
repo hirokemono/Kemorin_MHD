@@ -177,7 +177,7 @@
      &    .or. cd_prop%iflag_Aevo_scheme .ne. id_no_evolution) then
         call add_phys_name_ctl(fhd_pre_uxb, field_ctl)
       end if
-      if(evo_T%iflag_scheme .ne.  id_no_evolution) then
+      if(ht_prop%iflag_scheme .ne.  id_no_evolution) then
         call add_phys_name_ctl(fhd_pre_heat, field_ctl)
       end if
       if(cp_prop%iflag_scheme .ne.  id_no_evolution) then
@@ -206,7 +206,7 @@
         call add_phys_name_ctl(fhd_chk_uxb, field_ctl)
         call add_phys_name_ctl(fhd_chk_potential, field_ctl)
       end if
-      if(evo_T%iflag_scheme .ne.  id_no_evolution) then
+      if(ht_prop%iflag_scheme .ne.  id_no_evolution) then
         call add_phys_name_ctl(fhd_chk_heat, field_ctl)
       end if
       if(cp_prop%iflag_scheme .ne.  id_no_evolution) then
@@ -222,7 +222,7 @@
 !        call add_phys_name_ctl(fhd_chk_uxb_2, field_ctl)
 !        call add_phys_name_ctl(fhd_chk_potential_2, field_ctl)
 !      end if
-!      if(evo_T%iflag_scheme .ge. id_Crank_nicolson) then
+!      if(ht_prop%iflag_scheme .ge. id_Crank_nicolson) then
 !        call add_phys_name_ctl(fhd_chk_heat_2, field_ctl)
 !      end if
 !      if(cp_prop%iflag_scheme .ge. id_Crank_nicolson) then

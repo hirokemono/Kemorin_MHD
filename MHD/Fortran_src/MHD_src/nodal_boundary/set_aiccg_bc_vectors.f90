@@ -116,7 +116,7 @@
         end if
       end if
 !
-      if (evo_T%iflag_scheme .ge. id_Crank_nicolson) then
+      if (ht_prop%iflag_scheme .ge. id_Crank_nicolson) then
         call set_aiccg_bc_scalar_nod(ele%nnod_4_ele,                    &
      &      ele, node_bcs%Tnod_bcs%nod_bc_s,  djds_tbl_fl, mat_temp)
       end if

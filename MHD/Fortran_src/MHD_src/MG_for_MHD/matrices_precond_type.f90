@@ -83,7 +83,7 @@
      &      PRECOND_MG, sigma_diag)
       end if
 !
-      if (evo_T%iflag_scheme .ge. id_Crank_nicolson) then
+      if (ht_prop%iflag_scheme .ge. id_Crank_nicolson) then
         call precond_DJDS11_struct(np_smp, djds_tbl_fl, mat_temp,       &
      &     PRECOND_MG, sigma_diag)
       end if

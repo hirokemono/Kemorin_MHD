@@ -98,7 +98,7 @@
       end if
 !
 !
-      if( (f_trns%i_h_flux * evo_T%iflag_scheme) .gt. 0) then
+      if( (f_trns%i_h_flux * ht_prop%iflag_scheme) .gt. 0) then
         call cal_vec_scalar_prod_w_coef_smp                             &
      &     (sph_rtp%nnod_pole, ht_prop%coef_advect,                     &
      &      fls_pl(1,bs_trns%i_velo), fls_pl(1,bs_trns%i_temp),         &
