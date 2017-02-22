@@ -265,7 +265,7 @@
         call cal_temp_pre_lumped_crank(FEM_prm%iflag_temp_supg,         &
      &      cmt_param%iflag_c_temp, SGS_param%ifilter_final,            &
      &      i_field, iphys%i_pre_heat, ifld_diff%i_temp,                &
-     &      ak_d_temp, eps_4_temp_crank,                                &
+     &      ak_d_temp, FEM_prm%eps_4_temp_crank,                        &
      &      FEM_prm, nod_comm, node, ele, fluid, property, Tnod_bcs,    &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
      &      Tmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -273,7 +273,7 @@
         call cal_temp_pre_consist_crank                                 &
      &     (cmt_param%iflag_c_temp, SGS_param%ifilter_final,            &
      &      i_field, iphys%i_pre_heat, ifld_diff%i_temp,                &
-     &      ak_d_temp, eps_4_temp_crank,                                &
+     &      ak_d_temp, FEM_prm%eps_4_temp_crank,                        &
      &      FEM_prm, node, ele, fluid, property, Tnod_bcs, jac_3d,      &
      &      rhs_tbl, FEM_elens, diff_coefs, Tmatrix, MG_vector,         &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)

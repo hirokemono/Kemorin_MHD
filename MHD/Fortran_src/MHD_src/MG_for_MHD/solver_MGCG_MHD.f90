@@ -194,7 +194,7 @@
 !     &   ( node%internal_node, node%numnod, ntot_l, ntot_u,            &
 !     &     d_crs, al_crs, istack_l_crs, item_l_crs, au_crs,            &
 !     &     istack_u_crs, item_u_crs, b_vec(1), x_vec(1),               &
-!     &     precond_4_solver,1.0d0, 1.0d0, eps_4_temp_crank,            &
+!     &     precond_4_solver,1.0d0, 1.0d0, FEM_prm%eps_4_temp_crank,    &
 !     &     itr, ierr, my_rank,                                         &
 !     &     MG_comm(0)%num_neib, MG_comm(0)%id_neib,                    &
 !     &     MG_comm(0)%istack_import, MG_comm(0)%item_import,           &

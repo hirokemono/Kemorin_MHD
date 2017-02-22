@@ -74,8 +74,8 @@
 !      call check_crs_matrix_comps(my_rank, tbl_crs, mat_crs)
 !C
 !C-- ICCG computation
-      call transfer_crs_2_djds_matrix(node, nod_comm,                   &
-     &    tbl_crs, mat_crs, djds_tbl, djds_mat)
+      call transfer_crs_2_djds_matrix(node, nod_comm, tbl_crs, mat_crs, &
+     &    DJDS_param1, djds_tbl, djds_mat)
 !
       if (mat_crs%SOLVER_crs .eq. 'scalar'                              &
      &   .or. mat_crs%SOLVER_crs.eq.'SCALAR') then

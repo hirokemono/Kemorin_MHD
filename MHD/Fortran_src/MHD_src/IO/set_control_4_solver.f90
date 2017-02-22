@@ -11,10 +11,11 @@
 !!
 !!@verbatim
 !!      subroutine s_set_control_4_solver                               &
-!!     &         (iflag_scheme, mevo_ctl, CG_ctl, DJDS_param)
+!!     &         (iflag_scheme, mevo_ctl, CG_ctl, FEM_prm, DJDS_param)
 !!        type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
 !!        type(solver_control), intent(inout) :: CG_ctl
-!!      type(DJDS_poarameter), intent(inout) :: DJDS_param
+!!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
+!!        type(DJDS_poarameter), intent(inout) :: DJDS_param
 !!@endverbatim
 !
       module set_control_4_solver
@@ -32,13 +33,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_4_solver                                 &
-     &         (iflag_scheme, mevo_ctl, CG_ctl, DJDS_param)
+     &         (iflag_scheme, mevo_ctl, CG_ctl, FEM_prm, DJDS_param)
 !
       use calypso_mpi
       use m_error_IDs
       use m_iccg_parameter
       use t_iccg_parameter
       use m_ctl_parameter_Multigrid
+      use t_FEM_control_parameter
       use t_physical_property
       use t_ctl_data_4_solvers
       use t_ctl_data_mhd_evo_scheme
@@ -47,6 +49,7 @@
       integer (kind=kint), intent(in) :: iflag_scheme
       type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
       type(solver_control), intent(inout) :: CG_ctl
+      type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(DJDS_poarameter), intent(inout) :: DJDS_param
 !
 !   control for solvers
@@ -115,7 +118,8 @@
           end if
 !
           if(mevo_ctl%eps_B_crank_ctl%iflag .gt. 0) then
-            eps_4_magne_crank = mevo_ctl%eps_B_crank_ctl%realvalue
+            FEM_prm%eps_4_magne_crank                                   &
+     &               = mevo_ctl%eps_B_crank_ctl%realvalue
           end if
         end if
 !
@@ -141,7 +145,7 @@
           write(*,*) 'ordering_name: , iflag_ordering ',                &
      &      trim(DJDS_param%ordering_name), DJDS_param%iflag_ordering
           write(*,*) 'eps_4_crank:       ', eps_crank
-          write(*,*) 'eps_4_magne_crank: ', eps_4_magne_crank
+          write(*,*) 'eps_4_magne_crank: ', FEM_prm%eps_4_magne_crank
           write(*,*) 'method_4_velo:     ', trim(method_4_velo)
           write(*,*) 'precond_4_crank:   ', trim(precond_4_crank)
         end if

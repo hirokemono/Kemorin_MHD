@@ -67,8 +67,17 @@
         integer (kind=kint) :: maxiter_coulomb
 !>        Error torrance for Poisson equation
         real (kind=kreal) :: eps_4_stokes
-!>        Error torrance for time integration
+!>        Error torrance for iteration of Coulomb gauge
         real (kind=kreal) :: eps_4_coulomb
+!
+!>        Error torrance for viscous diffusion matrix
+        real(kind=kreal)   :: eps_4_velo_crank =  zero
+!>        Error torrance for magnetic diffusion matrix
+        real(kind=kreal)   :: eps_4_magne_crank = zero
+!>        Error torrance for thermal diffusion matrix
+        real(kind=kreal)   :: eps_4_temp_crank =  zero
+!>        Error torrance for composition diffusion matrix
+        real(kind=kreal)   :: eps_4_comp_crank =  zero
 !
         type(area_group_name_list) :: fluid_group
         type(area_group_name_list) :: condutive_group

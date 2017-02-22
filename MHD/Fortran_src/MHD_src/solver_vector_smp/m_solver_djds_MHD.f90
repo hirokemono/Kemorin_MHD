@@ -13,6 +13,7 @@
 !
       use m_precision
       use m_iccg_parameter
+      use t_FEM_control_parameter
       use t_comm_table
       use t_solver_djds
       use t_vector_for_solver
@@ -51,7 +52,8 @@
       type(node_data), intent(in) :: node
 !
 !
-      call set_residual_4_crank(fl_prop1, cd_prop1, ht_prop1, cp_prop1)
+      call set_residual_4_crank(fl_prop1, cd_prop1, ht_prop1, cp_prop1, &
+     &    FEM_prm1)
 !
       call alloc_aiccg_matrices                                         &
      &   (node, fl_prop1, cd_prop1, ht_prop1, cp_prop1,                 &
@@ -163,44 +165,52 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_residual_4_crank                                   &
-     &         (fl_prop, cd_prop, ht_prop, cp_prop)
+     &         (fl_prop, cd_prop, ht_prop, cp_prop, FEM_prm)
 !
       use m_machine_parameter
       use m_t_int_parameter
       use m_iccg_parameter
 !
+      use t_FEM_control_parameter
       use t_physical_property
 !
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
       type(scalar_property), intent(in) :: ht_prop, cp_prop
 !
+      type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
+!
+!
       if (fl_prop%iflag_scheme .ge. id_Crank_nicolson) then
-        eps_4_velo_crank = eps_crank * fl_prop%coef_diffuse * dt**2
+        FEM_prm%eps_4_velo_crank                                        &
+     &      = eps_crank * fl_prop%coef_diffuse * dt**2
         if(iflag_debug.eq.1)                                            &
-     &     write(12,*) 'eps_4_velo', eps_4_velo_crank
+     &     write(12,*) 'eps_4_velo', FEM_prm%eps_4_velo_crank
       end if
 !
       if (ht_prop%iflag_scheme .ge. id_Crank_nicolson) then
-        eps_4_temp_crank = eps_crank * ht_prop%coef_diffuse * dt**2
+        FEM_prm%eps_4_temp_crank                                        &
+     &      = eps_crank * ht_prop%coef_diffuse * dt**2
         if(iflag_debug.eq.1)                                            &
-     &     write(12,*) 'eps_4_temp_crank', eps_4_temp_crank
+     &     write(12,*) 'eps_4_temp_crank', FEM_prm%eps_4_temp_crank
       end if
 !
       if (   cd_prop%iflag_Bevo_scheme .ge. id_Crank_nicolson           &
      &  .or. cd_prop%iflag_Aevo_scheme .ge. id_Crank_nicolson) then
 !
-        if(eps_4_magne_crank .le. 0.0d0) then
-          eps_4_magne_crank = eps_crank * cd_prop%coef_diffuse * dt**2
+        if(FEM_prm%eps_4_magne_crank .le. 0.0d0) then
+          FEM_prm%eps_4_magne_crank                                     &
+     &        = eps_crank * cd_prop%coef_diffuse * dt**2
         end if
         if(iflag_debug.eq.1)                                            &
-     &     write(12,*) 'eps_4_magne_crank', eps_4_magne_crank
+     &     write(12,*) 'eps_4_magne_crank', FEM_prm%eps_4_magne_crank
       end if
 !
       if (cp_prop%iflag_scheme .ge. id_Crank_nicolson) then
-        eps_4_comp_crank = eps_crank * cp_prop%coef_diffuse * dt**2
+        FEM_prm%eps_4_comp_crank                                        &
+     &      = eps_crank * cp_prop%coef_diffuse * dt**2
         if(iflag_debug.eq.1)                                            &
-     &     write(12,*) 'iflag_t_evo_4_composit', cp_prop%iflag_scheme
+     &     write(12,*) 'eps_4_comp_crank', FEM_prm%eps_4_comp_crank
       end if
 !
       end subroutine set_residual_4_crank

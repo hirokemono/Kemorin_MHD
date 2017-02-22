@@ -155,7 +155,8 @@
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1)
 !
       call s_set_control_4_solver                                       &
-     &   (iflag_scheme, ctl_ctl%mevo_ctl, ctl_ctl%CG_ctl, DJDS_param1)
+     &   (iflag_scheme, ctl_ctl%mevo_ctl, ctl_ctl%CG_ctl,               &
+     &    FEM_prm, DJDS_param1)
       call set_control_4_FEM_params(ctl_ctl%mevo_ctl, ctl_ctl%fint_ctl, &
      &    fl_prop1, cd_prop1, FEM_prm)
 !
