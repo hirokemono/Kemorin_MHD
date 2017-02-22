@@ -4,7 +4,7 @@
 !        programmed H.Matsui on Dec., 2008
 !
 !!      subroutine s_initialize_4_MHD_AMG(FEM_prm, node_1st, ele_1st,   &
-!!     &          ifld_diff, diff_coefs, MHD_matrices)
+!!     &          ifld_diff, diff_coefs, DJDS_param, MHD_matrices)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(node_data), intent(inout) :: node_1st
 !!        type(element_data), intent(inout) :: ele_1st
@@ -15,6 +15,7 @@
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(SGS_terms_address), intent(in) :: ifld_diff
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
+!!        type(DJDS_poarameter), intent(in) :: DJDS_param
 !!        type(MHD_MG_matrices), intent(inout) :: MHD_matrices
 !
       module initialize_4_MHD_AMG
@@ -28,6 +29,7 @@
 !
       use m_physical_property
       use t_FEM_control_parameter
+      use t_iccg_parameter
       use t_solver_djds_MHD
       use t_material_property
       use t_SGS_model_coefs
@@ -43,7 +45,7 @@
 ! ---------------------------------------------------------------------
 !
       subroutine s_initialize_4_MHD_AMG(FEM_prm, node_1st, ele_1st,     &
-     &          ifld_diff, diff_coefs, MHD_matrices)
+     &          ifld_diff, diff_coefs, DJDS_param, MHD_matrices)
 !
       use t_geometry_data
       use t_edge_data
@@ -73,6 +75,7 @@
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_terms_address), intent(in) :: ifld_diff
       type(SGS_coefficients_type), intent(in) :: diff_coefs
+      type(DJDS_poarameter), intent(in) :: DJDS_param
 !
       type(node_data), intent(inout) :: node_1st
       type(element_data), intent(inout) :: ele_1st
@@ -237,7 +240,7 @@
      &            's_set_djds_connectivity_type', i_level
           call s_set_djds_connectivity_type                             &
      &       (MG_mesh(i_level)%mesh, MG_mpi(i_level),                   &
-     &        MG_next_table(i_level),                                   &
+     &        MG_next_table(i_level), DJDS_param,                       &
      &        MHD_matrices%MG_DJDS_table(i_level) )
         else
           if(iflag_debug .gt. 0) write(*,*)                             &
@@ -257,10 +260,10 @@
      &   (MG_mesh, MG_MHD_mesh, ele_1st, MHD_matrices)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_MG_djds_connect_type'
-      call set_MG_djds_connect_type(MHD_matrices)
+      call set_MG_djds_connect_type(DJDS_param, MHD_matrices)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_MG_djds_conn_lin_type_MHD'
-      call set_MG_djds_conn_lin_type_MHD(MHD_matrices)
+      call set_MG_djds_conn_lin_type_MHD(DJDS_param, MHD_matrices)
 !
 !     --------------------- 
 !

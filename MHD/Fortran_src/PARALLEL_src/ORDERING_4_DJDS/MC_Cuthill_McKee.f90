@@ -13,10 +13,10 @@
 !     &          IAL_crs, IAU_crs, NPL_mc, NPU_mc, NNL_mc, NNU_mc,      &
 !     &          INL_mc, INU_mc, IAL_mc, IAU_mc,                        &
 !     &          NO, IVECT, IV1, IV2, IW)
-!      subroutine sMC (NP, N, NPL_crs, NPU_crs, INL_crs, INU_crs,       &
-!     &          IAL_crs, IAU_crs, NPL_mc, NPU_mc, NNL_mc, NNU_mc,      &
-!     &          INL_mc, INU_mc, IAL_mc, IAU_mc,                        &
-!     &          NO, IVECT, IV1, IV2, IW, NCOLORk)
+!      subroutine sMC(NCOLOR_in, NP, N,                                 &
+!     &          NPL_crs, NPU_crs, INL_crs, INU_crs, IAL_crs, IAU_crs,  &
+!     &          NPL_mc, NPU_mc, NNL_mc, NNU_mc, INL_mc, INU_mc,        &
+!     &          IAL_mc, IAU_mc, NO, IVECT, IV1, IV2, IW)
 !
 !      subroutine no_MC(NP, NPL_crs, NPU_crs, INL_crs, INU_crs,         &
 !     &          IAL_crs, IAU_crs, NPL_mc, NPU_mc, NNL_mc, NNU_mc,      &
@@ -90,10 +90,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sMC (NP, N, NPL_crs, NPU_crs, INL_crs, INU_crs,        &
-     &          IAL_crs, IAU_crs, NPL_mc, NPU_mc, NNL_mc, NNU_mc,       &
-     &          INL_mc, INU_mc, IAL_mc, IAU_mc,                         &
-     &          NO, IVECT, IV1, IV2, IW, NCOLORk)
+      subroutine sMC(NCOLOR_in, NP, N,                                  &
+     &          NPL_crs, NPU_crs, INL_crs, INU_crs, IAL_crs, IAU_crs,   &
+     &          NPL_mc, NPU_mc, NNL_mc, NNU_mc, INL_mc, INU_mc,         &
+     &          IAL_mc, IAU_mc, NO, IVECT, IV1, IV2, IW)
 !
       use Cuthill_McKee
 !
@@ -103,6 +103,7 @@
       integer(kind = kint), intent(in) :: INU_crs(0:NP)
       integer(kind = kint), intent(in) :: IAL_crs(NPL_crs)
       integer(kind = kint), intent(in) :: IAU_crs(NPU_crs)
+      integer(kind = kint), intent(in) :: NCOLOR_in
 !
       integer(kind = kint), intent(inout) :: NPL_mc, NPU_mc
       integer(kind = kint), intent(inout) :: NNL_mc(NP)
@@ -112,7 +113,7 @@
       integer(kind = kint), intent(inout) :: IAL_mc(NPL_mc)
       integer(kind = kint), intent(inout) :: IAU_mc(NPU_mc)
 !
-      integer(kind = kint), intent(inout) :: NO, NCOLORk
+      integer(kind = kint), intent(inout) :: NO
 !
       integer(kind = kint), intent(inout) :: IVECT(0:NP)
       integer(kind = kint), intent(inout) :: IV1(NP), IV2(NP)
@@ -124,7 +125,7 @@
 !C +---------------+
 !C===
       call set_MC_ordering(NP, N, NPL_crs, NPU_crs, INL_crs, INU_crs,   &
-     &    IAL_crs, IAU_crs, NO, IVECT, IV1, IV2, IW, NCOLORk)
+     &    IAL_crs, IAU_crs, NCOLOR_in, NO, IVECT, IV1, IV2, IW)
 !C
 !C +-----------------+
 !C | MATRIX transfer |

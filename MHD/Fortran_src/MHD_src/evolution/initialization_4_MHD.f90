@@ -323,7 +323,7 @@
 !
       if(solver_iflag(method_4_solver) .eq. iflag_mgcg) then
         call s_initialize_4_MHD_AMG(FEM_prm, mesh%node, mesh%ele,       &
-     &      ifld_diff, diff_coefs, MHD1_matrices)
+     &      ifld_diff, diff_coefs, DJDS_param1, MHD1_matrices)
       end if
 !
 !     --------------------- 

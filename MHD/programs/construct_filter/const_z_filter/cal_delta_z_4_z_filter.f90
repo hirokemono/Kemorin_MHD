@@ -3,8 +3,8 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine cal_delta_z(nod_comm, node, ele, edge, jac_1d,       &
-!!     &                       tbl_crs, mat_crs)
+!!      subroutine cal_delta_z(DJDS_param, nod_comm, node, ele, edge,   &
+!!     &                       jac_1d, tbl_crs, mat_crs)
 !
       module cal_delta_z_4_z_filter
 !
@@ -13,6 +13,7 @@
       use t_comm_table
       use t_geometry_data
       use t_edge_data
+      use t_iccg_parameter
       use t_crs_connect
       use t_crs_matrix
 !
@@ -26,8 +27,8 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine cal_delta_z(nod_comm, node, ele, edge, jac_1d,         &
-     &                       tbl_crs, mat_crs)
+      subroutine cal_delta_z(DJDS_param, nod_comm, node, ele, edge,     &
+     &                       jac_1d, tbl_crs, mat_crs)
 !
       use m_int_edge_vart_width
       use m_int_edge_data
@@ -38,6 +39,7 @@
       use int_edge_mass_mat_z_filter
       use set_matrices_4_z_filter
 !
+      type(DJDS_poarameter), intent(in) :: DJDS_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(inout) :: node
       type(element_data), intent(in) :: ele
@@ -74,7 +76,8 @@
        else
 !
          write(*,*) 'solve_crs_by_mass_z'
-         call solve_crs_by_mass_z(nod_comm, node, tbl_crs, mat_crs)
+         call solve_crs_by_mass_z                                       &
+     &      (DJDS_param, nod_comm, node, tbl_crs, mat_crs)
 !$omp workshare
          delta_z(1:node%numnod) = sol_mk_crs(1:node%numnod)
 !$omp end workshare
@@ -89,7 +92,8 @@
          call solve_delta_dz_LU(node%numnod)
        else
          write(*,*) 'solve_crs_by_mass_z2'
-         call  solve_crs_by_mass_z2(nod_comm, node, tbl_crs, mat_crs)
+         call  solve_crs_by_mass_z2                                     &
+     &      (DJDS_param, nod_comm, node, tbl_crs, mat_crs)
 !$omp workshare
          delta_dz(1:node%numnod) = sol_mk_crs(1:node%numnod)
 !$omp end workshare
@@ -103,7 +107,8 @@
           call solve_delta_d2z_LU(node%numnod)
        else
          write(*,*) 'solve_crs_by_mass_z2'
-         call  solve_crs_by_mass_z2(nod_comm, node, tbl_crs, mat_crs)
+         call  solve_crs_by_mass_z2                                     &
+     &      (DJDS_param, nod_comm, node, tbl_crs, mat_crs)
 !$omp workshare
          d2_dz(1:node%numnod) = sol_mk_crs(1:node%numnod)
 !$omp end workshare

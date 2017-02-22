@@ -5,7 +5,7 @@
 !
 !!      subroutine copy_paramters_4_djds
 !!      subroutine transfer_crs_2_djds_matrix(node, nod_comm, tbl_crs,  &
-!!     &          mat_crs, djds_tbl, djds_mat)
+!!     &          mat_crs, DJDS_param, djds_tbl, djds_mat)
 !      subroutine copy_matrix_2_djds_NN(tbl_crs, mat_crs, djds_tbl,     &
 !     &          NP, N, NB, num_mat_comp, aiccg)
 !
@@ -17,6 +17,7 @@
       use m_precision
 !
       use m_machine_parameter
+      use m_iccg_parameter
       use t_crs_matrix
 !
       implicit none
@@ -33,7 +34,6 @@
 !
       subroutine copy_paramters_4_djds(tbl_crs, mat_crs, djds_tbl)
 !
-       use m_iccg_parameter
        use t_solver_djds
        use t_crs_matrix
 !
@@ -60,10 +60,11 @@
 !  ---------------------------------------------------------------------
 !
       subroutine transfer_crs_2_djds_matrix(node, nod_comm, tbl_crs,    &
-     &          mat_crs, djds_tbl, djds_mat)
+     &          mat_crs, DJDS_param, djds_tbl, djds_mat)
 !
       use calypso_mpi
       use t_geometry_data
+      use t_iccg_parameter
       use t_solver_djds
       use t_vector_for_solver
 !
@@ -74,8 +75,9 @@
       type(node_data), intent(inout) :: node
       type(communication_table), intent(in) :: nod_comm
       type(CRS_matrix), intent(in) :: mat_crs
-      type(CRS_matrix_connect), intent(inout) :: tbl_crs
+      type(DJDS_poarameter), intent(in) :: DJDS_param
 !
+      type(CRS_matrix_connect), intent(inout) :: tbl_crs
       type(DJDS_ordering_table), intent(inout) :: djds_tbl
       type(DJDS_MATRIX), intent(inout) :: djds_mat
 !
@@ -95,7 +97,7 @@
        if (iflag_debug.eq.1) write(*,*) 's_reordering_djds_smp'
       call s_reordering_djds_smp(np_smp, node%numnod,                   &
      &    node%internal_node, node%istack_internal_smp,                 &
-     &    solver_C, tbl_crs, djds_tbl)
+     &    solver_C, tbl_crs, DJDS_param, djds_tbl)
 !C
 !C +--------------------------------------+
 !C | set new communication table 4 solver |

@@ -13,6 +13,7 @@
 !
       use m_vertical_filter_utils
 !
+      use m_iccg_parameter
       use t_crs_connect
       use t_crs_matrix
 !
@@ -50,7 +51,7 @@
 !C-- CNTL DATA
       call s_input_control_4_z_commute(z_filter_mesh%nod_comm,          &
      &    z_filter_mesh%node, z_filter_mesh%ele,                        &
-     &    surf_z_filter, edge_z_filter, mat_crs_z)
+     &    surf_z_filter, edge_z_filter, mat_crs_z, DJDS_param1)
 !C
 !C     set gauss points
 !C===
@@ -71,7 +72,8 @@
      &                            n_int, jac_z_l)
 !
 !
-      call cal_delta_z(z_filter_mesh%nod_comm, z_filter_mesh%node,      &
+      call cal_delta_z                                                  &
+     &   (DJDS_param1, z_filter_mesh%nod_comm, z_filter_mesh%node,      &
      &    z_filter_mesh%ele, edge_z_filter, jac_z_l,                    &
      &    tbl_crs_z, mat_crs_z)
 !

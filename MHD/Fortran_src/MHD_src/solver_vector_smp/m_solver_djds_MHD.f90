@@ -12,6 +12,7 @@
       module m_solver_djds_MHD
 !
       use m_precision
+      use m_iccg_parameter
       use t_comm_table
       use t_solver_djds
       use t_vector_for_solver
@@ -109,8 +110,9 @@
 !C +-------------------------------+
 !  +   set Matrix assemble table   +
 !C +-------------------------------+
-      call set_djds_whole_connectivity(nod_comm, node, solver_C,        &
-     &    next_tbl%neib_nod, MHD1_matrices%MG_DJDS_table(0))
+      call set_djds_whole_connectivity                                  &
+     &   (nod_comm, node, solver_C, next_tbl%neib_nod,                  &
+     &    DJDS_param1, MHD1_matrices%MG_DJDS_table(0))
 !
       call link_comm_tbl_types                                          &
      &   (nod_comm, MHD1_matrices%MG_comm_table(0))
@@ -133,16 +135,16 @@
 !
 !
       call set_djds_layer_connectivity(node, ele, ele%nnod_4_ele,       &
-     &    fluid%iele_start_fld, fluid%iele_end_fld,                     &
-     &    DJDS_comm_fl, solver_C, MHD1_matrices%MG_DJDS_fluid(0))
+     &    fluid%iele_start_fld, fluid%iele_end_fld, DJDS_comm_fl,       &
+     &    solver_C, DJDS_param1, MHD1_matrices%MG_DJDS_fluid(0))
 !
       if (ele%nnod_4_ele .ne. num_t_linear) then
         call set_djds_layer_connectivity(node, ele, num_t_linear,       &
      &      ione, ele%numele, MHD1_matrices%MG_comm_table(0), solver_C, &
-     &      MHD1_matrices%MG_DJDS_linear(0))
+     &      DJDS_param1, MHD1_matrices%MG_DJDS_linear(0))
         call set_djds_layer_connectivity(node, ele, num_t_linear,       &
-     &      fluid%iele_start_fld, fluid%iele_end_fld,                   &
-     &      DJDS_comm_fl, solver_C, MHD1_matrices%MG_DJDS_lin_fl(0))
+     &      fluid%iele_start_fld, fluid%iele_end_fld, DJDS_comm_fl,     &
+     &      solver_C, DJDS_param1, MHD1_matrices%MG_DJDS_lin_fl(0))
       else
         call link_djds_connect_structs                                  &
      &     (MHD1_matrices%MG_DJDS_table(0),                             &

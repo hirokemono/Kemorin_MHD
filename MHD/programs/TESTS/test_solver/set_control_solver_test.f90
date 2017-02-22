@@ -91,7 +91,7 @@
       mat_crs%REALARRAY_crs(2) = sigma_diag
       mat_crs%REALARRAY_crs(3) = sigma
 !
-      call set_control_4_DJDS_solver(CG_test_ctl%DJDS_ctl)
+      call set_control_4_DJDS_solver(CG_test_ctl%DJDS_ctl, DJDS_param1)
 !
       if (iflag_debug .eq. 1) then
         write(*,*) 'np_smp       ', np_smp
@@ -105,10 +105,6 @@
      &            mat_crs%REALARRAY_crs(2)
         write(*,*) 'REALARRAY_crs (sigma) ',                            &
      &            mat_crs%REALARRAY_crs(3)
-!
-        write(*,*) 'iflag_ordering', iflag_ordering
-        write(*,*) 'min_color', min_color
-        write(*,*) 'mc_color', mc_color
       end if
 !
       if(cmp_no_case(mat_crs%METHOD_crs, 'MGCG')) then

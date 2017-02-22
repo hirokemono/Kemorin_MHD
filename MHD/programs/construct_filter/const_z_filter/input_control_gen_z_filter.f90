@@ -4,7 +4,7 @@
 !     Written by H. Matsui on June, 2007
 !
 !!      subroutine s_input_control_4_z_commute                          &
-!!     &         (nod_comm, node, ele, surf, edge, mat_crs)
+!!     &         (nod_comm, node, ele, surf, edge, mat_crs, DJDS_param)
 !
       module input_control_gen_z_filter
 !
@@ -14,6 +14,7 @@
       use t_geometry_data
       use t_surface_data
       use t_edge_data
+      use t_iccg_parameter
       use t_crs_matrix
 !
       implicit none
@@ -25,7 +26,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_input_control_4_z_commute                            &
-     &         (nod_comm, node, ele, surf, edge, mat_crs)
+     &         (nod_comm, node, ele, surf, edge, mat_crs, DJDS_param)
 !
       use m_machine_parameter
       use calypso_mpi
@@ -40,13 +41,14 @@
       type(surface_data), intent(inout) :: surf
       type(edge_data), intent(inout) :: edge
       type(CRS_matrix), intent(inout) :: mat_crs
+      type(DJDS_poarameter), intent(inout) :: DJDS_param
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_z_filter'
       call read_control_4_z_filter
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_4_gen_z_filter'
-      call set_ctl_params_4_gen_z_filter(mat_crs)
+      call set_ctl_params_4_gen_z_filter(mat_crs, DJDS_param)
 !
 !  --  set geometry
 !

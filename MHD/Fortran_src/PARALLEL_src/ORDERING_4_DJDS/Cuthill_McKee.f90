@@ -6,16 +6,17 @@
 !        modified by H. Matsui on June, 2006
 !        modified by H. Matsui on Oct., 2006
 !        modified by H. Matsui on Jan., 2009
+!        modified by H. Matsui on Jan., 2017
 !
 !C
 !C     Cuthill-McKee method for VECTOR ICCG.
 !C    
 !
-!      subroutine set_RCM_ordering (NP, N, NPU_crs, INL_crs, INU_crs,   &
-!     &          IAU_crs, NO, IVECT, IV1, IV2, IW)
-!      subroutine set_MC_ordering(NP, N, NPL_crs, NPU_crs,              &
-!     &          INL_crs, INU_crs, IAL_crs, IAU_crs,                    &
-!     &          NO, IVECT, IV1, IV2, IW, NCOLORk)
+!!      subroutine set_RCM_ordering (NP, N, NPU_crs, INL_crs, INU_crs,  &
+!!     &          IAU_crs, NO, IVECT, IV1, IV2, IW)
+!!      subroutine set_MC_ordering(NP, N, NPL_crs, NPU_crs,             &
+!!     &          INL_crs, INU_crs, IAL_crs, IAU_crs, NCOLOR_in,        &
+!!     &          NO, IVECT, IV1, IV2, IW)
 !
       module Cuthill_McKee
 !
@@ -130,8 +131,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_MC_ordering(NP, N, NPL_crs, NPU_crs,               &
-     &          INL_crs, INU_crs, IAL_crs, IAU_crs,                     &
-     &          NO, IVECT, IV1, IV2, IW, NCOLORk)
+     &          INL_crs, INU_crs, IAL_crs, IAU_crs, NCOLOR_in,          &
+     &          NO, IVECT, IV1, IV2, IW)
 !
       integer(kind = kint), intent(in) :: NP, N
       integer(kind = kint), intent(in) :: NPL_crs, NPU_crs
@@ -139,16 +140,17 @@
       integer(kind = kint), intent(in) :: INU_crs(0:NP)
       integer(kind = kint), intent(in) :: IAL_crs(NPL_crs)
       integer(kind = kint), intent(in) :: IAU_crs(NPU_crs)
+      integer(kind = kint), intent(in) :: NCOLOR_in
 !
 !
-      integer(kind = kint), intent(inout) :: NO, NCOLORk
+      integer(kind = kint), intent(inout) :: NO
 !
       integer(kind = kint), intent(inout) :: IVECT(0:NP)
       integer(kind = kint), intent(inout) :: IV1(NP), IV2(NP)
       integer(kind = kint), intent(inout) :: IW(NP)
 !
 !
-      integer(kind = kint) :: i, k, ik, ic, kst, ked
+      integer(kind = kint) :: i, k, ik, ic, kst, ked, NCOLORk
       integer(kind = kint) :: ITEMcou, icou, icouK, icoug, icol
       integer(kind = kint), parameter :: NODmin = 1
 
@@ -180,12 +182,12 @@
 !C===
 
 !      open (28, file='COLOR.DAT', status='unknown')
-!        read (28,*) NCOLORk
+!        read (28,*) NCOLOR_in
 !      close (28)
 
-      ITEMcou= N/NCOLORk
+      ITEMcou= N/NCOLOR_in
 !
-      write (*,*) 'color_mc:', NCOLORk
+      write (*,*) 'color_mc:', NCOLOR_in
       write (*,*) 'ITEMcou:', ITEMcou
 
 !C
@@ -195,7 +197,7 @@
 !C===
       icou = 1
       icouK= 1
-
+      NCOLORk= NCOLOR_in
 !
       do icol= 1, N
         NCOLORk= icol

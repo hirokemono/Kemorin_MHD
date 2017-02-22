@@ -9,9 +9,16 @@
 !!
 !!@verbatim
 !!      subroutine set_djds_whole_connectivity(nod_comm, node,          &
-!!     &          solver_C, neib_nod, DJDS_tbl)
+!!     &          solver_C, neib_nod, DJDS_param, DJDS_tbl)
 !!      subroutine set_djds_layer_connectivity(node, ele, nnod_1ele,    &
-!!     &          iele_start, iele_end, layer_comm, solver_C, DJDS_tbl)
+!!     &          iele_start, iele_end, layer_comm, solver_C,           &
+!!     &          DJDS_param, DJDS_tbl)
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(node_data), intent(in) :: node
+!!        type(next_nod_id_4_nod), intent(in) :: neib_nod
+!!        type(mpi_4_solver), intent(in) :: solver_C
+!!        type(DJDS_poarameter), intent(in) :: DJDS_param
+!!        type(DJDS_ordering_table), intent(inout) :: DJDS_tbl
 !!@endverbatim
 !
       module set_MHD_connectivity
@@ -22,8 +29,13 @@
       use m_machine_parameter
       use m_geometry_constants
 !
+      use t_geometry_data
+      use t_comm_table
       use t_next_node_ele_4_node
       use t_crs_connect
+      use t_iccg_parameter
+      use t_solver_djds
+      use t_vector_for_solver
 !
       implicit none
 !
@@ -34,14 +46,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_djds_whole_connectivity(nod_comm, node,            &
-     &          solver_C, neib_nod, DJDS_tbl)
+     &          solver_C, neib_nod, DJDS_param, DJDS_tbl)
 !
-      use t_geometry_data
-      use t_comm_table
-      use t_solver_djds
       use t_table_FEM_const
-      use t_solver_djds
-      use t_vector_for_solver
 !
       use reordering_djds_smp_type
       use DJDS_new_comm_table
@@ -50,6 +57,7 @@
       type(node_data), intent(in) :: node
       type(next_nod_id_4_nod), intent(in) :: neib_nod
       type(mpi_4_solver), intent(in) :: solver_C
+      type(DJDS_poarameter), intent(in) :: DJDS_param
 !
       type(DJDS_ordering_table), intent(inout) :: DJDS_tbl
 !
@@ -69,7 +77,7 @@
 !C
       call s_reordering_djds_smp(np_smp, node%numnod,                   &
      &    node%internal_node, node%istack_internal_smp,                 &
-     &    solver_C, MHD_CRS, DJDS_tbl)
+     &    solver_C, MHD_CRS, DJDS_param, DJDS_tbl)
 !C
 !      write(*,*) 'STACKmc', size(DJDS_tbl%STACKmc)
 !      write(*,*) 'NLmaxHYP', size(DJDS_tbl%NLmaxHYP),                  &
@@ -106,13 +114,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_djds_layer_connectivity(node, ele, nnod_1ele,      &
-     &          iele_start, iele_end, layer_comm, solver_C, DJDS_tbl)
-!
-      use t_geometry_data
-      use t_comm_table
-      use t_crs_connect
-      use t_solver_djds
-      use t_vector_for_solver
+     &          iele_start, iele_end, layer_comm, solver_C,             &
+     &          DJDS_param, DJDS_tbl)
 !
       use set_ele_id_4_node_type
       use reordering_djds_smp_type
@@ -125,6 +128,7 @@
       type(element_data), intent(in) :: ele
       type(communication_table), intent(in) :: layer_comm
       type(mpi_4_solver), intent(in) ::       solver_C
+      type(DJDS_poarameter), intent(in) :: DJDS_param
 !
       type(DJDS_ordering_table), intent(inout) :: DJDS_tbl
 !
@@ -141,7 +145,7 @@
 !
       call s_reordering_djds_smp(np_smp, node%numnod,                   &
      &    node%internal_node, node%istack_internal_smp,                 &
-     &    solver_C, MHD_CRS, DJDS_tbl)
+     &    solver_C, MHD_CRS, DJDS_param, DJDS_tbl)
       call set_new_comm_table_type(node%numnod, layer_comm, DJDS_tbl)
 !
       call dealloc_crs_connect(MHD_CRS)

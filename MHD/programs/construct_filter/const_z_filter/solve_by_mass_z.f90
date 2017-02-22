@@ -7,9 +7,10 @@
 !     solve using CRS matrix
 !
 !!      subroutine solve_crs_by_mass_z                                  &
-!!     &         (nod_comm, node, tbl_crs, mat_crs)
+!!     &         (DJDS_param, nod_comm, node, tbl_crs, mat_crs)
 !!      subroutine solve_crs_by_mass_z2                                 &
-!!     &         (nod_comm, node, tbl_crs, mat_crs)
+!!     &         (DJDS_param, nod_comm, node, tbl_crs, mat_crs)
+!!        type(DJDS_poarameter), intent(in) :: DJDS_param
 !
       module solve_by_mass_z
 !
@@ -19,6 +20,7 @@
 !
       use t_geometry_data
       use t_comm_table
+      use t_iccg_parameter
       use t_solver_djds
       use t_crs_connect
       use t_crs_matrix
@@ -39,12 +41,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine solve_crs_by_mass_z                                    &
-     &         (nod_comm, node, tbl_crs, mat_crs)
+     &         (DJDS_param, nod_comm, node, tbl_crs, mat_crs)
 !
       use calypso_mpi
       use solve_precond_DJDS
       use copy_matrix_2_djds_array
 !
+      type(DJDS_poarameter), intent(in) :: DJDS_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(inout) :: node
       type(CRS_matrix_connect), intent(inout) :: tbl_crs
@@ -70,7 +73,7 @@
 !
       write(*,*) 'solve_by_djds_solver11'
       call transfer_crs_2_djds_matrix(node, nod_comm,                   &
-     &    tbl_crs, mat_crs, djds_tbl1, djds_mat1)
+     &    tbl_crs, mat_crs, DJDS_param, djds_tbl1, djds_mat1)
       call solve_by_djds_solver11                                       &
      &   (node, nod_comm, mat_crs, djds_tbl1, djds_mat1, ierr)
 !
@@ -86,7 +89,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine solve_crs_by_mass_z2                                   &
-     &         (nod_comm, node, tbl_crs, mat_crs)
+     &         (DJDS_param, nod_comm, node, tbl_crs, mat_crs)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -96,6 +99,7 @@
       use solver_DJDS11_struct
       use solve_precond_DJDS
 !
+      type(DJDS_poarameter), intent(in) :: DJDS_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(inout) :: node
       type(CRS_matrix_connect), intent(inout) :: tbl_crs
@@ -114,7 +118,7 @@
 !
       djds_mat1%NB = mat_crs%NB_crs
       call transfer_crs_2_djds_matrix(node, nod_comm,                   &
-     &    tbl_crs, mat_crs, djds_tbl1, djds_mat1)
+     &    tbl_crs, mat_crs, DJDS_param, djds_tbl1, djds_mat1)
 !
       call solve_by_djds_solverNN                                       &
      &   (node, nod_comm, mat_crs, djds_tbl1, djds_mat1, ierr)

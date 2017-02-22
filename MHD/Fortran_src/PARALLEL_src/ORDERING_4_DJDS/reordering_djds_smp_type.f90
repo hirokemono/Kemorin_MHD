@@ -12,9 +12,10 @@
 !!
 !!@verbatim
 !!      subroutine s_reordering_djds_smp(np_smp, NP, N, ISTACK_N_smp,   &
-!!     &          solver_C, tbl_crs, djds_tbl)
+!!     &          solver_C, tbl_crs, DJDS_param, djds_tbl)
 !!        type(mpi_4_solver), intent(in) ::       solver_C
 !!        type(CRS_matrix_connect), intent(in) :: tbl_crs
+!!        type(DJDS_poarameter), intent(in) :: DJDS_param
 !!        type(DJDS_ordering_table), intent(inout) :: djds_tbl
 !!@endverbatim
 !
@@ -22,6 +23,7 @@
 !
       use m_precision
       use t_colored_connect
+      use t_iccg_parameter
       use t_work_DJDS_ordering
 !
       implicit none
@@ -36,7 +38,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_reordering_djds_smp(np_smp, NP, N, ISTACK_N_smp,     &
-     &          solver_C, tbl_crs, djds_tbl)
+     &          solver_C, tbl_crs, DJDS_param, djds_tbl)
 !
       use t_crs_connect
       use t_solver_djds
@@ -53,6 +55,7 @@
       integer(kind = kint), intent(in) :: ISTACK_N_smp(0:np_smp)
       type(mpi_4_solver), intent(in) ::       solver_C
       type(CRS_matrix_connect), intent(in) :: tbl_crs
+      type(DJDS_poarameter), intent(in) :: DJDS_param
 !
       type(DJDS_ordering_table), intent(inout) :: djds_tbl
 !
@@ -66,8 +69,8 @@
 !      count_rcm
 !       (output:: NHYP, OLDtoNEW, NEWtoOLD, NLmax, NUmax)
 !
-      call count_rcm                                                    &
-     &   (NP, N, solver_C, tbl_crs, djds_tbl, WK_MC, WK_DJDS)
+      call count_rcm(NP, N, solver_C, tbl_crs, djds_tbl,                &
+     &    DJDS_param, WK_MC, WK_DJDS)
 !      call check_mc_connect(my_rank, WK_MC)
 !
 !C +-----------------+

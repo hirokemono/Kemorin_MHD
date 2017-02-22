@@ -9,18 +9,20 @@
 !!
 !!@verbatim
 !!      subroutine s_set_djds_connectivity_type                         &
-!!     &         (mesh, solver_C, next_tbl, djds_tbl)
+!!     &         (mesh, solver_C, next_tbl, DJDS_param, djds_tbl)
 !!        type(mesh_geometry),       intent(in) :: mesh
 !!        type(mpi_4_solver),        intent(in) :: solver_C
 !!        type(next_nod_ele_table),  intent(in) :: next_tbl
+!!        type(DJDS_poarameter), intent(in) :: DJDS_param
 !!        type(DJDS_ordering_table), intent(inout) :: djds_tbl
 !!
 !!      subroutine set_djds_layer_connect_type(nnod_1ele,               &
 !!     &          iele_start, iele_end, mesh, layer_comm,               &
-!!     &          solver_C, djds_tbl)
+!!     &          solver_C, DJDS_param, djds_tbl)
 !!        integer(kind = kint), intent(in) :: iele_start, iele_end
 !!        type(mesh_geometry),           intent(in) :: mesh
 !!        type(communication_table), intent(in) :: layer_comm
+!!        type(DJDS_poarameter), intent(in) :: DJDS_param
 !!        type(DJDS_ordering_table), intent(inout) :: djds_tbl
 !!
 !!      subroutine empty_djds_connectivity_type(mesh, djds_tbl)
@@ -35,6 +37,7 @@
 !
       use t_mesh_data
       use t_next_node_ele_4_node
+      use t_iccg_parameter
       use t_crs_connect
       use t_solver_djds
       use t_vector_for_solver
@@ -51,11 +54,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_set_djds_connectivity_type                           &
-     &         (mesh, solver_C, next_tbl, djds_tbl)
+     &         (mesh, solver_C, next_tbl, DJDS_param, djds_tbl)
 !
       type(mesh_geometry),      intent(in) :: mesh
       type(mpi_4_solver),       intent(in) :: solver_C
       type(next_nod_ele_table), intent(in) :: next_tbl
+      type(DJDS_poarameter), intent(in) :: DJDS_param
 !
       type(DJDS_ordering_table), intent(inout) :: djds_tbl
 !
@@ -74,7 +78,7 @@
 !C
       call s_reordering_djds_smp(np_smp, mesh%node%numnod,              &
      &    mesh%node%internal_node, mesh%node%istack_internal_smp,       &
-     &    solver_C, MHD_crs, djds_tbl)
+     &    solver_C, MHD_crs, DJDS_param, djds_tbl)
 !C
 !C +--------------------------------------+
 !C | set new communication table 4 solver |
@@ -92,7 +96,7 @@
 !
       subroutine set_djds_layer_connect_type(nnod_1ele,                 &
      &          iele_start, iele_end, mesh, layer_comm,                 &
-     &          solver_C, djds_tbl)
+     &          solver_C, DJDS_param, djds_tbl)
 !
       use t_comm_table
       use set_ele_id_4_node_type
@@ -102,6 +106,7 @@
       type(mesh_geometry),       intent(in) :: mesh
       type(communication_table), intent(in) :: layer_comm
       type(mpi_4_solver),        intent(in) :: solver_C
+      type(DJDS_poarameter), intent(in) :: DJDS_param
 !
       type(DJDS_ordering_table), intent(inout) :: djds_tbl
 !
@@ -119,7 +124,7 @@
 !
       call s_reordering_djds_smp(np_smp, mesh%node%numnod,              &
      &    mesh%node%internal_node, mesh%node%istack_internal_smp,       &
-     &    solver_C, CRS_table, djds_tbl)
+     &    solver_C, CRS_table, DJDS_param, djds_tbl)
 !
       call set_new_comm_table_type(mesh%node%numnod,                    &
      &    layer_comm, djds_tbl)

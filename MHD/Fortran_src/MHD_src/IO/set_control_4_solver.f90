@@ -10,9 +10,11 @@
 !!        from control data
 !!
 !!@verbatim
-!!     subroutine s_set_control_4_solver(iflag_scheme, mevo_ctl, CG_ctl)
+!!      subroutine s_set_control_4_solver                               &
+!!     &         (iflag_scheme, mevo_ctl, CG_ctl, DJDS_param)
 !!        type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
 !!        type(solver_control), intent(inout) :: CG_ctl
+!!      type(DJDS_poarameter), intent(inout) :: DJDS_param
 !!@endverbatim
 !
       module set_control_4_solver
@@ -20,7 +22,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_control_parameter
 !
       implicit  none
 !
@@ -30,11 +31,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_4_solver(iflag_scheme, mevo_ctl, CG_ctl)
+      subroutine s_set_control_4_solver                                 &
+     &         (iflag_scheme, mevo_ctl, CG_ctl, DJDS_param)
 !
       use calypso_mpi
       use m_error_IDs
       use m_iccg_parameter
+      use t_iccg_parameter
       use m_ctl_parameter_Multigrid
       use t_physical_property
       use t_ctl_data_4_solvers
@@ -44,6 +47,7 @@
       integer (kind=kint), intent(in) :: iflag_scheme
       type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
       type(solver_control), intent(inout) :: CG_ctl
+      type(DJDS_poarameter), intent(inout) :: DJDS_param
 !
 !   control for solvers
 !
@@ -117,13 +121,13 @@
 !
 !   control for number of processores for DJDS solver
 !
-        call set_control_4_DJDS_solver(CG_ctl%DJDS_ctl)
+        call set_control_4_DJDS_solver(CG_ctl%DJDS_ctl, DJDS_param)
 !
         if (       precond_4_solver .eq. 'DIAG'                         &
-     &       .and. iflag_ordering .eq. 2                                &
-     &       .and. mc_color .eq. 0 ) then
+     &       .and. DJDS_param%iflag_ordering .eq. iflag_MultiColor      &
+     &       .and. DJDS_param%mc_color .eq. 0 ) then
           if(precond_4_crank .eq. 'DIAG') then
-            iflag_ordering = 0
+            DJDS_param%iflag_ordering = iflag_OFF
           end if
         end if
 !
@@ -135,7 +139,7 @@
           write(*,*) 'precond_4_solver: ',  trim(precond_4_solver)
           write(*,*) 'method_4_solver:  ',  trim(method_4_solver)
           write(*,*) 'ordering_name: , iflag_ordering ',                &
-     &                trim(ordering_name), iflag_ordering
+     &      trim(DJDS_param%ordering_name), DJDS_param%iflag_ordering
           write(*,*) 'eps_4_crank:       ', eps_crank
           write(*,*) 'eps_4_magne_crank: ', eps_4_magne_crank
           write(*,*) 'method_4_velo:     ', trim(method_4_velo)

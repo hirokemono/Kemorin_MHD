@@ -3,7 +3,7 @@
 !
 !     Written by H. Matsui on July, 2006
 !
-!      subroutine set_ctl_params_4_gen_z_filter(mat_crs)
+!      subroutine set_ctl_params_4_gen_z_filter(mat_crs, DJDS_param)
 !
       module set_ctl_gen_z_filter
 !
@@ -18,7 +18,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_ctl_params_4_gen_z_filter(mat_crs)
+      subroutine set_ctl_params_4_gen_z_filter(mat_crs, DJDS_param)
 !
       use m_constants
       use m_machine_parameter
@@ -33,6 +33,7 @@
       use skip_comment_f
 !
       type(CRS_matrix), intent(inout) :: mat_crs
+      type(DJDS_poarameter), intent(inout) :: DJDS_param
 !
       integer(kind = kint) :: i
       real(kind = kreal) :: pi
@@ -195,7 +196,8 @@
       mat_crs%REALARRAY_crs(2) = sigma_diag
       mat_crs%REALARRAY_crs(3) = sigma
 !
-      call set_control_4_DJDS_solver(CG_filter_ctl%DJDS_ctl)
+      call set_control_4_DJDS_solver                                    &
+     &   (CG_filter_ctl%DJDS_ctl, DJDS_param)
 !
       end subroutine set_ctl_params_4_gen_z_filter
 !

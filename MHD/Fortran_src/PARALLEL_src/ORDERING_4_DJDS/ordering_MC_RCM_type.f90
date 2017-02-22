@@ -11,10 +11,11 @@
 !>      RCM ordering from CRS matrix
 !!
 !!@verbatim
-!!      subroutine count_rcm                                            &
-!!     &         (NP, N, solver_C, tbl_crs, djds_tbl, WK_MC, WK_DJDS)
+!!      subroutine count_rcm(NP, N, solver_C, tbl_crs, djds_tbl,        &
+!!     &          DJDS_param, WK_MC, WK_DJDS)
 !!        type(CRS_matrix_connect), intent(in) :: tbl_crs
 !!        type(mpi_4_solver), intent(in) :: solver_C
+!!        type(DJDS_poarameter), intent(in) :: DJDS_param
 !!        type(DJDS_ordering_table), intent(inout) :: djds_tbl
 !!        type(work_4_RCM), intent(inout) :: WK_MC
 !!        type(work_DJDS_ordering), intent(inout) :: WK_DJDS
@@ -33,8 +34,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine count_rcm                                              &
-     &         (NP, N, solver_C, tbl_crs, djds_tbl, WK_MC, WK_DJDS)
+      subroutine count_rcm(NP, N, solver_C, tbl_crs, djds_tbl,          &
+     &          DJDS_param, WK_MC, WK_DJDS)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -43,8 +44,7 @@
       use t_vector_for_solver
       use t_colored_connect
       use t_work_DJDS_ordering
-!
-      use m_iccg_parameter
+      use t_iccg_parameter
 !
       use ordering_MC_RCM
       use MC_Cuthill_McKee
@@ -52,6 +52,7 @@
       integer(kind = kint), intent(in) :: NP, N
       type(CRS_matrix_connect), intent(in) :: tbl_crs
       type(mpi_4_solver), intent(in) :: solver_C
+      type(DJDS_poarameter), intent(in) :: DJDS_param
 !
       type(DJDS_ordering_table), intent(inout) :: djds_tbl
       type(work_4_RCM), intent(inout) :: WK_MC
@@ -75,11 +76,12 @@
 !   skip multi colorling (only for diagonal scaling)
 !----------------------------------------------------------
 !
-      if(iflag_debug.eq.1) write(*,*) 'iflag_ordering', iflag_ordering
+      if(iflag_debug.eq.1) write(*,*)                                   &
+     &             'iflag_ordering', DJDS_param%iflag_ordering
 !
       call alloc_iW_ordering(NP, WK_DJDS)
 !
-      if (iflag_ordering .eq. 0 ) then
+      if(DJDS_param%iflag_ordering .eq. iflag_OFF) then
 !
         if (iflag_debug.eq.1) write(*,*) 'no_MC'
         call no_MC(NP, tbl_crs%ntot_l, tbl_crs%ntot_u,                  &
@@ -116,7 +118,7 @@
 !C===
 !
 !  -------  RCM ordering
-        if ( iflag_ordering .eq. 1 ) then
+        if(DJDS_param%iflag_ordering .eq. iflag_MC_RCM) then
           if (iflag_debug.eq.1) write(*,*) 'sRCM'
           call sRCM (NP, N, tbl_crs%ntot_l,   tbl_crs%ntot_u,           &
      &        tbl_crs%istack_l,   tbl_crs%istack_u,                     &
@@ -129,9 +131,10 @@
      &        djds_tbl%NEWtoOLD, djds_tbl%OLDtoNEW, WK_DJDS%IW)
 !
 !  -------  MC ordering
-        else if ( iflag_ordering .eq. 2 ) then
+        else if(DJDS_param%iflag_ordering .eq. iflag_MultiColor) then
           if (iflag_debug.eq.1) write(*,*) 'sMC'
-          call sMC (NP, N, tbl_crs%ntot_l, tbl_crs%ntot_u,              &
+          call sMC(DJDS_param%mc_color, NP, N,                          &
+     &        tbl_crs%ntot_l, tbl_crs%ntot_u,                           &
      &        tbl_crs%istack_l,   tbl_crs%istack_u,                     &
      &        tbl_crs%item_l,     tbl_crs%item_u,                       &
      &        WK_MC%ntot_mc_l,    WK_MC%ntot_mc_u,                      &
@@ -139,8 +142,7 @@
      &        WK_MC%istack_mc_l,  WK_MC%istack_mc_u,                    &
      &        WK_MC%item_mc_l,    WK_MC%item_mc_u,                      &
      &        djds_tbl%NHYP, WK_DJDS%IVECT_rcm,                         &
-     &        djds_tbl%NEWtoOLD, djds_tbl%OLDtoNEW,                     &
-     &        WK_DJDS%IW, mc_color)
+     &        djds_tbl%NEWtoOLD, djds_tbl%OLDtoNEW, WK_DJDS%IW)
         end if
 !
 !C===
@@ -155,7 +157,7 @@
         call MPI_allREDUCE (djds_tbl%NHYP, NHYPmax, ione,               &
      &      CALYPSO_INTEGER, MPI_MAX, solver_C%SOLVER_COMM, ierr_MPI)
 
-        WK_DJDS%NCOLORtot= min_color
+        WK_DJDS%NCOLORtot = DJDS_param%min_color
         if (WK_DJDS%NCOLORtot.gt.NHYPmax/itwo) then
           WK_DJDS%NCOLORtot = ( NHYPmax+mod(NHYPmax,itwo) ) / itwo
         endif

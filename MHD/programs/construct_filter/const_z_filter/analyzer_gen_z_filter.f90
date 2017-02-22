@@ -14,6 +14,7 @@
 !
       use m_vertical_filter_utils
 !
+      use m_iccg_parameter
       use t_crs_connect
       use t_crs_matrix
       use t_gauss_points
@@ -90,7 +91,7 @@
 !C-- read CNTL DATA
       call s_input_control_4_z_commute                                  &
      &  (z_filter_mesh%nod_comm, z_filter_mesh%node, z_filter_mesh%ele, &
-     &   surf_z_filter, edge_z_filter, mat_crs_z)
+     &   surf_z_filter, edge_z_filter, mat_crs_z, DJDS_param1)
 !
 !C
 !C     set gauss points
@@ -121,7 +122,7 @@
        call cal_delta_z_analytical                                      &
      &    (z_filter_mesh%node, z_filter_mesh%ele,                       &
      &     edge_z_filter, jac_z_l)
-!      call cal_delta_z(z_filter_mesh%nod_comm,                         &
+!      call cal_delta_z(DJDS_param1, z_filter_mesh%nod_comm,            &
 !     &    z_filter_mesh%node, z_filter_mesh%ele,                       &
 !     &    edge_z_filter, jac_z_l, tbl_crs_z, mat_crs_z)
 !
@@ -212,7 +213,7 @@
       else
         call transfer_crs_2_djds_matrix                                 &
      &     (z_filter_mesh%node, z_filter_mesh%nod_comm,                 &
-     &      tbl_crs_z, mat_crs_z, djds_tbl_z, djds_mat_z)
+     &      tbl_crs_z, mat_crs_z, DJDS_param1, djds_tbl_z, djds_mat_z)
 !
         if   (mat_crs_z%SOLVER_crs.eq.'block33'                         &
      &    .or. mat_crs_z%SOLVER_crs.eq.'BLOCK33') then
