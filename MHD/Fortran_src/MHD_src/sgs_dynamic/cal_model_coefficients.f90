@@ -364,7 +364,7 @@
 !
 !
 !
-      if(evo_B%iflag_scheme .gt. id_no_evolution) then
+      if(cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         if(SGS_par%model_p%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'cal_sgs_induct_t_dynamic'

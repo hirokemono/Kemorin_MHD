@@ -48,7 +48,7 @@
 !
 !   velocity flag
       if(fl_prop%iflag_scheme .gt. id_no_evolution                      &
-     &     .or. evo_B%iflag_scheme .gt. id_no_evolution) then
+     &     .or. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
       end if
 !   vorticity flag
@@ -56,7 +56,7 @@
         call add_phys_name_ctl(fhd_vort, field_ctl)
       end if
 !   magnetic field flag
-      if(evo_B%iflag_scheme .gt. id_no_evolution                        &
+      if(cd_prop%iflag_Bevo_scheme .gt. id_no_evolution                 &
      &     .or. fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
         call add_phys_name_ctl(fhd_magne, field_ctl)
         call add_phys_name_ctl(fhd_current, field_ctl)
@@ -121,7 +121,7 @@
       end if
 !
 !   induction flag
-      if(evo_B%iflag_scheme .gt. id_no_evolution) then
+      if(cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         call add_phys_name_ctl(fhd_mag_diffuse, field_ctl)
 !
         call add_phys_name_ctl(fhd_mag_induct, field_ctl)

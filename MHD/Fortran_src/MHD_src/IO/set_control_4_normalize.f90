@@ -96,7 +96,7 @@
 !
 !    coefficients for inducition equation
 !
-      if     (evo_B%iflag_scheme .eq. id_no_evolution                   &
+      if     (cd_prop%iflag_Bevo_scheme .eq. id_no_evolution            &
      &  .and. cd_prop%iflag_Aevo_scheme .eq. id_no_evolution) then
         MHD_coef_list%coefs_magnetic%num =  0
         MHD_coef_list%coefs_magne_p%num =   0

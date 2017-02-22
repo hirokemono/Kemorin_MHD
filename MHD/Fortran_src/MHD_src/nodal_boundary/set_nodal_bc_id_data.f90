@@ -99,7 +99,7 @@
      &     (nod_bcs%Cnod_bcs%nod_bc_s, iphys%i_light, nod_fld)
       end if
 !
-      if    (evo_B%iflag_scheme .gt. id_no_evolution                    &
+      if    (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution             &
      &  .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1)  write(*,*) 'set_boundary_vect magne'
         call set_boundary_vect                                          &

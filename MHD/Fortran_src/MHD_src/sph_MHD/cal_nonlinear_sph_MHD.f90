@@ -107,7 +107,7 @@
 !
 !
 !
-      if( (f_trns%i_vp_induct * evo_B%iflag_scheme) .gt. 0) then
+      if( (f_trns%i_vp_induct * cd_prop%iflag_Bevo_scheme) .gt. 0) then
         call cal_cross_prod_w_coef_smp                                  &
      &     (sph_rtp%nnod_rtp, cd_prop%coef_induct,                      &
      &      fld_rtp(1,b_trns%i_velo), fld_rtp(1,b_trns%i_magne),        &

@@ -137,7 +137,7 @@
      &        = filter_area_4_each_field(s3df_ctl%momentum_filter_ctl)
         end if
 !
-        if (evo_B%iflag_scheme .gt. id_no_evolution                     &
+        if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution              &
      &      .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
           filter_param%iflag_induction_filtering                        &
      &        = filter_area_4_each_field(s3df_ctl%induction_filter_ctl)

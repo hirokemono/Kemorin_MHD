@@ -82,7 +82,7 @@
 !
 ! ----  read boundary data for magnetic field
 !
-      if (    evo_B%iflag_scheme .gt. id_no_evolution                   &
+      if (    cd_prop%iflag_Bevo_scheme .gt. id_no_evolution            &
      &   .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
 !
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
@@ -113,7 +113,7 @@
 !
 ! ----  read boundary data for current density
 !
-      if (     evo_B%iflag_scheme .gt. id_no_evolution                  &
+      if (     cd_prop%iflag_Bevo_scheme .gt. id_no_evolution           &
      &    .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
 !
         call set_serch_boundary_file_flag(iflag_boundary_file,          &

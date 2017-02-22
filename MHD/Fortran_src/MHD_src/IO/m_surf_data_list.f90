@@ -91,7 +91,7 @@
         if(wall_surf%num_bc.gt.0)   call deallocate_press_surf_ctl
       end if
 !
-      if    (evo_B%iflag_scheme .gt. id_no_evolution                    &
+      if    (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution             &
      &  .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         if(magne_surf%num_bc .gt. 0)   call deallocate_magne_surf_ctl
         if(current_surf%num_bc .gt. 0) call deallocate_current_surf_ctl

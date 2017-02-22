@@ -141,7 +141,7 @@
         end if
       end if
 !
-      if (evo_B%iflag_scheme .gt. id_no_evolution) then
+      if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
           if(cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
             diff_coefs%num_field = diff_coefs%num_field + 1
@@ -191,7 +191,7 @@
         end if
       end if
 !
-      if (evo_B%iflag_scheme .gt. id_no_evolution) then
+      if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         if(SGS_param%iflag_SGS .gt. id_SGS_none                         &
      &      .and. cmt_param%iflag_c_magne .eq. id_SGS_commute_ON) then
           diff_coefs%num_field = diff_coefs%num_field + 1
@@ -267,7 +267,7 @@
          end if
        end if
 !
-       if (evo_B%iflag_scheme .gt. id_no_evolution) then
+       if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
          if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
            if (cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
              icomp_diff%i_induction = id
@@ -342,7 +342,7 @@
         end if
       end if
 !
-      if (evo_B%iflag_scheme .gt. id_no_evolution) then
+      if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         if(SGS_param%iflag_SGS .ne. id_SGS_none                        &
      &      .and. cmt_param%iflag_c_magne .eq. id_SGS_commute_ON) then
             icomp_diff%i_magne = id

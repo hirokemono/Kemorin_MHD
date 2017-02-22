@@ -75,7 +75,7 @@
      &      rj_fld%d_fld)
       end if
 !
-      if(evo_B%iflag_scheme .gt.    id_no_evolution) then
+      if(cd_prop%iflag_Bevo_scheme .gt.    id_no_evolution) then
         call cal_diff_induction_MHD_adams(cd_prop%coef_exp,             &
      &      ipol, itor, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
@@ -133,7 +133,7 @@
      &      ipol%i_temp, ht_prop%coef_exp, ht_prop%coef_advect,         &
      &      ht_prop%coef_source, sph_rj, rj_fld)
       end if
-      if(evo_B%iflag_scheme .gt.    id_no_evolution) then
+      if(cd_prop%iflag_Bevo_scheme .gt.    id_no_evolution) then
         call cal_diff_induction_MHD_euler(cd_prop%coef_exp,             &
      &      ipol, itor, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
@@ -156,7 +156,7 @@
      &        ipol%i_heat_source, ipol%i_pre_heat,                      &
      &        ht_prop%coef_source, sph_rj, rj_fld)
         end if
-        if(evo_B%iflag_scheme .gt.    id_no_evolution) then
+        if(cd_prop%iflag_Bevo_scheme .gt.    id_no_evolution) then
           call set_ini_adams_mag_induct(ipol, itor,                     &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if

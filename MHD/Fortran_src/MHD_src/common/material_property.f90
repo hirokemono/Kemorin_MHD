@@ -174,7 +174,7 @@
 !
 !   For Induction
 !
-      if(    evo_B%iflag_scheme .gt. id_no_evolution                    &
+      if(    cd_prop%iflag_Bevo_scheme .gt. id_no_evolution             &
      &  .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
 !
         cd_prop%coef_magne =   one
@@ -199,7 +199,7 @@
      &      depth_top, depth_bottom)
       end if
 !
-      if(evo_B%iflag_scheme .gt. id_no_evolution) then
+      if(cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         call set_implicit_4_inf_viscous(cd_prop%coef_magne,            &
      &      cd_prop%coef_imp, cd_prop%coef_exp)
       end if
@@ -211,7 +211,7 @@
 !  Check
 !
       if (my_rank .eq. 0) then
-        if(     evo_B%iflag_scheme .gt. id_no_evolution                 &
+        if(     cd_prop%iflag_Bevo_scheme .gt. id_no_evolution          &
      &     .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
           write(*,*) 'coefficient for magnetic field:      ',           &
      &              cd_prop%coef_magne

@@ -108,7 +108,7 @@
      &      ifilter_final, fem_wk, mat_press)
       end if
 !
-      if (     evo_B%iflag_scheme .gt. id_no_evolution                  &
+      if (     cd_prop%iflag_Bevo_scheme .gt. id_no_evolution           &
      &    .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         call sel_int_poisson_mat                                        &
      &     (mesh%ele, jac_3d_l, rhs_tbl, MG_mat_linear, FEM_elens,      &
@@ -163,7 +163,7 @@
      &      fem_wk, mat_velo)
       end if
 !
-      if (evo_B%iflag_scheme .ge. id_Crank_nicolson) then
+      if (cd_prop%iflag_Bevo_scheme .ge. id_Crank_nicolson) then
         call sel_int_diffuse3_crank_mat(mesh%ele, jac_3d,               &
      &      rhs_tbl, MG_mat_full_cd_q, FEM_elens, num_int,              &
      &      diff_coefs%num_field, ifld_diff%i_magne, diff_coefs%ak,     &

@@ -100,16 +100,16 @@
      &      ele%nnod_4_ele, djds_tbl_fl, mat_light)
       end if
 !
-      if     (evo_B%iflag_scheme .gt. id_no_evolution                   &
+      if     (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution            &
      &   .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         call reset_aiccg_11_MHD(node, ele, ione, ele%numele,            &
      &      num_t_linear, djds_tbl_l, mat_magp)
       end if
 !
-      if (evo_B%iflag_scheme .gt. id_no_evolution) then
+      if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         call reset_aiccg_11_MHD(node, ele, ione, ele%numele,            &
      &      num_t_linear, djds_tbl_l, mat_magp)
-        if (evo_B%iflag_scheme .ge. id_Crank_nicolson) then
+        if (cd_prop%iflag_Bevo_scheme .ge. id_Crank_nicolson) then
           call reset_aiccg_33_MHD(node, ele, ione, ele%numele,          &
      &        ele%nnod_4_ele, djds_tbl, mat_magne)
         end if

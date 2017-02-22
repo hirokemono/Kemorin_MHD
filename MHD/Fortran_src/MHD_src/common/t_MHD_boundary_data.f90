@@ -73,7 +73,7 @@
         call alloc_surf_potential(surf_bcs%Psf_bcs)
       end if
 !
-      if     (evo_B%iflag_scheme .gt. id_no_evolution                   &
+      if     (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution            &
      &   .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         call alloc_surf_vector(surf_bcs%Bsf_bcs)
         call alloc_surf_vector(surf_bcs%Jsf_bcs)

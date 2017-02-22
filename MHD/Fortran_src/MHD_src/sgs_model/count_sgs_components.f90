@@ -154,7 +154,7 @@
           sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 3
         end if
       end if
-      if (evo_B%iflag_scheme .gt. id_no_evolution) then
+      if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
           sgs_coefs%num_field = sgs_coefs%num_field + 1
           sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 3
@@ -263,7 +263,7 @@
            j = j + 1
          end if
        end if
-       if (evo_B%iflag_scheme .gt. id_no_evolution) then
+       if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
          if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
            icomp_sgs%i_induction = i
            ifld_sgs%i_induction =  j
@@ -325,7 +325,7 @@
          iphys_elediff%i_filter_magne = i + 9
          i = i + 18
         else if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none               &
-     &     .and. evo_B%iflag_scheme .gt. id_no_evolution) then
+     &     .and. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
          iphys_elediff%i_magne = i
          iphys_elediff%i_filter_magne = i + 9
          i = i + 18
@@ -345,7 +345,7 @@
          iphys_elediff%i_magne = i
          i = i + 9
         else if (SGS_param%iflag_SGS_uxb .ne. id_SGS_none               &
-     &     .and. evo_B%iflag_scheme .gt. id_no_evolution) then
+     &     .and. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
          iphys_elediff%i_magne = i
          i = i + 9
         end if

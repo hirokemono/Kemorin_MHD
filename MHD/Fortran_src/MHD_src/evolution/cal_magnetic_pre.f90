@@ -222,15 +222,15 @@
      &    jac_sf_grp_q, rhs_tbl, FEM_elens, diff_coefs,                 &
      &    fem_wk, surf_wk, f_l, f_nl)
 !
-      if(evo_B%iflag_scheme .eq. id_explicit_euler) then
+      if(cd_prop%iflag_Bevo_scheme .eq. id_explicit_euler) then
         call cal_magne_pre_euler(iphys%i_magne,                         &
      &      FEM_prm, nod_comm, node, ele, conduct, iphys_ele, ele_fld,  &
      &      jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-      else if(evo_B%iflag_scheme .eq. id_explicit_adams2) then
+      else if(cd_prop%iflag_Bevo_scheme .eq. id_explicit_adams2) then
         call cal_magne_pre_adams(iphys%i_magne, iphys%i_pre_uxb,        &
      &      FEM_prm, nod_comm, node, ele, conduct, iphys_ele, ele_fld,  &
      &      jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-      else if(evo_B%iflag_scheme .eq. id_Crank_nicolson) then
+      else if(cd_prop%iflag_Bevo_scheme .eq. id_Crank_nicolson) then
         call cal_magne_pre_lumped_crank                                 &
      &     (cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
      &      iphys%i_magne, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,     &
@@ -238,7 +238,8 @@
      &      cd_prop, iphys_ele, ele_fld, jac_3d_q, rhs_tbl,             &
      &      FEM_elens, diff_coefs, Bmatrix, MG_vector,                  &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-      else if(evo_B%iflag_scheme .eq. id_Crank_nicolson_cmass) then
+      else if(cd_prop%iflag_Bevo_scheme .eq. id_Crank_nicolson_cmass)   &
+     & then
         call cal_magne_pre_consist_crank                                &
      &     (cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
      &      iphys%i_magne, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,     &

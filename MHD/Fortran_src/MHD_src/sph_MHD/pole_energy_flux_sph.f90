@@ -80,7 +80,7 @@
       end if
 !
 !
-      if( (iphys%i_vp_induct * evo_B%iflag_scheme) .gt. 0) then
+      if( (iphys%i_vp_induct * cd_prop%iflag_Bevo_scheme) .gt. 0) then
         call pole_fld_cst_cross_prod                                    &
      &     (node%numnod, node%internal_node, node%xx,                   &
      &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), cd_prop%coef_induct, &

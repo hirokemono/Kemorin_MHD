@@ -81,7 +81,7 @@
      &    cfl_diffuse
         end if
 !
-        if     (evo_B%iflag_scheme .gt. id_no_evolution                 &
+        if     (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution          &
      &     .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
          cfl_diffuse = cfl_advect / cd_prop%coef_diffuse
          write(12,*) 'estimated limit for Delta t for magnetic field:', &

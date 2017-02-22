@@ -171,7 +171,7 @@
      &     (IO_bc, sf_grp, wall_surf, surf_bcs%Psf_bcs)
       end if
 !
-      if (evo_B%iflag_scheme .gt. id_no_evolution                       &
+      if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution                &
      &      .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         call set_surf_grad_vector(name_sbn, name_bg,                    &
      &      IO_bc, node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v,       &

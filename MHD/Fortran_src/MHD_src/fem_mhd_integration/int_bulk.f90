@@ -624,7 +624,7 @@
      &      node, ele, nod_fld, jac_3d_q, fem_wk, rms_local(ir_diva))
       end if
 !
-      if      (evo_B%iflag_scheme .gt. id_no_evolution                  &
+      if      (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution           &
      &    .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         call int_norm_divergence(ele%istack_ele_smp, iphys%i_magne,     &
      &      node, ele, nod_fld, jac_3d_q, fem_wk, bulk_local(ja_divb))

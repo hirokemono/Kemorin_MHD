@@ -83,7 +83,7 @@
 !
       if(     fl_prop%iflag_scheme .ge. id_Crank_nicolson               &
      &   .or. cd_prop%iflag_Aevo_scheme .ge. id_Crank_nicolson          &
-     &   .or. evo_B%iflag_scheme .ge. id_Crank_nicolson) then
+     &   .or. cd_prop%iflag_Bevo_scheme .ge. id_Crank_nicolson) then
         METHOD = method_4_velo
         if (cmp_no_case(METHOD, 'MGCG')) then
           call init_VMGCG33_DJDS_SMP(node%numnod, np_smp,               &

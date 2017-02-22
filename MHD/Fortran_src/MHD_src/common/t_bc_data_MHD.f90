@@ -85,7 +85,7 @@
       end if
 !
 !
-      if    (evo_B%iflag_scheme .gt. id_no_evolution                    &
+      if    (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution             &
      &  .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*)  'set boundary ID 4 magne'
         call set_bc_magne_id(IO_bc, mesh%node, mesh%ele,                &

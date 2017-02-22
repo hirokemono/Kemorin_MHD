@@ -190,7 +190,7 @@
      &     write(12,*) 'eps_4_temp_crank', eps_4_temp_crank
       end if
 !
-      if (   evo_B%iflag_scheme .ge. id_Crank_nicolson                  &
+      if (   cd_prop%iflag_Bevo_scheme .ge. id_Crank_nicolson           &
      &  .or. cd_prop%iflag_Aevo_scheme .ge. id_Crank_nicolson) then
 !
         if(eps_4_magne_crank .le. 0.0d0) then

@@ -46,7 +46,7 @@
       integer (kind = kint) :: i
 !
 !
-      if (      evo_B%iflag_scheme .eq. id_no_evolution                 &
+      if (      cd_prop%iflag_Bevo_scheme .eq. id_no_evolution          &
      &   .and.  cd_prop%iflag_Aevo_scheme .eq. id_no_evolution) then
         current_nod%num_bc =  0
         current_surf%num_bc = 0

@@ -223,7 +223,7 @@
      &     wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,      &
      &     surf_wk, f_l, f_nl, nod_fld, ele_fld, diff_coefs)
 !
-      else if(evo_B%iflag_scheme .gt. id_no_evolution) then
+      else if(cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
 !
 !        call check_surface_param_smp('cal_magnetic_field start',       &
 !     &      my_rank, sf_grp, group%surf_nod_grp)

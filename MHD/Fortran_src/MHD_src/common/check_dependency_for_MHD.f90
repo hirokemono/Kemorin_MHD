@@ -127,7 +127,7 @@
 !   check dependencies for time evolution
 !
       if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution                &
-     &     .and. evo_B%iflag_scheme .gt. id_no_evolution) then
+     &     .and. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
          call calypso_MPI_abort(ierr_fld,                               &
      &        'You should choose vector potential OR magnetic field for &
      & time evolution')
@@ -156,7 +156,7 @@
         call check_missing_field_w_msg(fld, msg, iphys%i_light)
       end if
 !
-      if (evo_B%iflag_scheme .ne. id_no_evolution) then
+      if (cd_prop%iflag_Bevo_scheme .ne. id_no_evolution) then
         msg = 'Time integration for magnetic field needs'
         call check_missing_field_w_msg(fld, msg, iphys%i_magne)
         call check_missing_field_w_msg(fld, msg, iphys%i_velo)
@@ -271,7 +271,7 @@
       end if
 !
 !
-      if ( evo_B%iflag_scheme .gt. id_no_evolution) then
+      if ( cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         if ( SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
           msg = 'solving SGS magnetic induction needs'
           call check_missing_field_w_msg                                &
@@ -344,7 +344,7 @@
       end if
 !
 !
-      if (    evo_B%iflag_scheme .gt. id_no_evolution                   &
+      if (    cd_prop%iflag_Bevo_scheme .gt. id_no_evolution            &
      &   .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         if    (SGS_param%iflag_SGS_uxb .eq. id_SGS_similarity           &
      &   .and. SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
@@ -403,7 +403,7 @@
       end if
 !
 !
-      if ( evo_B%iflag_scheme .gt. id_no_evolution) then
+      if ( cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         if ( SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
           msg = 'solving SGS magnetic induction needs'
           call check_missing_field_w_msg                                &
@@ -468,7 +468,7 @@
       end if
 !
 !
-      if ( evo_B%iflag_scheme .gt. id_no_evolution) then
+      if ( cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         if    (SGS_param%iflag_SGS_uxb .eq. id_SGS_similarity           &
      &   .and. SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS induction needs'

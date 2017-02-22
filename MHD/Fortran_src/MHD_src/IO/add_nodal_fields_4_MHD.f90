@@ -149,7 +149,7 @@
       if(fl_prop%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_ctl(fhd_press_work, field_ctl)
       end if
-      if (evo_B%iflag_scheme .gt. id_no_evolution                       &
+      if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution                &
      &   .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         call add_phys_name_ctl(fhd_m_potential_work, field_ctl)
       end if
@@ -174,7 +174,7 @@
         call add_phys_name_ctl(fhd_forces, field_ctl)
         call add_phys_name_ctl(fhd_div_forces, field_ctl)
       end if
-      if      (evo_B%iflag_scheme .ne. id_no_evolution                  &
+      if      (cd_prop%iflag_Bevo_scheme .ne. id_no_evolution           &
      &    .or. cd_prop%iflag_Aevo_scheme .ne. id_no_evolution) then
         call add_phys_name_ctl(fhd_pre_uxb, field_ctl)
       end if
@@ -202,7 +202,7 @@
         call add_phys_name_ctl(fhd_chk_mom, field_ctl)
         call add_phys_name_ctl(fhd_chk_press, field_ctl)
       end if
-      if(evo_B%iflag_scheme .ne. id_no_evolution                        &
+      if(cd_prop%iflag_Bevo_scheme .ne. id_no_evolution                 &
      &     .or. cd_prop%iflag_Aevo_scheme .ne. id_no_evolution) then
         call add_phys_name_ctl(fhd_chk_uxb, field_ctl)
         call add_phys_name_ctl(fhd_chk_potential, field_ctl)
@@ -218,7 +218,7 @@
 !        call add_phys_name_ctl(fhd_chk_mom_2, field_ctl)
 !        call add_phys_name_ctl(fhd_chk_press_2, field_ctl)
 !      end if
-!      if     (evo_B%iflag_scheme .ge. id_Crank_nicolson                 &
+!      if     (cd_prop%iflag_Bevo_scheme .ge. id_Crank_nicolson         &
 !     &   .or. cd_prop%iflag_Aevo_scheme .ge. id_Crank_nicolson) then
 !        call add_phys_name_ctl(fhd_chk_uxb_2, field_ctl)
 !        call add_phys_name_ctl(fhd_chk_potential_2, field_ctl)

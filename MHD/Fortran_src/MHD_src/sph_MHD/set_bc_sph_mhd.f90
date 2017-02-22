@@ -93,7 +93,7 @@
      &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, sph_bc_T)
       end if
 !
-      if (evo_B%iflag_scheme .gt. id_no_evolution) then
+      if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_magne_sph'
         call set_sph_bc_magne_sph(sph_rj, radial_rj_grp,               &
      &      CTR_nod_grp_name, CTR_sf_grp_name)
@@ -152,7 +152,7 @@
           call check_coef_fdm_free_CMB
         end if
 !
-        if (evo_B%iflag_scheme .gt. id_no_evolution) then
+        if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
           call check_fdm_coefs_4_BC2(fhd_magne, sph_bc_B)
         end if
         if (evo_T%iflag_scheme .gt. id_no_evolution) then

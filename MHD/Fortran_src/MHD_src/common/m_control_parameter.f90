@@ -34,7 +34,7 @@
 !>      TIme evolution parameters for composition variation
       type(time_evolution_params), save :: evo_comp
 !
-!  cd_prop%iflag_Aevo_scheme
+!  cd_prop%iflag_Bevo_scheme
 !
 !  Parameters for FEM dynamo
 !
