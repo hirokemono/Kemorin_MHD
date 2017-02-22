@@ -16,14 +16,11 @@
 !
       use m_precision
       use m_constants
-      use t_time_stepping_parameter
       use t_FEM_control_parameter
 !
       implicit  none
 !
 !
-!
-      integer (kind=kint) :: iflag_scheme = id_Crank_nicolson
 !
 !  Parameters for FEM dynamo
 !

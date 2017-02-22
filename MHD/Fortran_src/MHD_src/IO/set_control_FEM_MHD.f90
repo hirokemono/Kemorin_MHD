@@ -111,7 +111,7 @@
       call s_set_control_4_force(model_ctl%frc_ctl, model_ctl%g_ctl,    &
      &    model_ctl%cor_ctl, model_ctl%mcv_ctl, fl_prop1, cd_prop1)
       call set_control_rotation_form                                    &
-     &   (ctl_ctl%mevo_ctl, fl_prop1, FEM_prm)
+     &   (iflag_scheme, fl_prop1, ctl_ctl%mevo_ctl, FEM_prm)
 !
 !   set parameters for SGS model
 !
@@ -153,7 +153,8 @@
       call s_set_control_4_crank(ctl_ctl%mevo_ctl,                      &
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1)
 !
-      call s_set_control_4_solver(ctl_ctl%mevo_ctl, ctl_ctl%CG_ctl)
+      call s_set_control_4_solver                                       &
+     &   (iflag_scheme, ctl_ctl%mevo_ctl, ctl_ctl%CG_ctl)
       call set_control_4_FEM_params(ctl_ctl%mevo_ctl, ctl_ctl%fint_ctl, &
      &    fl_prop1, cd_prop1, FEM_prm)
 !
@@ -229,15 +230,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_control_rotation_form(mevo_ctl, fl_prop, FEM_prm)
+      subroutine set_control_rotation_form                              &
+     &         (iflag_scheme, fl_prop, mevo_ctl, FEM_prm)
 !
-      use m_control_parameter
       use t_ctl_data_mhd_evolution
       use t_FEM_control_parameter
       use t_physical_property
 !
-      type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
+      integer (kind=kint), intent(in) :: iflag_scheme
       type(fluid_property), intent(in) :: fl_prop
+      type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !
       integer (kind = kint) :: i

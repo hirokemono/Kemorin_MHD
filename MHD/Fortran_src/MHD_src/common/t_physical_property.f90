@@ -20,6 +20,20 @@
 !
       implicit  none
 !
+!
+!>      Scheme ID for no evolution
+      integer (kind=kint), parameter :: id_no_evolution =     0
+!>      Scheme ID for explicit Euler scheme
+      integer (kind=kint), parameter :: id_explicit_euler =   1
+!>      Scheme ID for 2nd order Adams-Bashforth Scheme
+      integer (kind=kint), parameter :: id_explicit_adams2 =  2
+!>      Scheme ID for Crank-Nicolson Scheme
+      integer (kind=kint), parameter :: id_Crank_nicolson =   3
+!>      Scheme ID for Crank-Nicolson Scheme with consistent mass matrix
+      integer (kind=kint), parameter :: id_Crank_nicolson_cmass = 4
+!>      TIme evolution schme flag
+!
+!
 !>     flag for no gravity
       integer (kind = kint), parameter :: iflag_no_gravity =  -1
 !>     flag for constant gravity

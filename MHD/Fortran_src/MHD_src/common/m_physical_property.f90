@@ -16,6 +16,8 @@
       implicit  none
 !
 !
+      integer (kind=kint) :: iflag_scheme = id_Crank_nicolson
+!
 !>      Structure for fluid property
       type(fluid_property), save :: fl_prop1
 !>      Structure for manetic property

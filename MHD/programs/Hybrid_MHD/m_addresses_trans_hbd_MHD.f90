@@ -11,8 +11,7 @@
 !!      subroutine allocate_hbd_trans_rtp(sph_rtp)
 !!      subroutine deallocate_hbd_trans_rtp
 !!
-!!      subroutine set_addresses_trans_hbd_MHD(evo_B, SGS_param)
-!!        type(time_evolution_params), intent(in) :: evo_B
+!!      subroutine set_addresses_trans_hbd_MHD(SGS_param)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!      subroutine check_add_trans_hbd_MHD
 !!@endverbatim
@@ -97,11 +96,10 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_addresses_trans_hbd_MHD(evo_B, SGS_param)
+      subroutine set_addresses_trans_hbd_MHD(SGS_param)
 !
       use t_SGS_control_parameter
 !
-      type(time_evolution_params), intent(in) :: evo_B
       type(SGS_model_control_params), intent(in) :: SGS_param
 !
 !
