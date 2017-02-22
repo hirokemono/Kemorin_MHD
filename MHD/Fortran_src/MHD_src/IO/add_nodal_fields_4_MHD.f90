@@ -180,7 +180,7 @@
       if(evo_T%iflag_scheme .ne.  id_no_evolution) then
         call add_phys_name_ctl(fhd_pre_heat, field_ctl)
       end if
-      if(evo_C%iflag_scheme .ne.  id_no_evolution) then
+      if(cp_prop%iflag_scheme .ne.  id_no_evolution) then
         call add_phys_name_ctl(fhd_pre_composit, field_ctl)
       end if
 !
@@ -209,7 +209,7 @@
       if(evo_T%iflag_scheme .ne.  id_no_evolution) then
         call add_phys_name_ctl(fhd_chk_heat, field_ctl)
       end if
-      if(evo_C%iflag_scheme .ne.  id_no_evolution) then
+      if(cp_prop%iflag_scheme .ne.  id_no_evolution) then
         call add_phys_name_ctl(fhd_chk_composit, field_ctl)
       end if
 !
@@ -225,7 +225,7 @@
 !      if(evo_T%iflag_scheme .ge. id_Crank_nicolson) then
 !        call add_phys_name_ctl(fhd_chk_heat_2, field_ctl)
 !      end if
-!      if(evo_C%iflag_scheme .ge. id_Crank_nicolson) then
+!      if(cp_prop%iflag_scheme .ge. id_Crank_nicolson) then
 !        call add_phys_name_ctl(fhd_chk_composit_2, field_ctl)
 !      end if
 !

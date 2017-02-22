@@ -75,7 +75,7 @@
 !
 ! ----  read boundary data for dummy scalar
 !
-      if ( evo_C%iflag_scheme .gt. id_no_evolution) then
+      if ( cp_prop%iflag_scheme .gt. id_no_evolution) then
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
      &      light_nod%num_bc, light_nod%ibc_type)
       end if

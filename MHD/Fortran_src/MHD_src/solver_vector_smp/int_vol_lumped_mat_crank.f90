@@ -110,7 +110,7 @@
      &      mat_magne%num_non0, mat_magne%aiccg)
       end if
 !
-      if (evo_C%iflag_scheme .eq. id_Crank_nicolson                     &
+      if (cp_prop%iflag_scheme .eq. id_Crank_nicolson                   &
      &     .and. cp_prop%coef_advect .gt. zero) then
         call init_11_matrix_lump                                        &
      &     (mesh%node%numnod, fluid%numnod_fld, fluid%inod_fld,         &

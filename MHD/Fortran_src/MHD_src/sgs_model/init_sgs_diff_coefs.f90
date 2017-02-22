@@ -153,7 +153,7 @@
         end if
       end if
 !
-      if (evo_C%iflag_scheme .gt. id_no_evolution) then
+      if (cp_prop%iflag_scheme .gt. id_no_evolution) then
         if (SGS_param%iflag_SGS_c_flux .ne. id_SGS_none) then
           if (cmt_param%iflag_c_cf .eq. id_SGS_commute_ON) then
             diff_coefs%num_field = diff_coefs%num_field + 1
@@ -170,7 +170,7 @@
         end if
       end if
 !
-      if (evo_C%iflag_scheme .gt. id_no_evolution) then
+      if (cp_prop%iflag_scheme .gt. id_no_evolution) then
         if(SGS_param%iflag_SGS .ne. id_SGS_none                         &
      &      .and. cmt_param%iflag_c_light .eq. id_SGS_commute_ON) then
           diff_coefs%num_field = diff_coefs%num_field + 1
@@ -283,7 +283,7 @@
          end if
        end if
 !
-       if (evo_C%iflag_scheme .gt. id_no_evolution) then
+       if (cp_prop%iflag_scheme .gt. id_no_evolution) then
          if (SGS_param%iflag_SGS_c_flux .ne. id_SGS_none) then
            if(cmt_param%iflag_c_cf .eq. id_SGS_commute_ON) then
              icomp_diff%i_comp_flux = id
@@ -309,7 +309,7 @@
         end if
       end if
 !
-      if (evo_C%iflag_scheme .gt. id_no_evolution) then
+      if (cp_prop%iflag_scheme .gt. id_no_evolution) then
         if(SGS_param%iflag_SGS .ne. id_SGS_none                        &
      &      .and. cmt_param%iflag_c_light .eq. id_SGS_commute_ON) then
             icomp_diff%i_light = id

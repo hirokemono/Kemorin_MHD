@@ -89,7 +89,7 @@
      &     (nod_bcs%Tnod_bcs%nod_bc_s, iphys%i_temp, nod_fld)
       end if
 !
-      if (evo_C%iflag_scheme .gt. id_no_evolution) then
+      if (cp_prop%iflag_scheme .gt. id_no_evolution) then
         if (ref_param_C1%iflag_reference .ne. id_no_ref_temp) then
           call set_fixed_bc_per_scalar                                  &
      &       (mesh%node%numnod, nod_fld%ntot_phys,                      &

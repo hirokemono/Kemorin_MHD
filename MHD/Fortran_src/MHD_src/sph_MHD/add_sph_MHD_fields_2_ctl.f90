@@ -71,7 +71,7 @@
       end if
 !
 !   gradient of dummy scalar flag
-      if(evo_C%iflag_scheme .gt. id_no_evolution) then
+      if(cp_prop%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_ctl(fhd_grad_composit, field_ctl)
         call add_phys_name_ctl(fhd_part_light, field_ctl)
         call add_phys_name_ctl(fhd_grad_par_light, field_ctl)
@@ -137,7 +137,7 @@
       end if
 !
 !   divergence of dummy scalar flag
-      if(evo_C%iflag_scheme .gt. id_no_evolution) then
+      if(cp_prop%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_ctl(fhd_c_diffuse, field_ctl)
         call add_phys_name_ctl(fhd_c_flux, field_ctl)
         call add_phys_name_ctl(fhd_composit_advect, field_ctl)

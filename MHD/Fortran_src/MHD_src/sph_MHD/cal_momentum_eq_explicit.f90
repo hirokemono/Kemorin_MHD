@@ -83,7 +83,7 @@
      &      ipol%i_temp, ipol%i_pre_heat, ht_prop%coef_exp,             &
      &      ht_prop%coef_source, sph_rj, rj_fld)
       end if
-      if(evo_C%iflag_scheme .gt. id_no_evolution) then
+      if(cp_prop%iflag_scheme .gt. id_no_evolution) then
         call sel_scalar_diff_adv_src_adams                              &
      &     (sph_bc_C%kr_in, sph_bc_C%kr_out,                            &
      &      ipol%i_c_diffuse, ipol%i_c_advect, ipol%i_light_source,     &
@@ -132,7 +132,7 @@
         call cal_diff_induction_MHD_euler(cd_prop%coef_exp,             &
      &      ipol, itor, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
-      if(evo_C%iflag_scheme .gt. id_no_evolution) then
+      if(cp_prop%iflag_scheme .gt. id_no_evolution) then
         call sel_scalar_diff_adv_src_euler                              &
      &     (sph_bc_C%kr_in, sph_bc_C%kr_out,                            &
      &      ipol%i_c_diffuse, ipol%i_c_advect, ipol%i_light_source,     &
@@ -155,7 +155,7 @@
           call set_ini_adams_mag_induct(ipol, itor,                     &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
-        if(evo_C%iflag_scheme .gt. id_no_evolution) then
+        if(cp_prop%iflag_scheme .gt. id_no_evolution) then
           call sel_ini_adams_scalar_w_src                               &
      &       (sph_bc_C%kr_in, sph_bc_C%kr_out, ipol%i_c_advect,         &
      &        ipol%i_light_source, ipol%i_pre_composit,                 &

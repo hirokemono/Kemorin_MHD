@@ -147,7 +147,7 @@
      &      cd_prop1, g_sph_rj, band_bp_evo, band_bt_evo)
       end if
 !
-      if(evo_C%iflag_scheme .ge. id_Crank_nicolson) then
+      if(cp_prop%iflag_scheme .ge. id_Crank_nicolson) then
           if(iflag_debug .gt. 0)                                        &
      &          write(*,*) 'const_radial_mat_4_composit_sph'
         write(band_comp_evo%mat_name,'(a)') 'Composition_evolution'
@@ -195,7 +195,7 @@
      &    band_temp_evo%mat, band_temp00_evo)
       end if
 !
-      if(evo_C%iflag_scheme .ge. id_Crank_nicolson) then
+      if(cp_prop%iflag_scheme .ge. id_Crank_nicolson) then
           if(i_debug .gt. 0) write(*,*) 'const_radial_mat_comp00_sph'
         write(band_comp_evo%mat_name,'(a)')                             &
      &                        'average_composition_w_center'

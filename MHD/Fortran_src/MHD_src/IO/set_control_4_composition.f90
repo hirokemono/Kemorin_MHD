@@ -46,7 +46,7 @@
       integer (kind = kint) :: i
 !
 !
-      if (evo_C%iflag_scheme .eq. id_no_evolution) then
+      if (cp_prop%iflag_scheme .eq. id_no_evolution) then
         light_nod%num_bc =  0
         light_surf%num_bc = 0
       else

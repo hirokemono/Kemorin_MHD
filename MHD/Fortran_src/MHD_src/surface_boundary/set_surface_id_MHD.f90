@@ -199,7 +199,7 @@
      &     (IO_bc, sf_grp, h_flux_surf, surf_bcs%Tsf_bcs)
       end if
 !
-      if (evo_C%iflag_scheme .gt. id_no_evolution) then
+      if (cp_prop%iflag_scheme .gt. id_no_evolution) then
         call set_surf_grad_scalar_id                                    &
      &     (IO_bc, sf_grp, light_surf, surf_bcs%Csf_bcs)
       end if

@@ -105,7 +105,7 @@
      &      frc_pl(1,f_trns%i_h_flux) )
       end if
 !
-      if( (f_trns%i_c_flux * evo_C%iflag_scheme) .gt. 0) then
+      if( (f_trns%i_c_flux * cp_prop%iflag_scheme) .gt. 0) then
         call cal_vec_scalar_prod_w_coef_smp                             &
      &     (sph_rtp%nnod_pole, cp_prop%coef_advect,                     &
      &      fls_pl(1,bs_trns%i_velo), fls_pl(1,bs_trns%i_light),        &

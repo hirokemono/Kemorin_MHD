@@ -94,7 +94,7 @@
      &      ele%nnod_4_ele, djds_tbl_fl, mat_temp)
       end if
 !
-      if (evo_C%iflag_scheme .ge. id_Crank_nicolson) then
+      if (cp_prop%iflag_scheme .ge. id_Crank_nicolson) then
         call reset_aiccg_11_MHD(node, ele,                              &
      &      fluid%iele_start_fld, fluid%iele_end_fld,                   &
      &      ele%nnod_4_ele, djds_tbl_fl, mat_light)

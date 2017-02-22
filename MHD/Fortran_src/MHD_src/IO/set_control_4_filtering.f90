@@ -127,7 +127,7 @@
      &       = filter_area_4_each_field(s3df_ctl%heat_filter_ctl)
         end if
 !
-        if (evo_C%iflag_scheme .gt. id_no_evolution) then
+        if (cp_prop%iflag_scheme .gt. id_no_evolution) then
           filter_param%iflag_composition_filtering                      &
      &       = filter_area_4_each_field(s3df_ctl%compostion_filter_ctl)
         end if

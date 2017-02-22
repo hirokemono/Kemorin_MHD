@@ -120,7 +120,7 @@
      &      frc_rtp(1,f_trns%i_h_flux) )
       end if
 !
-      if( (f_trns%i_c_flux * evo_C%iflag_scheme) .gt. 0) then
+      if( (f_trns%i_c_flux * cp_prop%iflag_scheme) .gt. 0) then
         call cal_vec_scalar_prod_w_coef_smp                             &
      &     (sph_rtp%nnod_rtp, cp_prop%coef_advect,                      &
      &      fld_rtp(1,b_trns%i_velo), fld_rtp(1,b_trns%i_light),        &

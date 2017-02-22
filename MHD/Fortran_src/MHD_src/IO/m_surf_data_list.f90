@@ -102,7 +102,7 @@
         if(a_potential_surf%num_bc.gt.0) call deallocate_vecp_surf_ctl
       end if
 ! 
-      if (evo_C%iflag_scheme .gt. id_no_evolution) then
+      if (cp_prop%iflag_scheme .gt. id_no_evolution) then
         if(light_surf%num_bc.gt.0) call deallocate_composit_surf_ctl
       end if
 !

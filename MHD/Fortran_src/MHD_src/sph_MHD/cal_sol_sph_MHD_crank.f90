@@ -98,7 +98,7 @@
 !g
 !  Input: ipol%i_light,  Solution: ipol%i_light
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_composition_sph_crank'
-      if(evo_C%iflag_scheme .gt. id_no_evolution) then
+      if(cp_prop%iflag_scheme .gt. id_no_evolution) then
         call cal_sol_composition_sph_crank                              &
      &     (sph_rj, cp_prop1, band_comp_evo, ipol, rj_fld)
       end if
@@ -128,7 +128,7 @@
         call update_after_heat_sph                                      &
      &     (sph_rj, r_2nd, ht_prop1, leg, ipol, rj_fld)
       end if
-      if(evo_C%iflag_scheme .gt. id_no_evolution) then
+      if(cp_prop%iflag_scheme .gt. id_no_evolution) then
         call update_after_composit_sph                                  &
      &     (sph_rj, r_2nd, cp_prop1, leg, ipol, rj_fld)
       end if

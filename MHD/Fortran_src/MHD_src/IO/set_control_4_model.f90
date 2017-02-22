@@ -108,7 +108,7 @@
         else if (tmpchara .eq. fhd_temp ) then
           evo_T%iflag_scheme =   iflag_scheme
         else if (tmpchara .eq. fhd_light ) then
-          evo_C%iflag_scheme =   iflag_scheme
+          cp_prop%iflag_scheme =   iflag_scheme
         else if (tmpchara .eq. fhd_magne ) then
           cd_prop%iflag_Bevo_scheme =  iflag_scheme
         else if (tmpchara .eq. fhd_vecp ) then
@@ -122,7 +122,7 @@
 !
       if       (fl_prop%iflag_scheme .eq. id_no_evolution               &
      &    .and. evo_T%iflag_scheme .eq. id_no_evolution                 &
-     &    .and. evo_C%iflag_scheme .eq. id_no_evolution                 &
+     &    .and. cp_prop%iflag_scheme .eq. id_no_evolution               &
      &    .and. cd_prop%iflag_Bevo_scheme .eq. id_no_evolution          &
      &    .and. cd_prop%iflag_Aevo_scheme .eq. id_no_evolution) then
             e_message = 'Turn on field for time integration'
@@ -132,7 +132,7 @@
       if (iflag_debug .ge. iflag_routine_msg) then
         write(*,*) 'iflag_t_evo_4_velo     ', fl_prop%iflag_scheme
         write(*,*) 'iflag_t_evo_4_temp     ', evo_T%iflag_scheme
-        write(*,*) 'iflag_t_evo_4_composit ', evo_C%iflag_scheme
+        write(*,*) 'iflag_t_evo_4_composit ', cp_prop%iflag_scheme
         write(*,*) 'iflag_t_evo_4_magne    ', cd_prop%iflag_Bevo_scheme
         write(*,*) 'iflag_t_evo_4_vect_p   ', cd_prop%iflag_Aevo_scheme
       end if
@@ -197,7 +197,7 @@
      &    cd_prop%iflag_Aevo_scheme, cd_prop1%coef_imp,                 &
      &    cd_prop1%coef_exp)
       call set_implicit_coefs(mevo_ctl%coef_imp_c_ctl,                  &
-     &    evo_C%iflag_scheme, cp_prop1%coef_imp, cp_prop1%coef_exp)
+     &    cp_prop%iflag_scheme, cp_prop1%coef_imp, cp_prop1%coef_exp)
 !
       if (iflag_debug .ge. iflag_routine_msg) then
         write(*,*) 'coef_imp_v ', fl_prop1%coef_imp

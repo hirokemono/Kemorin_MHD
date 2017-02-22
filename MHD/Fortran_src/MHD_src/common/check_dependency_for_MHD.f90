@@ -148,7 +148,7 @@
         call check_missing_field_w_msg(fld, msg, iphys%i_temp)
       end if
 !
-      if (evo_C%iflag_scheme .ne. id_no_evolution) then
+      if (cp_prop%iflag_scheme .ne. id_no_evolution) then
         msg =  'Time integration for composition needs'
         call check_missing_field_w_msg(fld, msg, iphys%i_velo)
         call check_missing_field_w_msg(fld, msg, iphys%i_light)
@@ -289,7 +289,7 @@
       end if
 !
 !
-      if ( evo_C%iflag_scheme .gt. id_no_evolution) then
+      if ( cp_prop%iflag_scheme .gt. id_no_evolution) then
         if (SGS_param%iflag_SGS_c_flux .ne. id_SGS_none) then
           msg = 'solving SGS compsition flux needs'
           call check_missing_field_w_msg(fld, msg, iphys%i_SGS_c_flux)
@@ -412,7 +412,7 @@
       end if
 !
 !
-      if ( evo_C%iflag_scheme .gt. id_no_evolution) then
+      if ( cp_prop%iflag_scheme .gt. id_no_evolution) then
         if (SGS_param%iflag_SGS_c_flux .ne. id_SGS_none) then
           msg = 'solving SGS compsition flux needs'
           call check_missing_field_w_msg(fld, msg, iphys%i_SGS_c_flux)

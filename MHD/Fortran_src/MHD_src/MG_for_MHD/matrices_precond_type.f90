@@ -88,7 +88,7 @@
      &     PRECOND_MG, sigma_diag)
       end if
 !
-      if (evo_C%iflag_scheme .ge. id_Crank_nicolson) then
+      if (cp_prop%iflag_scheme .ge. id_Crank_nicolson) then
         call precond_DJDS11_struct(np_smp, djds_tbl_fl, mat_light,      &
      &     PRECOND_MG, sigma_diag)
       end if

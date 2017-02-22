@@ -101,7 +101,7 @@
      &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, sph_bc_B)
       end if
 !
-      if (evo_C%iflag_scheme .gt. id_no_evolution) then
+      if (cp_prop%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_composition_sph'
         call set_sph_bc_composition_sph(sph_rj, radial_rj_grp)
         call cal_fdm_coefs_4_BCs                                       &
@@ -139,7 +139,7 @@
           call check_sph_boundary_spectra(fhd_temp,                     &
      &        sph_rj%nidx_rj(2), sph_rj%idx_gl_1d_rj_j, sph_bc_T)
         end if
-        if (evo_C%iflag_scheme .gt. id_no_evolution) then
+        if (cp_prop%iflag_scheme .gt. id_no_evolution) then
           call check_sph_boundary_spectra(fhd_light,                    &
      &        sph_rj%nidx_rj(2), sph_rj%idx_gl_1d_rj_j, sph_bc_C)
         end if
@@ -158,7 +158,7 @@
         if (evo_T%iflag_scheme .gt. id_no_evolution) then
           call check_fdm_coefs_4_BC2(fhd_temp,  sph_bc_T)
         end if
-        if (evo_C%iflag_scheme .gt. id_no_evolution) then
+        if (cp_prop%iflag_scheme .gt. id_no_evolution) then
           call check_fdm_coefs_4_BC2(fhd_light, sph_bc_C)
         end if
 !

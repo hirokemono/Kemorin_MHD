@@ -132,6 +132,8 @@
 !
 !>      Structure for thermal property
       type scalar_property
+!>        Time evolution flag for velocity
+        integer (kind=kint) :: iflag_scheme = id_no_evolution
 !>        Coefficient of implicit term
         real(kind = kreal) :: coef_imp = half
 !>        Coefficient of explicit term

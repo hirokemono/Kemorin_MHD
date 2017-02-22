@@ -160,7 +160,7 @@
         end if
       end if
 !
-      if (evo_C%iflag_scheme .gt. id_no_evolution) then
+      if (cp_prop%iflag_scheme .gt. id_no_evolution) then
         if (SGS_param%iflag_SGS_c_flux .ne. id_SGS_none) then
           sgs_coefs%num_field = sgs_coefs%num_field + 1
           sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 3
@@ -273,7 +273,7 @@
          end if
        end if
 !
-       if (evo_C%iflag_scheme .gt. id_no_evolution) then
+       if (cp_prop%iflag_scheme .gt. id_no_evolution) then
          if (SGS_param%iflag_SGS_c_flux .ne. id_SGS_none) then
            icomp_sgs%i_comp_flux = i
            ifld_sgs%i_comp_flux =  j

@@ -299,7 +299,7 @@
 !
 !     ----- composition update
 !
-      if ( evo_C%iflag_scheme .gt. id_no_evolution) then
+      if ( cp_prop%iflag_scheme .gt. id_no_evolution) then
         if( ref_param_C1%iflag_reference .ne. id_no_ref_temp) then
           if(iflag_debug.eq.1) write(*,*) 's_cal_light_element part'
           call s_cal_light_element                                      &
@@ -626,7 +626,7 @@
 !
 !     ----- composition update
 !
-      if ( evo_C%iflag_scheme .gt. id_no_evolution) then
+      if ( cp_prop%iflag_scheme .gt. id_no_evolution) then
         if( ref_param_C1%iflag_reference .ne. id_no_ref_temp) then
           if(iflag_debug.eq.1) write(*,*) 's_cal_light_element part'
           call s_cal_light_element                                      &

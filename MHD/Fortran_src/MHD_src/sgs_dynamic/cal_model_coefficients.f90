@@ -228,7 +228,7 @@
       end if
 !
 !
-      if(evo_C%iflag_scheme .ne. id_no_evolution) then
+      if(cp_prop%iflag_scheme .ne. id_no_evolution) then
         if(SGS_par%model_p%iflag_SGS_c_flux .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_sf_dynamic comp'
           call cal_sgs_sf_dynamic                                       &

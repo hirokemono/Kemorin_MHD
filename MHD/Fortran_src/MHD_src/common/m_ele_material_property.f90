@@ -77,7 +77,7 @@
 !
 !   For dummy scalar
 !
-      if (evo_C%iflag_scheme .gt. id_no_evolution) then
+      if (cp_prop%iflag_scheme .gt. id_no_evolution) then
         call alloc_dscalar_diff_MHD_AMG(numele, ak_MHD)
         ak_MHD%ak_d_composit(1:numele) = cp_prop%coef_diffuse
       end if

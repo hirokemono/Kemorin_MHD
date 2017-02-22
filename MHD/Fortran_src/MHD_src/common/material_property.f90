@@ -297,7 +297,7 @@
 !
 !   For light element
 !
-      if (evo_C%iflag_scheme .gt. id_no_evolution) then
+      if (cp_prop%iflag_scheme .gt. id_no_evolution) then
         cp_prop%coef_advect =   one
         cp_prop%coef_diffuse =  one
         cp_prop%coef_source =   one
@@ -323,7 +323,7 @@
 !  Check
 !
       if (my_rank .eq. 0) then
-        if (evo_C%iflag_scheme .gt. id_no_evolution) then
+        if (cp_prop%iflag_scheme .gt. id_no_evolution) then
           write(*,*) 'coefficient for composition:         ',           &
      &              cp_prop%coef_advect
           write(*,*) 'coefficient for composite diffusion: ',           &

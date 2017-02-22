@@ -86,7 +86,7 @@
 !
       if    (fl_prop%iflag_scheme .ne. id_no_evolution                  &
      &  .or. evo_T%iflag_scheme .ne. id_no_evolution                    &
-     &  .or. evo_C%iflag_scheme .ne. id_no_evolution) then
+     &  .or. cp_prop%iflag_scheme .ne. id_no_evolution) then
         write(*,*) 'alloc_type_marix_list'
         call set_index_list_4_mat_fl(mesh%node, mesh%ele,               &
      &      MHD_mesh%fluid, rhs_tbl, djds_tbl_fl, MG_mat_fl_q)
