@@ -189,14 +189,18 @@
      &    fl_prop%iflag_scheme, fl_prop%coef_imp, fl_prop%coef_exp)
       call set_implicit_coefs(mevo_ctl%coef_imp_t_ctl,                  &
      &    ht_prop%iflag_scheme, ht_prop%coef_imp, ht_prop%coef_exp)
-      call set_implicit_coefs(mevo_ctl%coef_imp_b_ctl,                  &
-     &    cd_prop%iflag_Bevo_scheme, cd_prop1%coef_imp,                 &
-     &    cd_prop1%coef_exp)
-      call set_implicit_coefs(mevo_ctl%coef_imp_b_ctl,                  &
-     &    cd_prop%iflag_Aevo_scheme, cd_prop1%coef_imp,                 &
-     &    cd_prop1%coef_exp)
       call set_implicit_coefs(mevo_ctl%coef_imp_c_ctl,                  &
      &    cp_prop%iflag_scheme, cp_prop%coef_imp, cp_prop%coef_exp)
+!
+      if(cd_prop%iflag_Bevo_scheme .ne. id_no_evolution) then
+        call set_implicit_coefs                                         &
+     &     (mevo_ctl%coef_imp_b_ctl, cd_prop%iflag_Bevo_scheme,         &
+     &      cd_prop1%coef_imp, cd_prop1%coef_exp)
+      else if(cd_prop%iflag_Aevo_scheme .ne. id_no_evolution) then
+        call set_implicit_coefs                                         &
+     &     (mevo_ctl%coef_imp_b_ctl, cd_prop%iflag_Aevo_scheme,         &
+     &      cd_prop1%coef_imp, cd_prop1%coef_exp)
+      end if
 !
       if (iflag_debug .ge. iflag_routine_msg) then
         write(*,*) 'coef_imp_v ', fl_prop%coef_imp
