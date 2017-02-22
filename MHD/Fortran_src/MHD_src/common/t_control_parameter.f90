@@ -24,8 +24,6 @@
 !
 !>      Structure for evolution parameter for valocity
       type velocity_evolution_param
-!>        TIme evolution parameters for magnetic field
-        type(time_evolution_params) :: evo_V
 !>        Structure for fluid property
         type(fluid_property) :: fl_prop
       end type velocity_evolution_param

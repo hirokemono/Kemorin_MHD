@@ -4,15 +4,16 @@
 !      programmed by H.Matsui on March, 2009
 !
 !!      subroutine s_set_MHD_idx_4_mat_type                             &
-!!     &         (evo_V, evo_B, evo_A, evo_T, evo_C,                    &
-!!     &          mesh, MHD_mesh, rhs_tbl,                              &
+!!     &         (evo_B, evo_A, evo_T, evo_C, mesh, MHD_mesh,           &
+!!     &          fl_prop, rhs_tbl,                                &
 !!     &          djds_tbl, djds_tbl_fl, djds_tbl_lin, djds_tbl_fll,    &
 !!     &          MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,              &
 !!     &          MG_mat_linear, MG_mat_fl_l)
-!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_data_MHD), intent(in) :: MHD_mesh
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(DJDS_ordering_table),  intent(inout) :: djds_tbl
 !!        type(DJDS_ordering_table),  intent(inout) :: djds_tbl_fl
@@ -30,6 +31,7 @@
       use m_geometry_constants
 !
       use t_time_stepping_parameter
+      use t_physical_property
       use t_mesh_data
       use t_geometry_data
       use t_geometry_data_MHD
@@ -47,19 +49,20 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_set_MHD_idx_4_mat_type                               &
-     &         (evo_V, evo_B, evo_A, evo_T, evo_C,                      &
-     &          mesh, MHD_mesh, rhs_tbl,                                &
+     &         (evo_B, evo_A, evo_T, evo_C, mesh, MHD_mesh,             &
+     &          fl_prop, rhs_tbl,                                &
      &          djds_tbl, djds_tbl_fl, djds_tbl_lin, djds_tbl_fll,      &
      &          MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,                &
      &          MG_mat_linear, MG_mat_fl_l)
 !
       use set_idx_4_mat_type
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_data_MHD), intent(in) :: MHD_mesh
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(fluid_property), intent(in) :: fl_prop
 !
       type(DJDS_ordering_table),  intent(inout) :: djds_tbl
       type(DJDS_ordering_table),  intent(inout) :: djds_tbl_fl
@@ -83,7 +86,7 @@
       call set_index_list_4_mat_etr_l(mesh%node, mesh%ele,              &
      &    rhs_tbl, djds_tbl_lin, MG_mat_q, MG_mat_linear)
 !
-      if    (evo_V%iflag_scheme .ne. id_no_evolution                    &
+      if    (fl_prop%iflag_scheme .ne. id_no_evolution                  &
      &  .or. evo_T%iflag_scheme .ne. id_no_evolution                    &
      &  .or. evo_C%iflag_scheme .ne. id_no_evolution) then
         write(*,*) 'alloc_type_marix_list'

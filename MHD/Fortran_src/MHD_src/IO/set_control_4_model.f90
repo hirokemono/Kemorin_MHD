@@ -11,17 +11,18 @@
 !!@verbatim
 !!      subroutine s_set_control_4_model                                &
 !!     &          (reft_ctl, refc_ctl, mevo_ctl, evo_ctl, nmtr_ctl,     &
-!!     &           evo_V, evo_B, evo_A, evo_T, evo_C)
+!!     &           evo_B, evo_A, evo_T, evo_C, fl_prop)
 !!      subroutine s_set_control_4_crank                                &
-!!     &         (mevo_ctl, evo_V, evo_B, evo_A, evo_T, evo_C)
+!!     &         (mevo_ctl, evo_B, evo_A, evo_T, evo_C, fl_prop)
 !!        type(reference_temperature_ctl), intent(in) :: reft_ctl
 !!        type(reference_temperature_ctl), intent(in) :: refc_ctl
 !!        type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
 !!        type(mhd_evolution_control), intent(inout) :: evo_ctl
 !!        type(node_monitor_control), intent(inout) :: nmtr_ctl
-!!        type(time_evolution_params), intent(inout) :: evo_V, evo_B
+!!        type(time_evolution_params), intent(inout) :: evo_B
 !!        type(time_evolution_params), intent(inout) :: evo_A
 !!        type(time_evolution_params), intent(inout) :: evo_T, evo_C
+!!        type(fluid_property), intent(in) :: fl_prop
 !!@endverbatim
 !
       module set_control_4_model
@@ -35,6 +36,7 @@
       use m_t_int_parameter
       use t_ctl_data_mhd_evo_scheme
       use t_time_stepping_parameter
+      use t_physical_property
 !
       implicit  none
 !
@@ -48,7 +50,7 @@
 !
       subroutine s_set_control_4_model                                  &
      &          (reft_ctl, refc_ctl, mevo_ctl, evo_ctl, nmtr_ctl,       &
-     &           evo_V, evo_B, evo_A, evo_T, evo_C)
+     &           evo_B, evo_A, evo_T, evo_C, fl_prop)
 !
       use calypso_mpi
       use m_t_step_parameter
@@ -64,8 +66,9 @@
       type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
       type(mhd_evolution_control), intent(inout) :: evo_ctl
       type(node_monitor_control), intent(inout) :: nmtr_ctl
-      type(time_evolution_params), intent(inout) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(inout) :: evo_B, evo_A
       type(time_evolution_params), intent(inout) :: evo_T, evo_C
+      type(fluid_property), intent(inout) :: fl_prop
 !
       integer (kind = kint) :: i
       character(len=kchara) :: tmpchara
@@ -102,7 +105,7 @@
       do i = 1, evo_ctl%t_evo_field_ctl%num
         tmpchara = evo_ctl%t_evo_field_ctl%c_tbl(i)
         if (tmpchara .eq. fhd_velo ) then
-          evo_V%iflag_scheme =   iflag_scheme
+          fl_prop%iflag_scheme =   iflag_scheme
         else if (tmpchara .eq. fhd_temp ) then
           evo_T%iflag_scheme =   iflag_scheme
         else if (tmpchara .eq. fhd_light ) then
@@ -118,7 +121,7 @@
         call dealloc_t_evo_name_ctl(evo_ctl)
       end if
 !
-      if       (evo_V%iflag_scheme .eq. id_no_evolution                 &
+      if       (fl_prop%iflag_scheme .eq. id_no_evolution               &
      &    .and. evo_T%iflag_scheme .eq. id_no_evolution                 &
      &    .and. evo_C%iflag_scheme .eq. id_no_evolution                 &
      &    .and. evo_B%iflag_scheme .eq. id_no_evolution                 &
@@ -128,7 +131,7 @@
       end if
 !
       if (iflag_debug .ge. iflag_routine_msg) then
-        write(*,*) 'iflag_t_evo_4_velo     ', evo_V%iflag_scheme
+        write(*,*) 'iflag_t_evo_4_velo     ', fl_prop%iflag_scheme
         write(*,*) 'iflag_t_evo_4_temp     ', evo_T%iflag_scheme
         write(*,*) 'iflag_t_evo_4_composit ', evo_C%iflag_scheme
         write(*,*) 'iflag_t_evo_4_magne    ', evo_B%iflag_scheme
@@ -176,15 +179,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_4_crank                                  &
-     &         (mevo_ctl, evo_V, evo_B, evo_A, evo_T, evo_C)
+     &         (mevo_ctl, evo_B, evo_A, evo_T, evo_C, fl_prop)
 !
       type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
-      type(time_evolution_params), intent(inout) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(inout) :: evo_B, evo_A
       type(time_evolution_params), intent(inout) :: evo_T, evo_C
+      type(fluid_property), intent(inout) :: fl_prop
 !
 !
       call set_implicit_coefs(mevo_ctl%coef_imp_v_ctl,                  &
-     &    evo_V%iflag_scheme, fl_prop1%coef_imp, fl_prop1%coef_exp)
+     &    fl_prop%iflag_scheme, fl_prop%coef_imp, fl_prop%coef_exp)
       call set_implicit_coefs(mevo_ctl%coef_imp_t_ctl,                  &
      &    evo_T%iflag_scheme, ht_prop1%coef_imp, ht_prop1%coef_exp)
       call set_implicit_coefs(mevo_ctl%coef_imp_b_ctl,                  &

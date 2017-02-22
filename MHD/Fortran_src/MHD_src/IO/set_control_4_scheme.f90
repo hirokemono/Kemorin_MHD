@@ -9,8 +9,9 @@
 !!
 !!@verbatim
 !!      subroutine set_control_4_FEM_params                             &
-!!     &         (mevo_ctl, fint_ctl, evo_V, evo_B, evo_A, FEM_prm)
-!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!     &         (mevo_ctl, fint_ctl, evo_B, evo_A, fl_prop, FEM_prm)
+!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
 !!        type(fem_intergration_control), intent(in)  :: fint_ctl
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
@@ -29,18 +30,20 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_control_4_FEM_params                               &
-     &         (mevo_ctl, fint_ctl, evo_V, evo_B, evo_A, FEM_prm)
+     &         (mevo_ctl, fint_ctl, evo_B, evo_A, fl_prop, FEM_prm)
 !
       use calypso_mpi
       use m_error_IDs
       use m_machine_parameter
       use t_time_stepping_parameter
+      use t_physical_property
       use t_FEM_control_parameter
       use t_ctl_data_mhd_evo_scheme
       use t_ctl_data_4_fem_int_pts
       use skip_comment_f
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) ::  evo_B, evo_A
+      type(fluid_property), intent(in) :: fl_prop
       type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
       type(fem_intergration_control), intent(in)  :: fint_ctl
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
@@ -92,7 +95,7 @@
         end if
 !
         if(FEM_prm%maxiter_stokes.gt.1) then
-          if(evo_V%iflag_scheme .gt. id_no_evolution) then
+          if(fl_prop%iflag_scheme .gt. id_no_evolution) then
             if(mevo_ctl%eps_4_velo_ctl%iflag .eq. 0) then
               e_message                                                 &
      &         = 'Set convergence area for velocity iteration'

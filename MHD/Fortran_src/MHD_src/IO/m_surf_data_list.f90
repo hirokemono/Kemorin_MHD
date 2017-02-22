@@ -8,9 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine deallocate_surf_bc_lists                             &
-!!     &         (evo_V, evo_B, evo_A, evo_T, evo_C)
-!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!     &         (evo_B, evo_A, evo_T, evo_C, fl_prop)
+!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
+!!        type(fluid_property), intent(in) :: fl_prop
 !!      subroutine allocate_press_surf_ctl
 !!      subroutine allocate_temp_surf_ctl
 !!      subroutine allocate_magne_surf_ctl
@@ -71,19 +72,21 @@
 !-----------------------------------------------------------------------
 !
       subroutine deallocate_surf_bc_lists                               &
-     &         (evo_V, evo_B, evo_A, evo_T, evo_C)
+     &         (evo_B, evo_A, evo_T, evo_C, fl_prop)
 !
       use t_time_stepping_parameter
+      use t_physical_property
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
+      type(fluid_property), intent(in) :: fl_prop
 !
 !
       if (evo_T%iflag_scheme .gt. id_no_evolution) then
         if(h_flux_surf%num_bc .gt. 0) call deallocate_temp_surf_ctl
       end if
 !
-      if (evo_V%iflag_scheme .gt. id_no_evolution) then
+      if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         if(torque_surf%num_bc.gt.0) call deallocate_velo_surf_ctl
         if(wall_surf%num_bc.gt.0)   call deallocate_press_surf_ctl
       end if

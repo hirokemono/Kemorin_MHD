@@ -99,18 +99,17 @@
       call s_set_control_4_model                                        &
      &   (model_ctl%reft_ctl, model_ctl%refc_ctl,                       &
      &    ctl_ctl%mevo_ctl, model_ctl%evo_ctl, nmtr_ctl,                &
-     &    evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp)
+     &    evo_magne, evo_vect_p, evo_temp, evo_comp, fl_prop1)
 !
 !   set element groups for evolution
 !
       call s_set_control_evo_layers(model_ctl%earea_ctl,                &
-     &    evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp, FEM_prm)
+     &    evo_magne, evo_vect_p, evo_temp, evo_comp, fl_prop1, FEM_prm)
 !
 !   set forces
 !
       call s_set_control_4_force(model_ctl%frc_ctl, model_ctl%g_ctl,    &
-     &    model_ctl%cor_ctl, model_ctl%mcv_ctl,                         &
-     &    evo_velo, fl_prop1, cd_prop1)
+     &    model_ctl%cor_ctl, model_ctl%mcv_ctl, fl_prop1, cd_prop1)
       call set_control_rotation_form                                    &
      &   (ctl_ctl%mevo_ctl, fl_prop1, FEM_prm)
 !
@@ -126,7 +125,7 @@
 !   set parameters for filtering operation
 !
       call s_set_control_4_filtering                                    &
-     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
+     &   (evo_magne, evo_vect_p, evo_temp, evo_comp, fl_prop1,          &
      &    SGS_par%model_p, model_ctl%sgs_ctl%SGS_filter_name_ctl,       &
      &    model_ctl%sgs_ctl%ffile_ctl, model_ctl%sgs_ctl%s3df_ctl,      &
      &    SGS_par%filter_p)
@@ -139,7 +138,7 @@
 !   set control parameters
 !
       call s_set_control_4_normalize                                    &
-     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
+     &   (evo_magne, evo_vect_p, evo_temp, evo_comp, fl_prop1,          &
      &    model_ctl%dless_ctl, model_ctl%eqs_ctl)
 !
 !   set boundary conditions
@@ -152,11 +151,11 @@
       call s_set_control_4_time_steps                                   &
      &   (SGS_par%model_p, ctl_ctl%mrst_ctl, ctl_ctl%tctl)
       call s_set_control_4_crank(ctl_ctl%mevo_ctl,                      &
-     &    evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp)
+     &    evo_magne, evo_vect_p, evo_temp, evo_comp, fl_prop1)
 !
       call s_set_control_4_solver(ctl_ctl%mevo_ctl, ctl_ctl%CG_ctl)
       call set_control_4_FEM_params(ctl_ctl%mevo_ctl, ctl_ctl%fint_ctl, &
-     &    evo_velo, evo_magne, evo_vect_p, FEM_prm)
+     &    evo_magne, evo_vect_p, fl_prop1, FEM_prm)
 !
       end subroutine set_control_4_FEM_MHD
 !
@@ -164,6 +163,7 @@
 !
       subroutine set_control_FEM_MHD_bcs(nbc_ctl, sbc_ctl)
 !
+      use m_physical_property
       use t_ctl_data_node_boundary
       use t_ctl_data_surf_boundary
 !
@@ -189,12 +189,12 @@
 !   set boundary conditions for velocity
 !
       call s_set_control_4_velo                                         &
-     &   (evo_velo, nbc_ctl%node_bc_U_ctl, sbc_ctl%surf_bc_ST_ctl)
+     &   (fl_prop1, nbc_ctl%node_bc_U_ctl, sbc_ctl%surf_bc_ST_ctl)
 !
 !  set boundary conditions for pressure
 !
       call s_set_control_4_press                                        &
-     &   (evo_velo, nbc_ctl%node_bc_P_ctl, sbc_ctl%surf_bc_PN_ctl)
+     &   (fl_prop1, nbc_ctl%node_bc_P_ctl, sbc_ctl%surf_bc_PN_ctl)
 !
 !   set boundary conditions for composition
 !

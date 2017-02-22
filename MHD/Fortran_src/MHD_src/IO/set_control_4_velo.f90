@@ -10,8 +10,8 @@
 !!
 !!@verbatim
 !!      subroutine s_set_control_4_velo                                 &
-!!     &         (evo_V, node_bc_U_ctl, surf_bc_ST_ctl)
-!!        type(time_evolution_params), intent(in) :: evo_V
+!!     &         (fl_prop, node_bc_U_ctl, surf_bc_ST_ctl)
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(ctl_array_c2r), intent(inout) :: node_bc_U_ctl
 !!        type(ctl_array_c2r), intent(inout) :: surf_bc_ST_ctl
 !!@endverbatim
@@ -29,11 +29,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_4_velo                                   &
-     &         (evo_V, node_bc_U_ctl, surf_bc_ST_ctl)
+     &         (fl_prop, node_bc_U_ctl, surf_bc_ST_ctl)
 !
       use m_machine_parameter
       use calypso_mpi
-      use t_time_stepping_parameter
+      use t_physical_property
       use t_read_control_arrays
       use m_bc_data_list
       use m_surf_data_list
@@ -41,14 +41,14 @@
       use set_surface_group_types
       use skip_comment_f
 !
-      type(time_evolution_params), intent(in) :: evo_V
+      type(fluid_property), intent(in) :: fl_prop
       type(ctl_array_c2r), intent(inout) :: node_bc_U_ctl
       type(ctl_array_c2r), intent(inout) :: surf_bc_ST_ctl
 !
       integer (kind = kint) :: i, iflag_4_hemi
 !
 !
-      if (evo_V%iflag_scheme .eq. id_no_evolution) then
+      if (fl_prop%iflag_scheme .eq. id_no_evolution) then
         velo_nod%num_bc =    0
         torque_surf%num_bc = 0
       else

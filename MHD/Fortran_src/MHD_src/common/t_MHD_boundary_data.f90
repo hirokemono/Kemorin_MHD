@@ -8,8 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine alloc_surf_bc_data_type                              &
-!!     &         (evo_V, evo_B, evo_A, evo_T, evo_C, surf_bcs)
-!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!     &         (fl_prop, evo_B, evo_A, evo_T, evo_C, surf_bcs)
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(surface_boundarty_conditions), intent(inout) :: surf_bcs
 !!
@@ -52,11 +53,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine alloc_surf_bc_data_type                                &
-     &         (evo_V, evo_B, evo_A, evo_T, evo_C, surf_bcs)
+     &         (fl_prop, evo_B, evo_A, evo_T, evo_C, surf_bcs)
 !
+      use t_physical_property
       use t_time_stepping_parameter
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(fluid_property), intent(in) :: fl_prop
+      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(surface_boundarty_conditions), intent(inout) :: surf_bcs
 !
@@ -65,7 +68,7 @@
         call alloc_surf_data_scalar(surf_bcs%Tsf_bcs)
       end if
 !
-      if (evo_V%iflag_scheme .gt. id_no_evolution) then
+      if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         call alloc_surf_data_velo(surf_bcs%Vsf_bcs)
         call alloc_surf_potential(surf_bcs%Psf_bcs)
       end if

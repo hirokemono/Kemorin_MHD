@@ -10,8 +10,8 @@
 !!
 !!@verbatim
 !!      subroutine s_set_control_4_press                                &
-!!     &         (evo_V, node_bc_P_ctl, surf_bc_PN_ctl)
-!!        type(time_evolution_params), intent(in) :: evo_V
+!!     &         (fl_prop, node_bc_P_ctl, surf_bc_PN_ctl)
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(ctl_array_c2r), intent(inout) :: node_bc_P_ctl
 !!        type(ctl_array_c2r), intent(inout) :: surf_bc_PN_ctl
 !!@endverbatim
@@ -29,25 +29,25 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_4_press                                  &
-     &         (evo_V, node_bc_P_ctl, surf_bc_PN_ctl)
+     &         (fl_prop, node_bc_P_ctl, surf_bc_PN_ctl)
 !
       use m_machine_parameter
       use calypso_mpi
-      use t_time_stepping_parameter
+      use t_physical_property
       use t_read_control_arrays
       use m_bc_data_list
       use m_surf_data_list
       use set_node_group_types
       use set_surface_group_types
 !
-      type(time_evolution_params), intent(in) :: evo_V
+      type(fluid_property), intent(in) :: fl_prop
       type(ctl_array_c2r), intent(inout) :: node_bc_P_ctl
       type(ctl_array_c2r), intent(inout) :: surf_bc_PN_ctl
 !
       integer (kind = kint) :: i
 !
 !
-      if (evo_V%iflag_scheme .eq. id_no_evolution) then
+      if (fl_prop%iflag_scheme .eq. id_no_evolution) then
         press_nod%num_bc = 0
         wall_surf%num_bc = 0
       else

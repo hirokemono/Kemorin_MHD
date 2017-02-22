@@ -9,14 +9,14 @@
 !>      DJDS matrix data
 !!
 !!@verbatim
-!!      subroutine int_vol_crank_mat_lump(evo_V, evo_B, evo_A,          &
+!!      subroutine int_vol_crank_mat_lump(evo_B, evo_A,                 &
 !!     &          evo_T, evo_C, mesh, fluid, conduct,                   &
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop,                   &
 !!     &          DJDS_table, DJDS_table_fluid, mlump_fl, mlump_cd,     &
 !!     &          mat_velo, mat_magne, mat_temp, mat_light)
 !!      subroutine add_lumped_coriolis_matrix(mesh, fluid, fl_prop,     &
 !!     &          DJDS_table_fluid,  mlump_fl, mat_velo)
-!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(mesh_data), intent(in) ::              mesh
 !!        type(field_geometry_data), intent(in) :: fluid, conduct
@@ -56,13 +56,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_vol_crank_mat_lump(evo_V, evo_B, evo_A,            &
+      subroutine int_vol_crank_mat_lump(evo_B, evo_A,                   &
      &          evo_T, evo_C, mesh, fluid, conduct,                     &
      &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
      &          DJDS_table, DJDS_table_fluid, mlump_fl, mlump_cd,       &
      &          mat_velo, mat_magne, mat_temp, mat_light)
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(mesh_geometry), intent(in) :: mesh
       type(field_geometry_data), intent(in) :: fluid, conduct
@@ -80,7 +80,7 @@
 !
 !
 !$omp parallel
-      if (evo_V%iflag_scheme .eq. id_Crank_nicolson                     &
+      if (fl_prop%iflag_scheme .eq. id_Crank_nicolson                   &
      &     .and. fl_prop%coef_velo .gt. zero) then
         call init_33_matrix_lump                                        &
      &     (mesh%node%numnod, fluid%numnod_fld, fluid%inod_fld,         &

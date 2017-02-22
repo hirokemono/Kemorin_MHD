@@ -8,19 +8,18 @@
 !        modifired by H. Matsui on June, 2005
 !        modifired by H. Matsui on Nov., 2007
 !
-!!      subroutine int_MHD_poisson_matrices(evo_V, evo_B, evo_A,        &
-!!     &         (num_int, ifilter_final, iflag_commute_magne,          &
-!!     &          mesh, jac_3d_l, rhs_tbl, MG_mat_linear, MG_mat_fl_l,  &
+!!      subroutine int_MHD_poisson_matrices(evo_B, evo_A,               &
+!!     &          num_int, ifilter_final, iflag_commute_magne,          &
+!!     &          mesh, fl_prop,  &
 !!     &          FEM_elens, ifld_diff, diff_coefs, fem_wk,             &
 !!     &          mat_press, mat_magp)
-!!      subroutine int_MHD_crank_matrices                               &
-!!     &         (evo_V, evo_B, evo_A, evo_T, evo_C,                    &
+!!      subroutine int_MHD_crank_matrices(evo_B, evo_A, evo_T, evo_C,   &
 !!     &          num_int, ifilter_final, mesh,                         &
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD, jac_3d,   &
 !!     &          rhs_tbl, MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,     &
 !!     &          FEM_elens, ifld_diff, diff_coefs, fem_wk,             &
 !!     &          mat_velo, mat_magne, mat_temp, mat_light)
-!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(fluid_property), intent(in) :: fl_prop
@@ -75,17 +74,19 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_MHD_poisson_matrices(evo_V, evo_B, evo_A,          &
+      subroutine int_MHD_poisson_matrices(evo_B, evo_A,                 &
      &          num_int, ifilter_final, iflag_commute_magne,            &
-     &          mesh, jac_3d_l, rhs_tbl, MG_mat_linear, MG_mat_fl_l,    &
+     &          mesh, fl_prop,  &
+     &          jac_3d_l, rhs_tbl, MG_mat_linear, MG_mat_fl_l,          &
      &          FEM_elens, ifld_diff, diff_coefs, fem_wk,               &
      &          mat_press, mat_magp)
 !
       integer(kind = kint), intent(in) :: num_int
       integer(kind = kint), intent(in) :: ifilter_final
       integer(kind = kint), intent(in) :: iflag_commute_magne
-      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(mesh_geometry), intent(in) :: mesh
+      type(fluid_property), intent(in) :: fl_prop
       type(jacobians_3d), intent(in) :: jac_3d_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(table_mat_const),  intent(in) :: MG_mat_linear
@@ -99,7 +100,7 @@
       type(DJDS_MATRIX),  intent(inout) :: mat_magp
 !
 !
-      if (evo_V%iflag_scheme .gt. id_no_evolution) then
+      if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         call sel_int_poisson_mat                                        &
      &     (mesh%ele, jac_3d_l, rhs_tbl, MG_mat_fl_l, FEM_elens,        &
      &      iflag_commute_magne, num_int,                               &
@@ -121,8 +122,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine int_MHD_crank_matrices                                 &
-     &         (evo_V, evo_B, evo_A, evo_T, evo_C,                      &
+      subroutine int_MHD_crank_matrices(evo_B, evo_A, evo_T, evo_C,     &
      &          num_int, ifilter_final, mesh,                           &
      &          fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD, jac_3d,     &
      &          rhs_tbl, MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,       &
@@ -132,7 +132,7 @@
       use m_t_int_parameter
 !
       integer(kind = kint), intent(in) :: num_int, ifilter_final
-      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(mesh_geometry), intent(in) :: mesh
       type(fluid_property), intent(in) :: fl_prop
@@ -155,7 +155,7 @@
       type(DJDS_MATRIX),  intent(inout) :: mat_light
 !
 !
-      if (evo_V%iflag_scheme .ge. id_Crank_nicolson) then
+      if (fl_prop%iflag_scheme .ge. id_Crank_nicolson) then
         call sel_int_diffuse3_crank_mat(mesh%ele, jac_3d,               &
      &      rhs_tbl, MG_mat_fl_q, FEM_elens, num_int,                   &
      &      diff_coefs%num_field, ifld_diff%i_velo, diff_coefs%ak,      &

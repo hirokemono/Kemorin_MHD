@@ -223,7 +223,7 @@
       call set_material_property                                        &
      &   (iphys, ref_param_T1%depth_top, ref_param_T1%depth_bottom)
       call init_ele_material_property(mesh%ele%numele,                  &
-     &    evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
+     &    evo_magne, evo_vect_p, evo_temp, evo_comp,                    &
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1)
       call define_sgs_components                                        &
      &   (mesh%node%numnod, mesh%ele%numele, SGS_par%model_p,           &
@@ -231,7 +231,8 @@
      &    sgs_coefs, sgs_coefs_nod)
       call define_sgs_diff_coefs                                        &
      &   (mesh%ele%numele, SGS_par%model_p, SGS_par%commute_p,          &
-     &    layer_tbl, ifld_diff, icomp_diff, wk_diff1, diff_coefs)
+     &    layer_tbl, fl_prop1,             &
+     &    ifld_diff, icomp_diff, wk_diff1, diff_coefs)
 !
 !  -------------------------------
 !
@@ -246,7 +247,7 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*) 'init_MGCG_MHD'
-      call init_MGCG_MHD(evo_velo, evo_magne, evo_vect_p, mesh%node)
+      call init_MGCG_MHD(evo_magne, evo_vect_p, mesh%node, fl_prop1)
 !
 !  -------------------------------
 !
@@ -330,11 +331,11 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_stability_4_diffuse'
       call cal_stability_4_diffuse                                      &
-     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
+     &   (evo_magne, evo_vect_p, evo_temp, evo_comp,                    &
      &    mesh%ele, fl_prop1, cd_prop1, ht_prop1, cp_prop1)
 ! 
       call deallocate_surf_bc_lists                                     &
-     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp)
+     &   (evo_magne, evo_vect_p, evo_temp, evo_comp, fl_prop1)
 !
       end subroutine init_analyzer_fl
 !

@@ -8,9 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine s_set_control_4_force                                &
-!!     &         (frc_ctl, g_ctl, cor_ctl, mcv_ctl,                     &
-!!     &          evo_V, fl_prop, cd_prop)
-!!        type(time_evolution_params), intent(in) :: evo_V
+!!     &         (frc_ctl, g_ctl, cor_ctl, mcv_ctl, fl_prop, cd_prop)
 !!        type(forces_control), intent(inout) :: frc_ctl
 !!        type(gravity_control), intent(inout) :: g_ctl
 !!        type(coriolis_control), intent(inout) :: cor_ctl
@@ -33,18 +31,15 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_4_force                                  &
-     &         (frc_ctl, g_ctl, cor_ctl, mcv_ctl,                       &
-     &          evo_V, fl_prop, cd_prop)
+     &         (frc_ctl, g_ctl, cor_ctl, mcv_ctl, fl_prop, cd_prop)
 !
       use calypso_mpi
       use m_error_IDs
       use m_machine_parameter
-      use t_time_stepping_parameter
       use t_physical_property
       use t_ctl_data_mhd_forces
       use skip_comment_f
 !
-      type(time_evolution_params), intent(in) :: evo_V
       type(forces_control), intent(inout) :: frc_ctl
       type(gravity_control), intent(inout) :: g_ctl
       type(coriolis_control), intent(inout) :: cor_ctl
@@ -63,7 +58,7 @@
       fl_prop%iflag_4_composit_buo =   id_turn_OFF
       fl_prop%iflag_4_filter_gravity = id_turn_OFF
 !
-      if (evo_V%iflag_scheme .eq. id_no_evolution) then
+      if (fl_prop%iflag_scheme .eq. id_no_evolution) then
         fl_prop%num_force = 0
       else
         if (frc_ctl%force_names%icou .gt. 0) then
@@ -105,7 +100,7 @@
      &       .or. cmp_no_case(tmpchara, 'Thermal_buoyancy_node')        &
      &       .or. cmp_no_case(tmpchara, 'Thermal_gravity_node')         &
      &      ) then
-            if(evo_V%iflag_scheme .eq. id_Crank_nicolson_cmass) then
+            if(fl_prop%iflag_scheme .eq. id_Crank_nicolson_cmass) then
               fl_prop%iflag_4_gravity = id_FORCE_ele_int
             else
               fl_prop%iflag_4_gravity = id_FORCE_at_node
@@ -125,7 +120,7 @@
      &       .or. cmp_no_case(tmpchara, 'Composite_buoyancy_node')      &
      &       .or. cmp_no_case(tmpchara, 'Composite_gravity_node')       &
      &       ) then
-            if(evo_V%iflag_scheme .eq. id_Crank_nicolson_cmass) then
+            if(fl_prop%iflag_scheme .eq. id_Crank_nicolson_cmass) then
               fl_prop%iflag_4_composit_buo = id_FORCE_ele_int
             else
               fl_prop%iflag_4_composit_buo = id_FORCE_at_node
@@ -140,7 +135,7 @@
      &        )  fl_prop%iflag_4_coriolis = id_FORCE_ele_int
 !
           if (cmp_no_case(tmpchara, 'Coriolis_node')) then
-            if(evo_V%iflag_scheme .eq. id_Crank_nicolson_cmass) then
+            if(fl_prop%iflag_scheme .eq. id_Crank_nicolson_cmass) then
               fl_prop%iflag_4_coriolis = id_FORCE_ele_int
             else
               fl_prop%iflag_4_coriolis = id_FORCE_at_node
@@ -148,9 +143,9 @@
           end if
 !
           if(cmp_no_case(tmpchara, 'Coriolis_imp')) then
-            if(evo_V%iflag_scheme .eq. id_Crank_nicolson) then
+            if(fl_prop%iflag_scheme .eq. id_Crank_nicolson) then
               fl_prop%iflag_4_coriolis = id_Coriolis_ele_imp
-            else if(evo_V%iflag_scheme .eq. id_Crank_nicolson_cmass)    &
+            else if(fl_prop%iflag_scheme .eq. id_Crank_nicolson_cmass)  &
      &          then
               fl_prop%iflag_4_coriolis = id_Coriolis_ele_imp
             else
@@ -159,9 +154,9 @@
           end if
 !
           if(cmp_no_case(tmpchara, 'Coriolis_node_imp')) then
-            if(evo_V%iflag_scheme .eq. id_Crank_nicolson) then
+            if(fl_prop%iflag_scheme .eq. id_Crank_nicolson) then
               fl_prop%iflag_4_coriolis = id_Coriolis_nod_imp
-            else if(evo_V%iflag_scheme .eq. id_Crank_nicolson_cmass)    &
+            else if(fl_prop%iflag_scheme .eq. id_Crank_nicolson_cmass)  &
      &               then
               fl_prop%iflag_4_coriolis = id_Coriolis_ele_imp
             else

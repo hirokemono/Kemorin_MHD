@@ -118,8 +118,8 @@
 !
 !*  ---------- boudary conditions  ---------------
       if(iflag_debug.gt.0) write(*,*) 's_set_bc_sph_mhd'
-      call s_set_bc_sph_mhd(evo_velo, evo_magne, evo_temp, evo_comp,    &
-     &    sph%sph_params, sph%sph_rj, sph_grps%radial_rj_grp,           &
+      call s_set_bc_sph_mhd(evo_magne, evo_temp, evo_comp,              &
+     &    sph%sph_params, sph%sph_rj, sph_grps%radial_rj_grp, fl_prop1, &
      &    CTR_nod_grp_name, CTR_sf_grp_name)
 !
       call init_reference_temps(ref_param_T1, takepito_T1,              &

@@ -326,6 +326,7 @@
       subroutine sph_boundary_IO_control
 !
       use m_control_parameter
+      use m_physical_property
       use m_sph_boundary_input_data
       use check_read_bc_file
 !
@@ -333,7 +334,7 @@
 !
 !
       iflag = check_read_boundary_files                                 &
-     &      (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp)
+     &      (evo_magne, evo_vect_p, evo_temp, evo_comp, fl_prop1)
       if (iflag .eq. id_no_boundary_file) return
 !
       if (iflag_debug.eq.1) write(*,*) 'read_boundary_spectr_file'

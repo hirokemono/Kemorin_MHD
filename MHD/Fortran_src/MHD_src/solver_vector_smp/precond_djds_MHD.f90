@@ -8,10 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine matrix_precondition                                  &
-!!     &         (evo_V, evo_B, evo_A, evo_T, evo_C,                    &
+!!     &         (evo_B, evo_A, evo_T, evo_C, fl_prop,                  &
 !!     &         Vmatrix, Pmatrix, Bmatrix, Fmatrix, Tmatrix, Cmatrix)
-!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(MHD_MG_matrix), intent(inout) :: Vmatrix, Bmatrix
 !!        type(MHD_MG_matrix), intent(inout) :: Pmatrix, Fmatrix
 !!        type(MHD_MG_matrix), intent(inout) :: Tmatrix, Cmatrix
@@ -23,6 +24,7 @@
       use calypso_mpi
 !
       use t_time_stepping_parameter
+      use t_physical_property
       use t_solver_djds_MHD
 !
       implicit none
@@ -34,7 +36,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine matrix_precondition                                    &
-     &         (evo_V, evo_B, evo_A, evo_T, evo_C,                      &
+     &         (evo_B, evo_A, evo_T, evo_C, fl_prop,                    &
      &          Vmatrix, Pmatrix, Bmatrix, Fmatrix, Tmatrix, Cmatrix)
 !
       use m_machine_parameter
@@ -47,8 +49,9 @@
 !
       use preconditioning_DJDS11
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
+      type(fluid_property), intent(in) :: fl_prop
       type(MHD_MG_matrix), intent(inout) :: Vmatrix, Bmatrix
       type(MHD_MG_matrix), intent(inout) :: Pmatrix, Fmatrix
       type(MHD_MG_matrix), intent(inout) :: Tmatrix, Cmatrix
@@ -58,7 +61,7 @@
 !C +-----------------+
 !C===
 !
-      if (evo_V%iflag_scheme .gt. id_no_evolution) then
+      if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1)   write(*,*) 'precond: ',                 &
      &                trim(precond_4_solver),' ', sigma_diag
         call precond_DJDS11_struct(np_smp,                              &
@@ -66,7 +69,7 @@
      &      precond_4_solver, sigma_diag)
       end if
 !
-      if (evo_V%iflag_scheme .ge. id_Crank_nicolson) then
+      if (fl_prop%iflag_scheme .ge. id_Crank_nicolson) then
         call precond_DJDS33_struct(np_smp,                              &
      &      Vmatrix%MG_DJDS_table(0), Vmatrix%mat_MG_DJDS(0),           &
      &      precond_4_crank, sigma_diag)

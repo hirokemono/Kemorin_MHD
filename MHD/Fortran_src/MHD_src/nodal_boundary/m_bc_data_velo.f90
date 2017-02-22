@@ -68,22 +68,22 @@
 !
       if (iflag_debug.eq.1) write(*,*)' set_bc_id_data'
       call set_bc_id_data                                               &
-     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
+     &   (evo_magne, evo_vect_p, evo_temp, evo_comp,                    &
      &    IO_bc, mesh, group, MHD_mesh, fl_prop, nod1_bcs)
 !
       if (iflag_debug.eq.1) write(*,*)' set_bc_fields'
       call set_bc_fields                                                &
-     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
-     &    mesh, iphys, nod_fld, nod1_bcs)
+     &   (evo_magne, evo_vect_p, evo_temp, evo_comp,                    &
+     &    mesh, fl_prop, iphys, nod_fld, nod1_bcs)
 !
       call set_bc_surface_data                                          &
      &   (IO_bc, mesh%node, mesh%ele, ele_mesh%surf,                    &
      &    group%surf_grp, group%surf_nod_grp, group%surf_grp_geom,      &
-     &    sf1_bcs)
+     &    fl_prop, sf1_bcs)
 !
 !     set normal velocity
       call set_normal_velocity                                          &
-     &   (evo_velo, group%surf_grp, group%surf_nod_grp,                 &
+     &   (group%surf_grp, group%surf_nod_grp, fl_prop,                  &
      &    sf1_bcs%Vsf_bcs%normal, iphys%i_velo, nod_fld)
 !
       end subroutine set_boundary_data

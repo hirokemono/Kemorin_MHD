@@ -13,8 +13,8 @@
 !!     &          jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,           &
 !!     &          sgs_coefs, diff_coefs, filtering, Bmatrix, MG_vector, &
 !!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-!!      subroutine cal_vector_p_co(iak_diff_b, ak_d_magne,              &
-!!     &          evo_A, FEM_prm, SGS_param, cmt_param,                 &
+!!      subroutine cal_vector_p_co                                      &
+!!     &         (iak_diff_b, ak_d_magne, FEM_prm, SGS_param, cmt_param,&
 !!     &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,  &
 !!     &          Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,         &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
@@ -253,8 +253,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_vector_p_co(iak_diff_b, ak_d_magne,                &
-     &          evo_A, FEM_prm, SGS_param, cmt_param,                   &
+      subroutine cal_vector_p_co                                        &
+     &         (iak_diff_b, ak_d_magne, FEM_prm, SGS_param, cmt_param,  &
      &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,    &
      &          Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,           &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
@@ -271,7 +271,6 @@
       use cal_multi_pass
       use cal_sol_vector_co_crank
 !
-      type(time_evolution_params), intent(in) :: evo_A
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param

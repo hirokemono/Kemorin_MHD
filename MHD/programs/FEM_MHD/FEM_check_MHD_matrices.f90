@@ -30,6 +30,7 @@
       use m_mesh_data
       use m_geometry_data_MHD
       use m_node_phys_data
+      use m_physical_property
       use m_jacobians
       use m_element_id_4_node
       use m_finite_element_matrix
@@ -70,7 +71,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_write_djds_mat_MHD'
       call s_write_djds_mat_MHD                                         &
-     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
+     &   (evo_magne, evo_vect_p, evo_temp, evo_comp, fl_prop1,          &
      &    solver_pack1%Vmatrix, solver_pack1%Pmatrix,                   &
      &    solver_pack1%Bmatrix, solver_pack1%Fmatrix,                   &
      &    solver_pack1%Tmatrix, solver_pack1%Cmatrix)

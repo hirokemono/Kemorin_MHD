@@ -5,11 +5,12 @@
 !      Modified by H. Matsui on July, 2007
 !
 !!      subroutine define_sgs_diff_coefs                                &
-!!     &         (numele, SGS_param, cmt_param, layer_tbl,              &
+!!     &         (numele, SGS_param, cmt_param, layer_tbl, fl_prop,     &
 !!     &          ifld_diff, icomp_diff, wk_diff, diff_coefs)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(layering_tbl), intent(in) :: layer_tbl
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(SGS_terms_address), intent(inout) :: ifld_sgs
 !!        type(SGS_terms_address), intent(inout) :: icomp_sgs
 !!        type(SGS_terms_address), intent(inout) :: ifld_diff
@@ -26,6 +27,7 @@
       use m_machine_parameter
       use t_time_stepping_parameter
       use t_SGS_control_parameter
+      use t_physical_property
 !
       implicit none
 !
@@ -39,7 +41,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine define_sgs_diff_coefs                                  &
-     &         (numele, SGS_param, cmt_param, layer_tbl,                &
+     &         (numele, SGS_param, cmt_param, layer_tbl, fl_prop,       &
      &          ifld_diff, icomp_diff, wk_diff, diff_coefs)
 !
       use calypso_mpi
@@ -56,6 +58,7 @@
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(layering_tbl), intent(in) :: layer_tbl
+      type(fluid_property), intent(in) :: fl_prop
 !
       type(SGS_terms_address), intent(inout) :: ifld_diff, icomp_diff
 !
@@ -66,8 +69,8 @@
 !
 !
       call count_sgs_diff_coefs                                         &
-     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
-     &    SGS_param, cmt_param, ntot_diff_comp, diff_coefs)
+     &   (evo_magne, evo_vect_p, evo_temp, evo_comp,                    &
+     &    SGS_param, cmt_param, fl_prop, ntot_diff_comp, diff_coefs)
       call alloc_sgs_coefs_layer(layer_tbl%e_grp%num_grp,               &
      &    diff_coefs%num_field, ntot_diff_comp, wk_diff)
 !
@@ -75,8 +78,8 @@
       call alloc_SGS_coefs(numele, diff_coefs)
 !
       call set_sgs_diff_addresses                                       &
-     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
-     &    SGS_param, cmt_param, ifld_diff, icomp_diff,                  &
+     &   (evo_magne, evo_vect_p, evo_temp, evo_comp,                    &
+     &    SGS_param, cmt_param, fl_prop, ifld_diff, icomp_diff,         &
      &    wk_diff, diff_coefs)
       diff_coefs%ntot_comp = diff_coefs%num_field
 !
@@ -89,8 +92,8 @@
 !  ------------------------------------------------------------------
 !
       subroutine count_sgs_diff_coefs                                   &
-     &         (evo_V, evo_B, evo_A, evo_T, evo_C,                      &
-     &          SGS_param, cmt_param, ntot_diff_comp, diff_coefs)
+     &         (evo_B, evo_A, evo_T, evo_C, SGS_param, cmt_param,       &
+     &          fl_prop, ntot_diff_comp, diff_coefs)
 !
       use calypso_mpi
       use m_phys_labels
@@ -100,8 +103,9 @@
       use t_material_property
       use t_SGS_model_coefs
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
+      type(fluid_property), intent(in) :: fl_prop
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       integer(kind = kint), intent(inout) :: ntot_diff_comp
@@ -121,7 +125,7 @@
         end if
       end if
 !
-      if (evo_V%iflag_scheme .gt. id_no_evolution) then
+      if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         if (SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
           if (cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
             diff_coefs%num_field = diff_coefs%num_field + 1
@@ -171,7 +175,7 @@
         end if
       end if
 !
-      if (evo_V%iflag_scheme .gt. id_no_evolution) then
+      if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         if(SGS_param%iflag_SGS .ne. id_SGS_none                         &
      &       .and. cmt_param%iflag_c_velo .eq. id_SGS_commute_ON) then
           diff_coefs%num_field = diff_coefs%num_field + 1
@@ -200,8 +204,8 @@
 !  ------------------------------------------------------------------
 !
       subroutine set_sgs_diff_addresses                                 &
-     &        (evo_V, evo_B, evo_A, evo_T, evo_C, SGS_param, cmt_param, &
-     &         ifld_diff, icomp_diff, wk_diff, diff_coefs)
+     &         (evo_B, evo_A, evo_T, evo_C, SGS_param, cmt_param,       &
+     &          fl_prop, ifld_diff, icomp_diff, wk_diff, diff_coefs)
 !
       use calypso_mpi
       use m_phys_labels
@@ -211,8 +215,9 @@
       use t_material_property
       use t_SGS_model_coefs
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
+      type(fluid_property), intent(in) :: fl_prop
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(SGS_terms_address), intent(inout) :: ifld_diff, icomp_diff
@@ -238,7 +243,7 @@
          end if
        end if
 !
-       if (evo_V%iflag_scheme .gt. id_no_evolution) then
+       if (fl_prop%iflag_scheme .gt. id_no_evolution) then
          if (SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
            if (cmt_param%iflag_c_mf .eq. id_SGS_commute_ON) then
              icomp_diff%i_mom_flux = id
@@ -313,7 +318,7 @@
         end if
       end if
 !
-      if (evo_V%iflag_scheme .gt. id_no_evolution) then
+      if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         if(SGS_param%iflag_SGS .ne. id_SGS_none                        &
      &      .and. cmt_param%iflag_c_velo .eq. id_SGS_commute_ON) then
             icomp_diff%i_velo = id

@@ -4,9 +4,9 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine set_bc_id_data(evo_V, evo_B, evo_A, evo_T, evo_C,    &
+!!      subroutine set_bc_id_data(evo_B, evo_A, evo_T, evo_C,    &
 !!     &          IO_bc, mesh, group, MHD_mesh, fl_prop, nodal_bc)
-!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(IO_boundary),          intent(in) :: IO_bc
 !!        type(mesh_geometry),       intent(in) :: mesh
@@ -41,7 +41,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_bc_id_data(evo_V, evo_B, evo_A, evo_T, evo_C,      &
+      subroutine set_bc_id_data(evo_B, evo_A, evo_T, evo_C,      &
      &          IO_bc, mesh, group, MHD_mesh, fl_prop, nodal_bc)
 !
       use m_bc_data_list
@@ -54,7 +54,7 @@
       use t_boundary_field_IO
 !
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(IO_boundary),    intent(in) :: IO_bc
       type(mesh_geometry),  intent(in) :: mesh
@@ -64,7 +64,7 @@
       type(nodal_boundarty_conditions), intent(inout) :: nodal_bc
 !
 !
-      if (evo_V%iflag_scheme .gt. id_no_evolution) then
+      if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         if ( iflag_debug .eq.1) write(*,*)  'set boundary id 4 v'
         call set_bc_velo_id(IO_bc, mesh%node, mesh%ele,                 &
      &      MHD_mesh%fluid, group%nod_grp, nodal_bc%Vnod_bcs)

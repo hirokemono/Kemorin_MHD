@@ -6,11 +6,12 @@
 !     modified by H. Matsui on Aug., 2007
 !
 !!      subroutine output_time_step_control(FEM_prm, mesh, MHD_mesh,    &
-!!     &          iphys, nod_fld, iphys_ele, ele_fld,                   &
+!!     &          fl_prop, iphys, nod_fld, iphys_ele, ele_fld,          &
 !!     &          jac_3d_q, jac_3d_l, fem_wk, mhd_fem_wk)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_data_MHD), intent(in) :: MHD_mesh
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(phys_address), intent(in) :: iphys_ele
@@ -24,6 +25,7 @@
       use m_precision
 !
       use t_FEM_control_parameter
+      use t_physical_property
       use t_mesh_data
       use t_geometry_data
       use t_geometry_data_MHD
@@ -42,7 +44,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine output_time_step_control(FEM_prm, mesh, MHD_mesh,      &
-     &          iphys, nod_fld, iphys_ele, ele_fld,                     &
+     &          fl_prop, iphys, nod_fld, iphys_ele, ele_fld,            &
      &          jac_3d_q, jac_3d_l, fem_wk, mhd_fem_wk)
 !
       use calypso_mpi
@@ -60,6 +62,7 @@
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_data_MHD), intent(in) :: MHD_mesh
+      type(fluid_property), intent(in) :: fl_prop
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
       type(phys_address), intent(in) :: iphys_ele
@@ -79,8 +82,8 @@
       call s_int_mean_squares(FEM_prm%npoint_t_evo_int,                 &
      &    mesh%node, mesh%ele, MHD_mesh%fluid, MHD_mesh%conduct,        &
      &    iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk, mhd_fem_wk)
-      call int_no_evo_mean_squares(evo_velo, evo_magne, evo_vect_p,     &
-     &    mesh%node, mesh%ele, iphys, nod_fld,                          &
+      call int_no_evo_mean_squares(evo_magne, evo_vect_p,               &
+     &    mesh%node, mesh%ele, fl_prop, iphys, nod_fld,                 &
      &    iphys_ele, ele_fld, MHD_mesh%fluid, jac_3d_q, fem_wk)
 !
       call MPI_allREDUCE (bulk_local, bulk_global, num_bulk,            &

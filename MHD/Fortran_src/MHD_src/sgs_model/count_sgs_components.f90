@@ -9,14 +9,14 @@
 !!     &          ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs, sgs_coefs_nod)
 !!
 !!      subroutine set_sgs_addresses                                    &
-!!     &          (evo_V, evo_B, evo_A, evo_T, evo_C, SGS_param,        &
+!!     &          (evo_B, evo_A, evo_T, evo_C, SGS_param,               &
 !!     &           fl_prop, ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
 !!      subroutine s_count_sgs_components                               &
-!!     &         (evo_V, evo_B, evo_A, evo_T, evo_C, SGS_param,         &
+!!     &         (evo_B, evo_A, evo_T, evo_C, SGS_param,                &
 !!     &          fl_prop, sgs_coefs)
 !!      subroutine set_SGS_ele_fld_addresses                            &
 !!     &          (evo_B, SGS_param, iphys_elediff)
-!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(layering_tbl), intent(in) :: layer_tbl
@@ -66,7 +66,7 @@
 !
 !
       call s_count_sgs_components                                       &
-     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
+     &   (evo_magne, evo_vect_p, evo_temp, evo_comp,                    &
      &    SGS_param, fl_prop1, sgs_coefs)
 !
 !   set index for model coefficients
@@ -78,7 +78,7 @@
       call alloc_SGS_coefs(numele, sgs_coefs)
 !
       call set_sgs_addresses                                            &
-     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
+     &   (evo_magne, evo_vect_p, evo_temp, evo_comp,                    &
      &    SGS_param, fl_prop1, ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
       call check_sgs_addresses                                          &
      &   (ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
@@ -94,7 +94,7 @@
 !  ------------------------------------------------------------------
 !
       subroutine s_count_sgs_components                                 &
-     &         (evo_V, evo_B, evo_A, evo_T, evo_C, SGS_param,           &
+     &         (evo_B, evo_A, evo_T, evo_C, SGS_param,                  &
      &          fl_prop, sgs_coefs)
 !
       use calypso_mpi
@@ -108,7 +108,7 @@
       use t_material_property
       use t_SGS_model_coefs
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(fluid_property), intent(in) :: fl_prop
@@ -125,7 +125,7 @@
         end if
       end if
 !
-      if (evo_V%iflag_scheme .gt. id_no_evolution) then
+      if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         if (SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
           sgs_coefs%num_field = sgs_coefs%num_field + 1
           sgs_coefs%ntot_comp = sgs_coefs%ntot_comp + 6
@@ -173,7 +173,7 @@
 !  ------------------------------------------------------------------
 !
       subroutine set_sgs_addresses                                      &
-     &          (evo_V, evo_B, evo_A, evo_T, evo_C, SGS_param,          &
+     &          (evo_B, evo_A, evo_T, evo_C, SGS_param,                 &
      &           fl_prop, ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
 !
       use calypso_mpi
@@ -187,7 +187,7 @@
       use t_material_property
       use t_SGS_model_coefs
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(fluid_property), intent(in) :: fl_prop
@@ -214,7 +214,7 @@
          end if
        end if
 !
-       if (evo_V%iflag_scheme .gt. id_no_evolution) then
+       if (fl_prop%iflag_scheme .gt. id_no_evolution) then
          if (SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
            icomp_sgs%i_mom_flux = i
            ifld_sgs%i_mom_flux =  j

@@ -7,14 +7,13 @@
 !>@brief Time integration for momentum equation by explicit scheme
 !!
 !!@verbatim
-!!      subroutine cal_expricit_sph_adams(evo_V, evo_B, evo_T, evo_C,   &
-!!     &          sph_rj, fl_prop,cd_prop,  ht_prop, cp_prop,           &
+!!      subroutine cal_expricit_sph_adams(evo_B, evo_T, evo_C,          &
+!!     &          sph_rj, fl_prop, cd_prop, ht_prop, cp_prop,           &
 !!     &         ipol, itor, rj_fld)
-!!     &          sph_rj, ht_prop, cp_prop, ipol, itor, rj_fld)
 !!      subroutine cal_expricit_sph_euler                               &
-!!     &        (i_step, evo_V, evo_B, evo_T, evo_C, sph_rj,            &
+!!     &        (i_step, evo_B, evo_T, evo_C, sph_rj,                   &
 !!     &         fl_prop, cd_prop, ht_prop, cp_prop, ipol, itor, rj_fld)
-!!        type(time_evolution_params), intent(in) :: evo_V, evo_B
+!!        type(time_evolution_params), intent(in) :: evo_B
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
@@ -48,8 +47,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_expricit_sph_adams(evo_V, evo_B, evo_T, evo_C,     &
-     &          sph_rj, fl_prop,cd_prop,  ht_prop, cp_prop,             &
+      subroutine cal_expricit_sph_adams(evo_B, evo_T, evo_C,     &
+     &          sph_rj, fl_prop, cd_prop, ht_prop, cp_prop,             &
      &         ipol, itor, rj_fld)
 !
       use m_boundary_params_sph_MHD
@@ -58,7 +57,7 @@
       use cal_nonlinear_sph_MHD
       use select_diff_adv_source
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B
+      type(time_evolution_params), intent(in) :: evo_B
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fluid_property), intent(in) :: fl_prop
@@ -69,7 +68,7 @@
 !
 !
 !$omp parallel
-      if(evo_V%iflag_scheme .gt.     id_no_evolution) then
+      if(fl_prop%iflag_scheme .gt.     id_no_evolution) then
         call cal_vorticity_eq_adams(ipol, itor,                         &
      &      sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_exp,          &
      &      rj_fld%n_point,sph_rj%nidx_rj(2), rj_fld%ntot_phys,         &
@@ -101,7 +100,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_expricit_sph_euler                                 &
-     &        (i_step, evo_V, evo_B, evo_T, evo_C, sph_rj,              &
+     &        (i_step, evo_B, evo_T, evo_C, sph_rj,              &
      &         fl_prop, cd_prop, ht_prop, cp_prop, ipol, itor, rj_fld)
 !
       use m_boundary_params_sph_MHD
@@ -110,7 +109,7 @@
       use select_diff_adv_source
 !
       integer(kind = kint), intent(in) :: i_step
-      type(time_evolution_params), intent(in) :: evo_V, evo_B
+      type(time_evolution_params), intent(in) :: evo_B
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fluid_property), intent(in) :: fl_prop
@@ -120,7 +119,7 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !$omp parallel
-      if(evo_V%iflag_scheme .gt.     id_no_evolution) then
+      if(fl_prop%iflag_scheme .gt.     id_no_evolution) then
         call cal_vorticity_eq_euler(ipol, itor,                         &
      &      sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_exp,          &
      &      rj_fld%n_point, sph_rj%nidx_rj(2), rj_fld%ntot_phys,        &
@@ -147,7 +146,7 @@
       end if
 !
       if (i_step .eq. 1) then
-        if(evo_V%iflag_scheme .gt.     id_no_evolution) then
+        if(fl_prop%iflag_scheme .gt.     id_no_evolution) then
           call set_ini_adams_inertia(ipol, itor,                        &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if

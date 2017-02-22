@@ -5,9 +5,9 @@
 !      Modified by H. Matsui on july, 2006
 !
 !!      subroutine cal_stability_4_diffuse                              &
-!!     &         (evo_V, evo_B, evo_A, evo_T, evo_C, ele,               &
+!!     &         (evo_B, evo_A, evo_T, evo_C, ele,               &
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop)
-!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(element_data), intent(in) :: ele
 !!        type(fluid_property), intent(in) :: fl_prop
@@ -39,10 +39,10 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_stability_4_diffuse                                &
-     &         (evo_V, evo_B, evo_A, evo_T, evo_C, ele,                 &
+     &         (evo_B, evo_A, evo_T, evo_C, ele,                 &
      &          fl_prop, cd_prop, ht_prop, cp_prop)
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(element_data), intent(in) :: ele
 !
@@ -69,7 +69,7 @@
       if ( my_rank .eq. 0 ) then
 !
         write(12,*) ' Delta t: ', dt
-        if (evo_V%iflag_scheme .gt. id_no_evolution) then
+        if (fl_prop%iflag_scheme .gt. id_no_evolution) then
          cfl_diffuse = cfl_advect / fl_prop%coef_diffuse
          write(12,*) 'estimated limit for Delta t for velovity:      ', &
      &    cfl_diffuse

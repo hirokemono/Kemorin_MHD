@@ -9,9 +9,7 @@
 !!@verbatim
 !!      subroutine const_radial_mat_sph_mhd                             &
 !!     &         (fl_prop, ht_prop, cp_prop, sph_rj, r_2nd, leg)
-!!      subroutine const_radial_mat_sph_snap                            &
-!!     &         (evo_V, fl_prop, sph_rj, r_2nd, leg)
-!!        type(time_evolution_params), intent(in) :: evo_V
+!!      subroutine const_radial_mat_sph_snap(fl_prop, sph_rj, r_2nd, leg)
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(sph_rj_grid), intent(in) :: sph_rj
@@ -27,6 +25,7 @@
       use m_machine_parameter
 !
       use t_time_stepping_parameter
+      use t_physical_property
       use t_spheric_rj_data
       use t_fdm_coefs
       use t_schmidt_poly_on_rtm
@@ -57,36 +56,32 @@
       type(legendre_4_sph_trans), intent(in) :: leg
 !
 !
-      call const_radial_matrices_sph                                    &
-     &   (evo_velo, evo_magne, evo_temp, evo_comp,                      &
+      call const_radial_matrices_sph(evo_magne, evo_temp, evo_comp,     &
      &    fl_prop, ht_prop, cp_prop, sph_rj, r_2nd, leg%g_sph_rj)
 !
       if(sph_rj%inod_rj_center .gt. 0) then
         call const_radial_mat_sph_w_center                              &
-     &     (evo_velo, evo_temp, evo_comp,                               &
-     &      fl_prop, ht_prop, cp_prop, sph_rj)
+     &     (evo_temp, evo_comp, fl_prop, ht_prop, cp_prop, sph_rj)
       end if
 !
       end subroutine const_radial_mat_sph_mhd
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_sph_snap                              &
-     &         (evo_V, fl_prop, sph_rj, r_2nd, leg)
+      subroutine const_radial_mat_sph_snap(fl_prop, sph_rj, r_2nd, leg)
 !
       use m_radial_matrices_sph
       use m_radial_mat_sph_w_center
       use const_r_mat_4_scalar_sph
       use const_r_mat_w_center_sph
 !
-      type(time_evolution_params), intent(in) :: evo_V
       type(fluid_property), intent(in) :: fl_prop
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(legendre_4_sph_trans), intent(in) :: leg
 !
 !
-      if (evo_V%iflag_scheme .lt. id_Crank_nicolson) return
+      if (fl_prop%iflag_scheme .lt. id_Crank_nicolson) return
       if(iflag_debug .gt. 0)                                            &
      &          write(*,*) 'const_radial_mat_4_press_sph'
       call const_radial_mat_4_press_sph                                 &
@@ -104,7 +99,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_matrices_sph(evo_V, evo_B, evo_T, evo_C,  &
+      subroutine const_radial_matrices_sph(evo_B, evo_T, evo_C,         &
      &          fl_prop, ht_prop, cp_prop, sph_rj, r_2nd, g_sph_rj)
 !
       use m_physical_property
@@ -113,7 +108,7 @@
       use const_r_mat_4_scalar_sph
       use const_r_mat_4_vector_sph
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B
+      type(time_evolution_params), intent(in) :: evo_B
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
       type(scalar_property), intent(in) :: ht_prop, cp_prop
@@ -122,7 +117,7 @@
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
 !
-      if (evo_V%iflag_scheme .ge. id_Crank_nicolson) then
+      if (fl_prop%iflag_scheme .ge. id_Crank_nicolson) then
         if(iflag_debug .gt. 0)                                          &
      &          write(*,*) 'const_radial_mat_vort_2step'
         call const_radial_mat_vort_2step                                &
@@ -161,7 +156,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_sph_w_center(evo_V, evo_T, evo_C,     &
+      subroutine const_radial_mat_sph_w_center(evo_T, evo_C,            &
      &          fl_prop, ht_prop, cp_prop, sph_rj)
 !
       use m_radial_matrices_sph
@@ -169,7 +164,6 @@
       use m_boundary_params_sph_MHD
       use const_r_mat_w_center_sph
 !
-      type(time_evolution_params), intent(in) :: evo_V
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
       type(scalar_property), intent(in) :: ht_prop, cp_prop
@@ -178,7 +172,7 @@
 !
       call allocate_average_w_center(sph_rj)
 !
-      if (evo_V%iflag_scheme .ge. id_Crank_nicolson) then
+      if (fl_prop%iflag_scheme .ge. id_Crank_nicolson) then
         if(i_debug .gt. 0) write(*,*) 'const_radial_mat_press00_sph'
         write(band_p_poisson%mat_name,'(a)')                            &
      &                         'average_pressure_w_center'

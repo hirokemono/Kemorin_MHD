@@ -8,9 +8,10 @@
 !!
 !!@verbatim
 !!      integer(kind = kint) function check_read_boundary_files         &
-!!     &                   (evo_V, evo_B, evo_A, evo_T, evo_C)
-!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!     &                   (evo_B, evo_A, evo_T, evo_C, fl_prop)
+!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
+!!        type(fluid_property), intent(in) :: fl_prop
 !!@endverbatim
 !
       module check_read_bc_file
@@ -33,15 +34,17 @@
 !  ---------------------------------------------------------------------
 !
       integer(kind = kint) function check_read_boundary_files           &
-     &                   (evo_V, evo_B, evo_A, evo_T, evo_C)
+     &                   (evo_B, evo_A, evo_T, evo_C, fl_prop)
 !
       use calypso_mpi
       use m_bc_data_list
       use m_surf_data_list
       use t_time_stepping_parameter
+      use t_physical_property
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
+      type(fluid_property), intent(in) :: fl_prop
 !
       integer(kind = kint) :: iflag_boundary_file
 !
@@ -58,7 +61,7 @@
 !
 ! ----  read boundary data for velocity
 !
-      if (evo_V%iflag_scheme .gt. id_no_evolution) then
+      if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
      &      velo_nod%num_bc, velo_nod%ibc_type)
         call set_serch_boundary_file_flag(iflag_boundary_file,          &

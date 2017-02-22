@@ -7,13 +7,18 @@
 !
 !>     DJDS ordering table for MHD dynamo model
 !
+!!      subroutine alloc_aiccg_matrices                                 &
+!!     &          (evo_B, evo_A, evo_T, evo_C, node, fl_prop,           &
+!!     &           djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fll,     &
+!!     &           mat_velo, mat_magne, mat_temp, mat_light,            &
+!!     &           mat_press, mat_magp)
 !!      subroutine alloc_MG_zero_matrices                               &
-!!     &         (evo_V, evo_B, evo_A, evo_T, evo_C, mat_velo,          &
+!!     &         (evo_B, evo_A, evo_T, evo_C, fl_prop, mat_velo,        &
 !!     &          mat_magne, mat_temp,  mat_light, mat_press, mat_magp)
 !!      subroutine dealloc_aiccg_matrices                               &
-!!     &         (evo_V, evo_B, evo_A, evo_T, evo_C, mat_velo,          &
+!!     &         (evo_B, evo_A, evo_T, evo_C, fl_prop, mat_velo,        &
 !!     &          mat_magne, mat_temp, mat_light, mat_press, mat_magp)
-!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(DJDS_MATRIX),  intent(inout) :: mat_velo
 !!        type(DJDS_MATRIX),  intent(inout) :: mat_magne
@@ -27,6 +32,7 @@
       use m_precision
 !
       use t_time_stepping_parameter
+      use t_physical_property
       use t_comm_table
       use t_solver_djds
       use t_vector_for_solver
@@ -159,7 +165,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine alloc_aiccg_matrices                                   &
-     &          (evo_V, evo_B, evo_A, evo_T, evo_C, node,               &
+     &          (evo_B, evo_A, evo_T, evo_C, node, fl_prop,             &
      &           djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fll,       &
      &           mat_velo, mat_magne, mat_temp, mat_light,              &
      &           mat_press, mat_magp)
@@ -167,8 +173,9 @@
       use t_geometry_data
       use t_geometry_data_MHD
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
+      type(fluid_property), intent(in) :: fl_prop
 !
       type(node_data), intent(in) :: node
       type(DJDS_ordering_table),  intent(in) :: djds_tbl
@@ -183,11 +190,11 @@
       type(DJDS_MATRIX),  intent(inout) :: mat_magp
 !
 !
-      if ( evo_V%iflag_scheme .gt. id_no_evolution) then
+      if ( fl_prop%iflag_scheme .gt. id_no_evolution) then
         call alloc_type_djds11_mat(node%numnod, node%internal_node,     &
      &      djds_tbl_fll, mat_press)
 !
-        if ( evo_V%iflag_scheme .ge. id_Crank_nicolson) then
+        if ( fl_prop%iflag_scheme .ge. id_Crank_nicolson) then
           call alloc_type_djds33_mat(node%numnod, node%internal_node,   &
      &        djds_tbl_fl, mat_velo)
         end if
@@ -229,11 +236,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine alloc_MG_zero_matrices                                 &
-     &         (evo_V, evo_B, evo_A, evo_T, evo_C, mat_velo,            &
+     &         (evo_B, evo_A, evo_T, evo_C, fl_prop, mat_velo,          &
      &          mat_magne, mat_temp,  mat_light, mat_press, mat_magp)
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
+      type(fluid_property), intent(in) :: fl_prop
 !
       type(DJDS_MATRIX),  intent(inout) :: mat_velo
       type(DJDS_MATRIX),  intent(inout) :: mat_magne
@@ -243,10 +251,10 @@
       type(DJDS_MATRIX),  intent(inout) :: mat_magp
 !
 !
-      if ( evo_V%iflag_scheme .gt. id_no_evolution) then
+      if ( fl_prop%iflag_scheme .gt. id_no_evolution) then
         call alloc_type_zero_mat(mat_press)
 !
-        if ( evo_V%iflag_scheme .ge. id_Crank_nicolson) then
+        if ( fl_prop%iflag_scheme .ge. id_Crank_nicolson) then
           call alloc_type_zero_mat(mat_velo)
         end if
       end if
@@ -277,11 +285,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine dealloc_aiccg_matrices                                 &
-     &         (evo_V, evo_B, evo_A, evo_T, evo_C, mat_velo,            &
+     &         (evo_B, evo_A, evo_T, evo_C, fl_prop, mat_velo,          &
      &          mat_magne, mat_temp, mat_light, mat_press, mat_magp)
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
+      type(fluid_property), intent(in) :: fl_prop
 !
       type(DJDS_MATRIX),  intent(inout) :: mat_velo
       type(DJDS_MATRIX),  intent(inout) :: mat_magne
@@ -291,10 +300,10 @@
       type(DJDS_MATRIX),  intent(inout) :: mat_magp
 !
 !
-      if (evo_V%iflag_scheme .gt. id_no_evolution) then
+      if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         call dealloc_type_djds_mat(mat_press)
 !
-        if (evo_V%iflag_scheme .ge. id_Crank_nicolson) then
+        if (fl_prop%iflag_scheme .ge. id_Crank_nicolson) then
           call dealloc_type_djds_mat(mat_velo)
         end if
       end if

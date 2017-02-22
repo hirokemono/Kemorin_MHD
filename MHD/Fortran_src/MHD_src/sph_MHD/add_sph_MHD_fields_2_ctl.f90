@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine add_field_name_4_sph_mhd                             &
-!!     &         (evo_V, evo_B, evo_T, evo_C, fl_prop, field_ctl)
+!!     &         (evo_B, evo_T, evo_C, fl_prop, field_ctl)
 !!      subroutine add_field_name_4_SGS(SGS_param, field_ctl)
 !!      subroutine add_field_name_dynamic_SGS                           &
 !!     &         (SGS_param, fl_prop, field_ctl)
@@ -36,23 +36,23 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_field_name_4_sph_mhd                               &
-     &         (evo_V, evo_B, evo_T, evo_C, fl_prop, field_ctl)
+     &         (evo_B, evo_T, evo_C, fl_prop, field_ctl)
 !
       use add_nodal_fields_ctl
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B
+      type(time_evolution_params), intent(in) :: evo_B
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !
 !   velocity flag
-      if(evo_V%iflag_scheme .gt. id_no_evolution                        &
+      if(fl_prop%iflag_scheme .gt. id_no_evolution                      &
      &     .or. evo_B%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_ctl(fhd_velo, field_ctl)
       end if
 !   vorticity flag
-      if(evo_V%iflag_scheme .gt. id_no_evolution) then
+      if(fl_prop%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_ctl(fhd_vort, field_ctl)
       end if
 !   magnetic field flag
@@ -79,7 +79,7 @@
 !
 !
 !   advection flag
-      if(evo_V%iflag_scheme .gt. id_no_evolution) then
+      if(fl_prop%iflag_scheme .gt. id_no_evolution) then
         call add_phys_name_ctl(fhd_viscous, field_ctl)
         call add_phys_name_ctl(fhd_div_viscous, field_ctl)
         call add_phys_name_ctl(fhd_w_viscous, field_ctl)

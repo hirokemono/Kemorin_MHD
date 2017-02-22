@@ -6,9 +6,9 @@
 !     Written by H. Matsui
 !
 !!      subroutine init_ele_material_property                           &
-!!     &         (numele, evo_V, evo_B, evo_A, evo_T, evo_C,            &
+!!     &         (numele, evo_B, evo_A, evo_T, evo_C,            &
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop)
-!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in)  :: cd_prop
@@ -33,14 +33,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine init_ele_material_property                             &
-     &         (numele, evo_V, evo_B, evo_A, evo_T, evo_C,              &
+     &         (numele, evo_B, evo_A, evo_T, evo_C,              &
      &          fl_prop, cd_prop, ht_prop, cp_prop)
 !
       use t_time_stepping_parameter
       use t_physical_property
 !
       integer(kind = kint), intent(in) :: numele
-      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in)  :: cd_prop
@@ -55,7 +55,7 @@
 !
 !    For convection
 !
-      if (evo_V%iflag_scheme .gt. id_no_evolution) then
+      if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         call alloc_velo_diff_MHD_AMG(numele, ak_MHD)
         ak_MHD%ak_d_velo(1:numele) = fl_prop%coef_diffuse
 !

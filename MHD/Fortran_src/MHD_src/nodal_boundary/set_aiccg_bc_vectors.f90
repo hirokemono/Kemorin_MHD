@@ -7,13 +7,13 @@
 !        modified by H. Matsui on Oct. 2005
 !        modified by H. Matsui on Feb. 2009
 !
-!!      subroutine set_aiccg_bc_phys(num_int, evo_V, evo_B, evo_A,      &
+!!      subroutine set_aiccg_bc_phys(num_int, evo_B, evo_A,             &
 !!     &          evo_T, evo_C, ele, surf, sf_grp, fl_prop,             &
 !!     &          jac_sf_grp, rhs_tbl, MG_mat_fl_q, node_bcs, surf_bcs, &
 !!     &          djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,     &
 !!     &          surf_wk, fem_wk, mat_velo, mat_magne,                 &
 !!     &          mat_temp, mat_light, mat_press, mat_magp)
-!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -62,7 +62,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_aiccg_bc_phys(num_int, evo_V, evo_B, evo_A,        &
+      subroutine set_aiccg_bc_phys(num_int, evo_B, evo_A,               &
      &          evo_T, evo_C, ele, surf, sf_grp, fl_prop,               &
      &          jac_sf_grp, rhs_tbl, MG_mat_fl_q, node_bcs, surf_bcs,   &
      &          djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,       &
@@ -71,7 +71,7 @@
 !
       use set_aiccg_bc_fixed
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
@@ -102,11 +102,11 @@
 !
 !   set boundary conditions for matrix
 !
-      if (evo_V%iflag_scheme .gt. id_no_evolution) then
+      if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         call set_aiccg_bc_scalar_nod(num_t_linear, ele,                 &
      &      node_bcs%Vnod_bcs%nod_bc_p, djds_tbl_fl_l, mat_press)
 !
-        if (evo_V%iflag_scheme .ge. id_Crank_nicolson) then
+        if (fl_prop%iflag_scheme .ge. id_Crank_nicolson) then
           call set_aiccg_bc_velo(num_int, ele, surf, sf_grp, fl_prop,   &
      &      node_bcs%Vnod_bcs%nod_bc_v, node_bcs%Vnod_bcs%nod_bc_rot,   &
      &      surf_bcs%Vsf_bcs%free_sph_in,                               &

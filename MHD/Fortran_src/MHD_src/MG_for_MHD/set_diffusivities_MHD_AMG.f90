@@ -4,9 +4,9 @@
 !      Written by H.Matsui on Dec., 2008
 !
 !!      subroutine s_set_diffusivities_MHD_AMG                          &
-!!     &         (evo_V, evo_B, evo_A, evo_T, evo_C, ele,               &
+!!     &         (evo_B, evo_A, evo_T, evo_C, ele,               &
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop, ak_AMG)
-!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(element_data), intent(in) :: ele
 !!        type(fluid_property), intent(in) :: fl_prop
@@ -32,10 +32,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_diffusivities_MHD_AMG                            &
-     &         (evo_V, evo_B, evo_A, evo_T, evo_C, ele,                 &
+     &         (evo_B, evo_A, evo_T, evo_C, ele,                 &
      &          fl_prop, cd_prop, ht_prop, cp_prop, ak_AMG)
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(element_data), intent(in) :: ele
       type(fluid_property), intent(in) :: fl_prop
@@ -53,7 +53,7 @@
 !
 !    For convection
 !
-      if (evo_V%iflag_scheme .gt. id_no_evolution) then
+      if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         call alloc_velo_diff_MHD_AMG(ele%numele, ak_AMG)
       end if
 !
@@ -80,7 +80,7 @@
 !
 !    For convection
 !
-        if (evo_V%iflag_scheme .gt. id_no_evolution) then
+        if (fl_prop%iflag_scheme .gt. id_no_evolution) then
           ak_AMG%ak_d_velo(1:ele%numele) = fl_prop%coef_diffuse
         end if
 !

@@ -9,12 +9,13 @@
 !!     &         (npoint_integrate, node, ele, fluid, conduct,          &
 !!     &          iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk, mhd_fem_wk)
 !!      subroutine int_no_evo_mean_squares                              &
-!!     &         (evo_V, evo_B, evo_A, node, ele, iphys, nod_fld,       &
+!!     &         (evo_B, evo_A, node, ele, fl_prop, iphys, nod_fld,     &
 !!     &          iphys_ele, ele_fld, fluid, jac_3d_q, fem_wk)
-!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: fluid, conduct
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(phys_address), intent(in) :: iphys_ele
@@ -29,6 +30,7 @@
       use m_precision
 !
       use t_time_stepping_parameter
+      use t_physical_property
       use t_geometry_data_MHD
       use t_geometry_data
       use t_phys_data
@@ -583,16 +585,17 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_no_evo_mean_squares                                &
-     &         (evo_V, evo_B, evo_A, node, ele, iphys, nod_fld,         &
+     &         (evo_B, evo_A, node, ele, fl_prop, iphys, nod_fld,       &
      &          iphys_ele, ele_fld, fluid, jac_3d_q, fem_wk)
 !
       use int_norm_div_MHD
       use int_rms_div_MHD
       use estimate_stabilities
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(fluid_property), intent(in) :: fl_prop
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
       type(phys_address), intent(in) :: iphys_ele
@@ -603,7 +606,7 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
 !
 !
-      if(evo_V%iflag_scheme .gt. id_no_evolution) then
+      if(fl_prop%iflag_scheme .gt. id_no_evolution) then
         call int_norm_divergence                                        &
      &     (fluid%istack_ele_fld_smp, iphys%i_velo,                     &
      &      node, ele, nod_fld, jac_3d_q, fem_wk, bulk_local(ja_divv))

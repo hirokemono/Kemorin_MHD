@@ -4,10 +4,11 @@
 !     Written by H. Matsui on Apr., 2008
 !
 !!      subroutine s_write_djds_mat_MHD                                 &
-!!     &         (evo_V, evo_B, evo_A, evo_T, evo_C,                    &
+!!     &         (evo_B, evo_A, evo_T, evo_C, fl_prop,                  &
 !!     &          Vmatrix, Pmatrix, Bmatrix, Fmatrix, Tmatrix, Cmatrix)
-!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(MHD_MG_matrix), intent(in) :: Vmatrix, Bmatrix
 !!        type(MHD_MG_matrix), intent(in) :: Pmatrix, Fmatrix
 !!        type(MHD_MG_matrix), intent(in) :: Tmatrix, Cmatrix
@@ -52,26 +53,28 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_write_djds_mat_MHD                                   &
-     &         (evo_V, evo_B, evo_A, evo_T, evo_C,                      &
+     &         (evo_B, evo_A, evo_T, evo_C, fl_prop,                    &
      &          Vmatrix, Pmatrix, Bmatrix, Fmatrix, Tmatrix, Cmatrix)
 !
       use t_time_stepping_parameter
+      use t_physical_property
       use t_solver_djds_MHD
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
+      type(fluid_property), intent(in) :: fl_prop
       type(MHD_MG_matrix), intent(in) :: Vmatrix, Bmatrix
       type(MHD_MG_matrix), intent(in) :: Pmatrix, Fmatrix
       type(MHD_MG_matrix), intent(in) :: Tmatrix, Cmatrix
 !
 !
-      if ( evo_V%iflag_scheme .gt. id_no_evolution) then
+      if ( fl_prop%iflag_scheme .gt. id_no_evolution) then
         call write_MHD_djds_mat11(fhead_press_mat,                      &
      &       Pmatrix%nlevel_MG, Pmatrix%MG_comm_table,                  &
      &       Pmatrix%MG_DJDS_table, Pmatrix%mat_MG_DJDS)
       end if
 !
-      if ( evo_V%iflag_scheme .ge. id_Crank_nicolson) then
+      if ( fl_prop%iflag_scheme .ge. id_Crank_nicolson) then
         call write_MHD_djds_mat33(fhead_velo_mat,                       &
      &       Vmatrix%nlevel_MG, Vmatrix%MG_comm_table,                  &
      &       Vmatrix%MG_DJDS_table, Vmatrix%mat_MG_DJDS)

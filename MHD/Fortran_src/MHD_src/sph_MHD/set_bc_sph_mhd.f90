@@ -7,11 +7,12 @@
 !>@brief Set boundary conditions for MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine s_set_bc_sph_mhd(evo_V, evo_B, evo_T, evo_C,         &
-!!     &          sph_params, sph_rj, radial_rj_grp,                    &
+!!      subroutine s_set_bc_sph_mhd(evo_B, evo_T, evo_C,                &
+!!     &          sph_params, sph_rj, radial_rj_grp, fl_prop,           &
 !!     &          CTR_nod_grp_name, CTR_sf_grp_name)
-!!        type(time_evolution_params), intent(in) :: evo_V, evo_B
+!!        type(time_evolution_params), intent(in) :: evo_B
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(group_data), intent(in) :: radial_rj_grp
@@ -26,6 +27,7 @@
       use m_phys_labels
 !
       use t_time_stepping_parameter
+      use t_physical_property
       use t_spheric_parameter
       use t_group_data
 !
@@ -39,8 +41,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_bc_sph_mhd(evo_V, evo_B, evo_T, evo_C,           &
-     &          sph_params, sph_rj, radial_rj_grp,                      &
+      subroutine s_set_bc_sph_mhd(evo_B, evo_T, evo_C,                  &
+     &          sph_params, sph_rj, radial_rj_grp, fl_prop,             &
      &          CTR_nod_grp_name, CTR_sf_grp_name)
 !
       use m_phys_labels
@@ -53,18 +55,19 @@
       use m_coef_fdm_to_center
       use cal_fdm_coefs_4_boundaries
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B
+      type(time_evolution_params), intent(in) :: evo_B
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(group_data), intent(in) :: radial_rj_grp
+      type(fluid_property), intent(in) :: fl_prop
       character(len=kchara), intent(in) :: CTR_nod_grp_name
       character(len=kchara), intent(in) :: CTR_sf_grp_name
 !
       integer(kind = kint) :: kst, ked
 !
 !
-      if (evo_V%iflag_scheme .gt. id_no_evolution) then
+      if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_velo_sph'
         call set_sph_bc_velo_sph(sph_rj, radial_rj_grp,                 &
      &      sph_params%radius_ICB, sph_params%radius_CMB)
@@ -143,7 +146,7 @@
       end if
 !
       if (iflag_debug .eq. iflag_full_msg) then
-        if (evo_V%iflag_scheme .gt. id_no_evolution) then
+        if (fl_prop%iflag_scheme .gt. id_no_evolution) then
           call check_fdm_coefs_4_BC2(fhd_velo,  sph_bc_U)
           call check_coef_fdm_free_ICB
           call check_coef_fdm_free_CMB

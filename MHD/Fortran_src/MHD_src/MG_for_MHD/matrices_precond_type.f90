@@ -5,13 +5,14 @@
 !        modified by H. Matsui on Aug., 2007
 !
 !!      subroutine s_matrices_precond_type                              &
-!!     &         (PRECOND_MG, evo_V, evo_B, evo_A, evo_T, evo_C,        &
+!!     &         (PRECOND_MG, evo_B, evo_A, evo_T, evo_C, fl_prop,      &
 !!     &          djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,     &
 !!     &          mat_velo, mat_magne, mat_temp, mat_light,             &
 !!     &          mat_press, mat_magp)
 !!        character(len=kchara),  intent(in) :: PRECOND_MG
-!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(DJDS_ordering_table),  intent(in) :: djds_tbl
 !!        type(DJDS_ordering_table),  intent(in) :: djds_tbl_fl
 !!        type(DJDS_ordering_table),  intent(in) :: djds_tbl_l
@@ -36,7 +37,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_matrices_precond_type                                &
-     &         (PRECOND_MG, evo_V, evo_B, evo_A, evo_T, evo_C,          &
+     &         (PRECOND_MG, evo_B, evo_A, evo_T, evo_C, fl_prop,        &
      &          djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,       &
      &          mat_velo, mat_magne, mat_temp, mat_light,               &
      &          mat_press, mat_magp)
@@ -44,14 +45,16 @@
       use m_iccg_parameter
       use m_machine_parameter
       use t_time_stepping_parameter
+      use t_physical_property
       use t_solver_djds
 !
       use solver_DJDS11_struct
       use solver_DJDS33_struct
 !
       character(len=kchara),  intent(in) :: PRECOND_MG
-      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
+      type(fluid_property), intent(in) :: fl_prop
       type(DJDS_ordering_table),  intent(in) :: djds_tbl
       type(DJDS_ordering_table),  intent(in) :: djds_tbl_fl
       type(DJDS_ordering_table),  intent(in) :: djds_tbl_l
@@ -70,12 +73,12 @@
 !C +-----------------+
 !C===
 !
-      if (evo_V%iflag_scheme .gt. id_no_evolution) then
+      if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         call precond_DJDS11_struct(np_smp, djds_tbl_fl_l, mat_press,    &
      &     PRECOND_MG, sigma_diag)
       end if
 !
-      if (evo_V%iflag_scheme .ge. id_Crank_nicolson) then
+      if (fl_prop%iflag_scheme .ge. id_Crank_nicolson) then
         call precond_DJDS33_struct(np_smp, djds_tbl_fl, mat_velo,       &
      &      PRECOND_MG, sigma_diag)
       end if

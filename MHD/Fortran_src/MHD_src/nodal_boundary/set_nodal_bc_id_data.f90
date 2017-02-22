@@ -6,12 +6,13 @@
 !        modified by H.Matsui on Aug., 2007
 !
 !!      subroutine set_bc_fields                                        &
-!!     &         (evo_V, evo_B, evo_A, evo_T, evo_C, mesh,              &
+!!     &         (evo_B, evo_A, evo_T, evo_C, mesh, fl_prop,            &
 !!     &          iphys, nod_fld, nod_bcs)
 !!      subroutine set_boundary_velo(node, i_velo, nod_fld)
 !!      subroutine set_boundary_velo_4_rhs(node, Vnod_bcs, f_l, f_nl)
 !!      subroutine delete_field_by_fixed_v_bc(Vnod_bcs, i_field, nod_fld)
 !!        type(mesh_geometry), intent(in) :: mesh
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(node_data), intent(in) :: node
 !!        type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
@@ -27,6 +28,7 @@
       use m_constants
 !
       use t_time_stepping_parameter
+      use t_physical_property
       use t_mesh_data
       use t_geometry_data_MHD
       use t_geometry_data
@@ -45,7 +47,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_bc_fields                                          &
-     &         (evo_V, evo_B, evo_A, evo_T, evo_C, mesh,                &
+     &         (evo_B, evo_A, evo_T, evo_C, mesh, fl_prop,              &
      &          iphys, nod_fld, nod_bcs)
 !
       use m_machine_parameter
@@ -58,9 +60,10 @@
       use set_nodal_boundary
       use set_boundary_scalars
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(mesh_geometry), intent(in) :: mesh
+      type(fluid_property), intent(in) :: fl_prop
 !
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(inout) :: nod_fld
@@ -68,7 +71,7 @@
 !
 !
 !
-      if (evo_V%iflag_scheme .gt. id_no_evolution) then
+      if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         if ( iflag_debug .eq.1) write(*,*)  'set boundary values 4 v'
         call set_boundary_velo                                          &
      &     (mesh%node, nod_bcs%Vnod_bcs, iphys%i_velo, nod_fld)

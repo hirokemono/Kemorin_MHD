@@ -7,15 +7,16 @@
 !>@brief  Update fields for MHD dynamo model
 !!
 !!@verbatim
-!!      subroutine s_cal_sol_sph_MHD_crank(evo_V, evo_B, evo_T, evo_C,  &
+!!      subroutine s_cal_sol_sph_MHD_crank(evo_B, evo_T, evo_C,         &
 !!     &          sph_rj, r_2nd, leg, ipol, idpdr, itor, rj_fld)
 !!      subroutine set_sph_field_to_start                               &
-!!     &         (evo_V, sph_rj, r_2nd, leg, ipol, itor, rj_fld)
-!!        type(time_evolution_params), intent(in) :: evo_V, evo_B
+!!     &         (sph_rj, r_2nd, leg, ipol, itor, rj_fld)
+!!        type(time_evolution_params), intent(in) :: evo_B
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(legendre_4_sph_trans), intent(in) :: leg
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(phys_address), intent(in) :: ipol, itor
 !!        type(phys_data), intent(inout) :: rj_fld
 !!
@@ -37,6 +38,7 @@
       use const_sph_diffusion
 !
       use t_time_stepping_parameter
+      use t_physical_property
       use t_spheric_rj_data
       use t_phys_address
       use t_phys_data
@@ -53,7 +55,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_cal_sol_sph_MHD_crank(evo_V, evo_B, evo_T, evo_C,    &
+      subroutine s_cal_sol_sph_MHD_crank(evo_B, evo_T, evo_C,           &
      &          sph_rj, r_2nd, leg, ipol, idpdr, itor, rj_fld)
 !
       use m_physical_property
@@ -62,7 +64,7 @@
       use cal_sol_sph_fluid_crank
       use const_sph_radial_grad
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B
+      type(time_evolution_params), intent(in) :: evo_B
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
@@ -76,7 +78,7 @@
 !*
 !      call check_ws_spectr(sph_rj, ipol, idpdr, itor, rj_fld)
 !
-      if(evo_V%iflag_scheme .gt. id_no_evolution) then
+      if(fl_prop1%iflag_scheme .gt. id_no_evolution) then
 !         Input:    ipol%i_vort, itor%i_vort
 !         Solution: ipol%i_velo, itor%i_velo, idpdr%i_velo
         if (iflag_debug .gt. 0)                                         &
@@ -115,7 +117,7 @@
 !*  ---- update after evolution ------------------
 !      call check_vs_spectr(sph_rj, ipol, idpdr, itor, rj_fld)
 !
-      if(evo_V%iflag_scheme .gt. id_no_evolution) then
+      if(fl_prop1%iflag_scheme .gt. id_no_evolution) then
         call update_after_vorticity_sph                                 &
      &     (sph_rj, r_2nd, fl_prop1, leg, ipol, itor, rj_fld)
         call cal_rot_radial_self_gravity                                &
@@ -141,14 +143,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_sph_field_to_start                                 &
-     &         (evo_V, sph_rj, r_2nd, leg, ipol, itor, rj_fld)
+     &         (sph_rj, r_2nd, leg, ipol, itor, rj_fld)
 !
       use m_physical_property
       use m_boundary_params_sph_MHD
       use const_sph_radial_grad
       use cal_rot_buoyancies_sph_MHD
 !
-      type(time_evolution_params), intent(in) :: evo_V
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(legendre_4_sph_trans), intent(in) :: leg
@@ -161,7 +162,7 @@
      &      ipol%i_velo, ipol%i_vort, rj_fld)
       end if
 !
-      if(evo_V%iflag_scheme .gt. id_no_evolution) then
+      if(fl_prop1%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug.gt.0) write(*,*) 'update_after_vorticity_sph'
         call update_after_vorticity_sph                                 &
      &     (sph_rj, r_2nd, fl_prop1, leg, ipol, itor, rj_fld)

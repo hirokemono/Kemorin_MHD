@@ -81,6 +81,7 @@
       use calypso_mpi
       use m_control_parameter
       use m_type_AMG_data
+      use m_physical_property
 !
       use t_solver_djds
 !
@@ -97,8 +98,8 @@
 !
 !
       call s_set_MHD_idx_4_mat_type                                     &
-     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
-     &    mesh, MHD_mesh, rhs_tbl,                                      &
+     &   (evo_magne, evo_vect_p, evo_temp, evo_comp,                    &
+     &    mesh, MHD_mesh, fl_prop1, rhs_tbl,                            &
      &    MHD_matrices%MG_DJDS_table(0), MHD_matrices%MG_DJDS_fluid(0), &
      &    MHD_matrices%MG_DJDS_linear(0),                               &
      &    MHD_matrices%MG_DJDS_lin_fl(0),                               &
@@ -177,6 +178,7 @@
      &          surf_wk, mhd_fem_wk, fem_wk, MHD_matrices, s_package)
 !
       use m_iccg_parameter
+      use m_physical_property
 !
       use set_aiccg_matrices_type
       use precond_djds_MHD
@@ -232,7 +234,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'preconditioning'
       call matrix_precondition                                          &
-     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
+     &   (evo_magne, evo_vect_p, evo_temp, evo_comp, fl_prop1,          &
      &    s_package%Vmatrix, s_package%Pmatrix, s_package%Bmatrix,      &
      &    s_package%Fmatrix, s_package%Tmatrix, s_package%Cmatrix)
 !

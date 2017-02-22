@@ -49,7 +49,7 @@
 !
 !    For convection
       call set_fluid_property                                           &
-     &   (depth_top, depth_bottom, evo_velo, fl_prop1)
+     &   (depth_top, depth_bottom, fl_prop1)
 !
 !   For Induction
       call set_conductive_property                                      &
@@ -65,19 +65,18 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_fluid_property                                     &
-     &         (depth_top, depth_bottom, evo_V, fl_prop)
+     &         (depth_top, depth_bottom, fl_prop)
 !
       use m_normalize_parameter
       use m_t_int_parameter
       use construct_MHD_coefficient
 !
       real(kind = kreal), intent(in) :: depth_top, depth_bottom
-      type(time_evolution_params), intent(inout) :: evo_V
       type(fluid_property), intent(inout) :: fl_prop
 !
 !    For convection
 !
-      if(evo_V%iflag_scheme .gt. id_no_evolution) then
+      if(fl_prop%iflag_scheme .gt. id_no_evolution) then
 !
         fl_prop%coef_velo =     one
         fl_prop%coef_diffuse =  one
@@ -136,7 +135,7 @@
 !  Check
 !
       if (my_rank .eq. 0) then
-        if(evo_V%iflag_scheme .gt. id_no_evolution) then
+        if(fl_prop%iflag_scheme .gt. id_no_evolution) then
           write(*,*) 'coefficient for velocity:            ',           &
      &              fl_prop%coef_velo
           write(*,*) 'coefficient for pressure:            ',           &

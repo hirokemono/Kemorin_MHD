@@ -7,12 +7,12 @@
 !> @brief Evaluate nonlinear terms at poles
 !!
 !!@verbatim
-!!      subroutine pole_nonlinear_sph_MHD(evo_V, evo_B, evo_T, evo_C,   &
+!!      subroutine pole_nonlinear_sph_MHD(evo_B, evo_T, evo_C,          &
 !!     &          sph_rtp, node, fl_prop, cd_prop, iphys, nod_fld)
 !!      subroutine pole_energy_flux_rtp(sph_rtp, node,                  &
 !!     &          fl_prop, cd_prop, ref_param_T, ref_param_C,           &
 !!     &         iphys, nod_fld)
-!!        type(time_evolution_params), intent(in) :: evo_V, evo_B
+!!        type(time_evolution_params), intent(in) :: evo_B
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(node_data), intent(in) :: node
@@ -46,14 +46,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine pole_nonlinear_sph_MHD(evo_V, evo_B, evo_T, evo_C,     &
+      subroutine pole_nonlinear_sph_MHD(evo_B, evo_T, evo_C,            &
      &          sph_rtp, node, fl_prop, cd_prop, iphys, nod_fld)
 !
       use m_machine_parameter
 !
       use products_at_poles
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B
+      type(time_evolution_params), intent(in) :: evo_B
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(node_data), intent(in) :: node
@@ -63,7 +63,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if( (iphys%i_m_advect * evo_V%iflag_scheme) .gt. 0) then
+      if( (iphys%i_m_advect * fl_prop%iflag_scheme) .gt. 0) then
         call pole_fld_cst_cross_prod                                    &
      &     (node%numnod, node%internal_node, node%xx,                   &
      &      sph_rtp%nnod_rtp, sph_rtp%nidx_rtp(1), fl_prop%coef_velo,   &

@@ -157,8 +157,8 @@
 !* obtain linear terms for starting
 !*
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
-      call set_sph_field_to_start(evo_velo,                             &
-     &    sph1%sph_rj, r_2nd, trans_p1%leg, ipol, itor, rj_fld1)
+      call set_sph_field_to_start                                       &
+     &   (sph1%sph_rj, r_2nd, trans_p1%leg, ipol, itor, rj_fld1)
 !
 !*  ----------------Modify spectr data ... ----------
 !*
@@ -319,8 +319,8 @@
 !
 !
       call s_lead_fields_4_sph_mhd                                      &
-     &   (evo_velo, evo_magne, evo_temp, evo_comp, SGS_par1%model_p,    &
-     &    sph, comms_sph, r_2nd, trans_p1, ipol, rj_fld, trns_WK)
+     &   (evo_magne, evo_temp, evo_comp, SGS_par1%model_p, sph,         &
+     &    comms_sph, r_2nd, fl_prop1, trans_p1, ipol, rj_fld, trns_WK)
 !
       call sph_back_trans_4_MHD                                         &
      &   (sph, comms_sph, fl_prop1, omega_sph, trans_p1,                &

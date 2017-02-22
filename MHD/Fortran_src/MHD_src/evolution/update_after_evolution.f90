@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine fields_evolution                                     &
-!!     &         (evo_V, evo_B, evo_A, evo_T, evo_C, FEM_prm, SGS_par,  &
+!!     &         (evo_B, evo_A, evo_T, evo_C, FEM_prm, SGS_par,         &
 !!     &          mesh, group, ele_mesh, MHD_mesh,                      &
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,          &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
@@ -28,7 +28,7 @@
 !!     &        surf_wk, f_l, f_nl, nod_fld, ele_fld, diff_coefs)
 !!      subroutine reset_update_flag(nod_fld, sgs_coefs, diff_coefs)
 !!
-!!      subroutine fields_evolution_4_FEM_SPH(evo_V, evo_T, evo_C,      &
+!!      subroutine fields_evolution_4_FEM_SPH(evo_T, evo_C,             &
 !!     &          FEM_prm, SGS_par, mesh, group, ele_mesh, fluid,       &
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,          &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
@@ -38,7 +38,7 @@
 !!     &          wk_cor, wk_lsq, wk_sgs, wk_diff, wk_filter,           &
 !!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,               &
 !!     &          nod_fld, ele_fld, sgs_coefs, diff_coefs)
-!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -125,7 +125,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine fields_evolution                                       &
-     &         (evo_V, evo_B, evo_A, evo_T, evo_C, FEM_prm, SGS_par,    &
+     &         (evo_B, evo_A, evo_T, evo_C, FEM_prm, SGS_par,           &
      &          mesh, group, ele_mesh, MHD_mesh,                        &
      &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,            &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
@@ -150,7 +150,7 @@
 !
 !      use check_surface_groups
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -352,10 +352,10 @@
 !
 !     ---- velocity update
 !
-      if (evo_V%iflag_scheme .gt. id_no_evolution) then
+      if (fl_prop1%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'velocity_evolution'
-        call velocity_evolution(evo_velo, FEM_prm, SGS_par,             &
-     &      mesh%nod_comm, mesh%node, mesh%ele,                         &
+        call velocity_evolution                                         &
+     &     (FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,       &
      &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
      &      group%surf_nod_grp, fl_prop1, cd_prop1,                     &
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,       &
@@ -515,7 +515,7 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine fields_evolution_4_FEM_SPH(evo_V, evo_T, evo_C,        &
+      subroutine fields_evolution_4_FEM_SPH(evo_T, evo_C,               &
      &          FEM_prm, SGS_par, mesh, group, ele_mesh, fluid,         &
      &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,            &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
@@ -535,7 +535,6 @@
       use update_with_scalars
       use update_with_velo
 !
-      type(time_evolution_params), intent(in) :: evo_V
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -679,10 +678,10 @@
 !
 !     ---- velocity update
 !
-      if ( evo_V%iflag_scheme .gt. id_no_evolution) then
+      if (fl_prop1%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'velocity_evolution'
-        call velocity_evolution(evo_velo, FEM_prm, SGS_par,             &
-     &      mesh%nod_comm, mesh%node, mesh%ele,                         &
+        call velocity_evolution                                         &
+     &     (FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,       &
      &      ele_mesh%surf, fluid, group%surf_grp,                       &
      &      group%surf_nod_grp, fl_prop1, cd_prop1,                     &
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,       &

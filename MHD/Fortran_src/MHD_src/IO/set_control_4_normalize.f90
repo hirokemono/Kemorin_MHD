@@ -9,11 +9,12 @@
 !!
 !!@verbatim
 !      subroutine s_set_control_4_normalize                            &
-!!     &         (evo_V, evo_B, evo_A, evo_T, evo_C, dless_ctl, eqs_ctl)
-!!      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
-!!      type(time_evolution_params), intent(in) :: evo_T, evo_C
-!!       type(dimless_control), intent(inout) :: dless_ctl
-!!       type(equations_control), intent(inout) :: eqs_ctl
+!!     &       (evo_B, evo_A, evo_T, evo_C, fl_prop, dless_ctl, eqs_ctl)
+!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
+!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(dimless_control), intent(inout) :: dless_ctl
+!!        type(equations_control), intent(inout) :: eqs_ctl
 !!@endverbatim
 !
       module set_control_4_normalize
@@ -24,6 +25,7 @@
       use m_error_IDs
 !
       use t_time_stepping_parameter
+      use t_physical_property
       use t_normalize_parameter
       use t_ctl_data_mhd_normalize
 !
@@ -41,13 +43,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_4_normalize                              &
-     &         (evo_V, evo_B, evo_A, evo_T, evo_C, dless_ctl, eqs_ctl)
+     &         (evo_B, evo_A, evo_T, evo_C, fl_prop, dless_ctl, eqs_ctl)
 !
       use m_physical_property
       use m_normalize_parameter
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
+      type(fluid_property), intent(in) :: fl_prop
       type(dimless_control), intent(inout) :: dless_ctl
       type(equations_control), intent(inout) :: eqs_ctl
 !
@@ -78,7 +81,7 @@
 !
 !    set coefficients for momentum equation
 !
-      if (evo_V%iflag_scheme .eq. id_no_evolution) then
+      if (fl_prop%iflag_scheme .eq. id_no_evolution) then
         MHD_coef_list%coefs_momentum%num =  0
         MHD_coef_list%coefs_pressure%num =  0
         MHD_coef_list%coefs_v_diffuse%num = 0

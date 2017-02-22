@@ -65,13 +65,13 @@
       call init_field_address(node%numnod, nod_fld, iphys)
 !
       call check_field_dependencies                                     &
-     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
+     &   (evo_magne, evo_vect_p, evo_temp, evo_comp,                    &
      &    fl_prop1, iphys, nod_fld)
       call check_dependencies_by_id(evo_magne, iphys, nod_fld)
       call check_dependence_FEM_MHD_by_id(iphys, nod_fld)
-      call check_dependence_FEM_evo(evo_velo, iphys, nod_fld)
+      call check_dependence_FEM_evo(fl_prop1, iphys, nod_fld)
       call check_dependence_4_FEM_SGS                                   &
-     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
+     &   (evo_magne, evo_vect_p, evo_temp, evo_comp,                    &
      &    SGS_param, cmt_param, fl_prop1, iphys, nod_fld)
 !
       end subroutine set_FEM_MHD_field_data
@@ -98,13 +98,13 @@
      &   (sph_rj, ipol, idpdr, itor, rj_fld)
 !
       call check_field_dependencies                                     &
-     &   (evo_velo, evo_magne, evo_vect_p, evo_temp, evo_comp,          &
+     &   (evo_magne, evo_vect_p, evo_temp, evo_comp,                    &
      &    fl_prop1, ipol, rj_fld)
       call check_dependencies_by_id(evo_magne, ipol, rj_fld)
       call check_dependence_SPH_MHD_by_id(ipol, rj_fld)
-      call check_dependence_SPH_evo(evo_velo, ipol, rj_fld)
+      call check_dependence_SPH_evo(fl_prop1, ipol, rj_fld)
       call check_dependence_4_SPH_SGS                                   &
-     &   (evo_velo, evo_magne, evo_temp, evo_comp,                      &
+     &   (evo_magne, evo_temp, evo_comp,                                &
      &    SGS_param, fl_prop1, ipol, rj_fld)
 !
       end subroutine set_sph_MHD_sprctr_data
@@ -113,9 +113,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine check_field_dependencies                               &
-     &         (evo_V, evo_B, evo_A, evo_T, evo_C, fl_prop, iphys, fld)
+     &         (evo_B, evo_A, evo_T, evo_C, fl_prop, iphys, fld)
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
       type(phys_address), intent(in) :: iphys
@@ -133,13 +133,13 @@
      & time evolution')
       end if
 !
-      if (evo_V%iflag_scheme .gt. id_no_evolution) then
+      if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         msg = 'time integration for velocity needs'
         call check_missing_field_w_msg(fld, msg, iphys%i_velo)
         call check_missing_field_w_msg(fld, msg, iphys%i_press)
       end if
 !
-      if (evo_V%iflag_scheme .gt. id_no_evolution) then
+      if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         msg = 'time integration for velocity needs'
         call check_missing_field_w_msg(fld, msg, iphys%i_vort)
       end if
@@ -169,7 +169,7 @@
       end if
 !
 !
-      if ( evo_V%iflag_scheme .gt. id_no_evolution) then
+      if ( fl_prop%iflag_scheme .gt. id_no_evolution) then
         if (fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
           msg = 'Buoyancy needs'
           call check_missing_field_w_msg(fld, msg, iphys%i_temp)
@@ -196,16 +196,16 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_dependence_FEM_evo(evo_V, iphys, fld)
+      subroutine check_dependence_FEM_evo(fl_prop, iphys, fld)
 !
-      type(time_evolution_params), intent(in) :: evo_V
+      type(fluid_property), intent(in) :: fl_prop
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: fld
 !
       character(len=kchara) :: msg
 !
 !
-      if (evo_V%iflag_scheme .gt. id_no_evolution) then
+      if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         msg = 'time integration for velocity needs'
         call check_missing_field_w_msg(fld, msg, iphys%i_velo)
         call check_missing_field_w_msg(fld, msg, iphys%i_press)
@@ -215,16 +215,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_dependence_SPH_evo(evo_V, iphys, fld)
+      subroutine check_dependence_SPH_evo(fl_prop, iphys, fld)
 !
-      type(time_evolution_params), intent(in) :: evo_V
+      type(fluid_property), intent(in) :: fl_prop
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: fld
 !
       character(len=kchara) :: msg
 !
 !
-      if (evo_V%iflag_scheme .gt. id_no_evolution) then
+      if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         msg = 'time integration for velocity needs'
         call check_missing_field_w_msg(fld, msg, iphys%i_vort)
       end if
@@ -235,10 +235,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine check_dependence_4_FEM_SGS                             &
-     &         (evo_V, evo_B, evo_A, evo_T, evo_C,                      &
+     &         (evo_B, evo_A, evo_T, evo_C,                             &
      &          SGS_param, cmt_param, fl_prop, iphys, fld)
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
@@ -250,7 +250,7 @@
       character(len=kchara) :: msg
 !
 !
-      if (evo_V%iflag_scheme .gt. id_no_evolution) then
+      if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         if ( SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
           msg = 'solving SGS momentum flux needs'
           call check_missing_field_w_msg(fld, msg, iphys%i_SGS_m_flux)
@@ -298,7 +298,7 @@
         end if
       end if
 !
-      if ( evo_V%iflag_scheme .gt. id_no_evolution) then
+      if ( fl_prop%iflag_scheme .gt. id_no_evolution) then
         if ( SGS_param%iflag_SGS_m_flux .eq. id_SGS_similarity          &
      &     .and. SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS momentum flux needs'
@@ -369,10 +369,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_dependence_4_SPH_SGS(evo_V, evo_B, evo_T, evo_C, &
+      subroutine check_dependence_4_SPH_SGS(evo_B, evo_T, evo_C,        &
                 SGS_param, fl_prop, iphys, fld)
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B
+      type(time_evolution_params), intent(in) :: evo_B
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(fluid_property), intent(in) :: fl_prop
@@ -382,7 +382,7 @@
       character(len=kchara) :: msg
 !
 !
-      if (evo_V%iflag_scheme .gt. id_no_evolution) then
+      if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         if ( SGS_param%iflag_SGS_m_flux .ne. id_SGS_none) then
           msg = 'solving SGS momentum flux needs'
           call check_missing_field_w_msg(fld, msg, iphys%i_SGS_inertia)
@@ -422,7 +422,7 @@
       end if
 !
 !
-      if ( evo_V%iflag_scheme .gt. id_no_evolution) then
+      if ( fl_prop%iflag_scheme .gt. id_no_evolution) then
         if    (SGS_param%iflag_SGS_m_flux .eq. id_SGS_similarity        &
      &   .and. SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
           msg = 'SGS momentum flux needs'

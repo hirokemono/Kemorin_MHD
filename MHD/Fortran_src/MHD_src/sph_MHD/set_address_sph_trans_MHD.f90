@@ -55,7 +55,7 @@
       integer(kind = kint) :: nscltsr_rtp_2_rj, nscltsr_rj_2_rtp
 !
       call b_trans_address_vector_MHD                                   &
-     &   (evo_velo, evo_magne, evo_temp, evo_comp,                      &
+     &   (evo_magne, evo_temp, evo_comp,                      &
      &    fl_prop1, ipol, trns_MHD%nvector_rj_2_rtp, trns_MHD%b_trns)
       call b_trans_address_scalar_MHD(evo_temp, evo_comp,               &
      &    ipol, trns_MHD%nvector_rj_2_rtp, trns_MHD%nscalar_rj_2_rtp,   &
@@ -63,7 +63,7 @@
       trns_MHD%ntensor_rj_2_rtp = 0
 !
       call f_trans_address_vector_MHD                                   &
-     &   (evo_velo, evo_magne, evo_temp, evo_comp,                      &
+     &   (evo_magne, evo_temp, evo_comp,                      &
      &    fl_prop1, ipol, trns_MHD%nvector_rtp_2_rj, trns_MHD%f_trns)
       call f_trans_address_scalar_MHD                                   &
      &   (fl_prop1, trns_MHD%nvector_rtp_2_rj,                          &
@@ -115,10 +115,10 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine b_trans_address_vector_MHD(evo_V, evo_B, evo_T, evo_C, &
+      subroutine b_trans_address_vector_MHD(evo_B, evo_T, evo_C,        &
      &          fl_prop, ipol, nvector_rj_2_rtp, b_trns)
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B
+      type(time_evolution_params), intent(in) :: evo_B
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
       type(phys_address), intent(in) :: ipol
@@ -127,7 +127,7 @@
 !
       nvector_rj_2_rtp = 0
 !   velocity flag
-      if(       evo_V%iflag_scheme .gt. id_no_evolution                 &
+      if(       fl_prop%iflag_scheme .gt. id_no_evolution               &
      &     .or. evo_B%iflag_scheme .gt. id_no_evolution                 &
      &     .or. evo_T%iflag_scheme .gt. id_no_evolution                 &
      &     .or. evo_C%iflag_scheme .gt. id_no_evolution) then
@@ -135,7 +135,7 @@
         b_trns%i_velo = 3*nvector_rj_2_rtp - 2
       end if
 !   vorticity flag
-      if(       evo_V%iflag_scheme .gt. id_no_evolution) then
+      if(       fl_prop%iflag_scheme .gt. id_no_evolution) then
         nvector_rj_2_rtp = nvector_rj_2_rtp + 1
         b_trns%i_vort = 3*nvector_rj_2_rtp - 2
       end if
@@ -222,10 +222,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine f_trans_address_vector_MHD(evo_V, evo_B, evo_T, evo_C, &
+      subroutine f_trans_address_vector_MHD(evo_B, evo_T, evo_C,        &
      &          fl_prop, ipol, nvector_rtp_2_rj, f_trns)
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B
+      type(time_evolution_params), intent(in) :: evo_B
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
       type(phys_address), intent(in) :: ipol
@@ -235,7 +235,7 @@
 !
       nvector_rtp_2_rj = 0
 !   advection flag
-      if(evo_V%iflag_scheme .gt. id_no_evolution) then
+      if(fl_prop%iflag_scheme .gt. id_no_evolution) then
         nvector_rtp_2_rj = nvector_rtp_2_rj + 1
         f_trns%i_m_advect = 3*nvector_rtp_2_rj - 2
 !   Coriolis flag

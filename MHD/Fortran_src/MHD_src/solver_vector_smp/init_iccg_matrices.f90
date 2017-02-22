@@ -5,15 +5,16 @@
 !                                    on June 2005
 !
 !!      subroutine reset_MHD_aiccg_mat_type                             &
-!!     &         (evo_V, evo_B, evo_A, evo_T, evo_C, node, ele, fluid,  &
+!!     &         (evo_B, evo_A, evo_T, evo_C, node, ele, fluid, fl_prop,&
 !!     &          djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,     &
 !!     &          mat_velo, mat_magne, mat_temp, mat_light,             &
 !!     &          mat_press, mat_magp)
-!!        type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: fluid
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(DJDS_ordering_table),  intent(in) :: djds_tbl
 !!        type(DJDS_ordering_table),  intent(in) :: djds_tbl_fl
 !!        type(DJDS_ordering_table),  intent(in) :: djds_tbl_l
@@ -33,6 +34,7 @@
       use calypso_mpi
       use m_geometry_constants
 !
+      use t_physical_property
       use t_time_stepping_parameter
       use t_geometry_data
       use t_geometry_data_MHD
@@ -50,16 +52,17 @@
 ! ----------------------------------------------------------------------
 !
       subroutine reset_MHD_aiccg_mat_type                               &
-     &         (evo_V, evo_B, evo_A, evo_T, evo_C, node, ele, fluid,    &
+     &         (evo_B, evo_A, evo_T, evo_C, node, ele, fluid, fl_prop,  &
      &          djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,       &
      &          mat_velo, mat_magne, mat_temp, mat_light,               &
      &          mat_press, mat_magp)
 !
-      type(time_evolution_params), intent(in) :: evo_V, evo_B, evo_A
+      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
+      type(fluid_property), intent(in) :: fl_prop
       type(DJDS_ordering_table),  intent(in) :: djds_tbl
       type(DJDS_ordering_table),  intent(in) :: djds_tbl_fl
       type(DJDS_ordering_table),  intent(in) :: djds_tbl_l
@@ -73,12 +76,12 @@
       type(DJDS_MATRIX),  intent(inout) :: mat_magp
 !
 !
-      if (evo_V%iflag_scheme .gt. id_no_evolution) then
+      if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         call reset_aiccg_11_MHD(node, ele,                              &
      &      fluid%iele_start_fld, fluid%iele_end_fld,                   &
      &      num_t_linear, djds_tbl_fl_l, mat_press)
 !
-        if (evo_V%iflag_scheme .ge. id_Crank_nicolson) then
+        if (fl_prop%iflag_scheme .ge. id_Crank_nicolson) then
           call reset_aiccg_33_MHD(node, ele,                            &
      &        fluid%iele_start_fld, fluid%iele_end_fld,                 &
      &        ele%nnod_4_ele, djds_tbl_fl, mat_velo)

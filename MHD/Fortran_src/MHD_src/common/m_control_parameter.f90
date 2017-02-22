@@ -26,8 +26,6 @@
       integer (kind=kint) :: iflag_scheme = id_Crank_nicolson
 !
 !>      TIme evolution parameters for magnetic field
-      type(time_evolution_params), save :: evo_velo
-!>      TIme evolution parameters for magnetic field
       type(time_evolution_params), save :: evo_magne
 !>      TIme evolution parameters for vector potential
       type(time_evolution_params), save :: evo_vect_p
