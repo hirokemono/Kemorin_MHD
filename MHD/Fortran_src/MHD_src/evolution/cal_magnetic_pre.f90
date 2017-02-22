@@ -7,15 +7,15 @@
 !
 !!      subroutine cal_magnetic_field_pre(icomp_sgs_uxb, iak_diff_b,    &
 !!     &          iak_diff_uxb, ie_dvx, ie_dbx, ak_d_magne,             &
-!!     &          evo_B, FEM_prm, SGS_param, cmt_param, filter_param,   &
+!!     &          FEM_prm, SGS_param, cmt_param, filter_param,          &
 !!     &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,  &
 !!     &          Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,&
 !!     &          jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,           &
 !!     &          sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,      &
 !!     &          Bmatrix, MG_vector, wk_filter, mhd_fem_wk, fem_wk,    &
 !!     &          surf_wk, f_l, f_nl, nod_fld)
-!!      subroutine cal_magnetic_co(iak_diff_b, ak_d_magne,              &
-!!     &          evo_B, FEM_prm, SGS_param, cmt_param,                 &
+!!      subroutine cal_magnetic_co                                      &
+!!     &         (iak_diff_b, ak_d_magne, FEM_prm, SGS_param, cmt_param,&
 !!     &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,  &
 !!     &          Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,         &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
@@ -28,7 +28,6 @@
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
 !!     &          rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk, fem_wk,   &
 !!     &          surf_wk, f_l, f_nl, nod_fld)
-!!        type(time_evolution_params), intent(in) :: evo_B
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -74,7 +73,6 @@
       use m_machine_parameter
       use m_phys_constants
 !
-      use t_time_stepping_parameter
       use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_physical_property
@@ -110,7 +108,7 @@
 !
       subroutine cal_magnetic_field_pre(icomp_sgs_uxb, iak_diff_b,      &
      &          iak_diff_uxb, ie_dvx, ie_dbx, ak_d_magne,               &
-     &          evo_B, FEM_prm, SGS_param, cmt_param, filter_param,     &
+     &          FEM_prm, SGS_param, cmt_param, filter_param,            &
      &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,    &
      &          Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,  &
      &          jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,             &
@@ -132,7 +130,6 @@
       use evolve_by_lumped_crank
       use evolve_by_consist_crank
 !
-      type(time_evolution_params), intent(in) :: evo_B
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
@@ -257,8 +254,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_magnetic_co(iak_diff_b, ak_d_magne,                &
-     &          evo_B, FEM_prm, SGS_param, cmt_param,                   &
+      subroutine cal_magnetic_co                                        &
+     &         (iak_diff_b, ak_d_magne, FEM_prm, SGS_param, cmt_param,  &
      &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,    &
      &          Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,           &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
@@ -274,7 +271,6 @@
       use cal_multi_pass
       use cal_sol_vector_co_crank
 !
-      type(time_evolution_params), intent(in) :: evo_B
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param

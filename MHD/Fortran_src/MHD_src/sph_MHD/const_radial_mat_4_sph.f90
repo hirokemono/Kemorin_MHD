@@ -8,9 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine const_radial_mat_sph_mhd                             &
-!!     &         (fl_prop, ht_prop, cp_prop, sph_rj, r_2nd, leg)
+!!     &        (fl_prop, cd_prop, ht_prop, cp_prop, sph_rj, r_2nd, leg)
 !!      subroutine const_radial_mat_sph_snap(fl_prop, sph_rj, r_2nd, leg)
 !!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in) :: cd_prop
 !!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
@@ -45,19 +46,21 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_radial_mat_sph_mhd                               &
-     &         (fl_prop, ht_prop, cp_prop, sph_rj, r_2nd, leg)
+     &        (fl_prop, cd_prop, ht_prop, cp_prop, sph_rj, r_2nd, leg)
 !
       use m_control_parameter
 !
       type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
       type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(legendre_4_sph_trans), intent(in) :: leg
 !
 !
-      call const_radial_matrices_sph(evo_magne, evo_temp, evo_comp,     &
-     &    fl_prop, ht_prop, cp_prop, sph_rj, r_2nd, leg%g_sph_rj)
+      call const_radial_matrices_sph(evo_temp, evo_comp,                &
+     &    fl_prop, cd_prop, ht_prop, cp_prop,                           &
+     &    sph_rj, r_2nd, leg%g_sph_rj)
 !
       if(sph_rj%inod_rj_center .gt. 0) then
         call const_radial_mat_sph_w_center                              &
@@ -99,8 +102,9 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_matrices_sph(evo_B, evo_T, evo_C,         &
-     &          fl_prop, ht_prop, cp_prop, sph_rj, r_2nd, g_sph_rj)
+      subroutine const_radial_matrices_sph(evo_T, evo_C,                &
+     &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
+     &          sph_rj, r_2nd, g_sph_rj)
 !
       use m_physical_property
       use m_radial_matrices_sph
@@ -108,9 +112,9 @@
       use const_r_mat_4_scalar_sph
       use const_r_mat_4_vector_sph
 !
-      type(time_evolution_params), intent(in) :: evo_B
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
       type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd

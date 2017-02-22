@@ -8,7 +8,7 @@
 !> @brief Evaluate energy fluxes for MHD dynamo in physical space
 !!
 !!@verbatim
-!!      subroutine cal_nonlinear_pole_MHD(evo_B, evo_T, evo_C,          &
+!!      subroutine cal_nonlinear_pole_MHD(evo_T, evo_C,                 &
 !!     &          sph_rtp, fl_prop, cd_prop, ht_prop, cp_prop,          &
 !!     &          f_trns, bs_trns, ncomp_snap_rj_2_rtp, ncomp_rtp_2_rj, &
 !!     &          fls_pl, frc_pl)
@@ -17,7 +17,6 @@
 !!     &          f_trns, bs_trns, fs_trns, ncomp_rtp_2_rj,             &
 !!     &          ncomp_snap_rj_2_rtp, ncomp_snap_rtp_2_rj,             &
 !!     &          frc_rtp, fls_rtp, frs_rtp)
-!!        type(time_evolution_params), intent(in) :: evo_B
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(fluid_property), intent(in) :: fl_prop
@@ -51,7 +50,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_nonlinear_pole_MHD(evo_B, evo_T, evo_C,            &
+      subroutine cal_nonlinear_pole_MHD(evo_T, evo_C,                   &
      &          sph_rtp, fl_prop, cd_prop, ht_prop, cp_prop,            &
      &          f_trns, bs_trns, ncomp_snap_rj_2_rtp, ncomp_rtp_2_rj,   &
      &          fls_pl, frc_pl)
@@ -59,7 +58,6 @@
       use const_wz_coriolis_rtp
       use cal_products_smp
 !
-      type(time_evolution_params), intent(in) :: evo_B
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(fluid_property), intent(in) :: fl_prop

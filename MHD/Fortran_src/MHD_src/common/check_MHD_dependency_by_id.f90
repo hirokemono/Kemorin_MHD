@@ -7,10 +7,10 @@
 !>@brief  Check dependecy of field list fro MHD dynamo
 !!
 !!@verbatim
-!!      subroutine check_dependencies_by_id(evo_B, iphys, fld)
+!!      subroutine check_dependencies_by_id(cd_prop, iphys, fld)
 !!      subroutine check_dependence_FEM_MHD_by_id(iphys, fld)
 !!      subroutine check_dependence_SPH_MHD_by_id(iphys, fld)
-!!        type(time_evolution_params), intent(in) :: evo_B
+!!        type(conductive_property), intent(in) :: cd_prop
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(in) :: fld
 !!@endverbatim
@@ -22,7 +22,7 @@
 !
       use calypso_mpi
 !
-      use t_time_stepping_parameter
+      use t_physical_property
       use t_phys_address
       use t_phys_data
 !
@@ -36,9 +36,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_dependencies_by_id(evo_B, iphys, fld)
+      subroutine check_dependencies_by_id(cd_prop, iphys, fld)
 !
-      type(time_evolution_params), intent(in) :: evo_B
+      type(conductive_property), intent(in) :: cd_prop
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: fld
 !

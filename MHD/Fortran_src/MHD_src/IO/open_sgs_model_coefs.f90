@@ -11,23 +11,24 @@
 !!      subroutine open_SGS_model_coef_file(iflag_type, id_file,        &
 !!     &          file_name, wk_sgs)
 !!      subroutine open_SGS_correlation_file(iflag_type, id_file,       &
-!!     &          file_name, evo_A, SGS_param, wk_sgs)
+!!     &          file_name, cd_prop, SGS_param, wk_sgs)
 !!      subroutine open_SGS_rms_ratio_file(iflag_type, id_file,         &
-!!     &          file_name, evo_A, SGS_param, wk_sgs)
+!!     &          file_name, cd_prop, SGS_param, wk_sgs)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!
 !!      subroutine open_SGS_diff_coef_file(iflag_type, id_file,         &
 !!     &          file_name, wk_diff)
 !!      subroutine open_diff_correlation_file(iflag_type, id_file,      &
-!!     &          file_name, evo_A, wk_diff)
+!!     &          file_name, cd_prop, wk_diff)
 !!      subroutine open_diff_rms_ratio_file(iflag_type, id_file,        &
-!!     &          file_name, evo_A, wk_diff)
+!!     &          file_name, cd_prop, wk_diff)
+!!        type(conductive_property), intent(in) :: cd_prop
 !
       module open_sgs_model_coefs
 !
       use m_precision
 !
-      use t_time_stepping_parameter
+      use t_physical_property
       use t_ele_info_4_dynamic
 !
       implicit none
@@ -73,47 +74,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine open_SGS_correlation_file(iflag_type, id_file,         &
-     &          file_name, evo_A, SGS_param, wk_sgs)
+     &          file_name, cd_prop, SGS_param, wk_sgs)
 !
       use t_SGS_control_parameter
 !
       integer(kind=kint), intent(in) :: id_file, iflag_type
       character(len=kchara), intent(in) :: file_name
 !
-      type(time_evolution_params), intent(in) :: evo_A
-type(SGS_model_control_params), intent(in) :: SGS_param
-      type(dynamic_model_data), intent(in) :: wk_sgs
-!
-!
-      open (id_file,file=file_name, status='old',                       &
-     &    position='append', err = 99)
-      return
-!
-  99  continue
-      open (id_file,file=file_name, status='replace')
-!
-      if(iflag_type .eq. iflag_layered) then
-        call write_sgs_time_head(id_file)
-      else if(iflag_type .eq. iflag_whole) then
-        call write_sgs_whole_time_head(id_file)
-      end if
-!
-      call write_sgs_comps_head                                         &
-     &   (id_file, SGS_param%icoord_Csim, evo_A, wk_sgs)
-!
-      end subroutine open_SGS_correlation_file
-!
-!-----------------------------------------------------------------------
-!
-      subroutine open_SGS_rms_ratio_file(iflag_type, id_file,           &
-     &          file_name, evo_A, SGS_param, wk_sgs)
-!
-      use t_SGS_control_parameter
-!
-      integer(kind=kint), intent(in) :: id_file, iflag_type
-      character(len=kchara), intent(in) :: file_name
-!
-      type(time_evolution_params), intent(in) :: evo_A
+      type(conductive_property), intent(in) :: cd_prop
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(dynamic_model_data), intent(in) :: wk_sgs
 !
@@ -132,7 +100,40 @@ type(SGS_model_control_params), intent(in) :: SGS_param
       end if
 !
       call write_sgs_comps_head                                         &
-     &    (id_file, SGS_param%icoord_Csim, evo_A, wk_sgs)
+     &   (id_file, SGS_param%icoord_Csim, cd_prop, wk_sgs)
+!
+      end subroutine open_SGS_correlation_file
+!
+!-----------------------------------------------------------------------
+!
+      subroutine open_SGS_rms_ratio_file(iflag_type, id_file,           &
+     &          file_name, cd_prop, SGS_param, wk_sgs)
+!
+      use t_SGS_control_parameter
+!
+      integer(kind=kint), intent(in) :: id_file, iflag_type
+      character(len=kchara), intent(in) :: file_name
+!
+      type(conductive_property), intent(in) :: cd_prop
+      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(dynamic_model_data), intent(in) :: wk_sgs
+!
+!
+      open (id_file,file=file_name, status='old',                       &
+     &    position='append', err = 99)
+      return
+!
+  99  continue
+      open (id_file,file=file_name, status='replace')
+!
+      if(iflag_type .eq. iflag_layered) then
+        call write_sgs_time_head(id_file)
+      else if(iflag_type .eq. iflag_whole) then
+        call write_sgs_whole_time_head(id_file)
+      end if
+!
+      call write_sgs_comps_head                                         &
+     &    (id_file, SGS_param%icoord_Csim, cd_prop, wk_sgs)
 !
       end subroutine open_SGS_rms_ratio_file
 !
@@ -168,12 +169,12 @@ type(SGS_model_control_params), intent(in) :: SGS_param
 !-----------------------------------------------------------------------
 !
       subroutine open_diff_correlation_file(iflag_type, id_file,        &
-     &          file_name, evo_A, wk_diff)
+     &          file_name, cd_prop, wk_diff)
 !
       integer(kind=kint), intent(in) :: id_file, iflag_type
       character(len=kchara), intent(in) :: file_name
 !
-      type(time_evolution_params), intent(in) :: evo_A
+      type(conductive_property), intent(in) :: cd_prop
       type(dynamic_model_data), intent(in) :: wk_diff
 !
 !
@@ -190,19 +191,19 @@ type(SGS_model_control_params), intent(in) :: SGS_param
         call write_sgs_whole_time_head(id_file)
       end if
 !
-      call write_diff_comps_head(id_file, evo_A, wk_diff)
+      call write_diff_comps_head(id_file, cd_prop, wk_diff)
 !
       end subroutine open_diff_correlation_file
 !
 !-----------------------------------------------------------------------
 !
       subroutine open_diff_rms_ratio_file(iflag_type, id_file,          &
-     &          file_name, evo_A, wk_diff)
+     &          file_name, cd_prop, wk_diff)
 !
       integer(kind=kint), intent(in) :: id_file, iflag_type
       character(len=kchara), intent(in) :: file_name
 !
-      type(time_evolution_params), intent(in) :: evo_A
+      type(conductive_property), intent(in) :: cd_prop
       type(dynamic_model_data), intent(in) :: wk_diff
 !
       open (id_file,file=file_name, status='old',                       &
@@ -218,7 +219,7 @@ type(SGS_model_control_params), intent(in) :: SGS_param
         call write_sgs_whole_time_head(id_file)
       end if
 !
-      call write_diff_comps_head(id_file, evo_A, wk_diff)
+      call write_diff_comps_head(id_file, cd_prop, wk_diff)
 !
       end subroutine open_diff_rms_ratio_file
 !
@@ -333,7 +334,7 @@ type(SGS_model_control_params), intent(in) :: SGS_param
 !-----------------------------------------------------------------------
 !
       subroutine write_sgs_comps_head                                   &
-     &         (file_id, icoord_Csim, evo_A, wk_sgs)
+     &         (file_id, icoord_Csim, cd_prop, wk_sgs)
 !
       use m_geometry_constants
       use m_phys_labels
@@ -344,7 +345,7 @@ type(SGS_model_control_params), intent(in) :: SGS_param
 !
       integer(kind = kint), intent(in) :: icoord_Csim
       integer(kind = kint), intent(in) :: file_id
-      type(time_evolution_params), intent(in) :: evo_A
+      type(conductive_property), intent(in) :: cd_prop
       type(dynamic_model_data), intent(in) :: wk_sgs
 !
       integer ( kind=kint) :: i
@@ -404,12 +405,12 @@ type(SGS_model_control_params), intent(in) :: SGS_param
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_diff_comps_head(file_id, evo_A, wk_diff)
+      subroutine write_diff_comps_head(file_id, cd_prop, wk_diff)
 !
       use m_phys_labels
 !
       integer(kind = kint), intent(in) :: file_id
-      type(time_evolution_params), intent(in) :: evo_A
+      type(conductive_property), intent(in) :: cd_prop
       type(dynamic_model_data), intent(in) :: wk_diff
 !
       integer ( kind=kint) :: i

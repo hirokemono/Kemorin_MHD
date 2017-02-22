@@ -6,7 +6,8 @@
 !        Modified by H. Matsui on July, 2006
 !        Modified by H. Matsui on May, 2007
 !
-!!      subroutine s_init_check_delta_t_data(iphys, flex_data)
+!!      subroutine s_init_check_delta_t_data(cd_prop, iphys, flex_data)
+!!        type(conductive_property), intent(in) :: cd_prop
 !!        type(phys_address), intent(in) :: iphys
 !!        type(flexible_steppind_data), intent(inout) :: flex_data
 !
@@ -17,7 +18,7 @@
 !
       use calypso_mpi
 !
-      use t_time_stepping_parameter
+      use t_physical_property
       use t_phys_address
       use t_flex_delta_t_data
 !
@@ -31,23 +32,20 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_init_check_delta_t_data(iphys, flex_data)
+      subroutine s_init_check_delta_t_data(cd_prop, iphys, flex_data)
 !
-      use m_control_parameter
-!
+      type(conductive_property), intent(in) :: cd_prop
       type(phys_address), intent(in) :: iphys
       type(flexible_steppind_data), intent(inout) :: flex_data
 !
 !
-      call count_check_delta_t_data                                     &
-     &   (evo_magne, evo_vect_p, iphys, flex_data)
+      call count_check_delta_t_data(cd_prop, iphys, flex_data)
 !
       call alloc_check_delta_t_name(flex_data)
       call alloc_check_delta_t_rms(flex_data)
       call alloc_check_delta_t_data(flex_data)
 !
-      call set_check_delta_t_data                                       &
-     &   (evo_magne, evo_vect_p, iphys, flex_data)
+      call set_check_delta_t_data(cd_prop, iphys, flex_data)
 !
       end subroutine s_init_check_delta_t_data
 !
@@ -55,9 +53,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine count_check_delta_t_data                               &
-     &         (evo_B, evo_A, iphys, flex_data)
+     &         (cd_prop, iphys, flex_data)
 !
-      type(time_evolution_params), intent(in) :: evo_B, evo_A
+      type(conductive_property), intent(in) :: cd_prop
       type(phys_address), intent(in) :: iphys
       type(flexible_steppind_data), intent(inout) :: flex_data
 !
@@ -109,11 +107,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_check_delta_t_data(evo_B, evo_A, iphys, flex_data)
+      subroutine set_check_delta_t_data(cd_prop, iphys, flex_data)
 !
       use m_phys_labels
 !
-      type(time_evolution_params), intent(in) :: evo_B, evo_A
+      type(conductive_property), intent(in) :: cd_prop
       type(phys_address), intent(in) :: iphys
       type(flexible_steppind_data), intent(inout) :: flex_data
 !

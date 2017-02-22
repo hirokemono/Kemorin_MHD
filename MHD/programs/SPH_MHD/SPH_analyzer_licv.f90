@@ -95,7 +95,8 @@
 !
       if(iflag_debug.gt.0) write(*,*)' const_radial_mat_sph_mhd'
       call const_radial_mat_sph_mhd                                     &
-     &   (fl_prop1, ht_prop1, cp_prop1, sph1%sph_rj, r_2nd, trans_p1%leg)
+     &   (fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
+     &    sph1%sph_rj, r_2nd, trans_p1%leg)
 !*
 !* obtain linear terms for starting
 !*
@@ -147,14 +148,13 @@
 !*
       if(i_step .eq. 1) then
         if(iflag_debug.gt.0) write(*,*) 'cal_expricit_sph_euler'
-        call cal_expricit_sph_euler                                     &
-     &     (i_step, evo_magne, evo_temp, evo_comp,                      &
+        call cal_expricit_sph_euler(i_step, evo_temp, evo_comp,         &
      &      sph1%sph_rj, fl_prop1, cd_prop1, ht_prop1, cp_prop1,        &
      &      ipol, itor, rj_fld1)
       else
         if(iflag_debug.gt.0) write(*,*) 'cal_expricit_sph_adams'
         call cal_expricit_sph_adams                                     &
-     &     (evo_magne, evo_temp, evo_comp,                    &
+     &     (evo_temp, evo_comp,                    &
      &      sph1%sph_rj, fl_prop1, cd_prop1, ht_prop1, cp_prop1,        &
      &      ipol, itor, rj_fld1)
       end if
@@ -162,8 +162,8 @@
 !*  ----------  time evolution by inplicit method ----------
 !*
       call s_cal_sol_sph_MHD_crank                                      &
-     &   (evo_magne, evo_temp, evo_comp,                      &
-     &    sph1%sph_rj, r_2nd, trans_p1%leg, ipol, idpdr, itor, rj_fld1)
+     &   (evo_temp, evo_comp, sph1%sph_rj, r_2nd, cd_prop1,             &
+     &    trans_p1%leg, ipol, idpdr, itor, rj_fld1)
 !*
 !* ----  Update fields after time evolution ------------------------
 !*
@@ -176,8 +176,9 @@
 !*
       if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
       call s_lead_fields_4_sph_mhd                                      &
-     &   (evo_magne, evo_temp, evo_comp, SGS_par1%model_p, sph1,        &
-     &    comms_sph1, r_2nd, fl_prop1, trans_p1, ipol, rj_fld1, trns_WK1)
+     &   (evo_temp, evo_comp, SGS_par1%model_p, sph1,                   &
+     &    comms_sph1, r_2nd, fl_prop1, cd_prop1,                        &
+     &    trans_p1, ipol, rj_fld1, trns_WK1)
       call end_eleps_time(9)
 !
 !*  ----------------lead nonlinear term ... ----------

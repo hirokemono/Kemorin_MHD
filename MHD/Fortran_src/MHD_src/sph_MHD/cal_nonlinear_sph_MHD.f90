@@ -7,11 +7,10 @@
 !>@brief  Evaluate nonlinear terms in spherical coordinate grid
 !!
 !!@verbatim
-!!      subroutine nonlinear_terms_in_rtp(evo_B, evo_T, evo_C,          &
-!!     &          sph_rtp, fl_prop, cd_prop, ht_prop, cp_prop1,         &
+!!      subroutine nonlinear_terms_in_rtp(evo_T, evo_C,                 &
+!!     &          sph_rtp, fl_prop, cd_prop, ht_prop, cp_prop,          &
 !!     &          b_trns, f_trns, ncomp_rj_2_rtp, ncomp_rtp_2_rj,       &
 !!     &          fld_rtp, frc_rtp)
-!!        type(time_evolution_params), intent(in) :: evo_B
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(fluid_property), intent(in) :: fl_prop
@@ -67,7 +66,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine nonlinear_terms_in_rtp(evo_B, evo_T, evo_C,            &
+      subroutine nonlinear_terms_in_rtp(evo_T, evo_C,                   &
      &          sph_rtp, fl_prop, cd_prop, ht_prop, cp_prop,            &
      &          b_trns, f_trns, ncomp_rj_2_rtp, ncomp_rtp_2_rj,         &
      &          fld_rtp, frc_rtp)
@@ -75,7 +74,6 @@
       use const_wz_coriolis_rtp
       use cal_products_smp
 !
-      type(time_evolution_params), intent(in) :: evo_B
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(fluid_property), intent(in) :: fl_prop

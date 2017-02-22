@@ -8,16 +8,16 @@
 !>@brief  Wrapper for linear solvers for MHD dynmamo
 !!
 !!@verbatim
-!!      subroutine init_MGCG_MHD(evo_B, evo_A, node, fl_prop)
+!!      subroutine init_MGCG_MHD(node, fl_prop, cd_prop)
 !!      subroutine solver_MGCG_vector(node, num_MG_level,               &
 !!     &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat,            &
 !!     &          METHOD, PRECOND, eps, itr, MG_vector, b_vec, x_vec)
 !!      subroutine solver_MGCG_scalar(node, num_MG_level,               &
 !!     &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat11,          &
 !!     &          METHOD, PRECOND, eps, itr, MG_vector, b_vec, x_vec)
-!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
 !!        type(node_data), intent(in) :: node
-!!  `      type(fluid_property), intent(in) :: fl_prop
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in) :: cd_prop
 !!        integer(kind = kint), intent(in) :: num_MG_level
 !!        type(MG_itp_table), intent(in) :: MG_itp(num_MG_level)
 !!        type(communication_table), intent(in)                         &
@@ -38,7 +38,6 @@
       use m_ctl_parameter_Multigrid
       use calypso_mpi
 !
-      use t_time_stepping_parameter
       use t_physical_property
       use t_geometry_data
       use t_vector_for_solver
@@ -55,7 +54,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_MGCG_MHD(evo_B, evo_A, node, fl_prop)
+      subroutine init_MGCG_MHD(node, fl_prop, cd_prop)
 !
       use m_iccg_parameter
       use solver_DJDS11_struct
@@ -64,9 +63,9 @@
       use solver_VMGCG33_DJDS_SMP
       use skip_comment_f
 !
-      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(node_data), intent(in) :: node
       type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
 !
       integer(kind = kint) :: ierr
 !

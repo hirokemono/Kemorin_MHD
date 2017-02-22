@@ -8,12 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine s_set_control_evo_layers                             &
-!!     &       (earea_ctl, evo_B, evo_A, evo_T, evo_C, fl_prop, FEM_prm)
-!!       type(time_evolution_params), intent(in) :: evo_B, evo_A
-!!       type(time_evolution_params), intent(in) :: evo_T, evo_C
-!!       type(fluid_property), intent(in) :: fl_prop
-!!       type(mhd_evo_area_control), intent(inout) :: earea_ctl
-!!       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
+!!     &       (earea_ctl, evo_T, evo_C, fl_prop, cd_prop, FEM_prm)
+!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(inout)  :: cd_prop
+!!        type(mhd_evo_area_control), intent(inout) :: earea_ctl
+!!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!@endverbatim
 !
 !
@@ -39,11 +39,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_evo_layers                               &
-     &         (earea_ctl, evo_B, evo_A, evo_T, evo_C, fl_prop, FEM_prm)
+     &         (earea_ctl, evo_T, evo_C, fl_prop, cd_prop, FEM_prm)
 !
-      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(inout)  :: cd_prop
       type(mhd_evo_area_control), intent(inout) :: earea_ctl
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !

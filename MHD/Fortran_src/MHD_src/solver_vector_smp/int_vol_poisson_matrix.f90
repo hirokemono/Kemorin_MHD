@@ -8,18 +8,17 @@
 !        modifired by H. Matsui on June, 2005
 !        modifired by H. Matsui on Nov., 2007
 !
-!!      subroutine int_MHD_poisson_matrices(evo_B, evo_A,               &
-!!     &          num_int, ifilter_final, iflag_commute_magne,          &
-!!     &          mesh, fl_prop,  &
-!!     &          FEM_elens, ifld_diff, diff_coefs, fem_wk,             &
-!!     &          mat_press, mat_magp)
-!!      subroutine int_MHD_crank_matrices(evo_B, evo_A, evo_T, evo_C,   &
+!!      subroutine int_MHD_poisson_matrices                             &
+!!     &         (num_int, ifilter_final, iflag_commute_magne,          &
+!!     &          mesh, fl_prop, cd_prop, jac_3d_l, rhs_tbl,            &
+!!     &          MG_mat_linear, MG_mat_fl_l, FEM_elens,                &
+!!     &          ifld_diff, diff_coefs, fem_wk, mat_press, mat_magp)
+!!      subroutine int_MHD_crank_matrices(evo_T, evo_C,   &
 !!     &          num_int, ifilter_final, mesh,                         &
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD, jac_3d,   &
 !!     &          rhs_tbl, MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,     &
 !!     &          FEM_elens, ifld_diff, diff_coefs, fem_wk,             &
 !!     &          mat_velo, mat_magne, mat_temp, mat_light)
-!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(fluid_property), intent(in) :: fl_prop
@@ -74,19 +73,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_MHD_poisson_matrices(evo_B, evo_A,                 &
-     &          num_int, ifilter_final, iflag_commute_magne,            &
-     &          mesh, fl_prop,  &
-     &          jac_3d_l, rhs_tbl, MG_mat_linear, MG_mat_fl_l,          &
-     &          FEM_elens, ifld_diff, diff_coefs, fem_wk,               &
-     &          mat_press, mat_magp)
+      subroutine int_MHD_poisson_matrices                               &
+     &         (num_int, ifilter_final, iflag_commute_magne,            &
+     &          mesh, fl_prop, cd_prop, jac_3d_l, rhs_tbl,              &
+     &          MG_mat_linear, MG_mat_fl_l, FEM_elens,                  &
+     &          ifld_diff, diff_coefs, fem_wk, mat_press, mat_magp)
 !
       integer(kind = kint), intent(in) :: num_int
       integer(kind = kint), intent(in) :: ifilter_final
       integer(kind = kint), intent(in) :: iflag_commute_magne
-      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(mesh_geometry), intent(in) :: mesh
       type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
       type(jacobians_3d), intent(in) :: jac_3d_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(table_mat_const),  intent(in) :: MG_mat_linear
@@ -122,7 +120,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine int_MHD_crank_matrices(evo_B, evo_A, evo_T, evo_C,     &
+      subroutine int_MHD_crank_matrices(evo_T, evo_C,     &
      &          num_int, ifilter_final, mesh,                           &
      &          fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD, jac_3d,     &
      &          rhs_tbl, MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,       &
@@ -132,7 +130,6 @@
       use m_t_int_parameter
 !
       integer(kind = kint), intent(in) :: num_int, ifilter_final
-      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(mesh_geometry), intent(in) :: mesh
       type(fluid_property), intent(in) :: fl_prop

@@ -204,12 +204,12 @@
 !     ---------------------
 !
       if (iflag_debug.eq.1) write(*,*)' allocate_array'
-      call allocate_array(SGS_par, mesh%node, mesh%ele, iphys, nod_fld, &
-     &    iphys_elediff, m1_lump, mhd_fem1_wk, fem1_wk,                 &
+      call allocate_array(SGS_par, mesh%node, mesh%ele, cd_prop1,       &
+     &    iphys, nod_fld, iphys_elediff, m1_lump, mhd_fem1_wk, fem1_wk, &
      &    f1_l, f1_nl, label_sim)
 !
       if ( iflag_debug.ge.1 ) write(*,*) 'init_check_delta_t_data'
-      call s_init_check_delta_t_data(iphys, flex_data)
+      call s_init_check_delta_t_data(cd_prop1, iphys, flex_data)
 !
       if (iflag_debug.eq.1) write(*,*)' set_reference_temp'
       call set_reference_temp                                           &
@@ -223,7 +223,7 @@
       call set_material_property                                        &
      &   (iphys, ref_param_T1%depth_top, ref_param_T1%depth_bottom)
       call init_ele_material_property(mesh%ele%numele,                  &
-     &    evo_magne, evo_vect_p, evo_temp, evo_comp,                    &
+     &    evo_temp, evo_comp,                    &
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1)
       call define_sgs_components                                        &
      &   (mesh%node%numnod, mesh%ele%numele, SGS_par%model_p,           &
@@ -231,7 +231,7 @@
      &    sgs_coefs, sgs_coefs_nod)
       call define_sgs_diff_coefs                                        &
      &   (mesh%ele%numele, SGS_par%model_p, SGS_par%commute_p,          &
-     &    layer_tbl, fl_prop1,             &
+     &    layer_tbl, fl_prop1, cd_prop1,             &
      &    ifld_diff, icomp_diff, wk_diff1, diff_coefs)
 !
 !  -------------------------------
@@ -247,14 +247,14 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*) 'init_MGCG_MHD'
-      call init_MGCG_MHD(evo_magne, evo_vect_p, mesh%node, fl_prop1)
+      call init_MGCG_MHD(mesh%node, fl_prop1, cd_prop1)
 !
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*)' initial_data_control'
       call initial_data_control(SGS_par, ref_param_T1,                  &
-     &    mesh%node, mesh%ele, MHD_mesh%fluid, iphys, layer_tbl,        &
-     &    wk_sgs1, wk_diff1, sgs_coefs, diff_coefs, nod_fld)
+     &    mesh%node, mesh%ele, MHD_mesh%fluid, cd_prop1, iphys,         &
+     &    layer_tbl, wk_sgs1, wk_diff1, sgs_coefs, diff_coefs, nod_fld)
 !
 !  -------------------------------
 !
@@ -308,7 +308,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_data'
       call set_boundary_data(IO_bc, mesh, ele_mesh, MHD_mesh, group,    &
-     &    fl_prop1, iphys, nod_fld)
+     &    fl_prop1, cd_prop1, iphys, nod_fld)
 !
 !     ---------------------
 !
@@ -331,11 +331,11 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_stability_4_diffuse'
       call cal_stability_4_diffuse                                      &
-     &   (evo_magne, evo_vect_p, evo_temp, evo_comp,                    &
+     &   (evo_temp, evo_comp,                    &
      &    mesh%ele, fl_prop1, cd_prop1, ht_prop1, cp_prop1)
 ! 
       call deallocate_surf_bc_lists                                     &
-     &   (evo_magne, evo_vect_p, evo_temp, evo_comp, fl_prop1)
+     &   (evo_temp, evo_comp, fl_prop1, cd_prop1)
 !
       end subroutine init_analyzer_fl
 !

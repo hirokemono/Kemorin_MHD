@@ -53,7 +53,7 @@
 !
 !   For Induction
       call set_conductive_property                                      &
-     &   (depth_top, depth_bottom, evo_magne, evo_vect_p, cd_prop1)
+     &   (depth_top, depth_bottom, cd_prop1)
 !
 !   For light element
       call set_composition_property                                     &
@@ -162,14 +162,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_conductive_property                                &
-     &         (depth_top, depth_bottom,  evo_B, evo_A, cd_prop)
+     &         (depth_top, depth_bottom, cd_prop)
 !
       use m_normalize_parameter
       use m_t_int_parameter
       use construct_MHD_coefficient
 !
       real(kind = kreal), intent(in) :: depth_top, depth_bottom
-      type(time_evolution_params), intent(inout) :: evo_B, evo_A
       type(conductive_property), intent(inout) :: cd_prop
 !
 !   For Induction

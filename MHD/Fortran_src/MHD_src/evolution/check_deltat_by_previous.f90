@@ -4,8 +4,8 @@
 !      Written by H. Matsui on Nov., 2009
 !
 !!      subroutine s_check_deltat_by_previous                           &
-!!   &           (evo_A, node, iphys, nod_fld, flex_data)
-!!        type(time_evolution_params), intent(in) :: evo_A
+!!   &           (node, cd_prop, iphys, nod_fld, flex_data)
+!!        type(conductive_property), intent(in) :: cd_prop
 !!        type(node_data), intent(in) :: node
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(in) :: nod_fld
@@ -19,7 +19,7 @@
       use m_constants
       use m_machine_parameter
 !
-      use t_time_stepping_parameter
+      use t_physical_property
       use t_geometry_data
       use t_phys_data
       use t_phys_address
@@ -37,9 +37,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_check_deltat_by_previous                             &
-     &         (evo_A, node, iphys, nod_fld, flex_data)
+     &         (node, cd_prop, iphys, nod_fld, flex_data)
 !
-      type(time_evolution_params), intent(in) :: evo_A
+      type(conductive_property), intent(in) :: cd_prop
       type(node_data), intent(in) :: node
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld

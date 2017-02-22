@@ -7,7 +7,7 @@
 !
 !!      subroutine cal_vector_p_pre                                     &
 !!     &         (iak_diff_b, icomp_sgs_uxb, ie_dvx, ak_d_magne,        &
-!!     &          evo_A, FEM_prm, SGS_param, cmt_param, filter_param,   &
+!!     &          FEM_prm, SGS_param, cmt_param, filter_param,          &
 !!     &          nod_comm, node, ele, surf, conduct, sf_grp,           &
 !!     &          cd_prop, Bnod_bcs, Asf_bcs, iphys, iphys_ele, ele_fld,&
 !!     &          jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,           &
@@ -21,7 +21,6 @@
 !!     &          rhs_tbl, FEM_elens, diff_coefs, m_lump,               &
 !!     &          Bmatrix, MG_vector, mhd_fem_wk, fem_wk, surf_wk,      &
 !!     &          f_l, f_nl, nod_fld)
-!!        type(time_evolution_params), intent(in) :: evo_A
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -103,7 +102,7 @@
 !
       subroutine cal_vector_p_pre                                       &
      &         (iak_diff_b, icomp_sgs_uxb, ie_dvx, ak_d_magne,          &
-     &          evo_A, FEM_prm, SGS_param, cmt_param, filter_param,     &
+     &          FEM_prm, SGS_param, cmt_param, filter_param,            &
      &          nod_comm, node, ele, surf, conduct, sf_grp,             &
      &          cd_prop, Bnod_bcs, Asf_bcs, iphys, iphys_ele, ele_fld,  &
      &          jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,             &
@@ -124,7 +123,6 @@
       use evolve_by_consist_crank
       use copy_nodal_fields
 !
-      type(time_evolution_params), intent(in) :: evo_A
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param

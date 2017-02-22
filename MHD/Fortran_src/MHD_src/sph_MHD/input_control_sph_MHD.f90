@@ -334,7 +334,7 @@
 !
 !
       iflag = check_read_boundary_files                                 &
-     &      (evo_magne, evo_vect_p, evo_temp, evo_comp, fl_prop1)
+     &      (evo_temp, evo_comp, fl_prop1, cd_prop1)
       if (iflag .eq. id_no_boundary_file) return
 !
       if (iflag_debug.eq.1) write(*,*) 'read_boundary_spectr_file'

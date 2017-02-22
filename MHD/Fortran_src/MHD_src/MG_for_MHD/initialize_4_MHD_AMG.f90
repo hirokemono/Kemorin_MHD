@@ -127,9 +127,8 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &            's_set_diffusivities_MHD_AMG', i_level
         call s_set_diffusivities_MHD_AMG                                &
-     &     (evo_magne, evo_vect_p, evo_temp, evo_comp,                  &
-     &      MG_mesh(i_level)%mesh%ele,                                  &
-     &      fl_prop1, cd_prop1, ht_prop1, cp_prop1, ak_MHD_AMG(i_level))
+     &    (evo_temp, evo_comp, MG_mesh(i_level)%mesh%ele,               &
+     &     fl_prop1, cd_prop1, ht_prop1, cp_prop1, ak_MHD_AMG(i_level))
         if(iflag_debug .gt. 0) write(*,*)                               &
      &            's_set_sgs_diff_array_MHD_AMG', i_level
 !
@@ -280,17 +279,17 @@
 !
       do i_level = 1, num_MG_level
         call set_bc_id_data                                             &
-     &     (evo_magne, evo_vect_p, evo_temp, evo_comp,                  &
+     &     (evo_temp, evo_comp,                  &
      &      IO_MG_bc(i_level), MG_mesh(i_level)%mesh,                   &
-     &      MG_mesh(i_level)%group, MG_MHD_mesh(i_level), fl_prop1,     &
-     &      MG_node_bc(i_level))
+     &      MG_mesh(i_level)%group, MG_MHD_mesh(i_level),               &
+     &      fl_prop1, cd_prop1, MG_node_bc(i_level))
 !
         call set_bc_surface_data(IO_MG_bc(i_level),                     &
      &      MG_mesh(i_level)%mesh%node, MG_mesh(i_level)%mesh%ele,      &
      &      MG_ele_mesh(i_level)%surf, MG_mesh(i_level)%group%surf_grp, &
      &      MG_mesh(i_level)%group%surf_nod_grp,                        &
      &      MG_mesh(i_level)%group%surf_grp_geom,                       &
-     &      fl_prop1, MG_surf_bc(i_level) )
+     &      fl_prop1, cd_prop1, MG_surf_bc(i_level) )
       end do
 !
 !     --------------------- 
@@ -308,9 +307,9 @@
       do i_level = 1, num_MG_level
         if(iflag_debug .gt. 0) write(*,*) 's_set_MHD_idx_4_mat_type'
         call s_set_MHD_idx_4_mat_type(                                  &
-     &      evo_magne, evo_vect_p, evo_temp, evo_comp,                  &
+     &      evo_temp, evo_comp,                  &
      &      MG_mesh(i_level)%mesh, MG_MHD_mesh(i_level),                &
-     &      fl_prop1, MG_FEM_tbl(i_level), &
+     &      fl_prop1, cd_prop1, MG_FEM_tbl(i_level), &
      &      MHD_matrices%MG_DJDS_table(i_level),                        &
      &      MHD_matrices%MG_DJDS_fluid(i_level),                        &
      &      MHD_matrices%MG_DJDS_linear(i_level),                       &
@@ -327,9 +326,8 @@
       do i_level = 1, num_MG_level
         if(my_rank .lt. MG_mpi(i_level)%nprocs) then
           if(iflag_debug .gt. 0) write(*,*) 'alloc_aiccg_matrices'
-          call alloc_aiccg_matrices                                     &
-     &       (evo_magne, evo_vect_p, evo_temp, evo_comp,                &
-     &        MG_mesh(i_level)%mesh%node, fl_prop1,                     &
+          call alloc_aiccg_matrices(evo_temp, evo_comp,                 &
+     &        MG_mesh(i_level)%mesh%node, fl_prop1, cd_prop1,           &
      &        MHD_matrices%MG_DJDS_table(i_level),                      &
      &        MHD_matrices%MG_DJDS_fluid(i_level),                      &
      &        MHD_matrices%MG_DJDS_linear(i_level),                     &
@@ -343,7 +341,7 @@
         else
           if(iflag_debug .gt. 0) write(*,*) 'alloc_MG_zero_matrices'
           call alloc_MG_zero_matrices                                   &
-     &     (evo_magne, evo_vect_p, evo_temp, evo_comp, fl_prop1,        &
+     &     (evo_temp, evo_comp, fl_prop1, cd_prop1,                     &
      &      MHD_matrices%Vmat_MG_DJDS(i_level),                         &
      &      MHD_matrices%Bmat_MG_DJDS(i_level),                         &
      &      MHD_matrices%Tmat_MG_DJDS(i_level),                         &
@@ -411,7 +409,7 @@
         if(my_rank .lt. MG_mpi(i_level)%nprocs) then
           if (iflag_debug.gt.0) write(*,*) 'preconditioning', i_level
           call s_matrices_precond_type(PRECOND_MG,                      &
-     &      evo_magne, evo_vect_p, evo_temp, evo_comp, fl_prop1,        &
+     &      evo_temp, evo_comp, fl_prop1, cd_prop1,                     &
      &      MHD_matrices%MG_DJDS_table(i_level),                        &
      &      MHD_matrices%MG_DJDS_fluid(i_level),                        &
      &      MHD_matrices%MG_DJDS_linear(i_level),                       &

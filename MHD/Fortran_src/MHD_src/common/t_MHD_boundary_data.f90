@@ -8,9 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine alloc_surf_bc_data_type                              &
-!!     &         (fl_prop, evo_B, evo_A, evo_T, evo_C, surf_bcs)
+!!     &         (fl_prop, cd_prop, evo_T, evo_C, surf_bcs)
 !!        type(fluid_property), intent(in) :: fl_prop
-!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
+!!        type(conductive_property), intent(in) :: cd_prop
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(surface_boundarty_conditions), intent(inout) :: surf_bcs
 !!
@@ -53,13 +53,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine alloc_surf_bc_data_type                                &
-     &         (fl_prop, evo_B, evo_A, evo_T, evo_C, surf_bcs)
+     &         (fl_prop, cd_prop, evo_T, evo_C, surf_bcs)
 !
       use t_physical_property
       use t_time_stepping_parameter
 !
       type(fluid_property), intent(in) :: fl_prop
-      type(time_evolution_params), intent(in) :: evo_B, evo_A
+      type(conductive_property), intent(in) :: cd_prop
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(surface_boundarty_conditions), intent(inout) :: surf_bcs
 !

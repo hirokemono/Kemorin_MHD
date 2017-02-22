@@ -8,10 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine deallocate_surf_bc_lists                             &
-!!     &         (evo_B, evo_A, evo_T, evo_C, fl_prop)
-!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
+!!     &         (evo_T, evo_C, fl_prop, cd_prop)
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in) :: cd_prop
 !!      subroutine allocate_press_surf_ctl
 !!      subroutine allocate_temp_surf_ctl
 !!      subroutine allocate_magne_surf_ctl
@@ -72,14 +72,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine deallocate_surf_bc_lists                               &
-     &         (evo_B, evo_A, evo_T, evo_C, fl_prop)
+     &         (evo_T, evo_C, fl_prop, cd_prop)
 !
       use t_time_stepping_parameter
       use t_physical_property
 !
-      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
 !
 !
       if (evo_T%iflag_scheme .gt. id_no_evolution) then

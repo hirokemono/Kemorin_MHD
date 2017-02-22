@@ -3,8 +3,9 @@
 !
 !      Written by H. Matsui on Nov., 2009
 !
-!!      subroutine s_copy_field_data_for_dt_check(evo_A, iphys, nod_fld)
-!!        type(time_evolution_params), intent(in) :: evo_A
+!!      subroutine s_copy_field_data_for_dt_check                       &
+!!     &         (cd_prop, iphys, nod_fld)
+!!        type(conductive_property), intent(in) :: cd_prop
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
 !
@@ -12,7 +13,7 @@
 !
       use m_constants
 !
-      use t_time_stepping_parameter
+      use t_physical_property
       use t_phys_data
       use t_phys_address
 !
@@ -22,11 +23,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_copy_field_data_for_dt_check(evo_A, iphys, nod_fld)
+      subroutine s_copy_field_data_for_dt_check                         &
+     &         (cd_prop, iphys, nod_fld)
 !
       use copy_nodal_fields
 !
-      type(time_evolution_params), intent(in) :: evo_A
+      type(conductive_property), intent(in) :: cd_prop
       type(phys_address), intent(in) :: iphys
 !
       type(phys_data), intent(inout) :: nod_fld

@@ -5,13 +5,14 @@
 !      Written by H. Matsui
 !
 !!      subroutine set_boundary_data(IO_bc, mesh, ele_mesh, MHD_mesh,   &
-!!     &          group, fl_prop, iphys, nod_fld)
+!!     &          group, fl_prop, cd_prop, iphys, nod_fld)
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(mesh_data_MHD), intent(in) :: MHD_mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in) :: cd_prop
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
 !
@@ -35,7 +36,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_boundary_data(IO_bc, mesh, ele_mesh, MHD_mesh,     &
-     &          group, fl_prop, iphys, nod_fld)
+     &          group, fl_prop, cd_prop, iphys, nod_fld)
 !
       use m_machine_parameter
 !
@@ -62,24 +63,25 @@
       type(mesh_groups), intent(in) ::   group
       type(phys_address), intent(in) :: iphys
       type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
 !
       type(phys_data), intent(inout) :: nod_fld
 !
 !
       if (iflag_debug.eq.1) write(*,*)' set_bc_id_data'
       call set_bc_id_data                                               &
-     &   (evo_magne, evo_vect_p, evo_temp, evo_comp,                    &
-     &    IO_bc, mesh, group, MHD_mesh, fl_prop, nod1_bcs)
+     &   (evo_temp, evo_comp,                    &
+     &    IO_bc, mesh, group, MHD_mesh, fl_prop, cd_prop, nod1_bcs)
 !
       if (iflag_debug.eq.1) write(*,*)' set_bc_fields'
       call set_bc_fields                                                &
-     &   (evo_magne, evo_vect_p, evo_temp, evo_comp,                    &
-     &    mesh, fl_prop, iphys, nod_fld, nod1_bcs)
+     &   (evo_temp, evo_comp,                    &
+     &    mesh, fl_prop, cd_prop, iphys, nod_fld, nod1_bcs)
 !
       call set_bc_surface_data                                          &
      &   (IO_bc, mesh%node, mesh%ele, ele_mesh%surf,                    &
      &    group%surf_grp, group%surf_nod_grp, group%surf_grp_geom,      &
-     &    fl_prop, sf1_bcs)
+     &    fl_prop, cd_prop, sf1_bcs)
 !
 !     set normal velocity
       call set_normal_velocity                                          &

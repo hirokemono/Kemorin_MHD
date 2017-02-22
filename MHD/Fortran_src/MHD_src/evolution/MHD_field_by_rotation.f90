@@ -7,10 +7,9 @@
 !>@brief Evaluate vorticity and current density
 !!
 !!@verbatim
-!!      subroutine cal_field_by_rotation                                &
-!!     &         (evo_A, FEM_prm, SGS_param, cmt_param,                 &
-!!     &          nod_comm, node, ele, surf, fluid, conduct,            &
-!!     &          sf_grp, nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld, &
+!!      subroutine cal_field_by_rotation (FEM_prm, SGS_param, cmt_param,&
+!!     &          nod_comm, node, ele, surf, fluid, conduct, sf_grp,    &
+!!     &          cd_prop, nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,&
 !!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,               &
 !!     &          ifld_diff, diff_coefs, m_lump, mhd_fem_wk, fem_wk,    &
 !!     &          surf_wk, f_l, f_nl, nod_fld)
@@ -23,6 +22,7 @@
 !!        type(surface_data), intent(in) :: surf
 !!        type(field_geometry_data), intent(in) :: fluid, conduct
 !!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(conductive_property), intent(in) :: cd_prop
 !!        type(nodal_boundarty_conditions), intent(in) :: nod_bcs
 !!        type(surface_boundarty_conditions), intent(in) :: surf_bcs
 !!        type(phys_address), intent(in) :: iphys
@@ -48,7 +48,7 @@
       use m_constants
       use m_machine_parameter
 !
-      use t_time_stepping_parameter
+      use t_physical_property
       use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_comm_table
@@ -78,17 +78,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_field_by_rotation                                  &
-     &         (evo_A, FEM_prm, SGS_param, cmt_param,                   &
-     &          nod_comm, node, ele, surf, fluid, conduct,              &
-     &          sf_grp, nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,   &
+      subroutine cal_field_by_rotation (FEM_prm, SGS_param, cmt_param,  &
+     &          nod_comm, node, ele, surf, fluid, conduct, sf_grp,      &
+     &          cd_prop, nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,  &
      &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                 &
      &          ifld_diff, diff_coefs, m_lump, mhd_fem_wk, fem_wk,      &
      &          surf_wk, f_l, f_nl, nod_fld)
 !
       use cal_rotation_sgs
 !
-      type(time_evolution_params), intent(in) :: evo_A
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
@@ -98,6 +96,7 @@
       type(surface_data), intent(in) :: surf
       type(field_geometry_data), intent(in) :: fluid, conduct
       type(surface_group_data), intent(in) :: sf_grp
+      type(conductive_property), intent(in) :: cd_prop
       type(nodal_boundarty_conditions), intent(in) :: nod_bcs
       type(surface_boundarty_conditions), intent(in) :: surf_bcs
       type(phys_address), intent(in) :: iphys

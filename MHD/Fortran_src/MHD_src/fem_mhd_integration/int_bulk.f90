@@ -9,13 +9,13 @@
 !!     &         (npoint_integrate, node, ele, fluid, conduct,          &
 !!     &          iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk, mhd_fem_wk)
 !!      subroutine int_no_evo_mean_squares                              &
-!!     &         (evo_B, evo_A, node, ele, fl_prop, iphys, nod_fld,     &
+!!     &         (node, ele, fl_prop, cd_prop, iphys, nod_fld,          &
 !!     &          iphys_ele, ele_fld, fluid, jac_3d_q, fem_wk)
-!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: fluid, conduct
 !!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in) :: cd_prop
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(phys_address), intent(in) :: iphys_ele
@@ -29,7 +29,6 @@
 !
       use m_precision
 !
-      use t_time_stepping_parameter
       use t_physical_property
       use t_geometry_data_MHD
       use t_geometry_data
@@ -585,17 +584,17 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_no_evo_mean_squares                                &
-     &         (evo_B, evo_A, node, ele, fl_prop, iphys, nod_fld,       &
+     &         (node, ele, fl_prop, cd_prop, iphys, nod_fld,            &
      &          iphys_ele, ele_fld, fluid, jac_3d_q, fem_wk)
 !
       use int_norm_div_MHD
       use int_rms_div_MHD
       use estimate_stabilities
 !
-      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
       type(phys_address), intent(in) :: iphys_ele

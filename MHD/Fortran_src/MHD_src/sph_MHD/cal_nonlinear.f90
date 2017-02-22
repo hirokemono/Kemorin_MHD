@@ -245,7 +245,7 @@
       call start_eleps_time(15)
       if (iflag_debug.ge.1) write(*,*) 'nonlinear_terms_in_rtp'
       call nonlinear_terms_in_rtp                                       &
-     &   (evo_magne, evo_temp, evo_comp,                      &
+     &   (evo_temp, evo_comp,                      &
      &    sph%sph_rtp, fl_prop1, cd_prop1, ht_prop1, cp_prop1,          &
      &    trns_MHD%b_trns, trns_MHD%f_trns,                             &
      &    trns_MHD%ncomp_rj_2_rtp, trns_MHD%ncomp_rtp_2_rj,             &

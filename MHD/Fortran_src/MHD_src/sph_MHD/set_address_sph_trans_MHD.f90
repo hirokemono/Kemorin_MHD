@@ -55,16 +55,16 @@
       integer(kind = kint) :: nscltsr_rtp_2_rj, nscltsr_rj_2_rtp
 !
       call b_trans_address_vector_MHD                                   &
-     &   (evo_magne, evo_temp, evo_comp,                      &
-     &    fl_prop1, ipol, trns_MHD%nvector_rj_2_rtp, trns_MHD%b_trns)
+     &   (evo_temp, evo_comp, fl_prop1, cd_prop1,                       &
+     &    ipol, trns_MHD%nvector_rj_2_rtp, trns_MHD%b_trns)
       call b_trans_address_scalar_MHD(evo_temp, evo_comp,               &
      &    ipol, trns_MHD%nvector_rj_2_rtp, trns_MHD%nscalar_rj_2_rtp,   &
      &    trns_MHD%b_trns)
       trns_MHD%ntensor_rj_2_rtp = 0
 !
       call f_trans_address_vector_MHD                                   &
-     &   (evo_magne, evo_temp, evo_comp,                      &
-     &    fl_prop1, ipol, trns_MHD%nvector_rtp_2_rj, trns_MHD%f_trns)
+     &   (evo_temp, evo_comp, fl_prop1, cd_prop1, ipol,                 &
+     &    trns_MHD%nvector_rtp_2_rj, trns_MHD%f_trns)
       call f_trans_address_scalar_MHD                                   &
      &   (fl_prop1, trns_MHD%nvector_rtp_2_rj,                          &
      &    trns_MHD%nscalar_rtp_2_rj, trns_MHD%f_trns)
@@ -115,12 +115,12 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine b_trans_address_vector_MHD(evo_B, evo_T, evo_C,        &
-     &          fl_prop, ipol, nvector_rj_2_rtp, b_trns)
+      subroutine b_trans_address_vector_MHD(evo_T, evo_C,               &
+     &          fl_prop, cd_prop, ipol, nvector_rj_2_rtp, b_trns)
 !
-      type(time_evolution_params), intent(in) :: evo_B
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in)  :: cd_prop
       type(phys_address), intent(in) :: ipol
       integer(kind = kint), intent(inout) :: nvector_rj_2_rtp
       type(phys_address), intent(inout) :: b_trns
@@ -222,12 +222,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine f_trans_address_vector_MHD(evo_B, evo_T, evo_C,        &
-     &          fl_prop, ipol, nvector_rtp_2_rj, f_trns)
+      subroutine f_trans_address_vector_MHD(evo_T, evo_C,               &
+     &          fl_prop, cd_prop, ipol, nvector_rtp_2_rj, f_trns)
 !
-      type(time_evolution_params), intent(in) :: evo_B
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in)  :: cd_prop
       type(phys_address), intent(in) :: ipol
       type(phys_address), intent(inout) :: f_trns
       integer(kind = kint), intent(inout) :: nvector_rtp_2_rj

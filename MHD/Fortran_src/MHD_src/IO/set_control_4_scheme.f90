@@ -9,9 +9,9 @@
 !!
 !!@verbatim
 !!      subroutine set_control_4_FEM_params                             &
-!!     &         (mevo_ctl, fint_ctl, evo_B, evo_A, fl_prop, FEM_prm)
-!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
+!!     &         (mevo_ctl, fint_ctl, fl_prop, cd_prop, FEM_prm)
 !!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in)  :: cd_prop
 !!        type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
 !!        type(fem_intergration_control), intent(in)  :: fint_ctl
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
@@ -30,20 +30,19 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_control_4_FEM_params                               &
-     &         (mevo_ctl, fint_ctl, evo_B, evo_A, fl_prop, FEM_prm)
+     &         (mevo_ctl, fint_ctl, fl_prop, cd_prop, FEM_prm)
 !
       use calypso_mpi
       use m_error_IDs
       use m_machine_parameter
-      use t_time_stepping_parameter
       use t_physical_property
       use t_FEM_control_parameter
       use t_ctl_data_mhd_evo_scheme
       use t_ctl_data_4_fem_int_pts
       use skip_comment_f
 !
-      type(time_evolution_params), intent(in) ::  evo_B, evo_A
       type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in)  :: cd_prop
       type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
       type(fem_intergration_control), intent(in)  :: fint_ctl
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm

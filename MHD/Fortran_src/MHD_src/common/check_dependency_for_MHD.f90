@@ -65,14 +65,13 @@
       call init_field_address(node%numnod, nod_fld, iphys)
 !
       call check_field_dependencies                                     &
-     &   (evo_magne, evo_vect_p, evo_temp, evo_comp,                    &
-     &    fl_prop1, iphys, nod_fld)
-      call check_dependencies_by_id(evo_magne, iphys, nod_fld)
+     &   (evo_temp, evo_comp, fl_prop1, cd_prop1, iphys, nod_fld)
+      call check_dependencies_by_id(cd_prop1, iphys, nod_fld)
       call check_dependence_FEM_MHD_by_id(iphys, nod_fld)
       call check_dependence_FEM_evo(fl_prop1, iphys, nod_fld)
       call check_dependence_4_FEM_SGS                                   &
-     &   (evo_magne, evo_vect_p, evo_temp, evo_comp,                    &
-     &    SGS_param, cmt_param, fl_prop1, iphys, nod_fld)
+     &   (evo_temp, evo_comp,                                           &
+     &    SGS_param, cmt_param, fl_prop1, cd_prop1, iphys, nod_fld)
 !
       end subroutine set_FEM_MHD_field_data
 !
@@ -98,14 +97,13 @@
      &   (sph_rj, ipol, idpdr, itor, rj_fld)
 !
       call check_field_dependencies                                     &
-     &   (evo_magne, evo_vect_p, evo_temp, evo_comp,                    &
-     &    fl_prop1, ipol, rj_fld)
-      call check_dependencies_by_id(evo_magne, ipol, rj_fld)
+     &   (evo_temp, evo_comp, fl_prop1, cd_prop1, ipol, rj_fld)
+      call check_dependencies_by_id(cd_prop1, ipol, rj_fld)
       call check_dependence_SPH_MHD_by_id(ipol, rj_fld)
       call check_dependence_SPH_evo(fl_prop1, ipol, rj_fld)
       call check_dependence_4_SPH_SGS                                   &
-     &   (evo_magne, evo_temp, evo_comp,                                &
-     &    SGS_param, fl_prop1, ipol, rj_fld)
+     &   (evo_temp, evo_comp,                                &
+     &    SGS_param, fl_prop1, cd_prop1, ipol, rj_fld)
 !
       end subroutine set_sph_MHD_sprctr_data
 !
@@ -113,11 +111,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine check_field_dependencies                               &
-     &         (evo_B, evo_A, evo_T, evo_C, fl_prop, iphys, fld)
+     &         (evo_T, evo_C, fl_prop, cd_prop, iphys, fld)
 !
-      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: fld
 !
@@ -235,14 +233,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine check_dependence_4_FEM_SGS                             &
-     &         (evo_B, evo_A, evo_T, evo_C,                             &
-     &          SGS_param, cmt_param, fl_prop, iphys, fld)
+     &         (evo_T, evo_C,                                           &
+     &          SGS_param, cmt_param, fl_prop, cd_prop, iphys, fld)
 !
-      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: fld
 !
@@ -369,13 +367,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_dependence_4_SPH_SGS(evo_B, evo_T, evo_C,        &
-                SGS_param, fl_prop, iphys, fld)
+      subroutine check_dependence_4_SPH_SGS(evo_T, evo_C,               &
+                SGS_param, fl_prop, cd_prop, iphys, fld)
 !
-      type(time_evolution_params), intent(in) :: evo_B
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: fld
 !

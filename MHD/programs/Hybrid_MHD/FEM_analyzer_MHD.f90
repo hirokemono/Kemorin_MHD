@@ -15,6 +15,7 @@
       use m_machine_parameter
 !
       use m_SGS_control_parameter
+      use m_physical_property
       use m_t_step_parameter
       use m_t_int_parameter
       use m_mesh_data
@@ -108,9 +109,9 @@
       if (SGS_par1%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
         call s_cal_model_coefficients                                   &
-     &     (evo_magne, evo_vect_p, evo_temp, evo_comp,        &
+     &     (evo_temp, evo_comp,        &
      &      FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1,    &
-     &      fl_prop1,     &
+     &      fl_prop1, cd_prop1,     &
      &      layer_tbl1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,  &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, ifld_sgs, icomp_sgs, ifld_diff, icomp_diff,      &
@@ -140,7 +141,7 @@
      &     (mesh1%node, mesh1%ele, MHD_mesh1%fluid,                     &
      &      iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
         call s_check_deltat_by_prev_rms                                 &
-     &     (evo_vect_p, mesh1%node, mesh1%ele,                          &
+     &     (mesh1%node, mesh1%ele, cd_prop1,                            &
      &      MHD_mesh1%fluid, iphys, nod_fld1, jac1_3d_q, jac1_3d_l,     &
      &      fem1_wk, flex_data)
       end if
@@ -205,7 +206,7 @@
 !     ---- step to next time!! --- 
 !
       if (iflag_debug.eq.1) write(*,*) 'set_new_time_and_step'
-      call set_new_time_and_step(iphys, nod_fld1)
+      call set_new_time_and_step(cd_prop1, iphys, nod_fld1)
 !
       if (iflag_debug.eq.1) write(*,*) 'fields_evolution_4_FEM_SPH'
       call fields_evolution_4_FEM_SPH                                   &
@@ -225,9 +226,9 @@
       if (SGS_par1%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
         call s_cal_model_coefficients                                   &
-     &     (evo_magne, evo_vect_p, evo_temp, evo_comp,        &
+     &     (evo_temp, evo_comp,        &
      &      FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1,    &
-     &      fl_prop1,     &
+     &      fl_prop1, cd_prop1,     &
      &      layer_tbl1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,  &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, ifld_sgs, icomp_sgs, ifld_diff, icomp_diff,      &
@@ -242,7 +243,7 @@
       if (iflag_flexible_step .eq. iflag_flex_step) then
         if (iflag_debug.eq.1) write(*,*) 's_check_flexible_time_step'
         call s_check_flexible_time_step                                 &
-     &     (mesh1%node, mesh1%ele, MHD_mesh1%fluid,                     &
+     &     (mesh1%node, mesh1%ele, MHD_mesh1%fluid, cd_prop1,           &
      &      iphys, nod_fld1, jac1_3d_q, jac1_3d_l, fem1_wk)
       end if
 !
@@ -266,7 +267,7 @@
 !
         if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
         call output_time_step_control(FEM_prm1, mesh1, MHD_mesh1,       &
-     &    fl_prop1,   &
+     &      fl_prop1, cd_prop1,   &
      &      iphys, nod_fld1, iphys_ele, fld_ele1, jac1_3d_q, jac1_3d_l, &
      &      fem1_wk, mhd_fem1_wk)
 !

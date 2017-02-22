@@ -99,12 +99,12 @@
       call s_set_control_4_model                                        &
      &   (model_ctl%reft_ctl, model_ctl%refc_ctl,                       &
      &    ctl_ctl%mevo_ctl, model_ctl%evo_ctl, nmtr_ctl,                &
-     &    evo_magne, evo_vect_p, evo_temp, evo_comp, fl_prop1)
+     &    evo_temp, evo_comp, fl_prop1, cd_prop1)
 !
 !   set element groups for evolution
 !
       call s_set_control_evo_layers(model_ctl%earea_ctl,                &
-     &    evo_magne, evo_vect_p, evo_temp, evo_comp, fl_prop1, FEM_prm)
+     &    evo_temp, evo_comp, fl_prop1, cd_prop1, FEM_prm)
 !
 !   set forces
 !
@@ -125,7 +125,7 @@
 !   set parameters for filtering operation
 !
       call s_set_control_4_filtering                                    &
-     &   (evo_magne, evo_vect_p, evo_temp, evo_comp, fl_prop1,          &
+     &   (evo_temp, evo_comp, fl_prop1, cd_prop1,                       &
      &    SGS_par%model_p, model_ctl%sgs_ctl%SGS_filter_name_ctl,       &
      &    model_ctl%sgs_ctl%ffile_ctl, model_ctl%sgs_ctl%s3df_ctl,      &
      &    SGS_par%filter_p)
@@ -138,7 +138,7 @@
 !   set control parameters
 !
       call s_set_control_4_normalize                                    &
-     &   (evo_magne, evo_vect_p, evo_temp, evo_comp, fl_prop1,          &
+     &   (evo_temp, evo_comp, fl_prop1, cd_prop1,                       &
      &    model_ctl%dless_ctl, model_ctl%eqs_ctl)
 !
 !   set boundary conditions
@@ -151,11 +151,11 @@
       call s_set_control_4_time_steps                                   &
      &   (SGS_par%model_p, ctl_ctl%mrst_ctl, ctl_ctl%tctl)
       call s_set_control_4_crank(ctl_ctl%mevo_ctl,                      &
-     &    evo_magne, evo_vect_p, evo_temp, evo_comp, fl_prop1)
+     &    evo_temp, evo_comp, fl_prop1, cd_prop1)
 !
       call s_set_control_4_solver(ctl_ctl%mevo_ctl, ctl_ctl%CG_ctl)
       call set_control_4_FEM_params(ctl_ctl%mevo_ctl, ctl_ctl%fint_ctl, &
-     &    evo_magne, evo_vect_p, fl_prop1, FEM_prm)
+     &    fl_prop1, cd_prop1, FEM_prm)
 !
       end subroutine set_control_4_FEM_MHD
 !
@@ -203,23 +203,23 @@
 !
 !   set boundary_conditons for magnetic field
 !
-      call s_set_control_4_magne(evo_magne, evo_vect_p,                 &
-     &    nbc_ctl%node_bc_B_ctl, sbc_ctl%surf_bc_BN_ctl)
+      call s_set_control_4_magne                                        &
+     &   (cd_prop1, nbc_ctl%node_bc_B_ctl, sbc_ctl%surf_bc_BN_ctl)
 !
 !   set boundary_conditons for magnetic potential
 !
-      call s_set_control_4_mag_p(evo_magne, evo_vect_p,                 &
-     &    nbc_ctl%node_bc_MP_ctl, sbc_ctl%surf_bc_MPN_ctl)
+      call s_set_control_4_mag_p                                        &
+     &   (cd_prop1, nbc_ctl%node_bc_MP_ctl, sbc_ctl%surf_bc_MPN_ctl)
 !
 !   set boundary_conditons for vector potential
 !
-      call s_set_control_4_vect_p(evo_vect_p,                           &
-     &    nbc_ctl%node_bc_A_ctl, sbc_ctl%surf_bc_AN_ctl)
+      call s_set_control_4_vect_p                                       &
+     &   (cd_prop1, nbc_ctl%node_bc_A_ctl, sbc_ctl%surf_bc_AN_ctl)
 !
 !   set boundary_conditons for current density
 !
-      call s_set_control_4_current(evo_magne, evo_vect_p,               &
-     &    nbc_ctl%node_bc_J_ctl, sbc_ctl%surf_bc_JN_ctl)
+      call s_set_control_4_current                                      &
+     &   (cd_prop1, nbc_ctl%node_bc_J_ctl, sbc_ctl%surf_bc_JN_ctl)
 !
 !   set boundary_conditons for magnetic potential
 !

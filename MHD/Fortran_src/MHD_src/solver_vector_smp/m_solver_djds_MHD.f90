@@ -51,12 +51,11 @@
       type(node_data), intent(in) :: node
 !
 !
-      call set_residual_4_crank                                         &
-     &   (evo_magne, evo_vect_p, evo_temp, evo_comp,                    &
-     &    fl_prop1, cd_prop1, ht_prop1)
+      call set_residual_4_crank(evo_temp, evo_comp,                     &
+     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1)
 !
       call alloc_aiccg_matrices                                         &
-     &   (evo_magne, evo_vect_p, evo_temp, evo_comp, node, fl_prop1,    &
+     &   (evo_temp, evo_comp, node, fl_prop1, cd_prop1,                 &
      &    MHD1_matrices%MG_DJDS_table(0),                               &
      &    MHD1_matrices%MG_DJDS_fluid(0),                               &
      &    MHD1_matrices%MG_DJDS_linear(0),                              &
@@ -75,7 +74,7 @@
       use m_physical_property
 !
       call dealloc_aiccg_matrices                                       &
-     &   (evo_magne, evo_vect_p, evo_temp, evo_comp, fl_prop1,          &
+     &   (evo_temp, evo_comp, fl_prop1, cd_prop1,                       &
      &    MHD1_matrices%Vmat_MG_DJDS(0), MHD1_matrices%Bmat_MG_DJDS(0), &
      &    MHD1_matrices%Tmat_MG_DJDS(0), MHD1_matrices%Cmat_MG_DJDS(0), &
      &    MHD1_matrices%Pmat_MG_DJDS(0), MHD1_matrices%Fmat_MG_DJDS(0))
@@ -163,8 +162,8 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_residual_4_crank(evo_B, evo_A, evo_T, evo_C,       &
-     &          fl_prop, cd_prop, ht_prop)
+      subroutine set_residual_4_crank                                   &
+     &         (evo_T, evo_C, fl_prop, cd_prop, ht_prop, cp_prop)
 !
       use m_machine_parameter
       use m_t_int_parameter
@@ -172,11 +171,10 @@
 !
       use t_physical_property
 !
-      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
-      type(scalar_property), intent(in) :: ht_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
 !
       if (fl_prop%iflag_scheme .ge. id_Crank_nicolson) then
         eps_4_velo_crank = eps_crank * fl_prop%coef_diffuse * dt**2
@@ -201,7 +199,7 @@
       end if
 !
       if (evo_C%iflag_scheme .ge. id_Crank_nicolson) then
-        eps_4_comp_crank = eps_crank * cd_prop%coef_diffuse * dt**2
+        eps_4_comp_crank = eps_crank * cp_prop%coef_diffuse * dt**2
         if(iflag_debug.eq.1)                                            &
      &     write(12,*) 'iflag_t_evo_4_composit', evo_C%iflag_scheme
       end if

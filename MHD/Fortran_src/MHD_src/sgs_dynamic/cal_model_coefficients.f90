@@ -4,7 +4,7 @@
 !      Written by H. Matsui
 !
 !!      subroutine s_cal_model_coefficients                             &
-!!     &         (evo_B, evo_A, evo_T, evo_C, FEM_prm, SGS_par,         &
+!!     &         (evo_T, evo_C, FEM_prm, SGS_par,         &
 !!     &          mesh, group, ele_mesh, MHD_mesh,                      &
 !!     &          fl_prop, layer_tbl,        &
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele,                  &
@@ -14,7 +14,6 @@
 !!     &          m_lump, wk_cor, wk_lsq, wk_sgs, wk_diff, wk_filter,   &
 !!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,               &
 !!     &          nod_fld, sgs_coefs, sgs_coefs_nod, diff_coefs)
-!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -22,6 +21,7 @@
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in) :: cd_prop
 !!        type(nodal_boundarty_conditions), intent(in) :: nod_bcs
 !!        type(surface_boundarty_conditions), intent(in) :: surf_bcs
 !!        type(phys_address), intent(in) :: iphys
@@ -101,9 +101,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_cal_model_coefficients                               &
-     &         (evo_B, evo_A, evo_T, evo_C, FEM_prm, SGS_par,           &
+     &         (evo_T, evo_C, FEM_prm, SGS_par,           &
      &          mesh, group, ele_mesh, MHD_mesh,                        &
-     &          fl_prop, layer_tbl,        &
+     &          fl_prop, cd_prop, layer_tbl,        &
      &          nod_bcs, surf_bcs, iphys, iphys_ele,                    &
      &          ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,              &
      &          rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs, ifld_diff,     &
@@ -126,7 +126,6 @@
       use cal_diff_coef_sgs_induct
       use cal_sgs_uxb_dynamic_simi
 !
-      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -134,6 +133,7 @@
       type(mesh_groups), intent(in) ::   group
       type(element_geometry), intent(in) :: ele_mesh
       type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
       type(nodal_boundarty_conditions), intent(in) :: nod_bcs
       type(surface_boundarty_conditions), intent(in) :: surf_bcs
       type(phys_address), intent(in) :: iphys

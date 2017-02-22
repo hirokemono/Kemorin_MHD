@@ -7,12 +7,11 @@
 !> @brief Evaluate nonlinear terms at poles
 !!
 !!@verbatim
-!!      subroutine pole_nonlinear_sph_MHD(evo_B, evo_T, evo_C,          &
+!!      subroutine pole_nonlinear_sph_MHD(evo_T, evo_C,                 &
 !!     &          sph_rtp, node, fl_prop, cd_prop, iphys, nod_fld)
 !!      subroutine pole_energy_flux_rtp(sph_rtp, node,                  &
 !!     &          fl_prop, cd_prop, ref_param_T, ref_param_C,           &
 !!     &         iphys, nod_fld)
-!!        type(time_evolution_params), intent(in) :: evo_B
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(node_data), intent(in) :: node
@@ -46,14 +45,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine pole_nonlinear_sph_MHD(evo_B, evo_T, evo_C,            &
+      subroutine pole_nonlinear_sph_MHD(evo_T, evo_C,                   &
      &          sph_rtp, node, fl_prop, cd_prop, iphys, nod_fld)
 !
       use m_machine_parameter
 !
       use products_at_poles
 !
-      type(time_evolution_params), intent(in) :: evo_B
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(node_data), intent(in) :: node

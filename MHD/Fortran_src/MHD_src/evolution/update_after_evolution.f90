@@ -7,8 +7,7 @@
 !> @brief Evaluate field data for time integration for FEM dynamo model
 !!
 !!@verbatim
-!!      subroutine fields_evolution                                     &
-!!     &         (evo_B, evo_A, evo_T, evo_C, FEM_prm, SGS_par,         &
+!!      subroutine fields_evolution(evo_T, evo_C, FEM_prm, SGS_par,     &
 !!     &          mesh, group, ele_mesh, MHD_mesh,                      &
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,          &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
@@ -38,7 +37,6 @@
 !!     &          wk_cor, wk_lsq, wk_sgs, wk_diff, wk_filter,           &
 !!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,               &
 !!     &          nod_fld, ele_fld, sgs_coefs, diff_coefs)
-!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -124,8 +122,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fields_evolution                                       &
-     &         (evo_B, evo_A, evo_T, evo_C, FEM_prm, SGS_par,           &
+      subroutine fields_evolution(evo_T, evo_C, FEM_prm, SGS_par,       &
      &          mesh, group, ele_mesh, MHD_mesh,                        &
      &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,            &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
@@ -150,7 +147,6 @@
 !
 !      use check_surface_groups
 !
-      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -199,10 +195,10 @@
 !
 !     ---- magnetic field update
 !
-      if ( cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
+      if ( cd_prop1%iflag_Aevo_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'cal_magne_vector_potential'
-        call cal_vector_potential(evo_vect_p, FEM_prm, SGS_par,         &
-     &     mesh%nod_comm, mesh%node, mesh%ele,                          &
+        call cal_vector_potential                                       &
+     &    (FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,        &
      &     ele_mesh%surf, MHD_mesh%conduct, group%surf_grp, cd_prop1,   &
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Fsf_bcs,        &
      &     iphys, iphys_ele, ele_fld,                                   &
@@ -223,12 +219,12 @@
      &     wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,      &
      &     surf_wk, f_l, f_nl, nod_fld, ele_fld, diff_coefs)
 !
-      else if(cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
+      else if(cd_prop1%iflag_Bevo_scheme .gt. id_no_evolution) then
 !
 !        call check_surface_param_smp('cal_magnetic_field start',       &
 !     &      my_rank, sf_grp, group%surf_nod_grp)
         if (iflag_debug.eq.1) write(*,*) 's_cal_magnetic_field'
-        call s_cal_magnetic_field(evo_magne, FEM_prm, SGS_par,          &
+        call s_cal_magnetic_field(FEM_prm, SGS_par,                     &
      &     mesh%nod_comm, mesh%node, mesh%ele,                          &
      &     ele_mesh%surf, MHD_mesh%conduct, group%surf_grp, cd_prop1,   &
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,        &

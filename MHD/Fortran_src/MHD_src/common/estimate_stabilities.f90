@@ -5,9 +5,7 @@
 !      Modified by H. Matsui on july, 2006
 !
 !!      subroutine cal_stability_4_diffuse                              &
-!!     &         (evo_B, evo_A, evo_T, evo_C, ele,               &
-!!     &          fl_prop, cd_prop, ht_prop, cp_prop)
-!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
+!!     &         (evo_T, evo_C, ele, fl_prop, cd_prop, ht_prop, cp_prop)
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(element_data), intent(in) :: ele
 !!        type(fluid_property), intent(in) :: fl_prop
@@ -39,10 +37,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_stability_4_diffuse                                &
-     &         (evo_B, evo_A, evo_T, evo_C, ele,                 &
-     &          fl_prop, cd_prop, ht_prop, cp_prop)
+     &         (evo_T, evo_C, ele, fl_prop, cd_prop, ht_prop, cp_prop)
 !
-      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(element_data), intent(in) :: ele
 !

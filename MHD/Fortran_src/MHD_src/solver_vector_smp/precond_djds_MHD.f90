@@ -8,9 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine matrix_precondition                                  &
-!!     &         (evo_B, evo_A, evo_T, evo_C, fl_prop,                  &
+!!     &         (evo_T, evo_C, fl_prop, cd_prop,                       &
 !!     &         Vmatrix, Pmatrix, Bmatrix, Fmatrix, Tmatrix, Cmatrix)
-!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(MHD_MG_matrix), intent(inout) :: Vmatrix, Bmatrix
@@ -36,7 +35,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine matrix_precondition                                    &
-     &         (evo_B, evo_A, evo_T, evo_C, fl_prop,                    &
+     &         (evo_T, evo_C, fl_prop, cd_prop,                         &
      &          Vmatrix, Pmatrix, Bmatrix, Fmatrix, Tmatrix, Cmatrix)
 !
       use m_machine_parameter
@@ -49,9 +48,9 @@
 !
       use preconditioning_DJDS11
 !
-      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
       type(MHD_MG_matrix), intent(inout) :: Vmatrix, Bmatrix
       type(MHD_MG_matrix), intent(inout) :: Pmatrix, Fmatrix
       type(MHD_MG_matrix), intent(inout) :: Tmatrix, Cmatrix

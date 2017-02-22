@@ -19,8 +19,8 @@
       use m_precision
 !
       use calypso_mpi
-      use m_control_parameter
       use m_t_step_parameter
+      use t_physical_property
       use t_SGS_control_parameter
       use t_ele_info_4_dynamic
       use open_sgs_model_coefs
@@ -126,6 +126,7 @@
       subroutine s_output_sgs_model_coefs                               &
      &         (SGS_param, cmt_param, wk_sgs, wk_diff)
 !
+      use m_physical_property
       use set_exit_flag_4_visualizer
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
@@ -142,14 +143,14 @@
       call set_output_flag(i_coef, istep_max_dt, i_step_sgs_output)
       if (i_coef.ne.0 .or. my_rank.ne.0) return
 !
-      call output_layered_model_coefs_file(SGS_param, wk_sgs)
-      call output_whole_model_coefs_file(SGS_param, wk_sgs)
+      call output_layered_model_coefs_file(SGS_param, cd_prop1, wk_sgs)
+      call output_whole_model_coefs_file(SGS_param, cd_prop1, wk_sgs)
 !
       if (cmt_param%iflag_commute .gt. id_SGS_commute_OFF) then
-        call output_whole_diff_coefs_file(wk_diff)
+        call output_whole_diff_coefs_file(cd_prop1, wk_diff)
 !
         if (cmt_param%iset_DIFF_coefs .eq. 1 ) then
-          call output_layered_diff_coefs_file(wk_diff)
+          call output_layered_diff_coefs_file(cd_prop1, wk_diff)
         end if
       end if
 !
@@ -157,9 +158,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine output_layered_model_coefs_file(SGS_param, wk_sgs)
+      subroutine output_layered_model_coefs_file                        &
+     &         (SGS_param, cd_prop, wk_sgs)
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
+      type(conductive_property), intent(in) :: cd_prop
       type(dynamic_model_data), intent(in) :: wk_sgs
 !
       integer (kind = kint) :: inum
@@ -169,21 +172,21 @@
      &    sgs_fld_coef_file_code, sgs_fld_coef_file_name, wk_sgs)
       call open_SGS_correlation_file(iflag_layered,                     &
      &    sgs_comp_coef_file_code, sgs_comp_coef_file_name,             &
-     &    evo_vect_p, SGS_param, wk_sgs)
+     &    cd_prop, SGS_param, wk_sgs)
 !
       call open_SGS_correlation_file(iflag_layered,                     &
      &    sgs_cor_file_code, sgs_cor_file_name,                         &
-     &    evo_vect_p, SGS_param, wk_sgs)
+     &    cd_prop, SGS_param, wk_sgs)
       call open_SGS_correlation_file(iflag_layered,                     &
      &    sgs_cov_file_code, sgs_cov_file_name,                         &
-     &    evo_vect_p, SGS_param, wk_sgs)
+     &    cd_prop, SGS_param, wk_sgs)
       call open_SGS_correlation_file(iflag_layered,                     &
      &    sgs_ratio_file_code, sgs_ratio_file_name,                     &
-     &    evo_vect_p, SGS_param, wk_sgs)
+     &    cd_prop, SGS_param, wk_sgs)
 !
       call open_SGS_rms_ratio_file(iflag_layered,                       &
      &    sgs_rms_file_code, sgs_rms_file_name,                         &
-     &    evo_vect_p, SGS_param, wk_sgs)
+     &    cd_prop, SGS_param, wk_sgs)
 !
 !
       do inum = 1, wk_sgs%nlayer
@@ -218,9 +221,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine output_whole_model_coefs_file(SGS_param, wk_sgs)
+      subroutine output_whole_model_coefs_file                          &
+     &         (SGS_param, cd_prop, wk_sgs)
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
+      type(conductive_property), intent(in) :: cd_prop
       type(dynamic_model_data), intent(in) :: wk_sgs
 !
 !
@@ -228,21 +233,21 @@
      &    sgs_fld_coef_file_code, sgs_fld_whole_file_name, wk_sgs)
       call open_SGS_correlation_file(iflag_whole,                       &
      &    sgs_comp_coef_file_code, sgs_comp_whole_file_name,            &
-     &    evo_vect_p, SGS_param, wk_sgs)
+     &    cd_prop, SGS_param, wk_sgs)
 !
       call open_SGS_correlation_file(iflag_whole,                       &
      &    sgs_cor_file_code, sgs_w_cor_file_name,                       &
-     &    evo_vect_p, SGS_param, wk_sgs)
+     &    cd_prop, SGS_param, wk_sgs)
       call open_SGS_correlation_file(iflag_whole,                       &
      &    sgs_cov_file_code, sgs_w_cov_file_name,                       &
-     &    evo_vect_p, SGS_param, wk_sgs)
+     &    cd_prop, SGS_param, wk_sgs)
       call open_SGS_correlation_file(iflag_whole,                       &
      &    sgs_ratio_file_code, sgs_w_ratio_file_name,                   &
-     &    evo_vect_p, SGS_param, wk_sgs)
+     &    cd_prop, SGS_param, wk_sgs)
 !
       call open_SGS_rms_ratio_file(iflag_whole,                         &
      &    sgs_rms_file_code, sgs_w_rms_file_name,                       &
-     &    evo_vect_p, SGS_param, wk_sgs)
+     &    cd_prop, SGS_param, wk_sgs)
 !
       write(sgs_fld_coef_file_code,1001)  i_step_MHD, time,             &
      &        wk_sgs%fld_whole_clip(1:wk_sgs%num_kinds)
@@ -272,8 +277,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine output_whole_diff_coefs_file(wk_diff)
+      subroutine output_whole_diff_coefs_file(cd_prop, wk_diff)
 !
+      type(conductive_property), intent(in) :: cd_prop
       type(dynamic_model_data), intent(in) :: wk_diff
 !
 !
@@ -283,15 +289,15 @@
      &      diff_comp_file_code, diff_comp_whole_file_name, wk_diff)
 !
       call open_diff_correlation_file(iflag_whole,                      &
-     &   diff_cor_file_code, diff_w_cor_file_name, evo_vect_p, wk_diff)
+     &   diff_cor_file_code, diff_w_cor_file_name, cd_prop, wk_diff)
       call open_diff_correlation_file(iflag_whole,                      &
-     &   diff_cov_file_code, diff_w_cov_file_name, evo_vect_p, wk_diff)
+     &   diff_cov_file_code, diff_w_cov_file_name, cd_prop, wk_diff)
       call open_diff_correlation_file(iflag_whole,                      &
      &   diff_ratio_file_code, diff_w_ratio_file_name,                  &
-     &   evo_vect_p, wk_diff)
+     &   cd_prop, wk_diff)
 !
       call open_diff_rms_ratio_file(iflag_whole,                        &
-     &   diff_rms_file_code, diff_w_rms_file_name, evo_vect_p, wk_diff)
+     &   diff_rms_file_code, diff_w_rms_file_name, cd_prop, wk_diff)
 !
       write(diff_coef_file_code,1001) i_step_MHD, time,                 &
      &          wk_diff%fld_whole_clip(1:wk_diff%num_kinds)
@@ -321,8 +327,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine output_layered_diff_coefs_file(wk_diff)
+      subroutine output_layered_diff_coefs_file(cd_prop, wk_diff)
 !
+      type(conductive_property), intent(in) :: cd_prop
       type(dynamic_model_data), intent(in) :: wk_diff
 !
       integer (kind = kint) :: inum
@@ -332,15 +339,15 @@
      &             diff_coef_file_code, diff_coef_file_name, wk_diff)
 !
       call open_diff_correlation_file(iflag_layered,                    &
-     &    diff_cor_file_code, diff_cor_file_name, evo_vect_p, wk_diff)
+     &    diff_cor_file_code, diff_cor_file_name, cd_prop, wk_diff)
       call open_diff_correlation_file(iflag_layered,                    &
-     &    diff_cov_file_code, diff_cov_file_name, evo_vect_p, wk_diff)
+     &    diff_cov_file_code, diff_cov_file_name, cd_prop, wk_diff)
       call open_diff_correlation_file(iflag_layered,                    &
      &    diff_ratio_file_code, diff_ratio_file_name,                   &
-     &    evo_vect_p, wk_diff)
+     &    cd_prop, wk_diff)
 !
       call open_diff_rms_ratio_file(iflag_layered,                      &
-     &    diff_rms_file_code, diff_rms_file_name, evo_vect_p, wk_diff)
+     &    diff_rms_file_code, diff_rms_file_name, cd_prop, wk_diff)
 !
       do inum = 1, wk_diff%nlayer
         write(diff_coef_file_code,1000)                                 &

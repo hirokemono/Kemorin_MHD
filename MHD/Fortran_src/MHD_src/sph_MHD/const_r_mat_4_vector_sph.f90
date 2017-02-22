@@ -11,7 +11,6 @@
 !!     &         band_vs_poisson, band_vp_evo, band_vt_evo, band_wt_evo)
 !!      subroutine const_radial_mat_4_magne_sph(sph_rj, r_2nd,          &
 !!     &          cd_prop, g_sph_rj, band_bp_evo, band_bt_evo)
-!!        type(time_evolution_params), intent(in) :: evo_B
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(fluid_property), intent(in) :: fl_prop

@@ -141,32 +141,31 @@
 !
 !
       call reset_MHD_aiccg_mat_type                                     &
-     &   (evo_magne, evo_vect_p, evo_temp, evo_comp,                    &
-     &    mesh%node, mesh%ele, MHD_mesh%fluid, fl_prop,                 &
+     &   (evo_temp, evo_comp,                    &
+     &    mesh%node, mesh%ele, MHD_mesh%fluid, fl_prop, cd_prop,        &
      &    djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,             &
      &    mat_velo, mat_magne, mat_temp, mat_light,                     &
      &    mat_press, mat_magp)
 !
       if (iflag_debug.eq.1) write(*,*) 'matrix assemble'
 !
-      call int_MHD_poisson_matrices                                     &
-     &   (evo_magne, evo_vect_p, FEM_prm%npoint_poisson_int,  &
+      call int_MHD_poisson_matrices(FEM_prm%npoint_poisson_int,         &
      &    SGS_param%ifilter_final, cmt_param%iflag_c_magne,             &
-     &    mesh, fl_prop, jac_3d_l,                                      &
+     &    mesh, fl_prop, cd_prop, jac_3d_l,                             &
      &    rhs_tbl, MG_mat_linear, MG_mat_fl_l,                          &
      &    FEM_elens, ifld_diff, diff_coefs, fem_wk,                     &
      &    mat_press, mat_magp)
 !
       if (iflag_scheme .eq. id_Crank_nicolson) then
         call int_vol_crank_mat_lump                                     &
-     &     (evo_magne, evo_vect_p, evo_temp, evo_comp,                  &
+     &     (evo_temp, evo_comp,                  &
      &      mesh, MHD_mesh%fluid, MHD_mesh%conduct,                     &
      &      fl_prop, cd_prop, ht_prop, cp_prop,                         &
      &      djds_tbl, djds_tbl_fl, mlump_fl, mlump_cd,                  &
      &      mat_velo, mat_magne, mat_temp, mat_light)
 !
         call int_MHD_crank_matrices                                     &
-     &     (evo_magne, evo_vect_p, evo_temp, evo_comp,                  &
+     &     (evo_temp, evo_comp,                  &
      &      FEM_prm%npoint_t_evo_int, SGS_param%ifilter_final,          &
      &      mesh, fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD,           &
      &      jac_3d_q, rhs_tbl, MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q, &
@@ -175,12 +174,12 @@
 !
       else if (iflag_scheme .eq. id_Crank_nicolson_cmass) then
         call int_vol_crank_mat_consist(FEM_prm%npoint_t_evo_int,        &
-     &       evo_magne, evo_vect_p, evo_temp, evo_comp,                 &
+     &       evo_temp, evo_comp,                 &
      &       mesh, fl_prop, cd_prop, ht_prop, cp_prop,                  &
      &       jac_3d_q, rhs_tbl, MG_mat_fl_q, MG_mat_full_cd_q, fem_wk,  &
      &      mat_velo, mat_magne, mat_temp, mat_light)
         call int_MHD_crank_matrices                                     &
-     &     (evo_magne, evo_vect_p, evo_temp, evo_comp,                  &
+     &     (evo_temp, evo_comp,                  &
      &      FEM_prm%npoint_t_evo_int, SGS_param%ifilter_final,          &
      &      mesh, fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD,           &
      &      jac_3d_q, rhs_tbl, MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q, &
@@ -191,12 +190,12 @@
 !     set boundary conditions
 !
       call set_aiccg_bc_phys(FEM_prm%npoint_t_evo_int,                  &
-     &     evo_magne, evo_vect_p, evo_temp, evo_comp,                   &
-     &     mesh%ele, ele_mesh%surf, group%surf_grp, fl_prop1,           &
-     &     jac_sf_grp_q, rhs_tbl, MG_mat_fl_q, nod_bcs, surf_bcs,       &
-     &     djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,            &
-     &     ak_MHD%ak_d_velo, surf_wk, fem_wk, mat_velo, mat_magne,      &
-     &     mat_temp, mat_light, mat_press, mat_magp)
+     &    evo_temp, evo_comp,                   &
+     &    mesh%ele, ele_mesh%surf, group%surf_grp, fl_prop1, cd_prop1,  &
+     &    jac_sf_grp_q, rhs_tbl, MG_mat_fl_q, nod_bcs, surf_bcs,        &
+     &    djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,             &
+     &    ak_MHD%ak_d_velo, surf_wk, fem_wk, mat_velo, mat_magne,       &
+     &    mat_temp, mat_light, mat_press, mat_magp)
 !
       end subroutine s_set_aiccg_matrices_type
 !

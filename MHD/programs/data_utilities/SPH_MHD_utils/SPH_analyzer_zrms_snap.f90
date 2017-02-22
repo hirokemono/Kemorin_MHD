@@ -85,8 +85,9 @@
 !*
       if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
       call s_lead_fields_4_sph_mhd                                      &
-     &   (evo_magne, evo_temp, evo_comp, SGS_par1%model_p, sph1,        &
-     &    comms_sph1, r_2nd, fl_prop1, trans_p1, ipol, rj_fld1, trns_WK1)
+     &   (evo_temp, evo_comp, SGS_par1%model_p, sph1,                   &
+     &    comms_sph1, r_2nd, fl_prop1, cd_prop1,                        &
+     &    trans_p1, ipol, rj_fld1, trns_WK1)
       call end_eleps_time(9)
 !
       end subroutine SPH_analyze_zRMS_snap

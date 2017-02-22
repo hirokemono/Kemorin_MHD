@@ -5,18 +5,16 @@
 !
 !!      subroutine cal_fluxes_4_monitor                                 &
 !!     &         (node, fl_prop, cd_prop, iphys, nod_fld)
-!!      subroutine cal_forces_4_monitor(evo_B, FEM_prm, SGS_par,        &
+!!      subroutine cal_forces_4_monitor(FEM_prm, SGS_par,               &
 !!     &          nod_comm, node, ele, surf, fluid, conduct,            &
 !!     &          sf_grp, fl_prop, cd_prop, ht_prop, cp_prop,           &
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele,                  &
 !!     &          ak_MHD, jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,       &
 !!     &          ifld_diff, diff_coefs, m_lump, mhd_fem_wk, fem_wk,    &
 !!     &          surf_wk, f_l, f_nl, nod_fld, ele_fld)
-!!      subroutine cal_work_4_forces(evo_A, FEM_prm,                    &
+!!      subroutine cal_work_4_forces(FEM_prm,                           &
 !!     &           nod_comm, node, ele, fl_prop, cd_prop, iphys,        &
 !!     &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl, nod_fld)
-!!        type(time_evolution_params), intent(in) :: evo_A
-!!        type(time_evolution_params), intent(in) :: evo_B
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -52,7 +50,6 @@
       use m_machine_parameter
       use m_phys_labels
 !
-      use t_time_stepping_parameter
       use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_comm_table
@@ -147,7 +144,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_forces_4_monitor(evo_B, FEM_prm, SGS_par,          &
+      subroutine cal_forces_4_monitor(FEM_prm, SGS_par,                 &
      &          nod_comm, node, ele, surf, fluid, conduct,              &
      &          sf_grp, fl_prop, cd_prop, ht_prop, cp_prop,             &
      &          nod_bcs, surf_bcs, iphys, iphys_ele,                    &
@@ -161,7 +158,6 @@
       use cal_induction_terms
       use cal_gradient
 !
-      type(time_evolution_params), intent(in) :: evo_B
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
@@ -423,7 +419,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_work_4_forces(evo_A, FEM_prm,                      &
+      subroutine cal_work_4_forces(FEM_prm,                             &
      &           nod_comm, node, ele, fl_prop, cd_prop, iphys,          &
      &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !
@@ -434,7 +430,6 @@
       use int_magne_induction
       use nodal_poynting_flux_smp
 !
-      type(time_evolution_params), intent(in) :: evo_A
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node

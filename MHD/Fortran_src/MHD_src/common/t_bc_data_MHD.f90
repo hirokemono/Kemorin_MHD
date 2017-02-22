@@ -4,10 +4,11 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine set_bc_id_data(evo_B, evo_A, evo_T, evo_C,    &
-!!     &          IO_bc, mesh, group, MHD_mesh, fl_prop, nodal_bc)
-!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
+!!      subroutine set_bc_id_data(evo_T, evo_C, IO_bc, mesh, group,     &
+!!     &          MHD_mesh, fl_prop, cd_prop, nodal_bc)
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in) :: cd_prop
 !!        type(IO_boundary),          intent(in) :: IO_bc
 !!        type(mesh_geometry),       intent(in) :: mesh
 !!        type(mesh_groups),         intent(in) :: group
@@ -41,8 +42,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_bc_id_data(evo_B, evo_A, evo_T, evo_C,      &
-     &          IO_bc, mesh, group, MHD_mesh, fl_prop, nodal_bc)
+      subroutine set_bc_id_data(evo_T, evo_C, IO_bc, mesh, group,       &
+     &          MHD_mesh, fl_prop, cd_prop, nodal_bc)
 !
       use m_bc_data_list
       use m_boundary_condition_IDs
@@ -54,13 +55,13 @@
       use t_boundary_field_IO
 !
 !
-      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(IO_boundary),    intent(in) :: IO_bc
       type(mesh_geometry),  intent(in) :: mesh
       type(mesh_groups),    intent(in) :: group
       type(mesh_data_MHD),  intent(in) :: MHD_mesh
       type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
       type(nodal_boundarty_conditions), intent(inout) :: nodal_bc
 !
 !

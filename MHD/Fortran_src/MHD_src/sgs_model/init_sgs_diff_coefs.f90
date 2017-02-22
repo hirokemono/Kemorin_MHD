@@ -5,12 +5,14 @@
 !      Modified by H. Matsui on July, 2007
 !
 !!      subroutine define_sgs_diff_coefs                                &
-!!     &         (numele, SGS_param, cmt_param, layer_tbl, fl_prop,     &
-!!     &          ifld_diff, icomp_diff, wk_diff, diff_coefs)
+!!     &         (numele, SGS_param, cmt_param, layer_tbl,              &
+!!     &          fl_prop, cd_prop, ifld_diff, icomp_diff,              &
+!!     &          wk_diff, diff_coefs)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in)  :: cd_prop
 !!        type(SGS_terms_address), intent(inout) :: ifld_sgs
 !!        type(SGS_terms_address), intent(inout) :: icomp_sgs
 !!        type(SGS_terms_address), intent(inout) :: ifld_diff
@@ -41,8 +43,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine define_sgs_diff_coefs                                  &
-     &         (numele, SGS_param, cmt_param, layer_tbl, fl_prop,       &
-     &          ifld_diff, icomp_diff, wk_diff, diff_coefs)
+     &         (numele, SGS_param, cmt_param, layer_tbl,                &
+     &          fl_prop, cd_prop, ifld_diff, icomp_diff,                &
+     &          wk_diff, diff_coefs)
 !
       use calypso_mpi
       use m_phys_labels
@@ -59,6 +62,7 @@
       type(commutation_control_params), intent(in) :: cmt_param
       type(layering_tbl), intent(in) :: layer_tbl
       type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in)  :: cd_prop
 !
       type(SGS_terms_address), intent(inout) :: ifld_diff, icomp_diff
 !
@@ -69,8 +73,8 @@
 !
 !
       call count_sgs_diff_coefs                                         &
-     &   (evo_magne, evo_vect_p, evo_temp, evo_comp,                    &
-     &    SGS_param, cmt_param, fl_prop, ntot_diff_comp, diff_coefs)
+     &   (evo_temp, evo_comp, SGS_param, cmt_param,                     &
+     &    fl_prop, cd_prop, ntot_diff_comp, diff_coefs)
       call alloc_sgs_coefs_layer(layer_tbl%e_grp%num_grp,               &
      &    diff_coefs%num_field, ntot_diff_comp, wk_diff)
 !
@@ -78,9 +82,8 @@
       call alloc_SGS_coefs(numele, diff_coefs)
 !
       call set_sgs_diff_addresses                                       &
-     &   (evo_magne, evo_vect_p, evo_temp, evo_comp,                    &
-     &    SGS_param, cmt_param, fl_prop, ifld_diff, icomp_diff,         &
-     &    wk_diff, diff_coefs)
+     &   (evo_temp, evo_comp, SGS_param, cmt_param,                     &
+     &    fl_prop, cd_prop, ifld_diff, icomp_diff, wk_diff, diff_coefs)
       diff_coefs%ntot_comp = diff_coefs%num_field
 !
       if(iflag_debug .gt. 0) call check_sgs_diff_addresses              &
@@ -92,8 +95,8 @@
 !  ------------------------------------------------------------------
 !
       subroutine count_sgs_diff_coefs                                   &
-     &         (evo_B, evo_A, evo_T, evo_C, SGS_param, cmt_param,       &
-     &          fl_prop, ntot_diff_comp, diff_coefs)
+     &         (evo_T, evo_C, SGS_param, cmt_param,                     &
+     &          fl_prop, cd_prop, ntot_diff_comp, diff_coefs)
 !
       use calypso_mpi
       use m_phys_labels
@@ -103,9 +106,9 @@
       use t_material_property
       use t_SGS_model_coefs
 !
-      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in)  :: cd_prop
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       integer(kind = kint), intent(inout) :: ntot_diff_comp
@@ -204,8 +207,8 @@
 !  ------------------------------------------------------------------
 !
       subroutine set_sgs_diff_addresses                                 &
-     &         (evo_B, evo_A, evo_T, evo_C, SGS_param, cmt_param,       &
-     &          fl_prop, ifld_diff, icomp_diff, wk_diff, diff_coefs)
+     &         (evo_T, evo_C, SGS_param, cmt_param, fl_prop, cd_prop,   &
+     &          ifld_diff, icomp_diff, wk_diff, diff_coefs)
 !
       use calypso_mpi
       use m_phys_labels
@@ -215,9 +218,9 @@
       use t_material_property
       use t_SGS_model_coefs
 !
-      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in)  :: cd_prop
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(SGS_terms_address), intent(inout) :: ifld_diff, icomp_diff

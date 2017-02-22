@@ -4,7 +4,8 @@
 !      Written by H. Matsui on Sep. 2005
 !
 !!      subroutine set_bc_surface_data(IO_bc, node, ele, surf,          &
-!!     &          sf_grp, sf_grp_nod, sf_grp_v, fl_prop, surf_bcs)
+!!     &          sf_grp, sf_grp_nod, sf_grp_v,                         &
+!!     &          fl_prop, cd_prop, surf_bcs)
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -13,6 +14,7 @@
 !!        type(surface_node_grp_data), intent(in) :: sf_grp_nod
 !!        type(surface_group_geometry), intent(in) :: sf_grp_v
 !!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in) :: cd_prop
 !!        type(surface_boundarty_conditions), intent(inout) :: surf_bcs
 !
       module set_surface_id_MHD
@@ -42,7 +44,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_bc_surface_data(IO_bc, node, ele, surf,            &
-     &          sf_grp, sf_grp_nod, sf_grp_v, fl_prop, surf_bcs)
+     &          sf_grp, sf_grp_nod, sf_grp_v,                           &
+     &          fl_prop, cd_prop, surf_bcs)
 !
       use m_machine_parameter
       use m_control_parameter
@@ -57,6 +60,7 @@
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_node_grp_data), intent(in) :: sf_grp_nod
       type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
       type(surface_group_geometry), intent(in) :: sf_grp_v
 !
       type(surface_boundarty_conditions), intent(inout) :: surf_bcs
@@ -70,13 +74,12 @@
       call count_num_surf_bc(IO_bc, sf_grp, sf_grp_nod, surf_bcs)
 !
       call alloc_surf_bc_data_type                                      &
-     &   (fl_prop, evo_magne, evo_vect_p, evo_temp, evo_comp,           &
-     &    surf_bcs)
+     &   (fl_prop, cd_prop, evo_temp, evo_comp, surf_bcs)
 !
       call set_surface_id                                               &
-     &   (evo_magne, evo_vect_p, evo_temp, evo_comp, IO_bc,             &
-     &    node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v,                &
-     &    fl_prop, surf_bcs)
+     &   (evo_temp, evo_comp,             &
+     &    IO_bc, node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v,         &
+     &    fl_prop, cd_prop, surf_bcs)
 !
       call deallocate_work_4_surf_bc_dat
 ! 
@@ -139,22 +142,22 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_surface_id(evo_B, evo_A, evo_T, evo_C,      &
+      subroutine set_surface_id(evo_T, evo_C,      &
      &          IO_bc, node, ele, surf, sf_grp,                         &
-     &          sf_grp_nod, sf_grp_v, fl_prop, surf_bcs)
+     &          sf_grp_nod, sf_grp_v, fl_prop, cd_prop, surf_bcs)
 !
       use m_scalar_surf_id
       use m_vector_surf_id
 !
       use set_normal_field
 !
-      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(conductive_property), intent(in)  :: cd_prop
       type(surface_node_grp_data), intent(in) :: sf_grp_nod
       type(fluid_property), intent(in) :: fl_prop
       type(surface_group_geometry), intent(in) :: sf_grp_v

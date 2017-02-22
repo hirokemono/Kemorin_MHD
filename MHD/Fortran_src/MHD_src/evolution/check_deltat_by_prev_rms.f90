@@ -3,11 +3,11 @@
 !
 !      Written by H. Matsui on Nov., 2009
 !
-!!      subroutine s_check_deltat_by_prev_rms(evo_A, node, ele, fluid,  &
+!!      subroutine s_check_deltat_by_prev_rms(node, ele, fluid, cd_prop,&
 !!     &          iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk, flex_data)&
 !!      subroutine set_ele_rms_4_previous_step(node, ele, fluid,        &
 !!     &          iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk, flex_data)&
-!!        type(time_evolution_params), intent(in) :: evo_A
+!!        type(conductive_property), intent(in) :: cd_prop
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: fluid
@@ -27,7 +27,7 @@
       use m_t_step_parameter
       use m_t_int_parameter
 !
-      use t_time_stepping_parameter
+      use t_physical_property
       use t_geometry_data_MHD
       use t_geometry_data
       use t_phys_data
@@ -46,13 +46,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_check_deltat_by_prev_rms(evo_A, node, ele, fluid,    &
+      subroutine s_check_deltat_by_prev_rms(node, ele, fluid, cd_prop,  &
      &          iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk, flex_data)
 !
-      type(time_evolution_params), intent(in) :: evo_A
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
+      type(conductive_property), intent(in) :: cd_prop
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l

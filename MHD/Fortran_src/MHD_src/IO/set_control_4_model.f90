@@ -10,19 +10,18 @@
 !!
 !!@verbatim
 !!      subroutine s_set_control_4_model                                &
-!!     &          (reft_ctl, refc_ctl, mevo_ctl, evo_ctl, nmtr_ctl,     &
-!!     &           evo_B, evo_A, evo_T, evo_C, fl_prop)
+!!     &         (reft_ctl, refc_ctl, mevo_ctl, evo_ctl, nmtr_ctl,      &
+!!     &          evo_T, evo_C, fl_prop, cd_prop)
 !!      subroutine s_set_control_4_crank                                &
-!!     &         (mevo_ctl, evo_B, evo_A, evo_T, evo_C, fl_prop)
+!!     &         (mevo_ctl, evo_T, evo_C, fl_prop, cd_prop)
 !!        type(reference_temperature_ctl), intent(in) :: reft_ctl
 !!        type(reference_temperature_ctl), intent(in) :: refc_ctl
 !!        type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
 !!        type(mhd_evolution_control), intent(inout) :: evo_ctl
 !!        type(node_monitor_control), intent(inout) :: nmtr_ctl
-!!        type(time_evolution_params), intent(inout) :: evo_B
-!!        type(time_evolution_params), intent(inout) :: evo_A
 !!        type(time_evolution_params), intent(inout) :: evo_T, evo_C
 !!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(inout)  :: cd_prop
 !!@endverbatim
 !
       module set_control_4_model
@@ -49,8 +48,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_4_model                                  &
-     &          (reft_ctl, refc_ctl, mevo_ctl, evo_ctl, nmtr_ctl,       &
-     &           evo_B, evo_A, evo_T, evo_C, fl_prop)
+     &         (reft_ctl, refc_ctl, mevo_ctl, evo_ctl, nmtr_ctl,        &
+     &          evo_T, evo_C, fl_prop, cd_prop)
 !
       use calypso_mpi
       use m_t_step_parameter
@@ -66,9 +65,9 @@
       type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
       type(mhd_evolution_control), intent(inout) :: evo_ctl
       type(node_monitor_control), intent(inout) :: nmtr_ctl
-      type(time_evolution_params), intent(inout) :: evo_B, evo_A
       type(time_evolution_params), intent(inout) :: evo_T, evo_C
       type(fluid_property), intent(inout) :: fl_prop
+      type(conductive_property), intent(inout)  :: cd_prop
 !
       integer (kind = kint) :: i
       character(len=kchara) :: tmpchara
@@ -179,12 +178,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_4_crank                                  &
-     &         (mevo_ctl, evo_B, evo_A, evo_T, evo_C, fl_prop)
+     &         (mevo_ctl, evo_T, evo_C, fl_prop, cd_prop)
 !
       type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
-      type(time_evolution_params), intent(inout) :: evo_B, evo_A
       type(time_evolution_params), intent(inout) :: evo_T, evo_C
       type(fluid_property), intent(inout) :: fl_prop
+      type(conductive_property), intent(inout)  :: cd_prop
 !
 !
       call set_implicit_coefs(mevo_ctl%coef_imp_v_ctl,                  &

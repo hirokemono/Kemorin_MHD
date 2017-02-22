@@ -9,16 +9,16 @@
 !!     &          ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs, sgs_coefs_nod)
 !!
 !!      subroutine set_sgs_addresses                                    &
-!!     &          (evo_B, evo_A, evo_T, evo_C, SGS_param,               &
-!!     &           fl_prop, ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
+!!     &          (evo_T, evo_C, SGS_param, fl_prop, cd_prop,           &
+!!     &           ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
 !!      subroutine s_count_sgs_components                               &
-!!     &         (evo_B, evo_A, evo_T, evo_C, SGS_param,                &
-!!     &          fl_prop, sgs_coefs)
+!!     &         (evo_T, evo_C, SGS_param, fl_prop, cd_prop, sgs_coefs)
 !!      subroutine set_SGS_ele_fld_addresses                            &
-!!     &          (evo_B, SGS_param, iphys_elediff)
-!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
+!!     &         (cd_prop, SGS_param, iphys_elediff)
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in) :: cd_prop
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(SGS_terms_address), intent(inout) :: ifld_sgs
 !!        type(SGS_terms_address), intent(inout) :: icomp_sgs
@@ -51,7 +51,7 @@
       use t_SGS_control_parameter
       use t_layering_ele_list
       use t_ele_info_4_dynamic
-      use t_material_property
+      use t_physical_property
       use t_SGS_model_coefs
 !
       integer(kind = kint), intent(in) :: numnod, numele
@@ -66,8 +66,8 @@
 !
 !
       call s_count_sgs_components                                       &
-     &   (evo_magne, evo_vect_p, evo_temp, evo_comp,                    &
-     &    SGS_param, fl_prop1, sgs_coefs)
+     &   (evo_temp, evo_comp,                    &
+     &    SGS_param, fl_prop1, cd_prop1, sgs_coefs)
 !
 !   set index for model coefficients
 !
@@ -78,8 +78,8 @@
       call alloc_SGS_coefs(numele, sgs_coefs)
 !
       call set_sgs_addresses                                            &
-     &   (evo_magne, evo_vect_p, evo_temp, evo_comp,                    &
-     &    SGS_param, fl_prop1, ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
+     &   (evo_temp, evo_comp, SGS_param,                                &
+     &    fl_prop1, cd_prop1, ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
       call check_sgs_addresses                                          &
      &   (ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
 !
@@ -94,8 +94,7 @@
 !  ------------------------------------------------------------------
 !
       subroutine s_count_sgs_components                                 &
-     &         (evo_B, evo_A, evo_T, evo_C, SGS_param,                  &
-     &          fl_prop, sgs_coefs)
+     &         (evo_T, evo_C, SGS_param, fl_prop, cd_prop, sgs_coefs)
 !
       use calypso_mpi
       use m_phys_labels
@@ -105,13 +104,13 @@
       use t_layering_ele_list
       use t_ele_info_4_dynamic
       use t_physical_property
-      use t_material_property
+      use t_physical_property
       use t_SGS_model_coefs
 !
-      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
 !
 !    count coefficients for SGS terms
@@ -173,8 +172,8 @@
 !  ------------------------------------------------------------------
 !
       subroutine set_sgs_addresses                                      &
-     &          (evo_B, evo_A, evo_T, evo_C, SGS_param,                 &
-     &           fl_prop, ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
+     &          (evo_T, evo_C, SGS_param, fl_prop, cd_prop,             &
+     &           ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
 !
       use calypso_mpi
       use m_phys_labels
@@ -184,13 +183,13 @@
       use t_layering_ele_list
       use t_ele_info_4_dynamic
       use t_physical_property
-      use t_material_property
+      use t_physical_property
       use t_SGS_model_coefs
 !
-      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
 !
       type(SGS_terms_address), intent(inout) :: ifld_sgs, icomp_sgs
       type(dynamic_model_data), intent(inout) :: wk_sgs
@@ -296,14 +295,13 @@
 !  ------------------------------------------------------------------
 !
       subroutine set_SGS_ele_fld_addresses                              &
-     &          (evo_B, SGS_param, iphys_elediff)
+     &         (cd_prop, SGS_param, iphys_elediff)
 !
-      use t_time_stepping_parameter
       use t_SGS_control_parameter
-      use t_material_property
+      use t_physical_property
       use t_SGS_model_coefs
 !
-      type(time_evolution_params), intent(in) :: evo_B
+      type(conductive_property), intent(in) :: cd_prop
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(SGS_terms_address), intent(inout) :: iphys_elediff
 !

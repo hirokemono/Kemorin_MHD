@@ -6,13 +6,14 @@
 !      modified by H. Matsui on Dec., 2007
 !
 !!      subroutine initial_data_control(SGS_par, ref_param_T,           &
-!!     &          node, ele, fluid, iphys, layer_tbl,                   &
+!!     &          node, ele, fluid, cd_prop, iphys, layer_tbl,          &
 !!     &          wk_sgs, wk_diff, sgs_coefs, diff_coefs, nod_fld)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(reference_scalar_param), intent(in) :: ref_param_T
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: fluid
+!!        type(conductive_property), intent(in) :: cd_prop
 !!        type(phys_address), intent(in) :: iphys
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -36,6 +37,7 @@
       use t_SGS_model_coefs
       use t_ele_info_4_dynamic
       use t_reference_scalar_param
+      use t_physical_property
 !
       implicit none
 !
@@ -48,10 +50,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine initial_data_control(SGS_par, ref_param_T,             &
-     &          node, ele, fluid, iphys, layer_tbl,                     &
+     &          node, ele, fluid, cd_prop, iphys, layer_tbl,            &
      &          wk_sgs, wk_diff, sgs_coefs, diff_coefs, nod_fld)
 !
-      use m_control_parameter
       use m_initial_field_control
       use m_t_int_parameter
       use m_t_step_parameter
@@ -67,6 +68,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
+      type(conductive_property), intent(in) :: cd_prop
       type(phys_address), intent(in) :: iphys
       type(layering_tbl), intent(in) :: layer_tbl
 !
@@ -81,7 +83,7 @@
      &      fluid, wk_sgs, wk_diff, sgs_coefs, diff_coefs, nod_fld)
       else
         call set_initial_data                                           &
-     &     (evo_vect_p, ref_param_T, node, fluid, iphys, nod_fld)
+     &     (cd_prop, ref_param_T, node, fluid, iphys, nod_fld)
       end if
       iflag_initial_step = 0
 !
@@ -106,19 +108,18 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_initial_data                                       &
-     &         (evo_A, ref_param_T, node, fluid, iphys, nod_fld)
+     &         (cd_prop, ref_param_T, node, fluid, iphys, nod_fld)
 !
       use calypso_mpi
       use m_error_IDs
       use m_initial_field_control
       use m_t_step_parameter
-      use t_time_stepping_parameter
 !
       use set_initial_rotation
       use dynamobench_initial_temp
       use set_initial_for_MHD
 !
-      type(time_evolution_params), intent(in) :: evo_A
+      type(conductive_property), intent(in) :: cd_prop
       type(reference_scalar_param), intent(in) :: ref_param_T
       type(node_data), intent(in) :: node
       type(field_geometry_data), intent(in) :: fluid

@@ -6,12 +6,13 @@
 !        Modified by H. Matsui on July, 2006
 !        Modified by H. Matsui on May, 2007
 !
-!!      subroutine allocate_array(SGS_par, node, ele, iphys, nod_fld,   &
-!!     &          iphys_elediff, m_lump, mhd_fem_wk, fem_wk,            &
-!!     &          f_l, f_nl, label_sim)
+!!      subroutine allocate_array(SGS_par, node, ele, cd_prop,          &
+!!     &          iphys, nod_fld, iphys_elediff, m_lump,                &
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, label_sim)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
+!!        type(conductive_property), intent(in)  :: cd_prop
 !!        type(phys_address), intent(inout) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(SGS_terms_address), intent(inout) :: iphys_elediff
@@ -30,7 +31,7 @@
       use t_phys_address
       use t_phys_data
       use t_SGS_control_parameter
-      use t_time_stepping_parameter
+      use t_physical_property
       use t_MHD_finite_element_mat
 !
       implicit none
@@ -43,9 +44,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_array(SGS_par, node, ele, iphys, nod_fld,     &
-     &          iphys_elediff, m_lump, mhd_fem_wk, fem_wk,              &
-     &          f_l, f_nl, label_sim)
+      subroutine allocate_array(SGS_par, node, ele, cd_prop,            &
+     &          iphys, nod_fld, iphys_elediff, m_lump,                  &
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, label_sim)
 !
       use m_element_phys_data
       use m_phys_constants
@@ -65,6 +66,7 @@
       type(SGS_paremeters), intent(in) :: SGS_par
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(conductive_property), intent(in)  :: cd_prop
       type(phys_address), intent(inout) :: iphys
       type(phys_data), intent(inout) :: nod_fld
       type(SGS_terms_address), intent(inout) :: iphys_elediff
@@ -87,10 +89,10 @@
       if (iflag_debug.ge.1) write(*,*) 'allocate_int_vol_data'
       call alloc_int_vol_data(ele%numele, node%max_nod_smp,             &
      &   SGS_par%model_p, nod_fld, mhd_fem_wk)
-      call count_int_vol_data(SGS_par%model_p, evo_magne, mhd_fem_wk)
+      call count_int_vol_data(SGS_par%model_p, cd_prop, mhd_fem_wk)
       call alloc_int_vol_dvx(ele%numele, mhd_fem_wk)
       call set_SGS_ele_fld_addresses                                    &
-     &   (evo_magne, SGS_par%model_p, iphys_elediff)
+     &   (cd_prop, SGS_par%model_p, iphys_elediff)
 !
 !  allocation for field values
       if (iflag_debug.ge.1)  write(*,*) 'set_FEM_MHD_field_data'
@@ -107,12 +109,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine count_int_vol_data(SGS_param, evo_B, mhd_fem_wk)
+      subroutine count_int_vol_data(SGS_param, cd_prop, mhd_fem_wk)
 !
       use m_phys_labels
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
-      type(time_evolution_params), intent(in) :: evo_B
+      type(conductive_property), intent(in)  :: cd_prop
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
 !

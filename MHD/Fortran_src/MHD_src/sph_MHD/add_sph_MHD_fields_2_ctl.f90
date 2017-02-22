@@ -8,12 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine add_field_name_4_sph_mhd                             &
-!!     &         (evo_B, evo_T, evo_C, fl_prop, field_ctl)
+!!     &         (evo_T, evo_C, fl_prop, cd_prop, field_ctl)
 !!      subroutine add_field_name_4_SGS(SGS_param, field_ctl)
 !!      subroutine add_field_name_dynamic_SGS                           &
 !!     &         (SGS_param, fl_prop, field_ctl)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in) :: cd_prop
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
 !!@endverbatim
 !
@@ -36,13 +37,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_field_name_4_sph_mhd                               &
-     &         (evo_B, evo_T, evo_C, fl_prop, field_ctl)
+     &         (evo_T, evo_C, fl_prop, cd_prop, field_ctl)
 !
       use add_nodal_fields_ctl
 !
-      type(time_evolution_params), intent(in) :: evo_B
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !

@@ -8,11 +8,11 @@
 !> @brief set normalizatios for MHD simulation from control data
 !!
 !!@verbatim
-!      subroutine s_set_control_4_normalize                            &
-!!     &       (evo_B, evo_A, evo_T, evo_C, fl_prop, dless_ctl, eqs_ctl)
-!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
+!!      subroutine s_set_control_4_normalize                            &
+!!     &       (evo_T, evo_C, fl_prop, cd_prop, dless_ctl, eqs_ctl)
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in)  :: cd_prop
 !!        type(dimless_control), intent(inout) :: dless_ctl
 !!        type(equations_control), intent(inout) :: eqs_ctl
 !!@endverbatim
@@ -43,14 +43,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_4_normalize                              &
-     &         (evo_B, evo_A, evo_T, evo_C, fl_prop, dless_ctl, eqs_ctl)
+     &         (evo_T, evo_C, fl_prop, cd_prop, dless_ctl, eqs_ctl)
 !
       use m_physical_property
       use m_normalize_parameter
 !
-      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in)  :: cd_prop
       type(dimless_control), intent(inout) :: dless_ctl
       type(equations_control), intent(inout) :: eqs_ctl
 !
@@ -103,7 +103,7 @@
         MHD_coef_list%coefs_m_diffuse%num = 0
         MHD_coef_list%coefs_induction%num = 0
       else
-        call set_coefs_4_induction_eq(evo_A, eqs_ctl%induct_ctl)
+        call set_coefs_4_induction_eq(cd_prop, eqs_ctl%induct_ctl)
       end if
 !
 !    set normalization for composition
@@ -284,12 +284,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_coefs_4_induction_eq(evo_A, induct_ctl)
+      subroutine set_coefs_4_induction_eq(cd_prop, induct_ctl)
 !
       use m_normalize_parameter
       use t_ctl_data_induct_norm
 !
-      type(time_evolution_params), intent(in) :: evo_A
+      type(conductive_property), intent(in)  :: cd_prop
       type(induction_equation_control), intent(inout) :: induct_ctl
 !
 !

@@ -7,12 +7,12 @@
 !>@brief Set boundary conditions for MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine s_set_bc_sph_mhd(evo_B, evo_T, evo_C,                &
-!!     &          sph_params, sph_rj, radial_rj_grp, fl_prop,           &
+!!      subroutine s_set_bc_sph_mhd(evo_T, evo_C,                &
+!!     &          sph_params, sph_rj, radial_rj_grp, fl_prop, cd_prop,  &
 !!     &          CTR_nod_grp_name, CTR_sf_grp_name)
-!!        type(time_evolution_params), intent(in) :: evo_B
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in)  :: cd_prop
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(group_data), intent(in) :: radial_rj_grp
@@ -41,8 +41,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_bc_sph_mhd(evo_B, evo_T, evo_C,                  &
-     &          sph_params, sph_rj, radial_rj_grp, fl_prop,             &
+      subroutine s_set_bc_sph_mhd(evo_T, evo_C,                  &
+     &          sph_params, sph_rj, radial_rj_grp, fl_prop, cd_prop,    &
      &          CTR_nod_grp_name, CTR_sf_grp_name)
 !
       use m_phys_labels
@@ -55,12 +55,12 @@
       use m_coef_fdm_to_center
       use cal_fdm_coefs_4_boundaries
 !
-      type(time_evolution_params), intent(in) :: evo_B
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(group_data), intent(in) :: radial_rj_grp
       type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in)  :: cd_prop
       character(len=kchara), intent(in) :: CTR_nod_grp_name
       character(len=kchara), intent(in) :: CTR_sf_grp_name
 !

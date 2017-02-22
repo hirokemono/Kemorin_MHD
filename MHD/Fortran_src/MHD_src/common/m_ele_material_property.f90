@@ -5,10 +5,8 @@
 !
 !     Written by H. Matsui
 !
-!!      subroutine init_ele_material_property                           &
-!!     &         (numele, evo_B, evo_A, evo_T, evo_C,            &
+!!      subroutine init_ele_material_property(numele, evo_T, evo_C,     &
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop)
-!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in)  :: cd_prop
@@ -32,15 +30,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine init_ele_material_property                             &
-     &         (numele, evo_B, evo_A, evo_T, evo_C,              &
+      subroutine init_ele_material_property(numele, evo_T, evo_C,       &
      &          fl_prop, cd_prop, ht_prop, cp_prop)
 !
       use t_time_stepping_parameter
       use t_physical_property
 !
       integer(kind = kint), intent(in) :: numele
-      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in)  :: cd_prop

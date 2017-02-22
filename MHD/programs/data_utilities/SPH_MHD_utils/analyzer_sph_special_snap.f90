@@ -319,8 +319,9 @@
 !
 !
       call s_lead_fields_4_sph_mhd                                      &
-     &   (evo_magne, evo_temp, evo_comp, SGS_par1%model_p, sph,         &
-     &    comms_sph, r_2nd, fl_prop1, trans_p1, ipol, rj_fld, trns_WK)
+     &   (evo_temp, evo_comp, SGS_par1%model_p, sph,                    &
+     &    comms_sph, r_2nd, fl_prop1, cd_prop1,                         &
+     &    trans_p1, ipol, rj_fld, trns_WK)
 !
       call sph_back_trans_4_MHD                                         &
      &   (sph, comms_sph, fl_prop1, omega_sph, trans_p1,                &

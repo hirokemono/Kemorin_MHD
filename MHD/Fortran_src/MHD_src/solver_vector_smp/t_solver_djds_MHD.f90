@@ -6,20 +6,21 @@
 !!@date Modified in Nov., 2013
 !
 !>     DJDS ordering table for MHD dynamo model
-!
+!!
 !!      subroutine alloc_aiccg_matrices                                 &
-!!     &          (evo_B, evo_A, evo_T, evo_C, node, fl_prop,           &
+!!     &          (evo_T, evo_C, node, fl_prop, cd_prop,                &
 !!     &           djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fll,     &
 !!     &           mat_velo, mat_magne, mat_temp, mat_light,            &
 !!     &           mat_press, mat_magp)
 !!      subroutine alloc_MG_zero_matrices                               &
-!!     &         (evo_B, evo_A, evo_T, evo_C, fl_prop, mat_velo,        &
+!!     &         (evo_T, evo_C, fl_prop, cd_prop, mat_velo,             &
 !!     &          mat_magne, mat_temp,  mat_light, mat_press, mat_magp)
 !!      subroutine dealloc_aiccg_matrices                               &
-!!     &         (evo_B, evo_A, evo_T, evo_C, fl_prop, mat_velo,        &
+!!     &         (evo_T, evo_C, fl_prop, cd_prop, mat_velo,             &
 !!     &          mat_magne, mat_temp, mat_light, mat_press, mat_magp)
-!!        type(time_evolution_params), intent(in) :: evo_B, evo_A
 !!        type(time_evolution_params), intent(in) :: evo_T, evo_C
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in) :: cd_prop
 !!        type(DJDS_MATRIX),  intent(inout) :: mat_velo
 !!        type(DJDS_MATRIX),  intent(inout) :: mat_magne
 !!        type(DJDS_MATRIX),  intent(inout) :: mat_temp
@@ -165,7 +166,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine alloc_aiccg_matrices                                   &
-     &          (evo_B, evo_A, evo_T, evo_C, node, fl_prop,             &
+     &          (evo_T, evo_C, node, fl_prop, cd_prop,                  &
      &           djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fll,       &
      &           mat_velo, mat_magne, mat_temp, mat_light,              &
      &           mat_press, mat_magp)
@@ -173,9 +174,9 @@
       use t_geometry_data
       use t_geometry_data_MHD
 !
-      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
 !
       type(node_data), intent(in) :: node
       type(DJDS_ordering_table),  intent(in) :: djds_tbl
@@ -236,12 +237,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine alloc_MG_zero_matrices                                 &
-     &         (evo_B, evo_A, evo_T, evo_C, fl_prop, mat_velo,          &
+     &         (evo_T, evo_C, fl_prop, cd_prop, mat_velo,               &
      &          mat_magne, mat_temp,  mat_light, mat_press, mat_magp)
 !
-      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
 !
       type(DJDS_MATRIX),  intent(inout) :: mat_velo
       type(DJDS_MATRIX),  intent(inout) :: mat_magne
@@ -285,12 +286,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine dealloc_aiccg_matrices                                 &
-     &         (evo_B, evo_A, evo_T, evo_C, fl_prop, mat_velo,          &
+     &         (evo_T, evo_C, fl_prop, cd_prop, mat_velo,               &
      &          mat_magne, mat_temp, mat_light, mat_press, mat_magp)
 !
-      type(time_evolution_params), intent(in) :: evo_B, evo_A
       type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
 !
       type(DJDS_MATRIX),  intent(inout) :: mat_velo
       type(DJDS_MATRIX),  intent(inout) :: mat_magne
