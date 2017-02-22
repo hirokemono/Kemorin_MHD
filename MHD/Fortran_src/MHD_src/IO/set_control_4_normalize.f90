@@ -9,10 +9,10 @@
 !!
 !!@verbatim
 !!      subroutine s_set_control_4_normalize                            &
-!!     &       (evo_T, evo_C, fl_prop, cd_prop, dless_ctl, eqs_ctl)
-!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
+!!     &        (fl_prop, cd_prop, ht_prop, cp_prop, dless_ctl, eqs_ctl)
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in)  :: cd_prop
+!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(dimless_control), intent(inout) :: dless_ctl
 !!        type(equations_control), intent(inout) :: eqs_ctl
 !!@endverbatim
@@ -24,7 +24,6 @@
       use calypso_mpi
       use m_error_IDs
 !
-      use t_time_stepping_parameter
       use t_physical_property
       use t_normalize_parameter
       use t_ctl_data_mhd_normalize
@@ -43,14 +42,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_4_normalize                              &
-     &         (evo_T, evo_C, fl_prop, cd_prop, dless_ctl, eqs_ctl)
+     &        (fl_prop, cd_prop, ht_prop, cp_prop, dless_ctl, eqs_ctl)
 !
       use m_physical_property
       use m_normalize_parameter
 !
-      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in)  :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(dimless_control), intent(inout) :: dless_ctl
       type(equations_control), intent(inout) :: eqs_ctl
 !

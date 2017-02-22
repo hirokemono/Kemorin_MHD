@@ -71,7 +71,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_write_djds_mat_MHD'
       call s_write_djds_mat_MHD                                         &
-     &   (evo_temp, evo_comp, fl_prop1, cd_prop1,                       &
+     &   (fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
      &    solver_pack1%Vmatrix, solver_pack1%Pmatrix,                   &
      &    solver_pack1%Bmatrix, solver_pack1%Fmatrix,                   &
      &    solver_pack1%Tmatrix, solver_pack1%Cmatrix)

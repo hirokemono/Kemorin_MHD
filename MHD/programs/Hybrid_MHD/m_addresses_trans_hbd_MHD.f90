@@ -99,7 +99,6 @@
 !
       subroutine set_addresses_trans_hbd_MHD(evo_B, SGS_param)
 !
-      use t_time_stepping_parameter
       use t_SGS_control_parameter
 !
       type(time_evolution_params), intent(in) :: evo_B

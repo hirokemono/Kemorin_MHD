@@ -10,8 +10,8 @@
 !!
 !!@verbatim
 !!      subroutine s_set_control_4_temp                                 &
-!!     &         (evo_T, node_bc_T_ctl, surf_bc_HF_ctl)
-!!        type(time_evolution_params), intent(in) :: evo_T
+!!     &         (ht_prop, node_bc_T_ctl, surf_bc_HF_ctl)
+!!        type(scalar_property), intent(in) :: ht_prop
 !!        type(ctl_array_c2r), intent(inout) :: node_bc_T_ctl
 !!        type(ctl_array_c2r), intent(inout) :: surf_bc_HF_ctl
 !!@endverbatim
@@ -29,18 +29,18 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_4_temp                                   &
-     &         (evo_T, node_bc_T_ctl, surf_bc_HF_ctl)
+     &         (ht_prop, node_bc_T_ctl, surf_bc_HF_ctl)
 !
       use m_machine_parameter
       use calypso_mpi
-      use t_time_stepping_parameter
+      use t_physical_property
       use t_read_control_arrays
       use m_bc_data_list
       use m_surf_data_list
       use set_node_group_types
       use set_surface_group_types
 !
-      type(time_evolution_params), intent(in) :: evo_T
+      type(scalar_property), intent(in) :: ht_prop
       type(ctl_array_c2r), intent(inout) :: node_bc_T_ctl
       type(ctl_array_c2r), intent(inout) :: surf_bc_HF_ctl
 !

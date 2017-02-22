@@ -9,14 +9,12 @@
 !>      DJDS matrix data
 !!
 !!@verbatim
-!!      subroutine int_vol_crank_mat_lump                               &
-!!     &         (evo_T, evo_C, mesh, fluid, conduct,                   &
+!!      subroutine int_vol_crank_mat_lump(mesh, fluid, conduct,         &
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop,                   &
 !!     &          DJDS_table, DJDS_table_fluid, mlump_fl, mlump_cd,     &
 !!     &          mat_velo, mat_magne, mat_temp, mat_light)
 !!      subroutine add_lumped_coriolis_matrix(mesh, fluid, fl_prop,     &
 !!     &          DJDS_table_fluid,  mlump_fl, mat_velo)
-!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(mesh_data), intent(in) ::              mesh
 !!        type(field_geometry_data), intent(in) :: fluid, conduct
 !!        type(fluid_property), intent(in) :: fl_prop
@@ -37,7 +35,6 @@
       use m_precision
       use m_constants
 !
-      use t_time_stepping_parameter
       use t_physical_property
       use t_mesh_data
       use t_geometry_data
@@ -55,13 +52,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_vol_crank_mat_lump                                 &
-     &         (evo_T, evo_C, mesh, fluid, conduct,                     &
+      subroutine int_vol_crank_mat_lump(mesh, fluid, conduct,           &
      &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
      &          DJDS_table, DJDS_table_fluid, mlump_fl, mlump_cd,       &
      &          mat_velo, mat_magne, mat_temp, mat_light)
 !
-      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(mesh_geometry), intent(in) :: mesh
       type(field_geometry_data), intent(in) :: fluid, conduct
       type(fluid_property), intent(in) :: fl_prop

@@ -7,18 +7,18 @@
 !> @brief Evaluate nonlinear terms at poles
 !!
 !!@verbatim
-!!      subroutine pole_nonlinear_sph_MHD(evo_T, evo_C,                 &
-!!     &          sph_rtp, node, fl_prop, cd_prop, iphys, nod_fld)
+!!      subroutine pole_nonlinear_sph_MHD(sph_rtp, node,                &
+!!     &          fl_prop, cd_prop, ht_prop, cp_prop, iphys, nod_fld)
 !!      subroutine pole_energy_flux_rtp(sph_rtp, node,                  &
 !!     &          fl_prop, cd_prop, ref_param_T, ref_param_C,           &
 !!     &         iphys, nod_fld)
-!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(node_data), intent(in) :: node
 !!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in) :: cd_prop
+!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(reference_scalar_param), intent(in) :: ref_param_T
 !!        type(reference_scalar_param), intent(in) :: ref_param_C
-!!        type(conductive_property), intent(in) :: cd_prop
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
 !!@endverbatim
@@ -28,7 +28,6 @@
       use m_precision
       use m_constants
 !
-      use t_time_stepping_parameter
       use t_physical_property
       use t_spheric_rtp_data
       use t_geometry_data
@@ -45,18 +44,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine pole_nonlinear_sph_MHD(evo_T, evo_C,                   &
-     &          sph_rtp, node, fl_prop, cd_prop, iphys, nod_fld)
+      subroutine pole_nonlinear_sph_MHD(sph_rtp, node,                  &
+     &          fl_prop, cd_prop, ht_prop, cp_prop, iphys, nod_fld)
 !
       use m_machine_parameter
 !
       use products_at_poles
 !
-      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(node_data), intent(in) :: node
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(inout) :: nod_fld
 !

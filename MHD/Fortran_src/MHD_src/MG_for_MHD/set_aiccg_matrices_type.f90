@@ -140,9 +140,9 @@
       type(DJDS_MATRIX),  intent(inout) :: mat_magp
 !
 !
-      call reset_MHD_aiccg_mat_type                                     &
-     &   (evo_temp, evo_comp,                    &
-     &    mesh%node, mesh%ele, MHD_mesh%fluid, fl_prop, cd_prop,        &
+      call reset_MHD_aiccg_matrices                                     &
+     &   (mesh%node, mesh%ele, MHD_mesh%fluid,                          &
+     &    fl_prop, cd_prop, ht_prop, cp_prop,                           &
      &    djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,             &
      &    mat_velo, mat_magne, mat_temp, mat_light,                     &
      &    mat_press, mat_magp)
@@ -158,15 +158,13 @@
 !
       if (iflag_scheme .eq. id_Crank_nicolson) then
         call int_vol_crank_mat_lump                                     &
-     &     (evo_temp, evo_comp,                  &
-     &      mesh, MHD_mesh%fluid, MHD_mesh%conduct,                     &
+     &     (mesh, MHD_mesh%fluid, MHD_mesh%conduct,                     &
      &      fl_prop, cd_prop, ht_prop, cp_prop,                         &
      &      djds_tbl, djds_tbl_fl, mlump_fl, mlump_cd,                  &
      &      mat_velo, mat_magne, mat_temp, mat_light)
 !
         call int_MHD_crank_matrices                                     &
-     &     (evo_temp, evo_comp,                  &
-     &      FEM_prm%npoint_t_evo_int, SGS_param%ifilter_final,          &
+     &     (FEM_prm%npoint_t_evo_int, SGS_param%ifilter_final,          &
      &      mesh, fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD,           &
      &      jac_3d_q, rhs_tbl, MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q, &
      &      FEM_elens, ifld_diff, diff_coefs, fem_wk,                   &
@@ -174,13 +172,11 @@
 !
       else if (iflag_scheme .eq. id_Crank_nicolson_cmass) then
         call int_vol_crank_mat_consist(FEM_prm%npoint_t_evo_int,        &
-     &       evo_temp, evo_comp,                 &
      &       mesh, fl_prop, cd_prop, ht_prop, cp_prop,                  &
      &       jac_3d_q, rhs_tbl, MG_mat_fl_q, MG_mat_full_cd_q, fem_wk,  &
      &      mat_velo, mat_magne, mat_temp, mat_light)
         call int_MHD_crank_matrices                                     &
-     &     (evo_temp, evo_comp,                  &
-     &      FEM_prm%npoint_t_evo_int, SGS_param%ifilter_final,          &
+     &     (FEM_prm%npoint_t_evo_int, SGS_param%ifilter_final,          &
      &      mesh, fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD,           &
      &      jac_3d_q, rhs_tbl, MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q, &
      &      FEM_elens, ifld_diff, diff_coefs, fem_wk,                   &
@@ -190,8 +186,8 @@
 !     set boundary conditions
 !
       call set_aiccg_bc_phys(FEM_prm%npoint_t_evo_int,                  &
-     &    evo_temp, evo_comp,                   &
-     &    mesh%ele, ele_mesh%surf, group%surf_grp, fl_prop1, cd_prop1,  &
+     &    mesh%ele, ele_mesh%surf, group%surf_grp,                      &
+     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
      &    jac_sf_grp_q, rhs_tbl, MG_mat_fl_q, nod_bcs, surf_bcs,        &
      &    djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,             &
      &    ak_MHD%ak_d_velo, surf_wk, fem_wk, mat_velo, mat_magne,       &

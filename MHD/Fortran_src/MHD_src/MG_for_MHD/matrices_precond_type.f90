@@ -5,14 +5,14 @@
 !        modified by H. Matsui on Aug., 2007
 !
 !!      subroutine s_matrices_precond_type                              &
-!!     &         (PRECOND_MG, evo_T, evo_C, fl_prop, cd_prop,           &
+!!     &         (PRECOND_MG, fl_prop, cd_prop, ht_prop, cp_prop,       &
 !!     &          djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,     &
 !!     &          mat_velo, mat_magne, mat_temp, mat_light,             &
 !!     &          mat_press, mat_magp)
 !!        character(len=kchara),  intent(in) :: PRECOND_MG
-!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
+!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(DJDS_ordering_table),  intent(in) :: djds_tbl
 !!        type(DJDS_ordering_table),  intent(in) :: djds_tbl_fl
 !!        type(DJDS_ordering_table),  intent(in) :: djds_tbl_l
@@ -37,14 +37,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_matrices_precond_type                                &
-     &         (PRECOND_MG, evo_T, evo_C, fl_prop, cd_prop,             &
+     &         (PRECOND_MG, fl_prop, cd_prop, ht_prop, cp_prop,         &
      &          djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,       &
      &          mat_velo, mat_magne, mat_temp, mat_light,               &
      &          mat_press, mat_magp)
 !
       use m_iccg_parameter
       use m_machine_parameter
-      use t_time_stepping_parameter
       use t_physical_property
       use t_solver_djds
 !
@@ -52,9 +51,9 @@
       use solver_DJDS33_struct
 !
       character(len=kchara),  intent(in) :: PRECOND_MG
-      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(DJDS_ordering_table),  intent(in) :: djds_tbl
       type(DJDS_ordering_table),  intent(in) :: djds_tbl_fl
       type(DJDS_ordering_table),  intent(in) :: djds_tbl_l

@@ -4,9 +4,7 @@
 !      Written by H.Matsui on Dec., 2008
 !
 !!      subroutine s_set_diffusivities_MHD_AMG                          &
-!!     &         (evo_T, evo_C, ele,               &
-!!     &          fl_prop, cd_prop, ht_prop, cp_prop, ak_AMG)
-!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
+!!     &         (ele, fl_prop, cd_prop, ht_prop, cp_prop, ak_AMG)
 !!        type(element_data), intent(in) :: ele
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
@@ -17,7 +15,6 @@
 !
       use m_precision
 !
-      use t_time_stepping_parameter
       use t_geometry_data
       use t_coefs_element_4_MHD
       use t_physical_property
@@ -31,10 +28,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_diffusivities_MHD_AMG                            &
-     &         (evo_T, evo_C, ele,                 &
-     &          fl_prop, cd_prop, ht_prop, cp_prop, ak_AMG)
+     &         (ele, fl_prop, cd_prop, ht_prop, cp_prop, ak_AMG)
 !
-      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(element_data), intent(in) :: ele
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop

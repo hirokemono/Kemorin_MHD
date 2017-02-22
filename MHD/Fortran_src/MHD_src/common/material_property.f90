@@ -18,7 +18,6 @@
       use m_precision
       use m_constants
 !
-      use t_time_stepping_parameter
       use t_phys_address
       use t_physical_property
       use calypso_mpi
@@ -45,7 +44,7 @@
 !    For thermal
       if (my_rank .eq. 0) write(*,*) ''
       call set_thermal_property                                         &
-     &   (iphys, depth_top, depth_bottom, evo_temp, ht_prop1)
+     &   (iphys, depth_top, depth_bottom, ht_prop1)
 !
 !    For convection
       call set_fluid_property                                           &
@@ -57,7 +56,7 @@
 !
 !   For light element
       call set_composition_property                                     &
-     &   (iphys, depth_top, depth_bottom, evo_comp, cp_prop1)
+     &   (iphys, depth_top, depth_bottom, cp_prop1)
       if (my_rank .eq. 0) write(*,*) ''
 !
       end subroutine set_material_property
@@ -230,7 +229,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_thermal_property                                   &
-     &         (iphys, depth_top, depth_bottom, evo_T, ht_prop)
+     &         (iphys, depth_top, depth_bottom, ht_prop)
 !
       use m_normalize_parameter
       use m_t_int_parameter
@@ -238,7 +237,6 @@
 !
       type(phys_address), intent(in) :: iphys
       real(kind = kreal), intent(in) :: depth_top, depth_bottom
-      type(time_evolution_params), intent(inout) :: evo_T
       type(scalar_property), intent(inout) :: ht_prop
 !
 !    For thermal
@@ -284,7 +282,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_composition_property                               &
-     &         (iphys, depth_top, depth_bottom, evo_C, cp_prop)
+     &         (iphys, depth_top, depth_bottom, cp_prop)
 !
       use m_normalize_parameter
       use m_t_int_parameter
@@ -292,7 +290,6 @@
 !
       type(phys_address), intent(in) :: iphys
       real(kind = kreal), intent(in) :: depth_top, depth_bottom
-      type(time_evolution_params), intent(inout) :: evo_C
       type(scalar_property), intent(inout) :: cp_prop
 !
 !   For light element

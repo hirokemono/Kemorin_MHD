@@ -9,11 +9,11 @@
 !!
 !!@verbatim
 !!      subroutine s_set_control_4_filtering                            &
-!!     &         (evo_T, evo_C, fl_prop, cd_prop, SGS_param,            &
+!!     &         (fl_prop, cd_prop, ht_prop, cp_prop, SGS_param,        &
 !!     &          SGS_filter_name_ctl, ffile_ctl, s3df_ctl, filter_param)
-!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in)  :: cd_prop
+!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(read_character_item), intent(in) :: SGS_filter_name_ctl
 !!        type(filter_file_control), intent(in) :: ffile_ctl
 !!        type(SGS_3d_filter_control), intent(inout) :: s3df_ctl
@@ -39,26 +39,24 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_4_filtering                              &
-     &         (evo_T, evo_C, fl_prop, cd_prop, SGS_param,              &
+     &         (fl_prop, cd_prop, ht_prop, cp_prop, SGS_param,          &
      &          SGS_filter_name_ctl, ffile_ctl, s3df_ctl, filter_param)
 !
       use m_file_format_switch
       use m_phys_labels
       use m_filter_file_names
-      use t_time_stepping_parameter
       use t_physical_property
       use t_SGS_control_parameter
       use t_ctl_data_SGS_filter
       use t_ctl_data_filter_files
       use t_read_control_arrays
-      use t_time_stepping_parameter
       use sgs_ini_model_coefs_IO
       use set_control_ele_layering
       use skip_comment_f
 !
-      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in)  :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(read_character_item), intent(in) :: SGS_filter_name_ctl
       type(filter_file_control), intent(in) :: ffile_ctl

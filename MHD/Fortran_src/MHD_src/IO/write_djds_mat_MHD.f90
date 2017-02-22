@@ -4,11 +4,11 @@
 !     Written by H. Matsui on Apr., 2008
 !
 !!      subroutine s_write_djds_mat_MHD                                 &
-!!     &         (evo_T, evo_C, fl_prop, cd_prop,                       &
+!!     &         (fl_prop, cd_prop, ht_prop, cp_prop,                   &
 !!     &          Vmatrix, Pmatrix, Bmatrix, Fmatrix, Tmatrix, Cmatrix)
-!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
+!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(MHD_MG_matrix), intent(in) :: Vmatrix, Bmatrix
 !!        type(MHD_MG_matrix), intent(in) :: Pmatrix, Fmatrix
 !!        type(MHD_MG_matrix), intent(in) :: Tmatrix, Cmatrix
@@ -53,15 +53,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_write_djds_mat_MHD                                   &
-     &         (evo_T, evo_C, fl_prop, cd_prop,                         &
+     &         (fl_prop, cd_prop, ht_prop, cp_prop,                     &
      &          Vmatrix, Pmatrix, Bmatrix, Fmatrix, Tmatrix, Cmatrix)
 !
-      use t_time_stepping_parameter
       use t_physical_property
       use t_solver_djds_MHD
 !
-      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(conductive_property), intent(in) :: cd_prop
       type(MHD_MG_matrix), intent(in) :: Vmatrix, Bmatrix
       type(MHD_MG_matrix), intent(in) :: Pmatrix, Fmatrix

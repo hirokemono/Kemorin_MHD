@@ -5,15 +5,14 @@
 !                                    on July 2000 (ver 1.1)
 !        modieied by H. Matsui on Sep., 2005
 !
-!!      subroutine cal_temperature_field(i_field, evo_T, FEM_prm,       &
-!!     &          SGS_param, cmt_param, filter_param,                   &
+!!      subroutine cal_temperature_field                                &
+!!     &         (i_field, FEM_prm, SGS_param, cmt_param, filter_param, &
 !!     &          nod_comm, node, ele, surf, fluid, sf_grp, property,   &
 !!     &          Tnod_bcs, Tsf_bcs, iphys, iphys_ele, ele_fld,         &
 !!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, icomp_sgs,    &
 !!     &          ifld_diff, iphys_elediff, sgs_coefs, sgs_coefs_nod,   &
 !!     &          diff_coefs, filtering, Tmatrix, ak_d_temp, wk_filter, &
 !!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
-!!        type(time_evolution_params), intent(in) :: evo_T
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -55,7 +54,6 @@
       use m_machine_parameter
       use m_iccg_parameter
 !
-      use t_time_stepping_parameter
       use t_SGS_control_parameter
       use t_physical_property
       use t_comm_table
@@ -87,8 +85,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_temperature_field(i_field, evo_T, FEM_prm,         &
-     &          SGS_param, cmt_param, filter_param,                     &
+      subroutine cal_temperature_field                                  &
+     &         (i_field, FEM_prm, SGS_param, cmt_param, filter_param,   &
      &          nod_comm, node, ele, surf, fluid, sf_grp, property,     &
      &          Tnod_bcs, Tsf_bcs, iphys, iphys_ele, ele_fld,           &
      &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, icomp_sgs,      &
@@ -115,7 +113,6 @@
 !
       integer(kind = kint), intent(in) :: i_field
 !
-      type(time_evolution_params), intent(in) :: evo_T
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
@@ -255,16 +252,16 @@
       end if
 !
 !
-      if (ht_prop%iflag_scheme .eq. id_explicit_euler) then
+      if (property%iflag_scheme .eq. id_explicit_euler) then
         call cal_scalar_pre_euler(FEM_prm%iflag_temp_supg, i_field,     &
      &      FEM_prm, nod_comm, node, ele, fluid, iphys_ele, ele_fld,    &
      &      jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-      else if (ht_prop%iflag_scheme .eq. id_explicit_adams2) then
+      else if (property%iflag_scheme .eq. id_explicit_adams2) then
         call cal_scalar_pre_adams                                       &
      &     (FEM_prm%iflag_temp_supg, i_field, iphys%i_pre_heat,         &
      &      FEM_prm, nod_comm, node, ele, fluid, iphys_ele, ele_fld,    &
      &      jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-      else if (ht_prop%iflag_scheme .eq. id_Crank_nicolson) then
+      else if (property%iflag_scheme .eq. id_Crank_nicolson) then
         call cal_temp_pre_lumped_crank(FEM_prm%iflag_temp_supg,         &
      &      cmt_param%iflag_c_temp, SGS_param%ifilter_final,            &
      &      i_field, iphys%i_pre_heat, ifld_diff%i_temp,                &
@@ -272,7 +269,7 @@
      &      FEM_prm, nod_comm, node, ele, fluid, property, Tnod_bcs,    &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
      &      Tmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-      else if (ht_prop%iflag_scheme .eq. id_Crank_nicolson_cmass) then 
+      else if (property%iflag_scheme .eq. id_Crank_nicolson_cmass) then 
         call cal_temp_pre_consist_crank                                 &
      &     (cmt_param%iflag_c_temp, SGS_param%ifilter_final,            &
      &      i_field, iphys%i_pre_heat, ifld_diff%i_temp,                &

@@ -13,13 +13,12 @@
 !!     &          mesh, fl_prop, cd_prop, jac_3d_l, rhs_tbl,            &
 !!     &          MG_mat_linear, MG_mat_fl_l, FEM_elens,                &
 !!     &          ifld_diff, diff_coefs, fem_wk, mat_press, mat_magp)
-!!      subroutine int_MHD_crank_matrices(evo_T, evo_C,   &
-!!     &          num_int, ifilter_final, mesh,                         &
+!!      subroutine int_MHD_crank_matrices                               &
+!!     &         (num_int, ifilter_final, mesh,                         &
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD, jac_3d,   &
 !!     &          rhs_tbl, MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,     &
 !!     &          FEM_elens, ifld_diff, diff_coefs, fem_wk,             &
 !!     &          mat_velo, mat_magne, mat_temp, mat_light)
-!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
@@ -46,7 +45,6 @@
       use m_precision
       use m_phys_constants
 !
-      use t_time_stepping_parameter
       use t_physical_property
       use t_FEM_control_parameter
       use t_SGS_control_parameter
@@ -120,8 +118,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine int_MHD_crank_matrices(evo_T, evo_C,     &
-     &          num_int, ifilter_final, mesh,                           &
+      subroutine int_MHD_crank_matrices                                 &
+     &         (num_int, ifilter_final, mesh,                           &
      &          fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD, jac_3d,     &
      &          rhs_tbl, MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,       &
      &          FEM_elens, ifld_diff, diff_coefs, fem_wk,               &
@@ -130,7 +128,6 @@
       use m_t_int_parameter
 !
       integer(kind = kint), intent(in) :: num_int, ifilter_final
-      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(mesh_geometry), intent(in) :: mesh
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop

@@ -9,16 +9,16 @@
 !!     &          ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs, sgs_coefs_nod)
 !!
 !!      subroutine set_sgs_addresses                                    &
-!!     &          (evo_T, evo_C, SGS_param, fl_prop, cd_prop,           &
+!!     &          (SGS_param, fl_prop, cd_prop, ht_prop, cp_prop,       &
 !!     &           ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
-!!      subroutine s_count_sgs_components                               &
-!!     &         (evo_T, evo_C, SGS_param, fl_prop, cd_prop, sgs_coefs)
+!!      subroutine s_count_sgs_components(SGS_param,                    &
+!!     &          fl_prop, cd_prop, ht_prop, cp_prop, sgs_coefs)
 !!      subroutine set_SGS_ele_fld_addresses                            &
 !!     &         (cd_prop, SGS_param, iphys_elediff)
-!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
+!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(SGS_terms_address), intent(inout) :: ifld_sgs
 !!        type(SGS_terms_address), intent(inout) :: icomp_sgs
@@ -66,8 +66,7 @@
 !
 !
       call s_count_sgs_components                                       &
-     &   (evo_temp, evo_comp,                    &
-     &    SGS_param, fl_prop1, cd_prop1, sgs_coefs)
+     &   (SGS_param, fl_prop1, cd_prop1, ht_prop1, cp_prop1, sgs_coefs)
 !
 !   set index for model coefficients
 !
@@ -78,8 +77,8 @@
       call alloc_SGS_coefs(numele, sgs_coefs)
 !
       call set_sgs_addresses                                            &
-     &   (evo_temp, evo_comp, SGS_param,                                &
-     &    fl_prop1, cd_prop1, ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
+     &   (SGS_param, fl_prop1, cd_prop1, ht_prop1, cp_prop1,            &
+     &    ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
       call check_sgs_addresses                                          &
      &   (ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
 !
@@ -93,13 +92,12 @@
 !
 !  ------------------------------------------------------------------
 !
-      subroutine s_count_sgs_components                                 &
-     &         (evo_T, evo_C, SGS_param, fl_prop, cd_prop, sgs_coefs)
+      subroutine s_count_sgs_components(SGS_param,                      &
+     &          fl_prop, cd_prop, ht_prop, cp_prop, sgs_coefs)
 !
       use calypso_mpi
       use m_phys_labels
 !
-      use t_time_stepping_parameter
       use t_SGS_control_parameter
       use t_layering_ele_list
       use t_ele_info_4_dynamic
@@ -107,10 +105,10 @@
       use t_physical_property
       use t_SGS_model_coefs
 !
-      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
 !
 !    count coefficients for SGS terms
@@ -172,24 +170,22 @@
 !  ------------------------------------------------------------------
 !
       subroutine set_sgs_addresses                                      &
-     &          (evo_T, evo_C, SGS_param, fl_prop, cd_prop,             &
+     &          (SGS_param, fl_prop, cd_prop, ht_prop, cp_prop,         &
      &           ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
 !
       use calypso_mpi
       use m_phys_labels
 !
-      use t_time_stepping_parameter
       use t_SGS_control_parameter
       use t_layering_ele_list
       use t_ele_info_4_dynamic
       use t_physical_property
-      use t_physical_property
       use t_SGS_model_coefs
 !
-      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
 !
       type(SGS_terms_address), intent(inout) :: ifld_sgs, icomp_sgs
       type(dynamic_model_data), intent(inout) :: wk_sgs

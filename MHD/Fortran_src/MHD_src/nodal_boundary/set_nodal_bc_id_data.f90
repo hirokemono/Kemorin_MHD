@@ -6,7 +6,7 @@
 !        modified by H.Matsui on Aug., 2007
 !
 !!      subroutine set_bc_fields                                        &
-!!     &         (evo_T, evo_C, mesh, fl_prop, cd_prop,                 &
+!!     &         (mesh, fl_prop, cd_prop, ht_prop, cp_prop,             &
 !!     &          iphys, nod_fld, nod_bcs)
 !!      subroutine set_boundary_velo(node, i_velo, nod_fld)
 !!      subroutine set_boundary_velo_4_rhs(node, Vnod_bcs, f_l, f_nl)
@@ -14,6 +14,7 @@
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
+!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(node_data), intent(in) :: node
 !!        type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
@@ -28,7 +29,6 @@
       use m_precision
       use m_constants
 !
-      use t_time_stepping_parameter
       use t_physical_property
       use t_mesh_data
       use t_geometry_data_MHD
@@ -48,7 +48,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_bc_fields                                          &
-     &         (evo_T, evo_C, mesh, fl_prop, cd_prop,                   &
+     &         (mesh, fl_prop, cd_prop, ht_prop, cp_prop,               &
      &          iphys, nod_fld, nod_bcs)
 !
       use m_machine_parameter
@@ -61,10 +61,10 @@
       use set_nodal_boundary
       use set_boundary_scalars
 !
-      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(mesh_geometry), intent(in) :: mesh
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
 !
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(inout) :: nod_fld

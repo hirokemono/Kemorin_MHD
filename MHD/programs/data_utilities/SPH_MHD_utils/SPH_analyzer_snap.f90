@@ -84,8 +84,8 @@
 !
       if(SGS_par1%model_p%iflag_SGS .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)' init_SGS_model_sph_mhd'
-        call init_SGS_model_sph_mhd                                     &
-     &     (SGS_par1, sph1, sph_grps1, fl_prop1, cd_prop1,              &
+        call init_SGS_model_sph_mhd(SGS_par1, sph1, sph_grps1,          &
+     &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
      &      trns_WK1%dynamic_SPH)
       end if
 !
@@ -163,9 +163,8 @@
      &    sph1%sph_rj, ipol, idpdr, rj_fld1)
 !*
       if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
-      call s_lead_fields_4_sph_mhd                                      &
-     &   (evo_temp, evo_comp, SGS_par1%model_p, sph1,                   &
-     &    comms_sph1, r_2nd, fl_prop1, cd_prop1,                        &
+      call s_lead_fields_4_sph_mhd(SGS_par1%model_p, sph1,              &
+     &    comms_sph1, r_2nd, fl_prop1, cd_prop1, ht_prop1, cp_prop1,    &
      &    trans_p1, ipol, rj_fld1, trns_WK1)
       call end_eleps_time(9)
 !

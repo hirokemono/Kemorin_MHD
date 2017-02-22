@@ -7,16 +7,17 @@
 !>@brief  Update fields for MHD dynamo model
 !!
 !!@verbatim
-!!      subroutine s_cal_sol_sph_MHD_crank(evo_T, evo_C, sph_rj, r_2nd, &
-!!     &          cd_prop, leg, ipol, idpdr, itor, rj_fld)
+!!      subroutine s_cal_sol_sph_MHD_crank                              &
+!!     &         (sph_rj, r_2nd, cd_prop, ht_prop, cp_prop, leg,        &
+!!     &          ipol, idpdr, itor, rj_fld)
 !!      subroutine set_sph_field_to_start                               &
 !!     &         (sph_rj, r_2nd, leg, ipol, itor, rj_fld)
-!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
+!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(phys_address), intent(in) :: ipol, itor
 !!        type(phys_data), intent(inout) :: rj_fld
 !!
@@ -37,7 +38,6 @@
       use const_sph_rotation
       use const_sph_diffusion
 !
-      use t_time_stepping_parameter
       use t_physical_property
       use t_spheric_rj_data
       use t_phys_address
@@ -55,8 +55,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_cal_sol_sph_MHD_crank(evo_T, evo_C, sph_rj, r_2nd,   &
-     &          cd_prop, leg, ipol, idpdr, itor, rj_fld)
+      subroutine s_cal_sol_sph_MHD_crank                                &
+     &         (sph_rj, r_2nd, cd_prop, ht_prop, cp_prop, leg,          &
+     &          ipol, idpdr, itor, rj_fld)
 !
       use m_physical_property
       use m_boundary_params_sph_MHD
@@ -64,10 +65,10 @@
       use cal_sol_sph_fluid_crank
       use const_sph_radial_grad
 !
-      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(conductive_property), intent(in) :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_address), intent(in) :: ipol, idpdr, itor
       type(phys_data), intent(inout) :: rj_fld

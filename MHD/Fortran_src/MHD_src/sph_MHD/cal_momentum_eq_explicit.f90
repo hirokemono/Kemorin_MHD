@@ -7,12 +7,11 @@
 !>@brief Time integration for momentum equation by explicit scheme
 !!
 !!@verbatim
-!!      subroutine cal_expricit_sph_adams(evo_T, evo_C,                 &
-!!     &          sph_rj, fl_prop, cd_prop, ht_prop, cp_prop,           &
+!!      subroutine cal_expricit_sph_adams                               &
+!!     &         (sph_rj, fl_prop, cd_prop, ht_prop, cp_prop,           &
 !!     &          ipol, itor, rj_fld)
-!!      subroutine cal_expricit_sph_euler(i_step, evo_T, evo_C, sph_rj, &
+!!      subroutine cal_expricit_sph_euler(i_step, sph_rj,               &
 !!     &         fl_prop, cd_prop, ht_prop, cp_prop, ipol, itor, rj_fld)
-!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(scalar_property), intent(in) :: fl_prop
@@ -29,7 +28,6 @@
 !
       use m_precision
 !
-      use t_time_stepping_parameter
       use t_physical_property
       use t_spheric_rj_data
       use t_phys_address
@@ -45,8 +43,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_expricit_sph_adams(evo_T, evo_C,                   &
-     &          sph_rj, fl_prop, cd_prop, ht_prop, cp_prop,             &
+      subroutine cal_expricit_sph_adams                                 &
+     &         (sph_rj, fl_prop, cd_prop, ht_prop, cp_prop,             &
      &          ipol, itor, rj_fld)
 !
       use m_boundary_params_sph_MHD
@@ -55,7 +53,6 @@
       use cal_nonlinear_sph_MHD
       use select_diff_adv_source
 !
-      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
@@ -96,7 +93,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_expricit_sph_euler(i_step, evo_T, evo_C, sph_rj,   &
+      subroutine cal_expricit_sph_euler(i_step, sph_rj,                 &
      &         fl_prop, cd_prop, ht_prop, cp_prop, ipol, itor, rj_fld)
 !
       use m_boundary_params_sph_MHD
@@ -105,7 +102,6 @@
       use select_diff_adv_source
 !
       integer(kind = kint), intent(in) :: i_step
-      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop

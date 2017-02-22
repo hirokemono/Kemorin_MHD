@@ -8,10 +8,10 @@
 !!
 !!@verbatim
 !!      integer(kind = kint) function check_read_boundary_files         &
-!!     &                   (evo_T, evo_C, fl_prop, cd_prop)
-!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
+!!     &                   (fl_prop, cd_prop, ht_prop, cp_prop)
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
+!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!@endverbatim
 !
       module check_read_bc_file
@@ -34,17 +34,16 @@
 !  ---------------------------------------------------------------------
 !
       integer(kind = kint) function check_read_boundary_files           &
-     &                   (evo_T, evo_C, fl_prop, cd_prop)
+     &                   (fl_prop, cd_prop, ht_prop, cp_prop)
 !
       use calypso_mpi
       use m_bc_data_list
       use m_surf_data_list
-      use t_time_stepping_parameter
       use t_physical_property
 !
-      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
 !
       integer(kind = kint) :: iflag_boundary_file
 !

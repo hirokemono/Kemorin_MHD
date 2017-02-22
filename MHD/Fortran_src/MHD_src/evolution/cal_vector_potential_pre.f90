@@ -64,7 +64,6 @@
       use m_t_int_parameter
       use m_phys_constants
 !
-      use t_time_stepping_parameter
       use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_comm_table

@@ -7,18 +7,18 @@
 !        modified by H. Matsui on Oct. 2005
 !        modified by H. Matsui on Feb. 2009
 !
-!!      subroutine set_aiccg_bc_phys(num_int,                           &
-!!     &          evo_T, evo_C, ele, surf, sf_grp, fl_prop, cd_prop,    &
-!!     &          jac_sf_grp, rhs_tbl, MG_mat_fl_q, node_bcs, surf_bcs, &
+!!      subroutine set_aiccg_bc_phys(num_int, ele, surf, sf_grp,        &
+!!     &          fl_prop, cd_prop, ht_prop, cp_prop, jac_sf_grp,       &
+!!     &          rhs_tbl, MG_mat_fl_q, node_bcs, surf_bcs,             &
 !!     &          djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,     &
 !!     &          surf_wk, fem_wk, mat_velo, mat_magne,                 &
 !!     &          mat_temp, mat_light, mat_press, mat_magp)
-!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
+!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(nodal_boundarty_conditions), intent(in) ::   node_bcs
 !!        type(surface_boundarty_conditions), intent(in) :: surf_bcs
 !!        type(jacobians_2d), intent(in) ::          jac_sf_grp
@@ -38,7 +38,6 @@
 !
       use m_precision
 !
-      use t_time_stepping_parameter
       use t_physical_property
       use t_geometry_data
       use t_surface_data
@@ -62,21 +61,21 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_aiccg_bc_phys(num_int,                             &
-     &          evo_T, evo_C, ele, surf, sf_grp, fl_prop, cd_prop,      &
-     &          jac_sf_grp, rhs_tbl, MG_mat_fl_q, node_bcs, surf_bcs,   &
+      subroutine set_aiccg_bc_phys(num_int, ele, surf, sf_grp,          &
+     &          fl_prop, cd_prop, ht_prop, cp_prop, jac_sf_grp,         &
+     &          rhs_tbl, MG_mat_fl_q, node_bcs, surf_bcs,               &
      &          djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,       &
      &          ak_d_velo, surf_wk, fem_wk, mat_velo, mat_magne,        &
      &          mat_temp, mat_light, mat_press, mat_magp)
 !
       use set_aiccg_bc_fixed
 !
-      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(nodal_boundarty_conditions), intent(in) ::   node_bcs
       type(jacobians_2d), intent(in) ::         jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl

@@ -188,7 +188,7 @@
       call s_set_control_4_model                                        &
      &    (model_ctl%reft_ctl, model_ctl%refc_ctl,                      &
      &     ctl_ctl%mevo_ctl, model_ctl%evo_ctl, nmtr_ctl,               &
-     &     evo_temp, evo_comp, fl_prop1, cd_prop1)
+     &     fl_prop1, cd_prop1, ht_prop1, cp_prop1)
 !
 !   set spherical shell parameters
 !
@@ -217,7 +217,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_normalize'
       call s_set_control_4_normalize                                    &
-     &   (evo_temp, evo_comp, fl_prop1, cd_prop1,                       &
+     &   (fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
      &    model_ctl%dless_ctl, model_ctl%eqs_ctl)
 !
 !   set boundary conditions
@@ -231,7 +231,7 @@
       call s_set_control_4_time_steps                                   &
      &   (SGS_param, ctl_ctl%mrst_ctl, ctl_ctl%tctl)
       call s_set_control_4_crank(ctl_ctl%mevo_ctl,                      &
-     &    evo_temp, evo_comp, fl_prop1, cd_prop1)
+     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1)
 !
 !   set_pickup modes
 !
@@ -271,7 +271,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_temp'
       call s_set_control_4_temp                                         &
-     &   (evo_temp, nbc_ctl%node_bc_T_ctl, sbc_ctl%surf_bc_HF_ctl)
+     &   (ht_prop1, nbc_ctl%node_bc_T_ctl, sbc_ctl%surf_bc_HF_ctl)
 !
 !   set boundary conditions for velocity
 !
@@ -289,7 +289,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_composition'
       call s_set_control_4_composition                                  &
-     &   (evo_comp, nbc_ctl%node_bc_C_ctl, sbc_ctl%surf_bc_CF_ctl)
+     &   (cp_prop1, nbc_ctl%node_bc_C_ctl, sbc_ctl%surf_bc_CF_ctl)
 !
 !   set boundary_conditons for magnetic field
 !

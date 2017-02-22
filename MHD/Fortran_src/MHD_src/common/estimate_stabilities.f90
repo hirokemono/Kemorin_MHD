@@ -5,8 +5,7 @@
 !      Modified by H. Matsui on july, 2006
 !
 !!      subroutine cal_stability_4_diffuse                              &
-!!     &         (evo_T, evo_C, ele, fl_prop, cd_prop, ht_prop, cp_prop)
-!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
+!!     &         (ele, fl_prop, cd_prop, ht_prop, cp_prop)
 !!        type(element_data), intent(in) :: ele
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in)  :: cd_prop
@@ -23,7 +22,6 @@
       use m_t_step_parameter
       use m_stability_data
 !
-      use t_time_stepping_parameter
       use t_physical_property
       use t_geometry_data
       use t_geometry_data_MHD
@@ -37,9 +35,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_stability_4_diffuse                                &
-     &         (evo_T, evo_C, ele, fl_prop, cd_prop, ht_prop, cp_prop)
+     &         (ele, fl_prop, cd_prop, ht_prop, cp_prop)
 !
-      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(element_data), intent(in) :: ele
 !
       type(fluid_property), intent(in) :: fl_prop

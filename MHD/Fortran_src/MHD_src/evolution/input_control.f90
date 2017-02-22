@@ -256,7 +256,7 @@
 !
 !
       iflag = check_read_boundary_files                                 &
-     &      (evo_temp, evo_comp, fl_prop1, cd_prop1)
+     &      (fl_prop1, cd_prop1, ht_prop1, cp_prop1)
       if (iflag .eq. id_no_boundary_file) return
 !
       call read_bc_condition_file                                       &

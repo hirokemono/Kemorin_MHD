@@ -15,7 +15,6 @@
       module t_control_parameter
 !
       use m_precision
-      use t_time_stepping_parameter
       use t_physical_property
       use t_reference_scalar_param
 !

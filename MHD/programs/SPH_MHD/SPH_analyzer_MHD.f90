@@ -95,8 +95,8 @@
 !
       if(SGS_par1%model_p%iflag_SGS .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)' init_SGS_model_sph_mhd'
-        call init_SGS_model_sph_mhd                                     &
-     &     (SGS_par1, sph1, sph_grps1, fl_prop1, cd_prop1,              &
+        call init_SGS_model_sph_mhd(SGS_par1, sph1, sph_grps1,          &
+     &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
      &      trns_WK1%dynamic_SPH)
       end if
 !
@@ -164,15 +164,13 @@
       call start_eleps_time(6)
       if(i_step .eq. 1) then
         if(iflag_debug.gt.0) write(*,*) 'cal_expricit_sph_euler'
-        call cal_expricit_sph_euler                                     &
-     &     (i_step, evo_temp, evo_comp,                           &
-     &      sph1%sph_rj, fl_prop1, cd_prop1, ht_prop1, cp_prop1,        &
+        call cal_expricit_sph_euler(i_step, sph1%sph_rj,                &
+     &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
      &      ipol, itor, rj_fld1)
       else
         if(iflag_debug.gt.0) write(*,*) 'cal_expricit_sph_adams'
         call cal_expricit_sph_adams                                     &
-     &     (evo_temp, evo_comp,                    &
-     &      sph1%sph_rj, fl_prop1, cd_prop1, ht_prop1, cp_prop1,        &
+     &     (sph1%sph_rj, fl_prop1, cd_prop1, ht_prop1, cp_prop1,        &
      &      ipol, itor, rj_fld1)
       end if
 !*
@@ -180,9 +178,8 @@
 !*
       call start_eleps_time(7)
       call s_cal_sol_sph_MHD_crank                                      &
-     &   (evo_temp, evo_comp,                      &
-     &    sph1%sph_rj, r_2nd, cd_prop1, trans_p1%leg,                   &
-     &    ipol, idpdr, itor, rj_fld1)
+     &   (sph1%sph_rj, r_2nd, cd_prop1, ht_prop1, cp_prop1,             &
+     &    trans_p1%leg, ipol, idpdr, itor, rj_fld1)
       call end_eleps_time(7)
       call end_eleps_time(6)
 !*
@@ -204,10 +201,9 @@
      &    sph1%sph_rj, ipol, idpdr, rj_fld1)
 !*
       if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
-      call s_lead_fields_4_sph_mhd                                      &
-     &   (evo_temp, evo_comp, SGS_par1%model_p, sph1,                   &
-     &    comms_sph1, r_2nd, fl_prop1, cd_prop1, trans_p1,              &
-     &    ipol, rj_fld1, trns_WK1)
+      call s_lead_fields_4_sph_mhd(SGS_par1%model_p, sph1,              &
+     &    comms_sph1, r_2nd, fl_prop1, cd_prop1, ht_prop1, cp_prop1,    &
+     &    trans_p1, ipol, rj_fld1, trns_WK1)
       call end_eleps_time(9)
 !
 !*  -----------  output restart data --------------

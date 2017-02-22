@@ -25,7 +25,6 @@
       use m_constants
       use m_machine_parameter
 !
-      use t_time_stepping_parameter
       use t_physical_property
       use t_spheric_rj_data
       use t_fdm_coefs
@@ -58,13 +57,13 @@
       type(legendre_4_sph_trans), intent(in) :: leg
 !
 !
-      call const_radial_matrices_sph(evo_temp, evo_comp,                &
-     &    fl_prop, cd_prop, ht_prop, cp_prop,                           &
+      call const_radial_matrices_sph                                    &
+     &   (fl_prop, cd_prop, ht_prop, cp_prop,                           &
      &    sph_rj, r_2nd, leg%g_sph_rj)
 !
       if(sph_rj%inod_rj_center .gt. 0) then
         call const_radial_mat_sph_w_center                              &
-     &     (evo_temp, evo_comp, fl_prop, ht_prop, cp_prop, sph_rj)
+     &     (fl_prop, ht_prop, cp_prop, sph_rj)
       end if
 !
       end subroutine const_radial_mat_sph_mhd
@@ -102,8 +101,8 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_matrices_sph(evo_T, evo_C,                &
-     &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
+      subroutine const_radial_matrices_sph                              &
+     &         (fl_prop, cd_prop, ht_prop, cp_prop,                     &
      &          sph_rj, r_2nd, g_sph_rj)
 !
       use m_physical_property
@@ -112,7 +111,6 @@
       use const_r_mat_4_scalar_sph
       use const_r_mat_4_vector_sph
 !
-      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
       type(scalar_property), intent(in) :: ht_prop, cp_prop
@@ -160,15 +158,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_sph_w_center(evo_T, evo_C,            &
-     &          fl_prop, ht_prop, cp_prop, sph_rj)
+      subroutine const_radial_mat_sph_w_center                          &
+     &         (fl_prop, ht_prop, cp_prop, sph_rj)
 !
       use m_radial_matrices_sph
       use m_radial_mat_sph_w_center
       use m_boundary_params_sph_MHD
       use const_r_mat_w_center_sph
 !
-      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
       type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(sph_rj_grid), intent(in) :: sph_rj

@@ -8,11 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine add_field_name_4_mhd                                 &
-!!     &         (fl_prop, cd_prop, ref_param_T, ref_param_C, field_ctl)
+!!     &         (fl_prop, cd_prop, ht_prop, cp_prop,                   &
+!!     &          ref_param_T, ref_param_C, field_ctl)
 !!      subroutine add_ctl_4_ref_temp                                   &
 !!     &         (ref_param_T, ref_param_C, field_ctl)
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
+!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(reference_scalar_param), intent(in) :: ref_param_T
 !!        type(reference_scalar_param), intent(in) :: ref_param_C
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
@@ -40,13 +42,15 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_field_name_4_mhd                                   &
-     &         (fl_prop, cd_prop, ref_param_T, ref_param_C, field_ctl)
+     &         (fl_prop, cd_prop, ht_prop, cp_prop,                     &
+     &          ref_param_T, ref_param_C, field_ctl)
 !
       use m_control_parameter
       use t_reference_scalar_param
 !
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(reference_scalar_param), intent(in) :: ref_param_T
       type(reference_scalar_param), intent(in) :: ref_param_C
       type(ctl_array_c3), intent(inout) :: field_ctl
@@ -67,13 +71,13 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'add_data_4_previous_step'
       call add_data_4_previous_step                                     &
-     &   (evo_temp, evo_comp, fl_prop, cd_prop, field_ctl)
+     &   (fl_prop, cd_prop, ht_prop, cp_prop, field_ctl)
 !
 !     set work fields for evolution check
 !
       if (iflag_debug.eq.1) write(*,*) 'add_data_4_check_step'
       call add_data_4_check_step                                        &
-     &   (evo_temp, evo_comp, fl_prop, cd_prop, field_ctl)
+     &   (fl_prop, cd_prop,  ht_prop, cp_prop, field_ctl)
 !
       end subroutine add_field_name_4_mhd
 !
@@ -158,11 +162,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_data_4_previous_step                               &
-     &         (evo_T, evo_C, fl_prop, cd_prop, field_ctl)
+     &         (fl_prop, cd_prop, ht_prop, cp_prop, field_ctl)
 !
-      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !
@@ -189,11 +193,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine add_data_4_check_step                                  &
-     &         (evo_T, evo_C, fl_prop, cd_prop, field_ctl)
+     &         (fl_prop, cd_prop,  ht_prop, cp_prop, field_ctl)
 !
-      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(ctl_array_c3), intent(inout) :: field_ctl
 !
 !

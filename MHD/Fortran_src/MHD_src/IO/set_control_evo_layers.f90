@@ -8,9 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine s_set_control_evo_layers                             &
-!!     &       (earea_ctl, evo_T, evo_C, fl_prop, cd_prop, FEM_prm)
-!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
+!!     &        (earea_ctl, fl_prop, cd_prop, ht_prop, cp_prop, FEM_prm)
 !!        type(fluid_property), intent(in) :: fl_prop
+!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(conductive_property), intent(inout)  :: cd_prop
 !!        type(mhd_evo_area_control), intent(inout) :: earea_ctl
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
@@ -22,7 +22,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use t_time_stepping_parameter
       use t_physical_property
       use t_ctl_data_mhd_evolution
       use t_FEM_control_parameter
@@ -39,11 +38,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_evo_layers                               &
-     &         (earea_ctl, evo_T, evo_C, fl_prop, cd_prop, FEM_prm)
+     &        (earea_ctl, fl_prop, cd_prop, ht_prop, cp_prop, FEM_prm)
 !
-      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(inout)  :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(mhd_evo_area_control), intent(inout) :: earea_ctl
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !

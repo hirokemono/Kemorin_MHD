@@ -4,17 +4,17 @@
 !        programmed by H.Matsui
 !                                    on June 2005
 !
-!!      subroutine reset_MHD_aiccg_mat_type                             &
-!!     &         (evo_T, evo_C, node, ele, fluid, fl_prop, cd_prop,     &
+!!      subroutine reset_MHD_aiccg_matrices                             &
+!!     &         (node, ele, fluid, fl_prop, cd_prop, ht_prop, cp_prop, &
 !!     &          djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,     &
 !!     &          mat_velo, mat_magne, mat_temp, mat_light,             &
 !!     &          mat_press, mat_magp)
-!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
+!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(DJDS_ordering_table),  intent(in) :: djds_tbl
 !!        type(DJDS_ordering_table),  intent(in) :: djds_tbl_fl
 !!        type(DJDS_ordering_table),  intent(in) :: djds_tbl_l
@@ -35,7 +35,6 @@
       use m_geometry_constants
 !
       use t_physical_property
-      use t_time_stepping_parameter
       use t_geometry_data
       use t_geometry_data_MHD
       use t_solver_djds
@@ -51,18 +50,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine reset_MHD_aiccg_mat_type                               &
-     &         (evo_T, evo_C, node, ele, fluid, fl_prop, cd_prop,       &
+      subroutine reset_MHD_aiccg_matrices                               &
+     &         (node, ele, fluid, fl_prop, cd_prop, ht_prop, cp_prop,   &
      &          djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,       &
      &          mat_velo, mat_magne, mat_temp, mat_light,               &
      &          mat_press, mat_magp)
 !
-      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(DJDS_ordering_table),  intent(in) :: djds_tbl
       type(DJDS_ordering_table),  intent(in) :: djds_tbl_fl
       type(DJDS_ordering_table),  intent(in) :: djds_tbl_l
@@ -123,7 +122,7 @@
         end if
       end if
 !
-      end subroutine reset_MHD_aiccg_mat_type
+      end subroutine reset_MHD_aiccg_matrices
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

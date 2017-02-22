@@ -3,16 +3,16 @@
 !
 !      programmed by H.Matsui on March, 2009
 !
-!      subroutine s_set_MHD_idx_4_mat_type(evo_T, evo_C, mesh, MHD_mesh,&
-!!     &          fl_prop, cd_prop, rhs_tbl,                            &
+!!      subroutine s_set_MHD_idx_4_mat_type(mesh, MHD_mesh,             &
+!!     &          fl_prop, cd_prop, ht_prop, cp_prop, rhs_tbl,          &
 !!     &          djds_tbl, djds_tbl_fl, djds_tbl_lin, djds_tbl_fll,    &
 !!     &          MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,              &
 !!     &          MG_mat_linear, MG_mat_fl_l)
-!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_data_MHD), intent(in) :: MHD_mesh
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
+!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(DJDS_ordering_table),  intent(inout) :: djds_tbl
 !!        type(DJDS_ordering_table),  intent(inout) :: djds_tbl_fl
@@ -29,7 +29,6 @@
       use m_precision
       use m_geometry_constants
 !
-      use t_time_stepping_parameter
       use t_physical_property
       use t_mesh_data
       use t_geometry_data
@@ -47,20 +46,20 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_set_MHD_idx_4_mat_type(evo_T, evo_C, mesh, MHD_mesh, &
-     &          fl_prop, cd_prop, rhs_tbl,                              &
+      subroutine s_set_MHD_idx_4_mat_type(mesh, MHD_mesh,               &
+     &          fl_prop, cd_prop, ht_prop, cp_prop, rhs_tbl,            &
      &          djds_tbl, djds_tbl_fl, djds_tbl_lin, djds_tbl_fll,      &
      &          MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,                &
      &          MG_mat_linear, MG_mat_fl_l)
 !
       use set_idx_4_mat_type
 !
-      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_data_MHD), intent(in) :: MHD_mesh
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
 !
       type(DJDS_ordering_table),  intent(inout) :: djds_tbl
       type(DJDS_ordering_table),  intent(inout) :: djds_tbl_fl

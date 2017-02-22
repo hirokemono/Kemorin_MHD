@@ -6,11 +6,9 @@
 !      Modified by H. Matsui on Aug, 2007
 !
 !!      subroutine int_vol_crank_mat_consist                            &
-!!     &        (num_int, evo_T, evo_C,                   &
-!!     &         mesh, fl_prop, cd_prop, ht_prop, cp_prop,              &
+!!     &        (num_int, mesh, fl_prop, cd_prop, ht_prop, cp_prop,     &
 !!     &         jac_3d, rhs_tbl, MG_mat_fl_q, MG_mat_full_cd_q, fem_wk,&
 !!     &         mat_velo, mat_magne, mat_temp, mat_light)
-!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
@@ -29,7 +27,6 @@
 !
       use m_precision
 !
-      use t_time_stepping_parameter
       use t_physical_property
       use t_mesh_data
       use t_geometry_data
@@ -48,8 +45,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_vol_crank_mat_consist                              &
-     &         (num_int, evo_T, evo_C,                    &
-     &          mesh, fl_prop, cd_prop, ht_prop, cp_prop,               &
+     &         (num_int, mesh, fl_prop, cd_prop, ht_prop, cp_prop,      &
      &          jac_3d, rhs_tbl, MG_mat_fl_q, MG_mat_full_cd_q, fem_wk, &
      &          mat_velo, mat_magne, mat_temp, mat_light)
 !
@@ -60,7 +56,6 @@
       use add_skv1_to_crs_matrix
 !
       integer(kind = kint), intent(in) :: num_int
-      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(mesh_geometry), intent(in) :: mesh
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop

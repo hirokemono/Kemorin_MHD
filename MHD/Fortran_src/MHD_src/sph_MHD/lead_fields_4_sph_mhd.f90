@@ -8,15 +8,16 @@
 !!
 !!@verbatim
 !!      subroutine s_lead_fields_4_sph_mhd                              &
-!!     &         (evo_T, evo_C, SGS_param, sph, comms_sph, r_2nd,       &
-!!     &          fl_prop, cd_prop, trans_p, ipol, rj_fld, WK)
-!!        type(time_evolution_params), intent(in) :: evo_T, evo_C
+!!     &         (SGS_param, sph, comms_sph, r_2nd,                     &
+!!     &          fl_prop, cd_prop, ht_prop, cp_prop, trans_p,          &
+!!     &          ipol, rj_fld, WK)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
+!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(phys_address), intent(in) :: ipol
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
@@ -29,7 +30,6 @@
       use m_machine_parameter
       use m_physical_property
 !
-      use t_time_stepping_parameter
       use t_physical_property
       use t_SGS_control_parameter
       use t_spheric_parameter
@@ -56,8 +56,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_lead_fields_4_sph_mhd                                &
-     &         (evo_T, evo_C, SGS_param, sph, comms_sph, r_2nd,         &
-     &          fl_prop, cd_prop, trans_p, ipol, rj_fld, WK)
+     &         (SGS_param, sph, comms_sph, r_2nd,                       &
+     &          fl_prop, cd_prop, ht_prop, cp_prop, trans_p,            &
+     &          ipol, rj_fld, WK)
 !
       use m_t_step_parameter
       use m_radial_matrices_sph
@@ -69,13 +70,13 @@
       use swap_phi_4_sph_trans
       use dynamic_model_sph_MHD
 !
-      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(fdm_matrices), intent(in) :: r_2nd
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(phys_address), intent(in) :: ipol
 !
@@ -113,8 +114,7 @@
 !
         if (iflag_debug.eq.1) write(*,*) 'cal_nonlinear_pole_MHD'
         call cal_nonlinear_pole_MHD                                     &
-     &     (evo_T, evo_C, sph%sph_rtp,                                  &
-     &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
+     &     (sph%sph_rtp, fl_prop1, cd_prop1, ht_prop1, cp_prop1,        &
      &      WK%trns_MHD%f_trns, WK%trns_MHD%b_trns,                     &
      &      WK%trns_MHD%ncomp_rj_2_rtp, WK%trns_MHD%ncomp_rtp_2_rj,     &
      &      WK%trns_MHD%fld_pole, WK%trns_MHD%frc_pole)

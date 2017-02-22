@@ -11,7 +11,6 @@
 !!
       module m_solver_djds_MHD
 !
-      use t_time_stepping_parameter
       use m_precision
       use t_comm_table
       use t_solver_djds
@@ -51,11 +50,10 @@
       type(node_data), intent(in) :: node
 !
 !
-      call set_residual_4_crank(evo_temp, evo_comp,                     &
-     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1)
+      call set_residual_4_crank(fl_prop1, cd_prop1, ht_prop1, cp_prop1)
 !
       call alloc_aiccg_matrices                                         &
-     &   (evo_temp, evo_comp, node, fl_prop1, cd_prop1,                 &
+     &   (node, fl_prop1, cd_prop1, ht_prop1, cp_prop1,                 &
      &    MHD1_matrices%MG_DJDS_table(0),                               &
      &    MHD1_matrices%MG_DJDS_fluid(0),                               &
      &    MHD1_matrices%MG_DJDS_linear(0),                              &
@@ -74,7 +72,7 @@
       use m_physical_property
 !
       call dealloc_aiccg_matrices                                       &
-     &   (evo_temp, evo_comp, fl_prop1, cd_prop1,                       &
+     &   (fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
      &    MHD1_matrices%Vmat_MG_DJDS(0), MHD1_matrices%Bmat_MG_DJDS(0), &
      &    MHD1_matrices%Tmat_MG_DJDS(0), MHD1_matrices%Cmat_MG_DJDS(0), &
      &    MHD1_matrices%Pmat_MG_DJDS(0), MHD1_matrices%Fmat_MG_DJDS(0))
@@ -163,7 +161,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_residual_4_crank                                   &
-     &         (evo_T, evo_C, fl_prop, cd_prop, ht_prop, cp_prop)
+     &         (fl_prop, cd_prop, ht_prop, cp_prop)
 !
       use m_machine_parameter
       use m_t_int_parameter
@@ -171,7 +169,6 @@
 !
       use t_physical_property
 !
-      type(time_evolution_params), intent(in) :: evo_T, evo_C
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
       type(scalar_property), intent(in) :: ht_prop, cp_prop

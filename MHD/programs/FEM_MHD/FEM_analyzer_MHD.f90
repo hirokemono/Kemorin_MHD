@@ -112,9 +112,8 @@
       if (SGS_par1%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
         call s_cal_model_coefficients                                   &
-     &     (evo_temp, evo_comp,        &
-     &      FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1,    &
-     &      fl_prop1, cd_prop1,     &
+     &     (FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1,    &
+     &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
      &      layer_tbl1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,  &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, ifld_sgs, icomp_sgs, ifld_diff, icomp_diff,      &
@@ -217,8 +216,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'fields_evolution'
       call fields_evolution                                             &
-     &  (evo_temp, evo_comp,                     &
-     &   FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1,       &
+     &  (FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1,       &
      &   nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,                   &
      &   jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, jac1_sf_grp_2d_l,      &
      &   rhs_tbl1, FEM1_elen, ifld_sgs, icomp_sgs, ifld_diff,           &
@@ -233,9 +231,8 @@
       if (SGS_par1%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
         call s_cal_model_coefficients                                   &
-     &     (evo_temp, evo_comp,        &
-     &      FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1,    &
-     &      fl_prop1, cd_prop1,     &
+     &     (FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1,    &
+     &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
      &      layer_tbl1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,  &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, ifld_sgs, icomp_sgs, ifld_diff, icomp_diff,      &

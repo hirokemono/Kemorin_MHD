@@ -25,13 +25,6 @@
 !
       integer (kind=kint) :: iflag_scheme = id_Crank_nicolson
 !
-!>      TIme evolution parameters for temperature
-      type(time_evolution_params), save :: evo_temp
-!>      TIme evolution parameters for composition variation
-      type(time_evolution_params), save :: evo_comp
-!
-!  ht_prop%iflag_scheme
-!
 !  Parameters for FEM dynamo
 !
       type(FEM_MHD_paremeters), save :: FEM_prm1

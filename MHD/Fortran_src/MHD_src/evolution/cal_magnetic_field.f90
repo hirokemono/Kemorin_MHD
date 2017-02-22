@@ -66,7 +66,6 @@
       use m_precision
       use m_machine_parameter
 !
-      use t_time_stepping_parameter
       use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_physical_property
