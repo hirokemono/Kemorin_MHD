@@ -85,13 +85,13 @@
      &      = 'Set coefficient of diagonal for SSOR preconditioning'
             call calypso_MPI_abort(ierr_CG, e_message)
         else
-          sigma = CG_ctl%sigma_ctl%realvalue
+          FEM_prm%CG11_param%sigma = CG_ctl%sigma_ctl%realvalue
         end if
 !
         if (CG_ctl%sigma_diag_ctl%iflag .eq. 0) then
-          sigma_diag = 1.0d0
+          FEM_prm%CG11_param%sigma_diag = 1.0d0
         else
-          sigma_diag = CG_ctl%sigma_diag_ctl%realvalue
+          FEM_prm%CG11_param%sigma_diag = CG_ctl%sigma_diag_ctl%realvalue
         end if
 !
 !   control for time evolution scheme
@@ -138,8 +138,8 @@
         if (iflag_debug.eq.1) then
           write(*,*) 'itr:        ', itr
           write(*,*) 'eps:        ', eps
-          write(*,*) 'sigma:      ', sigma
-          write(*,*) 'sigma_diag: ', sigma_diag
+          write(*,*) 'sigma:      ', FEM_prm%CG11_param%sigma
+          write(*,*) 'sigma_diag: ', FEM_prm%CG11_param%sigma_diag
           write(*,*) 'precond_4_solver: ',  trim(precond_4_solver)
           write(*,*) 'method_4_solver:  ',  trim(method_4_solver)
           write(*,*) 'ordering_name: , iflag_ordering ',                &

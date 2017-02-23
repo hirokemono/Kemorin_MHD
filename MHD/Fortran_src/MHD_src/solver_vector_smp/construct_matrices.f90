@@ -231,7 +231,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'preconditioning'
       call matrix_precondition                                          &
-     &   (precond_4_solver, precond_4_crank, sigma_diag,                &
+     &   (precond_4_solver, precond_4_crank,                            &
+     &    FEM_prm%CG11_param%sigma_diag,                                &
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
      &    MHD_matrices%MG_DJDS_table(0),                                &
      &    MHD_matrices%MG_DJDS_fluid(0),                                &

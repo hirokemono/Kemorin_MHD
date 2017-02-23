@@ -92,9 +92,10 @@
       end if
 !
       if (CG_ctl%sigma_ctl%iflag .eq. 0) then
-        e_message                                                       &
-     &      = 'Set coefficient of diagonal for SSOR preconditioning'
-        call calypso_MPI_abort(ierr_CG, e_message)
+        CG_param%sigma = 1.0d0
+!        e_message                                                      &
+!     &      = 'Set coefficient of diagonal for SSOR preconditioning'
+!        call calypso_MPI_abort(ierr_CG, e_message)
       else
         CG_param%sigma = CG_ctl%sigma_ctl%realvalue
       end if

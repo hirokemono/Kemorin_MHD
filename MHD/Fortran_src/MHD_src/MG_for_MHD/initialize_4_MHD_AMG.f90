@@ -412,7 +412,7 @@
         if(my_rank .lt. MG_mpi(i_level)%nprocs) then
           if (iflag_debug.gt.0) write(*,*) 'preconditioning', i_level
           call matrix_precondition                                      &
-     &       (PRECOND_MG, PRECOND_MG, sigma_diag,                       &
+     &       (PRECOND_MG, PRECOND_MG, FEM_prm%CG11_param%sigma_diag,    &
      &        fl_prop1, cd_prop1, ht_prop1, cp_prop1,                   &
      &        MHD_matrices%MG_DJDS_table(i_level),                      &
      &        MHD_matrices%MG_DJDS_fluid(i_level),                      &
