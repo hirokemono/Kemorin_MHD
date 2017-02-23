@@ -14,10 +14,8 @@
 !
       implicit  none
 !
-      real(kind=kreal)   :: eps
-      integer(kind=kint) :: itr
-!      real(kind=kreal)   :: sigma
-!      real(kind=kreal)   :: sigma_diag
+!      real(kind=kreal)   :: eps
+!      integer(kind=kint) :: itr
 ! 
 !      solver and precionditioning for Poisson matrix
 !

@@ -192,7 +192,8 @@
       call solver_poisson_scalar(node, Pmatrix%nlevel_MG,               &
      &    Pmatrix%MG_interpolate,  Pmatrix%MG_comm_table,               &
      &    Pmatrix%MG_DJDS_table, Pmatrix%mat_MG_DJDS,                   &
-     &    method_4_solver, precond_4_solver, eps, itr,                  &
+     &    method_4_solver, precond_4_solver,                            &
+     &    FEM_prm%CG11_param%EPS, FEM_prm%CG11_param%MAXIT,             &
      &    iphys%i_p_phi, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !
       call set_boundary_scalar                                          &
@@ -284,7 +285,8 @@
       call solver_poisson_scalar(node, Fmatrix%nlevel_MG,               &
      &    Fmatrix%MG_interpolate, Fmatrix%MG_comm_table,                &
      &    Fmatrix%MG_DJDS_table, Fmatrix%mat_MG_DJDS,                   &
-     &    method_4_solver, precond_4_solver, eps, itr,                  &
+     &    method_4_solver, precond_4_solver,                            &
+     &    FEM_prm%CG11_param%EPS, FEM_prm%CG11_param%MAXIT,             &
      &    iphys%i_m_phi, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !
       if (iflag_debug .gt. 0)  write(*,*) 'set_boundary_m_phi'
@@ -380,7 +382,8 @@
       call solver_poisson_scalar(node, Fmatrix%nlevel_MG,               &
      &    Fmatrix%MG_interpolate, Fmatrix%MG_comm_table,                &
      &    Fmatrix%MG_DJDS_table, Fmatrix%mat_MG_DJDS,                   &
-     &    method_4_solver, precond_4_solver, eps, itr,                  &
+     &    method_4_solver, precond_4_solver,                            &
+     &    FEM_prm%CG11_param%EPS, FEM_prm%CG11_param%MAXIT,             &
      &    iphys%i_m_phi, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !
       call set_boundary_scalar                                          &

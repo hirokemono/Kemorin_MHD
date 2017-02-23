@@ -183,8 +183,9 @@
       call solver_crank_vector(node, Vmatrix%nlevel_MG,                 &
      &    Vmatrix%MG_interpolate, Vmatrix%MG_comm_table,                &
      &    Vmatrix%MG_DJDS_table, Vmatrix%mat_MG_DJDS,                   &
-     &    method_4_velo, precond_4_crank, FEM_prm%eps_4_velo_crank,     &
-     &    itr, iphys%i_velo, MG_vector, f_l, b_vec, x_vec, nod_fld)
+     &    method_4_velo, precond_4_crank,     &
+     &    FEM_prm%eps_4_velo_crank, FEM_prm%CG11_param%MAXIT,           &
+     &    iphys%i_velo, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !
       end subroutine cal_velo_pre_lumped_crank
 !
@@ -264,8 +265,9 @@
       call solver_crank_vector(node, Bmatrix%nlevel_MG,                 &
      &    Bmatrix%MG_interpolate, Bmatrix%MG_comm_table,                &
      &    Bmatrix%MG_DJDS_table, Bmatrix%mat_MG_DJDS,                   &
-     &    method_4_velo, precond_4_crank, FEM_prm%eps_4_magne_crank,    &
-     &    itr, i_vecp, MG_vector, f_l, b_vec, x_vec, nod_fld)
+     &    method_4_velo, precond_4_crank,     &
+     &    FEM_prm%eps_4_magne_crank, FEM_prm%CG11_param%MAXIT,          &
+     &    i_vecp, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !
       end subroutine cal_vect_p_pre_lumped_crank
 !
@@ -346,8 +348,9 @@
       call solver_crank_vector(node, Bmatrix%nlevel_MG,                 &
      &    Bmatrix%MG_interpolate, Bmatrix%MG_comm_table,                &
      &    Bmatrix%MG_DJDS_table, Bmatrix%mat_MG_DJDS,                   &
-     &    method_4_velo, precond_4_crank, FEM_prm%eps_4_magne_crank,    &
-     &    itr, i_magne, MG_vector, f_l, b_vec, x_vec, nod_fld)
+     &    method_4_velo, precond_4_crank,       &
+     &    FEM_prm%eps_4_magne_crank, FEM_prm%CG11_param%MAXIT,          &
+     &    i_magne, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !
        end subroutine cal_magne_pre_lumped_crank
 !
@@ -431,7 +434,8 @@
       call solver_crank_scalar(node, matrix%nlevel_MG,                  &
      &    matrix%MG_interpolate, matrix%MG_comm_table,                  &
      &    matrix%MG_DJDS_table, matrix%mat_MG_DJDS,                     &
-     &    method_4_solver, precond_4_solver, eps_4_crank, itr,          &
+     &    method_4_solver, precond_4_solver,      &
+     &    eps_4_crank, FEM_prm%CG11_param%MAXIT,                        &
      &    i_field, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !
       end subroutine cal_temp_pre_lumped_crank

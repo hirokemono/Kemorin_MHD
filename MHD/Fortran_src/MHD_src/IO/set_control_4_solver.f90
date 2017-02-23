@@ -69,7 +69,7 @@
      &      = 'Set max iteration count for CG solver '
             call calypso_MPI_abort(ierr_CG, e_message)
         else
-          itr   = CG_ctl%itr_ctl%intvalue
+          FEM_prm%CG11_param%MAXIT   = CG_ctl%itr_ctl%intvalue
         end if
 !
         if (CG_ctl%eps_ctl%iflag .eq. 0) then
@@ -77,7 +77,7 @@
      &      = 'Set conservation limit for CG solver '
             call calypso_MPI_abort(ierr_CG, e_message)
         else
-          eps   = CG_ctl%eps_ctl%realvalue
+          FEM_prm%CG11_param%EPS   = CG_ctl%eps_ctl%realvalue
         end if
 !
         if (CG_ctl%sigma_ctl%iflag .eq. 0) then
@@ -136,8 +136,8 @@
         end if
 !
         if (iflag_debug.eq.1) then
-          write(*,*) 'itr:        ', itr
-          write(*,*) 'eps:        ', eps
+          write(*,*) 'itr:        ', FEM_prm%CG11_param%MAXIT
+          write(*,*) 'eps:        ', FEM_prm%CG11_param%EPS
           write(*,*) 'sigma:      ', FEM_prm%CG11_param%sigma
           write(*,*) 'sigma_diag: ', FEM_prm%CG11_param%sigma_diag
           write(*,*) 'precond_4_solver: ',  trim(precond_4_solver)

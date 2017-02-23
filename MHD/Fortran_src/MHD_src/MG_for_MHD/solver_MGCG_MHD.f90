@@ -175,7 +175,7 @@
 !
       character(len=kchara), intent(in) :: METHOD, PRECOND
       real(kind = kreal), intent(in) :: eps
-      integer(kind = kint), intent(inout) :: itr
+      integer(kind = kint), intent(in) :: itr
 !
       type(node_data), intent(in) :: node
 !
