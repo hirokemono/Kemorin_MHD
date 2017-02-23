@@ -93,7 +93,7 @@
 !
 !   ordereing of element parameters for AMG (for first grid)
 !
-      if(cmp_no_case(method_4_solver, 'MGCG')) then
+      if(cmp_no_case(FEM_PRM%CG11_param%METHOD, 'MGCG')) then
         call reordering_ele_interpolate_type(ele%numele,                &
      &     old2newele_layer, MG_interpolate(1)%f2c%tbl_org)
         call s_reordering_MG_ele_by_layers(FEM_prm, MG_interpolate)

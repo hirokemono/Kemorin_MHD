@@ -14,16 +14,6 @@
 !
       implicit  none
 !
-!      real(kind=kreal)   :: eps
-!      integer(kind=kint) :: itr
-! 
-!      solver and precionditioning for Poisson matrix
-!
-      character (len=kchara) :: precond_4_solver
-      character (len=kchara) :: method_4_solver
-! 
-!      solver and precionditioning for 3x3 matrix
-!
       character (len=kchara) :: precond_4_crank
       character (len=kchara) :: method_4_velo
 ! 

@@ -404,7 +404,7 @@
       call solver_crank_scalar(node, matrix%nlevel_MG,                  &
      &    matrix%MG_interpolate, matrix%MG_comm_table,                  &
      &    matrix%MG_DJDS_table, matrix%mat_MG_DJDS,                     &
-     &    method_4_solver, precond_4_solver,                            &
+     &    FEM_PRM%CG11_param%METHOD, FEM_PRM%CG11_param%PRECOND,        &
      &    eps_4_crank, FEM_prm%CG11_param%MAXIT,                        &
      &    i_field, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !

@@ -224,14 +224,14 @@
 !
 !     set marrix for the Multigrid
 !
-      if(cmp_no_case(method_4_solver, 'MGCG')) then
+      if(cmp_no_case(FEM_PRM%CG11_param%METHOD, 'MGCG')) then
         call const_MGCG_MHD_matrices                                    &
      &     (FEM_prm, SGS_param, cmt_param, ifld_diff, MHD_matrices)
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'preconditioning'
       call matrix_precondition                                          &
-     &   (precond_4_solver, precond_4_crank,                            &
+     &   (FEM_PRM%CG11_param%PRECOND, precond_4_crank,                  &
      &    FEM_prm%CG11_param%sigma_diag,                                &
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
      &    MHD_matrices%MG_DJDS_table(0),                                &

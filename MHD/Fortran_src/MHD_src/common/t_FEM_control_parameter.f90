@@ -88,7 +88,7 @@
         type(area_group_name_list) :: inner_core_group
       end type FEM_MHD_paremeters
 !
-!FEM_PRM%CG11_param%EPS
+!FEM_PRM%CG11_param%METHOD
 !
 !  ---------------------------------------------------------------------
 !

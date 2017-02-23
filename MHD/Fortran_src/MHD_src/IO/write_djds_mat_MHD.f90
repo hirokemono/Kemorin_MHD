@@ -4,8 +4,9 @@
 !     Written by H. Matsui on Apr., 2008
 !
 !!      subroutine s_write_djds_mat_MHD                                 &
-!!     &         (fl_prop, cd_prop, ht_prop, cp_prop,                   &
+!!     &         (FEM_prm, fl_prop, cd_prop, ht_prop, cp_prop,          &
 !!     &          Vmatrix, Pmatrix, Bmatrix, Fmatrix, Tmatrix, Cmatrix)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(scalar_property), intent(in) :: ht_prop, cp_prop
@@ -52,13 +53,15 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_write_djds_mat_MHD                                   &
-     &         (fl_prop, cd_prop, ht_prop, cp_prop,                     &
+     &         (FEM_prm, fl_prop, cd_prop, ht_prop, cp_prop,            &
      &          Vmatrix, Pmatrix, Bmatrix, Fmatrix, Tmatrix, Cmatrix)
 !
       use m_iccg_parameter
+      use t_FEM_control_parameter
       use t_physical_property
       use t_solver_djds_MHD
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(fluid_property), intent(in) :: fl_prop
       type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(conductive_property), intent(in) :: cd_prop
@@ -68,7 +71,8 @@
 !
 !
       if ( fl_prop%iflag_scheme .gt. id_no_evolution) then
-        call write_MHD_djds_mat11(fhead_press_mat, method_4_solver,     &
+        call write_MHD_djds_mat11                                       &
+     &      (fhead_press_mat, FEM_PRM%CG11_param%METHOD,                &
      &       Pmatrix%nlevel_MG, Pmatrix%MG_comm_table,                  &
      &       Pmatrix%MG_DJDS_table, Pmatrix%mat_MG_DJDS)
       end if
@@ -80,20 +84,23 @@
       end if
 !
       if ( ht_prop%iflag_scheme .ge. id_Crank_nicolson) then
-        call write_MHD_djds_mat11(fhead_temp_mat, method_4_solver,      &
+        call write_MHD_djds_mat11                                       &
+     &      (fhead_temp_mat, FEM_PRM%CG11_param%METHOD,                 &
      &       Tmatrix%nlevel_MG, Tmatrix%MG_comm_table,                  &
      &       Tmatrix%MG_DJDS_table, Tmatrix%mat_MG_DJDS)
       end if
 !
       if ( cp_prop%iflag_scheme .ge. id_Crank_nicolson) then
-        call write_MHD_djds_mat11(fhead_dscalar_mat, method_4_solver,   &
+        call write_MHD_djds_mat11                                       &
+     &      (fhead_dscalar_mat, FEM_PRM%CG11_param%METHOD,              &
      &       Cmatrix%nlevel_MG, Cmatrix%MG_comm_table,                  &
      &       Cmatrix%MG_DJDS_table, Cmatrix%mat_MG_DJDS)
       end if
 !
       if    (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution             &
      &  .or. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
-        call write_MHD_djds_mat11(fhead_magp_mat, method_4_solver,      &
+        call write_MHD_djds_mat11                                       &
+     &      (fhead_magp_mat, FEM_PRM%CG11_param%METHOD,                 &
      &       Fmatrix%nlevel_MG, Fmatrix%MG_comm_table,                  &
      &       Fmatrix%MG_DJDS_table, Fmatrix%mat_MG_DJDS)
       end if

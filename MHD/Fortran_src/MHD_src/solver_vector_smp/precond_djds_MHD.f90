@@ -7,7 +7,9 @@
 !>     Preconditiong of DJDS solver for MHD dynamo
 !!
 !!@verbatim
-!!      subroutine init_MGCG_MHD(node, fl_prop, cd_prop)
+!!      subroutine init_MGCG_MHD(FEM_prm, node, fl_prop, cd_prop)
+!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
+!!        type(node_data), intent(in) :: node
 !!      subroutine matrix_precondition(PRECOND_11, PRECOND_33,          &
 !!     &          sigma_diag, fl_prop, cd_prop, ht_prop, cp_prop,       &
 !!     &          djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,     &
@@ -46,17 +48,20 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine init_MGCG_MHD(node, fl_prop, cd_prop)
+      subroutine init_MGCG_MHD(FEM_prm, node, fl_prop, cd_prop)
 !
+      use t_FEM_control_parameter
       use m_iccg_parameter
       use solver_MGCG_MHD
 !
+      type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(node_data), intent(in) :: node
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
 !
 !
-      call init_MGCG11_MHD(node, method_4_solver, precond_4_solver)
+      call init_MGCG11_MHD                                              &
+     &   (node, FEM_PRM%CG11_param%METHOD, FEM_PRM%CG11_param%PRECOND)
 !
       if(     fl_prop%iflag_scheme .ge. id_Crank_nicolson               &
      &   .or. cd_prop%iflag_Aevo_scheme .ge. id_Crank_nicolson          &

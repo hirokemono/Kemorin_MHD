@@ -114,7 +114,7 @@
       call input_meshes_4_MHD(SGS_par%model_p, mesh, group, IO_bc,      &
      &    SGS_par%filter_p, filtering, wide_filtering, wk_filter)
 !
-      if(cmp_no_case(method_4_solver, cflag_mgcg)) then
+      if(cmp_no_case(FEM_PRM%CG11_param%METHOD, cflag_mgcg)) then
         call alloc_MHD_MG_DJDS_mat(num_MG_level, MHD_matrices)
         call input_MG_mesh(mesh1_file)
         call input_MG_itp_tables(MHD_matrices%MG_interpolate)

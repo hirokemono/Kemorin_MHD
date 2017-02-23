@@ -106,6 +106,15 @@
         CG_param%sigma_diag = CG_ctl%sigma_diag_ctl%realvalue
       end if
 !
+      if (iflag_debug.eq.1) then
+        write(*,*) 'itr:        ', CG_param%MAXIT
+        write(*,*) 'eps:        ', CG_param%EPS
+        write(*,*) 'sigma:      ', CG_param%sigma
+        write(*,*) 'sigma_diag: ', CG_param%sigma_diag
+        write(*,*) 'precond_4_solver: ',  trim(CG_param%PRECOND)
+        write(*,*) 'method_4_solver:  ',  trim(CG_param%METHOD)
+      end if
+!
       end subroutine set_control_4_CG_solver
 !
 ! -----------------------------------------------------------------------

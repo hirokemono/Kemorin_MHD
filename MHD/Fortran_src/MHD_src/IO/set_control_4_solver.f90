@@ -52,47 +52,13 @@
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(DJDS_poarameter), intent(inout) :: DJDS_param
 !
+!
 !   control for solvers
+      call set_control_4_CG_solver(CG_ctl, FEM_PRM%CG11_param)
 !
-        if ((CG_ctl%method_ctl%iflag * CG_ctl%precond_ctl%iflag)        &
-     &    .eq. 0) then
-          e_message                                                     &
-     &    = 'Set CG method and preconditioning for Poisson solver'
-            call calypso_MPI_abort(ierr_CG, e_message)
-        else
-          precond_4_solver = CG_ctl%precond_ctl%charavalue
-          method_4_solver  = CG_ctl%method_ctl%charavalue
-        end if
+!   control for number of processores for DJDS solver
+      call set_control_4_DJDS_solver(CG_ctl%DJDS_ctl, DJDS_param)
 !
-        if (CG_ctl%itr_ctl%iflag .eq. 0) then
-            e_message                                                   &
-     &      = 'Set max iteration count for CG solver '
-            call calypso_MPI_abort(ierr_CG, e_message)
-        else
-          FEM_prm%CG11_param%MAXIT   = CG_ctl%itr_ctl%intvalue
-        end if
-!
-        if (CG_ctl%eps_ctl%iflag .eq. 0) then
-            e_message                                                   &
-     &      = 'Set conservation limit for CG solver '
-            call calypso_MPI_abort(ierr_CG, e_message)
-        else
-          FEM_prm%CG11_param%EPS   = CG_ctl%eps_ctl%realvalue
-        end if
-!
-        if (CG_ctl%sigma_ctl%iflag .eq. 0) then
-            e_message                                                   &
-     &      = 'Set coefficient of diagonal for SSOR preconditioning'
-            call calypso_MPI_abort(ierr_CG, e_message)
-        else
-          FEM_prm%CG11_param%sigma = CG_ctl%sigma_ctl%realvalue
-        end if
-!
-        if (CG_ctl%sigma_diag_ctl%iflag .eq. 0) then
-          FEM_prm%CG11_param%sigma_diag = 1.0d0
-        else
-          FEM_prm%CG11_param%sigma_diag = CG_ctl%sigma_diag_ctl%realvalue
-        end if
 !
 !   control for time evolution scheme
 !
@@ -123,11 +89,8 @@
           end if
         end if
 !
-!   control for number of processores for DJDS solver
 !
-        call set_control_4_DJDS_solver(CG_ctl%DJDS_ctl, DJDS_param)
-!
-        if (       precond_4_solver .eq. 'DIAG'                         &
+        if (       FEM_PRM%CG11_param%PRECOND .eq. 'DIAG'               &
      &       .and. DJDS_param%iflag_ordering .eq. iflag_MultiColor      &
      &       .and. DJDS_param%mc_color .eq. 0 ) then
           if(precond_4_crank .eq. 'DIAG') then
@@ -136,21 +99,13 @@
         end if
 !
         if (iflag_debug.eq.1) then
-          write(*,*) 'itr:        ', FEM_prm%CG11_param%MAXIT
-          write(*,*) 'eps:        ', FEM_prm%CG11_param%EPS
-          write(*,*) 'sigma:      ', FEM_prm%CG11_param%sigma
-          write(*,*) 'sigma_diag: ', FEM_prm%CG11_param%sigma_diag
-          write(*,*) 'precond_4_solver: ',  trim(precond_4_solver)
-          write(*,*) 'method_4_solver:  ',  trim(method_4_solver)
-          write(*,*) 'ordering_name: , iflag_ordering ',                &
-     &      trim(DJDS_param%ordering_name), DJDS_param%iflag_ordering
           write(*,*) 'eps_4_crank:       ', eps_crank
           write(*,*) 'eps_4_magne_crank: ', FEM_prm%eps_4_magne_crank
           write(*,*) 'method_4_velo:     ', trim(method_4_velo)
           write(*,*) 'precond_4_crank:   ', trim(precond_4_crank)
         end if
 !
-      if (cmp_no_case(method_4_solver, 'MGCG')) then
+      if (cmp_no_case(FEM_PRM%CG11_param%METHOD, 'MGCG')) then
         if (iflag_debug.eq.1) write(*,*) 'set_ctl_data_4_Multigrid'
         call set_ctl_data_4_Multigrid(CG_ctl%MG_ctl)
       end if

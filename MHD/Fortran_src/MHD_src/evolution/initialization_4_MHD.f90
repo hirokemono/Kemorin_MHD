@@ -247,7 +247,7 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*) 'init_MGCG_MHD'
-      call init_MGCG_MHD(mesh%node, fl_prop1, cd_prop1)
+      call init_MGCG_MHD(FEM_prm, mesh%node, fl_prop1, cd_prop1)
 !
 !  -------------------------------
 !
@@ -322,7 +322,7 @@
       call allocate_aiccg_matrices(mesh%node)
 !      call reset_aiccg_matrices(mesh%node, mesh%ele, MHD_mesh%fluid)
 !
-      if(solver_iflag(method_4_solver) .eq. iflag_mgcg) then
+      if(solver_iflag(FEM_PRM%CG11_param%METHOD) .eq. iflag_mgcg) then
         call s_initialize_4_MHD_AMG(FEM_prm, mesh%node, mesh%ele,       &
      &      ifld_diff, diff_coefs, DJDS_param1, MHD1_matrices)
       end if
