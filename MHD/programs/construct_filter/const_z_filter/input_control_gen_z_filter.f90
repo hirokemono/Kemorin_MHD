@@ -4,7 +4,16 @@
 !     Written by H. Matsui on June, 2007
 !
 !!      subroutine s_input_control_4_z_commute                          &
-!!     &         (nod_comm, node, ele, surf, edge, mat_crs, DJDS_param)
+!!     &         (nod_comm, node, ele, surf, edge,                      &
+!!     &          mat_crs, CG_param, DJDS_param)
+!!        type(communication_table), intent(inout) :: nod_comm
+!!        type(node_data), intent(inout) :: node
+!!        type(element_data), intent(inout) :: ele
+!!        type(surface_data), intent(inout) :: surf
+!!        type(edge_data), intent(inout) :: edge
+!!        type(CRS_matrix), intent(inout) :: mat_crs
+!!        type(CG_poarameter), intent(inout) :: CG_param
+!!        type(DJDS_poarameter), intent(inout) :: DJDS_param
 !
       module input_control_gen_z_filter
 !
@@ -26,7 +35,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_input_control_4_z_commute                            &
-     &         (nod_comm, node, ele, surf, edge, mat_crs, DJDS_param)
+     &         (nod_comm, node, ele, surf, edge,                        &
+     &          mat_crs, CG_param, DJDS_param)
 !
       use m_machine_parameter
       use calypso_mpi
@@ -41,6 +51,7 @@
       type(surface_data), intent(inout) :: surf
       type(edge_data), intent(inout) :: edge
       type(CRS_matrix), intent(inout) :: mat_crs
+      type(CG_poarameter), intent(inout) :: CG_param
       type(DJDS_poarameter), intent(inout) :: DJDS_param
 !
 !
@@ -48,7 +59,7 @@
       call read_control_4_z_filter
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_4_gen_z_filter'
-      call set_ctl_params_4_gen_z_filter(mat_crs, DJDS_param)
+      call set_ctl_params_4_gen_z_filter(mat_crs, CG_param, DJDS_param)
 !
 !  --  set geometry
 !

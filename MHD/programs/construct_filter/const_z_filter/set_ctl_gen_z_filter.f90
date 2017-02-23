@@ -3,12 +3,17 @@
 !
 !     Written by H. Matsui on July, 2006
 !
-!      subroutine set_ctl_params_4_gen_z_filter(mat_crs, DJDS_param)
+!!      subroutine set_ctl_params_4_gen_z_filter                        &
+!!     &         (mat_crs, CG_param, DJDS_param)
+!!        type(CRS_matrix), intent(inout) :: mat_crs
+!!        type(CG_poarameter), intent(inout) :: CG_param
+!!        type(DJDS_poarameter), intent(inout) :: DJDS_param
 !
       module set_ctl_gen_z_filter
 !
       use m_precision
       use t_crs_matrix
+      use t_iccg_parameter
 !
       implicit none
 !
@@ -18,11 +23,11 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_ctl_params_4_gen_z_filter(mat_crs, DJDS_param)
+      subroutine set_ctl_params_4_gen_z_filter                          &
+     &         (mat_crs, CG_param, DJDS_param)
 !
       use m_constants
       use m_machine_parameter
-      use m_iccg_parameter
       use m_commute_filter_z
       use m_ctl_data_4_plane_model
       use m_ctl_data_gen_filter
@@ -33,6 +38,7 @@
       use skip_comment_f
 !
       type(CRS_matrix), intent(inout) :: mat_crs
+      type(CG_poarameter), intent(inout) :: CG_param
       type(DJDS_poarameter), intent(inout) :: DJDS_param
 !
       integer(kind = kint) :: i
@@ -170,34 +176,11 @@
         mat_crs%SOLVER_crs =  f_solver_type_ctl%charavalue
       end if
 !
-      if(CG_filter_ctl%precond_ctl%iflag .gt. 0) then
-        precond = CG_filter_ctl%precond_ctl%charavalue
-      end if
-      if(CG_filter_ctl%method_ctl%iflag .gt. 0)  then
-        method =  CG_filter_ctl%method_ctl%charavalue
-      end if
-      if(CG_filter_ctl%eps_ctl%iflag .gt. 0)        then
-        eps = CG_filter_ctl%eps_ctl%realvalue
-      end if
-      if(CG_filter_ctl%itr_ctl%iflag .gt. 0)        then
-        itr = CG_filter_ctl%itr_ctl%intvalue
-      end if
-      if(CG_filter_ctl%sigma_ctl%iflag .gt. 0)      then
-        sigma = CG_filter_ctl%sigma_ctl%realvalue
-      end if
-      if(CG_filter_ctl%sigma_diag_ctl%iflag .gt. 0) then
-        sigma_diag =  CG_filter_ctl%sigma_diag_ctl%realvalue
-      end if
-!
-      mat_crs%METHOD_crs =       method
-      mat_crs%PRECOND_crs =      precond
-      mat_crs%INTARRAY_crs(1) =  itr
-      mat_crs%REALARRAY_crs(1) = eps
-      mat_crs%REALARRAY_crs(2) = sigma_diag
-      mat_crs%REALARRAY_crs(3) = sigma
-!
+      call set_control_4_CG_solver(CG_filter_ctl, CG_param)
       call set_control_4_DJDS_solver                                    &
      &   (CG_filter_ctl%DJDS_ctl, DJDS_param)
+!
+      call copy_from_iccg_parameter(CG_param, mat_crs)
 !
       end subroutine set_ctl_params_4_gen_z_filter
 !

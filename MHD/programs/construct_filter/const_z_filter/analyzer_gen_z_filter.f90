@@ -14,7 +14,7 @@
 !
       use m_vertical_filter_utils
 !
-      use m_iccg_parameter
+      use t_iccg_parameter
       use t_crs_connect
       use t_crs_matrix
       use t_gauss_points
@@ -27,6 +27,9 @@
       type(gauss_points), private :: gauss_z
       type(gauss_integrations), save, private :: g_z_int
 !
+      type(CG_poarameter), save :: CG_param_z
+      type(DJDS_poarameter), save :: DJDS_param_z
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -36,7 +39,6 @@
       subroutine init_analyzer
 !
       use calypso_mpi
-      use m_iccg_parameter
 !
       use m_fem_gauss_int_coefs
       use m_commute_filter_z
@@ -91,7 +93,8 @@
 !C-- read CNTL DATA
       call s_input_control_4_z_commute                                  &
      &  (z_filter_mesh%nod_comm, z_filter_mesh%node, z_filter_mesh%ele, &
-     &   surf_z_filter, edge_z_filter, mat_crs_z, DJDS_param1)
+     &   surf_z_filter, edge_z_filter, mat_crs_z,                       &
+     &   CG_param_z, DJDS_param_z)
 !
 !C
 !C     set gauss points
@@ -122,9 +125,9 @@
        call cal_delta_z_analytical                                      &
      &    (z_filter_mesh%node, z_filter_mesh%ele,                       &
      &     edge_z_filter, jac_z_l)
-!      call cal_delta_z(DJDS_param1, z_filter_mesh%nod_comm,            &
-!     &    z_filter_mesh%node, z_filter_mesh%ele,                       &
-!     &    edge_z_filter, jac_z_l, tbl_crs_z, mat_crs_z)
+!      call cal_delta_z(CG_param_z, DJDS_param_z,                       &
+!     &  z_filter_mesh%nod_comm, z_filter_mesh%node, z_filter_mesh%ele, &
+!     &  edge_z_filter, jac_z_l, tbl_crs_z, mat_crs_z)
 !
 !      call check_crs_connect                                           &
 !     &   (my_rank, z_filter_mesh%node%numnod, tbl_crs_z)
@@ -213,19 +216,20 @@
       else
         call transfer_crs_2_djds_matrix                                 &
      &     (z_filter_mesh%node, z_filter_mesh%nod_comm,                 &
-     &      tbl_crs_z, mat_crs_z, DJDS_param1, djds_tbl_z, djds_mat_z)
+     &      tbl_crs_z, mat_crs_z, CG_param_z, DJDS_param_z,             &
+     &      djds_tbl_z, djds_mat_z)
 !
         if   (mat_crs_z%SOLVER_crs.eq.'block33'                         &
      &    .or. mat_crs_z%SOLVER_crs.eq.'BLOCK33') then
           write(*,*) 'solve_by_djds_solver33'
           call solve_by_djds_solver33                                   &
-     &       (z_filter_mesh%node, z_filter_mesh%nod_comm,               &
+     &       (z_filter_mesh%node, z_filter_mesh%nod_comm, CG_param_z,   &
      &        mat_crs_z, djds_tbl_z, djds_mat_z, itr_res, ierr)
         else if (mat_crs_z%SOLVER_crs.eq.'blockNN'                      &
      &    .or. mat_crs_z%SOLVER_crs.eq.'BLOCKNN') then
           write(*,*) 'solve_by_djds_solverNN'
           call solve_by_djds_solverNN                                   &
-     &       (z_filter_mesh%node, z_filter_mesh%nod_comm,               &
+     &       (z_filter_mesh%node, z_filter_mesh%nod_comm, CG_param_z,   &
      &        mat_crs_z, djds_tbl_z, djds_mat_z, itr_res, ierr)
         end if
       end if

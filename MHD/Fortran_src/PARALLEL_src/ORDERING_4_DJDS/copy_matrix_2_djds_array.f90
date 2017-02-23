@@ -3,9 +3,8 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine copy_paramters_4_djds
 !!      subroutine transfer_crs_2_djds_matrix(node, nod_comm, tbl_crs,  &
-!!     &          mat_crs, DJDS_param, djds_tbl, djds_mat)
+!!     &          mat_crs, CG_param, DJDS_param, djds_tbl, djds_mat)
 !      subroutine copy_matrix_2_djds_NN(tbl_crs, mat_crs, djds_tbl,     &
 !     &          NP, N, NB, num_mat_comp, aiccg)
 !
@@ -17,7 +16,7 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_iccg_parameter
+      use t_iccg_parameter
       use t_crs_matrix
 !
       implicit none
@@ -32,23 +31,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine copy_paramters_4_djds(tbl_crs, mat_crs, djds_tbl)
+      subroutine copy_paramters_4_djds                                  &
+     &         (tbl_crs, mat_crs, CG_param, djds_tbl)
 !
        use t_solver_djds
        use t_crs_matrix
 !
       type(CRS_matrix_connect), intent(in) :: tbl_crs
       type(CRS_matrix), intent(in) :: mat_crs
+      type(CG_poarameter), intent(inout) :: CG_param
       type(DJDS_ordering_table), intent(inout) :: djds_tbl
 !
 !
-      eps = mat_crs%REALARRAY_crs(1)
-      itr = mat_crs%INTARRAY_crs (1)
-      sigma_diag = mat_crs%REALARRAY_crs(2)
-!      sigma = mat_crs%REALARRAY_crs(3)
-      method_4_solver =  mat_crs%METHOD_crs 
-      precond_4_solver = mat_crs%PRECOND_crs
-      precond_4_crank =  mat_crs%PRECOND_crs
+      call copy_to_iccg_parameter(CG_param, mat_crs)
       SOLVER_TYPE_djds = mat_crs%SOLVER_crs
 !
       djds_tbl%itotal_l = tbl_crs%ntot_l
@@ -60,7 +55,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine transfer_crs_2_djds_matrix(node, nod_comm, tbl_crs,    &
-     &          mat_crs, DJDS_param, djds_tbl, djds_mat)
+     &          mat_crs, CG_param, DJDS_param, djds_tbl, djds_mat)
 !
       use calypso_mpi
       use t_geometry_data
@@ -77,6 +72,7 @@
       type(CRS_matrix), intent(in) :: mat_crs
       type(DJDS_poarameter), intent(in) :: DJDS_param
 !
+      type(CG_poarameter), intent(inout) :: CG_param
       type(CRS_matrix_connect), intent(inout) :: tbl_crs
       type(DJDS_ordering_table), intent(inout) :: djds_tbl
       type(DJDS_MATRIX), intent(inout) :: djds_mat
@@ -85,7 +81,7 @@
 !
 !
       call copy_communicator_4_solver(solver_C)
-      call copy_paramters_4_djds(tbl_crs, mat_crs, djds_tbl)
+      call copy_paramters_4_djds(tbl_crs, mat_crs, CG_param, djds_tbl)
 !
       call count_node_4_smp_mesh_type(node)
 !

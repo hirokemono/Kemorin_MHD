@@ -5,16 +5,20 @@
 !     Modified by H. Matsui on Apr., 2008
 !
 !!      subroutine solve_by_djds_solver11                               &
-!!     &         (node, nod_comm, mat_crs, djds_tbl, djds_mat,          &
+!!     &         (node, nod_comm, CG_param, mat_crs, djds_tbl, djds_mat,&
 !!     &          itr_res, ierr)
 !!      subroutine solve_by_djds_solver33                               &
-!!     &         (node, nod_comm, mat_crs, djds_tbl, djds_mat,          &
+!!     &         (node, nod_comm, CG_param, mat_crs, djds_tbl, djds_mat,&
 !!     &          itr_res, ierr)
 !!      subroutine solve_by_djds_solverNN                               &
-!!     &         (node, nod_comm, mat_crs, djds_tbl, djds_mat,          &
+!!     &         (node, nod_comm, CG_param, mat_crs, djds_tbl, djds_mat,&
 !!     &          itr_res, ierr)
 !!        type(node_data), intent(in) :: node
-!!        type(CRS_matrix_connect), intent(inout) :: tbl_crs
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(CG_poarameter), intent(in) :: CG_param
+!!        type(CRS_matrix), intent(inout) :: mat_crs
+!!        type(DJDS_ordering_table), intent(inout) :: djds_tbl
+!!        type(DJDS_MATRIX), intent(inout) :: djds_mat
 !!
 !!     solve by DJDS solver using CRS matrix
 !!     results are also copied to CRS array
@@ -92,11 +96,11 @@
 !  ---------------------------------------------------------------------
 !
       subroutine solve_by_djds_solver11                                 &
-     &         (node, nod_comm, mat_crs, djds_tbl, djds_mat,            &
+     &         (node, nod_comm, CG_param, mat_crs, djds_tbl, djds_mat,  &
      &          itr_res, ierr)
 !
-      use m_iccg_parameter
       use m_solver_SR
+      use t_iccg_parameter
       use t_solver_djds
 !
       use solver_DJDS11_struct
@@ -105,6 +109,7 @@
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
+      type(CG_poarameter), intent(in) :: CG_param
       type(CRS_matrix), intent(inout) :: mat_crs
       type(DJDS_ordering_table), intent(inout) :: djds_tbl
       type(DJDS_MATRIX), intent(inout) :: djds_mat
@@ -130,14 +135,15 @@
         end if
 
       call precond_DJDS11_struct(np_smp, djds_tbl, djds_mat,            &
-     &    precond_4_solver, sigma_diag)
+     &    CG_param%PRECOND, CG_param%sigma_diag)
 !C
 !C-- ICCG computation
 
         write(*,*) 'init_solve_DJDS_kemo', my_rank
       call init_solve_DJDS11_struct(np_smp, nod_comm,                   &
      &    djds_tbl, djds_mat, node%numnod, b_djds, x_djds,              &
-     &    method_4_solver, precond_4_solver, ierr, eps, itr, itr_res)
+     &    CG_param%METHOD, CG_param%PRECOND, ierr,                      &
+     &    CG_param%EPS, CG_param%MAXIT, itr_res)
 
       call copy_solution_2_crs_nn                                       &
      &   (node%numnod, djds_mat%NB, x_djds, mat_crs)
@@ -148,11 +154,11 @@
 !  ---------------------------------------------------------------------
 !
       subroutine solve_by_djds_solver33                                 &
-     &         (node, nod_comm, mat_crs, djds_tbl, djds_mat,            &
+     &         (node, nod_comm, CG_param, mat_crs, djds_tbl, djds_mat,  &
      &          itr_res, ierr)
 !
-      use m_iccg_parameter
       use m_solver_SR
+      use t_iccg_parameter
       use t_solver_djds
 !
       use solver_DJDS33_struct
@@ -161,6 +167,7 @@
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
+      type(CG_poarameter), intent(in) :: CG_param
       type(CRS_matrix), intent(inout) :: mat_crs
       type(DJDS_ordering_table), intent(inout) :: djds_tbl
       type(DJDS_MATRIX), intent(inout) :: djds_mat
@@ -185,16 +192,17 @@
         end if
 
         call precond_DJDS33_struct(np_smp, djds_tbl, djds_mat,          &
-     &      precond_4_solver, sigma_diag)
+     &      CG_param%PRECOND, CG_param%sigma_diag)
 !C
 !C-- ICCG computation
 
         ierr = 1
  
-        write(*,*) 'init_solve33_DJDS_struct', method_4_solver
+        write(*,*) 'init_solve33_DJDS_struct', CG_param%METHOD
       call init_solve33_DJDS_struct(np_smp, nod_comm,                   &
      &    djds_tbl, djds_mat, node%numnod, b_djds, x_djds,              &
-     &    method_4_solver, precond_4_solver, ierr, eps, itr, itr_res)
+     &    CG_param%METHOD, CG_param%PRECOND, ierr,                      &
+     &    CG_param%EPS, CG_param%MAXIT, itr_res)
 
       call copy_solution_2_crs_nn                                       &
      &   (node%numnod, djds_mat%NB, x_djds, mat_crs)
@@ -205,11 +213,11 @@
 !  ---------------------------------------------------------------------
 !
       subroutine solve_by_djds_solverNN                                 &
-     &         (node, nod_comm, mat_crs, djds_tbl, djds_mat,            &
+     &         (node, nod_comm, CG_param, mat_crs, djds_tbl, djds_mat,  &
      &          itr_res, ierr)
 !
-      use m_iccg_parameter
       use m_solver_SR
+      use t_iccg_parameter
       use t_solver_djds
 !
       use solver_DJDSnn_struct
@@ -218,6 +226,7 @@
 !
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
+      type(CG_poarameter), intent(in) :: CG_param
       type(CRS_matrix), intent(inout) :: mat_crs
       type(DJDS_ordering_table), intent(inout) :: djds_tbl
       type(DJDS_MATRIX), intent(inout) :: djds_mat
@@ -244,7 +253,7 @@
 
       write(*,*) 'precond_DJDSNN'
       call precond_DJDSnn_struct(djds_mat%NB, np_smp, djds_tbl,         &
-     &   djds_mat, precond_4_solver, sigma_diag)
+     &   djds_mat, CG_param%PRECOND, CG_param%sigma_diag)
 !C
 !C-- ICCG computation
 
@@ -252,7 +261,8 @@
 !       if (my_rank.eq.0) write(*,*) 'init_solveNN_DJDS_struct'
       call init_solveNN_DJDS_struct(djds_mat%NB, np_smp, nod_comm,      &
      &    djds_tbl, djds_mat, node%numnod, b_djds, x_djds,              &
-     &    method_4_solver, precond_4_solver, ierr, eps, itr, itr_res)
+     &    CG_param%METHOD, CG_param%PRECOND, ierr,                      &
+     &    CG_param%EPS, CG_param%MAXIT, itr_res)
 
       call copy_solution_2_crs_nn                                       &
      &   (node%numnod, djds_mat%NB, x_djds, mat_crs)

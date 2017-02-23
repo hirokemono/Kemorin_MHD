@@ -3,11 +3,18 @@
 !
 !      Written by Kemorin
 !
-!      subroutine alloc_crs_matrix(numnod, tbl_crs, mat_crs)
-!      subroutine alloc_crs_mat_data(numnod, tbl_crs, mat_crs)
-!
-!      subroutine dealloc_crs_mat_data(mat_crs)
-!      subroutine check_crs_matrix_comps(my_rank, tbl_crs, mat_crs)
+!!      subroutine alloc_crs_matrix(numnod, tbl_crs, mat_crs)
+!!      subroutine alloc_crs_mat_data(numnod, tbl_crs, mat_crs)
+!!
+!!      subroutine copy_from_iccg_parameter(CG_param, mat_crs)
+!!        type(CG_poarameter), intent(inout) :: CG_param
+!!        type(CRS_matrix), intent(inout) :: mat_crs
+!!      subroutine copy_to_iccg_parameter(CG_param, mat_crs)
+!!        type(CRS_matrix), intent(in) :: mat_crs
+!!        type(CG_poarameter), intent(inout) :: CG_param
+!!
+!!      subroutine dealloc_crs_mat_data(mat_crs)
+!!      subroutine check_crs_matrix_comps(my_rank, tbl_crs, mat_crs)
 !
       module t_crs_matrix
 !
@@ -114,6 +121,46 @@
 !
       end subroutine dealloc_crs_mat_data
 !
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_from_iccg_parameter(CG_param, mat_crs)
+!
+      use t_iccg_parameter
+!
+      type(CG_poarameter), intent(in) :: CG_param
+      type(CRS_matrix), intent(inout) :: mat_crs
+!
+!
+      mat_crs%METHOD_crs =       CG_param%METHOD
+      mat_crs%PRECOND_crs =      CG_param%PRECOND
+      mat_crs%INTARRAY_crs(1) =  CG_param%MAXIT
+      mat_crs%REALARRAY_crs(1) = CG_param%EPS
+      mat_crs%REALARRAY_crs(2) = CG_param%sigma_diag
+      mat_crs%REALARRAY_crs(3) = CG_param%sigma
+!
+      end subroutine copy_from_iccg_parameter
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_to_iccg_parameter(CG_param, mat_crs)
+!
+      use t_iccg_parameter
+!
+      type(CRS_matrix), intent(in) :: mat_crs
+      type(CG_poarameter), intent(inout) :: CG_param
+!
+!
+      CG_param%METHOD =     mat_crs%METHOD_crs
+      CG_param%PRECOND =    mat_crs%PRECOND_crs
+      CG_param%MAXIT =      mat_crs%INTARRAY_crs(1)
+      CG_param%EPS =        mat_crs%REALARRAY_crs(1)
+      CG_param%sigma_diag = mat_crs%REALARRAY_crs(2)
+      CG_param%sigma =      mat_crs%REALARRAY_crs(3)
+!
+      end subroutine copy_to_iccg_parameter
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine check_crs_matrix_comps(my_rank, tbl_crs, mat_crs)

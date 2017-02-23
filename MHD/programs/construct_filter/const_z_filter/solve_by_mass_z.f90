@@ -7,9 +7,10 @@
 !     solve using CRS matrix
 !
 !!      subroutine solve_crs_by_mass_z                                  &
-!!     &         (DJDS_param, nod_comm, node, tbl_crs, mat_crs)
+!!     &         (CG_param, DJDS_param, nod_comm, node, tbl_crs, mat_crs)
 !!      subroutine solve_crs_by_mass_z2                                 &
-!!     &         (DJDS_param, nod_comm, node, tbl_crs, mat_crs)
+!!     &         (CG_param, DJDS_param, nod_comm, node, tbl_crs, mat_crs)
+!!        type(CG_poarameter), intent(inout) :: CG_param
 !!        type(DJDS_poarameter), intent(in) :: DJDS_param
 !
       module solve_by_mass_z
@@ -41,12 +42,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine solve_crs_by_mass_z                                    &
-     &         (DJDS_param, nod_comm, node, tbl_crs, mat_crs)
+     &         (CG_param, DJDS_param, nod_comm, node, tbl_crs, mat_crs)
 !
       use calypso_mpi
       use solve_precond_DJDS
       use copy_matrix_2_djds_array
 !
+      type(CG_poarameter), intent(inout) :: CG_param
       type(DJDS_poarameter), intent(in) :: DJDS_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(inout) :: node
@@ -73,9 +75,10 @@
 !
       write(*,*) 'solve_by_djds_solver11'
       call transfer_crs_2_djds_matrix(node, nod_comm,                   &
-     &    tbl_crs, mat_crs, DJDS_param, djds_tbl1, djds_mat1)
+     &    tbl_crs, mat_crs, CG_param, DJDS_param, djds_tbl1, djds_mat1)
       call solve_by_djds_solver11                                       &
-     &   (node, nod_comm, mat_crs, djds_tbl1, djds_mat1, itr_res, ierr)
+     &   (node, nod_comm, CG_param, mat_crs, djds_tbl1, djds_mat1,      &
+     &    itr_res, ierr)
       if (my_rank.eq.0) write (*,*) itr_res, "  iters"
 !
       do i = 1, node%numnod
@@ -90,16 +93,16 @@
 !  ---------------------------------------------------------------------
 !
       subroutine solve_crs_by_mass_z2                                   &
-     &         (DJDS_param, nod_comm, node, tbl_crs, mat_crs)
+     &         (CG_param, DJDS_param, nod_comm, node, tbl_crs, mat_crs)
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_iccg_parameter
 !
       use copy_matrix_2_djds_array
       use solver_DJDS11_struct
       use solve_precond_DJDS
 !
+      type(CG_poarameter), intent(inout) :: CG_param
       type(DJDS_poarameter), intent(in) :: DJDS_param
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(inout) :: node
@@ -119,10 +122,11 @@
 !
       djds_mat1%NB = mat_crs%NB_crs
       call transfer_crs_2_djds_matrix(node, nod_comm,                   &
-     &    tbl_crs, mat_crs, DJDS_param, djds_tbl1, djds_mat1)
+     &    tbl_crs, mat_crs, CG_param, DJDS_param, djds_tbl1, djds_mat1)
 !
       call solve_by_djds_solverNN                                       &
-     &   (node, nod_comm, mat_crs, djds_tbl1, djds_mat1, itr_res, ierr)
+     &   (node, nod_comm, CG_param, mat_crs, djds_tbl1, djds_mat1,      &
+     &    itr_res, ierr)
       if (my_rank.eq.0) write (*,*) itr_res, "  iters"
 !
       do i = 1, node%numnod

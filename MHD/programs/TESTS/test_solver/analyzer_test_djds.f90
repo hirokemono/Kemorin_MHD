@@ -15,6 +15,8 @@
       use t_geometry_data
       use t_comm_table
       use t_crs_matrix
+      use t_iccg_parameter
+      use m_iccg_parameter
 !
       implicit none
 !
@@ -22,6 +24,8 @@
       type(node_data), save :: node
       type(CRS_matrix_connect), save :: tbl_crs
       type(CRS_matrix), save :: mat_crs
+!
+      type(CG_poarameter), save :: CG_param_t
 !
       real(kind = kreal) :: RTIME, STARTTIME, ENDTIME
       private :: RTIME, STARTTIME, ENDTIME
@@ -60,7 +64,6 @@
       subroutine analyze
 !
       use calypso_mpi
-      use m_iccg_parameter
       use crs_matrix_io
       use solve_precond_DJDS
       use copy_matrix_2_djds_array
@@ -75,20 +78,23 @@
 !C
 !C-- ICCG computation
       call transfer_crs_2_djds_matrix(node, nod_comm, tbl_crs, mat_crs, &
-     &    DJDS_param1, djds_tbl, djds_mat)
+     &    CG_param_t, DJDS_param1, djds_tbl, djds_mat)
 !
       if (mat_crs%SOLVER_crs .eq. 'scalar'                              &
      &   .or. mat_crs%SOLVER_crs.eq.'SCALAR') then
         call solve_by_djds_solver11                                     &
-     &     (node, nod_comm, mat_crs, djds_tbl, djds_mat, itr_res, ierr)
+     &     (node, nod_comm, CG_param_t, mat_crs, djds_tbl, djds_mat,    &
+     &      itr_res, ierr)
       else if (mat_crs%SOLVER_crs.eq.'block33'                          &
      &    .or. mat_crs%SOLVER_crs.eq.'BLOCK33') then
         call solve_by_djds_solver33                                     &
-     &     (node, nod_comm, mat_crs, djds_tbl, djds_mat, itr_res, ierr)
+     &     (node, nod_comm, CG_param_t, mat_crs, djds_tbl, djds_mat,    &
+     &      itr_res, ierr)
       else if (mat_crs%SOLVER_crs.eq.'blockNN'                          &
      &    .or. mat_crs%SOLVER_crs.eq.'BLOCKNN') then
         call solve_by_djds_solverNN                                     &
-     &     (node, nod_comm, mat_crs, djds_tbl, djds_mat, itr_res, ierr)
+     &     (node, nod_comm, CG_param_t, mat_crs, djds_tbl, djds_mat,    &
+     &      itr_res, ierr)
       end if
 
       call output_solution(node, mat_crs)

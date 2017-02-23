@@ -4,11 +4,14 @@
 !
 !     Written by H. Matsui and H. Okuda in 2000
 !
+!!      subroutine set_control_4_CG_solver(CG_ctl, CG_param)
+!!        type(solver_control), intent(in) :: CG_ctl
+!!        type(CG_poarameter), intent(inout) :: CG_param
 !!      subroutine set_control_4_DJDS_solver(DJDS_ctl, DJDS_param)
 !!        type(DJDS_control), intent(in) :: DJDS_ctl
 !!        type(DJDS_poarameter), intent(inout) :: DJDS_param
 !
-      module   t_iccg_parameter
+      module t_iccg_parameter
 !
       use m_precision
 !
@@ -20,7 +23,7 @@
 !
       type CG_poarameter
 !>        Maxmum iteration
-        integer(kind=kint) :: MAXITR
+        integer(kind=kint) :: MAXIT
 !>        Error torrance
         real(kind=kreal)   :: EPS
 !>        Coefficients for SSOR
@@ -47,6 +50,37 @@
 ! -----------------------------------------------------------------------
 !
       contains
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_control_4_CG_solver(CG_ctl, CG_param)
+!
+      use t_ctl_data_4_solvers
+!
+      type(solver_control), intent(in) :: CG_ctl
+      type(CG_poarameter), intent(inout) :: CG_param
+!
+!
+      if(CG_ctl%precond_ctl%iflag .gt. 0) then
+        CG_param%PRECOND = CG_ctl%precond_ctl%charavalue
+      end if
+      if(CG_ctl%method_ctl%iflag .gt. 0)  then
+        CG_param%METHOD =  CG_ctl%method_ctl%charavalue
+      end if
+      if(CG_ctl%eps_ctl%iflag .gt. 0)        then
+        CG_param%EPS = CG_ctl%eps_ctl%realvalue
+      end if
+      if(CG_ctl%itr_ctl%iflag .gt. 0)        then
+        CG_param%MAXIT = CG_ctl%itr_ctl%intvalue
+      end if
+      if(CG_ctl%sigma_ctl%iflag .gt. 0)      then
+        CG_param%sigma = CG_ctl%sigma_ctl%realvalue
+      end if
+      if(CG_ctl%sigma_diag_ctl%iflag .gt. 0) then
+        CG_param%sigma_diag =  CG_ctl%sigma_diag_ctl%realvalue
+      end if
+!
+      end subroutine set_control_4_CG_solver
 !
 ! -----------------------------------------------------------------------
 !
