@@ -20,18 +20,18 @@
 !
       type CG_poarameter
 !>        Maxmum iteration
-        integer(kind=kint) :: itr
+        integer(kind=kint) :: MAXITR
 !>        Error torrance
-        real(kind=kreal)   :: eps
+        real(kind=kreal)   :: EPS
 !>        Coefficients for SSOR
         real(kind=kreal)   :: sigma
 !>        Coefficients for SSOR
         real(kind=kreal)   :: sigma_diag
 ! 
 !>        Oreconditioning method
-        character (len=kchara)   :: precond
+        character (len=kchara)   :: PRECOND
 !>        olver method
-        character (len=kchara)   :: method
+        character (len=kchara)   :: METHOD
       end type CG_poarameter
 ! 
 !

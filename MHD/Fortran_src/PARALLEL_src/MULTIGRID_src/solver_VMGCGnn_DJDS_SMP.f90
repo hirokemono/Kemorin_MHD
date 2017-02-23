@@ -12,14 +12,14 @@
 !C***
 !      subroutine VMGCGnn_DJDS_SMP(num_MG_level, MG_comm, MG_itp,       &
 !     &          djds_tbl, matNN, MG_vect, PEsmpTOT, NP, NB, B, X,      &
-!     &          ITR, iter_mid, iter_lowest, EPS, EPS_MG,               &
+!     &          MAXIT, ITR, iter_mid, iter_lowest, EPS, EPS_MG,        &
 !     &          PRECOND, METHOD_MG, PRECOND_MG, IER, iterPREmax)
 !
 !      subroutine init_VMGCGnn_DJDS_SMP(NP, NB, PEsmpTOT,               &
 !     &          PRECOND, METHOD_MG, PRECOND_MG, iterPREmax)
 !      subroutine solve_VMGCGnn_DJDS_SMP(num_MG_level, MG_comm, MG_itp, &
 !     &          djds_tbl, matNN, MG_vect, PEsmpTOT, NP, NB, B, X,      &
-!     &          ITR, iter_mid, iter_lowest, EPS, EPS_MG,               &
+!     &          MAXIT, ITR, iter_mid, iter_lowest, EPS, EPS_MG,        &
 !     &          PRECOND, METHOD_MG, PRECOND_MG, IER)
 !      integer(kind = kint), intent(in) :: num_MG_level
 !      type(communication_table), intent(in) :: MG_comm(0:num_MG_level)
@@ -36,6 +36,7 @@
 !      character (len=kchara), intent(in) :: PRECOND
 !      character(len=kchara), intent(in) :: METHOD_MG, PRECOND_MG
 !      integer(kind = kint), intent(in) :: iter_mid,  iter_lowest
+!      integer(kind=kint ), intent(in) :: MAXIT
 !      integer(kind=kint ), intent(inout) :: ITR, IER
 !      real(kind = kreal), intent(in) :: EPS
 !      real(kind = kreal), intent(in) :: EPS_MG
@@ -81,7 +82,7 @@
 !C
       subroutine VMGCGnn_DJDS_SMP(num_MG_level, MG_comm, MG_itp,        &
      &          djds_tbl, matNN, MG_vect, PEsmpTOT, NP, NB, B, X,       &
-     &          ITR, iter_mid, iter_lowest, EPS, EPS_MG,                &
+     &          MAXIT, ITR, iter_mid, iter_lowest, EPS, EPS_MG,         &
      &          PRECOND, METHOD_MG, PRECOND_MG, IER, iterPREmax)
 !
       use t_comm_table
@@ -106,6 +107,7 @@
       integer(kind = kint), intent(in) :: iter_mid,  iter_lowest
       real(kind = kreal), intent(in) :: EPS
       real(kind = kreal), intent(in) :: EPS_MG
+      integer(kind=kint ), intent(in) :: MAXIT
       integer(kind=kint ), intent(inout) :: ITR, IER
       integer(kind=kint ), intent(in)  :: iterPREmax
 !
@@ -115,7 +117,7 @@
 !C
       call solve_VMGCGnn_DJDS_SMP(num_MG_level, MG_comm, MG_itp,        &
      &          djds_tbl, matNN, MG_vect, PEsmpTOT, NP, NB, B, X,       &
-     &          ITR, iter_mid, iter_lowest, EPS, EPS_MG,                &
+     &          MAXIT, ITR, iter_mid, iter_lowest, EPS, EPS_MG,         &
      &          PRECOND, METHOD_MG, PRECOND_MG, IER)
 !
       end subroutine VMGCGnn_DJDS_SMP
@@ -151,7 +153,7 @@
 !C
       subroutine solve_VMGCGnn_DJDS_SMP(num_MG_level, MG_comm, MG_itp,  &
      &          djds_tbl, matNN, MG_vect, PEsmpTOT, NP, NB, B, X,       &
-     &          ITR, iter_mid, iter_lowest, EPS, EPS_MG,                &
+     &          MAXIT, ITR, iter_mid, iter_lowest, EPS, EPS_MG,         &
      &          PRECOND, METHOD_MG, PRECOND_MG, IER)
 !
       use calypso_mpi
@@ -192,9 +194,10 @@
       integer(kind = kint), intent(in) :: iter_mid,  iter_lowest
       real(kind = kreal), intent(in) :: EPS
       real(kind = kreal), intent(in) :: EPS_MG
+      integer(kind=kint ), intent(in) :: MAXIT
       integer(kind=kint ), intent(inout) :: ITR, IER
 !
-      integer(kind=kint ) :: iter, MAXIT
+      integer(kind=kint ) :: iter
 !
 !C
 !C +-------+
@@ -202,7 +205,6 @@
 !C +-------+
 !C===
 !
-      MAXIT= ITR
       TOL  = EPS
       S1_TIME= MPI_WTIME()
 !

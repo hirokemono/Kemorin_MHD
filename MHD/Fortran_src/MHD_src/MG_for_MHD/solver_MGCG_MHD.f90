@@ -108,7 +108,7 @@
 !
       character(len=kchara), intent(in) :: METHOD, PRECOND
       real(kind = kreal), intent(in) :: eps
-      integer(kind = kint), intent(inout) :: itr
+      integer(kind = kint), intent(in) :: itr
 !
       type(node_data), intent(in) :: node
 !
@@ -138,7 +138,7 @@
         call VMGCG33_DJDS_SMP(num_MG_level, MG_comm,                    &
      &      MG_itp, MG_DJDS_tbl, MG_DJDS_mat, MG_vector,                &
      &      np_smp, node%numnod, b_vec(1), x_vec(1), itr,               &
-     &      itr_MG_mid, itr_MG_lowest, eps, EPS_MG,                     &
+     &      itr_res, itr_MG_mid, itr_MG_lowest, eps, EPS_MG,            &
      &      PRECOND, METHOD_MG, PRECOND_MG, ierr, iterPREmax)
       else
         call solve33_DJDS_struct(np_smp, MG_comm(0), MG_DJDS_tbl(0),    &
@@ -203,7 +203,7 @@
       if (cmp_no_case(METHOD, 'MGCG')) then
         call VMGCG11_DJDS_SMP(num_MG_level, MG_comm,                    &
      &      MG_itp, MG_DJDS_tbl, MG_DJDS_mat11, MG_vector, np_smp,      &
-     &      node%numnod, b_vec(1), x_vec(1), itr,                       &
+     &      node%numnod, b_vec(1), x_vec(1), itr, itr_res,              &
      &      itr_MG_mid, itr_MG_lowest, eps, EPS_MG,                     &
      &      PRECOND, METHOD_MG, PRECOND_MG, ierr, iterPREmax)
       else

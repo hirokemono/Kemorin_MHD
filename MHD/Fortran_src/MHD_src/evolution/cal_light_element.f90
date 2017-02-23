@@ -273,7 +273,7 @@
      &      i_field, iphys%i_pre_composit, ifld_diff%i_light,           &
      &      ak_d_composit, FEM_prm%eps_4_comp_crank,                    &
      &      FEM_prm, node, ele, fluid, property, Snod_bcs, jac_3d,      &
-     &      rhs_tbl, FEM_elens, diff_coefs, Cmatrix, MG_vector, &
+     &      rhs_tbl, FEM_elens, diff_coefs, Cmatrix, MG_vector,         &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
