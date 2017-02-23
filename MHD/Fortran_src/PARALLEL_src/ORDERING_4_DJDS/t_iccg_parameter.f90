@@ -55,29 +55,54 @@
 !
       subroutine set_control_4_CG_solver(CG_ctl, CG_param)
 !
+      use calypso_mpi
+      use m_error_IDs
       use t_ctl_data_4_solvers
 !
       type(solver_control), intent(in) :: CG_ctl
       type(CG_poarameter), intent(inout) :: CG_param
 !
 !
-      if(CG_ctl%precond_ctl%iflag .gt. 0) then
-        CG_param%PRECOND = CG_ctl%precond_ctl%charavalue
+      if (CG_ctl%precond_ctl%iflag .eq. 0) then
+        e_message = 'Set CG preconditioning for Poisson solver'
+        call calypso_MPI_abort(ierr_CG, e_message)
+      else
+        CG_param%PRECOND  = CG_ctl%method_ctl%charavalue
       end if
-      if(CG_ctl%method_ctl%iflag .gt. 0)  then
-        CG_param%METHOD =  CG_ctl%method_ctl%charavalue
+!
+      if (CG_ctl%method_ctl%iflag .eq. 0) then
+        e_message = 'Set CG method for solver'
+        call calypso_MPI_abort(ierr_CG, e_message)
+      else
+        CG_param%METHOD  = CG_ctl%method_ctl%charavalue
       end if
-      if(CG_ctl%eps_ctl%iflag .gt. 0)        then
-        CG_param%EPS = CG_ctl%eps_ctl%realvalue
-      end if
-      if(CG_ctl%itr_ctl%iflag .gt. 0)        then
+!
+      if (CG_ctl%itr_ctl%iflag .eq. 0) then
+        e_message = 'Set max iteration count for CG solver '
+        call calypso_MPI_abort(ierr_CG, e_message)
+      else
         CG_param%MAXIT = CG_ctl%itr_ctl%intvalue
       end if
-      if(CG_ctl%sigma_ctl%iflag .gt. 0)      then
+!
+      if (CG_ctl%eps_ctl%iflag .eq. 0) then
+        e_message = 'Set conservation limit for CG solver '
+        call calypso_MPI_abort(ierr_CG, e_message)
+      else
+        CG_param%EPS = CG_ctl%eps_ctl%realvalue
+      end if
+!
+      if (CG_ctl%sigma_ctl%iflag .eq. 0) then
+        e_message                                                       &
+     &      = 'Set coefficient of diagonal for SSOR preconditioning'
+        call calypso_MPI_abort(ierr_CG, e_message)
+      else
         CG_param%sigma = CG_ctl%sigma_ctl%realvalue
       end if
-      if(CG_ctl%sigma_diag_ctl%iflag .gt. 0) then
-        CG_param%sigma_diag =  CG_ctl%sigma_diag_ctl%realvalue
+!
+      if (CG_ctl%sigma_diag_ctl%iflag .eq. 0) then
+        CG_param%sigma_diag = 1.0d0
+      else
+        CG_param%sigma_diag = CG_ctl%sigma_diag_ctl%realvalue
       end if
 !
       end subroutine set_control_4_CG_solver
