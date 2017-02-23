@@ -42,7 +42,6 @@
       subroutine set_addresses_trans_sph_MHD(ipol, trns_MHD,            &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
-      use m_control_parameter
       use m_physical_property
 !
       type(phys_address), intent(in) :: ipol

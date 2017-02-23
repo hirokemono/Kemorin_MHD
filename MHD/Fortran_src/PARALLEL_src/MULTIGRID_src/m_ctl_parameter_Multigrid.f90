@@ -3,8 +3,9 @@
 !
 !     Written by H. Matsui on Dec., 2008
 !
-!!      subroutine set_ctl_data_4_Multigrid(MG_ctl)
+!!      subroutine set_ctl_data_4_Multigrid(MG_ctl, MG_param)
 !!        type(MGCG_control), intent(inout) :: MG_ctl!
+!!        type(FEM_MHD_paremeters), intent(inout) :: MG_param
 !
       module m_ctl_parameter_Multigrid
 !
@@ -13,34 +14,30 @@
 !
       implicit  none
 !
-!   parameteres for multigrid
-!
-      character (len=kchara) :: METHOD_MG =  'CG'
-      character (len=kchara) :: PRECOND_MG = 'DIAG'
-      integer(kind=kint) ::     itr_MG_mid =     1
-      integer(kind=kint) ::     itr_MG_lowest =  30
-      real(kind=kreal) ::       EPS_MG =         1.0d-8
-!
 !------------------------------------------------------------------
 !
        contains
 !
 !------------------------------------------------------------------
 !
-      subroutine set_ctl_data_4_Multigrid(MG_ctl)
+      subroutine set_ctl_data_4_Multigrid(MG_ctl, MG_param)
 !
       use calypso_mpi
       use m_machine_parameter
       use m_file_format_switch
       use m_type_AMG_data
       use m_type_AMG_mesh
+      use t_MGCG_parameter
       use t_ctl_data_4_Multigrid
       use set_parallel_file_name
 !
       type(MGCG_control), intent(inout) :: MG_ctl
+      type(MGCG_parameter), intent(inout) :: MG_param
 !
       integer(kind = kint) :: i
 !
+!
+      call set_MGCG_parameter(MG_ctl, MG_param)
 !
       if (MG_ctl%num_multigrid_level_ctl%iflag .gt. 0) then
         num_MG_level = MG_ctl%num_multigrid_level_ctl%intvalue
@@ -121,48 +118,18 @@
       end if
 !
 !
-      if (MG_ctl%MG_METHOD_ctl%iflag .gt. 0) then
-        METHOD_MG =     MG_ctl%MG_METHOD_ctl%charavalue
-      end if
-!
-      if (MG_ctl%MG_PRECOND_ctl%iflag .gt. 0) then
-        PRECOND_MG =    MG_ctl%MG_PRECOND_ctl%charavalue
-      end if
-!
-      if (MG_ctl%maxiter_mid_ctl%iflag .gt. 0) then
-        itr_MG_mid =    MG_ctl%maxiter_mid_ctl%intvalue
-      end if
-!
-      if (MG_ctl%MG_residual_ctl%iflag .gt. 0) then
-        EPS_MG = MG_ctl%MG_residual_ctl%realvalue
-      end if
-!
-      if (MG_ctl%maxiter_coarsest_ctl%iflag .gt. 0) then
-        itr_MG_lowest = MG_ctl%maxiter_coarsest_ctl%intvalue
-      end if
-!
-!
-!
-        if (iflag_debug .gt. 0) then
-          do i = 1, num_MG_level
-            write(*,*) 'MG_mesh_file_head', MG_mpi(i)%nprocs,           &
+      if (iflag_debug .gt. 0) then
+        do i = 1, num_MG_level
+          write(*,*) 'MG_mesh_file_head', MG_mpi(i)%nprocs,             &
      &                trim(MG_mesh_file_head(i))
 !
-            write(*,*) 'MG_f2c_tbl_head: ', trim(MG_f2c_tbl_head(i))
-            write(*,*) 'MG_c2f_tbl_head: ', trim(MG_c2f_tbl_head(i))
+          write(*,*) 'MG_f2c_tbl_head: ', trim(MG_f2c_tbl_head(i))
+          write(*,*) 'MG_c2f_tbl_head: ', trim(MG_c2f_tbl_head(i))
 !
-            write(*,*) 'MG_f2c_eletbl_head: ',                          &
-     &                                   trim(MG_f2c_eletbl_head(i))
-          end do
-!
-          write(*,*) 'METHOD_MG:     ', trim(METHOD_MG)
-          write(*,*) 'PRECOND_MG:    ', trim(PRECOND_MG)
-          write(*,*) 'itr_MG_mid:    ', itr_MG_mid
-          write(*,*) 'itr_MG_lowest: ', itr_MG_lowest
-          write(*,*) 'EPS_MG:        ', EPS_MG
-!
-        end if
-!
+          write(*,*) 'MG_f2c_eletbl_head: ',                            &
+     &          trim(MG_f2c_eletbl_head(i))
+        end do
+      end if
 !
       end subroutine set_ctl_data_4_Multigrid
 !

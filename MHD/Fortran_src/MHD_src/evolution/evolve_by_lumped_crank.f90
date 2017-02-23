@@ -179,7 +179,8 @@
      &    n_vector, iphys%i_velo, iphys%i_pre_mom, nod_fld%d_fld,       &
      &    f_l%ff)
 !
-      call solver_crank_vector(node, Vmatrix%nlevel_MG,                 &
+      call solver_crank_vector                                          &
+     &   (node, FEM_prm%MG_param, Vmatrix%nlevel_MG,                    &
      &    Vmatrix%MG_interpolate, Vmatrix%MG_comm_table,                &
      &    Vmatrix%MG_DJDS_table, Vmatrix%mat_MG_DJDS,                   &
      &    FEM_PRM%method_33, FEM_PRM%precond_33,                        &
@@ -260,7 +261,8 @@
      &    nod_fld%ntot_phys, n_vector, i_vecp, i_pre_uxb,               &
      &    nod_fld%d_fld, f_l%ff)
 !
-      call solver_crank_vector(node, Bmatrix%nlevel_MG,                 &
+      call solver_crank_vector                                          &
+     &   (node, FEM_prm%MG_param, Bmatrix%nlevel_MG,                    &
      &    Bmatrix%MG_interpolate, Bmatrix%MG_comm_table,                &
      &    Bmatrix%MG_DJDS_table, Bmatrix%mat_MG_DJDS,                   &
      &    FEM_PRM%method_33, FEM_PRM%precond_33,                        &
@@ -342,7 +344,8 @@
      &    nod_fld%d_fld, f_l%ff)
 !
       if (iflag_debug .eq. 0 ) write(*,*) 'time_evolution'
-      call solver_crank_vector(node, Bmatrix%nlevel_MG,                 &
+      call solver_crank_vector                                          &
+     &   (node, FEM_prm%MG_param, Bmatrix%nlevel_MG,                    &
      &    Bmatrix%MG_interpolate, Bmatrix%MG_comm_table,                &
      &    Bmatrix%MG_DJDS_table, Bmatrix%mat_MG_DJDS,                   &
      &    FEM_PRM%method_33, FEM_PRM%precond_33,                        &
@@ -427,7 +430,8 @@
      &    mhd_fem_wk%mlump_fl%ml_o, f_nl%ff, nod_fld%ntot_phys,         &
      &    n_scalar, i_field, i_pre_advect, nod_fld%d_fld, f_l%ff)
 !
-      call solver_crank_scalar(node, matrix%nlevel_MG,                  &
+      call solver_crank_scalar                                          &
+     &   (node, FEM_prm%MG_param, matrix%nlevel_MG,                     &
      &    matrix%MG_interpolate, matrix%MG_comm_table,                  &
      &    matrix%MG_DJDS_table, matrix%mat_MG_DJDS,                     &
      &    FEM_PRM%CG11_param%METHOD, FEM_PRM%CG11_param%PRECOND,        &

@@ -47,7 +47,6 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_control_parameter
       use m_t_step_parameter
 !
       use m_physical_property
@@ -262,7 +261,7 @@
 !
 !     ---------------------
 !
-      call int_RHS_mass_matrices(FEM_prm1%npoint_t_evo_int,             &
+      call int_RHS_mass_matrices(FEM_prm%npoint_t_evo_int,              &
      &     mesh%node, mesh%ele, MHD_mesh, jac1_3d_q, rhs_tbl1,          &
      &     mhd_fem1_wk, fem1_wk, f1_l, m1_lump)
 !

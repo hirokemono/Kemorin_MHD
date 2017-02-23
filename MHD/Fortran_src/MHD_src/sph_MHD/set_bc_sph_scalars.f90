@@ -29,7 +29,6 @@
       use m_constants
       use m_error_IDs
       use m_machine_parameter
-      use m_control_parameter
       use m_boundary_condition_IDs
 !
       use t_spheric_rj_data

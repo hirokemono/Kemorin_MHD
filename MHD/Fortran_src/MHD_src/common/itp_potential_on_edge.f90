@@ -30,7 +30,6 @@
 !
       use m_geometry_constants
       use m_phys_labels
-      use m_control_parameter
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele

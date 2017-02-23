@@ -49,7 +49,6 @@
      &          jac_3d_q, jac_3d_l, fem_wk, mhd_fem_wk)
 !
       use calypso_mpi
-      use m_control_parameter
       use m_t_step_parameter
       use m_t_int_parameter
       use m_mean_square_values

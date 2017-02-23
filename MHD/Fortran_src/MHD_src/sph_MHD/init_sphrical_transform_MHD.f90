@@ -64,7 +64,6 @@
       subroutine init_sph_transform_MHD(SGS_param, ipol, idpdr, itor,   &
      &          iphys, sph, comms_sph, omega_sph, trans_p, WK, rj_fld)
 !
-      use m_control_parameter
       use m_physical_property
       use set_address_sph_trans_MHD
       use set_address_sph_trans_SGS

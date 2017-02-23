@@ -27,7 +27,6 @@
       module int_vol_SGS_div_flux
 !
       use m_precision
-      use m_control_parameter
 !
       use m_phys_constants
       use t_mesh_data

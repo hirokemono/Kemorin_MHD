@@ -17,8 +17,6 @@
       use m_precision
       use m_constants
 !
-      use m_control_parameter
-!
       use t_geometry_data
       use t_schmidt_polynomial
       use t_spherical_harmonics

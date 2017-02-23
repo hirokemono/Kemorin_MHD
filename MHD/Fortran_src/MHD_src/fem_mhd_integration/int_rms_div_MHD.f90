@@ -19,7 +19,6 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_control_parameter
       use m_mean_square_values
 !
       use t_geometry_data_MHD

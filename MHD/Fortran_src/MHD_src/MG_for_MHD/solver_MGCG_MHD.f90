@@ -8,18 +8,19 @@
 !>@brief  Wrapper for linear solvers for MHD dynmamo
 !!
 !!@verbatim
-!!      subroutine init_MGCG33_MHD(node, METHOD, PRECOND)
-!!      subroutine init_MGCG11_MHD(node, METHOD, PRECOND)
+!!      subroutine init_MGCG33_MHD(node, METHOD, PRECOND, MG_param)
+!!      subroutine init_MGCG11_MHD(node, METHOD, PRECOND, MG_param)
 !!
-!!      subroutine solver_MGCG_vector(node, num_MG_level,               &
+!!      subroutine solver_MGCG_vector(node, MG_param, num_MG_level,     &
 !!     &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat,            &
 !!     &          METHOD, PRECOND, eps, itr, MG_vector, b_vec, x_vec)
-!!      subroutine solver_MGCG_scalar(node, num_MG_level,               &
+!!      subroutine solver_MGCG_scalar(node, MG_param, num_MG_level,     &
 !!     &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat11,          &
 !!     &          METHOD, PRECOND, eps, itr, MG_vector, b_vec, x_vec)
 !!        type(node_data), intent(in) :: node
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
+!!        type(MGCG_parameter), intent(in) :: MG_param
 !!        integer(kind = kint), intent(in) :: num_MG_level
 !!        type(MG_itp_table), intent(in) :: MG_itp(num_MG_level)
 !!        type(communication_table), intent(in)                         &
@@ -37,7 +38,6 @@
 !
       use m_machine_parameter
       use m_work_time
-      use m_ctl_parameter_Multigrid
       use calypso_mpi
 !
       use t_physical_property
@@ -45,6 +45,7 @@
       use t_vector_for_solver
       use t_interpolate_table
       use t_solver_djds
+      use t_MGCG_parameter
 !
       implicit  none
 !
@@ -56,7 +57,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_MGCG33_MHD(node, METHOD, PRECOND)
+      subroutine init_MGCG33_MHD(node, METHOD, PRECOND, MG_param)
 !
       use solver_DJDS11_struct
       use solver_DJDS33_struct
@@ -65,14 +66,15 @@
       use skip_comment_f
 !
       character(len=kchara), intent(in) :: METHOD, PRECOND
+      type(MGCG_parameter), intent(in) :: MG_param
       type(node_data), intent(in) :: node
 !
       integer(kind = kint) :: ierr
 !
 !
       if (cmp_no_case(METHOD, 'MGCG')) then
-        call init_VMGCG33_DJDS_SMP(node%numnod, np_smp,                 &
-            PRECOND,  METHOD_MG, PRECOND_MG, iterPREmax)
+        call init_VMGCG33_DJDS_SMP(node%numnod, np_smp, PRECOND,        &
+            MG_param%METHOD_MG, MG_param%PRECOND_MG, iterPREmax)
       else
         call init33_DJDS_struct(node%numnod, np_smp, METHOD,            &
             PRECOND, ierr)
@@ -82,7 +84,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_MGCG11_MHD(node, METHOD, PRECOND)
+      subroutine init_MGCG11_MHD(node, METHOD, PRECOND, MG_param)
 !
       use solver_DJDS11_struct
       use solver_DJDS33_struct
@@ -91,14 +93,15 @@
       use skip_comment_f
 !
       character(len=kchara), intent(in) :: METHOD, PRECOND
+      type(MGCG_parameter), intent(in) :: MG_param
       type(node_data), intent(in) :: node
 !
       integer(kind = kint) :: ierr
 !
 !
       if (cmp_no_case(METHOD, 'MGCG')) then
-        call init_VMGCG11_DJDS_SMP(node%numnod, np_smp,                 &
-            PRECOND, METHOD_MG, PRECOND_MG, iterPREmax)
+        call init_VMGCG11_DJDS_SMP(node%numnod, np_smp, PRECOND,        &
+            MG_param%METHOD_MG, MG_param%PRECOND_MG, iterPREmax)
       else
         call init_DJDS11_struct(node%numnod, np_smp, METHOD,            &
             PRECOND, ierr)
@@ -109,7 +112,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine solver_MGCG_vector(node, num_MG_level,                 &
+      subroutine solver_MGCG_vector(node, MG_param, num_MG_level,       &
      &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat,              &
      &          METHOD, PRECOND, eps, itr, MG_vector, b_vec, x_vec)
 !
@@ -117,6 +120,7 @@
       use solver_VMGCG33_DJDS_SMP
       use skip_comment_f
 !
+      type(MGCG_parameter), intent(in) :: MG_param
       character(len=kchara), intent(in) :: METHOD, PRECOND
       real(kind = kreal), intent(in) :: eps
       integer(kind = kint), intent(in) :: itr
@@ -148,9 +152,10 @@
       if (cmp_no_case(METHOD, 'MGCG')) then
         call VMGCG33_DJDS_SMP(num_MG_level, MG_comm,                    &
      &      MG_itp, MG_DJDS_tbl, MG_DJDS_mat, MG_vector,                &
-     &      np_smp, node%numnod, b_vec(1), x_vec(1), itr,               &
-     &      itr_res, itr_MG_mid, itr_MG_lowest, eps, EPS_MG,            &
-     &      PRECOND, METHOD_MG, PRECOND_MG, ierr, iterPREmax)
+     &      np_smp, node%numnod, b_vec(1), x_vec(1), itr, itr_res,      &
+     &      MG_param%MID_ITR, MG_param%MIN_ITR, eps, MG_param%EPS_MG,   &
+     &      PRECOND, MG_param%METHOD_MG, MG_param%PRECOND_MG,           &
+     &      ierr, iterPREmax)
       else
         call solve33_DJDS_struct(np_smp, MG_comm(0), MG_DJDS_tbl(0),    &
      &      MG_DJDS_mat(0), node%numnod, b_vec(1), x_vec(1),            &
@@ -164,7 +169,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine solver_MGCG_scalar(node, num_MG_level,                 &
+      subroutine solver_MGCG_scalar(node, MG_param, num_MG_level,       &
      &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat11,            &
      &          METHOD, PRECOND, eps, itr, MG_vector, b_vec, x_vec)
 !
@@ -173,6 +178,7 @@
 !      use solver_CG
       use skip_comment_f
 !
+      type(MGCG_parameter), intent(in) :: MG_param
       character(len=kchara), intent(in) :: METHOD, PRECOND
       real(kind = kreal), intent(in) :: eps
       integer(kind = kint), intent(in) :: itr
@@ -215,8 +221,9 @@
         call VMGCG11_DJDS_SMP(num_MG_level, MG_comm,                    &
      &      MG_itp, MG_DJDS_tbl, MG_DJDS_mat11, MG_vector, np_smp,      &
      &      node%numnod, b_vec(1), x_vec(1), itr, itr_res,              &
-     &      itr_MG_mid, itr_MG_lowest, eps, EPS_MG,                     &
-     &      PRECOND, METHOD_MG, PRECOND_MG, ierr, iterPREmax)
+     &      MG_param%MID_ITR, MG_param%MIN_ITR, eps, MG_param%EPS_MG,   &
+     &      PRECOND, MG_param%METHOD_MG, MG_param%PRECOND_MG,           &
+     &      ierr, iterPREmax)
       else
         call solve_DJDS11_struct(np_smp, MG_comm(0), MG_DJDS_tbl(0),    &
      &      MG_DJDS_mat11(0), node%numnod, b_vec(1), x_vec(1),          &

@@ -192,7 +192,6 @@
      &         (is_temp, reftemp_rj, sph_rj, nlayer_ICB, nlayer_CMB,    &
      &          n_point, ntot_phys_rj, d_rj)
 !
-      use m_control_parameter
       use m_physical_property
 !
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -249,8 +248,6 @@
      &          r_ICB, r_CMB, nlayer_ICB, nlayer_CMB,                   &
      &          n_point, ntot_phys_rj, d_rj)
 !
-      use m_control_parameter
-!
       type(sph_rj_grid), intent(in) :: sph_rj
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       integer(kind = kint), intent(in) :: is_temp
@@ -290,8 +287,6 @@
       subroutine set_initial_temp_sph(isig, is_temp, sph_rj,            &
      &          r_ICB, r_CMB, nlayer_ICB, nlayer_CMB,                   &
      &          n_point, ntot_phys_rj, d_rj)
-!
-      use m_control_parameter
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
@@ -493,7 +488,6 @@
      &          r_ICB, r_CMB, nlayer_ICB, nlayer_CMB,                   &
      &          n_point, ntot_phys_rj, d_rj)
 !
-      use m_control_parameter
       use m_physical_property
 !
       type(sph_rj_grid), intent(in) :: sph_rj

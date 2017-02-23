@@ -19,8 +19,6 @@
       use m_precision
       use m_machine_parameter
 !
-      use m_control_parameter
-!
       use t_geometry_data
       use t_jacobian_3d
 !

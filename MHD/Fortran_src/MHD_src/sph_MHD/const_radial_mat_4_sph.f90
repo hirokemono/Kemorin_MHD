@@ -47,8 +47,6 @@
       subroutine const_radial_mat_sph_mhd                               &
      &        (fl_prop, cd_prop, ht_prop, cp_prop, sph_rj, r_2nd, leg)
 !
-      use m_control_parameter
-!
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
       type(scalar_property), intent(in) :: ht_prop, cp_prop

@@ -25,7 +25,6 @@
       module set_control_FEM_MHD
 !
       use m_precision
-      use m_control_parameter
       use t_phys_data
       use t_file_IO_parameter
       use t_ctl_data_4_platforms

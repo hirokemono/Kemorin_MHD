@@ -47,7 +47,6 @@
      &         (SGS_param, node, ele, sf_grp,  layer_tbl,               &
      &          infty_list, jac_3d_l, jac_3d_q, MHD_mesh)
 !
-!      use m_control_parameter
       use m_mean_square_values
       use t_jacobians
       use t_layering_ele_list

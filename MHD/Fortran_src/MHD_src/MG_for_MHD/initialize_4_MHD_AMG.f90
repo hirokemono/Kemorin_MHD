@@ -360,7 +360,6 @@
       subroutine const_MGCG_MHD_matrices                                &
      &        (FEM_prm, SGS_param, cmt_param, ifld_diff, MHD_matrices)
 !
-      use m_ctl_parameter_Multigrid
       use t_FEM_control_parameter
       use t_SGS_control_parameter
       use set_aiccg_matrices_type
@@ -411,7 +410,8 @@
         if(my_rank .lt. MG_mpi(i_level)%nprocs) then
           if (iflag_debug.gt.0) write(*,*) 'preconditioning', i_level
           call matrix_precondition                                      &
-     &       (PRECOND_MG, PRECOND_MG, FEM_prm%CG11_param%sigma_diag,    &
+     &       (FEM_prm%MG_param%PRECOND_MG, FEM_prm%MG_param%PRECOND_MG, &
+     &        FEM_prm%CG11_param%sigma_diag,                            &
      &        fl_prop1, cd_prop1, ht_prop1, cp_prop1,                   &
      &        MHD_matrices%MG_DJDS_table(i_level),                      &
      &        MHD_matrices%MG_DJDS_fluid(i_level),                      &

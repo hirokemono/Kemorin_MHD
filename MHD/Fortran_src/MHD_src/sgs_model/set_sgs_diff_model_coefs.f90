@@ -300,7 +300,6 @@
      &          ntot_comp_ele, sgs_f_clip, sgs_c_clip, ak_sgs)
 !
       use m_machine_parameter
-      use m_control_parameter
 !
       type(element_data), intent(in) :: ele
       integer (kind = kint), intent(in) :: itype_csim

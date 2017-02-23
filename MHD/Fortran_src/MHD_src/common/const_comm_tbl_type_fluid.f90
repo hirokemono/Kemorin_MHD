@@ -23,7 +23,6 @@
 !
       subroutine s_const_comm_tbl_type_fluid(solver_C, mesh, MHD_mesh)
 !
-      use m_control_parameter
       use t_vector_for_solver
       use t_mesh_data
       use t_geometry_data_MHD

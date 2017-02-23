@@ -20,7 +20,6 @@
       use m_constants
       use m_machine_parameter
       use m_boundary_condition_IDs
-      use m_control_parameter
 !
       use m_bc_data_list
       use m_surf_data_list

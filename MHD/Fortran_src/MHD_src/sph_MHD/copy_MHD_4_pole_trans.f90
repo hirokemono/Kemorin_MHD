@@ -39,7 +39,6 @@
      &          sph_rtp, bs_trns, ncomp_snap_rj_2_rtp, fls_pl,          &
      &          node, iphys, nod_fld)
 !
-      use m_control_parameter
       use m_machine_parameter
 !
       use copy_pole_field_sph_trans

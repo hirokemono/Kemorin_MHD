@@ -249,7 +249,6 @@
 !
       subroutine input_restart_files(node, nod_fld)
 !
-      use m_control_parameter
       use m_t_int_parameter
       use m_file_format_switch
 !
@@ -346,7 +345,6 @@
      &         (SGS_param, cmt_param, ele, fluid, layer_tbl,            &
      &          wk_sgs, wk_diff, sgs_coefs, diff_coefs)
 !
-      use m_control_parameter
       use t_geometry_data_MHD
       use t_SGS_model_coefs
       use t_ele_info_4_dynamic

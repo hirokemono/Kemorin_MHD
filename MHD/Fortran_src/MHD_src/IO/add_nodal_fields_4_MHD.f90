@@ -45,7 +45,6 @@
      &         (fl_prop, cd_prop, ht_prop, cp_prop,                     &
      &          ref_param_T, ref_param_C, field_ctl)
 !
-      use m_control_parameter
       use t_reference_scalar_param
 !
       type(fluid_property), intent(in) :: fl_prop

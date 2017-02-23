@@ -13,6 +13,7 @@
       use m_precision
       use m_machine_parameter
       use m_work_time
+      use m_control_parameter
       use m_t_step_parameter
       use m_t_int_parameter
       use m_SGS_control_parameter
@@ -34,7 +35,6 @@
 !
       subroutine FEM_initialize_snap_tmp
 !
-      use m_control_parameter
       use m_cal_max_indices
       use m_node_phys_data
       use m_geometry_data_MHD

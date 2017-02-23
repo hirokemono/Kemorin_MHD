@@ -43,7 +43,6 @@
 !
       use m_machine_parameter
 !
-      use m_control_parameter
       use t_mesh_data
       use t_geometry_data_MHD
       use t_surface_group_connect

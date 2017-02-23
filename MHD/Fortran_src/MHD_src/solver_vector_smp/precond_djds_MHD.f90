@@ -60,13 +60,15 @@
 !
 !
       call init_MGCG11_MHD                                              &
-     &   (node, FEM_PRM%CG11_param%METHOD, FEM_PRM%CG11_param%PRECOND)
+     &   (node, FEM_PRM%CG11_param%METHOD, FEM_PRM%CG11_param%PRECOND,  &
+     &    FEM_prm%MG_param)
 !
       if(     fl_prop%iflag_scheme .ge. id_Crank_nicolson               &
      &   .or. cd_prop%iflag_Aevo_scheme .ge. id_Crank_nicolson          &
      &   .or. cd_prop%iflag_Bevo_scheme .ge. id_Crank_nicolson) then
         call init_MGCG33_MHD                                            &
-     &     (node, FEM_PRM%method_33, FEM_PRM%precond_33)
+     &     (node, FEM_PRM%method_33, FEM_PRM%precond_33,                &
+     &      FEM_prm%MG_param)
       end if
 !
       end subroutine init_MGCG_MHD

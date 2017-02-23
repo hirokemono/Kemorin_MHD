@@ -300,7 +300,8 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_velo_pre_crank'
-      call solver_crank_vector(node, Vmatrix%nlevel_MG,                 &
+      call solver_crank_vector                                          &
+     &   (node, FEM_prm%MG_param, Vmatrix%nlevel_MG,                    &
      &    Vmatrix%MG_interpolate, Vmatrix%MG_comm_table,                &
      &    Vmatrix%MG_DJDS_table, Vmatrix%mat_MG_DJDS,                   &
      &    FEM_PRM%method_33, FEM_PRM%precond_33,                        &
@@ -390,7 +391,8 @@
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_vect_p_pre_crank'
-      call solver_crank_vector(node, Bmatrix%nlevel_MG,                 &
+      call solver_crank_vector                                          &
+     &   (node, FEM_prm%MG_param, Bmatrix%nlevel_MG,                    &
      &    Bmatrix%MG_interpolate, Bmatrix%MG_comm_table,                &
      &    Bmatrix%MG_DJDS_table, Bmatrix%mat_MG_DJDS,                   &
      &    FEM_PRM%method_33, FEM_PRM%precond_33,                        &
@@ -479,7 +481,8 @@
       end if
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_sol_magne_pre_crank'
-      call solver_crank_vector(node, Bmatrix%nlevel_MG,                 &
+      call solver_crank_vector                                          &
+     &   (node, FEM_prm%MG_param, Bmatrix%nlevel_MG,                    &
      &    Bmatrix%MG_interpolate, Bmatrix%MG_comm_table,                &
      &    Bmatrix%MG_DJDS_table, Bmatrix%mat_MG_DJDS,                   &
      &    FEM_PRM%method_33, FEM_PRM%precond_33,                        &

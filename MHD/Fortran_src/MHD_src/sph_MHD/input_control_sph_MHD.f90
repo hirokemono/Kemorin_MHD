@@ -80,7 +80,6 @@
      &         (MHD_ctl, sph, comms_sph, sph_grps, rj_fld, nod_fld,     &
      &          pwr, SGS_par, dynamic_SPH, mesh, group, ele_mesh)
 !
-      use m_control_parameter
       use m_error_IDs
 !
       use sph_mhd_rst_IO_control
@@ -128,7 +127,6 @@
      &         (MHD_ctl, sph, comms_sph, sph_grps, rj_fld,              &
      &          pwr, SGS_par, dynamic_SPH)
 !
-      use m_control_parameter
       use m_sph_boundary_input_data
       use sph_mhd_rst_IO_control
       use set_control_sph_mhd
@@ -167,7 +165,6 @@
      &         (MHD_ctl, sph, comms_sph, sph_grps, rj_fld,              &
      &          pwr, SGS_par, mesh, group, ele_mesh)
 !
-      use m_control_parameter
       use sph_mhd_rst_IO_control
       use set_control_sph_mhd
       use parallel_load_data_4_sph
@@ -205,7 +202,6 @@
      &          (MHD_ctl, sph, comms_sph, sph_grps,                     &
      &           rj_fld, nod_fld, pwr, SGS_par)
 !
-      use m_control_parameter
       use sph_mhd_rst_IO_control
       use set_control_sph_mhd
       use set_control_sph_data_MHD
@@ -325,7 +321,6 @@
 !
       subroutine sph_boundary_IO_control
 !
-      use m_control_parameter
       use m_physical_property
       use m_sph_boundary_input_data
       use check_read_bc_file

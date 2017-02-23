@@ -38,11 +38,11 @@
       use calypso_mpi
       use m_error_IDs
       use t_iccg_parameter
-      use m_ctl_parameter_Multigrid
       use t_FEM_control_parameter
       use t_physical_property
       use t_ctl_data_4_solvers
       use t_ctl_data_mhd_evo_scheme
+      use m_ctl_parameter_Multigrid
       use skip_comment_f
 !
       integer (kind=kint), intent(in) :: iflag_scheme
@@ -106,7 +106,7 @@
 !
       if (cmp_no_case(FEM_PRM%CG11_param%METHOD, 'MGCG')) then
         if (iflag_debug.eq.1) write(*,*) 'set_ctl_data_4_Multigrid'
-        call set_ctl_data_4_Multigrid(CG_ctl%MG_ctl)
+        call set_ctl_data_4_Multigrid(CG_ctl%MG_ctl, FEM_PRM%MG_param)
       end if
 !
       end subroutine s_set_control_4_solver

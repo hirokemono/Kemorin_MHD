@@ -27,7 +27,6 @@
 !
       subroutine cal_helicity(iphys, nod_fld)
 !
-      use m_control_parameter
       use products_nodal_fields_smp
 !
       type(phys_address), intent(in) :: iphys

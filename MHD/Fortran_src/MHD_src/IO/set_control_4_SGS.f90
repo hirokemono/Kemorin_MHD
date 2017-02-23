@@ -49,7 +49,6 @@
       subroutine set_control_SPH_SGS                                    &
      &         (num_sph_filter_ctl, sph_filter_ctl, sph_filters)
 !
-      use m_control_parameter
       use t_ctl_data_SGS_filter
       use t_sph_filtering_data
 !
@@ -233,7 +232,6 @@
       use m_geometry_constants
       use m_file_format_switch
       use m_phys_labels
-!      use m_control_parameter
       use m_filter_file_names
       use t_ctl_data_SGS_model
       use t_ctl_data_filter_files
@@ -428,7 +426,6 @@
      &         (SGS_param, sgs_ctl, cmt_param)
 !
       use m_phys_labels
-      use m_control_parameter
       use t_ctl_data_SGS_model
       use t_SGS_control_parameter
 !

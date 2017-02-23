@@ -3,18 +3,31 @@
 !
 !        programmed by H.Matsui on June 2010
 !
-!!      subroutine solver_crank_vector(node, num_MG_level,              &
+!!      subroutine solver_crank_vector(node, MG_param, num_MG_level,    &
 !!     &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat,            &
 !!     &          METHOD, PRECOND, eps, itr, i_field,                   &
 !!     &          MG_vector, f_l, b_vec, x_vec, nod_fld)
-!!      subroutine solver_crank_scalar(node, num_MG_level,              &
+!!      subroutine solver_crank_scalar(node, MG_param, num_MG_level,    &
 !!     &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat,            &
 !!     &          METHOD, PRECOND, eps, itr, i_field,                   &
 !!     &          MG_vector, f_l, b_vec, x_vec, nod_fld)
-!!      subroutine solver_poisson_scalar(node, num_MG_level,            &
+!!      subroutine solver_poisson_scalar(node, MG_param, num_MG_level,  &
 !!     &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat,            &
 !!     &          METHOD, PRECOND, eps, itr, i_field,                   &
 !!     &          MG_vector, f_l, b_vec, x_vec, nod_fld)
+!!        type(MGCG_parameter), intent(in) :: MG_param
+!!        type(node_data), intent(in) :: node
+!!        type(MG_itp_table), intent(in) :: MG_itp(num_MG_level)
+!!        type(communication_table), intent(in)                         &
+!!       &                      :: MG_comm(0:num_MG_level)
+!!        type(DJDS_ordering_table), intent(in)                         &
+!!       &                      :: MG_DJDS_tbl(0:num_MG_level)
+!!        type(DJDS_MATRIX), intent(in) :: MG_DJDS_mat(0:num_MG_level)
+!!        type(finite_ele_mat_node), intent(in) :: f_l
+!!        type(vectors_4_solver), intent(inout)                         &
+!!       &                        :: MG_vector(0:num_MG_level)
+!!        type(phys_data), intent(inout) :: nod_fld
+!
 !
       module cal_solver_MHD
 !
@@ -28,6 +41,7 @@
       use t_finite_element_mat
       use t_phys_data
       use t_phys_address
+      use t_MGCG_parameter
 !
       implicit none
 !
@@ -37,7 +51,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine solver_crank_vector(node, num_MG_level,                &
+      subroutine solver_crank_vector(node, MG_param, num_MG_level,      &
      &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat,              &
      &          METHOD, PRECOND, eps, itr, i_field,                     &
      &          MG_vector, f_l, b_vec, x_vec, nod_fld)
@@ -47,6 +61,7 @@
 !
       integer(kind = kint), intent(in) :: i_field
 !
+      type(MGCG_parameter), intent(in) :: MG_param
       character(len=kchara), intent(in) :: METHOD, PRECOND
       real(kind = kreal), intent(in) :: eps
       integer(kind = kint), intent(in) :: itr
@@ -72,7 +87,7 @@
       call copy_ff_to_rhs33                                             &
      &    (node%numnod, node%istack_nod_smp, f_l%ff, b_vec, x_vec)
 !
-      call solver_MGCG_vector(node, num_MG_level,                       &
+      call solver_MGCG_vector(node, MG_param, num_MG_level,             &
      &    MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat,                    &
      &    METHOD, PRECOND, eps, itr,  MG_vector, b_vec, x_vec)
 !
@@ -84,7 +99,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine solver_crank_scalar(node, num_MG_level,                &
+      subroutine solver_crank_scalar(node, MG_param, num_MG_level,      &
      &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat,              &
      &          METHOD, PRECOND, eps, itr, i_field,                     &
      &          MG_vector, f_l, b_vec, x_vec, nod_fld)
@@ -94,6 +109,7 @@
 !
       integer(kind = kint), intent(in) :: i_field
 !
+      type(MGCG_parameter), intent(in) :: MG_param
       character(len=kchara), intent(in) :: METHOD, PRECOND
       real(kind = kreal), intent(in) :: eps
       integer(kind = kint), intent(in) :: itr
@@ -118,7 +134,7 @@
 !
       call copy_ff_to_rhs11                                             &
      &   (node%numnod, node%istack_nod_smp, f_l%ff, b_vec, x_vec)
-      call solver_MGCG_scalar(node, num_MG_level,                       &
+      call solver_MGCG_scalar(node, MG_param, num_MG_level,             &
      &    MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat,                    &
      &    METHOD, PRECOND, eps, itr, MG_vector, b_vec, x_vec)
 !
@@ -130,7 +146,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine solver_poisson_scalar(node, num_MG_level,              &
+      subroutine solver_poisson_scalar(node, MG_param, num_MG_level,    &
      &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat,              &
      &          METHOD, PRECOND, eps, itr, i_field,                     &
      &          MG_vector, f_l, b_vec, x_vec, nod_fld)
@@ -140,6 +156,7 @@
 !
       integer(kind = kint), intent(in) :: i_field
 !
+      type(MGCG_parameter), intent(in) :: MG_param
       character(len=kchara), intent(in) :: METHOD, PRECOND
       real(kind = kreal), intent(in) :: eps
       integer(kind = kint), intent(in) :: itr
@@ -165,7 +182,7 @@
       call copy_ff_potential_to_rhs                                     &
      &   (node%numnod, node%istack_nod_smp, nod_fld%ntot_phys,          &
      &    i_field, nod_fld%d_fld, f_l%ff, b_vec, x_vec)
-      call solver_MGCG_scalar(node, num_MG_level,                       &
+      call solver_MGCG_scalar(node, MG_param, num_MG_level,             &
      &    MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat,                    &
      &    METHOD, PRECOND, eps, itr, MG_vector, b_vec, x_vec)
 !

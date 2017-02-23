@@ -49,7 +49,6 @@
       use t_material_property
       use t_SGS_model_coefs
 !
-!      use m_control_parameter
       use m_phys_constants
 !
       use int_surf_div_induct_tsr_sgs

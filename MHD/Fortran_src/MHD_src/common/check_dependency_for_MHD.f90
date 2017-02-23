@@ -47,7 +47,6 @@
       subroutine set_FEM_MHD_field_data                                 &
      &         (SGS_param, cmt_param, node, iphys, nod_fld)
 !
-      use m_control_parameter
       use m_physical_property
       use t_geometry_data
       use t_FEM_phys_data
@@ -78,7 +77,6 @@
       subroutine set_sph_MHD_sprctr_data                                &
      &         (SGS_param, sph_rj, ipol, idpdr, itor, rj_fld)
 !
-      use m_control_parameter
       use m_physical_property
       use t_spheric_rj_data
 !

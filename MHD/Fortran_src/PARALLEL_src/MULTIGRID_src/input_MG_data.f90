@@ -31,7 +31,6 @@
       subroutine input_MG_mesh(mesh_file)
 !
       use m_control_parameter
-      use m_ctl_parameter_Multigrid
       use t_file_IO_parameter
       use mpi_load_mesh_data
       use element_file_IO

@@ -25,8 +25,6 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_type_AMG_mesh
-      use m_ctl_parameter_Multigrid
       use m_ctl_data_solver_test
       use crs_matrix_io
       use skip_comment_f
@@ -85,10 +83,6 @@
      &            mat_crs%REALARRAY_crs(2)
         write(*,*) 'REALARRAY_crs (sigma) ',                            &
      &            mat_crs%REALARRAY_crs(3)
-      end if
-!
-      if(cmp_no_case(mat_crs%METHOD_crs, 'MGCG')) then
-        call set_ctl_data_4_Multigrid(CG_test_ctl%MG_ctl)
       end if
 !
       end subroutine set_ctl_params_4_solver_test

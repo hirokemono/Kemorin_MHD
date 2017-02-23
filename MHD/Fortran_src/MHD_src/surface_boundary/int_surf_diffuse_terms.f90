@@ -29,7 +29,6 @@
       module int_surf_diffuse_terms
 !
       use m_precision
-      use m_control_parameter
 !
       use t_geometry_data
       use t_surface_data

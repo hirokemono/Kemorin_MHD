@@ -244,7 +244,6 @@
 !
       subroutine boundary_file_IO_control(group, IO_bc)
 !
-      use m_control_parameter
       use m_physical_property
       use check_read_bc_file
 !

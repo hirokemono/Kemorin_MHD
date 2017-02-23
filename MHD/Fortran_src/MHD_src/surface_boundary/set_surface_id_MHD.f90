@@ -48,7 +48,6 @@
      &          fl_prop, cd_prop, ht_prop, cp_prop, surf_bcs)
 !
       use m_machine_parameter
-      use m_control_parameter
 !
       use set_surface_values
       use set_normal_field

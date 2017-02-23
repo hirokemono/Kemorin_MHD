@@ -29,7 +29,6 @@
       use m_machine_parameter
 !
       use m_constants
-      use m_control_parameter
 !
       implicit  none
 !

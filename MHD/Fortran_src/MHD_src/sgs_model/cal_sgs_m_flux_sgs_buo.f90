@@ -267,8 +267,6 @@
      &         (num_int, node, ele, fl_prop, layer_tbl, iphys, nod_fld, &
      &          jac_3d_q, jac_3d_l, n_layer_d, sgs_l)
 !
-      use m_control_parameter
-!
       use int_rms_ave_ele_grps
 !
       type(node_data), intent(in) :: node

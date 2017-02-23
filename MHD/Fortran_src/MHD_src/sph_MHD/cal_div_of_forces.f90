@@ -31,7 +31,6 @@
 !
       subroutine sum_div_of_forces(fl_prop, ipol, rj_fld)
 !
-      use m_control_parameter
       use t_physical_property
       use t_phys_data
 !

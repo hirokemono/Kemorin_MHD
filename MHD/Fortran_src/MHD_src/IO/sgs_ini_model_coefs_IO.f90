@@ -24,7 +24,6 @@
 !
       use calypso_mpi
       use m_constants
-      use m_control_parameter
       use m_t_step_parameter
 !
       use t_SGS_control_parameter

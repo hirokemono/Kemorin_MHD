@@ -79,7 +79,6 @@
      &          MHD_mat_tbls, MHD_matrices, s_package)
 !
       use calypso_mpi
-      use m_control_parameter
       use m_type_AMG_data
       use m_physical_property
 !

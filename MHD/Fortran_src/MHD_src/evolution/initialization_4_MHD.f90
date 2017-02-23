@@ -46,7 +46,6 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_control_parameter
       use m_physical_property
       use m_t_step_parameter
       use m_flexible_time_step
@@ -318,7 +317,7 @@
 !     ---------------------
 !
       if (iflag_debug.eq.1 ) write(*,*) 'allocate_aiccg_matrices'
-      call allocate_aiccg_matrices(mesh%node)
+      call allocate_aiccg_matrices(mesh%node, fl_prop1, cd_prop1, ht_prop1, cp_prop1, FEM_prm)
 !      call reset_aiccg_matrices(mesh%node, mesh%ele, MHD_mesh%fluid)
 !
       if(solver_iflag(FEM_PRM%CG11_param%METHOD) .eq. iflag_mgcg) then

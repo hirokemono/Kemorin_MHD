@@ -100,7 +100,6 @@
      &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                 &
      &          nod_fld, ele_fld, diff_coefs)
 !
-      use m_control_parameter
       use m_t_step_parameter
 !
       use average_on_elements

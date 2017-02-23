@@ -7,9 +7,10 @@
 !
 !>     DJDS ordering table for MHD dynamo model
 !!
-!!      subroutine link_MG_DJDS_MHD_structures
-!!      subroutine set_MHD_whole_connectivity                           &
-!!     &         (DJDS_param, nod_comm, node, ele, next_tbl, rhs_tbl)
+!!      subroutine allocate_aiccg_matrices                              &
+!!     &         (node, fl_prop, cd_prop, ht_prop, cp_prop, FEM_prm)
+!!      subroutine deallocate_aiccg_matrices                            &
+!!     &         (fl_prop, cd_prop, ht_prop, cp_prop)
 !!      subroutine set_MHD_layerd_connectivity                          &
 !!     &         (DJDS_param, node, ele, fluid)
 !!        type(communication_table), intent(in) :: nod_comm
@@ -30,6 +31,8 @@
       use t_vector_for_solver
       use t_solver_djds_MHD
       use t_MHD_matrices_pack
+      use t_physical_property
+!
 !
       implicit none
 !
@@ -54,20 +57,25 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_aiccg_matrices(node)
+      subroutine allocate_aiccg_matrices                                &
+     &         (node, fl_prop, cd_prop, ht_prop, cp_prop, FEM_prm)
 !
-      use m_control_parameter
-      use m_physical_property
       use allocate_MHD_AMG_array
 !
       type(node_data), intent(in) :: node
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
+!
+      type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !
 !
-      call set_residual_4_crank(fl_prop1, cd_prop1, ht_prop1, cp_prop1, &
-     &    FEM_prm1)
+!
+      call set_residual_4_crank                                         &
+     &   (fl_prop, cd_prop, ht_prop, cp_prop, FEM_prm)
 !
       call alloc_aiccg_matrices                                         &
-     &   (node, fl_prop1, cd_prop1, ht_prop1, cp_prop1,                 &
+     &   (node, fl_prop, cd_prop, ht_prop, cp_prop,                     &
      &    MHD1_matrices%MG_DJDS_table(0),                               &
      &    MHD1_matrices%MG_DJDS_fluid(0),                               &
      &    MHD1_matrices%MG_DJDS_linear(0),                              &
@@ -80,13 +88,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine deallocate_aiccg_matrices
+      subroutine deallocate_aiccg_matrices                              &
+     &         (fl_prop, cd_prop, ht_prop, cp_prop)
 !
-      use m_control_parameter
-      use m_physical_property
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
+!
 !
       call dealloc_aiccg_matrices                                       &
-     &   (fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
+     &   (fl_prop, cd_prop, ht_prop, cp_prop,                           &
      &    MHD1_matrices%Vmat_MG_DJDS(0), MHD1_matrices%Bmat_MG_DJDS(0), &
      &    MHD1_matrices%Tmat_MG_DJDS(0), MHD1_matrices%Cmat_MG_DJDS(0), &
      &    MHD1_matrices%Pmat_MG_DJDS(0), MHD1_matrices%Fmat_MG_DJDS(0))
@@ -183,9 +194,6 @@
 !
       use m_machine_parameter
       use m_t_int_parameter
-!
-      use t_FEM_control_parameter
-      use t_physical_property
 !
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop

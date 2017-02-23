@@ -51,8 +51,6 @@
       subroutine set_addresses_trans_sph_SGS(ipol, trns_SGS,            &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
-      use m_control_parameter
-!
       type(phys_address), intent(in) :: ipol
       type(address_4_sph_trans), intent(inout) :: trns_SGS
       integer(kind = kint), intent(inout) :: ncomp_sph_trans
@@ -96,8 +94,6 @@
 !
       subroutine set_addresses_trans_sph_Csim(ipol, trns_Csim,          &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
-!
-      use m_control_parameter
 !
       type(phys_address), intent(in) :: ipol
       type(address_4_sph_trans), intent(inout) :: trns_Csim
@@ -189,8 +185,6 @@
       subroutine b_trans_address_vector_SGS                             &
      &         (ipol, nvector_rj_2_rtp, b_trns)
 !
-      use m_control_parameter
-!
       type(phys_address), intent(in) :: ipol
       integer(kind = kint), intent(inout) :: nvector_rj_2_rtp
       type(phys_address), intent(inout) :: b_trns
@@ -238,8 +232,6 @@
       subroutine f_trans_address_vector_SGS                             &
      &         (ipol, nvector_rtp_2_rj, f_trns)
 !
-      use m_control_parameter
-!
       type(phys_address), intent(in) :: ipol
       type(phys_address), intent(inout) :: f_trns
       integer(kind = kint), intent(inout) :: nvector_rtp_2_rj
@@ -271,8 +263,6 @@
       subroutine f_trans_address_scalar_SGS                             &
      &         (ipol, nvector_rtp_2_rj, nscalar_rtp_2_rj, f_trns)
 !
-      use m_control_parameter
-!
       type(phys_address), intent(in) :: ipol
       integer(kind = kint), intent(in) :: nvector_rtp_2_rj
       integer(kind = kint), intent(inout) :: nscalar_rtp_2_rj
@@ -300,8 +290,6 @@
 !
       subroutine b_trans_address_scalar_Csim                            &
      &         (ipol, nvector_rj_2_rtp, nscalar_rj_2_rtp, b_trns)
-!
-      use m_control_parameter
 !
       type(phys_address), intent(in) :: ipol
       integer(kind = kint), intent(in) :: nvector_rj_2_rtp
@@ -343,8 +331,6 @@
 !
       subroutine f_trans_address_scalar_Csim                            &
      &         (ipol, nvector_rtp_2_rj, nscalar_rtp_2_rj, f_trns)
-!
-      use m_control_parameter
 !
       type(phys_address), intent(in) :: ipol
       type(phys_address), intent(inout) :: f_trns

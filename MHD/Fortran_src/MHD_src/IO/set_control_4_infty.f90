@@ -27,7 +27,6 @@
       subroutine s_set_control_4_infty(surf_bc_INF_ctl)
 !
       use calypso_mpi
-      use m_control_parameter
       use t_read_control_arrays
       use const_bc_infinity_surf
       use set_surface_group_types

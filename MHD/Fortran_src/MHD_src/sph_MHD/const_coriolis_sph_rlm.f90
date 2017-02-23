@@ -27,7 +27,6 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_control_parameter
 !
       use t_spheric_rlm_data
       use t_sph_trans_comm_tbl

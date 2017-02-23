@@ -41,7 +41,6 @@
       use t_group_data
       use t_geometry_data_MHD
       use t_boundary_field_IO
-      use m_control_parameter
       use m_bc_data_list
       use count_num_nod_bc_MHD
       use set_bc_scalars

@@ -77,7 +77,6 @@
 !
       subroutine set_empty_layers_type_4_MHD(MHD_mesh)
 !
-      use m_control_parameter
       use t_geometry_data_MHD
 !
       type(mesh_data_MHD), intent(inout) :: MHD_mesh
@@ -106,7 +105,6 @@
 !
       subroutine set_layers_4_field(nod, ele, fld)
 !
-      use m_control_parameter
       use t_geometry_data
       use t_geometry_data_MHD
       use m_set_layers

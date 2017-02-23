@@ -28,7 +28,6 @@
       subroutine set_reference_temp(ref_param, takepito,                &
      &          node, fluid, i_ref, i_gref, nod_fld)
 !
-      use m_control_parameter
       use t_reference_scalar_param
       use t_geometry_data
       use t_phys_data

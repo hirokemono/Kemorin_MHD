@@ -18,8 +18,6 @@
 !
       use m_precision
 !
-      use m_control_parameter
-!
       use t_geometry_data
       use t_group_data
       use t_phys_data

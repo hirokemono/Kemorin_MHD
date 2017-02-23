@@ -36,7 +36,6 @@
       use m_precision
       use m_constants
 !
-      use m_control_parameter
       use m_phys_constants
 !
       use t_FEM_control_parameter

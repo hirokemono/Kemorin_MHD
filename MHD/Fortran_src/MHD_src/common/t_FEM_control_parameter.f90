@@ -23,6 +23,7 @@
       use m_precision
       use m_constants
       use t_iccg_parameter
+      use t_MGCG_parameter
 !
       implicit  none
 !
@@ -92,6 +93,8 @@
         type(CG_poarameter) :: CG11_param
 !>        DJDS ordering parameters
         type(DJDS_poarameter)  :: DJDS_param
+!>        Multigrid parameters
+        type(MGCG_parameter) :: MG_param
 !
         type(area_group_name_list) :: fluid_group
         type(area_group_name_list) :: condutive_group

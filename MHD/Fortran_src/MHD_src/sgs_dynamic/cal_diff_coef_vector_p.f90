@@ -43,7 +43,6 @@
       module cal_diff_coef_vector_p
 !
       use m_precision
-      use m_control_parameter
 !
       use t_FEM_control_parameter
       use t_SGS_control_parameter

@@ -187,7 +187,8 @@
 !
 !   solve Poission equation
 !
-      call solver_poisson_scalar(node, Pmatrix%nlevel_MG,               &
+      call solver_poisson_scalar                                        &
+     &   (node, FEM_prm%MG_param, Pmatrix%nlevel_MG,                    &
      &    Pmatrix%MG_interpolate,  Pmatrix%MG_comm_table,               &
      &    Pmatrix%MG_DJDS_table, Pmatrix%mat_MG_DJDS,                   &
      &    FEM_PRM%CG11_param%METHOD, FEM_PRM%CG11_param%PRECOND,        &
@@ -278,7 +279,8 @@
       call set_boundary_ff(node, Bnod_bcs%nod_bc_f, f_l)
 !
       if (iflag_debug .gt. 0)  write(*,*) 'cal_sol_mag_po'
-      call solver_poisson_scalar(node, Fmatrix%nlevel_MG,               &
+      call solver_poisson_scalar                                        &
+     &   (node, FEM_prm%MG_param, Fmatrix%nlevel_MG,                    &
      &    Fmatrix%MG_interpolate, Fmatrix%MG_comm_table,                &
      &    Fmatrix%MG_DJDS_table, Fmatrix%mat_MG_DJDS,                   &
      &    FEM_PRM%CG11_param%METHOD, FEM_PRM%CG11_param%PRECOND,        &
@@ -373,7 +375,8 @@
 !
       call set_boundary_ff(node, Bnod_bcs%nod_bc_f, f_l)
 !
-      call solver_poisson_scalar(node, Fmatrix%nlevel_MG,               &
+      call solver_poisson_scalar                                        &
+     &   (node, FEM_prm%MG_param, Fmatrix%nlevel_MG,                    &
      &    Fmatrix%MG_interpolate, Fmatrix%MG_comm_table,                &
      &    Fmatrix%MG_DJDS_table, Fmatrix%mat_MG_DJDS,                   &
      &    FEM_PRM%CG11_param%METHOD, FEM_PRM%CG11_param%PRECOND,        &

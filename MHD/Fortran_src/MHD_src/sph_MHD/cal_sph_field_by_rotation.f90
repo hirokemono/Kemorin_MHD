@@ -23,7 +23,6 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_control_parameter
 !
       use t_spheric_rj_data
       use t_phys_address
