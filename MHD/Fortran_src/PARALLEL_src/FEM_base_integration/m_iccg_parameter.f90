@@ -19,9 +19,6 @@
       real(kind=kreal)   :: sigma
       real(kind=kreal)   :: sigma_diag
 ! 
-      character (len=kchara)   :: precond
-      character (len=kchara)   :: method
-! 
 !      solver and precionditioning for Poisson matrix
 !
       character (len=kchara) :: precond_4_solver

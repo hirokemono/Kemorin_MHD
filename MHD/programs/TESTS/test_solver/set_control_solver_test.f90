@@ -3,12 +3,14 @@
 !
 !     Written by H. Matsui on July, 2006
 !
-!      subroutine set_ctl_params_4_solver_test
+!!      subroutine set_ctl_params_4_solver_test                         &
+!!     &         (mat_crs, CG_param, DJDS_param)
 !
       module set_control_solver_test
 !
       use m_precision
       use t_crs_matrix
+      use t_iccg_parameter
 !
       implicit none
 !
@@ -18,12 +20,12 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_ctl_params_4_solver_test(mat_crs)
+      subroutine set_ctl_params_4_solver_test                           &
+     &         (mat_crs, CG_param, DJDS_param)
 !
       use calypso_mpi
       use m_machine_parameter
       use m_type_AMG_mesh
-      use m_iccg_parameter
       use m_ctl_parameter_Multigrid
       use m_ctl_data_solver_test
       use crs_matrix_io
@@ -32,6 +34,8 @@
       use set_parallel_file_name
 !
       type(CRS_matrix), intent(inout) :: mat_crs
+      type(CG_poarameter), intent(inout) :: CG_param
+      type(DJDS_poarameter), intent(inout) :: DJDS_param
 !
 !
       if (matrix_head_ctl%iflag .ne. 0) then
@@ -65,33 +69,9 @@
         mat_crs%SOLVER_crs = 'block33'
       end if
 !
-      if(CG_test_ctl%precond_ctl%iflag .gt. 0) then
-        precond = CG_test_ctl%precond_ctl%charavalue
-      end if
-      if(CG_test_ctl%method_ctl%iflag .gt. 0)  then
-        method =  CG_test_ctl%method_ctl%charavalue
-      end if
-      if(CG_test_ctl%eps_ctl%iflag .gt. 0)   then
-        eps = CG_test_ctl%eps_ctl%realvalue
-      end if
-      if(CG_test_ctl%itr_ctl%iflag .gt. 0)   then
-        itr = CG_test_ctl%itr_ctl%intvalue
-      end if
-      if(CG_test_ctl%sigma_ctl%iflag .gt. 0) then
-        sigma = CG_test_ctl%sigma_ctl%realvalue
-      end if
-      if(CG_test_ctl%sigma_diag_ctl%iflag .gt. 0) then
-        sigma_diag =  CG_test_ctl%sigma_diag_ctl%realvalue
-      end if
-!
-      mat_crs%METHOD_crs =       method
-      mat_crs%PRECOND_crs =      precond
-      mat_crs%INTARRAY_crs(1) =  itr
-      mat_crs%REALARRAY_crs(1) = eps
-      mat_crs%REALARRAY_crs(2) = sigma_diag
-      mat_crs%REALARRAY_crs(3) = sigma
-!
-      call set_control_4_DJDS_solver(CG_test_ctl%DJDS_ctl, DJDS_param1)
+      call set_control_4_CG_solver(CG_test_ctl, CG_param)
+      call set_control_4_DJDS_solver(CG_test_ctl%DJDS_ctl, DJDS_param)
+      call copy_from_iccg_parameter(CG_param, mat_crs)
 !
       if (iflag_debug .eq. 1) then
         write(*,*) 'np_smp       ', np_smp

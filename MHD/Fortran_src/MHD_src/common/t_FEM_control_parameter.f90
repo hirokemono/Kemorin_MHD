@@ -22,6 +22,7 @@
 !
       use m_precision
       use m_constants
+      use t_iccg_parameter
 !
       implicit  none
 !
@@ -79,11 +80,15 @@
 !>        Error torrance for composition diffusion matrix
         real(kind=kreal)   :: eps_4_comp_crank =  zero
 !
+        type(CG_poarameter) :: CG11_param
+!
         type(area_group_name_list) :: fluid_group
         type(area_group_name_list) :: condutive_group
         type(area_group_name_list) :: insulator_group
         type(area_group_name_list) :: inner_core_group
       end type FEM_MHD_paremeters
+!
+!FEM_PRM%CG11_param%EPS
 !
 !  ---------------------------------------------------------------------
 !

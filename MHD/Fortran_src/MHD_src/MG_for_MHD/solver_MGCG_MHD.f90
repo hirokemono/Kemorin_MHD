@@ -8,7 +8,9 @@
 !>@brief  Wrapper for linear solvers for MHD dynmamo
 !!
 !!@verbatim
-!!      subroutine init_MGCG_MHD(node, fl_prop, cd_prop)
+!!      subroutine init_MGCG33_MHD(node, METHOD, PRECOND)
+!!      subroutine init_MGCG11_MHD(node, METHOD, PRECOND)
+!!
 !!      subroutine solver_MGCG_vector(node, num_MG_level,               &
 !!     &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat,            &
 !!     &          METHOD, PRECOND, eps, itr, MG_vector, b_vec, x_vec)
@@ -54,46 +56,55 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_MGCG_MHD(node, fl_prop, cd_prop)
+      subroutine init_MGCG33_MHD(node, METHOD, PRECOND)
 !
-      use m_iccg_parameter
       use solver_DJDS11_struct
       use solver_DJDS33_struct
       use solver_VMGCG11_DJDS_SMP
       use solver_VMGCG33_DJDS_SMP
       use skip_comment_f
 !
+      character(len=kchara), intent(in) :: METHOD, PRECOND
       type(node_data), intent(in) :: node
-      type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in) :: cd_prop
 !
       integer(kind = kint) :: ierr
 !
 !
-      METHOD = method_4_solver
+      if (cmp_no_case(METHOD, 'MGCG')) then
+        call init_VMGCG33_DJDS_SMP(node%numnod, np_smp,                 &
+            PRECOND,  METHOD_MG, PRECOND_MG, iterPREmax)
+      else
+        call init33_DJDS_struct(node%numnod, np_smp, METHOD,            &
+            PRECOND, ierr)
+      end if
+!
+      end subroutine init_MGCG33_MHD
+!
+! ----------------------------------------------------------------------
+!
+      subroutine init_MGCG11_MHD(node, METHOD, PRECOND)
+!
+      use solver_DJDS11_struct
+      use solver_DJDS33_struct
+      use solver_VMGCG11_DJDS_SMP
+      use solver_VMGCG33_DJDS_SMP
+      use skip_comment_f
+!
+      character(len=kchara), intent(in) :: METHOD, PRECOND
+      type(node_data), intent(in) :: node
+!
+      integer(kind = kint) :: ierr
+!
+!
       if (cmp_no_case(METHOD, 'MGCG')) then
         call init_VMGCG11_DJDS_SMP(node%numnod, np_smp,                 &
-            precond_4_solver,  METHOD_MG, PRECOND_MG, iterPREmax)
+            PRECOND, METHOD_MG, PRECOND_MG, iterPREmax)
       else
         call init_DJDS11_struct(node%numnod, np_smp, METHOD,            &
-            precond_4_solver, ierr)
+            PRECOND, ierr)
       end if
 !
-!
-      if(     fl_prop%iflag_scheme .ge. id_Crank_nicolson               &
-     &   .or. cd_prop%iflag_Aevo_scheme .ge. id_Crank_nicolson          &
-     &   .or. cd_prop%iflag_Bevo_scheme .ge. id_Crank_nicolson) then
-        METHOD = method_4_velo
-        if (cmp_no_case(METHOD, 'MGCG')) then
-          call init_VMGCG33_DJDS_SMP(node%numnod, np_smp,               &
-              precond_4_crank,  METHOD_MG, PRECOND_MG, iterPREmax)
-        else
-          call init33_DJDS_struct(node%numnod, np_smp, METHOD,          &
-              precond_4_crank, ierr)
-        end if
-      end if
-!
-      end subroutine init_MGCG_MHD
+      end subroutine init_MGCG11_MHD
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

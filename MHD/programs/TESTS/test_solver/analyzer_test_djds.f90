@@ -16,7 +16,6 @@
       use t_comm_table
       use t_crs_matrix
       use t_iccg_parameter
-      use m_iccg_parameter
 !
       implicit none
 !
@@ -26,6 +25,7 @@
       type(CRS_matrix), save :: mat_crs
 !
       type(CG_poarameter), save :: CG_param_t
+      type(DJDS_poarameter), save :: DJDS_param_t
 !
       real(kind = kreal) :: RTIME, STARTTIME, ENDTIME
       private :: RTIME, STARTTIME, ENDTIME
@@ -48,7 +48,8 @@
 !C-- CNTL DATA
 
       call read_control_4_solver_test
-      call set_ctl_params_4_solver_test(mat_crs)
+      call set_ctl_params_4_solver_test                                 &
+     &   (mat_crs, CG_param_t, DJDS_param_t)
 !
 !C 
 !C +-------------+
@@ -78,7 +79,7 @@
 !C
 !C-- ICCG computation
       call transfer_crs_2_djds_matrix(node, nod_comm, tbl_crs, mat_crs, &
-     &    CG_param_t, DJDS_param1, djds_tbl, djds_mat)
+     &    CG_param_t, DJDS_param_t, djds_tbl, djds_mat)
 !
       if (mat_crs%SOLVER_crs .eq. 'scalar'                              &
      &   .or. mat_crs%SOLVER_crs.eq.'SCALAR') then

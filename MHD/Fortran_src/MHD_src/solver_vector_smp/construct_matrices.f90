@@ -5,17 +5,18 @@
 !
 !!      subroutine set_data_4_const_matrices(mesh, MHD_mesh, rhs_tbl,   &
 !!     &          MHD_mat_tbls, MHD_matrices, s_package)
+!!        type(MHD_matrices_pack), intent(inout) :: s_package
 !!      subroutine update_matrices(FEM_prm, SGS_param, cmt_param,       &
 !!     &         (mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,   &
 !!     &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,  &
 !!     &          ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,         &
-!!     &          surf_wk, mhd_fem_wk, fem_wk, MHD_matrices, s_package)
+!!     &          surf_wk, mhd_fem_wk, fem_wk, MHD_matrices)
 !!      subroutine set_aiccg_matrices                                   &
 !!     &         (FEM_prm, SGS_param, cmt_param, mesh, group,           &
 !!     &          ele_mesh, MHD_mesh, nod_bcs, surf_bcs,                &
 !!     &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,  &
 !!     &          ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,         &
-!!     &          surf_wk, mhd_fem_wk, fem_wk, MHD_matrices, s_package)
+!!     &          surf_wk, mhd_fem_wk, fem_wk, MHD_matrices)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -36,7 +37,6 @@
 !!        type(work_surface_element_mat), intent(in) :: surf_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(MHD_MG_matrices), intent(inout) :: MHD_matrices
-!!        type(MHD_matrices_pack), intent(inout) :: s_package
 !
       module construct_matrices
 !
@@ -117,7 +117,7 @@
      &          mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,     &
      &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,    &
      &          ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,           &
-     &          surf_wk, mhd_fem_wk, fem_wk, MHD_matrices, s_package)
+     &          surf_wk, mhd_fem_wk, fem_wk, MHD_matrices)
 !
       use t_SGS_control_parameter
       use m_t_step_parameter
@@ -144,7 +144,6 @@
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(MHD_MG_matrices), intent(inout) :: MHD_matrices
-      type(MHD_matrices_pack), intent(inout) :: s_package
 !
       integer (kind = kint) :: iflag
 !
@@ -161,7 +160,7 @@
      &      ele_mesh, MHD_mesh, nod_bcs, surf_bcs,                      &
      &      ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,        &
      &      ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,               &
-     &      surf_wk, mhd_fem_wk, fem_wk, MHD_matrices, s_package)
+     &      surf_wk, mhd_fem_wk, fem_wk, MHD_matrices)
         iflag_flex_step_changed = 0
       end if
 !
@@ -174,7 +173,7 @@
      &          ele_mesh, MHD_mesh, nod_bcs, surf_bcs,                  &
      &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,    &
      &          ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,           &
-     &          surf_wk, mhd_fem_wk, fem_wk, MHD_matrices, s_package)
+     &          surf_wk, mhd_fem_wk, fem_wk, MHD_matrices)
 !
       use m_iccg_parameter
       use m_physical_property
@@ -206,7 +205,6 @@
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(MHD_MG_matrices), intent(inout) :: MHD_matrices
-      type(MHD_matrices_pack), intent(inout) :: s_package
 !
 !
       call s_set_aiccg_matrices_type(FEM_prm, SGS_param, cmt_param,     &
@@ -233,9 +231,15 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'preconditioning'
       call matrix_precondition                                          &
-     &   (fl_prop1, cd_prop1,  ht_prop1, cp_prop1,                      &
-     &    s_package%Vmatrix, s_package%Pmatrix, s_package%Bmatrix,      &
-     &    s_package%Fmatrix, s_package%Tmatrix, s_package%Cmatrix)
+     &   (precond_4_solver, precond_4_crank, sigma_diag,                &
+     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
+     &    MHD_matrices%MG_DJDS_table(0),                                &
+     &    MHD_matrices%MG_DJDS_fluid(0),                                &
+     &    MHD_matrices%MG_DJDS_linear(0),                               &
+     &    MHD_matrices%MG_DJDS_lin_fl(0),                               &
+     &    MHD_matrices%Vmat_MG_DJDS(0), MHD_matrices%Bmat_MG_DJDS(0),   &
+     &    MHD_matrices%Tmat_MG_DJDS(0), MHD_matrices%Cmat_MG_DJDS(0),   &
+     &    MHD_matrices%Pmat_MG_DJDS(0), MHD_matrices%Fmat_MG_DJDS(0))
 !
       end subroutine set_aiccg_matrices
 !

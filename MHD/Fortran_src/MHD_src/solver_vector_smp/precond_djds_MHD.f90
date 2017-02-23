@@ -7,20 +7,32 @@
 !>     Preconditiong of DJDS solver for MHD dynamo
 !!
 !!@verbatim
-!!      subroutine matrix_precondition                                  &
-!!     &         (fl_prop, cd_prop, ht_prop, cp_prop,                   &
-!!     &         Vmatrix, Pmatrix, Bmatrix, Fmatrix, Tmatrix, Cmatrix)
+!!      subroutine init_MGCG_MHD(node, fl_prop, cd_prop)
+!!      subroutine matrix_precondition(PRECOND_11, PRECOND_33,          &
+!!     &          sigma_diag, fl_prop, cd_prop, ht_prop, cp_prop,       &
+!!     &          djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,     &
+!!     &          mat_velo, mat_magne, mat_temp, mat_light,             &
+!!     &          mat_press, mat_magp)
+!!        character(len=kchara),  intent(in) :: PRECOND_11, PRECOND_33
 !!        type(fluid_property), intent(in) :: fl_prop
-!!        type(conductive_property), intent(in)  :: cd_prop
+!!        type(conductive_property), intent(in) :: cd_prop
 !!        type(scalar_property), intent(in) :: ht_prop, cp_prop
-!!        type(MHD_MG_matrix), intent(inout) :: Vmatrix, Bmatrix
-!!        type(MHD_MG_matrix), intent(inout) :: Pmatrix, Fmatrix
-!!        type(MHD_MG_matrix), intent(inout) :: Tmatrix, Cmatrix
+!!        type(DJDS_ordering_table),  intent(in) :: djds_tbl
+!!        type(DJDS_ordering_table),  intent(in) :: djds_tbl_fl
+!!        type(DJDS_ordering_table),  intent(in) :: djds_tbl_l
+!!        type(DJDS_ordering_table),  intent(in) :: djds_tbl_fl_l
+!!        type(DJDS_MATRIX),  intent(inout) :: mat_velo
+!!        type(DJDS_MATRIX),  intent(inout) :: mat_magne
+!!        type(DJDS_MATRIX),  intent(inout) :: mat_temp
+!!        type(DJDS_MATRIX),  intent(inout) :: mat_light
+!!        type(DJDS_MATRIX),  intent(inout) :: mat_press
+!!        type(DJDS_MATRIX),  intent(inout) :: mat_magp
 !!@endverbatim
 !
       module precond_djds_MHD
 !
       use m_precision
+      use m_machine_parameter
       use calypso_mpi
 !
       use t_physical_property
@@ -34,26 +46,57 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine matrix_precondition                                    &
-     &         (fl_prop, cd_prop, ht_prop, cp_prop,                     &
-     &          Vmatrix, Pmatrix, Bmatrix, Fmatrix, Tmatrix, Cmatrix)
+      subroutine init_MGCG_MHD(node, fl_prop, cd_prop)
 !
-      use m_machine_parameter
-      use m_phys_constants
       use m_iccg_parameter
+      use solver_MGCG_MHD
+!
+      type(node_data), intent(in) :: node
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
+!
+!
+      call init_MGCG11_MHD(node, method_4_solver, precond_4_solver)
+!
+      if(     fl_prop%iflag_scheme .ge. id_Crank_nicolson               &
+     &   .or. cd_prop%iflag_Aevo_scheme .ge. id_Crank_nicolson          &
+     &   .or. cd_prop%iflag_Bevo_scheme .ge. id_Crank_nicolson) then
+        call init_MGCG33_MHD(node, method_4_velo, precond_4_crank)
+      end if
+!
+      end subroutine init_MGCG_MHD
+!
+! ----------------------------------------------------------------------
+!
+      subroutine matrix_precondition(PRECOND_11, PRECOND_33,            &
+     &          sigma_diag, fl_prop, cd_prop, ht_prop, cp_prop,         &
+     &          djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,       &
+     &          mat_velo, mat_magne, mat_temp, mat_light,               &
+     &          mat_press, mat_magp)
+!
+      use t_solver_djds
 !
       use solver_DJDS11_struct
       use solver_DJDS33_struct
-      use solver_DJDSnn_struct
 !
-      use preconditioning_DJDS11
+      character(len=kchara),  intent(in) :: PRECOND_11, PRECOND_33
+      real(kind = kreal), intent(in) :: sigma_diag
 !
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
       type(scalar_property), intent(in) :: ht_prop, cp_prop
-      type(MHD_MG_matrix), intent(inout) :: Vmatrix, Bmatrix
-      type(MHD_MG_matrix), intent(inout) :: Pmatrix, Fmatrix
-      type(MHD_MG_matrix), intent(inout) :: Tmatrix, Cmatrix
+      type(DJDS_ordering_table),  intent(in) :: djds_tbl
+      type(DJDS_ordering_table),  intent(in) :: djds_tbl_fl
+      type(DJDS_ordering_table),  intent(in) :: djds_tbl_l
+      type(DJDS_ordering_table),  intent(in) :: djds_tbl_fl_l
+!
+      type(DJDS_MATRIX),  intent(inout) :: mat_velo
+      type(DJDS_MATRIX),  intent(inout) :: mat_magne
+      type(DJDS_MATRIX),  intent(inout) :: mat_temp
+      type(DJDS_MATRIX),  intent(inout) :: mat_light
+      type(DJDS_MATRIX),  intent(inout) :: mat_press
+      type(DJDS_MATRIX),  intent(inout) :: mat_magp
+!
 !C
 !C +-----------------+
 !C | preconditioning |
@@ -61,53 +104,35 @@
 !C===
 !
       if (fl_prop%iflag_scheme .gt. id_no_evolution) then
-        if (iflag_debug.eq.1)   write(*,*) 'precond: ',                 &
-     &                trim(precond_4_solver),' ', sigma_diag
-        call precond_DJDS11_struct(np_smp,                              &
-     &      Pmatrix%MG_DJDS_table(0), Pmatrix%mat_MG_DJDS(0),           &
-     &      precond_4_solver, sigma_diag)
+        call precond_DJDS11_struct(np_smp, djds_tbl_fl_l, mat_press,    &
+     &     PRECOND_11, sigma_diag)
       end if
 !
       if (fl_prop%iflag_scheme .ge. id_Crank_nicolson) then
-        call precond_DJDS33_struct(np_smp,                              &
-     &      Vmatrix%MG_DJDS_table(0), Vmatrix%mat_MG_DJDS(0),           &
-     &      precond_4_crank, sigma_diag)
-!        call precond_DJDSnn_struct(n_vector, np_smp,                   &
-!     &      Vmatrix%MG_DJDS_table(0), Vmatrix%mat_MG_DJDS(0),          &
-!     &      precond_4_crank, sigma_diag)
+        call precond_DJDS33_struct(np_smp, djds_tbl_fl, mat_velo,       &
+     &      PRECOND_33, sigma_diag)
       end if
 !
       if (ht_prop%iflag_scheme .ge. id_Crank_nicolson) then
-        if (iflag_debug.eq.1)  write(*,*) 'precond: ',                  &
-     &          trim(precond_4_solver),' ', sigma_diag
-        call precond_DJDS11_struct(np_smp,                              &
-     &      Tmatrix%MG_DJDS_table(0), Tmatrix%mat_MG_DJDS(0),           &
-     &      precond_4_solver, sigma_diag)
+        call precond_DJDS11_struct(np_smp, djds_tbl_fl, mat_temp,       &
+     &     PRECOND_11, sigma_diag)
       end if
 !
       if (cp_prop%iflag_scheme .ge. id_Crank_nicolson) then
-        if (iflag_debug.eq.1)  write(*,*) 'precond: ',                  &
-     &         trim(precond_4_solver),' ', sigma_diag
-        call precond_DJDS11_struct(np_smp,                              &
-     &      Cmatrix%MG_DJDS_table(0), Cmatrix%mat_MG_DJDS(0),           &
-     &      precond_4_solver, sigma_diag)
+        call precond_DJDS11_struct(np_smp, djds_tbl_fl, mat_light,      &
+     &     PRECOND_11, sigma_diag)
       end if
 !
-      if      (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution           &
-     &    .or. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
-        call precond_DJDS11_struct                                      &
-     &     (np_smp, Fmatrix%MG_DJDS_table(0), Fmatrix%mat_MG_DJDS(0),   &
-     &      precond_4_solver, sigma_diag)
+      if    (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution             &
+     &  .or. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
+        call precond_DJDS11_struct(np_smp, djds_tbl_l, mat_magp,        &
+     &     PRECOND_11, sigma_diag)
       end if
 !
-      if      (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution           &
-     &    .or. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
-        call precond_DJDS33_struct                                      &
-     &     (np_smp, Bmatrix%MG_DJDS_table(0), Bmatrix%mat_MG_DJDS(0),   &
-     &      precond_4_crank, sigma_diag)
-!        call precond_DJDSnn_struct(n_vector, np_smp,                   &
-!       &    Bmatrix%MG_DJDS_table(0), Bmatrix%mat_MG_DJDS(0),          &
-!       &    precond_4_crank, sigma_diag)
+      if    (cd_prop%iflag_Aevo_scheme .ge. id_Crank_nicolson           &
+     &  .or. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
+        call precond_DJDS33_struct(np_smp, djds_tbl, mat_magne,         &
+     &      PRECOND_33, sigma_diag)
       end if
 !
       end subroutine matrix_precondition

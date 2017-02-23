@@ -100,6 +100,7 @@
       use const_mesh_information
       use const_element_comm_tables
       use init_check_delta_t_data
+      use precond_djds_MHD
 !
       use nod_phys_send_recv
       use solver_MGCG_MHD

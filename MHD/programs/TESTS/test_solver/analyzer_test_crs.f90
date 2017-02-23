@@ -15,6 +15,7 @@
       use t_geometry_data
       use t_comm_table
       use t_crs_matrix
+      use t_iccg_parameter
 !
       implicit none
 !
@@ -22,6 +23,9 @@
       type(node_data), save :: node
       type(CRS_matrix_connect), save :: tbl_crs
       type(CRS_matrix), save :: mat_crs
+!
+      type(CG_poarameter), save :: CG_param_t
+      type(DJDS_poarameter), save :: DJDS_param_t
 !
       real(kind = kreal) :: RTIME, STARTTIME, ENDTIME
       private :: RTIME, STARTTIME, ENDTIME
@@ -45,7 +49,8 @@
 !C-- CNTL DATA
 !
       call read_control_4_solver_test
-      call set_ctl_params_4_solver_test(mat_crs)
+      call set_ctl_params_4_solver_test                                 &
+     &   (mat_crs, CG_param_t, DJDS_param_t)
 !
 !C 
 !C +-------------+

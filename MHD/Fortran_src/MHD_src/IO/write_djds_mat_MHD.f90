@@ -26,7 +26,6 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_iccg_parameter
 !
       use m_type_AMG_data
       use set_parallel_file_name
@@ -56,6 +55,7 @@
      &         (fl_prop, cd_prop, ht_prop, cp_prop,                     &
      &          Vmatrix, Pmatrix, Bmatrix, Fmatrix, Tmatrix, Cmatrix)
 !
+      use m_iccg_parameter
       use t_physical_property
       use t_solver_djds_MHD
 !
@@ -68,41 +68,41 @@
 !
 !
       if ( fl_prop%iflag_scheme .gt. id_no_evolution) then
-        call write_MHD_djds_mat11(fhead_press_mat,                      &
+        call write_MHD_djds_mat11(fhead_press_mat, method_4_solver,     &
      &       Pmatrix%nlevel_MG, Pmatrix%MG_comm_table,                  &
      &       Pmatrix%MG_DJDS_table, Pmatrix%mat_MG_DJDS)
       end if
 !
       if ( fl_prop%iflag_scheme .ge. id_Crank_nicolson) then
-        call write_MHD_djds_mat33(fhead_velo_mat,                       &
+        call write_MHD_djds_mat33(fhead_velo_mat, method_4_velo,        &
      &       Vmatrix%nlevel_MG, Vmatrix%MG_comm_table,                  &
      &       Vmatrix%MG_DJDS_table, Vmatrix%mat_MG_DJDS)
       end if
 !
       if ( ht_prop%iflag_scheme .ge. id_Crank_nicolson) then
-        call write_MHD_djds_mat11(fhead_temp_mat,                       &
+        call write_MHD_djds_mat11(fhead_temp_mat, method_4_solver,      &
      &       Tmatrix%nlevel_MG, Tmatrix%MG_comm_table,                  &
      &       Tmatrix%MG_DJDS_table, Tmatrix%mat_MG_DJDS)
       end if
 !
       if ( cp_prop%iflag_scheme .ge. id_Crank_nicolson) then
-        call write_MHD_djds_mat11(fhead_dscalar_mat,                    &
+        call write_MHD_djds_mat11(fhead_dscalar_mat, method_4_solver,   &
      &       Cmatrix%nlevel_MG, Cmatrix%MG_comm_table,                  &
      &       Cmatrix%MG_DJDS_table, Cmatrix%mat_MG_DJDS)
       end if
 !
       if    (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution             &
      &  .or. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
-        call write_MHD_djds_mat11(fhead_magp_mat, Fmatrix%nlevel_MG,    &
-     &       Fmatrix%MG_comm_table, Fmatrix%MG_DJDS_table,              &
-     &       Fmatrix%mat_MG_DJDS)
+        call write_MHD_djds_mat11(fhead_magp_mat, method_4_solver,      &
+     &       Fmatrix%nlevel_MG, Fmatrix%MG_comm_table,                  &
+     &       Fmatrix%MG_DJDS_table, Fmatrix%mat_MG_DJDS)
       end if
 !
       if    (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution             &
      &  .or. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
-        call write_MHD_djds_mat33(fhead_magne_mat, Bmatrix%nlevel_MG,   &
-     &      Bmatrix%MG_comm_table, Bmatrix%MG_DJDS_table,               &
-     &      Bmatrix%mat_MG_DJDS)
+        call write_MHD_djds_mat33(fhead_magne_mat, method_4_velo,       &
+     &      Bmatrix%nlevel_MG, Bmatrix%MG_comm_table,                   &
+     &      Bmatrix%MG_DJDS_table, Bmatrix%mat_MG_DJDS)
       end if
 !
       end subroutine s_write_djds_mat_MHD
@@ -110,13 +110,13 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine write_MHD_djds_mat33(fhead_matrix,                     &
+      subroutine write_MHD_djds_mat33(fhead_matrix, METHOD,             &
      &          num_MG_level, MG_comm, MG_djds_tbl, MG_mat33)
 !
       use write_djds_matrix_struct
       use skip_comment_f
 !
-      character(len=kchara) :: fhead_matrix
+      character(len=kchara), intent(in) :: fhead_matrix, METHOD
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(communication_table), intent(in)                             &
@@ -153,13 +153,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine write_MHD_djds_mat11(fhead_matrix,                     &
+      subroutine write_MHD_djds_mat11(fhead_matrix, METHOD,             &
      &          num_MG_level, MG_comm, MG_djds_tbl, MG_mat11)
 !
       use write_djds_matrix_struct
       use skip_comment_f
 !
-      character(len=kchara) :: fhead_matrix
+      character(len=kchara), intent(in) :: fhead_matrix, METHOD
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(communication_table), intent(in)                             &
