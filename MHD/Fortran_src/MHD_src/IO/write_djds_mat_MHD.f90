@@ -56,7 +56,6 @@
      &         (FEM_prm, fl_prop, cd_prop, ht_prop, cp_prop,            &
      &          Vmatrix, Pmatrix, Bmatrix, Fmatrix, Tmatrix, Cmatrix)
 !
-      use m_iccg_parameter
       use t_FEM_control_parameter
       use t_physical_property
       use t_solver_djds_MHD
@@ -78,7 +77,7 @@
       end if
 !
       if ( fl_prop%iflag_scheme .ge. id_Crank_nicolson) then
-        call write_MHD_djds_mat33(fhead_velo_mat, method_4_velo,        &
+        call write_MHD_djds_mat33(fhead_velo_mat, FEM_PRM%method_33,    &
      &       Vmatrix%nlevel_MG, Vmatrix%MG_comm_table,                  &
      &       Vmatrix%MG_DJDS_table, Vmatrix%mat_MG_DJDS)
       end if
@@ -107,7 +106,7 @@
 !
       if    (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution             &
      &  .or. cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
-        call write_MHD_djds_mat33(fhead_magne_mat, method_4_velo,       &
+        call write_MHD_djds_mat33(fhead_magne_mat, FEM_PRM%method_33,   &
      &      Bmatrix%nlevel_MG, Bmatrix%MG_comm_table,                   &
      &      Bmatrix%MG_DJDS_table, Bmatrix%mat_MG_DJDS)
       end if

@@ -71,6 +71,9 @@
 !>        Error torrance for iteration of Coulomb gauge
         real (kind=kreal) :: eps_4_coulomb
 !
+!>        Reference error torrance for diffusion matrices
+        real(kind=kreal) :: eps_crank
+!
 !>        Error torrance for viscous diffusion matrix
         real(kind=kreal)   :: eps_4_velo_crank =  zero
 !>        Error torrance for magnetic diffusion matrix
@@ -80,15 +83,21 @@
 !>        Error torrance for composition diffusion matrix
         real(kind=kreal)   :: eps_4_comp_crank =  zero
 !
+!>        Preconditionang for 3x3 solver
+        character (len=kchara) :: precond_33
+!>        Method for 3x3 solver
+        character (len=kchara) :: method_33
+!
+!>        Poisson solver parameters
         type(CG_poarameter) :: CG11_param
+!>        DJDS ordering parameters
+        type(DJDS_poarameter)  :: DJDS_param
 !
         type(area_group_name_list) :: fluid_group
         type(area_group_name_list) :: condutive_group
         type(area_group_name_list) :: insulator_group
         type(area_group_name_list) :: inner_core_group
       end type FEM_MHD_paremeters
-!
-!FEM_PRM%CG11_param%METHOD
 !
 !  ---------------------------------------------------------------------
 !

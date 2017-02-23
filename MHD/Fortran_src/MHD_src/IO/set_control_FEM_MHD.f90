@@ -52,7 +52,6 @@
       use m_ucd_data
       use m_default_file_prefix
       use m_physical_property
-      use m_iccg_parameter
       use t_FEM_control_parameter
       use t_SGS_control_parameter
 !
@@ -155,8 +154,7 @@
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1)
 !
       call s_set_control_4_solver                                       &
-     &   (iflag_scheme, ctl_ctl%mevo_ctl, ctl_ctl%CG_ctl,               &
-     &    FEM_prm, DJDS_param1)
+     &   (iflag_scheme, ctl_ctl%mevo_ctl, ctl_ctl%CG_ctl, FEM_prm)
       call set_control_4_FEM_params(ctl_ctl%mevo_ctl, ctl_ctl%fint_ctl, &
      &    fl_prop1, cd_prop1, FEM_prm)
 !

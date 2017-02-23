@@ -101,8 +101,6 @@
      &          diff_coefs, Pmatrix, MG_vector, fem_wk, surf_wk,        &
      &          f_l, f_nl, nod_fld)
 !
-      use m_iccg_parameter
-!
       use int_vol_fractional_div
       use int_sk_4_fixed_boundary
       use int_surf_div_sgs
@@ -210,8 +208,6 @@
      &          FEM_elens, diff_coefs, Fmatrix, MG_vector,              &
      &          fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
-      use m_iccg_parameter
-!
       use int_vol_fractional_div
       use int_sk_4_fixed_boundary
       use int_surf_div_sgs
@@ -304,8 +300,6 @@
      &          iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,       &
      &          FEM_elens, diff_coefs, Fmatrix, MG_vector,              &
      &          fem_wk, surf_wk, f_l, f_nl, nod_fld)
-!
-      use m_iccg_parameter
 !
       use int_vol_fractional_div
       use int_sk_4_fixed_boundary

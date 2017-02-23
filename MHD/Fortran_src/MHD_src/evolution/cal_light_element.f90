@@ -55,7 +55,6 @@
 !
       use calypso_mpi
       use m_phys_constants
-      use m_iccg_parameter
 !
       use t_FEM_control_parameter
       use t_SGS_control_parameter

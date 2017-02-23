@@ -51,7 +51,6 @@
       subroutine init_MGCG_MHD(FEM_prm, node, fl_prop, cd_prop)
 !
       use t_FEM_control_parameter
-      use m_iccg_parameter
       use solver_MGCG_MHD
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -66,7 +65,8 @@
       if(     fl_prop%iflag_scheme .ge. id_Crank_nicolson               &
      &   .or. cd_prop%iflag_Aevo_scheme .ge. id_Crank_nicolson          &
      &   .or. cd_prop%iflag_Bevo_scheme .ge. id_Crank_nicolson) then
-        call init_MGCG33_MHD(node, method_4_velo, precond_4_crank)
+        call init_MGCG33_MHD                                            &
+     &     (node, FEM_PRM%method_33, FEM_PRM%precond_33)
       end if
 !
       end subroutine init_MGCG_MHD

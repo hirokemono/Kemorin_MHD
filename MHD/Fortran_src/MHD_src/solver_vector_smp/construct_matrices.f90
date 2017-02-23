@@ -175,7 +175,6 @@
      &          ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,           &
      &          surf_wk, mhd_fem_wk, fem_wk, MHD_matrices)
 !
-      use m_iccg_parameter
       use m_physical_property
 !
       use set_aiccg_matrices_type
@@ -231,7 +230,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'preconditioning'
       call matrix_precondition                                          &
-     &   (FEM_PRM%CG11_param%PRECOND, precond_4_crank,                  &
+     &   (FEM_PRM%CG11_param%PRECOND, FEM_PRM%precond_33,               &
      &    FEM_prm%CG11_param%sigma_diag,                                &
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
      &    MHD_matrices%MG_DJDS_table(0),                                &

@@ -75,7 +75,6 @@
      &          filtering, wide_filtering, wk_filter, MHD_matrices)
 !
       use t_ctl_data_sph_MHD_psf
-      use m_iccg_parameter
       use m_flags_4_solvers
       use set_control_FEM_MHD
       use mpi_load_mesh_data

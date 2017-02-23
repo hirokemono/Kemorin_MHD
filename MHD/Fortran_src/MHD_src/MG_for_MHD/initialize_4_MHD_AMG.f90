@@ -360,7 +360,6 @@
       subroutine const_MGCG_MHD_matrices                                &
      &        (FEM_prm, SGS_param, cmt_param, ifld_diff, MHD_matrices)
 !
-      use m_iccg_parameter
       use m_ctl_parameter_Multigrid
       use t_FEM_control_parameter
       use t_SGS_control_parameter

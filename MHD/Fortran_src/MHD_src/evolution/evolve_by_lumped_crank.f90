@@ -108,7 +108,6 @@
      &          diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,     &
      &          f_l, f_nl, nod_fld)
 !
-      use m_iccg_parameter
       use m_array_for_send_recv
 !
       use t_bc_data_velo
@@ -183,7 +182,7 @@
       call solver_crank_vector(node, Vmatrix%nlevel_MG,                 &
      &    Vmatrix%MG_interpolate, Vmatrix%MG_comm_table,                &
      &    Vmatrix%MG_DJDS_table, Vmatrix%mat_MG_DJDS,                   &
-     &    method_4_velo, precond_4_crank,     &
+     &    FEM_PRM%method_33, FEM_PRM%precond_33,                        &
      &    FEM_prm%eps_4_velo_crank, FEM_prm%CG11_param%MAXIT,           &
      &    iphys%i_velo, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !
@@ -199,7 +198,6 @@
      &          diff_coefs, Bmatrix, MG_vector, mhd_fem_wk, fem_wk,     &
      &          f_l, f_nl, nod_fld)
 !
-      use m_iccg_parameter
       use m_array_for_send_recv
 !
       use cal_multi_pass
@@ -265,7 +263,7 @@
       call solver_crank_vector(node, Bmatrix%nlevel_MG,                 &
      &    Bmatrix%MG_interpolate, Bmatrix%MG_comm_table,                &
      &    Bmatrix%MG_DJDS_table, Bmatrix%mat_MG_DJDS,                   &
-     &    method_4_velo, precond_4_crank,     &
+     &    FEM_PRM%method_33, FEM_PRM%precond_33,                        &
      &    FEM_prm%eps_4_magne_crank, FEM_prm%CG11_param%MAXIT,          &
      &    i_vecp, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !
@@ -281,7 +279,6 @@
      &          diff_coefs, Bmatrix, MG_vector, mhd_fem_wk, fem_wk,     &
      &          f_l, f_nl, nod_fld)
 !
-      use m_iccg_parameter
       use m_array_for_send_recv
 !
       use cal_multi_pass
@@ -348,7 +345,7 @@
       call solver_crank_vector(node, Bmatrix%nlevel_MG,                 &
      &    Bmatrix%MG_interpolate, Bmatrix%MG_comm_table,                &
      &    Bmatrix%MG_DJDS_table, Bmatrix%mat_MG_DJDS,                   &
-     &    method_4_velo, precond_4_crank,       &
+     &    FEM_PRM%method_33, FEM_PRM%precond_33,                        &
      &    FEM_prm%eps_4_magne_crank, FEM_prm%CG11_param%MAXIT,          &
      &    i_magne, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !
@@ -365,7 +362,6 @@
      &          FEM_elens, diff_coefs, matrix, MG_vector,               &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
-      use m_iccg_parameter
       use m_array_for_send_recv
 !
       use t_bc_data_temp

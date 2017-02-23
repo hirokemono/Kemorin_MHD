@@ -8,11 +8,22 @@
 !>     DJDS ordering table for MHD dynamo model
 !!
 !!      subroutine link_MG_DJDS_MHD_structures
-!!
+!!      subroutine set_MHD_whole_connectivity                           &
+!!     &         (DJDS_param, nod_comm, node, ele, next_tbl, rhs_tbl)
+!!      subroutine set_MHD_layerd_connectivity                          &
+!!     &         (DJDS_param, node, ele, fluid)
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(DJDS_poarameter), intent(in) :: DJDS_param
+!!        type(next_nod_ele_table), intent(inout) :: next_tbl
+!!        type(tables_4_FEM_assembles), intent(inout) :: rhs_tbl
+!!        type(field_geometry_data), intent(in) :: fluid
+!
       module m_solver_djds_MHD
 !
       use m_precision
-      use m_iccg_parameter
+      use t_iccg_parameter
       use t_FEM_control_parameter
       use t_comm_table
       use t_solver_djds
@@ -85,7 +96,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_MHD_whole_connectivity                             &
-     &         (nod_comm, node, ele, next_tbl, rhs_tbl)
+     &         (DJDS_param, nod_comm, node, ele, next_tbl, rhs_tbl)
 !
       use t_comm_table
       use t_geometry_data
@@ -99,6 +110,7 @@
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(DJDS_poarameter), intent(in) :: DJDS_param
 !
       type(next_nod_ele_table), intent(inout) :: next_tbl
       type(tables_4_FEM_assembles), intent(inout) :: rhs_tbl
@@ -114,7 +126,7 @@
 !C +-------------------------------+
       call set_djds_whole_connectivity                                  &
      &   (nod_comm, node, solver_C, next_tbl%neib_nod,                  &
-     &    DJDS_param1, MHD1_matrices%MG_DJDS_table(0))
+     &    DJDS_param, MHD1_matrices%MG_DJDS_table(0))
 !
       call link_comm_tbl_types                                          &
      &   (nod_comm, MHD1_matrices%MG_comm_table(0))
@@ -123,7 +135,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_MHD_layerd_connectivity(node, ele, fluid)
+      subroutine set_MHD_layerd_connectivity                            &
+     &         (DJDS_param, node, ele, fluid)
 !
       use t_geometry_data
       use t_geometry_data_MHD
@@ -131,6 +144,7 @@
       use set_MHD_connectivity
       use copy_mesh_structures
 !
+      type(DJDS_poarameter), intent(in) :: DJDS_param
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
@@ -138,15 +152,15 @@
 !
       call set_djds_layer_connectivity(node, ele, ele%nnod_4_ele,       &
      &    fluid%iele_start_fld, fluid%iele_end_fld, DJDS_comm_fl,       &
-     &    solver_C, DJDS_param1, MHD1_matrices%MG_DJDS_fluid(0))
+     &    solver_C, DJDS_param, MHD1_matrices%MG_DJDS_fluid(0))
 !
       if (ele%nnod_4_ele .ne. num_t_linear) then
         call set_djds_layer_connectivity(node, ele, num_t_linear,       &
      &      ione, ele%numele, MHD1_matrices%MG_comm_table(0), solver_C, &
-     &      DJDS_param1, MHD1_matrices%MG_DJDS_linear(0))
+     &      DJDS_param, MHD1_matrices%MG_DJDS_linear(0))
         call set_djds_layer_connectivity(node, ele, num_t_linear,       &
      &      fluid%iele_start_fld, fluid%iele_end_fld, DJDS_comm_fl,     &
-     &      solver_C, DJDS_param1, MHD1_matrices%MG_DJDS_lin_fl(0))
+     &      solver_C, DJDS_param, MHD1_matrices%MG_DJDS_lin_fl(0))
       else
         call link_djds_connect_structs                                  &
      &     (MHD1_matrices%MG_DJDS_table(0),                             &
@@ -169,7 +183,6 @@
 !
       use m_machine_parameter
       use m_t_int_parameter
-      use m_iccg_parameter
 !
       use t_FEM_control_parameter
       use t_physical_property
@@ -183,14 +196,14 @@
 !
       if (fl_prop%iflag_scheme .ge. id_Crank_nicolson) then
         FEM_prm%eps_4_velo_crank                                        &
-     &      = eps_crank * fl_prop%coef_diffuse * dt**2
+     &      = FEM_PRM%eps_crank * fl_prop%coef_diffuse * dt**2
         if(iflag_debug.eq.1)                                            &
      &     write(12,*) 'eps_4_velo', FEM_prm%eps_4_velo_crank
       end if
 !
       if (ht_prop%iflag_scheme .ge. id_Crank_nicolson) then
         FEM_prm%eps_4_temp_crank                                        &
-     &      = eps_crank * ht_prop%coef_diffuse * dt**2
+     &      = FEM_PRM%eps_crank * ht_prop%coef_diffuse * dt**2
         if(iflag_debug.eq.1)                                            &
      &     write(12,*) 'eps_4_temp_crank', FEM_prm%eps_4_temp_crank
       end if
@@ -200,7 +213,7 @@
 !
         if(FEM_prm%eps_4_magne_crank .le. 0.0d0) then
           FEM_prm%eps_4_magne_crank                                     &
-     &        = eps_crank * cd_prop%coef_diffuse * dt**2
+     &        = FEM_PRM%eps_crank * cd_prop%coef_diffuse * dt**2
         end if
         if(iflag_debug.eq.1)                                            &
      &     write(12,*) 'eps_4_magne_crank', FEM_prm%eps_4_magne_crank
@@ -208,7 +221,7 @@
 !
       if (cp_prop%iflag_scheme .ge. id_Crank_nicolson) then
         FEM_prm%eps_4_comp_crank                                        &
-     &      = eps_crank * cp_prop%coef_diffuse * dt**2
+     &      = FEM_PRM%eps_crank * cp_prop%coef_diffuse * dt**2
         if(iflag_debug.eq.1)                                            &
      &     write(12,*) 'eps_4_comp_crank', FEM_prm%eps_4_comp_crank
       end if

@@ -70,7 +70,6 @@
       subroutine reordering_by_layers_MHD                               &
      &         (FEM_prm, SGS_par, ele, group, MHD_mesh, MG_interpolate)
 !
-      use m_iccg_parameter
       use m_work_4_MHD_layering
       use m_type_AMG_data
       use m_type_AMG_mesh

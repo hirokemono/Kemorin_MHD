@@ -48,7 +48,6 @@
       use m_machine_parameter
       use m_control_parameter
       use m_physical_property
-      use m_iccg_parameter
       use m_t_step_parameter
       use m_flexible_time_step
 !
@@ -290,11 +289,11 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'set_MHD_whole_connectivity'
-      call set_MHD_whole_connectivity                                   &
-     &    (mesh%nod_comm, mesh%node, mesh%ele, next_tbl1, rhs_tbl1)
+      call set_MHD_whole_connectivity(FEM_prm%DJDS_param,               &
+     &    mesh%nod_comm, mesh%node, mesh%ele, next_tbl1, rhs_tbl1)
       if (iflag_debug.eq.1) write(*,*) 'set_MHD_layerd_connectivity'
       call set_MHD_layerd_connectivity                                  &
-     &  (mesh%node, mesh%ele, MHD_mesh%fluid)
+     &   (FEM_prm%DJDS_param, mesh%node, mesh%ele, MHD_mesh%fluid)
 !
 !     ---------------------
 !
@@ -324,7 +323,7 @@
 !
       if(solver_iflag(FEM_PRM%CG11_param%METHOD) .eq. iflag_mgcg) then
         call s_initialize_4_MHD_AMG(FEM_prm, mesh%node, mesh%ele,       &
-     &      ifld_diff, diff_coefs, DJDS_param1, MHD1_matrices)
+     &      ifld_diff, diff_coefs, FEM_prm%DJDS_param, MHD1_matrices)
       end if
 !
 !     --------------------- 
