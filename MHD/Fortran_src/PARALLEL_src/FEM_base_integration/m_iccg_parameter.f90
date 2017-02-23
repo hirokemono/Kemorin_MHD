@@ -34,9 +34,6 @@
 ! 
       real(kind=kreal) :: eps_crank
 ! 
-!
-      integer(kind=kint) :: itr_res
-!
       type(DJDS_poarameter)  :: DJDS_param1
 !
       end module m_iccg_parameter

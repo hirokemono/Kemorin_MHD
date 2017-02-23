@@ -53,7 +53,7 @@
       type(CRS_matrix_connect), intent(inout) :: tbl_crs
       type(CRS_matrix), intent(inout) :: mat_crs
 !
-      integer(kind = kint) :: i, ierr
+      integer(kind = kint) :: i, itr_res, ierr
 !
 !
       mat_crs%NB_crs = 1
@@ -75,7 +75,8 @@
       call transfer_crs_2_djds_matrix(node, nod_comm,                   &
      &    tbl_crs, mat_crs, DJDS_param, djds_tbl1, djds_mat1)
       call solve_by_djds_solver11                                       &
-     &   (node, nod_comm, mat_crs, djds_tbl1, djds_mat1, ierr)
+     &   (node, nod_comm, mat_crs, djds_tbl1, djds_mat1, itr_res, ierr)
+      if (my_rank.eq.0) write (*,*) itr_res, "  iters"
 !
       do i = 1, node%numnod
         sol_mk_crs(i) = mat_crs%X_crs(i)
@@ -105,7 +106,7 @@
       type(CRS_matrix_connect), intent(inout) :: tbl_crs
       type(CRS_matrix), intent(inout) :: mat_crs
 !
-      integer(kind = kint) :: i, ierr
+      integer(kind = kint) :: i, itr_res, ierr
 !
 !
       mat_crs%NB_crs = 1
@@ -121,7 +122,8 @@
      &    tbl_crs, mat_crs, DJDS_param, djds_tbl1, djds_mat1)
 !
       call solve_by_djds_solverNN                                       &
-     &   (node, nod_comm, mat_crs, djds_tbl1, djds_mat1, ierr)
+     &   (node, nod_comm, mat_crs, djds_tbl1, djds_mat1, itr_res, ierr)
+      if (my_rank.eq.0) write (*,*) itr_res, "  iters"
 !
       do i = 1, node%numnod
         sol_mk_crs(i) = mat_crs%X_crs(i)

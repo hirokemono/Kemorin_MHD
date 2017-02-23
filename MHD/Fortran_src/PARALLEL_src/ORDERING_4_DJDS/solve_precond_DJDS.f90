@@ -5,11 +5,14 @@
 !     Modified by H. Matsui on Apr., 2008
 !
 !!      subroutine solve_by_djds_solver11                               &
-!!     &         (node, nod_comm, mat_crs, djds_tbl, djds_mat, ierr)
+!!     &         (node, nod_comm, mat_crs, djds_tbl, djds_mat,          &
+!!     &          itr_res, ierr)
 !!      subroutine solve_by_djds_solver33                               &
-!!     &         (node, nod_comm, mat_crs, djds_tbl, djds_mat, ierr)
+!!     &         (node, nod_comm, mat_crs, djds_tbl, djds_mat,          &
+!!     &          itr_res, ierr)
 !!      subroutine solve_by_djds_solverNN                               &
-!!     &         (node, nod_comm, mat_crs, djds_tbl, djds_mat, ierr)
+!!     &         (node, nod_comm, mat_crs, djds_tbl, djds_mat,          &
+!!     &          itr_res, ierr)
 !!        type(node_data), intent(in) :: node
 !!        type(CRS_matrix_connect), intent(inout) :: tbl_crs
 !!
@@ -89,7 +92,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine solve_by_djds_solver11                                 &
-     &         (node, nod_comm, mat_crs, djds_tbl, djds_mat, ierr)
+     &         (node, nod_comm, mat_crs, djds_tbl, djds_mat,            &
+     &          itr_res, ierr)
 !
       use m_iccg_parameter
       use m_solver_SR
@@ -105,7 +109,7 @@
       type(DJDS_ordering_table), intent(inout) :: djds_tbl
       type(DJDS_MATRIX), intent(inout) :: djds_mat
 !
-      integer(kind = kint), intent(inout) :: ierr
+      integer(kind = kint), intent(inout) :: ierr, itr_res
 !
 !
       call allocate_vector_data_4_djds(node%numnod, djds_mat%NB)
@@ -144,7 +148,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine solve_by_djds_solver33                                 &
-     &         (node, nod_comm, mat_crs, djds_tbl, djds_mat, ierr)
+     &         (node, nod_comm, mat_crs, djds_tbl, djds_mat,            &
+     &          itr_res, ierr)
 !
       use m_iccg_parameter
       use m_solver_SR
@@ -160,7 +165,7 @@
       type(DJDS_ordering_table), intent(inout) :: djds_tbl
       type(DJDS_MATRIX), intent(inout) :: djds_mat
 !
-      integer(kind = kint), intent(inout) :: ierr
+      integer(kind = kint), intent(inout) :: ierr, itr_res
 !
 !
       call allocate_vector_data_4_djds(node%numnod, djds_mat%NB)
@@ -200,7 +205,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine solve_by_djds_solverNN                                 &
-     &         (node, nod_comm, mat_crs, djds_tbl, djds_mat, ierr)
+     &         (node, nod_comm, mat_crs, djds_tbl, djds_mat,            &
+     &          itr_res, ierr)
 !
       use m_iccg_parameter
       use m_solver_SR
@@ -216,7 +222,7 @@
       type(DJDS_ordering_table), intent(inout) :: djds_tbl
       type(DJDS_MATRIX), intent(inout) :: djds_mat
 !
-      integer(kind = kint), intent(inout) :: ierr
+      integer(kind = kint), intent(inout) :: itr_res, ierr
 !
 !
       call allocate_vector_data_4_djds(node%numnod, djds_mat%NB)

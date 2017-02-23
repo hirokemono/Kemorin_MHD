@@ -18,27 +18,22 @@
       integer(kind = kint), parameter :: iflag_MC_RCM =     1
       integer(kind = kint), parameter :: iflag_MultiColor = 2
 !
-!      real(kind=kreal)   :: eps
-!      integer(kind=kint) :: itr
-!      real(kind=kreal)   :: sigma
-!      real(kind=kreal)   :: sigma_diag
+      type CG_poarameter
+!>        Maxmum iteration
+        integer(kind=kint) :: itr
+!>        Error torrance
+        real(kind=kreal)   :: eps
+!>        Coefficients for SSOR
+        real(kind=kreal)   :: sigma
+!>        Coefficients for SSOR
+        real(kind=kreal)   :: sigma_diag
 ! 
-!      character (len=kchara)   :: precond
-!      character (len=kchara)   :: method
+!>        Oreconditioning method
+        character (len=kchara)   :: precond
+!>        olver method
+        character (len=kchara)   :: method
+      end type CG_poarameter
 ! 
-!      solver and precionditioning for Poisson matrix
-!
-!      character (len=kchara) :: precond_4_solver
-!      character (len=kchara) :: method_4_solver
-! 
-!      solver and precionditioning for 3x3 matrix
-!
-!      character (len=kchara) :: precond_4_crank
-!      character (len=kchara) :: method_4_velo
-! 
-!      real(kind=kreal) :: eps_crank
-! 
-!      integer(kind=kint) :: itr_res
 !
       type DJDS_poarameter
 !>      Ordering type for linear solver

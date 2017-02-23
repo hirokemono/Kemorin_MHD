@@ -85,7 +85,7 @@
       type(DJDS_ordering_table) :: djds_tbl_z
       type(DJDS_MATRIX) :: djds_mat_z
 !
-      integer(kind=kint) :: ierr
+      integer(kind=kint) :: itr_res, ierr
 !
 !C
 !C-- read CNTL DATA
@@ -220,13 +220,13 @@
           write(*,*) 'solve_by_djds_solver33'
           call solve_by_djds_solver33                                   &
      &       (z_filter_mesh%node, z_filter_mesh%nod_comm,               &
-     &        mat_crs_z, djds_tbl_z, djds_mat_z, ierr)
+     &        mat_crs_z, djds_tbl_z, djds_mat_z, itr_res, ierr)
         else if (mat_crs_z%SOLVER_crs.eq.'blockNN'                      &
      &    .or. mat_crs_z%SOLVER_crs.eq.'BLOCKNN') then
           write(*,*) 'solve_by_djds_solverNN'
           call solve_by_djds_solverNN                                   &
      &       (z_filter_mesh%node, z_filter_mesh%nod_comm,               &
-     &        mat_crs_z, djds_tbl_z, djds_mat_z, ierr)
+     &        mat_crs_z, djds_tbl_z, djds_mat_z, itr_res, ierr)
         end if
       end if
 !

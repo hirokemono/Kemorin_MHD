@@ -69,7 +69,7 @@
 !
       type(DJDS_ordering_table) :: djds_tbl
       type(DJDS_MATRIX) :: djds_mat
-      integer(kind = kint) :: ierr
+      integer(kind = kint) :: itr_res, ierr
 !
 !      call check_crs_matrix_comps(my_rank, tbl_crs, mat_crs)
 !C
@@ -80,15 +80,15 @@
       if (mat_crs%SOLVER_crs .eq. 'scalar'                              &
      &   .or. mat_crs%SOLVER_crs.eq.'SCALAR') then
         call solve_by_djds_solver11                                     &
-     &     (node, nod_comm, mat_crs, djds_tbl, djds_mat, ierr)
+     &     (node, nod_comm, mat_crs, djds_tbl, djds_mat, itr_res, ierr)
       else if (mat_crs%SOLVER_crs.eq.'block33'                          &
      &    .or. mat_crs%SOLVER_crs.eq.'BLOCK33') then
         call solve_by_djds_solver33                                     &
-     &     (node, nod_comm, mat_crs, djds_tbl, djds_mat, ierr)
+     &     (node, nod_comm, mat_crs, djds_tbl, djds_mat, itr_res, ierr)
       else if (mat_crs%SOLVER_crs.eq.'blockNN'                          &
      &    .or. mat_crs%SOLVER_crs.eq.'BLOCKNN') then
         call solve_by_djds_solverNN                                     &
-     &     (node, nod_comm, mat_crs, djds_tbl, djds_mat, ierr)
+     &     (node, nod_comm, mat_crs, djds_tbl, djds_mat, itr_res, ierr)
       end if
 
       call output_solution(node, mat_crs)
