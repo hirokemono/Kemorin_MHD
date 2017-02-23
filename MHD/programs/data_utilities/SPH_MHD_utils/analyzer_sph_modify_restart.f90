@@ -30,7 +30,6 @@
 !
       subroutine evolution_sph_mod_restart
 !
-      use m_control_parameter
       use m_t_int_parameter
       use m_t_step_parameter
 !

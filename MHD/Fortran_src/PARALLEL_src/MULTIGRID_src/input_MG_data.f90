@@ -30,7 +30,6 @@
 !
       subroutine input_MG_mesh(mesh_file)
 !
-      use m_control_parameter
       use t_file_IO_parameter
       use mpi_load_mesh_data
       use element_file_IO

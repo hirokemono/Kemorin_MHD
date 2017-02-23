@@ -14,6 +14,7 @@
       use m_work_time
       use m_machine_parameter
 !
+      use m_control_parameter
       use m_SGS_control_parameter
       use m_t_step_parameter
       use m_t_int_parameter
@@ -33,7 +34,6 @@
 !
       subroutine FEM_initialize_MHD
 !
-      use m_control_parameter
       use m_geometry_data_MHD
       use m_node_phys_data
       use m_element_phys_data
@@ -165,7 +165,6 @@
       subroutine FEM_analyze_MHD(istep_psf, istep_iso,                  &
      &          istep_pvr, istep_fline, visval, retval)
 !
-      use m_control_parameter
       use m_geometry_data_MHD
       use m_node_phys_data
       use m_element_phys_data

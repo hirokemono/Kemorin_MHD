@@ -31,7 +31,6 @@
       use m_constants
       use calypso_mpi
       use m_machine_parameter
-      use m_control_parameter
 !
       use m_spheric_parameter
       use m_sph_spectr_data
@@ -161,7 +160,6 @@
       use t_work_4_sph_trans
       use t_sph_multi_FFTW
 !
-      use m_control_parameter
       use set_address_sph_trans_MHD
       use pole_sph_transform
       use MHD_FFT_selector

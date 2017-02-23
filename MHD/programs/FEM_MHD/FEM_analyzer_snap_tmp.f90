@@ -64,7 +64,6 @@
       subroutine FEM_analyze_snap_tmp(i_step, istep_psf, istep_iso,     &
      &          istep_pvr, istep_fline, visval)
 !
-      use m_control_parameter
       use m_physical_property
       use m_geometry_data_MHD
       use m_node_phys_data

@@ -40,7 +40,6 @@
       use m_array_for_send_recv
       use calypso_mpi
       use m_machine_parameter
-      use m_control_parameter
 !
       use m_mesh_data
       use m_spheric_parameter

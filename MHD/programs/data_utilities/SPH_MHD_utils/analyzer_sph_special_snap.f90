@@ -34,7 +34,6 @@
 !
       subroutine evolution_sph_special_snap
 !
-      use m_control_parameter
       use m_t_int_parameter
       use m_t_step_parameter
       use m_mesh_data

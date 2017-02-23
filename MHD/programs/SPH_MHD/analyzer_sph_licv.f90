@@ -18,7 +18,6 @@
 !
       use m_machine_parameter
       use m_work_time
-      use m_control_parameter
       use m_sph_trans_arrays_MHD
 !
       use SPH_analyzer_licv

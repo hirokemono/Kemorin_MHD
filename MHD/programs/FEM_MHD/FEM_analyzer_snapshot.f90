@@ -15,6 +15,7 @@
       use m_work_time
       use m_t_step_parameter
       use m_t_int_parameter
+      use m_control_parameter
       use m_SGS_control_parameter
       use m_mesh_data
       use m_ucd_data
@@ -34,7 +35,6 @@
 !
       subroutine FEM_initialize_snapshot
 !
-      use m_control_parameter
       use m_cal_max_indices
       use m_node_phys_data
       use m_geometry_data_MHD
@@ -61,7 +61,6 @@
       subroutine FEM_analyze_snapshot(i_step, istep_psf, istep_iso,     &
      &          istep_pvr, istep_fline, visval)
 !
-      use m_control_parameter
       use m_physical_property
       use m_geometry_data_MHD
       use m_node_phys_data
