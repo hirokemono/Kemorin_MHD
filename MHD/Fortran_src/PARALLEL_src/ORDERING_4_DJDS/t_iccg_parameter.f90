@@ -67,7 +67,7 @@
         e_message = 'Set CG preconditioning for Poisson solver'
         call calypso_MPI_abort(ierr_CG, e_message)
       else
-        CG_param%PRECOND  = CG_ctl%method_ctl%charavalue
+        CG_param%PRECOND  = CG_ctl%precond_ctl%charavalue
       end if
 !
       if (CG_ctl%method_ctl%iflag .eq. 0) then
