@@ -33,10 +33,13 @@
       use t_solver_djds_MHD
       use t_material_property
       use t_SGS_model_coefs
+      use t_next_node_ele_4_node
 !
       use calypso_mpi
 !
       implicit none
+!
+      type(next_nod_ele_table), private :: MG_next_table(max_MG_level)
 !
 ! ---------------------------------------------------------------------
 !

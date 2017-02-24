@@ -20,13 +20,20 @@
       use calypso_mpi
       use m_t_int_parameter
       use m_t_step_parameter
-      use m_stability_data
 !
       use t_physical_property
       use t_geometry_data
       use t_geometry_data_MHD
 !
       implicit none
+!
+!
+      real(kind=kreal) :: min_length, cfl_tmp
+! 
+      real(kind=kreal) :: cfl_diffuse, cfl_advect
+!
+      private :: min_length, cfl_tmp
+      private :: cfl_diffuse, cfl_advect
 !
 ! ----------------------------------------------------------------------
 !
@@ -103,6 +110,7 @@
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
 !
       integer (kind = kint) :: iele
+      real(kind=kreal) :: cfl_advect0
 !
 !
       cfl_advect0 = 1.0d10

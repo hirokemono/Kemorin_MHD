@@ -3,9 +3,11 @@
 !
 !        programmed by H. Matsui on Dec., 2008
 !
-!!      subroutine input_MG_mesh(mesh_file)
+!!      subroutine input_MG_mesh(MG_file, mesh_file)
+!!        type(MGCG_file_list), intent(in) :: MG_file
 !!        type(field_IO_params), intent(inout) ::  mesh_file
-!!      subroutine input_MG_itp_tables(MG_itp)
+!!      subroutine input_MG_itp_tables(MG_file, MG_itp)
+!!        type(MGCG_file_list), intent(in) :: MG_file
 !!        type(MG_itp_table), intent(inout) :: MG_itp(num_MG_level)
 !
       module input_MG_data
@@ -17,10 +19,11 @@
       use m_constants
       use m_type_AMG_data
       use m_type_AMG_mesh
+      use t_MGCG_parameter
 !
       implicit none
 !
-      private ::  alloc_zero_mesh_data, sync_group_name_4_empty
+      private ::  sync_group_name_4_empty
 !
 !  ---------------------------------------------------------------------
 !
@@ -28,29 +31,32 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine input_MG_mesh(mesh_file)
+      subroutine input_MG_mesh(MG_file, mesh_file)
 !
       use t_file_IO_parameter
       use mpi_load_mesh_data
+      use load_mesh_data
       use element_file_IO
 !
+      type(MGCG_file_list), intent(in) :: MG_file
       type(field_IO_params), intent(inout) ::  mesh_file
 !
       integer(kind = kint) :: i_level
 !
 !
-      do i_level = 1, num_MG_level
-        mesh_file%iflag_format = ifmt_MG_mesh_file(i_level)
+      do i_level = 1, MG_file%nlevel_f
+        mesh_file%iflag_format = MG_file%ifmt_MG_mesh_file(i_level)
         if(my_rank .lt. MG_mpi(i_level)%nprocs ) then
 !
-          mesh_file%file_prefix = MG_mesh_file_head(i_level)
+          mesh_file%file_prefix = MG_file%MG_mesh_file_head(i_level)
           call mpi_input_mesh(mesh_file,                                &
      &        MG_mesh(i_level)%mesh, MG_mesh(i_level)%group,            &
      &        MG_ele_mesh(i_level)%surf%nnod_4_surf,                    &
      &        MG_ele_mesh(i_level)%edge%nnod_4_edge)
         else
-          call alloc_zero_mesh_data                                     &
-     &       (MG_mesh(i_level), MG_ele_mesh(i_level))
+          call set_zero_mesh_data(MG_mesh(i_level)%mesh,                &
+     &        MG_ele_mesh(i_level)%surf%nnod_4_surf,                    &
+     &        MG_ele_mesh(i_level)%edge%nnod_4_edge)
         end if
 !
         call sync_group_name_4_empty(MG_mpi(i_level)%nprocs,            &
@@ -63,22 +69,23 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine input_MG_itp_tables(MG_itp)
+      subroutine input_MG_itp_tables(MG_file, MG_itp)
 !
       use m_interpolate_table_IO
       use itp_table_IO_select_4_zlib
 !
+      type(MGCG_file_list), intent(in) :: MG_file
       type(MG_itp_table), intent(inout) :: MG_itp(num_MG_level)
 !
       integer(kind = kint) :: i_level
 !
 !
-      do i_level = 1, num_MG_level
+      do i_level = 1, MG_file%nlevel_f
         if(i_level.eq.1 .or. my_rank.lt.MG_mpi(i_level-1)%nprocs)       &
      &      then
           write(*,*) 'MG_f2c_tbl_head format', ifmt_itp_table_file
-          table_file_header = MG_f2c_tbl_head(i_level)
-          ifmt_itp_table_file = ifmt_MG_table_file(i_level)
+          table_file_header = MG_file%MG_f2c_tbl_head(i_level)
+          ifmt_itp_table_file = MG_file%ifmt_MG_table_file(i_level)
           call load_interpolate_table(my_rank, MG_itp(i_level)%f2c)
         else
           call load_zero_interpolate_table(MG_itp(i_level)%f2c)
@@ -88,12 +95,12 @@
 !
 !
 !
-      do i_level = 1, num_MG_level
+      do i_level = 1, MG_file%nlevel_f
         if(i_level.eq.1 .or. my_rank.lt.MG_mpi(i_level-1)%nprocs)       &
      &      then
           write(*,*) 'MG_c2f_tbl_head format', ifmt_itp_table_file
-          table_file_header = MG_c2f_tbl_head(i_level)
-          ifmt_itp_table_file = ifmt_MG_table_file(i_level)
+          table_file_header = MG_file%MG_c2f_tbl_head(i_level)
+          ifmt_itp_table_file = MG_file%ifmt_MG_table_file(i_level)
           call load_interpolate_table(my_rank, MG_itp(i_level)%c2f)
         else
           call load_zero_interpolate_table(MG_itp(i_level)%c2f)
@@ -104,10 +111,10 @@
 !
 !
       if (iflag_MG_commute_by_ele .gt. 0) then
-        do i_level = 1, num_MG_level
+        do i_level = 1, MG_file%nlevel_f
           if(i_level.eq.1 .or. my_rank.lt.MG_mpi(i_level-1)%nprocs)     &
      &      then
-            table_file_header = MG_f2c_eletbl_head(i_level)
+            table_file_header = MG_file%MG_f2c_eletbl_head(i_level)
             call load_interpolate_table                                 &
      &         (my_rank, MG_c2f_ele_tbl(i_level) )
           else
@@ -118,37 +125,6 @@
       end if
 !
       end subroutine input_MG_itp_tables
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine alloc_zero_mesh_data(mesh_info, ele_mesh)
-!
-      use t_mesh_data
-      use set_nnod_4_ele_by_type
-!
-      type(mesh_data), intent(inout) ::        mesh_info
-      type(element_geometry), intent(inout) :: ele_mesh
-!
-!
-      mesh_info%mesh%nod_comm%num_neib =    izero
-      mesh_info%mesh%nod_comm%ntot_import = izero
-      mesh_info%mesh%nod_comm%ntot_export = izero
-      call allocate_type_comm_tbl_num(mesh_info%mesh%nod_comm)
-      call allocate_type_comm_tbl_item(mesh_info%mesh%nod_comm)
-!
-      mesh_info%mesh%node%numnod =        izero
-      mesh_info%mesh%node%internal_node = izero
-      call allocate_node_geometry_type(mesh_info%mesh%node)
-!
-      mesh_info%mesh%ele%numele = izero
-      mesh_info%mesh%ele%first_ele_type = izero
-      call allocate_ele_connect_type(mesh_info%mesh%ele)
-!
-      call set_3D_nnod_4_sfed_by_ele(mesh_info%mesh%ele%nnod_4_ele,     &
-     &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
-!
-      end subroutine alloc_zero_mesh_data
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

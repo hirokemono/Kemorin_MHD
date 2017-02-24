@@ -15,7 +15,6 @@
       use t_interpolate_table
       use t_jacobians
       use t_table_FEM_const
-      use t_next_node_ele_4_node
       use t_work_FEM_integration
 !
       implicit  none
@@ -24,10 +23,6 @@
       type(mesh_data), target, save :: MG_mesh(max_MG_level)
       type(element_geometry), save ::  MG_ele_mesh(max_MG_level)
 !   mesh data structure
-!
-!      type(MG_itp_table), save :: MG_itp(max_MG_level)
-!   interpolation table structure for interpolation
-!
 !
       integer(kind = kint), save :: iflag_MG_commute_by_ele = 0
       type(interpolate_table), save :: MG_c2f_ele_tbl(max_MG_level)
@@ -40,55 +35,71 @@
       type(arrays_finite_element_mat), save :: MG_FEM_mat(max_MG_level)
 !   table for FEM assemble
 !
-!      work structure for matrix assemble
-!
-      type(next_nod_ele_table) :: MG_next_table(max_MG_level)
-!
-      character(len = kchara), allocatable :: MG_mesh_file_head(:)
-!
-      character(len = kchara), allocatable :: MG_f2c_tbl_head(:)
-      character(len = kchara), allocatable :: MG_c2f_tbl_head(:)
-      character(len = kchara), allocatable :: MG_f2c_eletbl_head(:)
-!
-      integer(kind = kint), allocatable :: ifmt_MG_mesh_file(:)
-      integer(kind = kint), allocatable :: ifmt_MG_table_file(:)
-!
 !------------------------------------------------------------------
 !
        contains
 !
 !------------------------------------------------------------------
 !
-      subroutine allocate_MG_mesh_file_heads
+      subroutine set_ctl_data_4_Multigrid(MG_ctl, MG_param, MG_file)
 !
+      use calypso_mpi
+      use m_error_IDs
+      use m_machine_parameter
+      use m_file_format_switch
       use m_type_AMG_data
+      use t_MGCG_parameter
+      use t_ctl_data_4_Multigrid
+      use set_parallel_file_name
 !
-      allocate( MG_mesh_file_head(num_MG_level) )
+      type(MGCG_control), intent(inout) :: MG_ctl
+      type(MGCG_parameter), intent(inout) :: MG_param
+      type(MGCG_file_list), intent(inout) :: MG_file
 !
-      allocate( MG_f2c_tbl_head(num_MG_level) )
-      allocate( MG_c2f_tbl_head(num_MG_level) )
-      allocate( MG_f2c_eletbl_head(num_MG_level) )
+      integer(kind = kint) :: i
 !
-      allocate( ifmt_MG_mesh_file(num_MG_level) )
-      allocate( ifmt_MG_table_file(num_MG_level) )
 !
-      ifmt_MG_mesh_file =  0
-      ifmt_MG_table_file = 0
+      call set_MGCG_parameter(MG_ctl, MG_param)
 !
-      end subroutine allocate_MG_mesh_file_heads
+      if (MG_ctl%num_multigrid_level_ctl%iflag .gt. 0) then
+        num_MG_level = MG_ctl%num_multigrid_level_ctl%intvalue
+      else
+        num_MG_level = 0
+      end if
 !
-!------------------------------------------------------------------
+      if (num_MG_level .gt. max_MG_level) then
+          write(e_message,*)                                            &
+     &           'Resize maximum MG level to ', num_MG_level
+          call calypso_MPI_abort(ierr_CG, e_message)
+      end if
 !
-      subroutine deallocate_MG_mesh_file_heads
+      if (num_MG_level .gt. 0) then
+        if(MG_ctl%num_MG_subdomain_ctl%num .ne. num_MG_level) then
+          write(e_message,'(a)')                                        &
+     &            'set correct level for MG subdomains'
+          call calypso_MPI_abort(ierr_CG, e_message)
+        end if
 !
-      deallocate( MG_mesh_file_head )
+        MG_mpi(1:num_MG_level)%nprocs                                   &
+     &         = MG_ctl%num_MG_subdomain_ctl%ivec(1:num_MG_level)
+        call dealloc_control_array_int(MG_ctl%num_MG_subdomain_ctl)
 !
-      deallocate( MG_f2c_tbl_head, MG_c2f_tbl_head )
-      deallocate( MG_f2c_eletbl_head )
-      deallocate( ifmt_MG_mesh_file, ifmt_MG_table_file )
+        if (MG_ctl%MG_f2c_ele_tbl_ctl%icou .eq. MG_file%nlevel_f) then
+          iflag_MG_commute_by_ele = 1
+        end if
+      end if
 !
-      end subroutine deallocate_MG_mesh_file_heads
+      if (iflag_debug .gt. 0) then
+        do i = 1, MG_file%nlevel_f
+          write(*,*) '# of domains for level ', i, ':  ',              &
+     &               MG_mpi(i)%nprocs
+        end do
+      end if
 !
-!------------------------------------------------------------------
+      call set_MGCG_file_controls(num_MG_level, MG_ctl, MG_file)
+!
+      end subroutine set_ctl_data_4_Multigrid
+!
+!  ---------------------------------------------------------------------
 !
       end module m_type_AMG_mesh

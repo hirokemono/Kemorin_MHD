@@ -95,6 +95,8 @@
         type(DJDS_poarameter)  :: DJDS_param
 !>        Multigrid parameters
         type(MGCG_parameter) :: MG_param
+!>        File list for Multigrid solver
+        type(MGCG_file_list) :: MG_file
 !
         type(area_group_name_list) :: fluid_group
         type(area_group_name_list) :: condutive_group

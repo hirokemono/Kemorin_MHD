@@ -18,6 +18,7 @@
 !!      subroutine set_mesh                                             &
 !!     &         (mesh, group, nnod_4_surf, nnod_4_edge)
 !!      subroutine set_mesh_geometry_data(mesh_IO, nod_comm, node, ele)
+!!      subroutine set_zero_mesh_data(mesh, nnod_4_surf, nnod_4_edge)
 !!
 !!      subroutine set_grp_data_from_IO(nod_grp, ele_grp, surf_grp)
 !!      subroutine set_grp_data_to_IO(nod_grp, ele_grp, surf_grp)
@@ -29,6 +30,7 @@
       module load_mesh_data
 !
       use m_precision
+      use m_constants
       use m_machine_parameter
 !
       use t_file_IO_parameter
@@ -171,6 +173,37 @@
       call allocate_sph_node_geometry(node)
 !
       end subroutine set_mesh_geometry_data
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine set_zero_mesh_data(mesh, nnod_4_surf, nnod_4_edge)
+!
+      use t_mesh_data
+      use set_nnod_4_ele_by_type
+!
+      type(mesh_geometry), intent(inout) :: mesh
+      integer(kind = kint), intent(inout) :: nnod_4_surf, nnod_4_edge
+!
+!
+      mesh%nod_comm%num_neib =    izero
+      mesh%nod_comm%ntot_import = izero
+      mesh%nod_comm%ntot_export = izero
+      call allocate_type_comm_tbl_num(mesh%nod_comm)
+      call allocate_type_comm_tbl_item(mesh%nod_comm)
+!
+      mesh%node%numnod =        izero
+      mesh%node%internal_node = izero
+      call allocate_node_geometry_type(mesh%node)
+!
+      mesh%ele%numele = izero
+      mesh%ele%first_ele_type = izero
+      call allocate_ele_connect_type(mesh%ele)
+!
+      call set_3D_nnod_4_sfed_by_ele                                    &
+     &   (mesh%ele%nnod_4_ele, nnod_4_surf, nnod_4_edge)
+!
+      end subroutine set_zero_mesh_data
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

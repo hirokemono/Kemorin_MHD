@@ -115,8 +115,9 @@
 !
       if(cmp_no_case(FEM_PRM%CG11_param%METHOD, cflag_mgcg)) then
         call alloc_MHD_MG_DJDS_mat(num_MG_level, MHD_matrices)
-        call input_MG_mesh(mesh1_file)
-        call input_MG_itp_tables(MHD_matrices%MG_interpolate)
+        call input_MG_mesh(FEM_prm%MG_file, mesh1_file)
+        call input_MG_itp_tables                                        &
+     &     (FEM_prm%MG_file, MHD_matrices%MG_interpolate)
       else
         num_MG_level = 0
         call alloc_MHD_MG_DJDS_mat(num_MG_level, MHD_matrices)

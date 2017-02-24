@@ -42,7 +42,7 @@
       use t_physical_property
       use t_ctl_data_4_solvers
       use t_ctl_data_mhd_evo_scheme
-      use m_ctl_parameter_Multigrid
+      use m_type_AMG_mesh
       use skip_comment_f
 !
       integer (kind=kint), intent(in) :: iflag_scheme
@@ -106,7 +106,8 @@
 !
       if (cmp_no_case(FEM_PRM%CG11_param%METHOD, 'MGCG')) then
         if (iflag_debug.eq.1) write(*,*) 'set_ctl_data_4_Multigrid'
-        call set_ctl_data_4_Multigrid(CG_ctl%MG_ctl, FEM_PRM%MG_param)
+        call set_ctl_data_4_Multigrid                                   &
+     &     (CG_ctl%MG_ctl, FEM_PRM%MG_param, FEM_PRM%MG_file)
       end if
 !
       end subroutine s_set_control_4_solver
