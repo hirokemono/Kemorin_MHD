@@ -50,17 +50,20 @@
 !
       subroutine analyze
 !
-      integer(kind=kint ) :: i_step, istep_pvr
+      use t_IO_step_parameter
+!
+      integer(kind=kint ) :: i_step
+      type(IO_step_param) :: pvr_step1
 !
 !
       do i_step = i_step_init, i_step_number
 !
 !  Load field data
-        call FEM_analyze_pvr(i_step, istep_pvr)
+        call FEM_analyze_pvr(i_step, pvr_step1)
 !
 !  Rendering
-        call PVR_visualize                                              &
-     &     (istep_pvr, femmesh_VIZ%mesh%node, femmesh_VIZ%mesh%ele,     &
+        call PVR_visualize(pvr_step1%istep_file,                        &
+     &      femmesh_VIZ%mesh%node, femmesh_VIZ%mesh%ele,                &
      &      elemesh_VIZ%surf, femmesh_VIZ%group, jac_VIZ_q, field_VIZ)
       end do
 !

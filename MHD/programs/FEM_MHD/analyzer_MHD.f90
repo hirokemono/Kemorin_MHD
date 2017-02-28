@@ -84,8 +84,6 @@
 !
       subroutine evolution_MHD
 !
-      integer(kind=kint ) :: istep_psf, istep_iso
-      integer(kind=kint ) :: istep_pvr, istep_fline
       integer(kind=kint ) :: visval
       integer(kind=kint ) :: retval
 !
@@ -95,16 +93,14 @@
 !
       do
 !  Time evolution
-        call FEM_analyze_MHD(istep_psf, istep_iso,                      &
-     &          istep_pvr, istep_fline, visval, retval)
+        call FEM_analyze_MHD(viz_step1, visval, retval)
 !
 !     ---------------------
 !
 !  Visualization
         if (visval.eq.0) then
           call start_eleps_time(4)
-          call visualize_surface(istep_psf, istep_iso,                  &
-     &        mesh1, ele_mesh1, nod_fld1)
+          call visualize_surface(viz_step1, mesh1, ele_mesh1, nod_fld1)
           call end_eleps_time(4)
         end if
 !

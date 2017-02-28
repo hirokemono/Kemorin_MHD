@@ -4,8 +4,8 @@
 !      modified by H. Matsui on June, 2005 
 !
 !      subroutine FEM_initialize_MHD
-!      subroutine FEM_analyze_MHD(istep_psf, istep_iso,                 &
-!     &          istep_pvr, istep_fline, visval, retval)
+!      subroutine FEM_analyze_MHD(viz_step, visval, retval)
+!!        type(VIZ_step_params), intent(inout) :: viz_step
 !      subroutine FEM_finalize_MHD
 !
       module FEM_analyzer_MHD
@@ -162,8 +162,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_MHD(istep_psf, istep_iso,                  &
-     &          istep_pvr, istep_fline, visval, retval)
+      subroutine FEM_analyze_MHD(viz_step, visval, retval)
 !
       use m_geometry_data_MHD
       use m_node_phys_data
@@ -199,8 +198,7 @@
       use check_deltat_by_prev_rms
 !
       integer(kind=kint ), intent(inout) :: visval
-      integer(kind=kint ), intent(inout) :: istep_psf, istep_iso
-      integer(kind=kint ), intent(inout) :: istep_pvr, istep_fline
+      type(VIZ_step_params), intent(inout) :: viz_step
 !
       integer(kind=kint ), intent(inout) :: retval
 !
@@ -320,8 +318,7 @@
           retval = 0
         end if
 !
-        call output_viz_file_4_flex(istep_psf, istep_iso,               &
-     &      istep_pvr, istep_fline, visval)
+        call output_viz_file_4_flex(viz_step, visval)
       else
         if      (i_step_number.eq.-1                                    &
      &       .and. total_max.gt.elapsed_time) then
@@ -336,8 +333,7 @@
           retval = 0
         end if
 !
-        call set_flag_to_visualization(istep_max_dt,                    &
-     &      istep_psf, istep_iso, istep_pvr, istep_fline, visval)
+        call set_flag_to_visualization(istep_max_dt, viz_step, visval)
       end if
 !
 !     --------------------- 

@@ -81,21 +81,17 @@
       use FEM_analyzer_snapshot
 !
       integer(kind=kint ) :: i_step, visval
-      integer(kind=kint ) :: istep_psf, istep_iso
-      integer(kind=kint ) :: istep_pvr, istep_fline
 !
 !
       do i_step = i_step_init, i_step_number
 !
 !  Read and generate fields
-        call FEM_analyze_filtered(i_step,                               &
-     &      istep_psf, istep_iso, istep_pvr, istep_fline, visval)
+        call FEM_analyze_filtered(i_step, viz_step1, visval)
 !
 !  Visualization
         if (visval.eq.0) then
           call visualize_all                                            &
-     &       (istep_psf, istep_iso, istep_pvr, istep_fline,             &
-     &        mesh1, group1, ele_mesh1, nod_fld1,                       &
+     &       (viz_step1, mesh1, group1, ele_mesh1, nod_fld1,            &
      &        next_tbl1%neib_ele, jac1_3d_q)
         end if
       end do

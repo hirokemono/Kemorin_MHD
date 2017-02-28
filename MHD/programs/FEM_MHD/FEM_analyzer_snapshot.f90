@@ -3,10 +3,10 @@
 !
 !      modified by H. Matsui on June, 2005 
 !
-!      subroutine FEM_initialize_snapshot
-!      subroutine FEM_analyze_snapshot(istep_psf, istep_iso,            &
-!     &          istep_pvr, istep_fline, visval)
-!      subroutine FEM_finalize_snapshot
+!!      subroutine FEM_initialize_snapshot
+!!      subroutine FEM_analyze_snapshot(i_step, viz_step, visval)
+!!        type(VIZ_step_params), intent(inout) :: viz_step
+!!      subroutine FEM_finalize_snapshot
 !
       module FEM_analyzer_snapshot
 !
@@ -58,8 +58,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_snapshot(i_step, istep_psf, istep_iso,     &
-     &          istep_pvr, istep_fline, visval)
+      subroutine FEM_analyze_snapshot(i_step, viz_step, visval)
 !
       use m_physical_property
       use m_geometry_data_MHD
@@ -96,8 +95,7 @@
 !
       integer(kind=kint ), intent(in) :: i_step
       integer(kind=kint ), intent(inout) :: visval
-      integer(kind=kint ), intent(inout) :: istep_psf, istep_iso
-      integer(kind=kint ), intent(inout) :: istep_pvr, istep_fline
+      type(VIZ_step_params), intent(inout) :: viz_step
 !
 !     ---- Load field data --- 
 !
@@ -198,11 +196,9 @@
 !     ----
 !
       if     (iflag_flexible_step .eq. iflag_flex_step) then
-        call output_viz_file_4_flex(istep_psf, istep_iso,               &
-     &      istep_pvr, istep_fline, visval)
+        call output_viz_file_4_flex(viz_step, visval)
       else
-        call set_flag_to_visualization(istep_max_dt,                    &
-     &      istep_psf, istep_iso, istep_pvr, istep_fline, visval)
+        call set_flag_to_visualization(istep_max_dt, viz_step, visval)
       end if
 !
       call end_eleps_time(4)

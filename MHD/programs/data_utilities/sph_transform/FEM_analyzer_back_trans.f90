@@ -6,8 +6,9 @@
 !
 !      subroutine FEM_initialize_back_trans                             &
 !     &         (ele_4_nod, jac_3d_l, jac_3d_q, ucd, m_ucd)
-!      subroutine FEM_analyze_back_trans(t_IO, ucd, i_step,             &
-!     &          istep_psf, istep_iso, istep_pvr, istep_fline, visval)
+!!      subroutine FEM_analyze_back_trans                               &
+!!     &         (t_IO, ucd, i_step, viz_step, visval)
+!!        type(VIZ_step_params), intent(inout) :: viz_step
 !
       module FEM_analyzer_back_trans
 !
@@ -88,8 +89,8 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_back_trans(t_IO, ucd, i_step,              &
-     &          istep_psf, istep_iso, istep_pvr, istep_fline, visval)
+      subroutine FEM_analyze_back_trans                                 &
+     &         (t_IO, ucd, i_step, viz_step, visval)
 !
       use m_t_step_parameter
       use t_time_data_IO
@@ -104,14 +105,12 @@
       type(ucd_data), intent(in) :: ucd
 !
       integer (kind =kint), intent(inout) :: visval
-      integer(kind = kint), intent(inout) :: istep_psf, istep_iso
-      integer(kind = kint), intent(inout) :: istep_pvr, istep_fline
+      type(VIZ_step_params), intent(inout) :: viz_step
 !
 !
 !*  ----------   Count steps for visualization
 !*
-      call set_flag_to_visualization(i_step,                            &
-     &      istep_psf, istep_iso, istep_pvr, istep_fline, visval)
+      call set_flag_to_visualization(i_step, viz_step, visval)
 !
       if(visval .eq. 0) then
         call nod_fields_send_recv                                       &

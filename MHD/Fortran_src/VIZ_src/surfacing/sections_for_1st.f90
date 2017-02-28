@@ -5,8 +5,9 @@
 !
 !!      subroutine init_visualize_surface(mesh, group, surf,            &
 !!     &          edge, edge_comm, nod_fld)
-!!      subroutine visualize_surface(istep_psf, istep_iso,              &
-!!     &          mesh, ele_mesh, nod_fld)
+!!      subroutine visualize_surface                                    &
+!!     &         (viz_step, mesh, ele_mesh, nod_fld)
+!!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(element_geometry), intent(in) :: ele_mesh
@@ -20,6 +21,7 @@
       use m_work_time
       use calypso_mpi
 !
+      use t_VIZ_step_parameter
       use t_mesh_data
       use t_comm_table
       use t_geometry_data
@@ -71,14 +73,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine visualize_surface(istep_psf, istep_iso,                &
-     &          mesh, ele_mesh, nod_fld)
+      subroutine visualize_surface                                      &
+     &         (viz_step, mesh, ele_mesh, nod_fld)
 !
       use m_cross_section
       use m_isosurface
 !
-      integer(kind = kint), intent(in) :: istep_psf, istep_iso
-!
+      type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_geometry), intent(in) :: mesh
       type(element_geometry), intent(in) :: ele_mesh
       type(phys_data), intent(in) :: nod_fld
@@ -86,11 +87,12 @@
 !
       call start_eleps_time(65)
       call SECTIONING_visualize                                         &
-     &   (istep_psf, ele_mesh%edge, nod_fld)
+     &   (viz_step%PSF_t%istep_file, ele_mesh%edge, nod_fld)
       call end_eleps_time(65)
 !
       call start_eleps_time(66)
-      call ISOSURF_visualize(istep_iso, mesh%node, mesh%ele,            &
+      call ISOSURF_visualize                                            &
+     &   (viz_step%ISO_t%istep_file, mesh%node, mesh%ele,               &
      &    ele_mesh%edge, ele_mesh%edge_comm, nod_fld)
       call end_eleps_time(66)
 !

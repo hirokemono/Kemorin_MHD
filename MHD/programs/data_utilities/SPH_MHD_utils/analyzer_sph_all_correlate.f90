@@ -109,8 +109,6 @@
       use SPH_analyzer_correle_all
 !
       integer(kind = kint) :: visval
-      integer(kind = kint) :: istep_psf, istep_iso
-      integer(kind = kint) :: istep_pvr, istep_fline
 !
 !     ---------------------
 !
@@ -144,8 +142,8 @@
      &      mesh1%node, nod_fld1)
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
-        call FEM_analyze_sph_MHD(i_step_MHD, mesh1, nod_fld1,           &
-     &      istep_psf, istep_iso, istep_pvr, istep_fline, visval)
+        call FEM_analyze_sph_MHD                                        &
+     &     (i_step_MHD, mesh1, nod_fld1, viz_step1, visval)
 !
         call end_eleps_time(4)
 !
@@ -155,8 +153,7 @@
           if (iflag_debug.eq.1) write(*,*) 'visualize_all'
           call start_eleps_time(12)
           call visualize_all                                            &
-     &       (istep_psf, istep_iso, istep_pvr, istep_fline,             &
-     &        mesh1, group1, ele_mesh1, nod_fld1,                       &
+     &       (viz_step1, mesh1, group1, ele_mesh1, nod_fld1,            &
      &        next_tbl1%neib_ele, jac1_3d_q)
           call end_eleps_time(12)
         end if

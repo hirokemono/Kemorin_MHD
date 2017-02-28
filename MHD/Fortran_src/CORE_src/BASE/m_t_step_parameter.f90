@@ -11,6 +11,8 @@
 !
 !
       use m_precision
+      use t_IO_step_parameter
+      use t_VIZ_step_parameter
 !
       implicit  none
 !
@@ -97,5 +99,10 @@
       real(kind=kreal)   :: delta_t_sgs_output
 !>      Increment of time step for evaluation of SGS model coefficients
       integer(kind=kint) :: i_step_sgs_coefs
+!
+!
+      type(VIZ_step_params), save :: viz_step1
+!
+!      pvr_step1%increment
 !
       end module  m_t_step_parameter

@@ -103,8 +103,6 @@
       use FEM_analyzer_sph_MHD
 !
       integer(kind = kint) :: visval
-      integer(kind = kint) :: istep_psf, istep_iso
-      integer(kind = kint) :: istep_pvr, istep_fline
 !
 !     ---------------------
 !
@@ -137,8 +135,8 @@
      &     (sph1%sph_params, sph1%sph_rtp, trns_WK1,                    &
      &      mesh1, iphys, nod_fld1)
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
-        call FEM_analyze_sph_MHD(i_step_MHD, mesh1, nod_fld1,           &
-     &      istep_psf, istep_iso, istep_pvr, istep_fline, visval)
+        call FEM_analyze_sph_MHD                                        &
+     &     (i_step_MHD, mesh1, nod_fld1, viz_step1, visval)
 !
         call end_eleps_time(4)
 !
@@ -148,8 +146,7 @@
           if (iflag_debug.eq.1) write(*,*) 'visualize_all'
           call start_eleps_time(12)
           call visualize_all                                            &
-     &       (istep_psf, istep_iso, istep_pvr, istep_fline,             &
-     &        mesh1, group1, ele_mesh1, nod_fld1,                       &
+     &       (viz_step1, mesh1, group1, ele_mesh1, nod_fld1,            &
      &        next_tbl1%neib_ele, jac1_3d_q)
           call end_eleps_time(12)
         end if
@@ -191,8 +188,6 @@
       use FEM_analyzer_sph_MHD
 !
       integer(kind = kint) :: visval
-      integer(kind = kint) :: istep_psf, istep_iso
-      integer(kind = kint) :: istep_pvr, istep_fline
 !
       real(kind = kreal) :: total_max, total_prev
 !
@@ -218,16 +213,15 @@
      &   (sph1%sph_params, sph1%sph_rtp, trns_WK1,                      &
      &    mesh1, iphys, nod_fld1)
       if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
-      call FEM_analyze_sph_MHD(i_step_MHD, mesh1, nod_fld1,             &
-     &    istep_psf, istep_iso, istep_pvr, istep_fline, visval)
+      call FEM_analyze_sph_MHD                                          &
+     &   (i_step_MHD, mesh1, nod_fld1, viz_step1, visval)
       call end_eleps_time(4)
 !
       if(visval .eq. 0) then
         if (iflag_debug.eq.1) write(*,*) 'visualize_all'
         call start_eleps_time(12)
         call visualize_all                                              &
-     &       (istep_psf, istep_iso, istep_pvr, istep_fline,             &
-     &        mesh1, group1, ele_mesh1, nod_fld1,                       &
+     &       (viz_step1, mesh1, group1, ele_mesh1, nod_fld1,            &
      &        next_tbl1%neib_ele, jac1_3d_q)
         call deallocate_pvr_data
         call end_eleps_time(12)
@@ -253,7 +247,7 @@
           call PVR_initialize                                           &
      &       (mesh1%node, mesh1%ele, ele_mesh1%surf, group1, nod_fld1)
           call PVR_visualize                                            &
-     &       (istep_pvr, mesh1%node, mesh1%ele,                         &
+     &       (viz_step1%PVR_t%istep_file, mesh1%node, mesh1%ele,        &
      &        ele_mesh1%surf, group1, jac1_3d_q, nod_fld1)
           call deallocate_pvr_data
           call end_eleps_time(12)

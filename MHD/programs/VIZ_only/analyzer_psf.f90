@@ -72,17 +72,17 @@
 !
       use m_t_step_parameter
 !
-      integer(kind=kint ) :: i_step, istep_psf, istep_iso
+      integer(kind=kint ) :: i_step
 !
 !
       do i_step = i_step_init, i_step_number
 !
 !  Load field data
-        call FEM_analyze_surface(i_step, istep_psf, istep_iso)
+        call FEM_analyze_surface(i_step, viz_step1)
 !
 !  Generate field lines
         call start_eleps_time(12)
-        call visualize_surface(istep_psf, istep_iso, femmesh_VIZ%mesh,  &
+        call visualize_surface(viz_step1, femmesh_VIZ%mesh,             &
      &      elemesh_VIZ, field_VIZ)
         call end_eleps_time(12)
       end do

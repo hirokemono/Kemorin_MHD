@@ -5,7 +5,8 @@
 !       Written by H. Matsui
 !
 !!      subroutine FEM_initialize_surface
-!!      subroutine FEM_analyze_surface(i_step, istep_pvr, iflag_viz)
+!!      subroutine FEM_analyze_surface(i_step, viz_step)
+!!        type(VIZ_step_params), intent(inout) :: viz_step
 !
       module FEM_analyzer_viz_surf
 !
@@ -43,22 +44,22 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_surface(i_step, istep_psf, istep_iso)
+      subroutine FEM_analyze_surface(i_step, viz_step)
 !
       use set_exit_flag_4_visualizer
 !
       integer (kind =kint), intent(in) :: i_step
-      integer (kind =kint), intent(inout) :: istep_psf, istep_iso
+      type(VIZ_step_params), intent(inout) :: viz_step
 !
       integer (kind =kint) :: visval, iflag
 !
 !
       call set_viz_file_step(i_step, i_step_output_psf,                 &
-     &    visval, istep_psf)
+     &    visval, viz_step%PSF_t%istep_file)
       call set_viz_file_step(i_step, i_step_output_iso,                 &
-     &    visval, istep_iso)
+     &    visval, viz_step%ISO_t%istep_file)
 !
-      iflag = istep_psf * istep_psf
+      iflag = viz_step%PSF_t%istep_file * viz_step%ISO_t%istep_file
       call set_field_data_4_VIZ(iflag, i_step)
 !
       end subroutine FEM_analyze_surface

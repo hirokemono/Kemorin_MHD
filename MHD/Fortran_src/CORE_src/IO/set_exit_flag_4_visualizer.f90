@@ -8,9 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine set_output_flag_4_viz(i_step, iflag_set_field)
-!!      subroutine set_flag_to_visualization(i_step,                    &
-!!     &          istep_psf, istep_iso, istep_pvr, istep_fline, visval)
-!!      subroutine set_flag_to_visualization(count, visval)
+!!      subroutine set_flag_to_visualization(i_step, viz_step, visval)
+!!        type(VIZ_step_params), intent(inout) :: viz_step
 !!
 !!      subroutine set_output_flag(i_flag, i_step, interval)
 !!      subroutine set_viz_file_step(istep_ref, i_step_viz, iviz, i_cnt)
@@ -51,27 +50,27 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_flag_to_visualization(i_step,                      &
-     &          istep_psf, istep_iso, istep_pvr, istep_fline, visval)
+      subroutine set_flag_to_visualization(i_step, viz_step, visval)
 !
       use m_t_step_parameter
+      use t_IO_step_parameter
 !
       integer (kind =kint), intent(in) :: i_step
+!
+      type(VIZ_step_params), intent(inout) :: viz_step
       integer(kind=kint ), intent(inout) :: visval
-      integer(kind=kint ), intent(inout) :: istep_psf, istep_iso
-      integer(kind=kint ), intent(inout) :: istep_pvr, istep_fline
 !
       integer(kind=kint ) :: ivis_pvr, ivis_psf, ivis_iso, ivis_fline
 !
 !
       call set_viz_file_step(i_step, i_step_output_psf,                 &
-     &    ivis_psf, istep_psf)
+     &    ivis_psf, viz_step%PSF_t%istep_file)
       call set_viz_file_step(i_step, i_step_output_iso,                 &
-     &    ivis_iso, istep_iso)
+     &    ivis_iso, viz_step%ISO_t%istep_file)
       call set_viz_file_step(i_step, i_step_output_pvr,                 &
-     &    ivis_pvr, istep_pvr)
+     &    ivis_pvr, viz_step%PVR_t%istep_file)
       call set_viz_file_step(i_step, i_step_output_fline,               &
-     &    ivis_fline, istep_fline)
+     &    ivis_fline, viz_step%FLINE_t%istep_file)
 !
       visval = ivis_psf * ivis_iso * ivis_pvr * ivis_fline
 !

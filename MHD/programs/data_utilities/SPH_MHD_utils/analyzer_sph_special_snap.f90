@@ -45,8 +45,6 @@
       use sections_for_1st
 !
       integer(kind = kint) :: visval
-      integer(kind = kint) :: istep_psf, istep_iso
-      integer(kind = kint) :: istep_pvr, istep_fline
 !
 !     ---------------------
 !
@@ -78,8 +76,8 @@
      &     write(*,*) 'SPH_to_FEM_bridge_special_snap'
         call SPH_to_FEM_bridge_special_snap
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
-        call FEM_analyze_sph_MHD(i_step_MHD, mesh1, nod_fld1,           &
-     &      istep_psf, istep_iso, istep_pvr, istep_fline, visval)
+        call FEM_analyze_sph_MHD                                        &
+     &     (i_step_MHD, mesh1, nod_fld1, viz_step1, visval)
 !
         call end_eleps_time(4)
 !
@@ -88,8 +86,7 @@
         if(visval .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'visualize_surface'
           call start_eleps_time(12)
-          call visualize_surface(istep_psf, istep_iso,                  &
-     &        mesh1, ele_mesh1, nod_fld1)
+          call visualize_surface(viz_step1, mesh1, ele_mesh1, nod_fld1)
           call end_eleps_time(12)
         end if
         call end_eleps_time(1)

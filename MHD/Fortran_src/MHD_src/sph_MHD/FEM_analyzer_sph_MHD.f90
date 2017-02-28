@@ -16,10 +16,11 @@
 !!        type(phys_address), intent(inout) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(maximum_informations), intent(inout) :: range
-!!      subroutine FEM_analyze_sph_MHD(i_step, mesh, nod_fld,           &
-!!     &          istep_psf, istep_iso, istep_pvr, istep_fline, visval)
+!!      subroutine FEM_analyze_sph_MHD                                  &
+!!     &         (i_step, mesh, nod_fld, viz_step, visval)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(VIZ_step_params), intent(inout) :: viz_step
 !!      subroutine FEM_finalize
 !!
 !!      subroutine SPH_to_FEM_bridge_MHD                                &
@@ -34,10 +35,6 @@
 !!@endverbatim
 !!
 !!@n @param  i_step       Current time step
-!!@n @param  istep_psf    Time step increment for cross sectioning
-!!@n @param  istep_iso    Time step increment for iso surfaces
-!!@n @param  istep_pvr    Time step increment for volume rendering
-!!@n @param  istep_fline  Time step increment for field line generation
 !!@n @param  visval       Return flag to call visualization routines
 !
       module FEM_analyzer_sph_MHD
@@ -125,8 +122,8 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_sph_MHD(i_step, mesh, nod_fld,             &
-     &          istep_psf, istep_iso, istep_pvr, istep_fline, visval)
+      subroutine FEM_analyze_sph_MHD                                    &
+     &         (i_step, mesh, nod_fld, viz_step, visval)
 !
       use set_exit_flag_4_visualizer
       use nod_phys_send_recv
@@ -137,8 +134,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
       integer (kind =kint), intent(inout) :: visval
-      integer(kind = kint), intent(inout) :: istep_psf, istep_iso
-      integer(kind = kint), intent(inout) :: istep_pvr, istep_fline
+      type(VIZ_step_params), intent(inout) :: viz_step
 !
       integer (kind =kint) :: iflag
 !
@@ -150,8 +146,7 @@
 !
 !*  ----------   Count steps for visualization
 !*
-      call set_flag_to_visualization(i_step,                            &
-     &   istep_psf, istep_iso, istep_pvr, istep_fline, visval)
+      call set_flag_to_visualization(i_step, viz_step, visval)
 !*
 !
 !*  ----------- Data communication  --------------

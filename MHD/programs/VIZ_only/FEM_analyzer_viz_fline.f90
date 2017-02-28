@@ -4,8 +4,9 @@
 !
 !       Written by H. Matsui
 !
-!      subroutine FEM_initialize_fline
-!      subroutine FEM_analyze_fline(i_step, istep_fline)
+!!      subroutine FEM_initialize_fline
+!!      subroutine FEM_analyze_fline(i_step, fline_step)
+!!        type(IO_step_param), intent(inout) :: fline_step
 !
       module FEM_analyzer_viz_fline
 !
@@ -15,6 +16,7 @@
       use calypso_mpi
       use m_t_step_parameter
       use m_visualization
+      use t_IO_step_parameter
 !
       implicit none
 !
@@ -42,19 +44,19 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_fline(i_step, istep_fline)
+      subroutine FEM_analyze_fline(i_step, fline_step)
 !
       use set_exit_flag_4_visualizer
 !
       integer (kind =kint), intent(in) :: i_step
-      integer (kind =kint), intent(inout) :: istep_fline
+      type(IO_step_param), intent(inout) :: fline_step
 !
       integer (kind =kint) :: visval
 !
 !
       call set_viz_file_step(i_step, i_step_output_fline,               &
-     &    visval, istep_fline)
-      call set_field_data_4_VIZ(istep_fline, i_step)
+     &    visval, fline_step%istep_file)
+      call set_field_data_4_VIZ(fline_step%istep_file, i_step)
 !
       end subroutine FEM_analyze_fline
 !

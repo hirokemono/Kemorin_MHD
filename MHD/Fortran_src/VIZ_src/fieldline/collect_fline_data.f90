@@ -26,14 +26,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_collect_fline_data(istep_psf, i_fln)
+      subroutine s_collect_fline_data(istep_fline, i_fln)
 !
       use m_control_params_4_fline
       use m_field_file_format
       use set_ucd_file_names
       use set_parallel_file_name
 !
-      integer(kind = kint), intent(in) :: istep_psf, i_fln
+      integer(kind = kint), intent(in) :: istep_fline, i_fln
 !
       character(len=kchara) :: ftmp_1, file_name
 !
@@ -57,14 +57,14 @@
       if(my_rank .eq. 0) then
         if(id_fline_file_type(i_fln) .eq. 0) then
           call set_single_ucd_file_name(fline_header(i_fln), iflag_ucd, &
-     &        istep_psf, file_name)
+     &        istep_fline, file_name)
           write(*,*) 'output ', trim(file_name)
           open(id_fline_data_code, file=file_name)
 !
           call write_global_fline(id_fline_data_code)
           close(id_fline_data_code)
         else
-          call add_int_suffix(istep_psf, fline_header(i_fln), ftmp_1)
+          call add_int_suffix(istep_fline, fline_header(i_fln), ftmp_1)
           call add_dx_extension(ftmp_1, file_name)
           write(*,*) 'output ', trim(file_name)
           open(id_fline_data_code, file=file_name)

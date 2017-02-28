@@ -93,8 +93,6 @@
       subroutine evolution_voviz_sph_zm_snap
 !
       integer(kind = kint) :: visval
-      integer(kind = kint) :: istep_psf, istep_iso
-      integer(kind = kint) :: istep_pvr, istep_fline
 !
 !     ---------------------
 !
@@ -125,8 +123,8 @@
         if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_zm_snap'
         call SPH_to_FEM_bridge_zm_snap
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
-        call FEM_analyze_sph_MHD(i_step_MHD, mesh1, nod_fld1,           &
-     &      istep_psf, istep_iso, istep_pvr, istep_fline, visval)
+        call FEM_analyze_sph_MHD                                        &
+     &     (i_step_MHD, mesh1, nod_fld1, viz_step1, visval)
 !
         call end_eleps_time(4)
         call end_eleps_time(1)

@@ -55,17 +55,18 @@
 !
       use m_t_step_parameter
 !
-      integer(kind=kint ) :: i_step, istep_fline
+      integer(kind=kint ) :: i_step
+      type(IO_step_param) :: fline_step1
 !
 !
       do i_step = i_step_init, i_step_number
 !
 !  Load field data
-        call FEM_analyze_fline(i_step, istep_fline)
+        call FEM_analyze_fline(i_step, fline_step1)
 !
 !  Generate field lines
-        call FLINE_visualize                                            &
-     &     (istep_fline, femmesh_VIZ%mesh%node, femmesh_VIZ%mesh%ele,   &
+        call FLINE_visualize(fline_step1%istep_file,                    &
+     &      femmesh_VIZ%mesh%node, femmesh_VIZ%mesh%ele,                &
      &      elemesh_VIZ%surf, femmesh_VIZ%group%ele_grp,                &
      &      ele_4_nod_VIZ, field_VIZ, femmesh_VIZ%mesh%nod_comm)
       end do

@@ -20,10 +20,6 @@
 !!@endverbatim
 !!
 !!@n @param  i_step       Current time step
-!!@n @param  istep_psf    Time step increment for cross sectioning
-!!@n @param  istep_iso    Time step increment for iso surfaces
-!!@n @param  istep_pvr    Time step increment for volume rendering
-!!@n @param  istep_fline  Time step increment for field line generation
 !!@n @param  visval       Return flag to call visualization routines
 !
       module FEM_analyzer_sph_MHD_w_viz

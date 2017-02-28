@@ -103,8 +103,6 @@
       use coordinate_convert_4_sph
 !
       integer(kind=kint ) :: visval, i_step
-      integer(kind=kint ) :: istep_psf, istep_iso
-      integer(kind=kint ) :: istep_pvr, istep_fline
 !
 !
       do i_step = i_step_init, i_step_number
@@ -121,11 +119,10 @@
 !
         call set_ucd_file_prefix(zonal_udt_head, ucd_SPH_TRNS)
         call FEM_analyze_back_trans(time_IO_TRNS, ucd_SPH_TRNS, i_step, &
-     &      istep_psf, istep_iso, istep_pvr, istep_fline, visval)
+     &      viz_step1, visval)
 !
         if(visval .eq. 0) then
-          call visualize_all                                            &
-     &       (istep_psf, istep_iso, istep_pvr, istep_fline,             &
+          call visualize_all(viz_step1,                                 &
      &        femmesh_STR%mesh, femmesh_STR%group, elemesh_STR,         &
      &        field_STR, ele_4_nod_SPH_TRANS, jac_STR_q)
         end if

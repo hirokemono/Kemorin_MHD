@@ -98,8 +98,6 @@
       use m_node_phys_data
 !
       integer(kind = kint) :: visval
-      integer(kind = kint) :: istep_psf, istep_iso
-      integer(kind = kint) :: istep_pvr, istep_fline
 !
 !     ---------------------
 !

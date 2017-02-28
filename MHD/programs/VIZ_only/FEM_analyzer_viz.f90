@@ -5,8 +5,8 @@
 !       Written by H. Matsui
 !
 !      subroutine FEM_initialize_vizs
-!      subroutine FEM_analyze_vizs(i_step,                              &
-!     &          istep_psf, istep_iso, istep_pvr, istep_fline, visval)
+!      subroutine FEM_analyze_vizs(i_step, viz_step, visval)
+!!      type(VIZ_step_params), intent(inout) :: viz_step
 !
       module FEM_analyzer_viz
 !
@@ -53,20 +53,18 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_vizs(i_step,                               &
-     &          istep_psf, istep_iso, istep_pvr, istep_fline, visval)
+      subroutine FEM_analyze_vizs(i_step, viz_step, visval)
 !
       use t_ucd_data
+      use t_VIZ_step_parameter
       use set_exit_flag_4_visualizer
 !
       integer (kind =kint), intent(in) :: i_step
       integer(kind=kint ), intent(inout) :: visval
-      integer(kind=kint ), intent(inout) :: istep_psf, istep_iso
-      integer(kind=kint ), intent(inout) :: istep_pvr, istep_fline
+      type(VIZ_step_params), intent(inout) :: viz_step
 !
 !
-      call set_flag_to_visualization(i_step,                            &
-     &        istep_psf, istep_iso, istep_pvr, istep_fline, visval)
+      call set_flag_to_visualization(i_step, viz_step, visval)
       call set_field_data_4_VIZ(visval, i_step)
 !
       end subroutine FEM_analyze_vizs
