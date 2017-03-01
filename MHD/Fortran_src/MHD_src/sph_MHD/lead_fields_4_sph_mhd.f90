@@ -86,17 +86,14 @@
       integer (kind =kint) :: iflag
 !
 !
-      call set_lead_physical_values_flag(iflag)
+      if(lead_field_data_flag() .gt. 0) return
 !
-      if ( (iflag*mod(istep_max_dt,i_step_output_rst)) .eq.0 ) then
         if(fl_prop%iflag_scheme .gt. id_no_evolution) then
           call pressure_4_sph_mhd                                       &
      &       (SGS_param, sph%sph_rj, fl_prop1, r_2nd,                   &
      &        trans_p%leg, band_p_poisson, ipol, rj_fld)
         end if
-      end if
 !
-      if(iflag .gt. 0) return
 !
       call swap_phi_from_trans(WK%trns_MHD%ncomp_rj_2_rtp,              &
      &    sph%sph_rtp%nnod_rtp, sph%sph_rtp%nidx_rtp,                   &

@@ -8,7 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine set_output_flag_4_viz(i_step, iflag_set_field)
-!!      subroutine set_flag_to_visualization(i_step, viz_step, visval)
+!!      integer(kind = kint) function viz_file_step_4_fix               &
+!!     &                            (i_step, viz_step)
 !!        type(VIZ_step_params), intent(inout) :: viz_step
 !!
 !!      subroutine set_output_flag(i_flag, i_step, interval)
@@ -50,7 +51,8 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_flag_to_visualization(i_step, viz_step, visval)
+      integer(kind = kint) function viz_file_step_4_fix                 &
+     &                            (i_step, viz_step)
 !
       use m_t_step_parameter
       use t_IO_step_parameter
@@ -58,7 +60,6 @@
       integer (kind =kint), intent(in) :: i_step
 !
       type(VIZ_step_params), intent(inout) :: viz_step
-      integer(kind=kint ), intent(inout) :: visval
 !
       integer(kind=kint ) :: ivis_pvr, ivis_psf, ivis_iso, ivis_fline
 !
@@ -72,9 +73,9 @@
       call set_viz_file_step(i_step, i_step_output_fline,               &
      &    ivis_fline, viz_step%FLINE_t%istep_file)
 !
-      visval = ivis_psf * ivis_iso * ivis_pvr * ivis_fline
+      viz_file_step_4_fix = ivis_psf * ivis_iso * ivis_pvr * ivis_fline
 !
-      end subroutine set_flag_to_visualization
+      end function viz_file_step_4_fix
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

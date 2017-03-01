@@ -136,17 +136,14 @@
       integer (kind =kint), intent(inout) :: visval
       type(VIZ_step_params), intent(inout) :: viz_step
 !
-      integer (kind =kint) :: iflag
-!
 !
       visval = 1
-      call set_lead_physical_values_flag(iflag)
 !
-      if(iflag .ne. 0) return
+      if(lead_field_data_flag() .ne. 0) return
 !
 !*  ----------   Count steps for visualization
 !*
-      call set_flag_to_visualization(i_step, viz_step, visval)
+      visval = viz_file_step_4_fix(i_step, viz_step)
 !*
 !
 !*  ----------- Data communication  --------------
@@ -187,11 +184,8 @@
 !
       type(phys_data), intent(inout) :: nod_fld
 !
-      integer (kind =kint) :: iflag
 !
-!
-      call set_lead_physical_values_flag(iflag)
-      if(iflag .ne. 0) return
+      if(lead_field_data_flag() .ne. 0) return
 !*
 !*  -----------  data transfer to FEM array --------------
 !*

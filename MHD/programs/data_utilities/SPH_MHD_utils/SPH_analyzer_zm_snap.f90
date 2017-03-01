@@ -120,11 +120,8 @@
       use copy_MHD_4_sph_trans
       use sph_rtp_zonal_rms_data
 !
-      integer (kind =kint) :: iflag
 !
-!
-      call set_lead_physical_values_flag(iflag)
-      if(iflag .ne. 0) return
+      if(lead_field_data_flag() .ne. 0) return
 !*
 !*  -----------  data transfer to FEM array --------------
 !*

@@ -61,6 +61,7 @@
       use construct_matrices
 !
       use chenge_step_4_dynamic
+      use output_viz_file_control
 !
 !   matrix assembling
 !
@@ -121,15 +122,17 @@
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'lead_fields_by_FEM'
-      call lead_fields_by_FEM                                           &
-     &   (FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1,                 &
-     &    MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,       &
-     &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
-     &    FEM1_elen, icomp_sgs, icomp_diff, ifld_diff, iphys_elediff,   &
-     &    sgs_coefs, sgs_coefs_nod, filtering1, wide_filtering,         &
-     &    layer_tbl1, m1_lump, wk_cor1, wk_lsq1, wk_diff1, wk_filter1,  &
-     &    mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,                  &
-     &    nod_fld1, fld_ele1, diff_coefs)
+      if (lead_field_data_flag() .eq.0) then
+        call lead_fields_by_FEM                                         &
+     &    (FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1,                &
+     &     MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,      &
+     &     jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,            &
+     &     FEM1_elen, icomp_sgs, icomp_diff, ifld_diff, iphys_elediff,  &
+     &     sgs_coefs, sgs_coefs_nod, filtering1, wide_filtering,        &
+     &     layer_tbl1, m1_lump, wk_cor1, wk_lsq1, wk_diff1, wk_filter1, &
+     &     mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,                 &
+     &     nod_fld1, fld_ele1, diff_coefs)
+      end if
 !
 !     ---------------------
 !
@@ -191,6 +194,7 @@
 !
       use init_iccg_matrices
       use check_deltat_by_prev_rms
+      use output_viz_file_control
 !
       integer(kind=kint ), intent(inout) :: visval
       type(VIZ_step_params), intent(inout) :: viz_step
@@ -245,15 +249,18 @@
 !     ========  Data output
 !
       if(istep_flex_to_max .eq. 0) then
-        call lead_fields_by_FEM                                         &
-     &    (FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1,                &
-     &     MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,      &
-     &     jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,            &
-     &     FEM1_elen, icomp_sgs, icomp_diff, ifld_diff, iphys_elediff,  &
-     &     sgs_coefs, sgs_coefs_nod, filtering1, wide_filtering,        &
-     &     layer_tbl1, m1_lump, wk_cor1, wk_lsq1, wk_diff1, wk_filter1, &
-     &     mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,                 &
-     &     nod_fld1, fld_ele1, diff_coefs)
+        if (lead_field_data_flag() .eq.0) then
+          call lead_fields_by_FEM                                       &
+     &       (FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1,             &
+     &        MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,   &
+     &        jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,         &
+     &        FEM1_elen, icomp_sgs, icomp_diff, ifld_diff,              &
+     &        iphys_elediff, sgs_coefs, sgs_coefs_nod,                  &
+     &        filtering1, wide_filtering, layer_tbl1, m1_lump,          &
+     &        wk_cor1, wk_lsq1, wk_diff1, wk_filter1,                   &
+     &        mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,              &
+     &        nod_fld1, fld_ele1, diff_coefs)
+        end if
 !
 !     -----Output monitor date
 !
@@ -312,7 +319,7 @@
           retval = 0
         end if
 !
-        call output_viz_file_4_flex(viz_step, visval)
+        visval = viz_file_step_4_flex(viz_step)
       else
         if      (i_step_number.eq.-1                                    &
      &       .and. total_max.gt.elapsed_time) then
@@ -327,7 +334,7 @@
           retval = 0
         end if
 !
-        call set_flag_to_visualization(istep_max_dt, viz_step, visval)
+        visval = viz_file_step_4_fix(istep_max_dt, viz_step)
       end if
 !
 !     --------------------- 

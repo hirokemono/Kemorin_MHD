@@ -64,7 +64,7 @@
       type(VIZ_step_params), intent(inout) :: viz_step
 !
 !
-      call set_flag_to_visualization(i_step, viz_step, visval)
+      visval = viz_file_step_4_fix(i_step, viz_step)
       call set_field_data_4_VIZ(visval, i_step)
 !
       end subroutine FEM_analyze_vizs

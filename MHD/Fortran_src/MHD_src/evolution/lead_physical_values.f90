@@ -113,7 +113,6 @@
       use itp_potential_on_edge
       use MHD_field_by_rotation
       use cal_helicities
-      use output_viz_file_control
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -156,43 +155,39 @@
       integer (kind =kint) :: iflag
 !
 !
-      call set_lead_physical_values_flag(iflag)
+      if (iflag_debug.gt.0) write(*,*) 'cal_potential_on_edge'
+      call cal_potential_on_edge                                        &
+     &   (mesh%node, mesh%ele, ele_mesh%edge, iphys, nod_fld)
 !
-      if ( iflag.eq.0 ) then
-        if (iflag_debug.gt.0) write(*,*) 'cal_potential_on_edge'
-        call cal_potential_on_edge                                      &
-     &     (mesh%node, mesh%ele, ele_mesh%edge, iphys, nod_fld)
+      if (iflag_debug.gt.0) write(*,*) 'update_fields'
+      call update_fields(FEM_prm, SGS_par, mesh, group,                 &
+     &    ele_mesh, MHD_mesh, nod_bcs, surf_bcs, iphys, iphys_ele,      &
+     &    jac_3d_q, jac_3d_l, jac_sf_grp, rhs_tbl, FEM_elens,           &
+     &    ifld_diff, icomp_diff, iphys_elediff,                         &
+     &    filtering, wide_filtering, layer_tbl, m_lump,                 &
+     &    wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,       &
+     &    surf_wk, f_l, f_nl, nod_fld, ele_fld, diff_coefs)
 !
-        if (iflag_debug.gt.0) write(*,*) 'update_fields'
-        call update_fields(FEM_prm, SGS_par, mesh, group,               &
-     &      ele_mesh, MHD_mesh, nod_bcs, surf_bcs, iphys, iphys_ele,    &
-     &      jac_3d_q, jac_3d_l, jac_sf_grp, rhs_tbl, FEM_elens,         &
-     &      ifld_diff, icomp_diff, iphys_elediff,                       &
-     &      filtering, wide_filtering, layer_tbl, m_lump,               &
-     &      wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,     &
-     &      surf_wk, f_l, f_nl, nod_fld, ele_fld, diff_coefs)
+      call cal_field_by_rotation                                        &
+     &   (FEM_prm, SGS_par%model_p, SGS_par%commute_p,                  &
+     &    mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,            &
+     &    MHD_mesh%fluid, MHD_mesh%conduct, group%surf_grp,             &
+     &    cd_prop1, nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,       &
+     &    jac_3d_q, jac_sf_grp, rhs_tbl, FEM_elens,                     &
+     &    ifld_diff, diff_coefs, m_lump, mhd_fem_wk, fem_wk, surf_wk,   &
+     &    f_l, f_nl, nod_fld)
 !
-        call cal_field_by_rotation                                      &
-     &     (FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
-     &      mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &
-     &      MHD_mesh%fluid, MHD_mesh%conduct, group%surf_grp,           &
-     &      cd_prop1, nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,     &
-     &      jac_3d_q, jac_sf_grp, rhs_tbl, FEM_elens,                   &
-     &      ifld_diff, diff_coefs, m_lump, mhd_fem_wk, fem_wk, surf_wk, &
-     &      f_l, f_nl, nod_fld)
+      if (iflag_debug.gt.0) write(*,*) 'cal_helicity'
+      call cal_helicity(iphys, nod_fld)
 !
-        if (iflag_debug.gt.0) write(*,*) 'cal_helicity'
-        call cal_helicity(iphys, nod_fld)
-!
-        if (iflag_debug.gt.0) write(*,*) 'cal_energy_fluxes'
-        call cal_energy_fluxes(FEM_prm, SGS_par,                        &
-     &      mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs, iphys,  &
-     &      iphys_ele, ak_MHD, jac_3d_q, jac_sf_grp, rhs_tbl,           &
-     &      FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,             &
-     &      sgs_coefs, sgs_coefs_nod, diff_coefs, filtering, m_lump,    &
-     &      wk_filter, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,          &
-     &      nod_fld, ele_fld)
-      end if
+      if (iflag_debug.gt.0) write(*,*) 'cal_energy_fluxes'
+      call cal_energy_fluxes(FEM_prm, SGS_par,                          &
+     &    mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs, iphys,    &
+     &    iphys_ele, ak_MHD, jac_3d_q, jac_sf_grp, rhs_tbl,             &
+     &    FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,               &
+     &    sgs_coefs, sgs_coefs_nod, diff_coefs, filtering, m_lump,      &
+     &    wk_filter, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,            &
+     &    nod_fld, ele_fld)
 !
       end subroutine lead_fields_by_FEM
 !

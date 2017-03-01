@@ -110,7 +110,7 @@
 !
 !*  ----------   Count steps for visualization
 !*
-      call set_flag_to_visualization(i_step, viz_step, visval)
+      visval = viz_file_step_4_fix(i_step, viz_step)
 !
       if(visval .eq. 0) then
         call nod_fields_send_recv                                       &

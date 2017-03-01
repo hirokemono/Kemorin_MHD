@@ -92,6 +92,7 @@
       use set_exit_flag_4_visualizer
 !
       use check_deltat_by_prev_rms
+      use output_viz_file_control
 !
       integer(kind=kint ), intent(in) :: i_step
       integer(kind=kint ), intent(inout) :: visval
@@ -161,15 +162,17 @@
 !
 !     ========  Data output
 !
-      call lead_fields_by_FEM                                           &
-     &   (FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1,                 &
-     &    MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,       &
-     &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
-     &    FEM1_elen, icomp_sgs, icomp_diff, ifld_diff, iphys_elediff,   &
-     &    sgs_coefs, sgs_coefs_nod, filtering1, wide_filtering,         &
-     &    layer_tbl1, m1_lump, wk_cor1, wk_lsq1, wk_diff1, wk_filter1,  &
-     &    mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,                  &
-     &    nod_fld1, fld_ele1, diff_coefs)
+      if (lead_field_data_flag() .eq.0) then
+        call lead_fields_by_FEM                                         &
+     &    (FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1,                &
+     &     MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,      &
+     &     jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,            &
+     &     FEM1_elen, icomp_sgs, icomp_diff, ifld_diff, iphys_elediff,  &
+     &     sgs_coefs, sgs_coefs_nod, filtering1, wide_filtering,        &
+     &     layer_tbl1, m1_lump, wk_cor1, wk_lsq1, wk_diff1, wk_filter1, &
+     &     mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,                 &
+     &     nod_fld1, fld_ele1, diff_coefs)
+      end if
 !
 !     -----Output monitor date
 !
@@ -196,9 +199,9 @@
 !     ----
 !
       if     (iflag_flexible_step .eq. iflag_flex_step) then
-        call output_viz_file_4_flex(viz_step, visval)
+        visval = viz_file_step_4_flex(viz_step)
       else
-        call set_flag_to_visualization(istep_max_dt, viz_step, visval)
+        visval = viz_file_step_4_fix(istep_max_dt, viz_step)
       end if
 !
       call end_eleps_time(4)

@@ -4,8 +4,8 @@
 !     programmed by H. Matsui
 !     modified by H. Matsui on Aug., 2007
 !
-!!      subroutine set_lead_physical_values_flag(iflag_set_field)
-!!      subroutine output_viz_file_4_flex(viz_step, visval)
+!!      integer(kind = kint) function lead_field_data_flag()
+!!      integer(kind = kint) function viz_file_step_4_flex(viz_step)
 !!        integer(kind=kint ), intent(inout) :: visval
 !
       module output_viz_file_control
@@ -26,18 +26,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_lead_physical_values_flag(iflag_set_field)
+      integer(kind = kint) function lead_field_data_flag()
 !
       use set_exit_flag_4_visualizer
 !
-      integer (kind =kint), intent(inout) :: iflag_set_field
-!
-      integer (kind =kint) :: i_monitor, i_bulk, i_udt, i_coef
+      integer (kind =kint) :: i_monitor, i_bulk, i_udt, i_coef, irst
 !
 !
-      iflag_set_field = 1
-      call set_output_flag_4_viz(istep_max_dt, iflag_set_field)
+      lead_field_data_flag = 1
+      call set_output_flag_4_viz(istep_max_dt, lead_field_data_flag)
 !
+      call set_output_flag(irst, istep_max_dt, i_step_output_rst)
       call set_output_flag(i_bulk, istep_max_dt, i_step_check)
       call set_output_flag(i_udt, istep_max_dt, i_step_output_ucd)
       call set_output_flag(i_monitor, istep_max_dt,                     &
@@ -45,26 +44,26 @@
 !
       call set_output_flag(i_coef, istep_max_dt, i_step_sgs_output)
 !
-      iflag_set_field = iflag_set_field * i_udt * i_monitor * i_bulk
-      iflag_set_field = iflag_set_field * i_coef
+      lead_field_data_flag = lead_field_data_flag                       &
+     &                     * irst * i_udt * i_monitor * i_bulk * i_coef
 !
       if (iflag_debug.eq.1) then
+        write(*,*) 'irst: ', i_udt
         write(*,*) 'i_udt: ', i_udt
         write(*,*) 'i_monitor: ', i_monitor
         write(*,*) 'i_bulk: ', i_bulk
         write(*,*) 'i_coef: ', i_coef
       end if
 !
-      end subroutine set_lead_physical_values_flag
+      end function lead_field_data_flag
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine output_viz_file_4_flex(viz_step, visval)
+      integer(kind = kint) function viz_file_step_4_flex(viz_step)
 !
       use m_t_int_parameter
 !
-      integer(kind=kint ), intent(inout) :: visval
       type(VIZ_step_params), intent(inout) :: viz_step
 !
       integer(kind=kint ) :: ivis_pvr, ivis_psf, ivis_iso, ivis_fline
@@ -79,9 +78,9 @@
       call set_viz_flex_file_step(time, dt, delta_t_output_fline,       &
      &    ivis_fline, viz_step%FLINE_t%istep_file)
 !
-      visval = ivis_psf * ivis_iso
+      viz_file_step_4_flex = ivis_psf * ivis_iso
 !
-      end subroutine output_viz_file_4_flex
+      end function viz_file_step_4_flex
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
