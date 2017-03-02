@@ -108,12 +108,10 @@
       type(node_data), intent(in) :: node
       type(time_params_IO), intent(inout) :: t_IO
 !
-      integer(kind = kint) :: index_rst
 !
-!
-      index_rst = i_step_init / i_step_output_rst
+      rst_step1%istep_file = i_step_init / rst_step1%increment
       call sel_read_alloc_FEM_fld_head                                  &
-     &   (nprocs, my_rank, index_rst, t_IO, fem_fst_IO)
+     &   (nprocs, my_rank, rst_step1%istep_file, t_IO, fem_fst_IO)
 !
       fem_fst_IO%nnod_IO = node%numnod
       call alloc_phys_data_IO(fem_fst_IO)
@@ -138,16 +136,14 @@
 !
       type(phys_data), intent(inout) :: nod_fld
 !
-      integer(kind = kint) :: index_rst
 !
+      if (output_flag(istep_max_dt,rst_step1%increment) .ne. 0) return
 !
-      if ( mod(istep_max_dt,i_step_output_rst) .ne. 0 ) return
-!
-      index_rst = istep_max_dt / i_step_output_rst
+      rst_step1%istep_file = istep_max_dt / rst_step1%increment
       call output_restart_files                                         &
-     &   (index_rst, node, nod_comm, iphys, nod_fld)
+     &   (rst_step1%istep_file, node, nod_comm, iphys, nod_fld)
       call output_model_coef_file                                       &
-     &   (index_rst, SGS_par%model_p, SGS_par%commute_p,                &
+     &   (rst_step1%istep_file, SGS_par%model_p, SGS_par%commute_p,     &
      &    wk_sgs, wk_diff)
 !
       end subroutine output_MHD_restart_file_ctl
@@ -294,14 +290,12 @@
       type(time_params_IO), intent(inout) :: t_IO
       type(phys_data), intent(inout) :: nod_fld
 !
-      integer(kind = kint) :: index_rst
 !
-!
-      if ( mod(istep_max_dt,i_step_output_rst) .ne. 0) return
-      index_rst = istep_max_dt / i_step_output_rst
+      if (output_flag(istep_max_dt,rst_step1%increment) .ne. 0) return
+      rst_step1%istep_file = istep_max_dt / rst_step1%increment
 !
       call sel_read_step_FEM_field_file                                 &
-     &    (nprocs, my_rank, index_rst, t_IO, fem_fst_IO)
+     &    (nprocs, my_rank, rst_step1%istep_file, t_IO, fem_fst_IO)
 !
       call copy_field_data_from_restart(node, fem_fst_IO, nod_fld)
 !

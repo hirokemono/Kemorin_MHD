@@ -317,7 +317,7 @@
           call end_eleps_time(4)
           retval = 0
         else if (istep_rst_end.ne.-1                                    &
-     &       .and. time.gt.(istep_rst_end*delta_t_output_rst)) then
+     &       .and. time.gt.(istep_rst_end * rst_step1%delta_t)) then
           retval = 0
         end if
 !

@@ -111,18 +111,16 @@
 !
       type(phys_data), intent(in) :: rj_fld
 !
-      integer(kind = kint) :: istep_fld
 !
+      if (output_flag(istep_max_dt,rst_step1%increment) .ne. 0) return
 !
-      if ( mod(istep_max_dt,i_step_output_rst) .ne. 0 ) return
-!
-      istep_fld = istep_max_dt/i_step_output_rst
+      rst_step1%istep_file = istep_max_dt/rst_step1%increment
 !
       call copy_time_steps_to_restart(sph_time_IO)
       call set_sph_restart_data_to_IO(rj_fld, sph_fst_IO)
 !
-      call sel_write_step_SPH_field_file                                &
-     &   (nprocs, my_rank, istep_fld, sph_time_IO, sph_fst_IO)
+      call sel_write_step_SPH_field_file(nprocs, my_rank,               &
+     &    rst_step1%istep_file, sph_time_IO, sph_fst_IO)
 !
       end subroutine output_sph_restart_control
 !
@@ -156,7 +154,6 @@
       use set_sph_restart_IO
       use copy_time_steps_4_restart
 !
-      integer(kind = kint) :: istep_fld
       type(phys_data), intent(inout) :: rj_fld
 !
 !
@@ -164,9 +161,9 @@
         call sel_read_alloc_step_SPH_file                               &
      &     (nprocs, my_rank, i_step_init, sph_time_IO, sph_fst_IO)
       else
-        istep_fld = i_step_init / i_step_output_rst
-        call sel_read_alloc_step_SPH_file                               &
-     &     (nprocs, my_rank, istep_fld, sph_time_IO, sph_fst_IO)
+        rst_step1%istep_file = i_step_init / rst_step1%increment
+        call sel_read_alloc_step_SPH_file(nprocs, my_rank,              &
+     &      rst_step1%istep_file, sph_time_IO, sph_fst_IO)
       end if
 !
       call set_sph_restart_from_IO(sph_fst_IO, rj_fld)
@@ -220,12 +217,10 @@
       type(phys_address), intent(in) :: ipol
       type(phys_data), intent(inout) :: rj_fld
 !
-      integer(kind = kint) :: istep_fld
 !
-!
-      istep_fld = i_step / i_step_output_rst
-      call sel_read_alloc_step_SPH_file                                 &
-     &   (nprocs, my_rank, istep_fld, sph_time_IO, sph_fst_IO)
+      rst_step1%istep_file = i_step / rst_step1%increment
+      call sel_read_alloc_step_SPH_file(nprocs, my_rank,                &
+     &    rst_step1%istep_file, sph_time_IO, sph_fst_IO)
 !
       call copy_init_time_from_restart(sph_time_IO)
       time = time_init

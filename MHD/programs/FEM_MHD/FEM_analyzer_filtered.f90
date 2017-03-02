@@ -78,7 +78,7 @@
       istep_max_dt = i_step
       if (my_rank.eq.0) write(*,*) 'step: ', istep_max_dt
 !
-      if (i_step_output_rst .gt. 0) then
+      if (rst_step1%increment .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'input_restart_4_snapshot'
         call input_restart_4_snapshot                                   &
      &     (mesh1%node, nod_fld1, SNAP_time_IO)

@@ -140,7 +140,7 @@
         write(*,*) 'istep_rst_end ',  istep_rst_end
         write(*,*) 'elapsed_time ',elapsed_time
         write(*,*) 'i_step_check ',i_step_check
-        write(*,*) 'i_step_output_rst ',i_step_output_rst
+        write(*,*) 'i_step_output_rst ',rst_step1%increment
         write(*,*) 'i_step_output_ucd ',i_step_output_ucd
       end if
 !
@@ -206,14 +206,14 @@
 !
 !
       call set_monitor_param_4_flex_step(ione, tctl%i_step_rst_ctl,     &
-     &    tctl%delta_t_rst_ctl, i_step_output_rst, delta_t_output_rst)
+     &    tctl%delta_t_rst_ctl, rst_step1%increment, rst_step1%delta_t)
 !
       call set_monitor_param_4_flex_step                                &
      &   (ione, tctl%i_step_ucd_ctl, tctl%delta_t_field_ctl,            &
      &    i_step_output_ucd, delta_t_output_ucd)
 !
-      i_step_init =   istep_rst_start * i_step_output_rst
-      i_step_number = istep_rst_end *   i_step_output_rst
+      i_step_init =   istep_rst_start * rst_step1%increment
+      i_step_number = istep_rst_end *   rst_step1%increment
 !
       call viz_flex_time_step_controls(tctl, viz_step)
 !

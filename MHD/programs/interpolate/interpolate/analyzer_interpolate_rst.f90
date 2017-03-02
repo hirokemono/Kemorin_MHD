@@ -90,7 +90,7 @@
 !
 !     --------------------- 
 !
-      istep_rst_start = int(i_step_init /   i_step_output_rst)
+      istep_rst_start = int(i_step_init /   rst_step1%increment)
       call set_field_file_fmt_prefix                                    &
      &   (ifmt_org_rst_file, org_rst_file_head, itp_fld_IO)
       call sel_read_alloc_step_FEM_file                                 &
@@ -132,8 +132,8 @@
       integer(kind = kint) :: i_step
 !
 !
-      istep_rst_start = int(i_step_init /   i_step_output_rst)
-      istep_rst_end =   int(i_step_number / i_step_output_rst)
+      istep_rst_start = int(i_step_init /   rst_step1%increment)
+      istep_rst_end =   int(i_step_number / rst_step1%increment)
       do i_step = istep_rst_start, istep_rst_end
 !
         if (my_rank .lt. ndomain_org) then

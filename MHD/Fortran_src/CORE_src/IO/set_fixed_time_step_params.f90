@@ -64,15 +64,15 @@
 !
 !
       call monitor_param_4_fixed_step(ione, tctl%i_step_rst_ctl,    &
-     &    tctl%delta_t_rst_ctl, i_step_output_rst, delta_t_output_rst)
+     &    tctl%delta_t_rst_ctl, rst_step1%increment, rst_step1%delta_t)
 !
       call monitor_param_4_fixed_step(ione, tctl%i_step_ucd_ctl,    &
      &    tctl%delta_t_field_ctl, i_step_output_ucd,                    &
      &    delta_t_output_ucd)
 !
-      if(i_step_output_rst .gt. 0) then
-        istep_rst_start = int(i_step_init /   i_step_output_rst)
-        istep_rst_end =   int(i_step_number / i_step_output_rst)
+      if(rst_step1%increment .gt. 0) then
+        istep_rst_start = int(i_step_init /   rst_step1%increment)
+        istep_rst_end =   int(i_step_number / rst_step1%increment)
       else
         istep_rst_start = i_step_init 
         istep_rst_end =   i_step_number

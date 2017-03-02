@@ -50,7 +50,7 @@
         i_step_MHD = i_step_MHD + 1
         istep_max_dt = i_step_MHD
 !
-        if( mod(i_step_MHD,i_step_output_rst) .ne. 0) cycle
+        if(output_flag(i_step_MHD,rst_step1%increment) .ne. 0) cycle
 !
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_mod_restart'

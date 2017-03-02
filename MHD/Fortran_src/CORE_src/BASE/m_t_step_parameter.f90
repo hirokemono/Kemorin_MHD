@@ -57,12 +57,8 @@
 !>      Time interval for monitoring output
       real(kind=kreal)   :: delta_t_step_check
 ! 
-!>      Increment of time step for restart file
-      integer(kind=kint) :: i_step_output_rst = 0
 !>      Increment of time step for field file
       integer(kind=kint) :: i_step_output_ucd = 0
-!>      Time interval for restart file
-      real(kind=kreal)   :: delta_t_output_rst
 !>      Time interval for field file
       real(kind=kreal)   :: delta_t_output_ucd
 !
@@ -83,6 +79,9 @@
 !>      Increment of time step for evaluation of SGS model coefficients
       integer(kind=kint) :: i_step_sgs_coefs
 !
+!
+      type(IO_step_param), save :: rst_step1
+!rst_step1%delta_t
 !
       type(VIZ_step_params), save :: viz_step1
 !
