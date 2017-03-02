@@ -77,13 +77,13 @@
 !
 !  -------------------------------
 !
-      if( (i_step_output_fline) .gt. 0) then
+      if(viz_step1%FLINE_t%increment .gt. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_ele_id_4_node'
         call set_ele_id_4_node                                          &
      &    (mesh%node, mesh%ele, next_tbl%neib_ele)
       end if
 !
-      if(i_step_output_pvr .le. 0) Return
+      if(viz_step1%PVR_t%increment .le. 0) Return
 !
 !  -----  If there is no volume rendering... return
 !

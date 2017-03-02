@@ -62,7 +62,6 @@
 !
       use m_t_step_parameter
       use m_radial_matrices_sph
-      use output_viz_file_control
       use sph_transforms_4_MHD
       use sph_transforms_4_SGS
       use copy_MHD_4_sph_trans
@@ -86,13 +85,11 @@
       integer (kind =kint) :: iflag
 !
 !
-      if(lead_field_data_flag() .gt. 0) return
-!
-        if(fl_prop%iflag_scheme .gt. id_no_evolution) then
-          call pressure_4_sph_mhd                                       &
-     &       (SGS_param, sph%sph_rj, fl_prop1, r_2nd,                   &
-     &        trans_p%leg, band_p_poisson, ipol, rj_fld)
-        end if
+      if(fl_prop%iflag_scheme .gt. id_no_evolution) then
+        call pressure_4_sph_mhd                                         &
+     &     (SGS_param, sph%sph_rj, fl_prop1, r_2nd,                     &
+     &      trans_p%leg, band_p_poisson, ipol, rj_fld)
+      end if
 !
 !
       call swap_phi_from_trans(WK%trns_MHD%ncomp_rj_2_rtp,              &

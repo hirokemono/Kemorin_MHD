@@ -48,6 +48,7 @@
       use lead_fields_4_sph_mhd
       use input_control_sph_MHD
       use sph_mhd_rst_IO_control
+      use output_viz_file_control
 !
       integer(kind = kint), intent(in) :: i_step
 !
@@ -83,10 +84,12 @@
      &   (ref_param_T1, ref_param_C1, ref_temp1, ref_comp1,             &
      &    sph1%sph_rj, ipol, idpdr, rj_fld1)
 !*
-      if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
-      call s_lead_fields_4_sph_mhd(SGS_par1%model_p, sph1,              &
+      if(lead_field_data_flag(viz_step1) .eq. 0) then
+        if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
+        call s_lead_fields_4_sph_mhd(SGS_par1%model_p, sph1,            &
      &    comms_sph1, r_2nd, fl_prop1, cd_prop1, ht_prop1, cp_prop1,    &
      &    trans_p1, ipol, rj_fld1, trns_WK1)
+      end if
       call end_eleps_time(9)
 !
       end subroutine SPH_analyze_zRMS_snap
@@ -100,14 +103,10 @@
       use m_spheric_parameter
       use m_sph_spectr_data
       use m_sph_trans_arrays_MHD
-      use output_viz_file_control
       use copy_snap_4_sph_trans
       use copy_MHD_4_sph_trans
       use sph_rtp_zonal_rms_data
 !
-!
-      if(lead_field_data_flag() .ne. 0) return
-!*
 !*  -----------  data transfer to FEM array --------------
 !*
       call copy_forces_to_snapshot_rtp                                  &

@@ -49,16 +49,14 @@
 !
       subroutine FEM_analyze_pvr(i_step, pvr_step)
 !
-      use set_exit_flag_4_visualizer
-!
       integer (kind =kint), intent(in) :: i_step
       type(IO_step_param), intent(inout)  :: pvr_step
 !
       integer (kind =kint) :: visval
 !
 !
-      call set_viz_file_step(i_step, i_step_output_pvr,                 &
-     &    visval, pvr_step%istep_file)
+      visval = ione
+      call accum_flag_to_visualization(i_step, pvr_step, visval)
       call set_field_data_4_VIZ(pvr_step%istep_file, i_step)
 !
       end subroutine FEM_analyze_pvr

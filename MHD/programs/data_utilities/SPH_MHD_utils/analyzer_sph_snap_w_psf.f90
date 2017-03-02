@@ -50,6 +50,7 @@
       use m_cal_max_indices
       use init_sph_MHD_elapsed_label
       use input_control_sph_MHD
+      use output_viz_file_control
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -98,6 +99,7 @@
 !
       use m_spheric_parameter
       use m_node_phys_data
+      use output_viz_file_control
 !
       integer(kind = kint) :: visval
 !
@@ -127,10 +129,13 @@
         call start_eleps_time(1)
         call start_eleps_time(4)
 !
-        if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_MHD'
-        call SPH_to_FEM_bridge_MHD                                      &
-     &     (sph1%sph_params, sph1%sph_rtp, trns_WK1,                    &
-     &      mesh1, iphys, nod_fld1)
+        if(lead_field_data_flag(viz_step1) .eq. 0) then
+          if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_MHD'
+          call SPH_to_FEM_bridge_MHD                                    &
+     &       (sph1%sph_params, sph1%sph_rtp, trns_WK1,                  &
+     &        mesh1, iphys, nod_fld1)
+        end if
+!
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
         call FEM_analyze_sph_MHD                                        &
      &     (i_step_MHD, mesh1, nod_fld1, viz_step1, visval)

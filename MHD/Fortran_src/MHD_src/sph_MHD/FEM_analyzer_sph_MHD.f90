@@ -125,7 +125,7 @@
       subroutine FEM_analyze_sph_MHD                                    &
      &         (i_step, mesh, nod_fld, viz_step, visval)
 !
-      use set_exit_flag_4_visualizer
+      use t_VIZ_step_parameter
       use nod_phys_send_recv
       use output_viz_file_control
 !
@@ -137,12 +137,12 @@
       type(VIZ_step_params), intent(inout) :: viz_step
 !
 !
-      visval = 1
 !
-      if(lead_field_data_flag() .ne. 0) return
+      if(lead_field_data_flag(viz_step) .ne. 0) return
 !
 !*  ----------   Count steps for visualization
 !*
+      visval = 1
       visval = viz_file_step_4_fix(i_step, viz_step)
 !*
 !
@@ -170,7 +170,6 @@
       use t_sph_trans_arrays_MHD
       use m_SGS_control_parameter
 !
-      use output_viz_file_control
       use copy_snap_4_sph_trans
       use copy_MHD_4_sph_trans
       use coordinate_convert_4_sph
@@ -183,9 +182,6 @@
       type(phys_address), intent(in) :: iphys
 !
       type(phys_data), intent(inout) :: nod_fld
-!
-!
-      if(lead_field_data_flag() .ne. 0) return
 !*
 !*  -----------  data transfer to FEM array --------------
 !*

@@ -5,7 +5,7 @@
 !
 !!      subroutine SPH_init_gauss_back_trans(sph_mesh, ipol, rj_fld)
 !!      subroutine SPH_analyze_gauss_back_trans                         &
-!!     &         (i_step, sph_mesh, ipol, rj_fld, visval)
+!!     &         (i_step, viz_step, sph_mesh, ipol, rj_fld, visval)
 !
       module SPH_analyzer_gauss_b_trans
 !
@@ -78,19 +78,20 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_analyze_gauss_back_trans                           &
-     &         (i_step, sph_mesh, ipol, rj_fld, visval)
+     &         (i_step, viz_step, sph_mesh, ipol, rj_fld, visval)
 !
       use m_t_step_parameter
       use m_ctl_params_sph_trans
+      use t_VIZ_step_parameter
 !
       use r_interpolate_sph_data
 !
       use sph_transfer_all_field
-      use set_exit_flag_4_visualizer
       use set_parallel_file_name
 !
 !
       integer(kind = kint), intent(in) :: i_step
+      type(VIZ_step_params), intent(in) :: viz_step
       type(sph_mesh_data), intent(in) :: sph_mesh
       type(phys_address), intent(in) :: ipol
 !
@@ -99,12 +100,9 @@
 !
       character(len=kchara) :: fname_tmp
 !
-      integer(kind = kint) :: i_udt
 !
-!
-      call set_output_flag(i_udt, i_step, i_step_output_ucd)
-      call set_output_flag_4_viz(i_step, visval)
-      visval = visval * i_udt
+      call set_output_flag_4_viz(i_step, viz_step, visval)
+      visval = visval * output_flag(i_step, i_step_output_ucd)
 !
       if(visval .eq. 0) then
 !

@@ -14,6 +14,7 @@
       use m_t_step_parameter
       use m_t_int_parameter
       use t_time_data_IO
+      use t_IO_step_parameter
 !
       use calypso_mpi
 !
@@ -60,7 +61,6 @@
       use sgs_model_coefs_IO
       use fem_mhd_rst_IO_control
       use output_viz_file_control
-      use set_exit_flag_4_visualizer
       use filter_all_fields
       use input_control
 !
@@ -136,7 +136,7 @@
 !
 !     ========  Data output
 !
-      if (lead_field_data_flag() .eq.0) then
+      if (lead_field_data_flag(viz_step) .eq.0) then
         call lead_fields_by_FEM                                         &
      &    (FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1,                &
      &     MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,      &
@@ -176,7 +176,7 @@
 !     ----
 !
       if     (iflag_flexible_step .eq. iflag_flex_step) then
-        visval = viz_file_step_4_flex(viz_step)
+        visval = viz_file_step_4_flex(time, viz_step)
       else
         visval =  viz_file_step_4_fix(istep_max_dt, viz_step)
       end if

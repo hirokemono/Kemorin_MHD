@@ -35,6 +35,7 @@
       use t_jacobian_3d
       use t_finite_element_mat
       use t_MHD_finite_element_mat
+      use t_IO_step_parameter
 !
       implicit none
 !
@@ -53,11 +54,8 @@
       use m_t_int_parameter
       use m_mean_square_values
 !
-      use set_exit_flag_4_visualizer
       use int_bulk
       use time_step_file_IO
-!
-      integer (kind = kint) :: nd, ii
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(mesh_geometry), intent(in) :: mesh
@@ -73,9 +71,10 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
+      integer (kind = kint) :: nd
 !
-      call set_output_flag(ii, istep_max_dt, i_step_check)
-      if ( ii .ne. 0 ) return
+!
+      if(output_flag(istep_max_dt, i_step_check) .ne. 0 ) return
 !
         if(my_rank .eq. 0) write(*,'(a10,i16,a10,e15.8)')               &
      &            'i_step=',i_step_MHD,'time=',time

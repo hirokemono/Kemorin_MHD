@@ -3,8 +3,8 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine SPH_analyze_zm_energies                              &
-!!     &         (i_step, sph_mesh, ipol, rj_fld, t_IO, fld_IO, visval)
+!!      subroutine SPH_analyze_zm_energies(i_step, viz_step,            &
+!!     &          sph_mesh, ipol, rj_fld, t_IO, fld_IO, visval)
 !!        type(sph_grids), intent(in) :: sph_mesh
 !!        type(phys_address), intent(in) :: ipol
 !!        type(phys_data), intent(inout) :: rj_fld
@@ -33,8 +33,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_zm_energies                                &
-     &         (i_step, sph_mesh, ipol, rj_fld, t_IO, fld_IO, visval)
+      subroutine SPH_analyze_zm_energies(i_step, viz_step,              &
+     &          sph_mesh, ipol, rj_fld, t_IO, fld_IO, visval)
 !
       use m_t_step_parameter
       use m_ctl_params_sph_trans
@@ -43,6 +43,7 @@
       use t_phys_data
       use t_time_data_IO
       use t_field_data_IO
+      use t_VIZ_step_parameter
 !
       use field_IO_select
       use r_interpolate_sph_data
@@ -50,10 +51,10 @@
 !
       use sph_transfer_all_field
       use cal_zonal_mean_sph_spectr
-      use set_exit_flag_4_visualizer
 !
 !
       integer(kind = kint), intent(in) :: i_step
+      type(VIZ_step_params), intent(in) :: viz_step
       type(sph_mesh_data), intent(in) :: sph_mesh
       type(phys_address), intent(in) :: ipol
 !
@@ -62,12 +63,9 @@
       type(field_IO), intent(inout) :: fld_IO
       type(time_params_IO), intent(inout) :: t_IO
 !
-      integer(kind = kint) :: i_udt
 !
-!
-      call set_output_flag(i_udt, i_step, i_step_output_ucd)
-      call set_output_flag_4_viz(i_step, visval)
-      visval = visval * i_udt
+      call set_output_flag_4_viz(i_step, viz_step, visval)
+      visval = visval * output_flag(i_step, i_step_output_ucd)
 !
       if(visval .eq. 0) then
 !

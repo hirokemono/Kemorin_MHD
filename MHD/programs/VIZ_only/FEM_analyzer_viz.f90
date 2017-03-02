@@ -27,6 +27,8 @@
 !
       subroutine FEM_initialize_vizs
 !
+      integer(kind = kint) :: iflag
+!
 !   --------------------------------
 !       setup mesh information
 !   --------------------------------
@@ -36,9 +38,8 @@
 !     --------------------- Connection information for PVR and fieldline
 !     --------------------- init for fieldline and PVR
 !
-      if( (i_step_output_fline+i_step_output_pvr) .gt. 0) then
-        call element_normals_4_VIZ
-      end if
+      iflag = viz_step1%FLINE_t%increment + viz_step1%PVR_t%increment
+      if(iflag .gt. 0) call element_normals_4_VIZ
 !
 !     --------------------- 
 !
@@ -57,7 +58,7 @@
 !
       use t_ucd_data
       use t_VIZ_step_parameter
-      use set_exit_flag_4_visualizer
+      use t_IO_step_parameter
 !
       integer (kind =kint), intent(in) :: i_step
       integer(kind=kint ), intent(inout) :: visval

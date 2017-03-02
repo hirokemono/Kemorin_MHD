@@ -102,7 +102,7 @@
       do i_step = i_step_init, i_step_number
         if (iflag_debug.gt.0) write(*,*) 'step ', i_step, 'start...'
 !
-        call SPH_analyze_zm_energies(i_step, sph_mesh_trans,            &
+        call SPH_analyze_zm_energies(i_step, viz_step1, sph_mesh_trans, &
      &      ipol_trans, rj_fld_trans, time_IO_TRNS, sph_trns_IO, visval)
 !
         call FEM_analyze_back_trans(time_IO_TRNS, ucd_SPH_TRNS, i_step, &

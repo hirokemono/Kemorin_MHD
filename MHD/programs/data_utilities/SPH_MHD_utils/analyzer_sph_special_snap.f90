@@ -43,6 +43,7 @@
       use FEM_analyzer_sph_MHD
       use SPH_analyzer_snap
       use sections_for_1st
+      use output_viz_file_control
 !
       integer(kind = kint) :: visval
 !
@@ -72,9 +73,12 @@
         call start_eleps_time(1)
         call start_eleps_time(4)
 !
-        if (iflag_debug.eq.1)                                           &
-     &     write(*,*) 'SPH_to_FEM_bridge_special_snap'
-        call SPH_to_FEM_bridge_special_snap
+        if(lead_field_data_flag(viz_step1) .eq. 0) then
+          if(iflag_debug.eq.1)                                          &
+     &       write(*,*) 'SPH_to_FEM_bridge_special_snap'
+          call SPH_to_FEM_bridge_special_snap
+        end if
+!
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
         call FEM_analyze_sph_MHD                                        &
      &     (i_step_MHD, mesh1, nod_fld1, viz_step1, visval)
@@ -207,13 +211,9 @@
       use m_spheric_parameter
       use m_sph_spectr_data
       use m_sph_trans_arrays_MHD
-      use output_viz_file_control
       use copy_snap_4_sph_trans
       use copy_MHD_4_sph_trans
       use sph_rtp_zonal_rms_data
-!
-!
-      if(lead_field_data_flag() .ne. 0) return
 !*
 !*  -----------  data transfer to FEM array --------------
 !*
@@ -300,6 +300,7 @@
       use cal_zonal_mean_sph_spectr
       use sph_transforms_4_MHD
       use sph_transforms_snapshot
+      use output_viz_file_control
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
@@ -310,9 +311,11 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call s_lead_fields_4_sph_mhd(SGS_par1%model_p, sph,               &
-     &    comms_sph, r_2nd, fl_prop1, cd_prop1, ht_prop1, cp_prop1,     &
-     &    trans_p1, ipol, rj_fld, trns_WK)
+      if(lead_field_data_flag(viz_step1) .eq. 0) then
+        call s_lead_fields_4_sph_mhd(SGS_par1%model_p, sph,             &
+     &      comms_sph, r_2nd, fl_prop1, cd_prop1, ht_prop1, cp_prop1,   &
+     &      trans_p1, ipol, rj_fld, trns_WK)
+      end if
 !
       call sph_back_trans_4_MHD                                         &
      &   (sph, comms_sph, fl_prop1, omega_sph, trans_p1,                &

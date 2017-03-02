@@ -73,7 +73,7 @@
       call end_eleps_time(4)
 !
       call start_eleps_time(2)
-      call FEM_initialize_MHD
+      call FEM_initialize_MHD(viz_step1)
 !
       call init_visualize_surface(mesh1, group1, ele_mesh1, nod_fld1)
       call end_eleps_time(2)

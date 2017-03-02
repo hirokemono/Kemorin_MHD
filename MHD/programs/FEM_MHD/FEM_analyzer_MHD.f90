@@ -21,6 +21,7 @@
       use m_mesh_data
       use m_ucd_data
       use m_sorted_node_MHD
+      use t_VIZ_step_parameter
 !
       use calypso_mpi
 !
@@ -32,7 +33,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_MHD
+      subroutine FEM_initialize_MHD(viz_step)
 !
       use m_geometry_data_MHD
       use m_node_phys_data
@@ -63,6 +64,8 @@
 !
       use chenge_step_4_dynamic
       use output_viz_file_control
+!
+      type(VIZ_step_params), intent(inout) :: viz_step
 !
 !   matrix assembling
 !
@@ -123,9 +126,9 @@
      &      nod_fld1, sgs_coefs, sgs_coefs_nod, diff_coefs)
       end if
 !
-      if (lead_field_data_flag() .eq.0) then
-       if (iflag_debug.eq.1) write(*,*) 'lead_fields_by_FEM'
-       call lead_fields_by_FEM                                          &
+      if (lead_field_data_flag(viz_step) .eq.0) then
+        if (iflag_debug.eq.1) write(*,*) 'lead_fields_by_FEM'
+        call lead_fields_by_FEM                                         &
      &    (FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1,                &
      &     MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,      &
      &     jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,            &
@@ -194,7 +197,6 @@
       use sgs_model_coefs_IO
       use fem_mhd_rst_IO_control
       use output_viz_file_control
-      use set_exit_flag_4_visualizer
 !
       use init_iccg_matrices
       use check_deltat_by_prev_rms
@@ -254,7 +256,7 @@
 !     ========  Data output
 !
       if(istep_flex_to_max .eq. 0) then
-        if (lead_field_data_flag() .eq.0) then
+        if (lead_field_data_flag(viz_step) .eq.0) then
           call lead_fields_by_FEM(FEM_prm1, SGS_par1,                   &
      &        mesh1, group1, ele_mesh1, MHD_mesh1,                      &
      &        nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,              &
@@ -324,7 +326,7 @@
           retval = 0
         end if
 !
-        visval = viz_file_step_4_flex(viz_step)
+        visval = viz_file_step_4_flex(time, viz_step)
       else
         if      (i_step_number.eq.-1                                    &
      &       .and. total_max.gt.elapsed_time) then

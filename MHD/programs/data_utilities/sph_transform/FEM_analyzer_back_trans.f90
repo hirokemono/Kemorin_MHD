@@ -52,6 +52,8 @@
       type(ucd_data), intent(inout) :: ucd
       type(merged_ucd_data), intent(inout)  :: m_ucd
 !
+      integer(kind = kint) :: iflag
+!
 !  -----    construct geometry informations
 !
       call mesh_setup_4_SPH_TRANS
@@ -59,7 +61,8 @@
 !     --------------------- Connection information for PVR and fieldline
 !     --------------------- init for fieldline and PVR
 !
-      if( (i_step_output_fline+i_step_output_pvr) .gt. 0) then
+      iflag = viz_step1%FLINE_t%increment + viz_step1%PVR_t%increment
+      if(iflag .gt. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_ele_id_4_node'
         call set_ele_id_4_node                                          &
      &   (femmesh_STR%mesh%node, femmesh_STR%mesh%ele, ele_4_nod)
@@ -95,8 +98,8 @@
       use m_t_step_parameter
       use t_time_data_IO
       use t_ucd_data
+      use t_IO_step_parameter
       use field_IO_select
-      use set_exit_flag_4_visualizer
       use ucd_IO_select
       use nod_phys_send_recv
 !

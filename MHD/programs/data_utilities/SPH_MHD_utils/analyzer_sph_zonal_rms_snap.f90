@@ -98,6 +98,7 @@
       subroutine evolution_sph_zonal_rms_snap
 !
       use SPH_analyzer_zrms_snap
+      use output_viz_file_control
 !
       integer(kind = kint) :: visval
 !
@@ -127,8 +128,11 @@
         call start_eleps_time(1)
         call start_eleps_time(4)
 !
-        if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_zRMS_snap'
-        call SPH_to_FEM_bridge_zRMS_snap
+        if(lead_field_data_flag(viz_step1) .eq. 0) then
+          if(iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_zRMS_snap'
+          call SPH_to_FEM_bridge_zRMS_snap
+        end if
+!
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
         call FEM_analyze_sph_MHD                                        &
      &     (i_step_MHD, mesh1, nod_fld1, viz_step1, visval)

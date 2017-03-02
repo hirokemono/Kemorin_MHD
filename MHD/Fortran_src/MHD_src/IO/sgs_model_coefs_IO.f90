@@ -127,21 +127,19 @@
      &         (SGS_param, cmt_param, wk_sgs, wk_diff)
 !
       use m_physical_property
-      use set_exit_flag_4_visualizer
+      use t_IO_step_parameter
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(dynamic_model_data), intent(in) :: wk_sgs, wk_diff
-!
-      integer (kind = kint) :: i_coef
 !
 !
       if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_OFF) return
 !
       if (mod(istep_max_dt,i_step_sgs_output) .ne. 0) return
 !
-      call set_output_flag(i_coef, istep_max_dt, i_step_sgs_output)
-      if (i_coef.ne.0 .or. my_rank.ne.0) return
+      if (output_flag(istep_max_dt, i_step_sgs_output) .ne. 0           &
+     &  .or. my_rank.ne.0) return
 !
       call output_layered_model_coefs_file(SGS_param, cd_prop1, wk_sgs)
       call output_whole_model_coefs_file(SGS_param, cd_prop1, wk_sgs)

@@ -46,16 +46,14 @@
 !
       subroutine FEM_analyze_fline(i_step, fline_step)
 !
-      use set_exit_flag_4_visualizer
-!
       integer (kind =kint), intent(in) :: i_step
       type(IO_step_param), intent(inout) :: fline_step
 !
       integer (kind =kint) :: visval
 !
 !
-      call set_viz_file_step(i_step, i_step_output_fline,               &
-     &    visval, fline_step%istep_file)
+      visval = ione
+      call accum_flag_to_visualization(i_step, fline_step, visval)
       call set_field_data_4_VIZ(fline_step%istep_file, i_step)
 !
       end subroutine FEM_analyze_fline

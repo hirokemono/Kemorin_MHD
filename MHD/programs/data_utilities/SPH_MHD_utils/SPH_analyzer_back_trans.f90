@@ -282,8 +282,8 @@
       use m_t_step_parameter
       use m_boundary_params_sph_MHD
       use t_schmidt_poly_on_rtm
+      use t_IO_step_parameter
 !
-      use set_exit_flag_4_visualizer
       use cal_rms_fields_by_sph
       use volume_average_4_sph
       use output_sph_m_square_file
@@ -297,12 +297,8 @@
       type(sph_mean_squares), intent(inout) :: pwr
       type(sph_mean_square_work), intent(inout) :: WK_pwr
 !
-      integer (kind = kint) :: i_flag
 !
-!
-      call set_output_flag(i_flag, istep_max_dt, i_step_check)
-!
-      if (i_flag .ne. 0) return
+      if (output_flag(istep_max_dt, i_step_check) .ne. 0) return
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
       call cal_mean_squre_in_shell                                      &

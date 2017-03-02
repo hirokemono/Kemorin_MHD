@@ -102,7 +102,8 @@
 !
 !      stepping parameter
 !
-      call s_set_fixed_time_step_params(t_su_ctl, ierr, e_message)
+      call s_set_fixed_time_step_params                                 &
+     &   (t_su_ctl, viz_step1, ierr, e_message)
 !
 !    file header for field data
 !

@@ -45,7 +45,6 @@
         integer(kind=kint) :: istep_file
       end type IO_step_param
 !
-      private :: set_viz_flex_file_step
       private :: set_monitor_param_4_flex_step
 !
 ! -----------------------------------------------------------------------
@@ -60,8 +59,8 @@
       use t_control_elements
 !
       integer(kind = kint), intent(in) :: istep_def
-      type(read_integer_item), intent(inout) :: step_ctl
-      type(read_real_item), intent(inout) :: delta_t_ctl
+      type(read_integer_item), intent(in) :: step_ctl
+      type(read_real_item), intent(in) :: delta_t_ctl
       type(IO_step_param), intent(inout) :: IO_step
 !
 !
@@ -79,8 +78,8 @@
 !
       integer(kind = kint), intent(in) :: istep_def
       real(kind = kreal), intent(in) :: dt_max
-      type(read_integer_item), intent(inout) :: step_ctl
-      type(read_real_item), intent(inout) :: delta_t_ctl
+      type(read_integer_item), intent(in) :: step_ctl
+      type(read_real_item), intent(in) :: delta_t_ctl
       type(IO_step_param), intent(inout) :: IO_step
 !
 !

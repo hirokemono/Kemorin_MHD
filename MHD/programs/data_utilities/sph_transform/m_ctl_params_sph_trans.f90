@@ -17,6 +17,7 @@
       use m_precision
 !
       use m_SPH_transforms
+      use m_t_step_parameter
 !
       use t_phys_data
       use t_global_gauss_coefs
@@ -112,7 +113,8 @@
 !
 !      stepping parameter
 !
-      call s_set_fixed_time_step_params(t_st_ctl, ierr, e_message)
+      call s_set_fixed_time_step_params                                 &
+     &   (t_st_ctl, viz_step1, ierr, e_message)
 !
 !   set physical values
 !
@@ -220,7 +222,8 @@
 !
 !      stepping parameter
 !
-      call s_set_fixed_time_step_params(t_st_ctl, ierr, e_message)
+      call s_set_fixed_time_step_params                                 &
+     &   (t_st_ctl, viz_step1, ierr, e_message)
 !
 !   set physical values
 !

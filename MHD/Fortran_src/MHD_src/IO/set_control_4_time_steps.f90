@@ -26,6 +26,7 @@
       use m_t_int_parameter
       use t_SGS_control_parameter
       use t_ctl_data_4_time_steps
+      use t_VIZ_step_parameter
 !
       implicit  none
 !
@@ -114,11 +115,11 @@
       if(iflag_flexible_step .eq. iflag_flex_step) then
         if (iflag_debug .ge. iflag_routine_msg)                         &
      &    write(*,*) 'set_flex_time_step_controls'
-        call set_flex_time_step_controls(SGS_param, tctl)
+        call set_flex_time_step_controls(SGS_param, tctl, viz_step1)
       else
         if (iflag_debug .ge. iflag_routine_msg)                         &
      &    write(*,*) 'set_fixed_time_step_controls'
-        call set_fixed_time_step_controls(SGS_param, tctl)
+        call set_fixed_time_step_controls(SGS_param, tctl, viz_step1)
       end if
 !
       if (i_step_number.eq.-1) then
@@ -147,30 +148,33 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_fixed_time_step_controls(SGS_param, tctl)
+      subroutine set_fixed_time_step_controls(SGS_param, tctl, viz_step)
 !
       use set_fixed_time_step_params
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(time_data_control), intent(inout) :: tctl
+      type(VIZ_step_params), intent(inout) :: viz_step
+!
       integer(kind = kint) :: ierr
 !
 !
-      call s_set_fixed_time_step_params(tctl, ierr, e_message)
+      call s_set_fixed_time_step_params                                 &
+     &   (tctl, viz_step, ierr, e_message)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
       i_step_sgs_coefs = 1
       if(SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
-        call set_monitor_param_4_fixed_step(ione,                       &
+        call monitor_param_4_fixed_step(ione,                       &
      &      tctl%i_step_sgs_coefs_ctl, tctl%delta_t_sgs_coefs_ctl,      &
      &      i_step_sgs_output, delta_t_sgs_output)
       end if
 !
-      call set_monitor_param_4_fixed_step                               &
+      call monitor_param_4_fixed_step                               &
      &   (izero, tctl%i_step_monitor_ctl, tctl%delta_t_monitor_ctl,     &
      &    i_step_output_monitor, delta_t_output_monitor)
 !
-      call set_monitor_param_4_fixed_step(izero,                        &
+      call monitor_param_4_fixed_step(izero,                        &
      &    tctl%i_step_boundary_ctl, tctl%delta_t_boundary_ctl,          &
      &    i_step_output_boundary, delta_t_output_boundary)
 !
@@ -178,10 +182,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_flex_time_step_controls(SGS_param, tctl)
+      subroutine set_flex_time_step_controls(SGS_param, tctl, viz_step)
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(time_data_control), intent(inout) :: tctl
+      type(VIZ_step_params), intent(inout) :: viz_step
 !
 !
       istep_rst_start   = 0
@@ -210,18 +215,7 @@
       i_step_init =   istep_rst_start * i_step_output_rst
       i_step_number = istep_rst_end *   i_step_output_rst
 !
-      call set_monitor_param_4_flex_step(izero, tctl%i_step_psf_ctl,    &
-     &    tctl%delta_t_psf_ctl, i_step_output_psf, delta_t_output_psf)
-!
-      call set_monitor_param_4_flex_step(izero, tctl%i_step_iso_ctl,    &
-     &    tctl%delta_t_iso_ctl, i_step_output_iso, delta_t_output_iso)
-!
-      call set_monitor_param_4_flex_step(izero, tctl%i_step_pvr_ctl,    &
-     &    tctl%delta_t_pvr_ctl, i_step_output_pvr, delta_t_output_pvr)
-!
-      call set_monitor_param_4_flex_step                                &
-     &   (izero, tctl%i_step_fline_ctl, tctl%delta_t_fline_ctl,         &
-     &    i_step_output_fline, delta_t_output_fline)
+      call viz_flex_time_step_controls(tctl, viz_step)
 !
 !
       i_step_sgs_coefs = 1

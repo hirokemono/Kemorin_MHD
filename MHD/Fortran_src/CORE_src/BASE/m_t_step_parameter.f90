@@ -66,23 +66,6 @@
 !>      Time interval for field file
       real(kind=kreal)   :: delta_t_output_ucd
 !
-!>      Increment of time step for volume rendering
-      integer(kind=kint) :: i_step_output_pvr
-!>      Increment of time step for cross sectioning
-      integer(kind=kint) :: i_step_output_psf
-!>      Increment of time step for isosurfaces
-      integer(kind=kint) :: i_step_output_iso
-!>      Increment of time step for field lines
-      integer(kind=kint) :: i_step_output_fline
-!>      Time interval for volume rendering
-      real(kind=kreal)   :: delta_t_output_pvr
-!>      Time interval for cross sectioning
-      real(kind=kreal)   :: delta_t_output_psf
-!>      Time interval for isosurfaces
-      real(kind=kreal)   :: delta_t_output_iso
-!>      Time interval for field lines
-      real(kind=kreal)   :: delta_t_output_fline
-! 
 !>      Increment of time step for point data output
       integer(kind=kint) :: i_step_output_monitor
 !>      Time interval for point data output
