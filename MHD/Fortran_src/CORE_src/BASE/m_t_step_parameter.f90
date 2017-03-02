@@ -51,16 +51,6 @@
       integer(kind=kint) :: istep_rst_start
 !>      End step for restarting file
       integer(kind=kint) :: istep_rst_end
-!
-!>      Increment of time step for point data output
-      integer(kind=kint) :: i_step_output_monitor
-!>      Time interval for point data output
-      real(kind=kreal)   :: delta_t_output_monitor
-! 
-!>      Increment of time step for boundary field data
-      integer(kind=kint) :: i_step_output_boundary
-!>      Time interval for boundary field data
-      real(kind=kreal)   :: delta_t_output_boundary
 ! 
 !>      Increment of time step for SGS model coefficients monitoring
       integer(kind=kint) :: i_step_sgs_output
@@ -75,7 +65,11 @@
       type(IO_step_param), save :: ucd_step1
 !
       type(IO_step_param), save :: rms_step1
-!rms_step1%delta_t
+!
+      type(IO_step_param), save :: point_step1
+!
+      type(IO_step_param), save :: boundary_step1
+!boundary_step1%delta_t
 !
       type(VIZ_step_params), save :: viz_step1
 !

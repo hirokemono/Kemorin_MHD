@@ -195,8 +195,7 @@
       integer (kind = kint) :: i, inod, i_fld, ist, ied
 !
 !
-      if (i_step_output_monitor .eq. 0) return
-      if(mod(istep_max_dt, i_step_output_monitor) .ne. 0) return
+      if(output_flag(istep_max_dt,point_step1%increment) .ne. 0) return
 !
       if (num_monitor .eq. 0 .or. num_monitor_local .eq. 0) return
 !

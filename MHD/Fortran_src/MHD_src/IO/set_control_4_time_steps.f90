@@ -172,11 +172,11 @@
 !
       call monitor_param_4_fixed_step                               &
      &   (izero, tctl%i_step_monitor_ctl, tctl%delta_t_monitor_ctl,     &
-     &    i_step_output_monitor, delta_t_output_monitor)
+     &    point_step1%increment, point_step1%delta_t)
 !
       call monitor_param_4_fixed_step(izero,                        &
      &    tctl%i_step_boundary_ctl, tctl%delta_t_boundary_ctl,          &
-     &    i_step_output_boundary, delta_t_output_boundary)
+     &    boundary_step1%increment, boundary_step1%delta_t)
 !
       end subroutine set_fixed_time_step_controls
 !
@@ -227,11 +227,11 @@
 !
       call set_monitor_param_4_flex_step                                &
      &   (izero, tctl%i_step_monitor_ctl, tctl%delta_t_monitor_ctl,     &
-     &    i_step_output_monitor, delta_t_output_monitor)
+     &    point_step1%increment, point_step1%delta_t)
 !
       call set_monitor_param_4_flex_step(izero,                         &
      &    tctl%i_step_boundary_ctl, tctl%delta_t_boundary_ctl,          &
-     &    i_step_output_boundary, delta_t_output_boundary)
+     &    boundary_step1%increment, boundary_step1%delta_t)
 !
       if (istep_rst_end .eq. -1) then
         if (tctl%elapsed_time_ctl%iflag .eq. 0) then
