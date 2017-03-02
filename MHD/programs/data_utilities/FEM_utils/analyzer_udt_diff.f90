@@ -70,7 +70,7 @@
       use ucd_IO_select
       use output_parallel_ucd_file
 !
-      integer(kind = kint) :: istep, istep_ucd
+      integer(kind = kint) :: istep
 !
 !
 !
@@ -78,15 +78,14 @@
      &   (femmesh_FUTIL%mesh%node, femmesh_FUTIL%mesh%ele, ucd_FUTIL)
 !
       do istep = i_step_init, i_step_number
-        if ( mod(istep,i_step_output_ucd) .eq. izero) then
+        if (output_flag(istep,ucd_step1%increment) .eq. izero) then
+          ucd_step1%istep_file = istep / ucd_step1%increment
 !
-          istep_ucd = istep / i_step_output_ucd
-!
-          call set_data_by_read_ucd_once(my_rank, istep_ucd,            &
+          call set_data_by_read_ucd_once(my_rank, ucd_step1%istep_file, &
      &        udt_param_FUTIL%iflag_format, ref_udt_file_head,          &
      &        field_FUTIL, time_IO_FUTIL)
 !
-          call subtract_by_ucd_data(my_rank, istep_ucd,                 &
+          call subtract_by_ucd_data(my_rank, ucd_step1%istep_file,      &
      &        udt_param_FUTIL%iflag_format, tgt_udt_file_head,          &
      &        field_FUTIL)
 !
@@ -96,7 +95,7 @@
      &       (femmesh_FUTIL%mesh%nod_comm, field_FUTIL)
 !
 !    output udt data
-          call link_output_ucd_file_once(my_rank, istep_ucd,            &
+          call link_output_ucd_file_once(my_rank, ucd_step1%istep_file, &
      &        ifmt_diff_udt_file, diff_udt_file_head,                   &
      &        field_FUTIL, time_IO_FUTIL)
         end if

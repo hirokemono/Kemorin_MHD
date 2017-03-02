@@ -80,21 +80,21 @@
       use ucd_IO_select
       use output_parallel_ucd_file
 !
-      integer(kind=kint ) :: istep, istep_ucd
+      integer(kind=kint ) :: istep
 !
 !
       do istep = i_step_init, i_step_number
-        if ( mod(istep,i_step_output_ucd) .eq. izero) then
-          istep_ucd = istep / i_step_output_ucd
-          call set_data_for_product                                     &
-     &       (femmesh_FUTIL%mesh%node%numnod, istep_ucd, time_IO_FUTIL)
+        if (output_flag(istep,ucd_step1%increment) .eq. izero) then
+          ucd_step1%istep_file = istep / ucd_step1%increment
+          call set_data_for_product(femmesh_FUTIL%mesh%node%numnod,     &
+     &        ucd_step1%istep_file, time_IO_FUTIL)
           call cal_rev_of_2nd_field(femmesh_FUTIL%mesh%node%numnod)
           call cal_products_of_fields                                   &
      &       (femmesh_FUTIL%mesh%nod_comm, femmesh_FUTIL%mesh%node,     &
      &        field_FUTIL%ntot_phys, field_FUTIL%d_fld)
 !
 !    output udt data
-          call link_output_ucd_file_once(my_rank, istep_ucd,            &
+          call link_output_ucd_file_once(my_rank, ucd_step1%istep_file, &
      &        ifmt_result_udt_file, result_udt_file_head,               &
      &        field_FUTIL, time_IO_FUTIL)
 !

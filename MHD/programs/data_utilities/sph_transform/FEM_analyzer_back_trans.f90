@@ -80,7 +80,7 @@
 !
 !  connect grid data to volume output
 !
-      if(i_step_output_ucd .eq. 0) return
+      if(ucd_step1%increment .eq. 0) return
       call link_output_grd_file                                         &
      &   (femmesh_STR%mesh%node, femmesh_STR%mesh%ele,                  &
      &    femmesh_STR%mesh%nod_comm, field_STR, ucd, m_ucd)
@@ -122,10 +122,8 @@
 !
 !*  -----------  Output volume data --------------
 !*
-      if(i_step_output_ucd .gt. 0) then
-        if( mod(i_step,i_step_output_ucd) .eq. 0) then
-          call sel_write_udt_file(my_rank, i_step, t_IO, ucd)
-        end if
+      if(output_flag(i_step,ucd_step1%increment) .eq. 0) then
+        call sel_write_udt_file(my_rank, i_step, t_IO, ucd)
       end if
 !
       end subroutine FEM_analyze_back_trans

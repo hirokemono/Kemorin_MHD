@@ -115,7 +115,7 @@
       integer(kind = kint) :: istep
 !
 !
-      do istep = i_step_init, i_step_number, i_step_output_ucd
+      do istep = i_step_init, i_step_number, ucd_step1%increment
         if (my_rank .lt. ndomain_org) then
           call set_data_by_read_ucd_once                                &
      &       (my_rank, istep, itype_org_udt_file, org_udt_file_head,    &

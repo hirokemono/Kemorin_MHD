@@ -199,7 +199,7 @@
 !     ---------------------
 !
       i_step_check = 0
-      i_step_output_ucd = 0
+      ucd_step1%increment = 0
       if(elapsed_time .gt. 1800.0) then
         if (my_rank.eq.0) write(*,*) 'This code can use up to 30 min.'
         elapsed_time = 1800.0

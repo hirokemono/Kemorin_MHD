@@ -92,7 +92,7 @@
 !
 !*  ----------   Count steps for visualization
 !*
-      visval =  mod(i_step,i_step_output_ucd)
+      visval =  mod(i_step,ucd_step1%increment)
 !
 !*  -----------  Output volume data --------------
 !*
@@ -144,7 +144,7 @@
       type(merged_ucd_data), intent(inout) :: m_ucd
 !
 !
-      if(i_step_output_ucd .gt. 0) then
+      if(ucd_step1%increment .gt. 0) then
         call finalize_ucd_file_output(ucd, m_ucd)
       end if
 !

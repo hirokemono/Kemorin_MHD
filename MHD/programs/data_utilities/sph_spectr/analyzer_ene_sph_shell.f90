@@ -101,7 +101,7 @@
      &  (sph_file_spec_p%iflag_format, sph_file_spec_p%file_prefix,     &
      &   sph_spec_IO)
 !
-      do i_step = i_step_init, i_step_number, i_step_output_ucd
+      do i_step = i_step_init, i_step_number, ucd_step1%increment
 !
 !   Input spectr data
 !

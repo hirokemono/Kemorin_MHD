@@ -65,7 +65,7 @@
 !
 !
       call set_output_flag_4_viz(i_step, viz_step, visval)
-      visval = visval * output_flag(i_step, i_step_output_ucd)
+      visval = visval * output_flag(i_step, ucd_step1%increment)
 !
       if(visval .eq. 0) then
 !

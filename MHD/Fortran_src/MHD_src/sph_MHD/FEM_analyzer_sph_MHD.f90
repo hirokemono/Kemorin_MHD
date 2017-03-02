@@ -110,7 +110,7 @@
 !
 !  connect grid data to volume output
 !
-      if(i_step_output_ucd.gt.0) then
+      if(ucd_step1%increment .gt. 0) then
         call alloc_phys_range(nod_fld%ntot_phys_viz, range)
       end if
 !
@@ -251,7 +251,7 @@
       use m_cal_max_indices
 !
 !
-     if(i_step_output_ucd.gt.0) then
+     if(ucd_step1%increment .gt. 0) then
        call dealloc_phys_range(range)
        call finalize_output_ucd
      end if

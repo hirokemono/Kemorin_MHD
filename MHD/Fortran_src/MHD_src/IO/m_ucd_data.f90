@@ -89,19 +89,16 @@
       use parallel_ucd_IO_select
       use copy_time_steps_4_restart
 !
-      integer(kind = kint) :: istep_ucd
-!
 !
       if(fem_ucd%ifmt_file .lt. 0) return
-      if(i_step_output_ucd .eq. 0) return
-      if(mod(istep_max_dt,i_step_output_ucd) .ne. 0) return
+      if(output_flag(istep_max_dt,ucd_step1%increment) .ne. 0) return
 !
-      istep_ucd = istep_max_dt / i_step_output_ucd
+      ucd_step1%istep_file = istep_max_dt / ucd_step1%increment
 !
       call copy_time_steps_to_restart(ucd_time_IO)
       call sel_write_parallel_ucd_file                                  &
-     &   (istep_ucd, ucd_time_IO, fem_ucd, merged_ucd)
-!      call output_range_data(node, nod_fld, istep_ucd, time)
+     &   (ucd_step1%istep_file, ucd_time_IO, fem_ucd, merged_ucd)
+!      call output_range_data(node, nod_fld, ucd_step1%istep_file, time)
 !
       end subroutine s_output_ucd_file_control
 !
@@ -117,7 +114,7 @@
 !
 !
       if(fem_ucd%ifmt_file .lt. 0) return
-      if(i_step_output_ucd .eq. 0) return
+      if(ucd_step1%increment .eq. 0) return
       call link_output_grd_file(mesh%node, mesh%ele, mesh%nod_comm,     &
      &    nod_fld, fem_ucd, merged_ucd)
 !
@@ -141,7 +138,7 @@
 !
 !
       if(fem_ucd%ifmt_file .lt. 0) return
-      if(i_step_output_ucd .eq. 0) return
+      if(ucd_step1%increment .eq. 0) return
 !
       call link_num_field_2_ucd(nod_fld, fem_ucd)
       call link_local_org_mesh_4_ucd                                    &
@@ -181,12 +178,10 @@
       type(phys_data),intent(inout) :: nod_fld
       type(time_params_IO), intent(inout) :: t_IO
 !
-      integer(kind = kint) :: istep_ucd
 !
-!
-      if (mod(i_step,i_step_output_ucd) .ne. izero) return
-      istep_ucd = i_step / i_step_output_ucd
-      call set_data_by_read_ucd_once(my_rank, istep_ucd,                &
+      if(output_flag(i_step,ucd_step1%increment) .ne. izero) return
+      ucd_step1%istep_file = i_step / ucd_step1%increment
+      call set_data_by_read_ucd_once(my_rank, ucd_step1%istep_file,     &
     &     udt_file_param%iflag_format, udt_file_param%file_prefix,      &
     &     nod_fld, t_IO)
 !

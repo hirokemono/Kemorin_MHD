@@ -97,7 +97,7 @@
      &   (rj_fld_spec%n_point, rj_fld_spec%ntot_phys)
 !
 !   Averaging
-      do i_step = i_step_init, i_step_number, i_step_output_ucd
+      do i_step = i_step_init, i_step_number, ucd_step1%increment
         call set_field_file_fmt_prefix                                  &
      &   (iflag_org_sph_file_fmt, org_sph_file_head, sph_fld_IN)
         if (iflag_debug.gt.0) write(*,*) 'sel_read_step_SPH_field_file'
@@ -143,7 +143,7 @@
 !
 !   Standard deviation
 !
-      do i_step = i_step_init, i_step_number, i_step_output_ucd
+      do i_step = i_step_init, i_step_number, ucd_step1%increment
         call set_field_file_fmt_prefix                                  &
      &   (iflag_org_sph_file_fmt, org_sph_file_head, sph_fld_IN)
         if (iflag_debug.gt.0) write(*,*) 'sel_read_step_SPH_field_file'

@@ -67,8 +67,8 @@
      &    tctl%delta_t_rst_ctl, rst_step1%increment, rst_step1%delta_t)
 !
       call monitor_param_4_fixed_step(ione, tctl%i_step_ucd_ctl,    &
-     &    tctl%delta_t_field_ctl, i_step_output_ucd,                    &
-     &    delta_t_output_ucd)
+     &    tctl%delta_t_field_ctl, ucd_step1%increment,                    &
+     &    ucd_step1%delta_t)
 !
       if(rst_step1%increment .gt. 0) then
         istep_rst_start = int(i_step_init /   rst_step1%increment)

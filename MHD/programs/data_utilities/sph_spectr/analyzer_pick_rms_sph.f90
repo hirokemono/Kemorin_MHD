@@ -102,7 +102,7 @@
      &   (sph_mesh_spec%sph%sph_params%l_truncation,                    &
      &    sph_mesh_spec%sph%sph_rj, pwr_spec, pick_list_u, pick_rms1)
 !
-      do i_step = i_step_init, i_step_number, i_step_output_ucd
+      do i_step = i_step_init, i_step_number, ucd_step1%increment
 !
 !   Input spectr data
 !

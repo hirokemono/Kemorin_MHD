@@ -101,17 +101,15 @@
 !
       integer(kind = kint), intent(in) :: numnod
       type(time_params_IO), intent(inout) :: t_IO
-      integer(kind = kint) :: istep_ucd
 !
 !
-      write(*,*) 'i_step_init', i_step_init, i_step_output_ucd
-      istep_ucd = i_step_init / i_step_output_ucd
-      call find_field_id_in_read_ucd(my_rank, istep_ucd,                &
+      ucd_step1%istep_file = i_step_init / ucd_step1%increment
+      call find_field_id_in_read_ucd(my_rank, ucd_step1%istep_file,     &
      &    ifmt_result_udt_file, prod_udt_file1_head,                    &
      &    numnod, product_field_1_name, i_field_product1,               &
      &    ncomp_4_product1, t_IO)
 !
-      call find_field_id_in_read_ucd(my_rank, istep_ucd,                &
+      call find_field_id_in_read_ucd(my_rank, ucd_step1%istep_file,     &
      &   ifmt_result_udt_file, prod_udt_file2_head,                     &
      &   numnod, product_field_2_name, i_field_product2,                &
      &   ncomp_4_product2, t_IO)

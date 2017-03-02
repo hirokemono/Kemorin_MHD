@@ -145,7 +145,7 @@
 !
       use correlation_all_layerd_data
 !
-      integer(kind=kint) :: istep, istep_ucd
+      integer(kind=kint) :: istep
 !
 !
       call link_num_field_2_ucd(field_FUTIL, ucd_FUTIL)
@@ -164,17 +164,17 @@
 !     ---------------------
 !
       do istep = i_step_init, i_step_number
-        if ( mod(istep,i_step_output_ucd) .eq. izero) then
+        if (output_flag(istep,ucd_step1%increment) .eq. izero) then
 !
-          istep_ucd = istep / i_step_output_ucd
+          ucd_step1%istep_file = istep / ucd_step1%increment
 !
-          call set_data_by_read_ucd_once(my_rank, istep_ucd,            &
+          call set_data_by_read_ucd_once(my_rank, ucd_step1%istep_file, &
      &        udt_param_FUTIL%iflag_format, ref_udt_file_head,          &
      &        field_FUTIL, time_IO_FUTIL)
 !
           ucd_FUTIL%ifmt_file = udt_param_FUTIL%iflag_format
           ucd_FUTIL%file_prefix = tgt_udt_file_head
-          call set_data_by_read_ucd_once(my_rank, istep_ucd,            &
+          call set_data_by_read_ucd_once(my_rank, ucd_step1%istep_file, &
      &        udt_param_FUTIL%iflag_format, tgt_udt_file_head,          &
      &        phys_ref, time_IO_FUTIL)
 !
@@ -199,8 +199,9 @@
      &        layer_tbl_corr, phys_ref, wk_correlate)
 !
           if (iflag_debug .gt. 0) write(*,*)                            &
-     &          ' write_layerd_correlate_data', istep_ucd
-          call write_layerd_correlate_data(my_rank, istep_ucd)
+     &          ' write_layerd_correlate_data', ucd_step1%istep_file
+          call write_layerd_correlate_data                              &
+     &       (my_rank, ucd_step1%istep_file)
 !
         end if
       end do

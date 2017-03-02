@@ -69,24 +69,24 @@
       use nod_phys_send_recv
       use output_parallel_ucd_file
 !
-      integer(kind = kint) :: istep, istep_ucd, icou
+      integer(kind = kint) :: istep, icou
 !
 !
       call link_num_field_2_ucd(field_FUTIL, ucd_FUTIL)
 !
-      istep_ucd = i_step_init / i_step_output_ucd
-      call set_data_by_read_ucd_once(my_rank, istep_ucd,                &
+      ucd_step1%istep_file = i_step_init / ucd_step1%increment
+      call set_data_by_read_ucd_once(my_rank, ucd_step1%istep_file,     &
      &    udt_param_FUTIL%iflag_format, udt_param_FUTIL%file_prefix,    &
      &    field_FUTIL, time_IO_FUTIL)
 !
       icou = 1
       do istep = i_step_init+1, i_step_number
-        if ( mod(istep,i_step_output_ucd) .eq. izero) then
+        if (output_flag(istep,ucd_step1%increment) .eq. izero) then
 !
-          istep_ucd = istep / i_step_output_ucd
+          ucd_step1%istep_file = istep / ucd_step1%increment
           icou = icou + 1
 !
-          call add_ucd_to_data(my_rank, istep_ucd,                      &
+          call add_ucd_to_data(my_rank, ucd_step1%istep_file,           &
      &       udt_param_FUTIL%iflag_format, udt_param_FUTIL%file_prefix, &
      &       field_FUTIL)
         end if

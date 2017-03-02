@@ -166,16 +166,16 @@
           rst_step1%increment = tctl%i_step_rst_ctl%intvalue
         end if
 !
-        i_step_output_ucd = 0
+        ucd_step1%increment = 0
         if (tctl%i_step_ucd_ctl%iflag .gt. 0) then
-          i_step_output_ucd = tctl%i_step_ucd_ctl%intvalue
+          ucd_step1%increment = tctl%i_step_ucd_ctl%intvalue
         end if
 !
         if (iflag_debug.eq.1) then
           write(*,*) 'i_step_init ',i_step_init
           write(*,*) 'i_step_number ',i_step_number
-          write(*,*) 'i_step_output_rst ',rst_step1%increment
-          write(*,*) 'i_step_output_ucd ',i_step_output_ucd
+          write(*,*) 'i_step_output_rst ', rst_step1%increment
+          write(*,*) 'i_step_output_ucd ', ucd_step1%increment
         end if
 !
       end subroutine set_ctl_4_itp_steps

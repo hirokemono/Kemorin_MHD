@@ -138,10 +138,10 @@
         write(*,*) 'i_step_number ',i_step_number
         write(*,*) 'istep_rst_start ', istep_rst_start
         write(*,*) 'istep_rst_end ',  istep_rst_end
-        write(*,*) 'elapsed_time ',elapsed_time
-        write(*,*) 'i_step_check ',i_step_check
-        write(*,*) 'i_step_output_rst ',rst_step1%increment
-        write(*,*) 'i_step_output_ucd ',i_step_output_ucd
+        write(*,*) 'elapsed_time ', elapsed_time
+        write(*,*) 'i_step_check ', i_step_check
+        write(*,*) 'i_step_output_rst ', rst_step1%increment
+        write(*,*) 'i_step_output_ucd ', ucd_step1%increment
       end if
 !
       end subroutine s_set_control_4_time_steps
@@ -210,7 +210,7 @@
 !
       call set_monitor_param_4_flex_step                                &
      &   (ione, tctl%i_step_ucd_ctl, tctl%delta_t_field_ctl,            &
-     &    i_step_output_ucd, delta_t_output_ucd)
+     &    ucd_step1%increment, ucd_step1%delta_t)
 !
       i_step_init =   istep_rst_start * rst_step1%increment
       i_step_number = istep_rst_end *   rst_step1%increment

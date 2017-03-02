@@ -79,20 +79,20 @@
       use set_ucd_data_to_type
       use FEM_MHD_length_scale
 !
-      integer(kind=kint ) :: istep, istep_ucd
+      integer(kind=kint ) :: istep
 !
 !
       do istep = i_step_init, i_step_number
-        if ( mod(istep,i_step_output_ucd) .eq. izero) then
-          istep_ucd = istep / i_step_output_ucd
+        if(output_flag(istep,ucd_step1%increment) .eq. izero) then
+          ucd_step1%istep_file = istep / ucd_step1%increment
 !
-          call set_data_by_read_ucd_once(my_rank, istep_ucd,            &
+          call set_data_by_read_ucd_once(my_rank, ucd_step1%istep_file, &
      &        udt_param_FUTIL%iflag_format, ref_udt_file_head,          &
      &        field_FUTIL, time_IO_FUTIL)
 !
           call const_MHD_length_scales                                  &
      &       (femmesh_FUTIL%mesh%node, iphys_FUTIL, field_FUTIL,        &
-     &        istep_ucd, time_IO_FUTIL, ucd_FUTIL)
+     &        ucd_step1%istep_file, time_IO_FUTIL, ucd_FUTIL)
         end if
       end do
 !

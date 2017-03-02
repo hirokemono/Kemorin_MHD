@@ -253,17 +253,15 @@
       type(field_IO_params), intent(in) :: sph_file_param
       integer(kind = kint), intent(in) :: i_step
 !
-      integer(kind = kint) :: istep_fld
 !
-!
-      if( (sph_file_param%iflag_IO*i_step_output_ucd) .eq. 0) return
-      if(mod(i_step,i_step_output_ucd) .ne. 0) return
+      if(sph_file_param%iflag_IO .eq. 0) return
+      if(mod(i_step,ucd_step1%increment) .ne. 0) return
 !
       call set_field_file_fmt_prefix                                    &
      &   (sph_file_param%iflag_format, sph_file_param%file_prefix,      &
      &    sph_out_IO)
 !
-      istep_fld = i_step / i_step_output_ucd
+      ucd_step1%istep_file = i_step / ucd_step1%increment
       call copy_time_steps_to_restart(sph_time_IO)
       call copy_rj_phys_name_to_IO                                      &
      &   (rj_fld%num_phys_viz, rj_fld, sph_out_IO)
@@ -275,8 +273,8 @@
       call count_number_of_node_stack                                   &
      &   (sph_out_IO%nnod_IO, sph_out_IO%istack_numnod_IO)
 !
-      call sel_write_step_SPH_field_file                                &
-     &   (nprocs, my_rank, istep_fld, sph_time_IO, sph_out_IO)
+      call sel_write_step_SPH_field_file(nprocs, my_rank,               &
+     &    ucd_step1%istep_file, sph_time_IO, sph_out_IO)
 !
       call dealloc_merged_field_stack(sph_out_IO)
       call dealloc_phys_data_IO(sph_out_IO)
@@ -301,15 +299,13 @@
       type(phys_address), intent(in) :: ipol
       type(phys_data), intent(inout) :: rj_fld
 !
-      integer(kind = kint) :: istep_fld
 !
-!
-      istep_fld = i_step / i_step_output_ucd
+      ucd_step1%istep_file = i_step / ucd_step1%increment
       call set_field_file_fmt_prefix                                    &
      &   (sph_file_param%iflag_format, sph_file_param%file_prefix,      &
      &    sph_out_IO)
-      call sel_read_alloc_step_SPH_file                                 &
-     &   (nprocs, my_rank, istep_fld, sph_time_IO, sph_out_IO)
+      call sel_read_alloc_step_SPH_file(nprocs, my_rank,                &
+     &    ucd_step1%istep_file, sph_time_IO, sph_out_IO)
 !
       call copy_init_time_from_restart(sph_time_IO)
       time = time_init

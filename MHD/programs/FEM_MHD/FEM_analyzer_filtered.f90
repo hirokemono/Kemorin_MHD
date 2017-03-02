@@ -83,7 +83,7 @@
         call input_restart_4_snapshot                                   &
      &     (mesh1%node, nod_fld1, SNAP_time_IO)
 !
-      else if (i_step_output_ucd .gt. 0) then
+      else if (ucd_step1%increment .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'read_udt_4_snap'
         call read_udt_4_snap                                            &
      &     (istep_max_dt, FEM_udt_org_param, nod_fld1, SNAP_time_IO)

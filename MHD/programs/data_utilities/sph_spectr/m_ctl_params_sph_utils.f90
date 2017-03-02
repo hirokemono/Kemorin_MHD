@@ -120,15 +120,15 @@
 !   using restart data for spherical dynamo
 !
       if(su_plt%restart_file_prefix%iflag .gt. 0) then
-        org_sph_file_head =  su_plt%restart_file_prefix%charavalue
+        org_sph_file_head = su_plt%restart_file_prefix%charavalue
         call choose_para_file_format                                    &
      &     (su_plt%restart_file_fmt_ctl, iflag_org_sph_file_fmt)
-        i_step_output_ucd =   rst_step1%increment
+        ucd_step1%increment = rst_step1%increment
       end if
 !
       if( (rj_org_param%iflag_IO) .gt. 0) then
         org_sph_file_head =  rst_org_param%file_prefix
-        i_step_output_ucd =  rst_step1%increment
+        ucd_step1%increment = rst_step1%increment
         call choose_file_format                                         &
      &     (org_su_plt%sph_file_fmt_ctl, iflag_org_sph_file_fmt)
       end if
