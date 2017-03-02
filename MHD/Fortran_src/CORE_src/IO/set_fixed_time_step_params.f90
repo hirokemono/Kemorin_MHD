@@ -60,7 +60,7 @@
       end if
 !
       call monitor_param_4_fixed_step(ione, tctl%i_step_check_ctl,  &
-     &    tctl%delta_t_check_ctl, i_step_check, delta_t_step_check)
+     &    tctl%delta_t_check_ctl, rms_step1%increment, rms_step1%delta_t)
 !
 !
       call monitor_param_4_fixed_step(ione, tctl%i_step_rst_ctl,    &

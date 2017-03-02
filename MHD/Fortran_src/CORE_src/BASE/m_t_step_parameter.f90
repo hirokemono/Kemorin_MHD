@@ -52,11 +52,6 @@
 !>      End step for restarting file
       integer(kind=kint) :: istep_rst_end
 !
-!>      Increment of time step for monitoring output
-      integer(kind=kint) :: i_step_check
-!>      Time interval for monitoring output
-      real(kind=kreal)   :: delta_t_step_check
-! 
 !>      Increment of time step for point data output
       integer(kind=kint) :: i_step_output_monitor
 !>      Time interval for point data output
@@ -78,7 +73,9 @@
       type(IO_step_param), save :: rst_step1
 !
       type(IO_step_param), save :: ucd_step1
-!ucd_step1%delta_t
+!
+      type(IO_step_param), save :: rms_step1
+!rms_step1%delta_t
 !
       type(VIZ_step_params), save :: viz_step1
 !

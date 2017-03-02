@@ -36,7 +36,7 @@
      &   (istep_max_dt, viz_step, lead_field_data_flag)
 !
       irst = output_flag(istep_max_dt, rst_step1%increment)
-      i_bulk = output_flag(istep_max_dt, i_step_check)
+      i_bulk = output_flag(istep_max_dt, rms_step1%increment)
       i_udt = output_flag(istep_max_dt, ucd_step1%increment)
       i_monitor = output_flag(istep_max_dt, i_step_output_monitor)
 !

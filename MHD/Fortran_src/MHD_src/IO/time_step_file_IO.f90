@@ -81,7 +81,7 @@
 !
 !
       if(my_rank .gt. 0) return
-      iflag = i_step_init - mod(istep_max_dt, i_step_check)
+      iflag = i_step_init - mod(istep_max_dt, rms_step1%increment)
 !
       do
         read(time_step_data_code,*,err=99,end=99)                       &
