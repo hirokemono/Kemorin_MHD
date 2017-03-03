@@ -33,8 +33,6 @@
 ! 
 !>      Integer flag for flexible time stepping
       integer(kind= kint) :: iflag_flex_step_changed = 0
-!>      
-      integer(kind= kint) :: i_interval_flex_2_max
 !
 !>      Flag for initial step to use Euler scheme
 !!      insted of Adams-BAshforth

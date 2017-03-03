@@ -30,6 +30,8 @@
       integer(kind=kint), parameter :: iflag_flex_step =  1
 !>     flag for time stepping
       integer(kind=kint) :: iflag_flexible_step = iflag_fixed_step
+!>
+      integer(kind= kint) :: i_interval_flex_2_max
 !
 !>      Maximum @f$ \Delta t @f$
       real(kind=kreal) :: dt_max
