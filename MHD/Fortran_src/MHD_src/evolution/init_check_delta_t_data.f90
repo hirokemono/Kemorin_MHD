@@ -9,7 +9,7 @@
 !!      subroutine s_init_check_delta_t_data(cd_prop, iphys, flex_data)
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(phys_address), intent(in) :: iphys
-!!        type(flexible_steppind_data), intent(inout) :: flex_data
+!!        type(flexible_stepping_data), intent(inout) :: flex_data
 !
       module init_check_delta_t_data
 !
@@ -36,7 +36,7 @@
 !
       type(conductive_property), intent(in) :: cd_prop
       type(phys_address), intent(in) :: iphys
-      type(flexible_steppind_data), intent(inout) :: flex_data
+      type(flexible_stepping_data), intent(inout) :: flex_data
 !
 !
       call count_check_delta_t_data(cd_prop, iphys, flex_data)
@@ -57,7 +57,7 @@
 !
       type(conductive_property), intent(in) :: cd_prop
       type(phys_address), intent(in) :: iphys
-      type(flexible_steppind_data), intent(inout) :: flex_data
+      type(flexible_stepping_data), intent(inout) :: flex_data
 !
 !
       flex_data%num_fld = 0
@@ -113,7 +113,7 @@
 !
       type(conductive_property), intent(in) :: cd_prop
       type(phys_address), intent(in) :: iphys
-      type(flexible_steppind_data), intent(inout) :: flex_data
+      type(flexible_stepping_data), intent(inout) :: flex_data
 !
       integer(kind = kint) :: icou
 !

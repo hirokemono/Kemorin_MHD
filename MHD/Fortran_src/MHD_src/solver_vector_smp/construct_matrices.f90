@@ -120,6 +120,7 @@
 !
       use t_SGS_control_parameter
       use m_t_step_parameter
+      use m_flexible_time_step
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param

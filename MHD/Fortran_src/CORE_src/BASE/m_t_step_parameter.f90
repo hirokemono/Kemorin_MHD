@@ -31,9 +31,6 @@
 !>      Elapsed time to terminate simulation
       real(kind=kreal)   :: elapsed_time
 ! 
-!>      Integer flag for flexible time stepping
-      integer(kind= kint) :: iflag_flex_step_changed = 0
-!
 !>      Flag for initial step to use Euler scheme
 !!      insted of Adams-BAshforth
       integer(kind=kint) :: iflag_initial_step = 0

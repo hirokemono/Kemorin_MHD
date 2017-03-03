@@ -37,7 +37,10 @@
       character(len=kchara), parameter                                  &
      &      :: dt_check_min_name = 'minimum_dt_chack.dat'
 !
-      type(flexible_steppind_data), save :: flex_data
+!>      Integer flag for flexible time stepping
+      integer(kind= kint) :: iflag_flex_step_changed = 0
+!
+      type(flexible_stepping_data), save :: flex_data
 !
 !
       private :: dt_check_max_code, dt_check_min_code
@@ -104,7 +107,7 @@
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       type(work_finite_element_mat), intent(inout) :: fem_wk
-      type(flexible_steppind_data), intent(inout) :: flex_data
+      type(flexible_stepping_data), intent(inout) :: flex_data
 !
 !
       if( mod(istep_flex_to_max,itwo) .eq. izero) then

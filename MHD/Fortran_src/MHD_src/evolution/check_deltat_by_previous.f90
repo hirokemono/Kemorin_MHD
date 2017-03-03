@@ -9,7 +9,7 @@
 !!        type(node_data), intent(in) :: node
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(in) :: nod_fld
-!!        type(flexible_steppind_data), intent(inout) :: flex_data
+!!        type(flexible_stepping_data), intent(inout) :: flex_data
 !
       module check_deltat_by_previous
 !
@@ -43,7 +43,7 @@
       type(node_data), intent(in) :: node
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
-      type(flexible_steppind_data), intent(inout) :: flex_data
+      type(flexible_stepping_data), intent(inout) :: flex_data
 !
       integer(kind = kint) :: ip, nd
 !
@@ -162,7 +162,7 @@
       integer(kind = kint), intent(in) :: i_fld, i_chk, i_chk2, idrm
       real(kind = kreal), intent(in) :: d_nod(numnod,ncomp_nod)
 !
-      type(flexible_steppind_data), intent(inout) :: flex_data
+      type(flexible_stepping_data), intent(inout) :: flex_data
 !
       integer(kind = kint) :: ip, ist, ied, inod
       real(kind = kreal) :: d_ratio
@@ -215,7 +215,7 @@
       integer(kind = kint), intent(in) :: i_fld, i_chk, i_chk2, idrm
       real(kind = kreal), intent(in) :: d_nod(numnod,ncomp_nod)
 !
-      type(flexible_steppind_data), intent(inout) :: flex_data
+      type(flexible_stepping_data), intent(inout) :: flex_data
 !
       integer(kind = kint) :: ip, ist, ied, inod
       real(kind = kreal) :: d_ratio

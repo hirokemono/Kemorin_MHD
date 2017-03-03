@@ -15,7 +15,7 @@
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
-!!        type(flexible_steppind_data), intent(inout) :: flex_data
+!!        type(flexible_stepping_data), intent(inout) :: flex_data
 !
       module check_deltat_by_prev_rms
 !
@@ -58,7 +58,7 @@
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
-      type(flexible_steppind_data), intent(inout) :: flex_data
+      type(flexible_stepping_data), intent(inout) :: flex_data
 !
 !
       integer(kind = kint) :: i, imax
@@ -221,7 +221,7 @@
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
-      type(flexible_steppind_data), intent(inout) :: flex_data
+      type(flexible_stepping_data), intent(inout) :: flex_data
 !
 !
       if(flex_data%i_drmax_v .gt. izero) then

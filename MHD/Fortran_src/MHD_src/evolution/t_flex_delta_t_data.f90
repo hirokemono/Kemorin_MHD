@@ -26,7 +26,7 @@
       implicit  none
 !
 !
-      type flexible_steppind_data
+      type flexible_stepping_data
         integer(kind = kint) :: num_fld
         integer(kind = kint) :: ntot_comp
         integer(kind = kint), allocatable :: num_comp(:)
@@ -60,7 +60,7 @@
         integer(kind=kint) :: i_drmax_b = izero
         integer(kind=kint) :: i_drmax_f = izero
         integer(kind=kint) :: i_drmax_d = izero
-      end type flexible_steppind_data
+      end type flexible_stepping_data
 !
 ! ----------------------------------------------------------------------
 !
@@ -70,7 +70,7 @@
 !
       subroutine alloc_check_delta_t_name(flex)
 !
-      type(flexible_steppind_data), intent(inout) :: flex
+      type(flexible_stepping_data), intent(inout) :: flex
 !
 !
       allocate(flex%fld_name(flex%num_fld) )
@@ -86,7 +86,7 @@
 !
       subroutine alloc_check_delta_t_rms(flex)
 !
-      type(flexible_steppind_data), intent(inout) :: flex
+      type(flexible_stepping_data), intent(inout) :: flex
 !
 !
       allocate(flex%rms_dt_local(flex%ntot_comp))
@@ -115,7 +115,7 @@
 !
       use m_machine_parameter
 !
-      type(flexible_steppind_data), intent(inout) :: flex
+      type(flexible_stepping_data), intent(inout) :: flex
 !
 !
       allocate(flex%d_ratio_min(flex%ntot_comp))
@@ -146,7 +146,7 @@
 !
       subroutine dealloc_check_delta_t_rms(flex)
 !
-      type(flexible_steppind_data), intent(inout) :: flex
+      type(flexible_stepping_data), intent(inout) :: flex
 !
 !
       deallocate(flex%rms_dt_local, flex%rms_dt_global)
@@ -160,7 +160,7 @@
 !
       subroutine dealloc_check_delta_t_data(flex)
 !
-      type(flexible_steppind_data), intent(inout) :: flex
+      type(flexible_stepping_data), intent(inout) :: flex
 !
 !
       deallocate(flex%d_ratio_min, flex%d_ratio_min_l)
@@ -178,7 +178,7 @@
       subroutine write_delta_t_check_head(id_file, flex)
 !
       integer(kind = kint), intent(in) :: id_file
-      type(flexible_steppind_data), intent(inout) :: flex
+      type(flexible_stepping_data), intent(inout) :: flex
 !
       integer(kind = kint) :: i_fld
 !
@@ -207,7 +207,7 @@
       integer(kind = kint), intent(in) :: i_step
       real(kind = kreal), intent(in) ::   time
 !
-      type(flexible_steppind_data), intent(inout) :: flex
+      type(flexible_stepping_data), intent(inout) :: flex
 !
 !
       write(id_file,'(i16, 1p127E25.15e3)') i_step, time,               &
@@ -223,7 +223,7 @@
       integer(kind = kint), intent(in) :: i_step
       real(kind = kreal), intent(in) ::   time
 !
-      type(flexible_steppind_data), intent(inout) :: flex
+      type(flexible_stepping_data), intent(inout) :: flex
 !
 !
       write(id_file,'(i16, 1p127E25.15e3)') i_step, time,               &
@@ -239,7 +239,7 @@
       integer(kind = kint), intent(in) :: i_step
       real(kind = kreal), intent(in) ::   time
 !
-      type(flexible_steppind_data), intent(inout) :: flex
+      type(flexible_stepping_data), intent(inout) :: flex
 !
 !
       write(id_file,'(i16, 1p127E25.15e3)') i_step, time,               &
@@ -257,7 +257,7 @@
       integer(kind = kint), intent(inout) :: i_step
       real(kind = kreal), intent(inout) ::   time
 !
-      type(flexible_steppind_data), intent(inout) :: flex
+      type(flexible_stepping_data), intent(inout) :: flex
 !
 !
 !
@@ -273,7 +273,7 @@
 !
       integer(kind = kint), intent(inout) :: i_step
       real(kind = kreal), intent(inout) ::   time
-      type(flexible_steppind_data), intent(inout) :: flex
+      type(flexible_stepping_data), intent(inout) :: flex
 !
 !
       read(id_file,*) i_step, time,                                     &
@@ -289,7 +289,7 @@
 !
       integer(kind = kint), intent(inout) :: i_step
       real(kind = kreal), intent(inout) ::   time
-      type(flexible_steppind_data), intent(inout) :: flex
+      type(flexible_stepping_data), intent(inout) :: flex
 !
 !
       write(id_file,*) i_step, time,                                    &
