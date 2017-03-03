@@ -11,8 +11,6 @@
 !!     &         (tctl, viz_step, ierr, errmsg)
 !!        type(time_data_control), intent(in) :: tctl
 !!        type(VIZ_step_params), intent(inout) :: viz_step
-!!      subroutine monitor_param_4_fixed_step(istep_def, istep_ctl, &
-!!     &          delta_t_ctl, istep_out, dt_out)
 !!@endverbatim
 !
       module set_fixed_time_step_params
@@ -59,16 +57,15 @@
         i_step_number = tctl%i_step_number_ctl%intvalue
       end if
 !
-      call monitor_param_4_fixed_step(ione, tctl%i_step_check_ctl,  &
-     &    tctl%delta_t_check_ctl, rms_step1%increment, rms_step1%delta_t)
+      call set_output_step_4_fixed_step(ione, tctl%i_step_check_ctl,    &
+     &    tctl%delta_t_check_ctl, rms_step1)
 !
 !
-      call monitor_param_4_fixed_step(ione, tctl%i_step_rst_ctl,    &
-     &    tctl%delta_t_rst_ctl, rst_step1%increment, rst_step1%delta_t)
+      call set_output_step_4_fixed_step(ione, tctl%i_step_rst_ctl,      &
+     &    tctl%delta_t_rst_ctl, rst_step1)
 !
-      call monitor_param_4_fixed_step(ione, tctl%i_step_ucd_ctl,    &
-     &    tctl%delta_t_field_ctl, ucd_step1%increment,                    &
-     &    ucd_step1%delta_t)
+      call set_output_step_4_fixed_step(ione, tctl%i_step_ucd_ctl,      &
+     &    tctl%delta_t_field_ctl, ucd_step1)
 !
       if(rst_step1%increment .gt. 0) then
         istep_rst_start = int(i_step_init /   rst_step1%increment)
@@ -96,35 +93,6 @@
       ierr = 0
 !
       end subroutine s_set_fixed_time_step_params
-!
-! -----------------------------------------------------------------------
-!
-      subroutine monitor_param_4_fixed_step(istep_def, istep_ctl,   &
-     &          delta_t_ctl, istep_out, dt_out)
-!
-      use m_t_int_parameter
-      use t_control_elements
-!
-      integer(kind = kint), intent(in) :: istep_def
-      type(read_real_item), intent(in) :: delta_t_ctl
-      type(read_integer_item), intent(in) :: istep_ctl
-!
-      integer(kind = kint), intent(inout) :: istep_out
-      real(kind = kreal), intent(inout) :: dt_out
-!
-!
-      if ( (istep_ctl%iflag + delta_t_ctl%iflag) .eq. 0) then
-        istep_out =   istep_def
-        dt_out = dble(istep_def) * dt
-      else if(istep_ctl%iflag .eq. 0) then
-        dt_out =    delta_t_ctl%realvalue
-        istep_out = nint(dt_out / dt)
-      else
-        istep_out =   istep_ctl%intvalue
-        dt_out = dble(istep_out) * dt
-      end if
-!
-      end subroutine monitor_param_4_fixed_step
 !
 ! -----------------------------------------------------------------------
 !

@@ -47,10 +47,6 @@
 !>      End step for restarting file
       integer(kind=kint) :: istep_rst_end
 ! 
-!>      Increment of time step for SGS model coefficients monitoring
-      integer(kind=kint) :: i_step_sgs_output
-!>      Time interval for SGS model coefficients monitoring
-      real(kind=kreal)   :: delta_t_sgs_output
 !>      Increment of time step for evaluation of SGS model coefficients
       integer(kind=kint) :: i_step_sgs_coefs
 !
@@ -64,7 +60,9 @@
       type(IO_step_param), save :: point_step1
 !
       type(IO_step_param), save :: boundary_step1
-!boundary_step1%delta_t
+!
+      type(IO_step_param), save :: sgs_step1
+!sgs_step1%delta_t
 !
       type(VIZ_step_params), save :: viz_step1
 !

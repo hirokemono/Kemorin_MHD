@@ -135,11 +135,8 @@
 !
 !
       if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_OFF) return
-!
-      if (mod(istep_max_dt,i_step_sgs_output) .ne. 0) return
-!
-      if (output_flag(istep_max_dt, i_step_sgs_output) .ne. 0           &
-     &  .or. my_rank.ne.0) return
+      if(output_flag(istep_max_dt,sgs_step1%increment) .ne. 0) return
+      if(my_rank .ne. 0) return
 !
       call output_layered_model_coefs_file(SGS_param, cd_prop1, wk_sgs)
       call output_whole_model_coefs_file(SGS_param, cd_prop1, wk_sgs)

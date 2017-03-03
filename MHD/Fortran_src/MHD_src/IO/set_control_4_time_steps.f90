@@ -31,7 +31,6 @@
       implicit  none
 !
       private :: set_flex_time_step_controls
-      private :: set_monitor_param_4_flex_step
       private :: set_fixed_time_step_controls
 !
 ! -----------------------------------------------------------------------
@@ -165,18 +164,18 @@
 !
       i_step_sgs_coefs = 1
       if(SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
-        call monitor_param_4_fixed_step(ione,                       &
+        call set_output_step_4_fixed_step(ione,                         &
      &      tctl%i_step_sgs_coefs_ctl, tctl%delta_t_sgs_coefs_ctl,      &
-     &      i_step_sgs_output, delta_t_sgs_output)
+     &      sgs_step1)
       end if
 !
-      call monitor_param_4_fixed_step                               &
+      call set_output_step_4_fixed_step                                 &
      &   (izero, tctl%i_step_monitor_ctl, tctl%delta_t_monitor_ctl,     &
-     &    point_step1%increment, point_step1%delta_t)
+     &    point_step1)
 !
-      call monitor_param_4_fixed_step(izero,                        &
+      call set_output_step_4_fixed_step(izero,                          &
      &    tctl%i_step_boundary_ctl, tctl%delta_t_boundary_ctl,          &
-     &    boundary_step1%increment, boundary_step1%delta_t)
+     &    boundary_step1)
 !
       end subroutine set_fixed_time_step_controls
 !
@@ -201,16 +200,15 @@
         istep_rst_end = tctl%end_rst_step_ctl%intvalue
       end if
 !
-      call set_monitor_param_4_flex_step(ione, tctl%i_step_check_ctl,   &
-     &    tctl%delta_t_check_ctl, rms_step1%increment, rms_step1%delta_t)
+      call set_output_step_4_flex_step(ione, dt_max,                    &
+     &    tctl%i_step_check_ctl, tctl%delta_t_check_ctl, rms_step1)
 !
 !
-      call set_monitor_param_4_flex_step(ione, tctl%i_step_rst_ctl,     &
-     &    tctl%delta_t_rst_ctl, rst_step1%increment, rst_step1%delta_t)
+      call set_output_step_4_flex_step(ione, dt_max,                    &
+     &    tctl%i_step_rst_ctl, tctl%delta_t_rst_ctl, rst_step1)
 !
-      call set_monitor_param_4_flex_step                                &
-     &   (ione, tctl%i_step_ucd_ctl, tctl%delta_t_field_ctl,            &
-     &    ucd_step1%increment, ucd_step1%delta_t)
+      call set_output_step_4_flex_step(ione, dt_max,                    &
+     &   tctl%i_step_ucd_ctl, tctl%delta_t_field_ctl, ucd_step1)
 !
       i_step_init =   istep_rst_start * rst_step1%increment
       i_step_number = istep_rst_end *   rst_step1%increment
@@ -220,18 +218,18 @@
 !
       i_step_sgs_coefs = 1
       if(SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
-        call set_monitor_param_4_flex_step(ione,                        &
+        call set_output_step_4_flex_step(ione, dt_max,                  &
      &      tctl%i_step_sgs_coefs_ctl, tctl%delta_t_sgs_coefs_ctl,      &
-     &      i_step_sgs_output, delta_t_sgs_output)
+     &      sgs_step1)
       end if
 !
-      call set_monitor_param_4_flex_step                                &
-     &   (izero, tctl%i_step_monitor_ctl, tctl%delta_t_monitor_ctl,     &
-     &    point_step1%increment, point_step1%delta_t)
+      call set_output_step_4_flex_step(izero, dt_max,                   &
+     &    tctl%i_step_monitor_ctl, tctl%delta_t_monitor_ctl,            &
+     &    point_step1)
 !
-      call set_monitor_param_4_flex_step(izero,                         &
+      call set_output_step_4_flex_step(izero, dt_max,                   &
      &    tctl%i_step_boundary_ctl, tctl%delta_t_boundary_ctl,          &
-     &    boundary_step1%increment, boundary_step1%delta_t)
+     &    boundary_step1)
 !
       if (istep_rst_end .eq. -1) then
         if (tctl%elapsed_time_ctl%iflag .eq. 0) then
@@ -244,35 +242,6 @@
       end if
 !
       end subroutine set_flex_time_step_controls
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine set_monitor_param_4_flex_step(istep_def,               &
-     &          istep_ctl, delta_t_ctl, istep_out, dt_out)
-!
-      use t_control_elements
-!
-      integer(kind = kint), intent(in) :: istep_def
-      type(read_real_item), intent(in) :: delta_t_ctl
-      type(read_integer_item), intent(in) :: istep_ctl
-!
-      integer(kind = kint), intent(inout) :: istep_out
-      real(kind = kreal), intent(inout) :: dt_out
-!
-!
-      if ( (istep_ctl%iflag+delta_t_ctl%iflag) .eq. 0) then
-        istep_out =   istep_def
-        dt_out = dble(istep_def) * dt_max
-      else if(delta_t_ctl%iflag .eq. 0) then
-        istep_out =   istep_ctl%intvalue
-        dt_out = dble(istep_out) * dt_max
-      else
-        dt_out =    delta_t_ctl%realvalue
-        istep_out = nint(dt_out / dt_max)
-      end if
-!
-      end subroutine set_monitor_param_4_flex_step
 !
 ! -----------------------------------------------------------------------
 !

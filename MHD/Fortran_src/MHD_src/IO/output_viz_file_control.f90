@@ -40,7 +40,7 @@
       i_udt = output_flag(istep_max_dt, ucd_step1%increment)
       i_monitor = output_flag(istep_max_dt, point_step1%increment)
 !
-      i_coef = output_flag(istep_max_dt, i_step_sgs_output)
+      i_coef = output_flag(istep_max_dt, sgs_step1%increment)
 !
       lead_field_data_flag = lead_field_data_flag                       &
      &                     * irst * i_udt * i_monitor * i_bulk * i_coef

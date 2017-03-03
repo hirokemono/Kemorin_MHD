@@ -45,48 +45,9 @@
         integer(kind=kint) :: istep_file
       end type IO_step_param
 !
-      private :: set_monitor_param_4_flex_step
-!
 ! -----------------------------------------------------------------------
 !
       contains
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_output_step_4_fixed_step                           &
-     &         (istep_def, step_ctl, delta_t_ctl, IO_step)
-!
-      use t_control_elements
-!
-      integer(kind = kint), intent(in) :: istep_def
-      type(read_integer_item), intent(in) :: step_ctl
-      type(read_real_item), intent(in) :: delta_t_ctl
-      type(IO_step_param), intent(inout) :: IO_step
-!
-!
-      call set_monitor_param_4_fixed_step(istep_def, step_ctl,          &
-     &    delta_t_ctl, IO_step%increment, IO_step%delta_t)
-!
-      end subroutine set_output_step_4_fixed_step
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_output_step_4_flex_step                            &
-     &         (istep_def, dt_max, step_ctl, delta_t_ctl, IO_step)
-!
-      use t_control_elements
-!
-      integer(kind = kint), intent(in) :: istep_def
-      real(kind = kreal), intent(in) :: dt_max
-      type(read_integer_item), intent(in) :: step_ctl
-      type(read_real_item), intent(in) :: delta_t_ctl
-      type(IO_step_param), intent(inout) :: IO_step
-!
-!
-      call set_monitor_param_4_flex_step(istep_def, dt_max,             &
-     &    step_ctl, delta_t_ctl, IO_step%increment, IO_step%delta_t)
-!
-      end subroutine set_output_step_4_flex_step
 !
 ! -----------------------------------------------------------------------
 !
@@ -121,8 +82,8 @@
 !-----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_monitor_param_4_fixed_step(istep_def, istep_ctl,   &
-     &          delta_t_ctl, istep_out, dt_out)
+      subroutine set_output_step_4_fixed_step(istep_def, istep_ctl,     &
+     &          delta_t_ctl, IO_step)
 !
       use m_t_int_parameter
       use t_control_elements
@@ -131,27 +92,26 @@
       type(read_real_item), intent(in) :: delta_t_ctl
       type(read_integer_item), intent(in) :: istep_ctl
 !
-      integer(kind = kint), intent(inout) :: istep_out
-      real(kind = kreal), intent(inout) :: dt_out
+      type(IO_step_param), intent(inout) :: IO_step
 !
 !
       if ( (istep_ctl%iflag + delta_t_ctl%iflag) .eq. 0) then
-        istep_out =   istep_def
-        dt_out = dble(istep_def) * dt
+        IO_step%increment =   istep_def
+        IO_step%delta_t = dble(istep_def) * dt
       else if(istep_ctl%iflag .eq. 0) then
-        dt_out =    delta_t_ctl%realvalue
-        istep_out = nint(dt_out / dt)
+        IO_step%delta_t =    delta_t_ctl%realvalue
+        IO_step%increment = nint(IO_step%delta_t / dt)
       else
-        istep_out =   istep_ctl%intvalue
-        dt_out = dble(istep_out) * dt
+        IO_step%increment =   istep_ctl%intvalue
+        IO_step%delta_t = dble(IO_step%increment) * dt
       end if
 !
-      end subroutine set_monitor_param_4_fixed_step
+      end subroutine set_output_step_4_fixed_step
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_monitor_param_4_flex_step(istep_def, dt_max,       &
-     &          istep_ctl, delta_t_ctl, istep_out, dt_out)
+      subroutine set_output_step_4_flex_step(istep_def, dt_max,         &
+     &          istep_ctl, delta_t_ctl, IO_step)
 !
       use t_control_elements
 !
@@ -160,22 +120,21 @@
       type(read_real_item), intent(in) :: delta_t_ctl
       type(read_integer_item), intent(in) :: istep_ctl
 !
-      integer(kind = kint), intent(inout) :: istep_out
-      real(kind = kreal), intent(inout) :: dt_out
+      type(IO_step_param), intent(inout) :: IO_step
 !
 !
       if ( (istep_ctl%iflag+delta_t_ctl%iflag) .eq. 0) then
-        istep_out =   istep_def
-        dt_out = dble(istep_def) * dt_max
+        IO_step%increment =   istep_def
+        IO_step%delta_t = dble(istep_def) * dt_max
       else if(delta_t_ctl%iflag .eq. 0) then
-        istep_out =   istep_ctl%intvalue
-        dt_out = dble(istep_out) * dt_max
+        IO_step%increment =   istep_ctl%intvalue
+        IO_step%delta_t = dble(IO_step%increment) * dt_max
       else
-        dt_out =    delta_t_ctl%realvalue
-        istep_out = nint(dt_out / dt_max)
+        IO_step%delta_t =    delta_t_ctl%realvalue
+        IO_step%increment = nint(IO_step%delta_t / dt_max)
       end if
 !
-      end subroutine set_monitor_param_4_flex_step
+      end subroutine set_output_step_4_flex_step
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
