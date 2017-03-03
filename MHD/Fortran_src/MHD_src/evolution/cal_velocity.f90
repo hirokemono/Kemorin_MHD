@@ -199,8 +199,7 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1)  write(*,*) 's_cal_velocity_pre'
-      call s_cal_velocity_pre(FEM_prm,                                  &
-     &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
+      call s_cal_velocity_pre(FEM_prm, SGS_par,                         &
      &    nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,         &
      &    fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys,          &
      &    iphys_ele, ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, &
@@ -232,8 +231,7 @@
      &      iphys%i_p_phi, iphys%i_press,  nod_fld%d_fld)
 !
         call cal_velocity_co                                            &
-     &     (FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
-     &      nod_comm, node, ele, surf, fluid,                           &
+     &     (FEM_prm, SGS_par, nod_comm, node, ele, surf, fluid,         &
      &      sf_grp, sf_grp_nod, fl_prop, Vnod_bcs, Vsf_bcs, Psf_bcs,    &
      &      iphys, iphys_ele, ele_fld, ak_MHD,                          &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &

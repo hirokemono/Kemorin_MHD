@@ -141,12 +141,6 @@
       integer (kind = kint) :: iflag_dmc, iflag2
 !
 !
-      if (i_step_sgs_coefs.eq.0) then
-        iflag_dmc = 1
-      else
-        iflag_dmc = mod(i_step_MHD, i_step_sgs_coefs)
-      end if
-!
       if (iphys_ele%i_magne .ne. 0) then
         call vector_on_element_1st(node, ele, jac_3d_q,                 &
      &      ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,               &
@@ -156,68 +150,69 @@
       end if
 !
 !
-        if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF        &
+      iflag_dmc = output_flag(i_step_MHD, SGS_par%i_step_sgs_coefs)
+      if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF          &
      &     .and.  iflag_dmc .eq. 0) then
-         if(SGS_par%model_p%iflag_SGS_lorentz .eq. id_SGS_similarity    &
-     &     .or. SGS_par%model_p%iflag_SGS_uxb .eq. id_SGS_similarity)   &
-     &    then
-           iflag2 = 3
-         else if(SGS_par%model_p%iflag_SGS_lorentz .eq. id_SGS_NL_grad  &
-     &      .or. SGS_par%model_p%iflag_SGS_uxb .eq. id_SGS_NL_grad)     &
-     &    then
-           iflag2 = 2
-         else
-           iflag2 = 2
-         end if
-       else
-         if(SGS_par%model_p%iflag_SGS_lorentz .eq. id_SGS_similarity    &
-     &     .or. SGS_par%model_p%iflag_SGS_uxb .eq. id_SGS_similarity)   &
+        if(SGS_par%model_p%iflag_SGS_lorentz .eq. id_SGS_similarity     &
+     &    .or. SGS_par%model_p%iflag_SGS_uxb .eq. id_SGS_similarity)    &
      &   then
-           iflag2 = 1
-         else
-           iflag2 = 0
-         end if
-       end if
+          iflag2 = 3
+        else if(SGS_par%model_p%iflag_SGS_lorentz .eq. id_SGS_NL_grad   &
+     &     .or. SGS_par%model_p%iflag_SGS_uxb .eq. id_SGS_NL_grad)      &
+     &   then
+          iflag2 = 2
+        else
+          iflag2 = 2
+        end if
+      else
+        if(SGS_par%model_p%iflag_SGS_lorentz .eq. id_SGS_similarity     &
+     &   .or. SGS_par%model_p%iflag_SGS_uxb .eq. id_SGS_similarity)     &
+     &   then
+          iflag2 = 1
+        else
+          iflag2 = 0
+        end if
+      end if
 !
-       if (iflag2.eq.1 .or. iflag2.eq.2 .or. iflag2.eq.3) then
-         if (iphys%i_filter_magne .ne. 0) then
-           if (iflag_debug.gt.0) write(*,*)                             &
+      if (iflag2.eq.1 .or. iflag2.eq.2 .or. iflag2.eq.3) then
+        if (iphys%i_filter_magne .ne. 0) then
+          if(iflag_debug.gt.0) write(*,*)                               &
      &         'cal_filtered_vector_whole',  iphys%i_filter_magne
-           call cal_filtered_vector_whole                               &
-     &        (SGS_par%filter_p, nod_comm, node, filtering,             &
-     &         iphys%i_filter_magne, iphys%i_magne, wk_filter, nod_fld)
-           nod_fld%iflag_update(iphys%i_filter_magne  ) = 1
-           nod_fld%iflag_update(iphys%i_filter_magne+1) = 1
-           nod_fld%iflag_update(iphys%i_filter_magne+2) = 1
-         end if
+          call cal_filtered_vector_whole                                &
+     &       (SGS_par%filter_p, nod_comm, node, filtering,              &
+     &        iphys%i_filter_magne, iphys%i_magne, wk_filter, nod_fld)
+          nod_fld%iflag_update(iphys%i_filter_magne  ) = 1
+          nod_fld%iflag_update(iphys%i_filter_magne+1) = 1
+          nod_fld%iflag_update(iphys%i_filter_magne+2) = 1
+        end if
 !
-         if (iflag2.eq.2 .and. iphys_ele%i_filter_magne.ne.0) then
-           if (iflag_debug.gt.0) write(*,*) 'filtered_magne_on_ele'
-            call vector_on_element_1st(node, ele, jac_3d_q,             &
-     &          ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,           &
-     &          nod_fld%ntot_phys, iphys%i_filter_magne,                &
-     &          nod_fld%d_fld, ele_fld%ntot_phys,                       &
-     &          iphys_ele%i_filter_magne, ele_fld%iflag_update,         &
-     &          ele_fld%d_fld)
-         end if
+        if (iflag2.eq.2 .and. iphys_ele%i_filter_magne.ne.0) then
+          if (iflag_debug.gt.0) write(*,*) 'filtered_magne_on_ele'
+          call vector_on_element_1st(node, ele, jac_3d_q,               &
+     &        ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,             &
+     &        nod_fld%ntot_phys, iphys%i_filter_magne,                  &
+     &        nod_fld%d_fld, ele_fld%ntot_phys,                         &
+     &        iphys_ele%i_filter_magne, ele_fld%iflag_update,           &
+     &        ele_fld%d_fld)
+        end if
 !
-         if (iflag2.eq.2 .and. ie_dfbx.ne.0) then
-           if (iflag_debug.gt.0) write(*,*) 'diff_filter_b_on_ele'
-           call sel_int_diff_vector_on_ele(FEM_prm%npoint_t_evo_int,    &
-     &         ele%istack_ele_smp, iphys%i_filter_magne, ie_dfbx,       &
-     &         node, ele, nod_fld, jac_3d_q, jac_3d_l, mhd_fem_wk)
-         end if
+        if (iflag2.eq.2 .and. ie_dfbx.ne.0) then
+          if (iflag_debug.gt.0) write(*,*) 'diff_filter_b_on_ele'
+          call sel_int_diff_vector_on_ele(FEM_prm%npoint_t_evo_int,     &
+     &        ele%istack_ele_smp, iphys%i_filter_magne, ie_dfbx,        &
+     &        node, ele, nod_fld, jac_3d_q, jac_3d_l, mhd_fem_wk)
+        end if
 !
-         if (iflag2.eq.3 .and. iphys%i_wide_fil_magne.ne.0) then
-           call cal_filtered_vector_whole                               &
+        if (iflag2.eq.3 .and. iphys%i_wide_fil_magne.ne.0) then
+          call cal_filtered_vector_whole                                &
      &        (SGS_par%filter_p, nod_comm, node, wide_filtering,        &
      &         iphys%i_wide_fil_magne, iphys%i_filter_magne,            &
      &         wk_filter, nod_fld)
-            nod_fld%iflag_update(iphys%i_wide_fil_magne  ) = 1
-            nod_fld%iflag_update(iphys%i_wide_fil_magne+1) = 1
-            nod_fld%iflag_update(iphys%i_wide_fil_magne+2) = 1
-         end if
-       end if
+           nod_fld%iflag_update(iphys%i_wide_fil_magne  ) = 1
+           nod_fld%iflag_update(iphys%i_wide_fil_magne+1) = 1
+           nod_fld%iflag_update(iphys%i_wide_fil_magne+2) = 1
+        end if
+      end if
 !
 !
       if(SGS_par%commute_p%iflag_c_magne .eq. id_SGS_commute_ON         &
@@ -232,19 +227,19 @@
      &        FEM_elens, filtering, m_lump, wk_filter,                  &
      &        wk_cor, wk_lsq, wk_diff, fem_wk, surf_wk, f_l, f_nl,      &
      &        nod_fld, diff_coefs)
-         end if
-       end if
+        end if
+      end if
  !
  !
-       if (  SGS_par%model_p%iflag_SGS_lorentz .eq. id_SGS_NL_grad      &
-     &  .or. SGS_par%model_p%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
+      if (  SGS_par%model_p%iflag_SGS_lorentz .eq. id_SGS_NL_grad       &
+     & .or. SGS_par%model_p%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
         if ( ie_dbx.ne.0 ) then
            if (iflag_debug.gt.0) write(*,*) 'diff_magne_on_ele'
             call sel_int_diff_vector_on_ele(FEM_prm%npoint_t_evo_int,   &
      &          ele%istack_ele_smp, iphys%i_magne, ie_dbx,              &
      &          node, ele, nod_fld, jac_3d_q, jac_3d_l, mhd_fem_wk)
         end if
-       end if
+      end if
 !
       if (iphys_ele%i_current .ne. 0                                    &
      &     .and. FEM_prm%iflag_rotate_form .eq. id_turn_ON) then

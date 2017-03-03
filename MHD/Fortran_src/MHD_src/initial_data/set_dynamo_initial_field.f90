@@ -5,10 +5,9 @@
 !      modified by H. Matsui on July, 2006
 !      modified by H. Matsui on Dec., 2007
 !
-!!      subroutine initial_data_control(SGS_par, ref_param_T,           &
-!!     &          node, ele, fluid, cd_prop, iphys, layer_tbl,          &
+!!      subroutine initial_data_control(ref_param_T,                    &
+!!     &          node, ele, fluid, cd_prop, iphys, layer_tbl, SGS_par, &
 !!     &          wk_sgs, wk_diff, sgs_coefs, diff_coefs, nod_fld)
-!!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(reference_scalar_param), intent(in) :: ref_param_T
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -17,6 +16,7 @@
 !!        type(phys_address), intent(in) :: iphys
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(SGS_paremeters), intent(inout) :: SGS_par
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!        type(dynamic_model_data), intent(inout) :: wk_diff
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
@@ -49,8 +49,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine initial_data_control(SGS_par, ref_param_T,             &
-     &          node, ele, fluid, cd_prop, iphys, layer_tbl,            &
+      subroutine initial_data_control(ref_param_T,                      &
+     &          node, ele, fluid, cd_prop, iphys, layer_tbl, SGS_par,   &
      &          wk_sgs, wk_diff, sgs_coefs, diff_coefs, nod_fld)
 !
       use m_initial_field_control
@@ -63,7 +63,6 @@
       use fem_mhd_rst_IO_control
       use set_restart_data
 !
-      type(SGS_paremeters), intent(in) :: SGS_par
       type(reference_scalar_param), intent(in) :: ref_param_T
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -72,6 +71,7 @@
       type(phys_address), intent(in) :: iphys
       type(layering_tbl), intent(in) :: layer_tbl
 !
+      type(SGS_paremeters), intent(inout) :: SGS_par
       type(dynamic_model_data), intent(inout) :: wk_sgs, wk_diff
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
@@ -79,8 +79,8 @@
 !
 !
       if(iflag_restart .eq. i_rst_by_file) then
-        call input_MHD_restart_file_ctl(SGS_par, layer_tbl, node, ele,  &
-     &      fluid, wk_sgs, wk_diff, sgs_coefs, diff_coefs, nod_fld)
+        call input_MHD_restart_file_ctl(layer_tbl, node, ele, fluid,    &
+     &      SGS_par, wk_sgs, wk_diff, sgs_coefs, diff_coefs, nod_fld)
       else
         call set_initial_data                                           &
      &     (cd_prop, ref_param_T, node, fluid, iphys, nod_fld)

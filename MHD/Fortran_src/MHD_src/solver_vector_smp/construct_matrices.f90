@@ -6,7 +6,7 @@
 !!      subroutine set_data_4_const_matrices(mesh, MHD_mesh, rhs_tbl,   &
 !!     &          MHD_mat_tbls, MHD_matrices, s_package)
 !!        type(MHD_matrices_pack), intent(inout) :: s_package
-!!      subroutine update_matrices(FEM_prm, SGS_param, cmt_param,       &
+!!      subroutine update_matrices(FEM_prm, SGS_par,                    &
 !!     &         (mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,   &
 !!     &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,  &
 !!     &          ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,         &
@@ -17,6 +17,7 @@
 !!     &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,  &
 !!     &          ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,         &
 !!     &          surf_wk, mhd_fem_wk, fem_wk, MHD_matrices)
+!!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -112,7 +113,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine update_matrices(FEM_prm, SGS_param, cmt_param,         &
+      subroutine update_matrices(FEM_prm, SGS_par,                      &
      &          mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,     &
      &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,    &
      &          ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,           &
@@ -123,8 +124,7 @@
       use m_flexible_time_step
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
-      type(SGS_model_control_params), intent(in) :: SGS_param
-      type(commutation_control_params), intent(in) :: cmt_param
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
       type(element_geometry), intent(in) :: ele_mesh
@@ -148,15 +148,15 @@
       integer (kind = kint) :: iflag
 !
       iflag = 0
-      if (    SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF           &
-     &  .and. cmt_param%iflag_c_linear .gt. id_SGS_commute_OFF          &
-     &  .and. mod(i_step_MHD,i_step_sgs_coefs) .eq. 0) iflag = 1
+      if (   SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF      &
+     & .and. SGS_par%commute_p%iflag_c_linear .gt. id_SGS_commute_OFF   &
+     & .and. mod(i_step_MHD,SGS_par%i_step_sgs_coefs) .eq. 0) iflag = 1
       iflag = iflag + iflag_flex_step_changed
 !
       if (iflag .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'matrix assemble again'
         call set_aiccg_matrices                                         &
-     &     (FEM_prm, SGS_param, cmt_param, mesh, group,                 &
+     &     (FEM_prm, SGS_par%model_p, SGS_par%commute_p, mesh, group,   &
      &      ele_mesh, MHD_mesh, nod_bcs, surf_bcs,                      &
      &      ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,        &
      &      ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,               &

@@ -174,6 +174,11 @@
 !
 !
       type SGS_paremeters
+!>        Increment of time step for evaluation of SGS model coefficients
+        integer(kind=kint) :: i_step_sgs_coefs = ione
+!>        Flag for initial step for SGS model
+        integer(kind=kint) :: iflag_SGS_initial =  1
+!
 !>        Parameters for SGS model
         type(SGS_model_control_params) :: model_p
 !>        Parameters for commutation error correction

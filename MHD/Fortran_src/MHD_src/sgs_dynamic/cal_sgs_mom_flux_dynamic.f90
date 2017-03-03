@@ -172,7 +172,7 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_model_coefs', n_sym_tensor, iak_sgs_mf, icomp_sgs_mf
-      call cal_model_coefs(SGS_par%model_p, layer_tbl,                  &
+      call cal_model_coefs(SGS_par, layer_tbl,                          &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
      &    SGS_par%model_p%itype_Csym_m_flux, n_sym_tensor,              &
      &    iak_sgs_mf, icomp_sgs_mf, FEM_prm%npoint_t_evo_int,           &

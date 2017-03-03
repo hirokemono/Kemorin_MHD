@@ -154,7 +154,7 @@
 !
       if (iflag_debug.eq.1)  write(*,*)' cal_model_coefs',              &
      &   n_vector, iak_sgs_hlux, icomp_sgs_flux
-      call cal_model_coefs(SGS_par%model_p, layer_tbl,                  &
+      call cal_model_coefs(SGS_par, layer_tbl,                          &
      &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
      &    itype_Csym_flux, n_vector, iak_sgs_hlux,                      &
      &    icomp_sgs_flux, num_int, wk_cor, wk_lsq, wk_sgs, sgs_coefs)

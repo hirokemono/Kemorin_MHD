@@ -143,11 +143,7 @@
       integer (kind = kint) :: iflag_dmc, iflag2
 !
 !
-      if (i_step_sgs_coefs .eq. 0) then
-        iflag_dmc = 1
-      else
-        iflag_dmc = mod(i_step_MHD, i_step_sgs_coefs)
-      end if
+      iflag_dmc = output_flag(i_step_MHD, SGS_par%i_step_sgs_coefs)
 !
 !
       if (iphys%i_sgs_temp .gt. 0) then
@@ -292,11 +288,7 @@
       integer (kind = kint) :: iflag_dmc, iflag2
 !
 !
-      if (i_step_sgs_coefs.eq.0) then
-        iflag_dmc = 1
-      else
-        iflag_dmc = mod(i_step_MHD, i_step_sgs_coefs)
-      end if
+      iflag_dmc = output_flag(i_step_MHD, SGS_par%i_step_sgs_coefs)
 !
       if (iphys%i_sgs_composit .ne. 0) then
         if(SGS_par%model_p%iflag_parterbuation .eq. id_SGS_REFERENCE)   &

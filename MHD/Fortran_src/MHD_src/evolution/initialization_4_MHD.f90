@@ -3,12 +3,12 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine init_analyzer_fl(FEM_prm, SGS_par, IO_bc,            &
+!!      subroutine init_analyzer_fl(IO_bc, FEM_prm, SGS_par,            &
 !!     &          mesh, group, ele_mesh, MHD_mesh, layer_tbl,           &
 !!     &          iphys, nod_fld, label_sim)
-!!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
-!!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(IO_boundary), intent(in) :: IO_bc
+!!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
+!!        type(SGS_paremeters), intent(inout) :: SGS_par
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(element_geometry), intent(inout) :: ele_mesh
@@ -40,7 +40,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer_fl(FEM_prm, SGS_par, IO_bc,              &
+      subroutine init_analyzer_fl(IO_bc, FEM_prm, SGS_par,              &
      &          mesh, group, ele_mesh, MHD_mesh, layer_tbl,             &
      &          iphys, nod_fld, label_sim)
 !
@@ -103,10 +103,10 @@
       use nod_phys_send_recv
       use solver_MGCG_MHD
 !
-      type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
-      type(SGS_paremeters), intent(in) :: SGS_par
       type(IO_boundary), intent(in) :: IO_bc
 !
+      type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
+      type(SGS_paremeters), intent(inout) :: SGS_par
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
@@ -250,9 +250,10 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*)' initial_data_control'
-      call initial_data_control(SGS_par, ref_param_T1,                  &
-     &    mesh%node, mesh%ele, MHD_mesh%fluid, cd_prop1, iphys,         &
-     &    layer_tbl, wk_sgs1, wk_diff1, sgs_coefs, diff_coefs, nod_fld)
+      call initial_data_control                                         &
+     &   (ref_param_T1, mesh%node, mesh%ele, MHD_mesh%fluid,            &
+     &    cd_prop1, iphys, layer_tbl, SGS_par, wk_sgs1, wk_diff1,       &
+     &    sgs_coefs, diff_coefs, nod_fld)
 !
 !  -------------------------------
 !

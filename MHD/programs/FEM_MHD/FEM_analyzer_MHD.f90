@@ -70,7 +70,7 @@
 !   matrix assembling
 !
       call init_analyzer_fl                                             &
-     &   (FEM_prm1, SGS_par1, IO_bc1, mesh1, group1, ele_mesh1,         &
+     &   (IO_bc1, FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1,         &
      &    MHD_mesh1, layer_tbl1, iphys, nod_fld1, label_sim)
 !
       call nod_fields_send_recv(mesh1%nod_comm, nod_fld1)
@@ -141,7 +141,7 @@
 !
 !     ---------------------
 !
-      iflag_SGS_initial = 0
+      SGS_par1%iflag_SGS_initial = 0
 !
       if (iflag_flexible_step .eq. iflag_flex_step) then
         call set_ele_rms_4_previous_step                                &
@@ -350,13 +350,12 @@
         if (iflag_debug.eq.1) write(*,*) 's_chenge_step_4_dynamic'
         call s_chenge_step_4_dynamic                                    &
      &     (my_rank, SGS_par1%model_p, SGS_par1%commute_p,              &
-     &      wk_sgs1, wk_diff1)
+     &      SGS_par1%i_step_sgs_coefs, wk_sgs1, wk_diff1)
       end if
 !
       if ( retval .ne. 0 ) then
         if (iflag_debug.eq.1) write(*,*) 'update_matrices'
-        call update_matrices                                            &
-     &    (FEM_prm1, SGS_par1%model_p, SGS_par1%commute_p,              &
+        call update_matrices(FEM_prm1, SGS_par1,                        &
      &     mesh1, group1, ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs,      &
      &     ak_MHD, jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, FEM1_elen,   &
      &     ifld_diff, diff_coefs, rhs_tbl1, MHD1_mat_tbls,              &

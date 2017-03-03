@@ -167,10 +167,11 @@
 !
 !
       if(SGS_par%model_p%iflag_dynamic .eq. id_SGS_DYNAMIC_OFF) return
-      if(mod(i_step_MHD, i_step_sgs_coefs) .ne. 0) return
+      if(output_flag(i_step_MHD, SGS_par%i_step_sgs_coefs) .ne. 0)      &
+     &     return
 !
       if(my_rank .eq. 0) write(*,*)                                     &
-     &            'set Csim', i_step_MHD, i_step_sgs_coefs
+     &            'set Csim', i_step_MHD, SGS_par%i_step_sgs_coefs
 !
       if(ht_prop%iflag_scheme .ne. id_no_evolution) then
         if(SGS_par%model_p%iflag_SGS_h_flux .eq. id_SGS_NL_grad) then

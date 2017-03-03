@@ -34,8 +34,6 @@
 !>      Flag for initial step to use Euler scheme
 !!      insted of Adams-BAshforth
       integer(kind=kint) :: iflag_initial_step = 0
-!>      Flag for initial step for SGS model
-      integer(kind=kint) :: iflag_SGS_initial =  1
 !
 !>      Start time step
       integer(kind=kint) :: i_step_init
@@ -46,9 +44,6 @@
       integer(kind=kint) :: istep_rst_start
 !>      End step for restarting file
       integer(kind=kint) :: istep_rst_end
-! 
-!>      Increment of time step for evaluation of SGS model coefficients
-      integer(kind=kint) :: i_step_sgs_coefs
 !
 !
       type(IO_step_param), save :: rst_step1

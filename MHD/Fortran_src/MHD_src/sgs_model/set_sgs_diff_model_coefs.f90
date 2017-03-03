@@ -6,8 +6,8 @@
 !     Modified by H. Matsui on Nov., 2009
 !
 !!      subroutine clippging_sgs_diff_coefs                             &
-!!     &         (numdir, ifield_d, icomp_f, SGS_param, wk_sgs)
-!!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!     &         (numdir, ifield_d, icomp_f, SGS_par, wk_sgs)
+!!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!
 !!      subroutine clear_model_coefs_2_ele                              &
@@ -44,17 +44,18 @@
 !  ---------------------------------------------------------------------
 !
       subroutine clippging_sgs_diff_coefs                               &
-     &         (numdir, ifield_d, icomp_f, SGS_param, wk_sgs)
+     &         (numdir, ifield_d, icomp_f, SGS_par, wk_sgs)
 !
       use t_ele_info_4_dynamic
       use t_SGS_control_parameter
 !
       integer(kind = kint), intent(in) :: numdir, ifield_d, icomp_f
-      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(dynamic_model_data), intent(inout) :: wk_sgs
 !
 !
-      call clippging_sgs_coefs(SGS_param, numdir, ifield_d, icomp_f,    &
+      call clippging_sgs_coefs(SGS_par%iflag_SGS_initial,               &
+     &    SGS_par%model_p, numdir, ifield_d, icomp_f,                   &
      &    wk_sgs%nlayer, wk_sgs%num_kinds, wk_sgs%ntot_comp,            &
      &    wk_sgs%fld_coef, wk_sgs%comp_coef, wk_sgs%fld_whole,          &
      &    wk_sgs%comp_whole, wk_sgs%fld_clip, wk_sgs%comp_clip,         &
@@ -65,8 +66,8 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine clippging_sgs_coefs                                    &
-     &         (SGS_param, numdir, ifield_d, icomp_f,                   &
+      subroutine clippging_sgs_coefs(iflag_SGS_initial,                 &
+     &          SGS_param, numdir, ifield_d, icomp_f,                   &
      &          nlayer_SGS, num_sgs_kinds, num_sgs_coefs,               &
      &          sgs_f_coef, sgs_c_coef, sgs_f_whole, sgs_c_whole,       &
      &          sgs_f_clip, sgs_c_clip, sgs_fw_clip, sgs_cw_clip)
@@ -75,6 +76,7 @@
       use m_t_step_parameter
       use t_SGS_control_parameter
 !
+      integer(kind = kint), intent(in) :: iflag_SGS_initial
       type(SGS_model_control_params), intent(in) :: SGS_param
 !
       integer(kind = kint), intent(in) :: numdir, ifield_d, icomp_f

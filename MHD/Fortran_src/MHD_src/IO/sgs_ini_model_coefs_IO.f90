@@ -4,11 +4,12 @@
 !     programmed by H.Matsui in 2005
 !     modified by H. Matsui on Aug., 2007
 !
-!!      subroutine output_ini_model_coefs(cmt_param, wk_sgs, wk_diff)
+!!      subroutine output_ini_model_coefs                               &
+!!     &         (i_step_sgs_coefs, cmt_param, wk_sgs, wk_diff)
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(dynamic_model_data), intent(in) :: wk_sgs
 !!      subroutine input_ini_model_coefs                                &
-!!     &         (cmt_param, ele, fluid, layer_tbl,                     &
+!!     &         (cmt_param, ele, fluid, layer_tbl, i_step_sgs_coefs,   &
 !!     &          wk_sgs, wk_diff, sgs_coefs, diff_coefs)
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: fluid
@@ -60,11 +61,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine output_ini_model_coefs(cmt_param, wk_sgs, wk_diff)
+      subroutine output_ini_model_coefs                                 &
+     &         (i_step_sgs_coefs, cmt_param, wk_sgs, wk_diff)
 !
       use open_sgs_model_coefs
       use sgs_model_coefs_IO
 !
+      integer(kind = kint), intent(in) :: i_step_sgs_coefs
       type(commutation_control_params), intent(in) :: cmt_param
       type(dynamic_model_data), intent(in) :: wk_sgs, wk_diff
 !
@@ -127,7 +130,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine input_ini_model_coefs                                  &
-     &         (cmt_param, ele, fluid, layer_tbl,                       &
+     &         (cmt_param, ele, fluid, layer_tbl, i_step_sgs_coefs,     &
      &          wk_sgs, wk_diff, sgs_coefs, diff_coefs)
 !
       use t_geometry_data
@@ -138,13 +141,14 @@
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
       type(layering_tbl), intent(in) :: layer_tbl
-      type(dynamic_model_data), intent(inout) :: wk_sgs, wk_diff
 !
+      integer(kind = kint), intent(inout) :: i_step_sgs_coefs
+      type(dynamic_model_data), intent(inout) :: wk_sgs, wk_diff
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
 !
-      call read_ini_model_coefs(cmt_param)
+      call read_ini_model_coefs(cmt_param, i_step_sgs_coefs)
       call set_ini_model_coefs_from_IO(cmt_param, wk_sgs, wk_diff)
       call set_initial_model_coefs_ele                                  &
      &   (cmt_param, ele, fluid, layer_tbl%e_grp,                       &
@@ -154,12 +158,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine read_ini_model_coefs(cmt_param)
+      subroutine read_ini_model_coefs(cmt_param, i_step_sgs_coefs)
 !
       use skip_comment_f
       use sgs_model_coefs_IO
 !
       type(commutation_control_params), intent(in) :: cmt_param
+      integer(kind = kint), intent(inout) :: i_step_sgs_coefs
 !
       character(len=255) :: character_4_read
       integer (kind = kint) :: itmp, i_step
