@@ -8,7 +8,7 @@
 !> @brief Parameteres for time steppings
 !!
 !!@verbatim
-!!      subroutine set_output_flag_4_viz(i_step, viz_step, iflag_field)
+!!      subroutine accum_output_flag_4_viz(i_step, viz_step, iflag_field)
 !!      integer(kind = kint) function viz_file_step_4_flex              &
 !!     &                            (time, viz_step)
 !!      integer(kind = kint) function viz_file_step_4_fix               &
@@ -45,7 +45,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_output_flag_4_viz(i_step, viz_step, iflag_field)
+      subroutine accum_output_flag_4_viz(i_step, viz_step, iflag_field)
 !
       integer (kind =kint), intent(in) :: i_step
       type(VIZ_step_params), intent(in) :: viz_step
@@ -59,7 +59,7 @@
       call accum_output_flag(i_step, viz_step%PVR_t, iflag_field)
       call accum_output_flag(i_step, viz_step%FLINE_t, iflag_field)
 !
-      end subroutine set_output_flag_4_viz
+      end subroutine accum_output_flag_4_viz
 !
 !-----------------------------------------------------------------------
 !

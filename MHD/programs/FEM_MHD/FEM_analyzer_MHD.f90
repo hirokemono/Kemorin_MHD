@@ -126,7 +126,7 @@
      &      nod_fld1, sgs_coefs, sgs_coefs_nod, diff_coefs)
       end if
 !
-      if (lead_field_data_flag(viz_step) .eq.0) then
+      if(lead_field_data_flag(viz_step, SGS_par1%sgs_step) .eq. 0) then
         if (iflag_debug.eq.1) write(*,*) 'lead_fields_by_FEM'
         call lead_fields_by_FEM                                         &
      &    (FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1,                &
@@ -256,7 +256,8 @@
 !     ========  Data output
 !
       if(istep_flex_to_max .eq. 0) then
-        if (lead_field_data_flag(viz_step) .eq.0) then
+        if(lead_field_data_flag(viz_step, SGS_par1%sgs_step) .eq. 0)    &
+     &   then
           call lead_fields_by_FEM(FEM_prm1, SGS_par1,                   &
      &        mesh1, group1, ele_mesh1, MHD_mesh1,                      &
      &        nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,              &
@@ -284,8 +285,7 @@
         call output_monitor_control(mesh1%node, nod_fld1)
 !
         if (iflag_debug.eq.1) write(*,*) 's_output_sgs_model_coefs'
-        call s_output_sgs_model_coefs                                   &
-     &     (SGS_par1%model_p, SGS_par1%commute_p, wk_sgs1, wk_diff1)
+        call s_output_sgs_model_coefs(SGS_par1, wk_sgs1, wk_diff1)
 !
 !     ---- Output restart field data
 !

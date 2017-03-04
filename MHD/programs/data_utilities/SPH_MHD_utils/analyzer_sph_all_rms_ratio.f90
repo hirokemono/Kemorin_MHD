@@ -20,6 +20,7 @@
       use m_work_time
       use m_t_int_parameter
       use m_t_step_parameter
+      use m_SGS_control_parameter
       use m_mesh_data
       use m_node_phys_data
       use m_element_id_4_node
@@ -46,7 +47,6 @@
 !
       use t_ctl_data_sph_MHD
       use m_ctl_data_sph_MHD
-      use m_SGS_control_parameter
       use m_spheric_parameter
       use m_sph_spectr_data
       use m_rms_4_sph_spectr
@@ -143,7 +143,7 @@
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
         call FEM_analyze_sph_MHD                                        &
-     &     (i_step_MHD, mesh1, nod_fld1, viz_step1, visval)
+     &     (i_step_MHD, SGS_par1, mesh1, nod_fld1, viz_step1, visval)
 !
         call end_eleps_time(4)
 !

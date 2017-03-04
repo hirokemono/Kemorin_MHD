@@ -17,7 +17,7 @@
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(maximum_informations), intent(inout) :: range
 !!      subroutine FEM_analyze_sph_MHD                                  &
-!!     &         (i_step, mesh, nod_fld, viz_step, visval)
+!!     &         (i_step, SGS_par, mesh, nod_fld, viz_step, visval)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(VIZ_step_params), intent(inout) :: viz_step
@@ -123,13 +123,15 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_analyze_sph_MHD                                    &
-     &         (i_step, mesh, nod_fld, viz_step, visval)
+     &         (i_step, SGS_par, mesh, nod_fld, viz_step, visval)
 !
+      use t_SGS_control_parameter
       use t_VIZ_step_parameter
       use nod_phys_send_recv
       use output_viz_file_control
 !
       integer (kind =kint), intent(in) :: i_step
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -138,7 +140,8 @@
 !
 !
 !
-      if(lead_field_data_flag(viz_step) .ne. 0) return
+      if(lead_field_data_flag(viz_step, SGS_par%sgs_step) .ne. 0)       &
+     & return
 !
 !*  ----------   Count steps for visualization
 !*

@@ -73,7 +73,8 @@
         call start_eleps_time(1)
         call start_eleps_time(4)
 !
-        if(lead_field_data_flag(viz_step1) .eq. 0) then
+        if(lead_field_data_flag(viz_step1,SGS_par1%sgs_step) .eq. 0)    &
+     &   then
           if(iflag_debug.eq.1)                                          &
      &       write(*,*) 'SPH_to_FEM_bridge_special_snap'
           call SPH_to_FEM_bridge_special_snap
@@ -81,7 +82,7 @@
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
         call FEM_analyze_sph_MHD                                        &
-     &     (i_step_MHD, mesh1, nod_fld1, viz_step1, visval)
+     &     (i_step_MHD, SGS_par1, mesh1, nod_fld1, viz_step1, visval)
 !
         call end_eleps_time(4)
 !
@@ -311,7 +312,7 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if(lead_field_data_flag(viz_step1) .eq. 0) then
+      if(lead_field_data_flag(viz_step1,SGS_par1%sgs_step) .eq. 0) then
         call s_lead_fields_4_sph_mhd(SGS_par1%model_p, sph,             &
      &      comms_sph, r_2nd, fl_prop1, cd_prop1, ht_prop1, cp_prop1,   &
      &      trans_p1, ipol, rj_fld, trns_WK)

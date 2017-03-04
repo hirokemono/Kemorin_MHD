@@ -21,6 +21,7 @@
 !
       use m_precision
       use m_constants
+      use t_IO_step_parameter
 !
       implicit  none
 !
@@ -178,6 +179,8 @@
         integer(kind=kint) :: i_step_sgs_coefs = ione
 !>        Flag for initial step for SGS model
         integer(kind=kint) :: iflag_SGS_initial =  1
+!
+        type(IO_step_param) :: sgs_step
 !
 !>        Parameters for SGS model
         type(SGS_model_control_params) :: model_p

@@ -64,7 +64,7 @@
       type(time_params_IO), intent(inout) :: t_IO
 !
 !
-      call set_output_flag_4_viz(i_step, viz_step, visval)
+      call accum_output_flag_4_viz(i_step, viz_step, visval)
       visval = visval * output_flag(i_step, ucd_step1%increment)
 !
       if(visval .eq. 0) then

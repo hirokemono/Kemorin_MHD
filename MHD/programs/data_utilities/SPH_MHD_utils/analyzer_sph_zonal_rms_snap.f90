@@ -21,6 +21,7 @@
       use m_work_time
       use m_t_int_parameter
       use m_t_step_parameter
+      use m_SGS_control_parameter
       use m_mesh_data
       use m_node_phys_data
       use m_sph_trans_arrays_MHD
@@ -43,7 +44,6 @@
 !
       use t_ctl_data_sph_MHD_psf
       use m_ctl_data_sph_MHD
-      use m_SGS_control_parameter
       use m_spheric_parameter
       use m_sph_spectr_data
       use m_cal_max_indices
@@ -128,14 +128,15 @@
         call start_eleps_time(1)
         call start_eleps_time(4)
 !
-        if(lead_field_data_flag(viz_step1) .eq. 0) then
+        if(lead_field_data_flag(viz_step1,SGS_par1%sgs_step) .eq. 0)    &
+     &   then
           if(iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_zRMS_snap'
           call SPH_to_FEM_bridge_zRMS_snap
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
         call FEM_analyze_sph_MHD                                        &
-     &     (i_step_MHD, mesh1, nod_fld1, viz_step1, visval)
+     &     (i_step_MHD, SGS_par1, mesh1, nod_fld1, viz_step1, visval)
 !
         call end_eleps_time(4)
 !

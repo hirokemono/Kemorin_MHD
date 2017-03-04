@@ -4,10 +4,8 @@
 !     programmed by H.Matsui in 2005
 !     modified by H. Matsui on Aug., 2007
 !
-!!      subroutine s_output_sgs_model_coefs                             &
-!!     &         (SGS_param, cmt_param, wk_sgs, wk_diff)
-!!        type(SGS_model_control_params), intent(in) :: SGS_param
-!!        type(commutation_control_params), intent(in) :: cmt_param
+!!      subroutine s_output_sgs_model_coefs(SGS_par, wk_sgs, wk_diff)
+!!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(dynamic_model_data), intent(in) :: wk_sgs, wk_diff
 !!
 !!      subroutine read_sgs_layerd_data(file_id, iflag, n_layer,        &
@@ -123,28 +121,29 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_output_sgs_model_coefs                               &
-     &         (SGS_param, cmt_param, wk_sgs, wk_diff)
+      subroutine s_output_sgs_model_coefs(SGS_par, wk_sgs, wk_diff)
 !
       use m_physical_property
       use t_IO_step_parameter
 !
-      type(SGS_model_control_params), intent(in) :: SGS_param
-      type(commutation_control_params), intent(in) :: cmt_param
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(dynamic_model_data), intent(in) :: wk_sgs, wk_diff
 !
 !
-      if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_OFF) return
-      if(output_flag(istep_max_dt,sgs_step1%increment) .ne. 0) return
+      if(SGS_par%model_p%iflag_dynamic .eq. id_SGS_DYNAMIC_OFF) return
+      if(output_flag(istep_max_dt,SGS_par%sgs_step%increment) .ne. 0)   &
+     & return
       if(my_rank .ne. 0) return
 !
-      call output_layered_model_coefs_file(SGS_param, cd_prop1, wk_sgs)
-      call output_whole_model_coefs_file(SGS_param, cd_prop1, wk_sgs)
+      call output_layered_model_coefs_file                              &
+     &   (SGS_par%model_p, cd_prop1, wk_sgs)
+      call output_whole_model_coefs_file                                &
+     &   (SGS_par%model_p, cd_prop1, wk_sgs)
 !
-      if (cmt_param%iflag_commute .gt. id_SGS_commute_OFF) then
+      if (SGS_par%commute_p%iflag_commute .gt. id_SGS_commute_OFF) then
         call output_whole_diff_coefs_file(cd_prop1, wk_diff)
 !
-        if (cmt_param%iset_DIFF_coefs .eq. 1 ) then
+        if (SGS_par%commute_p%iset_DIFF_coefs .eq. 1 ) then
           call output_layered_diff_coefs_file(cd_prop1, wk_diff)
         end if
       end if

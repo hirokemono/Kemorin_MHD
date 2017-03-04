@@ -56,9 +56,6 @@
 !
       type(IO_step_param), save :: boundary_step1
 !
-      type(IO_step_param), save :: sgs_step1
-!sgs_step1%delta_t
-!
       type(VIZ_step_params), save :: viz_step1
 !
 !      pvr_step1%increment
