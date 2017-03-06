@@ -11,9 +11,10 @@
 !!@verbatim
 !!      subroutine set_control_MHD_field_file(plt)
 !!        type(platform_data_control), intent(in) :: plt
-!!      subroutine s_output_ucd_file_control
+!!      subroutine s_output_ucd_file_control(i_step, ucd_step)
+!!        type(IO_step_param), intent(inout) :: ucd_step
 !!
-!!      subroutine output_grd_file_4_snapshot(mesh, nod_fld)
+!!      subroutine output_grd_file_4_snapshot(ucd_step, mesh, nod_fld)
 !!      subroutine output_grd_file_w_org_connect                        &
 !!     &        (mesh, MHD_mesh, nod_fld)
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -22,7 +23,8 @@
 !!        type(ucd_data), intent(inout) :: ucd
 !!        type(merged_ucd_data), intent(inout) :: m_ucd
 !!      subroutine read_udt_4_snap                                      &
-!!     &         (i_step, udt_file_param, nod_fld, t_IO)
+!!     &         (i_step, udt_file_param, nod_fld, t_IO, ucd_step)
+!!        type(IO_step_param), intent(in) :: ucd_step
 !!        type(field_IO_params), intent(in) :: udt_file_param
 !!        type(phys_data),intent(inout) :: nod_fld
 !!      subroutine finalize_output_ucd
@@ -43,6 +45,7 @@
       use t_phys_data
       use t_geometry_data_MHD
       use t_file_IO_parameter
+      use t_IO_step_parameter
 !
       implicit none
 !
@@ -82,39 +85,41 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_output_ucd_file_control
+      subroutine s_output_ucd_file_control(i_step, ucd_step)
 !
       use calypso_mpi
-      use m_t_step_parameter
       use parallel_ucd_IO_select
       use copy_time_steps_4_restart
 !
+      integer(kind = kint), intent(in) :: i_step
+      type(IO_step_param), intent(inout) :: ucd_step
+!
 !
       if(fem_ucd%ifmt_file .lt. 0) return
-      if(output_flag(istep_max_dt,ucd_step1%increment) .ne. 0) return
+      if(output_flag(i_step,ucd_step%increment) .ne. 0) return
 !
-      ucd_step1%istep_file = istep_max_dt / ucd_step1%increment
+      ucd_step%istep_file = i_step / ucd_step%increment
 !
       call copy_time_steps_to_restart(ucd_time_IO)
       call sel_write_parallel_ucd_file                                  &
-     &   (ucd_step1%istep_file, ucd_time_IO, fem_ucd, merged_ucd)
-!      call output_range_data(node, nod_fld, ucd_step1%istep_file, time)
+     &   (ucd_step%istep_file, ucd_time_IO, fem_ucd, merged_ucd)
+!      call output_range_data(node, nod_fld, ucd_step%istep_file, time)
 !
       end subroutine s_output_ucd_file_control
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine output_grd_file_4_snapshot(mesh, nod_fld)
+      subroutine output_grd_file_4_snapshot(ucd_step, mesh, nod_fld)
 !
-      use m_t_step_parameter
       use output_parallel_ucd_file
 !
+      type(IO_step_param), intent(in) :: ucd_step
       type(mesh_geometry), intent(in) :: mesh
       type(phys_data),intent(inout) :: nod_fld
 !
 !
       if(fem_ucd%ifmt_file .lt. 0) return
-      if(ucd_step1%increment .eq. 0) return
+      if(ucd_step%increment .eq. 0) return
       call link_output_grd_file(mesh%node, mesh%ele, mesh%nod_comm,     &
      &    nod_fld, fem_ucd, merged_ucd)
 !
@@ -123,22 +128,22 @@
 ! ----------------------------------------------------------------------
 !
       subroutine output_grd_file_w_org_connect                          &
-     &          (mesh, MHD_mesh, nod_fld)
+     &          (ucd_step, mesh, MHD_mesh, nod_fld)
 !
       use m_field_file_format
-      use m_t_step_parameter
       use set_ucd_data_to_type
 !
       use merged_udt_vtk_file_IO
       use parallel_ucd_IO_select
 !
+      type(IO_step_param), intent(in) :: ucd_step
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_data_MHD), intent(in) :: MHD_mesh
       type(phys_data), intent(in) :: nod_fld
 !
 !
       if(fem_ucd%ifmt_file .lt. 0) return
-      if(ucd_step1%increment .eq. 0) return
+      if(ucd_step%increment .eq. 0) return
 !
       call link_num_field_2_ucd(nod_fld, fem_ucd)
       call link_local_org_mesh_4_ucd                                    &
@@ -167,21 +172,21 @@
 !-----------------------------------------------------------------------
 !
       subroutine read_udt_4_snap                                        &
-     &         (i_step, udt_file_param, nod_fld, t_IO)
+     &         (i_step, udt_file_param, nod_fld, t_IO, ucd_step)
 !
       use calypso_mpi
-      use m_t_step_parameter
       use set_ucd_data_to_type
 !
       integer(kind = kint), intent(in) :: i_step
       type(field_IO_params), intent(in) :: udt_file_param
       type(phys_data),intent(inout) :: nod_fld
       type(time_params_IO), intent(inout) :: t_IO
+      type(IO_step_param), intent(inout) :: ucd_step
 !
 !
-      if(output_flag(i_step,ucd_step1%increment) .ne. izero) return
-      ucd_step1%istep_file = i_step / ucd_step1%increment
-      call set_data_by_read_ucd_once(my_rank, ucd_step1%istep_file,     &
+      if(output_flag(i_step,ucd_step%increment) .ne. izero) return
+      ucd_step%istep_file = i_step / ucd_step%increment
+      call set_data_by_read_ucd_once(my_rank, ucd_step%istep_file,      &
     &     udt_file_param%iflag_format, udt_file_param%file_prefix,      &
     &     nod_fld, t_IO)
 !

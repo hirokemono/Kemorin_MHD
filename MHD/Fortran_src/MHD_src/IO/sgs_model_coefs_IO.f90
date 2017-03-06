@@ -4,7 +4,8 @@
 !     programmed by H.Matsui in 2005
 !     modified by H. Matsui on Aug., 2007
 !
-!!      subroutine s_output_sgs_model_coefs(SGS_par, wk_sgs, wk_diff)
+!!      subroutine s_output_sgs_model_coefs                             &
+!!     &         (i_step, SGS_par, wk_sgs, wk_diff)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(dynamic_model_data), intent(in) :: wk_sgs, wk_diff
 !!
@@ -121,18 +122,19 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_output_sgs_model_coefs(SGS_par, wk_sgs, wk_diff)
+      subroutine s_output_sgs_model_coefs                               &
+     &         (i_step, SGS_par, wk_sgs, wk_diff)
 !
       use m_physical_property
       use t_IO_step_parameter
 !
+      integer(kind = kint), intent(in) :: i_step
       type(SGS_paremeters), intent(in) :: SGS_par
       type(dynamic_model_data), intent(in) :: wk_sgs, wk_diff
 !
 !
       if(SGS_par%model_p%iflag_dynamic .eq. id_SGS_DYNAMIC_OFF) return
-      if(output_flag(istep_max_dt,SGS_par%sgs_step%increment) .ne. 0)   &
-     & return
+      if(output_flag(i_step,SGS_par%sgs_step%increment) .ne. 0) return
       if(my_rank .ne. 0) return
 !
       call output_layered_model_coefs_file                              &

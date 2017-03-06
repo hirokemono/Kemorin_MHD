@@ -115,7 +115,7 @@
       end if
 !
       if(iflag_debug .gt. 0) write(*,*) 'output_grd_file_4_snapshot'
-      call output_grd_file_4_snapshot(mesh, nod_fld)
+      call output_grd_file_4_snapshot(ucd_step1, mesh, nod_fld)
 !
       end subroutine FEM_initialize_sph_MHD
 !
@@ -156,7 +156,7 @@
 !
 !*  -----------  Output volume data --------------
 !*
-      call s_output_ucd_file_control
+      call s_output_ucd_file_control(istep_max_dt, ucd_step1)
 !
       end subroutine FEM_analyze_sph_MHD
 !

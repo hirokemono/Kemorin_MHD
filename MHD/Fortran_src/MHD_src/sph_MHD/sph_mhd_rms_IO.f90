@@ -157,12 +157,12 @@
      &   (my_rank, i_step_MHD, time, sph_params, pwr)
 !
       call write_gauss_coefs_4_monitor                                  &
-     &   (my_rank, istep_max_dt, time, gauss_coefs_file_head, gauss1)
+     &   (my_rank, i_step_MHD, time, gauss_coefs_file_head, gauss1)
       call write_sph_spec_monitor                                       &
-     &   (pickup_sph_head, my_rank, istep_max_dt, time, pick1)
+     &   (pickup_sph_head, my_rank, i_step_MHD, time, pick1)
 !
       call write_no_heat_source_Nu(sph_rj%idx_rj_degree_zero,           &
-     &    istep_max_dt, time, Nu_type1)
+     &    i_step_MHD, time, Nu_type1)
 !
       end subroutine output_rms_sph_mhd_control
 !

@@ -82,8 +82,8 @@
       if (my_rank.eq.0) write(*,*) 'step: ', i_step
 !
       if (iflag_debug.eq.1)  write(*,*) 'read_udt_4_snap'
-      call read_udt_4_snap(i_step, FEM_udt_org_param,                   &
-     &    nod_fld1, SNAP_time_IO)
+      call read_udt_4_snap(i_step,                                      &
+     &    FEM_udt_org_param, nod_fld1, SNAP_time_IO, ucd_step1)
       time = time_init + dt*dble(i_step)
 !
 !     ---- magnetic field update

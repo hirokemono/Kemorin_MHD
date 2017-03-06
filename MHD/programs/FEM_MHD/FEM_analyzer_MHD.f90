@@ -157,7 +157,8 @@
       call end_eleps_time(2)
       call start_eleps_time(4)
 !
-      call output_grd_file_w_org_connect(mesh1, MHD_mesh1, nod_fld1)
+      call output_grd_file_w_org_connect                                &
+     &   (ucd_step1, mesh1, MHD_mesh1, nod_fld1)
 !
       call alloc_phys_range(nod_fld1%ntot_phys_viz, range)
 !       call s_open_boundary_monitor(my_rank, group1%sf_grp)
@@ -285,7 +286,8 @@
         call output_monitor_control(mesh1%node, nod_fld1)
 !
         if (iflag_debug.eq.1) write(*,*) 's_output_sgs_model_coefs'
-        call s_output_sgs_model_coefs(SGS_par1, wk_sgs1, wk_diff1)
+        call s_output_sgs_model_coefs                                   &
+     &     (istep_max_dt, SGS_par1, wk_sgs1, wk_diff1)
 !
 !     ---- Output restart field data
 !
@@ -297,7 +299,7 @@
 !     ---- Output voulme field data
 !
         if (iflag_debug.eq.1) write(*,*) 's_output_ucd_file_control'
-        call s_output_ucd_file_control
+        call s_output_ucd_file_control(istep_max_dt, ucd_step1)
 !
         call end_eleps_time(4)
         call start_eleps_time(3)

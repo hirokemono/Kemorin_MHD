@@ -112,9 +112,9 @@
       type(phys_data), intent(in) :: rj_fld
 !
 !
-      if (output_flag(istep_max_dt,rst_step1%increment) .ne. 0) return
+      if (output_flag(i_step_MHD,rst_step1%increment) .ne. 0) return
 !
-      rst_step1%istep_file = istep_max_dt/rst_step1%increment
+      rst_step1%istep_file = i_step_MHD/rst_step1%increment
 !
       call copy_time_steps_to_restart(sph_time_IO)
       call set_sph_restart_data_to_IO(rj_fld, sph_fst_IO)

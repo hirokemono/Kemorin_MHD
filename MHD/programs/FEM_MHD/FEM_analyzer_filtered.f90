@@ -85,8 +85,8 @@
 !
       else if (ucd_step1%increment .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'read_udt_4_snap'
-        call read_udt_4_snap                                            &
-     &     (istep_max_dt, FEM_udt_org_param, nod_fld1, SNAP_time_IO)
+        call read_udt_4_snap(istep_max_dt,                              &
+     &      FEM_udt_org_param, nod_fld1, SNAP_time_IO, ucd_step1)
         time = time_init + dt*dble(istep_max_dt)
         i_step_MHD = istep_max_dt
       end if
@@ -165,12 +165,13 @@
       call output_monitor_control(mesh1%node, nod_fld1)
 !
       if (iflag_debug.eq.1) write(*,*) 's_output_sgs_model_coefs'
-      call s_output_sgs_model_coefs(SGS_par1, wk_sgs1, wk_diff1)
+      call s_output_sgs_model_coefs                                     &
+     &   (istep_max_dt, SGS_par1, wk_sgs1, wk_diff1)
 !
 !     ---- Output voulme field data
 !
       if (iflag_debug.eq.1) write(*,*) 's_output_ucd_file_control'
-      call s_output_ucd_file_control
+      call s_output_ucd_file_control(istep_max_dt, ucd_step1)
 !
 !     ----
 !
