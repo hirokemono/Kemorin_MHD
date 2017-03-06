@@ -77,7 +77,7 @@
       use m_mean_square_values
 !
       integer (kind=kint), intent(in) :: my_rank, i_step
-      type(IO_step_param), save :: rms_step
+      type(IO_step_param), intent(in) :: rms_step
 !
       integer (kind = kint) :: i, iflag, i_read_step
       real(kind = kreal) :: rtmp
