@@ -46,6 +46,7 @@
       use t_field_data_IO
       use t_layering_ele_list
       use t_ele_info_4_dynamic
+      use t_flex_delta_t_data
 !
       use m_t_step_parameter
 !
@@ -178,7 +179,7 @@
 !
       subroutine input_MHD_restart_file_ctl                             &
      &         (layer_tbl, node, ele, fluid, SGS_par, wk_sgs, wk_diff,  &
-     &          sgs_coefs, diff_coefs, nod_fld)
+     &          sgs_coefs, diff_coefs, nod_fld, flex_p)
 !
       use t_geometry_data_MHD
       use t_SGS_model_coefs
@@ -193,9 +194,10 @@
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
       type(phys_data), intent(inout) :: nod_fld
+      type(flexible_stepping_parameter), intent(inout) :: flex_p
 !
 !
-      call input_restart_files(node, nod_fld)
+      call input_restart_files(node, nod_fld, flex_p)
       call input_model_coef_file                                        &
      &   (SGS_par%model_p, SGS_par%commute_p, ele, fluid, layer_tbl,    &
      &    SGS_par%i_step_sgs_coefs, wk_sgs, wk_diff,                    &
@@ -245,7 +247,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine input_restart_files(node, nod_fld)
+      subroutine input_restart_files(node, nod_fld, flex_p)
 !
       use m_t_int_parameter
       use m_file_format_switch
@@ -253,9 +255,11 @@
       use field_IO_select
       use set_field_to_restart
       use copy_time_steps_4_restart
+      use cal_num_digits
 !
       type(node_data), intent(in) :: node
       type(phys_data), intent(inout) :: nod_fld
+      type(flexible_stepping_parameter), intent(inout) :: flex_p
 !
       integer(kind = kint) :: ierr
 !
@@ -271,13 +275,15 @@
       call dealloc_phys_data_IO(fem_fst_IO)
       call dealloc_phys_name_IO(fem_fst_IO)
 !
-      if(iflag_flexible_step .eq. iflag_flex_step) then
+      if(flex_p%iflag_flexible_step .eq. iflag_flex_step) then
         call copy_time_steps_from_restart(fem_time_IO)
+        call cal_num_digit_real(dt, flex_p%dt_fact, flex_p%idt_digit)
       else
         call copy_init_time_from_restart(fem_time_IO)
       end if
 !
-      if(my_rank .eq. 0)  write(*,*) 'delta t ', dt, dt_fact, idt_digit
+      if(my_rank .eq. 0)  write(*,*) 'delta t ', dt,                    &
+     &                     flex_p%dt_fact, flex_p%idt_digit
 !
       end subroutine input_restart_files
 !

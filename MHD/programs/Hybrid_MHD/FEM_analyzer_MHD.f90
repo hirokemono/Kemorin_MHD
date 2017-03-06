@@ -141,7 +141,7 @@
 !
       SGS_par1%iflag_SGS_initial = 0
 !
-      if (iflag_flexible_step .eq. iflag_flex_step) then
+      if (flex_p1%iflag_flexible_step .eq. iflag_flex_step) then
         call set_ele_rms_4_previous_step                                &
      &     (mesh1%node, mesh1%ele, MHD_mesh1%fluid,                     &
      &      iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
@@ -241,7 +241,7 @@
 !
 !     ---------------------
 !
-      if (iflag_flexible_step .eq. iflag_flex_step) then
+      if (flex_p1%iflag_flexible_step .eq. iflag_flex_step) then
         if (iflag_debug.eq.1) write(*,*) 's_check_flexible_time_step'
         call s_check_flexible_time_step                                 &
      &     (mesh1%node, mesh1%ele, MHD_mesh1%fluid, cd_prop1,           &
@@ -250,7 +250,7 @@
 !
 !     ========  Data output
 !
-      if(istep_flex_to_max .eq. 0) then
+      if(flex_p1%istep_flex_to_max .eq. 0) then
         if(lead_field_data_flag(viz_step, SGS_par1%sgs_step) .eq. 0)    &
      &   then
           call lead_fields_by_FEM                                       &
@@ -307,7 +307,7 @@
       if(iflag_debug.gt.0) write(*,*) 'total_time',                     &
      &                       total_time, elapsed_time
 !
-      if     (iflag_flexible_step .eq. iflag_flex_step) then
+      if     (flex_p1%iflag_flexible_step .eq. iflag_flex_step) then
         if      (istep_rst_end.eq.-1                                    &
      &       .and. total_max.gt.elapsed_time) then
           call start_eleps_time(4)

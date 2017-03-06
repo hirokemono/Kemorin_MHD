@@ -24,14 +24,16 @@
       subroutine s_divide_phys_by_delta_t(nod_fld)
 !
       use m_phys_constants
-      use m_t_int_parameter
       use m_ctl_params_4_diff_udt
       use products_nodal_fields_smp
 !
       type(phys_data), intent(inout) :: nod_fld
 !
       integer(kind = kint) :: i, ist
+      real(kind=kreal) :: ddt
 !
+!
+      ddt = one / dt
 !
 !$omp parallel private(i,ist)
       do i = 1, nod_fld%num_phys

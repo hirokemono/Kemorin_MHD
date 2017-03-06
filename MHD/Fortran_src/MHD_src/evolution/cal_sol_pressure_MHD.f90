@@ -51,7 +51,9 @@
       real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
       integer (kind = kint) :: iproc, inod, ist, ied
+      real(kind = kreal) :: ddt
 !
+      ddt = one / dt
 !
 !$omp parallel do private(inod,ist,ied)
       do iproc = 1, np_smp
@@ -158,6 +160,9 @@
       real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
       integer (kind = kint) :: iproc, inod, ist, ied
+      real(kind = kreal) :: ddt
+!
+      ddt = one / dt
 !
 !$omp parallel do private(inod,ist,ied)
       do iproc = 1, np_smp

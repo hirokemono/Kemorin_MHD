@@ -25,6 +25,39 @@
 !
       implicit  none
 !
+!>     Fixed time step flag
+      integer(kind=kint), parameter :: iflag_fixed_step = 0
+!>     Flexible time step flag
+      integer(kind=kint), parameter :: iflag_flex_step =  1
+!
+!
+      type flexible_stepping_parameter
+!>        flag for time stepping
+        integer(kind=kint) :: iflag_flexible_step = iflag_fixed_step
+!
+!>        significand of @f$ \Delta t @f$
+        real(kind=kreal) :: dt_fact
+!>        exponent of @f$ \Delta t @f$
+        integer(kind = kint) :: idt_digit
+!
+!>        Maximum length of time step
+        integer(kind=kint) :: istep_max_dt
+!
+!>      Flexible time step number for maximum lenth of each step
+        integer(kind=kint) :: istep_flex_to_max = 0
+!>
+        integer(kind= kint) :: interval_flex_2_max
+!
+!>        Maximum error to shrink time step
+        real(kind=kreal) :: max_eps_to_shrink
+!>        Minimum error to expand time step
+        real(kind=kreal) :: min_eps_to_expand
+!
+!>        Maximum @f$ \Delta t @f$
+        real(kind=kreal) :: dt_max
+!>        Mimimum @f$ \Delta t @f$
+        real(kind=kreal) :: dt_min
+      end type flexible_stepping_parameter
 !
       type flexible_stepping_data
         integer(kind = kint) :: num_fld

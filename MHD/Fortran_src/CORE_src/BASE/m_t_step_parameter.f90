@@ -25,8 +25,6 @@
       integer(kind=kint) :: i_step_MHD
 !>      Maximum length of time step
       integer(kind=kint) :: istep_max_dt
-!>      Flexible time step number for maximum lenth of each step
-      integer(kind=kint) :: istep_flex_to_max = 0
 ! 
 !>      Elapsed time to terminate simulation
       real(kind=kreal)   :: elapsed_time

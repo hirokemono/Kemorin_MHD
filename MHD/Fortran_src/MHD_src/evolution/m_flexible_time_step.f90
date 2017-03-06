@@ -40,6 +40,8 @@
 !>      Integer flag for flexible time stepping
       integer(kind= kint) :: iflag_flex_step_changed = 0
 !
+      type(flexible_stepping_parameter), save :: flex_p1
+!
       type(flexible_stepping_data), save :: flex_data
 !
 !
@@ -70,12 +72,15 @@
       time = time + dt
       i_step_MHD = i_step_MHD + 1
 !
-      if (iflag_flexible_step .eq. iflag_fixed_step) then
+      if (flex_p1%iflag_flexible_step .eq. iflag_fixed_step) then
         istep_max_dt = i_step_MHD
       else
-        istep_flex_to_max = istep_flex_to_max + 1
-        istep_flex_to_max = mod(istep_flex_to_max,i_interval_flex_2_max)
-        if(istep_flex_to_max .eq. 0) istep_max_dt = istep_max_dt + 1
+        flex_p1%istep_flex_to_max = flex_p1%istep_flex_to_max + 1
+        flex_p1%istep_flex_to_max                                       &
+     &     = mod(flex_p1%istep_flex_to_max,flex_p1%interval_flex_2_max)
+        if(flex_p1%istep_flex_to_max .eq. 0) then
+          istep_max_dt = istep_max_dt + 1
+        end if
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 's_copy_field_data_for_dt_check'
@@ -110,23 +115,27 @@
       type(flexible_stepping_data), intent(inout) :: flex_data
 !
 !
-      if( mod(istep_flex_to_max,itwo) .eq. izero) then
+      if( mod(flex_p1%istep_flex_to_max,itwo) .eq. izero) then
 !        call s_check_deltat_by_previous                                &
 !     &     (node, cd_prop1, iphys, nod_fld, flex_data)
         call s_check_deltat_by_prev_rms(node, ele, fluid, cd_prop,      &
      &      iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk, flex_data)
 !
-        if(flex_data%d_ratio_allmax .gt. min_eps_to_expand_dt) then
-          call shrink_delta_t
+        if(flex_data%d_ratio_allmax .gt. flex_p1%min_eps_to_expand)     &
+     &   then
+          call shrink_delta_t(flex_p1%dt_fact, flex_p1%idt_digit,       &
+     &        flex_p1%istep_flex_to_max, flex_p1%interval_flex_2_max)
           iflag_flex_step_changed = 1
           return
         else
           iflag_flex_step_changed = 0
         end if
 !
-        if(istep_flex_to_max .eq. 0) then
-          if(flex_data%d_ratio_allmax .lt. max_eps_to_shrink_dt) then
-            call extend_delta_t
+        if(flex_p1%istep_flex_to_max .eq. 0) then
+          if(flex_data%d_ratio_allmax .lt. flex_p1%max_eps_to_shrink)   &
+     &     then
+            call extend_delta_t(flex_p1%dt_fact, flex_p1%idt_digit,     &
+     &          flex_p1%istep_flex_to_max, flex_p1%interval_flex_2_max)
             iflag_flex_step_changed = 1
           end if
 !
@@ -144,7 +153,13 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine shrink_delta_t
+      subroutine shrink_delta_t(dt_fact, idt_digit,                     &
+     &          istep_flex_to_max, interval_flex_2_max)
+!
+      real(kind=kreal), intent(inout) :: dt_fact
+      integer(kind = kint), intent(inout) :: idt_digit
+      integer(kind = kint), intent(inout) :: istep_flex_to_max
+      integer(kind = kint), intent(inout) :: interval_flex_2_max
 !
 !
       if(my_rank .eq. izero) then
@@ -159,20 +174,19 @@
       if     (dt_fact .eq. one) then
         dt_fact =   five
         idt_digit = idt_digit - 1
-        i_interval_flex_2_max = i_interval_flex_2_max * 2
+        interval_flex_2_max = interval_flex_2_max * 2
         istep_flex_to_max = istep_flex_to_max * 2
       else if(dt_fact .eq. two) then
         dt_fact = one
-        i_interval_flex_2_max = (i_interval_flex_2_max * 5) / 2
+        interval_flex_2_max = (interval_flex_2_max * 5) / 2
         istep_flex_to_max = (istep_flex_to_max * 5) / 2
       else if(dt_fact .eq. five) then
         dt_fact = two
-        i_interval_flex_2_max = i_interval_flex_2_max * 2
+        interval_flex_2_max = interval_flex_2_max * 2
         istep_flex_to_max = istep_flex_to_max * 2
       end if
 !
       dt = dt_fact * ten**(idt_digit)
-      ddt = one / dt
 !
       if(my_rank .eq. izero) then
         write(*,*) 'New Delta t is ', dt
@@ -186,7 +200,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine extend_delta_t
+      subroutine extend_delta_t(dt_fact, idt_digit,                     &
+     &          istep_flex_to_max, interval_flex_2_max)
+!
+      real(kind=kreal), intent(inout) :: dt_fact
+      integer(kind = kint), intent(inout) :: idt_digit
+      integer(kind = kint), intent(inout) :: istep_flex_to_max
+      integer(kind = kint), intent(inout) :: interval_flex_2_max
 !
 !
       if(my_rank .eq. izero) then
@@ -200,21 +220,20 @@
 !
       if     (dt_fact .eq. one) then
         dt_fact =   two
-        i_interval_flex_2_max = i_interval_flex_2_max / 2
+        interval_flex_2_max = interval_flex_2_max / 2
         istep_flex_to_max =     istep_flex_to_max / 2
       else if(dt_fact .eq. two) then
         dt_fact = five
-        i_interval_flex_2_max = (i_interval_flex_2_max * 2) / 5
+        interval_flex_2_max = (interval_flex_2_max * 2) / 5
         istep_flex_to_max =     (istep_flex_to_max * 2) / 5
       else if(dt_fact .eq. five) then
         dt_fact = one
         idt_digit = idt_digit + 1
-        i_interval_flex_2_max = i_interval_flex_2_max / 2
+        interval_flex_2_max = interval_flex_2_max / 2
         istep_flex_to_max =     istep_flex_to_max / 2
       end if
 !
       dt = dt_fact * ten**(idt_digit)
-      ddt = one / dt
 !
       if(my_rank .eq. izero) then
         write(*,*) 'New Delta t is ', dt

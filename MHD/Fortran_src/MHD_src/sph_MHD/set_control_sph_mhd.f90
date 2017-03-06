@@ -127,6 +127,7 @@
       use m_spheric_global_ranks
       use m_physical_property
       use m_ucd_data
+      use m_flexible_time_step
       use sph_mhd_rms_IO
 !
       use t_SGS_control_parameter
@@ -222,7 +223,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_time_steps'
       call s_set_control_4_time_steps                                   &
-     &   (SGS_par, ctl_ctl%mrst_ctl, ctl_ctl%tctl)
+     &   (flex_p1, SGS_par, ctl_ctl%mrst_ctl, ctl_ctl%tctl)
       call s_set_control_4_crank(ctl_ctl%mevo_ctl,                      &
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1)
 !

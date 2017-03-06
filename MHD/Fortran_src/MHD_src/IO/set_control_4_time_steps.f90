@@ -9,9 +9,11 @@
 !> @brief set parameters for time stepping
 !!
 !!@verbatim
-!!      subroutine s_set_control_4_time_steps(SGS_par, mr_ctl, tctl)
+!!      subroutine s_set_control_4_time_steps                           &
+!!     &         (flex_p, SGS_par, mr_ctl, tctl)
 !!        type(mhd_restart_control), intent(in) :: mr_ctl
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
+!!        type(flexible_stepping_parameter), intent(inout) :: flex_p
 !!        type(time_data_control), intent(inout) :: tctl
 !!@endverbatim
 !
@@ -27,6 +29,7 @@
       use t_SGS_control_parameter
       use t_ctl_data_4_time_steps
       use t_VIZ_step_parameter
+      use t_flex_delta_t_data
 !
       implicit  none
 !
@@ -39,7 +42,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_4_time_steps(SGS_par, mr_ctl, tctl)
+      subroutine s_set_control_4_time_steps                             &
+     &         (flex_p, SGS_par, mr_ctl, tctl)
 !
       use t_ctl_data_mhd_evo_scheme
       use m_initial_field_control
@@ -48,6 +52,7 @@
 !
       type(mhd_restart_control), intent(in) :: mr_ctl
       type(SGS_paremeters), intent(inout) :: SGS_par
+      type(flexible_stepping_parameter), intent(inout) :: flex_p
       type(time_data_control), intent(inout) :: tctl
 !
 !
@@ -55,10 +60,10 @@
 !
       call set_initial_field_id(mr_ctl%restart_flag_ctl, tctl)
 !
-        iflag_flexible_step = iflag_fixed_step
+        flex_p%iflag_flexible_step = iflag_fixed_step
         if(tctl%flexible_step_ctl%iflag .gt. 0                          &
      &     .and. yes_flag(tctl%flexible_step_ctl%charavalue)) then
-          iflag_flexible_step = iflag_flex_step
+          flex_p%iflag_flexible_step = iflag_flex_step
         end if
 !
         if (tctl%dt_ctl%iflag .eq. 0) then
@@ -66,58 +71,61 @@
           call calypso_MPI_abort(ierr_evo, e_message)
         else
           dt = tctl%dt_ctl%realvalue
-          ddt = 1.0d0 / dt
-          call cal_num_digit_real(dt, dt_fact, idt_digit)
+          call cal_num_digit_real(dt, flex_p%dt_fact, flex_p%idt_digit)
         end if
 !
-        if(iflag_flexible_step .eq. iflag_flex_step) then
+        if(flex_p%iflag_flexible_step .eq. iflag_flex_step) then
           if (tctl%min_delta_t_ctl%iflag .eq. 0) then
             e_message = 'Set maximum delta t'
             call calypso_MPI_abort(ierr_evo, e_message)
           else
-            dt_min = tctl%min_delta_t_ctl%realvalue
+            flex_p%dt_min = tctl%min_delta_t_ctl%realvalue
           end if
 !
           if (tctl%max_delta_t_ctl%iflag .eq. 0) then
             e_message = 'Set maximum delta t'
             call calypso_MPI_abort(ierr_evo, e_message)
           else
-            dt_max = tctl%max_delta_t_ctl%realvalue
+            flex_p%dt_max = tctl%max_delta_t_ctl%realvalue
           end if
 !
           if (tctl%max_eps_to_shrink_ctl%iflag .eq. 0) then
             e_message = 'Set maximum error to shrink delta t'
             call calypso_MPI_abort(ierr_evo, e_message)
           else
-            max_eps_to_shrink_dt = tctl%max_eps_to_shrink_ctl%realvalue
+            flex_p%max_eps_to_shrink                                    &
+     &                = tctl%max_eps_to_shrink_ctl%realvalue
           end if
 !
           if (tctl%min_eps_to_expand_ctl%iflag .eq. 0) then
             e_message = 'Set minimum error to expand delta t'
             call calypso_MPI_abort(ierr_evo, e_message)
           else
-            min_eps_to_expand_dt = tctl%min_eps_to_expand_ctl%realvalue
+            flex_p%min_eps_to_expand                                    &
+     &                = tctl%min_eps_to_expand_ctl%realvalue
           end if
 !
-          istep_flex_to_max = izero
+          flex_p%istep_flex_to_max = izero
 !
-          if(dt .gt. zero) i_interval_flex_2_max = nint(dt_max / dt)
+          if(dt .gt. zero) then
+            flex_p%interval_flex_2_max = nint(flex_p%dt_max / dt)
+          end if
         else
-          dt_max = dt
-          dt_min = dt
-          i_interval_flex_2_max = ione
-          istep_flex_to_max = izero
+          flex_p%dt_max = dt
+          flex_p%dt_min = dt
+          flex_p%interval_flex_2_max = ione
+          flex_p%istep_flex_to_max = izero
         end if
 !
 !   parameters for time evolution
 !
       SGS_par%i_step_sgs_coefs = 1
 !
-      if(iflag_flexible_step .eq. iflag_flex_step) then
+      if(flex_p%iflag_flexible_step .eq. iflag_flex_step) then
         if (iflag_debug .ge. iflag_routine_msg)                         &
      &    write(*,*) 'set_flex_time_step_controls'
         call set_flex_time_step_controls                                &
-     &     (SGS_par, tctl, viz_step1)
+     &     (flex_p, SGS_par, tctl, viz_step1)
       else
         if (iflag_debug .ge. iflag_routine_msg)                         &
      &    write(*,*) 'set_fixed_time_step_controls'
@@ -136,7 +144,7 @@
       end if
 !
       if (iflag_debug .ge. iflag_routine_msg) then
-        write(*,*) 'dt', dt, dt_fact, idt_digit
+        write(*,*) 'dt', dt, flex_p%dt_fact, flex_p%idt_digit
         write(*,*) 'i_step_init ',i_step_init
         write(*,*) 'i_step_number ',i_step_number
         write(*,*) 'istep_rst_start ', istep_rst_start
@@ -184,9 +192,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_flex_time_step_controls(SGS_par, tctl, viz_step)
+      subroutine set_flex_time_step_controls                            &
+     &         (flex_p, SGS_par, tctl, viz_step)
 !
       type(SGS_paremeters), intent(inout) :: SGS_par
+      type(flexible_stepping_parameter), intent(inout) :: flex_p
       type(time_data_control), intent(inout) :: tctl
       type(VIZ_step_params), intent(inout) :: viz_step
 !
@@ -203,14 +213,14 @@
         istep_rst_end = tctl%end_rst_step_ctl%intvalue
       end if
 !
-      call set_output_step_4_flex_step(ione, dt_max,                    &
+      call set_output_step_4_flex_step(ione, flex_p%dt_max,             &
      &    tctl%i_step_check_ctl, tctl%delta_t_check_ctl, rms_step1)
 !
 !
-      call set_output_step_4_flex_step(ione, dt_max,                    &
+      call set_output_step_4_flex_step(ione, flex_p%dt_max,             &
      &    tctl%i_step_rst_ctl, tctl%delta_t_rst_ctl, rst_step1)
 !
-      call set_output_step_4_flex_step(ione, dt_max,                    &
+      call set_output_step_4_flex_step(ione, flex_p%dt_max,             &
      &   tctl%i_step_ucd_ctl, tctl%delta_t_field_ctl, ucd_step1)
 !
       i_step_init =   istep_rst_start * rst_step1%increment
@@ -220,16 +230,16 @@
 !
 !
       if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
-        call set_output_step_4_flex_step(ione, dt_max,                  &
+        call set_output_step_4_flex_step(ione, flex_p%dt_max,           &
      &      tctl%i_step_sgs_coefs_ctl, tctl%delta_t_sgs_coefs_ctl,      &
      &      SGS_par%sgs_step)
       end if
 !
-      call set_output_step_4_flex_step(izero, dt_max,                   &
+      call set_output_step_4_flex_step(izero, flex_p%dt_max,            &
      &    tctl%i_step_monitor_ctl, tctl%delta_t_monitor_ctl,            &
      &    point_step1)
 !
-      call set_output_step_4_flex_step(izero, dt_max,                   &
+      call set_output_step_4_flex_step(izero, flex_p%dt_max,            &
      &    tctl%i_step_boundary_ctl, tctl%delta_t_boundary_ctl,          &
      &    boundary_step1)
 !

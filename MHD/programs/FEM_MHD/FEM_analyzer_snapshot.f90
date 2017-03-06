@@ -197,7 +197,7 @@
 !
 !     ----
 !
-      if     (iflag_flexible_step .eq. iflag_flex_step) then
+      if     (flex_p1%iflag_flexible_step .eq. iflag_flex_step) then
         visval = viz_file_step_4_flex(time, viz_step)
       else
         visval = viz_file_step_4_fix(istep_max_dt, viz_step)

@@ -51,6 +51,7 @@
       use m_ucd_data
       use m_default_file_prefix
       use m_physical_property
+      use m_flexible_time_step
       use t_FEM_control_parameter
       use t_SGS_control_parameter
 !
@@ -148,7 +149,7 @@
 !   set control parameters
 !
       call s_set_control_4_time_steps                                   &
-     &   (SGS_par, ctl_ctl%mrst_ctl, ctl_ctl%tctl)
+     &   (flex_p1, SGS_par, ctl_ctl%mrst_ctl, ctl_ctl%tctl)
       call s_set_control_4_crank(ctl_ctl%mevo_ctl,                      &
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1)
 !

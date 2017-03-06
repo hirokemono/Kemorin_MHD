@@ -218,12 +218,6 @@
           dt = tctl%dt_ctl%realvalue
         end if
 !
-        if (dt .eq. 0.0d0) then
-          ddt = 1.0d30
-        else
-          ddt = 1.0d0 / dt
-        end if
-!
         if (iflag_debug.eq.1) then
           write(*,*) 'i_step_init ',       i_step_init
           write(*,*) 'i_step_number ',     i_step_number
