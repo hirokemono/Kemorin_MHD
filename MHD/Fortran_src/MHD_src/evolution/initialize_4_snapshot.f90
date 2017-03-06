@@ -220,7 +220,8 @@
 !
       if (rst_step1%increment .gt. 0) then
         if (iflag_debug.eq.1) write(*,*)' init_restart_4_snapshot'
-        call init_restart_4_snapshot(mesh%node, t_IO)
+        call init_restart_4_snapshot                                    &
+     &     (i_step_init, mesh%node, t_IO, rst_step1)
       end if
 !
 !     ---------------------

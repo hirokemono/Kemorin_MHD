@@ -10,12 +10,14 @@
 !!@verbatim
 !!      subroutine output_monitor_file(my_rank, nod_fld)
 !!        type(phys_data), intent(in) :: nod_fld
-!!      subroutine skip_time_step_data(my_rank)
+!!      subroutine skip_time_step_data(my_rank, i_step, rms_step)
+!!        type(IO_step_param), save :: rms_step
 !!@endverbatim
 !
       module time_step_file_IO
 !
       use m_precision
+      use t_IO_step_parameter
 !
       implicit none
 !
@@ -69,19 +71,20 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine skip_time_step_data(my_rank)
+      subroutine skip_time_step_data(my_rank, i_step, rms_step)
 !
       use m_t_step_parameter
       use m_mean_square_values
 !
-      integer (kind=kint), intent(in) :: my_rank
+      integer (kind=kint), intent(in) :: my_rank, i_step
+      type(IO_step_param), save :: rms_step
 !
       integer (kind = kint) :: i, iflag, i_read_step
       real(kind = kreal) :: rtmp
 !
 !
       if(my_rank .gt. 0) return
-      iflag = i_step_init - mod(istep_max_dt, rms_step1%increment)
+      iflag = i_step_init - mod(i_step, rms_step%increment)
 !
       do
         read(time_step_data_code,*,err=99,end=99)                       &

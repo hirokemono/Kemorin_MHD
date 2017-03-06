@@ -120,8 +120,6 @@
       type(sph_mean_square_work), intent(inout) :: WK_pwr
 !
 !
-      if (output_flag(istep_max_dt, rms_step1%increment) .ne. 0) return
-!
       if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
       call cal_mean_squre_in_shell                                      &
      &   (sph_params%l_truncation, sph_rj, ipol, rj_fld, leg%g_sph_rj,  &

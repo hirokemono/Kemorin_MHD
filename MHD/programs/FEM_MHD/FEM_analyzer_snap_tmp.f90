@@ -111,7 +111,7 @@
       if (rst_step1%increment .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'input_restart_4_snapshot'
         call input_restart_4_snapshot                                   &
-     &     (mesh1%node, nod_fld1, SNAP_time_IO)
+     &    (istep_max_dt, mesh1%node, nod_fld1, SNAP_time_IO, rst_step1)
 !
       else if (ucd_step1%increment .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'read_udt_4_snap'
@@ -183,14 +183,17 @@
 !
 !     -----Output monitor date
 !
-      if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
-      call output_time_step_control(FEM_prm1, mesh1, MHD_mesh1,         &
-     &    fl_prop1, cd_prop1,   &
-     &    iphys, nod_fld1, iphys_ele, fld_ele1, jac1_3d_q, jac1_3d_l,   &
-     &    fem1_wk, mhd_fem1_wk)
+      if(output_flag(istep_max_dt, rms_step1%increment) .eq. 0) then
+        if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
+        call output_time_step_control(FEM_prm1, mesh1, MHD_mesh1,       &
+     &      fl_prop1, cd_prop1, iphys, nod_fld1, iphys_ele, fld_ele1,   &
+     &      jac1_3d_q, jac1_3d_l, fem1_wk, mhd_fem1_wk)
+      end if
 !
-      if (iflag_debug.eq.1) write(*,*) 'output_monitor_control'
-      call output_monitor_control(mesh1%node, nod_fld1)
+      if(output_flag(istep_max_dt,point_step1%increment) .eq. 0) then
+        if (iflag_debug.eq.1) write(*,*) 'output_monitor_control'
+        call output_monitor_control(mesh1%node, nod_fld1)
+      end if
 !
       if (iflag_debug.eq.1) write(*,*) 's_output_sgs_model_coefs'
       call s_output_sgs_model_coefs                                     &

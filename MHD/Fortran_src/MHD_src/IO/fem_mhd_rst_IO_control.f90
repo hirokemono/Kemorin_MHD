@@ -14,17 +14,19 @@
 !!        type(platform_data_control), intent(in) :: plt
 !!
 !!      subroutine init_MHD_restart_output
-!!      subroutine init_restart_4_snapshot(node, t_IO)
+!!      subroutine init_restart_4_snapshot(i_step, node, t_IO, rst_step)
 !!
-!!      subroutine output_MHD_restart_file_ctl(SGS_par, node, nod_comm, &
-!!     &          iphys, wk_sgs, wk_diff, nod_fld)
+!!      subroutine output_MHD_restart_file_ctl                          &
+!!     &         (i_step, SGS_par, node, nod_comm, iphys,               &
+!!     &          wk_sgs, wk_diff, nod_fld, rst_step)
 !!      subroutine elspased_MHD_restart_ctl(SGS_par, node, nod_comm,    &
 !!     &          iphys, wk_sgs, wk_diff, nod_fld)
 !!
 !!      subroutine input_MHD_restart_file_ctl                           &
 !!     &         (layer_tbl, node, ele, fluid, SGS_par, wk_sgs, wk_diff,&
 !!     &          sgs_coefs, diff_coefs, nod_fld)
-!!      subroutine input_restart_4_snapshot(node, nod_fld)
+!!      subroutine input_restart_4_snapshot                             &
+!!     &         (i_step, node, nod_fld, t_IO, rst_step)
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!        type(dynamic_model_data), intent(inout) :: wk_diff
@@ -47,6 +49,7 @@
       use t_layering_ele_list
       use t_ele_info_4_dynamic
       use t_flex_delta_t_data
+      use t_IO_step_parameter
 !
       use m_t_step_parameter
 !
@@ -101,19 +104,21 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_restart_4_snapshot(node, t_IO)
+      subroutine init_restart_4_snapshot(i_step, node, t_IO, rst_step)
 !
       use const_global_element_ids
       use field_IO_select
       use set_field_to_restart
 !
+      integer(kind = kint), intent(in) :: i_step
       type(node_data), intent(in) :: node
       type(time_params_IO), intent(inout) :: t_IO
+      type(IO_step_param), intent(inout) :: rst_step
 !
 !
-      rst_step1%istep_file = i_step_init / rst_step1%increment
+      rst_step%istep_file = i_step / rst_step%increment
       call sel_read_alloc_FEM_fld_head                                  &
-     &   (nprocs, my_rank, rst_step1%istep_file, t_IO, fem_fst_IO)
+     &   (nprocs, my_rank, rst_step%istep_file, t_IO, fem_fst_IO)
 !
       fem_fst_IO%nnod_IO = node%numnod
       call alloc_phys_data_IO(fem_fst_IO)
@@ -127,9 +132,11 @@
 ! ----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine output_MHD_restart_file_ctl(SGS_par, node, nod_comm,   &
-     &          iphys, wk_sgs, wk_diff, nod_fld)
+      subroutine output_MHD_restart_file_ctl                            &
+     &         (i_step, SGS_par, node, nod_comm, iphys,                 &
+     &          wk_sgs, wk_diff, nod_fld, rst_step)
 !
+      integer(kind = kint), intent(in) :: i_step
       type(SGS_paremeters), intent(in) :: SGS_par
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
@@ -137,14 +144,15 @@
       type(dynamic_model_data), intent(in) :: wk_sgs, wk_diff
 !
       type(phys_data), intent(inout) :: nod_fld
+      type(IO_step_param), intent(inout) :: rst_step
 !
 !
-      if (output_flag(istep_max_dt,rst_step1%increment) .ne. 0) return
+      if (output_flag(i_step,rst_step%increment) .ne. 0) return
 !
-      rst_step1%istep_file = istep_max_dt / rst_step1%increment
+      rst_step%istep_file = i_step / rst_step%increment
       call output_restart_files                                         &
-     &   (rst_step1%istep_file, node, nod_comm, iphys, nod_fld)
-      call output_model_coef_file(rst_step1%istep_file,                 &
+     &   (rst_step%istep_file, node, nod_comm, iphys, nod_fld)
+      call output_model_coef_file(rst_step%istep_file,                  &
      &    SGS_par%i_step_sgs_coefs, SGS_par%model_p, SGS_par%commute_p, &
      &    wk_sgs, wk_diff)
 !
@@ -289,21 +297,24 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine input_restart_4_snapshot(node, nod_fld, t_IO)
+      subroutine input_restart_4_snapshot                               &
+     &         (i_step, node, nod_fld, t_IO, rst_step)
 !
       use set_field_to_restart
       use field_IO_select
 !
+      integer(kind = kint), intent(in) :: i_step
       type(node_data), intent(in) :: node
       type(time_params_IO), intent(inout) :: t_IO
       type(phys_data), intent(inout) :: nod_fld
+      type(IO_step_param), intent(inout) :: rst_step
 !
 !
-      if (output_flag(istep_max_dt,rst_step1%increment) .ne. 0) return
-      rst_step1%istep_file = istep_max_dt / rst_step1%increment
+      if (output_flag(i_step,rst_step%increment) .ne. 0) return
+      rst_step%istep_file = i_step / rst_step%increment
 !
       call sel_read_step_FEM_field_file                                 &
-     &    (nprocs, my_rank, rst_step1%istep_file, t_IO, fem_fst_IO)
+     &    (nprocs, my_rank, rst_step%istep_file, t_IO, fem_fst_IO)
 !
       call copy_field_data_from_restart(node, fem_fst_IO, nod_fld)
 !

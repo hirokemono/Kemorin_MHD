@@ -74,8 +74,6 @@
       integer (kind = kint) :: nd
 !
 !
-      if(output_flag(istep_max_dt, rms_step1%increment) .ne. 0 ) return
-!
         if(my_rank .eq. 0) write(*,'(a10,i16,a10,e15.8)')               &
      &            'i_step=',i_step_MHD,'time=',time
 !
