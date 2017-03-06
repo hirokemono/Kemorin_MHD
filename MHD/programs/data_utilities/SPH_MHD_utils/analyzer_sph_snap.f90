@@ -104,6 +104,7 @@
       use output_viz_file_control
 !
       integer(kind = kint) :: visval
+      integer(kind = kint) :: iflag
 !
 !     ---------------------
 !
@@ -131,8 +132,9 @@
         call start_eleps_time(1)
         call start_eleps_time(4)
 !
-        if(lead_field_data_flag(viz_step1,SGS_par1%sgs_step) .eq. 0)    &
-     &   then
+        iflag = lead_field_data_flag(istep_max_dt,                      &
+     &                               viz_step1,SGS_par1%sgs_step)
+        if(iflag .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_MHD'
           call SPH_to_FEM_bridge_MHD                                    &
      &       (sph1%sph_params, sph1%sph_rtp, trns_WK1,                  &
@@ -194,6 +196,7 @@
       use output_viz_file_control
 !
       integer(kind = kint) :: visval
+      integer(kind = kint) :: iflag
 !
       real(kind = kreal) :: total_max, total_prev
 !
@@ -214,7 +217,9 @@
       if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_snap'
       call SPH_analyze_snap(i_step_MHD)
 !*
-      if(lead_field_data_flag(viz_step1,SGS_par1%sgs_step) .eq. 0) then
+      iflag = lead_field_data_flag(istep_max_dt,                        &
+     &                             viz_step1,SGS_par1%sgs_step)
+      if(iflag .eq. 0) then
         if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_MHD'
         call SPH_to_FEM_bridge_MHD                                      &
      &     (sph1%sph_params, sph1%sph_rtp, trns_WK1,                    &

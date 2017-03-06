@@ -5,7 +5,7 @@
 !     modified by H. Matsui on Aug., 2007
 !
 !!      integer(kind = kint) function lead_field_data_flag              &
-!!     &                   (viz_step, sgs_step)
+!!     &                   (i_step, viz_step, sgs_step)
 !!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(IO_step_param), intent(in) :: sgs_step
 !
@@ -28,8 +28,9 @@
 !-----------------------------------------------------------------------
 !
       integer(kind = kint) function lead_field_data_flag                &
-     &                   (viz_step, sgs_step)
+     &                   (i_step, viz_step, sgs_step)
 !
+      integer(kind = kint), intent(in) :: i_step
       type(VIZ_step_params), intent(in) :: viz_step
       type(IO_step_param), intent(in) :: sgs_step
 !
@@ -38,14 +39,14 @@
 !
       lead_field_data_flag = 1
       call accum_output_flag_4_viz                                      &
-     &   (istep_max_dt, viz_step, lead_field_data_flag)
+     &   (i_step, viz_step, lead_field_data_flag)
 !
-      irst = output_flag(istep_max_dt, rst_step1%increment)
-      i_bulk = output_flag(istep_max_dt, rms_step1%increment)
-      i_udt = output_flag(istep_max_dt, ucd_step1%increment)
-      i_monitor = output_flag(istep_max_dt, point_step1%increment)
+      irst = output_flag(i_step, rst_step1%increment)
+      i_bulk = output_flag(i_step, rms_step1%increment)
+      i_udt = output_flag(i_step, ucd_step1%increment)
+      i_monitor = output_flag(i_step, point_step1%increment)
 !
-      i_coef = output_flag(istep_max_dt, sgs_step%increment)
+      i_coef = output_flag(i_step, sgs_step%increment)
 !
       lead_field_data_flag = lead_field_data_flag                       &
      &                     * irst * i_udt * i_monitor * i_bulk * i_coef

@@ -138,10 +138,12 @@
       integer (kind =kint), intent(inout) :: visval
       type(VIZ_step_params), intent(inout) :: viz_step
 !
+      integer(kind = kint) :: iflag
 !
 !
-      if(lead_field_data_flag(viz_step, SGS_par%sgs_step) .ne. 0)       &
-     & return
+      iflag = lead_field_data_flag(istep_max_dt,                        &
+     &                             viz_step, SGS_par%sgs_step)
+      if(iflag .ne. 0) return
 !
 !*  ----------   Count steps for visualization
 !*

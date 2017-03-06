@@ -99,6 +99,8 @@
       integer(kind=kint ), intent(inout) :: visval
       type(VIZ_step_params), intent(inout) :: viz_step
 !
+      integer(kind = kint) :: iflag
+!
 !     ---- Load field data --- 
 !
       call reset_update_flag(nod_fld1, sgs_coefs, diff_coefs)
@@ -163,7 +165,9 @@
 !
 !     ========  Data output
 !
-      if(lead_field_data_flag(viz_step, SGS_par1%sgs_step) .eq. 0) then
+      iflag = lead_field_data_flag(istep_max_dt,                        &
+     &                             viz_step, SGS_par1%sgs_step)
+      if(iflag .eq. 0) then
         call lead_fields_by_FEM                                         &
      &    (FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1,                &
      &     MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,      &
