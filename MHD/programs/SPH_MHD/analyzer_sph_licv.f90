@@ -102,7 +102,6 @@
       do istep = 1, i_step_number
         time = time + dt
         i_step_MHD = i_step_MHD + 1
-        istep_max_dt = i_step_MHD
 !
 !*  ----------  add time evolution -----------------
 !*

@@ -128,7 +128,7 @@
      &      nod_fld1, sgs_coefs, sgs_coefs_nod, diff_coefs)
       end if
 !
-      iflag = lead_field_data_flag(istep_max_dt,                        &
+      iflag = lead_field_data_flag(flex_p1%istep_max_dt,                &
      &                             viz_step, SGS_par1%sgs_step)
       if(iflag .eq. 0) then
         if (iflag_debug.eq.1) write(*,*) 'lead_fields_by_FEM'
@@ -262,7 +262,7 @@
 !     ========  Data output
 !
       if(flex_p1%istep_flex_to_max .eq. 0) then
-        iflag = lead_field_data_flag(istep_max_dt,                      &
+        iflag = lead_field_data_flag(flex_p1%istep_max_dt,              &
      &                               viz_step, SGS_par1%sgs_step)
         if(iflag .eq. 0) then
           call lead_fields_by_FEM(FEM_prm1, SGS_par1,                   &
@@ -282,33 +282,35 @@
         call end_eleps_time(3)
         call start_eleps_time(4)
 !
-        if(output_flag(istep_max_dt, rms_step1%increment) .eq. 0) then
+        iflag = output_flag(flex_p1%istep_max_dt, rms_step1%increment)
+        if(iflag .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
           call output_time_step_control(FEM_prm1, mesh1, MHD_mesh1,     &
      &        fl_prop1, cd_prop1, iphys, nod_fld1, iphys_ele, fld_ele1, &
      &        jac1_3d_q, jac1_3d_l, fem1_wk, mhd_fem1_wk)
         end if
 !
-        if(output_flag(istep_max_dt,point_step1%increment) .eq. 0) then
+        iflag = output_flag(flex_p1%istep_max_dt,point_step1%increment)
+        if(iflag .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'output_monitor_control'
           call output_monitor_control(mesh1%node, nod_fld1)
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 's_output_sgs_model_coefs'
         call s_output_sgs_model_coefs                                   &
-     &     (istep_max_dt, SGS_par1, wk_sgs1, wk_diff1)
+     &     (flex_p1%istep_max_dt, SGS_par1, wk_sgs1, wk_diff1)
 !
 !     ---- Output restart field data
 !
         if (iflag_debug.eq.1) write(*,*) 'output_MHD_restart_file_ctl'
         call output_MHD_restart_file_ctl                                &
-     &     (istep_max_dt, SGS_par1, mesh1%node, mesh1%nod_comm,         &
+     &     (flex_p1%istep_max_dt, SGS_par1, mesh1%node, mesh1%nod_comm, &
      &      iphys, wk_sgs1, wk_diff1, nod_fld1, rst_step1)
 !
 !     ---- Output voulme field data
 !
         if (iflag_debug.eq.1) write(*,*) 's_output_ucd_file_control'
-        call s_output_ucd_file_control(istep_max_dt, ucd_step1)
+        call s_output_ucd_file_control(flex_p1%istep_max_dt, ucd_step1)
 !
         call end_eleps_time(4)
         call start_eleps_time(3)
@@ -348,11 +350,11 @@
           call end_eleps_time(4)
           retval = 0
         else if (i_step_number.ne.-1 .and.                              &
-     &       istep_max_dt .ge. i_step_number) then
+     &       flex_p1%istep_max_dt .ge. i_step_number) then
           retval = 0
         end if
 !
-        visval = viz_file_step_4_fix(istep_max_dt, viz_step)
+        visval = viz_file_step_4_fix(flex_p1%istep_max_dt, viz_step)
       end if
 !
 !     --------------------- 

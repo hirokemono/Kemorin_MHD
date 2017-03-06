@@ -141,8 +141,7 @@
       integer(kind = kint) :: iflag
 !
 !
-      iflag = lead_field_data_flag(istep_max_dt,                        &
-     &                             viz_step, SGS_par%sgs_step)
+      iflag = lead_field_data_flag(i_step, viz_step, SGS_par%sgs_step)
       if(iflag .ne. 0) return
 !
 !*  ----------   Count steps for visualization
@@ -158,7 +157,7 @@
 !
 !*  -----------  Output volume data --------------
 !*
-      call s_output_ucd_file_control(istep_max_dt, ucd_step1)
+      call s_output_ucd_file_control(i_step, ucd_step1)
 !
       end subroutine FEM_analyze_sph_MHD
 !

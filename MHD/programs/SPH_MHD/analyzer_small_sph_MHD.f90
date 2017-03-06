@@ -96,7 +96,6 @@
       do
         time = time + dt
         i_step_MHD = i_step_MHD + 1
-        istep_max_dt = i_step_MHD
 !
 !*  ----------  time evolution by spectral methood -----------------
 !*

@@ -100,11 +100,11 @@
       i_step_MHD =   i_step_init
 !
       if(flex_p%iflag_flexible_step .eq. iflag_flex_step) then
-        istep_max_dt = nint(time_init / flex_p%dt_max)
+        flex_p%istep_max_dt = nint(time_init / flex_p%dt_max)
         flex_p%interval_flex_2_max = nint(flex_p%dt_max / dt)
         flex_p%istep_flex_to_max = izero
       else
-        istep_max_dt = i_step_MHD
+        flex_p%istep_max_dt = i_step_MHD
         flex_p%interval_flex_2_max = ione
         flex_p%istep_flex_to_max = izero
       end if

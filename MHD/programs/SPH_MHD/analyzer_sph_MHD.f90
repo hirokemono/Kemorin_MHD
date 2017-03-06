@@ -125,7 +125,6 @@
       do
         time = time + dt
         i_step_MHD = i_step_MHD + 1
-        istep_max_dt = i_step_MHD
 !
 !*  ----------  time evolution by spectral methood -----------------
 !*
@@ -135,8 +134,8 @@
 !*  -----------  output field data --------------
 !*
         call start_eleps_time(4)
-        iflag = lead_field_data_flag(istep_max_dt,                      &
-     &                               viz_step1,SGS_par1%sgs_step)
+        iflag = lead_field_data_flag(i_step_MHD,                        &
+     &                               viz_step1, SGS_par1%sgs_step)
         if(iflag .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_MHD'
           call SPH_to_FEM_bridge_MHD                                    &

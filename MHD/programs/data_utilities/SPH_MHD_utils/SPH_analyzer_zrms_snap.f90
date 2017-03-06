@@ -85,7 +85,7 @@
      &   (ref_param_T1, ref_param_C1, ref_temp1, ref_comp1,             &
      &    sph1%sph_rj, ipol, idpdr, rj_fld1)
 !*
-      iflag = lead_field_data_flag(istep_max_dt,                        &
+      iflag = lead_field_data_flag(i_step,                              &
      &                             viz_step1,SGS_par1%sgs_step)
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'

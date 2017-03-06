@@ -23,8 +23,6 @@
 ! 
 !>      Time step
       integer(kind=kint) :: i_step_MHD
-!>      Maximum length of time step
-      integer(kind=kint) :: istep_max_dt
 ! 
 !>      Elapsed time to terminate simulation
       real(kind=kreal)   :: elapsed_time

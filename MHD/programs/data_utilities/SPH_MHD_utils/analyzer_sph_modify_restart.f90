@@ -48,7 +48,6 @@
 !*
       do
         i_step_MHD = i_step_MHD + 1
-        istep_max_dt = i_step_MHD
 !
         if(output_flag(i_step_MHD,rst_step1%increment) .ne. 0) cycle
 !
@@ -102,6 +101,8 @@
 !
       integer(kind = kint), intent(in) :: i_step
 !
+      integer(kind = kint) :: iflag
+!
 !
       call read_alloc_sph_rst_2_modify(i_step,                          &
      &    MHD1_org_files%rj_file_param, MHD1_org_files%rst_file_param,  &
@@ -118,7 +119,8 @@
 !*  -----------  lead energy data --------------
 !*
       call start_eleps_time(11)
-      if(output_flag(istep_max_dt, rms_step1%increment) .eq. 0) then
+      iflag = output_flag(i_step_MHD, rms_step1%increment)
+      if(iflag .eq. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
         call output_rms_sph_mhd_control(sph1%sph_params, sph1%sph_rj,   &
      &      trans_p1%leg, ipol, rj_fld1, pwr1, WK_pwr)

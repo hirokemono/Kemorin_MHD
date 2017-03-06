@@ -118,7 +118,6 @@
 !*
       do
         i_step_MHD = i_step_MHD + 1
-        istep_max_dt = i_step_MHD
 !
         if(output_flag(i_step_MHD,rst_step1%increment) .ne. 0) cycle
 !
@@ -132,8 +131,8 @@
         call start_eleps_time(1)
         call start_eleps_time(4)
 !
-        iflag = lead_field_data_flag(istep_max_dt,                      &
-     &                               viz_step1,SGS_par1%sgs_step)
+        iflag = lead_field_data_flag(i_step_MHD,                        &
+     &                               viz_step1, SGS_par1%sgs_step)
         if(iflag .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_MHD'
           call SPH_to_FEM_bridge_MHD                                    &
@@ -217,8 +216,8 @@
       if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_snap'
       call SPH_analyze_snap(i_step_MHD)
 !*
-      iflag = lead_field_data_flag(istep_max_dt,                        &
-     &                             viz_step1,SGS_par1%sgs_step)
+      iflag = lead_field_data_flag(i_step_MHD,                          &
+     &                             viz_step1, SGS_par1%sgs_step)
       if(iflag .eq. 0) then
         if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_MHD'
         call SPH_to_FEM_bridge_MHD                                      &

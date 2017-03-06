@@ -76,20 +76,20 @@
 !     ---- Load field data --- 
 !
       call reset_update_flag(nod_fld1, sgs_coefs, diff_coefs)
-      istep_max_dt = i_step
-      if (my_rank.eq.0) write(*,*) 'step: ', istep_max_dt
+      flex_p1%istep_max_dt = i_step
+      if (my_rank.eq.0) write(*,*) 'step: ', flex_p1%istep_max_dt
 !
       if (rst_step1%increment .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'input_restart_4_snapshot'
-        call input_restart_4_snapshot                                   &
-     &    (istep_max_dt, mesh1%node, nod_fld1, SNAP_time_IO, rst_step1)
+        call input_restart_4_snapshot(flex_p1%istep_max_dt,             &
+     &      mesh1%node, nod_fld1, SNAP_time_IO, rst_step1)
 !
       else if (ucd_step1%increment .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'read_udt_4_snap'
-        call read_udt_4_snap(istep_max_dt,                              &
+        call read_udt_4_snap(flex_p1%istep_max_dt,                      &
      &      FEM_udt_org_param, nod_fld1, SNAP_time_IO, ucd_step1)
-        time = time_init + dt*dble(istep_max_dt)
-        i_step_MHD = istep_max_dt
+        time = time_init + dt*dble(flex_p1%istep_max_dt)
+        i_step_MHD = flex_p1%istep_max_dt
       end if
 !
 !     ---- magnetic field update
@@ -137,7 +137,7 @@
 !
 !     ========  Data output
 !
-      iflag = lead_field_data_flag(istep_max_dt,                        &
+      iflag = lead_field_data_flag(flex_p1%istep_max_dt,                &
      &                             viz_step, SGS_par1%sgs_step)
       if(iflag .eq. 0) then
         call lead_fields_by_FEM                                         &
@@ -158,33 +158,35 @@
 !
 !     -----Output monitor date
 !
-      if(output_flag(istep_max_dt, rms_step1%increment) .eq. 0) then
+      iflag = output_flag(flex_p1%istep_max_dt, rms_step1%increment)
+      if(iflag .eq. 0) then
         if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
         call output_time_step_control(FEM_prm1, mesh1, MHD_mesh1,       &
      &      fl_prop1, cd_prop1, iphys, nod_fld1, iphys_ele, fld_ele1,   &
      &      jac1_3d_q, jac1_3d_l, fem1_wk, mhd_fem1_wk)
       end if
 !
-      if(output_flag(istep_max_dt,point_step1%increment) .eq. 0) then
+      iflag = output_flag(flex_p1%istep_max_dt,point_step1%increment)
+      if(iflag .eq. 0) then
         if (iflag_debug.eq.1) write(*,*) 'output_monitor_control'
         call output_monitor_control(mesh1%node, nod_fld1)
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 's_output_sgs_model_coefs'
       call s_output_sgs_model_coefs                                     &
-     &   (istep_max_dt, SGS_par1, wk_sgs1, wk_diff1)
+     &   (flex_p1%istep_max_dt, SGS_par1, wk_sgs1, wk_diff1)
 !
 !     ---- Output voulme field data
 !
       if (iflag_debug.eq.1) write(*,*) 's_output_ucd_file_control'
-      call s_output_ucd_file_control(istep_max_dt, ucd_step1)
+      call s_output_ucd_file_control(flex_p1%istep_max_dt, ucd_step1)
 !
 !     ----
 !
       if     (flex_p1%iflag_flexible_step .eq. iflag_flex_step) then
         visval = viz_file_step_4_flex(time, viz_step)
       else
-        visval =  viz_file_step_4_fix(istep_max_dt, viz_step)
+        visval =  viz_file_step_4_fix(flex_p1%istep_max_dt, viz_step)
       end if
 !
       end subroutine FEM_analyze_filtered

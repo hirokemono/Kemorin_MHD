@@ -73,13 +73,13 @@
       i_step_MHD = i_step_MHD + 1
 !
       if (flex_p1%iflag_flexible_step .eq. iflag_fixed_step) then
-        istep_max_dt = i_step_MHD
+        flex_p1%istep_max_dt = i_step_MHD
       else
         flex_p1%istep_flex_to_max = flex_p1%istep_flex_to_max + 1
         flex_p1%istep_flex_to_max                                       &
      &     = mod(flex_p1%istep_flex_to_max,flex_p1%interval_flex_2_max)
         if(flex_p1%istep_flex_to_max .eq. 0) then
-          istep_max_dt = istep_max_dt + 1
+          flex_p1%istep_max_dt = flex_p1%istep_max_dt + 1
         end if
       end if
 !

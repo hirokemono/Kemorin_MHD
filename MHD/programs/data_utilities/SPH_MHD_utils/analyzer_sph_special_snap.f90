@@ -60,7 +60,6 @@
 !*
       do
         i_step_MHD = i_step_MHD + 1
-        istep_max_dt = i_step_MHD
 !
         if(output_flag(i_step_MHD,rst_step1%increment) .ne. 0) cycle
 !
@@ -73,8 +72,8 @@
 !*
         call start_eleps_time(1)
         call start_eleps_time(4)
-        iflag = lead_field_data_flag(istep_max_dt,                      &
-     &                               viz_step1,SGS_par1%sgs_step)
+        iflag = lead_field_data_flag(i_step_MHD,                        &
+     &                               viz_step1, SGS_par1%sgs_step)
         if(iflag .eq. 0) then
           if(iflag_debug.eq.1)                                          &
      &       write(*,*) 'SPH_to_FEM_bridge_special_snap'
@@ -145,6 +144,7 @@
       use input_control_sph_MHD
 !
       integer(kind = kint), intent(in) :: i_step
+      integer(kind = kint) :: iflag
 !
 !
       call read_alloc_sph_rst_4_snap                                    &
@@ -184,15 +184,16 @@
      &    sph1%sph_rj, ipol, idpdr, rj_fld1)
 !*
       if(iflag_debug.gt.0) write(*,*) 'lead_special_fields_4_sph_mhd'
-      call lead_special_fields_4_sph_mhd                                &
-     &   (sph1, comms_sph1, omega_sph1, r_2nd, ipol, trns_WK1, rj_fld1)
+      call lead_special_fields_4_sph_mhd(i_step,                        &
+     &    sph1, comms_sph1, omega_sph1, r_2nd, ipol, trns_WK1, rj_fld1)
       call end_eleps_time(9)
 !
 !*  -----------  lead energy data --------------
 !*
       call start_eleps_time(4)
       call start_eleps_time(11)
-      if(output_flag(istep_max_dt, rms_step1%increment) .eq. 0) then
+      iflag = output_flag(i_step, rms_step1%increment)
+      if(iflag .eq. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
         call output_rms_sph_mhd_control(sph1%sph_params, sph1%sph_rj,   &
      &      trans_p1%leg, ipol, rj_fld1, pwr1, WK_pwr)
@@ -287,7 +288,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine lead_special_fields_4_sph_mhd(sph, comms_sph,          &
+      subroutine lead_special_fields_4_sph_mhd(i_step, sph, comms_sph,  &
      &          omega_sph, r_2nd, ipol, trns_WK, rj_fld)
 !
       use t_spheric_parameter
@@ -306,6 +307,7 @@
       use sph_transforms_snapshot
       use output_viz_file_control
 !
+      integer(kind = kint), intent(in) :: i_step
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(sph_rotation), intent(inout) :: omega_sph
@@ -317,8 +319,8 @@
       integer(kind = kint) :: iflag
 !
 !
-      iflag = lead_field_data_flag(istep_max_dt,                        &
-     &                             viz_step1,SGS_par1%sgs_step)
+      iflag = lead_field_data_flag(i_step,                              &
+     &                             viz_step1, SGS_par1%sgs_step)
       if(iflag .eq. 0) then
         call s_lead_fields_4_sph_mhd(SGS_par1%model_p, sph,             &
      &      comms_sph, r_2nd, fl_prop1, cd_prop1, ht_prop1, cp_prop1,   &

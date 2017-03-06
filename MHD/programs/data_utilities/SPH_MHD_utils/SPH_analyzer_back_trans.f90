@@ -297,8 +297,11 @@
       type(sph_mean_squares), intent(inout) :: pwr
       type(sph_mean_square_work), intent(inout) :: WK_pwr
 !
+      integer(kind = kint) :: iflag
 !
-      if (output_flag(istep_max_dt, rms_step1%increment) .ne. 0) return
+!
+      iflag = output_flag(i_step_MHD, rms_step1%increment)
+      if(iflag .ne. 0) return
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
       call cal_mean_squre_in_shell                                      &

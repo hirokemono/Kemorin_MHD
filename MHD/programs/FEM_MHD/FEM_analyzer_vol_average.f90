@@ -75,7 +75,8 @@
       use time_step_data_IO_control
       use output_parallel_ucd_file
 !
-      integer(kind=kint ), intent(in) :: i_step
+      integer(kind = kint), intent(in) :: i_step
+      integer(kind = kint) :: iflag
 !
 !     ---- Load field data --- 
 !
@@ -106,7 +107,8 @@
 !
 !     -----Output monitor date
 !
-      if(output_flag(istep_max_dt, rms_step1%increment) .eq. 0) then
+      iflag = output_flag(i_step, rms_step1%increment)
+      if(iflag .eq. 0) then
         if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
         call output_time_step_control(FEM_prm1, mesh1, MHD_mesh1,       &
      &      fl_prop1, cd_prop1, iphys, nod_fld1, iphys_ele, fld_ele1,   &

@@ -122,7 +122,6 @@
 !*
       do
         i_step_MHD = i_step_MHD + 1
-        istep_max_dt = i_step_MHD
 !
         if(output_flag(i_step_MHD,rst_step1%increment) .ne. 0) cycle
 !
