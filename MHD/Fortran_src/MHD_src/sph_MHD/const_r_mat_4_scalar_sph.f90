@@ -22,7 +22,7 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_t_int_parameter
+      use m_t_step_parameter
 !
       use t_physical_property
       use t_spheric_rj_data

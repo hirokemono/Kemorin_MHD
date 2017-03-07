@@ -162,7 +162,7 @@
      &         (sph_rj, ht_prop, band_temp_evo, ipol, rj_fld)
 !
       use t_physical_property
-      use m_t_int_parameter
+      use m_t_step_parameter
       use m_boundary_params_sph_MHD
       use m_radial_mat_sph_w_center
 !
@@ -187,7 +187,7 @@
      &         (sph_rj, cp_prop, band_comp_evo, ipol, rj_fld)
 !
       use t_physical_property
-      use m_t_int_parameter
+      use m_t_step_parameter
       use m_boundary_params_sph_MHD
       use m_radial_mat_sph_w_center
 !
@@ -344,7 +344,7 @@
       subroutine set_bc_scalar_sph_crank(sph_rj, sph_bc,                &
      &          coef_f, coef_d, coef_imp, is_field, rj_fld)
 !
-      use m_t_int_parameter
+      use m_t_step_parameter
       use set_scalar_boundary_sph
       use cal_sph_exp_center
 !

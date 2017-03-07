@@ -31,7 +31,7 @@
       use m_precision
 !
       use m_constants
-      use m_t_int_parameter
+      use m_t_step_parameter
 !
       implicit none
 !

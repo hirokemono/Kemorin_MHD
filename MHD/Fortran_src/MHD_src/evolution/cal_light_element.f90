@@ -98,7 +98,7 @@
      &          wk_filter, mhd_fem_wk, fem_wk, surf_wk,                 &
      &          f_l, f_nl, nod_fld)
 !
-      use m_t_int_parameter
+      use m_t_step_parameter
       use m_type_AMG_data
 !
       use nod_phys_send_recv

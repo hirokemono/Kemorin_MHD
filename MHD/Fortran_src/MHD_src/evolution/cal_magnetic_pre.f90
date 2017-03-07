@@ -117,7 +117,7 @@
      &          surf_wk, f_l, f_nl, nod_fld)
 !
       use calypso_mpi
-      use m_t_int_parameter
+      use m_t_step_parameter
 !
       use set_boundary_scalars
       use nod_phys_send_recv

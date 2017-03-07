@@ -91,7 +91,7 @@
 !
       use t_sph_matrices
       use t_physical_property
-      use m_t_int_parameter
+      use m_t_step_parameter
 !
       integer(kind = kint), intent(in) :: kr_in
       real(kind = kreal), intent(in) :: fdm1_fix_fld_ICB(0:1,2)
@@ -258,7 +258,7 @@
      &          nri, jmax, ar_1d_rj, fdm1_fix_fld_ICB, coef_imp,        &
      &          coef_d, vt_evo_mat)
 !
-      use m_t_int_parameter
+      use m_t_step_parameter
 !
       integer(kind = kint), intent(in) :: nri, jmax
       integer(kind = kint), intent(in) :: kr_in, idx_rj_l0

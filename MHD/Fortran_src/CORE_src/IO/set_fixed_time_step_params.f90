@@ -35,7 +35,6 @@
 !
       use m_error_IDs
       use m_t_step_parameter
-      use m_t_int_parameter
 !
       type(time_data_control), intent(in) :: tctl
 !
@@ -57,15 +56,15 @@
         i_step_number = tctl%i_step_number_ctl%intvalue
       end if
 !
-      call set_output_step_4_fixed_step(ione, tctl%i_step_check_ctl,    &
-     &    tctl%delta_t_check_ctl, rms_step1)
+      call set_output_step_4_fixed_step(ione, dt,                       &
+     &    tctl%i_step_check_ctl, tctl%delta_t_check_ctl, rms_step1)
 !
 !
-      call set_output_step_4_fixed_step(ione, tctl%i_step_rst_ctl,      &
-     &    tctl%delta_t_rst_ctl, rst_step1)
+      call set_output_step_4_fixed_step(ione, dt,                       &
+     &    tctl%i_step_rst_ctl, tctl%delta_t_rst_ctl, rst_step1)
 !
-      call set_output_step_4_fixed_step(ione, tctl%i_step_ucd_ctl,      &
-     &    tctl%delta_t_field_ctl, ucd_step1)
+      call set_output_step_4_fixed_step(ione, dt,                       &
+     &    tctl%i_step_ucd_ctl, tctl%delta_t_field_ctl, ucd_step1)
 !
       if(rst_step1%increment .gt. 0) then
         istep_rst_start = int(i_step_init /   rst_step1%increment)
@@ -78,7 +77,7 @@
       if(i_step_init .eq. -1)   istep_rst_start = -1
       if(i_step_number .eq. -1) istep_rst_end =   -1
 !
-      call viz_fixed_time_step_params(tctl, viz_step)
+      call viz_fixed_time_step_params(dt, tctl, viz_step)
 !
       if (i_step_number.eq.-1) then
         if (tctl%elapsed_time_ctl%iflag .eq. 0) then

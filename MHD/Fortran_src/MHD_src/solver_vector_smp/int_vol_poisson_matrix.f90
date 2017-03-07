@@ -125,7 +125,7 @@
      &          FEM_elens, ifld_diff, diff_coefs, fem_wk,               &
      &          mat_velo, mat_magne, mat_temp, mat_light)
 !
-      use m_t_int_parameter
+      use m_t_step_parameter
 !
       integer(kind = kint), intent(in) :: num_int, ifilter_final
       type(mesh_geometry), intent(in) :: mesh

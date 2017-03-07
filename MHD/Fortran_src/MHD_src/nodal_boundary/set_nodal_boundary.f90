@@ -141,7 +141,7 @@
       subroutine set_potential_4_fixed_press(coef_press, nod_bc_p)
 !
       use t_nodal_bc_data
-      use m_t_int_parameter
+      use m_t_step_parameter
 !
       real(kind = kreal), intent(in) :: coef_press
       type(scaler_fixed_nod_bc_type), intent(inout) :: nod_bc_p

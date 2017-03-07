@@ -32,7 +32,7 @@
 !
       use m_machine_parameter
       use m_physical_property
-      use m_t_int_parameter
+      use m_t_step_parameter
       use t_ctl_data_mhd_evo_scheme
       use t_physical_property
 !

@@ -165,7 +165,7 @@
      &         (sph_rj, band_s_evo, band_s00_evo, is_field,             &
      &          n_point, ntot_phys_rj, d_rj, sol_00)
 !
-      use m_t_int_parameter
+      use m_t_step_parameter
       use t_sph_center_matrix
       use cal_sph_exp_center
       use check_sph_radial_mat

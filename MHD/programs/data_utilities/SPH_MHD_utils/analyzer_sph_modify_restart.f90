@@ -30,7 +30,6 @@
 !
       subroutine evolution_sph_mod_restart
 !
-      use m_t_int_parameter
       use m_t_step_parameter
 !
       use FEM_analyzer_sph_MHD

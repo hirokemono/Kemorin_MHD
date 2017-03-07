@@ -30,7 +30,7 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_t_int_parameter
+      use m_t_step_parameter
       use m_ludcmp_3band
 !
       use t_physical_property

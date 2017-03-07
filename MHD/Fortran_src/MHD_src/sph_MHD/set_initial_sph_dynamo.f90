@@ -44,7 +44,6 @@
 !
       use m_machine_parameter
       use m_initial_field_control
-      use m_t_int_parameter
       use m_t_step_parameter
 !
       use t_spheric_parameter

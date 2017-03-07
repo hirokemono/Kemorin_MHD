@@ -57,7 +57,6 @@
      &          sgs_coefs, diff_coefs, nod_fld, flex_p)
 !
       use m_initial_field_control
-      use m_t_int_parameter
       use m_t_step_parameter
 !
       use t_SGS_control_parameter

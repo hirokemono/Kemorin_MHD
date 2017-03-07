@@ -80,7 +80,7 @@
      &          i_filter, nd_t, ele, jac_3d, FEM_elens,                 &
      &          scalar_1, vxe, dvx, sk_v)
 !
-      use m_t_int_parameter
+      use m_t_step_parameter
       use fem_skv_sgs_flux
 !
       type(element_data), intent(in) :: ele
@@ -118,7 +118,7 @@
      &          i_filter, nd, ele, jac_3d, FEM_elens,                   &
      &          vector_1, dvx, sk_v)
 !
-      use m_t_int_parameter
+      use m_t_step_parameter
       use fem_skv_sgs_uxb
 !
       type(element_data), intent(in) :: ele
@@ -153,7 +153,7 @@
      &          i_filter, nd, ele, jac_3d, FEM_elens,                   &
      &          vect_1, vxe, dvx, sk_v)
 !
-      use m_t_int_parameter
+      use m_t_step_parameter
       use fem_skv_sgs_uxb
 !
       type(element_data), intent(in) :: ele
@@ -225,7 +225,7 @@
      &          n_int, k2, i_filter, nd, ele, jac_3d, FEM_elens,        &
      &          vect_sgs, vxe, dvx, dbx, sk_v)
 !
-      use m_t_int_parameter
+      use m_t_step_parameter
       use fem_skv_sgs_induct_t
 !
       type(element_data), intent(in) :: ele

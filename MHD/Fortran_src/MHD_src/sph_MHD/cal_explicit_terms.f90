@@ -24,7 +24,7 @@
       module cal_explicit_terms
 !
       use m_precision
-      use m_t_int_parameter
+      use m_t_step_parameter
 !
       use t_phys_address
 !

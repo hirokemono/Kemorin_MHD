@@ -58,7 +58,7 @@
       subroutine cal_scalar_diffuse_mat(ele, rhs_tbl, MG_mat_tbl,       &
      &          fem_wk, k2, coef_imp, ak_d, mat11)
 !
-      use m_t_int_parameter
+      use m_t_step_parameter
       use t_coefs_element_4_MHD
       use cal_diffuse_matrix
 !
@@ -88,7 +88,7 @@
       subroutine cal_vect_diffuse_mat(ele, rhs_tbl, MG_mat_tbl,         &
      &          fem_wk, k2, coef_imp, ak_d, mat33)
 !
-      use m_t_int_parameter
+      use m_t_step_parameter
       use t_coefs_element_4_MHD
       use cal_diffuse_matrix
 !
@@ -121,7 +121,7 @@
 !
       use t_coefs_element_4_MHD
       use t_physical_property
-      use m_t_int_parameter
+      use m_t_step_parameter
       use cal_coriolis_mat33
 !
       type(element_data), intent(in) :: ele

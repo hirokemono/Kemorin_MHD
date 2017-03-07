@@ -32,7 +32,6 @@
 !
       use m_sph_spectr_data
       use m_t_step_parameter
-      use m_t_int_parameter
       use sph_file_IO_select
       use field_IO_select
       use r_interpolate_marged_sph

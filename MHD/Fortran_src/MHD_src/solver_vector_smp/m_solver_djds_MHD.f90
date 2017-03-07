@@ -193,7 +193,7 @@
      &         (fl_prop, cd_prop, ht_prop, cp_prop, FEM_prm)
 !
       use m_machine_parameter
-      use m_t_int_parameter
+      use m_t_step_parameter
 !
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop

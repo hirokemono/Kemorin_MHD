@@ -77,7 +77,6 @@
       subroutine evolution_sph_licv
 !
       use m_t_step_parameter
-      use m_t_int_parameter
 !
       use cal_nonlinear
       use cal_sol_sph_MHD_crank

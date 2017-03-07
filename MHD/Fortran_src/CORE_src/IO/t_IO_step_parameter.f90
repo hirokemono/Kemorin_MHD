@@ -8,8 +8,8 @@
 !> @brief Parameteres for time steppings
 !!
 !!@verbatim
-!!      subroutine set_output_step_4_fixed_step                         &
-!!     &         (istep_def, step_ctl, delta_t_ctl, IO_step)
+!!      subroutine set_output_step_4_fixed_step(istep_def, dt,          &
+!!     &          istep_ctl, delta_t_ctl, IO_step)
 !!      subroutine set_output_step_4_flex_step                          &
 !!     &         (istep_def, dt_max, step_ctl, delta_t_ctl, IO_step)
 !!        type(read_integer_item), intent(inout) :: step_ctl
@@ -82,13 +82,13 @@
 !-----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_output_step_4_fixed_step(istep_def, istep_ctl,     &
-     &          delta_t_ctl, IO_step)
+      subroutine set_output_step_4_fixed_step(istep_def, dt,            &
+     &          istep_ctl, delta_t_ctl, IO_step)
 !
-      use m_t_int_parameter
       use t_control_elements
 !
       integer(kind = kint), intent(in) :: istep_def
+      real(kind = kreal), intent(in) :: dt
       type(read_real_item), intent(in) :: delta_t_ctl
       type(read_integer_item), intent(in) :: istep_ctl
 !

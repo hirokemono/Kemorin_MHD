@@ -257,7 +257,7 @@
 !
       subroutine input_restart_files(node, nod_fld, flex_p)
 !
-      use m_t_int_parameter
+      use m_t_step_parameter
       use m_file_format_switch
 !
       use field_IO_select

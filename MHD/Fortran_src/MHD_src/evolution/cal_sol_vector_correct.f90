@@ -106,7 +106,7 @@
       subroutine cal_sol_velo_co_crank_lump(numnod, inter_smp_stack,    &
      &          ml_o_fl, ncomp_nod, i_velo, d_nod, ff_nl, ff)
 !
-      use m_t_int_parameter
+      use m_t_step_parameter
 !
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
       integer (kind = kint), intent(in) :: numnod, ncomp_nod, i_velo
@@ -177,7 +177,7 @@
       subroutine cal_sol_vect_co_crank(numnod, inter_smp_stack, ml_o,   &
      &          ncomp_nod, i_field, d_nod, ff_nl, ff)
 !
-      use m_t_int_parameter
+      use m_t_step_parameter
 !
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
       integer (kind = kint), intent(in) :: numnod, ncomp_nod, i_field
@@ -215,7 +215,7 @@
       subroutine cal_sol_vect_co_crank_consist                          &
      &        (numnod, inter_smp_stack, ff_nl, ff)
 !
-      use m_t_int_parameter
+      use m_t_step_parameter
 !
       integer (kind = kint), intent(in) :: numnod
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)

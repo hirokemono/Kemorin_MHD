@@ -23,7 +23,6 @@
       use m_constants
       use m_machine_parameter
       use m_t_step_parameter
-      use m_t_int_parameter
 !
       use t_flex_delta_t_data
 !

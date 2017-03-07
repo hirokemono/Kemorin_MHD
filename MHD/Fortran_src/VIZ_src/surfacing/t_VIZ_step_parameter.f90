@@ -10,12 +10,12 @@
 !!@verbatim
 !!      subroutine accum_output_flag_4_viz(i_step, viz_step, iflag_field)
 !!      integer(kind = kint) function viz_file_step_4_flex              &
-!!     &                            (time, viz_step)
+!!     &                            (dt, time, viz_step)
 !!      integer(kind = kint) function viz_file_step_4_fix               &
 !!     &                            (i_step, viz_step)
 !!
-!!      subroutine viz_fixed_time_step_params(tctl, viz_step)
-!!      subroutine viz_flex_time_step_controls(tctl, viz_step)
+!!      subroutine viz_fixed_time_step_params(dt, tctl, viz_step)
+!!      subroutine viz_flex_time_step_controls(tctl, dt, viz_step)
 !!        integer(kind=kint ), intent(inout) :: visval
 !!@endverbatim
 !
@@ -86,10 +86,9 @@
 !-----------------------------------------------------------------------
 !
       integer(kind = kint) function viz_file_step_4_flex                &
-     &                            (time, viz_step)
+     &                            (dt, time, viz_step)
 !
-      use m_t_int_parameter
-!
+      real(kind=kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: time
       type(VIZ_step_params), intent(inout) :: viz_step
 !
@@ -110,39 +109,40 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine viz_fixed_time_step_params(tctl, viz_step)
+      subroutine viz_fixed_time_step_params(dt, tctl, viz_step)
 !
       use t_ctl_data_4_time_steps
 !
+      real(kind=kreal), intent(in) :: dt
       type(time_data_control), intent(in) :: tctl
       type(VIZ_step_params), intent(inout) :: viz_step
 !
 !
       call set_output_step_4_fixed_step                                 &
-     &   (izero, tctl%i_step_psf_ctl, tctl%delta_t_psf_ctl,             &
+     &   (izero, dt, tctl%i_step_psf_ctl, tctl%delta_t_psf_ctl,         &
      &    viz_step%PSF_t)
 !
       call set_output_step_4_fixed_step                                 &
-     &   (izero, tctl%i_step_iso_ctl, tctl%delta_t_iso_ctl,             &
+     &   (izero, dt, tctl%i_step_iso_ctl, tctl%delta_t_iso_ctl,         &
      &    viz_step%ISO_t)
 !
       call set_output_step_4_fixed_step                                 &
-     &   (izero, tctl%i_step_pvr_ctl,   tctl%delta_t_pvr_ctl,           &
+     &   (izero, dt, tctl%i_step_pvr_ctl,   tctl%delta_t_pvr_ctl,       &
      &    viz_step%PVR_t)
 !
       call set_output_step_4_fixed_step                                 &
-     &   (izero, tctl%i_step_fline_ctl, tctl%delta_t_fline_ctl,         &
+     &   (izero, dt, tctl%i_step_fline_ctl, tctl%delta_t_fline_ctl,     &
      &    viz_step%FLINE_t)
 !
       end subroutine viz_fixed_time_step_params
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine viz_flex_time_step_controls(tctl, viz_step)
+      subroutine viz_flex_time_step_controls(tctl, dt, viz_step)
 !
-      use m_t_int_parameter
       use t_ctl_data_4_time_steps
 !
+      real(kind=kreal), intent(in) :: dt
       type(time_data_control), intent(in) :: tctl
       type(VIZ_step_params), intent(inout) :: viz_step
 !

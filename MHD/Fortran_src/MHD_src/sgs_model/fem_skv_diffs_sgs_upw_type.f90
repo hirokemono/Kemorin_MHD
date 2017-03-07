@@ -46,7 +46,7 @@
      &          i_filter, ak_diff, ele, jac_3d, FEM_elens,              &
      &          vxe, scalar_1, sk_v)
 !
-      use m_t_int_parameter
+      use m_t_step_parameter
       use fem_skv_gradient_sgs_upw
 !
       type(element_data), intent(in) :: ele
@@ -84,7 +84,7 @@
      &          i_filter, ak_diff, ele, jac_3d, FEM_elens,              &
      &          vxe, vector_1, sk_v)
 !
-      use m_t_int_parameter
+      use m_t_step_parameter
       use fem_skv_divergence_sgs_upw
 !
       type(element_data), intent(in) :: ele
@@ -122,7 +122,7 @@
      &          i_filter, ak_diff, ele, jac_3d, FEM_elens,              &
      &          vxe, vector_1, sk_v)
 !
-      use m_t_int_parameter
+      use m_t_step_parameter
       use fem_skv_rotation_sgs_upw
 !
       type(element_data), intent(in) :: ele
@@ -160,7 +160,7 @@
      &          k2, i_filter, ak_diff, ele, jac_3d, FEM_elens,          &
      &          vxe, tensor_1, sk_v)
 !
-      use m_t_int_parameter
+      use m_t_step_parameter
       use fem_skv_div_tensor_sgs_upw
 !
       type(element_data), intent(in) :: ele
@@ -198,7 +198,7 @@
      &          n_int, k2, i_filter, ak_diff, ele, jac_3d,              &
      &          FEM_elens, vxe, as_tsr_1, sk_v)
 !
-      use m_t_int_parameter
+      use m_t_step_parameter
       use fem_skv_div_as_tsr_sgs_upw
 !
       type(element_data), intent(in) :: ele

@@ -150,7 +150,6 @@
       subroutine read_alloc_sph_restart_data(rj_fld)
 !
       use m_t_step_parameter
-      use m_t_int_parameter
       use set_sph_restart_IO
       use copy_time_steps_4_restart
 !
@@ -205,7 +204,6 @@
      &         (i_step, rj_file_param, sph_rj, ipol, rj_fld)
 !
       use m_t_step_parameter
-      use m_t_int_parameter
       use t_spheric_rj_data
       use set_sph_restart_IO
       use r_interpolate_sph_data
@@ -244,7 +242,7 @@
 !
       subroutine output_spectr_4_snap(i_step, sph_file_param, rj_fld)
 !
-      use m_t_int_parameter
+      use m_t_step_parameter
       use copy_rj_phys_data_4_IO
       use copy_time_steps_4_restart
       use const_global_element_ids

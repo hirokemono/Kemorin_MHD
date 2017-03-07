@@ -299,7 +299,6 @@
 !
       subroutine share_time_step_data
 !
-      use m_t_int_parameter
       use m_t_step_parameter
 !
 !

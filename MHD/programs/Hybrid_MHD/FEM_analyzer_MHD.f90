@@ -17,7 +17,6 @@
       use m_SGS_control_parameter
       use m_physical_property
       use m_t_step_parameter
-      use m_t_int_parameter
       use m_mesh_data
       use m_ucd_data
       use m_sorted_node_MHD
@@ -334,7 +333,7 @@
           retval = 0
         end if
 !
-        visval = viz_file_step_4_flex(time, viz_step)
+        visval = viz_file_step_4_flex(dt, time, viz_step)
       else
         if      (i_step_number.eq.-1                                    &
      &       .and. total_max.gt.elapsed_time) then

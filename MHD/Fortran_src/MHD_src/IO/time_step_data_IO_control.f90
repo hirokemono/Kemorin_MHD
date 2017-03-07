@@ -51,7 +51,6 @@
 !
       use calypso_mpi
       use m_t_step_parameter
-      use m_t_int_parameter
       use m_mean_square_values
 !
       use int_bulk

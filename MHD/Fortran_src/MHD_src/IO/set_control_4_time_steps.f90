@@ -25,7 +25,6 @@
       use m_error_IDs
       use m_machine_parameter
       use m_t_step_parameter
-      use m_t_int_parameter
       use t_SGS_control_parameter
       use t_ctl_data_4_time_steps
       use t_VIZ_step_parameter
@@ -175,16 +174,16 @@
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
       if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
-        call set_output_step_4_fixed_step(ione,                         &
+        call set_output_step_4_fixed_step(ione, dt,                     &
      &      tctl%i_step_sgs_coefs_ctl, tctl%delta_t_sgs_coefs_ctl,      &
      &      SGS_par%sgs_step)
       end if
 !
       call set_output_step_4_fixed_step                                 &
-     &   (izero, tctl%i_step_monitor_ctl, tctl%delta_t_monitor_ctl,     &
+     &   (izero, dt, tctl%i_step_monitor_ctl, tctl%delta_t_monitor_ctl, &
      &    point_step1)
 !
-      call set_output_step_4_fixed_step(izero,                          &
+      call set_output_step_4_fixed_step(izero, dt,                      &
      &    tctl%i_step_boundary_ctl, tctl%delta_t_boundary_ctl,          &
      &    boundary_step1)
 !
@@ -226,7 +225,7 @@
       i_step_init =   istep_rst_start * rst_step1%increment
       i_step_number = istep_rst_end *   rst_step1%increment
 !
-      call viz_flex_time_step_controls(tctl, viz_step)
+      call viz_flex_time_step_controls(tctl, dt, viz_step)
 !
 !
       if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then

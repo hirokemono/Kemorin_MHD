@@ -14,7 +14,6 @@
       use m_machine_parameter
       use m_work_time
       use m_t_step_parameter
-      use m_t_int_parameter
       use m_control_parameter
       use m_SGS_control_parameter
       use m_mesh_data
@@ -209,7 +208,7 @@
 !     ----
 !
       if     (flex_p1%iflag_flexible_step .eq. iflag_flex_step) then
-        visval = viz_file_step_4_flex(time, viz_step)
+        visval = viz_file_step_4_flex(dt, time, viz_step)
       else
         visval = viz_file_step_4_fix(flex_p1%istep_max_dt, viz_step)
       end if

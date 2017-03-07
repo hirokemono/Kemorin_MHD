@@ -76,7 +76,6 @@
       subroutine sph_initial_spectrum(ipol, itor, rj_fld)
 !
       use m_initial_field_control
-      use m_t_int_parameter
       use m_t_step_parameter
       use t_phys_data
 !
