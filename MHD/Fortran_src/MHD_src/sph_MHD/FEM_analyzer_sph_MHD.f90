@@ -141,14 +141,13 @@
       integer(kind = kint) :: iflag
 !
 !
-      iflag = lead_field_data_flag(i_step, viz_step, SGS_par%sgs_step)
-      if(iflag .ne. 0) return
-!
 !*  ----------   Count steps for visualization
+!*
 !*
       visval = 1
       visval = viz_file_step_4_fix(i_step, viz_step)
-!*
+      iflag = lead_field_data_flag(i_step, viz_step, SGS_par%sgs_step)
+      if(iflag .ne. 0) return
 !
 !*  ----------- Data communication  --------------
 !
