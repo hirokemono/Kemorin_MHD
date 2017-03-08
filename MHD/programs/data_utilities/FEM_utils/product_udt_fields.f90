@@ -3,17 +3,19 @@
 !
 !      Written by H. Matsui on Dec., 2007
 !
-!      subroutine allocate_product_data(numnod)
-!      subroutine allocate_product_result(nod_fld)
-!        type(phys_data), intent(inout) :: nod_fld
-!      subroutine deallocate_product_data
-!
-!      subroutine set_field_id_4_product(numnod, t_IO)
-!
-!      subroutine set_data_for_product(numnod, istep_ucd, t_IO)
-!      subroutine cal_rev_of_2nd_field(numnod)
-!      subroutine cal_products_of_fields                                &
-!     &         (nod_comm, node, ncomp_nod, d_nod)
+!!      subroutine allocate_product_data(numnod)
+!!      subroutine allocate_product_result(nod_fld)
+!!        type(phys_data), intent(inout) :: nod_fld
+!!      subroutine deallocate_product_data
+!!
+!!      subroutine set_field_id_4_product(numnod, t_IO, ucd_step)
+!!        type(time_params_IO), intent(inout) :: t_IO
+!!        type(IO_step_param), intent(inout) :: ucd_step
+!!
+!!      subroutine set_data_for_product(numnod, istep_ucd, t_IO)
+!!      subroutine cal_rev_of_2nd_field(numnod)
+!!      subroutine cal_products_of_fields                               &
+!!     &         (nod_comm, node, ncomp_nod, d_nod)
 !
       module product_udt_fields
 !
@@ -21,6 +23,7 @@
       use m_constants
       use m_machine_parameter
 !
+      use t_IO_step_parameter
       use t_time_data_IO
       use t_comm_table
       use t_geometry_data
@@ -91,7 +94,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_field_id_4_product(numnod, t_IO)
+      subroutine set_field_id_4_product(numnod, t_IO, ucd_step)
 !
       use calypso_mpi
       use m_error_IDs
@@ -101,15 +104,16 @@
 !
       integer(kind = kint), intent(in) :: numnod
       type(time_params_IO), intent(inout) :: t_IO
+      type(IO_step_param), intent(inout) :: ucd_step
 !
 !
-      ucd_step1%istep_file = i_step_init / ucd_step1%increment
-      call find_field_id_in_read_ucd(my_rank, ucd_step1%istep_file,     &
+      ucd_step%istep_file = i_step_init / ucd_step%increment
+      call find_field_id_in_read_ucd(my_rank, ucd_step%istep_file,      &
      &    ifmt_result_udt_file, prod_udt_file1_head,                    &
      &    numnod, product_field_1_name, i_field_product1,               &
      &    ncomp_4_product1, t_IO)
 !
-      call find_field_id_in_read_ucd(my_rank, ucd_step1%istep_file,     &
+      call find_field_id_in_read_ucd(my_rank, ucd_step%istep_file,      &
      &   ifmt_result_udt_file, prod_udt_file2_head,                     &
      &   numnod, product_field_2_name, i_field_product2,                &
      &   ncomp_4_product2, t_IO)

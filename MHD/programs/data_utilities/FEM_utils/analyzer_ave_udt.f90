@@ -17,6 +17,7 @@
       use calypso_mpi
 !
       use m_FEM_utils
+      use m_t_step_parameter
 !
       implicit none
 !
@@ -42,7 +43,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_ave_udt'
       call s_input_control_ave_udt                                      &
-     &   (mesh_file_FUTIL, udt_param_FUTIL, field_FUTIL, ucd_FUTIL)
+     &   (mesh_file_FUTIL, udt_param_FUTIL, field_FUTIL, ucd_FUTIL,     &
+     &    ucd_step1)
 !
 !     --------------------- 
 !

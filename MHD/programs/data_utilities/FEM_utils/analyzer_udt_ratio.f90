@@ -63,7 +63,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_field_id_4_product'
       call set_field_id_4_product                                       &
-     &   (femmesh_FUTIL%mesh%node%numnod, time_IO_FUTIL)
+     &   (femmesh_FUTIL%mesh%node%numnod, time_IO_FUTIL, ucd_step1)
       call allocate_product_data(femmesh_FUTIL%mesh%node%numnod)
       call allocate_product_result(field_FUTIL)
 !

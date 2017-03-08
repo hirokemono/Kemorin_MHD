@@ -15,6 +15,7 @@
       use m_machine_parameter
       use calypso_mpi
 !
+      use m_t_step_parameter
       use t_mesh_data
       use t_phys_data
       use t_mesh_data_with_pointer
@@ -70,7 +71,8 @@
       call init_element_mesh_type(elemesh_FUT)
 !
       call s_input_control_corr_udt                                     &
-     &   (mesh_file_FUTIL, udt_param_FUTIL, field_FUTIL, ucd_FUTIL)
+     &   (mesh_file_FUTIL, udt_param_FUTIL, field_FUTIL, ucd_FUTIL,     &
+     &    ucd_step1)
       if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh_p'
       call mpi_input_mesh_p(mesh_file_FUTIL, femmesh_p_FUT,             &
      &    elemesh_FUT%surf%nnod_4_surf,                                 &
