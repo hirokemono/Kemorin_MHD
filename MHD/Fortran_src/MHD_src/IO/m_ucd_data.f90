@@ -96,7 +96,7 @@
 !
 !
       if(fem_ucd%ifmt_file .lt. 0) return
-      if(output_flag(i_step,ucd_step%increment) .ne. 0) return
+      if(output_IO_flag(i_step,ucd_step) .ne. 0) return
 !
       ucd_step%istep_file = i_step / ucd_step%increment
 !
@@ -184,7 +184,7 @@
       type(IO_step_param), intent(inout) :: ucd_step
 !
 !
-      if(output_flag(i_step,ucd_step%increment) .ne. izero) return
+      if(output_IO_flag(i_step,ucd_step) .ne. izero) return
       ucd_step%istep_file = i_step / ucd_step%increment
       call set_data_by_read_ucd_once(my_rank, ucd_step%istep_file,      &
     &     udt_file_param%iflag_format, udt_file_param%file_prefix,      &

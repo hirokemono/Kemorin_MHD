@@ -3,7 +3,11 @@
 !
 !        programmed by H.Matsui on Oct., 2007
 !
-!!      subroutine set_ctl_data_4_sph_utils(rj_fld, pwr)
+!!      subroutine set_ctl_data_4_sph_utils                             &
+!!     &         (rst_step, ucd_step, viz_step, rj_fld, pwr)
+!!        type(IO_step_param), intent(inout) :: rst_step
+!!        type(IO_step_param), intent(inout) :: ucd_step
+!!        type(VIZ_step_params), intent(inout) :: viz_step
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(sph_mean_squares), intent(inout) :: pwr
 !
@@ -15,6 +19,7 @@
       use t_rms_4_sph_spectr
       use t_pickup_sph_spectr_data
       use t_file_IO_parameter
+      use t_VIZ_step_parameter
 !
       implicit  none
 !
@@ -64,7 +69,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_ctl_data_4_sph_utils(rj_fld, pwr)
+      subroutine set_ctl_data_4_sph_utils                               &
+     &         (rst_step, ucd_step, viz_step, rj_fld, pwr)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -80,6 +86,10 @@
 !
       use m_ctl_data_4_sph_utils
       use m_default_file_prefix
+!
+      type(IO_step_param), intent(inout) :: rst_step
+      type(IO_step_param), intent(inout) :: ucd_step
+      type(VIZ_step_params), intent(inout) :: viz_step
 !
       type(phys_data), intent(inout) :: rj_fld
       type(sph_mean_squares), intent(inout) :: pwr
@@ -103,7 +113,7 @@
 !      stepping parameter
 !
       call s_set_fixed_time_step_params                                 &
-     &   (t_su_ctl, viz_step1, ierr, e_message)
+     &   (t_su_ctl, viz_step, ierr, e_message)
 !
 !    file header for field data
 !
@@ -123,12 +133,12 @@
         org_sph_file_head = su_plt%restart_file_prefix%charavalue
         call choose_para_file_format                                    &
      &     (su_plt%restart_file_fmt_ctl, iflag_org_sph_file_fmt)
-        ucd_step1%increment = rst_step1%increment
+        ucd_step%increment = rst_step%increment
       end if
 !
       if( (rj_org_param%iflag_IO) .gt. 0) then
         org_sph_file_head =  rst_org_param%file_prefix
-        ucd_step1%increment = rst_step1%increment
+        ucd_step%increment = rst_step%increment
         call choose_file_format                                         &
      &     (org_su_plt%sph_file_fmt_ctl, iflag_org_sph_file_fmt)
       end if

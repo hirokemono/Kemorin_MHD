@@ -157,7 +157,7 @@
 !
 !     -----Output monitor date
 !
-      iflag = output_flag(flex_p1%istep_max_dt, rms_step1%increment)
+      iflag = output_IO_flag(flex_p1%istep_max_dt, rms_step1)
       if(iflag .eq. 0) then
         if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
         call output_time_step_control(FEM_prm1, mesh1, MHD_mesh1,       &
@@ -165,7 +165,7 @@
      &      jac1_3d_q, jac1_3d_l, fem1_wk, mhd_fem1_wk)
       end if
 !
-      iflag = output_flag(flex_p1%istep_max_dt,point_step1%increment)
+      iflag = output_IO_flag(flex_p1%istep_max_dt,point_step1)
       if(iflag .eq. 0) then
         if (iflag_debug.eq.1) write(*,*) 'output_monitor_control'
         call output_monitor_control(mesh1%node, nod_fld1)

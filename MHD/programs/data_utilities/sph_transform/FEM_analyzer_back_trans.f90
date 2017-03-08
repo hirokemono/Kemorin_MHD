@@ -122,7 +122,7 @@
 !
 !*  -----------  Output volume data --------------
 !*
-      if(output_flag(i_step,ucd_step1%increment) .eq. 0) then
+      if(output_IO_flag(i_step,ucd_step1) .eq. 0) then
         call sel_write_udt_file(my_rank, i_step, t_IO, ucd)
       end if
 !

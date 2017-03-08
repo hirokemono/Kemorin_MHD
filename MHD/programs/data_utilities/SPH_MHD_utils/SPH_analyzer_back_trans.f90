@@ -114,12 +114,11 @@
       use sph_transforms_snapshot
 !
       integer(kind = kint), intent(in) :: i_step
-      integer (kind =kint) :: iflag
 !
 !
       call read_alloc_sph_spectr                                        &
      &   (i_step, MHD1_org_files%rj_file_param, sph_file_param1,        &
-     &    sph1%sph_rj, ipol, rj_fld1)
+     &    sph1%sph_rj, ipol, rj_fld1, ucd_step1)
 !
 !* ----  Update fields after time evolution ------------------------=
 !*
@@ -297,11 +296,8 @@
       type(sph_mean_squares), intent(inout) :: pwr
       type(sph_mean_square_work), intent(inout) :: WK_pwr
 !
-      integer(kind = kint) :: iflag
 !
-!
-      iflag = output_flag(i_step_MHD, rms_step1%increment)
-      if(iflag .ne. 0) return
+      if(output_IO_flag(i_step_MHD, rms_step1) .ne. 0) return
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
       call cal_mean_squre_in_shell                                      &

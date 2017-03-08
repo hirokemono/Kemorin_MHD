@@ -4,8 +4,9 @@
 !     Written by H. Matsui on July, 2006
 !
 !!      subroutine set_ctl_params_interpolation
-!!      subroutine set_ctl_4_itp_steps(tctl)
-!!        type(time_data_control), save :: tctl
+!!      subroutine set_ctl_4_itp_steps(tctl, rst_step, ucd_step)
+!!        type(time_data_control), intent(in) :: tctl
+!!        type(IO_step_param), intent(inout) :: rst_step, ucd_step
 !
       module set_ctl_interpolation
 !
@@ -139,13 +140,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_ctl_4_itp_steps(tctl)
+      subroutine set_ctl_4_itp_steps(tctl, rst_step, ucd_step)
 !
       use m_machine_parameter
       use m_t_step_parameter
       use t_ctl_data_4_time_steps
 !
       type(time_data_control), intent(in) :: tctl
+      type(IO_step_param), intent(inout) :: rst_step, ucd_step
 !
 !   parameters for time evolution
 !
@@ -161,21 +163,21 @@
           i_step_number = tctl%i_step_number_ctl%intvalue
         end if
 !
-        rst_step1%increment = 0
+        rst_step%increment = 0
         if (tctl%i_step_rst_ctl%intvalue .gt. 0) then
-          rst_step1%increment = tctl%i_step_rst_ctl%intvalue
+          rst_step%increment = tctl%i_step_rst_ctl%intvalue
         end if
 !
-        ucd_step1%increment = 0
+        ucd_step%increment = 0
         if (tctl%i_step_ucd_ctl%iflag .gt. 0) then
-          ucd_step1%increment = tctl%i_step_ucd_ctl%intvalue
+          ucd_step%increment = tctl%i_step_ucd_ctl%intvalue
         end if
 !
         if (iflag_debug.eq.1) then
           write(*,*) 'i_step_init ',i_step_init
           write(*,*) 'i_step_number ',i_step_number
-          write(*,*) 'i_step_output_rst ', rst_step1%increment
-          write(*,*) 'i_step_output_ucd ', ucd_step1%increment
+          write(*,*) 'i_step_output_rst ', rst_step%increment
+          write(*,*) 'i_step_output_ucd ', ucd_step%increment
         end if
 !
       end subroutine set_ctl_4_itp_steps

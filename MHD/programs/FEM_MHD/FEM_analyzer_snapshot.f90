@@ -47,8 +47,8 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
       call init_analyzer_snap(FEM_prm1, SGS_par1, IO_bc1,               &
-     &    mesh1, group1, ele_mesh1, MHD_mesh1,                          &
-     &    layer_tbl1, iphys, nod_fld1, SNAP_time_IO, label_sim)
+     &    mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,              &
+     &    iphys, nod_fld1, SNAP_time_IO, rst_step1, label_sim)
 !
       call output_grd_file_w_org_connect                                &
      &   (ucd_step1, mesh1, MHD_mesh1, nod_fld1)
@@ -182,7 +182,7 @@
 !
       call start_eleps_time(4)
 !
-      iflag = output_flag(flex_p1%istep_max_dt, rms_step1%increment)
+      iflag = output_IO_flag(flex_p1%istep_max_dt, rms_step1)
       if(iflag .eq. 0) then
         if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
         call output_time_step_control(FEM_prm1, mesh1, MHD_mesh1,       &
@@ -190,7 +190,7 @@
      &      jac1_3d_q, jac1_3d_l, fem1_wk, mhd_fem1_wk)
       end if
 !
-      iflag = output_flag(flex_p1%istep_max_dt,point_step1%increment)
+      iflag = output_IO_flag(flex_p1%istep_max_dt, point_step1)
       if(iflag .eq. 0) then
         if (iflag_debug.eq.1) write(*,*) 'output_monitor_control'
         call output_monitor_control(mesh1%node, nod_fld1)

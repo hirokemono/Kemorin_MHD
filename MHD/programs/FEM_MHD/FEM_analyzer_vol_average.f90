@@ -46,8 +46,8 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
       call init_analyzer_snap(FEM_prm1, SGS_par1, IO_bc1,               &
-     &    mesh1, group1, ele_mesh1, MHD_mesh1,                          &
-     &    layer_tbl1, iphys, nod_fld1, SNAP_time_IO, label_sim)
+     &    mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,              &
+     &    iphys, nod_fld1, SNAP_time_IO, rst_step1, label_sim)
 !
       end subroutine FEM_initialize_vol_average
 !
@@ -106,7 +106,7 @@
 !
 !     -----Output monitor date
 !
-      iflag = output_flag(i_step, rms_step1%increment)
+      iflag = output_IO_flag(i_step, rms_step1)
       if(iflag .eq. 0) then
         if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
         call output_time_step_control(FEM_prm1, mesh1, MHD_mesh1,       &

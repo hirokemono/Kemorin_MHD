@@ -72,7 +72,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_interpolate'
       call s_input_control_interpolate(org_femmesh, org_ele_mesh,       &
-     &    new_femmesh, new_ele_mesh, itp_rst, ierr)
+     &    new_femmesh, new_ele_mesh, itp_rst, rst_step1, ucd_step1,     &
+     &    ierr)
 !
 !     --------------------- 
 !

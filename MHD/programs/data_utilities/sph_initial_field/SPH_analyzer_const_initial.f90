@@ -112,7 +112,7 @@
 ! ---------------------------------
 !
       if(iflag_debug.gt.0) write(*,*)' sph_initial_spectrum'
-      call sph_initial_spectrum(ipol, itor, rj_fld1)
+      call sph_initial_spectrum(ipol, itor, rj_fld1, rst_step1)
 !
       end subroutine SPH_const_initial_field
 !

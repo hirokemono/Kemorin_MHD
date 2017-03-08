@@ -16,6 +16,8 @@
 !!        type(read_real_item), intent(inout) :: delta_t_ctl
 !!        type(IO_step_param), intent(inout) :: IO_step
 !!      subroutine accum_output_flag(i_step, IO_step, i_flag)
+!!      integer(kind = kint) function output_IO_flag(i_step, IO_step)
+!!
 !!      subroutine accum_flag_to_visualization(i_step, IO_step, visval)
 !!        type(IO_step_param), intent(in) :: IO_step
 !!
@@ -61,6 +63,18 @@
       i_flag = i_flag * output_flag(i_step, IO_step%increment)
 !
       end subroutine accum_output_flag
+!
+!-----------------------------------------------------------------------
+!
+      integer(kind = kint) function output_IO_flag(i_step, IO_step)
+!
+      integer (kind =kint), intent(in) :: i_step
+      type(IO_step_param), intent(in) :: IO_step
+!
+!
+      output_IO_flag = output_flag(i_step, IO_step%increment)
+!
+      end function output_IO_flag
 !
 !-----------------------------------------------------------------------
 !

@@ -13,6 +13,7 @@
       use m_precision
       use t_IO_step_parameter
       use t_VIZ_step_parameter
+      use t_MHD_step_parameter
 !
       implicit  none
 !
@@ -52,6 +53,9 @@
 !>      End step for restarting file
       integer(kind=kint) :: istep_rst_end
 !
+!
+      type(MHD_IO_step_param), save :: MHD_step1
+!MHD_step1%rst_step
 !
       type(IO_step_param), save :: rst_step1
 !

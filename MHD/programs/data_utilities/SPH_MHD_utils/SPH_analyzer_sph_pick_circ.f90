@@ -158,7 +158,7 @@
 !
       call read_alloc_sph_rst_4_snap                                    &
      &   (i_step, MHD1_org_files%rj_file_param, sph1%sph_rj,            &
-     &    ipol, rj_fld1)
+     &    ipol, rj_fld1, rst_step1)
 !
       call sync_temp_by_per_temp_sph                                    &
      &   (ref_param_T1, ref_param_C1, ref_temp1, ref_comp1,             &

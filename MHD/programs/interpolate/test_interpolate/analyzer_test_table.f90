@@ -16,6 +16,7 @@
       use calypso_mpi
       use m_machine_parameter
 !
+      use m_t_step_parameter
       use t_mesh_data
       use t_interpolate_table
 !
@@ -56,7 +57,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_itp_mesh'
       call s_input_control_interpolate(org_femmesh, org_ele_mesh,       &
-     &    new_femmesh, new_ele_mesh, itp_test, ierr)
+     &    new_femmesh, new_ele_mesh, itp_test, rst_step1, ucd_step1,    &
+     &    ierr)
 !
 !     --------------------- 
 !

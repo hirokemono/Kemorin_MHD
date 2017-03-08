@@ -7,9 +7,10 @@
 !> @brief Set initial data for spectrum dynamos
 !!
 !!@verbatim
-!!      subroutine sph_initial_spectrum(ipol, itor, rj_fld)
+!!      subroutine sph_initial_spectrum(ipol, itor, rj_fld, rst_step)
 !!        type(phys_address), intent(in) :: ipol, itor
 !!        type(phys_data), intent(inout) :: rj_fld
+!!        type(IO_step_param), intent(inout) :: rst_step
 !!
 !!       Sample program to generate initial field
 !!       This program generates initial condition
@@ -73,10 +74,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sph_initial_spectrum(ipol, itor, rj_fld)
+      subroutine sph_initial_spectrum(ipol, itor, rj_fld, rst_step)
 !
       use m_initial_field_control
       use m_t_step_parameter
+      use t_IO_step_parameter
       use t_phys_data
 !
       use sph_mhd_rst_IO_control
@@ -84,6 +86,7 @@
 !
       type(phys_address), intent(in) :: ipol, itor
       type(phys_data), intent(inout) :: rj_fld
+      type(IO_step_param), intent(inout) :: rst_step
 !
 !
 !  Set initial velocity if velocity is exist
@@ -124,7 +127,7 @@
 !  Copy initial field to restart IO data
       call init_output_sph_restart_file(rj_fld)
 !
-      call output_sph_restart_control(rj_fld)
+      call output_sph_restart_control(rj_fld, rst_step)
 !
       if(istep_rst_start .eq. -1) then
         call output_sph_rst_by_elaps(rj_fld)

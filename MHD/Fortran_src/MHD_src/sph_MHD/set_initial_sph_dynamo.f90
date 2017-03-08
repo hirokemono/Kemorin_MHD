@@ -8,11 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine sph_initial_data_control(sph_params, sph_rj,         &
-!!     &          reftemp_rj, ipol, idpdr, itor, rj_fld)
+!!     &          reftemp_rj, ipol, idpdr, itor, rj_fld, rst_step)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(phys_address), intent(in) :: ipol
 !!        type(phys_data), intent(inout) :: rj_fld
+!!        type(IO_step_param), intent(inout) :: rst_step
 !!@endverbatim
 !
 !
@@ -23,6 +24,7 @@
       use m_constants
       use m_machine_parameter
 !
+      use t_IO_step_parameter
       use t_spheric_rj_data
       use t_phys_address
 !
@@ -40,7 +42,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine sph_initial_data_control(sph_params, sph_rj,           &
-     &          reftemp_rj, ipol, idpdr, itor, rj_fld)
+     &          reftemp_rj, ipol, idpdr, itor, rj_fld, rst_step)
 !
       use m_machine_parameter
       use m_initial_field_control
@@ -60,6 +62,7 @@
       type(phys_address), intent(in) :: ipol, idpdr, itor
 !
       type(phys_data), intent(inout) :: rj_fld
+      type(IO_step_param), intent(inout) :: rst_step
 !
       integer(kind = kint) :: isig
 !
@@ -67,7 +70,7 @@
       iflag_initial_step = 0
       if (iflag_restart .eq. i_rst_by_file) then
         if(iflag_debug .gt. 0) write(*,*) 'read_alloc_sph_restart_data'
-        call read_alloc_sph_restart_data(rj_fld)
+        call read_alloc_sph_restart_data(rj_fld, rst_step)
 !
 !   for dynamo benchmark
 !
@@ -157,7 +160,7 @@
 !
       if (iflag_restart.ne.i_rst_by_file .and. i_step_init.eq.0) then
         if(iflag_debug .gt. 0) write(*,*) 'output_sph_restart_control'
-        call output_sph_restart_control(rj_fld)
+        call output_sph_restart_control(rj_fld, rst_step)
       end if
 !
       end subroutine sph_initial_data_control

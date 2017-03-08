@@ -150,7 +150,7 @@
 !
 !   set model coefficients for vector potential
 !
-      iflag_dmc = output_flag(i_step_MHD, SGS_par%i_step_sgs_coefs)
+      iflag_dmc = dynamic_SGS_flag(i_step_MHD, SGS_par)
 !
 !
       if (SGS_par%commute_p%iflag_c_magne .eq. id_SGS_commute_ON        &

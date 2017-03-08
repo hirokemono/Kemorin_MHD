@@ -150,7 +150,7 @@
       end if
 !
 !
-      iflag_dmc = output_flag(i_step_MHD, SGS_par%i_step_sgs_coefs)
+      iflag_dmc = dynamic_SGS_flag(i_step_MHD, SGS_par)
       if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF          &
      &     .and.  iflag_dmc .eq. 0) then
         if(SGS_par%model_p%iflag_SGS_lorentz .eq. id_SGS_similarity     &

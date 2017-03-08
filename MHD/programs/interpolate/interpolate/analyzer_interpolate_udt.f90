@@ -68,7 +68,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_interpolate'
       call s_input_control_interpolate(org_femmesh, org_ele_mesh,       &
-     &   new_femmesh, new_ele_mesh, itp_udt, ierr)
+     &   new_femmesh, new_ele_mesh, itp_udt, rst_step1, ucd_step1,      &
+     &   ierr)
 !
       call set_ctl_interpolate_udt(fld_gt_ctl, nod_fld_ITP)
 !

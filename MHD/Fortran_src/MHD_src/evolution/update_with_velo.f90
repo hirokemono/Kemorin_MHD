@@ -140,7 +140,7 @@
       integer (kind = kint) :: iflag_dmc, iflag2
 !
 !
-      iflag_dmc = output_flag(i_step_MHD, SGS_par%i_step_sgs_coefs)
+      iflag_dmc = dynamic_SGS_flag(i_step_MHD, SGS_par)
 !
       if (iphys_ele%i_velo .ne. 0) then
         if(iflag_debug .ge. iflag_routine_msg)                          &

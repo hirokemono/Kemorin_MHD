@@ -5,7 +5,8 @@
 !
 !!      subroutine init_analyzer_snap                                   &
 !!     &         (FEM_prm, SGS_par, IO_bc, mesh, group, ele_mesh,       &
-!!     &          MHD_mesh, layer_tbl, iphys, nod_fld, t_IO, label_sim)
+!!     &          MHD_mesh, layer_tbl, iphys, nod_fld, t_IO, rst_step,  &
+!!     &          label_sim)
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(IO_boundary), intent(in) :: IO_bc
@@ -17,6 +18,7 @@
 !!        type(phys_address), intent(inout) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(time_params_IO), intent(inout) :: t_IO
+!!        type(IO_step_param), intent(inout) :: rst_step
 !
       module initialize_4_snapshot
 !
@@ -32,6 +34,7 @@
       use t_work_layer_correlate
       use t_time_data_IO
       use t_boundary_field_IO
+      use t_IO_step_parameter
 !
       implicit none
 !
@@ -43,7 +46,8 @@
 !
       subroutine init_analyzer_snap                                     &
      &         (FEM_prm, SGS_par, IO_bc, mesh, group, ele_mesh,         &
-     &          MHD_mesh, layer_tbl, iphys, nod_fld, t_IO, label_sim)
+     &          MHD_mesh, layer_tbl, iphys, nod_fld, t_IO, rst_step,    &
+     &          label_sim)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -103,6 +107,7 @@
       type(phys_address), intent(inout) :: iphys
       type(phys_data), intent(inout) :: nod_fld
       type(time_params_IO), intent(inout) :: t_IO
+      type(IO_step_param), intent(inout) :: rst_step
       character(len=kchara), intent(inout)   :: label_sim
 !
       integer(kind = kint) :: iflag
@@ -218,10 +223,10 @@
 !
 !     --------------------- 
 !
-      if (rst_step1%increment .gt. 0) then
+      if (rst_step%increment .gt. 0) then
         if (iflag_debug.eq.1) write(*,*)' init_restart_4_snapshot'
         call init_restart_4_snapshot                                    &
-     &     (i_step_init, mesh%node, t_IO, rst_step1)
+     &     (i_step_init, mesh%node, t_IO, rst_step)
       end if
 !
 !     ---------------------

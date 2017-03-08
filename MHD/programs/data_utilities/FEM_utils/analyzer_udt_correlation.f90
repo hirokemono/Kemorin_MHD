@@ -164,7 +164,7 @@
 !     ---------------------
 !
       do istep = i_step_init, i_step_number
-        if (output_flag(istep,ucd_step1%increment) .eq. izero) then
+        if (output_IO_flag(istep,ucd_step1) .eq. izero) then
 !
           ucd_step1%istep_file = istep / ucd_step1%increment
 !

@@ -60,7 +60,7 @@
       do
         i_step_MHD = i_step_MHD + 1
 !
-        if(output_flag(i_step_MHD,rst_step1%increment) .ne. 0) cycle
+        if(output_IO_flag(i_step_MHD,rst_step1) .ne. 0) cycle
 !
 !*  ----------  time evolution by spectral methood -----------------
 !*
@@ -148,7 +148,7 @@
 !
       call read_alloc_sph_rst_4_snap                                    &
      &   (i_step, MHD1_org_files%rj_file_param, sph1%sph_rj,            &
-     &    ipol, rj_fld1)
+     &    ipol, rj_fld1, rst_step1)
 !
       if (iflag_debug.eq.1) write(*,*)' sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph                                    &
@@ -191,7 +191,7 @@
 !*
       call start_eleps_time(4)
       call start_eleps_time(11)
-      iflag = output_flag(i_step, rms_step1%increment)
+      iflag = output_IO_flag(i_step, rms_step1)
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
         call output_rms_sph_mhd_control(sph1%sph_params, sph1%sph_rj,   &
@@ -202,7 +202,8 @@
 !
 !*  -----------  Output spectr data --------------
 !*
-      call output_spectr_4_snap(i_step, sph_file_param1, rj_fld1)
+      call output_spectr_4_snap                                         &
+     &   (i_step, sph_file_param1, rj_fld1, ucd_step1)
 !
       end subroutine SPH_analyze_special_snap
 !

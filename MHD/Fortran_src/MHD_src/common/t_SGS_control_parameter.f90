@@ -15,6 +15,8 @@
 !!      subroutine copy_filter_group_param(f_area_org, f_area_new)
 !!        type(SGS_filter_area_params), intent(in) :: f_area_org
 !!        type(SGS_filter_area_params), intent(inout) :: f_area_new
+!!      integer(kind = kint) function dynamic_SGS_flag(i_step, SGS_par)
+!!        type(SGS_paremeters), intent(in) :: SGS_par
 !!@endverbatim
 !
       module t_SGS_control_parameter
@@ -256,5 +258,20 @@
       end subroutine copy_filter_group_param
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      integer(kind = kint) function dynamic_SGS_flag(i_step, SGS_par)
+!
+      use t_IO_step_parameter
+!
+      integer (kind =kint), intent(in) :: i_step
+      type(SGS_paremeters), intent(in) :: SGS_par
+!
+!
+      dynamic_SGS_flag = output_flag(i_step, SGS_par%i_step_sgs_coefs)
+!
+      end function dynamic_SGS_flag
+!
+!-----------------------------------------------------------------------
 !
       end module t_SGS_control_parameter

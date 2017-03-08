@@ -147,7 +147,7 @@
       type(IO_step_param), intent(inout) :: rst_step
 !
 !
-      if (output_flag(i_step,rst_step%increment) .ne. 0) return
+      if (output_IO_flag(i_step,rst_step) .ne. 0) return
 !
       rst_step%istep_file = i_step / rst_step%increment
       call output_restart_files                                         &
@@ -310,7 +310,7 @@
       type(IO_step_param), intent(inout) :: rst_step
 !
 !
-      if (output_flag(i_step,rst_step%increment) .ne. 0) return
+      if (output_IO_flag(i_step, rst_step) .ne. 0) return
       rst_step%istep_file = i_step / rst_step%increment
 !
       call sel_read_step_FEM_field_file                                 &

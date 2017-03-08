@@ -5,7 +5,13 @@
 !
 !      subroutine s_input_control_interpolate                           &
 !     &         (org_femmesh, org_ele_mesh, new_femmesh, new_ele_mesh,  &
-!     &          itp_info, ierr)
+!     &          itp_info, rst_step, ucd_step, ierr)
+!       type(mesh_data), intent(inout) :: org_femmesh
+!       type(element_geometry), intent(inout) :: org_ele_mesh
+!       type(mesh_data), intent(inout) :: new_femmesh
+!       type(element_geometry), intent(inout) :: new_ele_mesh
+!       type(interpolate_table), intent(inout) :: itp_info
+!       type(IO_step_param), intent(inout) :: rst_step, ucd_step
 !      subroutine set_ctl_interpolate_udt(fld_ctl, nod_fld)
 !        type(field_control), intent(inout) :: fld_ctl
 !        type(phys_data), intent(inout) :: nod_fld
@@ -27,10 +33,11 @@
 !
       subroutine s_input_control_interpolate                            &
      &         (org_femmesh, org_ele_mesh, new_femmesh, new_ele_mesh,   &
-     &          itp_info, ierr)
+     &          itp_info, rst_step, ucd_step, ierr)
 !
       use t_mesh_data
       use t_interpolate_table
+      use t_IO_step_parameter
 !
       use m_2nd_pallalel_vector
       use m_ctl_params_4_gen_table
@@ -52,6 +59,7 @@
       type(mesh_data), intent(inout) :: new_femmesh
       type(element_geometry), intent(inout) :: new_ele_mesh
       type(interpolate_table), intent(inout) :: itp_info
+      type(IO_step_param), intent(inout) :: rst_step, ucd_step
       integer(kind = kint), intent(inout) :: ierr
 !
 !
@@ -61,7 +69,7 @@
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_interpolation'
       call set_ctl_params_interpolation
 !
-      call set_ctl_4_itp_steps(t_gt_ctl)
+      call set_ctl_4_itp_steps(t_gt_ctl, rst_step, ucd_step)
 !
 !  --  read geometry for origin (if exist)
 !

@@ -41,12 +41,12 @@
       call accum_output_flag_4_viz                                      &
      &   (i_step, viz_step, lead_field_data_flag)
 !
-      irst = output_flag(i_step, rst_step1%increment)
-      i_bulk = output_flag(i_step, rms_step1%increment)
-      i_udt = output_flag(i_step, ucd_step1%increment)
-      i_monitor = output_flag(i_step, point_step1%increment)
+      irst =      output_IO_flag(i_step, rst_step1)
+      i_bulk =    output_IO_flag(i_step, rms_step1)
+      i_udt =     output_IO_flag(i_step, ucd_step1)
+      i_monitor = output_IO_flag(i_step, point_step1)
 !
-      i_coef = output_flag(i_step, sgs_step%increment)
+      i_coef =    output_IO_flag(i_step, sgs_step)
 !
       lead_field_data_flag = lead_field_data_flag                       &
      &                     * irst * i_udt * i_monitor * i_bulk * i_coef

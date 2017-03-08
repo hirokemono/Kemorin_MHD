@@ -167,8 +167,7 @@
 !
 !
       if(SGS_par%model_p%iflag_dynamic .eq. id_SGS_DYNAMIC_OFF) return
-      if(output_flag(i_step_MHD, SGS_par%i_step_sgs_coefs) .ne. 0)      &
-     &     return
+      if(dynamic_SGS_flag(i_step_MHD, SGS_par) .ne. 0) return
 !
       if(my_rank .eq. 0) write(*,*)                                     &
      &            'set Csim', i_step_MHD, SGS_par%i_step_sgs_coefs
