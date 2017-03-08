@@ -4,9 +4,9 @@
 !
 !       Written by H. Matsui
 !
-!      subroutine FEM_initialize_vizs
-!      subroutine FEM_analyze_vizs(i_step, viz_step, visval)
-!!      type(VIZ_step_params), intent(inout) :: viz_step
+!!      subroutine FEM_initialize_vizs(viz_step)
+!!      subroutine FEM_analyze_vizs(i_step, viz_step, visval)
+!!        type(VIZ_step_params), intent(inout) :: viz_step
 !
       module FEM_analyzer_viz
 !
@@ -17,6 +17,9 @@
       use m_t_step_parameter
       use m_visualization
 !
+      use t_VIZ_step_parameter
+      use t_IO_step_parameter
+!
       implicit none
 !
 !-----------------------------------------------------------------------
@@ -25,7 +28,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_vizs
+      subroutine FEM_initialize_vizs(viz_step)
+!
+      type(VIZ_step_params), intent(inout) :: viz_step
 !
       integer(kind = kint) :: iflag
 !
@@ -38,7 +43,7 @@
 !     --------------------- Connection information for PVR and fieldline
 !     --------------------- init for fieldline and PVR
 !
-      iflag = viz_step1%FLINE_t%increment + viz_step1%PVR_t%increment
+      iflag = viz_step%FLINE_t%increment + viz_step%PVR_t%increment
       if(iflag .gt. 0) call element_normals_4_VIZ
 !
 !     --------------------- 
@@ -57,8 +62,6 @@
       subroutine FEM_analyze_vizs(i_step, viz_step, visval)
 !
       use t_ucd_data
-      use t_VIZ_step_parameter
-      use t_IO_step_parameter
 !
       integer (kind =kint), intent(in) :: i_step
       integer(kind=kint ), intent(inout) :: visval

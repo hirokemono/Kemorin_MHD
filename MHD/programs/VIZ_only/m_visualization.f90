@@ -23,8 +23,11 @@
       use t_jacobian_3d
       use t_file_IO_parameter
       use t_time_data_IO
+      use t_VIZ_step_parameter
 !
       implicit none
+!
+      type(VIZ_step_params), save :: viz_step_V
 !
 !>      Structure for mesh file IO paramters
       type(field_IO_params), save :: mesh_file_VIZ

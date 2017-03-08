@@ -56,7 +56,7 @@
       call set_ctl_params_prod_udt                                      &
      &   (mesh_file_FUTIL, udt_param_FUTIL, ucd_FUTIL)
       call s_set_fixed_time_step_params                                 &
-     &   (t_pu_ctl, viz_step1, ierr, e_message)
+     &   (t_pu_ctl, viz_step_U, ierr, e_message)
 !
 !     ---------------------
 !

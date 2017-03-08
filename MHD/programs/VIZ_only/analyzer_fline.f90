@@ -1,9 +1,9 @@
 !analyzer_fline.f90
 !      module analyzer_fline
 !
-      module analyzer_fline
-!
 !     Written by H. Matsui on July, 2006
+!
+      module analyzer_fline
 !
       use m_precision
 !
@@ -34,7 +34,7 @@
       if (iflag_debug.gt.0) write(*,*) 'set_control_params_4_viz'
       call read_control_data_vizs
       call set_control_params_4_viz(my_rank, t_viz_ctl, viz_plt,        &
-     &   mesh_file_VIZ, ucd_VIZ, ierr)
+     &   mesh_file_VIZ, ucd_VIZ, viz_step_V, ierr)
 !
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
@@ -55,17 +55,16 @@
 !
       use m_t_step_parameter
 !
-      integer(kind=kint ) :: i_step
-      type(IO_step_param) :: fline_step1
+      integer(kind = kint) :: i_step
 !
 !
       do i_step = i_step_init, i_step_number
 !
 !  Load field data
-        call FEM_analyze_fline(i_step, fline_step1)
+        call FEM_analyze_fline(i_step, viz_step_V%FLINE_t)
 !
 !  Generate field lines
-        call FLINE_visualize(fline_step1%istep_file,                    &
+        call FLINE_visualize( viz_step_V%FLINE_t%istep_file,            &
      &      femmesh_VIZ%mesh%node, femmesh_VIZ%mesh%ele,                &
      &      elemesh_VIZ%surf, femmesh_VIZ%group%ele_grp,                &
      &      ele_4_nod_VIZ, field_VIZ, femmesh_VIZ%mesh%nod_comm)

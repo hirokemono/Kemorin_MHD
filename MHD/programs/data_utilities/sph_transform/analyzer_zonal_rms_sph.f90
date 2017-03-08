@@ -74,7 +74,7 @@
 !
 !    Initialize FEM grid
       if (iflag_debug.gt.0) write(*,*) 'FEM_initialize_back_trans'
-      call FEM_initialize_back_trans(ele_4_nod_SPH_TRANS,               &
+      call FEM_initialize_back_trans(viz_step_STR, ele_4_nod_SPH_TRANS, &
      &    jac_STR_l, jac_STR_q, ucd_SPH_TRNS, m_ucd_SPH_TRNS)
 !
 !    Initialization for spherical tranform
@@ -119,10 +119,10 @@
 !
         call set_ucd_file_prefix(zonal_udt_head, ucd_SPH_TRNS)
         call FEM_analyze_back_trans(time_IO_TRNS, ucd_SPH_TRNS, i_step, &
-     &      viz_step1, visval)
+     &      viz_step_STR, visval)
 !
         if(visval .eq. 0) then
-          call visualize_all(viz_step1,                                 &
+          call visualize_all(viz_step_STR,                              &
      &        femmesh_STR%mesh, femmesh_STR%group, elemesh_STR,         &
      &        field_STR, ele_4_nod_SPH_TRANS, jac_STR_q)
         end if

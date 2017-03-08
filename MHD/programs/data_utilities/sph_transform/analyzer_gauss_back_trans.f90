@@ -13,6 +13,7 @@
       use m_SPH_transforms
       use m_work_time
       use m_spheric_data_transform
+      use m_ctl_params_sph_trans
 !
       use FEM_analyzer_back_trans
       use SPH_analyzer_gauss_b_trans
@@ -29,7 +30,6 @@
       subroutine init_analyzer
 !
       use m_ctl_data_4_sph_trans
-      use m_ctl_params_sph_trans
       use parallel_load_data_4_sph
 !
 !
@@ -69,7 +69,7 @@
 !  ------  initialize FEM data
 !
       if (iflag_debug.gt.0) write(*,*) 'FEM_initialize_back_trans'
-      call FEM_initialize_back_trans(ele_4_nod_SPH_TRANS,               &
+      call FEM_initialize_back_trans(viz_step_STR, ele_4_nod_SPH_TRANS, &
      &    jac_STR_l, jac_STR_q, ucd_SPH_TRNS, m_ucd_SPH_TRNS)
 !
 !  ------  initialize spectr data
@@ -95,14 +95,14 @@
       do i_step = i_step_init, i_step_number
         if (iflag_debug.gt.0) write(*,*) 'step ', i_step, 'start...'
 !
-        call SPH_analyze_gauss_back_trans(i_step, viz_step1,            &
+        call SPH_analyze_gauss_back_trans(i_step, viz_step_STR,         &
      &      sph_mesh_trans, ipol_trans, rj_fld_trans, visval)
 !
         call FEM_analyze_back_trans(time_IO_TRNS, ucd_SPH_TRNS, i_step, &
-     &      viz_step1, visval)
+     &      viz_step_STR, visval)
 !
         if (visval .eq. 0) then
-          call visualize_all(viz_step1,                                 &
+          call visualize_all(viz_step_STR,                              &
      &        femmesh_STR%mesh, femmesh_STR%group, elemesh_STR,         &
      &        field_STR, ele_4_nod_SPH_TRANS, jac_STR_q)
         end if

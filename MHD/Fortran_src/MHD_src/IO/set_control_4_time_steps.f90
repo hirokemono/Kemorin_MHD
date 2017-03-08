@@ -25,6 +25,7 @@
       use m_error_IDs
       use m_machine_parameter
       use m_t_step_parameter
+      use m_MHD_step_parameter
       use t_SGS_control_parameter
       use t_ctl_data_4_time_steps
       use t_VIZ_step_parameter
@@ -124,12 +125,12 @@
         if (iflag_debug .ge. iflag_routine_msg)                         &
      &    write(*,*) 'set_flex_time_step_controls'
         call set_flex_time_step_controls                                &
-     &     (flex_p, SGS_par, tctl, viz_step1)
+     &     (flex_p, SGS_par, tctl, MHD_step1%viz_step)
       else
         if (iflag_debug .ge. iflag_routine_msg)                         &
      &    write(*,*) 'set_fixed_time_step_controls'
         call set_fixed_time_step_controls                               &
-     &     (SGS_par, tctl, viz_step1)
+     &     (SGS_par, tctl, MHD_step1%viz_step)
       end if
 !
       if (i_step_number.eq.-1) then

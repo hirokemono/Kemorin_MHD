@@ -4,11 +4,12 @@
 !     Written by H. Matsui on May., 2006
 !
 !!      subroutine set_control_params_4_viz                             &
-!!     &         (my_rank, tctl, plt, mesh_file, ucd, ierr)
+!!     &         (my_rank, tctl, plt, mesh_file, ucd, viz_step, ierr)
 !!        type(time_data_control), intent(in) :: tctl
 !!        type(platform_data_control), intent(inout) :: plt
 !!        type(field_IO_params), intent(inout) :: mesh_file
 !!        type(ucd_data), intent(inout) :: ucd
+!!        type(VIZ_step_params), intent(inout) :: viz_step
 !
       module set_control_visualizer
 !
@@ -24,12 +25,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_control_params_4_viz                               &
-     &         (my_rank, tctl, plt, mesh_file, ucd, ierr)
+     &         (my_rank, tctl, plt, mesh_file, ucd, viz_step, ierr)
 !
       use t_ucd_data
       use t_file_IO_parameter
       use t_ctl_data_4_platforms
       use t_ctl_data_4_time_steps
+      use t_VIZ_step_parameter
 !
       use m_file_format_switch
       use m_t_step_parameter
@@ -45,6 +47,7 @@
       type(platform_data_control), intent(inout) :: plt
       type(field_IO_params), intent(inout) :: mesh_file
       type(ucd_data), intent(inout) :: ucd
+      type(VIZ_step_params), intent(inout) :: viz_step
 !
 !
       call turn_off_debug_flag_by_ctl(my_rank, plt)
@@ -53,7 +56,7 @@
       call set_ucd_file_define(plt, ucd)
 !
       call s_set_fixed_time_step_params                                 &
-     &   (tctl, viz_step1, ierr, e_message)
+     &   (tctl, viz_step, ierr, e_message)
       if(ierr .gt. 0) return
 !
       end subroutine set_control_params_4_viz

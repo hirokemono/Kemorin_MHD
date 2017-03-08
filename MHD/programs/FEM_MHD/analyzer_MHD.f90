@@ -13,6 +13,7 @@
       use calypso_mpi
       use m_work_time
 !
+      use m_MHD_step_parameter
       use m_SGS_control_parameter
       use m_mesh_data
       use m_node_phys_data
@@ -73,7 +74,7 @@
       call end_eleps_time(4)
 !
       call start_eleps_time(2)
-      call FEM_initialize_MHD(viz_step1)
+      call FEM_initialize_MHD(MHD_step1%viz_step)
 !
       call init_visualize_surface(mesh1, group1, ele_mesh1, nod_fld1)
       call end_eleps_time(2)
@@ -93,14 +94,15 @@
 !
       do
 !  Time evolution
-        call FEM_analyze_MHD(viz_step1, visval, retval)
+        call FEM_analyze_MHD(MHD_step1%viz_step, visval, retval)
 !
 !     ---------------------
 !
 !  Visualization
         if (visval.eq.0) then
           call start_eleps_time(4)
-          call visualize_surface(viz_step1, mesh1, ele_mesh1, nod_fld1)
+          call visualize_surface                                        &
+     &       (MHD_step1%viz_step, mesh1, ele_mesh1, nod_fld1)
           call end_eleps_time(4)
         end if
 !

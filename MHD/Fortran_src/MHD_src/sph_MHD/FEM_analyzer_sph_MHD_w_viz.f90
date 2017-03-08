@@ -8,8 +8,9 @@
 !!       to FEM data for data visualization
 !!
 !!@verbatim
-!!      subroutine FEM_initialize_w_viz(mesh, group, ele_mesh,          &
+!!      subroutine FEM_initialize_w_viz(viz_step, mesh, group, ele_mesh,&
 !!     &          iphys, nod_fld, next_tbl, jac_3d_q, jac_3d_l)
+!!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(element_geometry), intent(inout) :: ele_mesh
@@ -28,6 +29,7 @@
       use m_constants
 !
       use calypso_mpi
+      use m_MHD_step_parameter
       use m_machine_parameter
       use m_work_time
 !
@@ -36,6 +38,7 @@
       use t_phys_address
       use t_next_node_ele_4_node
       use t_jacobian_3d
+      use t_VIZ_step_parameter
 !
       implicit none
 !
@@ -45,7 +48,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_w_viz(mesh, group, ele_mesh,            &
+      subroutine FEM_initialize_w_viz(viz_step, mesh, group, ele_mesh,  &
      &          iphys, nod_fld, next_tbl, jac_3d_q, jac_3d_l)
 !
       use m_t_step_parameter
@@ -57,6 +60,7 @@
       use int_volume_of_domain
       use set_normal_vectors
 !
+      type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
@@ -77,13 +81,13 @@
 !
 !  -------------------------------
 !
-      if(viz_step1%FLINE_t%increment .gt. 0) then
+      if(viz_step%FLINE_t%increment .gt. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_ele_id_4_node'
         call set_ele_id_4_node                                          &
      &    (mesh%node, mesh%ele, next_tbl%neib_ele)
       end if
 !
-      if(viz_step1%PVR_t%increment .le. 0) Return
+      if(viz_step%PVR_t%increment .le. 0) Return
 !
 !  -----  If there is no volume rendering... return
 !

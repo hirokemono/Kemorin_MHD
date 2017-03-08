@@ -4,10 +4,9 @@
 !        programmed by H.Matsui on Oct., 2007
 !
 !!      subroutine set_ctl_data_4_sph_utils                             &
-!!     &         (rst_step, ucd_step, viz_step, rj_fld, pwr)
+!!     &         (rst_step, ucd_step, rj_fld, pwr)
 !!        type(IO_step_param), intent(inout) :: rst_step
 !!        type(IO_step_param), intent(inout) :: ucd_step
-!!        type(VIZ_step_params), intent(inout) :: viz_step
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(sph_mean_squares), intent(inout) :: pwr
 !
@@ -23,6 +22,9 @@
 !
       implicit  none
 !
+!
+!>      Increment for visualizations
+      type(VIZ_step_params), save, private :: viz_step_SHR
 !
       type(phys_data), save :: nod_fld
 !
@@ -70,7 +72,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_ctl_data_4_sph_utils                               &
-     &         (rst_step, ucd_step, viz_step, rj_fld, pwr)
+     &         (rst_step, ucd_step, rj_fld, pwr)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -89,7 +91,6 @@
 !
       type(IO_step_param), intent(inout) :: rst_step
       type(IO_step_param), intent(inout) :: ucd_step
-      type(VIZ_step_params), intent(inout) :: viz_step
 !
       type(phys_data), intent(inout) :: rj_fld
       type(sph_mean_squares), intent(inout) :: pwr
@@ -113,7 +114,7 @@
 !      stepping parameter
 !
       call s_set_fixed_time_step_params                                 &
-     &   (t_su_ctl, viz_step, ierr, e_message)
+     &   (t_su_ctl, viz_step_SHR, ierr, e_message)
 !
 !    file header for field data
 !

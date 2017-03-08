@@ -19,6 +19,7 @@
       use m_machine_parameter
       use m_work_time
       use m_t_step_parameter
+      use m_MHD_step_parameter
       use m_SGS_control_parameter
       use m_mesh_data
       use m_node_phys_data
@@ -80,7 +81,8 @@
 !
       call start_eleps_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_w_viz'
-      call FEM_initialize_w_viz(mesh1, group1, ele_mesh1,               &
+      call FEM_initialize_w_viz                                         &
+     &   (MHD_step1%viz_step, mesh1, group1, ele_mesh1,                 &
      &    iphys, nod_fld1, next_tbl1, jac1_3d_q, jac1_3d_l)
 !
 !        Initialize spherical transform dynamo
@@ -140,8 +142,8 @@
      &      mesh1%node, nod_fld1)
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
-        call FEM_analyze_sph_MHD                                        &
-     &     (i_step_MHD, SGS_par1, mesh1, nod_fld1, viz_step1, visval)
+        call FEM_analyze_sph_MHD(i_step_MHD, SGS_par1, mesh1,           &
+     &      nod_fld1, MHD_step1%viz_step, visval)
 !
         call end_eleps_time(4)
 !
@@ -151,7 +153,7 @@
           if (iflag_debug.eq.1) write(*,*) 'visualize_all'
           call start_eleps_time(12)
           call visualize_all                                            &
-     &       (viz_step1, mesh1, group1, ele_mesh1, nod_fld1,            &
+     &       (MHD_step1%viz_step, mesh1, group1, ele_mesh1, nod_fld1,   &
      &        next_tbl1%neib_ele, jac1_3d_q)
           call end_eleps_time(12)
         end if

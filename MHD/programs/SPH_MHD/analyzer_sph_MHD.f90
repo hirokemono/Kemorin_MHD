@@ -19,6 +19,7 @@
       use m_machine_parameter
       use m_work_time
       use m_t_step_parameter
+      use m_MHD_step_parameter
       use m_mesh_data
       use m_node_phys_data
       use m_element_id_4_node
@@ -77,7 +78,8 @@
 !        Initialize FEM mesh data for field data IO
 !
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_w_viz'
-      call FEM_initialize_w_viz(mesh1, group1, ele_mesh1,               &
+      call FEM_initialize_w_viz                                         &
+     &   (MHD_step1%viz_step, mesh1, group1, ele_mesh1,                 &
      &    iphys, nod_fld1, next_tbl1, jac1_3d_q, jac1_3d_l)
 !
 !        Initialize spherical transform dynamo
@@ -133,8 +135,8 @@
 !*  -----------  output field data --------------
 !*
         call start_eleps_time(4)
-        iflag = lead_field_data_flag(i_step_MHD,                        &
-     &                               viz_step1, SGS_par1%sgs_step)
+        iflag = lead_field_data_flag(i_step_MHD, MHD_step1%viz_step,    &
+     &                               SGS_par1%sgs_step)
         if(iflag .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_MHD'
           call SPH_to_FEM_bridge_MHD                                    &
@@ -143,8 +145,8 @@
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
-        call FEM_analyze_sph_MHD                                        &
-     &     (i_step_MHD, SGS_par1, mesh1, nod_fld1, viz_step1, visval)
+        call FEM_analyze_sph_MHD(i_step_MHD, SGS_par1, mesh1,           &
+     &      nod_fld1, MHD_step1%viz_step, visval)
 !
         call end_eleps_time(4)
 !
@@ -154,7 +156,7 @@
           if (iflag_debug.eq.1) write(*,*) 'visualize_all', my_rank
           call start_eleps_time(12)
           call visualize_all                                            &
-     &       (viz_step1, mesh1, group1, ele_mesh1, nod_fld1,            &
+     &       (MHD_step1%viz_step, mesh1, group1, ele_mesh1, nod_fld1,   &
      &        next_tbl1%neib_ele, jac1_3d_q)
           call end_eleps_time(12)
         end if

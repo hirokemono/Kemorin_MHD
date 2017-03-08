@@ -29,9 +29,8 @@
 !
         type(IO_step_param) :: boundary_step
 !
+!>        Increment for visualizations
         type(VIZ_step_params) :: viz_step
       end type MHD_IO_step_param
-!
-!      pvr_step1%increment
 !
       end module  t_MHD_step_parameter

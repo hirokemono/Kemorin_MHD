@@ -19,6 +19,7 @@
 !
       use m_precision
       use m_SGS_control_parameter
+      use m_MHD_step_parameter
       use t_phys_address
 !
       implicit none
@@ -166,8 +167,8 @@
      &   (ref_param_T1, ref_param_C1, ref_temp1, ref_comp1,             &
      &    sph1%sph_rj, ipol, idpdr, rj_fld1)
 !*
-      iflag = lead_field_data_flag(i_step,                              &
-     &                             viz_step1,SGS_par1%sgs_step)
+      iflag = lead_field_data_flag(i_step, MHD_step1%viz_step,          &
+     &                             SGS_par1%sgs_step)
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
         call s_lead_fields_4_sph_mhd(SGS_par1%model_p, sph1,            &

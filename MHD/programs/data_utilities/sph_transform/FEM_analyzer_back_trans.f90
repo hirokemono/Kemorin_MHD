@@ -5,7 +5,7 @@
 !      Written by H. Matsui
 !
 !      subroutine FEM_initialize_back_trans                             &
-!     &         (ele_4_nod, jac_3d_l, jac_3d_q, ucd, m_ucd)
+!     &         (viz_step, ele_4_nod, jac_3d_l, jac_3d_q, ucd, m_ucd)
 !!      subroutine FEM_analyze_back_trans                               &
 !!     &         (t_IO, ucd, i_step, viz_step, visval)
 !!        type(VIZ_step_params), intent(inout) :: viz_step
@@ -17,6 +17,7 @@
       use calypso_mpi
 !
       use m_SPH_transforms
+      use t_VIZ_step_parameter
 !
       implicit none
 !
@@ -27,7 +28,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_initialize_back_trans                              &
-     &         (ele_4_nod, jac_3d_l, jac_3d_q, ucd, m_ucd)
+     &         (viz_step, ele_4_nod, jac_3d_l, jac_3d_q, ucd, m_ucd)
 !
       use t_ucd_data
       use t_next_node_ele_4_node
@@ -47,6 +48,7 @@
       use const_mesh_information
       use const_element_comm_tables
 !
+      type(VIZ_step_params), intent(in) :: viz_step
       type(element_around_node), intent(inout) :: ele_4_nod
       type(jacobians_3d), intent(inout) :: jac_3d_l, jac_3d_q
       type(ucd_data), intent(inout) :: ucd
@@ -61,7 +63,7 @@
 !     --------------------- Connection information for PVR and fieldline
 !     --------------------- init for fieldline and PVR
 !
-      iflag = viz_step1%FLINE_t%increment + viz_step1%PVR_t%increment
+      iflag = viz_step%FLINE_t%increment + viz_step%PVR_t%increment
       if(iflag .gt. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_ele_id_4_node'
         call set_ele_id_4_node                                          &

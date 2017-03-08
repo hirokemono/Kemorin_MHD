@@ -12,6 +12,7 @@
       use calypso_mpi
 !
       use m_control_parameter
+      use m_MHD_step_parameter
       use m_SGS_control_parameter
       use m_mesh_data
       use m_node_phys_data
@@ -86,12 +87,12 @@
       do i_step = i_step_init, i_step_number
 !
 !  Read and generate fields
-        call FEM_analyze_filtered(i_step, viz_step1, visval)
+        call FEM_analyze_filtered(i_step, MHD_step1%viz_step, visval)
 !
 !  Visualization
         if (visval.eq.0) then
           call visualize_all                                            &
-     &       (viz_step1, mesh1, group1, ele_mesh1, nod_fld1,            &
+     &       (MHD_step1%viz_step, mesh1, group1, ele_mesh1, nod_fld1,   &
      &        next_tbl1%neib_ele, jac1_3d_q)
         end if
       end do

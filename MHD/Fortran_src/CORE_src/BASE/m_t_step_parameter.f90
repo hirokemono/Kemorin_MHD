@@ -12,8 +12,6 @@
 !
       use m_precision
       use t_IO_step_parameter
-      use t_VIZ_step_parameter
-      use t_MHD_step_parameter
 !
       implicit  none
 !
@@ -54,9 +52,6 @@
       integer(kind=kint) :: istep_rst_end
 !
 !
-      type(MHD_IO_step_param), save :: MHD_step1
-!MHD_step1%rst_step
-!
       type(IO_step_param), save :: rst_step1
 !
       type(IO_step_param), save :: ucd_step1
@@ -66,9 +61,5 @@
       type(IO_step_param), save :: point_step1
 !
       type(IO_step_param), save :: boundary_step1
-!
-      type(VIZ_step_params), save :: viz_step1
-!
-!      pvr_step1%increment
 !
       end module  m_t_step_parameter

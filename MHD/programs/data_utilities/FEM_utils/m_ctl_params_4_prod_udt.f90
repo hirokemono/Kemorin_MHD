@@ -9,6 +9,7 @@
       module m_ctl_params_4_prod_udt
 !
       use m_precision
+      use t_VIZ_step_parameter
 !
       implicit none
 !
@@ -32,6 +33,9 @@
       character(len = kchara) :: result_field_name = "velocity"
       integer(kind = kint) :: i_field_4_result = 1
       integer(kind = kint) :: ncomp_4_result =   3
+!
+!>      Increment for visualizations
+      type(VIZ_step_params), save :: viz_step_U
 !
 !
       integer(kind = kint) :: i_diff_steps = 0

@@ -33,7 +33,7 @@
       if (iflag_debug.gt.0) write(*,*) 'set_control_params_4_viz'
       call read_control_data_vizs
       call set_control_params_4_viz(my_rank, t_viz_ctl, viz_plt,        &
-     &   mesh_file_VIZ, ucd_VIZ, ierr)
+     &   mesh_file_VIZ, ucd_VIZ, viz_step_V, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !  FEM Initialization
@@ -53,16 +53,15 @@
       use t_IO_step_parameter
 !
       integer(kind=kint ) :: i_step
-      type(IO_step_param) :: pvr_step1
 !
 !
       do i_step = i_step_init, i_step_number
 !
 !  Load field data
-        call FEM_analyze_pvr(i_step, pvr_step1)
+        call FEM_analyze_pvr(i_step,  viz_step_V%PVR_t)
 !
 !  Rendering
-        call PVR_visualize(pvr_step1%istep_file,                        &
+        call PVR_visualize(viz_step_V%PVR_t%istep_file,                 &
      &      femmesh_VIZ%mesh%node, femmesh_VIZ%mesh%ele,                &
      &      elemesh_VIZ%surf, femmesh_VIZ%group, jac_VIZ_q, field_VIZ)
       end do

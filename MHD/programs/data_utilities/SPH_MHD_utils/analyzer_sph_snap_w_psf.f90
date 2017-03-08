@@ -19,6 +19,7 @@
       use m_machine_parameter
       use m_work_time
       use m_t_step_parameter
+      use m_MHD_step_parameter
       use m_mesh_data
       use m_node_phys_data
       use m_sph_trans_arrays_MHD
@@ -127,8 +128,8 @@
 !*
         call start_eleps_time(1)
         call start_eleps_time(4)
-        iflag = lead_field_data_flag(i_step_MHD,                        &
-     &                               viz_step1, SGS_par1%sgs_step)
+        iflag = lead_field_data_flag(i_step_MHD, MHD_step1%viz_step,    &
+     &                               SGS_par1%sgs_step)
         if(iflag .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_MHD'
           call SPH_to_FEM_bridge_MHD                                    &
@@ -137,8 +138,8 @@
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
-        call FEM_analyze_sph_MHD                                        &
-     &     (i_step_MHD, SGS_par1, mesh1, nod_fld1, viz_step1, visval)
+        call FEM_analyze_sph_MHD(i_step_MHD, SGS_par1, mesh1,           &
+     &      nod_fld1, MHD_step1%viz_step, visval)
 !
         call end_eleps_time(4)
 !
@@ -147,7 +148,8 @@
         if(visval .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'visualize_surface'
           call start_eleps_time(12)
-          call visualize_surface(viz_step1, mesh1, ele_mesh1, nod_fld1)
+          call visualize_surface                                        &
+     &       (MHD_step1%viz_step, mesh1, ele_mesh1, nod_fld1)
           call end_eleps_time(12)
         end if
         call end_eleps_time(1)
