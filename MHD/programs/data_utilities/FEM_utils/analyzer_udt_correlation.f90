@@ -74,7 +74,7 @@
       if (iflag_debug.eq.1) write(*,*) 's_input_control_corr_udt'
       call s_input_control_corr_udt                                     &
      &   (mesh_file_FUTIL, udt_param_FUTIL, field_FUTIL, ucd_FUTIL,     &
-     &    ucd_step1)
+     &    ucd_step_U)
       if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh_p'
       call mpi_input_mesh_p(mesh_file_FUTIL, femmesh_p_FUT,             &
      &    elemesh_FUT%surf%nnod_4_surf,                                 &
@@ -166,17 +166,19 @@
 !     ---------------------
 !
       do istep = i_step_init, i_step_number
-        if (output_IO_flag(istep,ucd_step1) .eq. izero) then
+        if (output_IO_flag(istep,ucd_step_U) .eq. izero) then
 !
-          ucd_step1%istep_file = istep / ucd_step1%increment
+          ucd_step_U%istep_file = istep / ucd_step_U%increment
 !
-          call set_data_by_read_ucd_once(my_rank, ucd_step1%istep_file, &
+          call set_data_by_read_ucd_once                                &
+     &       (my_rank, ucd_step_U%istep_file,                           &
      &        udt_param_FUTIL%iflag_format, ref_udt_file_head,          &
      &        field_FUTIL, time_IO_FUTIL)
 !
           ucd_FUTIL%ifmt_file = udt_param_FUTIL%iflag_format
           ucd_FUTIL%file_prefix = tgt_udt_file_head
-          call set_data_by_read_ucd_once(my_rank, ucd_step1%istep_file, &
+          call set_data_by_read_ucd_once                                &
+     &       (my_rank, ucd_step_U%istep_file,                           &
      &        udt_param_FUTIL%iflag_format, tgt_udt_file_head,          &
      &        phys_ref, time_IO_FUTIL)
 !
@@ -201,9 +203,9 @@
      &        layer_tbl_corr, phys_ref, wk_correlate)
 !
           if (iflag_debug .gt. 0) write(*,*)                            &
-     &          ' write_layerd_correlate_data', ucd_step1%istep_file
+     &          ' write_layerd_correlate_data', ucd_step_U%istep_file
           call write_layerd_correlate_data                              &
-     &       (my_rank, ucd_step1%istep_file)
+     &       (my_rank, ucd_step_U%istep_file)
 !
         end if
       end do

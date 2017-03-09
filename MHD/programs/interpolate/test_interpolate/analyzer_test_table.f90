@@ -19,6 +19,7 @@
       use m_t_step_parameter
       use t_mesh_data
       use t_interpolate_table
+      use t_IO_step_parameter
 !
       implicit none
 !
@@ -29,6 +30,9 @@
       type(element_geometry), save :: new_ele_mesh
 !
       type(interpolate_table), save :: itp_test
+!
+      type(IO_step_param), save :: rst_step_t
+      type(IO_step_param), save :: ucd_step_t
 !
 ! ----------------------------------------------------------------------
 !
@@ -57,7 +61,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_itp_mesh'
       call s_input_control_interpolate(org_femmesh, org_ele_mesh,       &
-     &    new_femmesh, new_ele_mesh, itp_test, rst_step1, ucd_step1,    &
+     &    new_femmesh, new_ele_mesh, itp_test, rst_step_t, ucd_step_t,  &
      &    ierr)
 !
 !     --------------------- 

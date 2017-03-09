@@ -23,10 +23,15 @@
       use t_global_gauss_coefs
       use t_rms_4_sph_spectr
       use t_file_IO_parameter
+      use t_IO_step_parameter
       use t_VIZ_step_parameter
 !
       implicit  none
 !
+!
+      type(IO_step_param), save, private :: rst_step_STR
+!
+      type(IO_step_param), save :: ucd_step_STR
 !
 !>      Increment for visualizations
       type(VIZ_step_params), save :: viz_step_STR
@@ -118,7 +123,11 @@
 !      stepping parameter
 !
       call s_set_fixed_time_step_params                                 &
-     &   (t_st_ctl, viz_step_STR, ierr, e_message)
+     &   (t_st_ctl, rst_step_STR, ucd_step_STR, viz_step_STR,           &
+     &    ierr, e_message)
+      call set_output_step_4_fixed_step(ione, dt,                       &
+     &    t_st_ctl%i_step_check_ctl, t_st_ctl%delta_t_check_ctl,        &
+     &    rms_step1)
 !
 !   set physical values
 !
@@ -227,7 +236,11 @@
 !      stepping parameter
 !
       call s_set_fixed_time_step_params                                 &
-     &   (t_st_ctl, viz_step_STR, ierr, e_message)
+     &   (t_st_ctl, rst_step_STR, ucd_step_STR, viz_step_STR,           &
+     &    ierr, e_message)
+      call set_output_step_4_fixed_step(ione, dt,                       &
+     &    t_st_ctl%i_step_check_ctl, t_st_ctl%delta_t_check_ctl,        &
+     &    rms_step1)
 !
 !   set physical values
 !

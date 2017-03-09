@@ -17,6 +17,7 @@
 !
       use m_machine_parameter
       use m_work_time
+      use m_MHD_step_parameter
 !
       implicit none
 !
@@ -48,7 +49,7 @@
       do
         i_step_MHD = i_step_MHD + 1
 !
-        if(output_IO_flag(i_step_MHD,rst_step1) .ne. 0) cycle
+        if(output_IO_flag(i_step_MHD,MHD_step1%rst_step) .ne. 0) cycle
 !
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_mod_restart'
@@ -105,7 +106,7 @@
 !
       call read_alloc_sph_rst_2_modify(i_step,                          &
      &    MHD1_org_files%rj_file_param, MHD1_org_files%rst_file_param,  &
-     &    sph1%sph_rj, ipol, rj_fld1, rst_step1)
+     &    sph1%sph_rj, ipol, rj_fld1, MHD_step1%rst_step)
 !
 !*  ----------------Modify spectr data ... ----------
 !*
@@ -113,7 +114,7 @@
 !
       if(iflag_debug.gt.0) write(*,*) 'output_sph_restart_control'
       call init_output_sph_restart_file(rj_fld1)
-      call output_sph_restart_control(rj_fld1, rst_step1)
+      call output_sph_restart_control(rj_fld1, MHD_step1%rst_step)
 !*
 !*  -----------  lead energy data --------------
 !*

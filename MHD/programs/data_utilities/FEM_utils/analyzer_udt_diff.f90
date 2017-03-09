@@ -45,7 +45,7 @@
       if (iflag_debug.eq.1) write(*,*) 's_input_control_udt_diff'
       call s_input_control_udt_diff                                     &
      &   (mesh_file_FUTIL, udt_param_FUTIL, field_FUTIL, ucd_FUTIL,     &
-     &    ucd_step1)
+     &    ucd_step_U)
 !
 !     --------------------- 
 !
@@ -80,14 +80,15 @@
      &   (femmesh_FUTIL%mesh%node, femmesh_FUTIL%mesh%ele, ucd_FUTIL)
 !
       do istep = i_step_init, i_step_number
-        if (output_IO_flag(istep,ucd_step1) .eq. izero) then
-          ucd_step1%istep_file = istep / ucd_step1%increment
+        if (output_IO_flag(istep,ucd_step_U) .eq. izero) then
+          ucd_step_U%istep_file = istep / ucd_step_U%increment
 !
-          call set_data_by_read_ucd_once(my_rank, ucd_step1%istep_file, &
+          call set_data_by_read_ucd_once                                &
+     &       (my_rank, ucd_step_U%istep_file,                           &
      &        udt_param_FUTIL%iflag_format, ref_udt_file_head,          &
      &        field_FUTIL, time_IO_FUTIL)
 !
-          call subtract_by_ucd_data(my_rank, ucd_step1%istep_file,      &
+          call subtract_by_ucd_data(my_rank, ucd_step_U%istep_file,     &
      &        udt_param_FUTIL%iflag_format, tgt_udt_file_head,          &
      &        field_FUTIL)
 !
@@ -97,7 +98,8 @@
      &       (femmesh_FUTIL%mesh%nod_comm, field_FUTIL)
 !
 !    output udt data
-          call link_output_ucd_file_once(my_rank, ucd_step1%istep_file, &
+          call link_output_ucd_file_once                                &
+     &       (my_rank, ucd_step_U%istep_file,                           &
      &        ifmt_diff_udt_file, diff_udt_file_head,                   &
      &        field_FUTIL, time_IO_FUTIL)
         end if

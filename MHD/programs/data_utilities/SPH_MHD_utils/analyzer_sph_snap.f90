@@ -120,7 +120,7 @@
       do
         i_step_MHD = i_step_MHD + 1
 !
-        if(output_IO_flag(i_step_MHD,rst_step1) .ne. 0) cycle
+        if(output_IO_flag(i_step_MHD, MHD_step1%rst_step) .ne. 0) cycle
 !
 !*  ----------  time evolution by spectral methood -----------------
 !*
@@ -132,7 +132,7 @@
         call start_eleps_time(1)
         call start_eleps_time(4)
 !
-        iflag = lead_field_data_flag(i_step_MHD, MHD_step1%viz_step,    &
+        iflag = lead_field_data_flag(i_step_MHD, MHD_step1,             &
      &                               SGS_par1%sgs_step)
         if(iflag .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_MHD'
@@ -143,7 +143,7 @@
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
         call FEM_analyze_sph_MHD(i_step_MHD, SGS_par1, mesh1,           &
-     &      nod_fld1, MHD_step1%viz_step, visval)
+     &      nod_fld1, MHD_step1, visval)
 !
         call end_eleps_time(4)
 !
@@ -217,7 +217,7 @@
       if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_snap'
       call SPH_analyze_snap(i_step_MHD)
 !*
-      iflag = lead_field_data_flag(i_step_MHD, MHD_step1%viz_step,      &
+      iflag = lead_field_data_flag(i_step_MHD, MHD_step1,               &
      &                             SGS_par1%sgs_step)
       if(iflag .eq. 0) then
         if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_MHD'
@@ -228,7 +228,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
       call FEM_analyze_sph_MHD(i_step_MHD, SGS_par1, mesh1,             &
-     &    nod_fld1, MHD_step1%viz_step, visval)
+     &    nod_fld1, MHD_step1, visval)
       call end_eleps_time(4)
 !
       if(visval .eq. 0) then

@@ -92,7 +92,7 @@
 !
 !*  ----------   Count steps for visualization
 !*
-      visval =  mod(i_step,ucd_step1%increment)
+      visval =  mod(i_step,ucd_step_STR%increment)
 !
 !*  -----------  Output volume data --------------
 !*
@@ -136,7 +136,7 @@
 !
       subroutine FEM_finalize_sph_trans(ucd, m_ucd)
 !
-      use m_t_step_parameter
+      use m_ctl_params_sph_trans
       use t_ucd_data
       use output_parallel_ucd_file
 !
@@ -144,7 +144,7 @@
       type(merged_ucd_data), intent(inout) :: m_ucd
 !
 !
-      if(ucd_step1%increment .gt. 0) then
+      if(ucd_step_STR%increment .gt. 0) then
         call finalize_ucd_file_output(ucd, m_ucd)
       end if
 !

@@ -66,7 +66,7 @@
 !
 !     --------------------- 
 !
-      call FEM_initialize_snap_tmp
+      call FEM_initialize_snap_tmp(MHD_step1)
 !
       call init_visualize(mesh1, group1, ele_mesh1, nod_fld1)
 !
@@ -86,7 +86,7 @@
       do i_step = i_step_init, i_step_number
 !
 !  Read and generate fields
-        call FEM_analyze_snap_tmp(i_step, MHD_step1%viz_step, visval)
+        call FEM_analyze_snap_tmp(i_step, MHD_step1, visval)
 !
 !  Visualization
         if (visval.eq.0) then

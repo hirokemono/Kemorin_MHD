@@ -159,7 +159,7 @@
 !
       call read_alloc_sph_rst_4_snap                                    &
      &   (i_step, MHD1_org_files%rj_file_param, sph1%sph_rj,            &
-     &    ipol, rj_fld1, rst_step1)
+     &    ipol, rj_fld1, MHD_step1%rst_step)
 !
       call sync_temp_by_per_temp_sph                                    &
      &   (ref_param_T1, ref_param_C1, ref_temp1, ref_comp1,             &
@@ -187,7 +187,7 @@
      &   (ref_param_T1, ref_param_C1, ref_temp1, ref_comp1,             &
      &    sph1%sph_rj, ipol, idpdr, rj_fld1)
 !*
-      iflag = lead_field_data_flag(i_step, MHD_step1%viz_step,          &
+      iflag = lead_field_data_flag(i_step, MHD_step1,                   &
      &                             SGS_par1%sgs_step)
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'

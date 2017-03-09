@@ -151,7 +151,7 @@
         write(*,*) 'istep_rst_end ',  istep_rst_end
         write(*,*) 'elapsed_time ', elapsed_time
         write(*,*) 'i_step_check ', rms_step1%increment
-        write(*,*) 'i_step_output_rst ', rst_step1%increment
+        write(*,*) 'i_step_output_rst ', MHD_step1%rst_step%increment
         write(*,*) 'i_step_output_ucd ', ucd_step1%increment
       end if
 !
@@ -171,8 +171,11 @@
 !
 !
       call s_set_fixed_time_step_params                                 &
-     &   (tctl, viz_step, ierr, e_message)
+     &   (tctl, MHD_step1%rst_step, ucd_step1, viz_step, ierr, e_message)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
+!
+      call set_output_step_4_fixed_step(ione, dt,                       &
+     &    tctl%i_step_check_ctl, tctl%delta_t_check_ctl, rms_step1)
 !
       if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         call set_output_step_4_fixed_step(ione, dt,                     &
@@ -201,33 +204,12 @@
       type(VIZ_step_params), intent(inout) :: viz_step
 !
 !
-      istep_rst_start   = 0
-      if (tctl%start_rst_step_ctl%iflag .gt. 0) then
-        istep_rst_start   = tctl%start_rst_step_ctl%intvalue
-      end if
-!
-      if (tctl%end_rst_step_ctl%iflag .eq. 0) then
-        e_message = 'Set time to finish'
-          call calypso_MPI_abort(ierr_evo, e_message)
-      else
-        istep_rst_end = tctl%end_rst_step_ctl%intvalue
-      end if
+      call set_flex_time_step_params                                    &
+     &   (flex_p, SGS_par, tctl, MHD_step1%rst_step, ucd_step1,         &
+     &    viz_step)
 !
       call set_output_step_4_flex_step(ione, flex_p%dt_max,             &
      &    tctl%i_step_check_ctl, tctl%delta_t_check_ctl, rms_step1)
-!
-!
-      call set_output_step_4_flex_step(ione, flex_p%dt_max,             &
-     &    tctl%i_step_rst_ctl, tctl%delta_t_rst_ctl, rst_step1)
-!
-      call set_output_step_4_flex_step(ione, flex_p%dt_max,             &
-     &   tctl%i_step_ucd_ctl, tctl%delta_t_field_ctl, ucd_step1)
-!
-      i_step_init =   istep_rst_start * rst_step1%increment
-      i_step_number = istep_rst_end *   rst_step1%increment
-!
-      call viz_flex_time_step_controls(tctl, dt, viz_step)
-!
 !
       if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         call set_output_step_4_flex_step(ione, flex_p%dt_max,           &
@@ -243,6 +225,43 @@
      &    tctl%i_step_boundary_ctl, tctl%delta_t_boundary_ctl,          &
      &    boundary_step1)
 !
+      end subroutine set_flex_time_step_controls
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_flex_time_step_params                              &
+     &         (flex_p, SGS_par, tctl, rst_step, ucd_step, viz_step)
+!
+      type(SGS_paremeters), intent(inout) :: SGS_par
+      type(flexible_stepping_parameter), intent(inout) :: flex_p
+      type(time_data_control), intent(inout) :: tctl
+      type(IO_step_param), intent(inout) :: rst_step, ucd_step
+      type(VIZ_step_params), intent(inout) :: viz_step
+!
+!
+      istep_rst_start   = 0
+      if (tctl%start_rst_step_ctl%iflag .gt. 0) then
+        istep_rst_start   = tctl%start_rst_step_ctl%intvalue
+      end if
+!
+      if (tctl%end_rst_step_ctl%iflag .eq. 0) then
+        e_message = 'Set time to finish'
+          call calypso_MPI_abort(ierr_evo, e_message)
+      else
+        istep_rst_end = tctl%end_rst_step_ctl%intvalue
+      end if
+!
+!
+      call set_output_step_4_flex_step(ione, flex_p%dt_max,             &
+     &    tctl%i_step_rst_ctl, tctl%delta_t_rst_ctl, rst_step)
+!
+      call set_output_step_4_flex_step(ione, flex_p%dt_max,             &
+     &   tctl%i_step_ucd_ctl, tctl%delta_t_field_ctl, ucd_step)
+!
+      call set_start_stop_by_restart(rst_step)
+!
+      call viz_flex_time_step_controls(tctl, dt, viz_step)
+!
       if (istep_rst_end .eq. -1) then
         if (tctl%elapsed_time_ctl%iflag .eq. 0) then
           e_message                                                     &
@@ -253,7 +272,7 @@
         end if
       end if
 !
-      end subroutine set_flex_time_step_controls
+      end subroutine set_flex_time_step_params
 !
 ! -----------------------------------------------------------------------
 !

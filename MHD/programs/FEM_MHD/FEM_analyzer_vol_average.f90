@@ -3,8 +3,9 @@
 !
 !      modified by H. Matsui on June, 2005 
 !
-!      subroutine FEM_initialize_vol_average
-!      subroutine FEM_analyze_vol_average(i_step)
+!!      subroutine FEM_initialize_vol_average(MHD_step)
+!!        type(MHD_IO_step_param), intent(inout) :: MHD_step
+!!      subroutine FEM_analyze_vol_average(i_step)
 !
       module FEM_analyzer_vol_average
 !
@@ -14,6 +15,7 @@
       use m_t_step_parameter
       use m_SGS_control_parameter
       use t_time_data_IO
+      use t_MHD_step_parameter
 !
       use calypso_mpi
 !
@@ -27,7 +29,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_vol_average
+      subroutine FEM_initialize_vol_average(MHD_step)
 !
       use m_mesh_data
       use m_node_phys_data
@@ -41,13 +43,15 @@
       use node_monitor_IO
       use open_sgs_model_coefs
 !
+      type(MHD_IO_step_param), intent(inout) :: MHD_step
+!
 !
 !   matrix assembling
 !
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
       call init_analyzer_snap(FEM_prm1, SGS_par1, IO_bc1,               &
      &    mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,              &
-     &    iphys, nod_fld1, SNAP_time_IO, rst_step1, label_sim)
+     &    iphys, nod_fld1, SNAP_time_IO, MHD_step%rst_step, label_sim)
 !
       end subroutine FEM_initialize_vol_average
 !

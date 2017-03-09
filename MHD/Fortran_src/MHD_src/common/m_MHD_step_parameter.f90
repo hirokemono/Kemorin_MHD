@@ -17,7 +17,7 @@
 !
 !
       type(MHD_IO_step_param), save :: MHD_step1
-!MHD_step1%viz_step
+!MHD_step1%rst_step
 !
 !
       end module m_MHD_step_parameter

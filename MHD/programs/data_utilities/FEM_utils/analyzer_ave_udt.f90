@@ -44,7 +44,7 @@
       if (iflag_debug.eq.1) write(*,*) 's_input_control_ave_udt'
       call s_input_control_ave_udt                                      &
      &   (mesh_file_FUTIL, udt_param_FUTIL, field_FUTIL, ucd_FUTIL,     &
-     &    ucd_step1)
+     &    ucd_step_U)
 !
 !     --------------------- 
 !
@@ -76,19 +76,19 @@
 !
       call link_num_field_2_ucd(field_FUTIL, ucd_FUTIL)
 !
-      ucd_step1%istep_file = i_step_init / ucd_step1%increment
-      call set_data_by_read_ucd_once(my_rank, ucd_step1%istep_file,     &
+      ucd_step_U%istep_file = i_step_init / ucd_step_U%increment
+      call set_data_by_read_ucd_once(my_rank, ucd_step_U%istep_file,    &
      &    udt_param_FUTIL%iflag_format, udt_param_FUTIL%file_prefix,    &
      &    field_FUTIL, time_IO_FUTIL)
 !
       icou = 1
       do istep = i_step_init+1, i_step_number
-        if (output_IO_flag(istep,ucd_step1) .eq. izero) then
+        if (output_IO_flag(istep,ucd_step_U) .eq. izero) then
 !
-          ucd_step1%istep_file = istep / ucd_step1%increment
+          ucd_step_U%istep_file = istep / ucd_step_U%increment
           icou = icou + 1
 !
-          call add_ucd_to_data(my_rank, ucd_step1%istep_file,           &
+          call add_ucd_to_data(my_rank, ucd_step_U%istep_file,          &
      &       udt_param_FUTIL%iflag_format, udt_param_FUTIL%file_prefix, &
      &       field_FUTIL)
         end if

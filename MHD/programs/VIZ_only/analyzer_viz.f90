@@ -29,7 +29,6 @@
 !
       use calypso_mpi
       use m_control_data_vizs
-      use set_control_visualizer
 !
       integer(kind = kint) :: ierr
 !
@@ -55,7 +54,7 @@
       if (iflag_debug.gt.0) write(*,*) 'set_control_params_4_viz'
       call read_control_data_vizs
       call set_control_params_4_viz(my_rank, t_viz_ctl, viz_plt,        &
-     &    mesh_file_VIZ, ucd_VIZ, viz_step_V, ierr)
+     &    mesh_file_VIZ, ucd_VIZ, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !

@@ -102,7 +102,7 @@
 !
 !
       call accum_output_flag_4_viz(i_step, viz_step, visval)
-      visval = visval * output_IO_flag(i_step, ucd_step1)
+      visval = visval * output_IO_flag(i_step, ucd_step_STR)
 !
       if(visval .eq. 0) then
 !

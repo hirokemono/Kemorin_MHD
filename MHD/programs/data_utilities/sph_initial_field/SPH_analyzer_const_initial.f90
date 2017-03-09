@@ -22,6 +22,7 @@
       use m_work_time
       use m_SGS_control_parameter
       use m_t_step_parameter
+      use m_MHD_step_parameter
 !
       implicit none
 !
@@ -112,7 +113,7 @@
 ! ---------------------------------
 !
       if(iflag_debug.gt.0) write(*,*)' sph_initial_spectrum'
-      call sph_initial_spectrum(ipol, itor, rj_fld1, rst_step1)
+      call sph_initial_spectrum(ipol, itor, rj_fld1, MHD_step1%rst_step)
 !
       end subroutine SPH_const_initial_field
 !

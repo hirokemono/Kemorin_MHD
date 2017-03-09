@@ -21,9 +21,18 @@
       use t_ucd_data
       use t_file_IO_parameter
       use t_jacobian_3d
+      use t_IO_step_parameter
+      use t_VIZ_step_parameter
       use calypso_mpi
 !
       implicit none
+!
+!>      Increment for restart
+      type(IO_step_param), save :: rst_step_U
+!>      Increment for field
+      type(IO_step_param), save :: ucd_step_U
+!>      Increment for visualizations
+      type(VIZ_step_params), save :: viz_step_U
 !
 !>      Structure for mesh file IO paramters
       type(field_IO_params), save :: mesh_file_FUTIL

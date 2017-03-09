@@ -74,7 +74,7 @@
       call end_eleps_time(4)
 !
       call start_eleps_time(2)
-      call FEM_initialize_MHD(MHD_step1%viz_step)
+      call FEM_initialize_MHD(MHD_step1)
 !
       call init_visualize_surface(mesh1, group1, ele_mesh1, nod_fld1)
       call end_eleps_time(2)
@@ -94,7 +94,7 @@
 !
       do
 !  Time evolution
-        call FEM_analyze_MHD(MHD_step1%viz_step, visval, retval)
+        call FEM_analyze_MHD(MHD_step1, visval, retval)
 !
 !     ---------------------
 !

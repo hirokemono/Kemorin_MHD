@@ -135,7 +135,7 @@
 !*  -----------  output field data --------------
 !*
         call start_eleps_time(4)
-        iflag = lead_field_data_flag(i_step_MHD, MHD_step1%viz_step,    &
+        iflag = lead_field_data_flag(i_step_MHD, MHD_step1,             &
      &                               SGS_par1%sgs_step)
         if(iflag .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_MHD'
@@ -146,7 +146,7 @@
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
         call FEM_analyze_sph_MHD(i_step_MHD, SGS_par1, mesh1,           &
-     &      nod_fld1, MHD_step1%viz_step, visval)
+     &      nod_fld1, MHD_step1, visval)
 !
         call end_eleps_time(4)
 !

@@ -3,9 +3,9 @@
 !
 !      modified by H. Matsui on June, 2005 
 !
-!!      subroutine FEM_initialize_snapshot
-!!      subroutine FEM_analyze_snapshot(i_step, viz_step, visval)
-!!        type(VIZ_step_params), intent(inout) :: viz_step
+!!      subroutine FEM_initialize_snapshot(MHD_step)
+!!      subroutine FEM_analyze_snapshot(i_step, MHD_step, visval)
+!!        type(MHD_IO_step_param), intent(inout) :: MHD_step
 !!      subroutine FEM_finalize_snapshot
 !
       module FEM_analyzer_snapshot
@@ -20,6 +20,7 @@
       use m_ucd_data
       use t_time_data_IO
       use t_IO_step_parameter
+      use t_MHD_step_parameter
 !
       use calypso_mpi
 !
@@ -33,7 +34,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_snapshot
+      subroutine FEM_initialize_snapshot(MHD_step)
 !
       use m_cal_max_indices
       use m_node_phys_data
@@ -43,12 +44,14 @@
 !
       use initialize_4_snapshot
 !
+      type(MHD_IO_step_param), intent(inout) :: MHD_step
+!
 !   matrix assembling
 !
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
       call init_analyzer_snap(FEM_prm1, SGS_par1, IO_bc1,               &
      &    mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,              &
-     &    iphys, nod_fld1, SNAP_time_IO, rst_step1, label_sim)
+     &    iphys, nod_fld1, SNAP_time_IO, MHD_step%rst_step, label_sim)
 !
       call output_grd_file_w_org_connect                                &
      &   (ucd_step1, mesh1, MHD_mesh1, nod_fld1)
@@ -59,7 +62,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_snapshot(i_step, viz_step, visval)
+      subroutine FEM_analyze_snapshot(i_step, MHD_step, visval)
 !
       use m_physical_property
       use m_geometry_data_MHD
@@ -96,7 +99,7 @@
 !
       integer(kind=kint ), intent(in) :: i_step
       integer(kind=kint ), intent(inout) :: visval
-      type(VIZ_step_params), intent(inout) :: viz_step
+      type(MHD_IO_step_param), intent(inout) :: MHD_step
 !
       integer(kind = kint) :: iflag
 !
@@ -106,10 +109,10 @@
       flex_p1%istep_max_dt = i_step
       if (my_rank.eq.0) write(*,*) 'step: ', flex_p1%istep_max_dt
 !
-      if (rst_step1%increment .gt. 0) then
+      if (MHD_step%rst_step%increment .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'input_restart_4_snapshot'
         call input_restart_4_snapshot(flex_p1%istep_max_dt,             &
-     &      mesh1%node, nod_fld1, SNAP_time_IO, rst_step1)
+     &      mesh1%node, nod_fld1, SNAP_time_IO, MHD_step%rst_step)
 !
       else if (ucd_step1%increment .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'read_udt_4_snap'
@@ -165,7 +168,7 @@
 !     ========  Data output
 !
       iflag = lead_field_data_flag(flex_p1%istep_max_dt,                &
-     &                             viz_step, SGS_par1%sgs_step)
+     &                             MHD_step, SGS_par1%sgs_step)
       if(iflag .eq. 0) then
         call lead_fields_by_FEM                                         &
      &    (FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1,                &
@@ -208,9 +211,10 @@
 !     ----
 !
       if     (flex_p1%iflag_flexible_step .eq. iflag_flex_step) then
-        visval = viz_file_step_4_flex(dt, time, viz_step)
+        visval = viz_file_step_4_flex(dt, time, MHD_step%viz_step)
       else
-        visval = viz_file_step_4_fix(flex_p1%istep_max_dt, viz_step)
+        visval = viz_file_step_4_fix(flex_p1%istep_max_dt,              &
+     &                               MHD_step%viz_step)
       end if
 !
       call end_eleps_time(4)

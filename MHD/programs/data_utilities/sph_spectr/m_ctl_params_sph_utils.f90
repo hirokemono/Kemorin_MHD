@@ -4,9 +4,10 @@
 !        programmed by H.Matsui on Oct., 2007
 !
 !!      subroutine set_ctl_data_4_sph_utils                             &
-!!     &         (rst_step, ucd_step, rj_fld, pwr)
+!!     &         (rst_step, ucd_step, viz_step, rj_fld, pwr)
 !!        type(IO_step_param), intent(inout) :: rst_step
 !!        type(IO_step_param), intent(inout) :: ucd_step
+!!        type(VIZ_step_params), intent(inout) :: viz_step
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(sph_mean_squares), intent(inout) :: pwr
 !
@@ -18,13 +19,18 @@
       use t_rms_4_sph_spectr
       use t_pickup_sph_spectr_data
       use t_file_IO_parameter
+      use t_IO_step_parameter
       use t_VIZ_step_parameter
 !
       implicit  none
 !
 !
+      type(IO_step_param), save :: rst_step_SHR
+!
+      type(IO_step_param), save :: ucd_step_SHR
+!
 !>      Increment for visualizations
-      type(VIZ_step_params), save, private :: viz_step_SHR
+      type(VIZ_step_params), save :: viz_step_SHR
 !
       type(phys_data), save :: nod_fld
 !
@@ -72,7 +78,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_ctl_data_4_sph_utils                               &
-     &         (rst_step, ucd_step, rj_fld, pwr)
+     &         (rst_step, ucd_step, viz_step, rj_fld, pwr)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -91,6 +97,7 @@
 !
       type(IO_step_param), intent(inout) :: rst_step
       type(IO_step_param), intent(inout) :: ucd_step
+      type(VIZ_step_params), intent(inout) :: viz_step
 !
       type(phys_data), intent(inout) :: rj_fld
       type(sph_mean_squares), intent(inout) :: pwr
@@ -114,7 +121,10 @@
 !      stepping parameter
 !
       call s_set_fixed_time_step_params                                 &
-     &   (t_su_ctl, viz_step_SHR, ierr, e_message)
+     &   (t_su_ctl, rst_step, ucd_step, viz_step, ierr, e_message)
+      call set_output_step_4_fixed_step(ione, dt,                       &
+     &    t_su_ctl%i_step_check_ctl, t_su_ctl%delta_t_check_ctl,        &
+     &    rms_step1)
 !
 !    file header for field data
 !

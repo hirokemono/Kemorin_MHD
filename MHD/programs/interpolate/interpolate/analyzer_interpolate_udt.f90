@@ -21,8 +21,12 @@
       use t_time_data_IO
       use t_ucd_data
       use t_interpolate_table
+      use t_IO_step_parameter
 !
       implicit none
+!
+      type(IO_step_param), save :: rst_step_ITP
+      type(IO_step_param), save :: ucd_step_ITP
 !
       type(mesh_data), save :: org_femmesh
       type(element_geometry), save :: org_ele_mesh
@@ -68,8 +72,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_interpolate'
       call s_input_control_interpolate(org_femmesh, org_ele_mesh,       &
-     &   new_femmesh, new_ele_mesh, itp_udt, rst_step1, ucd_step1,      &
-     &   ierr)
+     &    new_femmesh, new_ele_mesh, itp_udt,                           &
+     &    rst_step_ITP, ucd_step_ITP, ierr)
 !
       call set_ctl_interpolate_udt(fld_gt_ctl, nod_fld_ITP)
 !
@@ -116,7 +120,7 @@
       integer(kind = kint) :: istep
 !
 !
-      do istep = i_step_init, i_step_number, ucd_step1%increment
+      do istep = i_step_init, i_step_number, ucd_step_ITP%increment
         if (my_rank .lt. ndomain_org) then
           call set_data_by_read_ucd_once                                &
      &       (my_rank, istep, itype_org_udt_file, org_udt_file_head,    &

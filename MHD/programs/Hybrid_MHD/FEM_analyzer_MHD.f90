@@ -3,9 +3,9 @@
 !
 !      modified by H. Matsui on June, 2005 
 !
-!!      subroutine FEM_initialize_MHD(viz_step)
-!!      subroutine FEM_analyze_MHD(viz_step, visval, retval)
-!!        type(VIZ_step_params), intent(inout) :: viz_step
+!!      subroutine FEM_initialize_MHD(MHD_step)
+!!      subroutine FEM_analyze_MHD(MHD_step, visval, retval)
+!!        type(MHD_IO_step_param), intent(inout) :: MHD_step
 !!      subroutine FEM_finalize_MHD
 !
       module FEM_analyzer_MHD
@@ -20,7 +20,7 @@
       use m_mesh_data
       use m_ucd_data
       use m_sorted_node_MHD
-      use t_VIZ_step_parameter
+      use t_MHD_step_parameter
 !
       use calypso_mpi
 !
@@ -32,7 +32,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_MHD(viz_step)
+      subroutine FEM_initialize_MHD(MHD_step)
 !
       use m_mesh_data
       use m_geometry_data_MHD
@@ -63,7 +63,7 @@
       use chenge_step_4_dynamic
       use output_viz_file_control
 !
-      type(VIZ_step_params), intent(inout) :: viz_step
+      type(MHD_IO_step_param), intent(inout) :: MHD_step
 !
       integer(kind = kint) :: iflag
 !
@@ -127,7 +127,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'lead_fields_by_FEM'
       iflag = lead_field_data_flag(flex_p1%istep_max_dt,                &
-     &                             viz_step, SGS_par1%sgs_step)
+     &                             MHD_step, SGS_par1%sgs_step)
       if(iflag .eq. 0) then
         call lead_fields_by_FEM                                         &
      &    (FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1,                &
@@ -170,7 +170,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_MHD(viz_step, visval, retval)
+      subroutine FEM_analyze_MHD(MHD_step, visval, retval)
 !
       use m_control_parameter
 !
@@ -203,7 +203,7 @@
       use output_viz_file_control
 !
       integer(kind=kint), intent(inout) :: visval
-      type(VIZ_step_params), intent(inout) :: viz_step
+      type(MHD_IO_step_param), intent(inout) :: MHD_step
 !
       integer(kind=kint ), intent(inout) :: retval
 !
@@ -257,7 +257,7 @@
 !
       if(flex_p1%istep_flex_to_max .eq. 0) then
         iflag = lead_field_data_flag(flex_p1%istep_max_dt,              &
-     &                               viz_step, SGS_par1%sgs_step)
+     &                               MHD_step, SGS_par1%sgs_step)
         if(iflag .eq. 0) then
           call lead_fields_by_FEM                                       &
      &       (FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1,             &
@@ -299,7 +299,7 @@
         if (iflag_debug.eq.1) write(*,*) 'output_MHD_restart_file_ctl'
         call output_MHD_restart_file_ctl                                &
      &     (flex_p1%istep_max_dt, SGS_par1, mesh1%node, mesh1%nod_comm, &
-     &      iphys, wk_sgs1, wk_diff1, nod_fld1, rst_step1)
+     &      iphys, wk_sgs1, wk_diff1, nod_fld1, MHD_step%rst_step)
 !
 !     ---- Output voulme field data
 !
@@ -329,11 +329,12 @@
           call end_eleps_time(4)
           retval = 0
         else if (istep_rst_end.ne.-1                                    &
-     &       .and. time.gt.(istep_rst_end * rst_step1%delta_t)) then
+     &     .and. time.gt.(istep_rst_end * MHD_step%rst_step%delta_t))   &
+     &     then
           retval = 0
         end if
 !
-        visval = viz_file_step_4_flex(dt, time, viz_step)
+        visval = viz_file_step_4_flex(dt, time, MHD_step%viz_step)
       else
         if      (i_step_number.eq.-1                                    &
      &       .and. total_max.gt.elapsed_time) then
@@ -348,7 +349,8 @@
           retval = 0
         end if
 !
-        visval = viz_file_step_4_fix(flex_p1%istep_max_dt, viz_step)
+        visval = viz_file_step_4_fix(flex_p1%istep_max_dt,              &
+     &                               MHD_step%viz_step)
       end if
 !
 !     --------------------- 

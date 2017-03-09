@@ -52,8 +52,6 @@
       integer(kind=kint) :: istep_rst_end
 !
 !
-      type(IO_step_param), save :: rst_step1
-!
       type(IO_step_param), save :: ucd_step1
 !
       type(IO_step_param), save :: rms_step1
@@ -61,5 +59,40 @@
       type(IO_step_param), save :: point_step1
 !
       type(IO_step_param), save :: boundary_step1
+!
+! -----------------------------------------------------------------------
+!
+      contains
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_start_stop_4_restart(rst_step)
+!
+      type(IO_step_param), intent(in) :: rst_step
+!
+!
+      if(rst_step%increment .gt. 0) then
+        istep_rst_start = int(i_step_init /   rst_step%increment)
+        istep_rst_end =   int(i_step_number / rst_step%increment)
+      else
+        istep_rst_start = i_step_init 
+        istep_rst_end =   i_step_number
+      end if
+!
+      end subroutine set_start_stop_4_restart
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_start_stop_by_restart(rst_step)
+!
+      type(IO_step_param), intent(in) :: rst_step
+!
+!
+      i_step_init =   istep_rst_start * rst_step%increment
+      i_step_number = istep_rst_end *   rst_step%increment
+!
+      end subroutine set_start_stop_by_restart
+!
+! -----------------------------------------------------------------------
 !
       end module  m_t_step_parameter

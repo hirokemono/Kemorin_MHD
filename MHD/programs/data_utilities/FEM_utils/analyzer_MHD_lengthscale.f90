@@ -56,7 +56,12 @@
       call set_ctl_params_prod_udt                                      &
      &   (mesh_file_FUTIL, udt_param_FUTIL, ucd_FUTIL)
       call s_set_fixed_time_step_params                                 &
-     &   (t_pu_ctl, viz_step_U, ierr, e_message)
+     &   (t_pu_ctl, rst_step_U, ucd_step_U, viz_step_U,                 &
+     &    ierr, e_message)
+      call set_output_step_4_fixed_step(ione, dt,                       &
+     &    t_pu_ctl%i_step_check_ctl, t_pu_ctl%delta_t_check_ctl,        &
+     &    rms_step1)
+!
 !
 !     ---------------------
 !
@@ -83,16 +88,17 @@
 !
 !
       do istep = i_step_init, i_step_number
-        if(output_IO_flag(istep,ucd_step1) .eq. izero) then
-          ucd_step1%istep_file = istep / ucd_step1%increment
+        if(output_IO_flag(istep,ucd_step_U) .eq. izero) then
+          ucd_step_U%istep_file = istep / ucd_step_U%increment
 !
-          call set_data_by_read_ucd_once(my_rank, ucd_step1%istep_file, &
+          call set_data_by_read_ucd_once                                &
+     &       (my_rank, ucd_step_U%istep_file,                           &
      &        udt_param_FUTIL%iflag_format, ref_udt_file_head,          &
      &        field_FUTIL, time_IO_FUTIL)
 !
           call const_MHD_length_scales                                  &
      &       (femmesh_FUTIL%mesh%node, iphys_FUTIL, field_FUTIL,        &
-     &        ucd_step1%istep_file, time_IO_FUTIL, ucd_FUTIL)
+     &        ucd_step_U%istep_file, time_IO_FUTIL, ucd_FUTIL)
         end if
       end do
 !

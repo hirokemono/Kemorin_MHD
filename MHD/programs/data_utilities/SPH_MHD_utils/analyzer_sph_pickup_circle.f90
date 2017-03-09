@@ -113,7 +113,7 @@
       do
         i_step_MHD = i_step_MHD + 1
 !
-        if(output_IO_flag(i_step_MHD,rst_step1) .ne. 0) cycle
+        if(output_IO_flag(i_step_MHD, MHD_step1%rst_step) .ne. 0) cycle
 !
 !*  ----------  time evolution by spectral methood -----------------
 !*

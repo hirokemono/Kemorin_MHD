@@ -48,7 +48,8 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'set_ctl_data_4_sph_utils'
       call set_ctl_data_4_sph_utils                                     &
-     &   (rst_step1, ucd_step1, rj_fld_spec, pwr_spec)
+     &   (rst_step_SHR, ucd_step_SHR, viz_step_SHR,                     &
+     &    rj_fld_spec, pwr_spec)
 !
 !       set spectr grids
 !
@@ -93,7 +94,7 @@
      &    sph_mesh_spec%sph%sph_rj, rj_fld_spec,                        &
      &    pick_list_u, pick_sph_u)
 !
-      do i_step = i_step_init, i_step_number, ucd_step1%increment
+      do i_step = i_step_init, i_step_number, ucd_step_SHR%increment
 !
 !   Input spectr data
 !

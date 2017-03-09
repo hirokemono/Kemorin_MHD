@@ -23,8 +23,12 @@
       use t_phys_data
       use t_phys_address
       use t_interpolate_table
+      use t_IO_step_parameter
 !
       implicit none
+!
+      type(IO_step_param), save :: rst_step_ITP
+      type(IO_step_param), save :: ucd_step_ITP
 !
       type(mesh_data), save :: org_femmesh
       type(element_geometry), save :: org_ele_mesh
@@ -72,8 +76,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_interpolate'
       call s_input_control_interpolate(org_femmesh, org_ele_mesh,       &
-     &    new_femmesh, new_ele_mesh, itp_rst, rst_step1, ucd_step1,     &
-     &    ierr)
+     &    new_femmesh, new_ele_mesh, itp_rst,                           &
+     &    rst_step_ITP, ucd_step_ITP, ierr)
 !
 !     --------------------- 
 !
@@ -91,7 +95,7 @@
 !
 !     --------------------- 
 !
-      istep_rst_start = int(i_step_init /   rst_step1%increment)
+      istep_rst_start = int(i_step_init / rst_step_ITP%increment)
       call set_field_file_fmt_prefix                                    &
      &   (ifmt_org_rst_file, org_rst_file_head, itp_fld_IO)
       call sel_read_alloc_step_FEM_file                                 &
@@ -133,8 +137,8 @@
       integer(kind = kint) :: i_step
 !
 !
-      istep_rst_start = int(i_step_init /   rst_step1%increment)
-      istep_rst_end =   int(i_step_number / rst_step1%increment)
+      istep_rst_start = int(i_step_init /   rst_step_ITP%increment)
+      istep_rst_end =   int(i_step_number / rst_step_ITP%increment)
       do i_step = istep_rst_start, istep_rst_end
 !
         if (my_rank .lt. ndomain_org) then

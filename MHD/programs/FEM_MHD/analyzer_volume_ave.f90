@@ -27,6 +27,7 @@
       use m_node_phys_data
       use m_3d_filter_coef_MHD
       use m_boundary_field_IO
+      use m_MHD_step_parameter
       use input_control
 !
 !
@@ -41,7 +42,7 @@
 !   matrix assembling
 !
       if (iflag_debug.eq.1)  write(*,*) 'FEM_initialize_vol_average'
-      call FEM_initialize_vol_average
+      call FEM_initialize_vol_average(MHD_step1)
 !
       end subroutine init_analyzer
 !

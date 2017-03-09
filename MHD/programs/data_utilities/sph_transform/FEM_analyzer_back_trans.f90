@@ -34,6 +34,7 @@
       use t_next_node_ele_4_node
       use t_jacobian_3d
 !
+      use m_ctl_params_sph_trans
       use m_array_for_send_recv
       use m_t_step_parameter
 !
@@ -82,7 +83,7 @@
 !
 !  connect grid data to volume output
 !
-      if(ucd_step1%increment .eq. 0) return
+      if(ucd_step_STR%increment .eq. 0) return
       call link_output_grd_file                                         &
      &   (femmesh_STR%mesh%node, femmesh_STR%mesh%ele,                  &
      &    femmesh_STR%mesh%nod_comm, field_STR, ucd, m_ucd)
@@ -97,7 +98,7 @@
       subroutine FEM_analyze_back_trans                                 &
      &         (t_IO, ucd, i_step, viz_step, visval)
 !
-      use m_t_step_parameter
+      use m_ctl_params_sph_trans
       use t_time_data_IO
       use t_ucd_data
       use t_IO_step_parameter
@@ -124,7 +125,7 @@
 !
 !*  -----------  Output volume data --------------
 !*
-      if(output_IO_flag(i_step,ucd_step1) .eq. 0) then
+      if(output_IO_flag(i_step,ucd_step_STR) .eq. 0) then
         call sel_write_udt_file(my_rank, i_step, t_IO, ucd)
       end if
 !

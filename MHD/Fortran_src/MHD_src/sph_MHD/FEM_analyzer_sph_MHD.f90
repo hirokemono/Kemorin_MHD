@@ -17,10 +17,10 @@
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(maximum_informations), intent(inout) :: range
 !!      subroutine FEM_analyze_sph_MHD                                  &
-!!     &         (i_step, SGS_par, mesh, nod_fld, viz_step, visval)
+!!     &         (i_step, SGS_par, mesh, nod_fld, MHD_step, visval)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(phys_data), intent(inout) :: nod_fld
-!!        type(VIZ_step_params), intent(inout) :: viz_step
+!!        type(MHD_IO_step_param), intent(inout) :: MHD_step
 !!      subroutine FEM_finalize
 !!
 !!      subroutine SPH_to_FEM_bridge_MHD                                &
@@ -123,10 +123,10 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_analyze_sph_MHD                                    &
-     &         (i_step, SGS_par, mesh, nod_fld, viz_step, visval)
+     &         (i_step, SGS_par, mesh, nod_fld, MHD_step, visval)
 !
       use t_SGS_control_parameter
-      use t_VIZ_step_parameter
+      use t_MHD_step_parameter
       use nod_phys_send_recv
       use output_viz_file_control
 !
@@ -136,7 +136,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
       integer (kind =kint), intent(inout) :: visval
-      type(VIZ_step_params), intent(inout) :: viz_step
+      type(MHD_IO_step_param), intent(inout) :: MHD_step
 !
       integer(kind = kint) :: iflag
 !
@@ -145,8 +145,8 @@
 !*
 !*
       visval = 1
-      visval = viz_file_step_4_fix(i_step, viz_step)
-      iflag = lead_field_data_flag(i_step, viz_step, SGS_par%sgs_step)
+      visval = viz_file_step_4_fix(i_step, MHD_step%viz_step)
+      iflag = lead_field_data_flag(i_step, MHD_step, SGS_par%sgs_step)
       if(iflag .ne. 0) return
 !
 !*  ----------- Data communication  --------------

@@ -5,8 +5,8 @@
 !     modified by H. Matsui on Aug., 2007
 !
 !!      integer(kind = kint) function lead_field_data_flag              &
-!!     &                   (i_step, viz_step, sgs_step)
-!!        type(VIZ_step_params), intent(in) :: viz_step
+!!     &                   (i_step, MHD_step, sgs_step)
+!!        type(MHD_IO_step_param), intent(in) :: MHD_step
 !!        type(IO_step_param), intent(in) :: sgs_step
 !
       module output_viz_file_control
@@ -17,7 +17,7 @@
       use m_constants
       use m_t_step_parameter
       use t_IO_step_parameter
-      use t_VIZ_step_parameter
+      use t_MHD_step_parameter
 !
       implicit none
 !
@@ -28,10 +28,10 @@
 !-----------------------------------------------------------------------
 !
       integer(kind = kint) function lead_field_data_flag                &
-     &                   (i_step, viz_step, sgs_step)
+     &                   (i_step, MHD_step, sgs_step)
 !
       integer(kind = kint), intent(in) :: i_step
-      type(VIZ_step_params), intent(in) :: viz_step
+      type(MHD_IO_step_param), intent(in) :: MHD_step
       type(IO_step_param), intent(in) :: sgs_step
 !
       integer (kind =kint) :: i_monitor, i_bulk, i_udt, i_coef, irst
@@ -39,11 +39,11 @@
 !
       lead_field_data_flag = 1
       call accum_output_flag_4_viz                                      &
-     &   (i_step, viz_step, lead_field_data_flag)
+     &   (i_step, MHD_step%viz_step, lead_field_data_flag)
 !
-      irst =      output_IO_flag(i_step, rst_step1)
-      i_bulk =    output_IO_flag(i_step, rms_step1)
+      irst =      output_IO_flag(i_step, MHD_step%rst_step)
       i_udt =     output_IO_flag(i_step, ucd_step1)
+      i_bulk =    output_IO_flag(i_step, rms_step1)
       i_monitor = output_IO_flag(i_step, point_step1)
 !
       i_coef =    output_IO_flag(i_step, sgs_step)

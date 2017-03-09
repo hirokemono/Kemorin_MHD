@@ -84,7 +84,7 @@
       if(iflag_debug.gt.0) write(*,*)' sph_initial_data_control'
       call sph_initial_data_control                                     &
      &   (sph1%sph_params, sph1%sph_rj, ref_temp1%t_rj,                 &
-     &    ipol, idpdr, itor, rj_fld1, rst_step1)
+     &    ipol, idpdr, itor, rj_fld1, MHD_step1%rst_step)
 !
       if(iflag_debug.gt.0) write(*,*)' sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph                                    &
@@ -202,7 +202,7 @@
      &   (ref_param_T1, ref_param_C1, ref_temp1, ref_comp1,             &
      &    sph1%sph_rj, ipol, idpdr, rj_fld1)
 !*
-      iflag = lead_field_data_flag(i_step, MHD_step1%viz_step,          &
+      iflag = lead_field_data_flag(i_step, MHD_step1,                   &
      &                             SGS_par1%sgs_step)
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
@@ -217,7 +217,7 @@
       call start_eleps_time(4)
       call start_eleps_time(10)
       if(iflag_debug.gt.0) write(*,*) 'output_sph_restart_control'
-      call output_sph_restart_control(rj_fld1, rst_step1)
+      call output_sph_restart_control(rj_fld1, MHD_step1%rst_step)
 !
       total_time = MPI_WTIME() - total_start
       call MPI_allREDUCE (total_time, total_max, ione, CALYPSO_REAL,    &

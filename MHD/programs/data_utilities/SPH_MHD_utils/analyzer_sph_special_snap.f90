@@ -61,7 +61,7 @@
       do
         i_step_MHD = i_step_MHD + 1
 !
-        if(output_IO_flag(i_step_MHD,rst_step1) .ne. 0) cycle
+        if(output_IO_flag(i_step_MHD, MHD_step1%rst_step) .ne. 0) cycle
 !
 !*  ----------  time evolution by spectral methood -----------------
 !*
@@ -72,7 +72,7 @@
 !*
         call start_eleps_time(1)
         call start_eleps_time(4)
-        iflag = lead_field_data_flag(i_step_MHD, MHD_step1%viz_step,    &
+        iflag = lead_field_data_flag(i_step_MHD, MHD_step1,             &
      &                               SGS_par1%sgs_step)
         if(iflag .eq. 0) then
           if(iflag_debug.eq.1)                                          &
@@ -82,7 +82,7 @@
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
         call FEM_analyze_sph_MHD(i_step_MHD, SGS_par1, mesh1,           &
-     &      nod_fld1, MHD_step1%viz_step, visval)
+     &      nod_fld1, MHD_step1, visval)
 !
         call end_eleps_time(4)
 !
@@ -150,7 +150,7 @@
 !
       call read_alloc_sph_rst_4_snap                                    &
      &   (i_step, MHD1_org_files%rj_file_param, sph1%sph_rj,            &
-     &    ipol, rj_fld1, rst_step1)
+     &    ipol, rj_fld1, MHD_step1%rst_step)
 !
       if (iflag_debug.eq.1) write(*,*)' sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph                                    &
@@ -321,7 +321,7 @@
       integer(kind = kint) :: iflag
 !
 !
-      iflag = lead_field_data_flag(i_step, MHD_step1%viz_step,          &
+      iflag = lead_field_data_flag(i_step, MHD_step1,                   &
      &                             SGS_par1%sgs_step)
       if(iflag .eq. 0) then
         call s_lead_fields_4_sph_mhd(SGS_par1%model_p, sph,             &

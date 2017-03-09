@@ -7,8 +7,9 @@
 !>@brief  Set time step parameters
 !!
 !!@verbatim
-!!      subroutine s_set_fixed_time_step_params                           &
-!!     &         (tctl, viz_step, ierr, errmsg)
+!!      subroutine s_set_fixed_time_step_params                         &
+!!     &         (tctl, rst_step, ucd_step, viz_step, ierr, errmsg)
+!!        type(IO_step_param), intent(inout) :: rst_step, ucd_step
 !!        type(time_data_control), intent(in) :: tctl
 !!        type(VIZ_step_params), intent(inout) :: viz_step
 !!@endverbatim
@@ -20,6 +21,7 @@
       use m_constants
       use m_machine_parameter
       use t_ctl_data_4_time_steps
+      use t_IO_step_parameter
       use t_VIZ_step_parameter
 !
       implicit  none
@@ -31,13 +33,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_fixed_time_step_params                           &
-     &         (tctl, viz_step, ierr, errmsg)
+     &         (tctl, rst_step, ucd_step, viz_step, ierr, errmsg)
 !
       use m_error_IDs
       use m_t_step_parameter
 !
       type(time_data_control), intent(in) :: tctl
 !
+      type(IO_step_param), intent(inout) :: rst_step, ucd_step
       type(VIZ_step_params), intent(inout) :: viz_step
       integer(kind = kint), intent(inout) :: ierr
       character(len=kchara), intent(inout) :: errmsg
@@ -61,21 +64,12 @@
 !
 !
       call set_output_step_4_fixed_step(ione, dt,                       &
-     &    tctl%i_step_rst_ctl, tctl%delta_t_rst_ctl, rst_step1)
+     &    tctl%i_step_rst_ctl, tctl%delta_t_rst_ctl, rst_step)
 !
       call set_output_step_4_fixed_step(ione, dt,                       &
-     &    tctl%i_step_ucd_ctl, tctl%delta_t_field_ctl, ucd_step1)
+     &    tctl%i_step_ucd_ctl, tctl%delta_t_field_ctl, ucd_step)
 !
-      if(rst_step1%increment .gt. 0) then
-        istep_rst_start = int(i_step_init /   rst_step1%increment)
-        istep_rst_end =   int(i_step_number / rst_step1%increment)
-      else
-        istep_rst_start = i_step_init 
-        istep_rst_end =   i_step_number
-      end if
-!
-      if(i_step_init .eq. -1)   istep_rst_start = -1
-      if(i_step_number .eq. -1) istep_rst_end =   -1
+      call set_start_stop_4_restart(rst_step)
 !
       call viz_fixed_time_step_params(dt, tctl, viz_step)
 !
