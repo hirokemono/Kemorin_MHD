@@ -6,7 +6,7 @@
 !!      subroutine FEM_initialize_snapshot(MHD_step)
 !!      subroutine FEM_analyze_snapshot(i_step, MHD_step, visval)
 !!        type(MHD_IO_step_param), intent(inout) :: MHD_step
-!!      subroutine FEM_finalize_snapshot
+!!      subroutine FEM_finalize_snapshot(MHD_step)
 !
       module FEM_analyzer_snapshot
 !
@@ -54,7 +54,7 @@
      &    iphys, nod_fld1, SNAP_time_IO, MHD_step%rst_step, label_sim)
 !
       call output_grd_file_w_org_connect                                &
-     &   (ucd_step1, mesh1, MHD_mesh1, nod_fld1)
+     &   (MHD_step%ucd_step, mesh1, MHD_mesh1, nod_fld1)
 !
       call alloc_phys_range(nod_fld1%ntot_phys_viz, range)
 !
@@ -114,10 +114,10 @@
         call input_restart_4_snapshot(flex_p1%istep_max_dt,             &
      &      mesh1%node, nod_fld1, SNAP_time_IO, MHD_step%rst_step)
 !
-      else if (ucd_step1%increment .gt. 0) then
+      else if (MHD_step%ucd_step%increment .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'read_udt_4_snap'
-        call read_udt_4_snap(flex_p1%istep_max_dt,                      &
-     &      FEM_udt_org_param, nod_fld1, SNAP_time_IO, ucd_step1)
+        call read_udt_4_snap(flex_p1%istep_max_dt, FEM_udt_org_param,   &
+     &      nod_fld1, SNAP_time_IO, MHD_step%ucd_step)
         time = time_init + dt*dble(flex_p1%istep_max_dt)
         i_step_MHD = flex_p1%istep_max_dt
       end if
@@ -206,7 +206,8 @@
 !     ---- Output voulme field data
 !
       if (iflag_debug.eq.1) write(*,*) 's_output_ucd_file_control'
-      call s_output_ucd_file_control(flex_p1%istep_max_dt, ucd_step1)
+      call s_output_ucd_file_control                                    &
+     &   (flex_p1%istep_max_dt, MHD_step%ucd_step)
 !
 !     ----
 !
@@ -223,12 +224,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_finalize_snapshot
+      subroutine FEM_finalize_snapshot(MHD_step)
 !
       use m_cal_max_indices
 !
+      type(MHD_IO_step_param), intent(in) :: MHD_step
 !
-      if(ucd_step1%increment .gt. 0) then
+!
+      if(MHD_step%ucd_step%increment .gt. 0) then
         call finalize_output_ucd
         call dealloc_phys_range(range)
       end if

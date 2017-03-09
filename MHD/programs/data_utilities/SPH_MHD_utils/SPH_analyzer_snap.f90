@@ -9,7 +9,8 @@
 !!@verbatim
 !!      subroutine SPH_init_sph_snap(iphys)
 !!        type(phys_address), intent(in) :: iphys
-!!      subroutine SPH_analyze_snap(i_step)
+!!      subroutine SPH_analyze_snap(i_step, MHD_step)
+!!        type(MHD_IO_step_param), intent(inout) :: MHD_step
 !!@endverbatim
 !
       module SPH_analyzer_snap
@@ -109,7 +110,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_snap(i_step)
+      subroutine SPH_analyze_snap(i_step, MHD_step)
 !
       use m_work_time
       use m_t_step_parameter
@@ -130,12 +131,14 @@
       use output_viz_file_control
 !
       integer(kind = kint), intent(in) :: i_step
+      type(MHD_IO_step_param), intent(inout) :: MHD_step
+!
       integer(kind = kint) :: iflag
 !
 !
       call read_alloc_sph_rst_4_snap                                    &
      &   (i_step, MHD1_org_files%rj_file_param, sph1%sph_rj,            &
-     &    ipol, rj_fld1, MHD_step1%rst_step)
+     &    ipol, rj_fld1, MHD_step%rst_step)
 !
       if (iflag_debug.eq.1) write(*,*)' sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph                                    &
@@ -164,7 +167,7 @@
      &   (ref_param_T1, ref_param_C1, ref_temp1, ref_comp1,             &
      &    sph1%sph_rj, ipol, idpdr, rj_fld1)
 !*
-      iflag = lead_field_data_flag(i_step, MHD_step1,                   &
+      iflag = lead_field_data_flag(i_step, MHD_step,                    &
      &                             SGS_par1%sgs_step)
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
@@ -189,7 +192,7 @@
 !*
       if(iflag_debug.gt.0)  write(*,*) 'output_spectr_4_snap'
       call output_spectr_4_snap                                         &
-     &   (i_step, sph_file_param1, rj_fld1, ucd_step1)
+     &   (i_step, sph_file_param1, rj_fld1, MHD_step%ucd_step)
       call end_eleps_time(4)
 !
       end subroutine SPH_analyze_snap

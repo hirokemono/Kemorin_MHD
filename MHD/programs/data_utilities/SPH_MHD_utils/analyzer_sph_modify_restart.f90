@@ -65,7 +65,7 @@
       call end_eleps_time(3)
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
-      call FEM_finalize
+      call FEM_finalize(MHD_step1)
 !
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_snap'
 !      call SPH_finalize_snap

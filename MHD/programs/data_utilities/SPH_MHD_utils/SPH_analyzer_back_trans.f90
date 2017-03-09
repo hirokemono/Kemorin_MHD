@@ -9,7 +9,8 @@
 !!@verbatim
 !!      subroutine SPH_init_sph_back_trans(iphys)
 !!        type(phys_address), intent(in) :: iphys
-!!      subroutine SPH_analyze_back_trans(i_step)
+!!      subroutine SPH_analyze_back_trans(i_step, MHD_step)
+!!        type(MHD_IO_step_param), intent(inout) :: MHD_step
 !!@endverbatim
 !
       module SPH_analyzer_back_trans
@@ -17,6 +18,7 @@
       use m_precision
       use calypso_mpi
       use t_phys_address
+      use t_MHD_step_parameter
 !
       implicit none
 !
@@ -92,7 +94,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_back_trans(i_step)
+      subroutine SPH_analyze_back_trans(i_step, MHD_step)
 !
       use m_work_time
       use m_t_step_parameter
@@ -114,11 +116,12 @@
       use sph_transforms_snapshot
 !
       integer(kind = kint), intent(in) :: i_step
+      type(MHD_IO_step_param), intent(inout) :: MHD_step
 !
 !
       call read_alloc_sph_spectr                                        &
      &   (i_step, MHD1_org_files%rj_file_param, sph_file_param1,        &
-     &    sph1%sph_rj, ipol, rj_fld1, ucd_step1)
+     &    sph1%sph_rj, ipol, rj_fld1, MHD_step%ucd_step)
 !
 !* ----  Update fields after time evolution ------------------------=
 !*

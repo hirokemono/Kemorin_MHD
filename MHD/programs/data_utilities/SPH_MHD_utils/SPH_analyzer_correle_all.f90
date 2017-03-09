@@ -7,7 +7,8 @@
 !>@brief Evolution loop for spherical MHD
 !!
 !!@verbatim
-!!      subroutine SPH_analyze_correlate_all(i_step)
+!!      subroutine SPH_analyze_correlate_all(i_step, MHD_step)
+!!        type(MHD_IO_step_param), intent(inout) :: MHD_step
 !!@endverbatim
 !
       module SPH_analyzer_correle_all
@@ -17,6 +18,7 @@
       use t_phys_address
       use t_file_IO_parameter
       use t_phys_data
+      use t_MHD_step_parameter
       use SPH_analyzer_back_trans
 !
       implicit none
@@ -30,7 +32,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_correlate_all(i_step)
+      subroutine SPH_analyze_correlate_all(i_step, MHD_step)
 !
       use m_work_time
       use m_t_step_parameter
@@ -54,6 +56,7 @@
       use zonal_correlation_rtp
 !
       integer(kind = kint), intent(in) :: i_step
+      type(MHD_IO_step_param), intent(inout) :: MHD_step
 !
       integer(kind = kint) :: iflag, ncomp
       integer(kind = kint) :: k, nd
@@ -71,7 +74,7 @@
 !
       call read_alloc_sph_spectr                                        &
      &   (i_step, MHD1_org_files%rj_file_param, sph_file_param1,        &
-     &    sph1%sph_rj, ipol, rj_fld1, ucd_step1)
+     &    sph1%sph_rj, ipol, rj_fld1, MHD_step%ucd_step)
 !
       call copy_field_name_type(rj_fld1, ref_rj_fld)
       call copy_field_data_type(rj_fld1, ref_rj_fld)
@@ -80,7 +83,7 @@
 !
       call read_alloc_sph_spectr                                        &
      &   (i_step, MHD1_org_files%rj_file_param, sph_file_param2,        &
-     &    sph1%sph_rj, ipol, rj_fld1, ucd_step1)
+     &    sph1%sph_rj, ipol, rj_fld1, MHD_step%ucd_step)
 !
 !       Transform first data
 !

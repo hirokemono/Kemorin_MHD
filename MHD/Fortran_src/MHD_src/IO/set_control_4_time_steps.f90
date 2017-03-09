@@ -10,9 +10,10 @@
 !!
 !!@verbatim
 !!      subroutine s_set_control_4_time_steps                           &
-!!     &         (flex_p, SGS_par, mr_ctl, tctl)
+!!     &         (flex_p, SGS_par, MHD_step, mr_ctl, tctl)
 !!        type(mhd_restart_control), intent(in) :: mr_ctl
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
+!!        type(MHD_IO_step_param), intent(inout) :: MHD_step
 !!        type(flexible_stepping_parameter), intent(inout) :: flex_p
 !!        type(time_data_control), intent(inout) :: tctl
 !!@endverbatim
@@ -29,6 +30,7 @@
       use t_SGS_control_parameter
       use t_ctl_data_4_time_steps
       use t_VIZ_step_parameter
+      use t_MHD_step_parameter
       use t_flex_delta_t_data
 !
       implicit  none
@@ -43,7 +45,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_4_time_steps                             &
-     &         (flex_p, SGS_par, mr_ctl, tctl)
+     &         (flex_p, SGS_par, MHD_step, mr_ctl, tctl)
 !
       use t_ctl_data_mhd_evo_scheme
       use m_initial_field_control
@@ -52,6 +54,7 @@
 !
       type(mhd_restart_control), intent(in) :: mr_ctl
       type(SGS_paremeters), intent(inout) :: SGS_par
+      type(MHD_IO_step_param), intent(inout) :: MHD_step
       type(flexible_stepping_parameter), intent(inout) :: flex_p
       type(time_data_control), intent(inout) :: tctl
 !
@@ -125,12 +128,11 @@
         if (iflag_debug .ge. iflag_routine_msg)                         &
      &    write(*,*) 'set_flex_time_step_controls'
         call set_flex_time_step_controls                                &
-     &     (flex_p, SGS_par, tctl, MHD_step1%viz_step)
+     &     (flex_p, SGS_par, tctl, MHD_step)
       else
         if (iflag_debug .ge. iflag_routine_msg)                         &
      &    write(*,*) 'set_fixed_time_step_controls'
-        call set_fixed_time_step_controls                               &
-     &     (SGS_par, tctl, MHD_step1%viz_step)
+        call set_fixed_time_step_controls(SGS_par, tctl, MHD_step)
       end if
 !
       if (i_step_number.eq.-1) then
@@ -151,27 +153,28 @@
         write(*,*) 'istep_rst_end ',  istep_rst_end
         write(*,*) 'elapsed_time ', elapsed_time
         write(*,*) 'i_step_check ', rms_step1%increment
-        write(*,*) 'i_step_output_rst ', MHD_step1%rst_step%increment
-        write(*,*) 'i_step_output_ucd ', ucd_step1%increment
+        write(*,*) 'i_step_output_rst ', MHD_step%rst_step%increment
+        write(*,*) 'i_step_output_ucd ', MHD_step%ucd_step%increment
       end if
 !
       end subroutine s_set_control_4_time_steps
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_fixed_time_step_controls(SGS_par, tctl, viz_step)
+      subroutine set_fixed_time_step_controls(SGS_par, tctl, MHD_step)
 !
       use set_fixed_time_step_params
 !
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(time_data_control), intent(inout) :: tctl
-      type(VIZ_step_params), intent(inout) :: viz_step
+      type(MHD_IO_step_param), intent(inout) :: MHD_step
 !
       integer(kind = kint) :: ierr
 !
 !
-      call s_set_fixed_time_step_params                                 &
-     &   (tctl, MHD_step1%rst_step, ucd_step1, viz_step, ierr, e_message)
+      call s_set_fixed_time_step_params(tctl,                           &
+     &    MHD_step%rst_step, MHD_step%ucd_step, MHD_step%viz_step,      &
+     &    ierr, e_message)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
       call set_output_step_4_fixed_step(ione, dt,                       &
@@ -196,17 +199,17 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_flex_time_step_controls                            &
-     &         (flex_p, SGS_par, tctl, viz_step)
+     &         (flex_p, SGS_par, tctl, MHD_step)
 !
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(flexible_stepping_parameter), intent(inout) :: flex_p
       type(time_data_control), intent(inout) :: tctl
-      type(VIZ_step_params), intent(inout) :: viz_step
+      type(MHD_IO_step_param), intent(inout) :: MHD_step
 !
 !
       call set_flex_time_step_params                                    &
-     &   (flex_p, SGS_par, tctl, MHD_step1%rst_step, ucd_step1,         &
-     &    viz_step)
+     &   (flex_p, SGS_par, tctl, MHD_step%rst_step, MHD_step%ucd_step,  &
+     &    MHD_step%viz_step)
 !
       call set_output_step_4_flex_step(ione, flex_p%dt_max,             &
      &    tctl%i_step_check_ctl, tctl%delta_t_check_ctl, rms_step1)

@@ -8,9 +8,9 @@
 !!       to FEM data for data visualization
 !!
 !!@verbatim
-!!      subroutine FEM_initialize_w_viz(viz_step, mesh, group, ele_mesh,&
+!!      subroutine FEM_initialize_w_viz(MHD_step, mesh, group, ele_mesh,&
 !!     &          iphys, nod_fld, next_tbl, jac_3d_q, jac_3d_l)
-!!        type(VIZ_step_params), intent(in) :: viz_step
+!!        type(MHD_IO_step_param), intent(in) :: MHD_step
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(element_geometry), intent(inout) :: ele_mesh
@@ -39,6 +39,7 @@
       use t_next_node_ele_4_node
       use t_jacobian_3d
       use t_VIZ_step_parameter
+      use t_MHD_step_parameter
 !
       implicit none
 !
@@ -48,7 +49,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_w_viz(viz_step, mesh, group, ele_mesh,  &
+      subroutine FEM_initialize_w_viz(MHD_step, mesh, group, ele_mesh,  &
      &          iphys, nod_fld, next_tbl, jac_3d_q, jac_3d_l)
 !
       use m_t_step_parameter
@@ -60,7 +61,7 @@
       use int_volume_of_domain
       use set_normal_vectors
 !
-      type(VIZ_step_params), intent(in) :: viz_step
+      type(MHD_IO_step_param), intent(in) :: MHD_step
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
@@ -76,18 +77,18 @@
 !  --  init FEM mesh data
 !
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
-      call FEM_initialize_sph_MHD(mesh, group, ele_mesh,                &
+      call FEM_initialize_sph_MHD(MHD_step, mesh, group, ele_mesh,      &
      &    iphys, nod_fld, range)
 !
 !  -------------------------------
 !
-      if(viz_step%FLINE_t%increment .gt. 0) then
+      if(MHD_step%viz_step%FLINE_t%increment .gt. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_ele_id_4_node'
         call set_ele_id_4_node                                          &
      &    (mesh%node, mesh%ele, next_tbl%neib_ele)
       end if
 !
-      if(viz_step%PVR_t%increment .le. 0) Return
+      if(MHD_step%viz_step%PVR_t%increment .le. 0) Return
 !
 !  -----  If there is no volume rendering... return
 !

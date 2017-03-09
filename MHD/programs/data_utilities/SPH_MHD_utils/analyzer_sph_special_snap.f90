@@ -36,6 +36,7 @@
       subroutine evolution_sph_special_snap
 !
       use m_t_step_parameter
+      use t_MHD_step_parameter
       use m_mesh_data
       use m_node_phys_data
 !
@@ -66,7 +67,7 @@
 !*  ----------  time evolution by spectral methood -----------------
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_special_snap'
-        call SPH_analyze_special_snap(i_step_MHD)
+        call SPH_analyze_special_snap(i_step_MHD, MHD_step1)
 !*
 !*  -----------  output field data --------------
 !*
@@ -107,7 +108,7 @@
       call end_eleps_time(3)
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
-      call FEM_finalize
+      call FEM_finalize(MHD_step1)
 !
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_snap'
 !      call SPH_finalize_snap
@@ -125,7 +126,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_special_snap(i_step)
+      subroutine SPH_analyze_special_snap(i_step, MHD_step)
 !
       use m_work_time
       use m_t_step_parameter
@@ -135,6 +136,7 @@
       use m_schmidt_poly_on_rtm
       use m_sph_trans_arrays_MHD
       use m_rms_4_sph_spectr
+      use t_MHD_step_parameter
 !
       use cal_nonlinear
       use cal_sol_sph_MHD_crank
@@ -145,12 +147,13 @@
       use input_control_sph_MHD
 !
       integer(kind = kint), intent(in) :: i_step
+      type(MHD_IO_step_param), intent(inout) :: MHD_step
       integer(kind = kint) :: iflag
 !
 !
       call read_alloc_sph_rst_4_snap                                    &
      &   (i_step, MHD1_org_files%rj_file_param, sph1%sph_rj,            &
-     &    ipol, rj_fld1, MHD_step1%rst_step)
+     &    ipol, rj_fld1, MHD_step%rst_step)
 !
       if (iflag_debug.eq.1) write(*,*)' sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph                                    &
@@ -185,8 +188,8 @@
      &    sph1%sph_rj, ipol, idpdr, rj_fld1)
 !*
       if(iflag_debug.gt.0) write(*,*) 'lead_special_fields_4_sph_mhd'
-      call lead_special_fields_4_sph_mhd(i_step,                        &
-     &    sph1, comms_sph1, omega_sph1, r_2nd, ipol, trns_WK1, rj_fld1)
+      call lead_special_fields_4_sph_mhd(i_step, sph1, comms_sph1,      &
+     &    omega_sph1, r_2nd, ipol, trns_WK1, rj_fld1, MHD_step)
       call end_eleps_time(9)
 !
 !*  -----------  lead energy data --------------
@@ -205,7 +208,7 @@
 !*  -----------  Output spectr data --------------
 !*
       call output_spectr_4_snap                                         &
-     &   (i_step, sph_file_param1, rj_fld1, ucd_step1)
+     &   (i_step, sph_file_param1, rj_fld1, MHD_step%ucd_step)
 !
       end subroutine SPH_analyze_special_snap
 !
@@ -291,8 +294,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine lead_special_fields_4_sph_mhd(i_step, sph, comms_sph,  &
-     &          omega_sph, r_2nd, ipol, trns_WK, rj_fld)
+     &          omega_sph, r_2nd, ipol, trns_WK, rj_fld, MHD_step)
 !
+      use t_MHD_step_parameter
       use t_spheric_parameter
       use t_poloidal_rotation
       use t_phys_address
@@ -317,11 +321,12 @@
       type(phys_address), intent(in) :: ipol
       type(works_4_sph_trans_MHD), intent(inout) :: trns_WK
       type(phys_data), intent(inout) :: rj_fld
+      type(MHD_IO_step_param), intent(inout) :: MHD_step
 !
       integer(kind = kint) :: iflag
 !
 !
-      iflag = lead_field_data_flag(i_step, MHD_step1,                   &
+      iflag = lead_field_data_flag(i_step, MHD_step,                    &
      &                             SGS_par1%sgs_step)
       if(iflag .eq. 0) then
         call s_lead_fields_4_sph_mhd(SGS_par1%model_p, sph,             &

@@ -29,10 +29,10 @@
       implicit  none
 !
 !
+!>      Increment for restart
       type(IO_step_param), save, private :: rst_step_STR
-!
+!>      Increment for field data
       type(IO_step_param), save :: ucd_step_STR
-!
 !>      Increment for visualizations
       type(VIZ_step_params), save :: viz_step_STR
 !

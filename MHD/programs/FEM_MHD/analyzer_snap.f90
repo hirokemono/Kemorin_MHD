@@ -99,7 +99,7 @@
         end if
       end do
 !
-      call FEM_finalize_snapshot
+      call FEM_finalize_snapshot(MHD_step1)
       call output_elapsed_times
 !
       end subroutine analyze

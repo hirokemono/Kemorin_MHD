@@ -4,8 +4,8 @@
 !      modified by H. Matsui on June, 2005 
 !
 !!      subroutine FEM_initialize_vol_average(MHD_step)
+!!      subroutine FEM_analyze_vol_average(i_step, MHD_step)
 !!        type(MHD_IO_step_param), intent(inout) :: MHD_step
-!!      subroutine FEM_analyze_vol_average(i_step)
 !
       module FEM_analyzer_vol_average
 !
@@ -45,7 +45,6 @@
 !
       type(MHD_IO_step_param), intent(inout) :: MHD_step
 !
-!
 !   matrix assembling
 !
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
@@ -57,7 +56,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_vol_average(i_step)
+      subroutine FEM_analyze_vol_average(i_step, MHD_step)
 !
       use m_control_parameter
       use m_physical_property
@@ -79,6 +78,8 @@
       use output_parallel_ucd_file
 !
       integer(kind = kint), intent(in) :: i_step
+      type(MHD_IO_step_param), intent(inout) :: MHD_step
+!
       integer(kind = kint) :: iflag
 !
 !     ---- Load field data --- 
@@ -87,7 +88,7 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 'read_udt_4_snap'
       call read_udt_4_snap(i_step,                                      &
-     &    FEM_udt_org_param, nod_fld1, SNAP_time_IO, ucd_step1)
+     &    FEM_udt_org_param, nod_fld1, SNAP_time_IO, MHD_step%ucd_step)
       time = time_init + dt*dble(i_step)
 !
 !     ---- magnetic field update

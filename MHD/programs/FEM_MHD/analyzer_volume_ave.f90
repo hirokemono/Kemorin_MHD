@@ -9,6 +9,7 @@
 !
       use m_precision
       use m_machine_parameter
+      use m_MHD_step_parameter
       use FEM_analyzer_vol_average
 !
       implicit none
@@ -57,7 +58,7 @@
 !
       do i_step = i_step_init, i_step_number
         if (iflag_debug.eq.1)  write(*,*) 'FEM_analyze_vol_average'
-        call FEM_analyze_vol_average(i_step)
+        call FEM_analyze_vol_average(i_step, MHD_step1)
       end do
 !
 !      call FEM_finalize_vol_average

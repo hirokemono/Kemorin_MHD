@@ -9,7 +9,8 @@
 !!
 !!@verbatim
 !!      subroutine FEM_initialize_sph_MHD                               &
-!!     &         (mesh, group, ele_mesh, iphys, nod_fld, range)
+!!     &        (MHD_step, mesh, group, ele_mesh, iphys, nod_fld, range)
+!!        type(MHD_IO_step_param), intent(in) :: MHD_step
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(element_geometry), intent(inout) :: ele_mesh
@@ -21,7 +22,7 @@
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(MHD_IO_step_param), intent(inout) :: MHD_step
-!!      subroutine FEM_finalize
+!!      subroutine FEM_finalize(MHD_step)
 !!
 !!      subroutine SPH_to_FEM_bridge_MHD                                &
 !!     &         (sph_params, sph_rtp, WK, mesh, iphys, nod_fld)
@@ -47,6 +48,7 @@
       use m_work_time
 !
       use m_ucd_data
+      use t_MHD_step_parameter
 !
       implicit none
 !
@@ -57,7 +59,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_initialize_sph_MHD                                 &
-     &         (mesh, group, ele_mesh, iphys, nod_fld, range)
+     &        (MHD_step, mesh, group, ele_mesh, iphys, nod_fld, range)
 !
       use m_array_for_send_recv
       use m_t_step_parameter
@@ -73,6 +75,7 @@
       use const_mesh_information
       use const_element_comm_tables
 !
+      type(MHD_IO_step_param), intent(in) :: MHD_step
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
@@ -110,12 +113,12 @@
 !
 !  connect grid data to volume output
 !
-      if(ucd_step1%increment .gt. 0) then
+      if(MHD_step%ucd_step%increment .gt. 0) then
         call alloc_phys_range(nod_fld%ntot_phys_viz, range)
       end if
 !
       if(iflag_debug .gt. 0) write(*,*) 'output_grd_file_4_snapshot'
-      call output_grd_file_4_snapshot(ucd_step1, mesh, nod_fld)
+      call output_grd_file_4_snapshot(MHD_step%ucd_step, mesh, nod_fld)
 !
       end subroutine FEM_initialize_sph_MHD
 !
@@ -156,7 +159,7 @@
 !
 !*  -----------  Output volume data --------------
 !*
-      call s_output_ucd_file_control(i_step, ucd_step1)
+      call s_output_ucd_file_control(i_step, MHD_step%ucd_step)
 !
       end subroutine FEM_analyze_sph_MHD
 !
@@ -248,13 +251,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_finalize
+      subroutine FEM_finalize(MHD_step)
 !
       use m_t_step_parameter
       use m_cal_max_indices
 !
+      type(MHD_IO_step_param), intent(in) :: MHD_step
 !
-     if(ucd_step1%increment .gt. 0) then
+!
+     if(MHD_step%ucd_step%increment .gt. 0) then
        call dealloc_phys_range(range)
        call finalize_output_ucd
      end if

@@ -84,10 +84,10 @@
         call input_restart_4_snapshot(flex_p1%istep_max_dt,             &
      &      mesh1%node, nod_fld1, SNAP_time_IO, MHD_step%rst_step)
 !
-      else if (ucd_step1%increment .gt. 0) then
+      else if (MHD_step%ucd_step%increment .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'read_udt_4_snap'
-        call read_udt_4_snap(flex_p1%istep_max_dt,                      &
-     &      FEM_udt_org_param, nod_fld1, SNAP_time_IO, ucd_step1)
+        call read_udt_4_snap(flex_p1%istep_max_dt, FEM_udt_org_param,   &
+     &      nod_fld1, SNAP_time_IO, MHD_step%ucd_step)
         time = time_init + dt*dble(flex_p1%istep_max_dt)
         i_step_MHD = flex_p1%istep_max_dt
       end if
@@ -179,7 +179,8 @@
 !     ---- Output voulme field data
 !
       if (iflag_debug.eq.1) write(*,*) 's_output_ucd_file_control'
-      call s_output_ucd_file_control(flex_p1%istep_max_dt, ucd_step1)
+      call s_output_ucd_file_control                                    &
+     &   (flex_p1%istep_max_dt, MHD_step%ucd_step)
 !
 !     ----
 !

@@ -113,7 +113,7 @@
 !
 !  time evolution end
 !
-      call FEM_finalize_MHD
+      call FEM_finalize_MHD(MHD_step1)
 !
       call copy_COMM_TIME_to_eleps(num_elapsed)
       call end_eleps_time(1)

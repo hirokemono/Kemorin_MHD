@@ -82,7 +82,7 @@
       call start_eleps_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_w_viz'
       call FEM_initialize_w_viz                                         &
-     &   (MHD_step1%viz_step, mesh1, group1, ele_mesh1,                 &
+     &   (MHD_step1, mesh1, group1, ele_mesh1,                          &
      &    iphys, nod_fld1, next_tbl1, jac1_3d_q, jac1_3d_l)
 !
 !        Initialize spherical transform dynamo
@@ -129,7 +129,7 @@
 !*  ----------  time evolution by spectral methood -----------------
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_correlate_all'
-        call SPH_analyze_correlate_all(i_step_MHD)
+        call SPH_analyze_correlate_all(i_step_MHD, MHD_step1)
 !*
 !*  -----------  output field data --------------
 !*
@@ -169,7 +169,7 @@
       call end_eleps_time(3)
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
-      call FEM_finalize
+      call FEM_finalize(MHD_step1)
 !
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_snap'
 !      call SPH_finalize_snap

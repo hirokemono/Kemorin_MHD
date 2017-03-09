@@ -42,7 +42,7 @@
      &   (i_step, MHD_step%viz_step, lead_field_data_flag)
 !
       irst =      output_IO_flag(i_step, MHD_step%rst_step)
-      i_udt =     output_IO_flag(i_step, ucd_step1)
+      i_udt =     output_IO_flag(i_step, MHD_step%ucd_step)
       i_bulk =    output_IO_flag(i_step, rms_step1)
       i_monitor = output_IO_flag(i_step, point_step1)
 !

@@ -5,8 +5,8 @@
 !
 !!      subroutine FEM_initialize_MHD(MHD_step)
 !!      subroutine FEM_analyze_MHD(MHD_step, visval, retval)
+!!      subroutine FEM_finalize_MHD(MHD_step)
 !!        type(MHD_IO_step_param), intent(inout) :: MHD_step
-!!      subroutine FEM_finalize_MHD
 !
       module FEM_analyzer_MHD
 !
@@ -160,7 +160,7 @@
       call start_eleps_time(4)
 !
       call output_grd_file_w_org_connect                                &
-     &   (ucd_step1, mesh1, MHD_mesh1, nod_fld1)
+     &   (MHD_step%ucd_step, mesh1, MHD_mesh1, nod_fld1)
 !
       call alloc_phys_range(nod_fld1%ntot_phys_viz, range)
 !       call s_open_boundary_monitor(my_rank, group1%sf_grp)
@@ -304,7 +304,8 @@
 !     ---- Output voulme field data
 !
         if (iflag_debug.eq.1) write(*,*) 's_output_ucd_file_control'
-        call s_output_ucd_file_control(flex_p1%istep_max_dt, ucd_step1)
+        call s_output_ucd_file_control                                  &
+     &     (flex_p1%istep_max_dt, MHD_step%ucd_step)
 !
         call end_eleps_time(4)
         call start_eleps_time(3)
@@ -375,12 +376,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_finalize_MHD
+      subroutine FEM_finalize_MHD(MHD_step)
 !
       use m_cal_max_indices
 !
+      type(MHD_IO_step_param), intent(in) :: MHD_step
 !
-      if(ucd_step1%increment .gt. 0) then
+!
+      if(MHD_step%ucd_step%increment .gt. 0) then
         call finalize_output_ucd
         call dealloc_phys_range(range)
       end if

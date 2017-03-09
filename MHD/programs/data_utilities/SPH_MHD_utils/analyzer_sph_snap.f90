@@ -78,7 +78,7 @@
       call start_eleps_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_w_viz'
       call FEM_initialize_w_viz                                         &
-     &   (MHD_step1%viz_step, mesh1, group1, ele_mesh1,                 &
+     &   (MHD_step1, mesh1, group1, ele_mesh1,                          &
      &    iphys, nod_fld1, next_tbl1, jac1_3d_q, jac1_3d_l)
 !
 !        Initialize spherical transform dynamo
@@ -125,7 +125,7 @@
 !*  ----------  time evolution by spectral methood -----------------
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_snap'
-        call SPH_analyze_snap(i_step_MHD)
+        call SPH_analyze_snap(i_step_MHD, MHD_step1)
 !*
 !*  -----------  output field data --------------
 !*
@@ -169,7 +169,7 @@
       call end_eleps_time(3)
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
-      call FEM_finalize
+      call FEM_finalize(MHD_step1)
 !
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_snap'
 !      call SPH_finalize_snap
@@ -203,7 +203,7 @@
 !     ---------------------
 !
       rms_step1%increment = 0
-      ucd_step1%increment = 0
+      MHD_step1%ucd_step%increment = 0
       if(elapsed_time .gt. 1800.0) then
         if (my_rank.eq.0) write(*,*) 'This code can use up to 30 min.'
         elapsed_time = 1800.0
@@ -215,7 +215,7 @@
 !*
       i_step_MHD = i_step_init
       if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_snap'
-      call SPH_analyze_snap(i_step_MHD)
+      call SPH_analyze_snap(i_step_MHD, MHD_step1)
 !*
       iflag = lead_field_data_flag(i_step_MHD, MHD_step1,               &
      &                             SGS_par1%sgs_step)
@@ -289,7 +289,7 @@
   10   continue
 !    Loop end
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
-      call FEM_finalize
+      call FEM_finalize(MHD_step1)
 !
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_snap'
 !      call SPH_finalize_snap
