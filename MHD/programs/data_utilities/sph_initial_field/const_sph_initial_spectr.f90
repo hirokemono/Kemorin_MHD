@@ -129,9 +129,7 @@
 !
       call output_sph_restart_control(rj_fld, rst_step)
 !
-      if(istep_rst_start .eq. -1) then
-        call output_sph_rst_by_elaps(rj_fld)
-      end if
+      if(i_step_init .eq. -1) call output_sph_rst_by_elaps(rj_fld)
 !
       end subroutine sph_initial_spectrum
 !

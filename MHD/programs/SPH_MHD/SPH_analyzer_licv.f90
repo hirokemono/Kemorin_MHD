@@ -208,7 +208,7 @@
       call output_sph_restart_control(rj_fld1, MHD_step%rst_step)
 !
       total_time = MPI_WTIME() - total_start
-      if      (istep_rst_end .eq. -1                                    &
+      if      (i_step_number .eq. -1                                    &
      &   .and. total_time.gt.elapsed_time) then
         call output_sph_rst_by_elaps(rj_fld1)
         iflag_finish = 1

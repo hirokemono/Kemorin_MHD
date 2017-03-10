@@ -19,14 +19,15 @@
 !
 !
       type MHD_IO_step_param
+!>        Increment for mean restart data
         type(IO_step_param) :: rst_step
-!
+!>        Increment for mean field data
         type(IO_step_param) :: ucd_step
-!
+!>        Increment for mean square output
         type(IO_step_param) :: rms_step
-!
+!>        Increment for nodal monitor
         type(IO_step_param) :: point_step
-!
+!>        Increment for boundary condition file
         type(IO_step_param) :: boundary_step
 !
 !>        Increment for visualizations

@@ -205,9 +205,9 @@
       type(flexible_stepping_parameter), intent(inout) :: flex_p
 !
 !
-      call input_restart_files(node, nod_fld, flex_p)
-      call input_model_coef_file                                        &
-     &   (SGS_par%model_p, SGS_par%commute_p, ele, fluid, layer_tbl,    &
+      call input_restart_files(istep_rst_start, node, nod_fld, flex_p)
+      call input_model_coef_file(istep_rst_start,                       &
+     &    SGS_par%model_p, SGS_par%commute_p, ele, fluid, layer_tbl,    &
      &    SGS_par%i_step_sgs_coefs, wk_sgs, wk_diff,                    &
      &    sgs_coefs, diff_coefs)
 !
@@ -255,9 +255,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine input_restart_files(node, nod_fld, flex_p)
+      subroutine input_restart_files(istep_rst, node, nod_fld, flex_p)
 !
-      use m_t_step_parameter
       use m_file_format_switch
 !
       use field_IO_select
@@ -265,6 +264,7 @@
       use copy_time_steps_4_restart
       use cal_num_digits
 !
+      integer(kind = kint), intent(in) :: istep_rst
       type(node_data), intent(in) :: node
       type(phys_data), intent(inout) :: nod_fld
       type(flexible_stepping_parameter), intent(inout) :: flex_p
@@ -273,11 +273,11 @@
 !
 !
       call check_step_FEM_field_file                                    &
-     &   (my_rank, istep_rst_start, fem_fst_IO, ierr)
+     &   (my_rank, istep_rst, fem_fst_IO, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr,'No restart file.')
 !
       call sel_read_alloc_step_FEM_file                                 &
-     &   (nprocs, my_rank, istep_rst_start, fem_time_IO, fem_fst_IO)
+     &   (nprocs, my_rank, istep_rst, fem_time_IO, fem_fst_IO)
 !
       call copy_field_data_from_restart(node, fem_fst_IO, nod_fld)
       call dealloc_phys_data_IO(fem_fst_IO)
@@ -357,7 +357,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine input_model_coef_file                                  &
-     &         (SGS_param, cmt_param, ele, fluid, layer_tbl,            &
+     &         (istep_rst, SGS_param, cmt_param, ele, fluid, layer_tbl, &
      &          i_step_sgs_coefs, wk_sgs, wk_diff,                      &
      &          sgs_coefs, diff_coefs)
 !
@@ -368,6 +368,7 @@
       use set_parallel_file_name
       use sgs_ini_model_coefs_IO
 !
+      integer(kind = kint), intent(in) :: istep_rst
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(element_data), intent(in) :: ele
@@ -388,7 +389,7 @@
       if (i_step_init .eq. -1) then
         call add_elaps_postfix(rst_sgs_coef_head, fn_tmp)
       else
-        call add_int_suffix(istep_rst_start, rst_sgs_coef_head, fn_tmp)
+        call add_int_suffix(istep_rst, rst_sgs_coef_head, fn_tmp)
       end if
 !
       call add_dat_extension(fn_tmp, rst_sgs_coef_name)

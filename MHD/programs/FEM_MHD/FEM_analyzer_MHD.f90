@@ -326,7 +326,7 @@
       call MPI_allREDUCE (total_time, total_max, ione, CALYPSO_REAL,    &
      &    MPI_MAX, CALYPSO_COMM, ierr_MPI)
       if     (flex_p1%iflag_flexible_step .eq. iflag_flex_step) then
-        if      (istep_rst_end.eq.-1                                    &
+        if      (i_step_number.eq.-1                                    &
      &       .and. total_max.gt.elapsed_time) then
           call start_eleps_time(4)
           call elspased_MHD_restart_ctl                                 &
@@ -334,7 +334,7 @@
      &        iphys, wk_sgs1, wk_diff1, nod_fld1)
           call end_eleps_time(4)
           retval = 0
-        else if (istep_rst_end.ne.-1                                    &
+        else if (i_step_number.ne.-1                                    &
      &     .and. time.gt.(istep_rst_end * MHD_step%rst_step%delta_t))   &
      &     then
           retval = 0

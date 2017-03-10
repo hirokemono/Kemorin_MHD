@@ -67,7 +67,7 @@
       use field_IO_select
 !
 !
-      integer(kind = kint) :: ierr
+      integer(kind = kint) :: ierr, i_step
 !
 !
       if (my_rank.eq.0)  write(*,*) 'Interpolate data to new mesh'
@@ -95,11 +95,11 @@
 !
 !     --------------------- 
 !
-      istep_rst_start = int(i_step_init / rst_step_ITP%increment)
+      i_step = int(i_step_init / rst_step_ITP%increment)
       call set_field_file_fmt_prefix                                    &
      &   (ifmt_org_rst_file, org_rst_file_head, itp_fld_IO)
       call sel_read_alloc_step_FEM_file                                 &
-     &   (ndomain_org, izero, istep_rst_start, itp_time_IO, itp_fld_IO)
+     &   (ndomain_org, izero, i_step, itp_time_IO, itp_fld_IO)
       if (iflag_debug.eq.1) write(*,*) 'init_field_name_by_restart'
       call init_field_name_by_restart(itp_fld_IO, nod_fld_ITP)
       call dealloc_phys_data_IO(itp_fld_IO)
@@ -134,12 +134,12 @@
       use interpolate_nod_field_2_type
       use const_global_element_ids
 !
-      integer(kind = kint) :: i_step
+      integer(kind = kint) :: i_step, i_rst_start, i_rst_end
 !
 !
-      istep_rst_start = int(i_step_init /   rst_step_ITP%increment)
-      istep_rst_end =   int(i_step_number / rst_step_ITP%increment)
-      do i_step = istep_rst_start, istep_rst_end
+      i_rst_start = int(i_step_init /   rst_step_ITP%increment)
+      i_rst_end =   int(i_step_number / rst_step_ITP%increment)
+      do i_step = i_rst_start, i_rst_end
 !
         if (my_rank .lt. ndomain_org) then
           itp_fld_IO%nnod_IO = org_femmesh%mesh%node%numnod
