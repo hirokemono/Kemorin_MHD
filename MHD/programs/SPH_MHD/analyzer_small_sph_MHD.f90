@@ -22,6 +22,7 @@
       use m_work_time
       use m_t_step_parameter
       use m_sph_trans_arrays_MHD
+      use m_MHD_step_parameter
 !
       use SPH_analyzer_MHD
 !
@@ -68,7 +69,7 @@
 !        Initialize spherical transform dynamo
 !
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_MHD'
-      call SPH_initialize_MHD(iphys)
+      call SPH_initialize_MHD(iphys, MHD_step1)
 !
       call end_eleps_time(2)
       call reset_elapse_4_init_sph_mhd
@@ -99,7 +100,7 @@
 !*  ----------  time evolution by spectral methood -----------------
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_MHD'
-        call SPH_analyze_MHD(i_step_MHD, iflag_finish)
+        call SPH_analyze_MHD(i_step_MHD, iflag_finish, MHD_step1)
 !
 !*  -----------  exit loop --------------
 !*

@@ -25,6 +25,7 @@
       use m_element_id_4_node
       use m_jacobians
       use m_sph_trans_arrays_MHD
+      use m_MHD_step_parameter
 !
       use SPH_analyzer_MHD
       use visualizer_all
@@ -85,7 +86,7 @@
 !        Initialize spherical transform dynamo
 !
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_MHD'
-      call SPH_initialize_MHD(iphys)
+      call SPH_initialize_MHD(iphys, MHD_step1)
 !
 !        Initialize visualization
 !
@@ -130,7 +131,7 @@
 !*  ----------  time evolution by spectral methood -----------------
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_MHD'
-        call SPH_analyze_MHD(i_step_MHD, iflag_finish)
+        call SPH_analyze_MHD(i_step_MHD, iflag_finish, MHD_step1)
 !*
 !*  -----------  output field data --------------
 !*

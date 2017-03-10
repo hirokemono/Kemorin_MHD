@@ -58,10 +58,6 @@
       call s_set_fixed_time_step_params                                 &
      &   (t_pu_ctl, rst_step_U, ucd_step_U, viz_step_U,                 &
      &    ierr, e_message)
-      call set_output_step_4_fixed_step(ione, dt,                       &
-     &    t_pu_ctl%i_step_check_ctl, t_pu_ctl%delta_t_check_ctl,        &
-     &    rms_step1)
-!
 !
 !     ---------------------
 !

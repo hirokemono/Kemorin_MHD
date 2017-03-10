@@ -24,11 +24,12 @@
 !
       implicit  none
 !
-!
+!>      Increment for restart
       type(IO_step_param), save :: rst_step_SHR
-!
+!>      Increment for field data
       type(IO_step_param), save :: ucd_step_SHR
-!
+!>      Increment for mean square data
+      type(IO_step_param), save :: rms_step_SHR
 !>      Increment for visualizations
       type(VIZ_step_params), save :: viz_step_SHR
 !
@@ -124,7 +125,7 @@
      &   (t_su_ctl, rst_step, ucd_step, viz_step, ierr, e_message)
       call set_output_step_4_fixed_step(ione, dt,                       &
      &    t_su_ctl%i_step_check_ctl, t_su_ctl%delta_t_check_ctl,        &
-     &    rms_step1)
+     &    rms_step_SHR)
 !
 !    file header for field data
 !

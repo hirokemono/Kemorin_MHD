@@ -7,8 +7,9 @@
 !>@brief  main routines to evaluate zonal mean field
 !!
 !!@verbatim
-!!      subroutine SPH_analyze_zm_snap(i_step)
-!!      subroutine SPH_to_FEM_bridge_zm_snap(i_step)
+!!      subroutine SPH_analyze_zm_snap(i_step, MHD_step)
+!!      subroutine SPH_to_FEM_bridge_zm_snap(i_step, MHD_step)
+!!        type(MHD_IO_step_param), intent(inout) :: MHD_step
 !!@endverbatim
 !!
 !!@param i_step  time step number
@@ -19,7 +20,7 @@
 !
       use m_machine_parameter
       use m_SGS_control_parameter
-      use m_MHD_step_parameter
+      use t_MHD_step_parameter
 !
       implicit none
 !
@@ -29,7 +30,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_zm_snap(i_step)
+      subroutine SPH_analyze_zm_snap(i_step, MHD_step)
 !
       use m_work_time
       use m_spheric_parameter
@@ -51,12 +52,14 @@
       use cal_zonal_mean_sph_spectr
 !
       integer(kind = kint), intent(in) :: i_step
+      type(MHD_IO_step_param), intent(inout) :: MHD_step
+!
       integer(kind = kint) :: iflag
 !
 !
       call read_alloc_sph_rst_4_snap                                    &
      &   (i_step, MHD1_org_files%rj_file_param, sph1%sph_rj,            &
-     &    ipol, rj_fld1, MHD_step1%rst_step)
+     &    ipol, rj_fld1, MHD_step%rst_step)
 !
       if (iflag_debug.eq.1) write(*,*)' sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph                                    &
@@ -85,7 +88,7 @@
      &   (ref_param_T1, ref_param_C1, ref_temp1, ref_comp1,             &
      &    sph1%sph_rj, ipol, idpdr, rj_fld1)
 !*
-      iflag = lead_field_data_flag(i_step, MHD_step1,                   &
+      iflag = lead_field_data_flag(i_step, MHD_step,                    &
      &                             SGS_par1%sgs_step)
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
@@ -104,7 +107,7 @@
 !*
       call start_eleps_time(4)
       call start_eleps_time(11)
-      if(output_IO_flag(i_step, rms_step1) .eq. 0) then
+      if(output_IO_flag(i_step, MHD_step%rms_step) .eq. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
         call output_rms_sph_mhd_control(sph1%sph_params, sph1%sph_rj,   &
      &      trans_p1%leg, ipol, rj_fld1, pwr1, WK_pwr)
@@ -116,7 +119,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_to_FEM_bridge_zm_snap(i_step)
+      subroutine SPH_to_FEM_bridge_zm_snap(i_step, MHD_step)
 !
       use m_mesh_data
       use m_node_phys_data
@@ -131,11 +134,12 @@
       use sph_rtp_zonal_rms_data
 !
       integer(kind = kint), intent(in) :: i_step
+      type(MHD_IO_step_param), intent(inout) :: MHD_step
 !
       integer(kind = kint) :: iflag
 !
 !
-      iflag = lead_field_data_flag(i_step, MHD_step1,                   &
+      iflag = lead_field_data_flag(i_step, MHD_step,                    &
      &                             SGS_par1%sgs_step)
       if(iflag .ne. 0) return
 !*

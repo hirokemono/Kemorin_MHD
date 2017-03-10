@@ -17,7 +17,7 @@
 !
       use m_machine_parameter
       use m_work_time
-      use m_MHD_step_parameter
+      use t_MHD_step_parameter
 !
       implicit none
 !
@@ -32,6 +32,7 @@
       subroutine evolution_sph_mod_restart
 !
       use m_t_step_parameter
+      use m_MHD_step_parameter
 !
       use FEM_analyzer_sph_MHD
       use SPH_analyzer_snap
@@ -53,7 +54,7 @@
 !
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_mod_restart'
-        call SPH_analyze_mod_restart(i_step_MHD)
+        call SPH_analyze_mod_restart(i_step_MHD, MHD_step1)
 !*
 !*  -----------  output field data --------------
 !*
@@ -83,7 +84,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_mod_restart(i_step)
+      subroutine SPH_analyze_mod_restart(i_step, MHD_step)
 !
       use m_work_time
       use m_t_step_parameter
@@ -100,13 +101,14 @@
       use input_control_sph_MHD
 !
       integer(kind = kint), intent(in) :: i_step
+      type(MHD_IO_step_param), intent(inout) :: MHD_step
 !
       integer(kind = kint) :: iflag
 !
 !
       call read_alloc_sph_rst_2_modify(i_step,                          &
      &    MHD1_org_files%rj_file_param, MHD1_org_files%rst_file_param,  &
-     &    sph1%sph_rj, ipol, rj_fld1, MHD_step1%rst_step)
+     &    sph1%sph_rj, ipol, rj_fld1, MHD_step%rst_step)
 !
 !*  ----------------Modify spectr data ... ----------
 !*
@@ -114,12 +116,12 @@
 !
       if(iflag_debug.gt.0) write(*,*) 'output_sph_restart_control'
       call init_output_sph_restart_file(rj_fld1)
-      call output_sph_restart_control(rj_fld1, MHD_step1%rst_step)
+      call output_sph_restart_control(rj_fld1, MHD_step%rst_step)
 !*
 !*  -----------  lead energy data --------------
 !*
       call start_eleps_time(11)
-      iflag = output_IO_flag(i_step_MHD, rms_step1)
+      iflag = output_IO_flag(i_step_MHD, MHD_step%rms_step)
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
         call output_rms_sph_mhd_control(sph1%sph_params, sph1%sph_rj,   &

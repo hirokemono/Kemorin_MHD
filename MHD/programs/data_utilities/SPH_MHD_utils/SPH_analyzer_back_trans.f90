@@ -135,7 +135,8 @@
 !*
       call start_eleps_time(11)
       if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_back_trans'
-      call output_rms_sph_back_trans(sph1%sph_params, sph1%sph_rj,      &
+      call output_rms_sph_back_trans                                    &
+     &   (MHD_step, sph1%sph_params, sph1%sph_rj,                       &
      &    trans_p1%leg, ipol, rj_fld1, pwr1, WK_pwr)
       call end_eleps_time(11)
 !
@@ -277,19 +278,20 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine output_rms_sph_back_trans                              &
-     &         (sph_params, sph_rj, leg, ipol, rj_fld, pwr, WK_pwr)
+      subroutine output_rms_sph_back_trans(MHD_step,                    &
+     &          sph_params, sph_rj, leg, ipol, rj_fld, pwr, WK_pwr)
 !
       use m_machine_parameter
       use m_t_step_parameter
       use m_boundary_params_sph_MHD
+      use t_MHD_step_parameter
       use t_schmidt_poly_on_rtm
-      use t_IO_step_parameter
 !
       use cal_rms_fields_by_sph
       use volume_average_4_sph
       use output_sph_m_square_file
 !
+      type(MHD_IO_step_param), intent(in) :: MHD_step
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(legendre_4_sph_trans), intent(in) :: leg
@@ -300,7 +302,7 @@
       type(sph_mean_square_work), intent(inout) :: WK_pwr
 !
 !
-      if(output_IO_flag(i_step_MHD, rms_step1) .ne. 0) return
+      if(output_IO_flag(i_step_MHD, MHD_step%rms_step) .ne. 0) return
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
       call cal_mean_squre_in_shell                                      &

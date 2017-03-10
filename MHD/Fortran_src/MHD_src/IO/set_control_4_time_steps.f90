@@ -152,7 +152,7 @@
         write(*,*) 'istep_rst_start ', istep_rst_start
         write(*,*) 'istep_rst_end ',  istep_rst_end
         write(*,*) 'elapsed_time ', elapsed_time
-        write(*,*) 'i_step_check ', rms_step1%increment
+        write(*,*) 'i_step_check ', MHD_step%rms_step%increment
         write(*,*) 'i_step_output_rst ', MHD_step%rst_step%increment
         write(*,*) 'i_step_output_ucd ', MHD_step%ucd_step%increment
       end if
@@ -178,7 +178,8 @@
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
       call set_output_step_4_fixed_step(ione, dt,                       &
-     &    tctl%i_step_check_ctl, tctl%delta_t_check_ctl, rms_step1)
+     &    tctl%i_step_check_ctl, tctl%delta_t_check_ctl,                &
+     &    MHD_step%rms_step)
 !
       if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         call set_output_step_4_fixed_step(ione, dt,                     &
@@ -212,7 +213,8 @@
      &    MHD_step%viz_step)
 !
       call set_output_step_4_flex_step(ione, flex_p%dt_max,             &
-     &    tctl%i_step_check_ctl, tctl%delta_t_check_ctl, rms_step1)
+     &    tctl%i_step_check_ctl, tctl%delta_t_check_ctl,                &
+     &    MHD_step%rms_step)
 !
       if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         call set_output_step_4_flex_step(ione, flex_p%dt_max,           &

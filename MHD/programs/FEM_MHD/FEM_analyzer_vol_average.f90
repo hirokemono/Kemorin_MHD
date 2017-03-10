@@ -111,7 +111,7 @@
 !
 !     -----Output monitor date
 !
-      iflag = output_IO_flag(i_step, rms_step1)
+      iflag = output_IO_flag(i_step, MHD_step%rms_step)
       if(iflag .eq. 0) then
         if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
         call output_time_step_control(FEM_prm1, mesh1, MHD_mesh1,       &

@@ -19,6 +19,7 @@
       use m_machine_parameter
       use m_work_time
       use m_sph_trans_arrays_MHD
+      use m_MHD_step_parameter
 !
       use SPH_analyzer_licv
 !
@@ -64,7 +65,7 @@
 !   matrix assembling
 !
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_linear_conv'
-      call SPH_initialize_linear_conv(iphys)
+      call SPH_initialize_linear_conv(iphys, MHD_step1)
       call calypso_MPI_barrier
 !
       call end_eleps_time(2)
@@ -105,7 +106,8 @@
 !*  ----------  add time evolution -----------------
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_linear_conv'
-        call SPH_analyze_linear_conv(i_step_MHD, iflag_finish)
+        call SPH_analyze_linear_conv                                    &
+     &     (i_step_MHD, iflag_finish, MHD_step1)
 !*
 !*  -----------  exit loop --------------
 !*

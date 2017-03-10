@@ -281,7 +281,7 @@
         call end_eleps_time(3)
         call start_eleps_time(4)
 !
-        iflag = output_IO_flag(flex_p1%istep_max_dt, rms_step1)
+        iflag = output_IO_flag(flex_p1%istep_max_dt, MHD_step%rms_step)
         if(iflag .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
           call output_time_step_control(FEM_prm1, mesh1, MHD_mesh1,     &

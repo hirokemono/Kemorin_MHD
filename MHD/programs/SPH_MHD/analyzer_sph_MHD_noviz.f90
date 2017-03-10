@@ -23,6 +23,7 @@
       use m_MHD_step_parameter
       use m_mesh_data
       use m_sph_trans_arrays_MHD
+      use m_MHD_step_parameter
 !
       use FEM_analyzer_sph_MHD
       use SPH_analyzer_MHD
@@ -76,7 +77,7 @@
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_MHD'
-      call SPH_initialize_MHD(iphys)
+      call SPH_initialize_MHD(iphys, MHD_step1)
 !
       call calypso_MPI_barrier
 !
@@ -115,7 +116,7 @@
 !*  ----------  time evolution by spectral methood -----------------
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_MHD'
-        call SPH_analyze_MHD(i_step_MHD, iflag_finish)
+        call SPH_analyze_MHD(i_step_MHD, iflag_finish, MHD_step1)
 !*
 !*  -----------  output field data --------------
 !*

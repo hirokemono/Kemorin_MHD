@@ -1,9 +1,11 @@
 !
 !     module SPH_analyzer_licv
 !
-!!      subroutine SPH_initialize_linear_conv(iphys)
+!!      subroutine SPH_initialize_linear_conv(iphys, MHD_step)
 !!        type(phys_address), intent(in) :: iphys
-!!      subroutine SPH_analyze_linear_conv(i_step, iflag_finish)
+!!      subroutine SPH_analyze_linear_conv                              &
+!!     &         (i_step, iflag_finish, MHD_step)
+!!        type(MHD_IO_step_param), intent(inout) :: MHD_step
 !
 !      Written by H. Matsui
 !
@@ -13,6 +15,7 @@
       use m_MHD_step_parameter
       use m_SGS_control_parameter
       use t_phys_address
+      use t_MHD_step_parameter
 !
       implicit none
 !
@@ -22,7 +25,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_initialize_linear_conv(iphys)
+      subroutine SPH_initialize_linear_conv(iphys, MHD_step)
 !
       use calypso_mpi
       use m_constants
@@ -57,6 +60,7 @@
       use m_work_time
 !
       type(phys_address), intent(in) :: iphys
+      type(MHD_IO_step_param), intent(inout) :: MHD_step
 !
 !   Allocate spectr field data
 !
@@ -85,7 +89,7 @@
       if(iflag_debug.gt.0) write(*,*)' sph_initial_data_control'
       call sph_initial_data_control                                     &
      &   (sph1%sph_params, sph1%sph_rj, ref_temp1%t_rj,                 &
-     &    ipol, idpdr, itor, rj_fld1, MHD_step1%rst_step)
+     &    ipol, idpdr, itor, rj_fld1, MHD_step%rst_step)
 !
       if(iflag_debug.gt.0) write(*,*)' sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph                                    &
@@ -124,7 +128,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_linear_conv(i_step, iflag_finish)
+      subroutine SPH_analyze_linear_conv                                &
+     &         (i_step, iflag_finish, MHD_step)
 !
       use m_work_time
       use m_t_step_parameter
@@ -145,6 +150,7 @@
 !
       integer(kind = kint), intent(in) :: i_step
       integer(kind = kint), intent(inout) :: iflag_finish
+      type(MHD_IO_step_param), intent(inout) :: MHD_step
 !
       integer(kind = kint) :: iflag
 !
@@ -177,7 +183,7 @@
      &   (ref_param_T1, ref_param_C1, ref_temp1, ref_comp1,             &
      &    sph1%sph_rj, ipol, idpdr, rj_fld1)
 !*
-      iflag = lead_field_data_flag(i_step, MHD_step1,                   &
+      iflag = lead_field_data_flag(i_step, MHD_step,                    &
      &                             SGS_par1%sgs_step)
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
@@ -199,7 +205,7 @@
       call start_eleps_time(4)
       call start_eleps_time(10)
       if(iflag_debug.gt.0) write(*,*) 'output_sph_restart_control'
-      call output_sph_restart_control(rj_fld1, MHD_step1%rst_step)
+      call output_sph_restart_control(rj_fld1, MHD_step%rst_step)
 !
       total_time = MPI_WTIME() - total_start
       if      (istep_rst_end .eq. -1                                    &
@@ -212,7 +218,7 @@
 !*  -----------  lead energy data --------------
 !*
       call start_eleps_time(11)
-      iflag = output_IO_flag(i_step, rms_step1)
+      iflag = output_IO_flag(i_step, MHD_step%rms_step)
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
         call output_rms_sph_mhd_control(sph1%sph_params, sph1%sph_rj,   &

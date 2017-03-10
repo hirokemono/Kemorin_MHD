@@ -33,6 +33,8 @@
       type(IO_step_param), save, private :: rst_step_STR
 !>      Increment for field data
       type(IO_step_param), save :: ucd_step_STR
+!>      Increment for mean square data
+      type(IO_step_param), save :: rms_step_STR
 !>      Increment for visualizations
       type(VIZ_step_params), save :: viz_step_STR
 !
@@ -127,7 +129,7 @@
      &    ierr, e_message)
       call set_output_step_4_fixed_step(ione, dt,                       &
      &    t_st_ctl%i_step_check_ctl, t_st_ctl%delta_t_check_ctl,        &
-     &    rms_step1)
+     &    rms_step_STR)
 !
 !   set physical values
 !
@@ -240,7 +242,7 @@
      &    ierr, e_message)
       call set_output_step_4_fixed_step(ione, dt,                       &
      &    t_st_ctl%i_step_check_ctl, t_st_ctl%delta_t_check_ctl,        &
-     &    rms_step1)
+     &    rms_step_STR)
 !
 !   set physical values
 !

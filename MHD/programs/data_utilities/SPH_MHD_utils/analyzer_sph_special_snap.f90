@@ -196,7 +196,7 @@
 !*
       call start_eleps_time(4)
       call start_eleps_time(11)
-      iflag = output_IO_flag(i_step, rms_step1)
+      iflag = output_IO_flag(i_step, MHD_step%rms_step)
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
         call output_rms_sph_mhd_control(sph1%sph_params, sph1%sph_rj,   &

@@ -59,9 +59,6 @@
         i_step_number = tctl%i_step_number_ctl%intvalue
       end if
 !
-      call set_output_step_4_fixed_step(ione, dt,                       &
-     &    tctl%i_step_check_ctl, tctl%delta_t_check_ctl, rms_step1)
-!
 !
       call set_output_step_4_fixed_step(ione, dt,                       &
      &    tctl%i_step_rst_ctl, tctl%delta_t_rst_ctl, rst_step)

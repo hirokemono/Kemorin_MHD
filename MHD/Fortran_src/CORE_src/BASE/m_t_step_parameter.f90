@@ -52,8 +52,6 @@
       integer(kind=kint) :: istep_rst_end
 !
 !
-      type(IO_step_param), save :: rms_step1
-!
       type(IO_step_param), save :: point_step1
 !
       type(IO_step_param), save :: boundary_step1
