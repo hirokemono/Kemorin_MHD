@@ -70,6 +70,9 @@
         istep_rst_end =   i_step_number
       end if
 !
+      if(i_step_init .eq. -1)   istep_rst_start = -1
+      if(i_step_number .eq. -1) istep_rst_end =   -1
+!
       end subroutine set_start_stop_4_restart
 !
 ! -----------------------------------------------------------------------
