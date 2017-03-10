@@ -34,6 +34,7 @@
 !
       use m_machine_parameter
       use m_phys_constants
+      use m_t_step_parameter
 !
       use t_physical_property
       use t_geometry_data_MHD
@@ -152,7 +153,7 @@
      &      k2, iphys%i_velo, cd_prop%coef_induct, mhd_fem_wk%velo_1)
 !
         call fem_skv_rot_inertia_upwind(conduct%istack_ele_fld_smp,     &
-     &      num_int, k2, mhd_fem_wk%velo_1, fem_wk%vector_1,            &
+     &      num_int, k2, dt, mhd_fem_wk%velo_1, fem_wk%vector_1,        &
      &      d_ele(1,iele_magne), ele, jac_3d, fem_wk%sk6)
       end do
 !

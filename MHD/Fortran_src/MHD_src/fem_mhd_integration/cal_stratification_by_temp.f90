@@ -36,6 +36,7 @@
       use m_precision
 !
       use m_phys_constants
+      use m_t_step_parameter
 !
       use t_geometry_data_MHD
       use t_geometry_data
@@ -146,7 +147,7 @@
      &      k2, i_gref, fem_wk%scalar_1)
 !
         call fem_skv_stratified_upwind(fluid%istack_ele_fld_smp,        &
-     &      num_int, k2, fem_wk%scalar_1, d_ele(1,iele_velo),           &
+     &      num_int, k2, dt, fem_wk%scalar_1, d_ele(1,iele_velo),       &
      &      mhd_fem_wk%xx_e, ele, jac_3d, fem_wk%sk6)
       end do
 !

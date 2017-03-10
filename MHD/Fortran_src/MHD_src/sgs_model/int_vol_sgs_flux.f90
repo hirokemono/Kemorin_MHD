@@ -26,6 +26,7 @@
       use m_precision
 !
       use m_phys_constants
+      use m_t_step_parameter
 !
       use t_FEM_control_parameter
       use t_geometry_data_MHD
@@ -189,8 +190,8 @@
             call scalar_phys_2_each_element(node, ele, nod_fld,         &
      &          k2, icomp, fem_wk%scalar_1)
             call fem_skv_sgs_flux_upwind                                &
-     &         (fluid%istack_ele_fld_smp, num_int, k2, i_filter, nd_t,  &
-     &          ele, jac_3d, FEM_elens, fem_wk%scalar_1,                &
+     &         (fluid%istack_ele_fld_smp, num_int, k2, i_filter, dt,    &
+     &          nd_t, ele, jac_3d, FEM_elens, fem_wk%scalar_1,          &
      &          d_ele(1,ie_upw), diff_ele(1,id_dvx2), fem_wk%sk6)
           end do
         end do

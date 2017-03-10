@@ -42,6 +42,7 @@
 !
       use m_precision
       use m_phys_constants
+      use m_t_step_parameter
 !
       use t_geometry_data
       use t_phys_data
@@ -229,7 +230,8 @@
       do k2 = 1, ele%nnod_4_ele
         call scalar_cst_phys_2_each_ele(node, ele, nod_fld,             &
      &      k2, i_scalar, coef, fem_wk%scalar_1)
-        call fem_skv_scalar_inertia_upwind(iele_fsmp_stack, n_int, k2,  &
+        call fem_skv_scalar_inertia_upwind                              &
+     &     (iele_fsmp_stack, n_int, k2, dt,                             &
      &      fem_wk%scalar_1, d_ele(1,iele_velo), d_ele(1,ie_upw),       &
      &      ele, jac_3d, fem_wk%sk6)
       end do
@@ -275,7 +277,8 @@
       do k2 = 1, ele%nnod_4_ele
         call vector_cst_phys_2_each_ele(node, ele, nod_fld,             &
      &      k2, i_vector, coef, fem_wk%vector_1)
-        call fem_skv_vector_inertia_upwind(iele_fsmp_stack, n_int, k2,  &
+        call fem_skv_vector_inertia_upwind                              &
+     &     (iele_fsmp_stack, n_int, k2, dt,                             &
      &      fem_wk%vector_1, d_ele(1,iele_velo), d_ele(1,ie_upw),       &
      &      ele, jac_3d, fem_wk%sk6)
       end do
@@ -321,7 +324,7 @@
       do k2 = 1, ele%nnod_4_ele
         call vector_cst_phys_2_each_ele(node, ele, nod_fld,             &
      &      k2, i_vector, coef, fem_wk%vector_1)
-        call fem_skv_rot_inertia_upwind(iele_fsmp_stack, n_int, k2,     &
+        call fem_skv_rot_inertia_upwind(iele_fsmp_stack, n_int, k2, dt, &
      &      fem_wk%vector_1, d_ele(1,iele_vort), d_ele(1,ie_upw),       &
      &      ele, jac_3d, fem_wk%sk6)
       end do

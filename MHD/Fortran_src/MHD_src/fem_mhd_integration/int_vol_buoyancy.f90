@@ -32,6 +32,7 @@
 !
       use m_machine_parameter
       use m_phys_constants
+      use m_t_step_parameter
 !
       use t_geometry_data
       use t_phys_data
@@ -129,8 +130,9 @@
       do k2 = 1, ele%nnod_4_ele
         call set_gravity_vec_each_ele(node, ele, nod_fld, k2, i_source, &
      &      fl_prop%i_grav, fl_prop%grav, ak_buo, fem_wk%vector_1)
-        call fem_skv_vector_field_upwind(iele_fsmp_stack, n_int, k2,    &
-     &      d_ele(1,ie_upw), ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+        call fem_skv_vector_field_upwind                                &
+     &     (iele_fsmp_stack, n_int, k2, dt, d_ele(1,ie_upw),            &
+     &      ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp                                         &

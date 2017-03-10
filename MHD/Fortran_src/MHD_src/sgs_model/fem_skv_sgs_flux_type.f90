@@ -7,21 +7,21 @@
 !     &          i_filter, nd_t, ele, jac_3d, FEM_elens,                &
 !     &          scalar_1, dvx, sk_v)
 !      subroutine fem_skv_sgs_flux_upwind(iele_fsmp_stack, n_int, k2,   &
-!     &          i_filter, nd_t, ele, jac_3d, FEM_elens,                &
+!     &          i_filter, dt, nd_t, ele, jac_3d, FEM_elens,            &
 !     &          scalar_1, vxe, dvx, sk_v)
 !
 !      subroutine fem_skv_sgs_uxb_galerkin(iele_fsmp_stack, n_int, k2,  &
 !     &          i_filter, nd, ele, jac_3d, FEM_elens,                  &
 !     &          vector_1, dvx, sk_v)
 !      subroutine fem_skv_sgs_uxb_upwind(iele_fsmp_stack, n_int, k2,    &
-!     &          i_filter, nd, ele, jac_3d, FEM_elens,                  &
+!     &          i_filter, dt, nd, ele, jac_3d, FEM_elens,              &
 !     &          vect_1, vxe, dvx, sk_v)
 !
 !      subroutine fem_skv_sgs_induct_t_galerkin(iele_fsmp_stack,        &
 !     &          n_int, k2, i_filter, nd, ele, jac_3d, FEM_elens,       &
 !     &          vect_sgs, dvx, dbx, sk_v)
 !      subroutine fem_skv_sgs_induct_t_upwind(iele_fsmp_stack,          &
-!     &          n_int, k2, i_filter, nd, ele, jac_3d, FEM_elens,       &
+!     &          n_int, k2, i_filter, dt, nd, ele, jac_3d, FEM_elens,   &
 !     &          vect_sgs, vxe, dvx, dbx, sk_v)
 !
       module fem_skv_sgs_flux_type
@@ -77,10 +77,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine fem_skv_sgs_flux_upwind(iele_fsmp_stack, n_int, k2,    &
-     &          i_filter, nd_t, ele, jac_3d, FEM_elens,                 &
+     &          i_filter, dt, nd_t, ele, jac_3d, FEM_elens,             &
      &          scalar_1, vxe, dvx, sk_v)
 !
-      use m_t_step_parameter
       use fem_skv_sgs_flux
 !
       type(element_data), intent(in) :: ele
@@ -91,6 +90,7 @@
       integer (kind=kint), intent(in) :: n_int, nd_t, k2
       integer (kind=kint), intent(in) :: i_filter
 !
+      real(kind=kreal), intent(in) :: dt
       real (kind=kreal), intent(in) :: scalar_1(ele%numele)
       real (kind=kreal), intent(in) :: vxe(ele%numele,3)
       real (kind=kreal), intent(in) :: dvx(ele%numele,3)
@@ -118,7 +118,6 @@
      &          i_filter, nd, ele, jac_3d, FEM_elens,                   &
      &          vector_1, dvx, sk_v)
 !
-      use m_t_step_parameter
       use fem_skv_sgs_uxb
 !
       type(element_data), intent(in) :: ele
@@ -150,10 +149,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine fem_skv_sgs_uxb_upwind(iele_fsmp_stack, n_int, k2,     &
-     &          i_filter, nd, ele, jac_3d, FEM_elens,                   &
+     &          i_filter, dt, nd, ele, jac_3d, FEM_elens,               &
      &          vect_1, vxe, dvx, sk_v)
 !
-      use m_t_step_parameter
       use fem_skv_sgs_uxb
 !
       type(element_data), intent(in) :: ele
@@ -163,9 +161,10 @@
       integer (kind=kint), intent(in) :: nd, n_int, i_filter, k2
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
-      real (kind=kreal), intent(in) :: vxe(ele%numele,3)
-      real (kind=kreal), intent(in) :: vect_1(ele%numele,3)
-      real (kind=kreal), intent(in) :: dvx(ele%numele,9)
+      real(kind=kreal), intent(in) :: dt
+      real(kind=kreal), intent(in) :: vxe(ele%numele,3)
+      real(kind=kreal), intent(in) :: vect_1(ele%numele,3)
+      real(kind=kreal), intent(in) :: dvx(ele%numele,9)
 !
       real (kind=kreal), intent(inout)                                  &
      &             :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
@@ -222,10 +221,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine fem_skv_sgs_induct_t_upwind(iele_fsmp_stack,           &
-     &          n_int, k2, i_filter, nd, ele, jac_3d, FEM_elens,        &
+     &          n_int, k2, i_filter, dt, nd, ele, jac_3d, FEM_elens,    &
      &          vect_sgs, vxe, dvx, dbx, sk_v)
 !
-      use m_t_step_parameter
       use fem_skv_sgs_induct_t
 !
       type(element_data), intent(in) :: ele
@@ -235,6 +233,7 @@
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer (kind=kint), intent(in) :: nd, n_int, i_filter, k2
 !
+      real(kind=kreal), intent(in) :: dt
       real(kind=kreal), intent(in) :: vect_sgs(ele%numele,3)
       real(kind=kreal), intent(in) :: vxe(ele%numele,3)
       real(kind=kreal), intent(in) :: dvx(ele%numele,3)

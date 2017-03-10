@@ -36,6 +36,7 @@
       use m_machine_parameter
       use m_phys_constants
       use m_fem_gauss_int_coefs
+      use m_t_step_parameter
 !
       use t_SGS_control_parameter
       use t_physical_property
@@ -199,7 +200,7 @@
      &        property%coef_nega_adv, mhd_fem_wk%sgs_v1,                &
      &        fem_wk%vector_1)
           call fem_skv_scl_inertia_msgs_upw                             &
-     &       (fluid%istack_ele_fld_smp, num_int, k2, ifilter_final,     &
+     &       (fluid%istack_ele_fld_smp, num_int, k2, ifilter_final, dt, &
      &        diff_coefs%num_field, iak_diff_flux, diff_coefs%ak,       &
      &        ele, jac_3d, FEM_elens, fem_wk%scalar_1,                  &
      &        mhd_fem_wk%sgs_v1, fem_wk%vector_1, d_ele(1,iele_velo),   &
@@ -208,12 +209,12 @@
           call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,       &
      &        i_SGS_flux, property%coef_nega_adv, mhd_fem_wk%sgs_v1)
           call fem_skv_scl_inertia_sgs_upwind                           &
-     &       (fluid%istack_ele_fld_smp, num_int, k2,                    &
+     &       (fluid%istack_ele_fld_smp, num_int, k2, dt,                &
      &        ele, jac_3d, fem_wk%scalar_1, mhd_fem_wk%sgs_v1,          &
      &        d_ele(1,iele_velo), d_ele(1,iele_velo), fem_wk%sk6)
         else
           call fem_skv_scalar_inertia_upwind(fluid%istack_ele_fld_smp,  &
-     &       num_int, k2, fem_wk%scalar_1, d_ele(1,iele_velo),          &
+     &       num_int, k2, dt, fem_wk%scalar_1, d_ele(1,iele_velo),      &
      &       d_ele(1,iele_velo), ele, jac_3d, fem_wk%sk6)
         end if
       end do

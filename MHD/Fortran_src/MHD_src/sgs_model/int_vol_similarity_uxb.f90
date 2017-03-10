@@ -29,6 +29,7 @@
 !
       use m_machine_parameter
       use m_phys_constants
+      use m_t_step_parameter
 !
       use t_FEM_control_parameter
       use t_geometry_data_MHD
@@ -133,7 +134,7 @@
      &      k2, iphys%i_sgs_simi, fem_wk%vector_1)
 !
         call fem_skv_vector_field_upwind(conduct%istack_ele_fld_smp,    &
-     &      num_int, k2, d_ele(1,iele_magne), ele, jac_3d,              &
+     &      num_int, k2, dt, d_ele(1,iele_magne), ele, jac_3d,          &
      &      fem_wk%vector_1, fem_wk%sk6)
 !
         call scalar_prod_to_tensor_skv(ele, conduct%istack_ele_fld_smp, &

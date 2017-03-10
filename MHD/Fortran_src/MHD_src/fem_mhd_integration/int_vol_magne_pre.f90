@@ -43,6 +43,7 @@
       use m_machine_parameter
       use m_phys_constants
       use m_fem_gauss_int_coefs
+      use m_t_step_parameter
 !
       use t_SGS_control_parameter
       use t_physical_property
@@ -220,7 +221,7 @@
 !$omp end parallel
 !
         call fem_skv_induction_upmagne                                  &
-     &     (conduct%istack_ele_fld_smp, num_int, k2,                    &
+     &     (conduct%istack_ele_fld_smp, num_int, k2, dt,                &
      &      cd_prop%coef_induct, mhd_fem_wk%velo_1, mhd_fem_wk%magne_1, &
      &      d_ele(1,iphys_ele%i_velo), fem_wk%vector_1,                 &
      &      d_ele(1,iphys_ele%i_magne), ele, jac_3d, fem_wk%sk6)
@@ -232,7 +233,7 @@
      &        cd_prop%coef_induct, mhd_fem_wk%sgs_v1, fem_wk%vector_1)
           call fem_skv_div_sgs_asym_t_upwind                            &
      &       (conduct%istack_ele_fld_smp, num_int,                      &
-     &        k2, SGS_param%ifilter_final,                              &
+     &        k2, SGS_param%ifilter_final, dt,                          &
      &        diff_coefs%num_field, iak_diff_uxb, diff_coefs%ak,        &
      &        ele, jac_3d, FEM_elens, d_ele(1,iphys_ele%i_magne),       &
      &        mhd_fem_wk%sgs_v1, fem_wk%vector_1, fem_wk%sk6)
@@ -241,7 +242,7 @@
      &        iphys%i_SGS_induct_t, cd_prop%coef_induct,                &
      &        mhd_fem_wk%sgs_v1)
           call fem_skv_div_as_tsr_upw                                   &
-     &       (conduct%istack_ele_fld_smp, num_int, k2,                  &
+     &       (conduct%istack_ele_fld_smp, num_int, k2, dt,              &
      &        d_ele(1,iphys_ele%i_magne), ele, jac_3d,                  &
      &        mhd_fem_wk%sgs_v1, fem_wk%sk6)
         end if

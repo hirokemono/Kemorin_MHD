@@ -36,6 +36,7 @@
 !
       use m_phys_constants
       use m_fem_gauss_int_coefs
+      use m_t_step_parameter
       use t_geometry_data
       use t_phys_address
       use t_phys_data
@@ -145,7 +146,7 @@
      &      k2, iphys%i_magne, iphys%i_velo, iphys%i_SGS_induct_t,      &
      &      coef_induct, mhd_fem_wk%sgs_v1, fem_wk%vector_1)
         call fem_skv_div_sgs_asym_t_upwind                              &
-     &     (iele_fsmp_stack, n_int, k2, i_filter,                       &
+     &     (iele_fsmp_stack, n_int, k2, i_filter, dt,                   &
      &      diff_coefs%num_field, iak_diff_uxb, diff_coefs%ak,          &
      &      ele, jac_3d, FEM_elens, d_ele(1,i_magne),                   &
      &      mhd_fem_wk%sgs_v1, fem_wk%vector_1, fem_wk%sk6)

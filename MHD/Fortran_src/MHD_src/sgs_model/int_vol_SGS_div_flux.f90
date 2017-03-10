@@ -29,6 +29,7 @@
       use m_precision
 !
       use m_phys_constants
+      use m_t_step_parameter
       use t_mesh_data
       use t_phys_data
       use t_table_FEM_const
@@ -198,7 +199,7 @@
      &      k2, i_vector, i_scalar, i_SGS_flux, coef,                   &
      &      mhd_fem_wk%sgs_v1, fem_wk%vector_1)
         call fem_skv_div_sgs_vector_upwind                              &
-     &     (iele_fsmp_stack, n_int, k2, i_filter,                       &
+     &     (iele_fsmp_stack, n_int, k2, i_filter, dt,                   &
      &      diff_coefs%num_field, iak_diff, diff_coefs%ak,              &
      &      ele, jac_3d, FEM_elens, d_ele(1,ie_upw),                    &
      &      mhd_fem_wk%sgs_v1, fem_wk%vector_1, fem_wk%sk6)
@@ -255,7 +256,7 @@
      &     (node, ele, nod_fld, k2, i_vect, i_SGS_flux, coef,           &
      &      mhd_fem_wk%sgs_t1, fem_wk%tensor_1)
         call fem_skv_div_sgs_tensor_upwind                              &
-     &     (iele_fsmp_stack, n_int, k2, i_filter,                       &
+     &     (iele_fsmp_stack, n_int, k2, i_filter, dt,                   &
      &      diff_coefs%num_field, iak_diff, diff_coefs%ak,              &
      &      ele, jac_3d, FEM_elens, d_ele(1,ie_upw),                    &
      &      mhd_fem_wk%sgs_t1, fem_wk%tensor_1, fem_wk%sk6)

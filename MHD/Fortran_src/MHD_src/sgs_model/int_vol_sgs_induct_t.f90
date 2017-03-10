@@ -26,6 +26,7 @@
       use m_precision
 !
       use m_phys_constants
+      use m_t_step_parameter
 !
       use t_FEM_control_parameter
       use t_geometry_data_MHD
@@ -201,7 +202,7 @@
 !
           call fem_skv_sgs_induct_t_upwind                              &
      &       (conduct%istack_ele_fld_smp, num_int, k2,                  &
-     &        i_filter, nd, ele, jac_3d, FEM_elens,                     &
+     &        i_filter, dt, nd, ele, jac_3d, FEM_elens,                 &
      &        fem_wk%vector_1, d_ele(1,i_magne),                        &
      &        diff_ele(1,id_dvx2), diff_ele(1,id_dbx2), fem_wk%sk6)
         end do

@@ -30,6 +30,7 @@
       use m_constants
 !
       use m_phys_constants
+      use m_t_step_parameter
 !
       use t_geometry_data
       use t_jacobians
@@ -166,8 +167,9 @@
       do k2 = 1, ele%nnod_4_ele
         call scalar_2_each_element(node, ele,                           &
      &      k2, f_nl%ff(1:node%numnod,1), fem_wk%scalar_1)
-        call fem_skv_scalar_field_upwind(iele_fsmp_stack, num_int, k2,  &
-     &       d_ele(1,ie_up), ele, jac_3d, fem_wk%scalar_1, fem_wk%sk6)
+        call fem_skv_scalar_field_upwind                                &
+     &      (iele_fsmp_stack, num_int, k2, dt, d_ele(1,ie_up),          &
+     &       ele, jac_3d, fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
       call sub1_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
@@ -213,8 +215,9 @@
       do k2 = 1, ele%nnod_4_ele
         call vector_2_each_element(node, ele,                           &
      &      k2, f_nl%ff, fem_wk%vector_1)
-        call fem_skv_vector_field_upwind(iele_fsmp_stack, num_int, k2,  &
-     &      d_ele(1,ie_up), ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
+        call fem_skv_vector_field_upwind                                &
+     &     (iele_fsmp_stack, num_int, k2, dt, d_ele(1,ie_up),           &
+     &      ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call sub3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &

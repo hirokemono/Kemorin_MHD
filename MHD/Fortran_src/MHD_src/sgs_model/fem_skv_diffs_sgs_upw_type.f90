@@ -5,19 +5,19 @@
 !        modified by H. Matsui on Aug., 2007
 !
 !      subroutine fem_skv_grad_sgs_upwind(iele_fsmp_stack, n_int, k2,   &
-!     &          i_filter, ak_diff, ele, jac_3d, FEM_elens,             &
+!     &          i_filter, dt, ak_diff, ele, jac_3d, FEM_elens,         &
 !     &          vxe, scalar_1, sk_v)
 !      subroutine fem_skv_div_sgs_upwind(iele_fsmp_stack, n_int, k2,    &
-!     &          i_filter, ak_diff, ele, jac_3d, FEM_elens,             &
+!     &          i_filter, dt, ak_diff, ele, jac_3d, FEM_elens,         &
 !     &          vxe, vector_1, sk_v)
 !      subroutine fem_skv_rot_sgs_upwind(iele_fsmp_stack, n_int, k2,    &
-!     &          i_filter, ak_diff, ele, jac_3d, FEM_elens,             &
+!     &          i_filter, dt, ak_diff, ele, jac_3d, FEM_elens,         &
 !     &          vxe, vector_1, sk_v)
 !      subroutine fem_skv_div_tsr_sgs_upwind(iele_fsmp_stack, n_int,    &
-!     &          k2, i_filter, ak_diff, ele, jac_3d, FEM_elens,         &
+!     &          k2, i_filter, dt, ak_diff, ele, jac_3d, FEM_elens,     &
 !     &          vxe, tensor_1, sk_v)
 !      subroutine fem_skv_div_as_tsr_sgs_upwind(iele_fsmp_stack,        &
-!     &          n_int, k2, i_filter, ak_diff, ele, jac_3d,             &
+!     &          n_int, k2, i_filter, dt, ak_diff, ele, jac_3d,         &
 !     &          FEM_elens, vxe, as_tsr_1, sk_v)
 !
       module fem_skv_diffs_sgs_upw_type
@@ -43,10 +43,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine fem_skv_grad_sgs_upwind(iele_fsmp_stack, n_int, k2,    &
-     &          i_filter, ak_diff, ele, jac_3d, FEM_elens,              &
+     &          i_filter, dt, ak_diff, ele, jac_3d, FEM_elens,          &
      &          vxe, scalar_1, sk_v)
 !
-      use m_t_step_parameter
       use fem_skv_gradient_sgs_upw
 !
       type(element_data), intent(in) :: ele
@@ -57,6 +56,7 @@
       integer(kind=kint), intent(in) :: n_int
       integer(kind=kint), intent(in) :: k2, i_filter
 !
+      real(kind=kreal), intent(in) :: dt
       real(kind=kreal), intent(in) :: vxe(ele%numele,3)
       real(kind=kreal), intent(in) :: ak_diff(ele%numele)
       real(kind=kreal), intent(in) :: scalar_1(ele%numele)
@@ -81,10 +81,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine fem_skv_div_sgs_upwind(iele_fsmp_stack, n_int, k2,     &
-     &          i_filter, ak_diff, ele, jac_3d, FEM_elens,              &
+     &          i_filter, dt, ak_diff, ele, jac_3d, FEM_elens,          &
      &          vxe, vector_1, sk_v)
 !
-      use m_t_step_parameter
       use fem_skv_divergence_sgs_upw
 !
       type(element_data), intent(in) :: ele
@@ -95,6 +94,7 @@
       integer(kind=kint), intent(in) :: n_int
       integer(kind=kint), intent(in) :: k2, i_filter
 !
+      real(kind=kreal), intent(in) :: dt
       real(kind=kreal), intent(in) :: vxe(ele%numele,3)
       real(kind=kreal), intent(in) :: ak_diff(ele%numele)
       real(kind=kreal), intent(in) :: vector_1(ele%numele,3)
@@ -119,10 +119,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine fem_skv_rot_sgs_upwind(iele_fsmp_stack, n_int, k2,     &
-     &          i_filter, ak_diff, ele, jac_3d, FEM_elens,              &
+     &          i_filter, dt, ak_diff, ele, jac_3d, FEM_elens,          &
      &          vxe, vector_1, sk_v)
 !
-      use m_t_step_parameter
       use fem_skv_rotation_sgs_upw
 !
       type(element_data), intent(in) :: ele
@@ -133,6 +132,7 @@
       integer(kind=kint), intent(in) :: n_int
       integer(kind=kint), intent(in) :: k2, i_filter
 !
+      real(kind=kreal), intent(in) :: dt
       real(kind=kreal), intent(in) :: vxe(ele%numele,3)
       real(kind=kreal), intent(in) :: ak_diff(ele%numele)
       real(kind=kreal), intent(in) :: vector_1(ele%numele,3)
@@ -157,10 +157,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine fem_skv_div_tsr_sgs_upwind(iele_fsmp_stack, n_int,     &
-     &          k2, i_filter, ak_diff, ele, jac_3d, FEM_elens,          &
+     &          k2, i_filter, dt, ak_diff, ele, jac_3d, FEM_elens,      &
      &          vxe, tensor_1, sk_v)
 !
-      use m_t_step_parameter
       use fem_skv_div_tensor_sgs_upw
 !
       type(element_data), intent(in) :: ele
@@ -171,6 +170,7 @@
       integer(kind=kint), intent(in) :: n_int
       integer(kind=kint), intent(in) :: k2, i_filter
 !
+      real(kind=kreal), intent(in) :: dt
       real(kind=kreal), intent(in) :: vxe(ele%numele,3)
       real(kind=kreal), intent(in) :: ak_diff(ele%numele)
       real(kind=kreal), intent(in) :: tensor_1(ele%numele,6)
@@ -195,10 +195,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine fem_skv_div_as_tsr_sgs_upwind(iele_fsmp_stack,         &
-     &          n_int, k2, i_filter, ak_diff, ele, jac_3d,              &
+     &          n_int, k2, i_filter, dt, ak_diff, ele, jac_3d,          &
      &          FEM_elens, vxe, as_tsr_1, sk_v)
 !
-      use m_t_step_parameter
       use fem_skv_div_as_tsr_sgs_upw
 !
       type(element_data), intent(in) :: ele
@@ -209,6 +208,7 @@
       integer(kind=kint), intent(in) :: n_int
       integer(kind=kint), intent(in) :: k2, i_filter
 !
+      real(kind=kreal), intent(in) :: dt
       real(kind=kreal), intent(in) :: vxe(ele%numele,3)
       real(kind=kreal), intent(in) :: ak_diff(ele%numele)
       real(kind=kreal), intent(in) :: as_tsr_1(ele%numele,3)

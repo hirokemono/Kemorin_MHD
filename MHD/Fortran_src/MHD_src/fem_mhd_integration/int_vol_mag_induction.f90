@@ -34,6 +34,7 @@
 !
       use m_machine_parameter
       use m_phys_constants
+      use m_t_step_parameter
 !
       use t_physical_property
       use t_geometry_data
@@ -157,7 +158,7 @@
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, iphys_nod%i_magne, fem_wk%vector_1)
 !
-        call fem_skv_induction_upmagne(iele_fsmp_stack, n_int, k2,      &
+        call fem_skv_induction_upmagne(iele_fsmp_stack, n_int, k2, dt,  &
      &      cd_prop%coef_induct, mhd_fem_wk%velo_1, fem_wk%vector_1,    &
      &      d_ele(1,iphys_ele%i_velo), mhd_fem_wk%magne_1,              &
      &      d_ele(1,iphys_ele%i_magne), ele, jac_3d, fem_wk%sk6)

@@ -38,6 +38,7 @@
       use m_precision
 !
       use m_phys_constants
+      use m_t_step_parameter
       use t_geometry_data
       use t_phys_data
       use t_jacobians
@@ -87,7 +88,7 @@
       do k2 = 1, ele%nnod_4_ele
         call scalar_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_field, fem_wk%scalar_1)
-        call fem_skv_gradient_upw(iele_fsmp_stack, num_int, k2,         &
+        call fem_skv_gradient_upw(iele_fsmp_stack, num_int, k2, dt,     &
      &      d_ele(1,iv_up), ele, jac_3d, fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
@@ -129,7 +130,7 @@
       do k2 = 1, ele%nnod_4_ele
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_field, fem_wk%vector_1)
-        call fem_skv_divergence_upw(iele_fsmp_stack, num_int, k2,       &
+        call fem_skv_divergence_upw(iele_fsmp_stack, num_int, k2, dt,   &
      &      d_ele(1,iv_up), ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
@@ -171,7 +172,7 @@
       do k2 = 1, ele%nnod_4_ele
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_field, fem_wk%vector_1)
-        call fem_skv_rotation_upw(iele_fsmp_stack, num_int, k2,         &
+        call fem_skv_rotation_upw(iele_fsmp_stack, num_int, k2, dt,     &
      &      d_ele(1,iv_up), ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
@@ -214,7 +215,7 @@
       do k2 = 1, ele%nnod_4_ele
         call tensor_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_field, fem_wk%tensor_1)
-        call fem_skv_div_tsr_upw(iele_fsmp_stack, num_int, k2,          &
+        call fem_skv_div_tsr_upw(iele_fsmp_stack, num_int, k2, dt,      &
      &      d_ele(1,iv_up), ele, jac_3d, fem_wk%tensor_1, fem_wk%sk6)
       end do
 !
@@ -256,7 +257,7 @@
       do k2 = 1, ele%nnod_4_ele
         call vector_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_field, fem_wk%vector_1)
-        call fem_skv_div_as_tsr_upw(iele_fsmp_stack, num_int, k2,       &
+        call fem_skv_div_as_tsr_upw(iele_fsmp_stack, num_int, k2, dt,   &
      &      d_ele(1,iv_up), ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
       end do
 !

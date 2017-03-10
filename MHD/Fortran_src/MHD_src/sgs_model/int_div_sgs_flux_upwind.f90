@@ -32,6 +32,7 @@
 !
       use m_machine_parameter
       use m_phys_constants
+      use m_t_step_parameter
 !
       use t_geometry_data_MHD
       use t_geometry_data
@@ -84,8 +85,8 @@
      &     (node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,            &
      &      ele%istack_ele_smp, k2, nod_fld%ntot_phys,                  &
      &      i_vect, i_flux, nod_fld%d_fld, fem_wk%tensor_1)
-        call fem_skv_div_tsr_upw(fluid%istack_ele_fld_smp, num_int, k2, &
-     &      d_ele(1,ie_upw), ele, jac_3d, fem_wk%tensor_1,              &
+        call fem_skv_div_tsr_upw(fluid%istack_ele_fld_smp, num_int,     &
+     &      k2, dt, d_ele(1,ie_upw), ele, jac_3d, fem_wk%tensor_1,      &
      &      fem_wk%sk6)
       end do
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
@@ -132,7 +133,7 @@
      &      ele%istack_ele_smp, k2, nod_fld%ntot_phys,                  &
      &      i_vect, i_scalar, i_flux, nod_fld%d_fld, fem_wk%vector_1)
         call fem_skv_divergence_upw(fluid%istack_ele_fld_smp,           &
-     &      num_int, k2, d_ele(1,iele_velo), ele, jac_3d,               &
+     &      num_int, k2, dt, d_ele(1,iele_velo), ele, jac_3d,           &
      &      fem_wk%vector_1, fem_wk%sk6)
       end do
 !
@@ -176,7 +177,7 @@
      &      ele%istack_ele_smp, k2, nod_fld%ntot_phys,                  &
      &      i_b, i_v, i_flux, nod_fld%d_fld, fem_wk%vector_1)
         call fem_skv_div_as_tsr_upw(conduct%istack_ele_fld_smp,         &
-     &      num_int, k2, d_ele(1,iele_velo), ele, jac_3d,               &
+     &      num_int, k2, dt, d_ele(1,iele_velo), ele, jac_3d,           &
      &      fem_wk%vector_1, fem_wk%sk6)
       end do
 !
