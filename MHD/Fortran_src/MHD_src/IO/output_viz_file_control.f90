@@ -44,7 +44,7 @@
       irst =      output_IO_flag(i_step, MHD_step%rst_step)
       i_udt =     output_IO_flag(i_step, MHD_step%ucd_step)
       i_bulk =    output_IO_flag(i_step, MHD_step%rms_step)
-      i_monitor = output_IO_flag(i_step, point_step1)
+      i_monitor = output_IO_flag(i_step, MHD_step%point_step)
 !
       i_coef =    output_IO_flag(i_step, sgs_step)
 !

@@ -189,11 +189,11 @@
 !
       call set_output_step_4_fixed_step                                 &
      &   (izero, dt, tctl%i_step_monitor_ctl, tctl%delta_t_monitor_ctl, &
-     &    point_step1)
+     &    MHD_step%point_step)
 !
       call set_output_step_4_fixed_step(izero, dt,                      &
      &    tctl%i_step_boundary_ctl, tctl%delta_t_boundary_ctl,          &
-     &    boundary_step1)
+     &    MHD_step%boundary_step)
 !
       end subroutine set_fixed_time_step_controls
 !
@@ -224,11 +224,11 @@
 !
       call set_output_step_4_flex_step(izero, flex_p%dt_max,            &
      &    tctl%i_step_monitor_ctl, tctl%delta_t_monitor_ctl,            &
-     &    point_step1)
+     &    MHD_step%point_step)
 !
       call set_output_step_4_flex_step(izero, flex_p%dt_max,            &
      &    tctl%i_step_boundary_ctl, tctl%delta_t_boundary_ctl,          &
-     &    boundary_step1)
+     &    MHD_step%boundary_step)
 !
       end subroutine set_flex_time_step_controls
 !
