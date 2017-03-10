@@ -22,11 +22,12 @@
 !!      subroutine elspased_MHD_restart_ctl(SGS_par, node, nod_comm,    &
 !!     &          iphys, wk_sgs, wk_diff, nod_fld)
 !!
-!!      subroutine input_MHD_restart_file_ctl                           &
-!!     &         (layer_tbl, node, ele, fluid, SGS_par, wk_sgs, wk_diff,&
-!!     &          sgs_coefs, diff_coefs, nod_fld)
+!!      subroutine input_MHD_restart_file_ctl(rst_step, layer_tbl,      &
+!!     &          node, ele, fluid, SGS_par, wk_sgs, wk_diff,           &
+!!     &          sgs_coefs, diff_coefs, nod_fld, flex_p)
 !!      subroutine input_restart_4_snapshot                             &
 !!     &         (i_step, node, nod_fld, t_IO, rst_step)
+!!        type(IO_step_param), intent(in) :: rst_step
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!        type(dynamic_model_data), intent(inout) :: wk_diff
@@ -185,13 +186,14 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine input_MHD_restart_file_ctl                             &
-     &         (layer_tbl, node, ele, fluid, SGS_par, wk_sgs, wk_diff,  &
+      subroutine input_MHD_restart_file_ctl(rst_step, layer_tbl,        &
+     &          node, ele, fluid, SGS_par, wk_sgs, wk_diff,             &
      &          sgs_coefs, diff_coefs, nod_fld, flex_p)
 !
       use t_geometry_data_MHD
       use t_SGS_model_coefs
 !
+      type(IO_step_param), intent(in) :: rst_step
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
@@ -204,9 +206,12 @@
       type(phys_data), intent(inout) :: nod_fld
       type(flexible_stepping_parameter), intent(inout) :: flex_p
 !
+      integer(kind = kint) :: istep_rst
 !
-      call input_restart_files(istep_rst_start, node, nod_fld, flex_p)
-      call input_model_coef_file(istep_rst_start,                       &
+!
+      call set_step_4_restart(rst_step, i_step_init, istep_rst)
+      call input_restart_files(istep_rst, node, nod_fld, flex_p)
+      call input_model_coef_file(istep_rst,                             &
      &    SGS_par%model_p, SGS_par%commute_p, ele, fluid, layer_tbl,    &
      &    SGS_par%i_step_sgs_coefs, wk_sgs, wk_diff,                    &
      &    sgs_coefs, diff_coefs)
@@ -386,7 +391,7 @@
       if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_OFF) return
       if(iflag_rst_sgs_coef_code .eq. 0) return
 !
-      if (i_step_init .eq. -1) then
+      if (istep_rst .eq. -1) then
         call add_elaps_postfix(rst_sgs_coef_head, fn_tmp)
       else
         call add_int_suffix(istep_rst, rst_sgs_coef_head, fn_tmp)

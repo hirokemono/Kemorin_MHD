@@ -6,9 +6,10 @@
 !      modified by H. Matsui on Dec., 2007
 !
 !!      subroutine initial_data_control                                 &
-!!     &         (ref_param_T, node, ele, fluid, cd_prop, iphys,        &
-!!     &          layer_tbl, SGS_par, wk_sgs, wk_diff,                  &
+!!     &         (rst_step, ref_param_T, node, ele, fluid, cd_prop,     &
+!!     &          iphys, layer_tbl, SGS_par, wk_sgs, wk_diff,           &
 !!     &          sgs_coefs, diff_coefs, nod_fld, flex_p)
+!!        type(IO_step_param), intent(in) :: rst_step
 !!        type(reference_scalar_param), intent(in) :: ref_param_T
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -40,6 +41,7 @@
       use t_ele_info_4_dynamic
       use t_reference_scalar_param
       use t_physical_property
+      use t_IO_step_parameter
 !
       implicit none
 !
@@ -52,8 +54,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine initial_data_control                                   &
-     &         (ref_param_T, node, ele, fluid, cd_prop, iphys,          &
-     &          layer_tbl, SGS_par, wk_sgs, wk_diff,                    &
+     &         (rst_step, ref_param_T, node, ele, fluid, cd_prop,       &
+     &          iphys, layer_tbl, SGS_par, wk_sgs, wk_diff,             &
      &          sgs_coefs, diff_coefs, nod_fld, flex_p)
 !
       use m_initial_field_control
@@ -66,6 +68,7 @@
       use fem_mhd_rst_IO_control
       use set_restart_data
 !
+      type(IO_step_param), intent(in) :: rst_step
       type(reference_scalar_param), intent(in) :: ref_param_T
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -83,7 +86,8 @@
 !
 !
       if(iflag_restart .eq. i_rst_by_file) then
-        call input_MHD_restart_file_ctl(layer_tbl, node, ele, fluid,    &
+        call input_MHD_restart_file_ctl                                 &
+     &     (rst_step, layer_tbl, node, ele, fluid,                      &
      &      SGS_par, wk_sgs, wk_diff, sgs_coefs, diff_coefs, nod_fld,   &
      &      flex_p)
       else

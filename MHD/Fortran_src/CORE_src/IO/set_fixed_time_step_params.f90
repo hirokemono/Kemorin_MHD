@@ -66,8 +66,6 @@
       call set_output_step_4_fixed_step(ione, dt,                       &
      &    tctl%i_step_ucd_ctl, tctl%delta_t_field_ctl, ucd_step)
 !
-      call set_start_stop_4_restart(rst_step)
-!
       call viz_fixed_time_step_params(dt, tctl, viz_step)
 !
       if (i_step_number.eq.-1) then

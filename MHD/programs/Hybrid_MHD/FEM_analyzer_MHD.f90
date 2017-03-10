@@ -320,36 +320,30 @@
       if(iflag_debug.gt.0) write(*,*) 'total_time',                     &
      &                       total_time, elapsed_time
 !
-      if     (flex_p1%iflag_flexible_step .eq. iflag_flex_step) then
-        if      (i_step_number.eq.-1                                    &
-     &       .and. total_max.gt.elapsed_time) then
+!   Finish by elapsed time
+      if(i_step_number .eq. -1) then
+        if(total_max .gt. elapsed_time) then
           call start_eleps_time(4)
           call elspased_MHD_restart_ctl                                 &
      &       (SGS_par, mesh1%node, mesh1%nod_comm,                      &
      &        iphys, wk_sgs1, wk_diff1, nod_fld1)
+          retval = 0
           call end_eleps_time(4)
-          retval = 0
-        else if (i_step_number.ne.-1                                    &
-     &     .and. time.gt.(istep_rst_end * MHD_step%rst_step%delta_t))   &
-     &     then
-          retval = 0
         end if
 !
+!   Finish by specific time
+      else
+        if(flex_p1%iflag_flexible_step .eq. iflag_flex_step) then
+          if(time .gt. flex_p1%time_to_finish) retval = 0
+        else
+          if(flex_p1%istep_max_dt .ge. i_step_number) retval = 0
+        end if
+      end if
+!
+!   Set visualization flag
+      if(flex_p1%iflag_flexible_step .eq. iflag_flex_step) then
         visval = viz_file_step_4_flex(dt, time, MHD_step%viz_step)
       else
-        if      (i_step_number.eq.-1                                    &
-     &       .and. total_max.gt.elapsed_time) then
-          call start_eleps_time(4)
-          call elspased_MHD_restart_ctl                                 &
-     &       (SGS_par1, mesh1%node, mesh1%nod_comm,                     &
-     &        iphys, wk_sgs1, wk_diff1, nod_fld1)
-          call end_eleps_time(4)
-          retval = 0
-        else if (i_step_number.ne.-1 .and.                              &
-     &       flex_p1%istep_max_dt .ge. i_step_number) then
-          retval = 0
-        end if
-!
         visval = viz_file_step_4_fix(flex_p1%istep_max_dt,              &
      &                               MHD_step%viz_step)
       end if

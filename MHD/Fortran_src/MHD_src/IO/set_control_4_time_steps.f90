@@ -149,8 +149,6 @@
         write(*,*) 'dt', dt, flex_p%dt_fact, flex_p%idt_digit
         write(*,*) 'i_step_init ',i_step_init
         write(*,*) 'i_step_number ',i_step_number
-        write(*,*) 'istep_rst_start ', istep_rst_start
-        write(*,*) 'istep_rst_end ',  istep_rst_end
         write(*,*) 'elapsed_time ', elapsed_time
         write(*,*) 'i_step_check ', MHD_step%rms_step%increment
         write(*,*) 'i_step_output_rst ', MHD_step%rst_step%increment
@@ -243,10 +241,13 @@
       type(IO_step_param), intent(inout) :: rst_step, ucd_step
       type(VIZ_step_params), intent(inout) :: viz_step
 !
+!>      Start step for restarting file
+      integer(kind=kint) :: istep_rst_start, istep_rst_end
+!
 !
       istep_rst_start   = 0
       if (tctl%start_rst_step_ctl%iflag .gt. 0) then
-        istep_rst_start   = tctl%start_rst_step_ctl%intvalue
+        istep_rst_start = tctl%start_rst_step_ctl%intvalue
       end if
 !
       if (tctl%end_rst_step_ctl%iflag .eq. 0) then
@@ -263,7 +264,9 @@
       call set_output_step_4_flex_step(ione, flex_p%dt_max,             &
      &   tctl%i_step_ucd_ctl, tctl%delta_t_field_ctl, ucd_step)
 !
-      call set_start_stop_by_restart(rst_step)
+      i_step_init = istep_rst_start * rst_step%increment
+      i_step_number = istep_rst_end *   rst_step%increment
+      flex_p%time_to_finish = istep_rst_end * rst_step%delta_t
 !
       call viz_flex_time_step_controls(tctl, dt, viz_step)
 !
@@ -275,6 +278,12 @@
         else
           elapsed_time  = tctl%elapsed_time_ctl%realvalue
         end if
+      end if
+!
+      if (iflag_debug .ge. iflag_routine_msg) then
+        write(*,*) 'istep_rst_start ', istep_rst_start
+        write(*,*) 'istep_rst_end ',  istep_rst_end
+        write(*,*) 'time_to_finish ',  flex_p%time_to_finish
       end if
 !
       end subroutine set_flex_time_step_params

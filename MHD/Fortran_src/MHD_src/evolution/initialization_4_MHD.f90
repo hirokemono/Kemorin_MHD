@@ -3,7 +3,7 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine init_analyzer_fl(IO_bc, FEM_prm, SGS_par,            &
+!!      subroutine init_analyzer_fl(MHD_step, IO_bc, FEM_prm, SGS_par,  &
 !!     &          mesh, group, ele_mesh, MHD_mesh, layer_tbl,           &
 !!     &          iphys, nod_fld, label_sim)
 !!        type(IO_boundary), intent(in) :: IO_bc
@@ -23,6 +23,7 @@
       use m_precision
       use t_FEM_control_parameter
       use t_SGS_control_parameter
+      use t_MHD_step_parameter
       use t_phys_data
       use t_phys_address
 !
@@ -40,7 +41,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer_fl(IO_bc, FEM_prm, SGS_par,              &
+      subroutine init_analyzer_fl(MHD_step, IO_bc, FEM_prm, SGS_par,    &
      &          mesh, group, ele_mesh, MHD_mesh, layer_tbl,             &
      &          iphys, nod_fld, label_sim)
 !
@@ -103,6 +104,7 @@
       use nod_phys_send_recv
       use solver_MGCG_MHD
 !
+      type(MHD_IO_step_param), intent(in) :: MHD_step
       type(IO_boundary), intent(in) :: IO_bc
 !
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
@@ -250,8 +252,8 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*)' initial_data_control'
-      call initial_data_control                                         &
-     &   (ref_param_T1, mesh%node, mesh%ele, MHD_mesh%fluid,            &
+      call initial_data_control(MHD_step%rst_step, ref_param_T1,        &
+     &    mesh%node, mesh%ele, MHD_mesh%fluid,                          &
      &    cd_prop1, iphys, layer_tbl, SGS_par, wk_sgs1, wk_diff1,       &
      &    sgs_coefs, diff_coefs, nod_fld, flex_p1)
 !

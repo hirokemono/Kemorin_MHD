@@ -35,6 +35,9 @@
 !>        flag for time stepping
         integer(kind=kint) :: iflag_flexible_step = iflag_fixed_step
 !
+!>        End time
+        real(kind=kreal) :: time_to_finish
+!
 !>        significand of @f$ \Delta t @f$
         real(kind=kreal) :: dt_fact
 !>        exponent of @f$ \Delta t @f$

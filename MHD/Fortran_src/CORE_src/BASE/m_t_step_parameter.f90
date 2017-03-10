@@ -45,47 +45,29 @@
       integer(kind=kint) :: i_step_init
 !>      End time steo
       integer(kind=kint) :: i_step_number
-! 
-!>      Start step for restarting file
-      integer(kind=kint) :: istep_rst_start
-!>      End step for restarting file
-      integer(kind=kint) :: istep_rst_end
-!
+!!
 ! -----------------------------------------------------------------------
 !
       contains
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_start_stop_4_restart(rst_step)
+      subroutine set_step_4_restart(rst_step, i_step, istep_rst)
 !
       type(IO_step_param), intent(in) :: rst_step
+      integer(kind = kint), intent(in) :: i_step
+      integer(kind = kint), intent(inout) :: istep_rst
 !
 !
       if(rst_step%increment .gt. 0) then
-        istep_rst_start = int(i_step_init /   rst_step%increment)
-        istep_rst_end =   int(i_step_number / rst_step%increment)
+        istep_rst = int(i_step / rst_step%increment)
       else
-        istep_rst_start = i_step_init 
-        istep_rst_end =   i_step_number
+        istep_rst = i_step
       end if
 !
-      if(i_step_init .eq. -1)   istep_rst_start = -1
-      if(i_step_number .eq. -1) istep_rst_end =   -1
+      if(i_step .eq. -1)   istep_rst = -1
 !
-      end subroutine set_start_stop_4_restart
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_start_stop_by_restart(rst_step)
-!
-      type(IO_step_param), intent(in) :: rst_step
-!
-!
-      i_step_init =   istep_rst_start * rst_step%increment
-      i_step_number = istep_rst_end *   rst_step%increment
-!
-      end subroutine set_start_stop_by_restart
+      end subroutine set_step_4_restart
 !
 ! -----------------------------------------------------------------------
 !
