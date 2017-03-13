@@ -4,20 +4,20 @@
 !     Written by H. Matsui on June, 2005
 !
 !!      subroutine cal_t_evo_4_vector                                   &
-!!     &         (iflag_4_supg, iele_fsmp_stack, FEM_prm, m_lump,       &
+!!     &         (iflag_4_supg, iele_fsmp_stack, dt, FEM_prm, m_lump,   &
 !!     &          nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,      &
 !!     &          rhs_tbl, ff_m_smp, fem_wk, f_l, f_nl)
 !!      subroutine cal_t_evo_4_scalar                                   &
-!!     &         (iflag_4_supg, iele_fsmp_stack, FEM_prm, m_lump,       &
+!!     &         (iflag_4_supg, iele_fsmp_stack, dt, FEM_prm, m_lump,   &
 !!     &          nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,      &
 !!     &          rhs_tbl, ff_m_smp, fem_wk, f_l, f_nl)
 !!
 !!      subroutine cal_t_evo_4_vector_cd                                &
-!!     &         (iflag_4_supg, iele_fsmp_stack, FEM_prm, m_lump,       &
+!!     &         (iflag_4_supg, iele_fsmp_stack, dt, FEM_prm, m_lump,   &
 !!     &          nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,      &
 !!     &          rhs_tbl, ff_m_smp, fem_wk, f_l, f_nl)
 !!      subroutine cal_t_evo_4_scalar_cd                                &
-!!     &         (iflag_4_supg, iele_fsmp_stack, FEM_prm, m_lump,       &
+!!     &         (iflag_4_supg, iele_fsmp_stack, dt, FEM_prm, m_lump,   &
 !!     &          nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,      &
 !!     &          rhs_tbl, ff_m_smp, fem_wk, f_l, f_nl)
 !!
@@ -66,7 +66,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_t_evo_4_vector                                     &
-     &         (iflag_4_supg, iele_fsmp_stack, FEM_prm, m_lump,         &
+     &         (iflag_4_supg, iele_fsmp_stack, dt, FEM_prm, m_lump,     &
      &          nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,        &
      &          rhs_tbl, ff_m_smp, fem_wk, f_l, f_nl)
 !
@@ -81,6 +81,7 @@
       type(lumped_mass_matrices), intent(in) :: m_lump
       integer(kind = kint), intent(in) :: iflag_4_supg
       integer (kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+      real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -96,12 +97,12 @@
 !
         if (iflag_4_supg .eq. id_turn_ON) then
           call int_multi_pass_vector_upw                                &
-     &       (iele_fsmp_stack, iphys_ele%i_velo, FEM_prm, m_lump,       &
+     &       (iele_fsmp_stack, iphys_ele%i_velo, dt, FEM_prm, m_lump,   &
      &        nod_comm, node, ele, ele_fld, jac_3d, rhs_tbl,            &
      &        ff_m_smp, fem_wk, f_nl)
         else if (iflag_4_supg .eq. id_magnetic_SUPG) then
           call int_multi_pass_vector_upw                                &
-     &       (iele_fsmp_stack, iphys_ele%i_magne, FEM_prm, m_lump,      &
+     &       (iele_fsmp_stack, iphys_ele%i_magne, dt, FEM_prm, m_lump,  &
      &        nod_comm, node, ele, ele_fld, jac_3d, rhs_tbl,            &
      &        ff_m_smp, fem_wk, f_nl)
         else
@@ -118,7 +119,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_t_evo_4_scalar                                     &
-     &         (iflag_4_supg, iele_fsmp_stack, FEM_prm, m_lump,         &
+     &         (iflag_4_supg, iele_fsmp_stack, dt, FEM_prm, m_lump,     &
      &          nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,        &
      &          rhs_tbl, ff_m_smp, fem_wk, f_l, f_nl)
 !
@@ -133,6 +134,7 @@
       type(lumped_mass_matrices), intent(in) :: m_lump
       integer(kind = kint), intent(in) :: iflag_4_supg
       integer (kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+      real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -148,12 +150,12 @@
 !
         if (iflag_4_supg .eq. id_turn_ON) then
           call int_multi_pass_scalar_upw                                &
-     &        (iele_fsmp_stack, iphys_ele%i_velo, FEM_prm, m_lump,      &
+     &        (iele_fsmp_stack, iphys_ele%i_velo, dt, FEM_prm, m_lump,  &
      &         nod_comm, node, ele, ele_fld, jac_3d, rhs_tbl,           &
      &         ff_m_smp, fem_wk, f_nl)
         else if (iflag_4_supg .eq. id_magnetic_SUPG) then
           call int_multi_pass_scalar_upw                                &
-     &        (iele_fsmp_stack, iphys_ele%i_magne, FEM_prm, m_lump,     &
+     &        (iele_fsmp_stack, iphys_ele%i_magne, dt, FEM_prm, m_lump, &
      &         nod_comm, node, ele, ele_fld, jac_3d, rhs_tbl,           &
      &         ff_m_smp, fem_wk, f_nl)
         else
@@ -172,7 +174,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_t_evo_4_vector_cd                                  &
-     &         (iflag_4_supg, iele_fsmp_stack, FEM_prm, m_lump,         &
+     &         (iflag_4_supg, iele_fsmp_stack, dt, FEM_prm, m_lump,     &
      &          nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,        &
      &          rhs_tbl, ff_m_smp, fem_wk, f_l, f_nl)
 !
@@ -187,6 +189,7 @@
       type(lumped_mass_matrices), intent(in) :: m_lump
       integer(kind = kint), intent(in) :: iflag_4_supg
       integer (kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+      real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -202,7 +205,7 @@
 !
         if (iflag_4_supg .gt. id_turn_OFF) then
           call int_multi_pass_vector_upw                                &
-     &       (iele_fsmp_stack, iphys_ele%i_magne, FEM_prm, m_lump,      &
+     &       (iele_fsmp_stack, iphys_ele%i_magne, dt, FEM_prm, m_lump,  &
      &        nod_comm, node, ele, ele_fld, jac_3d, rhs_tbl,            &
      &        ff_m_smp, fem_wk, f_nl)
         else
@@ -220,7 +223,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_t_evo_4_scalar_cd                                  &
-     &         (iflag_4_supg, iele_fsmp_stack, FEM_prm, m_lump,         &
+     &         (iflag_4_supg, iele_fsmp_stack, dt, FEM_prm, m_lump,     &
      &          nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,        &
      &          rhs_tbl, ff_m_smp, fem_wk, f_l, f_nl)
 !
@@ -235,6 +238,7 @@
       type(lumped_mass_matrices), intent(in) :: m_lump
       integer(kind = kint), intent(in) :: iflag_4_supg
       integer (kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+      real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -250,7 +254,7 @@
 !
         if (iflag_4_supg .gt. id_turn_OFF) then
           call int_multi_pass_scalar_upw                                &
-     &       (iele_fsmp_stack, iphys_ele%i_magne, FEM_prm, m_lump,      &
+     &       (iele_fsmp_stack, iphys_ele%i_magne, dt, FEM_prm, m_lump,  &
      &        nod_comm, node, ele, ele_fld, jac_3d, rhs_tbl,            &
      &        ff_m_smp, fem_wk, f_nl)
         else

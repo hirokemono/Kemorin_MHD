@@ -36,7 +36,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_t_step_parameter
       use m_phys_constants
 !
       use t_FEM_control_parameter
@@ -88,7 +87,7 @@
 !
 !
       call cal_t_evo_4_vector                                           &
-     &   (FEM_prm%iflag_velo_supg, fluid%istack_ele_fld_smp,            &
+     &   (FEM_prm%iflag_velo_supg, fluid%istack_ele_fld_smp, dt,        &
      &    FEM_prm, mhd_fem_wk%mlump_fl, nod_comm,                       &
      &    node, ele, iphys_ele, ele_fld, jac_3d, rhs_tbl,               &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
@@ -137,7 +136,7 @@
 !
 !
       call cal_t_evo_4_vector_cd                                        &
-     &   (FEM_prm%iflag_magne_supg, conduct%istack_ele_fld_smp,         &
+     &   (FEM_prm%iflag_magne_supg, conduct%istack_ele_fld_smp, dt,     &
      &    FEM_prm, mhd_fem_wk%mlump_cd,                                 &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,              &
      &    rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
@@ -180,7 +179,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call cal_t_evo_4_scalar(iflag_supg, fluid%istack_ele_fld_smp,     &
+      call cal_t_evo_4_scalar(iflag_supg, fluid%istack_ele_fld_smp, dt, &
      &    FEM_prm, mhd_fem_wk%mlump_fl, nod_comm,                       &
      &    node, ele, iphys_ele, ele_fld, jac_3d, rhs_tbl,               &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)

@@ -92,7 +92,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_t_evo_4_vector_fl'
       call cal_t_evo_4_vector                                           &
-     &   (FEM_prm%iflag_velo_supg, fluid%istack_ele_fld_smp,            &
+     &   (FEM_prm%iflag_velo_supg, fluid%istack_ele_fld_smp, dt,        &
      &    FEM_prm, mhd_fem_wk%mlump_fl, nod_comm,                       &
      &    node, ele, iphys_ele, fld_ele, jac_3d, rhs_tbl,               &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
@@ -106,7 +106,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_velo_co_crank'
       call cal_sol_velo_co_crank_lump                                   &
-     &   (nod_fld%n_point, node%istack_internal_smp,                    &
+     &   (dt, nod_fld%n_point, node%istack_internal_smp,                &
      &    mhd_fem_wk%mlump_fl%ml_o, nod_fld%ntot_phys,                  &
      &    i_velo, nod_fld%d_fld, f_nl%ff, f_l%ff)
 !
@@ -144,7 +144,7 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_t_evo_4_vector'
       call cal_t_evo_4_vector(FEM_prm%iflag_magne_supg,                 &
-     &    ele%istack_ele_smp, FEM_prm, m_lump,                          &
+     &    ele%istack_ele_smp, dt, FEM_prm, m_lump,                      &
      &    nod_comm, node, ele, iphys_ele, fld_ele, jac_3d, rhs_tbl,     &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
@@ -153,7 +153,7 @@
 !
       if (iflag_debug.eq.1)   write(*,*) 'cal_sol_magne_co_crank'
       call cal_sol_vect_co_crank                                        &
-     &   (nod_fld%n_point, node%istack_internal_smp, m_lump%ml_o,       &
+     &   (dt, nod_fld%n_point, node%istack_internal_smp, m_lump%ml_o,   &
      &    nod_fld%ntot_phys, i_magne, nod_fld%d_fld,                    &
      &    f_nl%ff, f_l%ff)
 !
@@ -201,7 +201,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_velo_co_crank_consist'
       call cal_sol_vect_co_crank_consist                                &
-     &   (node%numnod, node%istack_internal_smp, f_nl%ff, f_l%ff)
+     &   (dt, node%numnod, node%istack_internal_smp, f_nl%ff, f_l%ff)
 !
       if (coef_velo .eq. 0.0d0) return
       call cal_ff_smp_2_ff(node, rhs_tbl, n_vector,                     &
@@ -250,7 +250,7 @@
 !
       if(iflag_debug.eq.1)  write(*,*) 'cal_sol_magne_co_crank_consist'
       call cal_sol_vect_co_crank_consist                                &
-     &   (node%numnod, node%istack_internal_smp, f_nl%ff, f_l%ff)
+     &   (dt, node%numnod, node%istack_internal_smp, f_nl%ff, f_l%ff)
 !
       if (coef_magne .eq. 0.0d0) return
       call cal_ff_smp_2_ff(node, rhs_tbl, n_vector,                     &

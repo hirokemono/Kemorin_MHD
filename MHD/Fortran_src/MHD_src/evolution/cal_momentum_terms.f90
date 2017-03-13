@@ -162,7 +162,7 @@
      &    FEM_elens, diff_coefs, fem_wk, surf_wk, f_l, f_nl)
 !
       call cal_t_evo_4_vector                                           &
-     &   (FEM_prm%iflag_velo_supg, fluid%istack_ele_fld_smp,            &
+     &   (FEM_prm%iflag_velo_supg, fluid%istack_ele_fld_smp, dt,        &
      &    FEM_prm, mhd_fem_wk%mlump_fl, nod_comm,                       &
      &    node, ele, iphys_ele, ele_fld, jac_3d, rhs_tbl,               &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)

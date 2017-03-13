@@ -10,11 +10,11 @@
 !!      subroutine int_vol_multi_pass_vector(num_int, iele_fsmp_stack,  &
 !!     &          node, ele, jac_3d, rhs_tbl, ff_m_smp, fem_wk, f_nl)
 !!
-!!      subroutine int_vol_multi_pass_scalar_upw                        &
-!!     &         (num_int, iele_fsmp_stack, node, ele, jac_3d, rhs_tbl, &
+!!      subroutine int_vol_multi_pass_scalar_upw(num_int, dt,           &
+!!     &          iele_fsmp_stack, node, ele, jac_3d, rhs_tbl,          &
 !!     &          ncomp_ele, ie_up, d_ele, ff_m_smp, fem_wk, f_nl)
-!!      subroutine int_vol_multi_pass_vector_upw                        &
-!!     &         (num_int, iele_fsmp_stack, node, ele, jac_3d, rhs_tbl, &
+!!      subroutine int_vol_multi_pass_vector_upw(num_int, dt,           &
+!!     &          iele_fsmp_stack, node, ele, jac_3d, rhs_tbl,          &
 !!     &          ncomp_ele, ie_up, d_ele, ff_m_smp, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -28,9 +28,7 @@
 !
       use m_precision
       use m_constants
-!
       use m_phys_constants
-      use m_t_step_parameter
 !
       use t_geometry_data
       use t_jacobians
@@ -134,8 +132,8 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_multi_pass_scalar_upw                          &
-     &         (num_int, iele_fsmp_stack, node, ele, jac_3d, rhs_tbl,   &
+      subroutine int_vol_multi_pass_scalar_upw(num_int, dt,             &
+     &          iele_fsmp_stack, node, ele, jac_3d, rhs_tbl,            &
      &          ncomp_ele, ie_up, d_ele, ff_m_smp, fem_wk, f_nl)
 !
       use nodal_fld_2_each_element
@@ -152,6 +150,7 @@
       integer (kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: ncomp_ele, ie_up
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
+      real(kind = kreal), intent(in) :: dt
 !
       real(kind = kreal), intent(in)                                    &
      &                   :: ff_m_smp(node%max_nod_smp,3,np_smp)
@@ -168,8 +167,8 @@
         call scalar_2_each_element(node, ele,                           &
      &      k2, f_nl%ff(1:node%numnod,1), fem_wk%scalar_1)
         call fem_skv_scalar_field_upwind                                &
-     &      (iele_fsmp_stack, num_int, k2, dt, d_ele(1,ie_up),          &
-     &       ele, jac_3d, fem_wk%scalar_1, fem_wk%sk6)
+     &     (iele_fsmp_stack, num_int, k2, dt, d_ele(1,ie_up),           &
+     &      ele, jac_3d, fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
       call sub1_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
@@ -182,8 +181,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_multi_pass_vector_upw                          &
-     &         (num_int, iele_fsmp_stack, node, ele, jac_3d, rhs_tbl,   &
+      subroutine int_vol_multi_pass_vector_upw(num_int, dt,             &
+     &          iele_fsmp_stack, node, ele, jac_3d, rhs_tbl,            &
      &          ncomp_ele, ie_up, d_ele, ff_m_smp, fem_wk, f_nl)
 !
       use nodal_fld_2_each_element
@@ -200,6 +199,7 @@
       integer (kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: ncomp_ele, ie_up
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
+      real(kind = kreal), intent(in) :: dt
 !
       real(kind = kreal), intent(in)                                    &
      &                   :: ff_m_smp(node%max_nod_smp,3,np_smp)

@@ -8,15 +8,16 @@
 !!      subroutine cal_sol_vector_co(numnod, inter_smp_stack, ml, ff,   &
 !!     &          ncomp_nod, i_field, d_nod)
 !!
-!!      subroutine cal_sol_velo_co_crank_lump(numnod, inter_smp_stack,  &
+!!      subroutine cal_sol_velo_co_crank_lump                           &
+!!     &         (dt, numnod, inter_smp_stack,                          &
 !!     &          ml_o_fl, ncomp_nod, i_velo, d_nod, ff_nl, ff)
 !!      subroutine cal_sol_magne_insulate                               &
 !!     &         (numnod, inter_smp_stack, nnod_ins, inod_insulate, ff, &
 !!     &          ncomp_nod, i_magne, d_nod)
-!!      subroutine cal_sol_vect_co_crank(numnod, inter_smp_stack, ml_o, &
-!!     &          ncomp_nod, i_field, d_nod, ff_nl, ff)
+!!      subroutine cal_sol_vect_co_crank(dt, numnod, inter_smp_stack,   &
+!!     &          ml_o, ncomp_nod, i_field, d_nod, ff_nl, ff)
 !!      subroutine cal_sol_vect_co_crank_consist                        &
-!!     &        (inter_smp_stack, coef_field, ff_nl, ff)
+!!     &         (dt, numnod, inter_smp_stack, ff_nl, ff)
 !
       module cal_sol_vector_correct
 !
@@ -103,15 +104,15 @@
 ! ----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sol_velo_co_crank_lump(numnod, inter_smp_stack,    &
+      subroutine cal_sol_velo_co_crank_lump                             &
+     &         (dt, numnod, inter_smp_stack,                            &
      &          ml_o_fl, ncomp_nod, i_velo, d_nod, ff_nl, ff)
-!
-      use m_t_step_parameter
 !
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
       integer (kind = kint), intent(in) :: numnod, ncomp_nod, i_velo
       real(kind = kreal), intent(in) :: ml_o_fl(numnod)
       real(kind = kreal), intent(in) :: d_nod(numnod,ncomp_nod)
+      real(kind = kreal), intent(in) :: dt
 !
       real(kind = kreal), intent(in) :: ff_nl(numnod,n_vector)
       real(kind = kreal), intent(inout) :: ff(numnod,n_vector)
@@ -174,16 +175,16 @@
 !
 ! -----------------------------------------------------------------------! -----------------------------------------------------------------------
 !
-      subroutine cal_sol_vect_co_crank(numnod, inter_smp_stack, ml_o,   &
-     &          ncomp_nod, i_field, d_nod, ff_nl, ff)
-!
-      use m_t_step_parameter
+      subroutine cal_sol_vect_co_crank(dt, numnod, inter_smp_stack,     &
+     &          ml_o, ncomp_nod, i_field, d_nod, ff_nl, ff)
 !
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
       integer (kind = kint), intent(in) :: numnod, ncomp_nod, i_field
       real(kind = kreal), intent(in) :: ml_o(numnod)
       real(kind = kreal), intent(in) :: d_nod(numnod,ncomp_nod)
       real(kind = kreal), intent(in) :: ff_nl(numnod,n_vector)
+      real(kind = kreal), intent(in) :: dt
+!
       real(kind = kreal), intent(inout) :: ff(numnod,n_vector)
 !
 !
@@ -213,14 +214,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_sol_vect_co_crank_consist                          &
-     &        (numnod, inter_smp_stack, ff_nl, ff)
-!
-      use m_t_step_parameter
+     &         (dt, numnod, inter_smp_stack, ff_nl, ff)
 !
       integer (kind = kint), intent(in) :: numnod
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: ff_nl(numnod,n_vector)
       real(kind = kreal), intent(inout) :: ff(numnod,n_vector)
+      real(kind = kreal), intent(in) :: dt
 !
        integer (kind=kint) :: iproc, inod, nd
        integer (kind=kint) :: ist, ied
