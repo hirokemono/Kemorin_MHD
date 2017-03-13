@@ -3,8 +3,8 @@
 !
 !     Written by H. Matsui
 !
-!!      subroutine s_cal_diff_coef_sgs_mxwl                             &
-!!     &         (iak_diff_lor, icomp_sgs_lor, icomp_diff_lor, ie_dfbx, &
+!!      subroutine s_cal_diff_coef_sgs_mxwl(iak_diff_lor,               &
+!!     &          icomp_sgs_lor, icomp_diff_lor, ie_dfbx, dt,           &
 !!     &          FEM_prm, SGS_par, nod_comm, node, ele, surf, fluid,   &
 !!     &          layer_tbl, sf_grp, Vnod_bcs, Bsf_bcs, iphys,          &
 !!     &          iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q, &
@@ -80,8 +80,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_diff_coef_sgs_mxwl                               &
-     &         (iak_diff_lor, icomp_sgs_lor, icomp_diff_lor, ie_dfbx,   &
+      subroutine s_cal_diff_coef_sgs_mxwl(iak_diff_lor,                 &
+     &          icomp_sgs_lor, icomp_diff_lor, ie_dfbx, dt,             &
      &          FEM_prm, SGS_par, nod_comm, node, ele, surf, fluid,     &
      &          layer_tbl, sf_grp, Vnod_bcs, Bsf_bcs, iphys,            &
      &          iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,   &
@@ -106,6 +106,7 @@
       integer(kind = kint), intent(in) :: iak_diff_lor
       integer(kind = kint), intent(in) :: icomp_sgs_lor, icomp_diff_lor
       integer(kind = kint), intent(in) :: ie_dfbx
+      real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -150,7 +151,7 @@
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_filter_maxwell_grad'
       call cal_sgs_m_flux_grad_w_coef                                   &
      &   (ifilter_4delta, icomp_sgs_lor,                                &
-     &    iphys%i_sgs_grad_f, iphys%i_filter_magne, ie_dfbx,            &
+     &    iphys%i_sgs_grad_f, iphys%i_filter_magne, ie_dfbx, dt,        &
      &    FEM_prm, SGS_par%model_p, nod_comm, node, ele, fluid,         &
      &    iphys_ele, ele_fld, jac_3d_q, FEM_elens, sgs_coefs, rhs_tbl,  &
      &    fem_wk, mhd_fem_wk, nod_fld)
@@ -158,8 +159,8 @@
 !   take divergence of filtered heat flux (to iphys%i_sgs_simi)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_div_sgs_filter_mxwl_simi'
-      call cal_div_sgs_mf_simi                                          &
-     &   (iphys%i_sgs_simi, iphys%i_sgs_grad_f, iphys%i_filter_magne,   &
+      call cal_div_sgs_mf_simi(iphys%i_sgs_simi,                        &
+     &    iphys%i_sgs_grad_f, iphys%i_filter_magne, dt,                 &
      &    FEM_prm, nod_comm, node, ele, fluid, iphys_ele, ele_fld,      &
      &    jac_3d_q, rhs_tbl, fem_wk, mhd_fem_wk,                        &
      &    f_l, f_nl, nod_fld)
@@ -168,7 +169,7 @@
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_div_sgs_maxwell_simi'
       call cal_div_sgs_mf_simi                                          &
-     &   (iphys%i_sgs_grad, iphys%i_SGS_maxwell, iphys%i_magne,         &
+     &   (iphys%i_sgs_grad, iphys%i_SGS_maxwell, iphys%i_magne, dt,     &
      &    FEM_prm, nod_comm, node, ele, fluid, iphys_ele, ele_fld,      &
      &    jac_3d_q, rhs_tbl, fem_wk, mhd_fem_wk, f_l, f_nl, nod_fld)
 !

@@ -6,7 +6,7 @@
 !        modified by H. Matsui on July, 2007
 !        modified by H. Matsui on April, 2012
 !
-!!      subroutine sel_int_vol_sgs_flux(iflag_4_supg, num_int,          &
+!!      subroutine sel_int_vol_sgs_flux(iflag_4_supg, num_int, dt,      &
 !!     &          i_filter, numdir, i_field, id_dx,                     &
 !!     &          node, ele, fluid, nod_fld, iphys_ele, ele_fld,        &
 !!     &          jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
@@ -26,7 +26,6 @@
       use m_precision
 !
       use m_phys_constants
-      use m_t_step_parameter
 !
       use t_FEM_control_parameter
       use t_geometry_data_MHD
@@ -48,7 +47,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sel_int_vol_sgs_flux(iflag_4_supg, num_int,            &
+      subroutine sel_int_vol_sgs_flux(iflag_4_supg, num_int, dt,        &
      &          i_filter, numdir, i_field, id_dx,                       &
      &          node, ele, fluid, nod_fld, iphys_ele, ele_fld,          &
      &          jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
@@ -65,6 +64,7 @@
       integer(kind = kint), intent(in) :: iflag_4_supg, num_int
       integer (kind = kint), intent(in) :: id_dx, i_filter
       integer (kind = kint), intent(in) :: numdir, i_field
+      real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -72,14 +72,14 @@
 !
       if ( iflag_4_supg .eq. id_magnetic_SUPG) then
         call int_vol_sgs_flux_upwind                                    &
-     &     (num_int, i_filter, numdir, i_field,                         &
+     &     (num_int, dt, i_filter, numdir, i_field,                     &
      &      node, ele, fluid, nod_fld, jac_3d, FEM_elens,               &
      &      mhd_fem_wk%n_dvx, id_dx, mhd_fem_wk%dvx,                    &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
      &      fem_wk)
       else if ( iflag_4_supg .eq. id_turn_ON) then
         call int_vol_sgs_flux_upwind                                    &
-     &     (num_int, i_filter, numdir, i_field,                         &
+     &     (num_int, dt, i_filter, numdir, i_field,                     &
      &      node, ele, fluid, nod_fld, jac_3d, FEM_elens,               &
      &      mhd_fem_wk%n_dvx, id_dx, mhd_fem_wk%dvx,                    &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
@@ -147,7 +147,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_vol_sgs_flux_upwind                                &
-     &         (num_int, i_filter, numdir, i_field,                     &
+     &         (num_int, dt, i_filter, numdir, i_field,                 &
      &          node, ele, fluid, nod_fld, jac_3d, FEM_elens,           &
      &          ncomp_dvx, id_dx, diff_ele, ncomp_ele, ie_upw, d_ele,   &
      &          fem_wk)
@@ -166,6 +166,7 @@
       integer(kind = kint), intent(in) :: num_int
       integer(kind = kint), intent(in) :: ncomp_dvx, id_dx
       integer(kind = kint), intent(in) :: ncomp_ele, ie_upw
+      real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
       real(kind = kreal), intent(in) :: diff_ele(ele%numele,ncomp_dvx)
 !

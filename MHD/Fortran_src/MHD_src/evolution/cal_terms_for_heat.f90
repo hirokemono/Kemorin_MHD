@@ -4,12 +4,12 @@
 !     Written by H. Matsui on June, 2005
 !
 !!      subroutine cal_terms_4_advect                                   &
-!!     &         (i_field, i_scalar, iflag_supg, num_int,               &
+!!     &         (i_field, i_scalar, iflag_supg, num_int, dt,           &
 !!     &          FEM_prm, nod_comm, node, ele, fluid, property,        &
 !!     &          Snod_bcs, iphys_ele, ele_fld, jac_3d, rhs_tbl,        &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_div_of_scalar_flux                               &
-!!     &         (i_field, i_vector, iflag_supg, num_int,               &
+!!     &         (i_field, i_vector, iflag_supg, num_int, dt,           &
 !!     &          FEM_prm, nod_comm, node, ele, fluid, property,        &
 !!     &          Snod_bcs,  iphys_ele, ele_fld, jac_3d, rhs_tbl,       &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -87,7 +87,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_terms_4_advect                                     &
-     &         (i_field, i_scalar, iflag_supg, num_int,                 &
+     &         (i_field, i_scalar, iflag_supg, num_int, dt,             &
      &          FEM_prm, nod_comm, node, ele, fluid, property,          &
      &          Snod_bcs, iphys_ele, ele_fld, jac_3d, rhs_tbl,          &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -96,6 +96,7 @@
 !
       integer (kind=kint), intent(in) :: i_field, i_scalar
       integer (kind=kint), intent(in) :: iflag_supg, num_int
+      real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
@@ -120,7 +121,7 @@
       if (iflag_supg .gt. id_turn_OFF) then
         call int_vol_scalar_inertia_upw                                 &
      &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
-     &      fluid%istack_ele_fld_smp, num_int, i_scalar,                &
+     &      fluid%istack_ele_fld_smp, num_int, dt, i_scalar,            &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, iphys_ele%i_velo,      &
      &      ele_fld%d_fld, property%coef_nega_adv, fem_wk, f_nl)
       else
@@ -153,7 +154,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_div_of_scalar_flux                                 &
-     &         (i_field, i_vector, iflag_supg, num_int,                 &
+     &         (i_field, i_vector, iflag_supg, num_int, dt,             &
      &          FEM_prm, nod_comm, node, ele, fluid, property,          &
      &          Snod_bcs,  iphys_ele, ele_fld, jac_3d, rhs_tbl,         &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -163,6 +164,7 @@
 !
       integer (kind=kint), intent(in) :: i_vector, i_field
       integer (kind=kint), intent(in) :: iflag_supg, num_int
+      real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
@@ -193,7 +195,7 @@
       else
         call int_vol_div_w_const_upw                                    &
      &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
-     &      fluid%istack_ele_fld_smp, num_int,                          &
+     &      fluid%istack_ele_fld_smp, num_int, dt,                      &
      &      i_vector, ele_fld%ntot_phys, iphys_ele%i_velo,              &
      &      ele_fld%d_fld, property%coef_nega_adv, fem_wk, f_nl)
       end if

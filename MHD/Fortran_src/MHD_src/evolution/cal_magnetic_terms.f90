@@ -4,7 +4,7 @@
 !     Written by H. Matsui on June, 2005
 !
 !!      subroutine cal_terms_4_magnetic                                 &
-!!     &        (i_field, iak_diff_uxb, ak_d_magne,                     &
+!!     &        (i_field, iak_diff_uxb, ak_d_magne, dt,                 &
 !!     &         FEM_prm, SGS_param, cmt_param,                         &
 !!     &         nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,   &
 !!     &         Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld, &
@@ -87,7 +87,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_terms_4_magnetic                                   &
-     &        (i_field, iak_diff_uxb, ak_d_magne,                       &
+     &        (i_field, iak_diff_uxb, ak_d_magne, dt,                   &
      &         FEM_prm, SGS_param, cmt_param,                           &
      &         nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,     &
      &         Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,   &
@@ -121,6 +121,7 @@
 !
       integer (kind=kint), intent(in) :: i_field, iak_diff_uxb
       real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
+      real(kind = kreal), intent(in) :: dt
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -133,7 +134,7 @@
 !
       if (FEM_prm%iflag_magne_supg .gt. id_turn_OFF) then
         call int_vol_magne_monitor_upm                                  &
-     &     (i_field, iak_diff_uxb, FEM_prm%npoint_t_evo_int,            &
+     &     (i_field, iak_diff_uxb, FEM_prm%npoint_t_evo_int, dt,        &
      &      SGS_param, cmt_param, node, ele, conduct, cd_prop,          &
      &      iphys, nod_fld, iphys_ele, ele_fld, jac_3d, rhs_tbl,        &
      &      FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, f_nl)

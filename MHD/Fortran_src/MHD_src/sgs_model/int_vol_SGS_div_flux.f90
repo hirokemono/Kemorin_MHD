@@ -15,13 +15,13 @@
 !!
 !!      subroutine int_vol_div_SGS_vec_flux_upw                         &
 !!     &          (node, ele, jac_3d, rhs_tbl, FEM_elens, nod_fld,      &
-!!     &           iele_fsmp_stack, n_int, i_vector, i_scalar,          &
+!!     &           iele_fsmp_stack, n_int, dt, i_vector, i_scalar,      &
 !!     &           i_SGS_flux, i_filter, ak_diff, ncomp_ele, ie_upw,    &
 !!     &           d_ele, coef, fem_wk, mhd_fem_wk, f_nl)
 !!      subroutine int_vol_div_SGS_tsr_flux_upw(node, ele, nod_fld,     &
 !!     &           jac_3d, rhs_tbl, FEM_elens, diff_coefs,              &
-!!     &           iele_fsmp_stack, n_int, i_vect, i_SGS_flux, i_filter,&
-!!     &           iak_diff, ncomp_ele, ie_upw, d_ele, coef,            &
+!!     &           iele_fsmp_stack, n_int, dt, i_vect, i_SGS_flux,      &
+!!     &           i_filter, iak_diff, ncomp_ele, ie_upw, d_ele, coef,  &
 !!     &           fem_wk, mhd_fem_wk, f_nl)
 !
       module int_vol_SGS_div_flux
@@ -29,7 +29,6 @@
       use m_precision
 !
       use m_phys_constants
-      use m_t_step_parameter
       use t_mesh_data
       use t_phys_data
       use t_table_FEM_const
@@ -157,7 +156,7 @@
 !
       subroutine int_vol_div_SGS_vec_flux_upw(node, ele, nod_fld,       &
      &           jac_3d, rhs_tbl, FEM_elens, diff_coefs,                &
-     &           iele_fsmp_stack, n_int, i_vector, i_scalar,            &
+     &           iele_fsmp_stack, n_int, dt, i_vector, i_scalar,        &
      &           i_SGS_flux, i_filter, iak_diff, ncomp_ele, ie_upw,     &
      &           d_ele, coef, fem_wk, mhd_fem_wk, f_nl)
 !
@@ -182,6 +181,7 @@
       integer(kind = kint), intent(in) :: ncomp_ele, ie_upw
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
 !
+      real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: coef
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -214,8 +214,8 @@
 !
       subroutine int_vol_div_SGS_tsr_flux_upw(node, ele, nod_fld,       &
      &           jac_3d, rhs_tbl, FEM_elens, diff_coefs,                &
-     &           iele_fsmp_stack, n_int, i_vect, i_SGS_flux, i_filter,  &
-     &           iak_diff, ncomp_ele, ie_upw, d_ele, coef,              &
+     &           iele_fsmp_stack, n_int, dt, i_vect, i_SGS_flux,        &
+     &           i_filter, iak_diff, ncomp_ele, ie_upw, d_ele, coef,    &
      &           fem_wk, mhd_fem_wk, f_nl)
 !
       use nodal_fld_cst_to_element
@@ -239,6 +239,7 @@
       integer(kind = kint), intent(in) :: ncomp_ele, ie_upw
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
 !
+      real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: coef
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk

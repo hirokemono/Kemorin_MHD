@@ -5,7 +5,7 @@
 !     Modified by H. Matsui on Aug., 2007
 !
 !!      subroutine cal_sgs_maxwell_t_dynamic                            &
-!!     &         (iak_sgs_lor, icomp_sgs_lor, ie_dbx, ie_dfbx,          &
+!!     &         (iak_sgs_lor, icomp_sgs_lor, ie_dbx, ie_dfbx, dt,      &
 !!     &          FEM_prm, SGS_par, nod_comm, node, ele,                &
 !!     &          iphys, iphys_ele, fld_ele, fluid, layer_tbl,          &
 !!     &          jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,    &
@@ -70,7 +70,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_sgs_maxwell_t_dynamic                              &
-     &         (iak_sgs_lor, icomp_sgs_lor, ie_dbx, ie_dfbx,            &
+     &         (iak_sgs_lor, icomp_sgs_lor, ie_dbx, ie_dfbx, dt,        &
      &          FEM_prm, SGS_par, nod_comm, node, ele,                  &
      &          iphys, iphys_ele, fld_ele, fluid, layer_tbl,            &
      &          jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,      &
@@ -87,7 +87,8 @@
       use cvt_dynamic_scheme_coord
 !
       integer(kind = kint), intent(in) :: iak_sgs_lor, icomp_sgs_lor
-      integer (kind=kint), intent(in) :: ie_dbx, ie_dfbx
+      integer(kind = kint), intent(in) :: ie_dbx, ie_dfbx
+      real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -139,7 +140,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_filter_mxwl_grad_4_dyn'
       call cal_sgs_m_flux_grad_no_coef(ifilter_4delta,                  &
-     &    iphys%i_sgs_grad_f, iphys%i_filter_magne, ie_dfbx,            &
+     &    iphys%i_sgs_grad_f, iphys%i_filter_magne, ie_dfbx, dt,        &
      &    FEM_prm, nod_comm, node, ele, fluid, iphys_ele, fld_ele,      &
      &    jac_3d_q, FEM_elens, rhs_tbl, fem_wk, mhd_fem_wk, nod_fld)
 !
@@ -147,7 +148,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_maxwell_grad_4_dyn'
       call cal_sgs_m_flux_grad_no_coef(ifilter_2delta,                  &
-     &    iphys%i_SGS_maxwell, iphys%i_magne, ie_dbx,                   &
+     &    iphys%i_SGS_maxwell, iphys%i_magne, ie_dbx, dt,               &
      &    FEM_prm, nod_comm, node, ele, fluid, iphys_ele, fld_ele,      &
      &    jac_3d_q, FEM_elens, rhs_tbl, fem_wk, mhd_fem_wk, nod_fld)
 !

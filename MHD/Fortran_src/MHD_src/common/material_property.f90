@@ -67,7 +67,6 @@
      &         (depth_top, depth_bottom, fl_prop)
 !
       use m_normalize_parameter
-      use m_t_step_parameter
       use construct_MHD_coefficient
 !
       real(kind = kreal), intent(in) :: depth_top, depth_bottom
@@ -164,7 +163,6 @@
      &         (depth_top, depth_bottom, cd_prop)
 !
       use m_normalize_parameter
-      use m_t_step_parameter
       use construct_MHD_coefficient
 !
       real(kind = kreal), intent(in) :: depth_top, depth_bottom
@@ -232,7 +230,6 @@
      &         (iphys, depth_top, depth_bottom, ht_prop)
 !
       use m_normalize_parameter
-      use m_t_step_parameter
       use construct_MHD_coefficient
 !
       type(phys_address), intent(in) :: iphys
@@ -285,7 +282,6 @@
      &         (iphys, depth_top, depth_bottom, cp_prop)
 !
       use m_normalize_parameter
-      use m_t_step_parameter
       use construct_MHD_coefficient
 !
       type(phys_address), intent(in) :: iphys

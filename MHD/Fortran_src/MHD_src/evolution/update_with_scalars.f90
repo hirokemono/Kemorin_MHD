@@ -217,7 +217,7 @@
      &            write(*,*) 's_cal_diff_coef_scalar temp'
                call s_cal_diff_coef_scalar                              &
      &            (FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,   &
-     &             iphys%i_sgs_temp, iphys%i_filter_temp,               &
+     &             dt, iphys%i_sgs_temp, iphys%i_filter_temp,           &
      &             iak_diff_t, icomp_diff_t, SGS_par,                   &
      &             nod_comm, node, ele, surf, sf_grp, Tsf_bcs,          &
      &             iphys, iphys_ele, ele_fld, fluid, layer_tbl,         &
@@ -337,7 +337,7 @@
      &                        's_cal_diff_coef_scalar composition'
                call s_cal_diff_coef_scalar                              &
      &            (FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int,   &
-     &             iphys%i_sgs_composit, iphys%i_filter_comp,           &
+     &             dt, iphys%i_sgs_composit, iphys%i_filter_comp,       &
      &             iak_diff_c, icomp_diff_c, SGS_par,                   &
      &             nod_comm, node, ele, surf, sf_grp, Csf_bcs,          &
      &             iphys, iphys_ele, ele_fld, fluid, layer_tbl,         &

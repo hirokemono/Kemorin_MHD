@@ -4,7 +4,7 @@
 !     Written by H. Matsui
 !
 !!      subroutine s_cal_diff_coef_sgs_induct(iak_diff_uxb,             &
-!!     &         icomp_sgs_uxb, icomp_diff_uxb, ie_dfvx, ie_dfbx,       &
+!!     &         icomp_sgs_uxb, icomp_diff_uxb, ie_dfvx, ie_dfbx, dt,   &
 !!     &         FEM_prm, SGS_par, nod_comm, node, ele, surf,           &
 !!     &         fluid, conduct, cd_prop, layer_tbl, sf_grp, Bsf_bcs,   &
 !!     &         iphys, iphys_ele, ele_fld, jac_3d_q, jac_3d_l,         &
@@ -79,7 +79,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_cal_diff_coef_sgs_induct(iak_diff_uxb,               &
-     &         icomp_sgs_uxb, icomp_diff_uxb, ie_dfvx, ie_dfbx,         &
+     &         icomp_sgs_uxb, icomp_diff_uxb, ie_dfvx, ie_dfbx, dt,     &
      &         FEM_prm, SGS_par, nod_comm, node, ele, surf,             &
      &         fluid, conduct, cd_prop, layer_tbl, sf_grp, Bsf_bcs,     &
      &         iphys, iphys_ele, ele_fld, jac_3d_q, jac_3d_l,           &
@@ -103,6 +103,7 @@
       integer(kind = kint), intent(in) :: iak_diff_uxb
       integer(kind = kint), intent(in) :: icomp_sgs_uxb, icomp_diff_uxb
       integer(kind = kint), intent(in) :: ie_dfvx, ie_dfbx
+      real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -149,7 +150,7 @@
       call cal_sgs_induct_t_grad_w_coef                                 &
      &   (ifilter_4delta, icomp_sgs_uxb, iphys%i_sgs_grad_f,            &
      &    iphys%i_filter_velo, iphys%i_filter_magne, ie_dfvx, ie_dfbx,  &
-     &    FEM_prm, SGS_par%model_p, nod_comm, node, ele, conduct,       &
+     &    dt, FEM_prm, SGS_par%model_p, nod_comm, node, ele, conduct,   &
      &    cd_prop, iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,    &
      &    sgs_coefs, fem_wk, mhd_fem_wk, f_l, nod_fld)
 !
@@ -157,7 +158,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_div_sgs_filter_idct_simi'
       call cal_div_sgs_idct_simi(iphys%i_sgs_simi, iphys%i_sgs_grad_f,  &
-     &    iphys%i_filter_velo, iphys%i_filter_magne,                    &
+     &    iphys%i_filter_velo, iphys%i_filter_magne, dt,                &
      &    FEM_prm, nod_comm, node, ele, conduct, iphys_ele, ele_fld,    &
      &    jac_3d_q, rhs_tbl, fem_wk, mhd_fem_wk, f_l, f_nl, nod_fld)
 !
@@ -165,7 +166,7 @@
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_div_sgs_induct_simi'
       call cal_div_sgs_idct_simi(iphys%i_sgs_grad,                      &
-     &    iphys%i_SGS_induct_t, iphys%i_velo, iphys%i_magne,            &
+     &    iphys%i_SGS_induct_t, iphys%i_velo, iphys%i_magne, dt,        &
      &    FEM_prm, nod_comm, node, ele, conduct, iphys_ele, ele_fld,    &
      &    jac_3d_q, rhs_tbl, fem_wk, mhd_fem_wk, f_l, f_nl, nod_fld)
 !

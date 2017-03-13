@@ -4,8 +4,8 @@
 !     Written by H. Matsui on Oct. 2005
 !     Modified by H. Matsui on Aug., 2007
 !
-!!      subroutine cal_sgs_sf_dynamic                                   &
-!!     &         (iflag_supg, num_int, itype_Csym_flux, SGS_flux_factor,&
+!!      subroutine cal_sgs_sf_dynamic(iflag_supg, num_int, dt,          &
+!!     &          itype_Csym_flux, SGS_flux_factor,                     &
 !!     &          ifield, ifield_f, ivelo, ivelo_f, i_sgs,              &
 !!     &          iak_sgs_hlux, icomp_sgs_flux, ie_dvx, ie_dfvx,        &
 !!     &          SGS_par, nod_comm, node, ele, iphys, iphys_ele,       &
@@ -71,8 +71,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_sgs_sf_dynamic                                     &
-     &         (iflag_supg, num_int, itype_Csym_flux, SGS_flux_factor,  &
+      subroutine cal_sgs_sf_dynamic(iflag_supg, num_int, dt,            &
+     &          itype_Csym_flux, SGS_flux_factor,                       &
      &          ifield, ifield_f, ivelo, ivelo_f, i_sgs,                &
      &          iak_sgs_hlux, icomp_sgs_flux, ie_dvx, ie_dfvx,          &
      &          SGS_par, nod_comm, node, ele, iphys, iphys_ele,         &
@@ -93,6 +93,7 @@
       integer(kind = kint), intent(in) :: iflag_supg, num_int
       integer(kind = kint), intent(in) :: itype_Csym_flux
       real(kind = kreal), intent(in) :: SGS_flux_factor
+      real(kind = kreal), intent(in) :: dt
 !
       integer (kind=kint), intent(in) :: i_sgs, ifield, ifield_f
       integer (kind=kint), intent(in) :: ivelo, ivelo_f
@@ -147,7 +148,7 @@
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_filter_hf_grad_4_dyn'
       call cal_sgs_s_flux_grad_no_coef                                  &
-     &   (iflag_supg, num_int, ifilter_4delta,                          &
+     &   (iflag_supg, num_int, dt, ifilter_4delta,                      &
      &    iphys%i_sgs_grad_f, ifield_f, ie_dfvx,                        &
      &    nod_comm, node, ele, fluid, iphys_ele, ele_fld, jac_3d_q,     &
      &    rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_l, nod_fld)
@@ -155,8 +156,8 @@
 !   gradient model by original field
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_h_flux_grad_4_dyn'
-      call cal_sgs_s_flux_grad_no_coef                                  &
-     &   (iflag_supg, num_int, ifilter_2delta, i_sgs, ifield, ie_dvx,   &
+      call cal_sgs_s_flux_grad_no_coef(iflag_supg, num_int, dt,         &
+     &    ifilter_2delta, i_sgs, ifield, ie_dvx,                        &
      &    nod_comm, node, ele, fluid, iphys_ele, ele_fld, jac_3d_q,     &
      &    rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_l, nod_fld)
 !

@@ -189,7 +189,7 @@
      &        .or. SGS_par%model_p%iflag_SGS .eq. id_SGS_similarity)    &
      &       then
               call s_cal_diff_coef_vector_p                             &
-     &           (iak_diff_b, icomp_diff_b, FEM_prm, SGS_par,           &
+     &           (iak_diff_b, icomp_diff_b, dt, FEM_prm, SGS_par,       &
      &            nod_comm, node, ele, surf, fluid, layer_tbl,          &
      &            sf_grp, Asf_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,  &
      &            jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,  &
@@ -207,7 +207,7 @@
       if (iphys%i_magne .ne. 0) then
         if (iflag_debug.gt.0) write(*,*) 'cal_magnetic_f_by_vect_p'
         call choose_cal_rotation_sgs(SGS_par%commute_p%iflag_c_magne,   &
-     &      FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int,         &
+     &      FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,     &
      &      iak_diff_b, iphys%i_vecp, iphys%i_magne,                    &
      &      ele%istack_ele_smp, m_lump, SGS_par%model_p,                &
      &      nod_comm, node, ele, surf, sf_grp, iphys_ele, ele_fld,      &

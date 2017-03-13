@@ -14,7 +14,7 @@
 !!     &          fem_wk, mhd_fem_wk, f_nl)
 !!      subroutine int_vol_mag_induct_upm(node, ele, cd_prop, jac_3d,   &
 !!     &          rhs_tbl, nod_fld, iphys_nod, iphys_ele,               &
-!!     &          iele_fsmp_stack, n_int, ncomp_ele, d_ele,             &
+!!     &          iele_fsmp_stack, n_int, dt, ncomp_ele, d_ele,         &
 !!     &          fem_wk, mhd_fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -34,7 +34,6 @@
 !
       use m_machine_parameter
       use m_phys_constants
-      use m_t_step_parameter
 !
       use t_physical_property
       use t_geometry_data
@@ -114,7 +113,7 @@
 !
       subroutine int_vol_mag_induct_upm(node, ele, cd_prop, jac_3d,     &
      &          rhs_tbl, nod_fld, iphys_nod, iphys_ele,                 &
-     &          iele_fsmp_stack, n_int, ncomp_ele, d_ele,               &
+     &          iele_fsmp_stack, n_int, dt, ncomp_ele, d_ele,           &
      &          fem_wk, mhd_fem_wk, f_nl)
 !
       use cal_add_smp
@@ -135,6 +134,7 @@
       integer(kind = kint), intent(in) :: n_int
       integer(kind = kint), intent(in) :: ncomp_ele
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
+      real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk

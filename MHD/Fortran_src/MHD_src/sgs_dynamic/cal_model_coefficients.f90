@@ -62,6 +62,7 @@
       use calypso_mpi
       use m_machine_parameter
       use m_physical_property
+      use m_t_step_parameter
 !
       use t_FEM_control_parameter
       use t_SGS_control_parameter
@@ -176,7 +177,7 @@
         if(SGS_par%model_p%iflag_SGS_h_flux .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_sf_dynamic temp'
           call cal_sgs_sf_dynamic                                       &
-     &       (FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,        &
+     &       (FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,    &
      &        SGS_par%model_p%itype_Csym_h_flux,                        &
      &        SGS_par%model_p%SGS_hf_factor,                            &
      &        iphys%i_sgs_temp, iphys%i_filter_temp,                    &
@@ -208,7 +209,7 @@
           if (iflag_debug.eq.1)  write(*,*) 's_cal_diff_coef_sgs_sf'
           call s_cal_diff_coef_sgs_sf                                   &
      &       (SGS_par%model_p%itype_Csym_h_flux,                        &
-     &        FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int,        &
+     &        FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,    &
      &        iphys%i_sgs_temp, iphys%i_filter_temp,                    &
      &        iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_h_flux,    &
      &        ifld_diff%i_heat_flux, icomp_sgs%i_heat_flux,             &
@@ -229,7 +230,7 @@
         if(SGS_par%model_p%iflag_SGS_c_flux .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_sf_dynamic comp'
           call cal_sgs_sf_dynamic                                       &
-     &       (FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int,        &
+     &       (FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,    &
      &        SGS_par%model_p%itype_Csym_c_flux,                        &
      &        SGS_par%model_p%SGS_cf_factor,                            &
      &        iphys%i_sgs_composit, iphys%i_filter_comp,                &
@@ -261,7 +262,7 @@
           if (iflag_debug.eq.1)  write(*,*) 's_cal_diff_coef_sgs_sf'
           call s_cal_diff_coef_sgs_sf                                   &
      &       (SGS_par%model_p%itype_Csym_c_flux,                        &
-     &        FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int,        &
+     &        FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,    &
      &        iphys%i_sgs_composit, iphys%i_filter_comp,                &
      &        iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_c_flux,    &
      &        ifld_diff%i_comp_flux, icomp_sgs%i_comp_flux,             &
@@ -282,7 +283,7 @@
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_m_flux_dynamic'
           call cal_sgs_m_flux_dynamic                                   &
      &       (ifld_sgs%i_mom_flux, icomp_sgs%i_mom_flux,                &
-     &        iphys_elediff%i_velo, iphys_elediff%i_filter_velo,        &
+     &        iphys_elediff%i_velo, iphys_elediff%i_filter_velo, dt,    &
      &        FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,     &
      &        iphys, iphys_ele, ele_fld, MHD_mesh%fluid, layer_tbl,     &
      &        jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,        &
@@ -305,7 +306,7 @@
           if (iflag_debug.eq.1)  write(*,*) 's_cal_diff_coef_sgs_mf'
           call s_cal_diff_coef_sgs_mf                                   &
      &     (ifld_diff%i_mom_flux, icomp_sgs%i_mom_flux,                 &
-     &      icomp_diff%i_mom_flux, iphys_elediff%i_filter_velo,         &
+     &      icomp_diff%i_mom_flux, iphys_elediff%i_filter_velo, dt,     &
      &      FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,       &
      &      ele_mesh%surf, group%surf_grp,                              &
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs,                         &
@@ -325,7 +326,7 @@
      &       write(*,*) 'cal_sgs_maxwell_t_dynamic'
           call cal_sgs_maxwell_t_dynamic                                &
      &       (ifld_sgs%i_lorentz, icomp_sgs%i_lorentz,                  &
-     &        iphys_elediff%i_magne, iphys_elediff%i_filter_magne,      &
+     &        iphys_elediff%i_magne, iphys_elediff%i_filter_magne, dt,  &
      &        FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,     &
      &        iphys, iphys_ele, ele_fld, MHD_mesh%fluid, layer_tbl,     &
      &        jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,        &
@@ -348,7 +349,7 @@
           if (iflag_debug.eq.1) write(*,*) 's_cal_diff_coef_sgs_mxwl'
           call s_cal_diff_coef_sgs_mxwl                                 &
      &     (ifld_diff%i_lorentz, icomp_sgs%i_lorentz,                   &
-     &      icomp_diff%i_lorentz, iphys_elediff%i_filter_magne,         &
+     &      icomp_diff%i_lorentz, iphys_elediff%i_filter_magne, dt,     &
      &      FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,       &
      &      ele_mesh%surf, MHD_mesh%fluid, layer_tbl, group%surf_grp,   &
      &      nod_bcs%Vnod_bcs, surf_bcs%Bsf_bcs, iphys,                  &
@@ -369,7 +370,7 @@
      &      (ifld_sgs%i_induction, icomp_sgs%i_induction,               &
      &       iphys_elediff%i_velo, iphys_elediff%i_magne,               &
      &       iphys_elediff%i_filter_velo, iphys_elediff%i_filter_magne, &
-     &       FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,      &
+     &       dt, FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,  &
      &       iphys, iphys_ele, ele_fld, MHD_mesh%conduct, cd_prop1,     &
      &       layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens,         &
      &       filtering, sgs_coefs_nod, wk_filter, wk_cor, wk_lsq,       &
@@ -392,7 +393,7 @@
           call s_cal_diff_coef_sgs_induct(ifld_diff%i_induction,        &
      &       icomp_sgs%i_induction, icomp_diff%i_induction,             &
      &       iphys_elediff%i_filter_velo, iphys_elediff%i_filter_magne, &
-     &       FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,      &
+     &       dt, FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,  &
      &       ele_mesh%surf, MHD_mesh%fluid, MHD_mesh%conduct, cd_prop1, &
      &       layer_tbl, group%surf_grp, surf_bcs%Bsf_bcs, iphys,        &
      &       iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,      &
@@ -407,7 +408,7 @@
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_uxb_dynamic'
           call cal_sgs_uxb_dynamic                                      &
      &       (ifld_sgs%i_induction, icomp_sgs%i_induction,              &
-     &        iphys_elediff%i_velo, iphys_elediff%i_filter_velo,        &
+     &        iphys_elediff%i_velo, iphys_elediff%i_filter_velo, dt,    &
      &        FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,     &
      &        iphys, iphys_ele, ele_fld, MHD_mesh%conduct, cd_prop1,    &
      &        layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens,        &

@@ -5,14 +5,14 @@
 !     Modified by H. Matsui on Aug., 2007
 !
 !!      subroutine cal_sgs_uxb_dynamic                                  &
-!!     &         (iak_sgs_uxb, icomp_sgs_uxb, ie_dvx, ie_dfvx,          &
+!!     &         (iak_sgs_uxb, icomp_sgs_uxb, ie_dvx, ie_dfvx, dt,      &
 !!     &          FEM_prm, SGS_par, nod_comm, node, ele, iphys,         &
 !!     &          iphys_ele, ele_fld, conduct, cd_prop, layer_tbl,      &
 !!     &          jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,    &
 !!     &          wk_filter, wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,&
 !!     &          f_l, nod_fld, sgs_coefs)
 !!      subroutine cal_sgs_induct_t_dynamic(iak_sgs_uxb, icomp_sgs_uxb, &
-!!     &          ie_dvx, ie_dbx, ie_dfvx, ie_dfbx,                     &
+!!     &          ie_dvx, ie_dbx, ie_dfvx, ie_dfbx, dt,                 &
 !!     &          FEM_prm, SGS_par, nod_comm, node, ele, iphys,         &
 !!     &          iphys_ele, ele_fld, conduct, cd_prop, layer_tbl,      &
 !!     &          jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,    &
@@ -81,7 +81,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_sgs_uxb_dynamic                                    &
-     &         (iak_sgs_uxb, icomp_sgs_uxb, ie_dvx, ie_dfvx,            &
+     &         (iak_sgs_uxb, icomp_sgs_uxb, ie_dvx, ie_dfvx, dt,        &
      &          FEM_prm, SGS_par, nod_comm, node, ele, iphys,           &
      &          iphys_ele, ele_fld, conduct, cd_prop, layer_tbl,        &
      &          jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,      &
@@ -98,6 +98,7 @@
 !
       integer(kind=kint), intent(in) :: iak_sgs_uxb, icomp_sgs_uxb
       integer(kind=kint), intent(in) :: ie_dvx, ie_dfvx
+      real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -144,7 +145,7 @@
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_filter_uxb_grad_4_dyn'
       call cal_sgs_vp_induct_grad_no_coef(ifilter_4delta,               &
-     &    iphys%i_sgs_grad_f, iphys%i_filter_magne, ie_dfvx,            &
+     &    iphys%i_sgs_grad_f, iphys%i_filter_magne, ie_dfvx, dt,        &
      &    FEM_prm, nod_comm, node, ele, conduct, cd_prop,               &
      &    iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens, mhd_fem_wk, &
      &    fem_wk, f_l, nod_fld)
@@ -153,7 +154,7 @@
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_uxb_grad_4_dyn'
       call cal_sgs_vp_induct_grad_no_coef(ifilter_2delta,               &
-     &    iphys%i_SGS_vp_induct, iphys%i_magne, ie_dvx,                 &
+     &    iphys%i_SGS_vp_induct, iphys%i_magne, ie_dvx, dt,             &
      &    FEM_prm, nod_comm, node, ele, conduct, cd_prop,               &
      &    iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens, mhd_fem_wk, &
      &    fem_wk, f_l, nod_fld)
@@ -184,7 +185,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_sgs_induct_t_dynamic(iak_sgs_uxb, icomp_sgs_uxb,   &
-     &          ie_dvx, ie_dbx, ie_dfvx, ie_dfbx,                       &
+     &          ie_dvx, ie_dbx, ie_dfvx, ie_dfbx, dt,                   &
      &          FEM_prm, SGS_par, nod_comm, node, ele, iphys,           &
      &          iphys_ele, ele_fld, conduct, cd_prop, layer_tbl,        &
      &          jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,      &
@@ -203,6 +204,7 @@
       integer(kind=kint), intent(in) :: iak_sgs_uxb, icomp_sgs_uxb
       integer(kind=kint), intent(in) :: ie_dvx, ie_dfvx
       integer(kind=kint), intent(in) :: ie_dbx, ie_dfbx
+      real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -258,7 +260,7 @@
       call cal_sgs_induct_t_grad_no_coef                                &
      &   (ifilter_4delta, iphys%i_sgs_grad_f,                           &
      &    iphys%i_filter_velo, iphys%i_filter_magne, ie_dfvx, ie_dfbx,  &
-     &    FEM_prm, nod_comm, node, ele, conduct, cd_prop,               &
+     &    dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,           &
      &    iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,             &
      &    fem_wk, mhd_fem_wk, f_l, nod_fld)
 !
@@ -267,7 +269,7 @@
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_induct_t_grad_4_dyn'
       call cal_sgs_induct_t_grad_no_coef                                &
      &   (ifilter_2delta,  iphys%i_SGS_induct_t,                        &
-     &    iphys%i_velo, iphys%i_magne, ie_dvx, ie_dbx,                  &
+     &    iphys%i_velo, iphys%i_magne, ie_dvx, ie_dbx, dt,              &
      &    FEM_prm, nod_comm, node, ele, conduct, cd_prop,               &
      &    iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,             &
      &    fem_wk, mhd_fem_wk, f_l, nod_fld)

@@ -5,10 +5,10 @@
 !     Modified by H. Matsui on July, 2007
 !     Modified by H. Matsui on Apr., 2012
 !
-!!      subroutine sel_int_vol_sgs_induct_t(i_filter, ie_dvx, ie_dbx,   &
-!!     &          ifield_v, ifield_b, FEM_prm, node, ele, conduct,      &
-!!     &          nod_fld, iphys_ele, ele_fld, jac_3d, FEM_elens,       &
-!!     &          fem_wk, mhd_fem_wk)
+!!      subroutine sel_int_vol_sgs_induct_t                             &
+!!     &         (i_filter, ie_dvx, ie_dbx, ifield_v, ifield_b, dt,     &
+!!     &          FEM_prm, node, ele, conduct, nod_fld, iphys_ele,      &
+!!     &          ele_fld, jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -24,9 +24,7 @@
       module int_vol_sgs_induct_t
 !
       use m_precision
-!
       use m_phys_constants
-      use m_t_step_parameter
 !
       use t_FEM_control_parameter
       use t_geometry_data_MHD
@@ -50,10 +48,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sel_int_vol_sgs_induct_t(i_filter, ie_dvx, ie_dbx,     &
-     &          ifield_v, ifield_b, FEM_prm, node, ele, conduct,        &
-     &          nod_fld, iphys_ele, ele_fld, jac_3d, FEM_elens,         &
-     &          fem_wk, mhd_fem_wk)
+      subroutine sel_int_vol_sgs_induct_t                               &
+     &         (i_filter, ie_dvx, ie_dbx, ifield_v, ifield_b, dt,       &
+     &          FEM_prm, node, ele, conduct, nod_fld, iphys_ele,        &
+     &          ele_fld, jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(node_data), intent(in) :: node
@@ -68,6 +66,7 @@
       integer (kind = kint), intent(in) :: i_filter
       integer (kind = kint), intent(in) :: ifield_v, ifield_b
       integer (kind = kint), intent(in) :: ie_dvx, ie_dbx
+      real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -75,7 +74,7 @@
 !
       if (FEM_prm%iflag_magne_supg .gt. id_turn_OFF) then
         call int_vol_sgs_induct_t_upm                                   &
-     &     (i_filter, ifield_v, ifield_b, FEM_prm%npoint_t_evo_int,     &
+     &     (i_filter, ifield_v, ifield_b, FEM_prm%npoint_t_evo_int, dt, &
      &      node, ele, conduct, nod_fld, jac_3d, FEM_elens,             &
      &      mhd_fem_wk%n_dvx, ie_dvx, ie_dbx, mhd_fem_wk%dvx,           &
      &      ele_fld%ntot_phys, iphys_ele%i_magne,                       &
@@ -154,7 +153,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_sgs_induct_t_upm                               &
-     &         (i_filter, ifield_v, ifield_b, num_int,                  &
+     &         (i_filter, ifield_v, ifield_b, num_int, dt,              &
      &          node, ele, conduct, nod_fld, jac_3d, FEM_elens,         &
      &          ncomp_dvx, ie_dvx, ie_dbx, diff_ele,                    &
      &          ncomp_ele, i_magne, d_ele, fem_wk)
@@ -175,6 +174,7 @@
 !
       integer(kind = kint), intent(in) :: ncomp_dvx, ie_dvx, ie_dbx
       integer(kind = kint), intent(in) :: ncomp_ele, i_magne
+      real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: diff_ele(ele%numele,ncomp_dvx)
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
 !

@@ -4,14 +4,16 @@
 !     Written by H. Matsui on July, 2005
 !     modified by H. Matsui on July, 2007
 !
-!!      subroutine int_div_sgs_mf_simi_upwind(i_flux, i_vect, num_int,  &
+!!      subroutine int_div_sgs_mf_simi_upwind                           &
+!!     &         (i_flux, i_vect, num_int, dt,                          &
 !!     &          node, ele, fluid, nod_fld, jac_3d, rhs_tbl,           &
 !!     &          ncomp_ele, ie_upw, d_ele, fem_wk, f_nl)
 !!      subroutine int_div_sgs_sf_simi_upw                              &
-!!     &         (i_flux, i_vect, i_scalar, num_int,                    &
+!!     &         (i_flux, i_vect, i_scalar, num_int, dt,                &
 !!     &          node, ele, fluid, nod_fld, jac_3d, rhs_tbl,           &
 !!     &          ncomp_ele, iele_velo, d_ele, fem_wk, f_nl)
-!!      subroutine int_div_sgs_idct_simi_upw(i_flux, i_v, i_b, num_int, &
+!!      subroutine int_div_sgs_idct_simi_upw                            &
+!!     &         (i_flux, i_v, i_b, num_int, dt,                        &
 !!     &          node, ele, conduct, nod_fld, jac_3d, rhs_tbl,         &
 !!     &          ncomp_ele, iele_velo, d_ele, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
@@ -32,7 +34,6 @@
 !
       use m_machine_parameter
       use m_phys_constants
-      use m_t_step_parameter
 !
       use t_geometry_data_MHD
       use t_geometry_data
@@ -49,8 +50,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_div_sgs_mf_simi_upwind(i_flux, i_vect, num_int,    &
-     &          node, ele, fluid, nod_fld, jac_3d, rhs_tbl,             &
+      subroutine int_div_sgs_mf_simi_upwind                             &
+     &         (i_flux, i_vect, num_int, dt,                            &
+     &          node, ele, fluid, nod_fld, jac_3d, rhs_tbl,            &
      &          ncomp_ele, ie_upw, d_ele, fem_wk, f_nl)
 !
       use sgs_terms_2_each_ele
@@ -68,6 +70,7 @@
       integer(kind = kint), intent(in) :: num_int
       integer(kind = kint), intent(in) :: ncomp_ele, ie_upw
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
+      real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -97,7 +100,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_div_sgs_sf_simi_upw                                &
-     &         (i_flux, i_vect, i_scalar, num_int,                      &
+     &         (i_flux, i_vect, i_scalar, num_int, dt,                  &
      &          node, ele, fluid, nod_fld, jac_3d, rhs_tbl,             &
      &          ncomp_ele, iele_velo, d_ele, fem_wk, f_nl)
 !
@@ -116,6 +119,7 @@
       integer(kind = kint), intent(in) :: num_int
       integer(kind = kint), intent(in) :: ncomp_ele, iele_velo
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
+      real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -144,7 +148,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_div_sgs_idct_simi_upw(i_flux, i_v, i_b, num_int,   &
+      subroutine int_div_sgs_idct_simi_upw                              &
+     &         (i_flux, i_v, i_b, num_int, dt,                          &
      &          node, ele, conduct, nod_fld, jac_3d, rhs_tbl,           &
      &          ncomp_ele, iele_velo, d_ele, fem_wk, f_nl)
 !
@@ -163,6 +168,7 @@
       integer(kind = kint), intent(in) :: num_int
       integer(kind = kint), intent(in) :: ncomp_ele, iele_velo
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
+      real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl

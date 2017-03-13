@@ -18,7 +18,7 @@
 !!     &          filter_param, nod_comm, node, filtering,              &
 !!     &          wk_filter, nod_fld)
 !!
-!!      subroutine cal_sgs_uxb_2_ff_simi(icomp_sgs_uxb,                 &
+!!      subroutine cal_sgs_uxb_2_ff_simi(icomp_sgs_uxb, dt,             &
 !!     &          FEM_prm, filter_param, nod_comm, node, ele, conduct,  &
 !!     &          iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, filtering,&
 !!     &          sgs_coefs, wk_filter, fem_wk, f_nl, nod_fld)
@@ -219,14 +219,15 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine cal_sgs_uxb_2_ff_simi(icomp_sgs_uxb,                   &
+      subroutine cal_sgs_uxb_2_ff_simi(icomp_sgs_uxb, dt,               &
      &          FEM_prm, filter_param, nod_comm, node, ele, conduct,    &
      &          iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, filtering,  &
      &          sgs_coefs, wk_filter, fem_wk, f_nl, nod_fld)
 !
       use int_vol_similarity_uxb
 !
-      integer (kind=kint), intent(in) :: icomp_sgs_uxb
+      real(kind = kreal), intent(in) :: dt
+      integer(kind = kint), intent(in) :: icomp_sgs_uxb
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_filtering_params), intent(in) :: filter_param
@@ -255,7 +256,7 @@
 !
       if (FEM_prm%iflag_magne_supg .eq. id_turn_ON) then
         call int_simi_vp_induct_upm                                     &
-     &     (FEM_prm%npoint_t_evo_int, icomp_sgs_uxb,                    &
+     &     (FEM_prm%npoint_t_evo_int, dt, icomp_sgs_uxb,                &
      &      node, ele, conduct, iphys, nod_fld,                         &
      &      jac_3d, rhs_tbl, sgs_coefs,                                 &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &

@@ -3,7 +3,7 @@
 !
 !      written by H. Matsui on Aug., 2007
 !
-!!      subroutine cal_sgs_mom_flux_with_sgs_buo(FEM_prm, SGS_par,      &
+!!      subroutine cal_sgs_mom_flux_with_sgs_buo(dt, FEM_prm, SGS_par,  &
 !!     &          nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,  &
 !!     &          fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele, &
 !!     &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,    &
@@ -89,7 +89,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_sgs_mom_flux_with_sgs_buo(FEM_prm, SGS_par,        &
+      subroutine cal_sgs_mom_flux_with_sgs_buo(dt, FEM_prm, SGS_par,    &
      &          nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,    &
      &          fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,   &
      &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,      &
@@ -108,6 +108,8 @@
       use set_sgs_diff_model_coefs
       use int_rms_ave_ele_grps
       use modify_Csim_by_SGS_buo_ele
+!
+      real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -165,7 +167,7 @@
      &    wk_sgs%fld_clip, wk_sgs%comp_clip, sgs_coefs%ak)
 !
       call cal_sgs_momentum_flux                                        &
-     &   (icomp_sgs%i_mom_flux, iphys_elediff%i_velo,                   &
+     &   (icomp_sgs%i_mom_flux, iphys_elediff%i_velo, dt,               &
      &    FEM_prm, SGS_par%model_p, SGS_par%filter_p,                   &
      &    nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,        &
      &    jac_3d_q, rhs_tbl, FEM_elens, filtering,                      &
@@ -175,7 +177,7 @@
 !   lead work of Reynolds stress
 !
       call cal_terms_4_momentum(iphys%i_SGS_div_m_flux,                 &
-     &    ifld_diff%i_mom_flux, ifld_diff%i_lorentz,                    &
+     &    ifld_diff%i_mom_flux, ifld_diff%i_lorentz, dt,                &
      &    FEM_prm, SGS_par%model_p, SGS_par%commute_p,                  &
      &    nod_comm, node, ele, surf, sf_grp, fluid, fl_prop, cd_prop,   &
      &    Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD,                   &

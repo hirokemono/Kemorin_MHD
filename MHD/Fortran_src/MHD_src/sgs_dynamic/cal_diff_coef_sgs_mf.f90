@@ -4,7 +4,7 @@
 !     Written by H. Matsui
 !
 !!      subroutine s_cal_diff_coef_sgs_mf                               &
-!!     &         (iak_diff_mf, icomp_sgs_mf, icomp_diff_mf, ie_dfvx,    &
+!!     &         (iak_diff_mf, icomp_sgs_mf, icomp_diff_mf, ie_dfvx, dt,&
 !!     &          FEM_prm, SGS_par, nod_comm, node, ele, surf, sf_grp,  &
 !!     &          Vnod_bcs, Vsf_bcs, iphys, iphys_ele, ele_fld,         &
 !!     &          fluid, layer_tbl, jac_3d_q, jac_3d_l, jac_sf_grp_q,   &
@@ -81,7 +81,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_cal_diff_coef_sgs_mf                                 &
-     &         (iak_diff_mf, icomp_sgs_mf, icomp_diff_mf, ie_dfvx,      &
+     &         (iak_diff_mf, icomp_sgs_mf, icomp_diff_mf, ie_dfvx, dt,  &
      &          FEM_prm, SGS_par, nod_comm, node, ele, surf, sf_grp,    &
      &          Vnod_bcs, Vsf_bcs, iphys, iphys_ele, ele_fld,           &
      &          fluid, layer_tbl, jac_3d_q, jac_3d_l, jac_sf_grp_q,     &
@@ -106,6 +106,7 @@
       integer(kind = kint), intent(in) :: iak_diff_mf
       integer(kind = kint), intent(in) :: icomp_sgs_mf, icomp_diff_mf
       integer(kind = kint), intent(in) :: ie_dfvx
+      real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -151,7 +152,7 @@
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_filter_m_flux_grad'
       call cal_sgs_m_flux_grad_w_coef                                   &
      &   (ifilter_4delta, icomp_sgs_mf,                                 &
-     &    iphys%i_sgs_grad_f, iphys%i_filter_velo, ie_dfvx,             &
+     &    iphys%i_sgs_grad_f, iphys%i_filter_velo, ie_dfvx, dt,         &
      &    FEM_prm, SGS_par%model_p, nod_comm, node, ele, fluid,         &
      &    iphys_ele, ele_fld, jac_3d_q, FEM_elens, sgs_coefs, rhs_tbl,  &
      &    fem_wk, mhd_fem_wk, nod_fld)
@@ -159,8 +160,8 @@
 !   take divergence of filtered heat flux (to iphys%i_sgs_simi)
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_div_sgs_filter_mf_simi'
-      call cal_div_sgs_mf_simi                                          &
-     &   (iphys%i_sgs_simi, iphys%i_sgs_grad_f, iphys%i_filter_velo,    &
+      call cal_div_sgs_mf_simi(iphys%i_sgs_simi,                        &
+     &    iphys%i_sgs_grad_f, iphys%i_filter_velo, dt,                  &
      &    FEM_prm, nod_comm, node, ele, fluid, iphys_ele, ele_fld,      &
      &    jac_3d_q, rhs_tbl, fem_wk, mhd_fem_wk, f_l, f_nl, nod_fld)
 !
@@ -168,7 +169,7 @@
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_div_sgs_m_flux_simi'
       call cal_div_sgs_mf_simi                                          &
-     &   (iphys%i_sgs_grad, iphys%i_SGS_m_flux, iphys%i_velo,           &
+     &   (iphys%i_sgs_grad, iphys%i_SGS_m_flux, iphys%i_velo, dt,       &
      &    FEM_prm, nod_comm, node, ele, fluid, iphys_ele, ele_fld,      &
      &    jac_3d_q, rhs_tbl, fem_wk, mhd_fem_wk,                        &
      &    f_l, f_nl, nod_fld)

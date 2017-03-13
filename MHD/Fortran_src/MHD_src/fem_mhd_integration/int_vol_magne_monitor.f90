@@ -9,12 +9,12 @@
 !        modified by H. Matsui on Aug., 2007
 !
 !!      subroutine int_vol_magne_monitor_pg                             &
-!!     &         (i_field, iak_diff_uxb, num_int,                         &
+!!     &         (i_field, iak_diff_uxb, num_int,                       &
 !!     &          SGS_param, cmt_param, node, ele, conduct, cd_prop,    &
 !!     &          iphys, nod_fld, iphys_ele, ele_fld, jac_3d, rhs_tbl,  &
 !!     &           FEM_elen, diff_coefs, mhd_fem_wk, fem_wk, f_nl)
 !!      subroutine int_vol_magne_monitor_upm                            &
-!!     &         (i_field, iak_diff_uxb, num_int,                       &
+!!     &         (i_field, iak_diff_uxb, num_int, dt,                   &
 !!     &          SGS_param, cmt_param, node, ele, conduct, cd_prop,    &
 !!     &          iphys, nod_fld, iphys_ele, ele_fld, jac_3d, rhs_tbl,  &
 !!     &          FEM_elen, diff_coefs, mhd_fem_wk, fem_wk, f_nl)
@@ -133,7 +133,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_magne_monitor_upm                              &
-     &         (i_field, iak_diff_uxb, num_int,                         &
+     &         (i_field, iak_diff_uxb, num_int, dt,                     &
      &          SGS_param, cmt_param, node, ele, conduct, cd_prop,      &
      &          iphys, nod_fld, iphys_ele, ele_fld, jac_3d, rhs_tbl,    &
      &          FEM_elen, diff_coefs, mhd_fem_wk, fem_wk, f_nl)
@@ -145,6 +145,7 @@
 !
       integer(kind=kint), intent(in) :: i_field, iak_diff_uxb
       integer(kind=kint), intent(in) :: num_int
+      real(kind = kreal), intent(in) :: dt
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
@@ -169,13 +170,13 @@
       if (i_field .eq. iphys%i_induction) then
         call int_vol_mag_induct_upm(node, ele, cd_prop,                 &
      &      jac_3d, rhs_tbl, nod_fld, iphys, iphys_ele,                 &
-     &      conduct%istack_ele_fld_smp, num_int,                        &
+     &      conduct%istack_ele_fld_smp, num_int, dt,                    &
      &      ele_fld%ntot_phys, ele_fld%d_fld, fem_wk, mhd_fem_wk, f_nl)
 !
       else if (i_field .eq. iphys%i_induct_div) then
         call int_vol_div_as_tsr_upw                                     &
      &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
-     &      conduct%istack_ele_fld_smp, num_int,                        &
+     &      conduct%istack_ele_fld_smp, num_int, dt,                    &
      &      iphys%i_induct_t, ele_fld%ntot_phys, iphys_ele%i_magne,     &
      &      ele_fld%d_fld, fem_wk, f_nl)
 !
@@ -183,7 +184,7 @@
         if(cmt_param%iflag_c_uxb .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_idct_mod_upm(node, ele,                  &
      &        nod_fld, iphys, jac_3d, rhs_tbl, FEM_elen, diff_coefs,    &
-     &        conduct%istack_ele_fld_smp, num_int,                      &
+     &        conduct%istack_ele_fld_smp, num_int, dt,                  &
      &        SGS_param%ifilter_final, iak_diff_uxb,                    &
      &        cd_prop%coef_induct, ele_fld%ntot_phys,                   &
      &        iphys_ele%i_magne, ele_fld%d_fld, fem_wk,                 &
@@ -191,7 +192,7 @@
         else
           call int_vol_div_as_tsr_cst_upw                               &
      &       (node, ele, jac_3d, rhs_tbl, nod_fld,                      &
-     &        conduct%istack_ele_fld_smp, num_int,                      &
+     &        conduct%istack_ele_fld_smp, num_int, dt,                  &
      &        iphys%i_SGS_induct_t, ele_fld%ntot_phys,                  &
      &        iphys_ele%i_magne, ele_fld%d_fld, cd_prop%coef_induct,    &
      &        fem_wk, f_nl)

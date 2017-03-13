@@ -6,24 +6,24 @@
 !
 !!      subroutine int_vol_gradient_upw                                 &
 !!     &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack, &
-!!     &          num_int, i_field, ncomp_ele, iv_up, d_ele,            &
+!!     &          num_int, dt, i_field, ncomp_ele, iv_up, d_ele,        &
 !!     &          fem_wk, f_nl)
 !!      subroutine int_vol_divergence_upw                               &
 !!     &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack, &
-!!     &          num_int, i_field, ncomp_ele, iv_up, d_ele,            &
+!!     &          num_int, dt, i_field, ncomp_ele, iv_up, d_ele,        &
 !!     &          fem_wk, f_nl)
 !!      subroutine int_vol_rotation_upw                                 &
 !!     &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack, &
-!!     &          num_int, i_field, ncomp_ele, iv_up, d_ele,            &
+!!     &          num_int, dt, i_field, ncomp_ele, iv_up, d_ele,        &
 !!     &          fem_wk, f_nl)
 !!
 !!      subroutine int_vol_div_tsr_upw                                  &
 !!     &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack, &
-!!     &          num_int, i_field, ncomp_ele, iv_up, d_ele,            &
+!!     &          num_int, dt, i_field, ncomp_ele, iv_up, d_ele,        &
 !!     &          fem_wk, f_nl)
 !!      subroutine int_vol_div_as_tsr_upw                               &
 !!     &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack, &
-!!     &          num_int, i_field, ncomp_ele, iv_up, d_ele,            &
+!!     &          num_int, dt, i_field, ncomp_ele, iv_up, d_ele,        &
 !!     &          fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -36,9 +36,8 @@
       module int_vol_vect_diff_upw
 !
       use m_precision
-!
       use m_phys_constants
-      use m_t_step_parameter
+!
       use t_geometry_data
       use t_phys_data
       use t_jacobians
@@ -59,7 +58,7 @@
 !
       subroutine int_vol_gradient_upw                                   &
      &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack,   &
-     &          num_int, i_field, ncomp_ele, iv_up, d_ele,              &
+     &          num_int, dt, i_field, ncomp_ele, iv_up, d_ele,          &
      &          fem_wk, f_nl)
 !
       type(node_data), intent(in) :: node
@@ -74,6 +73,7 @@
 !
       integer(kind = kint), intent(in) :: ncomp_ele, iv_up
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
+      real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -101,7 +101,7 @@
 !
       subroutine int_vol_divergence_upw                                 &
      &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack,   &
-     &          num_int, i_field, ncomp_ele, iv_up, d_ele,              &
+     &          num_int, dt, i_field, ncomp_ele, iv_up, d_ele,          &
      &          fem_wk, f_nl)
 !
       type(node_data), intent(in) :: node
@@ -116,6 +116,7 @@
 !
       integer(kind = kint), intent(in) :: ncomp_ele, iv_up
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
+      real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -143,7 +144,7 @@
 !
       subroutine int_vol_rotation_upw                                   &
      &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack,   &
-     &          num_int, i_field, ncomp_ele, iv_up, d_ele,              &
+     &          num_int, dt, i_field, ncomp_ele, iv_up, d_ele,          &
      &          fem_wk, f_nl)
 !
       type(node_data), intent(in) :: node
@@ -158,6 +159,7 @@
 !
       integer(kind = kint), intent(in) :: ncomp_ele, iv_up
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
+      real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -186,7 +188,7 @@
 !
       subroutine int_vol_div_tsr_upw                                    &
      &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack,   &
-     &          num_int, i_field, ncomp_ele, iv_up, d_ele,              &
+     &          num_int, dt, i_field, ncomp_ele, iv_up, d_ele,          &
      &          fem_wk, f_nl)
 !
       type(node_data), intent(in) :: node
@@ -201,6 +203,7 @@
 !
       integer(kind = kint), intent(in) :: ncomp_ele, iv_up
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
+      real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -228,7 +231,7 @@
 !
       subroutine int_vol_div_as_tsr_upw                                 &
      &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack,   &
-     &          num_int, i_field, ncomp_ele, iv_up, d_ele,              &
+     &          num_int, dt, i_field, ncomp_ele, iv_up, d_ele,          &
      &          fem_wk, f_nl)
 !
       type(node_data), intent(in) :: node
@@ -243,6 +246,7 @@
 !
       integer(kind = kint), intent(in) :: ncomp_ele, iv_up
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
+      real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl

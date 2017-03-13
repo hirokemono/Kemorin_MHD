@@ -5,7 +5,7 @@
 !     Modified by H. Matsui on Aug., 2007
 !
 !!      subroutine cal_sgs_m_flux_dynamic                               &
-!!     &         (iak_sgs_mf, icomp_sgs_mf, ie_dvx, ie_dfvx,            &
+!!     &         (iak_sgs_mf, icomp_sgs_mf, ie_dvx, ie_dfvx, dt,        &
 !!     &          FEM_prm, SGS_par, nod_comm, node, ele, iphys,         &
 !!     &          iphys_ele, ele_fld, fluid, layer_tbl,                 &
 !!     &          jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,    &
@@ -70,7 +70,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_sgs_m_flux_dynamic                                 &
-     &         (iak_sgs_mf, icomp_sgs_mf, ie_dvx, ie_dfvx,              &
+     &         (iak_sgs_mf, icomp_sgs_mf, ie_dvx, ie_dfvx, dt,          &
      &          FEM_prm, SGS_par, nod_comm, node, ele, iphys,           &
      &          iphys_ele, ele_fld, fluid, layer_tbl,                   &
      &          jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,      &
@@ -88,7 +88,8 @@
       use reduce_model_coefs
 !
       integer(kind = kint), intent(in) :: iak_sgs_mf, icomp_sgs_mf
-      integer (kind=kint), intent(in) :: ie_dvx, ie_dfvx
+      integer(kind = kint), intent(in) :: ie_dvx, ie_dfvx
+      real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -141,7 +142,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_filter_mf_grad_4_dyn'
       call cal_sgs_m_flux_grad_no_coef(ifilter_4delta,                  &
-     &    iphys%i_sgs_grad_f, iphys%i_filter_velo, ie_dfvx,             &
+     &    iphys%i_sgs_grad_f, iphys%i_filter_velo, ie_dfvx, dt,         &
      &    FEM_prm, nod_comm, node, ele, fluid, iphys_ele, ele_fld,      &
      &    jac_3d_q, FEM_elens, rhs_tbl, fem_wk, mhd_fem_wk, nod_fld)
 !      call check_nodal_data                                            &
@@ -151,7 +152,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_m_flux_grad_4_dyn'
       call cal_sgs_m_flux_grad_no_coef(ifilter_2delta,                  &
-     &    iphys%i_SGS_m_flux, iphys%i_velo, ie_dvx,                     &
+     &    iphys%i_SGS_m_flux, iphys%i_velo, ie_dvx, dt,                 &
      &    FEM_prm, nod_comm, node, ele, fluid, iphys_ele, ele_fld,      &
      &    jac_3d_q, FEM_elens, rhs_tbl, fem_wk, mhd_fem_wk, nod_fld)
 !

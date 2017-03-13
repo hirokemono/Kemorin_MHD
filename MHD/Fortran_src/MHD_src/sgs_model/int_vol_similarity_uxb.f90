@@ -7,7 +7,7 @@
 !!      subroutine int_simi_vp_induct(num_int, icomp_sgs_uxb,           &
 !!     &          node, ele, conduct, iphys, nod_fld, jac_3d,           &
 !!     &          rhs_tbl, sgs_coefs, fem_wk, f_nl)
-!!      subroutine int_simi_vp_induct_upm(num_int, icomp_sgs_uxb,       &
+!!      subroutine int_simi_vp_induct_upm(num_int, dt, icomp_sgs_uxb,   &
 !!     &          node, ele, conduct, iphys, nod_fld, jac_3d, rhs_tbl,  &
 !!     &          sgs_coefs, ncomp_ele, iele_magne, d_ele, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
@@ -29,7 +29,6 @@
 !
       use m_machine_parameter
       use m_phys_constants
-      use m_t_step_parameter
 !
       use t_FEM_control_parameter
       use t_geometry_data_MHD
@@ -97,7 +96,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_simi_vp_induct_upm(num_int, icomp_sgs_uxb,         &
+      subroutine int_simi_vp_induct_upm(num_int, dt, icomp_sgs_uxb,     &
      &          node, ele, conduct, iphys, nod_fld, jac_3d, rhs_tbl,    &
      &          sgs_coefs, ncomp_ele, iele_magne, d_ele, fem_wk, f_nl)
 !
@@ -120,6 +119,7 @@
 !
       integer(kind = kint), intent(in) :: ncomp_ele, iele_magne
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
+      real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl

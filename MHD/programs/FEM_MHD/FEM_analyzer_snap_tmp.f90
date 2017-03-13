@@ -270,7 +270,6 @@
       use coordinate_convert_4_sph
 !
       use products_nodal_fields_smp
-      use int_sgs_induction
       use cal_momentum_terms
       use cal_sgs_4_monitor
       use int_sgs_induction
@@ -294,7 +293,7 @@
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead radial', trim(fhd_div_SGS_m_flux)
         call cal_terms_4_momentum(iphys%i_SGS_div_m_flux,               &
-     &      ifld_diff%i_mom_flux, ifld_diff%i_lorentz,                  &
+     &      ifld_diff%i_mom_flux, ifld_diff%i_lorentz, dt,              &
      &      FEM_prm1, SGS_par1%model_p, SGS_par1%commute_p,             &
      &      mesh1%nod_comm, mesh1%node, mesh1%ele, ele_mesh1%surf,      &
      &      group1%surf_grp, MHD_mesh1%fluid, fl_prop1, cd_prop1,       &
@@ -328,7 +327,7 @@
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_vp_induct)
         call cal_sgs_uxb_2_monitor                                      &
-     &     (icomp_sgs%i_induction, iphys_elediff%i_velo,                &
+     &     (icomp_sgs%i_induction, iphys_elediff%i_velo, dt,            &
      &      FEM_prm1, SGS_par1%model_p, SGS_par1%filter_p,              &
      &      mesh1%nod_comm, mesh1%node, mesh1%ele,                      &
      &      MHD_mesh1%conduct, cd_prop1, iphys, iphys_ele, fld_ele1,    &

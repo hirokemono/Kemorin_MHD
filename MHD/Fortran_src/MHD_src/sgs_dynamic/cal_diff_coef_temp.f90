@@ -3,7 +3,7 @@
 !
 !     Written by H. Matsui
 !
-!!      subroutine s_cal_diff_coef_scalar(iflag_supg, num_int,          &
+!!      subroutine s_cal_diff_coef_scalar(iflag_supg, num_int, dt,      &
 !!     &          ifield, ifield_f, iak_diff_t, icomp_diff_t,           &
 !!     &          SGS_par, nod_comm, node, ele, surf, sf_grp,           &
 !!     &          Tsf_bcs, iphys, iphys_ele, ele_fld, fluid,            &
@@ -77,7 +77,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_diff_coef_scalar(iflag_supg, num_int,            &
+      subroutine s_cal_diff_coef_scalar(iflag_supg, num_int, dt,        &
      &          ifield, ifield_f, iak_diff_t, icomp_diff_t,             &
      &          SGS_par, nod_comm, node, ele, surf, sf_grp,             &
      &          Tsf_bcs, iphys, iphys_ele, ele_fld, fluid,              &
@@ -101,6 +101,7 @@
       integer(kind = kint), intent(in) :: iflag_supg, num_int
       integer(kind = kint), intent(in) :: iak_diff_t, icomp_diff_t
       integer(kind = kint), intent(in) :: ifield, ifield_f
+      real(kind = kreal), intent(in) :: dt
 !
       type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm
@@ -142,7 +143,7 @@
       if (iflag_debug.gt.0) write(*,*) 'cal_gradent_in_fluid',          &
      &        iphys%i_sgs_simi, ifield_f
       call choose_cal_gradient                                          &
-     &   (iflag_supg, num_int, ifield_f, iphys%i_sgs_simi,              &
+     &   (iflag_supg, num_int, dt, ifield_f, iphys%i_sgs_simi,          &
      &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d_q,            &
      &    rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
@@ -152,7 +153,7 @@
       if (iflag_debug.gt.0) write(*,*) 'cal_gradent_in_fluid',          &
      &                     iphys%i_sgs_grad, ifield
       call choose_cal_gradient                                          &
-     &   (iflag_supg, num_int, ifield, iphys%i_sgs_grad,                &
+     &   (iflag_supg, num_int, dt, ifield, iphys%i_sgs_grad,            &
      &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d_q,            &
      &    rhs_tbl, fem_wk, f_l, f_nl, nod_fld)

@@ -31,7 +31,6 @@
       use m_error_IDs
 !
       use m_machine_parameter
-      use m_t_step_parameter
 !
       use calypso_mpi
       use t_ctl_data_temp_model

@@ -4,13 +4,13 @@
 !      Written by H. Matsui
 !
 !!      subroutine cal_sgs_s_flux_grad_w_coef                           &
-!!     &         (iflag_supg, num_int, itype_Csym_flux, icoord_Csim,    &
+!!     &         (iflag_supg, num_int, dt, itype_Csym_flux, icoord_Csim,&
 !!     &          i_filter, icomp_sgs_hf, i_sgs, i_field, ie_dvx,       &
 !!     &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,       &
 !!     &          jac_3d, rhs_tbl, FEM_elens, sgs_coefs,                &
 !!     &          mhd_fem_wk, fem_wk, f_l, nod_fld)
-!!      subroutine cal_sgs_s_flux_grad_no_coef                          &
-!!     &         (iflag_supg, num_int, i_filter, i_sgs, i_field, ie_dvx,&
+!!      subroutine cal_sgs_s_flux_grad_no_coef(iflag_supg, num_int, dt, &
+!!     &          i_filter, i_sgs, i_field, ie_dvx,                     &
 !!     &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,       &
 !!     &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,       &
 !!     &          f_l, nod_fld)
@@ -57,7 +57,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_sgs_s_flux_grad_w_coef                             &
-     &         (iflag_supg, num_int, itype_Csym_flux, icoord_Csim,      &
+     &         (iflag_supg, num_int, dt, itype_Csym_flux, icoord_Csim,  &
      &          i_filter, icomp_sgs_hf, i_sgs, i_field, ie_dvx,         &
      &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,         &
      &          jac_3d, rhs_tbl, FEM_elens, sgs_coefs,                  &
@@ -85,6 +85,7 @@
       integer (kind=kint), intent(in) :: i_filter, icomp_sgs_hf
       integer (kind=kint), intent(in) :: i_sgs, i_field
       integer (kind=kint), intent(in) :: ie_dvx
+      real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -96,7 +97,7 @@
       call reset_ff_smp(node%max_nod_smp, f_l)
 !
       call sel_int_vol_sgs_flux                                         &
-     &   (iflag_supg, num_int, i_filter, n_vector, i_field, ie_dvx,     &
+     &   (iflag_supg, num_int, dt, i_filter, n_vector, i_field, ie_dvx, &
      &    node, ele, fluid, nod_fld, iphys_ele, ele_fld,                &
      &    jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !
@@ -119,8 +120,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_sgs_s_flux_grad_no_coef                            &
-     &         (iflag_supg, num_int, i_filter, i_sgs, i_field, ie_dvx,  &
+      subroutine cal_sgs_s_flux_grad_no_coef(iflag_supg, num_int, dt,   &
+     &          i_filter, i_sgs, i_field, ie_dvx,                       &
      &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,         &
      &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,         &
      &          f_l, nod_fld)
@@ -144,6 +145,7 @@
       integer (kind=kint), intent(in) :: i_filter
       integer (kind=kint), intent(in) :: i_sgs, i_field
       integer (kind=kint), intent(in) :: ie_dvx
+      real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -155,7 +157,7 @@
       call reset_ff_smp(node%max_nod_smp, f_l)
 !
       call sel_int_vol_sgs_flux                                         &
-     &   (iflag_supg, num_int, i_filter, n_vector, i_field, ie_dvx,     &
+     &   (iflag_supg, num_int, dt, i_filter, n_vector, i_field, ie_dvx, &
      &    node, ele, fluid, nod_fld, iphys_ele, ele_fld,                &
      &    jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !

@@ -5,7 +5,7 @@
 !     Modified by H. Matsui on July, 2007
 !     Modified by H. Matsui on Apr., 2012
 !
-!!      subroutine sel_int_vol_sgs_uxb(i_filter, i_field, id_dx,        &
+!!      subroutine sel_int_vol_sgs_uxb(i_filter, i_field, id_dx, dt,    &
 !!     &          FEM_prm, node, ele, conduct, nod_fld,                 &
 !!     &          iphys_ele, ele_fld, jac_3d, FEM_elens,                &
 !!     &          fem_wk, mhd_fem_wk)
@@ -24,9 +24,7 @@
       module int_vol_sgs_uxb
 !
       use m_precision
-!
       use m_phys_constants
-      use m_t_step_parameter
 !
       use t_FEM_control_parameter
       use t_geometry_data_MHD
@@ -47,7 +45,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sel_int_vol_sgs_uxb(i_filter, i_field, id_dx,          &
+      subroutine sel_int_vol_sgs_uxb(i_filter, i_field, id_dx, dt,      &
      &          FEM_prm, node, ele, conduct, nod_fld,                   &
      &          iphys_ele, ele_fld, jac_3d, FEM_elens,                  &
      &          fem_wk, mhd_fem_wk)
@@ -64,6 +62,7 @@
 !
       integer (kind=kint), intent(in) :: i_field, i_filter
       integer (kind=kint), intent(in) :: id_dx
+      real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -71,7 +70,7 @@
 !
       if (FEM_prm%iflag_magne_supg .eq. id_turn_ON) then
         call int_vol_sgs_uxb_upm                                        &
-     &     (i_filter, i_field, FEM_prm%npoint_t_evo_int,                &
+     &     (i_filter, i_field, FEM_prm%npoint_t_evo_int, dt,            &
      &      node, ele, conduct, nod_fld, jac_3d, FEM_elens,             &
      &      mhd_fem_wk%n_dvx, id_dx, mhd_fem_wk%dvx,                    &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
@@ -133,7 +132,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_sgs_uxb_upm(i_filter, i_field, num_int,        &
+      subroutine int_vol_sgs_uxb_upm(i_filter, i_field, num_int, dt,    &
      &          node, ele, conduct, nod_fld, jac_3d, FEM_elens,         &
      &          ncomp_dvx, id_dx, diff_ele,                             &
      &          ncomp_ele, i_magne, d_ele, fem_wk)
@@ -153,6 +152,7 @@
 !
       integer(kind = kint), intent(in) :: ncomp_dvx, id_dx
       integer(kind = kint), intent(in) :: ncomp_ele, i_magne
+      real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: diff_ele(ele%numele,ncomp_dvx)
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
 !

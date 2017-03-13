@@ -187,7 +187,7 @@
 !
 !
       if(SGS_par%model_p%iflag_SGS_gravity .ne. id_SGS_none) then
-        call cal_sgs_mom_flux_with_sgs_buo(FEM_prm, SGS_par,            &
+        call cal_sgs_mom_flux_with_sgs_buo(dt, FEM_prm, SGS_par,        &
      &      nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,        &
      &      fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,       &
      &      ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,          &
@@ -199,7 +199,7 @@
 !
       if(SGS_par%model_p%iflag_SGS_m_flux .ne. id_SGS_none) then
         call cal_sgs_momentum_flux                                      &
-     &     (icomp_sgs%i_mom_flux, iphys_elediff%i_velo,                 &
+     &     (icomp_sgs%i_mom_flux, iphys_elediff%i_velo, dt,             &
      &      FEM_prm, SGS_par%model_p, SGS_par%filter_p,                 &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
      &      jac_3d_q, rhs_tbl, FEM_elens, filtering,                    &
@@ -209,7 +209,7 @@
 !
       if(SGS_par%model_p%iflag_SGS_lorentz .ne. id_SGS_none) then
         call cal_sgs_maxwell                                            &
-     &     (icomp_sgs%i_lorentz, iphys_elediff%i_magne,                 &
+     &     (icomp_sgs%i_lorentz, iphys_elediff%i_magne, dt,             &
      &      FEM_prm, SGS_par%model_p, SGS_par%filter_p,                 &
      &      nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,      &
      &      jac_3d_q, rhs_tbl, FEM_elens, filtering,                    &

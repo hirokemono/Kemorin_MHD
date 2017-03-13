@@ -7,7 +7,7 @@
 !!      subroutine int_vol_sgs_induction                                &
 !!     &         (FEM_prm, nod_comm, node, ele, conduct, iphys, jac_3d, &
 !!     &          rhs_tbl, mhd_fem_wk, fem_wk, f_nl, nod_fld)
-!!      subroutine cal_sgs_uxb_2_monitor(icomp_sgs_uxb, ie_dvx,         &
+!!      subroutine cal_sgs_uxb_2_monitor(icomp_sgs_uxb, ie_dvx, dt,     &
 !!     &          FEM_prm, SGS_param, filter_param, nod_comm, node, ele,&
 !!     &          conduct, cd_prop, iphys, iphys_ele, ele_fld, jac_3d,  &
 !!     &          rhs_tbl, FEM_elen, filtering, sgs_coefs, wk_filter,   &
@@ -111,7 +111,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_sgs_uxb_2_monitor(icomp_sgs_uxb, ie_dvx,           &
+      subroutine cal_sgs_uxb_2_monitor(icomp_sgs_uxb, ie_dvx, dt,       &
      &          FEM_prm, SGS_param, filter_param, nod_comm, node, ele,  &
      &          conduct, cd_prop, iphys, iphys_ele, ele_fld, jac_3d,    &
      &          rhs_tbl, FEM_elen, filtering, sgs_coefs, wk_filter,     &
@@ -123,6 +123,7 @@
       use nod_phys_send_recv
 !
       integer(kind = kint), intent(in) :: icomp_sgs_uxb, ie_dvx
+      real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
@@ -149,7 +150,7 @@
 !
 !
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
-      call cal_sgs_uxb_2_evo(icomp_sgs_uxb, ie_dvx,                     &
+      call cal_sgs_uxb_2_evo(icomp_sgs_uxb, ie_dvx, dt,                 &
      &    FEM_prm, SGS_param, filter_param, nod_comm, node, ele,        &
      &    conduct, cd_prop, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, &
      &    FEM_elen, filtering, sgs_coefs, wk_filter,                    &

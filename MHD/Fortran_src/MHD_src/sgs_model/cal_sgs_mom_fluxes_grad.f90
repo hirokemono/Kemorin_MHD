@@ -4,12 +4,12 @@
 !      Written by H. Matsui on Apr., 2012
 !
 !!      subroutine cal_sgs_m_flux_grad_w_coef                           &
-!!     &         (i_filter, icm_sgs, i_sgs, i_field, ie_dvx,            &
+!!     &         (i_filter, icm_sgs, i_sgs, i_field, ie_dvx, dt,        &
 !!     &          FEM_prm, SGS_param, nod_comm, node, ele, fluid,       &
 !!     &          iphys_ele, ele_fld, jac_3d, FEM_elens, sgs_coefs,     &
 !!     &          rhs_tbl, fem_wk, mhd_fem_wk, nod_fld)
 !!      subroutine cal_sgs_m_flux_grad_no_coef                          &
-!!     &         (i_filter, i_sgs, i_field, ie_dvx,                     &
+!!     &         (i_filter, i_sgs, i_field, ie_dvx, dt,                 &
 !!     &          FEM_prm, nod_comm, node, ele, fluid,                  &
 !!     &          iphys_ele, ele_fld, jac_3d, FEM_elens,                &
 !!     &           rhs_tbl, fem_wk, mhd_fem_wk, nod_fld)
@@ -60,7 +60,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_sgs_m_flux_grad_w_coef                             &
-     &         (i_filter, icm_sgs, i_sgs, i_field, ie_dvx,              &
+     &         (i_filter, icm_sgs, i_sgs, i_field, ie_dvx, dt,          &
      &          FEM_prm, SGS_param, nod_comm, node, ele, fluid,         &
      &          iphys_ele, ele_fld, jac_3d, FEM_elens, sgs_coefs,       &
      &          rhs_tbl, fem_wk, mhd_fem_wk, nod_fld)
@@ -87,6 +87,7 @@
       integer (kind=kint), intent(in) :: i_filter, icm_sgs
       integer (kind=kint), intent(in) :: i_sgs, i_field
       integer (kind=kint), intent(in) :: ie_dvx
+      real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -97,7 +98,7 @@
       call reset_ff_t_smp(node%max_nod_smp, mhd_fem_wk)
 !
       call sel_int_vol_sgs_flux                                         &
-     &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int,            &
+     &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,        &
      &    i_filter, n_sym_tensor, i_field, ie_dvx,                      &
      &    node, ele, fluid, nod_fld, iphys_ele, ele_fld,                &
      &    jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
@@ -123,7 +124,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_sgs_m_flux_grad_no_coef                            &
-     &         (i_filter, i_sgs, i_field, ie_dvx,                       &
+     &         (i_filter, i_sgs, i_field, ie_dvx, dt,                   &
      &          FEM_prm, nod_comm, node, ele, fluid,                    &
      &          iphys_ele, ele_fld, jac_3d, FEM_elens,                  &
      &          rhs_tbl, fem_wk, mhd_fem_wk, nod_fld)
@@ -147,6 +148,7 @@
       integer (kind=kint), intent(in) :: i_filter
       integer (kind=kint), intent(in) :: i_sgs, i_field
       integer (kind=kint), intent(in) :: ie_dvx
+      real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -157,7 +159,7 @@
       call reset_ff_t_smp(node%max_nod_smp, mhd_fem_wk)
 !
       call sel_int_vol_sgs_flux                                         &
-     &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int,            &
+     &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,        &
      &    i_filter, n_sym_tensor, i_field, ie_dvx,                      &
      &    node, ele, fluid, nod_fld, iphys_ele, ele_fld,                &
      &    jac_3d, FEM_elens, fem_wk, mhd_fem_wk)

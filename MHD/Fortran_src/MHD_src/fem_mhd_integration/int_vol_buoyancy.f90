@@ -15,7 +15,7 @@
 !!     &          fem_wk, f_nl)
 !!      subroutine int_vol_buoyancy_upw                                 &
 !!     &         (node, ele, jac_3d, fl_prop, rhs_tbl, nod_fld,         &
-!!     &          iele_fsmp_stack, n_int, i_source, ak_buo,             &
+!!     &          iele_fsmp_stack, n_int, dt, i_source, ak_buo,         &
 !!     &          ncomp_ele, ie_upw, d_ele, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -32,7 +32,6 @@
 !
       use m_machine_parameter
       use m_phys_constants
-      use m_t_step_parameter
 !
       use t_geometry_data
       use t_phys_data
@@ -96,7 +95,7 @@
 !
       subroutine int_vol_buoyancy_upw                                   &
      &         (node, ele, jac_3d, fl_prop, rhs_tbl, nod_fld,           &
-     &          iele_fsmp_stack, n_int, i_source, ak_buo,               &
+     &          iele_fsmp_stack, n_int, dt, i_source, ak_buo,           &
      &          ncomp_ele, ie_upw, d_ele, fem_wk, f_nl)
 !
       use gravity_vec_each_ele
@@ -114,6 +113,7 @@
       integer(kind = kint), intent(in) :: n_int
       integer(kind = kint), intent(in) :: i_source
       real(kind = kreal), intent(in) :: ak_buo(ele%numele)
+      real(kind = kreal), intent(in) :: dt
 !
       integer(kind = kint), intent(in) :: ncomp_ele, ie_upw
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)

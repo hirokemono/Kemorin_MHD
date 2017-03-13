@@ -14,7 +14,7 @@
 !!     &         coef_induct, fem_wk, mhd_fem_wk, f_nl)
 !!      subroutine int_vol_div_SGS_idct_mod_upm(node, ele,              &
 !!     &         nod_fld, iphys, jac_3d, rhs_tbl, FEM_elens, diff_coefs,&
-!!     &         iele_fsmp_stack, n_int, i_filter, iak_diff_uxb,        &
+!!     &         iele_fsmp_stack, n_int, dt, i_filter, iak_diff_uxb,    &
 !!     &         coef_induct, ncomp_ele, i_magne, d_ele,                &
 !!     &         fem_wk, mhd_fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
@@ -36,7 +36,6 @@
 !
       use m_phys_constants
       use m_fem_gauss_int_coefs
-      use m_t_step_parameter
       use t_geometry_data
       use t_phys_address
       use t_phys_data
@@ -107,7 +106,7 @@
 !
       subroutine int_vol_div_SGS_idct_mod_upm(node, ele,                &
      &         nod_fld, iphys, jac_3d, rhs_tbl, FEM_elens, diff_coefs,  &
-     &         iele_fsmp_stack, n_int, i_filter, iak_diff_uxb,          &
+     &         iele_fsmp_stack, n_int, dt, i_filter, iak_diff_uxb,      &
      &         coef_induct, ncomp_ele, i_magne, d_ele,                  &
      &         fem_wk, mhd_fem_wk, f_nl)
 !
@@ -128,6 +127,7 @@
       integer(kind = kint), intent(in) :: n_int, i_filter, iak_diff_uxb
 !
       integer(kind = kint), intent(in) :: ncomp_ele, i_magne
+      real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
       real(kind=kreal), intent(in) :: coef_induct
 !

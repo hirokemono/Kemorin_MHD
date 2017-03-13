@@ -11,7 +11,7 @@
 !!      subroutine cal_terms_4_heat(i_SGS_div_flux,                     &
 !!     &          i_velo, i_field, i_SGS_flux, iak_diff_flux,           &
 !!     &          iflag_supg, num_int, ifilter_final, iflag_SGS_flux,   &
-!!     &          iflag_commute_flux, iflag_commute_field,              &
+!!     &          iflag_commute_flux, iflag_commute_field, dt,          &
 !!     &          FEM_prm, nod_comm, node, ele, surf, fluid, sf_grp,    &
 !!     &          property, Snod_bcs, Ssf_bcs, iphys_ele, ele_fld,      &
 !!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,   &
@@ -77,7 +77,7 @@
       subroutine cal_terms_4_heat (i_SGS_div_flux,                      &
      &          i_velo, i_field, i_SGS_flux, iak_diff_flux,             &
      &          iflag_supg, num_int, ifilter_final, iflag_SGS_flux,     &
-     &          iflag_commute_flux, iflag_commute_field,                &
+     &          iflag_commute_flux, iflag_commute_field, dt,            &
      &          FEM_prm, nod_comm, node, ele, surf, fluid, sf_grp,      &
      &          property, Snod_bcs, Ssf_bcs, iphys_ele, ele_fld,        &
      &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,     &
@@ -98,6 +98,7 @@
       integer (kind=kint), intent(in) :: i_SGS_div_flux
       integer(kind=kint), intent(in) :: i_velo, i_field, i_SGS_flux
       integer(kind=kint), intent(in) :: iak_diff_flux
+      real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
@@ -126,11 +127,12 @@
 !
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
-      call sel_int_vol_div_sgs_flux(iflag_supg, num_int, ifilter_final, &
-     &     iflag_commute_flux, i_velo, i_field, i_SGS_flux,             &
-     &     iak_diff_flux, node, ele, fluid, property, nod_fld,          &
-     &     iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,              &
-     &     diff_coefs, mhd_fem_wk, fem_wk, f_nl)
+      call sel_int_vol_div_sgs_flux                                     &
+     &    (iflag_supg, num_int, ifilter_final, iflag_commute_flux,      &
+     &     i_velo, i_field, i_SGS_flux, iak_diff_flux, dt,              &
+     &     node, ele, fluid, property, nod_fld, iphys_ele, ele_fld,     &
+     &     jac_3d, rhs_tbl, FEM_elens, diff_coefs,                      &
+     &     mhd_fem_wk, fem_wk, f_nl)
 !
       if(iflag_commute_field .ne. id_SGS_commute_OFF                    &
           .and. iflag_SGS_flux .ne. id_SGS_none) then
@@ -166,7 +168,7 @@
 !
       subroutine sel_int_vol_div_sgs_flux                               &
      &         (iflag_supg, num_int, ifilter_final, iflag_commute_flux, &
-     &          i_velo, i_field, i_SGS_flux, iak_diff_flux,             &
+     &          i_velo, i_field, i_SGS_flux, iak_diff_flux, dt,         &
      &          node, ele, fluid, property, nod_fld,                    &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
      &          diff_coefs, mhd_fem_wk, fem_wk, f_nl)
@@ -180,6 +182,7 @@
 !
       integer(kind=kint), intent(in) :: i_velo, i_field, i_SGS_flux
       integer(kind=kint), intent(in) :: iak_diff_flux
+      real(kind = kreal), intent(in) :: dt
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -202,10 +205,10 @@
         if(iflag_supg .gt. id_turn_OFF) then
           call int_vol_div_SGS_vec_flux_upw(node, ele, nod_fld,         &
      &       jac_3d, rhs_tbl, FEM_elens, diff_coefs,                    &
-     &       fluid%istack_ele_fld_smp, num_int,                         &
+     &       fluid%istack_ele_fld_smp, num_int, dt,                     &
      &       i_velo, i_field, i_SGS_flux, ifilter_final, iak_diff_flux, &
-     &        ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,       &
-     &        property%coef_nega_adv, fem_wk, mhd_fem_wk, f_nl)
+     &       ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,        &
+     &       property%coef_nega_adv, fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_div_SGS_vec_flux(node, ele, nod_fld,             &
      &       jac_3d, rhs_tbl, FEM_elens, diff_coefs,                    &
@@ -217,7 +220,7 @@
         if(iflag_supg .gt. id_turn_OFF) then
           call int_vol_div_w_const_upw                                  &
      &       (node, ele, jac_3d, rhs_tbl, nod_fld,                      &
-              fluid%istack_ele_fld_smp, num_int,                        &
+              fluid%istack_ele_fld_smp, num_int, dt,                    &
      &        i_SGS_flux, ele_fld%ntot_phys, iphys_ele%i_velo,          &
      &        ele_fld%d_fld, property%coef_nega_adv, fem_wk, f_nl)
         else

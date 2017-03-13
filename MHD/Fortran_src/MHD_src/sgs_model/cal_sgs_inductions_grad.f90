@@ -4,13 +4,13 @@
 !      Written by H. Matsui
 !
 !!      subroutine cal_sgs_induct_t_grad_w_coef(i_filter, icomp_sgs_uxb,&
-!!     &          i_sgs, ifield_v, ifield_b, ie_dvx, ie_dbx,            &
+!!     &          i_sgs, ifield_v, ifield_b, ie_dvx, ie_dbx, dt,        &
 !!     &          FEM_prm, SGS_param, nod_comm, node, ele, conduct,     &
 !!     &          cd_prop, iphys_ele, ele_fld, jac_3d, rhs_tbl,         &
 !!     &          FEM_elen, sgs_coefs, fem_wk, mhd_fem_wk, f_l, nod_fld)
 !!      subroutine cal_sgs_induct_t_grad_no_coef                        &
 !!     &         (i_filter, i_sgs, ifield_v, ifield_b, ie_dvx, ie_dbx,  &
-!!     &          FEM_prm, nod_comm, node, ele, conduct, cd_prop,       &
+!!     &          dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,   &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elen,        &
 !!     &          fem_wk, mhd_fem_wk, f_l, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -58,7 +58,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_sgs_induct_t_grad_w_coef(i_filter, icomp_sgs_uxb,  &
-     &          i_sgs, ifield_v, ifield_b, ie_dvx, ie_dbx,              &
+     &          i_sgs, ifield_v, ifield_b, ie_dvx, ie_dbx, dt,          &
      &          FEM_prm, SGS_param, nod_comm, node, ele, conduct,       &
      &          cd_prop, iphys_ele, ele_fld, jac_3d, rhs_tbl,           &
      &          FEM_elen, sgs_coefs, fem_wk, mhd_fem_wk, f_l, nod_fld)
@@ -86,6 +86,7 @@
       integer (kind=kint), intent(in) :: i_filter, icomp_sgs_uxb
       integer (kind=kint), intent(in) :: i_sgs, ifield_v, ifield_b
       integer (kind=kint), intent(in) :: ie_dvx, ie_dbx
+      real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
@@ -97,10 +98,10 @@
       call reset_sk6(n_asym_tensor, ele, fem_wk%sk6)
       call reset_ff_smp(node%max_nod_smp, f_l)
 !
-      call sel_int_vol_sgs_induct_t(i_filter, ie_dvx, ie_dbx,           &
-     &    ifield_v, ifield_b, FEM_prm, node, ele, conduct,              &
-     &    nod_fld, iphys_ele, ele_fld, jac_3d, FEM_elen,                &
-     &    fem_wk, mhd_fem_wk)
+      call sel_int_vol_sgs_induct_t                                     &
+     &   (i_filter, ie_dvx, ie_dbx, ifield_v, ifield_b, dt,             &
+     &    FEM_prm, node, ele, conduct, nod_fld, iphys_ele, ele_fld,     &
+     &    jac_3d, FEM_elen, fem_wk, mhd_fem_wk)
 !
 !     set elemental model coefficients
 !
@@ -124,7 +125,7 @@
 !
       subroutine cal_sgs_induct_t_grad_no_coef                          &
      &         (i_filter, i_sgs, ifield_v, ifield_b, ie_dvx, ie_dbx,    &
-     &          FEM_prm, nod_comm, node, ele, conduct, cd_prop,         &
+     &          dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,     &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elen,          &
      &          fem_wk, mhd_fem_wk, f_l, nod_fld)
 !
@@ -148,6 +149,7 @@
       integer (kind=kint), intent(in) :: i_filter
       integer (kind=kint), intent(in) :: i_sgs, ifield_v, ifield_b
       integer (kind=kint), intent(in) :: ie_dvx, ie_dbx
+      real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
@@ -159,10 +161,10 @@
       call reset_sk6(n_asym_tensor, ele, fem_wk%sk6)
       call reset_ff_smp(node%max_nod_smp, f_l)
 !
-      call sel_int_vol_sgs_induct_t(i_filter, ie_dvx, ie_dbx,           &
-     &    ifield_v, ifield_b, FEM_prm, node, ele, conduct,              &
-     &    nod_fld, iphys_ele, ele_fld, jac_3d, FEM_elen,                &
-     &    fem_wk, mhd_fem_wk)
+      call sel_int_vol_sgs_induct_t                                     &
+     &   (i_filter, ie_dvx, ie_dbx, ifield_v, ifield_b, dt,             &
+     &    FEM_prm, node, ele, conduct, nod_fld, iphys_ele, ele_fld,     &
+     &    jac_3d, FEM_elen, fem_wk, mhd_fem_wk)
 !
       call add3_skv_coef_to_ff_v_smp(node, ele, rhs_tbl,                &
      &    cd_prop%coef_induct, fem_wk%sk6, f_l%ff_smp)

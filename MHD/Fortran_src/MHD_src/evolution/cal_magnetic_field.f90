@@ -169,8 +169,8 @@
 !
       if (iflag_debug .gt. 0)  write(*,*) 'vector_p_pre'
       call cal_vector_p_pre(ifld_diff%i_magne, icomp_sgs%i_induction,   &
-     &   iphys_elediff%i_velo, ak_d_magne, FEM_prm,                     &
-     &   SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,          &
+     &   iphys_elediff%i_velo, ak_d_magne,                              &
+     &   FEM_prm, SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p, &
      &   nod_comm, node, ele, surf, conduct,                            &
      &   sf_grp, cd_prop, Bnod_bcs, Asf_bcs, iphys, iphys_ele,          &
      &   ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,           &

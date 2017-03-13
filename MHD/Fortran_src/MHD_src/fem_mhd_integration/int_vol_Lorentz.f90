@@ -24,11 +24,11 @@
 !!
 !!      subroutine int_vol_Lorentz_upw                                  &
 !!     &         (node, ele, fl_prop, cd_prop, jac_3d, rhs_tbl, nod_fld,&
-!!     &          iele_fsmp_stack, n_int, i_magne, ncomp_ele,           &
+!!     &          iele_fsmp_stack, n_int, dt, i_magne, ncomp_ele,       &
 !!     &          iele_magne, ie_upw, d_ele, fem_wk, mhd_fem_wk, f_nl)
 !!      subroutine int_vol_full_Lorentz_upw                             &
 !!     &         (node, ele, fl_prop, cd_prop, jac_3d, rhs_tbl, nod_fld,&
-!!     &          iele_fsmp_stack, n_int, i_magne, ncomp_ele,           &
+!!     &          iele_fsmp_stack, n_int, dt, i_magne, ncomp_ele,       &
 !!     &          iele_magne, ie_upw, d_ele, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -48,7 +48,6 @@
 !
       use m_machine_parameter
       use m_phys_constants
-      use m_t_step_parameter
 !
       use t_physical_property
       use t_geometry_data
@@ -227,7 +226,7 @@
 !
       subroutine int_vol_Lorentz_upw                                    &
      &         (node, ele, fl_prop, cd_prop, jac_3d, rhs_tbl, nod_fld,  &
-     &          iele_fsmp_stack, n_int, i_magne, ncomp_ele,             &
+     &          iele_fsmp_stack, n_int, dt, i_magne, ncomp_ele,         &
      &          iele_magne, ie_upw, d_ele, fem_wk, mhd_fem_wk, f_nl)
 !
       use cal_add_smp
@@ -249,6 +248,7 @@
 !
       integer(kind = kint), intent(in) :: ncomp_ele, iele_magne, ie_upw
       real(kind = kreal), intent(inout) :: d_ele(ele%numele,ncomp_ele)
+      real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -283,7 +283,7 @@
 !
       subroutine int_vol_full_Lorentz_upw                               &
      &         (node, ele, fl_prop, cd_prop, jac_3d, rhs_tbl, nod_fld,  &
-     &          iele_fsmp_stack, n_int, i_magne, ncomp_ele,             &
+     &          iele_fsmp_stack, n_int, dt, i_magne, ncomp_ele,         &
      &          iele_magne, ie_upw, d_ele, fem_wk, f_nl)
 !
       use cal_add_smp
@@ -304,6 +304,7 @@
 !
       integer(kind = kint), intent(in) :: ncomp_ele, iele_magne, ie_upw
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
+      real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl

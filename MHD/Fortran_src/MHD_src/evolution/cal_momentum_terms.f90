@@ -4,7 +4,7 @@
 !     Written by H. Matsui on June, 2005
 !
 !!      subroutine cal_terms_4_momentum                                 &
-!!     &       (i_field, iak_diff_mf, iak_diff_lor,                     &
+!!     &       (i_field, iak_diff_mf, iak_diff_lor, dt,                 &
 !!     &        FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,     &
 !!     &        surf, sf_grp, fluid, fl_prop, cd_prop, Vsf_bcs, Bsf_bcs,&
 !!     &        iphys, iphys_ele, ak_MHD, jac_3d, jac_sf_grp, rhs_tbl,  &
@@ -87,7 +87,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_terms_4_momentum                                   &
-     &       (i_field, iak_diff_mf, iak_diff_lor,                       &
+     &       (i_field, iak_diff_mf, iak_diff_lor, dt,                   &
      &        FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,       &
      &        surf, sf_grp, fluid, fl_prop, cd_prop, Vsf_bcs, Bsf_bcs,  &
      &        iphys, iphys_ele, ak_MHD, jac_3d, jac_sf_grp, rhs_tbl,    &
@@ -99,6 +99,7 @@
 !
       integer (kind=kint), intent(in) :: i_field
       integer(kind= kint), intent(in) :: iak_diff_mf, iak_diff_lor
+      real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
@@ -134,14 +135,14 @@
 !
       if(FEM_prm%iflag_velo_supg .eq. id_turn_ON) then
         call int_vol_velo_monitor_upwind                                &
-     &     (i_field, iak_diff_mf, iak_diff_lor, iphys_ele%i_velo,       &
+     &     (i_field, iak_diff_mf, iak_diff_lor, iphys_ele%i_velo, dt,   &
      &      FEM_prm, SGS_param, cmt_param, node, ele, fluid,            &
      &      fl_prop, cd_prop, iphys, nod_fld, iphys_ele, ak_MHD,        &
      &      jac_3d, rhs_tbl, FEM_elens, diff_coefs,                     &
      &      mhd_fem_wk, fem_wk, f_nl, ele_fld)
       else if (FEM_prm%iflag_velo_supg .eq. id_magnetic_SUPG) then
         call int_vol_velo_monitor_upwind                                &
-     &     (i_field, iak_diff_mf, iak_diff_lor, iphys_ele%i_magne,      &
+     &     (i_field, iak_diff_mf, iak_diff_lor, iphys_ele%i_magne, dt,  &
      &      FEM_prm, SGS_param, cmt_param, node, ele, fluid,            &
      &      fl_prop, cd_prop, iphys, nod_fld, iphys_ele, ak_MHD,        &
      &      jac_3d, rhs_tbl, FEM_elens, diff_coefs,                     &

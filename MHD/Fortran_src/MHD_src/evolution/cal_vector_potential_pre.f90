@@ -176,7 +176,7 @@
 !  lead induction terms
 !
       if ( SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
-        call cal_sgs_uxb_2_evo(icomp_sgs_uxb, ie_dvx,                   &
+        call cal_sgs_uxb_2_evo(icomp_sgs_uxb, ie_dvx, dt,               &
      &      FEM_prm, SGS_param, filter_param, nod_comm, node, ele,      &
      &      conduct, cd_prop, iphys, iphys_ele, ele_fld, jac_3d_q,      &
      &      rhs_tbl, FEM_elens, filtering, sgs_coefs, wk_filter,        &
