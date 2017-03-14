@@ -3,19 +3,19 @@
 !
 !      Written by H. Matsui on March, 2006
 !
-!!      subroutine cal_velo_co_lumped_crank                             &
-!!     &         (i_velo, FEM_prm, nod_comm, node, ele, fluid, fl_prop, &
+!!      subroutine cal_velo_co_lumped_crank(i_velo, dt,                 &
+!!     &          FEM_prm, nod_comm, node, ele, fluid, fl_prop,         &
 !!     &          Vnod_bcs, nod_fld, iphys_ele, fld_ele, jac_3d,        &
 !!     &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
-!!      subroutine cal_magne_co_lumped_crank                            &
-!!     &         (i_magne, FEM_prm, nod_comm, node, ele, nod_fld,       &
+!!      subroutine cal_magne_co_lumped_crank(i_magne, dt,               &
+!!     &          FEM_prm, nod_comm, node, ele, nod_fld,                &
 !!     &          iphys_ele, fld_ele, nod_bc_b, jac_3d, rhs_tbl,        &
 !!     &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
 !!
-!!      subroutine cal_velo_co_consist_crank(i_velo, coef_velo,         &
+!!      subroutine cal_velo_co_consist_crank(i_velo, coef_velo, dt,     &
 !!     &          FEM_prm, node, ele, fluid, Vnod_bcs, nod_fld, jac_3d, &
 !!     &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
-!!      subroutine cal_magne_co_consist_crank(i_magne, coef_magne,      &
+!!      subroutine cal_magne_co_consist_crank(i_magne, coef_magne, dt,  &
 !!     &         FEM_prm, node, ele, conduct, nod_fld, nod_bc_b, jac_3d,&
 !!     &         rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -36,8 +36,6 @@
 !
       use m_precision
       use m_machine_parameter
-!
-      use m_t_step_parameter
 !
       use t_FEM_control_parameter
       use t_physical_property
@@ -60,8 +58,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_velo_co_lumped_crank                               &
-     &         (i_velo, FEM_prm, nod_comm, node, ele, fluid, fl_prop,   &
+      subroutine cal_velo_co_lumped_crank(i_velo, dt,                   &
+     &          FEM_prm, nod_comm, node, ele, fluid, fl_prop,           &
      &          Vnod_bcs, nod_fld, iphys_ele, fld_ele, jac_3d,          &
      &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
 !
@@ -71,6 +69,7 @@
       use cal_sol_vector_correct
 !
       integer(kind = kint), intent(in) :: i_velo
+      real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
@@ -114,8 +113,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_magne_co_lumped_crank                              &
-     &         (i_magne, FEM_prm, nod_comm, node, ele, nod_fld,         &
+      subroutine cal_magne_co_lumped_crank(i_magne, dt,                 &
+     &          FEM_prm, nod_comm, node, ele, nod_fld,                  &
      &          iphys_ele, fld_ele, nod_bc_b, jac_3d, rhs_tbl,          &
      &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
 !
@@ -124,6 +123,7 @@
       use set_boundary_scalars
 !
       integer(kind = kint), intent(in) :: i_magne
+      real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
@@ -162,7 +162,7 @@
 ! -----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_velo_co_consist_crank(i_velo, coef_velo,           &
+      subroutine cal_velo_co_consist_crank(i_velo, coef_velo, dt,       &
      &          FEM_prm, node, ele, fluid, Vnod_bcs, nod_fld, jac_3d,   &
      &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
 !
@@ -173,6 +173,7 @@
 !
       integer(kind = kint), intent(in) :: i_velo
       real(kind = kreal), intent(in) :: coef_velo
+      real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(node_data), intent(in) :: node
@@ -211,7 +212,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_magne_co_consist_crank(i_magne, coef_magne,        &
+      subroutine cal_magne_co_consist_crank(i_magne, coef_magne, dt,    &
      &         FEM_prm, node, ele, conduct, nod_fld, nod_bc_b, jac_3d,  &
      &         rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
 !
@@ -222,6 +223,7 @@
 !
       integer(kind = kint), intent(in) :: i_magne
       real(kind = kreal), intent(in) :: coef_magne
+      real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(node_data), intent(in) :: node

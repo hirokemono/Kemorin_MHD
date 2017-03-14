@@ -6,7 +6,7 @@
 !        modieied by H. Matsui on Sep., 2005
 !
 !!      subroutine cal_velo_pre_lumped_crank(iflag_commute_velo,        &
-!!     &          ifilter_final, iak_diff_v, ak_d_velo,  FEM_prm,       &
+!!     &          ifilter_final, iak_diff_v, ak_d_velo, dt, FEM_prm,    &
 !!     &          nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,        &
 !!     &          iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,&
 !!     &          diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,   &
@@ -14,21 +14,21 @@
 !!      subroutine cal_vect_p_pre_lumped_crank                          &
 !!     &         (iflag_commute_magne, ifilter_final,                   &
 !!     &          i_vecp, i_pre_uxb, iak_diff_b, ak_d_magne, nod_bc_a,  &
-!!     &          FEM_prm, nod_comm, node, ele, conduct, cd_prop,       &
+!!     &          dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,   &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
 !!     &          diff_coefs, Bmatrix, MG_vector, mhd_fem_wk, fem_wk,   &
 !!     &          f_l, f_nl, nod_fld)
 !!      subroutine cal_magne_pre_lumped_crank                           &
 !!     &         (iflag_commute_magne, ifilter_final,                   &
 !!     &          i_magne, i_pre_uxb, iak_diff_b, ak_d_magne, nod_bc_b, &
-!!     &          FEM_prm, nod_comm, node, ele, conduct, cd_prop,       &
+!!     &          dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,   &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
 !!     &          diff_coefs, Bmatrix, MG_vector, mhd_fem_wk, fem_wk,   &
 !!     &          f_l, f_nl, nod_fld)
 !!
 !!      subroutine cal_temp_pre_lumped_crank(iflag_supg,                &
 !!     &          iflag_commute_field, ifilter_final, i_field,          &
-!!     &          i_pre_advect, iak_diff, ak_diffuese, eps_4_crank,     &
+!!     &          i_pre_advect, iak_diff, ak_diffuese, eps_4_crank, dt, &
 !!     &          FEM_prm, nod_comm, node, ele, fluid, property,        &
 !!     &          Snod_bcs, iphys_ele, ele_fld, jac_3d, rhs_tbl,        &
 !!     &          FEM_elens, diff_coefs, matrix, MG_vector,             &
@@ -100,7 +100,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_velo_pre_lumped_crank(iflag_commute_velo,          &
-     &          ifilter_final, iak_diff_v, ak_d_velo, FEM_prm,          &
+     &          ifilter_final, iak_diff_v, ak_d_velo, dt, FEM_prm,      &
      &          nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,          &
      &          iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,  &
      &          diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,     &
@@ -137,6 +137,7 @@
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(MHD_MG_matrix), intent(in) :: Vmatrix
 !
+      real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: ak_d_velo(ele%numele)
 !
       type(vectors_4_solver), intent(inout)                             &
@@ -193,7 +194,7 @@
       subroutine cal_vect_p_pre_lumped_crank                            &
      &         (iflag_commute_magne, ifilter_final,                     &
      &          i_vecp, i_pre_uxb, iak_diff_b, ak_d_magne, nod_bc_a,    &
-     &          FEM_prm, nod_comm, node, ele, conduct, cd_prop,         &
+     &          dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,     &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
      &          diff_coefs, Bmatrix, MG_vector, mhd_fem_wk, fem_wk,     &
      &          f_l, f_nl, nod_fld)
@@ -227,6 +228,7 @@
       type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_a
       type(MHD_MG_matrix), intent(in) :: Bmatrix
 !
+      real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
 !
       type(vectors_4_solver), intent(inout)                             &
@@ -275,7 +277,7 @@
       subroutine cal_magne_pre_lumped_crank                             &
      &         (iflag_commute_magne, ifilter_final,                     &
      &          i_magne, i_pre_uxb, iak_diff_b, ak_d_magne, nod_bc_b,   &
-     &          FEM_prm, nod_comm, node, ele, conduct, cd_prop,         &
+     &          dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,     &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
      &          diff_coefs, Bmatrix, MG_vector, mhd_fem_wk, fem_wk,     &
      &          f_l, f_nl, nod_fld)
@@ -308,6 +310,7 @@
       type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_b
       type(MHD_MG_matrix), intent(in) :: Bmatrix
 !
+      real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
 !
       type(vectors_4_solver), intent(inout)                             &
@@ -359,7 +362,7 @@
       subroutine cal_temp_pre_lumped_crank(iflag_supg,                  &
      &          iflag_commute_field, ifilter_final, i_field,            &
      &          i_pre_advect, iak_diff, ak_diffuese, eps_4_crank,       &
-     &          FEM_prm, nod_comm, node, ele, fluid, property,          &
+     &          dt, FEM_prm, nod_comm, node, ele, fluid, property,      &
      &          Snod_bcs, iphys_ele, ele_fld, jac_3d, rhs_tbl,          &
      &          FEM_elens, diff_coefs, matrix, MG_vector,               &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -395,6 +398,7 @@
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(MHD_MG_matrix), intent(in) :: matrix
 !
+      real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: eps_4_crank
       real(kind = kreal), intent(in) :: ak_diffuese(ele%numele)
 !

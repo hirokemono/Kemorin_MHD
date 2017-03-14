@@ -288,12 +288,12 @@
 !
       if (     FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson) then
         call cal_velo_co_lumped_crank                                   &
-     &     (i_velo, FEM_prm, nod_comm, node, ele, fluid, fl_prop,       &
+     &     (i_velo, dt, FEM_prm, nod_comm, node, ele, fluid, fl_prop,   &
      &      Vnod_bcs, nod_fld, iphys_ele, ele_fld, jac_3d, rhs_tbl,     &
      &      mhd_fem_wk, fem_wk, f_l, f_nl)
       else if(FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)   &
      & then
-        call cal_velo_co_consist_crank(i_velo, fl_prop%coef_velo,       &
+        call cal_velo_co_consist_crank(i_velo, fl_prop%coef_velo, dt,   &
      &      FEM_prm, node, ele, fluid, Vnod_bcs, nod_fld, jac_3d,       &
      &      rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
       end if
@@ -380,12 +380,12 @@
 !
       if (     FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson) then
         call cal_magne_co_lumped_crank                                  &
-     &     (i_vecp, FEM_prm, nod_comm, node, ele, nod_fld,              &
+     &     (i_vecp, dt, FEM_prm, nod_comm, node, ele, nod_fld,          &
      &      iphys_ele, ele_fld, Bnod_bcs%nod_bc_a, jac_3d, rhs_tbl,     &
      &      m_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
       else if(FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)   &
      & then
-        call cal_magne_co_consist_crank(i_vecp, cd_prop%coef_magne,     &
+        call cal_magne_co_consist_crank(i_vecp, cd_prop%coef_magne, dt, &
      &      FEM_prm, node, ele, conduct, nod_fld, Bnod_bcs%nod_bc_a,    &
      &      jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
       end if
@@ -470,12 +470,13 @@
 !
       if     (FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson) then
         call cal_magne_co_lumped_crank                                  &
-     &     (i_magne, FEM_prm, nod_comm, node, ele, nod_fld,             &
+     &     (i_magne, dt, FEM_prm, nod_comm, node, ele, nod_fld,         &
      &      iphys_ele, ele_fld, Bnod_bcs%nod_bc_b, jac_3d, rhs_tbl,     &
      &      m_lump, mhd_fem_wk, fem_wk, f_l, f_nl)
       else if(FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)   &
      & then
-        call cal_magne_co_consist_crank(i_magne, cd_prop%coef_magne,    &
+        call cal_magne_co_consist_crank                                 &
+     &     (i_magne, cd_prop%coef_magne, dt,                            &
      &      FEM_prm, node, ele, conduct, nod_fld, Bnod_bcs%nod_bc_b,    &
      &      jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
       end if

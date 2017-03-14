@@ -22,7 +22,6 @@
       use m_precision
 !
       use m_constants
-      use m_t_step_parameter
       use t_time_data_IO
 !
       implicit none
@@ -35,6 +34,8 @@
 !
       subroutine copy_time_from_restart(t_IO)
 !
+      use m_t_step_parameter
+!
       type(time_params_IO), intent(in) :: t_IO
 !
       time_init =   t_IO%time_IO
@@ -44,6 +45,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine copy_init_time_from_restart(t_IO)
+!
+      use m_t_step_parameter
 !
       type(time_params_IO), intent(in) :: t_IO
 !
@@ -56,6 +59,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine copy_time_steps_from_restart(t_IO)
+!
+      use m_t_step_parameter
 !
       type(time_params_IO), intent(in) :: t_IO
 !
@@ -70,6 +75,8 @@
 !
       subroutine copy_time_steps_to_restart(t_IO)
 !
+      use m_t_step_parameter
+!
       type(time_params_IO), intent(inout) :: t_IO
 !
 !
@@ -82,6 +89,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine copy_time_steps_from_field(t_IO)
+!
+      use m_t_step_parameter
 !
       type(time_params_IO), intent(in) :: t_IO
 !

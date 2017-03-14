@@ -52,7 +52,6 @@
 !
       use calypso_mpi
       use m_constants
-      use m_t_step_parameter
 !
       implicit none
 !

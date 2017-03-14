@@ -173,14 +173,14 @@
       if (fl_prop%iflag_4_lorentz .eq. id_turn_ON) then
         if (FEM_prm%iflag_rotate_form .eq. id_turn_OFF) then
           call cal_sol_pressure_w_mag_ene                               &
-     &      (node%numnod, node%istack_internal_smp,                     &
-     &     fl_prop%coef_press, fl_prop%acoef_press, fl_prop%coef_lor,   &
+     &      (dt, node%numnod, node%istack_internal_smp,                 &
+     &       fl_prop%coef_press, fl_prop%acoef_press, fl_prop%coef_lor, &
      &       nod_fld%ntot_phys, iphys%i_p_phi, iphys%i_magne,           &
      &       iphys%i_press, nod_fld%d_fld)
         else if (cd_prop%iflag_magneto_cv .eq. id_turn_ON               &
      &     .and. FEM_prm%iflag_rotate_form .eq. id_turn_OFF) then
           call cal_sol_pressure_mcv                                     &
-     &       (node%numnod, node%istack_internal_smp,                    &
+     &       (dt, node%numnod, node%istack_internal_smp,                &
      &        fl_prop%coef_press, fl_prop%acoef_press,                  &
      &        fl_prop%coef_lor, cd_prop%ex_magne,                       &
      &        nod_fld%ntot_phys, iphys%i_p_phi, iphys%i_magne,          &
@@ -226,7 +226,7 @@
      &      f_l, f_nl, nod_fld)
 !
         call cal_sol_pressure                                           &
-     &     (node%numnod, node%istack_internal_smp,                      &
+     &     (dt, node%numnod, node%istack_internal_smp,                  &
      &      fl_prop%acoef_press, nod_fld%ntot_phys,                     &
      &      iphys%i_p_phi, iphys%i_press,  nod_fld%d_fld)
 !
