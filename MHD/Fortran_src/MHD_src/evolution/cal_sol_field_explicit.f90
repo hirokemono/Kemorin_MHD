@@ -3,39 +3,47 @@
 !
 !      Written by H. Matsui on March, 2006
 !
-!!      subroutine cal_sol_vect_pre_fluid_euler(numnod, inter_smp_stack,&
-!!     &          ml_fl, ff, ff_nl, ncomp_nod, numdir, i_field, d_nod)
+!!      subroutine cal_sol_vect_pre_fluid_euler                         &
+!!     &         (dt, numnod, inter_smp_stack, ml_fl, ff, ff_nl,        &
+!!     &          ncomp_nod, numdir, i_field, d_nod)
 !!      subroutine cal_sol_vect_pre_conduct_euler                       &
-!!     &         (numnod, inter_smp_stack, nnod_cd, inod_conduct,       &
+!!     &         (dt, numnod, inter_smp_stack, nnod_cd, inod_conduct,   &
 !!     &          ml_cd, ff, ff_nl, ncomp_nod, numdir, i_field, d_nod)
 !!
 !!      subroutine cal_sol_vect_pre_fluid_adams                         &
-!!     &         (numnod, inter_smp_stack, ml_fl, ff, ff_nl,            &
+!!     &         (dt, numnod, inter_smp_stack, ml_fl, ff, ff_nl,        &
 !!     &          ncomp_nod, numdir, i_field, if_pre, d_nod)
 !!      subroutine cal_sol_vect_pre_conduct_adams                       &
-!!     &         (numnod, inter_smp_stack, nnod_cd, inod_conduct,       &
+!!     &         (dt, numnod, inter_smp_stack, nnod_cd, inod_conduct,   &
 !!     &          ml_cd, ff, ff_nl, ncomp_nod, numdir,                  &
 !!     &          i_field, if_pre, d_nod)
 !!
 !!      subroutine cal_sol_vec_fluid_linear                             &
-!!     &         (numnod, inod_smp_stack, ml_o_fl, ff_nl,               &
+!!     &         (dt, numnod, inod_smp_stack, ml_o_fl, ff_nl,           &
 !!     &          ncomp_nod, numdir, i_field, if_pre, d_nod, ff)
-!!      subroutine cal_sol_vec_conduct_linear(numnod, inter_smp_stack,  &
-!!     &          inter_cd_smp_stack, nnod_cd, inod_conduct, ml_o_cd,   &
-!!     &          ff_nl, ncomp_nod, numdir, i_field, if_pre, d_nod, ff)
+!!      subroutine cal_sol_vec_conduct_linear                           &
+!!     &         (dt, numnod, inter_smp_stack, inter_cd_smp_stack,      &
+!!     &          nnod_cd, inod_conduct, ml_o_cd, ff_nl,                &
+!!     &          ncomp_nod, numdir, i_field, if_pre, d_nod, ff)
 !!
 !!      subroutine cal_sol_vec_pre_consist                              &
-!!     &          (numnod, inter_smp_stack, ff_nl,                      &
+!!     &          (dt, numnod, inter_smp_stack, ff_nl,                  &
 !!     &           ncomp_nod, numdir, if_pre, d_nod, ff)
 !
       module cal_sol_field_explicit
 !
       use m_precision
-!
+      use m_constants
       use m_machine_parameter
-      use m_t_step_parameter
 !
       implicit none
+!
+!>      Coefficient of terms at current step for Adams-Bashforth
+      real(kind=kreal), parameter :: adam_0 =  three / two
+!>      Coefficient of terms at previous step for Adams-Bashforth
+      real(kind=kreal), parameter :: adam_1 = -one / two
+!>      1 / adam_0
+      real(kind=kreal), parameter :: adam_r =  two / three
 !
 ! -----------------------------------------------------------------------
 !
@@ -43,11 +51,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sol_vect_pre_fluid_euler(numnod, inter_smp_stack,  &
-     &          ml_fl, ff, ff_nl, ncomp_nod, numdir, i_field, d_nod)
+      subroutine cal_sol_vect_pre_fluid_euler                           &
+     &         (dt, numnod, inter_smp_stack, ml_fl, ff, ff_nl,          &
+     &          ncomp_nod, numdir, i_field, d_nod)
 !
       integer (kind = kint), intent(in) :: numnod, ncomp_nod
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
+      real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: ml_fl(numnod)
       real(kind = kreal), intent(in) :: ff(numnod,3)
       real(kind = kreal), intent(in) :: ff_nl(numnod,3)
@@ -78,12 +88,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sol_vect_pre_conduct_euler                         &
-     &         (numnod, inter_smp_stack, nnod_cd, inod_conduct,         &
+     &         (dt, numnod, inter_smp_stack, nnod_cd, inod_conduct,     &
      &          ml_cd, ff, ff_nl, ncomp_nod, numdir, i_field, d_nod)
 !
       integer (kind = kint), intent(in) :: numnod, nnod_cd, ncomp_nod
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
       integer (kind = kint), intent(in) :: inod_conduct(nnod_cd)
+      real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: ml_cd(numnod)
       real(kind = kreal), intent(in) :: ff(numnod,3)
       real(kind = kreal), intent(in) :: ff_nl(numnod,3)
@@ -116,11 +127,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sol_vect_pre_fluid_adams                           &
-     &         (numnod, inter_smp_stack, ml_fl, ff, ff_nl,              &
+     &         (dt, numnod, inter_smp_stack, ml_fl, ff, ff_nl,          &
      &          ncomp_nod, numdir, i_field, if_pre, d_nod)
 !
       integer (kind = kint), intent(in) :: numnod, ncomp_nod
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
+      real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: ml_fl(numnod)
       real(kind = kreal), intent(in) :: ff(numnod,3)
       real(kind = kreal), intent(in) :: ff_nl(numnod,3)
@@ -154,13 +166,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sol_vect_pre_conduct_adams                         &
-     &         (numnod, inter_smp_stack, nnod_cd, inod_conduct,         &
+     &         (dt, numnod, inter_smp_stack, nnod_cd, inod_conduct,     &
      &          ml_cd, ff, ff_nl, ncomp_nod, numdir,                    &
      &          i_field, if_pre, d_nod)
 !
       integer (kind = kint), intent(in) :: numnod, nnod_cd, ncomp_nod
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
       integer (kind = kint), intent(in) :: inod_conduct(nnod_cd)
+      real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: ml_cd(numnod)
       real(kind = kreal), intent(in) :: ff(numnod,3)
       real(kind = kreal), intent(in) :: ff_nl(numnod,3)
@@ -199,10 +212,11 @@
 ! -----------------------------------------------------------------------! -----------------------------------------------------------------------
 !
       subroutine cal_sol_vec_fluid_linear                               &
-     &         (numnod, inod_smp_stack, ml_o_fl, ff_nl,                 &
+     &         (dt, numnod, inod_smp_stack, ml_o_fl, ff_nl,             &
      &          ncomp_nod, numdir, i_field, if_pre, d_nod, ff)
 !
       integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
+      real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: ml_o_fl(numnod)
       real(kind = kreal), intent(in) :: ff_nl(numnod,3)
 !
@@ -241,14 +255,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sol_vec_conduct_linear(numnod, inter_smp_stack,    &
-     &          inter_cd_smp_stack, nnod_cd, inod_conduct, ml_o_cd,     &
-     &          ff_nl, ncomp_nod, numdir, i_field, if_pre, d_nod, ff)
+      subroutine cal_sol_vec_conduct_linear                             &
+     &         (dt, numnod, inter_smp_stack, inter_cd_smp_stack,        &
+     &          nnod_cd, inod_conduct, ml_o_cd, ff_nl,                  &
+     &          ncomp_nod, numdir, i_field, if_pre, d_nod, ff)
 !
       integer (kind = kint), intent(in) :: numnod, nnod_cd, ncomp_nod
       integer (kind = kint), intent(in) :: inod_conduct(nnod_cd)
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
       integer (kind = kint), intent(in) :: inter_cd_smp_stack(0:np_smp)
+      real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: ml_o_cd(numnod)
       real(kind = kreal), intent(in) :: ff_nl(numnod,3)
 !
@@ -302,13 +318,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sol_vec_pre_consist                                &
-     &          (numnod, inter_smp_stack, ff_nl,                        &
+     &          (dt, numnod, inter_smp_stack, ff_nl,                    &
      &           ncomp_nod, numdir, if_pre, d_nod, ff)
 !
       integer(kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
 !
       integer (kind = kint), intent(in) :: numnod, ncomp_nod
       integer (kind = kint), intent(in) :: numdir, if_pre
+      real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: ff_nl(numnod,3)
       real(kind = kreal), intent(inout) :: ff(numnod,3)
       real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)

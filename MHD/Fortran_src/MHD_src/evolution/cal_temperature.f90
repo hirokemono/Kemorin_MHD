@@ -252,12 +252,12 @@
 !
 !
       if (property%iflag_scheme .eq. id_explicit_euler) then
-        call cal_scalar_pre_euler(FEM_prm%iflag_temp_supg, i_field,     &
+        call cal_scalar_pre_euler(FEM_prm%iflag_temp_supg, i_field, dt, &
      &      FEM_prm, nod_comm, node, ele, fluid, iphys_ele, ele_fld,    &
      &      jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if (property%iflag_scheme .eq. id_explicit_adams2) then
         call cal_scalar_pre_adams                                       &
-     &     (FEM_prm%iflag_temp_supg, i_field, iphys%i_pre_heat,         &
+     &     (FEM_prm%iflag_temp_supg, i_field, iphys%i_pre_heat, dt,     &
      &      FEM_prm, nod_comm, node, ele, fluid, iphys_ele, ele_fld,    &
      &      jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if (property%iflag_scheme .eq. id_Crank_nicolson) then

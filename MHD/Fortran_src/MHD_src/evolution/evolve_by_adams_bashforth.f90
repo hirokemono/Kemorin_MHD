@@ -5,14 +5,15 @@
 !                                    on July 2000 (ver 1.1)
 !        modieied by H. Matsui on Sep., 2005
 !
-!!      subroutine cal_velo_pre_adams(FEM_prm, nod_comm, node, ele,     &
+!!      subroutine cal_velo_pre_adams(dt, FEM_prm, nod_comm, node, ele, &
 !!     &          fluid, fl_prop, iphys, iphys_ele, ele_fld, jac_3d,    &
 !!     &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-!!      subroutine cal_magne_pre_adams(i_field, i_previous,             &
+!!      subroutine cal_magne_pre_adams(i_field, i_previous, dt,         &
 !!     &          FEM_prm, nod_comm, node, ele, conduct,                &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                  &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-!!      subroutine cal_scalar_pre_adams(iflag_supg, i_field, i_previous,&
+!!      subroutine cal_scalar_pre_adams                                 &
+!!     &         (iflag_supg, i_field, i_previous, dt,                  &
 !!     &          FEM_prm, nod_comm, node, ele, fluid,                  &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                  &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -60,13 +61,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_velo_pre_adams(FEM_prm, nod_comm, node, ele,       &
+      subroutine cal_velo_pre_adams(dt, FEM_prm, nod_comm, node, ele,   &
      &          fluid, fl_prop, iphys, iphys_ele, ele_fld, jac_3d,      &
      &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use cal_multi_pass
       use cal_sol_field_explicit
       use int_vol_coriolis_term
+!
+      real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
@@ -100,7 +103,7 @@
      &   (node, fl_prop, mhd_fem_wk, iphys, nod_fld, f_nl)
 !
       call cal_sol_vect_pre_fluid_adams                                 &
-     &   (node%numnod, node%istack_internal_smp,                        &
+     &   (dt, node%numnod, node%istack_internal_smp,                    &
      &    mhd_fem_wk%mlump_fl%ml, f_l%ff, f_nl%ff,                      &
      &    nod_fld%ntot_phys, n_vector, iphys%i_velo,                    &
      &    iphys%i_pre_mom, nod_fld%d_fld)
@@ -109,7 +112,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_magne_pre_adams(i_field, i_previous,               &
+      subroutine cal_magne_pre_adams(i_field, i_previous, dt,           &
      &          FEM_prm, nod_comm, node, ele, conduct,                  &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                    &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -118,6 +121,7 @@
       use cal_multi_pass
 !
       integer(kind = kint), intent(in) :: i_field, i_previous
+      real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
@@ -141,7 +145,7 @@
      &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,              &
      &    rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
       call cal_sol_vect_pre_conduct_adams                               &
-     &   (node%numnod, conduct%istack_inter_fld_smp,                    &
+     &   (dt, node%numnod, conduct%istack_inter_fld_smp,                &
      &    conduct%numnod_fld, conduct%inod_fld,                         &
      &    mhd_fem_wk%mlump_cd%ml, f_l%ff, f_nl%ff,                      &
      &    nod_fld%ntot_phys, n_vector, i_field, i_previous,             &
@@ -152,7 +156,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_scalar_pre_adams(iflag_supg, i_field, i_previous,  &
+      subroutine cal_scalar_pre_adams                                   &
+     &         (iflag_supg, i_field, i_previous, dt,                    &
      &          FEM_prm, nod_comm, node, ele, fluid,                    &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                    &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -162,6 +167,7 @@
 !
       integer(kind = kint), intent(in) :: iflag_supg
       integer(kind = kint), intent(in) :: i_field, i_previous
+      real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
@@ -186,7 +192,7 @@
 !      call check_ff(my_rank, n_scalar, node%numnod, f_l)
 !      call check_ff(my_rank, n_scalar, node%numnod, f_nl)
       call cal_sol_vect_pre_fluid_adams                                 &
-     &   (node%numnod, node%istack_internal_smp,                        &
+     &   (dt, node%numnod, node%istack_internal_smp,                    &
      &    mhd_fem_wk%mlump_fl%ml, f_l%ff, f_nl%ff,                      &
      &    nod_fld%ntot_phys, n_scalar, i_field, i_previous,             &
      &    nod_fld%d_fld)

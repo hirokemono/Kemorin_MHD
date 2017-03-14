@@ -172,7 +172,8 @@
 !
       call set_boundary_velo_4_rhs(node, Vnod_bcs, f_l, f_nl)
 !
-      call cal_sol_vec_fluid_linear(node%numnod, node%istack_nod_smp,   &
+      call cal_sol_vec_fluid_linear                                     &
+     &   (dt, node%numnod, node%istack_nod_smp,                         &
      &    mhd_fem_wk%mlump_fl%ml_o, f_nl%ff, nod_fld%ntot_phys,         &
      &    n_vector, iphys%i_velo, iphys%i_pre_mom, nod_fld%d_fld,       &
      &    f_l%ff)
@@ -252,7 +253,7 @@
 !
       call delete_vector_ffs_on_bc(node, nod_bc_a, f_l, f_nl)
 !
-      call cal_sol_vec_conduct_linear(node%numnod,                      &
+      call cal_sol_vec_conduct_linear(dt, node%numnod,                  &
      &    node%istack_internal_smp, conduct%istack_inter_fld_smp,       &
      &    conduct%numnod_fld, conduct%inod_fld,                         &
      &    mhd_fem_wk%mlump_cd%ml_o, f_nl%ff,                            &
@@ -334,7 +335,7 @@
       if (iflag_debug .eq. 0 ) write(*,*) 'bc_4_magne_rhs'
       call delete_vector_ffs_on_bc(node, nod_bc_b, f_l, f_nl)
 !
-      call cal_sol_vec_conduct_linear(node%numnod,                      &
+      call cal_sol_vec_conduct_linear(dt, node%numnod,                  &
      &    node%istack_internal_smp, conduct%istack_inter_fld_smp,       &
      &    conduct%numnod_fld, conduct%inod_fld,                         &
      &    mhd_fem_wk%mlump_cd%ml_o, f_nl%ff,                            &
@@ -424,7 +425,8 @@
 !
       call set_boundary_rhs_scalar(node, Snod_bcs%nod_bc_s, f_l, f_nl)
 !
-      call cal_sol_vec_fluid_linear(node%numnod, node%istack_nod_smp,   &
+      call cal_sol_vec_fluid_linear                                     &
+     &   (dt, node%numnod, node%istack_nod_smp,                         &
      &    mhd_fem_wk%mlump_fl%ml_o, f_nl%ff, nod_fld%ntot_phys,         &
      &    n_scalar, i_field, i_pre_advect, nod_fld%d_fld, f_l%ff)
 !

@@ -156,7 +156,7 @@
 !
       call set_boundary_velo_4_rhs(node, Vnod_bcs, f_l, f_nl)
 !
-      call cal_vector_pre_consist(node, fl_prop%coef_velo,              &
+      call cal_vector_pre_consist(dt, node, fl_prop%coef_velo,          &
      &    n_vector, i_pre_mom, nod_fld, rhs_tbl, mhd_fem_wk, f_nl, f_l)
 !
       call solver_crank_vector                                          &
@@ -232,7 +232,7 @@
 !
       call delete_vector_ffs_on_bc(node, nod_bc_a, f_l, f_nl)
 !
-      call cal_vector_pre_consist(node, cd_prop%coef_magne,             &
+      call cal_vector_pre_consist(dt, node, cd_prop%coef_magne,         &
      &    n_vector, i_pre_uxb, nod_fld, rhs_tbl,                        &
      &    mhd_fem_wk, f_nl, f_l)
 !
@@ -309,7 +309,7 @@
       if (iflag_debug.eq.1) write(*,*) 'bc_4_magne_rhs'
       call delete_vector_ffs_on_bc(node, nod_bc_b, f_l, f_nl)
 !
-      call cal_vector_pre_consist(node, cd_prop%coef_magne,             &
+      call cal_vector_pre_consist(dt, node, cd_prop%coef_magne,         &
      &    n_vector, i_pre_uxb, nod_fld, rhs_tbl,                        &
      &    mhd_fem_wk, f_nl, f_l)
 !
@@ -394,7 +394,7 @@
 !
       call set_boundary_rhs_scalar(node, Snod_bcs%nod_bc_s, f_l, f_nl)
 !
-      call cal_vector_pre_consist(node, property%coef_advect,           &
+      call cal_vector_pre_consist(dt, node, property%coef_advect,       &
      &    n_scalar, i_pre_advect, nod_fld, rhs_tbl,                     &
      &    mhd_fem_wk, f_nl, f_l)
 !

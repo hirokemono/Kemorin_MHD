@@ -282,12 +282,12 @@
 !
 !
       if (fl_prop%iflag_scheme .eq. id_explicit_euler) then
-        call cal_velo_pre_euler(FEM_prm, nod_comm, node, ele,           &
+        call cal_velo_pre_euler(dt, FEM_prm, nod_comm, node, ele,       &
      &     fluid, fl_prop, iphys, iphys_ele, ele_fld,                   &
      &     jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       else if(fl_prop%iflag_scheme .eq. id_explicit_adams2) then
-        call cal_velo_pre_adams(FEM_prm, nod_comm, node, ele,           &
+        call cal_velo_pre_adams(dt, FEM_prm, nod_comm, node, ele,       &
      &     fluid, fl_prop, iphys, iphys_ele, ele_fld,                   &
      &     jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
