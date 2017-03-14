@@ -9,10 +9,10 @@
 !!
 !!      subroutine int_vol_diffuse_mat11                                &
 !!     &         (ele, jac_3d, rhs_tbl, MG_mat_tbl,                     &
-!!     &          n_int, coef_imp, ak_d, fem_wk, mat11)
+!!     &          n_int, dt, coef_imp, ak_d, fem_wk, mat11)
 !!      subroutine int_vol_diffuse_mat33                                &
 !!     &         (ele, jac_3d, rhs_tbl, MG_mat_tbl,                     &
-!!     &          n_int, coef_imp, ak_d, fem_wk, mat33)
+!!     &          n_int, dt, coef_imp, ak_d, fem_wk, mat33)
 !
       module int_vol_poisson_mat
 !
@@ -20,7 +20,6 @@
 !
       use m_machine_parameter
       use m_phys_constants
-      use m_t_step_parameter
 !
       use t_geometry_data
       use t_table_FEM_const
@@ -70,7 +69,7 @@
 !
       subroutine int_vol_diffuse_mat11                                  &
      &         (ele, jac_3d, rhs_tbl, MG_mat_tbl,                       &
-     &          n_int, coef_imp, ak_d, fem_wk, mat11)
+     &          n_int, dt, coef_imp, ak_d, fem_wk, mat11)
 !
       use fem_skv_diffusion_type
       use cal_skv_to_ff_smp
@@ -81,6 +80,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(table_mat_const), intent(in) :: MG_mat_tbl
 !
+      real(kind = kreal), intent(in) :: dt
       real(kind=kreal), intent(in) :: coef_imp
       real(kind=kreal), intent(in) :: ak_d(ele%numele)
 !
@@ -97,7 +97,7 @@
         call fem_skv_poisson_type(ele%istack_ele_smp, n_int, k2,        &
      &      ele, jac_3d, fem_wk%sk6)
         call cal_scalar_diffuse_mat(ele, rhs_tbl, MG_mat_tbl, fem_wk,   &
-     &      k2, coef_imp, ak_d, mat11)
+     &      k2, dt, coef_imp, ak_d, mat11)
       end do
 !
       end subroutine int_vol_diffuse_mat11
@@ -106,7 +106,7 @@
 !
       subroutine int_vol_diffuse_mat33                                  &
      &         (ele, jac_3d, rhs_tbl, MG_mat_tbl,                       &
-     &          n_int, coef_imp, ak_d, fem_wk, mat33)
+     &          n_int, dt, coef_imp, ak_d, fem_wk, mat33)
 !
       use fem_skv_diffusion_type
       use cal_skv_to_ff_smp
@@ -117,6 +117,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(table_mat_const), intent(in) :: MG_mat_tbl
 !
+      real(kind = kreal), intent(in) :: dt
       real(kind=kreal), intent(in) :: coef_imp
       real(kind=kreal), intent(in) :: ak_d(ele%numele)
 !
@@ -133,7 +134,7 @@
         call fem_skv_poisson_type(ele%istack_ele_smp, n_int, k2,       &
      &      ele, jac_3d, fem_wk%sk6)
         call cal_vect_diffuse_mat(ele, rhs_tbl, MG_mat_tbl, fem_wk,    &
-     &      k2, coef_imp, ak_d, mat33)
+     &      k2, dt, coef_imp, ak_d, mat33)
       end do
 !
       end subroutine int_vol_diffuse_mat33

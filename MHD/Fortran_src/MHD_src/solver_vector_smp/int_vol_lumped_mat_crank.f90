@@ -13,7 +13,7 @@
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop,                   &
 !!     &          DJDS_table, DJDS_table_fluid, mlump_fl, mlump_cd,     &
 !!     &          mat_velo, mat_magne, mat_temp, mat_light)
-!!      subroutine add_lumped_coriolis_matrix(mesh, fluid, fl_prop,     &
+!!      subroutine add_lumped_coriolis_matrix(dt, mesh, fluid, fl_prop, &
 !!     &          DJDS_table_fluid,  mlump_fl, mat_velo)
 !!        type(mesh_data), intent(in) ::              mesh
 !!        type(field_geometry_data), intent(in) :: fluid, conduct
@@ -118,11 +118,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine add_lumped_coriolis_matrix(mesh, fluid, fl_prop,       &
+      subroutine add_lumped_coriolis_matrix(dt, mesh, fluid, fl_prop,   &
      &          DJDS_table_fluid,  mlump_fl, mat_velo)
 !
       use cal_coriolis_mat33
 !
+      real(kind = kreal), intent(in) :: dt
       type(mesh_geometry), intent(in) :: mesh
       type(field_geometry_data), intent(in) :: fluid
       type(fluid_property), intent(in) :: fl_prop
@@ -135,7 +136,7 @@
       call cal_lumped_coriolis_matrix                                   &
      &   (mesh%node%numnod, fluid%numnod_fld, fluid%inod_fld,           &
      &    DJDS_table_fluid%OLDtoNEW, fl_prop%coef_cor, fl_prop%sys_rot, &
-     &    fl_prop%coef_imp, mlump_fl%ml_o, mat_velo%num_non0,           &
+     &    dt, fl_prop%coef_imp, mlump_fl%ml_o, mat_velo%num_non0,       &
      &    mat_velo%aiccg)
 !
       end subroutine add_lumped_coriolis_matrix

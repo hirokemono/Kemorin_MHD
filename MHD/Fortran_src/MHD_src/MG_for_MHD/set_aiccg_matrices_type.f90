@@ -5,7 +5,7 @@
 !
 !
 !!      subroutine s_set_aiccg_matrices_type                            &
-!!     &        (FEM_prm, SGS_param, cmt_param,                         &
+!!     &        (dt, FEM_prm, SGS_param, cmt_param,                     &
 !!     &         mesh, group, ele_mesh, MHD_mesh,                       &
 !!     &         nod_bcs, surf_bcs, fl_prop, cd_prop, ht_prop, cp_prop, &
 !!     &         ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q,              &
@@ -61,7 +61,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_aiccg_matrices_type                              &
-     &        (FEM_prm, SGS_param, cmt_param,                           &
+     &        (dt, FEM_prm, SGS_param, cmt_param,                       &
      &         mesh, group, ele_mesh, MHD_mesh,                         &
      &         nod_bcs, surf_bcs, fl_prop, cd_prop, ht_prop, cp_prop,   &
      &         ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q,                &
@@ -99,6 +99,8 @@
       use int_vol_lumped_mat_crank
       use set_aiccg_bc_vectors
       use int_vol_consist_evo_mat
+!
+      real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
@@ -164,7 +166,7 @@
      &      mat_velo, mat_magne, mat_temp, mat_light)
 !
         call int_MHD_crank_matrices                                     &
-     &     (FEM_prm%npoint_t_evo_int, SGS_param%ifilter_final,          &
+     &     (FEM_prm%npoint_t_evo_int, dt, SGS_param%ifilter_final,      &
      &      mesh, fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD,           &
      &      jac_3d_q, rhs_tbl, MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q, &
      &      FEM_elens, ifld_diff, diff_coefs, fem_wk,                   &
@@ -176,7 +178,7 @@
      &       jac_3d_q, rhs_tbl, MG_mat_fl_q, MG_mat_full_cd_q, fem_wk,  &
      &      mat_velo, mat_magne, mat_temp, mat_light)
         call int_MHD_crank_matrices                                     &
-     &     (FEM_prm%npoint_t_evo_int, SGS_param%ifilter_final,          &
+     &     (FEM_prm%npoint_t_evo_int, dt, SGS_param%ifilter_final,      &
      &      mesh, fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD,           &
      &      jac_3d_q, rhs_tbl, MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q, &
      &      FEM_elens, ifld_diff, diff_coefs, fem_wk,                   &
@@ -185,7 +187,7 @@
 !
 !     set boundary conditions
 !
-      call set_aiccg_bc_phys(FEM_prm%npoint_t_evo_int,                  &
+      call set_aiccg_bc_phys(FEM_prm%npoint_t_evo_int, dt,              &
      &    mesh%ele, ele_mesh%surf, group%surf_grp,                      &
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
      &    jac_sf_grp_q, rhs_tbl, MG_mat_fl_q, nod_bcs, surf_bcs,        &

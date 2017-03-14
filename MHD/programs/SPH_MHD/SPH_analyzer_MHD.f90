@@ -18,6 +18,7 @@
       use m_precision
       use m_MHD_step_parameter
       use m_SGS_control_parameter
+      use m_t_step_parameter
       use t_phys_address
       use t_MHD_step_parameter
 !
@@ -107,7 +108,7 @@
 !
       if(iflag_debug.gt.0) write(*,*)' const_radial_mat_sph_mhd'
       call const_radial_mat_sph_mhd                                     &
-     &   (fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
+     &   (dt, fl_prop1, cd_prop1, ht_prop1, cp_prop1,                   &
      &    sph1%sph_rj, r_2nd, trans_p1%leg)
 !*
 !* obtain linear terms for starting
@@ -184,7 +185,7 @@
 !*
       call start_eleps_time(7)
       call s_cal_sol_sph_MHD_crank                                      &
-     &   (sph1%sph_rj, r_2nd, cd_prop1, ht_prop1, cp_prop1,             &
+     &   (dt, sph1%sph_rj, r_2nd, cd_prop1, ht_prop1, cp_prop1,         &
      &    trans_p1%leg, ipol, idpdr, itor, rj_fld1)
       call end_eleps_time(7)
       call end_eleps_time(6)

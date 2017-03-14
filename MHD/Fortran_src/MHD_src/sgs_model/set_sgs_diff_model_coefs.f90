@@ -73,7 +73,6 @@
      &          sgs_f_clip, sgs_c_clip, sgs_fw_clip, sgs_cw_clip)
 !
       use calypso_mpi
-      use m_t_step_parameter
       use t_SGS_control_parameter
 !
       integer(kind = kint), intent(in) :: iflag_SGS_initial

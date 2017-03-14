@@ -6,12 +6,14 @@
 !
 !!      subroutine cal_lumped_coriolis_matrix                           &
 !!     &         (numnod, numnod_fluid, inod_fluid, OLDtoNEW,           &
-!!     &          coef_cor, angular, coef_imp, ml_o, num_mat, aiccg33)
+!!     &          coef_cor, angular, dt, coef_imp, ml_o,                &
+!!     &          num_mat, aiccg33)
 !!      subroutine cal_consist_coriolis_matrix                          &
 !!     &         (np_smp, numele, nnod_4_e1, nnod_4_e2,                 &
 !!     &          inod_ele_max, num_sort_smp, nod_stack_smp,            &
 !!     &          iele_sort_smp, iconn_sort_smp, idx_4_mat, k2,         &
-!!     &          coef_cor, angular, coef_imp, sk_v, num_mat, aiccg33)
+!!     &          coef_cor, angular, dt, coef_imp, sk_v,                &
+!!     &          num_mat, aiccg33)
 !
       module cal_coriolis_mat33
 !
@@ -19,7 +21,6 @@
 !
       use m_constants
       use m_phys_constants
-      use m_t_step_parameter
 !
       implicit none
 !
@@ -31,17 +32,19 @@
 !
       subroutine cal_lumped_coriolis_matrix                             &
      &         (numnod, numnod_fluid, inod_fluid, OLDtoNEW,             &
-     &          coef_cor, angular, coef_imp, ml_o, num_mat, aiccg33)
+     &          coef_cor, angular, dt, coef_imp, ml_o,                  &
+     &          num_mat, aiccg33)
 !
       integer(kind = kint), intent(in) :: numnod, numnod_fluid
       integer(kind = kint), intent(in) :: inod_fluid(numnod_fluid)
 !
       integer(kind = kint), intent(in) :: OLDtoNEW(numnod)
 !
-      real (kind=kreal), intent(in) :: ml_o(numnod)
-      real (kind=kreal), intent(in) :: coef_cor
-      real (kind=kreal), intent(in) :: angular(3)
-      real (kind=kreal), intent(in) :: coef_imp
+      real(kind = kreal), intent(in) :: ml_o(numnod)
+      real(kind = kreal), intent(in) :: coef_cor
+      real(kind = kreal), intent(in) :: angular(3)
+      real(kind = kreal), intent(in) :: coef_imp
+      real(kind = kreal), intent(in) :: dt
 !
       integer(kind = kint), intent(in) :: num_mat
       real(kind = kreal), intent(inout) :: aiccg33(-8:num_mat)
@@ -83,7 +86,8 @@
      &         (np_smp, numele, nnod_4_e1, nnod_4_e2,                   &
      &          inod_ele_max, num_sort_smp, nod_stack_smp,              &
      &          iele_sort_smp, iconn_sort_smp, idx_4_mat, k2,           &
-     &          coef_cor, angular, coef_imp, sk_v, num_mat, aiccg33)
+     &          coef_cor, angular, dt, coef_imp, sk_v,                  &
+     &          num_mat, aiccg33)
 !
       integer(kind = kint), intent(in) :: np_smp, numele
       integer(kind = kint), intent(in) :: nnod_4_e1, nnod_4_e2
@@ -100,9 +104,10 @@
       integer (kind = kint), intent(in) :: k2
       real (kind=kreal), intent(in)                                     &
      &                  :: sk_v(numele,n_sym_tensor,nnod_4_e1)
-      real (kind=kreal), intent(in) :: coef_cor
-      real (kind=kreal), intent(in) :: angular(3)
-      real (kind=kreal), intent(in) :: coef_imp
+      real(kind = kreal), intent(in) :: coef_cor
+      real(kind = kreal), intent(in) :: angular(3)
+      real(kind = kreal), intent(in) :: coef_imp
+      real(kind = kreal), intent(in) :: dt
 !
       integer(kind = kint), intent(in) :: num_mat
       real(kind = kreal), intent(inout) :: aiccg33(-8:num_mat)

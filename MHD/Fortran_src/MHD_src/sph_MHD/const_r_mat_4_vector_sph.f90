@@ -7,10 +7,10 @@
 !!
 !!@verbatim
 !!      subroutine const_radial_mat_vort_2step                          &
-!!     &        (sph_rj, r_2nd, fl_prop, g_sph_rj,                      &
+!!     &        (sph_rj, r_2nd, fl_prop, g_sph_rj, dt,                  &
 !!     &         band_vs_poisson, band_vp_evo, band_vt_evo, band_wt_evo)
 !!      subroutine const_radial_mat_4_magne_sph(sph_rj, r_2nd,          &
-!!     &          cd_prop, g_sph_rj, band_bp_evo, band_bt_evo)
+!!     &          cd_prop, g_sph_rj, dt, band_bp_evo, band_bt_evo)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(fluid_property), intent(in) :: fl_prop
@@ -30,7 +30,6 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_t_step_parameter
       use m_ludcmp_3band
 !
       use t_physical_property
@@ -49,7 +48,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_radial_mat_vort_2step                            &
-     &        (sph_rj, r_2nd, fl_prop, g_sph_rj,                        &
+     &        (sph_rj, r_2nd, fl_prop, g_sph_rj, dt,                    &
      &         band_vs_poisson, band_vp_evo, band_vt_evo, band_wt_evo)
 !
       use m_boundary_params_sph_MHD
@@ -67,6 +66,7 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(fluid_property), intent(in) :: fl_prop
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
+      real(kind = kreal), intent(in) :: dt
 !
       type(band_matrices_type), intent(inout) :: band_vp_evo
       type(band_matrices_type), intent(inout) :: band_vt_evo
@@ -169,7 +169,7 @@
       if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call set_icore_viscous_matrix                                   &
      &     (sph_bc_U%kr_in, sph_bc_U%fdm1_fix_fld_ICB,                  &
-     &      sph_rj, fl_prop, band_vt_evo)
+     &      dt, sph_rj, fl_prop, band_vt_evo)
       end if
 !
 !   Boundary condition for CMB
@@ -235,7 +235,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_radial_mat_4_magne_sph(sph_rj, r_2nd,            &
-     &          cd_prop, g_sph_rj, band_bp_evo, band_bt_evo)
+     &          cd_prop, g_sph_rj, dt, band_bp_evo, band_bt_evo)
 !
       use m_boundary_params_sph_MHD
       use m_coef_fdm_to_center
@@ -248,6 +248,7 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(conductive_property), intent(in) :: cd_prop
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
+      real(kind = kreal), intent(in) :: dt
 !
       type(band_matrices_type), intent(inout) :: band_bp_evo
       type(band_matrices_type), intent(inout) :: band_bt_evo

@@ -8,7 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine const_radial_mat_sph_mhd                             &
-!!     &        (fl_prop, cd_prop, ht_prop, cp_prop, sph_rj, r_2nd, leg)
+!!     &        (dt, fl_prop, cd_prop, ht_prop, cp_prop,                &
+!!     &         sph_rj, r_2nd, leg)
 !!      subroutine const_radial_mat_sph_snap(fl_prop, sph_rj, r_2nd, leg)
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
@@ -45,7 +46,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_radial_mat_sph_mhd                               &
-     &        (fl_prop, cd_prop, ht_prop, cp_prop, sph_rj, r_2nd, leg)
+     &        (dt, fl_prop, cd_prop, ht_prop, cp_prop,                  &
+     &         sph_rj, r_2nd, leg)
 !
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
@@ -54,14 +56,16 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(legendre_4_sph_trans), intent(in) :: leg
 !
+      real(kind = kreal), intent(in) :: dt
+!
 !
       call const_radial_matrices_sph                                    &
      &   (fl_prop, cd_prop, ht_prop, cp_prop,                           &
-     &    sph_rj, r_2nd, leg%g_sph_rj)
+     &    sph_rj, r_2nd, leg%g_sph_rj, dt)
 !
       if(sph_rj%inod_rj_center .gt. 0) then
         call const_radial_mat_sph_w_center                              &
-     &     (fl_prop, ht_prop, cp_prop, sph_rj)
+     &     (fl_prop, ht_prop, cp_prop, sph_rj, dt)
       end if
 !
       end subroutine const_radial_mat_sph_mhd
@@ -101,7 +105,7 @@
 !
       subroutine const_radial_matrices_sph                              &
      &         (fl_prop, cd_prop, ht_prop, cp_prop,                     &
-     &          sph_rj, r_2nd, g_sph_rj)
+     &          sph_rj, r_2nd, g_sph_rj, dt)
 !
       use m_physical_property
       use m_radial_matrices_sph
@@ -114,6 +118,8 @@
       type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
+!
+      real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
 !
@@ -121,7 +127,7 @@
         if(iflag_debug .gt. 0)                                          &
      &          write(*,*) 'const_radial_mat_vort_2step'
         call const_radial_mat_vort_2step                                &
-     &     (sph_rj, r_2nd, fl_prop, g_sph_rj,                           &
+     &     (sph_rj, r_2nd, fl_prop, g_sph_rj, dt,                       &
      &      band_vs_poisson, band_vp_evo, band_vt_evo, band_wt_evo)
         call const_radial_mat_4_press_sph                               &
      &     (fl_prop, sph_rj, r_2nd, g_sph_rj, band_p_poisson)
@@ -132,7 +138,7 @@
      &          write(*,*) 'const_radial_mat_4_temp_sph'
         write(band_temp_evo%mat_name,'(a)') 'Temperature_evolution'
         call const_radial_mat_4_scalar_sph                              &
-     &     (sph_rj, r_2nd, sph_bc_T, g_sph_rj, ht_prop%coef_imp,        &
+     &     (sph_rj, r_2nd, sph_bc_T, g_sph_rj, dt, ht_prop%coef_imp,    &
      &      ht_prop%coef_advect, ht_prop%coef_diffuse, band_temp_evo)
       end if
 !
@@ -140,7 +146,7 @@
           if(iflag_debug .gt. 0)                                        &
      &          write(*,*) 'const_radial_mat_4_magne_sph'
         call const_radial_mat_4_magne_sph(sph_rj, r_2nd,                &
-     &      cd_prop1, g_sph_rj, band_bp_evo, band_bt_evo)
+     &      cd_prop1, g_sph_rj, dt, band_bp_evo, band_bt_evo)
       end if
 !
       if(cp_prop%iflag_scheme .ge. id_Crank_nicolson) then
@@ -148,7 +154,7 @@
      &          write(*,*) 'const_radial_mat_4_composit_sph'
         write(band_comp_evo%mat_name,'(a)') 'Composition_evolution'
         call const_radial_mat_4_scalar_sph                              &
-     &     (sph_rj, r_2nd, sph_bc_C, g_sph_rj, cp_prop%coef_imp,        &
+     &     (sph_rj, r_2nd, sph_bc_C, g_sph_rj, dt, cp_prop%coef_imp,    &
      &      cp_prop%coef_advect, cp_prop%coef_diffuse, band_comp_evo)
       end if
 !
@@ -157,7 +163,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_radial_mat_sph_w_center                          &
-     &         (fl_prop, ht_prop, cp_prop, sph_rj)
+     &         (fl_prop, ht_prop, cp_prop, sph_rj, dt)
 !
       use m_radial_matrices_sph
       use m_radial_mat_sph_w_center
@@ -167,6 +173,7 @@
       type(fluid_property), intent(in) :: fl_prop
       type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(sph_rj_grid), intent(in) :: sph_rj
+      real(kind = kreal), intent(in) :: dt
 !
 !
       call allocate_average_w_center(sph_rj)
@@ -184,7 +191,7 @@
           if(i_debug .gt. 0) write(*,*) 'const_radial_mat_temp00_sph'
         write(band_temp_evo%mat_name,'(a)')                             &
      &                         'average_temperature_w_center'
-        call const_radial_mat_scalar00_sph(sph_rj, sph_bc_T,            &
+        call const_radial_mat_scalar00_sph(sph_rj, sph_bc_T, dt,        &
      &    ht_prop%coef_imp, ht_prop%coef_advect, ht_prop%coef_diffuse,  &
      &    band_temp_evo%n_vect, band_temp_evo%n_comp,                   &
      &    band_temp_evo%mat, band_temp00_evo)
@@ -194,11 +201,10 @@
           if(i_debug .gt. 0) write(*,*) 'const_radial_mat_comp00_sph'
         write(band_comp_evo%mat_name,'(a)')                             &
      &                        'average_composition_w_center'
-        call const_radial_mat_scalar00_sph                              &
-     &     (sph_rj, sph_bc_C, cp_prop%coef_imp,                         &
-     &      cp_prop%coef_advect, cp_prop%coef_diffuse,                  &
-     &      band_comp_evo%n_vect, band_comp_evo%n_comp,                 &
-     &      band_comp_evo%mat, band_comp00_evo)
+        call const_radial_mat_scalar00_sph(sph_rj, sph_bc_C, dt,        &
+     &    cp_prop%coef_imp, cp_prop%coef_advect, cp_prop%coef_diffuse,  &
+     &    band_comp_evo%n_vect, band_comp_evo%n_comp,                   &
+     &    band_comp_evo%mat, band_comp00_evo)
       end if
 !
       end subroutine const_radial_mat_sph_w_center

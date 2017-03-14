@@ -4,12 +4,12 @@
 !      stress free boundary in a spherical shell
 !     Written by H. Matsui on Sep. 2005
 !
-!      subroutine fem_surf_crank_free_inside(igrp, k2, num_int,         &
+!      subroutine fem_surf_crank_free_inside(igrp, k2, num_int, dt,     &
 !     &          numele, nnod_4_ele, nnod_4_surf, node_on_sf,           &
 !     &          num_surf_bc, num_surf_smp, isurf_grp_smp_stack,        &
 !     &          surf_item, ntot_int_sf_grp, aw_sf, xjq_sf, xe_sf,      &
 !     &          ak_d_velo, coef_imp, sk_v)
-!      subroutine fem_surf_crank_free_outside(igrp, k2, num_int,        &
+!      subroutine fem_surf_crank_free_outside(igrp, k2, num_int, dt,    &
 !     &          numele, nnod_4_ele, nnod_4_surf, node_on_sf,           &
 !     &          num_surf_bc, num_surf_smp, isurf_grp_smp_stack,        &
 !     &          surf_item, ntot_int_sf_grp, aw_sf, xjq_sf, xe_sf,      &
@@ -23,7 +23,6 @@
       use m_geometry_constants
       use m_fem_gauss_int_coefs
       use m_phys_constants
-      use m_t_step_parameter
 !
       implicit none
 !
@@ -33,7 +32,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_surf_crank_free_inside(igrp, k2, num_int,          &
+      subroutine fem_surf_crank_free_inside(igrp, k2, num_int, dt,      &
      &          numele, nnod_4_ele, nnod_4_surf, node_on_sf,            &
      &          num_surf_bc, num_surf_smp, isurf_grp_smp_stack,         &
      &          surf_item, ntot_int_sf_grp, aw_sf, xjq_sf, xe_sf,       &
@@ -51,6 +50,7 @@
       integer (kind = kint), intent(in) :: surf_item(2,num_surf_bc)
       real (kind=kreal), intent(in) :: ak_d_velo(numele)
       real (kind=kreal), intent(in) :: coef_imp
+      real(kind = kreal), intent(in) :: dt
 !
       integer (kind = kint), intent(in) :: ntot_int_sf_grp
       real (kind=kreal), intent(in)                                     &
@@ -101,7 +101,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine fem_surf_crank_free_outside(igrp, k2, num_int,         &
+      subroutine fem_surf_crank_free_outside(igrp, k2, num_int, dt,     &
      &          numele, nnod_4_ele, nnod_4_surf, node_on_sf,            &
      &          num_surf_bc, num_surf_smp, isurf_grp_smp_stack,         &
      &          surf_item, ntot_int_sf_grp, aw_sf, xjq_sf, xe_sf,       &
@@ -119,6 +119,7 @@
       integer (kind = kint), intent(in) :: surf_item(2,num_surf_bc)
       real (kind=kreal), intent(in) :: ak_d_velo(numele)
       real (kind=kreal), intent(in) :: coef_imp
+      real(kind = kreal), intent(in) :: dt
 !
       integer (kind = kint), intent(in) :: ntot_int_sf_grp
       real (kind=kreal), intent(in)                                     &

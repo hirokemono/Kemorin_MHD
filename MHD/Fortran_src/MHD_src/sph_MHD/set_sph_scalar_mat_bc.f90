@@ -40,9 +40,7 @@
       module set_sph_scalar_mat_bc
 !
       use m_precision
-!
       use m_constants
-      use m_t_step_parameter
 !
       implicit none
 !

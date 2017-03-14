@@ -24,7 +24,7 @@
 !!        Solution address: ipol%i_magne, itor%i_magne
 !!
 !!      subroutine cal_sol_temperature_sph_crank                        &
-!!     &         (sph_rj, ht_prop, band_temp_evo, ipol, rj_fld)
+!!     &         (dt, sph_rj, ht_prop, band_temp_evo, ipol, rj_fld)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(scalar_property), intent(in) :: ht_prop
 !!        type(band_matrices_type), intent(in) :: band_temp_evo
@@ -33,7 +33,7 @@
 !!       Input address:    ipol%i_temp
 !!       Solution address: ipol%i_temp
 !!      subroutine cal_sol_composition_sph_crank                        &
-!!     &         (sph_rj, cp_prop, band_comp_evo, ipol, rj_fld)
+!!     &         (dt, sph_rj, cp_prop, band_comp_evo, ipol, rj_fld)
 !!         type(sph_rj_grid), intent(in) :: sph_rj
 !!         type(scalar_property), intent(in) :: cp_prop
 !!         type(band_matrices_type), intent(in) :: band_comp_evo
@@ -65,6 +65,7 @@
       implicit none
 !
       private :: set_bc_magne_sph_crank, set_bc_scalar_sph_crank
+      private :: cal_sol_scalar_sph_crank
 !
 ! -----------------------------------------------------------------------
 !
@@ -159,10 +160,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sol_temperature_sph_crank                          &
-     &         (sph_rj, ht_prop, band_temp_evo, ipol, rj_fld)
+     &         (dt, sph_rj, ht_prop, band_temp_evo, ipol, rj_fld)
 !
       use t_physical_property
-      use m_t_step_parameter
       use m_boundary_params_sph_MHD
       use m_radial_mat_sph_w_center
 !
@@ -170,24 +170,24 @@
       type(scalar_property), intent(in) :: ht_prop
       type(band_matrices_type), intent(in) :: band_temp_evo
       type(phys_address), intent(in) :: ipol
+      real(kind = kreal), intent(in) :: dt
 !
       type(phys_data), intent(inout) :: rj_fld
 !
 !
       call cal_sol_scalar_sph_crank                                     &
      &   (sph_rj, sph_bc_T, band_temp_evo, band_temp00_evo,             &
-     &    ht_prop%coef_advect, ht_prop%coef_diffuse, ht_prop%coef_imp,  &
-     &    ipol%i_temp, rj_fld)
+     &    ht_prop%coef_advect, ht_prop%coef_diffuse,                    &
+     &    dt, ht_prop%coef_imp, ipol%i_temp, rj_fld)
 !
       end subroutine cal_sol_temperature_sph_crank
 !
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sol_composition_sph_crank                          &
-     &         (sph_rj, cp_prop, band_comp_evo, ipol, rj_fld)
+     &         (dt, sph_rj, cp_prop, band_comp_evo, ipol, rj_fld)
 !
       use t_physical_property
-      use m_t_step_parameter
       use m_boundary_params_sph_MHD
       use m_radial_mat_sph_w_center
 !
@@ -195,14 +195,15 @@
       type(scalar_property), intent(in) :: cp_prop
       type(band_matrices_type), intent(in) :: band_comp_evo
       type(phys_address), intent(in) :: ipol
+      real(kind = kreal), intent(in) :: dt
 !
       type(phys_data), intent(inout) :: rj_fld
 !
 !
       call cal_sol_scalar_sph_crank                                     &
      &   (sph_rj, sph_bc_C, band_comp_evo, band_comp00_evo,             &
-     &    cp_prop%coef_advect, cp_prop%coef_diffuse, cp_prop%coef_imp,  &
-     &    ipol%i_light, rj_fld)
+     &    cp_prop%coef_advect, cp_prop%coef_diffuse,                    &
+     &    dt, cp_prop%coef_imp, ipol%i_light, rj_fld)
 !
       end subroutine cal_sol_composition_sph_crank
 !
@@ -210,8 +211,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sol_scalar_sph_crank                               &
-     &         (sph_rj, sph_bc, band_s_evo, band_s00_evo,               &
-     &          coef_adv, coef_diffuse, coef_imp, is_light, rj_fld)
+     &         (sph_rj, sph_bc, band_s_evo, band_s00_evo, coef_adv,     &
+     &          coef_diffuse, dt, coef_imp, is_light, rj_fld)
 !
       use m_radial_mat_sph_w_center
       use t_sph_center_matrix
@@ -225,13 +226,14 @@
       type(band_matrix_type), intent(in) :: band_s00_evo
       real(kind = kreal), intent(in) :: coef_adv, coef_diffuse
       real(kind = kreal), intent(in) :: coef_imp
+      real(kind = kreal), intent(in) :: dt
       integer(kind = kint), intent(in) :: is_light
 !
       type(phys_data), intent(inout) :: rj_fld
 !
 !
       call set_bc_scalar_sph_crank(sph_rj, sph_bc,                      &
-     &    coef_adv, coef_diffuse, coef_imp, is_light, rj_fld)
+     &    coef_adv, coef_diffuse, dt, coef_imp, is_light, rj_fld)
 !
       call solve_scalar_sph_crank(sph_rj, band_s_evo, band_s00_evo,     &
      &    is_light, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,     &
@@ -342,15 +344,15 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_bc_scalar_sph_crank(sph_rj, sph_bc,                &
-     &          coef_f, coef_d, coef_imp, is_field, rj_fld)
+     &          coef_f, coef_d, dt, coef_imp, is_field, rj_fld)
 !
-      use m_t_step_parameter
       use set_scalar_boundary_sph
       use cal_sph_exp_center
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc
       real(kind = kreal), intent(in) :: coef_imp, coef_f, coef_d
+      real(kind = kreal), intent(in) :: dt
 !
       integer(kind = kint), intent(in) :: is_field
 !

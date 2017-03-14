@@ -14,7 +14,7 @@
 !!     &          MG_mat_linear, MG_mat_fl_l, FEM_elens,                &
 !!     &          ifld_diff, diff_coefs, fem_wk, mat_press, mat_magp)
 !!      subroutine int_MHD_crank_matrices                               &
-!!     &         (num_int, ifilter_final, mesh,                         &
+!!     &         (num_int, dt, ifilter_final, mesh,                     &
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD, jac_3d,   &
 !!     &          rhs_tbl, MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,     &
 !!     &          FEM_elens, ifld_diff, diff_coefs, fem_wk,             &
@@ -119,15 +119,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_MHD_crank_matrices                                 &
-     &         (num_int, ifilter_final, mesh,                           &
+     &         (num_int, dt, ifilter_final, mesh,                       &
      &          fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD, jac_3d,     &
      &          rhs_tbl, MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,       &
      &          FEM_elens, ifld_diff, diff_coefs, fem_wk,               &
      &          mat_velo, mat_magne, mat_temp, mat_light)
 !
-      use m_t_step_parameter
-!
       integer(kind = kint), intent(in) :: num_int, ifilter_final
+      real(kind = kreal), intent(in) :: dt
       type(mesh_geometry), intent(in) :: mesh
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
@@ -153,7 +152,7 @@
         call sel_int_diffuse3_crank_mat(mesh%ele, jac_3d,               &
      &      rhs_tbl, MG_mat_fl_q, FEM_elens, num_int,                   &
      &      diff_coefs%num_field, ifld_diff%i_velo, diff_coefs%ak,      &
-     &      fl_prop%coef_imp, ak_MHD%ak_d_velo, ifilter_final,          &
+     &      dt, fl_prop%coef_imp, ak_MHD%ak_d_velo, ifilter_final,      &
      &      fem_wk, mat_velo)
       end if
 !
@@ -161,7 +160,7 @@
         call sel_int_diffuse3_crank_mat(mesh%ele, jac_3d,               &
      &      rhs_tbl, MG_mat_full_cd_q, FEM_elens, num_int,              &
      &      diff_coefs%num_field, ifld_diff%i_magne, diff_coefs%ak,     &
-     &      cd_prop%coef_imp, ak_MHD%ak_d_magne, ifilter_final,         &
+     &      dt, cd_prop%coef_imp, ak_MHD%ak_d_magne, ifilter_final,     &
      &      fem_wk, mat_magne)
       end if
 !
@@ -169,7 +168,7 @@
         call sel_int_diffuse3_crank_mat(mesh%ele, jac_3d,               &
      &      rhs_tbl, MG_mat_q, FEM_elens, num_int,                      &
      &      diff_coefs%num_field, ifld_diff%i_magne, diff_coefs%ak,     &
-     &      cd_prop%coef_imp, ak_MHD%ak_d_magne, ifilter_final,         &
+     &      dt, cd_prop%coef_imp, ak_MHD%ak_d_magne, ifilter_final,     &
      &      fem_wk, mat_magne)
       end if
 !
@@ -177,7 +176,7 @@
         call choose_int_diffuse1_crank_mat(mesh%ele, jac_3d,            &
      &      rhs_tbl, MG_mat_fl_q, FEM_elens, num_int,                   &
      &      diff_coefs%num_field, ifld_diff%i_temp, diff_coefs%ak,      &
-     &      ht_prop%coef_imp, ak_MHD%ak_d_temp, ifilter_final,          &
+     &      dt, ht_prop%coef_imp, ak_MHD%ak_d_temp, ifilter_final,      &
      &      fem_wk, mat_temp)
       end if
 !
@@ -185,7 +184,7 @@
         call choose_int_diffuse1_crank_mat(mesh%ele, jac_3d,            &
      &      rhs_tbl, MG_mat_fl_q, FEM_elens, num_int,                   &
      &      diff_coefs%num_field, ifld_diff%i_light, diff_coefs%ak,     &
-     &      cp_prop%coef_imp, ak_MHD%ak_d_composit, ifilter_final,      &
+     &      dt, cp_prop%coef_imp, ak_MHD%ak_d_composit, ifilter_final,  &
      &      fem_wk, mat_light)
       end if
 !
@@ -233,8 +232,8 @@
 !
       subroutine sel_int_diffuse3_crank_mat                             &
      &         (ele, jac_3d, rhs_tbl, MG_mat_tbl, FEM_elens,            &
-     &          n_int, num_diff_kinds, iak_diff, ak_diff, coef_imp,     &
-     &          ak_d, i_filter, fem_wk, mat33_DJDS)
+     &          n_int, num_diff_kinds, iak_diff, ak_diff,               &
+     &          dt, coef_imp, ak_d, i_filter, fem_wk, mat33_DJDS)
 !
       use int_vol_poisson_mat
       use int_vol_poisson_sgs_matrix
@@ -249,6 +248,7 @@
       integer(kind = kint), intent(in) :: num_diff_kinds, iak_diff
       real(kind = kreal), intent(in)                                    &
      &                    :: ak_diff(ele%numele,num_diff_kinds)
+      real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: coef_imp
       real(kind = kreal), intent(in) :: ak_d(ele%numele)
 !
@@ -259,11 +259,11 @@
       if(iak_diff .gt. 0) then
         call int_vol_diffuse_sgs_mat33                                  &
      &     (ele, jac_3d, rhs_tbl, MG_mat_tbl, FEM_elens,                &
-     &      n_int, coef_imp, i_filter, ak_diff(1,iak_diff),             &
+     &      n_int, dt, coef_imp, i_filter, ak_diff(1,iak_diff),         &
      &      ak_d, fem_wk, mat33_DJDS)
       else
         call int_vol_diffuse_mat33(ele, jac_3d, rhs_tbl, MG_mat_tbl,    &
-     &      n_int, coef_imp, ak_d, fem_wk, mat33_DJDS)
+     &      n_int, dt, coef_imp, ak_d, fem_wk, mat33_DJDS)
       end if
 !
       end subroutine sel_int_diffuse3_crank_mat
@@ -272,8 +272,8 @@
 !
       subroutine choose_int_diffuse1_crank_mat                          &
      &         (ele, jac_3d, rhs_tbl, MG_mat_tbl, FEM_elens,            &
-     &          n_int, num_diff_kinds, iak_diff, ak_diff, coef_imp,     &
-     &          ak_d, i_filter, fem_wk, mat11_DJDS)
+     &          n_int, num_diff_kinds, iak_diff, ak_diff,               &
+     &          dt, coef_imp, ak_d, i_filter, fem_wk, mat11_DJDS)
 !
       use int_vol_poisson_mat
       use int_vol_poisson_sgs_matrix
@@ -288,6 +288,7 @@
       integer(kind = kint), intent(in) :: num_diff_kinds, iak_diff
       real(kind = kreal), intent(in)                                    &
      &                    :: ak_diff(ele%numele,num_diff_kinds)
+      real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: coef_imp
       real(kind = kreal), intent(in) :: ak_d(ele%numele)
 !
@@ -298,11 +299,11 @@
       if(iak_diff .gt. 0) then
         call int_vol_diffuse_sgs_mat11                                  &
      &     (ele, jac_3d, rhs_tbl, MG_mat_tbl, FEM_elens,                &
-     &      n_int, coef_imp, i_filter, ak_diff(1,iak_diff),             &
+     &      n_int, dt, coef_imp, i_filter, ak_diff(1,iak_diff),         &
      &      ak_d, fem_wk, mat11_DJDS)
       else
         call int_vol_diffuse_mat11(ele, jac_3d, rhs_tbl, MG_mat_tbl,    &
-     &      n_int, coef_imp, ak_d, fem_wk, mat11_DJDS)
+     &      n_int, dt, coef_imp, ak_d, fem_wk, mat11_DJDS)
       end if
 !
       end subroutine choose_int_diffuse1_crank_mat

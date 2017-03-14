@@ -165,7 +165,6 @@
      &         (sph_rj, band_s_evo, band_s00_evo, is_field,             &
      &          n_point, ntot_phys_rj, d_rj, sol_00)
 !
-      use m_t_step_parameter
       use t_sph_center_matrix
       use cal_sph_exp_center
       use check_sph_radial_mat
@@ -181,7 +180,7 @@
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
       real(kind = kreal), intent(inout) :: sol_00(0:sph_rj%nidx_rj(1))
 !
-      integer(kind = kint) :: j
+!      integer(kind = kint) :: j
 !
 !
       if(sph_rj%inod_rj_center .gt. 0) then

@@ -7,7 +7,7 @@
 !        modified by H. Matsui on Oct. 2005
 !        modified by H. Matsui on Feb. 2009
 !
-!!      subroutine set_aiccg_bc_phys(num_int, ele, surf, sf_grp,        &
+!!      subroutine set_aiccg_bc_phys(num_int, dt, ele, surf, sf_grp,    &
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop, jac_sf_grp,       &
 !!     &          rhs_tbl, MG_mat_fl_q, node_bcs, surf_bcs,             &
 !!     &          djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,     &
@@ -61,7 +61,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_aiccg_bc_phys(num_int, ele, surf, sf_grp,          &
+      subroutine set_aiccg_bc_phys(num_int, dt, ele, surf, sf_grp,      &
      &          fl_prop, cd_prop, ht_prop, cp_prop, jac_sf_grp,         &
      &          rhs_tbl, MG_mat_fl_q, node_bcs, surf_bcs,               &
      &          djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,       &
@@ -88,6 +88,7 @@
       type(DJDS_ordering_table),  intent(in) :: djds_tbl_fl_l
 !
       integer(kind = kint), intent(in) :: num_int
+      real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: ak_d_velo(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -106,7 +107,8 @@
      &      node_bcs%Vnod_bcs%nod_bc_p, djds_tbl_fl_l, mat_press)
 !
         if (fl_prop%iflag_scheme .ge. id_Crank_nicolson) then
-          call set_aiccg_bc_velo(num_int, ele, surf, sf_grp, fl_prop,   &
+          call set_aiccg_bc_velo                                        &
+     &     (num_int, dt, ele, surf, sf_grp, fl_prop,                    &
      &      node_bcs%Vnod_bcs%nod_bc_v, node_bcs%Vnod_bcs%nod_bc_rot,   &
      &      surf_bcs%Vsf_bcs%free_sph_in,                               &
      &      surf_bcs%Vsf_bcs%free_sph_out,                              &
@@ -148,7 +150,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_aiccg_bc_velo                                      &
-     &         (num_int, ele, surf, sf_grp, fl_prop,                    &
+     &         (num_int, dt, ele, surf, sf_grp, fl_prop,                &
      &          nod_bc_v, nod_bc_rot, free_in_sf, free_out_sf,          &
      &          jac_sf_grp, rhs_tbl, MG_mat_fl_q, DJDS_tbl, ak_d_velo,  &
      &          surf_wk, fem_wk, Vmat_DJDS)
@@ -173,6 +175,7 @@
       type(work_surface_element_mat), intent(in) :: surf_wk
 !
       integer(kind = kint), intent(in) :: num_int
+      real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: ak_d_velo(ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -182,10 +185,10 @@
 !      matrix setting for free slip on sphere
       call set_aiccg_bc_free_sph_in(ele, surf, sf_grp,                  &
      &    free_in_sf, jac_sf_grp, rhs_tbl, MG_mat_fl_q, surf_wk,        &
-     &    fl_prop%coef_imp, num_int, ak_d_velo, fem_wk, Vmat_DJDS)
+     &    dt, fl_prop%coef_imp, num_int, ak_d_velo, fem_wk, Vmat_DJDS)
       call set_aiccg_bc_free_sph_out(ele, surf, sf_grp,                 &
      &    free_out_sf, jac_sf_grp, rhs_tbl, MG_mat_fl_q, surf_wk,       &
-     &    fl_prop%coef_imp, num_int, ak_d_velo, fem_wk, Vmat_DJDS)
+     &    dt, fl_prop%coef_imp, num_int, ak_d_velo, fem_wk, Vmat_DJDS)
 !
 !      matrix setting for fixed boundaries
       call set_aiccg_bc_vector_nod(ele, nod_bc_v, DJDS_tbl, Vmat_DJDS)

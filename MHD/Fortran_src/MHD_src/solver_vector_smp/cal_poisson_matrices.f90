@@ -6,7 +6,7 @@
 !
 !
 !!      subroutine cal_scalar_diffuse_mat(ele, rhs_tbl, MG_mat_tbl,     &
-!!     &          fem_wk, k2, coef_imp, ak_d, mat11)
+!!     &          fem_wk, k2, dt, coef_imp, ak_d, mat11)
 !!        integer (kind = kint), intent(in) :: k2
 !!        real(kind=kreal), intent(in) :: coef_imp
 !!        real(kind=kreal), intent(in) :: ak_d(ele%numele)
@@ -16,7 +16,7 @@
 !!        type(work_finite_element_mat), intent(in) :: fem_wk
 !!        type(DJDS_MATRIX),  intent(inout) :: mat11
 !!      subroutine cal_vect_diffuse_mat(ele, rhs_tbl, MG_mat_tbl,       &
-!!     &          fem_wk, k2, coef_imp, ak_d, mat33)
+!!     &          fem_wk, k2, dt, coef_imp, ak_d, mat33)
 !!        integer (kind = kint), intent(in) :: k2
 !!        real(kind=kreal), intent(in) :: coef_imp
 !!        real(kind=kreal), intent(in) :: ak_d(ele%numele)
@@ -27,7 +27,7 @@
 !!        type(DJDS_MATRIX),  intent(inout) :: mat33
 !!
 !!      subroutine cal_consist_coriolis_mat(ele, fl_prop,               &
-!!     &          rhs_tbl, MG_mat_tbl, fem_wk, k2, mat33)
+!!     &          rhs_tbl, MG_mat_tbl, fem_wk, k2, dt, mat33)
 !!        type(element_data), intent(in) :: ele
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
@@ -56,9 +56,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_scalar_diffuse_mat(ele, rhs_tbl, MG_mat_tbl,       &
-     &          fem_wk, k2, coef_imp, ak_d, mat11)
+     &          fem_wk, k2, dt, coef_imp, ak_d, mat11)
 !
-      use m_t_step_parameter
       use t_coefs_element_4_MHD
       use cal_diffuse_matrix
 !
@@ -68,6 +67,7 @@
       type(work_finite_element_mat), intent(in) :: fem_wk
 !
       integer (kind = kint), intent(in) :: k2
+      real(kind = kreal), intent(in) :: dt
       real(kind=kreal), intent(in) :: coef_imp
       real(kind=kreal), intent(in) :: ak_d(ele%numele)
 !
@@ -86,9 +86,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_vect_diffuse_mat(ele, rhs_tbl, MG_mat_tbl,         &
-     &          fem_wk, k2, coef_imp, ak_d, mat33)
+     &          fem_wk, k2, dt, coef_imp, ak_d, mat33)
 !
-      use m_t_step_parameter
       use t_coefs_element_4_MHD
       use cal_diffuse_matrix
 !
@@ -98,6 +97,7 @@
       type(work_finite_element_mat), intent(in) :: fem_wk
 !
       integer (kind = kint), intent(in) :: k2
+      real(kind = kreal), intent(in) :: dt
       real(kind=kreal), intent(in) :: coef_imp
       real(kind=kreal), intent(in) :: ak_d(ele%numele)
 !
@@ -117,11 +117,10 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_consist_coriolis_mat(ele, fl_prop,                 &
-     &          rhs_tbl, MG_mat_tbl, fem_wk, k2, mat33)
+     &          rhs_tbl, MG_mat_tbl, fem_wk, k2, dt, mat33)
 !
       use t_coefs_element_4_MHD
       use t_physical_property
-      use m_t_step_parameter
       use cal_coriolis_mat33
 !
       type(element_data), intent(in) :: ele
@@ -131,6 +130,7 @@
       type(work_finite_element_mat), intent(in) :: fem_wk
 !
       integer (kind = kint), intent(in) :: k2
+      real(kind = kreal), intent(in) :: dt
 !
       type(DJDS_MATRIX),  intent(inout) :: mat33
 !
@@ -140,7 +140,7 @@
      &    rhs_tbl%inod_ele_max, rhs_tbl%num_sort_smp,                   &
      &    rhs_tbl%nod_stack_smp, rhs_tbl%iele_sort_smp,                 &
      &    rhs_tbl%iconn_sort_smp, MG_mat_tbl%idx_4_mat, k2,             &
-     &    fl_prop%coef_cor, fl_prop%sys_rot, fl_prop%coef_imp,          &
+     &    fl_prop%coef_cor, fl_prop%sys_rot, dt, fl_prop%coef_imp,      &
      &    fem_wk%sk6, mat33%num_non0, mat33%aiccg)
 !
       end subroutine cal_consist_coriolis_mat

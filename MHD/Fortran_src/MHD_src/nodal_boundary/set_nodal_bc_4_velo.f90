@@ -64,8 +64,8 @@
      &          num_bc_vsp_nod, ibc_vsp_id, bc_vsp_id_apt,              &
      &          ncomp_nod, i_velo, d_nod)
 !
-       use m_constants
-       use m_t_step_parameter
+      use m_constants
+      use m_t_step_parameter
 !
       integer(kind = kint), intent(in) :: numnod, ncomp_nod, i_velo
       real(kind = kreal), intent(in) :: xx(numnod,3)

@@ -6,32 +6,31 @@
 !
 !!      subroutine int_sgs_grad_w_const_upw                             &
 !!     &         (node, ele, jac_3d, rhs_tbl, nod_fld, FEM_elens,       &
-!!     &          iele_fsmp_stack, num_int, i_filter, ak_diff, i_field, &
-!!     &          coef, ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
+!!     &          iele_fsmp_stack, num_int, dt, i_filter, ak_diff,      &
+!!     &          i_field, coef, ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
 !!      subroutine int_sgs_div_w_const_upw                              &
 !!     &         (node, ele, jac_3d, rhs_tbl, nod_fld, FEM_elens,       &
-!!     &          iele_fsmp_stack, num_int, i_filter, ak_diff, i_field, &
-!!     &          coef, ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
+!!     &          iele_fsmp_stack, num_int, dt, i_filter, ak_diff,      &
+!!     &          i_field, coef, ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
 !!      subroutine int_sgs_rot_w_const_upw                              &
 !!     &         (node, ele, jac_3d, rhs_tbl, nod_fld, FEM_elens,       &
-!!     &          iele_fsmp_stack, num_int, i_filter, ak_diff, i_field, &
-!!     &          coef, ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
+!!     &          iele_fsmp_stack, num_int, dt, i_filter, ak_diff,      &
+!!     &          i_field, coef, ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
 !!
 !!      subroutine int_sgs_div_tsr_w_const_upw                          &
 !!     &         (node, ele, jac_3d, rhs_tbl, nod_fld, FEM_elens,       &
-!!     &          iele_fsmp_stack, num_int, i_filter, ak_diff, i_field, &
-!!     &          coef, ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
+!!     &          iele_fsmp_stack, num_int, dt, i_filter, ak_diff,      &
+!!     &          i_field, coef, ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
 !!      subroutine int_sgs_div_as_tsr_w_const_upw                       &
 !!     &         (node, ele, jac_3d, rhs_tbl, nod_fld, FEM_elens,       &
-!!     &          iele_fsmp_stack, num_int, i_filter, ak_diff, i_field, &
-!!     &          coef, ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
+!!     &          iele_fsmp_stack, num_int, dt, i_filter, ak_diff,      &
+!!     &          i_field, coef, ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
 !
       module int_sgs_vect_cst_diff_upw
 !
       use m_precision
 !
       use m_phys_constants
-      use m_t_step_parameter
       use t_geometry_data
       use t_phys_data
       use t_jacobians
@@ -53,8 +52,8 @@
 !
       subroutine int_sgs_grad_w_const_upw                               &
      &         (node, ele, jac_3d, rhs_tbl, nod_fld, FEM_elens,         &
-     &          iele_fsmp_stack, num_int, i_filter, ak_diff, i_field,   &
-     &          coef, ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
+     &          iele_fsmp_stack, num_int, dt, i_filter, ak_diff,        &
+     &          i_field, coef, ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -67,6 +66,7 @@
       integer(kind=kint), intent(in) :: i_field, i_filter
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: coef
+      real(kind = kreal), intent(in) :: dt
 !
       integer(kind = kint), intent(in) :: ncomp_ele, iv_up
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
@@ -99,8 +99,8 @@
 !
       subroutine int_sgs_div_w_const_upw                                &
      &         (node, ele, jac_3d, rhs_tbl, nod_fld, FEM_elens,         &
-     &          iele_fsmp_stack, num_int, i_filter, ak_diff, i_field,   &
-     &          coef, ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
+     &          iele_fsmp_stack, num_int, dt, i_filter, ak_diff,        &
+     &          i_field, coef, ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -113,6 +113,7 @@
       integer(kind=kint), intent(in) :: i_field, i_filter
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: coef
+      real(kind = kreal), intent(in) :: dt
 !
       integer(kind = kint), intent(in) :: ncomp_ele, iv_up
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
@@ -145,8 +146,8 @@
 !
       subroutine int_sgs_rot_w_const_upw                                &
      &         (node, ele, jac_3d, rhs_tbl, nod_fld, FEM_elens,         &
-     &          iele_fsmp_stack, num_int, i_filter, ak_diff, i_field,   &
-     &          coef, ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
+     &          iele_fsmp_stack, num_int, dt, i_filter, ak_diff,        &
+     &          i_field, coef, ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -159,6 +160,7 @@
       integer(kind=kint), intent(in) :: i_field, i_filter
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: coef
+      real(kind = kreal), intent(in) :: dt
 !
       integer(kind = kint), intent(in) :: ncomp_ele, iv_up
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
@@ -192,8 +194,8 @@
 !
       subroutine int_sgs_div_tsr_w_const_upw                            &
      &         (node, ele, jac_3d, rhs_tbl, nod_fld, FEM_elens,         &
-     &          iele_fsmp_stack, num_int, i_filter, ak_diff, i_field,   &
-     &          coef, ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
+     &          iele_fsmp_stack, num_int, dt, i_filter, ak_diff,        &
+     &          i_field, coef, ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -206,6 +208,7 @@
       integer(kind=kint), intent(in) :: i_field, i_filter
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: coef
+      real(kind = kreal), intent(in) :: dt
 !
       integer(kind = kint), intent(in) :: ncomp_ele, iv_up
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
@@ -238,8 +241,8 @@
 !
       subroutine int_sgs_div_as_tsr_w_const_upw                         &
      &         (node, ele, jac_3d, rhs_tbl, nod_fld, FEM_elens,         &
-     &          iele_fsmp_stack, num_int, i_filter, ak_diff, i_field,   &
-     &          coef, ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
+     &          iele_fsmp_stack, num_int, dt, i_filter, ak_diff,        &
+     &          i_field, coef, ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -252,6 +255,7 @@
       integer(kind=kint), intent(in) :: i_field, i_filter
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: coef
+      real(kind = kreal), intent(in) :: dt
 !
       integer(kind = kint), intent(in) :: ncomp_ele, iv_up
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)

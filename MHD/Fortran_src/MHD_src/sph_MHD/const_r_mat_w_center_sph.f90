@@ -10,7 +10,7 @@
 !!     &         (sph_rj, fl_prop, n_vect, n_comp, p_poisson_mat,       &
 !!     &          band_p00_poisson)
 !!      subroutine const_radial_mat_scalar00_sph                        &
-!!     &         (sph_rj, sph_bc, coef_imp, coef_f, coef_d,             &
+!!     &         (sph_rj, sph_bc, dt, coef_imp, coef_f, coef_d,         &
 !!     &          n_vect, n_comp, evo_mat, band_s00_evo)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(fluid_property), intent(in) :: fl_prop
@@ -23,7 +23,6 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_t_step_parameter
 !
       use t_spheric_rj_data
       use t_sph_center_matrix
@@ -87,7 +86,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_radial_mat_scalar00_sph                          &
-     &         (sph_rj, sph_bc, coef_imp, coef_f, coef_d,               &
+     &         (sph_rj, sph_bc, dt, coef_imp, coef_f, coef_d,           &
      &          n_vect, n_comp, evo_mat, band_s00_evo)
 !
       use m_coef_fdm_to_center
@@ -100,6 +99,7 @@
       integer(kind= kint), intent(in) :: n_vect, n_comp
       real(kind = kreal) :: coef_imp, coef_f, coef_d
       real(kind = kreal), intent(in) :: evo_mat(3,n_vect,n_comp)
+      real(kind = kreal), intent(in) :: dt
 !
       type(band_matrix_type), intent(inout) :: band_s00_evo
 !
