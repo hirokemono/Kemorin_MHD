@@ -3,15 +3,13 @@
 !
 !      Written by H. Matsui on June, 2005
 !
-!      subroutine init_4_sol_k_potential(inod_smp_stack)
-!      subroutine init_4_sol_m_potential(inod_smp_stack)
+!!      subroutine init_sol_potential(numnod, inod_smp_stack,           &
+!!     &          dt, coef_p, ncomp_nod, i_p_phi, i_press, d_nod)
 !
       module init_4_sol_potentials
 !
       use m_precision
-!
       use m_machine_parameter
-      use m_t_step_parameter
 !
       implicit none
 !
@@ -22,11 +20,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine init_sol_potential(numnod, inod_smp_stack,             &
-     &          coef_p, ncomp_nod, i_p_phi, i_press, d_nod)
+     &          dt, coef_p, ncomp_nod, i_p_phi, i_press, d_nod)
 !
       integer(kind = kint), intent(in) :: numnod, ncomp_nod
       integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: i_p_phi, i_press
+      real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: coef_p
       real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !

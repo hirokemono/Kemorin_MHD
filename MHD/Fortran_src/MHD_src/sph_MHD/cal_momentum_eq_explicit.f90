@@ -64,7 +64,7 @@
 !$omp parallel
       if(fl_prop%iflag_scheme .gt.     id_no_evolution) then
         call cal_vorticity_eq_adams(ipol, itor,                         &
-     &      sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_exp,          &
+     &      sph_bc_U%kr_in, sph_bc_U%kr_out, dt, fl_prop%coef_exp,      &
      &      rj_fld%n_point,sph_rj%nidx_rj(2), rj_fld%ntot_phys,         &
      &      rj_fld%d_fld)
       end if
@@ -77,14 +77,14 @@
         call sel_scalar_diff_adv_src_adams                              &
      &     (sph_bc_T%kr_in, sph_bc_T%kr_out,                            &
      &      ipol%i_t_diffuse, ipol%i_h_advect, ipol%i_heat_source,      &
-     &      ipol%i_temp, ipol%i_pre_heat, ht_prop%coef_exp,             &
+     &      ipol%i_temp, ipol%i_pre_heat, dt, ht_prop%coef_exp,         &
      &      ht_prop%coef_source, sph_rj, rj_fld)
       end if
       if(cp_prop%iflag_scheme .gt. id_no_evolution) then
         call sel_scalar_diff_adv_src_adams                              &
      &     (sph_bc_C%kr_in, sph_bc_C%kr_out,                            &
      &      ipol%i_c_diffuse, ipol%i_c_advect, ipol%i_light_source,     &
-     &      ipol%i_light, ipol%i_pre_composit, cp_prop%coef_exp,        &
+     &      ipol%i_light, ipol%i_pre_composit, dt, cp_prop%coef_exp,    &
      &      cp_prop%coef_source, sph_rj, rj_fld)
       end if
 !$omp end parallel
@@ -112,7 +112,7 @@
 !$omp parallel
       if(fl_prop%iflag_scheme .gt.     id_no_evolution) then
         call cal_vorticity_eq_euler(ipol, itor,                         &
-     &      sph_bc_U%kr_in, sph_bc_U%kr_out, fl_prop%coef_exp,          &
+     &      sph_bc_U%kr_in, sph_bc_U%kr_out, dt, fl_prop%coef_exp,      &
      &      rj_fld%n_point, sph_rj%nidx_rj(2), rj_fld%ntot_phys,        &
      &      rj_fld%d_fld)
       end if
@@ -121,7 +121,7 @@
         call sel_scalar_diff_adv_src_euler                              &
      &     (sph_bc_T%kr_in, sph_bc_T%kr_out,                            &
      &      ipol%i_t_diffuse, ipol%i_h_advect, ipol%i_heat_source,      &
-     &      ipol%i_temp, ht_prop%coef_exp, ht_prop%coef_advect,         &
+     &      ipol%i_temp, dt, ht_prop%coef_exp, ht_prop%coef_advect,     &
      &      ht_prop%coef_source, sph_rj, rj_fld)
       end if
       if(cd_prop%iflag_Bevo_scheme .gt.    id_no_evolution) then
@@ -132,7 +132,7 @@
         call sel_scalar_diff_adv_src_euler                              &
      &     (sph_bc_C%kr_in, sph_bc_C%kr_out,                            &
      &      ipol%i_c_diffuse, ipol%i_c_advect, ipol%i_light_source,     &
-     &      ipol%i_light, cp_prop%coef_exp, cp_prop%coef_advect,        &
+     &      ipol%i_light, dt, cp_prop%coef_exp, cp_prop%coef_advect,    &
      &      cp_prop%coef_source, sph_rj, rj_fld)
       end if
 !

@@ -83,6 +83,7 @@
       use m_precision
 !
       use m_machine_parameter
+      use m_t_step_parameter
 !
       use t_FEM_control_parameter
       use t_SGS_control_parameter
@@ -195,7 +196,7 @@
       if ( cd_prop1%iflag_Aevo_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'cal_magne_vector_potential'
         call cal_vector_potential                                       &
-     &    (FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,        &
+     &    (dt, FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,    &
      &     ele_mesh%surf, MHD_mesh%conduct, group%surf_grp, cd_prop1,   &
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Fsf_bcs,        &
      &     iphys, iphys_ele, ele_fld,                                   &
@@ -221,7 +222,7 @@
 !        call check_surface_param_smp('cal_magnetic_field start',       &
 !     &      my_rank, sf_grp, group%surf_nod_grp)
         if (iflag_debug.eq.1) write(*,*) 's_cal_magnetic_field'
-        call s_cal_magnetic_field(FEM_prm, SGS_par,                     &
+        call s_cal_magnetic_field(dt, FEM_prm, SGS_par,                 &
      &     mesh%nod_comm, mesh%node, mesh%ele,                          &
      &     ele_mesh%surf, MHD_mesh%conduct, group%surf_grp, cd_prop1,   &
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,        &

@@ -6,7 +6,7 @@
 !        modieied by H. Matsui on Sep., 2005
 !
 !!      subroutine cal_vector_p_pre                                     &
-!!     &         (iak_diff_b, icomp_sgs_uxb, ie_dvx, ak_d_magne,        &
+!!     &         (iak_diff_b, icomp_sgs_uxb, ie_dvx, ak_d_magne, dt,    &
 !!     &          FEM_prm, SGS_param, cmt_param, filter_param,          &
 !!     &          nod_comm, node, ele, surf, conduct, sf_grp,           &
 !!     &          cd_prop, Bnod_bcs, Asf_bcs, iphys, iphys_ele, ele_fld,&
@@ -61,7 +61,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_t_step_parameter
       use m_phys_constants
 !
       use t_FEM_control_parameter
@@ -100,7 +99,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_vector_p_pre                                       &
-     &         (iak_diff_b, icomp_sgs_uxb, ie_dvx, ak_d_magne,          &
+     &         (iak_diff_b, icomp_sgs_uxb, ie_dvx, ak_d_magne, dt,      &
      &          FEM_prm, SGS_param, cmt_param, filter_param,            &
      &          nod_comm, node, ele, surf, conduct, sf_grp,             &
      &          cd_prop, Bnod_bcs, Asf_bcs, iphys, iphys_ele, ele_fld,  &
@@ -150,6 +149,7 @@
       integer(kind = kint), intent(in) :: iak_diff_b, icomp_sgs_uxb
       integer(kind = kint), intent(in) :: ie_dvx
       real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
+      real(kind = kreal), intent(in) :: dt
 !
       type(vectors_4_solver), intent(inout)                             &
      &           :: MG_vector(0:Bmatrix%nlevel_MG)
@@ -184,7 +184,7 @@
       end if
 !
       if (FEM_prm%iflag_magne_supg .gt. id_turn_OFF) then
-        call int_vol_vect_p_pre_ele_upm(FEM_prm%npoint_t_evo_int,       &
+        call int_vol_vect_p_pre_ele_upm(FEM_prm%npoint_t_evo_int, dt,   &
      &      node, ele, conduct, cd_prop, iphys, nod_fld,                &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
      &      jac_3d_q, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)

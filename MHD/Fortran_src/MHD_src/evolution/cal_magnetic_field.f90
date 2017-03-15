@@ -6,7 +6,7 @@
 !        modified by H.Matsui on July, 2006
 !
 !!      subroutine cal_vector_potential                                 &
-!!     &         (FEM_prm, SGS_par, nod_comm, node, ele, surf,          &
+!!     &         (dt, FEM_prm, SGS_par, nod_comm, node, ele, surf,      &
 !!     &          conduct, sf_grp, cd_prop, Bnod_bcs, Asf_bcs, Fsf_bcs, &
 !!     &          iphys, iphys_ele, ele_fld,                            &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
@@ -14,7 +14,7 @@
 !!     &          iphys_elediff, sgs_coefs, diff_coefs, filtering,      &
 !!     &          m_lump, Bmatrix, Fmatrix, ak_d_magne, wk_filter,      &
 !!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
-!!      subroutine s_cal_magnetic_field(FEM_prm, SGS_par,               &
+!!      subroutine s_cal_magnetic_field(dt, FEM_prm, SGS_par,           &
 !!     &          nod_comm, node, ele, surf, conduct, sf_grp,           &
 !!     &          cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs, Fsf_bcs,         &
 !!     &          iphys, iphys_ele, ele_fld,                            &
@@ -102,7 +102,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_vector_potential                                   &
-     &         (FEM_prm, SGS_par, nod_comm, node, ele, surf,            &
+     &         (dt, FEM_prm, SGS_par, nod_comm, node, ele, surf,        &
      &          conduct, sf_grp, cd_prop, Bnod_bcs, Asf_bcs, Fsf_bcs,   &
      &          iphys, iphys_ele, ele_fld,                              &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
@@ -148,6 +148,7 @@
       type(MHD_MG_matrix), intent(in) :: Bmatrix
       type(MHD_MG_matrix), intent(in) :: Fmatrix
 !
+      real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
 !
       type(filtering_work_type), intent(inout) :: wk_filter
@@ -162,20 +163,20 @@
 !
 !
       call init_sol_potential(node%numnod, node%istack_nod_smp,         &
-     &    cd_prop%coef_mag_p, nod_fld%ntot_phys,                        &
+     &    dt, cd_prop%coef_mag_p, nod_fld%ntot_phys,                    &
      &    iphys%i_m_phi, iphys%i_mag_p, nod_fld%d_fld)
 !
 !     --------------------- 
 !
       if (iflag_debug .gt. 0)  write(*,*) 'vector_p_pre'
       call cal_vector_p_pre(ifld_diff%i_magne, icomp_sgs%i_induction,   &
-     &   iphys_elediff%i_velo, ak_d_magne,                              &
-     &   FEM_prm, SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p, &
-     &   nod_comm, node, ele, surf, conduct,                            &
-     &   sf_grp, cd_prop, Bnod_bcs, Asf_bcs, iphys, iphys_ele,          &
-     &   ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,           &
-     &   sgs_coefs, diff_coefs, filtering, Bmatrix, MG_vector,          &
-     &   wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &    iphys_elediff%i_velo, ak_d_magne, dt, FEM_prm,                &
+     &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
+     &    nod_comm, node, ele, surf, conduct,                           &
+     &    sf_grp, cd_prop, Bnod_bcs, Asf_bcs, iphys, iphys_ele,         &
+     &    ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,          &
+     &    sgs_coefs, diff_coefs, filtering, Bmatrix, MG_vector,         &
+     &    wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
 !     --------------------- 
 !
@@ -186,7 +187,7 @@
 !     &    iphys, nod_fld, jac_3d_q, fem_wk, rel_correct)
 !
       call init_sol_potential(node%numnod, node%istack_nod_smp,         &
-     &    cd_prop%coef_mag_p, nod_fld%ntot_phys,                        &
+     &    dt, cd_prop%coef_mag_p, nod_fld%ntot_phys,                    &
      &    iphys%i_m_phi, iphys%i_mag_p,nod_fld%d_fld)
 !
       do iloop = 0, FEM_prm%maxiter_coulomb
@@ -237,7 +238,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_magnetic_field(FEM_prm, SGS_par,                 &
+      subroutine s_cal_magnetic_field(dt, FEM_prm, SGS_par,             &
      &          nod_comm, node, ele, surf, conduct, sf_grp,             &
      &          cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs, Fsf_bcs,           &
      &          iphys, iphys_ele, ele_fld,                              &
@@ -288,6 +289,7 @@
       type(MHD_MG_matrix), intent(in) :: Bmatrix
       type(MHD_MG_matrix), intent(in) :: Fmatrix
 !
+      real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
 !
       type(filtering_work_type), intent(inout) :: wk_filter
@@ -309,14 +311,14 @@
       end if
 !
       call init_sol_potential(node%numnod, node%istack_nod_smp,         &
-     &    cd_prop%coef_mag_p, nod_fld%ntot_phys,                        &
+     &    dt, cd_prop%coef_mag_p, nod_fld%ntot_phys,                    &
      &    iphys%i_m_phi, iphys%i_mag_p, nod_fld%d_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_magnetic_field_pre'
       call cal_magnetic_field_pre                                       &
      &   (icomp_sgs%i_induction, ifld_diff%i_magne,                     &
      &    ifld_diff%i_induction, iphys_elediff%i_velo,                  &
-     &    iphys_elediff%i_magne, ak_d_magne, FEM_prm,                   &
+     &    iphys_elediff%i_magne, ak_d_magne, dt, FEM_prm,               &
      &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
      &    nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,          &
      &    Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,        &

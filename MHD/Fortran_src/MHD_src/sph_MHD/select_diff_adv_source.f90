@@ -9,10 +9,10 @@
 !!@verbatim
 !!      subroutine sel_scalar_diff_adv_src_adams(kr_st, kr_ed,          &
 !!     &          ipol_diffuse, ipol_advect, ipol_source, ipol_scalar,  &
-!!     &          ipol_pre, coef_exp, coef_src, sph_rj, rj_fld)
+!!     &          ipol_pre, dt, coef_exp, coef_src, sph_rj, rj_fld)
 !!      subroutine sel_scalar_diff_adv_src_euler(kr_st, kr_ed,          &
 !!     &          ipol_diffuse, ipol_advect, ipol_source, ipol_scalar,  &
-!!     &          coef_exp, coef_adv, coef_src, sph_rj, rj_fld)
+!!     &          dt, coef_exp, coef_adv, coef_src, sph_rj, rj_fld)
 !!
 !!      subroutine sel_ini_adams_scalar_w_src(kr_st, kr_ed,             &
 !!     &          ipol_advect, ipol_source, ipol_pre, coef_src,         &
@@ -49,7 +49,7 @@
 !
       subroutine sel_scalar_diff_adv_src_adams(kr_st, kr_ed,            &
      &          ipol_diffuse, ipol_advect, ipol_source, ipol_scalar,    &
-     &          ipol_pre, coef_exp, coef_src, sph_rj, rj_fld)
+     &          ipol_pre, dt, coef_exp, coef_src, sph_rj, rj_fld)
 !
       use cal_diff_adv_src_explicit
 !
@@ -59,19 +59,21 @@
       integer(kind = kint), intent(in) :: ipol_source
       integer(kind = kint), intent(in) :: ipol_scalar, ipol_pre
       real(kind = kreal), intent(in) :: coef_exp, coef_src
+      real(kind = kreal), intent(in) :: dt
 !
       type(phys_data), intent(inout) :: rj_fld
 !
 !
       if(ipol_source .eq. izero) then
-        call scalar_diff_advect_adams(kr_st, kr_ed, sph_rj%nidx_rj(2),  &
-     &      ipol_diffuse, ipol_advect, ipol_scalar, ipol_pre, coef_exp, &
+        call scalar_diff_advect_adams                                   &
+     &     (kr_st, kr_ed, sph_rj%nidx_rj(2), ipol_diffuse,              &
+     &      ipol_advect, ipol_scalar, ipol_pre, dt, coef_exp,           &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else
         call scalar_diff_adv_src_adams                                  &
      &     (kr_st, kr_ed, sph_rj%nidx_rj(2), sph_rj%inod_rj_center,     &
      &      ipol_diffuse, ipol_advect, ipol_source, ipol_scalar,        &
-     &      ipol_pre, coef_exp, coef_src,                               &
+     &      ipol_pre, dt, coef_exp, coef_src,                           &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
@@ -81,7 +83,7 @@
 !
       subroutine sel_scalar_diff_adv_src_euler(kr_st, kr_ed,            &
      &          ipol_diffuse, ipol_advect, ipol_source, ipol_scalar,    &
-     &          coef_exp, coef_adv, coef_src, sph_rj, rj_fld)
+     &          dt, coef_exp, coef_adv, coef_src, sph_rj, rj_fld)
 !
       use cal_diff_adv_src_explicit
 !
@@ -91,6 +93,7 @@
       integer(kind = kint), intent(in) :: ipol_source
       integer(kind = kint), intent(in) :: ipol_scalar
       real(kind = kreal), intent(in) :: coef_exp, coef_adv, coef_src
+      real(kind = kreal), intent(in) :: dt
 !
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -109,13 +112,13 @@
         end if
       else if(ipol_source .eq. izero) then
         call scalar_diff_advect_euler(kr_st, kr_ed, sph_rj%nidx_rj(2),  &
-     &      ipol_diffuse, ipol_advect, ipol_scalar, coef_exp,           &
+     &      ipol_diffuse, ipol_advect, ipol_scalar, dt, coef_exp,       &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else
         call scalar_diff_adv_src_euler                                  &
      &     (kr_st, kr_ed, sph_rj%nidx_rj(2), sph_rj%inod_rj_center,     &
-     &      ipol_diffuse, ipol_advect, ipol_source, ipol_scalar,        &
-     &      coef_exp, coef_src,                                         &
+     &      ipol_diffuse, ipol_advect, ipol_source,                     &
+     &      ipol_scalar, dt, coef_exp, coef_src,                        &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !

@@ -187,12 +187,12 @@
      &        iphys%i_press, nod_fld%d_fld)
         else
           call init_sol_potential(node%numnod, node%istack_nod_smp,     &
-     &        fl_prop%coef_press, nod_fld%ntot_phys, iphys%i_p_phi,     &
+     &        dt, fl_prop%coef_press, nod_fld%ntot_phys, iphys%i_p_phi, &
      &        iphys%i_press, nod_fld%d_fld)
         end if
       else
         call init_sol_potential(node%numnod, node%istack_nod_smp,       &
-     &      fl_prop%coef_press, nod_fld%ntot_phys, iphys%i_p_phi,       &
+     &      dt, fl_prop%coef_press, nod_fld%ntot_phys, iphys%i_p_phi,   &
      &      iphys%i_press, nod_fld%d_fld)
       end if
 !

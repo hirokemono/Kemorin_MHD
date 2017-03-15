@@ -9,22 +9,21 @@
 !!@verbatim
 !!      subroutine scalar_diff_advect_adams(kr_st, kr_ed, jmax,         &
 !!     &          ipol_diffuse, ipol_advect, ipol_scalar, ipol_pre,     &
-!!     &          coef_exp, n_point, ntot_phys_rj, d_rj)
+!!     &          dt, coef_exp, n_point, ntot_phys_rj, d_rj)
 !!      subroutine scalar_diff_advect_euler(kr_st, kr_ed, jmax,         &
-!!     &          ipol_diffuse, ipol_advect, ipol_scalar, coef_exp,     &
+!!     &          ipol_diffuse, ipol_advect, ipol_scalar, dt, coef_exp, &
 !!     &          n_point, ntot_phys_rj, d_rj)
 !!      subroutine set_ini_adams_scalar(kr_st, kr_ed, jmax,             &
 !!     &          ipol_advect, ipol_pre, n_point, ntot_phys_rj, d_rj)
 !!
 !!      subroutine scalar_diff_adv_src_adams                            &
-!!     &         (kr_st, kr_ed, jmax, inod_rj_center,                   &
-!!     &          ipol_diffuse, ipol_advect, ipol_source, ipol_scalar,  &
-!!     &          ipol_pre, coef_exp, coef_src,                         &
-!!     &          n_point, ntot_phys_rj, d_rj)
+!!     &         (kr_st, kr_ed, jmax, inod_rj_center, ipol_diffuse,     &
+!!     &          ipol_advect, ipol_source, ipol_scalar, ipol_pre, dt,  &
+!!     &          coef_exp, coef_src, n_point, ntot_phys_rj, d_rj)
 !!      subroutine scalar_diff_adv_src_euler                            &
 !!     &         (kr_st, kr_ed, jmax, inod_rj_center,                   &
 !!     &          ipol_diffuse, ipol_advect, ipol_source, ipol_scalar,  &
-!!     &          coef_exp, coef_src, n_point, ntot_phys_rj, d_rj)
+!!     &          dt, coef_exp, coef_src, n_point, ntot_phys_rj, d_rj)
 !!      subroutine set_ini_adams_scalar_w_src                           &
 !!     &         (kr_st, kr_ed, jmax, inod_rj_center,                   &
 !!     &          ipol_advect, ipol_source, ipol_pre, coef_src,         &
@@ -52,9 +51,14 @@
       use m_precision
       use m_constants
 !
-      use m_t_step_parameter
-!
       implicit  none
+!
+!>      Coefficient of terms at current step for Adams-Bashforth
+      real(kind=kreal), parameter :: adam_0 =  three / two
+!>      Coefficient of terms at previous step for Adams-Bashforth
+      real(kind=kreal), parameter :: adam_1 = -one / two
+!>      1 / adam_0
+      real(kind=kreal), parameter :: adam_r =  two / three
 !
 ! ----------------------------------------------------------------------
 !
@@ -64,13 +68,14 @@
 !
       subroutine scalar_diff_advect_adams(kr_st, kr_ed, jmax,           &
      &          ipol_diffuse, ipol_advect, ipol_scalar, ipol_pre,       &
-     &          coef_exp, n_point, ntot_phys_rj, d_rj)
+     &          dt, coef_exp, n_point, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_st, kr_ed, jmax
       integer(kind = kint), intent(in) :: ipol_diffuse, ipol_advect
       integer(kind = kint), intent(in) :: ipol_scalar, ipol_pre
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real(kind = kreal), intent(in) :: coef_exp
+      real(kind = kreal), intent(in) :: dt
 !
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
@@ -95,7 +100,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine scalar_diff_advect_euler(kr_st, kr_ed, jmax,           &
-     &          ipol_diffuse, ipol_advect, ipol_scalar, coef_exp,       &
+     &          ipol_diffuse, ipol_advect, ipol_scalar, dt, coef_exp,   &
      &          n_point, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: kr_st, kr_ed, jmax
@@ -103,6 +108,7 @@
       integer(kind = kint), intent(in) :: ipol_scalar
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real(kind = kreal), intent(in) :: coef_exp
+      real(kind = kreal), intent(in) :: dt
 !
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
@@ -149,10 +155,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine scalar_diff_adv_src_adams                              &
-     &         (kr_st, kr_ed, jmax, inod_rj_center,                     &
-     &          ipol_diffuse, ipol_advect, ipol_source, ipol_scalar,    &
-     &          ipol_pre, coef_exp, coef_src,                           &
-     &          n_point, ntot_phys_rj, d_rj)
+     &         (kr_st, kr_ed, jmax, inod_rj_center, ipol_diffuse,       &
+     &          ipol_advect, ipol_source, ipol_scalar, ipol_pre, dt,    &
+     &          coef_exp, coef_src, n_point, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: inod_rj_center
       integer(kind = kint), intent(in) :: kr_st, kr_ed, jmax
@@ -161,6 +166,7 @@
       integer(kind = kint), intent(in) :: ipol_scalar, ipol_pre
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real(kind = kreal), intent(in) :: coef_exp, coef_src
+      real(kind = kreal), intent(in) :: dt
 !
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
@@ -200,7 +206,7 @@
       subroutine scalar_diff_adv_src_euler                              &
      &         (kr_st, kr_ed, jmax, inod_rj_center,                     &
      &          ipol_diffuse, ipol_advect, ipol_source, ipol_scalar,    &
-     &          coef_exp, coef_src, n_point, ntot_phys_rj, d_rj)
+     &          dt, coef_exp, coef_src, n_point, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: inod_rj_center
       integer(kind = kint), intent(in) :: kr_st, kr_ed, jmax
@@ -209,6 +215,7 @@
       integer(kind = kint), intent(in) :: ipol_scalar
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real(kind = kreal), intent(in) :: coef_exp, coef_src
+      real(kind = kreal), intent(in) :: dt
 !
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !

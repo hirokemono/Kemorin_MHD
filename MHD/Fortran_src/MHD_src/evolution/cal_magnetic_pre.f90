@@ -6,7 +6,7 @@
 !        modieied by H. Matsui on Sep., 2005
 !
 !!      subroutine cal_magnetic_field_pre(icomp_sgs_uxb, iak_diff_b,    &
-!!     &          iak_diff_uxb, ie_dvx, ie_dbx, ak_d_magne,             &
+!!     &          iak_diff_uxb, ie_dvx, ie_dbx, ak_d_magne, dt,         &
 !!     &          FEM_prm, SGS_param, cmt_param, filter_param,          &
 !!     &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,  &
 !!     &          Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,&
@@ -107,7 +107,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_magnetic_field_pre(icomp_sgs_uxb, iak_diff_b,      &
-     &          iak_diff_uxb, ie_dvx, ie_dbx, ak_d_magne,               &
+     &          iak_diff_uxb, ie_dvx, ie_dbx, ak_d_magne, dt,           &
      &          FEM_prm, SGS_param, cmt_param, filter_param,            &
      &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,    &
      &          Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,  &
@@ -117,7 +117,6 @@
      &          surf_wk, f_l, f_nl, nod_fld)
 !
       use calypso_mpi
-      use m_t_step_parameter
 !
       use set_boundary_scalars
       use nod_phys_send_recv
@@ -161,6 +160,7 @@
       integer(kind = kint), intent(in) :: icomp_sgs_uxb
       integer(kind = kint), intent(in) :: ie_dvx, ie_dbx
       real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
+      real(kind = kreal), intent(in) :: dt
 !
       type(vectors_4_solver), intent(inout)                             &
      &           :: MG_vector(0:Bmatrix%nlevel_MG)
@@ -198,7 +198,7 @@
       if (iflag_debug .eq. 0 ) write(*,*) 'coefs_4_time_evolution'
       if (FEM_prm%iflag_magne_supg .gt. id_turn_OFF) then
        call int_vol_magne_pre_ele_upm                                   &
-     &    (FEM_prm%npoint_t_evo_int, SGS_param, cmt_param,              &
+     &    (FEM_prm%npoint_t_evo_int, dt, SGS_param, cmt_param,          &
      &     node, ele, conduct, cd_prop, iphys, nod_fld,                 &
      &     ele_fld%ntot_phys, ele_fld%d_fld, iphys_ele, iak_diff_uxb,   &
      &     jac_3d_q, rhs_tbl, FEM_elens, diff_coefs,                    &

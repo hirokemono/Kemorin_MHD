@@ -4,7 +4,7 @@
 !     Written by H. Matsui on June, 2005
 !
 !!      subroutine cal_vecp_induction                                   &
-!!     &         (FEM_prm, nod_comm, node, ele, conduct, cd_prop,       &
+!!     &         (dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,   &
 !!     &          Bnod_bcs, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_vecp_diffusion(iak_diff_b, ak_d_magne,           &
@@ -74,13 +74,15 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_vecp_induction                                     &
-     &         (FEM_prm, nod_comm, node, ele, conduct, cd_prop,         &
+     &         (dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,     &
      &          Bnod_bcs, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl,   &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
 !
       use int_vol_vect_p_pre
       use set_boundary_scalars
+!
+      real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(communication_table), intent(in) :: nod_comm
@@ -104,7 +106,7 @@
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
       if (FEM_prm%iflag_magne_supg .gt. id_turn_OFF) then
-        call int_vol_vect_p_pre_ele_upm(FEM_prm%npoint_t_evo_int,       &
+        call int_vol_vect_p_pre_ele_upm(FEM_prm%npoint_t_evo_int, dt,   &
      &      node, ele, conduct, cd_prop, iphys, nod_fld,                &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
      &      jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)

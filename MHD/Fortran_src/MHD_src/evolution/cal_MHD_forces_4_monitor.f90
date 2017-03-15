@@ -331,7 +331,7 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_vp_induct)
         call cal_vecp_induction                                         &
-     &     (FEM_prm, nod_comm, node, ele, conduct, cd_prop,             &
+     &     (dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,         &
      &      nod_bcs%Bnod_bcs, iphys, iphys_ele, ele_fld, jac_3d,        &
      &      rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if

@@ -15,7 +15,7 @@
 !!     &          jac_3d, rhs_tbl, FEM_elens, diff_coefs,               &
 !!     &          mhd_fem_wk, fem_wk, f_nl)
 !!      subroutine int_vol_magne_pre_ele_upm                            &
-!!     &         (num_int, SGS_param, cmt_param,                        &
+!!     &         (num_int, dt, SGS_param, cmt_param,                    &
 !!     &          node, ele, conduct, cd_prop, iphys, nod_fld,          &
 !!     &          ncomp_ele, d_ele, iphys_ele, iak_diff_uxb,            &
 !!     &          jac_3d, rhs_tbl, FEM_elens, diff_coefs,               &
@@ -43,7 +43,6 @@
       use m_machine_parameter
       use m_phys_constants
       use m_fem_gauss_int_coefs
-      use m_t_step_parameter
 !
       use t_SGS_control_parameter
       use t_physical_property
@@ -162,7 +161,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_magne_pre_ele_upm                              &
-     &         (num_int, SGS_param, cmt_param,                          &
+     &         (num_int, dt, SGS_param, cmt_param,                      &
      &          node, ele, conduct, cd_prop, iphys, nod_fld,            &
      &          ncomp_ele, d_ele, iphys_ele, iak_diff_uxb,              &
      &          jac_3d, rhs_tbl, FEM_elens, diff_coefs,                 &
@@ -195,6 +194,7 @@
       integer(kind = kint), intent(in) :: iak_diff_uxb
       integer(kind = kint), intent(in) :: ncomp_ele
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
+      real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl

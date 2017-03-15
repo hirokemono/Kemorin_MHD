@@ -13,8 +13,8 @@
 !!     &          ncomp_ele, iele_magne, d_ele,                         &
 !!     &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
 !!      subroutine int_vol_vect_p_pre_ele_upm                           &
-!!     &         (num_int, node, ele, conduct, cd_prop, iphys, nod_fld, &
-!!     &          ncomp_ele, iele_magne, d_ele,                         &
+!!     &         (num_int, dt, node, ele, conduct, cd_prop,             &
+!!     &          iphys, nod_fld, ncomp_ele, iele_magne, d_ele,         &
 !!     &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -34,7 +34,6 @@
 !
       use m_machine_parameter
       use m_phys_constants
-      use m_t_step_parameter
 !
       use t_physical_property
       use t_geometry_data_MHD
@@ -111,8 +110,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_vect_p_pre_ele_upm                             &
-     &         (num_int, node, ele, conduct, cd_prop, iphys, nod_fld,   &
-     &          ncomp_ele, iele_magne, d_ele,                           &
+     &         (num_int, dt, node, ele, conduct, cd_prop,               &
+     &          iphys, nod_fld, ncomp_ele, iele_magne, d_ele,           &
      &          jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)
 !
       use cal_add_smp
@@ -132,6 +131,7 @@
       integer(kind = kint), intent(in) :: num_int
       integer(kind = kint), intent(in) :: ncomp_ele, iele_magne
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
+      real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
