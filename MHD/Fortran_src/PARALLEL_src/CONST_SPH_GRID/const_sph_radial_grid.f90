@@ -30,6 +30,8 @@
 !
       use m_spheric_constants
       use m_sph_mesh_1d_connect
+      use chebyshev_radial_grid
+      use half_chebyshev_radial_grid
       use set_radial_grid_sph_shell
 !
       integer(kind = kint), intent(in) :: nele
@@ -46,6 +48,11 @@
      &     (nele, sph_param%radius_ICB, sph_param%radius_CMB,           &
      &      rmin, rmax, sph_rtp%nidx_global_rtp(1),                     &
      &      sph_param%nlayer_ICB, sph_param%nlayer_CMB)
+      else if(sph_param%iflag_radial_grid .eq. igrid_half_Chebyshev)    &
+     & then
+        call count_half_chebyshev_external(nele, sph_param%radius_CMB,  &
+     &      rmax, sph_rtp%nidx_global_rtp(1),                           &
+     &      sph_param%nlayer_ICB, sph_param%nlayer_CMB)
       else if(sph_param%iflag_radial_grid .eq. igrid_equidistance) then
         call count_equi_ext_layers                                      &
      &     (nele, sph_param%radius_ICB, sph_param%radius_CMB,           &
@@ -59,6 +66,10 @@
         call set_chebyshev_distance_shell(sph_rtp%nidx_global_rtp(1),   &
      &      sph_param%nlayer_ICB, sph_param%nlayer_CMB,                 &
      &      sph_param%radius_ICB, sph_param%radius_CMB, radius_1d_gl)
+      else if(sph_param%iflag_radial_grid .eq. igrid_half_Chebyshev)    &
+     & then
+        call half_chebyshev_distance_shell(sph_rtp%nidx_global_rtp(1),  &
+     &      sph_param%nlayer_CMB, sph_param%radius_CMB, radius_1d_gl)
       else if(sph_param%iflag_radial_grid .eq. igrid_equidistance) then
         call set_equi_distance_shell(sph_rtp%nidx_global_rtp(1),        &
      &      sph_param%nlayer_ICB, sph_param%nlayer_CMB,                 &
