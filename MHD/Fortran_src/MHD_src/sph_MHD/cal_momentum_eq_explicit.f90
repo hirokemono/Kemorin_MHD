@@ -8,9 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine cal_expricit_sph_adams                               &
-!!     &         (sph_rj, fl_prop, cd_prop, ht_prop, cp_prop,           &
+!!     &         (dt, sph_rj, fl_prop, cd_prop, ht_prop, cp_prop,       &
 !!     &          ipol, itor, rj_fld)
-!!      subroutine cal_expricit_sph_euler(i_step, sph_rj,               &
+!!      subroutine cal_expricit_sph_euler(i_step, dt, sph_rj,           &
 !!     &         fl_prop, cd_prop, ht_prop, cp_prop, ipol, itor, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
@@ -44,7 +44,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_expricit_sph_adams                                 &
-     &         (sph_rj, fl_prop, cd_prop, ht_prop, cp_prop,             &
+     &         (dt, sph_rj, fl_prop, cd_prop, ht_prop, cp_prop,         &
      &          ipol, itor, rj_fld)
 !
       use m_boundary_params_sph_MHD
@@ -52,6 +52,8 @@
       use cal_vorticity_terms_adams
       use cal_nonlinear_sph_MHD
       use select_diff_adv_source
+!
+      real(kind = kreal), intent(in) :: dt
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fluid_property), intent(in) :: fl_prop
@@ -70,7 +72,7 @@
       end if
 !
       if(cd_prop%iflag_Bevo_scheme .gt.    id_no_evolution) then
-        call cal_diff_induction_MHD_adams(cd_prop%coef_exp,             &
+        call cal_diff_induction_MHD_adams(dt, cd_prop%coef_exp,         &
      &      ipol, itor, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
       if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
@@ -93,7 +95,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_expricit_sph_euler(i_step, sph_rj,                 &
+      subroutine cal_expricit_sph_euler(i_step, dt, sph_rj,             &
      &         fl_prop, cd_prop, ht_prop, cp_prop, ipol, itor, rj_fld)
 !
       use m_boundary_params_sph_MHD
@@ -102,6 +104,8 @@
       use select_diff_adv_source
 !
       integer(kind = kint), intent(in) :: i_step
+      real(kind = kreal), intent(in) :: dt
+!
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
@@ -125,7 +129,7 @@
      &      ht_prop%coef_source, sph_rj, rj_fld)
       end if
       if(cd_prop%iflag_Bevo_scheme .gt.    id_no_evolution) then
-        call cal_diff_induction_MHD_euler(cd_prop%coef_exp,             &
+        call cal_diff_induction_MHD_euler(dt, cd_prop%coef_exp,         &
      &      ipol, itor, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
       if(cp_prop%iflag_scheme .gt. id_no_evolution) then

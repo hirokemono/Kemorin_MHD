@@ -14,8 +14,8 @@
 !!     &          sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,      &
 !!     &          Bmatrix, MG_vector, wk_filter, mhd_fem_wk, fem_wk,    &
 !!     &          surf_wk, f_l, f_nl, nod_fld)
-!!      subroutine cal_magnetic_co                                      &
-!!     &         (iak_diff_b, ak_d_magne, FEM_prm, SGS_param, cmt_param,&
+!!      subroutine cal_magnetic_co(iak_diff_b, ak_d_magne, dt,          &
+!!     &          FEM_prm, SGS_param, cmt_param,                        &
 !!     &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,  &
 !!     &          Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,         &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
@@ -254,8 +254,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_magnetic_co                                        &
-     &         (iak_diff_b, ak_d_magne, FEM_prm, SGS_param, cmt_param,  &
+      subroutine cal_magnetic_co(iak_diff_b, ak_d_magne, dt,            &
+     &          FEM_prm, SGS_param, cmt_param,                          &
      &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,    &
      &          Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,           &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
@@ -296,6 +296,7 @@
 !
       integer(kind = kint), intent(in) :: iak_diff_b
       real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
+      real(kind = kreal), intent(in) :: dt
 !
       type(vectors_4_solver), intent(inout)                             &
      &           :: MG_vector(0:Bmatrix%nlevel_MG)
@@ -334,7 +335,7 @@
      &  .or. FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)    &
      & then
         call cal_magnetic_co_imp(iphys%i_magne, iak_diff_b, ak_d_magne, &
-     &      FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,         &
+     &      dt, FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,     &
      &      conduct, cd_prop, Bnod_bcs, iphys_ele, ele_fld, jac_3d_q,   &
      &      rhs_tbl, FEM_elens, diff_coefs, m_lump, Bmatrix, MG_vector, &
      &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)

@@ -8,7 +8,7 @@
 !>     DJDS ordering table for MHD dynamo model
 !!
 !!      subroutine allocate_aiccg_matrices                              &
-!!     &         (node, fl_prop, cd_prop, ht_prop, cp_prop, FEM_prm)
+!!     &         (dt, node, fl_prop, cd_prop, ht_prop, cp_prop, FEM_prm)
 !!      subroutine deallocate_aiccg_matrices                            &
 !!     &         (fl_prop, cd_prop, ht_prop, cp_prop)
 !!      subroutine set_MHD_layerd_connectivity                          &
@@ -58,10 +58,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine allocate_aiccg_matrices                                &
-     &         (node, fl_prop, cd_prop, ht_prop, cp_prop, FEM_prm)
+     &         (dt, node, fl_prop, cd_prop, ht_prop, cp_prop, FEM_prm)
 !
       use allocate_MHD_AMG_array
 !
+      real(kind = kreal), intent(in) :: dt
       type(node_data), intent(in) :: node
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
@@ -72,7 +73,7 @@
 !
 !
       call set_residual_4_crank                                         &
-     &   (fl_prop, cd_prop, ht_prop, cp_prop, FEM_prm)
+     &   (dt, fl_prop, cd_prop, ht_prop, cp_prop, FEM_prm)
 !
       call alloc_aiccg_matrices                                         &
      &   (node, fl_prop, cd_prop, ht_prop, cp_prop,                     &
@@ -190,11 +191,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_residual_4_crank                                   &
-     &         (fl_prop, cd_prop, ht_prop, cp_prop, FEM_prm)
+     &         (dt, fl_prop, cd_prop, ht_prop, cp_prop, FEM_prm)
 !
       use m_machine_parameter
-      use m_t_step_parameter
 !
+      real(kind = kreal), intent(in) :: dt
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
       type(scalar_property), intent(in) :: ht_prop, cp_prop

@@ -6,9 +6,10 @@
 !        modified by H.Matsui on Aug., 2007
 !
 !!      subroutine set_bc_fields                                        &
-!!     &         (mesh, fl_prop, cd_prop, ht_prop, cp_prop,             &
+!!     &         (time, mesh, fl_prop, cd_prop, ht_prop, cp_prop,       &
 !!     &          iphys, nod_fld, nod_bcs)
-!!      subroutine set_boundary_velo(node, i_velo, nod_fld)
+!!      subroutine set_boundary_velo                                    &
+!!     &         (time, node, Vnod_bcs, i_velo, nod_fld)
 !!      subroutine set_boundary_velo_4_rhs(node, Vnod_bcs, f_l, f_nl)
 !!      subroutine delete_field_by_fixed_v_bc(Vnod_bcs, i_field, nod_fld)
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -48,7 +49,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_bc_fields                                          &
-     &         (mesh, fl_prop, cd_prop, ht_prop, cp_prop,               &
+     &         (time, mesh, fl_prop, cd_prop, ht_prop, cp_prop,         &
      &          iphys, nod_fld, nod_bcs)
 !
       use m_machine_parameter
@@ -60,6 +61,8 @@
       use count_num_nod_bc_MHD
       use set_nodal_boundary
       use set_boundary_scalars
+!
+      real(kind = kreal), intent(in) :: time
 !
       type(mesh_geometry), intent(in) :: mesh
       type(fluid_property), intent(in) :: fl_prop
@@ -75,7 +78,7 @@
       if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         if ( iflag_debug .eq.1) write(*,*)  'set boundary values 4 v'
         call set_boundary_velo                                          &
-     &     (mesh%node, nod_bcs%Vnod_bcs, iphys%i_velo, nod_fld)
+     &     (time, mesh%node, nod_bcs%Vnod_bcs, iphys%i_velo, nod_fld)
       end if
 !
       if (ht_prop%iflag_scheme .gt. id_no_evolution) then
@@ -124,7 +127,8 @@
 !-----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_boundary_velo(node, Vnod_bcs, i_velo, nod_fld)
+      subroutine set_boundary_velo                                      &
+     &         (time, node, Vnod_bcs, i_velo, nod_fld)
 !
       use t_bc_data_velo
 !
@@ -132,6 +136,7 @@
       use set_boundary_scalars
       use set_fixed_boundaries
 !
+      real(kind = kreal), intent(in) :: time
       integer(kind = kint), intent(in) :: i_velo
       type(node_data), intent(in) :: node
       type(nodal_bcs_4_momentum_type), intent(in) :: Vnod_bcs
@@ -149,7 +154,7 @@
 !   boundary condition for special case
 !     ( please write every time!!)
       call set_boundary_specific_vect                                   &
-     &   (node, Vnod_bcs%nod_bc_vsp, i_velo, nod_fld)
+     &   (time, node, Vnod_bcs%nod_bc_vsp, i_velo, nod_fld)
 !
 !
       call delete_radial_vector_on_bc                                   &

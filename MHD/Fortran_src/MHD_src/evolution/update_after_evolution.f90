@@ -249,7 +249,7 @@
       if ( ht_prop1%iflag_scheme .gt. id_no_evolution) then
         if( ref_param_T1%iflag_reference .ne. id_no_ref_temp) then
           if(iflag_debug.eq.1) write(*,*) 'cal_temperature_field theta'
-          call cal_temperature_field(iphys%i_par_temp, FEM_prm,         &
+          call cal_temperature_field(iphys%i_par_temp, dt, FEM_prm,     &
      &       SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,      &
      &       mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,         &
      &       MHD_mesh%fluid, group%surf_grp, ht_prop1,                  &
@@ -266,7 +266,7 @@
 !          call check_surface_param_smp('cal_temperature_field start',  &
 !     &        my_rank, sf_grp, group%surf_nod_grp)
           if (iflag_debug.eq.1) write(*,*) 'cal_temperature_field T'
-          call cal_temperature_field(iphys%i_temp, FEM_prm,             &
+          call cal_temperature_field(iphys%i_temp, dt, FEM_prm,         &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
      &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
      &        MHD_mesh%fluid, group%surf_grp, ht_prop1,                 &
@@ -299,7 +299,7 @@
       if ( cp_prop1%iflag_scheme .gt. id_no_evolution) then
         if( ref_param_C1%iflag_reference .ne. id_no_ref_temp) then
           if(iflag_debug.eq.1) write(*,*) 's_cal_light_element part'
-          call s_cal_light_element(iphys%i_par_light, FEM_prm,          &
+          call s_cal_light_element(iphys%i_par_light, dt, FEM_prm,      &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
      &        mesh%nod_comm, mesh%node, mesh%ele,                       &
      &        ele_mesh%surf, MHD_mesh%fluid, group%surf_grp, cp_prop1,  &
@@ -314,7 +314,7 @@
      &        iphys%i_ref_c, iphys%i_par_light, iphys%i_light)
         else
           if(iflag_debug.eq.1) write(*,*) 's_cal_light_element C'
-          call s_cal_light_element(iphys%i_light, FEM_prm,              &
+          call s_cal_light_element(iphys%i_light, dt, FEM_prm,          &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
      &        mesh%nod_comm, mesh%node, mesh%ele,                       &
      &        ele_mesh%surf, MHD_mesh%fluid, group%surf_grp, cp_prop1,  &
@@ -346,8 +346,8 @@
 !
       if (fl_prop1%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'velocity_evolution'
-        call velocity_evolution                                         &
-     &     (FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,       &
+        call velocity_evolution(time, dt,                               &
+     &      FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,       &
      &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
      &      group%surf_nod_grp, fl_prop1, cd_prop1,                     &
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,       &
@@ -576,7 +576,7 @@
       if ( ht_prop1%iflag_scheme .gt. id_no_evolution) then
         if( ref_param_T1%iflag_reference .ne. id_no_ref_temp) then
           if (iflag_debug.eq.1) write(*,*) 'cal_temperature_field'
-          call cal_temperature_field(iphys%i_par_temp, FEM_prm,         &
+          call cal_temperature_field(iphys%i_par_temp, dt, FEM_prm,     &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
      &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
      &        fluid, group%surf_grp, ht_prop1,                          &
@@ -591,7 +591,7 @@
      &        iphys%i_ref_t, iphys%i_par_temp, iphys%i_temp)
         else
           if (iflag_debug.eq.1) write(*,*) 'cal_temperature_field'
-          call cal_temperature_field(iphys%i_temp, FEM_prm,             &
+          call cal_temperature_field(iphys%i_temp, dt, FEM_prm,         &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
      &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
      &        fluid, group%surf_grp, ht_prop1,                          &
@@ -623,7 +623,7 @@
       if ( cp_prop1%iflag_scheme .gt. id_no_evolution) then
         if( ref_param_C1%iflag_reference .ne. id_no_ref_temp) then
           if(iflag_debug.eq.1) write(*,*) 's_cal_light_element part'
-          call s_cal_light_element(iphys%i_par_light, FEM_prm,          &
+          call s_cal_light_element(iphys%i_par_light, dt, FEM_prm,      &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
      &        mesh%nod_comm, mesh%node, mesh%ele,                       &
      &        ele_mesh%surf, fluid, group%surf_grp, cp_prop1,           &
@@ -638,7 +638,7 @@
      &        iphys%i_ref_c, iphys%i_par_light, iphys%i_light)
         else
           if (iflag_debug.eq.1) write(*,*) 's_cal_light_element'
-          call s_cal_light_element(iphys%i_light, FEM_prm,              &
+          call s_cal_light_element(iphys%i_light, dt, FEM_prm,          &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
      &        mesh%nod_comm, mesh%node, mesh%ele,                       &
      &        ele_mesh%surf, fluid, group%surf_grp, cp_prop1,           &
@@ -669,8 +669,8 @@
 !
       if (fl_prop1%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'velocity_evolution'
-        call velocity_evolution                                         &
-     &     (FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,       &
+        call velocity_evolution(time, dt,                               &
+     &      FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,       &
      &      ele_mesh%surf, fluid, group%surf_grp,                       &
      &      group%surf_nod_grp, fl_prop1, cd_prop1,                     &
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,       &

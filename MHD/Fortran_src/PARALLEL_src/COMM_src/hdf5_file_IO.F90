@@ -546,8 +546,6 @@
       subroutine parallel_write_xdmf_file(xdmf_dir_file, istep_hdf5,    &
      &          t_IO, ucd, m_ucd)
 !
-      use m_t_step_parameter
-!
       character(len = kchara), intent(in) :: xdmf_dir_file
       integer(kind=kint), intent(in) :: istep_hdf5
       type(time_params_IO), intent(in) :: t_IO

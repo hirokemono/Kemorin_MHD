@@ -9,8 +9,8 @@
 !!@verbatim
 !!      subroutine open_sph_vol_rms_file_mhd                            &
 !!     &         (sph_params, sph_rj, ipol, rj_fld, pwr, WK_pwr)
-!!      subroutine output_rms_sph_mhd_control                           &
-!!     &         (sph_params, sph_rj, leg, ipol, rj_fld, pwr, WK_pwr)
+!!      subroutine output_rms_sph_mhd_control(i_step, time,             &
+!!     &          sph_params, sph_rj, leg, ipol, rj_fld, pwr, WK_pwr)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(legendre_4_sph_trans), intent(in) :: leg
@@ -98,17 +98,19 @@
 !
 !  --------------------------------------------------------------------
 !
-      subroutine output_rms_sph_mhd_control                             &
-     &         (sph_params, sph_rj, leg, ipol, rj_fld, pwr, WK_pwr)
+      subroutine output_rms_sph_mhd_control(i_step, time,               &
+     &          sph_params, sph_rj, leg, ipol, rj_fld, pwr, WK_pwr)
 !
       use m_machine_parameter
-      use m_t_step_parameter
       use m_boundary_params_sph_MHD
 !
       use cal_rms_fields_by_sph
       use volume_average_4_sph
       use picked_sph_spectr_data_IO
       use gauss_coefs_monitor_IO
+!
+      integer(kind=kint), intent(in) :: i_step
+      real(kind=kreal), intent(in) :: time
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
@@ -141,26 +143,26 @@
 !
       if(iflag_debug.gt.0)  write(*,*) 'write_total_energy_to_screen'
       call write_total_energy_to_screen                                 &
-     &   (my_rank, i_step_MHD, time, pwr)
+     &   (my_rank, i_step, time, pwr)
 !
       call write_sph_vol_ave_file                                       &
-     &   (i_step_MHD, time, sph_params, sph_rj, pwr)
+     &   (i_step, time, sph_params, sph_rj, pwr)
       call write_sph_vol_ms_file                                        &
-     &   (my_rank, i_step_MHD, time, sph_params, sph_rj, pwr)
+     &   (my_rank, i_step, time, sph_params, sph_rj, pwr)
       call write_sph_vol_ms_spectr_file                                 &
-     &   (my_rank, i_step_MHD, time, sph_params, sph_rj, pwr)
+     &   (my_rank, i_step, time, sph_params, sph_rj, pwr)
       call write_sph_layer_ms_file                                      &
-     &   (my_rank, i_step_MHD, time, sph_params, pwr)
+     &   (my_rank, i_step, time, sph_params, pwr)
       call write_sph_layer_spectr_file                                  &
-     &   (my_rank, i_step_MHD, time, sph_params, pwr)
+     &   (my_rank, i_step, time, sph_params, pwr)
 !
       call write_gauss_coefs_4_monitor                                  &
-     &   (my_rank, i_step_MHD, time, gauss_coefs_file_head, gauss1)
+     &   (my_rank, i_step, time, gauss_coefs_file_head, gauss1)
       call write_sph_spec_monitor                                       &
-     &   (pickup_sph_head, my_rank, i_step_MHD, time, pick1)
+     &   (pickup_sph_head, my_rank, i_step, time, pick1)
 !
       call write_no_heat_source_Nu(sph_rj%idx_rj_degree_zero,           &
-     &    i_step_MHD, time, Nu_type1)
+     &    i_step, time, Nu_type1)
 !
       end subroutine output_rms_sph_mhd_control
 !

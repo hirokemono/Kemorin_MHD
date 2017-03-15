@@ -262,7 +262,8 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*)' set_boundary_data'
-      call set_boundary_data(IO_bc, mesh, ele_mesh, MHD_mesh, group,    &
+      call set_boundary_data                                            &
+     &   (time, dt, IO_bc, mesh, ele_mesh, MHD_mesh, group,             &
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1, iphys, nod_fld)
 !
 !     ---------------------

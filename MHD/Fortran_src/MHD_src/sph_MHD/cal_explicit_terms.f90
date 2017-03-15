@@ -8,13 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine cal_diff_induction_MHD_adams                         &
-!!     &         (coef_exp, ipol, itor, n_point, ntot_phys_rj, d_rj)
+!!     &         (dt, coef_exp, ipol, itor, n_point, ntot_phys_rj, d_rj)
 !!      subroutine cal_diff_induction_wSGS_adams                        &
-!!     &         (coef_exp, ipol, itor, n_point, ntot_phys_rj, d_rj)
+!!     &         (dt, coef_exp, ipol, itor, n_point, ntot_phys_rj, d_rj)
 !!      subroutine cal_diff_induction_MHD_euler                         &
-!!     &         (coef_exp, ipol, itor, n_point, ntot_phys_rj, d_rj)
+!!     &         (dt, coef_exp, ipol, itor, n_point, ntot_phys_rj, d_rj)
 !!      subroutine cal_diff_induction_wSGS_euler                        &
-!!     &         (coef_exp, ipol, itor, n_point, ntot_phys_rj, d_rj)
+!!     &         (dt, coef_exp, ipol, itor, n_point, ntot_phys_rj, d_rj)
 !!
 !!      subroutine set_ini_adams_mag_induct                             &
 !!     &         (ipol, itor, n_point, ntot_phys_rj, d_rj)
@@ -24,11 +24,17 @@
       module cal_explicit_terms
 !
       use m_precision
-      use m_t_step_parameter
 !
       use t_phys_address
 !
       implicit  none
+!
+!>      Coefficient of terms at current step for Adams-Bashforth
+      real(kind=kreal), parameter :: adam_0 =  three / two
+!>      Coefficient of terms at previous step for Adams-Bashforth
+      real(kind=kreal), parameter :: adam_1 = -one / two
+!>      1 / adam_0
+      real(kind=kreal), parameter :: adam_r =  two / three
 !
 ! ----------------------------------------------------------------------
 !
@@ -37,9 +43,10 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_diff_induction_MHD_adams                           &
-     &         (coef_exp, ipol, itor, n_point, ntot_phys_rj, d_rj)
+     &         (dt, coef_exp, ipol, itor, n_point, ntot_phys_rj, d_rj)
 !
       type(phys_address), intent(in) :: ipol, itor
+      real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: coef_exp
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real(kind = kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
@@ -68,9 +75,10 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_diff_induction_wSGS_adams                          &
-     &         (coef_exp, ipol, itor, n_point, ntot_phys_rj, d_rj)
+     &         (dt, coef_exp, ipol, itor, n_point, ntot_phys_rj, d_rj)
 !
       type(phys_address), intent(in) :: ipol, itor
+      real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: coef_exp
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real(kind = kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
@@ -104,9 +112,10 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_diff_induction_MHD_euler                           &
-     &         (coef_exp, ipol, itor, n_point, ntot_phys_rj, d_rj)
+     &         (dt, coef_exp, ipol, itor, n_point, ntot_phys_rj, d_rj)
 !
       type(phys_address), intent(in) :: ipol, itor
+      real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: coef_exp
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real(kind = kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
@@ -130,9 +139,10 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_diff_induction_wSGS_euler                          &
-     &         (coef_exp, ipol, itor, n_point, ntot_phys_rj, d_rj)
+     &         (dt, coef_exp, ipol, itor, n_point, ntot_phys_rj, d_rj)
 !
       type(phys_address), intent(in) :: ipol, itor
+      real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: coef_exp
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real(kind = kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)

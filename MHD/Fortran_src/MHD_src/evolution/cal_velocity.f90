@@ -6,7 +6,7 @@
 !        modified by H.Matsui on July, 2006
 !
 !!      subroutine velocity_evolution                                   &
-!!     &        (FEM_prm, SGS_par, nod_comm, node, ele, surf,           &
+!!     &        (time, dt, FEM_prm, SGS_par, nod_comm, node, ele, surf, &
 !!     &         fluid, sf_grp, sf_grp_nod, fl_prop, cd_prop,           &
 !!     &         Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys, iphys_ele, &
 !!     &         ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,&
@@ -101,7 +101,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine velocity_evolution                                     &
-     &        (FEM_prm, SGS_par, nod_comm, node, ele, surf,             &
+     &        (time, dt, FEM_prm, SGS_par, nod_comm, node, ele, surf,   &
      &         fluid, sf_grp, sf_grp_nod, fl_prop, cd_prop,             &
      &         Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys, iphys_ele,   &
      &         ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,  &
@@ -121,6 +121,8 @@
       use int_rms_div_MHD
       use int_norm_div_MHD
       use cal_rms_potentials
+!
+      real(kind = kreal), intent(in) :: time, dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -199,7 +201,7 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1)  write(*,*) 's_cal_velocity_pre'
-      call s_cal_velocity_pre(FEM_prm, SGS_par,                         &
+      call s_cal_velocity_pre(time, dt, FEM_prm, SGS_par,               &
      &    nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,         &
      &    fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys,          &
      &    iphys_ele, ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, &
@@ -230,9 +232,9 @@
      &      fl_prop%acoef_press, nod_fld%ntot_phys,                     &
      &      iphys%i_p_phi, iphys%i_press,  nod_fld%d_fld)
 !
-        call cal_velocity_co                                            &
-     &     (FEM_prm, SGS_par, nod_comm, node, ele, surf, fluid,         &
-     &      sf_grp, sf_grp_nod, fl_prop, Vnod_bcs, Vsf_bcs, Psf_bcs,    &
+        call cal_velocity_co(time, dt, FEM_prm, SGS_par,                &
+     &      nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,       &
+     &      fl_prop, Vnod_bcs, Vsf_bcs, Psf_bcs,                        &
      &      iphys, iphys_ele, ele_fld, ak_MHD,                          &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &
      &      FEM_elens, ifld_diff, diff_coefs, Vmatrix, MG_vector,       &

@@ -169,7 +169,7 @@
      &    surf_wk, f_l, f_nl, nod_fld, ele_fld, diff_coefs)
 !
       call cal_field_by_rotation                                        &
-     &   (FEM_prm, SGS_par%model_p, SGS_par%commute_p,                  &
+     &   (dt, FEM_prm, SGS_par%model_p, SGS_par%commute_p,              &
      &    mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,            &
      &    MHD_mesh%fluid, MHD_mesh%conduct, group%surf_grp,             &
      &    cd_prop1, nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,       &

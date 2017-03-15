@@ -308,7 +308,8 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_data'
-      call set_boundary_data(IO_bc, mesh, ele_mesh, MHD_mesh, group,    &
+      call set_boundary_data                                            &
+     &   (time, dt, IO_bc, mesh, ele_mesh, MHD_mesh, group,             &
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1, iphys, nod_fld)
 !
 !     ---------------------
@@ -320,11 +321,12 @@
 !     ---------------------
 !
       if (iflag_debug.eq.1 ) write(*,*) 'allocate_aiccg_matrices'
-      call allocate_aiccg_matrices(mesh%node, fl_prop1, cd_prop1, ht_prop1, cp_prop1, FEM_prm)
+      call allocate_aiccg_matrices(dt, mesh%node,                       &
+     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1, FEM_prm)
 !      call reset_aiccg_matrices(mesh%node, mesh%ele, MHD_mesh%fluid)
 !
       if(solver_iflag(FEM_PRM%CG11_param%METHOD) .eq. iflag_mgcg) then
-        call s_initialize_4_MHD_AMG(FEM_prm, mesh%node, mesh%ele,       &
+        call s_initialize_4_MHD_AMG(dt, FEM_prm, mesh%node, mesh%ele,   &
      &      ifld_diff, diff_coefs, FEM_prm%DJDS_param, MHD1_matrices)
       end if
 !

@@ -5,7 +5,8 @@
 !     modified by H. Matsui on Aug., 2007
 !
 !!      subroutine output_ini_model_coefs                               &
-!!     &         (i_step_sgs_coefs, cmt_param, wk_sgs, wk_diff)
+!!     &         (i_step_sgs_coefs, i_step, time,                       &
+!!     &          cmt_param, wk_sgs, wk_diff)
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(dynamic_model_data), intent(in) :: wk_sgs
 !!      subroutine input_ini_model_coefs                                &
@@ -25,7 +26,6 @@
 !
       use calypso_mpi
       use m_constants
-      use m_t_step_parameter
 !
       use t_SGS_control_parameter
       use t_ele_info_4_dynamic
@@ -62,10 +62,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine output_ini_model_coefs                                 &
-     &         (i_step_sgs_coefs, cmt_param, wk_sgs, wk_diff)
+     &         (i_step_sgs_coefs, i_step, time,                         &
+     &          cmt_param, wk_sgs, wk_diff)
 !
       use open_sgs_model_coefs
       use sgs_model_coefs_IO
+!
+      integer(kind=kint), intent(in) :: i_step
+      real(kind=kreal), intent(in) :: time
 !
       integer(kind = kint), intent(in) :: i_step_sgs_coefs
       type(commutation_control_params), intent(in) :: cmt_param
@@ -82,7 +86,7 @@
 !
         write(rst_sgs_coef_code,'(a)')                                  &
      &              '! time step and interbal for dynamic model'
-        write(rst_sgs_coef_code,'(2i16)') i_step_MHD, i_step_sgs_coefs
+        write(rst_sgs_coef_code,'(2i16)') i_step, i_step_sgs_coefs
 !
         write(rst_sgs_coef_code,'(a)')  '! num. of model coefs'
         write(rst_sgs_coef_code,'(2i16)')                               &
@@ -91,12 +95,12 @@
         call write_sgs_coef_head(rst_sgs_coef_code, wk_sgs)
 !
 !   write model coefs for whole domain
-        write(rst_sgs_coef_code,1000)  i_step_MHD, time, izero,         &
+        write(rst_sgs_coef_code,1000)  i_step, time, izero,             &
      &        wk_sgs%fld_whole_clip(1:wk_sgs%num_kinds)
 !
 !   write model coefs for each layer
         do inum = 1, wk_sgs%nlayer
-          write(rst_sgs_coef_code,1000) i_step_MHD, time, inum,         &
+          write(rst_sgs_coef_code,1000) i_step, time, inum,             &
      &       wk_sgs%fld_clip(inum,1:wk_sgs%num_kinds)
         end do
 !
@@ -108,12 +112,12 @@
 !
           call write_diff_coef_head(rst_sgs_coef_code, wk_diff)
 !
-          write(rst_sgs_coef_code,1000) i_step_MHD, time, izero,        &
+          write(rst_sgs_coef_code,1000) i_step, time, izero,            &
      &          wk_diff%fld_whole_clip(1:wk_diff%num_kinds)
 !
           if (cmt_param%iset_DIFF_coefs .eq. 1 ) then
             do inum = 1, wk_diff%nlayer
-              write(rst_sgs_coef_code,1000)  i_step_MHD, time, inum,    &
+              write(rst_sgs_coef_code,1000)  i_step, time, inum,        &
      &              wk_diff%fld_clip(inum,1:wk_diff%num_kinds)
             end do
           end if

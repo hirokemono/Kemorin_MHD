@@ -13,7 +13,7 @@
 !!        type(group_data), intent(in) :: nod_grp
 !!      subroutine set_fixed_bc_per_scalar                              &
 !!     &         (numnod, ncomp_nod, i_ref_t, d_nod, nod_bc_t)
-!!      subroutine set_potential_4_fixed_press(coef_press, nod_bc_p)
+!!      subroutine set_potential_4_fixed_press(dt, coef_press, nod_bc_p)
 !
       module set_nodal_boundary
 !
@@ -138,11 +138,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_potential_4_fixed_press(coef_press, nod_bc_p)
+      subroutine set_potential_4_fixed_press(dt, coef_press, nod_bc_p)
 !
       use t_nodal_bc_data
-      use m_t_step_parameter
 !
+      real(kind = kreal), intent(in) :: dt
       real(kind = kreal), intent(in) :: coef_press
       type(scaler_fixed_nod_bc_type), intent(inout) :: nod_bc_p
 !

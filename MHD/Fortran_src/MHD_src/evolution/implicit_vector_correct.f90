@@ -18,19 +18,19 @@
 !!     &          f_l, f_nl, nod_fld)
 !!
 !!      subroutine cal_velocity_co_imp(i_velo, iak_diff_v, ak_d_velo,   &
-!!     &          FEM_prm, SGS_param, cmt_param,                        &
+!!     &          dt, FEM_prm, SGS_param, cmt_param,                    &
 !!     &          nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,        &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
 !!     &          diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,   &
 !!     &          f_l, f_nl, nod_fld)
 !!      subroutine cal_vector_p_co_imp(i_vecp, iak_diff_b, ak_d_magne,  &
-!!     &          FEM_prm, SGS_param, cmt_param,                        &
+!!     &          dt, FEM_prm, SGS_param, cmt_param,                    &
 !!     &          nod_comm, node, ele, conduct, cd_prop, Bnod_bcs,      &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
 !!     &          diff_coefs, m_lump, Bmatrix, MG_vector,               &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_magnetic_co_imp(i_magne, iak_diff_b, ak_d_magne, &
-!!     &          FEM_prm, SGS_param, cmt_param,                        &
+!!     &          dt, FEM_prm, SGS_param, cmt_param,                    &
 !!     &          nod_comm, node, ele, conduct, cd_prop, Bnod_bcs,      &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
 !!     &          diff_coefs,m_lump,  Bmatrix, MG_vector,               &
@@ -65,7 +65,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_t_step_parameter
       use m_phys_constants
 !
       use t_FEM_control_parameter
@@ -214,7 +213,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_velocity_co_imp(i_velo, iak_diff_v, ak_d_velo,     &
-     &          FEM_prm, SGS_param, cmt_param,                          &
+     &          dt, FEM_prm, SGS_param, cmt_param,                      &
      &          nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,          &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
      &          diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,     &
@@ -250,6 +249,7 @@
 !
       integer(kind=kint), intent(in) :: i_velo, iak_diff_v
       real(kind = kreal), intent(in) :: ak_d_velo(ele%numele)
+      real(kind = kreal), intent(in) :: dt
 !
       type(vectors_4_solver), intent(inout)                             &
      &           :: MG_vector(0:Vmatrix%nlevel_MG)
@@ -313,7 +313,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_vector_p_co_imp(i_vecp, iak_diff_b, ak_d_magne,    &
-     &          FEM_prm, SGS_param, cmt_param,                          &
+     &          dt, FEM_prm, SGS_param, cmt_param,                      &
      &          nod_comm, node, ele, conduct, cd_prop, Bnod_bcs,        &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
      &          diff_coefs, m_lump, Bmatrix, MG_vector,                 &
@@ -350,6 +350,7 @@
 !
       integer(kind=kint), intent(in) :: i_vecp, iak_diff_b
       real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
+      real(kind = kreal), intent(in) :: dt
 !
       type(vectors_4_solver), intent(inout)                             &
      &           :: MG_vector(0:Bmatrix%nlevel_MG)
@@ -404,7 +405,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_magnetic_co_imp(i_magne, iak_diff_b, ak_d_magne,   &
-     &          FEM_prm, SGS_param, cmt_param,                          &
+     &          dt, FEM_prm, SGS_param, cmt_param,                      &
      &          nod_comm, node, ele, conduct, cd_prop, Bnod_bcs,        &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
      &          diff_coefs,m_lump,  Bmatrix, MG_vector,                 &
@@ -440,6 +441,7 @@
 !
       integer(kind=kint), intent(in) :: i_magne, iak_diff_b
       real(kind = kreal), intent(in) :: ak_d_magne(ele%numele)
+      real(kind = kreal), intent(in) :: dt
 !
       type(vectors_4_solver), intent(inout)                             &
      &           :: MG_vector(0:Bmatrix%nlevel_MG)

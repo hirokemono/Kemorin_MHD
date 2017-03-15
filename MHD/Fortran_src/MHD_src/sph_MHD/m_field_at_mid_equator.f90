@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine set_mid_equator_point_global                         &
 !!     &         (sph_params, sph_rtp, sph_rj)
-!!      subroutine mid_eq_transfer_dynamobench(rj_fld)
+!!      subroutine mid_eq_transfer_dynamobench(time, sph_rj, rj_fld)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -64,7 +64,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine mid_eq_transfer_dynamobench(sph_rj, rj_fld)
+      subroutine mid_eq_transfer_dynamobench(time, sph_rj, rj_fld)
 !
       use calypso_mpi
       use m_field_on_circle
@@ -74,6 +74,7 @@
 !
       use sph_MHD_circle_transform
 !
+      real(kind=kreal), intent(in) :: time
       type(sph_rj_grid), intent(in) :: sph_rj
       type(phys_data), intent(in) :: rj_fld
 !
@@ -85,7 +86,7 @@
 !
 !   Evaluate drift frequencty by velocity 
 !
-      call cal_drift_by_v44
+      call cal_drift_by_v44(time)
 !
 !   find local point for dynamobench
 !
@@ -97,10 +98,11 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_drift_by_v44
+      subroutine cal_drift_by_v44(time)
 !
-      use m_t_step_parameter
       use m_field_on_circle
+!
+      real(kind=kreal), intent(in) :: time
 !
       integer(kind = kint) :: j4c, j4s
       real(kind = kreal) :: vp44c, vp44s

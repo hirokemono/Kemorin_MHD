@@ -3,8 +3,8 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine s_cal_model_coefficients                             &
-!!     &         (FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh,    &
+!!      subroutine s_cal_model_coefficients(i_step, dt,                 &
+!!     &          FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh,    &
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop, layer_tbl,        &
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele,                  &
 !!     &          ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,            &
@@ -62,7 +62,7 @@
       use calypso_mpi
       use m_machine_parameter
       use m_physical_property
-      use m_t_step_parameter
+!      use m_t_step_parameter
 !
       use t_FEM_control_parameter
       use t_SGS_control_parameter
@@ -99,8 +99,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_model_coefficients                               &
-     &         (FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh,      &
+      subroutine s_cal_model_coefficients(i_step, dt,                   &
+     &          FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh,      &
      &          fl_prop, cd_prop, ht_prop, cp_prop, layer_tbl,          &
      &          nod_bcs, surf_bcs, iphys, iphys_ele,                    &
      &          ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,              &
@@ -109,8 +109,6 @@
      &          m_lump, wk_cor, wk_lsq, wk_sgs, wk_diff, wk_filter,     &
      &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                 &
      &          nod_fld, sgs_coefs, sgs_coefs_nod, diff_coefs)
-!
-      use m_t_step_parameter
 !
       use cal_sgs_heat_flux_dynamic
       use cal_sgs_h_flux_dynamic_simi
@@ -123,6 +121,9 @@
       use cal_sgs_induction_dynamic
       use cal_diff_coef_sgs_induct
       use cal_sgs_uxb_dynamic_simi
+!
+      integer(kind = kint), intent(in) :: i_step
+      real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -168,10 +169,10 @@
 !
 !
       if(SGS_par%model_p%iflag_dynamic .eq. id_SGS_DYNAMIC_OFF) return
-      if(dynamic_SGS_flag(i_step_MHD, SGS_par) .ne. 0) return
+      if(dynamic_SGS_flag(i_step, SGS_par) .ne. 0) return
 !
       if(my_rank .eq. 0) write(*,*)                                     &
-     &            'set Csim', i_step_MHD, SGS_par%i_step_sgs_coefs
+     &            'set Csim', i_step, SGS_par%i_step_sgs_coefs
 !
       if(ht_prop%iflag_scheme .ne. id_no_evolution) then
         if(SGS_par%model_p%iflag_SGS_h_flux .eq. id_SGS_NL_grad) then

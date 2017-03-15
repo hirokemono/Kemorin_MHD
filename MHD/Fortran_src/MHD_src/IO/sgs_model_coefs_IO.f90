@@ -5,7 +5,7 @@
 !     modified by H. Matsui on Aug., 2007
 !
 !!      subroutine s_output_sgs_model_coefs                             &
-!!     &         (i_step, SGS_par, wk_sgs, wk_diff)
+!!     &        (i_step_max, i_step_MHD, time, SGS_par, wk_sgs, wk_diff)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(dynamic_model_data), intent(in) :: wk_sgs, wk_diff
 !!
@@ -18,7 +18,6 @@
       use m_precision
 !
       use calypso_mpi
-      use m_t_step_parameter
       use t_physical_property
       use t_SGS_control_parameter
       use t_ele_info_4_dynamic
@@ -123,30 +122,35 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_output_sgs_model_coefs                               &
-     &         (i_step, SGS_par, wk_sgs, wk_diff)
+     &        (i_step_max, i_step_MHD, time, SGS_par, wk_sgs, wk_diff)
 !
       use m_physical_property
       use t_IO_step_parameter
 !
-      integer(kind = kint), intent(in) :: i_step
+      integer(kind = kint), intent(in) :: i_step_max
+      integer(kind=kint), intent(in) :: i_step_MHD
+      real(kind=kreal), intent(in) :: time
+!
       type(SGS_paremeters), intent(in) :: SGS_par
       type(dynamic_model_data), intent(in) :: wk_sgs, wk_diff
 !
 !
       if(SGS_par%model_p%iflag_dynamic .eq. id_SGS_DYNAMIC_OFF) return
-      if(output_IO_flag(i_step,SGS_par%sgs_step) .ne. 0) return
+      if(output_IO_flag(i_step_max,SGS_par%sgs_step) .ne. 0) return
       if(my_rank .ne. 0) return
 !
       call output_layered_model_coefs_file                              &
-     &   (SGS_par%model_p, cd_prop1, wk_sgs)
+     &   (i_step_MHD, time, SGS_par%model_p, cd_prop1, wk_sgs)
       call output_whole_model_coefs_file                                &
-     &   (SGS_par%model_p, cd_prop1, wk_sgs)
+     &   (i_step_MHD, time, SGS_par%model_p, cd_prop1, wk_sgs)
 !
       if (SGS_par%commute_p%iflag_commute .gt. id_SGS_commute_OFF) then
-        call output_whole_diff_coefs_file(cd_prop1, wk_diff)
+        call output_whole_diff_coefs_file                               &
+     &     (i_step_MHD, time, cd_prop1, wk_diff)
 !
         if (SGS_par%commute_p%iset_DIFF_coefs .eq. 1 ) then
-          call output_layered_diff_coefs_file(cd_prop1, wk_diff)
+          call output_layered_diff_coefs_file                           &
+     &       (i_step_MHD, time, cd_prop1, wk_diff)
         end if
       end if
 !
@@ -155,7 +159,10 @@
 !-----------------------------------------------------------------------
 !
       subroutine output_layered_model_coefs_file                        &
-     &         (SGS_param, cd_prop, wk_sgs)
+     &         (i_step, time, SGS_param, cd_prop, wk_sgs)
+!
+      integer(kind=kint), intent(in) :: i_step
+      real(kind=kreal), intent(in) :: time
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(conductive_property), intent(in) :: cd_prop
@@ -186,19 +193,19 @@
 !
 !
       do inum = 1, wk_sgs%nlayer
-        write(sgs_fld_coef_file_code,1000) i_step_MHD,                  &
+        write(sgs_fld_coef_file_code,1000) i_step,                      &
      &      time, inum, wk_sgs%fld_clip(inum,1:wk_sgs%num_kinds)
-        write(sgs_comp_coef_file_code,1000) i_step_MHD,                 &
+        write(sgs_comp_coef_file_code,1000) i_step,                     &
      &      time, inum, wk_sgs%comp_clip(inum,1:wk_sgs%ntot_comp)
 !
-        write(sgs_cor_file_code,1000) i_step_MHD, time, inum,           &
+        write(sgs_cor_file_code,1000) i_step, time, inum,               &
      &         wk_sgs%corrilate(inum,1:wk_sgs%ntot_comp)
-        write(sgs_cov_file_code,1000) i_step_MHD, time, inum,           &
+        write(sgs_cov_file_code,1000) i_step, time, inum,               &
      &         wk_sgs%covariant(inum,1:wk_sgs%ntot_comp)
-        write(sgs_ratio_file_code,1000) i_step_MHD, time, inum,         &
+        write(sgs_ratio_file_code,1000) i_step, time, inum,             &
      &         wk_sgs%ratio(inum,1:wk_sgs%ntot_comp)
 !
-        write(sgs_rms_file_code,1000) i_step_MHD, time, inum,           &
+        write(sgs_rms_file_code,1000) i_step, time, inum,               &
      &         wk_sgs%rms_simi(inum,1:wk_sgs%ntot_comp),                &
      &         wk_sgs%rms_grad(inum,1:wk_sgs%ntot_comp)
       end do
@@ -218,7 +225,10 @@
 !-----------------------------------------------------------------------
 !
       subroutine output_whole_model_coefs_file                          &
-     &         (SGS_param, cd_prop, wk_sgs)
+     &         (i_step, time, SGS_param, cd_prop, wk_sgs)
+!
+      integer(kind=kint), intent(in) :: i_step
+      real(kind=kreal), intent(in) :: time
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(conductive_property), intent(in) :: cd_prop
@@ -245,18 +255,18 @@
      &    sgs_rms_file_code, sgs_w_rms_file_name,                       &
      &    cd_prop, SGS_param, wk_sgs)
 !
-      write(sgs_fld_coef_file_code,1001)  i_step_MHD, time,             &
+      write(sgs_fld_coef_file_code,1001)  i_step, time,                 &
      &        wk_sgs%fld_whole_clip(1:wk_sgs%num_kinds)
-      write(sgs_comp_coef_file_code,1001)  i_step_MHD, time,            &
+      write(sgs_comp_coef_file_code,1001)  i_step, time,                &
      &        wk_sgs%comp_whole_clip(1:wk_sgs%ntot_comp)
 !
-      write(sgs_cor_file_code,1001)  i_step_MHD, time,                  &
+      write(sgs_cor_file_code,1001)  i_step, time,                      &
      &        wk_sgs%corrilate_w(1:wk_sgs%ntot_comp)
-      write(sgs_cov_file_code,1001)  i_step_MHD, time,                  &
+      write(sgs_cov_file_code,1001)  i_step, time,                      &
      &        wk_sgs%covariant_w(1:wk_sgs%ntot_comp)
-      write(sgs_ratio_file_code,1001) i_step_MHD, time,                 &
+      write(sgs_ratio_file_code,1001) i_step, time,                     &
      &        wk_sgs%ratio_w(1:wk_sgs%ntot_comp)
-      write(sgs_rms_file_code,1001) i_step_MHD, time,                   &
+      write(sgs_rms_file_code,1001) i_step, time,                       &
      &        wk_sgs%rms_simi_w(1:wk_sgs%ntot_comp),                    &
      &        wk_sgs%rms_grad_w(1:wk_sgs%ntot_comp)
 !
@@ -273,7 +283,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine output_whole_diff_coefs_file(cd_prop, wk_diff)
+      subroutine output_whole_diff_coefs_file                           &
+     &         (i_step, time, cd_prop, wk_diff)
+!
+      integer(kind=kint), intent(in) :: i_step
+      real(kind=kreal), intent(in) :: time
 !
       type(conductive_property), intent(in) :: cd_prop
       type(dynamic_model_data), intent(in) :: wk_diff
@@ -295,18 +309,18 @@
       call open_diff_rms_ratio_file(iflag_whole,                        &
      &   diff_rms_file_code, diff_w_rms_file_name, cd_prop, wk_diff)
 !
-      write(diff_coef_file_code,1001) i_step_MHD, time,                 &
+      write(diff_coef_file_code,1001) i_step, time,                     &
      &          wk_diff%fld_whole_clip(1:wk_diff%num_kinds)
-      write(diff_comp_file_code,1001) i_step_MHD, time,                 &
+      write(diff_comp_file_code,1001) i_step, time,                     &
      &          wk_diff%comp_whole_clip(1:wk_diff%ntot_comp)
 !
-      write(diff_cor_file_code,1001) i_step_MHD, time,                  &
+      write(diff_cor_file_code,1001) i_step, time,                      &
      &          wk_diff%corrilate_w(1:wk_diff%ntot_comp)
-      write(diff_cov_file_code,1001) i_step_MHD, time,                  &
+      write(diff_cov_file_code,1001) i_step, time,                      &
      &          wk_diff%covariant_w(1:wk_diff%ntot_comp)
-      write(diff_ratio_file_code,1001) i_step_MHD, time,                &
+      write(diff_ratio_file_code,1001) i_step, time,                    &
      &          wk_diff%ratio_w(1:wk_diff%ntot_comp)
-      write(diff_rms_file_code,1001) i_step_MHD, time,                  &
+      write(diff_rms_file_code,1001) i_step, time,                      &
      &          wk_diff%rms_simi_w(1:wk_diff%ntot_comp),                &
      &          wk_diff%rms_grad_w(1:wk_diff%ntot_comp)
 !
@@ -323,7 +337,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine output_layered_diff_coefs_file(cd_prop, wk_diff)
+      subroutine output_layered_diff_coefs_file                         &
+     &         (i_step, time, cd_prop, wk_diff)
+!
+      integer(kind=kint), intent(in) :: i_step
+      real(kind=kreal), intent(in) :: time
 !
       type(conductive_property), intent(in) :: cd_prop
       type(dynamic_model_data), intent(in) :: wk_diff
@@ -346,22 +364,17 @@
      &    diff_rms_file_code, diff_rms_file_name, cd_prop, wk_diff)
 !
       do inum = 1, wk_diff%nlayer
-        write(diff_coef_file_code,1000)                                 &
-     &       i_step_MHD, time, inum,                                    &
+        write(diff_coef_file_code,1000) i_step, time, inum,             &
      &              wk_diff%fld_clip(inum,1:wk_diff%num_kinds)
 !
-        write(diff_cor_file_code,1000)                                  &
-     &       i_step_MHD, time, inum,                                    &
+        write(diff_cor_file_code,1000)  i_step, time, inum,             &
      &              wk_diff%corrilate(inum,1:wk_diff%ntot_comp)
-        write(diff_cov_file_code,1000)                                  &
-     &       i_step_MHD, time, inum,                                    &
+        write(diff_cov_file_code,1000)  i_step, time, inum,             &
      &              wk_diff%covariant(inum,1:wk_diff%ntot_comp)
 !
-        write(diff_ratio_file_code,1000)                                &
-     &       i_step_MHD, time, inum,                                    &
+        write(diff_ratio_file_code,1000) i_step, time, inum,            &
      &              wk_diff%ratio(inum,1:wk_diff%ntot_comp)
-        write(diff_rms_file_code,1000)                                  &
-     &      i_step_MHD, time, inum,                                     &
+        write(diff_rms_file_code,1000) i_step, time, inum,              &
      &              wk_diff%rms_simi(inum,1:wk_diff%ntot_comp),         &
      &              wk_diff%rms_grad(inum,1:wk_diff%ntot_comp)
       end do

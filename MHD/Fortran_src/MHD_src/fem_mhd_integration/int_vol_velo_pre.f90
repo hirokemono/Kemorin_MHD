@@ -14,10 +14,10 @@
 !!     &         ncomp_ele, d_ele, iphys_ele, iak_diff_mf, iak_diff_lor,&
 !!     &         jac_3d, rhs_tbl, FEM_elens, diff_coefs,                &
 !!     &         mhd_fem_wk, fem_wk, f_nl)
-!!      subroutine int_vol_velo_pre_ele_upwind(iflag_4_rotate, num_int, &
-!!     &          SGS_param, cmt_param, node, ele, fluid,               &
-!!     &          fl_prop, cd_prop, iphys, nod_fld, ak_MHD,             &
-!!     &          ncomp_ele, ie_upw, d_ele, iphys_ele,                  &
+!!      subroutine int_vol_velo_pre_ele_upwind                          &
+!!     &         (iflag_4_rotate, num_int, dt, SGS_param, cmt_param,    &
+!!     &          node, ele, fluid, fl_prop, cd_prop, iphys, nod_fld,   &
+!!     &          ak_MHD, ncomp_ele, ie_upw, d_ele, iphys_ele,          &
 !!     &          iak_diff_mf, iak_diff_lor,                            &
 !!     &          jac_3d,  rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk,  &
 !!     &          fem_wk, f_nl)
@@ -46,7 +46,6 @@
 !
       use m_phys_constants
       use m_fem_gauss_int_coefs
-      use m_t_step_parameter
 !
       use t_SGS_control_parameter
       use t_physical_property
@@ -311,10 +310,10 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_velo_pre_ele_upwind(iflag_4_rotate, num_int,   &
-     &          SGS_param, cmt_param, node, ele, fluid,                 &
-     &          fl_prop, cd_prop, iphys, nod_fld, ak_MHD,               &
-     &          ncomp_ele, ie_upw, d_ele, iphys_ele,                    &
+      subroutine int_vol_velo_pre_ele_upwind                            &
+     &         (iflag_4_rotate, num_int, dt, SGS_param, cmt_param,      &
+     &          node, ele, fluid, fl_prop, cd_prop, iphys, nod_fld,     &
+     &          ak_MHD, ncomp_ele, ie_upw, d_ele, iphys_ele,            &
      &          iak_diff_mf, iak_diff_lor,                              &
      &          jac_3d,  rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk,    &
      &          fem_wk, f_nl)
@@ -336,6 +335,7 @@
       type(element_data), intent(in) :: ele
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
+      type(phys_address), intent(in) :: iphys_ele
       type(field_geometry_data), intent(in) :: fluid
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
@@ -349,7 +349,7 @@
       integer(kind = kint), intent(in) :: iak_diff_mf, iak_diff_lor
       integer(kind = kint), intent(in) :: ncomp_ele, ie_upw
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
-      type(phys_address), intent(in) :: iphys_ele
+      real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl

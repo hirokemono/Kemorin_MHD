@@ -6,7 +6,7 @@
 !!      subroutine set_rotation_boundary(numnod, xx,                    &
 !!     &          num_bc_v10_nod, ibc_v10_id, bc_v10_id_apt,            &
 !!     &          ncomp_nod, i_velo, d_nod)
-!!      subroutine set_specific_boundary_velo(numnod, xx,               &
+!!      subroutine set_specific_boundary_velo(time, numnod, xx,         &
 !!     &          num_bc_vsp_nod, ibc_vsp_id, bc_vsp_id_apt,            &
 !!     &          ncomp_nod, i_velo, d_nod)
 !!      subroutine del_radial_velocity(numnod, xx, a_radius,            &
@@ -60,15 +60,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_specific_boundary_velo(numnod, xx,                 &
+      subroutine set_specific_boundary_velo(time, numnod, xx,           &
      &          num_bc_vsp_nod, ibc_vsp_id, bc_vsp_id_apt,              &
      &          ncomp_nod, i_velo, d_nod)
 !
-      use m_constants
-      use m_t_step_parameter
-!
       integer(kind = kint), intent(in) :: numnod, ncomp_nod, i_velo
       real(kind = kreal), intent(in) :: xx(numnod,3)
+      real(kind = kreal), intent(in) :: time
 !
       integer(kind=kint), intent(in) :: num_bc_vsp_nod
       integer(kind=kint), intent(in) :: ibc_vsp_id(num_bc_vsp_nod)

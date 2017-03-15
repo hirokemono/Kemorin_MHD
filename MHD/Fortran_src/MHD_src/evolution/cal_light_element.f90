@@ -5,8 +5,8 @@
 !                                    on July 2000 (ver 1.1)
 !        modieied by H. Matsui on Sep., 2005
 !
-!!      subroutine s_cal_light_element                                  &
-!!     &         (i_field, FEM_prm, SGS_param, cmt_param, filter_param, &
+!!      subroutine s_cal_light_element(i_field, dt,                     &
+!!     &          FEM_prm, SGS_param, cmt_param, filter_param,          &
 !!     &          nod_comm, node, ele, surf, fluid, sf_grp,             &
 !!     &          property, Snod_bcs, sf_bcs, iphys, iphys_ele, ele_fld,&
 !!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, icomp_sgs,    &
@@ -88,8 +88,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_cal_light_element                                    &
-     &         (i_field, FEM_prm, SGS_param, cmt_param, filter_param,   &
+      subroutine s_cal_light_element(i_field, dt,                       &
+     &          FEM_prm, SGS_param, cmt_param, filter_param,            &
      &          nod_comm, node, ele, surf, fluid, sf_grp,               &
      &          property, Snod_bcs, sf_bcs, iphys, iphys_ele, ele_fld,  &
      &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, icomp_sgs,      &
@@ -98,7 +98,6 @@
      &          wk_filter, mhd_fem_wk, fem_wk, surf_wk,                 &
      &          f_l, f_nl, nod_fld)
 !
-      use m_t_step_parameter
       use m_type_AMG_data
 !
       use nod_phys_send_recv
@@ -116,6 +115,7 @@
       use evolve_by_consist_crank
 !
       integer(kind = kint), intent(in) :: i_field
+      real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
@@ -190,7 +190,7 @@
         call int_vol_temp_ele_upw                                       &
      &     (SGS_param%iflag_SGS_c_flux, cmt_param%iflag_c_cf,           &
      &      SGS_param%ifilter_final, FEM_prm%npoint_t_evo_int,          &
-     &      iphys%i_light, iphys%i_velo,                                &
+     &      dt, iphys%i_light, iphys%i_velo,                            &
      &      iphys%i_SGS_c_flux, ifld_diff%i_comp_flux,                  &
      &      node, ele, fluid, property, nod_fld,                        &
      &      jac_3d, rhs_tbl, FEM_elens, diff_coefs,                     &
@@ -232,7 +232,7 @@
       if (ref_param_C1%iflag_reference .eq. id_takepiro_temp) then
         if (FEM_prm%iflag_comp_supg .gt. id_turn_OFF) then
           call cal_stratified_layer_upw                                 &
-     &       (iphys%i_gref_c, FEM_prm%npoint_t_evo_int,                 &
+     &       (iphys%i_gref_c, FEM_prm%npoint_t_evo_int, dt,             &
      &        node, ele, fluid, nod_fld,                                &
      &        ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,       &
      &        jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_nl)

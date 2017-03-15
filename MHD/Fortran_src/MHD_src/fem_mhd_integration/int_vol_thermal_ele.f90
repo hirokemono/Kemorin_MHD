@@ -11,7 +11,7 @@
 !!     &          iak_diff_hf, mhd_fem_wk, fem_wk, f_nl)
 !!      subroutine int_vol_temp_ele_upw                                 &
 !!     &         (iflug_SGS_term, iflag_commute, ifilter_final, num_int,&
-!!     &          i_field, i_velo, i_SGS_flux, iak_diff_flux,           &
+!!     &          dt, i_field, i_velo, i_SGS_flux, iak_diff_flux,       &
 !!     &          node, ele, fluid, property, nod_fld, jac_3d, rhs_tbl, &
 !!     &          FEM_elens, diff_coefs, ncomp_ele, iele_velo, d_ele,   &
 !!     &          mhd_fem_wk, fem_wk, f_nl)
@@ -36,7 +36,6 @@
       use m_machine_parameter
       use m_phys_constants
       use m_fem_gauss_int_coefs
-      use m_t_step_parameter
 !
       use t_SGS_control_parameter
       use t_physical_property
@@ -146,7 +145,7 @@
 !
       subroutine int_vol_temp_ele_upw                                   &
      &         (iflug_SGS_term, iflag_commute, ifilter_final, num_int,  &
-     &          i_field, i_velo, i_SGS_flux, iak_diff_flux,             &
+     &          dt, i_field, i_velo, i_SGS_flux, iak_diff_flux,         &
      &          node, ele, fluid, property, nod_fld, jac_3d, rhs_tbl,   &
      &          FEM_elens, diff_coefs, ncomp_ele, iele_velo, d_ele,     &
      &          mhd_fem_wk, fem_wk, f_nl)
@@ -172,9 +171,10 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
 !
+      integer(kind=kint), intent(in) :: iak_diff_flux
       integer(kind = kint), intent(in) :: ncomp_ele, iele_velo
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
-      integer(kind=kint), intent(in) :: iak_diff_flux
+      real(kind = kreal), intent(in) :: dt
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl

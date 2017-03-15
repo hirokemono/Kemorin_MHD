@@ -4,7 +4,7 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine set_bc_id_data(IO_bc, mesh, group, MHD_mesh,         &
+!!      subroutine set_bc_id_data(dt, IO_bc, mesh, group, MHD_mesh,     &
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop, nodal_bc)
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
@@ -42,7 +42,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_bc_id_data(IO_bc, mesh, group, MHD_mesh,           &
+      subroutine set_bc_id_data(dt, IO_bc, mesh, group, MHD_mesh,       &
      &          fl_prop, cd_prop, ht_prop, cp_prop, nodal_bc)
 !
       use m_bc_data_list
@@ -53,6 +53,8 @@
       use t_nodal_bc_data
       use t_boundary_field_IO
 !
+!
+      real(kind = kreal), intent(in) :: dt
 !
       type(IO_boundary),    intent(in) :: IO_bc
       type(mesh_geometry),  intent(in) :: mesh
@@ -69,7 +71,7 @@
         call set_bc_velo_id(IO_bc, mesh%node, mesh%ele,                 &
      &      MHD_mesh%fluid, group%nod_grp, nodal_bc%Vnod_bcs)
         if ( iflag_debug .eq.1) write(*,*)  'set boundary id 4 P'
-        call set_bc_press_id(IO_bc, mesh%node, mesh%ele,                &
+        call set_bc_press_id(dt, IO_bc, mesh%node, mesh%ele,            &
      &      MHD_mesh%fluid, group%nod_grp, fl_prop, nodal_bc%Vnod_bcs)
       end if
 !

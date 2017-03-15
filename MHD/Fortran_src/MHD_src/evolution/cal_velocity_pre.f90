@@ -5,7 +5,7 @@
 !                                    on July 2000 (ver 1.1)
 !        modieied by H. Matsui on Sep., 2005
 !
-!!      subroutine s_cal_velocity_pre(FEM_prm, SGS_par,                 &
+!!      subroutine s_cal_velocity_pre(time, dt, FEM_prm, SGS_par,       &
 !!     &          nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod, &
 !!     &          fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs,         &
 !!     &          iphys, iphys_ele, ak_MHD, jac_3d_q, jac_3d_l,         &
@@ -15,7 +15,7 @@
 !!     &          Vmatrix, MG_vector, wk_lsq, wk_sgs, wk_filter,        &
 !!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,               &
 !!     &          nod_fld, ele_fld, sgs_coefs)
-!!      subroutine cal_velocity_co(FEM_prm, SGS_par,                    &
+!!      subroutine cal_velocity_co(time, FEM_prm, SGS_par,              &
 !!     &         nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,  &
 !!     &         fl_prop, Vnod_bcs, Vsf_bcs, Psf_bcs, iphys,            &
 !!     &         iphys_ele, ele_fld, ak_MHD, jac_3d_q, jac_3d_l,        &
@@ -69,9 +69,7 @@
       module cal_velocity_pre
 !
       use m_precision
-!
       use m_machine_parameter
-      use m_t_step_parameter
 !
       use t_FEM_control_parameter
       use t_SGS_control_parameter
@@ -112,7 +110,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_cal_velocity_pre(FEM_prm, SGS_par,                   &
+      subroutine s_cal_velocity_pre(time, dt, FEM_prm, SGS_par,         &
      &          nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,   &
      &          fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs,           &
      &          iphys, iphys_ele, ak_MHD, jac_3d_q, jac_3d_l,           &
@@ -137,6 +135,8 @@
       use evolve_by_adams_bashforth
       use evolve_by_lumped_crank
       use evolve_by_consist_crank
+!
+      real(kind = kreal), intent(in) :: time, dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -243,7 +243,7 @@
 !
       if (FEM_prm%iflag_velo_supg .eq. id_turn_ON) then
         call int_vol_velo_pre_ele_upwind                                &
-     &     (FEM_prm%iflag_rotate_form, FEM_prm%npoint_t_evo_int,        &
+     &     (FEM_prm%iflag_rotate_form, FEM_prm%npoint_t_evo_int, dt,    &
      &      SGS_par%model_p, SGS_par%commute_p, node, ele, fluid,       &
      &      fl_prop, cd_prop, iphys, nod_fld, ak_MHD,                   &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
@@ -252,7 +252,7 @@
      &      mhd_fem_wk, fem_wk, f_nl)
       else if (FEM_prm%iflag_velo_supg .eq. id_magnetic_SUPG) then
         call int_vol_velo_pre_ele_upwind                                &
-     &     (FEM_prm%iflag_rotate_form, FEM_prm%npoint_t_evo_int,        &
+     &     (FEM_prm%iflag_rotate_form, FEM_prm%npoint_t_evo_int, dt,    &
      &      SGS_par%model_p, SGS_par%commute_p, node, ele, fluid,       &
      &      fl_prop, cd_prop, iphys, nod_fld, ak_MHD,                   &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
@@ -309,7 +309,8 @@
      &      Vmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
-      call set_boundary_velo(node, Vnod_bcs, iphys%i_velo, nod_fld)
+      call set_boundary_velo                                            &
+     &   (time, node, Vnod_bcs, iphys%i_velo, nod_fld)
       call set_normal_velocity(sf_grp, sf_grp_nod, fl_prop,             &
      &    Vsf_bcs%normal, iphys%i_velo, nod_fld)
 !
@@ -319,7 +320,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_velocity_co(FEM_prm, SGS_par,                      &
+      subroutine cal_velocity_co(time, dt, FEM_prm, SGS_par,            &
      &         nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,    &
      &         fl_prop, Vnod_bcs, Vsf_bcs, Psf_bcs, iphys,              &
      &         iphys_ele, ele_fld, ak_MHD, jac_3d_q, jac_3d_l,          &
@@ -337,6 +338,8 @@
       use set_nodal_bc_id_data
       use cal_sol_vector_co_crank
       use implicit_vector_correct
+!
+      real(kind = kreal), intent(in) :: dt, time
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -399,7 +402,7 @@
      &  .or. FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)    &
      & then
         call cal_velocity_co_imp                                        &
-     &     (iphys%i_velo, ifld_diff%i_velo, ak_MHD%ak_d_velo,           &
+     &     (iphys%i_velo, ifld_diff%i_velo, ak_MHD%ak_d_velo, dt,       &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,              &
      &      iphys_ele, ele_fld,  jac_3d_q, rhs_tbl, FEM_elens,          &
@@ -413,7 +416,8 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_velo'
-      call set_boundary_velo(node, Vnod_bcs, iphys%i_velo, nod_fld)
+      call set_boundary_velo                                            &
+     &   (time, node, Vnod_bcs, iphys%i_velo, nod_fld)
       if (iflag_debug.eq.1) write(*,*) 'set_normal_velocity'
       call set_normal_velocity(sf_grp, sf_grp_nod, fl_prop,             &
      &    Vsf_bcs%normal, iphys%i_velo, nod_fld)

@@ -16,7 +16,7 @@
 !!      subroutine set_boundary_vect(vector_bc, i_field, nod_fld)
 !!      subroutine set_boundary_rot_vect(node, rot_bc, i_field, nod_fld)
 !!      subroutine set_boundary_specific_vect                           &
-!!     &         (node, vsp_bc, i_field, nod_fld)
+!!     &         (time, node, vsp_bc, i_field, nod_fld)
 !!
 !!      subroutine delete_field_by_fixed_s_bc                           &
 !!     &         (scalar_bc, i_field, nod_fld)
@@ -252,12 +252,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_boundary_specific_vect                             &
-     &         (node, vsp_bc, i_field, nod_fld)
+     &         (time, node, vsp_bc, i_field, nod_fld)
 !
       use t_geometry_data
       use t_phys_data
       use set_nodal_bc_4_velo
 !
+      real(kind = kreal), intent(in) :: time
       integer(kind = kint), intent(in) :: i_field
       type(node_data), intent(in) :: node
       type(scaler_fixed_nod_bc_type), intent(in) :: vsp_bc
@@ -265,7 +266,7 @@
 !
 !
       if (vsp_bc%num_bc_nod .le. 0) return
-      call set_specific_boundary_velo(node%numnod, node%xx,             &
+      call set_specific_boundary_velo(time, node%numnod, node%xx,       &
      &    vsp_bc%num_bc_nod, vsp_bc%ibc_id, vsp_bc%bc_apt,              &
      &    nod_fld%ntot_phys, i_field, nod_fld%d_fld)
 !

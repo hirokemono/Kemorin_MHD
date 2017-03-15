@@ -9,7 +9,7 @@
 !!     &          ncomp_ele, iele_velo, d_ele, jac_3d, rhs_tbl,         &
 !!     &          mhd_fem_wk, fem_wk, f_nl)
 !!      subroutine cal_stratified_layer_upw                             &
-!!     &         (i_gref, num_int, node, ele, fluid, nod_fld,           &
+!!     &         (i_gref, num_int, dt, node, ele, fluid, nod_fld,       &
 !!     &          ncomp_ele, iele_velo, d_ele, jac_3d, rhs_tbl,         &
 !!     &          mhd_fem_wk, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
@@ -36,7 +36,6 @@
       use m_precision
 !
       use m_phys_constants
-      use m_t_step_parameter
 !
       use t_geometry_data_MHD
       use t_geometry_data
@@ -107,7 +106,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_stratified_layer_upw                               &
-     &         (i_gref, num_int, node, ele, fluid, nod_fld,             &
+     &         (i_gref, num_int, dt, node, ele, fluid, nod_fld,         &
      &          ncomp_ele, iele_velo, d_ele, jac_3d, rhs_tbl,           &
      &          mhd_fem_wk, fem_wk, f_nl)
 !
@@ -126,6 +125,7 @@
       integer(kind = kint), intent(in) :: i_gref, num_int
       integer(kind = kint), intent(in) :: ncomp_ele, iele_velo
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
+      real(kind = kreal), intent(in) :: dt
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk

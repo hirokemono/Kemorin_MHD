@@ -6,8 +6,8 @@
 !
 !!      subroutine set_bc_velo_id                                       &
 !!     &          (IO_bc, node, ele, fluid, nod_grp, Vnod_bcs)
-!!      subroutine set_bc_press_id                                      &
-!!     &          (IO_bc, node, ele, fluid, nod_grp, fl_prop, Vnod_bcs)
+!!      subroutine set_bc_press_id(dt, IO_bc, node, ele, fluid,         &
+!!     &           nod_grp, fl_prop, Vnod_bcs)
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -132,8 +132,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_bc_press_id                                        &
-     &          (IO_bc, node, ele, fluid, nod_grp, fl_prop, Vnod_bcs)
+      subroutine set_bc_press_id(dt, IO_bc, node, ele, fluid,           &
+     &           nod_grp, fl_prop, Vnod_bcs)
 !
       use m_bc_data_list
       use t_physical_property
@@ -142,6 +142,7 @@
       use set_ele_nod_bc_vectors
       use set_nodal_boundary
 !
+      real(kind = kreal), intent(in) :: dt
       type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -164,9 +165,9 @@
      &    Vnod_bcs%nod_bc_p, Vnod_bcs%sgs_bc_p)
 !
       call set_potential_4_fixed_press                                  &
-     &   (fl_prop%coef_press, Vnod_bcs%nod_bc_p)
+     &   (dt, fl_prop%coef_press, Vnod_bcs%nod_bc_p)
       call set_potential_4_fixed_press                                  &
-     &   (fl_prop%coef_press, Vnod_bcs%sgs_bc_p)
+     &   (dt, fl_prop%coef_press, Vnod_bcs%sgs_bc_p)
 !
 !   set node id in an element for the pressure boundary
 !

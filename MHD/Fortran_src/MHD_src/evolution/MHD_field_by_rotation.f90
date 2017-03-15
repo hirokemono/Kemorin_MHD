@@ -7,7 +7,8 @@
 !>@brief Evaluate vorticity and current density
 !!
 !!@verbatim
-!!      subroutine cal_field_by_rotation (FEM_prm, SGS_param, cmt_param,&
+!!      subroutine cal_field_by_rotation                                &
+!!     &         (dt, FEM_prm, SGS_param, cmt_param,                    &
 !!     &          nod_comm, node, ele, surf, fluid, conduct, sf_grp,    &
 !!     &          cd_prop, nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,&
 !!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,               &
@@ -47,7 +48,6 @@
       use m_precision
       use m_constants
       use m_machine_parameter
-      use m_t_step_parameter
 !
       use t_physical_property
       use t_FEM_control_parameter
@@ -79,7 +79,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_field_by_rotation (FEM_prm, SGS_param, cmt_param,  &
+      subroutine cal_field_by_rotation                                  &
+     &         (dt, FEM_prm, SGS_param, cmt_param,                      &
      &          nod_comm, node, ele, surf, fluid, conduct, sf_grp,      &
      &          cd_prop, nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,  &
      &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens,                 &
@@ -87,6 +88,8 @@
      &          surf_wk, f_l, f_nl, nod_fld)
 !
       use cal_rotation_sgs
+!
+      real(kind=kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param

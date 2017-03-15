@@ -9,15 +9,12 @@
 !!@verbatim
 !!      subroutine s_lead_fields_4_sph_mhd                              &
 !!     &         (SGS_param, sph, comms_sph, r_2nd,                     &
-!!     &          fl_prop, cd_prop, ht_prop, cp_prop, trans_p,          &
-!!     &          ipol, rj_fld, WK)
+!!     &          fl_prop, trans_p, ipol, rj_fld, WK)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(fluid_property), intent(in) :: fl_prop
-!!        type(conductive_property), intent(in) :: cd_prop
-!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(phys_address), intent(in) :: ipol
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
@@ -57,10 +54,8 @@
 !
       subroutine s_lead_fields_4_sph_mhd                                &
      &         (SGS_param, sph, comms_sph, r_2nd,                       &
-     &          fl_prop, cd_prop, ht_prop, cp_prop, trans_p,            &
-     &          ipol, rj_fld, WK)
+     &          fl_prop, trans_p, ipol, rj_fld, WK)
 !
-      use m_t_step_parameter
       use m_radial_matrices_sph
       use sph_transforms_4_MHD
       use sph_transforms_4_SGS
@@ -74,15 +69,11 @@
       type(sph_comm_tables), intent(in) :: comms_sph
       type(fdm_matrices), intent(in) :: r_2nd
       type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in) :: cd_prop
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(phys_address), intent(in) :: ipol
 !
       type(works_4_sph_trans_MHD), intent(inout) :: WK
       type(phys_data), intent(inout) :: rj_fld
-!
-      integer (kind =kint) :: iflag
 !
 !
       if(fl_prop%iflag_scheme .gt. id_no_evolution) then

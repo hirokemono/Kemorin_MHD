@@ -7,7 +7,7 @@
 !>@brief Evaluate dynamo benchmark results
 !!
 !!@verbatim
-!!      subroutine s_const_data_4_dynamobench(sph_params, sph_rj,       &
+!!      subroutine s_const_data_4_dynamobench(time, sph_params, sph_rj, &
 !!     &          leg, ipol, itor, rj_fld, pwr, WK_pwr)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
@@ -32,7 +32,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_const_data_4_dynamobench(sph_params, sph_rj,         &
+      subroutine s_const_data_4_dynamobench(time, sph_params, sph_rj,   &
      &          leg, ipol, itor, rj_fld, pwr, WK_pwr)
 !
       use m_boundary_params_sph_MHD
@@ -50,6 +50,7 @@
       use cal_rms_fields_by_sph
       use global_field_4_dynamobench
 !
+      real(kind=kreal), intent(in) :: time
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(legendre_4_sph_trans), intent(in) :: leg
@@ -61,7 +62,7 @@
 !
 !
       if(iflag_debug.gt.0)  write(*,*) 'mid_eq_transfer_dynamobench'
-      call mid_eq_transfer_dynamobench(sph_rj, rj_fld)
+      call mid_eq_transfer_dynamobench(time, sph_rj, rj_fld)
 !
       pwr%v_spectr(1)%kr_inside =  sph_params%nlayer_ICB
       pwr%v_spectr(1)%kr_outside = sph_params%nlayer_CMB

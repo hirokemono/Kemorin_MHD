@@ -3,8 +3,9 @@
 !
 !        programmed H.Matsui on Dec., 2008
 !
-!!      subroutine s_initialize_4_MHD_AMG(FEM_prm, node_1st, ele_1st,   &
-!!     &          ifld_diff, diff_coefs, DJDS_param, MHD_matrices)
+!!      subroutine s_initialize_4_MHD_AMG                               &
+!!     &         (dt, FEM_prm, node_1st, ele_1st, ifld_diff, diff_coefs,&
+!!     &          DJDS_param, MHD_matrices)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(node_data), intent(inout) :: node_1st
 !!        type(element_data), intent(inout) :: ele_1st
@@ -47,8 +48,9 @@
 !
 ! ---------------------------------------------------------------------
 !
-      subroutine s_initialize_4_MHD_AMG(FEM_prm, node_1st, ele_1st,     &
-     &          ifld_diff, diff_coefs, DJDS_param, MHD_matrices)
+      subroutine s_initialize_4_MHD_AMG                                 &
+     &         (dt, FEM_prm, node_1st, ele_1st, ifld_diff, diff_coefs,  &
+     &          DJDS_param, MHD_matrices)
 !
       use t_geometry_data
       use t_edge_data
@@ -75,6 +77,7 @@
       use link_MG_MHD_mesh_data
       use const_element_comm_tables
 !
+      real(kind = kreal), intent(in) :: dt
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_terms_address), intent(in) :: ifld_diff
       type(SGS_coefficients_type), intent(in) :: diff_coefs
@@ -284,7 +287,7 @@
 !
       do i_level = 1, num_MG_level
         call set_bc_id_data                                             &
-     &     (IO_MG_bc(i_level), MG_mesh(i_level)%mesh,                   &
+     &     (dt, IO_MG_bc(i_level), MG_mesh(i_level)%mesh,               &
      &      MG_mesh(i_level)%group, MG_MHD_mesh(i_level),               &
      &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
      &      MG_node_bc(i_level))

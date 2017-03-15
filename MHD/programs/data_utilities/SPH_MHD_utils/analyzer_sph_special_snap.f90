@@ -199,8 +199,9 @@
       iflag = output_IO_flag(i_step, MHD_step%rms_step)
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
-        call output_rms_sph_mhd_control(sph1%sph_params, sph1%sph_rj,   &
-     &      trans_p1%leg, ipol, rj_fld1, pwr1, WK_pwr)
+        call output_rms_sph_mhd_control(i_step_MHD, time,               &
+     &      sph1%sph_params, sph1%sph_rj, trans_p1%leg, ipol,           &
+     &      rj_fld1, pwr1, WK_pwr)
       end if
       call end_eleps_time(11)
       call end_eleps_time(4)
@@ -330,8 +331,8 @@
      &                             SGS_par1%sgs_step)
       if(iflag .eq. 0) then
         call s_lead_fields_4_sph_mhd(SGS_par1%model_p, sph,             &
-     &      comms_sph, r_2nd, fl_prop1, cd_prop1, ht_prop1, cp_prop1,   &
-     &      trans_p1, ipol, rj_fld, trns_WK)
+     &      comms_sph, r_2nd, fl_prop1, trans_p1,                       &
+     &      ipol, rj_fld, trns_WK)
       end if
 !
       call sph_back_trans_4_MHD                                         &

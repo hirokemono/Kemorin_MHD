@@ -11,8 +11,8 @@
 !!
 !!      subroutine open_node_monitor_file(my_rank, nod_fld)
 !!      subroutine set_local_node_id_4_monitor(node, nod_grp)
-!!      subroutine output_monitor_control(node, nod_fld)
-!!      subroutine skip_monitor_data
+!!      subroutine output_monitor_control(i_step, time, node, nod_fld)
+!!      subroutine skip_monitor_data(i_step_init)
 !
       module node_monitor_IO
 !
@@ -184,10 +184,12 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine output_monitor_control(node, nod_fld)
+      subroutine output_monitor_control(i_step, time, node, nod_fld)
 !
       use calypso_mpi
-      use m_t_step_parameter
+!
+      integer(kind=kint), intent(in) :: i_step
+      real(kind=kreal), intent(in) :: time
 !
       type(node_data), intent(in) :: node
       type(phys_data), intent(in) :: nod_fld
@@ -202,7 +204,7 @@
       do i = 1, num_monitor_local
         inod = monitor_local(i)
         write(id_monitor_file,'(2i16,1pe25.15e3)',                      &
-     &             advance='NO') i_step_MHD, inod, time
+     &             advance='NO') i_step, inod, time
         write(id_monitor_file,'(1p3e25.15e3)',                          &
      &             advance='NO') node%xx(inod,1:3)
         do i_fld = 1, nod_fld%num_phys
@@ -222,9 +224,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine skip_monitor_data
+      subroutine skip_monitor_data(i_step_init)
 !
-      use m_t_step_parameter
+      integer(kind=kint), intent(in) :: i_step_init
 !
       integer (kind = kint) :: i, k, itmp
       integer (kind = kint) :: i_read_step

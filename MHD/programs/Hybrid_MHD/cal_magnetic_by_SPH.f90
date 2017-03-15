@@ -253,10 +253,10 @@
       type(phys_data), intent(in) :: rj_fld
 !
       if ( SGS_param%iflag_SGS_uxb .ne. id_SGS_none) then
-        call cal_diff_induction_MHD_adams(cd_prop%coef_exp,             &
+        call cal_diff_induction_MHD_adams(dt, cd_prop%coef_exp,         &
      &      ipol, itor, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else
-        call cal_diff_induction_wSGS_adams(cd_prop%coef_exp,            &
+        call cal_diff_induction_wSGS_adams(dt, cd_prop%coef_exp,        &
      &      ipol, itor, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
