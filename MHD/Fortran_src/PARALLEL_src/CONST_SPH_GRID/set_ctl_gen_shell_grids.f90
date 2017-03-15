@@ -223,6 +223,9 @@
      &               label_Chebyshev))                                  &
      &       sph_params%iflag_radial_grid =  igrid_Chebyshev
       if(cmp_no_case(spctl%radial_grid_type_ctl%charavalue,             &
+     &               label_half_Cbyv))                                  &
+     &       sph_params%iflag_radial_grid =  igrid_half_Chebyshev
+      if(cmp_no_case(spctl%radial_grid_type_ctl%charavalue,             &
      &               label_equi))                                       &
      &       sph_params%iflag_radial_grid =  igrid_equidistance
 !
@@ -301,7 +304,7 @@
           call dealloc_control_array_c_i(spctl%radial_grp_ctl)
         end if
 !
-!   Set radial grid by Chebyshev or equaidistance
+!   Set radial grid by Chebyshev, equaidistance, or half Chebyshev
       else
         if(spctl%ICB_radius_ctl%iflag .gt. 0                            &
      &     .and. spctl%CMB_radius_ctl%iflag .gt. 0) then
@@ -336,6 +339,24 @@
         call count_set_radial_grid(spctl%num_fluid_grid_ctl%intvalue,   &
      &      spctl%Min_radius_ctl%realvalue,                             &
      &      spctl%Max_radius_ctl%realvalue, sph_params, sph_rtp)
+      end if
+!
+!       Check whole sphere model
+      if(sph_params%iflag_radial_grid .eq. igrid_half_Chebyshev) then
+        if(sph_params%radius_ICB .ne. zero) then
+          write(*,*)                                                    &
+     &     'Set ICB radius to be zero for whole sphere'
+          ierr = ierr_mesh
+          return
+        end if
+!
+        if(spctl%Min_radius_ctl%iflag .ne. 0                            &
+     &     .and. spctl%Min_radius_ctl%realvalue .ne. zero) then
+          write(*,*)                                                    &
+     &     'Set minimum radius to be zero for whole sphere'
+          ierr = ierr_mesh
+          return
+        end if
       end if
 !
       end subroutine set_ctl_radius_4_shell
