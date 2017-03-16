@@ -49,6 +49,7 @@
 !
 !>      Structure for time data
       type(time_data), save :: time_d1
+!time_d1%dt
 !
 !>      Structure for initial time data
       type(time_data), save :: init_d1

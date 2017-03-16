@@ -6,11 +6,11 @@
 !!      subroutine set_data_4_const_matrices(mesh, MHD_mesh, rhs_tbl,   &
 !!     &          MHD_mat_tbls, MHD_matrices, s_package)
 !!        type(MHD_matrices_pack), intent(inout) :: s_package
-!!      subroutine update_matrices(FEM_prm, SGS_par,                    &
+!!      subroutine update_matrices(i_step, dt, FEM_prm, SGS_par,        &
 !!     &         (mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,   &
 !!     &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,  &
 !!     &          ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,         &
-!!     &          surf_wk, mhd_fem_wk, fem_wk, MHD_matrices)
+!!     &          surf_wk, flex_p, mhd_fem_wk, fem_wk, MHD_matrices)
 !!      subroutine set_aiccg_matrices                                   &
 !!     &         (dt, FEM_prm, SGS_param, cmt_param, mesh, group,       &
 !!     &          ele_mesh, MHD_mesh, nod_bcs, surf_bcs,                &
@@ -113,16 +113,17 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine update_matrices(FEM_prm, SGS_par,                      &
+      subroutine update_matrices(i_step, dt, FEM_prm, SGS_par,          &
      &          mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,     &
      &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,    &
      &          ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,           &
-     &          surf_wk, mhd_fem_wk, fem_wk, MHD_matrices)
+     &          surf_wk, flex_p, mhd_fem_wk, fem_wk, MHD_matrices)
 !
       use t_SGS_control_parameter
-      use m_t_step_parameter
-      use m_flexible_time_step
+      use t_flex_delta_t_data
 !
+      integer(kind=kint), intent(in) :: i_step
+      real(kind = kreal), intent(in) :: dt
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
@@ -141,17 +142,21 @@
       type(tables_MHD_mat_const), intent(in) :: MHD_mat_tbls
       type(work_surface_element_mat), intent(in) :: surf_wk
 !
+      type(flexible_stepping_parameter), intent(inout) :: flex_p
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(MHD_MG_matrices), intent(inout) :: MHD_matrices
 !
       integer (kind = kint) :: iflag
 !
-      iflag = 0
       if (   SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF      &
      & .and. SGS_par%commute_p%iflag_c_linear .gt. id_SGS_commute_OFF   &
-     & .and. mod(i_step_MHD,SGS_par%i_step_sgs_coefs) .eq. 0) iflag = 1
-      iflag = iflag + iflag_flex_step_changed
+     & .and. mod(i_step,SGS_par%i_step_sgs_coefs) .eq. 0) then
+        iflag = id_turn_ON
+      else
+        iflag = id_turn_OFF
+      end if
+      iflag = iflag + flex_p%iflag_flex_step_changed
 !
       if (iflag .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'matrix assemble again'
@@ -161,7 +166,7 @@
      &      ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,        &
      &      ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,               &
      &      surf_wk, mhd_fem_wk, fem_wk, MHD_matrices)
-        iflag_flex_step_changed = 0
+        flex_p%iflag_flex_step_changed = 0
       end if
 !
       end subroutine update_matrices

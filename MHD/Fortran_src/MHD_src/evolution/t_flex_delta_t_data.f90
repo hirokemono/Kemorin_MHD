@@ -34,6 +34,8 @@
       type flexible_stepping_parameter
 !>        flag for time stepping
         integer(kind=kint) :: iflag_flexible_step = iflag_fixed_step
+!>        Integer flag if time stepping is changed
+        integer(kind= kint) :: iflag_flex_step_changed = id_turn_OFF
 !
 !>        End time
         real(kind=kreal) :: time_to_finish

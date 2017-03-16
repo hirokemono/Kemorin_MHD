@@ -5,7 +5,7 @@
 !
 !!      subroutine cal_fluxes_4_monitor                                 &
 !!     &         (node, fl_prop, cd_prop, iphys, nod_fld)
-!!      subroutine cal_forces_4_monitor(FEM_prm, SGS_par,               &
+!!      subroutine cal_forces_4_monitor(dt, FEM_prm, SGS_par,           &
 !!     &          nod_comm, node, ele, surf, fluid, conduct,            &
 !!     &          sf_grp, fl_prop, cd_prop, ht_prop, cp_prop,           &
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele,                  &
@@ -49,7 +49,6 @@
       use m_constants
       use m_machine_parameter
       use m_phys_labels
-      use m_t_step_parameter
 !
       use t_FEM_control_parameter
       use t_SGS_control_parameter
@@ -145,7 +144,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_forces_4_monitor(FEM_prm, SGS_par,                 &
+      subroutine cal_forces_4_monitor(dt, FEM_prm, SGS_par,             &
      &          nod_comm, node, ele, surf, fluid, conduct,              &
      &          sf_grp, fl_prop, cd_prop, ht_prop, cp_prop,             &
      &          nod_bcs, surf_bcs, iphys, iphys_ele,                    &
@@ -159,6 +158,7 @@
       use cal_induction_terms
       use cal_gradient
 !
+      real(kind = kreal), intent(in) :: dt
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(communication_table), intent(in) :: nod_comm

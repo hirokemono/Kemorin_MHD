@@ -152,15 +152,13 @@
       type(phys_data), intent(inout) :: ele_fld
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
-      integer (kind =kint) :: iflag
-!
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_potential_on_edge'
       call cal_potential_on_edge                                        &
      &   (mesh%node, mesh%ele, ele_mesh%edge, iphys, nod_fld)
 !
       if (iflag_debug.gt.0) write(*,*) 'update_fields'
-      call update_fields(FEM_prm, SGS_par, mesh, group,                 &
+      call update_fields(i_step_MHD, dt, FEM_prm, SGS_par, mesh, group, &
      &    ele_mesh, MHD_mesh, nod_bcs, surf_bcs, iphys, iphys_ele,      &
      &    jac_3d_q, jac_3d_l, jac_sf_grp, rhs_tbl, FEM_elens,           &
      &    ifld_diff, icomp_diff, iphys_elediff,                         &
@@ -181,7 +179,7 @@
       call cal_helicity(iphys, nod_fld)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_energy_fluxes'
-      call cal_energy_fluxes(FEM_prm, SGS_par,                          &
+      call cal_energy_fluxes(dt, FEM_prm, SGS_par,                      &
      &    mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs, iphys,    &
      &    iphys_ele, ak_MHD, jac_3d_q, jac_sf_grp, rhs_tbl,             &
      &    FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,               &
@@ -194,7 +192,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_energy_fluxes                                      &
-     &         (FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh,      &
+     &         (dt, FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh,  &
      &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,            &
      &          jac_3d_q, jac_sf_grp, rhs_tbl, FEM_elens,               &
      &          icomp_sgs, ifld_diff, iphys_elediff,                    &
@@ -209,6 +207,7 @@
       use cal_sgs_4_monitor
       use cal_true_sgs_terms
 !
+      real(kind = kreal), intent(in) :: dt
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
@@ -261,7 +260,7 @@
       call cal_fluxes_4_monitor                                         &
      &   (mesh%node, fl_prop1, cd_prop1, iphys, nod_fld)
 !
-      call cal_forces_4_monitor(FEM_prm, SGS_par,                       &
+      call cal_forces_4_monitor(dt, FEM_prm, SGS_par,                   &
      &    mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,            &
      &    MHD_mesh%fluid, MHD_mesh%conduct, group%surf_grp,             &
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1, nod_bcs, surf_bcs,    &

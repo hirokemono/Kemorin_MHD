@@ -4,8 +4,8 @@
 !        Written by H. Matsui on Aug., 2007
 !
 !!      subroutine s_chenge_step_4_dynamic                              &
-!!     &         (my_rank, SGS_param, cmt_param, i_step_sgs_coefs,      &
-!!     &          wk_sgs, wk_diff)
+!!     &         (my_rank, i_step_MHD, SGS_param, cmt_param,            &
+!!     &          i_step_sgs_coefs, wk_sgs, wk_diff)
 !!      subroutine copy_model_coef_2_previous(cmt_param,                &
 !!     &          nlayer_SGS, num_sgs_kind,  sgs_f_coef,                &
 !!     &          nlayer_diff, num_diff_kind, diff_f_coef, diff_f_whole,&
@@ -19,7 +19,6 @@
 !
       use m_precision
 !
-      use m_t_step_parameter
       use t_SGS_control_parameter
 !
       implicit none
@@ -58,14 +57,16 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_chenge_step_4_dynamic                                &
-     &         (my_rank, SGS_param, cmt_param, i_step_sgs_coefs,        &
-     &          wk_sgs, wk_diff)
+     &         (my_rank, i_step_MHD, SGS_param, cmt_param,              &
+     &          i_step_sgs_coefs, wk_sgs, wk_diff)
 !
       use t_ele_info_4_dynamic
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       integer(kind = kint), intent(in) :: my_rank
+      integer(kind=kint), intent(in) :: i_step_MHD
+!
       integer(kind = kint), intent(inout) :: i_step_sgs_coefs
       type(dynamic_model_data), intent(inout) :: wk_sgs, wk_diff
 !

@@ -7,8 +7,8 @@
 !> @brief Evaluate field data for time integration for FEM dynamo model
 !!
 !!@verbatim
-!!      subroutine fields_evolution                                     &
-!!     &         (FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh,    &
+!!      subroutine fields_evolution(i_step, time, dt,                   &
+!!     &          FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh,    &
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,          &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
 !!     &          rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs, ifld_diff,   &
@@ -17,8 +17,8 @@
 !!     &          s_package, wk_cor, wk_lsq, wk_sgs, wk_diff, wk_filter,&
 !!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,               &
 !!     &          nod_fld, ele_fld, sgs_coefs, diff_coefs)
-!!      subroutine update_fields                                        &
-!!     &       (FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh,      &
+!!      subroutine update_fields(i_step, dt,                            &
+!!     &        FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh,      &
 !!     &        nod_bcs, surf_bcs, iphys, iphys_ele,                    &
 !!     &        jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,   &
 !!     &        ifld_diff, icomp_diff, iphys_elediff,                   &
@@ -27,8 +27,8 @@
 !!     &        surf_wk, f_l, f_nl, nod_fld, ele_fld, diff_coefs)
 !!      subroutine reset_update_flag(nod_fld, sgs_coefs, diff_coefs)
 !!
-!!      subroutine fields_evolution_4_FEM_SPH                           &
-!!     &         (FEM_prm, SGS_par, mesh, group, ele_mesh, fluid,       &
+!!      subroutine fields_evolution_4_FEM_SPH(i_step, time, dt,         &
+!!     &          FEM_prm, SGS_par, mesh, group, ele_mesh, fluid,       &
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,          &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
 !!     &          rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs, ifld_diff,   &
@@ -81,9 +81,7 @@
       module update_after_evolution
 !
       use m_precision
-!
       use m_machine_parameter
-      use m_t_step_parameter
 !
       use t_FEM_control_parameter
       use t_SGS_control_parameter
@@ -121,8 +119,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fields_evolution                                       &
-     &         (FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh,      &
+      subroutine fields_evolution(i_step, time, dt,                     &
+     &          FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh,      &
      &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,            &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
      &          rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs, ifld_diff,     &
@@ -145,6 +143,9 @@
       use update_with_magne
 !
 !      use check_surface_groups
+!
+      integer(kind=kint), intent(in) :: i_step
+      real(kind = kreal), intent(in) :: time, dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -208,7 +209,7 @@
         call update_with_vector_potential                               &
      &    (ifld_diff%i_magne, icomp_diff%i_magne,                       &
      &     iphys_elediff%i_magne, iphys_elediff%i_filter_magne,         &
-     &     i_step_MHD, dt, FEM_prm, SGS_par,                            &
+     &     i_step, dt, FEM_prm, SGS_par,                                &
      &     mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,           &
      &     MHD_mesh%fluid, MHD_mesh%conduct, layer_tbl,                 &
      &     group%surf_grp, nod_bcs%Bnod_bcs,                            &
@@ -236,7 +237,7 @@
         call update_with_magnetic_field                                 &
      &    (ifld_diff%i_magne, icomp_diff%i_magne,                       &
      &     iphys_elediff%i_magne, iphys_elediff%i_filter_magne,         &
-     &     i_step_MHD, dt, FEM_prm, SGS_par,                            &
+     &     i_step, dt, FEM_prm, SGS_par,                                &
      &     mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,           &
      &     MHD_mesh%fluid, MHD_mesh%conduct, layer_tbl,                 &
      &     group%surf_grp, surf_bcs%Bsf_bcs, surf_bcs%Fsf_bcs, iphys,   &
@@ -286,7 +287,7 @@
       end if
 !
         call update_with_temperature                                    &
-     &     (ifld_diff%i_temp, icomp_diff%i_temp, i_step_MHD, dt,        &
+     &     (ifld_diff%i_temp, icomp_diff%i_temp, i_step, dt,            &
      &      FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,       &
      &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
      &      surf_bcs%Tsf_bcs, iphys, iphys_ele, ele_fld,                &
@@ -334,7 +335,7 @@
         end if
 !
         call update_with_dummy_scalar                                   &
-     &     (ifld_diff%i_light, icomp_diff%i_light, i_step_MHD, dt,      &
+     &     (ifld_diff%i_light, icomp_diff%i_light, i_step, dt,          &
      &      FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,       &
      &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
      &      surf_bcs%Csf_bcs, iphys, iphys_ele, ele_fld,                &
@@ -363,7 +364,7 @@
         call update_with_velocity                                       &
      &     (ifld_diff%i_velo, icomp_diff%i_velo,                        &
      &      iphys_elediff%i_velo, iphys_elediff%i_filter_velo,          &
-     &      i_step_MHD, dt, FEM_prm, SGS_par,                           &
+     &      i_step, dt, FEM_prm, SGS_par,                               &
      &      mesh%nod_comm, mesh%node, mesh%ele,                         &
      &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
      &      surf_bcs%Vsf_bcs, surf_bcs%Psf_bcs, iphys,                  &
@@ -377,8 +378,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine update_fields                                          &
-     &         (FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh,      &
+      subroutine update_fields(i_step, dt,                              &
+     &          FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh,      &
      &          nod_bcs, surf_bcs, iphys, iphys_ele,                    &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,   &
      &          ifld_diff, icomp_diff, iphys_elediff,                   &
@@ -391,6 +392,9 @@
       use update_with_velo
       use update_with_vector_p
       use update_with_magne
+!
+      integer(kind=kint), intent(in) :: i_step
+      real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -431,7 +435,7 @@
         call update_with_velocity                                       &
      &     (ifld_diff%i_velo, icomp_diff%i_velo,                        &
      &      iphys_elediff%i_velo, iphys_elediff%i_filter_velo,          &
-     &      i_step_MHD, dt, FEM_prm, SGS_par,                           &
+     &      i_step, dt, FEM_prm, SGS_par,                               &
      &      mesh%nod_comm, mesh%node, mesh%ele,                         &
      &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
      &      surf_bcs%Vsf_bcs, surf_bcs%Psf_bcs, iphys,                  &
@@ -443,7 +447,7 @@
 !
       if (iphys%i_temp .ne. 0) then
         call update_with_temperature                                    &
-     &     (ifld_diff%i_temp, icomp_diff%i_temp, i_step_MHD, dt,        &
+     &     (ifld_diff%i_temp, icomp_diff%i_temp, i_step, dt,            &
      &      FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,       &
      &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
      &      surf_bcs%Tsf_bcs, iphys, iphys_ele, ele_fld,                &
@@ -455,7 +459,7 @@
 !
       if (iphys%i_light .ne. 0) then
         call update_with_dummy_scalar                                   &
-     &     (ifld_diff%i_light, icomp_diff%i_light, i_step_MHD, dt,      &
+     &     (ifld_diff%i_light, icomp_diff%i_light, i_step, dt,          &
      &      FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,       &
      &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
      &      surf_bcs%Csf_bcs, iphys, iphys_ele, ele_fld,                &
@@ -469,7 +473,7 @@
         call update_with_vector_potential                               &
      &    (ifld_diff%i_magne, icomp_diff%i_magne,                       &
      &     iphys_elediff%i_magne, iphys_elediff%i_filter_magne,         &
-     &     i_step_MHD, dt, FEM_prm, SGS_par,                            &
+     &     i_step, dt, FEM_prm, SGS_par,                                &
      &     mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,           &
      &     MHD_mesh%fluid, MHD_mesh%conduct, layer_tbl,                 &
      &     group%surf_grp, nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs,          &
@@ -482,7 +486,7 @@
         call update_with_magnetic_field                                 &
      &    (ifld_diff%i_magne, icomp_diff%i_magne,                       &
      &     iphys_elediff%i_magne, iphys_elediff%i_filter_magne,         &
-     &     i_step_MHD, dt, FEM_prm, SGS_par,                            &
+     &     i_step, dt, FEM_prm, SGS_par,                                &
      &     mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,           &
      &     MHD_mesh%fluid, MHD_mesh%conduct, layer_tbl,                 &
      &     group%surf_grp, surf_bcs%Bsf_bcs, surf_bcs%Fsf_bcs, iphys,   &
@@ -513,8 +517,8 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine fields_evolution_4_FEM_SPH                             &
-     &         (FEM_prm, SGS_par, mesh, group, ele_mesh, fluid,         &
+      subroutine fields_evolution_4_FEM_SPH(i_step, time, dt,           &
+     &          FEM_prm, SGS_par, mesh, group, ele_mesh, fluid,         &
      &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,            &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
      &          rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs, ifld_diff,     &
@@ -532,6 +536,9 @@
 !
       use update_with_scalars
       use update_with_velo
+!
+      integer(kind=kint), intent(in) :: i_step
+      real(kind = kreal), intent(in) :: time, dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -615,7 +622,7 @@
         end if
 !
         call update_with_temperature                                    &
-     &    (ifld_diff%i_temp, icomp_diff%i_temp, i_step_MHD, dt,         &
+     &    (ifld_diff%i_temp, icomp_diff%i_temp, i_step, dt,             &
      &     FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,        &
      &     ele_mesh%surf, fluid, group%surf_grp, surf_bcs%Tsf_bcs,      &
      &     iphys, iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q, &
@@ -662,7 +669,7 @@
         end if
 !
         call update_with_dummy_scalar                                   &
-     &    (ifld_diff%i_light, icomp_diff%i_light, i_step_MHD, dt,       &
+     &    (ifld_diff%i_light, icomp_diff%i_light, i_step, dt,           &
      &     FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,        &
      &     ele_mesh%surf, fluid, group%surf_grp, surf_bcs%Csf_bcs,      &
      &     iphys, iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q, &
@@ -690,7 +697,7 @@
         call update_with_velocity                                       &
      &     (ifld_diff%i_velo, icomp_diff%i_velo,                        &
      &      iphys_elediff%i_velo, iphys_elediff%i_filter_velo,          &
-     &      i_step_MHD, dt, FEM_prm, SGS_par,                           &
+     &      i_step, dt, FEM_prm, SGS_par,                               &
      &      mesh%nod_comm, mesh%node, mesh%ele,                         &
      &      ele_mesh%surf, fluid, group%surf_grp,                       &
      &      surf_bcs%Vsf_bcs, surf_bcs%Psf_bcs,                         &
