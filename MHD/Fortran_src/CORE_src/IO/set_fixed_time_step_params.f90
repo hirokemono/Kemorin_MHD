@@ -36,7 +36,7 @@
      &         (tctl, rst_step, ucd_step, viz_step, ierr, errmsg)
 !
       use m_error_IDs
-      use m_t_step_parameter
+!      use m_t_step_parameter
 !
       type(time_data_control), intent(in) :: tctl
 !

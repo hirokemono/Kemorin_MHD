@@ -106,7 +106,7 @@
         end if
       end do
 !
-      call output_monitor_file(my_rank, nod_fld)
+      call output_monitor_file(my_rank, i_step_MHD, time, nod_fld)
 !
       end subroutine output_time_step_control
 !

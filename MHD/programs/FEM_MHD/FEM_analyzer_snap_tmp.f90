@@ -174,8 +174,8 @@
       iflag = lead_field_data_flag(flex_p1%istep_max_dt,                &
      &                             MHD_step, SGS_par1%sgs_step)
       if(iflag .eq. 0) then
-        call lead_fields_by_FEM                                         &
-     &    (FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1,                &
+        call lead_fields_by_FEM(i_step_MHD, dt,                         &
+     &     FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1,                &
      &     MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,      &
      &     jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,            &
      &     FEM1_elen, icomp_sgs, icomp_diff, ifld_diff, iphys_elediff,  &

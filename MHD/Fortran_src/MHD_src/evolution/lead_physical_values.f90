@@ -7,8 +7,8 @@
 !> @brief Evaluate many kind of field data
 !!
 !!@verbatim
-!!      subroutine lead_fields_by_FEM                                   &
-!!     &         (FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh,    &
+!!      subroutine lead_fields_by_FEM(i_step, dt,                       &
+!!     &          FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh,    &
 !!     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,          &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp, rhs_tbl, FEM_elens,   &
 !!     &          icomp_sgs, icomp_diff, ifld_diff, iphys_elediff,      &
@@ -95,8 +95,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine lead_fields_by_FEM                                     &
-     &         (FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh,      &
+      subroutine lead_fields_by_FEM(i_step, dt,                         &
+     &          FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh,      &
      &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,            &
      &          jac_3d_q, jac_3d_l, jac_sf_grp, rhs_tbl, FEM_elens,     &
      &          icomp_sgs, icomp_diff, ifld_diff, iphys_elediff,        &
@@ -107,12 +107,14 @@
 !
       use m_physical_property
       use m_machine_parameter
-      use m_t_step_parameter
 !
       use update_after_evolution
       use itp_potential_on_edge
       use MHD_field_by_rotation
       use cal_helicities
+!
+      integer(kind=kint), intent(in) :: i_step
+      real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
@@ -158,7 +160,7 @@
      &   (mesh%node, mesh%ele, ele_mesh%edge, iphys, nod_fld)
 !
       if (iflag_debug.gt.0) write(*,*) 'update_fields'
-      call update_fields(i_step_MHD, dt, FEM_prm, SGS_par, mesh, group, &
+      call update_fields(i_step, dt, FEM_prm, SGS_par, mesh, group,     &
      &    ele_mesh, MHD_mesh, nod_bcs, surf_bcs, iphys, iphys_ele,      &
      &    jac_3d_q, jac_3d_l, jac_sf_grp, rhs_tbl, FEM_elens,           &
      &    ifld_diff, icomp_diff, iphys_elediff,                         &

@@ -8,9 +8,11 @@
 !> @brief Labels of fields
 !!
 !!@verbatim
-!!      subroutine output_monitor_file(my_rank, nod_fld)
+!!      subroutine output_monitor_file                                  &
+!!     &         (my_rank, i_step_MHD, time, nod_fld)
 !!        type(phys_data), intent(in) :: nod_fld
-!!      subroutine skip_time_step_data(my_rank, i_step, rms_step)
+!!      subroutine skip_time_step_data                                  &
+!!     &         (my_rank, i_step_MHD, i_step_init, rms_step)
 !!        type(IO_step_param), save :: rms_step
 !!@endverbatim
 !
@@ -45,14 +47,17 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine output_monitor_file(my_rank, nod_fld)
+      subroutine output_monitor_file                                    &
+     &         (my_rank, i_step_MHD, time, nod_fld)
 !
       use t_phys_data
-      use m_t_step_parameter
       use m_mean_square_values
 !
-      type(phys_data), intent(in) :: nod_fld
       integer (kind=kint), intent(in) :: my_rank
+      integer(kind=kint), intent(in) :: i_step_MHD
+      real(kind = kreal), intent(in) :: time
+!
+      type(phys_data), intent(in) :: nod_fld
 !
 !
       if ( my_rank .gt. 0 ) return
@@ -71,12 +76,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine skip_time_step_data(my_rank, i_step, rms_step)
+      subroutine skip_time_step_data                                    &
+     &         (my_rank, i_step_MHD, i_step_init, rms_step)
 !
-      use m_t_step_parameter
       use m_mean_square_values
 !
-      integer (kind=kint), intent(in) :: my_rank, i_step
+      integer (kind=kint), intent(in) :: my_rank
+      integer(kind=kint), intent(in) :: i_step_MHD, i_step_init
       type(IO_step_param), intent(in) :: rms_step
 !
       integer (kind = kint) :: i, iflag, i_read_step
@@ -84,7 +90,7 @@
 !
 !
       if(my_rank .gt. 0) return
-      iflag = i_step_init - mod(i_step, rms_step%increment)
+      iflag = i_step_init - mod(i_step_MHD, rms_step%increment)
 !
       do
         read(time_step_data_code,*,err=99,end=99)                       &
