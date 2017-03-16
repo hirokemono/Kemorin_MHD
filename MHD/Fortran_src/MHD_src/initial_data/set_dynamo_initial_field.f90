@@ -59,7 +59,6 @@
      &          sgs_coefs, diff_coefs, nod_fld, flex_p)
 !
       use m_initial_field_control
-      use m_t_step_parameter
 !
       use t_SGS_control_parameter
       use t_layering_ele_list
@@ -122,7 +121,6 @@
       use calypso_mpi
       use m_error_IDs
       use m_initial_field_control
-      use m_t_step_parameter
 !
       use set_initial_rotation
       use dynamobench_initial_temp

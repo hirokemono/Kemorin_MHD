@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!       subroutine update_with_magnetic_field                          &
-!!     &        (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx,             &
+!!     &        (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx, i_step, dt, &
 !!     &         FEM_prm, SGS_par, nod_comm, node, ele, surf,           &
 !!     &         fluid, conduct, layer_tbl, sf_grp, Bsf_bcs, Fsf_bcs,   &
 !!     &         iphys, iphys_ele, jac_3d_q, jac_3d_l, jac_sf_grp_q,    &
@@ -86,7 +86,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine update_with_magnetic_field                             &
-     &        (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx,               &
+     &        (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx, i_step, dt,   &
      &         FEM_prm, SGS_par, nod_comm, node, ele, surf,             &
      &         fluid, conduct, layer_tbl, sf_grp, Bsf_bcs, Fsf_bcs,     &
      &         iphys, iphys_ele, jac_3d_q, jac_3d_l, jac_sf_grp_q,      &
@@ -94,13 +94,14 @@
      &         wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,  &
      &         surf_wk, f_l, f_nl, nod_fld, ele_fld, diff_coefs)
 !
-      use m_t_step_parameter
-!
       use average_on_elements
       use cal_filtering_scalars
       use cal_diff_vector_on_ele
       use cal_diff_coef_magne
       use cal_filtering_scalars
+!
+      integer(kind=kint), intent(in) :: i_step
+      real(kind=kreal), intent(in) :: dt
 !
       integer(kind = kint), intent(in) :: iak_diff_b, icomp_diff_b
       integer(kind = kint), intent(in) :: ie_dbx, ie_dfbx
@@ -150,7 +151,7 @@
       end if
 !
 !
-      iflag_dmc = dynamic_SGS_flag(i_step_MHD, SGS_par)
+      iflag_dmc = dynamic_SGS_flag(i_step, SGS_par)
       if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF          &
      &     .and.  iflag_dmc .eq. 0) then
         if(SGS_par%model_p%iflag_SGS_lorentz .eq. id_SGS_similarity     &

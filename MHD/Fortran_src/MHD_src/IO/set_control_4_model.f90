@@ -32,7 +32,6 @@
 !
       use m_machine_parameter
       use m_physical_property
-      use m_t_step_parameter
       use t_ctl_data_mhd_evo_scheme
       use t_physical_property
 !
@@ -51,7 +50,6 @@
      &          fl_prop, cd_prop, ht_prop, cp_prop)
 !
       use calypso_mpi
-      use m_t_step_parameter
       use m_phys_labels
       use t_ctl_data_mhd_evolution
       use t_ctl_data_temp_model

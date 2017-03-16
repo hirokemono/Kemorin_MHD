@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine update_with_velocity                                 &
-!!     &         (iak_diff_v, icomp_diff_v, ie_dvx, ie_dfvx,            &
+!!     &         (iak_diff_v, icomp_diff_v, ie_dvx, ie_dfvx, i_step, dt,&
 !!     &          FEM_prm, SGS_par, nod_comm, node, ele, surf, fluid,   &
 !!     &          sf_grp, Vsf_bcs, Psf_bcs, iphys, iphys_ele,           &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
@@ -86,7 +86,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine update_with_velocity                                   &
-     &         (iak_diff_v, icomp_diff_v, ie_dvx, ie_dfvx,              &
+     &         (iak_diff_v, icomp_diff_v, ie_dvx, ie_dfvx, i_step, dt,  &
      &          FEM_prm, SGS_par, nod_comm, node, ele, surf, fluid,     &
      &          sf_grp, Vsf_bcs, Psf_bcs, iphys, iphys_ele,             &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
@@ -95,12 +95,13 @@
      &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                 &
      &          nod_fld, ele_fld, diff_coefs)
 !
-      use m_t_step_parameter
-!
       use average_on_elements
       use cal_filtering_scalars
       use cal_diff_vector_on_ele
       use cal_diff_coef_velo
+!
+      integer(kind=kint), intent(in) :: i_step
+      real(kind=kreal), intent(in) :: dt
 !
       integer(kind = kint), intent(in) :: iak_diff_v, icomp_diff_v
       integer(kind = kint), intent(in) :: ie_dvx, ie_dfvx
@@ -140,7 +141,7 @@
       integer (kind = kint) :: iflag_dmc, iflag2
 !
 !
-      iflag_dmc = dynamic_SGS_flag(i_step_MHD, SGS_par)
+      iflag_dmc = dynamic_SGS_flag(i_step, SGS_par)
 !
       if (iphys_ele%i_velo .ne. 0) then
         if(iflag_debug .ge. iflag_routine_msg)                          &

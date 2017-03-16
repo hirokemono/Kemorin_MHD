@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine update_with_vector_potential                         &
-!!     &         (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx,            &
+!!     &         (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx, i_step, dt,&
 !!     &          FEM_prm, SGS_par, nod_comm, node, ele, surf,          &
 !!     &          fluid, conduct, layer_tbl, sf_grp,                    &
 !!     &          Bnod_bcs, Asf_bcs, Fsf_bcs, iphys, iphys_ele,         &
@@ -90,7 +90,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine update_with_vector_potential                           &
-     &         (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx,              &
+     &         (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx, i_step, dt,  &
      &          FEM_prm, SGS_par, nod_comm, node, ele, surf,            &
      &          fluid, conduct, layer_tbl, sf_grp,                      &
      &          Bnod_bcs, Asf_bcs, Fsf_bcs, iphys, iphys_ele,           &
@@ -100,14 +100,15 @@
      &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                 &
      &          nod_fld, ele_fld, diff_coefs)
 !
-      use m_t_step_parameter
-!
       use average_on_elements
       use cal_rotation_sgs
       use cal_filtering_scalars
       use cal_diff_vector_on_ele
       use cal_diff_coef_vector_p
       use cal_filtering_scalars
+!
+      integer(kind=kint), intent(in) :: i_step
+      real(kind=kreal), intent(in) :: dt
 !
       integer(kind = kint), intent(in) :: iak_diff_b, icomp_diff_b
       integer(kind = kint), intent(in) :: ie_dbx, ie_dfbx
@@ -150,7 +151,7 @@
 !
 !   set model coefficients for vector potential
 !
-      iflag_dmc = dynamic_SGS_flag(i_step_MHD, SGS_par)
+      iflag_dmc = dynamic_SGS_flag(i_step, SGS_par)
 !
 !
       if (SGS_par%commute_p%iflag_c_magne .eq. id_SGS_commute_ON        &

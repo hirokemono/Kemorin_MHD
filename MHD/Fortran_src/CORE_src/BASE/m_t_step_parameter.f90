@@ -11,7 +11,7 @@
 !
 !
       use m_precision
-      use t_IO_step_parameter
+      use t_time_data
 !
       implicit  none
 !
@@ -46,6 +46,13 @@
 !>      End time steo
       integer(kind=kint) :: i_step_number
 !!
+!
+!>      Structure for time data
+      type(time_data), save :: time_d1
+!
+!>      Structure for initial time data
+      type(time_data), save :: init_d1
+!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -53,6 +60,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_step_4_restart(rst_step, i_step, istep_rst)
+!
+      use t_IO_step_parameter
 !
       type(IO_step_param), intent(in) :: rst_step
       integer(kind = kint), intent(in) :: i_step

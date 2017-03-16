@@ -8,8 +8,8 @@
 !!      subroutine s_int_mean_squares                                   &
 !!     &         (npoint_integrate, node, ele, fluid, conduct,          &
 !!     &          iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk, mhd_fem_wk)
-!!      subroutine int_no_evo_mean_squares                              &
-!!     &         (node, ele, fl_prop, cd_prop, iphys, nod_fld,          &
+!!      subroutine int_no_evo_mean_squares(i_step, dt,                  &
+!!     &          node, ele, fl_prop, cd_prop, iphys, nod_fld,          &
 !!     &          iphys_ele, ele_fld, fluid, jac_3d_q, fem_wk)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -583,13 +583,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_no_evo_mean_squares                                &
-     &         (node, ele, fl_prop, cd_prop, iphys, nod_fld,            &
+      subroutine int_no_evo_mean_squares(i_step, dt,                    &
+     &          node, ele, fl_prop, cd_prop, iphys, nod_fld,            &
      &          iphys_ele, ele_fld, fluid, jac_3d_q, fem_wk)
 !
       use int_norm_div_MHD
       use int_rms_div_MHD
       use estimate_stabilities
+!
+      integer(kind = kint), intent(in) :: i_step
+      real(kind = kreal), intent(in) :: dt
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -612,7 +615,7 @@
         call int_rms_divergence                                         &
      &     (fluid%istack_ele_fld_smp, iphys%i_velo,                     &
      &      node, ele, nod_fld, jac_3d_q, fem_wk, rms_local(ir_divv))
-        call cal_stability_4_advect(ele, fluid,                         &
+        call cal_stability_4_advect(i_step, dt, ele, fluid,             &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld)
       end if
 !

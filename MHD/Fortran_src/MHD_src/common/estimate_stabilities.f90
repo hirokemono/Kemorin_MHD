@@ -5,20 +5,19 @@
 !      Modified by H. Matsui on july, 2006
 !
 !!      subroutine cal_stability_4_diffuse                              &
-!!     &         (ele, fl_prop, cd_prop, ht_prop, cp_prop)
+!!     &         (dt, ele, fl_prop, cd_prop, ht_prop, cp_prop)
 !!        type(element_data), intent(in) :: ele
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in)  :: cd_prop
 !!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!      subroutine cal_stability_4_advect                               &
-!!     &         (ele, fluid, ncomp_ele, ivelo_ele, d_ele)
+!!     &         (i_step, dt, ele, fluid, ncomp_ele, ivelo_ele, d_ele)
 !
       module estimate_stabilities
 !
       use m_precision
 !
       use calypso_mpi
-      use m_t_step_parameter
 !
       use t_physical_property
       use t_geometry_data
@@ -41,8 +40,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_stability_4_diffuse                                &
-     &         (ele, fl_prop, cd_prop, ht_prop, cp_prop)
+     &         (dt, ele, fl_prop, cd_prop, ht_prop, cp_prop)
 !
+      real(kind = kreal), intent(in) :: dt
       type(element_data), intent(in) :: ele
 !
       type(fluid_property), intent(in) :: fl_prop
@@ -100,10 +100,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_stability_4_advect                                 &
-     &         (ele, fluid, ncomp_ele, ivelo_ele, d_ele)
+     &         (i_step, dt, ele, fluid, ncomp_ele, ivelo_ele, d_ele)
 !
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
+!
+      integer(kind = kint), intent(in) :: i_step
+      real(kind = kreal), intent(in) :: dt
 !
       integer(kind = kint), intent(in) :: ncomp_ele, ivelo_ele
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
@@ -128,7 +131,7 @@
      &  CALYPSO_REAL, MPI_MIN, CALYPSO_COMM, ierr_MPI)
 !
       if ( my_rank .eq. 0 ) then
-         write(12,*) 'time_step:', i_step_MHD, ' Delta t:', dt,         &
+         write(12,*) 'time_step:', i_step, ' Delta t:', dt,             &
      &     'estimated CFL:', cfl_advect
       end if
 !

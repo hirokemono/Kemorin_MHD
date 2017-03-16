@@ -334,7 +334,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_stability_4_diffuse'
       call cal_stability_4_diffuse                                      &
-     &   (mesh%ele, fl_prop1, cd_prop1, ht_prop1, cp_prop1)
+     &   (dt, mesh%ele, fl_prop1, cd_prop1, ht_prop1, cp_prop1)
 ! 
       call deallocate_surf_bc_lists                                     &
      &   (fl_prop1, cd_prop1, ht_prop1, cp_prop1)

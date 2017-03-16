@@ -15,7 +15,6 @@
       use m_precision
 !
       use m_constants
-!      use m_t_step_parameter
       use t_IO_step_parameter
       use t_MHD_step_parameter
 !
