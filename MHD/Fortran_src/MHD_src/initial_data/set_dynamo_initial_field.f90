@@ -99,7 +99,7 @@
       if (iflag_debug .gt. 1)  write(*,*) 'init_MHD_restart_output'
       call init_MHD_restart_output(node, nod_fld)
 !
-      time   =       time_init
+      time_d1%time   =       time_init
       i_step_MHD =   i_step_init
 !
       if(flex_p%iflag_flexible_step .eq. iflag_flex_step) then

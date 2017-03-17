@@ -122,8 +122,8 @@
      &      leg_s, ipol_spec, rj_fld_spec, pwr_spec, pick_rms1)
 !
         if (iflag_debug.gt.0) write(*,*) 'write_sph_spec_monitor'
-        call write_sph_spec_monitor                                     &
-     &     (pickup_sph_rms_head, my_rank, i_step, time, pick_rms1)
+        call write_sph_spec_monitor(pickup_sph_rms_head, my_rank,       &
+     &      i_step, time_d1%time, pick_rms1)
       end do
 !
       end subroutine analyze_pick_rms_sph

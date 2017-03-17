@@ -208,10 +208,10 @@
         deallocate(msq_v1, msq_v2, cor_v)
       end if
 !
-      call write_sph_vol_ms_file                                        &
-     &   (my_rank, i_step, time, sph1%sph_params, sph1%sph_rj, pwr1)
-      call write_sph_layer_ms_file                                      &
-     &   (my_rank, i_step, time, sph1%sph_params, pwr1)
+      call write_sph_vol_ms_file(my_rank, i_step, time_d1%time,         &
+     &   sph1%sph_params, sph1%sph_rj, pwr1)
+      call write_sph_layer_ms_file(my_rank, i_step, time_d1%time,       &
+     &   sph1%sph_params, pwr1)
 !
       end subroutine SPH_analyze_correlate_all
 !

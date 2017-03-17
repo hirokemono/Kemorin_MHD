@@ -310,15 +310,15 @@
      &    pwr, WK_pwr)
 !
       call write_sph_vol_ave_file                                       &
-     &   (i_step_MHD, time, sph_params, sph_rj, pwr)
+     &   (i_step_MHD, time_d1%time, sph_params, sph_rj, pwr)
       call write_sph_vol_ms_file                                        &
-     &   (my_rank, i_step_MHD, time, sph_params, sph_rj, pwr)
+     &   (my_rank, i_step_MHD, time_d1%time, sph_params, sph_rj, pwr)
       call write_sph_vol_ms_spectr_file                                 &
-     &   (my_rank, i_step_MHD, time, sph_params, sph_rj, pwr)
+     &   (my_rank, i_step_MHD, time_d1%time, sph_params, sph_rj, pwr)
       call write_sph_layer_ms_file                                      &
-     &   (my_rank, i_step_MHD, time, sph_params, pwr)
+     &   (my_rank, i_step_MHD, time_d1%time, sph_params, pwr)
       call write_sph_layer_spectr_file                                  &
-     &   (my_rank, i_step_MHD, time, sph_params, pwr)
+     &   (my_rank, i_step_MHD, time_d1%time, sph_params, pwr)
 !
       end subroutine output_rms_sph_back_trans
 !

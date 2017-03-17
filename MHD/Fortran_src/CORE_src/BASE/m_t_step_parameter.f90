@@ -24,7 +24,7 @@
       real(kind=kreal), parameter :: adam_r =  two / three
 !
 !>      Time
-      real(kind=kreal) :: time
+!      real(kind=kreal) :: time
 !>      Time for the initail step
       real(kind=kreal) :: time_init
 ! 
@@ -46,7 +46,7 @@
 !
 !>      Structure for time data
       type(time_data), save :: time_d1
-!time_d1%dt
+!time_d1%time
 !
 !>      Structure for initial time data
       type(time_data), save :: init_d1

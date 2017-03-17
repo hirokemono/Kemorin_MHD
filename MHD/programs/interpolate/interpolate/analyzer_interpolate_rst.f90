@@ -153,14 +153,14 @@
           call copy_field_data_from_restart                             &
      &       (org_femmesh%mesh%node, itp_fld_IO, nod_fld_ITP)
           call dealloc_phys_data_IO(itp_fld_IO)
-          time =       itp_time_IO%time_IO
+          time_d1%time =       itp_time_IO%time_IO
           i_step_MHD = itp_time_IO%i_time_step_IO
 !
           call nod_fields_send_recv                                     &
      &       (org_femmesh%mesh%nod_comm, nod_fld_ITP)
         end if
 !
-        call MPI_Bcast(time, ione, CALYPSO_REAL, izero,                 &
+        call MPI_Bcast(time_d1%time, ione, CALYPSO_REAL, izero,         &
      &      CALYPSO_COMM, ierr_MPI)
         call MPI_Bcast(i_step_MHD, ione, CALYPSO_INTEGER, izero,        &
      &      CALYPSO_COMM, ierr_MPI)

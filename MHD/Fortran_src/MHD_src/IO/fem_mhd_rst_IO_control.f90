@@ -355,7 +355,8 @@
       end if
       call add_dat_extension(fn_tmp, rst_sgs_coef_name)
 !
-      call output_ini_model_coefs(i_step_sgs_coefs, i_step_MHD, time,   &
+      call output_ini_model_coefs                                       &
+     &   (i_step_sgs_coefs, i_step_MHD, time_d1%time,                   &
      &    cmt_param, wk_sgs, wk_diff)
 !
       end subroutine output_model_coef_file

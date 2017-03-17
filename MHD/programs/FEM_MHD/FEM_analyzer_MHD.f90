@@ -148,11 +148,11 @@
       SGS_par1%iflag_SGS_initial = 0
 !
       if (flex_p1%iflag_flexible_step .eq. iflag_flex_step) then
-        call set_ele_rms_4_previous_step                                &
-     &     (time, time_d1%dt, mesh1%node, mesh1%ele, MHD_mesh1%fluid,   &
+        call set_ele_rms_4_previous_step(time_d1%time, time_d1%dt,      &
+     &      mesh1%node, mesh1%ele, MHD_mesh1%fluid,                     &
      &      iphys, nod_fld1, jac1_3d_q, jac1_3d_l, fem1_wk, flex_data)
-        call s_check_deltat_by_prev_rms                                 &
-     &     (time, mesh1%node, mesh1%ele, MHD_mesh1%fluid, cd_prop1,     &
+        call s_check_deltat_by_prev_rms(time_d1%time,                   &
+     &      mesh1%node, mesh1%ele, MHD_mesh1%fluid, cd_prop1,           &
      &      iphys, nod_fld1, jac1_3d_q, jac1_3d_l, fem1_wk, flex_data)
       end if
 !
@@ -219,12 +219,12 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_new_time_and_step'
       call set_new_time_and_step(time_d1%dt, cd_prop1, iphys, nod_fld1, &
-     &    flex_p1, i_step_MHD, time)
+     &    flex_p1, i_step_MHD, time_d1%time)
 !
 !     ----- Time integration
 !
       if (iflag_debug.eq.1) write(*,*) 'fields_evolution'
-      call fields_evolution(i_step_MHD, time, time_d1%dt,               &
+      call fields_evolution(i_step_MHD, time_d1%time, time_d1%dt,       &
      &   FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1,       &
      &   nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,                   &
      &   jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, jac1_sf_grp_2d_l,      &
@@ -255,7 +255,7 @@
 !
       if (flex_p1%iflag_flexible_step .eq. iflag_flex_step) then
         if (iflag_debug.eq.1) write(*,*) 's_check_flexible_time_step'
-        call s_check_flexible_time_step(i_step_MHD, time,               &
+        call s_check_flexible_time_step(i_step_MHD, time_d1%time,       &
      &      mesh1%node, mesh1%ele, MHD_mesh1%fluid, cd_prop1, iphys,    &
      &      nod_fld1, jac1_3d_q, jac1_3d_l, fem1_wk, flex_data,         &
      &      flex_p1, time_d1%dt)
@@ -297,12 +297,12 @@
         if(iflag .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'output_monitor_control'
           call output_monitor_control                                   &
-     &       (i_step_MHD, time, mesh1%node, nod_fld1)
+     &       (i_step_MHD, time_d1%time, mesh1%node, nod_fld1)
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 's_output_sgs_model_coefs'
         call s_output_sgs_model_coefs                                   &
-     &     (flex_p1%istep_max_dt, i_step_MHD, time,                     &
+     &     (flex_p1%istep_max_dt, i_step_MHD, time_d1%time,             &
      &      SGS_par1, wk_sgs1, wk_diff1)
 !
 !     ---- Output restart field data
@@ -347,7 +347,7 @@
 !   Finish by specific time
       else
         if(flex_p1%iflag_flexible_step .eq. iflag_flex_step) then
-          if(time .gt. flex_p1%time_to_finish) retval = 0
+          if(time_d1%time .gt. flex_p1%time_to_finish) retval = 0
         else
           if(flex_p1%istep_max_dt .ge. i_step_number) retval = 0
         end if
@@ -356,7 +356,7 @@
 !   Set visualization flag
       if(flex_p1%iflag_flexible_step .eq. iflag_flex_step) then
         visval = viz_file_step_4_flex                                   &
-     &         (time_d1%dt, time, MHD_step%viz_step)
+     &         (time_d1%dt, time_d1%time, MHD_step%viz_step)
       else
         visval = viz_file_step_4_fix(flex_p1%istep_max_dt,              &
      &                               MHD_step%viz_step)

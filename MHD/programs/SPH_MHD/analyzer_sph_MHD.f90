@@ -118,14 +118,14 @@
 !
 !*  -----------  set initial step data --------------
 !*
-      time =       time_init
+      time_d1%time =       time_init
       i_step_MHD = i_step_init
       iflag_finish = 0
 !*
 !*  -------  time evelution loop start -----------
 !*
       do
-        time = time + time_d1%dt
+        time_d1%time = time_d1%time + time_d1%dt
         i_step_MHD = i_step_MHD + 1
 !
 !*  ----------  time evolution by spectral methood -----------------

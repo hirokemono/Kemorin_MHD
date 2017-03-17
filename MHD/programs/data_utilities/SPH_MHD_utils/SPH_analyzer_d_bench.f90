@@ -183,9 +183,9 @@
       call start_eleps_time(11)
       if(iflag_debug.gt.0)  write(*,*) 'const_data_4_dynamobench'
       call s_const_data_4_dynamobench                                   &
-     &   (time, sph1%sph_params, sph1%sph_rj, trans_p1%leg,             &
+     &   (time_d1%time, sph1%sph_params, sph1%sph_rj, trans_p1%leg,     &
      &    ipol, itor, rj_fld1, pwr1, WK_pwr)
-      call output_field_4_dynamobench(i_step, time, ipol)
+      call output_field_4_dynamobench(i_step, time_d1%time, ipol)
       call end_eleps_time(11)
       call end_eleps_time(4)
 !

@@ -88,7 +88,8 @@
         if (iflag_debug.eq.1)  write(*,*) 'read_udt_4_snap'
         call read_udt_4_snap(flex_p1%istep_max_dt, FEM_udt_org_param,   &
      &      nod_fld1, SNAP_time_IO, MHD_step%ucd_step)
-        time = time_init + time_d1%dt * dble(flex_p1%istep_max_dt)
+        time_d1%time = time_init                                        &
+     &                + time_d1%dt * dble(flex_p1%istep_max_dt)
         i_step_MHD = flex_p1%istep_max_dt
       end if
 !
@@ -171,12 +172,12 @@
       if(iflag .eq. 0) then
         if (iflag_debug.eq.1) write(*,*) 'output_monitor_control'
         call output_monitor_control                                     &
-     &     (i_step_MHD, time, mesh1%node, nod_fld1)
+     &     (i_step_MHD, time_d1%time, mesh1%node, nod_fld1)
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 's_output_sgs_model_coefs'
       call s_output_sgs_model_coefs                                     &
-     &   (flex_p1%istep_max_dt, i_step_MHD, time,                       &
+     &   (flex_p1%istep_max_dt, i_step_MHD, time_d1%time,               &
      &    SGS_par1, wk_sgs1, wk_diff1)
 !
 !     ---- Output voulme field data
@@ -189,7 +190,7 @@
 !
       if     (flex_p1%iflag_flexible_step .eq. iflag_flex_step) then
         visval = viz_file_step_4_flex                                   &
-     &         (time_d1%dt, time, MHD_step%viz_step)
+     &         (time_d1%dt, time_d1%time, MHD_step%viz_step)
       else
         visval =  viz_file_step_4_fix(flex_p1%istep_max_dt,             &
      &                                MHD_step%viz_step)

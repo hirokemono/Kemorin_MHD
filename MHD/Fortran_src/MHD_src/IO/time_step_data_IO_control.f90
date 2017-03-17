@@ -74,7 +74,7 @@
 !
 !
         if(my_rank .eq. 0) write(*,'(a10,i16,a10,e15.8)')               &
-     &            'i_step=',i_step_MHD,'time=',time
+     &            'i_step=',i_step_MHD,'time=', time_d1%time
 !
       call s_int_mean_squares(FEM_prm%npoint_t_evo_int,                 &
      &    mesh%node, mesh%ele, MHD_mesh%fluid, MHD_mesh%conduct,        &
@@ -106,7 +106,8 @@
         end if
       end do
 !
-      call output_monitor_file(my_rank, i_step_MHD, time, nod_fld)
+      call output_monitor_file                                          &
+     &   (my_rank, i_step_MHD, time_d1%time, nod_fld)
 !
       end subroutine output_time_step_control
 !

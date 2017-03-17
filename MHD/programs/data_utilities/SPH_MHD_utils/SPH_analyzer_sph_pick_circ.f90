@@ -202,7 +202,7 @@
       call start_eleps_time(4)
       if(iflag_debug.gt.0)  write(*,*) 'sph_transfer_on_circle'
       call sph_transfer_on_circle(sph1%sph_rj, rj_fld1)
-      call write_field_data_on_circle(i_step, time)
+      call write_field_data_on_circle(i_step, time_d1%time)
       call end_eleps_time(4)
 !
       end subroutine SPH_analyze_pick_circle

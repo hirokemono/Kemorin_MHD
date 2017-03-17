@@ -117,7 +117,7 @@
 !
         if (iflag_debug.gt.0)                                           &
      &      write(*,*) 'write_sph_1layer_ms_spec_file'
-        call write_sph_layer_ms_file(my_rank, i_step, time,             &
+        call write_sph_layer_ms_file(my_rank, i_step, time_d1%time,     &
      &      sph_mesh_spec%sph%sph_params, pwr_spec)
       end do
 !
