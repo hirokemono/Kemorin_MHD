@@ -123,7 +123,7 @@
 !
       call s_set_fixed_time_step_params                                 &
      &   (t_su_ctl, rst_step, ucd_step, viz_step, ierr, e_message)
-      call set_output_step_4_fixed_step(ione, dt,                       &
+      call set_output_step_4_fixed_step(ione, time_d1%dt,               &
      &    t_su_ctl%i_step_check_ctl, t_su_ctl%delta_t_check_ctl,        &
      &    rms_step_SHR)
 !

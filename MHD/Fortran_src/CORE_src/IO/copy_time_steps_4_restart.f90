@@ -67,7 +67,7 @@
 !
       call copy_init_time_from_restart(t_IO)
 !
-      if(t_IO%delta_t_IO .gt. zero) dt = t_IO%delta_t_IO
+      if(t_IO%delta_t_IO .gt. zero) time_d1%dt = t_IO%delta_t_IO
 !
       end subroutine copy_time_steps_from_restart
 !
@@ -82,7 +82,7 @@
 !
       t_IO%i_time_step_IO = i_step_MHD
       t_IO%time_IO =        time
-      t_IO%delta_t_IO =     dt
+      t_IO%delta_t_IO =     time_d1%dt
 !
       end subroutine copy_time_steps_to_restart
 !
@@ -97,7 +97,7 @@
 !
       i_step_MHD = t_IO%i_time_step_IO
       time =       t_IO%time_IO
-      dt =         t_IO%delta_t_IO
+      time_d1%dt =         t_IO%delta_t_IO
 !
       end subroutine copy_time_steps_from_field
 !

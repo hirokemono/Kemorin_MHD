@@ -79,7 +79,7 @@
       call s_int_mean_squares(FEM_prm%npoint_t_evo_int,                 &
      &    mesh%node, mesh%ele, MHD_mesh%fluid, MHD_mesh%conduct,        &
      &    iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk, mhd_fem_wk)
-      call int_no_evo_mean_squares(i_step_MHD, dt,                      &
+      call int_no_evo_mean_squares(i_step_MHD, time_d1%dt,              &
      &    mesh%node, mesh%ele, fl_prop, cd_prop, iphys, nod_fld,        &
      &    iphys_ele, ele_fld, MHD_mesh%fluid, jac_3d_q, fem_wk)
 !

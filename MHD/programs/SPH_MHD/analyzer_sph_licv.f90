@@ -100,7 +100,7 @@
 !*  -------  time evelution  -----------
 !*
       do istep = 1, i_step_number
-        time = time + dt
+        time = time + time_d1%dt
         i_step_MHD = i_step_MHD + 1
 !
 !*  ----------  add time evolution -----------------

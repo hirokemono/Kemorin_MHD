@@ -290,12 +290,13 @@
 !
       if(flex_p%iflag_flexible_step .eq. iflag_flex_step) then
         call copy_time_steps_from_restart(fem_time_IO)
-        call cal_num_digit_real(dt, flex_p%dt_fact, flex_p%idt_digit)
+        call cal_num_digit_real                                         &
+     &     (time_d1%dt, flex_p%dt_fact, flex_p%idt_digit)
       else
         call copy_init_time_from_restart(fem_time_IO)
       end if
 !
-      if(my_rank .eq. 0)  write(*,*) 'delta t ', dt,                    &
+      if(my_rank .eq. 0)  write(*,*) 'delta t ', time_d1%dt,            &
      &                     flex_p%dt_fact, flex_p%idt_digit
 !
       end subroutine input_restart_files

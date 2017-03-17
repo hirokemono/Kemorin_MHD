@@ -59,6 +59,7 @@
      &          sgs_coefs, diff_coefs, nod_fld, flex_p)
 !
       use m_initial_field_control
+      use m_t_step_parameter
 !
       use t_SGS_control_parameter
       use t_layering_ele_list
@@ -103,7 +104,7 @@
 !
       if(flex_p%iflag_flexible_step .eq. iflag_flex_step) then
         flex_p%istep_max_dt = nint(time_init / flex_p%dt_max)
-        flex_p%interval_flex_2_max = nint(flex_p%dt_max / dt)
+        flex_p%interval_flex_2_max = nint(flex_p%dt_max / time_d1%dt)
         flex_p%istep_flex_to_max = izero
       else
         flex_p%istep_max_dt = i_step_MHD

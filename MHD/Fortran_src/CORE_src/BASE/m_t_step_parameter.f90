@@ -23,9 +23,6 @@
 !>      1 / adam_0
       real(kind=kreal), parameter :: adam_r =  two / three
 !
-!>      length of each time step @f$ \Delta t @f$
-      real(kind=kreal) :: dt
-!
 !>      Time
       real(kind=kreal) :: time
 !>      Time for the initail step

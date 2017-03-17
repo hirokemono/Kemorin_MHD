@@ -108,7 +108,7 @@
 !
       if(iflag_debug.gt.0) write(*,*)' const_radial_mat_sph_mhd'
       call const_radial_mat_sph_mhd                                     &
-     &   (dt, fl_prop1, cd_prop1, ht_prop1, cp_prop1,                   &
+     &   (time_d1%dt, fl_prop1, cd_prop1, ht_prop1, cp_prop1,           &
      &    sph1%sph_rj, r_2nd, trans_p1%leg)
 !*
 !* obtain linear terms for starting
@@ -171,21 +171,20 @@
       call start_eleps_time(6)
       if(i_step .eq. 1) then
         if(iflag_debug.gt.0) write(*,*) 'cal_expricit_sph_euler'
-        call cal_expricit_sph_euler(i_step, dt, sph1%sph_rj,            &
+        call cal_expricit_sph_euler(i_step, time_d1%dt, sph1%sph_rj,    &
      &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
      &      ipol, itor, rj_fld1)
       else
         if(iflag_debug.gt.0) write(*,*) 'cal_expricit_sph_adams'
-        call cal_expricit_sph_adams                                     &
-     &     (dt, sph1%sph_rj, fl_prop1, cd_prop1, ht_prop1, cp_prop1,    &
-     &      ipol, itor, rj_fld1)
+        call cal_expricit_sph_adams(time_d1%dt, sph1%sph_rj,            &
+     &     fl_prop1, cd_prop1, ht_prop1, cp_prop1, ipol, itor, rj_fld1)
       end if
 !*
 !*  ----------  time evolution by inplicit method ----------
 !*
       call start_eleps_time(7)
       call s_cal_sol_sph_MHD_crank                                      &
-     &   (dt, sph1%sph_rj, r_2nd, cd_prop1, ht_prop1, cp_prop1,         &
+     &   (time_d1%dt, sph1%sph_rj, r_2nd, cd_prop1, ht_prop1, cp_prop1, &
      &    trans_p1%leg, ipol, idpdr, itor, rj_fld1)
       call end_eleps_time(7)
       call end_eleps_time(6)

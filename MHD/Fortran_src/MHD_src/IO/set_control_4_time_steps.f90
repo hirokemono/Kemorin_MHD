@@ -25,8 +25,8 @@
       use calypso_mpi
       use m_error_IDs
       use m_machine_parameter
-      use m_t_step_parameter
       use m_MHD_step_parameter
+      use m_t_step_parameter
       use t_SGS_control_parameter
       use t_ctl_data_4_time_steps
       use t_VIZ_step_parameter
@@ -74,8 +74,9 @@
           e_message = 'Set delta t'
           call calypso_MPI_abort(ierr_evo, e_message)
         else
-          dt = tctl%dt_ctl%realvalue
-          call cal_num_digit_real(dt, flex_p%dt_fact, flex_p%idt_digit)
+          time_d1%dt = tctl%dt_ctl%realvalue
+          call cal_num_digit_real                                       &
+     &       (time_d1%dt, flex_p%dt_fact, flex_p%idt_digit)
         end if
 !
         if(flex_p%iflag_flexible_step .eq. iflag_flex_step) then
@@ -111,12 +112,13 @@
 !
           flex_p%istep_flex_to_max = izero
 !
-          if(dt .gt. zero) then
-            flex_p%interval_flex_2_max = nint(flex_p%dt_max / dt)
+          if(time_d1%dt .gt. zero) then
+            flex_p%interval_flex_2_max                                  &
+     &                = nint(flex_p%dt_max / time_d1%dt)
           end if
         else
-          flex_p%dt_max = dt
-          flex_p%dt_min = dt
+          flex_p%dt_max = time_d1%dt
+          flex_p%dt_min = time_d1%dt
           flex_p%interval_flex_2_max = ione
           flex_p%istep_flex_to_max = izero
         end if
@@ -147,7 +149,7 @@
       end if
 !
       if (iflag_debug .ge. iflag_routine_msg) then
-        write(*,*) 'dt', dt, flex_p%dt_fact, flex_p%idt_digit
+        write(*,*) 'dt', time_d1%dt, flex_p%dt_fact, flex_p%idt_digit
         write(*,*) 'i_step_init ',i_step_init
         write(*,*) 'i_step_number ',i_step_number
         write(*,*) 'elapsed_time ', elapsed_time
@@ -176,21 +178,21 @@
      &    ierr, e_message)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
-      call set_output_step_4_fixed_step(ione, dt,                       &
+      call set_output_step_4_fixed_step(ione, time_d1%dt,               &
      &    tctl%i_step_check_ctl, tctl%delta_t_check_ctl,                &
      &    MHD_step%rms_step)
 !
       if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
-        call set_output_step_4_fixed_step(ione, dt,                     &
+        call set_output_step_4_fixed_step(ione, time_d1%dt,             &
      &      tctl%i_step_sgs_coefs_ctl, tctl%delta_t_sgs_coefs_ctl,      &
      &      SGS_par%sgs_step)
       end if
 !
-      call set_output_step_4_fixed_step                                 &
-     &   (izero, dt, tctl%i_step_monitor_ctl, tctl%delta_t_monitor_ctl, &
+      call set_output_step_4_fixed_step(izero, time_d1%dt,              &
+     &    tctl%i_step_monitor_ctl, tctl%delta_t_monitor_ctl,            &
      &    MHD_step%point_step)
 !
-      call set_output_step_4_fixed_step(izero, dt,                      &
+      call set_output_step_4_fixed_step(izero, time_d1%dt,              &
      &    tctl%i_step_boundary_ctl, tctl%delta_t_boundary_ctl,          &
      &    MHD_step%boundary_step)
 !
@@ -269,7 +271,7 @@
       i_step_number = istep_rst_end *   rst_step%increment
       flex_p%time_to_finish = istep_rst_end * rst_step%delta_t
 !
-      call viz_flex_time_step_controls(tctl, dt, viz_step)
+      call viz_flex_time_step_controls(tctl, time_d1%dt, viz_step)
 !
       if (istep_rst_end .eq. -1) then
         if (tctl%elapsed_time_ctl%iflag .eq. 0) then

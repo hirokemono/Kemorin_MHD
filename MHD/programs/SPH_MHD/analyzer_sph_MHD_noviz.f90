@@ -110,7 +110,7 @@
 !*  -------  time evelution loop start -----------
 !*
       do
-        time = time + dt
+        time = time + time_d1%dt
         i_step_MHD = i_step_MHD + 1
 !
 !*  ----------  time evolution by spectral methood -----------------

@@ -156,7 +156,7 @@
      &        ip, istep, org_sph_mesh(ip)%sph, org_sph_phys(ip))
         end do
         time = 0.0d0
-        dt =   0.0d0
+        time_d1%dt =   0.0d0
         i_step_MHD = 0
 !
 !     Bloadcast original spectr data
