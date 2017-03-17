@@ -100,14 +100,14 @@
       call init_MHD_restart_output(node, nod_fld)
 !
       time_d1%time   =       time_init
-      i_step_MHD =   i_step_init
+      time_d1%i_time_step =   i_step_init
 !
       if(flex_p%iflag_flexible_step .eq. iflag_flex_step) then
         flex_p%istep_max_dt = nint(time_init / flex_p%dt_max)
         flex_p%interval_flex_2_max = nint(flex_p%dt_max / time_d1%dt)
         flex_p%istep_flex_to_max = izero
       else
-        flex_p%istep_max_dt = i_step_MHD
+        flex_p%istep_max_dt = time_d1%i_time_step
         flex_p%interval_flex_2_max = ione
         flex_p%istep_flex_to_max = izero
       end if

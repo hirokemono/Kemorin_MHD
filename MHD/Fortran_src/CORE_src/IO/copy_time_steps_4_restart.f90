@@ -80,7 +80,7 @@
       type(time_params_IO), intent(inout) :: t_IO
 !
 !
-      t_IO%i_time_step_IO = i_step_MHD
+      t_IO%i_time_step_IO = time_d1%i_time_step
       t_IO%time_IO =        time_d1%time
       t_IO%delta_t_IO =     time_d1%dt
 !
@@ -95,9 +95,9 @@
       type(time_params_IO), intent(in) :: t_IO
 !
 !
-      i_step_MHD = t_IO%i_time_step_IO
-      time_d1%time =       t_IO%time_IO
-      time_d1%dt =         t_IO%delta_t_IO
+      time_d1%i_time_step = t_IO%i_time_step_IO
+      time_d1%time =        t_IO%time_IO
+      time_d1%dt =          t_IO%delta_t_IO
 !
       end subroutine copy_time_steps_from_field
 !

@@ -37,28 +37,31 @@
       use FEM_analyzer_sph_MHD
       use SPH_analyzer_snap
 !
+      integer(kind = kint) :: iflag
+!
 !     ---------------------
 !
       call start_eleps_time(3)
 !
 !*  -----------  set initial step data --------------
 !*
-      i_step_MHD = i_step_init - 1
+      time_d1%i_time_step = i_step_init - 1
 !*
 !*  -------  time evelution loop start -----------
 !*
       do
-        i_step_MHD = i_step_MHD + 1
+        time_d1%i_time_step = time_d1%i_time_step + 1
 !
-        if(output_IO_flag(i_step_MHD,MHD_step1%rst_step) .ne. 0) cycle
+        iflag = output_IO_flag(time_d1%i_time_step,MHD_step1%rst_step)
+        if(iflag .ne. 0) cycle
 !
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_mod_restart'
-        call SPH_analyze_mod_restart(i_step_MHD, MHD_step1)
+        call SPH_analyze_mod_restart(time_d1%i_time_step, MHD_step1)
 !*
 !*  -----------  output field data --------------
 !*
-        if(i_step_MHD .ge. i_step_number) exit
+        if(time_d1%i_time_step .ge. i_step_number) exit
       end do
 !
 !  time evolution end
@@ -121,10 +124,11 @@
 !*  -----------  lead energy data --------------
 !*
       call start_eleps_time(11)
-      iflag = output_IO_flag(i_step_MHD, MHD_step%rms_step)
+      iflag = output_IO_flag(time_d1%i_time_step, MHD_step%rms_step)
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
-        call output_rms_sph_mhd_control(i_step_MHD, time_d1%time,       &
+        call output_rms_sph_mhd_control                                 &
+     &     (time_d1%i_time_step, time_d1%time,                          &
      &      sph1%sph_params, sph1%sph_rj, trans_p1%leg,                 &
      &      ipol, rj_fld1, pwr1, WK_pwr)
       end if

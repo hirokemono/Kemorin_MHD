@@ -104,7 +104,7 @@
       type(phys_data), intent(in) :: rj_fld
 !
 !
-      i_step_MHD =   i_step_init
+      time_d1%i_time_step =   i_step_init
       time_d1%time = time_init
 !
       call set_sph_restart_num_to_IO(rj_fld, sph_fst_IO)
@@ -122,9 +122,9 @@
       type(IO_step_param), intent(inout) :: rst_step
 !
 !
-      if (output_IO_flag(i_step_MHD,rst_step) .ne. 0) return
+      if (output_IO_flag(time_d1%i_time_step,rst_step) .ne. 0) return
 !
-      rst_step%istep_file = i_step_MHD/rst_step%increment
+      rst_step%istep_file = time_d1%i_time_step/rst_step%increment
 !
       call copy_time_steps_to_restart(sph_time_IO)
       call set_sph_restart_data_to_IO(rj_fld, sph_fst_IO)

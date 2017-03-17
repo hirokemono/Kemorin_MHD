@@ -74,12 +74,12 @@
 !
 !
         if(my_rank .eq. 0) write(*,'(a10,i16,a10,e15.8)')               &
-     &            'i_step=',i_step_MHD,'time=', time_d1%time
+     &            'i_step=', time_d1%i_time_step,'time=', time_d1%time
 !
       call s_int_mean_squares(FEM_prm%npoint_t_evo_int,                 &
      &    mesh%node, mesh%ele, MHD_mesh%fluid, MHD_mesh%conduct,        &
      &    iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk, mhd_fem_wk)
-      call int_no_evo_mean_squares(i_step_MHD, time_d1%dt,              &
+      call int_no_evo_mean_squares(time_d1%i_time_step, time_d1%dt,     &
      &    mesh%node, mesh%ele, fl_prop, cd_prop, iphys, nod_fld,        &
      &    iphys_ele, ele_fld, MHD_mesh%fluid, jac_3d_q, fem_wk)
 !
@@ -107,7 +107,7 @@
       end do
 !
       call output_monitor_file                                          &
-     &   (my_rank, i_step_MHD, time_d1%time, nod_fld)
+     &   (my_rank, time_d1%i_time_step, time_d1%time, nod_fld)
 !
       end subroutine output_time_step_control
 !

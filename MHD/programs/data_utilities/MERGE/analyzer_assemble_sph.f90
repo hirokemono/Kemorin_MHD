@@ -217,8 +217,8 @@
           call dealloc_phys_data_type(org_sph_phys(ip))
         end do
 !
-        time_d1%time = time_init
-        i_step_MHD = i_step_init
+        time_d1%time =        time_init
+        time_d1%i_time_step = i_step_init
 !
         do jloop = 1, nloop_new
           irank_new = my_rank + (jloop-1) * nprocs

@@ -90,7 +90,7 @@
      &      nod_fld1, SNAP_time_IO, MHD_step%ucd_step)
         time_d1%time = time_init                                        &
      &                + time_d1%dt * dble(flex_p1%istep_max_dt)
-        i_step_MHD = flex_p1%istep_max_dt
+        time_d1%i_time_step = flex_p1%istep_max_dt
       end if
 !
 !     ---- magnetic field update
@@ -112,8 +112,8 @@
       call nod_fields_send_recv(mesh1%nod_comm, nod_fld1)
 !
       if (iflag_debug.eq.1)  write(*,*) 'update_fields'
-      call update_fields                                                &
-     &   (i_step_MHD, time_d1%dt, FEM_prm1, SGS_par1, mesh1, group1,    &
+      call update_fields(time_d1%i_time_step, time_d1%dt,               &
+     &    FEM_prm1, SGS_par1, mesh1, group1,                            &
      &    ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,    &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,  &
      &    ifld_diff, icomp_diff, iphys_elediff,                         &
@@ -125,7 +125,7 @@
 !
       if (SGS_par1%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
-        call s_cal_model_coefficients(i_step_MHD, time_d1%dt,           &
+        call s_cal_model_coefficients(time_d1%i_time_step, time_d1%dt,  &
      &      FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1,    &
      &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
      &      layer_tbl1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,  &
@@ -142,7 +142,7 @@
       iflag = lead_field_data_flag(flex_p1%istep_max_dt,                &
      &                             MHD_step, SGS_par1%sgs_step)
       if(iflag .eq. 0) then
-        call lead_fields_by_FEM(i_step_MHD, time_d1%dt,                 &
+        call lead_fields_by_FEM(time_d1%i_time_step, time_d1%dt,        &
      &     FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1,                &
      &     MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,      &
      &     jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,            &
@@ -172,12 +172,12 @@
       if(iflag .eq. 0) then
         if (iflag_debug.eq.1) write(*,*) 'output_monitor_control'
         call output_monitor_control                                     &
-     &     (i_step_MHD, time_d1%time, mesh1%node, nod_fld1)
+     &     (time_d1%i_time_step, time_d1%time, mesh1%node, nod_fld1)
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 's_output_sgs_model_coefs'
       call s_output_sgs_model_coefs                                     &
-     &   (flex_p1%istep_max_dt, i_step_MHD, time_d1%time,               &
+     &   (flex_p1%istep_max_dt, time_d1%i_time_step, time_d1%time,      &
      &    SGS_par1, wk_sgs1, wk_diff1)
 !
 !     ---- Output voulme field data

@@ -301,8 +301,11 @@
       type(sph_mean_squares), intent(inout) :: pwr
       type(sph_mean_square_work), intent(inout) :: WK_pwr
 !
+      integer(kind = kint) :: iflag
 !
-      if(output_IO_flag(i_step_MHD, MHD_step%rms_step) .ne. 0) return
+!
+      iflag = output_IO_flag(time_d1%i_time_step, MHD_step%rms_step)
+      if(iflag .ne. 0) return
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
       call cal_mean_squre_in_shell                                      &
@@ -310,15 +313,17 @@
      &    pwr, WK_pwr)
 !
       call write_sph_vol_ave_file                                       &
-     &   (i_step_MHD, time_d1%time, sph_params, sph_rj, pwr)
+     &   (time_d1%i_time_step, time_d1%time, sph_params, sph_rj, pwr)
       call write_sph_vol_ms_file                                        &
-     &   (my_rank, i_step_MHD, time_d1%time, sph_params, sph_rj, pwr)
+     &   (my_rank, time_d1%i_time_step, time_d1%time,                   &
+     &    sph_params, sph_rj, pwr)
       call write_sph_vol_ms_spectr_file                                 &
-     &   (my_rank, i_step_MHD, time_d1%time, sph_params, sph_rj, pwr)
+     &   (my_rank, time_d1%i_time_step, time_d1%time,                   &
+     &    sph_params, sph_rj, pwr)
       call write_sph_layer_ms_file                                      &
-     &   (my_rank, i_step_MHD, time_d1%time, sph_params, pwr)
+     &   (my_rank, time_d1%i_time_step, time_d1%time, sph_params, pwr)
       call write_sph_layer_spectr_file                                  &
-     &   (my_rank, i_step_MHD, time_d1%time, sph_params, pwr)
+     &   (my_rank, time_d1%i_time_step, time_d1%time, sph_params, pwr)
 !
       end subroutine output_rms_sph_back_trans
 !

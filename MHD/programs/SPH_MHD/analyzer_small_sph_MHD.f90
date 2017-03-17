@@ -87,20 +87,21 @@
 !
 !*  -----------  set initial step data --------------
 !*
-      time_d1%time =       time_init
-      i_step_MHD = i_step_init
+      time_d1%time =        time_init
+      time_d1%i_time_step = i_step_init
       iflag_finish = 0
 !*
 !*  -------  time evelution loop start -----------
 !*
       do
         time_d1%time = time_d1%time + time_d1%dt
-        i_step_MHD = i_step_MHD + 1
+        time_d1%i_time_step = time_d1%i_time_step + 1
 !
 !*  ----------  time evolution by spectral methood -----------------
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_MHD'
-        call SPH_analyze_MHD(i_step_MHD, iflag_finish, MHD_step1)
+        call SPH_analyze_MHD                                            &
+     &     (time_d1%i_time_step, iflag_finish, MHD_step1)
 !
 !*  -----------  exit loop --------------
 !*

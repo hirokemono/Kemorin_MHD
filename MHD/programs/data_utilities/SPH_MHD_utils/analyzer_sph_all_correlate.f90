@@ -109,7 +109,7 @@
       use FEM_analyzer_sph_MHD
       use SPH_analyzer_correle_all
 !
-      integer(kind = kint) :: visval
+      integer(kind = kint) :: visval, iflag
 !
 !     ---------------------
 !
@@ -117,19 +117,20 @@
 !
 !*  -----------  set initial step data --------------
 !*
-      i_step_MHD = i_step_init - 1
+      time_d1%i_time_step = i_step_init - 1
 !*
 !*  -------  time evelution loop start -----------
 !*
       do
-        i_step_MHD = i_step_MHD + 1
+        time_d1%i_time_step = time_d1%i_time_step + 1
 !
-        if(output_IO_flag(i_step_MHD,MHD_step1%rst_step) .ne. 0) cycle
+        iflag = output_IO_flag(time_d1%i_time_step,MHD_step1%rst_step)
+        if(iflag .ne. 0) cycle
 !
 !*  ----------  time evolution by spectral methood -----------------
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_correlate_all'
-        call SPH_analyze_correlate_all(i_step_MHD, MHD_step1)
+        call SPH_analyze_correlate_all(time_d1%i_time_step, MHD_step1)
 !*
 !*  -----------  output field data --------------
 !*
@@ -142,7 +143,7 @@
      &      mesh1%node, nod_fld1)
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
-        call FEM_analyze_sph_MHD(i_step_MHD, SGS_par1, mesh1,           &
+        call FEM_analyze_sph_MHD(time_d1%i_time_step, SGS_par1, mesh1,  &
      &      nod_fld1, MHD_step1, visval)
 !
         call end_eleps_time(4)
@@ -161,7 +162,7 @@
 !
 !*  -----------  exit loop --------------
 !*
-        if(i_step_MHD .ge. i_step_number) exit
+        if(time_d1%i_time_step .ge. i_step_number) exit
       end do
 !
 !  time evolution end

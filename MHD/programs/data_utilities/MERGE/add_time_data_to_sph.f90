@@ -157,7 +157,7 @@
         end do
         time_d1%time = 0.0d0
         time_d1%dt =   0.0d0
-        i_step_MHD = 0
+        time_d1%i_time_step = 0
 !
 !     Bloadcast original spectr data
         do ip = 1, np_sph_org
