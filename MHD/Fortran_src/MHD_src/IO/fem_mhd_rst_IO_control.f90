@@ -250,7 +250,7 @@
         call scalar_send_recv(iphys%i_pre_composit, nod_comm, nod_fld)
       end if
 !
-      call copy_time_steps_to_restart(fem_time_IO)
+      call copy_time_steps_to_restart(time_d1, fem_time_IO)
       call copy_field_data_to_restart(node, nod_fld, fem_fst_IO)
 !
       call sel_write_step_FEM_field_file                                &
@@ -289,7 +289,8 @@
       call dealloc_phys_name_IO(fem_fst_IO)
 !
       if(flex_p%iflag_flexible_step .eq. iflag_flex_step) then
-        call copy_time_steps_from_restart(fem_time_IO)
+        call copy_time_steps_from_restart(fem_time_IO, init_d1)
+        time_d1%dt = init_d1%dt
         call cal_num_digit_real                                         &
      &     (time_d1%dt, flex_p%dt_fact, flex_p%idt_digit)
       else

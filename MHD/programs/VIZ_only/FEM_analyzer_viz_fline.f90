@@ -46,6 +46,8 @@
 !
       subroutine FEM_analyze_fline(i_step, fline_step)
 !
+      use m_t_step_parameter
+!
       integer (kind =kint), intent(in) :: i_step
       type(IO_step_param), intent(inout) :: fline_step
 !
@@ -54,7 +56,7 @@
 !
       visval = ione
       call accum_flag_to_visualization(i_step, fline_step, visval)
-      call set_field_data_4_VIZ(fline_step%istep_file, i_step)
+      call set_field_data_4_VIZ(fline_step%istep_file, i_step, time_d1)
 !
       end subroutine FEM_analyze_fline
 !

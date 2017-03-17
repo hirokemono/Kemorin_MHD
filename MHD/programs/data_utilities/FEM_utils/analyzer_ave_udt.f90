@@ -101,7 +101,7 @@
 !    output udt data
 !
       call set_ucd_file_prefix(ave_udt_file_head, ucd_FUTIL)
-      call output_udt_one_snapshot(i_step_number,                       &
+      call output_udt_one_snapshot(i_step_number, time_d1,              &
      &    femmesh_FUTIL%mesh%node, femmesh_FUTIL%mesh%ele,              &
      &    femmesh_FUTIL%mesh%nod_comm, field_FUTIL)
 !

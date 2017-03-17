@@ -9,6 +9,8 @@
 !!@verbatim
 !!      subroutine mesh_setup_4_VIZ
 !!      subroutine element_normals_4_VIZ
+!!      subroutine set_field_data_4_VIZ(iflag, istep_ucd, time_d)
+!!        type(time_data), intent(inout) :: time_d
 !!@endverbatim
 !
       module m_visualization
@@ -16,6 +18,7 @@
       use m_precision
       use m_machine_parameter
 !
+      use t_time_data
       use t_mesh_data
       use t_phys_data
       use t_ucd_data
@@ -184,19 +187,20 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_field_data_4_VIZ(iflag, istep_ucd)
+      subroutine set_field_data_4_VIZ(iflag, istep_ucd, time_d)
 !
       use set_ucd_data_to_type
       use copy_time_steps_4_restart
       use nod_phys_send_recv
 !
       integer(kind = kint), intent(in) :: iflag, istep_ucd
+      type(time_data), intent(inout) :: time_d
 !
 !
       if(iflag .ne. 0) return
       call set_data_by_read_ucd                                         &
      &   (my_rank, istep_ucd, VIZ_time_IO, ucd_VIZ, field_VIZ)
-      call copy_time_steps_from_field(VIZ_time_IO)
+      call copy_time_steps_from_field(VIZ_time_IO, time_d)
 !
       if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'
       call nod_fields_send_recv                                         &

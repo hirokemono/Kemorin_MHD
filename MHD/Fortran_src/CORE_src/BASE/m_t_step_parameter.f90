@@ -41,7 +41,6 @@
 !
 !>      Structure for time data
       type(time_data), save :: time_d1
-!time_d1%i_time_step
 !
 !>      Structure for initial time data
       type(time_data), save :: init_d1

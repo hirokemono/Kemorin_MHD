@@ -11,7 +11,8 @@
 !!      subroutine SECTIONING_initialize                                &
 !!     &         (node, ele, surf, edge, nod_comm, edge_comm,           &
 !!     &          ele_grp, sf_grp, sf_grp_nod, nod_fld)
-!!      subroutine SECTIONING_visualize(istep_psf, edge, nod_fld)
+!!      subroutine SECTIONING_visualize(istep_psf, time_d, edge, nod_fld)
+!!        type(time_data), intent(in) :: time_d
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -38,6 +39,7 @@
       use m_machine_parameter
       use calypso_mpi
 !
+      use t_time_data
       use t_mesh_data
       use t_phys_data
       use t_psf_geometry_list
@@ -182,7 +184,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine SECTIONING_visualize(istep_psf, edge, nod_fld)
+      subroutine SECTIONING_visualize(istep_psf, time_d, edge, nod_fld)
 !
       use m_control_params_4_psf
       use set_fields_for_psf
@@ -191,6 +193,7 @@
 !
       integer(kind = kint), intent(in) :: istep_psf
 !
+      type(time_data), intent(in) :: time_d
       type(edge_data), intent(in) :: edge
       type(phys_data), intent(in) :: nod_fld
 !
@@ -207,7 +210,7 @@
 !
 !      call start_eleps_time(21)
       if (iflag_debug.eq.1) write(*,*) 'output_section_mesh'
-      call output_section_data(num_psf, istep_psf, psf_mesh,            &
+      call output_section_data(num_psf, istep_psf, time_d, psf_mesh,    &
      &    psf_time_IO, psf_out, psf_out_m)
 !
       end subroutine SECTIONING_visualize

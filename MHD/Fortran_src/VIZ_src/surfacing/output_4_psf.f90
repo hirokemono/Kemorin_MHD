@@ -10,12 +10,22 @@
 !!@verbatim
 !!      subroutine output_section_mesh(num_psf, psf_header,             &
 !!     &          itype_psf_file, psf_mesh, psf_out, psf_out_m)
-!!      subroutine output_section_data(num_psf, istep_psf, psf_mesh,    &
-!!     &          t_IO, psf_out, psf_out_m)
+!!      subroutine output_section_data(num_psf, istep_psf,              &
+!!     &          time_d, psf_mesh, t_IO, psf_out, psf_out_m)
+!!        type(time_data), intent(in) :: time_d
+!!        type(psf_local_data), intent(in) :: psf_mesh(num_psf)
+!!        type(time_params_IO), intent(inout) :: t_IO
+!!        type(ucd_data), intent(inout) ::        psf_out(num_psf)
+!!        type(merged_ucd_data), intent(inout) :: psf_out_m(num_psf)
 !!
 !!      subroutine output_isosurface                                    &
 !!     &         (num_iso, iso_header, itype_iso_file, istep_iso,       &
-!!     &         iso_mesh, t_IO, iso_out, iso_out_m)
+!!     &          time_d, iso_mesh, t_IO, iso_out, iso_out_m)
+!!        type(time_data), intent(in) :: time_d
+!!        type(psf_local_data), intent(in) :: iso_mesh(num_iso)
+!!        type(time_params_IO), intent(inout) :: t_IO
+!!        type(ucd_data), intent(inout) :: iso_out(num_iso)
+!!        type(merged_ucd_data), intent(inout) :: iso_out_m(num_iso)
 !!@endverbatim
 !
       module output_4_psf
@@ -23,6 +33,7 @@
       use m_precision
 !
       use calypso_mpi
+      use t_time_data
       use t_time_data_IO
       use t_ucd_data
 !
@@ -107,8 +118,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine output_section_data(num_psf, istep_psf, psf_mesh,      &
-     &          t_IO, psf_out, psf_out_m)
+      subroutine output_section_data(num_psf, istep_psf,                &
+     &          time_d, psf_mesh, t_IO, psf_out, psf_out_m)
 !
       use set_ucd_data_to_type
       use parallel_ucd_IO_select
@@ -118,6 +129,7 @@
 !
       integer(kind= kint), intent(in) :: num_psf
       integer(kind= kint), intent(in) ::  istep_psf
+      type(time_data), intent(in) :: time_d
       type(psf_local_data), intent(in) :: psf_mesh(num_psf)
       type(time_params_IO), intent(inout) :: t_IO
       type(ucd_data), intent(inout) ::        psf_out(num_psf)
@@ -126,7 +138,7 @@
       integer(kind= kint) :: i_psf, irank_tgt
 !
 !
-      call copy_time_steps_to_restart(t_IO)
+      call copy_time_steps_to_restart(time_d, t_IO)
 !
       do i_psf = 1, num_psf
         if((psf_out(i_psf)%ifmt_file/iflag_single) .eq. 0) then
@@ -156,7 +168,7 @@
 !
       subroutine output_isosurface                                      &
      &         (num_iso, iso_header, itype_iso_file, istep_iso,         &
-     &         iso_mesh, t_IO, iso_out, iso_out_m)
+     &          time_d, iso_mesh, t_IO, iso_out, iso_out_m)
 !
       use t_psf_patch_data
       use set_ucd_data_to_type
@@ -169,6 +181,7 @@
       character(len = kchara), intent(in) :: iso_header(num_iso)
       integer(kind= kint), intent(in) :: itype_iso_file(num_iso)
       integer(kind= kint), intent(in) :: istep_iso
+      type(time_data), intent(in) :: time_d
       type(psf_local_data), intent(in) :: iso_mesh(num_iso)
 !
 !>      Structure for isosurface output (used by master process)
@@ -179,7 +192,7 @@
       integer(kind= kint) :: i_iso, irank_tgt
 !
 !
-      call copy_time_steps_to_restart(t_IO)
+      call copy_time_steps_to_restart(time_d, t_IO)
 !
       do i_iso = 1, num_iso
         iso_out(i_iso)%ifmt_file = itype_iso_file(i_iso)

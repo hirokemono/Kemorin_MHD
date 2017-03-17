@@ -62,6 +62,7 @@
       subroutine FEM_analyze_vizs(i_step, viz_step, visval)
 !
       use t_ucd_data
+      use m_t_step_parameter
 !
       integer (kind =kint), intent(in) :: i_step
       integer(kind=kint ), intent(inout) :: visval
@@ -69,7 +70,7 @@
 !
 !
       visval = viz_file_step_4_fix(i_step, viz_step)
-      call set_field_data_4_VIZ(visval, i_step)
+      call set_field_data_4_VIZ(visval, i_step, time_d1)
 !
       end subroutine FEM_analyze_vizs
 !

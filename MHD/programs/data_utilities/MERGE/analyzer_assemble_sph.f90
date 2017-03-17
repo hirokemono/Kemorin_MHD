@@ -197,7 +197,7 @@
           ip = irank_new + 1
           call load_org_sph_data(org_sph_fst_head, ifmt_org_sph_fst,    &
      &        ip, istep, np_sph_org, org_sph_mesh(ip)%sph,              &
-     &        org_sph_phys(ip))
+     &        time_d1, org_sph_phys(ip))
         call calypso_mpi_barrier
         end do
         call share_time_step_data
@@ -226,7 +226,7 @@
 
           if(irank_new .lt. np_sph_new) then
             call const_assembled_sph_data                               &
-     &          (b_sph_ratio, new_sph_mesh(jp)%sph, r_itp,              &
+     &          (b_sph_ratio, time_d1, new_sph_mesh(jp)%sph, r_itp,     &
      &           new_sph_phys(jp), new_fst_IO(jloop), fst_time_IO)
           end if
 !

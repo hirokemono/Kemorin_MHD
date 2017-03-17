@@ -4,9 +4,10 @@
 !      Written by H. Matsui on July, 2006
 !
 !!      subroutine init_visualize(mesh, group, ele_mesh, nod_fld)
-!!      subroutine visualize_all(viz_step, mesh, group, ele_mesh,       &
-!!     &          nod_fld, ele_4_nod, jac_3d)
+!!      subroutine visualize_all(viz_step, time_d,                     &
+!!     &          mesh, group, ele_mesh, nod_fld, ele_4_nod, jac_3d)
 !!        type(VIZ_step_params), intent(in) :: viz_step
+!!        type(time_data), intent(in) :: time_d
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(element_geometry), intent(in) :: ele_mesh
@@ -23,6 +24,7 @@
       use calypso_mpi
 !
       use t_VIZ_step_parameter
+      use t_time_data
       use t_mesh_data
       use t_comm_table
       use t_geometry_data
@@ -87,14 +89,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine visualize_all(viz_step, mesh, group, ele_mesh,         &
-     &          nod_fld, ele_4_nod, jac_3d)
+      subroutine visualize_all(viz_step, time_d,                       &
+     &          mesh, group, ele_mesh, nod_fld, ele_4_nod, jac_3d)
 !
       use m_cross_section
       use m_isosurface
       use volume_rendering
       use fieldline
 !
+      type(time_data), intent(in) :: time_d
       type(VIZ_step_params), intent(in) :: viz_step
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
@@ -107,12 +110,12 @@
 !
       call start_eleps_time(65)
       call SECTIONING_visualize                                         &
-     &   (viz_step%PSF_t%istep_file, ele_mesh%edge, nod_fld)
+     &   (viz_step%PSF_t%istep_file, time_d, ele_mesh%edge, nod_fld)
       call end_eleps_time(65)
 !
       call start_eleps_time(66)
       call ISOSURF_visualize                                            &
-     &   (viz_step%ISO_t%istep_file, mesh%node, mesh%ele,               &
+     &   (viz_step%ISO_t%istep_file, time_d, mesh%node, mesh%ele,       &
      &    ele_mesh%edge, ele_mesh%edge_comm, nod_fld)
       call end_eleps_time(66)
 !

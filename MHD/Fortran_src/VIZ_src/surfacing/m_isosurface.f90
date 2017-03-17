@@ -11,7 +11,8 @@
 !!      subroutine ISOSURF_initialize                                   &
 !!     &         (node, ele, surf, edge, ele_grp, nod_fld)
 !!      subroutine ISOSURF_visualize                                    &
-!!     &         (istep_iso, node, ele, edge, edge_comm, nod_fld)
+!!     &         (istep_iso, time_d, node, ele, edge, edge_comm, nod_fld)
+!!        type(time_data), intent(in) :: time_d
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -127,11 +128,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine ISOSURF_visualize                                      &
-     &         (istep_iso, node, ele, edge, edge_comm, nod_fld)
+     &         (istep_iso, time_d, node, ele, edge, edge_comm, nod_fld)
 !
 !
       use m_geometry_constants
       use m_control_params_4_iso
+      use t_time_data
       use t_comm_table
       use t_edge_data
       use t_phys_data
@@ -144,6 +146,7 @@
 !
       integer(kind = kint), intent(in) :: istep_iso
 !
+      type(time_data), intent(in) :: time_d
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(edge_data), intent(in) :: edge
@@ -176,7 +179,7 @@
      &    iso_param, iso_list, iso_mesh)
 !
       call output_isosurface(num_iso, iso_header, itype_iso_file,       &
-     &    istep_iso, iso_mesh, iso_time_IO, iso_out, iso_out_m)
+     &    istep_iso, time_d, iso_mesh, iso_time_IO, iso_out, iso_out_m)
 !
       call dealloc_psf_field_data(num_iso, iso_mesh)
       call dealloc_psf_node_and_patch(num_iso, iso_list, iso_mesh)

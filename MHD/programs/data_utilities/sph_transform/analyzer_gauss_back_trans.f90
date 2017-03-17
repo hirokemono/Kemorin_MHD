@@ -102,7 +102,7 @@
      &      viz_step_STR, visval)
 !
         if (visval .eq. 0) then
-          call visualize_all(viz_step_STR,                              &
+          call visualize_all(viz_step_STR, time_d1,                     &
      &        femmesh_STR%mesh, femmesh_STR%group, elemesh_STR,         &
      &        field_STR, ele_4_nod_SPH_TRANS, jac_STR_q)
         end if

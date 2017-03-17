@@ -81,7 +81,7 @@
 !
 !  Generate field lines
         call start_eleps_time(12)
-        call visualize_surface(viz_step_V, femmesh_VIZ%mesh,            &
+        call visualize_surface(viz_step_V, time_d1, femmesh_VIZ%mesh,   &
      &      elemesh_VIZ, field_VIZ)
         call end_eleps_time(12)
       end do

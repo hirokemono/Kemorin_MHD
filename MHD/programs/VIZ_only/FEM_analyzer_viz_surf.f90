@@ -47,6 +47,8 @@
 !
       subroutine FEM_analyze_surface(i_step, viz_step)
 !
+      use m_t_step_parameter
+!
       integer (kind =kint), intent(in) :: i_step
       type(VIZ_step_params), intent(inout) :: viz_step
 !
@@ -58,7 +60,7 @@
       call accum_flag_to_visualization(i_step, viz_step%ISO_t, visval)
 !
       iflag = viz_step%PSF_t%istep_file * viz_step%ISO_t%istep_file
-      call set_field_data_4_VIZ(iflag, i_step)
+      call set_field_data_4_VIZ(iflag, i_step, time_d1)
 !
       end subroutine FEM_analyze_surface
 !

@@ -18,7 +18,9 @@
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(maximum_informations), intent(inout) :: range
 !!      subroutine FEM_analyze_sph_MHD                                  &
-!!     &         (i_step, SGS_par, mesh, nod_fld, MHD_step, visval)
+!!     &         (SGS_par, time_d, mesh, nod_fld, MHD_step, visval)
+!!        type(SGS_paremeters), intent(in) :: SGS_par
+!!        type(time_data), intent(in) :: time_d
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(MHD_IO_step_param), intent(inout) :: MHD_step
@@ -48,6 +50,7 @@
       use m_work_time
 !
       use m_ucd_data
+      use t_time_data
       use t_MHD_step_parameter
 !
       implicit none
@@ -126,15 +129,15 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_analyze_sph_MHD                                    &
-     &         (i_step, SGS_par, mesh, nod_fld, MHD_step, visval)
+     &         (SGS_par, time_d, mesh, nod_fld, MHD_step, visval)
 !
       use t_SGS_control_parameter
       use t_MHD_step_parameter
       use nod_phys_send_recv
       use output_viz_file_control
 !
-      integer (kind =kint), intent(in) :: i_step
       type(SGS_paremeters), intent(in) :: SGS_par
+      type(time_data), intent(in) :: time_d
       type(mesh_geometry), intent(in) :: mesh
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -148,8 +151,10 @@
 !*
 !*
       visval = 1
-      visval = viz_file_step_4_fix(i_step, MHD_step%viz_step)
-      iflag = lead_field_data_flag(i_step, MHD_step, SGS_par%sgs_step)
+      visval = viz_file_step_4_fix                                      &
+     &       (time_d%i_time_step, MHD_step%viz_step)
+      iflag = lead_field_data_flag                                      &
+     &      (time_d%i_time_step, MHD_step, SGS_par%sgs_step)
       if(iflag .ne. 0) return
 !
 !*  ----------- Data communication  --------------
@@ -159,7 +164,8 @@
 !
 !*  -----------  Output volume data --------------
 !*
-      call s_output_ucd_file_control(i_step, MHD_step%ucd_step)
+      call s_output_ucd_file_control                                    &
+     &   (time_d%i_time_step, time_d, MHD_step%ucd_step)
 !
       end subroutine FEM_analyze_sph_MHD
 !

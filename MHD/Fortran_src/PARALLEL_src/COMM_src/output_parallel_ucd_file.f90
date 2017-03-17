@@ -16,7 +16,7 @@
 !!      subroutine link_output_grd_file                                 &
 !!     &         (node, ele, nod_comm, nod_fld, ucd, m_ucd)
 !!      subroutine output_udt_one_snapshot                              &
-!!     &         (istep_ucd, node, ele, nod_comm, nod_fld)
+!!     &         (istep_ucd, time_d, node, ele, nod_comm, nod_fld)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(communication_table), intent(in) :: nod_comm
@@ -89,8 +89,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine output_udt_one_snapshot                                &
-     &         (istep_ucd, node, ele, nod_comm, nod_fld)
+     &         (istep_ucd, time_d, node, ele, nod_comm, nod_fld)
 !
+      use t_time_data
       use t_geometry_data
       use t_comm_table
       use t_phys_data
@@ -100,6 +101,7 @@
       use set_ucd_data_to_type
 !
       integer(kind = kint), intent(in) :: istep_ucd
+      type(time_data), intent(in) :: time_d
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(communication_table), intent(in) :: nod_comm
@@ -119,7 +121,7 @@
      &     (node, ele, nod_comm, ucd, m_ucd)
       end if
 !
-      call copy_time_steps_to_restart(t_IO)
+      call copy_time_steps_to_restart(time_d, t_IO)
       call sel_write_parallel_ucd_file(istep_ucd, t_IO, ucd, m_ucd)
       call calypso_mpi_barrier
 !

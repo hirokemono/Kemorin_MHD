@@ -85,7 +85,7 @@
         if(visval .eq. 0) then
           if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step
           call start_eleps_time(12)
-          call visualize_all(viz_step_V,                                &
+          call visualize_all(viz_step_V, time_d1,                       &
      &        femmesh_VIZ%mesh, femmesh_VIZ%group, elemesh_VIZ,         &
      &        field_VIZ, ele_4_nod_VIZ, jac_VIZ_q)
           call end_eleps_time(12)

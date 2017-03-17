@@ -11,7 +11,8 @@
 !!@verbatim
 !!      subroutine set_control_MHD_field_file(plt)
 !!        type(platform_data_control), intent(in) :: plt
-!!      subroutine s_output_ucd_file_control(i_step, ucd_step)
+!!      subroutine s_output_ucd_file_control(i_step, time_d, ucd_step)
+!!        type(time_data), intent(in) :: time_d
 !!        type(IO_step_param), intent(inout) :: ucd_step
 !!
 !!      subroutine output_grd_file_4_snapshot(ucd_step, mesh, nod_fld)
@@ -37,6 +38,7 @@
       use m_precision
       use m_constants
 !
+      use t_time_data
       use t_time_data_IO
       use t_mesh_data
       use t_comm_table
@@ -85,13 +87,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_output_ucd_file_control(i_step, ucd_step)
+      subroutine s_output_ucd_file_control(i_step, time_d, ucd_step)
 !
       use calypso_mpi
       use parallel_ucd_IO_select
       use copy_time_steps_4_restart
 !
       integer(kind = kint), intent(in) :: i_step
+      type(time_data), intent(in) :: time_d
       type(IO_step_param), intent(inout) :: ucd_step
 !
 !
@@ -100,7 +103,7 @@
 !
       ucd_step%istep_file = i_step / ucd_step%increment
 !
-      call copy_time_steps_to_restart(ucd_time_IO)
+      call copy_time_steps_to_restart(time_d, ucd_time_IO)
       call sel_write_parallel_ucd_file                                  &
      &   (ucd_step%istep_file, ucd_time_IO, fem_ucd, merged_ucd)
 !      call output_range_data(node, nod_fld, ucd_step%istep_file, time)

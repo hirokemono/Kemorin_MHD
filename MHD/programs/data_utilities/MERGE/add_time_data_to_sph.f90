@@ -20,6 +20,7 @@
       use t_time_data_IO
       use t_field_data_IO
 !
+      use m_t_step_parameter
       use m_machine_parameter
       use m_control_param_newsph
       use new_SPH_restart
@@ -155,9 +156,7 @@
           call load_org_fld_data(org_sph_fst_head, ifmt_org_sph_fst,    &
      &        ip, istep, org_sph_mesh(ip)%sph, org_sph_phys(ip))
         end do
-        time_d1%time = 0.0d0
-        time_d1%dt =   0.0d0
-        time_d1%i_time_step = 0
+        call reset_time_data(time_d1)
 !
 !     Bloadcast original spectr data
         do ip = 1, np_sph_org
@@ -190,7 +189,7 @@
         do jp = 1, np_sph_new
           irank_new = jp - 1
           call const_assembled_sph_data                                 &
-     &       (b_sph_ratio, new_sph_mesh(jp)%sph,                        &
+     &       (b_sph_ratio, time_d1, new_sph_mesh(jp)%sph,               &
      &        r_itp, new_sph_phys(jp), new_fst_IO, fst_time_IO)
 !
           call sel_write_step_SPH_field_file                            &

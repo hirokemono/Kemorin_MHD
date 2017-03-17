@@ -311,7 +311,7 @@
 !
         if (iflag_debug.eq.1) write(*,*) 's_output_ucd_file_control'
         call s_output_ucd_file_control                                  &
-     &     (flex_p1%istep_max_dt, MHD_step%ucd_step)
+     &     (flex_p1%istep_max_dt, time_d1, MHD_step%ucd_step)
 !
         call end_eleps_time(4)
         call start_eleps_time(3)

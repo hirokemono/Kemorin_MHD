@@ -143,7 +143,7 @@
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
-        call FEM_analyze_sph_MHD(time_d1%i_time_step, SGS_par1, mesh1,  &
+        call FEM_analyze_sph_MHD(SGS_par1, time_d1, mesh1,              &
      &      nod_fld1, MHD_step1, visval)
 !
         call end_eleps_time(4)
@@ -153,8 +153,8 @@
         if(visval .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'visualize_all'
           call start_eleps_time(12)
-          call visualize_all                                            &
-     &       (MHD_step1%viz_step, mesh1, group1, ele_mesh1, nod_fld1,   &
+          call visualize_all(MHD_step1%viz_step, time_d1,               &
+     &        mesh1, group1, ele_mesh1, nod_fld1,                       &
      &        next_tbl1%neib_ele, jac1_3d_q)
           call end_eleps_time(12)
         end if
@@ -228,15 +228,15 @@
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
-      call FEM_analyze_sph_MHD(time_d1%i_time_step, SGS_par1, mesh1,    &
+      call FEM_analyze_sph_MHD(SGS_par1, time_d1, mesh1,                &
      &    nod_fld1, MHD_step1, visval)
       call end_eleps_time(4)
 !
       if(visval .eq. 0) then
         if (iflag_debug.eq.1) write(*,*) 'visualize_all'
         call start_eleps_time(12)
-        call visualize_all                                              &
-     &     (MHD_step1%viz_step, mesh1, group1, ele_mesh1, nod_fld1,     &
+        call visualize_all(MHD_step1%viz_step, time_d1,                 &
+     &      mesh1, group1, ele_mesh1, nod_fld1,                         &
      &      next_tbl1%neib_ele, jac1_3d_q)
         call deallocate_pvr_data
         call end_eleps_time(12)
