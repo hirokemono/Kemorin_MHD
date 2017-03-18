@@ -44,7 +44,6 @@
       use m_precision
 !
       use calypso_mpi
-      use m_t_step_parameter
       use t_time_data
       use t_spheric_mesh
       use t_sph_spectr_data
@@ -177,6 +176,7 @@
       subroutine load_org_sph_data(org_sph_fst_head, ifmt_org_sph_fst,  &
      &          ip, istep, np_sph_org, org_sph, time_d, org_phys)
 !
+      use m_t_step_parameter
       use field_IO_select
       use copy_rj_phys_data_4_IO
       use copy_time_steps_4_restart

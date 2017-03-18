@@ -283,7 +283,8 @@
         iflag = output_IO_flag(flex_p1%istep_max_dt, MHD_step%rms_step)
         if(iflag .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
-          call output_time_step_control(FEM_prm1, mesh1, MHD_mesh1,     &
+          call output_time_step_control                                 &
+     &       (FEM_prm1, time_d1, mesh1, MHD_mesh1,                      &
      &        fl_prop1, cd_prop1, iphys, nod_fld1, iphys_ele, fld_ele1, &
      &        jac1_3d_q, jac1_3d_l, fem1_wk, mhd_fem1_wk)
         end if
@@ -303,8 +304,8 @@
 !     ---- Output restart field data
 !
         if (iflag_debug.eq.1) write(*,*) 'output_MHD_restart_file_ctl'
-        call output_MHD_restart_file_ctl                                &
-     &     (flex_p1%istep_max_dt, SGS_par1, mesh1%node, mesh1%nod_comm, &
+        call output_MHD_restart_file_ctl(flex_p1%istep_max_dt,          &
+     &      time_d1, SGS_par1, mesh1%node, mesh1%nod_comm,              &
      &      iphys, wk_sgs1, wk_diff1, nod_fld1, MHD_step%rst_step)
 !
 !     ---- Output voulme field data
@@ -331,7 +332,7 @@
         if(total_max .gt. elapsed_time) then
           call start_eleps_time(4)
           call elspased_MHD_restart_ctl                                 &
-     &       (SGS_par, mesh1%node, mesh1%nod_comm,                      &
+     &       (SGS_par, time_d1, mesh1%node, mesh1%nod_comm,             &
      &        iphys, wk_sgs1, wk_diff1, nod_fld1)
           retval = 0
           call end_eleps_time(4)

@@ -205,12 +205,13 @@
       call start_eleps_time(4)
       call start_eleps_time(10)
       if(iflag_debug.gt.0) write(*,*) 'output_sph_restart_control'
-      call output_sph_restart_control(rj_fld1, MHD_step%rst_step)
+      call output_sph_restart_control                                   &
+     &   (time_d1, rj_fld1, MHD_step%rst_step)
 !
       total_time = MPI_WTIME() - total_start
       if      (i_step_number .eq. -1                                    &
      &   .and. total_time.gt.elapsed_time) then
-        call output_sph_rst_by_elaps(rj_fld1)
+        call output_sph_rst_by_elaps(time_d1, rj_fld1)
         iflag_finish = 1
       end if
       call end_eleps_time(10)

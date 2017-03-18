@@ -155,11 +155,11 @@
       end if
 !
       if(iflag_debug .gt. 0) write(*,*) 'init_output_sph_restart_file'
-      call init_output_sph_restart_file(rj_fld)
+      call init_output_sph_restart_file(rj_fld, time_d1)
 !
       if (iflag_restart.ne.i_rst_by_file .and. i_step_init.eq.0) then
         if(iflag_debug .gt. 0) write(*,*) 'output_sph_restart_control'
-        call output_sph_restart_control(rj_fld, rst_step)
+        call output_sph_restart_control(time_d1, rj_fld, rst_step)
       end if
 !
       end subroutine sph_initial_data_control

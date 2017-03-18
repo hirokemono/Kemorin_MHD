@@ -125,11 +125,13 @@
       end if
 !
 !  Copy initial field to restart IO data
-      call init_output_sph_restart_file(rj_fld)
+      call init_output_sph_restart_file(rj_fld, time_d1)
 !
-      call output_sph_restart_control(rj_fld, rst_step)
+      call output_sph_restart_control(time_d1, rj_fld, rst_step)
 !
-      if(i_step_init .eq. -1) call output_sph_rst_by_elaps(rj_fld)
+      if(i_step_init .eq. -1) then
+        call output_sph_rst_by_elaps(time_d1, rj_fld)
+      end if
 !
       end subroutine sph_initial_spectrum
 !

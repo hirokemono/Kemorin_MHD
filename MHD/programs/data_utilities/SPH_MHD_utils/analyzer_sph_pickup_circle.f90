@@ -75,6 +75,8 @@
      &    sph_gen, rj_fld1, mesh_file_circ, sph_file_param1,            &
      &    MHD1_org_files, sph_fst_IO, pwr1, SGS_par1,                   &
      &    trns_WK1%dynamic_SPH%sph_filters)
+      time_d1%dt = init_d1%dt
+!
       call set_ctl_params_pick_circle                                   &
      &   (MHD_ctl1%model_ctl%fld_ctl%field_ctl,                         &
      &    MHD_ctl1%smonitor_ctl%meq_ctl)

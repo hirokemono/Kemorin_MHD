@@ -124,9 +124,8 @@
 !
 !      stepping parameter
 !
-      call s_set_fixed_time_step_params                                 &
-     &   (t_st_ctl, rst_step_STR, ucd_step_STR, viz_step_STR,           &
-     &    ierr, e_message)
+      call s_set_fixed_time_step_params(time_d1%dt, t_st_ctl,           &
+     &    rst_step_STR, ucd_step_STR, viz_step_STR, ierr, e_message)
       call set_output_step_4_fixed_step(ione, time_d1%dt,               &
      &    t_st_ctl%i_step_check_ctl, t_st_ctl%delta_t_check_ctl,        &
      &    rms_step_STR)
@@ -237,9 +236,8 @@
 !
 !      stepping parameter
 !
-      call s_set_fixed_time_step_params                                 &
-     &   (t_st_ctl, rst_step_STR, ucd_step_STR, viz_step_STR,           &
-     &    ierr, e_message)
+      call s_set_fixed_time_step_params(time_d1%dt, t_st_ctl,           &
+     &    rst_step_STR, ucd_step_STR, viz_step_STR, ierr, e_message)
       call set_output_step_4_fixed_step(ione, time_d1%dt,               &
      &    t_st_ctl%i_step_check_ctl, t_st_ctl%delta_t_check_ctl,        &
      &    rms_step_STR)

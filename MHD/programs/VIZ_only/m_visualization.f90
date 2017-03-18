@@ -104,8 +104,8 @@
       call set_control_mesh_def(plt, mesh_file)
       call set_ucd_file_define(plt, ucd)
 !
-      call s_set_fixed_time_step_params                                 &
-     &   (tctl, rst_step_V, ucd_step_V, viz_step_V, ierr, e_message)
+      call s_set_fixed_time_step_params(time_d1%dt, tctl,               &
+     &    rst_step_V, ucd_step_V, viz_step_V, ierr, e_message)
       if(ierr .gt. 0) return
 !
       end subroutine set_control_params_4_viz

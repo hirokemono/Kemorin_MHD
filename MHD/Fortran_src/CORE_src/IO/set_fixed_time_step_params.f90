@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine s_set_fixed_time_step_params                         &
-!!     &         (tctl, rst_step, ucd_step, viz_step, ierr, errmsg)
+!!     &         (dt, tctl, rst_step, ucd_step, viz_step, ierr, errmsg)
 !!        type(IO_step_param), intent(inout) :: rst_step, ucd_step
 !!        type(time_data_control), intent(in) :: tctl
 !!        type(VIZ_step_params), intent(inout) :: viz_step
@@ -33,11 +33,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_fixed_time_step_params                           &
-     &         (tctl, rst_step, ucd_step, viz_step, ierr, errmsg)
+     &         (dt, tctl, rst_step, ucd_step, viz_step, ierr, errmsg)
 !
       use m_t_step_parameter
       use m_error_IDs
 !
+      real(kind = kreal), intent(in) :: dt
       type(time_data_control), intent(in) :: tctl
 !
       type(IO_step_param), intent(inout) :: rst_step, ucd_step
@@ -60,13 +61,13 @@
       end if
 !
 !
-      call set_output_step_4_fixed_step(ione, time_d1%dt,               &
+      call set_output_step_4_fixed_step(ione, dt,                       &
      &    tctl%i_step_rst_ctl, tctl%delta_t_rst_ctl, rst_step)
 !
-      call set_output_step_4_fixed_step(ione, time_d1%dt,               &
+      call set_output_step_4_fixed_step(ione, dt,                       &
      &    tctl%i_step_ucd_ctl, tctl%delta_t_field_ctl, ucd_step)
 !
-      call viz_fixed_time_step_params(time_d1%dt, tctl, viz_step)
+      call viz_fixed_time_step_params(dt, tctl, viz_step)
 !
       if (i_step_number.eq.-1) then
         if (tctl%elapsed_time_ctl%iflag .eq. 0) then

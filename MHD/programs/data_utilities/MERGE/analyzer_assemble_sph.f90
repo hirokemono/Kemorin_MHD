@@ -201,6 +201,7 @@
         call calypso_mpi_barrier
         end do
         call share_time_step_data
+        time_d1%dt = init_d1%dt
 !
 !     Bloadcast original spectr data
         do ip = 1, np_sph_org

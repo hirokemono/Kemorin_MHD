@@ -138,7 +138,7 @@
 !
       call read_alloc_sph_rst_4_snap                                    &
      &   (i_step, MHD1_org_files%rj_file_param, sph1%sph_rj,            &
-     &    ipol, rj_fld1, MHD_step%rst_step)
+     &    ipol, rj_fld1, MHD_step%rst_step, time_d1)
 !
       if (iflag_debug.eq.1) write(*,*)' sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph                                    &
@@ -194,7 +194,7 @@
 !*
       if(iflag_debug.gt.0)  write(*,*) 'output_spectr_4_snap'
       call output_spectr_4_snap                                         &
-     &   (i_step, sph_file_param1, rj_fld1, MHD_step%ucd_step)
+     &   (i_step, time_d1, sph_file_param1, rj_fld1, MHD_step%ucd_step)
       call end_eleps_time(4)
 !
       end subroutine SPH_analyze_snap

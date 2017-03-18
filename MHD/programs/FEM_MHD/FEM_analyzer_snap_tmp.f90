@@ -195,7 +195,8 @@
       iflag = output_IO_flag(flex_p1%istep_max_dt, MHD_step%rms_step)
       if(iflag .eq. 0) then
         if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
-        call output_time_step_control(FEM_prm1, mesh1, MHD_mesh1,       &
+        call output_time_step_control                                   &
+     &     (FEM_prm1, time_d1, mesh1, MHD_mesh1,                        &
      &      fl_prop1, cd_prop1, iphys, nod_fld1, iphys_ele, fld_ele1,   &
      &      jac1_3d_q, jac1_3d_l, fem1_wk, mhd_fem1_wk)
       end if

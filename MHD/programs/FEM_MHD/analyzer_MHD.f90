@@ -71,6 +71,7 @@
       call input_control_4_MHD(FEM_prm1, SGS_par1,                      &
      &    mesh1, group1, ele_mesh1, nod_fld1, IO_bc1,                   &
      &    filtering1, wide_filtering, wk_filter1, MHD1_matrices)
+      time_d1%dt = init_d1%dt
       call end_eleps_time(4)
 !
       call start_eleps_time(2)

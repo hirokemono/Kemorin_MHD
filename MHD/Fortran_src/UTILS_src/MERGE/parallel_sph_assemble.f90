@@ -306,7 +306,7 @@
      &        izero, CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast(time_init, ione, CALYPSO_REAL,                     &
      &        izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(time_d1%dt, ione, CALYPSO_REAL,                    &
+      call MPI_Bcast(init_d1%dt, ione, CALYPSO_REAL,                    &
      &        izero, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine share_time_step_data

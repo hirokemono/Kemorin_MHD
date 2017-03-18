@@ -17,14 +17,22 @@
 !!      subroutine init_restart_4_snapshot(i_step, node, t_IO, rst_step)
 !!
 !!      subroutine output_MHD_restart_file_ctl                          &
-!!     &         (i_step, SGS_par, node, nod_comm, iphys,               &
+!!     &         (i_step, SGS_par, time_d, node, nod_comm, iphys,       &
 !!     &          wk_sgs, wk_diff, nod_fld, rst_step)
-!!      subroutine elspased_MHD_restart_ctl(SGS_par, node, nod_comm,    &
-!!     &          iphys, wk_sgs, wk_diff, nod_fld)
+!!      subroutine elspased_MHD_restart_ctl                             &
+!!     &         (SGS_par, time_d, node, nod_comm, iphys,               &
+!!     &          wk_sgs, wk_diff, nod_fld)
 !!
 !!      subroutine input_MHD_restart_file_ctl(rst_step, layer_tbl,      &
 !!     &          node, ele, fluid, SGS_par, wk_sgs, wk_diff,           &
-!!     &          sgs_coefs, diff_coefs, nod_fld, flex_p)
+!!     &          sgs_coefs, diff_coefs, nod_fld, time_d, flex_p)
+!!        type(SGS_paremeters), intent(inout) :: SGS_par
+!!        type(dynamic_model_data), intent(inout) :: wk_sgs, wk_diff
+!!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+!!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
+!!        type(phys_data), intent(inout) :: nod_fld
+!!        type(time_data), intent(inout) :: time_d
+!!        type(flexible_stepping_parameter), intent(inout) :: flex_p
 !!      subroutine input_restart_4_snapshot                             &
 !!     &         (i_step, node, nod_fld, t_IO, rst_step)
 !!        type(IO_step_param), intent(in) :: rst_step
@@ -42,6 +50,8 @@
       use calypso_mpi
 !
       use t_SGS_control_parameter
+      use t_time_data
+      use t_time_data
       use t_comm_table
       use t_geometry_data
       use t_phys_data
@@ -51,8 +61,6 @@
       use t_ele_info_4_dynamic
       use t_flex_delta_t_data
       use t_IO_step_parameter
-!
-      use m_t_step_parameter
 !
       implicit  none
 !
@@ -99,7 +107,7 @@
 !
       call alloc_merged_field_stack(nprocs, fem_fst_IO)
       call count_number_of_node_stack                                   &
-     &       (fem_fst_IO%nnod_IO, fem_fst_IO%istack_numnod_IO)
+     &   (fem_fst_IO%nnod_IO, fem_fst_IO%istack_numnod_IO)
 !
       end subroutine init_MHD_restart_output
 !
@@ -134,11 +142,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine output_MHD_restart_file_ctl                            &
-     &         (i_step, SGS_par, node, nod_comm, iphys,                 &
+     &         (i_step, SGS_par, time_d, node, nod_comm, iphys,         &
      &          wk_sgs, wk_diff, nod_fld, rst_step)
 !
       integer(kind = kint), intent(in) :: i_step
       type(SGS_paremeters), intent(in) :: SGS_par
+      type(time_data), intent(in) :: time_d
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
       type(phys_address), intent(in) :: iphys
@@ -152,19 +161,21 @@
 !
       rst_step%istep_file = i_step / rst_step%increment
       call output_restart_files                                         &
-     &   (rst_step%istep_file, node, nod_comm, iphys, nod_fld)
+     &   (rst_step%istep_file, time_d, node, nod_comm, iphys, nod_fld)
       call output_model_coef_file(rst_step%istep_file,                  &
      &    SGS_par%i_step_sgs_coefs, SGS_par%model_p, SGS_par%commute_p, &
-     &    wk_sgs, wk_diff)
+     &    time_d, wk_sgs, wk_diff)
 !
       end subroutine output_MHD_restart_file_ctl
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine elspased_MHD_restart_ctl(SGS_par, node, nod_comm,      &
-     &          iphys, wk_sgs, wk_diff, nod_fld)
+      subroutine elspased_MHD_restart_ctl                               &
+     &         (SGS_par, time_d, node, nod_comm, iphys,                 &
+     &          wk_sgs, wk_diff, nod_fld)
 !
       type(SGS_paremeters), intent(in) :: SGS_par
+      type(time_data), intent(in) :: time_d
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
       type(phys_address), intent(in) :: iphys
@@ -176,10 +187,10 @@
 !
 !
       call output_restart_files                                         &
-     &   (index_rst, node, nod_comm, iphys, nod_fld)
+     &   (index_rst, time_d, node, nod_comm, iphys, nod_fld)
       call output_model_coef_file(index_rst,                            &
      &    SGS_par%i_step_sgs_coefs, SGS_par%model_p, SGS_par%commute_p, &
-     &    wk_sgs, wk_diff)
+     &    time_d, wk_sgs, wk_diff)
 !
       end subroutine elspased_MHD_restart_ctl
 !
@@ -188,8 +199,9 @@
 !
       subroutine input_MHD_restart_file_ctl(rst_step, layer_tbl,        &
      &          node, ele, fluid, SGS_par, wk_sgs, wk_diff,             &
-     &          sgs_coefs, diff_coefs, nod_fld, flex_p)
+     &          sgs_coefs, diff_coefs, nod_fld, time_d, flex_p)
 !
+      use m_t_step_parameter
       use t_geometry_data_MHD
       use t_SGS_model_coefs
 !
@@ -204,13 +216,15 @@
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
       type(phys_data), intent(inout) :: nod_fld
+      type(time_data), intent(inout) :: time_d
       type(flexible_stepping_parameter), intent(inout) :: flex_p
 !
       integer(kind = kint) :: istep_rst
 !
 !
       call set_step_4_restart(rst_step, i_step_init, istep_rst)
-      call input_restart_files(istep_rst, node, nod_fld, flex_p)
+      call input_restart_files                                          &
+     &   (istep_rst, node, nod_fld, time_d, flex_p)
       call input_model_coef_file(istep_rst,                             &
      &    SGS_par%model_p, SGS_par%commute_p, ele, fluid, layer_tbl,    &
      &    SGS_par%i_step_sgs_coefs, wk_sgs, wk_diff,                    &
@@ -222,7 +236,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine output_restart_files                                   &
-     &         (index_rst, node, nod_comm, iphys, nod_fld)
+     &         (index_rst, time_d, node, nod_comm, iphys, nod_fld)
 !
       use field_IO_select
       use copy_time_steps_4_restart
@@ -230,6 +244,7 @@
       use nod_phys_send_recv
 !
       integer(kind = kint), intent(in) :: index_rst
+      type(time_data), intent(in) :: time_d
       type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
       type(phys_address), intent(in) :: iphys
@@ -250,7 +265,7 @@
         call scalar_send_recv(iphys%i_pre_composit, nod_comm, nod_fld)
       end if
 !
-      call copy_time_steps_to_restart(time_d1, fem_time_IO)
+      call copy_time_steps_to_restart(time_d, fem_time_IO)
       call copy_field_data_to_restart(node, nod_fld, fem_fst_IO)
 !
       call sel_write_step_FEM_field_file                                &
@@ -260,8 +275,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine input_restart_files(istep_rst, node, nod_fld, flex_p)
+      subroutine input_restart_files                                    &
+     &         (istep_rst, node, nod_fld, time_d, flex_p)
 !
+      use m_t_step_parameter
       use m_file_format_switch
 !
       use field_IO_select
@@ -271,6 +288,8 @@
 !
       integer(kind = kint), intent(in) :: istep_rst
       type(node_data), intent(in) :: node
+!
+      type(time_data), intent(inout) :: time_d
       type(phys_data), intent(inout) :: nod_fld
       type(flexible_stepping_parameter), intent(inout) :: flex_p
 !
@@ -290,14 +309,14 @@
 !
       if(flex_p%iflag_flexible_step .eq. iflag_flex_step) then
         call copy_time_steps_from_restart(fem_time_IO, init_d1)
-        time_d1%dt = init_d1%dt
+        time_d%dt = init_d1%dt
         call cal_num_digit_real                                         &
-     &     (time_d1%dt, flex_p%dt_fact, flex_p%idt_digit)
+     &     (time_d%dt, flex_p%dt_fact, flex_p%idt_digit)
       else
         call copy_init_time_from_restart(fem_time_IO)
       end if
 !
-      if(my_rank .eq. 0)  write(*,*) 'delta t ', time_d1%dt,            &
+      if(my_rank .eq. 0)  write(*,*) 'delta t ', time_d%dt,             &
      &                     flex_p%dt_fact, flex_p%idt_digit
 !
       end subroutine input_restart_files
@@ -331,7 +350,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine output_model_coef_file(index_rst, i_step_sgs_coefs,    &
-     &          SGS_param, cmt_param, wk_sgs, wk_diff)
+     &          SGS_param, cmt_param, time_d, wk_sgs, wk_diff)
 !
       use t_ele_info_4_dynamic
 !
@@ -342,6 +361,7 @@
       integer(kind = kint), intent(in) :: i_step_sgs_coefs
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
+      type(time_data), intent(in) :: time_d
       type(dynamic_model_data), intent(in) :: wk_sgs, wk_diff
 !
       character(len=kchara) :: fn_tmp
@@ -357,7 +377,7 @@
       call add_dat_extension(fn_tmp, rst_sgs_coef_name)
 !
       call output_ini_model_coefs                                       &
-     &   (i_step_sgs_coefs, time_d1%i_time_step, time_d1%time,          &
+     &   (i_step_sgs_coefs, time_d%i_time_step, time_d%time,            &
      &    cmt_param, wk_sgs, wk_diff)
 !
       end subroutine output_model_coef_file
