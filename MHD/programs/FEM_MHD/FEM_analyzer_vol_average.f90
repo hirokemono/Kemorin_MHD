@@ -48,7 +48,7 @@
 !   matrix assembling
 !
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
-      call init_analyzer_snap(FEM_prm1, SGS_par1, IO_bc1,               &
+      call init_analyzer_snap(FEM_prm1, SGS_par1, IO_bc1, time_d1,      &
      &    mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,              &
      &    iphys, nod_fld1, SNAP_time_IO, MHD_step%rst_step, label_sim)
 !

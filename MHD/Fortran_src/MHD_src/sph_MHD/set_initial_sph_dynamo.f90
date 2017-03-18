@@ -7,11 +7,13 @@
 !> @brief Set initial data for spectrum dynamos
 !!
 !!@verbatim
-!!      subroutine sph_initial_data_control(sph_params, sph_rj,         &
-!!     &          reftemp_rj, ipol, idpdr, itor, rj_fld, rst_step)
+!!      subroutine sph_initial_data_control                             &
+!!     &         (sph_params, sph_rj, reftemp_rj, ipol, idpdr, itor,    &
+!!     &          rj_fld, rst_step, time_d)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(phys_address), intent(in) :: ipol
+!!        type(time_data), intent(inout) :: time_d
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(IO_step_param), intent(inout) :: rst_step
 !!@endverbatim
@@ -25,6 +27,7 @@
       use m_machine_parameter
 !
       use t_IO_step_parameter
+      use t_time_data
       use t_spheric_rj_data
       use t_phys_address
 !
@@ -41,8 +44,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sph_initial_data_control(sph_params, sph_rj,           &
-     &          reftemp_rj, ipol, idpdr, itor, rj_fld, rst_step)
+      subroutine sph_initial_data_control                               &
+     &         (sph_params, sph_rj, reftemp_rj, ipol, idpdr, itor,      &
+     &          rj_fld, rst_step, time_d)
 !
       use m_machine_parameter
       use m_initial_field_control
@@ -60,6 +64,7 @@
       real(kind=kreal), intent(in) :: reftemp_rj(sph_rj%nidx_rj(1),0:2)
       type(phys_address), intent(in) :: ipol, idpdr, itor
 !
+      type(time_data), intent(inout) :: time_d
       type(phys_data), intent(inout) :: rj_fld
       type(IO_step_param), intent(inout) :: rst_step
 !
@@ -155,11 +160,11 @@
       end if
 !
       if(iflag_debug .gt. 0) write(*,*) 'init_output_sph_restart_file'
-      call init_output_sph_restart_file(rj_fld, time_d1)
+      call init_output_sph_restart_file(rj_fld, time_d)
 !
       if (iflag_restart.ne.i_rst_by_file .and. i_step_init.eq.0) then
         if(iflag_debug .gt. 0) write(*,*) 'output_sph_restart_control'
-        call output_sph_restart_control(time_d1, rj_fld, rst_step)
+        call output_sph_restart_control(time_d, rj_fld, rst_step)
       end if
 !
       end subroutine sph_initial_data_control

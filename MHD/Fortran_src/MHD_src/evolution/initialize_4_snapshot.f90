@@ -3,8 +3,8 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine init_analyzer_snap                                   &
-!!     &         (FEM_prm, SGS_par, IO_bc, mesh, group, ele_mesh,       &
+!!      subroutine init_analyzer_snap(FEM_prm, SGS_par,                 &
+!!     &          IO_bc, time_d, mesh, group, ele_mesh,                 &
 !!     &          MHD_mesh, layer_tbl, iphys, nod_fld, t_IO, rst_step,  &
 !!     &          label_sim)
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
@@ -25,6 +25,7 @@
       use m_precision
       use t_FEM_control_parameter
       use t_SGS_control_parameter
+      use t_time_data
       use t_phys_data
       use t_phys_address
 !
@@ -44,15 +45,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer_snap                                     &
-     &         (FEM_prm, SGS_par, IO_bc, mesh, group, ele_mesh,         &
+      subroutine init_analyzer_snap(FEM_prm, SGS_par,                   &
+     &          IO_bc, time_d, mesh, group, ele_mesh,                   &
      &          MHD_mesh, layer_tbl, iphys, nod_fld, t_IO, rst_step,    &
      &          label_sim)
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_t_step_parameter
 !
+      use m_t_step_parameter
       use m_physical_property
       use m_ele_material_property
       use m_mean_square_values
@@ -98,6 +99,7 @@
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(IO_boundary), intent(in) :: IO_bc
+      type(time_data), intent(in) :: time_d
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
@@ -262,8 +264,8 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*)' set_boundary_data'
-      call set_boundary_data(time_d1%time, time_d1%dt,                  &
-     &    IO_bc, mesh, ele_mesh, MHD_mesh, group,                       &
+      call set_boundary_data                                            &
+     &   (time_d, IO_bc, mesh, ele_mesh, MHD_mesh, group,               &
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1, iphys, nod_fld)
 !
 !     ---------------------

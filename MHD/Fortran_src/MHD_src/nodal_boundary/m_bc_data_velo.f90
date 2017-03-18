@@ -5,9 +5,10 @@
 !      Written by H. Matsui
 !
 !!      subroutine set_boundary_data                                    &
-!!     &         (time, dt, IO_bc, mesh, ele_mesh, MHD_mesh,            &
+!!     &         (time_d, IO_bc, mesh, ele_mesh, MHD_mesh,              &
 !!     &          group, fl_prop, cd_prop, ht_prop, cp_prop,            &
 !!     &          iphys, nod_fld)
+!!        type(time_data), intent(in) :: time_d
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(element_geometry), intent(in) :: ele_mesh
@@ -39,12 +40,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_boundary_data                                      &
-     &         (time, dt, IO_bc, mesh, ele_mesh, MHD_mesh,              &
+     &         (time_d, IO_bc, mesh, ele_mesh, MHD_mesh,                &
      &          group, fl_prop, cd_prop, ht_prop, cp_prop,              &
      &          iphys, nod_fld)
 !
       use m_machine_parameter
 !
+      use t_time_data
       use t_mesh_data
       use t_geometry_data_MHD
       use t_surface_group_connect
@@ -60,7 +62,7 @@
       use set_surface_values
       use set_normal_field
 !
-      real(kind = kreal), intent(in) :: time, dt
+      type(time_data), intent(in) :: time_d
       type(IO_boundary), intent(in) :: IO_bc
       type(mesh_geometry), intent(in) :: mesh
       type(element_geometry), intent(in) :: ele_mesh
@@ -75,12 +77,12 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*)' set_bc_id_data'
-      call set_bc_id_data(dt, IO_bc, mesh, group, MHD_mesh,             &
+      call set_bc_id_data(time_d%dt, IO_bc, mesh, group, MHD_mesh,      &
      &    fl_prop, cd_prop, ht_prop, cp_prop, nod1_bcs)
 !
       if (iflag_debug.eq.1) write(*,*)' set_bc_fields'
       call set_bc_fields                                                &
-     &   (time, mesh, fl_prop, cd_prop, ht_prop, cp_prop,               &
+     &   (time_d%time, mesh, fl_prop, cd_prop, ht_prop, cp_prop,        &
      &    iphys, nod_fld, nod1_bcs)
 !
       call set_bc_surface_data                                          &

@@ -60,6 +60,7 @@
 !
       call input_control_4_SPH_MHD_nosnap(MHD_ctl1, sph1, comms_sph1,   &
      &    sph_grps1, rj_fld1, pwr1, SGS_par1, trns_WK1%dynamic_SPH)
+      time_d1%dt = init_d1%dt
       call end_eleps_time(4)
 !
 !    precondition elaps start

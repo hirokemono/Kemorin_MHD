@@ -42,7 +42,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine init_analyzer_fl(MHD_step, IO_bc, FEM_prm, SGS_par,    &
-     &          mesh, group, ele_mesh, MHD_mesh, layer_tbl,             &
+     &          time_d, mesh, group, ele_mesh, MHD_mesh, layer_tbl,     &
      &          iphys, nod_fld, label_sim)
 !
       use calypso_mpi
@@ -109,6 +109,7 @@
 !
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(SGS_paremeters), intent(inout) :: SGS_par
+      type(time_data), intent(inout) :: time_d
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
@@ -255,7 +256,7 @@
       call initial_data_control(MHD_step%rst_step, ref_param_T1,        &
      &    mesh%node, mesh%ele, MHD_mesh%fluid,                          &
      &    cd_prop1, iphys, layer_tbl, SGS_par, wk_sgs1, wk_diff1,       &
-     &    sgs_coefs, diff_coefs, nod_fld, flex_p1, time_d1)
+     &    sgs_coefs, diff_coefs, nod_fld, flex_p1, time_d)
 !
 !  -------------------------------
 !
@@ -308,8 +309,8 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_data'
-      call set_boundary_data(time_d1%time, time_d1%dt,                  &
-     &    IO_bc, mesh, ele_mesh, MHD_mesh, group,                       &
+      call set_boundary_data                                            &
+     &   (time_d, IO_bc, mesh, ele_mesh, MHD_mesh, group,               &
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1, iphys, nod_fld)
 !
 !     ---------------------
@@ -321,13 +322,13 @@
 !     ---------------------
 !
       if (iflag_debug.eq.1 ) write(*,*) 'allocate_aiccg_matrices'
-      call allocate_aiccg_matrices(time_d1%dt, mesh%node,               &
+      call allocate_aiccg_matrices(time_d%dt, mesh%node,                &
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1, FEM_prm)
 !      call reset_aiccg_matrices(mesh%node, mesh%ele, MHD_mesh%fluid)
 !
       if(solver_iflag(FEM_PRM%CG11_param%METHOD) .eq. iflag_mgcg) then
         call s_initialize_4_MHD_AMG                                     &
-     &     (time_d1%dt, FEM_prm, mesh%node, mesh%ele,                   &
+     &     (time_d%dt, FEM_prm, mesh%node, mesh%ele,                    &
      &      ifld_diff, diff_coefs, FEM_prm%DJDS_param, MHD1_matrices)
       end if
 !
@@ -335,7 +336,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_stability_4_diffuse'
       call cal_stability_4_diffuse                                      &
-     &   (time_d1%dt, mesh%ele, fl_prop1, cd_prop1, ht_prop1, cp_prop1)
+     &   (time_d%dt, mesh%ele, fl_prop1, cd_prop1, ht_prop1, cp_prop1)
 ! 
       call deallocate_surf_bc_lists                                     &
      &   (fl_prop1, cd_prop1, ht_prop1, cp_prop1)
