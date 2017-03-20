@@ -148,7 +148,7 @@
      &      = 'Set elapsed time to finish (second)'
           call calypso_MPI_abort(ierr_evo, e_message)
         else
-          elapsed_time  = tctl%elapsed_time_ctl%realvalue
+          finish_d1%elapsed_time  = tctl%elapsed_time_ctl%realvalue
         end if
       end if
 !
@@ -156,7 +156,7 @@
         write(*,*) 'dt', init_d%dt, flex_p%dt_fact, flex_p%idt_digit
         write(*,*) 'i_step_init ', init_d1%i_time_step
         write(*,*) 'i_step_number ',finish_d1%i_end_step
-        write(*,*) 'elapsed_time ', elapsed_time
+        write(*,*) 'elapsed_time ', finish_d1%elapsed_time
         write(*,*) 'i_step_check ', MHD_step%rms_step%increment
         write(*,*) 'i_step_output_rst ', MHD_step%rst_step%increment
         write(*,*) 'i_step_output_ucd ', MHD_step%ucd_step%increment
@@ -289,7 +289,7 @@
      &      = 'Set elapsed time to finish (second)'
           call calypso_MPI_abort(ierr_evo, e_message)
         else
-          elapsed_time  = tctl%elapsed_time_ctl%realvalue
+          finish_d1%elapsed_time  = tctl%elapsed_time_ctl%realvalue
         end if
       end if
 !

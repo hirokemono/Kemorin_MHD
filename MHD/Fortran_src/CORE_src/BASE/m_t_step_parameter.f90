@@ -24,15 +24,11 @@
       real(kind=kreal), parameter :: adam_r =  two / three
 !
 !>      Elapsed time to terminate simulation
-      real(kind=kreal)   :: elapsed_time
+!      real(kind=kreal)   :: elapsed_time
 ! 
 !>      Flag for initial step to use Euler scheme
 !!      insted of Adams-BAshforth
       integer(kind=kint) :: iflag_initial_step = 0
-!
-!>      End time steo
-!      integer(kind=kint) :: i_step_number
-!!
 !
 !>      Structure for time data
       type(time_data), save :: time_d1
@@ -42,7 +38,7 @@
 !
 !>      Structure for end time data
       type(finish_data), save :: finish_d1
-!finish_d1%i_end_step
+!finish_d1%elapsed_time
 !
 ! -----------------------------------------------------------------------
 !

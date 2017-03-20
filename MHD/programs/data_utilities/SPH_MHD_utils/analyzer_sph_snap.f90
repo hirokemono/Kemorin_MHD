@@ -206,11 +206,13 @@
 !
       MHD_step1%rms_step%increment = 0
       MHD_step1%ucd_step%increment = 0
-      if(elapsed_time .gt. 1800.0) then
+      if(finish_d1%elapsed_time .gt. 1800.0) then
         if (my_rank.eq.0) write(*,*) 'This code can use up to 30 min.'
-        elapsed_time = 1800.0
+        finish_d1%elapsed_time = 1800.0
+      else if(finish_d1%elapsed_time .lt. 0.0d0) then
+        finish_d1%elapsed_time = 1800.0
       end if
-      if(elapsed_time .lt. 1800.0) elapsed_time = 1800.0
+!
       call start_eleps_time(3)
 !
 !*  ----------- Read spectr data and get field data --------------
@@ -279,7 +281,7 @@
           end if
         end if
 !
-        if(total_time .gt. elapsed_time) then
+        if(total_time .gt. finish_d1%elapsed_time) then
           call calypso_mpi_barrier
           call MPI_allREDUCE (total_time, total_max, ione,              &
      &       CALYPSO_REAL, MPI_MAX, CALYPSO_COMM, ierr_MPI)

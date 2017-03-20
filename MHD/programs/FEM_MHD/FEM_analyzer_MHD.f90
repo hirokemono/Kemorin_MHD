@@ -330,7 +330,7 @@
 !
       total_time = MPI_WTIME() - total_start
       if(iflag_debug.gt.0) write(*,*) 'total_time',                     &
-     &                       total_time, elapsed_time
+     &                       total_time, finish_d1%elapsed_time
 !
       call MPI_allREDUCE (total_time, total_max, ione, CALYPSO_REAL,    &
      &    MPI_MAX, CALYPSO_COMM, ierr_MPI)
@@ -338,7 +338,7 @@
 !
 !   Finish by elapsed time
       if(finish_d1%i_end_step .eq. -1) then
-        if(total_max .gt. elapsed_time) then
+        if(total_max .gt. finish_d1%elapsed_time) then
           call start_eleps_time(4)
           call elspased_MHD_restart_ctl                                 &
      &       (SGS_par1, time_d1, mesh1%node, mesh1%nod_comm,            &

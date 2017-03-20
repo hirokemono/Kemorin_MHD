@@ -75,7 +75,7 @@
           errmsg = 'Set elapsed time to finish (second)'
           return
         else
-          elapsed_time  = tctl%elapsed_time_ctl%realvalue
+          finish_d1%elapsed_time  = tctl%elapsed_time_ctl%realvalue
         end if
       end if
 !
