@@ -16,7 +16,7 @@
       use m_schmidt_poly_on_rtm
       use calypso_mpi
 !
-      use t_time_data_IO
+      use t_time_data
       use field_IO_select
 !
       implicit none

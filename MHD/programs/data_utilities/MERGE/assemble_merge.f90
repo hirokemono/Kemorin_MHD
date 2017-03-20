@@ -19,7 +19,7 @@
       use m_control_data_4_merge
       use m_control_param_merge
       use m_original_ucd_4_merge
-      use t_time_data_IO
+      use t_time_data
       use t_ucd_data
 !
       use set_merged_geometry

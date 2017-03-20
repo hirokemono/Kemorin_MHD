@@ -43,7 +43,7 @@
 !
       use calypso_mpi
       use m_calypso_mpi_IO
-      use t_time_data_IO
+      use t_time_data
       use t_field_data_IO
 !
       implicit none
@@ -245,6 +245,7 @@
      &          ioff_gl, t_IO, num_field, ncomp_field, istack_merged)
 !
       use m_phys_constants
+      use time_data_IO
       use field_data_IO
       use gz_field_data_MPI_IO
 !
@@ -312,6 +313,7 @@
      &         (id_fld, nprocs_in, ioff_gl, t_IO)
 !
       use m_error_IDs
+      use time_data_IO
       use field_data_MPI_IO
       use gz_field_data_MPI_IO
 !

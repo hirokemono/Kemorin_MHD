@@ -14,7 +14,7 @@
       use m_work_time
       use m_t_step_parameter
       use m_SGS_control_parameter
-      use t_time_data_IO
+      use t_time_data
       use t_MHD_step_parameter
 !
       use calypso_mpi

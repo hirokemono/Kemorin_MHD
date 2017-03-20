@@ -10,7 +10,7 @@
       use m_precision
       use calypso_mpi
 !
-      use t_time_data_IO
+      use t_time_data
 !
       use m_constants
       use m_file_format_switch

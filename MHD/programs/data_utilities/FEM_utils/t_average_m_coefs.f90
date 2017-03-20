@@ -12,7 +12,7 @@
       use m_field_file_format
 !
       use t_group_data
-      use t_time_data_IO
+      use t_time_data
       use t_ucd_data
 !
       use ucd_IO_select

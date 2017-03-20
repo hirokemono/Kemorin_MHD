@@ -99,7 +99,7 @@
      &         (t_IO, ucd, i_step, viz_step, visval)
 !
       use m_ctl_params_sph_trans
-      use t_time_data_IO
+      use t_time_data
       use t_ucd_data
       use t_IO_step_parameter
       use field_IO_select

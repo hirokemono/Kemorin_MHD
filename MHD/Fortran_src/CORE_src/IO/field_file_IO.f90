@@ -34,8 +34,9 @@
       use m_precision
       use m_machine_parameter
 !
-      use t_time_data_IO
+      use t_time_data
       use t_field_data_IO
+      use time_data_IO
       use field_data_IO
       use set_parallel_file_name
 !

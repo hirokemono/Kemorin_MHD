@@ -40,7 +40,7 @@
       use m_constants
       use calypso_mpi
 !
-      use t_time_data_IO
+      use t_time_data
       use t_field_data_IO
       use m_calypso_mpi_IO
 !

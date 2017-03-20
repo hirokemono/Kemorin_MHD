@@ -27,7 +27,7 @@
       use m_file_format_switch
       use m_field_file_format
 !
-      use t_time_data_IO
+      use t_time_data
       use t_ucd_data
 !
       implicit none

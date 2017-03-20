@@ -55,7 +55,7 @@
       subroutine init_ucd_data_4_merge(istep, t_IO, ucd)
 !
       use m_constants
-      use t_time_data_IO
+      use t_time_data
       use t_ucd_data
       use m_control_param_merge
       use ucd_IO_select
@@ -92,7 +92,7 @@
 !
       subroutine read_ucd_data_4_merge(istep, t_IO, ucd)
 !
-      use t_time_data_IO
+      use t_time_data
       use t_ucd_data
       use m_control_param_merge
       use m_geometry_data_4_merge

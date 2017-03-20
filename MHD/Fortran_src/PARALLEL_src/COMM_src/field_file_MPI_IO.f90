@@ -38,7 +38,7 @@
 !
       use calypso_mpi
       use m_calypso_mpi_IO
-      use t_time_data_IO
+      use t_time_data
       use t_field_data_IO
 !
       implicit none
@@ -236,6 +236,7 @@
      &          field_name, d_nod, istack_merged)
 !
       use m_phys_constants
+      use time_data_IO
       use field_data_IO
       use field_data_MPI_IO
 !

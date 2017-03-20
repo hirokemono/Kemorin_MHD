@@ -20,7 +20,7 @@
       use m_ctl_data_4_plane_model
       use m_ctl_data_2nd_plane
 !
-      use t_time_data_IO
+      use t_time_data
       use t_ucd_data
 !
       use count_number_with_overlap

@@ -63,7 +63,7 @@
 !
       subroutine sync_field_time_mpi(t_IO)
 !
-      use t_time_data_IO
+      use t_time_data
 !
       type(time_data), intent(inout) :: t_IO
 !
@@ -186,7 +186,8 @@
 !
       subroutine read_field_time_mpi(id_fld, nprocs_in, ioff_gl, t_IO)
 !
-      use t_time_data_IO
+      use t_time_data
+      use time_data_IO
       use field_data_IO
       use m_error_IDs
 !

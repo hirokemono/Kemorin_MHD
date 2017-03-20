@@ -90,7 +90,7 @@
       subroutine difference_of_two_spectr(istep_fld, files, fld_list)
 !
       use calypso_mpi
-      use t_time_data_IO
+      use t_time_data
       use field_IO_select
       use const_global_element_ids
 !

@@ -22,7 +22,7 @@
       use m_SPH_transforms
       use calypso_mpi
 !
-      use t_time_data_IO
+      use t_time_data
 !
       implicit none
 !
@@ -115,7 +115,7 @@
      &    write(*,*) 'copy_rj_phys_data_to_IO'
       call copy_rj_phys_data_to_IO(rj_fld%num_phys, rj_fld, fld_IO)
 !
-     call reset_time_data_IO(time_IO)
+     call reset_time_data(time_IO)
      call set_field_file_fmt_prefix                                     &
      &   (sph_file_trns_p%iflag_format, sph_file_trns_p%file_prefix,    &
      &    fld_IO)
@@ -167,7 +167,7 @@
       call count_number_of_node_stack                                   &
      &   (fld_IO%nnod_IO, fld_IO%istack_numnod_IO)
 !
-      call reset_time_data_IO(time_IO)
+      call reset_time_data(time_IO)
       call sel_write_step_SPH_field_file                                &
      &   (nprocs, my_rank, i_step, time_IO, fld_IO)
 !

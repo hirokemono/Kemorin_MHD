@@ -37,7 +37,7 @@
 !
       use t_mesh_data
       use t_geometry_data
-      use t_time_data_IO
+      use t_time_data
       use t_field_data_IO
       use t_file_IO_parameter
 !
@@ -62,7 +62,7 @@
       call s_set_ctl_data_plane_mesh
 !
       call set_initial_components
-      call reset_time_data_IO(plane_t_IO)
+      call reset_time_data(plane_t_IO)
 !
       num_pe = ndx * ndy * ndz
 !

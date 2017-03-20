@@ -14,7 +14,7 @@
       use m_ctl_data_4_plane_model
       use m_geometry_data_4_merge
 !
-      use t_time_data_IO
+      use t_time_data
       use t_ucd_data
 !
       use set_geometry_to_merge

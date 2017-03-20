@@ -16,7 +16,7 @@
       use m_spheric_data_sph_spetr
       use calypso_mpi
 !
-      use t_time_data_IO
+      use t_time_data
       use field_IO_select
       use pickup_sph_rms_spectr 
 !

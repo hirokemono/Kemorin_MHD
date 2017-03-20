@@ -29,7 +29,7 @@
 !
       use m_file_format_switch
       use t_phys_data
-      use t_time_data_IO
+      use t_time_data
       use ucd_IO_select
 !
       integer (kind = kint), intent(in) :: istep
@@ -63,7 +63,7 @@
      &          ifield_target, phys_data, nnod_max, mesh, t_IO, ucd)
 !
       use t_mesh_data
-      use t_time_data_IO
+      use t_time_data
       use t_ucd_data
       use ucd_IO_select
 !

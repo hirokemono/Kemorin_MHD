@@ -24,7 +24,7 @@
       use m_control_param_merge
       use m_geometry_data_4_merge
       use m_file_format_switch
-      use t_time_data_IO
+      use t_time_data
       use t_field_data_IO
 !
       implicit none

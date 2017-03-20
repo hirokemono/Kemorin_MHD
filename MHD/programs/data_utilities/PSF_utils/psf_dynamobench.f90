@@ -18,7 +18,7 @@
       use m_psf_edge_connect
       use m_dynamobench_data_by_psf
 !
-      use t_time_data_IO
+      use t_time_data
       use t_ucd_data
 !
       implicit    none

@@ -16,7 +16,7 @@
       use m_schmidt_poly_on_rtm
       use calypso_mpi
 !
-      use t_time_data_IO
+      use t_time_data
       use cal_rms_fields_by_sph
       use field_IO_select
 !

@@ -32,7 +32,7 @@
       use m_precision
       use m_machine_parameter
 !
-      use t_time_data_IO
+      use t_time_data
       use t_field_data_IO
       use gz_field_data_IO
       use skip_gz_comment

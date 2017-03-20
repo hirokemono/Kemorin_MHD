@@ -34,7 +34,7 @@
 !
       use calypso_mpi
       use t_time_data
-      use t_time_data_IO
+      use t_time_data
       use t_ucd_data
 !
       implicit  none

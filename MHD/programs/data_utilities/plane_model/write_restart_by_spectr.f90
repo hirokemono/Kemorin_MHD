@@ -71,7 +71,7 @@
 !
       use m_constants
       use m_geometry_data_4_merge
-      use t_time_data_IO
+      use t_time_data
       use field_IO_select
       use set_list_4_FFT
       use set_field_to_restart

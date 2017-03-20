@@ -1,5 +1,5 @@
-!>@file   t_time_data_IO.f90
-!!@brief  module t_time_data_IO
+!>@file   time_data_IO.f90
+!!@brief  module time_data_IO
 !!
 !!@author H. Matsui
 !!@date Programmed in Oct., 2007
@@ -12,15 +12,13 @@
 !!
 !!      subroutine write_step_data(id_file, my_rank, t_IO)
 !!      subroutine read_step_data(id_file, t_IO)
-!!
-!!      subroutine reset_time_data_IO(t_IO)
 !!        type(time_data), intent(inout) :: t_IO
 !!@endverbatim
 !!
 !!@n @param  my_rank   Process ID
 !!@n @param  id_file   file ID for data IO
 !
-      module t_time_data_IO
+      module time_data_IO
 !
       use m_precision
       use m_constants
@@ -140,19 +138,5 @@
       end subroutine read_step_data
 !
 ! -------------------------------------------------------------------
-! -------------------------------------------------------------------
 !
-      subroutine reset_time_data_IO(t_IO)
-!
-      type(time_data), intent(inout) :: t_IO
-!
-!
-      t_IO%i_time_step = izero
-      t_IO%time =        zero
-      t_IO%dt =     zero
-!
-      end subroutine reset_time_data_IO
-!
-! -------------------------------------------------------------------
-!
-      end module t_time_data_IO
+      end module time_data_IO

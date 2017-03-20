@@ -25,7 +25,6 @@
 !
       use m_constants
       use t_time_data
-      use t_time_data_IO
 !
       implicit none
 !
@@ -82,9 +81,7 @@
       type(time_data), intent(inout) :: t_IO
 !
 !
-      t_IO%i_time_step = time_d%i_time_step
-      t_IO%time =        time_d%time
-      t_IO%dt =          time_d%dt
+      call copy_time_step_data(time_d, t_IO)
 !
       end subroutine copy_time_steps_to_restart
 !
@@ -96,9 +93,7 @@
       type(time_data), intent(inout) :: time_d
 !
 !
-      time_d%i_time_step = t_IO%i_time_step
-      time_d%time =        t_IO%time
-      time_d%dt =          t_IO%dt
+      call copy_time_step_data(t_IO, time_d)
 !
       end subroutine copy_time_steps_from_field
 !

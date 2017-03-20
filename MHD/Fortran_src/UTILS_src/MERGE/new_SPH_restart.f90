@@ -47,7 +47,7 @@
       use t_time_data
       use t_spheric_mesh
       use t_sph_spectr_data
-      use t_time_data_IO
+      use t_time_data
       use t_field_data_IO
       use t_spheric_parameter
       use t_sph_trans_comm_tbl

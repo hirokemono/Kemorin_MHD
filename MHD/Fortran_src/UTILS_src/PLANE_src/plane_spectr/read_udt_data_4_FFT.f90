@@ -31,7 +31,7 @@
       use m_constants
       use m_control_param_merge
 !
-      use t_time_data_IO
+      use t_time_data
       use t_ucd_data
 !
       use set_list_4_FFT
@@ -60,7 +60,7 @@
       use m_spectr_4_ispack
       use m_file_format_switch
 !
-      use t_time_data_IO
+      use t_time_data
       use t_ucd_data
 !
       use set_list_4_FFT

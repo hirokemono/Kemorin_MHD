@@ -41,7 +41,7 @@
 !
       use t_geometry_data
       use t_phys_data
-      use t_time_data_IO
+      use t_time_data
       use t_ucd_data
 !
       implicit none
@@ -215,7 +215,6 @@
       subroutine set_data_by_read_ucd                                   &
      &         (my_rank, istep_ucd, t_IO, ucd, nod_fld)
 !
-      use t_time_data_IO
       use set_and_cal_udt_data
       use ucd_IO_select
 !
@@ -237,7 +236,6 @@
       subroutine set_data_by_read_ucd_once(my_rank, istep_ucd,          &
      &          ifile_format, ucd_prefix, nod_fld, t_IO)
 !
-      use t_time_data_IO
       use set_and_cal_udt_data
       use ucd_IO_select
 !

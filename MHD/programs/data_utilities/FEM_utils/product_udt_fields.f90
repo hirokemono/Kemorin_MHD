@@ -24,7 +24,7 @@
       use m_machine_parameter
 !
       use t_IO_step_parameter
-      use t_time_data_IO
+      use t_time_data
       use t_comm_table
       use t_geometry_data
       use t_phys_data
