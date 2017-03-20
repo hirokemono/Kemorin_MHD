@@ -121,7 +121,7 @@
      &     (node, ele, nod_comm, ucd, m_ucd)
       end if
 !
-      call copy_time_steps_to_restart(time_d, t_IO)
+      call copy_time_step_size_data(time_d, t_IO)
       call sel_write_parallel_ucd_file(istep_ucd, t_IO, ucd, m_ucd)
       call calypso_mpi_barrier
 !

@@ -129,7 +129,7 @@
 !
       rst_step%istep_file = time_d%i_time_step/rst_step%increment
 !
-      call copy_time_steps_to_restart(time_d, sph_time_IO)
+      call copy_time_step_size_data(time_d, sph_time_IO)
       call set_sph_restart_data_to_IO(rj_fld, sph_fst_IO)
 !
       call sel_write_step_SPH_field_file(nprocs, my_rank,               &
@@ -150,7 +150,7 @@
       integer(kind = kint), parameter :: negaone = -1
 !
 !
-      call copy_time_steps_to_restart(time_d, sph_time_IO)
+      call copy_time_step_size_data(time_d, sph_time_IO)
       call set_sph_restart_data_to_IO(rj_fld, sph_fst_IO)
 
       call sel_write_step_SPH_field_file                                &
@@ -277,7 +277,7 @@
      &    sph_out_IO)
 !
       ucd_step%istep_file = i_step / ucd_step%increment
-      call copy_time_steps_to_restart(time_d, sph_time_IO)
+      call copy_time_step_size_data(time_d, sph_time_IO)
       call copy_rj_phys_name_to_IO                                      &
      &   (rj_fld%num_phys_viz, rj_fld, sph_out_IO)
       call alloc_phys_data_IO(sph_out_IO)

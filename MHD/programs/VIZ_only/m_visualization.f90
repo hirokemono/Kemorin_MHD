@@ -200,7 +200,7 @@
       if(iflag .ne. 0) return
       call set_data_by_read_ucd                                         &
      &   (my_rank, istep_ucd, VIZ_time_IO, ucd_VIZ, field_VIZ)
-      call copy_time_steps_from_field(VIZ_time_IO, time_d)
+      call copy_time_step_size_data(VIZ_time_IO, time_d)
 !
       if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'
       call nod_fields_send_recv                                         &

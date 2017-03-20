@@ -103,7 +103,7 @@
 !
       ucd_step%istep_file = i_step / ucd_step%increment
 !
-      call copy_time_steps_to_restart(time_d, ucd_time_IO)
+      call copy_time_step_size_data(time_d, ucd_time_IO)
       call sel_write_parallel_ucd_file                                  &
      &   (ucd_step%istep_file, ucd_time_IO, fem_ucd, merged_ucd)
 !      call output_range_data(node, nod_fld, ucd_step%istep_file, time)

@@ -12,11 +12,6 @@
 !!      subroutine copy_time_steps_from_restart(t_IO, init_d)
 !!        type(time_data), intent(in) :: t_IO
 !!        type(time_data), intent(inout) :: time_d
-!!
-!!      subroutine copy_time_steps_to_restart(time_d, t_IO)
-!!      subroutine copy_time_steps_from_field(t_IO, time_d)
-!!        type(time_data), intent(inout) :: t_IO
-!!        type(time_data), intent(inout) :: time_d
 !!@endverbatim
 !
       module copy_time_steps_4_restart
@@ -71,31 +66,6 @@
       if(t_IO%dt .gt. zero) init_d%dt = t_IO%dt
 !
       end subroutine copy_time_steps_from_restart
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine copy_time_steps_to_restart(time_d, t_IO)
-!
-      type(time_data), intent(in) :: time_d
-      type(time_data), intent(inout) :: t_IO
-!
-!
-      call copy_time_step_data(time_d, t_IO)
-!
-      end subroutine copy_time_steps_to_restart
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine copy_time_steps_from_field(t_IO, time_d)
-!
-      type(time_data), intent(in) :: t_IO
-      type(time_data), intent(inout) :: time_d
-!
-!
-      call copy_time_step_data(t_IO, time_d)
-!
-      end subroutine copy_time_steps_from_field
 !
 !  ---------------------------------------------------------------------
 !

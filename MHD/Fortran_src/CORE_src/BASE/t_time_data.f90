@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine reset_time_data(time_d)
 !!        type(time_data), intent(inout) :: time_d
-!!      subroutine copy_time_step_data(time_org, time_new)
+!!      subroutine copy_time_step_size_data(time_org, time_new)
 !!        type(time_data), intent(in) ::    time_org
 !!        type(time_data), intent(inout) :: time_new
 !!@endverbatim
@@ -55,7 +55,7 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine copy_time_step_data(time_org, time_new)
+      subroutine copy_time_step_size_data(time_org, time_new)
 !
       type(time_data), intent(in) ::    time_org
       type(time_data), intent(inout) :: time_new
@@ -65,7 +65,7 @@
       time_new%time =        time_org%time
       time_new%dt =          time_org%dt
 !
-      end subroutine copy_time_step_data
+      end subroutine copy_time_step_size_data
 !
 !  ---------------------------------------------------------------------
 !

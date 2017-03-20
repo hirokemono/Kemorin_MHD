@@ -138,7 +138,7 @@
       integer(kind= kint) :: i_psf, irank_tgt
 !
 !
-      call copy_time_steps_to_restart(time_d, t_IO)
+      call copy_time_step_size_data(time_d, t_IO)
 !
       do i_psf = 1, num_psf
         if((psf_out(i_psf)%ifmt_file/iflag_single) .eq. 0) then
@@ -192,7 +192,7 @@
       integer(kind= kint) :: i_iso, irank_tgt
 !
 !
-      call copy_time_steps_to_restart(time_d, t_IO)
+      call copy_time_step_size_data(time_d, t_IO)
 !
       do i_iso = 1, num_iso
         iso_out(i_iso)%ifmt_file = itype_iso_file(i_iso)

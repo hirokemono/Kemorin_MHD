@@ -293,7 +293,7 @@
         end if
 !
 !
-        call copy_time_steps_to_restart(time_d, t_IO)
+        call copy_time_step_size_data(time_d, t_IO)
         call copy_rj_phys_name_to_IO                                    &
      &     (new_phys%num_phys, new_phys, new_fst_IO)
 !
