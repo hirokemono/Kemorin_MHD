@@ -59,7 +59,7 @@
       call open_write_binary_file(file_name)
 !
       call write_step_data_b                                            &
-     &   (my_rank, t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO)
+     &   (my_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
       call write_field_data_b                                           &
      &   (fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
      &    fld_IO%num_comp_IO, fld_IO%fld_name, fld_IO%d_IO)
@@ -87,8 +87,7 @@
      &   'Read binary data file: ', trim(file_name)
 !
       call open_read_binary_file(file_name, my_rank)
-      call read_step_data_b                                             &
-     &   (t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO,           &
+      call read_step_data_b(t_IO%i_time_step, t_IO%time, t_IO%dt,       &
      &    istack_merged, fld_IO%num_field_IO)
 !
       call read_mul_integer_b                                           &
@@ -160,8 +159,7 @@
       integer(kind = kint_gl) :: istack_merged(1)
 !
 !
-      call read_step_data_b                                             &
-     &   (t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO,           &
+      call read_step_data_b(t_IO%i_time_step, t_IO%time, t_IO%dt,       &
      &    istack_merged, fld_IO%num_field_IO)
       fld_IO%nnod_IO = int(istack_merged(1))
 !

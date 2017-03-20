@@ -41,7 +41,7 @@
 !
       type(time_params_IO), intent(in) :: t_IO
 !
-      init_d1%time =   t_IO%time_IO
+      init_d1%time =   t_IO%time
 !
       end subroutine copy_time_from_restart
 !
@@ -55,7 +55,7 @@
 !
 !
       call copy_time_from_restart(t_IO)
-      init_d1%i_time_step = t_IO%i_time_step_IO
+      init_d1%i_time_step = t_IO%i_time_step
 !
       end subroutine copy_init_time_from_restart
 !
@@ -69,7 +69,7 @@
 !
       call copy_init_time_from_restart(t_IO)
 !
-      if(t_IO%delta_t_IO .gt. zero) init_d%dt = t_IO%delta_t_IO
+      if(t_IO%dt .gt. zero) init_d%dt = t_IO%dt
 !
       end subroutine copy_time_steps_from_restart
 !
@@ -82,9 +82,9 @@
       type(time_params_IO), intent(inout) :: t_IO
 !
 !
-      t_IO%i_time_step_IO = time_d%i_time_step
-      t_IO%time_IO =        time_d%time
-      t_IO%delta_t_IO =     time_d%dt
+      t_IO%i_time_step = time_d%i_time_step
+      t_IO%time =        time_d%time
+      t_IO%dt =          time_d%dt
 !
       end subroutine copy_time_steps_to_restart
 !
@@ -96,9 +96,9 @@
       type(time_data), intent(inout) :: time_d
 !
 !
-      time_d%i_time_step = t_IO%i_time_step_IO
-      time_d%time =        t_IO%time_IO
-      time_d%dt =          t_IO%delta_t_IO
+      time_d%i_time_step = t_IO%i_time_step
+      time_d%time =        t_IO%time
+      time_d%dt =          t_IO%dt
 !
       end subroutine copy_time_steps_from_field
 !

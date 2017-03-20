@@ -153,8 +153,8 @@
           call copy_field_data_from_restart                             &
      &       (org_femmesh%mesh%node, itp_fld_IO, nod_fld_ITP)
           call dealloc_phys_data_IO(itp_fld_IO)
-          time_d1%time =       itp_time_IO%time_IO
-          time_d1%i_time_step = itp_time_IO%i_time_step_IO
+          time_d1%time =        itp_time_IO%time
+          time_d1%i_time_step = itp_time_IO%i_time_step
 !
           call nod_fields_send_recv                                     &
      &       (org_femmesh%mesh%nod_comm, nod_fld_ITP)

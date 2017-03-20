@@ -75,7 +75,7 @@
      &   (file_name, nprocs_in, id_rank, IO_param)
 !
       call gz_write_field_head_mpi_b(IO_param,                          &
-     &    t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO,           &
+     &    t_IO%i_time_step, t_IO%time, t_IO%dt,                         &
      &    fld_IO%num_field_IO, fld_IO%num_comp_IO,                      &
      &    fld_IO%istack_numnod_IO)
       call gz_write_field_data_mpi_b                                    &
@@ -112,7 +112,7 @@
      &   (file_name, nprocs_in, id_rank, IO_param)
 !
       call gz_read_step_data_mpi_b(IO_param,                            &
-     &    t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO)
+     &    t_IO%i_time_step, t_IO%time, t_IO%dt)
 !
       call alloc_merged_field_stack(nprocs_in, fld_IO)
       call gz_read_field_header_mpi_b                                   &
@@ -160,7 +160,7 @@
      &   (file_name, nprocs_in, id_rank, IO_param)
 !
       call gz_read_step_data_mpi_b(IO_param,                            &
-     &    t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO)
+     &    t_IO%i_time_step, t_IO%time, t_IO%dt)
 !
       call alloc_merged_field_stack(nprocs_in, fld_IO)
       call gz_read_field_header_mpi_b                                   &
@@ -213,7 +213,7 @@
      &   (file_name, nprocs_in, id_rank, IO_param)
 !
       call gz_read_step_data_mpi_b(IO_param,                            &
-     &    t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO)
+     &    t_IO%i_time_step, t_IO%time, t_IO%dt)
 !
       call alloc_merged_field_stack(nprocs_in, fld_IO)
       call gz_read_field_header_mpi_b                                   &

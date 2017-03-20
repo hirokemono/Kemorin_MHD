@@ -63,7 +63,7 @@
 !
       nnod4 = int(ucd%nnod)
       call write_gz_step_data                                           &
-     &   (my_rank, t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO)
+     &   (my_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
       call write_gz_field_data                                          &
      &         (nnod4, ucd%num_field, ucd%ntot_comp,                    &
      &          ucd%num_comp, ucd%phys_name, ucd%d_ucd)
@@ -95,7 +95,7 @@
       call open_rd_gzfile_f(gzip_name)
 !
       call read_gz_step_data                                            &
-     &   (id_rank, t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO)
+     &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
       call skip_gz_comment_int2(nnod4, ucd%num_field)
       call read_gz_multi_int(ucd%num_field, ucd%num_comp)
 !
@@ -131,7 +131,7 @@
       call open_rd_gzfile_f(gzip_name)
 !
       call read_gz_step_data                                            &
-     &   (id_rank, t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO)
+     &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
       call skip_gz_comment_int2(nnod4, ucd%num_field)
       ucd%nnod = nnod4
 !

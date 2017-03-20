@@ -228,9 +228,9 @@
 !
         istep_udt = i_time_step / ifactor_step
         istep_rst = i_time_step / ifactor_rst
-        plane_t_IO%i_time_step_IO = i_time_step
-        plane_t_IO%time_IO = t_init + dble(i_time_step-ist) * dt_init
-        plane_t_IO%delta_t_IO = dt_init
+        plane_t_IO%i_time_step = i_time_step
+        plane_t_IO%time = t_init + dble(i_time_step-ist) * dt_init
+        plane_t_IO%dt =  dt_init
 !
 !    read spectral data
 !

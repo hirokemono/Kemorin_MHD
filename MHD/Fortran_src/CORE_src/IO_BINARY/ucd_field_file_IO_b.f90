@@ -65,7 +65,7 @@
 !
       nnod4 = int(ucd%nnod)
       call write_step_data_b                                            &
-     &   (my_rank, t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO)
+     &   (my_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
       call write_field_data_b(nnod4, ucd%num_field,                     &
      &    ucd%ntot_comp, ucd%num_comp, ucd%phys_name, ucd%d_ucd)
       call close_binary_file
@@ -93,8 +93,7 @@
      &     'Read binary data file: ', trim(file_name)
 !
       call open_read_binary_file(file_name, my_rank)
-      call read_step_data_b                                             &
-     &   (t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO,           &
+      call read_step_data_b(t_IO%i_time_step, t_IO%time, t_IO%dt,       &
      &    istack_merged, ucd%num_field)
       ucd%nnod = istack_merged(1)
       nnod4 = int(istack_merged(1))
@@ -127,8 +126,7 @@
      &     'Read binary data file: ', trim(file_name)
 !
       call open_read_binary_file(file_name, my_rank)
-      call read_step_data_b                                             &
-     &   (t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO,           &
+      call read_step_data_b(t_IO%i_time_step, t_IO%time, t_IO%dt,       &
      &    istack_merged, ucd%num_field)
       ucd%nnod = istack_merged(1)
       nnod4 = int(istack_merged(1))
@@ -165,8 +163,7 @@
      &     'Read binary data file: ', trim(file_name)
 !
       call open_read_binary_file(file_name, my_rank)
-      call read_step_data_b                                             &
-     &   (t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO,           &
+      call read_step_data_b(t_IO%i_time_step, t_IO%time, t_IO%dt,       &
      &    istack_merged, ucd%num_field)
       ucd%nnod = istack_merged(1)
 !

@@ -41,11 +41,11 @@
 !>      Structure for time data
       type time_params_IO
 !>        Time step
-        integer(kind = kint) :: i_time_step_IO
+        integer(kind = kint) :: i_time_step
 !>        Time                  @f$ t @f$
-        real(kind = kreal) :: time_IO
+        real(kind = kreal) :: time
 !>        Length of time step   @f$ \Delta t @f$
-        real(kind = kreal) :: delta_t_IO
+        real(kind = kreal) :: dt
       end type time_params_IO
 !
       private :: TIME_HD1, TIME_HD2, TIME_HD3
@@ -69,8 +69,8 @@
 !
 !
       write(buf_pe,'(i16)')      my_rank
-      write(buf_step,'(i16)')    t_IO%i_time_step_IO
-      write(buf_time,'(1p2E25.15e3)') t_IO%time_IO, t_IO%delta_t_IO
+      write(buf_step,'(i16)')         t_IO%i_time_step
+      write(buf_time,'(1p2E25.15e3)') t_IO%time, t_IO%dt
 !
       step_data_buffer =   TIME_HD1 // char(10)                         &
      &                  // buf_pe   // char(10)                         &
@@ -97,8 +97,8 @@
       write(tmp4,'(a16)') textbuf(51:66)
       write(tmp6,'(a50)') textbuf(85:134)
       read(tmp2,*) id_rank
-      read(tmp4,*) t_IO%i_time_step_IO
-      read(tmp6,*) t_IO%time_IO, t_IO%delta_t_IO
+      read(tmp4,*) t_IO%i_time_step
+      read(tmp6,*) t_IO%time, t_IO%dt
 !
       end subroutine read_step_data_buffer
 !
@@ -114,9 +114,9 @@
       write(id_file,'(a)'   )   TIME_HD1
       write(id_file,'(i16)') my_rank
       write(id_file,'(a)'   )   TIME_HD2
-      write(id_file,'(i16)') t_IO%i_time_step_IO
+      write(id_file,'(i16)') t_IO%i_time_step
       write(id_file,'(a)'   )   TIME_HD3
-      write(id_file,'(1p20E25.15e3)') t_IO%time_IO, t_IO%delta_t_IO
+      write(id_file,'(1p20E25.15e3)') t_IO%time, t_IO%dt
 !
       end subroutine write_step_data
 !
@@ -136,14 +136,14 @@
       call skip_comment(character_4_read,id_file)
       read(character_4_read,*) itmp
       call skip_comment(character_4_read,id_file)
-      read(character_4_read,*) t_IO%i_time_step_IO
+      read(character_4_read,*) t_IO%i_time_step
       call skip_comment(character_4_read,id_file)
       read(character_4_read,*,err=99, end=99)                           &
-     &                        t_IO%time_IO, t_IO%delta_t_IO
+     &                        t_IO%time, t_IO%dt
 !
       go to 10
   99    write(*,*) 'no delta t data... continue'
-        t_IO%delta_t_IO = 0.0d0
+        t_IO%dt = 0.0d0
   10  continue
 !
       end subroutine read_step_data
@@ -156,9 +156,9 @@
       type(time_params_IO), intent(inout) :: t_IO
 !
 !
-      t_IO%i_time_step_IO = izero
-      t_IO%time_IO =        zero
-      t_IO%delta_t_IO =     zero
+      t_IO%i_time_step = izero
+      t_IO%time =        zero
+      t_IO%dt =     zero
 !
       end subroutine reset_time_data_IO
 !

@@ -61,7 +61,7 @@
       call open_wt_gzfile_f(gzip_name)
 !
       call gz_write_step_data_b(my_rank,                                &
-     &    t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO)
+     &    t_IO%i_time_step, t_IO%time, t_IO%dt)
       call gz_write_field_data_b                                        &
      &   (fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
      &    fld_IO%num_comp_IO, fld_IO%fld_name, fld_IO%d_IO)
@@ -89,7 +89,7 @@
 !
       call open_rd_gzfile_f(gzip_name)
       call gz_read_step_data_b                                          &
-     &   (my_rank, t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO,  &
+     &   (my_rank, t_IO%i_time_step, t_IO%time, t_IO%dt,                &
      &    istack_merged, fld_IO%num_field_IO)
 !
       call gz_read_mul_integer_b                                        &
@@ -122,7 +122,7 @@
 !
       call open_rd_gzfile_f(gzip_name)
       call gz_read_step_data_b                                          &
-     &   (my_rank, t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO,  &
+     &   (my_rank, t_IO%i_time_step, t_IO%time, t_IO%dt,                &
      &    istack_merged, fld_IO%num_field_IO)
 !
       call alloc_phys_name_IO(fld_IO)
@@ -159,7 +159,7 @@
 !
       call open_rd_gzfile_f(gzip_name)
       call gz_read_step_data_b                                          &
-     &   (my_rank, t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO,  &
+     &   (my_rank, t_IO%i_time_step, t_IO%time, t_IO%dt,                &
      &    istack_merged, fld_IO%num_field_IO)
 !
       call alloc_phys_name_IO(fld_IO)

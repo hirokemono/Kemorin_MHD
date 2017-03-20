@@ -75,7 +75,7 @@
 !
       if(id_rank .lt. nprocs_in) then
         call write_field_data_mpi_b(IO_param,                           &
-     &      t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO,         &
+     &      t_IO%i_time_step, t_IO%time, t_IO%dt,                       &
      &      fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,   &
      &      fld_IO%num_comp_IO, fld_IO%fld_name, fld_IO%d_IO,           &
      &      fld_IO%istack_numnod_IO)
@@ -273,9 +273,9 @@
 !
 !
       call mpi_read_one_inthead_b(IO_param_l, nprocs_tmp)
-      call mpi_read_one_inthead_b(IO_param_l, t_IO%i_time_step_IO)
-      call mpi_read_one_realhead_b(IO_param_l, t_IO%time_IO)
-      call mpi_read_one_realhead_b(IO_param_l, t_IO%delta_t_IO)
+      call mpi_read_one_inthead_b(IO_param_l, t_IO%i_time_step)
+      call mpi_read_one_realhead_b(IO_param_l, t_IO%time)
+      call mpi_read_one_realhead_b(IO_param_l, t_IO%dt)
 !
       call alloc_merged_field_stack(IO_param_l%nprocs_in, fld_IO)
 !

@@ -68,11 +68,11 @@
       type(time_params_IO), intent(inout) :: t_IO
 !
 !
-      call MPI_BCAST(t_IO%i_time_step_IO, ione, CALYPSO_INTEGER, izero, &
+      call MPI_BCAST(t_IO%i_time_step, ione, CALYPSO_INTEGER, izero,    &
      &    CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(t_IO%time_IO, ione, CALYPSO_REAL, izero,           &
+      call MPI_BCAST(t_IO%time, ione, CALYPSO_REAL, izero,              &
      &    CALYPSO_COMM, ierr_MPI)
-      call MPI_BCAST(t_IO%delta_t_IO, ione, CALYPSO_REAL, izero,        &
+      call MPI_BCAST(t_IO%dt, ione, CALYPSO_REAL, izero,                &
      &    CALYPSO_COMM, ierr_MPI)
 !
       end subroutine sync_field_time_mpi

@@ -55,7 +55,7 @@
       call open_rd_gzfile_f(gzip_name)
 !
       call read_gz_step_data                                            &
-     &   (id_rank, t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO)
+     &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
       call skip_gz_comment_int(fld_IO%num_field_IO)
       call read_gz_field_data                                           &
      &   (fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
@@ -87,7 +87,7 @@
       call open_rd_gzfile_f(gzip_name)
 !
       call read_gz_step_data                                            &
-     &   (id_rank, t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO)
+     &   (id_rank, t_IO%i_time_step, t_IO%time, t_IO%dt)
       call skip_gz_comment_int(fld_IO%num_field_IO)
 !
       call alloc_phys_name_IO(fld_IO)

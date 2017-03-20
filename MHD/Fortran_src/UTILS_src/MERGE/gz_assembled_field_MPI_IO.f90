@@ -169,7 +169,7 @@
      &   (file_name, nprocs_in, id_rank, IO_param)
 !
       call gz_write_field_head_mpi_b(IO_param,                          &
-     &    t_IO%i_time_step_IO, t_IO%time_IO, t_IO%delta_t_IO,           &
+     &    t_IO%i_time_step, t_IO%time, t_IO%dt,                         &
      &    fld_IO(1)%num_field_IO, fld_IO(1)%num_comp_IO,                &
      &    fld_IO(1)%istack_numnod_IO)
 !
