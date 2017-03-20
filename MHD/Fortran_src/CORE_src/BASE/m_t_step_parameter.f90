@@ -23,9 +23,6 @@
 !>      1 / adam_0
       real(kind=kreal), parameter :: adam_r =  two / three
 !
-!>      Time for the initail step
-!      real(kind=kreal) :: time_init
-! 
 !>      Elapsed time to terminate simulation
       real(kind=kreal)   :: elapsed_time
 ! 
@@ -42,7 +39,6 @@
 !
 !>      Structure for initial time data
       type(time_data), save :: init_d1
-!init_d1%time
 !
 ! -----------------------------------------------------------------------
 !

@@ -256,7 +256,7 @@
       call initial_data_control(MHD_step%rst_step, ref_param_T1,        &
      &    mesh%node, mesh%ele, MHD_mesh%fluid,                          &
      &    cd_prop1, iphys, layer_tbl, SGS_par, wk_sgs1, wk_diff1,       &
-     &    sgs_coefs, diff_coefs, nod_fld, flex_p1, time_d)
+     &    sgs_coefs, diff_coefs, nod_fld, flex_p1, init_d1, time_d)
 !
 !  -------------------------------
 !

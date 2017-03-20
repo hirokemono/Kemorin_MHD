@@ -124,7 +124,6 @@
       use set_ucd_data_to_type
       use parallel_ucd_IO_select
       use ucd_IO_select
-      use copy_time_steps_4_restart
       use merge_output_4_psf
 !
       integer(kind= kint), intent(in) :: num_psf
@@ -174,7 +173,6 @@
       use set_ucd_data_to_type
       use parallel_ucd_IO_select
       use ucd_IO_select
-      use copy_time_steps_4_restart
       use merge_output_4_psf
 !
       integer(kind= kint), intent(in) :: num_iso

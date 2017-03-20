@@ -127,7 +127,6 @@
 !
       use field_IO_select
       use set_parallel_file_name
-      use copy_time_steps_4_restart
       use nod_phys_send_recv
       use set_field_to_restart
       use set_field_to_restart
@@ -153,9 +152,8 @@
           call copy_field_data_from_restart                             &
      &       (org_femmesh%mesh%node, itp_fld_IO, nod_fld_ITP)
           call dealloc_phys_data_IO(itp_fld_IO)
-          time_d1%time =        itp_time_IO%time
-          time_d1%i_time_step = itp_time_IO%i_time_step
 !
+          call copy_time_step_data(itp_time_IO, init_d1)
           call nod_fields_send_recv                                     &
      &       (org_femmesh%mesh%nod_comm, nod_fld_ITP)
         end if

@@ -178,7 +178,6 @@
       use m_sph_spectr_data
       use m_t_step_parameter
       use r_interpolate_marged_sph
-      use copy_time_steps_4_restart
       use set_field_file_names
       use parallel_sph_assemble
 !
@@ -200,7 +199,7 @@
      &        time_d1, org_sph_phys(ip))
         call calypso_mpi_barrier
         end do
-        call share_time_step_data
+        call share_time_step_data(init_d1)
         time_d1%dt = init_d1%dt
 !
 !     Bloadcast original spectr data
@@ -218,8 +217,7 @@
           call dealloc_phys_data_type(org_sph_phys(ip))
         end do
 !
-        time_d1%time =        init_d1%time
-        time_d1%i_time_step = init_d1%i_time_step
+        call copy_time_step_data(init_d1, time_d1)
 !
         do jloop = 1, nloop_new
           irank_new = my_rank + (jloop-1) * nprocs

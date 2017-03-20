@@ -8,7 +8,7 @@
 !!      subroutine                                   &
 !!     &         (rst_step, ref_param_T, node, ele, fluid, cd_prop,     &
 !!     &          iphys, layer_tbl, SGS_par, wk_sgs, wk_diff,           &
-!!     &          sgs_coefs, diff_coefs, nod_fld, flex_p, time_d)
+!!     &          sgs_coefs, diff_coefs, nod_fld, flex_p, init_d, time_d)
 !!        type(IO_step_param), intent(in) :: rst_step
 !!        type(reference_scalar_param), intent(in) :: ref_param_T
 !!        type(node_data), intent(in) :: node
@@ -17,7 +17,7 @@
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(phys_address), intent(in) :: iphys
 !!        type(layering_tbl), intent(in) :: layer_tbl
-!!        type(time_data), intent(inout) :: time_d
+!!        type(time_data), intent(inout) :: init_d, time_d
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
@@ -57,7 +57,7 @@
       subroutine initial_data_control                                   &
      &         (rst_step, ref_param_T, node, ele, fluid, cd_prop,       &
      &          iphys, layer_tbl, SGS_par, wk_sgs, wk_diff,             &
-     &          sgs_coefs, diff_coefs, nod_fld, flex_p, time_d)
+     &          sgs_coefs, diff_coefs, nod_fld, flex_p, init_d, time_d)
 !
       use m_t_step_parameter
       use m_initial_field_control
@@ -83,7 +83,7 @@
       type(dynamic_model_data), intent(inout) :: wk_sgs, wk_diff
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
-      type(time_data), intent(inout) :: time_d
+      type(time_data), intent(inout) :: init_d, time_d
       type(phys_data), intent(inout) :: nod_fld
       type(flexible_stepping_parameter), intent(inout) :: flex_p
 !
@@ -92,7 +92,7 @@
         call input_MHD_restart_file_ctl                                 &
      &     (rst_step, layer_tbl, node, ele, fluid,                      &
      &      SGS_par, wk_sgs, wk_diff, sgs_coefs, diff_coefs, nod_fld,   &
-     &      time_d, flex_p)
+     &      init_d, time_d, flex_p)
       else
         call set_initial_data                                           &
      &     (cd_prop, ref_param_T, node, fluid, iphys, nod_fld)
@@ -102,8 +102,7 @@
       if (iflag_debug .gt. 1)  write(*,*) 'init_MHD_restart_output'
       call init_MHD_restart_output(node, nod_fld)
 !
-      time_d%time   =       init_d1%time
-      time_d%i_time_step =  init_d1%i_time_step
+      call copy_time_step_data(init_d1, time_d)
 !
       if(flex_p%iflag_flexible_step .eq. iflag_flex_step) then
         flex_p%istep_max_dt = nint(init_d1%time / flex_p%dt_max)

@@ -24,8 +24,8 @@
 !!     &          wk_sgs, wk_diff, nod_fld)
 !!
 !!      subroutine input_MHD_restart_file_ctl(rst_step, layer_tbl,      &
-!!     &          node, ele, fluid, SGS_par, wk_sgs, wk_diff,           &
-!!     &          sgs_coefs, diff_coefs, nod_fld, time_d, flex_p)
+!!     &         node, ele, fluid, SGS_par, wk_sgs, wk_diff,            &
+!!     &         sgs_coefs, diff_coefs, nod_fld, init_d, time_d, flex_p)
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs, wk_diff
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
@@ -50,7 +50,6 @@
       use calypso_mpi
 !
       use t_SGS_control_parameter
-      use t_time_data
       use t_time_data
       use t_comm_table
       use t_geometry_data
@@ -198,12 +197,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine input_MHD_restart_file_ctl(rst_step, layer_tbl,        &
-     &          node, ele, fluid, SGS_par, wk_sgs, wk_diff,             &
-     &          sgs_coefs, diff_coefs, nod_fld, time_d, flex_p)
+     &         node, ele, fluid, SGS_par, wk_sgs, wk_diff,              &
+     &         sgs_coefs, diff_coefs, nod_fld, init_d, time_d, flex_p)
 !
-      use m_t_step_parameter
       use t_geometry_data_MHD
       use t_SGS_model_coefs
+      use m_t_step_parameter
 !
       type(IO_step_param), intent(in) :: rst_step
       type(node_data), intent(in) :: node
@@ -216,15 +215,15 @@
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
       type(phys_data), intent(inout) :: nod_fld
-      type(time_data), intent(inout) :: time_d
+      type(time_data), intent(inout) :: init_d, time_d
       type(flexible_stepping_parameter), intent(inout) :: flex_p
 !
       integer(kind = kint) :: istep_rst
 !
 !
-      call set_step_4_restart(rst_step, init_d1%i_time_step, istep_rst)
+      call set_step_4_restart(rst_step, init_d%i_time_step, istep_rst)
       call input_restart_files                                          &
-     &   (istep_rst, node, nod_fld, time_d, flex_p)
+     &   (istep_rst, node, nod_fld, init_d, time_d, flex_p)
       call input_model_coef_file(istep_rst,                             &
      &    SGS_par%model_p, SGS_par%commute_p, ele, fluid, layer_tbl,    &
      &    SGS_par%i_step_sgs_coefs, wk_sgs, wk_diff,                    &
@@ -239,7 +238,6 @@
      &         (index_rst, time_d, node, nod_comm, iphys, nod_fld)
 !
       use field_IO_select
-      use copy_time_steps_4_restart
       use set_field_to_restart
       use nod_phys_send_recv
 !
@@ -276,20 +274,18 @@
 ! -----------------------------------------------------------------------
 !
       subroutine input_restart_files                                    &
-     &         (istep_rst, node, nod_fld, time_d, flex_p)
+     &         (istep_rst, node, nod_fld, init_d, time_d, flex_p)
 !
-      use m_t_step_parameter
       use m_file_format_switch
 !
       use field_IO_select
       use set_field_to_restart
-      use copy_time_steps_4_restart
       use cal_num_digits
 !
       integer(kind = kint), intent(in) :: istep_rst
       type(node_data), intent(in) :: node
 !
-      type(time_data), intent(inout) :: time_d
+      type(time_data), intent(inout) :: init_d, time_d
       type(phys_data), intent(inout) :: nod_fld
       type(flexible_stepping_parameter), intent(inout) :: flex_p
 !
@@ -308,12 +304,12 @@
       call dealloc_phys_name_IO(fem_fst_IO)
 !
       if(flex_p%iflag_flexible_step .eq. iflag_flex_step) then
-        call copy_time_steps_from_restart(fem_time_IO, init_d1)
-        time_d%dt = init_d1%dt
+        call copy_time_steps_from_restart(fem_time_IO, init_d)
+        time_d%dt = init_d%dt
         call cal_num_digit_real                                         &
      &     (time_d%dt, flex_p%dt_fact, flex_p%idt_digit)
       else
-        call copy_init_time_from_restart(fem_time_IO)
+        call copy_time_step_data(fem_time_IO, init_d)
       end if
 !
       if(my_rank .eq. 0)  write(*,*) 'delta t ', time_d%dt,             &

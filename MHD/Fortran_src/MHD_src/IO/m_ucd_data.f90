@@ -91,7 +91,6 @@
 !
       use calypso_mpi
       use parallel_ucd_IO_select
-      use copy_time_steps_4_restart
 !
       integer(kind = kint), intent(in) :: i_step
       type(time_data), intent(in) :: time_d

@@ -119,15 +119,13 @@
 !
 !*  -----------  set initial step data --------------
 !*
-      time_d1%time =        init_d1%time
-      time_d1%i_time_step = init_d1%i_time_step
+      call copy_time_step_data(init_d1, time_d1)
       iflag_finish = 0
 !*
 !*  -------  time evelution loop start -----------
 !*
       do
-        time_d1%time = time_d1%time + time_d1%dt
-        time_d1%i_time_step = time_d1%i_time_step + 1
+        call evolve_time_data(time_d1)
 !
 !*  ----------  time evolution by spectral methood -----------------
 !*

@@ -20,7 +20,8 @@
 !!     &          r_itp, nlayer_ICB_org, nlayer_CMB_org,                &
 !!     &          nlayer_ICB_new, nlayer_CMB_new)
 !!
-!!      subroutine share_time_step_data
+!!      subroutine share_time_step_data(time_d)
+!!        type(time_data), intent(inout) :: time_d
 !!      subroutine share_original_spectr_data(ip, np_sph_org,           &
 !!     &          org_sph_mesh, org_sph_phys)
 !!@endverbatim
@@ -297,16 +298,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine share_time_step_data
+      subroutine share_time_step_data(time_d)
 !
-      use m_t_step_parameter
+      use t_time_data
+!
+      type(time_data), intent(inout) :: time_d
 !
 !
-      call MPI_Bcast(init_d1%i_time_step, ione, CALYPSO_INTEGER,        &
+      call MPI_Bcast(time_d%i_time_step, ione, CALYPSO_INTEGER,         &
      &        izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(init_d1%time, ione, CALYPSO_REAL,                  &
+      call MPI_Bcast(time_d%time, ione, CALYPSO_REAL,                   &
      &        izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(init_d1%dt, ione, CALYPSO_REAL,                    &
+      call MPI_Bcast(time_d%dt, ione, CALYPSO_REAL,                     &
      &        izero, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine share_time_step_data

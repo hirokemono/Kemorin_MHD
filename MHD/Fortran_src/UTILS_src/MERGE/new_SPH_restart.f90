@@ -179,7 +179,6 @@
       use m_t_step_parameter
       use field_IO_select
       use copy_rj_phys_data_4_IO
-      use copy_time_steps_4_restart
 !
       character(len=kchara), intent(in) :: org_sph_fst_head
       integer(kind=kint ), intent(in) :: np_sph_org
@@ -259,7 +258,6 @@
       use r_interpolate_marged_sph
 !
       use parallel_assemble_sph
-      use copy_time_steps_4_restart
       use copy_rj_phys_data_4_IO
       use field_IO_select
 !

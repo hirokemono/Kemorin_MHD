@@ -190,7 +190,6 @@
       subroutine set_field_data_4_VIZ(iflag, istep_ucd, time_d)
 !
       use set_ucd_data_to_type
-      use copy_time_steps_4_restart
       use nod_phys_send_recv
 !
       integer(kind = kint), intent(in) :: iflag, istep_ucd
