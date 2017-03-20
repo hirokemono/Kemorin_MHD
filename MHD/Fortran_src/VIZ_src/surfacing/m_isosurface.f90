@@ -55,7 +55,7 @@
 !>      Structure for psf patch data on local domain
       type(psf_local_data), allocatable, save :: iso_mesh(:)
 !
-      type(time_params_IO), save :: iso_time_IO
+      type(time_data), save :: iso_time_IO
 !
 !>      Structure for isosurface output (used by master process)
       type(ucd_data), allocatable, save :: iso_out(:)

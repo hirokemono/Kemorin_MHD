@@ -70,7 +70,7 @@
       use set_parallel_file_name
 !
       integer(kind=kint), intent(in) :: my_rank, istep_fld
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       character(len=kchara) :: file_name, fname_tmp
@@ -104,7 +104,7 @@
       use set_parallel_file_name
 !
       integer(kind=kint), intent(in) :: my_rank, istep_fld
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       character(len=kchara) :: file_name, fname_tmp

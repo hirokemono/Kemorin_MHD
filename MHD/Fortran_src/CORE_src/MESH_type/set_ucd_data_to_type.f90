@@ -220,7 +220,7 @@
       use ucd_IO_select
 !
       integer(kind = kint),  intent(in) :: my_rank, istep_ucd
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -246,7 +246,7 @@
       integer(kind = kint),  intent(in) :: my_rank, istep_ucd
 !
       type(phys_data), intent(inout) :: nod_fld
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
 !
       type(ucd_data) :: local_ucd
 !
@@ -276,7 +276,7 @@
 !
       type(phys_data), intent(inout) :: nod_fld
 !
-      type(time_params_IO) :: local_t_IO
+      type(time_data) :: local_t_IO
       type(ucd_data) :: local_ucd
 !
 !
@@ -307,7 +307,7 @@
 !
       type(phys_data), intent(inout) :: nod_fld
 !
-      type(time_params_IO) :: local_t_IO
+      type(time_data) :: local_t_IO
       type(ucd_data) :: local_ucd
 !
 !

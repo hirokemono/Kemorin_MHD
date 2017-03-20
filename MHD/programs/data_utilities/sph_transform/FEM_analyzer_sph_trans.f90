@@ -56,7 +56,7 @@
       use copy_all_field_4_sph_trans
 !
       type(field_IO_params), intent(in) :: udt_file_param
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
 !
 !
 !  -----    construct geometry informations
@@ -86,9 +86,9 @@
       use set_ucd_data_to_type
       use nod_phys_send_recv
 !
-      integer (kind =kint), intent(in) :: i_step
-      type(time_params_IO), intent(inout) :: t_IO
-      integer (kind =kint), intent(inout) :: visval
+      integer(kind =kint), intent(in) :: i_step
+      type(time_data), intent(inout) :: t_IO
+      integer(kind =kint), intent(inout) :: visval
 !
 !
 !*  ----------   Count steps for visualization

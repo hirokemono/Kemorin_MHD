@@ -28,7 +28,7 @@
 !>        Instance for FEM field data IO
       type(ucd_data), save :: fem_ucd
 !
-      type(time_params_IO), save :: merged_time_IO
+      type(time_data), save :: merged_time_IO
       type(field_IO), save :: merged_IO
 !
       integer (kind = kint) :: istep

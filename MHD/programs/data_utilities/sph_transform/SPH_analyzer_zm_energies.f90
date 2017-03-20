@@ -9,7 +9,7 @@
 !!        type(phys_address), intent(in) :: ipol
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(field_IO), intent(inout) :: fld_IO
-!!        type(time_params_IO), intent(inout) :: t_IO
+!!        type(time_data), intent(inout) :: t_IO
 !!      subroutine set_ctl_data_4_zm_energies(field_ctl)
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
 !
@@ -61,7 +61,7 @@
       integer(kind = kint), intent(inout) :: visval
       type(phys_data), intent(inout) :: rj_fld
       type(field_IO), intent(inout) :: fld_IO
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
 !
 !
       call accum_output_flag_4_viz(i_step, viz_step, visval)

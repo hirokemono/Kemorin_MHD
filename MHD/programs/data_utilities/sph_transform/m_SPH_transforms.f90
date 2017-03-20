@@ -45,7 +45,7 @@
 !
 !
 !>        Instance for FEM field data IO
-      type(time_params_IO), save :: time_IO_TRNS
+      type(time_data), save :: time_IO_TRNS
       type(ucd_data), save :: ucd_SPH_TRNS
 !>        Instance for numbers of FEM mesh for merged IO
       type(merged_ucd_data), save :: m_ucd_SPH_TRNS

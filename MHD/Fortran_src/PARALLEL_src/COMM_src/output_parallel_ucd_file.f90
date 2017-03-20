@@ -107,7 +107,7 @@
       type(communication_table), intent(in) :: nod_comm
       type(phys_data), intent(in) :: nod_fld
 !
-      type(time_params_IO) :: t_IO
+      type(time_data) :: t_IO
       type(ucd_data) :: ucd
       type(merged_ucd_data) :: m_ucd
 !
@@ -152,7 +152,7 @@
 !
       type(phys_data), intent(in) :: nod_fld
 !
-      type(time_params_IO), intent(in) :: t_IO
+      type(time_data), intent(in) :: t_IO
 !
       type(ucd_data) :: local_ucd
 !

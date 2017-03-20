@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine write_gz_step_field_file                             &
 !!     &         (gzip_name, my_rank, t_IO, fld_IO)
-!!        type(time_params_IO), intent(in) :: t_IO
+!!        type(time_data), intent(in) :: t_IO
 !!        type(field_IO), intent(in) :: fld_IO
 !!
 !!      subroutine read_alloc_gz_field_file(gzip_name, my_rank, fld_IO)
@@ -18,12 +18,12 @@
 !!     &         (gzip_name, my_rank, t_IO, fld_IO)
 !!      subroutine read_alloc_gz_step_field_file                        &
 !!     &          (gzip_name, my_rank, t_IO, fld_IO)
-!!        type(time_params_IO), intent(inout) :: t_IO
+!!        type(time_data), intent(inout) :: t_IO
 !!        type(field_IO), intent(inout) :: fld_IO
 !!
 !!      subroutine read_alloc_gz_step_field_head                        &
 !!     &         (gzip_name, my_rank, t_IO, fld_IO)
-!!        type(time_params_IO), intent(inout) :: t_IO
+!!        type(time_data), intent(inout) :: t_IO
 !!        type(field_IO), intent(inout) :: fld_IO
 !!@endverbatim
 !
@@ -50,7 +50,7 @@
 !
       integer(kind = kint), intent(in) :: my_rank
       character(len=kchara), intent(in) :: gzip_name
-      type(time_params_IO), intent(in) :: t_IO
+      type(time_data), intent(in) :: t_IO
       type(field_IO), intent(in) :: fld_IO
 !
 !
@@ -110,7 +110,7 @@
       integer(kind=kint), intent(in) :: my_rank
       character(len=kchara), intent(in) :: gzip_name
 !
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       integer(kind = kint) :: id_rank
@@ -142,7 +142,7 @@
       integer(kind=kint), intent(in) :: my_rank
       character(len=kchara), intent(in) :: gzip_name
 !
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       integer(kind = kint) :: id_rank
@@ -180,7 +180,7 @@
       integer(kind=kint), intent(in) :: my_rank
       character(len=kchara), intent(in) :: gzip_name
 !
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       integer(kind = kint) :: id_rank

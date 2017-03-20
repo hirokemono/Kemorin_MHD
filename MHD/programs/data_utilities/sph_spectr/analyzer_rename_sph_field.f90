@@ -98,7 +98,7 @@
       type(diff_spectrum_file_param), intent(in) :: files
       type(rename_list), intent(in) :: fld_list
 !
-      type(time_params_IO) :: fst_t_IO
+      type(time_data) :: fst_t_IO
       type(field_IO) :: sph_fst_IO
 !
 !

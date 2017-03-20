@@ -12,7 +12,7 @@
 !!      subroutine gz_write_step_asbl_fld_mpi_b                         &
 !!     &         (file_name, nprocs_in, id_rank, nloop, fld_IO, t_IO)
 !!        type(field_IO), intent(in) :: fld_IO(nloop)
-!!        type(time_params_IO), intent(in) :: t_IO
+!!        type(time_data), intent(in) :: t_IO
 !!
 !!   Data format for the merged ascii field data
 !!     1.   Number of process
@@ -105,7 +105,7 @@
       integer(kind = kint), intent(in) :: nprocs_in
 !
       integer(kind = kint), intent(in) :: nloop
-      type(time_params_IO), intent(in) :: t_IO
+      type(time_data), intent(in) :: t_IO
       type(field_IO), intent(in) :: fld_IO(nloop)
 !
       integer ::  id_fld
@@ -156,7 +156,7 @@
 !
       integer(kind = kint), intent(in) :: nloop
       type(field_IO), intent(in) :: fld_IO(nloop)
-      type(time_params_IO), intent(in) :: t_IO
+      type(time_data), intent(in) :: t_IO
 !
       type(calypso_MPI_IO_params) :: IO_param
 !

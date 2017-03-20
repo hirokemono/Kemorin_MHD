@@ -17,7 +17,7 @@
 !!        type(layering_tbl), intent(inout) :: layer_tbl
 !!        type(phys_address), intent(inout) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
-!!        type(time_params_IO), intent(inout) :: t_IO
+!!        type(time_data), intent(inout) :: t_IO
 !!        type(IO_step_param), intent(inout) :: rst_step
 !
       module initialize_4_snapshot
@@ -108,7 +108,7 @@
       type(layering_tbl), intent(inout) :: layer_tbl
       type(phys_address), intent(inout) :: iphys
       type(phys_data), intent(inout) :: nod_fld
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(IO_step_param), intent(inout) :: rst_step
       character(len=kchara), intent(inout)   :: label_sim
 !

@@ -55,7 +55,7 @@
       integer(kind=kint) :: jst
 !
       type(node_data) :: node_plane
-      type(time_params_IO), save :: plane_t_IO
+      type(time_data), save :: plane_t_IO
       type(field_IO) :: plane_fst_IO
       type(mesh_geometry) :: mesh_IO_p
       type(field_IO_params) ::  cube_mesh_file

@@ -9,7 +9,7 @@
 !!      subroutine deallocate_product_data
 !!
 !!      subroutine set_field_id_4_product(numnod, t_IO, ucd_step)
-!!        type(time_params_IO), intent(inout) :: t_IO
+!!        type(time_data), intent(inout) :: t_IO
 !!        type(IO_step_param), intent(inout) :: ucd_step
 !!
 !!      subroutine set_data_for_product(numnod, istep_ucd, t_IO)
@@ -103,7 +103,7 @@
       use ucd_IO_select
 !
       integer(kind = kint), intent(in) :: numnod
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(IO_step_param), intent(inout) :: ucd_step
 !
 !
@@ -172,7 +172,7 @@
 !
       integer(kind = kint), intent(in) :: numnod
       integer(kind = kint), intent(in) :: istep_ucd
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
 !
 !
       call set_one_field_by_read_ucd_once(my_rank, istep_ucd,           &
@@ -340,7 +340,7 @@
 !
       character(len = kchara), intent(in) :: field_name
       integer(kind = kint),  intent(inout) :: i_field, ncomp_field
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
 !
       type(ucd_data) :: local_ucd
 !
@@ -370,7 +370,7 @@
       integer(kind = kint),  intent(in) :: numnod, i_field, ncomp_field
 !
       real(kind = kreal), intent(inout) :: d_fld(numnod,ncomp_field)
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
 !
       type(ucd_data) :: local_ucd
 !

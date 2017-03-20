@@ -48,7 +48,7 @@
       type(phys_data), allocatable, save ::     new_sph_phys(:)
 !
       type(field_IO), save :: new_fst_IO
-      type(time_params_IO), save :: fst_time_IO
+      type(time_data), save :: fst_time_IO
 !
       type(sph_radial_itp_data), save :: r_itp
       type(rj_assemble_tbl), allocatable, save :: j_table_s(:,:)

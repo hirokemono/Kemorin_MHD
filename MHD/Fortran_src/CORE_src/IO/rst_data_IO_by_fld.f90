@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine read_rst_file(my_rank, file_name, t_IO, fld_IO)
 !!      subroutine read_rst_data_comps(my_rank, file_name, t_IO, fld_IO)
-!!        type(time_params_IO), intent(inout) :: t_IO
+!!        type(time_data), intent(inout) :: t_IO
 !!        type(field_IO), intent(inout) :: fld_IO
 !!@endverbatim
 !
@@ -40,7 +40,7 @@
       integer(kind = kint), intent(in) :: my_rank
       character(len=kchara), intent(in) :: file_name
 !
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       character(len=kchara) :: character_4_read
@@ -73,7 +73,7 @@
       integer(kind = kint), intent(in) :: my_rank
       character(len=kchara), intent(in) :: file_name
 !
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       character(len=kchara) :: character_4_read

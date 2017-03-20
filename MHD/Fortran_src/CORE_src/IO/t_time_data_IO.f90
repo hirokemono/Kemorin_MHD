@@ -14,7 +14,7 @@
 !!      subroutine read_step_data(id_file, t_IO)
 !!
 !!      subroutine reset_time_data_IO(t_IO)
-!!        type(time_params_IO), intent(inout) :: t_IO
+!!        type(time_data), intent(inout) :: t_IO
 !!@endverbatim
 !!
 !!@n @param  my_rank   Process ID
@@ -25,6 +25,7 @@
       use m_precision
       use m_constants
       use m_machine_parameter
+      use t_time_data
 !
       implicit none
 !
@@ -38,16 +39,6 @@
 !
       integer(kind = kint), parameter :: len_step_data_buf = l_hd+l_dt
 !
-!>      Structure for time data
-      type time_params_IO
-!>        Time step
-        integer(kind = kint) :: i_time_step
-!>        Time                  @f$ t @f$
-        real(kind = kreal) :: time
-!>        Length of time step   @f$ \Delta t @f$
-        real(kind = kreal) :: dt
-      end type time_params_IO
-!
       private :: TIME_HD1, TIME_HD2, TIME_HD3
       private :: l_hd, l_dt
 !
@@ -60,7 +51,7 @@
       function step_data_buffer(my_rank, t_IO)
 !
       integer(kind = kint), intent(in) :: my_rank
-      type(time_params_IO), intent(in) :: t_IO
+      type(time_data), intent(in) :: t_IO
 !
       character(len=len_step_data_buf) :: step_data_buffer
 !
@@ -87,7 +78,7 @@
 !
       character(len=len_step_data_buf), intent(in) :: textbuf
       integer(kind = kint), intent(inout) :: id_rank
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
 !
       character(len=16) :: tmp2
       character(len=16) :: tmp4
@@ -108,7 +99,7 @@
       subroutine write_step_data(id_file, my_rank, t_IO)
 !
       integer(kind = kint), intent(in) :: id_file, my_rank
-      type(time_params_IO), intent(in) :: t_IO
+      type(time_data), intent(in) :: t_IO
 !
 !
       write(id_file,'(a)'   )   TIME_HD1
@@ -127,7 +118,7 @@
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_file
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
 !
       character(len=255) :: character_4_read
       integer(kind = kint) :: itmp
@@ -153,7 +144,7 @@
 !
       subroutine reset_time_data_IO(t_IO)
 !
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
 !
 !
       t_IO%i_time_step = izero

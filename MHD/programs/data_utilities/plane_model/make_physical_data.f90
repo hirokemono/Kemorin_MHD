@@ -40,7 +40,7 @@
 !
       type(field_IO_params), save ::  plane_mesh_file
       type(ucd_data) :: fft_ucd
-      type(time_params_IO), save :: fft_t_IO
+      type(time_data), save :: fft_t_IO
 !
       integer(kind=kint ) :: ist, ied, iint
       integer(kind=kint ) ::  istep, isig, ip

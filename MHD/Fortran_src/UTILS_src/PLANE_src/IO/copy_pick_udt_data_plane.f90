@@ -5,7 +5,7 @@
 !!      subroutine read_udt_data_4_plane_model(num_pe, istep,           &
 !!     &          nnod_target, nfield_target, icomp_target,             &
 !!     &          ifield_target, phys_data, nnod_max, mesh, t_IO, ucd)
-!!        type(time_params_IO), intent(inout) :: t_IO
+!!        type(time_data), intent(inout) :: t_IO
 !!        type(ucd_data), intent(inout) :: ucd
 !!        type(phys_data), intent(inout) :: nod_fld
 !
@@ -33,7 +33,7 @@
       use ucd_IO_select
 !
       integer (kind = kint), intent(in) :: istep
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
       type(phys_data), intent(inout) :: nod_fld
       integer (kind = kint) :: i
@@ -69,7 +69,7 @@
 !
       integer(kind = kint), intent(in) :: num_pe, istep, nnod_max
       type(mesh_geometry), intent(in) :: mesh(num_pe)
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
       integer(kind = kint), intent(in) :: nfield_target, nnod_target

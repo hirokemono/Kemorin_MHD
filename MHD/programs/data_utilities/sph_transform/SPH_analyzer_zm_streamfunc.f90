@@ -10,7 +10,7 @@
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(sph_grids), intent(in) :: sph_mesh
 !!        type(phys_data), intent(inout) :: rj_fld
-!!        type(time_params_IO), intent(inout) :: t_IO
+!!        type(time_data), intent(inout) :: t_IO
 !!        type(field_IO), intent(inout) :: fld_IO
 !!      subroutine set_ctl_data_4_zm_streamline(field_ctl)
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
@@ -62,7 +62,7 @@
       type(phys_data), intent(inout) :: rj_fld
 !
       integer(kind = kint), intent(inout) :: visval
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
 !

@@ -6,7 +6,7 @@
 !!
 !!      subroutine init_ucd_data_4_merge(istep, t_IO, ucd)
 !!      subroutine read_ucd_data_4_merge(istep, t_IO, ucd)
-!!        type(time_params_IO), intent(inout) :: t_IO
+!!        type(time_data), intent(inout) :: t_IO
 !!        type(ucd_data), intent(inout) :: ucd
 !!
 !!      subroutine set_field_list_4_merge
@@ -61,7 +61,7 @@
       use ucd_IO_select
 !
       integer (kind = kint), intent(in) :: istep
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
       integer (kind = kint) :: i
@@ -100,7 +100,7 @@
       use ucd_IO_select
 !
        integer (kind = kint), intent(in) :: istep
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
        integer (kind = kint) :: ip, my_rank

@@ -23,7 +23,7 @@
 !
 !
       type(group_data), save :: e_grp
-      type(time_params_IO), save :: med_time_IO
+      type(time_data), save :: med_time_IO
       type(ucd_data), save  :: ucd_med
 !
       integer(kind = kint) :: istep_read, nd, ierr, icou, i, istart_grp

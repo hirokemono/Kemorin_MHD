@@ -20,7 +20,7 @@
 !
       implicit none
 !
-      type(time_params_IO), save, private :: SNAP_time_IO
+      type(time_data), save, private :: SNAP_time_IO
 !
 ! ----------------------------------------------------------------------
 !

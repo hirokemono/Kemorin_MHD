@@ -72,7 +72,7 @@
       use hdf5_file_IO
 !
       integer(kind=kint), intent(in) :: istep_ucd
-      type(time_params_IO), intent(in) :: t_IO
+      type(time_data), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
       type(merged_ucd_data), intent(inout) :: m_ucd
 !

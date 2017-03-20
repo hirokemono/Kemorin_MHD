@@ -71,7 +71,7 @@
       implicit  none
 !
 !
-      type(time_params_IO), save, private :: sph_time_IO
+      type(time_data), save, private :: sph_time_IO
       type(field_IO), save :: sph_fst_IO
 !
       type(field_IO), save, private :: sph_out_IO

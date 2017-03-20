@@ -72,7 +72,7 @@
 !>      Structure for psf patch data on local domain
       type(psf_local_data), allocatable, save :: psf_mesh(:)
 !
-      type(time_params_IO), save :: psf_time_IO
+      type(time_data), save :: psf_time_IO
 !
 !>      Structure for cross sectioning output (used by master process)
       type(ucd_data), allocatable, save :: psf_out(:)

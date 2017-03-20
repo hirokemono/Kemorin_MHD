@@ -36,7 +36,7 @@
 !!        type(sph_radial_itp_data), intent(in) :: r_itp
 !!        type(phys_data), intent(inout) :: new_phys
 !!        type(field_IO), intent(inout) :: new_fst_IO
-!!        type(time_params_IO), intent(in) :: t_IO
+!!        type(time_data), intent(in) :: t_IO
 !!@endverbatim
 !
       module new_SPH_restart
@@ -137,7 +137,7 @@
 !
       type(phys_data), intent(inout) :: org_phys(np_sph_org)
       type(phys_data), intent(inout) :: new_phys
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
 !
 !>      Field data IO structure for original data
       type(field_IO) :: org_fst_IO
@@ -192,7 +192,7 @@
       type(phys_data), intent(inout) :: org_phys
 !
 !>      Field data IO structure for original data
-      type(time_params_IO) :: org_time_IO
+      type(time_data) :: org_time_IO
       type(field_IO) :: org_fst_IO
       integer(kind = kint) :: irank_org
 !
@@ -271,7 +271,7 @@
 !
       type(phys_data), intent(inout) :: new_phys
       type(field_IO), intent(inout) :: new_fst_IO
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
 !
 !
         if(r_itp%iflag_same_rgrid .eq. 0) then

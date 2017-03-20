@@ -12,7 +12,7 @@
 !!      subroutine read_ucd_2_gz_fld_file(my_rank, istep, t_IO, ucd)
 !!      subroutine read_alloc_ucd_2_gz_fld_file                         &
 !!     &         (my_rank, istep, t_IO, ucd)
-!!        type(time_params_IO), intent(inout) :: t_IO
+!!        type(time_data), intent(inout) :: t_IO
 !!        type(ucd_data), intent(inout) :: ucd
 !!@endverbatim
 !!
@@ -46,7 +46,7 @@
 !
       integer(kind=kint), intent(in) :: my_rank, istep
 !
-      type(time_params_IO), intent(in) :: t_IO
+      type(time_data), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
 !
       character(len=kchara) :: gzip_name
@@ -79,7 +79,7 @@
 !
       integer(kind=kint), intent(in) :: my_rank, istep
 !
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
       character(len=kchara) :: gzip_name
@@ -115,7 +115,7 @@
 !
       integer(kind=kint), intent(in) :: my_rank, istep
 !
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
       character(len=kchara) :: gzip_name

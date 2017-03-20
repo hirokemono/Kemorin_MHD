@@ -24,7 +24,7 @@
       implicit    none
 !
 !
-      type(time_params_IO), save :: psf_time
+      type(time_data), save :: psf_time
       type(ucd_data), save:: psf_ucd
 !
       character(len=kchara) :: psf_format

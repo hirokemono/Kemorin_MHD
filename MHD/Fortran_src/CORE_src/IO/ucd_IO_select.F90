@@ -78,7 +78,7 @@
       use write_ucd_to_vtk_file
 !
       integer(kind=kint), intent(in) :: my_rank, istep_ucd
-      type(time_params_IO), intent(in) :: t_IO
+      type(time_data), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
 !
 !
@@ -119,7 +119,7 @@
       use write_ucd_to_vtk_file
 !
       integer(kind=kint), intent(in) :: my_rank, istep_ucd
-      type(time_params_IO), intent(in) :: t_IO
+      type(time_data), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
 !
 !
@@ -187,7 +187,7 @@
 !
 !
       integer(kind=kint), intent(in) :: my_rank, istep_ucd
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
 !
@@ -218,7 +218,7 @@
 !
 !
       integer(kind=kint), intent(in) :: my_rank, istep_ucd
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
 !
@@ -247,7 +247,7 @@
 !
 !
       integer(kind=kint), intent(in) :: my_rank, istep_ucd
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
 !

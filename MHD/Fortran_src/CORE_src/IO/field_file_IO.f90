@@ -10,7 +10,7 @@
 !!@verbatim
 !!      subroutine write_step_field_file                                &
 !!     &         (file_name, my_rank, t_IO, fld_IO)
-!!        type(time_params_IO), intent(in) :: t_IO
+!!        type(time_data), intent(in) :: t_IO
 !!        type(field_IO), intent(in) :: fld_IO
 !!
 !!      subroutine read_and_allocate_field_file                         &
@@ -20,12 +20,12 @@
 !!     &         (file_name, my_rank, t_IO, fld_IO)
 !!      subroutine read_and_alloc_step_field                            &
 !!     &         (file_name, my_rank, t_IO, fld_IO)
-!!        type(time_params_IO), intent(inout) :: t_IO
+!!        type(time_data), intent(inout) :: t_IO
 !!        type(field_IO), intent(inout) :: fld_IO
 !!
 !!      subroutine read_and_allocate_step_head                          &
 !!     &         (file_name, my_rank, t_IO, fld_IO)
-!!        type(time_params_IO), intent(inout) :: t_IO
+!!        type(time_data), intent(inout) :: t_IO
 !!        type(field_IO), intent(inout) :: fld_IO
 !!@endverbatim
 !
@@ -53,7 +53,7 @@
       integer(kind = kint), intent(in) :: my_rank
       character(len=kchara), intent(in) :: file_name
 !
-      type(time_params_IO), intent(in) :: t_IO
+      type(time_data), intent(in) :: t_IO
       type(field_IO), intent(in) :: fld_IO
 !
 !
@@ -120,7 +120,7 @@
       integer(kind = kint), intent(in) :: my_rank
       character(len=kchara), intent(in) :: file_name
 !
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       character(len=255) :: character_4_read
@@ -155,7 +155,7 @@
       integer(kind = kint), intent(in) :: my_rank
       character(len=kchara), intent(in) :: file_name
 !
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       character(len=255) :: character_4_read
@@ -195,7 +195,7 @@
       integer(kind = kint), intent(in) :: my_rank
       character(len=kchara), intent(in) :: file_name
 !
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       character(len=255) :: character_4_read

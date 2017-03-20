@@ -15,7 +15,7 @@
 !!
 !!      subroutine read_alloc_ucd_2_fld_header_b                        &
 !!     &         (my_rank, istep, t_IO, ucd)
-!!        type(time_params_IO), intent(inout) :: t_IO
+!!        type(time_data), intent(inout) :: t_IO
 !!        type(ucd_data), intent(inout) :: ucd
 !!@endverbatim
 !!
@@ -48,7 +48,7 @@
       subroutine write_ucd_2_fld_file_b(my_rank, istep, t_IO, ucd)
 !
       integer(kind=kint), intent(in) :: my_rank, istep
-      type(time_params_IO), intent(in) :: t_IO
+      type(time_data), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
 !
       character(len=kchara) :: file_name
@@ -78,7 +78,7 @@
       subroutine read_ucd_2_fld_file_b(my_rank, istep, t_IO, ucd)
 !
       integer(kind=kint), intent(in) :: my_rank, istep
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
       character(len=kchara) :: file_name
@@ -111,7 +111,7 @@
      &         (my_rank, istep, t_IO, ucd)
 !
       integer(kind=kint), intent(in) :: my_rank, istep
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
       character(len=kchara) :: file_name
@@ -149,7 +149,7 @@
      &         (my_rank, istep, t_IO, ucd)
 !
       integer(kind=kint), intent(in) :: my_rank, istep
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
       character(len=kchara) :: file_name

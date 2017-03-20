@@ -33,7 +33,7 @@
       integer(kind = kint) :: nd
       real(kind = kreal) :: xref
 !
-      type(time_params_IO), save :: line_time
+      type(time_data), save :: line_time
       type(ucd_data), save :: line
 !
 !  ===========

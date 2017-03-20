@@ -37,7 +37,7 @@
 !
       character(len=kchara), intent(in) :: file_header
       integer(kind = kint), intent(in) :: istep, iflag_format
-      type(time_params_IO), intent(inout) :: line_time
+      type(time_data), intent(inout) :: line_time
       type(ucd_data), intent(inout) :: line
 !
       integer(kind = kint), parameter :: delete_process = -1

@@ -57,7 +57,7 @@
       real   (kind=kreal) ::  dt_init, t_init
       real   (kind=kreal), dimension(:), allocatable ::  zz
 !
-      type(time_params_IO), save :: plane_t_IO
+      type(time_data), save :: plane_t_IO
 !
 ! ==============================================
 ! * get number of  nodes,elements for whole PES

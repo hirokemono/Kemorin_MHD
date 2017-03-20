@@ -78,7 +78,7 @@
       use set_restart_data
 !
       integer(kind=kint), intent(in) :: ip, nnod
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
 !
       integer(kind=kint) :: id_rank
 !

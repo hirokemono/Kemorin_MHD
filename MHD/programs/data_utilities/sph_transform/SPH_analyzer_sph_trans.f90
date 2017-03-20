@@ -26,7 +26,7 @@
 !
       implicit none
 !
-      type(time_params_IO), save, private :: time_IO
+      type(time_data), save, private :: time_IO
 !
 ! ----------------------------------------------------------------------
 !

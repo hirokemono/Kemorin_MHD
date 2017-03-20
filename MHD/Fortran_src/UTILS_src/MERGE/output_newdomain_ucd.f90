@@ -5,7 +5,7 @@
 !
 !!      subroutine assemble_2nd_udt_phys(istep, t_IO, ucd)
 !!      subroutine assemble_2nd_udt_mesh(ucd)
-!!        type(time_params_IO), intent(inout) :: t_IO
+!!        type(time_data), intent(inout) :: t_IO
 !!        type(ucd_data), intent(inout) :: ucd
 !
       module output_newdomain_ucd
@@ -35,7 +35,7 @@
       use ucd_IO_select
 !
       integer (kind = kint), intent(in) :: istep
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
       integer (kind = kint) :: ip, my_rank

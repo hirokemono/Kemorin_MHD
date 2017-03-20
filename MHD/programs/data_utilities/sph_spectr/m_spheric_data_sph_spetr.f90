@@ -34,7 +34,7 @@
       type(phys_data), save :: rj_fld_spec
 !
 !>  Structure for field data IO
-      type(time_params_IO) :: spec_time_IO
+      type(time_data) :: spec_time_IO
       type(field_IO), save :: sph_spec_IO
 !
       type(legendre_4_sph_trans), save :: leg_s

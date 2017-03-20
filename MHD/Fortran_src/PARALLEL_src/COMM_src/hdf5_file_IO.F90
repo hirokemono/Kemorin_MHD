@@ -13,7 +13,7 @@
 !!     &         (istep_hdf5, t_IO, ucd, m_ucd)
 !!      subroutine parallel_write_xdmf_evo_file                         &
 !!     &         (istep_hdf5, t_IO, ucd, m_ucd)
-!!        type(time_params_IO), intent(in) :: t_IO
+!!        type(time_data), intent(in) :: t_IO
 !!        type(ucd_data), intent(in) :: ucd
 !!        type(merged_ucd_data), intent(in) :: m_ucd
 !
@@ -501,7 +501,7 @@
      &         (istep_hdf5, t_IO, ucd, m_ucd)
 !
       integer(kind=kint), intent(in) :: istep_hdf5
-      type(time_params_IO), intent(in) :: t_IO
+      type(time_data), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
       type(merged_ucd_data), intent(in) :: m_ucd
       character(len = kchara) :: xdmf_dir_file
@@ -524,7 +524,7 @@
      &         (istep_hdf5, t_IO, ucd, m_ucd)
 !
       integer(kind=kint), intent(in) :: istep_hdf5
-      type(time_params_IO), intent(in) :: t_IO
+      type(time_data), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
       type(merged_ucd_data), intent(in) :: m_ucd
       character(len = kchara) :: xdmf_dir_file
@@ -548,7 +548,7 @@
 !
       character(len = kchara), intent(in) :: xdmf_dir_file
       integer(kind=kint), intent(in) :: istep_hdf5
-      type(time_params_IO), intent(in) :: t_IO
+      type(time_data), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
       type(merged_ucd_data), intent(in) :: m_ucd
 !

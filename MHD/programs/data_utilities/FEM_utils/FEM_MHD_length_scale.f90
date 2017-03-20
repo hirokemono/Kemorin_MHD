@@ -78,7 +78,7 @@
       type(node_data), intent(in) :: node
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
       integer(kind = kint), intent(in) :: istep_ucd
       integer(kind = kint) :: icou

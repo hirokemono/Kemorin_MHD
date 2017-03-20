@@ -40,7 +40,7 @@
       use field_IO_select
       use set_field_to_restart
 !
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: merged_IO
 !
 !
@@ -65,7 +65,7 @@
       use field_IO_select
 !
       integer (kind = kint), intent(in) :: istep
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: merged_IO
 !
       integer (kind = kint) :: ip, id_rank
@@ -126,7 +126,7 @@
       use input_old_file_sel_4_zlib
       use set_field_to_restart
 !
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: merged_IO
 !
 !
@@ -151,7 +151,7 @@
 !
       integer (kind = kint), intent(in) :: istep
 !
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: merged_IO
 !
       integer (kind = kint) :: ip, id_rank

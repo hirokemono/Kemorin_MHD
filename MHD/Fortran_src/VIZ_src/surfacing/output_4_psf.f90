@@ -14,7 +14,7 @@
 !!     &          time_d, psf_mesh, t_IO, psf_out, psf_out_m)
 !!        type(time_data), intent(in) :: time_d
 !!        type(psf_local_data), intent(in) :: psf_mesh(num_psf)
-!!        type(time_params_IO), intent(inout) :: t_IO
+!!        type(time_data), intent(inout) :: t_IO
 !!        type(ucd_data), intent(inout) ::        psf_out(num_psf)
 !!        type(merged_ucd_data), intent(inout) :: psf_out_m(num_psf)
 !!
@@ -23,7 +23,7 @@
 !!     &          time_d, iso_mesh, t_IO, iso_out, iso_out_m)
 !!        type(time_data), intent(in) :: time_d
 !!        type(psf_local_data), intent(in) :: iso_mesh(num_iso)
-!!        type(time_params_IO), intent(inout) :: t_IO
+!!        type(time_data), intent(inout) :: t_IO
 !!        type(ucd_data), intent(inout) :: iso_out(num_iso)
 !!        type(merged_ucd_data), intent(inout) :: iso_out_m(num_iso)
 !!@endverbatim
@@ -131,7 +131,7 @@
       integer(kind= kint), intent(in) ::  istep_psf
       type(time_data), intent(in) :: time_d
       type(psf_local_data), intent(in) :: psf_mesh(num_psf)
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) ::        psf_out(num_psf)
       type(merged_ucd_data), intent(inout) :: psf_out_m(num_psf)
 !
@@ -185,7 +185,7 @@
       type(psf_local_data), intent(in) :: iso_mesh(num_iso)
 !
 !>      Structure for isosurface output (used by master process)
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: iso_out(num_iso)
       type(merged_ucd_data), intent(inout) :: iso_out_m(num_iso)
 !

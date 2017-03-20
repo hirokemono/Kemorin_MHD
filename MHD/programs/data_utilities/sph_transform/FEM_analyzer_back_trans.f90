@@ -107,7 +107,7 @@
       use nod_phys_send_recv
 !
       integer (kind =kint), intent(in) :: i_step
-      type(time_params_IO), intent(in) :: t_IO
+      type(time_data), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
 !
       integer (kind =kint), intent(inout) :: visval

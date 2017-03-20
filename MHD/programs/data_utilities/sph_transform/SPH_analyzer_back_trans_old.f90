@@ -47,7 +47,7 @@
       type(phys_address), intent(inout) :: ipol, idpdr, itor
       type(phys_data), intent(inout) :: rj_fld
       type(field_IO), intent(inout) :: fld_IO
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
 !
 !
 !  ------  initialize spectr data

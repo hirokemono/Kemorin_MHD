@@ -36,7 +36,7 @@
 !
       integer (kind = kint), intent(in) :: istep
       type(phys_data), intent(inout) :: nod_fld
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 
 !
@@ -62,7 +62,7 @@
       use ucd_IO_select
 !
       integer (kind = kint), intent(in) :: istep
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
 !

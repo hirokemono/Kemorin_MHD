@@ -32,7 +32,7 @@
 ! . for local 
 !  ===========
 !>        Instance for FEM field data IO
-      type(time_params_IO), save :: fem_time_IO
+      type(time_data), save :: fem_time_IO
       type(ucd_data), save :: fem_ucd
       type(ucd_data), save :: second_ucd
 !

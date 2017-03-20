@@ -43,7 +43,7 @@
 !
       type(phys_data), save :: new_phys
 !
-      type(time_params_IO), save :: itp_time_IO
+      type(time_data), save :: itp_time_IO
       type(field_IO), save :: itp_fld_IO
 !
       private :: new_femmesh, new_ele_mesh

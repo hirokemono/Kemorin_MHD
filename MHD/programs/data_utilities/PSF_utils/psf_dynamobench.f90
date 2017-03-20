@@ -34,7 +34,7 @@
       real(kind = kreal) :: xref
       real(kind = kreal) :: time
 !
-!      type(time_params_IO), save :: line_time
+!      type(time_data), save :: line_time
       type(ucd_data), save :: line
 !
 !  ===========

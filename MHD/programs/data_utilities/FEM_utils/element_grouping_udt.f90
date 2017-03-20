@@ -26,7 +26,7 @@
 !
 !
       type(group_data), save :: e_grp
-      type(time_params_IO), save :: psf_time_IO
+      type(time_data), save :: psf_time_IO
       type(ucd_data), save :: psf_ucd
       type(psf_results), save :: psf_data
 !

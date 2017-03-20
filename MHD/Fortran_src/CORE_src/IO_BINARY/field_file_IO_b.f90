@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine write_step_field_file_b                              &
 !!     &         (file_name, my_rank, t_IO, fld_IO)
-!!        type(time_params_IO), intent(in) :: t_IO
+!!        type(time_data), intent(in) :: t_IO
 !!        type(field_IO), intent(in) :: fld_IO
 !!
 !!      subroutine read_step_field_file_b                               &
@@ -18,7 +18,7 @@
 !!     &         (file_name, my_rank, t_IO, fld_IO)
 !!      subroutine read_and_allocate_step_head_b                        &
 !!     &         (file_name, my_rank, t_IO, fld_IO)
-!!        type(time_params_IO), intent(inout) :: t_IO
+!!        type(time_data), intent(inout) :: t_IO
 !!        type(field_IO), intent(inout) :: fld_IO
 !!@endverbatim
 !
@@ -49,7 +49,7 @@
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank
 !
-      type(time_params_IO), intent(in) :: t_IO
+      type(time_data), intent(in) :: t_IO
       type(field_IO), intent(in) :: fld_IO
 !
 !
@@ -77,7 +77,7 @@
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank
 !
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       integer(kind = kint_gl) :: istack_merged(1)
@@ -108,7 +108,7 @@
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank
 !
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
 !
@@ -135,7 +135,7 @@
       character(len=kchara), intent(in) :: file_name
       integer(kind = kint), intent(in) :: my_rank
 !
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
 !
@@ -153,7 +153,7 @@
 !
       subroutine read_and_allocate_step_b(t_IO, fld_IO)
 !
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       integer(kind = kint_gl) :: istack_merged(1)

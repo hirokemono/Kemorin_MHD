@@ -32,7 +32,7 @@
 
       type(field_IO_params), save ::  plane_mesh_file
 !
-      type(time_params_IO), save :: fft_t_IO
+      type(time_data), save :: fft_t_IO
       type(ucd_data), save :: fft_ucd
 !
       integer(kind=kint ) :: istep

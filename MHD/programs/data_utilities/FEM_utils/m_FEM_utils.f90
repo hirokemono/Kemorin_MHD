@@ -53,7 +53,7 @@
 !
 !>      Structure for field data IO paramters
       type(field_IO_params), save :: udt_param_FUTIL
-      type(time_params_IO), save :: time_IO_FUTIL
+      type(time_data), save :: time_IO_FUTIL
 !>        Instance for FEM field data IO
       type(ucd_data), save :: ucd_FUTIL
 !>        Instance for numbers of FEM mesh for merged IO

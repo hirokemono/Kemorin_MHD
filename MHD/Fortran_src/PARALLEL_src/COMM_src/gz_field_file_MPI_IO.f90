@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine write_gz_step_field_file_mpi                         &
 !!     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
-!!        type(time_params_IO), intent(in) :: t_IO
+!!        type(time_data), intent(in) :: t_IO
 !!        type(field_IO), intent(in) :: fld_IO
 !!
 !!      subroutine write_field_head_gz_mpi(id_fld, nprocs_in,           &
@@ -65,7 +65,7 @@
       character(len=kchara), intent(in) :: file_name
 !
       integer(kind = kint), intent(in) :: nprocs_in, id_rank
-      type(time_params_IO), intent(in) :: t_IO
+      type(time_data), intent(in) :: t_IO
       type(field_IO), intent(in) :: fld_IO
 !
       integer :: id_fld
@@ -103,7 +103,7 @@
       integer(kind=kint), intent(in) :: id_rank
       integer(kind=kint), intent(in) :: nprocs_in
 !
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       integer :: id_fld
@@ -146,7 +146,7 @@
       integer(kind=kint), intent(in) :: id_rank
       integer(kind=kint), intent(in) :: nprocs_in
 !
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       integer ::  id_fld
@@ -200,7 +200,7 @@
       integer(kind=kint), intent(in) :: id_rank
       integer(kind=kint), intent(in) :: nprocs_in
 !
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       integer ::  id_fld
@@ -252,7 +252,7 @@
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
       integer(kind = kint), intent(in) :: nprocs_in
 !
-      type(time_params_IO), intent(in) :: t_IO
+      type(time_data), intent(in) :: t_IO
 !
       integer(kind=kint), intent(in) :: num_field
       integer(kind=kint), intent(in) :: ncomp_field(num_field)
@@ -319,7 +319,7 @@
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
       integer(kind = kint), intent(in) :: nprocs_in
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
 !
       integer(kind=kint) :: iread
       character(len=len_step_data_buf) :: textbuf_c

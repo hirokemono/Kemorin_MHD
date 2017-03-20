@@ -67,7 +67,7 @@
       private :: output_restart_files, input_restart_files
       private :: input_model_coef_file, output_model_coef_file
 !
-      type(time_params_IO), save, private :: fem_time_IO
+      type(time_data), save, private :: fem_time_IO
       type(field_IO), save, private :: fem_fst_IO
 !
 ! -----------------------------------------------------------------------
@@ -121,7 +121,7 @@
 !
       integer(kind = kint), intent(in) :: i_step
       type(node_data), intent(in) :: node
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(IO_step_param), intent(inout) :: rst_step
 !
 !
@@ -331,7 +331,7 @@
 !
       integer(kind = kint), intent(in) :: i_step
       type(node_data), intent(in) :: node
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(phys_data), intent(inout) :: nod_fld
       type(IO_step_param), intent(inout) :: rst_step
 !

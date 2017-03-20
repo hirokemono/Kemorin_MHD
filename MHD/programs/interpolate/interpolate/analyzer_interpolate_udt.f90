@@ -41,7 +41,7 @@
 !
       type(phys_data), save :: new_phys
 !
-      type(time_params_IO), save :: itp_time_IO
+      type(time_data), save :: itp_time_IO
       type(ucd_data), save :: fem_ucd
 !
       private :: link_field_data_type_2_IO

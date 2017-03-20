@@ -37,7 +37,7 @@
 !
       integer(kind = kint) :: nloop_new
       type(field_IO), allocatable, save :: new_fst_IO(:)
-      type(time_params_IO), save :: fst_time_IO
+      type(time_data), save :: fst_time_IO
 !
       integer(kind = kint), allocatable :: nnod_list_lc(:)
       integer(kind = kint), allocatable :: nnod_list(:)

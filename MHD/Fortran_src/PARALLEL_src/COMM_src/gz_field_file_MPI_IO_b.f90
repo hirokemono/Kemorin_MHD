@@ -61,7 +61,7 @@
       character(len=kchara), intent(in) :: file_name
 !
       integer(kind = kint), intent(in) :: nprocs_in, id_rank
-      type(time_params_IO), intent(in) :: t_IO
+      type(time_data), intent(in) :: t_IO
       type(field_IO), intent(in) :: fld_IO
 !
 !
@@ -102,7 +102,7 @@
       integer(kind=kint), intent(in) :: id_rank
       integer(kind=kint), intent(in) :: nprocs_in
 !
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
 !
@@ -150,7 +150,7 @@
       integer(kind=kint), intent(in) :: id_rank
       integer(kind=kint), intent(in) :: nprocs_in
 !
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
 !
@@ -203,7 +203,7 @@
       integer(kind=kint), intent(in) :: id_rank
       integer(kind=kint), intent(in) :: nprocs_in
 !
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
 !

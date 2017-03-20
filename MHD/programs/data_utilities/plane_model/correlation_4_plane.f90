@@ -40,7 +40,7 @@
       type(phys_data), save :: ref_phys
 
 !>      Structure for time data
-      type(time_params_IO), save :: plane_t_IO
+      type(time_data), save :: plane_t_IO
       type(ucd_data), save :: plane_ucd
 
       integer(kind=kint ) :: istep

@@ -51,7 +51,7 @@
 !
       implicit none
 !
-      type(time_params_IO), save :: ucd_time_IO
+      type(time_data), save :: ucd_time_IO
 !
 !>        Instance for FEM field data IO
       type(ucd_data), save :: fem_ucd
@@ -183,7 +183,7 @@
       integer(kind = kint), intent(in) :: i_step
       type(field_IO_params), intent(in) :: udt_file_param
       type(phys_data),intent(inout) :: nod_fld
-      type(time_params_IO), intent(inout) :: t_IO
+      type(time_data), intent(inout) :: t_IO
       type(IO_step_param), intent(inout) :: ucd_step
 !
 !

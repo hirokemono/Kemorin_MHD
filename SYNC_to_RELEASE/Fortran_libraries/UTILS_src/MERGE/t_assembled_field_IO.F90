@@ -63,7 +63,7 @@
 !
       integer(kind = kint), intent(in) :: istep_fld
       integer(kind = kint), intent(in) :: nloop, nprocs_in
-      type(time_params_IO), intent(in) :: t_IO
+      type(time_data), intent(in) :: t_IO
 !
       type(field_IO), intent(inout) :: fld_IO(nloop)
 !
