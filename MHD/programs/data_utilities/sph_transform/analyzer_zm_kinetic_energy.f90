@@ -99,7 +99,7 @@
       integer(kind=kint ) :: visval, i_step
 !
 !
-      do i_step = init_d1%i_time_step, i_step_number
+      do i_step = init_d1%i_time_step, finish_d1%i_end_step
         if (iflag_debug.gt.0) write(*,*) 'step ', i_step, 'start...'
 !
         call SPH_analyze_zm_energies                                    &

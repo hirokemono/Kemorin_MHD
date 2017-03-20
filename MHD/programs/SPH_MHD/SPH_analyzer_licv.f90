@@ -209,7 +209,7 @@
      &   (time_d1, rj_fld1, MHD_step%rst_step)
 !
       total_time = MPI_WTIME() - total_start
-      if      (i_step_number .eq. -1                                    &
+      if(finish_d1%i_end_step .eq. -1                                   &
      &   .and. total_time.gt.elapsed_time) then
         call output_sph_rst_by_elaps(time_d1, rj_fld1)
         iflag_finish = 1
@@ -235,7 +235,8 @@
      &    sph1%sph_rj, ipol, idpdr, rj_fld1)
       call end_eleps_time(4)
 !
-      if(i_step .ge. i_step_number .and. i_step_number.gt.0) then
+      if(i_step .ge. finish_d1%i_end_step                               &
+     &     .and. finish_d1%i_end_step .gt. 0) then
         iflag_finish = 1
       end if
 !

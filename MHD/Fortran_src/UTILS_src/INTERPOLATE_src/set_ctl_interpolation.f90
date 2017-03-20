@@ -161,7 +161,7 @@
           e_message = 'Set step number to finish'
             call calypso_MPI_abort(ierr_evo, e_message)
         else
-          i_step_number = tctl%i_step_number_ctl%intvalue
+          finish_d1%i_end_step = tctl%i_step_number_ctl%intvalue
         end if
 !
         rst_step%increment = 0
@@ -176,7 +176,7 @@
 !
         if (iflag_debug.eq.1) then
           write(*,*) 'i_step_init ', init_d1%i_time_step
-          write(*,*) 'i_step_number ', i_step_number
+          write(*,*) 'i_step_number ', finish_d1%i_end_step
           write(*,*) 'i_step_output_rst ', rst_step%increment
           write(*,*) 'i_step_output_ucd ', ucd_step%increment
         end if

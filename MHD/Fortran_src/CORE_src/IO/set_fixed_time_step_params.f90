@@ -57,7 +57,7 @@
         errmsg = 'Set step number to finish'
         return
       else
-        i_step_number = tctl%i_step_number_ctl%intvalue
+        finish_d1%i_end_step = tctl%i_step_number_ctl%intvalue
       end if
 !
 !
@@ -69,7 +69,7 @@
 !
       call viz_fixed_time_step_params(dt, tctl, viz_step)
 !
-      if (i_step_number.eq.-1) then
+      if (finish_d1%i_end_step.eq.-1) then
         if (tctl%elapsed_time_ctl%iflag .eq. 0) then
           ierr = ierr_evo
           errmsg = 'Set elapsed time to finish (second)'

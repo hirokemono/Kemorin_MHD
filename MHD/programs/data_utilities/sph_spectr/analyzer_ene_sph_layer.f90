@@ -96,7 +96,7 @@
       integer(kind = kint) :: i_step
 !
 !
-      do i_step = init_d1%i_time_step, i_step_number,                   &
+      do i_step = init_d1%i_time_step, finish_d1%i_end_step,            &
      &           ucd_step_SHR%increment
 !
 !   Input spectr data

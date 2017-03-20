@@ -40,6 +40,15 @@
         real(kind = kreal) :: dt
       end type time_data
 !
+!>      Structure for finish time data
+      type finish_data
+!>        End time steo
+        integer(kind=kint) :: i_end_step
+!
+!>        Elapsed time to terminate simulation
+        real(kind=kreal)   :: elapsed_time
+      end type finish_data
+!
 ! -------------------------------------------------------------------
 !
       contains

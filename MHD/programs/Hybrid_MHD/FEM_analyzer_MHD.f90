@@ -328,7 +328,7 @@
      &                       total_time, elapsed_time
 !
 !   Finish by elapsed time
-      if(i_step_number .eq. -1) then
+      if(finish_d1%i_end_step .eq. -1) then
         if(total_max .gt. elapsed_time) then
           call start_eleps_time(4)
           call elspased_MHD_restart_ctl                                 &
@@ -343,7 +343,7 @@
         if(flex_p1%iflag_flexible_step .eq. iflag_flex_step) then
           if(time .gt. flex_p1%time_to_finish) retval = 0
         else
-          if(flex_p1%istep_max_dt .ge. i_step_number) retval = 0
+          if(flex_p1%istep_max_dt .ge. finish_d1%i_end_step) retval = 0
         end if
       end if
 !

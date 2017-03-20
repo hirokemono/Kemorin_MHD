@@ -120,7 +120,7 @@
       integer(kind = kint) :: istep
 !
 !
-      do istep = init_d1%i_time_step, i_step_number,                    &
+      do istep = init_d1%i_time_step, finish_d1%i_end_step,             &
      &          ucd_step_ITP%increment
         if (my_rank .lt. ndomain_org) then
           call set_data_by_read_ucd_once                                &

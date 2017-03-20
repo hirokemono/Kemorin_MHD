@@ -61,7 +61,7 @@
 !*
 !*  -----------  output field data --------------
 !*
-        if(time_d1%i_time_step .ge. i_step_number) exit
+        if(time_d1%i_time_step .ge. finish_d1%i_end_step) exit
       end do
 !
 !  time evolution end

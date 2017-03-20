@@ -142,7 +142,7 @@
      &     (init_d%dt, SGS_par, tctl, MHD_step)
       end if
 !
-      if (i_step_number.eq.-1) then
+      if (finish_d1%i_end_step .eq. -1) then
         if (tctl%elapsed_time_ctl%iflag .eq. 0) then
           e_message                                                     &
      &      = 'Set elapsed time to finish (second)'
@@ -155,7 +155,7 @@
       if (iflag_debug .ge. iflag_routine_msg) then
         write(*,*) 'dt', init_d%dt, flex_p%dt_fact, flex_p%idt_digit
         write(*,*) 'i_step_init ', init_d1%i_time_step
-        write(*,*) 'i_step_number ',i_step_number
+        write(*,*) 'i_step_number ',finish_d1%i_end_step
         write(*,*) 'elapsed_time ', elapsed_time
         write(*,*) 'i_step_check ', MHD_step%rms_step%increment
         write(*,*) 'i_step_output_rst ', MHD_step%rst_step%increment
@@ -277,8 +277,8 @@
       call set_output_step_4_flex_step(ione, flex_p%dt_max,             &
      &   tctl%i_step_ucd_ctl, tctl%delta_t_field_ctl, ucd_step)
 !
-      init_d1%i_time_step = istep_rst_start * rst_step%increment
-      i_step_number = istep_rst_end *   rst_step%increment
+      init_d1%i_time_step =  istep_rst_start * rst_step%increment
+      finish_d1%i_end_step = istep_rst_end *   rst_step%increment
       flex_p%time_to_finish = istep_rst_end * rst_step%delta_t
 !
       call viz_flex_time_step_controls(tctl, dt, viz_step)

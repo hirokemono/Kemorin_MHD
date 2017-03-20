@@ -97,7 +97,7 @@
       call init_gauss_coefs_4_monitor                                   &
      &   (sph_mesh_spec%sph%sph_params%l_truncation,                    &
      &    sph_mesh_spec%sph%sph_rj, ipol_spec, gauss_list_u, gauss_u)
-      do i_step = init_d1%i_time_step, i_step_number,                   &
+      do i_step = init_d1%i_time_step, finish_d1%i_end_step,            &
      &           ucd_step_SHR%increment
 !
 !   Input spectr data

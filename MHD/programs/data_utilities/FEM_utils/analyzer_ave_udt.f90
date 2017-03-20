@@ -83,7 +83,7 @@
      &    field_FUTIL, time_IO_FUTIL)
 !
       icou = 1
-      do istep = init_d1%i_time_step+1, i_step_number
+      do istep = init_d1%i_time_step+1, finish_d1%i_end_step
         if (output_IO_flag(istep,ucd_step_U) .eq. izero) then
 !
           ucd_step_U%istep_file = istep / ucd_step_U%increment
@@ -102,7 +102,7 @@
 !    output udt data
 !
       call set_ucd_file_prefix(ave_udt_file_head, ucd_FUTIL)
-      call output_udt_one_snapshot(i_step_number, time_d1,              &
+      call output_udt_one_snapshot(finish_d1%i_end_step, time_d1,       &
      &    femmesh_FUTIL%mesh%node, femmesh_FUTIL%mesh%ele,              &
      &    femmesh_FUTIL%mesh%nod_comm, field_FUTIL)
 !
