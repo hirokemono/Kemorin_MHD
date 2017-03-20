@@ -129,7 +129,7 @@
 !
       call output_sph_restart_control(time_d1, rj_fld, rst_step)
 !
-      if(i_step_init .eq. -1) then
+      if(init_d1%i_time_step .eq. -1) then
         call output_sph_rst_by_elaps(time_d1, rj_fld)
       end if
 !

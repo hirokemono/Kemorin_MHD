@@ -219,7 +219,7 @@
         end do
 !
         time_d1%time =        time_init
-        time_d1%i_time_step = i_step_init
+        time_d1%i_time_step = init_d1%i_time_step
 !
         do jloop = 1, nloop_new
           irank_new = my_rank + (jloop-1) * nprocs

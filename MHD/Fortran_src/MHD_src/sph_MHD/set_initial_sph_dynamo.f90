@@ -162,7 +162,8 @@
       if(iflag_debug .gt. 0) write(*,*) 'init_output_sph_restart_file'
       call init_output_sph_restart_file(rj_fld, time_d)
 !
-      if (iflag_restart.ne.i_rst_by_file .and. i_step_init.eq.0) then
+      if (iflag_restart.ne.i_rst_by_file                                &
+     &     .and. init_d1%i_time_step.eq.0) then
         if(iflag_debug .gt. 0) write(*,*) 'output_sph_restart_control'
         call output_sph_restart_control(time_d, rj_fld, rst_step)
       end if

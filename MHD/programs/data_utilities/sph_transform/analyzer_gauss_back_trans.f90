@@ -92,7 +92,7 @@
       integer(kind=kint ) :: visval, i_step
 !
 !
-      do i_step = i_step_init, i_step_number
+      do i_step = init_d1%i_time_step, i_step_number
         if (iflag_debug.gt.0) write(*,*) 'step ', i_step, 'start...'
 !
         call SPH_analyze_gauss_back_trans(i_step, viz_step_STR,         &

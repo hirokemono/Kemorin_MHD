@@ -76,13 +76,14 @@
 !
       call link_num_field_2_ucd(field_FUTIL, ucd_FUTIL)
 !
-      ucd_step_U%istep_file = i_step_init / ucd_step_U%increment
+      ucd_step_U%istep_file                                             &
+     &    = init_d1%i_time_step / ucd_step_U%increment
       call set_data_by_read_ucd_once(my_rank, ucd_step_U%istep_file,    &
      &    udt_param_FUTIL%iflag_format, udt_param_FUTIL%file_prefix,    &
      &    field_FUTIL, time_IO_FUTIL)
 !
       icou = 1
-      do istep = i_step_init+1, i_step_number
+      do istep = init_d1%i_time_step+1, i_step_number
         if (output_IO_flag(istep,ucd_step_U) .eq. izero) then
 !
           ucd_step_U%istep_file = istep / ucd_step_U%increment

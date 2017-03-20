@@ -95,7 +95,7 @@
 !
 !     --------------------- 
 !
-      i_step = int(i_step_init / rst_step_ITP%increment)
+      i_step = int(init_d1%i_time_step / rst_step_ITP%increment)
       call set_field_file_fmt_prefix                                    &
      &   (ifmt_org_rst_file, org_rst_file_head, itp_fld_IO)
       call sel_read_alloc_step_FEM_file                                 &
@@ -137,7 +137,7 @@
       integer(kind = kint) :: i_step, i_rst_start, i_rst_end
 !
 !
-      i_rst_start = int(i_step_init /   rst_step_ITP%increment)
+      i_rst_start = int(init_d1%i_time_step /   rst_step_ITP%increment)
       i_rst_end =   int(i_step_number / rst_step_ITP%increment)
       do i_step = i_rst_start, i_rst_end
 !

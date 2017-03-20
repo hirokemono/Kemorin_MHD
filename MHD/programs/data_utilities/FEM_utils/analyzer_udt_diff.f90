@@ -79,7 +79,7 @@
       call link_global_mesh_2_ucd                                       &
      &   (femmesh_FUTIL%mesh%node, femmesh_FUTIL%mesh%ele, ucd_FUTIL)
 !
-      do istep = i_step_init, i_step_number
+      do istep = init_d1%i_time_step, i_step_number
         if (output_IO_flag(istep,ucd_step_U) .eq. izero) then
           ucd_step_U%istep_file = istep / ucd_step_U%increment
 !

@@ -34,7 +34,7 @@
       integer(kind=kint) :: iflag_initial_step = 0
 !
 !>      Start time step
-      integer(kind=kint) :: i_step_init
+!      integer(kind=kint) :: i_step_init
 !>      End time steo
       integer(kind=kint) :: i_step_number
 !!
@@ -44,6 +44,7 @@
 !
 !>      Structure for initial time data
       type(time_data), save :: init_d1
+!init_d1%i_time_step
 !
 ! -----------------------------------------------------------------------
 !

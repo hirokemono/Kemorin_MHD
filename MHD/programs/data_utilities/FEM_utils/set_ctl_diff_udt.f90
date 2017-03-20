@@ -200,9 +200,9 @@
 !
 !   parameters for time evolution
 !
-        i_step_init   = 0
+        init_d1%i_time_step   = 0
         if (tctl%i_step_init_ctl%iflag .gt. 0) then
-          i_step_init   = tctl%i_step_init_ctl%intvalue
+          init_d1%i_time_step   = tctl%i_step_init_ctl%intvalue
         end if
 !
         if (tctl%i_step_number_ctl%iflag .eq. 0) then
@@ -228,7 +228,7 @@
         end if
 !
         if (iflag_debug.eq.1) then
-          write(*,*) 'i_step_init ',       i_step_init
+          write(*,*) 'i_step_init ',       init_d1%i_time_step
           write(*,*) 'i_step_number ',     i_step_number
           write(*,*) 'i_step_output_ucd ', ucd_step%increment
           write(*,*) 'i_diff_steps ',      i_diff_steps

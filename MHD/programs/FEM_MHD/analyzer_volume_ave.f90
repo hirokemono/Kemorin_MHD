@@ -57,7 +57,7 @@
 !
       integer(kind=kint ) :: i_step
 !
-      do i_step = i_step_init, i_step_number
+      do i_step = init_d1%i_time_step, i_step_number
         if (iflag_debug.eq.1)  write(*,*) 'FEM_analyze_vol_average'
         call FEM_analyze_vol_average(i_step, MHD_step1)
       end do

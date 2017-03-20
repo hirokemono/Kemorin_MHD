@@ -58,7 +58,7 @@
      &    fld_IO)
       write(*,*) 'ifmt_org_rst', rst_org_param%iflag_format
       call sel_read_alloc_step_SPH_file                                 &
-     &   (nprocs, my_rank, i_step_init, t_IO, fld_IO)
+     &   (nprocs, my_rank, init_d1%i_time_step, t_IO, fld_IO)
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_sph_name_rj_to_rtp'
       call copy_sph_name_rj_to_rtp(rj_fld)

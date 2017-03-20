@@ -103,7 +103,7 @@
       call init_MHD_restart_output(node, nod_fld)
 !
       time_d%time   =       time_init
-      time_d%i_time_step =  i_step_init
+      time_d%i_time_step =  init_d1%i_time_step
 !
       if(flex_p%iflag_flexible_step .eq. iflag_flex_step) then
         flex_p%istep_max_dt = nint(time_init / flex_p%dt_max)

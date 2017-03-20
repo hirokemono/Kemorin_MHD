@@ -55,7 +55,7 @@
 !
 !
       call copy_time_from_restart(t_IO)
-      i_step_init = t_IO%i_time_step_IO
+      init_d1%i_time_step = t_IO%i_time_step_IO
 !
       end subroutine copy_init_time_from_restart
 !

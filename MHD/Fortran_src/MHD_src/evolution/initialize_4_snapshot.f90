@@ -228,7 +228,7 @@
       if (rst_step%increment .gt. 0) then
         if (iflag_debug.eq.1) write(*,*)' init_restart_4_snapshot'
         call init_restart_4_snapshot                                    &
-     &     (i_step_init, mesh%node, t_IO, rst_step)
+     &     (init_d1%i_time_step, mesh%node, t_IO, rst_step)
       end if
 !
 !     ---------------------

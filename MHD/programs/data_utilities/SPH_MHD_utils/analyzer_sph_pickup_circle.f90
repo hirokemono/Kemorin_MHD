@@ -109,7 +109,7 @@
 !*  -----------  set initial step data --------------
 !*
       call start_eleps_time(3)
-      time_d1%i_time_step = i_step_init - 1
+      time_d1%i_time_step = init_d1%i_time_step - 1
 !*
 !*  -------  time evelution loop start -----------
 !*

@@ -74,7 +74,7 @@
       integer(kind=kint ) :: i_step
 !
 !
-      do i_step = i_step_init, i_step_number
+      do i_step = init_d1%i_time_step, i_step_number
 !
 !  Load field data
         call FEM_analyze_surface(i_step, viz_step_V)

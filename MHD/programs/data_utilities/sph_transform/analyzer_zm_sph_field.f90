@@ -104,7 +104,7 @@
       integer(kind=kint ) :: visval, i_step
 !
 !
-      do i_step = i_step_init, i_step_number
+      do i_step = init_d1%i_time_step, i_step_number
 !
 !   Input field data
         call FEM_analyze_sph_trans(i_step, time_IO_TRNS, visval)

@@ -63,8 +63,8 @@
       if (iflag_debug.gt.0) write(*,*) 'sel_read_alloc_step_SPH_file'
       call set_field_file_fmt_prefix                                    &
      &     (iflag_org_sph_file_fmt, org_sph_file_head, sph_spec_IO)
-      call sel_read_alloc_step_SPH_file                                 &
-     &   (nprocs, my_rank, i_step_init, spec_time_IO, sph_spec_IO)
+      call sel_read_alloc_step_SPH_file(nprocs, my_rank,                &
+     &    init_d1%i_time_step, spec_time_IO, sph_spec_IO)
 !
 !  -------------------------------
 !
@@ -97,7 +97,8 @@
       call init_gauss_coefs_4_monitor                                   &
      &   (sph_mesh_spec%sph%sph_params%l_truncation,                    &
      &    sph_mesh_spec%sph%sph_rj, ipol_spec, gauss_list_u, gauss_u)
-      do i_step = i_step_init, i_step_number, ucd_step_SHR%increment
+      do i_step = init_d1%i_time_step, i_step_number,                   &
+     &           ucd_step_SHR%increment
 !
 !   Input spectr data
 !

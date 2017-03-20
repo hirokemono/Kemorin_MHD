@@ -114,7 +114,7 @@
 !
 !*  -----------  set initial step data --------------
 !*
-      time_d1%i_time_step = i_step_init - 1
+      time_d1%i_time_step = init_d1%i_time_step - 1
 !*
 !*  -------  time evelution loop start -----------
 !*
@@ -215,7 +215,7 @@
 !
 !*  ----------- Read spectr data and get field data --------------
 !*
-      time_d1%i_time_step = i_step_init
+      time_d1%i_time_step = init_d1%i_time_step
       if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_snap'
       call SPH_analyze_snap(time_d1%i_time_step, MHD_step1)
 !*

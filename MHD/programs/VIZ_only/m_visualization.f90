@@ -152,7 +152,7 @@
 !
       ucd_VIZ%nnod =      femmesh_VIZ%mesh%node%numnod
       call sel_read_udt_param                                           &
-     &   (my_rank, i_step_init, VIZ_time_IO, ucd_VIZ)
+     &   (my_rank, init_d1%i_time_step, VIZ_time_IO, ucd_VIZ)
       call alloc_phys_data_type_by_output                               &
      &   (ucd_VIZ, femmesh_VIZ%mesh%node, field_VIZ)
 !

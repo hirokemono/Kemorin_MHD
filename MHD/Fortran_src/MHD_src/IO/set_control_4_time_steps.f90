@@ -154,7 +154,7 @@
 !
       if (iflag_debug .ge. iflag_routine_msg) then
         write(*,*) 'dt', init_d%dt, flex_p%dt_fact, flex_p%idt_digit
-        write(*,*) 'i_step_init ',i_step_init
+        write(*,*) 'i_step_init ', init_d1%i_time_step
         write(*,*) 'i_step_number ',i_step_number
         write(*,*) 'elapsed_time ', elapsed_time
         write(*,*) 'i_step_check ', MHD_step%rms_step%increment
@@ -277,7 +277,7 @@
       call set_output_step_4_flex_step(ione, flex_p%dt_max,             &
      &   tctl%i_step_ucd_ctl, tctl%delta_t_field_ctl, ucd_step)
 !
-      i_step_init = istep_rst_start * rst_step%increment
+      init_d1%i_time_step = istep_rst_start * rst_step%increment
       i_step_number = istep_rst_end *   rst_step%increment
       flex_p%time_to_finish = istep_rst_end * rst_step%delta_t
 !

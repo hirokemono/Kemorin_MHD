@@ -302,7 +302,7 @@
       use m_t_step_parameter
 !
 !
-      call MPI_Bcast(i_step_init, ione, CALYPSO_INTEGER,                &
+      call MPI_Bcast(init_d1%i_time_step, ione, CALYPSO_INTEGER,        &
      &        izero, CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast(time_init, ione, CALYPSO_REAL,                     &
      &        izero, CALYPSO_COMM, ierr_MPI)

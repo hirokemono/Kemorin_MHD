@@ -106,7 +106,7 @@
       type(time_data), intent(inout) :: time_d
 !
 !
-      time_d%i_time_step =   i_step_init
+      time_d%i_time_step =   init_d1%i_time_step
       time_d%time = time_init
 !
       call set_sph_restart_num_to_IO(rj_fld, sph_fst_IO)
@@ -170,11 +170,11 @@
       type(IO_step_param), intent(inout) :: rst_step
 !
 !
-      if (i_step_init .eq. -1) then
-        call sel_read_alloc_step_SPH_file                               &
-     &     (nprocs, my_rank, i_step_init, sph_time_IO, sph_fst_IO)
+      if (init_d1%i_time_step .eq. -1) then
+        call sel_read_alloc_step_SPH_file(nprocs, my_rank,              &
+     &      init_d1%i_time_step, sph_time_IO, sph_fst_IO)
       else
-        rst_step%istep_file = i_step_init / rst_step%increment
+        rst_step%istep_file = init_d1%i_time_step / rst_step%increment
         call sel_read_alloc_step_SPH_file(nprocs, my_rank,              &
      &      rst_step%istep_file, sph_time_IO, sph_fst_IO)
       end if

@@ -107,7 +107,7 @@
       type(IO_step_param), intent(inout) :: ucd_step
 !
 !
-      ucd_step%istep_file = i_step_init / ucd_step%increment
+      ucd_step%istep_file = init_d1%i_time_step / ucd_step%increment
       call find_field_id_in_read_ucd(my_rank, ucd_step%istep_file,      &
      &    ifmt_result_udt_file, prod_udt_file1_head,                    &
      &    numnod, product_field_1_name, i_field_product1,               &

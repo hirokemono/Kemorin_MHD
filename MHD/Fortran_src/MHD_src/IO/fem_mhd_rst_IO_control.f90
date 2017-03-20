@@ -222,7 +222,7 @@
       integer(kind = kint) :: istep_rst
 !
 !
-      call set_step_4_restart(rst_step, i_step_init, istep_rst)
+      call set_step_4_restart(rst_step, init_d1%i_time_step, istep_rst)
       call input_restart_files                                          &
      &   (istep_rst, node, nod_fld, time_d, flex_p)
       call input_model_coef_file(istep_rst,                             &

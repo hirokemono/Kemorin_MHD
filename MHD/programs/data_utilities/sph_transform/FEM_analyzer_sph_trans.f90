@@ -71,7 +71,8 @@
       call set_ucd_file_prefix(udt_file_param%file_prefix, input_ucd)
 !
       input_ucd%nnod = ione
-      call sel_read_udt_param(my_rank, i_step_init, t_IO, input_ucd)
+      call sel_read_udt_param                                           &
+    &    (my_rank, init_d1%i_time_step, t_IO, input_ucd)
 !
       end subroutine FEM_initialize_sph_trans
 !

@@ -85,7 +85,7 @@
       integer(kind=kint ) :: i_step, visval
 !
 !
-      do i_step = i_step_init, i_step_number
+      do i_step = init_d1%i_time_step, i_step_number
 !
 !  Read and generate fields
         call FEM_analyze_snapshot(i_step, MHD_step1, visval)
