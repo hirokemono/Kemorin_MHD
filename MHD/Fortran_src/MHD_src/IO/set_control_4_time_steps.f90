@@ -65,7 +65,7 @@
 !  control for restert
 !
       call set_initial_field_id                                         &
-     &   (mr_ctl%restart_flag_ctl, tctl, time_init)
+     &   (mr_ctl%restart_flag_ctl, tctl, init_d1%time)
 !
         flex_p%iflag_flexible_step = iflag_fixed_step
         if(tctl%flexible_step_ctl%iflag .gt. 0                          &

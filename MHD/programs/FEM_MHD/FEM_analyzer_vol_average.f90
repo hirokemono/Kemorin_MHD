@@ -89,7 +89,7 @@
       if (iflag_debug.eq.1)  write(*,*) 'read_udt_4_snap'
       call read_udt_4_snap(i_step,                                      &
      &    FEM_udt_org_param, nod_fld1, SNAP_time_IO, MHD_step%ucd_step)
-      time_d1%time = time_init + time_d1%dt * dble(i_step)
+      time_d1%time = init_d1%time + time_d1%dt * dble(i_step)
 !
 !     ---- magnetic field update
 !

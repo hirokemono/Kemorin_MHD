@@ -218,7 +218,7 @@
           call dealloc_phys_data_type(org_sph_phys(ip))
         end do
 !
-        time_d1%time =        time_init
+        time_d1%time =        init_d1%time
         time_d1%i_time_step = init_d1%i_time_step
 !
         do jloop = 1, nloop_new

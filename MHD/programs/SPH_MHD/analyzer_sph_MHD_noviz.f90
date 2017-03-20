@@ -104,7 +104,7 @@
 !
 !*  -----------  set initial step data --------------
 !*
-      time_d1%time =       time_init
+      time_d1%time =        init_d1%time
       time_d1%i_time_step = init_d1%i_time_step
       iflag_finish = 0
 !*

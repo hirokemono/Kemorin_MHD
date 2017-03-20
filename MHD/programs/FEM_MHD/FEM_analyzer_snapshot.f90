@@ -119,7 +119,7 @@
         call read_udt_4_snap(flex_p1%istep_max_dt, FEM_udt_org_param,   &
      &      nod_fld1, SNAP_time_IO, MHD_step%ucd_step)
 !
-        time_d1%time = time_init                                        &
+        time_d1%time = init_d1%time                                     &
      &                + time_d1%dt * dble(flex_p1%istep_max_dt)
         time_d1%i_time_step = flex_p1%istep_max_dt
       end if

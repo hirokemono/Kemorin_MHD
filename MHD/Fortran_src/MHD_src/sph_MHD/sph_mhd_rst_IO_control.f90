@@ -106,8 +106,8 @@
       type(time_data), intent(inout) :: time_d
 !
 !
-      time_d%i_time_step =   init_d1%i_time_step
-      time_d%time = time_init
+      time_d%i_time_step =  init_d1%i_time_step
+      time_d%time =         init_d1%time
 !
       call set_sph_restart_num_to_IO(rj_fld, sph_fst_IO)
 !
@@ -236,7 +236,7 @@
      &    rst_step%istep_file, sph_time_IO, sph_fst_IO)
 !
       call copy_init_time_from_restart(sph_time_IO)
-      time_d%time = time_init
+      time_d%time = init_d1%time
 !
       if(rj_file_param%iflag_IO .eq. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_sph_restart_from_IO'
@@ -327,7 +327,7 @@
      &    ucd_step%istep_file, sph_time_IO, sph_out_IO)
 !
       call copy_init_time_from_restart(sph_time_IO)
-      time_d%time = time_init
+      time_d%time = init_d1%time
 !
       if(rj_file_param%iflag_IO .eq. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'

@@ -41,7 +41,7 @@
 !
       type(time_params_IO), intent(in) :: t_IO
 !
-      time_init =   t_IO%time_IO
+      init_d1%time =   t_IO%time_IO
 !
       end subroutine copy_time_from_restart
 !

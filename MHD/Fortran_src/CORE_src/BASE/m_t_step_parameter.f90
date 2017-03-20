@@ -24,7 +24,7 @@
       real(kind=kreal), parameter :: adam_r =  two / three
 !
 !>      Time for the initail step
-      real(kind=kreal) :: time_init
+!      real(kind=kreal) :: time_init
 ! 
 !>      Elapsed time to terminate simulation
       real(kind=kreal)   :: elapsed_time
@@ -33,8 +33,6 @@
 !!      insted of Adams-BAshforth
       integer(kind=kint) :: iflag_initial_step = 0
 !
-!>      Start time step
-!      integer(kind=kint) :: i_step_init
 !>      End time steo
       integer(kind=kint) :: i_step_number
 !!
@@ -44,7 +42,7 @@
 !
 !>      Structure for initial time data
       type(time_data), save :: init_d1
-!init_d1%i_time_step
+!init_d1%time
 !
 ! -----------------------------------------------------------------------
 !
