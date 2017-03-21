@@ -19,6 +19,7 @@
       use m_SPH_transforms
       use m_t_step_parameter
 !
+      use t_step_parameter
       use t_phys_data
       use t_global_gauss_coefs
       use t_rms_4_sph_spectr
@@ -74,7 +75,6 @@
       use set_control_nodal_data
       use set_control_sph_data
       use set_control_platform_data
-      use set_fixed_time_step_params
       use legendre_transform_select
       use ucd_IO_select
 !
@@ -169,7 +169,6 @@
       use set_control_nodal_data
       use set_control_sph_data
       use set_control_platform_data
-      use set_fixed_time_step_params
       use legendre_transform_select
 !
       use m_ctl_data_4_sph_trans

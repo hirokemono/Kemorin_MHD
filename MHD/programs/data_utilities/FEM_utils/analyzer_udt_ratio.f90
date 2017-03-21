@@ -17,6 +17,7 @@
       use calypso_mpi
 !
       use m_FEM_utils
+      use t_step_parameter
       use t_VIZ_step_parameter
 !
       implicit none
@@ -35,7 +36,6 @@
       use m_t_step_parameter
       use nod_phys_send_recv
       use product_udt_fields
-      use set_fixed_time_step_params
 !
       integer(kind = kint) :: ierr
 !

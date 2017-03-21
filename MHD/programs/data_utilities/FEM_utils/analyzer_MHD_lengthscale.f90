@@ -37,8 +37,8 @@
       use m_array_for_send_recv
       use m_ctl_params_4_prod_udt
       use m_ctl_data_product_udt
+      use t_step_parameter
       use product_udt_fields
-      use set_fixed_time_step_params
 !
       integer(kind = kint) :: ierr
 !

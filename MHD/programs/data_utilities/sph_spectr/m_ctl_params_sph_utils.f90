@@ -15,6 +15,7 @@
 !
       use m_precision
 !
+      use t_step_parameter
       use t_phys_data
       use t_rms_4_sph_spectr
       use t_pickup_sph_spectr_data
@@ -90,7 +91,6 @@
       use set_control_nodal_data
       use set_control_sph_data
       use set_control_platform_data
-      use set_fixed_time_step_params
       use set_control_4_pickup_sph
 !
       use m_ctl_data_4_sph_utils

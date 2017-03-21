@@ -18,6 +18,7 @@
       use m_precision
       use m_machine_parameter
 !
+      use t_step_parameter
       use t_time_data
       use t_mesh_data
       use t_phys_data
@@ -87,7 +88,6 @@
       use m_t_step_parameter
       use m_default_file_prefix
       use set_control_platform_data
-      use set_fixed_time_step_params
       use ucd_IO_select
 !
       integer(kind = kint), intent(in) :: my_rank

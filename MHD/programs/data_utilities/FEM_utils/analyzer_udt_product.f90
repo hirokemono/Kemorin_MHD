@@ -17,6 +17,7 @@
       use calypso_mpi
 !
       use m_FEM_utils
+      use t_step_parameter
       use t_VIZ_step_parameter
 !
       implicit none
@@ -37,7 +38,6 @@
       use load_mesh_data
       use const_mesh_information
       use product_udt_fields
-      use set_fixed_time_step_params
 !
       integer(kind = kint) :: ierr
 !

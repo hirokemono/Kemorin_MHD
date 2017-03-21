@@ -29,6 +29,7 @@
       use m_machine_parameter
       use m_MHD_step_parameter
       use t_time_data
+      use t_step_parameter
       use t_SGS_control_parameter
       use t_ctl_data_4_time_steps
       use t_VIZ_step_parameter
@@ -171,8 +172,6 @@
 !
       subroutine set_fixed_time_step_controls                           &
      &         (SGS_par, tctl, init_d, finish_d, MHD_step)
-!
-      use set_fixed_time_step_params
 !
       type(time_data), intent(inout) :: init_d
       type(finish_data), intent(inout) :: finish_d
