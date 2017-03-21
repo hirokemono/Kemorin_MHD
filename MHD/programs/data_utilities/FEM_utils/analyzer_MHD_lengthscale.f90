@@ -55,9 +55,9 @@
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_prod_udt'
       call set_ctl_params_prod_udt                                      &
      &   (mesh_file_FUTIL, udt_param_FUTIL, ucd_FUTIL)
-      call s_set_fixed_time_step_params                                 &
-     &   (time_d1%dt, t_pu_ctl, rst_step_U, ucd_step_U, viz_step_U,     &
-     &    ierr, e_message)
+      call s_set_fixed_time_step_params(t_pu_ctl, init_d1, finish_d1,   &
+     &    rst_step_U, ucd_step_U, viz_step_U, ierr, e_message)
+      time_d1%dt = init_d1%dt
 !
 !     ---------------------
 !

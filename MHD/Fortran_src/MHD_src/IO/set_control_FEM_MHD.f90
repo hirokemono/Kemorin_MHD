@@ -48,6 +48,7 @@
      &          mesh_file, udt_org_param, FEM_prm, SGS_par, nod_fld)
 !
       use calypso_mpi
+      use m_t_step_parameter
       use m_ucd_data
       use m_default_file_prefix
       use m_physical_property
@@ -149,7 +150,7 @@
 !   set control parameters
 !
       call s_set_control_4_time_steps                                   &
-     &   (flex_p1, SGS_par, init_d1, MHD_step1,                         &
+     &   (flex_p1, SGS_par, init_d1, finish_d1, MHD_step1,              &
      &    ctl_ctl%mrst_ctl, ctl_ctl%tctl)
 !
       call s_set_control_4_crank(ctl_ctl%mevo_ctl,                      &

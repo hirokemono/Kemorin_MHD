@@ -38,7 +38,6 @@
 !
 !>      Structure for end time data
       type(finish_data), save :: finish_d1
-!finish_d1%elapsed_time
 !
 ! -----------------------------------------------------------------------
 !
