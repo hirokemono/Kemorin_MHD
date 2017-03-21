@@ -1,0 +1,36 @@
+!>@file   t_step_parameter.f90
+!!@brief  module t_step_parameter
+!!
+!!@author H. Matsui and H. Okuda
+!!@date Programmed in July., 2001
+!!@n    Modified by H. Matsui in 2003
+!
+!> @brief Parameteres for time steppings
+!
+      module t_step_parameter
+!
+!
+      use m_precision
+      use t_time_data
+      use t_IO_step_parameter
+!
+      implicit  none
+!
+!
+!
+!       Structure for time stepping parameters
+      type time_step_param
+!>        Structure for time data
+        type(time_data) :: time_d
+!>        Structure for initial time data
+        type(time_data) :: init_d
+!>        Structure for end time data
+        type(finish_data) :: finish_d
+!
+!>        Increment for mean restart data
+        type(IO_step_param) :: rst_step
+!>        Increment for mean field data
+        type(IO_step_param) :: ucd_step
+      end type time_step_param
+!
+      end module t_step_parameter
