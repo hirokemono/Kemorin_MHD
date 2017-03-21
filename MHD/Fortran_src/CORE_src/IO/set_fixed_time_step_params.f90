@@ -8,12 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine s_set_fixed_time_step_params(tctl, init_d, finish_d, &
-!!     &          rst_step, ucd_step, viz_step, ierr, errmsg)
+!!     &          rst_step, ucd_step, ierr, errmsg)
 !!        type(time_data_control), intent(in) :: tctl
 !!        type(time_data), intent(inout) :: init_d
 !!        type(finish_data), intent(inout) :: finish_d
 !!        type(IO_step_param), intent(inout) :: rst_step, ucd_step
-!!        type(VIZ_step_params), intent(inout) :: viz_step
 !!@endverbatim
 !
       module set_fixed_time_step_params
@@ -25,7 +24,6 @@
       use t_time_data
       use t_ctl_data_4_time_steps
       use t_IO_step_parameter
-      use t_VIZ_step_parameter
 !
       implicit  none
 !
@@ -36,7 +34,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_fixed_time_step_params(tctl, init_d, finish_d,   &
-     &          rst_step, ucd_step, viz_step, ierr, errmsg)
+     &          rst_step, ucd_step, ierr, errmsg)
 !
       use m_error_IDs
 !
@@ -45,7 +43,6 @@
       type(time_data), intent(inout) :: init_d
       type(finish_data), intent(inout) :: finish_d
       type(IO_step_param), intent(inout) :: rst_step, ucd_step
-      type(VIZ_step_params), intent(inout) :: viz_step
       integer(kind = kint), intent(inout) :: ierr
       character(len=kchara), intent(inout) :: errmsg
 !
@@ -70,9 +67,7 @@
       call set_output_step_4_fixed_step(ione, init_d%dt,                &
      &    tctl%i_step_ucd_ctl, tctl%delta_t_field_ctl, ucd_step)
 !
-      call viz_fixed_time_step_params(init_d%dt, tctl, viz_step)
-!
-      if (finish_d%i_end_step.eq.-1) then
+      if (finish_d%i_end_step .eq. -1) then
         if (tctl%elapsed_time_ctl%iflag .eq. 0) then
           ierr = ierr_evo
           errmsg = 'Set elapsed time to finish (second)'

@@ -19,6 +19,7 @@
       use m_t_step_parameter
 !
       use m_FEM_utils
+      use t_VIZ_step_parameter
       use ucd_IO_select
       use FEM_MHD_length_scale
 !
@@ -56,7 +57,8 @@
       call set_ctl_params_prod_udt                                      &
      &   (mesh_file_FUTIL, udt_param_FUTIL, ucd_FUTIL)
       call s_set_fixed_time_step_params(t_pu_ctl, init_d1, finish_d1,   &
-     &    rst_step_U, ucd_step_U, viz_step_U, ierr, e_message)
+     &    rst_step_U, ucd_step_U, ierr, e_message)
+      call viz_fixed_time_step_params(init_d1%dt, t_pu_ctl, viz_step_U)
       time_d1%dt = init_d1%dt
 !
 !     ---------------------

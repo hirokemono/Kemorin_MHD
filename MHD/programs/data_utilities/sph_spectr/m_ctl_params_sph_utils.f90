@@ -122,7 +122,8 @@
 !      stepping parameter
 !
       call s_set_fixed_time_step_params(t_su_ctl, init_d1, finish_d1,   &
-     &    rst_step, ucd_step, viz_step, ierr, e_message)
+     &    rst_step, ucd_step, ierr, e_message)
+      call viz_fixed_time_step_params(init_d1%dt, t_su_ctl, viz_step)
       time_d1%dt = init_d1%dt
 !
       call set_output_step_4_fixed_step(ione, time_d1%dt,               &

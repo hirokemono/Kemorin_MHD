@@ -185,8 +185,9 @@
 !
 !
       call s_set_fixed_time_step_params(tctl, init_d, finish_d,         &
-     &    MHD_step%rst_step, MHD_step%ucd_step, MHD_step%viz_step,      &
-     &    ierr, e_message)
+     &    MHD_step%rst_step, MHD_step%ucd_step, ierr, e_message)
+      call viz_fixed_time_step_params                                   &
+     &   (init_d%dt, tctl, MHD_step%viz_step)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
       call set_output_step_4_fixed_step(ione, init_d%dt,                &
@@ -225,7 +226,7 @@
 !
       call set_flex_time_step_params                                    &
      &   (flex_p, SGS_par, tctl, init_d, finish_d,                      &
-     &    MHD_step%rst_step, MHD_step%ucd_step, MHD_step%viz_step)
+     &    MHD_step%rst_step, MHD_step%ucd_step)
 !
       call set_output_step_4_flex_step(ione, flex_p%dt_max,             &
      &    tctl%i_step_check_ctl, tctl%delta_t_check_ctl,                &
@@ -245,12 +246,15 @@
      &    tctl%i_step_boundary_ctl, tctl%delta_t_boundary_ctl,          &
      &    MHD_step%boundary_step)
 !
+      call viz_flex_time_step_controls                                  &
+     &   (tctl, init_d%dt, MHD_step%viz_step)
+!
       end subroutine set_flex_time_step_controls
 !
 ! -----------------------------------------------------------------------
 !
       subroutine set_flex_time_step_params(flex_p, SGS_par, tctl,       &
-     &          init_d, finish_d, rst_step, ucd_step, viz_step)
+     &          init_d, finish_d, rst_step, ucd_step)
 !
       type(time_data), intent(inout) :: init_d
       type(finish_data), intent(inout) :: finish_d
@@ -259,7 +263,6 @@
       type(flexible_stepping_parameter), intent(inout) :: flex_p
       type(time_data_control), intent(inout) :: tctl
       type(IO_step_param), intent(inout) :: rst_step, ucd_step
-      type(VIZ_step_params), intent(inout) :: viz_step
 !
 !>      Start step for restarting file
       integer(kind=kint) :: istep_rst_start, istep_rst_end
@@ -287,8 +290,6 @@
       init_d%i_time_step =  istep_rst_start * rst_step%increment
       finish_d%i_end_step = istep_rst_end *   rst_step%increment
       flex_p%time_to_finish = istep_rst_end * rst_step%delta_t
-!
-      call viz_flex_time_step_controls(tctl, init_d%dt, viz_step)
 !
       if (istep_rst_end .eq. -1) then
         if (tctl%elapsed_time_ctl%iflag .eq. 0) then
