@@ -72,7 +72,8 @@
 !
       call read_alloc_sph_spectr                                        &
      &   (i_step, MHD1_org_files%rj_file_param, sph_file_param1,        &
-     &    sph1%sph_rj, ipol, rj_fld1, MHD_step%ucd_step, init_d1)
+     &    sph1%sph_rj, ipol, rj_fld1,                                   &
+     &    MHD_step%ucd_step, MHD_step%init_d)
 !
       call copy_field_name_type(rj_fld1, ref_rj_fld)
       call copy_field_data_type(rj_fld1, ref_rj_fld)
@@ -81,8 +82,9 @@
 !
       call read_alloc_sph_spectr                                        &
      &   (i_step, MHD1_org_files%rj_file_param, sph_file_param2,        &
-     &    sph1%sph_rj, ipol, rj_fld1, MHD_step%ucd_step, init_d1)
-      call copy_time_data(init_d1, time_d1)
+     &    sph1%sph_rj, ipol, rj_fld1,                                   &
+     &    MHD_step%ucd_step, MHD_step%init_d)
+      call copy_time_data(MHD_step%init_d, time_d1)
 !
 !       Transform first data
 !

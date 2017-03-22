@@ -71,7 +71,7 @@
      &   (MHD_ctl1, sph1, comms_sph1, sph_grps1, rj_fld1, nod_fld1,     &
      &    pwr1, SGS_par1, trns_WK1%dynamic_SPH,                         &
      &    mesh1, group1, ele_mesh1)
-      call copy_delta_t(init_d1, time_d1)
+      call copy_delta_t(MHD_step1%init_d, time_d1)
       call end_eleps_time(4)
 !
 !     --------------------- 
@@ -114,7 +114,7 @@
 !
 !*  -----------  set initial step data --------------
 !*
-      time_d1%i_time_step = init_d1%i_time_step - 1
+      time_d1%i_time_step = MHD_step1%init_d%i_time_step - 1
 !*
 !*  -------  time evelution loop start -----------
 !*
@@ -217,7 +217,7 @@
 !
 !*  ----------- Read spectr data and get field data --------------
 !*
-      time_d1%i_time_step = init_d1%i_time_step
+      time_d1%i_time_step = MHD_step1%init_d%i_time_step
       if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_snap'
       call SPH_analyze_snap(time_d1%i_time_step, MHD_step1)
 !*

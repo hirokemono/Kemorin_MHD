@@ -3,12 +3,13 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine init_analyzer_fl(MHD_step, IO_bc, FEM_prm, SGS_par,  &
+!!      subroutine init_analyzer_fl(IO_bc, FEM_prm, SGS_par, MHD_step,  &
 !!     &          mesh, group, ele_mesh, MHD_mesh, layer_tbl,           &
 !!     &          iphys, nod_fld, label_sim)
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
+!!        type(MHD_IO_step_param), intent(inout) :: MHD_step
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(element_geometry), intent(inout) :: ele_mesh
@@ -41,7 +42,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer_fl(MHD_step, IO_bc, FEM_prm, SGS_par,    &
+      subroutine init_analyzer_fl(IO_bc, FEM_prm, SGS_par, MHD_step,    &
      &          time_d, mesh, group, ele_mesh, MHD_mesh, layer_tbl,     &
      &          iphys, nod_fld, label_sim)
 !
@@ -104,11 +105,11 @@
       use nod_phys_send_recv
       use solver_MGCG_MHD
 !
-      type(MHD_IO_step_param), intent(in) :: MHD_step
       type(IO_boundary), intent(in) :: IO_bc
 !
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(SGS_paremeters), intent(inout) :: SGS_par
+      type(MHD_IO_step_param), intent(inout) :: MHD_step
       type(time_data), intent(inout) :: time_d
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
@@ -256,7 +257,8 @@
       call initial_data_control(MHD_step%rst_step, ref_param_T1,        &
      &    mesh%node, mesh%ele, MHD_mesh%fluid,                          &
      &    cd_prop1, iphys, layer_tbl, SGS_par, wk_sgs1, wk_diff1,       &
-     &    sgs_coefs, diff_coefs, nod_fld, flex_p1, init_d1, time_d)
+     &    sgs_coefs, diff_coefs, nod_fld, flex_p1,                      &
+     &    MHD_step%init_d, time_d)
       iflag_initial_step = 0
 !
 !  -------------------------------

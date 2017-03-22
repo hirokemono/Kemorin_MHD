@@ -75,7 +75,7 @@
      &    sph_gen, rj_fld1, mesh_file_circ, sph_file_param1,            &
      &    MHD1_org_files, sph_fst_IO, pwr1, SGS_par1,                   &
      &    trns_WK1%dynamic_SPH%sph_filters)
-      call copy_delta_t(init_d1, time_d1)
+      call copy_delta_t(MHD_step1%init_d, time_d1)
 !
       call set_ctl_params_pick_circle                                   &
      &   (MHD_ctl1%model_ctl%fld_ctl%field_ctl,                         &
@@ -109,7 +109,7 @@
 !*  -----------  set initial step data --------------
 !*
       call start_eleps_time(3)
-      time_d1%i_time_step = init_d1%i_time_step - 1
+      time_d1%i_time_step = MHD_step1%init_d%i_time_step - 1
 !*
 !*  -------  time evelution loop start -----------
 !*

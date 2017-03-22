@@ -55,7 +55,7 @@
 !
 !*  -----------  set initial step data --------------
 !*
-      time_d1%i_time_step = init_d1%i_time_step - 1
+      time_d1%i_time_step = MHD_step1%init_d%i_time_step - 1
 !*
 !*  -------  time evelution loop start -----------
 !*
@@ -154,8 +154,8 @@
 !
       call read_alloc_sph_rst_4_snap                                    &
      &   (i_step, MHD1_org_files%rj_file_param, sph1%sph_rj,            &
-     &    ipol, rj_fld1, MHD_step%rst_step, init_d1)
-      call copy_time_data(init_d1, time_d1)
+     &    ipol, rj_fld1, MHD_step%rst_step, MHD_step1%init_d)
+      call copy_time_data(MHD_step1%init_d, time_d1)
 !
       if (iflag_debug.eq.1) write(*,*)' sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph                                    &

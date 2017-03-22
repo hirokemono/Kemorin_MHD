@@ -39,7 +39,7 @@
       call input_control_4_snapshot                                     &
      &   (FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, nod_fld1,       &
      &    IO_bc1, filtering1, wide_filtering, wk_filter1)
-      call copy_delta_t(init_d1, time_d1)
+      call copy_delta_t(MHD_step1%init_d, time_d1)
 !
 !   matrix assembling
 !
@@ -57,7 +57,7 @@
 !
       integer(kind=kint ) :: i_step
 !
-      do i_step = init_d1%i_time_step, MHD_step1%finish_d%i_end_step
+      do i_step = MHD_step1%init_d%i_time_step, MHD_step1%finish_d%i_end_step
         if (iflag_debug.eq.1)  write(*,*) 'FEM_analyze_vol_average'
         call FEM_analyze_vol_average(i_step, MHD_step1)
       end do

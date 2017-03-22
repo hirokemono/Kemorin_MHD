@@ -78,6 +78,7 @@
 !
       use m_initial_field_control
       use m_t_step_parameter
+      use m_MHD_step_parameter
       use t_IO_step_parameter
       use t_phys_data
 !
@@ -125,12 +126,12 @@
       end if
 !
 !  Copy initial field to restart IO data
-      call copy_time_step_data(init_d1, time_d1)
+      call copy_time_step_data(MHD_step1%init_d, time_d1)
       call init_output_sph_restart_file(rj_fld)
 !
       call output_sph_restart_control(time_d1, rj_fld, rst_step)
 !
-      if(init_d1%i_time_step .eq. -1) then
+      if(MHD_step1%init_d%i_time_step .eq. -1) then
         call output_sph_rst_by_elaps(time_d1, rj_fld)
       end if
 !

@@ -4,12 +4,13 @@
 !      Written by H. Matsui
 !
 !!      subroutine init_analyzer_snap(FEM_prm, SGS_par,                 &
-!!     &          IO_bc, time_d, mesh, group, ele_mesh,                 &
+!!     &          IO_bc, MHD_step, time_d, mesh, group, ele_mesh,       &
 !!     &          MHD_mesh, layer_tbl, iphys, nod_fld, t_IO, rst_step,  &
 !!     &          label_sim)
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(IO_boundary), intent(in) :: IO_bc
+!!        type(MHD_IO_step_param), intent(inout) :: MHD_step
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(element_geometry), intent(inout) :: ele_mesh
@@ -25,6 +26,7 @@
       use m_precision
       use t_FEM_control_parameter
       use t_SGS_control_parameter
+      use t_MHD_step_parameter
       use t_time_data
       use t_phys_data
       use t_phys_address
@@ -46,7 +48,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine init_analyzer_snap(FEM_prm, SGS_par,                   &
-     &          IO_bc, time_d, mesh, group, ele_mesh,                   &
+     &          IO_bc, MHD_step, time_d, mesh, group, ele_mesh,         &
      &          MHD_mesh, layer_tbl, iphys, nod_fld, t_IO, rst_step,    &
      &          label_sim)
 !
@@ -99,6 +101,7 @@
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(IO_boundary), intent(in) :: IO_bc
+      type(MHD_IO_step_param), intent(in) :: MHD_step
       type(time_data), intent(in) :: time_d
 !
       type(mesh_geometry), intent(inout) :: mesh
@@ -228,7 +231,7 @@
       if (rst_step%increment .gt. 0) then
         if (iflag_debug.eq.1) write(*,*)' init_restart_4_snapshot'
         call init_restart_4_snapshot                                    &
-     &     (init_d1%i_time_step, mesh%node, t_IO, rst_step)
+     &     (MHD_step%init_d%i_time_step, mesh%node, t_IO, rst_step)
       end if
 !
 !     ---------------------

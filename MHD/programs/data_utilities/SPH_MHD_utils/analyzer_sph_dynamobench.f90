@@ -61,7 +61,7 @@
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_dynamobench'
       call input_control_SPH_dynamobench(MHD_ctl1, sph1, comms_sph1,    &
      &    sph_grps1, rj_fld1, nod_fld1, pwr1, SGS_par1)
-      call copy_delta_t(init_d1, time_d1)
+      call copy_delta_t(MHD_step1%init_d, time_d1)
       call end_eleps_time(4)
 !
 !    precondition elaps start
@@ -88,7 +88,7 @@
 !*  -----------  set initial step data --------------
 !*
       call start_eleps_time(3)
-      time_d1%i_time_step = init_d1%i_time_step - 1
+      time_d1%i_time_step = MHD_step1%init_d%i_time_step - 1
 !*
 !*  -------  time evelution loop start -----------
 !*

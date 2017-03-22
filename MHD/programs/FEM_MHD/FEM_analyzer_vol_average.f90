@@ -48,7 +48,8 @@
 !   matrix assembling
 !
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
-      call init_analyzer_snap(FEM_prm1, SGS_par1, IO_bc1, time_d1,      &
+      call init_analyzer_snap                                           &
+     &   (FEM_prm1, SGS_par1, IO_bc1, MHD_step, time_d1,                &
      &    mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,              &
      &    iphys, nod_fld1, SNAP_time_IO, MHD_step%rst_step, label_sim)
 !
@@ -89,7 +90,7 @@
       if (iflag_debug.eq.1)  write(*,*) 'read_udt_4_snap'
       call read_udt_4_snap(i_step,                                      &
      &    FEM_udt_org_param, nod_fld1, SNAP_time_IO, MHD_step%ucd_step)
-      time_d1%time = init_d1%time + time_d1%dt * dble(i_step)
+      time_d1%time = MHD_step%init_d%time + time_d1%dt * dble(i_step)
 !
 !     ---- magnetic field update
 !

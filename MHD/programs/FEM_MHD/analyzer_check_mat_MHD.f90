@@ -25,6 +25,7 @@
 !
       use m_control_parameter
       use m_SGS_control_parameter
+      use m_MHD_step_parameter
       use m_mesh_data
       use m_node_phys_data
       use m_3d_filter_coef_MHD
@@ -38,7 +39,7 @@
       call input_control_4_MHD(FEM_prm1, SGS_par1,                      &
      &    mesh1, group1, ele_mesh1, nod_fld1, IO_bc1,                   &
      &    filtering1, wide_filtering, wk_filter1, MHD1_matrices)
-      call copy_delta_t(init_d1, time_d1)
+      call copy_delta_t(MHD_step1%init_d, time_d1)
 !
       call FEM_check_MHD_mat
 !

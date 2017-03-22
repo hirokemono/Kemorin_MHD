@@ -70,7 +70,7 @@
 !
 !   matrix assembling
 !
-      call init_analyzer_fl(MHD_step, IO_bc1, FEM_prm1, SGS_par1,       &
+      call init_analyzer_fl(IO_bc1, FEM_prm1, SGS_par1, MHD_step,       &
      &    time_d1, mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,     &
      &    iphys, nod_fld1, label_sim)
 !

@@ -64,7 +64,7 @@
       call input_control_4_snapshot                                     &
      &   (FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, nod_fld1,       &
      &    IO_bc1, filtering1, wide_filtering, wk_filter1)
-      call copy_delta_t(init_d1, time_d1)
+      call copy_delta_t(MHD_step1%init_d, time_d1)
 !
 !     --------------------- 
 !
@@ -85,7 +85,7 @@
       integer(kind=kint ) :: i_step, visval
 !
 !
-      do i_step = init_d1%i_time_step, MHD_step1%finish_d%i_end_step
+      do i_step = MHD_step1%init_d%i_time_step, MHD_step1%finish_d%i_end_step
 !
 !  Read and generate fields
         call FEM_analyze_snapshot(i_step, MHD_step1, visval)

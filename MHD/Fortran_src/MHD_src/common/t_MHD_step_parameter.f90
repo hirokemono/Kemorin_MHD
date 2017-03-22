@@ -20,6 +20,8 @@
 !
 !
       type MHD_IO_step_param
+!>        Structure for initial time data
+        type(time_data) :: init_d
 !>        Structure for end time data
         type(finish_data) :: finish_d
 !

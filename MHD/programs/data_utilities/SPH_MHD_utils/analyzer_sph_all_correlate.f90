@@ -75,7 +75,7 @@
      &    mesh1, group1, ele_mesh1)
       call set_ctl_4_second_spectr_data                                 &
      &   (MHD_ctl1%new_plt, sph_file_param2)
-      call copy_delta_t(init_d1, time_d1)
+      call copy_delta_t(MHD_step1%init_d, time_d1)
       call end_eleps_time(4)
 !
 !     --------------------- 
@@ -118,7 +118,7 @@
 !
 !*  -----------  set initial step data --------------
 !*
-      time_d1%i_time_step = init_d1%i_time_step - 1
+      time_d1%i_time_step = MHD_step1%init_d%i_time_step - 1
 !*
 !*  -------  time evelution loop start -----------
 !*
