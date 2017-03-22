@@ -69,19 +69,20 @@
 !
       subroutine analyze
 !
-      use m_t_step_parameter
-!
       integer(kind=kint ) :: i_step
 !
 !
-      do i_step = init_d1%i_time_step, finish_d1%i_end_step
+      do i_step = t_VIZ%init_d%i_time_step, t_VIZ%finish_d%i_end_step
+        if(output_IO_flag(i_step,t_VIZ%ucd_step) .ne. izero) cycle
+        t_VIZ%ucd_step%istep_file = i_step / t_VIZ%ucd_step%increment
 !
 !  Load field data
-        call FEM_analyze_surface(i_step, viz_step_V)
+        call FEM_analyze_surface(i_step, t_VIZ, viz_step_V)
 !
 !  Generate field lines
         call start_eleps_time(12)
-        call visualize_surface(viz_step_V, time_d1, femmesh_VIZ%mesh,   &
+        call visualize_surface                                          &
+     &     (viz_step_V, t_VIZ%time_d, femmesh_VIZ%mesh,                 &
      &      elemesh_VIZ, field_VIZ)
         call end_eleps_time(12)
       end do

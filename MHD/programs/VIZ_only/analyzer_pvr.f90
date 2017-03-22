@@ -54,10 +54,12 @@
       integer(kind=kint ) :: i_step
 !
 !
-      do i_step = init_d1%i_time_step, finish_d1%i_end_step
+      do i_step = t_VIZ%init_d%i_time_step, t_VIZ%finish_d%i_end_step
+        if(output_IO_flag(i_step,t_VIZ%ucd_step) .ne. izero) cycle
+        t_VIZ%ucd_step%istep_file = i_step / t_VIZ%ucd_step%increment
 !
 !  Load field data
-        call FEM_analyze_pvr(i_step,  viz_step_V%PVR_t)
+        call FEM_analyze_pvr(i_step, t_VIZ, viz_step_V%PVR_t)
 !
 !  Rendering
         call PVR_visualize(viz_step_V%PVR_t%istep_file,                 &

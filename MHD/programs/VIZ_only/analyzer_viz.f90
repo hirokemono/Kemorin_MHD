@@ -76,16 +76,19 @@
       integer(kind=kint ) :: i_step, visval
 !
 !
-      do i_step = init_d1%i_time_step, finish_d1%i_end_step
+      do i_step = t_VIZ%init_d%i_time_step, t_VIZ%finish_d%i_end_step
+        if(output_IO_flag(i_step,t_VIZ%ucd_step) .ne. izero) cycle
+        t_VIZ%ucd_step%istep_file = i_step / t_VIZ%ucd_step%increment
+!
 !  Load field data
         if(iflag_debug .gt. 0)  write(*,*) 'FEM_analyze_vizs', i_step
-        call FEM_analyze_vizs(i_step, viz_step_V, visval)
+        call FEM_analyze_vizs(i_step, t_VIZ, viz_step_V, visval)
 !
 !  Rendering
         if(visval .eq. 0) then
           if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step
           call start_eleps_time(12)
-          call visualize_all(viz_step_V, time_d1,                       &
+          call visualize_all(viz_step_V, t_VIZ%time_d,                  &
      &        femmesh_VIZ%mesh, femmesh_VIZ%group, elemesh_VIZ,         &
      &        field_VIZ, ele_4_nod_VIZ, jac_VIZ_q)
           call end_eleps_time(12)

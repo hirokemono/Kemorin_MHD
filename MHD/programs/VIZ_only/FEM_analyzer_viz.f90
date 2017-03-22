@@ -4,9 +4,11 @@
 !
 !       Written by H. Matsui
 !
-!!      subroutine FEM_initialize_vizs(viz_step)
-!!      subroutine FEM_analyze_vizs(i_step, viz_step, visval)
+!!      subroutine FEM_initialize_vizs(viz_step, elemesh)
+!!      subroutine FEM_analyze_vizs(i_step, time_VIZ, viz_step, visval)
+!!        type(time_step_param), intent(inout) :: time_VIZ
 !!        type(VIZ_step_params), intent(inout) :: viz_step
+!!        type(element_geometry), intent(inout) :: elemesh
 !
       module FEM_analyzer_viz
 !
@@ -14,11 +16,12 @@
 !
       use m_machine_parameter
       use calypso_mpi
-      use m_t_step_parameter
-      use m_visualization
 !
+      use t_step_parameter
       use t_VIZ_step_parameter
       use t_IO_step_parameter
+      use t_mesh_data
+      use m_visualization
 !
       implicit none
 !
@@ -59,18 +62,18 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_vizs(i_step, viz_step, visval)
+      subroutine FEM_analyze_vizs(i_step, time_VIZ, viz_step, visval)
 !
       use t_ucd_data
-      use m_t_step_parameter
 !
       integer (kind =kint), intent(in) :: i_step
+      type(time_step_param), intent(inout) :: time_VIZ
       integer(kind=kint ), intent(inout) :: visval
       type(VIZ_step_params), intent(inout) :: viz_step
 !
 !
       visval = viz_file_step_4_fix(i_step, viz_step)
-      call set_field_data_4_VIZ(visval, i_step, time_d1)
+      call set_field_data_4_VIZ(visval, i_step, time_VIZ%time_d)
 !
       end subroutine FEM_analyze_vizs
 !

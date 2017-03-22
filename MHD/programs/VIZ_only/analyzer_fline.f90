@@ -52,15 +52,15 @@
 !
       subroutine analyze
 !
-      use m_t_step_parameter
-!
       integer(kind = kint) :: i_step
 !
 !
-      do i_step = init_d1%i_time_step, finish_d1%i_end_step
+      do i_step = t_VIZ%init_d%i_time_step, t_VIZ%finish_d%i_end_step
+        if(output_IO_flag(i_step,t_VIZ%ucd_step) .ne. izero) cycle
+        t_VIZ%ucd_step%istep_file = i_step / t_VIZ%ucd_step%increment
 !
 !  Load field data
-        call FEM_analyze_fline(i_step, viz_step_V%FLINE_t)
+        call FEM_analyze_fline(i_step, t_VIZ, viz_step_V%FLINE_t)
 !
 !  Generate field lines
         call FLINE_visualize( viz_step_V%FLINE_t%istep_file,            &

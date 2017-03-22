@@ -31,9 +31,8 @@
 !
       implicit none
 !
-      type(IO_step_param), save, private :: rst_step_V
-!
-      type(IO_step_param), save, private :: ucd_step_V
+!       Structure for time stepping parameters
+      type(time_step_param), save :: t_VIZ
 !
 !>      Increment for visualizations
       type(VIZ_step_params), save :: viz_step_V
@@ -85,7 +84,6 @@
       use t_VIZ_step_parameter
 !
       use m_file_format_switch
-      use m_t_step_parameter
       use m_default_file_prefix
       use set_control_platform_data
       use ucd_IO_select
@@ -104,10 +102,10 @@
       call set_control_mesh_def(plt, mesh_file)
       call set_ucd_file_define(plt, ucd)
 !
-      call s_set_fixed_time_step_params(tctl, init_d1, finish_d1,       &
-     &    rst_step_V, ucd_step_V, ierr, e_message)
-      call viz_fixed_time_step_params(init_d1%dt, tctl, viz_step_V)
-      call copy_delta_t(init_d1, time_d1)
+      call set_fixed_time_step_params(tctl, t_VIZ, ierr, e_message)
+      call viz_fixed_time_step_params                                   &
+     &   (t_VIZ%init_d%dt, tctl, viz_step_V)
+      call copy_delta_t(t_VIZ%init_d, t_VIZ%time_d)
 !
       if(ierr .gt. 0) return
 !
@@ -119,7 +117,6 @@
       subroutine mesh_setup_4_VIZ
 !
       use calypso_mpi
-      use m_t_step_parameter
       use m_array_for_send_recv
       use mpi_load_mesh_data
       use nod_phys_send_recv
@@ -155,7 +152,7 @@
 !
       ucd_VIZ%nnod =      femmesh_VIZ%mesh%node%numnod
       call sel_read_udt_param                                           &
-     &   (my_rank, init_d1%i_time_step, VIZ_time_IO, ucd_VIZ)
+     &   (my_rank, t_VIZ%init_d%i_time_step, VIZ_time_IO, ucd_VIZ)
       call alloc_phys_data_type_by_output                               &
      &   (ucd_VIZ, femmesh_VIZ%mesh%node, field_VIZ)
 !
