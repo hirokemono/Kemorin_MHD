@@ -147,5 +147,17 @@
       end subroutine copy_delta_t
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine increment_step(time_d)
+!
+      type(time_data), intent(inout) :: time_d
+!
+!
+      time_d%i_time_step = time_d%i_time_step + 1
+!
+      end subroutine increment_step
+!
+!  ---------------------------------------------------------------------
 !
       end module t_time_data

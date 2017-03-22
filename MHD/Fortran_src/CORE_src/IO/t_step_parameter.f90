@@ -14,6 +14,7 @@
 !!        type(time_step_param), intent(inout) :: t_param
 !!        integer(kind = kint), intent(inout) :: ierr
 !!        character(len=kchara), intent(inout) :: errmsg
+!!      subroutine s_initialize_time_step(init_d, time_d)
 !!      subroutine s_set_fixed_time_step_params(tctl, init_d, finish_d, &
 !!     &          rst_step, ucd_step, ierr, errmsg)
 !!        type(time_data_control), intent(in) :: tctl
@@ -72,6 +73,19 @@
      &    t_param%rst_step, t_param%ucd_step, ierr, errmsg)
 !
       end subroutine set_fixed_time_step_params
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine s_initialize_time_step(init_d, time_d)
+!
+      type(time_data), intent(in) :: init_d
+      type(time_data), intent(inout) :: time_d
+!
+!
+      time_d%i_time_step = init_d%i_time_step - 1
+!
+      end subroutine s_initialize_time_step
 !
 ! -----------------------------------------------------------------------
 !

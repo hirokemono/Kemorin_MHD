@@ -112,18 +112,15 @@
 !
       integer(kind = kint) :: visval, iflag
 !
-!     ---------------------
-!
-      call start_eleps_time(3)
-!
 !*  -----------  set initial step data --------------
 !*
-      time_d1%i_time_step = MHD_step1%init_d%i_time_step - 1
+      call start_eleps_time(3)
+      call s_initialize_time_step(MHD_step1%init_d, time_d1)
 !*
 !*  -------  time evelution loop start -----------
 !*
       do
-        time_d1%i_time_step = time_d1%i_time_step + 1
+        call increment_step(time_d1)
 !
         iflag = output_IO_flag(time_d1%i_time_step,MHD_step1%rst_step)
         if(iflag .ne. 0) cycle
