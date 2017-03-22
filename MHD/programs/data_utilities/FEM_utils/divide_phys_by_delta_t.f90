@@ -3,7 +3,7 @@
 !
 !      Written by H. Matsui on Nov., 2006
 !
-!      subroutine s_divide_phys_by_delta_t(nod_fld)
+!      subroutine s_divide_phys_by_delta_t(dt, nod_fld)
 !      subroutine s_divide_phys_by_num_udt(icou, nod_fld)
 !        type(phys_data), intent(inout) :: nod_fld
 !
@@ -21,12 +21,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_divide_phys_by_delta_t(nod_fld)
+      subroutine s_divide_phys_by_delta_t(dt, nod_fld)
 !
       use m_phys_constants
       use m_ctl_params_4_diff_udt
       use products_nodal_fields_smp
 !
+      real(kind = kreal), intent(in) :: dt
       type(phys_data), intent(inout) :: nod_fld
 !
       integer(kind = kint) :: i, ist

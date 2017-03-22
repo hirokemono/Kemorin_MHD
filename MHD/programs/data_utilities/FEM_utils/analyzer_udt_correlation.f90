@@ -15,7 +15,6 @@
       use m_machine_parameter
       use calypso_mpi
 !
-      use m_t_step_parameter
       use t_mesh_data
       use t_phys_data
       use t_mesh_data_with_pointer
@@ -74,7 +73,7 @@
       if (iflag_debug.eq.1) write(*,*) 's_input_control_corr_udt'
       call s_input_control_corr_udt                                     &
      &   (mesh_file_FUTIL, udt_param_FUTIL, field_FUTIL, ucd_FUTIL,     &
-     &    ucd_step_U)
+     &    time_U)
       if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh_p'
       call mpi_input_mesh_p(mesh_file_FUTIL, femmesh_p_FUT,             &
      &    elemesh_FUT%surf%nnod_4_surf,                                 &
@@ -138,7 +137,6 @@
       subroutine analyze_udt_correlate
 !
       use m_geometry_constants
-      use m_t_step_parameter
       use m_ctl_params_4_diff_udt
       use set_ucd_data_to_type
       use set_ucd_data
@@ -165,49 +163,46 @@
 !
 !     ---------------------
 !
-      do istep = init_d1%i_time_step, finish_d1%i_end_step
-        if (output_IO_flag(istep,ucd_step_U) .eq. izero) then
+      do istep = time_U%init_d%i_time_step, time_U%finish_d%i_end_step
+        if (output_IO_flag(istep,time_U%ucd_step) .ne. izero) cycle
 !
-          ucd_step_U%istep_file = istep / ucd_step_U%increment
+        time_U%ucd_step%istep_file = istep / time_U%ucd_step%increment
 !
-          call set_data_by_read_ucd_once                                &
-     &       (my_rank, ucd_step_U%istep_file,                           &
-     &        udt_param_FUTIL%iflag_format, ref_udt_file_head,          &
-     &        field_FUTIL, time_IO_FUTIL)
+        call set_data_by_read_ucd_once                                  &
+     &     (my_rank, time_U%ucd_step%istep_file,                        &
+     &      udt_param_FUTIL%iflag_format, ref_udt_file_head,            &
+     &      field_FUTIL, time_IO_FUTIL)
 !
-          ucd_FUTIL%ifmt_file = udt_param_FUTIL%iflag_format
-          ucd_FUTIL%file_prefix = tgt_udt_file_head
-          call set_data_by_read_ucd_once                                &
-     &       (my_rank, ucd_step_U%istep_file,                           &
-     &        udt_param_FUTIL%iflag_format, tgt_udt_file_head,          &
-     &        phys_ref, time_IO_FUTIL)
+        ucd_FUTIL%ifmt_file = udt_param_FUTIL%iflag_format
+        ucd_FUTIL%file_prefix = tgt_udt_file_head
+        call set_data_by_read_ucd_once                                  &
+     &     (my_rank, time_U%ucd_step%istep_file,                        &
+     &      udt_param_FUTIL%iflag_format, tgt_udt_file_head,            &
+     &      phys_ref, time_IO_FUTIL)
 !
-          call nod_fields_send_recv                                     &
-     &       (femmesh_p_FUT%mesh%nod_comm, field_FUTIL)
-          call nod_fields_send_recv                                     &
-     &       (femmesh_p_REF%mesh%nod_comm, phys_ref)
+        call nod_fields_send_recv                                       &
+     &     (femmesh_p_FUT%mesh%nod_comm, field_FUTIL)
+        call nod_fields_send_recv                                       &
+     &     (femmesh_p_REF%mesh%nod_comm, phys_ref)
 !
 !    output udt data
 !
-          call coord_transfer_4_1st_field                               &
-     &       (femmesh_p_FUT%mesh%node, field_FUTIL)
-          call coord_transfer_4_2nd_field(femmesh_p_FUT%mesh%node,      &
-     &        phys_ref)
-
+        call coord_transfer_4_1st_field                                 &
+     &     (femmesh_p_FUT%mesh%node, field_FUTIL)
+        call coord_transfer_4_2nd_field(femmesh_p_FUT%mesh%node,        &
+     &      phys_ref)
 !
-          if (iflag_debug .gt. 0) write(*,*)                            &
-     &          's_correlation_all_layerd_data'
-          call s_correlation_all_layerd_data                            &
-     &       (femmesh_p_FUT%mesh%node, femmesh_p_FUT%mesh%ele,          &
-     &        field_FUTIL, jac_FUTIL_l, jac_FUTIL_q,                    &
-     &        layer_tbl_corr, phys_ref, wk_correlate)
+        if (iflag_debug .gt. 0) write(*,*)                              &
+     &        's_correlation_all_layerd_data'
+        call s_correlation_all_layerd_data                              &
+     &     (femmesh_p_FUT%mesh%node, femmesh_p_FUT%mesh%ele,            &
+     &      field_FUTIL, jac_FUTIL_l, jac_FUTIL_q,                      &
+     &      layer_tbl_corr, phys_ref, wk_correlate)
 !
-          if (iflag_debug .gt. 0) write(*,*)                            &
-     &          ' write_layerd_correlate_data', ucd_step_U%istep_file
-          call write_layerd_correlate_data                              &
-     &       (my_rank, ucd_step_U%istep_file)
-!
-        end if
+        if (iflag_debug .gt. 0) write(*,*)                              &
+     &     ' write_layerd_correlate_data', time_U%ucd_step%istep_file
+        call write_layerd_correlate_data                                &
+     &     (my_rank, time_U%ucd_step%istep_file)
       end do
 !
       end subroutine analyze_udt_correlate

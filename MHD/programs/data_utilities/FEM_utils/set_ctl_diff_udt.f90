@@ -5,17 +5,17 @@
 !     Modified by H. Matsui on JUne, 2007
 !
 !!      subroutine set_ctl_params_correlate_udt                         &
-!!     &         (mesh_file, udt_org_param, nod_fld, ucd, ucd_step)
+!!     &         (mesh_file, udt_org_param, nod_fld, ucd, time_U)
 !!        type(field_IO_params), intent(inout) ::  mesh_file
 !!        type(field_IO_params), intent(inout) :: udt_org_param
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(ucd_data), intent(inout) :: ucd
-!!        type(IO_step_param), intent(inout) :: ucd_step
+!!        type(time_step_param), intent(inout) :: time_U
 !!      subroutine set_ctl_params_diff_udt                              &
 !!     &         (mesh_file, udt_org_param, ucd)
-!!      subroutine s_set_ctl_4_diff_udt_steps(tctl, ucd_step)
+!!      subroutine s_set_ctl_4_diff_udt_steps(tctl, time_U)
 !!        type(time_data_control), intent(in) :: tctl
-!!        type(IO_step_param), intent(inout) :: ucd_step
+!!        type(time_step_param), intent(inout) :: time_U
 !
       module set_ctl_diff_udt
 !
@@ -24,6 +24,7 @@
       use calypso_mpi
       use m_machine_parameter
       use m_ctl_params_4_diff_udt
+      use t_step_parameter
       use t_phys_data
       use t_file_IO_parameter
       use t_IO_step_parameter
@@ -37,7 +38,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine set_ctl_params_correlate_udt                           &
-     &         (mesh_file, udt_org_param, nod_fld, ucd, ucd_step)
+     &         (mesh_file, udt_org_param, nod_fld, ucd, time_U)
 !
       use t_ucd_data
       use m_ctl_data_diff_udt
@@ -49,7 +50,7 @@
       type(field_IO_params), intent(inout) :: udt_org_param
       type(phys_data), intent(inout) :: nod_fld
       type(ucd_data), intent(inout) :: ucd
-      type(IO_step_param), intent(inout) :: ucd_step
+      type(time_step_param), intent(inout) :: time_U
       integer(kind = kint) :: ierr
 !
 !
@@ -64,7 +65,7 @@
       if (ierr .ne. 0) call calypso_MPI_abort(ierr, e_message)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_ctl_4_diff_udt_steps'
-      call s_set_ctl_4_diff_udt_steps(t_d_ctl, ucd_step)
+      call s_set_ctl_4_diff_udt_steps(t_d_ctl, time_U)
 !
       if(fint_d_ctl%integration_points_ctl%iflag .gt. 0) then
         call maximum_integration_points                                 &
@@ -188,51 +189,32 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_ctl_4_diff_udt_steps(tctl, ucd_step)
+      subroutine s_set_ctl_4_diff_udt_steps(tctl, time_U)
 !
-      use m_t_step_parameter
       use m_error_IDs
       use t_ctl_data_4_time_steps
       use cal_num_digits
 !
       type(time_data_control), intent(in) :: tctl
-      type(IO_step_param), intent(inout) :: ucd_step
+      type(time_step_param), intent(inout) :: time_U
+!
+      integer(kind = kint) :: ierr
 !
 !   parameters for time evolution
 !
-        init_d1%i_time_step   = 0
-        if (tctl%i_step_init_ctl%iflag .gt. 0) then
-          init_d1%i_time_step   = tctl%i_step_init_ctl%intvalue
-        end if
+      call set_fixed_time_step_params                                   &
+     &         (tctl, time_U, ierr, e_message)
 !
-        if (tctl%i_step_number_ctl%iflag .eq. 0) then
-          e_message = 'Set step number to finish'
-            call calypso_MPI_abort(ierr_evo, e_message)
-        else
-          finish_d1%i_end_step = tctl%i_step_number_ctl%intvalue
-        end if
+      time_U%time_d%dt = 1.0d0
+      if (tctl%dt_ctl%iflag .gt. 0) then
+        time_U%time_d%dt = tctl%dt_ctl%realvalue
+      end if
 !
-        ucd_step%increment = 1
-        if (tctl%i_step_ucd_ctl%iflag .gt. 0) then
-          ucd_step%increment = tctl%i_step_ucd_ctl%intvalue
-        end if
-!
-        i_diff_steps = 1
-        if (tctl%i_diff_steps_ctl%iflag .gt. 0) then
-          i_diff_steps = tctl%i_diff_steps_ctl%intvalue
-        end if
-!
-        dt = 1.0d0
-        if (tctl%dt_ctl%iflag .gt. 0) then
-          dt = tctl%dt_ctl%realvalue
-        end if
-!
-        if (iflag_debug.eq.1) then
-          write(*,*) 'i_step_init ',       init_d1%i_time_step
-          write(*,*) 'i_step_number ',     finish_d1%i_end_step
-          write(*,*) 'i_step_output_ucd ', ucd_step%increment
-          write(*,*) 'i_diff_steps ',      i_diff_steps
-        end if
+      if (iflag_debug.eq.1) then
+        write(*,*) 'i_step_init ',       time_U%init_d%i_time_step
+        write(*,*) 'i_step_number ',     time_U%finish_d%i_end_step
+        write(*,*) 'i_step_output_ucd ', time_U%ucd_step%increment
+      end if
 !
       end subroutine s_set_ctl_4_diff_udt_steps
 !

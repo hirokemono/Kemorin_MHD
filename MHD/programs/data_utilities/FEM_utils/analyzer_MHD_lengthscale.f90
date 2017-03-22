@@ -16,7 +16,6 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_t_step_parameter
 !
       use m_FEM_utils
       use t_VIZ_step_parameter
@@ -56,10 +55,8 @@
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_prod_udt'
       call set_ctl_params_prod_udt                                      &
      &   (mesh_file_FUTIL, udt_param_FUTIL, ucd_FUTIL)
-      call s_set_fixed_time_step_params(t_pu_ctl, init_d1, finish_d1,   &
-     &    rst_step_U, ucd_step_U, ierr, e_message)
-      call viz_fixed_time_step_params(init_d1%dt, t_pu_ctl, viz_step_U)
-      call copy_delta_t(init_d1, time_d1)
+      call set_fixed_time_step_params                                   &
+     &   (t_pu_ctl, time_U, ierr, e_message)
 !
 !     ---------------------
 !
@@ -77,7 +74,6 @@
 !
       subroutine analyze_MHD_lscale
 !
-      use m_t_step_parameter
       use m_ctl_params_4_diff_udt
       use set_ucd_data_to_type
       use FEM_MHD_length_scale
@@ -85,19 +81,18 @@
       integer(kind=kint ) :: istep
 !
 !
-      do istep = init_d1%i_time_step, finish_d1%i_end_step
-        if(output_IO_flag(istep,ucd_step_U) .eq. izero) then
-          ucd_step_U%istep_file = istep / ucd_step_U%increment
+      do istep = time_U%init_d%i_time_step, time_U%finish_d%i_end_step
+        if(output_IO_flag(istep,time_U%ucd_step) .ne. izero) cycle
+        time_U%ucd_step%istep_file = istep / time_U%ucd_step%increment
 !
-          call set_data_by_read_ucd_once                                &
-     &       (my_rank, ucd_step_U%istep_file,                           &
-     &        udt_param_FUTIL%iflag_format, ref_udt_file_head,          &
-     &        field_FUTIL, time_IO_FUTIL)
+        call set_data_by_read_ucd_once                                  &
+     &     (my_rank, time_U%ucd_step%istep_file,                        &
+     &      udt_param_FUTIL%iflag_format, ref_udt_file_head,            &
+     &      field_FUTIL, time_IO_FUTIL)
 !
-          call const_MHD_length_scales                                  &
-     &       (femmesh_FUTIL%mesh%node, iphys_FUTIL, field_FUTIL,        &
-     &        ucd_step_U%istep_file, time_IO_FUTIL, ucd_FUTIL)
-        end if
+        call const_MHD_length_scales                                    &
+     &     (femmesh_FUTIL%mesh%node, iphys_FUTIL, field_FUTIL,          &
+     &      time_U%ucd_step%istep_file, time_IO_FUTIL, ucd_FUTIL)
       end do
 !
       call deallocate_work_4_lscale

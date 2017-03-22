@@ -17,7 +17,6 @@
       use calypso_mpi
 !
       use m_FEM_utils
-      use m_t_step_parameter
 !
       implicit none
 !
@@ -45,7 +44,7 @@
       if (iflag_debug.eq.1) write(*,*) 's_input_control_udt_diff'
       call s_input_control_udt_diff                                     &
      &   (mesh_file_FUTIL, udt_param_FUTIL, field_FUTIL, ucd_FUTIL,     &
-     &    ucd_step_U)
+     &    time_U)
 !
 !     --------------------- 
 !
@@ -63,7 +62,6 @@
 !
       subroutine analyze_udt_diff
 !
-      use m_t_step_parameter
       use m_ctl_params_4_diff_udt
       use set_ucd_data_to_type
       use output_parallel_ucd_file
@@ -79,30 +77,29 @@
       call link_global_mesh_2_ucd                                       &
      &   (femmesh_FUTIL%mesh%node, femmesh_FUTIL%mesh%ele, ucd_FUTIL)
 !
-      do istep = init_d1%i_time_step, finish_d1%i_end_step
-        if (output_IO_flag(istep,ucd_step_U) .eq. izero) then
-          ucd_step_U%istep_file = istep / ucd_step_U%increment
+      do istep = time_U%init_d%i_time_step, time_U%finish_d%i_end_step
+        if (output_IO_flag(istep,time_U%ucd_step) .ne. izero) cycle
+        time_U%ucd_step%istep_file = istep / time_U%ucd_step%increment
 !
-          call set_data_by_read_ucd_once                                &
-     &       (my_rank, ucd_step_U%istep_file,                           &
-     &        udt_param_FUTIL%iflag_format, ref_udt_file_head,          &
-     &        field_FUTIL, time_IO_FUTIL)
+        call set_data_by_read_ucd_once                                  &
+     &     (my_rank, time_U%ucd_step%istep_file,                        &
+     &      udt_param_FUTIL%iflag_format, ref_udt_file_head,            &
+     &      field_FUTIL, time_IO_FUTIL)
 !
-          call subtract_by_ucd_data(my_rank, ucd_step_U%istep_file,     &
-     &        udt_param_FUTIL%iflag_format, tgt_udt_file_head,          &
-     &        field_FUTIL)
+        call subtract_by_ucd_data(my_rank, time_U%ucd_step%istep_file,  &
+     &      udt_param_FUTIL%iflag_format, tgt_udt_file_head,            &
+     &      field_FUTIL)
 !
-          call s_divide_phys_by_delta_t(field_FUTIL)
+        call s_divide_phys_by_delta_t(time_U%time_d%dt, field_FUTIL)
 !
-          call nod_fields_send_recv                                     &
-     &       (femmesh_FUTIL%mesh%nod_comm, field_FUTIL)
+        call nod_fields_send_recv                                       &
+     &     (femmesh_FUTIL%mesh%nod_comm, field_FUTIL)
 !
 !    output udt data
-          call link_output_ucd_file_once                                &
-     &       (my_rank, ucd_step_U%istep_file,                           &
-     &        ifmt_diff_udt_file, diff_udt_file_head,                   &
-     &        field_FUTIL, time_IO_FUTIL)
-        end if
+        call link_output_ucd_file_once                                  &
+     &     (my_rank, time_U%ucd_step%istep_file,                        &
+     &      ifmt_diff_udt_file, diff_udt_file_head,                     &
+     &      field_FUTIL, time_IO_FUTIL)
       end do
 !
       end subroutine analyze_udt_diff

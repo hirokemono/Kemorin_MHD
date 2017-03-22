@@ -8,7 +8,9 @@
 !!        type(phys_data), intent(inout) :: nod_fld
 !!      subroutine deallocate_product_data
 !!
-!!      subroutine set_field_id_4_product(numnod, t_IO, ucd_step)
+!!      subroutine set_field_id_4_product                               &
+!!     &         (init_d, numnod, t_IO, ucd_step)
+!!        type(time_data), intent(in) :: init_d
 !!        type(time_data), intent(inout) :: t_IO
 !!        type(IO_step_param), intent(inout) :: ucd_step
 !!
@@ -94,20 +96,22 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_field_id_4_product(numnod, t_IO, ucd_step)
+      subroutine set_field_id_4_product                                 &
+     &         (init_d, numnod, t_IO, ucd_step)
 !
       use calypso_mpi
+      use t_time_data
       use m_error_IDs
       use m_ctl_params_4_prod_udt
-      use m_t_step_parameter
       use ucd_IO_select
 !
       integer(kind = kint), intent(in) :: numnod
+      type(time_data), intent(in) :: init_d
       type(time_data), intent(inout) :: t_IO
       type(IO_step_param), intent(inout) :: ucd_step
 !
 !
-      ucd_step%istep_file = init_d1%i_time_step / ucd_step%increment
+      ucd_step%istep_file = init_d%i_time_step / ucd_step%increment
       call find_field_id_in_read_ucd(my_rank, ucd_step%istep_file,      &
      &    ifmt_result_udt_file, prod_udt_file1_head,                    &
      &    numnod, product_field_1_name, i_field_product1,               &

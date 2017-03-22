@@ -33,9 +33,6 @@
 !
       integer(kind = kint) :: iflag_correlate_coord = iflag_certecian
 !
-      integer(kind = kint) :: i_diff_steps = 0
-      real(kind = kreal) :: dt =  1.0d0
-!
 !  ---------------------------------------------------------------------
 !
 !      contains

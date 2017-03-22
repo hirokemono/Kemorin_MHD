@@ -4,18 +4,18 @@
 !     Written by H. Matsui on July, 2006
 !
 !!      subroutine s_input_control_udt_diff                             &
-!!     &         (mesh_file, udt_org_param, nod_fld, ucd, ucd_step)
+!!     &         (mesh_file, udt_org_param, nod_fld, ucd, time_U)
 !!      subroutine s_input_control_ave_udt                              &
-!!     &         (mesh_file, udt_org_param, nod_fld, ucd, ucd_step)
+!!     &         (mesh_file, udt_org_param, nod_fld, ucd, time_U)
 !!      subroutine s_input_control_corr_udt                             &
-!!     &         (mesh_file, udt_org_param, nod_fld, ucd, ucd_step)
+!!     &         (mesh_file, udt_org_param, nod_fld, ucd, time_U)
 !!      subroutine s_input_control_grp_patch                            &
 !!     &         (mesh_file, udt_org_param, ucd)
 !!        type(field_IO_params), intent(inout) ::  mesh_file
 !!        type(field_IO_params), intent(inout) :: udt_org_param
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(ucd_data), intent(inout) :: ucd
-!!        type(IO_step_param), intent(inout) :: ucd_step
+!!        type(time_step_param), intent(inout) :: time_U
 !
       module input_control_udt_diff
 !
@@ -23,6 +23,7 @@
       use m_machine_parameter
 !
       use calypso_mpi
+      use t_step_parameter
       use t_phys_data
       use t_ucd_data
       use t_file_IO_parameter
@@ -37,7 +38,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_input_control_udt_diff                               &
-     &         (mesh_file, udt_org_param, nod_fld, ucd, ucd_step)
+     &         (mesh_file, udt_org_param, nod_fld, ucd, time_U)
 !
       use m_ctl_params_4_diff_udt
       use m_ctl_data_diff_udt
@@ -49,7 +50,7 @@
       type(field_IO_params), intent(inout) :: udt_org_param
       type(phys_data), intent(inout) :: nod_fld
       type(ucd_data), intent(inout) :: ucd
-      type(IO_step_param), intent(inout) :: ucd_step
+      type(time_step_param), intent(inout) :: time_U
       integer(kind = kint) :: ierr
 !
 !
@@ -64,14 +65,14 @@
       if (ierr .ne. 0) call calypso_MPI_abort(ierr, e_message)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_ctl_4_diff_udt_steps'
-      call s_set_ctl_4_diff_udt_steps(t_d_ctl, ucd_step)
+      call s_set_ctl_4_diff_udt_steps(t_d_ctl, time_U)
 !
       end subroutine s_input_control_udt_diff
 !
 ! ----------------------------------------------------------------------
 !
       subroutine s_input_control_ave_udt                                &
-     &         (mesh_file, udt_org_param, nod_fld, ucd, ucd_step)
+     &         (mesh_file, udt_org_param, nod_fld, ucd, time_U)
 !
       use m_ctl_params_4_diff_udt
       use m_ctl_data_diff_udt
@@ -83,7 +84,7 @@
       type(field_IO_params), intent(inout)  :: udt_org_param
       type(phys_data), intent(inout) :: nod_fld
       type(ucd_data), intent(inout) :: ucd
-      type(IO_step_param), intent(inout) :: ucd_step
+      type(time_step_param), intent(inout) :: time_U
 !
       integer(kind = kint) :: ierr
 !
@@ -99,14 +100,14 @@
       if (ierr .ne. 0) call calypso_MPI_abort(ierr, e_message)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_ctl_4_diff_udt_steps'
-      call s_set_ctl_4_diff_udt_steps(t_d_ctl, ucd_step)
+      call s_set_ctl_4_diff_udt_steps(t_d_ctl, time_U)
 !
       end subroutine s_input_control_ave_udt
 !
 ! ----------------------------------------------------------------------
 !
       subroutine s_input_control_corr_udt                               &
-     &         (mesh_file, udt_org_param, nod_fld, ucd, ucd_step)
+     &         (mesh_file, udt_org_param, nod_fld, ucd, time_U)
 !
       use m_ctl_params_4_diff_udt
       use m_ctl_data_diff_udt
@@ -117,7 +118,7 @@
       type(field_IO_params), intent(inout)  :: udt_org_param
       type(phys_data), intent(inout) :: nod_fld
       type(ucd_data), intent(inout) :: ucd
-      type(IO_step_param), intent(inout) :: ucd_step
+      type(time_step_param), intent(inout) :: time_U
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_corr_udt'
@@ -125,7 +126,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_correlate_udt'
       call set_ctl_params_correlate_udt                                 &
-     &   (mesh_file, udt_org_param, nod_fld, ucd, ucd_step)
+     &   (mesh_file, udt_org_param, nod_fld, ucd, time_U)
 !
       end subroutine s_input_control_corr_udt
 !

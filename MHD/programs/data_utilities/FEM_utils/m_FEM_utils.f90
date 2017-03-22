@@ -14,6 +14,8 @@
       module m_FEM_utils
 !
       use m_precision
+!
+      use t_step_parameter
       use t_time_data
       use t_mesh_data
       use t_phys_data
@@ -27,12 +29,8 @@
 !
       implicit none
 !
-!>      Increment for restart
-      type(IO_step_param), save :: rst_step_U
-!>      Increment for field
-      type(IO_step_param), save :: ucd_step_U
-!>      Increment for visualizations
-      type(VIZ_step_params), save :: viz_step_U
+!       Structure for time stepping parameters
+      type(time_step_param), save :: time_U
 !
 !>      Structure for mesh file IO paramters
       type(field_IO_params), save :: mesh_file_FUTIL

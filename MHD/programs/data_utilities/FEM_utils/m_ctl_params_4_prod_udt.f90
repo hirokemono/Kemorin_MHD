@@ -33,11 +33,6 @@
       integer(kind = kint) :: i_field_4_result = 1
       integer(kind = kint) :: ncomp_4_result =   3
 !
-!
-      integer(kind = kint) :: i_diff_steps = 0
-      real(kind = kreal) :: dt =  1.0d0
-!
-!
 !  ---------------------------------------------------------------------
 !
       contains
