@@ -150,7 +150,7 @@
 !   set control parameters
 !
       call s_set_control_4_time_steps                                   &
-     &   (flex_p1, SGS_par, init_d1, finish_d1, MHD_step1,              &
+     &   (flex_p1, SGS_par, init_d1, MHD_step1%finish_d, MHD_step1,     &
      &    ctl_ctl%mrst_ctl, ctl_ctl%tctl)
 !
       call s_set_control_4_crank(ctl_ctl%mevo_ctl,                      &

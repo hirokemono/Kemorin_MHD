@@ -325,11 +325,11 @@
       call MPI_allREDUCE (total_time, total_max, ione, CALYPSO_REAL,    &
      &    MPI_MAX, CALYPSO_COMM, ierr_MPI)
       if(iflag_debug.gt.0) write(*,*) 'total_time',                     &
-     &                       total_time, finish_d1%elapsed_time
+     &                       total_time, MHD_step%finish_d%elapsed_time
 !
 !   Finish by elapsed time
-      if(finish_d1%i_end_step .eq. -1) then
-        if(total_max .gt. finish_d1%elapsed_time) then
+      if(MHD_step%finish_d%i_end_step .eq. -1) then
+        if(total_max .gt. MHD_step%finish_d%elapsed_time) then
           call start_eleps_time(4)
           call elspased_MHD_restart_ctl                                 &
      &       (SGS_par, time_d1, mesh1%node, mesh1%nod_comm,             &
@@ -343,7 +343,8 @@
         if(flex_p1%iflag_flexible_step .eq. iflag_flex_step) then
           if(time .gt. flex_p1%time_to_finish) retval = 0
         else
-          if(flex_p1%istep_max_dt .ge. finish_d1%i_end_step) retval = 0
+          if(flex_p1%istep_max_dt                                       &
+     &         .ge. MHD_step%finish_d%i_end_step) retval = 0
         end if
       end if
 !

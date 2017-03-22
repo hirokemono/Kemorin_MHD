@@ -37,6 +37,6 @@
       type(time_data), save :: init_d1
 !
 !>      Structure for end time data
-      type(finish_data), save :: finish_d1
+!      type(finish_data), save :: finish_d1
 !
       end module  m_t_step_parameter

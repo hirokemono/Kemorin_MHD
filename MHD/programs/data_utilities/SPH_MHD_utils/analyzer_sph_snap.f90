@@ -163,7 +163,7 @@
 !
 !*  -----------  exit loop --------------
 !*
-        if(time_d1%i_time_step .ge. finish_d1%i_end_step) exit
+        if(time_d1%i_time_step .ge. MHD_step1%finish_d%i_end_step) exit
       end do
 !
 !  time evolution end
@@ -206,11 +206,11 @@
 !
       MHD_step1%rms_step%increment = 0
       MHD_step1%ucd_step%increment = 0
-      if(finish_d1%elapsed_time .gt. 1800.0) then
+      if(MHD_step1%finish_d%elapsed_time .gt. 1800.0) then
         if (my_rank.eq.0) write(*,*) 'This code can use up to 30 min.'
-        finish_d1%elapsed_time = 1800.0
-      else if(finish_d1%elapsed_time .lt. 0.0d0) then
-        finish_d1%elapsed_time = 1800.0
+        MHD_step1%finish_d%elapsed_time = 1800.0
+      else if(MHD_step1%finish_d%elapsed_time .lt. 0.0d0) then
+        MHD_step1%finish_d%elapsed_time = 1800.0
       end if
 !
       call start_eleps_time(3)
@@ -281,7 +281,7 @@
           end if
         end if
 !
-        if(total_time .gt. finish_d1%elapsed_time) then
+        if(total_time .gt. MHD_step1%finish_d%elapsed_time) then
           call calypso_mpi_barrier
           call MPI_allREDUCE (total_time, total_max, ione,              &
      &       CALYPSO_REAL, MPI_MAX, CALYPSO_COMM, ierr_MPI)

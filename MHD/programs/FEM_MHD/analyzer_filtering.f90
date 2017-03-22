@@ -85,7 +85,7 @@
       integer(kind=kint ) :: i_step, visval
 !
 !
-      do i_step = init_d1%i_time_step, finish_d1%i_end_step
+      do i_step = init_d1%i_time_step, MHD_step1%finish_d%i_end_step
 !
 !  Read and generate fields
         call FEM_analyze_filtered(i_step, MHD_step1, visval)

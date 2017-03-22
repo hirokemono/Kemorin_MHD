@@ -105,7 +105,7 @@
 !*
 !*  -----------  exit loop --------------
 !*
-        if(time_d1%i_time_step .ge. finish_d1%i_end_step) exit
+        if(time_d1%i_time_step .ge. MHD_step1%finish_d%i_end_step) exit
       end do
 !
 !  time evolution end

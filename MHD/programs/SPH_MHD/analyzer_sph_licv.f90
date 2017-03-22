@@ -99,7 +99,7 @@
 !
 !*  -------  time evelution  -----------
 !*
-      do istep = 1, finish_d1%i_end_step
+      do istep = 1, MHD_step1%finish_d%i_end_step
         call evolve_time_data(time_d1)
 !
 !*  ----------  add time evolution -----------------

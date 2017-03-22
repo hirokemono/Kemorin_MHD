@@ -229,8 +229,8 @@
       total_time = MPI_WTIME() - total_start
       call MPI_allREDUCE (total_time, total_max, ione, CALYPSO_REAL,    &
      &    MPI_MAX, CALYPSO_COMM, ierr_MPI)
-      if      (finish_d1%i_end_step .eq. -1                             &
-     &   .and. total_max .gt. finish_d1%elapsed_time) then
+      if      (MHD_step%finish_d%i_end_step .eq. -1                     &
+     &   .and. total_max .gt. MHD_step%finish_d%elapsed_time) then
         call output_sph_rst_by_elaps(time_d1, rj_fld1)
         iflag_finish = 1
       end if
@@ -254,8 +254,8 @@
      &   (ref_param_T1, ref_param_C1, ref_temp1, ref_comp1,             &
      &    sph1%sph_rj, ipol, idpdr, rj_fld1)
 !
-      if(i_step .ge. finish_d1%i_end_step                               &
-     &    .and. finish_d1%i_end_step .gt. 0) then
+      if(i_step .ge. MHD_step%finish_d%i_end_step                       &
+     &    .and. MHD_step%finish_d%i_end_step .gt. 0) then
         iflag_finish = 1
       end if
       call end_eleps_time(4)

@@ -11,6 +11,7 @@
 !
 !
       use m_precision
+      use t_time_data
       use t_IO_step_parameter
       use t_VIZ_step_parameter
 !
@@ -19,6 +20,9 @@
 !
 !
       type MHD_IO_step_param
+!>        Structure for end time data
+        type(finish_data) :: finish_d
+!
 !>        Increment for mean restart data
         type(IO_step_param) :: rst_step
 !>        Increment for mean field data
