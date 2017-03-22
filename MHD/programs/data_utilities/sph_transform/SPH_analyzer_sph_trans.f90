@@ -36,7 +36,6 @@
 !
       subroutine SPH_initialize_sph_trans(sph_mesh, rj_fld)
 !
-      use m_t_step_parameter
       use m_ctl_params_sph_trans
 !
       use t_spheric_mesh
@@ -84,7 +83,6 @@
       subroutine SPH_analyze_sph_trans                                  &
      &         (i_step, sph_mesh, rj_fld, fld_IO)
 !
-      use m_t_step_parameter
       use m_ctl_params_sph_trans
       use t_spheric_mesh
       use t_phys_data
@@ -129,7 +127,6 @@
       subroutine SPH_analyze_sph_zm_trans                               &
      &         (i_step, sph_mesh, rj_fld, fld_IO)
 !
-      use m_t_step_parameter
       use t_spheric_mesh
       use t_phys_data
       use t_field_data_IO

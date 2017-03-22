@@ -42,7 +42,8 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_ctl_data_4_sph_trans'
       call s_set_ctl_data_4_sph_trans                                   &
-     &   (mesh_file_STR, ucd_SPH_TRNS, rj_fld_trans, d_gauss_trans)
+     &   (t_STR, mesh_file_STR, ucd_SPH_TRNS, rj_fld_trans,             &
+     &    d_gauss_trans, field_STR)
       call set_ctl_data_4_zm_trans
 !
 !  ------    set spectr grids
@@ -71,12 +72,10 @@
 !
       subroutine analyze_zm_trans
 !
-      use m_t_step_parameter
-!
       integer(kind = kint) :: i_step, visval
 !
 !
-      do i_step = init_d1%i_time_step, finish_d1%i_end_step
+      do i_step = t_STR%init_d%i_time_step, t_STR%finish_d%i_end_step
 !
 !   Input field data
         call FEM_analyze_sph_trans(i_step, time_IO_TRNS, visval)

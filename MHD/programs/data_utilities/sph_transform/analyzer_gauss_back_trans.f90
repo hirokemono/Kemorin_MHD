@@ -57,7 +57,8 @@
       call read_control_data_sph_trans
       if (iflag_debug.gt.0) write(*,*) 's_set_ctl_data_4_sph_trans'
       call s_set_ctl_data_4_sph_trans                                   &
-     &   (mesh_file_STR, ucd_SPH_TRNS, rj_fld_trans, d_gauss_trans)
+     &   (t_STR, mesh_file_STR, ucd_SPH_TRNS, rj_fld_trans,             &
+     &    d_gauss_trans, field_STR)
 !
 !  ------    set spectr grids
       if (iflag_debug.gt.0) write(*,*) 'load_para_SPH_and_FEM_mesh'
@@ -87,12 +88,10 @@
 !
       subroutine analyze
 !
-      use m_t_step_parameter
-!
       integer(kind=kint ) :: visval, i_step
 !
 !
-      do i_step = init_d1%i_time_step, finish_d1%i_end_step
+      do i_step = t_STR%init_d%i_time_step, t_STR%finish_d%i_end_step
         if (iflag_debug.gt.0) write(*,*) 'step ', i_step, 'start...'
 !
         call SPH_analyze_gauss_back_trans(i_step, viz_step_STR,         &
@@ -102,7 +101,7 @@
      &      viz_step_STR, visval)
 !
         if (visval .eq. 0) then
-          call visualize_all(viz_step_STR, time_d1,                     &
+          call visualize_all(viz_step_STR, t_STR%time_d,                &
      &        femmesh_STR%mesh, femmesh_STR%group, elemesh_STR,         &
      &        field_STR, ele_4_nod_SPH_TRANS, jac_STR_q)
         end if

@@ -15,9 +15,10 @@
       use m_precision
       use m_machine_parameter
 !
+      use t_step_parameter
+      use t_time_data
       use t_mesh_data
       use t_phys_data
-      use t_time_data
       use t_ucd_data
       use t_next_node_ele_4_node
       use t_jacobian_3d
@@ -27,6 +28,9 @@
       use t_file_IO_parameter
 !
       implicit none
+!
+!       Structure for time stepping parameters
+      type(time_step_param), save :: t_STR
 !
 !>      Structure for field data IO paramters
       type(field_IO_params), save ::  mesh_file_STR
@@ -76,7 +80,6 @@
       subroutine mesh_setup_4_SPH_TRANS
 !
       use calypso_mpi
-      use m_t_step_parameter
       use m_array_for_send_recv
       use load_mesh_data
       use nod_phys_send_recv

@@ -38,7 +38,6 @@
       subroutine SPH_analyze_zm_streamfunc(i_step, viz_step, sph_mesh,  &
      &          ipol, idpdr, itor, rj_fld, t_IO, fld_IO, visval)
 !
-      use m_t_step_parameter
       use m_ctl_params_sph_trans
       use t_spheric_mesh
       use t_phys_address
@@ -67,7 +66,7 @@
 !
 !
       call accum_output_flag_4_viz(i_step, viz_step, visval)
-      visval = visval * output_IO_flag(i_step, ucd_step_STR)
+      visval = visval * output_IO_flag(i_step, t_STR%ucd_step)
 !
       if(visval .eq. 0) then
 !

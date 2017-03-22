@@ -31,8 +31,6 @@
       subroutine SPH_initialize_back_trans                              &
      &         (sph_mesh, ipol, idpdr, itor, rj_fld, t_IO, fld_IO)
 !
-      use m_t_step_parameter
-!
       use r_interpolate_sph_data
       use count_num_sph_smp
       use field_IO_select
@@ -58,7 +56,7 @@
      &    fld_IO)
       write(*,*) 'ifmt_org_rst', rst_org_param%iflag_format
       call sel_read_alloc_step_SPH_file                                 &
-     &   (nprocs, my_rank, init_d1%i_time_step, t_IO, fld_IO)
+     &   (nprocs, my_rank, t_STR%init_d%i_time_step, t_IO, fld_IO)
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_sph_name_rj_to_rtp'
       call copy_sph_name_rj_to_rtp(rj_fld)

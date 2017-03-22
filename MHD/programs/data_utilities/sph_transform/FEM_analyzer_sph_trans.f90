@@ -41,7 +41,6 @@
       subroutine FEM_initialize_sph_trans(udt_file_param, t_IO)
 !
       use m_array_for_send_recv
-      use m_t_step_parameter
 !
       use nod_phys_send_recv
       use int_volume_of_domain
@@ -72,7 +71,7 @@
 !
       input_ucd%nnod = ione
       call sel_read_udt_param                                           &
-    &    (my_rank, init_d1%i_time_step, t_IO, input_ucd)
+    &    (my_rank, t_STR%init_d%i_time_step, t_IO, input_ucd)
 !
       end subroutine FEM_initialize_sph_trans
 !
@@ -82,7 +81,6 @@
       subroutine FEM_analyze_sph_trans(i_step, t_IO, visval)
 !
       use m_ctl_params_sph_trans
-      use m_t_step_parameter
       use set_ucd_data_to_type
       use nod_phys_send_recv
 !
@@ -93,7 +91,7 @@
 !
 !*  ----------   Count steps for visualization
 !*
-      visval =  mod(i_step,ucd_step_STR%increment)
+      visval =  mod(i_step,t_STR%ucd_step%increment)
 !
 !*  -----------  Output volume data --------------
 !*
@@ -145,7 +143,7 @@
       type(merged_ucd_data), intent(inout) :: m_ucd
 !
 !
-      if(ucd_step_STR%increment .gt. 0) then
+      if(t_STR%ucd_step%increment .gt. 0) then
         call finalize_ucd_file_output(ucd, m_ucd)
       end if
 !

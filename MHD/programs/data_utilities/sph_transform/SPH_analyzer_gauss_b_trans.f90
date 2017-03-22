@@ -13,6 +13,7 @@
       use m_machine_parameter
       use calypso_mpi
 !
+      use m_SPH_transforms
       use t_work_4_sph_trans
       use t_spheric_mesh
       use t_phys_address
@@ -30,7 +31,6 @@
 !
       subroutine SPH_init_gauss_back_trans(sph_mesh, ipol, rj_fld)
 !
-      use m_t_step_parameter
       use m_ctl_params_sph_trans
 !
       use r_interpolate_sph_data
@@ -80,7 +80,6 @@
       subroutine SPH_analyze_gauss_back_trans                           &
      &         (i_step, viz_step, sph_mesh, ipol, rj_fld, visval)
 !
-      use m_t_step_parameter
       use m_ctl_params_sph_trans
       use t_VIZ_step_parameter
 !
@@ -102,7 +101,7 @@
 !
 !
       call accum_output_flag_4_viz(i_step, viz_step, visval)
-      visval = visval * output_IO_flag(i_step, ucd_step_STR)
+      visval = visval * output_IO_flag(i_step, t_STR%ucd_step)
 !
       if(visval .eq. 0) then
 !

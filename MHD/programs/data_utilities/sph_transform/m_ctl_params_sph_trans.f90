@@ -4,9 +4,9 @@
 !        programmed by H.Matsui on Oct., 2007
 !
 !!      subroutine set_control_4_sph_transform                          &
-!!     &         (mesh_file, ucd, rj_fld, d_gauss)
+!!     &         (time_STR, mesh_file, ucd, rj_fld, d_gauss, fem_fld)
 !!      subroutine s_set_ctl_data_4_sph_trans                           &
-!!     &         (mesh_file, ucd, rj_fld, d_gauss)
+!!     &         (time_STR, mesh_file, ucd, rj_fld, d_gauss, fem_fld)
 !!        type(ucd_data), intent(inout) :: ucd
 !!        type(phys_data), intent(inout) :: rj_fld
 !!      subroutine set_ctl_data_4_zm_trans
@@ -15,9 +15,6 @@
       module m_ctl_params_sph_trans
 !
       use m_precision
-!
-      use m_SPH_transforms
-      use m_t_step_parameter
 !
       use t_step_parameter
       use t_phys_data
@@ -30,10 +27,6 @@
       implicit  none
 !
 !
-!>      Increment for restart
-      type(IO_step_param), save, private :: rst_step_STR
-!>      Increment for field data
-      type(IO_step_param), save :: ucd_step_STR
 !>      Increment for mean square data
       type(IO_step_param), save :: rms_step_STR
 !>      Increment for visualizations
@@ -66,7 +59,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_control_4_sph_transform                            &
-     &         (mesh_file, ucd, rj_fld, d_gauss)
+     &         (time_STR, mesh_file, ucd, rj_fld, d_gauss, fem_fld)
 !
       use t_ucd_data
       use calypso_mpi
@@ -81,9 +74,11 @@
       use m_sel_spherical_SRs
       use m_ctl_data_4_sph_trans
 !
+      type(time_step_param), intent(inout) :: time_STR
       type(field_IO_params), intent(inout) :: mesh_file
       type(ucd_data), intent(inout) :: ucd
       type(phys_data), intent(inout) :: rj_fld
+      type(phys_data), intent(inout) :: fem_fld
       type(global_gauss_points), intent(inout) :: d_gauss
 !
       integer(kind = kint) :: ierr
@@ -124,13 +119,13 @@
 !
 !      stepping parameter
 !
-      call s_set_fixed_time_step_params(t_st_ctl, init_d1, finish_d1,   &
-     &    rst_step_STR, ucd_step_STR, ierr, e_message)
+      call set_fixed_time_step_params                                   &
+     &   (t_st_ctl, time_STR, ierr, e_message)
       call viz_fixed_time_step_params                                   &
-     &   (init_d1%dt, t_st_ctl, viz_step_STR)
-      call copy_delta_t(init_d1, time_d1)
+     &   (time_STR%init_d%dt, t_st_ctl, viz_step_STR)
+      call copy_delta_t(time_STR%init_d, time_STR%time_d)
 !
-      call set_output_step_4_fixed_step(ione, time_d1%dt,               &
+      call set_output_step_4_fixed_step(ione, time_STR%time_d%dt,       &
      &    t_st_ctl%i_step_check_ctl, t_st_ctl%delta_t_check_ctl,        &
      &    rms_step_STR)
 !
@@ -138,7 +133,7 @@
 !
       call s_set_control_sph_data(fld_st_ctl%field_ctl, rj_fld, ierr)
       call s_set_control_nodal_data                                     &
-     &   (fld_st_ctl%field_ctl, field_STR, ierr)
+     &   (fld_st_ctl%field_ctl, fem_fld, ierr)
 !
 !
       cmb_radial_grp =  'CMB'
@@ -158,12 +153,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_ctl_data_4_sph_trans                             &
-     &         (mesh_file, ucd, rj_fld, d_gauss)
+     &         (time_STR, mesh_file, ucd, rj_fld, d_gauss, fem_fld)
 !
       use calypso_mpi
       use t_ucd_data
       use m_machine_parameter
-      use m_t_step_parameter
       use m_FFT_selector
 !
       use set_control_nodal_data
@@ -176,9 +170,11 @@
       use skip_comment_f
       use parallel_ucd_IO_select
 !
+      type(time_step_param), intent(inout) :: time_STR
       type(field_IO_params), intent(inout) :: mesh_file
       type(ucd_data), intent(inout) :: ucd
       type(phys_data), intent(inout) :: rj_fld
+      type(phys_data), intent(inout) :: fem_fld
       type(global_gauss_points), intent(inout) :: d_gauss
 !
       integer(kind = kint) :: ierr
@@ -239,13 +235,13 @@
 !
 !      stepping parameter
 !
-      call s_set_fixed_time_step_params(t_st_ctl, init_d1, finish_d1,   &
-     &    rst_step_STR, ucd_step_STR, ierr, e_message)
+      call set_fixed_time_step_params                                   &
+     &   (t_st_ctl, time_STR, ierr, e_message)
       call viz_fixed_time_step_params                                   &
-     &   (init_d1%dt, t_st_ctl, viz_step_STR)
-      call copy_delta_t(init_d1, time_d1)
+     &   (time_STR%init_d%dt, t_st_ctl, viz_step_STR)
+      call copy_delta_t(time_STR%init_d, time_STR%time_d)
 !
-      call set_output_step_4_fixed_step(ione, time_d1%dt,               &
+      call set_output_step_4_fixed_step(ione, time_STR%time_d%dt,       &
      &    t_st_ctl%i_step_check_ctl, t_st_ctl%delta_t_check_ctl,        &
      &    rms_step_STR)
 !
@@ -253,7 +249,7 @@
 !
       call s_set_control_sph_data(fld_st_ctl%field_ctl, rj_fld, ierr)
       call s_set_control_nodal_data                                     &
-     &   (fld_st_ctl%field_ctl, field_STR, ierr)
+     &   (fld_st_ctl%field_ctl, fem_fld, ierr)
 !
 !
       cmb_radial_grp =  'CMB'

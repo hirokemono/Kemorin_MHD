@@ -61,7 +61,8 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_ctl_data_4_sph_trans'
       call s_set_ctl_data_4_sph_trans                                   &
-     &   (mesh_file_STR, ucd_SPH_TRNS, rj_fld_trans, d_gauss_trans)
+     &   (t_STR, mesh_file_STR, ucd_SPH_TRNS, rj_fld_trans,             &
+     &    d_gauss_trans, field_STR)
       call set_ctl_data_4_pick_zm
 !
 !  ------    set spectr grids
@@ -96,7 +97,6 @@
 !
       subroutine analyze_zm_sph_field
 !
-      use m_t_step_parameter
       use m_ctl_params_sph_trans
       use sph_rtp_zonal_rms_data
       use coordinate_convert_4_sph
@@ -104,7 +104,7 @@
       integer(kind=kint ) :: visval, i_step
 !
 !
-      do i_step = init_d1%i_time_step, finish_d1%i_end_step
+      do i_step = t_STR%init_d%i_time_step, t_STR%finish_d%i_end_step
 !
 !   Input field data
         call FEM_analyze_sph_trans(i_step, time_IO_TRNS, visval)
@@ -121,7 +121,7 @@
      &      viz_step_STR, visval)
 !
         if(visval .eq. 0) then
-          call visualize_all(viz_step_STR, time_d1,                     &
+          call visualize_all(viz_step_STR, t_STR%time_d,                &
      &        femmesh_STR%mesh, femmesh_STR%group, elemesh_STR,         &
      &        field_STR, ele_4_nod_SPH_TRANS, jac_STR_q)
         end if
