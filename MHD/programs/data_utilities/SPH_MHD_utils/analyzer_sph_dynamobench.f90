@@ -20,6 +20,7 @@
       use m_machine_parameter
       use m_work_time
       use m_t_step_parameter
+      use t_step_parameter
 !
       use SPH_analyzer_d_bench
 !
@@ -93,7 +94,7 @@
 !*  -------  time evelution loop start -----------
 !*
       do
-        call increment_step(time_d1)
+        call add_one_step(time_d1)
 !
         iflag = output_IO_flag(time_d1%i_time_step,MHD_step1%rst_step)
         if(time_d1%i_time_step .ne. 0) cycle

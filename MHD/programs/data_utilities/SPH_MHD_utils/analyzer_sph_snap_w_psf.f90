@@ -23,6 +23,7 @@
       use m_mesh_data
       use m_node_phys_data
       use m_sph_trans_arrays_MHD
+      use t_step_parameter
 !
       use FEM_analyzer_sph_MHD
       use SPH_analyzer_snap
@@ -113,7 +114,7 @@
 !*  -------  time evelution loop start -----------
 !*
       do
-        call increment_step(time_d1)
+        call add_one_step(time_d1)
 !
         iflag = output_IO_flag(time_d1%i_time_step, MHD_step1%rst_step)
         if(iflag .ne. 0) cycle

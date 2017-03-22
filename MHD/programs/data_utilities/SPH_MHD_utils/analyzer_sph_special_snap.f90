@@ -21,6 +21,7 @@
       use m_MHD_step_parameter
       use m_SGS_control_parameter
       use t_sph_filtering_data
+      use t_step_parameter
 !
       implicit none
 !
@@ -57,7 +58,7 @@
 !*  -------  time evelution loop start -----------
 !*
       do
-        call increment_step(time_d1)
+        call add_one_step(time_d1)
 !
         iflag = output_IO_flag(time_d1%i_time_step, MHD_step1%rst_step)
         if(iflag .ne. 0) cycle

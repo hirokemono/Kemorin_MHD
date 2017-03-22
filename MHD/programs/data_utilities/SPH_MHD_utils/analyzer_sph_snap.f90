@@ -26,6 +26,7 @@
       use m_element_id_4_node
       use m_jacobians
       use m_sph_trans_arrays_MHD
+      use t_step_parameter
 !
       use SPH_analyzer_snap
       use visualizer_all
@@ -116,7 +117,7 @@
 !*  -------  time evelution loop start -----------
 !*
       do
-        call increment_step(time_d1)
+        call add_one_step(time_d1)
 !
         iflag = output_IO_flag(time_d1%i_time_step, MHD_step1%rst_step)
         if(iflag .ne. 0) cycle

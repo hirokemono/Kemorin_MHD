@@ -17,6 +17,7 @@
 !!      subroutine copy_delta_t(time_org, time_new)
 !!        type(time_data), intent(in) ::    time_org
 !!        type(time_data), intent(inout) :: time_new
+!!      subroutine add_one_step(time_d)
 !!@endverbatim
 !!
 !!@n @param  my_rank   Process ID
@@ -149,14 +150,14 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine increment_step(time_d)
+      subroutine add_one_step(time_d)
 !
       type(time_data), intent(inout) :: time_d
 !
 !
       time_d%i_time_step = time_d%i_time_step + 1
 !
-      end subroutine increment_step
+      end subroutine add_one_step
 !
 !  ---------------------------------------------------------------------
 !
