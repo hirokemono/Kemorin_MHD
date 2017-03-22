@@ -90,7 +90,9 @@
       if(iflag_debug.gt.0) write(*,*)' sph_initial_data_control'
       call sph_initial_data_control                                     &
      &   (sph1%sph_params, sph1%sph_rj, ref_temp1%t_rj,                 &
-     &    ipol, idpdr, itor, rj_fld1, MHD_step%rst_step, time_d1)
+     &    ipol, idpdr, itor, rj_fld1, MHD_step%rst_step,                &
+     &    init_d1, time_d1)
+      iflag_initial_step = 0
 !
       if(iflag_debug.gt.0) write(*,*)' sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph                                    &

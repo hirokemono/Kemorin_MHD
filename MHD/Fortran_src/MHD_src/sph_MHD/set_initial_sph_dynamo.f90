@@ -9,11 +9,11 @@
 !!@verbatim
 !!      subroutine sph_initial_data_control                             &
 !!     &         (sph_params, sph_rj, reftemp_rj, ipol, idpdr, itor,    &
-!!     &          rj_fld, rst_step, time_d)
+!!     &          rj_fld, rst_step, init_d, time_d)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(phys_address), intent(in) :: ipol
-!!        type(time_data), intent(inout) :: time_d
+!!        type(time_data), intent(inout) :: init_d, time_d
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(IO_step_param), intent(inout) :: rst_step
 !!@endverbatim
@@ -46,7 +46,7 @@
 !
       subroutine sph_initial_data_control                               &
      &         (sph_params, sph_rj, reftemp_rj, ipol, idpdr, itor,      &
-     &          rj_fld, rst_step, time_d)
+     &          rj_fld, rst_step, init_d, time_d)
 !
       use m_machine_parameter
       use m_initial_field_control
@@ -64,17 +64,16 @@
       real(kind=kreal), intent(in) :: reftemp_rj(sph_rj%nidx_rj(1),0:2)
       type(phys_address), intent(in) :: ipol, idpdr, itor
 !
-      type(time_data), intent(inout) :: time_d
+      type(time_data), intent(inout) :: init_d, time_d
       type(phys_data), intent(inout) :: rj_fld
       type(IO_step_param), intent(inout) :: rst_step
 !
       integer(kind = kint) :: isig
 !
 !
-      iflag_initial_step = 0
       if (iflag_restart .eq. i_rst_by_file) then
         if(iflag_debug .gt. 0) write(*,*) 'read_alloc_sph_restart_data'
-        call read_alloc_sph_restart_data(rj_fld, rst_step)
+        call read_alloc_sph_restart_data(init_d, rj_fld, rst_step)
 !
 !   for dynamo benchmark
 !
@@ -160,10 +159,11 @@
       end if
 !
       if(iflag_debug .gt. 0) write(*,*) 'init_output_sph_restart_file'
-      call init_output_sph_restart_file(rj_fld, time_d)
+      call copy_time_step_data(init_d, time_d)
+      call init_output_sph_restart_file(rj_fld)
 !
       if (iflag_restart.ne.i_rst_by_file                                &
-     &     .and. init_d1%i_time_step.eq.0) then
+     &     .and. init_d%i_time_step.eq.0) then
         if(iflag_debug .gt. 0) write(*,*) 'output_sph_restart_control'
         call output_sph_restart_control(time_d, rj_fld, rst_step)
       end if

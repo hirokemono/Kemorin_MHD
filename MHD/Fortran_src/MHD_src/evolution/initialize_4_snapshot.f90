@@ -52,6 +52,7 @@
 !
       use calypso_mpi
       use m_machine_parameter
+      use m_fem_mhd_restart
 !
       use m_t_step_parameter
       use m_physical_property
@@ -89,7 +90,6 @@
       use set_layer_list_by_table
       use set_normal_vectors
       use set_table_type_RHS_assemble
-      use fem_mhd_rst_IO_control
       use const_jacobians_sf_grp
       use const_element_comm_tables
       use const_mesh_information

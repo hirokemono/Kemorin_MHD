@@ -75,7 +75,7 @@
      &    mesh1, group1, ele_mesh1)
       call set_ctl_4_second_spectr_data                                 &
      &   (MHD_ctl1%new_plt, sph_file_param2)
-      time_d1%dt = init_d1%dt
+      call copy_delta_t(init_d1, time_d1)
       call end_eleps_time(4)
 !
 !     --------------------- 

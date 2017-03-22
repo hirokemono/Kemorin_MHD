@@ -23,8 +23,9 @@
 !!      subroutine load_field_name_assemble_sph                         &
 !!     &         (org_sph_fst_head, ifmt_org_sph_fst, istep_start,      &
 !!     &          np_sph_org, org_phys, new_phys, t_IO)
-!!      subroutine load_org_sph_data(org_sph_fst_head, ifmt_org_sph_fst,&
-!!     &          ip, istep, np_sph_org, org_sph, time_d, org_phys)
+!!      subroutine load_org_sph_data                                    &
+!!     &         (org_sph_fst_head, ifmt_org_sph_fst, ip, istep,        &
+!!     &          np_sph_org, org_sph, init_d, time_d, org_phys)
 !!        type(sph_grids), intent(in) :: org_sph
 !!        type(time_data), intent(inout) :: time_d
 !!        type(phys_data), intent(inout) :: org_phys
@@ -173,10 +174,10 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine load_org_sph_data(org_sph_fst_head, ifmt_org_sph_fst,  &
-     &          ip, istep, np_sph_org, org_sph, time_d, org_phys)
+      subroutine load_org_sph_data                                      &
+     &         (org_sph_fst_head, ifmt_org_sph_fst, ip, istep,          &
+     &          np_sph_org, org_sph, init_d, time_d, org_phys)
 !
-      use m_t_step_parameter
       use field_IO_select
       use copy_rj_phys_data_4_IO
 !
@@ -187,7 +188,7 @@
       integer(kind = kint), intent(in) :: ip, istep
       type(sph_grids), intent(in) :: org_sph
 !
-      type(time_data), intent(inout) :: time_d
+      type(time_data), intent(inout) :: init_d, time_d
       type(phys_data), intent(inout) :: org_phys
 !
 !>      Field data IO structure for original data
@@ -202,8 +203,8 @@
      &   (np_sph_org, irank_org, istep, org_time_IO, org_fst_IO)
 !
       if(irank_org .lt. np_sph_org) then
-        call copy_time_steps_from_restart(org_time_IO, init_d1)
-        time_d%dt = init_d1%dt
+        call copy_time_steps_from_restart(org_time_IO, init_d)
+        call copy_delta_t(init_d, time_d)
 !
         call alloc_phys_data_type(org_sph%sph_rj%nnod_rj, org_phys)
         call copy_rj_phys_data_from_IO(org_fst_IO, org_phys)

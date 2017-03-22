@@ -37,8 +37,10 @@
 !
       use t_mesh_data
       use t_interpolate_table
+      use t_step_parameter
       use t_IO_step_parameter
 !
+      use m_t_step_parameter
       use m_2nd_pallalel_vector
       use m_ctl_params_4_gen_table
       use m_ctl_data_gen_table
@@ -69,7 +71,8 @@
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_interpolation'
       call set_ctl_params_interpolation
 !
-      call set_ctl_4_itp_steps(t_gt_ctl, rst_step, ucd_step)
+      call s_set_fixed_time_step_params(t_gt_ctl, init_d1, finish_d1,   &
+     &    rst_step, ucd_step, ierr, e_message)
 !
 !  --  read geometry for origin (if exist)
 !

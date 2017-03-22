@@ -13,13 +13,14 @@
 !!        type(field_IO_params), intent(in) :: rj_file_param
 !!        type(field_IO_params), intent(in) :: rst_file_param
 !!
-!!      subroutine init_output_sph_restart_file(rj_fld, time_d)
+!!      subroutine init_output_sph_restart_file(rj_fld)
 !!      subroutine output_sph_restart_control(time_d, rj_fld, rst_step)
 !!      subroutine output_sph_rst_by_elaps(time_d, rj_fld)
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(IO_step_param), intent(inout) :: rst_step
 !!
-!!      subroutine read_alloc_sph_restart_data(rj_fld, rst_step)
+!!      subroutine read_alloc_sph_restart_data(init_d, rj_fld, rst_step)
+!!        type(time_data), intent(inout) :: init_d
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(IO_step_param), intent(inout) :: rst_step
 !!
@@ -56,7 +57,6 @@
 !
       use m_machine_parameter
       use calypso_mpi
-      use m_t_step_parameter
       use m_file_format_switch
 !
       use t_time_data
@@ -97,16 +97,14 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine init_output_sph_restart_file(rj_fld, time_d)
+      subroutine init_output_sph_restart_file(rj_fld)
 !
       use m_initial_field_control
       use set_sph_restart_IO
 !
       type(phys_data), intent(in) :: rj_fld
-      type(time_data), intent(inout) :: time_d
 !
 !
-      call copy_time_step_data(init_d1, time_d)
       call set_sph_restart_num_to_IO(rj_fld, sph_fst_IO)
 !
       end subroutine init_output_sph_restart_file
@@ -157,25 +155,26 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_alloc_sph_restart_data(rj_fld, rst_step)
+      subroutine read_alloc_sph_restart_data(init_d, rj_fld, rst_step)
 !
       use set_sph_restart_IO
 !
+      type(time_data), intent(inout) :: init_d
       type(phys_data), intent(inout) :: rj_fld
       type(IO_step_param), intent(inout) :: rst_step
 !
 !
-      if (init_d1%i_time_step .eq. -1) then
+      if (init_d%i_time_step .eq. -1) then
         call sel_read_alloc_step_SPH_file(nprocs, my_rank,              &
-     &      init_d1%i_time_step, sph_time_IO, sph_fst_IO)
+     &      init_d%i_time_step, sph_time_IO, sph_fst_IO)
       else
-        rst_step%istep_file = init_d1%i_time_step / rst_step%increment
+        rst_step%istep_file = init_d%i_time_step / rst_step%increment
         call sel_read_alloc_step_SPH_file(nprocs, my_rank,              &
      &      rst_step%istep_file, sph_time_IO, sph_fst_IO)
       end if
 !
       call set_sph_restart_from_IO(sph_fst_IO, rj_fld)
-      call copy_time_step_data(sph_time_IO, init_d1)
+      call copy_time_step_data(sph_time_IO, init_d)
 !
       call dealloc_phys_data_IO(sph_fst_IO)
       call dealloc_phys_name_IO(sph_fst_IO)
@@ -229,8 +228,7 @@
       call sel_read_alloc_step_SPH_file(nprocs, my_rank,                &
      &    rst_step%istep_file, sph_time_IO, sph_fst_IO)
 !
-      call copy_time_step_data(sph_time_IO, init_d1)
-      call copy_time_data(init_d1, time_d)
+      call copy_time_step_data(sph_time_IO, time_d)
 !
       if(rj_file_param%iflag_IO .eq. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_sph_restart_from_IO'
@@ -318,8 +316,7 @@
       call sel_read_alloc_step_SPH_file(nprocs, my_rank,                &
      &    ucd_step%istep_file, sph_time_IO, sph_out_IO)
 !
-      call copy_time_step_data(sph_time_IO, init_d1)
-      call copy_time_data(init_d1, time_d)
+      call copy_time_step_data(sph_time_IO, time_d)
 !
       if(rj_file_param%iflag_IO .eq. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'

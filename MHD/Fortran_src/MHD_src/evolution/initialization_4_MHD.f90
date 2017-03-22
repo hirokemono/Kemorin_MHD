@@ -257,6 +257,7 @@
      &    mesh%node, mesh%ele, MHD_mesh%fluid,                          &
      &    cd_prop1, iphys, layer_tbl, SGS_par, wk_sgs1, wk_diff1,       &
      &    sgs_coefs, diff_coefs, nod_fld, flex_p1, init_d1, time_d)
+      iflag_initial_step = 0
 !
 !  -------------------------------
 !

@@ -196,11 +196,11 @@
           ip = irank_new + 1
           call load_org_sph_data(org_sph_fst_head, ifmt_org_sph_fst,    &
      &        ip, istep, np_sph_org, org_sph_mesh(ip)%sph,              &
-     &        time_d1, org_sph_phys(ip))
+     &        init_d1, time_d1, org_sph_phys(ip))
         call calypso_mpi_barrier
         end do
         call share_time_step_data(init_d1)
-        time_d1%dt = init_d1%dt
+        call copy_delta_t(init_d1, time_d1)
 !
 !     Bloadcast original spectr data
         do ip = 1, np_sph_org

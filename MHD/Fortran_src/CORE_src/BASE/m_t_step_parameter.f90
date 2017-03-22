@@ -39,31 +39,4 @@
 !>      Structure for end time data
       type(finish_data), save :: finish_d1
 !
-! -----------------------------------------------------------------------
-!
-      contains
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_step_4_restart(rst_step, i_step, istep_rst)
-!
-      use t_IO_step_parameter
-!
-      type(IO_step_param), intent(in) :: rst_step
-      integer(kind = kint), intent(in) :: i_step
-      integer(kind = kint), intent(inout) :: istep_rst
-!
-!
-      if(rst_step%increment .gt. 0) then
-        istep_rst = int(i_step / rst_step%increment)
-      else
-        istep_rst = i_step
-      end if
-!
-      if(i_step .eq. -1)   istep_rst = -1
-!
-      end subroutine set_step_4_restart
-!
-! -----------------------------------------------------------------------
-!
       end module  m_t_step_parameter

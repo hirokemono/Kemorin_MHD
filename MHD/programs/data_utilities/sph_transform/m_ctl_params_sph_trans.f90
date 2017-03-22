@@ -128,7 +128,7 @@
      &    rst_step_STR, ucd_step_STR, ierr, e_message)
       call viz_fixed_time_step_params                                   &
      &   (init_d1%dt, t_st_ctl, viz_step_STR)
-      time_d1%dt = init_d1%dt
+      call copy_delta_t(init_d1, time_d1)
 !
       call set_output_step_4_fixed_step(ione, time_d1%dt,               &
      &    t_st_ctl%i_step_check_ctl, t_st_ctl%delta_t_check_ctl,        &
@@ -243,7 +243,7 @@
      &    rst_step_STR, ucd_step_STR, ierr, e_message)
       call viz_fixed_time_step_params                                   &
      &   (init_d1%dt, t_st_ctl, viz_step_STR)
-      time_d1%dt = init_d1%dt
+      call copy_delta_t(init_d1, time_d1)
 !
       call set_output_step_4_fixed_step(ione, time_d1%dt,               &
      &    t_st_ctl%i_step_check_ctl, t_st_ctl%delta_t_check_ctl,        &

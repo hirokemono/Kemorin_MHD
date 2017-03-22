@@ -125,7 +125,8 @@
       end if
 !
 !  Copy initial field to restart IO data
-      call init_output_sph_restart_file(rj_fld, time_d1)
+      call copy_time_step_data(init_d1, time_d1)
+      call init_output_sph_restart_file(rj_fld)
 !
       call output_sph_restart_control(time_d1, rj_fld, rst_step)
 !

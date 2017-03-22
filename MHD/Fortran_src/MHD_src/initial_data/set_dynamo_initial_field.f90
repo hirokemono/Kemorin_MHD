@@ -59,16 +59,16 @@
      &          iphys, layer_tbl, SGS_par, wk_sgs, wk_diff,             &
      &          sgs_coefs, diff_coefs, nod_fld, flex_p, init_d, time_d)
 !
-      use m_t_step_parameter
       use m_initial_field_control
- !
+      use m_fem_mhd_restart
+!
       use t_time_data
       use t_SGS_control_parameter
       use t_layering_ele_list
       use t_flex_delta_t_data
 !
-      use fem_mhd_rst_IO_control
       use set_restart_data
+      use fem_mhd_rst_IO_control
 !
       type(IO_step_param), intent(in) :: rst_step
       type(reference_scalar_param), intent(in) :: ref_param_T
@@ -97,15 +97,14 @@
         call set_initial_data                                           &
      &     (cd_prop, ref_param_T, node, fluid, iphys, nod_fld)
       end if
-      iflag_initial_step = 0
 !
       if (iflag_debug .gt. 1)  write(*,*) 'init_MHD_restart_output'
       call init_MHD_restart_output(node, nod_fld)
 !
-      call copy_time_step_data(init_d1, time_d)
+      call copy_time_step_data(init_d, time_d)
 !
       if(flex_p%iflag_flexible_step .eq. iflag_flex_step) then
-        flex_p%istep_max_dt = nint(init_d1%time / flex_p%dt_max)
+        flex_p%istep_max_dt = nint(init_d%time / flex_p%dt_max)
         flex_p%interval_flex_2_max = nint(flex_p%dt_max / time_d%dt)
         flex_p%istep_flex_to_max = izero
       else

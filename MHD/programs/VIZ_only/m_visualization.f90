@@ -107,8 +107,8 @@
       call s_set_fixed_time_step_params(tctl, init_d1, finish_d1,       &
      &    rst_step_V, ucd_step_V, ierr, e_message)
       call viz_fixed_time_step_params(init_d1%dt, tctl, viz_step_V)
+      call copy_delta_t(init_d1, time_d1)
 !
-      time_d1%dt = init_d1%dt
       if(ierr .gt. 0) return
 !
       end subroutine set_control_params_4_viz

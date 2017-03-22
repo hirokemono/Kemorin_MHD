@@ -4,9 +4,6 @@
 !     Written by H. Matsui on July, 2006
 !
 !!      subroutine set_ctl_params_interpolation
-!!      subroutine set_ctl_4_itp_steps(tctl, rst_step, ucd_step)
-!!        type(time_data_control), intent(in) :: tctl
-!!        type(IO_step_param), intent(inout) :: rst_step, ucd_step
 !
       module set_ctl_interpolation
 !
@@ -140,49 +137,5 @@
       end subroutine set_ctl_params_interpolation
 !
 !  ---------------------------------------------------------------------
-!
-      subroutine set_ctl_4_itp_steps(tctl, rst_step, ucd_step)
-!
-      use m_machine_parameter
-      use m_t_step_parameter
-      use t_ctl_data_4_time_steps
-!
-      type(time_data_control), intent(in) :: tctl
-      type(IO_step_param), intent(inout) :: rst_step, ucd_step
-!
-!   parameters for time evolution
-!
-        init_d1%i_time_step   = 0
-        if (tctl%i_step_init_ctl%iflag .gt. 0) then
-          init_d1%i_time_step   = tctl%i_step_init_ctl%intvalue
-        end if
-!
-        if (tctl%i_step_number_ctl%iflag .eq. 0) then
-          e_message = 'Set step number to finish'
-            call calypso_MPI_abort(ierr_evo, e_message)
-        else
-          finish_d1%i_end_step = tctl%i_step_number_ctl%intvalue
-        end if
-!
-        rst_step%increment = 0
-        if (tctl%i_step_rst_ctl%intvalue .gt. 0) then
-          rst_step%increment = tctl%i_step_rst_ctl%intvalue
-        end if
-!
-        ucd_step%increment = 0
-        if (tctl%i_step_ucd_ctl%iflag .gt. 0) then
-          ucd_step%increment = tctl%i_step_ucd_ctl%intvalue
-        end if
-!
-        if (iflag_debug.eq.1) then
-          write(*,*) 'i_step_init ', init_d1%i_time_step
-          write(*,*) 'i_step_number ', finish_d1%i_end_step
-          write(*,*) 'i_step_output_rst ', rst_step%increment
-          write(*,*) 'i_step_output_ucd ', ucd_step%increment
-        end if
-!
-      end subroutine set_ctl_4_itp_steps
-!
-! -----------------------------------------------------------------------
 !
       end module set_ctl_interpolation

@@ -111,14 +111,15 @@
 !
       call read_alloc_sph_rst_2_modify(i_step,                          &
      &    MHD1_org_files%rj_file_param, MHD1_org_files%rst_file_param,  &
-     &    sph1%sph_rj, ipol, rj_fld1, MHD_step%rst_step, time_d1)
+     &    sph1%sph_rj, ipol, rj_fld1, MHD_step%rst_step, init_d1)
 !
 !*  ----------------Modify spectr data ... ----------
 !*
       call set_modify_rj_fields
 !
       if(iflag_debug.gt.0) write(*,*) 'output_sph_restart_control'
-      call init_output_sph_restart_file(rj_fld1, time_d1)
+      call copy_time_step_data(init_d1, time_d1)
+      call init_output_sph_restart_file(rj_fld1)
       call output_sph_restart_control                                   &
      &   (time_d1, rj_fld1, MHD_step%rst_step)
 !*

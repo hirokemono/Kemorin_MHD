@@ -82,8 +82,9 @@
       use m_layering_ele_list
       use m_bc_data_velo
       use m_flexible_time_step
-      use input_control
+      use m_fem_mhd_restart
 !
+      use input_control
       use nod_phys_send_recv
       use lead_physical_values
       use update_after_evolution
@@ -94,7 +95,6 @@
       use time_step_data_IO_control
       use node_monitor_IO
       use sgs_model_coefs_IO
-      use fem_mhd_rst_IO_control
       use output_viz_file_control
 !
       use check_deltat_by_prev_rms

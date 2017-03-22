@@ -70,7 +70,7 @@
       use set_control_4_solver
       use set_control_evo_layers
 !
-      use fem_mhd_rst_IO_control
+      use m_fem_mhd_restart
 !
       type(platform_data_control), intent(in) :: plt
       type(platform_data_control), intent(in) :: org_plt

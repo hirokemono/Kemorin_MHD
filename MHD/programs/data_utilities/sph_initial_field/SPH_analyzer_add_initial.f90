@@ -59,7 +59,7 @@
       if (iflag_debug.eq.1) write(*,*) 'input_control_4_SPH_make_init'
       call input_control_4_SPH_make_init(MHD_ctl1, sph1, comms_sph1,    &
      &    sph_grps1, rj_fld1, pwr1, SGS_par1, mesh1, group1, ele_mesh1)
-      time_d1%dt = init_d1%dt
+      call copy_delta_t(init_d1, time_d1)
       call end_eleps_time(4)
 !
 !    precondition elaps start
@@ -114,7 +114,8 @@
 ! ---------------------------------
 !
      if(iflag_debug.gt.0) write(*,*)' read_alloc_sph_restart_data'
-     call read_alloc_sph_restart_data(rj_fld1, MHD_step1%rst_step)
+     call read_alloc_sph_restart_data                                   &
+     &  (init_d1, rj_fld1, MHD_step1%rst_step)
 !
      if(iflag_debug.gt.0) write(*,*)' sph_initial_spectrum'
      call sph_initial_spectrum(ipol, itor, rj_fld1, MHD_step1%rst_step)

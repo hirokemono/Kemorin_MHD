@@ -58,7 +58,7 @@
       call s_set_fixed_time_step_params(t_pu_ctl, init_d1, finish_d1,   &
      &    rst_step_U, ucd_step_U, ierr, e_message)
       call viz_fixed_time_step_params(init_d1%dt, t_pu_ctl, viz_step_U)
-      time_d1%dt = init_d1%dt
+      call copy_delta_t(init_d1, time_d1)
 !
 !     --------------------- 
 !
