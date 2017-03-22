@@ -112,8 +112,8 @@
       call nod_fields_send_recv(mesh1%nod_comm, nod_fld1)
 !
       if (iflag_debug.eq.1)  write(*,*) 'update_fields'
-      call update_fields(time_d1%i_time_step, time_d1%dt,               &
-     &    FEM_prm1, SGS_par1, mesh1, group1,                            &
+      call update_fields                                                &
+     &   (time_d1, FEM_prm1, SGS_par1, mesh1, group1,                   &
      &    ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,    &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,  &
      &    ifld_diff, icomp_diff, iphys_elediff,                         &
@@ -125,7 +125,7 @@
 !
       if (SGS_par1%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
-        call s_cal_model_coefficients(time_d1%i_time_step, time_d1%dt,  &
+        call s_cal_model_coefficients(time_d1,                          &
      &      FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1,    &
      &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
      &      layer_tbl1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,  &
@@ -142,8 +142,8 @@
       iflag = lead_field_data_flag(flex_p1%istep_max_dt,                &
      &                             MHD_step, SGS_par1%sgs_step)
       if(iflag .eq. 0) then
-        call lead_fields_by_FEM(time_d1%i_time_step, time_d1%dt,        &
-     &     FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1,                &
+        call lead_fields_by_FEM                                         &
+     &    (time_d1, FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1,       &
      &     MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,      &
      &     jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,            &
      &     FEM1_elen, icomp_sgs, icomp_diff, ifld_diff, iphys_elediff,  &
@@ -172,13 +172,11 @@
       iflag = output_IO_flag(flex_p1%istep_max_dt,MHD_step%point_step)
       if(iflag .eq. 0) then
         if (iflag_debug.eq.1) write(*,*) 'output_monitor_control'
-        call output_monitor_control                                     &
-     &     (time_d1%i_time_step, time_d1%time, mesh1%node, nod_fld1)
+        call output_monitor_control(time_d1, mesh1%node, nod_fld1)
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 's_output_sgs_model_coefs'
-      call s_output_sgs_model_coefs                                     &
-     &   (flex_p1%istep_max_dt, time_d1%i_time_step, time_d1%time,      &
+      call s_output_sgs_model_coefs(flex_p1%istep_max_dt, time_d1,      &
      &    SGS_par1, wk_sgs1, wk_diff1)
 !
 !     ---- Output voulme field data
@@ -190,8 +188,7 @@
 !     ----
 !
       if     (flex_p1%iflag_flexible_step .eq. iflag_flex_step) then
-        visval = viz_file_step_4_flex                                   &
-     &         (time_d1%dt, time_d1%time, MHD_step%viz_step)
+        visval = viz_file_step_4_flex(time_d1, MHD_step%viz_step)
       else
         visval =  viz_file_step_4_fix(flex_p1%istep_max_dt,             &
      &                                MHD_step%viz_step)

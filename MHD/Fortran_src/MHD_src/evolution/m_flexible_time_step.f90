@@ -4,11 +4,11 @@
 !      Written by H. Matsui on Nov., 2009
 !
 !!      subroutine set_new_time_and_step                                &
-!!     &         (dt, cd_prop, iphys, nod_fld, i_step, time)
+!!     &         (cd_prop, iphys, nod_fld, time_d)
 !!      subroutine s_check_flexible_time_step                           &
-!!     &         (i_step, time, node, ele, fluid, cd_prop, iphys,       &
+!!     &         (node, ele, fluid, cd_prop, iphys,                     &
 !!     &          nod_fld, jac_3d_q, jac_3d_l, fem_wk, flex_data,       &
-!!     &          flex_p, dt)
+!!     &          flex_p, time_d)
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -17,6 +17,7 @@
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(time_data), intent(inout) :: time_d
 !
       module m_flexible_time_step
 !
@@ -55,31 +56,28 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_new_time_and_step                                  &
-     &         (dt, cd_prop, iphys, nod_fld, flex_p, i_step, time)
+     &         (cd_prop, iphys, nod_fld, flex_p, time_d)
 !
+      use t_time_data
       use t_material_property
       use t_phys_data
       use t_phys_address
 !
       use copy_field_data_4_dt_check
 !
-      real(kind = kreal), intent(in) :: dt
-!
       type(conductive_property), intent(in) :: cd_prop
       type(phys_address), intent(in) :: iphys
 !
-      real(kind = kreal), intent(inout) :: time
-      integer(kind=kint), intent(inout) :: i_step
-!
+      type(time_data), intent(inout) :: time_d
       type(flexible_stepping_parameter), intent(inout) :: flex_p
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      time = time + dt
-      i_step = i_step + 1
+      time_d%time = time_d%time + time_d%dt
+      time_d%i_time_step = time_d%i_time_step + 1
 !
       if (flex_p%iflag_flexible_step .eq. iflag_fixed_step) then
-        flex_p%istep_max_dt = i_step
+        flex_p%istep_max_dt = time_d%i_time_step
       else
         flex_p%istep_flex_to_max = flex_p%istep_flex_to_max + 1
         flex_p%istep_flex_to_max                                        &
@@ -97,9 +95,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_check_flexible_time_step                             &
-     &         (i_step, time, node, ele, fluid, cd_prop, iphys,         &
+     &         (node, ele, fluid, cd_prop, iphys,                       &
      &          nod_fld, jac_3d_q, jac_3d_l, fem_wk, flex_data,         &
-     &          flex_p, dt)
+     &          flex_p, time_d)
 !
       use t_geometry_data_MHD
       use t_geometry_data
@@ -112,8 +110,6 @@
 !
       use check_deltat_by_prev_rms
 !
-      integer(kind=kint), intent(in) :: i_step
-      real(kind = kreal), intent(in) :: time
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
@@ -125,22 +121,22 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(flexible_stepping_data), intent(inout) :: flex_data
       type(flexible_stepping_parameter), intent(inout) :: flex_p
-      real(kind = kreal), intent(inout) :: dt
+      type(time_data), intent(inout) :: time_d
 !
 !
       if( mod(flex_p%istep_flex_to_max,itwo) .eq. izero) then
 !        call s_check_deltat_by_previous                                &
 !     &     (node, cd_prop1, iphys, nod_fld, flex_data)
         call s_check_deltat_by_prev_rms                                 &
-     &     (time, node, ele, fluid, cd_prop, iphys, nod_fld,            &
+     &     (time_d%time, node, ele, fluid, cd_prop, iphys, nod_fld,     &
      &      jac_3d_q, jac_3d_l, fem_wk, flex_data)
 !
         if(flex_data%d_ratio_allmax .gt. flex_p%min_eps_to_expand)      &
      &   then
           call shrink_delta_t                                           &
-     &       (i_step, flex_p%dt_fact, flex_p%idt_digit,                 &
+     &       (time_d%i_time_step, flex_p%dt_fact, flex_p%idt_digit,     &
      &        flex_p%istep_flex_to_max, flex_p%interval_flex_2_max,     &
-     &        dt)
+     &        time_d%dt)
           flex_p%iflag_flex_step_changed = id_turn_ON
           return
         else
@@ -151,16 +147,16 @@
           if(flex_data%d_ratio_allmax .lt. flex_p%max_eps_to_shrink)    &
      &     then
             call extend_delta_t                                         &
-     &         (i_step, flex_p%dt_fact, flex_p%idt_digit,               &
+     &         (time_d%i_time_step, flex_p%dt_fact, flex_p%idt_digit,   &
      &          flex_p%istep_flex_to_max, flex_p%interval_flex_2_max,   &
-     &          dt)
+     &          time_d%dt)
             flex_p%iflag_flex_step_changed = id_turn_ON
           end if
 !
           if(my_rank .eq. izero) then
             call open_flex_step_monitor
             call write_rms_delta_t_check(dt_check_max_code,             &
-     &         i_step, time, flex_data)
+     &          time_d%i_time_step, time_d%time, flex_data)
             close(dt_check_max_code)
           end if
         end if

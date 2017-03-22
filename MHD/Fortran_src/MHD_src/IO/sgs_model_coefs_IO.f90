@@ -5,7 +5,8 @@
 !     modified by H. Matsui on Aug., 2007
 !
 !!      subroutine s_output_sgs_model_coefs                             &
-!!     &        (i_step_max, i_step_MHD, time, SGS_par, wk_sgs, wk_diff)
+!!     &        (i_step_max, time_d, SGS_par, wk_sgs, wk_diff)
+!!        type(time_data), intent(in) :: time_d
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(dynamic_model_data), intent(in) :: wk_sgs, wk_diff
 !!
@@ -122,15 +123,15 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_output_sgs_model_coefs                               &
-     &        (i_step_max, i_step_MHD, time, SGS_par, wk_sgs, wk_diff)
+     &        (i_step_max, time_d, SGS_par, wk_sgs, wk_diff)
 !
       use m_physical_property
+      use t_time_data
       use t_IO_step_parameter
 !
       integer(kind = kint), intent(in) :: i_step_max
-      integer(kind=kint), intent(in) :: i_step_MHD
-      real(kind=kreal), intent(in) :: time
 !
+      type(time_data), intent(in) :: time_d
       type(SGS_paremeters), intent(in) :: SGS_par
       type(dynamic_model_data), intent(in) :: wk_sgs, wk_diff
 !
@@ -140,17 +141,19 @@
       if(my_rank .ne. 0) return
 !
       call output_layered_model_coefs_file                              &
-     &   (i_step_MHD, time, SGS_par%model_p, cd_prop1, wk_sgs)
+     &   (time_d%i_time_step, time_d%time,                              &
+     &    SGS_par%model_p, cd_prop1, wk_sgs)
       call output_whole_model_coefs_file                                &
-     &   (i_step_MHD, time, SGS_par%model_p, cd_prop1, wk_sgs)
+     &   (time_d%i_time_step, time_d%time,                              &
+     &    SGS_par%model_p, cd_prop1, wk_sgs)
 !
       if (SGS_par%commute_p%iflag_commute .gt. id_SGS_commute_OFF) then
         call output_whole_diff_coefs_file                               &
-     &     (i_step_MHD, time, cd_prop1, wk_diff)
+     &     (time_d%i_time_step, time_d%time, cd_prop1, wk_diff)
 !
         if (SGS_par%commute_p%iset_DIFF_coefs .eq. 1 ) then
           call output_layered_diff_coefs_file                           &
-     &       (i_step_MHD, time, cd_prop1, wk_diff)
+     &       (time_d%i_time_step, time_d%time, cd_prop1, wk_diff)
         end if
       end if
 !

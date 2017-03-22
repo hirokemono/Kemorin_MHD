@@ -11,13 +11,17 @@
 !!
 !!      subroutine open_node_monitor_file(my_rank, nod_fld)
 !!      subroutine set_local_node_id_4_monitor(node, nod_grp)
-!!      subroutine output_monitor_control(i_step, time, node, nod_fld)
+!!      subroutine output_monitor_control(time_d, node, nod_fld)
+!!        type(time_data), intent(in) :: time_d
+!!        type(node_data), intent(in) :: node
+!!        type(phys_data), intent(in) :: nod_fld
 !!      subroutine skip_monitor_data(i_step_init)
 !
       module node_monitor_IO
 !
       use m_precision
 !
+      use t_time_data
       use t_geometry_data
       use t_group_data
       use t_phys_data
@@ -184,13 +188,11 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine output_monitor_control(i_step, time, node, nod_fld)
+      subroutine output_monitor_control(time_d, node, nod_fld)
 !
       use calypso_mpi
 !
-      integer(kind=kint), intent(in) :: i_step
-      real(kind=kreal), intent(in) :: time
-!
+      type(time_data), intent(in) :: time_d
       type(node_data), intent(in) :: node
       type(phys_data), intent(in) :: nod_fld
 !
@@ -204,7 +206,7 @@
       do i = 1, num_monitor_local
         inod = monitor_local(i)
         write(id_monitor_file,'(2i16,1pe25.15e3)',                      &
-     &             advance='NO') i_step, inod, time
+     &             advance='NO') time_d%i_time_step, inod, time_d%time
         write(id_monitor_file,'(1p3e25.15e3)',                          &
      &             advance='NO') node%xx(inod,1:3)
         do i_fld = 1, nod_fld%num_phys

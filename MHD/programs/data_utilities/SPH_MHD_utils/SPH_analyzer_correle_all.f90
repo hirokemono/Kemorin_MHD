@@ -7,7 +7,8 @@
 !>@brief Evolution loop for spherical MHD
 !!
 !!@verbatim
-!!      subroutine SPH_analyze_correlate_all(i_step, MHD_step)
+!!      subroutine SPH_analyze_correlate_all(time_d, MHD_step)
+!!        type(time_data), intent(in) :: time_d
 !!        type(MHD_IO_step_param), intent(inout) :: MHD_step
 !!@endverbatim
 !
@@ -15,6 +16,7 @@
 !
       use m_precision
       use calypso_mpi
+      use t_time_data
       use t_phys_address
       use t_file_IO_parameter
       use t_phys_data
@@ -32,7 +34,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_correlate_all(i_step, MHD_step)
+      subroutine SPH_analyze_correlate_all(time_d, MHD_step)
 !
       use m_work_time
       use m_t_step_parameter
@@ -55,7 +57,7 @@
       use sph_transforms_snapshot
       use zonal_correlation_rtp
 !
-      integer(kind = kint), intent(in) :: i_step
+      type(time_data), intent(in) :: time_d
       type(MHD_IO_step_param), intent(inout) :: MHD_step
 !
       integer(kind = kint) :: iflag, ncomp
@@ -73,8 +75,8 @@
 !       read first data
 !
       call read_alloc_sph_spectr                                        &
-     &   (i_step, MHD1_org_files%rj_file_param, sph_file_param1,        &
-     &    sph1%sph_rj, ipol, rj_fld1,                                   &
+     &   (time_d%i_time_step, MHD1_org_files%rj_file_param,             &
+     &    sph_file_param1, sph1%sph_rj, ipol, rj_fld1,                  &
      &    MHD_step%ucd_step, MHD_step%init_d)
 !
       call copy_field_name_type(rj_fld1, ref_rj_fld)
@@ -83,8 +85,8 @@
 !       Transform second data
 !
       call read_alloc_sph_spectr                                        &
-     &   (i_step, MHD1_org_files%rj_file_param, sph_file_param2,        &
-     &    sph1%sph_rj, ipol, rj_fld1,                                   &
+     &   (time_d%i_time_step, MHD1_org_files%rj_file_param,             &
+     &    sph_file_param2,sph1%sph_rj, ipol, rj_fld1,                   &
      &    MHD_step%ucd_step, MHD_step%init_d)
       call copy_time_data(MHD_step%init_d, time_d1)
 !
@@ -211,9 +213,9 @@
         deallocate(msq_v1, msq_v2, cor_v)
       end if
 !
-      call write_sph_vol_ms_file(my_rank, i_step, time_d1%time,         &
+      call write_sph_vol_ms_file(my_rank, time_d,                       &
      &   sph1%sph_params, sph1%sph_rj, pwr1)
-      call write_sph_layer_ms_file(my_rank, i_step, time_d1%time,       &
+      call write_sph_layer_ms_file(my_rank, time_d,                     &
      &   sph1%sph_params, pwr1)
 !
       end subroutine SPH_analyze_correlate_all

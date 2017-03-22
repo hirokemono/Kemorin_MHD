@@ -131,7 +131,7 @@
 !*  ----------  time evolution by spectral methood -----------------
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_correlate_all'
-        call SPH_analyze_correlate_all(time_d1%i_time_step, MHD_step1)
+        call SPH_analyze_correlate_all(time_d1, MHD_step1)
 !*
 !*  -----------  output field data --------------
 !*

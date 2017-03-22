@@ -101,11 +101,12 @@
 !
       do i_step = t_SHR%init_d%i_time_step, t_SHR%finish_d%i_end_step,  &
      &           t_SHR%ucd_step%increment
+        t_SHR%time_d%i_time_step = i_step
 !
 !   Input spectr data
 !
-      call sel_read_step_SPH_field_file                                 &
-     &     (nprocs, my_rank, i_step, spec_time_IO, sph_spec_IO)
+      call sel_read_step_SPH_field_file (nprocs, my_rank,               &
+     &    t_SHR%time_d%i_time_step, spec_time_IO, sph_spec_IO)
 !
         call set_rj_phys_data_from_IO(sph_spec_IO, rj_fld_spec)
         call copy_time_step_data(spec_time_IO, t_SHR%time_d)
@@ -119,21 +120,17 @@
      &      leg_s%g_sph_rj, pwr_spec, WK_pwr_spec)
 !
         call write_sph_vol_ave_file                                     &
-     &     (i_step, t_SHR%time_d%time, sph_mesh_spec%sph%sph_params,    &
+     &     (t_SHR%time_d, sph_mesh_spec%sph%sph_params,                 &
      &      sph_mesh_spec%sph%sph_rj, pwr_spec)
-        call write_sph_vol_ms_file                                      &
-     &     (my_rank, i_step, t_SHR%time_d%time,                         &
+        call write_sph_vol_ms_file(my_rank, t_SHR%time_d,               &
      &     sph_mesh_spec%sph%sph_params, sph_mesh_spec%sph%sph_rj,      &
      &     pwr_spec)
-        call write_sph_vol_ms_spectr_file                               &
-     &     (my_rank, i_step, t_SHR%time_d%time,                         &
+        call write_sph_vol_ms_spectr_file(my_rank, t_SHR%time_d,        &
      &      sph_mesh_spec%sph%sph_params, sph_mesh_spec%sph%sph_rj,     &
      &      pwr_spec)
-        call write_sph_layer_ms_file                                    &
-     &     (my_rank, i_step, t_SHR%time_d%time,                         &
+        call write_sph_layer_ms_file(my_rank, t_SHR%time_d,             &
      &      sph_mesh_spec%sph%sph_params, pwr_spec)
-        call write_sph_layer_spectr_file                                &
-     &     (my_rank, i_step, t_SHR%time_d%time,                         &
+        call write_sph_layer_spectr_file(my_rank, t_SHR%time_d,         &
      &      sph_mesh_spec%sph%sph_params, pwr_spec)
       end do
 !

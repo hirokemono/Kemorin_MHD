@@ -7,9 +7,10 @@
 !!     &         (time, node, ele, fluid, cd_prop, iphys, nod_fld,      &
 !!     &          jac_3d_q, jac_3d_l, fem_wk, flex_data)
 !!      subroutine set_ele_rms_4_previous_step                          &
-!!     &         (time, dt, node, ele, fluid, iphys, nod_fld,           &
+!!     &         (time_d, node, ele, fluid, iphys, nod_fld,             &
 !!     &          jac_3d_q, jac_3d_l, fem_wk, flex_data)
 !!        type(conductive_property), intent(in) :: cd_prop
+!!        type(time_data), intent(in) :: time_d
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: fluid
@@ -27,6 +28,7 @@
       use m_constants
       use m_machine_parameter
 !
+      use t_time_data
       use t_physical_property
       use t_geometry_data_MHD
       use t_geometry_data
@@ -213,10 +215,10 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_ele_rms_4_previous_step                            &
-     &         (time, dt, node, ele, fluid, iphys, nod_fld,             &
+     &         (time_d, node, ele, fluid, iphys, nod_fld,               &
      &          jac_3d_q, jac_3d_l, fem_wk, flex_data)
 !
-      real(kind = kreal), intent(in) :: time, dt
+      type(time_data), intent(in) :: time_d
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
@@ -308,7 +310,7 @@
      &    flex_data%ntot_comp, CALYPSO_REAL, MPI_MIN,                   &
      &    CALYPSO_COMM, ierr_MPI)
 !
-      flex_data%rms_dt_global(0) = time - dt
+      flex_data%rms_dt_global(0) = time_d%time - time_d%dt
       flex_data%rms_dt_pre1 = 0.0d0
 !
       end subroutine set_ele_rms_4_previous_step

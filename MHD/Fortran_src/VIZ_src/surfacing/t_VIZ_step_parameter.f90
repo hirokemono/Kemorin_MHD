@@ -10,7 +10,7 @@
 !!@verbatim
 !!      subroutine accum_output_flag_4_viz(i_step, viz_step, iflag_field)
 !!      integer(kind = kint) function viz_file_step_4_flex              &
-!!     &                            (dt, time, viz_step)
+!!     &                            (time_d, viz_step)
 !!      integer(kind = kint) function viz_file_step_4_fix               &
 !!     &                            (i_step, viz_step)
 !!
@@ -24,6 +24,7 @@
 !
       use m_precision
       use m_constants
+      use t_time_data
       use t_IO_step_parameter
 !
       implicit  none
@@ -86,20 +87,18 @@
 !-----------------------------------------------------------------------
 !
       integer(kind = kint) function viz_file_step_4_flex                &
-     &                            (dt, time, viz_step)
+     &                            (time_d, viz_step)
 !
-      real(kind=kreal), intent(in) :: dt
-      real(kind = kreal), intent(in) :: time
+      type(time_data), intent(in) :: time_d
       type(VIZ_step_params), intent(inout) :: viz_step
 !
       integer(kind=kint ) :: ivis_pvr, ivis_psf, ivis_iso, ivis_fline
 !
 !
-      call set_viz_flex_file_step(time, dt, viz_step%PSF_t, ivis_psf)
-      call set_viz_flex_file_step(time, dt, viz_step%ISO_t, ivis_iso)
-      call set_viz_flex_file_step(time, dt, viz_step%PVR_t, ivis_pvr)
-      call set_viz_flex_file_step                                       &
-     &   (time, dt, viz_step%FLINE_t,ivis_fline)
+      call set_viz_flex_file_step(time_d, viz_step%PSF_t, ivis_psf)
+      call set_viz_flex_file_step(time_d, viz_step%ISO_t, ivis_iso)
+      call set_viz_flex_file_step(time_d, viz_step%PVR_t, ivis_pvr)
+      call set_viz_flex_file_step(time_d, viz_step%FLINE_t,ivis_fline)
 !
       viz_file_step_4_flex                                              &
      &    = ivis_psf * ivis_iso * ivis_pvr * ivis_fline

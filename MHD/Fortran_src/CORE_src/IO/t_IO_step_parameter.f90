@@ -27,6 +27,7 @@
 !!     &          istep_ctl, delta_t_ctl, istep_out, dt_out)
 !!      integer(kind = kint) function output_flag(i_step, increment)
 !!      subroutine set_viz_file_step(istep_ref, i_step_viz, iviz, i_cnt)
+!!      subroutine set_viz_flex_file_step(time_d, IO_step, iviz)
 !!end@verbatim
 !!
       module  t_IO_step_parameter
@@ -190,22 +191,23 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_viz_flex_file_step(time, dt, IO_step, iviz)
+      subroutine set_viz_flex_file_step(time_d, IO_step, iviz)
 !
-      real(kind = kreal), intent(in) :: time, dt
+      use t_time_data
 !
+      type(time_data), intent(in) :: time_d
       type(IO_step_param), intent(inout) :: IO_step
       integer(kind = kint), intent(inout) :: iviz
 !
       integer(kind = kint) :: istep, iref
 !
 !
-      istep = int(time / dt)
+      istep = int(time_d%time / time_d%dt)
       if (IO_step%delta_t .eq. zero) then
         iviz =   ione
         IO_step%istep_file = -ione
       else
-         iref =  int(IO_step%delta_t / dt)
+         iref =  int(IO_step%delta_t / time_d%dt)
          iviz = mod(istep, iref)
         if (iviz .eq. izero) then
           IO_step%istep_file = istep / iref
