@@ -5,13 +5,13 @@
 !
 !      subroutine s_input_control_interpolate                           &
 !     &         (org_femmesh, org_ele_mesh, new_femmesh, new_ele_mesh,  &
-!     &          itp_info, rst_step, ucd_step, ierr)
+!     &          itp_info, t_param, ierr)
 !       type(mesh_data), intent(inout) :: org_femmesh
 !       type(element_geometry), intent(inout) :: org_ele_mesh
 !       type(mesh_data), intent(inout) :: new_femmesh
 !       type(element_geometry), intent(inout) :: new_ele_mesh
 !       type(interpolate_table), intent(inout) :: itp_info
-!       type(IO_step_param), intent(inout) :: rst_step, ucd_step
+!!        type(time_step_param), intent(inout) :: t_param
 !      subroutine set_ctl_interpolate_udt(fld_ctl, nod_fld)
 !        type(field_control), intent(inout) :: fld_ctl
 !        type(phys_data), intent(inout) :: nod_fld
@@ -33,14 +33,13 @@
 !
       subroutine s_input_control_interpolate                            &
      &         (org_femmesh, org_ele_mesh, new_femmesh, new_ele_mesh,   &
-     &          itp_info, rst_step, ucd_step, ierr)
+     &          itp_info, t_param, ierr)
 !
       use t_mesh_data
       use t_interpolate_table
       use t_step_parameter
       use t_IO_step_parameter
 !
-      use m_t_step_parameter
       use m_2nd_pallalel_vector
       use m_ctl_params_4_gen_table
       use m_ctl_data_gen_table
@@ -61,7 +60,7 @@
       type(mesh_data), intent(inout) :: new_femmesh
       type(element_geometry), intent(inout) :: new_ele_mesh
       type(interpolate_table), intent(inout) :: itp_info
-      type(IO_step_param), intent(inout) :: rst_step, ucd_step
+      type(time_step_param), intent(inout) :: t_param
       integer(kind = kint), intent(inout) :: ierr
 !
 !
@@ -71,8 +70,8 @@
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_interpolation'
       call set_ctl_params_interpolation
 !
-      call s_set_fixed_time_step_params(t_gt_ctl, init_d1, finish_d1,   &
-     &    rst_step, ucd_step, ierr, e_message)
+      call set_fixed_time_step_params                                   &
+     &   (t_gt_ctl, t_param, ierr, e_message)
 !
 !  --  read geometry for origin (if exist)
 !

@@ -15,7 +15,7 @@
       use calypso_mpi
       use m_machine_parameter
 !
-      use m_t_step_parameter
+      use t_step_parameter
       use t_mesh_data
       use t_interpolate_table
       use t_IO_step_parameter
@@ -30,8 +30,7 @@
 !
       type(interpolate_table), save :: itp_ele_t
 !
-      type(IO_step_param), save :: rst_step_t
-      type(IO_step_param), save :: ucd_step_t
+      type(time_step_param), save :: t_ITP
 !
 ! ----------------------------------------------------------------------
 !
@@ -61,8 +60,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_itp_mesh'
       call s_input_control_interpolate(org_femmesh, org_ele_mesh,       &
-     &   new_femmesh, new_ele_mesh, itp_ele_t, rst_step_t, ucd_step_t,  &
-     &   ierr)
+     &   new_femmesh, new_ele_mesh, itp_ele_t, t_ITP, ierr)
 !
 !     --------------------- 
 !

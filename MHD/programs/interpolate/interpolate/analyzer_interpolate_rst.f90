@@ -13,9 +13,8 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_t_step_parameter
 !
-      use t_time_data
+      use t_step_parameter
       use t_field_data_IO
 !
       use t_mesh_data
@@ -27,8 +26,7 @@
 !
       implicit none
 !
-      type(IO_step_param), save :: rst_step_ITP
-      type(IO_step_param), save :: ucd_step_ITP
+      type(time_step_param), save :: t_ITP
 !
       type(mesh_data), save :: org_femmesh
       type(element_geometry), save :: org_ele_mesh
@@ -76,8 +74,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_interpolate'
       call s_input_control_interpolate(org_femmesh, org_ele_mesh,       &
-     &    new_femmesh, new_ele_mesh, itp_rst,                           &
-     &    rst_step_ITP, ucd_step_ITP, ierr)
+     &    new_femmesh, new_ele_mesh, itp_rst, t_ITP, ierr)
 !
 !     --------------------- 
 !
@@ -95,7 +92,7 @@
 !
 !     --------------------- 
 !
-      i_step = int(init_d1%i_time_step / rst_step_ITP%increment)
+      i_step = int(t_ITP%init_d%i_time_step / t_ITP%rst_step%increment)
       call set_field_file_fmt_prefix                                    &
      &   (ifmt_org_rst_file, org_rst_file_head, itp_fld_IO)
       call sel_read_alloc_step_FEM_file                                 &
@@ -136,8 +133,10 @@
       integer(kind = kint) :: i_step, i_rst_start, i_rst_end
 !
 !
-      i_rst_start = int(init_d1%i_time_step /   rst_step_ITP%increment)
-      i_rst_end =   int(finish_d1%i_end_step / rst_step_ITP%increment)
+      i_rst_start                                                       &
+     &      = int(t_ITP%init_d%i_time_step / t_ITP%rst_step%increment)
+      i_rst_end                                                         &
+     &      = int(t_ITP%finish_d%i_end_step / t_ITP%rst_step%increment)
       do i_step = i_rst_start, i_rst_end
 !
         if (my_rank .lt. ndomain_org) then
@@ -153,14 +152,14 @@
      &       (org_femmesh%mesh%node, itp_fld_IO, nod_fld_ITP)
           call dealloc_phys_data_IO(itp_fld_IO)
 !
-          call copy_time_step_data(itp_time_IO, init_d1)
+          call copy_time_step_data(itp_time_IO, t_ITP%init_d)
           call nod_fields_send_recv                                     &
      &       (org_femmesh%mesh%nod_comm, nod_fld_ITP)
         end if
 !
-        call MPI_Bcast(time_d1%time, ione, CALYPSO_REAL,                &
+        call MPI_Bcast(t_ITP%init_d%time, ione, CALYPSO_REAL,           &
      &      izero, CALYPSO_COMM, ierr_MPI)
-        call MPI_Bcast(time_d1%i_time_step, ione, CALYPSO_INTEGER,      &
+        call MPI_Bcast(t_ITP%init_d%i_time_step, ione, CALYPSO_INTEGER, &
      &      izero, CALYPSO_COMM, ierr_MPI)
 !
         if (iflag_debug.gt.0)  write(*,*) 's_interpolate_nodal_data'
@@ -169,7 +168,7 @@
      &      new_femmesh%mesh%node, new_phys)
 !
         if (my_rank .lt. ndomain_dest) then
-          call copy_time_step_size_data(time_d1, itp_time_IO)
+          call copy_time_step_size_data(t_ITP%init_d, itp_time_IO)
 !
           itp_fld_IO%nnod_IO = new_femmesh%mesh%node%numnod
           call alloc_phys_data_IO(itp_fld_IO)

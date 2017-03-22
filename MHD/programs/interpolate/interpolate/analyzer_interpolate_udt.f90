@@ -18,15 +18,14 @@
       use t_FEM_phys_data
       use t_phys_data
       use t_phys_address
-      use t_time_data
+      use t_step_parameter
       use t_ucd_data
       use t_interpolate_table
       use t_IO_step_parameter
 !
       implicit none
 !
-      type(IO_step_param), save :: rst_step_ITP
-      type(IO_step_param), save :: ucd_step_ITP
+      type(time_step_param), save :: t_ITP
 !
       type(mesh_data), save :: org_femmesh
       type(element_geometry), save :: org_ele_mesh
@@ -56,7 +55,6 @@
 !
       use m_ctl_data_gen_table
       use m_ctl_params_4_gen_table
-      use m_t_step_parameter
 !
       use input_control_interpolate
       use const_mesh_information
@@ -72,8 +70,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_interpolate'
       call s_input_control_interpolate(org_femmesh, org_ele_mesh,       &
-     &    new_femmesh, new_ele_mesh, itp_udt,                           &
-     &    rst_step_ITP, ucd_step_ITP, ierr)
+     &    new_femmesh, new_ele_mesh, itp_udt, t_ITP, ierr)
 !
       call set_ctl_interpolate_udt(fld_gt_ctl, nod_fld_ITP)
 !
@@ -110,7 +107,6 @@
 !
       subroutine analyze_itp_udt
 !
-      use m_t_step_parameter
       use m_ctl_params_4_gen_table
       use ucd_IO_select
       use set_ucd_data_to_type
@@ -120,8 +116,8 @@
       integer(kind = kint) :: istep
 !
 !
-      do istep = init_d1%i_time_step, finish_d1%i_end_step,             &
-     &          ucd_step_ITP%increment
+      do istep = t_ITP%init_d%i_time_step, t_ITP%finish_d%i_end_step,   &
+     &          t_ITP%ucd_step%increment
         if (my_rank .lt. ndomain_org) then
           call set_data_by_read_ucd_once                                &
      &       (my_rank, istep, itype_org_udt_file, org_udt_file_head,    &

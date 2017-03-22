@@ -29,6 +29,8 @@
 !
       implicit none
 !
+      type(time_data), save :: init_t
+!
       type(sph_mesh_data), allocatable, save :: org_sph_mesh(:)
       type(phys_data), allocatable, save ::     org_sph_phys(:)
 !
@@ -196,11 +198,10 @@
           ip = irank_new + 1
           call load_org_sph_data(org_sph_fst_head, ifmt_org_sph_fst,    &
      &        ip, istep, np_sph_org, org_sph_mesh(ip)%sph,              &
-     &        init_d1, time_d1, org_sph_phys(ip))
-        call calypso_mpi_barrier
+     &        init_t, org_sph_phys(ip))
+          call calypso_mpi_barrier
         end do
-        call share_time_step_data(init_d1)
-        call copy_delta_t(init_d1, time_d1)
+        call share_time_step_data(init_t)
 !
 !     Bloadcast original spectr data
         do ip = 1, np_sph_org
@@ -217,15 +218,13 @@
           call dealloc_phys_data_type(org_sph_phys(ip))
         end do
 !
-        call copy_time_step_data(init_d1, time_d1)
-!
         do jloop = 1, nloop_new
           irank_new = my_rank + (jloop-1) * nprocs
           jp = irank_new + 1
 
           if(irank_new .lt. np_sph_new) then
             call const_assembled_sph_data                               &
-     &          (b_sph_ratio, time_d1, new_sph_mesh(jp)%sph, r_itp,     &
+     &          (b_sph_ratio, init_t, new_sph_mesh(jp)%sph, r_itp,      &
      &           new_sph_phys(jp), new_fst_IO(jloop), fst_time_IO)
           end if
 !
