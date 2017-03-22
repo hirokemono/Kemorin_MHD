@@ -30,7 +30,6 @@
 !
       subroutine init_zonal_mean_sph
 !
-      use m_t_step_parameter
       use m_ctl_data_4_sph_utils
       use m_ctl_params_sph_utils
       use parallel_load_data_4_sph
@@ -46,9 +45,7 @@
       call read_control_data_sph_utils
 !
       if (iflag_debug.gt.0) write(*,*) 'set_ctl_data_4_sph_utils'
-      call set_ctl_data_4_sph_utils                                     &
-     &   (rst_step_SHR, ucd_step_SHR, viz_step_SHR,                     &
-     &    rj_fld_spec, pwr_spec)
+      call set_ctl_data_4_sph_utils(t_SHR, rj_fld_spec, pwr_spec)
 !
 !       set spectr grids
 !
@@ -62,7 +59,7 @@
       call set_field_file_fmt_prefix                                    &
      &    (iflag_org_sph_file_fmt, org_sph_file_head, sph_spec_IO)
       call sel_read_alloc_step_SPH_file(nprocs, my_rank,                &
-     &    init_d1%i_time_step, spec_time_IO, sph_spec_IO)
+     &    t_SHR%init_d%i_time_step, spec_time_IO, sph_spec_IO)
 !
 !  -------------------------------
 !
@@ -77,7 +74,6 @@
 !
       subroutine analyze_zonal_mean_sph
 !
-      use m_t_step_parameter
       use m_ctl_params_sph_utils
       use copy_rj_phys_data_4_IO
       use cal_zonal_mean_sph_spectr
@@ -86,8 +82,8 @@
       integer(kind = kint) :: i_step
 !
 !
-      do i_step = init_d1%i_time_step, finish_d1%i_end_step,            &
-     &           ucd_step_SHR%increment
+      do i_step = t_SHR%init_d%i_time_step, t_SHR%finish_d%i_end_step,  &
+     &           t_SHR%ucd_step%increment
 !
 !   Input spectr data
 !

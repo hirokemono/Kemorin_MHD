@@ -3,11 +3,8 @@
 !
 !        programmed by H.Matsui on Oct., 2007
 !
-!!      subroutine set_ctl_data_4_sph_utils                             &
-!!     &         (rst_step, ucd_step, viz_step, rj_fld, pwr)
-!!        type(IO_step_param), intent(inout) :: rst_step
-!!        type(IO_step_param), intent(inout) :: ucd_step
-!!        type(VIZ_step_params), intent(inout) :: viz_step
+!!      subroutine set_ctl_data_4_sph_utils(time_SHR, rj_fld, pwr)
+!!        type(time_step_param), intent(inout) :: time_SHR
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(sph_mean_squares), intent(inout) :: pwr
 !
@@ -25,14 +22,8 @@
 !
       implicit  none
 !
-!>      Increment for restart
-      type(IO_step_param), save :: rst_step_SHR
-!>      Increment for field data
-      type(IO_step_param), save :: ucd_step_SHR
-!>      Increment for mean square data
-      type(IO_step_param), save :: rms_step_SHR
-!>      Increment for visualizations
-      type(VIZ_step_params), save :: viz_step_SHR
+!       Structure for time stepping parameters
+      type(time_step_param), save :: t_SHR
 !
       type(phys_data), save :: nod_fld
 !
@@ -80,11 +71,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_ctl_data_4_sph_utils                               &
-     &         (rst_step, ucd_step, viz_step, rj_fld, pwr)
+     &         (time_SHR, rj_fld, pwr)
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_t_step_parameter
       use m_sph_spectr_data
       use m_file_format_switch
 !
@@ -96,9 +86,7 @@
       use m_ctl_data_4_sph_utils
       use m_default_file_prefix
 !
-      type(IO_step_param), intent(inout) :: rst_step
-      type(IO_step_param), intent(inout) :: ucd_step
-      type(VIZ_step_params), intent(inout) :: viz_step
+      type(time_step_param), intent(inout) :: time_SHR
 !
       type(phys_data), intent(inout) :: rj_fld
       type(sph_mean_squares), intent(inout) :: pwr
@@ -121,14 +109,9 @@
 !
 !      stepping parameter
 !
-      call s_set_fixed_time_step_params(t_su_ctl, init_d1, finish_d1,   &
-     &    rst_step, ucd_step, ierr, e_message)
-      call viz_fixed_time_step_params(init_d1%dt, t_su_ctl, viz_step)
-      call copy_delta_t(init_d1, time_d1)
-!
-      call set_output_step_4_fixed_step(ione, time_d1%dt,               &
-     &    t_su_ctl%i_step_check_ctl, t_su_ctl%delta_t_check_ctl,        &
-     &    rms_step_SHR)
+      call set_fixed_time_step_params                                   &
+     &   (t_su_ctl, time_SHR, ierr, e_message)
+      call copy_delta_t(time_SHR%init_d, time_SHR%time_d)
 !
 !    file header for field data
 !
@@ -148,12 +131,12 @@
         org_sph_file_head = su_plt%restart_file_prefix%charavalue
         call choose_para_file_format                                    &
      &     (su_plt%restart_file_fmt_ctl, iflag_org_sph_file_fmt)
-        ucd_step%increment = rst_step%increment
+        time_SHR%ucd_step%increment = time_SHR%rst_step%increment
       end if
 !
       if( (rj_org_param%iflag_IO) .gt. 0) then
         org_sph_file_head =  rst_org_param%file_prefix
-        ucd_step%increment = rst_step%increment
+        time_SHR%ucd_step%increment = time_SHR%rst_step%increment
         call choose_file_format                                         &
      &     (org_su_plt%sph_file_fmt_ctl, iflag_org_sph_file_fmt)
       end if

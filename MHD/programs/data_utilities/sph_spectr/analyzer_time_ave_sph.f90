@@ -31,7 +31,6 @@
 !
       subroutine initialize_ave_sph
 !
-      use m_t_step_parameter
       use m_ctl_data_4_sph_utils
       use m_ctl_params_sph_utils
       use parallel_load_data_4_sph
@@ -47,9 +46,7 @@
       call read_control_data_sph_utils
 !
       if (iflag_debug.gt.0) write(*,*) 'set_ctl_data_4_sph_utils'
-      call set_ctl_data_4_sph_utils                                     &
-     &   (rst_step_SHR, ucd_step_SHR, viz_step_SHR,                     &
-     &    rj_fld_spec, pwr_spec)
+      call set_ctl_data_4_sph_utils(t_SHR, rj_fld_spec, pwr_spec)
 !
 !       set spectr grids
 !
@@ -63,11 +60,11 @@
       call set_field_file_fmt_prefix                                    &
      &    (iflag_org_sph_file_fmt, org_sph_file_head, sph_fld_IN)
       call sel_read_alloc_step_SPH_file(nprocs, my_rank,                &
-     &    init_d1%i_time_step, spec_time_IO, sph_fld_IN)
+     &    t_SHR%init_d%i_time_step, spec_time_IO, sph_fld_IN)
 !
 !  -------------------------------
 !
-      call copy_time_data(spec_time_IO, init_d1)
+      call copy_time_data(spec_time_IO, t_SHR%init_d)
       call copy_rj_phys_name_from_IO(sph_fld_IN, rj_fld_spec)
 !
       call set_sph_sprctr_data_address(sph_mesh_spec%sph%sph_rj,        &
@@ -83,7 +80,6 @@
 !
       subroutine evolution_ave_sph
 !
-      use m_t_step_parameter
       use m_ctl_params_sph_utils
       use copy_rj_phys_data_4_IO
       use set_parallel_file_name
@@ -97,15 +93,15 @@
      &   (rj_fld_spec%n_point, rj_fld_spec%ntot_phys)
 !
 !   Averaging
-      do i_step = init_d1%i_time_step, finish_d1%i_end_step,            &
-     &           ucd_step_SHR%increment
+      do i_step = t_SHR%init_d%i_time_step, t_SHR%finish_d%i_end_step,  &
+     &           t_SHR%ucd_step%increment
         call set_field_file_fmt_prefix                                  &
      &   (iflag_org_sph_file_fmt, org_sph_file_head, sph_fld_IN)
         if (iflag_debug.gt.0) write(*,*) 'sel_read_step_SPH_field_file'
         call sel_read_step_SPH_field_file                               &
      &     (nprocs, my_rank, i_step, spec_time_IO, sph_fld_IN)
 !
-        call copy_time_data(spec_time_IO, init_d1)
+        call copy_time_data(spec_time_IO, t_SHR%init_d)
 !
         if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
         call set_rj_phys_data_from_IO(sph_fld_IN, rj_fld_spec)
@@ -117,7 +113,7 @@
 
       call calypso_mpi_barrier
       call t_ave_sph_spectr_data                                        &
-     &   (init_d1%i_time_step, finish_d1%i_end_step,                    &
+     &   (t_SHR%init_d%i_time_step, t_SHR%finish_d%i_end_step,          &
      &    rj_fld_spec%n_point, rj_fld_spec%ntot_phys,                   &
      &    rj_fld_spec%d_fld)
 !
@@ -134,10 +130,10 @@
 !
       call set_field_file_fmt_prefix                                    &
      &    (iflag_org_sph_file_fmt, org_sph_file_head, sph_fld_OUT)
-      call add_int_suffix(init_d1%i_time_step,                          &
+      call add_int_suffix(t_SHR%init_d%i_time_step,                     &
      &    tave_sph_file_head, sph_fld_OUT%file_prefix)
       call sel_write_step_SPH_field_file(nprocs, my_rank,               &
-     &    finish_d1%i_end_step, spec_time_IO, sph_fld_OUT)
+     &    t_SHR%finish_d%i_end_step, spec_time_IO, sph_fld_OUT)
 !
       call dealloc_phys_data_IO(sph_fld_OUT)
       call dealloc_phys_name_IO(sph_fld_OUT)
@@ -145,15 +141,15 @@
 !
 !   Standard deviation
 !
-      do i_step = init_d1%i_time_step, finish_d1%i_end_step,            &
-     &           ucd_step_SHR%increment
+      do i_step = t_SHR%init_d%i_time_step, t_SHR%finish_d%i_end_step,  &
+     &           t_SHR%ucd_step%increment
         call set_field_file_fmt_prefix                                  &
      &   (iflag_org_sph_file_fmt, org_sph_file_head, sph_fld_IN)
         if (iflag_debug.gt.0) write(*,*) 'sel_read_step_SPH_field_file'
         call sel_read_step_SPH_field_file                               &
      &     (nprocs, my_rank, i_step, spec_time_IO, sph_fld_IN)
 !
-        call copy_time_data(spec_time_IO, init_d1)
+        call copy_time_data(spec_time_IO, t_SHR%init_d)
 !
         if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
         call set_rj_phys_data_from_IO(sph_fld_IN, rj_fld_spec)
@@ -168,7 +164,7 @@
       call dealloc_phys_name_IO(sph_fld_IN)
 !
       call sdev_sph_spectr_data                                         &
-     &   (init_d1%i_time_step, finish_d1%i_end_step,                    &
+     &   (t_SHR%init_d%i_time_step, t_SHR%finish_d%i_end_step,          &
      &    rj_fld_spec%n_point, rj_fld_spec%ntot_phys,                   &
      &    rj_fld_spec%d_fld)
 !
@@ -185,10 +181,10 @@
 !
       call set_field_file_fmt_prefix                                    &
      &    (iflag_org_sph_file_fmt, org_sph_file_head, sph_fld_OUT)
-      call add_int_suffix(init_d1%i_time_step,                          &
+      call add_int_suffix(t_SHR%init_d%i_time_step,                     &
      &    sdev_sph_file_head, sph_fld_OUT%file_prefix)
       call sel_write_step_SPH_field_file(nprocs, my_rank,               &
-     &    finish_d1%i_end_step, spec_time_IO, sph_fld_OUT)
+     &    t_SHR%finish_d%i_end_step, spec_time_IO, sph_fld_OUT)
 !
       call dealloc_phys_data_IO(sph_fld_OUT)
       call dealloc_phys_name_IO(sph_fld_OUT)

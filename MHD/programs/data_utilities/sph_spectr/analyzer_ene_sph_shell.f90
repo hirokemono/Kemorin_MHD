@@ -30,7 +30,6 @@
 !
       subroutine initialize_ene_sph_shell
 !
-      use m_t_step_parameter
       use m_ctl_data_4_sph_utils
       use m_ctl_params_sph_utils
       use parallel_load_data_4_sph
@@ -48,9 +47,7 @@
       call read_control_data_sph_utils
 !
       if (iflag_debug.gt.0) write(*,*) 'set_ctl_data_4_sph_utils'
-      call set_ctl_data_4_sph_utils                                     &
-     &   (rst_step_SHR, ucd_step_SHR, viz_step_SHR,                     &
-     &    rj_fld_spec, pwr_spec)
+      call set_ctl_data_4_sph_utils(t_SHR, rj_fld_spec, pwr_spec)
 !
 !       set spectr grids
 !
@@ -65,7 +62,7 @@
      &  (sph_file_spec_p%iflag_format, sph_file_spec_p%file_prefix,     &
      &   sph_spec_IO)
       call sel_read_alloc_step_SPH_file(nprocs, my_rank,                &
-     &    init_d1%i_time_step, spec_time_IO, sph_spec_IO)
+     &    t_SHR%init_d%i_time_step, spec_time_IO, sph_spec_IO)
 !
 !  -------------------------------
 !
@@ -88,7 +85,6 @@
 !
       subroutine analyze_ene_sph_shell
 !
-      use m_t_step_parameter
       use m_ctl_params_sph_utils
       use m_schmidt_poly_on_rtm
       use copy_rj_phys_data_4_IO
@@ -103,8 +99,8 @@
      &  (sph_file_spec_p%iflag_format, sph_file_spec_p%file_prefix,     &
      &   sph_spec_IO)
 !
-      do i_step = init_d1%i_time_step, finish_d1%i_end_step,            &
-     &           ucd_step_SHR%increment
+      do i_step = t_SHR%init_d%i_time_step, t_SHR%finish_d%i_end_step,  &
+     &           t_SHR%ucd_step%increment
 !
 !   Input spectr data
 !
@@ -112,6 +108,7 @@
      &     (nprocs, my_rank, i_step, spec_time_IO, sph_spec_IO)
 !
         call set_rj_phys_data_from_IO(sph_spec_IO, rj_fld_spec)
+        call copy_time_step_data(spec_time_IO, t_SHR%time_d)
 !
 !  evaluate energies
 !
@@ -122,18 +119,21 @@
      &      leg_s%g_sph_rj, pwr_spec, WK_pwr_spec)
 !
         call write_sph_vol_ave_file                                     &
-     &     (i_step, time_d1%time, sph_mesh_spec%sph%sph_params,         &
+     &     (i_step, t_SHR%time_d%time, sph_mesh_spec%sph%sph_params,    &
      &      sph_mesh_spec%sph%sph_rj, pwr_spec)
-        call write_sph_vol_ms_file(my_rank, i_step, time_d1%time,       &
-     &      sph_mesh_spec%sph%sph_params, sph_mesh_spec%sph%sph_rj,     &
+        call write_sph_vol_ms_file                                      &
+     &     (my_rank, i_step, t_SHR%time_d%time,                         &
+     &     sph_mesh_spec%sph%sph_params, sph_mesh_spec%sph%sph_rj,      &
      &     pwr_spec)
         call write_sph_vol_ms_spectr_file                               &
-     &     (my_rank, i_step, time_d1%time,                              &
+     &     (my_rank, i_step, t_SHR%time_d%time,                         &
      &      sph_mesh_spec%sph%sph_params, sph_mesh_spec%sph%sph_rj,     &
      &      pwr_spec)
-        call write_sph_layer_ms_file(my_rank, i_step, time_d1%time,     &
+        call write_sph_layer_ms_file                                    &
+     &     (my_rank, i_step, t_SHR%time_d%time,                         &
      &      sph_mesh_spec%sph%sph_params, pwr_spec)
-        call write_sph_layer_spectr_file(my_rank, i_step, time_d1%time, &
+        call write_sph_layer_spectr_file                                &
+     &     (my_rank, i_step, t_SHR%time_d%time,                         &
      &      sph_mesh_spec%sph%sph_params, pwr_spec)
       end do
 !
