@@ -89,7 +89,7 @@
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
-      type(MHD_IO_step_param), intent(inout) :: MHD_step
+      type(MHD_step_param), intent(inout) :: MHD_step
       type(phys_data), intent(inout) :: nod_fld
 !
       type(IO_boundary), intent(inout) :: IO_bc
@@ -149,7 +149,7 @@
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
-      type(MHD_IO_step_param), intent(inout) :: MHD_step
+      type(MHD_step_param), intent(inout) :: MHD_step
       type(phys_data), intent(inout) :: nod_fld
 !
       type(IO_boundary), intent(inout) :: IO_bc

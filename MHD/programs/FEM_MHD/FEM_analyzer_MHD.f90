@@ -5,7 +5,7 @@
 !
 !      subroutine FEM_initialize_MHD(MHD_step)
 !      subroutine FEM_analyze_MHD(MHD_step, visval, retval)
-!!        type(MHD_IO_step_param), intent(inout) :: MHD_step
+!!        type(MHD_step_param), intent(inout) :: MHD_step
 !      subroutine FEM_finalize_MHD(MHD_step)
 !
       module FEM_analyzer_MHD
@@ -63,7 +63,7 @@
       use chenge_step_4_dynamic
       use output_viz_file_control
 !
-      type(MHD_IO_step_param), intent(inout) :: MHD_step
+      type(MHD_step_param), intent(inout) :: MHD_step
 !
       integer(kind = kint) :: iflag
 !
@@ -207,7 +207,7 @@
       use output_viz_file_control
 !
       integer(kind=kint ), intent(inout) :: visval
-      type(MHD_IO_step_param), intent(inout) :: MHD_step
+      type(MHD_step_param), intent(inout) :: MHD_step
 !
       integer(kind=kint ), intent(inout) :: retval
 !
@@ -390,7 +390,7 @@
 !
       use m_cal_max_indices
 !
-      type(MHD_IO_step_param), intent(in) :: MHD_step
+      type(MHD_step_param), intent(in) :: MHD_step
 !
 !
       if(MHD_step%ucd_step%increment .gt. 0) then

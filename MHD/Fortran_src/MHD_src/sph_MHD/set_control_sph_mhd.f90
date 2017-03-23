@@ -32,7 +32,7 @@
 !!        type(sph_mean_squares), intent(inout) :: pwr
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
 !!        type(sph_filters_type), intent(inout) :: sph_filters(1)
-!!        type(MHD_IO_step_param), intent(inout) :: MHD_step
+!!        type(MHD_step_param), intent(inout) :: MHD_step
 !!@endverbatim
 !
       module set_control_sph_mhd
@@ -97,7 +97,7 @@
       type(sph_mean_squares), intent(inout) :: pwr
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(sph_filters_type), intent(inout) :: sph_filters(1)
-      type(MHD_IO_step_param), intent(inout) :: MHD_step
+      type(MHD_step_param), intent(inout) :: MHD_step
 !
 !
 !   set parameters for SGS model
@@ -167,7 +167,7 @@
       type(file_params_4_sph_mhd), intent(inout) :: MHD_org_files
       type(field_IO), intent(inout) :: sph_fst_IO
       type(SGS_paremeters), intent(inout) :: SGS_par
-      type(MHD_IO_step_param), intent(inout) :: MHD_step
+      type(MHD_step_param), intent(inout) :: MHD_step
       type(sph_mean_squares), intent(inout) :: pwr
 !
       integer(kind = kint) :: ierr

@@ -6,7 +6,7 @@
 !
 !!      integer(kind = kint) function lead_field_data_flag              &
 !!     &                   (i_step, MHD_step, sgs_step)
-!!        type(MHD_IO_step_param), intent(in) :: MHD_step
+!!        type(MHD_step_param), intent(in) :: MHD_step
 !!        type(IO_step_param), intent(in) :: sgs_step
 !
       module output_viz_file_control
@@ -30,7 +30,7 @@
      &                   (i_step, MHD_step, sgs_step)
 !
       integer(kind = kint), intent(in) :: i_step
-      type(MHD_IO_step_param), intent(in) :: MHD_step
+      type(MHD_step_param), intent(in) :: MHD_step
       type(IO_step_param), intent(in) :: sgs_step
 !
       integer (kind =kint) :: i_monitor, i_bulk, i_udt, i_coef, irst

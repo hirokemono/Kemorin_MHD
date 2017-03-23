@@ -10,7 +10,7 @@
 !!      subroutine SPH_init_sph_snap(iphys)
 !!        type(phys_address), intent(in) :: iphys
 !!      subroutine SPH_analyze_snap(i_step, MHD_step)
-!!        type(MHD_IO_step_param), intent(inout) :: MHD_step
+!!        type(MHD_step_param), intent(inout) :: MHD_step
 !!@endverbatim
 !
       module SPH_analyzer_snap
@@ -130,7 +130,7 @@
       use output_viz_file_control
 !
       integer(kind = kint), intent(in) :: i_step
-      type(MHD_IO_step_param), intent(inout) :: MHD_step
+      type(MHD_step_param), intent(inout) :: MHD_step
 !
       integer(kind = kint) :: iflag
 !

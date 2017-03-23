@@ -10,7 +10,7 @@
 !!      subroutine SPH_init_sph_back_trans(iphys)
 !!        type(phys_address), intent(in) :: iphys
 !!      subroutine SPH_analyze_back_trans(i_step, MHD_step)
-!!        type(MHD_IO_step_param), intent(inout) :: MHD_step
+!!        type(MHD_step_param), intent(inout) :: MHD_step
 !!@endverbatim
 !
       module SPH_analyzer_back_trans
@@ -115,7 +115,7 @@
       use sph_transforms_snapshot
 !
       integer(kind = kint), intent(in) :: i_step
-      type(MHD_IO_step_param), intent(inout) :: MHD_step
+      type(MHD_step_param), intent(inout) :: MHD_step
 !
 !
       call read_alloc_sph_spectr                                        &
@@ -291,7 +291,7 @@
       use volume_average_4_sph
       use output_sph_m_square_file
 !
-      type(MHD_IO_step_param), intent(in) :: MHD_step
+      type(MHD_step_param), intent(in) :: MHD_step
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(legendre_4_sph_trans), intent(in) :: leg

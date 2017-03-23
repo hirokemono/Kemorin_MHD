@@ -5,7 +5,7 @@
 !
 !!      subroutine FEM_initialize_snapshot(MHD_step)
 !!      subroutine FEM_analyze_snapshot(i_step, MHD_step, visval)
-!!        type(MHD_IO_step_param), intent(inout) :: MHD_step
+!!        type(MHD_step_param), intent(inout) :: MHD_step
 !!      subroutine FEM_finalize_snapshot(MHD_step)
 !
       module FEM_analyzer_snapshot
@@ -43,7 +43,7 @@
 !
       use initialize_4_snapshot
 !
-      type(MHD_IO_step_param), intent(inout) :: MHD_step
+      type(MHD_step_param), intent(inout) :: MHD_step
 !
 !   matrix assembling
 !
@@ -99,7 +99,7 @@
 !
       integer(kind=kint ), intent(in) :: i_step
       integer(kind=kint ), intent(inout) :: visval
-      type(MHD_IO_step_param), intent(inout) :: MHD_step
+      type(MHD_step_param), intent(inout) :: MHD_step
 !
       integer(kind = kint) :: iflag
 !
@@ -235,7 +235,7 @@
 !
       use m_cal_max_indices
 !
-      type(MHD_IO_step_param), intent(in) :: MHD_step
+      type(MHD_step_param), intent(in) :: MHD_step
 !
 !
       if(MHD_step%ucd_step%increment .gt. 0) then

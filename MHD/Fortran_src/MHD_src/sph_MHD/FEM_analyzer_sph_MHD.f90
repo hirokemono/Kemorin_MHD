@@ -10,7 +10,7 @@
 !!@verbatim
 !!      subroutine FEM_initialize_sph_MHD                               &
 !!     &        (MHD_step, mesh, group, ele_mesh, iphys, nod_fld, range)
-!!        type(MHD_IO_step_param), intent(in) :: MHD_step
+!!        type(MHD_step_param), intent(in) :: MHD_step
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(element_geometry), intent(inout) :: ele_mesh
@@ -23,7 +23,7 @@
 !!        type(time_data), intent(in) :: time_d
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(phys_data), intent(inout) :: nod_fld
-!!        type(MHD_IO_step_param), intent(inout) :: MHD_step
+!!        type(MHD_step_param), intent(inout) :: MHD_step
 !!      subroutine FEM_finalize(MHD_step)
 !!
 !!      subroutine SPH_to_FEM_bridge_MHD                                &
@@ -77,7 +77,7 @@
       use const_mesh_information
       use const_element_comm_tables
 !
-      type(MHD_IO_step_param), intent(in) :: MHD_step
+      type(MHD_step_param), intent(in) :: MHD_step
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
@@ -140,7 +140,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
       integer (kind =kint), intent(inout) :: visval
-      type(MHD_IO_step_param), intent(inout) :: MHD_step
+      type(MHD_step_param), intent(inout) :: MHD_step
 !
       integer(kind = kint) :: iflag
 !
@@ -259,7 +259,7 @@
 !
       use m_cal_max_indices
 !
-      type(MHD_IO_step_param), intent(in) :: MHD_step
+      type(MHD_step_param), intent(in) :: MHD_step
 !
 !
      if(MHD_step%ucd_step%increment .gt. 0) then

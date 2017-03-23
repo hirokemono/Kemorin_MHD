@@ -10,7 +10,7 @@
 !!@verbatim
 !!      subroutine FEM_initialize_w_viz(MHD_step, mesh, group, ele_mesh,&
 !!     &          iphys, nod_fld, next_tbl, jac_3d_q, jac_3d_l)
-!!        type(MHD_IO_step_param), intent(in) :: MHD_step
+!!        type(MHD_step_param), intent(in) :: MHD_step
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(element_geometry), intent(inout) :: ele_mesh
@@ -60,7 +60,7 @@
       use int_volume_of_domain
       use set_normal_vectors
 !
-      type(MHD_IO_step_param), intent(in) :: MHD_step
+      type(MHD_step_param), intent(in) :: MHD_step
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh

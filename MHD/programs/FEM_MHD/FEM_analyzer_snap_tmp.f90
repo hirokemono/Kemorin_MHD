@@ -47,7 +47,7 @@
       use node_monitor_IO
       use open_sgs_model_coefs
 !
-      type(MHD_IO_step_param), intent(inout) :: MHD_step
+      type(MHD_step_param), intent(inout) :: MHD_step
 !
 !   matrix assembling
 !
@@ -103,7 +103,7 @@
 !
       integer(kind=kint ), intent(in) :: i_step
       integer(kind=kint ), intent(inout) :: visval
-      type(MHD_IO_step_param), intent(inout) :: MHD_step
+      type(MHD_step_param), intent(inout) :: MHD_step
 !
       integer(kind = kint) :: iflag
 !
@@ -238,7 +238,7 @@
 !
       use m_cal_max_indices
 !
-      type(MHD_IO_step_param), intent(in) :: MHD_step
+      type(MHD_step_param), intent(in) :: MHD_step
 !
 !
       if(MHD_step%ucd_step%increment .gt. 0) then

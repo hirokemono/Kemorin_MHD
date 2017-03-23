@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine SPH_analyze_correlate_all(time_d, MHD_step)
 !!        type(time_data), intent(in) :: time_d
-!!        type(MHD_IO_step_param), intent(inout) :: MHD_step
+!!        type(MHD_step_param), intent(inout) :: MHD_step
 !!@endverbatim
 !
       module SPH_analyzer_correle_all
@@ -57,7 +57,7 @@
       use zonal_correlation_rtp
 !
       type(time_data), intent(in) :: time_d
-      type(MHD_IO_step_param), intent(inout) :: MHD_step
+      type(MHD_step_param), intent(inout) :: MHD_step
 !
       integer(kind = kint) :: iflag, ncomp
       integer(kind = kint) :: k, nd

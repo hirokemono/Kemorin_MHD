@@ -147,7 +147,7 @@
       use input_control_sph_MHD
 !
       integer(kind = kint), intent(in) :: i_step
-      type(MHD_IO_step_param), intent(inout) :: MHD_step
+      type(MHD_step_param), intent(inout) :: MHD_step
       integer(kind = kint) :: iflag
 !
 !
@@ -323,7 +323,7 @@
       type(phys_address), intent(in) :: ipol
       type(works_4_sph_trans_MHD), intent(inout) :: trns_WK
       type(phys_data), intent(inout) :: rj_fld
-      type(MHD_IO_step_param), intent(inout) :: MHD_step
+      type(MHD_step_param), intent(inout) :: MHD_step
 !
       integer(kind = kint) :: iflag
 !

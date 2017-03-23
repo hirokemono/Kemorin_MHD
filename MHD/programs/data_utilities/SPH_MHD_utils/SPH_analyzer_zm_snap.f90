@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine SPH_analyze_zm_snap(i_step, MHD_step)
 !!      subroutine SPH_to_FEM_bridge_zm_snap(i_step, MHD_step)
-!!        type(MHD_IO_step_param), intent(inout) :: MHD_step
+!!        type(MHD_step_param), intent(inout) :: MHD_step
 !!@endverbatim
 !!
 !!@param i_step  time step number
@@ -51,7 +51,7 @@
       use cal_zonal_mean_sph_spectr
 !
       integer(kind = kint), intent(in) :: i_step
-      type(MHD_IO_step_param), intent(inout) :: MHD_step
+      type(MHD_step_param), intent(inout) :: MHD_step
 !
       integer(kind = kint) :: iflag
 !
@@ -135,7 +135,7 @@
       use sph_rtp_zonal_rms_data
 !
       integer(kind = kint), intent(in) :: i_step
-      type(MHD_IO_step_param), intent(inout) :: MHD_step
+      type(MHD_step_param), intent(inout) :: MHD_step
 !
       integer(kind = kint) :: iflag
 !

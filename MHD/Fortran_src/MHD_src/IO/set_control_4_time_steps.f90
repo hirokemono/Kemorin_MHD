@@ -13,7 +13,7 @@
 !!     &          MHD_step, mr_ctl, tctl)
 !!        type(mhd_restart_control), intent(in) :: mr_ctl
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
-!!        type(MHD_IO_step_param), intent(inout) :: MHD_step
+!!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(flexible_stepping_parameter), intent(inout) :: flex_p
 !!        type(time_data_control), intent(inout) :: tctl
 !!@endverbatim
@@ -58,7 +58,7 @@
       type(mhd_restart_control), intent(in) :: mr_ctl
       type(flexible_stepping_parameter), intent(inout) :: flex_p
       type(SGS_paremeters), intent(inout) :: SGS_par
-      type(MHD_IO_step_param), intent(inout) :: MHD_step
+      type(MHD_step_param), intent(inout) :: MHD_step
       type(time_data_control), intent(inout) :: tctl
 !
 !
@@ -171,7 +171,7 @@
 !
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(time_data_control), intent(inout) :: tctl
-      type(MHD_IO_step_param), intent(inout) :: MHD_step
+      type(MHD_step_param), intent(inout) :: MHD_step
 !
       integer(kind = kint) :: ierr
 !
@@ -211,7 +211,7 @@
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(flexible_stepping_parameter), intent(inout) :: flex_p
       type(time_data_control), intent(inout) :: tctl
-      type(MHD_IO_step_param), intent(inout) :: MHD_step
+      type(MHD_step_param), intent(inout) :: MHD_step
 !
 !
       call set_flex_time_step_params                                    &

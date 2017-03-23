@@ -102,7 +102,7 @@
       use input_control_sph_MHD
 !
       integer(kind = kint), intent(in) :: i_step
-      type(MHD_IO_step_param), intent(inout) :: MHD_step
+      type(MHD_step_param), intent(inout) :: MHD_step
 !
       integer(kind = kint) :: iflag
 !

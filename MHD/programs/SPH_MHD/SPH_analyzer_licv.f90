@@ -5,7 +5,7 @@
 !!        type(phys_address), intent(in) :: iphys
 !!      subroutine SPH_analyze_linear_conv                              &
 !!     &         (i_step, iflag_finish, MHD_step)
-!!        type(MHD_IO_step_param), intent(inout) :: MHD_step
+!!        type(MHD_step_param), intent(inout) :: MHD_step
 !
 !      Written by H. Matsui
 !
@@ -60,7 +60,7 @@
       use m_work_time
 !
       type(phys_address), intent(in) :: iphys
-      type(MHD_IO_step_param), intent(inout) :: MHD_step
+      type(MHD_step_param), intent(inout) :: MHD_step
 !
 !   Allocate spectr field data
 !
@@ -151,7 +151,7 @@
 !
       integer(kind = kint), intent(in) :: i_step
       integer(kind = kint), intent(inout) :: iflag_finish
-      type(MHD_IO_step_param), intent(inout) :: MHD_step
+      type(MHD_step_param), intent(inout) :: MHD_step
 !
       integer(kind = kint) :: iflag
 !

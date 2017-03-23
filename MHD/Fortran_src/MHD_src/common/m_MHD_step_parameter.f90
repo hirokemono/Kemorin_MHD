@@ -16,6 +16,6 @@
       implicit  none
 !
 !
-      type(MHD_IO_step_param), save :: MHD_step1
+      type(MHD_step_param), save :: MHD_step1
 !
       end module m_MHD_step_parameter

@@ -10,7 +10,7 @@
 !!      subroutine SPH_initialize_MHD(iphys, MHD_step)
 !!        type(phys_address), intent(in) :: iphys
 !!      subroutine SPH_analyze_MHD(i_step, iflag_finish, MHD_step)
-!!        type(MHD_IO_step_param), intent(inout) :: MHD_step
+!!        type(MHD_step_param), intent(inout) :: MHD_step
 !!@endverbatim
 !
       module SPH_analyzer_MHD
@@ -62,7 +62,7 @@
       use m_work_time
 !
       type(phys_address), intent(in) :: iphys
-      type(MHD_IO_step_param), intent(inout) :: MHD_step
+      type(MHD_step_param), intent(inout) :: MHD_step
 !
 !   Allocate spectr field data
 !
@@ -159,7 +159,7 @@
       integer(kind = kint), intent(in) :: i_step
 !
       integer(kind = kint), intent(inout) :: iflag_finish
-      type(MHD_IO_step_param), intent(inout) :: MHD_step
+      type(MHD_step_param), intent(inout) :: MHD_step
 !
       integer(kind = kint) :: iflag
       real(kind = kreal) :: total_max

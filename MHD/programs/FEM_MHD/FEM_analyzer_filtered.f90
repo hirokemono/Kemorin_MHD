@@ -4,7 +4,7 @@
 !      modified by H. Matsui on June, 2005 
 !
 !!      subroutine FEM_analyze_filtered(i_step, MHD_step, visval)
-!!      type(MHD_IO_step_param), intent(inout) :: MHD_step
+!!      type(MHD_step_param), intent(inout) :: MHD_step
 !
       module FEM_analyzer_filtered
 !
@@ -68,7 +68,7 @@
 !
       integer(kind=kint ), intent(in) :: i_step
       integer(kind=kint ), intent(inout) :: visval
-      type(MHD_IO_step_param), intent(inout) :: MHD_step
+      type(MHD_step_param), intent(inout) :: MHD_step
 !
       integer(kind = kint) :: iflag
 !

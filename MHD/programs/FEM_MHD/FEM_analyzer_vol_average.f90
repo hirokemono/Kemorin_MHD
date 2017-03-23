@@ -5,7 +5,7 @@
 !
 !!      subroutine FEM_initialize_vol_average(MHD_step)
 !!      subroutine FEM_analyze_vol_average(i_step, MHD_step)
-!!        type(MHD_IO_step_param), intent(inout) :: MHD_step
+!!        type(MHD_step_param), intent(inout) :: MHD_step
 !
       module FEM_analyzer_vol_average
 !
@@ -42,7 +42,7 @@
       use node_monitor_IO
       use open_sgs_model_coefs
 !
-      type(MHD_IO_step_param), intent(inout) :: MHD_step
+      type(MHD_step_param), intent(inout) :: MHD_step
 !
 !   matrix assembling
 !
@@ -78,7 +78,7 @@
       use output_parallel_ucd_file
 !
       integer(kind = kint), intent(in) :: i_step
-      type(MHD_IO_step_param), intent(inout) :: MHD_step
+      type(MHD_step_param), intent(inout) :: MHD_step
 !
       integer(kind = kint) :: iflag
 !

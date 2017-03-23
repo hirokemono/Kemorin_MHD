@@ -19,7 +19,7 @@
 !
 !
 !
-      type MHD_IO_step_param
+      type MHD_step_param
 !>        Structure for time data
         type(time_data) :: time_d
 !>        Structure for initial time data
@@ -44,6 +44,6 @@
 !
 !>        Increment for visualizations
         type(VIZ_step_params) :: viz_step
-      end type MHD_IO_step_param
+      end type MHD_step_param
 !
       end module  t_MHD_step_parameter

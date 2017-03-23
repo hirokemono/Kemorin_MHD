@@ -19,7 +19,7 @@
 !!        type(field_IO_params), intent(inout) :: udt_org_param
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
-!!        type(MHD_IO_step_param), intent(inout) :: MHD_step
+!!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(phys_data), intent(inout) :: nod_fld
 !!@endverbatim
 !
@@ -82,7 +82,7 @@
       type(field_IO_params), intent(inout) :: udt_org_param
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(SGS_paremeters), intent(inout) :: SGS_par
-      type(MHD_IO_step_param), intent(inout) :: MHD_step
+      type(MHD_step_param), intent(inout) :: MHD_step
       type(phys_data), intent(inout) :: nod_fld
 !
 !
