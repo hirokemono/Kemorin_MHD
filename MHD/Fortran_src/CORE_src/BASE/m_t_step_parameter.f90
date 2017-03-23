@@ -7,7 +7,7 @@
 !
 !> @brief Parameteres for time steppings
 !
-      module  m_t_step_parameter
+      module m_t_step_parameter
 !
 !
       use m_precision
@@ -23,4 +23,4 @@
 !>      1 / adam_0
       real(kind=kreal), parameter :: adam_r =  two / three
 !
-      end module  m_t_step_parameter
+      end module m_t_step_parameter

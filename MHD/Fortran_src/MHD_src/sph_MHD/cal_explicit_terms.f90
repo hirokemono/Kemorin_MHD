@@ -24,17 +24,11 @@
       module cal_explicit_terms
 !
       use m_precision
+      use m_t_step_parameter
 !
       use t_phys_address
 !
       implicit  none
-!
-!>      Coefficient of terms at current step for Adams-Bashforth
-      real(kind=kreal), parameter :: adam_0 =  three / two
-!>      Coefficient of terms at previous step for Adams-Bashforth
-      real(kind=kreal), parameter :: adam_1 = -one / two
-!>      1 / adam_0
-      real(kind=kreal), parameter :: adam_r =  two / three
 !
 ! ----------------------------------------------------------------------
 !
