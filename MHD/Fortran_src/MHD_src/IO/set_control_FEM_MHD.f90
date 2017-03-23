@@ -8,8 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine set_control_4_FEM_MHD                                &
-!!     &         (plt, org_plt, model_ctl, ctl_ctl, nmtr_ctl,           &
-!!     &          mesh_file, udt_org_param, FEM_prm, SGS_par, nod_fld)
+!!     &         (plt, org_plt, model_ctl, ctl_ctl, nmtr_ctl, mesh_file,&
+!!     &          udt_org_param, FEM_prm, SGS_par, MHD_step, nod_fld)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
 !!        type(mhd_model_control), intent(inout) :: model_ctl
@@ -19,12 +19,14 @@
 !!        type(field_IO_params), intent(inout) :: udt_org_param
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
+!!        type(MHD_IO_step_param), intent(inout) :: MHD_step
 !!        type(phys_data), intent(inout) :: nod_fld
 !!@endverbatim
 !
       module set_control_FEM_MHD
 !
       use m_precision
+      use t_MHD_step_parameter
       use t_phys_data
       use t_file_IO_parameter
       use t_ctl_data_4_platforms
@@ -44,11 +46,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_control_4_FEM_MHD                                  &
-     &         (plt, org_plt, model_ctl, ctl_ctl, nmtr_ctl,             &
-     &          mesh_file, udt_org_param, FEM_prm, SGS_par, nod_fld)
+     &         (plt, org_plt, model_ctl, ctl_ctl, nmtr_ctl, mesh_file,  &
+     &          udt_org_param, FEM_prm, SGS_par, MHD_step, nod_fld)
 !
       use calypso_mpi
-      use m_t_step_parameter
       use m_ucd_data
       use m_default_file_prefix
       use m_physical_property
@@ -81,6 +82,7 @@
       type(field_IO_params), intent(inout) :: udt_org_param
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(SGS_paremeters), intent(inout) :: SGS_par
+      type(MHD_IO_step_param), intent(inout) :: MHD_step
       type(phys_data), intent(inout) :: nod_fld
 !
 !
@@ -149,8 +151,7 @@
 !
 !   set control parameters
 !
-      call s_set_control_4_time_steps                                   &
-     &   (flex_p1, SGS_par, MHD_step1%init_d, MHD_step1%finish_d, MHD_step1,     &
+      call s_set_control_4_time_steps(flex_p1, SGS_par, MHD_step,       &
      &    ctl_ctl%mrst_ctl, ctl_ctl%tctl)
 !
       call s_set_control_4_crank(ctl_ctl%mevo_ctl,                      &

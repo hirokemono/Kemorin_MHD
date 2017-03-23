@@ -49,7 +49,6 @@
       use calypso_mpi
       use m_machine_parameter
       use m_physical_property
-      use m_t_step_parameter
       use m_flexible_time_step
 !
       use m_jacobians
@@ -259,7 +258,7 @@
      &    cd_prop1, iphys, layer_tbl, SGS_par, wk_sgs1, wk_diff1,       &
      &    sgs_coefs, diff_coefs, nod_fld, flex_p1,                      &
      &    MHD_step%init_d, time_d)
-      iflag_initial_step = 0
+      MHD_step%iflag_initial_step = 0
 !
 !  -------------------------------
 !

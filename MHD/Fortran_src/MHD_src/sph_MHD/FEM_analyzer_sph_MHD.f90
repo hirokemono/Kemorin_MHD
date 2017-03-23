@@ -65,7 +65,6 @@
      &        (MHD_step, mesh, group, ele_mesh, iphys, nod_fld, range)
 !
       use m_array_for_send_recv
-      use m_t_step_parameter
       use t_phys_data
       use t_phys_address
       use t_FEM_phys_data
@@ -258,7 +257,6 @@
 !
       subroutine FEM_finalize(MHD_step)
 !
-      use m_t_step_parameter
       use m_cal_max_indices
 !
       type(MHD_IO_step_param), intent(in) :: MHD_step

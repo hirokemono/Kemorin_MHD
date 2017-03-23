@@ -384,7 +384,7 @@
      &      node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
      &      Snod_bcs%nod_bc_s, ak_diffuese, property%coef_imp,          &
      &      fem_wk, f_l)
-!        if (iflag_initial_step.eq.1) then
+!        if (MHD_step1%iflag_initial_step.eq.1) then
 !          property%coef_imp = 1.0d0 / property%coef_imp
 !        end if
       end if

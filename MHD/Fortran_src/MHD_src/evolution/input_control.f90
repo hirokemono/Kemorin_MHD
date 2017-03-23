@@ -9,10 +9,10 @@
 !>@brief  Load mesh and filtering data for MHD simulation
 !!
 !!@verbatim
-!!      subroutine input_control_4_MHD(FEM_prm, SGS_par,                &
+!!      subroutine input_control_4_MHD(FEM_prm, SGS_par, MHD_step,      &
 !!     &          mesh, group, ele_mesh, nod_fld, IO_bc,                &
 !!     &          filtering, wide_filtering, wk_filter, MHD_matrices)
-!!      subroutine input_control_4_snapshot(FEM_prm, SGS_par,           &
+!!      subroutine input_control_4_snapshot(FEM_prm, SGS_par, MHD_step, &
 !!     &          mesh, group, ele_mesh, nod_fld, IO_bc,                &
 !!     &          filtering, wide_filtering, wk_filter)
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
@@ -38,6 +38,7 @@
 !
       use t_FEM_control_parameter
       use t_SGS_control_parameter
+      use t_MHD_step_parameter
       use t_mesh_data
       use t_boundary_field_IO
       use t_filtering_data
@@ -70,7 +71,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine input_control_4_MHD(FEM_prm, SGS_par,                  &
+      subroutine input_control_4_MHD(FEM_prm, SGS_par, MHD_step,        &
      &          mesh, group, ele_mesh, nod_fld, IO_bc,                  &
      &          filtering, wide_filtering, wk_filter, MHD_matrices)
 !
@@ -88,6 +89,7 @@
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
+      type(MHD_IO_step_param), intent(inout) :: MHD_step
       type(phys_data), intent(inout) :: nod_fld
 !
       type(IO_boundary), intent(inout) :: IO_bc
@@ -103,8 +105,8 @@
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_FEM_MHD'
       call set_control_4_FEM_MHD                                        &
      &   (FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt, FEM_MHD_ctl%model_ctl,  &
-     &    FEM_MHD_ctl%ctl_ctl, FEM_MHD_ctl%nmtr_ctl,                    &
-     &    mesh1_file, FEM_udt_org_param, FEM_prm, SGS_par, nod_fld)
+     &    FEM_MHD_ctl%ctl_ctl, FEM_MHD_ctl%nmtr_ctl, mesh1_file,        &
+     &    FEM_udt_org_param, FEM_prm, SGS_par, MHD_step, nod_fld)
 !
 !  --  load FEM mesh data
       call mpi_input_mesh(mesh1_file, mesh, group,                      &
@@ -132,7 +134,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine input_control_4_snapshot(FEM_prm, SGS_par,             &
+      subroutine input_control_4_snapshot(FEM_prm, SGS_par, MHD_step,   &
      &          mesh, group, ele_mesh, nod_fld, IO_bc,                  &
      &          filtering, wide_filtering, wk_filter)
 !
@@ -147,6 +149,7 @@
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
+      type(MHD_IO_step_param), intent(inout) :: MHD_step
       type(phys_data), intent(inout) :: nod_fld
 !
       type(IO_boundary), intent(inout) :: IO_bc
@@ -161,8 +164,8 @@
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_FEM_MHD'
       call set_control_4_FEM_MHD                                        &
      &   (FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt, FEM_MHD_ctl%model_ctl,  &
-     &    FEM_MHD_ctl%ctl_ctl, FEM_MHD_ctl%nmtr_ctl,                    &
-     &    mesh1_file, FEM_udt_org_param, FEM_prm, SGS_par, nod_fld)
+     &    FEM_MHD_ctl%ctl_ctl, FEM_MHD_ctl%nmtr_ctl, mesh1_file,        &
+     &    FEM_udt_org_param, FEM_prm, SGS_par, MHD_step, nod_fld)
 !
 !  --  load FEM mesh data
       call mpi_input_mesh(mesh1_file, mesh, group,                      &

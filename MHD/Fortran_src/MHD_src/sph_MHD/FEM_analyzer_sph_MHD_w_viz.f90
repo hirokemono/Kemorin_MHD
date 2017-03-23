@@ -52,7 +52,6 @@
       subroutine FEM_initialize_w_viz(MHD_step, mesh, group, ele_mesh,  &
      &          iphys, nod_fld, next_tbl, jac_3d_q, jac_3d_l)
 !
-      use m_t_step_parameter
       use m_fem_gauss_int_coefs
       use m_cal_max_indices
 !

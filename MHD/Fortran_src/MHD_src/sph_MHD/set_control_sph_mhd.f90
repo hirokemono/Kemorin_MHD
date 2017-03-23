@@ -10,11 +10,12 @@
 !!      subroutine set_control_SGS_SPH_MHD(plt, org_plt,                &
 !!     &         model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,  &
 !!     &         sph_gen, rj_fld, mesh_file, sph_file_param,            &
-!!     &         MHD_org_files, sph_fst_IO, pwr, SGS_par, sph_filters)
+!!     &         MHD_org_files, sph_fst_IO, pwr, SGS_par, sph_filters,  &
+!!     &         MHD_step)
 !!      subroutine set_control_4_SPH_MHD(plt, org_plt,                  &
 !!     &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl, &
 !!     &          sph_gen, rj_fld, mesh_file, sph_file_param,           &
-!!     &          MHD_org_files, sph_fst_IO, pwr, SGS_par)
+!!     &          MHD_org_files, sph_fst_IO, pwr, SGS_par, MHD_step)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
 !!        type(mhd_model_control), intent(inout) :: model_ctl
@@ -31,6 +32,7 @@
 !!        type(sph_mean_squares), intent(inout) :: pwr
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
 !!        type(sph_filters_type), intent(inout) :: sph_filters(1)
+!!        type(MHD_IO_step_param), intent(inout) :: MHD_step
 !!@endverbatim
 !
       module set_control_sph_mhd
@@ -40,6 +42,7 @@
       use m_machine_parameter
       use calypso_mpi
 !
+      use t_MHD_step_parameter
       use t_file_IO_parameter
       use t_field_data_IO
       use t_SPH_MHD_file_parameters
@@ -63,7 +66,8 @@
       subroutine set_control_SGS_SPH_MHD(plt, org_plt,                  &
      &         model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,    &
      &         sph_gen, rj_fld, mesh_file, sph_file_param,              &
-     &         MHD_org_files, sph_fst_IO, pwr, SGS_par, sph_filters)
+     &         MHD_org_files, sph_fst_IO, pwr, SGS_par, sph_filters,    &
+     &         MHD_step)
 !
       use m_spheric_global_ranks
       use m_ucd_data
@@ -93,6 +97,7 @@
       type(sph_mean_squares), intent(inout) :: pwr
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(sph_filters_type), intent(inout) :: sph_filters(1)
+      type(MHD_IO_step_param), intent(inout) :: MHD_step
 !
 !
 !   set parameters for SGS model
@@ -113,7 +118,7 @@
       call set_control_4_SPH_MHD(plt, org_plt,                          &
      &    model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,         &
      &    sph_gen, rj_fld, mesh_file, sph_file_param,                   &
-     &    MHD_org_files, sph_fst_IO, pwr, SGS_par)
+     &    MHD_org_files, sph_fst_IO, pwr, SGS_par, MHD_step)
 !
       end subroutine set_control_SGS_SPH_MHD
 !
@@ -122,13 +127,12 @@
       subroutine set_control_4_SPH_MHD(plt, org_plt,                    &
      &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,   &
      &          sph_gen, rj_fld, mesh_file, sph_file_param,             &
-     &          MHD_org_files, sph_fst_IO, pwr, SGS_par)
+     &          MHD_org_files, sph_fst_IO, pwr, SGS_par, MHD_step)
 !
       use m_spheric_global_ranks
       use m_physical_property
       use m_ucd_data
       use m_flexible_time_step
-      use m_t_step_parameter
       use sph_mhd_rms_IO
 !
       use t_SGS_control_parameter
@@ -163,6 +167,7 @@
       type(file_params_4_sph_mhd), intent(inout) :: MHD_org_files
       type(field_IO), intent(inout) :: sph_fst_IO
       type(SGS_paremeters), intent(inout) :: SGS_par
+      type(MHD_IO_step_param), intent(inout) :: MHD_step
       type(sph_mean_squares), intent(inout) :: pwr
 !
       integer(kind = kint) :: ierr
@@ -223,8 +228,7 @@
 !   set control parameters
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_time_steps'
-      call s_set_control_4_time_steps                                   &
-     &   (flex_p1, SGS_par, MHD_step1%init_d, MHD_step1%finish_d, MHD_step1,     &
+      call s_set_control_4_time_steps(flex_p1, SGS_par, MHD_step,       &
      &    ctl_ctl%mrst_ctl, ctl_ctl%tctl)
 !
       call s_set_control_4_crank(ctl_ctl%mevo_ctl,                      &

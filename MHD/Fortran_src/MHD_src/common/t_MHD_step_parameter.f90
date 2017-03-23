@@ -27,6 +27,10 @@
 !>        Structure for end time data
         type(finish_data) :: finish_d
 !
+!>        Flag for initial step to use Euler scheme
+!!        insted of Adams-BAshforth
+        integer(kind=kint) :: iflag_initial_step = 0
+!
 !>        Increment for mean restart data
         type(IO_step_param) :: rst_step
 !>        Increment for mean field data
