@@ -12,12 +12,13 @@
 !!      subroutine leg_f_trans_vector_blocked(ncomp, nvector,           &
 !!     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns,       &
 !!     &          asin_theta_1d_rtm, g_sph_rlm, weight_rtm,             &
-!!     &          P_rtm, dPdt_rtm, n_WR, n_WS, WR, WS)
+!!     &          P_rtm, dPdt_rtm, n_WR, n_WS, WR, WS, WK_l_mtl)
 !!        Input:  vr_rtm   (Order: radius,theta,phi)
 !!        Output: sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
 !!      subroutine leg_f_trans_scalar_blocked(ncomp, nvector, nscalar,  &
 !!     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns,       &
-!!     &          g_sph_rlm, weight_rtm, P_rtm, n_WR, n_WS, WR, WS)
+!!     &          g_sph_rlm, weight_rtm, P_rtm,                         &
+!!     &          n_WR, n_WS, WR, WS, WK_l_mtl)
 !!        Input:  vr_rtm
 !!        Output: sp_rlm
 !!
@@ -25,6 +26,7 @@
 !!        type(sph_rtm_grid), intent(in) :: sph_rtm
 !!        type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
 !!        type(index_4_sph_trans), intent(in) :: idx_trns
+!!        type(leg_trns_matmul_work), intent(inout) :: WK_l_mtl
 !!@endverbatim
 !!
 !!@param   ncomp    Total number of components for spherical transform
@@ -37,7 +39,7 @@
       use m_precision
       use m_machine_parameter
 !
-      use m_legendre_work_matmul
+      use t_legendre_work_matmul
 !
       use t_spheric_rtm_data
       use t_spheric_rlm_data
@@ -55,7 +57,7 @@
       subroutine leg_f_trans_vector_blocked(ncomp, nvector,             &
      &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns,         &
      &          asin_theta_1d_rtm, g_sph_rlm, weight_rtm,               &
-     &          P_rtm, dPdt_rtm, n_WR, n_WS, WR, WS)
+     &          P_rtm, dPdt_rtm, n_WR, n_WS, WR, WS, WK_l_mtl)
 !
       use set_vr_rtm_for_leg_vecprod
       use cal_sp_rlm_by_vecprod
@@ -76,8 +78,10 @@
 !
       integer(kind = kint), intent(in) :: ncomp, nvector
       integer(kind = kint), intent(in) :: n_WR, n_WS
+!
       real (kind=kreal), intent(inout):: WR(n_WR)
       real (kind=kreal), intent(inout):: WS(n_WS)
+      type(leg_trns_matmul_work), intent(inout) :: WK_l_mtl
 !
       integer(kind = kint) :: i_rlm, k_rlm, j_rlm, i_send
       integer(kind = kint) :: nd, ip, kst, ked, lp, lst, nth
@@ -121,13 +125,15 @@
      &              nd, k_rlm, idx_trns%mdx_p_rlm_rtm(j_rlm),           &
      &              idx_trns%mdx_n_rlm_rtm(j_rlm), lst, nth,            &
      &              ncomp, comm_rtm%irev_sr, n_WR, WR,                  &
-     &              symp_r(1,ip), asmp_t(1,ip), asmp_p(1,ip),           &
-     &              symn_t(1,ip), symn_p(1,ip))
+     &              WK_l_mtl%symp_r(1,ip), WK_l_mtl%asmp_t(1,ip),       &
+     &              WK_l_mtl%asmp_p(1,ip), WK_l_mtl%symn_t(1,ip),       &
+     &              WK_l_mtl%symn_p(1,ip))
                 call cal_vector_sp_rlm_dotprod                          &
      &             (nth, g7, gm, r1_1d_rlm_r, r2_1d_rlm_r,              &
      &              P_rtm(1+lst,j_rlm), dPdt_rtm(1+lst,j_rlm),          &
-     &              symp_r(1,ip), asmp_t(1,ip), asmp_p(1,ip),           &
-     &              symn_t(1,ip), symn_p(1,ip), WS(i_send))
+     &              WK_l_mtl%symp_r(1,ip), WK_l_mtl%asmp_t(1,ip),       &
+     &              WK_l_mtl%asmp_p(1,ip), WK_l_mtl%symn_t(1,ip),       &
+     &              WK_l_mtl%symn_p(1,ip), WS(i_send))
               end do
             end do
           end do
@@ -141,7 +147,8 @@
 !
       subroutine leg_f_trans_scalar_blocked(ncomp, nvector, nscalar,    &
      &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns,         &
-     &          g_sph_rlm, weight_rtm, P_rtm, n_WR, n_WS, WR, WS)
+     &          g_sph_rlm, weight_rtm, P_rtm,                           &
+     &          n_WR, n_WS, WR, WS, WK_l_mtl)
 !
       use set_vr_rtm_for_leg_vecprod
       use cal_sp_rlm_by_vecprod
@@ -158,8 +165,10 @@
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR, n_WS
+!
       real (kind=kreal), intent(inout):: WR(n_WR)
       real (kind=kreal), intent(inout):: WS(n_WS)
+      type(leg_trns_matmul_work), intent(inout) :: WK_l_mtl
 !
       integer(kind = kint) :: i_rlm, k_rlm, j_rlm
       integer(kind = kint) :: nd, ip, kst, ked, lp, lst, nth, i_send
@@ -192,9 +201,10 @@
      &              sph_rtm%istep_rtm, weight_rtm, nd, k_rlm,           &
      &              idx_trns%mdx_p_rlm_rtm(j_rlm), lst, nth,            &
      &              ncomp, nvector, comm_rtm%irev_sr,                   &
-     &              n_WR, WR, symp(1,ip))
+     &              n_WR, WR, WK_l_mtl%symp(1,ip))
                 call cal_scalar_sp_rlm_dotprod(nth, g_sph_rlm(j_rlm,6), &
-     &             P_rtm(lst+1,j_rlm), symp(1,ip), WS(i_send))
+     &              P_rtm(lst+1,j_rlm), WK_l_mtl%symp(1,ip),            &
+     &              WS(i_send))
               end do
             end do
           end do

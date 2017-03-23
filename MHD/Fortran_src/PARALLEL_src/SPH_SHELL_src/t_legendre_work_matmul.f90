@@ -14,9 +14,6 @@
 !!     &        (nth_rtm, maxidx_rtm_r_smp, nscalar, idx_trns, WK_l_mtl)
 !!      subroutine dealloc_leg_vec_matmul(WK_l_mtl)
 !!
-!!      subroutine alloc_leg_vec_symmetry(nth_rtm)
-!!      subroutine alloc_leg_scl_symmetry(nth_rtm)
-!!
 !!      subroutine alloc_leg_vec_blocked(nth_rtm, idx_trns, WK_l_mtl)
 !!      subroutine alloc_leg_scl_blocked(nth_rtm, idx_trns, WK_l_mtl)
 !!        type(index_4_sph_trans), intent(in) :: idx_trns

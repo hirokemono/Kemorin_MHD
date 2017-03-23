@@ -15,7 +15,7 @@
 !!     &          n_WR, n_WS, WR, WS)
 !!      subroutine leg_backward_trans_blocked(ncomp, nvector, nscalar,  &
 !!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,  &
-!!     &          n_WR, n_WS, WR, WS)
+!!     &          n_WR, n_WS, WR, WS, WK_l_mtl)
 !!      subroutine leg_backward_trans_sym_org(ncomp, nvector, nscalar,  &
 !!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,  &
 !!     &          n_WR, n_WS, WR, WS, WK_l_sml)
@@ -35,7 +35,7 @@
 !!     &          n_WR, n_WS, WR, WS)
 !!      subroutine leg_forwawd_trans_blocked(ncomp, nvector, nscalar,   &
 !!     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, leg, idx_trns,  &
-!!     &          n_WR, n_WS, WR, WS)
+!!     &          n_WR, n_WS, WR, WS, WK_l_mtl)
 !!      subroutine leg_forward_trans_sym_org(ncomp, nvector, nscalar,   &
 !!     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, leg, idx_trns,  &
 !!     &          n_WR, n_WS, WR, WS, WK_l_sml)
@@ -47,6 +47,7 @@
 !!        type(sph_comm_tbl), intent(in) :: comm_rtm, comm_rlm
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(index_4_sph_trans), intent(in) :: idx_trns
+!!        type(leg_trns_matmul_work), intent(inout) :: WK_l_mtl
 !!        type(leg_trns_sym_mul_work), intent(inout) :: WK_l_sml
 !!@endverbatim
 !!
@@ -64,6 +65,7 @@
       use t_sph_trans_comm_tbl
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
+      use t_legendre_work_matmul
       use t_legendre_work_sym_matmul
 !
       implicit none
@@ -154,7 +156,7 @@
 !
       subroutine leg_backward_trans_blocked(ncomp, nvector, nscalar,    &
      &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,    &
-     &          n_WR, n_WS, WR, WS)
+     &          n_WR, n_WS, WR, WS, WK_l_mtl)
 !
       use legendre_bwd_trans_blocked
 !
@@ -165,17 +167,19 @@
       type(index_4_sph_trans), intent(in) :: idx_trns
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR, n_WS
+!
       real (kind=kreal), intent(inout):: WR(n_WR)
       real (kind=kreal), intent(inout):: WS(n_WS)
+      type(leg_trns_matmul_work), intent(inout) :: WK_l_mtl
 !
 !
       call leg_b_trans_vector_blocked(ncomp, nvector,                   &
      &    sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns,               &
      &    leg%asin_t_rtm, leg%g_sph_rlm, leg%P_jl, leg%dPdt_jl,         &
-     &    n_WR, n_WS, WR, WS)
+     &    n_WR, n_WS, WR, WS, WK_l_mtl)
       call leg_b_trans_scalar_blocked(ncomp, nvector, nscalar,          &
      &    sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns, leg%P_jl,     &
-     &    n_WR, n_WS, WR, WS)
+     &    n_WR, n_WS, WR, WS, WK_l_mtl)
 !
       end subroutine leg_backward_trans_blocked
 !
@@ -183,7 +187,7 @@
 !
       subroutine leg_forwawd_trans_blocked(ncomp, nvector, nscalar,     &
      &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, leg, idx_trns,    &
-     &          n_WR, n_WS, WR, WS)
+     &          n_WR, n_WS, WR, WS, WK_l_mtl)
 !
       use legendre_fwd_trans_blocked
 !
@@ -194,18 +198,20 @@
       type(index_4_sph_trans), intent(in) :: idx_trns
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR, n_WS
+!
       real (kind=kreal), intent(inout):: WR(n_WR)
       real (kind=kreal), intent(inout):: WS(n_WS)
+      type(leg_trns_matmul_work), intent(inout) :: WK_l_mtl
 !
 !
       call leg_f_trans_vector_blocked(ncomp, nvector,                  &
      &    sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns,              &
      &    leg%asin_t_rtm, leg%g_sph_rlm, leg%weight_rtm,               &
-     &    leg%P_rtm, leg%dPdt_rtm, n_WR, n_WS, WR, WS)
+     &    leg%P_rtm, leg%dPdt_rtm, n_WR, n_WS, WR, WS, WK_l_mtl)
       call leg_f_trans_scalar_blocked(ncomp, nvector, nscalar,         &
      &    sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns,              &
      &    leg%g_sph_rlm, leg%weight_rtm, leg%P_rtm,                    &
-     &    n_WR, n_WS, WR, WS)
+     &    n_WR, n_WS, WR, WS, WK_l_mtl)
 !
       end subroutine leg_forwawd_trans_blocked
 !

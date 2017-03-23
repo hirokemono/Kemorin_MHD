@@ -12,12 +12,12 @@
 !!      subroutine leg_b_trans_vector_blocked(ncomp, nvector,           &
 !!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns,       &
 !!     &          asin_theta_1d_rtm, g_sph_rlm, P_jl, dPdt_jl,          &
-!!     &          n_WR, n_WS, WR, WS)
+!!     &          n_WR, n_WS, WR, WS, WK_l_mtl)
 !!        Input:  vr_rtm   (Order: radius,theta,phi)
 !!        Output: sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
 !!      subroutine leg_b_trans_scalar_blocked(ncomp, nvector, nscalar,  &
 !!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns, P_jl, &
-!!     &          n_WR, n_WS, WR, WS)
+!!     &          n_WR, n_WS, WR, WS, WK_l_mtl)
 !!        Input:  vr_rtm
 !!        Output: sp_rlm
 !!
@@ -25,6 +25,7 @@
 !!        type(sph_rtm_grid), intent(in) :: sph_rtm
 !!        type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
 !!        type(index_4_sph_trans), intent(in) :: idx_trns
+!!        type(leg_trns_matmul_work), intent(inout) :: WK_l_mtl
 !!@endverbatim
 !!
 !!@param   ncomp    Total number of components for spherical transform
@@ -37,7 +38,7 @@
       use m_precision
       use m_machine_parameter
 !
-      use m_legendre_work_matmul
+      use t_legendre_work_matmul
 !
       use t_spheric_rtm_data
       use t_spheric_rlm_data
@@ -55,7 +56,7 @@
       subroutine leg_b_trans_vector_blocked(ncomp, nvector,             &
      &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns,         &
      &          asin_theta_1d_rtm, g_sph_rlm, P_jl, dPdt_jl,            &
-     &          n_WR, n_WS, WR, WS)
+     &          n_WR, n_WS, WR, WS, WK_l_mtl)
 !
       use cal_vr_rtm_by_vecprod
       use set_sp_rlm_for_leg_vecprod
@@ -75,8 +76,10 @@
 !
       integer(kind = kint), intent(in) :: ncomp, nvector
       integer(kind = kint), intent(in) :: n_WR, n_WS
+!
       real (kind=kreal), intent(inout):: WR(n_WR)
       real (kind=kreal), intent(inout):: WS(n_WS)
+      type(leg_trns_matmul_work), intent(inout) :: WK_l_mtl
 !
       integer(kind = kint) :: ip_rtm, in_rtm
       integer(kind = kint) :: ip_send, in_send
@@ -130,16 +133,18 @@
      &                g_sph_rlm, jst, nd, k_rlm,                        &
      &                a1r_1d_rlm_r, a2r_1d_rlm_r,                       &
      &                ncomp, n_WR, comm_rlm%irev_sr, WR, nj_rlm,        &
-     &                pol_e(1,ip), dpoldt_e(1,ip), dpoldp_e(1,ip),      &
-     &                dtordt_e(1,ip), dtordp_e(1,ip))
+     &                WK_l_mtl%pol_e(1,ip), WK_l_mtl%dpoldt_e(1,ip),    &
+     &                WK_l_mtl%dpoldp_e(1,ip), WK_l_mtl%dtordt_e(1,ip), &
+     &                WK_l_mtl%dtordp_e(1,ip))
 !
                   call cal_vr_rtm_dydtheta_vector                       &
      &               (nj_rlm, P_jl(jst+1,l_rtm), dPdt_jl(jst+1,l_rtm),  &
-     &                pol_e(1,ip), dpoldt_e(1,ip), dtordt_e(1,ip),      &
-     &                WS(ip_send))
+     &                WK_l_mtl%pol_e(1,ip), WK_l_mtl%dpoldt_e(1,ip),    &
+     &                WK_l_mtl%dtordt_e(1,ip), WS(ip_send))
                   call cal_vr_rtm_dydphi_vector(nj_rlm,                 &
      &                P_jl(jst+1,l_rtm), asin_theta_1d_rtm(l_rtm),      &
-     &                dpoldp_e(1,ip), dtordp_e(1,ip), WS(in_send))
+     &                WK_l_mtl%dpoldp_e(1,ip), WK_l_mtl%dtordp_e(1,ip), &
+     &                WS(in_send))
                 end do
               end do
             end do
@@ -155,7 +160,7 @@
 !
       subroutine leg_b_trans_scalar_blocked(ncomp, nvector, nscalar,    &
      &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns, P_jl,   &
-     &          n_WR, n_WS, WR, WS)
+     &          n_WR, n_WS, WR, WS, WK_l_mtl)
 !
       use cal_vr_rtm_by_vecprod
       use set_sp_rlm_for_leg_vecprod
@@ -169,8 +174,10 @@
 !
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR, n_WS
+!
       real (kind=kreal), intent(inout):: WR(n_WR)
       real (kind=kreal), intent(inout):: WS(n_WS)
+      type(leg_trns_matmul_work), intent(inout) :: WK_l_mtl
 !
       integer(kind = kint) :: k_rlm, l_rtm
       integer(kind = kint) :: ip_rtm, nd, ip, kst, ked, lp, lst, led
@@ -207,9 +214,11 @@
                   call set_sp_rlm_scalar_blocked                        &
      &               (sph_rlm%nnod_rlm, sph_rlm%istep_rlm,              &
      &                jst, nd, k_rlm, ncomp, nvector,                   &
-     &                n_WR, comm_rlm%irev_sr, WR, nj_rlm, scl_e(1,ip))
+     &                n_WR, comm_rlm%irev_sr, WR, nj_rlm,               &
+     &                WK_l_mtl%scl_e(1,ip))
                   call cal_vr_rtm_scalar_blocked(nj_rlm,                &
-     &               P_jl(jst+1,l_rtm), scl_e(1,ip), WS(ip_send))
+     &                P_jl(jst+1,l_rtm), WK_l_mtl%scl_e(1,ip),          &
+     &                WS(ip_send))
                 end do
               end do
 !
