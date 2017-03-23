@@ -12,7 +12,7 @@
 !!@verbatim
 !!      subroutine leg_backward_trans_org(ncomp, nvector, nscalar,      &
 !!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg,            &
-!!     &          n_WR, n_WS, WR, WS)
+!!     &          n_WR, n_WS, WR, WS, WK_spin)
 !!      subroutine leg_backward_trans_blocked(ncomp, nvector, nscalar,  &
 !!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,  &
 !!     &          n_WR, n_WS, WR, WS, WK_l_mtl)
@@ -32,7 +32,7 @@
 !!    Forward transforms
 !!      subroutine leg_forwawd_trans_org(ncomp, nvector, nscalar,       &
 !!     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, leg, idx_trns,  &
-!!     &          n_WR, n_WS, WR, WS)
+!!     &          n_WR, n_WS, WR, WS, WK_spin)
 !!      subroutine leg_forwawd_trans_blocked(ncomp, nvector, nscalar,   &
 !!     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, leg, idx_trns,  &
 !!     &          n_WR, n_WS, WR, WS, WK_l_mtl)
@@ -49,6 +49,7 @@
 !!        type(index_4_sph_trans), intent(in) :: idx_trns
 !!        type(leg_trns_matmul_work), intent(inout) :: WK_l_mtl
 !!        type(leg_trns_sym_mul_work), intent(inout) :: WK_l_sml
+!!        type(leg_trns_spin_work), intent(inout) :: WK_spin
 !!@endverbatim
 !!
 !!@param   ncomp    Total number of components for spherical transform
@@ -65,6 +66,7 @@
       use t_sph_trans_comm_tbl
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
+      use t_work_4_sph_trans_spin
       use t_legendre_work_matmul
       use t_legendre_work_sym_matmul
 !
@@ -78,9 +80,8 @@
 !
       subroutine leg_backward_trans_org(ncomp, nvector, nscalar,        &
      &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,    &
-     &          n_WR, n_WS, WR, WS)
+     &          n_WR, n_WS, WR, WS, WK_spin)
 !
-      use m_work_4_sph_trans_spin
       use legendre_bwd_trans_org
       use spherical_SRs_N
 !
@@ -91,24 +92,26 @@
       type(index_4_sph_trans), intent(in) :: idx_trns
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR, n_WS
+!
       real (kind=kreal), intent(inout):: WR(n_WR)
       real (kind=kreal), intent(inout):: WS(n_WS)
+      type(leg_trns_spin_work), intent(inout) :: WK_spin
 !
 !
       call calypso_sph_from_recv_N(ncomp, sph_rlm%nnod_rlm,             &
-     &    comm_rlm, n_WR, WR, sp_rlm_wk(1))
-      call clear_bwd_legendre_work(ncomp, sph_rtm%nnod_rtm)
+     &    comm_rlm, n_WR, WR, WK_spin%sp_rlm_wk(1))
+      call clear_bwd_legendre_work(ncomp, sph_rtm%nnod_rtm, WK_spin)
 !
       call legendre_b_trans_vector_org                                  &
      &   (ncomp, nvector, sph_rlm, sph_rtm, idx_trns,                   &
      &    leg%asin_t_rtm, leg%g_sph_rlm, leg%P_jl, leg%dPdt_jl,         &
-     &    sp_rlm_wk(1), vr_rtm_wk(1))
+     &    WK_spin%sp_rlm_wk(1), WK_spin%vr_rtm_wk(1))
       call legendre_b_trans_scalar_org                                  &
      &   (ncomp, nvector, nscalar, sph_rlm, sph_rtm, idx_trns,          &
-     &    leg%P_jl, sp_rlm_wk(1), vr_rtm_wk(1))
+     &    leg%P_jl, WK_spin%sp_rlm_wk(1), WK_spin%vr_rtm_wk(1))
 !
       call calypso_sph_to_send_N(ncomp, sph_rtm%nnod_rtm,               &
-     &    comm_rtm, n_WS, vr_rtm_wk(1), WS)
+     &    comm_rtm, n_WS, WK_spin%vr_rtm_wk(1), WS)
 !
       end subroutine leg_backward_trans_org
 !
@@ -116,9 +119,8 @@
 !
       subroutine leg_forwawd_trans_org(ncomp, nvector, nscalar,         &
      &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, leg, idx_trns,    &
-     &          n_WR, n_WS, WR, WS)
+     &          n_WR, n_WS, WR, WS, WK_spin)
 !
-      use m_work_4_sph_trans_spin
       use legendre_fwd_trans_org
       use spherical_SRs_N
 !
@@ -129,25 +131,28 @@
       type(index_4_sph_trans), intent(in) :: idx_trns
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR, n_WS
+!
       real (kind=kreal), intent(inout):: WR(n_WR)
       real (kind=kreal), intent(inout):: WS(n_WS)
+      type(leg_trns_spin_work), intent(inout) :: WK_spin
 !
 !
       call calypso_sph_from_recv_N(ncomp, sph_rtm%nnod_rtm,             &
-     &    comm_rtm, n_WR, WR, vr_rtm_wk(1))
-      call clear_fwd_legendre_work(ncomp, sph_rlm%nnod_rlm)
+     &    comm_rtm, n_WR, WR, WK_spin%vr_rtm_wk(1))
+      call clear_fwd_legendre_work(ncomp, sph_rlm%nnod_rlm, WK_spin)
 !
       call legendre_f_trans_vector_org                                  &
      &   (ncomp, nvector, sph_rtm, sph_rlm, idx_trns,                   &
      &    leg%asin_t_rtm, leg%g_sph_rlm, leg%weight_rtm,                &
-     &    leg%P_rtm, leg%dPdt_rtm, vr_rtm_wk(1), sp_rlm_wk(1))
+     &    leg%P_rtm, leg%dPdt_rtm, WK_spin%vr_rtm_wk(1),                &
+     &    WK_spin%sp_rlm_wk(1))
       call legendre_f_trans_scalar_org                                  &
      &   (ncomp, nvector, nscalar, sph_rtm, sph_rlm, idx_trns,          &
      &    leg%g_sph_rlm, leg%weight_rtm, leg%P_rtm,                     &
-     &    vr_rtm_wk(1), sp_rlm_wk(1))
+     &    WK_spin%vr_rtm_wk(1), WK_spin%sp_rlm_wk(1))
 !
       call calypso_sph_to_send_N(ncomp, sph_rlm%nnod_rlm,               &
-     &    comm_rlm, n_WS, sp_rlm_wk(1), WS)
+     &    comm_rlm, n_WS, WK_spin%sp_rlm_wk(1), WS)
 !
       end subroutine leg_forwawd_trans_org
 !

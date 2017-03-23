@@ -66,7 +66,6 @@
      &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,    &
      &          n_WR, n_WS, WR, WS, WK_l_tst)
 !
-      use m_work_4_sph_trans_spin
       use legendre_bwd_trans_testloop
       use spherical_SRs_N
 !

@@ -8,11 +8,11 @@
 !!       (innermost loop is spherical harmonics)
 !!
 !!@verbatim
-!!      subroutine allocate_work_sph_trans                              &
-!!     &         (ncomp, nnod_rtm, nnod_rlm, WK_l_spi)
-!!      subroutine deallocate_work_sph_trans(WK_l_spi)
-!!      subroutine clear_fwd_legendre_work(ncomp, nnod_rlm, WK_l_spi)
-!!      subroutine clear_bwd_legendre_work(ncomp, nnod_rtm, WK_l_spi)
+!!      subroutine alloc_work_sph_trans                                 &
+!!     &         (ncomp, nnod_rtm, nnod_rlm, WK_spin)
+!!      subroutine dealloc_work_sph_trans(WK_spin)
+!!      subroutine clear_fwd_legendre_work(ncomp, nnod_rlm, WK_spin)
+!!      subroutine clear_bwd_legendre_work(ncomp, nnod_rtm, WK_spin)
 !!
 !!    Data for single vector field
 !!      radial component:      vr_rtm_wk(3*i_rtm-2)
@@ -58,64 +58,64 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_work_sph_trans                                &
-     &         (ncomp, nnod_rtm, nnod_rlm, WK_l_spi)
+      subroutine alloc_work_sph_trans                                   &
+     &         (ncomp, nnod_rtm, nnod_rlm, WK_spin)
 !
       integer(kind = kint), intent(in) :: ncomp
       integer(kind = kint), intent(in) :: nnod_rtm, nnod_rlm
 !
-      type(leg_trns_spin_work), intent(inout) :: WK_l_spi
+      type(leg_trns_spin_work), intent(inout) :: WK_spin
 !
 !
-      allocate(WK_l_spi%sp_rlm_wk(nnod_rlm*ncomp))
-      allocate(WK_l_spi%vr_rtm_wk(nnod_rtm*ncomp))
+      allocate(WK_spin%sp_rlm_wk(nnod_rlm*ncomp))
+      allocate(WK_spin%vr_rtm_wk(nnod_rtm*ncomp))
 !
-      call clear_bwd_legendre_work(ncomp, nnod_rtm, WK_l_spi)
-      call clear_fwd_legendre_work(ncomp, nnod_rlm, WK_l_spi)
+      call clear_bwd_legendre_work(ncomp, nnod_rtm, WK_spin)
+      call clear_fwd_legendre_work(ncomp, nnod_rlm, WK_spin)
 !
-      end subroutine allocate_work_sph_trans
-!
-! ----------------------------------------------------------------------
-!
-      subroutine deallocate_work_sph_trans(WK_l_spi)
-!
-      type(leg_trns_spin_work), intent(inout) :: WK_l_spi
-!
-      deallocate(WK_l_spi%vr_rtm_wk, WK_l_spi%sp_rlm_wk)
-!
-      end subroutine deallocate_work_sph_trans
+      end subroutine alloc_work_sph_trans
 !
 ! ----------------------------------------------------------------------
+!
+      subroutine dealloc_work_sph_trans(WK_spin)
+!
+      type(leg_trns_spin_work), intent(inout) :: WK_spin
+!
+      deallocate(WK_spin%vr_rtm_wk, WK_spin%sp_rlm_wk)
+!
+      end subroutine dealloc_work_sph_trans
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine clear_fwd_legendre_work(ncomp, nnod_rlm, WK_l_spi)
+      subroutine clear_fwd_legendre_work(ncomp, nnod_rlm, WK_spin)
 !
       integer(kind = kint), intent(in) :: ncomp
       integer(kind = kint), intent(in) :: nnod_rlm
 !
-      type(leg_trns_spin_work), intent(inout) :: WK_l_spi
+      type(leg_trns_spin_work), intent(inout) :: WK_spin
 !
 !
       if(ncomp .le. 0) return
 !$omp parallel workshare
-      WK_l_spi%sp_rlm_wk(1:nnod_rlm*ncomp) = 0.0d0
+      WK_spin%sp_rlm_wk(1:nnod_rlm*ncomp) = 0.0d0
 !$omp end parallel workshare
 !
       end subroutine clear_fwd_legendre_work
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine clear_bwd_legendre_work(ncomp, nnod_rtm, WK_l_spi)
+      subroutine clear_bwd_legendre_work(ncomp, nnod_rtm, WK_spin)
 !
       integer(kind = kint), intent(in) :: ncomp
       integer(kind = kint), intent(in) :: nnod_rtm
 !
-      type(leg_trns_spin_work), intent(inout) :: WK_l_spi
+      type(leg_trns_spin_work), intent(inout) :: WK_spin
 !
 !
       if(ncomp .le. 0) return
 !$omp parallel workshare
-      WK_l_spi%vr_rtm_wk(1:nnod_rtm*ncomp) = 0.0d0
+      WK_spin%vr_rtm_wk(1:nnod_rtm*ncomp) = 0.0d0
 !$omp end parallel workshare
 !
       end subroutine clear_bwd_legendre_work

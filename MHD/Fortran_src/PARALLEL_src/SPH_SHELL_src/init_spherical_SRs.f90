@@ -29,8 +29,11 @@
 !
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
+      use t_work_4_sph_trans_spin
 !
       implicit none
+!
+      type(leg_trns_spin_work), save, private :: WK0_spin
 !
       private :: all_sph_send_recv_N, all_sph_SR_core_N
       private :: check_spherical_SRs_N, check_calypso_sph_buffer_N
@@ -47,7 +50,6 @@
       use calypso_mpi
 !
       use m_sph_communicators
-      use m_work_4_sph_trans_spin
       use spherical_SRs_N
 !
       integer (kind=kint), intent(in) :: NB
@@ -56,8 +58,9 @@
 !
       real(kind = kreal), allocatable :: X_rtp(:), X_rj(:)
 !
-      call allocate_work_sph_trans                                      &
-     &   (NB, sph%sph_rtm%nnod_rtm, sph%sph_rlm%nnod_rlm)
+!
+      call alloc_work_sph_trans                                         &
+     &   (NB, sph%sph_rtm%nnod_rtm, sph%sph_rlm%nnod_rlm, WK0_spin)
       allocate(X_rj(NB * sph%sph_rj%nnod_rj))
       allocate(X_rtp(NB * sph%sph_rtp%nnod_rtp))
       X_rj = 0.0d0
@@ -71,10 +74,10 @@
       call sel_sph_import_table(NB, comms_sph,                          &
      &    sph%sph_rtp%nnod_rtp, sph%sph_rtm%nnod_rtm,                   &
      &    sph%sph_rlm%nnod_rlm, sph%sph_rj%nnod_rj,                     &
-     &    X_rtp, vr_rtm_wk, sp_rlm_wk, X_rj)
+     &    X_rtp, WK0_spin%vr_rtm_wk, WK0_spin%sp_rlm_wk, X_rj)
 !
       deallocate(X_rj, X_rtp)
-      call deallocate_work_sph_trans
+      call dealloc_work_sph_trans(WK0_spin)
 !
       if(my_rank .eq. 0) then
         write(*,'(a,i4)', advance='no')                                 &

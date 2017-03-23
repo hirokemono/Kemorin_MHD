@@ -46,13 +46,12 @@
 !
       use m_precision
 !
-      use m_work_4_sph_trans_spin
-!
       use t_spheric_rtm_data
       use t_spheric_rlm_data
       use t_sph_trans_comm_tbl
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
+      use t_work_4_sph_trans_spin
       use t_legendre_work_matmul
       use t_legendre_work_sym_matmul
       use t_leg_trans_sym_matmul_big
@@ -68,10 +67,11 @@
 !
       implicit none
 !
-      type(leg_trns_matmul_work), save :: WK1_l_mtl
-      type(leg_trns_sym_mul_work), save :: WK1_l_sml
-      type(leg_trns_bsym_mul_work), save :: WK1_l_bsm
-      type(leg_trns_testloop_work), save :: WK1_l_tst
+        type(leg_trns_spin_work), save :: WK1_spin
+        type(leg_trns_matmul_work), save :: WK1_l_mtl
+        type(leg_trns_sym_mul_work), save :: WK1_l_sml
+        type(leg_trns_bsym_mul_work), save :: WK1_l_bsm
+        type(leg_trns_testloop_work), save :: WK1_l_tst
 !
       integer(kind = kint), parameter :: ntype_Leg_trans_loop = 15
 !
@@ -294,8 +294,8 @@
         call init_legendre_testloop(sph_rtm, sph_rlm, leg,              &
      &      idx_trns, nvector, nscalar, WK1_l_tst)
       else
-        call allocate_work_sph_trans                                    &
-     &     (ncomp, sph_rtm%nnod_rtm, sph_rlm%nnod_rlm)
+        call alloc_work_sph_trans                                       &
+     &     (ncomp, sph_rtm%nnod_rtm, sph_rlm%nnod_rlm, WK1_spin)
       end if
 !
       end subroutine sel_init_legendre_trans
@@ -325,7 +325,7 @@
       else if(id_legendre_transfer .eq. iflag_leg_test_loop) then
         call dealloc_leg_vec_test(WK1_l_tst)
       else
-        call deallocate_work_sph_trans
+        call dealloc_work_sph_trans(WK1_spin)
       end if
 !
       end subroutine sel_finalize_legendre_trans
@@ -361,7 +361,7 @@
       else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
         call leg_bwd_trans_fields_krin(ncomp, nvector, nscalar,         &
      &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,        &
-     &      n_WR, n_WS, WR, WS)
+     &      n_WR, n_WS, WR, WS, WK1_spin)
       else if(id_legendre_transfer .eq. iflag_leg_symmetry) then
         call leg_backward_trans_sym_org(ncomp, nvector, nscalar,        &
      &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,        &
@@ -413,7 +413,7 @@
       else
         call leg_backward_trans_org(ncomp, nvector, nscalar,            &
      &      sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,        &
-     &      n_WR, n_WS, WR, WS)
+     &      n_WR, n_WS, WR, WS, WK1_spin)
       end if
 !
       end subroutine sel_backward_legendre_trans
@@ -448,7 +448,7 @@
       else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
         call leg_fwd_trans_fields_krin(ncomp, nvector, nscalar,         &
      &      sph_rtm, sph_rlm, comm_rtm, comm_rlm, leg, idx_trns,        &
-     &      n_WR, n_WS, WR, WS)
+     &      n_WR, n_WS, WR, WS, WK1_spin)
       else if(id_legendre_transfer .eq. iflag_leg_symmetry) then
         call leg_forward_trans_sym_org(ncomp, nvector, nscalar,         &
      &      sph_rtm, sph_rlm, comm_rtm, comm_rlm, leg, idx_trns,        &
@@ -500,7 +500,7 @@
       else
         call leg_forwawd_trans_org(ncomp, nvector, nscalar,             &
      &      sph_rtm, sph_rlm, comm_rtm, comm_rlm, leg, idx_trns,        &
-     &      n_WR, n_WS, WR, WS)
+     &      n_WR, n_WS, WR, WS, WK1_spin)
       end if
 !
       end subroutine sel_forward_legendre_trans

@@ -48,7 +48,6 @@
 !
       use m_precision
       use m_work_time
-      use m_work_4_sph_trans_spin
 !
       use t_spheric_rtm_data
       use t_spheric_rlm_data

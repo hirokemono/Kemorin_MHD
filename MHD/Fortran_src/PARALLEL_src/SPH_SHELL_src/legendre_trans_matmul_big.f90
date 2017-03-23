@@ -83,7 +83,6 @@
      &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,    &
      &          n_WR, n_WS, WR, WS, WK_l_bsm)
 !
-      use m_work_4_sph_trans_spin
       use leg_b_trans_sym_matmul_big
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
@@ -145,7 +144,6 @@
      &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,    &
      &          n_WR, n_WS, WR, WS, WK_l_bsm)
 !
-      use m_work_4_sph_trans_spin
       use leg_b_trans_sym_matmul_big
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
@@ -207,7 +205,6 @@
      &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,    &
      &          n_WR, n_WS, WR, WS, WK_l_bsm)
 !
-      use m_work_4_sph_trans_spin
       use leg_b_trans_sym_matmul_big
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
