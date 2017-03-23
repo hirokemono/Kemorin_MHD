@@ -18,7 +18,7 @@
 !!     &          n_WR, n_WS, WR, WS)
 !!      subroutine leg_backward_trans_sym_org(ncomp, nvector, nscalar,  &
 !!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,  &
-!!     &          n_WR, n_WS, WR, WS)
+!!     &          n_WR, n_WS, WR, WS, WK_l_sml)
 !!        Input:  sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
 !!        Output: vr_rtm   (Order: radius,theta,phi)
 !!
@@ -27,6 +27,7 @@
 !!        type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(index_4_sph_trans), intent(in) :: idx_trns
+!!        type(leg_trns_sym_mul_work), intent(inout) :: WK_l_sml
 !!
 !!    Forward transforms
 !!      subroutine leg_forwawd_trans_org(ncomp, nvector, nscalar,       &
@@ -37,7 +38,7 @@
 !!     &          n_WR, n_WS, WR, WS)
 !!      subroutine leg_forward_trans_sym_org(ncomp, nvector, nscalar,   &
 !!     &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, leg, idx_trns,  &
-!!     &          n_WR, n_WS, WR, WS)
+!!     &          n_WR, n_WS, WR, WS, WK_l_sml)
 !!        Input:  vr_rtm   (Order: radius,theta,phi)
 !!        Output: sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
 !!
@@ -46,6 +47,7 @@
 !!        type(sph_comm_tbl), intent(in) :: comm_rtm, comm_rlm
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(index_4_sph_trans), intent(in) :: idx_trns
+!!        type(leg_trns_sym_mul_work), intent(inout) :: WK_l_sml
 !!@endverbatim
 !!
 !!@param   ncomp    Total number of components for spherical transform
@@ -62,6 +64,7 @@
       use t_sph_trans_comm_tbl
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
+      use t_legendre_work_sym_matmul
 !
       implicit none
 !
@@ -211,7 +214,7 @@
 !
       subroutine leg_backward_trans_sym_org(ncomp, nvector, nscalar,    &
      &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, leg, idx_trns,    &
-     &          n_WR, n_WS, WR, WS)
+     &          n_WR, n_WS, WR, WS, WK_l_sml)
 !
       use legendre_bwd_trans_symmetry
 !
@@ -222,16 +225,18 @@
       type(index_4_sph_trans), intent(in) :: idx_trns
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR, n_WS
+!
       real (kind=kreal), intent(inout):: WR(n_WR)
       real (kind=kreal), intent(inout):: WS(n_WS)
+      type(leg_trns_sym_mul_work), intent(inout) :: WK_l_sml
 !
 !
       call leg_bwd_trans_vector_sym_org(ncomp, nvector,                 &
      &    sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns,               &
-     &    leg%asin_t_rtm, leg%g_sph_rlm, n_WR, n_WS, WR, WS)
+     &    leg%asin_t_rtm, leg%g_sph_rlm, n_WR, n_WS, WR, WS, WK_l_sml)
       call leg_bwd_trans_scalar_sym_org(ncomp, nvector, nscalar,        &
      &    sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns,               &
-     &    n_WR, n_WS, WR, WS)
+     &    n_WR, n_WS, WR, WS, WK_l_sml)
 !
       end subroutine leg_backward_trans_sym_org
 !
@@ -239,7 +244,7 @@
 !
       subroutine leg_forward_trans_sym_org(ncomp, nvector, nscalar,     &
      &          sph_rtm, sph_rlm, comm_rtm, comm_rlm, leg, idx_trns,    &
-     &          n_WR, n_WS, WR, WS)
+     &          n_WR, n_WS, WR, WS, WK_l_sml)
 !
       use legendre_fwd_trans_symmetry
 !
@@ -250,17 +255,19 @@
       type(index_4_sph_trans), intent(in) :: idx_trns
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR, n_WS
+!
       real (kind=kreal), intent(inout):: WR(n_WR)
       real (kind=kreal), intent(inout):: WS(n_WS)
+      type(leg_trns_sym_mul_work), intent(inout) :: WK_l_sml
 !
 !
       call leg_fwd_trans_vector_sym_org(ncomp, nvector,                 &
      &    sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns,               &
      &    leg%asin_t_rtm, leg%g_sph_rlm, leg%weight_rtm,                &
-     &    n_WR, n_WS, WR, WS)
+     &    n_WR, n_WS, WR, WS, WK_l_sml)
       call leg_fwd_trans_scalar_sym_org(ncomp, nvector, nscalar,        &
      &    sph_rtm, sph_rlm, comm_rtm, comm_rlm, idx_trns,               &
-     &    leg%g_sph_rlm, leg%weight_rtm, n_WR, n_WS, WR, WS)
+     &    leg%g_sph_rlm, leg%weight_rtm, n_WR, n_WS, WR, WS, WK_l_sml)
 !
       end subroutine leg_forward_trans_sym_org
 !

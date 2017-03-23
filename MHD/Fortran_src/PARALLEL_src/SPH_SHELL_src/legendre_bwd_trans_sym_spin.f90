@@ -9,15 +9,21 @@
 !!@verbatim
 !!      subroutine leg_bwd_trans_vector_sym_spin(ncomp, nvector,        &
 !!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns,       &
-!!     &          asin_theta_1d_rtm, g_sph_rlm, n_WR, n_WS, WR, WS)
-!!        Input:  vr_rtm   (Order: radius,theta,phi)
-!!        Output: sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
+!!     &          asin_theta_1d_rtm, g_sph_rlm,                         &
+!!     &          n_WR, n_WS, WR, WS, WK_l_sml)
+!!          Input:  vr_rtm   (Order: radius,theta,phi)
+!!          Output: sp_rlm   (Order: poloidal,diff_poloidal,toroidal)
 !!      subroutine leg_bwd_trans_scalar_sym_spin                        &
 !!     &         (ncomp, nvector, nscalar,                              &
 !!     &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns,       &
-!!     &          n_WR, n_WS, WR, WS)
-!!        Input:  vr_rtm
-!!        Output: sp_rlm
+!!     &          n_WR, n_WS, WR, WS, WK_l_sml)
+!!          Input:  vr_rtm
+!!          Output: sp_rlm
+!!        type(sph_rlm_grid), intent(in) :: sph_rlm
+!!        type(sph_rtm_grid), intent(in) :: sph_rtm
+!!        type(sph_comm_tbl), intent(in) :: comm_rlm, comm_rtm
+!!        type(index_4_sph_trans), intent(in) :: idx_trns
+!!        type(leg_trns_sym_mul_work), intent(inout) :: WK_l_sml
 !!@endverbatim
 !!
 !!@param   ncomp    Total number of components for spherical transform
@@ -31,7 +37,7 @@
       use m_constants
       use m_machine_parameter
 !
-      use m_legendre_work_sym_matmul
+      use t_legendre_work_sym_matmul
 !
       use t_spheric_rtm_data
       use t_spheric_rlm_data
@@ -48,7 +54,8 @@
 !
       subroutine leg_bwd_trans_vector_sym_spin(ncomp, nvector,          &
      &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns,         &
-     &          asin_theta_1d_rtm, g_sph_rlm, n_WR, n_WS, WR, WS)
+     &          asin_theta_1d_rtm, g_sph_rlm,                           &
+     &          n_WR, n_WS, WR, WS, WK_l_sml)
 !
       use cal_vr_rtm_by_vecprod
       use set_sp_rlm_for_leg_vecprod
@@ -64,8 +71,10 @@
 !
       integer(kind = kint), intent(in) :: ncomp, nvector
       integer(kind = kint), intent(in) :: n_WR, n_WS
+!
       real (kind=kreal), intent(inout):: WR(n_WR)
       real (kind=kreal), intent(inout):: WS(n_WS)
+      type(leg_trns_sym_mul_work), intent(inout) :: WK_l_sml
 !
       integer(kind = kint) :: ip, kst, ked, k_rlm, nd, je, jo
       integer(kind = kint) :: ip_rtpm,  in_rtpm,  ip_rtnm,  in_rtnm
@@ -137,22 +146,27 @@
      &                g_sph_rlm, jst, nd, k_rlm,                        &
      &                a1r_1d_rlm_r, a2r_1d_rlm_r,                       &
      &                ncomp, n_WR, comm_rlm%irev_sr, WR, nj_rlm,        &
-     &                pol_e(1,ip), dpoldt_e(1,ip), dpoldp_e(1,ip),      &
-     &                dtordt_e(1,ip), dtordp_e(1,ip),                   &
-     &                pol_o(1,ip), dpoldt_o(1,ip), dpoldp_o(1,ip),      &
-     &                dtordt_o(1,ip), dtordp_o(1,ip))
+     &                WK_l_sml%pol_e(1,ip), WK_l_sml%dpoldt_e(1,ip),    &
+     &                WK_l_sml%dpoldp_e(1,ip), WK_l_sml%dtordt_e(1,ip), &
+     &                WK_l_sml%dtordp_e(1,ip), WK_l_sml%pol_o(1,ip),    &
+     &                WK_l_sml%dpoldt_o(1,ip), WK_l_sml%dpoldp_o(1,ip), &
+     &                WK_l_sml%dtordt_o(1,ip), WK_l_sml%dtordp_o(1,ip))
 !
                   call cal_vr_rtm_dydtheta_symmetry(nj_rlm,             &
-     &                Ps_jl(je,lp_rtm), dPsdt_jl(je,lp_rtm),            &
-     &                Ps_jl(jo,lp_rtm), dPsdt_jl(jo,lp_rtm),            &
-     &                pol_e(1,ip), dpoldt_e(1,ip), dtordt_e(1,ip),      &
-     &                pol_o(1,ip), dpoldt_o(1,ip), dtordt_o(1,ip),      &
+     &                WK_l_sml%Ps_jl(je,lp_rtm),                        &
+     &                WK_l_sml%dPsdt_jl(je,lp_rtm),                     &
+     &                WK_l_sml%Ps_jl(jo,lp_rtm),                        &
+     &                WK_l_sml%dPsdt_jl(jo,lp_rtm),                     &
+     &                WK_l_sml%pol_e(1,ip), WK_l_sml%dpoldt_e(1,ip),    &
+     &                WK_l_sml%dtordt_e(1,ip), WK_l_sml%pol_o(1,ip),    &
+     &                WK_l_sml%dpoldt_o(1,ip), WK_l_sml%dtordt_o(1,ip), &
      &                WS(ipp_send), WS(ipn_send))
                   call cal_vr_rtm_dydphi_symmetry(nj_rlm,               &
-     &                Ps_jl(je,lp_rtm), Ps_jl(jo,lp_rtm),               &
+     &                WK_l_sml%Ps_jl(je,lp_rtm),                        &
+     &                WK_l_sml%Ps_jl(jo,lp_rtm),                        &
      &                asin_theta_1d_rtm(lp_rtm),                        &
-     &                dpoldp_e(1,ip), dtordp_e(1,ip),                   &
-     &                dpoldp_o(1,ip), dtordp_o(1,ip),                   &
+     &                WK_l_sml%dpoldp_e(1,ip), WK_l_sml%dtordp_e(1,ip), &
+     &                WK_l_sml%dpoldp_o(1,ip), WK_l_sml%dtordp_o(1,ip), &
      &                WS(inp_send), WS(inn_send))
                 end do
               end do
@@ -187,16 +201,18 @@
      &              g_sph_rlm, jst, nd, k_rlm,                          &
      &              a1r_1d_rlm_r, a2r_1d_rlm_r,                         &
      &              ncomp, n_WR, comm_rlm%irev_sr, WR, nj_rlm,          &
-     &              pol_e(1,ip), dpoldp_e(1,ip), dtordp_e(1,ip),        &
-     &              dpoldt_o(1,ip), dtordt_o(1,ip))
+     &              WK_l_sml%pol_e(1,ip), WK_l_sml%dpoldp_e(1,ip),      &
+     &              WK_l_sml%dtordp_e(1,ip), WK_l_sml%dpoldt_o(1,ip),   &
+     &              WK_l_sml%dtordt_o(1,ip))
 !
                 call cal_vr_rtm_dydtheta_equator(nj_rlm,                &
-     &              Ps_jl(je,lp_rtm), dPsdt_jl(jo,lp_rtm),              &
-     &              pol_e(1,ip), dpoldt_o(1,ip), dtordt_o(1,ip),        &
-     &              WS(ipp_send))
+     &              WK_l_sml%Ps_jl(je,lp_rtm),                          &
+     &              WK_l_sml%dPsdt_jl(jo,lp_rtm),                       &
+     &              WK_l_sml%pol_e(1,ip), WK_l_sml%dpoldt_o(1,ip),      &
+     &              WK_l_sml%dtordt_o(1,ip), WS(ipp_send))
                 call cal_vr_rtm_dydphi_equator(nj_rlm,                  &
-     &              Ps_jl(je,lp_rtm), dpoldp_e(1,ip), dtordp_e(1,ip),   &
-     &              WS(inp_send))
+     &              WK_l_sml%Ps_jl(je,lp_rtm), WK_l_sml%dpoldp_e(1,ip), &
+     &              WK_l_sml%dtordp_e(1,ip), WS(inp_send))
               end do
             end do
           end do
@@ -211,7 +227,7 @@
       subroutine leg_bwd_trans_scalar_sym_spin                          &
      &         (ncomp, nvector, nscalar,                                &
      &          sph_rlm, sph_rtm, comm_rlm, comm_rtm, idx_trns,         &
-     &          n_WR, n_WS, WR, WS)
+     &          n_WR, n_WS, WR, WS, WK_l_sml)
 !
       use cal_vr_rtm_by_vecprod
       use set_sp_rlm_for_leg_vecprod
@@ -222,8 +238,10 @@
       type(index_4_sph_trans), intent(in) :: idx_trns
       integer(kind = kint), intent(in) :: ncomp, nvector, nscalar
       integer(kind = kint), intent(in) :: n_WR, n_WS
+!
       real (kind=kreal), intent(inout):: WR(n_WR)
       real (kind=kreal), intent(inout):: WS(n_WS)
+      type(leg_trns_sym_mul_work), intent(inout) :: WK_l_sml
 !
       integer(kind = kint) :: ip, kst, ked, k_rlm, nd, je, jo
       integer(kind = kint) :: ip_rtm, in_rtm, ip_send, in_send
@@ -273,11 +291,12 @@
      &               (sph_rlm%nnod_rlm, sph_rlm%istep_rlm,              &
      &                jst, nd, k_rlm, ncomp, nvector,                   &
      &                n_WR, comm_rlm%irev_sr, WR, nj_rlm,               &
-     &                scl_e(1,ip), scl_o(1,ip))
+     &                WK_l_sml%scl_e(1,ip), WK_l_sml%scl_o(1,ip))
 !
                   call cal_vr_rtm_scalar_symmetry(nj_rlm,               &
-     &                Ps_jl(je,lp_rtm), Ps_jl(jo,lp_rtm),               &
-     &                scl_e(1,ip), scl_o(1,ip),                         &
+     &                WK_l_sml%Ps_jl(je,lp_rtm),                        &
+     &                WK_l_sml%Ps_jl(jo,lp_rtm),                        &
+     &                WK_l_sml%scl_e(1,ip), WK_l_sml%scl_o(1,ip),       &
      &                WS(ip_send), WS(in_send))
                 end do
               end do
@@ -302,11 +321,12 @@
 !
                 call set_sp_rlm_scalar_equator                          &
      &             (sph_rlm%nnod_rlm, sph_rlm%istep_rlm,                &
-     &              jst, nd, k_rlm,  ncomp, nvector,                    &
-     &              n_WR, comm_rlm%irev_sr, WR,  nj_rlm, scl_e(1,ip))
+     &              jst, nd, k_rlm,  ncomp, nvector, n_WR,              &
+     &              comm_rlm%irev_sr, WR, nj_rlm, WK_l_sml%scl_e(1,ip))
 !
                 call cal_vr_rtm_scalar_equator(nj_rlm,                  &
-     &              Ps_jl(je,lp_rtm), scl_e(1,ip), WS(ip_send))
+     &              WK_l_sml%Ps_jl(je,lp_rtm), WK_l_sml%scl_e(1,ip),    &
+     &              WS(ip_send))
               end do
             end do
 !
