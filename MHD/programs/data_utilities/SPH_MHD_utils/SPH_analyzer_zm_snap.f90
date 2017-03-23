@@ -60,7 +60,7 @@
       call read_alloc_sph_rst_4_snap                                    &
      &   (i_step, MHD1_org_files%rj_file_param, sph1%sph_rj,            &
      &    ipol, rj_fld1, MHD_step%rst_step, MHD_step%init_d)
-      call copy_time_data(MHD_step%init_d, time_d1)
+      call copy_time_data(MHD_step%init_d, MHD_step%time_d)
 !
       if (iflag_debug.eq.1) write(*,*)' sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph                                    &
@@ -111,8 +111,8 @@
       if(output_IO_flag(i_step, MHD_step%rms_step) .eq. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
         call output_rms_sph_mhd_control                                 &
-     &     (time_d1, sph1%sph_params, sph1%sph_rj, trans_p1%leg,        &
-     &      ipol, rj_fld1, pwr1, WK_pwr)
+     &     (MHD_step%time_d, sph1%sph_params, sph1%sph_rj,              &
+     &      trans_p1%leg, ipol, rj_fld1, pwr1, WK_pwr)
       end if
       call end_eleps_time(11)
       call end_eleps_time(4)

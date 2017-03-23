@@ -64,7 +64,7 @@
       call input_control_4_snapshot                                     &
      &   (FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, nod_fld1,       &
      &    IO_bc1, filtering1, wide_filtering, wk_filter1)
-      call copy_delta_t(MHD_step1%init_d, time_d1)
+      call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
 !
 !     --------------------- 
 !
@@ -93,7 +93,7 @@
 !  Visualization
         if (visval.eq.0) then
           call start_eleps_time(12)
-          call visualize_all(MHD_step1%viz_step, time_d1,               &
+          call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
      &        mesh1, group1, ele_mesh1, nod_fld1,                       &
      &        next_tbl1%neib_ele, jac1_3d_q)
           call end_eleps_time(12)

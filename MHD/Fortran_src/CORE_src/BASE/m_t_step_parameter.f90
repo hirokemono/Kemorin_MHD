@@ -27,7 +27,4 @@
 !!      insted of Adams-BAshforth
       integer(kind=kint) :: iflag_initial_step = 0
 !
-!>      Structure for time data
-      type(time_data), save :: time_d1
-!
       end module  m_t_step_parameter

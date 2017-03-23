@@ -140,7 +140,7 @@
       call read_alloc_sph_rst_4_snap                                    &
      &   (i_step, MHD1_org_files%rj_file_param, sph1%sph_rj,            &
      &    ipol, rj_fld1, MHD_step1%rst_step, MHD_step1%init_d)
-      call copy_time_data(MHD_step1%init_d, time_d1)
+      call copy_time_data(MHD_step1%init_d, MHD_step1%time_d)
 !
       call sync_temp_by_per_temp_sph                                    &
      &   (ref_param_T1, ref_param_C1, ref_temp1, ref_comp1,             &
@@ -184,9 +184,10 @@
       call start_eleps_time(11)
       if(iflag_debug.gt.0)  write(*,*) 'const_data_4_dynamobench'
       call s_const_data_4_dynamobench                                   &
-     &   (time_d1%time, sph1%sph_params, sph1%sph_rj, trans_p1%leg,     &
-     &    ipol, itor, rj_fld1, pwr1, WK_pwr)
-      call output_field_4_dynamobench(i_step, time_d1%time, ipol)
+     &   (MHD_step1%time_d%time, sph1%sph_params, sph1%sph_rj,          &
+     &    trans_p1%leg, ipol, itor, rj_fld1, pwr1, WK_pwr)
+      call output_field_4_dynamobench                                   &
+     &   (i_step, MHD_step1%time_d%time, ipol)
       call end_eleps_time(11)
       call end_eleps_time(4)
 !

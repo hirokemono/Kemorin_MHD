@@ -11,6 +11,7 @@
       module FEM_analyzer_snap_tmp
 !
       use m_precision
+      use m_constants
       use m_machine_parameter
       use m_work_time
       use m_control_parameter
@@ -53,7 +54,7 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
       call init_analyzer_snap                                           &
-     &   (FEM_prm1, SGS_par1, IO_bc1, MHD_step, time_d1,                &
+     &   (FEM_prm1, SGS_par1, IO_bc1, MHD_step, MHD_step%time_d,        &
      &    mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,              &
      &    iphys, nod_fld1, SNAP_time_IO, MHD_step%rst_step, label_sim)
 !
@@ -123,9 +124,9 @@
         call read_udt_4_snap(flex_p1%istep_max_dt, FEM_udt_org_param,   &
      &      nod_fld1, SNAP_time_IO, MHD_step%ucd_step)
 !
-        time_d1%time = MHD_step%init_d%time                             &
-     &                + time_d1%dt * dble(flex_p1%istep_max_dt)
-        time_d1%i_time_step = flex_p1%istep_max_dt
+        MHD_step%time_d%time = MHD_step%init_d%time                     &
+     &             + MHD_step%time_d%dt * dble(flex_p1%istep_max_dt)
+        MHD_step%time_d%i_time_step = flex_p1%istep_max_dt
       end if
 !
 !     ---- magnetic field update
@@ -148,7 +149,7 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 'update_fields'
       call update_fields                                                &
-     &   (time_d1, FEM_prm1, SGS_par1, mesh1, group1,                   &
+     &   (MHD_step%time_d, FEM_prm1, SGS_par1, mesh1, group1,           &
      &    ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,    &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,  &
      &    ifld_diff, icomp_diff, iphys_elediff,                         &
@@ -160,7 +161,7 @@
 !
       if (SGS_par1%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
-        call s_cal_model_coefficients(time_d1,                          &
+        call s_cal_model_coefficients(MHD_step%time_d,                  &
      &      FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1,    &
      &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
      &      layer_tbl1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,  &
@@ -177,8 +178,8 @@
       iflag = lead_field_data_flag(flex_p1%istep_max_dt,                &
      &                             MHD_step, SGS_par1%sgs_step)
       if(iflag .eq. 0) then
-        call lead_fields_by_FEM                                         &
-     &    (time_d1, FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1,       &
+        call lead_fields_by_FEM(MHD_step%time_d,                        &
+     &     FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1,                &
      &     MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,      &
      &     jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,            &
      &     FEM1_elen, icomp_sgs, icomp_diff, ifld_diff, iphys_elediff,  &
@@ -197,7 +198,7 @@
       if(iflag .eq. 0) then
         if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
         call output_time_step_control                                   &
-     &     (FEM_prm1, time_d1, mesh1, MHD_mesh1,                        &
+     &     (FEM_prm1, MHD_step%time_d, mesh1, MHD_mesh1,                &
      &      fl_prop1, cd_prop1, iphys, nod_fld1, iphys_ele, fld_ele1,   &
      &      jac1_3d_q, jac1_3d_l, fem1_wk, mhd_fem1_wk)
       end if
@@ -205,23 +206,26 @@
       iflag = output_IO_flag(flex_p1%istep_max_dt, MHD_step%point_step)
       if(iflag .eq. 0) then
         if (iflag_debug.eq.1) write(*,*) 'output_monitor_control'
-        call output_monitor_control(time_d1, mesh1%node, nod_fld1)
+        call output_monitor_control                                     &
+     &     (MHD_step%time_d, mesh1%node, nod_fld1)
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 's_output_sgs_model_coefs'
-      call s_output_sgs_model_coefs(flex_p1%istep_max_dt, time_d1,      &
+      call s_output_sgs_model_coefs                                     &
+     &   (flex_p1%istep_max_dt, MHD_step%time_d,                        &
      &    SGS_par1, wk_sgs1, wk_diff1)
 !
 !     ---- Output voulme field data
 !
       if (iflag_debug.eq.1) write(*,*) 's_output_ucd_file_control'
       call s_output_ucd_file_control                                    &
-     &   (flex_p1%istep_max_dt, time_d1, MHD_step%ucd_step)
+     &   (flex_p1%istep_max_dt, MHD_step%time_d, MHD_step%ucd_step)
 !
 !     ----
 !
       if     (flex_p1%iflag_flexible_step .eq. iflag_flex_step) then
-        visval = viz_file_step_4_flex(time_d1, MHD_step%viz_step)
+        visval = viz_file_step_4_flex(MHD_step%time_d,                  &
+     &                                MHD_step%viz_step)
       else
         visval = viz_file_step_4_fix(flex_p1%istep_max_dt,              &
      &                               MHD_step%viz_step)
@@ -251,7 +255,7 @@
 !
       subroutine lead_specital_SGS
 !
-      use m_constants
+      use m_MHD_step_parameter
       use m_physical_property
       use m_phys_constants
       use m_phys_labels
@@ -297,8 +301,9 @@
       if (iphys%i_SGS_div_m_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead radial', trim(fhd_div_SGS_m_flux)
-        call cal_terms_4_momentum(iphys%i_SGS_div_m_flux,               &
-     &      ifld_diff%i_mom_flux, ifld_diff%i_lorentz, time_d1%dt,      &
+        call cal_terms_4_momentum                                       &
+     &     (iphys%i_SGS_div_m_flux, ifld_diff%i_mom_flux,               &
+     &      ifld_diff%i_lorentz, MHD_step1%time_d%dt,                   &
      &      FEM_prm1, SGS_par1%model_p, SGS_par1%commute_p,             &
      &      mesh1%nod_comm, mesh1%node, mesh1%ele, ele_mesh1%surf,      &
      &      group1%surf_grp, MHD_mesh1%fluid, fl_prop1, cd_prop1,       &
@@ -331,8 +336,8 @@
       if (iphys%i_SGS_vp_induct .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_vp_induct)
-        call cal_sgs_uxb_2_monitor                                      &
-     &     (icomp_sgs%i_induction, iphys_elediff%i_velo, time_d1%dt,    &
+        call cal_sgs_uxb_2_monitor(icomp_sgs%i_induction,               &
+     &      iphys_elediff%i_velo, MHD_step1%time_d%dt,                  &
      &      FEM_prm1, SGS_par1%model_p, SGS_par1%filter_p,              &
      &      mesh1%nod_comm, mesh1%node, mesh1%ele,                      &
      &      MHD_mesh1%conduct, cd_prop1, iphys, iphys_ele, fld_ele1,    &

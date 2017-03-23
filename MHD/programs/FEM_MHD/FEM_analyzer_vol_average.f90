@@ -49,7 +49,7 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
       call init_analyzer_snap                                           &
-     &   (FEM_prm1, SGS_par1, IO_bc1, MHD_step, time_d1,                &
+     &   (FEM_prm1, SGS_par1, IO_bc1, MHD_step, MHD_step%time_d,        &
      &    mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,              &
      &    iphys, nod_fld1, SNAP_time_IO, MHD_step%rst_step, label_sim)
 !
@@ -90,7 +90,8 @@
       if (iflag_debug.eq.1)  write(*,*) 'read_udt_4_snap'
       call read_udt_4_snap(i_step,                                      &
      &    FEM_udt_org_param, nod_fld1, SNAP_time_IO, MHD_step%ucd_step)
-      time_d1%time = MHD_step%init_d%time + time_d1%dt * dble(i_step)
+      MHD_step%time_d%time = MHD_step%init_d%time                       &
+     &                      + MHD_step%time_d%dt * dble(i_step)
 !
 !     ---- magnetic field update
 !
@@ -116,7 +117,7 @@
       if(iflag .eq. 0) then
         if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
         call output_time_step_control                                   &
-     &     (FEM_prm1, time_d1, mesh1, MHD_mesh1,                        &
+     &     (FEM_prm1, MHD_step%time_d, mesh1, MHD_mesh1,                &
      &      fl_prop1, cd_prop1, iphys, nod_fld1, iphys_ele, fld_ele1,   &
      &      jac1_3d_q, jac1_3d_l, fem1_wk, mhd_fem1_wk)
       end if

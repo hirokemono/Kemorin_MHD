@@ -160,7 +160,7 @@
       call read_alloc_sph_rst_4_snap                                    &
      &   (i_step, MHD1_org_files%rj_file_param, sph1%sph_rj,            &
      &    ipol, rj_fld1, MHD_step1%rst_step, MHD_step1%init_d)
-      call copy_time_data(MHD_step1%init_d, time_d1)
+      call copy_time_data(MHD_step1%init_d, MHD_step1%time_d)
 !
       call sync_temp_by_per_temp_sph                                    &
      &   (ref_param_T1, ref_param_C1, ref_temp1, ref_comp1,             &
@@ -203,7 +203,7 @@
       call start_eleps_time(4)
       if(iflag_debug.gt.0)  write(*,*) 'sph_transfer_on_circle'
       call sph_transfer_on_circle(sph1%sph_rj, rj_fld1)
-      call write_field_data_on_circle(i_step, time_d1%time)
+      call write_field_data_on_circle(i_step, MHD_step1%time_d%time)
       call end_eleps_time(4)
 !
       end subroutine SPH_analyze_pick_circle

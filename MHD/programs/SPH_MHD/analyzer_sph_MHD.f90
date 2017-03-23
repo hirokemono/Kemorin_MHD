@@ -69,7 +69,7 @@
      &   (MHD_ctl1, sph1, comms_sph1, sph_grps1, rj_fld1, nod_fld1,     &
      &    pwr1, SGS_par1, trns_WK1%dynamic_SPH,                         &
      &    mesh1, group1, ele_mesh1)
-      call copy_delta_t(MHD_step1%init_d, time_d1)
+      call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
       call end_eleps_time(4)
 !
 !    IO elapsed end
@@ -119,25 +119,25 @@
 !
 !*  -----------  set initial step data --------------
 !*
-      call copy_time_step_data(MHD_step1%init_d, time_d1)
+      call copy_time_step_data(MHD_step1%init_d, MHD_step1%time_d)
       iflag_finish = 0
 !*
 !*  -------  time evelution loop start -----------
 !*
       do
-        call evolve_time_data(time_d1)
+        call evolve_time_data(MHD_step1%time_d)
 !
 !*  ----------  time evolution by spectral methood -----------------
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_MHD'
         call SPH_analyze_MHD                                            &
-     &     (time_d1%i_time_step, iflag_finish, MHD_step1)
+     &     (MHD_step1%time_d%i_time_step, iflag_finish, MHD_step1)
 !*
 !*  -----------  output field data --------------
 !*
         call start_eleps_time(4)
-        iflag = lead_field_data_flag(time_d1%i_time_step, MHD_step1,    &
-     &                               SGS_par1%sgs_step)
+        iflag = lead_field_data_flag(MHD_step1%time_d%i_time_step,      &
+     &                               MHD_step1, SGS_par1%sgs_step)
         if(iflag .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_MHD'
           call SPH_to_FEM_bridge_MHD                                    &
@@ -146,8 +146,8 @@
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
-        call FEM_analyze_sph_MHD(SGS_par1, time_d1, mesh1,              &
-     &      nod_fld1, MHD_step1, visval)
+        call FEM_analyze_sph_MHD                                        &
+     &     (SGS_par1, mesh1, nod_fld1, MHD_step1, visval)
 !
         call end_eleps_time(4)
 !
@@ -156,7 +156,7 @@
         if(visval .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'visualize_all', my_rank
           call start_eleps_time(12)
-          call visualize_all(MHD_step1%viz_step, time_d1,               &
+          call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
      &        mesh1, group1, ele_mesh1, nod_fld1,                       &
      &        next_tbl1%neib_ele, jac1_3d_q)
           call end_eleps_time(12)

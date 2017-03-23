@@ -123,7 +123,7 @@
      &   (i_step, MHD1_org_files%rj_file_param, sph_file_param1,        &
      &    sph1%sph_rj, ipol, rj_fld1,                                   &
      &    MHD_step%ucd_step, MHD_step%init_d)
-      call copy_time_data(MHD_step%init_d, time_d1)
+      call copy_time_data(MHD_step%init_d, MHD_step%time_d)
 !
 !* ----  Update fields after time evolution ------------------------=
 !*
@@ -306,7 +306,8 @@
       integer(kind = kint) :: iflag
 !
 !
-      iflag = output_IO_flag(time_d1%i_time_step, MHD_step%rms_step)
+      iflag = output_IO_flag(MHD_step%time_d%i_time_step,               &
+     &                       MHD_step%rms_step)
       if(iflag .ne. 0) return
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_rms_sph_outer_core'
@@ -314,15 +315,16 @@
      &   (sph_params%l_truncation, sph_rj, ipol, rj_fld, leg%g_sph_rj,  &
      &    pwr, WK_pwr)
 !
-      call write_sph_vol_ave_file(time_d1, sph_params, sph_rj, pwr)
+      call write_sph_vol_ave_file                                       &
+     &   (MHD_step%time_d, sph_params, sph_rj, pwr)
       call write_sph_vol_ms_file                                        &
-     &   (my_rank, time_d1, sph_params, sph_rj, pwr)
+     &   (my_rank, MHD_step%time_d, sph_params, sph_rj, pwr)
       call write_sph_vol_ms_spectr_file                                 &
-     &   (my_rank, time_d1, sph_params, sph_rj, pwr)
+     &   (my_rank, MHD_step%time_d, sph_params, sph_rj, pwr)
       call write_sph_layer_ms_file                                      &
-     &   (my_rank, time_d1, sph_params, pwr)
+     &   (my_rank, MHD_step%time_d, sph_params, pwr)
       call write_sph_layer_spectr_file                                  &
-     &   (my_rank, time_d1, sph_params, pwr)
+     &   (my_rank, MHD_step%time_d, sph_params, pwr)
 !
       end subroutine output_rms_sph_back_trans
 !

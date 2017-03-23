@@ -43,23 +43,26 @@
 !*  -----------  set initial step data --------------
 !*
       call start_eleps_time(3)
-      call s_initialize_time_step(MHD_step1%init_d, time_d1)
+      call s_initialize_time_step(MHD_step1%init_d, MHD_step1%time_d)
 !*
 !*  -------  time evelution loop start -----------
 !*
       do
-        call add_one_step(time_d1)
+        call add_one_step(MHD_step1%time_d)
 !
-        iflag = output_IO_flag(time_d1%i_time_step,MHD_step1%rst_step)
+        iflag = output_IO_flag(MHD_step1%time_d%i_time_step,            &
+     &                         MHD_step1%rst_step)
         if(iflag .ne. 0) cycle
 !
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_mod_restart'
-        call SPH_analyze_mod_restart(time_d1%i_time_step, MHD_step1)
+        call SPH_analyze_mod_restart(MHD_step1%time_d%i_time_step,      &
+     &                               MHD_step1)
 !*
 !*  -----------  output field data --------------
 !*
-        if(time_d1%i_time_step .ge. MHD_step1%finish_d%i_end_step) exit
+        if(MHD_step1%time_d%i_time_step                                 &
+     &        .ge. MHD_step1%finish_d%i_end_step) exit
       end do
 !
 !  time evolution end
@@ -117,20 +120,21 @@
       call set_modify_rj_fields
 !
       if(iflag_debug.gt.0) write(*,*) 'output_sph_restart_control'
-      call copy_time_step_data(MHD_step1%init_d, time_d1)
+      call copy_time_step_data(MHD_step1%init_d, MHD_step1%time_d)
       call init_output_sph_restart_file(rj_fld1)
       call output_sph_restart_control                                   &
-     &   (time_d1, rj_fld1, MHD_step%rst_step)
+     &   (MHD_step1%time_d, rj_fld1, MHD_step%rst_step)
 !*
 !*  -----------  lead energy data --------------
 !*
       call start_eleps_time(11)
-      iflag = output_IO_flag(time_d1%i_time_step, MHD_step%rms_step)
+      iflag = output_IO_flag(MHD_step%time_d%i_time_step,               &
+     &                       MHD_step%rms_step)
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
         call output_rms_sph_mhd_control                                 &
-     &     (time_d1, sph1%sph_params, sph1%sph_rj, trans_p1%leg,        &
-     &      ipol, rj_fld1, pwr1, WK_pwr)
+     &     (MHD_step%time_d, sph1%sph_params, sph1%sph_rj,              &
+     &      trans_p1%leg, ipol, rj_fld1, pwr1, WK_pwr)
       end if
       call end_eleps_time(11)
       call end_eleps_time(4)

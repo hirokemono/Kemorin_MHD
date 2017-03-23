@@ -70,7 +70,7 @@
      &   (MHD_ctl1, sph1, comms_sph1, sph_grps1, rj_fld1, nod_fld1,     &
      &    pwr1, SGS_par1, trns_WK1%dynamic_SPH,                         &
      &    mesh1, group1, ele_mesh1)
-      call copy_delta_t(MHD_step1%init_d, time_d1)
+      call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
       call end_eleps_time(4)
 !
 !     --------------------- 
@@ -103,24 +103,26 @@
 !*  -----------  set initial step data --------------
 !*
       call start_eleps_time(3)
-      call s_initialize_time_step(MHD_step1%init_d, time_d1)
+      call s_initialize_time_step(MHD_step1%init_d, MHD_step1%time_d)
 !*
 !*  -------  time evelution loop start -----------
 !*
       do
-        call add_one_step(time_d1)
+        call add_one_step(MHD_step1%time_d)
 !
-        iflag = output_IO_flag(time_d1%i_time_step,MHD_step1%rst_step)
+        iflag = output_IO_flag(MHD_step1%time_d%i_time_step,            &
+     &                         MHD_step1%rst_step)
         if(iflag .ne. 0) cycle
 !
 !*  ----------  time evolution by spectral methood -----------------
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_snap'
-        call SPH_analyze_snap(time_d1%i_time_step, MHD_step1)
+        call SPH_analyze_snap(MHD_step1%time_d%i_time_step, MHD_step1)
 !*
 !*  -----------  exit loop --------------
 !*
-        if(time_d1%i_time_step .ge. MHD_step1%finish_d%i_end_step) exit
+        if(MHD_step1%time_d%i_time_step                                 &
+     &        .ge. MHD_step1%finish_d%i_end_step) exit
       end do
 !
 !  time evolution end

@@ -76,7 +76,7 @@
      &    mesh1, group1, ele_mesh1)
       call set_ctl_4_second_spectr_data                                 &
      &   (MHD_ctl1%new_plt, sph_file_param2)
-      call copy_delta_t(MHD_step1%init_d, time_d1)
+      call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
       call end_eleps_time(4)
 !
 !     --------------------- 
@@ -116,20 +116,21 @@
 !*  -----------  set initial step data --------------
 !*
       call start_eleps_time(3)
-      call s_initialize_time_step(MHD_step1%init_d, time_d1)
+      call s_initialize_time_step(MHD_step1%init_d, MHD_step1%time_d)
 !*
 !*  -------  time evelution loop start -----------
 !*
       do
-        call add_one_step(time_d1)
+        call add_one_step(MHD_step1%time_d)
 !
-        iflag = output_IO_flag(time_d1%i_time_step,MHD_step1%rst_step)
+        iflag = output_IO_flag(MHD_step1%time_d%i_time_step,            &
+     &                         MHD_step1%rst_step)
         if(iflag .ne. 0) cycle
 !
 !*  ----------  time evolution by spectral methood -----------------
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_correlate_all'
-        call SPH_analyze_rms_ratio_all(time_d1, MHD_step1)
+        call SPH_analyze_rms_ratio_all(MHD_step1%time_d, MHD_step1)
 !*
 !*  -----------  output field data --------------
 !*
@@ -142,8 +143,8 @@
      &      mesh1%node, nod_fld1)
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
-        call FEM_analyze_sph_MHD(SGS_par1, time_d1, mesh1,              &
-     &      nod_fld1, MHD_step1, visval)
+        call FEM_analyze_sph_MHD                                        &
+     &     (SGS_par1, mesh1, nod_fld1, MHD_step1, visval)
 !
         call end_eleps_time(4)
 !
@@ -152,7 +153,7 @@
         if(visval .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'visualize_all'
           call start_eleps_time(12)
-          call visualize_all(MHD_step1%viz_step, time_d1,               &
+          call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
      &        mesh1, group1, ele_mesh1, nod_fld1,                       &
      &        next_tbl1%neib_ele, jac1_3d_q)
           call end_eleps_time(12)
@@ -161,7 +162,8 @@
 !
 !*  -----------  exit loop --------------
 !*
-        if(time_d1%i_time_step .ge. MHD_step1%finish_d%i_end_step) exit
+        if(MHD_step1%time_d%i_time_step                                 &
+     &        .ge. MHD_step1%finish_d%i_end_step) exit
       end do
 !
 !  time evolution end

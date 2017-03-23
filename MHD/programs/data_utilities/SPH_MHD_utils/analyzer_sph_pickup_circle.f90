@@ -76,7 +76,7 @@
      &    sph_gen, rj_fld1, mesh_file_circ, sph_file_param1,            &
      &    MHD1_org_files, sph_fst_IO, pwr1, SGS_par1,                   &
      &    trns_WK1%dynamic_SPH%sph_filters)
-      call copy_delta_t(MHD_step1%init_d, time_d1)
+      call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
 !
       call set_ctl_params_pick_circle                                   &
      &   (MHD_ctl1%model_ctl%fld_ctl%field_ctl,                         &
@@ -110,24 +110,26 @@
 !*  -----------  set initial step data --------------
 !*
       call start_eleps_time(3)
-      call s_initialize_time_step(MHD_step1%init_d, time_d1)
+      call s_initialize_time_step(MHD_step1%init_d, MHD_step1%time_d)
 !*
 !*  -------  time evelution loop start -----------
 !*
       do
-        call add_one_step(time_d1)
+        call add_one_step(MHD_step1%time_d)
 !
-        iflag = output_IO_flag(time_d1%i_time_step, MHD_step1%rst_step)
+        iflag = output_IO_flag(MHD_step1%time_d%i_time_step,            &
+     &                         MHD_step1%rst_step)
         if(iflag .ne. 0) cycle
 !
 !*  ----------  time evolution by spectral methood -----------------
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_pick_circle'
-        call SPH_analyze_pick_circle(time_d1%i_time_step)
+        call SPH_analyze_pick_circle(MHD_step1%time_d%i_time_step)
 !*
 !*  -----------  exit loop --------------
 !*
-        if(time_d1%i_time_step .ge. MHD_step1%finish_d%i_end_step) exit
+        if(MHD_step1%time_d%i_time_step                                 &
+     &        .ge. MHD_step1%finish_d%i_end_step) exit
       end do
 !
 !  time evolution end
