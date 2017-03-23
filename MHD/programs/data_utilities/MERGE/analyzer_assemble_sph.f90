@@ -178,7 +178,6 @@
 !
       use m_phys_labels
       use m_sph_spectr_data
-      use m_t_step_parameter
       use r_interpolate_marged_sph
       use set_field_file_names
       use parallel_sph_assemble

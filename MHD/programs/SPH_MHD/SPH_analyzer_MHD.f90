@@ -18,7 +18,6 @@
       use m_precision
       use m_MHD_step_parameter
       use m_SGS_control_parameter
-      use m_t_step_parameter
       use t_phys_address
       use t_MHD_step_parameter
 !
@@ -145,7 +144,6 @@
       use m_spheric_parameter
       use m_sph_spectr_data
       use m_fdm_coefs
-      use m_t_step_parameter
       use m_sph_trans_arrays_MHD
       use m_rms_4_sph_spectr
 !

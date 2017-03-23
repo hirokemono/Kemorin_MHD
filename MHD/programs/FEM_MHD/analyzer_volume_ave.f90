@@ -52,8 +52,6 @@
 !
       subroutine analyze
 !
-      use m_t_step_parameter
-!
 !
       integer(kind=kint ) :: i_step
 !

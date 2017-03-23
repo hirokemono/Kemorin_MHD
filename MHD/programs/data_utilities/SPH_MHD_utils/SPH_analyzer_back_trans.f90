@@ -97,7 +97,6 @@
       subroutine SPH_analyze_back_trans(i_step, MHD_step)
 !
       use m_work_time
-      use m_t_step_parameter
       use m_spheric_parameter
       use m_sph_spectr_data
       use m_fdm_coefs
@@ -284,7 +283,6 @@
      &          sph_params, sph_rj, leg, ipol, rj_fld, pwr, WK_pwr)
 !
       use m_machine_parameter
-      use m_t_step_parameter
       use m_boundary_params_sph_MHD
       use t_MHD_step_parameter
       use t_schmidt_poly_on_rtm

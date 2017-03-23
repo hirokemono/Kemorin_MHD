@@ -16,7 +16,6 @@
 !
       use m_SGS_control_parameter
       use m_physical_property
-      use m_t_step_parameter
       use m_mesh_data
       use m_ucd_data
       use m_sorted_node_MHD

@@ -33,8 +33,6 @@
 !
       subroutine evolution_sph_mod_restart
 !
-      use m_t_step_parameter
-!
       use FEM_analyzer_sph_MHD
       use SPH_analyzer_snap
 !
@@ -91,7 +89,6 @@
       subroutine SPH_analyze_mod_restart(i_step, MHD_step)
 !
       use m_work_time
-      use m_t_step_parameter
       use m_spheric_parameter
       use m_sph_spectr_data
       use m_rms_4_sph_spectr

@@ -36,7 +36,6 @@
 !
       subroutine evolution_sph_special_snap
 !
-      use m_t_step_parameter
       use t_MHD_step_parameter
       use m_mesh_data
       use m_node_phys_data
@@ -131,7 +130,6 @@
       subroutine SPH_analyze_special_snap(i_step, MHD_step)
 !
       use m_work_time
-      use m_t_step_parameter
       use m_spheric_parameter
       use m_sph_spectr_data
       use m_fdm_coefs

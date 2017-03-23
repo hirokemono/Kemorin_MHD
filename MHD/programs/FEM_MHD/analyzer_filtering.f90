@@ -77,7 +77,6 @@
 !
       subroutine analyze
 !
-      use m_t_step_parameter
       use m_jacobians
       use m_element_id_4_node
       use FEM_analyzer_snapshot
