@@ -11,18 +11,18 @@
 !!@verbatim
 !!  ---------------------------------------------------------------------
 !!
-!!      subroutine init_sph_ISPACK_t(ncomp, nidx_rtp, maxirt_rtp_smp,   &
+!!      subroutine init_sph_ISPACK(nidx_rtp, maxirt_rtp_smp, ncomp,     &
 !!     &          ispack_t)
-!!      subroutine finalize_sph_ISPACK_t(ispack_t)
-!!      subroutine verify_sph_ISPACK_t(ncomp, nidx_rtp, maxirt_rtp_smp, &
+!!      subroutine finalize_sph_ISPACK(ispack_t)
+!!      subroutine verify_sph_ISPACK(nidx_rtp, maxirt_rtp_smp, ncomp,   &
 !!     &          ispack_t)
 !! ------------------------------------------------------------------
 !! wrapper subroutine for initierize FFT for ISPACK
 !! ------------------------------------------------------------------
 !!
-!!      subroutine sph_FTTRUF_to_send_t(ncomp, nnod_rtp, nidx_rtp,      &
-!!     &          irt_rtp_smp_stack, n_WS, irev_sr_rtp, X_rtp, WS,      &
-!!     &          ispack_t)
+!!      subroutine sph_FTTRUF_to_send(nnod_rtp, nidx_rtp,               &
+!!     &          irt_rtp_smp_stack, ncomp, n_WS, irev_sr_rtp,          &
+!!     &          X_rtp, WS, ispack_t)
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for forward Fourier transform by ISPACK
@@ -36,9 +36,9 @@
 !!
 !! ------------------------------------------------------------------
 !!
-!!      subroutine sph_FTTRUB_from_recv_t(ncomp, nnod_rtp, nidx_rtp,    &
-!!     &          irt_rtp_smp_stack, n_WR, irev_sr_rtp, WR, X_rtp,      &
-!!     &          ispack_t)
+!!      subroutine sph_FTTRUB_from_recv(nnod_rtp, nidx_rtp,             &
+!!     &          irt_rtp_smp_stack, ncomp, n_WR, irev_sr_rtp,          &
+!!     &          WR, X_rtp, ispack_t)
 !! ------------------------------------------------------------------
 !!
 !! wrapper subroutine for backward Fourier transform by ISPACK
@@ -107,7 +107,7 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_sph_ISPACK_t(ncomp, nidx_rtp, maxirt_rtp_smp,     &
+      subroutine init_sph_ISPACK(nidx_rtp, maxirt_rtp_smp, ncomp,       &
      &          ispack_t)
 !
       integer(kind = kint), intent(in) :: nidx_rtp(3)
@@ -124,11 +124,11 @@
 !
       call alloc_work_4_ispack(nidx_rtp(3), ispack_t)
 !
-      end subroutine init_sph_ISPACK_t
+      end subroutine init_sph_ISPACK
 !
 ! ------------------------------------------------------------------
 !
-      subroutine finalize_sph_ISPACK_t(ispack_t)
+      subroutine finalize_sph_ISPACK(ispack_t)
 !
       type(work_for_ispack), intent(inout) :: ispack_t
 !
@@ -136,11 +136,11 @@
       call dealloc_const_4_ispack(ispack_t)
       call dealloc_work_4_ispack(ispack_t)
 !
-      end subroutine finalize_sph_ISPACK_t
+      end subroutine finalize_sph_ISPACK
 !
 ! ------------------------------------------------------------------
 !
-      subroutine verify_sph_ISPACK_t(ncomp, nidx_rtp, maxirt_rtp_smp,   &
+      subroutine verify_sph_ISPACK(nidx_rtp, maxirt_rtp_smp, ncomp,     &
      &          ispack_t)
 !
       integer(kind = kint), intent(in) :: nidx_rtp(3)
@@ -172,14 +172,14 @@
         call alloc_work_4_ispack(nidx_rtp(3), ispack_t)
       end if
 !
-      end subroutine verify_sph_ISPACK_t
+      end subroutine verify_sph_ISPACK
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine sph_FTTRUF_to_send_t(ncomp, nnod_rtp, nidx_rtp,        &
-     &          irt_rtp_smp_stack, n_WS, irev_sr_rtp, X_rtp, WS,        &
-     &          ispack_t)
+      subroutine sph_FTTRUF_to_send(nnod_rtp, nidx_rtp,                 &
+     &          irt_rtp_smp_stack, ncomp, n_WS, irev_sr_rtp,            &
+     &          X_rtp, WS, ispack_t)
 !
       integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: nidx_rtp(3)
@@ -250,13 +250,13 @@
       end do
 !$omp end parallel do
 !
-      end subroutine sph_FTTRUF_to_send_t
+      end subroutine sph_FTTRUF_to_send
 !
 ! ------------------------------------------------------------------
 !
-      subroutine sph_FTTRUB_from_recv_t(ncomp, nnod_rtp, nidx_rtp,      &
-     &          irt_rtp_smp_stack, n_WR, irev_sr_rtp, WR, X_rtp,        &
-     &          ispack_t)
+      subroutine sph_FTTRUB_from_recv(nnod_rtp, nidx_rtp,               &
+     &          irt_rtp_smp_stack, ncomp, n_WR, irev_sr_rtp,            &
+     &          WR, X_rtp, ispack_t)
 !
       integer(kind = kint), intent(in) :: nnod_rtp
       integer(kind = kint), intent(in) :: nidx_rtp(3)
@@ -326,7 +326,7 @@
       end do
 !$omp end parallel do
 !
-      end subroutine sph_FTTRUB_from_recv_t
+      end subroutine sph_FTTRUB_from_recv
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------

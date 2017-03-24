@@ -70,15 +70,25 @@
 !
       use m_precision
       use m_machine_parameter
-      use m_sph_FFTPACK5
+      use t_sph_FFTPACK5
       use m_FFT_selector
 !
 #ifdef FFTW3
-      use m_sph_single_FFTW
-      use m_sph_field_FFTW
+      use t_sph_single_FFTW
+      use t_sph_field_FFTW
 #endif
 !
       implicit none
+!
+!>      Structure to use FFTPACK
+      type(work_for_fftpack), save :: sph_FFTPACK
+!
+#ifdef FFTW3
+!>      Structure to use FFTW
+      type(work_for_sgl_FFTW), save :: sph_fld_FFTW
+!>      Structure to use FFTW for each component
+      type(work_for_sgl_FFTW), save :: sph_sgl_FFTW
+#endif
 !
 ! ------------------------------------------------------------------
 !
@@ -99,18 +109,19 @@
      &   .or. iflag_FFT .eq. iflag_FFTW_FIELD) then
         if(my_rank .eq. 0) write(*,*) 'Use FFTW'
         call init_sph_field_FFTW                                        &
-     &     (sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp)
+     &     (sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp, sph_fld_FFTW)
         return
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         if(my_rank .eq. 0) write(*,*) 'Use single transform in FFTW'
-        call init_sph_single_FFTW(sph_rtp%nidx_rtp)
+        call init_sph_single_FFTW(sph_rtp%nidx_rtp, sph_sgl_FFTW)
         return
       end if
 #endif
 !
         if(my_rank .eq. 0) write(*,*) 'Use FFTPACK'
         call init_sph_FFTPACK5                                          &
-     &     (sph_rtp%nidx_rtp, sph_rtp%maxirt_rtp_smp, ncomp)
+     &     (sph_rtp%nidx_rtp, sph_rtp%maxirt_rtp_smp, ncomp,            &
+     &      sph_FFTPACK)
 !
       end subroutine init_sph_FFT_select
 !
@@ -120,20 +131,20 @@
 !
 !
 #ifdef FFTW3
-      if(iflag_FFT .eq. iflag_FFTW                                 &
+      if(iflag_FFT .eq. iflag_FFTW                                      &
      &   .or. iflag_FFT .eq. iflag_FFTW_FIELD) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW'
-        call finalize_sph_field_FFTW
+        call finalize_sph_field_FFTW(sph_fld_FFTW)
         return
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize single FFTW'
-        call finalize_sph_single_FFTW
+        call finalize_sph_single_FFTW(sph_sgl_FFTW)
         return
       end if
 #endif
 !
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTPACK'
-        call finalize_sph_FFTPACK5
+        call finalize_sph_FFTPACK5(sph_FFTPACK)
 !
       end subroutine finalize_sph_FFT_select
 !
@@ -155,18 +166,19 @@
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTW'
         call verify_sph_field_FFTW                                      &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
-     &      sph_rtp%istack_rtp_rt_smp)
+     &      sph_rtp%istack_rtp_rt_smp, sph_fld_FFTW)
         return
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         if(iflag_debug .gt. 0) write(*,*) 'Use single transforms in FFTW'
-        call verify_sph_single_FFTW(sph_rtp%nidx_rtp)
+        call verify_sph_single_FFTW(sph_rtp%nidx_rtp, sph_sgl_FFTW)
         return
       end if
 #endif
 !
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTPACK'
         call verify_sph_FFTPACK5                                        &
-     &     (sph_rtp%nidx_rtp, sph_rtp%maxirt_rtp_smp, ncomp)
+     &     (sph_rtp%nidx_rtp, sph_rtp%maxirt_rtp_smp, ncomp,            &
+     &      sph_FFTPACK)
 !
       end subroutine verify_sph_FFT_select
 !
@@ -193,13 +205,13 @@
         call sph_field_fwd_FFTW_to_send                                 &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp, n_WS, comm_rtp%irev_sr,   &
-     &      v_rtp(1,1), WS(1))
+     &      v_rtp(1,1), WS(1), sph_fld_FFTW)
         return
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         call sph_single_fwd_FFTW_to_send                                &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp, n_WS, comm_rtp%irev_sr,   &
-     &      v_rtp(1,1), WS(1))
+     &      v_rtp(1,1), WS(1), sph_sgl_FFTW)
         return
       end if
 #endif
@@ -207,7 +219,7 @@
         call sph_RFFTMF_to_send                                         &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp, n_WS, comm_rtp%irev_sr,   &
-     &      v_rtp(1,1), WS(1))
+     &      v_rtp(1,1), WS(1), sph_FFTPACK)
 !
       end subroutine fwd_FFT_select_to_send
 !
@@ -233,13 +245,13 @@
         call sph_field_back_FFTW_from_recv                              &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp, n_WR, comm_rtp%irev_sr,   &
-     &      WR(1), v_rtp(1,1))
+     &      WR(1), v_rtp(1,1), sph_fld_FFTW)
         return
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         call sph_single_back_FFTW_from_recv                             &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp, n_WR, comm_rtp%irev_sr,   &
-     &      WR(1), v_rtp(1,1))
+     &      WR(1), v_rtp(1,1), sph_sgl_FFTW)
         return
       end if
 #endif
@@ -247,7 +259,7 @@
         call sph_RFFTMB_from_recv                                       &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp, n_WR, comm_rtp%irev_sr,   &
-     &      WR, v_rtp(1,1))
+     &      WR, v_rtp(1,1), sph_FFTPACK)
 !
       end subroutine back_FFT_select_from_recv
 !

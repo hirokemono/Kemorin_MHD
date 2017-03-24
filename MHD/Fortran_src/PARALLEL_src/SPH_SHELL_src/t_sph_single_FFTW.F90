@@ -9,15 +9,15 @@
 !!
 !!@verbatim
 !! ------------------------------------------------------------------
-!!      subroutine init_sph_single_FFTW_t(nidx_rtp, FFTW_t)
-!!      subroutine finalize_sph_single_FFTW_t(FFTW_t)
-!!      subroutine verify_sph_single_FFTW_t(nidx_rtp, FFTW_t)
+!!      subroutine init_sph_single_FFTW(nidx_rtp, FFTW_t)
+!!      subroutine finalize_sph_single_FFTW(FFTW_t)
+!!      subroutine verify_sph_single_FFTW(nidx_rtp, FFTW_t)
 !!
 !!   wrapper subroutine for initierize FFT by FFTW
 !! ------------------------------------------------------------------
 !!
-!!      subroutine sph_sgl_fwd_FFTW_to_send_t(ncomp, nnod_rtp,          &
-!!     &          nidx_rtp, irt_rtp_smp_stack, n_WS, irev_sr_rtp,       &
+!!      subroutine sph_single_fwd_FFTW_to_send(nnod_rtp, nidx_rtp,   &
+!!     &          irt_rtp_smp_stack, ncomp, n_WS, irev_sr_rtp,       &
 !!     &          X_rtp, WS, FFTW_t)
 !! ------------------------------------------------------------------
 !!
@@ -32,8 +32,8 @@
 !!
 !! ------------------------------------------------------------------
 !!
-!!      subroutine sph_sgl_back_FFTW_from_recv_t(ncomp, nnod_rtp,       &
-!!     &          nidx_rtp, irt_rtp_smp_stack, n_WR, irev_sr_rtp, WR,   &
+!!      subroutine sph_single_back_FFTW_from_recv(nnod_rtp, nidx_rtp,   &
+!!     &          irt_rtp_smp_stack, ncomp, n_WR, irev_sr_rtp, WR,      &
 !!     &          X_rtp, FFTW_t)
 !! ------------------------------------------------------------------
 !!
@@ -109,7 +109,7 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_sph_single_FFTW_t(nidx_rtp, FFTW_t)
+      subroutine init_sph_single_FFTW(nidx_rtp, FFTW_t)
 !
       integer(kind = kint), intent(in) :: nidx_rtp(3)
       type(work_for_sgl_FFTW), intent(inout) :: FFTW_t
@@ -136,11 +136,11 @@
       end do
       FFTW_t%aNfft = one / dble(nidx_rtp(3))
 !
-      end subroutine init_sph_single_FFTW_t
+      end subroutine init_sph_single_FFTW
 !
 ! ------------------------------------------------------------------
 !
-      subroutine finalize_sph_single_FFTW_t(FFTW_t)
+      subroutine finalize_sph_single_FFTW(FFTW_t)
 !
       type(work_for_sgl_FFTW), intent(inout) :: FFTW_t
 !
@@ -163,33 +163,33 @@
 !
       call dealloc_FFTW_plan(FFTW_t)
 !
-      end subroutine finalize_sph_single_FFTW_t
+      end subroutine finalize_sph_single_FFTW
 !
 ! ------------------------------------------------------------------
 !
-      subroutine verify_sph_single_FFTW_t(nidx_rtp, FFTW_t)
+      subroutine verify_sph_single_FFTW(nidx_rtp, FFTW_t)
 !
       integer(kind = kint), intent(in) :: nidx_rtp(3)
       type(work_for_sgl_FFTW), intent(inout) :: FFTW_t
 !
 !
       if(allocated(FFTW_t%X) .eqv. .false.) then
-        call init_sph_single_FFTW_t(nidx_rtp, FFTW_t)
+        call init_sph_single_FFTW(nidx_rtp, FFTW_t)
         return
       end if
 !
       if(size(FFTW_t%X) .ne. nidx_rtp(3)*np_smp) then
-        call finalize_sph_single_FFTW_t(FFTW_t)
-        call init_sph_single_FFTW_t(nidx_rtp, FFTW_t)
+        call finalize_sph_single_FFTW(FFTW_t)
+        call init_sph_single_FFTW(nidx_rtp, FFTW_t)
       end if
 !
-      end subroutine verify_sph_single_FFTW_t
+      end subroutine verify_sph_single_FFTW
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------
 !
-      subroutine sph_sgl_fwd_FFTW_to_send_t(ncomp, nnod_rtp,            &
-     &          nidx_rtp, irt_rtp_smp_stack, n_WS, irev_sr_rtp,         &
+      subroutine sph_single_fwd_FFTW_to_send(nnod_rtp, nidx_rtp,     &
+     &          irt_rtp_smp_stack, ncomp, n_WS, irev_sr_rtp,         &
      &          X_rtp, WS, FFTW_t)
 !
       integer(kind = kint), intent(in) :: nnod_rtp
@@ -255,12 +255,12 @@
 !     &                     + rtmp(ip,1:3) - dummy(ip,1:3)
 !      end do
 !
-      end subroutine sph_sgl_fwd_FFTW_to_send_t
+      end subroutine sph_single_fwd_FFTW_to_send
 !
 ! ------------------------------------------------------------------
 !
-      subroutine sph_sgl_back_FFTW_from_recv_t(ncomp, nnod_rtp,         &
-     &          nidx_rtp, irt_rtp_smp_stack, n_WR, irev_sr_rtp, WR,     &
+      subroutine sph_single_back_FFTW_from_recv(nnod_rtp, nidx_rtp,     &
+     &          irt_rtp_smp_stack, ncomp, n_WR, irev_sr_rtp, WR,        &
      &          X_rtp, FFTW_t)
 !
       integer(kind = kint), intent(in) :: nnod_rtp
@@ -330,7 +330,7 @@
 !     &                     + rtmp(ip,1:3) - dummy(ip,1:3)
 !      end do
 !
-      end subroutine sph_sgl_back_FFTW_from_recv_t
+      end subroutine sph_single_back_FFTW_from_recv
 !
 ! ------------------------------------------------------------------
 ! ------------------------------------------------------------------

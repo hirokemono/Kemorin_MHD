@@ -77,17 +77,18 @@
 !
       use m_precision
       use m_machine_parameter
-      use m_sph_FFTPACK5
-      use m_sph_ISPACK_FFT
+      use t_sph_FFTPACK5
+      use t_sph_ISPACK_FFT
       use m_FFT_selector
 !
 #ifdef FFTW3
-      use m_sph_single_FFTW
-      use m_sph_field_FFTW
+      use t_sph_single_FFTW
+      use t_sph_field_FFTW
       use t_sph_multi_FFTW
 #endif
 !
       use t_sph_single_FFTW
+      use sph_FFT_selector
 !
       implicit none
 !
@@ -187,7 +188,7 @@
         call sph_FTTRUF_to_send                                         &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
-     &      comm_rtp%irev_sr, frc_rtp, WS(1))
+     &      comm_rtp%irev_sr, frc_rtp, WS(1), sph_ispack)
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW) then
         call MHD_multi_fwd_FFTW_to_send(ncomp_fwd, sph_rtp%nnod_rtp,    &
@@ -197,18 +198,18 @@
         call sph_field_fwd_FFTW_to_send                                 &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
-     &      comm_rtp%irev_sr, frc_rtp, WS(1))
+     &      comm_rtp%irev_sr, frc_rtp, WS(1), sph_fld_FFTW)
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         call sph_single_fwd_FFTW_to_send                                &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
-     &      comm_rtp%irev_sr, frc_rtp, WS(1))
+     &      comm_rtp%irev_sr, frc_rtp, WS(1), sph_sgl_FFTW)
 #endif
       else
         call sph_RFFTMF_to_send                                         &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
-     &      comm_rtp%irev_sr, frc_rtp, WS(1))
+     &      comm_rtp%irev_sr, frc_rtp, WS(1), sph_FFTPACK)
       end if
 !
       end subroutine fwd_MHD_FFT_sel_to_send
@@ -235,7 +236,7 @@
         call sph_FTTRUB_from_recv                                       &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                 &
-     &      comm_rtp%irev_sr, WR(1), fld_rtp)
+     &      comm_rtp%irev_sr, WR(1), fld_rtp, sph_ispack)
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW) then
         call MHD_multi_back_FFTW_from_recv(ncomp_bwd, sph_rtp%nnod_rtp, &
@@ -245,18 +246,18 @@
         call sph_field_back_FFTW_from_recv                              &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                 &
-     &      comm_rtp%irev_sr, WR(1), fld_rtp)
+     &      comm_rtp%irev_sr, WR(1), fld_rtp, sph_fld_FFTW)
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         call sph_single_back_FFTW_from_recv                             &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                 &
-     &      comm_rtp%irev_sr, WR(1), fld_rtp)
+     &      comm_rtp%irev_sr, WR(1), fld_rtp, sph_sgl_FFTW)
 #endif
       else
         call sph_RFFTMB_from_recv                                       &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                 &
-     &      comm_rtp%irev_sr, WR, fld_rtp)
+     &      comm_rtp%irev_sr, WR, fld_rtp, sph_FFTPACK)
       end if
 !
       end subroutine back_MHD_FFT_sel_from_recv
