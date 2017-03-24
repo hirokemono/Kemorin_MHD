@@ -27,6 +27,7 @@
       use t_global_gauss_coefs
       use t_file_IO_parameter
       use t_sph_transforms
+      use t_phys_name_4_sph_trans
 !
       implicit none
 !
@@ -64,12 +65,6 @@
       type(jacobians_3d), save :: jac_STR_q
 !
 !
-!>      total number of components for spherical harmonics transform
-      integer(kind = kint) :: ncomp_sph_trans
-!>      total number of vectors for spherical harmonics transform
-      integer(kind = kint) :: nvector_sph_trans
-!>      total number of scalars for spherical harmonics transform
-      integer(kind = kint) :: nscalar_sph_trans
 !>        Structures of parameters for spherical transform
       type(parameters_4_sph_trans), save :: trns_param
 !
@@ -78,6 +73,7 @@
 !
 !>      Work structures for various spherical harmonics trasform
       type(spherical_trns_works), save :: WK_sph_TRNS
+      type(field_name_4_sph_trans), save :: fld_rtp_TRNS
 !
 ! ----------------------------------------------------------------------
 !

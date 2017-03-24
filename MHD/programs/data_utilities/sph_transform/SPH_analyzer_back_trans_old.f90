@@ -19,6 +19,7 @@
       use t_phys_data
       use t_time_data
       use t_field_data_IO
+      use t_phys_name_4_sph_trans
 !
       implicit none
 !
@@ -35,7 +36,6 @@
       use r_interpolate_sph_data
       use count_num_sph_smp
       use field_IO_select
-      use set_phys_name_4_sph_trans
       use set_sph_phys_address
       use init_sph_trans
       use pole_sph_transform
@@ -59,7 +59,7 @@
      &   (nprocs, my_rank, t_STR%init_d%i_time_step, t_IO, fld_IO)
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_sph_name_rj_to_rtp'
-      call copy_sph_name_rj_to_rtp(rj_fld)
+      call copy_sph_name_rj_to_rtp(rj_fld, fld_rtp_TRNS)
 !
 !  ------    set original spectr modes
 !
@@ -81,15 +81,14 @@
 !  ---- initialize spherical harmonics transform
 !
       if (iflag_debug.gt.0) write(*,*) 'initialize_sph_trans'
-      call copy_sph_trans_nums_from_rtp(ncomp_sph_trans)
-      nscalar_sph_trans = num_scalar_rtp + 6*num_tensor_rtp
-      call initialize_sph_trans                                         &
-     &   (ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans,        &
+      call copy_sph_trans_nums_from_rtp(fld_rtp_TRNS)
+      call initialize_sph_trans(fld_rtp_TRNS%ncomp_trans,               &
+     &    fld_rtp_TRNS%num_vector, fld_rtp_TRNS%nscalar_trans,          &
      &    sph_mesh%sph, sph_mesh%sph_comms, trns_param, WK_sph_TRNS)
 !
       call init_pole_transform(sph_mesh%sph%sph_rtp)
       call allocate_d_pole_4_all_trans                                  &
-     &   (ncomp_sph_trans, sph_mesh%sph%sph_rtp)
+     &   (fld_rtp_TRNS, sph_mesh%sph%sph_rtp)
 !
 !      call calypso_MPI_barrier
 !      call check_schmidt_poly_rtm(my_rank+40, sph_mesh%sph%sph_rtm,    &

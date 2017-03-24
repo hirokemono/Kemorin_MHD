@@ -52,8 +52,6 @@
       use const_mesh_information
       use const_element_comm_tables
 !
-      use copy_all_field_4_sph_trans
-!
       type(field_IO_params), intent(in) :: udt_file_param
       type(time_data), intent(inout) :: t_IO
 !

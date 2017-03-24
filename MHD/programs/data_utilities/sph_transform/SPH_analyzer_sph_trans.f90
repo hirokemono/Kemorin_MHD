@@ -41,9 +41,9 @@
 !
       use t_spheric_mesh
       use t_phys_data
+      use t_phys_name_4_sph_trans
 !
       use count_num_sph_smp
-      use set_phys_name_4_sph_trans
       use init_sph_trans
       use sph_transfer_all_field
 !
@@ -53,7 +53,7 @@
 !  ---- allocate spectr data
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_sph_name_rj_to_rtp'
-      call copy_sph_name_rj_to_rtp(rj_fld)
+      call copy_sph_name_rj_to_rtp(rj_fld, fld_rtp_TRNS)
       call calypso_mpi_barrier
 !
       call alloc_phys_data_type(sph_mesh%sph%sph_rj%nnod_rj, rj_fld)
@@ -62,18 +62,17 @@
 !  ---- initialize spherical harmonics transform
 !
       if (iflag_debug.gt.0) write(*,*) 'initialize_sph_trans'
-      call copy_sph_trans_nums_from_rtp(ncomp_sph_trans)
+      call copy_sph_trans_nums_from_rtp(fld_rtp_TRNS)
 !
-      nscalar_sph_trans = num_scalar_rtp + 6*num_tensor_rtp
       if (iflag_debug.gt.0) write(*,*) 'initialize_sph_trans'
-      call initialize_sph_trans                                         &
-     &   (ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans,        &
+      call initialize_sph_trans(fld_rtp_TRNS%ncomp_trans,               &
+     &    fld_rtp_TRNS%num_vector, fld_rtp_TRNS%nscalar_trans,          &
      &    sph_mesh%sph, sph_mesh%sph_comms, trns_param, WK_sph_TRNS)
 !
       call calypso_mpi_barrier
       if (iflag_debug.gt.0) write(*,*) 'allocate_d_rtp_4_all_trans'
       call allocate_d_rtp_4_all_trans                                   &
-     &   (ncomp_sph_trans, sph_mesh%sph%sph_rtp)
+     &   (fld_rtp_TRNS, sph_mesh%sph%sph_rtp)
 !
       end subroutine SPH_initialize_sph_trans
 !
@@ -101,8 +100,8 @@
 !
 !  spherical transform for vector
       call sph_f_trans_all_field                                        &
-     &   (ncomp_sph_trans, sph_mesh%sph, sph_mesh%sph_comms,            &
-     &    femmesh_STR%mesh, trns_param, field_STR, rj_fld, WK_sph_TRNS)
+     &   (sph_mesh%sph, sph_mesh%sph_comms, femmesh_STR%mesh,           &
+     &    trns_param, fld_rtp_TRNS, field_STR, rj_fld, WK_sph_TRNS)
 !
 !      call check_all_field_data(my_rank, rj_fld)
 !
@@ -145,8 +144,8 @@
 !
 !  spherical transform for vector
       call sph_f_trans_all_field                                        &
-     &   (ncomp_sph_trans, sph_mesh%sph, sph_mesh%sph_comms,            &
-     &    femmesh_STR%mesh, trns_param, field_STR, rj_fld, WK_sph_TRNS)
+     &   (sph_mesh%sph, sph_mesh%sph_comms, femmesh_STR%mesh,           &
+     &    trns_param, fld_rtp_TRNS, field_STR, rj_fld, WK_sph_TRNS)
 !
 !      call check_all_field_data(my_rank, rj_fld)
 !
