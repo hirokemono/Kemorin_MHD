@@ -55,6 +55,7 @@
 !
       implicit none
 !
+!>      Work structure for Legendre trasform by matmul with symmetry
       type leg_trns_sym_mul_work
 !>        Number of meridional grid points in northern hemisphere
         integer(kind = kint) :: nth_hemi_rtm

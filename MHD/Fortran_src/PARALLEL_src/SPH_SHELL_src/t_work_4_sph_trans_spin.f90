@@ -42,6 +42,7 @@
       implicit none
 !
 !
+!>      Work structure for Legendre trasform
       type leg_trns_spin_work
 !>        field data for Legendre transform  @f$ f(r,\theta,m) @f$ 
 !!@n       size:  vr_rtm(ncomp*nidx_rtm(2)*nidx_rtm(1)*nidx_rtm(3))

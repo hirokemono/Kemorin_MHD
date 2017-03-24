@@ -54,7 +54,7 @@
 !
       implicit none
 !
-!>      Structure for LEgendre trasdorm for test
+!>      Structure for Legendre trasdorm for test
       type leg_trns_testloop_work
 !>        Number of meridional grid points in northern hemisphere
         integer(kind = kint) :: nth_sym

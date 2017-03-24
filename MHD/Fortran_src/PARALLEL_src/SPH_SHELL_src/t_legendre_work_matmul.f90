@@ -48,6 +48,7 @@
       implicit none
 !
 !
+!>      Work structure for Legendre trasform by matmul
       type leg_trns_matmul_work
 !>        Maximum matrix size for spectr data
         integer(kind = kint) :: nvec_jk
