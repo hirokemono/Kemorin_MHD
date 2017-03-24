@@ -305,6 +305,7 @@
       use t_phys_data
       use t_fdm_coefs
       use t_sph_trans_arrays_MHD
+      use t_sph_transforms
       use m_physical_property
       use m_schmidt_poly_on_rtm
       use output_viz_file_control
@@ -337,11 +338,12 @@
       end if
 !
       call sph_back_trans_4_MHD                                         &
-     &   (sph, comms_sph, fl_prop1, omega_sph, trans_p1,                &
-     &    ipol, rj_fld, trns_WK%trns_MHD, trns_WK%MHD_mul_FFTW)
+     &   (sph, comms_sph, fl_prop1, omega_sph, trans_p1, ipol, rj_fld,  &
+     &    trns_WK%trns_MHD, trns_WK%WK_sph, trns_WK%MHD_mul_FFTW)
 !
       call sph_forward_trans_snapshot_MHD                               &
-     &   (sph, comms_sph, trans_p1, trns_WK%trns_snap, ipol, rj_fld)
+     &   (sph, comms_sph, trans_p1, trns_WK%trns_snap, ipol,            &
+     &    trns_WK%WK_sph, rj_fld)
 !
 ! ----  Take zonal mean
 !

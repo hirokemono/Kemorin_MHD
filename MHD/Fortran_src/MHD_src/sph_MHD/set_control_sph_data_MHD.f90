@@ -9,7 +9,7 @@
 !!@verbatim
 !!     subroutine s_set_control_sph_data_MHD                            &
 !!    &         (SGS_param, plt, field_ctl, mevo_ctl,                   &
-!!    &          rj_org_param, rst_org_param, rj_fld)
+!!    &          rj_org_param, rst_org_param, rj_fld, WK_sph)
 !!       type(SGS_model_control_params), intent(in) :: SGS_param
 !!       type(platform_data_control), intent(in) :: plt
 !!       type(ctl_array_c3), intent(inout) :: field_ctl
@@ -38,7 +38,7 @@
 !
       subroutine s_set_control_sph_data_MHD                             &
      &         (SGS_param, plt, field_ctl, mevo_ctl,                    &
-     &          rj_org_param, rst_org_param, rj_fld)
+     &          rj_org_param, rst_org_param, rj_fld, WK_sph)
 !
       use calypso_mpi
       use m_error_IDs
@@ -49,6 +49,7 @@
       use m_sph_boundary_input_data
       use m_sel_spherical_SRs
       use m_FFT_selector
+      use m_legendre_transform_list
 !
       use t_SGS_control_parameter
       use t_ctl_data_4_platforms
@@ -56,10 +57,10 @@
       use t_ctl_data_mhd_evo_scheme
       use t_phys_data
       use t_field_data_IO
+      use t_sph_transforms
 !
       use skip_comment_f
       use set_control_sph_data
-      use legendre_transform_select
       use add_nodal_fields_4_MHD
       use add_sph_MHD_fields_2_ctl
       use sph_mhd_rst_IO_control
@@ -70,6 +71,7 @@
       type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
       type(field_IO_params), intent(in) :: rj_org_param, rst_org_param
       type(phys_data), intent(inout) :: rj_fld
+      type(spherical_trns_works), intent(inout) :: WK_sph
 !
       integer(kind = kint) :: ierr
 !
@@ -113,8 +115,8 @@
       end if
 !      
       if(mevo_ctl%Legendre_trans_type%iflag .gt. 0) then
-        call set_legendre_trans_mode_ctl                                &
-     &     (mevo_ctl%Legendre_trans_type%charavalue)
+        WK_sph%WK_leg%id_legendre = set_legendre_trans_mode_ctl         &
+     &                       (mevo_ctl%Legendre_trans_type%charavalue)
       end if
 !
       if(mevo_ctl%FFT_library%iflag .gt. 0) then

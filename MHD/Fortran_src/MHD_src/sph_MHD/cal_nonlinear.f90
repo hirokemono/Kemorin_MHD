@@ -60,6 +60,7 @@
       use t_work_4_sph_trans
       use t_sph_filtering_data
       use t_radial_reference_temp
+      use t_sph_transforms
       use sph_filtering
 !
       implicit none
@@ -103,15 +104,15 @@
       if (iflag_debug.eq.1) write(*,*) 'nonlinear_by_pseudo_sph'
       call nonlinear_by_pseudo_sph(SGS_param, sph, comms_sph,           &
      &    omega_sph, r_2nd, trans_p, WK%dynamic_SPH,                    &
-     &    WK%trns_MHD, WK%MHD_mul_FFTW, ipol, itor, rj_fld)
+     &    WK%trns_MHD, WK%WK_sph, WK%MHD_mul_FFTW, ipol, itor, rj_fld)
 !
 !   ----  Lead SGS terms
       if(SGS_param%iflag_SGS .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'SGS_by_pseudo_sph'
         call SGS_by_pseudo_sph                                          &
      &     (SGS_param, sph, comms_sph, r_2nd, trans_p,                  &
-     &      WK%trns_MHD, WK%trns_snap, WK%trns_SGS, WK%SGS_mul_FFTW,    &
-     &      WK%dynamic_SPH, ipol, itor, rj_fld)
+     &      WK%trns_MHD, WK%trns_snap, WK%trns_SGS, WK%WK_sph,          &
+     &      WK%SGS_mul_FFTW, WK%dynamic_SPH, ipol, itor, rj_fld)
       end if
 !
 !   ----  Lead advection of reference field
@@ -200,7 +201,7 @@
 !
       subroutine nonlinear_by_pseudo_sph(SGS_param, sph, comms_sph,     &
      &          omega_sph, r_2nd, trans_p, dynamic_SPH, trns_MHD,       &
-     &          MHD_mul_FFTW, ipol, itor, rj_fld)
+     &          WK_sph, MHD_mul_FFTW, ipol, itor, rj_fld)
 !
       use sph_transforms_4_MHD
       use cal_nonlinear_sph_MHD
@@ -220,6 +221,7 @@
       type(phys_address), intent(in) :: ipol, itor
 !
       type(address_4_sph_trans), intent(inout) :: trns_MHD
+      type(spherical_trns_works), intent(inout) :: WK_sph
       type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -238,7 +240,7 @@
       call start_eleps_time(14)
       if (iflag_debug.ge.1) write(*,*) 'sph_back_trans_4_MHD'
       call sph_back_trans_4_MHD(sph, comms_sph, fl_prop1, omega_sph,    &
-     &    trans_p, ipol, rj_fld, trns_MHD, MHD_mul_FFTW)
+     &    trans_p, ipol, rj_fld, trns_MHD, WK_sph, MHD_mul_FFTW)
       call end_eleps_time(14)
 !
       call start_eleps_time(15)
@@ -262,7 +264,7 @@
       call start_eleps_time(16)
       if (iflag_debug.ge.1) write(*,*) 'sph_forward_trans_4_MHD'
       call sph_forward_trans_4_MHD(sph, comms_sph, fl_prop1, trans_p,   &
-     &    ipol, trns_MHD, MHD_mul_FFTW, rj_fld)
+     &    ipol, trns_MHD, WK_sph, MHD_mul_FFTW, rj_fld)
       call end_eleps_time(16)
 !
       call start_eleps_time(17)
@@ -278,7 +280,7 @@
 !
       subroutine SGS_by_pseudo_sph                                      &
      &         (SGS_param, sph, comms_sph, r_2nd, trans_p,              &
-     &          trns_MHD, trns_snap, trns_SGS, SGS_mul_FFTW,            &
+     &          trns_MHD, trns_snap, trns_SGS, WK_sph, SGS_mul_FFTW,    &
      &          dynamic_SPH, ipol, itor, rj_fld)
 !
       use sph_transforms_4_SGS
@@ -299,6 +301,7 @@
 !
       type(address_4_sph_trans), intent(inout) :: trns_MHD, trns_snap
       type(address_4_sph_trans), intent(inout) :: trns_SGS
+      type(spherical_trns_works), intent(inout) :: WK_sph
       type(work_for_sgl_FFTW), intent(inout) :: SGS_mul_FFTW
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       type(phys_data), intent(inout) :: rj_fld
@@ -314,7 +317,7 @@
         call start_eleps_time(14)
         if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_SGS_MHD'
         call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,            &
-     &      ipol, rj_fld, trns_SGS, SGS_mul_FFTW)
+     &      ipol, rj_fld, trns_SGS, WK_sph, SGS_mul_FFTW)
         call end_eleps_time(14)
 !
         call start_eleps_time(15)
@@ -350,7 +353,7 @@
         call start_eleps_time(16)
         if (iflag_debug.eq.1) write(*,*) 'sph_forward_trans_SGS_MHD'
         call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,         &
-     &      ipol, trns_SGS, SGS_mul_FFTW, rj_fld)
+     &      ipol, trns_SGS, WK_sph, SGS_mul_FFTW, rj_fld)
         call end_eleps_time(16)
 !
         call start_eleps_time(17)

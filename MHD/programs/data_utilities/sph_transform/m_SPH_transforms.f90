@@ -26,6 +26,7 @@
       use t_work_4_sph_trans
       use t_global_gauss_coefs
       use t_file_IO_parameter
+      use t_sph_transforms
 !
       implicit none
 !
@@ -65,11 +66,18 @@
 !
 !>      total number of components for spherical harmonics transform
       integer(kind = kint) :: ncomp_sph_trans
+!>      total number of vectors for spherical harmonics transform
+      integer(kind = kint) :: nvector_sph_trans
+!>      total number of scalars for spherical harmonics transform
+      integer(kind = kint) :: nscalar_sph_trans
 !>        Structures of parameters for spherical transform
       type(parameters_4_sph_trans), save :: trns_param
 !
 !>        Structures of Gauss points
       type(global_gauss_points), save :: d_gauss_trans
+!
+!>      Work structures for various spherical harmonics trasform
+      type(spherical_trns_works), save :: WK_sph_TRNS
 !
 ! ----------------------------------------------------------------------
 !

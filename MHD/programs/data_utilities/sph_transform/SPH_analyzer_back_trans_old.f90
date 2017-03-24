@@ -31,6 +31,7 @@
       subroutine SPH_initialize_back_trans                              &
      &         (sph_mesh, ipol, idpdr, itor, rj_fld, t_IO, fld_IO)
 !
+      use m_legendre_transform_list
       use r_interpolate_sph_data
       use count_num_sph_smp
       use field_IO_select
@@ -38,7 +39,6 @@
       use set_sph_phys_address
       use init_sph_trans
       use pole_sph_transform
-      use legendre_transform_select
       use sph_transfer_all_field
 !
       type(sph_mesh_data), intent(inout) :: sph_mesh
@@ -81,11 +81,11 @@
 !  ---- initialize spherical harmonics transform
 !
       if (iflag_debug.gt.0) write(*,*) 'initialize_sph_trans'
-      if(id_legendre_transfer.eq.iflag_leg_undefined)                   &
-     &            id_legendre_transfer = iflag_leg_orginal_loop
       call copy_sph_trans_nums_from_rtp(ncomp_sph_trans)
-      call initialize_sph_trans(ncomp_sph_trans,                        &
-     &    sph_mesh%sph, sph_mesh%sph_comms, trns_param)
+      nscalar_sph_trans = num_scalar_rtp + 6*num_tensor_rtp
+      call initialize_sph_trans                                         &
+     &   (ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans,        &
+     &    sph_mesh%sph, sph_mesh%sph_comms, trns_param, WK_sph_TRNS)
 !
       call init_pole_transform(sph_mesh%sph%sph_rtp)
       call allocate_d_pole_4_all_trans                                  &

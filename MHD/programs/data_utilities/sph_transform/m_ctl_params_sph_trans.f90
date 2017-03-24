@@ -3,12 +3,13 @@
 !
 !        programmed by H.Matsui on Oct., 2007
 !
-!!      subroutine set_control_4_sph_transform                          &
-!!     &         (time_STR, mesh_file, ucd, rj_fld, d_gauss, fem_fld)
-!!      subroutine s_set_ctl_data_4_sph_trans                           &
-!!     &         (time_STR, mesh_file, ucd, rj_fld, d_gauss, fem_fld)
+!!      subroutine set_control_4_sph_transform(time_STR, mesh_file,     &
+!!     &          ucd, rj_fld, d_gauss, fem_fld, WK_sph)
+!!      subroutine s_set_ctl_data_4_sph_trans(time_STR, mesh_file,      &
+!!     &         ucd, rj_fld, d_gauss, fem_fld, WK_sph)
 !!        type(ucd_data), intent(inout) :: ucd
 !!        type(phys_data), intent(inout) :: rj_fld
+!!        type(spherical_trns_works), intent(inout) :: WK_sph
 !!      subroutine set_ctl_data_4_zm_trans
 !!      subroutine set_ctl_data_4_pick_zm
 !
@@ -23,6 +24,7 @@
       use t_file_IO_parameter
       use t_IO_step_parameter
       use t_VIZ_step_parameter
+      use t_sph_transforms
 !
       implicit  none
 !
@@ -58,17 +60,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_sph_transform                            &
-     &         (time_STR, mesh_file, ucd, rj_fld, d_gauss, fem_fld)
+      subroutine set_control_4_sph_transform(time_STR, mesh_file,       &
+     &          ucd, rj_fld, d_gauss, fem_fld, WK_sph)
 !
       use t_ucd_data
       use calypso_mpi
       use m_FFT_selector
+      use m_legendre_transform_list
 !
       use set_control_nodal_data
       use set_control_sph_data
       use set_control_platform_data
-      use legendre_transform_select
       use ucd_IO_select
 !
       use m_sel_spherical_SRs
@@ -79,6 +81,7 @@
       type(ucd_data), intent(inout) :: ucd
       type(phys_data), intent(inout) :: rj_fld
       type(phys_data), intent(inout) :: fem_fld
+      type(spherical_trns_works), intent(inout) :: WK_sph
       type(global_gauss_points), intent(inout) :: d_gauss
 !
       integer(kind = kint) :: ierr
@@ -100,8 +103,8 @@
       end if
 !
       if(Legendre_trans_loop_ctl%iflag .gt. 0) then
-        call set_legendre_trans_mode_ctl                                &
-     &     (Legendre_trans_loop_ctl%charavalue)
+        WK_sph%WK_leg%id_legendre = set_legendre_trans_mode_ctl         &
+     &                       (Legendre_trans_loop_ctl%charavalue)
       end if
 !
       if(FFT_lib_ctl%iflag .gt. 0) then
@@ -152,18 +155,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_ctl_data_4_sph_trans                             &
-     &         (time_STR, mesh_file, ucd, rj_fld, d_gauss, fem_fld)
+      subroutine s_set_ctl_data_4_sph_trans(time_STR, mesh_file,        &
+     &         ucd, rj_fld, d_gauss, fem_fld, WK_sph)
 !
       use calypso_mpi
       use t_ucd_data
       use m_machine_parameter
       use m_FFT_selector
+      use m_legendre_transform_list
 !
       use set_control_nodal_data
       use set_control_sph_data
       use set_control_platform_data
-      use legendre_transform_select
 !
       use m_ctl_data_4_sph_trans
       use m_default_file_prefix
@@ -175,6 +178,7 @@
       type(ucd_data), intent(inout) :: ucd
       type(phys_data), intent(inout) :: rj_fld
       type(phys_data), intent(inout) :: fem_fld
+      type(spherical_trns_works), intent(inout) :: WK_sph
       type(global_gauss_points), intent(inout) :: d_gauss
 !
       integer(kind = kint) :: ierr
@@ -219,8 +223,8 @@
       end if
 !
       if(Legendre_trans_loop_ctl%iflag .gt. 0) then
-        call set_legendre_trans_mode_ctl                                &
-     &     (Legendre_trans_loop_ctl%charavalue)
+        WK_sph%WK_leg%id_legendre = set_legendre_trans_mode_ctl         &
+     &                       (Legendre_trans_loop_ctl%charavalue)
       end if
 !
       if(FFT_lib_ctl%iflag .gt. 0) then

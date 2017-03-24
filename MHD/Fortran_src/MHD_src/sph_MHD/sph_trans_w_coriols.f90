@@ -11,29 +11,31 @@
 !!@verbatim
 !!      subroutine sph_b_trans_w_coriolis(ncomp_trans, nvector, nscalar,&
 !!     &          sph, comms_sph, fl_prop, omega_sph, trans_p,          &
-!!     &          n_WS, n_WR, WS, WR, trns_MHD, MHD_mul_FFTW)
+!!     &          n_WS, n_WR, WS, WR, trns_MHD, WK_sph, MHD_mul_FFTW)
 !!      subroutine sph_f_trans_w_coriolis(ncomp_trans, nvector, nscalar,&
 !!     &          sph, comms_sph, fl_prop, trans_p, trns_MHD,           &
-!!     &          n_WS, n_WR, WS, WR, MHD_mul_FFTW)
+!!     &          n_WS, n_WR, WS, WR, WK_sph, MHD_mul_FFTW)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(sph_rotation), intent(in) :: omega_sph
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(address_4_sph_trans), intent(inout) :: trns_MHD
+!!        type(spherical_trns_works), intent(inout) :: WK_sph
 !!        type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !!
 !!      subroutine sph_b_transform_SGS(ncomp_trans, nvector, nscalar,   &
 !!     &          sph, comms_sph, trans_p, n_WS, n_WR, WS, WR,          &
-!!     &          trns_SGS, SGS_mul_FFTW)
+!!     &          trns_SGS, WK_sph, SGS_mul_FFTW)
 !!      subroutine sph_f_transform_SGS(ncomp_trans, nvector, nscalar,   &
 !!     &          sph, comms_sph, trans_p, trns_SGS,                    &
-!!     &          n_WS, n_WR, WS, WR, SGS_mul_FFTW)
+!!     &          n_WS, n_WR, WS, WR, WK_sph, SGS_mul_FFTW)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(sph_rotation), intent(in) :: omega_sph
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(address_4_sph_trans), intent(inout) :: trns_SGS
+!!        type(spherical_trns_works), intent(inout) :: WK_sph
 !!        type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !!
 !!      subroutine sph_b_trans_licv(ncomp_trans,                        &
@@ -78,7 +80,6 @@
       use m_work_time
       use m_machine_parameter
       use MHD_FFT_selector
-      use legendre_transform_select
       use spherical_SRs_N
       use const_coriolis_sph_rlm
 !
@@ -90,6 +91,8 @@
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
       use t_sph_multi_FFTW
+      use t_legendre_trans_select
+      use t_sph_transforms
 !
       implicit none
 !
@@ -101,7 +104,7 @@
 !
       subroutine sph_b_trans_w_coriolis(ncomp_trans, nvector, nscalar,  &
      &          sph, comms_sph, fl_prop, omega_sph, trans_p,            &
-     &          n_WS, n_WR, WS, WR, trns_MHD, MHD_mul_FFTW)
+     &          n_WS, n_WR, WS, WR, trns_MHD, WK_sph, MHD_mul_FFTW)
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
@@ -114,6 +117,7 @@
       integer(kind = kint), intent(in) :: n_WS, n_WR
       real(kind = kreal), intent(inout) :: WS(n_WS), WR(n_WR)
       type(address_4_sph_trans), intent(inout) :: trns_MHD
+      type(spherical_trns_works), intent(inout) :: WK_sph
       type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !
 !
@@ -139,7 +143,8 @@
       call sel_backward_legendre_trans                                  &
      &   (ncomp_trans, nvector, nscalar, sph%sph_rlm, sph%sph_rtm,      &
      &    comms_sph%comm_rlm, comms_sph%comm_rtm,                       &
-     &    trans_p%leg, trans_p%idx_trns, n_WR, n_WS, WR, WS)
+     &    trans_p%leg, trans_p%idx_trns,                                &
+     &    n_WR, n_WS, WR, WS, WK_sph%WK_leg)
       call end_eleps_time(22)
 !
 !
@@ -158,7 +163,7 @@
      &    'back_MHD_FFT_sel_from_recv', ncomp_trans, nvector, nscalar
       call back_MHD_FFT_sel_from_recv                                   &
      &   (sph%sph_rtp, comms_sph%comm_rtp, ncomp_trans,                 &
-     &    n_WR, WR, trns_MHD%fld_rtp, MHD_mul_FFTW)
+     &    n_WR, WR, trns_MHD%fld_rtp, WK_sph%WK_FFTs, MHD_mul_FFTW)
       call end_eleps_time(24)
 !
       if(iflag_debug .gt. 0) write(*,*) 'finish_send_recv_rtm_2_rtp'
@@ -170,7 +175,7 @@
 !
       subroutine sph_f_trans_w_coriolis(ncomp_trans, nvector, nscalar,  &
      &          sph, comms_sph, fl_prop, trans_p, trns_MHD,             &
-     &          n_WS, n_WR, WS, WR, MHD_mul_FFTW)
+     &          n_WS, n_WR, WS, WR, WK_sph, MHD_mul_FFTW)
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
@@ -181,13 +186,14 @@
       integer(kind = kint), intent(in) :: n_WS, n_WR
       real(kind = kreal), intent(inout) :: WS(n_WS), WR(n_WR)
       type(address_4_sph_trans), intent(inout) :: trns_MHD
+      type(spherical_trns_works), intent(inout) :: WK_sph
       type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !
 !
       call start_eleps_time(24)
       call fwd_MHD_FFT_sel_to_send                                      &
      &   (sph%sph_rtp, comms_sph%comm_rtp, ncomp_trans,                 &
-     &    n_WS, trns_MHD%frc_rtp, WS, MHD_mul_FFTW)
+     &    n_WS, trns_MHD%frc_rtp, WS, WK_sph%WK_FFTs, MHD_mul_FFTW)
       call end_eleps_time(24)
 !
       START_SRtime= MPI_WTIME()
@@ -203,7 +209,8 @@
       call sel_forward_legendre_trans                                   &
      &   (ncomp_trans, nvector, nscalar, sph%sph_rtm, sph%sph_rlm,      &
      &    comms_sph%comm_rtm, comms_sph%comm_rlm,                       &
-     &    trans_p%leg, trans_p%idx_trns, n_WR, n_WS, WR, WS)
+     &    trans_p%leg, trans_p%idx_trns,                                &
+     &    n_WR, n_WS, WR, WS, WK_sph%WK_leg)
       call end_eleps_time(23)
 !
 !
@@ -228,7 +235,7 @@
 !
       subroutine sph_b_transform_SGS(ncomp_trans, nvector, nscalar,     &
      &          sph, comms_sph, trans_p, n_WS, n_WR, WS, WR,            &
-     &          trns_SGS, SGS_mul_FFTW)
+     &          trns_SGS, WK_sph, SGS_mul_FFTW)
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
@@ -239,6 +246,7 @@
       integer(kind = kint), intent(in) :: n_WS, n_WR
       real(kind = kreal), intent(inout) :: WS(n_WS), WR(n_WR)
       type(address_4_sph_trans), intent(inout) :: trns_SGS
+      type(spherical_trns_works), intent(inout) :: WK_sph
       type(work_for_sgl_FFTW), intent(inout) :: SGS_mul_FFTW
 !
 !
@@ -257,7 +265,8 @@
       call sel_backward_legendre_trans                                  &
      &   (ncomp_trans, nvector, nscalar, sph%sph_rlm, sph%sph_rtm,      &
      &    comms_sph%comm_rlm, comms_sph%comm_rtm,                       &
-     &    trans_p%leg, trans_p%idx_trns, n_WR, n_WS, WR, WS)
+     &    trans_p%leg, trans_p%idx_trns,                                &
+     &    n_WR, n_WS, WR, WS, WK_sph%WK_leg)
       call end_eleps_time(22)
 !
 !
@@ -276,7 +285,7 @@
      &    'back_MHD_FFT_sel_from_recv', ncomp_trans, nvector, nscalar
       call back_MHD_FFT_sel_from_recv                                   &
      &   (sph%sph_rtp, comms_sph%comm_rtp, ncomp_trans,                 &
-     &    n_WR, WR, trns_SGS%fld_rtp, SGS_mul_FFTW)
+     &    n_WR, WR, trns_SGS%fld_rtp, WK_sph%WK_FFTs, SGS_mul_FFTW)
       call end_eleps_time(24)
 !
       if(iflag_debug .gt. 0) write(*,*) 'finish_send_recv_rtm_2_rtp'
@@ -288,7 +297,7 @@
 !
       subroutine sph_f_transform_SGS(ncomp_trans, nvector, nscalar,     &
      &          sph, comms_sph, trans_p, trns_SGS,                      &
-     &          n_WS, n_WR, WS, WR, SGS_mul_FFTW)
+     &          n_WS, n_WR, WS, WR, WK_sph, SGS_mul_FFTW)
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
@@ -298,13 +307,14 @@
       integer(kind = kint), intent(in) :: n_WS, n_WR
       real(kind = kreal), intent(inout) :: WS(n_WS), WR(n_WR)
       type(address_4_sph_trans), intent(inout) :: trns_SGS
+      type(spherical_trns_works), intent(inout) :: WK_sph
       type(work_for_sgl_FFTW), intent(inout) :: SGS_mul_FFTW
 !
 !
       call start_eleps_time(24)
       call fwd_MHD_FFT_sel_to_send                                      &
      &   (sph%sph_rtp, comms_sph%comm_rtp, ncomp_trans,                 &
-     &    n_WS, trns_SGS%frc_rtp, WS, SGS_mul_FFTW)
+     &    n_WS, trns_SGS%frc_rtp, WS, WK_sph%WK_FFTs, SGS_mul_FFTW)
       call end_eleps_time(24)
 !
       START_SRtime= MPI_WTIME()
@@ -320,7 +330,8 @@
       call sel_forward_legendre_trans                                   &
      &   (ncomp_trans, nvector, nscalar, sph%sph_rtm, sph%sph_rlm,      &
      &    comms_sph%comm_rtm, comms_sph%comm_rlm,                       &
-     &    trans_p%leg, trans_p%idx_trns, n_WR, n_WS, WR, WS)
+     &    trans_p%leg, trans_p%idx_trns,                                &
+     &    n_WR, n_WS, WR, WS, WK_sph%WK_leg)
       call end_eleps_time(23)
 !
       START_SRtime= MPI_WTIME()

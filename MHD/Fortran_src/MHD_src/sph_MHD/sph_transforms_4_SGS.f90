@@ -8,9 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,      &
-!!     &          ipol, rj_fld, trns_SGS, SGS_mul_FFTW)
+!!     &          ipol, rj_fld, trns_SGS, WK_sph, SGS_mul_FFTW)
 !!      subroutine sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,   &
-!!     &          ipol, trns_SGS, SGS_mul_FFTW, rj_fld)
+!!     &          ipol, trns_SGS, WK_sph, SGS_mul_FFTW, rj_fld)
 !!      subroutine sph_pole_trans_SGS_MHD(sph, comms_sph, trans_p,      &
 !!     &          ipol, rj_fld, trns_SGS)
 !!        type(sph_grids), intent(in) :: sph
@@ -19,6 +19,7 @@
 !!        type(phys_address), intent(in) :: ipol
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(address_4_sph_trans), intent(inout) :: trns_SGS
+!!        type(spherical_trns_works), intent(inout) :: WK_sph
 !!        type(work_for_sgl_FFTW), intent(inout) :: SGS_mul_FFTW
 !!@endverbatim
 !!
@@ -41,8 +42,9 @@
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
       use t_sph_multi_FFTW
+      use t_sph_transforms
 !
-      use legendre_transform_select
+      use m_legendre_transform_list
 !
       implicit  none
 !
@@ -53,7 +55,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,        &
-     &          ipol, rj_fld, trns_SGS, SGS_mul_FFTW)
+     &          ipol, rj_fld, trns_SGS, WK_sph, SGS_mul_FFTW)
 !
       use m_solver_SR
       use sph_trans_w_coriols
@@ -67,6 +69,7 @@
       type(phys_data), intent(in) :: rj_fld
 !
       type(address_4_sph_trans), intent(inout) :: trns_SGS
+      type(spherical_trns_works), intent(inout) :: WK_sph
       type(work_for_sgl_FFTW), intent(inout) :: SGS_mul_FFTW
 !
 !
@@ -84,14 +87,14 @@
       call sph_b_transform_SGS                                          &
      &   (trns_SGS%ncomp_rj_2_rtp, trns_SGS%nvector_rj_2_rtp,           &
      &    trns_SGS%ntensor_rj_2_rtp, sph, comms_sph, trans_p,           &
-     &    n_WS, n_WR, WS(1), WR(1), trns_SGS, SGS_mul_FFTW)
+     &    n_WS, n_WR, WS(1), WR(1), trns_SGS, WK_sph, SGS_mul_FFTW)
 !
       end subroutine sph_back_trans_SGS_MHD
 !
 !-----------------------------------------------------------------------
 !
       subroutine sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,     &
-     &          ipol, trns_SGS, SGS_mul_FFTW, rj_fld)
+     &          ipol, trns_SGS, WK_sph, SGS_mul_FFTW, rj_fld)
 !
       use m_solver_SR
       use sph_trans_w_coriols
@@ -104,6 +107,7 @@
       type(phys_address), intent(in) :: ipol
 !
       type(address_4_sph_trans), intent(inout) :: trns_SGS
+      type(spherical_trns_works), intent(inout) :: WK_sph
       type(work_for_sgl_FFTW), intent(inout) :: SGS_mul_FFTW
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -119,7 +123,7 @@
       call sph_f_transform_SGS(trns_SGS%ncomp_rtp_2_rj,                 &
      &    trns_SGS%nvector_rtp_2_rj, trns_SGS%nscalar_rtp_2_rj,         &
      &    sph, comms_sph, trans_p, trns_SGS,                            &
-     &    n_WS, n_WR, WS(1), WR(1), SGS_mul_FFTW)
+     &    n_WS, n_WR, WS(1), WR(1), WK_sph, SGS_mul_FFTW)
 !
       call copy_SGS_vec_spec_from_trans                                 &
      &   (trns_SGS%ncomp_rtp_2_rj, trns_SGS%f_trns,                     &
@@ -133,7 +137,7 @@
      &          ipol, rj_fld, trns_SGS)
 !
       use m_solver_SR
-      use sph_transforms
+      use t_sph_transforms
       use copy_sph_MHD_4_send_recv
       use spherical_SRs_N
 !

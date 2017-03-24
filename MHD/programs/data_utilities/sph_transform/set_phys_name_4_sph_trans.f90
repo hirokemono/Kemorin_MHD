@@ -16,24 +16,24 @@
 !
       implicit  none
 !
-!>      Number of fields on spherical grid @f$ f(r,\theta,\phi) @f$
-      integer (kind=kint) :: num_phys_rtp
-!>      Field name for @f$ f(r,\theta,\phi) @f$
-      character (len=kchara), allocatable :: phys_name_rtp(:)
+!>        Number of fields on spherical grid @f$ f(r,\theta,\phi) @f$
+        integer (kind=kint) :: num_phys_rtp
+!>        Field name for @f$ f(r,\theta,\phi) @f$
+        character (len=kchara), allocatable :: phys_name_rtp(:)
 !
-!>      Number of fields of scalar fields @f$ f(r,\theta,\phi) @f$
-      integer (kind=kint) :: num_scalar_rtp
-!>      Number of fields of vector fields @f$ f(r,\theta,\phi) @f$
-      integer (kind=kint) :: num_vector_rtp
-!>      Number of fields of tensor fields @f$ f(r,\theta,\phi) @f$
-      integer (kind=kint) :: num_tensor_rtp
+!>        Number of fields of scalar fields @f$ f(r,\theta,\phi) @f$
+        integer (kind=kint) :: num_scalar_rtp
+!>        Number of fields of vector fields @f$ f(r,\theta,\phi) @f$
+        integer (kind=kint) :: num_vector_rtp
+!>        Number of fields of tensor fields @f$ f(r,\theta,\phi) @f$
+        integer (kind=kint) :: num_tensor_rtp
 !
-!>      Start field address of scalar fields @f$ f(r,\theta,\phi) @f$
-      integer (kind=kint) :: istart_scalar_rtp
-!>      Start field address of vector fields @f$ f(r,\theta,\phi) @f$
-      integer (kind=kint) :: istart_vector_rtp
-!>      Start field address of tensor fields @f$ f(r,\theta,\phi) @f$
-      integer (kind=kint) :: istart_tensor_rtp
+!>        Start field address of scalar fields @f$ f(r,\theta,\phi) @f$
+        integer (kind=kint) :: istart_scalar_rtp
+!>        Start field address of vector fields @f$ f(r,\theta,\phi) @f$
+        integer (kind=kint) :: istart_vector_rtp
+!>        Start field address of tensor fields @f$ f(r,\theta,\phi) @f$
+        integer (kind=kint) :: istart_tensor_rtp
 !
       private :: allocate_phys_rtp_name
 !

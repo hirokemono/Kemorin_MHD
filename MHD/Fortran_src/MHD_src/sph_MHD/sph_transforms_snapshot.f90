@@ -8,17 +8,20 @@
 !!
 !!@verbatim
 !!      subroutine sph_back_trans_snapshot_MHD(sph, comms_sph, trans_p, &
-!!     &          ipol, rj_fld, trns_snap)
+!!     &          ipol, rj_fld, trns_snap, WK_sph)
 !!      subroutine sph_forward_trans_snapshot_MHD                       &
-!!     &         (sph, comms_sph, trans_p, trns_snap, ipol, rj_fld)
+!!     &         (sph, comms_sph, trans_p, trns_snap, ipol,             &
+!!     &          WK_sph, rj_fld)
 !!
 !!      subroutine sph_forward_trans_tmp_snap_MHD                       &
-!!     &         (sph, comms_sph, trans_p, trns_tmp, ipol, rj_fld)
+!!     &         (sph, comms_sph, trans_p, trns_tmp, ipol,              &
+!!     &          WK_sph, rj_fld)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(address_4_sph_trans), intent(in) :: trns_tmp
 !!        type(phys_address), intent(in) :: ipol
 !!        type(phys_data), intent(inout) :: rj_fld
+!!        type(spherical_trns_works), intent(inout) :: WK_sph
 !!@endverbatim
 !!
       module sph_transforms_snapshot
@@ -40,8 +43,9 @@
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
       use t_sph_multi_FFTW
+      use t_sph_transforms
 !
-      use legendre_transform_select
+      use m_legendre_transform_list
 !
       implicit  none
 !
@@ -52,10 +56,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine sph_back_trans_snapshot_MHD(sph, comms_sph, trans_p,   &
-     &          ipol, rj_fld, trns_snap)
+     &          ipol, rj_fld, trns_snap, WK_sph)
 !
       use m_solver_SR
-      use sph_transforms
       use copy_sph_MHD_4_send_recv
       use spherical_SRs_N
 !
@@ -66,6 +69,7 @@
       type(phys_data), intent(in) :: rj_fld
 !
       type(address_4_sph_trans), intent(inout) :: trns_snap
+      type(spherical_trns_works), intent(inout) :: WK_sph
 !
       integer(kind = kint) :: nscalar_trans
 !
@@ -87,18 +91,18 @@
       call sph_b_trans_w_poles                                          &
      &   (trns_snap%ncomp_rj_2_rtp, trns_snap%nvector_rj_2_rtp,         &
      &    nscalar_trans, sph, comms_sph, trans_p,                       &
-     &    n_WS, n_WR, WS(1), WR(1),                                     &
-     &    trns_snap%fld_rtp, trns_snap%flc_pole, trns_snap%fld_pole)
+     &    n_WS, n_WR, WS(1), WR(1), trns_snap%fld_rtp,                  &
+     &    trns_snap%flc_pole, trns_snap%fld_pole, WK_sph)
 !
       end subroutine sph_back_trans_snapshot_MHD
 !
 !-----------------------------------------------------------------------
 !
       subroutine sph_forward_trans_snapshot_MHD                         &
-     &         (sph, comms_sph, trans_p, trns_snap, ipol, rj_fld)
+     &         (sph, comms_sph, trans_p, trns_snap, ipol,               &
+     &          WK_sph, rj_fld)
 !
       use m_solver_SR
-      use sph_transforms
       use copy_sph_MHD_4_send_recv
       use spherical_SRs_N
 !
@@ -108,6 +112,7 @@
       type(address_4_sph_trans), intent(in) :: trns_snap
       type(phys_address), intent(in) :: ipol
 !
+      type(spherical_trns_works), intent(inout) :: WK_sph
       type(phys_data), intent(inout) :: rj_fld
 !
 !
@@ -122,7 +127,7 @@
       call sph_forward_transforms(trns_snap%ncomp_rtp_2_rj,             &
      &    trns_snap%nvector_rtp_2_rj, trns_snap%nscalar_rtp_2_rj,       &
      &    sph, comms_sph, trans_p, trns_snap%frc_rtp,                   &
-     &    n_WS, n_WR, WS(1), WR(1))
+     &    n_WS, n_WR, WS(1), WR(1), WK_sph)
 !
       call copy_snap_vec_spec_from_trans                                &
      &   (trns_snap%ncomp_rtp_2_rj, trns_snap%f_trns,                   &
@@ -134,10 +139,10 @@
 !-----------------------------------------------------------------------
 !
       subroutine sph_forward_trans_tmp_snap_MHD                         &
-     &         (sph, comms_sph, trans_p, trns_tmp, ipol, rj_fld)
+     &         (sph, comms_sph, trans_p, trns_tmp, ipol,                &
+     &          WK_sph, rj_fld)
 !
       use m_solver_SR
-      use sph_transforms
       use copy_sph_MHD_4_send_recv
       use spherical_SRs_N
 !
@@ -147,6 +152,7 @@
       type(address_4_sph_trans), intent(in) :: trns_tmp
       type(phys_address), intent(in) :: ipol
 !
+      type(spherical_trns_works), intent(inout) :: WK_sph
       type(phys_data), intent(inout) :: rj_fld
 !
 !
@@ -161,7 +167,7 @@
       call sph_forward_transforms(trns_tmp%ncomp_rtp_2_rj,              &
      &    trns_tmp%nvector_rtp_2_rj, trns_tmp%nscalar_rtp_2_rj,         &
      &    sph, comms_sph, trans_p, trns_tmp%frc_rtp,                    &
-     &    n_WS, n_WR, WS, WR)
+     &    n_WS, n_WR, WS, WR, WK_sph)
 !
       call copy_tmp_scl_spec_from_trans                                 &
      &   (trns_tmp%ncomp_rtp_2_rj, trns_tmp%f_trns,                     &

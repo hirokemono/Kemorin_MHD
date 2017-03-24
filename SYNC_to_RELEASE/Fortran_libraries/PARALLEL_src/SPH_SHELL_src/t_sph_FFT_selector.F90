@@ -1,5 +1,5 @@
-!>@file   sph_FFT_selector.F90
-!!@brief  module sph_FFT_selector
+!>@file   t_sph_FFT_selector.F90
+!!@brief  module t_sph_FFT_selector
 !!
 !!@author H. Matsui
 !!@date Programmed in Oct., 2009
@@ -7,18 +7,22 @@
 !>@brief  Selector of Fourier transform
 !!
 !!@verbatim
-!!      subroutine init_sph_FFT_select(my_rank, sph_rtp, ncomp)
-!!      subroutine finalize_sph_FFT_select
-!!      subroutine verify_sph_FFT_select(sph_rtp, ncomp)
+!!      subroutine init_sph_FFT_select(my_rank, sph_rtp, ncomp, WK_FFTs)
+!!        type(work_for_FFTs), intent(inout) :: WK_FFTs
+!!      subroutine finalize_sph_FFT_select(WK_FFTs)
+!!        type(work_for_FFTs), intent(inout) :: WK_FFTs
+!!      subroutine verify_sph_FFT_select(sph_rtp, ncomp, WK_FFTs)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(work_for_FFTs), intent(inout) :: WK_FFTs
 !! ------------------------------------------------------------------
 !!   wrapper subroutine for initierize FFT for ISPACK
 !! ------------------------------------------------------------------
 !!
 !!      subroutine fwd_FFT_select_to_send                               &
-!!     &         (sph_rtp, comm_rtp, ncomp, n_WS, v_rtp, WS)
+!!     &         (sph_rtp, comm_rtp, ncomp, n_WS, v_rtp, WS, WK_FFTs)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in)  :: comm_rtp
+!!        type(work_for_FFTs), intent(inout) :: WK_FFTs
 !! ------------------------------------------------------------------
 !!
 !!   wrapper subroutine for FFT in ISPACK
@@ -33,9 +37,10 @@
 !! ------------------------------------------------------------------
 !!
 !!      subroutine back_FFT_select_from_recv                            &
-!!     &         (sph_rtp, comm_rtp, ncomp, n_WR, WR, v_rtp)
+!!     &         (sph_rtp, comm_rtp, ncomp, n_WR, WR, v_rtp, WK_FFTs)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in)  :: comm_rtp
+!!        type(work_for_FFTs), intent(inout) :: WK_FFTs
 !! ------------------------------------------------------------------
 !!
 !!   wrapper subroutine for backward FFT
@@ -66,13 +71,12 @@
 !!@n @param Nfft        Data length for eadh FFT
 !!@n @param X(M, Nfft)  Data for Fourier transform
 !
-      module sph_FFT_selector
+      module t_sph_FFT_selector
 !
       use m_precision
       use m_machine_parameter
       use m_FFT_selector
       use t_sph_FFTPACK5
-      use t_sph_ISPACK_FFT
 !
 #ifdef FFTW3
       use t_sph_single_FFTW
@@ -81,17 +85,18 @@
 !
       implicit none
 !
-!>      Structure to use FFTPACK
-      type(work_for_fftpack), save :: sph_FFTPACK
-!>      Structure to use ISPACK
-      type(work_for_ispack), save :: sph_ispack
+!>      Structure for work area of FFTs
+      type work_for_FFTs
+!>        Structure to use FFTPACK
+        type(work_for_fftpack) :: sph_FFTPACK
 !
 #ifdef FFTW3
-!>      Structure to use FFTW
-      type(work_for_sgl_FFTW), save :: sph_fld_FFTW
-!>      Structure to use FFTW for each component
-      type(work_for_sgl_FFTW), save :: sph_sgl_FFTW
+!>        Structure to use FFTW
+        type(work_for_sgl_FFTW) :: sph_fld_FFTW
+!>        Structure to use FFTW for each component
+        type(work_for_sgl_FFTW) :: sph_sgl_FFTW
 #endif
+      end type work_for_FFTs
 !
 ! ------------------------------------------------------------------
 !
@@ -99,97 +104,96 @@
 !
 ! ------------------------------------------------------------------
 !
-      subroutine init_sph_FFT_select(my_rank, sph_rtp, ncomp)
+      subroutine init_sph_FFT_select(my_rank, sph_rtp, ncomp, WK_FFTs)
 !
       use t_spheric_rtp_data
 !
-      type(sph_rtp_grid), intent(in) :: sph_rtp
       integer(kind = kint), intent(in) ::  my_rank, ncomp
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
 !
-      if(iflag_FFT .eq. iflag_ISPACK) then
-        if(my_rank .eq. 0) write(*,*) 'Use ISPACK'
-        call init_sph_ISPACK                                            &
-     &     (sph_rtp%nidx_rtp, sph_rtp%maxirt_rtp_smp, ncomp,            &
-     &      sph_ispack)
 #ifdef FFTW3
-      else if(iflag_FFT .eq. iflag_FFTW                                 &
+      if(iflag_FFT .eq. iflag_FFTW                                      &
      &   .or. iflag_FFT .eq. iflag_FFTW_FIELD) then
         if(my_rank .eq. 0) write(*,*) 'Use FFTW'
         call init_sph_field_FFTW                                        &
-     &     (sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp, sph_fld_FFTW)
+     &     (sph_rtp%nidx_rtp, sph_rtp%istack_rtp_rt_smp,                &
+     &      WK_FFTs%sph_fld_FFTW)
+        return
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         if(my_rank .eq. 0) write(*,*) 'Use single transform in FFTW'
-        call init_sph_single_FFTW(sph_rtp%nidx_rtp, sph_sgl_FFTW)
+        call init_sph_single_FFTW                                       &
+     &     (sph_rtp%nidx_rtp, WK_FFTs%sph_sgl_FFTW)
+        return
+      end if
 #endif
-      else
+!
         if(my_rank .eq. 0) write(*,*) 'Use FFTPACK'
         call init_sph_FFTPACK5                                          &
      &     (sph_rtp%nidx_rtp, sph_rtp%maxirt_rtp_smp, ncomp,            &
-     &      sph_FFTPACK)
-      end if
+     &      WK_FFTs%sph_FFTPACK)
 !
       end subroutine init_sph_FFT_select
 !
 ! ------------------------------------------------------------------
 !
-      subroutine finalize_sph_FFT_select
+      subroutine finalize_sph_FFT_select(WK_FFTs)
+!
+      type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
 !
-      if(iflag_FFT .eq. iflag_ISPACK) then
-        if(iflag_debug .gt. 0) write(*,*) 'Finalize ISPACK'
-        call finalize_sph_ISPACK(sph_ispack)
 #ifdef FFTW3
-      else if(iflag_FFT .eq. iflag_FFTW                                 &
+      if(iflag_FFT .eq. iflag_FFTW                                      &
      &   .or. iflag_FFT .eq. iflag_FFTW_FIELD) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTW'
-        call finalize_sph_field_FFTW(sph_fld_FFTW)
+        call finalize_sph_field_FFTW(WK_FFTs%sph_fld_FFTW)
+        return
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         if(iflag_debug .gt. 0) write(*,*) 'Finalize single FFTW'
-        call finalize_sph_single_FFTW(sph_sgl_FFTW)
-#endif
-      else
-        if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTPACK'
-        call finalize_sph_FFTPACK5(sph_FFTPACK)
+        call finalize_sph_single_FFTW(WK_FFTs%sph_sgl_FFTW)
+        return
       end if
+#endif
+!
+        if(iflag_debug .gt. 0) write(*,*) 'Finalize FFTPACK'
+        call finalize_sph_FFTPACK5(WK_FFTs%sph_FFTPACK)
 !
       end subroutine finalize_sph_FFT_select
 !
 ! ------------------------------------------------------------------
 !
-      subroutine verify_sph_FFT_select(sph_rtp, ncomp)
+      subroutine verify_sph_FFT_select(sph_rtp, ncomp, WK_FFTs)
 !
       use t_spheric_rtp_data
 !
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-!
       integer(kind = kint), intent(in) ::  ncomp
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(work_for_FFTs), intent(inout) :: WK_FFTs
+!
       integer(kind = kint) :: Nstacksmp(0:np_smp)
 !
 !
-      Nstacksmp(0:np_smp) = ncomp * sph_rtp%istack_rtp_rt_smp(0:np_smp)
-      if(iflag_FFT .eq. iflag_ISPACK) then
-        if(iflag_debug .gt. 0) write(*,*) 'Use ISPACK'
-        call verify_sph_ISPACK                                          &
-     &     (sph_rtp%nidx_rtp, sph_rtp%maxirt_rtp_smp, ncomp,            &
-     &      sph_ispack)
 #ifdef FFTW3
-      else if(iflag_FFT .eq. iflag_FFTW                                 &
+      if(     iflag_FFT .eq. iflag_FFTW                                 &
      &   .or. iflag_FFT .eq. iflag_FFTW_FIELD) then
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTW'
         call verify_sph_field_FFTW                                      &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
-     &      sph_rtp%istack_rtp_rt_smp, sph_fld_FFTW)
+     &      sph_rtp%istack_rtp_rt_smp, WK_FFTs%sph_fld_FFTW)
+        return
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
-        if(iflag_debug .gt. 0) write(*,*) 'Use single transforms in FFTW'
-        call verify_sph_single_FFTW(sph_rtp%nidx_rtp, sph_sgl_FFTW)
+        if(iflag_debug .gt. 0) write(*,*) 'Use single FFTW'
+        call verify_sph_single_FFTW                                     &
+     &     (sph_rtp%nidx_rtp, WK_FFTs%sph_sgl_FFTW)
+        return
+      end if
 #endif
-      else
+!
         if(iflag_debug .gt. 0) write(*,*) 'Use FFTPACK'
         call verify_sph_FFTPACK5                                        &
      &     (sph_rtp%nidx_rtp, sph_rtp%maxirt_rtp_smp, ncomp,            &
-     &      sph_FFTPACK)
-      end if
+     &      WK_FFTs%sph_FFTPACK)
 !
       end subroutine verify_sph_FFT_select
 !
@@ -197,7 +201,7 @@
 ! ------------------------------------------------------------------
 !
       subroutine fwd_FFT_select_to_send                                 &
-     &         (sph_rtp, comm_rtp, ncomp, n_WS, v_rtp, WS)
+     &         (sph_rtp, comm_rtp, ncomp, n_WS, v_rtp, WS, WK_FFTs)
 !
       use t_spheric_rtp_data
       use t_sph_trans_comm_tbl
@@ -208,39 +212,37 @@
       integer(kind = kint), intent(in) :: ncomp, n_WS
       real (kind=kreal), intent(in):: v_rtp(sph_rtp%nnod_rtp,ncomp)
       real (kind=kreal), intent(inout):: WS(n_WS)
+      type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
 !
-      if(iflag_FFT .eq. iflag_ISPACK) then
-        call sph_FTTRUF_to_send                                         &
-     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
-     &      sph_rtp%istack_rtp_rt_smp, ncomp, n_WS, comm_rtp%irev_sr,   &
-     &      v_rtp(1,1), WS(1), sph_ispack)
 #ifdef FFTW3
-      else if(iflag_FFT .eq. iflag_FFTW                                 &
+      if(     iflag_FFT .eq. iflag_FFTW                                 &
      &   .or. iflag_FFT .eq. iflag_FFTW_FIELD) then
         call sph_field_fwd_FFTW_to_send                                 &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp, n_WS, comm_rtp%irev_sr,   &
-     &      v_rtp(1,1), WS(1), sph_fld_FFTW)
+     &      v_rtp(1,1), WS(1), WK_FFTs%sph_fld_FFTW)
+        return
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         call sph_single_fwd_FFTW_to_send                                &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp, n_WS, comm_rtp%irev_sr,   &
-     &      v_rtp(1,1), WS(1), sph_sgl_FFTW)
+     &      v_rtp(1,1), WS(1), WK_FFTs%sph_sgl_FFTW)
+        return
+      end if
 #endif
-      else
+!
         call sph_RFFTMF_to_send                                         &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp, n_WS, comm_rtp%irev_sr,   &
-     &      v_rtp(1,1), WS(1), sph_FFTPACK)
-      end if
+     &      v_rtp(1,1), WS(1), WK_FFTs%sph_FFTPACK)
 !
       end subroutine fwd_FFT_select_to_send
 !
 ! ------------------------------------------------------------------
 !
       subroutine back_FFT_select_from_recv                              &
-     &         (sph_rtp, comm_rtp, ncomp, n_WR, WR, v_rtp)
+     &         (sph_rtp, comm_rtp, ncomp, n_WR, WR, v_rtp, WK_FFTs)
 !
       use t_spheric_rtp_data
       use t_sph_trans_comm_tbl
@@ -251,35 +253,33 @@
       integer(kind = kint), intent(in) :: ncomp, n_WR
       real (kind=kreal), intent(inout):: WR(n_WR)
       real (kind=kreal), intent(inout):: v_rtp(sph_rtp%nnod_rtp,ncomp)
+      type(work_for_FFTs), intent(inout) :: WK_FFTs
 !
 !
-      if(iflag_FFT .eq. iflag_ISPACK) then
-        call sph_FTTRUB_from_recv                                       &
-     &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
-     &      sph_rtp%istack_rtp_rt_smp, ncomp, n_WR, comm_rtp%irev_sr,   &
-     &      WR(1), v_rtp(1,1), sph_ispack)
 #ifdef FFTW3
-      else if(iflag_FFT .eq. iflag_FFTW                                 &
+      if(     iflag_FFT .eq. iflag_FFTW                                 &
      &   .or. iflag_FFT .eq. iflag_FFTW_FIELD) then
         call sph_field_back_FFTW_from_recv                              &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp, n_WR, comm_rtp%irev_sr,   &
-     &      WR(1), v_rtp(1,1), sph_fld_FFTW)
+     &      WR(1), v_rtp(1,1), WK_FFTs%sph_fld_FFTW)
+        return
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         call sph_single_back_FFTW_from_recv                             &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp, n_WR, comm_rtp%irev_sr,   &
-     &      WR(1), v_rtp(1,1), sph_sgl_FFTW)
+     &      WR(1), v_rtp(1,1), WK_FFTs%sph_sgl_FFTW)
+        return
+      end if
 #endif
-      else
+!
         call sph_RFFTMB_from_recv                                       &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp, n_WR, comm_rtp%irev_sr,   &
-     &      WR, v_rtp(1,1), sph_FFTPACK)
-      end if
+     &      WR, v_rtp(1,1), WK_FFTs%sph_FFTPACK)
 !
       end subroutine back_FFT_select_from_recv
 !
 ! ------------------------------------------------------------------
 !
-      end module sph_FFT_selector
+      end module t_sph_FFT_selector

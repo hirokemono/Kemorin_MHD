@@ -152,11 +152,11 @@
       use t_sph_trans_comm_tbl
       use t_mesh_data
       use t_phys_data
+      use t_sph_transforms
 !
       use m_solver_SR
       use copy_all_spec_4_sph_trans
       use copy_all_field_4_sph_trans
-      use sph_transforms
       use spherical_SRs_N
       use sph_transfer_all_field
 !
@@ -190,7 +190,7 @@
       call sph_b_trans_w_poles                                          &
      &   (ncomp_sph_trans, num_vector_rtp, nscalar_trans,               &
      &    sph, comms_sph, trns_param, n_WS, n_WR, WS(1), WR(1),         &
-     &    dall_rtp, dlcl_pole, dall_pole)
+     &    dall_rtp, dlcl_pole, dall_pole, WK_sph_TRNS)
 !
         if (iflag_debug.gt.0)                                           &
      &        write(*,*) 'set_xyz_vect_from_sph_trans'

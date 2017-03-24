@@ -129,7 +129,7 @@
       call start_eleps_time(9)
       if (iflag_debug.eq.1) write(*,*) 'sph_all_back_transform'
       call sph_all_back_transform(sph1, comms_sph1, trans_p1,           &
-     &    ipol, rj_fld1, trns_WK1%trns_MHD)
+     &    ipol, rj_fld1, trns_WK1%trns_MHD, trns_WK1%WK_sph)
        call end_eleps_time(9)
 !
 !*  -----------  lead energy data --------------
@@ -211,17 +211,16 @@
 !
       call sel_sph_transform_MHD(ipol, sph, comms_sph, omega_sph,       &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
-     &    trans_p, WK, rj_fld)
+     &    trans_p, WK%trns_MHD, WK%WK_sph, WK%MHD_mul_FFTW, rj_fld)
 !
       end subroutine init_sph_back_transform
 !
 !-----------------------------------------------------------------------
 !
       subroutine sph_all_back_transform(sph, comms_sph, trans_p,        &
-     &          ipol, rj_fld, trns_MHD)
+     &          ipol, rj_fld, trns_MHD, WK_sph)
 !
       use m_solver_SR
-      use sph_transforms
       use copy_sph_MHD_4_send_recv
       use spherical_SRs_N
 !
@@ -239,8 +238,9 @@
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
       use t_sph_multi_FFTW
+      use t_sph_transforms
 !
-      use legendre_transform_select
+      use m_legendre_transform_list
       use copy_all_trans_send_recv
       use sph_mhd_rms_IO
 !
@@ -251,6 +251,7 @@
       type(phys_data), intent(in) :: rj_fld
 !
       type(address_4_sph_trans), intent(inout) :: trns_MHD
+      type(spherical_trns_works), intent(inout) :: WK_sph
 !
       integer(kind = kint) :: nscalar_trans
 !
@@ -272,8 +273,8 @@
       call sph_b_trans_w_poles                                          &
      &   (trns_MHD%ncomp_rj_2_rtp, trns_MHD%nvector_rj_2_rtp,           &
      &    nscalar_trans, sph, comms_sph, trans_p,                       &
-     &    n_WS, n_WR, WS(1), WR(1),                                     &
-     &    trns_MHD%fld_rtp, trns_MHD%flc_pole, trns_MHD%fld_pole)
+     &    n_WS, n_WR, WS(1), WR(1), trns_MHD%fld_rtp,                   &
+     &    trns_MHD%flc_pole, trns_MHD%fld_pole, WK_sph)
 !
       end subroutine sph_all_back_transform
 !

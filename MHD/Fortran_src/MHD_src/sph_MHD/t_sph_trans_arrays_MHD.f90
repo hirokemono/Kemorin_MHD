@@ -21,6 +21,7 @@
       use t_phys_address
       use t_addresses_sph_transform
       use t_sph_multi_FFTW
+      use t_sph_transforms
       use sph_filtering
 !
       implicit none
@@ -37,6 +38,9 @@
         type(address_4_sph_trans) :: trns_snap
 !>        strucutres for spherical transform for intermediate snapshot
         type(address_4_sph_trans) :: trns_tmp
+!
+!>        Work structures for various spherical harmonics trasform
+        type(spherical_trns_works) :: WK_sph
 !
         type(work_for_sgl_FFTW) :: MHD_mul_FFTW
         type(work_for_sgl_FFTW) :: SGS_mul_FFTW

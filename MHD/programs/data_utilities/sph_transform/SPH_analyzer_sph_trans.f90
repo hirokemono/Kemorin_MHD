@@ -37,6 +37,7 @@
       subroutine SPH_initialize_sph_trans(sph_mesh, rj_fld)
 !
       use m_ctl_params_sph_trans
+      use m_legendre_transform_list
 !
       use t_spheric_mesh
       use t_phys_data
@@ -44,7 +45,6 @@
       use count_num_sph_smp
       use set_phys_name_4_sph_trans
       use init_sph_trans
-      use legendre_transform_select
       use sph_transfer_all_field
 !
       type(sph_mesh_data), intent(inout) :: sph_mesh
@@ -62,14 +62,13 @@
 !  ---- initialize spherical harmonics transform
 !
       if (iflag_debug.gt.0) write(*,*) 'initialize_sph_trans'
-      if(id_legendre_transfer.eq.iflag_leg_undefined)                   &
-     &            id_legendre_transfer = iflag_leg_orginal_loop
       call copy_sph_trans_nums_from_rtp(ncomp_sph_trans)
 !
-      call calypso_mpi_barrier
+      nscalar_sph_trans = num_scalar_rtp + 6*num_tensor_rtp
       if (iflag_debug.gt.0) write(*,*) 'initialize_sph_trans'
-      call initialize_sph_trans(ncomp_sph_trans,                        &
-     &    sph_mesh%sph, sph_mesh%sph_comms, trns_param)
+      call initialize_sph_trans                                         &
+     &   (ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans,        &
+     &    sph_mesh%sph, sph_mesh%sph_comms, trns_param, WK_sph_TRNS)
 !
       call calypso_mpi_barrier
       if (iflag_debug.gt.0) write(*,*) 'allocate_d_rtp_4_all_trans'
@@ -103,7 +102,7 @@
 !  spherical transform for vector
       call sph_f_trans_all_field                                        &
      &   (ncomp_sph_trans, sph_mesh%sph, sph_mesh%sph_comms,            &
-     &    femmesh_STR%mesh, trns_param, field_STR, rj_fld)
+     &    femmesh_STR%mesh, trns_param, field_STR, rj_fld, WK_sph_TRNS)
 !
 !      call check_all_field_data(my_rank, rj_fld)
 !
@@ -147,7 +146,7 @@
 !  spherical transform for vector
       call sph_f_trans_all_field                                        &
      &   (ncomp_sph_trans, sph_mesh%sph, sph_mesh%sph_comms,            &
-     &    femmesh_STR%mesh, trns_param, field_STR, rj_fld)
+     &    femmesh_STR%mesh, trns_param, field_STR, rj_fld, WK_sph_TRNS)
 !
 !      call check_all_field_data(my_rank, rj_fld)
 !

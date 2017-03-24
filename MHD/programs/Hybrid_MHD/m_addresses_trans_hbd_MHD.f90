@@ -26,6 +26,7 @@
 !
 !>      number of components for backward spherical harmonics transform
       integer(kind = kint) :: ncomp_rj_2_xyz = 0
+!
 !>      number of components
 !!      for backward vector spherical harmonics transform
       integer(kind = kint) :: nvector_rj_2_xyz = 0

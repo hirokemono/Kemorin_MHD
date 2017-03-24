@@ -94,7 +94,7 @@
       call start_eleps_time(9)
       if (iflag_debug.eq.1) write(*,*) 'sph_all_back_transform'
       call sph_all_back_transform(sph1, comms_sph1, trans_p1,           &
-     &    ipol, ref_rj_fld, trns_WK1%trns_MHD)
+     &    ipol, ref_rj_fld, trns_WK1%trns_MHD, trns_WK1%WK_sph)
       call end_eleps_time(9)
 !
       ncomp = trns_WK1%trns_MHD%ncomp_rj_2_rtp
@@ -110,7 +110,7 @@
       call start_eleps_time(9)
       if (iflag_debug.eq.1) write(*,*) 'sph_all_back_transform'
       call sph_all_back_transform(sph1, comms_sph1, trans_p1,           &
-     &    ipol, rj_fld1, trns_WK1%trns_MHD)
+     &    ipol, rj_fld1, trns_WK1%trns_MHD, trns_WK1%WK_sph)
       call end_eleps_time(9)
 !
 !       Evaluate correlation in zonal

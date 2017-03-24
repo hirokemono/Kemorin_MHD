@@ -10,9 +10,11 @@
 !!      subroutine deallocate_d_rtp_4_all_trans
 !!      subroutine deallocate_d_pole_4_all_trans
 !!      subroutine sph_f_trans_all_field(ncomp_sph_trans,               &
-!!     &          sph, comms_sph, mesh, trans_p, nod_fld, rj_fld)
+!!     &          sph, comms_sph, mesh, trans_p, nod_fld,               &
+!!     &          rj_fld, WK_sph)
 !!      subroutine sph_b_trans_all_field(ncomp_sph_trans,               &
-!!     &          sph, comms_sph, mesh, trans_p, rj_fld, nod_fld)
+!!     &          sph, comms_sph, mesh, trans_p, rj_fld,                &
+!!     &          nod_fld, WK_sph)
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -30,6 +32,7 @@
       use t_spheric_rtp_data
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
+      use t_sph_transforms
 !
       implicit none
 !
@@ -91,10 +94,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sph_f_trans_all_field(ncomp_sph_trans,                 &
-     &          sph, comms_sph, mesh, trans_p, nod_fld, rj_fld)
+     &          sph, comms_sph, mesh, trans_p, nod_fld,                 &
+     &          rj_fld, WK_sph)
 !
       use m_solver_SR
-      use sph_transforms
       use copy_all_spec_4_sph_trans
       use copy_all_field_4_sph_trans
       use spherical_SRs_N
@@ -106,6 +109,7 @@
 !
       type(mesh_geometry), intent(in) :: mesh
       type(phys_data), intent(in) :: nod_fld
+      type(spherical_trns_works), intent(inout) :: WK_sph
       type(phys_data), intent(inout) :: rj_fld
 !
       integer(kind = kint) :: nscalar_trans
@@ -137,7 +141,7 @@
       call sph_forward_transforms                                       &
      &   (ncomp_sph_trans, num_vector_rtp, nscalar_trans,               &
      &    sph, comms_sph, trans_p, dall_rtp(1,1),                       &
-     &    n_WS, n_WR, WS(1), WR(1))
+     &    n_WS, n_WR, WS(1), WR(1), WK_sph)
 !
 !
       if (iflag_debug.gt.0)                                             &
@@ -160,12 +164,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sph_b_trans_all_field(ncomp_sph_trans,                 &
-     &          sph, comms_sph, mesh, trans_p, rj_fld, nod_fld)
+     &          sph, comms_sph, mesh, trans_p, rj_fld,                  &
+     &          nod_fld, WK_sph)
 !
       use m_solver_SR
       use copy_all_spec_4_sph_trans
       use copy_all_field_4_sph_trans
-      use sph_transforms
       use spherical_SRs_N
 !
       integer(kind = kint), intent(in) :: ncomp_sph_trans
@@ -175,6 +179,7 @@
 !
       type(mesh_geometry), intent(in) :: mesh
       type(phys_data), intent(in) :: rj_fld
+      type(spherical_trns_works), intent(inout) :: WK_sph
       type(phys_data), intent(inout) :: nod_fld
 !
       integer(kind = kint) :: nscalar_trans
@@ -207,7 +212,7 @@
       call sph_b_trans_w_poles                                          &
      &   (ncomp_sph_trans, num_vector_rtp, nscalar_trans,               &
      &    sph, comms_sph, trans_p, n_WS, n_WR, WS(1), WR(1),            &
-     &    dall_rtp, dlcl_pole, dall_pole)
+     &    dall_rtp, dlcl_pole, dall_pole, WK_sph)
 !
 !
       if (iflag_debug.gt.0)                                             &

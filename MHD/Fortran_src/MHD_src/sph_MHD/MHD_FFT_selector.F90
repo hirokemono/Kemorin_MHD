@@ -21,9 +21,10 @@
 !! ------------------------------------------------------------------
 !!
 !!      subroutine fwd_MHD_FFT_sel_to_send(sph_rtp, comm_rtp,           &
-!!     &          ncomp_fwd, n_WS, frc_rtp, WS, MHD_mul_FFTW)
+!!     &          ncomp_fwd, n_WS, frc_rtp, WS, WK_FFTs, MHD_mul_FFTW)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in)  :: comm_rtp
+!!        type(work_for_FFTs), intent(inout) :: WK_FFTs
 !!        type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !! ------------------------------------------------------------------
 !!
@@ -39,9 +40,10 @@
 !! ------------------------------------------------------------------
 !!
 !!      subroutine back_MHD_FFT_sel_from_recv(sph_rtp, comm_rtp,        &
-!!     &         ncomp_bwd, n_WR, WR, fld_rtp, MHD_mul_FFTW)
+!!     &         ncomp_bwd, n_WR, WR, fld_rtp, WK_FFTs, MHD_mul_FFTW)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_comm_tbl), intent(in)  :: comm_rtp
+!!        type(work_for_FFTs), intent(inout) :: WK_FFTs
 !!        type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !! ------------------------------------------------------------------
 !!
@@ -88,7 +90,7 @@
 #endif
 !
       use t_sph_single_FFTW
-      use sph_FFT_selector
+      use t_sph_FFT_selector
 !
       implicit none
 !
@@ -169,7 +171,7 @@
 ! ------------------------------------------------------------------
 !
       subroutine fwd_MHD_FFT_sel_to_send(sph_rtp, comm_rtp,             &
-     &          ncomp_fwd, n_WS, frc_rtp, WS, MHD_mul_FFTW)
+     &          ncomp_fwd, n_WS, frc_rtp, WS, WK_FFTs, MHD_mul_FFTW)
 !
       use t_spheric_rtp_data
       use t_sph_trans_comm_tbl
@@ -181,6 +183,7 @@
       real (kind=kreal), intent(inout)                                  &
      &                   :: frc_rtp(sph_rtp%nnod_rtp,ncomp_fwd)
       real (kind=kreal), intent(inout) :: WS(n_WS)
+      type(work_for_FFTs), intent(inout) :: WK_FFTs
       type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !
 !
@@ -188,7 +191,7 @@
         call sph_FTTRUF_to_send                                         &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
-     &      comm_rtp%irev_sr, frc_rtp, WS(1), sph_ispack)
+     &      comm_rtp%irev_sr, frc_rtp, WS(1), WK_FFTs%sph_ispack)
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW) then
         call MHD_multi_fwd_FFTW_to_send(ncomp_fwd, sph_rtp%nnod_rtp,    &
@@ -198,18 +201,18 @@
         call sph_field_fwd_FFTW_to_send                                 &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
-     &      comm_rtp%irev_sr, frc_rtp, WS(1), sph_fld_FFTW)
+     &      comm_rtp%irev_sr, frc_rtp, WS(1), WK_FFTs%sph_fld_FFTW)
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         call sph_single_fwd_FFTW_to_send                                &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
-     &      comm_rtp%irev_sr, frc_rtp, WS(1), sph_sgl_FFTW)
+     &      comm_rtp%irev_sr, frc_rtp, WS(1), WK_FFTs%sph_sgl_FFTW)
 #endif
       else
         call sph_RFFTMF_to_send                                         &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_fwd, n_WS,                 &
-     &      comm_rtp%irev_sr, frc_rtp, WS(1), sph_FFTPACK)
+     &      comm_rtp%irev_sr, frc_rtp, WS(1), WK_FFTs%sph_FFTPACK)
       end if
 !
       end subroutine fwd_MHD_FFT_sel_to_send
@@ -217,7 +220,7 @@
 ! ------------------------------------------------------------------
 !
       subroutine back_MHD_FFT_sel_from_recv(sph_rtp, comm_rtp,          &
-     &         ncomp_bwd, n_WR, WR, fld_rtp, MHD_mul_FFTW)
+     &         ncomp_bwd, n_WR, WR, fld_rtp, WK_FFTs, MHD_mul_FFTW)
 !
       use t_spheric_rtp_data
       use t_sph_trans_comm_tbl
@@ -229,6 +232,7 @@
       real(kind=kreal), intent(inout) :: WR(n_WR)
       real(kind=kreal), intent(inout)                                   &
      &                 :: fld_rtp(sph_rtp%nnod_rtp,ncomp_bwd)
+      type(work_for_FFTs), intent(inout) :: WK_FFTs
       type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !
 !
@@ -236,7 +240,7 @@
         call sph_FTTRUB_from_recv                                       &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                 &
-     &      comm_rtp%irev_sr, WR(1), fld_rtp, sph_ispack)
+     &      comm_rtp%irev_sr, WR(1), fld_rtp, WK_FFTs%sph_ispack)
 #ifdef FFTW3
       else if(iflag_FFT .eq. iflag_FFTW) then
         call MHD_multi_back_FFTW_from_recv(ncomp_bwd, sph_rtp%nnod_rtp, &
@@ -246,18 +250,18 @@
         call sph_field_back_FFTW_from_recv                              &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                 &
-     &      comm_rtp%irev_sr, WR(1), fld_rtp, sph_fld_FFTW)
+     &      comm_rtp%irev_sr, WR(1), fld_rtp, WK_FFTs%sph_fld_FFTW)
       else if(iflag_FFT .eq. iflag_FFTW_SINGLE) then
         call sph_single_back_FFTW_from_recv                             &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                 &
-     &      comm_rtp%irev_sr, WR(1), fld_rtp, sph_sgl_FFTW)
+     &      comm_rtp%irev_sr, WR(1), fld_rtp, WK_FFTs%sph_sgl_FFTW)
 #endif
       else
         call sph_RFFTMB_from_recv                                       &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
      &      sph_rtp%istack_rtp_rt_smp, ncomp_bwd, n_WR,                 &
-     &      comm_rtp%irev_sr, WR, fld_rtp, sph_FFTPACK)
+     &      comm_rtp%irev_sr, WR, fld_rtp, WK_FFTs%sph_FFTPACK)
       end if
 !
       end subroutine back_MHD_FFT_sel_from_recv

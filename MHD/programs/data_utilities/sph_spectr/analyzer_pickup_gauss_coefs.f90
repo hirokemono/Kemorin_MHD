@@ -30,12 +30,12 @@
 !
       use m_ctl_data_4_sph_utils
       use m_ctl_params_sph_utils
+      use m_legendre_transform_list
       use parallel_load_data_4_sph
       use set_sph_phys_address
       use copy_rj_phys_data_4_IO
       use count_num_sph_smp
       use init_sph_trans
-      use legendre_transform_select
       use cal_rms_fields_by_sph
 !
 !     --------------------- 

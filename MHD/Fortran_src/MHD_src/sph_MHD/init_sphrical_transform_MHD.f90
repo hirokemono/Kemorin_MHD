@@ -38,8 +38,8 @@
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
       use t_sph_multi_FFTW
-!
-      use legendre_transform_select
+      use t_legendre_trans_select
+      use t_sph_transforms
 !
       implicit  none
 !
@@ -124,7 +124,7 @@
 !
       call sel_sph_transform_MHD(ipol, sph, comms_sph, omega_sph,       &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
-     &    trans_p, WK, rj_fld)
+     &    trans_p, WK%trns_MHD, WK%WK_sph, WK%MHD_mul_FFTW, rj_fld)
 !
       if(SGS_param%iflag_SGS .gt. 0) then
         call init_MHD_FFT_select(my_rank, sph%sph_rtp, ncomp_max_trans, &
@@ -139,7 +139,7 @@
       subroutine sel_sph_transform_MHD                                  &
      &         (ipol, sph, comms_sph, omega_sph,                        &
      &          ncomp_max_trans, nvector_max_trans, nscalar_max_trans,  &
-     &          trans_p, WK, rj_fld)
+     &          trans_p, trns_MHD, WK_sph, MHD_mul_FFTW, rj_fld)
 !
       use init_sph_trans
       use init_FFT_4_MHD
@@ -163,18 +163,18 @@
       integer(kind = kint), intent(in) :: nscalar_max_trans
 !
       type(parameters_4_sph_trans), intent(inout) :: trans_p
-      type(works_4_sph_trans_MHD), intent(inout) :: WK
+      type(address_4_sph_trans), intent(inout) :: trns_MHD
+      type(spherical_trns_works), intent(inout) :: WK_sph
+      type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
       type(phys_data), intent(inout) :: rj_fld
-!
-      character(len=kchara) :: tmpchara
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'initialize_legendre_trans'
       call initialize_legendre_trans(ncomp_max_trans,                   &
      &    sph, comms_sph, trans_p%leg, trans_p%idx_trns)
       call init_fourier_transform_4_MHD(ncomp_max_trans,                &
-     &    sph%sph_rtp, comms_sph%comm_rtp, WK%trns_MHD,                 &
-     &    WK%MHD_mul_FFTW)
+     &    sph%sph_rtp, comms_sph%comm_rtp, trns_MHD,                    &
+     &    WK_sph%WK_FFTs, MHD_mul_FFTW)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_colatitude_rtp'
       call set_colatitude_rtp(sph%sph_rtp, sph%sph_rj, trans_p%leg)
@@ -186,53 +186,15 @@
       call select_legendre_transform                                    &
      &   (sph, comms_sph, omega_sph, trans_p, ipol,                     &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
-     &    rj_fld, WK%trns_MHD, WK%MHD_mul_FFTW)
+     &    rj_fld, trns_MHD, WK_sph, MHD_mul_FFTW)
 !
       call sel_init_legendre_trans                                      &
-     &    (ncomp_max_trans, nvector_max_trans, nscalar_max_trans,       &
-     &     sph%sph_rtm, sph%sph_rlm, trans_p%leg, trans_p%idx_trns)
+     &   (ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
+     &    sph%sph_rtm, sph%sph_rlm, trans_p%leg, trans_p%idx_trns,      &
+     &    WK_sph%WK_leg)
 !
       if(my_rank .ne. 0) return
-        if     (id_legendre_transfer .eq. iflag_leg_orginal_loop) then
-          write(tmpchara,'(a)') trim(leg_orginal_loop)
-        else if(id_legendre_transfer .eq. iflag_leg_blocked) then
-          write(tmpchara,'(a)') trim(leg_blocked_loop)
-        else if(id_legendre_transfer .eq. iflag_leg_krloop_inner) then
-          write(tmpchara,'(a)') trim(leg_krloop_inner)
-        else if(id_legendre_transfer .eq. iflag_leg_krloop_outer) then
-          write(tmpchara,'(a)') trim(leg_krloop_outer)
-        else if(id_legendre_transfer .eq. iflag_leg_symmetry) then
-          write(tmpchara,'(a)') trim(leg_sym_org_loop)
-        else if(id_legendre_transfer .eq. iflag_leg_sym_spin_loop) then
-          write(tmpchara,'(a)') trim(leg_sym_spin_loop)
-        else if(id_legendre_transfer .eq. iflag_leg_matmul) then
-          write(tmpchara,'(a)') trim(leg_matmul)
-        else if(id_legendre_transfer .eq. iflag_leg_dgemm) then
-          write(tmpchara,'(a)') trim(leg_dgemm)
-        else if(id_legendre_transfer .eq. iflag_leg_matprod) then
-          write(tmpchara,'(a)') trim(leg_matprod)
-        else if(id_legendre_transfer .eq. iflag_leg_sym_matmul) then
-          write(tmpchara,'(a)') trim(leg_sym_matmul)
-        else if(id_legendre_transfer .eq. iflag_leg_sym_dgemm) then
-          write(tmpchara,'(a)') trim(leg_sym_dgemm)
-        else if(id_legendre_transfer .eq. iflag_leg_sym_matprod) then
-          write(tmpchara,'(a)') trim(leg_sym_matprod)
-        else if(id_legendre_transfer .eq. iflag_leg_sym_matmul_big)     &
-     &          then
-          write(tmpchara,'(a)') trim(leg_sym_matmul_big)
-        else if(id_legendre_transfer .eq. iflag_leg_sym_dgemm_big) then
-          write(tmpchara,'(a)') trim(leg_sym_dgemm_big)
-        else if(id_legendre_transfer .eq. iflag_leg_sym_matprod_big)    &
-     &          then
-          write(tmpchara,'(a)') trim(leg_sym_matprod_big)
-        else if(id_legendre_transfer .eq. iflag_leg_test_loop) then
-          write(tmpchara,'(a)') trim(leg_test_loop)
-        end if
-        call change_2_upper_case(tmpchara)
-!
-        write(*,'(a,i4)', advance='no')                                 &
-     &         'Selected id_legendre_transfer: ', id_legendre_transfer
-        write(*,'(a,a,a)') ' (', trim(tmpchara), ') '
+      call display_selected_legendre_mode(WK_sph%WK_leg%id_legendre)
 !
       end subroutine sel_sph_transform_MHD
 !
@@ -242,7 +204,7 @@
       subroutine select_legendre_transform                              &
      &         (sph, comms_sph, omega_sph, trans_p, ipol,               &
      &          ncomp_max_trans, nvector_max_trans, nscalar_max_trans,  &
-     &          rj_fld, trns_MHD, MHD_mul_FFTW)
+     &          rj_fld, trns_MHD, WK_sph, MHD_mul_FFTW)
 !
       use m_physical_property
       use sph_transforms_4_MHD
@@ -258,6 +220,7 @@
       integer(kind = kint), intent(in) :: nscalar_max_trans
 !
       type(address_4_sph_trans), intent(inout) :: trns_MHD
+      type(spherical_trns_works), intent(inout) :: WK_sph
       type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -269,27 +232,28 @@
       integer(kind = kint) :: id, iloop_type
 !
 !
-      if(id_legendre_transfer .ne. iflag_leg_undefined) return
+      if(WK_sph%WK_leg%id_legendre .ne. iflag_leg_undefined) return
 !
       endtime(1:ntype_Leg_trans_loop) =     zero
       etime_trans(1:ntype_Leg_trans_loop) = zero
       etime_max(1:ntype_Leg_trans_loop) =   zero
       do iloop_type = 1, num_test
-        id_legendre_transfer = list_test(iloop_type)
+        WK_sph%WK_leg%id_legendre = list_test(iloop_type)
         if(my_rank .eq. 0) write(*,*)                                   &
-     &            'Test SPH transform for ', id_legendre_transfer
+     &            'Test SPH transform for ', WK_sph%WK_leg%id_legendre
         call sel_init_legendre_trans                                    &
      &     (ncomp_max_trans, nvector_max_trans, nscalar_max_trans,      &
-     &      sph%sph_rtm, sph%sph_rlm, trans_p%leg, trans_p%idx_trns)
+     &      sph%sph_rtm, sph%sph_rlm, trans_p%leg, trans_p%idx_trns,    &
+     &      WK_sph%WK_leg)
 !
         starttime = MPI_WTIME()
         call sph_back_trans_4_MHD(sph, comms_sph, fl_prop1, omega_sph,  &
-     &      trans_p, ipol, rj_fld, trns_MHD, MHD_mul_FFTW)
+     &      trans_p, ipol, rj_fld, trns_MHD, WK_sph, MHD_mul_FFTW)
         call sph_forward_trans_4_MHD(sph, comms_sph, fl_prop1, trans_p, &
-     &      ipol, trns_MHD, MHD_mul_FFTW, rj_fld)
-        endtime(id_legendre_transfer) = MPI_WTIME() - starttime
+     &      ipol, trns_MHD, WK_sph, MHD_mul_FFTW, rj_fld)
+        endtime(WK_sph%WK_leg%id_legendre) = MPI_WTIME() - starttime
 !
-        call sel_finalize_legendre_trans
+        call sel_finalize_legendre_trans(WK_sph%WK_leg)
       end do
 !
       call MPI_allREDUCE (endtime, etime_trans, ntype_Leg_trans_loop,   &
@@ -303,7 +267,7 @@
       do iloop_type = 1, num_test
         id = list_test(iloop_type)
         if(etime_max(id) .lt. etime_shortest) then
-          id_legendre_transfer = id
+          WK_sph%WK_leg%id_legendre = id
           etime_shortest =       etime_max(id)
         end if
       end do

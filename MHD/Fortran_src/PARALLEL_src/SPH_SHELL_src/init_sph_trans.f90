@@ -8,10 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine initialize_sph_trans                                 &
-!!     &         (ncomp_trans, sph, comms_sph, trans_p)
+!!     &         (ncomp_trans, nvector_trns, nscalar_trns,              &
+!!     &          sph, comms_sph, trans_p, WK_sph)
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
 !!        type(parameters_4_sph_trans), intent(inout) :: trans_p
+!!        type(spherical_trns_works), intent(inout) :: WK_sph
 !!      subroutine initialize_legendre_trans                            &
 !!     &         (ncomp_trans, sph, comms_sph, leg, idx_trns)
 !!        type(sph_grids), intent(in) :: sph
@@ -29,6 +31,7 @@
       use t_sph_trans_comm_tbl
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
+      use t_sph_transforms
 !
       implicit none
 !
@@ -41,20 +44,32 @@
 ! -----------------------------------------------------------------------
 !
       subroutine initialize_sph_trans                                   &
-     &         (ncomp_trans, sph, comms_sph, trans_p)
+     &         (ncomp_trans, nvector_trns, nscalar_trns,                &
+     &          sph, comms_sph, trans_p, WK_sph)
 !
       use init_FFT_4_sph
 !
       integer(kind = kint), intent(in) :: ncomp_trans
+      integer(kind = kint), intent(in) :: nvector_trns, nscalar_trns
       type(sph_grids), intent(inout) :: sph
       type(sph_comm_tables), intent(inout) :: comms_sph
       type(parameters_4_sph_trans), intent(inout) :: trans_p
+      type(spherical_trns_works), intent(inout) :: WK_sph
 !
+!
+      iflag_FFT = iflag_FFTPACK
+      if(WK_sph%WK_leg%id_legendre .eq. iflag_leg_undefined) then
+        WK_sph%WK_leg%id_legendre = iflag_leg_sym_dgemm_big
+      end if
 !
       call initialize_legendre_trans                                    &
      &   (ncomp_trans, sph, comms_sph, trans_p%leg, trans_p%idx_trns)
-      call init_fourier_transform_4_sph                                 &
-     &   (ncomp_trans, sph%sph_rtp, comms_sph%comm_rtp)
+      call init_fourier_transform_4_sph(ncomp_trans, sph%sph_rtp,       &
+     &    comms_sph%comm_rtp, WK_sph%WK_FFTs)
+      call sel_init_legendre_trans                                      &
+     &   (ncomp_trans, nvector_trns, nscalar_trns,                      &
+     &    sph%sph_rtm, sph%sph_rlm, trans_p%leg, trans_p%idx_trns,      &
+     &    WK_sph%WK_leg)
 !
       end subroutine initialize_sph_trans
 !
@@ -161,9 +176,9 @@
       use calypso_mpi
       use m_machine_parameter
       use m_sph_communicators
+      use m_legendre_transform_list
       use init_spherical_SRs
       use cal_minmax_and_stacks
-      use legendre_transform_select
 !
       integer(kind = kint), intent(in) :: ncomp_trans
       type(sph_grids), intent(in) :: sph

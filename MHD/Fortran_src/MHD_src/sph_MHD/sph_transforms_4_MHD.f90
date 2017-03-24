@@ -8,8 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine sph_back_trans_4_MHD                                 &
-!!     &         (sph, comms_sph, fl_prop, omega_sph,                   &
-!!     &          trans_p, ipol, rj_fld, trns_MHD, MHD_mul_FFTW)
+!!     &         (sph, comms_sph, fl_prop, omega_sph, trans_p,          &
+!!     &          ipol, rj_fld, trns_MHD, WK_sph, MHD_mul_FFTW)
 !!      subroutine sph_pole_trans_4_MHD(sph, comms_sph,                 &
 !!     &          trans_p, ipol, rj_fld, trns_MHD)
 !!        type(sph_grids), intent(inout) :: sph
@@ -20,10 +20,11 @@
 !!        type(phys_address), intent(in) :: ipol
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(address_4_sph_trans), intent(inout) :: trns_MHD
+!!        type(spherical_trns_works), intent(inout) :: WK_sph
 !!        type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !!      subroutine sph_forward_trans_4_MHD                              &
 !!     &         (sph, comms_sph, fl_prop, trans_p,                     &
-!!     &          ipol, trns_MHD, MHD_mul_FFTW, rj_fld)
+!!     &          ipol, trns_MHD, WK_sph, MHD_mul_FFTW, rj_fld)
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
 !!        type(fluid_property), intent(in) :: fl_prop
@@ -31,6 +32,7 @@
 !!        type(phys_address), intent(in) :: ipol
 !!        type(address_4_sph_trans), intent(in) :: trns_MHD
 !!        type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
+!!        type(spherical_trns_works), intent(inout) :: WK_sph
 !!        type(phys_data), intent(inout) :: rj_fld
 !!
 !!      subroutine sph_transform_4_licv(sph_rlm, comm_rlm, comm_rj,     &
@@ -45,6 +47,7 @@
       use m_constants
       use m_machine_parameter
       use m_work_time
+      use m_legendre_transform_list
 !
       use calypso_mpi
 !
@@ -60,8 +63,8 @@
       use t_work_4_sph_trans
       use t_sph_multi_FFTW
       use t_sph_single_FFTW
+      use t_sph_transforms
 !
-      use legendre_transform_select
 !
       implicit  none
 !
@@ -72,8 +75,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine sph_back_trans_4_MHD                                   &
-     &         (sph, comms_sph, fl_prop, omega_sph,                     &
-     &          trans_p, ipol, rj_fld, trns_MHD, MHD_mul_FFTW)
+     &         (sph, comms_sph, fl_prop, omega_sph, trans_p,            &
+     &          ipol, rj_fld, trns_MHD, WK_sph, MHD_mul_FFTW)
 !
       use m_solver_SR
       use sph_trans_w_coriols
@@ -89,6 +92,7 @@
       type(phys_data), intent(in) :: rj_fld
 !
       type(address_4_sph_trans), intent(inout) :: trns_MHD
+      type(spherical_trns_works), intent(inout) :: WK_sph
       type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
 !
 !
@@ -108,7 +112,7 @@
       call sph_b_trans_w_coriolis(trns_MHD%ncomp_rj_2_rtp,              &
      &    trns_MHD%nvector_rj_2_rtp, trns_MHD%nscalar_rj_2_rtp,         &
      &    sph, comms_sph, fl_prop, omega_sph, trans_p,                  &
-     &    n_WS, n_WR, WS(1), WR(1), trns_MHD, MHD_mul_FFTW)
+     &    n_WS, n_WR, WS(1), WR(1), trns_MHD, WK_sph, MHD_mul_FFTW)
 !
       end subroutine sph_back_trans_4_MHD
 !
@@ -116,7 +120,7 @@
 !
       subroutine sph_forward_trans_4_MHD                                &
      &         (sph, comms_sph, fl_prop, trans_p,                       &
-     &          ipol, trns_MHD, MHD_mul_FFTW, rj_fld)
+     &          ipol, trns_MHD, WK_sph, MHD_mul_FFTW, rj_fld)
 !
       use m_solver_SR
       use sph_trans_w_coriols
@@ -130,6 +134,7 @@
       type(phys_address), intent(in) :: ipol
 !
       type(address_4_sph_trans), intent(inout) :: trns_MHD
+      type(spherical_trns_works), intent(inout) :: WK_sph
       type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -143,7 +148,7 @@
       call sph_f_trans_w_coriolis(trns_MHD%ncomp_rtp_2_rj,              &
      &    trns_MHD%nvector_rtp_2_rj, trns_MHD%nscalar_rtp_2_rj,         &
      &    sph, comms_sph, fl_prop, trans_p, trns_MHD,                   &
-     &    n_WS, n_WR, WS(1), WR(1), MHD_mul_FFTW)
+     &    n_WS, n_WR, WS(1), WR(1), WK_sph, MHD_mul_FFTW)
 !
       call copy_mhd_spectr_from_recv(trns_MHD%ncomp_rtp_2_rj,           &
      &    trns_MHD%f_trns, comms_sph%comm_rj, ipol,                     &
@@ -157,7 +162,7 @@
      &          trans_p, ipol, rj_fld, trns_MHD)
 !
       use m_solver_SR
-      use sph_transforms
+      use t_sph_transforms
       use copy_sph_MHD_4_send_recv
       use spherical_SRs_N
 !

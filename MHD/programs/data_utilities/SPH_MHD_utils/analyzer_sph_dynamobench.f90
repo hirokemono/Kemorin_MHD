@@ -43,6 +43,7 @@
       use m_node_phys_data
       use m_sph_spectr_data
       use m_rms_4_sph_spectr
+      use m_sph_trans_arrays_MHD
       use init_sph_MHD_elapsed_label
       use input_control_sph_MHD
 !
@@ -60,7 +61,8 @@
 
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_dynamobench'
       call input_control_SPH_dynamobench(MHD_ctl1, sph1, comms_sph1,    &
-     &    sph_grps1, rj_fld1, nod_fld1, pwr1, SGS_par1, MHD_step1)
+     &    sph_grps1, rj_fld1, nod_fld1, pwr1, SGS_par1,                 &
+     &    MHD_step1, trns_WK1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
       call end_eleps_time(4)
 !
