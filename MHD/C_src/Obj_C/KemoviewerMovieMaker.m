@@ -400,6 +400,7 @@ NSImage *SnapshotImage;
                                     completionHandler:^(NSInteger RotateImageSaveInt){
         if (RotateImageSaveInt == NSFileHandlingPanelOKButton) {
             NSString *RotateImageFilename = [[ RotateImageSavePanelObj URL] path];
+            [RotateImageSavePanelObj orderOut:nil];
             [self SelectRotationMovieFile:RotateImageFilename];
         };
                                     }];
@@ -412,6 +413,7 @@ NSImage *SnapshotImage;
                                     completionHandler:^(NSInteger EvolutionImageSaveInt){
 	if(EvolutionImageSaveInt == NSFileHandlingPanelOKButton){
 		NSString *EvolutionMovieFilename = [[ EvolutionImageSavePanelObj URL] path];
+        [EvolutionImageSavePanelObj orderOut:nil];
         [self SelectEvolutionMovieFile:EvolutionMovieFilename];
 	};
                                     }];
