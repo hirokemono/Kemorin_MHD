@@ -52,12 +52,12 @@
           call mpi_input_mesh(mesh_file,                                &
      &        MGCG_FEM1%MG_mesh(i_level)%mesh,                          &
      &        MGCG_FEM1%MG_mesh(i_level)%group,                         &
-     &        MG_ele_mesh(i_level)%surf%nnod_4_surf,                    &
-     &        MG_ele_mesh(i_level)%edge%nnod_4_edge)
+     &        MGCG_FEM1%MG_ele_mesh(i_level)%surf%nnod_4_surf,          &
+     &        MGCG_FEM1%MG_ele_mesh(i_level)%edge%nnod_4_edge)
         else
           call set_zero_mesh_data(MGCG_FEM1%MG_mesh(i_level)%mesh,      &
-     &        MG_ele_mesh(i_level)%surf%nnod_4_surf,                    &
-     &        MG_ele_mesh(i_level)%edge%nnod_4_edge)
+     &        MGCG_FEM1%MG_ele_mesh(i_level)%surf%nnod_4_surf,          &
+     &        MGCG_FEM1%MG_ele_mesh(i_level)%edge%nnod_4_edge)
         end if
 !
         call sync_group_name_4_empty(MGCG_WK1%MG_mpi(i_level)%nprocs,   &
