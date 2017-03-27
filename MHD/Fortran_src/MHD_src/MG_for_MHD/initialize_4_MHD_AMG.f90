@@ -319,7 +319,7 @@
      &      MGCG_FEM1%MG_mesh(i_level)%group,                           &
      &      MGCG_MHD_FEM1%MG_MHD_mesh(i_level),                         &
      &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
-     &      MG_node_bc(i_level))
+     &      MGCG_MHD_FEM1%MG_node_bc(i_level))
 !
         call set_bc_surface_data(IO_MG_bc(i_level),                     &
      &      MGCG_FEM1%MG_mesh(i_level)%mesh%node,                       &
@@ -329,7 +329,7 @@
      &      MGCG_FEM1%MG_mesh(i_level)%group%surf_nod_grp,              &
      &      MGCG_FEM1%MG_mesh(i_level)%group%surf_grp_geom,             &
      &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
-     &      MG_surf_bc(i_level) )
+     &      MGCG_MHD_FEM1%MG_surf_bc(i_level) )
       end do
 !
 !     --------------------- 
@@ -427,7 +427,8 @@
      &        MGCG_FEM1%MG_mesh(i_level)%group,                         &
      &        MGCG_FEM1%MG_ele_mesh(i_level),                           &
      &        MGCG_MHD_FEM1%MG_MHD_mesh(i_level),                       &
-     &        MG_node_bc(i_level), MG_surf_bc(i_level),                 &
+     &        MGCG_MHD_FEM1%MG_node_bc(i_level),                        &
+     &        MGCG_MHD_FEM1%MG_surf_bc(i_level),                        &
      &        fl_prop1, cd_prop1, ht_prop1, cp_prop1,                   &
      &        ak_MHD_AMG(i_level),                                      &
      &        MGCG_FEM1%MG_jacobians(i_level)%jac_3d,                   &

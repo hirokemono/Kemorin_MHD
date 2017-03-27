@@ -35,7 +35,7 @@
 !
 !
       type(MGCG_MHD_data), save :: MGCG_MHD_FEM1
-!MGCG_MHD_FEM1%MG_MHD_mesh
+!MGCG_MHD_FEM1%MG_surf_bc
 !
 !      type(mesh_data_MHD), target, save :: MG_MHD_mesh(max_MG_level)
 !   mesh data structure
@@ -46,10 +46,10 @@
       type(lumped_mass_mat_layerd), save :: MG_mk_MHD(max_MG_level)
 !   mass matrix for layers
 !
-      type(nodal_boundarty_conditions), save                            &
-     &                       :: MG_node_bc(max_MG_level)
-      type(surface_boundarty_conditions), save                          &
-     &                       :: MG_surf_bc(max_MG_level)
+!      type(nodal_boundarty_conditions), save                           &
+!     &                       :: MG_node_bc(max_MG_level)
+!      type(surface_boundarty_conditions), save                         &
+!     &                       :: MG_surf_bc(max_MG_level)
 !   mesh data structure
 !
       type(CRS_tables_MHD), save :: MG_MHD_CRS_table(max_MG_level)
