@@ -4,19 +4,19 @@
 !     Written by H. Matsui on Dec., 2008
 !
 !!      subroutine alloc_MGCG_data(num_level, MGCG_WK)
-!!      subroutine alloc_MGCG_mesh(MGCG_WK, MGCG_mesh)
+!!      subroutine alloc_MGCG_mesh(MGCG_WK, MGCG_FEM)
 !!
 !!      subroutine dealloc_MGCG_data(MGCG_WK)
-!!      subroutine dealloc_MGCG_mesh(MGCG_mesh)
+!!      subroutine dealloc_MGCG_mesh(MGCG_FEM)
 !!
 !!      subroutine split_multigrid_comms(MGCG_WK)
 !!      subroutine set_ctl_data_4_Multigrid                             &
-!!     &         (MG_ctl, MG_param, MG_file, MGCG_WK, MGCG_mesh)
+!!     &         (MG_ctl, MG_param, MG_file, MGCG_WK, MGCG_FEM)
 !!       type(MGCG_control), intent(inout) :: MG_ctl
 !!       type(MGCG_parameter), intent(inout) :: MG_param
 !!       type(MGCG_file_list), intent(inout) :: MG_file
 !!       type(MGCG_data), intent(inout) :: MGCG_WK
-!!       type(mesh_4_MGCG), intent(inout) :: MGCG_mesh
+!!       type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
 !
       module t_MGCG_data
 !
@@ -47,8 +47,6 @@
 !
 !>        structure of communicator for MGCG matrix
         type(DJDS_MATRIX), allocatable :: MG_mat(:)
-!>        Interpolation table for multigrid
-        type(tables_4_FEM_assembles), allocatable :: MG_FEM_tbl(:)
       end type MGCG_data
 !
 !
@@ -66,6 +64,8 @@
 !>        Jacobians for coarse mesh
         type(jacobians_type), allocatable :: MG_jacobians(:)
 !
+!>        Interpolation table for multigrid
+        type(tables_4_FEM_assembles), allocatable :: MG_FEM_tbl(:)
 !>        FEM assemble table for multigrid mesh
         type(arrays_finite_element_mat), allocatable :: MG_FEM_mat(:)
       end type mesh_4_MGCG
@@ -88,26 +88,25 @@
       allocate(MGCG_WK%MG_mpi(0:MGCG_WK%num_MG_level))
       allocate(MGCG_WK%MG_vector(0:MGCG_WK%num_MG_level))
 !
-      allocate(MGCG_WK%MG_FEM_tbl(MGCG_WK%num_MG_level))
-!
       end subroutine alloc_MGCG_data
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_MGCG_mesh(MGCG_WK, MGCG_mesh)
+      subroutine alloc_MGCG_mesh(MGCG_WK, MGCG_FEM)
 !
       type(MGCG_data), intent(in) :: MGCG_WK
-      type(mesh_4_MGCG), intent(inout) :: MGCG_mesh
+      type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
 !
 !
-      allocate(MGCG_mesh%MG_mesh(MGCG_WK%num_MG_level))
-      allocate(MGCG_mesh%MG_ele_mesh(MGCG_WK%num_MG_level))
+      allocate(MGCG_FEM%MG_mesh(MGCG_WK%num_MG_level))
+      allocate(MGCG_FEM%MG_ele_mesh(MGCG_WK%num_MG_level))
 !
-      allocate(MGCG_mesh%MG_c2f_ele_tbl(MGCG_WK%num_MG_level))
+      allocate(MGCG_FEM%MG_c2f_ele_tbl(MGCG_WK%num_MG_level))
 !
-      allocate(MGCG_mesh%MG_jacobians(MGCG_WK%num_MG_level))
+      allocate(MGCG_FEM%MG_jacobians(MGCG_WK%num_MG_level))
 !
-      allocate(MGCG_mesh%MG_FEM_mat(MGCG_WK%num_MG_level))
+      allocate(MGCG_FEM%MG_FEM_mat(MGCG_WK%num_MG_level))
+      allocate(MGCG_FEM%MG_FEM_tbl(MGCG_WK%num_MG_level))
 !
       end subroutine alloc_MGCG_mesh
 !
@@ -121,25 +120,25 @@
 !
       deallocate(MGCG_WK%MG_mpi)
       deallocate(MGCG_WK%MG_vector)
-      deallocate(MGCG_WK%MG_FEM_tbl)
 !
       end subroutine dealloc_MGCG_data
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_MGCG_mesh(MGCG_mesh)
+      subroutine dealloc_MGCG_mesh(MGCG_FEM)
 !
-      type(mesh_4_MGCG), intent(inout) :: MGCG_mesh
+      type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
 !
 !
-      deallocate(MGCG_mesh%MG_mesh)
-      deallocate(MGCG_mesh%MG_ele_mesh)
+      deallocate(MGCG_FEM%MG_mesh)
+      deallocate(MGCG_FEM%MG_ele_mesh)
 !
-      deallocate(MGCG_mesh%MG_c2f_ele_tbl)
+      deallocate(MGCG_FEM%MG_c2f_ele_tbl)
 !
-      deallocate(MGCG_mesh%MG_jacobians)
+      deallocate(MGCG_FEM%MG_jacobians)
 !
-      deallocate(MGCG_mesh%MG_FEM_mat)
+      deallocate(MGCG_FEM%MG_FEM_tbl)
+      deallocate(MGCG_FEM%MG_FEM_mat)
 !
       end subroutine dealloc_MGCG_mesh
 !
@@ -187,7 +186,7 @@
 !------------------------------------------------------------------
 !
       subroutine set_ctl_data_4_Multigrid                               &
-     &         (MG_ctl, MG_param, MG_file, MGCG_WK, MGCG_mesh)
+     &         (MG_ctl, MG_param, MG_file, MGCG_WK, MGCG_FEM)
 !
       use calypso_mpi
       use m_error_IDs
@@ -201,7 +200,7 @@
       type(MGCG_parameter), intent(inout) :: MG_param
       type(MGCG_file_list), intent(inout) :: MG_file
       type(MGCG_data), intent(inout) :: MGCG_WK
-      type(mesh_4_MGCG), intent(inout) :: MGCG_mesh
+      type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
 !
       integer(kind = kint) :: i
 !
@@ -227,7 +226,7 @@
         call dealloc_control_array_int(MG_ctl%num_MG_subdomain_ctl)
 !
         if (MG_ctl%MG_f2c_ele_tbl_ctl%icou .eq. MG_file%nlevel_f) then
-          MGCG_mesh%iflag_MG_commute_by_ele = 1
+          MGCG_FEM%iflag_MG_commute_by_ele = 1
         end if
       end if
 !

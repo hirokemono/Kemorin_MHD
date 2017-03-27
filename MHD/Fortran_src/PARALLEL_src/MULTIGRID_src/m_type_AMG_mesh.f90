@@ -20,7 +20,7 @@
       implicit  none
 !
 !
-      type(mesh_data), target, save :: MG_mesh(max_MG_level)
+!      type(mesh_data), target, save :: MG_mesh(max_MG_level)
       type(element_geometry), save ::  MG_ele_mesh(max_MG_level)
 !   mesh data structure
 !

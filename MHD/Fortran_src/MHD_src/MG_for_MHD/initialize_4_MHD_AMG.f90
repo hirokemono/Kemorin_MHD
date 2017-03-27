@@ -104,17 +104,19 @@
         if(my_rank .lt. MGCG_WK1%MG_mpi(i_level)%nprocs ) then
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            'set_layers_type_4_MHD', i_level
-          call set_layers_type_4_MHD(FEM_prm, MG_mesh(i_level)%mesh,    &
-     &      MG_mesh(i_level)%group,  MG_MHD_mesh(i_level) )
+          call set_layers_type_4_MHD                                    &
+     &       (FEM_prm, MGCG_FEM1%MG_mesh(i_level)%mesh,                 &
+     &        MGCG_FEM1%MG_mesh(i_level)%group,  MG_MHD_mesh(i_level) )
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            'const_mesh_infos', i_level
           call const_mesh_infos                                         &
-     &       (my_rank, MG_mesh(i_level)%mesh, MG_mesh(i_level)%group,   &
-     &        MG_ele_mesh(i_level))
+     &       (my_rank, MGCG_FEM1%MG_mesh(i_level)%mesh,                 &
+     &        MGCG_FEM1%MG_mesh(i_level)%group, MG_ele_mesh(i_level))
         else
           call set_empty_layers_type_4_MHD(MG_MHD_mesh(i_level) )
           call empty_mesh_info                                          &
-     &       (MG_mesh(i_level)%mesh, MG_mesh(i_level)%group,            &
+     &       (MGCG_FEM1%MG_mesh(i_level)%mesh,                          &
+     &        MGCG_FEM1%MG_mesh(i_level)%group,                         &
      &        MG_ele_mesh(i_level))
         end if
 !
@@ -126,7 +128,7 @@
       do i_level = 1, MGCG_WK1%num_MG_level
         if(iflag_debug .gt. 0) write(*,*)                               &
      &            's_allocate_MHD_AMG_array', i_level
-        call s_allocate_MHD_AMG_array(MG_mesh(i_level),                 &
+        call s_allocate_MHD_AMG_array(MGCG_FEM1%MG_mesh(i_level),       &
      &      MGCG_WK1%MG_vector(i_level), MG_FEM_mat(i_level),           &
      &      MG_mk_MHD(i_level) )
       end do
@@ -136,14 +138,16 @@
       do i_level = 1, MGCG_WK1%num_MG_level
         if(iflag_debug .gt. 0) write(*,*)                               &
      &            's_set_diffusivities_MHD_AMG', i_level
-        call s_set_diffusivities_MHD_AMG(MG_mesh(i_level)%mesh%ele,     &
+        call s_set_diffusivities_MHD_AMG                                &
+     &    (MGCG_FEM1%MG_mesh(i_level)%mesh%ele,                         &
      &     fl_prop1, cd_prop1, ht_prop1, cp_prop1, ak_MHD_AMG(i_level))
         if(iflag_debug .gt. 0) write(*,*)                               &
      &            's_set_sgs_diff_array_MHD_AMG', i_level
 !
         call copy_SGS_num_coefs(diff_coefs, MG_diff_coefs(i_level))
         call alloc_SGS_coefs                                            &
-     &     (MG_mesh(i_level)%mesh%ele%numele, MG_diff_coefs(i_level))
+     &     (MGCG_FEM1%MG_mesh(i_level)%mesh%ele%numele,                 &
+     &      MG_diff_coefs(i_level))
       end do
 !
 !     --------------------- 
@@ -152,10 +156,10 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &            's_const_comm_tbl_type_fluid', i_level
         call s_const_comm_tbl_type_fluid(MGCG_WK1%MG_mpi(i_level),      &
-     &      MG_mesh(i_level)%mesh, MG_MHD_mesh(i_level) )
+     &      MGCG_FEM1%MG_mesh(i_level)%mesh, MG_MHD_mesh(i_level) )
 !
         call const_element_comm_tbls                                    &
-     &     (MG_mesh(i_level)%mesh, MG_ele_mesh(i_level))
+     &     (MGCG_FEM1%MG_mesh(i_level)%mesh, MG_ele_mesh(i_level))
       end do
 !
 !     ---------------------
@@ -164,11 +168,11 @@
         if(my_rank .lt. MGCG_WK1%MG_mpi(i_level)%nprocs ) then
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            'const_bc_infinity_surf_grp', i_level
-          call const_bc_infinity_surf_grp                               &
-     &       (iflag_surf_infty, MG_mesh(i_level)%group%surf_grp,        &
-     &        MG_mesh(i_level)%group%infty_grp)
+          call const_bc_infinity_surf_grp(iflag_surf_infty,             &
+     &        MGCG_FEM1%MG_mesh(i_level)%group%surf_grp,                &
+     &        MGCG_FEM1%MG_mesh(i_level)%group%infty_grp)
         else
-          call empty_infty_surf_type(MG_mesh(i_level)%group)
+          call empty_infty_surf_type(MGCG_FEM1%MG_mesh(i_level)%group)
         end if
       end do
 !
@@ -178,29 +182,33 @@
         if(my_rank .lt. MGCG_WK1%MG_mpi(i_level)%nprocs ) then
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            'const_jacobian_type', i_level
-          call const_jacobian_type(MG_mesh(i_level)%mesh,               &
-     &        MG_mesh(i_level)%group, MG_jacobians(i_level)%jac_3d)
+          call const_jacobian_type(MGCG_FEM1%MG_mesh(i_level)%mesh,     &
+     &        MGCG_FEM1%MG_mesh(i_level)%group,                         &
+     &        MG_jacobians(i_level)%jac_3d)
 !
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            'const_jacobian_surface_type', i_level
-          call const_jacobian_surface_type(MG_mesh(i_level)%mesh,       &
+          call const_jacobian_surface_type                              &
+     &       (MGCG_FEM1%MG_mesh(i_level)%mesh,                          &
      &        MG_ele_mesh(i_level), MG_jacobians(i_level)%jac_2d)
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &            'cal_jacobian_surf_grp_type', i_level
-          call cal_jacobian_surf_grp_type(MG_mesh(i_level)%mesh,        &
-     &        MG_ele_mesh(i_level), MG_mesh(i_level)%group,             &
+          call cal_jacobian_surf_grp_type                               &
+     &       (MGCG_FEM1%MG_mesh(i_level)%mesh,                          &
+     &        MG_ele_mesh(i_level), MGCG_FEM1%MG_mesh(i_level)%group,   &
      &        MG_jacobians(i_level)%jac_sf_grp)
 !
 !
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            'const_linear_jac_3d_type', i_level
-          call const_linear_jac_3d_type(MG_mesh(i_level)%mesh,          &
-     &        MG_mesh(i_level)%group, MG_jacobians(i_level))
+          call const_linear_jac_3d_type                                 &
+     &       (MGCG_FEM1%MG_mesh(i_level)%mesh,                          &
+     &        MGCG_FEM1%MG_mesh(i_level)%group, MG_jacobians(i_level))
         else
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            'empty_jacobian_type', i_level
-          call empty_jacobian_type(MG_mesh(i_level)%mesh,               &
+          call empty_jacobian_type(MGCG_FEM1%MG_mesh(i_level)%mesh,     &
      &        MG_jacobians(i_level)%jac_3d)
 !
           if(iflag_debug .gt. 0) write(*,*)                             &
@@ -211,12 +219,14 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &            'empty_jacobian_surf_grp_type', i_level
           call empty_jacobian_surf_grp_type(MG_ele_mesh(i_level),       &
-     &        MG_mesh(i_level)%group, MG_jacobians(i_level)%jac_sf_grp)
+     &        MGCG_FEM1%MG_mesh(i_level)%group,                         &
+     &        MG_jacobians(i_level)%jac_sf_grp)
 !
 !
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            'empty_linear_jac_3d_type', i_level
-          call empty_linear_jac_3d_type(MG_mesh(i_level)%mesh,          &
+          call empty_linear_jac_3d_type                                 &
+     &       (MGCG_FEM1%MG_mesh(i_level)%mesh,                          &
      &        MG_jacobians(i_level))
         end if
       end do
@@ -228,13 +238,15 @@
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            's_set_table_type_RHS_assemble', i_level
           call s_set_table_type_RHS_assemble                            &
-     &       (MG_mesh(i_level)%mesh%node, MG_mesh(i_level)%mesh%ele,    &
+     &       (MGCG_FEM1%MG_mesh(i_level)%mesh%node,                     &
+     &        MGCG_FEM1%MG_mesh(i_level)%mesh%ele,                      &
      &        MG_next_table(i_level), MG_FEM_tbl(i_level))
         else
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            'empty_table_type_RHS_assemble', i_level
           call empty_table_type_RHS_assemble                            &
-     &       (MG_mesh(i_level)%mesh%node, MG_FEM_tbl(i_level),          &
+     &       (MGCG_FEM1%MG_mesh(i_level)%mesh%node,                     &
+     &        MG_FEM_tbl(i_level),                                      &
      &        MG_next_table(i_level))
         end if
       end do
@@ -246,13 +258,15 @@
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            's_set_djds_connectivity_type', i_level
           call s_set_djds_connectivity_type                             &
-     &       (MG_mesh(i_level)%mesh, MGCG_WK1%MG_mpi(i_level),          &
+     &       (MGCG_FEM1%MG_mesh(i_level)%mesh,                          &
+     &        MGCG_WK1%MG_mpi(i_level),                                 &
      &        MG_next_table(i_level), DJDS_param,                       &
      &        MHD_matrices%MG_DJDS_table(i_level) )
         else
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            'empty_djds_connectivity_type', i_level
-          call empty_djds_connectivity_type(MG_mesh(i_level)%mesh,      &
+          call empty_djds_connectivity_type                             &
+     &       (MGCG_FEM1%MG_mesh(i_level)%mesh,                          &
      &        MHD_matrices%MG_DJDS_table(i_level) )
         end if
 !
@@ -264,7 +278,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 's_link_MG_MHD_mesh_data'
       call s_link_MG_MHD_mesh_data                                      &
-     &   (MG_mesh, MG_MHD_mesh, ele_1st, MHD_matrices)
+     &   (MGCG_FEM1%MG_mesh, MG_MHD_mesh, ele_1st, MHD_matrices)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_MG_djds_connect_type'
       call set_MG_djds_connect_type(DJDS_param, MHD_matrices)
@@ -279,8 +293,9 @@
      &         'int_normal_4_all_surface', i_level
         call int_normal_4_all_surface(MG_ele_mesh(i_level)%surf,        &
      &      MG_jacobians(i_level)%jac_2d)
-        call int_surface_parameters(MG_mesh(i_level)%mesh,              &
-     &      MG_ele_mesh(i_level)%surf, MG_mesh(i_level)%group,          &
+        call int_surface_parameters(MGCG_FEM1%MG_mesh(i_level)%mesh,    &
+     &      MG_ele_mesh(i_level)%surf,                                  &
+     &      MGCG_FEM1%MG_mesh(i_level)%group,                           &
      &      MG_FEM_mat(i_level)%surf_wk)
       end do
 !
@@ -288,16 +303,18 @@
 !
       do i_level = 1, MGCG_WK1%num_MG_level
         call set_bc_id_data                                             &
-     &     (dt, IO_MG_bc(i_level), MG_mesh(i_level)%mesh,               &
-     &      MG_mesh(i_level)%group, MG_MHD_mesh(i_level),               &
+     &     (dt, IO_MG_bc(i_level), MGCG_FEM1%MG_mesh(i_level)%mesh,     &
+     &      MGCG_FEM1%MG_mesh(i_level)%group, MG_MHD_mesh(i_level),     &
      &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
      &      MG_node_bc(i_level))
 !
         call set_bc_surface_data(IO_MG_bc(i_level),                     &
-     &      MG_mesh(i_level)%mesh%node, MG_mesh(i_level)%mesh%ele,      &
-     &      MG_ele_mesh(i_level)%surf, MG_mesh(i_level)%group%surf_grp, &
-     &      MG_mesh(i_level)%group%surf_nod_grp,                        &
-     &      MG_mesh(i_level)%group%surf_grp_geom,                       &
+     &      MGCG_FEM1%MG_mesh(i_level)%mesh%node,                       &
+     &      MGCG_FEM1%MG_mesh(i_level)%mesh%ele,                        &
+     &      MG_ele_mesh(i_level)%surf,                                  &
+     &      MGCG_FEM1%MG_mesh(i_level)%group%surf_grp,                  &
+     &      MGCG_FEM1%MG_mesh(i_level)%group%surf_nod_grp,              &
+     &      MGCG_FEM1%MG_mesh(i_level)%group%surf_grp_geom,             &
      &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
      &      MG_surf_bc(i_level) )
       end do
@@ -306,7 +323,8 @@
 !
       do i_level = 1, MGCG_WK1%num_MG_level
         if(iflag_debug .gt. 0) write(*,*) 's_int_type_mass_matrices'
-        call s_int_type_mass_matrices(FEM_prm, MG_mesh(i_level)%mesh,   &
+        call s_int_type_mass_matrices                                   &
+     &     (FEM_prm, MGCG_FEM1%MG_mesh(i_level)%mesh,                   &
      &      MG_MHD_mesh(i_level), MG_jacobians(i_level),                &
      &      MG_FEM_tbl(i_level), MG_FEM_mat(i_level),                   &
      &      MG_mk_MHD(i_level) )
@@ -317,7 +335,7 @@
       do i_level = 1, MGCG_WK1%num_MG_level
         if(iflag_debug .gt. 0) write(*,*) 's_set_MHD_idx_4_mat_type'
         call s_set_MHD_idx_4_mat_type                                   &
-     &     (MG_mesh(i_level)%mesh, MG_MHD_mesh(i_level),                &
+     &     (MGCG_FEM1%MG_mesh(i_level)%mesh, MG_MHD_mesh(i_level),      &
      &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
      &      MG_FEM_tbl(i_level), MHD_matrices%MG_DJDS_table(i_level),   &
      &      MHD_matrices%MG_DJDS_fluid(i_level),                        &
@@ -335,7 +353,8 @@
       do i_level = 1, MGCG_WK1%num_MG_level
         if(my_rank .lt. MGCG_WK1%MG_mpi(i_level)%nprocs) then
           if(iflag_debug .gt. 0) write(*,*) 'alloc_aiccg_matrices'
-          call alloc_aiccg_matrices(MG_mesh(i_level)%mesh%node,         &
+          call alloc_aiccg_matrices                                     &
+     &       (MGCG_FEM1%MG_mesh(i_level)%mesh%node,                     &
      &        fl_prop1, cd_prop1, ht_prop1, cp_prop1,                   &
      &        MHD_matrices%MG_DJDS_table(i_level),                      &
      &        MHD_matrices%MG_DJDS_fluid(i_level),                      &
@@ -386,8 +405,9 @@
         if(my_rank .lt. MGCG_WK1%MG_mpi(i_level)%nprocs) then
           if (iflag_debug.eq.1) write(*,*) 'set MG matrices', i_level
           call s_set_aiccg_matrices_type                                &
-     &       (dt, FEM_prm, SGS_param, cmt_param, &
-     &        MG_mesh(i_level)%mesh, MG_mesh(i_level)%group,            &
+     &       (dt, FEM_prm, SGS_param, cmt_param,                        &
+     &        MGCG_FEM1%MG_mesh(i_level)%mesh,                          &
+     &        MGCG_FEM1%MG_mesh(i_level)%group,                         &
      &        MG_ele_mesh(i_level),  MG_MHD_mesh(i_level),              &
      &        MG_node_bc(i_level), MG_surf_bc(i_level),                 &
      &        fl_prop1, cd_prop1, ht_prop1, cp_prop1,                   &

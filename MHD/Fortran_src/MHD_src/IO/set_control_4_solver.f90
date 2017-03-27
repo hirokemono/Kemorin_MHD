@@ -108,7 +108,7 @@
         if (iflag_debug.eq.1) write(*,*) 'set_ctl_data_4_Multigrid'
         call set_ctl_data_4_Multigrid                                   &
      &     (CG_ctl%MG_ctl, FEM_PRM%MG_param, FEM_PRM%MG_file,           &
-     &      MGCG_WK1, MGCG_mesh1)
+     &      MGCG_WK1, MGCG_FEM1)
       end if
 !
       end subroutine s_set_control_4_solver

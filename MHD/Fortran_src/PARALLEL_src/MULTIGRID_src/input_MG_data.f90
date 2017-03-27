@@ -50,19 +50,20 @@
 !
           mesh_file%file_prefix = MG_file%MG_mesh_file_head(i_level)
           call mpi_input_mesh(mesh_file,                                &
-     &        MG_mesh(i_level)%mesh, MG_mesh(i_level)%group,            &
+     &        MGCG_FEM1%MG_mesh(i_level)%mesh,                          &
+     &        MGCG_FEM1%MG_mesh(i_level)%group,                         &
      &        MG_ele_mesh(i_level)%surf%nnod_4_surf,                    &
      &        MG_ele_mesh(i_level)%edge%nnod_4_edge)
         else
-          call set_zero_mesh_data(MG_mesh(i_level)%mesh,                &
+          call set_zero_mesh_data(MGCG_FEM1%MG_mesh(i_level)%mesh,      &
      &        MG_ele_mesh(i_level)%surf%nnod_4_surf,                    &
      &        MG_ele_mesh(i_level)%edge%nnod_4_edge)
         end if
 !
         call sync_group_name_4_empty(MGCG_WK1%MG_mpi(i_level)%nprocs,   &
-     &      MG_mesh(i_level)%group%nod_grp,                             &
-     &      MG_mesh(i_level)%group%ele_grp,                             &
-     &      MG_mesh(i_level)%group%surf_grp)
+     &      MGCG_FEM1%MG_mesh(i_level)%group%nod_grp,                   &
+     &      MGCG_FEM1%MG_mesh(i_level)%group%ele_grp,                   &
+     &      MGCG_FEM1%MG_mesh(i_level)%group%surf_grp)
       end do
 !
       end subroutine input_MG_mesh
