@@ -107,7 +107,8 @@
       if (cmp_no_case(FEM_PRM%CG11_param%METHOD, 'MGCG')) then
         if (iflag_debug.eq.1) write(*,*) 'set_ctl_data_4_Multigrid'
         call set_ctl_data_4_Multigrid                                   &
-     &     (CG_ctl%MG_ctl, FEM_PRM%MG_param, FEM_PRM%MG_file)
+     &     (CG_ctl%MG_ctl, FEM_PRM%MG_param, FEM_PRM%MG_file,           &
+     &      MGCG_WK1, MGCG_mesh1)
       end if
 !
       end subroutine s_set_control_4_solver

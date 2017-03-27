@@ -52,7 +52,7 @@
       integer(kind = kint) :: i_level
 !
 !
-      do i_level = 1, num_MG_level
+      do i_level = 1, MGCG_WK1%num_MG_level
         if(my_rank .lt. MG_mpi(i_level)%nprocs ) then
           if(iflag_debug .gt. 0) write(*,*)                             &
      &       'set_djds_layer_connect_type fluid', i_level
@@ -94,7 +94,7 @@
 !
 !
       l_endlevel = 0
-      do i_level = 1, num_MG_level
+      do i_level = 1, MGCG_WK1%num_MG_level
         if(my_rank .ge. MG_mpi(i_level)%nprocs) then
           l_endlevel = i_level - 1
           exit
@@ -127,7 +127,7 @@
         end if
       end do
 !
-      do i_level = l_endlevel+1, num_MG_level
+      do i_level = l_endlevel+1, MGCG_WK1%num_MG_level
         call empty_djds_connectivity_type(MG_mesh(i_level)%mesh,        &
      &        MHD_matrices%MG_DJDS_linear(i_level) )
         call empty_djds_connectivity_type(MG_mesh(i_level)%mesh,        &

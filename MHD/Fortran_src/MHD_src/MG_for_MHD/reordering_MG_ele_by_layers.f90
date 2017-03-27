@@ -30,13 +30,14 @@
       use m_type_AMG_data_4_MHD
 !
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
-      type(MG_itp_table), intent(inout) :: MG_interpolate(num_MG_level)
+      type(MG_itp_table), intent(inout)                                 &
+     &      :: MG_interpolate(MGCG_WK1%num_MG_level)
 !
       integer(kind = kint) :: i_level, i_level_1, iflag_last_level
 !
 !
       iflag_last_level = 0
-      do i_level = 1, num_MG_level-1
+      do i_level = 1, MGCG_WK1%num_MG_level-1
         if ( MG_mesh(i_level)%mesh%ele%numele .gt. 0) then
           i_level_1 = i_level + 1
 !
@@ -47,9 +48,9 @@
         end if
       end do
 !
-      if ( MG_mesh(num_MG_level)%mesh%ele%numele .gt. 0) then
-        i_level = num_MG_level
-        iflag_last_level = num_MG_level
+      if ( MG_mesh(MGCG_WK1%num_MG_level)%mesh%ele%numele .gt. 0) then
+        i_level = MGCG_WK1%num_MG_level
+        iflag_last_level = MGCG_WK1%num_MG_level
         call reordering_ele_types_by_layer(iflag_last_level, FEM_prm,   &
      &      MG_mesh(i_level), MG_MHD_mesh(i_level),                     &
      &      MG_interpolate(i_level)%f2c, MG_interpolate(i_level)%c2f)

@@ -83,7 +83,8 @@
       type(element_data), intent(inout) :: ele
       type(mesh_groups), intent(inout) ::   group
       type(mesh_data_MHD), intent(inout) :: MHD_mesh
-      type(MG_itp_table), intent(inout) :: MG_interpolate(num_MG_level)
+      type(MG_itp_table), intent(inout)                                 &
+     &     :: MG_interpolate(MGCG_WK1%num_MG_level)
 !
 !
       call allocate_lists_4_layer(ele%numele)

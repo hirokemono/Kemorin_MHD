@@ -75,7 +75,8 @@
       use itp_table_IO_select_4_zlib
 !
       type(MGCG_file_list), intent(in) :: MG_file
-      type(MG_itp_table), intent(inout) :: MG_itp(num_MG_level)
+      type(MG_itp_table), intent(inout)                                 &
+     &     :: MG_itp(MGCG_WK1%num_MG_level)
 !
       integer(kind = kint) :: i_level
 !

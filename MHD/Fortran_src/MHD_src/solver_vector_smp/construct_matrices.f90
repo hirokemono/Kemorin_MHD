@@ -108,7 +108,7 @@
      &    MHD_mat_tbls%fluid_l)
 !
       call link_MG_DJDS_MHD_structures                                  &
-     &   (num_MG_level, MHD_matrices, s_package)
+     &   (MGCG_WK1%num_MG_level, MHD_matrices, s_package)
 !
       end subroutine set_data_4_const_matrices
 !

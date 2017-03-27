@@ -54,7 +54,7 @@
      &    MHD_matrices%MG_interpolate(1)%c2f%tbl_org,                   &
      &    MHD_matrices%MG_interpolate(1)%c2f%mat)
 !
-      do i_level = 2, num_MG_level
+      do i_level = 2, MGCG_WK1%num_MG_level
         call link_comm_tbl_types(MG_mesh(i_level)%mesh%nod_comm,        &
      &      MHD_matrices%MG_comm_table(i_level))
         call link_comm_tbl_types(MG_MHD_mesh(i_level)%nod_fl_comm,      &
