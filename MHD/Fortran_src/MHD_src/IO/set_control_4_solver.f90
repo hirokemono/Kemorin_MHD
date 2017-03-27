@@ -43,6 +43,7 @@
       use t_ctl_data_4_solvers
       use t_ctl_data_mhd_evo_scheme
       use m_type_AMG_data
+      use m_type_AMG_data_4_MHD
       use skip_comment_f
 !
       integer (kind=kint), intent(in) :: iflag_scheme
@@ -109,6 +110,7 @@
         call set_ctl_data_4_Multigrid                                   &
      &     (CG_ctl%MG_ctl, FEM_PRM%MG_param, FEM_PRM%MG_file,           &
      &      MGCG_WK1, MGCG_FEM1)
+        call alloc_MGCG_MHD_data(MGCG_WK1, MGCG_MHD_FEM1)
       end if
 !
       end subroutine s_set_control_4_solver

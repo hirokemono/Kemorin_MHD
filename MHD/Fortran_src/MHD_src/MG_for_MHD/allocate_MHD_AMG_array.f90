@@ -4,7 +4,7 @@
 !        programmed by H.Matsui on Dec., 2008
 !
 !      subroutine s_allocate_MHD_AMG_array(femmesh, MG_vector, rhs_mat, &
-!     &          MG_mk_MHD)
+!     &          mk_MHD)
 !
       module allocate_MHD_AMG_array
 !

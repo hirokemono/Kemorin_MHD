@@ -39,7 +39,7 @@
 !
       implicit none
 !
-      type(next_nod_ele_table), private :: MG_next_table(max_MG_level)
+      type(next_nod_ele_table), allocatable :: MG_next_table(:)
 !
 ! ---------------------------------------------------------------------
 !
@@ -133,7 +133,7 @@
      &            's_allocate_MHD_AMG_array', i_level
         call s_allocate_MHD_AMG_array(MGCG_FEM1%MG_mesh(i_level),       &
      &      MGCG_WK1%MG_vector(i_level), MGCG_FEM1%MG_FEM_mat(i_level), &
-     &      MG_mk_MHD(i_level) )
+     &      MGCG_MHD_FEM1%MG_mk_MHD(i_level) )
       end do
 !
 !     --------------------- 
@@ -143,14 +143,16 @@
      &            's_set_diffusivities_MHD_AMG', i_level
         call s_set_diffusivities_MHD_AMG                                &
      &    (MGCG_FEM1%MG_mesh(i_level)%mesh%ele,                         &
-     &     fl_prop1, cd_prop1, ht_prop1, cp_prop1, ak_MHD_AMG(i_level))
+     &     fl_prop1, cd_prop1, ht_prop1, cp_prop1,                      &
+     &     MGCG_MHD_FEM1%ak_MHD_AMG(i_level))
         if(iflag_debug .gt. 0) write(*,*)                               &
      &            's_set_sgs_diff_array_MHD_AMG', i_level
 !
-        call copy_SGS_num_coefs(diff_coefs, MG_diff_coefs(i_level))
+        call copy_SGS_num_coefs                                         &
+     &     (diff_coefs, MGCG_MHD_FEM1%MG_diff_coefs(i_level))
         call alloc_SGS_coefs                                            &
      &     (MGCG_FEM1%MG_mesh(i_level)%mesh%ele%numele,                 &
-     &      MG_diff_coefs(i_level))
+     &      MGCG_MHD_FEM1%MG_diff_coefs(i_level))
       end do
 !
 !     --------------------- 
@@ -243,6 +245,8 @@
 !
 !     --------------------- 
 !
+      allocate(MG_next_table(MGCG_WK1%num_MG_level))
+!
       do i_level = 1, MGCG_WK1%num_MG_level
         if(my_rank .lt. MGCG_WK1%MG_mpi(i_level)%nprocs ) then
           if(iflag_debug .gt. 0) write(*,*)                             &
@@ -284,6 +288,8 @@
         call dealloc_inod_next_node(MG_next_table(i_level)%neib_nod)
       end do
 !
+      deallocate(MG_next_table)
+!
 !     -----  set DJDS matrix connectivity
 !
       if(iflag_debug .gt. 0) write(*,*) 's_link_MG_MHD_mesh_data'
@@ -315,13 +321,14 @@
 !
       do i_level = 1, MGCG_WK1%num_MG_level
         call set_bc_id_data                                             &
-     &     (dt, IO_MG_bc(i_level), MGCG_FEM1%MG_mesh(i_level)%mesh,     &
+     &     (dt, MGCG_MHD_FEM1%IO_MG_bc(i_level),                        &
+     &      MGCG_FEM1%MG_mesh(i_level)%mesh,                            &
      &      MGCG_FEM1%MG_mesh(i_level)%group,                           &
      &      MGCG_MHD_FEM1%MG_MHD_mesh(i_level),                         &
      &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
      &      MGCG_MHD_FEM1%MG_node_bc(i_level))
 !
-        call set_bc_surface_data(IO_MG_bc(i_level),                     &
+        call set_bc_surface_data(MGCG_MHD_FEM1%IO_MG_bc(i_level),       &
      &      MGCG_FEM1%MG_mesh(i_level)%mesh%node,                       &
      &      MGCG_FEM1%MG_mesh(i_level)%mesh%ele,                        &
      &      MGCG_FEM1%MG_ele_mesh(i_level)%surf,                        &
@@ -342,7 +349,7 @@
      &      MGCG_FEM1%MG_jacobians(i_level),                            &
      &      MGCG_FEM1%MG_FEM_tbl(i_level),                              &
      &      MGCG_FEM1%MG_FEM_mat(i_level),                              &
-     &      MG_mk_MHD(i_level) )
+     &      MGCG_MHD_FEM1%MG_mk_MHD(i_level) )
       end do
 !
 !     ---------------------
@@ -430,12 +437,13 @@
      &        MGCG_MHD_FEM1%MG_node_bc(i_level),                        &
      &        MGCG_MHD_FEM1%MG_surf_bc(i_level),                        &
      &        fl_prop1, cd_prop1, ht_prop1, cp_prop1,                   &
-     &        ak_MHD_AMG(i_level),                                      &
+     &        MGCG_MHD_FEM1%ak_MHD_AMG(i_level),                        &
      &        MGCG_FEM1%MG_jacobians(i_level)%jac_3d,                   &
      &        MGCG_FEM1%MG_jacobians(i_level)%jac_3d_l,                 &
      &        MGCG_FEM1%MG_jacobians(i_level)%jac_sf_grp,               &
-     &        MG_filter_MHD(i_level), ifld_diff,                        &
-     &        MG_diff_coefs(i_level), MGCG_FEM1%MG_FEM_tbl(i_level),    &
+     &        MGCG_MHD_FEM1%MG_filter_MHD(i_level), ifld_diff,          &
+     &        MGCG_MHD_FEM1%MG_diff_coefs(i_level),                     &
+     &        MGCG_FEM1%MG_FEM_tbl(i_level),                            &
      &        MHD_matrices%MG_DJDS_table(i_level),                      &
      &        MHD_matrices%MG_DJDS_fluid(i_level),                      &
      &        MHD_matrices%MG_DJDS_linear(i_level),                     &
@@ -445,7 +453,8 @@
      &        MHD_matrices%MG_mat_tbls(i_level)%full_conduct_q,         &
      &        MHD_matrices%MG_mat_tbls(i_level)%linear,                 &
      &        MHD_matrices%MG_mat_tbls(i_level)%fluid_l,                &
-     &        MG_mk_MHD(i_level)%fluid, MG_mk_MHD(i_level)%conduct,     &
+     &        MGCG_MHD_FEM1%MG_mk_MHD(i_level)%fluid,                   &
+     &        MGCG_MHD_FEM1%MG_mk_MHD(i_level)%conduct,                 &
      &        MGCG_FEM1%MG_FEM_mat(i_level)%surf_wk,                    &
      &        MGCG_FEM1%MG_FEM_mat(i_level)%fem_wk,                     &
      &        MHD_matrices%Vmat_MG_DJDS(i_level),                       &
