@@ -267,15 +267,16 @@
      &      ak_d_temp, FEM_prm%eps_4_temp_crank, dt,                    &
      &      FEM_prm, nod_comm, node, ele, fluid, property, Tnod_bcs,    &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens, diff_coefs, &
-     &      Tmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      Tmatrix, MGCG_WK1%MG_vector, mhd_fem_wk, fem_wk,            &
+     &      f_l, f_nl, nod_fld)
       else if (property%iflag_scheme .eq. id_Crank_nicolson_cmass) then 
         call cal_temp_pre_consist_crank                                 &
      &     (cmt_param%iflag_c_temp, SGS_param%ifilter_final,            &
      &      i_field, iphys%i_pre_heat, ifld_diff%i_temp,                &
      &      ak_d_temp, FEM_prm%eps_4_temp_crank, dt,                    &
      &      FEM_prm, node, ele, fluid, property, Tnod_bcs, jac_3d,      &
-     &      rhs_tbl, FEM_elens, diff_coefs, Tmatrix, MG_vector,         &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      rhs_tbl, FEM_elens, diff_coefs, Tmatrix,                    &
+     &      MGCG_WK1%MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       call set_boundary_scalar                                          &

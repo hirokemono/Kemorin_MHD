@@ -207,7 +207,7 @@
      &    iphys_ele, ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, &
      &    FEM_elens, ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,     &
      &    sgs_coefs_nod, diff_coefs, filtering, layer_tbl,              &
-     &    Vmatrix, MG_vector, wk_lsq, wk_sgs,                           &
+     &    Vmatrix, MGCG_WK1%MG_vector, wk_lsq, wk_sgs,                  &
      &    wk_filter, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,            &
      &    nod_fld, ele_fld, sgs_coefs)
 !
@@ -224,8 +224,8 @@
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      node, ele, surf, fluid, sf_grp, Vnod_bcs, Vsf_bcs, Psf_bcs, &
      &      iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,           &
-     &      FEM_elens, diff_coefs, Pmatrix, MG_vector, fem_wk, surf_wk, &
-     &      f_l, f_nl, nod_fld)
+     &      FEM_elens, diff_coefs, Pmatrix, MGCG_WK1%MG_vector,         &
+     &      fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
         call cal_sol_pressure                                           &
      &     (dt, node%numnod, node%istack_internal_smp,                  &
@@ -237,8 +237,9 @@
      &      fl_prop, Vnod_bcs, Vsf_bcs, Psf_bcs,                        &
      &      iphys, iphys_ele, ele_fld, ak_MHD,                          &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &
-     &      FEM_elens, ifld_diff, diff_coefs, Vmatrix, MG_vector,       &
-     &      mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &      FEM_elens, ifld_diff, diff_coefs, Vmatrix,                  &
+     &      MGCG_WK1%MG_vector, mhd_fem_wk, fem_wk, surf_wk,            &
+     &      f_l, f_nl, nod_fld)
 !
 !
         call cal_rms_scalar_potential(iloop, fluid%istack_ele_fld_smp,  &

@@ -93,8 +93,9 @@
       call split_multigrid_comms(MGCG_WK1)
 !
       if (iflag_debug .gt. 0) write(*,*) 'alloc_iccgN_vec_type'
-      MG_vector(0)%isize_solver_vect = -1
-      call alloc_iccgN_vec_type(isix, node_1st%numnod,  MG_vector(0))
+      MGCG_WK1%MG_vector(0)%isize_solver_vect = -1
+      call alloc_iccgN_vec_type                                         &
+     &   (isix, node_1st%numnod,  MGCG_WK1%MG_vector(0))
 !
 !     --------------------- 
 !
@@ -126,7 +127,7 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &            's_allocate_MHD_AMG_array', i_level
         call s_allocate_MHD_AMG_array(MG_mesh(i_level),                 &
-     &      MG_vector(i_level), MG_FEM_mat(i_level),                    &
+     &      MGCG_WK1%MG_vector(i_level), MG_FEM_mat(i_level),           &
      &      MG_mk_MHD(i_level) )
       end do
 !

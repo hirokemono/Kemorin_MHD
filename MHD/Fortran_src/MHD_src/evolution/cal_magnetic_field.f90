@@ -175,8 +175,9 @@
      &    nod_comm, node, ele, surf, conduct,                           &
      &    sf_grp, cd_prop, Bnod_bcs, Asf_bcs, iphys, iphys_ele,         &
      &    ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,          &
-     &    sgs_coefs, diff_coefs, filtering, Bmatrix, MG_vector,         &
-     &    wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &    sgs_coefs, diff_coefs, filtering, Bmatrix,                    &
+     &    MGCG_WK1%MG_vector, wk_filter, mhd_fem_wk, fem_wk,            &
+     &    f_l, f_nl, nod_fld)
 !
 !     --------------------- 
 !
@@ -197,7 +198,7 @@
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      node, ele, surf, sf_grp, Bnod_bcs, Asf_bcs, Fsf_bcs,        &
      &      iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,           &
-     &      FEM_elens, diff_coefs, Fmatrix, MG_vector,                  &
+     &      FEM_elens, diff_coefs, Fmatrix, MGCG_WK1%MG_vector,         &
      &      fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_sol_m_potential', iloop
@@ -211,7 +212,7 @@
      &      nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,        &
      &      Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,               &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &
-     &      FEM_elens, diff_coefs, m_lump, Bmatrix, MG_vector,          &
+     &      FEM_elens, diff_coefs, m_lump, Bmatrix, MGCG_WK1%MG_vector, &
      &      mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
 !
@@ -323,8 +324,8 @@
      &    nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,          &
      &    Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,        &
      &    jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,                   &
-     &    sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,              &
-     &    Bmatrix, MG_vector, wk_filter, mhd_fem_wk, fem_wk, surf_wk,   &
+     &    sgs_coefs, sgs_coefs_nod, diff_coefs, filtering, Bmatrix,     &
+     &    MGCG_WK1%MG_vector, wk_filter, mhd_fem_wk, fem_wk, surf_wk,   &
      &    f_l, f_nl, nod_fld)
 !
 !----  set magnetic field in insulate layer
@@ -339,7 +340,7 @@
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      node, ele, surf, sf_grp, Bnod_bcs, Bsf_bcs, Fsf_bcs,        &
      &      iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,           &
-     &      FEM_elens, diff_coefs, Fmatrix, MG_vector,                  &
+     &      FEM_elens, diff_coefs, Fmatrix, MGCG_WK1%MG_vector,         &
      &      fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
         call cal_sol_m_potential                                        &
@@ -353,7 +354,7 @@
      &      nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,        &
      &      Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,               &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &
-     &      FEM_elens, diff_coefs, m_lump, Bmatrix, MG_vector,          &
+     &      FEM_elens, diff_coefs, m_lump, Bmatrix, MGCG_WK1%MG_vector, &
      &      mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
         call cal_rms_scalar_potential(iloop, ele%istack_ele_smp,        &
