@@ -72,7 +72,6 @@
 !
       use m_work_4_MHD_layering
       use m_type_AMG_data
-      use m_type_AMG_mesh
       use t_interpolate_table
 !
       use reordering_MG_ele_by_layers

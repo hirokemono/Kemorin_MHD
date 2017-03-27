@@ -18,7 +18,6 @@
       use calypso_mpi
       use m_constants
       use m_type_AMG_data
-      use m_type_AMG_mesh
       use t_MGCG_parameter
 !
       implicit none
@@ -112,15 +111,16 @@
 !
 !
 !
-      if (iflag_MG_commute_by_ele .gt. 0) then
+      if(MGCG_FEM1%iflag_MG_commute_by_ele .gt. 0) then
         do i_level = 1, MG_file%nlevel_f
           if(my_rank.lt.MGCG_WK1%MG_mpi(i_level-1)%nprocs               &
      &      .or. i_level .eq. 1) then
             table_file_header = MG_file%MG_f2c_eletbl_head(i_level)
             call load_interpolate_table                                 &
-     &         (my_rank, MG_c2f_ele_tbl(i_level) )
+     &         (my_rank, MGCG_FEM1%MG_c2f_ele_tbl(i_level) )
           else
-            call load_zero_interpolate_table(MG_c2f_ele_tbl(i_level))
+            call load_zero_interpolate_table                            &
+     &         (MGCG_FEM1%MG_c2f_ele_tbl(i_level))
           end if
 !
         end do

@@ -42,7 +42,7 @@
       use t_physical_property
       use t_ctl_data_4_solvers
       use t_ctl_data_mhd_evo_scheme
-      use m_type_AMG_mesh
+      use m_type_AMG_data
       use skip_comment_f
 !
       integer (kind=kint), intent(in) :: iflag_scheme

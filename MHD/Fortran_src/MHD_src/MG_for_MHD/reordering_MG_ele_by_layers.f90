@@ -25,7 +25,6 @@
 !
      subroutine s_reordering_MG_ele_by_layers(FEM_prm, MG_interpolate)
 !
-      use m_type_AMG_mesh
       use m_type_AMG_data
       use m_type_AMG_data_4_MHD
 !
