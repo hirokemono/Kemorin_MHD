@@ -131,7 +131,7 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &            's_allocate_MHD_AMG_array', i_level
         call s_allocate_MHD_AMG_array(MGCG_FEM1%MG_mesh(i_level),       &
-     &      MGCG_WK1%MG_vector(i_level), MG_FEM_mat(i_level),           &
+     &      MGCG_WK1%MG_vector(i_level), MGCG_FEM1%MG_FEM_mat(i_level), &
      &      MG_mk_MHD(i_level) )
       end do
 !
@@ -304,7 +304,7 @@
         call int_surface_parameters(MGCG_FEM1%MG_mesh(i_level)%mesh,    &
      &      MGCG_FEM1%MG_ele_mesh(i_level)%surf,                        &
      &      MGCG_FEM1%MG_mesh(i_level)%group,                           &
-     &      MG_FEM_mat(i_level)%surf_wk)
+     &      MGCG_FEM1%MG_FEM_mat(i_level)%surf_wk)
       end do
 !
 !     --------------------- 
@@ -334,7 +334,8 @@
         call s_int_type_mass_matrices                                   &
      &     (FEM_prm, MGCG_FEM1%MG_mesh(i_level)%mesh,                   &
      &      MG_MHD_mesh(i_level), MG_jacobians(i_level),                &
-     &      MGCG_FEM1%MG_FEM_tbl(i_level), MG_FEM_mat(i_level),         &
+     &      MGCG_FEM1%MG_FEM_tbl(i_level),                              &
+     &      MGCG_FEM1%MG_FEM_mat(i_level),                              &
      &      MG_mk_MHD(i_level) )
       end do
 !
@@ -435,7 +436,8 @@
      &        MHD_matrices%MG_mat_tbls(i_level)%linear,                 &
      &        MHD_matrices%MG_mat_tbls(i_level)%fluid_l,                &
      &        MG_mk_MHD(i_level)%fluid, MG_mk_MHD(i_level)%conduct,     &
-     &        MG_FEM_mat(i_level)%surf_wk, MG_FEM_mat(i_level)%fem_wk,  &
+     &        MGCG_FEM1%MG_FEM_mat(i_level)%surf_wk,                    &
+     &        MGCG_FEM1%MG_FEM_mat(i_level)%fem_wk,                     &
      &        MHD_matrices%Vmat_MG_DJDS(i_level),                       &
      &        MHD_matrices%Bmat_MG_DJDS(i_level),                       &
      &        MHD_matrices%Tmat_MG_DJDS(i_level),                       &

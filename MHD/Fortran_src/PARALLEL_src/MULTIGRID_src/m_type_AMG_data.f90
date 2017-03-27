@@ -20,7 +20,7 @@
 !
 !>      Structure for MGCG solver
       type(mesh_4_MGCG), save :: MGCG_FEM1
-!MGCG_FEM1%MG_FEM_tbl
+!MGCG_FEM1%MG_FEM_mat
 !
 !   Maximum Levels of multigrid (level 0 is original mesh)
       integer(kind = kint), parameter :: max_MG_level = 12

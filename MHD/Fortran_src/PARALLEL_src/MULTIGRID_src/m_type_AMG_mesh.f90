@@ -32,7 +32,7 @@
 !   jacobians for mesh
 !
 !      type(tables_4_FEM_assembles), save ::    MG_FEM_tbl(max_MG_level)
-      type(arrays_finite_element_mat), save :: MG_FEM_mat(max_MG_level)
+!      type(arrays_finite_element_mat), save :: MG_FEM_mat(max_MG_level)
 !   table for FEM assemble
 !
       end module m_type_AMG_mesh
