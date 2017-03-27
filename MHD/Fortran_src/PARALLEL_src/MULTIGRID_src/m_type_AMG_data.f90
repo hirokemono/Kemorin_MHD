@@ -16,7 +16,7 @@
 !
 !>      Structure for MGCG solver
       type(MGCG_data), save :: MGCG_WK1
-!MGCG_WK1%num_MG_level
+!MGCG_WK1%MG_mpi
 !
 !>      Structure for MGCG solver
       type(mesh_4_MGCG), save :: MGCG_mesh1
@@ -29,7 +29,7 @@
 !
 !
 !>     structure of communicator for MGCG
-      type(mpi_4_solver), target, save :: MG_mpi(0:max_MG_level)
+!      type(mpi_4_solver), target, save :: MG_mpi(0:max_MG_level)
 !>     structure of vectors in MGCG
       type(vectors_4_solver), target, save :: MG_vector(0:max_MG_level)
 !

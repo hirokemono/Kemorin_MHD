@@ -46,7 +46,7 @@
 !
       do i_level = 1, MG_file%nlevel_f
         mesh_file%iflag_format = MG_file%ifmt_MG_mesh_file(i_level)
-        if(my_rank .lt. MG_mpi(i_level)%nprocs ) then
+        if(my_rank .lt. MGCG_WK1%MG_mpi(i_level)%nprocs ) then
 !
           mesh_file%file_prefix = MG_file%MG_mesh_file_head(i_level)
           call mpi_input_mesh(mesh_file,                                &
@@ -59,7 +59,7 @@
      &        MG_ele_mesh(i_level)%edge%nnod_4_edge)
         end if
 !
-        call sync_group_name_4_empty(MG_mpi(i_level)%nprocs,            &
+        call sync_group_name_4_empty(MGCG_WK1%MG_mpi(i_level)%nprocs,   &
      &      MG_mesh(i_level)%group%nod_grp,                             &
      &      MG_mesh(i_level)%group%ele_grp,                             &
      &      MG_mesh(i_level)%group%surf_grp)
@@ -82,8 +82,8 @@
 !
 !
       do i_level = 1, MG_file%nlevel_f
-        if(i_level.eq.1 .or. my_rank.lt.MG_mpi(i_level-1)%nprocs)       &
-     &      then
+        if(my_rank.lt.MGCG_WK1%MG_mpi(i_level-1)%nprocs                 &
+     &      .or. i_level .eq. 1) then
           write(*,*) 'MG_f2c_tbl_head format', ifmt_itp_table_file
           table_file_header = MG_file%MG_f2c_tbl_head(i_level)
           ifmt_itp_table_file = MG_file%ifmt_MG_table_file(i_level)
@@ -97,8 +97,8 @@
 !
 !
       do i_level = 1, MG_file%nlevel_f
-        if(i_level.eq.1 .or. my_rank.lt.MG_mpi(i_level-1)%nprocs)       &
-     &      then
+        if(my_rank .lt. MGCG_WK1%MG_mpi(i_level-1)%nprocs               &
+     &      .or. i_level .eq. 1) then
           write(*,*) 'MG_c2f_tbl_head format', ifmt_itp_table_file
           table_file_header = MG_file%MG_c2f_tbl_head(i_level)
           ifmt_itp_table_file = MG_file%ifmt_MG_table_file(i_level)
@@ -113,8 +113,8 @@
 !
       if (iflag_MG_commute_by_ele .gt. 0) then
         do i_level = 1, MG_file%nlevel_f
-          if(i_level.eq.1 .or. my_rank.lt.MG_mpi(i_level-1)%nprocs)     &
-     &      then
+          if(my_rank.lt.MGCG_WK1%MG_mpi(i_level-1)%nprocs               &
+     &      .or. i_level .eq. 1) then
             table_file_header = MG_file%MG_f2c_eletbl_head(i_level)
             call load_interpolate_table                                 &
      &         (my_rank, MG_c2f_ele_tbl(i_level) )

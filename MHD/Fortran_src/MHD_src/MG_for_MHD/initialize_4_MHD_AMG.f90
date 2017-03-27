@@ -100,7 +100,7 @@
 !
 !
       do i_level = 1, MGCG_WK1%num_MG_level
-        if(my_rank .lt. MG_mpi(i_level)%nprocs ) then
+        if(my_rank .lt. MGCG_WK1%MG_mpi(i_level)%nprocs ) then
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            'set_layers_type_4_MHD', i_level
           call set_layers_type_4_MHD(FEM_prm, MG_mesh(i_level)%mesh,    &
@@ -150,7 +150,7 @@
       do i_level = 1, MGCG_WK1%num_MG_level
         if(iflag_debug .gt. 0) write(*,*)                               &
      &            's_const_comm_tbl_type_fluid', i_level
-        call s_const_comm_tbl_type_fluid(MG_mpi(i_level),               &
+        call s_const_comm_tbl_type_fluid(MGCG_WK1%MG_mpi(i_level),      &
      &      MG_mesh(i_level)%mesh, MG_MHD_mesh(i_level) )
 !
         call const_element_comm_tbls                                    &
@@ -160,7 +160,7 @@
 !     ---------------------
 !
       do i_level = 1, MGCG_WK1%num_MG_level
-        if(my_rank .lt. MG_mpi(i_level)%nprocs ) then
+        if(my_rank .lt. MGCG_WK1%MG_mpi(i_level)%nprocs ) then
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            'const_bc_infinity_surf_grp', i_level
           call const_bc_infinity_surf_grp                               &
@@ -174,7 +174,7 @@
 !     --------------------- 
 !
       do i_level = 1, MGCG_WK1%num_MG_level
-        if(my_rank .lt. MG_mpi(i_level)%nprocs ) then
+        if(my_rank .lt. MGCG_WK1%MG_mpi(i_level)%nprocs ) then
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            'const_jacobian_type', i_level
           call const_jacobian_type(MG_mesh(i_level)%mesh,               &
@@ -223,7 +223,7 @@
 !     --------------------- 
 !
       do i_level = 1, MGCG_WK1%num_MG_level
-        if(my_rank .lt. MG_mpi(i_level)%nprocs ) then
+        if(my_rank .lt. MGCG_WK1%MG_mpi(i_level)%nprocs ) then
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            's_set_table_type_RHS_assemble', i_level
           call s_set_table_type_RHS_assemble                            &
@@ -241,11 +241,11 @@
 !     --------------------- 
 !
       do i_level = 1, MGCG_WK1%num_MG_level
-        if(my_rank .lt. MG_mpi(i_level)%nprocs ) then
+        if(my_rank .lt. MGCG_WK1%MG_mpi(i_level)%nprocs ) then
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            's_set_djds_connectivity_type', i_level
           call s_set_djds_connectivity_type                             &
-     &       (MG_mesh(i_level)%mesh, MG_mpi(i_level),                   &
+     &       (MG_mesh(i_level)%mesh, MGCG_WK1%MG_mpi(i_level),          &
      &        MG_next_table(i_level), DJDS_param,                       &
      &        MHD_matrices%MG_DJDS_table(i_level) )
         else
@@ -332,7 +332,7 @@
 !     ---------------------
 !
       do i_level = 1, MGCG_WK1%num_MG_level
-        if(my_rank .lt. MG_mpi(i_level)%nprocs) then
+        if(my_rank .lt. MGCG_WK1%MG_mpi(i_level)%nprocs) then
           if(iflag_debug .gt. 0) write(*,*) 'alloc_aiccg_matrices'
           call alloc_aiccg_matrices(MG_mesh(i_level)%mesh%node,         &
      &        fl_prop1, cd_prop1, ht_prop1, cp_prop1,                   &
@@ -382,7 +382,7 @@
 !
 !
       do i_level = 1, MGCG_WK1%num_MG_level
-        if(my_rank .lt. MG_mpi(i_level)%nprocs) then
+        if(my_rank .lt. MGCG_WK1%MG_mpi(i_level)%nprocs) then
           if (iflag_debug.eq.1) write(*,*) 'set MG matrices', i_level
           call s_set_aiccg_matrices_type                                &
      &       (dt, FEM_prm, SGS_param, cmt_param, &
@@ -415,7 +415,7 @@
       end do
 !
       do i_level = 1, MGCG_WK1%num_MG_level
-        if(my_rank .lt. MG_mpi(i_level)%nprocs) then
+        if(my_rank .lt. MGCG_WK1%MG_mpi(i_level)%nprocs) then
           if (iflag_debug.gt.0) write(*,*) 'preconditioning', i_level
           call matrix_precondition                                      &
      &       (FEM_prm%MG_param%PRECOND_MG, FEM_prm%MG_param%PRECOND_MG, &

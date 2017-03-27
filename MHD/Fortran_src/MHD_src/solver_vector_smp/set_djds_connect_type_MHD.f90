@@ -53,7 +53,7 @@
 !
 !
       do i_level = 1, MGCG_WK1%num_MG_level
-        if(my_rank .lt. MG_mpi(i_level)%nprocs ) then
+        if(my_rank .lt. MGCG_WK1%MG_mpi(i_level)%nprocs ) then
           if(iflag_debug .gt. 0) write(*,*)                             &
      &       'set_djds_layer_connect_type fluid', i_level
           call set_djds_layer_connect_type                              &
@@ -61,7 +61,7 @@
      &       MG_MHD_mesh(i_level)%fluid%iele_start_fld,                 &
      &       MG_MHD_mesh(i_level)%fluid%iele_end_fld,                   &
      &       MG_mesh(i_level)%mesh, MG_MHD_mesh(i_level)%nod_fl_comm,   &
-     &       MG_mpi(i_level), DJDS_param,                               &
+     &       MGCG_WK1%MG_mpi(i_level), DJDS_param,                      &
      &      MHD_matrices%MG_DJDS_fluid(i_level) )
         else
           if(iflag_debug .gt. 0) write(*,*)                             &
@@ -95,7 +95,7 @@
 !
       l_endlevel = 0
       do i_level = 1, MGCG_WK1%num_MG_level
-        if(my_rank .ge. MG_mpi(i_level)%nprocs) then
+        if(my_rank .ge. MGCG_WK1%MG_mpi(i_level)%nprocs) then
           l_endlevel = i_level - 1
           exit
         end if
@@ -115,14 +115,14 @@
           call set_djds_layer_connect_type(num_t_linear,                &
      &        ione, MG_mesh(i_level)%mesh%ele%numele,                   &
      &        MG_mesh(i_level)%mesh, MG_mesh(i_level)%mesh%nod_comm,    &
-     &        MG_mpi(i_level), DJDS_param,                              &
+     &        MGCG_WK1%MG_mpi(i_level), DJDS_param,                     &
      &        MHD_matrices%MG_DJDS_linear(i_level))
 !
           call set_djds_layer_connect_type(num_t_linear,                &
      &        MG_MHD_mesh(i_level)%fluid%iele_start_fld,                &
      &        MG_MHD_mesh(i_level)%fluid%iele_end_fld,                  &
      &        MG_mesh(i_level)%mesh, MG_MHD_mesh(i_level)%nod_fl_comm,  &
-     &        MG_mpi(i_level), DJDS_param,                              &
+     &        MGCG_WK1%MG_mpi(i_level), DJDS_param,                     &
      &        MHD_matrices%MG_DJDS_lin_fl(i_level))
         end if
       end do

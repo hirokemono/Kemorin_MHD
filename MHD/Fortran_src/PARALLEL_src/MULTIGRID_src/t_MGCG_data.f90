@@ -40,7 +40,6 @@
 !         Levels of multigrid (level 0 is original mesh)
         integer(kind = kint) :: num_MG_level = 1
 !
-!
 !>        structure of communicator for MGCG
         type(mpi_4_solver), allocatable :: MG_mpi(:)
 !>        structure of vectors in MGCG
