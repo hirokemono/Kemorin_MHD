@@ -57,10 +57,10 @@
      &       'set_djds_layer_connect_type fluid', i_level
           call set_djds_layer_connect_type                              &
      &      (MGCG_FEM1%MG_mesh(i_level)%mesh%ele%nnod_4_ele,            &
-     &       MG_MHD_mesh(i_level)%fluid%iele_start_fld,                 &
-     &       MG_MHD_mesh(i_level)%fluid%iele_end_fld,                   &
+     &       MGCG_MHD_FEM1%MG_MHD_mesh(i_level)%fluid%iele_start_fld,   &
+     &       MGCG_MHD_FEM1%MG_MHD_mesh(i_level)%fluid%iele_end_fld,     &
      &       MGCG_FEM1%MG_mesh(i_level)%mesh,                           &
-     &       MG_MHD_mesh(i_level)%nod_fl_comm,                          &
+     &       MGCG_MHD_FEM1%MG_MHD_mesh(i_level)%nod_fl_comm,            &
      &       MGCG_WK1%MG_mpi(i_level), DJDS_param,                      &
      &      MHD_matrices%MG_DJDS_fluid(i_level) )
         else
@@ -121,10 +121,10 @@
      &        MHD_matrices%MG_DJDS_linear(i_level))
 !
           call set_djds_layer_connect_type(num_t_linear,                &
-     &        MG_MHD_mesh(i_level)%fluid%iele_start_fld,                &
-     &        MG_MHD_mesh(i_level)%fluid%iele_end_fld,                  &
+     &        MGCG_MHD_FEM1%MG_MHD_mesh(i_level)%fluid%iele_start_fld,  &
+     &        MGCG_MHD_FEM1%MG_MHD_mesh(i_level)%fluid%iele_end_fld,    &
      &        MGCG_FEM1%MG_mesh(i_level)%mesh,                          &
-     &        MG_MHD_mesh(i_level)%nod_fl_comm,                         &
+     &        MGCG_MHD_FEM1%MG_MHD_mesh(i_level)%nod_fl_comm,           &
      &        MGCG_WK1%MG_mpi(i_level), DJDS_param,                     &
      &        MHD_matrices%MG_DJDS_lin_fl(i_level))
         end if

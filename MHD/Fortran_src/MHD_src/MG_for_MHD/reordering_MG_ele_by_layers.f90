@@ -41,9 +41,10 @@
           i_level_1 = i_level + 1
 !
           call reordering_ele_types_by_layer(iflag_last_level, FEM_prm, &
-     &      MGCG_FEM1%MG_mesh(i_level), MG_MHD_mesh(i_level),           &
-     &      MG_interpolate(i_level_1)%f2c, MG_interpolate(i_level)%c2f)
-!
+     &        MGCG_FEM1%MG_mesh(i_level),                               &
+     &        MGCG_MHD_FEM1%MG_MHD_mesh(i_level),                       &
+     &        MG_interpolate(i_level_1)%f2c,                            &
+     &        MG_interpolate(i_level)%c2f)
         end if
       end do
 !
@@ -52,7 +53,8 @@
         i_level = MGCG_WK1%num_MG_level
         iflag_last_level = MGCG_WK1%num_MG_level
         call reordering_ele_types_by_layer(iflag_last_level, FEM_prm,   &
-     &      MGCG_FEM1%MG_mesh(i_level), MG_MHD_mesh(i_level),           &
+     &      MGCG_FEM1%MG_mesh(i_level),                                 &
+     &      MGCG_MHD_FEM1%MG_MHD_mesh(i_level),                         &
      &      MG_interpolate(i_level)%f2c, MG_interpolate(i_level)%c2f)
       end if
 !

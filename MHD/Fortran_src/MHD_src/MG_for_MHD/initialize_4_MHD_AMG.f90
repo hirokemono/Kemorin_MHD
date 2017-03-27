@@ -105,7 +105,8 @@
      &            'set_layers_type_4_MHD', i_level
           call set_layers_type_4_MHD                                    &
      &       (FEM_prm, MGCG_FEM1%MG_mesh(i_level)%mesh,                 &
-     &        MGCG_FEM1%MG_mesh(i_level)%group,  MG_MHD_mesh(i_level) )
+     &        MGCG_FEM1%MG_mesh(i_level)%group,                         &
+     &        MGCG_MHD_FEM1%MG_MHD_mesh(i_level) )
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            'const_mesh_infos', i_level
           call const_mesh_infos                                         &
@@ -113,7 +114,8 @@
      &        MGCG_FEM1%MG_mesh(i_level)%group,                         &
      &        MGCG_FEM1%MG_ele_mesh(i_level))
         else
-          call set_empty_layers_type_4_MHD(MG_MHD_mesh(i_level) )
+          call set_empty_layers_type_4_MHD                              &
+     &       (MGCG_MHD_FEM1%MG_MHD_mesh(i_level) )
           call empty_mesh_info                                          &
      &       (MGCG_FEM1%MG_mesh(i_level)%mesh,                          &
      &        MGCG_FEM1%MG_mesh(i_level)%group,                         &
@@ -157,7 +159,8 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &            's_const_comm_tbl_type_fluid', i_level
         call s_const_comm_tbl_type_fluid(MGCG_WK1%MG_mpi(i_level),      &
-     &      MGCG_FEM1%MG_mesh(i_level)%mesh, MG_MHD_mesh(i_level) )
+     &      MGCG_FEM1%MG_mesh(i_level)%mesh,                            &
+     &      MGCG_MHD_FEM1%MG_MHD_mesh(i_level) )
 !
         call const_element_comm_tbls                                    &
      &     (MGCG_FEM1%MG_mesh(i_level)%mesh,                            &
@@ -285,7 +288,8 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 's_link_MG_MHD_mesh_data'
       call s_link_MG_MHD_mesh_data                                      &
-     &   (MGCG_FEM1%MG_mesh, MG_MHD_mesh, ele_1st, MHD_matrices)
+     &   (MGCG_FEM1%MG_mesh, MGCG_MHD_FEM1%MG_MHD_mesh,                 &
+     &    ele_1st, MHD_matrices)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_MG_djds_connect_type'
       call set_MG_djds_connect_type(DJDS_param, MHD_matrices)
@@ -312,7 +316,8 @@
       do i_level = 1, MGCG_WK1%num_MG_level
         call set_bc_id_data                                             &
      &     (dt, IO_MG_bc(i_level), MGCG_FEM1%MG_mesh(i_level)%mesh,     &
-     &      MGCG_FEM1%MG_mesh(i_level)%group, MG_MHD_mesh(i_level),     &
+     &      MGCG_FEM1%MG_mesh(i_level)%group,                           &
+     &      MGCG_MHD_FEM1%MG_MHD_mesh(i_level),                         &
      &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
      &      MG_node_bc(i_level))
 !
@@ -333,7 +338,8 @@
         if(iflag_debug .gt. 0) write(*,*) 's_int_type_mass_matrices'
         call s_int_type_mass_matrices                                   &
      &     (FEM_prm, MGCG_FEM1%MG_mesh(i_level)%mesh,                   &
-     &      MG_MHD_mesh(i_level), MGCG_FEM1%MG_jacobians(i_level),      &
+     &      MGCG_MHD_FEM1%MG_MHD_mesh(i_level),                         &
+     &      MGCG_FEM1%MG_jacobians(i_level),                            &
      &      MGCG_FEM1%MG_FEM_tbl(i_level),                              &
      &      MGCG_FEM1%MG_FEM_mat(i_level),                              &
      &      MG_mk_MHD(i_level) )
@@ -344,7 +350,8 @@
       do i_level = 1, MGCG_WK1%num_MG_level
         if(iflag_debug .gt. 0) write(*,*) 's_set_MHD_idx_4_mat_type'
         call s_set_MHD_idx_4_mat_type                                   &
-     &     (MGCG_FEM1%MG_mesh(i_level)%mesh, MG_MHD_mesh(i_level),      &
+     &     (MGCG_FEM1%MG_mesh(i_level)%mesh,                            &
+     &      MGCG_MHD_FEM1%MG_MHD_mesh(i_level),                         &
      &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
      &      MGCG_FEM1%MG_FEM_tbl(i_level),                              &
      &      MHD_matrices%MG_DJDS_table(i_level),                        &
@@ -418,7 +425,8 @@
      &       (dt, FEM_prm, SGS_param, cmt_param,                        &
      &        MGCG_FEM1%MG_mesh(i_level)%mesh,                          &
      &        MGCG_FEM1%MG_mesh(i_level)%group,                         &
-     &        MGCG_FEM1%MG_ele_mesh(i_level),  MG_MHD_mesh(i_level),    &
+     &        MGCG_FEM1%MG_ele_mesh(i_level),                           &
+     &        MGCG_MHD_FEM1%MG_MHD_mesh(i_level),                       &
      &        MG_node_bc(i_level), MG_surf_bc(i_level),                 &
      &        fl_prop1, cd_prop1, ht_prop1, cp_prop1,                   &
      &        ak_MHD_AMG(i_level),                                      &

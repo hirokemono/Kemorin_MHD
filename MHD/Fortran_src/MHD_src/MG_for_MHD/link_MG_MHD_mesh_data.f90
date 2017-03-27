@@ -36,7 +36,7 @@
 !
       type(mesh_data), intent(in), target :: MG_mesh(max_MG_level)
       type(mesh_data_MHD), intent(in), target                           &
-     &                    :: MG_MHD_mesh(0:max_MG_level)
+     &                    :: MG_MHD_mesh(max_MG_level)
       type(element_data), intent(inout) :: ele_1st
       type(MHD_MG_matrices), intent(inout) :: MHD_matrices
       integer(kind = kint) :: i_level

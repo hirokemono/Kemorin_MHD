@@ -16,6 +16,7 @@
 !
       use m_precision
 !
+      use t_MGCG_data_4_MHD
       use m_type_AMG_data
       use t_geometry_data_MHD
       use t_coefs_element_4_MHD
@@ -32,7 +33,11 @@
 !
       implicit  none
 !
-      type(mesh_data_MHD), target, save :: MG_MHD_mesh(0:max_MG_level)
+!
+      type(MGCG_MHD_data), save :: MGCG_MHD_FEM1
+!MGCG_MHD_FEM1%MG_MHD_mesh
+!
+!      type(mesh_data_MHD), target, save :: MG_MHD_mesh(max_MG_level)
 !   mesh data structure
 !
       type(coefs_4_MHD_type), save :: ak_MHD_AMG(max_MG_level)
@@ -42,17 +47,10 @@
 !   mass matrix for layers
 !
       type(nodal_boundarty_conditions), save                            &
-     &                       :: MG_node_bc(0:max_MG_level)
+     &                       :: MG_node_bc(max_MG_level)
       type(surface_boundarty_conditions), save                          &
-     &                       :: MG_surf_bc(0:max_MG_level)
+     &                       :: MG_surf_bc(max_MG_level)
 !   mesh data structure
-!
-      type CRS_tables_MHD
-        type(CRS_matrix_connect) :: whole
-        type(CRS_matrix_connect) :: fluid
-        type(CRS_matrix_connect) :: conduct
-        type(CRS_matrix_connect) :: insulate
-      end type CRS_tables_MHD
 !
       type(CRS_tables_MHD), save :: MG_MHD_CRS_table(max_MG_level)
 !   CRS matrix for FEM assemble
