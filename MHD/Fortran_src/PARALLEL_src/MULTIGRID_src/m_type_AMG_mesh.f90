@@ -28,7 +28,7 @@
       type(interpolate_table), save :: MG_c2f_ele_tbl(max_MG_level)
 !   interpolation table structure for elemnent averaging
 !
-      type(jacobians_type), save :: MG_jacobians(max_MG_level)
+!      type(jacobians_type), save :: MG_jacobians(max_MG_level)
 !   jacobians for mesh
 !
 !      type(tables_4_FEM_assembles), save ::    MG_FEM_tbl(max_MG_level)

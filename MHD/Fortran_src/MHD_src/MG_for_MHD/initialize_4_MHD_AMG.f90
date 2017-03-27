@@ -187,14 +187,14 @@
      &            'const_jacobian_type', i_level
           call const_jacobian_type(MGCG_FEM1%MG_mesh(i_level)%mesh,     &
      &        MGCG_FEM1%MG_mesh(i_level)%group,                         &
-     &        MG_jacobians(i_level)%jac_3d)
+     &        MGCG_FEM1%MG_jacobians(i_level)%jac_3d)
 !
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            'const_jacobian_surface_type', i_level
           call const_jacobian_surface_type                              &
      &       (MGCG_FEM1%MG_mesh(i_level)%mesh,                          &
      &        MGCG_FEM1%MG_ele_mesh(i_level),                           &
-     &        MG_jacobians(i_level)%jac_2d)
+     &        MGCG_FEM1%MG_jacobians(i_level)%jac_2d)
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &            'cal_jacobian_surf_grp_type', i_level
@@ -202,39 +202,40 @@
      &       (MGCG_FEM1%MG_mesh(i_level)%mesh,                          &
      &        MGCG_FEM1%MG_ele_mesh(i_level),                           &
      &        MGCG_FEM1%MG_mesh(i_level)%group,                         &
-     &        MG_jacobians(i_level)%jac_sf_grp)
+     &        MGCG_FEM1%MG_jacobians(i_level)%jac_sf_grp)
 !
 !
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            'const_linear_jac_3d_type', i_level
           call const_linear_jac_3d_type                                 &
      &       (MGCG_FEM1%MG_mesh(i_level)%mesh,                          &
-     &        MGCG_FEM1%MG_mesh(i_level)%group, MG_jacobians(i_level))
+     &        MGCG_FEM1%MG_mesh(i_level)%group,                         &
+     &        MGCG_FEM1%MG_jacobians(i_level))
         else
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            'empty_jacobian_type', i_level
           call empty_jacobian_type(MGCG_FEM1%MG_mesh(i_level)%mesh,     &
-     &        MG_jacobians(i_level)%jac_3d)
+     &        MGCG_FEM1%MG_jacobians(i_level)%jac_3d)
 !
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            'empty_jacobian_surface_type', i_level
           call empty_jacobian_surface_type                              &
      &       (MGCG_FEM1%MG_ele_mesh(i_level),                           &
-     &        MG_jacobians(i_level)%jac_2d)
+     &        MGCG_FEM1%MG_jacobians(i_level)%jac_2d)
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &            'empty_jacobian_surf_grp_type', i_level
           call empty_jacobian_surf_grp_type                             &
      &       (MGCG_FEM1%MG_ele_mesh(i_level),                           &
      &        MGCG_FEM1%MG_mesh(i_level)%group,                         &
-     &        MG_jacobians(i_level)%jac_sf_grp)
+     &        MGCG_FEM1%MG_jacobians(i_level)%jac_sf_grp)
 !
 !
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            'empty_linear_jac_3d_type', i_level
           call empty_linear_jac_3d_type                                 &
      &       (MGCG_FEM1%MG_mesh(i_level)%mesh,                          &
-     &        MG_jacobians(i_level))
+     &        MGCG_FEM1%MG_jacobians(i_level))
         end if
       end do
 !
@@ -300,7 +301,7 @@
      &         'int_normal_4_all_surface', i_level
         call int_normal_4_all_surface                                   &
      &     (MGCG_FEM1%MG_ele_mesh(i_level)%surf,                        &
-     &      MG_jacobians(i_level)%jac_2d)
+     &      MGCG_FEM1%MG_jacobians(i_level)%jac_2d)
         call int_surface_parameters(MGCG_FEM1%MG_mesh(i_level)%mesh,    &
      &      MGCG_FEM1%MG_ele_mesh(i_level)%surf,                        &
      &      MGCG_FEM1%MG_mesh(i_level)%group,                           &
@@ -333,7 +334,7 @@
         if(iflag_debug .gt. 0) write(*,*) 's_int_type_mass_matrices'
         call s_int_type_mass_matrices                                   &
      &     (FEM_prm, MGCG_FEM1%MG_mesh(i_level)%mesh,                   &
-     &      MG_MHD_mesh(i_level), MG_jacobians(i_level),                &
+     &      MG_MHD_mesh(i_level), MGCG_FEM1%MG_jacobians(i_level),      &
      &      MGCG_FEM1%MG_FEM_tbl(i_level),                              &
      &      MGCG_FEM1%MG_FEM_mat(i_level),                              &
      &      MG_mk_MHD(i_level) )
@@ -421,11 +422,12 @@
      &        MGCG_FEM1%MG_ele_mesh(i_level),  MG_MHD_mesh(i_level),    &
      &        MG_node_bc(i_level), MG_surf_bc(i_level),                 &
      &        fl_prop1, cd_prop1, ht_prop1, cp_prop1,                   &
-     &        ak_MHD_AMG(i_level), MG_jacobians(i_level)%jac_3d,        &
-     &        MG_jacobians(i_level)%jac_3d_l,                           &
-     &        MG_jacobians(i_level)%jac_sf_grp, MG_filter_MHD(i_level), &
-     &        ifld_diff, MG_diff_coefs(i_level),                        &
-     &        MGCG_FEM1%MG_FEM_tbl(i_level),                            &
+     &        ak_MHD_AMG(i_level),                                      &
+     &        MGCG_FEM1%MG_jacobians(i_level)%jac_3d,                   &
+     &        MGCG_FEM1%MG_jacobians(i_level)%jac_3d_l,                 &
+     &        MGCG_FEM1%MG_jacobians(i_level)%jac_sf_grp,               &
+     &        MG_filter_MHD(i_level), ifld_diff,                        &
+     &        MG_diff_coefs(i_level), MGCG_FEM1%MG_FEM_tbl(i_level),    &
      &        MHD_matrices%MG_DJDS_table(i_level),                      &
      &        MHD_matrices%MG_DJDS_fluid(i_level),                      &
      &        MHD_matrices%MG_DJDS_linear(i_level),                     &
