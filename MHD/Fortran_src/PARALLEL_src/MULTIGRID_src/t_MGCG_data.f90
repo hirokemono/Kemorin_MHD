@@ -207,11 +207,13 @@
 !
       call set_MGCG_parameter(MG_ctl, MG_param)
 !
-      if (MG_ctl%num_multigrid_level_ctl%iflag .gt. 0) then
-        MGCG_WK%num_MG_level = MG_ctl%num_multigrid_level_ctl%intvalue
-      else
-        MGCG_WK%num_MG_level = 0
+      if (MG_ctl%num_multigrid_level_ctl%iflag .eq. 0) then
+        MG_ctl%num_multigrid_level_ctl%intvalue = 0
       end if
+!
+      call alloc_MGCG_data                                              &
+     &   (MG_ctl%num_multigrid_level_ctl%intvalue, MGCG_WK)
+      call alloc_MGCG_mesh(MGCG_WK, MGCG_FEM)
 !
       if (MGCG_WK%num_MG_level .gt. 0) then
         if(MG_ctl%num_MG_subdomain_ctl%num .ne. MGCG_WK%num_MG_level)   &
