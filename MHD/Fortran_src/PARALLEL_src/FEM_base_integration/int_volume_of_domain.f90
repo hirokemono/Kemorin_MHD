@@ -12,8 +12,8 @@
 !> @brief Construct jacobians and volume integrations
 !!
 !!@verbatim
-!!      subroutine const_jacobian_volume_normals                        &
-!!     &        (mesh, surf, group, jac_3d_l, jac_3d_q)
+!!      subroutine const_jacobian_volume_normals(my_rank, nprocs,       &
+!!     &          mesh, surf, group, jacobians)
 !!      subroutine const_jacobian_and_volume(node, sf_grp,              &
 !!     &         infinity_list, ele, jac_3d_l, jac_3d_q)
 !!      subroutine const_jacobian_and_vol_layer(node, sf_grp,           &
@@ -46,29 +46,31 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine const_jacobian_volume_normals                          &
-     &        (mesh, surf, group, jac_3d_l, jac_3d_q)
+      subroutine const_jacobian_volume_normals(my_rank, nprocs,         &
+     &          mesh, surf, group, jacobians)
 !
       use set_normal_vectors
       use set_surf_grp_vectors
       use sum_normal_4_surf_group
       use set_connects_4_surf_group
 !
+      integer(kind = kint), intent(in) :: my_rank, nprocs
       type(mesh_geometry), intent(inout) :: mesh
       type(surface_data), intent(inout) :: surf
       type(mesh_groups), intent(inout) :: group
-      type(jacobians_3d), intent(inout) :: jac_3d_l, jac_3d_q
+      type(jacobians_type), intent(inout) :: jacobians
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_volume'
       call const_jacobian_and_volume                                    &
      &   (mesh%node, group%surf_grp, group%infty_grp,                   &
-     &    mesh%ele, jac_3d_l, jac_3d_q)
+     &    mesh%ele, jacobians%jac_3d_l, jacobians%jac_3d)
 !
 !     --------------------- Surface jacobian for fieldline
 !
       if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
-      call const_normal_vector(mesh%node, surf)
+      call const_normal_vector                                          &
+     &   (my_rank, nprocs, mesh%node, surf, jacobians)
 !
       if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
       call pick_normal_of_surf_group(surf, group%surf_grp,              &

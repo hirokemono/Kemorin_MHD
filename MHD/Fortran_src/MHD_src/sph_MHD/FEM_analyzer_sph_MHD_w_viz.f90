@@ -9,7 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine FEM_initialize_w_viz(MHD_step, mesh, group, ele_mesh,&
-!!     &          iphys, nod_fld, next_tbl, jac_3d_q, jac_3d_l)
+!!     &          iphys, nod_fld, next_tbl, jacobians)
 !!        type(MHD_step_param), intent(in) :: MHD_step
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
@@ -17,7 +17,7 @@
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(next_nod_ele_table), intent(inout) :: next_tbl
-!!        type(jacobians_3d), intent(inout) :: jac_3d_q, jac_3d_l
+!!        type(jacobians_type), intent(inout) :: jacobians
 !!@endverbatim
 !!
 !!@n @param  i_step       Current time step
@@ -37,7 +37,7 @@
       use t_phys_data
       use t_phys_address
       use t_next_node_ele_4_node
-      use t_jacobian_3d
+      use t_jacobians
       use t_VIZ_step_parameter
       use t_MHD_step_parameter
 !
@@ -50,7 +50,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_initialize_w_viz(MHD_step, mesh, group, ele_mesh,  &
-     &          iphys, nod_fld, next_tbl, jac_3d_q, jac_3d_l)
+     &          iphys, nod_fld, next_tbl, jacobians)
 !
       use m_fem_gauss_int_coefs
       use m_cal_max_indices
@@ -67,7 +67,7 @@
       type(phys_address), intent(inout) :: iphys
       type(phys_data), intent(inout) :: nod_fld
       type(next_nod_ele_table), intent(inout) :: next_tbl
-      type(jacobians_3d), intent(inout) :: jac_3d_q, jac_3d_l
+      type(jacobians_type), intent(inout) :: jacobians
 !
 !   --------------------------------
 !       setup mesh information
@@ -93,8 +93,8 @@
 !
       if (iflag_debug.eq.1) write(*,*)  'maximum_integration_points'
       call maximum_integration_points(ione)
-      call const_jacobian_volume_normals                                &
-     &   (mesh, ele_mesh%surf, group, jac_3d_l, jac_3d_q)
+      call const_jacobian_volume_normals(my_rank, nprocs,               &
+     &    mesh, ele_mesh%surf, group, jacobians)
 !
       end subroutine FEM_initialize_w_viz
 !

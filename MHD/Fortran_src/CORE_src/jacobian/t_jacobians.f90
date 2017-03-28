@@ -14,7 +14,7 @@
 !!      subroutine const_jacobians_surf_group                           &
 !!     &         (my_rank, nprocs, node, ele, surf, surf_grp, jacobians)
 !!      subroutine const_jacobians_surface                              &
-!!     &          (my_rank, nprocs, node, surf, jacobians)
+!!     &         (my_rank, nprocs, node, surf, jacobians)
 !!      subroutine const_jacobians_edge                                 &
 !!     &         (my_rank, nprocs, node, edge, jacobians)
 !!        type(node_data), intent(in) :: node
@@ -23,6 +23,9 @@
 !!        type(surface_group_data), intent(in) :: surf_grp
 !!        type(scalar_surf_BC_list), intent(in) :: infinity_list
 !!        type(jacobians_type), intent(inout) :: jacobians
+!!
+!!      subroutine dealloc_jacobians_surface(surf, jacobians)
+!!      subroutine dealloc_jacobians_edge(edge, jacobians)
 !
       module t_jacobians
 !
@@ -193,7 +196,7 @@
 !> for surface element
 !
       subroutine const_jacobians_surface                                &
-     &          (my_rank, nprocs, node, surf, jacobians)
+     &         (my_rank, nprocs, node, surf, jacobians)
 !
       use const_jacobians_2d
 !
@@ -262,6 +265,28 @@
       end subroutine const_jacobians_edge
 !
 !-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine dealloc_jacobians_surface(surf, jacobians)
+!
+      use const_jacobians_2d
+!
+      type(surface_data), intent(in)  :: surf
+      type(jacobians_type), intent(inout) :: jacobians
+!
+!
+      call dealloc_2d_jac_type(jacobians%jac_2d)
+      deallocate(jacobians%jac_2d)
+!
+      if(surf%nnod_4_surf .eq. num_linear_sf) then
+        nullify(jacobians%jac_2d_l)
+      else
+        call dealloc_2d_jac_type(jacobians%jac_2d_l)
+        deallocate(jacobians%jac_2d_l)
+      end if
+!
+      end subroutine dealloc_jacobians_surface
+!
 !-----------------------------------------------------------------------
 !
       subroutine dealloc_jacobians_edge(edge, jacobians)

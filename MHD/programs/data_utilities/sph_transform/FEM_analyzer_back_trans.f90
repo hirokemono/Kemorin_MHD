@@ -4,8 +4,13 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine FEM_initialize_back_trans                             &
-!     &         (viz_step, ele_4_nod, jac_3d_l, jac_3d_q, ucd, m_ucd)
+!!      subroutine FEM_initialize_back_trans                            &
+!!     &         (viz_step, ele_4_nod, jacobians, ucd, m_ucd)
+!!        type(VIZ_step_params), intent(in) :: viz_step
+!!        type(element_around_node), intent(inout) :: ele_4_nod
+!!        type(jacobians_type), intent(inout) :: jacobians
+!!        type(ucd_data), intent(inout) :: ucd
+!!        type(merged_ucd_data), intent(inout)  :: m_ucd
 !!      subroutine FEM_analyze_back_trans                               &
 !!     &         (t_IO, ucd, i_step, viz_step, visval)
 !!        type(VIZ_step_params), intent(inout) :: viz_step
@@ -28,11 +33,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_initialize_back_trans                              &
-     &         (viz_step, ele_4_nod, jac_3d_l, jac_3d_q, ucd, m_ucd)
+     &         (viz_step, ele_4_nod, jacobians, ucd, m_ucd)
 !
       use t_ucd_data
       use t_next_node_ele_4_node
-      use t_jacobian_3d
+      use t_jacobians
 !
       use m_ctl_params_sph_trans
       use m_array_for_send_recv
@@ -50,7 +55,7 @@
 !
       type(VIZ_step_params), intent(in) :: viz_step
       type(element_around_node), intent(inout) :: ele_4_nod
-      type(jacobians_3d), intent(inout) :: jac_3d_l, jac_3d_q
+      type(jacobians_type), intent(inout) :: jacobians
       type(ucd_data), intent(inout) :: ucd
       type(merged_ucd_data), intent(inout)  :: m_ucd
 !
@@ -71,8 +76,9 @@
 !
         if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_volume'
         call max_int_point_by_etype(femmesh_STR%mesh%ele%nnod_4_ele)
-        call const_jacobian_volume_normals(femmesh_STR%mesh,            &
-     &      elemesh_STR%surf, femmesh_STR%group, jac_STR_l, jac_STR_q)
+        call const_jacobian_volume_normals(my_rank, nprocs,             &
+     &      femmesh_STR%mesh, elemesh_STR%surf, femmesh_STR%group,      &
+     &      jacobians)
       end if
 !
 !  -------------------------------

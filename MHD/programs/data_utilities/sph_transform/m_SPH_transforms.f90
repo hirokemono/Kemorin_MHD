@@ -21,7 +21,7 @@
       use t_phys_data
       use t_ucd_data
       use t_next_node_ele_4_node
-      use t_jacobian_3d
+      use t_jacobians
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
       use t_global_gauss_coefs
@@ -59,11 +59,8 @@
 !>   Structure of included element list for each node
       type(element_around_node), save :: ele_4_nod_SPH_TRANS
 !
-!>     Stracture for Jacobians for linear element
-      type(jacobians_3d), save :: jac_STR_l
-!>     Stracture for Jacobians for quad element
-      type(jacobians_3d), save :: jac_STR_q
-!
+!>      Stracture for Jacobians
+      type(jacobians_type), save :: jacobians_STR
 !
 !>        Structures of parameters for spherical transform
       type(parameters_4_sph_trans), save :: trns_param

@@ -259,7 +259,8 @@
 !     ---------------------
 !
       if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
-      call const_normal_vector(mesh%node, ele_mesh%surf)
+      call const_normal_vector                                          &
+     &   (my_rank, nprocs, mesh%node, ele_mesh%surf, jacobians1)
 !
       if (iflag_debug.eq.1) write(*,*)' int_surface_parameters'
       call int_surface_parameters(mesh, ele_mesh%surf, group, surf1_wk)

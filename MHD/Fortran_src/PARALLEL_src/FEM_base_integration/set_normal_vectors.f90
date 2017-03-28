@@ -3,12 +3,14 @@
 !
 !     Written by H. Matsui on Aug., 2006
 !
-!      subroutine const_normal_vector(node, surf)
-!      subroutine int_normal_4_all_surface(surf, jac_2d)
-!        type(jacobians_2d), intent(in) :: jac_2d
-!        type(surface_data), intent(inout) :: surf
-!      subroutine s_cal_normal_vector_spherical(surf)
-!      subroutine s_cal_normal_vector_cylindrical(surf)
+!!      subroutine const_normal_vector                                  &
+!!     &         (my_rank, nprocs, node, surf, jacobians)
+!!      subroutine int_normal_4_all_surface(surf, jac_2d)
+!!        type(jacobians_2d), intent(in) :: jac_2d
+!!        type(surface_data), intent(inout) :: surf
+!!        type(jacobians_type), intent(inout) :: jacobians
+!!      subroutine s_cal_normal_vector_spherical(surf)
+!!      subroutine s_cal_normal_vector_cylindrical(surf)
 !
       module set_normal_vectors
 !
@@ -17,12 +19,10 @@
       use m_machine_parameter
       use t_geometry_data
       use t_surface_data
+      use t_jacobians
       use t_jacobian_2d
 !
       implicit none
-!
-      type(jacobians_2d), save, private :: jac_2d_l
-      type(jacobians_2d), save, private :: jac_2d_q
 !
 ! -----------------------------------------------------------------------
 !
@@ -30,20 +30,22 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_normal_vector(node, surf)
+      subroutine const_normal_vector                                    &
+     &         (my_rank, nprocs, node, surf, jacobians)
 !
       use m_fem_gauss_int_coefs
-      use const_jacobians_2d
 !
+      integer(kind = kint), intent(in) :: my_rank, nprocs
       type(node_data), intent(in) :: node
       type(surface_data), intent(inout) :: surf
+      type(jacobians_type), intent(inout) :: jacobians
 !
 !
-      call cal_jacobian_surface(node, surf, jac_2d_q, jac_2d_l)
-      call int_normal_4_all_surface(surf, jac_2d_q)
+      call const_jacobians_surface                                      &
+     &   (my_rank, nprocs, node, surf, jacobians)
+      call int_normal_4_all_surface(surf, jacobians%jac_2d)
 !
-      call dealloc_2d_jac_type(jac_2d_l)
-      call dealloc_2d_jac_type(jac_2d_q)
+      call dealloc_jacobians_surface(surf, jacobians)
 !
       end subroutine const_normal_vector
 !

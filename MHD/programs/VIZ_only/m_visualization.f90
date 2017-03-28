@@ -17,6 +17,7 @@
 !
       use m_precision
       use m_machine_parameter
+      use calypso_mpi
 !
       use t_step_parameter
       use t_time_data
@@ -24,7 +25,7 @@
       use t_phys_data
       use t_ucd_data
       use t_next_node_ele_4_node
-      use t_jacobian_3d
+      use t_jacobians
       use t_file_IO_parameter
       use t_time_data
       use t_VIZ_step_parameter
@@ -63,10 +64,8 @@
 !>   Structure of included element list for each node
       type(element_around_node), save :: ele_4_nod_VIZ
 !
-!>     Stracture for Jacobians for linear element
-      type(jacobians_3d), save :: jac_VIZ_l
-!>     Stracture for Jacobians for quad element
-      type(jacobians_3d), save :: jac_VIZ_q
+!>      Stracture for Jacobians
+      type(jacobians_type), save :: jacobians_VIZ
 !
 ! ----------------------------------------------------------------------
 !
@@ -179,8 +178,9 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_volume'
       call max_int_point_by_etype(femmesh_VIZ%mesh%ele%nnod_4_ele)
-      call const_jacobian_volume_normals(femmesh_VIZ%mesh,              &
-     &    elemesh_VIZ%surf, femmesh_VIZ%group, jac_VIZ_l, jac_VIZ_q)
+      call const_jacobian_volume_normals(my_rank, nprocs,               &
+     &    femmesh_VIZ%mesh, elemesh_VIZ%surf, femmesh_VIZ%group,        &
+     &    jacobians_VIZ)
 !
       end subroutine element_normals_4_VIZ
 !

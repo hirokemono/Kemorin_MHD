@@ -64,7 +64,8 @@
 !  Rendering
         call PVR_visualize(viz_step_V%PVR_t%istep_file,                 &
      &      femmesh_VIZ%mesh%node, femmesh_VIZ%mesh%ele,                &
-     &      elemesh_VIZ%surf, femmesh_VIZ%group, jac_VIZ_q, field_VIZ)
+     &      elemesh_VIZ%surf, femmesh_VIZ%group, jacobians_VIZ%jac_3d,  &
+     &      field_VIZ)
       end do
 !
       end subroutine analyze

@@ -94,8 +94,8 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_volume'
       call max_int_point_by_etype(mesh%ele%nnod_4_ele)
-      call const_jacobian_volume_normals                                &
-     &   (mesh, ele_mesh%surf, group, jacobians1%jac_3d_l, jacobians1%jac_3d)
+      call const_jacobian_volume_normals(my_rank, nprocs,               &
+     &    mesh, ele_mesh%surf, group, jacobians1)
 !
 !  -------------------------------
 !
