@@ -5,19 +5,20 @@
 !                                    on July 2000 (ver 1.1)
 !        modified by H. Matsui on June. 2006
 !
-!      subroutine cal_jacobian_element                                  &
-!     &         (node, ele, sf_grp, infinity_list, jac_3d_l, jac_3d_q)
-!        type(node_data), intent(in) :: node
-!        type(element_data), intent(in) :: ele
-!        type(surface_group_data), intent(in) :: sf_grp
-!        type(scalar_surf_BC_list), intent(in) :: infinity_list
-!        type(jacobians_3d), intent(inout) :: jac_3d_l
-!        type(jacobians_3d), intent(inout) :: jac_3d_q
-!
-!      subroutine cal_jacobian_trilinear(node, ele, jac_3d)
-!      subroutine cal_jacobian_quad(node, ele, jac_3d)
-!      subroutine cal_jacobian_lag(node, ele, jac_3d)
-!      subroutine cal_jacobian_quad_on_linear(node, ele, jac_3d)
+!!      subroutine cal_jacobian_element                                 &
+!!     &         (node, ele, sf_grp, infinity_list, jac_3d_l, jac_3d_q)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(scalar_surf_BC_list), intent(in) :: infinity_list
+!!        type(jacobians_3d), intent(inout) :: jac_3d_l
+!!        type(jacobians_3d), intent(inout) :: jac_3d_q
+!!
+!!      subroutine sel_jacobian_type(node, ele, jac_3d)
+!!      subroutine cal_jacobian_trilinear(node, ele, jac_3d)
+!!      subroutine cal_jacobian_quad(node, ele, jac_3d)
+!!      subroutine cal_jacobian_lag(node, ele, jac_3d)
+!!      subroutine cal_jacobian_quad_on_linear(node, ele, jac_3d)
 !
       module const_jacobians_3d
 !
@@ -127,6 +128,27 @@
       call dealloc_inv_jac_type(jac_3d_l)
 !
       end subroutine cal_jacobian_element
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine sel_jacobian_type(node, ele, jac_3d)
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(jacobians_3d), intent(inout) :: jac_3d
+!
+!  set jacobians
+!
+      if (ele%nnod_4_ele .eq. num_t_linear) then
+        call cal_jacobian_trilinear(node, ele, jac_3d)
+      else if (ele%nnod_4_ele .eq. num_t_quad) then
+        call cal_jacobian_quad(node, ele, jac_3d)
+      else if (ele%nnod_4_ele .eq. num_t_lag) then
+        call cal_jacobian_lag(node, ele, jac_3d)
+      end if
+!
+      end subroutine sel_jacobian_type
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

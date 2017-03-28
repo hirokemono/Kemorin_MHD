@@ -42,6 +42,34 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine sel_jacobian_infinity                                  &
+     &         (node, ele, surf_grp, infty_grp, jac_3d)
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_group_data), intent(in) :: surf_grp
+      type(scalar_surf_BC_list), intent(in) :: infty_grp
+      type(jacobians_3d), intent(inout) :: jac_3d
+!
+!
+      if(infty_grp%ngrp_sf .le. 0) return
+!
+      if (ele%nnod_4_ele .eq. num_t_linear) then
+        call cal_jacobian_infty_linear                                  &
+     &     (node, ele, surf_grp, infty_grp, jac_3d)
+      else if (ele%nnod_4_ele .eq. num_t_quad) then
+        call cal_jacobian_infty_quad                                    &
+     &     (node, ele, surf_grp, infty_grp, jac_3d)
+      else if (ele%nnod_4_ele .eq. num_t_lag) then
+        call cal_jacobian_infty_lag                                     &
+     &    (node, ele, surf_grp, infty_grp, jac_3d)
+      end if
+!
+      end subroutine sel_jacobian_infinity
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
       subroutine cal_jacobian_infty_linear                              &
      &          (node, ele, sf_grp, infty_grp, jac_3d)
 !
@@ -51,6 +79,8 @@
       type(scalar_surf_BC_list), intent(in) :: infty_grp
       type(jacobians_3d), intent(inout) :: jac_3d
 !
+!
+      if(infty_grp%ngrp_sf .le. 0) return
 !
       call s_cal_shape_func_infty_linear                                &
      &   (jac_3d%ntot_int, infty_grp%sf_apt(1), jac_3d%an_infty,        &

@@ -55,6 +55,7 @@
       use t_edge_data
       use t_surface_data
       use t_bc_data_MHD
+      use t_jacobians
 !
       use m_type_AMG_data
       use m_boundary_condition_IDs
@@ -64,7 +65,6 @@
       use set_diffusivities_MHD_AMG
       use const_comm_tbl_type_fluid
       use const_bc_infty_surf_type
-      use cal_jacobians_type
       use set_table_type_RHS_assemble
       use set_djds_connectivity_type
       use set_djds_connect_type_MHD

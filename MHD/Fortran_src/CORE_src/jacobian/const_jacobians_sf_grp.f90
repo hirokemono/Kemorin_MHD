@@ -11,6 +11,8 @@
 !!      subroutine const_jacobian_sf_grp                                &
 !!     &         (node, ele, surf, sf_grp, jac_sf_grp_l, jac_sf_grp_q)
 !!
+!!      subroutine sel_jacobian_surf_grp_type(node, ele, surf,          &
+!!     &          surf_grp, jac_sf_grp)
 !!      subroutine const_jacobian_sf_grp_linear(node, ele, surf_grp,    &
 !!     &          jac_sf_grp)
 !!      subroutine const_jacobian_sf_grp_quad(node, ele, surf_grp,      &
@@ -87,6 +89,34 @@
       end if
 !
       end subroutine const_jacobian_sf_grp
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine sel_jacobian_surf_grp_type(node, ele, surf,            &
+     &          surf_grp, jac_sf_grp)
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_group_data), intent(in) :: surf_grp
+      type(surface_data), intent(in)  :: surf
+      type(jacobians_2d), intent(inout) :: jac_sf_grp
+!
+!
+      if (surf_grp%num_grp .gt. 0) then
+        if      (surf%nnod_4_surf .eq. num_linear_sf) then
+          call const_jacobian_sf_grp_linear(node, ele,                  &
+     &        surf_grp, jac_sf_grp)
+        else if (surf%nnod_4_surf .eq. num_quad_sf)   then
+          call const_jacobian_sf_grp_quad(node, ele,                    &
+     &        surf_grp, jac_sf_grp)
+        else if (surf%nnod_4_surf .eq. num_lag_sf)   then
+          call const_jacobian_sf_grp_lag(node, ele,                     &
+     &        surf_grp, jac_sf_grp)
+        end if
+      end if
+!
+      end subroutine sel_jacobian_surf_grp_type
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

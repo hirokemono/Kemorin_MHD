@@ -13,6 +13,7 @@
 !!        type(jacobians_1d), intent(inout) :: jac_1d_l
 !!        type(jacobians_1d), intent(inout) :: jac_1d_q
 !!
+!!      subroutine sel_jacobian_edge_type(node, edge, jac_1d)
 !!      subroutine cal_jacobian_edge_linear(node, edge, jac_1d)
 !!      subroutine cal_jacobian_edge_quad(node, edge, jac_1d)
 !!      subroutine cal_jacobian_edge_quad_on_l(node, edge, jac_1d)
@@ -70,6 +71,25 @@
 !
       end subroutine cal_jacobian_edge
 !
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine sel_jacobian_edge_type(node, edge, jac_1d)
+!
+      type(node_data), intent(in) :: node
+      type(edge_data), intent(in)  :: edge
+      type(jacobians_1d), intent(inout) :: jac_1d
+!
+!
+      if      (edge%nnod_4_edge .eq. num_linear_edge) then
+        call cal_jacobian_edge_linear(node, edge, jac_1d)
+      else if (edge%nnod_4_edge .eq. num_quad_edge) then
+        call cal_jacobian_edge_quad(node, edge, jac_1d)
+      end if
+!
+      end subroutine sel_jacobian_edge_type
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine cal_jacobian_edge_linear(node, edge, jac_1d)

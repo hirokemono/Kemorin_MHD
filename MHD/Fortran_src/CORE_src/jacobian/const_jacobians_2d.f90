@@ -15,6 +15,7 @@
 !!        type(jacobians_2d), intent(inout) :: jac_2d_l
 !!        type(jacobians_2d), intent(inout) :: jac_2d_q
 !!
+!!      subroutine sel_jacobian_surface_type(node, surf, jac_2d)
 !!      subroutine cal_jacobian_surface_linear(node, surf, jac_2d)
 !!      subroutine cal_jacobian_surface_quad(node, surf, jac_2d)
 !!      subroutine cal_jacobian_surface_lag(node, surf, jac_2d)
@@ -78,6 +79,26 @@
       end if
 !
       end subroutine cal_jacobian_surface
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine sel_jacobian_surface_type(node, surf, jac_2d)
+!
+      type(node_data), intent(in) :: node
+      type(surface_data), intent(in)  :: surf
+      type(jacobians_2d), intent(inout) :: jac_2d
+!
+!
+      if      (surf%nnod_4_surf .eq. num_linear_sf) then
+        call cal_jacobian_surface_linear(node, surf, jac_2d)
+      else if (surf%nnod_4_surf .eq. num_quad_sf)   then
+        call cal_jacobian_surface_quad(node, surf, jac_2d)
+      else if (surf%nnod_4_surf .eq. num_lag_sf)   then
+        call cal_jacobian_surface_lag(node, surf, jac_2d)
+      end if
+!
+      end subroutine sel_jacobian_surface_type
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
