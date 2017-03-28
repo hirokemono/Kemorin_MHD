@@ -188,15 +188,18 @@
       do i_level = 1, MGCG_WK1%num_MG_level
         call const_jacobians_element                                    &
      &     (my_rank, MGCG_WK1%MG_mpi(i_level)%nprocs,                   &
-     &      MGCG_FEM1%MG_mesh(i_level)%mesh,                            &
-     &      MGCG_FEM1%MG_mesh(i_level)%group,                           &
+     &      MGCG_FEM1%MG_mesh(i_level)%mesh%node,                       &
+     &      MGCG_FEM1%MG_mesh(i_level)%mesh%ele,                        &
+     &      MGCG_FEM1%MG_mesh(i_level)%group%surf_grp,                  &
+     &      MGCG_FEM1%MG_mesh(i_level)%group%infty_grp,                 &
      &      MGCG_FEM1%MG_jacobians(i_level))
 !
         call const_jacobians_surf_group                                    &
      &     (my_rank, MGCG_WK1%MG_mpi(i_level)%nprocs,                   &
-     &      MGCG_FEM1%MG_mesh(i_level)%mesh,                            &
-     &      MGCG_FEM1%MG_ele_mesh(i_level),                             &
-     &      MGCG_FEM1%MG_mesh(i_level)%group,                           &
+     &      MGCG_FEM1%MG_mesh(i_level)%mesh%node,                       &
+     &      MGCG_FEM1%MG_mesh(i_level)%mesh%ele,                        &
+     &      MGCG_FEM1%MG_ele_mesh(i_level)%surf,                        &
+     &      MGCG_FEM1%MG_mesh(i_level)%group%surf_grp,                  &
      &      MGCG_FEM1%MG_jacobians(i_level))
       end do
 !

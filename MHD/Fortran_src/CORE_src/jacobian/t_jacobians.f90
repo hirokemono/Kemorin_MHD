@@ -5,7 +5,6 @@
 !
 !>   Structure of Jacobian and difference of shape functions
 !
-!      subroutine alloc_3d_linear_jac_type(jacobians)
 !      subroutine dealloc_3d_linear_jac_type(jacobians)
 !      subroutine unlink_3d_linear_jac_type(jacobians)
 !        type(jacobians_type), intent(inout) :: jacobians
@@ -53,19 +52,6 @@
 !  ---------------------------------------------------------------------
 !
       contains
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine alloc_3d_linear_jac_type(jacobians)
-!
-      type(jacobians_type), intent(inout) :: jacobians
-!
-      allocate(jacobians%jac_3d_l)
-      allocate(jacobians%jac_2d_l)
-      allocate(jacobians%jac_1d_l)
-      allocate(jacobians%jac_sf_grp_l)
-!
-      end subroutine alloc_3d_linear_jac_type
 !
 !  ---------------------------------------------------------------------
 !
