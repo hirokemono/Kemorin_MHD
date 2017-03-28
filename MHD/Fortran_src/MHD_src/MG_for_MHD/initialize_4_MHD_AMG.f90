@@ -193,13 +193,6 @@
      &        MGCG_FEM1%MG_mesh(i_level)%group,                         &
      &        MGCG_FEM1%MG_jacobians(i_level)%jac_3d)
 !
-          if(iflag_debug .gt. 0) write(*,*)                             &
-     &            'const_jacobian_surface_type', i_level
-          call const_jacobian_surface_type                              &
-     &       (MGCG_FEM1%MG_mesh(i_level)%mesh,                          &
-     &        MGCG_FEM1%MG_ele_mesh(i_level),                           &
-     &        MGCG_FEM1%MG_jacobians(i_level)%jac_2d)
-!
         if(iflag_debug .gt. 0) write(*,*)                               &
      &            'cal_jacobian_surf_grp_type', i_level
           call cal_jacobian_surf_grp_type                               &
@@ -220,12 +213,6 @@
      &            'empty_jacobian_type', i_level
           call empty_jacobian_type(MGCG_FEM1%MG_mesh(i_level)%mesh,     &
      &        MGCG_FEM1%MG_jacobians(i_level)%jac_3d)
-!
-          if(iflag_debug .gt. 0) write(*,*)                             &
-     &            'empty_jacobian_surface_type', i_level
-          call empty_jacobian_surface_type                              &
-     &       (MGCG_FEM1%MG_ele_mesh(i_level),                           &
-     &        MGCG_FEM1%MG_jacobians(i_level)%jac_2d)
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &            'empty_jacobian_surf_grp_type', i_level

@@ -24,7 +24,6 @@
 !
 !>     Stracture for Jacobians for FEM grid
       type jacobians_type
-!
 !>     Stracture for Jacobians for element
         type(jacobians_3d) ::       jac_3d
 !>     Stracture for Jacobians for surface
@@ -50,7 +49,6 @@
         type(jacobians_1d), pointer  :: jac_1d_lq
 !>     Stracture for quadrature Jacobians for surafce group
         type(jacobians_2d), pointer :: jac_sf_grp_lq
-!
       end type jacobians_type
 !
 !  ---------------------------------------------------------------------
