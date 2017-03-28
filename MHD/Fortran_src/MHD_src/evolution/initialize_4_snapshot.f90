@@ -248,7 +248,7 @@
 !
       call const_jacobian_sf_grp                                        &
      &   (mesh%node, mesh%ele, ele_mesh%surf, group%surf_grp,           &
-     &    jac1_sf_grp_2d_l, jac1_sf_grp_2d_q)
+     &    jacobians1%jac_sf_grp_l, jacobians1%jac_sf_grp)
 !
 !     --------------------- 
 !

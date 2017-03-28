@@ -81,7 +81,7 @@
       call update_fields                                                &
      &   (MHD_step1%time_d, FEM_prm1, SGS_par1, mesh1, group1,          &
      &    ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,    &
-     &    jacobians1%jac_3d, jacobians1%jac_3d_l, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,  &
+     &    jacobians1%jac_3d, jacobians1%jac_3d_l, jacobians1%jac_sf_grp, rhs_tbl1, FEM1_elen,  &
      &    ifld_diff, icomp_diff, iphys_elediff,                         &
      &    filtering1, wide_filtering, layer_tbl1, m1_lump,              &
      &    wk_cor1, wk_lsq1, wk_diff1, wk_filter1, mhd_fem1_wk, fem1_wk, &
@@ -105,7 +105,7 @@
       call set_aiccg_matrices(MHD_step1%time_d%dt,                      &
      &    FEM_prm1, SGS_par1%model_p, SGS_par1%commute_p,               &
      &    mesh1, group1, ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs,       &
-     &    ak_MHD, jacobians1%jac_3d, jacobians1%jac_3d_l, jac1_sf_grp_2d_q, FEM1_elen,    &
+     &    ak_MHD, jacobians1%jac_3d, jacobians1%jac_3d_l, jacobians1%jac_sf_grp, FEM1_elen,    &
      &    ifld_diff, diff_coefs, rhs_tbl1, MHD1_mat_tbls,               &
      &    surf1_wk, mhd_fem1_wk, fem1_wk, MHD1_matrices)
 !
@@ -117,7 +117,7 @@
      &      FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1,    &
      &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
      &      layer_tbl1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,  &
-     &      jacobians1%jac_3d, jacobians1%jac_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
+     &      jacobians1%jac_3d, jacobians1%jac_3d_l, jacobians1%jac_sf_grp, rhs_tbl1,           &
      &      FEM1_elen, ifld_sgs, icomp_sgs, ifld_diff, icomp_diff,      &
      &      iphys_elediff, filtering1, wide_filtering, m1_lump,         &
      &      wk_cor1, wk_lsq1, wk_sgs1, wk_diff1, wk_filter1,            &
@@ -132,7 +132,7 @@
         call lead_fields_by_FEM(MHD_step1%time_d,                       &
      &     FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1,                &
      &     MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,      &
-     &     jacobians1%jac_3d, jacobians1%jac_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,            &
+     &     jacobians1%jac_3d, jacobians1%jac_3d_l, jacobians1%jac_sf_grp, rhs_tbl1,            &
      &     FEM1_elen, icomp_sgs, icomp_diff, ifld_diff, iphys_elediff,  &
      &     sgs_coefs, sgs_coefs_nod, filtering1, wide_filtering,        &
      &     layer_tbl1, m1_lump, wk_cor1, wk_lsq1, wk_diff1, wk_filter1, &
@@ -221,7 +221,7 @@
      &   (MHD_step1%time_d, FEM_prm1, SGS_par1,                         &
      &    mesh1, group1, ele_mesh1, MHD_mesh1%fluid,                    &
      &    nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,                  &
-     &    jacobians1%jac_3d, jacobians1%jac_3d_l, jac1_sf_grp_2d_q, jac1_sf_grp_2d_l,     &
+     &    jacobians1%jac_3d, jacobians1%jac_3d_l, jacobians1%jac_sf_grp, jacobians1%jac_sf_grp_l,     &
      &    rhs_tbl1, FEM1_elen, ifld_sgs, icomp_sgs, ifld_diff,          &
      &    icomp_diff, iphys_elediff, sgs_coefs_nod,                     &
      &    filtering1, wide_filtering, layer_tbl1, solver_pack1,         &
@@ -237,7 +237,7 @@
      &      FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1,    &
      &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
      &      layer_tbl1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,  &
-     &      jacobians1%jac_3d, jacobians1%jac_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
+     &      jacobians1%jac_3d, jacobians1%jac_3d_l, jacobians1%jac_sf_grp, rhs_tbl1,           &
      &      FEM1_elen, ifld_sgs, icomp_sgs, ifld_diff, icomp_diff,      &
      &      iphys_elediff, filtering1, wide_filtering, m1_lump,         &
      &      wk_cor1, wk_lsq1, wk_sgs1, wk_diff1, wk_filter1,            &
@@ -264,7 +264,7 @@
           call lead_fields_by_FEM(MHD_step1%time_d,                     &
      &        FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1,             &
      &        MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,   &
-     &        jacobians1%jac_3d, jacobians1%jac_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,         &
+     &        jacobians1%jac_3d, jacobians1%jac_3d_l, jacobians1%jac_sf_grp, rhs_tbl1,         &
      &        FEM1_elen, icomp_sgs, icomp_diff, ifld_diff,              &
      &        iphys_elediff, sgs_coefs, sgs_coefs_nod,                  &
      &        filtering1, wide_filtering, layer_tbl1, m1_lump,          &
@@ -370,7 +370,7 @@
         if (iflag_debug.eq.1) write(*,*) 'update_matrices'
         call update_matrices(MHD_step1%time_d, FEM_prm1, SGS_par1,      &
      &     mesh1, group1, ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs,      &
-     &     ak_MHD, jacobians1%jac_3d, jacobians1%jac_3d_l, jac1_sf_grp_2d_q, FEM1_elen,   &
+     &     ak_MHD, jacobians1%jac_3d, jacobians1%jac_3d_l, jacobians1%jac_sf_grp, FEM1_elen,   &
      &     ifld_diff, diff_coefs, rhs_tbl1, MHD1_mat_tbls,              &
      &     surf1_wk, flex_p1, mhd_fem1_wk, fem1_wk, MHD1_matrices)
       end if
