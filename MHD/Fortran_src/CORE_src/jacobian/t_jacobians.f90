@@ -7,7 +7,6 @@
 !
 !      subroutine alloc_3d_linear_jac_type(jacobians)
 !      subroutine dealloc_3d_linear_jac_type(jacobians)
-!      subroutine link_3d_linear_jac_type(jacobians)
 !      subroutine unlink_3d_linear_jac_type(jacobians)
 !        type(jacobians_type), intent(inout) :: jacobians
 !
@@ -25,13 +24,13 @@
 !>     Stracture for Jacobians for FEM grid
       type jacobians_type
 !>     Stracture for Jacobians for element
-        type(jacobians_3d) ::       jac_3d
+        type(jacobians_3d), pointer :: jac_3d
 !>     Stracture for Jacobians for surface
-        type(jacobians_2d) ::       jac_2d
+        type(jacobians_2d), pointer :: jac_2d
 !>     Stracture for Jacobians for edge
-        type(jacobians_1d) ::       jac_1d
+        type(jacobians_1d), pointer :: jac_1d
 !>     Stracture for Jacobians for surafce group
-        type(jacobians_2d) :: jac_sf_grp
+        type(jacobians_2d), pointer :: jac_sf_grp
 !
 !>     Stracture for Jacobians for linear element
         type(jacobians_3d), pointer ::  jac_3d_l
@@ -80,19 +79,6 @@
       deallocate(jacobians%jac_sf_grp_l)
 !
       end subroutine dealloc_3d_linear_jac_type
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine link_3d_linear_jac_type(jacobians)
-!
-      type(jacobians_type), intent(inout) :: jacobians
-!
-      jacobians%jac_3d_l =     jacobians%jac_3d
-      jacobians%jac_2d_l =     jacobians%jac_2d
-      jacobians%jac_1d_l =     jacobians%jac_1d
-      jacobians%jac_sf_grp_l = jacobians%jac_sf_grp
-!
-      end subroutine link_3d_linear_jac_type
 !
 !  ---------------------------------------------------------------------
 !

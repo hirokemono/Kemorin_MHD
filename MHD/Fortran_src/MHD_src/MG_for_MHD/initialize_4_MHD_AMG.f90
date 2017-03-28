@@ -186,48 +186,18 @@
 !     --------------------- 
 !
       do i_level = 1, MGCG_WK1%num_MG_level
-        if(my_rank .lt. MGCG_WK1%MG_mpi(i_level)%nprocs ) then
-          if(iflag_debug .gt. 0) write(*,*)                             &
-     &            'const_jacobian_type', i_level
-          call const_jacobian_type(MGCG_FEM1%MG_mesh(i_level)%mesh,     &
-     &        MGCG_FEM1%MG_mesh(i_level)%group,                         &
-     &        MGCG_FEM1%MG_jacobians(i_level)%jac_3d)
+        call const_jacobians_element                                    &
+     &     (my_rank, MGCG_WK1%MG_mpi(i_level)%nprocs,                   &
+     &      MGCG_FEM1%MG_mesh(i_level)%mesh,                            &
+     &      MGCG_FEM1%MG_mesh(i_level)%group,                           &
+     &      MGCG_FEM1%MG_jacobians(i_level))
 !
-        if(iflag_debug .gt. 0) write(*,*)                               &
-     &            'cal_jacobian_surf_grp_type', i_level
-          call cal_jacobian_surf_grp_type                               &
-     &       (MGCG_FEM1%MG_mesh(i_level)%mesh,                          &
-     &        MGCG_FEM1%MG_ele_mesh(i_level),                           &
-     &        MGCG_FEM1%MG_mesh(i_level)%group,                         &
-     &        MGCG_FEM1%MG_jacobians(i_level)%jac_sf_grp)
-!
-!
-          if(iflag_debug .gt. 0) write(*,*)                             &
-     &            'const_linear_jac_3d_type', i_level
-          call const_linear_jac_3d_type                                 &
-     &       (MGCG_FEM1%MG_mesh(i_level)%mesh,                          &
-     &        MGCG_FEM1%MG_mesh(i_level)%group,                         &
-     &        MGCG_FEM1%MG_jacobians(i_level))
-        else
-          if(iflag_debug .gt. 0) write(*,*)                             &
-     &            'empty_jacobian_type', i_level
-          call empty_jacobian_type(MGCG_FEM1%MG_mesh(i_level)%mesh,     &
-     &        MGCG_FEM1%MG_jacobians(i_level)%jac_3d)
-!
-        if(iflag_debug .gt. 0) write(*,*)                               &
-     &            'empty_jacobian_surf_grp_type', i_level
-          call empty_jacobian_surf_grp_type                             &
-     &       (MGCG_FEM1%MG_ele_mesh(i_level),                           &
-     &        MGCG_FEM1%MG_mesh(i_level)%group,                         &
-     &        MGCG_FEM1%MG_jacobians(i_level)%jac_sf_grp)
-!
-!
-          if(iflag_debug .gt. 0) write(*,*)                             &
-     &            'empty_linear_jac_3d_type', i_level
-          call empty_linear_jac_3d_type                                 &
-     &       (MGCG_FEM1%MG_mesh(i_level)%mesh,                          &
-     &        MGCG_FEM1%MG_jacobians(i_level))
-        end if
+        call const_jacobians_surf_group                                    &
+     &     (my_rank, MGCG_WK1%MG_mpi(i_level)%nprocs,                   &
+     &      MGCG_FEM1%MG_mesh(i_level)%mesh,                            &
+     &      MGCG_FEM1%MG_ele_mesh(i_level),                             &
+     &      MGCG_FEM1%MG_mesh(i_level)%group,                           &
+     &      MGCG_FEM1%MG_jacobians(i_level))
       end do
 !
 !     --------------------- 
