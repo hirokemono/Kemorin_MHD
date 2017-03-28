@@ -94,7 +94,7 @@
         if (visval.eq.0) then
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
      &        mesh1, group1, ele_mesh1, nod_fld1,                       &
-     &        next_tbl1%neib_ele, jac1_3d_q)
+     &        next_tbl1%neib_ele, jacobians1%jac_3d)
         end if
       end do
 !

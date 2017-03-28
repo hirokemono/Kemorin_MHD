@@ -284,7 +284,8 @@
       if (iflag_debug.eq.1) write(*,*) 'const_MHD_jacobian_and_volumes'
       call const_MHD_jacobian_and_volumes(SGS_par%model_p,              &
      &    mesh%node, mesh%ele, group%surf_grp, layer_tbl,               &
-     &    group%infty_grp, jacobians1%jac_3d_l, jac1_3d_q, MHD_mesh)
+     &    group%infty_grp, jacobians1%jac_3d_l, jacobians1%jac_3d,      &
+     &    MHD_mesh)
 !
       if (iflag_debug.eq.1) write(*,*)  'const_jacobian_sf_grp'
       call const_jacobian_sf_grp                                        &
@@ -318,7 +319,7 @@
 !     ---------------------
 !
       call int_RHS_mass_matrices(FEM_prm%npoint_t_evo_int,              &
-     &    mesh%node, mesh%ele, MHD_mesh, jac1_3d_q, rhs_tbl1,           &
+     &    mesh%node, mesh%ele, MHD_mesh, jacobians1%jac_3d, rhs_tbl1,   &
      &    mhd_fem1_wk, fem1_wk, f1_l, m1_lump)
 !
 !     ---------------------

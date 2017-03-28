@@ -17,10 +17,6 @@
       type(jacobians_type), save :: jacobians1
 !jacobians1%jac_3d
 !
-!>     Stracture for Jacobians for quad element
-      type(jacobians_3d), save :: jac1_3d_q
-!
-!
 !>     Stracture for linear Jacobians for quad element
       type(jacobians_3d), save :: jac1_3d_lq
 !

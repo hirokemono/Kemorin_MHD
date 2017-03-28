@@ -83,8 +83,8 @@
       call start_eleps_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_w_viz'
       call FEM_initialize_w_viz                                         &
-     &   (MHD_step1, mesh1, group1, ele_mesh1,                          &
-     &    iphys, nod_fld1, next_tbl1, jac1_3d_q, jacobians1%jac_3d_l)
+     &   (MHD_step1, mesh1, group1, ele_mesh1, iphys, nod_fld1,         &
+     &    next_tbl1, jacobians1%jac_3d, jacobians1%jac_3d_l)
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_back_trans'
@@ -154,7 +154,7 @@
           call start_eleps_time(12)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
      &        mesh1, group1, ele_mesh1, nod_fld1,                       &
-     &        next_tbl1%neib_ele, jac1_3d_q)
+     &        next_tbl1%neib_ele, jacobians1%jac_3d)
           call end_eleps_time(12)
         end if
         call end_eleps_time(1)

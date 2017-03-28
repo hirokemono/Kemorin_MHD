@@ -115,7 +115,7 @@
       call update_fields                                                &
      &   (MHD_step%time_d, FEM_prm1, SGS_par1, mesh1, group1,           &
      &    ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,    &
-     &    jac1_3d_q, jacobians1%jac_3d_l, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,  &
+     &    jacobians1%jac_3d, jacobians1%jac_3d_l, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,  &
      &    ifld_diff, icomp_diff, iphys_elediff,                         &
      &    filtering1, wide_filtering, layer_tbl1, m1_lump,              &
      &    wk_cor1, wk_lsq1, wk_diff1, wk_filter1, mhd_fem1_wk, fem1_wk, &
@@ -129,7 +129,7 @@
      &      FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1,    &
      &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
      &      layer_tbl1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,  &
-     &      jac1_3d_q, jacobians1%jac_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
+     &      jacobians1%jac_3d, jacobians1%jac_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, ifld_sgs, icomp_sgs, ifld_diff, icomp_diff,      &
      &      iphys_elediff, filtering1, wide_filtering, m1_lump,         &
      &      wk_cor1, wk_lsq1, wk_sgs1, wk_diff1, wk_filter1,            &
@@ -145,7 +145,7 @@
         call lead_fields_by_FEM(MHD_step%time_d,                        &
      &     FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1,                &
      &     MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,      &
-     &     jac1_3d_q, jacobians1%jac_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,            &
+     &     jacobians1%jac_3d, jacobians1%jac_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,            &
      &     FEM1_elen, icomp_sgs, icomp_diff, ifld_diff, iphys_elediff,  &
      &     sgs_coefs, sgs_coefs_nod, filtering1, wide_filtering,        &
      &     layer_tbl1, m1_lump, wk_cor1, wk_lsq1, wk_diff1, wk_filter1, &
@@ -166,7 +166,7 @@
         call output_time_step_control                                   &
      &     (FEM_prm1, MHD_step%time_d, mesh1, MHD_mesh1,                &
      &      fl_prop1, cd_prop1, iphys, nod_fld1, iphys_ele, fld_ele1,   &
-     &      jac1_3d_q, jacobians1%jac_3d_l, fem1_wk, mhd_fem1_wk)
+     &      jacobians1%jac_3d, jacobians1%jac_3d_l, fem1_wk, mhd_fem1_wk)
       end if
 !
       iflag = output_IO_flag(flex_p1%istep_max_dt,MHD_step%point_step)
