@@ -8,12 +8,12 @@
 !
 !!      subroutine const_MHD_jacobian_and_volumes                       &
 !!     &         (SGS_param, node, ele, sf_grp,  layer_tbl,             &
-!!     &          infty_list, jac_3d_l, jac_3d_q, MHD_mesh)
+!!     &          infty_list, jacobians, MHD_mesh)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(inout) :: ele
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(scalar_surf_BC_list), intent(in) :: infty_list
-!!        type(jacobians_3d), intent(inout) :: jac_3d_l, jac_3d_q
+!!        type(jacobians_type), intent(inout) :: jacobians
 !!        type(layering_tbl), intent(inout) :: layer_tbl
 !!        type(mesh_data_MHD), intent(inout) :: MHD_mesh
 !
@@ -45,7 +45,7 @@
 !
       subroutine const_MHD_jacobian_and_volumes                         &
      &         (SGS_param, node, ele, sf_grp,  layer_tbl,               &
-     &          infty_list, jac_3d_l, jac_3d_q, MHD_mesh)
+     &          infty_list, jacobians, MHD_mesh)
 !
       use m_mean_square_values
       use t_jacobians
@@ -61,22 +61,23 @@
       type(element_data), intent(inout) :: ele
       type(surface_group_data), intent(in) :: sf_grp
       type(scalar_surf_BC_list), intent(in) :: infty_list
-      type(jacobians_3d), intent(inout) :: jac_3d_l, jac_3d_q
+      type(jacobians_type), intent(inout) :: jacobians
       type(layering_tbl), intent(inout) :: layer_tbl
       type(mesh_data_MHD), intent(inout) :: MHD_mesh
 !
 !    Construct Jacobians
 !
       call max_int_point_by_etype(ele%nnod_4_ele)
-      call cal_jacobian_element                                         &
-     &   (node, ele, sf_grp, infty_list, jac_3d_l, jac_3d_q)
+      call initialize_FEM_integration
+      call const_jacobians_element(my_rank, nprocs,                     &
+     &    node, ele, sf_grp, infty_list, jacobians)
 !
 !    Construct volumes
 !
       call allocate_volume_4_smp
 !
       if (iflag_debug.eq.1) write(*,*) 's_int_volume_of_domain'
-      call s_int_volume_of_domain(ele, jac_3d_q)
+      call s_int_volume_of_domain(ele, jacobians%jac_3d)
 !
 !     ---  lead total volume of each area
 !
@@ -103,8 +104,7 @@
 !       call s_int_volume_insulate_core(ele, inner_core)
 !
       call deallocate_volume_4_smp
-      call dealloc_dxi_dx_type(jac_3d_q)
-      call dealloc_dxi_dx_type(jac_3d_l)
+      call dealloc_dxi_dx_element(ele, jacobians)
 !
 !
       if (iflag_debug.eq.1) then

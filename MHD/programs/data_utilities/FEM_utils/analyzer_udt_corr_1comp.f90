@@ -124,10 +124,10 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_vol_layer'
       call max_int_point_by_etype(femmesh_p_FUT%mesh%ele%nnod_4_ele)
-      call const_jacobian_and_vol_layer(femmesh_p_FUT%mesh%node,        &
-     &    femmesh_p_FUT%group%surf_grp, femmesh_p_FUT%group%infty_grp,  &
-     &    femmesh_p_FUT%mesh%ele, jac_FUTIL_l, jac_FUTIL_q,             &
-     &     layer_tbl_corr)
+      call const_jacobian_and_vol_layer(my_rank, nprocs,                &
+     &    femmesh_p_FUT%mesh%node, femmesh_p_FUT%group%surf_grp,        &
+     &    femmesh_p_FUT%group%infty_grp, femmesh_p_FUT%mesh%ele,        &
+     &    jacobians_FUTIL, layer_tbl_corr)
 !
       end subroutine initialize_udt_corre_1comp
 !
@@ -186,8 +186,8 @@
      &        's_correlation_all_layerd_data'
         call s_correlation_all_layerd_data                              &
      &     (femmesh_p_FUT%mesh%node, femmesh_p_FUT%mesh%ele,            &
-     &      field_FUTIL, jac_FUTIL_l, jac_FUTIL_q,                      &
-     &      layer_tbl_corr, phys_ref, wk_correlate)
+     &      field_FUTIL, jacobians_FUTIL, layer_tbl_corr,               &
+     &      phys_ref, wk_correlate)
 !
         if (iflag_debug .gt. 0) write(*,*)                              &
      &     ' write_layerd_correlate_data', time_U%ucd_step%istep_file

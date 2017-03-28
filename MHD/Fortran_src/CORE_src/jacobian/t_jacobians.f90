@@ -24,6 +24,8 @@
 !!        type(scalar_surf_BC_list), intent(in) :: infinity_list
 !!        type(jacobians_type), intent(inout) :: jacobians
 !!
+!!      subroutine dealloc_dxi_dx_element(ele, jacobians)
+!!      subroutine dealloc_jacobians_element(ele, jacobians)
 !!      subroutine dealloc_jacobians_surface(surf, jacobians)
 !!      subroutine dealloc_jacobians_edge(edge, jacobians)
 !
@@ -33,6 +35,7 @@
 !
       use m_geometry_constants
       use m_fem_gauss_int_coefs
+      use m_shape_functions
 !
       use t_geometry_data
       use t_surface_data
@@ -104,7 +107,7 @@
 !
       end subroutine unlink_3d_linear_jac_type
 !
-!  ---------------------------------------------------------------------
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine const_jacobians_element(my_rank, nprocs,               &
@@ -265,6 +268,42 @@
       end subroutine const_jacobians_edge
 !
 !-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine dealloc_dxi_dx_element(ele, jacobians)
+!
+      type(element_data), intent(in) :: ele
+      type(jacobians_type), intent(inout) :: jacobians
+!
+!
+      call dealloc_dxi_dx_type(jacobians%jac_3d)
+!
+      if(ele%nnod_4_ele .ne. num_t_linear) then
+        call dealloc_dxi_dx_type(jacobians%jac_3d_l)
+      end if
+!
+      end subroutine dealloc_dxi_dx_element
+!
+!-----------------------------------------------------------------------
+!
+      subroutine dealloc_jacobians_element(ele, jacobians)
+!
+      type(element_data), intent(in) :: ele
+      type(jacobians_type), intent(inout) :: jacobians
+!
+!
+      call dealloc_jacobians_type(jacobians%jac_3d)
+      allocate(jacobians%jac_3d)
+!
+      if(ele%nnod_4_ele .eq. num_t_linear) then
+        jacobians%jac_3d_l => jacobians%jac_3d
+      else
+        call dealloc_jacobians_type(jacobians%jac_3d_l)
+        deallocate(jacobians%jac_3d_l)
+      end if
+!
+      end subroutine dealloc_jacobians_element
+!
 !-----------------------------------------------------------------------
 !
       subroutine dealloc_jacobians_surface(surf, jacobians)

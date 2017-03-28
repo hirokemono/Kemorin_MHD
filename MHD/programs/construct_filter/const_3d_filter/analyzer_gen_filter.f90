@@ -18,7 +18,7 @@
 !
       use t_file_IO_parameter
       use t_mesh_data
-      use t_jacobian_3d
+      use t_jacobians
       use t_table_FEM_const
       use t_crs_connect
       use t_work_FEM_integration
@@ -37,8 +37,8 @@
       type(mesh_groups), save :: group_filter
       type(element_geometry), save :: ele_filter
 !
-      type(jacobians_3d), save :: jac_3d_l
-      type(jacobians_3d), save :: jac_3d_q
+!>     Stracture for Jacobians for FEM grid
+      type(jacobians_type), save :: jacobians_f
 !
       type(tables_4_FEM_assembles), save :: rhs_tbl_f
       type(CRS_matrix_connect), save :: tbl_crs_f
@@ -138,14 +138,14 @@
 !  -------------------------------
 !  -------------------------------
 !
-      if (iflag_debug.eq.1)  write(*,*)  'cal_jacobian_element'
+      if (iflag_debug.eq.1)  write(*,*)  'const_jacobian_and_volume'
       call maximum_integration_points(num_int_points)
-      call const_jacobian_and_volume(mesh_filter%node,                  &
-     &    group_filter%surf_grp, group_filter%infty_grp,                &
-     &    mesh_filter%ele, jac_3d_l, jac_3d_q)
+      call const_jacobian_and_volume(my_rank, nprocs,                   &
+     &    mesh_filter%node, group_filter%surf_grp,                      &
+     &    group_filter%infty_grp, mesh_filter%ele, jacobians_f)
 !
 !      call check_jacobians_trilinear                                   &
-!     &   (my_rank, mesh_filter%ele, jac_3d_l)
+!     &   (my_rank, mesh_filter%ele, jacobians_f%jac_3d_l)
 !
 !  -------------------------------
 !
@@ -205,8 +205,8 @@
       if(iflag_debug.eq.1)  write(*,*) 's_cal_element_size'
       call s_cal_element_size                                           &
      &   (mesh_filter%nod_comm, mesh_filter%node, mesh_filter%ele,      &
-     &    jac_3d_q, rhs_tbl_f, tbl_crs_f, mat_tbl_f, rhs_mat_f,         &
-     &    FEM_elen_f, filter_dxi1, dxidxs1)
+     &    jacobians_f%jac_3d, rhs_tbl_f, tbl_crs_f, mat_tbl_f,          &
+     &    rhs_mat_f, FEM_elen_f, filter_dxi1, dxidxs1)
       call dealloc_jacobians_ele(filter_dxi1)
 !
 !  ---------------------------------------------------
@@ -237,8 +237,8 @@
 !
         call select_const_filter(file_name,                             &
     &       mesh_filter%nod_comm, mesh_filter%node, mesh_filter%ele,    &
-    &       jac_3d_q, rhs_tbl_f, tbl_crs_f, rhs_mat_f, FEM_elen_f,      &
-    &       dxidxs1, FEM_momenet1)
+    &       jacobians_f%jac_3d, rhs_tbl_f, tbl_crs_f, rhs_mat_f,        &
+    &       FEM_elen_f, dxidxs1, FEM_momenet1)
         call dealloc_jacobians_node(filter_dxi1)
 !
 !

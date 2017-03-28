@@ -22,7 +22,7 @@
       use t_phys_address
       use t_ucd_data
       use t_file_IO_parameter
-      use t_jacobian_3d
+      use t_jacobians
       use t_IO_step_parameter
       use t_VIZ_step_parameter
       use calypso_mpi
@@ -57,10 +57,8 @@
 !>        Instance for numbers of FEM mesh for merged IO
       type(merged_ucd_data), save :: m_ucd_FUTIL
 !
-!>     Stracture for Jacobians for linear element
-      type(jacobians_3d), save :: jac_FUTIL_l
-!>     Stracture for Jacobians for quad element
-      type(jacobians_3d), save :: jac_FUTIL_q
+!>      Stracture for Jacobians
+      type(jacobians_type), save :: jacobians_FUTIL
 !
 !   ---------------------------------------------------------------------
 !

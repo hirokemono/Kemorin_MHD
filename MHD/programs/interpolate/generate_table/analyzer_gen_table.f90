@@ -16,7 +16,7 @@
 !
       use t_mesh_data
       use t_next_node_ele_4_node
-      use t_jacobian_3d
+      use t_jacobians
       use t_interpolate_table
       use t_interpolate_coefs_dest
 !
@@ -27,8 +27,7 @@
 !
       type(next_nod_ele_table), save :: next_tbl_i
 !
-      type(jacobians_3d), save :: jac_3d_l
-      type(jacobians_3d), save :: jac_3d_q
+      type(jacobians_type), save :: jacobians_I
 !
       type(interpolate_table), save :: itp_nod
       type(interpolate_coefs_dest), save :: itp_n_coef
@@ -86,12 +85,13 @@
      &   (org_femmesh%mesh%node, org_femmesh%mesh%ele,                  &
      &    next_tbl_i%neib_ele, next_tbl_i%neib_nod)
 !
-      if (iflag_debug.gt.0) write(*,*) 'cal_jacobian_element'
+      if (iflag_debug.gt.0) write(*,*) 'const_jacobians_element'
       call max_int_point_by_etype(org_femmesh%mesh%ele%nnod_4_ele)
-      call cal_jacobian_element                                         &
-     &   (org_femmesh%mesh%node, org_femmesh%mesh%ele,                  &
+      call initialize_FEM_integration
+      call const_jacobians_element(my_rank, nprocs,                     &
+     &    org_femmesh%mesh%node, org_femmesh%mesh%ele,                  &
      &    org_femmesh%group%surf_grp, org_femmesh%group%infty_grp,      &
-     &    jac_3d_l, jac_3d_q)
+     &    jacobians_I)
 !
 !  -------------------------------
 !

@@ -22,6 +22,7 @@
 !
       use t_geometry_data
       use t_phys_data
+      use t_jacobians
       use t_jacobian_3d
       use t_layering_ele_list
       use t_work_layer_correlate
@@ -62,22 +63,22 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_correlation_all_layerd_data(node, ele, nod_fld,      &
-     &          jac_3d_l, jac_3d_q, layer_tbl, phys_2nd, wk_cor)
+     &          jacobians, layer_tbl, phys_2nd, wk_cor)
 !
       use cal_layerd_ave_correlate
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
-      type(jacobians_3d), intent(in) :: jac_3d_l, jac_3d_q
+      type(jacobians_type), intent(inout) :: jacobians
       type(phys_data), intent(in) :: phys_2nd
       type(layering_tbl), intent(in) :: layer_tbl
 !
       type(dynamis_correlation_data), intent(inout) :: wk_cor
 !
 !
-      call int_vol_rms_ave_all_layer                                    &
-     &   (node, ele, nod_fld, jac_3d_l, jac_3d_q, layer_tbl, phys_2nd,  &
+      call int_vol_rms_ave_all_layer(node, ele, nod_fld,                &
+     &    jacobians%jac_3d_l, jacobians%jac_3d, layer_tbl, phys_2nd,    &
      &    wk_cor%nlayer, wk_cor%ncomp_sgl, wk_cor%ncomp_dble,           &
      &    wk_cor%ave_l, wk_cor%rms_l)
       call sum_layerd_averages(layer_tbl%e_grp%num_grp, wk_cor)
@@ -93,8 +94,8 @@
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'int_vol_dev_cor_all_layer'
-      call int_vol_dev_cor_all_layer                                    &
-     &   (node, ele, nod_fld, jac_3d_l, jac_3d_q, layer_tbl, phys_2nd,  &
+      call int_vol_dev_cor_all_layer(node, ele, nod_fld,                &
+     &    jacobians%jac_3d_l, jacobians%jac_3d, layer_tbl, phys_2nd,    &
      &    wk_cor%nlayer, wk_cor%ncomp_sgl, wk_cor%ncomp_dble,           &
      &    wk_cor%sig_l, wk_cor%cov_l)
 !

@@ -5,20 +5,18 @@
 !                                    on July 2000 (ver 1.1)
 !        modified by H. Matsui on June. 2006
 !
-!!      subroutine cal_jacobian_element                                 &
-!!     &         (node, ele, sf_grp, infinity_list, jac_3d_l, jac_3d_q)
-!!        type(node_data), intent(in) :: node
-!!        type(element_data), intent(in) :: ele
-!!        type(surface_group_data), intent(in) :: sf_grp
-!!        type(scalar_surf_BC_list), intent(in) :: infinity_list
-!!        type(jacobians_3d), intent(inout) :: jac_3d_l
-!!        type(jacobians_3d), intent(inout) :: jac_3d_q
+!!      subroutine initialize_FEM_integration
 !!
 !!      subroutine sel_jacobian_type(node, ele, jac_3d)
 !!      subroutine cal_jacobian_trilinear(node, ele, jac_3d)
 !!      subroutine cal_jacobian_quad(node, ele, jac_3d)
 !!      subroutine cal_jacobian_lag(node, ele, jac_3d)
 !!      subroutine cal_jacobian_quad_on_linear(node, ele, jac_3d)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(scalar_surf_BC_list), intent(in) :: infinity_list
+!!        type(jacobians_3d), intent(inout) :: jac_3d
 !
       module const_jacobians_3d
 !
@@ -47,32 +45,15 @@
 !> Construct shape function, difference of shape function, and Jacobian
 !> for hexadedral element
 !
-      subroutine cal_jacobian_element                                   &
-     &         (node, ele, sf_grp, infinity_list, jac_3d_l, jac_3d_q)
+      subroutine initialize_FEM_integration
 !
       use set_gauss_int_parameters
       use set_integration_indices
-      use const_jacobians_infinity
-!
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(surface_group_data), intent(in) :: sf_grp
-      type(scalar_surf_BC_list), intent(in) :: infinity_list
-!
-      type(jacobians_3d), intent(inout) :: jac_3d_l
-      type(jacobians_3d), intent(inout) :: jac_3d_q
 !
 !  data allocation
 !
       call allocate_integrate_parameters
       call allocate_gauss_coef_4_fem
-!
-      call alloc_jacobians_type(ele%numele, num_t_linear,               &
-     &                          maxtot_int_3d, jac_3d_l)
-      call alloc_jacobians_type(ele%numele, ele%nnod_4_ele,             &
-     &                          jac_3d_l%ntot_int, jac_3d_q)
-      call alloc_dxi_dx_type(ele%numele, jac_3d_l)
-      call alloc_dxi_dx_type(ele%numele, jac_3d_q)
 !
 !  set constant for gauss integration with roots
 !
@@ -90,44 +71,8 @@
       call set_gauss_coefs_4_2d
       call set_gauss_coefs_4_3d
 !
-!  set jacobians
 !
-      call cal_jacobian_trilinear(node, ele, jac_3d_l)
-!
-      if (ele%nnod_4_ele .eq. num_t_quad) then
-        call cal_jacobian_quad(node, ele, jac_3d_q)
-      else if (ele%nnod_4_ele .eq. num_t_lag) then
-        call cal_jacobian_lag(node, ele, jac_3d_q)
-      end if
-!
-!   Infinity elements
-!
-      if (infinity_list%ngrp_sf .ne. 0) then
-        call cal_jacobian_infty_linear                                  &
-     &     (node, ele, sf_grp, infinity_list, jac_3d_l)
-!
-        if (ele%nnod_4_ele .eq. num_t_quad) then
-          call cal_jacobian_infty_quad                                  &
-     &       (node, ele, sf_grp, infinity_list, jac_3d_q)
-        else if (ele%nnod_4_ele .eq. num_t_lag) then
-          call cal_jacobian_infty_lag                                   &
-     &       (node, ele, sf_grp, infinity_list, jac_3d_q)
-        end if
-!
-      end if
-!
-      if (ele%nnod_4_ele .eq. num_t_linear) then
-        call copy_jacobians_3d(jac_3d_l, jac_3d_q)
-        call copy_dxidx_3d(jac_3d_l, jac_3d_q)
-        if (infinity_list%ngrp_sf .ne. 0) then
-          call copy_shape_func_infty(jac_3d_l, jac_3d_q)
-        end if
-      end if
-!
-      call dealloc_inv_jac_type(jac_3d_q)
-      call dealloc_inv_jac_type(jac_3d_l)
-!
-      end subroutine cal_jacobian_element
+      end subroutine initialize_FEM_integration
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

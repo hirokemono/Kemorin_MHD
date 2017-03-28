@@ -194,7 +194,7 @@
      &      MGCG_FEM1%MG_mesh(i_level)%group%infty_grp,                 &
      &      MGCG_FEM1%MG_jacobians(i_level))
 !
-        call const_jacobians_surf_group                                    &
+        call const_jacobians_surf_group                                 &
      &     (my_rank, MGCG_WK1%MG_mpi(i_level)%nprocs,                   &
      &      MGCG_FEM1%MG_mesh(i_level)%mesh%node,                       &
      &      MGCG_FEM1%MG_mesh(i_level)%mesh%ele,                        &

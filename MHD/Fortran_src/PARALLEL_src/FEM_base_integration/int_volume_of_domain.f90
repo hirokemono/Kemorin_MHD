@@ -14,15 +14,15 @@
 !!@verbatim
 !!      subroutine const_jacobian_volume_normals(my_rank, nprocs,       &
 !!     &          mesh, surf, group, jacobians)
-!!      subroutine const_jacobian_and_volume(node, sf_grp,              &
-!!     &         infinity_list, ele, jac_3d_l, jac_3d_q)
-!!      subroutine const_jacobian_and_vol_layer(node, sf_grp,           &
-!!     &          infinity_list, ele, jac_3d_l, jac_3d_q, layer_tbl)
+!!      subroutine const_jacobian_and_volume(my_rank, nprocs,           &
+!!     &          node, sf_grp, infinity_list, ele, jacobians)
+!!      subroutine const_jacobian_and_vol_layer(my_rank, nprocs,        &
+!!     &         node, sf_grp, infinity_list, ele, jacobians, layer_tbl)
 !!        type(node_data), intent(in) :: node
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(scalar_surf_BC_list), intent(in) :: infinity_list
 !!        type(element_data), intent(inout) :: ele
-!!        type(jacobians_3d), intent(inout) :: jac_3d_l, jac_3d_q
+!!        type(jacobians_type), intent(inout) :: jacobians
 !!        type(layering_tbl), intent(inout) :: layer_tbl
 !!      subroutine s_int_volume_of_domain(ele, jac_3d)
 !!@endverbatim
@@ -62,9 +62,9 @@
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_volume'
-      call const_jacobian_and_volume                                    &
-     &   (mesh%node, group%surf_grp, group%infty_grp,                   &
-     &    mesh%ele, jacobians%jac_3d_l, jacobians%jac_3d)
+      call const_jacobian_and_volume(my_rank, nprocs,                   &
+     &    mesh%node, group%surf_grp, group%infty_grp,                   &
+     &    mesh%ele, jacobians)
 !
 !     --------------------- Surface jacobian for fieldline
 !
@@ -89,60 +89,63 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine const_jacobian_and_volume(node, sf_grp,                &
-     &         infinity_list, ele, jac_3d_l, jac_3d_q)
+      subroutine const_jacobian_and_volume(my_rank, nprocs,             &
+     &          node, sf_grp, infinity_list, ele, jacobians)
 !
       use sum_volume_of_domain
       use const_jacobians_3d
 !
+      integer(kind = kint), intent(in) :: my_rank, nprocs
       type(node_data), intent(in) :: node
       type(surface_group_data), intent(in) :: sf_grp
       type(scalar_surf_BC_list), intent(in) :: infinity_list
 !
       type(element_data), intent(inout) :: ele
-      type(jacobians_3d), intent(inout) :: jac_3d_l, jac_3d_q
+      type(jacobians_type), intent(inout) :: jacobians
 !
 !
-      call cal_jacobian_element                                         &
-     &   (node, ele, sf_grp, infinity_list, jac_3d_l, jac_3d_q)
+      call initialize_FEM_integration
+      call const_jacobians_element(my_rank, nprocs,                     &
+     &    node, ele, sf_grp, infinity_list, jacobians)
 !
       call allocate_volume_4_smp
-      call s_int_volume_of_domain(ele, jac_3d_q)
+      call s_int_volume_of_domain(ele, jacobians%jac_3d)
       call deallocate_volume_4_smp
 !
-      call dealloc_dxi_dx_type(jac_3d_q)
-      call dealloc_dxi_dx_type(jac_3d_l)
+      call dealloc_dxi_dx_element(ele, jacobians)
 !
       end subroutine const_jacobian_and_volume
 !
 !-----------------------------------------------------------------------
 !
-      subroutine const_jacobian_and_vol_layer(node, sf_grp,             &
-     &          infinity_list, ele, jac_3d_l, jac_3d_q, layer_tbl)
+      subroutine const_jacobian_and_vol_layer(my_rank, nprocs,          &
+     &         node, sf_grp, infinity_list, ele, jacobians, layer_tbl)
 !
       use t_layering_ele_list
       use const_jacobians_3d
       use sum_volume_of_domain
       use cal_layered_volumes
 !
+      integer(kind = kint), intent(in) :: my_rank, nprocs
       type(node_data), intent(in) :: node
       type(surface_group_data), intent(in) :: sf_grp
       type(scalar_surf_BC_list), intent(in) :: infinity_list
 !
       type(element_data), intent(inout) :: ele
-      type(jacobians_3d), intent(inout) :: jac_3d_l, jac_3d_q
+      type(jacobians_type), intent(inout) :: jacobians
       type(layering_tbl), intent(inout) :: layer_tbl
 !
-      call cal_jacobian_element                                         &
-     &   (node, ele, sf_grp, infinity_list, jac_3d_l, jac_3d_q)
+!
+      call initialize_FEM_integration
+      call const_jacobians_element(my_rank, nprocs,                     &
+     &    node, ele, sf_grp, infinity_list, jacobians)
 !
       call allocate_volume_4_smp
-      call s_int_volume_of_domain(ele, jac_3d_q)
+      call s_int_volume_of_domain(ele, jacobians%jac_3d)
       call s_cal_layered_volumes(ele, layer_tbl)
       call deallocate_volume_4_smp
 !
-      call dealloc_dxi_dx_type(jac_3d_q)
-      call dealloc_dxi_dx_type(jac_3d_l)
+      call dealloc_dxi_dx_element(ele, jacobians)
 !
       end subroutine const_jacobian_and_vol_layer
 !
