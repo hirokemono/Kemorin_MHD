@@ -7,16 +7,12 @@
 !> @brief  Construct Jacobians on edge
 !!
 !!@verbatim
-!!      subroutine cal_jacobian_edge(node, edge, jac_1d_l, jac_1d_q)
-!!        type(node_data), intent(in) :: node
-!!        type(edge_data), intent(in)  :: edge
-!!        type(jacobians_1d), intent(inout) :: jac_1d_l
-!!        type(jacobians_1d), intent(inout) :: jac_1d_q
-!!
 !!      subroutine sel_jacobian_edge_type(node, edge, jac_1d)
 !!      subroutine cal_jacobian_edge_linear(node, edge, jac_1d)
 !!      subroutine cal_jacobian_edge_quad(node, edge, jac_1d)
 !!      subroutine cal_jacobian_edge_quad_on_l(node, edge, jac_1d)
+!!        type(node_data), intent(in) :: node
+!!        type(edge_data), intent(in)  :: edge
 !!        type(jacobians_1d), intent(inout) :: jac_1d
 !!@endverbatim
 !
@@ -39,39 +35,6 @@
 !
       contains
 !
-!-----------------------------------------------------------------------
-!> Construct shape function, difference of shape function, and Jacobian
-!> for edge element
-!
-      subroutine cal_jacobian_edge(node, edge, jac_1d_l, jac_1d_q)
-!
-      type(node_data), intent(in) :: node
-      type(edge_data), intent(in)  :: edge
-!
-      type(jacobians_1d), intent(inout) :: jac_1d_l
-      type(jacobians_1d), intent(inout) :: jac_1d_q
-!
-!
-      call alloc_1d_jac_type                                            &
-     &   (edge%numedge, num_linear_edge, maxtot_int_1d, jac_1d_l)
-!
-      if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_edge_linear'
-      call cal_jacobian_edge_linear(node, edge, jac_1d_l)
-!
-      if(edge%nnod_4_edge .eq. num_quad_edge) then
-        if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_edge_quad'
-        call alloc_1d_jac_type                                          &
-     &     (edge%numedge, edge%nnod_4_edge, maxtot_int_1d, jac_1d_q)
-        call cal_jacobian_edge_quad(node, edge, jac_1d_q)
-      else
-        if (iflag_debug.eq.1) write(*,*) 'copy_1d_jacobians'
-        call copy_1d_jacobians                                          &
-     &     (edge%numedge, num_linear_edge, jac_1d_l, jac_1d_q)
-      end if
-!
-      end subroutine cal_jacobian_edge
-!
-!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine sel_jacobian_edge_type(node, edge, jac_1d)

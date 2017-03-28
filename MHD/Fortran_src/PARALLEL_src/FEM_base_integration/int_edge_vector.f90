@@ -7,22 +7,40 @@
 !> @brief  Structure of 1D Jacobian and difference of shape functions
 !!
 !!@verbatim
-!!      subroutine int_edge_vect(numedge, iedge_smp_stack,              &
-!!     &          ntot_int_1d, num_int, xj_edge, xeg_edge,              &
-!!     &          edge_vect, edge_length, a_edge_length)
-!
+!!      subroutine s_int_edge_vector(num_int, jac_1d, edge)
+!!        type(jacobians_1d), intent(in) :: jac_1d
+!!        type(edge_data), intent(inout) :: edge
 !!@endverbatim
 !
       module int_edge_vector
 !
       use m_precision
       use m_machine_parameter
+      use t_edge_data
+      use t_jacobian_1d
 !
       implicit none
+!
+      private :: int_edge_vect
 !
 !-----------------------------------------------------------------------
 !
       contains
+!
+!-----------------------------------------------------------------------
+!
+      subroutine s_int_edge_vector(num_int, jac_1d, edge)
+!
+      integer(kind = kint), intent(in) :: num_int
+      type(jacobians_1d), intent(in) :: jac_1d
+      type(edge_data), intent(inout) :: edge
+!
+!
+      call int_edge_vect(edge%numedge, edge%istack_edge_smp,            &
+     &    jac_1d%ntot_int, num_int, jac_1d%xj_edge, jac_1d%xeg_edge,    &
+     &    edge%edge_vect, edge%edge_length, edge%a_edge_length)
+!
+      end subroutine s_int_edge_vector
 !
 !-----------------------------------------------------------------------
 !

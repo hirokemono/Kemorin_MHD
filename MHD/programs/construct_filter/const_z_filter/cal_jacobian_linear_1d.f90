@@ -4,7 +4,7 @@
 !        programmed by H. Matsui on June, 2007
 !
 !      subroutine s_cal_jacobian_linear_1d(num_int,                     &
-!     &          node, ele, surf, edge, jac_1d_l, jac_1d_q)
+!     &          node, ele, surf, edge, jacobians)
 !
       module cal_jacobian_linear_1d
 !
@@ -19,9 +19,10 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_cal_jacobian_linear_1d(num_int,                      &
-     &          node, ele, surf, edge, jac_1d_l, jac_1d_q)
+     &          node, ele, surf, edge, jacobians)
 !
-      use t_jacobian_1d
+      use calypso_mpi
+      use t_jacobians
       use t_geometry_data
       use t_surface_data
       use t_edge_data
@@ -38,7 +39,7 @@
 !
       type(surface_data), intent(inout)  :: surf
       type(edge_data), intent(inout)  :: edge
-      type(jacobians_1d), intent(inout) :: jac_1d_l, jac_1d_q
+      type(jacobians_type), intent(inout) :: jacobians
 !
 !  data allocation
 !
@@ -62,7 +63,7 @@
 !
       call set_gauss_coefs_4_1d
 !
-      call cal_jacobian_edge(node, edge, jac_1d_l, jac_1d_q)
+      call const_jacobians_edge(my_rank, nprocs, node, edge, jacobians)
 !
       end subroutine s_cal_jacobian_linear_1d
 !

@@ -3,24 +3,25 @@
 !
 !     Written by H. Matsui on Aug., 2006
 !
-!      subroutine const_edge_vector(node, edge)
-!        type(node_data), intent(in) :: node
-!        type(edge_data), intent(inout) :: edge
-!      subroutine s_cal_edge_vector_spherical(edge)
-!      subroutine s_cal_edge_vector_cylindrical(edge)
+!!      subroutine const_edge_vector                                    &
+!!     &         (my_rank, nprocs, node, edge, jacobians)
+!!        type(node_data), intent(in) :: node
+!!        type(edge_data), intent(inout) :: edge
+!!        type(jacobians_type), intent(inout) :: jacobians
+!!      subroutine s_cal_edge_vector_spherical(edge)
+!!      subroutine s_cal_edge_vector_cylindrical(edge)
 !
       module set_edge_vectors
 !
       use m_precision
       use m_machine_parameter
       use m_geometry_constants
+      use t_geometry_data
       use t_edge_data
+      use t_jacobians
       use t_jacobian_1d
 !
       implicit none
-!
-      type(jacobians_1d), save, private :: jac_1d_l
-      type(jacobians_1d), save, private :: jac_1d_q
 !
 ! -----------------------------------------------------------------------
 !
@@ -28,26 +29,24 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_edge_vector(node, edge)
+      subroutine const_edge_vector                                      &
+     &         (my_rank, nprocs, node, edge, jacobians)
 !
       use m_fem_gauss_int_coefs
-      use const_jacobians_1d
       use int_edge_vector
 !
+      integer(kind = kint), intent(in) :: my_rank, nprocs
       type(node_data), intent(in) :: node
       type(edge_data), intent(inout) :: edge
+      type(jacobians_type), intent(inout) :: jacobians
 !
 !
-      call cal_jacobian_edge(node, edge, jac_1d_l, jac_1d_q)
+      call const_jacobians_edge(my_rank, nprocs, node, edge, jacobians)
 !
       call allocate_edge_vect_type(edge)
-      call int_edge_vect(edge%numedge, edge%istack_edge_smp,            &
-     &      jac_1d_q%ntot_int, max_int_point,                           &
-     &      jac_1d_q%xj_edge, jac_1d_q%xeg_edge,                        &
-     &      edge%edge_vect, edge%edge_length, edge%a_edge_length)
+      call s_int_edge_vector(max_int_point, jacobians%jac_1d, edge)
 !
-      call dealloc_1d_jac_type(jac_1d_q)
-      call dealloc_1d_jac_type(jac_1d_l)
+      call dealloc_jacobians_edge(edge, jacobians)
 !
       end subroutine const_edge_vector
 !

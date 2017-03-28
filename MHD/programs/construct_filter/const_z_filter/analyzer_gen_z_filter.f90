@@ -105,7 +105,7 @@
       if (my_rank.eq.0) write(*,*) 's_cal_jacobian_linear_1d'
       call s_cal_jacobian_linear_1d(i_int_z_filter,                     &
      &    z_filter_mesh%node, z_filter_mesh%ele,                        &
-     &    surf_z_filter, edge_z_filter, jac_z_l, jac_z_q)
+     &    surf_z_filter, edge_z_filter, jacobians_z)
 !
 !   construct FEM mesh for x direction
 !
@@ -119,15 +119,15 @@
       call allocate_int_edge_data                                       &
      &   (z_filter_mesh%node%numnod, z_filter_mesh%ele%numele)
       call set_spatial_difference(z_filter_mesh%ele%numele,             &
-     &                            i_int_z_filter, jac_z_l)
+     &                            i_int_z_filter, jacobians_z%jac_1d_l)
 !
       if (my_rank.eq.0) write(*,*) 'cal_delta_z_analytical'
        call cal_delta_z_analytical                                      &
      &    (z_filter_mesh%node, z_filter_mesh%ele,                       &
-     &     edge_z_filter, jac_z_l)
+     &     edge_z_filter, jacobians_z%jac_1d_l)
 !      call cal_delta_z(CG_param_z, DJDS_param_z,                       &
 !     &  z_filter_mesh%nod_comm, z_filter_mesh%node, z_filter_mesh%ele, &
-!     &  edge_z_filter, jac_z_l, tbl_crs_z, mat_crs_z)
+!     &  edge_z_filter, jacobians_z%jac_1d_l, tbl_crs_z, mat_crs_z)
 !
 !      call check_crs_connect                                           &
 !     &   (my_rank, z_filter_mesh%node%numnod, tbl_crs_z)
@@ -272,7 +272,7 @@
        if(my_rank.eq.0) write(*,*) 'int_edge_moment'
        call int_edge_moment                                             &
      &    (z_filter_mesh%node%numnod, z_filter_mesh%ele%numele,         &
-     &     edge_z_filter, i_int_z_filter, jac_z_l)
+     &     edge_z_filter, i_int_z_filter, jacobians_z%jac_1d_l)
 !
 !    output results
 !

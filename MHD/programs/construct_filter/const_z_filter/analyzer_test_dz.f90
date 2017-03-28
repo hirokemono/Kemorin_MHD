@@ -64,7 +64,7 @@
       if (my_rank.eq.0) write(*,*) 's_cal_jacobian_linear_1d'
       call s_cal_jacobian_linear_1d                                     &
      &   (n_int, z_filter_mesh%node, z_filter_mesh%ele,                 &
-     &    surf_z_filter, edge_z_filter, jac_z_l, jac_z_q)
+     &    surf_z_filter, edge_z_filter, jacobians_z)
 !
       if (my_rank.eq.0) write(*,*) 'set_crs_connect_commute_z'
       call set_crs_connect_commute_z(z_filter_mesh%node, tbl_crs_z)
@@ -73,12 +73,12 @@
       call allocate_int_edge_data                                       &
      &   (z_filter_mesh%node%numnod, z_filter_mesh%ele%numele)
       call set_spatial_difference(z_filter_mesh%ele%numele,             &
-     &                            n_int, jac_z_l)
+     &                            n_int, jacobians_z%jac_1d_l)
 !
 !
       call cal_delta_z(CG_param_z, DJDS_param_z,                        &
      &   z_filter_mesh%nod_comm, z_filter_mesh%node, z_filter_mesh%ele, &
-     &   edge_z_filter, jac_z_l, tbl_crs_z, mat_crs_z)
+     &   edge_z_filter, jacobians_z%jac_1d_l, tbl_crs_z, mat_crs_z)
 !
 !C===
 !

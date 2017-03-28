@@ -56,12 +56,10 @@
 !
       use t_mesh_data
       use t_read_mesh_data
-      use t_jacobian_3d
+      use t_jacobians
 !
-!>     Stracture for Jacobians for linear element
-      type(jacobians_3d), save :: jac_3d_l
-!>     Stracture for Jacobians for quad element
-      type(jacobians_3d), save :: jac_3d_q
+!>     Stracture for Jacobians
+      type(jacobians_type), save :: jacobians1
 !
       type(mesh_geometry) :: mesh_IO
       type(surf_edge_IO_file) :: ele_mesh_IO
@@ -97,7 +95,7 @@
       if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_volume'
       call max_int_point_by_etype(mesh%ele%nnod_4_ele)
       call const_jacobian_volume_normals                                &
-     &   (mesh, ele_mesh%surf, group, jac_3d_l, jac_3d_q)
+     &   (mesh, ele_mesh%surf, group, jacobians1%jac_3d_l, jacobians1%jac_3d)
 !
 !  -------------------------------
 !
@@ -109,7 +107,8 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'const_edge_vector'
-      call const_edge_vector(mesh%node, ele_mesh%edge)
+      call const_edge_vector(my_rank, nprocs,                           &
+     &    mesh%node, ele_mesh%edge, jacobians1)
 !
       if (iflag_debug.gt.0) write(*,*) 's_cal_edge_vector_spherical'
       call s_cal_edge_vector_spherical(ele_mesh%edge)

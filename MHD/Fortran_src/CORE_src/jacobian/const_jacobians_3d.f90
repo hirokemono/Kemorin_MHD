@@ -30,7 +30,7 @@
       use m_shape_functions
 !
       use t_geometry_data
-      use t_jacobians
+      use t_jacobian_3d
       use t_group_data
       use t_surface_boundary
 !

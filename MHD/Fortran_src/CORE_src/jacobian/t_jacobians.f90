@@ -189,6 +189,8 @@
       end subroutine const_jacobians_surf_group
 !
 !-----------------------------------------------------------------------
+!> Construct shape function, difference of shape function, and Jacobian
+!> for surface element
 !
       subroutine const_jacobians_surface                                &
      &          (my_rank, nprocs, node, surf, jacobians)
@@ -224,6 +226,8 @@
       end subroutine const_jacobians_surface
 !
 !-----------------------------------------------------------------------
+!> Construct shape function, difference of shape function, and Jacobian
+!> for edge element
 !
       subroutine const_jacobians_edge                                   &
      &         (my_rank, nprocs, node, edge, jacobians)
@@ -256,6 +260,27 @@
       end if
 !
       end subroutine const_jacobians_edge
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine dealloc_jacobians_edge(edge, jacobians)
+!
+      type(edge_data), intent(in)  :: edge
+      type(jacobians_type), intent(inout) :: jacobians
+!
+!
+      call dealloc_1d_jac_type(jacobians%jac_1d)
+      deallocate(jacobians%jac_1d)
+!
+      if(edge%nnod_4_edge .eq. num_linear_edge) then
+        nullify(jacobians%jac_1d_l)
+      else
+        call dealloc_1d_jac_type(jacobians%jac_1d_l)
+        deallocate(jacobians%jac_1d_l)
+      end if
+!
+      end subroutine dealloc_jacobians_edge
 !
 !-----------------------------------------------------------------------
 !
