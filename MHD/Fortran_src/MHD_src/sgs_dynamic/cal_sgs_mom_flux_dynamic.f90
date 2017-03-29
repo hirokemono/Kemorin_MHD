@@ -8,7 +8,7 @@
 !!     &         (iak_sgs_mf, icomp_sgs_mf, ie_dvx, ie_dfvx, dt,        &
 !!     &          FEM_prm, SGS_par, nod_comm, node, ele, iphys,         &
 !!     &          iphys_ele, ele_fld, fluid, layer_tbl,                 &
-!!     &          jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,    &
+!!     &          jacobians, rhs_tbl, FEM_elens, filtering,             &
 !!     &          sgs_coefs_nod, wk_filter, wk_cor, wk_lsq, wk_sgs,     &
 !!     &          mhd_fem_wk, fem_wk, nod_fld, sgs_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -21,7 +21,7 @@
 !!        type(phys_data), intent(in) :: fld_ele
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(layering_tbl), intent(in) :: layer_tbl
-!!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+!!        type(jacobians_type), intent(in) :: jacobians
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(filtering_data_type), intent(in) :: filtering
@@ -49,7 +49,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
-      use t_jacobian_3d
+      use t_jacobians
       use t_table_FEM_const
       use t_layering_ele_list
       use t_MHD_finite_element_mat
@@ -73,7 +73,7 @@
      &         (iak_sgs_mf, icomp_sgs_mf, ie_dvx, ie_dfvx, dt,          &
      &          FEM_prm, SGS_par, nod_comm, node, ele, iphys,           &
      &          iphys_ele, ele_fld, fluid, layer_tbl,                   &
-     &          jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,      &
+     &          jacobians, rhs_tbl, FEM_elens, filtering,               &
      &          sgs_coefs_nod, wk_filter, wk_cor, wk_lsq, wk_sgs,       &
      &          mhd_fem_wk, fem_wk, nod_fld, sgs_coefs)
 !
@@ -101,7 +101,7 @@
       type(phys_data), intent(in) :: ele_fld
       type(field_geometry_data), intent(in) :: fluid
       type(layering_tbl), intent(in) :: layer_tbl
-      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+      type(jacobians_type), intent(in) :: jacobians
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
@@ -144,7 +144,8 @@
       call cal_sgs_m_flux_grad_no_coef(ifilter_4delta,                  &
      &    iphys%i_sgs_grad_f, iphys%i_filter_velo, ie_dfvx, dt,         &
      &    FEM_prm, nod_comm, node, ele, fluid, iphys_ele, ele_fld,      &
-     &    jac_3d_q, FEM_elens, rhs_tbl, fem_wk, mhd_fem_wk, nod_fld)
+     &    jacobians%jac_3d, FEM_elens, rhs_tbl,                         &
+     &    fem_wk, mhd_fem_wk, nod_fld)
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys%i_sgs_grad_f)
 !
@@ -154,7 +155,8 @@
       call cal_sgs_m_flux_grad_no_coef(ifilter_2delta,                  &
      &    iphys%i_SGS_m_flux, iphys%i_velo, ie_dvx, dt,                 &
      &    FEM_prm, nod_comm, node, ele, fluid, iphys_ele, ele_fld,      &
-     &    jac_3d_q, FEM_elens, rhs_tbl, fem_wk, mhd_fem_wk, nod_fld)
+     &    jacobians%jac_3d, FEM_elens, rhs_tbl,                         &
+     &    fem_wk, mhd_fem_wk, nod_fld)
 !
 !      filtering
 !
@@ -173,8 +175,8 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_model_coefs', n_sym_tensor, iak_sgs_mf, icomp_sgs_mf
-      call cal_model_coefs(SGS_par, layer_tbl,                          &
-     &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
+      call cal_model_coefs(SGS_par, layer_tbl, node, ele,               &
+     &    iphys, nod_fld, jacobians%jac_3d, jacobians%jac_3d_l,         &
      &    SGS_par%model_p%itype_Csym_m_flux, n_sym_tensor,              &
      &    iak_sgs_mf, icomp_sgs_mf, FEM_prm%npoint_t_evo_int,           &
      &    wk_cor, wk_lsq, wk_sgs, sgs_coefs)

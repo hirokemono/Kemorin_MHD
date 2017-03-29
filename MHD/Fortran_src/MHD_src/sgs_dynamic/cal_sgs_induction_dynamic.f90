@@ -8,14 +8,14 @@
 !!     &         (iak_sgs_uxb, icomp_sgs_uxb, ie_dvx, ie_dfvx, dt,      &
 !!     &          FEM_prm, SGS_par, nod_comm, node, ele, iphys,         &
 !!     &          iphys_ele, ele_fld, conduct, cd_prop, layer_tbl,      &
-!!     &          jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,    &
+!!     &          jacobians, rhs_tbl, FEM_elens, filtering,             &
 !!     &          wk_filter, wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,&
 !!     &          f_l, nod_fld, sgs_coefs)
 !!      subroutine cal_sgs_induct_t_dynamic(iak_sgs_uxb, icomp_sgs_uxb, &
 !!     &          ie_dvx, ie_dbx, ie_dfvx, ie_dfbx, dt,                 &
 !!     &          FEM_prm, SGS_par, nod_comm, node, ele, iphys,         &
 !!     &          iphys_ele, ele_fld, conduct, cd_prop, layer_tbl,      &
-!!     &          jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,    &
+!!     &          jacobians, rhs_tbl, FEM_elens, filtering,             &
 !!     &          sgs_coefs_nod, wk_filter,  wk_cor, wk_lsq, wk_sgs,    &
 !!     &          mhd_fem_wk, fem_wk, f_l, nod_fld, sgs_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -29,7 +29,7 @@
 !!        type(field_geometry_data), intent(in) :: conduct
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(layering_tbl), intent(in) :: layer_tbl
-!!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+!!        type(jacobians_type), intent(in) :: jacobians
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(filtering_data_type), intent(in) :: filtering
@@ -60,7 +60,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
-      use t_jacobian_3d
+      use t_jacobians
       use t_table_FEM_const
       use t_layering_ele_list
       use t_MHD_finite_element_mat
@@ -84,7 +84,7 @@
      &         (iak_sgs_uxb, icomp_sgs_uxb, ie_dvx, ie_dfvx, dt,        &
      &          FEM_prm, SGS_par, nod_comm, node, ele, iphys,           &
      &          iphys_ele, ele_fld, conduct, cd_prop, layer_tbl,        &
-     &          jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,      &
+     &          jacobians, rhs_tbl, FEM_elens, filtering,               &
      &          wk_filter, wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,  &
      &          f_l, nod_fld, sgs_coefs)
 !
@@ -111,7 +111,7 @@
       type(field_geometry_data), intent(in) :: conduct
       type(conductive_property), intent(in) :: cd_prop
       type(layering_tbl), intent(in) :: layer_tbl
-      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+      type(jacobians_type), intent(in) :: jacobians
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
@@ -147,8 +147,8 @@
       call cal_sgs_vp_induct_grad_no_coef(ifilter_4delta,               &
      &    iphys%i_sgs_grad_f, iphys%i_filter_magne, ie_dfvx, dt,        &
      &    FEM_prm, nod_comm, node, ele, conduct, cd_prop,               &
-     &    iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens, mhd_fem_wk, &
-     &    fem_wk, f_l, nod_fld)
+     &    iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl, FEM_elens,     &
+     &    mhd_fem_wk, fem_wk, f_l, nod_fld)
 !
 !   gradient model by original field
 !
@@ -156,8 +156,8 @@
       call cal_sgs_vp_induct_grad_no_coef(ifilter_2delta,               &
      &    iphys%i_SGS_vp_induct, iphys%i_magne, ie_dvx, dt,             &
      &    FEM_prm, nod_comm, node, ele, conduct, cd_prop,               &
-     &    iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens, mhd_fem_wk, &
-     &    fem_wk, f_l, nod_fld)
+     &    iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl, FEM_elens,     &
+     &    mhd_fem_wk, fem_wk, f_l, nod_fld)
 !
 !      filtering
 !
@@ -174,8 +174,8 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &        'cal_model_coefs', n_vector, iak_sgs_uxb, icomp_sgs_uxb
-      call cal_model_coefs(SGS_par, layer_tbl,                          &
-     &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
+      call cal_model_coefs(SGS_par, layer_tbl, node, ele,               &
+     &    iphys, nod_fld, jacobians%jac_3d, jacobians%jac_3d_l,         &
      &    SGS_par%model_p%itype_Csym_uxb, n_vector,                     &
      &    iak_sgs_uxb, icomp_sgs_uxb, FEM_prm%npoint_t_evo_int, wk_cor, &
      &    wk_lsq, wk_sgs, sgs_coefs)
@@ -188,7 +188,7 @@
      &          ie_dvx, ie_dbx, ie_dfvx, ie_dfbx, dt,                   &
      &          FEM_prm, SGS_par, nod_comm, node, ele, iphys,           &
      &          iphys_ele, ele_fld, conduct, cd_prop, layer_tbl,        &
-     &          jac_3d_q, jac_3d_l, rhs_tbl, FEM_elens, filtering,      &
+     &          jacobians, rhs_tbl, FEM_elens, filtering,               &
      &          sgs_coefs_nod, wk_filter,  wk_cor, wk_lsq, wk_sgs,      &
      &          mhd_fem_wk, fem_wk, f_l, nod_fld, sgs_coefs)
 !
@@ -217,7 +217,7 @@
       type(field_geometry_data), intent(in) :: conduct
       type(conductive_property), intent(in) :: cd_prop
       type(layering_tbl), intent(in) :: layer_tbl
-      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+      type(jacobians_type), intent(in) :: jacobians
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
@@ -261,7 +261,7 @@
      &   (ifilter_4delta, iphys%i_sgs_grad_f,                           &
      &    iphys%i_filter_velo, iphys%i_filter_magne, ie_dfvx, ie_dfbx,  &
      &    dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,           &
-     &    iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,             &
+     &    iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl, FEM_elens,     &
      &    fem_wk, mhd_fem_wk, f_l, nod_fld)
 !
 !   gradient model by original field
@@ -271,7 +271,7 @@
      &   (ifilter_2delta,  iphys%i_SGS_induct_t,                        &
      &    iphys%i_velo, iphys%i_magne, ie_dvx, ie_dbx, dt,              &
      &    FEM_prm, nod_comm, node, ele, conduct, cd_prop,               &
-     &    iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,             &
+     &    iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl, FEM_elens,     &
      &    fem_wk, mhd_fem_wk, f_l, nod_fld)
 !
 !      filtering
@@ -289,8 +289,8 @@
 !
       if (iflag_debug.gt.0 )  write(*,*)                                &
      &     'cal_model_coefs', n_asym_tensor, iak_sgs_uxb, icomp_sgs_uxb
-      call cal_model_coefs(SGS_par, layer_tbl,                          &
-     &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
+      call cal_model_coefs(SGS_par, layer_tbl, node, ele,               &
+     &    iphys, nod_fld, jacobians%jac_3d, jacobians%jac_3d_l,         &
      &    SGS_par%model_p%itype_Csym_uxb, n_asym_tensor,                &
      &    iak_sgs_uxb, icomp_sgs_uxb, FEM_prm%npoint_t_evo_int,         &
      &    wk_cor, wk_lsq, wk_sgs, sgs_coefs)

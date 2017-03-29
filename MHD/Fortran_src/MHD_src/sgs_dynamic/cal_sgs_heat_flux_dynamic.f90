@@ -9,7 +9,7 @@
 !!     &          ifield, ifield_f, ivelo, ivelo_f, i_sgs,              &
 !!     &          iak_sgs_hlux, icomp_sgs_flux, ie_dvx, ie_dfvx,        &
 !!     &          SGS_par, nod_comm, node, ele, iphys, iphys_ele,       &
-!!     &          ele_fld, fluid, layer_tbl, jac_3d_q, jac_3d_l,        &
+!!     &          ele_fld, fluid, layer_tbl, jacobians,                 &
 !!     &          rhs_tbl, FEM_elens, filtering, sgs_coefs_nod,         &
 !!     &          wk_filter, wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,&
 !!     &          f_l, nod_fld, sgs_coefs)
@@ -22,7 +22,7 @@
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(layering_tbl), intent(in) :: layer_tbl
-!!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+!!        type(jacobians_type), intent(in) :: jacobians
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(filtering_data_type), intent(in) :: filtering
@@ -51,7 +51,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
-      use t_jacobian_3d
+      use t_jacobians
       use t_table_FEM_const
       use t_layering_ele_list
       use t_MHD_finite_element_mat
@@ -76,7 +76,7 @@
      &          ifield, ifield_f, ivelo, ivelo_f, i_sgs,                &
      &          iak_sgs_hlux, icomp_sgs_flux, ie_dvx, ie_dfvx,          &
      &          SGS_par, nod_comm, node, ele, iphys, iphys_ele,         &
-     &          ele_fld, fluid, layer_tbl, jac_3d_q, jac_3d_l,          &
+     &          ele_fld, fluid, layer_tbl, jacobians,                   &
      &          rhs_tbl, FEM_elens, filtering, sgs_coefs_nod,           &
      &          wk_filter, wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,  &
      &          f_l, nod_fld, sgs_coefs)
@@ -110,7 +110,7 @@
       type(phys_data), intent(in) :: ele_fld
       type(field_geometry_data), intent(in) :: fluid
       type(layering_tbl), intent(in) :: layer_tbl
-      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+      type(jacobians_type), intent(in) :: jacobians
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
@@ -150,16 +150,18 @@
       call cal_sgs_s_flux_grad_no_coef                                  &
      &   (iflag_supg, num_int, dt, ifilter_4delta,                      &
      &    iphys%i_sgs_grad_f, ifield_f, ie_dfvx,                        &
-     &    nod_comm, node, ele, fluid, iphys_ele, ele_fld, jac_3d_q,     &
-     &    rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_l, nod_fld)
+     &    nod_comm, node, ele, fluid, iphys_ele, ele_fld,               &
+     &    jacobians%jac_3d, rhs_tbl, FEM_elens,                         &
+     &    mhd_fem_wk, fem_wk, f_l, nod_fld)
 !
 !   gradient model by original field
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_h_flux_grad_4_dyn'
       call cal_sgs_s_flux_grad_no_coef(iflag_supg, num_int, dt,         &
      &    ifilter_2delta, i_sgs, ifield, ie_dvx,                        &
-     &    nod_comm, node, ele, fluid, iphys_ele, ele_fld, jac_3d_q,     &
-     &    rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_l, nod_fld)
+     &    nod_comm, node, ele, fluid, iphys_ele, ele_fld,               &
+     &    jacobians%jac_3d, rhs_tbl, FEM_elens,                         &
+     &    mhd_fem_wk, fem_wk, f_l, nod_fld)
 !
 !      filtering
 !
@@ -176,8 +178,8 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_model_coefs', n_vector, iak_sgs_hlux, icomp_sgs_flux
-      call cal_model_coefs(SGS_par, layer_tbl,                          &
-     &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
+      call cal_model_coefs(SGS_par, layer_tbl, node, ele,               &
+     &    iphys, nod_fld, jacobians%jac_3d, jacobians%jac_3d_l,         &
      &    itype_Csym_flux, n_vector, iak_sgs_hlux, icomp_sgs_flux,      &
      &    num_int, wk_cor, wk_lsq, wk_sgs, sgs_coefs)
 !

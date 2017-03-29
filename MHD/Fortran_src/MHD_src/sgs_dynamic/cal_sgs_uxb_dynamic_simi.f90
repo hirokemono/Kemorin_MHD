@@ -6,13 +6,13 @@
 !
 !!      subroutine s_cal_sgs_uxb_dynamic_simi                           &
 !!     &        (iak_sgs_uxb, icomp_sgs_uxb, FEM_prm, SGS_par, nod_comm,&
-!!     &         node, ele, iphys, layer_tbl, jac_3d_q, jac_3d_l,       &
-!!     &         filtering, wide_filtering, wk_filter, wk_cor, wk_lsq,  &
-!!     &         wk_sgs, nod_fld, sgs_coefs)
+!!     &         node, ele, iphys, layer_tbl, jacobians, filtering,     &
+!!     &         wide_filtering, wk_filter, wk_cor, wk_lsq, wk_sgs,     &
+!!     &         nod_fld, sgs_coefs)
 !!      subroutine cal_sgs_induct_t_dynamic_simi                        &
 !!     &        (iak_sgs_uxb, icomp_sgs_uxb, FEM_prm, SGS_par, nod_comm,&
-!!     &         node, ele, iphys, layer_tbl, jac_3d_q, jac_3d_l,       &
-!!     &         rhs_tbl, filtering, wide_filtering, m_lump, wk_filter, &
+!!     &         node, ele, iphys, layer_tbl, jacobians, rhs_tbl,       &
+!!     &         filtering, wide_filtering, m_lump, wk_filter,          &
 !!     &         wk_cor, wk_lsq, wk_sgs, fem_wk, f_l, nod_fld,          &
 !!     &         sgs_coefs, sgs_coefs_nod)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -21,7 +21,7 @@
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_address), intent(in) :: iphys
 !!        type(layering_tbl), intent(in) :: layer_tbl
-!!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+!!        type(jacobians_type), intent(in) :: jacobians
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(filtering_data_type), intent(in) :: wide_filtering
@@ -49,7 +49,7 @@
       use t_geometry_data
       use t_phys_data
       use t_phys_address
-      use t_jacobian_3d
+      use t_jacobians
       use t_table_FEM_const
       use t_layering_ele_list
       use t_MHD_finite_element_mat
@@ -70,9 +70,9 @@
 !
       subroutine s_cal_sgs_uxb_dynamic_simi                             &
      &        (iak_sgs_uxb, icomp_sgs_uxb, FEM_prm, SGS_par, nod_comm,  &
-     &         node, ele, iphys, layer_tbl, jac_3d_q, jac_3d_l,         &
-     &         filtering, wide_filtering, wk_filter, wk_cor, wk_lsq,    &
-     &         wk_sgs, nod_fld, sgs_coefs)
+     &         node, ele, iphys, layer_tbl, jacobians, filtering,       &
+     &         wide_filtering, wk_filter, wk_cor, wk_lsq, wk_sgs,       &
+     &         nod_fld, sgs_coefs)
 !
       use reset_dynamic_model_coefs
       use cal_filtering_scalars
@@ -89,7 +89,7 @@
       type(element_data), intent(in) :: ele
       type(phys_address), intent(in) :: iphys
       type(layering_tbl), intent(in) :: layer_tbl
-      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+      type(jacobians_type), intent(in) :: jacobians
       type(filtering_data_type), intent(in) :: filtering
       type(filtering_data_type), intent(in) :: wide_filtering
 !
@@ -142,8 +142,8 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      & 'cal_model_coefs', n_vector, iak_sgs_uxb, icomp_sgs_uxb
-      call cal_model_coefs(SGS_par, layer_tbl,                          &
-     &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
+      call cal_model_coefs(SGS_par, layer_tbl, node, ele,               &
+     &    iphys, nod_fld, jacobians%jac_3d, jacobians%jac_3d_l,         &
      &    SGS_par%model_p%itype_Csym_uxb, n_vector, iak_sgs_uxb,        &
      &    icomp_sgs_uxb, FEM_prm%npoint_t_evo_int,                      &
      &    wk_cor, wk_lsq, wk_sgs, sgs_coefs)
@@ -154,8 +154,8 @@
 !
       subroutine cal_sgs_induct_t_dynamic_simi                          &
      &        (iak_sgs_uxb, icomp_sgs_uxb, FEM_prm, SGS_par, nod_comm,  &
-     &         node, ele, iphys, layer_tbl, jac_3d_q, jac_3d_l,         &
-     &         rhs_tbl, filtering, wide_filtering, m_lump, wk_filter,   &
+     &         node, ele, iphys, layer_tbl, jacobians, rhs_tbl,         &
+     &         filtering, wide_filtering, m_lump, wk_filter,            &
      &         wk_cor, wk_lsq, wk_sgs, fem_wk, f_l, nod_fld,            &
      &         sgs_coefs, sgs_coefs_nod)
 !
@@ -177,7 +177,7 @@
       type(element_data), intent(in) :: ele
       type(phys_address), intent(in) :: iphys
       type(layering_tbl), intent(in) :: layer_tbl
-      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+      type(jacobians_type), intent(in) :: jacobians
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(filtering_data_type), intent(in) :: filtering
       type(filtering_data_type), intent(in) :: wide_filtering
@@ -244,14 +244,14 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      & 'cal_model_coefs', n_asym_tensor, iak_sgs_uxb, icomp_sgs_uxb
-      call cal_model_coefs(SGS_par, layer_tbl,                          &
-     &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
+      call cal_model_coefs(SGS_par, layer_tbl, node, ele,               &
+     &    iphys, nod_fld, jacobians%jac_3d, jacobians%jac_3d_l,         &
      &    SGS_par%model_p%itype_Csym_uxb, n_asym_tensor,                &
      &    iak_sgs_uxb, icomp_sgs_uxb, FEM_prm%npoint_t_evo_int,         &
      &    wk_cor, wk_lsq, wk_sgs, sgs_coefs)
 !
       call cal_ele_vector_2_node                                        &
-     &   (node, ele, jac_3d_q, rhs_tbl, m_lump,                         &
+     &   (node, ele, jacobians%jac_3d, rhs_tbl, m_lump,                 &
      &    sgs_coefs%ntot_comp, icomp_sgs_uxb, sgs_coefs%ak,             &
      &    sgs_coefs_nod%ntot_comp, icomp_sgs_uxb, sgs_coefs_nod%ak,     &
      &    fem_wk, f_l)
