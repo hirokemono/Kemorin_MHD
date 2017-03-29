@@ -388,7 +388,7 @@
       do i_level = 1, MGCG_WK1%num_MG_level
         if(my_rank .lt. MGCG_WK1%MG_mpi(i_level)%nprocs) then
           if (iflag_debug.eq.1) write(*,*) 'set MG matrices', i_level
-          call s_set_aiccg_matrices_type                                &
+          call s_set_aiccg_matrices                                     &
      &       (dt, FEM_prm, SGS_param, cmt_param,                        &
      &        MGCG_FEM1%MG_mesh(i_level)%mesh,                          &
      &        MGCG_FEM1%MG_mesh(i_level)%group,                         &
@@ -398,9 +398,7 @@
      &        MGCG_MHD_FEM1%MG_surf_bc(i_level),                        &
      &        fl_prop1, cd_prop1, ht_prop1, cp_prop1,                   &
      &        MGCG_MHD_FEM1%ak_MHD_AMG(i_level),                        &
-     &        MGCG_FEM1%MG_jacobians(i_level)%jac_3d,                   &
-     &        MGCG_FEM1%MG_jacobians(i_level)%jac_3d_l,                 &
-     &        MGCG_FEM1%MG_jacobians(i_level)%jac_sf_grp,               &
+     &        MGCG_FEM1%MG_jacobians(i_level),                          &
      &        MGCG_MHD_FEM1%MG_filter_MHD(i_level), ifld_diff,          &
      &        MGCG_MHD_FEM1%MG_diff_coefs(i_level),                     &
      &        MGCG_FEM1%MG_FEM_tbl(i_level),                            &

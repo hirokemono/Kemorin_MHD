@@ -7,16 +7,15 @@
 !!     &          MHD_mat_tbls, MHD_matrices, s_package)
 !!        type(MHD_matrices_pack), intent(inout) :: s_package
 !!      subroutine update_matrices(time_d, FEM_prm, SGS_par,            &
-!!     &         (mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,   &
-!!     &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,  &
-!!     &          ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,         &
-!!     &          surf_wk, flex_p, mhd_fem_wk, fem_wk, MHD_matrices)
-!!      subroutine set_aiccg_matrices                                   &
-!!     &         (dt, FEM_prm, SGS_param, cmt_param, mesh, group,       &
-!!     &          ele_mesh, MHD_mesh, nod_bcs, surf_bcs,                &
-!!     &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,  &
-!!     &          ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,         &
-!!     &          surf_wk, mhd_fem_wk, fem_wk, MHD_matrices)
+!!     &          mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,   &
+!!     &          ak_MHD, jacobians, FEM_elens, ifld_diff, diff_coefs,  &
+!!     &          rhs_tbl, MHD_mat_tbls, surf_wk, flex_p,               &
+!!     &          mhd_fem_wk, fem_wk, MHD_matrices)
+!!      subroutine set_aiccg_matrices(dt, FEM_prm, SGS_param, cmt_param,&
+!!     &          mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,   &
+!!     &          ak_MHD, jacobians, FEM_elens, ifld_diff, diff_coefs,  &
+!!     &          rhs_tbl, MHD_mat_tbls, surf_wk, mhd_fem_wk, fem_wk,   &
+!!     &          MHD_matrices)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -28,8 +27,7 @@
 !!        type(nodal_boundarty_conditions), intent(in) :: nod_bcs
 !!        type(surface_boundarty_conditions), intent(in)  :: surf_bcs
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
-!!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
-!!        type(jacobians_2d), intent(in) :: jac_sf_grp_q
+!!        type(jacobians_type), intent(in) :: jacobians
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(SGS_terms_address), intent(in) :: ifld_diff
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
@@ -54,8 +52,7 @@
       use t_geometry_data
       use t_surface_data
       use t_group_data
-      use t_jacobian_3d
-      use t_jacobian_2d
+      use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
       use t_int_surface_data
@@ -116,9 +113,9 @@
 !
       subroutine update_matrices(time_d, FEM_prm, SGS_par,              &
      &          mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,     &
-     &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,    &
-     &          ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,           &
-     &          surf_wk, flex_p, mhd_fem_wk, fem_wk, MHD_matrices)
+     &          ak_MHD, jacobians, FEM_elens, ifld_diff, diff_coefs,    &
+     &          rhs_tbl, MHD_mat_tbls, surf_wk, flex_p,                 &
+     &          mhd_fem_wk, fem_wk, MHD_matrices)
 !
       use t_time_data
       use t_SGS_control_parameter
@@ -134,8 +131,7 @@
       type(nodal_boundarty_conditions), intent(in) :: nod_bcs
       type(surface_boundarty_conditions), intent(in)  :: surf_bcs
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
-      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
-      type(jacobians_2d), intent(in) :: jac_sf_grp_q
+      type(jacobians_type), intent(in) :: jacobians
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_terms_address), intent(in) :: ifld_diff
       type(SGS_coefficients_type), intent(in) :: diff_coefs
@@ -164,10 +160,9 @@
         if (iflag_debug.eq.1)  write(*,*) 'matrix assemble again'
         call set_aiccg_matrices                                         &
      &     (time_d%dt, FEM_prm, SGS_par%model_p, SGS_par%commute_p,     &
-     &      mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,         &
-     &      ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,        &
-     &      ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,               &
-     &      surf_wk, mhd_fem_wk, fem_wk, MHD_matrices)
+     &      mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs, ak_MHD, &
+     &      jacobians, FEM_elens, ifld_diff, diff_coefs, rhs_tbl,       &
+     &      MHD_mat_tbls, surf_wk, mhd_fem_wk, fem_wk, MHD_matrices)
         flex_p%iflag_flex_step_changed = 0
       end if
 !
@@ -175,12 +170,11 @@
 !
 !  ----------------------------------------------------------------------
 !
-      subroutine set_aiccg_matrices                                     &
-     &         (dt, FEM_prm, SGS_param, cmt_param, mesh, group,         &
-     &          ele_mesh, MHD_mesh, nod_bcs, surf_bcs,                  &
-     &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, FEM_elens,    &
-     &          ifld_diff, diff_coefs, rhs_tbl, MHD_mat_tbls,           &
-     &          surf_wk, mhd_fem_wk, fem_wk, MHD_matrices)
+      subroutine set_aiccg_matrices(dt, FEM_prm, SGS_param, cmt_param,  &
+     &          mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,     &
+     &          ak_MHD, jacobians, FEM_elens, ifld_diff, diff_coefs,    &
+     &          rhs_tbl, MHD_mat_tbls, surf_wk, mhd_fem_wk, fem_wk,     &
+     &          MHD_matrices)
 !
       use m_physical_property
 !
@@ -201,8 +195,7 @@
       type(nodal_boundarty_conditions), intent(in) :: nod_bcs
       type(surface_boundarty_conditions), intent(in)  :: surf_bcs
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
-      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
-      type(jacobians_2d), intent(in) :: jac_sf_grp_q
+      type(jacobians_type), intent(in) :: jacobians
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_terms_address), intent(in) :: ifld_diff
@@ -215,11 +208,10 @@
       type(MHD_MG_matrices), intent(inout) :: MHD_matrices
 !
 !
-      call s_set_aiccg_matrices_type                                    &
+      call s_set_aiccg_matrices                                         &
      &   (dt, FEM_prm, SGS_param, cmt_param,                            &
      &    mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,           &
-     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
-     &    ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q,                     &
+     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1, ak_MHD, jacobians,    &
      &    FEM_elens, ifld_diff, diff_coefs, rhs_tbl,                    &
      &    MHD_matrices%MG_DJDS_table(0), MHD_matrices%MG_DJDS_fluid(0), &
      &    MHD_matrices%MG_DJDS_linear(0),                               &

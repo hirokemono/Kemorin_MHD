@@ -194,7 +194,7 @@
         call output_time_step_control                                   &
      &     (FEM_prm1, MHD_step%time_d, mesh1, MHD_mesh1,                &
      &      fl_prop1, cd_prop1, iphys, nod_fld1, iphys_ele, fld_ele1,   &
-     &      jacobians1%jac_3d, jacobians1%jac_3d_l, fem1_wk, mhd_fem1_wk)
+     &      jacobians1, fem1_wk, mhd_fem1_wk)
       end if
 !
       iflag = output_IO_flag(flex_p1%istep_max_dt, MHD_step%point_step)

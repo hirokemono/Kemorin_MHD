@@ -64,9 +64,9 @@
       call set_aiccg_matrices(MHD_step1%time_d%dt,                      &
      &    FEM_prm1, SGS_par1%model_p, SGS_par1%commute_p,               &
      &    mesh1, group1, ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs,       &
-     &    ak_MHD, jacobians1%jac_3d, jacobians1%jac_3d_l, jacobians1%jac_sf_grp, FEM1_elen,    &
-     &    ifld_diff, diff_coefs, rhs_tbl1, MHD1_mat_tbls,               &
-     &    surf1_wk, mhd_fem1_wk, fem1_wk, MHD1_matrices)
+     &    ak_MHD, jacobians1, FEM1_elen, ifld_diff, diff_coefs,         &
+     &    rhs_tbl1, MHD1_mat_tbls, surf1_wk, mhd_fem1_wk, fem1_wk,      &
+     &    MHD1_matrices)
 !
       if (iflag_debug.eq.1) write(*,*) 's_write_djds_mat_MHD'
       call s_write_djds_mat_MHD                                         &

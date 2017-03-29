@@ -4,11 +4,10 @@
 !        programmed H.Matsui on Dec., 2008
 !
 !
-!!      subroutine s_set_aiccg_matrices_type                            &
+!!      subroutine s_set_aiccg_matrices                                 &
 !!     &        (dt, FEM_prm, SGS_param, cmt_param,                     &
-!!     &         mesh, group, ele_mesh, MHD_mesh,                       &
-!!     &         nod_bcs, surf_bcs, fl_prop, cd_prop, ht_prop, cp_prop, &
-!!     &         ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q,              &
+!!     &         mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,    &
+!!     &         fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD, jacobians, &
 !!     &         FEM_elens, ifld_diff, diff_coefs, rhs_tbl,             &
 !!     &         djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,      &
 !!     &         MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q, MG_mat_linear,&
@@ -28,8 +27,7 @@
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
-!!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
-!!        type(jacobians_2d), intent(in) :: jac_sf_grp_q
+!!        type(jacobians_type), intent(in) :: jacobians
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(tables_4_FEM_assembles), intent(in) ::   rhs_tbl
 !!        type(table_mat_const), intent(in) :: MG_mat_q
@@ -60,11 +58,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_aiccg_matrices_type                              &
+      subroutine s_set_aiccg_matrices                                   &
      &        (dt, FEM_prm, SGS_param, cmt_param,                       &
-     &         mesh, group, ele_mesh, MHD_mesh,                         &
-     &         nod_bcs, surf_bcs, fl_prop, cd_prop, ht_prop, cp_prop,   &
-     &         ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q,                &
+     &         mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,      &
+     &         fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD, jacobians,   &
      &         FEM_elens, ifld_diff, diff_coefs, rhs_tbl,               &
      &         djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,        &
      &         MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q, MG_mat_linear,  &
@@ -84,8 +81,6 @@
       use t_MHD_boundary_data
       use t_coefs_element_4_MHD
       use t_jacobians
-      use t_jacobian_3d
-      use t_jacobian_2d
       use t_finite_element_mat_MHD
       use t_work_FEM_integration
       use t_finite_element_mat
@@ -115,8 +110,7 @@
       type(nodal_boundarty_conditions), intent(in) ::   nod_bcs
       type(surface_boundarty_conditions), intent(in) :: surf_bcs
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
-      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
-      type(jacobians_2d), intent(in) :: jac_sf_grp_q
+      type(jacobians_type), intent(in) :: jacobians
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_terms_address), intent(in) :: ifld_diff
       type(SGS_coefficients_type), intent(in) :: diff_coefs
@@ -153,7 +147,7 @@
 !
       call int_MHD_poisson_matrices(FEM_prm%npoint_poisson_int,         &
      &    SGS_param%ifilter_final, cmt_param%iflag_c_magne,             &
-     &    mesh, fl_prop, cd_prop, jac_3d_l,                             &
+     &    mesh, fl_prop, cd_prop, jacobians%jac_3d_l,                   &
      &    rhs_tbl, MG_mat_linear, MG_mat_fl_l,                          &
      &    FEM_elens, ifld_diff, diff_coefs, fem_wk,                     &
      &    mat_press, mat_magp)
@@ -168,21 +162,22 @@
         call int_MHD_crank_matrices                                     &
      &     (FEM_prm%npoint_t_evo_int, dt, SGS_param%ifilter_final,      &
      &      mesh, fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD,           &
-     &      jac_3d_q, rhs_tbl, MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q, &
+     &      jacobians%jac_3d, rhs_tbl,                                  &
+     &      MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q,                    &
      &      FEM_elens, ifld_diff, diff_coefs, fem_wk,                   &
      &      mat_velo, mat_magne, mat_temp, mat_light)
 !
       else if (iflag_scheme .eq. id_Crank_nicolson_cmass) then
         call int_vol_crank_mat_consist(FEM_prm%npoint_t_evo_int,        &
-     &       mesh, fl_prop, cd_prop, ht_prop, cp_prop,                  &
-     &       jac_3d_q, rhs_tbl, MG_mat_fl_q, MG_mat_full_cd_q, fem_wk,  &
-     &      mat_velo, mat_magne, mat_temp, mat_light)
+     &      mesh, fl_prop, cd_prop, ht_prop, cp_prop,                   &
+     &      jacobians%jac_3d, rhs_tbl, MG_mat_fl_q, MG_mat_full_cd_q,   &
+     &      fem_wk, mat_velo, mat_magne, mat_temp, mat_light)
         call int_MHD_crank_matrices                                     &
      &     (FEM_prm%npoint_t_evo_int, dt, SGS_param%ifilter_final,      &
      &      mesh, fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD,           &
-     &      jac_3d_q, rhs_tbl, MG_mat_q, MG_mat_fl_q, MG_mat_full_cd_q, &
-     &      FEM_elens, ifld_diff, diff_coefs, fem_wk,                   &
-     &      mat_velo, mat_magne, mat_temp, mat_light)
+     &      jacobians%jac_3d, rhs_tbl, MG_mat_q, MG_mat_fl_q,           &
+     &      MG_mat_full_cd_q, FEM_elens, ifld_diff, diff_coefs,         &
+     &      fem_wk, mat_velo, mat_magne, mat_temp, mat_light)
       end if
 !
 !     set boundary conditions
@@ -190,12 +185,12 @@
       call set_aiccg_bc_phys(FEM_prm%npoint_t_evo_int, dt,              &
      &    mesh%ele, ele_mesh%surf, group%surf_grp,                      &
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
-     &    jac_sf_grp_q, rhs_tbl, MG_mat_fl_q, nod_bcs, surf_bcs,        &
-     &    djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,             &
+     &    jacobians%jac_sf_grp, rhs_tbl, MG_mat_fl_q, nod_bcs,          &
+     &    surf_bcs, djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,   &
      &    ak_MHD%ak_d_velo, surf_wk, fem_wk, mat_velo, mat_magne,       &
      &    mat_temp, mat_light, mat_press, mat_magp)
 !
-      end subroutine s_set_aiccg_matrices_type
+      end subroutine s_set_aiccg_matrices
 !
 ! ---------------------------------------------------------------------
 !

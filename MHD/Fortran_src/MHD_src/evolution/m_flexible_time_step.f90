@@ -6,16 +6,14 @@
 !!      subroutine set_new_time_and_step                                &
 !!     &         (cd_prop, iphys, nod_fld, time_d)
 !!      subroutine s_check_flexible_time_step                           &
-!!     &         (node, ele, fluid, cd_prop, iphys,                     &
-!!     &          nod_fld, jac_3d_q, jac_3d_l, fem_wk, flex_data,       &
-!!     &          flex_p, time_d)
+!!     &         (mesh, MHD_mesh, cd_prop, iphys, nod_fld, jacobians,   &
+!!     &          fem_wk, flex_data, flex_p, time_d)
 !!        type(conductive_property), intent(in) :: cd_prop
-!!        type(node_data), intent(in) :: node
-!!        type(element_data), intent(in) :: ele
-!!        type(field_geometry_data), intent(in) :: fluid
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(mesh_data_MHD), intent(in) :: MHD_mesh
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(in) :: nod_fld
-!!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+!!        type(jacobians_type), intent(in) :: jacobians
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(time_data), intent(inout) :: time_d
 !
@@ -95,28 +93,27 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_check_flexible_time_step                             &
-     &         (node, ele, fluid, cd_prop, iphys,                       &
-     &          nod_fld, jac_3d_q, jac_3d_l, fem_wk, flex_data,         &
-     &          flex_p, time_d)
+     &         (mesh, MHD_mesh, cd_prop, iphys, nod_fld, jacobians,     &
+     &          fem_wk, flex_data, flex_p, time_d)
 !
+      use t_mesh_data
       use t_geometry_data_MHD
       use t_geometry_data
       use t_phys_data
       use t_phys_address
-      use t_jacobian_3d
+      use t_jacobians
       use t_finite_element_mat
       use t_flex_delta_t_data
       use t_physical_property
 !
       use check_deltat_by_prev_rms
 !
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(field_geometry_data), intent(in) :: fluid
+      type(mesh_geometry), intent(in) :: mesh
+      type(mesh_data_MHD), intent(in) :: MHD_mesh
       type(conductive_property), intent(in) :: cd_prop
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
-      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+      type(jacobians_type), intent(in) :: jacobians
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(flexible_stepping_data), intent(inout) :: flex_data
@@ -126,10 +123,11 @@
 !
       if( mod(flex_p%istep_flex_to_max,itwo) .eq. izero) then
 !        call s_check_deltat_by_previous                                &
-!     &     (node, cd_prop1, iphys, nod_fld, flex_data)
-        call s_check_deltat_by_prev_rms                                 &
-     &     (time_d%time, node, ele, fluid, cd_prop, iphys, nod_fld,     &
-     &      jac_3d_q, jac_3d_l, fem_wk, flex_data)
+!     &     (mesh%node, cd_prop1, iphys, nod_fld, flex_data)
+        call check_difference_by_prev_rms                               &
+     &     (time_d%time, mesh%node, mesh%ele, MHD_mesh%fluid, cd_prop,  &
+     &      iphys, nod_fld, jacobians%jac_3d, jacobians%jac_3d_l,       &
+     &      fem_wk, flex_data)
 !
         if(flex_data%d_ratio_allmax .gt. flex_p%min_eps_to_expand)      &
      &   then

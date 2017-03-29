@@ -69,7 +69,7 @@
 !   matrix assembling
 !
       call init_analyzer_fl(IO_bc1, FEM_prm1, SGS_par1,                 &
-     &    MHD_step1, mesh1, group1, ele_mesh1, MHD_step1%time_d,        &
+     &    MHD_step, mesh1, group1, ele_mesh1, MHD_step%time_d,          &
      &    MHD_mesh1, layer_tbl1, iphys, nod_fld1, label_sim)
 !
       call nod_fields_send_recv(mesh1%nod_comm, nod_fld1)
@@ -79,7 +79,7 @@
       call reset_update_flag(nod_fld1, sgs_coefs, diff_coefs)
       if (iflag_debug.eq.1) write(*,*) 'update_fields'
       call update_fields                                                &
-     &   (MHD_step1%time_d, FEM_prm1, SGS_par1, mesh1, group1,          &
+     &   (MHD_step%time_d, FEM_prm1, SGS_par1, mesh1, group1,           &
      &    ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,    &
      &    jacobians1, rhs_tbl1, FEM1_elen, ifld_diff, icomp_diff,       &
      &    iphys_elediff, filtering1, wide_filtering, layer_tbl1,        &
@@ -102,18 +102,18 @@
       call set_data_4_const_matrices                                    &
      &   (mesh1, MHD_mesh1, rhs_tbl1, MHD1_mat_tbls, solver_pack1)
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
-      call set_aiccg_matrices(MHD_step1%time_d%dt,                      &
+      call set_aiccg_matrices(MHD_step%time_d%dt,                       &
      &    FEM_prm1, SGS_par1%model_p, SGS_par1%commute_p,               &
      &    mesh1, group1, ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs,       &
-     &    ak_MHD, jacobians1%jac_3d, jacobians1%jac_3d_l, jacobians1%jac_sf_grp, FEM1_elen,    &
-     &    ifld_diff, diff_coefs, rhs_tbl1, MHD1_mat_tbls,               &
-     &    surf1_wk, mhd_fem1_wk, fem1_wk, MHD1_matrices)
+     &    ak_MHD, jacobians1, FEM1_elen, ifld_diff, diff_coefs,         &
+     &    rhs_tbl1, MHD1_mat_tbls, surf1_wk, mhd_fem1_wk, fem1_wk,      &
+     &    MHD1_matrices)
 !
 !   time evolution loop start!
 !
       if (SGS_par1%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
-        call s_cal_model_coefficients(MHD_step1%time_d,                 &
+        call s_cal_model_coefficients(MHD_step%time_d,                  &
      &      FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1,    &
      &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
      &      layer_tbl1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,  &
@@ -129,7 +129,7 @@
       iflag = lead_field_data_flag(flex_p1%istep_max_dt,                &
      &                             MHD_step, SGS_par1%sgs_step)
       if(iflag .eq. 0) then
-        call lead_fields_by_FEM(MHD_step1%time_d,                       &
+        call lead_fields_by_FEM(MHD_step%time_d,                        &
      &     FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1,                &
      &     MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,              &
      &     ak_MHD, jacobians1, rhs_tbl1, FEM1_elen,                     &
@@ -144,15 +144,9 @@
 !
       SGS_par1%iflag_SGS_initial = 0
 !
-      if (flex_p1%iflag_flexible_step .eq. iflag_flex_step) then
-        call set_ele_rms_4_previous_step                                &
-     &     (MHD_step1%time_d, mesh1%node, mesh1%ele, MHD_mesh1%fluid,   &
-     &      iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
-        call s_check_deltat_by_prev_rms(MHD_step1%time_d%time,          &
-     &      mesh1%node, mesh1%ele, cd_prop1, MHD_mesh1%fluid,           &
-     &      iphys, nod_fld1, jacobians1%jac_3d, jacobians1%jac_3d_l, fem1_wk, flex_data)
-      end if
-!
+      call s_check_deltat_by_prev_rms                                   &
+     &   (flex_p1, MHD_step%time_d, mesh1, MHD_mesh1, cd_prop1,         &
+     &    iphys, nod_fld1, jacobians1, fem1_wk, flex_data)
 !
 !    Open monitor files
       call end_eleps_time(2)
@@ -214,11 +208,11 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_new_time_and_step'
       call set_new_time_and_step(cd_prop1, iphys, nod_fld1,             &
-     &    flex_p1, MHD_step1%time_d)
+     &    flex_p1, MHD_step%time_d)
 !
       if (iflag_debug.eq.1) write(*,*) 'fields_evolution_4_FEM_SPH'
       call fields_evolution_4_FEM_SPH                                   &
-     &   (MHD_step1%time_d, FEM_prm1, SGS_par1,                         &
+     &   (MHD_step%time_d, FEM_prm1, SGS_par1,                          &
      &    mesh1, group1, ele_mesh1, MHD_mesh1%fluid,                    &
      &    nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD, jacobians1,      &
      &    rhs_tbl1, FEM1_elen, ifld_sgs, icomp_sgs, ifld_diff,          &
@@ -232,7 +226,7 @@
 !
       if (SGS_par1%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
-        call s_cal_model_coefficients(MHD_step1%time_d,                 &
+        call s_cal_model_coefficients(MHD_step%time_d,                  &
      &      FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1,    &
      &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
      &      layer_tbl1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,  &
@@ -249,9 +243,8 @@
       if (flex_p1%iflag_flexible_step .eq. iflag_flex_step) then
         if (iflag_debug.eq.1) write(*,*) 's_check_flexible_time_step'
         call s_check_flexible_time_step                                 &
-     &     (mesh1%node, mesh1%ele, MHD_mesh1%fluid, cd_prop1, iphys,    &
-     &      nod_fld1, jacobians1%jac_3d, jacobians1%jac_3d_l, fem1_wk, flex_data,         &
-     &      flex_p1, MHD_step1%time_d)
+     &     (mesh1, MHD_mesh1, cd_prop1, iphys, nod_fld1, jacobians1,    &
+     &      fem1_wk, flex_data, flex_p1, MHD_step%time_d)
       end if
 !
 !     ========  Data output
@@ -260,7 +253,7 @@
         iflag = lead_field_data_flag(flex_p1%istep_max_dt,              &
      &                               MHD_step, SGS_par1%sgs_step)
         if(iflag .eq. 0) then
-          call lead_fields_by_FEM(MHD_step1%time_d,                     &
+          call lead_fields_by_FEM(MHD_step%time_d,                      &
      &        FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1,             &
      &        MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,           &
      &        ak_MHD, jacobians1, rhs_tbl1, FEM1_elen,                  &
@@ -281,16 +274,16 @@
         if(iflag .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
           call output_time_step_control                                 &
-     &       (FEM_prm1, MHD_step1%time_d, mesh1, MHD_mesh1,             &
+     &       (FEM_prm1, MHD_step%time_d, mesh1, MHD_mesh1,              &
      &        fl_prop1, cd_prop1, iphys, nod_fld1, iphys_ele, fld_ele1, &
-     &        jacobians1%jac_3d, jacobians1%jac_3d_l, fem1_wk, mhd_fem1_wk)
+     &        jacobians1, fem1_wk, mhd_fem1_wk)
         end if
 !
         iflag= output_IO_flag(flex_p1%istep_max_dt,MHD_step%point_step)
         if(iflag .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'output_monitor_control'
           call output_monitor_control                                   &
-     &       (MHD_step1%time_d, mesh1%node, nod_fld1)
+     &       (MHD_step%time_d, mesh1%node, nod_fld1)
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 's_output_sgs_model_coefs'
@@ -302,7 +295,7 @@
 !
         if (iflag_debug.eq.1) write(*,*) 'output_MHD_restart_file_ctl'
         call output_MHD_restart_file_ctl(flex_p1%istep_max_dt,          &
-     &      MHD_step1%time_d, SGS_par1, mesh1%node, mesh1%nod_comm,     &
+     &      MHD_step%time_d, SGS_par1, mesh1%node, mesh1%nod_comm,      &
      &      iphys, wk_sgs1, wk_diff1, nod_fld1, MHD_step%rst_step)
 !
 !     ---- Output voulme field data
@@ -329,7 +322,7 @@
         if(total_max .gt. MHD_step%finish_d%elapsed_time) then
           call start_eleps_time(4)
           call elspased_MHD_restart_ctl                                 &
-     &       (SGS_par, MHD_step1%time_d, mesh1%node, mesh1%nod_comm,    &
+     &       (SGS_par, MHD_step%time_d, mesh1%node, mesh1%nod_comm,     &
      &        iphys, wk_sgs1, wk_diff1, nod_fld1)
           retval = 0
           call end_eleps_time(4)
@@ -338,7 +331,7 @@
 !   Finish by specific time
       else
         if(flex_p1%iflag_flexible_step .eq. iflag_flex_step) then
-          if(MHD_step1%time_d%time .gt. flex_p1%time_to_finish)         &
+          if(MHD_step%time_d%time .gt. flex_p1%time_to_finish)          &
      &        retval = 0
         else
           if(flex_p1%istep_max_dt                                       &
@@ -348,7 +341,7 @@
 !
 !   Set visualization flag
       if(flex_p1%iflag_flexible_step .eq. iflag_flex_step) then
-        visval = viz_file_step_4_flex(MHD_step1%time_d,                 &
+        visval = viz_file_step_4_flex(MHD_step%time_d,                  &
      &                                MHD_step%viz_step)
       else
         visval = viz_file_step_4_fix(flex_p1%istep_max_dt,              &
@@ -360,18 +353,18 @@
       if (SGS_par1%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_chenge_step_4_dynamic'
         call s_chenge_step_4_dynamic                                    &
-     &     (my_rank, MHD_step1%time_d%i_time_step,                      &
+     &     (my_rank, MHD_step%time_d%i_time_step,                       &
      &      SGS_par1%model_p, SGS_par1%commute_p,                       &
      &      SGS_par1%i_step_sgs_coefs, wk_sgs1, wk_diff1)
       end if
 !
       if ( retval .ne. 0 ) then
         if (iflag_debug.eq.1) write(*,*) 'update_matrices'
-        call update_matrices(MHD_step1%time_d, FEM_prm1, SGS_par1,      &
+        call update_matrices(MHD_step%time_d, FEM_prm1, SGS_par1,       &
      &     mesh1, group1, ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs,      &
-     &     ak_MHD, jacobians1%jac_3d, jacobians1%jac_3d_l, jacobians1%jac_sf_grp, FEM1_elen,   &
-     &     ifld_diff, diff_coefs, rhs_tbl1, MHD1_mat_tbls,              &
-     &     surf1_wk, flex_p1, mhd_fem1_wk, fem1_wk, MHD1_matrices)
+     &     ak_MHD, jacobians1, FEM1_elen, ifld_diff, diff_coefs,        &
+     &     rhs_tbl1, MHD1_mat_tbls, surf1_wk, flex_p1,                  &
+     &     mhd_fem1_wk, fem1_wk, MHD1_matrices)
       end if
 !
       end subroutine FEM_analyze_MHD
