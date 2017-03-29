@@ -3,22 +3,26 @@
 !
 !        programmed by H. Matsui on Dec., 2008
 !
-!!      subroutine input_MG_mesh(MG_file, mesh_file)
+!!      subroutine input_MG_mesh(MG_file, MGCG_WK, MGCG_FEM, mesh_file)
 !!        type(MGCG_file_list), intent(in) :: MG_file
+!!        type(MGCG_data), intent(in) :: MGCG_WK
+!!        type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
 !!        type(field_IO_params), intent(inout) ::  mesh_file
-!!      subroutine input_MG_itp_tables(MG_file, MG_itp)
+!!      subroutine input_MG_itp_tables                                  &
+!!     &          (MG_file, MGCG_WK, MGCG_FEM, MG_itp)
 !!        type(MGCG_file_list), intent(in) :: MG_file
+!!        type(MGCG_data), intent(in) :: MGCG_WK
 !!        type(MG_itp_table), intent(inout) :: MG_itp(num_MG_level)
 !
       module input_MG_data
 !
       use m_precision
+      use m_constants
       use m_machine_parameter
 !
       use calypso_mpi
-      use m_constants
-      use m_type_AMG_data
       use t_MGCG_parameter
+      use t_MGCG_data
 !
       implicit none
 !
@@ -30,7 +34,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine input_MG_mesh(MG_file, mesh_file)
+      subroutine input_MG_mesh(MG_file, MGCG_WK, MGCG_FEM, mesh_file)
 !
       use t_file_IO_parameter
       use mpi_load_mesh_data
@@ -38,6 +42,8 @@
       use element_file_IO
 !
       type(MGCG_file_list), intent(in) :: MG_file
+      type(MGCG_data), intent(in) :: MGCG_WK
+      type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
       type(field_IO_params), intent(inout) ::  mesh_file
 !
       integer(kind = kint) :: i_level
@@ -45,44 +51,47 @@
 !
       do i_level = 1, MG_file%nlevel_f
         mesh_file%iflag_format = MG_file%ifmt_MG_mesh_file(i_level)
-        if(my_rank .lt. MGCG_WK1%MG_mpi(i_level)%nprocs ) then
+        if(my_rank .lt. MGCG_WK%MG_mpi(i_level)%nprocs ) then
 !
           mesh_file%file_prefix = MG_file%MG_mesh_file_head(i_level)
           call mpi_input_mesh(mesh_file,                                &
-     &        MGCG_FEM1%MG_mesh(i_level)%mesh,                          &
-     &        MGCG_FEM1%MG_mesh(i_level)%group,                         &
-     &        MGCG_FEM1%MG_ele_mesh(i_level)%surf%nnod_4_surf,          &
-     &        MGCG_FEM1%MG_ele_mesh(i_level)%edge%nnod_4_edge)
+     &        MGCG_FEM%MG_mesh(i_level)%mesh,                           &
+     &        MGCG_FEM%MG_mesh(i_level)%group,                          &
+     &        MGCG_FEM%MG_ele_mesh(i_level)%surf%nnod_4_surf,           &
+     &        MGCG_FEM%MG_ele_mesh(i_level)%edge%nnod_4_edge)
         else
-          call set_zero_mesh_data(MGCG_FEM1%MG_mesh(i_level)%mesh,      &
-     &        MGCG_FEM1%MG_ele_mesh(i_level)%surf%nnod_4_surf,          &
-     &        MGCG_FEM1%MG_ele_mesh(i_level)%edge%nnod_4_edge)
+          call set_zero_mesh_data(MGCG_FEM%MG_mesh(i_level)%mesh,       &
+     &        MGCG_FEM%MG_ele_mesh(i_level)%surf%nnod_4_surf,           &
+     &        MGCG_FEM%MG_ele_mesh(i_level)%edge%nnod_4_edge)
         end if
 !
-        call sync_group_name_4_empty(MGCG_WK1%MG_mpi(i_level)%nprocs,   &
-     &      MGCG_FEM1%MG_mesh(i_level)%group%nod_grp,                   &
-     &      MGCG_FEM1%MG_mesh(i_level)%group%ele_grp,                   &
-     &      MGCG_FEM1%MG_mesh(i_level)%group%surf_grp)
+        call sync_group_name_4_empty(MGCG_WK%MG_mpi(i_level)%nprocs,    &
+     &      MGCG_FEM%MG_mesh(i_level)%group%nod_grp,                    &
+     &      MGCG_FEM%MG_mesh(i_level)%group%ele_grp,                    &
+     &      MGCG_FEM%MG_mesh(i_level)%group%surf_grp)
       end do
 !
       end subroutine input_MG_mesh
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine input_MG_itp_tables(MG_file, MG_itp)
+      subroutine input_MG_itp_tables                                    &
+     &          (MG_file, MGCG_WK, MGCG_FEM, MG_itp)
 !
       use m_interpolate_table_IO
       use itp_table_IO_select_4_zlib
 !
       type(MGCG_file_list), intent(in) :: MG_file
+      type(MGCG_data), intent(in) :: MGCG_WK
+      type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
       type(MG_itp_table), intent(inout)                                 &
-     &     :: MG_itp(MGCG_WK1%num_MG_level)
+     &     :: MG_itp(MGCG_WK%num_MG_level)
 !
       integer(kind = kint) :: i_level
 !
 !
       do i_level = 1, MG_file%nlevel_f
-        if(my_rank.lt.MGCG_WK1%MG_mpi(i_level-1)%nprocs                 &
+        if(my_rank.lt.MGCG_WK%MG_mpi(i_level-1)%nprocs                  &
      &      .or. i_level .eq. 1) then
           write(*,*) 'MG_f2c_tbl_head format', ifmt_itp_table_file
           table_file_header = MG_file%MG_f2c_tbl_head(i_level)
@@ -97,7 +106,7 @@
 !
 !
       do i_level = 1, MG_file%nlevel_f
-        if(my_rank .lt. MGCG_WK1%MG_mpi(i_level-1)%nprocs               &
+        if(my_rank .lt. MGCG_WK%MG_mpi(i_level-1)%nprocs                &
      &      .or. i_level .eq. 1) then
           write(*,*) 'MG_c2f_tbl_head format', ifmt_itp_table_file
           table_file_header = MG_file%MG_c2f_tbl_head(i_level)
@@ -111,16 +120,16 @@
 !
 !
 !
-      if(MGCG_FEM1%iflag_MG_commute_by_ele .gt. 0) then
+      if(MGCG_FEM%iflag_MG_commute_by_ele .gt. 0) then
         do i_level = 1, MG_file%nlevel_f
-          if(my_rank.lt.MGCG_WK1%MG_mpi(i_level-1)%nprocs               &
+          if(my_rank.lt.MGCG_WK%MG_mpi(i_level-1)%nprocs                &
      &      .or. i_level .eq. 1) then
             table_file_header = MG_file%MG_f2c_eletbl_head(i_level)
             call load_interpolate_table                                 &
-     &         (my_rank, MGCG_FEM1%MG_c2f_ele_tbl(i_level) )
+     &         (my_rank, MGCG_FEM%MG_c2f_ele_tbl(i_level) )
           else
             call load_zero_interpolate_table                            &
-     &         (MGCG_FEM1%MG_c2f_ele_tbl(i_level))
+     &         (MGCG_FEM%MG_c2f_ele_tbl(i_level))
           end if
 !
         end do

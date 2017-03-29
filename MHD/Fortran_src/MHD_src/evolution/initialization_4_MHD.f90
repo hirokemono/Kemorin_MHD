@@ -61,6 +61,8 @@
       use m_flags_4_solvers
       use m_array_for_send_recv
       use m_solver_djds_MHD
+      use m_type_AMG_data
+      use m_type_AMG_data_4_MHD
       use m_3d_filter_coef_MHD
       use m_SGS_model_coefs
 !
@@ -127,8 +129,9 @@
 !
 !  -----   ordering by regions ---------------------------------------
 !
-      call reordering_by_layers_MHD(FEM_prm, SGS_par, mesh%ele, group,  &
-     &    MHD_mesh, MHD1_matrices%MG_interpolate)
+      call reordering_by_layers_MHD                                     &
+     &   (SGS_par, MGCG_WK1, MGCG_FEM1, MGCG_MHD_FEM1, FEM_prm,         &
+     &    mesh%ele, group, MHD_mesh, MHD1_matrices%MG_interpolate)
 !
       call set_layers                                                   &
      &   (FEM_prm, mesh%node, mesh%ele, group%ele_grp, MHD_mesh)
@@ -332,7 +335,8 @@
       if(solver_iflag(FEM_PRM%CG11_param%METHOD) .eq. iflag_mgcg) then
         call s_initialize_4_MHD_AMG                                     &
      &     (time_d%dt, FEM_prm, mesh%node, mesh%ele,                    &
-     &      ifld_diff, diff_coefs, FEM_prm%DJDS_param, MHD1_matrices)
+     &      ifld_diff, diff_coefs, FEM_prm%DJDS_param,                  &
+     &      MGCG_WK1, MGCG_FEM1, MGCG_MHD_FEM1, MHD1_matrices)
       end if
 !
 !     --------------------- 

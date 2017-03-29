@@ -30,6 +30,8 @@
 !
       use m_3d_filter_coef_MHD
       use m_boundary_field_IO
+      use m_type_AMG_data
+      use m_type_AMG_data_4_MHD
       use input_control
 !
 !
@@ -62,7 +64,8 @@
 !
       call input_control_4_snapshot(FEM_prm1, SGS_par1, MHD_step1,      &
      &    mesh1, group1, ele_mesh1, nod_fld1, IO_bc1,                   &
-     &    filtering1, wide_filtering, wk_filter1)
+     &    filtering1, wide_filtering, wk_filter1,                       &
+     &    MGCG_WK1, MGCG_FEM1, MGCG_MHD_FEM1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
 !
 !     --------------------- 

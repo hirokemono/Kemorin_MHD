@@ -3,8 +3,13 @@
 !
 !      Written by H. Matsui on Dec., 2008
 !
-!!      subroutine s_reordering_MG_ele_by_layers(FEM_prm, MG_interpolate)
-!!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
+!!     subroutine s_reordering_MG_ele_by_layers                         &
+!!    &         (MGCG_WK, MGCG_FEM, MGCG_MHD_FEM,                       &
+!!    &          FEM_prm, MG_interpolate)
+!!        type(MGCG_data), intent(in) :: MGCG_WK
+!!        type(mesh_4_MGCG), intent(in) :: MGCG_FEM
+!!        type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
+!!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(MG_itp_table), intent(inout)                             &
 !!       &               :: MG_interpolate(num_MG_level)
 !
@@ -23,38 +28,44 @@
 !
 ! -----------------------------------------------------------------------
 !
-     subroutine s_reordering_MG_ele_by_layers(FEM_prm, MG_interpolate)
+     subroutine s_reordering_MG_ele_by_layers                           &
+    &         (MGCG_WK, MGCG_FEM, MGCG_MHD_FEM,                         &
+    &          FEM_prm, MG_interpolate)
 !
-      use m_type_AMG_data
-      use m_type_AMG_data_4_MHD
+      use t_MGCG_data
+      use t_MGCG_data_4_MHD
 !
+      type(MGCG_data), intent(in) :: MGCG_WK
+      type(mesh_4_MGCG), intent(in) :: MGCG_FEM
+!
+      type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(MG_itp_table), intent(inout)                                 &
-     &      :: MG_interpolate(MGCG_WK1%num_MG_level)
+     &      :: MG_interpolate(MGCG_WK%num_MG_level)
 !
       integer(kind = kint) :: i_level, i_level_1, iflag_last_level
 !
 !
       iflag_last_level = 0
-      do i_level = 1, MGCG_WK1%num_MG_level-1
-        if (MGCG_FEM1%MG_mesh(i_level)%mesh%ele%numele .gt. 0) then
+      do i_level = 1, MGCG_WK%num_MG_level-1
+        if (MGCG_FEM%MG_mesh(i_level)%mesh%ele%numele .gt. 0) then
           i_level_1 = i_level + 1
 !
           call reordering_ele_types_by_layer(iflag_last_level, FEM_prm, &
-     &        MGCG_FEM1%MG_mesh(i_level),                               &
-     &        MGCG_MHD_FEM1%MG_MHD_mesh(i_level),                       &
+     &        MGCG_FEM%MG_mesh(i_level),                                &
+     &        MGCG_MHD_FEM%MG_MHD_mesh(i_level),                        &
      &        MG_interpolate(i_level_1)%f2c,                            &
      &        MG_interpolate(i_level)%c2f)
         end if
       end do
 !
-      if(MGCG_FEM1%MG_mesh(MGCG_WK1%num_MG_level)%mesh%ele%numele       &
+      if(MGCG_FEM%MG_mesh(MGCG_WK%num_MG_level)%mesh%ele%numele         &
      & .gt. 0) then
-        i_level = MGCG_WK1%num_MG_level
-        iflag_last_level = MGCG_WK1%num_MG_level
+        i_level = MGCG_WK%num_MG_level
+        iflag_last_level = MGCG_WK%num_MG_level
         call reordering_ele_types_by_layer(iflag_last_level, FEM_prm,   &
-     &      MGCG_FEM1%MG_mesh(i_level),                                 &
-     &      MGCG_MHD_FEM1%MG_MHD_mesh(i_level),                         &
+     &      MGCG_FEM%MG_mesh(i_level),                                  &
+     &      MGCG_MHD_FEM%MG_MHD_mesh(i_level),                          &
      &      MG_interpolate(i_level)%f2c, MG_interpolate(i_level)%c2f)
       end if
 !

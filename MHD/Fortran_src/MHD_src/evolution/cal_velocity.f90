@@ -8,11 +8,11 @@
 !!      subroutine velocity_evolution                                   &
 !!     &        (time, dt, FEM_prm, SGS_par, nod_comm, node, ele, surf, &
 !!     &         fluid, sf_grp, sf_grp_nod, fl_prop, cd_prop,           &
-!!     &         Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs,                   &
-!!     &         iphys, iphys_ele, ak_MHD, jacobians,                   &
-!!     &         rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs, ifld_diff,    &
-!!     &         iphys_elediff, sgs_coefs_nod, diff_coefs, filtering,   &
-!!     &         layer_tbl, Vmatrix, Pmatrix, wk_lsq, wk_sgs, wk_filter,&
+!!     &         Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys,            &
+!!     &         iphys_ele, ak_MHD, jacobians, rhs_tbl, FEM_elens,      &
+!!     &         ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,         &
+!!     &         sgs_coefs_nod, diff_coefs, filtering, layer_tbl,       &
+!!     &         Vmatrix, Pmatrix, MGCG_WK, wk_lsq, wk_sgs, wk_filter,  &
 !!     &         mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                &
 !!     &         nod_fld, ele_fld, sgs_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -45,6 +45,7 @@
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(MHD_MG_matrix), intent(in) :: Vmatrix
 !!        type(MHD_MG_matrix), intent(in) :: Pmatrix
+!!        type(MGCG_data), intent(inout) :: MGCG_WK
 !!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!        type(filtering_work_type), intent(inout) :: wk_filter
@@ -59,6 +60,7 @@
       module cal_velocity
 !
       use m_precision
+      use m_machine_parameter
 !
       use t_FEM_control_parameter
       use t_SGS_control_parameter
@@ -86,6 +88,7 @@
       use t_work_4_dynamic_model
       use t_solver_djds_MHD
       use t_physical_property
+      use t_MGCG_data
 !
       implicit none
 !
@@ -101,16 +104,13 @@
       subroutine velocity_evolution                                     &
      &        (time, dt, FEM_prm, SGS_par, nod_comm, node, ele, surf,   &
      &         fluid, sf_grp, sf_grp_nod, fl_prop, cd_prop,             &
-     &         Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs,                     &
-     &         iphys, iphys_ele, ak_MHD, jacobians,                     &
-     &         rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs, ifld_diff,      &
-     &         iphys_elediff, sgs_coefs_nod, diff_coefs, filtering,     &
-     &         layer_tbl, Vmatrix, Pmatrix, wk_lsq, wk_sgs, wk_filter,  &
+     &         Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys,              &
+     &         iphys_ele, ak_MHD, jacobians, rhs_tbl, FEM_elens,        &
+     &         ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,           &
+     &         sgs_coefs_nod, diff_coefs, filtering, layer_tbl,         &
+     &         Vmatrix, Pmatrix, MGCG_WK, wk_lsq, wk_sgs, wk_filter,    &
      &         mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                  &
      &         nod_fld, ele_fld, sgs_coefs)
-!
-      use m_machine_parameter
-      use m_type_AMG_data
 !
       use cal_velocity_pre
       use cal_mod_vel_potential
@@ -154,6 +154,7 @@
       type(MHD_MG_matrix), intent(in) :: Vmatrix
       type(MHD_MG_matrix), intent(in) :: Pmatrix
 !
+      type(MGCG_data), intent(inout) :: MGCG_WK
       type(dynamis_least_suare_data), intent(inout) :: wk_lsq
       type(dynamic_model_data), intent(inout) :: wk_sgs
       type(filtering_work_type), intent(inout) :: wk_filter
@@ -204,7 +205,7 @@
      &    iphys_ele, ak_MHD, jacobians, rhs_tbl, FEM_elens,             &
      &    ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,                &
      &    sgs_coefs_nod, diff_coefs, filtering, layer_tbl,              &
-     &    Vmatrix, MGCG_WK1%MG_vector, wk_lsq, wk_sgs,                  &
+     &    Vmatrix, MGCG_WK%MG_vector, wk_lsq, wk_sgs,                   &
      &    wk_filter, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,            &
      &    nod_fld, ele_fld, sgs_coefs)
 !
@@ -221,7 +222,7 @@
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      node, ele, surf, fluid, sf_grp, Vnod_bcs, Vsf_bcs, Psf_bcs, &
      &      iphys, jacobians, rhs_tbl, FEM_elens, diff_coefs,           &
-     &      Pmatrix, MGCG_WK1%MG_vector, fem_wk, surf_wk,               &
+     &      Pmatrix, MGCG_WK%MG_vector, fem_wk, surf_wk,                &
      &      f_l, f_nl, nod_fld)
 !
         call cal_sol_pressure                                           &
@@ -234,7 +235,7 @@
      &      fl_prop, Vnod_bcs, Vsf_bcs, Psf_bcs,                        &
      &      iphys, iphys_ele, ele_fld, ak_MHD, jacobians, rhs_tbl,      &
      &      FEM_elens, ifld_diff, diff_coefs, Vmatrix,                  &
-     &      MGCG_WK1%MG_vector, mhd_fem_wk, fem_wk, surf_wk,            &
+     &      MGCG_WK%MG_vector, mhd_fem_wk, fem_wk, surf_wk,             &
      &      f_l, f_nl, nod_fld)
 !
 !

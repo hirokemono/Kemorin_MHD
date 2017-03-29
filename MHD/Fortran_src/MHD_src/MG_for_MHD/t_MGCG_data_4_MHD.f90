@@ -10,7 +10,7 @@
 !
       use m_precision
 !
-      use m_type_AMG_data
+      use t_MGCG_data
       use t_geometry_data_MHD
       use t_coefs_element_4_MHD
       use t_finite_element_mat

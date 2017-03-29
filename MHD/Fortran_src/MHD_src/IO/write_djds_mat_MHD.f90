@@ -28,7 +28,6 @@
       use calypso_mpi
       use m_machine_parameter
 !
-      use m_type_AMG_data
       use set_parallel_file_name
 !
       implicit  none

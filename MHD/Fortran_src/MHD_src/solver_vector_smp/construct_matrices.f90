@@ -4,7 +4,7 @@
 !     Written by H. Matsui on June, 2005
 !
 !!      subroutine set_data_4_const_matrices(mesh, MHD_mesh, rhs_tbl,   &
-!!     &          MHD_mat_tbls, MHD_matrices, s_package)
+!!     &          MGCG_WK, MHD_mat_tbls, MHD_matrices, s_package)
 !!        type(MHD_matrices_pack), intent(inout) :: s_package
 !!      subroutine update_matrices(time_d, FEM_prm, SGS_par,            &
 !!     &          mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,   &
@@ -32,6 +32,7 @@
 !!        type(SGS_terms_address), intent(in) :: ifld_diff
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(MGCG_data), intent(in) :: MGCG_WK
 !!        type(tables_MHD_mat_const), intent(in) :: MHD_mat_tbls
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_surface_element_mat), intent(in) :: surf_wk
@@ -65,6 +66,7 @@
       use t_MHD_boundary_data
       use t_solver_djds_MHD
       use t_MHD_matrices_pack
+      use t_MGCG_data
 !
       implicit none
 !
@@ -75,10 +77,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_data_4_const_matrices(mesh, MHD_mesh, rhs_tbl,     &
-     &          MHD_mat_tbls, MHD_matrices, s_package)
+     &          MGCG_WK, MHD_mat_tbls, MHD_matrices, s_package)
 !
       use calypso_mpi
-      use m_type_AMG_data
       use m_physical_property
 !
       use t_solver_djds
@@ -89,6 +90,7 @@
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_data_MHD), intent(in) :: MHD_mesh
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(MGCG_data), intent(in) :: MGCG_WK
 !
       type(tables_MHD_mat_const), intent(inout) :: MHD_mat_tbls
       type(MHD_MG_matrices), intent(inout) :: MHD_matrices
@@ -105,7 +107,7 @@
      &    MHD_mat_tbls%fluid_l)
 !
       call link_MG_DJDS_MHD_structures                                  &
-     &   (MGCG_WK1%num_MG_level, MHD_matrices, s_package)
+     &   (MGCG_WK%num_MG_level, MHD_matrices, s_package)
 !
       end subroutine set_data_4_const_matrices
 !
@@ -177,6 +179,8 @@
      &          MHD_matrices)
 !
       use m_physical_property
+      use m_type_AMG_data
+      use m_type_AMG_data_4_MHD
 !
       use set_aiccg_matrices_type
       use precond_djds_MHD
@@ -227,7 +231,8 @@
 !
       if(cmp_no_case(FEM_PRM%CG11_param%METHOD, 'MGCG')) then
         call const_MGCG_MHD_matrices                                    &
-     &     (dt, FEM_prm, SGS_param, cmt_param, ifld_diff, MHD_matrices)
+     &     (dt, FEM_prm, SGS_param, cmt_param, ifld_diff,               &
+     &      MGCG_WK1, MGCG_FEM1, MGCG_MHD_FEM1, MHD_matrices)
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'preconditioning'

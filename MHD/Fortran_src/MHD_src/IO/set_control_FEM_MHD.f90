@@ -9,7 +9,8 @@
 !!@verbatim
 !!      subroutine set_control_4_FEM_MHD                                &
 !!     &         (plt, org_plt, model_ctl, ctl_ctl, nmtr_ctl, mesh_file,&
-!!     &          udt_org_param, FEM_prm, SGS_par, MHD_step, nod_fld)
+!!     &          udt_org_param, FEM_prm, SGS_par, MHD_step,            &
+!!     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
 !!        type(mhd_model_control), intent(inout) :: model_ctl
@@ -20,6 +21,9 @@
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
 !!        type(MHD_step_param), intent(inout) :: MHD_step
+!!        type(MGCG_data), intent(inout) :: MGCG_WK
+!!        type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
+!!        type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
 !!        type(phys_data), intent(inout) :: nod_fld
 !!@endverbatim
 !
@@ -47,7 +51,8 @@
 !
       subroutine set_control_4_FEM_MHD                                  &
      &         (plt, org_plt, model_ctl, ctl_ctl, nmtr_ctl, mesh_file,  &
-     &          udt_org_param, FEM_prm, SGS_par, MHD_step, nod_fld)
+     &          udt_org_param, FEM_prm, SGS_par, MHD_step,              &
+     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
 !
       use calypso_mpi
       use m_ucd_data
@@ -56,6 +61,8 @@
       use m_flexible_time_step
       use t_FEM_control_parameter
       use t_SGS_control_parameter
+      use t_MGCG_data
+      use t_MGCG_data_4_MHD
 !
       use set_control_platform_data
       use set_control_nodal_data_MHD
@@ -83,6 +90,9 @@
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(MHD_step_param), intent(inout) :: MHD_step
+      type(MGCG_data), intent(inout) :: MGCG_WK
+      type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
+      type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
       type(phys_data), intent(inout) :: nod_fld
 !
 !
@@ -158,7 +168,8 @@
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1)
 !
       call s_set_control_4_solver                                       &
-     &   (iflag_scheme, ctl_ctl%mevo_ctl, ctl_ctl%CG_ctl, FEM_prm)
+     &   (iflag_scheme, ctl_ctl%mevo_ctl, ctl_ctl%CG_ctl,               &
+     &    FEM_prm, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
       call set_control_4_FEM_params(ctl_ctl%mevo_ctl, ctl_ctl%fint_ctl, &
      &    fl_prop1, cd_prop1, FEM_prm)
 !

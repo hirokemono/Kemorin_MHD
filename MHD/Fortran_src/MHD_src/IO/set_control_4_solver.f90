@@ -11,11 +11,15 @@
 !!
 !!@verbatim
 !!      subroutine s_set_control_4_solver                               &
-!!     &         (iflag_scheme, mevo_ctl, CG_ctl, FEM_prm, DJDS_param)
+!!     &         (iflag_scheme, mevo_ctl, CG_ctl, FEM_prm,              &
+!!     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
 !!        type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
 !!        type(solver_control), intent(inout) :: CG_ctl
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(DJDS_poarameter), intent(inout) :: DJDS_param
+!!        type(MGCG_data), intent(inout) ::   MGCG_WK
+!!        type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
+!!        type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
 !!@endverbatim
 !
       module set_control_4_solver
@@ -33,7 +37,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_4_solver                                 &
-     &         (iflag_scheme, mevo_ctl, CG_ctl, FEM_prm)
+     &         (iflag_scheme, mevo_ctl, CG_ctl, FEM_prm,                &
+     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
 !
       use calypso_mpi
       use m_error_IDs
@@ -42,14 +47,17 @@
       use t_physical_property
       use t_ctl_data_4_solvers
       use t_ctl_data_mhd_evo_scheme
-      use m_type_AMG_data
-      use m_type_AMG_data_4_MHD
+      use t_MGCG_data
+      use t_MGCG_data_4_MHD
       use skip_comment_f
 !
       integer (kind=kint), intent(in) :: iflag_scheme
       type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
       type(solver_control), intent(inout) :: CG_ctl
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
+      type(MGCG_data), intent(inout) ::   MGCG_WK
+      type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
+      type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
 !
 !
 !   control for solvers
@@ -109,8 +117,8 @@
         if (iflag_debug.eq.1) write(*,*) 'set_ctl_data_4_Multigrid'
         call set_ctl_data_4_Multigrid                                   &
      &     (CG_ctl%MG_ctl, FEM_PRM%MG_param, FEM_PRM%MG_file,           &
-     &      MGCG_WK1, MGCG_FEM1)
-        call alloc_MGCG_MHD_data(MGCG_WK1, MGCG_MHD_FEM1)
+     &      MGCG_WK, MGCG_FEM)
+        call alloc_MGCG_MHD_data(MGCG_WK, MGCG_MHD_FEM)
       end if
 !
       end subroutine s_set_control_4_solver

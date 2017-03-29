@@ -11,10 +11,12 @@
 !!@verbatim
 !!      subroutine input_control_4_MHD(FEM_prm, SGS_par, MHD_step,      &
 !!     &          mesh, group, ele_mesh, nod_fld, IO_bc,                &
-!!     &          filtering, wide_filtering, wk_filter, MHD_matrices)
+!!     &          filtering, wide_filtering, wk_filter, MHD_matrices,   &
+!!     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
 !!      subroutine input_control_4_snapshot(FEM_prm, SGS_par, MHD_step, &
 !!     &          mesh, group, ele_mesh, nod_fld, IO_bc,                &
-!!     &          filtering, wide_filtering, wk_filter)
+!!     &          filtering, wide_filtering, wk_filter,                 &
+!!     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
 !!        type(mesh_geometry), intent(inout) :: mesh
@@ -26,6 +28,9 @@
 !!        type(filtering_data_type), intent(inout) :: wide_filtering
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(MHD_MG_matrices), intent(inout) :: MHD_matrices
+!!        type(MGCG_data), intent(inout) :: MGCG_WK
+!!        type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
+!!        type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
 !!@endverbatim
 !
 !
@@ -47,6 +52,8 @@
       use t_file_IO_parameter
       use t_field_data_IO
       use t_ctl_data_MHD
+      use t_MGCG_data
+      use t_MGCG_data_4_MHD
 !
       implicit none
 !
@@ -73,7 +80,8 @@
 !
       subroutine input_control_4_MHD(FEM_prm, SGS_par, MHD_step,        &
      &          mesh, group, ele_mesh, nod_fld, IO_bc,                  &
-     &          filtering, wide_filtering, wk_filter, MHD_matrices)
+     &          filtering, wide_filtering, wk_filter, MHD_matrices,     &
+     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
 !
       use t_ctl_data_sph_MHD_psf
       use m_flags_4_solvers
@@ -97,6 +105,9 @@
       type(filtering_data_type), intent(inout) :: wide_filtering
       type(filtering_work_type), intent(inout) :: wk_filter
       type(MHD_MG_matrices), intent(inout) :: MHD_matrices
+      type(MGCG_data), intent(inout) :: MGCG_WK
+      type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
+      type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_fem_MHD'
@@ -106,7 +117,8 @@
       call set_control_4_FEM_MHD                                        &
      &   (FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt, FEM_MHD_ctl%model_ctl,  &
      &    FEM_MHD_ctl%ctl_ctl, FEM_MHD_ctl%nmtr_ctl, mesh1_file,        &
-     &    FEM_udt_org_param, FEM_prm, SGS_par, MHD_step, nod_fld)
+     &    FEM_udt_org_param, FEM_prm, SGS_par, MHD_step,                &
+     &    MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
 !
 !  --  load FEM mesh data
       call mpi_input_mesh(mesh1_file, mesh, group,                      &
@@ -116,13 +128,14 @@
      &    SGS_par%filter_p, filtering, wide_filtering, wk_filter)
 !
       if(cmp_no_case(FEM_PRM%CG11_param%METHOD, cflag_mgcg)) then
-        call alloc_MHD_MG_DJDS_mat(MGCG_WK1%num_MG_level, MHD_matrices)
-        call input_MG_mesh(FEM_prm%MG_file, mesh1_file)
-        call input_MG_itp_tables                                        &
-     &     (FEM_prm%MG_file, MHD_matrices%MG_interpolate)
+        call alloc_MHD_MG_DJDS_mat(MGCG_WK%num_MG_level, MHD_matrices)
+        call input_MG_mesh                                              &
+     &     (FEM_prm%MG_file, MGCG_WK, MGCG_FEM, mesh1_file)
+        call input_MG_itp_tables(FEM_prm%MG_file, MGCG_WK, MGCG_FEM,    &
+     &      MHD_matrices%MG_interpolate)
       else
-        MGCG_WK1%num_MG_level = 0
-        call alloc_MHD_MG_DJDS_mat(MGCG_WK1%num_MG_level, MHD_matrices)
+        MGCG_WK%num_MG_level = 0
+        call alloc_MHD_MG_DJDS_mat(MGCG_WK%num_MG_level, MHD_matrices)
       end if
 !
       call count_field_4_monitor                                        &
@@ -136,7 +149,8 @@
 !
       subroutine input_control_4_snapshot(FEM_prm, SGS_par, MHD_step,   &
      &          mesh, group, ele_mesh, nod_fld, IO_bc,                  &
-     &          filtering, wide_filtering, wk_filter)
+     &          filtering, wide_filtering, wk_filter,                   &
+     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
 !
       use t_ctl_data_sph_MHD_psf
       use set_control_FEM_MHD
@@ -156,6 +170,9 @@
       type(filtering_data_type), intent(inout) :: filtering
       type(filtering_data_type), intent(inout) :: wide_filtering
       type(filtering_work_type), intent(inout) :: wk_filter
+      type(MGCG_data), intent(inout) :: MGCG_WK
+      type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
+      type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_fem_snap'
@@ -165,7 +182,8 @@
       call set_control_4_FEM_MHD                                        &
      &   (FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt, FEM_MHD_ctl%model_ctl,  &
      &    FEM_MHD_ctl%ctl_ctl, FEM_MHD_ctl%nmtr_ctl, mesh1_file,        &
-     &    FEM_udt_org_param, FEM_prm, SGS_par, MHD_step, nod_fld)
+     &    FEM_udt_org_param, FEM_prm, SGS_par, MHD_step,                &
+     &    MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
 !
 !  --  load FEM mesh data
       call mpi_input_mesh(mesh1_file, mesh, group,                      &

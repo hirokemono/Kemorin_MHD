@@ -4,7 +4,8 @@
 !        programmed H.Matsui on Dec., 2008
 !
 !!      subroutine s_link_MG_MHD_mesh_data                              &
-!!     &        (MG_mesh, MG_MHD_mesh, ele_1st, MHD_matrices)
+!!     &        (MGCG_WK, MG_mesh, MG_MHD_mesh, ele_1st, MHD_matrices)
+!!        type(MGCG_data), intent(in) :: MGCG_WK
 !!        type(mesh_data), intent(in), target                           &
 !!     &                    :: MG_mesh(MGCG_WK1%num_MG_level)
 !!        type(mesh_data_MHD), intent(in), target                       &
@@ -26,19 +27,20 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_link_MG_MHD_mesh_data                                &
-     &        (MG_mesh, MG_MHD_mesh, ele_1st, MHD_matrices)
+     &         (MGCG_WK, MG_mesh, MG_MHD_mesh, ele_1st, MHD_matrices)
 !
-      use m_type_AMG_data
+      use t_MGCG_data
       use t_mesh_data
       use t_geometry_data
       use t_solver_djds_MHD
       use t_interpolate_table
       use interpolate_by_module
 !
+      type(MGCG_data), intent(in) :: MGCG_WK
       type(mesh_data), intent(in), target                               &
-     &                    :: MG_mesh(MGCG_WK1%num_MG_level)
+     &                    :: MG_mesh(MGCG_WK%num_MG_level)
       type(mesh_data_MHD), intent(in), target                           &
-     &                    :: MG_MHD_mesh(MGCG_WK1%num_MG_level)
+     &                    :: MG_MHD_mesh(MGCG_WK%num_MG_level)
       type(element_data), intent(inout) :: ele_1st
       type(MHD_MG_matrices), intent(inout) :: MHD_matrices
       integer(kind = kint) :: i_level
@@ -56,7 +58,7 @@
      &    MHD_matrices%MG_interpolate(1)%c2f%tbl_org,                   &
      &    MHD_matrices%MG_interpolate(1)%c2f%mat)
 !
-      do i_level = 2, MGCG_WK1%num_MG_level
+      do i_level = 2, MGCG_WK%num_MG_level
         call link_comm_tbl_types(MG_mesh(i_level)%mesh%nod_comm,        &
      &      MHD_matrices%MG_comm_table(i_level))
         call link_comm_tbl_types(MG_MHD_mesh(i_level)%nod_fl_comm,      &

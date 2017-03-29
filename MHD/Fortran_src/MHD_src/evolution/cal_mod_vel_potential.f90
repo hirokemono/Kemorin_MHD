@@ -58,8 +58,6 @@
       use m_phys_constants
 !
       use m_array_for_send_recv
-      use m_type_AMG_data
-      use m_type_AMG_data_4_MHD
 !
       use t_FEM_control_parameter
       use t_SGS_control_parameter

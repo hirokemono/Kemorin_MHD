@@ -8,7 +8,11 @@
 !!      subroutine reordering_by_layers_snap                            &
 !!     &         (FEM_prm, SGS_par, ele, group, MHD_mesh)
 !!      subroutine reordering_by_layers_MHD                             &
-!!     &         (FEM_prm, SGS_par, ele, group, MHD_mesh, MG_interpolate)
+!!     &         (SGS_par, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM,             &
+!!     &          FEM_prm, ele, group, MHD_mesh, MG_interpolate)
+!!        type(MGCG_data), intent(in) :: MGCG_WK
+!!        type(mesh_4_MGCG), intent(in) :: MGCG_FEM
+!!        type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(element_data), intent(inout) :: ele
@@ -68,22 +72,28 @@
 ! -----------------------------------------------------------------------
 !
       subroutine reordering_by_layers_MHD                               &
-     &         (FEM_prm, SGS_par, ele, group, MHD_mesh, MG_interpolate)
+     &         (SGS_par, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM,               &
+     &          FEM_prm, ele, group, MHD_mesh, MG_interpolate)
 !
       use m_work_4_MHD_layering
-      use m_type_AMG_data
       use t_interpolate_table
+      use t_MGCG_data
+      use t_MGCG_data_4_MHD
 !
       use reordering_MG_ele_by_layers
       use skip_comment_f
 !
-      type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
+      type(MGCG_data), intent(in) :: MGCG_WK
+      type(mesh_4_MGCG), intent(in) :: MGCG_FEM
+!
+      type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
+      type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(element_data), intent(inout) :: ele
       type(mesh_groups), intent(inout) ::   group
       type(mesh_data_MHD), intent(inout) :: MHD_mesh
       type(MG_itp_table), intent(inout)                                 &
-     &     :: MG_interpolate(MGCG_WK1%num_MG_level)
+     &     :: MG_interpolate(MGCG_WK%num_MG_level)
 !
 !
       call allocate_lists_4_layer(ele%numele)
@@ -95,7 +105,8 @@
       if(cmp_no_case(FEM_PRM%CG11_param%METHOD, 'MGCG')) then
         call reordering_ele_interpolate_type(ele%numele,                &
      &     old2newele_layer, MG_interpolate(1)%f2c%tbl_org)
-        call s_reordering_MG_ele_by_layers(FEM_prm, MG_interpolate)
+        call s_reordering_MG_ele_by_layers                              &
+     &     (MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, FEM_prm, MG_interpolate)
       end if
 !
       call deallocate_lists_4_layer

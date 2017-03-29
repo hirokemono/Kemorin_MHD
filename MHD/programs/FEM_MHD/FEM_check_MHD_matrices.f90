@@ -41,6 +41,7 @@
       use m_bc_data_velo
       use m_solver_djds_MHD
       use m_boundary_field_IO
+      use m_type_AMG_data
 !
       use initialization_4_MHD
 !
@@ -59,7 +60,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_data_4_const_matrices'
       call set_data_4_const_matrices(mesh1, MHD_mesh1, rhs_tbl1,        &
-     &    MHD1_mat_tbls, MHD1_matrices, solver_pack1)
+     &    MGCG_WK1, MHD1_mat_tbls, MHD1_matrices, solver_pack1)
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
       call set_aiccg_matrices(MHD_step1%time_d%dt,                      &
      &    FEM_prm1, SGS_par1%model_p, SGS_par1%commute_p,               &

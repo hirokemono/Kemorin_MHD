@@ -14,9 +14,9 @@
 !!     &          rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs, ifld_diff,   &
 !!     &          icomp_diff, iphys_elediff, sgs_coefs_nod,             &
 !!     &          filtering, wide_filtering, layer_tbl, m_lump,         &
-!!     &          s_package, wk_cor, wk_lsq, wk_sgs, wk_diff, wk_filter,&
-!!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,               &
-!!     &          nod_fld, ele_fld, sgs_coefs, diff_coefs)
+!!     &          s_package, MGCG_WK, wk_cor, wk_lsq, wk_sgs, wk_diff,  &
+!!     &          wk_filter, mhd_fem_wk, fem_wk, surf_wk,               &
+!!     &          f_l, f_nl,  nod_fld, ele_fld, sgs_coefs, diff_coefs)
 !!      subroutine update_fields(time_d, FEM_prm, SGS_par,              &
 !!     &         mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,    &
 !!     &         iphys, iphys_ele, jacobians, rhs_tbl, FEM_elens,       &
@@ -32,7 +32,7 @@
 !!     &          jacobians, rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs,   &
 !!     &          ifld_diff, icomp_diff, iphys_elediff, sgs_coefs_nod,  &
 !!     &          filtering, wide_filtering, layer_tbl, s_package,      &
-!!     &          wk_cor, wk_lsq, wk_sgs, wk_diff, wk_filter,           &
+!!     &          MGCG_WK, wk_cor, wk_lsq, wk_sgs, wk_diff, wk_filter,  &
 !!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,               &
 !!     &          nod_fld, ele_fld, sgs_coefs, diff_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -61,6 +61,7 @@
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(MHD_matrices_pack), intent(in) :: s_package
+!!        type(MGCG_data), intent(inout) :: MGCG_WK
 !!        type(dynamis_correlation_data), intent(inout) :: wk_cor
 !!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
@@ -109,6 +110,7 @@
       use t_MHD_boundary_data
       use t_bc_data_MHD
       use t_MHD_matrices_pack
+      use t_MGCG_data
 !
       implicit none
 !
@@ -124,9 +126,9 @@
      &          jacobians, rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs,     &
      &          ifld_diff, icomp_diff, iphys_elediff, sgs_coefs_nod,    &
      &          filtering, wide_filtering, layer_tbl, m_lump,           &
-     &          s_package, wk_cor, wk_lsq, wk_sgs, wk_diff, wk_filter,  &
-     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                 &
-     &          nod_fld, ele_fld, sgs_coefs, diff_coefs)
+     &          s_package, MGCG_WK, wk_cor, wk_lsq, wk_sgs, wk_diff,    &
+     &          wk_filter, mhd_fem_wk, fem_wk, surf_wk,                 &
+     &          f_l, f_nl,  nod_fld, ele_fld, sgs_coefs, diff_coefs)
 !
       use m_physical_property
       use cal_temperature
@@ -167,6 +169,7 @@
       type(layering_tbl), intent(in) :: layer_tbl
       type(MHD_matrices_pack), intent(in) :: s_package
 !
+      type(MGCG_data), intent(inout) :: MGCG_WK
       type(dynamis_correlation_data), intent(inout) :: wk_cor
       type(dynamis_least_suare_data), intent(inout) :: wk_lsq
       type(dynamic_model_data), intent(inout) :: wk_sgs
@@ -197,7 +200,8 @@
      &     FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,              &
      &     sgs_coefs, diff_coefs, filtering, m_lump,                    &
      &     s_package%Bmatrix, s_package%Fmatrix, ak_MHD%ak_d_magne,     &
-     &     wk_filter, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &     MGCG_WK, wk_filter, mhd_fem_wk, fem_wk, surf_wk,             &
+     &     f_l, f_nl, nod_fld)
         call update_with_vector_potential                               &
      &    (ifld_diff%i_magne, icomp_diff%i_magne,                       &
      &     iphys_elediff%i_magne, iphys_elediff%i_filter_magne,         &
@@ -223,7 +227,8 @@
      &     rhs_tbl, FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,     &
      &     sgs_coefs, sgs_coefs_nod, diff_coefs, filtering, m_lump,     &
      &     s_package%Bmatrix, s_package%Fmatrix, ak_MHD%ak_d_magne,     &
-     &     wk_filter, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &     MGCG_WK, wk_filter, mhd_fem_wk, fem_wk, surf_wk,             &
+     &     f_l, f_nl, nod_fld)
         call update_with_magnetic_field                                 &
      &    (ifld_diff%i_magne, icomp_diff%i_magne,                       &
      &     iphys_elediff%i_magne, iphys_elediff%i_filter_magne,         &
@@ -250,8 +255,9 @@
      &       ele_fld, jacobians%jac_3d, jacobians%jac_sf_grp,           &
      &       rhs_tbl, FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,   &
      &       sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,           &
-     &       s_package%Tmatrix, ak_MHD%ak_d_temp, wk_filter,            &
-     &       mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &       s_package%Tmatrix, ak_MHD%ak_d_temp, MGCG_WK,              &
+     &       wk_filter, mhd_fem_wk, fem_wk, surf_wk,                    &
+     &       f_l, f_nl, nod_fld)
 !
           call add_2_nod_scalars(nod_fld,                               &
      &        iphys%i_ref_t, iphys%i_par_temp, iphys%i_temp)
@@ -267,8 +273,9 @@
      &        ele_fld, jacobians%jac_3d, jacobians%jac_sf_grp,          &
      &        rhs_tbl, FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,  &
      &        sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,          &
-     &        s_package%Tmatrix, ak_MHD%ak_d_temp, wk_filter,           &
-     &        mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &        s_package%Tmatrix, ak_MHD%ak_d_temp, MGCG_WK,             &
+     &        wk_filter, mhd_fem_wk, fem_wk, surf_wk,                   &
+     &        f_l, f_nl, nod_fld)
 !
         if (iphys%i_par_temp .gt. 0) then
           call subtract_2_nod_scalars(nod_fld,                          &
@@ -301,8 +308,9 @@
      &        ele_fld, jacobians%jac_3d, jacobians%jac_sf_grp,          &
      &        rhs_tbl, FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,  &
      &        sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,          &
-     &        s_package%Cmatrix, ak_MHD%ak_d_composit, wk_filter,       &
-     &        mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &        s_package%Cmatrix, ak_MHD%ak_d_composit, MGCG_WK,         &
+     &        wk_filter, mhd_fem_wk, fem_wk, surf_wk,                   &
+     &        f_l, f_nl, nod_fld)
 !
           call add_2_nod_scalars(nod_fld,                               &
      &        iphys%i_ref_c, iphys%i_par_light, iphys%i_light)
@@ -316,8 +324,9 @@
      &        ele_fld, jacobians%jac_3d, jacobians%jac_sf_grp,          &
      &        rhs_tbl, FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,  &
      &        sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,          &
-     &        s_package%Cmatrix, ak_MHD%ak_d_composit, wk_filter,       &
-     &        mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &        s_package%Cmatrix, ak_MHD%ak_d_composit, MGCG_WK,         &
+     &        wk_filter, mhd_fem_wk, fem_wk, surf_wk,                   &
+     &        f_l, f_nl, nod_fld)
 !
           if (iphys%i_par_light .gt. 0) then
             call subtract_2_nod_scalars(nod_fld,                        &
@@ -348,9 +357,9 @@
      &      iphys, iphys_ele, ak_MHD, jacobians, rhs_tbl,               &
      &      FEM_elens, ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,   &
      &      sgs_coefs_nod, diff_coefs, filtering, layer_tbl,            &
-     &      s_package%Vmatrix, s_package%Pmatrix, wk_lsq, wk_sgs,       &
-     &      wk_filter, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,          &
-     &      nod_fld, ele_fld, sgs_coefs)
+     &      s_package%Vmatrix, s_package%Pmatrix, MGCG_WK,              &
+     &      wk_lsq, wk_sgs, wk_filter, mhd_fem_wk, fem_wk, surf_wk,     &
+     &      f_l, f_nl,  nod_fld, ele_fld, sgs_coefs)
         call update_with_velocity                                       &
      &     (ifld_diff%i_velo, icomp_diff%i_velo,                        &
      &      iphys_elediff%i_velo, iphys_elediff%i_filter_velo,          &
@@ -369,7 +378,7 @@
 !
       subroutine update_fields(time_d, FEM_prm, SGS_par,                &
      &          mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,     &
-     &          iphys, iphys_ele, jacobians, rhs_tbl, FEM_elens,       &
+     &          iphys, iphys_ele, jacobians, rhs_tbl, FEM_elens,        &
      &          ifld_diff, icomp_diff, iphys_elediff,                   &
      &          filtering, wide_filtering, layer_tbl, m_lump,           &
      &          wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk, &
@@ -505,7 +514,7 @@
      &          jacobians, rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs,     &
      &          ifld_diff, icomp_diff, iphys_elediff, sgs_coefs_nod,    &
      &          filtering, wide_filtering, layer_tbl, s_package,        &
-     &          wk_cor, wk_lsq, wk_sgs, wk_diff, wk_filter,             &
+     &          MGCG_WK, wk_cor, wk_lsq, wk_sgs, wk_diff, wk_filter,    &
      &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                 &
      &          nod_fld, ele_fld, sgs_coefs, diff_coefs)
 !
@@ -544,6 +553,7 @@
       type(layering_tbl), intent(in) :: layer_tbl
       type(MHD_matrices_pack), intent(in) :: s_package
 !
+      type(MGCG_data), intent(inout) :: MGCG_WK
       type(dynamis_correlation_data), intent(inout) :: wk_cor
       type(dynamis_least_suare_data), intent(inout) :: wk_lsq
       type(dynamic_model_data), intent(inout) :: wk_sgs
@@ -576,8 +586,9 @@
      &        ele_fld, jacobians%jac_3d, jacobians%jac_sf_grp,          &
      &        rhs_tbl, FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,  &
      &        sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,          &
-     &        s_package%Tmatrix, ak_MHD%ak_d_temp, wk_filter,           &
-     &        mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &        s_package%Tmatrix, ak_MHD%ak_d_temp, MGCG_WK,             &
+     &        wk_filter, mhd_fem_wk, fem_wk, surf_wk,                   &
+     &        f_l, f_nl, nod_fld)
 !
           call add_2_nod_scalars(nod_fld,                               &
      &        iphys%i_ref_t, iphys%i_par_temp, iphys%i_temp)
@@ -591,8 +602,9 @@
      &        ele_fld, jacobians%jac_3d, jacobians%jac_sf_grp,          &
      &        rhs_tbl, FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,  &
      &        sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,          &
-     &        s_package%Tmatrix, ak_MHD%ak_d_temp, wk_filter,           &
-     &        mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &        s_package%Tmatrix, ak_MHD%ak_d_temp, MGCG_WK,             &
+     &        wk_filter,  mhd_fem_wk, fem_wk, surf_wk,                  &
+     &        f_l, f_nl, nod_fld)
 !
           if (iphys%i_par_temp .gt. 0) then
             call subtract_2_nod_scalars(nod_fld,                        &
@@ -625,8 +637,9 @@
      &        ele_fld, jacobians%jac_3d, jacobians%jac_sf_grp,          &
      &        rhs_tbl, FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,  &
      &        sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,          &
-     &        s_package%Cmatrix, ak_MHD%ak_d_composit, wk_filter,       &
-     &        mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &        s_package%Cmatrix, ak_MHD%ak_d_composit, MGCG_WK,         &
+     &        wk_filter, mhd_fem_wk, fem_wk, surf_wk,                   &
+     &        f_l, f_nl, nod_fld)
 !
           call add_2_nod_scalars(nod_fld,                               &
      &        iphys%i_ref_c, iphys%i_par_light, iphys%i_light)
@@ -640,8 +653,9 @@
      &        ele_fld, jacobians%jac_3d, jacobians%jac_sf_grp,          &
      &        rhs_tbl, FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,  &
      &        sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,          &
-     &        s_package%Cmatrix, ak_MHD%ak_d_composit, wk_filter,       &
-     &        mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &        s_package%Cmatrix, ak_MHD%ak_d_composit, MGCG_WK,         &
+     &        wk_filter, mhd_fem_wk, fem_wk, surf_wk,                   &
+     &        f_l, f_nl, nod_fld)
 !
           if (iphys%i_par_light .gt. 0) then
             call subtract_2_nod_scalars(nod_fld,                        &
@@ -672,9 +686,9 @@
      &      iphys, iphys_ele, ak_MHD, jacobians, rhs_tbl,               &
      &      FEM_elens, ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,   &
      &      sgs_coefs_nod, diff_coefs, filtering, layer_tbl,            &
-     &      s_package%Vmatrix, s_package%Pmatrix, wk_lsq, wk_sgs,       &
-     &       wk_filter, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,         &
-     &      nod_fld, ele_fld, sgs_coefs)
+     &      s_package%Vmatrix, s_package%Pmatrix, MGCG_WK,              &
+     &      wk_lsq, wk_sgs, wk_filter, mhd_fem_wk, fem_wk, surf_wk,     &
+     &      f_l, f_nl, nod_fld, ele_fld, sgs_coefs)
         call update_with_velocity                                       &
      &     (ifld_diff%i_velo, icomp_diff%i_velo,                        &
      &      iphys_elediff%i_velo, iphys_elediff%i_filter_velo,          &

@@ -50,6 +50,7 @@
       use m_solver_djds_MHD
       use m_flexible_time_step
       use m_boundary_field_IO
+      use m_type_AMG_data
 !
       use initialization_4_MHD
       use lead_physical_values
@@ -102,7 +103,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_data_4_const_matrices'
       call set_data_4_const_matrices(mesh1, MHD_mesh1, rhs_tbl1,        &
-     &    MHD1_mat_tbls, MHD1_matrices, solver_pack1)
+     &    MGCG_WK1, MHD1_mat_tbls, MHD1_matrices, solver_pack1)
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
       call set_aiccg_matrices(MHD_step%time_d%dt,                       &
      &    FEM_prm1, SGS_par1%model_p, SGS_par1%commute_p,               &
@@ -182,6 +183,7 @@
       use m_ele_material_property
       use m_SGS_model_coefs
       use m_solver_djds_MHD
+      use m_type_AMG_data
       use m_flexible_time_step
 !
       use construct_matrices
@@ -224,7 +226,7 @@
      &   jacobians1, rhs_tbl1, FEM1_elen, ifld_sgs, icomp_sgs,          &
      &   ifld_diff, icomp_diff, iphys_elediff, sgs_coefs_nod,           &
      &   filtering1, wide_filtering, layer_tbl1, m1_lump, solver_pack1, &
-     &   wk_cor1, wk_lsq1, wk_sgs1, wk_diff1, wk_filter1,               &
+     &   MGCG_WK1, wk_cor1, wk_lsq1, wk_sgs1, wk_diff1, wk_filter1,     &
      &   mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,                   &
      &   nod_fld1, fld_ele1, sgs_coefs, diff_coefs)
 !
