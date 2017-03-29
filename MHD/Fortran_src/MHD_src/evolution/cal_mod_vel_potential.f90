@@ -9,21 +9,21 @@
 !!     &         (iak_diff_v, FEM_prm, SGS_param, cmt_param,            &
 !!     &          node, ele, surf, fluid, sf_grp,                       &
 !!     &          Vnod_bcs, Vsf_bcs, Psf_bcs, iphys,                    &
-!!     &          jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl, FEM_elens, &
-!!     &          diff_coefs, Pmatrix, MG_vector, fem_wk, surf_wk,      &
+!!     &          jacobians, rhs_tbl, FEM_elens, diff_coefs,            &
+!!     &          Pmatrix, MG_vector, fem_wk, surf_wk,                  &
 !!     &          f_l, f_nl, nod_fld)
 !!      subroutine cal_electric_potential                               &
 !!     &         (iak_diff_b, FEM_prm, SGS_param, cmt_param,            &
 !!     &          node, ele, surf, sf_grp, Bnod_bcs, Asf_bcs, Fsf_bcs,  &
-!!     &          iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,     &
-!!     &          FEM_elens, diff_coefs, Fmatrix, MG_vector,            &
-!!     &          fem_wk, surf_wk, f_l, f_nl, nod_fld)
+!!     &          iphys, jacobians, rhs_tbl, FEM_elens, diff_coefs,     &
+!!     &          Fmatrix, MG_vector, fem_wk, surf_wk,                  &
+!!     &          f_l, f_nl, nod_fld)
 !!      subroutine cal_mag_potential                                    &
 !!     &         (iak_diff_b, FEM_prm, SGS_param, cmt_param,            &
 !!     &          node, ele, surf, sf_grp, Bnod_bcs, Bsf_bcs, Fsf_bcs,  &
-!!     &          iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,     &
-!!     &          FEM_elens, diff_coefs, Fmatrix, MG_vector,            &
-!!     &          fem_wk, surf_wk, f_l, f_nl, nod_fld)
+!!     &          iphys, jacobians, rhs_tbl, FEM_elens, diff_coefs,     &
+!!     &          Fmatrix, MG_vector, fem_wk, surf_wk,                  &
+!!     &          f_l, f_nl, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -38,8 +38,7 @@
 !!        type(vector_surf_bc_type), intent(in) :: Bsf_bcs
 !!        type(potential_surf_bc_type), intent(in) :: Fsf_bcs
 !!        type(phys_address), intent(in) :: iphys
-!!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
-!!        type(jacobians_2d), intent(in) :: jac_sf_grp_l
+!!        type(jacobians_type), intent(in) :: jacobians
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
@@ -70,8 +69,7 @@
       use t_group_data
       use t_phys_address
       use t_phys_data
-      use t_jacobian_3d
-      use t_jacobian_2d
+      use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
       use t_int_surface_data
@@ -97,8 +95,8 @@
      &         (iak_diff_v, FEM_prm, SGS_param, cmt_param,              &
      &          node, ele, surf, fluid, sf_grp,                         &
      &          Vnod_bcs, Vsf_bcs, Psf_bcs, iphys,                      &
-     &          jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl, FEM_elens,   &
-     &          diff_coefs, Pmatrix, MG_vector, fem_wk, surf_wk,        &
+     &          jacobians, rhs_tbl, FEM_elens, diff_coefs,              &
+     &          Pmatrix, MG_vector, fem_wk, surf_wk,                    &
      &          f_l, f_nl, nod_fld)
 !
       use int_vol_fractional_div
@@ -124,8 +122,7 @@
       type(velocity_surf_bc_type), intent(in)  :: Vsf_bcs
       type(potential_surf_bc_type), intent(in) :: Psf_bcs
       type(phys_address), intent(in) :: iphys
-      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
-      type(jacobians_2d), intent(in) :: jac_sf_grp_l
+      type(jacobians_type), intent(in) :: jacobians
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
@@ -148,19 +145,19 @@
       call int_vol_fractional_div_ele                                   &
      &   (SGS_param%ifilter_final, fluid%istack_ele_fld_smp,            &
      &    FEM_prm%npoint_poisson_int, iphys%i_velo, iak_diff_v,         &
-     &    node, ele, nod_fld, jac_3d_q, jac_3d_l,                       &
+     &    node, ele, nod_fld, jacobians%jac_3d, jacobians%jac_3d_l,     &
      &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_l)
 !
       call int_surf_normal_vector                                       &
      &   (iphys%i_velo, FEM_prm%npoint_poisson_int,                     &
      &    Psf_bcs%wall, Psf_bcs%sph_in, Psf_bcs%sph_out,                &
-     &    node, ele, surf, sf_grp, nod_fld, jac_sf_grp_l, rhs_tbl,      &
-     &    fem_wk, surf_wk, f_l)
+     &    node, ele, surf, sf_grp, nod_fld, jacobians%jac_sf_grp_l,     &
+     &    rhs_tbl, fem_wk, surf_wk, f_l)
 !
 !      if (cmt_param%iflag_c_velo .eq. id_SGS_commute_ON) then
 !        call int_surf_sgs_div_velo_ele                                 &
 !     &     (node, ele, surf, sf_grp, nod_fld,                          &
-!     &      jac_sf_grp_q, jac_sf_grp_l, rhs_tbl, FEM_elens,            &
+!     &      jac_sf_grp_q, jacobians%jac_sf_grp_l, rhs_tbl, FEM_elens,  &
 !     &      FEM_prm%npoint_poisson_int, Vsf_bcs%sgs%nmax_sf_dat,       &
 !     &      Vsf_bcs%sgs%ngrp_sf_dat, Vsf_bcs%sgs%id_grp_sf_dat,        &
 !     &      SGS_param%ifilter_final, diff_coefs%num_field, iak_diff_v, &
@@ -170,7 +167,7 @@
 !   set boundary condition for wall
 !
       call int_sf_grad_press(node, ele, surf, sf_grp,                   &
-     &    jac_sf_grp_l, rhs_tbl, Psf_bcs%grad,                          &
+     &    jacobians%jac_sf_grp_l, rhs_tbl, Psf_bcs%grad,                &
      &    FEM_prm%npoint_poisson_int, fem_wk, f_l)
 !
 !   add boundary term for fixed velocity
@@ -178,8 +175,8 @@
       call int_vol_sk_po_bc                                             &
      &   (cmt_param%iflag_c_velo, SGS_param%ifilter_final,              &
      &    FEM_prm%npoint_poisson_int, iphys%i_p_phi, iak_diff_v,        &
-     &    node, ele, nod_fld, jac_3d_l, rhs_tbl, FEM_elens, diff_coefs, &
-     &    Vnod_bcs%nod_bc_p, fem_wk, f_l)
+     &    node, ele, nod_fld, jacobians%jac_3d_l, rhs_tbl, FEM_elens,   &
+     &    diff_coefs, Vnod_bcs%nod_bc_p, fem_wk, f_l)
 !
 !   add boundary term for fixed pressure
 !
@@ -205,9 +202,9 @@
       subroutine cal_electric_potential                                 &
      &         (iak_diff_b, FEM_prm, SGS_param, cmt_param,              &
      &          node, ele, surf, sf_grp, Bnod_bcs, Asf_bcs, Fsf_bcs,    &
-     &          iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,       &
-     &          FEM_elens, diff_coefs, Fmatrix, MG_vector,              &
-     &          fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &          iphys, jacobians, rhs_tbl, FEM_elens, diff_coefs,       &
+     &          Fmatrix, MG_vector, fem_wk, surf_wk,                    &
+     &          f_l, f_nl, nod_fld)
 !
       use int_vol_fractional_div
       use int_sk_4_fixed_boundary
@@ -229,8 +226,7 @@
       type(velocity_surf_bc_type), intent(in) :: Asf_bcs
       type(potential_surf_bc_type), intent(in) :: Fsf_bcs
       type(phys_address), intent(in) :: iphys
-      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
-      type(jacobians_2d), intent(in) :: jac_sf_grp_l
+      type(jacobians_type), intent(in) :: jacobians
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
@@ -251,13 +247,13 @@
       call int_vol_fractional_div_ele                                   &
      &   (SGS_param%ifilter_final, ele%istack_ele_smp,                  &
      &    FEM_prm%npoint_poisson_int, iphys%i_vecp, iak_diff_b,         &
-     &    node, ele, nod_fld, jac_3d_q, jac_3d_l,                       &
+     &    node, ele, nod_fld, jacobians%jac_3d, jacobians%jac_3d_l,     &
      &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_l)
 !
 !      if (cmt_param%iflag_c_magne .eq. id_SGS_commute_ON) then
 !        call int_surf_sgs_div_velo_ele                                 &
 !     &     (node, ele, surf, sf_grp, nod_fld,                          &
-!     &      jac_sf_grp_q, jac_sf_grp_l, rhs_tbl, FEM_elens,            &
+!     &      jac_sf_grp_q, jacobians%jac_sf_grp_l, rhs_tbl, FEM_elens,  &
 !     &      FEM_prm%npoint_poisson_int, Asf_bcs%sgs%nmax_sf_dat,       &
 !     &      Asf_bcs%sgs%ngrp_sf_dat, Asf_bcs%sgs%id_grp_sf_dat,        &
 !     &      SGS_param%ifilter_final, diff_coefs%num_field, iak_diff_b, &
@@ -267,14 +263,14 @@
       call int_surf_normal_vector                                       &
      &   (iphys%i_vecp, FEM_prm%npoint_poisson_int,                     &
      &    Fsf_bcs%wall, Fsf_bcs%sph_in, Fsf_bcs%sph_out,                &
-     &    node, ele, surf, sf_grp, nod_fld, jac_sf_grp_l, rhs_tbl,      &
-     &    fem_wk, surf_wk, f_l)
+     &    node, ele, surf, sf_grp, nod_fld, jacobians%jac_sf_grp_l,     &
+     &    rhs_tbl, fem_wk, surf_wk, f_l)
 !
       call int_vol_sk_mp_bc                                             &
      &   (cmt_param%iflag_c_magne, SGS_param%ifilter_final,             &
      &    FEM_prm%npoint_poisson_int, iphys%i_m_phi, iak_diff_b,        &
-     &    node, ele, nod_fld, jac_3d_l, rhs_tbl, FEM_elens, diff_coefs, &
-     &    Bnod_bcs%nod_bc_f, fem_wk, f_l)
+     &    node, ele, nod_fld, jacobians%jac_3d_l, rhs_tbl, FEM_elens,   &
+     &    diff_coefs, Bnod_bcs%nod_bc_f, fem_wk, f_l)
 !
       call set_boundary_ff(node, Bnod_bcs%nod_bc_f, f_l)
 !
@@ -299,9 +295,9 @@
       subroutine cal_mag_potential                                      &
      &         (iak_diff_b, FEM_prm, SGS_param, cmt_param,              &
      &          node, ele, surf, sf_grp, Bnod_bcs, Bsf_bcs, Fsf_bcs,    &
-     &          iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,       &
-     &          FEM_elens, diff_coefs, Fmatrix, MG_vector,              &
-     &          fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &          iphys, jacobians, rhs_tbl, FEM_elens, diff_coefs,       &
+     &          Fmatrix, MG_vector, fem_wk, surf_wk,                    &
+     &          f_l, f_nl, nod_fld)
 !
       use int_vol_fractional_div
       use int_sk_4_fixed_boundary
@@ -324,8 +320,7 @@
       type(vector_surf_bc_type), intent(in) :: Bsf_bcs
       type(potential_surf_bc_type), intent(in) :: Fsf_bcs
       type(phys_address), intent(in) :: iphys
-      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
-      type(jacobians_2d), intent(in) :: jac_sf_grp_l
+      type(jacobians_type), intent(in) :: jacobians
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
@@ -345,12 +340,12 @@
       call int_vol_fractional_div_ele                                   &
      &   (SGS_param%ifilter_final, ele%istack_ele_smp,                  &
      &    FEM_prm%npoint_poisson_int, iphys%i_magne, iak_diff_b,        &
-     &    node, ele, nod_fld, jac_3d_q, jac_3d_l,                       &
+     &    node, ele, nod_fld, jacobians%jac_3d, jacobians%jac_3d_l,     &
      &    rhs_tbl, FEM_elens, diff_coefs, fem_wk, f_l)
 !
 !      if (cmt_param%iflag_c_magne .eq. id_SGS_commute_ON) then
 !        call int_surf_sgs_div_velo_ele(node, ele, surf, sf_grp,        &
-!     &      nod_fld, jac_sf_grp_q, jac_sf_grp_l,                       &
+!     &      nod_fld, jac_sf_grp_q, jacobians%jac_sf_grp_l,             &
 !     &      rhs_tbl, FEM_elens, FEM_prm%npoint_poisson_int,            &
 !     &      Bsf_bcs%sgs%nmax_sf_dat, Bsf_bcs%sgs%ngrp_sf_dat,          &
 !     &      Bsf_bcs%sgs%id_grp_sf_dat, SGS_param%ifilter_final,        &
@@ -361,17 +356,17 @@
       call int_surf_normal_vector                                       &
      &   (iphys%i_magne, FEM_prm%npoint_poisson_int,                    &
      &    Fsf_bcs%wall, Fsf_bcs%sph_in, Fsf_bcs%sph_out,                &
-     &    node, ele, surf, sf_grp, nod_fld, jac_sf_grp_l, rhs_tbl,      &
-     &    fem_wk, surf_wk, f_l)
+     &    node, ele, surf, sf_grp, nod_fld, jacobians%jac_sf_grp_l,     &
+     &    rhs_tbl, fem_wk, surf_wk, f_l)
       call int_sf_grad_press                                            &
-     &   (node, ele, surf, sf_grp, jac_sf_grp_l, rhs_tbl,               &
+     &   (node, ele, surf, sf_grp, jacobians%jac_sf_grp_l, rhs_tbl,     &
      &    Fsf_bcs%grad, FEM_prm%npoint_poisson_int, fem_wk, f_l)
 !
       call int_vol_sk_mp_bc                                             &
      &   (cmt_param%iflag_c_magne, SGS_param%ifilter_final,             &
      &    FEM_prm%npoint_poisson_int, iphys%i_m_phi, iak_diff_b,        &
-     &    node, ele, nod_fld, jac_3d_l, rhs_tbl, FEM_elens, diff_coefs, &
-     &    Bnod_bcs%nod_bc_f, fem_wk, f_l)
+     &    node, ele, nod_fld, jacobians%jac_3d_l, rhs_tbl, FEM_elens,   &
+     &    diff_coefs, Bnod_bcs%nod_bc_f, fem_wk, f_l)
 !
       call set_boundary_ff(node, Bnod_bcs%nod_bc_f, f_l)
 !

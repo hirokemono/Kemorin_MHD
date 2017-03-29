@@ -8,8 +8,8 @@
 !!      subroutine velocity_evolution                                   &
 !!     &        (time, dt, FEM_prm, SGS_par, nod_comm, node, ele, surf, &
 !!     &         fluid, sf_grp, sf_grp_nod, fl_prop, cd_prop,           &
-!!     &         Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys, iphys_ele, &
-!!     &         ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,&
+!!     &         Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs,                   &
+!!     &         iphys, iphys_ele, ak_MHD, jacobians,                   &
 !!     &         rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs, ifld_diff,    &
 !!     &         iphys_elediff, sgs_coefs_nod, diff_coefs, filtering,   &
 !!     &         layer_tbl, Vmatrix, Pmatrix, wk_lsq, wk_sgs, wk_filter,&
@@ -32,8 +32,7 @@
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
-!!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
-!!        type(jacobians_2d), intent(in) :: jac_sf_grp_q, jac_sf_grp_l
+!!        type(jacobians_type), intent(in) :: jacobians
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(SGS_terms_address), intent(in) :: ifld_sgs
@@ -71,8 +70,7 @@
       use t_surface_group_connect
       use t_phys_data
       use t_phys_address
-      use t_jacobian_3d
-      use t_jacobian_2d
+      use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
       use t_int_surface_data
@@ -103,8 +101,8 @@
       subroutine velocity_evolution                                     &
      &        (time, dt, FEM_prm, SGS_par, nod_comm, node, ele, surf,   &
      &         fluid, sf_grp, sf_grp_nod, fl_prop, cd_prop,             &
-     &         Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs, iphys, iphys_ele,   &
-     &         ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,  &
+     &         Vnod_bcs, Vsf_bcs, Bsf_bcs, Psf_bcs,                     &
+     &         iphys, iphys_ele, ak_MHD, jacobians,                     &
      &         rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs, ifld_diff,      &
      &         iphys_elediff, sgs_coefs_nod, diff_coefs, filtering,     &
      &         layer_tbl, Vmatrix, Pmatrix, wk_lsq, wk_sgs, wk_filter,  &
@@ -142,8 +140,7 @@
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
-      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
-      type(jacobians_2d), intent(in) :: jac_sf_grp_q, jac_sf_grp_l
+      type(jacobians_type), intent(in) :: jacobians
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_terms_address), intent(in) :: ifld_sgs
@@ -204,8 +201,8 @@
       call s_cal_velocity_pre(time, dt, FEM_prm, SGS_par,               &
      &    nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,         &
      &    fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys,          &
-     &    iphys_ele, ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, &
-     &    FEM_elens, ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,     &
+     &    iphys_ele, ak_MHD, jacobians, rhs_tbl, FEM_elens,             &
+     &    ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,                &
      &    sgs_coefs_nod, diff_coefs, filtering, layer_tbl,              &
      &    Vmatrix, MGCG_WK1%MG_vector, wk_lsq, wk_sgs,                  &
      &    wk_filter, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,            &
@@ -215,17 +212,17 @@
 !
       iloop = -1
       call int_norm_div_v_monitor(iloop, node, ele, fluid,              &
-     &    iphys, nod_fld, jac_3d_q, fem_wk, rel_correct)
+     &    iphys, nod_fld, jacobians%jac_3d, fem_wk, rel_correct)
 !      call int_rms_div_v_monitor(iloop, node, ele, fluid,              &
-!     &    iphys, nod_fld, jac_3d_q, fem_wk, rel_correct)
+!     &    iphys, nod_fld, jacobians%jac_3d, fem_wk, rel_correct)
 !
       do iloop = 0, FEM_prm%maxiter_stokes
         call cal_mod_potential(ifld_diff%i_velo,                        &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      node, ele, surf, fluid, sf_grp, Vnod_bcs, Vsf_bcs, Psf_bcs, &
-     &      iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,           &
-     &      FEM_elens, diff_coefs, Pmatrix, MGCG_WK1%MG_vector,         &
-     &      fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &      iphys, jacobians, rhs_tbl, FEM_elens, diff_coefs,           &
+     &      Pmatrix, MGCG_WK1%MG_vector, fem_wk, surf_wk,               &
+     &      f_l, f_nl, nod_fld)
 !
         call cal_sol_pressure                                           &
      &     (dt, node%numnod, node%istack_internal_smp,                  &
@@ -235,8 +232,7 @@
         call cal_velocity_co(time, dt, FEM_prm, SGS_par,                &
      &      nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,       &
      &      fl_prop, Vnod_bcs, Vsf_bcs, Psf_bcs,                        &
-     &      iphys, iphys_ele, ele_fld, ak_MHD,                          &
-     &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &
+     &      iphys, iphys_ele, ele_fld, ak_MHD, jacobians, rhs_tbl,      &
      &      FEM_elens, ifld_diff, diff_coefs, Vmatrix,                  &
      &      MGCG_WK1%MG_vector, mhd_fem_wk, fem_wk, surf_wk,            &
      &      f_l, f_nl, nod_fld)
@@ -244,8 +240,8 @@
 !
         call cal_rms_scalar_potential(iloop, fluid%istack_ele_fld_smp,  &
      &      iphys%i_press, i_rms%i_press, j_ave%i_press,                &
-     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
-     &      rel_correct, ave_pr0, rms_pr0)
+     &      node, ele, nod_fld, jacobians%jac_3d, jacobians%jac_3d_l,   &
+     &      fem_wk, rel_correct, ave_pr0, rms_pr0)
 !
 !
         if (iflag_debug.eq.1)                                           &
@@ -254,9 +250,9 @@
 !
 !
         call int_norm_div_v_monitor(iloop, node, ele, fluid,            &
-     &      iphys, nod_fld, jac_3d_q, fem_wk, rel_correct)
+     &      iphys, nod_fld, jacobians%jac_3d, fem_wk, rel_correct)
 !        call int_rms_div_v_monitor(iloop, node, ele, fluid,            &
-!     &      iphys, nod_fld, jac_3d_q, fem_wk, rel_correct)
+!     &      iphys, nod_fld, jacobians%jac_3d, fem_wk, rel_correct)
 !
         if (abs(rel_correct) .lt. FEM_prm%eps_4_stokes) go to 10
 !

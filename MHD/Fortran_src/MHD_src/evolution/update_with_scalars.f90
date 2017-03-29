@@ -8,21 +8,19 @@
 !!
 !!@verbatim
 !!      subroutine update_with_temperature                              &
-!!     &        (iak_diff_t, icomp_diff_t, i_step, dt,                  &
-!!     &         FEM_prm, SGS_par, nod_comm, node, ele, surf, fluid,    &
-!!     &         sf_grp, Tsf_bcs, iphys, iphys_ele, ele_fld,            &
-!!     &         jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,   &
-!!     &         filtering, wide_filtering, layer_tbl,                  &
-!!     &         wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,&
-!!     &         surf_wk, f_l, f_nl, nod_fld, diff_coefs)
+!!     &       (iak_diff_t, icomp_diff_t, i_step, dt,                   &
+!!     &        FEM_prm, SGS_par, nod_comm, node, ele, surf, fluid,     &
+!!     &        sf_grp, Tsf_bcs, iphys, iphys_ele, ele_fld, jacobians,  &
+!!     &        rhs_tbl, FEM_elen, filtering, wide_filtering, layer_tbl,&
+!!     &        wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk, &
+!!     &        surf_wk, f_l, f_nl, nod_fld, diff_coefs)
 !!      subroutine update_with_dummy_scalar                             &
-!!     &        (iak_diff_c, icomp_diff_c, i_step, dt,                  &
-!!     &         SGS_par, nod_comm, node, ele, surf, fluid, sf_grp,     &
-!!     &         Csf_bcs, iphys, iphys_ele, ele_fld,                    &
-!!     &         jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,   &
-!!     &         filtering, wide_filtering, layer_tbl,                  &
-!!     &         wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,&
-!!     &         surf_wk, f_l, f_nl, nod_fld, diff_coefs)
+!!     &       (iak_diff_c, icomp_diff_c, i_step, dt,                   &
+!!     &        FEM_prm, SGS_par, nod_comm, node, ele, surf, fluid,     &
+!!     &        sf_grp, Csf_bcs, iphys, iphys_ele, ele_fld, jacobians,  &
+!!     &        rhs_tbl, FEM_elen, filtering, wide_filtering, layer_tbl,&
+!!     &        wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk, &
+!!     &        surf_wk, f_l, f_nl, nod_fld, diff_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
@@ -36,8 +34,7 @@
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
-!!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
-!!        type(jacobians_2d), intent(in) :: jac_sf_grp_q
+!!        type(jacobians_type), intent(in) :: jacobians
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elen
 !!        type(filtering_data_type), intent(in) :: filtering
@@ -70,7 +67,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
-      use t_jacobian_3d
+      use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
       use t_int_surface_data
@@ -93,13 +90,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine update_with_temperature                                &
-     &        (iak_diff_t, icomp_diff_t, i_step, dt,                    &
-     &         FEM_prm, SGS_par, nod_comm, node, ele, surf, fluid,      &
-     &         sf_grp, Tsf_bcs, iphys, iphys_ele, ele_fld,              &
-     &         jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,     &
-     &         filtering, wide_filtering, layer_tbl,                    &
-     &         wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,  &
-     &         surf_wk, f_l, f_nl, nod_fld, diff_coefs)
+     &       (iak_diff_t, icomp_diff_t, i_step, dt,                     &
+     &        FEM_prm, SGS_par, nod_comm, node, ele, surf, fluid,       &
+     &        sf_grp, Tsf_bcs, iphys, iphys_ele, ele_fld, jacobians,    &
+     &        rhs_tbl, FEM_elen, filtering, wide_filtering, layer_tbl,  &
+     &        wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,   &
+     &        surf_wk, f_l, f_nl, nod_fld, diff_coefs)
 !
       use average_on_elements
       use cal_filtering_scalars
@@ -125,8 +121,7 @@
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
-      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
-      type(jacobians_2d), intent(in) :: jac_sf_grp_q
+      type(jacobians_type), intent(in) :: jacobians
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elen
       type(filtering_data_type), intent(in) :: filtering
@@ -225,8 +220,7 @@
      &             iak_diff_t, icomp_diff_t, SGS_par,                   &
      &             nod_comm, node, ele, surf, sf_grp, Tsf_bcs,          &
      &             iphys, iphys_ele, ele_fld, fluid, layer_tbl,         &
-     &             jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,           &
-     &             FEM_elen, filtering, wk_filter,                      &
+     &             jacobians, rhs_tbl, FEM_elen, filtering, wk_filter,  &
      &             wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk,         &
      &             surf_wk, f_l, f_nl, nod_fld, diff_coefs)
              end if
@@ -240,13 +234,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine update_with_dummy_scalar                               &
-     &        (iak_diff_c, icomp_diff_c, i_step, dt,                    &
-     &         FEM_prm, SGS_par, nod_comm, node, ele, surf, fluid,      &
-     &         sf_grp, Csf_bcs, iphys, iphys_ele, ele_fld,              &
-     &         jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,     &
-     &         filtering, wide_filtering, layer_tbl,                    &
-     &         wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,  &
-     &         surf_wk, f_l, f_nl, nod_fld, diff_coefs)
+     &       (iak_diff_c, icomp_diff_c, i_step, dt,                     &
+     &        FEM_prm, SGS_par, nod_comm, node, ele, surf, fluid,       &
+     &        sf_grp, Csf_bcs, iphys, iphys_ele, ele_fld, jacobians,    &
+     &        rhs_tbl, FEM_elen, filtering, wide_filtering, layer_tbl,  &
+     &        wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,   &
+     &        surf_wk, f_l, f_nl, nod_fld, diff_coefs)
 !
       use average_on_elements
       use cal_filtering_scalars
@@ -272,8 +265,7 @@
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
-      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
-      type(jacobians_2d), intent(in) :: jac_sf_grp_q
+      type(jacobians_type), intent(in) :: jacobians
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elen
       type(filtering_data_type), intent(in) :: filtering
@@ -347,8 +339,7 @@
      &             iak_diff_c, icomp_diff_c, SGS_par,                   &
      &             nod_comm, node, ele, surf, sf_grp, Csf_bcs,          &
      &             iphys, iphys_ele, ele_fld, fluid, layer_tbl,         &
-     &             jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,           &
-     &             FEM_elen, filtering, wk_filter,                      &
+     &             jacobians, rhs_tbl, FEM_elen, filtering, wk_filter,  &
      &             wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk,         &
      &             surf_wk, f_l, f_nl, nod_fld, diff_coefs)
              end if

@@ -25,8 +25,7 @@
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(layering_tbl), intent(in) :: layer_tbl
-!!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
-!!        type(jacobians_2d), intent(in) :: jac_sf_grp_q
+!!        type(jacobians_type), intent(in) :: jacobians
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(filtering_data_type), intent(in) :: filtering
@@ -54,8 +53,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
-      use t_jacobian_2d
-      use t_jacobian_3d
+      use t_jacobians
       use t_table_FEM_const
       use t_layering_ele_list
       use t_finite_element_mat
@@ -81,7 +79,7 @@
      &         (iak_diff_b, icomp_diff_b, dt, FEM_prm, SGS_par,         &
      &          nod_comm, node, ele, surf, sf_grp, Bsf_bcs, Fsf_bcs,    &
      &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,            &
-     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
+     &          jacobians, rhs_tbl,              &
      &          FEM_elens, filtering, m_lump, wk_filter,                &
      &          wk_cor, wk_lsq, wk_diff, fem_wk, surf_wk,               &
      &          f_l, f_nl, nod_fld, diff_coefs)
@@ -116,8 +114,7 @@
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
       type(layering_tbl), intent(in) :: layer_tbl
-      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
-      type(jacobians_2d), intent(in) :: jac_sf_grp_q
+      type(jacobians_type), intent(in) :: jacobians
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
@@ -160,14 +157,14 @@
       call choose_cal_rotation                                          &
      &   (FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,       &
      &    iphys%i_sgs_grad_f, iphys%i_sgs_simi, ele%istack_ele_smp,     &
-     &    m_lump, nod_comm, node, ele, iphys_ele, ele_fld, jac_3d_q,    &
-     &    rhs_tbl, fem_wk, f_nl, nod_fld)
+     &    m_lump, nod_comm, node, ele, iphys_ele, ele_fld,              &
+     &    jacobians%jac_3d, rhs_tbl, fem_wk, f_nl, nod_fld)
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_gradent_whole', i_sgs_simi_p, i_sgs_grad_fp
       call choose_cal_gradient                                          &
      &   (FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,       &
      &    i_sgs_grad_fp, i_sgs_simi_p, ele%istack_ele_smp, m_lump,      &
-     &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d_q,            &
+     &    nod_comm, node, ele, iphys_ele, ele_fld, jacobians%jac_3d,    &
      &    rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !      call choose_cal_divergence                                       &
 !     &   (FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,      &
@@ -181,14 +178,14 @@
       call choose_cal_rotation                                          &
      &   (FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,       &
      &    iphys%i_magne, iphys%i_sgs_grad, ele%istack_ele_smp,          &
-     &    m_lump, nod_comm, node, ele, iphys_ele, ele_fld, jac_3d_q,    &
-     &    rhs_tbl, fem_wk, f_nl, nod_fld)
+     &    m_lump, nod_comm, node, ele, iphys_ele, ele_fld,              &
+     &    jacobians%jac_3d, rhs_tbl, fem_wk, f_nl, nod_fld)
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_gradent_in_fluid', i_sgs_grad_p, iphys%i_mag_p
       call choose_cal_gradient                                          &
      &   (FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,       &
      &    iphys%i_mag_p, i_sgs_grad_p, ele%istack_ele_smp, m_lump,      &
-     &    nod_comm, node, ele, iphys_ele, ele_fld, jac_3d_q,            &
+     &    nod_comm, node, ele, iphys_ele, ele_fld, jacobians%jac_3d,    &
      &    rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !      call choose_cal_divergence                                       &
 !     &   (FEM_prm%iflag_magne_supg, FEM_prm%npoint_t_evo_int, dt,      &
@@ -213,13 +210,15 @@
 !
       call cal_rotation_commute                                         &
      &   (FEM_prm%npoint_t_evo_int,ele%istack_ele_smp,                  &
-     &    m_lump, node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,      &
+     &    m_lump, node, ele, surf, sf_grp,                              &
+     &    jacobians%jac_3d, jacobians%jac_sf_grp,                       &
      &    rhs_tbl, FEM_elens, Bsf_bcs%sgs, ifilter_4delta,              &
      &    iphys%i_sgs_grad_f, iphys%i_sgs_grad_f,                       &
      &    fem_wk, surf_wk, f_l, f_nl, nod_fld)
       call cal_grad_commute                                             &
      &   (FEM_prm%npoint_t_evo_int, ele%istack_ele_smp,                 &
-     &    m_lump, node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,      &
+     &    m_lump, node, ele, surf, sf_grp,                              &
+     &    jacobians%jac_3d, jacobians%jac_sf_grp,                       &
      &    rhs_tbl, FEM_elens, Fsf_bcs%sgs, ifilter_4delta,              &
      &    i_sgs_grad_fp, i_sgs_grad_fp, fem_wk, surf_wk,                &
      &    f_l, f_nl, nod_fld)
@@ -234,13 +233,15 @@
 !
       call cal_rotation_commute                                         &
      &   (FEM_prm%npoint_t_evo_int, ele%istack_ele_smp,                 &
-     &    m_lump, node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,      &
+     &    m_lump, node, ele, surf, sf_grp,                              &
+     &    jacobians%jac_3d, jacobians%jac_sf_grp,                       &
      &    rhs_tbl, FEM_elens, Bsf_bcs%sgs, ifilter_2delta,              &
      &    iphys%i_sgs_grad, iphys%i_magne,                              &
      &    fem_wk, surf_wk, f_l, f_nl, nod_fld)
       call cal_grad_commute                                             &
      &   (FEM_prm%npoint_t_evo_int, ele%istack_ele_smp,                 &
-     &    m_lump, node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,      &
+     &    m_lump, node, ele, surf, sf_grp,                              &
+     &    jacobians%jac_3d, jacobians%jac_sf_grp,                       &
      &    rhs_tbl, FEM_elens, Fsf_bcs%sgs, ifilter_2delta,              &
      &    i_sgs_grad_p, iphys%i_mag_p, fem_wk, surf_wk,                 &
      &    f_l, f_nl, nod_fld)
@@ -262,7 +263,8 @@
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_diff_coef_fluid', n_sym_tensor, iak_diff_b, icomp_diff_b
       call cal_diff_coef_fluid(SGS_par, layer_tbl,                      &
-     &    node, ele, fluid, iphys, nod_fld, jac_3d_q, jac_3d_l,         &
+     &    node, ele, fluid, iphys, nod_fld,                             &
+     &    jacobians%jac_3d, jacobians%jac_3d_l,                         &
      &    n_sym_tensor, iak_diff_b, icomp_diff_b,                       &
      &    FEM_prm%npoint_t_evo_int, wk_cor, wk_lsq, wk_diff,            &
      &    diff_coefs)

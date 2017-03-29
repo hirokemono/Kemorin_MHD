@@ -27,8 +27,7 @@
 !!        type(potential_surf_bc_type), intent(in) :: Fsf_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
-!!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
-!!        type(jacobians_2d), intent(in) :: jac_sf_grp_q
+!!        type(jacobians_type), intent(in) :: jacobians
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(filtering_data_type), intent(in) :: filtering
@@ -63,7 +62,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
-      use t_jacobian_3d
+      use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
       use t_int_surface_data
@@ -89,7 +88,7 @@
      &        (iak_diff_b, icomp_diff_b, ie_dbx, ie_dfbx, i_step, dt,   &
      &         FEM_prm, SGS_par, nod_comm, node, ele, surf,             &
      &         fluid, conduct, layer_tbl, sf_grp, Bsf_bcs, Fsf_bcs,     &
-     &         iphys, iphys_ele, jac_3d_q, jac_3d_l, jac_sf_grp_q,      &
+     &         iphys, iphys_ele, jacobians,      &
      &         rhs_tbl, FEM_elens, filtering, wide_filtering, m_lump,   &
      &         wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,  &
      &         surf_wk, f_l, f_nl, nod_fld, ele_fld, diff_coefs)
@@ -118,8 +117,7 @@
       type(potential_surf_bc_type), intent(in) :: Fsf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
-      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
-      type(jacobians_2d), intent(in) :: jac_sf_grp_q
+      type(jacobians_type), intent(in) :: jacobians
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
@@ -143,7 +141,7 @@
 !
 !
       if (iphys_ele%i_magne .ne. 0) then
-        call vector_on_element_1st(node, ele, jac_3d_q,                 &
+        call vector_on_element_1st(node, ele, jacobians%jac_3d,         &
      &      ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,               &
      &      nod_fld%ntot_phys, iphys%i_magne, nod_fld%d_fld,            &
      &      ele_fld%ntot_phys, iphys_ele%i_magne,                       &
@@ -189,7 +187,7 @@
 !
         if (iflag2.eq.2 .and. iphys_ele%i_filter_magne.ne.0) then
           if (iflag_debug.gt.0) write(*,*) 'filtered_magne_on_ele'
-          call vector_on_element_1st(node, ele, jac_3d_q,               &
+          call vector_on_element_1st(node, ele, jacobians%jac_3d,       &
      &        ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,             &
      &        nod_fld%ntot_phys, iphys%i_filter_magne,                  &
      &        nod_fld%d_fld, ele_fld%ntot_phys,                         &
@@ -201,7 +199,8 @@
           if (iflag_debug.gt.0) write(*,*) 'diff_filter_b_on_ele'
           call sel_int_diff_vector_on_ele(FEM_prm%npoint_t_evo_int,     &
      &        ele%istack_ele_smp, iphys%i_filter_magne, ie_dfbx,        &
-     &        node, ele, nod_fld, jac_3d_q, jac_3d_l, mhd_fem_wk)
+     &        node, ele, nod_fld, jacobians%jac_3d, jacobians%jac_3d_l, &
+     &        mhd_fem_wk)
         end if
 !
         if (iflag2.eq.3 .and. iphys%i_wide_fil_magne.ne.0) then
@@ -223,9 +222,8 @@
           call s_cal_diff_coef_magne                                    &
      &       (iak_diff_b, icomp_diff_b, dt, FEM_prm, SGS_par,           &
      &        nod_comm, node, ele, surf, sf_grp, Bsf_bcs, Fsf_bcs,      &
-     &        iphys, iphys_ele, ele_fld, fluid, layer_tbl,              &
-     &        jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,                &
-     &        FEM_elens, filtering, m_lump, wk_filter,                  &
+     &        iphys, iphys_ele, ele_fld, fluid, layer_tbl, jacobians,   &
+     &        rhs_tbl, FEM_elens, filtering, m_lump, wk_filter,         &
      &        wk_cor, wk_lsq, wk_diff, fem_wk, surf_wk, f_l, f_nl,      &
      &        nod_fld, diff_coefs)
         end if
@@ -236,23 +234,24 @@
      & .or. SGS_par%model_p%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
         if ( ie_dbx.ne.0 ) then
            if (iflag_debug.gt.0) write(*,*) 'diff_magne_on_ele'
-            call sel_int_diff_vector_on_ele(FEM_prm%npoint_t_evo_int,   &
-     &          ele%istack_ele_smp, iphys%i_magne, ie_dbx,              &
-     &          node, ele, nod_fld, jac_3d_q, jac_3d_l, mhd_fem_wk)
+            call sel_int_diff_vector_on_ele                             &
+     &         (FEM_prm%npoint_t_evo_int, ele%istack_ele_smp,           &
+     &          iphys%i_magne, ie_dbx, node, ele, nod_fld,              &
+     &          jacobians%jac_3d, jacobians%jac_3d_l, mhd_fem_wk)
         end if
       end if
 !
       if (iphys_ele%i_current .ne. 0                                    &
      &     .and. FEM_prm%iflag_rotate_form .eq. id_turn_ON) then
          if (iflag_debug.gt.0)  write(*,*) 'current_on_element'
-        call rotation_on_element_1st(node, ele, jac_3d_q,               &
+        call rotation_on_element_1st(node, ele, jacobians%jac_3d,       &
      &      conduct%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,       &
      &      nod_fld%ntot_phys, iphys%i_magne, nod_fld%d_fld,            &
      &      ele_fld%ntot_phys, iphys_ele%i_current,                     &
      &      ele_fld%iflag_update, ele_fld%d_fld)
       end if
 !
-!      call rotation_on_element_1st(node, ele, jac_3d_q,                &
+!      call rotation_on_element_1st(node, ele, jacobians%jac_3d,        &
 !     &    ele%istack_ele_smp, FEM_prm%npoint_t_evo_int,                &
 !     &    nod_fld%ntot_phys, iphys%i_filter_vecp, nod_fld%d_fld,       &
 !     &    ele_fld%ntot_phys, iphys_ele%i_filter_magne,                 &

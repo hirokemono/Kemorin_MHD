@@ -115,11 +115,11 @@
       call update_fields                                                &
      &   (MHD_step%time_d, FEM_prm1, SGS_par1, mesh1, group1,           &
      &    ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,    &
-     &    jacobians1%jac_3d, jacobians1%jac_3d_l, jacobians1%jac_sf_grp, rhs_tbl1, FEM1_elen,  &
-     &    ifld_diff, icomp_diff, iphys_elediff,                         &
-     &    filtering1, wide_filtering, layer_tbl1, m1_lump,              &
-     &    wk_cor1, wk_lsq1, wk_diff1, wk_filter1, mhd_fem1_wk, fem1_wk, &
-     &    surf1_wk, f1_l, f1_nl, nod_fld1, fld_ele1, diff_coefs)
+     &    jacobians1, rhs_tbl1, FEM1_elen, ifld_diff, icomp_diff,       &
+     &    iphys_elediff, filtering1, wide_filtering, layer_tbl1,        &
+     &    m1_lump, wk_cor1, wk_lsq1, wk_diff1, wk_filter1,              &
+     &    mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,                  &
+     &    nod_fld1, fld_ele1, diff_coefs)
 !
 !     ----- Evaluate model coefficients
 !
@@ -144,9 +144,9 @@
       if(iflag .eq. 0) then
         call lead_fields_by_FEM(MHD_step%time_d,                        &
      &     FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1,                &
-     &     MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,      &
-     &     jacobians1%jac_3d, jacobians1%jac_3d_l, jacobians1%jac_sf_grp, rhs_tbl1,            &
-     &     FEM1_elen, icomp_sgs, icomp_diff, ifld_diff, iphys_elediff,  &
+     &     MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,              &
+     &     ak_MHD,  jacobians1, rhs_tbl1, FEM1_elen,                    &
+     &     icomp_sgs, icomp_diff, ifld_diff, iphys_elediff,             &
      &     sgs_coefs, sgs_coefs_nod, filtering1, wide_filtering,        &
      &     layer_tbl1, m1_lump, wk_cor1, wk_lsq1, wk_diff1, wk_filter1, &
      &     mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,                 &

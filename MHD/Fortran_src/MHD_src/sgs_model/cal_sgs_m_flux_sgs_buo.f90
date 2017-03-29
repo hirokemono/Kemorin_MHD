@@ -6,11 +6,11 @@
 !!      subroutine cal_sgs_mom_flux_with_sgs_buo(dt, FEM_prm, SGS_par,  &
 !!     &          nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,  &
 !!     &          fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele, &
-!!     &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,    &
-!!     &          FEM_elens, filtering, ifld_sgs, icomp_sgs,            &
-!!     &          ifld_diff, iphys_elediff, sgs_coefs_nod, diff_coefs,  &
-!!     &          wk_filter, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,        &
-!!     &          surf_wk, f_l, f_nl, nod_fld, ele_fld, sgs_coefs)
+!!     &          ak_MHD, jacobians, rhs_tbl,  FEM_elens, filtering,    &
+!!     &          ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,        &
+!!     &          sgs_coefs_nod, diff_coefs, wk_filter, wk_lsq, wk_sgs, &
+!!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,               &
+!!     &          nod_fld, ele_fld, sgs_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
@@ -25,8 +25,7 @@
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(layering_tbl), intent(in) :: layer_tbl
-!!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
-!!        type(jacobians_2d), intent(in) :: jac_sf_grp_q
+!!        type(jacobians_type), intent(in) :: jacobians
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(filtering_data_type), intent(in) :: filtering
@@ -63,8 +62,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
-      use t_jacobian_2d
-      use t_jacobian_3d
+      use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
       use t_int_surface_data
@@ -92,11 +90,11 @@
       subroutine cal_sgs_mom_flux_with_sgs_buo(dt, FEM_prm, SGS_par,    &
      &          nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,    &
      &          fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,   &
-     &          ak_MHD, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,      &
-     &          FEM_elens, filtering, ifld_sgs, icomp_sgs,              &
-     &          ifld_diff, iphys_elediff, sgs_coefs_nod, diff_coefs,    &
-     &          wk_filter, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,          &
-     &          surf_wk, f_l, f_nl, nod_fld, ele_fld, sgs_coefs)
+     &          ak_MHD, jacobians, rhs_tbl,  FEM_elens, filtering,      &
+     &          ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,          &
+     &          sgs_coefs_nod, diff_coefs, wk_filter, wk_lsq, wk_sgs,   &
+     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                 &
+     &          nod_fld, ele_fld, sgs_coefs)
 !
       use m_phys_constants
 !
@@ -127,8 +125,7 @@
       type(conductive_property), intent(in) :: cd_prop
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(layering_tbl), intent(in) :: layer_tbl
-      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
-      type(jacobians_2d), intent(in) :: jac_sf_grp_q
+      type(jacobians_type), intent(in) :: jacobians
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
@@ -170,7 +167,7 @@
      &   (icomp_sgs%i_mom_flux, iphys_elediff%i_velo, dt,               &
      &    FEM_prm, SGS_par%model_p, SGS_par%filter_p,                   &
      &    nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,        &
-     &    jac_3d_q, rhs_tbl, FEM_elens, filtering,                      &
+     &    jacobians%jac_3d, rhs_tbl, FEM_elens, filtering,              &
      &    sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,      &
      &    f_l, f_nl, nod_fld)
 !
@@ -181,8 +178,9 @@
      &    FEM_prm, SGS_par%model_p, SGS_par%commute_p,                  &
      &    nod_comm, node, ele, surf, sf_grp, fluid, fl_prop, cd_prop,   &
      &    Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD,                   &
-     &    jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens, diff_coefs,       &
-     &    mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld, ele_fld)
+     &    jacobians%jac_3d, jacobians%jac_sf_grp, rhs_tbl,              &
+     &    FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,           &
+     &    f_l, f_nl, nod_fld, ele_fld)
 !
 !$omp parallel
       call cal_phys_dot_product                                         &
@@ -206,7 +204,8 @@
 !   take RMS of SGS buoyancy flux and work of Reynolds stress
       call select_int_vol_sgs_buoyancy(FEM_prm%npoint_t_evo_int,        &
      &    node, ele, fl_prop, layer_tbl, iphys, nod_fld,                &
-     &    jac_3d_q, jac_3d_l, wk_lsq%nlayer, wk_lsq%slocal)
+     &    jacobians%jac_3d, jacobians%jac_3d_l,                         &
+     &    wk_lsq%nlayer, wk_lsq%slocal)
 !
       call sum_lsq_coefs_4_comps(ncomp_sgs_buo, wk_lsq)
 !

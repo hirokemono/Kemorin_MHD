@@ -8,8 +8,7 @@
 !!      subroutine cal_vector_potential                                 &
 !!     &         (dt, FEM_prm, SGS_par, nod_comm, node, ele, surf,      &
 !!     &          conduct, sf_grp, cd_prop, Bnod_bcs, Asf_bcs, Fsf_bcs, &
-!!     &          iphys, iphys_ele, ele_fld,                            &
-!!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
+!!     &          iphys, iphys_ele, ele_fld, jacobians,                 &
 !!     &          rhs_tbl, FEM_elens, icomp_sgs, ifld_diff,             &
 !!     &          iphys_elediff, sgs_coefs, diff_coefs, filtering,      &
 !!     &          m_lump, Bmatrix, Fmatrix, ak_d_magne, wk_filter,      &
@@ -17,8 +16,7 @@
 !!      subroutine s_cal_magnetic_field(dt, FEM_prm, SGS_par,           &
 !!     &          nod_comm, node, ele, surf, conduct, sf_grp,           &
 !!     &          cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs, Fsf_bcs,         &
-!!     &          iphys, iphys_ele, ele_fld,                            &
-!!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
+!!     &          iphys, iphys_ele, ele_fld, jacobians,                 &
 !!     &          rhs_tbl, FEM_elens, icomp_sgs, ifld_diff,             &
 !!     &          iphys_elediff, sgs_coefs, sgs_coefs_nod,              &
 !!     &          diff_coefs, filtering, m_lump, Bmatrix, Fmatrix,      &
@@ -40,8 +38,7 @@
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
-!!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
-!!        type(jacobians_2d), intent(in) :: jac_sf_grp_q, jac_sf_grp_l
+!!        type(jacobians_type), intent(in) :: jacobians
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -76,8 +73,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
-      use t_jacobian_3d
-      use t_jacobian_2d
+      use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
       use t_int_surface_data
@@ -104,8 +100,7 @@
       subroutine cal_vector_potential                                   &
      &         (dt, FEM_prm, SGS_par, nod_comm, node, ele, surf,        &
      &          conduct, sf_grp, cd_prop, Bnod_bcs, Asf_bcs, Fsf_bcs,   &
-     &          iphys, iphys_ele, ele_fld,                              &
-     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
+     &          iphys, iphys_ele, ele_fld, jacobians,                   &
      &          rhs_tbl, FEM_elens, icomp_sgs, ifld_diff,               &
      &          iphys_elediff, sgs_coefs, diff_coefs, filtering,        &
      &          m_lump, Bmatrix, Fmatrix, ak_d_magne, wk_filter,        &
@@ -134,8 +129,7 @@
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
-      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
-      type(jacobians_2d), intent(in) :: jac_sf_grp_q, jac_sf_grp_l
+      type(jacobians_type), intent(in) :: jacobians
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(lumped_mass_matrices), intent(in) :: m_lump
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -172,20 +166,19 @@
       call cal_vector_p_pre(ifld_diff%i_magne, icomp_sgs%i_induction,   &
      &    iphys_elediff%i_velo, ak_d_magne, dt, FEM_prm,                &
      &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
-     &    nod_comm, node, ele, surf, conduct,                           &
-     &    sf_grp, cd_prop, Bnod_bcs, Asf_bcs, iphys, iphys_ele,         &
-     &    ele_fld, jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,          &
-     &    sgs_coefs, diff_coefs, filtering, Bmatrix,                    &
-     &    MGCG_WK1%MG_vector, wk_filter, mhd_fem_wk, fem_wk,            &
+     &    nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,          &
+     &    Bnod_bcs, Asf_bcs, iphys, iphys_ele, ele_fld, jacobians,      &
+     &    rhs_tbl, FEM_elens, sgs_coefs, diff_coefs, filtering,         &
+     &    Bmatrix, MGCG_WK1%MG_vector, wk_filter, mhd_fem_wk, fem_wk,   &
      &    f_l, f_nl, nod_fld)
 !
 !     --------------------- 
 !
       iloop = -1
       call int_norm_div_a_monitor(iloop, node, ele,                     &
-     &    iphys, nod_fld, jac_3d_q, fem_wk, rel_correct)
+     &    iphys, nod_fld, jacobians%jac_3d, fem_wk, rel_correct)
 !      call int_rms_div_a_monitor(iloop, node, ele,                     &
-!     &    iphys, nod_fld, jac_3d_q, fem_wk, rel_correct)
+!     &    iphys, nod_fld, jacobians%jac_3d, fem_wk, rel_correct)
 !
       call init_sol_potential(node%numnod, node%istack_nod_smp,         &
      &    dt, cd_prop%coef_mag_p, nod_fld%ntot_phys,                    &
@@ -197,9 +190,9 @@
         call cal_electric_potential(ifld_diff%i_magne,                  &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      node, ele, surf, sf_grp, Bnod_bcs, Asf_bcs, Fsf_bcs,        &
-     &      iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,           &
-     &      FEM_elens, diff_coefs, Fmatrix, MGCG_WK1%MG_vector,         &
-     &      fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &      iphys, jacobians, rhs_tbl, FEM_elens, diff_coefs,           &
+     &      Fmatrix, MGCG_WK1%MG_vector, fem_wk, surf_wk,               &
+     &      f_l, f_nl, nod_fld)
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_sol_m_potential', iloop
         call cal_sol_m_potential                                        &
@@ -211,16 +204,16 @@
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,        &
      &      Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,               &
-     &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &
-     &      FEM_elens, diff_coefs, m_lump, Bmatrix, MGCG_WK1%MG_vector, &
-     &      mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &      jacobians, rhs_tbl, FEM_elens, diff_coefs, m_lump, Bmatrix, &
+     &      MGCG_WK1%MG_vector, mhd_fem_wk, fem_wk, surf_wk,            &
+     &      f_l, f_nl, nod_fld) 
 !
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_rms_scalar_potential'
         call cal_rms_scalar_potential(iloop, ele%istack_ele_smp,        &
      &      iphys%i_mag_p, i_rms%i_mag_p, j_ave%i_mag_p,                &
-     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
-     &      rel_correct, ave_mp0, rms_mp0)
+     &      node, ele, nod_fld, jacobians%jac_3d, jacobians%jac_3d_l,   &
+     &      fem_wk, rel_correct, ave_mp0, rms_mp0)
 !
         if (iflag_debug.eq.1)                                           &
      &         write(12,*) 'average and RMS of potential correction: ', &
@@ -228,9 +221,9 @@
 !
         if (iflag_debug.gt.0) write(*,*) 'int_norm_div_a_monitor'
         call int_norm_div_a_monitor(iloop, node, ele,                   &
-     &      iphys, nod_fld, jac_3d_q, fem_wk, rel_correct)
+     &      iphys, nod_fld, jacobians%jac_3d, fem_wk, rel_correct)
 !        call int_rms_div_a_monitor(iloop, node, ele,                   &
-!     &      iphys, nod_fld, jac_3d_q, fem_wk, rel_correct)
+!     &      iphys, nod_fld, jacobians%jac_3d, fem_wk, rel_correct)
 !
         if(abs(rel_correct) .lt. FEM_prm%eps_4_coulomb) exit
       end do
@@ -242,8 +235,7 @@
       subroutine s_cal_magnetic_field(dt, FEM_prm, SGS_par,             &
      &          nod_comm, node, ele, surf, conduct, sf_grp,             &
      &          cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs, Fsf_bcs,           &
-     &          iphys, iphys_ele, ele_fld,                              &
-     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
+     &          iphys, iphys_ele, ele_fld, jacobians,                   &
      &          rhs_tbl, FEM_elens, icomp_sgs, ifld_diff,               &
      &          iphys_elediff, sgs_coefs, sgs_coefs_nod,                &
      &          diff_coefs, filtering, m_lump, Bmatrix, Fmatrix,        &
@@ -275,8 +267,7 @@
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
-      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
-      type(jacobians_2d), intent(in) :: jac_sf_grp_q, jac_sf_grp_l
+      type(jacobians_type), intent(in) :: jacobians
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(lumped_mass_matrices), intent(in) :: m_lump
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -323,25 +314,24 @@
      &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
      &    nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,          &
      &    Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,        &
-     &    jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,                   &
-     &    sgs_coefs, sgs_coefs_nod, diff_coefs, filtering, Bmatrix,     &
-     &    MGCG_WK1%MG_vector, wk_filter, mhd_fem_wk, fem_wk, surf_wk,   &
-     &    f_l, f_nl, nod_fld)
+     &    jacobians, rhs_tbl, FEM_elens, sgs_coefs, sgs_coefs_nod,      &
+     &    diff_coefs, filtering, Bmatrix, MGCG_WK1%MG_vector,           &
+     &    wk_filter, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
 !----  set magnetic field in insulate layer
 !
       iloop = -1
       call int_norm_div_b_monitor(iloop, node, ele,                     &
-     &    iphys, nod_fld, jac_3d_q, fem_wk, rel_correct)
+     &    iphys, nod_fld, jacobians%jac_3d, fem_wk, rel_correct)
 !
 !
       do iloop = 0, FEM_prm%maxiter_coulomb
         call cal_mag_potential(ifld_diff%i_magne,                       &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      node, ele, surf, sf_grp, Bnod_bcs, Bsf_bcs, Fsf_bcs,        &
-     &      iphys, jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,           &
-     &      FEM_elens, diff_coefs, Fmatrix, MGCG_WK1%MG_vector,         &
-     &      fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &      iphys, jacobians, rhs_tbl, FEM_elens, diff_coefs,           &
+     &      Fmatrix, MGCG_WK1%MG_vector, fem_wk, surf_wk,               &
+     &      f_l, f_nl, nod_fld)
 !
         call cal_sol_m_potential                                        &
      &     (node%numnod, node%istack_internal_smp, nod_fld%ntot_phys,   &
@@ -353,14 +343,14 @@
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,        &
      &      Bnod_bcs, Fsf_bcs, iphys, iphys_ele, ele_fld,               &
-     &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &
-     &      FEM_elens, diff_coefs, m_lump, Bmatrix, MGCG_WK1%MG_vector, &
-     &      mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &      jacobians, rhs_tbl, FEM_elens, diff_coefs, m_lump,          &
+     &      Bmatrix, MGCG_WK1%MG_vector, mhd_fem_wk, fem_wk, surf_wk,   &
+     &      f_l, f_nl, nod_fld)
 !
         call cal_rms_scalar_potential(iloop, ele%istack_ele_smp,        &
      &      iphys%i_mag_p, i_rms%i_mag_p, j_ave%i_mag_p,                &
-     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
-     &      rel_correct, ave_mp0, rms_mp0)
+     &      node, ele, nod_fld, jacobians%jac_3d, jacobians%jac_3d_l,   &
+     &      fem_wk, rel_correct, ave_mp0, rms_mp0)
 !
       if (iflag_debug.eq.1)                                             &
      &         write(12,*) 'average and RMS of potential correction: ', &
@@ -368,9 +358,9 @@
 !
 !
         call int_norm_div_b_monitor(iloop, node, ele,                   &
-     &      iphys, nod_fld, jac_3d_q, fem_wk, rel_correct)
+     &      iphys, nod_fld, jacobians%jac_3d, fem_wk, rel_correct)
 !        call int_rms_div_b_monitor(iloop, node, ele,                   &
-!     &      iphys, nod_fld, jac_3d_q, fem_wk, rel_correct)
+!     &      iphys, nod_fld, jacobians%jac_3d, fem_wk, rel_correct)
 !
         if (abs(rel_correct) .lt. FEM_prm%eps_4_coulomb) exit
       end do

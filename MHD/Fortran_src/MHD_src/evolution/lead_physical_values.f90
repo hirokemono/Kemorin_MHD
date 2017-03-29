@@ -28,8 +28,7 @@
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
-!!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
-!!        type(jacobians_2d), intent(in) :: jac_sf_grp
+!!        type(jacobians_type), intent(in) :: jacobians
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -71,7 +70,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
-      use t_jacobian_3d
+      use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
       use t_int_surface_data
@@ -99,8 +98,8 @@
 !
       subroutine lead_fields_by_FEM                                     &
      &         (time_d, FEM_prm, SGS_par, mesh, group, ele_mesh,        &
-     &          MHD_mesh, nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,  &
-     &          jac_3d_q, jac_3d_l, jac_sf_grp, rhs_tbl, FEM_elens,     &
+     &          MHD_mesh, nod_bcs, surf_bcs, iphys, iphys_ele,          &
+     &          ak_MHD, jacobians, rhs_tbl, FEM_elens,                  &
      &          icomp_sgs, icomp_diff, ifld_diff, iphys_elediff,        &
      &          sgs_coefs, sgs_coefs_nod, filtering, wide_filtering,    &
      &          layer_tbl, m_lump, wk_cor, wk_lsq, wk_diff, wk_filter,  &
@@ -127,8 +126,7 @@
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
-      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
-      type(jacobians_2d), intent(in) :: jac_sf_grp
+      type(jacobians_type), intent(in) :: jacobians
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(lumped_mass_matrices), intent(in) :: m_lump
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -162,9 +160,8 @@
       if (iflag_debug.gt.0) write(*,*) 'update_fields'
       call update_fields(time_d, FEM_prm, SGS_par, mesh, group,         &
      &    ele_mesh, MHD_mesh, nod_bcs, surf_bcs, iphys, iphys_ele,      &
-     &    jac_3d_q, jac_3d_l, jac_sf_grp, rhs_tbl, FEM_elens,           &
-     &    ifld_diff, icomp_diff, iphys_elediff,                         &
-     &    filtering, wide_filtering, layer_tbl, m_lump,                 &
+     &    jacobians, rhs_tbl, FEM_elens, ifld_diff, icomp_diff,         &
+     &    iphys_elediff, filtering, wide_filtering, layer_tbl, m_lump,  &
      &    wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, fem_wk,       &
      &    surf_wk, f_l, f_nl, nod_fld, ele_fld, diff_coefs)
 !
@@ -173,7 +170,7 @@
      &    mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,            &
      &    MHD_mesh%fluid, MHD_mesh%conduct, group%surf_grp,             &
      &    cd_prop1, nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,       &
-     &    jac_3d_q, jac_sf_grp, rhs_tbl, FEM_elens,                     &
+     &    jacobians%jac_3d, jacobians%jac_sf_grp, rhs_tbl, FEM_elens,   &
      &    ifld_diff, diff_coefs, m_lump, mhd_fem_wk, fem_wk, surf_wk,   &
      &    f_l, f_nl, nod_fld)
 !
@@ -183,7 +180,7 @@
       if (iflag_debug.gt.0) write(*,*) 'cal_energy_fluxes'
       call cal_energy_fluxes(time_d%dt, FEM_prm, SGS_par,               &
      &    mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs, iphys,    &
-     &    iphys_ele, ak_MHD, jac_3d_q, jac_sf_grp, rhs_tbl,             &
+     &    iphys_ele, ak_MHD, jacobians, rhs_tbl,                        &
      &    FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,               &
      &    sgs_coefs, sgs_coefs_nod, diff_coefs, filtering, m_lump,      &
      &    wk_filter, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,            &
@@ -194,13 +191,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_energy_fluxes                                      &
-     &         (dt, FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh,  &
-     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,            &
-     &          jac_3d_q, jac_sf_grp, rhs_tbl, FEM_elens,               &
-     &          icomp_sgs, ifld_diff, iphys_elediff,                    &
-     &          sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,        &
-     &          m_lump, wk_filter, mhd_fem_wk, fem_wk, surf_wk,         &
-     &          f_l, f_nl, nod_fld, ele_fld)
+     &        (dt, FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh,   &
+     &         nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD, jacobians,  &
+     &         rhs_tbl, FEM_elens, icomp_sgs, ifld_diff, iphys_elediff, &
+     &         sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,         &
+     &         m_lump, wk_filter, mhd_fem_wk, fem_wk, surf_wk,          &
+     &         f_l, f_nl, nod_fld, ele_fld)
 !
       use m_machine_parameter
       use m_physical_property
@@ -221,8 +217,7 @@
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
-      type(jacobians_3d), intent(in) :: jac_3d_q
-      type(jacobians_2d), intent(in) :: jac_sf_grp
+      type(jacobians_type), intent(in) :: jacobians
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(lumped_mass_matrices), intent(in) :: m_lump
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -246,8 +241,9 @@
       call cal_true_sgs_terms_pre(dt, FEM_prm, SGS_par,                 &
      &    mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,            &
      &    group%surf_grp, MHD_mesh%fluid, MHD_mesh%conduct,             &
-     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1, nod_bcs, surf_bcs,    &
-     &    iphys, iphys_ele, ak_MHD,  jac_3d_q, jac_sf_grp, rhs_tbl,     &
+     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
+     &    nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,                  &
+     &    jacobians%jac_3d, jacobians%jac_sf_grp, rhs_tbl,              &
      &    FEM_elens, ifld_diff, diff_coefs, mhd_fem_wk, fem_wk,         &
      &    surf_wk, f_l, f_nl, nod_fld, ele_fld)
 !
@@ -255,7 +251,7 @@
      &   (dt, FEM_prm, SGS_par%model_p, SGS_par%filter_p,               &
      &    mesh%nod_comm, mesh%node, mesh%ele,                           &
      &    MHD_mesh%fluid, MHD_mesh%conduct, cd_prop1, iphys,            &
-     &    iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,             &
+     &    iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl, FEM_elens,     &
      &    icomp_sgs, iphys_elediff, sgs_coefs, sgs_coefs_nod,           &
      &    filtering, wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
@@ -266,15 +262,17 @@
      &    mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,            &
      &    MHD_mesh%fluid, MHD_mesh%conduct, group%surf_grp,             &
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1, nod_bcs, surf_bcs,    &
-     &    iphys, iphys_ele, ak_MHD, jac_3d_q, jac_sf_grp, rhs_tbl,      &
+     &    iphys, iphys_ele, ak_MHD,                                     &
+     &    jacobians%jac_3d, jacobians%jac_sf_grp, rhs_tbl,              &
      &    FEM_elens, ifld_diff, diff_coefs, m_lump,                     &
      &    mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld, ele_fld)
       call cal_diff_of_sgs_terms                                        &
      &   (dt, FEM_prm, SGS_par%model_p, SGS_par%commute_p,              &
      &    mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,            &
      &    group%surf_grp, MHD_mesh%fluid, MHD_mesh%conduct,             &
-     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1, nod_bcs, surf_bcs,    &
-     &    iphys, iphys_ele, ak_MHD, jac_3d_q, jac_sf_grp, rhs_tbl,      &
+     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
+     &    nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,                  &
+     &    jacobians%jac_3d, jacobians%jac_sf_grp, rhs_tbl,              &
      &    FEM_elens, ifld_diff, diff_coefs, mhd_fem_wk,                 &
      &    fem_wk, surf_wk, f_l, f_nl, nod_fld, ele_fld)
 !
@@ -284,12 +282,12 @@
 !
       call cal_work_4_forces                                            &
      &   (FEM_prm, mesh%nod_comm, mesh%node, mesh%ele,                  &
-     &    fl_prop1, cd_prop1, iphys, jac_3d_q, rhs_tbl,                 &
+     &    fl_prop1, cd_prop1, iphys, jacobians%jac_3d, rhs_tbl,         &
      &    mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !
       call cal_work_4_sgs_terms(FEM_prm,                                &
      &   mesh%nod_comm, mesh%node, mesh%ele, MHD_mesh%conduct,          &
-     &   fl_prop1, cd_prop1, iphys, jac_3d_q, rhs_tbl,                  &
+     &   fl_prop1, cd_prop1, iphys, jacobians%jac_3d, rhs_tbl,          &
      &   mhd_fem_wk, fem_wk, f_nl, nod_fld)
 ! 
       end subroutine cal_energy_fluxes

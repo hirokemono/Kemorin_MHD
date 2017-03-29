@@ -10,10 +10,9 @@
 !!      subroutine update_with_velocity                                 &
 !!     &         (iak_diff_v, icomp_diff_v, ie_dvx, ie_dfvx, i_step, dt,&
 !!     &          FEM_prm, SGS_par, nod_comm, node, ele, surf, fluid,   &
-!!     &          sf_grp, Vsf_bcs, Psf_bcs, iphys, iphys_ele,           &
-!!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
-!!     &          FEM_elens, filtering, wide_filtering, layer_tbl,      &
-!!     &          wk_cor, wk_lsq, wk_diff, wk_filter,                   &
+!!     &          sf_grp, Vsf_bcs, Psf_bcs, iphys, iphys_ele, jacobians,&
+!!     &          rhs_tbl, FEM_elens, filtering, wide_filtering,        &
+!!     &          layer_tbl, wk_cor, wk_lsq, wk_diff, wk_filter,        &
 !!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,               &
 !!     &          nod_fld, ele_fld, diff_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -28,8 +27,7 @@
 !!        type(potential_surf_bc_type), intent(in) :: Psf_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
-!!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
-!!        type(jacobians_2d), intent(in) :: jac_sf_grp_q
+!!        type(jacobians_type), intent(in) :: jacobians
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(filtering_data_type), intent(in) :: filtering
@@ -63,7 +61,7 @@
       use t_group_data
       use t_phys_data
       use t_phys_address
-      use t_jacobian_3d
+      use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
       use t_int_surface_data
@@ -88,10 +86,9 @@
       subroutine update_with_velocity                                   &
      &         (iak_diff_v, icomp_diff_v, ie_dvx, ie_dfvx, i_step, dt,  &
      &          FEM_prm, SGS_par, nod_comm, node, ele, surf, fluid,     &
-     &          sf_grp, Vsf_bcs, Psf_bcs, iphys, iphys_ele,             &
-     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
-     &          FEM_elens, filtering, wide_filtering, layer_tbl,        &
-     &          wk_cor, wk_lsq, wk_diff, wk_filter,                     &
+     &          sf_grp, Vsf_bcs, Psf_bcs, iphys, iphys_ele, jacobians,  &
+     &          rhs_tbl, FEM_elens, filtering, wide_filtering,          &
+     &          layer_tbl, wk_cor, wk_lsq, wk_diff, wk_filter,          &
      &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                 &
      &          nod_fld, ele_fld, diff_coefs)
 !
@@ -118,8 +115,7 @@
       type(potential_surf_bc_type), intent(in) :: Psf_bcs
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
-      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
-      type(jacobians_2d), intent(in) :: jac_sf_grp_q
+      type(jacobians_type), intent(in) :: jacobians
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
@@ -146,7 +142,7 @@
       if (iphys_ele%i_velo .ne. 0) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &                 write(*,*) 'velocity_on_element'
-        call vector_on_element_1st(node, ele, jac_3d_q,                 &
+        call vector_on_element_1st(node, ele, jacobians%jac_3d,         &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &      nod_fld%ntot_phys, iphys%i_velo, nod_fld%d_fld,             &
      &      ele_fld%ntot_phys, iphys_ele%i_velo,                        &
@@ -157,7 +153,7 @@
      &      .and. iphys_ele%i_vort .ne. 0) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &                 write(*,*) 'vorticity_on_element'
-        call rotation_on_element_1st(node, ele, jac_3d_q,               &
+        call rotation_on_element_1st(node, ele, jacobians%jac_3d,       &
      &      fluid%istack_ele_fld_smp, FEM_prm%npoint_t_evo_int,         &
      &      nod_fld%ntot_phys, iphys%i_velo, nod_fld%d_fld,             &
      &      ele_fld%ntot_phys, iphys_ele%i_vort,                        &
@@ -213,8 +209,9 @@
            if(iflag_debug .ge. iflag_routine_msg)                       &
      &                 write(*,*) 'diff_filter_v_on_ele'
            call sel_int_diff_vector_on_ele(FEM_prm%npoint_t_evo_int,    &
-     &         fluid%istack_ele_fld_smp, iphys%i_filter_velo, ie_dfvx,  &
-     &         node, ele, nod_fld, jac_3d_q, jac_3d_l, mhd_fem_wk)
+     &        fluid%istack_ele_fld_smp, iphys%i_filter_velo, ie_dfvx,   &
+     &        node, ele, nod_fld, jacobians%jac_3d, jacobians%jac_3d_l, &
+     &        mhd_fem_wk)
          end if
 !
         if (SGS_par%commute_p%iflag_c_velo .eq. id_SGS_commute_ON       &
@@ -224,10 +221,9 @@
           call s_cal_diff_coef_velo(iak_diff_v, icomp_diff_v, dt,       &
      &        FEM_prm, SGS_par, nod_comm, node, ele, surf, sf_grp,      &
      &        Vsf_bcs, Psf_bcs, iphys, iphys_ele, ele_fld, fluid,       &
-     &        layer_tbl, jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,     &
-     &        FEM_elens, filtering, wk_filter, wk_cor, wk_lsq, wk_diff, &
-     &        mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                   &
-     &        nod_fld, diff_coefs)
+     &        layer_tbl, jacobians, rhs_tbl, FEM_elens, filtering,      &
+     &        wk_filter, wk_cor, wk_lsq, wk_diff, mhd_fem_wk,           &
+     &        fem_wk, surf_wk, f_l, f_nl, nod_fld, diff_coefs)
         end if
 !
       end if
@@ -239,8 +235,9 @@
            if(iflag_debug .ge. iflag_routine_msg)                       &
      &                 write(*,*) 'diff_velocity_on_ele'
            call sel_int_diff_vector_on_ele(FEM_prm%npoint_t_evo_int,    &
-     &         fluid%istack_ele_fld_smp, iphys%i_velo, ie_dvx,          &
-     &         node, ele, nod_fld, jac_3d_q, jac_3d_l, mhd_fem_wk)
+     &        fluid%istack_ele_fld_smp, iphys%i_velo, ie_dvx,           &
+     &        node, ele, nod_fld, jacobians%jac_3d, jacobians%jac_3d_l, &
+     &        mhd_fem_wk)
          end if
        end if
 !
