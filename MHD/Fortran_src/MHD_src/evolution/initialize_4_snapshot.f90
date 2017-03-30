@@ -257,7 +257,8 @@
      &    fem_int1%jacobians)
 !
       if (iflag_debug.eq.1) write(*,*)' int_surface_parameters'
-      call int_surface_parameters(mesh, ele_mesh%surf, group, surf1_wk)
+      call int_surface_parameters                                       &
+     &   (mesh, ele_mesh%surf, group, rhs_mat1%surf_wk)
 !
 !     --------------------- 
 !

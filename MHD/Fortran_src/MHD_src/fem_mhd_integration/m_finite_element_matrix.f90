@@ -23,7 +23,7 @@
 !
 !>      Stracture for FEM assembling
       type(arrays_finite_element_mat), save :: rhs_mat1
-!rhs_mat1%f_l
+!rhs_mat1%surf_wk
 !
 !>      Work array for FEM assemble in MHD model
       type(work_MHD_fe_mat), save :: mhd_fem1_wk
@@ -32,7 +32,7 @@
       type(work_finite_element_mat), save :: fem1_wk
 !
 !>      Work area for surface FEM assemble
-      type(work_surface_element_mat), save :: surf1_wk
+!      type(work_surface_element_mat), save :: surf1_wk
 !
 !      type(finite_ele_mat_node), save :: f1_l
 !
