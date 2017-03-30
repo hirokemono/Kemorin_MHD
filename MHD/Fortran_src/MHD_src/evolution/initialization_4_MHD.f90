@@ -209,7 +209,7 @@
       if (iflag_debug.eq.1) write(*,*)' allocate_array'
       call allocate_array(SGS_par, mesh%node, mesh%ele, cd_prop1,       &
      &    iphys, nod_fld, iphys_elediff, fem_int1%m_lump,               &
-     &    mhd_fem1_wk, fem1_wk, f1_l, f1_nl, label_sim)
+     &    mhd_fem1_wk, fem1_wk, f1_l, rhs_mat1%f_nl, label_sim)
 !
       if ( iflag_debug.ge.1 ) write(*,*) 'init_check_delta_t_data'
       call s_init_check_delta_t_data(cd_prop1, iphys, flex_data)

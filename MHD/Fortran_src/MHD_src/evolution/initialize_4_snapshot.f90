@@ -196,7 +196,7 @@
       if (iflag_debug.eq.1) write(*,*)' allocate_array'
       call allocate_array(SGS_par, mesh%node, mesh%ele, cd_prop1,       &
      &    iphys, nod_fld, iphys_elediff, fem_int1%m_lump,               &
-     &    mhd_fem1_wk, fem1_wk, f1_l, f1_nl, label_sim)
+     &    mhd_fem1_wk, fem1_wk, f1_l, rhs_mat1%f_nl, label_sim)
 !
       if (iflag_debug.eq.1) write(*,*)' set_reference_temp'
       call set_reference_temp                                           &

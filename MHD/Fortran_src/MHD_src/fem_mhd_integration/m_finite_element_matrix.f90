@@ -23,6 +23,7 @@
 !
 !>      Stracture for FEM assembling
       type(arrays_finite_element_mat), save :: rhs_mat1
+!rhs_mat1%f_nl
 !
 !>      Work array for FEM assemble in MHD model
       type(work_MHD_fe_mat), save :: mhd_fem1_wk
@@ -35,6 +36,6 @@
 !
       type(finite_ele_mat_node), save :: f1_l
 !
-      type(finite_ele_mat_node), save :: f1_nl
+!      type(finite_ele_mat_node), save :: f1_nl
 !
       end module m_finite_element_matrix
