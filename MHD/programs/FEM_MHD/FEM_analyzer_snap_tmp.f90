@@ -175,15 +175,13 @@
       iflag = lead_field_data_flag(flex_p1%istep_max_dt,                &
      &                             MHD_step, SGS_par1%sgs_step)
       if(iflag .eq. 0) then
-        call lead_fields_by_FEM(MHD_step%time_d,                        &
-     &     FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1,                &
-     &     MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,              &
-     &     ak_MHD, fem_int1%jacobians, fem_int1%rhs_tbl, FEM1_elen,                     &
+        call lead_fields_by_FEM(MHD_step%time_d, FEM_prm1, SGS_par1,    &
+     &     mesh1, group1, ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs,      &
+     &     iphys, iphys_ele, ak_MHD, fem_int1, FEM1_elen,               &
      &     icomp_sgs, icomp_diff, ifld_diff, iphys_elediff,             &
      &     sgs_coefs, sgs_coefs_nod, filtering1, wide_filtering,        &
-     &     layer_tbl1, fem_int1%m_lump, wk_cor1, wk_lsq1, wk_diff1,     &
-     &     wk_filter1, mhd_fem1_wk, rhs_mat1%fem_wk, rhs_mat1%surf_wk, rhs_mat1%f_l, rhs_mat1%f_nl,     &
-     &     nod_fld1, fld_ele1, diff_coefs)
+     &     layer_tbl1, wk_cor1, wk_lsq1, wk_diff1, wk_filter1,          &
+     &     mhd_fem1_wk, rhs_mat1, nod_fld1, fld_ele1, diff_coefs)
       end if
 !
       if (iflag_debug.eq.1)  write(*,*) 'lead_specital_SGS'
