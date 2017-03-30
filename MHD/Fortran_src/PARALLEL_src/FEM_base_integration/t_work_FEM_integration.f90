@@ -28,16 +28,17 @@
       implicit  none
 !
 !
+!>      Stracture of work area for FEM assembling
       type arrays_finite_element_mat
-!>     Structure of work area  for RHS linear vector assemble
+!>        Structure of work area  for RHS linear vector assemble
         type(finite_ele_mat_node) :: f_l
-!>     Structure of work area  for RHS nonlinear vector assemble
+!>        Structure of work area  for RHS nonlinear vector assemble
         type(finite_ele_mat_node) :: f_nl
 !
-!>     Structure of work area  for volume integration
+!>        Structure of work area  for volume integration
         type(work_finite_element_mat) :: fem_wk
 !
-!>     Structure of work area  for surface integration
+!>        Structure of work area  for surface integration
         type(work_surface_element_mat) :: surf_wk
       end type arrays_finite_element_mat
 !
@@ -50,7 +51,7 @@
         type(tables_4_FEM_assembles) :: rhs_tbl
 !
 !>        lumped mass matrix
-        type(lumped_mass_matrices) ::    m_lump
+        type(lumped_mass_matrices) :: m_lump
       end type finite_element_integration
 !
 !   ---------------------------------------------------------------------

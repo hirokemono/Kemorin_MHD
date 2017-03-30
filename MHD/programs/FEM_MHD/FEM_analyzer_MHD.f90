@@ -85,7 +85,7 @@
      &    ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,    &
      &    jacobians1, rhs_tbl1, FEM1_elen, ifld_diff, icomp_diff,       &
      &    iphys_elediff, filtering1, wide_filtering, layer_tbl1,        &
-     &    m1_lump, wk_cor1, wk_lsq1, wk_diff1, wk_filter1,              &
+     &    fem_int1%m_lump, wk_cor1, wk_lsq1, wk_diff1, wk_filter1,      &
      &    mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,                  &
      &    nod_fld1, fld_ele1, diff_coefs)
 !
@@ -122,7 +122,7 @@
      &      layer_tbl1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,  &
      &      jacobians1, rhs_tbl1, FEM1_elen, ifld_sgs, icomp_sgs,       &
      &      ifld_diff, icomp_diff, iphys_elediff,                       &
-     &      filtering1, wide_filtering, m1_lump,                        &
+     &      filtering1, wide_filtering, fem_int1%m_lump,                &
      &      wk_cor1, wk_lsq1, wk_sgs1, wk_diff1, wk_filter1,            &
      &      mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,                &
      &      nod_fld1, sgs_coefs, sgs_coefs_nod, diff_coefs)
@@ -138,8 +138,8 @@
      &     ak_MHD, jacobians1, rhs_tbl1, FEM1_elen,                     &
      &     icomp_sgs, icomp_diff, ifld_diff, iphys_elediff,             &
      &     sgs_coefs, sgs_coefs_nod, filtering1, wide_filtering,        &
-     &     layer_tbl1, m1_lump, wk_cor1, wk_lsq1, wk_diff1, wk_filter1, &
-     &     mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,                 &
+     &     layer_tbl1, fem_int1%m_lump, wk_cor1, wk_lsq1, wk_diff1,     &
+     &     wk_filter1, mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,     &
      &     nod_fld1, fld_ele1, diff_coefs)
       end if
 !
@@ -225,9 +225,9 @@
      &   MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,        &
      &   jacobians1, rhs_tbl1, FEM1_elen, ifld_sgs, icomp_sgs,          &
      &   ifld_diff, icomp_diff, iphys_elediff, sgs_coefs_nod,           &
-     &   filtering1, wide_filtering, layer_tbl1, m1_lump, solver_pack1, &
-     &   MGCG_WK1, wk_cor1, wk_lsq1, wk_sgs1, wk_diff1, wk_filter1,     &
-     &   mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,                   &
+     &   filtering1, wide_filtering, layer_tbl1, fem_int1%m_lump,       &
+     &   solver_pack1, MGCG_WK1, wk_cor1, wk_lsq1, wk_sgs1, wk_diff1,   &
+     &   wk_filter1, mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,       &
      &   nod_fld1, fld_ele1, sgs_coefs, diff_coefs)
 !
 !     ----- Evaluate model coefficients
@@ -240,7 +240,7 @@
      &      layer_tbl1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,  &
      &      jacobians1, rhs_tbl1, FEM1_elen, ifld_sgs, icomp_sgs,       &
      &      ifld_diff, icomp_diff, iphys_elediff,                       &
-     &      filtering1, wide_filtering, m1_lump,                        &
+     &      filtering1, wide_filtering, fem_int1%m_lump,                &
      &      wk_cor1, wk_lsq1, wk_sgs1, wk_diff1, wk_filter1,            &
      &      mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,                &
      &      nod_fld1, sgs_coefs, sgs_coefs_nod, diff_coefs)
@@ -267,7 +267,7 @@
      &        ak_MHD, jacobians1, rhs_tbl1, FEM1_elen,                  &
      &        icomp_sgs, icomp_diff, ifld_diff,                         &
      &        iphys_elediff, sgs_coefs, sgs_coefs_nod,                  &
-     &        filtering1, wide_filtering, layer_tbl1, m1_lump,          &
+     &        filtering1, wide_filtering, layer_tbl1, fem_int1%m_lump,  &
      &        wk_cor1, wk_lsq1, wk_diff1, wk_filter1,                   &
      &        mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,              &
      &        nod_fld1, fld_ele1, diff_coefs)

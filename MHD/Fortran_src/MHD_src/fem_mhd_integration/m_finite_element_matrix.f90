@@ -13,9 +13,14 @@
       use t_finite_element_mat
       use t_MHD_finite_element_mat
       use t_int_surface_data
+      use t_work_FEM_integration
 !
       implicit  none
 !
+!
+!>      Stracture for FEM assembling
+      type(finite_element_integration), save :: fem_int1
+!fem_int1%m_lump
 !
 !>      Work array for FEM assemble in MHD model
       type(work_MHD_fe_mat), save :: mhd_fem1_wk
@@ -29,7 +34,5 @@
       type(finite_ele_mat_node), save :: f1_l
 !
       type(finite_ele_mat_node), save :: f1_nl
-!
-      type(lumped_mass_matrices), save :: m1_lump
 !
       end module m_finite_element_matrix

@@ -210,8 +210,8 @@
 !
       if (iflag_debug.eq.1) write(*,*)' allocate_array'
       call allocate_array(SGS_par, mesh%node, mesh%ele, cd_prop1,       &
-     &    iphys, nod_fld, iphys_elediff, m1_lump, mhd_fem1_wk, fem1_wk, &
-     &    f1_l, f1_nl, label_sim)
+     &    iphys, nod_fld, iphys_elediff, fem_int1%m_lump,               &
+     &    mhd_fem1_wk, fem1_wk, f1_l, f1_nl, label_sim)
 !
       if ( iflag_debug.ge.1 ) write(*,*) 'init_check_delta_t_data'
       call s_init_check_delta_t_data(cd_prop1, iphys, flex_data)
@@ -323,7 +323,7 @@
 !
       call int_RHS_mass_matrices(FEM_prm%npoint_t_evo_int,              &
      &    mesh%node, mesh%ele, MHD_mesh, jacobians1%jac_3d, rhs_tbl1,   &
-     &    mhd_fem1_wk, fem1_wk, f1_l, m1_lump)
+     &    mhd_fem1_wk, fem1_wk, f1_l, fem_int1%m_lump)
 !
 !     ---------------------
 !
