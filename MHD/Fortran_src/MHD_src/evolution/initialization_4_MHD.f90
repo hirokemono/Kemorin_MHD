@@ -51,7 +51,6 @@
       use m_physical_property
       use m_flexible_time_step
 !
-      use m_element_id_4_node
       use m_finite_element_matrix
       use m_ele_material_property
       use m_mean_square_values
@@ -293,7 +292,7 @@
       if (iflag_debug.eq.1) write(*,*) 'set_MHD_whole_connectivity'
       call set_MHD_whole_connectivity(FEM_prm%DJDS_param,               &
      &    mesh%nod_comm, mesh%node, mesh%ele,                           &
-     &    next_tbl1, fem_int1%rhs_tbl)
+     &    fem_int1%next_tbl, fem_int1%rhs_tbl)
       if (iflag_debug.eq.1) write(*,*) 'set_MHD_layerd_connectivity'
       call set_MHD_layerd_connectivity                                  &
      &   (FEM_prm%DJDS_param, mesh%node, mesh%ele, MHD_mesh%fluid)

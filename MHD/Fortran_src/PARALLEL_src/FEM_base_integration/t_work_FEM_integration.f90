@@ -23,6 +23,7 @@
       use t_finite_element_mat
       use t_int_surface_data
       use t_jacobians
+      use t_next_node_ele_4_node
       use t_table_FEM_const
 !
       implicit  none
@@ -45,11 +46,13 @@
 !
 !>      Stracture for FEM assembling
       type finite_element_integration
-!>        Stracture for Jacobians for FEM grid
-        type(jacobians_type) :: jacobians
+!>        Structure of neighbouring node and element list for each node
+        type(next_nod_ele_table) :: next_tbl
 !>        Structure for FEM construction table
         type(tables_4_FEM_assembles) :: rhs_tbl
 !
+!>        Stracture for Jacobians for FEM grid
+        type(jacobians_type) :: jacobians
 !>        lumped mass matrix
         type(lumped_mass_matrices) :: m_lump
       end type finite_element_integration

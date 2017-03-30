@@ -4,7 +4,7 @@
 !        programmed by H.Matsui on Nov., 2008
 !
 !!      subroutine int_coriolis_nod_exp(node, fl_prop, mhd_fem_wk,      &
-!!     &          i_velo, nod_fld, f_l, f1_nl)
+!!     &          i_velo, nod_fld, f_l, f_nl)
 !!      subroutine int_vol_coriolis_crank_ele                           &
 !!     &         (num_int, node, ele, fluid, fl_prop,                   &
 !!     &          jac_3d, rhs_tbl, i_velo, nod_fld, fem_wk, f_l)
@@ -40,7 +40,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_coriolis_nod_exp(node, fl_prop, mhd_fem_wk,        &
-     &          i_velo, nod_fld, f_l, f1_nl)
+     &          i_velo, nod_fld, f_l, f_nl)
 !
       use t_MHD_finite_element_mat
 !
@@ -49,14 +49,14 @@
       type(fluid_property), intent(in) :: fl_prop
       type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
       type(phys_data), intent(in) :: nod_fld
-      type(finite_ele_mat_node), intent(inout) :: f_l, f1_nl
+      type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !
 !
       if (fl_prop%iflag_4_coriolis .eq. id_FORCE_at_node) then
         call cal_coriolis_nod(node%numnod, node%istack_nod_smp,         &
      &      fl_prop%sys_rot, fl_prop%coef_cor,                          &
      &      mhd_fem_wk%mlump_fl%ml_o, nod_fld%ntot_phys,                &
-     &      i_velo, nod_fld%d_fld, f1_nl%ff)
+     &      i_velo, nod_fld%d_fld, f_nl%ff)
       else if (fl_prop%iflag_4_coriolis .eq. id_Coriolis_nod_imp) then
         call cal_coriolis_nod(node%numnod, node%istack_nod_smp,         &
      &      fl_prop%sys_rot, fl_prop%coef_cor,                          &

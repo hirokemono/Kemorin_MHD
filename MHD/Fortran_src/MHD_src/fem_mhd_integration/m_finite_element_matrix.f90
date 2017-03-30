@@ -20,7 +20,9 @@
 !
 !>      Stracture for FEM assembling
       type(finite_element_integration), save :: fem_int1
-!fem_int1%rhs_tbl
+!
+!>      Stracture for FEM assembling
+      type(arrays_finite_element_mat), save :: rhs_mat1
 !
 !>      Work array for FEM assemble in MHD model
       type(work_MHD_fe_mat), save :: mhd_fem1_wk

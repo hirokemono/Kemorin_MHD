@@ -21,7 +21,6 @@
       use m_MHD_step_parameter
       use m_mesh_data
       use m_node_phys_data
-      use m_element_id_4_node
       use m_jacobians_VIZ
       use m_sph_trans_arrays_MHD
       use m_MHD_step_parameter
@@ -81,7 +80,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_w_viz'
       call FEM_initialize_w_viz                                         &
      &   (MHD_step1, mesh1, group1, ele_mesh1, iphys, nod_fld1,         &
-     &    next_tbl1, jacobians_VIZ1)
+     &    next_tbl_VIZ1, jacobians_VIZ1)
 !
 !        Initialize spherical transform dynamo
 !
@@ -157,7 +156,7 @@
           call start_eleps_time(12)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
      &        mesh1, group1, ele_mesh1, nod_fld1,                       &
-     &        next_tbl1%neib_ele, jacobians_VIZ1)
+     &        next_tbl_VIZ1%neib_ele, jacobians_VIZ1)
           call end_eleps_time(12)
         end if
 !

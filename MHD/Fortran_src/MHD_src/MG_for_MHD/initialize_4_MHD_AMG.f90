@@ -44,8 +44,6 @@
 !
       implicit none
 !
-      type(next_nod_ele_table), allocatable :: MG_next_table(:)
-!
 ! ---------------------------------------------------------------------
 !
       contains
@@ -215,8 +213,6 @@
 !
 !     --------------------- 
 !
-      allocate(MG_next_table(MGCG_WK%num_MG_level))
-!
       do i_level = 1, MGCG_WK%num_MG_level
         if(my_rank .lt. MGCG_WK%MG_mpi(i_level)%nprocs ) then
           if(iflag_debug .gt. 0) write(*,*)                             &
@@ -224,7 +220,7 @@
           call s_set_table_type_RHS_assemble                            &
      &       (MGCG_FEM%MG_mesh(i_level)%mesh%node,                      &
      &        MGCG_FEM%MG_mesh(i_level)%mesh%ele,                       &
-     &        MG_next_table(i_level),                                   &
+     &        MGCG_FEM%MG_FEM_int(i_level)%next_tbl,                    &
      &        MGCG_FEM%MG_FEM_int(i_level)%rhs_tbl)
         else
           if(iflag_debug .gt. 0) write(*,*)                             &
@@ -232,7 +228,7 @@
           call empty_table_type_RHS_assemble                            &
      &       (MGCG_FEM%MG_mesh(i_level)%mesh%node,                      &
      &        MGCG_FEM%MG_FEM_int(i_level)%rhs_tbl,                     &
-     &        MG_next_table(i_level))
+     &        MGCG_FEM%MG_FEM_int(i_level)%next_tbl)
         end if
       end do
 !
@@ -245,8 +241,8 @@
           call s_set_djds_connectivity_type                             &
      &       (MGCG_FEM%MG_mesh(i_level)%mesh,                           &
      &        MGCG_WK%MG_mpi(i_level),                                  &
-     &        MG_next_table(i_level), DJDS_param,                       &
-     &        MHD_matrices%MG_DJDS_table(i_level) )
+     &        MGCG_FEM%MG_FEM_int(i_level)%next_tbl,                    &
+     &        DJDS_param, MHD_matrices%MG_DJDS_table(i_level) )
         else
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            'empty_djds_connectivity_type', i_level
@@ -255,11 +251,9 @@
      &        MHD_matrices%MG_DJDS_table(i_level) )
         end if
 !
-        call dealloc_iele_belonged(MG_next_table(i_level)%neib_ele)
-        call dealloc_inod_next_node(MG_next_table(i_level)%neib_nod)
+        call dealloc_iele_belonged(MGCG_FEM%MG_FEM_int(i_level)%next_tbl%neib_ele)
+        call dealloc_inod_next_node(MGCG_FEM%MG_FEM_int(i_level)%next_tbl%neib_nod)
       end do
-!
-      deallocate(MG_next_table)
 !
 !     -----  set DJDS matrix connectivity
 !

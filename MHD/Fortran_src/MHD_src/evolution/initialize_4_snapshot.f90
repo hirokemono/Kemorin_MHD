@@ -62,7 +62,6 @@
       use m_work_4_dynamic_model
       use m_boundary_condition_IDs
       use m_array_for_send_recv
-      use m_element_id_4_node
       use m_finite_element_matrix
       use m_surf_data_list
       use m_bc_data_velo
@@ -248,7 +247,7 @@
 !
       if (iflag_debug.eq.1) write(*,*)' set_connect_RHS_assemble'
       call s_set_table_type_RHS_assemble                                &
-     &   (mesh%node, mesh%ele, next_tbl1, fem_int1%rhs_tbl)
+     &   (mesh%node, mesh%ele, fem_int1%next_tbl, fem_int1%rhs_tbl)
 !
 !     ---------------------
 !

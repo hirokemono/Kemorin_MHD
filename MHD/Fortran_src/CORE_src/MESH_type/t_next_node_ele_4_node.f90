@@ -6,8 +6,6 @@
 !!@n      Modified by H. Matsui on Feb., 2012
 !
 !> @brief Neighbouring node and element list for each node
-!>     This routine is substitution of the following module
-!>@n        (module m_element_id_4_node)
 !!
 !!@verbatim
 !!      subroutine alloc_numele_belonged(numnod, neib_ele)
