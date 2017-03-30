@@ -97,7 +97,7 @@
           call start_eleps_time(12)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
      &        mesh1, group1, ele_mesh1, nod_fld1,                       &
-     &        next_tbl1%neib_ele, jacobians1%jac_3d)
+     &        next_tbl1%neib_ele, jacobians1)
           call end_eleps_time(12)
         end if
       end do

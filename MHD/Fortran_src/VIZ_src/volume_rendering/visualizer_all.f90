@@ -5,7 +5,7 @@
 !
 !!      subroutine init_visualize(mesh, group, ele_mesh, nod_fld)
 !!      subroutine visualize_all(viz_step, time_d,                     &
-!!     &          mesh, group, ele_mesh, nod_fld, ele_4_nod, jac_3d)
+!!     &          mesh, group, ele_mesh, nod_fld, ele_4_nod, jacobians)
 !!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(time_data), intent(in) :: time_d
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -13,7 +13,7 @@
 !!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(element_around_node), intent(in) :: ele_4_nod
-!!        type(jacobians_3d), intent(in) :: jac_3d
+!!        type(jacobians_type), intent(in) :: jacobians
 !
       module visualizer_all
 !
@@ -34,7 +34,7 @@
       use t_surface_group_connect
       use t_phys_data
       use t_next_node_ele_4_node
-      use t_jacobian_3d
+      use t_jacobians
 !
       implicit  none
 !
@@ -90,7 +90,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine visualize_all(viz_step, time_d,                       &
-     &          mesh, group, ele_mesh, nod_fld, ele_4_nod, jac_3d)
+     &          mesh, group, ele_mesh, nod_fld, ele_4_nod, jacobians)
 !
       use m_cross_section
       use m_isosurface
@@ -105,7 +105,7 @@
 !
       type(phys_data), intent(in) :: nod_fld
       type(element_around_node), intent(in) :: ele_4_nod
-      type(jacobians_3d), intent(in) :: jac_3d
+      type(jacobians_type), intent(in) :: jacobians
 !
 !
       call start_eleps_time(65)
@@ -122,7 +122,7 @@
       call start_eleps_time(67)
       call PVR_visualize                                                &
      &   (viz_step%PVR_t%istep_file, mesh%node, mesh%ele,               &
-     &    ele_mesh%surf, group, jac_3d, nod_fld)
+     &    ele_mesh%surf, group, jacobians%jac_3d, nod_fld)
       call end_eleps_time(67)
 !
       call start_eleps_time(68)

@@ -154,7 +154,7 @@
           call start_eleps_time(12)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
      &        mesh1, group1, ele_mesh1, nod_fld1,                       &
-     &        next_tbl1%neib_ele, jacobians1%jac_3d)
+     &        next_tbl1%neib_ele, jacobians1)
           call end_eleps_time(12)
         end if
         call end_eleps_time(1)
@@ -192,6 +192,7 @@
       use m_spheric_parameter
       use m_node_phys_data
 !
+      use volume_rendering_only
       use volume_rendering
       use FEM_analyzer_sph_MHD
       use output_viz_file_control
@@ -239,7 +240,7 @@
         call start_eleps_time(12)
         call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,        &
      &      mesh1, group1, ele_mesh1, nod_fld1,                         &
-     &      next_tbl1%neib_ele, jacobians1%jac_3d)
+     &      next_tbl1%neib_ele, jacobians1)
         call deallocate_pvr_data
         call end_eleps_time(12)
       end if
@@ -261,11 +262,10 @@
           end if
 !
           call start_eleps_time(12)
-          call PVR_initialize                                           &
-     &       (mesh1%node, mesh1%ele, ele_mesh1%surf, group1, nod_fld1)
-          call PVR_visualize(MHD_step1%viz_step%PVR_t%istep_file,       &
-     &        mesh1%node, mesh1%ele, ele_mesh1%surf, group1,            &
-     &        jacobians1%jac_3d, nod_fld1)
+          call init_visualize_pvr_only                                  &
+     &       (mesh1, group1, ele_mesh1, nod_fld1)
+          call visualize_pvr_only(MHD_step1%viz_step%PVR_t%istep_file,  &
+     &        mesh1, group1, ele_mesh1, jacobians1, nod_fld1)
           call deallocate_pvr_data
           call end_eleps_time(12)
         end if

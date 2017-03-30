@@ -84,6 +84,9 @@
       call cal_surf_normal_at_nod(mesh%node, mesh%ele, surf,            &
      &    group%surf_grp, group%surf_grp_geom, group%surf_nod_grp)
 !
+!      call check_jacobians_trilinear                                   &
+!     &   (my_rank, mesh%ele, jacobians%jac_3d_l)
+!
       end subroutine const_jacobian_volume_normals
 !
 ! ----------------------------------------------------------------------

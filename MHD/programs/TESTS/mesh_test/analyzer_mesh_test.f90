@@ -128,9 +128,6 @@
       call const_jacobian_volume_normals(my_rank, nprocs,               &
      &    mesh, ele_mesh%surf, group, jacobians1)
 !
-!      call check_jacobians_trilinear                                   &
-!     &   (my_rank, mesh%ele, jacobians1%jac_3d_l)
-!
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 's_cal_normal_vector_spherical'
