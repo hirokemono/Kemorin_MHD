@@ -269,7 +269,7 @@
 !     ---------------------
 !
       call int_RHS_mass_matrices(FEM_prm%npoint_t_evo_int,              &
-     &     mesh%node, mesh%ele, MHD_mesh, jacobians1%jac_3d, rhs_tbl1,  &
+     &     mesh, MHD_mesh, jacobians1, rhs_tbl1,                        &
      &     mhd_fem1_wk, fem1_wk, f1_l, fem_int1%m_lump)
 !
 !     ---------------------

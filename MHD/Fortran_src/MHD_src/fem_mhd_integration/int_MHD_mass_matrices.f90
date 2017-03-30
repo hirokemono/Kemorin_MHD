@@ -7,12 +7,11 @@
 !     Modified by H. Matsui on Oct. 2005
 !     Modified by H. Matsui on Oct. 2006
 !
-!!      subroutine int_RHS_mass_matrices(n_int, node, ele, MHD_mesh,    &
-!!     &           jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_l, m_lump)
-!!        type(node_data), intent(in) :: node
-!!        type(element_data), intent(in) :: ele
+!!      subroutine int_RHS_mass_matrices(n_int, mesh, MHD_mesh,         &
+!!     &          jacobians, rhs_tbl, mhd_fem_wk, fem_wk, f_l, m_lump)
+!!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_data_MHD), intent(in) :: MHD_mesh
-!!        type(jacobians_3d), intent(in) :: jac_3d
+!!        type(jacobians_type), intent(in) :: jacobians
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -28,9 +27,10 @@
 !
       use int_vol_mass_matrix
 !
+      use t_mesh_data
       use t_geometry_data_MHD
       use t_geometry_data
-      use t_jacobian_3d
+      use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
       use t_MHD_finite_element_mat
@@ -45,15 +45,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_RHS_mass_matrices(n_int, node, ele, MHD_mesh,      &
-     &           jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_l, m_lump)
+      subroutine int_RHS_mass_matrices(n_int, mesh, MHD_mesh,           &
+     &          jacobians, rhs_tbl, mhd_fem_wk, fem_wk, f_l, m_lump)
 !
       integer(kind = kint), intent(in) :: n_int
 !
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
+      type(mesh_geometry), intent(in) :: mesh
       type(mesh_data_MHD), intent(in) :: MHD_mesh
-      type(jacobians_3d), intent(in) :: jac_3d
+      type(jacobians_type), intent(in) :: jacobians
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -62,15 +61,15 @@
       type(lumped_mass_matrices), intent(inout) :: m_lump
 !
 !
-      if     (ele%nnod_4_ele.eq.num_t_quad                              &
-     &   .or. ele%nnod_4_ele.eq.num_t_lag) then
-        call int_mass_matrices_quad(n_int, node, ele,                   &
+      if     (mesh%ele%nnod_4_ele.eq.num_t_quad                         &
+     &   .or. mesh%ele%nnod_4_ele.eq.num_t_lag) then
+        call int_mass_matrices_quad(n_int, mesh%node, mesh%ele,         &
      &      MHD_mesh%fluid, MHD_mesh%conduct, MHD_mesh%insulate,        &
-     &      jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_l, m_lump)
+     &      jacobians%jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_l, m_lump)
       else
-        call int_mass_matrix_trilinear(n_int, node, ele,                &
+        call int_mass_matrix_trilinear(n_int, mesh%node, mesh%ele,      &
      &      MHD_mesh%fluid, MHD_mesh%conduct, MHD_mesh%insulate,        &
-     &      jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_l, m_lump)
+     &      jacobians%jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_l, m_lump)
       end if 
 !
       end subroutine int_RHS_mass_matrices

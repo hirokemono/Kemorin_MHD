@@ -15,6 +15,7 @@
       use t_work_4_sph_trans
       use t_file_IO_parameter
       use t_sph_transforms
+      use t_jacobians
 !
       use calypso_mpi
 !
@@ -120,7 +121,8 @@
 !*   ------------------------------------------------------------------
 !
       subroutine nonlinear_incuction_wSGS_SPH(FEM_prm, SGS_param,       &
-     &          sph, comms_sph, trans_p, conduct, ipol, rj_fld)
+     &          sph, comms_sph, trans_p, conduct, jacobians,            &
+     &          ipol, rj_fld)
 !
       use m_solver_SR
       use m_schmidt_poly_on_rtm
@@ -136,6 +138,7 @@
       type(sph_comm_tables), intent(in) :: comms_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(phys_address), intent(in) :: ipol
+      type(jacobians_type), intent(in) :: jacobians
 !
       type(field_geometry_data), intent(in) :: conduct
       type(phys_data), intent(inout) :: rj_fld
@@ -145,7 +148,7 @@
      &   (icomp_sgs%i_induction, iphys_elediff%i_velo, dt,              &
      &    FEM_prm, SGS_param, mesh1%nod_comm, mesh1%node, mesh1%ele,    &
      &    conduct, cd_prop1, iphys, iphys_ele, fld_ele1,                &
-     &    jacobians1%jac_3d, rhs_tbl1, FEM1_elen, filtering1,           &
+     &    jacobians%jac_3d, rhs_tbl1, FEM1_elen, filtering1,            &
      &    wk_filter1, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
 !
       call interpolate_vector_type                                      &
