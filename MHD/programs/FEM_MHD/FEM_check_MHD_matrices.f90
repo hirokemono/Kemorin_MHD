@@ -64,7 +64,7 @@
      &    FEM_prm1, SGS_par1%model_p, SGS_par1%commute_p,               &
      &    mesh1, group1, ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs,       &
      &    ak_MHD, fem_int1%jacobians, FEM1_elen, ifld_diff, diff_coefs, &
-     &    fem_int1%rhs_tbl, MHD1_mat_tbls, rhs_mat1%surf_wk, mhd_fem1_wk, fem1_wk,      &
+     &    fem_int1%rhs_tbl, MHD1_mat_tbls, rhs_mat1%surf_wk, mhd_fem1_wk, rhs_mat1%fem_wk,      &
      &    MHD1_matrices)
 !
       if (iflag_debug.eq.1) write(*,*) 's_write_djds_mat_MHD'

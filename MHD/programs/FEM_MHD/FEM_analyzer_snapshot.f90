@@ -147,7 +147,7 @@
      &    fem_int1%jacobians, fem_int1%rhs_tbl, FEM1_elen, ifld_diff, icomp_diff,       &
      &    iphys_elediff, filtering1, wide_filtering, layer_tbl1,        &
      &    fem_int1%m_lump, wk_cor1, wk_lsq1, wk_diff1, wk_filter1,      &
-     &    mhd_fem1_wk, fem1_wk, rhs_mat1%surf_wk, rhs_mat1%f_l, rhs_mat1%f_nl,                  &
+     &    mhd_fem1_wk, rhs_mat1%fem_wk, rhs_mat1%surf_wk, rhs_mat1%f_l, rhs_mat1%f_nl,                  &
      &    nod_fld1, fld_ele1, diff_coefs)
 !
 !     ----- Evaluate model coefficients
@@ -162,7 +162,7 @@
      &      ifld_diff, icomp_diff, iphys_elediff,                       &
      &      filtering1, wide_filtering, fem_int1%m_lump,                &
      &      wk_cor1, wk_lsq1, wk_sgs1, wk_diff1, wk_filter1,            &
-     &      mhd_fem1_wk, fem1_wk, rhs_mat1%surf_wk, rhs_mat1%f_l, rhs_mat1%f_nl,                &
+     &      mhd_fem1_wk, rhs_mat1%fem_wk, rhs_mat1%surf_wk, rhs_mat1%f_l, rhs_mat1%f_nl,                &
      &      nod_fld1, sgs_coefs, sgs_coefs_nod, diff_coefs)
       end if
 !
@@ -178,7 +178,7 @@
      &     icomp_sgs, icomp_diff, ifld_diff, iphys_elediff,             &
      &     sgs_coefs, sgs_coefs_nod, filtering1, wide_filtering,        &
      &     layer_tbl1, fem_int1%m_lump, wk_cor1, wk_lsq1, wk_diff1,     &
-     &     wk_filter1, mhd_fem1_wk, fem1_wk, rhs_mat1%surf_wk, rhs_mat1%f_l, rhs_mat1%f_nl,     &
+     &     wk_filter1, mhd_fem1_wk, rhs_mat1%fem_wk, rhs_mat1%surf_wk, rhs_mat1%f_l, rhs_mat1%f_nl,     &
      &     nod_fld1, fld_ele1, diff_coefs)
       end if
 !
@@ -192,7 +192,7 @@
         call output_time_step_control                                   &
      &     (FEM_prm1, MHD_step%time_d, mesh1, MHD_mesh1,                &
      &      fl_prop1, cd_prop1, iphys, nod_fld1, iphys_ele, fld_ele1,   &
-     &      fem_int1%jacobians, fem1_wk, mhd_fem1_wk)
+     &      fem_int1%jacobians, rhs_mat1%fem_wk, mhd_fem1_wk)
       end if
 !
       iflag = output_IO_flag(flex_p1%istep_max_dt, MHD_step%point_step)

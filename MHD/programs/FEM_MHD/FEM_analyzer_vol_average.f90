@@ -117,7 +117,7 @@
         call output_time_step_control                                   &
      &     (FEM_prm1, MHD_step%time_d, mesh1, MHD_mesh1,                &
      &      fl_prop1, cd_prop1, iphys, nod_fld1, iphys_ele, fld_ele1,   &
-     &      fem_int1%jacobians, fem1_wk, mhd_fem1_wk)
+     &      fem_int1%jacobians, rhs_mat1%fem_wk, mhd_fem1_wk)
       end if
 !
       end subroutine FEM_analyze_vol_average
