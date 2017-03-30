@@ -112,8 +112,10 @@
       call alloc_dxidxs_ele(mesh%ele%numele, dxidxs)
       call alloc_dxidxs_node(mesh%node%numnod, dxidxs)
 !
-      call alloc_fem_mat_base_type                                      &
-     &   (mesh, ele_mesh%surf, group, rhs_mat)
+      call alloc_finite_elem_mat(mesh, rhs_mat)
+      call alloc_int_surf_data                                          &
+     &   (group%surf_grp%num_item, ele_mesh%surf%nnod_4_surf,           &
+     &    rhs_mat%surf_wk)
       call alloc_fem_int_base_type(mesh, fem_int)
       call allocate_scalar_ele_4_int(mesh%ele%numele)
 !
@@ -272,7 +274,8 @@
 !
 !
       call deallocate_scalar_ele_4_int
-      call dealloc_fem_mat_base_type(rhs_mat)
+      call dealloc_int_surf_data(rhs_mat%surf_wk)
+      call dealloc_finite_elem_mat(rhs_mat)
       call dealloc_crs_mat_data(mass1)
       call dealloc_crs_connect(tbl_crs)
 !

@@ -7,11 +7,6 @@
 !>    Structure for lumped mass matrix and RHS vector assembler
 !!
 !!@verbatim
-!!      subroutine alloc_finite_elem_mat                                &
-!!     &         (node, ele, fem_wk, f_l, f_nl)
-!!      subroutine dealloc_finite_elem_mat(fem_wk, f_l, f_nl)
-!!
-!!
 !!      subroutine alloc_type_fem_mat_work(ele, fem_wk)
 !!        type(element_data), intent(in) :: ele
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -82,43 +77,6 @@
 !
       contains
 !
-!   ---------------------------------------------------------------------
-!
-      subroutine alloc_finite_elem_mat(node, ele, fem_wk, f_l, f_nl)
-!
-      use t_geometry_data
-      use m_phys_constants
-!
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-!
-      type(work_finite_element_mat), intent(inout) :: fem_wk
-      type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
-!
-!
-      call alloc_type_fem_mat_work(ele, fem_wk)
-!
-      call alloc_type_fem_matrices(n_vector, node, f_l)
-      call alloc_type_fem_matrices(n_vector, node, f_nl)
-!
-      end subroutine alloc_finite_elem_mat
-!
-!   ---------------------------------------------------------------------
-!
-      subroutine dealloc_finite_elem_mat(fem_wk, f_l, f_nl)
-!
-      type(work_finite_element_mat), intent(inout) :: fem_wk
-      type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
-!
-!
-      call dealloc_type_fem_mat_work(fem_wk)
-!
-      call dealloc_type_fem_matrices(f_l)
-      call dealloc_type_fem_matrices(f_nl)
-!
-      end subroutine dealloc_finite_elem_mat
-!
-!   ---------------------------------------------------------------------
 !   ---------------------------------------------------------------------
 !
       subroutine alloc_type_fem_mat_work(ele, fem_wk)

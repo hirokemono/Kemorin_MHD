@@ -46,8 +46,7 @@
       type(lumped_mass_mat_layerd), intent(inout) ::    mk_MHD
 !
 !
-      call alloc_fem_mat_base_type                                      &
-     &   (femmesh%mesh, ele_mesh%surf, femmesh%group, rhs_mat)
+      call alloc_finite_elem_mat(femmesh%mesh, rhs_mat)
       call alloc_fem_int_base_type(femmesh%mesh, fem_int)
       call alloc_fem_mat_fluid_type(femmesh%mesh%node%numnod,           &
      &    mk_MHD)

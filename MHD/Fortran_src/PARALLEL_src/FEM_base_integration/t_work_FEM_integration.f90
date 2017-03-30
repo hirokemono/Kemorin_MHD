@@ -7,14 +7,13 @@
 !>    Structure for lumped mass matrix and RHS vector assembler
 !
 !!@verbatim
-!!      subroutine alloc_fem_mat_base_type                              &
-!!     &         (node, ele, surf, surf_grp, rhs_mat)
+!!      subroutine alloc_finite_elem_mat(mesh, rhs_mat)
+!!      subroutine dealloc_finite_elem_mat(rhs_mat)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
-!!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
-!!      subroutine dealloc_fem_mat_base_type(rhs_mat)
+!!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!@endverbatim
 !
       module t_work_FEM_integration
@@ -63,27 +62,21 @@
 !
 !   ---------------------------------------------------------------------
 !
-      subroutine alloc_fem_mat_base_type(mesh, surf, group, rhs_mat)
+      subroutine alloc_finite_elem_mat(mesh, rhs_mat)
 !
       use t_mesh_data
-      use t_surface_data
-      use t_group_data
       use m_phys_constants
 !
       type(mesh_geometry), intent(in) :: mesh
-      type(surface_data), intent(in) :: surf
-      type(mesh_groups), intent(in) ::   group
-!
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !
 !
-      call alloc_finite_elem_mat(mesh%node, mesh%ele,                   &
-     &    rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl)
+      call alloc_type_fem_mat_work(mesh%ele, rhs_mat%fem_wk)
 !
-      call alloc_int_surf_data                                          &
-     &   (group%surf_grp%num_item, surf%nnod_4_surf, rhs_mat%surf_wk)
+      call alloc_type_fem_matrices(n_vector, mesh%node, rhs_mat%f_l)
+      call alloc_type_fem_matrices(n_vector, mesh%node, rhs_mat%f_nl)
 !
-      end subroutine alloc_fem_mat_base_type
+      end subroutine alloc_finite_elem_mat
 !
 !   ---------------------------------------------------------------------
 !
@@ -103,17 +96,17 @@
 !   ---------------------------------------------------------------------
 !   ---------------------------------------------------------------------
 !
-      subroutine dealloc_fem_mat_base_type(rhs_mat)
+      subroutine dealloc_finite_elem_mat(rhs_mat)
 !
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !
 !
-      call dealloc_int_surf_data(rhs_mat%surf_wk)
+      call dealloc_type_fem_mat_work(rhs_mat%fem_wk)
 !
-      call dealloc_finite_elem_mat                                      &
-     &   (rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl)
+      call dealloc_type_fem_matrices(rhs_mat%f_l)
+      call dealloc_type_fem_matrices(rhs_mat%f_nl)
 !
-      end subroutine dealloc_fem_mat_base_type
+      end subroutine dealloc_finite_elem_mat
 !
 !   ---------------------------------------------------------------------
 !
