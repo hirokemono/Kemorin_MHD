@@ -80,10 +80,9 @@
       call update_fields                                                &
      &   (MHD_step%time_d, FEM_prm1, SGS_par1, mesh1, group1,           &
      &    ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,    &
-     &    fem_int1%jacobians, fem_int1%rhs_tbl, FEM1_elen, ifld_diff, icomp_diff,       &
-     &    iphys_elediff, filtering1, wide_filtering, layer_tbl1,        &
-     &    fem_int1%m_lump, wk_cor1, wk_lsq1, wk_diff1, wk_filter1,      &
-     &    mhd_fem1_wk, rhs_mat1%fem_wk, rhs_mat1%surf_wk, rhs_mat1%f_l, rhs_mat1%f_nl,                  &
+     &    fem_int1, FEM1_elen, ifld_diff, icomp_diff, iphys_elediff,    &
+     &    filtering1, wide_filtering, layer_tbl1, wk_cor1, wk_lsq1,     &
+     &    wk_diff1, wk_filter1, mhd_fem1_wk, rhs_mat1,                  &
      &    nod_fld1, fld_ele1, diff_coefs)
 !
       if (SGS_par1%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
@@ -211,12 +210,11 @@
       call fields_evolution_4_FEM_SPH                                   &
      &   (MHD_step%time_d, FEM_prm1, SGS_par1,                          &
      &    mesh1, group1, ele_mesh1, MHD_mesh1%fluid,                    &
-     &    nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD, fem_int1%jacobians,      &
-     &    fem_int1%rhs_tbl, FEM1_elen, ifld_sgs, icomp_sgs, ifld_diff,          &
-     &    icomp_diff, iphys_elediff, sgs_coefs_nod,                     &
-     &    filtering1, wide_filtering, layer_tbl1, solver_pack1,         &
-     &    MGCG_WK1, wk_cor1, wk_lsq1, wk_sgs1, wk_diff1, wk_filter1,    &
-     &    mhd_fem1_wk, rhs_mat1%fem_wk, rhs_mat1%surf_wk, rhs_mat1%f_l, rhs_mat1%f_nl,                  &
+     &    nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD, fem_int1,        &
+     &    FEM1_elen, ifld_sgs, icomp_sgs, ifld_diff, icomp_diff,        &
+     &    iphys_elediff, sgs_coefs_nod, filtering1, wide_filtering,     &
+     &    layer_tbl1, solver_pack1, MGCG_WK1, wk_cor1, wk_lsq1,         &
+     &    wk_sgs1, wk_diff1, wk_filter1, mhd_fem1_wk, rhs_mat1,         &
      &    nod_fld1, fld_ele1, sgs_coefs, diff_coefs)
 !
 !     ----- Evaluate model coefficients

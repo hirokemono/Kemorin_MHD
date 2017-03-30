@@ -149,10 +149,10 @@
       if (iflag_debug.gt.0) write(*,*) 'update_fields'
       call update_fields(time_d, FEM_prm, SGS_par, mesh, group,         &
      &    ele_mesh, MHD_mesh, nod_bcs, surf_bcs, iphys, iphys_ele,      &
-     &    fem_int%jacobians, fem_int%rhs_tbl, FEM_elens, ifld_diff, icomp_diff,         &
-     &    iphys_elediff, filtering, wide_filtering, layer_tbl, fem_int%m_lump,  &
-     &    wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk, rhs_mat%fem_wk,       &
-     &    rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, ele_fld, diff_coefs)
+     &    fem_int, FEM_elens, ifld_diff, icomp_diff, iphys_elediff,     &
+     &    filtering, wide_filtering, layer_tbl, wk_cor, wk_lsq,         &
+     &    wk_diff, wk_filter, mhd_fem_wk, rhs_mat,                      &
+     &    nod_fld, ele_fld, diff_coefs)
 !
       call cal_field_by_rotation                                        &
      &   (time_d%dt, FEM_prm, SGS_par%model_p, SGS_par%commute_p,       &
