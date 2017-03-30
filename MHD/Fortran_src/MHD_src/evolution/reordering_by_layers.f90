@@ -11,7 +11,7 @@
 !!     &         (SGS_par, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM,             &
 !!     &          FEM_prm, ele, group, MHD_mesh, MG_interpolate)
 !!        type(MGCG_data), intent(in) :: MGCG_WK
-!!        type(mesh_4_MGCG), intent(in) :: MGCG_FEM
+!!        type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
 !!        type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -85,8 +85,8 @@
 !
       type(SGS_paremeters), intent(in) :: SGS_par
       type(MGCG_data), intent(in) :: MGCG_WK
-      type(mesh_4_MGCG), intent(in) :: MGCG_FEM
 !
+      type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
       type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(element_data), intent(inout) :: ele

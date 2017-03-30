@@ -54,7 +54,7 @@
 !
       type mesh_4_MGCG
 !>        Mesh structure for Multigrid
-        type(mesh_data), pointer :: MG_mesh(:)
+        type(mesh_data), allocatable :: MG_mesh(:)
 !>        Element structure for Multigrid
         type(element_geometry), allocatable ::  MG_ele_mesh(:)
 !

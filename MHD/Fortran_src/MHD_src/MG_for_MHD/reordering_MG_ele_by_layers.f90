@@ -7,7 +7,7 @@
 !!    &         (MGCG_WK, MGCG_FEM, MGCG_MHD_FEM,                       &
 !!    &          FEM_prm, MG_interpolate)
 !!        type(MGCG_data), intent(in) :: MGCG_WK
-!!        type(mesh_4_MGCG), intent(in) :: MGCG_FEM
+!!        type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
 !!        type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(MG_itp_table), intent(inout)                             &
@@ -36,8 +36,8 @@
       use t_MGCG_data_4_MHD
 !
       type(MGCG_data), intent(in) :: MGCG_WK
-      type(mesh_4_MGCG), intent(in) :: MGCG_FEM
 !
+      type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
       type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(MG_itp_table), intent(inout)                                 &
