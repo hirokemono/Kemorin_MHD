@@ -159,8 +159,9 @@
      &    mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,            &
      &    MHD_mesh%fluid, MHD_mesh%conduct, group%surf_grp,             &
      &    cd_prop1, nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,       &
-     &    fem_int%jacobians%jac_3d, fem_int%jacobians%jac_sf_grp, fem_int%rhs_tbl, FEM_elens,   &
-     &    ifld_diff, diff_coefs, fem_int%m_lump, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%surf_wk,   &
+     &    fem_int%jacobians%jac_3d, fem_int%jacobians%jac_sf_grp,       &
+     &    fem_int%rhs_tbl, FEM_elens, ifld_diff, diff_coefs,            &
+     &    fem_int%m_lump, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%surf_wk,  &
      &    rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_helicity'
@@ -226,17 +227,18 @@
      &    group%surf_grp, MHD_mesh%fluid, MHD_mesh%conduct,             &
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
      &    nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,                  &
-     &    fem_int%jacobians%jac_3d, fem_int%jacobians%jac_sf_grp, fem_int%rhs_tbl,              &
-     &    FEM_elens, ifld_diff, diff_coefs, mhd_fem_wk, rhs_mat%fem_wk,         &
+     &    fem_int%jacobians, fem_int%rhs_tbl, FEM_elens,                &
+     &    ifld_diff, diff_coefs, mhd_fem_wk, rhs_mat%fem_wk,            &
      &    rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, ele_fld)
 !
       call cal_sgs_terms_4_monitor                                      &
      &   (dt, FEM_prm, SGS_par%model_p, SGS_par%filter_p,               &
      &    mesh%nod_comm, mesh%node, mesh%ele,                           &
      &    MHD_mesh%fluid, MHD_mesh%conduct, cd_prop1, iphys,            &
-     &    iphys_ele, ele_fld, fem_int%jacobians%jac_3d, fem_int%rhs_tbl, FEM_elens,     &
-     &    icomp_sgs, iphys_elediff, sgs_coefs, sgs_coefs_nod,           &
-     &    filtering, wk_filter, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &    iphys_ele, ele_fld, fem_int%jacobians, fem_int%rhs_tbl,       &
+     &    FEM_elens, icomp_sgs, iphys_elediff,                          &
+     &    sgs_coefs, sgs_coefs_nod, filtering, wk_filter, mhd_fem_wk,   &
+     &    rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
 !
       call cal_fluxes_4_monitor                                         &
      &   (mesh%node, fl_prop1, cd_prop1, iphys, nod_fld)
@@ -245,32 +247,32 @@
      &    mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,            &
      &    MHD_mesh%fluid, MHD_mesh%conduct, group%surf_grp,             &
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1, nod_bcs, surf_bcs,    &
-     &    iphys, iphys_ele, ak_MHD,                                     &
-     &    fem_int%jacobians%jac_3d, fem_int%jacobians%jac_sf_grp, fem_int%rhs_tbl,              &
-     &    FEM_elens, ifld_diff, diff_coefs, fem_int%m_lump,            &
-     &    mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, ele_fld)
+     &    iphys, iphys_ele, ak_MHD, fem_int%jacobians, fem_int%rhs_tbl, &
+     &    FEM_elens, ifld_diff, diff_coefs, fem_int%m_lump, mhd_fem_wk, &
+     &    rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl,   &
+     &    nod_fld, ele_fld)
       call cal_diff_of_sgs_terms                                        &
      &   (dt, FEM_prm, SGS_par%model_p, SGS_par%commute_p,              &
      &    mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,            &
      &    group%surf_grp, MHD_mesh%fluid, MHD_mesh%conduct,             &
-     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
-     &    nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,                  &
-     &    fem_int%jacobians%jac_3d, fem_int%jacobians%jac_sf_grp, fem_int%rhs_tbl,              &
+     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1, nod_bcs, surf_bcs,    &
+     &    iphys, iphys_ele, ak_MHD, fem_int%jacobians, fem_int%rhs_tbl, &
      &    FEM_elens, ifld_diff, diff_coefs, mhd_fem_wk,                 &
-     &    rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld, ele_fld)
+     &    rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl,   &
+     &    nod_fld, ele_fld)
 !
       call cal_true_sgs_terms_post                                      &
      &   (SGS_par%filter_p, mesh%nod_comm, mesh%node, iphys,            &
      &    filtering, wk_filter, nod_fld)
 !
       call cal_work_4_forces                                            &
-     &   (FEM_prm, mesh%nod_comm, mesh%node, mesh%ele,                  &
-     &    fl_prop1, cd_prop1, iphys, fem_int%jacobians%jac_3d, fem_int%rhs_tbl,         &
+     &   (FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, fl_prop1,        &
+     &    cd_prop1, iphys, fem_int%jacobians, fem_int%rhs_tbl,          &
      &    mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl, nod_fld)
 !
       call cal_work_4_sgs_terms(FEM_prm,                                &
      &   mesh%nod_comm, mesh%node, mesh%ele, MHD_mesh%conduct,          &
-     &   fl_prop1, cd_prop1, iphys, fem_int%jacobians%jac_3d, fem_int%rhs_tbl,          &
+     &   fl_prop1, cd_prop1, iphys, fem_int%jacobians, fem_int%rhs_tbl, &
      &   mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl, nod_fld)
 ! 
       end subroutine cal_energy_fluxes
