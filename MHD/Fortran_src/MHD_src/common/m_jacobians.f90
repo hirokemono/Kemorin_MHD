@@ -14,6 +14,6 @@
 !
 !
 !>     Stracture for Jacobians for FEM grid
-      type(jacobians_type), save :: jacobians1
+      type(jacobians_type), save :: jacobians_VIZ1
 !
       end module m_jacobians

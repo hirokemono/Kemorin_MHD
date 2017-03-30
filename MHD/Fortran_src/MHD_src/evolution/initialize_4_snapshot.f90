@@ -242,7 +242,8 @@
 !
       if (iflag_debug.eq.1) write(*,*)' const_MHD_jacobian_and_volumes'
       call const_MHD_jacobian_and_volumes(SGS_par%model_p,              &
-     &    ele_mesh, group, mesh, layer_tbl, jacobians1, MHD_mesh)
+     &    ele_mesh, group, mesh, layer_tbl, fem_int1%jacobians,         &
+     &    MHD_mesh)
 !
 !     --------------------- 
 !
@@ -254,7 +255,8 @@
 !
       if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
       call const_normal_vector                                          &
-     &   (my_rank, nprocs, mesh%node, ele_mesh%surf, jacobians1)
+     &   (my_rank, nprocs, mesh%node, ele_mesh%surf,                    &
+     &    fem_int1%jacobians)
 !
       if (iflag_debug.eq.1) write(*,*)' int_surface_parameters'
       call int_surface_parameters(mesh, ele_mesh%surf, group, surf1_wk)
@@ -269,7 +271,7 @@
 !     ---------------------
 !
       call int_RHS_mass_matrices(FEM_prm%npoint_t_evo_int,              &
-     &     mesh, MHD_mesh, jacobians1, rhs_tbl1,                        &
+     &     mesh, MHD_mesh, fem_int1%jacobians, rhs_tbl1,                &
      &     mhd_fem1_wk, fem1_wk, f1_l, fem_int1%m_lump)
 !
 !     ---------------------
