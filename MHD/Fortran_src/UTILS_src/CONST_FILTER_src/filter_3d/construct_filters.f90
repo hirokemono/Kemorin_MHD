@@ -3,14 +3,13 @@
 !
 !     Written by H. Matsui on Mar., 2008
 !
-!!      subroutine select_const_filter(file_name, nod_comm, node, ele,  &
-!!     &          jac_3d_q, rhs_tbl, tbl_crs, rhs_mat, FEM_elen,        &
-!!     &          dxidxs, FEM_moments)
+!!      subroutine select_const_filter                                  &
+!!     &         (file_name, nod_comm, node, ele, fem_int, tbl_crs,     &
+!!     &          rhs_mat, FEM_elen, dxidxs, FEM_moments)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
-!!        type(jacobians_3d), intent(in) :: jac_3d_q
-!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(gradient_model_data_type), intent(in) :: FEM_elen
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(dxidx_data_type), intent(inout) :: dxidxs
@@ -54,17 +53,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine select_const_filter(file_name, nod_comm, node, ele,    &
-     &          jac_3d_q, rhs_tbl, tbl_crs, rhs_mat, FEM_elen,          &
-     &          dxidxs, FEM_moments)
+      subroutine select_const_filter                                    &
+     &         (file_name, nod_comm, node, ele, fem_int, tbl_crs,       &
+     &          rhs_mat, FEM_elen, dxidxs, FEM_moments)
 !
 !
       character(len=kchara), intent(in) :: file_name
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
-      type(jacobians_3d), intent(in) :: jac_3d_q
-      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elen
       type(CRS_matrix_connect), intent(inout) :: tbl_crs
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
@@ -75,26 +73,28 @@
       if (iflag_tgt_filter_type .eq. 1)  then
         if (iflag_debug.eq.1) write(*,*) 'const_commutative_filter'
         call const_commutative_filter(file_name, node, ele,             &
-     &      jac_3d_q, tbl_crs, rhs_mat, FEM_elen, FEM_moments)
+     &      fem_int%jacobians%jac_3d, tbl_crs, rhs_mat,                 &
+     &      FEM_elen, FEM_moments)
 !
       else if (iflag_tgt_filter_type .eq. -1) then
         if (iflag_debug.eq.1) write(*,*) 'correct_commutative_filter'
-        call correct_commutative_filter(node, ele, jac_3d_q,            &
+        call correct_commutative_filter                                 &
+     &     (node, ele, fem_int%jacobians%jac_3d,                        &
      &      tbl_crs, rhs_mat, FEM_elen, dxidxs, FEM_moments)
 !
       else if (iflag_tgt_filter_type .ge. -4                            &
      &     .and. iflag_tgt_filter_type .le. -2) then
         if (iflag_debug.eq.1) write(*,*) 'correct_by_simple_filter'
-        call correct_by_simple_filter                                   &
-     &     (nod_comm, node, ele, jac_3d_q, rhs_tbl, tbl_crs,            &
-     &      rhs_mat, FEM_elen, dxidxs, FEM_moments)
+        call correct_by_simple_filter(nod_comm, node, ele,              &
+     &      fem_int%jacobians%jac_3d, fem_int%rhs_tbl, fem_int%m_lump,  &
+     &      tbl_crs, rhs_mat, FEM_elen, dxidxs, FEM_moments)
 !
       else if (iflag_tgt_filter_type.ge.2                               &
      &     .and. iflag_tgt_filter_type.le.4) then
         if (iflag_debug.eq.1) write(*,*) 'const_simple_filter'
         call const_simple_filter(file_name, nod_comm, node, ele,        &
-     &      jac_3d_q, rhs_tbl, tbl_crs, rhs_mat, FEM_elen,              &
-     &      dxidxs, FEM_moments)
+     &      fem_int%jacobians%jac_3d, fem_int%rhs_tbl, fem_int%m_lump,  &
+     &      tbl_crs, rhs_mat, FEM_elen, dxidxs, FEM_moments)
       end if
 !
       end subroutine select_const_filter
@@ -152,7 +152,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine const_simple_filter(file_name, nod_comm, node, ele,    &
-     &          jac_3d_q, rhs_tbl, tbl_crs, rhs_mat, FEM_elen,          &
+     &          jac_3d_q, rhs_tbl, m_lump, tbl_crs, rhs_mat, FEM_elen,  &
      &          dxidxs, FEM_moments)
 !
       use cal_1st_diff_deltax_4_nod
@@ -166,6 +166,7 @@
       type(element_data), intent(in) :: ele
       type(jacobians_3d), intent(in) :: jac_3d_q
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(lumped_mass_matrices), intent(in) :: m_lump
       type(CRS_matrix_connect), intent(inout) :: tbl_crs
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !
@@ -191,8 +192,8 @@
 !
       if(iflag_debug.eq.1)  write(*,*) 's_const_filter_mom_ele 1'
       call s_const_filter_mom_ele                                       &
-     &   (nod_comm, node, ele, jac_3d_q, rhs_tbl, tbl_crs, rhs_mat,     &
-     &    FEM_moments%mom_nod(1), FEM_moments%mom_ele(1))
+     &   (nod_comm, node, ele, jac_3d_q, rhs_tbl, tbl_crs, m_lump,      &
+     &    rhs_mat, FEM_moments%mom_nod(1), FEM_moments%mom_ele(1))
       if(iflag_debug.eq.1)                                              &
      &       write(*,*) 'cal_fmoms_ele_by_elen 2'
       call cal_fmoms_ele_by_elen(FEM_elen, FEM_moments%mom_ele(1))
@@ -329,8 +330,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine correct_by_simple_filter                               &
-     &         (nod_comm, node, ele, jac_3d_q, rhs_tbl, tbl_crs,        &
-     &          rhs_mat, FEM_elen, dxidxs, FEM_moments)
+     &         (nod_comm, node, ele, jac_3d_q, rhs_tbl, m_lump,         &
+     &          tbl_crs, rhs_mat, FEM_elen, dxidxs, FEM_moments)
 !
       use m_ctl_param_newdom_filter
       use m_filter_file_names
@@ -346,8 +347,10 @@
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+
       type(jacobians_3d), intent(in) :: jac_3d_q
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(lumped_mass_matrices), intent(in) :: m_lump
       type(CRS_matrix_connect), intent(inout) :: tbl_crs
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !
@@ -425,7 +428,7 @@ integer(kind = kint) :: ierr
 !
       if(iflag_debug.eq.1)  write(*,*) 's_const_filter_mom_ele 1'
       call s_const_filter_mom_ele                                       &
-     &   (nod_comm, node, ele, jac_3d_q, rhs_tbl, tbl_crs,              &
+     &   (nod_comm, node, ele, jac_3d_q, rhs_tbl, tbl_crs, m_lump,      &
      &    rhs_mat, FEM_moments%mom_nod(1), FEM_moments%mom_ele(1))
       if(iflag_debug.eq.1)                                              &
      &       write(*,*) 'correct_fmoms_ele_by_elen 1'

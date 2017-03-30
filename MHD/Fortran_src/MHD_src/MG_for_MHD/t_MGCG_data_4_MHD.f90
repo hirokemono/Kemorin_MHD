@@ -3,8 +3,10 @@
 !
 !     Written by H. Matsui on Dec., 2008
 !
+!!@verbatim
 !!      subroutine alloc_MGCG_MHD_data(MGCG_WK, MGCG_MHD_FEM)
 !!      subroutine dealloc_MGCG_MHD_mesh(MGCG_MHD_FEM)
+!!@endverbatim
 !
       module t_MGCG_data_4_MHD
 !

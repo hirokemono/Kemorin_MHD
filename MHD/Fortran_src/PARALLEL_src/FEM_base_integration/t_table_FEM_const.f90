@@ -5,29 +5,29 @@
 !
 !> @brief Stricture for index table for FEM assemble
 !
-!      subroutine set_idx_list_whole_crs_mat                            &
-!     &         (node, ele, tbl_crs, rhs_tbl, mat_tbl)
-!        type(node_data), intent(in) :: node
-!        type(element_data), intent(in) :: ele
-!        type(CRS_matrix_connect), intent(in) :: tbl_crs
-!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-!        type(table_mat_const), intent(inout) :: mat_tbl
+!!      subroutine set_idx_list_whole_crs_mat                           &
+!!     &         (node, ele, tbl_crs, rhs_tbl, mat_tbl)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(CRS_matrix_connect), intent(in) :: tbl_crs
+!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(table_mat_const), intent(inout) :: mat_tbl
 !!
-!      subroutine alloc_type_sorted_node(np_smp, numnod, rhs_tbl)
-!        integer(kind = kint), intent(in) :: np_smp, numnod
-!        type(tables_4_FEM_assembles), intent(inout) :: rhs_tbl
-!      subroutine alloc_type_sort_smp(rhs_tbl)
-!        type(tables_4_FEM_assembles), intent(inout) :: rhs_tbl
-!      subroutine alloc_type_marix_list(nnod_4_ele, rhs_tbl, mat_tbl)
-!        integer(kind = kint), intent(in) :: nnod_4_ele
-!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-!        type(table_mat_const), intent(inout) :: mat_tbl
-!      subroutine dealloc_type_sorted_node(rhs_tbl)
-!        type(tables_4_FEM_assembles), intent(inout) :: rhs_tbl
-!      subroutine dealloc_type_sort_smp(rhs_tbl)
-!        type(tables_4_FEM_assembles), intent(inout) :: rhs_tbl
-!      subroutine dealloc_type_marix_list(mat_tbl)
-!        type(table_mat_const), intent(inout) :: mat_tbl
+!!      subroutine alloc_type_sorted_node(np_smp, numnod, rhs_tbl)
+!!        integer(kind = kint), intent(in) :: np_smp, numnod
+!!        type(tables_4_FEM_assembles), intent(inout) :: rhs_tbl
+!!      subroutine alloc_type_sort_smp(rhs_tbl)
+!!        type(tables_4_FEM_assembles), intent(inout) :: rhs_tbl
+!!      subroutine alloc_type_marix_list(nnod_4_ele, rhs_tbl, mat_tbl)
+!!        integer(kind = kint), intent(in) :: nnod_4_ele
+!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(table_mat_const), intent(inout) :: mat_tbl
+!!      subroutine dealloc_type_sorted_node(rhs_tbl)
+!!        type(tables_4_FEM_assembles), intent(inout) :: rhs_tbl
+!!      subroutine dealloc_type_sort_smp(rhs_tbl)
+!!        type(tables_4_FEM_assembles), intent(inout) :: rhs_tbl
+!!      subroutine dealloc_type_marix_list(mat_tbl)
+!!        type(table_mat_const), intent(inout) :: mat_tbl
 !
       module t_table_FEM_const
 !

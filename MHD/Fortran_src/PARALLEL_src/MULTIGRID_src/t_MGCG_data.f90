@@ -3,6 +3,7 @@
 !
 !     Written by H. Matsui on Dec., 2008
 !
+!!@verbatim
 !!      subroutine alloc_MGCG_data(num_level, MGCG_WK)
 !!      subroutine alloc_MGCG_mesh(MGCG_WK, MGCG_FEM)
 !!
@@ -17,6 +18,7 @@
 !!       type(MGCG_file_list), intent(inout) :: MG_file
 !!       type(MGCG_data), intent(inout) :: MGCG_WK
 !!       type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
+!!@endverbatim
 !
       module t_MGCG_data
 !
@@ -61,11 +63,8 @@
 !>        Element interpolation table
         type(interpolate_table), allocatable :: MG_c2f_ele_tbl(:)
 !
-!>        Jacobians for coarse mesh
-        type(jacobians_type), allocatable :: MG_jacobians(:)
-!
-!>        Interpolation table for multigrid
-        type(tables_4_FEM_assembles), allocatable :: MG_FEM_tbl(:)
+!>        Stracture for FEM assembling
+        type(finite_element_integration), allocatable :: MG_FEM_int(:)
 !>        FEM assemble table for multigrid mesh
         type(arrays_finite_element_mat), allocatable :: MG_FEM_mat(:)
       end type mesh_4_MGCG
@@ -103,10 +102,8 @@
 !
       allocate(MGCG_FEM%MG_c2f_ele_tbl(MGCG_WK%num_MG_level))
 !
-      allocate(MGCG_FEM%MG_jacobians(MGCG_WK%num_MG_level))
-!
       allocate(MGCG_FEM%MG_FEM_mat(MGCG_WK%num_MG_level))
-      allocate(MGCG_FEM%MG_FEM_tbl(MGCG_WK%num_MG_level))
+      allocate(MGCG_FEM%MG_FEM_int(MGCG_WK%num_MG_level))
 !
       end subroutine alloc_MGCG_mesh
 !
@@ -135,9 +132,7 @@
 !
       deallocate(MGCG_FEM%MG_c2f_ele_tbl)
 !
-      deallocate(MGCG_FEM%MG_jacobians)
-!
-      deallocate(MGCG_FEM%MG_FEM_tbl)
+      deallocate(MGCG_FEM%MG_FEM_int)
       deallocate(MGCG_FEM%MG_FEM_mat)
 !
       end subroutine dealloc_MGCG_mesh

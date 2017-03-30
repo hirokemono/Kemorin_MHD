@@ -81,8 +81,8 @@
       label_sim = 'GeoFEM_MHD'
 !
       if (iflag_debug.ge.1) write(*,*) 'alloc_finite_elem_mat'
-      call alloc_finite_elem_mat                                        &
-     &   (node, ele, m_lump, fem_wk, f_l, f_nl)
+      call alloc_finite_elem_mat(node, ele, fem_wk, f_l, f_nl)
+      call alloc_type_fem_lumped_mass(node%numnod, m_lump)
       call alloc_mass_mat_fluid(node%numnod, mhd_fem_wk)
       call alloc_mass_mat_conduct(node%numnod, mhd_fem_wk)
 !

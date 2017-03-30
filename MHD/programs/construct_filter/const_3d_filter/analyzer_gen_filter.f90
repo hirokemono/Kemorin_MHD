@@ -37,10 +37,9 @@
       type(mesh_groups), save :: group_filter
       type(element_geometry), save :: ele_filter
 !
-!>     Stracture for Jacobians for FEM grid
-      type(jacobians_type), save :: jacobians_f
+!>      Stracture for FEM assembling
+      type(finite_element_integration), save :: fem_int_f
 !
-      type(tables_4_FEM_assembles), save :: rhs_tbl_f
       type(CRS_matrix_connect), save :: tbl_crs_f
       type(table_mat_const), save :: mat_tbl_f
       type(arrays_finite_element_mat), save :: rhs_mat_f
@@ -142,10 +141,10 @@
       call maximum_integration_points(num_int_points)
       call const_jacobian_and_volume(my_rank, nprocs,                   &
      &    mesh_filter%node, group_filter%surf_grp,                      &
-     &    group_filter%infty_grp, mesh_filter%ele, jacobians_f)
+     &    group_filter%infty_grp, mesh_filter%ele, fem_int_f%jacobians)
 !
 !      call check_jacobians_trilinear                                   &
-!     &   (my_rank, mesh_filter%ele, jacobians_f%jac_3d_l)
+!     &   (my_rank, mesh_filter%ele, fem_int_f%jacobians%jac_3d_l)
 !
 !  -------------------------------
 !
@@ -203,10 +202,9 @@
       call init_send_recv(mesh_filter%nod_comm)
 !
       if(iflag_debug.eq.1)  write(*,*) 's_cal_element_size'
-      call s_cal_element_size                                           &
-     &   (mesh_filter%nod_comm, mesh_filter%node, mesh_filter%ele,      &
-     &    jacobians_f%jac_3d, rhs_tbl_f, tbl_crs_f, mat_tbl_f,          &
-     &    rhs_mat_f, FEM_elen_f, filter_dxi1, dxidxs1)
+      call s_cal_element_size(mesh_filter, ele_filter,                  &
+     &    group_filter, tbl_crs_f, mat_tbl_f, rhs_mat_f, fem_int_f,     &
+     &    FEM_elen_f, filter_dxi1, dxidxs1)
       call dealloc_jacobians_ele(filter_dxi1)
 !
 !  ---------------------------------------------------
@@ -237,8 +235,8 @@
 !
         call select_const_filter(file_name,                             &
     &       mesh_filter%nod_comm, mesh_filter%node, mesh_filter%ele,    &
-    &       jacobians_f%jac_3d, rhs_tbl_f, tbl_crs_f, rhs_mat_f,        &
-    &       FEM_elen_f, dxidxs1, FEM_momenet1)
+    &       fem_int_f, tbl_crs_f, rhs_mat_f, FEM_elen_f,                &
+    &       dxidxs1, FEM_momenet1)
         call dealloc_jacobians_node(filter_dxi1)
 !
 !

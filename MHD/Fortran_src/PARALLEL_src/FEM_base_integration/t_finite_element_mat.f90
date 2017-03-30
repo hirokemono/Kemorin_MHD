@@ -5,44 +5,47 @@
 !     Written by H. Matsui on Mar. 2009
 !
 !>    Structure for lumped mass matrix and RHS vector assembler
-!
-!      subroutine alloc_finite_elem_mat                                 &
-!     &         (node, ele, m_lump, fem_wk, f_l, f_nl)
-!
-!
-!      subroutine alloc_type_fem_mat_work(ele, fem_wk)
-!        type(element_data), intent(in) :: ele
-!        type(work_finite_element_mat), intent(inout) :: fem_wk
-!      subroutine alloc_type_fem_lumped_mass(num, lump)
-!        integer(kind = kint), intent(in) :: num
-!        type(lumped_mass_matrices), intent(inout) :: lump
-!      subroutine alloc_type_fem_matrices(numdir, node, rhs)
-!        type(finite_ele_mat_node), intent(inout) :: rhs
-!
-!      subroutine reset_ff_smps_type(numdir, max_nod_smp, rhs)
-!      subroutine reset_ff_type(numdir, numnod, rhs)
-!        integer(kind = kint), intent(in) :: numele, nnod_4_ele
-!        integer(kind = kint), intent(in) :: numdir, numnod
-!        type(work_finite_element_mat), intent(inout) :: fem_wk
-!
-!      subroutine dealloc_type_fem_mat_work(fem_wk)
-!      subroutine dealloc_type_fem_lumped_mass(lump)
-!      subroutine dealloc_type_fem_matrices(rhs)
-!
-!      subroutine reset_ff(numnod, ffs)
-!      subroutine reset_ff_smp(max_nod_smp, ffs)
-!        type(finite_ele_mat_node), intent(inout) :: ffs
-!      subroutine reset_ff_smps(max_nod_smp, f_l, f_nl)
-!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
-!
-!      subroutine check_mass_martix(my_rank, numnod, lump)
-!        type(lumped_mass_matrices), intent(inout) :: lump
-!      subroutine check_ff(my_rank, numdir, numnod, ffs)
-!      subroutine check_ff_smp(my_rank, numdir, max_nod_smp, ffs)
-!        type(finite_ele_mat_node), intent(inout) :: ffs
-!      subroutine check_sk6(my_rank, ele, fem_wk)
-!        type(element_data), intent(in) :: ele
-!        type(work_finite_element_mat), intent(in) :: fem_wk
+!!
+!!@verbatim
+!!      subroutine alloc_finite_elem_mat                                &
+!!     &         (node, ele, fem_wk, f_l, f_nl)
+!!      subroutine dealloc_finite_elem_mat(fem_wk, f_l, f_nl)
+!!
+!!
+!!      subroutine alloc_type_fem_mat_work(ele, fem_wk)
+!!        type(element_data), intent(in) :: ele
+!!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!      subroutine alloc_type_fem_lumped_mass(num, lump)
+!!        integer(kind = kint), intent(in) :: num
+!!        type(lumped_mass_matrices), intent(inout) :: lump
+!!      subroutine alloc_type_fem_matrices(numdir, node, rhs)
+!!        type(finite_ele_mat_node), intent(inout) :: rhs
+!!
+!!      subroutine reset_ff_smps_type(numdir, max_nod_smp, rhs)
+!!      subroutine reset_ff_type(numdir, numnod, rhs)
+!!        integer(kind = kint), intent(in) :: numele, nnod_4_ele
+!!        integer(kind = kint), intent(in) :: numdir, numnod
+!!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!
+!!      subroutine dealloc_type_fem_mat_work(fem_wk)
+!!      subroutine dealloc_type_fem_lumped_mass(lump)
+!!      subroutine dealloc_type_fem_matrices(rhs)
+!!
+!!      subroutine reset_ff(numnod, ffs)
+!!      subroutine reset_ff_smp(max_nod_smp, ffs)
+!!        type(finite_ele_mat_node), intent(inout) :: ffs
+!!      subroutine reset_ff_smps(max_nod_smp, f_l, f_nl)
+!!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
+!!
+!!      subroutine check_mass_martix(my_rank, numnod, lump)
+!!        type(lumped_mass_matrices), intent(inout) :: lump
+!!      subroutine check_ff(my_rank, numdir, numnod, ffs)
+!!      subroutine check_ff_smp(my_rank, numdir, max_nod_smp, ffs)
+!!        type(finite_ele_mat_node), intent(inout) :: ffs
+!!      subroutine check_sk6(my_rank, ele, fem_wk)
+!!        type(element_data), intent(in) :: ele
+!!        type(work_finite_element_mat), intent(in) :: fem_wk
+!!@endverbatim
 !
 !
       module t_finite_element_mat
@@ -81,8 +84,7 @@
 !
 !   ---------------------------------------------------------------------
 !
-      subroutine alloc_finite_elem_mat                                  &
-     &         (node, ele, m_lump, fem_wk, f_l, f_nl)
+      subroutine alloc_finite_elem_mat(node, ele, fem_wk, f_l, f_nl)
 !
       use t_geometry_data
       use m_phys_constants
@@ -91,17 +93,30 @@
       type(element_data), intent(in) :: ele
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
-      type(lumped_mass_matrices), intent(inout) :: m_lump
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !
 !
       call alloc_type_fem_mat_work(ele, fem_wk)
-      call alloc_type_fem_lumped_mass(node%numnod, m_lump)
 !
       call alloc_type_fem_matrices(n_vector, node, f_l)
       call alloc_type_fem_matrices(n_vector, node, f_nl)
 !
       end subroutine alloc_finite_elem_mat
+!
+!   ---------------------------------------------------------------------
+!
+      subroutine dealloc_finite_elem_mat(fem_wk, f_l, f_nl)
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
+!
+!
+      call dealloc_type_fem_mat_work(fem_wk)
+!
+      call dealloc_type_fem_matrices(f_l)
+      call dealloc_type_fem_matrices(f_nl)
+!
+      end subroutine dealloc_finite_elem_mat
 !
 !   ---------------------------------------------------------------------
 !   ---------------------------------------------------------------------
