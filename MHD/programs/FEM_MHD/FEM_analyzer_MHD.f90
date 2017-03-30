@@ -36,7 +36,6 @@
       use m_geometry_data_MHD
       use m_node_phys_data
       use m_element_phys_data
-      use m_jacobians
       use m_element_id_4_node
       use m_finite_element_matrix
       use m_filter_elength
@@ -83,7 +82,7 @@
       call update_fields                                                &
      &   (MHD_step%time_d, FEM_prm1, SGS_par1, mesh1, group1,           &
      &    ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,    &
-     &    fem_int1%jacobians, rhs_tbl1, FEM1_elen, ifld_diff, icomp_diff,       &
+     &    fem_int1%jacobians, fem_int1%rhs_tbl, FEM1_elen, ifld_diff, icomp_diff,       &
      &    iphys_elediff, filtering1, wide_filtering, layer_tbl1,        &
      &    fem_int1%m_lump, wk_cor1, wk_lsq1, wk_diff1, wk_filter1,      &
      &    mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,                  &
@@ -102,14 +101,14 @@
 !   construct matrix for Poisson and diffusion terms
 !
       if (iflag_debug.eq.1) write(*,*) 'set_data_4_const_matrices'
-      call set_data_4_const_matrices(mesh1, MHD_mesh1, rhs_tbl1,        &
+      call set_data_4_const_matrices(mesh1, MHD_mesh1, fem_int1%rhs_tbl,        &
      &    MGCG_WK1, MHD1_mat_tbls, MHD1_matrices, solver_pack1)
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
       call set_aiccg_matrices(MHD_step%time_d%dt,                       &
      &    FEM_prm1, SGS_par1%model_p, SGS_par1%commute_p,               &
      &    mesh1, group1, ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs,       &
      &    ak_MHD, fem_int1%jacobians, FEM1_elen, ifld_diff, diff_coefs,         &
-     &    rhs_tbl1, MHD1_mat_tbls, surf1_wk, mhd_fem1_wk, fem1_wk,      &
+     &    fem_int1%rhs_tbl, MHD1_mat_tbls, surf1_wk, mhd_fem1_wk, fem1_wk,      &
      &    MHD1_matrices)
 !
 !   time evolution loop start!
@@ -120,7 +119,7 @@
      &      FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1,    &
      &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
      &      layer_tbl1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,  &
-     &      fem_int1%jacobians, rhs_tbl1, FEM1_elen, ifld_sgs, icomp_sgs,       &
+     &      fem_int1%jacobians, fem_int1%rhs_tbl, FEM1_elen, ifld_sgs, icomp_sgs,       &
      &      ifld_diff, icomp_diff, iphys_elediff,                       &
      &      filtering1, wide_filtering, fem_int1%m_lump,                &
      &      wk_cor1, wk_lsq1, wk_sgs1, wk_diff1, wk_filter1,            &
@@ -135,7 +134,7 @@
         call lead_fields_by_FEM(MHD_step%time_d,                        &
      &     FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1,                &
      &     MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,              &
-     &     ak_MHD, fem_int1%jacobians, rhs_tbl1, FEM1_elen,             &
+     &     ak_MHD, fem_int1%jacobians, fem_int1%rhs_tbl, FEM1_elen,             &
      &     icomp_sgs, icomp_diff, ifld_diff, iphys_elediff,             &
      &     sgs_coefs, sgs_coefs_nod, filtering1, wide_filtering,        &
      &     layer_tbl1, fem_int1%m_lump, wk_cor1, wk_lsq1, wk_diff1,     &
@@ -172,7 +171,6 @@
       use m_geometry_data_MHD
       use m_node_phys_data
       use m_element_phys_data
-      use m_jacobians
       use m_element_id_4_node
       use m_finite_element_matrix
       use m_filter_elength
@@ -223,7 +221,7 @@
       call fields_evolution                                             &
      &  (MHD_step%time_d, FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, &
      &   MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,        &
-     &   fem_int1%jacobians, rhs_tbl1, FEM1_elen, ifld_sgs, icomp_sgs,  &
+     &   fem_int1%jacobians, fem_int1%rhs_tbl, FEM1_elen, ifld_sgs, icomp_sgs,  &
      &   ifld_diff, icomp_diff, iphys_elediff, sgs_coefs_nod,           &
      &   filtering1, wide_filtering, layer_tbl1, fem_int1%m_lump,       &
      &   solver_pack1, MGCG_WK1, wk_cor1, wk_lsq1, wk_sgs1, wk_diff1,   &
@@ -238,7 +236,7 @@
      &      FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1,    &
      &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
      &      layer_tbl1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,  &
-     &      fem_int1%jacobians, rhs_tbl1, FEM1_elen, ifld_sgs, icomp_sgs,       &
+     &      fem_int1%jacobians, fem_int1%rhs_tbl, FEM1_elen, ifld_sgs, icomp_sgs,       &
      &      ifld_diff, icomp_diff, iphys_elediff,                       &
      &      filtering1, wide_filtering, fem_int1%m_lump,                &
      &      wk_cor1, wk_lsq1, wk_sgs1, wk_diff1, wk_filter1,            &
@@ -265,7 +263,7 @@
           call lead_fields_by_FEM(MHD_step%time_d, FEM_prm1, SGS_par1,  &
      &        mesh1, group1, ele_mesh1, MHD_mesh1,                      &
      &        nod1_bcs, sf1_bcs, iphys, iphys_ele,                      &
-     &        ak_MHD, fem_int1%jacobians, rhs_tbl1, FEM1_elen,          &
+     &        ak_MHD, fem_int1%jacobians, fem_int1%rhs_tbl, FEM1_elen,          &
      &        icomp_sgs, icomp_diff, ifld_diff,                         &
      &        iphys_elediff, sgs_coefs, sgs_coefs_nod,                  &
      &        filtering1, wide_filtering, layer_tbl1, fem_int1%m_lump,  &
@@ -374,7 +372,7 @@
         call update_matrices(MHD_step%time_d, FEM_prm1, SGS_par1,       &
      &     mesh1, group1, ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs,      &
      &     ak_MHD, fem_int1%jacobians, FEM1_elen, ifld_diff,            &
-     &     diff_coefs, rhs_tbl1, MHD1_mat_tbls, surf1_wk, flex_p1,      &
+     &     diff_coefs, fem_int1%rhs_tbl, MHD1_mat_tbls, surf1_wk, flex_p1,      &
      &     mhd_fem1_wk, fem1_wk, MHD1_matrices)
       end if
 !

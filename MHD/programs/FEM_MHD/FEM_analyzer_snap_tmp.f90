@@ -72,7 +72,6 @@
       use m_geometry_data_MHD
       use m_node_phys_data
       use m_element_phys_data
-      use m_jacobians
       use m_element_id_4_node
       use m_finite_element_matrix
       use m_filter_elength
@@ -150,7 +149,7 @@
       call update_fields                                                &
      &   (MHD_step%time_d, FEM_prm1, SGS_par1, mesh1, group1,           &
      &    ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,    &
-     &    fem_int1%jacobians, rhs_tbl1, FEM1_elen, ifld_diff, icomp_diff,       &
+     &    fem_int1%jacobians, fem_int1%rhs_tbl, FEM1_elen, ifld_diff, icomp_diff,       &
      &    iphys_elediff, filtering1, wide_filtering, layer_tbl1,        &
      &    fem_int1%m_lump, wk_cor1, wk_lsq1, wk_diff1, wk_filter1,      &
      &    mhd_fem1_wk, fem1_wk, surf1_wk, f1_l, f1_nl,                  &
@@ -164,7 +163,7 @@
      &      FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1,    &
      &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
      &      layer_tbl1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,  &
-     &      fem_int1%jacobians, rhs_tbl1, FEM1_elen, ifld_sgs, icomp_sgs,       &
+     &      fem_int1%jacobians, fem_int1%rhs_tbl, FEM1_elen, ifld_sgs, icomp_sgs,       &
      &      ifld_diff, icomp_diff, iphys_elediff,                       &
      &      filtering1, wide_filtering, fem_int1%m_lump,                &
      &      wk_cor1, wk_lsq1, wk_sgs1, wk_diff1, wk_filter1,            &
@@ -180,7 +179,7 @@
         call lead_fields_by_FEM(MHD_step%time_d,                        &
      &     FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1,                &
      &     MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,              &
-     &     ak_MHD, fem_int1%jacobians, rhs_tbl1, FEM1_elen,                     &
+     &     ak_MHD, fem_int1%jacobians, fem_int1%rhs_tbl, FEM1_elen,                     &
      &     icomp_sgs, icomp_diff, ifld_diff, iphys_elediff,             &
      &     sgs_coefs, sgs_coefs_nod, filtering1, wide_filtering,        &
      &     layer_tbl1, fem_int1%m_lump, wk_cor1, wk_lsq1, wk_diff1,     &
@@ -261,7 +260,6 @@
       use m_geometry_data_MHD
       use m_node_phys_data
       use m_element_phys_data
-      use m_jacobians
       use m_element_id_4_node
       use m_finite_element_matrix
       use m_filter_elength
@@ -307,7 +305,7 @@
      &      mesh1%nod_comm, mesh1%node, mesh1%ele, ele_mesh1%surf,      &
      &      group1%surf_grp, MHD_mesh1%fluid, fl_prop1, cd_prop1,       &
      &      sf1_bcs%Vsf_bcs, sf1_bcs%Bsf_bcs, iphys, iphys_ele, ak_MHD, &
-     &      fem_int1%jacobians%jac_3d, fem_int1%jacobians%jac_sf_grp, rhs_tbl1, &
+     &      fem_int1%jacobians%jac_3d, fem_int1%jacobians%jac_sf_grp, fem_int1%rhs_tbl, &
      &      FEM1_elen, diff_coefs, mhd_fem1_wk, fem1_wk, surf1_wk,      &
      &      f1_l, f1_nl, nod_fld1, fld_ele1)
       end if
@@ -340,7 +338,7 @@
      &      FEM_prm1, SGS_par1%model_p, SGS_par1%filter_p,              &
      &      mesh1%nod_comm, mesh1%node, mesh1%ele,                      &
      &      MHD_mesh1%conduct, cd_prop1, iphys, iphys_ele, fld_ele1,    &
-     &      fem_int1%jacobians%jac_3d, rhs_tbl1, FEM1_elen, filtering1,         &
+     &      fem_int1%jacobians%jac_3d, fem_int1%rhs_tbl, FEM1_elen, filtering1,         &
      &      sgs_coefs, wk_filter1, mhd_fem1_wk, fem1_wk,                &
      &      f1_l, f1_nl, nod_fld1)
 
@@ -351,7 +349,7 @@
      &        'lead ', trim(fhd_SGS_induction)
         call int_vol_sgs_induction(FEM_prm1,                            &
      &      mesh1%nod_comm, mesh1%node, mesh1%ele, MHD_mesh1%conduct,   &
-     &      iphys, fem_int1%jacobians%jac_3d, rhs_tbl1, mhd_fem1_wk, fem1_wk,   &
+     &      iphys, fem_int1%jacobians%jac_3d, fem_int1%rhs_tbl, mhd_fem1_wk, fem1_wk,   &
      &      f1_nl, nod_fld1)
       end if
 !

@@ -22,7 +22,7 @@
       use m_mesh_data
       use m_node_phys_data
       use m_element_id_4_node
-      use m_jacobians
+      use m_jacobians_VIZ
       use m_sph_trans_arrays_MHD
       use m_MHD_step_parameter
 !

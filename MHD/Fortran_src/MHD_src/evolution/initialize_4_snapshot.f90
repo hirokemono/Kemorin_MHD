@@ -59,7 +59,6 @@
       use m_physical_property
       use m_ele_material_property
       use m_mean_square_values
-      use m_jacobians
       use m_work_4_dynamic_model
       use m_boundary_condition_IDs
       use m_array_for_send_recv
@@ -249,7 +248,7 @@
 !
       if (iflag_debug.eq.1) write(*,*)' set_connect_RHS_assemble'
       call s_set_table_type_RHS_assemble                                &
-     &   (mesh%node, mesh%ele, next_tbl1, rhs_tbl1)
+     &   (mesh%node, mesh%ele, next_tbl1, fem_int1%rhs_tbl)
 !
 !     ---------------------
 !
@@ -271,7 +270,7 @@
 !     ---------------------
 !
       call int_RHS_mass_matrices(FEM_prm%npoint_t_evo_int,              &
-     &     mesh, MHD_mesh, fem_int1%jacobians, rhs_tbl1,                &
+     &     mesh, MHD_mesh, fem_int1%jacobians, fem_int1%rhs_tbl,        &
      &     mhd_fem1_wk, fem1_wk, f1_l, fem_int1%m_lump)
 !
 !     ---------------------

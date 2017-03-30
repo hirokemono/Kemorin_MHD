@@ -5,11 +5,11 @@
 !
 !!      subroutine transfer_crs_2_djds_matrix(node, nod_comm, tbl_crs,  &
 !!     &          mat_crs, CG_param, DJDS_param, djds_tbl, djds_mat)
-!      subroutine copy_matrix_2_djds_NN(tbl_crs, mat_crs, djds_tbl,     &
-!     &          NP, N, NB, num_mat_comp, aiccg)
-!
-!      subroutine copy_RH_vect_2_crs_nn((mat1_crs, NP, NB, B, X)
-!      subroutine copy_solution_2_crs_nn(NP, NB, X, mat_crs)
+!!      subroutine copy_matrix_2_djds_NN(tbl_crs, mat_crs, djds_tbl,    &
+!!     &          NP, N, NB, num_mat_comp, aiccg)
+!!
+!!      subroutine copy_RH_vect_2_crs_nn(mat_crs, NP, NB, B, X)
+!!      subroutine copy_solution_2_crs_nn(NP, NB, X, mat_crs)
 !
       module copy_matrix_2_djds_array
 !

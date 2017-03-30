@@ -22,14 +22,4 @@
 !>   Structure of neighbouring node and element list for each node
       type(next_nod_ele_table), save :: next_tbl1
 !
-!>  Structure for FEM construction table
-      type(tables_4_FEM_assembles), save :: rhs_tbl1
-!
-!
-!>  Structures for index table for compressed raw strage matrix
-      type(CRS_matrix_connect), save :: tbl1_crs
-!
-!>  Structures for compressed raw strage matrix
-      type(CRS_matrix), save :: mat1_crs
-!
       end module m_element_id_4_node

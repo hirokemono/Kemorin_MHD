@@ -51,7 +51,6 @@
       use m_physical_property
       use m_flexible_time_step
 !
-      use m_jacobians
       use m_element_id_4_node
       use m_finite_element_matrix
       use m_ele_material_property
@@ -293,7 +292,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_MHD_whole_connectivity'
       call set_MHD_whole_connectivity(FEM_prm%DJDS_param,               &
-     &    mesh%nod_comm, mesh%node, mesh%ele, next_tbl1, rhs_tbl1)
+     &    mesh%nod_comm, mesh%node, mesh%ele,                           &
+     &    next_tbl1, fem_int1%rhs_tbl)
       if (iflag_debug.eq.1) write(*,*) 'set_MHD_layerd_connectivity'
       call set_MHD_layerd_connectivity                                  &
      &   (FEM_prm%DJDS_param, mesh%node, mesh%ele, MHD_mesh%fluid)
@@ -317,7 +317,7 @@
 !     ---------------------
 !
       call int_RHS_mass_matrices(FEM_prm%npoint_t_evo_int,              &
-     &    mesh, MHD_mesh, fem_int1%jacobians, rhs_tbl1,                 &
+     &    mesh, MHD_mesh, fem_int1%jacobians, fem_int1%rhs_tbl,         &
      &    mhd_fem1_wk, fem1_wk, f1_l, fem_int1%m_lump)
 !
 !     ---------------------

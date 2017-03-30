@@ -64,7 +64,6 @@
       use m_node_phys_data
       use m_geometry_data_MHD
       use m_element_phys_data
-      use m_jacobians
       use m_finite_element_matrix
 !
       use m_ucd_data
