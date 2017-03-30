@@ -156,6 +156,8 @@
       end subroutine const_jacobians_element
 !
 !-----------------------------------------------------------------------
+!> Construct shape function, difference of shape function, and Jacobian
+!> for surface group
 !
       subroutine const_jacobians_surf_group                             &
      &         (my_rank, nprocs, node, ele, surf, surf_grp, jacobians)

@@ -242,12 +242,7 @@
 !
       if (iflag_debug.eq.1) write(*,*)' const_MHD_jacobian_and_volumes'
       call const_MHD_jacobian_and_volumes(SGS_par%model_p,              &
-     &    mesh%node, mesh%ele, group%surf_grp, layer_tbl,               &
-     &    group%infty_grp, jacobians1, MHD_mesh)
-!
-      call const_jacobian_sf_grp                                        &
-     &   (mesh%node, mesh%ele, ele_mesh%surf, group%surf_grp,           &
-     &    jacobians1%jac_sf_grp_l, jacobians1%jac_sf_grp)
+     &    ele_mesh, group, mesh, layer_tbl, jacobians1, MHD_mesh)
 !
 !     --------------------- 
 !

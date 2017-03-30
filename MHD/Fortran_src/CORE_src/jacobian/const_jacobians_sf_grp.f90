@@ -8,9 +8,6 @@
 !> @brief Construct Jacobians on surfaces
 !!
 !!@verbatim
-!!      subroutine const_jacobian_sf_grp                                &
-!!     &         (node, ele, surf, sf_grp, jac_sf_grp_l, jac_sf_grp_q)
-!!
 !!      subroutine sel_jacobian_surf_grp_type(node, ele, surf,          &
 !!     &          surf_grp, jac_sf_grp)
 !!      subroutine const_jacobian_sf_grp_linear(node, ele, surf_grp,    &
@@ -47,50 +44,6 @@
 !
       contains
 !
-!-----------------------------------------------------------------------
-!> Construct shape function, difference of shape function, and Jacobian
-!> for surface group
-!
-      subroutine const_jacobian_sf_grp                                  &
-     &         (node, ele, surf, sf_grp, jac_sf_grp_l, jac_sf_grp_q)
-!
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      type(surface_data), intent(in) :: surf
-      type(surface_group_data), intent(in) :: sf_grp
-!
-      type(jacobians_2d), intent(inout) :: jac_sf_grp_l
-      type(jacobians_2d), intent(inout) :: jac_sf_grp_q
-!
-!
-      if (sf_grp%num_grp .le. 0) return
-      call alloc_2d_jac_type(sf_grp%num_item, num_linear_sf,            &
-     &                       maxtot_int_2d, jac_sf_grp_l)
-      if (iflag_debug.eq.1) write(*,*) 'const_jacobian_sf_grp_linear'
-      call const_jacobian_sf_grp_linear                                 &
-     &   (node, ele, sf_grp, jac_sf_grp_l)
-!
-      if(surf%nnod_4_surf .eq. num_quad_sf) then
-        if (iflag_debug.eq.1)  write(*,*) 'const_jacobian_sf_grp_quad'
-        call alloc_2d_jac_type(sf_grp%num_item, surf%nnod_4_surf,       &
-     &      maxtot_int_2d, jac_sf_grp_q)
-        call const_jacobian_sf_grp_quad                                 &
-     &    (node, ele, sf_grp, jac_sf_grp_q)
-      else if (surf%nnod_4_surf .eq. num_lag_sf) then
-        if (iflag_debug.eq.1) write(*,*) 'const_jacobian_sf_grp_lag'
-        call alloc_2d_jac_type(sf_grp%num_item, surf%nnod_4_surf,       &
-     &      maxtot_int_2d, jac_sf_grp_q)
-        call const_jacobian_sf_grp_lag                                  &
-     &     (node, ele, sf_grp, jac_sf_grp_q)
-      else
-        if (iflag_debug.eq.1) write(*,*) 'copy_jacobians_2d_quad'
-        call copy_jacobians_2d(sf_grp%num_item, surf%nnod_4_surf,       &
-     &                         jac_sf_grp_l, jac_sf_grp_q)
-      end if
-!
-      end subroutine const_jacobian_sf_grp
-!
-!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine sel_jacobian_surf_grp_type(node, ele, surf,            &

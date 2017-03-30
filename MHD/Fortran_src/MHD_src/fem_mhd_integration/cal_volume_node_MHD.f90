@@ -7,12 +7,11 @@
 !        Modified by H. Matsui on Aug., 2007
 !
 !!      subroutine const_MHD_jacobian_and_volumes                       &
-!!     &         (SGS_param, node, ele, sf_grp,  layer_tbl,             &
-!!     &          infty_list, jacobians, MHD_mesh)
-!!        type(node_data), intent(in) :: node
-!!        type(element_data), intent(inout) :: ele
-!!        type(surface_group_data), intent(in) :: sf_grp
-!!        type(scalar_surf_BC_list), intent(in) :: infty_list
+!!     &         (SGS_param, ele_mesh, group, mesh, layer_tbl,          &
+!!     &          jacobians, MHD_mesh)
+!!        type(element_geometry), intent(in) :: ele_mesh
+!!        type(mesh_groups), intent(in) ::   group
+!!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(jacobians_type), intent(inout) :: jacobians
 !!        type(layering_tbl), intent(inout) :: layer_tbl
 !!        type(mesh_data_MHD), intent(inout) :: MHD_mesh
@@ -25,7 +24,9 @@
       use calypso_mpi
       use m_machine_parameter
       use t_SGS_control_parameter
+      use t_mesh_data
       use t_geometry_data
+      use t_surface_data
       use t_group_data
       use t_surface_boundary
       use t_geometry_data_MHD
@@ -44,8 +45,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine const_MHD_jacobian_and_volumes                         &
-     &         (SGS_param, node, ele, sf_grp,  layer_tbl,               &
-     &          infty_list, jacobians, MHD_mesh)
+     &         (SGS_param, ele_mesh, group, mesh, layer_tbl,            &
+     &          jacobians, MHD_mesh)
 !
       use m_mean_square_values
       use t_jacobians
@@ -57,32 +58,37 @@
       use sum_volume_of_domain
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
-      type(node_data), intent(in) :: node
-      type(element_data), intent(inout) :: ele
-      type(surface_group_data), intent(in) :: sf_grp
-      type(scalar_surf_BC_list), intent(in) :: infty_list
+      type(element_geometry), intent(in) :: ele_mesh
+      type(mesh_groups), intent(in) ::   group
+      type(mesh_geometry), intent(inout) :: mesh
       type(jacobians_type), intent(inout) :: jacobians
       type(layering_tbl), intent(inout) :: layer_tbl
       type(mesh_data_MHD), intent(inout) :: MHD_mesh
 !
 !    Construct Jacobians
 !
-      call max_int_point_by_etype(ele%nnod_4_ele)
+      call max_int_point_by_etype(mesh%ele%nnod_4_ele)
       call initialize_FEM_integration
       call const_jacobians_element(my_rank, nprocs,                     &
-     &    node, ele, sf_grp, infty_list, jacobians)
+     &    mesh%node, mesh%ele, group%surf_grp, group%infty_grp,         &
+     &    jacobians)
+!
+      if (iflag_debug.eq.1) write(*,*)  'const_jacobian_sf_grp'
+      call const_jacobians_surf_group(my_rank, nprocs,                  &
+     &    mesh%node, mesh%ele, ele_mesh%surf, group%surf_grp,           &
+     &    jacobians)
 !
 !    Construct volumes
 !
       call allocate_volume_4_smp
 !
       if (iflag_debug.eq.1) write(*,*) 's_int_volume_of_domain'
-      call s_int_volume_of_domain(ele, jacobians%jac_3d)
+      call s_int_volume_of_domain(mesh%ele, jacobians%jac_3d)
 !
 !     ---  lead total volume of each area
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_volume_4_fluid'
-      call cal_volume_4_area(ele, MHD_mesh%fluid)
+      call cal_volume_4_area(mesh%ele, MHD_mesh%fluid)
 !
       if (MHD_mesh%fluid%istack_ele_fld_smp(np_smp)                     &
      &   .eq. MHD_mesh%fluid%istack_ele_fld_smp(0)) then
@@ -92,23 +98,23 @@
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_volume_4_conduct'
-      call cal_volume_4_area(ele, MHD_mesh%conduct)
+      call cal_volume_4_area(mesh%ele, MHD_mesh%conduct)
       if (iflag_debug.eq.1) write(*,*) 'cal_volume_4_insulate'
-      call cal_volume_4_area(ele, MHD_mesh%insulate)
+      call cal_volume_4_area(mesh%ele, MHD_mesh%insulate)
 !
        if (SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
          if (iflag_debug.eq.1) write(*,*) 's_cal_layered_volumes'
-         call s_cal_layered_volumes(ele, layer_tbl)
+         call s_cal_layered_volumes(mesh%ele, layer_tbl)
        end if
 !
-!       call s_int_volume_insulate_core(ele, inner_core)
+!       call s_int_volume_insulate_core(mesh%ele, inner_core)
 !
       call deallocate_volume_4_smp
-      call dealloc_dxi_dx_element(ele, jacobians)
+      call dealloc_dxi_dx_element(mesh%ele, jacobians)
 !
 !
       if (iflag_debug.eq.1) then
-        write(*,*) 'volume:       ', ele%volume
+        write(*,*) 'volume:       ', mesh%ele%volume
         write(*,*) 'vol_fluid:    ', MHD_mesh%fluid%volume
         write(*,*) 'vol_conduct:  ', MHD_mesh%conduct%volume
         write(*,*) 'vol_insulate: ', MHD_mesh%insulate%volume

@@ -20,7 +20,7 @@
 !
 !>      Stracture for FEM assembling
       type(finite_element_integration), save :: fem_int1
-!fem_int1%m_lump
+!fem_int1%jacobians
 !
 !>      Work array for FEM assemble in MHD model
       type(work_MHD_fe_mat), save :: mhd_fem1_wk
