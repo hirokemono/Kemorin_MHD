@@ -83,7 +83,8 @@
 !     ---------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh(mesh_file_H, mesh_sph%mesh, mesh_sph%group,   &
+      call mpi_input_mesh                                               &
+     &   (mesh_file_H, nprocs, mesh_sph%mesh, mesh_sph%group,           &
      &    ele_mesh_sph%surf%nnod_4_surf, ele_mesh_sph%edge%nnod_4_edge)
       call const_mesh_infos                                             &
      &   (my_rank, mesh_sph%mesh, mesh_sph%group, ele_mesh_sph)

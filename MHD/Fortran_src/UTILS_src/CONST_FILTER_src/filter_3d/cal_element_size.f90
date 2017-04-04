@@ -96,8 +96,8 @@
 !      set RHS assemble table
 !  ---------------------------------------------------
 !
-      if (iflag_debug.eq.1)  write(*,*) 's_set_table_type_RHS_assemble'
-      call s_set_table_type_RHS_assemble                                &
+      if (iflag_debug.eq.1)  write(*,*) 's_set_RHS_assemble_table'
+      call s_set_RHS_assemble_table                                     &
      &   (mesh%node, mesh%ele, next_tbl_f, fem_int%rhs_tbl)
 !
 !  ---------------------------------------------------

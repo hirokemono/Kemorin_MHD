@@ -8,10 +8,16 @@
 !>@brief  Construct index table for DJDS solver
 !!
 !!@verbatim
-!!      subroutine set_MG_djds_connect_type(DJDS_param,                 &
-!!     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, MHD_matrices)
-!!      subroutine set_MG_djds_conn_lin_type_MHD(DJDS_param,            &
-!!     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, MHD_matrices)
+!!      subroutine set_MHD_whole_connectivity                           &
+!!     &         (DJDS_param, mesh, solver_C, next_tbl, rhs_tbl,        &
+!!     &          DJDS_table, solver_comm_tbl)
+!!      subroutine set_MHD_djds_connectivities                          &
+!!     &         (DJDS_param, mesh, fluid, DJDS_comm_fl, solver_C,      &
+!!     &          DJDS_table, DJDS_fluid, DJDS_linear, DJDS_linear_fl)
+!!      subroutine empty_whole_djds_connectivity                        &
+!!     &         (mesh, neib_tbl, rhs_tbl, DJDS_tbl)
+!!      subroutine empty_MHD_djds_connectivities                        &
+!!     &         (mesh, DJDS_fluid, DJDS_linear, DJDS_linear_fl)
 !!        type(DJDS_poarameter), intent(in) :: DJDS_param
 !!        type(MGCG_data), intent(in) :: MGCG_WK
 !!        type(mesh_4_MGCG), intent(in) :: MGCG_FEM
@@ -32,8 +38,6 @@
       use t_crs_connect
       use t_solver_djds
       use t_solver_djds_MHD
-      use t_MGCG_data
-      use t_MGCG_data_4_MHD
 !
       implicit  none
 !
@@ -43,111 +47,142 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_MG_djds_connect_type(DJDS_param,                   &
-     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, MHD_matrices)
+      subroutine set_MHD_whole_connectivity                             &
+     &         (DJDS_param, mesh, solver_C, next_tbl, rhs_tbl,          &
+     &          DJDS_table, solver_comm_tbl)
 !
-      use t_mesh_data
-      use t_geometry_data_MHD
+      use t_comm_table
+      use t_geometry_data
       use t_next_node_ele_4_node
+      use t_table_FEM_const
+!
+      use set_table_type_RHS_assemble
       use set_djds_connectivity_type
+      use copy_mesh_structures
 !
+      type(mesh_geometry), intent(in) :: mesh
+      type(mpi_4_solver), intent(in) :: solver_C
       type(DJDS_poarameter), intent(in) :: DJDS_param
-      type(MGCG_data), intent(in) :: MGCG_WK
-      type(mesh_4_MGCG), intent(in) :: MGCG_FEM
-      type(MGCG_MHD_data), intent(in) :: MGCG_MHD_FEM
-      type(MHD_MG_matrices), intent(inout) :: MHD_matrices
 !
-      integer(kind = kint) :: i_level
+      type(next_nod_ele_table), intent(inout) :: next_tbl
+      type(tables_4_FEM_assembles), intent(inout) :: rhs_tbl
+      type(DJDS_ordering_table), intent(inout) :: DJDS_table
+      type(communication_table), intent(inout) :: solver_comm_tbl
 !
+!C +-------------------------------+
+!  +   set RHS assemble table      +
+!C +-------------------------------+
+      call s_set_RHS_assemble_table                                     &
+     &   (mesh%node, mesh%ele, next_tbl, rhs_tbl)
 !
-      do i_level = 1, MGCG_WK%num_MG_level
-        if(my_rank .lt. MGCG_WK%MG_mpi(i_level)%nprocs ) then
-          if(iflag_debug .gt. 0) write(*,*)                             &
-     &       'set_djds_layer_connect_type fluid', i_level
-          call set_djds_layer_connect_type                              &
-     &      (MGCG_FEM%MG_mesh(i_level)%mesh%ele%nnod_4_ele,             &
-     &       MGCG_MHD_FEM%MG_MHD_mesh(i_level)%fluid%iele_start_fld,    &
-     &       MGCG_MHD_FEM%MG_MHD_mesh(i_level)%fluid%iele_end_fld,      &
-     &       MGCG_FEM%MG_mesh(i_level)%mesh,                            &
-     &       MGCG_MHD_FEM%MG_MHD_mesh(i_level)%nod_fl_comm,             &
-     &       MGCG_WK%MG_mpi(i_level), DJDS_param,                       &
-     &       MHD_matrices%MG_DJDS_fluid(i_level) )
-        else
-          if(iflag_debug .gt. 0) write(*,*)                             &
-     &       'empty_djds_connectivity_type fluid', i_level
-          call empty_djds_connectivity_type                             &
-     &       (MGCG_FEM%MG_mesh(i_level)%mesh,                           &
-     &        MHD_matrices%MG_DJDS_fluid(i_level) )
-        end if
-      end do
+!C +-------------------------------+
+!  +   set Matrix assemble table   +
+!C +-------------------------------+
+      call s_set_djds_connectivity(mesh%nod_comm, mesh%node, solver_C,  &
+     &    next_tbl, DJDS_param, DJDS_table)
 !
-      end subroutine set_MG_djds_connect_type
+      call link_comm_tbl_types                                          &
+     &   (mesh%nod_comm, solver_comm_tbl)
+!
+      end subroutine set_MHD_whole_connectivity
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_MG_djds_conn_lin_type_MHD(DJDS_param,              &
-     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, MHD_matrices)
+      subroutine set_MHD_djds_connectivities                            &
+     &         (DJDS_param, mesh, fluid, DJDS_comm_fl, solver_C,        &
+     &          DJDS_table, DJDS_fluid, DJDS_linear, DJDS_linear_fl)
 !
       use t_mesh_data
       use t_geometry_data_MHD
       use t_next_node_ele_4_node
       use set_djds_connectivity_type
 !
+      type(mesh_geometry), intent(in) :: mesh
+      type(field_geometry_data), intent(in) :: fluid
+      type(communication_table), intent(in) :: DJDS_comm_fl
+      type(mpi_4_solver), intent(in) :: solver_C
       type(DJDS_poarameter), intent(in) :: DJDS_param
-      type(MGCG_data), intent(in) :: MGCG_WK
-      type(mesh_4_MGCG), intent(in) :: MGCG_FEM
-      type(MGCG_MHD_data), intent(in) :: MGCG_MHD_FEM
-      type(MHD_MG_matrices), intent(inout), target :: MHD_matrices
+      type(DJDS_ordering_table), intent(in) :: DJDS_table
 !
-      integer(kind = kint) :: i_level, l_endlevel
+      type(DJDS_ordering_table), intent(inout) :: DJDS_fluid
+      type(DJDS_ordering_table), intent(inout) :: DJDS_linear
+      type(DJDS_ordering_table), intent(inout) :: DJDS_linear_fl
 !
 !
-      l_endlevel = 0
-      do i_level = 1, MGCG_WK%num_MG_level
-        if(my_rank .ge. MGCG_WK%MG_mpi(i_level)%nprocs) then
-          l_endlevel = i_level - 1
-          exit
-        end if
-      end do
+      if(iflag_debug .gt. 0) write(*,*)                                 &
+     &       'set_djds_layer_connectivity fluid'
+      call set_djds_layer_connectivity                                  &
+     &   (mesh%ele%nnod_4_ele, mesh%node, mesh%ele,                     &
+     &    fluid%iele_start_fld, fluid%iele_end_fld, DJDS_comm_fl,       &
+     &    solver_C, DJDS_param, DJDS_fluid)
 !
-      do i_level = 1, l_endlevel
-        if(MGCG_FEM%MG_mesh(i_level)%mesh%ele%nnod_4_ele                &
-     &    .eq. num_t_linear) then
-          call link_djds_connect_structs                                &
-     &       (MHD_matrices%MG_DJDS_table(i_level),                      &
-     &        MHD_matrices%MG_DJDS_linear(i_level))
+      if(mesh%ele%nnod_4_ele .eq. num_t_linear) then
+        call link_djds_connect_structs(DJDS_table,  DJDS_linear)
+        call link_djds_connect_structs(DJDS_fluid, DJDS_linear_fl)
+      else
+        call set_djds_layer_connectivity                                &
+     &     (num_t_linear, mesh%node, mesh%ele, ione, mesh%ele%numele,   &
+     &      mesh%nod_comm, solver_C, DJDS_param, DJDS_linear)
+        call set_djds_layer_connectivity                                &
+     &     (num_t_linear, mesh%node, mesh%ele,                          &
+     &      fluid%iele_start_fld, fluid%iele_end_fld, DJDS_comm_fl,     &
+     &      solver_C, DJDS_param, DJDS_linear_fl)
+      end if
 !
-          call link_djds_connect_structs                                &
-     &       (MHD_matrices%MG_DJDS_fluid(i_level),                      &
-     &        MHD_matrices%MG_DJDS_lin_fl(i_level))
-        else
-          call set_djds_layer_connect_type(num_t_linear,                &
-     &        ione, MGCG_FEM%MG_mesh(i_level)%mesh%ele%numele,          &
-     &        MGCG_FEM%MG_mesh(i_level)%mesh,                           &
-     &        MGCG_FEM%MG_mesh(i_level)%mesh%nod_comm,                  &
-     &        MGCG_WK%MG_mpi(i_level), DJDS_param,                      &
-     &        MHD_matrices%MG_DJDS_linear(i_level))
+      end subroutine set_MHD_djds_connectivities
 !
-          call set_djds_layer_connect_type(num_t_linear,                &
-     &        MGCG_MHD_FEM%MG_MHD_mesh(i_level)%fluid%iele_start_fld,   &
-     &        MGCG_MHD_FEM%MG_MHD_mesh(i_level)%fluid%iele_end_fld,     &
-     &        MGCG_FEM%MG_mesh(i_level)%mesh,                           &
-     &        MGCG_MHD_FEM%MG_MHD_mesh(i_level)%nod_fl_comm,            &
-     &        MGCG_WK%MG_mpi(i_level), DJDS_param,                      &
-     &        MHD_matrices%MG_DJDS_lin_fl(i_level))
-        end if
-      end do
+!-----------------------------------------------------------------------
 !
-      do i_level = l_endlevel+1, MGCG_WK%num_MG_level
-        call empty_djds_connectivity_type                               &
-     &     (MGCG_FEM%MG_mesh(i_level)%mesh,                             &
-     &      MHD_matrices%MG_DJDS_linear(i_level) )
-        call empty_djds_connectivity_type                               &
-     &     (MGCG_FEM%MG_mesh(i_level)%mesh,                             &
-     &      MHD_matrices%MG_DJDS_lin_fl(i_level) )
-      end do
+      subroutine empty_whole_djds_connectivity                          &
+     &         (mesh, neib_tbl, rhs_tbl, DJDS_tbl)
 !
-      end subroutine set_MG_djds_conn_lin_type_MHD
+      use t_mesh_data
+      use t_geometry_data_MHD
+      use t_next_node_ele_4_node
+      use set_table_type_RHS_assemble
+      use set_djds_connectivity_type
+!
+      type(mesh_geometry), intent(in) :: mesh
+!
+      type(next_nod_ele_table), intent(inout) ::    neib_tbl
+      type(tables_4_FEM_assembles), intent(inout) :: rhs_tbl
+      type(DJDS_ordering_table), intent(inout) :: DJDS_tbl
+!
+!
+      if(iflag_debug .gt. 0) write(*,*)                                 &
+     &            'empty_table_type_RHS_assemble'
+      call empty_table_type_RHS_assemble(mesh%node, rhs_tbl, neib_tbl)
+!
+      if(iflag_debug .gt. 0) write(*,*)  'empty_djds_connectivity'
+      call empty_djds_connectivity(mesh%nod_comm, mesh%node, DJDS_tbl)
+!
+      end subroutine empty_whole_djds_connectivity
+!
+!-----------------------------------------------------------------------
+!
+      subroutine empty_MHD_djds_connectivities                          &
+     &         (mesh, DJDS_fluid, DJDS_linear, DJDS_linear_fl)
+!
+      use t_mesh_data
+      use t_geometry_data_MHD
+      use t_next_node_ele_4_node
+      use set_djds_connectivity_type
+!
+      type(mesh_geometry), intent(in) :: mesh
+!
+      type(DJDS_ordering_table), intent(inout) :: DJDS_fluid
+      type(DJDS_ordering_table), intent(inout) :: DJDS_linear
+      type(DJDS_ordering_table), intent(inout) :: DJDS_linear_fl
+!
+!
+      call empty_djds_connectivity                                      &
+     &   (mesh%nod_comm, mesh%node, DJDS_fluid)
+      call empty_djds_connectivity                                      &
+     &   (mesh%nod_comm, mesh%node, DJDS_linear)
+      call empty_djds_connectivity                                      &
+     &   (mesh%nod_comm, mesh%node, DJDS_linear_fl)
+!
+      end subroutine empty_MHD_djds_connectivities
 !
 !-----------------------------------------------------------------------
 !

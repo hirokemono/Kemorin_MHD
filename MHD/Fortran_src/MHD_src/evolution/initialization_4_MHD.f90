@@ -70,7 +70,6 @@
 !
       use count_whole_num_element
 !
-      use set_MHD_connectivity
       use init_iccg_matrices
       use copy_nodal_fields
       use cal_volume_node_MHD
@@ -289,13 +288,10 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_MHD_whole_connectivity'
-      call set_MHD_whole_connectivity(FEM_prm%DJDS_param,               &
-     &    mesh%nod_comm, mesh%node, mesh%ele,                           &
-     &    fem_int1%next_tbl, fem_int1%rhs_tbl)
       if (iflag_debug.eq.1) write(*,*) 'set_MHD_layerd_connectivity'
-      call set_MHD_layerd_connectivity                                  &
-     &   (FEM_prm%DJDS_param, mesh%node, mesh%ele, MHD_mesh%fluid)
+      call set_MHD_connectivities                                       &
+     &   (FEM_prm%DJDS_param, mesh, MHD_mesh%fluid,                     &
+     &    fem_int1%next_tbl, fem_int1%rhs_tbl)
 !
 !     ---------------------
 !

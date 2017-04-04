@@ -95,7 +95,7 @@
 !  --  read geometry
 !
       if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
-      call mpi_input_mesh(tested_mesh_file, mesh, group,                &
+      call mpi_input_mesh(tested_mesh_file, nprocs, mesh, group,        &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'

@@ -129,7 +129,7 @@
 !  --  load FEM mesh data
       if(check_exist_mesh(mesh_file, my_rank) .eq. 0) then
         if (iflag_debug.gt.0) write(*,*) 'mpi_input_mesh'
-        call mpi_input_mesh(mesh_file, mesh, group,                     &
+        call mpi_input_mesh(mesh_file, nprocs, mesh, group,             &
      &      ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
         call set_fem_center_mode_4_SPH                                  &
      &     (mesh%node%internal_node, sph_rtp, sph_params)

@@ -56,5 +56,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-     end module m_cube_files_data
-
+      end module m_cube_files_data

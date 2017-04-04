@@ -246,7 +246,7 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*)' set_connect_RHS_assemble'
-      call s_set_table_type_RHS_assemble                                &
+      call s_set_RHS_assemble_table                                     &
      &   (mesh%node, mesh%ele, fem_int1%next_tbl, fem_int1%rhs_tbl)
 !
 !     ---------------------

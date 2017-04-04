@@ -91,7 +91,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh'
       call mpi_input_mesh                                               &
-     &   (mesh_file_test, test_fem%mesh, test_fem%group,                &
+     &   (mesh_file_test, nprocs, test_fem%mesh, test_fem%group,        &
      &    test_ele_mesh%surf%nnod_4_surf,                               &
      &    test_ele_mesh%edge%nnod_4_edge)
 !

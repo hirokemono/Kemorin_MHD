@@ -121,7 +121,7 @@
      &    MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
 !
 !  --  load FEM mesh data
-      call mpi_input_mesh(mesh1_file, mesh, group,                      &
+      call mpi_input_mesh(mesh1_file, nprocs, mesh, group,              &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
       call input_meshes_4_MHD(SGS_par%model_p, mesh, group, IO_bc,      &
@@ -186,7 +186,7 @@
      &    MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
 !
 !  --  load FEM mesh data
-      call mpi_input_mesh(mesh1_file, mesh, group,                      &
+      call mpi_input_mesh(mesh1_file, nprocs, mesh, group,              &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
       call input_meshes_4_MHD(SGS_par%model_p, mesh, group, IO_bc,      &
