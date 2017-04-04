@@ -171,14 +171,14 @@
       call start_eleps_time(5)
       call start_eleps_time(6)
       if(i_step .eq. 1) then
-        if(iflag_debug.gt.0) write(*,*) 'cal_expricit_sph_euler'
-        call cal_expricit_sph_euler                                     &
+        if(iflag_debug.gt.0) write(*,*) 'cal_explicit_sph_euler'
+        call cal_explicit_sph_euler                                     &
      &     (i_step, MHD_step1%time_d%dt, sph1%sph_rj,                   &
      &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
      &      ipol, itor, rj_fld1)
       else
-        if(iflag_debug.gt.0) write(*,*) 'cal_expricit_sph_adams'
-        call cal_expricit_sph_adams(MHD_step1%time_d%dt, sph1%sph_rj,   &
+        if(iflag_debug.gt.0) write(*,*) 'cal_explicit_sph_adams'
+        call cal_explicit_sph_adams(MHD_step1%time_d%dt, sph1%sph_rj,   &
      &     fl_prop1, cd_prop1, ht_prop1, cp_prop1, ipol, itor, rj_fld1)
       end if
 !*

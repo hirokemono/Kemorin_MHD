@@ -7,10 +7,10 @@
 !>@brief Time integration for momentum equation by explicit scheme
 !!
 !!@verbatim
-!!      subroutine cal_expricit_sph_adams                               &
+!!      subroutine cal_explicit_sph_adams                               &
 !!     &         (dt, sph_rj, fl_prop, cd_prop, ht_prop, cp_prop,       &
 !!     &          ipol, itor, rj_fld)
-!!      subroutine cal_expricit_sph_euler(i_step, dt, sph_rj,           &
+!!      subroutine cal_explicit_sph_euler(i_step, dt, sph_rj,           &
 !!     &         fl_prop, cd_prop, ht_prop, cp_prop, ipol, itor, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
@@ -43,7 +43,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_expricit_sph_adams                                 &
+      subroutine cal_explicit_sph_adams                                 &
      &         (dt, sph_rj, fl_prop, cd_prop, ht_prop, cp_prop,         &
      &          ipol, itor, rj_fld)
 !
@@ -91,11 +91,11 @@
       end if
 !$omp end parallel
 !
-      end subroutine cal_expricit_sph_adams
+      end subroutine cal_explicit_sph_adams
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_expricit_sph_euler(i_step, dt, sph_rj,             &
+      subroutine cal_explicit_sph_euler(i_step, dt, sph_rj,             &
      &         fl_prop, cd_prop, ht_prop, cp_prop, ipol, itor, rj_fld)
 !
       use m_boundary_params_sph_MHD
@@ -164,7 +164,7 @@
       end if
 !$omp end parallel
 !
-      end subroutine cal_expricit_sph_euler
+      end subroutine cal_explicit_sph_euler
 !
 ! ----------------------------------------------------------------------
 !
