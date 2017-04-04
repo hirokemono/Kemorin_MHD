@@ -115,8 +115,9 @@
 !* obtain linear terms for starting
 !*
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
-      call set_sph_field_to_start                                       &
-     &   (sph1%sph_rj, r_2nd, trans_p1%leg, ipol, itor, rj_fld1)
+      call set_sph_field_to_start(sph1%sph_rj, r_2nd,                   &
+     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
+     &    trans_p1%leg, ipol, itor, rj_fld1)
 !
 !* obtain nonlinear terms for starting
 !*
@@ -185,7 +186,7 @@
 !*
       call start_eleps_time(7)
       call s_cal_sol_sph_MHD_crank(MHD_step1%time_d%dt,                 &
-     &    sph1%sph_rj, r_2nd, cd_prop1, ht_prop1, cp_prop1,             &
+     &    sph1%sph_rj, r_2nd, fl_prop1, cd_prop1, ht_prop1, cp_prop1,   &
      &    trans_p1%leg, ipol, idpdr, itor, rj_fld1)
       call end_eleps_time(7)
       call end_eleps_time(6)

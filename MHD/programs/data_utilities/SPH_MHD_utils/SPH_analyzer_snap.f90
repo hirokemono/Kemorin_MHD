@@ -148,8 +148,9 @@
 !* obtain linear terms for starting
 !*
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
-      call set_sph_field_to_start                                       &
-     &   (sph1%sph_rj, r_2nd, trans_p1%leg, ipol, itor, rj_fld1)
+      call set_sph_field_to_start(sph1%sph_rj, r_2nd,                   &
+     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
+     &    trans_p1%leg, ipol, itor, rj_fld1)
 !
 !*  ----------------lead nonlinear term ... ----------
 !*
