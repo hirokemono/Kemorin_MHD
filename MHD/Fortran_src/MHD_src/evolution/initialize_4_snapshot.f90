@@ -213,8 +213,8 @@
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1)
       call define_sgs_components                                        &
      &   (mesh%node%numnod, mesh%ele%numele, SGS_par%model_p,           &
-     &    layer_tbl, ifld_sgs, icomp_sgs, wk_sgs1,                      &
-     &    sgs_coefs, sgs_coefs_nod)
+     &    layer_tbl, fl_prop1, cd_prop1, ht_prop1, cp_prop1,            &
+     &    ifld_sgs, icomp_sgs, wk_sgs1,  sgs_coefs, sgs_coefs_nod)
       call define_sgs_diff_coefs                                        &
      &   (mesh%ele%numele, SGS_par%model_p, SGS_par%commute_p,          &
      &    layer_tbl, fl_prop1, cd_prop1, ht_prop1, cp_prop1,            &

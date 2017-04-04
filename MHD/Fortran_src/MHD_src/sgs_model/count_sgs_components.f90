@@ -6,6 +6,7 @@
 !
 !!      subroutine define_sgs_components                                &
 !!     &         (numnod, numele, SGS_param, layer_tbl,                 &
+!!     &          fl_prop, cd_prop, ht_prop, cp_prop,                   &
 !!     &          ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs, sgs_coefs_nod)
 !!
 !!      subroutine set_sgs_addresses                                    &
@@ -41,11 +42,11 @@
 !
       subroutine define_sgs_components                                  &
      &         (numnod, numele, SGS_param, layer_tbl,                   &
+     &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
      &          ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs, sgs_coefs_nod)
 !
       use calypso_mpi
       use m_phys_labels
-      use m_physical_property
 !
       use t_SGS_control_parameter
       use t_layering_ele_list
@@ -55,6 +56,9 @@
 !
       integer(kind = kint), intent(in) :: numnod, numele
       type(layering_tbl), intent(in) :: layer_tbl
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(SGS_terms_address), intent(inout) :: ifld_sgs, icomp_sgs
@@ -65,7 +69,7 @@
 !
 !
       call s_count_sgs_components                                       &
-     &   (SGS_param, fl_prop1, cd_prop1, ht_prop1, cp_prop1, sgs_coefs)
+     &   (SGS_param, fl_prop, cd_prop, ht_prop, cp_prop, sgs_coefs)
 !
 !   set index for model coefficients
 !
@@ -76,7 +80,7 @@
       call alloc_SGS_coefs(numele, sgs_coefs)
 !
       call set_sgs_addresses                                            &
-     &   (SGS_param, fl_prop1, cd_prop1, ht_prop1, cp_prop1,            &
+     &   (SGS_param, fl_prop, cd_prop, ht_prop, cp_prop,                &
      &    ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
       call check_sgs_addresses                                          &
      &   (ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)

@@ -57,8 +57,6 @@
       subroutine cal_vorticity_eq_adams(ipol, itor, kr_in, kr_out,      &
      &          dt, coef_exp, nnod_rj, jmax, ntot_phys_rj, d_rj)
 !
-      use m_physical_property
-!
       type(phys_address), intent(in) :: ipol, itor
       real(kind = kreal), intent(in) :: coef_exp
       real(kind = kreal), intent(in) :: dt
@@ -93,8 +91,6 @@
 !
       subroutine cal_vorticity_eq_euler(ipol, itor, kr_in, kr_out,      &
      &          dt, coef_exp, nnod_rj, jmax, ntot_phys_rj, d_rj)
-!
-      use m_physical_property
 !
       type(phys_address), intent(in) :: ipol, itor
       real(kind = kreal), intent(in) :: coef_exp

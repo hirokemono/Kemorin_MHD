@@ -9,12 +9,17 @@
 !!@verbatim
 !!      subroutine s_lead_fields_4_sph_mhd                              &
 !!     &         (SGS_param, sph, comms_sph, r_2nd,                     &
-!!     &          fl_prop, trans_p, ipol, rj_fld, WK)
+!!     &          fl_prop, cd_prop, ht_prop, cp_prop,                   &
+!!     &          ref_param_T, ref_param_C, trans_p, ipol, rj_fld, WK)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in) :: cd_prop
+!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
+!!        type(reference_scalar_param), intent(in) :: ref_param_T
+!!        type(reference_scalar_param), intent(in) :: ref_param_C
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(phys_address), intent(in) :: ipol
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
@@ -25,9 +30,9 @@
 !
       use m_precision
       use m_machine_parameter
-      use m_physical_property
 !
       use t_physical_property
+      use t_reference_scalar_param
       use t_SGS_control_parameter
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
@@ -55,7 +60,8 @@
 !
       subroutine s_lead_fields_4_sph_mhd                                &
      &         (SGS_param, sph, comms_sph, r_2nd,                       &
-     &          fl_prop, trans_p, ipol, rj_fld, WK)
+     &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
+     &          ref_param_T, ref_param_C, trans_p, ipol, rj_fld, WK)
 !
       use m_radial_matrices_sph
       use sph_transforms_4_MHD
@@ -70,6 +76,10 @@
       type(sph_comm_tables), intent(in) :: comms_sph
       type(fdm_matrices), intent(in) :: r_2nd
       type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
+      type(reference_scalar_param), intent(in) :: ref_param_T
+      type(reference_scalar_param), intent(in) :: ref_param_C
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(phys_address), intent(in) :: ipol
 !
@@ -79,8 +89,8 @@
 !
       if(fl_prop%iflag_scheme .gt. id_no_evolution) then
         call pressure_4_sph_mhd                                         &
-     &     (SGS_param, sph%sph_rj, fl_prop1, r_2nd,                     &
-     &      trans_p%leg, band_p_poisson, ipol, rj_fld)
+     &     (SGS_param, sph%sph_rj, fl_prop, ref_param_T, ref_param_C,   &
+     &      r_2nd, trans_p%leg, band_p_poisson, ipol, rj_fld)
       end if
 !
 !
@@ -100,7 +110,7 @@
 !
         if (iflag_debug.eq.1) write(*,*) 'cal_nonlinear_pole_MHD'
         call cal_nonlinear_pole_MHD                                     &
-     &     (sph%sph_rtp, fl_prop1, cd_prop1, ht_prop1, cp_prop1,        &
+     &     (sph%sph_rtp, fl_prop, cd_prop, ht_prop, cp_prop,            &
      &      WK%trns_MHD%f_trns, WK%trns_MHD%b_trns,                     &
      &      WK%trns_MHD%ncomp_rj_2_rtp, WK%trns_MHD%ncomp_rtp_2_rj,     &
      &      WK%trns_MHD%fld_pole, WK%trns_MHD%frc_pole)
@@ -129,16 +139,18 @@
 !
       call gradients_of_vectors_sph(sph, comms_sph, r_2nd, trans_p,     &
      &    ipol, WK%trns_MHD, WK%trns_tmp, WK%WK_sph, rj_fld)
-      call enegy_fluxes_4_sph_mhd                                       &
-     &   (SGS_param, sph, comms_sph, r_2nd, trans_p, ipol,              &
-     &    WK%trns_MHD, WK%trns_SGS, WK%trns_snap, WK%WK_sph, rj_fld)
+      call enegy_fluxes_4_sph_mhd(SGS_param, sph, comms_sph,            &
+     &    r_2nd, fl_prop, cd_prop, ref_param_T, ref_param_C,            &
+     &    trans_p, ipol, WK%trns_MHD, WK%trns_SGS,                      &
+     &    WK%trns_snap, WK%WK_sph, rj_fld)
 !
       end subroutine s_lead_fields_4_sph_mhd
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine pressure_4_sph_mhd(SGS_param, sph_rj, fl_prop, r_2nd,  &
-     &          leg, band_p_poisson, ipol, rj_fld)
+      subroutine pressure_4_sph_mhd                                     &
+     &         (SGS_param, sph_rj, fl_prop, ref_param_T, ref_param_C,   &
+     &          r_2nd, leg, band_p_poisson, ipol, rj_fld)
 !
       use m_boundary_params_sph_MHD
       use cal_sol_sph_fluid_crank
@@ -151,6 +163,8 @@
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(fluid_property), intent(in) :: fl_prop
+      type(reference_scalar_param), intent(in) :: ref_param_T
+      type(reference_scalar_param), intent(in) :: ref_param_C
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(legendre_4_sph_trans), intent(in) :: leg
@@ -162,7 +176,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_div_of_forces_sph_2'
       call cal_div_of_forces_sph_2                                      &
-     &   (sph_rj, r_2nd, leg%g_sph_rj, ipol, rj_fld)
+     &   (sph_rj, r_2nd, fl_prop, ref_param_T, ref_param_C,             &
+     &    leg%g_sph_rj, ipol, rj_fld)
 !
 !   ----  Lead SGS terms
       if(SGS_param%iflag_SGS .gt. id_SGS_none) then
@@ -190,9 +205,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine enegy_fluxes_4_sph_mhd                                 &
-     &          (SGS_param, sph, comms_sph, r_2nd, trans_p, ipol,       &
-     &           trns_MHD, trns_SGS, trns_snap, WK_sph, rj_fld)
+      subroutine enegy_fluxes_4_sph_mhd(SGS_param, sph, comms_sph,      &
+     &          r_2nd, fl_prop, cd_prop, ref_param_T, ref_param_C,      &
+     &          trans_p, ipol, trns_MHD, trns_SGS, trns_snap,           &
+     &          WK_sph, rj_fld)
 !
       use sph_transforms_snapshot
       use cal_energy_flux_rtp
@@ -204,6 +220,10 @@
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(fdm_matrices), intent(in) :: r_2nd
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
+      type(reference_scalar_param), intent(in) :: ref_param_T
+      type(reference_scalar_param), intent(in) :: ref_param_C
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(phys_address), intent(in) :: ipol
 !
@@ -225,7 +245,7 @@
 !      Evaluate fields for output in grid space
       if (iflag_debug.eq.1) write(*,*) 's_cal_energy_flux_rtp'
       call s_cal_energy_flux_rtp                                        &
-     &   (sph%sph_rtp, fl_prop1, cd_prop1, ref_param_T1, ref_param_C1,  &
+     &   (sph%sph_rtp, fl_prop, cd_prop, ref_param_T, ref_param_C,      &
      &    trns_MHD%f_trns, trns_snap%b_trns, trns_snap%f_trns,          &
      &    trns_MHD%ncomp_rtp_2_rj, trns_snap%ncomp_rj_2_rtp,            &
      &    trns_snap%ncomp_rtp_2_rj, trns_MHD%frc_rtp,                   &
@@ -235,7 +255,7 @@
       if(SGS_param%iflag_SGS .gt. id_SGS_none) then
         if (iflag_debug.eq.1) write(*,*) 'SGS_fluxes_for_snapshot'
         call SGS_fluxes_for_snapshot                                    &
-     &     (sph%sph_rtp, fl_prop1, trns_MHD%b_trns,                     &
+     &     (sph%sph_rtp, fl_prop, trns_MHD%b_trns,                      &
      &      trns_SGS%f_trns, trns_snap%b_trns, trns_snap%f_trns,        &
      &      trns_MHD%ncomp_rj_2_rtp, trns_SGS%ncomp_rtp_2_rj,           &
      &      trns_snap%ncomp_rj_2_rtp, trns_snap%ncomp_rtp_2_rj,         &

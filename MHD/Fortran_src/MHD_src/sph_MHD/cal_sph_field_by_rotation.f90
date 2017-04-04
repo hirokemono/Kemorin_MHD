@@ -10,9 +10,13 @@
 !!      subroutine rot_momentum_eq_exp_sph                              &
 !!     &         (sph_rj, r_2nd, leg, ipol, itor, rj_fld)
 !!      subroutine cal_div_of_forces_sph_2                              &
-!!     &         (sph_rj, r_2nd, g_sph_rj, ipol, rj_fld)
+!!     &         (sph_rj, r_2nd, fl_prop, ref_param_T, ref_param_C,     &
+!!     &          g_sph_rj, ipol, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(reference_scalar_param), intent(in) :: ref_param_T
+!!        type(reference_scalar_param), intent(in) :: ref_param_C
 !!        type(phys_address), intent(in) :: ipol, itor
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
@@ -110,15 +114,20 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_div_of_forces_sph_2                                &
-     &         (sph_rj, r_2nd, g_sph_rj, ipol, rj_fld)
+     &         (sph_rj, r_2nd, fl_prop, ref_param_T, ref_param_C,       &
+     &          g_sph_rj, ipol, rj_fld)
 !
-      use m_physical_property
+      use t_physical_property
+      use t_reference_scalar_param
       use m_boundary_params_sph_MHD
       use cal_div_buoyancies_sph_MHD
       use const_sph_divergence
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
+      type(fluid_property), intent(in) :: fl_prop
+      type(reference_scalar_param), intent(in) :: ref_param_T
+      type(reference_scalar_param), intent(in) :: ref_param_C
       type(phys_address), intent(in) :: ipol
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
@@ -128,18 +137,18 @@
       call const_sph_div_force(sph_rj, r_2nd, sph_bc_U, g_sph_rj,       &
      &    ipol%i_m_advect, ipol%i_div_inertia, rj_fld)
 !
-      if(fl_prop1%iflag_4_lorentz .gt. id_turn_OFF) then
+      if(fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
         call const_sph_div_force(sph_rj, r_2nd, sph_bc_U, g_sph_rj,     &
      &      ipol%i_lorentz, ipol%i_div_Lorentz, rj_fld)
       end if
 !
-      if(fl_prop1%iflag_4_coriolis .gt. id_turn_OFF) then
+      if(fl_prop%iflag_4_coriolis .gt. id_turn_OFF) then
         call const_sph_div_force(sph_rj, r_2nd, sph_bc_U, g_sph_rj,     &
      &      ipol%i_coriolis, ipol%i_div_Coriolis, rj_fld)
       end if
 !
-      call sel_div_buoyancies_sph_MHD(sph_rj, ipol,                     &           
-     &    fl_prop1, ref_param_T1, ref_param_C1, sph_bc_U, rj_fld)
+      call sel_div_buoyancies_sph_MHD(sph_rj, ipol,                     &
+     &    fl_prop, ref_param_T, ref_param_C, sph_bc_U, rj_fld)
 !
       end subroutine cal_div_of_forces_sph_2
 !

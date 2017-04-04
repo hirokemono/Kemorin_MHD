@@ -40,7 +40,6 @@
 !
       use m_precision
 !
-      use m_physical_property
       use t_geometry_data
       use t_surface_data
       use t_group_data

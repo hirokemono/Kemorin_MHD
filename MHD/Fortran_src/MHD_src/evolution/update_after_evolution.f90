@@ -247,7 +247,7 @@
      &      (iphys%i_par_temp, time_d%dt, FEM_prm,                      &
      &       SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,      &
      &       mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,         &
-     &       MHD_mesh%fluid, group%surf_grp, ht_prop1,                  &
+     &       MHD_mesh%fluid, group%surf_grp, ht_prop1, ref_param_T1,    &
      &       nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys, iphys_ele,      &
      &       ele_fld, fem_int%jacobians, fem_int%rhs_tbl,               &
      &       FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,            &
@@ -265,7 +265,7 @@
           call cal_temperature_field(iphys%i_temp, time_d%dt, FEM_prm,  &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
      &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
-     &        MHD_mesh%fluid, group%surf_grp, ht_prop1,                 &
+     &        MHD_mesh%fluid, group%surf_grp, ht_prop1, ref_param_T1,   &
      &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys, iphys_ele,     &
      &        ele_fld, fem_int%jacobians, fem_int%rhs_tbl,              &
      &        FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,           &
@@ -300,8 +300,8 @@
           call s_cal_light_element                                      &
      &       (iphys%i_par_light, time_d%dt, FEM_prm,                    &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
-     &        mesh%nod_comm, mesh%node, mesh%ele,                       &
-     &        ele_mesh%surf, MHD_mesh%fluid, group%surf_grp, cp_prop1,  &
+     &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
+     &        MHD_mesh%fluid, group%surf_grp, cp_prop1, ref_param_C1,   &
      &        nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys, iphys_ele,     &
      &        ele_fld, fem_int%jacobians, fem_int%rhs_tbl, FEM_elens,   &
      &        icomp_sgs, ifld_diff, iphys_elediff,                      &
@@ -316,8 +316,8 @@
           if(iflag_debug.eq.1) write(*,*) 's_cal_light_element C'
           call s_cal_light_element(iphys%i_light, time_d%dt, FEM_prm,   &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
-     &        mesh%nod_comm, mesh%node, mesh%ele,                       &
-     &        ele_mesh%surf, MHD_mesh%fluid, group%surf_grp, cp_prop1,  &
+     &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
+     &        MHD_mesh%fluid, group%surf_grp, cp_prop1, ref_param_C1,   &
      &        nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys, iphys_ele,     &
      &        ele_fld, fem_int%jacobians, fem_int%rhs_tbl, FEM_elens,   &
      &        icomp_sgs, ifld_diff, iphys_elediff,                      &
@@ -584,7 +584,7 @@
      &       (iphys%i_par_temp, time_d%dt, FEM_prm,                     &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
      &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
-     &        fluid, group%surf_grp, ht_prop1,                          &
+     &        fluid, group%surf_grp, ht_prop1, ref_param_T1,            &
      &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys, iphys_ele,     &
      &        ele_fld, fem_int%jacobians, fem_int%rhs_tbl,              &
      &        FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,           &
@@ -600,7 +600,7 @@
           call cal_temperature_field(iphys%i_temp, time_d%dt, FEM_prm,  &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
      &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
-     &        fluid, group%surf_grp, ht_prop1,                          &
+     &        fluid, group%surf_grp, ht_prop1, ref_param_T1,            &
      &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys, iphys_ele,     &
      &        ele_fld, fem_int%jacobians, fem_int%rhs_tbl,              &
      &        FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,           &
@@ -635,8 +635,8 @@
           call s_cal_light_element                                      &
      &       (iphys%i_par_light, time_d%dt, FEM_prm,                    &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
-     &        mesh%nod_comm, mesh%node, mesh%ele,                       &
-     &        ele_mesh%surf, fluid, group%surf_grp, cp_prop1,           &
+     &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
+     &        fluid, group%surf_grp, cp_prop1, ref_param_C1,            &
      &        nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys, iphys_ele,     &
      &        ele_fld, fem_int%jacobians, fem_int%rhs_tbl, FEM_elens,   &
      &        icomp_sgs, ifld_diff, iphys_elediff,                      &
@@ -651,8 +651,8 @@
           if (iflag_debug.eq.1) write(*,*) 's_cal_light_element'
           call s_cal_light_element(iphys%i_light, time_d%dt, FEM_prm,   &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
-     &        mesh%nod_comm, mesh%node, mesh%ele,                       &
-     &        ele_mesh%surf, fluid, group%surf_grp, cp_prop1,           &
+     &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
+     &        fluid, group%surf_grp, cp_prop1, ref_param_C1,            &
      &        nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys, iphys_ele,     &
      &        ele_fld, fem_int%jacobians, fem_int%rhs_tbl, FEM_elens,   &
      &        icomp_sgs, ifld_diff, iphys_elediff,                      &

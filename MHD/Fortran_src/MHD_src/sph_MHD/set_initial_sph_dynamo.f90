@@ -7,11 +7,12 @@
 !> @brief Set initial data for spectrum dynamos
 !!
 !!@verbatim
-!!      subroutine sph_initial_data_control                             &
-!!     &         (sph_params, sph_rj, reftemp_rj, ipol, idpdr, itor,    &
+!!      subroutine sph_initial_data_control(reftemp_rj,                 &
+!!     &          sph_params, sph_rj, ref_param_T, ipol, idpdr, itor,   &
 !!     &          rj_fld, rst_step, init_d, time_d)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(reference_scalar_param), intent(in) :: ref_param_T
 !!        type(phys_address), intent(in) :: ipol
 !!        type(time_data), intent(inout) :: init_d, time_d
 !!        type(phys_data), intent(inout) :: rj_fld
@@ -26,6 +27,7 @@
       use m_constants
       use m_machine_parameter
 !
+      use t_reference_scalar_param
       use t_IO_step_parameter
       use t_time_data
       use t_spheric_rj_data
@@ -44,13 +46,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sph_initial_data_control                               &
-     &         (sph_params, sph_rj, reftemp_rj, ipol, idpdr, itor,      &
+      subroutine sph_initial_data_control(reftemp_rj,                   &
+     &          sph_params, sph_rj, ref_param_T, ipol, idpdr, itor,     &
      &          rj_fld, rst_step, init_d, time_d)
 !
       use m_machine_parameter
       use m_initial_field_control
 !
+      use t_reference_scalar_param
       use t_spheric_parameter
       use t_phys_data
 !
@@ -61,6 +64,7 @@
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(reference_scalar_param), intent(in) :: ref_param_T
       real(kind=kreal), intent(in) :: reftemp_rj(sph_rj%nidx_rj(1),0:2)
       type(phys_address), intent(in) :: ipol, idpdr, itor
 !
@@ -85,8 +89,8 @@
         call set_initial_velo_sph(ipol%i_velo,                          &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         if(ipol%i_temp .gt. 0) then
-          call set_ini_reference_temp_sph                               &
-     &       (ipol%i_temp, reftemp_rj, sph_rj,                          &
+          call set_ini_reference_temp_sph(ipol%i_temp, reftemp_rj,      &
+     &        sph_rj, ref_param_T%iflag_reference,                      &
      &        sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
           call set_initial_temp_sph(isig, ipol%i_temp, sph_rj,          &
@@ -127,13 +131,15 @@
 !
       else if (iflag_restart .eq. i_rst_no_file) then
         if(ipol%i_temp .gt. 0)  then
-          call set_noize_scalar_sph(ipol%i_temp, reftemp_rj, sph_rj,    &
+          call set_noize_scalar_sph(ipol%i_temp, reftemp_rj,            &
+     &        sph_rj, ref_param_T%iflag_reference,                      &
      &        sph_params%radius_ICB, sph_params%radius_CMB,             &
      &        sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
         if(ipol%i_light .gt. 0) then
-          call set_noize_scalar_sph(ipol%i_light, reftemp_rj, sph_rj,   &
+          call set_noize_scalar_sph(ipol%i_light, reftemp_rj,           &
+     &        sph_rj, ref_param_T%iflag_reference,                      &
      &        sph_params%radius_ICB, sph_params%radius_CMB,             &
      &        sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
@@ -148,8 +154,8 @@
         end if
 !
       else if (iflag_restart .eq. i_rst_licv) then
-        call set_ini_reference_temp_sph                                 &
-     &     (ipol%i_temp, reftemp_rj, sph_rj,                            &
+        call set_ini_reference_temp_sph(ipol%i_temp, reftemp_rj,        &
+     &      sph_rj, ref_param_T%iflag_reference,                        &
      &      sph_params%nlayer_ICB, sph_params%nlayer_CMB,               &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         call set_all_part_temp_sph(ipol%i_temp, sph_rj,                 &
@@ -196,12 +202,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_ini_reference_temp_sph                             &
-     &         (is_temp, reftemp_rj, sph_rj, nlayer_ICB, nlayer_CMB,    &
-     &          n_point, ntot_phys_rj, d_rj)
-!
-      use m_physical_property
+     &         (is_temp, reftemp_rj, sph_rj, iflag_reftemp,             &
+     &          nlayer_ICB, nlayer_CMB, n_point, ntot_phys_rj, d_rj)
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      integer(kind = kint), intent(in) :: iflag_reftemp
       integer(kind = kint), intent(in) :: is_temp
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
@@ -220,7 +225,7 @@
 !
 !   set reference temperature (l = m = 0)
       if (sph_rj%idx_rj_degree_zero .gt. 0) then
-        if (ref_param_T1%iflag_reference .eq. id_sphere_ref_temp) then
+        if (iflag_reftemp .eq. id_sphere_ref_temp) then
           do k = 1, sph_rj%nidx_rj(1)
             inod = sph_rj%idx_rj_degree_zero + (k-1) * sph_rj%nidx_rj(2)
             d_rj(inod,is_temp) = reftemp_rj(k,0)
@@ -491,13 +496,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_noize_scalar_sph(is_fld, reftemp_rj, sph_rj,       &
-     &          r_ICB, r_CMB, nlayer_ICB, nlayer_CMB,                   &
-     &          n_point, ntot_phys_rj, d_rj)
-!
-      use m_physical_property
+      subroutine set_noize_scalar_sph(is_fld, reftemp_rj,               &
+     &          sph_rj, iflag_reftemp, r_ICB, r_CMB,                    &
+     &          nlayer_ICB, nlayer_CMB, n_point, ntot_phys_rj, d_rj)
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      integer(kind = kint), intent(in) :: iflag_reftemp
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
       real(kind = kreal), intent(in) :: r_ICB, r_CMB
       integer(kind = kint), intent(in) :: is_fld
@@ -521,7 +525,7 @@
 !
 !
       if (sph_rj%idx_rj_degree_zero .gt. 0) then
-        if(ref_param_T1%iflag_reference .eq. id_sphere_ref_temp) then
+        if(iflag_reftemp .eq. id_sphere_ref_temp) then
           do k = 1, sph_rj%nidx_rj(1)
             inod = sph_rj%idx_rj_degree_zero + (k-1)*sph_rj%nidx_rj(2)
             d_rj(inod,is_fld) = reftemp_rj(k,0)

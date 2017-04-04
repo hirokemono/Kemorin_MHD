@@ -334,7 +334,8 @@
      &                             SGS_par1%sgs_step)
       if(iflag .eq. 0) then
         call s_lead_fields_4_sph_mhd(SGS_par1%model_p, sph,             &
-     &      comms_sph, r_2nd, fl_prop1, trans_p1,                       &
+     &      comms_sph, r_2nd, fl_prop1, cd_prop1, ht_prop1, cp_prop1,   &
+     &      ref_param_T1, ref_param_C1, trans_p1,                       &
      &      ipol, rj_fld, trns_WK)
       end if
 !

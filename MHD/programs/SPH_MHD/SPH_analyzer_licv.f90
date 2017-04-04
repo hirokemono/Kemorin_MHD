@@ -81,14 +81,14 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD'
       call init_sph_transform_MHD                                       &
-     &   (SGS_par1%model_p, ipol, idpdr, itor, iphys,                   &
+     &   (SGS_par1%model_p, fl_prop1, ipol, idpdr, itor, iphys,         &
      &    sph1, comms_sph1, omega_sph1, trans_p1, trns_WK1, rj_fld1)
 !
 ! ---------------------------------
 !
       if(iflag_debug.gt.0) write(*,*)' sph_initial_data_control'
       call sph_initial_data_control                                     &
-     &   (sph1%sph_params, sph1%sph_rj, ref_temp1%t_rj,                 &
+     &   (ref_temp1%t_rj, sph1%sph_params, sph1%sph_rj, ref_param_T1,   &
      &    ipol, idpdr, itor, rj_fld1, MHD_step%rst_step,                &
      &    MHD_step1%init_d, MHD_step1%time_d)
       MHD_step1%iflag_initial_step = 0
@@ -190,7 +190,8 @@
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
         call s_lead_fields_4_sph_mhd(SGS_par1%model_p, sph1,            &
-     &      comms_sph1, r_2nd, fl_prop1, trans_p1,                      &
+     &      comms_sph1, r_2nd, fl_prop1, cd_prop1, ht_prop1, cp_prop1,  &
+     &      ref_param_T1, ref_param_C1, trans_p1,                       &
      &      ipol, rj_fld1, trns_WK1)
       end if
       call end_eleps_time(9)

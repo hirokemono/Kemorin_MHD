@@ -7,9 +7,11 @@
 !>@brief Perform spherical harmonics transform for MHD dynamo model
 !!
 !!@verbatim
-!!      subroutine init_sph_transform_MHD(SGS_param, ipol, idpdr, itor, &
-!!     &          iphys, sph, comms_sph, omega_sph, trans_p, WK, rj_fld)
+!!      subroutine init_sph_transform_MHD                               &
+!!     &         (SGS_param, fl_prop, ipol, idpdr, itor, iphys,         &
+!!     &          sph, comms_sph, omega_sph, trans_p, WK, rj_fld)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
+!!        type(fluid_property), intent(in) :: fl_prop
 !!        type(phys_address), intent(in) :: ipol, idpdr, itor
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
@@ -27,6 +29,7 @@
 !
       use calypso_mpi
 !
+      use t_physical_property
       use t_SGS_control_parameter
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
@@ -61,10 +64,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine init_sph_transform_MHD(SGS_param, ipol, idpdr, itor,   &
-     &          iphys, sph, comms_sph, omega_sph, trans_p, WK, rj_fld)
+      subroutine init_sph_transform_MHD                                 &
+     &         (SGS_param, fl_prop, ipol, idpdr, itor, iphys,           &
+     &          sph, comms_sph, omega_sph, trans_p, WK, rj_fld)
 !
-      use m_physical_property
       use set_address_sph_trans_MHD
       use set_address_sph_trans_SGS
       use set_address_sph_trans_snap
@@ -73,6 +76,7 @@
       use MHD_FFT_selector
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
+      type(fluid_property), intent(in) :: fl_prop
       type(phys_address), intent(in) :: ipol, idpdr, itor
       type(phys_address), intent(in) :: iphys
 !
@@ -122,7 +126,8 @@
 !
       call alloc_sph_trans_address(sph%sph_rtp, WK)
 !
-      call sel_sph_transform_MHD(ipol, sph, comms_sph, omega_sph,       &
+      call sel_sph_transform_MHD                                        &
+     &   (ipol, fl_prop, sph, comms_sph, omega_sph,                     &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
      &    trans_p, WK%trns_MHD, WK%WK_sph, WK%MHD_mul_FFTW, rj_fld)
 !
@@ -137,7 +142,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine sel_sph_transform_MHD                                  &
-     &         (ipol, sph, comms_sph, omega_sph,                        &
+     &         (ipol, fl_prop, sph, comms_sph, omega_sph,               &
      &          ncomp_max_trans, nvector_max_trans, nscalar_max_trans,  &
      &          trans_p, trns_MHD, WK_sph, MHD_mul_FFTW, rj_fld)
 !
@@ -153,6 +158,7 @@
       use skip_comment_f
 !
       type(phys_address), intent(in) :: ipol
+      type(fluid_property), intent(in) :: fl_prop
 !
       type(sph_grids), intent(inout) :: sph
       type(sph_comm_tables), intent(inout) :: comms_sph
@@ -184,7 +190,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'select_legendre_transform'
       call select_legendre_transform                                    &
-     &   (sph, comms_sph, omega_sph, trans_p, ipol,                     &
+     &   (sph, comms_sph, fl_prop, omega_sph, trans_p, ipol,            &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
      &    rj_fld, trns_MHD, WK_sph, MHD_mul_FFTW)
 !
@@ -202,15 +208,15 @@
 !-----------------------------------------------------------------------
 !
       subroutine select_legendre_transform                              &
-     &         (sph, comms_sph, omega_sph, trans_p, ipol,               &
+     &         (sph, comms_sph, fl_prop, omega_sph, trans_p, ipol,      &
      &          ncomp_max_trans, nvector_max_trans, nscalar_max_trans,  &
      &          rj_fld, trns_MHD, WK_sph, MHD_mul_FFTW)
 !
-      use m_physical_property
       use sph_transforms_4_MHD
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
+      type(fluid_property), intent(in) :: fl_prop
       type(sph_rotation), intent(in) :: omega_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(phys_address), intent(in) :: ipol
@@ -247,9 +253,9 @@
      &      WK_sph%WK_leg)
 !
         starttime = MPI_WTIME()
-        call sph_back_trans_4_MHD(sph, comms_sph, fl_prop1, omega_sph,  &
+        call sph_back_trans_4_MHD(sph, comms_sph, fl_prop, omega_sph,   &
      &      trans_p, ipol, rj_fld, trns_MHD, WK_sph, MHD_mul_FFTW)
-        call sph_forward_trans_4_MHD(sph, comms_sph, fl_prop1, trans_p, &
+        call sph_forward_trans_4_MHD(sph, comms_sph, fl_prop, trans_p,  &
      &      ipol, trns_MHD, WK_sph, MHD_mul_FFTW, rj_fld)
         endtime(WK_sph%WK_leg%id_legendre) = MPI_WTIME() - starttime
 !

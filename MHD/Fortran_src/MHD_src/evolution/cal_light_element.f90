@@ -8,12 +8,12 @@
 !!      subroutine s_cal_light_element(i_field, dt,                     &
 !!     &          FEM_prm, SGS_param, cmt_param, filter_param,          &
 !!     &          nod_comm, node, ele, surf, fluid, sf_grp,             &
-!!     &          property, nod_bcs, sf_bcs, iphys, iphys_ele, ele_fld, &
-!!     &          jacobians, rhs_tbl, FEM_elens, icomp_sgs,             &
-!!     &          ifld_diff, iphys_elediff, sgs_coefs, sgs_coefs_nod,   &
-!!     &          diff_coefs, filtering, Cmatrix, ak_diffuse,           &
-!!     &          MGCG_WK, wk_filter, mhd_fem_wk, fem_wk, surf_wk,      &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          property, ref_param, nod_bcs, sf_bcs,                 &
+!!     &          iphys, iphys_ele, ele_fld, jacobians, rhs_tbl,        &
+!!     &          FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,       &
+!!     &          sgs_coefs, sgs_coefs_nod,  diff_coefs, filtering,     &
+!!     &          Cmatrix, ak_diffuse, MGCG_WK, wk_filter, mhd_fem_wk,  &
+!!     &          fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -25,8 +25,9 @@
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(scalar_property), intent(in) :: property
-!!        type(nodal_bcs_4_scalar_type), intent(in) :: Tnod_bcs
-!!        type(scaler_surf_bc_type), intent(in) :: Tsf_bcs
+!!        type(reference_scalar_param), intent(in) :: ref_param
+!!        type(nodal_bcs_4_scalar_type), intent(in) :: nod_bcs
+!!        type(scaler_surf_bc_type), intent(in) :: sf_bcs
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
@@ -56,6 +57,7 @@
       use m_machine_parameter
       use m_phys_constants
 !
+      use t_reference_scalar_param
       use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_physical_property
@@ -91,12 +93,12 @@
       subroutine s_cal_light_element(i_field, dt,                       &
      &          FEM_prm, SGS_param, cmt_param, filter_param,            &
      &          nod_comm, node, ele, surf, fluid, sf_grp,               &
-     &          property, nod_bcs, sf_bcs, iphys, iphys_ele, ele_fld,   &
-     &          jacobians, rhs_tbl, FEM_elens, icomp_sgs,               &
-     &          ifld_diff, iphys_elediff, sgs_coefs, sgs_coefs_nod,     &
-     &          diff_coefs, filtering, Cmatrix, ak_diffuse,             &
-     &          MGCG_WK, wk_filter, mhd_fem_wk, fem_wk, surf_wk,        &
-     &          f_l, f_nl, nod_fld)
+     &          property, ref_param, nod_bcs, sf_bcs,                   &
+     &          iphys, iphys_ele, ele_fld, jacobians, rhs_tbl,          &
+     &          FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,         &
+     &          sgs_coefs, sgs_coefs_nod,  diff_coefs, filtering,       &
+     &          Cmatrix, ak_diffuse, MGCG_WK, wk_filter, mhd_fem_wk,    &
+     &          fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
       use nod_phys_send_recv
       use set_boundary_scalars
@@ -126,6 +128,7 @@
       type(surface_group_data), intent(in) :: sf_grp
       type(field_geometry_data), intent(in) :: fluid
       type(scalar_property), intent(in) :: property
+      type(reference_scalar_param), intent(in) :: ref_param
       type(nodal_bcs_4_scalar_type), intent(in) :: nod_bcs
       type(scaler_surf_bc_type), intent(in) :: sf_bcs
       type(phys_address), intent(in) :: iphys
@@ -227,7 +230,7 @@
 !     &   ((50+my_rank), nod_fld, n_scalar, i_field)
 !
 !
-      if (ref_param_C1%iflag_reference .eq. id_takepiro_temp) then
+      if (ref_param%iflag_reference .eq. id_takepiro_temp) then
         if (FEM_prm%iflag_comp_supg .gt. id_turn_OFF) then
           call cal_stratified_layer_upw                                 &
      &       (iphys%i_gref_c, FEM_prm%npoint_t_evo_int, dt,             &

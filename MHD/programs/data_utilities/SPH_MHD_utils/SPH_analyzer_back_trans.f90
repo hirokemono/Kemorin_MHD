@@ -77,7 +77,7 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_back_transform'
-      call init_sph_back_transform(ipol, idpdr, itor, iphys,            &
+      call init_sph_back_transform(fl_prop1, ipol, idpdr, itor, iphys,  &
      &    sph1, comms_sph1, omega_sph1, trans_p1, trns_WK1, rj_fld1)
 !
 ! ---------------------------------
@@ -151,9 +151,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_sph_back_transform(ipol, idpdr, itor, iphys,      &
+      subroutine init_sph_back_transform                                &
+     &         (fl_prop, ipol, idpdr, itor, iphys,                      &
      &          sph, comms_sph, omega_sph, trans_p, WK, rj_fld)
 !
+      use t_physical_property
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
       use t_phys_data
@@ -174,6 +176,7 @@
 !
       type(phys_address), intent(in) :: ipol, idpdr, itor
       type(phys_address), intent(in) :: iphys
+      type(fluid_property), intent(in) :: fl_prop
 !
       type(sph_grids), intent(inout) :: sph
       type(sph_comm_tables), intent(inout) :: comms_sph
@@ -209,7 +212,8 @@
 !
       call alloc_sph_trans_address(sph%sph_rtp, WK)
 !
-      call sel_sph_transform_MHD(ipol, sph, comms_sph, omega_sph,       &
+      call sel_sph_transform_MHD                                        &
+     &   (ipol, fl_prop, sph, comms_sph, omega_sph,                     &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
      &    trans_p, WK%trns_MHD, WK%WK_sph, WK%MHD_mul_FFTW, rj_fld)
 !
