@@ -6,12 +6,11 @@
 !!      subroutine s_cal_model_coefficients(time_d,                     &
 !!     &        FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh,      &
 !!     &        fl_prop, cd_prop, ht_prop, cp_prop, layer_tbl,          &
-!!     &        nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld, jacobians,&
-!!     &        rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs, ifld_diff,     &
-!!     &        icomp_diff, iphys_elediff, filtering, wide_filtering,   &
-!!     &        m_lump, wk_cor, wk_lsq, wk_sgs, wk_diff, wk_filter,     &
-!!     &        mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                 &
-!!     &        nod_fld, sgs_coefs, sgs_coefs_nod, diff_coefs)
+!!     &        nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld, fem_int,  &
+!!     &        FEM_elens, ifld_sgs, icomp_sgs, ifld_diff, icomp_diff,  &
+!!     &        iphys_elediff, filtering, wide_filtering,               &
+!!     &        wk_cor, wk_lsq, wk_sgs, wk_diff, wk_filter, mhd_fem_wk, &
+!!     &        rhs_mat, nod_fld, sgs_coefs, sgs_coefs_nod, diff_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(time_data), intent(in) :: time_d
@@ -28,8 +27,7 @@
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(mesh_data_MHD), intent(in) :: MHD_mesh
 !!        type(layering_tbl), intent(in) :: layer_tbl
-!!        type(jacobians_type), intent(in) :: jacobians
-!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(SGS_terms_address), intent(in) :: ifld_sgs
 !!        type(SGS_terms_address), intent(in) :: icomp_sgs
@@ -38,7 +36,6 @@
 !!        type(SGS_terms_address), intent(in) :: iphys_elediff
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(filtering_data_type), intent(in) :: wide_filtering
-!!        type(lumped_mass_matrices), intent(in) :: m_lump
 !!
 !!        type(dynamis_correlation_data), intent(inout) :: wk_cor
 !!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
@@ -46,9 +43,7 @@
 !!        type(dynamic_model_data), intent(inout) :: wk_diff
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
-!!        type(work_finite_element_mat), intent(inout) :: fem_wk
-!!        type(work_surface_element_mat), intent(inout) :: surf_wk
-!!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
+!!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs_nod
@@ -79,6 +74,7 @@
       use t_layering_ele_list
       use t_MHD_finite_element_mat
       use t_finite_element_mat
+      use t_work_FEM_integration
       use t_int_surface_data
       use t_filter_elength
       use t_filtering_data
@@ -100,12 +96,11 @@
       subroutine s_cal_model_coefficients(time_d,                       &
      &        FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh,        &
      &        fl_prop, cd_prop, ht_prop, cp_prop, layer_tbl,            &
-     &        nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld, jacobians,  &
-     &        rhs_tbl, FEM_elens, ifld_sgs, icomp_sgs, ifld_diff,       &
-     &        icomp_diff, iphys_elediff, filtering, wide_filtering,     &
-     &        m_lump, wk_cor, wk_lsq, wk_sgs, wk_diff, wk_filter,       &
-     &        mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                   &
-     &        nod_fld, sgs_coefs, sgs_coefs_nod, diff_coefs)
+     &        nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld, fem_int,    &
+     &        FEM_elens, ifld_sgs, icomp_sgs, ifld_diff, icomp_diff,    &
+     &        iphys_elediff, filtering, wide_filtering,                 &
+     &        wk_cor, wk_lsq, wk_sgs, wk_diff, wk_filter, mhd_fem_wk,   &
+     &        rhs_mat, nod_fld, sgs_coefs, sgs_coefs_nod, diff_coefs)
 !
       use cal_sgs_heat_flux_dynamic
       use cal_sgs_h_flux_dynamic_simi
@@ -135,8 +130,7 @@
       type(phys_data), intent(in) :: ele_fld
       type(mesh_data_MHD), intent(in) :: MHD_mesh
       type(layering_tbl), intent(in) :: layer_tbl
-      type(jacobians_type), intent(in) :: jacobians
-      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_terms_address), intent(in) :: ifld_sgs
       type(SGS_terms_address), intent(in) :: icomp_sgs
@@ -145,7 +139,6 @@
       type(SGS_terms_address), intent(in) :: iphys_elediff
       type(filtering_data_type), intent(in) :: filtering
       type(filtering_data_type), intent(in) :: wide_filtering
-      type(lumped_mass_matrices), intent(in) :: m_lump
 !
       type(dynamis_correlation_data), intent(inout) :: wk_cor
       type(dynamis_least_suare_data), intent(inout) :: wk_lsq
@@ -153,9 +146,7 @@
       type(dynamic_model_data), intent(inout) :: wk_diff
       type(filtering_work_type), intent(inout) :: wk_filter
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
-      type(work_finite_element_mat), intent(inout) :: fem_wk
-      type(work_surface_element_mat), intent(inout) :: surf_wk
-      type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
+      type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs_nod
@@ -181,9 +172,10 @@
      &        iphys_elediff%i_velo, iphys_elediff%i_filter_velo,        &
      &        SGS_par, mesh%nod_comm, mesh%node, mesh%ele, iphys,       &
      &        iphys_ele, ele_fld, MHD_mesh%fluid, layer_tbl,            &
-     &        jacobians, rhs_tbl, FEM_elens, filtering, sgs_coefs_nod,  &
-     &        wk_filter, wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,    &
-     &        f_l, nod_fld, sgs_coefs)
+     &        fem_int%jacobians, fem_int%rhs_tbl, FEM_elens, filtering, &
+     &        sgs_coefs_nod, wk_filter, wk_cor, wk_lsq, wk_sgs,         &
+     &        mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l,                  &
+     &        nod_fld, sgs_coefs)
 !
         else if(SGS_par%model_p%iflag_SGS_h_flux                        &
      &                        .eq. id_SGS_similarity) then
@@ -194,10 +186,11 @@
      &        iphys%i_filter_temp, iphys%i_wide_fil_temp,               &
      &        iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_h_flux,    &
      &        ifld_sgs%i_heat_flux, icomp_sgs%i_heat_flux, SGS_par,     &
-     &        mesh%nod_comm, mesh%node, mesh%ele, iphys, layer_tbl,     &
-     &        jacobians, rhs_tbl, filtering, wide_filtering, m_lump,    &
-     &        wk_filter, wk_cor, wk_lsq, wk_sgs, fem_wk,                &
-     &        f_l, nod_fld, sgs_coefs, sgs_coefs_nod)
+     &        mesh%nod_comm, mesh%node, mesh%ele, iphys,                &
+     &        layer_tbl, fem_int%jacobians, fem_int%rhs_tbl,            &
+     &        filtering, wide_filtering, fem_int%m_lump, wk_filter,     &
+     &        wk_cor, wk_lsq, wk_sgs, rhs_mat%fem_wk,                   &
+     &        rhs_mat%f_l, nod_fld, sgs_coefs, sgs_coefs_nod)
         end if
 !
         if(SGS_par%commute_p%iflag_c_hf .eq. id_SGS_commute_ON) then
@@ -212,10 +205,11 @@
      &        SGS_par, mesh%nod_comm, mesh%node, mesh%ele,              &
      &        ele_mesh%surf, group%surf_grp,                            &
      &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys, iphys_ele,     &
-     &        ele_fld, MHD_mesh%fluid, layer_tbl, jacobians, rhs_tbl,   &
-     &        FEM_elens, filtering, sgs_coefs, wk_filter,               &
-     &        wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk, surf_wk,     &
-     &        f_l, f_nl, nod_fld, diff_coefs)
+     &        ele_fld, MHD_mesh%fluid, layer_tbl,                       &
+     &        fem_int%jacobians, fem_int%rhs_tbl, FEM_elens, filtering, &
+     &        sgs_coefs, wk_filter, wk_cor, wk_lsq, wk_diff,            &
+     &        mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%surf_wk,              &
+     &        rhs_mat%f_l, rhs_mat%f_nl, nod_fld, diff_coefs)
         end if
       end if
 !
@@ -233,9 +227,10 @@
      &        iphys_elediff%i_velo, iphys_elediff%i_filter_velo,        &
      &        SGS_par, mesh%nod_comm, mesh%node, mesh%ele, iphys,       &
      &        iphys_ele, ele_fld, MHD_mesh%fluid, layer_tbl,            &
-     &        jacobians, rhs_tbl, FEM_elens, filtering, sgs_coefs_nod,  &
-     &        wk_filter, wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,    &
-     &        f_l, nod_fld, sgs_coefs)
+     &        fem_int%jacobians, fem_int%rhs_tbl, FEM_elens, filtering, &
+     &        sgs_coefs_nod, wk_filter, wk_cor, wk_lsq, wk_sgs,         &
+     &        mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l,                  &
+     &        nod_fld, sgs_coefs)
 !
         else if(SGS_par%model_p%iflag_SGS_c_flux                        &
      &                       .eq. id_SGS_similarity) then
@@ -246,10 +241,11 @@
      &        iphys%i_filter_comp, iphys%i_wide_fil_comp,               &
      &        iphys%i_velo, iphys%i_filter_velo, iphys%i_SGS_c_flux,    &
      &        ifld_sgs%i_comp_flux, icomp_sgs%i_comp_flux, SGS_par,     &
-     &        mesh%nod_comm, mesh%node, mesh%ele, iphys, layer_tbl,     &
-     &        jacobians, rhs_tbl, filtering, wide_filtering, m_lump,    &
-     &        wk_filter, wk_cor, wk_lsq, wk_sgs, fem_wk,                &
-     &        f_l, nod_fld, sgs_coefs, sgs_coefs_nod)
+     &        mesh%nod_comm, mesh%node, mesh%ele, iphys,                &
+     &        layer_tbl, fem_int%jacobians, fem_int%rhs_tbl,            &
+     &        filtering, wide_filtering, fem_int%m_lump,                &
+     &        wk_filter, wk_cor, wk_lsq, wk_sgs, rhs_mat%fem_wk,        &
+     &        rhs_mat%f_l, nod_fld, sgs_coefs, sgs_coefs_nod)
         end if
 !
         if(SGS_par%commute_p%iflag_c_hf .eq. id_SGS_commute_ON) then
@@ -264,10 +260,11 @@
      &        SGS_par, mesh%nod_comm, mesh%node, mesh%ele,              &
      &        ele_mesh%surf, group%surf_grp,                            &
      &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys, iphys_ele,     &
-     &        ele_fld, MHD_mesh%fluid, layer_tbl, jacobians, rhs_tbl,   &
-     &        FEM_elens, filtering, sgs_coefs, wk_filter,               &
-     &        wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk, surf_wk,     &
-     &        f_l, f_nl, nod_fld, diff_coefs)
+     &        ele_fld, MHD_mesh%fluid, layer_tbl,                       &
+     &        fem_int%jacobians, fem_int%rhs_tbl, FEM_elens, filtering, &
+     &        sgs_coefs, wk_filter, wk_cor, wk_lsq, wk_diff,            &
+     &        mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%surf_wk,              &
+     &        rhs_mat%f_l, rhs_mat%f_nl, nod_fld, diff_coefs)
         end if
       end if
 !
@@ -279,9 +276,10 @@
      &        iphys_elediff%i_velo, iphys_elediff%i_filter_velo,        &
      &        time_d%dt, FEM_prm, SGS_par, mesh%nod_comm, mesh%node,    &
      &        mesh%ele, iphys, iphys_ele, ele_fld, MHD_mesh%fluid,      &
-     &        layer_tbl, jacobians, rhs_tbl, FEM_elens, filtering,      &
-     &        sgs_coefs_nod, wk_filter, wk_cor, wk_lsq, wk_sgs,         &
-     &        mhd_fem_wk, fem_wk, nod_fld, sgs_coefs)
+     &        layer_tbl, fem_int%jacobians, fem_int%rhs_tbl,            &
+     &        FEM_elens, filtering, sgs_coefs_nod, wk_filter, wk_cor,   &
+     &        wk_lsq, wk_sgs, mhd_fem_wk, rhs_mat%fem_wk,               &
+     &        nod_fld, sgs_coefs)
         else if(SGS_par%model_p%iflag_SGS_m_flux                        &
      &                        .eq. id_SGS_similarity) then
           if (iflag_debug.eq.1)                                         &
@@ -289,10 +287,10 @@
           call s_cal_sgs_m_flux_dynamic_simi                            &
      &       (ifld_sgs%i_mom_flux, icomp_sgs%i_mom_flux,                &
      &        FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,     &
-     &        iphys, layer_tbl, jacobians, rhs_tbl,                     &
-     &        filtering, wide_filtering, m_lump, wk_filter,             &
-     &        wk_cor, wk_lsq, wk_sgs, fem_wk, f_l, nod_fld,             &
-     &        sgs_coefs, sgs_coefs_nod)
+     &        iphys, layer_tbl, fem_int%jacobians, fem_int%rhs_tbl,     &
+     &        filtering, wide_filtering, fem_int%m_lump, wk_filter,     &
+     &        wk_cor, wk_lsq, wk_sgs, rhs_mat%fem_wk, rhs_mat%f_l,      &
+     &        nod_fld, sgs_coefs, sgs_coefs_nod)
         end if
 !
         if(SGS_par%commute_p%iflag_c_mf .eq. id_SGS_commute_ON) then
@@ -303,10 +301,11 @@
      &      time_d%dt,  FEM_prm, SGS_par, mesh%nod_comm, mesh%node,     &
      &      mesh%ele,  ele_mesh%surf, group%surf_grp,                   &
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, iphys, iphys_ele,       &
-     &      ele_fld, MHD_mesh%fluid, layer_tbl, jacobians, rhs_tbl,     &
-     &      FEM_elens, filtering, sgs_coefs, wk_filter,                 &
-     &      wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk, surf_wk,       &
-     &      f_l, f_nl, nod_fld, diff_coefs)
+     &      ele_fld, MHD_mesh%fluid, layer_tbl,                         &
+     &      fem_int%jacobians, fem_int%rhs_tbl, FEM_elens, filtering,   &
+     &      sgs_coefs, wk_filter, wk_cor, wk_lsq, wk_diff,              &
+     &      mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%surf_wk,                &
+     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, diff_coefs)
         end if
       end if
 !
@@ -321,19 +320,20 @@
      &        iphys_elediff%i_magne, iphys_elediff%i_filter_magne,      &
      &        time_d%dt, FEM_prm, SGS_par, mesh%nod_comm, mesh%node,    &
      &        mesh%ele, iphys, iphys_ele, ele_fld, MHD_mesh%fluid,      &
-     &        layer_tbl, jacobians, rhs_tbl, FEM_elens, filtering,      &
-     &        sgs_coefs_nod, wk_filter, wk_cor, wk_lsq, wk_sgs,         &
-     &        mhd_fem_wk, fem_wk, nod_fld, sgs_coefs)
+     &        layer_tbl, fem_int%jacobians, fem_int%rhs_tbl, FEM_elens, &
+     &        filtering, sgs_coefs_nod, wk_filter, wk_cor, wk_lsq,      &
+     &        wk_sgs, mhd_fem_wk, rhs_mat%fem_wk, nod_fld, sgs_coefs)
         else if(SGS_par%model_p%iflag_SGS_lorentz                       &
      &                        .eq. id_SGS_similarity) then
           if (iflag_debug.eq.1)                                         &
      &       write(*,*) 'cal_sgs_maxwell_dynamic_simi'
           call cal_sgs_maxwell_dynamic_simi                             &
      &      (ifld_sgs%i_lorentz, icomp_sgs%i_lorentz, FEM_prm, SGS_par, &
-     &       mesh%nod_comm, mesh%node, mesh%ele, iphys, layer_tbl,      &
-     &       jacobians, rhs_tbl, filtering, wide_filtering, m_lump,     &
-     &       wk_filter, wk_cor, wk_lsq, wk_sgs, fem_wk,                 &
-     &       f_l, nod_fld, sgs_coefs, sgs_coefs_nod)
+     &       mesh%nod_comm, mesh%node, mesh%ele, iphys,                 &
+     &       layer_tbl, fem_int%jacobians, fem_int%rhs_tbl,             &
+     &       filtering, wide_filtering, fem_int%m_lump, wk_filter,      &
+     &       wk_cor, wk_lsq, wk_sgs, rhs_mat%fem_wk, rhs_mat%f_l,       &
+     &       nod_fld, sgs_coefs, sgs_coefs_nod)
         end if
 !
         if(SGS_par%commute_p%iflag_c_lorentz .eq. id_SGS_commute_ON)    &
@@ -345,10 +345,10 @@
      &      time_d%dt, FEM_prm, SGS_par, mesh%nod_comm, mesh%node,      &
      &      mesh%ele, ele_mesh%surf, MHD_mesh%fluid, layer_tbl,         &
      &      group%surf_grp, nod_bcs%Vnod_bcs, surf_bcs%Bsf_bcs, iphys,  &
-     &      iphys_ele, ele_fld, jacobians, rhs_tbl, FEM_elens,          &
-     &      filtering, sgs_coefs, wk_filter, wk_cor, wk_lsq, wk_diff,   &
-     &      mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                     &
-     &      nod_fld, diff_coefs)
+     &      iphys_ele, ele_fld, fem_int%jacobians, fem_int%rhs_tbl,     &
+     &      FEM_elens, filtering, sgs_coefs, wk_filter, wk_cor, wk_lsq, &
+     &      wk_diff,  mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%surf_wk,      &
+     &      rhs_mat%f_l, rhs_mat%f_nl, nod_fld, diff_coefs)
         end if
       end if
 !
@@ -365,9 +365,10 @@
      &       time_d%dt, FEM_prm, SGS_par,                               &
      &       mesh%nod_comm, mesh%node, mesh%ele, iphys,                 &
      &       iphys_ele, ele_fld, MHD_mesh%conduct, cd_prop1, layer_tbl, &
-     &       jacobians, rhs_tbl, FEM_elens, filtering, sgs_coefs_nod,   &
-     &       wk_filter, wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,     &
-     &       f_l, nod_fld, sgs_coefs)
+     &       fem_int%jacobians, fem_int%rhs_tbl, FEM_elens, filtering,  &
+     &       sgs_coefs_nod, wk_filter, wk_cor, wk_lsq, wk_sgs,          &
+     &       mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l,                   &
+     &       nod_fld, sgs_coefs)
         else if(SGS_par%model_p%iflag_SGS_uxb                           &
      &                            .eq. id_SGS_similarity) then
           if (iflag_debug.eq.1)                                         &
@@ -375,10 +376,10 @@
           call cal_sgs_induct_t_dynamic_simi                            &
      &       (ifld_sgs%i_induction, icomp_sgs%i_induction,              &
      &        FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,     &
-     &        iphys, layer_tbl, jacobians, rhs_tbl,                     &
-     &        filtering, wide_filtering, m_lump, wk_filter,             &
-     &        wk_cor, wk_lsq, wk_sgs, fem_wk, f_l, nod_fld,             &
-     &        sgs_coefs, sgs_coefs_nod)
+     &        iphys, layer_tbl, fem_int%jacobians, fem_int%rhs_tbl,     &
+     &        filtering, wide_filtering, fem_int%m_lump, wk_filter,     &
+     &        wk_cor, wk_lsq, wk_sgs, rhs_mat%fem_wk, rhs_mat%f_l,      &
+     &        nod_fld, sgs_coefs, sgs_coefs_nod)
         end if
 !
         if(SGS_par%commute_p%iflag_c_uxb .eq. id_SGS_commute_ON) then
@@ -388,12 +389,12 @@
      &       iphys_elediff%i_filter_velo, iphys_elediff%i_filter_magne, &
      &       time_d%dt, FEM_prm, SGS_par,                               &
      &       mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,         &
-     &       MHD_mesh%fluid, MHD_mesh%conduct, cd_prop1,                &
-     &       layer_tbl, group%surf_grp, surf_bcs%Bsf_bcs, iphys,        &
-     &       iphys_ele, ele_fld, jacobians, rhs_tbl, FEM_elens,         &
+     &       MHD_mesh%fluid, MHD_mesh%conduct, cd_prop1, layer_tbl,     &
+     &       group%surf_grp, surf_bcs%Bsf_bcs, iphys, iphys_ele,        &
+     &       ele_fld, fem_int%jacobians, fem_int%rhs_tbl, FEM_elens,    &
      &       sgs_coefs, filtering, wk_filter, wk_cor, wk_lsq,           &
-     &       wk_diff, mhd_fem_wk, fem_wk, surf_wk,                      &
-     &       f_l, f_nl, nod_fld, diff_coefs)
+     &       wk_diff, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%surf_wk,      &
+     &       rhs_mat%f_l, rhs_mat%f_nl, nod_fld, diff_coefs)
         end if
 !
       else if(cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
@@ -405,9 +406,10 @@
      &        iphys_elediff%i_velo, iphys_elediff%i_filter_velo,        &
      &        time_d%dt, FEM_prm, SGS_par, mesh%nod_comm,               &
      &        mesh%node, mesh%ele, iphys, iphys_ele, ele_fld,           &
-     &        MHD_mesh%conduct, cd_prop1, layer_tbl, jacobians,         &
-     &        rhs_tbl, FEM_elens, filtering, wk_filter, wk_cor, wk_lsq, &
-     &        wk_sgs, mhd_fem_wk, fem_wk, f_l, nod_fld, sgs_coefs)
+     &        MHD_mesh%conduct, cd_prop1, layer_tbl, fem_int%jacobians, &
+     &        fem_int%rhs_tbl, FEM_elens, filtering, wk_filter, wk_cor, &
+     &        wk_lsq, wk_sgs, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l,  &
+     &        nod_fld, sgs_coefs)
         else if(SGS_par%model_p%iflag_SGS_uxb                           &
      &                         .eq. id_SGS_similarity) then
           if (iflag_debug.eq.1)  write(*,*)                             &
@@ -415,8 +417,9 @@
           call s_cal_sgs_uxb_dynamic_simi                               &
      &       (ifld_sgs%i_induction, icomp_sgs%i_induction,              &
      &        FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,     &
-     &        iphys, layer_tbl, jacobians, filtering, wide_filtering,   &
-     &        wk_filter, wk_cor, wk_lsq, wk_sgs, nod_fld, sgs_coefs)
+     &        iphys, layer_tbl, fem_int%jacobians,                      &
+     &        filtering, wide_filtering, wk_filter, wk_cor, wk_lsq,     &
+     &        wk_sgs, nod_fld, sgs_coefs)
         end if
       end if
 !

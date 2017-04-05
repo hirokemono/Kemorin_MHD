@@ -3,6 +3,9 @@
 !
 !      Written by H. Matsui on Nov., 2009
 !
+!!      subroutine s_check_deltat_by_prev_rms(flex_p, time_d,           &
+!!     &          mesh, MHD_mesh, cd_prop, iphys, nod_fld,  jacobians,  &
+!!     &          fem_wk, flex_data)
 !!      subroutine check_difference_by_prev_rms                         &
 !!     &         (time, node, ele, fluid, cd_prop, iphys, nod_fld,      &
 !!     &          jac_3d_q, jac_3d_l, fem_wk, flex_data)

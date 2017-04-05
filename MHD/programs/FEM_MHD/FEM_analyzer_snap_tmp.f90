@@ -161,12 +161,11 @@
      &      FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1,    &
      &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
      &      layer_tbl1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,  &
-     &      fem_int1%jacobians, fem_int1%rhs_tbl, FEM1_elen, ifld_sgs, icomp_sgs,       &
-     &      ifld_diff, icomp_diff, iphys_elediff,                       &
-     &      filtering1, wide_filtering, fem_int1%m_lump,                &
+     &      fem_int1, FEM1_elen, ifld_sgs, icomp_sgs, ifld_diff,        &
+     &      icomp_diff, iphys_elediff, filtering1, wide_filtering,      &
      &      wk_cor1, wk_lsq1, wk_sgs1, wk_diff1, wk_filter1,            &
-     &      mhd_fem1_wk, rhs_mat1%fem_wk, rhs_mat1%surf_wk, rhs_mat1%f_l, rhs_mat1%f_nl,                &
-     &      nod_fld1, sgs_coefs, sgs_coefs_nod, diff_coefs)
+     &      mhd_fem1_wk, rhs_mat1, nod_fld1,                            &
+     &      sgs_coefs, sgs_coefs_nod, diff_coefs)
       end if
 !
 !     ========  Data output

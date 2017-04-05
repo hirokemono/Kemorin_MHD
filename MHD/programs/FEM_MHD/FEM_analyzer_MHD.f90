@@ -99,15 +99,16 @@
 !   construct matrix for Poisson and diffusion terms
 !
       if (iflag_debug.eq.1) write(*,*) 'set_data_4_const_matrices'
-      call set_data_4_const_matrices(mesh1, MHD_mesh1, fem_int1%rhs_tbl,        &
+      call set_data_4_const_matrices(mesh1, MHD_mesh1,                  &
+     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1, fem_int1,             &
      &    MGCG_WK1, MHD1_mat_tbls, MHD1_matrices, solver_pack1)
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
       call set_aiccg_matrices(MHD_step%time_d%dt,                       &
      &    FEM_prm1, SGS_par1%model_p, SGS_par1%commute_p,               &
      &    mesh1, group1, ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs,       &
-     &    ak_MHD, fem_int1%jacobians, FEM1_elen, ifld_diff, diff_coefs,         &
-     &    fem_int1%rhs_tbl, MHD1_mat_tbls, rhs_mat1%surf_wk, mhd_fem1_wk, rhs_mat1%fem_wk,      &
-     &    MHD1_matrices)
+     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
+     &    ak_MHD, fem_int1, FEM1_elen, ifld_diff, diff_coefs,           &
+     &    MHD1_mat_tbls, rhs_mat1, mhd_fem1_wk, MHD1_matrices)
 !
 !   time evolution loop start!
 !
@@ -117,12 +118,11 @@
      &      FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1,    &
      &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
      &      layer_tbl1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,  &
-     &      fem_int1%jacobians, fem_int1%rhs_tbl, FEM1_elen, ifld_sgs, icomp_sgs,       &
-     &      ifld_diff, icomp_diff, iphys_elediff,                       &
-     &      filtering1, wide_filtering, fem_int1%m_lump,                &
+     &      fem_int1, FEM1_elen, ifld_sgs, icomp_sgs, ifld_diff,        &
+     &      icomp_diff, iphys_elediff, filtering1, wide_filtering,      &
      &      wk_cor1, wk_lsq1, wk_sgs1, wk_diff1, wk_filter1,            &
-     &      mhd_fem1_wk, rhs_mat1%fem_wk, rhs_mat1%surf_wk, rhs_mat1%f_l, rhs_mat1%f_nl,                &
-     &      nod_fld1, sgs_coefs, sgs_coefs_nod, diff_coefs)
+     &      mhd_fem1_wk, rhs_mat1, nod_fld1,                            &
+     &      sgs_coefs, sgs_coefs_nod, diff_coefs)
       end if
 !
       iflag = lead_field_data_flag(flex_p1%istep_max_dt,                &
@@ -144,7 +144,8 @@
 !
       call s_check_deltat_by_prev_rms                                   &
      &   (flex_p1, MHD_step%time_d, mesh1, MHD_mesh1, cd_prop1,         &
-     &    iphys, nod_fld1, fem_int1%jacobians, rhs_mat1%fem_wk, flex_data)
+     &    iphys, nod_fld1, fem_int1%jacobians, rhs_mat1%fem_wk,         &
+     &    flex_data)
 !
 !
 !    Open monitor files
@@ -230,12 +231,11 @@
      &      FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1,    &
      &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
      &      layer_tbl1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,  &
-     &      fem_int1%jacobians, fem_int1%rhs_tbl, FEM1_elen, ifld_sgs, icomp_sgs,       &
-     &      ifld_diff, icomp_diff, iphys_elediff,                       &
-     &      filtering1, wide_filtering, fem_int1%m_lump,                &
+     &      fem_int1, FEM1_elen, ifld_sgs, icomp_sgs, ifld_diff,        &
+     &      icomp_diff, iphys_elediff, filtering1, wide_filtering,      &
      &      wk_cor1, wk_lsq1, wk_sgs1, wk_diff1, wk_filter1,            &
-     &      mhd_fem1_wk, rhs_mat1%fem_wk, rhs_mat1%surf_wk, rhs_mat1%f_l, rhs_mat1%f_nl,                &
-     &      nod_fld1, sgs_coefs, sgs_coefs_nod, diff_coefs)
+     &      mhd_fem1_wk, rhs_mat1, nod_fld1,                            &
+     &      sgs_coefs, sgs_coefs_nod, diff_coefs)
       end if
 !
 !     ---------------------
@@ -244,7 +244,7 @@
         if (iflag_debug.eq.1) write(*,*) 's_check_flexible_time_step'
         call s_check_flexible_time_step                                 &
      &     (mesh1, MHD_mesh1, cd_prop1, iphys, nod_fld1,                &
-     &      fem_int1%jacobians, rhs_mat1%fem_wk, flex_data, flex_p1,            &
+     &      fem_int1%jacobians, rhs_mat1%fem_wk, flex_data, flex_p1,    &
      &      MHD_step%time_d)
       end if
 !
@@ -362,9 +362,10 @@
         if (iflag_debug.eq.1) write(*,*) 'update_matrices'
         call update_matrices(MHD_step%time_d, FEM_prm1, SGS_par1,       &
      &     mesh1, group1, ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs,      &
-     &     ak_MHD, fem_int1%jacobians, FEM1_elen, ifld_diff,            &
-     &     diff_coefs, fem_int1%rhs_tbl, MHD1_mat_tbls, rhs_mat1%surf_wk, flex_p1,      &
-     &     mhd_fem1_wk, rhs_mat1%fem_wk, MHD1_matrices)
+     &     fl_prop1, cd_prop1, ht_prop1, cp_prop1,                      &
+     &     ak_MHD, fem_int1, FEM1_elen, ifld_diff, diff_coefs,          &
+     &     MHD1_mat_tbls, flex_p1, rhs_mat1,                            &
+     &     mhd_fem1_wk, MHD1_matrices)
       end if
 !
       end subroutine FEM_analyze_MHD
