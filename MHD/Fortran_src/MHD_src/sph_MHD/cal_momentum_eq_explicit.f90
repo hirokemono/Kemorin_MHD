@@ -38,6 +38,10 @@
 !
       implicit  none
 !
+      private :: sel_diff_induction_MHD_adams
+      private :: sel_diff_induction_MHD_euler
+      private :: sel_ini_adams_mag_induct
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -49,7 +53,6 @@
      &          ipol, itor, rj_fld)
 !
       use m_boundary_params_sph_MHD
-      use cal_explicit_terms
       use cal_vorticity_terms_adams
       use cal_nonlinear_sph_MHD
       use select_diff_adv_source
@@ -74,19 +77,8 @@
       end if
 !
       if(cd_prop%iflag_Bevo_scheme .gt.    id_no_evolution) then
-        if(SGS_param%iflag_SGS_uxb .gt. id_SGS_none) then
-          if(iflag_debug .gt. 0) write(*,*)                             &
-     &                'cal_diff_induction_wSGS_adams'
-          call cal_diff_induction_wSGS_adams                            &
-     &       (dt, cd_prop%coef_exp, ipol, itor,                         &
-     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-        else
-          if(iflag_debug .gt. 0) write(*,*)                             &
-     &                'cal_diff_induction_MHD_adams'
-          call cal_diff_induction_MHD_adams                             &
-     &       (dt, cd_prop%coef_exp, ipol, itor,                         &
-     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-        end if
+        call sel_diff_induction_MHD_adams                               &
+     &     (SGS_param%iflag_SGS_uxb, dt, cd_prop, ipol, itor, rj_fld)
       end if
 !
       if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
@@ -140,7 +132,6 @@
      &         fl_prop, cd_prop, ht_prop, cp_prop, ipol, itor, rj_fld)
 !
       use m_boundary_params_sph_MHD
-      use cal_explicit_terms
       use cal_vorticity_terms_adams
       use select_diff_adv_source
 !
@@ -164,19 +155,8 @@
       end if
 !
       if(cd_prop%iflag_Bevo_scheme .gt.    id_no_evolution) then
-        if(SGS_param%iflag_SGS_uxb .gt. id_SGS_none) then
-          if(iflag_debug .gt. 0) write(*,*)                             &
-     &                'cal_diff_induction_wSGS_euler'
-          call cal_diff_induction_wSGS_euler                            &
-     &       (dt, cd_prop%coef_exp, ipol, itor,                         &
-     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-        else
-          if(iflag_debug .gt. 0) write(*,*)                             &
-     &                'cal_diff_induction_MHD_euler'
-          call cal_diff_induction_MHD_euler                             &
-     &       (dt, cd_prop%coef_exp, ipol, itor,                         &
-     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-        end if
+        call sel_diff_induction_MHD_euler(SGS_param%iflag_SGS_uxb,      &
+     &      dt, cd_prop, ipol, itor, rj_fld)
       end if
 !
       if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
@@ -206,8 +186,8 @@
         end if
 !
         if(cd_prop%iflag_Bevo_scheme .gt.    id_no_evolution) then
-          call set_ini_adams_mag_induct(ipol, itor,                     &
-     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+          call sel_ini_adams_mag_induct                                 &
+     &       (SGS_param%iflag_SGS_uxb, ipol, itor, rj_fld)
         end if
 !
         if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
@@ -263,6 +243,94 @@
       end if
 !
       end subroutine cal_explicit_sph_euler
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine sel_diff_induction_MHD_adams                           &
+     &         (iflag_SGS, dt, cd_prop, ipol, itor, rj_fld)
+!
+      use cal_explicit_terms
+!
+      integer(kind = kint), intent(in) :: iflag_SGS
+      real(kind = kreal), intent(in) :: dt
+!
+      type(conductive_property), intent(in) :: cd_prop
+      type(phys_address), intent(in) :: ipol, itor
+      type(phys_data), intent(inout) :: rj_fld
+!
+!
+      if(iflag_SGS .gt. id_SGS_none) then
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &              'cal_diff_induction_wSGS_adams'
+        call cal_diff_induction_wSGS_adams                              &
+     &     (dt, cd_prop%coef_exp, ipol, itor,                           &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+      else
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &              'cal_diff_induction_MHD_adams'
+        call cal_diff_induction_MHD_adams                               &
+     &     (dt, cd_prop%coef_exp, ipol, itor,                           &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+      end if
+!
+      end subroutine sel_diff_induction_MHD_adams
+!
+! ----------------------------------------------------------------------
+!
+      subroutine sel_diff_induction_MHD_euler                           &
+     &         (iflag_SGS, dt, cd_prop, ipol, itor, rj_fld)
+!
+      use cal_explicit_terms
+!
+      integer(kind = kint), intent(in) :: iflag_SGS
+      real(kind = kreal), intent(in) :: dt
+!
+      type(conductive_property), intent(in) :: cd_prop
+      type(phys_address), intent(in) :: ipol, itor
+      type(phys_data), intent(inout) :: rj_fld
+!
+      if(iflag_SGS .gt. id_SGS_none) then
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &              'cal_diff_induction_wSGS_euler'
+        call cal_diff_induction_wSGS_euler                              &
+     &     (dt, cd_prop%coef_exp, ipol, itor,                           &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+      else
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &                'cal_diff_induction_MHD_euler'
+        call cal_diff_induction_MHD_euler                               &
+     &     (dt, cd_prop%coef_exp, ipol, itor,                           &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+      end if
+!
+      end subroutine sel_diff_induction_MHD_euler
+!
+! ----------------------------------------------------------------------
+!
+      subroutine sel_ini_adams_mag_induct                               &
+     &         (iflag_SGS, ipol, itor, rj_fld)
+!
+      use cal_explicit_terms
+!
+      integer(kind = kint), intent(in) :: iflag_SGS
+      type(phys_address), intent(in) :: ipol, itor
+      type(phys_data), intent(inout) :: rj_fld
+!
+!
+      if(iflag_SGS .gt. id_SGS_none) then
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &              'SGS_ini_adams_mag_induct'
+        call SGS_ini_adams_mag_induct(ipol, itor,                       &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+      else
+        if(iflag_debug .gt. 0) write(*,*)                               &
+     &              'set_ini_adams_mag_induct'
+        call set_ini_adams_mag_induct(ipol, itor,                       &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+      end if
+!
+      end subroutine sel_ini_adams_mag_induct
 !
 ! ----------------------------------------------------------------------
 !
