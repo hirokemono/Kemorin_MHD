@@ -217,15 +217,15 @@
 !
       if (iflag_debug.eq.1) write(*,*)' set_reference_temp'
       call set_reference_temp                                           &
-     &   (ref_param_T1, takepito_T1, mesh%node, MHD_mesh%fluid,         &
-     &    iphys%i_ref_t, iphys%i_gref_t, nod_fld)
+     &   (MHD_prop1%ref_param_T, MHD_prop1%takepito_T, mesh%node,       &
+     &    MHD_mesh%fluid, iphys%i_ref_t, iphys%i_gref_t, nod_fld)
       call set_reference_temp                                           &
-     &   (ref_param_C1, takepito_C1, mesh%node, MHD_mesh%fluid,         &
-      &   iphys%i_ref_c, iphys%i_gref_c, nod_fld)
+     &   (MHD_prop1%ref_param_C, MHD_prop1%takepito_C, mesh%node,       &
+      &   MHD_mesh%fluid, iphys%i_ref_c, iphys%i_gref_c, nod_fld)
 !
       if (iflag_debug.eq.1) write(*,*)' set_material_property'
       call set_material_property                                        &
-     &   (iphys, ref_param_T1%depth_top, ref_param_T1%depth_bottom,     &
+     &   (iphys, MHD_prop1%ref_param_T%depth_top, MHD_prop1%ref_param_T%depth_bottom,     &
      &    MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop)
       call init_ele_material_property(mesh%ele%numele,                  &
      &    MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop)
@@ -257,7 +257,8 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*)' initial_data_control'
-      call initial_data_control(MHD_step%rst_step, ref_param_T1,        &
+      call initial_data_control                                         &
+     &   (MHD_step%rst_step, MHD_prop1%ref_param_T,                     &
      &    mesh%node, mesh%ele, MHD_mesh%fluid, MHD_prop1%cd_prop,       &
      &    iphys, layer_tbl, SGS_par, wk_sgs1, wk_diff1,                 &
      &    sgs_coefs, diff_coefs, nod_fld, flex_p1,                      &
@@ -266,12 +267,14 @@
 !
 !  -------------------------------
 !
-      if (ref_param_T1%iflag_reference .ne. id_no_ref_temp) then
+      if(MHD_prop1%ref_param_T%iflag_reference                          &
+     & .ne. id_no_ref_temp) then
         if (iflag_debug.eq.1) write(*,*)' set_2_perturbation_temp'
         call subtract_2_nod_scalars(nod_fld,                            &
      &      iphys%i_temp, iphys%i_ref_t, iphys%i_par_temp)
       end if
-      if (ref_param_C1%iflag_reference .ne. id_no_ref_temp) then
+      if (MHD_prop1%ref_param_C%iflag_reference                         &
+     & .ne. id_no_ref_temp) then
         if (iflag_debug.eq.1) write(*,*)' set_2_perturbation_comp'
         call subtract_2_nod_scalars(nod_fld,                            &
      &      iphys%i_light, iphys%i_ref_c, iphys%i_par_light)
@@ -313,7 +316,7 @@
       call set_boundary_data                                            &
      &   (time_d, IO_bc, mesh, ele_mesh, MHD_mesh, group,               &
      &    MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop,                       &
-     &    ref_param_T1, ref_param_C1, iphys, nod_fld)
+     &    MHD_prop1%ref_param_T, MHD_prop1%ref_param_C, iphys, nod_fld)
 !
 !     ---------------------
 !

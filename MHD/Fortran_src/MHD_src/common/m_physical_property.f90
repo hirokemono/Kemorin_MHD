@@ -16,18 +16,8 @@
 !
 !
       type(MHD_evolution_param), save :: MHD_prop1
-!MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop
+!MHD_prop1%iflag_all_scheme
 !
       integer (kind=kint) :: iflag_scheme = id_Crank_nicolson
-!
-!>      reference paramter for temperature
-      type(reference_scalar_param), save :: ref_param_T1
-!>      Takepiro stratified composition
-      type(reference_scalar_param), save :: ref_param_C1
-!
-!>      Takepiro stratified temperature
-      type(takepiro_model_param), save :: takepito_T1
-!>      Takepiro stratified composition
-      type(takepiro_model_param), save :: takepito_C1
 !
       end module m_physical_property

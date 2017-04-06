@@ -11,12 +11,12 @@
 !!@verbatim
 !!      subroutine init_r_infos_sph_mhd_evo(fl_prop, sph_grps, ipol,    &
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop,                   &
-!!     &          ref_param_T1, ref_param_C1, takepito_T1, takepito_C1, &
+!!     &          ref_param_T, ref_param_C, takepito_T, takepito_C,     &
 !!     &          r_2nd, rj_fld)
 !!      subroutine init_r_infos_sph_mhd(sph_grps, ipol,                 &
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop,                   &
 !!     &          sph, omega_sph, ref_temp, ref_comp, rj_fld,           &
-!!     &          ref_param_T1, ref_param_C1, takepito_T1, takepito_C1)
+!!     &          ref_param_T, ref_param_C, takepito_T, takepito_C)
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(sph_group_data), intent(in) :: sph_grps
 !!        type(phys_address), intent(in) :: ipol
@@ -28,10 +28,10 @@
 !!        type(scalar_property), intent(inout) :: ht_prop, cp_prop
 !!        type(fdm_matrices), intent(inout) :: r_2nd
 !!        type(phys_data), intent(inout) :: rj_fld
-!!        type(reference_scalar_param), intent(inout)  :: ref_param_T1
-!!        type(reference_scalar_param), intent(inout)  :: ref_param_C1
-!!        type(takepiro_model_param), intent(inout)  :: takepito_T1
-!!        type(takepiro_model_param), intent(inout)  :: takepito_C1
+!!        type(reference_scalar_param), intent(inout)  :: ref_param_T
+!!        type(reference_scalar_param), intent(inout)  :: ref_param_C
+!!        type(takepiro_model_param), intent(inout)  :: takepito_T
+!!        type(takepiro_model_param), intent(inout)  :: takepito_C
 !!@endverbatim
 !!
 !!@n @param r_hot        radius at highest temperature point
@@ -73,7 +73,7 @@
       subroutine init_r_infos_sph_mhd_evo(sph_grps, ipol,               &
      &          sph, omega_sph, ref_temp, ref_comp,                     &
      &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
-     &          ref_param_T1, ref_param_C1, takepito_T1, takepito_C1,   &
+     &          ref_param_T, ref_param_C, takepito_T, takepito_C,       &
      &          r_2nd, rj_fld)
 !
       use calypso_mpi
@@ -89,10 +89,10 @@
       type(fluid_property), intent(inout) :: fl_prop
       type(conductive_property), intent(inout) :: cd_prop
       type(scalar_property), intent(inout) :: ht_prop, cp_prop
-      type(reference_scalar_param), intent(inout)  :: ref_param_T1
-      type(reference_scalar_param), intent(inout)  :: ref_param_C1
-      type(takepiro_model_param), intent(inout)  :: takepito_T1
-      type(takepiro_model_param), intent(inout)  :: takepito_C1
+      type(reference_scalar_param), intent(inout)  :: ref_param_T
+      type(reference_scalar_param), intent(inout)  :: ref_param_C
+      type(takepiro_model_param), intent(inout)  :: takepito_T
+      type(takepiro_model_param), intent(inout)  :: takepito_C
       type(fdm_matrices), intent(inout) :: r_2nd
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -100,7 +100,7 @@
       call init_r_infos_sph_mhd(sph_grps, ipol,                         &
      &    fl_prop, cd_prop, ht_prop, cp_prop,                           &
      &    sph, omega_sph, ref_temp, ref_comp, rj_fld,                   &
-     &    ref_param_T1, ref_param_C1, takepito_T1, takepito_C1)
+     &    ref_param_T, ref_param_C, takepito_T, takepito_C)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_2nd_fdm_matrices'
       call const_2nd_fdm_matrices(sph%sph_params, sph%sph_rj, r_2nd)
@@ -117,7 +117,7 @@
       subroutine init_r_infos_sph_mhd(sph_grps, ipol,                   &
      &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
      &          sph, omega_sph, ref_temp, ref_comp, rj_fld,             &
-     &          ref_param_T1, ref_param_C1, takepito_T1, takepito_C1)
+     &          ref_param_T, ref_param_C, takepito_T, takepito_C)
 !
       use m_boundary_params_sph_MHD
 !
@@ -132,10 +132,10 @@
       type(sph_grids), intent(inout) :: sph
       type(sph_rotation), intent(inout) :: omega_sph
       type(reference_temperature), intent(inout) :: ref_temp, ref_comp
-      type(reference_scalar_param), intent(inout)  :: ref_param_T1
-      type(reference_scalar_param), intent(inout)  :: ref_param_C1
-      type(takepiro_model_param), intent(inout)  :: takepito_T1
-      type(takepiro_model_param), intent(inout)  :: takepito_C1
+      type(reference_scalar_param), intent(inout)  :: ref_param_T
+      type(reference_scalar_param), intent(inout)  :: ref_param_C
+      type(takepiro_model_param), intent(inout)  :: takepito_T
+      type(takepiro_model_param), intent(inout)  :: takepito_C
       type(phys_data), intent(inout) :: rj_fld
 !
 !
@@ -157,10 +157,10 @@
      &    fl_prop, cd_prop, ht_prop, cp_prop,                           &
      &    CTR_nod_grp_name, CTR_sf_grp_name)
 !
-      call init_reference_temps(ref_param_T1, takepito_T1,              &
+      call init_reference_temps(ref_param_T, takepito_T,                &
      &    sph%sph_params, sph%sph_rj, ipol%i_ref_t, ipol%i_gref_t,      &
      &    ref_temp, rj_fld, sph_bc_T)
-      call init_reference_temps(ref_param_C1, takepito_C1,              &
+      call init_reference_temps(ref_param_C, takepito_C,                &
      &    sph%sph_params, sph%sph_rj, ipol%i_ref_c, ipol%i_gref_c,      &
      &    ref_comp, rj_fld, sph_bc_C)
 !

@@ -159,7 +159,7 @@
 !
       if (iflag_debug.eq.1) write(*,*)' sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph                                    &
-     &   (ref_param_T1, ref_param_C1, ref_temp1, ref_comp1,             &
+     &   (MHD_prop1%ref_param_T, MHD_prop1%ref_param_C, ref_temp1, ref_comp1,             &
      &    sph1%sph_rj, ipol, idpdr, rj_fld1)
 !
 !* obtain linear terms for starting
@@ -179,7 +179,7 @@
       call nonlinear                                                    &
      &   (SGS_par1%model_p, sph1, comms_sph1, omega_sph1, r_2nd,        &
      &    MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop,                       &
-     &    ref_param_T1, ref_param_C1, trans_p1, ref_temp1, ref_comp1,   &
+     &    MHD_prop1%ref_param_T, MHD_prop1%ref_param_C, trans_p1, ref_temp1, ref_comp1,   &
      &    ipol, itor, trns_WK1, rj_fld1)
       call end_eleps_time(8)
 !
@@ -189,7 +189,7 @@
 !
       if(iflag_debug.gt.0) write(*,*) 'trans_per_temp_to_temp_sph'
       call trans_per_temp_to_temp_sph                                   &
-     &   (ref_param_T1, ref_param_C1, ref_temp1, ref_comp1,             &
+     &   (MHD_prop1%ref_param_T, MHD_prop1%ref_param_C, ref_temp1, ref_comp1,             &
      &    sph1%sph_rj, ipol, idpdr, rj_fld1)
 !*
       if(iflag_debug.gt.0) write(*,*) 'lead_special_fields_4_sph_mhd'
@@ -338,7 +338,7 @@
       if(iflag .eq. 0) then
         call s_lead_fields_4_sph_mhd(SGS_par1%model_p, sph,             &
      &      comms_sph, r_2nd, MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop,   &
-     &      ref_param_T1, ref_param_C1, trans_p1,                       &
+     &      MHD_prop1%ref_param_T, MHD_prop1%ref_param_C, trans_p1,                       &
      &      ipol, rj_fld, trns_WK)
       end if
 !

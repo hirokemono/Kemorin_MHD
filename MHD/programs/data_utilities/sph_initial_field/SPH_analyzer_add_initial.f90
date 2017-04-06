@@ -62,7 +62,7 @@
      &    sph_grps1, rj_fld1, pwr1, SGS_par1, MHD_step1,                &
      &    mesh1, group1, ele_mesh1,                                     &
      &    iflag_scheme, MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop,         &
-     &    ref_param_T1, ref_param_C1, takepito_T1, takepito_C1,         &
+     &    MHD_prop1%ref_param_T, MHD_prop1%ref_param_C, MHD_prop1%takepito_T, MHD_prop1%takepito_C,         &
      &    trns_WK1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
       call end_eleps_time(4)
@@ -116,7 +116,7 @@
       call init_r_infos_sph_mhd(sph_grps1, ipol,                        &
      &    MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop,                       &
      &    sph1, omega_sph1, ref_temp1, ref_comp1, rj_fld1,              &
-     &    ref_param_T1, ref_param_C1, takepito_T1, takepito_C1)
+     &    MHD_prop1%ref_param_T, MHD_prop1%ref_param_C, MHD_prop1%takepito_T, MHD_prop1%takepito_C)
 !
 ! ---------------------------------
 !

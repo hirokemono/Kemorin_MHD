@@ -74,7 +74,7 @@
       call init_r_infos_sph_mhd_evo(sph_grps1, ipol, sph1,              &
      &    omega_sph1, ref_temp1, ref_comp1,                             &
      &    MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop,                       &
-     &    ref_param_T1, ref_param_C1, takepito_T1, takepito_C1,         &
+     &    MHD_prop1%ref_param_T, MHD_prop1%ref_param_C, MHD_prop1%takepito_T, MHD_prop1%takepito_C,         &
      &    r_2nd, rj_fld1)
 !
 !  -------------------------------

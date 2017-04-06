@@ -218,7 +218,7 @@
       call fields_evolution(MHD_step%time_d, FEM_prm1, SGS_par1,        &
      &   mesh1, group1, ele_mesh1, MHD_mesh1,                           &
      &   MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop,                        &
-     &   ref_param_T1, ref_param_C1, nod1_bcs, sf1_bcs,                 &
+     &   MHD_prop1%ref_param_T, MHD_prop1%ref_param_C, nod1_bcs, sf1_bcs,                 &
      &   iphys, iphys_ele, ak_MHD, fem_int1, FEM1_elen,                 &
      &   ifld_sgs, icomp_sgs, ifld_diff, icomp_diff, iphys_elediff,     &
      &   sgs_coefs_nod, filtering1, wide_filtering, layer_tbl1,         &
