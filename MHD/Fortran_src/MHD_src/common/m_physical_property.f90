@@ -10,23 +10,15 @@
       module m_physical_property
 !
       use m_precision
-      use t_physical_property
-      use t_reference_scalar_param
+      use t_control_parameter
 !
       implicit  none
 !
 !
+      type(MHD_evolution_param), save :: MHD_prop1
+!MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop
+!
       integer (kind=kint) :: iflag_scheme = id_Crank_nicolson
-!
-!>      Structure for fluid property
-      type(fluid_property), save :: fl_prop1
-!>      Structure for manetic property
-      type(conductive_property), save :: cd_prop1
-!
-!>      Structure for thermal property
-      type(scalar_property), save :: ht_prop1
-!>      Structure for compositon property
-      type(scalar_property), save :: cp_prop1
 !
 !>      reference paramter for temperature
       type(reference_scalar_param), save :: ref_param_T1

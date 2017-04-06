@@ -124,7 +124,7 @@
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
         call s_cal_model_coefficients(MHD_step%time_d,                  &
      &      FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1, MHD_mesh1,    &
-     &      fl_prop1, cd_prop1, ht_prop1, cp_prop1,                     &
+     &      MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop,                     &
      &      layer_tbl1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,  &
      &      fem_int1, FEM1_elen, ifld_sgs, icomp_sgs, ifld_diff,        &
      &      icomp_diff, iphys_elediff, filtering1, wide_filtering,      &
@@ -140,7 +140,7 @@
       if(iflag .eq. 0) then
         call lead_fields_by_FEM(MHD_step%time_d, FEM_prm1, SGS_par1,    &
      &     mesh1, group1, ele_mesh1, MHD_mesh1,                         &
-     &     fl_prop1, cd_prop1, ht_prop1, cp_prop1, nod1_bcs, sf1_bcs,   &
+     &     MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop, nod1_bcs, sf1_bcs,   &
      &     iphys, iphys_ele, ak_MHD, fem_int1, FEM1_elen,               &
      &     icomp_sgs, icomp_diff, ifld_diff, iphys_elediff,             &
      &     sgs_coefs, sgs_coefs_nod, filtering1, wide_filtering,        &
@@ -160,7 +160,8 @@
         if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
         call output_time_step_control                                   &
      &     (FEM_prm1, MHD_step%time_d, mesh1, MHD_mesh1,                &
-     &      fl_prop1, cd_prop1, iphys, nod_fld1, iphys_ele, fld_ele1,   &
+     &      MHD_prop1%fl_prop, MHD_prop1%cd_prop,                       &
+     &      iphys, nod_fld1, iphys_ele, fld_ele1,                       &
      &      fem_int1%jacobians, rhs_mat1%fem_wk, mhd_fem1_wk)
       end if
 !
@@ -174,7 +175,7 @@
       if (iflag_debug.eq.1) write(*,*) 's_output_sgs_model_coefs'
       call s_output_sgs_model_coefs                                     &
      &   (flex_p1%istep_max_dt, MHD_step%time_d,                        &
-     &    SGS_par1, cd_prop1, wk_sgs1, wk_diff1)
+     &    SGS_par1, MHD_prop1%cd_prop, wk_sgs1, wk_diff1)
 !
 !     ---- Output voulme field data
 !

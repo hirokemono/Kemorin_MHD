@@ -65,7 +65,7 @@
 !     --------------------- 
 !
       call input_control_4_snapshot(FEM_prm1, SGS_par1, MHD_step1,      &
-     &    iflag_scheme, fl_prop1, cd_prop1, ht_prop1, cp_prop1,         &
+     &    iflag_scheme, MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop,         &
      &    ref_param_T1, ref_param_C1, takepito_T1, takepito_C1,         &
      &    mesh1, group1, ele_mesh1, nod_fld1, IO_bc1,                   &
      &    filtering1, wide_filtering, wk_filter1,                       &

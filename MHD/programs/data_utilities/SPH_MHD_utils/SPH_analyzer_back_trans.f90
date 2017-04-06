@@ -73,14 +73,15 @@
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd_evo'
       call init_r_infos_sph_mhd_evo(sph_grps1, ipol, sph1,              &
      &    omega_sph1, ref_temp1, ref_comp1,                             &
-     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
+     &    MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop,                       &
      &    ref_param_T1, ref_param_C1, takepito_T1, takepito_C1,         &
      &    r_2nd, rj_fld1)
 !
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_back_transform'
-      call init_sph_back_transform(fl_prop1, ipol, idpdr, itor, iphys,  &
+      call init_sph_back_transform                                      &
+     &   (MHD_prop1%fl_prop, ipol, idpdr, itor, iphys,                  &
      &    sph1, comms_sph1, omega_sph1, trans_p1, trns_WK1, rj_fld1)
 !
 ! ---------------------------------

@@ -148,9 +148,10 @@
       call cal_sgs_uxb_2_monitor
      &   (icomp_sgs%i_induction, iphys_elediff%i_velo, dt,              &
      &    FEM_prm, SGS_param, mesh1%nod_comm, mesh1%node, mesh1%ele,    &
-     &    conduct, cd_prop1, iphys, iphys_ele, fld_ele1,                &
-     &    jacobians%jac_3d, fem_int1%rhs_tbl, FEM1_elen, filtering1,            &
-     &    wk_filter1, mhd_fem1_wk, rhs_mat1%fem_wk, rhs_mat1%f_l, rhs_mat1%f_nl, nod_fld1)
+     &    conduct, MHD_prop1%cd_prop, iphys, iphys_ele, fld_ele1,       &
+     &    jacobians%jac_3d, fem_int1%rhs_tbl, FEM1_elen, filtering1,    &
+     &    wk_filter1, mhd_fem1_wk, rhs_mat1%fem_wk, rhs_mat1%f_l,       &
+     &    rhs_mat1%f_nl, nod_fld1)
 !
       call interpolate_vector_type                                      &
      &   (iphys%i_vp_induct,  iphys_sph%i_vp_induct,                    &
@@ -272,7 +273,8 @@
       call cal_sol_magne_sph_crank                                      &
      &   (sph%sph_rj, band_bp_evo, band_bt_evo, g_sph_rj, rj_fld)
       call update_after_magne_sph                                       &
-     &   (sph%sph_rj, r_2nd, cd_prop1, trans_p%leg, ipol, itor, rj_fld)
+     &   (sph%sph_rj, r_2nd, MHD_prop1%cd_prop, trans_p%leg,            &
+     &    ipol, itor, rj_fld)
 !
 !
       call check_calypso_sph_comm_buf_N                                 &

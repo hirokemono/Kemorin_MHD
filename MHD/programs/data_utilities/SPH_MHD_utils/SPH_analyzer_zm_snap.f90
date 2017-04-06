@@ -71,7 +71,7 @@
 !*
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
       call set_sph_field_to_start(sph1%sph_rj, r_2nd,                   &
-     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
+     &    MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop,                       &
      &    trans_p1%leg, ipol, itor, rj_fld1)
 !
 !*  ----------------lead nonlinear term ... ----------
@@ -79,7 +79,7 @@
       call start_eleps_time(8)
       call nonlinear                                                    &
      &   (SGS_par1%model_p, sph1, comms_sph1, omega_sph1, r_2nd,        &
-     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
+     &    MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop,                       &
      &    ref_param_T1, ref_param_C1, trans_p1, ref_temp1, ref_comp1,   &
      &    ipol, itor, trns_WK1, rj_fld1)
       call end_eleps_time(8)
@@ -97,7 +97,7 @@
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
         call s_lead_fields_4_sph_mhd(SGS_par1%model_p, sph1,            &
-     &      comms_sph1, r_2nd, fl_prop1, cd_prop1, ht_prop1, cp_prop1,  &
+     &      comms_sph1, r_2nd, MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop,  &
      &      ref_param_T1, ref_param_C1, trans_p1,                       &
      &      ipol, rj_fld1, trns_WK1)
       end if

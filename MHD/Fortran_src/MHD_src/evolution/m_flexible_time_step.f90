@@ -123,7 +123,7 @@
 !
       if( mod(flex_p%istep_flex_to_max,itwo) .eq. izero) then
 !        call s_check_deltat_by_previous                                &
-!     &     (mesh%node, cd_prop1, iphys, nod_fld, flex_data)
+!     &     (mesh%node, MHD_prop1%cd_prop, iphys, nod_fld, flex_data)
         call check_difference_by_prev_rms                               &
      &     (time_d%time, mesh%node, mesh%ele, MHD_mesh%fluid, cd_prop,  &
      &      iphys, nod_fld, jacobians%jac_3d, jacobians%jac_3d_l,       &

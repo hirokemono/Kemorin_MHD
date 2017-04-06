@@ -23,6 +23,9 @@
 !
 !>      Structure for evolution parameter for valocity
       type MHD_evolution_param
+!>        Time integeration flag
+        integer (kind=kint) :: iflag_scheme = id_Crank_nicolson
+!
 !>        Structure for fluid property
         type(fluid_property) :: fl_prop
 !

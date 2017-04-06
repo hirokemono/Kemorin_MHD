@@ -69,7 +69,7 @@
       call input_control_SPH_mesh                                       &
      &   (MHD_ctl1, sph1, comms_sph1, sph_grps1, rj_fld1, nod_fld1,     &
      &    pwr1, SGS_par1, trns_WK1%dynamic_SPH, MHD_step1,              &
-     &    iflag_scheme, fl_prop1, cd_prop1, ht_prop1, cp_prop1,         &
+     &    iflag_scheme, MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop,         &
      &    ref_param_T1, ref_param_C1, takepito_T1, takepito_C1,         &
      &    trns_WK1, mesh1, group1, ele_mesh1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)

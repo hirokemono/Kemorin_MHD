@@ -69,7 +69,7 @@
 !   Allocate spectr field data
 !
       call set_sph_MHD_sprctr_data(SGS_par1%model_p, sph1%sph_rj,       &
-     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
+     &    MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop,                       &
      &    ipol, idpdr, itor, rj_fld1)
 !
       if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
@@ -84,7 +84,7 @@
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd_evo'
       call init_r_infos_sph_mhd_evo(sph_grps1, ipol, sph1,              &
      &    omega_sph1, ref_temp1, ref_comp1,                             &
-     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
+     &    MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop,                       &
      &    ref_param_T1, ref_param_C1, takepito_T1, takepito_C1,         &
      &    r_2nd, rj_fld1)
 !
@@ -92,7 +92,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD'
       call init_sph_transform_MHD                                       &
-     &   (SGS_par1%model_p, fl_prop1, cd_prop1, ht_prop1, cp_prop1,     &
+     &   (SGS_par1%model_p, MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop,     &
      &    ipol, idpdr, itor, iphys, sph1, comms_sph1, omega_sph1,       &
      &    trans_p1, trns_WK1, rj_fld1)
 !
@@ -100,7 +100,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'const_radial_mat_sph_snap'
       call const_radial_mat_sph_snap                                    &
-     &   (fl_prop1, sph1%sph_rj, r_2nd, trans_p1%leg)
+     &   (MHD_prop1%fl_prop, sph1%sph_rj, r_2nd, trans_p1%leg)
 !
 !     --------------------- 
 !  set original spectr mesh data for extension of B
@@ -155,7 +155,7 @@
 !*
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
       call set_sph_field_to_start(sph1%sph_rj, r_2nd,                   &
-     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
+     &    MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop,                       &
      &    trans_p1%leg, ipol, itor, rj_fld1)
 !
 !*  ----------------lead nonlinear term ... ----------
@@ -163,7 +163,7 @@
 !      call start_eleps_time(8)
 !      call nonlinear                                                   &
 !     &   (SGS_par1%model_p, sph1, comms_sph1, omega_sph1, r_2nd,       &
-!     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1,                      &
+!     &    MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop,                      &
 !     &    ref_param_T1, ref_param_C1, trans_p1, ref_temp1, ref_comp1,  &
 !     &    ipol, itor, trns_WK1, rj_fld1)
 !      call end_eleps_time(8)
@@ -181,7 +181,7 @@
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
         call s_lead_fields_4_sph_mhd(SGS_par1%model_p, sph1,            &
-     &      comms_sph1, r_2nd, fl_prop1, cd_prop1, ht_prop1, cp_prop1,  &
+     &      comms_sph1, r_2nd, MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop,  &
      &      ref_param_T1, ref_param_C1, trans_p1,                       &
      &      ipol, rj_fld1, trns_WK1)
       end if
