@@ -10,13 +10,18 @@
 !!      subroutine set_control_SGS_SPH_MHD(plt, org_plt,                &
 !!     &         model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,  &
 !!     &         sph_gen, rj_fld, mesh_file, sph_file_param,            &
-!!     &         MHD_org_files, sph_fst_IO, pwr, SGS_par, sph_filters,  &
-!!     &         MHD_step, WK_sph)
+!!     &         MHD_org_files, sph_fst_IO, pwr,                        &
+!!     &         SGS_par, sph_filters, MHD_step,                        &
+!!     &         iflag_scheme, fl_prop, cd_prop, ht_prop, cp_prop,      &
+!!     &         ref_param_T, ref_param_C, takepito_T, takepito_C,      &
+!!     &         WK_sph)
 !!      subroutine set_control_4_SPH_MHD(plt, org_plt,                  &
 !!     &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl, &
 !!     &          sph_gen, rj_fld, mesh_file, sph_file_param,           &
-!!     &          MHD_org_files, sph_fst_IO, pwr, SGS_par,              &
-!!     &          MHD_step, WK_sph)
+!!     &          MHD_org_files, sph_fst_IO, pwr, SGS_par, MHD_step,    &
+!!     &          iflag_scheme, fl_prop, cd_prop, ht_prop, cp_prop,     &
+!!     &          ref_param_T, ref_param_C, takepito_T, takepito_C,     &
+!!     &          WK_sph)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
 !!        type(mhd_model_control), intent(inout) :: model_ctl
@@ -34,6 +39,13 @@
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
 !!        type(sph_filters_type), intent(inout) :: sph_filters(1)
 !!        type(MHD_step_param), intent(inout) :: MHD_step
+!!        type(fluid_property), intent(inout) :: fl_prop
+!!        type(conductive_property), intent(inout)  :: cd_prop
+!!        type(scalar_property), intent(inout) :: ht_prop, cp_prop
+!!        type(reference_scalar_param), intent(inout) :: ref_param_T
+!!        type(reference_scalar_param), intent(inout) :: ref_param_C
+!!        type(takepiro_model_param), intent(inout) :: takepito_T
+!!        type(takepiro_model_param), intent(inout) :: takepito_C
 !!        type(spherical_trns_works), intent(inout) :: WK_sph
 !!@endverbatim
 !
@@ -54,6 +66,8 @@
       use t_ctl_data_4_sph_monitor
       use t_ctl_data_node_monitor
       use t_ctl_data_gen_sph_shell
+      use t_physical_property
+      use t_reference_scalar_param
       use t_sph_transforms
 !
       implicit none
@@ -69,8 +83,11 @@
       subroutine set_control_SGS_SPH_MHD(plt, org_plt,                  &
      &         model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,    &
      &         sph_gen, rj_fld, mesh_file, sph_file_param,              &
-     &         MHD_org_files, sph_fst_IO, pwr, SGS_par, sph_filters,    &
-     &         MHD_step, WK_sph)
+     &         MHD_org_files, sph_fst_IO, pwr,                          &
+     &         SGS_par, sph_filters, MHD_step,                          &
+     &         iflag_scheme, fl_prop, cd_prop, ht_prop, cp_prop,        &
+     &         ref_param_T, ref_param_C, takepito_T, takepito_C,        &
+     &         WK_sph)
 !
       use m_spheric_global_ranks
       use m_ucd_data
@@ -101,7 +118,15 @@
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(sph_filters_type), intent(inout) :: sph_filters(1)
       type(MHD_step_param), intent(inout) :: MHD_step
+      type(fluid_property), intent(inout) :: fl_prop
+      type(conductive_property), intent(inout)  :: cd_prop
+      type(scalar_property), intent(inout) :: ht_prop, cp_prop
+      type(reference_scalar_param), intent(inout) :: ref_param_T
+      type(reference_scalar_param), intent(inout) :: ref_param_C
+      type(takepiro_model_param), intent(inout) :: takepito_T
+      type(takepiro_model_param), intent(inout) :: takepito_C
       type(spherical_trns_works), intent(inout) :: WK_sph
+      integer (kind=kint), intent(inout) :: iflag_scheme
 !
 !
 !   set parameters for SGS model
@@ -122,7 +147,9 @@
       call set_control_4_SPH_MHD(plt, org_plt,                          &
      &    model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,         &
      &    sph_gen, rj_fld, mesh_file, sph_file_param,                   &
-     &    MHD_org_files, sph_fst_IO, pwr, SGS_par, MHD_step, WK_sph)
+     &    MHD_org_files, sph_fst_IO, pwr, SGS_par, MHD_step,            &
+     &    iflag_scheme, fl_prop, cd_prop, ht_prop, cp_prop,             &
+     &    ref_param_T, ref_param_C, takepito_T, takepito_C, WK_sph)
 !
       end subroutine set_control_SGS_SPH_MHD
 !
@@ -131,11 +158,12 @@
       subroutine set_control_4_SPH_MHD(plt, org_plt,                    &
      &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,   &
      &          sph_gen, rj_fld, mesh_file, sph_file_param,             &
-     &          MHD_org_files, sph_fst_IO, pwr, SGS_par,                &
-     &          MHD_step, WK_sph)
+     &          MHD_org_files, sph_fst_IO, pwr, SGS_par, MHD_step,      &
+     &          iflag_scheme, fl_prop, cd_prop, ht_prop, cp_prop,       &
+     &          ref_param_T, ref_param_C, takepito_T, takepito_C,       &
+     &          WK_sph)
 !
       use m_spheric_global_ranks
-      use m_physical_property
       use m_ucd_data
       use m_flexible_time_step
       use sph_mhd_rms_IO
@@ -174,8 +202,16 @@
       type(field_IO), intent(inout) :: sph_fst_IO
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(MHD_step_param), intent(inout) :: MHD_step
+      type(fluid_property), intent(inout) :: fl_prop
+      type(conductive_property), intent(inout)  :: cd_prop
+      type(scalar_property), intent(inout) :: ht_prop, cp_prop
+      type(reference_scalar_param), intent(inout) :: ref_param_T
+      type(reference_scalar_param), intent(inout) :: ref_param_C
+      type(takepiro_model_param), intent(inout) :: takepito_T
+      type(takepiro_model_param), intent(inout) :: takepito_C
       type(sph_mean_squares), intent(inout) :: pwr
       type(spherical_trns_works), intent(inout) :: WK_sph
+      integer (kind=kint), intent(inout) :: iflag_scheme
 !
       integer(kind = kint) :: ierr
 !
@@ -195,7 +231,9 @@
       call s_set_control_4_model                                        &
      &    (model_ctl%reft_ctl, model_ctl%refc_ctl,                      &
      &     ctl_ctl%mevo_ctl, model_ctl%evo_ctl, nmtr_ctl,               &
-     &     fl_prop1, cd_prop1, ht_prop1, cp_prop1)
+     &     fl_prop, cd_prop, ht_prop, cp_prop,                          &
+     &     ref_param_T, ref_param_C, takepito_T, takepito_C,            &
+     &     iflag_scheme)
 !
 !   set spherical shell parameters
 !
@@ -210,12 +248,14 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_force'
       call s_set_control_4_force(model_ctl%frc_ctl, model_ctl%g_ctl,    &
-     &    model_ctl%cor_ctl, model_ctl%mcv_ctl, fl_prop1, cd_prop1)
+     &    model_ctl%cor_ctl, model_ctl%mcv_ctl, fl_prop, cd_prop)
 !
 !   set parameters for general information
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_sph_data_MHD'
-      call s_set_control_sph_data_MHD(SGS_par%model_p, plt,             &
+      call s_set_control_sph_data_MHD                                   &
+     &   (SGS_par%model_p, fl_prop, cd_prop, ht_prop, cp_prop,          &
+     &    ref_param_T, ref_param_C, plt,                                &
      &    model_ctl%fld_ctl%field_ctl, ctl_ctl%mevo_ctl,                &
      &    MHD_org_files%rj_file_param, MHD_org_files%rst_file_param,    &
      &    rj_fld, WK_sph)
@@ -224,13 +264,14 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_normalize'
       call s_set_control_4_normalize                                    &
-     &   (fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
+     &   (fl_prop, cd_prop, ht_prop, cp_prop,                           &
      &    model_ctl%dless_ctl, model_ctl%eqs_ctl)
 !
 !   set boundary conditions
 !
       call set_control_SPH_MHD_bcs                                      &
-     &   (model_ctl%nbc_ctl, model_ctl%sbc_ctl)
+     &   (fl_prop, cd_prop, ht_prop, cp_prop,                           &
+     &    model_ctl%nbc_ctl, model_ctl%sbc_ctl)
 !
 !   set control parameters
 !
@@ -239,7 +280,7 @@
      &    ctl_ctl%mrst_ctl, ctl_ctl%tctl)
 !
       call s_set_control_4_crank(ctl_ctl%mevo_ctl,                      &
-     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1)
+     &    fl_prop, cd_prop, ht_prop, cp_prop)
 !
 !   set_pickup modes
 !
@@ -259,9 +300,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_control_SPH_MHD_bcs(nbc_ctl, sbc_ctl)
+      subroutine set_control_SPH_MHD_bcs                                &
+     &         (fl_prop, cd_prop, ht_prop, cp_prop, nbc_ctl, sbc_ctl)
 !
-      use m_physical_property
       use t_ctl_data_node_boundary
       use t_ctl_data_surf_boundary
 !
@@ -271,6 +312,9 @@
       use set_control_4_magne
       use set_control_4_composition
 !
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in)  :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(node_bc_control), intent(inout) :: nbc_ctl
       type(surf_bc_control), intent(inout) :: sbc_ctl
 !
@@ -279,31 +323,31 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_temp'
       call s_set_control_4_temp                                         &
-     &   (ht_prop1, nbc_ctl%node_bc_T_ctl, sbc_ctl%surf_bc_HF_ctl)
+     &   (ht_prop, nbc_ctl%node_bc_T_ctl, sbc_ctl%surf_bc_HF_ctl)
 !
 !   set boundary conditions for velocity
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_velo'
       call s_set_control_4_velo                                         &
-     &   (fl_prop1, nbc_ctl%node_bc_U_ctl, sbc_ctl%surf_bc_ST_ctl)
+     &   (fl_prop, nbc_ctl%node_bc_U_ctl, sbc_ctl%surf_bc_ST_ctl)
 !
 !  set boundary conditions for pressure
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_press'
       call s_set_control_4_press                                        &
-     &   (fl_prop1, nbc_ctl%node_bc_P_ctl, sbc_ctl%surf_bc_PN_ctl)
+     &   (fl_prop, nbc_ctl%node_bc_P_ctl, sbc_ctl%surf_bc_PN_ctl)
 !
 !   set boundary conditions for composition variation
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_composition'
       call s_set_control_4_composition                                  &
-     &   (cp_prop1, nbc_ctl%node_bc_C_ctl, sbc_ctl%surf_bc_CF_ctl)
+     &   (cp_prop, nbc_ctl%node_bc_C_ctl, sbc_ctl%surf_bc_CF_ctl)
 !
 !   set boundary_conditons for magnetic field
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_magne'
       call s_set_control_4_magne                                        &
-     &   (cd_prop1, nbc_ctl%node_bc_B_ctl, sbc_ctl%surf_bc_BN_ctl)
+     &   (cd_prop, nbc_ctl%node_bc_B_ctl, sbc_ctl%surf_bc_BN_ctl)
 !
       end subroutine set_control_SPH_MHD_bcs
 !

@@ -7,8 +7,14 @@
 !>@brief  Radial field data f(r)
 !!
 !!@verbatim
-!!      subroutine alloc_radial_field(nri_rj)
+!!      subroutine alloc_radial_field(nri_rj,                           &
+!!     &          fl_prop, cd_prop, ref_param_T, ref_param_C,           &
+!!     &          r_file, r_field)
 !!      subroutine deallocate_radial_field
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in) :: cd_prop
+!!        type(reference_scalar_param), intent(in) :: ref_param_T
+!!        type(reference_scalar_param), intent(in) :: ref_param_C
 !!@endverbatim
 !
       module t_radial_field
@@ -21,6 +27,8 @@
 !
       use t_phys_data
       use t_phys_address
+      use t_physical_property
+      use t_reference_scalar_param
 !
       implicit none
 !
@@ -31,20 +39,28 @@
         type(phys_address) :: irad
       end type radial_field_type
 !
+      private :: each_radial_field_num_by_model
+      private :: each_radial_field_name_by_model
+!
 ! ----------------------------------------------------------------------
 !
       contains
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine alloc_radial_field(nri_rj, r_file, r_field)
+      subroutine alloc_radial_field(nri_rj,                             &
+     &          fl_prop, cd_prop, ref_param_T, ref_param_C,             &
+     &          r_file, r_field)
 !
-      use m_physical_property
       use t_radial_parameter_input
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: nri_rj
       type(radial_parameter_file), intent(in) :: r_file
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
+      type(reference_scalar_param), intent(in) :: ref_param_T
+      type(reference_scalar_param), intent(in) :: ref_param_C
 !
       type(radial_field_type), intent(inout) :: r_field
 !
@@ -53,7 +69,8 @@
 !
       r_field%d_rad%num_phys = 0
       call each_radial_field_num_by_file(r_file, r_field%d_rad)
-      call each_radial_field_num_by_model(r_field%d_rad)
+      call each_radial_field_num_by_model                               &
+     &   (fl_prop, cd_prop, ref_param_T, ref_param_C, r_field%d_rad)
 !
       call alloc_phys_name_type(r_field%d_rad)
 !
@@ -64,7 +81,8 @@
       end do
 !
       call each_radial_field_name_by_model                              &
-     &    (r_field%d_rad, r_field%irad, icou)
+     &   (fl_prop, cd_prop, ref_param_T, ref_param_C,                   &
+     &    r_field%d_rad, r_field%irad, icou)
 !
       r_field%d_rad%ntot_phys                                           &
      &      = r_field%d_rad%istack_component(r_field%d_rad%num_phys)
@@ -109,20 +127,24 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine each_radial_field_num_by_model(d_rad)
+      subroutine each_radial_field_num_by_model                         &
+     &         (fl_prop, cd_prop, ref_param_T, ref_param_C, d_rad)
 !
-      use m_physical_property
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
+      type(reference_scalar_param), intent(in) :: ref_param_T
+      type(reference_scalar_param), intent(in) :: ref_param_C
 !
       type(phys_data), intent(inout) :: d_rad
 !
 !
-      if(fl_prop1%iflag_4_coriolis .eq. id_turn_ON)                     &
+      if(fl_prop%iflag_4_coriolis .eq. id_turn_ON)                      &
      &       d_rad%num_phys = d_rad%num_phys + 1
-      if(cd_prop1%iflag_magneto_cv .eq. id_turn_ON)                     &
+      if(cd_prop%iflag_magneto_cv .eq. id_turn_ON)                      &
      &       d_rad%num_phys = d_rad%num_phys + 1
-      if(ref_param_T1%iflag_reference .eq. id_sphere_ref_temp)          &
+      if(ref_param_T%iflag_reference .eq. id_sphere_ref_temp)           &
      &       d_rad%num_phys = d_rad%num_phys + 1
-      if(ref_param_C1%iflag_reference .eq. id_sphere_ref_temp)          &
+      if(ref_param_C%iflag_reference .eq. id_sphere_ref_temp)           &
      &       d_rad%num_phys = d_rad%num_phys + 1
 !
       end subroutine each_radial_field_num_by_model
@@ -164,17 +186,22 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine each_radial_field_name_by_model(d_rad, irad, icou)
+      subroutine each_radial_field_name_by_model                        &
+     &         (fl_prop, cd_prop, ref_param_T, ref_param_C,             &
+     &          d_rad, irad, icou)
 !
       use m_phys_labels
-      use m_physical_property
 !
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
+      type(reference_scalar_param), intent(in) :: ref_param_T
+      type(reference_scalar_param), intent(in) :: ref_param_C
       type(phys_data), intent(inout) :: d_rad
       type(phys_address), intent(inout) :: irad
       integer(kind = kint), intent(inout) :: icou
 !
 !
-      if(fl_prop1%iflag_4_coriolis .eq. id_turn_ON) then
+      if(fl_prop%iflag_4_coriolis .eq. id_turn_ON) then
         icou = icou + 1
         d_rad%phys_name(icou) = fhd_omega
         d_rad%num_component(icou) = n_vector
@@ -182,7 +209,7 @@
      &                                + d_rad%num_component(icou)
         irad%i_omega = d_rad%istack_component(icou-1) + 1
       end if
-      if(cd_prop1%iflag_magneto_cv .eq. id_turn_ON) then
+      if(cd_prop%iflag_magneto_cv .eq. id_turn_ON) then
         icou = icou + 1
         d_rad%phys_name(icou) = fhd_back_B
         d_rad%num_component(icou) = n_vector
@@ -190,7 +217,7 @@
      &                                + d_rad%num_component(icou)
         irad%i_back_B = d_rad%istack_component(icou-1) + 1
       end if
-      if(ref_param_T1%iflag_reference .eq. id_sphere_ref_temp) then
+      if(ref_param_T%iflag_reference .eq. id_sphere_ref_temp) then
         icou = icou + 1
         d_rad%phys_name(icou) = fhd_ref_temp
         d_rad%num_component(icou) = n_vector
@@ -198,7 +225,7 @@
      &                                + d_rad%num_component(icou)
         irad%i_ref_t = d_rad%istack_component(icou-1) + 1
       end if
-      if(ref_param_C1%iflag_reference .eq. id_sphere_ref_temp) then
+      if(ref_param_C%iflag_reference .eq. id_sphere_ref_temp) then
         icou = icou + 1
         d_rad%phys_name(icou) = fhd_ref_light
         d_rad%num_component(icou) = n_vector

@@ -16,6 +16,7 @@
       use m_SGS_control_parameter
       use m_mesh_data
       use m_node_phys_data
+      use m_physical_property
       use FEM_analyzer_filtered
       use visualizer_all
 !
@@ -63,6 +64,8 @@
 !     --------------------- 
 !
       call input_control_4_snapshot(FEM_prm1, SGS_par1, MHD_step1,      &
+     &    iflag_scheme, fl_prop1, cd_prop1, ht_prop1, cp_prop1,         &
+     &    ref_param_T1, ref_param_C1, takepito_T1, takepito_C1,         &
      &    mesh1, group1, ele_mesh1, nod_fld1, IO_bc1,                   &
      &    filtering1, wide_filtering, wk_filter1,                       &
      &    MGCG_WK1, MGCG_FEM1, MGCG_MHD_FEM1)

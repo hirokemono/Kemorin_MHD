@@ -11,7 +11,9 @@
 !!@verbatim
 !!      subroutine s_set_control_4_model                                &
 !!     &         (reft_ctl, refc_ctl, mevo_ctl, evo_ctl, nmtr_ctl,      &
-!!     &          fl_prop, cd_prop, ht_prop, cp_prop)
+!!     &          fl_prop, cd_prop, ht_prop, cp_prop,                   &
+!!     &          ref_param_T, ref_param_C, takepito_T, takepito_C,     &
+!!     &          iflag_scheme)
 !!      subroutine s_set_control_4_crank                                &
 !!     &         (mevo_ctl, fl_prop, cd_prop, ht_prop, cp_prop)
 !!        type(reference_temperature_ctl), intent(in) :: reft_ctl
@@ -19,9 +21,13 @@
 !!        type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
 !!        type(mhd_evolution_control), intent(inout) :: evo_ctl
 !!        type(node_monitor_control), intent(inout) :: nmtr_ctl
-!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(fluid_property), intent(inou) :: fl_prop
 !!        type(conductive_property), intent(inout)  :: cd_prop
 !!        type(scalar_property), intent(inout) :: ht_prop, cp_prop
+!!        type(reference_scalar_param), intent(inout) :: ref_param_T
+!!        type(reference_scalar_param), intent(inout) :: ref_param_C
+!!        type(takepiro_model_param), intent(inout) :: takepito_T
+!!        type(takepiro_model_param), intent(inout) :: takepito_C
 !!@endverbatim
 !
       module set_control_4_model
@@ -31,9 +37,9 @@
       use m_error_IDs
 !
       use m_machine_parameter
-      use m_physical_property
       use t_ctl_data_mhd_evo_scheme
       use t_physical_property
+      use t_reference_scalar_param
 !
       implicit  none
 !
@@ -47,7 +53,9 @@
 !
       subroutine s_set_control_4_model                                  &
      &         (reft_ctl, refc_ctl, mevo_ctl, evo_ctl, nmtr_ctl,        &
-     &          fl_prop, cd_prop, ht_prop, cp_prop)
+     &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
+     &          ref_param_T, ref_param_C, takepito_T, takepito_C,       &
+     &          iflag_scheme)
 !
       use calypso_mpi
       use m_phys_labels
@@ -65,6 +73,11 @@
       type(fluid_property), intent(inout) :: fl_prop
       type(conductive_property), intent(inout)  :: cd_prop
       type(scalar_property), intent(inout) :: ht_prop, cp_prop
+      type(reference_scalar_param), intent(inout) :: ref_param_T
+      type(reference_scalar_param), intent(inout) :: ref_param_C
+      type(takepiro_model_param), intent(inout) :: takepito_T
+      type(takepiro_model_param), intent(inout) :: takepito_C
+      integer(kind=kint), intent(inout)  :: iflag_scheme
 !
       integer (kind = kint) :: i
       character(len=kchara) :: tmpchara
@@ -138,13 +151,13 @@
 !
       write(tmpchara,'(a)') 'Reference temperature'
       call set_reference_scalar_ctl                                     &
-     &   (tmpchara, reft_ctl, ref_param_T1, takepito_T1)
+     &   (tmpchara, reft_ctl, ref_param_T, takepito_T)
 !
 !   set control for reference  
 !
       write(tmpchara,'(a)') 'Reference temperature'
       call set_reference_scalar_ctl                                     &
-     &   (tmpchara, refc_ctl, ref_param_C1, takepito_C1)
+     &   (tmpchara, refc_ctl, ref_param_C, takepito_C)
 !
 !
       if (nmtr_ctl%group_4_monitor_ctl%icou .eq. 0) then
@@ -193,11 +206,11 @@
       if(cd_prop%iflag_Bevo_scheme .ne. id_no_evolution) then
         call set_implicit_coefs                                         &
      &     (mevo_ctl%coef_imp_b_ctl, cd_prop%iflag_Bevo_scheme,         &
-     &      cd_prop1%coef_imp, cd_prop1%coef_exp)
+     &      cd_prop%coef_imp, cd_prop%coef_exp)
       else if(cd_prop%iflag_Aevo_scheme .ne. id_no_evolution) then
         call set_implicit_coefs                                         &
      &     (mevo_ctl%coef_imp_b_ctl, cd_prop%iflag_Aevo_scheme,         &
-     &      cd_prop1%coef_imp, cd_prop1%coef_exp)
+     &      cd_prop%coef_imp, cd_prop%coef_exp)
       end if
 !
       if (iflag_debug .ge. iflag_routine_msg) then

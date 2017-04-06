@@ -10,15 +10,28 @@
 !!
 !!@verbatim
 !!      subroutine input_control_4_MHD(FEM_prm, SGS_par, MHD_step,      &
+!!     &          iflag_scheme, fl_prop, cd_prop, ht_prop, cp_prop,     &
+!!     &          ref_param_T, ref_param_C, takepito_T, takepito_C,     &
 !!     &          mesh, group, ele_mesh, nod_fld, IO_bc,                &
 !!     &          filtering, wide_filtering, wk_filter, MHD_matrices,   &
 !!     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
 !!      subroutine input_control_4_snapshot(FEM_prm, SGS_par, MHD_step, &
+!!     &          iflag_scheme, fl_prop, cd_prop, ht_prop, cp_prop,     &
+!!     &          ref_param_T, ref_param_C, takepito_T, takepito_C,     &
 !!     &          mesh, group, ele_mesh, nod_fld, IO_bc,                &
 !!     &          filtering, wide_filtering, wk_filter,                 &
 !!     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
+!!        type(MHD_step_param), intent(inout) :: MHD_step
+!!        type(fluid_property), intent(inout) :: fl_prop
+!!        type(conductive_property), intent(inout)  :: cd_prop
+!!        type(scalar_property), intent(inout) :: ht_prop, cp_prop
+!!        type(reference_scalar_param), intent(inout) :: ref_param_T
+!!        type(reference_scalar_param), intent(inout) :: ref_param_C
+!!        type(takepiro_model_param), intent(inout) :: takepito_T
+!!        type(takepiro_model_param), intent(inout) :: takepito_C
+!!        type(MGCG_data), intent(inout) :: MGCG_WK
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(element_geometry), intent(inout) :: ele_mesh
@@ -44,6 +57,8 @@
       use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_MHD_step_parameter
+      use t_physical_property
+      use t_reference_scalar_param
       use t_mesh_data
       use t_boundary_field_IO
       use t_filtering_data
@@ -79,6 +94,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine input_control_4_MHD(FEM_prm, SGS_par, MHD_step,        &
+     &          iflag_scheme, fl_prop, cd_prop, ht_prop, cp_prop,       &
+     &          ref_param_T, ref_param_C, takepito_T, takepito_C,       &
      &          mesh, group, ele_mesh, nod_fld, IO_bc,                  &
      &          filtering, wide_filtering, wk_filter, MHD_matrices,     &
      &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
@@ -92,12 +109,20 @@
       use ordering_field_by_viz
       use node_monitor_IO
 !
+      integer (kind=kint), intent(inout) :: iflag_scheme
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
       type(MHD_step_param), intent(inout) :: MHD_step
+      type(fluid_property), intent(inout) :: fl_prop
+      type(conductive_property), intent(inout)  :: cd_prop
+      type(scalar_property), intent(inout) :: ht_prop, cp_prop
+      type(reference_scalar_param), intent(inout) :: ref_param_T
+      type(reference_scalar_param), intent(inout) :: ref_param_C
+      type(takepiro_model_param), intent(inout) :: takepito_T
+      type(takepiro_model_param), intent(inout) :: takepito_C
       type(phys_data), intent(inout) :: nod_fld
 !
       type(IO_boundary), intent(inout) :: IO_bc
@@ -118,14 +143,18 @@
      &   (FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt, FEM_MHD_ctl%model_ctl,  &
      &    FEM_MHD_ctl%ctl_ctl, FEM_MHD_ctl%nmtr_ctl, mesh1_file,        &
      &    FEM_udt_org_param, FEM_prm, SGS_par, MHD_step,                &
-     &    MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
+     &    fl_prop, cd_prop, ht_prop, cp_prop,                           &
+     &    ref_param_T, ref_param_C, takepito_T, takepito_C,             &
+     &    MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld, iflag_scheme)
 !
 !  --  load FEM mesh data
       call mpi_input_mesh(mesh1_file, nprocs, mesh, group,              &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
-      call input_meshes_4_MHD(SGS_par%model_p, mesh, group, IO_bc,      &
-     &    SGS_par%filter_p, filtering, wide_filtering, wk_filter)
+      call input_meshes_4_MHD                                           &
+     &   (SGS_par%model_p, fl_prop, cd_prop, ht_prop, cp_prop,          &
+     &    mesh, group, IO_bc, SGS_par%filter_p,                         &
+     &    filtering, wide_filtering, wk_filter)
 !
       if(cmp_no_case(FEM_PRM%CG11_param%METHOD, cflag_mgcg)) then
         call alloc_MHD_MG_DJDS_mat(MGCG_WK%num_MG_level, MHD_matrices)
@@ -148,6 +177,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine input_control_4_snapshot(FEM_prm, SGS_par, MHD_step,   &
+     &          iflag_scheme, fl_prop, cd_prop, ht_prop, cp_prop,       &
+     &          ref_param_T, ref_param_C, takepito_T, takepito_C,       &
      &          mesh, group, ele_mesh, nod_fld, IO_bc,                  &
      &          filtering, wide_filtering, wk_filter,                   &
      &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
@@ -158,12 +189,20 @@
       use node_monitor_IO
       use ordering_field_by_viz
 !
+      integer (kind=kint), intent(inout) :: iflag_scheme
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
       type(MHD_step_param), intent(inout) :: MHD_step
+      type(fluid_property), intent(inout) :: fl_prop
+      type(conductive_property), intent(inout)  :: cd_prop
+      type(scalar_property), intent(inout) :: ht_prop, cp_prop
+      type(reference_scalar_param), intent(inout) :: ref_param_T
+      type(reference_scalar_param), intent(inout) :: ref_param_C
+      type(takepiro_model_param), intent(inout) :: takepito_T
+      type(takepiro_model_param), intent(inout) :: takepito_C
       type(phys_data), intent(inout) :: nod_fld
 !
       type(IO_boundary), intent(inout) :: IO_bc
@@ -183,14 +222,18 @@
      &   (FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt, FEM_MHD_ctl%model_ctl,  &
      &    FEM_MHD_ctl%ctl_ctl, FEM_MHD_ctl%nmtr_ctl, mesh1_file,        &
      &    FEM_udt_org_param, FEM_prm, SGS_par, MHD_step,                &
-     &    MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
+     &    fl_prop, cd_prop, ht_prop, cp_prop,                           &
+     &    ref_param_T, ref_param_C, takepito_T, takepito_C,             &
+     &    MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld, iflag_scheme)
 !
 !  --  load FEM mesh data
       call mpi_input_mesh(mesh1_file, nprocs, mesh, group,              &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
-      call input_meshes_4_MHD(SGS_par%model_p, mesh, group, IO_bc,      &
-     &    SGS_par%filter_p, filtering, wide_filtering, wk_filter)
+      call input_meshes_4_MHD                                           &
+     &   (SGS_par%model_p, fl_prop, cd_prop, ht_prop, cp_prop,          &
+     &    mesh, group, IO_bc, SGS_par%filter_p,                         &
+     &    filtering, wide_filtering, wk_filter)
 !
       call count_field_4_monitor                                        &
      &   (nod_fld%num_phys, nod_fld%num_component,                      &
@@ -201,8 +244,10 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine input_meshes_4_MHD(SGS_param, mesh, group, IO_bc,      &
-     &          filter_param, filtering, wide_filtering, wk_filter)
+      subroutine input_meshes_4_MHD                                     &
+     &         (SGS_param, fl_prop, cd_prop, ht_prop, cp_prop,          &
+     &          mesh, group, IO_bc, filter_param,                       &
+     &          filtering, wide_filtering, wk_filter)
 !
       use m_machine_parameter
 !
@@ -215,6 +260,10 @@
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in)  :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
+!
 !
       type(IO_boundary), intent(inout) :: IO_bc
       type(SGS_filtering_params), intent(inout) :: filter_param
@@ -230,7 +279,8 @@
 !
 ! ----  open data file for boundary data
 !
-      call boundary_file_IO_control(group, IO_bc)
+      call boundary_file_IO_control                                     &
+     &   (fl_prop, cd_prop, ht_prop, cp_prop, group, IO_bc)
 !
 ! ---------------------------------
 !
@@ -264,10 +314,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine boundary_file_IO_control(group, IO_bc)
+      subroutine boundary_file_IO_control                               &
+     &         (fl_prop, cd_prop, ht_prop, cp_prop, group, IO_bc)
 !
-      use m_physical_property
       use check_read_bc_file
+!
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in)  :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
 !
       type(mesh_groups), intent(in) ::   group
       type(IO_boundary), intent(inout) :: IO_bc
@@ -276,7 +330,7 @@
 !
 !
       iflag = check_read_boundary_files                                 &
-     &      (fl_prop1, cd_prop1, ht_prop1, cp_prop1)
+     &      (fl_prop, cd_prop, ht_prop, cp_prop)
       if (iflag .eq. id_no_boundary_file) return
 !
       call read_bc_condition_file                                       &

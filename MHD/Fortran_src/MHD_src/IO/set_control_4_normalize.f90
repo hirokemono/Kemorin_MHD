@@ -44,7 +44,6 @@
       subroutine s_set_control_4_normalize                              &
      &        (fl_prop, cd_prop, ht_prop, cp_prop, dless_ctl, eqs_ctl)
 !
-      use m_physical_property
       use m_normalize_parameter
 !
       type(fluid_property), intent(in) :: fl_prop
@@ -89,7 +88,7 @@
         MHD_coef_list%coefs_Coriolis%num =  0
         MHD_coef_list%coefs_Lorentz%num =   0
       else
-        call set_coefs_4_momentum_eq(fl_prop1, eqs_ctl%mom_ctl)
+        call set_coefs_4_momentum_eq(fl_prop, eqs_ctl%mom_ctl)
       end if
 !
 !

@@ -9,18 +9,26 @@
 !!@verbatim
 !!      subroutine input_control_SPH_mesh                               &
 !!     &         (MHD_ctl, sph, comms_sph, sph_grps, rj_fld, nod_fld,   &
-!!     &          pwr, SGS_par, dynamic_SPH, MHD_step, WK,              &
-!!     &          mesh, group, ele_mesh)
+!!     &          pwr, SGS_par, dynamic_SPH, MHD_step,                  &
+!!     &          iflag_scheme, fl_prop, cd_prop, ht_prop, cp_prop,     &
+!!     &          ref_param_T, ref_param_C, takepito_T, takepito_C,     &
+!!     &          WK, mesh, group, ele_mesh)
 !!      subroutine input_control_4_SPH_MHD_nosnap                       &
 !!     &         (MHD_ctl, sph, comms_sph, sph_grps, rj_fld,            &
-!!     &          pwr, SGS_par, dynamic_SPH, MHD_step, WK)
+!!     &          pwr, SGS_par, dynamic_SPH, MHD_step,                  &
+!!     &          iflag_scheme, fl_prop, cd_prop, ht_prop, cp_prop,     &
+!!     &          ref_param_T, ref_param_C, takepito_T, takepito_C, WK)
 !!
 !!      subroutine input_control_4_SPH_make_init                        &
 !! .   &         (MHD_ctl, sph, comms_sph, sph_grps, rj_fld,            &
-!!     &          pwr, SGS_par, MHD_step, mesh, group, ele_mesh, WK)
+!!     &          pwr, SGS_par, MHD_step, mesh, group, ele_mesh,        &
+!!     &          iflag_scheme, fl_prop, cd_prop, ht_prop, cp_prop,     &
+!!     &          ref_param_T, ref_param_C, takepito_T, takepito_C, WK)
 !!      subroutine input_control_SPH_dynamobench                        &
 !!     &          (MHD_ctl, sph, comms_sph, sph_grps,                   &
-!!     &           rj_fld, nod_fld, pwr, SGS_par, MHD_step, WK)
+!!     &           rj_fld, nod_fld, pwr, SGS_par, MHD_step,             &
+!!     &           iflag_scheme, fl_prop, cd_prop, ht_prop, cp_prop,    &
+!!     &           ref_param_T, ref_param_C, takepito_T, takepito_C, WK)
 !!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
@@ -34,6 +42,13 @@
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(element_geometry), intent(inout) :: ele_mesh
 !!        type(MHD_step_param), intent(inout) :: MHD_step
+!!        type(fluid_property), intent(inout) :: fl_prop
+!!        type(conductive_property), intent(inout)  :: cd_prop
+!!        type(scalar_property), intent(inout) :: ht_prop, cp_prop
+!!        type(reference_scalar_param), intent(inout) :: ref_param_T
+!!        type(reference_scalar_param), intent(inout) :: ref_param_C
+!!        type(takepiro_model_param), intent(inout) :: takepito_T
+!!        type(takepiro_model_param), intent(inout) :: takepito_C
 !!@endverbatim
 !
 !
@@ -46,6 +61,8 @@
 !
       use t_MHD_step_parameter
       use t_SGS_control_parameter
+      use t_physical_property
+      use t_reference_scalar_param
       use t_spheric_parameter
       use t_mesh_data
       use t_phys_data
@@ -73,6 +90,7 @@
 !
       private :: mesh1_file
       private :: select_make_SPH_mesh
+      private :: sph_boundary_IO_control
 !
 ! ----------------------------------------------------------------------
 !
@@ -82,8 +100,10 @@
 !
       subroutine input_control_SPH_mesh                                 &
      &         (MHD_ctl, sph, comms_sph, sph_grps, rj_fld, nod_fld,     &
-     &          pwr, SGS_par, dynamic_SPH, MHD_step, WK,                &
-     &          mesh, group, ele_mesh)
+     &          pwr, SGS_par, dynamic_SPH, MHD_step,                    &
+     &          iflag_scheme, fl_prop, cd_prop, ht_prop, cp_prop,       &
+     &          ref_param_T, ref_param_C, takepito_T, takepito_C,       &
+     &          WK, mesh, group, ele_mesh)
 !
       use m_error_IDs
 !
@@ -102,7 +122,15 @@
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       type(MHD_step_param), intent(inout) :: MHD_step
+      type(fluid_property), intent(inout) :: fl_prop
+      type(conductive_property), intent(inout)  :: cd_prop
+      type(scalar_property), intent(inout) :: ht_prop, cp_prop
+      type(reference_scalar_param), intent(inout) :: ref_param_T
+      type(reference_scalar_param), intent(inout) :: ref_param_C
+      type(takepiro_model_param), intent(inout) :: takepito_T
+      type(takepiro_model_param), intent(inout) :: takepito_C
       type(works_4_sph_trans_MHD), intent(inout) :: WK
+      integer (kind=kint), intent(inout) :: iflag_scheme
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
@@ -115,6 +143,8 @@
      &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl,                           &
      &    sph_gen, rj_fld, mesh1_file, sph_file_param1, MHD1_org_files, &
      &    sph_fst_IO, pwr, SGS_par, dynamic_SPH%sph_filters, MHD_step,  &
+     &    iflag_scheme, fl_prop, cd_prop, ht_prop, cp_prop,             &
+     &    ref_param_T, ref_param_C, takepito_T, takepito_C,             &
      &    WK%WK_sph)
 !
       call set_control_4_SPH_to_FEM                                     &
@@ -124,7 +154,8 @@
       call select_make_SPH_mesh                                         &
      &   (sph, comms_sph, sph_grps,  mesh, group, ele_mesh, mesh1_file)
 !
-      call sph_boundary_IO_control
+      call sph_boundary_IO_control                                      &
+     &   (fl_prop, cd_prop, ht_prop, cp_prop)
 !
       end subroutine input_control_SPH_mesh
 !
@@ -133,7 +164,9 @@
 !
       subroutine input_control_4_SPH_MHD_nosnap                         &
      &         (MHD_ctl, sph, comms_sph, sph_grps, rj_fld,              &
-     &          pwr, SGS_par, dynamic_SPH, MHD_step, WK)
+     &          pwr, SGS_par, dynamic_SPH, MHD_step,                    &
+     &          iflag_scheme, fl_prop, cd_prop, ht_prop, cp_prop,       &
+     &          ref_param_T, ref_param_C, takepito_T, takepito_C,  WK)
 !
       use m_sph_boundary_input_data
       use sph_mhd_rst_IO_control
@@ -150,7 +183,15 @@
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       type(MHD_step_param), intent(inout) :: MHD_step
+      type(fluid_property), intent(inout) :: fl_prop
+      type(conductive_property), intent(inout)  :: cd_prop
+      type(scalar_property), intent(inout) :: ht_prop, cp_prop
+      type(reference_scalar_param), intent(inout) :: ref_param_T
+      type(reference_scalar_param), intent(inout) :: ref_param_C
+      type(takepiro_model_param), intent(inout) :: takepito_T
+      type(takepiro_model_param), intent(inout) :: takepito_C
       type(works_4_sph_trans_MHD), intent(inout) :: WK
+      integer (kind=kint), intent(inout) :: iflag_scheme
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_SGS_SPH_MHD'
@@ -158,13 +199,16 @@
      &    MHD_ctl%model_ctl, MHD_ctl%ctl_ctl, MHD_ctl%smonitor_ctl,     &
      &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl,                           &
      &    sph_gen, rj_fld, mesh1_file, sph_file_param1, MHD1_org_files, &
-     &    sph_fst_IO, pwr, SGS_par, dynamic_SPH%sph_filters,            &
-     &    MHD_step, WK%WK_sph)
+     &    sph_fst_IO, pwr, SGS_par, dynamic_SPH%sph_filters, MHD_step,  &
+     &    iflag_scheme, fl_prop, cd_prop, ht_prop, cp_prop,             &
+     &    ref_param_T, ref_param_C, takepito_T, takepito_C,             &
+     &    WK%WK_sph)
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
       call load_para_sph_mesh(sph, comms_sph, sph_grps)
 !
-      call sph_boundary_IO_control
+      call sph_boundary_IO_control                                      &
+     &   (fl_prop, cd_prop, ht_prop, cp_prop)
 !
       end subroutine input_control_4_SPH_MHD_nosnap
 !
@@ -173,7 +217,9 @@
 !
       subroutine input_control_4_SPH_make_init                          &
      &         (MHD_ctl, sph, comms_sph, sph_grps, rj_fld,              &
-     &          pwr, SGS_par, MHD_step, mesh, group, ele_mesh, WK)
+     &          pwr, SGS_par, MHD_step, mesh, group, ele_mesh,          &
+     &          iflag_scheme, fl_prop, cd_prop, ht_prop, cp_prop,       &
+     &          ref_param_T, ref_param_C, takepito_T, takepito_C, WK)
 !
       use sph_mhd_rst_IO_control
       use set_control_sph_mhd
@@ -192,7 +238,15 @@
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
       type(MHD_step_param), intent(inout) :: MHD_step
+      type(fluid_property), intent(inout) :: fl_prop
+      type(conductive_property), intent(inout)  :: cd_prop
+      type(scalar_property), intent(inout) :: ht_prop, cp_prop
+      type(reference_scalar_param), intent(inout) :: ref_param_T
+      type(reference_scalar_param), intent(inout) :: ref_param_C
+      type(takepiro_model_param), intent(inout) :: takepito_T
+      type(takepiro_model_param), intent(inout) :: takepito_C
       type(works_4_sph_trans_MHD), intent(inout) :: WK
+      integer (kind=kint), intent(inout) :: iflag_scheme
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
@@ -200,8 +254,10 @@
      &    MHD_ctl%model_ctl, MHD_ctl%ctl_ctl, MHD_ctl%smonitor_ctl,     &
      &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl,                           &
      &    sph_gen, rj_fld, mesh1_file, sph_file_param1,                 &
-     &    MHD1_org_files, sph_fst_IO, pwr, SGS_par,                     &
-     &    MHD_step, WK%WK_sph)
+     &    MHD1_org_files, sph_fst_IO, pwr, SGS_par, MHD_step,           &
+     &    iflag_scheme, fl_prop, cd_prop, ht_prop, cp_prop,             &
+     &    ref_param_T, ref_param_C, takepito_T, takepito_C,             &
+     &    WK%WK_sph)
 !
       call select_make_SPH_mesh                                         &
      &   (sph, comms_sph, sph_grps, mesh, group, ele_mesh, mesh1_file)
@@ -213,7 +269,9 @@
 !
       subroutine input_control_SPH_dynamobench                          &
      &          (MHD_ctl, sph, comms_sph, sph_grps,                     &
-     &           rj_fld, nod_fld, pwr, SGS_par, MHD_step, WK)
+     &           rj_fld, nod_fld, pwr, SGS_par, MHD_step,               &
+     &           iflag_scheme, fl_prop, cd_prop, ht_prop, cp_prop,      &
+     &           ref_param_T, ref_param_C, takepito_T, takepito_C, WK)
 !
       use sph_mhd_rst_IO_control
       use set_control_sph_mhd
@@ -230,7 +288,15 @@
       type(sph_mean_squares), intent(inout) :: pwr
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(MHD_step_param), intent(inout) :: MHD_step
+      type(fluid_property), intent(inout) :: fl_prop
+      type(conductive_property), intent(inout)  :: cd_prop
+      type(scalar_property), intent(inout) :: ht_prop, cp_prop
+      type(reference_scalar_param), intent(inout) :: ref_param_T
+      type(reference_scalar_param), intent(inout) :: ref_param_C
+      type(takepiro_model_param), intent(inout) :: takepito_T
+      type(takepiro_model_param), intent(inout) :: takepito_C
       type(works_4_sph_trans_MHD), intent(inout) :: WK
+      integer (kind=kint), intent(inout) :: iflag_scheme
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
@@ -238,8 +304,10 @@
      &    MHD_ctl%model_ctl, MHD_ctl%ctl_ctl, MHD_ctl%smonitor_ctl,     &
      &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl,                           &
      &    sph_gen, rj_fld, mesh1_file, sph_file_param1,                 &
-     &    MHD1_org_files, sph_fst_IO, pwr, SGS_par,                     &
-     &    MHD_step, WK%WK_sph)
+     &    MHD1_org_files, sph_fst_IO, pwr, SGS_par, MHD_step,           &
+     &    iflag_scheme, fl_prop, cd_prop, ht_prop, cp_prop,             &
+     &    ref_param_T, ref_param_C, takepito_T, takepito_C,             &
+     &    WK%WK_sph)
 !
       call set_control_4_SPH_to_FEM                                     &
      &   (MHD_ctl%psph_ctl%spctl, sph%sph_params, rj_fld, nod_fld)
@@ -336,17 +404,21 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sph_boundary_IO_control
+      subroutine sph_boundary_IO_control                                &
+     &         (fl_prop, cd_prop, ht_prop, cp_prop)
 !
-      use m_physical_property
       use m_sph_boundary_input_data
       use check_read_bc_file
+!
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in)  :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
 !
       integer(kind = kint) :: iflag
 !
 !
       iflag = check_read_boundary_files                                 &
-     &      (fl_prop1, cd_prop1, ht_prop1, cp_prop1)
+     &      (fl_prop, cd_prop, ht_prop, cp_prop)
       if (iflag .eq. id_no_boundary_file) return
 !
       if (iflag_debug.eq.1) write(*,*) 'read_boundary_spectr_file'

@@ -2,13 +2,14 @@
 !      module analyzer_check_mat_MHD
 !..................................................
 !
-      module analyzer_check_mat_MHD
-!
 !      Written by H. Matsui and H. Okuda
 !      modified by H. Matsui on June, 2005 
 !
+      module analyzer_check_mat_MHD
+!
       use m_precision
       use m_machine_parameter
+      use m_physical_property
       use calypso_mpi
 !
       use FEM_check_MHD_matrices
@@ -39,6 +40,8 @@
         write(*,*) 'Simulation start: PE. ', my_rank
 !
       call input_control_4_MHD(FEM_prm1, SGS_par1, MHD_step1,           &
+     &    iflag_scheme, fl_prop1, cd_prop1, ht_prop1, cp_prop1,         &
+     &    ref_param_T1, ref_param_C1, takepito_T1, takepito_C1,         &
      &    mesh1, group1, ele_mesh1, nod_fld1, IO_bc1,                   &
      &    filtering1, wide_filtering, wk_filter1,                       &
      &    MHD1_matrices, MGCG_WK1, MGCG_FEM1, MGCG_MHD_FEM1)
