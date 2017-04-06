@@ -20,6 +20,7 @@
       use m_work_time
       use m_MHD_step_parameter
       use m_SGS_control_parameter
+      use m_physical_property
       use t_sph_filtering_data
       use t_step_parameter
 !

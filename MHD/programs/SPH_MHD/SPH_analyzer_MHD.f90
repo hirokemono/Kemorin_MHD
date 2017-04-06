@@ -18,6 +18,7 @@
       use m_precision
       use m_MHD_step_parameter
       use m_SGS_control_parameter
+      use m_physical_property
       use t_phys_address
       use t_MHD_step_parameter
 !

@@ -20,6 +20,7 @@
       use m_machine_parameter
       use m_work_time
       use m_sph_trans_arrays_MHD
+      use m_physical_property
       use t_spheric_parameter
       use t_file_IO_parameter
       use t_step_parameter
