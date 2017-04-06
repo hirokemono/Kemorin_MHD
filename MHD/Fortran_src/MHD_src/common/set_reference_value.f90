@@ -4,10 +4,10 @@
 !      Written by H.Matsui
 !      Modified by H.Matsui on Sep., 2007
 !
-!!      subroutine set_reference_temp(ref_param, takepito,              &
+!!      subroutine set_reference_temp(ref_param, takepiro,              &
 !!     &          node, fluid, i_ref, i_gref, nod_fld)
 !!        type(reference_scalar_param), intent(in) :: ref_param
-!!        type(takepiro_model_param), intent(in) :: takepito
+!!        type(takepiro_model_param), intent(in) :: takepiro
 !!        type(node_data), intent(in) :: node
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -25,7 +25,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_reference_temp(ref_param, takepito,                &
+      subroutine set_reference_temp(ref_param, takepiro,                &
      &          node, fluid, i_ref, i_gref, nod_fld)
 !
       use t_reference_scalar_param
@@ -34,7 +34,7 @@
       use t_geometry_data_MHD
 !
       type(reference_scalar_param), intent(in) :: ref_param
-      type(takepiro_model_param), intent(in) :: takepito
+      type(takepiro_model_param), intent(in) :: takepiro
       type(node_data), intent(in) :: node
       type(field_geometry_data), intent(in) :: fluid
       integer(kind = kint), intent(in) :: i_ref, i_gref
@@ -72,8 +72,8 @@
       end if
 !
       if (ref_param%iflag_reference .eq. id_takepiro_temp) then
-        call set_takepiro_temp(takepito%stratified_sigma,               &
-     &     takepito%stratified_width, takepito%stratified_outer_r,      &
+        call set_takepiro_temp(takepiro%stratified_sigma,               &
+     &     takepiro%stratified_width, takepiro%stratified_outer_r,      &
      &     node%numnod, fluid%numnod_fld, fluid%inod_fld, node%rr,      &
      &     nod_fld%d_fld(1,i_ref), nod_fld%d_fld(1,i_gref))
       end if

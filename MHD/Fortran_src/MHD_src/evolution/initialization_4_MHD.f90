@@ -207,8 +207,9 @@
 !
       if (iflag_debug.eq.1) write(*,*)' allocate_array'
       call allocate_array                                               &
-     &   (SGS_par, mesh, cd_prop1, iphys, nod_fld, iphys_elediff,       &
-     &    mhd_fem1_wk, rhs_mat1, fem_int1, label_sim)
+     &   (SGS_par, mesh, fl_prop1, cd_prop1, ht_prop1, cp_prop1,        &
+     &    iphys, nod_fld, iphys_elediff, mhd_fem1_wk, rhs_mat1,         &
+     &    fem_int1, label_sim)
 !
       if ( iflag_debug.ge.1 ) write(*,*) 'init_check_delta_t_data'
       call s_init_check_delta_t_data(cd_prop1, iphys, flex_data)
@@ -223,7 +224,8 @@
 !
       if (iflag_debug.eq.1) write(*,*)' set_material_property'
       call set_material_property                                        &
-     &   (iphys, ref_param_T1%depth_top, ref_param_T1%depth_bottom)
+     &   (iphys, ref_param_T1%depth_top, ref_param_T1%depth_bottom,     &
+     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1)
       call init_ele_material_property(mesh%ele%numele,                  &
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1)
       call define_sgs_components                                        &
@@ -308,7 +310,8 @@
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_data'
       call set_boundary_data                                            &
      &   (time_d, IO_bc, mesh, ele_mesh, MHD_mesh, group,               &
-     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1, iphys, nod_fld)
+     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
+     &    ref_param_T1, ref_param_C1, iphys, nod_fld)
 !
 !     ---------------------
 !
@@ -324,9 +327,9 @@
 !      call reset_aiccg_matrices(mesh%node, mesh%ele, MHD_mesh%fluid)
 !
       if(solver_iflag(FEM_PRM%CG11_param%METHOD) .eq. iflag_mgcg) then
-        call s_initialize_4_MHD_AMG                                     &
-     &     (time_d%dt, FEM_prm, mesh%node, mesh%ele,                    &
-     &      ifld_diff, diff_coefs, FEM_prm%DJDS_param,                  &
+        call s_initialize_4_MHD_AMG(time_d%dt, FEM_prm,                 &
+     &      mesh%node, mesh%ele, ifld_diff, diff_coefs,                 &
+     &      fl_prop1, cd_prop1, ht_prop1, cp_prop1, FEM_prm%DJDS_param, &
      &      MGCG_WK1, MGCG_FEM1, MGCG_MHD_FEM1, MHD1_matrices)
       end if
 !

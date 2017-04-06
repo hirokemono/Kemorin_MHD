@@ -340,8 +340,6 @@
      &          fl_prop, cd_prop, iphys, jacobians, rhs_tbl,            &
      &          mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !
-      use m_physical_property
-!
       use products_nodal_fields_smp
       use int_sgs_induction
       use sgs_buoyancy_flux

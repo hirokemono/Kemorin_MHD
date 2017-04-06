@@ -55,7 +55,6 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_physical_property
 !
       use t_FEM_control_parameter
       use t_SGS_control_parameter
@@ -310,7 +309,7 @@
       end if
 !
 !
-      if (fl_prop1%iflag_4_lorentz .ne. id_turn_OFF) then
+      if (fl_prop%iflag_4_lorentz .ne. id_turn_OFF) then
 !
         if(SGS_par%model_p%iflag_SGS_lorentz .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)                                         &
@@ -364,7 +363,7 @@
      &       iphys_elediff%i_filter_velo, iphys_elediff%i_filter_magne, &
      &       time_d%dt, FEM_prm, SGS_par,                               &
      &       mesh%nod_comm, mesh%node, mesh%ele, iphys,                 &
-     &       iphys_ele, ele_fld, MHD_mesh%conduct, cd_prop1, layer_tbl, &
+     &       iphys_ele, ele_fld, MHD_mesh%conduct, cd_prop, layer_tbl,  &
      &       fem_int%jacobians, fem_int%rhs_tbl, FEM_elens, filtering,  &
      &       sgs_coefs_nod, wk_filter, wk_cor, wk_lsq, wk_sgs,          &
      &       mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l,                   &
@@ -389,7 +388,7 @@
      &       iphys_elediff%i_filter_velo, iphys_elediff%i_filter_magne, &
      &       time_d%dt, FEM_prm, SGS_par,                               &
      &       mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,         &
-     &       MHD_mesh%fluid, MHD_mesh%conduct, cd_prop1, layer_tbl,     &
+     &       MHD_mesh%fluid, MHD_mesh%conduct, cd_prop, layer_tbl,      &
      &       group%surf_grp, surf_bcs%Bsf_bcs, iphys, iphys_ele,        &
      &       ele_fld, fem_int%jacobians, fem_int%rhs_tbl, FEM_elens,    &
      &       sgs_coefs, filtering, wk_filter, wk_cor, wk_lsq,           &
@@ -406,7 +405,7 @@
      &        iphys_elediff%i_velo, iphys_elediff%i_filter_velo,        &
      &        time_d%dt, FEM_prm, SGS_par, mesh%nod_comm,               &
      &        mesh%node, mesh%ele, iphys, iphys_ele, ele_fld,           &
-     &        MHD_mesh%conduct, cd_prop1, layer_tbl, fem_int%jacobians, &
+     &        MHD_mesh%conduct, cd_prop, layer_tbl, fem_int%jacobians,  &
      &        fem_int%rhs_tbl, FEM_elens, filtering, wk_filter, wk_cor, &
      &        wk_lsq, wk_sgs, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l,  &
      &        nod_fld, sgs_coefs)

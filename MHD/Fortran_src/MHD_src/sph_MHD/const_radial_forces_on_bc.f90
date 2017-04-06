@@ -7,8 +7,11 @@
 !>@brief Evaluate radial component of forces at boundaries
 !!
 !!@verbatim
-!!      subroutine s_const_radial_forces_on_bc                          &
-!!     &         (sph_rj, g_sph_rj, ipol, rj_fld)
+!!      subroutine s_const_radial_forces_on_bc(sph_rj, g_sph_rj,        &
+!!     &          fl_prop, ref_param_T, ref_param_C, ipol, rj_fld)
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(reference_scalar_param), intent(in) :: ref_param_T
+!!        type(reference_scalar_param), intent(in) :: ref_param_C
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_address), intent(in) :: ipol
 !!        type(phys_data), intent(inout) :: rj_fld
@@ -31,17 +34,22 @@
 !
 !   ------------------------------------------------------------------
 !
-      subroutine s_const_radial_forces_on_bc                            &
-     &         (sph_rj, g_sph_rj, ipol, rj_fld)
+      subroutine s_const_radial_forces_on_bc(sph_rj, g_sph_rj,          &
+     &          fl_prop, ref_param_T, ref_param_C, ipol, rj_fld)
 !
-      use m_physical_property
       use m_boundary_params_sph_MHD
 !
+      use t_physical_property
+      use t_reference_scalar_param
       use t_spheric_rj_data
       use t_phys_address
       use t_phys_data
 !
       use cal_r_buoyancies_on_sph
+!
+      type(fluid_property), intent(in) :: fl_prop
+      type(reference_scalar_param), intent(in) :: ref_param_T
+      type(reference_scalar_param), intent(in) :: ref_param_C
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
@@ -51,9 +59,9 @@
 !
 !
       call s_cal_r_buoyancies_on_sph(sph_bc_U%kr_in, sph_rj, ipol,      &
-     &    fl_prop1, ref_param_T1, ref_param_C1, rj_fld)
+     &    fl_prop, ref_param_T, ref_param_C, rj_fld)
       call s_cal_r_buoyancies_on_sph(sph_bc_U%kr_out, sph_rj, ipol,     &
-     &    fl_prop1, ref_param_T1, ref_param_C1, rj_fld)
+     &    fl_prop, ref_param_T, ref_param_C, rj_fld)
 !
 !$omp parallel
       call cal_radial_force_on_sph(sph_bc_U%kr_in,                      &
@@ -74,7 +82,7 @@
      &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                  &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
-      if(fl_prop1%iflag_4_lorentz .gt. id_turn_OFF) then
+      if(fl_prop%iflag_4_lorentz .gt. id_turn_OFF) then
         call cal_radial_force_on_sph(sph_bc_U%kr_in,                    &
      &      ipol%i_lorentz, ipol%i_div_inertia,                         &
      &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                  &

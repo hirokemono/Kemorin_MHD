@@ -9,7 +9,9 @@
 !!@verbatim
 !!      subroutine fields_evolution                                     &
 !!     &         (time_d, FEM_prm, SGS_par, mesh, group, ele_mesh,      &
-!!     &          MHD_mesh, nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,&
+!!     &          MHD_mesh, fl_prop, cd_prop, ht_prop, cp_prop,         &
+!!     &          ref_param_T, ref_param_C,                             &
+!!     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,          &
 !!     &          fem_int, FEM_elens, ifld_sgs, icomp_sgs,              &
 !!     &          ifld_diff, icomp_diff, iphys_elediff, sgs_coefs_nod,  &
 !!     &          filtering, wide_filtering, layer_tbl,                 &
@@ -27,7 +29,9 @@
 !!
 !!      subroutine fields_evolution_4_FEM_SPH                           &
 !!     &         (time_d, FEM_prm, SGS_par, mesh, group, ele_mesh,      &
-!!     &          fluid, nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,   &
+!!     &          fluid, fl_prop, cd_prop, ht_prop, cp_prop,            &
+!!     &          ref_param_T, ref_param_C,                             &
+!!     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,          &
 !!     &          fem_int, FEM_elens, ifld_sgs, icomp_sgs,              &
 !!     &          ifld_diff, icomp_diff, iphys_elediff, sgs_coefs_nod,  &
 !!     &          filtering, wide_filtering, layer_tbl, s_package,      &
@@ -42,6 +46,11 @@
 !!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(mesh_data_MHD), intent(in) :: MHD_mesh
 !!        type(field_geometry_data), intent(in) :: fluid
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in) :: cd_prop
+!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
+!!        type(reference_scalar_param), intent(in) :: ref_param_T
+!!        type(reference_scalar_param), intent(in) :: ref_param_C
 !!        type(nodal_boundarty_conditions), intent(in) :: nod_bcs
 !!        type(surface_boundarty_conditions), intent(in) :: surf_bcs
 !!        type(phys_address), intent(in) :: iphys
@@ -79,6 +88,8 @@
 !
       use t_FEM_control_parameter
       use t_SGS_control_parameter
+      use t_physical_property
+      use t_reference_scalar_param
       use t_time_data
       use t_mesh_data
       use t_comm_table
@@ -118,7 +129,9 @@
 !
       subroutine fields_evolution                                       &
      &         (time_d, FEM_prm, SGS_par, mesh, group, ele_mesh,        &
-     &          MHD_mesh, nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,  &
+     &          MHD_mesh, fl_prop, cd_prop, ht_prop, cp_prop,           &
+     &          ref_param_T, ref_param_C,                               &
+     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,            &
      &          fem_int, FEM_elens, ifld_sgs, icomp_sgs,                &
      &          ifld_diff, icomp_diff, iphys_elediff, sgs_coefs_nod,    &
      &          filtering, wide_filtering, layer_tbl,                   &
@@ -126,7 +139,6 @@
      &          wk_filter, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,       &
      &          sgs_coefs, diff_coefs)
 !
-      use m_physical_property
       use cal_temperature
       use cal_velocity
       use cal_magnetic_field
@@ -145,6 +157,11 @@
       type(mesh_groups), intent(in) ::   group
       type(element_geometry), intent(in) :: ele_mesh
       type(mesh_data_MHD), intent(in) :: MHD_mesh
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
+      type(reference_scalar_param), intent(in) :: ref_param_T
+      type(reference_scalar_param), intent(in) :: ref_param_C
       type(nodal_boundarty_conditions), intent(in) :: nod_bcs
       type(surface_boundarty_conditions), intent(in) :: surf_bcs
       type(phys_address), intent(in) :: iphys
@@ -182,11 +199,11 @@
 !
 !     ---- magnetic field update
 !
-      if ( cd_prop1%iflag_Aevo_scheme .gt. id_no_evolution) then
+      if ( cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'cal_magne_vector_potential'
         call cal_vector_potential(time_d%dt, FEM_prm, SGS_par,          &
      &     mesh%nod_comm, mesh%node, mesh%ele,                          &
-     &     ele_mesh%surf, MHD_mesh%conduct, group%surf_grp, cd_prop1,   &
+     &     ele_mesh%surf, MHD_mesh%conduct, group%surf_grp, cd_prop,    &
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Fsf_bcs, iphys, &
      &     iphys_ele, ele_fld, fem_int%jacobians, fem_int%rhs_tbl,      &
      &     FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,              &
@@ -208,14 +225,14 @@
      &     rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl,  &
      &     nod_fld, ele_fld, diff_coefs)
 !
-      else if(cd_prop1%iflag_Bevo_scheme .gt. id_no_evolution) then
+      else if(cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
 !
 !        call check_surface_param_smp('cal_magnetic_field start',       &
 !     &      my_rank, sf_grp, group%surf_nod_grp)
         if (iflag_debug.eq.1) write(*,*) 's_cal_magnetic_field'
         call s_cal_magnetic_field(time_d%dt, FEM_prm, SGS_par,          &
      &     mesh%nod_comm, mesh%node, mesh%ele,                          &
-     &     ele_mesh%surf, MHD_mesh%conduct, group%surf_grp, cd_prop1,   &
+     &     ele_mesh%surf, MHD_mesh%conduct, group%surf_grp, cd_prop,    &
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,        &
      &     surf_bcs%Fsf_bcs, iphys, iphys_ele, ele_fld,                 &
      &     fem_int%jacobians, fem_int%rhs_tbl, FEM_elens, icomp_sgs,    &
@@ -240,14 +257,14 @@
 !
 !     ---- temperature update
 !
-      if ( ht_prop1%iflag_scheme .gt. id_no_evolution) then
-        if( ref_param_T1%iflag_reference .ne. id_no_ref_temp) then
+      if ( ht_prop%iflag_scheme .gt. id_no_evolution) then
+        if( ref_param_T%iflag_reference .ne. id_no_ref_temp) then
           if(iflag_debug.eq.1) write(*,*) 'cal_temperature_field theta'
           call cal_temperature_field                                    &
      &      (iphys%i_par_temp, time_d%dt, FEM_prm,                      &
      &       SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,      &
      &       mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,         &
-     &       MHD_mesh%fluid, group%surf_grp, ht_prop1, ref_param_T1,    &
+     &       MHD_mesh%fluid, group%surf_grp, ht_prop, ref_param_T,      &
      &       nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys, iphys_ele,      &
      &       ele_fld, fem_int%jacobians, fem_int%rhs_tbl,               &
      &       FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,            &
@@ -265,7 +282,7 @@
           call cal_temperature_field(iphys%i_temp, time_d%dt, FEM_prm,  &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
      &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
-     &        MHD_mesh%fluid, group%surf_grp, ht_prop1, ref_param_T1,   &
+     &        MHD_mesh%fluid, group%surf_grp, ht_prop, ref_param_T,     &
      &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys, iphys_ele,     &
      &        ele_fld, fem_int%jacobians, fem_int%rhs_tbl,              &
      &        FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,           &
@@ -294,14 +311,14 @@
 !
 !     ----- composition update
 !
-      if ( cp_prop1%iflag_scheme .gt. id_no_evolution) then
-        if( ref_param_C1%iflag_reference .ne. id_no_ref_temp) then
+      if ( cp_prop%iflag_scheme .gt. id_no_evolution) then
+        if( ref_param_C%iflag_reference .ne. id_no_ref_temp) then
           if(iflag_debug.eq.1) write(*,*) 's_cal_light_element part'
           call s_cal_light_element                                      &
      &       (iphys%i_par_light, time_d%dt, FEM_prm,                    &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
      &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
-     &        MHD_mesh%fluid, group%surf_grp, cp_prop1, ref_param_C1,   &
+     &        MHD_mesh%fluid, group%surf_grp, cp_prop, ref_param_C,     &
      &        nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys, iphys_ele,     &
      &        ele_fld, fem_int%jacobians, fem_int%rhs_tbl, FEM_elens,   &
      &        icomp_sgs, ifld_diff, iphys_elediff,                      &
@@ -317,7 +334,7 @@
           call s_cal_light_element(iphys%i_light, time_d%dt, FEM_prm,   &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
      &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
-     &        MHD_mesh%fluid, group%surf_grp, cp_prop1, ref_param_C1,   &
+     &        MHD_mesh%fluid, group%surf_grp, cp_prop, ref_param_C,     &
      &        nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys, iphys_ele,     &
      &        ele_fld, fem_int%jacobians, fem_int%rhs_tbl, FEM_elens,   &
      &        icomp_sgs, ifld_diff, iphys_elediff,                      &
@@ -346,12 +363,12 @@
 !
 !     ---- velocity update
 !
-      if (fl_prop1%iflag_scheme .gt. id_no_evolution) then
+      if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'velocity_evolution'
         call velocity_evolution(time_d%time, time_d%dt,                 &
      &      FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,       &
      &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
-     &      group%surf_nod_grp, fl_prop1, cd_prop1,                     &
+     &      group%surf_nod_grp, fl_prop, cd_prop,                       &
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,       &
      &      surf_bcs%Psf_bcs, iphys, iphys_ele, ak_MHD,                 &
      &      fem_int%jacobians, fem_int%rhs_tbl, FEM_elens,              &
@@ -516,7 +533,9 @@
 !
       subroutine fields_evolution_4_FEM_SPH                             &
      &         (time_d, FEM_prm, SGS_par, mesh, group, ele_mesh,        &
-     &          fluid, nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,     &
+     &          fluid, fl_prop, cd_prop, ht_prop, cp_prop,              &
+     &          ref_param_T, ref_param_C,                               &
+     &          nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,            &
      &          fem_int, FEM_elens, ifld_sgs, icomp_sgs,                &
      &          ifld_diff, icomp_diff, iphys_elediff, sgs_coefs_nod,    &
      &          filtering, wide_filtering, layer_tbl, s_package,        &
@@ -524,7 +543,6 @@
      &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld,                  &
      &          sgs_coefs, diff_coefs)
 !
-      use m_physical_property
       use cal_temperature
       use cal_velocity
       use cal_light_element
@@ -540,6 +558,11 @@
       type(mesh_groups), intent(in) ::   group
       type(element_geometry), intent(in) :: ele_mesh
       type(field_geometry_data), intent(in) :: fluid
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
+      type(reference_scalar_param), intent(in) :: ref_param_T
+      type(reference_scalar_param), intent(in) :: ref_param_C
       type(nodal_boundarty_conditions), intent(in) :: nod_bcs
       type(surface_boundarty_conditions), intent(in) :: surf_bcs
       type(phys_address), intent(in) :: iphys
@@ -577,14 +600,14 @@
 !
 !     ---- temperature update
 !
-      if ( ht_prop1%iflag_scheme .gt. id_no_evolution) then
-        if( ref_param_T1%iflag_reference .ne. id_no_ref_temp) then
+      if ( ht_prop%iflag_scheme .gt. id_no_evolution) then
+        if( ref_param_T%iflag_reference .ne. id_no_ref_temp) then
           if (iflag_debug.eq.1) write(*,*) 'cal_temperature_field'
           call cal_temperature_field                                    &
      &       (iphys%i_par_temp, time_d%dt, FEM_prm,                     &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
      &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
-     &        fluid, group%surf_grp, ht_prop1, ref_param_T1,            &
+     &        fluid, group%surf_grp, ht_prop, ref_param_T,              &
      &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys, iphys_ele,     &
      &        ele_fld, fem_int%jacobians, fem_int%rhs_tbl,              &
      &        FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,           &
@@ -600,7 +623,7 @@
           call cal_temperature_field(iphys%i_temp, time_d%dt, FEM_prm,  &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
      &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
-     &        fluid, group%surf_grp, ht_prop1, ref_param_T1,            &
+     &        fluid, group%surf_grp, ht_prop, ref_param_T,              &
      &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys, iphys_ele,     &
      &        ele_fld, fem_int%jacobians, fem_int%rhs_tbl,              &
      &        FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,           &
@@ -629,14 +652,14 @@
 !
 !     ----- composition update
 !
-      if ( cp_prop1%iflag_scheme .gt. id_no_evolution) then
-        if( ref_param_C1%iflag_reference .ne. id_no_ref_temp) then
+      if ( cp_prop%iflag_scheme .gt. id_no_evolution) then
+        if( ref_param_C%iflag_reference .ne. id_no_ref_temp) then
           if(iflag_debug.eq.1) write(*,*) 's_cal_light_element part'
           call s_cal_light_element                                      &
      &       (iphys%i_par_light, time_d%dt, FEM_prm,                    &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
      &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
-     &        fluid, group%surf_grp, cp_prop1, ref_param_C1,            &
+     &        fluid, group%surf_grp, cp_prop, ref_param_C,              &
      &        nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys, iphys_ele,     &
      &        ele_fld, fem_int%jacobians, fem_int%rhs_tbl, FEM_elens,   &
      &        icomp_sgs, ifld_diff, iphys_elediff,                      &
@@ -652,7 +675,7 @@
           call s_cal_light_element(iphys%i_light, time_d%dt, FEM_prm,   &
      &        SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,     &
      &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
-     &        fluid, group%surf_grp, cp_prop1, ref_param_C1,            &
+     &        fluid, group%surf_grp, cp_prop, ref_param_C,              &
      &        nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys, iphys_ele,     &
      &        ele_fld, fem_int%jacobians, fem_int%rhs_tbl, FEM_elens,   &
      &        icomp_sgs, ifld_diff, iphys_elediff,                      &
@@ -681,12 +704,12 @@
 !
 !     ---- velocity update
 !
-      if (fl_prop1%iflag_scheme .gt. id_no_evolution) then
+      if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'velocity_evolution'
         call velocity_evolution(time_d%time, time_d%dt,                 &
      &      FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,       &
      &      ele_mesh%surf, fluid, group%surf_grp,                       &
-     &      group%surf_nod_grp, fl_prop1, cd_prop1,                     &
+     &      group%surf_nod_grp, fl_prop, cd_prop,                       &
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,       &
      &      surf_bcs%Psf_bcs, iphys, iphys_ele, ak_MHD,                 &
      &      fem_int%jacobians, fem_int%rhs_tbl, FEM_elens,              &

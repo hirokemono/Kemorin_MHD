@@ -101,7 +101,7 @@
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1, fem_int1,             &
      &    MGCG_WK1, MHD1_mat_tbls, solver_pack1)
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
-      call set_aiccg_matrices(MHD_step%time_d%dt,                       &
+      call set_aiccg_matrices(iflag_scheme, MHD_step%time_d%dt,         &
      &    FEM_prm1, SGS_par1%model_p, SGS_par1%commute_p,               &
      &    mesh1, group1, ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs,       &
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
@@ -129,7 +129,8 @@
       if(iflag .eq. 0) then
         call lead_fields_by_FEM(MHD_step%time_d,                        &
      &     FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1,                &
-     &     MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,      &
+     &     MHD_mesh1, fl_prop1, cd_prop1, ht_prop1, cp_prop1,           &
+     &     nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,                 &
      &     fem_int1, FEM1_elen, icomp_sgs, icomp_diff, ifld_diff,       &
      &     iphys_elediff, sgs_coefs, sgs_coefs_nod,                     &
      &     filtering1, wide_filtering, layer_tbl1,                      &
@@ -211,7 +212,9 @@
       call fields_evolution_4_FEM_SPH                                   &
      &   (MHD_step%time_d, FEM_prm1, SGS_par1,                          &
      &    mesh1, group1, ele_mesh1, MHD_mesh1%fluid,                    &
-     &    nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD, fem_int1,        &
+     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
+     &    ref_param_T1, ref_param_C1, nod1_bcs, sf1_bcs,                &
+     &    iphys, iphys_ele, ak_MHD, fem_int1,                           &
      &    FEM1_elen, ifld_sgs, icomp_sgs, ifld_diff, icomp_diff,        &
      &    iphys_elediff, sgs_coefs_nod, filtering1, wide_filtering,     &
      &    layer_tbl1, solver_pack1, MGCG_WK1, wk_cor1, wk_lsq1,         &
@@ -251,7 +254,8 @@
         if(iflag .eq. 0) then
           call lead_fields_by_FEM(MHD_step%time_d,                      &
      &        FEM_prm1, SGS_par1, mesh1, group1, ele_mesh1,             &
-     &        MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,   &
+     &        MHD_mesh1, fl_prop1, cd_prop1, ht_prop1, cp_prop1,        &
+     &        nod1_bcs, sf1_bcs, iphys, iphys_ele, ak_MHD,              &
      &        fem_int1, FEM1_elen, icomp_sgs, icomp_diff, ifld_diff,    &
      &        iphys_elediff, sgs_coefs, sgs_coefs_nod,                  &
      &        filtering1, wide_filtering, layer_tbl1,                   &
@@ -283,7 +287,7 @@
         if (iflag_debug.eq.1) write(*,*) 's_output_sgs_model_coefs'
         call s_output_sgs_model_coefs                                   &
      &     (flex_p1%istep_max_dt, MHD_step%time_d,                      &
-     &      SGS_par1, wk_sgs1, wk_diff1)
+     &      SGS_par1, cd_prop1, wk_sgs1, wk_diff1)
 !
 !     ---- Output restart field data
 !
@@ -354,7 +358,8 @@
 !
       if ( retval .ne. 0 ) then
         if (iflag_debug.eq.1) write(*,*) 'update_matrices'
-        call update_matrices(MHD_step%time_d, FEM_prm1, SGS_par1,       &
+        call update_matrices                                            &
+     &    (iflag_scheme, MHD_step%time_d, FEM_prm1, SGS_par1,           &
      &     mesh1, group1, ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs,      &
      &     fl_prop1, cd_prop1, ht_prop1, cp_prop1,                      &
      &     ak_MHD, fem_int1, FEM1_elen, ifld_diff, diff_coefs,          &

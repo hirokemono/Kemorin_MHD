@@ -72,7 +72,10 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd_evo'
       call init_r_infos_sph_mhd_evo(sph_grps1, ipol, sph1,              &
-     &    omega_sph1, ref_temp1, ref_comp1, r_2nd, rj_fld1)
+     &    omega_sph1, ref_temp1, ref_comp1,                             &
+     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
+     &    ref_param_T1, ref_param_C1, takepito_T1, takepito_C1,         &
+     &    r_2nd, rj_fld1)
 !
 !  -------------------------------
 !
@@ -198,7 +201,7 @@
       call init_pole_transform(sph%sph_rtp)
 !
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
-     &                     'set_addresses_trans_sph_MHD'
+     &                     'set_addresses_backward_trans'
       call set_addresses_backward_trans(rj_fld, WK%trns_MHD,            &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
 !

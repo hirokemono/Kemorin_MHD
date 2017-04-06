@@ -7,7 +7,7 @@
 !!      subroutine set_boundary_data                                    &
 !!     &         (time_d, IO_bc, mesh, ele_mesh, MHD_mesh,              &
 !!     &          group, fl_prop, cd_prop, ht_prop, cp_prop,            &
-!!     &          iphys, nod_fld)
+!!     &          ref_param_T, ref_param_C, iphys, nod_fld)
 !!        type(time_data), intent(in) :: time_d
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -17,6 +17,8 @@
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(scalar_property), intent(in) :: ht_prop, cp_prop
+!!        type(reference_scalar_param), intent(in) :: ref_param_T
+!!        type(reference_scalar_param), intent(in) :: ref_param_C
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
 !
@@ -42,7 +44,7 @@
       subroutine set_boundary_data                                      &
      &         (time_d, IO_bc, mesh, ele_mesh, MHD_mesh,                &
      &          group, fl_prop, cd_prop, ht_prop, cp_prop,              &
-     &          iphys, nod_fld)
+     &          ref_param_T, ref_param_C, iphys, nod_fld)
 !
       use m_machine_parameter
 !
@@ -55,6 +57,7 @@
       use t_phys_address
       use t_boundary_field_IO
       use t_physical_property
+      use t_reference_scalar_param
       use t_bc_data_MHD
 !
       use set_nodal_bc_id_data
@@ -72,6 +75,8 @@
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
       type(scalar_property), intent(in) :: ht_prop, cp_prop
+      type(reference_scalar_param), intent(in) :: ref_param_T
+      type(reference_scalar_param), intent(in) :: ref_param_C
 !
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -83,7 +88,7 @@
       if (iflag_debug.eq.1) write(*,*)' set_bc_fields'
       call set_bc_fields                                                &
      &   (time_d%time, mesh, fl_prop, cd_prop, ht_prop, cp_prop,        &
-     &    iphys, nod_fld, nod1_bcs)
+     &    ref_param_T, ref_param_C, iphys, nod_fld, nod1_bcs)
 !
       call set_bc_surface_data                                          &
      &   (IO_bc, mesh%node, mesh%ele, ele_mesh%surf,                    &

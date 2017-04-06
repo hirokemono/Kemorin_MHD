@@ -108,7 +108,6 @@
       subroutine cal_div_of_SGS_forces_sph_2                            &
      &         (sph_rj, r_2nd, g_sph_rj, ipol, rj_fld)
 !
-      use m_physical_property
       use m_boundary_params_sph_MHD
       use cal_div_buoyancies_sph_MHD
       use const_sph_divergence

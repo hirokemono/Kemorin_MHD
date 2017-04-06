@@ -16,9 +16,7 @@
       module set_buoyancy_at_node
 !
       use m_precision
-!
       use m_machine_parameter
-!      use m_physical_property
 !
       implicit none
 !

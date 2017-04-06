@@ -107,7 +107,6 @@
      &         (fl_prop, cd_prop, ht_prop, cp_prop,                     &
      &          sph_rj, r_2nd, g_sph_rj, dt)
 !
-      use m_physical_property
       use m_radial_matrices_sph
       use m_boundary_params_sph_MHD
       use const_r_mat_4_scalar_sph
@@ -146,7 +145,7 @@
           if(iflag_debug .gt. 0)                                        &
      &          write(*,*) 'const_radial_mat_4_magne_sph'
         call const_radial_mat_4_magne_sph(sph_rj, r_2nd,                &
-     &      cd_prop1, g_sph_rj, dt, band_bp_evo, band_bt_evo)
+     &      cd_prop, g_sph_rj, dt, band_bp_evo, band_bt_evo)
       end if
 !
       if(cp_prop%iflag_scheme .ge. id_Crank_nicolson) then

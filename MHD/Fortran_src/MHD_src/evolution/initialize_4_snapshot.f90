@@ -195,8 +195,9 @@
 !
       if (iflag_debug.eq.1) write(*,*)' allocate_array'
       call allocate_array                                               &
-     &   (SGS_par, mesh, cd_prop1, iphys, nod_fld, iphys_elediff,       &
-     &    mhd_fem1_wk, rhs_mat1, fem_int1, label_sim)
+     &   (SGS_par, mesh, fl_prop1, cd_prop1, ht_prop1, cp_prop1,        &
+     &    iphys, nod_fld, iphys_elediff, mhd_fem1_wk, rhs_mat1,         &
+     &    fem_int1, label_sim)
 !
       if (iflag_debug.eq.1) write(*,*)' set_reference_temp'
       call set_reference_temp                                           &
@@ -208,7 +209,8 @@
 !
       if (iflag_debug.eq.1) write(*,*)' set_material_property'
       call set_material_property                                        &
-     &   (iphys, ref_param_T1%depth_top, ref_param_T1%depth_bottom)
+     &   (iphys, ref_param_T1%depth_top, ref_param_T1%depth_bottom,     &
+     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1)
       call init_ele_material_property(mesh%ele%numele,                  &
      &    fl_prop1, cd_prop1, ht_prop1, cp_prop1)
       call define_sgs_components                                        &
@@ -265,7 +267,8 @@
       if (iflag_debug.eq.1) write(*,*)' set_boundary_data'
       call set_boundary_data                                            &
      &   (time_d, IO_bc, mesh, ele_mesh, MHD_mesh, group,               &
-     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1, iphys, nod_fld)
+     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
+     &    ref_param_T1, ref_param_C1, iphys, nod_fld)
 !
 !     ---------------------
 !

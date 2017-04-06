@@ -5,7 +5,7 @@
 !
 !
 !!      subroutine s_set_aiccg_matrices                                 &
-!!     &        (dt, FEM_prm, SGS_param, cmt_param,                     &
+!!     &        (iflag_scheme, dt, FEM_prm, SGS_param, cmt_param,       &
 !!     &         mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,    &
 !!     &         fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD, jacobians, &
 !!     &         FEM_elens, ifld_diff, diff_coefs, rhs_tbl,             &
@@ -59,7 +59,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_aiccg_matrices                                   &
-     &        (dt, FEM_prm, SGS_param, cmt_param,                       &
+     &        (iflag_scheme, dt, FEM_prm, SGS_param, cmt_param,         &
      &         mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,      &
      &         fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD, jacobians,   &
      &         FEM_elens, ifld_diff, diff_coefs, rhs_tbl,               &
@@ -68,8 +68,6 @@
      &         MG_mat_fl_l, mlump_fl, mlump_cd, surf_wk, fem_wk,        &
      &         mat_velo, mat_magne, mat_temp, mat_light,                &
      &         mat_press, mat_magp)
-!
-      use m_physical_property
 !
       use t_FEM_control_parameter
       use t_SGS_control_parameter
@@ -95,6 +93,7 @@
       use set_aiccg_bc_vectors
       use int_vol_consist_evo_mat
 !
+      integer(kind=kint), intent(in) :: iflag_scheme
       real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -184,7 +183,7 @@
 !
       call set_aiccg_bc_phys(FEM_prm%npoint_t_evo_int, dt,              &
      &    mesh%ele, ele_mesh%surf, group%surf_grp,                      &
-     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
+     &    fl_prop, cd_prop, ht_prop, cp_prop,                           &
      &    jacobians%jac_sf_grp, rhs_tbl, MG_mat_fl_q, nod_bcs,          &
      &    surf_bcs, djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,   &
      &    ak_MHD%ak_d_velo, surf_wk, fem_wk, mat_velo, mat_magne,       &

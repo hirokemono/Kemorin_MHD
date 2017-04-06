@@ -9,18 +9,29 @@
 !!        by finite difference method
 !!
 !!@verbatim
-!!      subroutine init_r_infos_sph_mhd_evo(fl_prop, sph_grps, ipol,  &
-!!     &          sph, omega_sph, ref_temp, ref_comp, r_2nd, rj_fld)
-!!      subroutine init_r_infos_sph_mhd(fl_prop, sph_grps, ipol, sph, &
-!!     &          omega_sph, ref_temp, rj_fld)
+!!      subroutine init_r_infos_sph_mhd_evo(fl_prop, sph_grps, ipol,    &
+!!     &          fl_prop, cd_prop, ht_prop, cp_prop,                   &
+!!     &          ref_param_T1, ref_param_C1, takepito_T1, takepito_C1, &
+!!     &          r_2nd, rj_fld)
+!!      subroutine init_r_infos_sph_mhd(sph_grps, ipol,                 &
+!!     &          fl_prop, cd_prop, ht_prop, cp_prop,                   &
+!!     &          sph, omega_sph, ref_temp, ref_comp, rj_fld,           &
+!!     &          ref_param_T1, ref_param_C1, takepito_T1, takepito_C1)
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(sph_group_data), intent(in) :: sph_grps
 !!        type(phys_address), intent(in) :: ipol
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_rotation), intent(inout) :: omega_sph
 !!        type(reference_temperature), intent(inout) :: ref_temp
+!!        type(fluid_property), intent(inout) :: fl_prop
+!!        type(conductive_property), intent(inout) :: cd_prop
+!!        type(scalar_property), intent(inout) :: ht_prop, cp_prop
 !!        type(fdm_matrices), intent(inout) :: r_2nd
 !!        type(phys_data), intent(inout) :: rj_fld
+!!        type(reference_scalar_param), intent(inout)  :: ref_param_T1
+!!        type(reference_scalar_param), intent(inout)  :: ref_param_C1
+!!        type(takepiro_model_param), intent(inout)  :: takepito_T1
+!!        type(takepiro_model_param), intent(inout)  :: takepito_C1
 !!@endverbatim
 !!
 !!@n @param r_hot        radius at highest temperature point
@@ -37,8 +48,9 @@
       use m_constants
       use m_machine_parameter
       use m_spheric_constants
-      use m_physical_property
 !
+      use t_physical_property
+      use t_reference_scalar_param
       use t_spheric_parameter
       use t_spheric_mesh
       use t_group_data
@@ -59,7 +71,10 @@
 !  -------------------------------------------------------------------
 !
       subroutine init_r_infos_sph_mhd_evo(sph_grps, ipol,               &
-     &          sph, omega_sph, ref_temp, ref_comp, r_2nd, rj_fld)
+     &          sph, omega_sph, ref_temp, ref_comp,                     &
+     &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
+     &          ref_param_T1, ref_param_C1, takepito_T1, takepito_C1,   &
+     &          r_2nd, rj_fld)
 !
       use calypso_mpi
       use const_fdm_coefs
@@ -71,37 +86,56 @@
       type(sph_grids), intent(inout) :: sph
       type(sph_rotation), intent(inout) :: omega_sph
       type(reference_temperature), intent(inout) :: ref_temp, ref_comp
+      type(fluid_property), intent(inout) :: fl_prop
+      type(conductive_property), intent(inout) :: cd_prop
+      type(scalar_property), intent(inout) :: ht_prop, cp_prop
+      type(reference_scalar_param), intent(inout)  :: ref_param_T1
+      type(reference_scalar_param), intent(inout)  :: ref_param_C1
+      type(takepiro_model_param), intent(inout)  :: takepito_T1
+      type(takepiro_model_param), intent(inout)  :: takepito_C1
       type(fdm_matrices), intent(inout) :: r_2nd
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call init_r_infos_sph_mhd(sph_grps, ipol, sph,                    &
-     &    omega_sph, ref_temp, ref_comp, rj_fld)
+      call init_r_infos_sph_mhd(sph_grps, ipol,                         &
+     &    fl_prop, cd_prop, ht_prop, cp_prop,                           &
+     &    sph, omega_sph, ref_temp, ref_comp, rj_fld,                   &
+     &    ref_param_T1, ref_param_C1, takepito_T1, takepito_C1)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_2nd_fdm_matrices'
       call const_2nd_fdm_matrices(sph%sph_params, sph%sph_rj, r_2nd)
 !
       if(iflag_debug.gt.0) write(*,*)' set_material_property'
       call set_material_property                                        &
-     &   (ipol, sph%sph_params%radius_CMB, sph%sph_params%radius_ICB)
+     &   (ipol, sph%sph_params%radius_CMB, sph%sph_params%radius_ICB,   &
+     &    fl_prop, cd_prop, ht_prop, cp_prop)
 !
       end subroutine init_r_infos_sph_mhd_evo
 !
 !  -------------------------------------------------------------------
 !
-      subroutine init_r_infos_sph_mhd(sph_grps, ipol, sph,              &
-     &          omega_sph, ref_temp, ref_comp, rj_fld)
+      subroutine init_r_infos_sph_mhd(sph_grps, ipol,                   &
+     &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
+     &          sph, omega_sph, ref_temp, ref_comp, rj_fld,             &
+     &          ref_param_T1, ref_param_C1, takepito_T1, takepito_C1)
 !
       use m_boundary_params_sph_MHD
 !
       use set_bc_sph_mhd
 !
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
       type(sph_group_data), intent(in) :: sph_grps
       type(phys_address), intent(in) :: ipol
 !
       type(sph_grids), intent(inout) :: sph
       type(sph_rotation), intent(inout) :: omega_sph
       type(reference_temperature), intent(inout) :: ref_temp, ref_comp
+      type(reference_scalar_param), intent(inout)  :: ref_param_T1
+      type(reference_scalar_param), intent(inout)  :: ref_param_C1
+      type(takepiro_model_param), intent(inout)  :: takepito_T1
+      type(takepiro_model_param), intent(inout)  :: takepito_C1
       type(phys_data), intent(inout) :: rj_fld
 !
 !
@@ -114,13 +148,13 @@
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &                write(*,*) 'set_rot_earth_4_sph'
       call set_rot_earth_4_sph(sph%sph_rlm, sph%sph_rj,                 &
-     &    fl_prop1, omega_sph)
+     &    fl_prop, omega_sph)
 !
 !*  ---------- boudary conditions  ---------------
       if(iflag_debug.gt.0) write(*,*) 's_set_bc_sph_mhd'
       call s_set_bc_sph_mhd                                             &
      &   (sph%sph_params, sph%sph_rj, sph_grps%radial_rj_grp,           &
-     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
+     &    fl_prop, cd_prop, ht_prop, cp_prop,                           &
      &    CTR_nod_grp_name, CTR_sf_grp_name)
 !
       call init_reference_temps(ref_param_T1, takepito_T1,              &
@@ -170,7 +204,7 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine init_reference_temps(ref_param, takepito,              &
+      subroutine init_reference_temps(ref_param, takepiro,              &
      &          sph_params, sph_rj, i_ref, i_gref,                      &
      &          ref_fld, rj_fld, sph_bc_S)
 !
@@ -181,7 +215,7 @@
 !
       integer(kind = kint), intent(in) :: i_ref, i_gref
       type(reference_scalar_param), intent(inout) :: ref_param
-      type(takepiro_model_param), intent(in) :: takepito
+      type(takepiro_model_param), intent(in) :: takepiro
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
 !
@@ -206,8 +240,8 @@
      &      ref_fld%t_rj, sph_bc_S)
 !
       else if(ref_param%iflag_reference .eq. id_takepiro_temp) then
-        call set_stratified_sph_mhd(takepito%stratified_sigma,          &
-     &    takepito%stratified_width, takepito%stratified_outer_r,       &
+        call set_stratified_sph_mhd(takepiro%stratified_sigma,          &
+     &    takepiro%stratified_width, takepiro%stratified_outer_r,       &
      &    sph_rj%nidx_rj, sph_params%radius_ICB, sph_params%radius_CMB, &
      &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
      &    sph_rj%radius_1d_rj_r, ref_fld%t_rj)

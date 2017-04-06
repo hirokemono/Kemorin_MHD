@@ -109,8 +109,10 @@
 ! ---------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd'
-      call init_r_infos_sph_mhd(sph_grps1, ipol, sph1,                  &
-     &    omega_sph1, ref_temp1, ref_comp1, rj_fld1)
+      call init_r_infos_sph_mhd(sph_grps1, ipol,                        &
+     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
+     &    sph1, omega_sph1, ref_temp1, ref_comp1, rj_fld1,              &
+     &    ref_param_T1, ref_param_C1, takepito_T1, takepito_C1)
 !
 ! ---------------------------------
 !

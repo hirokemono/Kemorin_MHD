@@ -7,13 +7,15 @@
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop, fem_int,          &
 !!     &          MGCG_WK, MHD_mat_tbls, MHD_matrices, s_package)
 !!        type(MHD_matrices_pack), intent(inout) :: s_package
-!!      subroutine update_matrices(time_d, FEM_prm, SGS_par,            &
+!!      subroutine update_matrices                                      &
+!!     &         (iflag_scheme, time_d, FEM_prm, SGS_par,               &
 !!     &          mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,   &
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop,                   &
 !!     &          ak_MHD, fem_int, FEM_elens, ifld_diff, diff_coefs,    &
 !!     &          MHD_mat_tbls, flex_p, rhs_mat,                        &
 !!     &          mhd_fem_wk, MHD_matrices)
-!!      subroutine set_aiccg_matrices(dt, FEM_prm, SGS_param, cmt_param,&
+!!      subroutine set_aiccg_matrices                                   &
+!!     &         (iflag_scheme, dt, FEM_prm, SGS_param, cmt_param,      &
 !!     &          mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,   &
 !!     &          fl_prop, cd_prop, ht_prop, cp_prop,                   &
 !!     &          ak_MHD, fem_int, FEM_elens, ifld_diff, diff_coefs,    &
@@ -117,7 +119,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine update_matrices(time_d, FEM_prm, SGS_par,              &
+      subroutine update_matrices                                        &
+     &         (iflag_scheme, time_d, FEM_prm, SGS_par,                 &
      &          mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,     &
      &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
      &          ak_MHD, fem_int, FEM_elens, ifld_diff, diff_coefs,      &
@@ -128,6 +131,7 @@
       use t_SGS_control_parameter
       use t_flex_delta_t_data
 !
+      integer(kind=kint), intent(in) :: iflag_scheme
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(time_data), intent(in) :: time_d
@@ -167,8 +171,8 @@
 !
       if (iflag .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'matrix assemble again'
-        call set_aiccg_matrices                                         &
-     &     (time_d%dt, FEM_prm, SGS_par%model_p, SGS_par%commute_p,     &
+        call set_aiccg_matrices(iflag_scheme, time_d%dt,                &
+     &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,         &
      &      fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD,                 &
      &      fem_int, FEM_elens, ifld_diff, diff_coefs,                  &
@@ -180,7 +184,8 @@
 !
 !  ----------------------------------------------------------------------
 !
-      subroutine set_aiccg_matrices(dt, FEM_prm, SGS_param, cmt_param,  &
+      subroutine set_aiccg_matrices                                     &
+     &         (iflag_scheme, dt, FEM_prm, SGS_param, cmt_param,        &
      &          mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,     &
      &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
      &          ak_MHD, fem_int, FEM_elens, ifld_diff, diff_coefs,      &
@@ -194,6 +199,7 @@
       use initialize_4_MHD_AMG
       use skip_comment_f
 !
+      integer(kind=kint), intent(in) :: iflag_scheme
       real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -221,7 +227,7 @@
 !
 !
       call s_set_aiccg_matrices                                         &
-     &   (dt, FEM_prm, SGS_param, cmt_param,                            &
+     &   (iflag_scheme, dt, FEM_prm, SGS_param, cmt_param,              &
      &    mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,           &
      &    fl_prop, cd_prop, ht_prop, cp_prop,                           &
      &    ak_MHD, fem_int%jacobians, FEM_elens,                         &
@@ -241,7 +247,8 @@
 !
       if(cmp_no_case(FEM_PRM%CG11_param%METHOD, 'MGCG')) then
         call const_MGCG_MHD_matrices                                    &
-     &     (dt, FEM_prm, SGS_param, cmt_param, ifld_diff,               &
+     &     (iflag_scheme, dt, FEM_prm, SGS_param, cmt_param, ifld_diff, &
+     &     fl_prop, cd_prop, ht_prop, cp_prop,                          &
      &      MGCG_WK1, MGCG_FEM1, MGCG_MHD_FEM1, MHD_matrices)
       end if
 !

@@ -10,6 +10,9 @@
 !!@verbatim
 !!      subroutine set_material_property(iphys, depth_top, depth_bottom)
 !!        type(phys_address), intent(in) :: iphys
+!!        type(fluid_property), intent(inout) :: fl_prop
+!!        type(conductive_property), intent(inout) :: cd_prop
+!!        type(scalar_property), intent(inout) :: ht_prop, cp_prop
 !!@endverbatim
 !!
 !
@@ -33,30 +36,35 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_material_property(iphys, depth_top, depth_bottom)
+      subroutine set_material_property                                  &
+     &         (iphys, depth_top, depth_bottom,                         &
+     &          fl_prop, cd_prop, ht_prop, cp_prop)
 !
-      use m_physical_property
       use construct_MHD_coefficient
 !
-      type(phys_address), intent(in) :: iphys
       real(kind = kreal), intent(in) :: depth_top, depth_bottom
+      type(phys_address), intent(in) :: iphys
+!
+      type(fluid_property), intent(inout) :: fl_prop
+      type(conductive_property), intent(inout) :: cd_prop
+      type(scalar_property), intent(inout) :: ht_prop, cp_prop
 !
 !    For thermal
       if (my_rank .eq. 0) write(*,*) ''
       call set_thermal_property                                         &
-     &   (iphys, depth_top, depth_bottom, ht_prop1)
+     &   (iphys, depth_top, depth_bottom, ht_prop)
 !
 !    For convection
       call set_fluid_property                                           &
-     &   (depth_top, depth_bottom, fl_prop1)
+     &   (depth_top, depth_bottom, fl_prop)
 !
 !   For Induction
       call set_conductive_property                                      &
-     &   (depth_top, depth_bottom, cd_prop1)
+     &   (depth_top, depth_bottom, cd_prop)
 !
 !   For light element
       call set_composition_property                                     &
-     &   (iphys, depth_top, depth_bottom, cp_prop1)
+     &   (iphys, depth_top, depth_bottom, cp_prop)
       if (my_rank .eq. 0) write(*,*) ''
 !
       end subroutine set_material_property

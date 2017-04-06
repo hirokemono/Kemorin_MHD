@@ -32,6 +32,7 @@
       use m_array_for_send_recv
       use m_machine_parameter
 !
+      use m_physical_property
       use m_spheric_parameter
       use m_sph_spectr_data
       use m_fdm_coefs
@@ -64,8 +65,9 @@
 !
 !   Allocate spectr field data
 !
-      call set_sph_MHD_sprctr_data                                      &
-     &   (SGS_par1%model_p, sph1%sph_rj, ipol, idpdr, itor, rj_fld1)
+      call set_sph_MHD_sprctr_data(SGS_par1%model_p, sph1%sph_rj,       &
+     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
+     &    ipol, idpdr, itor, rj_fld1)
 !
 !
       if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
@@ -75,14 +77,18 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd_evo'
       call init_r_infos_sph_mhd_evo(sph_grps1, ipol, sph1,              &
-     &    omega_sph1, ref_temp1, ref_comp1, r_2nd, rj_fld1)
+     &    omega_sph1, ref_temp1, ref_comp1,                             &
+     &    fl_prop1, cd_prop1, ht_prop1, cp_prop1,                       &
+     &    ref_param_T1, ref_param_C1, takepito_T1, takepito_C1,         &
+     &    r_2nd, rj_fld1)
 !
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD'
       call init_sph_transform_MHD                                       &
-     &   (SGS_par1%model_p, fl_prop1, ipol, idpdr, itor, iphys,         &
-     &    sph1, comms_sph1, omega_sph1, trans_p1, trns_WK1, rj_fld1)
+     &   (SGS_par1%model_p, fl_prop1, cd_prop1, ht_prop1, cp_prop1,     &
+     &    ipol, idpdr, itor, iphys, sph1, comms_sph1, omega_sph1,       &
+     &    trans_p1, trns_WK1, rj_fld1)
 !
 ! ---------------------------------
 !
@@ -118,6 +124,7 @@
       call licv_exp                                                     &
      &   (ref_temp1, ref_comp1, sph1%sph_rlm, sph1%sph_rj,              &
      &    comms_sph1%comm_rlm, comms_sph1%comm_rj, omega_sph1,          &
+     &    fl_prop1, ht_prop1, cp_prop1, ref_param_T1, ref_param_C1,     &
      &    trans_p1%leg, trns_WK1%trns_MHD, ipol, itor, rj_fld1)
 !
 !* -----  Open Volume integration data files -----------------
@@ -135,6 +142,7 @@
      &         (i_step, iflag_finish, MHD_step)
 !
       use m_work_time
+      use m_physical_property
       use m_spheric_parameter
       use m_sph_spectr_data
       use m_fdm_coefs
@@ -202,6 +210,7 @@
         call licv_exp                                                   &
      &     (ref_temp1, ref_comp1, sph1%sph_rlm, sph1%sph_rj,            &
      &      comms_sph1%comm_rlm, comms_sph1%comm_rj, omega_sph1,        &
+     &      fl_prop1, ht_prop1, cp_prop1, ref_param_T1, ref_param_C1,   &
      &      trans_p1%leg, trns_WK1%trns_MHD, ipol, itor, rj_fld1)
 !
 !*  -----------  output restart data --------------
