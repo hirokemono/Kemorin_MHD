@@ -8,15 +8,11 @@
 !!
 !!@verbatim
 !!     subroutine s_set_control_sph_data_MHD                            &
-!!     &         (SGS_param, fl_prop, cd_prop, ht_prop, cp_prop,        &
-!!     &          ref_param_T, ref_param_C, plt, field_ctl, mevo_ctl,   &
+!!     &         (SGS_param, MHD_prop, plt, field_ctl, mevo_ctl,        &
 !!     &          rj_org_param, rst_org_param, rj_fld, WK_sph)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(fluid_property), intent(in) :: fl_prop
-!!        type(conductive_property), intent(in)  :: cd_prop
-!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
-!!        type(reference_scalar_param), intent(in) :: ref_param_T
-!!        type(reference_scalar_param), intent(in) :: ref_param_C
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
 !!        type(field_IO_params), intent(in) :: rj_org_param
@@ -43,8 +39,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_sph_data_MHD                             &
-     &         (SGS_param, fl_prop, cd_prop, ht_prop, cp_prop,          &
-     &          ref_param_T, ref_param_C, plt, field_ctl, mevo_ctl,     &
+     &         (SGS_param, MHD_prop, plt, field_ctl, mevo_ctl,          &
      &          rj_org_param, rst_org_param, rj_fld, WK_sph)
 !
       use calypso_mpi
@@ -64,8 +59,7 @@
       use t_phys_data
       use t_field_data_IO
       use t_sph_transforms
-      use t_physical_property
-      use t_reference_scalar_param
+      use t_control_parameter
 !
       use skip_comment_f
       use set_control_sph_data
@@ -74,11 +68,7 @@
       use sph_mhd_rst_IO_control
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
-      type(fluid_property), intent(inout) :: fl_prop
-      type(conductive_property), intent(inout)  :: cd_prop
-      type(scalar_property), intent(inout) :: ht_prop, cp_prop
-      type(reference_scalar_param), intent(inout) :: ref_param_T
-      type(reference_scalar_param), intent(inout) :: ref_param_C
+      type(MHD_evolution_param), intent(in) :: MHD_prop
       type(platform_data_control), intent(in) :: plt
       type(ctl_array_c3), intent(inout) :: field_ctl
       type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
@@ -103,13 +93,13 @@
       if ( field_ctl%num .ne. 0 ) then
 !
 !     add fields for simulation
-        call add_field_name_4_mhd(fl_prop, cd_prop, ht_prop, cp_prop,   &
-     &      ref_param_T, ref_param_C, field_ctl)
+        call add_field_name_4_mhd(MHD_prop, field_ctl)
         call add_field_name_4_sph_mhd                                   &
-     &     (fl_prop, cd_prop, ht_prop, cp_prop, field_ctl)
+     &     (MHD_prop%fl_prop, MHD_prop%cd_prop,                         &
+     &      MHD_prop%ht_prop, MHD_prop%cp_prop, field_ctl)
         call add_field_name_4_SGS(SGS_param, field_ctl)
         call add_field_name_dynamic_SGS                                 &
-     &     (SGS_param, fl_prop, field_ctl)
+     &     (SGS_param, MHD_prop%fl_prop, field_ctl)
         if (iflag_debug.eq.1) write(*,*)                                &
      &    'field_ctl%num after modified ', field_ctl%num
 !

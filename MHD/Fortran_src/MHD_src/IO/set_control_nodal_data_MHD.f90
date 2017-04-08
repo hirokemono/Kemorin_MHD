@@ -8,16 +8,11 @@
 !> @brief Set field information for MHD simulation from control data
 !!
 !!@verbatim
-!!      subroutine set_control_4_fields(FEM_prm, SGS_par,               &
-!!     &          fl_prop, cd_prop, ht_prop, cp_prop,                   &
-!!     &          ref_param_T, ref_param_C, field_ctl, nod_fld)
+!!      subroutine set_control_4_fields                                 &
+!!     &         (FEM_prm, SGS_par, MHD_prop, field_ctl, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
-!!        type(fluid_property), intent(in) :: fl_prop
-!!        type(conductive_property), intent(in)  :: cd_prop
-!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
-!!        type(reference_scalar_param), intent(in) :: ref_param_T
-!!        type(reference_scalar_param), intent(in) :: ref_param_C
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
 !!        type(phys_data), intent(inout) :: nod_fld
 !!@endverbatim
@@ -30,8 +25,7 @@
 !
       use t_phys_data
       use t_read_control_arrays
-      use t_physical_property
-      use t_reference_scalar_param
+      use t_control_parameter
 !
       implicit  none
 !
@@ -41,9 +35,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_fields(FEM_prm, SGS_par,                 &
-     &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
-     &          ref_param_T, ref_param_C, field_ctl, nod_fld)
+      subroutine set_control_4_fields                                   &
+     &         (FEM_prm, SGS_par, MHD_prop, field_ctl, nod_fld)
 !
       use calypso_mpi
       use m_error_IDs
@@ -57,11 +50,7 @@
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
-      type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in)  :: cd_prop
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
-      type(reference_scalar_param), intent(in) :: ref_param_T
-      type(reference_scalar_param), intent(in) :: ref_param_C
+      type(MHD_evolution_param), intent(in) :: MHD_prop
 !
       type(ctl_array_c3), intent(inout) :: field_ctl
       type(phys_data), intent(inout) :: nod_fld
@@ -82,17 +71,15 @@
 !
 !     add terms for MHD
 !
-        call add_field_name_4_mhd                                       &
-     &     (fl_prop, cd_prop, ht_prop, cp_prop,                         &
-     &      ref_param_T, ref_param_C, field_ctl)
+        call add_field_name_4_mhd(MHD_prop, field_ctl)
         call add_ctl_4_ref_temp                                         &
-     &     (ref_param_T, ref_param_C, field_ctl)
+     &     (MHD_prop%ref_param_T, MHD_prop%ref_param_C, field_ctl)
 !
 !     set work fields for SGS models
         if (iflag_debug .ge. iflag_routine_msg)                         &
      &               write(*,*) 'add_work_area_4_sgs_model'
         call add_work_area_4_sgs_model                                  &
-     &     (SGS_par%model_p, fl_prop, field_ctl)
+     &     (SGS_par%model_p, MHD_prop%fl_prop, field_ctl)
 !
         if (iflag_debug .ge. iflag_routine_msg) write(*,*)              &
      &    'num_nod_phys after modified ', field_ctl%num

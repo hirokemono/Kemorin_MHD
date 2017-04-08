@@ -8,13 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine init_sph_transform_MHD                               &
-!!     &         (SGS_param, fl_prop, cd_prop, ht_prop, cp_prop,        &
-!!     &          ipol, idpdr, itor, iphys, sph, comms_sph, omega_sph,  &
-!!     &          trans_p, WK, rj_fld)
+!!     &         (SGS_param, MHD_prop, ipol, idpdr, itor, iphys,        &
+!!     &          sph, comms_sph, omega_sph, trans_p, WK, rj_fld)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
-!!        type(fluid_property), intent(in) :: fl_prop
-!!        type(conductive_property), intent(in) :: cd_prop
-!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(phys_address), intent(in) :: ipol, idpdr, itor
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
@@ -32,7 +29,7 @@
 !
       use calypso_mpi
 !
-      use t_physical_property
+      use t_control_parameter
       use t_SGS_control_parameter
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
@@ -68,9 +65,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine init_sph_transform_MHD                                 &
-     &         (SGS_param, fl_prop, cd_prop, ht_prop, cp_prop,          &
-     &          ipol, idpdr, itor, iphys, sph, comms_sph, omega_sph,    &
-     &          trans_p, WK, rj_fld)
+     &         (SGS_param, MHD_prop, ipol, idpdr, itor, iphys,          &
+     &          sph, comms_sph, omega_sph, trans_p, WK, rj_fld)
 !
       use set_address_sph_trans_MHD
       use set_address_sph_trans_SGS
@@ -80,9 +76,7 @@
       use MHD_FFT_selector
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
-      type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in) :: cd_prop
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
+      type(MHD_evolution_param), intent(in) :: MHD_prop
       type(phys_address), intent(in) :: ipol, idpdr, itor
       type(phys_address), intent(in) :: iphys
 !
@@ -106,8 +100,7 @@
 !
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &                     'set_addresses_trans_sph_MHD'
-      call set_addresses_trans_sph_MHD                                  &
-     &   (fl_prop, cd_prop, ht_prop, cp_prop, ipol, WK%trns_MHD,        &
+      call set_addresses_trans_sph_MHD(MHD_prop, ipol, WK%trns_MHD,     &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
       call set_addresses_trans_sph_SGS(ipol, WK%trns_SGS,               &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans)
@@ -134,7 +127,7 @@
       call alloc_sph_trans_address(sph%sph_rtp, WK)
 !
       call sel_sph_transform_MHD                                        &
-     &   (ipol, fl_prop, sph, comms_sph, omega_sph,                     &
+     &   (ipol, MHD_prop%fl_prop, sph, comms_sph, omega_sph,            &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
      &    trans_p, WK%trns_MHD, WK%WK_sph, WK%MHD_mul_FFTW, rj_fld)
 !

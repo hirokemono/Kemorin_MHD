@@ -72,13 +72,10 @@
       if (iflag_debug.eq.1) write(*,*) 'set_control_SGS_SPH_MHD'
       call set_control_SGS_SPH_MHD(MHD_ctl1%plt, MHD_ctl1%org_plt,      &
      &    MHD_ctl1%model_ctl, MHD_ctl1%ctl_ctl, MHD_ctl1%smonitor_ctl,  &
-     &    MHD_ctl1%nmtr_ctl, MHD_ctl1%psph_ctl,                         &
-     &    sph_gen, rj_fld1, mesh_file_circ, sph_file_param1,            &
-     &    MHD1_org_files, sph_fst_IO, pwr1, SGS_par1,                   &
-     &    trns_WK1%dynamic_SPH%sph_filters, MHD_step1,                  &
-     &    iflag_scheme, MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop,         &
-     &    MHD_prop1%ref_param_T, MHD_prop1%ref_param_C, MHD_prop1%takepito_T, MHD_prop1%takepito_C,         &
-     &    trns_WK1%WK_sph)
+     &    MHD_ctl1%nmtr_ctl, MHD_ctl1%psph_ctl, sph_gen, rj_fld1,       &
+     &    mesh_file_circ, sph_file_param1, MHD1_org_files, sph_fst_IO,  &
+     &    pwr1, SGS_par1, trns_WK1%dynamic_SPH%sph_filters, MHD_step1,  &
+     &    MHD_prop1, trns_WK1%WK_sph)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
 !
       call set_ctl_params_pick_circle                                   &

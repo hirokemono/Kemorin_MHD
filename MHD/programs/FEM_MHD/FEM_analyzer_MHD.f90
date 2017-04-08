@@ -104,7 +104,8 @@
      &    MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop, fem_int1,             &
      &    MGCG_WK1, MHD1_mat_tbls, MHD1_matrices, solver_pack1)
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
-      call set_aiccg_matrices(iflag_scheme, MHD_step%time_d%dt,         &
+      call set_aiccg_matrices                                           &
+     &   (MHD_prop1%iflag_all_scheme, MHD_step%time_d%dt,                   &
      &    FEM_prm1, SGS_par1%model_p, SGS_par1%commute_p,               &
      &    mesh1, group1, ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs,       &
      &    MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop,                       &
@@ -366,7 +367,7 @@
       if ( retval .ne. 0 ) then
         if (iflag_debug.eq.1) write(*,*) 'update_matrices'
         call update_matrices                                            &
-     &    (iflag_scheme, MHD_step%time_d, FEM_prm1, SGS_par1,           &
+     &    (MHD_prop1%iflag_all_scheme, MHD_step%time_d, FEM_prm1, SGS_par1,           &
      &     mesh1, group1, ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs,      &
      &     MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop,                      &
      &     ak_MHD, fem_int1, FEM1_elen, ifld_diff, diff_coefs,          &

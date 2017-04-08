@@ -7,11 +7,8 @@
 !> @brief Decide if boundary condition data field is read
 !!
 !!@verbatim
-!!      integer(kind = kint) function check_read_boundary_files         &
-!!     &                   (fl_prop, cd_prop, ht_prop, cp_prop)
-!!        type(fluid_property), intent(in) :: fl_prop
-!!        type(conductive_property), intent(in) :: cd_prop
-!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
+!!      integer(kind=kint) function check_read_boundary_files(MHD_prop)
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!@endverbatim
 !
       module check_read_bc_file
@@ -26,6 +23,7 @@
       integer (kind=kint), parameter :: id_read_boundary_file = 1
 !
       private :: set_serch_boundary_file_flag
+      private :: chk_read_boundary_files
 !
 !  ---------------------------------------------------------------------
 !
@@ -33,7 +31,23 @@
 !
 !  ---------------------------------------------------------------------
 !
-      integer(kind = kint) function check_read_boundary_files           &
+      integer(kind=kint) function check_read_boundary_files(MHD_prop)
+!
+      use t_control_parameter
+!
+      type(MHD_evolution_param), intent(in) :: MHD_prop
+!
+!
+      check_read_boundary_files                                         &
+     &   = chk_read_boundary_files(MHD_prop%fl_prop, MHD_prop%cd_prop,  &
+     &                             MHD_prop%ht_prop, MHD_prop%cp_prop)
+!
+      end function check_read_boundary_files
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      integer(kind = kint) function chk_read_boundary_files             &
      &                   (fl_prop, cd_prop, ht_prop, cp_prop)
 !
       use calypso_mpi
@@ -74,7 +88,7 @@
 !
 ! ----  read boundary data for dummy scalar
 !
-      if ( cp_prop%iflag_scheme .gt. id_no_evolution) then
+      if (cp_prop%iflag_scheme .gt. id_no_evolution) then
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
      &      light_nod%num_bc, light_nod%ibc_type)
       end if
@@ -121,9 +135,9 @@
      &      current_surf%num_bc, current_surf%ibc_type)
       end if
 !
-      check_read_boundary_files = iflag_boundary_file
+      chk_read_boundary_files = iflag_boundary_file
 !
-      end function check_read_boundary_files
+      end function chk_read_boundary_files
 !
 ! -----------------------------------------------------------------------
 !

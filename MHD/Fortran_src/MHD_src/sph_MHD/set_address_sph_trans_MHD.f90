@@ -8,12 +8,9 @@
 !!       in MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine set_addresses_trans_sph_MHD                          &
-!!     &         (fl_prop, cd_prop, ht_prop, cp_prop, ipol, trns_MHD,   &
+!!      subroutine set_addresses_trans_sph_MHD(MHD_prop, ipol, trns_MHD,&
 !!     &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
-!!        type(fluid_property), intent(in) :: fl_prop
-!!        type(conductive_property), intent(in) :: cd_prop
-!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(phys_address), intent(in) :: ipol
 !!        type(address_4_sph_trans), intent(inout) :: trns_MHD
 !!      subroutine check_address_trans_sph_MHD                          &
@@ -28,6 +25,7 @@
 !
       use t_phys_address
       use t_addresses_sph_transform
+      use t_control_parameter
       use t_physical_property
 !
       implicit none
@@ -43,13 +41,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_addresses_trans_sph_MHD                            &
-     &         (fl_prop, cd_prop, ht_prop, cp_prop, ipol, trns_MHD,     &
+      subroutine set_addresses_trans_sph_MHD(MHD_prop, ipol, trns_MHD,  &
      &          ncomp_sph_trans, nvector_sph_trans, nscalar_sph_trans)
 !
-      type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in) :: cd_prop
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
+      type(MHD_evolution_param), intent(in) :: MHD_prop
       type(phys_address), intent(in) :: ipol
       type(address_4_sph_trans), intent(inout) :: trns_MHD
       integer(kind = kint), intent(inout) :: ncomp_sph_trans
@@ -59,18 +54,21 @@
       integer(kind = kint) :: nscltsr_rtp_2_rj, nscltsr_rj_2_rtp
 !
       call b_trans_address_vector_MHD                                   &
-     &   (fl_prop, cd_prop, ht_prop, cp_prop,                           &
+     &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
      &    ipol, trns_MHD%nvector_rj_2_rtp, trns_MHD%b_trns)
-      call b_trans_address_scalar_MHD(ht_prop, cp_prop,                 &
+      call b_trans_address_scalar_MHD                                   &
+     &   (MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
      &    ipol, trns_MHD%nvector_rj_2_rtp, trns_MHD%nscalar_rj_2_rtp,   &
      &    trns_MHD%b_trns)
       trns_MHD%ntensor_rj_2_rtp = 0
 !
       call f_trans_address_vector_MHD                                   &
-     &   (fl_prop, cd_prop, ht_prop, cp_prop, ipol,                     &
+     &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop, ipol,                     &
      &    trns_MHD%nvector_rtp_2_rj, trns_MHD%f_trns)
       call f_trans_address_scalar_MHD                                   &
-     &   (fl_prop, trns_MHD%nvector_rtp_2_rj,                           &
+     &   (MHD_prop%fl_prop, trns_MHD%nvector_rtp_2_rj,                  &
      &    trns_MHD%nscalar_rtp_2_rj, trns_MHD%f_trns)
       trns_MHD%ntensor_rtp_2_rj = 0
 !

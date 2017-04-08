@@ -6,15 +6,12 @@
 !        Modified by H. Matsui on July, 2006
 !        Modified by H. Matsui on May, 2007
 !
-!!      subroutine allocate_array                                       &
-!!     &         (SGS_par, mesh, fl_prop, cd_prop, ht_prop, cp_prop,    &
+!!      subroutine allocate_array(SGS_par, mesh, MHD_prop,              &
 !!     &          iphys, nod_fld, iphys_elediff, mhd_fem_wk, rhs_mat,   &
 !!     &          fem_int, label_sim)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
-!!        type(fluid_property), intent(in) :: fl_prop
-!!        type(conductive_property), intent(in) :: cd_prop
-!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(phys_address), intent(inout) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(SGS_terms_address), intent(inout) :: iphys_elediff
@@ -29,6 +26,7 @@
 !
       use calypso_mpi
 !
+      use t_control_parameter
       use t_phys_address
       use t_phys_data
       use t_SGS_control_parameter
@@ -45,8 +43,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_array                                         &
-     &         (SGS_par, mesh, fl_prop, cd_prop, ht_prop, cp_prop,      &
+      subroutine allocate_array(SGS_par, mesh, MHD_prop,                &
      &          iphys, nod_fld, iphys_elediff, mhd_fem_wk, rhs_mat,     &
      &          fem_int, label_sim)
 !
@@ -67,9 +64,7 @@
 !
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
-      type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in) :: cd_prop
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
+      type(MHD_evolution_param), intent(in) :: MHD_prop
       type(phys_address), intent(inout) :: iphys
       type(phys_data), intent(inout) :: nod_fld
       type(SGS_terms_address), intent(inout) :: iphys_elediff
@@ -91,16 +86,17 @@
       if (iflag_debug.ge.1) write(*,*) 'allocate_int_vol_data'
       call alloc_int_vol_data(mesh%ele%numele, mesh%node%max_nod_smp,   &
      &   SGS_par%model_p, nod_fld, mhd_fem_wk)
-      call count_int_vol_data(SGS_par%model_p, cd_prop, mhd_fem_wk)
+      call count_int_vol_data                                           &
+         (SGS_par%model_p, MHD_prop%cd_prop, mhd_fem_wk)
       call alloc_int_vol_dvx(mesh%ele%numele, mhd_fem_wk)
       call set_SGS_ele_fld_addresses                                    &
-     &   (cd_prop, SGS_par%model_p, iphys_elediff)
+     &   (MHD_prop%cd_prop, SGS_par%model_p, iphys_elediff)
 !
 !  allocation for field values
       if (iflag_debug.ge.1)  write(*,*) 'set_FEM_MHD_field_data'
       call set_FEM_MHD_field_data                                       &
      &   (SGS_par%model_p, SGS_par%commute_p, mesh%node,                &
-     &    fl_prop, cd_prop, ht_prop, cp_prop, iphys, nod_fld)
+     &    MHD_prop, iphys, nod_fld)
       if (iflag_debug.ge.1)  write(*,*) 'initialize_ele_field_data'
       call initialize_ele_field_data(mesh%ele%numele)
 !

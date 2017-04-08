@@ -59,9 +59,7 @@
 !
       call input_control_4_SPH_MHD_nosnap                               &
      &   (MHD_ctl1, sph1, comms_sph1, sph_grps1, rj_fld1, pwr1,         &
-     &    SGS_par1, trns_WK1%dynamic_SPH, MHD_step1,                    &
-     &    iflag_scheme, MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop,         &
-     &    MHD_prop1%ref_param_T, MHD_prop1%ref_param_C, MHD_prop1%takepito_T, MHD_prop1%takepito_C,         &
+     &    SGS_par1, trns_WK1%dynamic_SPH, MHD_step1, MHD_prop1,         &
      &    trns_WK1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
       call end_eleps_time(4)

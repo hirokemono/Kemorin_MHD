@@ -207,9 +207,8 @@
 !
       if (iflag_debug.eq.1) write(*,*)' allocate_array'
       call allocate_array                                               &
-     &   (SGS_par, mesh, MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop,        &
-     &    iphys, nod_fld, iphys_elediff, mhd_fem1_wk, rhs_mat1,         &
-     &    fem_int1, label_sim)
+     &   (SGS_par, mesh, MHD_prop1, iphys, nod_fld, iphys_elediff,      &
+     &    mhd_fem1_wk, rhs_mat1, fem_int1, label_sim)
 !
       if ( iflag_debug.ge.1 ) write(*,*) 'init_check_delta_t_data'
       call s_init_check_delta_t_data                                    &
@@ -225,8 +224,8 @@
 !
       if (iflag_debug.eq.1) write(*,*)' set_material_property'
       call set_material_property                                        &
-     &   (iphys, MHD_prop1%ref_param_T%depth_top, MHD_prop1%ref_param_T%depth_bottom,     &
-     &    MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop)
+     &   (iphys, MHD_prop1%ref_param_T%depth_top,                       &
+     &    MHD_prop1%ref_param_T%depth_bottom, MHD_prop1)
       call init_ele_material_property(mesh%ele%numele,                  &
      &    MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop)
       call define_sgs_components                                        &

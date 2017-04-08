@@ -7,18 +7,15 @@
 !>@brief  Check dependecy of field list fro MHD dynamo
 !!
 !!@verbatim
-!!      subroutine set_FEM_MHD_field_data(SGS_param, cmt_param, node,   &
-!!     &          fl_prop, cd_prop, ht_prop, cp_prop, iphys, nod_fld)
+!!      subroutine set_FEM_MHD_field_data                               &
+!!     &         (SGS_param, cmt_param, node, MHD_prop, iphys, nod_fld)
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(node_data), intent(in) :: node
-!!        type(fluid_property), intent(in) :: fl_prop
-!!        type(conductive_property), intent(in) :: cd_prop
-!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(phys_address), intent(inout) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
 !!      subroutine set_sph_MHD_sprctr_data                              &
-!!     &         (SGS_param, sph_rj, fl_prop, cd_prop, ht_prop, cp_prop,&
-!!     &          ipol, idpdr, itor, rj_fld)
+!!     &        (SGS_param, sph_rj, MHD_prop, ipol, idpdr, itor, rj_fld)
 !!@endverbatim
 !
       module check_dependency_for_MHD
@@ -30,6 +27,7 @@
       use calypso_mpi
       use m_phys_labels
 !
+      use t_control_parameter
       use t_SGS_control_parameter
       use t_phys_data
       use t_phys_address
@@ -48,8 +46,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_FEM_MHD_field_data(SGS_param, cmt_param, node,     &
-     &          fl_prop, cd_prop, ht_prop, cp_prop, iphys, nod_fld)
+      subroutine set_FEM_MHD_field_data                                 &
+     &         (SGS_param, cmt_param, node, MHD_prop, iphys, nod_fld)
 !
       use t_geometry_data
       use t_FEM_phys_data
@@ -58,9 +56,7 @@
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(node_data), intent(in) :: node
-      type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in) :: cd_prop
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
+      type(MHD_evolution_param), intent(in) :: MHD_prop
 !
       type(phys_address), intent(inout) :: iphys
       type(phys_data), intent(inout) :: nod_fld
@@ -70,20 +66,21 @@
       call init_field_address(node%numnod, nod_fld, iphys)
 !
       call check_field_dependencies                                     &
-     &   (fl_prop, cd_prop, ht_prop, cp_prop, iphys, nod_fld)
-      call check_dependencies_by_id(cd_prop, iphys, nod_fld)
+     &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop, iphys, nod_fld)
+      call check_dependencies_by_id(MHD_prop%cd_prop, iphys, nod_fld)
       call check_dependence_FEM_MHD_by_id(iphys, nod_fld)
-      call check_dependence_FEM_evo(fl_prop, iphys, nod_fld)
+      call check_dependence_FEM_evo(MHD_prop%fl_prop, iphys, nod_fld)
       call check_dependence_4_FEM_SGS (SGS_param, cmt_param,            &
-     &   fl_prop, cd_prop, ht_prop, cp_prop, iphys, nod_fld)
+     &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop, iphys, nod_fld)
 !
       end subroutine set_FEM_MHD_field_data
 !
 ! -----------------------------------------------------------------------
 !
       subroutine set_sph_MHD_sprctr_data                                &
-     &         (SGS_param, sph_rj, fl_prop, cd_prop, ht_prop, cp_prop,  &
-     &          ipol, idpdr, itor, rj_fld)
+     &        (SGS_param, sph_rj, MHD_prop, ipol, idpdr, itor, rj_fld)
 !
       use t_spheric_rj_data
 !
@@ -92,9 +89,7 @@
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_rj_grid), intent(in) :: sph_rj
-      type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in) :: cd_prop
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
+      type(MHD_evolution_param), intent(in) :: MHD_prop
 !
       type(phys_address), intent(inout) :: ipol, idpdr, itor
       type(phys_data), intent(inout) :: rj_fld
@@ -104,12 +99,14 @@
      &   (sph_rj, ipol, idpdr, itor, rj_fld)
 !
       call check_field_dependencies                                     &
-     &   (fl_prop, cd_prop, ht_prop, cp_prop, ipol, rj_fld)
-      call check_dependencies_by_id(cd_prop, ipol, rj_fld)
+     &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop, ipol, rj_fld)
+      call check_dependencies_by_id(MHD_prop%cd_prop, ipol, rj_fld)
       call check_dependence_SPH_MHD_by_id(ipol, rj_fld)
-      call check_dependence_SPH_evo(fl_prop, ipol, rj_fld)
+      call check_dependence_SPH_evo(MHD_prop%fl_prop, ipol, rj_fld)
       call check_dependence_4_SPH_SGS(SGS_param,                        &
-     &    fl_prop, cd_prop, ht_prop, cp_prop, ipol, rj_fld)
+     &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop, ipol, rj_fld)
 !
       end subroutine set_sph_MHD_sprctr_data
 !

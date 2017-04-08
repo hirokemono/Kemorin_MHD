@@ -71,9 +71,7 @@
 !
       call start_eleps_time(4)
       call input_control_4_MHD(FEM_prm1, SGS_par1, MHD_step1,           &
-     &    iflag_scheme, MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop,         &
-     &    MHD_prop1%ref_param_T, MHD_prop1%ref_param_C, MHD_prop1%takepito_T, MHD_prop1%takepito_C,         &
-     &    mesh1, group1, ele_mesh1, nod_fld1, IO_bc1,                   &
+     &    MHD_prop1, mesh1, group1, ele_mesh1, nod_fld1, IO_bc1,        &
      &    filtering1, wide_filtering, wk_filter1,                       &
      &    MHD1_matrices, MGCG_WK1, MGCG_FEM1, MGCG_MHD_FEM1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)

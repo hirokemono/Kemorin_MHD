@@ -8,11 +8,10 @@
 !>@brief  Subroutines to set coeffiecient of each term
 !!
 !!@verbatim
-!!      subroutine set_material_property(iphys, depth_top, depth_bottom)
+!!      subroutine set_material_property                                &
+!!     &         (iphys, depth_top, depth_bottom, MHD_prop)
 !!        type(phys_address), intent(in) :: iphys
-!!        type(fluid_property), intent(inout) :: fl_prop
-!!        type(conductive_property), intent(inout) :: cd_prop
-!!        type(scalar_property), intent(inout) :: ht_prop, cp_prop
+!!        type(MHD_evolution_param), intent(inout) :: MHD_prop
 !!@endverbatim
 !!
 !
@@ -22,6 +21,7 @@
       use m_constants
 !
       use t_phys_address
+      use t_control_parameter
       use t_physical_property
       use calypso_mpi
 !
@@ -37,34 +37,31 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_material_property                                  &
-     &         (iphys, depth_top, depth_bottom,                         &
-     &          fl_prop, cd_prop, ht_prop, cp_prop)
+     &         (iphys, depth_top, depth_bottom, MHD_prop)
 !
       use construct_MHD_coefficient
 !
       real(kind = kreal), intent(in) :: depth_top, depth_bottom
       type(phys_address), intent(in) :: iphys
 !
-      type(fluid_property), intent(inout) :: fl_prop
-      type(conductive_property), intent(inout) :: cd_prop
-      type(scalar_property), intent(inout) :: ht_prop, cp_prop
+      type(MHD_evolution_param), intent(inout) :: MHD_prop
 !
 !    For thermal
       if (my_rank .eq. 0) write(*,*) ''
       call set_thermal_property                                         &
-     &   (iphys, depth_top, depth_bottom, ht_prop)
+     &   (iphys, depth_top, depth_bottom, MHD_prop%ht_prop)
 !
 !    For convection
       call set_fluid_property                                           &
-     &   (depth_top, depth_bottom, fl_prop)
+     &   (depth_top, depth_bottom, MHD_prop%fl_prop)
 !
 !   For Induction
       call set_conductive_property                                      &
-     &   (depth_top, depth_bottom, cd_prop)
+     &   (depth_top, depth_bottom, MHD_prop%cd_prop)
 !
 !   For light element
       call set_composition_property                                     &
-     &   (iphys, depth_top, depth_bottom, cp_prop)
+     &   (iphys, depth_top, depth_bottom, MHD_prop%cp_prop)
       if (my_rank .eq. 0) write(*,*) ''
 !
       end subroutine set_material_property

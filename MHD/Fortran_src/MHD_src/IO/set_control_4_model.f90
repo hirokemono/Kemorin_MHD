@@ -9,11 +9,8 @@
 !> @brief set models for MHD simulation from control data
 !!
 !!@verbatim
-!!      subroutine s_set_control_4_model                                &
-!!     &         (reft_ctl, refc_ctl, mevo_ctl, evo_ctl, nmtr_ctl,      &
-!!     &          fl_prop, cd_prop, ht_prop, cp_prop,                   &
-!!     &          ref_param_T, ref_param_C, takepito_T, takepito_C,     &
-!!     &          iflag_scheme)
+!!      subroutine s_set_control_4_model(reft_ctl, refc_ctl,            &
+!!     &          mevo_ctl, evo_ctl, nmtr_ctl, MHD_prop)
 !!      subroutine s_set_control_4_crank                                &
 !!     &         (mevo_ctl, fl_prop, cd_prop, ht_prop, cp_prop)
 !!        type(reference_temperature_ctl), intent(in) :: reft_ctl
@@ -21,13 +18,7 @@
 !!        type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
 !!        type(mhd_evolution_control), intent(inout) :: evo_ctl
 !!        type(node_monitor_control), intent(inout) :: nmtr_ctl
-!!        type(fluid_property), intent(inou) :: fl_prop
-!!        type(conductive_property), intent(inout)  :: cd_prop
-!!        type(scalar_property), intent(inout) :: ht_prop, cp_prop
-!!        type(reference_scalar_param), intent(inout) :: ref_param_T
-!!        type(reference_scalar_param), intent(inout) :: ref_param_C
-!!        type(takepiro_model_param), intent(inout) :: takepito_T
-!!        type(takepiro_model_param), intent(inout) :: takepito_C
+!!        type(MHD_evolution_param), intent(inout) :: MHD_prop
 !!@endverbatim
 !
       module set_control_4_model
@@ -35,11 +26,10 @@
       use m_precision
       use m_constants
       use m_error_IDs
-!
       use m_machine_parameter
+!
       use t_ctl_data_mhd_evo_scheme
-      use t_physical_property
-      use t_reference_scalar_param
+      use t_control_parameter
 !
       implicit  none
 !
@@ -51,11 +41,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_4_model                                  &
-     &         (reft_ctl, refc_ctl, mevo_ctl, evo_ctl, nmtr_ctl,        &
-     &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
-     &          ref_param_T, ref_param_C, takepito_T, takepito_C,       &
-     &          iflag_scheme)
+      subroutine s_set_control_4_model(reft_ctl, refc_ctl,              &
+     &          mevo_ctl, evo_ctl, nmtr_ctl, MHD_prop)
 !
       use calypso_mpi
       use m_phys_labels
@@ -70,14 +57,7 @@
       type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
       type(mhd_evolution_control), intent(inout) :: evo_ctl
       type(node_monitor_control), intent(inout) :: nmtr_ctl
-      type(fluid_property), intent(inout) :: fl_prop
-      type(conductive_property), intent(inout)  :: cd_prop
-      type(scalar_property), intent(inout) :: ht_prop, cp_prop
-      type(reference_scalar_param), intent(inout) :: ref_param_T
-      type(reference_scalar_param), intent(inout) :: ref_param_C
-      type(takepiro_model_param), intent(inout) :: takepito_T
-      type(takepiro_model_param), intent(inout) :: takepito_C
-      integer(kind=kint), intent(inout)  :: iflag_scheme
+      type(MHD_evolution_param), intent(inout) :: MHD_prop
 !
       integer (kind = kint) :: i
       character(len=kchara) :: tmpchara
@@ -91,16 +71,16 @@
       else
         if (cmp_no_case(mevo_ctl%scheme_ctl%charavalue,                 &
      &                    'explicit_Euler')) then
-          iflag_scheme = id_explicit_euler
+          MHD_prop%iflag_all_scheme = id_explicit_euler
         else if (cmp_no_case(mevo_ctl%scheme_ctl%charavalue,            &
      &                         '2nd_Adams_Bashforth')) then
-          iflag_scheme = id_explicit_adams2
+          MHD_prop%iflag_all_scheme = id_explicit_adams2
         else if (cmp_no_case(mevo_ctl%scheme_ctl%charavalue,            &
      &                         'Crank_Nicolson')) then
-          iflag_scheme = id_Crank_nicolson
+          MHD_prop%iflag_all_scheme = id_Crank_nicolson
         else if (cmp_no_case(mevo_ctl%scheme_ctl%charavalue,            &
      &                         'Crank_Nicolson_consist')) then
-          iflag_scheme = id_Crank_nicolson_cmass
+          MHD_prop%iflag_all_scheme = id_Crank_nicolson_cmass
         end if
       end if
 !
@@ -114,15 +94,17 @@
       do i = 1, evo_ctl%t_evo_field_ctl%num
         tmpchara = evo_ctl%t_evo_field_ctl%c_tbl(i)
         if (tmpchara .eq. fhd_velo ) then
-          fl_prop%iflag_scheme =   iflag_scheme
+          MHD_prop%fl_prop%iflag_scheme =   MHD_prop%iflag_all_scheme
         else if (tmpchara .eq. fhd_temp ) then
-          ht_prop%iflag_scheme =   iflag_scheme
+          MHD_prop%ht_prop%iflag_scheme =   MHD_prop%iflag_all_scheme
         else if (tmpchara .eq. fhd_light ) then
-          cp_prop%iflag_scheme =   iflag_scheme
+          MHD_prop%cp_prop%iflag_scheme =   MHD_prop%iflag_all_scheme
         else if (tmpchara .eq. fhd_magne ) then
-          cd_prop%iflag_Bevo_scheme =  iflag_scheme
+          MHD_prop%cd_prop%iflag_Bevo_scheme                            &
+     &          =  MHD_prop%iflag_all_scheme
         else if (tmpchara .eq. fhd_vecp ) then
-          cd_prop%iflag_Aevo_scheme = iflag_scheme
+          MHD_prop%cd_prop%iflag_Aevo_scheme                            &
+     &          = MHD_prop%iflag_all_scheme
         end if
       end do
 !
@@ -130,34 +112,39 @@
         call dealloc_t_evo_name_ctl(evo_ctl)
       end if
 !
-      if       (fl_prop%iflag_scheme .eq. id_no_evolution               &
-     &    .and. ht_prop%iflag_scheme .eq. id_no_evolution               &
-     &    .and. cp_prop%iflag_scheme .eq. id_no_evolution               &
-     &    .and. cd_prop%iflag_Bevo_scheme .eq. id_no_evolution          &
-     &    .and. cd_prop%iflag_Aevo_scheme .eq. id_no_evolution) then
+      if      (MHD_prop%fl_prop%iflag_scheme .eq. id_no_evolution       &
+     &   .and. MHD_prop%ht_prop%iflag_scheme .eq. id_no_evolution       &
+     &   .and. MHD_prop%cp_prop%iflag_scheme .eq. id_no_evolution       &
+     &   .and. MHD_prop%cd_prop%iflag_Bevo_scheme .eq. id_no_evolution  &
+     &   .and. MHD_prop%cd_prop%iflag_Aevo_scheme .eq. id_no_evolution) then
             e_message = 'Turn on field for time integration'
         call calypso_MPI_abort(ierr_evo, e_message)
       end if
 !
       if (iflag_debug .ge. iflag_routine_msg) then
-        write(*,*) 'iflag_t_evo_4_velo     ', fl_prop%iflag_scheme
-        write(*,*) 'iflag_t_evo_4_temp     ', ht_prop%iflag_scheme
-        write(*,*) 'iflag_t_evo_4_composit ', cp_prop%iflag_scheme
-        write(*,*) 'iflag_t_evo_4_magne    ', cd_prop%iflag_Bevo_scheme
-        write(*,*) 'iflag_t_evo_4_vect_p   ', cd_prop%iflag_Aevo_scheme
+        write(*,*) 'iflag_t_evo_4_velo     ',                           &
+     &             MHD_prop%fl_prop%iflag_scheme
+        write(*,*) 'iflag_t_evo_4_temp     ',                           &
+     &             MHD_prop%ht_prop%iflag_scheme
+        write(*,*) 'iflag_t_evo_4_composit ',                           &
+     &             MHD_prop%cp_prop%iflag_scheme
+        write(*,*) 'iflag_t_evo_4_magne    ',                           &
+     &             MHD_prop%cd_prop%iflag_Bevo_scheme
+        write(*,*) 'iflag_t_evo_4_vect_p   ',                           &
+     &             MHD_prop%cd_prop%iflag_Aevo_scheme
       end if
 !
 !   set control for reference temperature 
 !
       write(tmpchara,'(a)') 'Reference temperature'
-      call set_reference_scalar_ctl                                     &
-     &   (tmpchara, reft_ctl, ref_param_T, takepito_T)
+      call set_reference_scalar_ctl(tmpchara, reft_ctl,                 &
+     &    MHD_prop%ref_param_T, MHD_prop%takepito_T)
 !
 !   set control for reference  
 !
       write(tmpchara,'(a)') 'Reference temperature'
-      call set_reference_scalar_ctl                                     &
-     &   (tmpchara, refc_ctl, ref_param_C, takepito_C)
+      call set_reference_scalar_ctl(tmpchara, refc_ctl,                 &
+     &    MHD_prop%ref_param_C, MHD_prop%takepito_C)
 !
 !
       if (nmtr_ctl%group_4_monitor_ctl%icou .eq. 0) then

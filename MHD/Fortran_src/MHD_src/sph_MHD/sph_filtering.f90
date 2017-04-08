@@ -7,14 +7,12 @@
 !>@brief  Evaluate horizontal filtering in spectrunm space
 !!
 !!@verbatim
-!!      subroutine init_SGS_model_sph_mhd(SGS_par, sph, sph_grps,       &
-!!     &          fl_prop, cd_prop, ht_prop, cp_prop, dynamic_SPH)
+!!      subroutine init_SGS_model_sph_mhd                               &
+!!     &         (SGS_par, sph, sph_grps, MHD_prop, dynamic_SPH)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(sph_grids), intent(in) ::  sph
 !!        type(sph_group_data), intent(in) :: sph_grps
-!!        type(fluid_property), intent(in) :: fl_prop
-!!        type(conductive_property), intent(in)  :: cd_prop
-!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !!
 !!      subroutine vector_sph_filter(i_field, i_filter,                 &
@@ -33,6 +31,7 @@
       use m_machine_parameter
 !
       use t_SGS_control_parameter
+      use t_control_parameter
       use t_physical_property
       use t_spheric_parameter
       use t_phys_data
@@ -64,8 +63,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_SGS_model_sph_mhd(SGS_par, sph, sph_grps,         &
-     &          fl_prop, cd_prop, ht_prop, cp_prop, dynamic_SPH)
+      subroutine init_SGS_model_sph_mhd                                 &
+     &         (SGS_par, sph, sph_grps, MHD_prop, dynamic_SPH)
 !
       use calypso_mpi
       use t_physical_property
@@ -73,17 +72,14 @@
       type(SGS_paremeters), intent(in) :: SGS_par
       type(sph_grids), intent(in) ::  sph
       type(sph_group_data), intent(in) :: sph_grps
-      type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in)  :: cd_prop
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
+      type(MHD_evolution_param), intent(in) :: MHD_prop
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !
 !
       call init_filter_4_SPH_MHD(sph%sph_params, sph%sph_rj, sph_grps,  &
      &    dynamic_SPH%sph_filters)
 !
-      call init_work_4_SGS_sph_mhd                                      &
-     &   (SGS_par, sph%sph_rtp, fl_prop, cd_prop, ht_prop, cp_prop,     &
+      call init_work_4_SGS_sph_mhd(SGS_par, sph%sph_rtp, MHD_prop,      &
      &    dynamic_SPH%ifld_sgs, dynamic_SPH%icomp_sgs,                  &
      &    dynamic_SPH%sgs_coefs, dynamic_SPH%wk_sgs)
 !
@@ -145,8 +141,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_work_4_SGS_sph_mhd                                &
-     &         (SGS_par, sph_rtp, fl_prop, cd_prop, ht_prop, cp_prop,   &
+      subroutine init_work_4_SGS_sph_mhd(SGS_par, sph_rtp, MHD_prop,    &
      &          ifld_sgs, icomp_sgs, sgs_coefs, wk_sgs)
 !
       use t_physical_property
@@ -154,9 +149,7 @@
 !
       type(SGS_paremeters), intent(in) :: SGS_par
       type(sph_rtp_grid), intent(in) ::  sph_rtp
-      type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in)  :: cd_prop
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
+      type(MHD_evolution_param), intent(in) :: MHD_prop
       type(SGS_terms_address), intent(inout) :: ifld_sgs, icomp_sgs
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
       type(dynamic_model_data), intent(inout) :: wk_sgs
@@ -166,14 +159,16 @@
 !
       num_med = sph_rtp%nidx_rtp(1) * sph_rtp%nidx_rtp(2)
       call s_count_sgs_components(SGS_par%model_p,                      &
-     &    fl_prop, cd_prop, ht_prop, cp_prop, sgs_coefs)
+     &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop, sgs_coefs)
       call alloc_sgs_coefs_layer(num_med,                               &
      &    sgs_coefs%num_field, sgs_coefs%ntot_comp, wk_sgs)
 !
       call alloc_SGS_num_coefs(sgs_coefs)
 !
       call set_sgs_addresses                                            &
-     &   (SGS_par%model_p, fl_prop, cd_prop, ht_prop, cp_prop,          &
+     &   (SGS_par%model_p, MHD_prop%fl_prop, MHD_prop%cd_prop,          &
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
      &    ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
       call check_sgs_addresses                                          &
      &   (ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
