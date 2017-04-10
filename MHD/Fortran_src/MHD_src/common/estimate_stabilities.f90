@@ -4,12 +4,9 @@
 !      Written by H. Matsui
 !      Modified by H. Matsui on july, 2006
 !
-!!      subroutine cal_stability_4_diffuse                              &
-!!     &         (dt, ele, fl_prop, cd_prop, ht_prop, cp_prop)
+!!      subroutine cal_stability_4_diffuse(dt, ele, MHD_prop)
 !!        type(element_data), intent(in) :: ele
-!!        type(fluid_property), intent(in) :: fl_prop
-!!        type(conductive_property), intent(in)  :: cd_prop
-!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!      subroutine cal_stability_4_advect                               &
 !!     &         (i_step, dt, ele, fluid, ncomp_ele, ivelo_ele, d_ele)
 !
@@ -19,7 +16,7 @@
 !
       use calypso_mpi
 !
-      use t_physical_property
+      use t_control_parameter
       use t_geometry_data
       use t_geometry_data_MHD
 !
@@ -39,15 +36,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_stability_4_diffuse                                &
-     &         (dt, ele, fl_prop, cd_prop, ht_prop, cp_prop)
+      subroutine cal_stability_4_diffuse(dt, ele, MHD_prop)
 !
       real(kind = kreal), intent(in) :: dt
       type(element_data), intent(in) :: ele
 !
-      type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in)  :: cd_prop
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
+      type(MHD_evolution_param), intent(in) :: MHD_prop
 !
       integer (kind = kint) :: iele
 !
@@ -68,27 +62,28 @@
       if ( my_rank .eq. 0 ) then
 !
         write(12,*) ' Delta t: ', dt
-        if (fl_prop%iflag_scheme .gt. id_no_evolution) then
-         cfl_diffuse = cfl_advect / fl_prop%coef_diffuse
+        if (MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
+         cfl_diffuse = cfl_advect / MHD_prop%fl_prop%coef_diffuse
          write(12,*) 'estimated limit for Delta t for velovity:      ', &
      &    cfl_diffuse
         end if
 !
-        if (ht_prop%iflag_scheme .gt. id_no_evolution) then
-         cfl_diffuse = cfl_advect / ht_prop%coef_diffuse
+        if (MHD_prop%ht_prop%iflag_scheme .gt. id_no_evolution) then
+         cfl_diffuse = cfl_advect / MHD_prop%ht_prop%coef_diffuse
          write(12,*) 'estimated limit for Delta t for temperature:   ', &
      &    cfl_diffuse
         end if
 !
-        if     (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution          &
-     &     .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
-         cfl_diffuse = cfl_advect / cd_prop%coef_diffuse
+        if    (MHD_prop%cd_prop%iflag_Bevo_scheme .gt. id_no_evolution  &
+     &    .or. MHD_prop%cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) &
+     &  then
+         cfl_diffuse = cfl_advect / MHD_prop%cd_prop%coef_diffuse
          write(12,*) 'estimated limit for Delta t for magnetic field:', &
      &    cfl_diffuse
         end if
 !
-        if (cp_prop%iflag_scheme .gt. id_no_evolution) then
-         cfl_diffuse = cfl_advect / cp_prop%coef_diffuse
+        if (MHD_prop%cp_prop%iflag_scheme .gt. id_no_evolution) then
+         cfl_diffuse = cfl_advect / MHD_prop%cp_prop%coef_diffuse
          write(12,*) 'estimated limit for Delta t for composition:   ', &
      &    cfl_diffuse
         end if

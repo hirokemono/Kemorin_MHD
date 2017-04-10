@@ -14,8 +14,8 @@
 !!     &          iflag_commute_flux, iflag_commute_field, dt,          &
 !!     &          FEM_prm, nod_comm, node, ele, surf, fluid, sf_grp,    &
 !!     &          property, Snod_bcs, Ssf_bcs, iphys_ele, ele_fld,      &
-!!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,   &
-!!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+!!     &          fem_int, FEM_elens, diff_coefs, mhd_fem_wk, rhs_mat,  &
+!!     &          nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -28,12 +28,14 @@
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(field_geometry_data), intent(in) :: fluid
+!!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -57,12 +59,13 @@
       use t_table_FEM_const
       use t_finite_element_mat
       use t_int_surface_data
-      use t_MHD_finite_element_mat
       use t_filter_elength
       use t_bc_data_temp
       use t_surface_bc_data
       use t_material_property
       use t_SGS_model_coefs
+      use t_MHD_finite_element_mat
+      use t_work_FEM_integration
 !
       implicit none
 !
@@ -80,8 +83,8 @@
      &          iflag_commute_flux, iflag_commute_field, dt,            &
      &          FEM_prm, nod_comm, node, ele, surf, fluid, sf_grp,      &
      &          property, Snod_bcs, Ssf_bcs, iphys_ele, ele_fld,        &
-     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, diff_coefs,     &
-     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &          fem_int, FEM_elens, diff_coefs, mhd_fem_wk, rhs_mat,    &
+     &          nod_fld)
 !
       use int_surf_div_fluxes_sgs
       use cal_multi_pass
@@ -112,49 +115,49 @@
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
       type(field_geometry_data), intent(in) :: fluid
-      type(jacobians_3d), intent(in) :: jac_3d
-      type(jacobians_2d), intent(in) :: jac_sf_grp
-      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
 !
-      type(work_finite_element_mat), intent(inout) :: fem_wk
-      type(work_surface_element_mat), intent(inout) :: surf_wk
-      type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
+      type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
+      call reset_ff_smps(node%max_nod_smp, rhs_mat%f_l, rhs_mat%f_nl)
 !
       call sel_int_vol_div_sgs_flux                                     &
      &    (iflag_supg, num_int, ifilter_final, iflag_commute_flux,      &
      &     i_velo, i_field, i_SGS_flux, iak_diff_flux, dt,              &
      &     node, ele, fluid, property, nod_fld, iphys_ele, ele_fld,     &
-     &     jac_3d, rhs_tbl, FEM_elens, diff_coefs,                      &
-     &     mhd_fem_wk, fem_wk, f_nl)
+     &     fem_int%jacobians%jac_3d, fem_int%rhs_tbl, FEM_elens,        &
+     &     diff_coefs, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl)
 !
       if(iflag_commute_field .ne. id_SGS_commute_OFF                    &
           .and. iflag_SGS_flux .ne. id_SGS_none) then
-        call int_sf_skv_sgs_div_v_flux(node, ele, surf, sf_grp,         &
-     &      nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, num_int,           &
-     &      Ssf_bcs%sgs%ngrp_sf_dat, Ssf_bcs%sgs%id_grp_sf_dat,         &
-     &      ifilter_final, i_SGS_flux, i_velo,                          &
-     &      i_field, diff_coefs%num_field,iak_diff_flux,                &
-     &      diff_coefs%ak, property%coef_advect, fem_wk, surf_wk, f_nl)
+        call int_sf_skv_sgs_div_v_flux                                  &
+     &    (node, ele, surf, sf_grp, nod_fld,                            &
+     &     fem_int%jacobians%jac_sf_grp, fem_int%rhs_tbl, FEM_elens,    &
+     &     num_int, Ssf_bcs%sgs%ngrp_sf_dat, Ssf_bcs%sgs%id_grp_sf_dat, &
+     &     ifilter_final, i_SGS_flux, i_velo, i_field,                  &
+     &     diff_coefs%num_field,iak_diff_flux, diff_coefs%ak,           &
+     &     property%coef_advect, rhs_mat%fem_wk, rhs_mat%surf_wk,       &
+     &     rhs_mat%f_nl)
       end if
 !
       call cal_t_evo_4_scalar(iflag_supg, fluid%istack_ele_fld_smp, dt, &
-     &    FEM_prm, mhd_fem_wk%mlump_fl, nod_comm,                       &
-     &    node, ele, iphys_ele, ele_fld, jac_3d, rhs_tbl,               &
-     &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
+     &    FEM_prm, mhd_fem_wk%mlump_fl, nod_comm, node, ele, iphys_ele, &
+     &    ele_fld, fem_int%jacobians%jac_3d, fem_int%rhs_tbl,           &
+     &    mhd_fem_wk%ff_m_smp, rhs_mat%fem_wk,                          &
+     &    rhs_mat%f_l, rhs_mat%f_nl)
 !
-      call set_boundary_rhs_scalar(node, Snod_bcs%nod_bc_s, f_l, f_nl)
+      call set_boundary_rhs_scalar                                      &
+     &   (node, Snod_bcs%nod_bc_s, rhs_mat%f_l, rhs_mat%f_nl)
 !
-!       call check_ff(my_rank, n_scalar, node%numnod, f_nl)
+!       call check_ff(my_rank, n_scalar, node%numnod, rhs_mat%f_nl)
 !
       call cal_ff_2_scalar(node%numnod, node%istack_nod_smp,            &
-     &    f_nl%ff, mhd_fem_wk%mlump_fl%ml,                              &
+     &    rhs_mat%f_nl%ff, mhd_fem_wk%mlump_fl%ml,                      &
      &    nod_fld%ntot_phys, i_SGS_div_flux, nod_fld%d_fld)
 !
 !   communication

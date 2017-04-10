@@ -5,24 +5,20 @@
 !
 !!      subroutine s_initialize_4_MHD_AMG                               &
 !!     &         (dt, FEM_prm, node_1st, ele_1st, ifld_diff, diff_coefs,&
-!!     &          fl_prop, cd_prop, ht_prop, cp_prop,                   &
-!!     &          DJDS_param, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM,          &
+!!     &          MHD_prop, DJDS_param, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM,&
 !!     &          MHD_matrices)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(node_data), intent(inout) :: node_1st
 !!        type(element_data), intent(inout) :: ele_1st
 !!      subroutine const_MGCG_MHD_matrices(iflag_scheme, dt,            &
-!!     &          FEM_prm, SGS_param, cmt_param, ifld_diff,             &
-!!     &          fl_prop, cd_prop, ht_prop, cp_prop,                   &
+!!     &          FEM_prm, SGS_param, cmt_param, ifld_diff, MHD_prop,   &
 !!     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, MHD_matrices)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(SGS_terms_address), intent(in) :: ifld_diff
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
-!!        type(fluid_property), intent(in) :: fl_prop
-!!        type(conductive_property), intent(in) :: cd_prop
-!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(DJDS_poarameter), intent(in) :: DJDS_param
 !!        type(MGCG_data), intent(inout) :: MGCG_WK
 !!        type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
@@ -35,6 +31,7 @@
 !
       use m_machine_parameter
 !
+      use t_control_parameter
       use t_physical_property
       use t_FEM_control_parameter
       use t_iccg_parameter
@@ -57,8 +54,7 @@
 !
       subroutine s_initialize_4_MHD_AMG                                 &
      &         (dt, FEM_prm, node_1st, ele_1st, ifld_diff, diff_coefs,  &
-     &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
-     &          DJDS_param, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM,            &
+     &          MHD_prop, DJDS_param, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM,  &
      &          MHD_matrices)
 !
       use t_geometry_data
@@ -89,9 +85,7 @@
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_terms_address), intent(in) :: ifld_diff
       type(SGS_coefficients_type), intent(in) :: diff_coefs
-      type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in) :: cd_prop
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
+      type(MHD_evolution_param), intent(in) :: MHD_prop
       type(DJDS_poarameter), intent(in) :: DJDS_param
 !
       type(node_data), intent(inout) :: node_1st
@@ -159,9 +153,10 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &            's_set_diffusivities_MHD_AMG', i_level
         call s_set_diffusivities_MHD_AMG                                &
-     &    (MGCG_FEM%MG_mesh(i_level)%mesh%ele,                          &
-     &     fl_prop, cd_prop, ht_prop, cp_prop,                          &
-     &     MGCG_MHD_FEM%ak_MHD_AMG(i_level))
+     &     (MGCG_FEM%MG_mesh(i_level)%mesh%ele,                         &
+     &      MHD_prop%fl_prop, MHD_prop%cd_prop,                         &
+     &      MHD_prop%ht_prop, MHD_prop%cp_prop,                         &
+     &      MGCG_MHD_FEM%ak_MHD_AMG(i_level))
         if(iflag_debug .gt. 0) write(*,*)                               &
      &            's_set_sgs_diff_array_MHD_AMG', i_level
 !
@@ -256,7 +251,8 @@
      &      MGCG_FEM%MG_mesh(i_level)%mesh,                             &
      &      MGCG_FEM%MG_mesh(i_level)%group,                            &
      &      MGCG_MHD_FEM%MG_MHD_mesh(i_level),                          &
-     &      fl_prop, cd_prop, ht_prop, cp_prop,                         &
+     &      MHD_prop%fl_prop, MHD_prop%cd_prop,                         &
+     &      MHD_prop%ht_prop, MHD_prop%cp_prop,                         &
      &      MGCG_MHD_FEM%MG_node_bc(i_level))
 !
         call set_bc_surface_data(MGCG_MHD_FEM%IO_MG_bc(i_level),        &
@@ -266,8 +262,7 @@
      &      MGCG_FEM%MG_mesh(i_level)%group%surf_grp,                   &
      &      MGCG_FEM%MG_mesh(i_level)%group%surf_nod_grp,               &
      &      MGCG_FEM%MG_mesh(i_level)%group%surf_grp_geom,              &
-     &      fl_prop, cd_prop, ht_prop, cp_prop,                         &
-     &      MGCG_MHD_FEM%MG_surf_bc(i_level) )
+     &      MHD_prop, MGCG_MHD_FEM%MG_surf_bc(i_level) )
       end do
 !
 !     --------------------- 
@@ -291,7 +286,8 @@
         call s_set_MHD_idx_4_mat_type                                   &
      &     (MGCG_FEM%MG_mesh(i_level)%mesh,                             &
      &      MGCG_MHD_FEM%MG_MHD_mesh(i_level),                          &
-     &      fl_prop, cd_prop, ht_prop, cp_prop,                         &
+     &      MHD_prop%fl_prop, MHD_prop%cd_prop,                         &
+     &      MHD_prop%ht_prop, MHD_prop%cp_prop,                         &
      &      MGCG_FEM%MG_FEM_int(i_level)%rhs_tbl,                       &
      &      MHD_matrices%MG_DJDS_table(i_level),                        &
      &      MHD_matrices%MG_DJDS_fluid(i_level),                        &
@@ -311,7 +307,8 @@
           if(iflag_debug .gt. 0) write(*,*) 'alloc_aiccg_matrices'
           call alloc_aiccg_matrices                                     &
      &       (MGCG_FEM%MG_mesh(i_level)%mesh%node,                      &
-     &        fl_prop, cd_prop, ht_prop, cp_prop,                       &
+     &        MHD_prop%fl_prop, MHD_prop%cd_prop,                       &
+     &        MHD_prop%ht_prop, MHD_prop%cp_prop,                       &
      &        MHD_matrices%MG_DJDS_table(i_level),                      &
      &        MHD_matrices%MG_DJDS_fluid(i_level),                      &
      &        MHD_matrices%MG_DJDS_linear(i_level),                     &
@@ -325,7 +322,8 @@
         else
           if(iflag_debug .gt. 0) write(*,*) 'alloc_MG_zero_matrices'
           call alloc_MG_zero_matrices                                   &
-     &       (fl_prop, cd_prop, ht_prop, cp_prop,                       &
+     &       (MHD_prop%fl_prop, MHD_prop%cd_prop,                       &
+     &        MHD_prop%ht_prop, MHD_prop%cp_prop,                       &
      &        MHD_matrices%Vmat_MG_DJDS(i_level),                       &
      &        MHD_matrices%Bmat_MG_DJDS(i_level),                       &
      &        MHD_matrices%Tmat_MG_DJDS(i_level),                       &
@@ -403,8 +401,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine const_MGCG_MHD_matrices(iflag_scheme, dt,              &
-     &          FEM_prm, SGS_param, cmt_param, ifld_diff,               &
-     &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
+     &          FEM_prm, SGS_param, cmt_param, ifld_diff, MHD_prop,     &
      &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, MHD_matrices)
 !
       use t_FEM_control_parameter
@@ -418,9 +415,7 @@
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(SGS_terms_address), intent(in) :: ifld_diff
-      type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in) :: cd_prop
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
+      type(MHD_evolution_param), intent(in) :: MHD_prop
       type(MGCG_data), intent(in) :: MGCG_WK
 !
       type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
@@ -441,7 +436,8 @@
      &        MGCG_MHD_FEM%MG_MHD_mesh(i_level),                        &
      &        MGCG_MHD_FEM%MG_node_bc(i_level),                         &
      &        MGCG_MHD_FEM%MG_surf_bc(i_level),                         &
-     &        fl_prop, cd_prop, ht_prop, cp_prop,                       &
+     &        MHD_prop%fl_prop, MHD_prop%cd_prop,                       &
+     &        MHD_prop%ht_prop, MHD_prop%cp_prop,                       &
      &        MGCG_MHD_FEM%ak_MHD_AMG(i_level),                         &
      &        MGCG_FEM%MG_FEM_int(i_level)%jacobians,                   &
      &        MGCG_MHD_FEM%MG_filter_MHD(i_level), ifld_diff,           &
@@ -475,7 +471,8 @@
           call matrix_precondition                                      &
      &       (FEM_prm%MG_param%PRECOND_MG, FEM_prm%MG_param%PRECOND_MG, &
      &        FEM_prm%CG11_param%sigma_diag,                            &
-     &        fl_prop, cd_prop, ht_prop, cp_prop,                       &
+     &        MHD_prop%fl_prop, MHD_prop%cd_prop,                       &
+     &        MHD_prop%ht_prop, MHD_prop%cp_prop,                       &
      &        MHD_matrices%MG_DJDS_table(i_level),                      &
      &        MHD_matrices%MG_DJDS_fluid(i_level),                      &
      &        MHD_matrices%MG_DJDS_linear(i_level),                     &

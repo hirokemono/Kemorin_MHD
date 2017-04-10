@@ -6,11 +6,10 @@
 !!      subroutine cal_sgs_mom_flux_with_sgs_buo(dt, FEM_prm, SGS_par,  &
 !!     &          nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,  &
 !!     &          fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele, &
-!!     &          ak_MHD, jacobians, rhs_tbl,  FEM_elens, filtering,    &
+!!     &          ak_MHD, fem_int, FEM_elens, filtering,                &
 !!     &          ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,        &
 !!     &          sgs_coefs_nod, diff_coefs, wk_filter, wk_lsq, wk_sgs, &
-!!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,               &
-!!     &          nod_fld, ele_fld, sgs_coefs)
+!!     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld, sgs_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
@@ -25,8 +24,7 @@
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(layering_tbl), intent(in) :: layer_tbl
-!!        type(jacobians_type), intent(in) :: jacobians
-!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(SGS_terms_address), intent(in) :: ifld_sgs
@@ -39,9 +37,7 @@
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
-!!        type(work_finite_element_mat), intent(inout) :: fem_wk
-!!        type(work_surface_element_mat), intent(inout) :: surf_wk
-!!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
+!!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(phys_data), intent(inout) :: ele_fld
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
@@ -66,7 +62,6 @@
       use t_table_FEM_const
       use t_finite_element_mat
       use t_int_surface_data
-      use t_MHD_finite_element_mat
       use t_filter_elength
       use t_filtering_data
       use t_ele_info_4_dynamic
@@ -76,6 +71,8 @@
       use t_layering_ele_list
       use t_surface_bc_data
       use t_physical_property
+      use t_MHD_finite_element_mat
+      use t_work_FEM_integration
 !
       implicit none
 !
@@ -90,11 +87,10 @@
       subroutine cal_sgs_mom_flux_with_sgs_buo(dt, FEM_prm, SGS_par,    &
      &          nod_comm, node, ele, surf, fluid, layer_tbl, sf_grp,    &
      &          fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,   &
-     &          ak_MHD, jacobians, rhs_tbl,  FEM_elens, filtering,      &
+     &          ak_MHD, fem_int,  FEM_elens, filtering,                 &
      &          ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,          &
      &          sgs_coefs_nod, diff_coefs, wk_filter, wk_lsq, wk_sgs,   &
-     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                 &
-     &          nod_fld, ele_fld, sgs_coefs)
+     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld, sgs_coefs)
 !
       use m_phys_constants
 !
@@ -125,8 +121,7 @@
       type(conductive_property), intent(in) :: cd_prop
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(layering_tbl), intent(in) :: layer_tbl
-      type(jacobians_type), intent(in) :: jacobians
-      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
       type(SGS_terms_address), intent(in) :: ifld_sgs, icomp_sgs
@@ -140,9 +135,7 @@
       type(dynamic_model_data), intent(inout) :: wk_sgs
       type(dynamis_least_suare_data), intent(inout) :: wk_lsq
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
-      type(work_finite_element_mat), intent(inout) :: fem_wk
-      type(work_surface_element_mat), intent(inout) :: surf_wk
-      type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
+      type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
       type(phys_data), intent(inout) :: ele_fld
 !
@@ -167,9 +160,9 @@
      &   (icomp_sgs%i_mom_flux, iphys_elediff%i_velo, dt,               &
      &    FEM_prm, SGS_par%model_p, SGS_par%filter_p,                   &
      &    nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,        &
-     &    jacobians%jac_3d, rhs_tbl, FEM_elens, filtering,              &
-     &    sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,      &
-     &    f_l, f_nl, nod_fld)
+     &    fem_int%jacobians%jac_3d, fem_int%rhs_tbl, FEM_elens,         &
+     &    filtering, sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk,   &
+     &    rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
 !
 !   lead work of Reynolds stress
 !
@@ -177,10 +170,9 @@
      &    ifld_diff%i_mom_flux, ifld_diff%i_lorentz, dt,                &
      &    FEM_prm, SGS_par%model_p, SGS_par%commute_p,                  &
      &    nod_comm, node, ele, surf, sf_grp, fluid, fl_prop, cd_prop,   &
-     &    Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD,                   &
-     &    jacobians%jac_3d, jacobians%jac_sf_grp, rhs_tbl,              &
-     &    FEM_elens, diff_coefs, mhd_fem_wk, fem_wk, surf_wk,           &
-     &    f_l, f_nl, nod_fld, ele_fld)
+     &    Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD, fem_int,          &
+     &    FEM_elens, diff_coefs, mhd_fem_wk, rhs_mat,                   &
+     &    nod_fld, ele_fld)
 !
 !$omp parallel
       call cal_phys_dot_product                                         &
@@ -204,7 +196,7 @@
 !   take RMS of SGS buoyancy flux and work of Reynolds stress
       call select_int_vol_sgs_buoyancy(FEM_prm%npoint_t_evo_int,        &
      &    node, ele, fl_prop, layer_tbl, iphys, nod_fld,                &
-     &    jacobians%jac_3d, jacobians%jac_3d_l,                         &
+     &    fem_int%jacobians%jac_3d, fem_int%jacobians%jac_3d_l,         &
      &    wk_lsq%nlayer, wk_lsq%slocal)
 !
       call sum_lsq_coefs_4_comps(ncomp_sgs_buo, wk_lsq)

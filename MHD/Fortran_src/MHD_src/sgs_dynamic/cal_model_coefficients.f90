@@ -3,9 +3,8 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine s_cal_model_coefficients(time_d,                     &
-!!     &        FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh,      &
-!!     &        fl_prop, cd_prop, ht_prop, cp_prop, layer_tbl,          &
+!!      subroutine s_cal_model_coefficients(time_d, FEM_prm, SGS_par,   &
+!!     &        mesh, group, ele_mesh, MHD_mesh, MHD_prop, layer_tbl,   &
 !!     &        nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld, fem_int,  &
 !!     &        FEM_elens, ifld_sgs, icomp_sgs, ifld_diff, icomp_diff,  &
 !!     &        iphys_elediff, filtering, wide_filtering,               &
@@ -17,9 +16,7 @@
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(element_geometry), intent(in) :: ele_mesh
-!!        type(fluid_property), intent(in) :: fl_prop
-!!        type(conductive_property), intent(in) :: cd_prop
-!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(nodal_boundarty_conditions), intent(in) :: nod_bcs
 !!        type(surface_boundarty_conditions), intent(in) :: surf_bcs
 !!        type(phys_address), intent(in) :: iphys
@@ -58,6 +55,7 @@
 !
       use t_FEM_control_parameter
       use t_SGS_control_parameter
+      use t_control_parameter
       use t_physical_property
       use t_time_data
       use t_mesh_data
@@ -92,9 +90,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_model_coefficients(time_d,                       &
-     &        FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh,        &
-     &        fl_prop, cd_prop, ht_prop, cp_prop, layer_tbl,            &
+      subroutine s_cal_model_coefficients(time_d, FEM_prm, SGS_par,     &
+     &        mesh, group, ele_mesh, MHD_mesh, MHD_prop, layer_tbl,     &
      &        nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld, fem_int,    &
      &        FEM_elens, ifld_sgs, icomp_sgs, ifld_diff, icomp_diff,    &
      &        iphys_elediff, filtering, wide_filtering,                 &
@@ -119,9 +116,7 @@
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
       type(element_geometry), intent(in) :: ele_mesh
-      type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in) :: cd_prop
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
+      type(MHD_evolution_param), intent(in) :: MHD_prop
       type(nodal_boundarty_conditions), intent(in) :: nod_bcs
       type(surface_boundarty_conditions), intent(in) :: surf_bcs
       type(phys_address), intent(in) :: iphys
@@ -158,7 +153,7 @@
       if(my_rank .eq. 0) write(*,*)                                     &
      &        'set Csim', time_d%i_time_step, SGS_par%i_step_sgs_coefs
 !
-      if(ht_prop%iflag_scheme .ne. id_no_evolution) then
+      if(MHD_prop%ht_prop%iflag_scheme .ne. id_no_evolution) then
         if(SGS_par%model_p%iflag_SGS_h_flux .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_sf_dynamic temp'
           call cal_sgs_sf_dynamic                                       &
@@ -213,7 +208,7 @@
       end if
 !
 !
-      if(cp_prop%iflag_scheme .ne. id_no_evolution) then
+      if(MHD_prop%cp_prop%iflag_scheme .ne. id_no_evolution) then
         if(SGS_par%model_p%iflag_SGS_c_flux .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_sf_dynamic comp'
           call cal_sgs_sf_dynamic                                       &
@@ -267,7 +262,7 @@
         end if
       end if
 !
-      if(fl_prop%iflag_scheme .ne. id_no_evolution) then
+      if(MHD_prop%fl_prop%iflag_scheme .ne. id_no_evolution) then
         if (SGS_par%model_p%iflag_SGS_m_flux .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_m_flux_dynamic'
           call cal_sgs_m_flux_dynamic                                   &
@@ -309,7 +304,7 @@
       end if
 !
 !
-      if (fl_prop%iflag_4_lorentz .ne. id_turn_OFF) then
+      if (MHD_prop%fl_prop%iflag_4_lorentz .ne. id_turn_OFF) then
 !
         if(SGS_par%model_p%iflag_SGS_lorentz .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)                                         &
@@ -353,7 +348,7 @@
 !
 !
 !
-      if(cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
+      if(MHD_prop%cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         if(SGS_par%model_p%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'cal_sgs_induct_t_dynamic'
@@ -363,10 +358,10 @@
      &       iphys_elediff%i_filter_velo, iphys_elediff%i_filter_magne, &
      &       time_d%dt, FEM_prm, SGS_par,                               &
      &       mesh%nod_comm, mesh%node, mesh%ele, iphys,                 &
-     &       iphys_ele, ele_fld, MHD_mesh%conduct, cd_prop, layer_tbl,  &
-     &       fem_int%jacobians, fem_int%rhs_tbl, FEM_elens, filtering,  &
-     &       sgs_coefs_nod, wk_filter, wk_cor, wk_lsq, wk_sgs,          &
-     &       mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l,                   &
+     &       iphys_ele, ele_fld, MHD_mesh%conduct, MHD_prop%cd_prop,    &
+     &       layer_tbl, fem_int%jacobians, fem_int%rhs_tbl, FEM_elens,  &
+     &       filtering, sgs_coefs_nod, wk_filter, wk_cor, wk_lsq,       &
+     &       wk_sgs, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l,           &
      &       nod_fld, sgs_coefs)
         else if(SGS_par%model_p%iflag_SGS_uxb                           &
      &                            .eq. id_SGS_similarity) then
@@ -388,7 +383,8 @@
      &       iphys_elediff%i_filter_velo, iphys_elediff%i_filter_magne, &
      &       time_d%dt, FEM_prm, SGS_par,                               &
      &       mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,         &
-     &       MHD_mesh%fluid, MHD_mesh%conduct, cd_prop, layer_tbl,      &
+     &       MHD_mesh%fluid, MHD_mesh%conduct,                          &
+     &       MHD_prop%cd_prop, layer_tbl,                               &
      &       group%surf_grp, surf_bcs%Bsf_bcs, iphys, iphys_ele,        &
      &       ele_fld, fem_int%jacobians, fem_int%rhs_tbl, FEM_elens,    &
      &       sgs_coefs, filtering, wk_filter, wk_cor, wk_lsq,           &
@@ -396,7 +392,8 @@
      &       rhs_mat%f_l, rhs_mat%f_nl, nod_fld, diff_coefs)
         end if
 !
-      else if(cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
+      else if(MHD_prop%cd_prop%iflag_Aevo_scheme .gt. id_no_evolution)  &
+     &  then
 !
         if(SGS_par%model_p%iflag_SGS_uxb .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_uxb_dynamic'
@@ -405,9 +402,10 @@
      &        iphys_elediff%i_velo, iphys_elediff%i_filter_velo,        &
      &        time_d%dt, FEM_prm, SGS_par, mesh%nod_comm,               &
      &        mesh%node, mesh%ele, iphys, iphys_ele, ele_fld,           &
-     &        MHD_mesh%conduct, cd_prop, layer_tbl, fem_int%jacobians,  &
-     &        fem_int%rhs_tbl, FEM_elens, filtering, wk_filter, wk_cor, &
-     &        wk_lsq, wk_sgs, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l,  &
+     &        MHD_mesh%conduct, MHD_prop%cd_prop, layer_tbl,            &
+     &        fem_int%jacobians, fem_int%rhs_tbl, FEM_elens,            &
+     &        filtering, wk_filter, wk_cor, wk_lsq, wk_sgs,             &
+     &        mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l,                  &
      &        nod_fld, sgs_coefs)
         else if(SGS_par%model_p%iflag_SGS_uxb                           &
      &                         .eq. id_SGS_similarity) then

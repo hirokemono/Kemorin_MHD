@@ -5,15 +5,12 @@
 !      Modified by H. Matsui on July, 2007
 !
 !!      subroutine define_sgs_diff_coefs                                &
-!!     &         (numele, SGS_param, cmt_param, layer_tbl,              &
-!!     &          fl_prop, cd_prop, ht_prop, cp_prop,                   &
+!!     &         (numele, SGS_param, cmt_param, layer_tbl, MHD_prop,    &
 !!     &          ifld_diff, icomp_diff, wk_diff, diff_coefs)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(layering_tbl), intent(in) :: layer_tbl
-!!        type(fluid_property), intent(in) :: fl_prop
-!!        type(conductive_property), intent(in)  :: cd_prop
-!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(SGS_terms_address), intent(inout) :: ifld_sgs
 !!        type(SGS_terms_address), intent(inout) :: icomp_sgs
 !!        type(SGS_terms_address), intent(inout) :: ifld_diff
@@ -29,6 +26,7 @@
       use m_precision
       use m_machine_parameter
       use t_SGS_control_parameter
+      use t_control_parameter
       use t_physical_property
 !
       implicit none
@@ -43,8 +41,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine define_sgs_diff_coefs                                  &
-     &         (numele, SGS_param, cmt_param, layer_tbl,                &
-     &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
+     &         (numele, SGS_param, cmt_param, layer_tbl, MHD_prop,      &
      &          ifld_diff, icomp_diff, wk_diff, diff_coefs)
 !
       use calypso_mpi
@@ -60,9 +57,7 @@
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(layering_tbl), intent(in) :: layer_tbl
-      type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in)  :: cd_prop
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
+      type(MHD_evolution_param), intent(in) :: MHD_prop
 !
       type(SGS_terms_address), intent(inout) :: ifld_diff, icomp_diff
 !
@@ -72,8 +67,9 @@
       integer(kind = kint) :: ntot_diff_comp
 !
 !
-      call count_sgs_diff_coefs                                         &
-     &   (SGS_param, cmt_param, fl_prop, cd_prop, ht_prop, cp_prop,     &
+      call count_sgs_diff_coefs(SGS_param, cmt_param,                   &
+     &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
      &    ntot_diff_comp, diff_coefs)
       call alloc_sgs_coefs_layer(layer_tbl%e_grp%num_grp,               &
      &    diff_coefs%num_field, ntot_diff_comp, wk_diff)
@@ -81,8 +77,9 @@
       call alloc_SGS_num_coefs(diff_coefs)
       call alloc_SGS_coefs(numele, diff_coefs)
 !
-      call set_sgs_diff_addresses                                       &
-     &   (SGS_param, cmt_param, fl_prop, cd_prop, ht_prop, cp_prop,     &
+      call set_sgs_diff_addresses(SGS_param, cmt_param,                 &
+     &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
      &    ifld_diff, icomp_diff, wk_diff, diff_coefs)
       diff_coefs%ntot_comp = diff_coefs%num_field
 !

@@ -3,9 +3,14 @@
 !
 !     Written by H. Matsui on June, 2005
 !
-!!      subroutine set_data_4_const_matrices(mesh, MHD_mesh,            &
-!!     &          fl_prop, cd_prop, ht_prop, cp_prop, fem_int,          &
+!!      subroutine set_data_4_const_matrices                            &
+!!     &         (mesh, MHD_mesh, MHD_prop, fem_int,                    &
 !!     &          MGCG_WK, MHD_mat_tbls, MHD_matrices, s_package)
+!!      subroutine update_matrices(time_d, FEM_prm, SGS_par,            &
+!!     &          mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,   &
+!!     &          MHD_prop, ak_MHD, fem_int, FEM_elens,                 &
+!!     &          ifld_diff, diff_coefs, MHD_mat_tbls, flex_p, rhs_mat, &
+!!     &          mhd_fem_wk, MHD_matrices)
 !!        type(MHD_matrices_pack), intent(inout) :: s_package
 !!      subroutine update_matrices                                      &
 !!     &         (iflag_scheme, time_d, FEM_prm, SGS_par,               &
@@ -14,12 +19,11 @@
 !!     &          ak_MHD, fem_int, FEM_elens, ifld_diff, diff_coefs,    &
 !!     &          MHD_mat_tbls, flex_p, rhs_mat,                        &
 !!     &          mhd_fem_wk, MHD_matrices)
-!!      subroutine set_aiccg_matrices                                   &
-!!     &         (iflag_scheme, dt, FEM_prm, SGS_param, cmt_param,      &
+!!      subroutine set_aiccg_matrices(dt, FEM_prm, SGS_param, cmt_param,&
 !!     &          mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,   &
-!!     &          fl_prop, cd_prop, ht_prop, cp_prop,                   &
-!!     &          ak_MHD, fem_int, FEM_elens, ifld_diff, diff_coefs,    &
-!!     &          MHD_mat_tbls, rhs_mat, mhd_fem_wk,  MHD_matrices)
+!!     &          MHD_prop, ak_MHD, fem_int, FEM_elens,                 &
+!!     &          ifld_diff, diff_coefs, MHD_mat_tbls, rhs_mat,         &
+!!     &          mhd_fem_wk,  MHD_matrices)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -30,6 +34,7 @@
 !!        type(mesh_data_MHD), intent(in) :: MHD_mesh
 !!        type(nodal_boundarty_conditions), intent(in) :: nod_bcs
 !!        type(surface_boundarty_conditions), intent(in)  :: surf_bcs
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(coefs_4_MHD_type), intent(in) :: ak_MHD
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -48,6 +53,7 @@
       use m_machine_parameter
       use m_geometry_constants
 !
+      use t_control_parameter
       use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_mesh_data
@@ -80,8 +86,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_data_4_const_matrices(mesh, MHD_mesh,              &
-     &          fl_prop, cd_prop, ht_prop, cp_prop, fem_int,            &
+      subroutine set_data_4_const_matrices                              &
+     &         (mesh, MHD_mesh, MHD_prop, fem_int,                      &
      &          MGCG_WK, MHD_mat_tbls, MHD_matrices, s_package)
 !
       use calypso_mpi
@@ -92,9 +98,7 @@
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_data_MHD), intent(in) :: MHD_mesh
-      type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in) :: cd_prop
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
+      type(MHD_evolution_param), intent(in) :: MHD_prop
       type(finite_element_integration), intent(in) :: fem_int
       type(MGCG_data), intent(in) :: MGCG_WK
 !
@@ -104,7 +108,8 @@
 !
 !
       call s_set_MHD_idx_4_mat_type(mesh, MHD_mesh,                     &
-     &    fl_prop, cd_prop, ht_prop, cp_prop, fem_int%rhs_tbl,          &
+     &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop, fem_int%rhs_tbl,          &
      &    MHD_matrices%MG_DJDS_table(0), MHD_matrices%MG_DJDS_fluid(0), &
      &    MHD_matrices%MG_DJDS_linear(0),                               &
      &    MHD_matrices%MG_DJDS_lin_fl(0),                               &
@@ -119,19 +124,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine update_matrices                                        &
-     &         (iflag_scheme, time_d, FEM_prm, SGS_par,                 &
+      subroutine update_matrices(time_d, FEM_prm, SGS_par,              &
      &          mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,     &
-     &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
-     &          ak_MHD, fem_int, FEM_elens, ifld_diff, diff_coefs,      &
-     &          MHD_mat_tbls, flex_p, rhs_mat,                          &
+     &          MHD_prop, ak_MHD, fem_int, FEM_elens,                   &
+     &          ifld_diff, diff_coefs, MHD_mat_tbls, flex_p, rhs_mat,   &
      &          mhd_fem_wk, MHD_matrices)
 !
       use t_time_data
       use t_SGS_control_parameter
       use t_flex_delta_t_data
 !
-      integer(kind=kint), intent(in) :: iflag_scheme
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
       type(time_data), intent(in) :: time_d
@@ -141,9 +143,7 @@
       type(mesh_data_MHD), intent(in) :: MHD_mesh
       type(nodal_boundarty_conditions), intent(in) :: nod_bcs
       type(surface_boundarty_conditions), intent(in)  :: surf_bcs
-      type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in) :: cd_prop
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
+      type(MHD_evolution_param), intent(in) :: MHD_prop
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
 
@@ -171,10 +171,9 @@
 !
       if (iflag .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'matrix assemble again'
-        call set_aiccg_matrices(iflag_scheme, time_d%dt,                &
-     &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
-     &      mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,         &
-     &      fl_prop, cd_prop, ht_prop, cp_prop, ak_MHD,                 &
+        call set_aiccg_matrices(time_d%dt, FEM_prm,                     &
+     &      SGS_par%model_p, SGS_par%commute_p, mesh, group, ele_mesh,  &
+     &      MHD_mesh, nod_bcs, surf_bcs, MHD_prop, ak_MHD,              &
      &      fem_int, FEM_elens, ifld_diff, diff_coefs,                  &
      &      MHD_mat_tbls, rhs_mat, mhd_fem_wk, MHD_matrices)
         flex_p%iflag_flex_step_changed = 0
@@ -184,12 +183,11 @@
 !
 !  ----------------------------------------------------------------------
 !
-      subroutine set_aiccg_matrices                                     &
-     &         (iflag_scheme, dt, FEM_prm, SGS_param, cmt_param,        &
+      subroutine set_aiccg_matrices(dt, FEM_prm, SGS_param, cmt_param,  &
      &          mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,     &
-     &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
-     &          ak_MHD, fem_int, FEM_elens, ifld_diff, diff_coefs,      &
-     &          MHD_mat_tbls, rhs_mat, mhd_fem_wk,  MHD_matrices)
+     &          MHD_prop, ak_MHD, fem_int, FEM_elens,                   &
+     &          ifld_diff, diff_coefs, MHD_mat_tbls, rhs_mat,           &
+     &          mhd_fem_wk,  MHD_matrices)
 !
       use m_type_AMG_data
       use m_type_AMG_data_4_MHD
@@ -199,7 +197,6 @@
       use initialize_4_MHD_AMG
       use skip_comment_f
 !
-      integer(kind=kint), intent(in) :: iflag_scheme
       real(kind = kreal), intent(in) :: dt
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -211,9 +208,7 @@
       type(mesh_data_MHD), intent(in) :: MHD_mesh
       type(nodal_boundarty_conditions), intent(in) :: nod_bcs
       type(surface_boundarty_conditions), intent(in)  :: surf_bcs
-      type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in) :: cd_prop
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
+      type(MHD_evolution_param), intent(in) :: MHD_prop
       type(coefs_4_MHD_type), intent(in) :: ak_MHD
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
@@ -227,9 +222,10 @@
 !
 !
       call s_set_aiccg_matrices                                         &
-     &   (iflag_scheme, dt, FEM_prm, SGS_param, cmt_param,              &
+     &   (MHD_prop%iflag_all_scheme, dt, FEM_prm, SGS_param, cmt_param, &
      &    mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,           &
-     &    fl_prop, cd_prop, ht_prop, cp_prop,                           &
+     &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
      &    ak_MHD, fem_int%jacobians, FEM_elens,                         &
      &    ifld_diff, diff_coefs, fem_int%rhs_tbl,                       &
      &    MHD_matrices%MG_DJDS_table(0), MHD_matrices%MG_DJDS_fluid(0), &
@@ -246,9 +242,8 @@
 !     set marrix for the Multigrid
 !
       if(cmp_no_case(FEM_PRM%CG11_param%METHOD, 'MGCG')) then
-        call const_MGCG_MHD_matrices                                    &
-     &     (iflag_scheme, dt, FEM_prm, SGS_param, cmt_param, ifld_diff, &
-     &     fl_prop, cd_prop, ht_prop, cp_prop,                          &
+        call const_MGCG_MHD_matrices(MHD_prop%iflag_all_scheme, dt,     &
+     &      FEM_prm, SGS_param, cmt_param, ifld_diff, MHD_prop,         &
      &      MGCG_WK1, MGCG_FEM1, MGCG_MHD_FEM1, MHD_matrices)
       end if
 !
@@ -256,7 +251,8 @@
       call matrix_precondition                                          &
      &   (FEM_PRM%CG11_param%PRECOND, FEM_PRM%precond_33,               &
      &    FEM_prm%CG11_param%sigma_diag,                                &
-     &    fl_prop, cd_prop, ht_prop, cp_prop,                           &
+     &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
      &    MHD_matrices%MG_DJDS_table(0),                                &
      &    MHD_matrices%MG_DJDS_fluid(0),                                &
      &    MHD_matrices%MG_DJDS_linear(0),                               &

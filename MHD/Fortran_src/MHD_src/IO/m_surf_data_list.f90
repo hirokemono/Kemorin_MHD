@@ -7,11 +7,8 @@
 !>@brief flux boundary condition lists for MHD dynamo model
 !!
 !!@verbatim
-!!      subroutine deallocate_surf_bc_lists                             &
-!!     &         (fl_prop, cd_prop, ht_prop, cp_prop)
-!!        type(fluid_property), intent(in) :: fl_prop
-!!        type(conductive_property), intent(in) :: cd_prop
-!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
+!!      subroutine deallocate_surf_bc_lists(MHD_prop)
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!      subroutine allocate_press_surf_ctl
 !!      subroutine allocate_temp_surf_ctl
 !!      subroutine allocate_magne_surf_ctl
@@ -71,37 +68,35 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine deallocate_surf_bc_lists                               &
-     &         (fl_prop, cd_prop, ht_prop, cp_prop)
+      subroutine deallocate_surf_bc_lists(MHD_prop)
 !
-      use t_physical_property
+      use t_control_parameter
 !
-      type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in) :: cd_prop
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
+      type(MHD_evolution_param), intent(in) :: MHD_prop
 !
 !
-      if (ht_prop%iflag_scheme .gt. id_no_evolution) then
+      if (MHD_prop%ht_prop%iflag_scheme .gt. id_no_evolution) then
         if(h_flux_surf%num_bc .gt. 0) call deallocate_temp_surf_ctl
       end if
 !
-      if (fl_prop%iflag_scheme .gt. id_no_evolution) then
+      if (MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
         if(torque_surf%num_bc.gt.0) call deallocate_velo_surf_ctl
         if(wall_surf%num_bc.gt.0)   call deallocate_press_surf_ctl
       end if
 !
-      if    (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution             &
-     &  .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
+      if    (MHD_prop%cd_prop%iflag_Bevo_scheme .gt. id_no_evolution    &
+     &  .or. MHD_prop%cd_prop%iflag_Aevo_scheme .gt. id_no_evolution)   &
+     & then
         if(magne_surf%num_bc .gt. 0)   call deallocate_magne_surf_ctl
         if(current_surf%num_bc .gt. 0) call deallocate_current_surf_ctl
         if(e_potential_surf%num_bc.gt.0) call deallocate_magp_surf_ctl
       end if
 !
-      if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
+      if (MHD_prop%cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         if(a_potential_surf%num_bc.gt.0) call deallocate_vecp_surf_ctl
       end if
 ! 
-      if (cp_prop%iflag_scheme .gt. id_no_evolution) then
+      if (MHD_prop%cp_prop%iflag_scheme .gt. id_no_evolution) then
         if(light_surf%num_bc.gt.0) call deallocate_composit_surf_ctl
       end if
 !

@@ -226,16 +226,15 @@
       call set_material_property                                        &
      &   (iphys, MHD_prop1%ref_param_T%depth_top,                       &
      &    MHD_prop1%ref_param_T%depth_bottom, MHD_prop1)
-      call init_ele_material_property(mesh%ele%numele,                  &
-     &    MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop)
+      call init_ele_material_property(mesh%ele%numele, MHD_prop1)
       call define_sgs_components                                        &
      &   (mesh%node%numnod, mesh%ele%numele, SGS_par%model_p,           &
-     &    layer_tbl, MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop,            &
-     &    ifld_sgs, icomp_sgs, wk_sgs1, sgs_coefs, sgs_coefs_nod)
+     &    layer_tbl, MHD_prop1, ifld_sgs, icomp_sgs, wk_sgs1,           &
+     &    sgs_coefs, sgs_coefs_nod)
       call define_sgs_diff_coefs                                        &
      &   (mesh%ele%numele, SGS_par%model_p, SGS_par%commute_p,          &
-     &    layer_tbl, MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop,            &
-     &    ifld_diff, icomp_diff, wk_diff1, diff_coefs)
+     &    layer_tbl, MHD_prop1, ifld_diff, icomp_diff,                  &
+     &    wk_diff1, diff_coefs)
 !
 !  -------------------------------
 !
@@ -314,8 +313,7 @@
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_data'
       call set_boundary_data                                            &
      &   (time_d, IO_bc, mesh, ele_mesh, MHD_mesh, group,               &
-     &    MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop,                       &
-     &    MHD_prop1%ref_param_T, MHD_prop1%ref_param_C, iphys, nod_fld)
+     &    MHD_prop1, iphys, nod_fld)
 !
 !     ---------------------
 !
@@ -326,25 +324,22 @@
 !     ---------------------
 !
       if (iflag_debug.eq.1 ) write(*,*) 'allocate_aiccg_matrices'
-      call allocate_aiccg_matrices(time_d%dt, mesh%node,                &
-     &    MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop, FEM_prm)
+      call allocate_aiccg_matrices                                      &
+     &   (time_d%dt, mesh%node, MHD_prop1, FEM_prm)
 !      call reset_aiccg_matrices(mesh%node, mesh%ele, MHD_mesh%fluid)
 !
       if(solver_iflag(FEM_PRM%CG11_param%METHOD) .eq. iflag_mgcg) then
         call s_initialize_4_MHD_AMG(time_d%dt, FEM_prm,                 &
-     &      mesh%node, mesh%ele, ifld_diff, diff_coefs,                 &
-     &      MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop, FEM_prm%DJDS_param, &
-     &      MGCG_WK1, MGCG_FEM1, MGCG_MHD_FEM1, MHD1_matrices)
+     &      mesh%node, mesh%ele, ifld_diff, diff_coefs, MHD_prop1,      &
+     &      FEM_prm%DJDS_param, MGCG_WK1, MGCG_FEM1, MGCG_MHD_FEM1,     &
+     &      MHD1_matrices)
       end if
 !
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_stability_4_diffuse'
-      call cal_stability_4_diffuse                                      &
-     &   (time_d%dt, mesh%ele, MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop)
-! 
-      call deallocate_surf_bc_lists                                     &
-     &   (MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop)
+      call cal_stability_4_diffuse(time_d%dt, mesh%ele, MHD_prop1)
+      call deallocate_surf_bc_lists(MHD_prop1)
 !
       end subroutine init_analyzer_fl
 !

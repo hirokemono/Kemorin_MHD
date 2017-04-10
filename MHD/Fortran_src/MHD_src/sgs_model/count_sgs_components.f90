@@ -5,8 +5,7 @@
 !      Modified by H. Matsui on July, 2007
 !
 !!      subroutine define_sgs_components                                &
-!!     &         (numnod, numele, SGS_param, layer_tbl,                 &
-!!     &          fl_prop, cd_prop, ht_prop, cp_prop,                   &
+!!     &         (numnod, numele, SGS_param, layer_tbl, MHD_prop,       &
 !!     &          ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs, sgs_coefs_nod)
 !!
 !!      subroutine set_sgs_addresses                                    &
@@ -17,9 +16,7 @@
 !!      subroutine set_SGS_ele_fld_addresses                            &
 !!     &         (cd_prop, SGS_param, iphys_elediff)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
-!!        type(fluid_property), intent(in) :: fl_prop
-!!        type(conductive_property), intent(in) :: cd_prop
-!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(SGS_terms_address), intent(inout) :: ifld_sgs
 !!        type(SGS_terms_address), intent(inout) :: icomp_sgs
@@ -41,13 +38,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine define_sgs_components                                  &
-     &         (numnod, numele, SGS_param, layer_tbl,                   &
-     &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
+     &         (numnod, numele, SGS_param, layer_tbl, MHD_prop,         &
      &          ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs, sgs_coefs_nod)
 !
       use calypso_mpi
       use m_phys_labels
 !
+      use t_control_parameter
       use t_SGS_control_parameter
       use t_layering_ele_list
       use t_ele_info_4_dynamic
@@ -56,9 +53,7 @@
 !
       integer(kind = kint), intent(in) :: numnod, numele
       type(layering_tbl), intent(in) :: layer_tbl
-      type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in) :: cd_prop
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
+      type(MHD_evolution_param), intent(in) :: MHD_prop
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(SGS_terms_address), intent(inout) :: ifld_sgs, icomp_sgs
@@ -68,8 +63,9 @@
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs_nod
 !
 !
-      call s_count_sgs_components                                       &
-     &   (SGS_param, fl_prop, cd_prop, ht_prop, cp_prop, sgs_coefs)
+      call s_count_sgs_components(SGS_param,                            &
+     &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop, sgs_coefs)
 !
 !   set index for model coefficients
 !
@@ -79,8 +75,9 @@
       call alloc_SGS_num_coefs(sgs_coefs)
       call alloc_SGS_coefs(numele, sgs_coefs)
 !
-      call set_sgs_addresses                                            &
-     &   (SGS_param, fl_prop, cd_prop, ht_prop, cp_prop,                &
+      call set_sgs_addresses(SGS_param,                                 &
+     &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
      &    ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)
       call check_sgs_addresses                                          &
      &   (ifld_sgs, icomp_sgs, wk_sgs, sgs_coefs)

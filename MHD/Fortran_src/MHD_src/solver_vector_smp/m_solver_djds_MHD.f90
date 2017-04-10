@@ -7,15 +7,14 @@
 !
 !>     DJDS ordering table for MHD dynamo model
 !!
-!!      subroutine allocate_aiccg_matrices                              &
-!!     &         (dt, node, fl_prop, cd_prop, ht_prop, cp_prop, FEM_prm)
-!!      subroutine deallocate_aiccg_matrices                            &
-!!     &         (fl_prop, cd_prop, ht_prop, cp_prop)
+!!      subroutine allocate_aiccg_matrices(dt, node, MHD_prop, FEM_prm)
+!!      subroutine deallocate_aiccg_matrices(MHD_prop)
 !!      subroutine set_MHD_connectivities                               &
 !!     &         (DJDS_param, mesh, fluid, next_tbl, rhs_tbl)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(DJDS_poarameter), intent(in) :: DJDS_param
 !!        type(next_nod_ele_table), intent(inout) :: next_tbl
 !!        type(tables_4_FEM_assembles), intent(inout) :: rhs_tbl
@@ -24,6 +23,7 @@
       module m_solver_djds_MHD
 !
       use m_precision
+      use t_control_parameter
       use t_iccg_parameter
       use t_FEM_control_parameter
       use t_mesh_data
@@ -58,26 +58,24 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_aiccg_matrices                                &
-     &         (dt, node, fl_prop, cd_prop, ht_prop, cp_prop, FEM_prm)
+      subroutine allocate_aiccg_matrices(dt, node, MHD_prop, FEM_prm)
 !
       use allocate_MHD_AMG_array
 !
       real(kind = kreal), intent(in) :: dt
       type(node_data), intent(in) :: node
-      type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in) :: cd_prop
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
+      type(MHD_evolution_param), intent(in) :: MHD_prop
 !
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !
 !
 !
-      call set_residual_4_crank                                         &
-     &   (dt, fl_prop, cd_prop, ht_prop, cp_prop, FEM_prm)
+      call set_residual_4_crank(dt, MHD_prop%fl_prop, MHD_prop%cd_prop, &
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop, FEM_prm)
 !
       call alloc_aiccg_matrices                                         &
-     &   (node, fl_prop, cd_prop, ht_prop, cp_prop,                     &
+     &   (node, MHD_prop%fl_prop, MHD_prop%cd_prop,                     &
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
      &    MHD1_matrices%MG_DJDS_table(0),                               &
      &    MHD1_matrices%MG_DJDS_fluid(0),                               &
      &    MHD1_matrices%MG_DJDS_linear(0),                              &
@@ -90,16 +88,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine deallocate_aiccg_matrices                              &
-     &         (fl_prop, cd_prop, ht_prop, cp_prop)
+      subroutine deallocate_aiccg_matrices(MHD_prop)
 !
-      type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in) :: cd_prop
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
+      type(MHD_evolution_param), intent(in) :: MHD_prop
 !
 !
       call dealloc_aiccg_matrices                                       &
-     &   (fl_prop, cd_prop, ht_prop, cp_prop,                           &
+     &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
      &    MHD1_matrices%Vmat_MG_DJDS(0), MHD1_matrices%Bmat_MG_DJDS(0), &
      &    MHD1_matrices%Tmat_MG_DJDS(0), MHD1_matrices%Cmat_MG_DJDS(0), &
      &    MHD1_matrices%Pmat_MG_DJDS(0), MHD1_matrices%Fmat_MG_DJDS(0))

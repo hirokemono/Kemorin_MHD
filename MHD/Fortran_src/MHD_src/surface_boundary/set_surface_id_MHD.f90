@@ -4,8 +4,7 @@
 !      Written by H. Matsui on Sep. 2005
 !
 !!      subroutine set_bc_surface_data(IO_bc, node, ele, surf,          &
-!!     &          sf_grp, sf_grp_nod, sf_grp_v,                         &
-!!     &          fl_prop, cd_prop, ht_prop, cp_prop, surf_bcs)
+!!     &          sf_grp, sf_grp_nod, sf_grp_v, MHD_prop, surf_bcs)
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -13,6 +12,7 @@
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(surface_node_grp_data), intent(in) :: sf_grp_nod
 !!        type(surface_group_geometry), intent(in) :: sf_grp_v
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(scalar_property), intent(in) :: ht_prop, cp_prop
@@ -22,6 +22,7 @@
 !
       use m_precision
 !
+      use t_control_parameter
       use t_physical_property
       use t_geometry_data
       use t_surface_data
@@ -44,8 +45,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_bc_surface_data(IO_bc, node, ele, surf,            &
-     &          sf_grp, sf_grp_nod, sf_grp_v,                           &
-     &          fl_prop, cd_prop, ht_prop, cp_prop, surf_bcs)
+     &          sf_grp, sf_grp_nod, sf_grp_v, MHD_prop, surf_bcs)
 !
       use m_machine_parameter
 !
@@ -58,9 +58,7 @@
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_node_grp_data), intent(in) :: sf_grp_nod
-      type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in) :: cd_prop
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
+      type(MHD_evolution_param), intent(in) :: MHD_prop
       type(surface_group_geometry), intent(in) :: sf_grp_v
 !
       type(surface_boundarty_conditions), intent(inout) :: surf_bcs
@@ -74,11 +72,13 @@
       call count_num_surf_bc(IO_bc, sf_grp, sf_grp_nod, surf_bcs)
 !
       call alloc_surf_bc_data_type                                      &
-     &   (fl_prop, cd_prop, ht_prop, cp_prop, surf_bcs)
+     &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop, surf_bcs)
 !
       call set_surface_id                                               &
      &   (IO_bc, node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v,         &
-     &    fl_prop, cd_prop, ht_prop, cp_prop, surf_bcs)
+     &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop, surf_bcs)
 !
       call deallocate_work_4_surf_bc_dat
 ! 

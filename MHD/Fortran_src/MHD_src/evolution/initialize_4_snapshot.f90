@@ -210,16 +210,15 @@
       call set_material_property                                        &
      &   (iphys, MHD_prop1%ref_param_T%depth_top,                       &
      &    MHD_prop1%ref_param_T%depth_bottom, MHD_prop1)
-      call init_ele_material_property(mesh%ele%numele,                  &
-     &    MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop)
+      call init_ele_material_property(mesh%ele%numele, MHD_prop1)
       call define_sgs_components                                        &
      &   (mesh%node%numnod, mesh%ele%numele, SGS_par%model_p,           &
-     &    layer_tbl, MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop,            &
-     &    ifld_sgs, icomp_sgs, wk_sgs1,  sgs_coefs, sgs_coefs_nod)
+     &    layer_tbl, MHD_prop1, ifld_sgs, icomp_sgs, wk_sgs1,           &
+     &    sgs_coefs, sgs_coefs_nod)
       call define_sgs_diff_coefs                                        &
      &   (mesh%ele%numele, SGS_par%model_p, SGS_par%commute_p,          &
-     &    layer_tbl, MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop,            &
-     &    ifld_diff, icomp_diff, wk_diff1, diff_coefs)
+     &    layer_tbl, MHD_prop1, ifld_diff, icomp_diff,                  &
+     &    wk_diff1, diff_coefs)
 !
       call deallocate_surface_geom_type(ele_mesh%surf)
       call deallocate_edge_geom_type(ele_mesh%edge)
@@ -266,8 +265,7 @@
       if (iflag_debug.eq.1) write(*,*)' set_boundary_data'
       call set_boundary_data                                            &
      &   (time_d, IO_bc, mesh, ele_mesh, MHD_mesh, group,               &
-     &    MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop,                       &
-     &    MHD_prop1%ref_param_T, MHD_prop1%ref_param_C, iphys, nod_fld)
+     &    MHD_prop1, iphys, nod_fld)
 !
 !     ---------------------
 !
@@ -277,8 +275,7 @@
 !
 !     ---------------------
 !
-      call deallocate_surf_bc_lists                                     &
-     &   (MHD_prop1%fl_prop, MHD_prop1%cd_prop, MHD_prop1%ht_prop, MHD_prop1%cp_prop)
+      call deallocate_surf_bc_lists(MHD_prop1)
 !
       end subroutine init_analyzer_snap
 !
