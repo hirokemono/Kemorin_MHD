@@ -51,7 +51,7 @@
         type(tables_4_FEM_assembles) :: rhs_tbl
 !
 !>        Stracture for Jacobians for FEM grid
-        type(jacobians_type) :: jacobians
+        type(jacobians_type) :: jcs
 !>        lumped mass matrix
         type(lumped_mass_matrices) :: m_lump
       end type finite_element_integration

@@ -204,7 +204,7 @@
      &      MGCG_FEM%MG_mesh(i_level)%mesh%ele,                         &
      &      MGCG_FEM%MG_mesh(i_level)%group%surf_grp,                   &
      &      MGCG_FEM%MG_mesh(i_level)%group%infty_grp,                  &
-     &      MGCG_FEM%MG_FEM_int(i_level)%jacobians)
+     &      MGCG_FEM%MG_FEM_int(i_level)%jcs)
 !
         call const_jacobians_surf_group                                 &
      &     (my_rank, MGCG_WK%MG_mpi(i_level)%nprocs,                    &
@@ -212,7 +212,7 @@
      &      MGCG_FEM%MG_mesh(i_level)%mesh%ele,                         &
      &      MGCG_FEM%MG_ele_mesh(i_level)%surf,                         &
      &      MGCG_FEM%MG_mesh(i_level)%group%surf_grp,                   &
-     &      MGCG_FEM%MG_FEM_int(i_level)%jacobians)
+     &      MGCG_FEM%MG_FEM_int(i_level)%jcs)
       end do
 !
 !
@@ -236,7 +236,7 @@
      &         'int_normal_4_all_surface', i_level
         call int_normal_4_all_surface                                   &
      &     (MGCG_FEM%MG_ele_mesh(i_level)%surf,                         &
-     &      MGCG_FEM%MG_FEM_int(i_level)%jacobians%jac_2d)
+     &      MGCG_FEM%MG_FEM_int(i_level)%jcs%jac_2d)
         call int_surface_parameters(MGCG_FEM%MG_mesh(i_level)%mesh,     &
      &      MGCG_FEM%MG_ele_mesh(i_level)%surf,                         &
      &      MGCG_FEM%MG_mesh(i_level)%group,                            &
@@ -272,7 +272,7 @@
         call s_int_type_mass_matrices                                   &
      &     (FEM_prm, MGCG_FEM%MG_mesh(i_level)%mesh,                    &
      &      MGCG_MHD_FEM%MG_MHD_mesh(i_level),                          &
-     &      MGCG_FEM%MG_FEM_int(i_level)%jacobians,                     &
+     &      MGCG_FEM%MG_FEM_int(i_level)%jcs,                           &
      &      MGCG_FEM%MG_FEM_int(i_level)%rhs_tbl,                       &
      &      MGCG_FEM%MG_FEM_mat(i_level),                               &
      &      MGCG_FEM%MG_FEM_int(i_level),                               &
@@ -439,7 +439,7 @@
      &        MHD_prop%fl_prop, MHD_prop%cd_prop,                       &
      &        MHD_prop%ht_prop, MHD_prop%cp_prop,                       &
      &        MGCG_MHD_FEM%ak_MHD_AMG(i_level),                         &
-     &        MGCG_FEM%MG_FEM_int(i_level)%jacobians,                   &
+     &        MGCG_FEM%MG_FEM_int(i_level)%jcs,                         &
      &        MGCG_MHD_FEM%MG_filter_MHD(i_level), ifld_diff,           &
      &        MGCG_MHD_FEM%MG_diff_coefs(i_level),                      &
      &        MGCG_FEM%MG_FEM_int(i_level)%rhs_tbl,                     &

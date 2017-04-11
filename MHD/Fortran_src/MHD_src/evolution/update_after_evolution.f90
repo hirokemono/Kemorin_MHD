@@ -192,7 +192,7 @@
      &     mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,           &
      &     MHD_mesh%conduct, group%surf_grp, MHD_prop%cd_prop,          &
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Fsf_bcs, iphys, &
-     &     iphys_ele, ele_fld, fem_int%jacobians, fem_int%rhs_tbl,      &
+     &     iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,            &
      &     FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,              &
      &     sgs_coefs, diff_coefs, filtering, fem_int%m_lump,            &
      &     s_package%Bmatrix, s_package%Fmatrix, ak_MHD%ak_d_magne,     &
@@ -206,7 +206,7 @@
      &     MHD_mesh%fluid, MHD_mesh%conduct, layer_tbl,                 &
      &     group%surf_grp, nod_bcs%Bnod_bcs,                            &
      &     surf_bcs%Asf_bcs, surf_bcs%Fsf_bcs, iphys, iphys_ele,        &
-     &     fem_int%jacobians, fem_int%rhs_tbl, FEM_elens,               &
+     &     fem_int%jcs, fem_int%rhs_tbl, FEM_elens,                     &
      &     filtering, wide_filtering, fem_int%m_lump,                   &
      &     wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk,              &
      &     rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl,  &
@@ -223,7 +223,7 @@
      &     MHD_mesh%conduct, group%surf_grp, MHD_prop%cd_prop,          &
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Bsf_bcs,        &
      &     surf_bcs%Fsf_bcs, iphys, iphys_ele, ele_fld,                 &
-     &     fem_int%jacobians, fem_int%rhs_tbl, FEM_elens, icomp_sgs,    &
+     &     fem_int%jcs, fem_int%rhs_tbl, FEM_elens, icomp_sgs,          &
      &     ifld_diff, iphys_elediff, sgs_coefs, sgs_coefs_nod,          &
      &     diff_coefs, filtering, fem_int%m_lump,                       &
      &     s_package%Bmatrix, s_package%Fmatrix, ak_MHD%ak_d_magne,     &
@@ -236,7 +236,7 @@
      &     mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,           &
      &     MHD_mesh%fluid, MHD_mesh%conduct, layer_tbl, group%surf_grp, &
      &     surf_bcs%Bsf_bcs, surf_bcs%Fsf_bcs, iphys, iphys_ele,        &
-     &     fem_int%jacobians, fem_int%rhs_tbl, FEM_elens,               &
+     &     fem_int%jcs, fem_int%rhs_tbl, FEM_elens,                     &
      &     filtering, wide_filtering, fem_int%m_lump,                   &
      &     wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk,              &
      &     rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl,  &
@@ -255,8 +255,7 @@
      &       mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,         &
      &       MHD_mesh%fluid, group%surf_grp, MHD_prop%ht_prop,          &
      &       MHD_prop%ref_param_T, nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs,  &
-     &       iphys, iphys_ele, ele_fld,                                 &
-     &       fem_int%jacobians, fem_int%rhs_tbl,                        &
+     &       iphys, iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,   &
      &       FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,            &
      &       sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,           &
      &       s_package%Tmatrix, ak_MHD%ak_d_temp, MGCG_WK,              &
@@ -274,8 +273,7 @@
      &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
      &        MHD_mesh%fluid, group%surf_grp, MHD_prop%ht_prop,         &
      &        MHD_prop%ref_param_T, nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, &
-     &        iphys, iphys_ele, ele_fld,                                &
-     &        fem_int%jacobians, fem_int%rhs_tbl,                       &
+     &        iphys, iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,  &
      &        FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,           &
      &        sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,          &
      &        s_package%Tmatrix, ak_MHD%ak_d_temp, MGCG_WK,             &
@@ -293,7 +291,7 @@
      &      time_d%i_time_step, time_d%dt, FEM_prm, SGS_par,            &
      &      mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &
      &      MHD_mesh%fluid, group%surf_grp, surf_bcs%Tsf_bcs,           &
-     &      iphys, iphys_ele, ele_fld, fem_int%jacobians,               &
+     &      iphys, iphys_ele, ele_fld, fem_int%jcs,                     &
      &      fem_int%rhs_tbl, FEM_elens, filtering, wide_filtering,      &
      &      layer_tbl, wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk,  &
      &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, &
@@ -312,9 +310,8 @@
      &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
      &        MHD_mesh%fluid, group%surf_grp, MHD_prop%cp_prop,         &
      &        MHD_prop%ref_param_C, nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, &
-     &        iphys, iphys_ele, ele_fld,                                &
-     &        fem_int%jacobians, fem_int%rhs_tbl, FEM_elens,            &
-     &        icomp_sgs, ifld_diff, iphys_elediff,                      &
+     &        iphys, iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,  &
+     &        FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,           &
      &        sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,          &
      &        s_package%Cmatrix, ak_MHD%ak_d_composit, MGCG_WK,         &
      &        wk_filter, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%surf_wk,   &
@@ -329,9 +326,8 @@
      &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,        &
      &        MHD_mesh%fluid, group%surf_grp, MHD_prop%cp_prop,         &
      &        MHD_prop%ref_param_C, nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, &
-     &        iphys, iphys_ele, ele_fld,                                &
-     &        fem_int%jacobians, fem_int%rhs_tbl, FEM_elens,            &
-     &        icomp_sgs, ifld_diff, iphys_elediff,                      &
+     &        iphys, iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,  &
+     &        FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,           &
      &        sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,          &
      &        s_package%Cmatrix, ak_MHD%ak_d_composit, MGCG_WK,         &
      &        wk_filter, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%surf_wk,   &
@@ -348,7 +344,7 @@
      &      time_d%i_time_step, time_d%dt, FEM_prm, SGS_par,            &
      &      mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &
      &      MHD_mesh%fluid, group%surf_grp, surf_bcs%Csf_bcs, iphys,    &
-     &      iphys_ele, ele_fld, fem_int%jacobians, fem_int%rhs_tbl,     &
+     &      iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,           &
      &      FEM_elens, filtering, wide_filtering, layer_tbl,            &
      &      wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk,             &
      &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, &
@@ -376,7 +372,7 @@
      &      time_d%i_time_step, time_d%dt, FEM_prm, SGS_par,            &
      &      mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &
      &      MHD_mesh%fluid, group%surf_grp, surf_bcs%Vsf_bcs,           &
-     &      surf_bcs%Psf_bcs, iphys, iphys_ele, fem_int%jacobians,      &
+     &      surf_bcs%Psf_bcs, iphys, iphys_ele, fem_int%jcs,            &
      &      fem_int%rhs_tbl, FEM_elens, filtering, wide_filtering,      &
      &      layer_tbl, wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk,  &
      &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, &
@@ -439,7 +435,7 @@
      &      time_d%i_time_step, time_d%dt, FEM_prm, SGS_par,            &
      &      mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &
      &      MHD_mesh%fluid, group%surf_grp, surf_bcs%Vsf_bcs,           &
-     &      surf_bcs%Psf_bcs, iphys, iphys_ele, fem_int%jacobians,      &
+     &      surf_bcs%Psf_bcs, iphys, iphys_ele, fem_int%jcs,            &
      &      fem_int%rhs_tbl, FEM_elens, filtering, wide_filtering,      &
      &      layer_tbl, wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk,  &
      &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, &
@@ -453,7 +449,7 @@
      &      FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,       &
      &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
      &      surf_bcs%Tsf_bcs, iphys, iphys_ele, ele_fld,                &
-     &      fem_int%jacobians, fem_int%rhs_tbl, FEM_elens,              &
+     &      fem_int%jcs, fem_int%rhs_tbl, FEM_elens,                    &
      &      filtering, wide_filtering, layer_tbl,                       &
      &      wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk,             &
      &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, &
@@ -467,7 +463,7 @@
      &      FEM_prm, SGS_par, mesh%nod_comm, mesh%node, mesh%ele,       &
      &      ele_mesh%surf, MHD_mesh%fluid, group%surf_grp,              &
      &      surf_bcs%Csf_bcs, iphys, iphys_ele, ele_fld,                &
-     &      fem_int%jacobians, fem_int%rhs_tbl, FEM_elens,              &
+     &      fem_int%jcs, fem_int%rhs_tbl, FEM_elens,                    &
      &      filtering, wide_filtering, layer_tbl,                       &
      &      wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk,             &
      &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, &
@@ -482,7 +478,7 @@
      &     mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,           &
      &     MHD_mesh%fluid, MHD_mesh%conduct, layer_tbl, group%surf_grp, &
      &     nod_bcs%Bnod_bcs, surf_bcs%Asf_bcs, surf_bcs%Fsf_bcs,        &
-     &     iphys, iphys_ele, fem_int%jacobians, fem_int%rhs_tbl,        &
+     &     iphys, iphys_ele, fem_int%jcs, fem_int%rhs_tbl,              &
      &     FEM_elens, filtering, wide_filtering, fem_int%m_lump,        &
      &     wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk,              &
      &     rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl,  &
@@ -495,7 +491,7 @@
      &     mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,           &
      &     MHD_mesh%fluid, MHD_mesh%conduct, layer_tbl, group%surf_grp, &
      &     surf_bcs%Bsf_bcs, surf_bcs%Fsf_bcs, iphys, iphys_ele,        &
-     &     fem_int%jacobians, fem_int%rhs_tbl, FEM_elens,               &
+     &     fem_int%jcs, fem_int%rhs_tbl, FEM_elens,                     &
      &     filtering, wide_filtering, fem_int%m_lump,                   &
      &     wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk,              &
      &     rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl,  &
@@ -596,7 +592,7 @@
      &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf, fluid, &
      &        group%surf_grp, MHD_prop%ht_prop, MHD_prop%ref_param_T,   &
      &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys, iphys_ele,     &
-     &        ele_fld, fem_int%jacobians, fem_int%rhs_tbl,              &
+     &        ele_fld, fem_int%jcs, fem_int%rhs_tbl,                    &
      &        FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,           &
      &        sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,          &
      &        s_package%Tmatrix, ak_MHD%ak_d_temp, MGCG_WK,             &
@@ -612,7 +608,7 @@
      &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf, fluid, &
      &        group%surf_grp, MHD_prop%ht_prop, MHD_prop%ref_param_T,   &
      &        nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys, iphys_ele,     &
-     &        ele_fld, fem_int%jacobians, fem_int%rhs_tbl,              &
+     &        ele_fld, fem_int%jcs, fem_int%rhs_tbl,                    &
      &        FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,           &
      &        sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,          &
      &        s_package%Tmatrix, ak_MHD%ak_d_temp, MGCG_WK,             &
@@ -630,7 +626,7 @@
      &      time_d%i_time_step, time_d%dt, FEM_prm, SGS_par,            &
      &      mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,          &
      &      fluid, group%surf_grp, surf_bcs%Tsf_bcs,                    &
-     &      iphys, iphys_ele, ele_fld, fem_int%jacobians,               &
+     &      iphys, iphys_ele, ele_fld, fem_int%jcs,                     &
      &      fem_int%rhs_tbl, FEM_elens, filtering, wide_filtering,      &
      &      layer_tbl, wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk,  &
      &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, &
@@ -649,7 +645,7 @@
      &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf, fluid, &
      &        group%surf_grp, MHD_prop%cp_prop, MHD_prop%ref_param_C,   &
      &        nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys, iphys_ele,     &
-     &        ele_fld, fem_int%jacobians, fem_int%rhs_tbl, FEM_elens,   &
+     &        ele_fld, fem_int%jcs, fem_int%rhs_tbl, FEM_elens,         &
      &        icomp_sgs, ifld_diff, iphys_elediff,                      &
      &        sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,          &
      &        s_package%Cmatrix, ak_MHD%ak_d_composit, MGCG_WK,         &
@@ -665,7 +661,7 @@
      &        mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf, fluid, &
      &        group%surf_grp, MHD_prop%cp_prop, MHD_prop%ref_param_C,   &
      &        nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys, iphys_ele,     &
-     &        ele_fld, fem_int%jacobians, fem_int%rhs_tbl, FEM_elens,   &
+     &        ele_fld, fem_int%jcs, fem_int%rhs_tbl, FEM_elens,         &
      &        icomp_sgs, ifld_diff, iphys_elediff,                      &
      &        sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,          &
      &        s_package%Cmatrix, ak_MHD%ak_d_composit, MGCG_WK,         &
@@ -683,7 +679,7 @@
      &     time_d%i_time_step, time_d%dt, FEM_prm, SGS_par,             &
      &     mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,           &
      &     fluid, group%surf_grp, surf_bcs%Csf_bcs, iphys,              &
-     &     iphys_ele, ele_fld, fem_int%jacobians, fem_int%rhs_tbl,      &
+     &     iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,            &
      &     FEM_elens, filtering, wide_filtering, layer_tbl,             &
      &     wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk,              &
      &     rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl,  &
@@ -711,7 +707,7 @@
      &      time_d%i_time_step, time_d%dt, FEM_prm, SGS_par,            &
      &      mesh%nod_comm, mesh%node, mesh%ele,                         &
      &      ele_mesh%surf, fluid, group%surf_grp, surf_bcs%Vsf_bcs,     &
-     &      surf_bcs%Psf_bcs, iphys, iphys_ele, fem_int%jacobians,      &
+     &      surf_bcs%Psf_bcs, iphys, iphys_ele, fem_int%jcs,            &
      &      fem_int%rhs_tbl, FEM_elens, filtering, wide_filtering,      &
      &      layer_tbl, wk_cor, wk_lsq, wk_diff, wk_filter, mhd_fem_wk,  &
      &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, &

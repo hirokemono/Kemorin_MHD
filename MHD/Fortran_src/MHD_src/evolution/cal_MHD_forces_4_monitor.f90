@@ -397,7 +397,7 @@
      &       (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,    &
      &        i_src, i_fld, fluid%istack_ele_fld_smp,                   &
      &        mhd_fem_wk%mlump_fl, nod_comm, node, ele, iphys_ele,      &
-     &        ele_fld, fem_int%jacobians%jac_3d, fem_int%rhs_tbl,       &
+     &        ele_fld, fem_int%jcs%jac_3d, fem_int%rhs_tbl,             &
      &        rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
         end if
       end do

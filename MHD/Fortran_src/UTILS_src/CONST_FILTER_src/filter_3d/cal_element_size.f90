@@ -122,30 +122,30 @@
       if (itype_mass_matrix .eq. 1) then
         if (iflag_debug.eq.1) write(*,*) 'set_consist_mass_matrix'
         call set_consist_mass_matrix                                    &
-     &     (mesh%node, mesh%ele, fem_int%jacobians%jac_3d,              &
+     &     (mesh%node, mesh%ele, fem_int%jcs%jac_3d,                    &
      &      next_tbl_f%neib_nod, fem_int%rhs_tbl, tbl_crs, mat_tbl,     &
      &      rhs_mat%fem_wk, mass1)
       end if
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_mass_matrix_4_filter'
       call int_mass_matrix_4_filter                                     &
-     &   (mesh%node, mesh%ele, fem_int%jacobians%jac_3d,                &
+     &   (mesh%node, mesh%ele, fem_int%jcs%jac_3d,                      &
      &    fem_int%rhs_tbl, rhs_mat%fem_wk, rhs_mat%f_l, fem_int%m_lump)
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_dxidx_ele_type'
       call cal_dxidx_ele_type                                           &
-     &   (mesh%ele, fem_int%jacobians%jac_3d, dxidxs%dx_ele)
+     &   (mesh%ele, fem_int%jcs%jac_3d, dxidxs%dx_ele)
 !
 !  ---------------------------------------------------
 !        cal element size for each node
 !  ---------------------------------------------------
 !
       call cal_dx2_on_node                                              &
-     &   (mesh%nod_comm, mesh%node, mesh%ele, fem_int%jacobians%jac_3d, &
+     &   (mesh%nod_comm, mesh%node, mesh%ele, fem_int%jcs%jac_3d,       &
      &    fem_int%rhs_tbl, tbl_crs, fem_int%m_lump, itype_mass_matrix,  &
      &    mass1, FEM_elen, rhs_mat%fem_wk, rhs_mat%f_l)
       call cal_dxi_dxes_node                                            &
-     &   (mesh%nod_comm, mesh%node, mesh%ele, fem_int%jacobians%jac_3d, &
+     &   (mesh%nod_comm, mesh%node, mesh%ele, fem_int%jcs%jac_3d,       &
      &    fem_int%rhs_tbl, tbl_crs, fem_int%m_lump, itype_mass_matrix,  &
      &    mass1, dxidxs, rhs_mat%fem_wk, rhs_mat%f_l)
 !
@@ -162,12 +162,12 @@
         if (iflag_debug.eq.1) write(*,*) 'cal_1st_diffs_dx_by_consist'
         call cal_1st_diffs_dx_by_consist                                &
      &    (mesh%nod_comm, mesh%node, mesh%ele,                          &
-     &     fem_int%jacobians%jac_3d, fem_int%rhs_tbl, tbl_crs, mass1,   &
+     &     fem_int%jcs%jac_3d, fem_int%rhs_tbl, tbl_crs, mass1,         &
      &     FEM_elen, rhs_mat%fem_wk, rhs_mat%f_nl)
       else
         if (iflag_debug.eq.1) write(*,*) 'cal_1st_diffs_dx_by_lump'
         call cal_1st_diffs_dx_by_lump                                   &
-     &     (mesh%node, mesh%ele, fem_int%jacobians%jac_3d,              &
+     &     (mesh%node, mesh%ele, fem_int%jcs%jac_3d,                    &
      &      fem_int%rhs_tbl, fem_int%m_lump, FEM_elen,                  &
      &      rhs_mat%fem_wk, rhs_mat%f_nl)
       end if
@@ -189,7 +189,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_filter_moments_on_node_1st'
       call cal_filter_moments_on_node_1st                               &
-     &   (mesh%nod_comm, mesh%node, mesh%ele, fem_int%jacobians%jac_3d, &
+     &   (mesh%nod_comm, mesh%node, mesh%ele, fem_int%jcs%jac_3d,       &
      &    fem_int%rhs_tbl, tbl_crs, fem_int%m_lump, FEM_elen, mass1,    &
      &    rhs_mat%fem_wk, rhs_mat%f_l)
 !
@@ -199,11 +199,11 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_diffs_delta_on_element'
       call cal_diffs_delta_on_element                                   &
-     &   (mesh%node, mesh%ele, fem_int%jacobians%jac_3d, FEM_elen)
+     &   (mesh%node, mesh%ele, fem_int%jcs%jac_3d, FEM_elen)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_2nd_diffs_delta_on_element'
       call cal_2nd_diffs_delta_on_element                               &
-     &   (mesh%node, mesh%ele, fem_int%jacobians%jac_3d, FEM_elen)
+     &   (mesh%node, mesh%ele, fem_int%jcs%jac_3d, FEM_elen)
 !
       if (iflag_momentum_type .eq. 1) then
         call delete_x_products_of_elen(FEM_elen)

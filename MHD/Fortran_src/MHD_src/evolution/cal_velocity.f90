@@ -205,17 +205,17 @@
 !
       iloop = -1
       call int_norm_div_v_monitor(iloop, node, ele, fluid,              &
-     &    iphys, nod_fld, fem_int%jacobians%jac_3d, rhs_mat%fem_wk,     &
+     &    iphys, nod_fld, fem_int%jcs%jac_3d, rhs_mat%fem_wk,           &
      &     rel_correct)
 !      call int_rms_div_v_monitor(iloop, node, ele, fluid,              &
-!     &    iphys, nod_fld, fem_int%jacobians%jac_3d, rhs_mat%fem_wk,    &
+!     &    iphys, nod_fld, fem_int%jcs%jac_3d, rhs_mat%fem_wk,          &
 !     &    rel_correct)
 !
       do iloop = 0, FEM_prm%maxiter_stokes
         call cal_mod_potential(ifld_diff%i_velo,                        &
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      node, ele, surf, fluid, sf_grp, Vnod_bcs, Vsf_bcs, Psf_bcs, &
-     &      iphys, fem_int%jacobians, fem_int%rhs_tbl,                  &
+     &      iphys, fem_int%jcs, fem_int%rhs_tbl,                        &
      &      FEM_elens, diff_coefs, Pmatrix, MGCG_WK%MG_vector,          &
      &      rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, &
      &      nod_fld)
@@ -235,7 +235,7 @@
         call cal_rms_scalar_potential                                   &
      &     (iloop, fluid%istack_ele_fld_smp, iphys%i_press,             &
      &      i_rms%i_press, j_ave%i_press, node, ele, nod_fld,           &
-     &      fem_int%jacobians%jac_3d, fem_int%jacobians%jac_3d_l,       &
+     &      fem_int%jcs%jac_3d, fem_int%jcs%jac_3d_l,                   &
      &      rhs_mat%fem_wk, rel_correct, ave_pr0, rms_pr0)
 !
 !
@@ -245,10 +245,10 @@
 !
 !
         call int_norm_div_v_monitor(iloop, node, ele, fluid,            &
-     &      iphys, nod_fld, fem_int%jacobians%jac_3d, rhs_mat%fem_wk,   &
+     &      iphys, nod_fld, fem_int%jcs%jac_3d, rhs_mat%fem_wk,         &
      &      rel_correct)
 !        call int_rms_div_v_monitor(iloop, node, ele, fluid,            &
-!     &      iphys, nod_fld, fem_int%jacobians%jac_3d, rhs_mat%fem_wk,  &
+!     &      iphys, nod_fld, fem_int%jcs%jac_3d, rhs_mat%fem_wk,        &
 !     &      rel_correct)
 !
         if (abs(rel_correct) .lt. FEM_prm%eps_4_stokes) go to 10

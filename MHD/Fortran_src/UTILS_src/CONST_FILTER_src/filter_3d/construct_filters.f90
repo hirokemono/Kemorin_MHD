@@ -73,27 +73,26 @@
       if (iflag_tgt_filter_type .eq. 1)  then
         if (iflag_debug.eq.1) write(*,*) 'const_commutative_filter'
         call const_commutative_filter(file_name, node, ele,             &
-     &      fem_int%jacobians%jac_3d, tbl_crs, rhs_mat,                 &
-     &      FEM_elen, FEM_moments)
+     &      fem_int%jcs%jac_3d, tbl_crs, rhs_mat, FEM_elen, FEM_moments)
 !
       else if (iflag_tgt_filter_type .eq. -1) then
         if (iflag_debug.eq.1) write(*,*) 'correct_commutative_filter'
         call correct_commutative_filter                                 &
-     &     (node, ele, fem_int%jacobians%jac_3d,                        &
+     &     (node, ele, fem_int%jcs%jac_3d,                              &
      &      tbl_crs, rhs_mat, FEM_elen, dxidxs, FEM_moments)
 !
       else if (iflag_tgt_filter_type .ge. -4                            &
      &     .and. iflag_tgt_filter_type .le. -2) then
         if (iflag_debug.eq.1) write(*,*) 'correct_by_simple_filter'
         call correct_by_simple_filter(nod_comm, node, ele,              &
-     &      fem_int%jacobians%jac_3d, fem_int%rhs_tbl, fem_int%m_lump,  &
+     &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, fem_int%m_lump,        &
      &      tbl_crs, rhs_mat, FEM_elen, dxidxs, FEM_moments)
 !
       else if (iflag_tgt_filter_type.ge.2                               &
      &     .and. iflag_tgt_filter_type.le.4) then
         if (iflag_debug.eq.1) write(*,*) 'const_simple_filter'
         call const_simple_filter(file_name, nod_comm, node, ele,        &
-     &      fem_int%jacobians%jac_3d, fem_int%rhs_tbl, fem_int%m_lump,  &
+     &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, fem_int%m_lump,        &
      &      tbl_crs, rhs_mat, FEM_elen, dxidxs, FEM_moments)
       end if
 !

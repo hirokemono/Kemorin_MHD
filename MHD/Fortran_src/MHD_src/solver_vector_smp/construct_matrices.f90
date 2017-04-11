@@ -226,7 +226,7 @@
      &    mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,           &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
-     &    ak_MHD, fem_int%jacobians, FEM_elens,                         &
+     &    ak_MHD, fem_int%jcs, FEM_elens,                               &
      &    ifld_diff, diff_coefs, fem_int%rhs_tbl,                       &
      &    MHD_matrices%MG_DJDS_table(0), MHD_matrices%MG_DJDS_fluid(0), &
      &    MHD_matrices%MG_DJDS_linear(0),                               &

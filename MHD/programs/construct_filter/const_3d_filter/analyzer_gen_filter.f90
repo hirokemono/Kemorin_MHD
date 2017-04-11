@@ -142,10 +142,10 @@
       call maximum_integration_points(num_int_points)
       call const_jacobian_and_volume(my_rank, nprocs,                   &
      &    mesh_filter%node, group_filter%surf_grp,                      &
-     &    group_filter%infty_grp, mesh_filter%ele, fem_int_f%jacobians)
+     &    group_filter%infty_grp, mesh_filter%ele, fem_int_f%jcs)
 !
 !      call check_jacobians_trilinear                                   &
-!     &   (my_rank, mesh_filter%ele, fem_int_f%jacobians%jac_3d_l)
+!     &   (my_rank, mesh_filter%ele, fem_int_f%jcs%jac_3d_l)
 !
 !  -------------------------------
 !

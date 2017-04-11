@@ -164,7 +164,7 @@
      &    MHD_mesh%fluid, MHD_mesh%conduct, group%surf_grp,             &
      &    MHD_prop%cd_prop, nod_bcs, surf_bcs,                          &
      &    iphys, iphys_ele, ele_fld,                                    &
-     &    fem_int%jacobians%jac_3d, fem_int%jacobians%jac_sf_grp,       &
+     &    fem_int%jcs%jac_3d, fem_int%jcs%jac_sf_grp,                   &
      &    fem_int%rhs_tbl, FEM_elens, ifld_diff, diff_coefs,            &
      &    fem_int%m_lump, mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%surf_wk,  &
      &    rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
@@ -238,7 +238,7 @@
      &   (dt, FEM_prm, SGS_par%model_p, SGS_par%filter_p,               &
      &    mesh%nod_comm, mesh%node, mesh%ele,                           &
      &    MHD_mesh%fluid, MHD_mesh%conduct, MHD_prop%cd_prop, iphys,    &
-     &    iphys_ele, ele_fld, fem_int%jacobians, fem_int%rhs_tbl,       &
+     &    iphys_ele, ele_fld, fem_int%jcs, fem_int%rhs_tbl,             &
      &    FEM_elens, icomp_sgs, iphys_elediff,                          &
      &    sgs_coefs, sgs_coefs_nod, filtering, wk_filter, mhd_fem_wk,   &
      &    rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
@@ -268,13 +268,13 @@
 !
       call cal_work_4_forces                                            &
      &  (FEM_prm, mesh%nod_comm, mesh%node, mesh%ele, MHD_prop%fl_prop, &
-     &   MHD_prop%cd_prop, iphys, fem_int%jacobians, fem_int%rhs_tbl,   &
+     &   MHD_prop%cd_prop, iphys, fem_int%jcs, fem_int%rhs_tbl,         &
      &   mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_nl, nod_fld)
 !
       call cal_work_4_sgs_terms(FEM_prm,                                &
      &   mesh%nod_comm, mesh%node, mesh%ele, MHD_mesh%conduct,          &
      &   MHD_prop%fl_prop, MHD_prop%cd_prop, iphys,                     &
-     &   fem_int%jacobians, fem_int%rhs_tbl, mhd_fem_wk,                &
+     &   fem_int%jcs, fem_int%rhs_tbl, mhd_fem_wk,                      &
      &   rhs_mat%fem_wk, rhs_mat%f_nl, nod_fld)
 ! 
       end subroutine cal_energy_fluxes

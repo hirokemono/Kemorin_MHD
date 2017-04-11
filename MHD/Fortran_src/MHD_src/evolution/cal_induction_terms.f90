@@ -105,22 +105,21 @@
         call int_vol_vect_p_pre_ele_upm(FEM_prm%npoint_t_evo_int, dt,   &
      &      node, ele, conduct, cd_prop, iphys, nod_fld,                &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
-     &      fem_int%jacobians%jac_3d, fem_int%rhs_tbl, mhd_fem_wk,      &
+     &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, mhd_fem_wk,            &
      &      rhs_mat%fem_wk, rhs_mat%f_nl)
       else
         call int_vol_vect_p_pre_ele(FEM_prm%npoint_t_evo_int,           &
      &      node, ele, conduct, cd_prop, iphys, nod_fld,                &
      &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
-     &      fem_int%jacobians%jac_3d, fem_int%rhs_tbl, mhd_fem_wk,      &
+     &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, mhd_fem_wk,            &
      &      rhs_mat%fem_wk, rhs_mat%f_nl)
       end if
 !
       call cal_t_evo_4_vector_cd(FEM_prm%iflag_magne_supg,              &
      &    conduct%istack_ele_fld_smp, dt, FEM_prm,                      &
      &    mhd_fem_wk%mlump_cd, nod_comm, node, ele, iphys_ele, ele_fld, &
-     &    fem_int%jacobians%jac_3d, fem_int%rhs_tbl,                    &
-     &    mhd_fem_wk%ff_m_smp, rhs_mat%fem_wk,                          &
-     &    rhs_mat%f_l, rhs_mat%f_nl)
+     &    fem_int%jcs%jac_3d, fem_int%rhs_tbl, mhd_fem_wk%ff_m_smp,     &
+     &    rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl)
       call delete_vector_ffs_on_bc(node, Bnod_bcs%nod_bc_a,             &
      &    rhs_mat%f_l, rhs_mat%f_nl)
 !
@@ -172,12 +171,12 @@
       call int_vol_vector_diffuse_ele                                   &
      &   (SGS_param%ifilter_final, ele%istack_ele_smp,                  &
      &    FEM_prm%npoint_t_evo_int,  node, ele, nod_fld,                &
-     &    fem_int%jacobians%jac_3d, fem_int%rhs_tbl,                    &
+     &    fem_int%jcs%jac_3d, fem_int%rhs_tbl,                          &
      &    FEM_elens, diff_coefs, iak_diff_b, one, ak_d_magne,           &
      &    iphys%i_vecp, rhs_mat%fem_wk, rhs_mat%f_l)
 !
       call int_sf_grad_velocity(node, ele, surf, sf_grp,                &
-     &    fem_int%jacobians%jac_sf_grp, fem_int%rhs_tbl,                &
+     &    fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,                      &
      &    Asf_bcs%grad, FEM_prm%npoint_t_evo_int, ak_d_magne,           &
      &    rhs_mat%fem_wk, rhs_mat%f_l)
 !

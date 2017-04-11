@@ -114,14 +114,14 @@
 !
       if (iflag_supg .gt. id_turn_OFF) then
         call int_vol_scalar_inertia_upw(node, ele,                      &
-     &      fem_int%jacobians%jac_3d, fem_int%rhs_tbl, nod_fld,         &
+     &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, nod_fld,               &
      &      fluid%istack_ele_fld_smp, num_int, dt, i_scalar,            &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, iphys_ele%i_velo,      &
      &      ele_fld%d_fld, property%coef_nega_adv,                      &
      &      rhs_mat%fem_wk, rhs_mat%f_nl)
       else
         call int_vol_scalar_inertia (node, ele,                         &
-     &      fem_int%jacobians%jac_3d, fem_int%rhs_tbl, nod_fld,         &
+     &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, nod_fld,               &
      &      fluid%istack_ele_fld_smp, num_int, i_scalar,                &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
      &      property%coef_nega_adv, rhs_mat%fem_wk, rhs_mat%f_nl)
@@ -129,7 +129,7 @@
 !
       call cal_t_evo_4_scalar(iflag_supg, fluid%istack_ele_fld_smp, dt, &
      &    FEM_prm, mhd_fem_wk%mlump_fl, nod_comm, node, ele, iphys_ele, &
-     &    ele_fld, fem_int%jacobians%jac_3d, fem_int%rhs_tbl,           &
+     &    ele_fld, fem_int%jcs%jac_3d, fem_int%rhs_tbl,                 &
      &    mhd_fem_wk%ff_m_smp, rhs_mat%fem_wk,                          &
      &    rhs_mat%f_l, rhs_mat%f_nl)
 !
@@ -184,12 +184,12 @@
 !
       if (iflag_supg .gt. id_turn_OFF) then
         call int_vol_div_w_const(node, ele,                             &
-     &      fem_int%jacobians%jac_3d, fem_int%rhs_tbl, nod_fld,         &
+     &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, nod_fld,               &
      &      fluid%istack_ele_fld_smp, num_int, i_vector,                &
      &      property%coef_nega_adv, rhs_mat%fem_wk, rhs_mat%f_nl)
       else
         call int_vol_div_w_const_upw(node, ele,                         &
-     &      fem_int%jacobians%jac_3d, fem_int%rhs_tbl, nod_fld,         &
+     &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, nod_fld,               &
      &      fluid%istack_ele_fld_smp, num_int, dt,                      &
      &      i_vector, ele_fld%ntot_phys, iphys_ele%i_velo,              &
      &      ele_fld%d_fld, property%coef_nega_adv,                      &
@@ -199,9 +199,8 @@
       call cal_t_evo_4_scalar                                           &
      &   (iflag_supg, fluid%istack_ele_fld_smp, dt, FEM_prm,            &
      &    mhd_fem_wk%mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld, &
-     &    fem_int%jacobians%jac_3d, fem_int%rhs_tbl,                    &
-     &    mhd_fem_wk%ff_m_smp, rhs_mat%fem_wk,                          &
-     &    rhs_mat%f_l, rhs_mat%f_nl)
+     &    fem_int%jcs%jac_3d, fem_int%rhs_tbl, mhd_fem_wk%ff_m_smp,     &
+     &    rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl)
 !
       call set_boundary_rhs_scalar                                      &
      &   (node, Snod_bcs%nod_bc_s, rhs_mat%f_l, rhs_mat%f_nl)
@@ -257,12 +256,12 @@
 !
       call int_vol_scalar_diffuse_ele(SGS_param%ifilter_final,          &
      &    fluid%istack_ele_fld_smp, num_int, node, ele, nod_fld,        &
-     &    fem_int%jacobians%jac_3d, fem_int%rhs_tbl,                    &
+     &    fem_int%jcs%jac_3d, fem_int%rhs_tbl,                          &
      &    FEM_elens, diff_coefs, iak_diffuse, one, ak_diffuse,          &
      &    i_scalar, rhs_mat%fem_wk, rhs_mat%f_l)
 !
       call int_sf_scalar_flux(node, ele, surf, sf_grp,                  &
-     &    fem_int%jacobians%jac_sf_grp, fem_int%rhs_tbl, Ssf_bcs%flux,  &
+     &    fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl, Ssf_bcs%flux,        &
      &    num_int, ak_diffuse, rhs_mat%fem_wk, rhs_mat%f_l)
 !
       call set_ff_nl_smp_2_ff                                           &

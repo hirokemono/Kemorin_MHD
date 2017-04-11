@@ -164,7 +164,7 @@
      &     (FEM_prm1, MHD_step%time_d, mesh1, MHD_mesh1,                &
      &      MHD_prop1%fl_prop, MHD_prop1%cd_prop,                       &
      &      iphys, nod_fld1, iphys_ele, fld_ele1,                       &
-     &      fem_int1%jacobians, rhs_mat1%fem_wk, mhd_fem1_wk)
+     &      fem_int1%jcs, rhs_mat1%fem_wk, mhd_fem1_wk)
       end if
 !
       iflag = output_IO_flag(flex_p1%istep_max_dt,MHD_step%point_step)

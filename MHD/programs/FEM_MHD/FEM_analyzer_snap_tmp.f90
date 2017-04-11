@@ -197,7 +197,7 @@
      &     (FEM_prm1, MHD_step%time_d, mesh1, MHD_mesh1,                &
      &      MHD_prop1%fl_prop, MHD_prop1%cd_prop, iphys,                &
      &      nod_fld1, iphys_ele, fld_ele1,                              &
-     &      fem_int1%jacobians, rhs_mat1%fem_wk, mhd_fem1_wk)
+     &      fem_int1%jcs, rhs_mat1%fem_wk, mhd_fem1_wk)
       end if
 !
       iflag = output_IO_flag(flex_p1%istep_max_dt, MHD_step%point_step)
@@ -336,9 +336,9 @@
      &      FEM_prm1, SGS_par1%model_p, SGS_par1%filter_p,              &
      &      mesh1%nod_comm, mesh1%node, mesh1%ele,                      &
      &      MHD_mesh1%conduct, MHD_prop1%cd_prop,                       &
-     &      iphys, iphys_ele, fld_ele1,                                 &
-     &      fem_int1%jacobians%jac_3d, fem_int1%rhs_tbl, FEM1_elen, filtering1,         &
-     &      sgs_coefs, wk_filter1, mhd_fem1_wk, rhs_mat1%fem_wk,                &
+     &      iphys, iphys_ele, fld_ele1, fem_int1%jcs%jac_3d,            &
+     &      fem_int1%rhs_tbl, FEM1_elen, filtering1,                    &
+     &      sgs_coefs, wk_filter1, mhd_fem1_wk, rhs_mat1%fem_wk,        &
      &      rhs_mat1%f_l, rhs_mat1%f_nl, nod_fld1)
 
       end if
@@ -348,8 +348,8 @@
      &        'lead ', trim(fhd_SGS_induction)
         call int_vol_sgs_induction(FEM_prm1,                            &
      &      mesh1%nod_comm, mesh1%node, mesh1%ele, MHD_mesh1%conduct,   &
-     &      iphys, fem_int1%jacobians%jac_3d, fem_int1%rhs_tbl, mhd_fem1_wk, rhs_mat1%fem_wk,   &
-     &      rhs_mat1%f_nl, nod_fld1)
+     &      iphys, fem_int1%jcs%jac_3d, fem_int1%rhs_tbl,               &
+     &      mhd_fem1_wk, rhs_mat1%fem_wk, rhs_mat1%f_nl, nod_fld1)
       end if
 !
 !$omp parallel
