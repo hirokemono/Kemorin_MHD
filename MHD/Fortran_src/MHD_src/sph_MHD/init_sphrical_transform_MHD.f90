@@ -8,10 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine init_sph_transform_MHD                               &
-!!     &         (SGS_param, MHD_prop, ipol, idpdr, itor, iphys,        &
-!!     &          sph, comms_sph, omega_sph, trans_p, WK, rj_fld)
+!!     &         (SGS_param, MHD_prop, sph_bc_U, ipol, idpdr, itor,     &
+!!     &          iphys, sph, comms_sph, omega_sph, trans_p, WK, rj_fld)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
+!!        type(sph_boundary_type), intent(in) :: sph_bc_U
 !!        type(phys_address), intent(in) :: ipol, idpdr, itor
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
@@ -43,6 +44,7 @@
       use t_sph_multi_FFTW
       use t_legendre_trans_select
       use t_sph_transforms
+      use t_boundary_params_sph_MHD
 !
       implicit  none
 !
@@ -65,8 +67,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine init_sph_transform_MHD                                 &
-     &         (SGS_param, MHD_prop, ipol, idpdr, itor, iphys,          &
-     &          sph, comms_sph, omega_sph, trans_p, WK, rj_fld)
+     &         (SGS_param, MHD_prop, sph_bc_U, ipol, idpdr, itor,       &
+     &          iphys, sph, comms_sph, omega_sph, trans_p, WK, rj_fld)
 !
       use set_address_sph_trans_MHD
       use set_address_sph_trans_SGS
@@ -77,6 +79,7 @@
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_U
       type(phys_address), intent(in) :: ipol, idpdr, itor
       type(phys_address), intent(in) :: iphys
 !
@@ -127,7 +130,7 @@
       call alloc_sph_trans_address(sph%sph_rtp, WK)
 !
       call sel_sph_transform_MHD                                        &
-     &   (ipol, MHD_prop%fl_prop, sph, comms_sph, omega_sph,            &
+     &   (ipol, MHD_prop%fl_prop, sph_bc_U, sph, comms_sph, omega_sph,  &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
      &    trans_p, WK%trns_MHD, WK%WK_sph, WK%MHD_mul_FFTW, rj_fld)
 !
@@ -142,7 +145,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine sel_sph_transform_MHD                                  &
-     &         (ipol, fl_prop, sph, comms_sph, omega_sph,               &
+     &         (ipol, fl_prop, sph_bc_U, sph, comms_sph, omega_sph,     &
      &          ncomp_max_trans, nvector_max_trans, nscalar_max_trans,  &
      &          trans_p, trns_MHD, WK_sph, MHD_mul_FFTW, rj_fld)
 !
@@ -159,6 +162,7 @@
 !
       type(phys_address), intent(in) :: ipol
       type(fluid_property), intent(in) :: fl_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_U
 !
       type(sph_grids), intent(inout) :: sph
       type(sph_comm_tables), intent(inout) :: comms_sph
@@ -185,8 +189,8 @@
       if (iflag_debug.eq.1) write(*,*) 'set_colatitude_rtp'
       call set_colatitude_rtp(sph%sph_rtp, sph%sph_rj, trans_p%leg)
       if (iflag_debug.eq.1) write(*,*) 'init_sum_coriolis_rlm'
-      call init_sum_coriolis_rlm                                        &
-     &   (sph%sph_params%l_truncation, sph%sph_rlm, trans_p%leg)
+      call init_sum_coriolis_rlm(sph%sph_params%l_truncation,           &
+     &    sph%sph_rlm, sph_bc_U, trans_p%leg)
 !
       if (iflag_debug.eq.1) write(*,*) 'select_legendre_transform'
       call select_legendre_transform                                    &
@@ -212,6 +216,7 @@
      &          ncomp_max_trans, nvector_max_trans, nscalar_max_trans,  &
      &          rj_fld, trns_MHD, WK_sph, MHD_mul_FFTW)
 !
+      use m_boundary_params_sph_MHD
       use sph_transforms_4_MHD
 !
       type(sph_grids), intent(in) :: sph
@@ -253,8 +258,9 @@
      &      WK_sph%WK_leg)
 !
         starttime = MPI_WTIME()
-        call sph_back_trans_4_MHD(sph, comms_sph, fl_prop, omega_sph,   &
-     &      trans_p, ipol, rj_fld, trns_MHD, WK_sph, MHD_mul_FFTW)
+        call sph_back_trans_4_MHD(sph, comms_sph, fl_prop, sph_bc_U,    &
+     &      omega_sph, trans_p, ipol, rj_fld, trns_MHD,                 &
+     &      WK_sph, MHD_mul_FFTW)
         call sph_forward_trans_4_MHD(sph, comms_sph, fl_prop, trans_p,  &
      &      ipol, trns_MHD, WK_sph, MHD_mul_FFTW, rj_fld)
         endtime(WK_sph%WK_leg%id_legendre) = MPI_WTIME() - starttime

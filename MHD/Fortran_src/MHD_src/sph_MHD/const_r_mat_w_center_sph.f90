@@ -7,8 +7,8 @@
 !!
 !!@verbatim
 !!      subroutine const_radial_mat_press00_sph                         &
-!!     &         (sph_rj, fl_prop, n_vect, n_comp, p_poisson_mat,       &
-!!     &          band_p00_poisson)
+!!     &         (sph_rj, sph_bc_U, fl_prop, n_vect, n_comp,            &
+!!     &           p_poisson_mat, band_p00_poisson)
 !!      subroutine const_radial_mat_scalar00_sph                        &
 !!     &         (sph_rj, sph_bc, dt, coef_imp, coef_f, coef_d,         &
 !!     &          n_vect, n_comp, evo_mat, band_s00_evo)
@@ -27,6 +27,7 @@
       use t_spheric_rj_data
       use t_sph_center_matrix
       use t_physical_property
+      use t_boundary_params_sph_MHD
 !
       implicit none
 !
@@ -37,16 +38,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_radial_mat_press00_sph                           &
-     &         (sph_rj, fl_prop, n_vect, n_comp, p_poisson_mat,         &
-     &          band_p00_poisson)
+     &         (sph_rj, sph_bc_U, fl_prop, n_vect, n_comp,              &
+     &          p_poisson_mat, band_p00_poisson)
 !
-      use m_boundary_params_sph_MHD
       use m_coef_fdm_to_center
       use m_ludcmp_3band
       use center_sph_matrices
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fluid_property), intent(in) :: fl_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_U
       integer(kind= kint), intent(in) :: n_vect, n_comp
       real(kind = kreal), intent(in) :: p_poisson_mat(3,n_vect,n_comp)
 !

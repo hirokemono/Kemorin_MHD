@@ -270,10 +270,10 @@
      &      ipol, itor, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
-      call cal_sol_magne_sph_crank                                      &
-     &   (sph%sph_rj, band_bp_evo, band_bt_evo, g_sph_rj, rj_fld)
+      call cal_sol_magne_sph_crank(sph%sph_rj, sph_bc_B,                &
+     &    band_bp_evo, band_bt_evo, g_sph_rj, rj_fld)
       call update_after_magne_sph                                       &
-     &   (sph%sph_rj, r_2nd, MHD_prop1%cd_prop, trans_p%leg,            &
+     &   (sph%sph_rj, r_2nd, MHD_prop1%cd_prop, sph_bc_B, trans_p%leg,  &
      &    ipol, itor, rj_fld)
 !
 !

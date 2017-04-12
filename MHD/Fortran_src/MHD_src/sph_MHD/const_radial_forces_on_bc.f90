@@ -8,8 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine s_const_radial_forces_on_bc(sph_rj, g_sph_rj,        &
-!!     &          fl_prop, ref_param_T, ref_param_C, ipol, rj_fld)
+!!     &          fl_prop, sph_bc_U, ref_param_T, ref_param_C,          &
+!!     &          ipol, rj_fld)
 !!        type(fluid_property), intent(in) :: fl_prop
+!!        type(sph_boundary_type), intent(in) :: sph_bc_U
 !!        type(reference_scalar_param), intent(in) :: ref_param_T
 !!        type(reference_scalar_param), intent(in) :: ref_param_C
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
@@ -35,12 +37,12 @@
 !   ------------------------------------------------------------------
 !
       subroutine s_const_radial_forces_on_bc(sph_rj, g_sph_rj,          &
-     &          fl_prop, ref_param_T, ref_param_C, ipol, rj_fld)
-!
-      use m_boundary_params_sph_MHD
+     &          fl_prop, sph_bc_U, ref_param_T, ref_param_C,            &
+     &          ipol, rj_fld)
 !
       use t_physical_property
       use t_reference_scalar_param
+      use t_boundary_params_sph_MHD
       use t_spheric_rj_data
       use t_phys_address
       use t_phys_data
@@ -48,6 +50,7 @@
       use cal_r_buoyancies_on_sph
 !
       type(fluid_property), intent(in) :: fl_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_U
       type(reference_scalar_param), intent(in) :: ref_param_T
       type(reference_scalar_param), intent(in) :: ref_param_C
 !

@@ -78,7 +78,8 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD'
-      call init_sph_transform_MHD(SGS_par1%model_p, MHD_prop1,          &
+      call init_sph_transform_MHD                                       &
+     &   (SGS_par1%model_p, MHD_prop1, sph_bc_U,                        &
      &    ipol, idpdr, itor, iphys, sph1, comms_sph1, omega_sph1,       &
      &    trans_p1, trns_WK1, rj_fld1)
 !
@@ -119,6 +120,7 @@
       use m_schmidt_poly_on_rtm
       use m_sph_trans_arrays_MHD
       use m_rms_4_sph_spectr
+      use m_boundary_params_sph_MHD
 !
       use cal_nonlinear
       use cal_sol_sph_MHD_crank
@@ -184,7 +186,7 @@
         if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
         call output_rms_sph_mhd_control                                 &
      &     (MHD_step1%time_d, sph1%sph_params, sph1%sph_rj,             &
-     &      trans_p1%leg, ipol, rj_fld1, pwr1, WK_pwr)
+     &      sph_bc_U, trans_p1%leg, ipol, rj_fld1, pwr1, WK_pwr)
       end if
       call end_eleps_time(11)
 !

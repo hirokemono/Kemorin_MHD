@@ -8,32 +8,24 @@
 !!
 !!@verbatim
 !!      subroutine cal_sol_velo_by_vort_sph_crank                       &
-!!     &         (sph_rj, band_vp_evo, band_vt_evo, ipol, itor, rj_fld)
+!!     &         (sph_rj, sph_bc_U, vt_ICB_bc, vt_CMB_bc,               &
+!!     &          band_vp_evo, band_vt_evo, ipol, itor, rj_fld)
 !!        Input address:    ipol%i_vort, itor%i_vort
 !!        Solution address: ipol%i_velo, itor%i_velo
 !!
 !!      subroutine cal_sol_pressure_by_div_v                            &
-!!     &         (sph_rj, band_p_poisson, ipol, rj_fld)
+!!     &         (sph_rj, sph_bc_U, band_p_poisson, ipol, rj_fld)
 !!        Solution address: ipol%i_press
 !!
 !!
 !!      subroutine cal_sol_magne_sph_crank                              &
-!!     &         (sph_rj, band_bp_evo, band_bt_evo, g_sph_rj,           &
+!!     &         (sph_rj, sph_bc_B, band_bp_evo, band_bt_evo, g_sph_rj, &
 !!     &          ipol, itor, rj_fld)
 !!        Input address:    ipol%i_magne, itor%i_magne
 !!        Solution address: ipol%i_magne, itor%i_magne
 !!
-!!      subroutine cal_sol_temperature_sph_crank                        &
-!!     &         (dt, sph_rj, ht_prop, band_temp_evo, ipol, rj_fld)
-!!        type(sph_rj_grid), intent(in) :: sph_rj
-!!        type(scalar_property), intent(in) :: ht_prop
-!!        type(band_matrices_type), intent(in) :: band_temp_evo
-!!        type(phys_address), intent(in) :: ipol
-!!        type(phys_data), intent(inout) :: rj_fld
-!!       Input address:    ipol%i_temp
-!!       Solution address: ipol%i_temp
-!!      subroutine cal_sol_composition_sph_crank                        &
-!!     &         (dt, sph_rj, cp_prop, band_comp_evo, ipol, rj_fld)
+!!      subroutine cal_sol_scalar_sph_crank(dt, sph_rj, property        &
+!!     &         sph_bc, band_s_evo, band_s00_evo, is_scalar, rj_fld)
 !!         type(sph_rj_grid), intent(in) :: sph_rj
 !!         type(scalar_property), intent(in) :: cp_prop
 !!         type(band_matrices_type), intent(in) :: band_comp_evo
@@ -64,8 +56,8 @@
 !
       implicit none
 !
+      private :: set_bc_velo_sph_crank, cal_sol_scl_sph_crank
       private :: set_bc_magne_sph_crank, set_bc_scalar_sph_crank
-      private :: cal_sol_scalar_sph_crank
 !
 ! -----------------------------------------------------------------------
 !
@@ -74,15 +66,18 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sol_velo_by_vort_sph_crank                         &
-     &         (sph_rj, band_vp_evo, band_vt_evo, ipol, itor, rj_fld)
+     &         (sph_rj, sph_bc_U, vt_ICB_bc, vt_CMB_bc,                 &
+     &          band_vp_evo, band_vt_evo, ipol, itor, rj_fld)
 !
-      use m_boundary_params_sph_MHD
       use m_coef_fdm_free_ICB
       use m_coef_fdm_free_CMB
       use copy_field_smp
       use solve_sph_fluid_crank
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(sph_boundary_type), intent(in) :: sph_bc_U
+      real(kind= kreal), intent(in) :: vt_ICB_bc(sph_rj%nidx_rj(2))
+      real(kind= kreal), intent(in) :: vt_CMB_bc(sph_rj%nidx_rj(2))
       type(band_matrices_type), intent(in) :: band_vp_evo, band_vt_evo
       type(phys_address), intent(in) :: ipol, itor
 !
@@ -96,7 +91,8 @@
      &    rj_fld%d_fld(1,ipol%i_vort), rj_fld%d_fld(1,itor%i_velo))
 !$omp end parallel
 !
-      call set_bc_velo_sph_crank(ipol%i_velo, sph_rj, rj_fld)
+      call set_bc_velo_sph_crank(ipol%i_velo, sph_rj,                   &
+     &    sph_bc_U, vt_ICB_bc, vt_CMB_bc, rj_fld)
 !
       call solve_velo_by_vort_sph_crank                                 &
      &   (sph_rj, band_vp_evo, band_vt_evo, ipol%i_velo, itor%i_velo,   &
@@ -107,13 +103,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sol_pressure_by_div_v                              &
-     &         (sph_rj, band_p_poisson, ipol, rj_fld)
+     &         (sph_rj, sph_bc_U, band_p_poisson, ipol, rj_fld)
 !
-      use m_boundary_params_sph_MHD
       use set_reference_sph_mhd
       use solve_sph_fluid_crank
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(sph_boundary_type), intent(in) :: sph_bc_U
       type(band_matrices_type), intent(in) :: band_p_poisson
       type(phys_address), intent(in) :: ipol
 !
@@ -134,13 +130,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sol_magne_sph_crank                                &
-     &         (sph_rj, band_bp_evo, band_bt_evo, g_sph_rj,             &
+     &         (sph_rj, sph_bc_B, band_bp_evo, band_bt_evo, g_sph_rj,   &
      &          ipol, itor, rj_fld)
 !
-      use m_boundary_params_sph_MHD
       use solve_sph_fluid_crank
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(sph_boundary_type), intent(in) :: sph_bc_B
       type(band_matrices_type), intent(in) :: band_bp_evo, band_bt_evo
       type(phys_address), intent(in) :: ipol, itor
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
@@ -149,7 +145,7 @@
 !
 !
       call set_bc_magne_sph_crank                                       &
-     &   (sph_rj, g_sph_rj, ipol%i_magne, rj_fld)
+     &   (sph_rj, g_sph_rj, sph_bc_B, ipol%i_magne, rj_fld)
 !
       call solve_magne_sph_crank                                        &
      &   (sph_rj, band_bp_evo, band_bt_evo, ipol%i_magne, itor%i_magne, &
@@ -159,60 +155,36 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sol_temperature_sph_crank                          &
-     &         (dt, sph_rj, ht_prop, band_temp_evo, ipol, rj_fld)
+      subroutine cal_sol_scalar_sph_crank(dt, sph_rj, property,         &
+     &         sph_bc, band_s_evo, band_s00_evo, is_scalar, rj_fld)
 !
-      use t_physical_property
-      use m_boundary_params_sph_MHD
       use m_radial_mat_sph_w_center
+      use t_physical_property
 !
       type(sph_rj_grid), intent(in) :: sph_rj
-      type(scalar_property), intent(in) :: ht_prop
-      type(band_matrices_type), intent(in) :: band_temp_evo
-      type(phys_address), intent(in) :: ipol
+      type(scalar_property), intent(in) :: property
+      type(sph_boundary_type), intent(in) :: sph_bc
+      type(band_matrices_type), intent(in) :: band_s_evo
+      type(band_matrix_type), intent(in) :: band_s00_evo
       real(kind = kreal), intent(in) :: dt
+      integer(kind = kint), intent(in) :: is_scalar
 !
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call cal_sol_scalar_sph_crank                                     &
-     &   (sph_rj, sph_bc_T, band_temp_evo, band_temp00_evo,             &
-     &    ht_prop%coef_advect, ht_prop%coef_diffuse,                    &
-     &    dt, ht_prop%coef_imp, ipol%i_temp, rj_fld)
+      call cal_sol_scl_sph_crank                                        &
+     &   (sph_rj, sph_bc, band_s_evo, band_s00_evo,                     &
+     &    property%coef_advect, property%coef_diffuse,                  &
+     &    dt, property%coef_imp, is_scalar, rj_fld)
 !
-      end subroutine cal_sol_temperature_sph_crank
-!
-! -----------------------------------------------------------------------
-!
-      subroutine cal_sol_composition_sph_crank                          &
-     &         (dt, sph_rj, cp_prop, band_comp_evo, ipol, rj_fld)
-!
-      use t_physical_property
-      use m_boundary_params_sph_MHD
-      use m_radial_mat_sph_w_center
-!
-      type(sph_rj_grid), intent(in) :: sph_rj
-      type(scalar_property), intent(in) :: cp_prop
-      type(band_matrices_type), intent(in) :: band_comp_evo
-      type(phys_address), intent(in) :: ipol
-      real(kind = kreal), intent(in) :: dt
-!
-      type(phys_data), intent(inout) :: rj_fld
-!
-!
-      call cal_sol_scalar_sph_crank                                     &
-     &   (sph_rj, sph_bc_C, band_comp_evo, band_comp00_evo,             &
-     &    cp_prop%coef_advect, cp_prop%coef_diffuse,                    &
-     &    dt, cp_prop%coef_imp, ipol%i_light, rj_fld)
-!
-      end subroutine cal_sol_composition_sph_crank
+      end subroutine cal_sol_scalar_sph_crank
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sol_scalar_sph_crank                               &
+      subroutine cal_sol_scl_sph_crank                                  &
      &         (sph_rj, sph_bc, band_s_evo, band_s00_evo, coef_adv,     &
-     &          coef_diffuse, dt, coef_imp, is_light, rj_fld)
+     &          coef_diffuse, dt, coef_imp, is_scalar, rj_fld)
 !
       use m_radial_mat_sph_w_center
       use t_sph_center_matrix
@@ -227,30 +199,30 @@
       real(kind = kreal), intent(in) :: coef_adv, coef_diffuse
       real(kind = kreal), intent(in) :: coef_imp
       real(kind = kreal), intent(in) :: dt
-      integer(kind = kint), intent(in) :: is_light
+      integer(kind = kint), intent(in) :: is_scalar
 !
       type(phys_data), intent(inout) :: rj_fld
 !
 !
       call set_bc_scalar_sph_crank(sph_rj, sph_bc,                      &
-     &    coef_adv, coef_diffuse, dt, coef_imp, is_light, rj_fld)
+     &    coef_adv, coef_diffuse, dt, coef_imp, is_scalar, rj_fld)
 !
       call solve_scalar_sph_crank(sph_rj, band_s_evo, band_s00_evo,     &
-     &    is_light, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,     &
+     &    is_scalar, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,    &
      &    x00_w_center)
 !
       call fill_scalar_at_external(sph_bc%kr_in, sph_bc%kr_out,         &
      &    sph_rj%inod_rj_center, sph_rj%idx_rj_degree_zero,             &
      &    sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                         &
-     &    is_light, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+     &    is_scalar, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
-      end subroutine cal_sol_scalar_sph_crank
+      end subroutine cal_sol_scl_sph_crank
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_bc_velo_sph_crank(is_velo, sph_rj, rj_fld)
+      subroutine set_bc_velo_sph_crank(is_velo, sph_rj,                 &
+     &          sph_bc_U, vt_ICB_bc, vt_CMB_bc, rj_fld)
 !
-      use m_boundary_params_sph_MHD
       use m_coef_fdm_free_ICB
       use m_coef_fdm_free_CMB
       use set_sph_exp_rigid_ICB
@@ -260,6 +232,9 @@
 !
       integer(kind = kint), intent(in) :: is_velo
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(sph_boundary_type), intent(in) :: sph_bc_U
+      real(kind= kreal), intent(in) :: vt_ICB_bc(sph_rj%nidx_rj(2))
+      real(kind= kreal), intent(in) :: vt_CMB_bc(sph_rj%nidx_rj(2))
 !
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -299,9 +274,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_bc_magne_sph_crank                                 &
-     &         (sph_rj, g_sph_rj, is_magne, rj_fld)
+     &         (sph_rj, g_sph_rj, sph_bc_B, is_magne, rj_fld)
 !
-      use m_boundary_params_sph_MHD
       use const_sph_radial_grad
       use cal_sph_exp_nod_icb_ins
       use cal_sph_exp_nod_cmb_ins
@@ -310,6 +284,7 @@
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
+      type(sph_boundary_type), intent(in) :: sph_bc_B
       integer(kind = kint), intent(in) :: is_magne
 !
       type(phys_data), intent(inout) :: rj_fld

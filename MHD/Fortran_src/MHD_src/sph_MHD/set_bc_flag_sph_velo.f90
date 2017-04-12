@@ -20,6 +20,7 @@
       use m_constants
       use m_machine_parameter
       use m_boundary_condition_IDs
+      use t_boundary_params_sph_MHD
 !
       use m_bc_data_list
       use m_surf_data_list
@@ -58,20 +59,28 @@
 !
       i = abs(igrp_icb)
       if(igrp_icb .lt. 0) then
-        call set_sph_velo_ICB_flag(sph_rj%idx_rj_degree_one, r_ICB,     &
-     &     torque_surf%ibc_type(i), torque_surf%bc_magnitude(i))
+        call set_sph_velo_ICB_flag                                      &
+     &    (sph_rj%nidx_rj(2), sph_rj%idx_rj_degree_one, r_ICB,          &
+     &     torque_surf%ibc_type(i), torque_surf%bc_magnitude(i),        &
+     &      sph_bc_U, vt_ICB_bc)
       else
-        call set_sph_velo_ICB_flag(sph_rj%idx_rj_degree_one, r_ICB,     &
-     &     velo_nod%ibc_type(i), velo_nod%bc_magnitude(i))
+        call set_sph_velo_ICB_flag                                      &
+     &    (sph_rj%nidx_rj(2), sph_rj%idx_rj_degree_one, r_ICB,          &
+     &     velo_nod%ibc_type(i), velo_nod%bc_magnitude(i),              &
+     &      sph_bc_U, vt_ICB_bc)
       end if
 !
       i = abs(igrp_cmb)
       if(igrp_icb .lt. 0) then
-        call set_sph_velo_CMB_flag(sph_rj%idx_rj_degree_one, r_CMB,     &
-     &      torque_surf%ibc_type(i), torque_surf%bc_magnitude(i))
+        call set_sph_velo_CMB_flag                                      &
+     &    (sph_rj%nidx_rj(2), sph_rj%idx_rj_degree_one, r_CMB,          &
+     &      torque_surf%ibc_type(i), torque_surf%bc_magnitude(i),       &
+     &      sph_bc_U, vt_CMB_bc)
       else
-        call set_sph_velo_CMB_flag(sph_rj%idx_rj_degree_one, r_CMB,     &
-     &      velo_nod%ibc_type(i), velo_nod%bc_magnitude(i))
+        call set_sph_velo_CMB_flag                                      &
+     &    (sph_rj%nidx_rj(2), sph_rj%idx_rj_degree_one, r_CMB,          &
+     &      velo_nod%ibc_type(i), velo_nod%bc_magnitude(i),             &
+     &      sph_bc_U, vt_CMB_bc)
       end if
 !
       end subroutine set_sph_bc_velo_sph
@@ -79,15 +88,17 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sph_velo_ICB_flag                                  &
-     &         (idx_rj_degree_one, r_ICB, ibc_type, bc_mag)
+      subroutine set_sph_velo_ICB_flag(jmax, idx_rj_degree_one,         &
+     &          r_ICB, ibc_type, bc_mag, sph_bc_U, vt_ICB_bc)
 !
-      use m_boundary_params_sph_MHD
-!
+      integer(kind = kint), intent(in) :: jmax
       integer(kind = kint), intent(in) :: idx_rj_degree_one(-1:1)
       real(kind = kreal), intent(in) :: r_ICB
       integer(kind = kint), intent(in) :: ibc_type
       real(kind = kreal), intent(in) :: bc_mag
+!
+      type(sph_boundary_type), intent(inout) :: sph_bc_U
+      real(kind= kreal), intent(inout) :: vt_ICB_bc(jmax)
 !
 !
       if      (ibc_type .eq. iflag_free_sph) then
@@ -122,15 +133,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sph_velo_CMB_flag                                  &
-     &         (idx_rj_degree_one, r_CMB, ibc_type, bc_mag)
+      subroutine set_sph_velo_CMB_flag(jmax, idx_rj_degree_one,         &
+     &          r_CMB, ibc_type, bc_mag, sph_bc_U, vt_CMB_bc)
 !
-      use m_boundary_params_sph_MHD
-!
+      integer(kind = kint), intent(in) :: jmax
       integer(kind = kint), intent(in) :: idx_rj_degree_one(-1:1)
       real(kind = kreal), intent(in) :: r_CMB
       integer(kind = kint), intent(in) :: ibc_type
       real(kind = kreal), intent(in) :: bc_mag
+!
+      type(sph_boundary_type), intent(inout) :: sph_bc_U
+      real(kind= kreal), intent(inout) :: vt_CMB_bc(jmax)
 !
 !
       if      (ibc_type .eq. iflag_free_sph) then

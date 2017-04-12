@@ -8,9 +8,10 @@
 !!
 !!
 !!@verbatim
-!!      subroutine init_sum_coriolis_rlm(l_truncation, sph_rlm, leg)
+!!      subroutine init_sum_coriolis_rlm                                &
+!!     &         (l_truncation, sph_rlm, sph_bc_U, leg)
 !!      subroutine sum_coriolis_rlm(ncomp_trans, sph_rlm, comm_rlm,     &
-!!     &          fl_prop, omega_sph, trns_MHD, leg, n_WR, WR)
+!!     &          fl_prop, sph_bc_U, omega_sph, trns_MHD, leg, n_WR, WR)
 !!      subroutine copy_coriolis_terms_rlm(ncomp_trans,                 &
 !!     &          sph_rlm, comm_rlm, fl_prop, trns_MHD, n_WS, WS)
 !!        type(sph_rlm_grid), intent(in)  :: sph_rlm
@@ -34,7 +35,7 @@
       use t_addresses_sph_transform
       use t_schmidt_poly_on_rtm
       use t_physical_property
-
+      use t_boundary_params_sph_MHD
 !
       implicit none
 !
@@ -44,15 +45,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_sum_coriolis_rlm(l_truncation, sph_rlm, leg)
+      subroutine init_sum_coriolis_rlm                                  &
+     &         (l_truncation, sph_rlm, sph_bc_U, leg)
 !
       use calypso_mpi
-      use m_boundary_params_sph_MHD
       use m_gaunt_coriolis_rlm
       use m_coriolis_terms_rlm
       use interact_coriolis_rlm
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
+      type(sph_boundary_type), intent(in) :: sph_bc_U
       type(legendre_4_sph_trans), intent(in) :: leg
       integer(kind = kint), intent(in) :: l_truncation
 !
@@ -90,17 +92,17 @@
 ! -----------------------------------------------------------------------
 !
       subroutine sum_coriolis_rlm(ncomp_trans, sph_rlm, comm_rlm,       &
-     &          fl_prop, omega_sph, trns_MHD, leg, n_WR, WR)
+     &          fl_prop, sph_bc_U, omega_sph, trns_MHD, leg, n_WR, WR)
 !
       use t_physical_property
       use t_boundary_params_sph_MHD
-      use m_boundary_params_sph_MHD
       use m_coriolis_terms_rlm
       use sum_coriolis_terms_rlm
 !
       type(sph_rlm_grid), intent(in) :: sph_rlm
       type(sph_comm_tbl), intent(in) :: comm_rlm
       type(fluid_property), intent(in) :: fl_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_U
       type(sph_rotation), intent(in) :: omega_sph
       type(address_4_sph_trans), intent(in) :: trns_MHD 
       type(legendre_4_sph_trans), intent(in) :: leg

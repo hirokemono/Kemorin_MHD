@@ -39,6 +39,7 @@
       use m_fdm_coefs
       use m_sph_trans_arrays_MHD
       use m_rms_4_sph_spectr
+      use m_boundary_params_sph_MHD
 !
       use cal_nonlinear
       use cal_sol_sph_MHD_crank
@@ -111,7 +112,7 @@
         if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
         call output_rms_sph_mhd_control                                 &
      &     (MHD_step%time_d, sph1%sph_params, sph1%sph_rj,              &
-     &      trans_p1%leg, ipol, rj_fld1, pwr1, WK_pwr)
+     &      sph_bc_U, trans_p1%leg, ipol, rj_fld1, pwr1, WK_pwr)
       end if
       call end_eleps_time(11)
       call end_eleps_time(4)

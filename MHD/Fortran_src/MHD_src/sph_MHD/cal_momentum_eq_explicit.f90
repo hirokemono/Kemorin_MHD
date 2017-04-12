@@ -33,6 +33,7 @@
       use t_phys_data
       use t_fdm_coefs
       use t_schmidt_poly_on_rtm
+      use t_boundary_params_sph_MHD
 !
       implicit  none
 !
@@ -51,6 +52,8 @@
       subroutine sel_explicit_sph(i_step, dt, SGS_param, MHD_prop,      &
      &          sph_rj, ipol, itor, rj_fld)
 !
+      use m_boundary_params_sph_MHD
+!
       integer(kind = kint), intent(in) :: i_step
       real(kind = kreal), intent(in) :: dt
 !
@@ -64,20 +67,24 @@
       if(MHD_prop%iflag_all_scheme .eq. id_explicit_euler) then
         call cal_explicit_sph_euler(dt, SGS_param, sph_rj,              &
      &      MHD_prop%fl_prop, MHD_prop%cd_prop,                         &
-     &      MHD_prop%ht_prop, MHD_prop%cp_prop, ipol, itor, rj_fld)
+     &      MHD_prop%ht_prop, MHD_prop%cp_prop,                         &
+     &      sph_bc_U, sph_bc_T, sph_bc_C, ipol, itor, rj_fld)
       else if(i_step .eq. 1) then
         if(iflag_debug.gt.0) write(*,*) 'cal_explicit_sph_euler'
         call cal_explicit_sph_euler(dt, SGS_param, sph_rj,              &
      &      MHD_prop%fl_prop, MHD_prop%cd_prop,                         &
-     &      MHD_prop%ht_prop, MHD_prop%cp_prop, ipol, itor, rj_fld)
+     &      MHD_prop%ht_prop, MHD_prop%cp_prop,                         &
+     &      sph_bc_U, sph_bc_T, sph_bc_C, ipol, itor, rj_fld)
         call cal_first_prev_step_adams(SGS_param, sph_rj,               &
      &      MHD_prop%fl_prop, MHD_prop%cd_prop,                         &
-     &      MHD_prop%ht_prop, MHD_prop%cp_prop, ipol, itor, rj_fld)
+     &      MHD_prop%ht_prop, MHD_prop%cp_prop,                         &
+     &      sph_bc_T, sph_bc_C, ipol, itor, rj_fld)
       else
         if(iflag_debug.gt.0) write(*,*) 'cal_explicit_sph_adams'
         call cal_explicit_sph_adams(dt, SGS_param, sph_rj,              &
      &      MHD_prop%fl_prop, MHD_prop%cd_prop,                         &
-     &      MHD_prop%ht_prop, MHD_prop%cp_prop, ipol, itor, rj_fld)
+     &      MHD_prop%ht_prop, MHD_prop%cp_prop,                         &
+     &      sph_bc_U, sph_bc_T, sph_bc_C, ipol, itor, rj_fld)
       end if
 !
       end subroutine sel_explicit_sph
@@ -87,9 +94,8 @@
 !
       subroutine cal_explicit_sph_adams(dt, SGS_param,                  &
      &          sph_rj, fl_prop, cd_prop, ht_prop, cp_prop,             &
-     &          ipol, itor, rj_fld)
+     &          sph_bc_U, sph_bc_T, sph_bc_C, ipol, itor, rj_fld)
 !
-      use m_boundary_params_sph_MHD
       use cal_vorticity_terms_adams
       use cal_nonlinear_sph_MHD
       use select_diff_adv_source
@@ -101,6 +107,8 @@
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
       type(scalar_property), intent(in) :: ht_prop, cp_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_U
+      type(sph_boundary_type), intent(in) :: sph_bc_T, sph_bc_C
       type(phys_address), intent(in) :: ipol, itor
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -166,9 +174,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_explicit_sph_euler(dt, SGS_param, sph_rj,          &
-     &         fl_prop, cd_prop, ht_prop, cp_prop, ipol, itor, rj_fld)
+     &         fl_prop, cd_prop, ht_prop, cp_prop,                      &
+     &         sph_bc_U, sph_bc_T, sph_bc_C, ipol, itor, rj_fld)
 !
-      use m_boundary_params_sph_MHD
       use cal_vorticity_terms_adams
       use select_diff_adv_source
 !
@@ -179,6 +187,8 @@
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
       type(scalar_property), intent(in) :: ht_prop, cp_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_U
+      type(sph_boundary_type), intent(in) :: sph_bc_T, sph_bc_C
       type(phys_address), intent(in) :: ipol, itor
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -243,9 +253,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_first_prev_step_adams(SGS_param, sph_rj,           &
-     &          fl_prop, cd_prop, ht_prop, cp_prop, ipol, itor, rj_fld)
+     &          fl_prop, cd_prop, ht_prop, cp_prop, sph_bc_T, sph_bc_C, &
+     &          ipol, itor, rj_fld)
 !
-      use m_boundary_params_sph_MHD
       use cal_vorticity_terms_adams
       use select_diff_adv_source
 !
@@ -254,6 +264,7 @@
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
       type(scalar_property), intent(in) :: ht_prop, cp_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_T, sph_bc_C
       type(phys_address), intent(in) :: ipol, itor
       type(phys_data), intent(inout) :: rj_fld
 !

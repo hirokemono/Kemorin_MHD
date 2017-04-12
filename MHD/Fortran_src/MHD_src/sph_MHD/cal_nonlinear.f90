@@ -147,6 +147,7 @@
      &          MHD_prop, trans_p, dynamic_SPH, trns_MHD, WK_sph,       &
      &          MHD_mul_FFTW, ipol, itor, rj_fld)
 !
+      use m_boundary_params_sph_MHD
       use sph_transforms_4_MHD
       use cal_nonlinear_sph_MHD
       use cal_sph_field_by_rotation
@@ -185,7 +186,7 @@
       call start_eleps_time(14)
       if (iflag_debug.ge.1) write(*,*) 'sph_back_trans_4_MHD'
       call sph_back_trans_4_MHD                                         &
-     &   (sph, comms_sph, MHD_prop%fl_prop, omega_sph,                  &
+     &   (sph, comms_sph, MHD_prop%fl_prop, sph_bc_U, omega_sph,        &
      &    trans_p, ipol, rj_fld, trns_MHD, WK_sph, MHD_mul_FFTW)
       call end_eleps_time(14)
 !
@@ -348,8 +349,8 @@
       if(MHD_prop%fl_prop%iflag_4_coriolis .ne. id_turn_OFF) then
         call sph_transform_4_licv                                       &
      &     (sph%sph_rlm, comms_sph%comm_rlm, comms_sph%comm_rj,         &
-     &      MHD_prop%fl_prop, omega_sph, trans_p%leg, trns_MHD,         &
-     &      ipol, rj_fld)
+     &      MHD_prop%fl_prop, sph_bc_U, omega_sph, trans_p%leg,         &
+     &      trns_MHD, ipol, rj_fld)
       end if
 !
 !   ----  lead nonlinear terms by phesdo spectrum

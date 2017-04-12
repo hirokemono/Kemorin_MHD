@@ -166,6 +166,7 @@
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
       use t_sph_multi_FFTW
+      use m_boundary_params_sph_MHD
 !
       use set_address_sph_trans_MHD
       use pole_sph_transform
@@ -214,7 +215,7 @@
       call alloc_sph_trans_address(sph%sph_rtp, WK)
 !
       call sel_sph_transform_MHD                                        &
-     &   (ipol, fl_prop, sph, comms_sph, omega_sph,                     &
+     &   (ipol, fl_prop, sph_bc_U, sph, comms_sph, omega_sph,           &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
      &    trans_p, WK%trns_MHD, WK%WK_sph, WK%MHD_mul_FFTW, rj_fld)
 !

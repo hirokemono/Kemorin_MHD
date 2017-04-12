@@ -161,23 +161,23 @@
       if (iflag_debug.eq.1) write(*,*) 'cal_div_of_forces_sph_2'
       call cal_div_of_forces_sph_2(sph_rj, r_2nd,                       &
      &    MHD_prop%fl_prop, MHD_prop%ref_param_T, MHD_prop%ref_param_C, &
-     &    leg%g_sph_rj, ipol, rj_fld)
+     &    leg%g_sph_rj, sph_bc_U, ipol, rj_fld)
 !
 !   ----  Lead SGS terms
       if(SGS_param%iflag_SGS .gt. id_SGS_none) then
         call cal_div_of_SGS_forces_sph_2                                &
-     &     (sph_rj, r_2nd, leg%g_sph_rj, ipol, rj_fld)
+     &     (sph_rj, r_2nd, leg%g_sph_rj, sph_bc_U, ipol, rj_fld)
       end if
 !
-      call s_const_radial_forces_on_bc(sph_rj, leg%g_sph_rj,            &
-     &    MHD_prop%fl_prop, MHD_prop%ref_param_T, MHD_prop%ref_param_C, &
-     &    ipol, rj_fld)
+      call s_const_radial_forces_on_bc                                  &
+     &   (sph_rj, leg%g_sph_rj,MHD_prop%fl_prop, sph_bc_U,              &
+     &    MHD_prop%ref_param_T, MHD_prop%ref_param_C, ipol, rj_fld)
 !
       call sum_div_of_forces(MHD_prop%fl_prop, ipol, rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_pressure_by_div_v'
       call cal_sol_pressure_by_div_v                                    &
-     &   (sph_rj, band_p_poisson, ipol, rj_fld)
+     &   (sph_rj, sph_bc_U, band_p_poisson, ipol, rj_fld)
 !
       if(ipol%i_press_grad .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'const_pressure_gradient'

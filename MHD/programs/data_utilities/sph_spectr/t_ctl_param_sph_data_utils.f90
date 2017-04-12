@@ -23,6 +23,8 @@
       use t_file_IO_parameter
       use t_field_data_IO
 !
+      implicit none
+!
       type diff_spectrum_file_param
         type(field_IO_params) :: org_file_param
         type(field_IO_params) :: sub_file_param
@@ -133,6 +135,8 @@
 !
       type(rename_spectr_ctl), intent(inout) :: field_list
       type(rename_list), intent(inout) :: rename
+!
+      integer(kind = kint) :: i
 !
 !
       rename%num_list = field_list%field_to_rename_ctl%num

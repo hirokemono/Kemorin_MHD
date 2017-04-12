@@ -107,7 +107,7 @@
 !
       subroutine cal_fdm4_ICB0_nonslip_vp(r_from_ICB)
 !
-      real(kind = kreal) :: r_from_ICB(0:3)
+      real(kind = kreal), intent(in) :: r_from_ICB(0:3)
 !
       integer(kind = kint) :: ierr
       real(kind = kreal) :: mat_taylor_4(4,4)
@@ -156,7 +156,7 @@
 !
       subroutine cal_fdm4_ICB1_nonslip_vp(r_from_ICB)
 !
-      real(kind = kreal) :: r_from_ICB(0:3)
+      real(kind = kreal), intent(in) :: r_from_ICB(0:3)
 !
       integer(kind = kint) :: ierr
       real(kind = kreal) :: mat_taylor_5(5,5)

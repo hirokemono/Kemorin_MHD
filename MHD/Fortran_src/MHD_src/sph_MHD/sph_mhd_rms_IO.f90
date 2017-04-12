@@ -9,11 +9,13 @@
 !!@verbatim
 !!      subroutine open_sph_vol_rms_file_mhd                            &
 !!     &         (sph_params, sph_rj, ipol, rj_fld, pwr, WK_pwr)
-!!      subroutine output_rms_sph_mhd_control(time_d,                   &
-!!     &          sph_params, sph_rj, leg, ipol, rj_fld, pwr, WK_pwr)
+!!      subroutine output_rms_sph_mhd_control                           &
+!!     &         (time_d, sph_params, sph_rj, sph_bc_U, leg,            &
+!!     &          ipol, rj_fld, pwr, WK_pwr)
 !!        type(time_data), intent(in) :: time_d
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(sph_boundary_type), intent(in) :: sph_bc_U
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(sph_mean_squares), intent(inout) :: pwr
@@ -99,12 +101,13 @@
 !
 !  --------------------------------------------------------------------
 !
-      subroutine output_rms_sph_mhd_control(time_d,                     &
-     &          sph_params, sph_rj, leg, ipol, rj_fld, pwr, WK_pwr)
+      subroutine output_rms_sph_mhd_control                             &
+     &         (time_d, sph_params, sph_rj, sph_bc_U, leg,              &
+     &          ipol, rj_fld, pwr, WK_pwr)
 !
       use t_time_data
+      use t_boundary_params_sph_MHD
       use m_machine_parameter
-      use m_boundary_params_sph_MHD
 !
       use cal_rms_fields_by_sph
       use volume_average_4_sph
@@ -114,6 +117,7 @@
       type(time_data), intent(in) :: time_d
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(sph_boundary_type), intent(in) :: sph_bc_U
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_address), intent(in) :: ipol
       type(phys_data), intent(in) :: rj_fld

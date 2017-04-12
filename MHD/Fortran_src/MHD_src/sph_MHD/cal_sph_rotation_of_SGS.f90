@@ -10,7 +10,7 @@
 !!      subroutine rot_SGS_terms_exp_sph                                &
 !!     &         (sph_rj, r_2nd, leg, ipol, itor, rj_fld)
 !!      subroutine cal_div_of_SGS_forces_sph_2                          &
-!!     &         (sph_rj, r_2nd, g_sph_rj, ipol, rj_fld)
+!!     &         (sph_rj, r_2nd, g_sph_rj, sph_bc_U, ipol, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(phys_address), intent(in) :: ipol, itor
@@ -29,6 +29,7 @@
       use t_phys_data
       use t_fdm_coefs
       use t_schmidt_poly_on_rtm
+      use t_boundary_params_sph_MHD
 !
       implicit none
 !
@@ -46,6 +47,7 @@
      &         (sph_rj, r_2nd, leg, ipol, itor, rj_fld)
 !
       use calypso_mpi
+      use m_boundary_params_sph_MHD
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
@@ -57,15 +59,15 @@
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &     write(*,*) 'SGS_rot_of_SGS_forces_sph_2'
       call SGS_rot_of_SGS_forces_sph_2                                  &
-     &   (sph_rj, r_2nd, leg%g_sph_rj, ipol, itor, rj_fld)
+     &   (sph_rj, r_2nd, leg%g_sph_rj, sph_bc_U, ipol, itor, rj_fld)
 !
       call cal_rot_of_SGS_induction_sph                                 &
-     &   (sph_rj, r_2nd, leg%g_sph_rj, ipol, rj_fld)
+     &   (sph_rj, r_2nd, leg%g_sph_rj, sph_bc_B, ipol, rj_fld)
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &     write(*,*) 'cal_div_of_SGS_fluxes_sph'
-      call cal_div_of_SGS_fluxes_sph                                    &
-     &   (sph_rj, r_2nd, leg%g_sph_rj, ipol, rj_fld)
+      call cal_div_of_SGS_fluxes_sph(sph_rj, r_2nd, leg%g_sph_rj,       &
+     &   sph_bc_T, sph_bc_C, ipol, rj_fld)
 !
       end subroutine rot_SGS_terms_exp_sph
 !
@@ -73,10 +75,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SGS_rot_of_SGS_forces_sph_2                            &
-     &         (sph_rj, r_2nd, g_sph_rj, ipol, itor, rj_fld)
+     &         (sph_rj, r_2nd, g_sph_rj, sph_bc_U, ipol, itor, rj_fld)
 !
       use calypso_mpi
-      use m_boundary_params_sph_MHD
       use const_sph_radial_grad
       use const_sph_rotation
       use cal_inner_core_rotation
@@ -85,6 +86,7 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(phys_address), intent(in) :: ipol, itor
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
+      type(sph_boundary_type), intent(in) :: sph_bc_U
 !
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -106,9 +108,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_div_of_SGS_forces_sph_2                            &
-     &         (sph_rj, r_2nd, g_sph_rj, ipol, rj_fld)
+     &         (sph_rj, r_2nd, g_sph_rj, sph_bc_U, ipol, rj_fld)
 !
-      use m_boundary_params_sph_MHD
       use cal_div_buoyancies_sph_MHD
       use const_sph_divergence
 !
@@ -116,6 +117,7 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(phys_address), intent(in) :: ipol
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
+      type(sph_boundary_type), intent(in) :: sph_bc_U
 !
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -136,10 +138,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_rot_of_SGS_induction_sph                           &
-     &         (sph_rj, r_2nd, g_sph_rj, ipol, rj_fld)
+     &         (sph_rj, r_2nd, g_sph_rj, sph_bc_B, ipol, rj_fld)
 !
       use calypso_mpi
-      use m_boundary_params_sph_MHD
       use const_sph_radial_grad
       use const_sph_rotation
 !
@@ -147,6 +148,7 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(phys_address), intent(in) :: ipol
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
+      type(sph_boundary_type), intent(in) :: sph_bc_B
 !
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -161,17 +163,17 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_div_of_SGS_fluxes_sph                              &
-     &         (sph_rj, r_2nd, g_sph_rj, ipol, rj_fld)
+      subroutine cal_div_of_SGS_fluxes_sph(sph_rj, r_2nd, g_sph_rj,     &
+     &          sph_bc_T, sph_bc_C, ipol, rj_fld)
 !
       use calypso_mpi
-      use m_boundary_params_sph_MHD
       use const_sph_divergence
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(phys_address), intent(in) :: ipol
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
+      type(sph_boundary_type), intent(in) :: sph_bc_T, sph_bc_C
 !
       type(phys_data), intent(inout) :: rj_fld
 !

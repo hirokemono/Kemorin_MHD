@@ -137,6 +137,7 @@
       use m_schmidt_poly_on_rtm
       use m_sph_trans_arrays_MHD
       use m_rms_4_sph_spectr
+      use m_boundary_params_sph_MHD
       use t_MHD_step_parameter
 !
       use cal_nonlinear
@@ -202,7 +203,7 @@
         if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
         call output_rms_sph_mhd_control                                 &
      &     (MHD_step1%time_d, sph1%sph_params, sph1%sph_rj,             &
-     &      trans_p1%leg, ipol, rj_fld1, pwr1, WK_pwr)
+     &      sph_bc_U, trans_p1%leg, ipol, rj_fld1, pwr1, WK_pwr)
       end if
       call end_eleps_time(11)
       call end_eleps_time(4)
@@ -307,6 +308,7 @@
       use t_sph_trans_arrays_MHD
       use t_sph_transforms
       use m_physical_property
+      use m_boundary_params_sph_MHD
       use m_schmidt_poly_on_rtm
       use output_viz_file_control
       use lead_fields_4_sph_mhd
@@ -338,8 +340,9 @@
       end if
 !
       call sph_back_trans_4_MHD(sph, comms_sph,                         &
-     &    MHD_prop1%fl_prop, omega_sph, trans_p1, ipol, rj_fld,         &
-     &    trns_WK%trns_MHD, trns_WK%WK_sph, trns_WK%MHD_mul_FFTW)
+     &    MHD_prop1%fl_prop, sph_bc_U, omega_sph, trans_p1,             &
+     &    ipol, rj_fld, trns_WK%trns_MHD, trns_WK%WK_sph,               &
+     &    trns_WK%MHD_mul_FFTW)
 !
       call sph_forward_trans_snapshot_MHD                               &
      &   (sph, comms_sph, trans_p1, trns_WK%trns_snap, ipol,            &

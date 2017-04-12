@@ -6,13 +6,14 @@
 !>@brief Construct matrix for time evolution of scalar fields
 !!
 !!@verbatim
-!!      subroutine const_radial_mat_4_press_sph                         &
-!!     &         (fl_prop, sph_rj, r_2nd, g_sph_rj, band_p_poisson)
+!!      subroutine const_radial_mat_4_press_sph(sph_rj, r_2nd,          &
+!!     &          fl_prop, sph_bc_U, g_sph_rj, band_p_poisson)
 !!      subroutine const_radial_mat_4_scalar_sph(sph_rj, r_2nd, sph_bc, &
 !!     &          g_sph_rj, dt, coef_imp, coef_f, coef_d, band_s_evo)
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
+!!        type(sph_boundary_type), intent(in) :: sph_bc_U
 !!@endverbatim
 !
       module const_r_mat_4_scalar_sph
@@ -27,6 +28,7 @@
       use t_spheric_rj_data
       use t_sph_matrices
       use t_fdm_coefs
+      use t_boundary_params_sph_MHD
 !
       implicit none
 !
@@ -36,10 +38,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_4_press_sph                           &
-     &         (fl_prop, sph_rj, r_2nd, g_sph_rj, band_p_poisson)
+      subroutine const_radial_mat_4_press_sph(sph_rj, r_2nd,            &
+     &          fl_prop, sph_bc_U, g_sph_rj, band_p_poisson)
 !
-      use m_boundary_params_sph_MHD
       use m_coef_fdm_to_center
       use m_coef_fdm_free_ICB
       use m_coef_fdm_free_CMB
@@ -52,6 +53,7 @@
       use check_sph_radial_mat
 !
       type(fluid_property), intent(in) :: fl_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_U
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
