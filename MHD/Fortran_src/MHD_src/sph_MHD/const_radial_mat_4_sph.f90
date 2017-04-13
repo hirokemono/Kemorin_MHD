@@ -31,7 +31,11 @@
       use t_fdm_coefs
       use t_schmidt_poly_on_rtm
       use t_physical_property
+      use t_boundary_data_sph_MHD
       use t_boundary_params_sph_MHD
+      use t_radial_matrices_sph_MHD
+      use t_sph_matrices
+      use t_sph_matrix
 !
       use calypso_mpi
 !
@@ -49,7 +53,7 @@
       subroutine const_radial_mat_sph_mhd                               &
      &        (dt, MHD_prop, sph_MHD_bc, sph_rj, r_2nd, leg)
 !
-      use t_boundary_data_sph_MHD
+      use m_radial_matrices_sph
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
@@ -68,10 +72,10 @@
      &    sph_rj, r_2nd, leg%g_sph_rj, dt)
 !
       if(sph_rj%inod_rj_center .gt. 0) then
-        call const_radial_mat_sph_w_center(dt, sph_rj,                  &
-     &      MHD_prop%fl_prop, MHD_prop%ht_prop, MHD_prop%cp_prop,       &
-     &      sph_MHD_bc%sph_bc_U, sph_MHD_bc%sph_bc_T,                   &
-     &      sph_MHD_bc%sph_bc_C)
+        call const_radial_mat_sph_w_center                              &
+     &     (dt, sph_rj, MHD_prop, sph_MHD_bc,                           &
+     &      band_p_poisson, band_temp_evo, band_comp_evo,               &
+     &      sph_MHD_mat1)
       end if
 !
       end subroutine const_radial_mat_sph_mhd
@@ -82,7 +86,6 @@
      &         (MHD_prop, sph_MHD_bc, sph_rj, r_2nd, leg)
 !
       use m_radial_matrices_sph
-      use m_radial_mat_sph_w_center
       use t_boundary_data_sph_MHD
       use const_r_mat_4_scalar_sph
       use const_r_mat_w_center_sph
@@ -92,6 +95,8 @@
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(legendre_4_sph_trans), intent(in) :: leg
+!
+      character(len=kchara) :: mat_name
 !
 !
       if(MHD_prop%fl_prop%iflag_scheme .lt. id_Crank_nicolson) return
@@ -103,11 +108,10 @@
 !
       if(sph_rj%inod_rj_center .eq. 0) return
 !
-      if(i_debug .gt. 0) write(*,*) 'const_radial_mat_press00_sph'
+      write(mat_name,'(a)') 'average_pressure_w_center'
       call const_radial_mat_press00_sph                                 &
-     &   (sph_rj, sph_MHD_bc%sph_bc_U, MHD_prop%fl_prop,                &
-     &    band_p_poisson%n_vect, band_p_poisson%n_comp,                 &
-     &    band_p_poisson%mat, band_p00_poisson)
+     &   (mat_name, sph_rj, MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U,      &
+     &    band_p_poisson, sph_MHD_mat1%band_p00_poisson)
 !
       end subroutine const_radial_mat_sph_snap
 !
@@ -175,51 +179,42 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_sph_w_center(dt, sph_rj,              &
-     &         fl_prop, ht_prop, cp_prop, sph_bc_U, sph_bc_T, sph_bc_C)
+      subroutine const_radial_mat_sph_w_center                          &
+     &        (dt, sph_rj, MHD_prop, sph_MHD_bc,                        &
+     &         band_p_poisson, band_temp_evo, band_comp_evo,            &
+     &         sph_MHD_mat)
 !
-      use m_radial_matrices_sph
-      use m_radial_mat_sph_w_center
       use const_r_mat_w_center_sph
 !
-      type(fluid_property), intent(in) :: fl_prop
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
-      type(sph_boundary_type), intent(in) :: sph_bc_U
-      type(sph_boundary_type), intent(in) :: sph_bc_T, sph_bc_C
-      type(sph_rj_grid), intent(in) :: sph_rj
       real(kind = kreal), intent(in) :: dt
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
+      type(band_matrices_type), intent(in) :: band_p_poisson
+      type(band_matrices_type), intent(in) :: band_temp_evo
+      type(band_matrices_type), intent(in) :: band_comp_evo
+!
+      type(MHD_radial_matrices), intent(inout) :: sph_MHD_mat
+!
+      character(len=kchara) :: mat_name
 !
 !
-      call allocate_average_w_center(sph_rj)
+      call alloc_average_w_center(sph_rj, sph_MHD_mat)
 !
-      if (fl_prop%iflag_scheme .ge. id_Crank_nicolson) then
-        if(i_debug .gt. 0) write(*,*) 'const_radial_mat_press00_sph'
-        write(band_p_poisson%mat_name,'(a)')                            &
-     &                         'average_pressure_w_center'
-        call const_radial_mat_press00_sph(sph_rj, sph_bc_U, fl_prop,    &
-     &      band_p_poisson%n_vect, band_p_poisson%n_comp,               &
-     &      band_p_poisson%mat, band_p00_poisson)
-      end if
+      write(mat_name,'(a)') 'average_pressure_w_center'
+      call const_radial_mat_press00_sph                                 &
+     &   (mat_name, sph_rj, MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U,      &
+     &    band_p_poisson, sph_MHD_mat%band_p00_poisson)
 !
-      if (ht_prop%iflag_scheme .ge. id_Crank_nicolson) then
-          if(i_debug .gt. 0) write(*,*) 'const_radial_mat_temp00_sph'
-        write(band_temp_evo%mat_name,'(a)')                             &
-     &                         'average_temperature_w_center'
-        call const_radial_mat_scalar00_sph(sph_rj, sph_bc_T, dt,        &
-     &    ht_prop%coef_imp, ht_prop%coef_advect, ht_prop%coef_diffuse,  &
-     &    band_temp_evo%n_vect, band_temp_evo%n_comp,                   &
-     &    band_temp_evo%mat, band_temp00_evo)
-      end if
+      write(mat_name,'(a)') 'average_temperature_w_center'
+      call const_radial_mat_scalar00_sph                                &
+     &   (mat_name, dt, sph_rj, MHD_prop%ht_prop, sph_MHD_bc%sph_bc_T,  &
+     &    band_temp_evo, sph_MHD_mat%band_temp00_evo)
 !
-      if(cp_prop%iflag_scheme .ge. id_Crank_nicolson) then
-          if(i_debug .gt. 0) write(*,*) 'const_radial_mat_comp00_sph'
-        write(band_comp_evo%mat_name,'(a)')                             &
-     &                        'average_composition_w_center'
-        call const_radial_mat_scalar00_sph(sph_rj, sph_bc_C, dt,        &
-     &    cp_prop%coef_imp, cp_prop%coef_advect, cp_prop%coef_diffuse,  &
-     &    band_comp_evo%n_vect, band_comp_evo%n_comp,                   &
-     &    band_comp_evo%mat, band_comp00_evo)
-      end if
+      write(mat_name,'(a)') 'average_composition_w_center'
+      call const_radial_mat_scalar00_sph                                &
+     &   (mat_name, dt, sph_rj, MHD_prop%cp_prop, sph_MHD_bc%sph_bc_C,  &
+     &    band_comp_evo, sph_MHD_mat%band_comp00_evo)
 !
       end subroutine const_radial_mat_sph_w_center
 !

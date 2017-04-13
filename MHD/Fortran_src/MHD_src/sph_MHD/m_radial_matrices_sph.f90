@@ -15,6 +15,12 @@
 !
       implicit none
 !
+!
+!
+!>        Structure of band matrices for dynamo simulation
+      type(MHD_radial_matrices), save :: sph_MHD_mat1
+!
+!
 !>      Structure of band matrices for poloidal velocity
       type(band_matrices_type), save :: band_vp_evo
 !

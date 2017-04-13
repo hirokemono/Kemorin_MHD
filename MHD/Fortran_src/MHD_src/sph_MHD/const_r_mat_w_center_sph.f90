@@ -6,14 +6,20 @@
 !>@brief Construct matrix for time evolution of scalar fields
 !!
 !!@verbatim
-!!      subroutine const_radial_mat_press00_sph                         &
-!!     &         (sph_rj, sph_bc_U, fl_prop, n_vect, n_comp,            &
-!!     &           p_poisson_mat, band_p00_poisson)
-!!      subroutine const_radial_mat_scalar00_sph                        &
-!!     &         (sph_rj, sph_bc, dt, coef_imp, coef_f, coef_d,         &
-!!     &          n_vect, n_comp, evo_mat, band_s00_evo)
-!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!      subroutine const_radial_mat_press00_sph(mat_name, sph_rj,       &
+!!     &          fl_prop, sph_bc_U, band_p_poisson, band_p00_poisson)
 !!        type(fluid_property), intent(in) :: fl_prop
+!!        type(sph_boundary_type), intent(in) :: sph_bc_U
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(band_matrices_type), intent(in) :: band_p_poisson
+!!        type(band_matrix_type), intent(inout) :: band_p00_poisson
+!!      subroutine const_radial_mat_scalar00_sph(mat_name, sph_rj,      &
+!!     &          prop, sph_bc, evo_mat, band_s00_evo)
+!!        type(scalar_property), intent(in) :: prop
+!!        type(sph_boundary_type), intent(in) :: sph_bc
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(band_matrices_type), save :: evo_mat
+!!        type(band_matrix_type), intent(inout) :: band_s00_evo
 !!@endverbatim
 !
       module const_r_mat_w_center_sph
@@ -24,6 +30,7 @@
       use m_constants
       use m_machine_parameter
 !
+      use t_physical_property
       use t_spheric_rj_data
       use t_sph_center_matrix
       use t_physical_property
@@ -31,13 +38,70 @@
 !
       implicit none
 !
+      private :: const_rmat_press00_sph, const_rmat_scalar00_sph
+!
 ! -----------------------------------------------------------------------
 !
       contains
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_press00_sph                           &
+      subroutine const_radial_mat_press00_sph(mat_name, sph_rj,         &
+     &          fl_prop, sph_bc_U, band_p_poisson, band_p00_poisson)
+!
+      use t_sph_matrices
+      use t_sph_matrix
+!
+      character(len=kchara), intent(in) :: mat_name
+      type(fluid_property), intent(in) :: fl_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_U
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(band_matrices_type), intent(in) :: band_p_poisson
+!
+      type(band_matrix_type), intent(inout) :: band_p00_poisson
+!
+!
+      if (fl_prop%iflag_scheme .le. id_Crank_nicolson) return
+!
+      if(i_debug .gt. 0) write(*,*) 'const_rmat_press00_sph'
+      write(band_p00_poisson%mat_name,'(a)') trim(mat_name)
+      call const_rmat_press00_sph(sph_rj, sph_bc_U, fl_prop,            &
+     &    band_p_poisson%n_vect, band_p_poisson%n_comp,                 &
+     &    band_p_poisson%mat, band_p00_poisson)
+!
+      end subroutine const_radial_mat_press00_sph
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine const_radial_mat_scalar00_sph(mat_name, dt, sph_rj,    &
+     &          prop, sph_bc, evo_mat, band_s00_evo)
+!
+      use t_sph_matrices
+      use t_sph_matrix
+!
+      character(len=kchara), intent(in) :: mat_name
+      real(kind = kreal), intent(in) :: dt
+      type(scalar_property), intent(in) :: prop
+      type(sph_boundary_type), intent(in) :: sph_bc
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(band_matrices_type), intent(in) :: evo_mat
+!
+      type(band_matrix_type), intent(inout) :: band_s00_evo
+!
+!
+      if (prop%iflag_scheme .le. id_Crank_nicolson) return
+      if(i_debug .gt. 0) write(*,*) 'const_rmat_scalar00_sph'
+      write(band_s00_evo%mat_name,'(a)') trim(mat_name)
+      call const_rmat_scalar00_sph(sph_rj, sph_bc, dt,                  &
+     &    prop%coef_imp, prop%coef_advect, prop%coef_diffuse,           &
+     &    evo_mat%n_vect, evo_mat%n_comp, evo_mat%mat, band_s00_evo)
+!
+      end subroutine const_radial_mat_scalar00_sph
+!
+! -----------------------------------------------------------------------
+!
+      subroutine const_rmat_press00_sph                                 &
      &         (sph_rj, sph_bc_U, fl_prop, n_vect, n_comp,              &
      &          p_poisson_mat, band_p00_poisson)
 !
@@ -82,11 +146,11 @@
       if(i_debug .ne. iflag_full_msg) return
       call check_center_band_matrix(my_rank, sph_rj, band_p00_poisson)
 !
-      end subroutine const_radial_mat_press00_sph
+      end subroutine const_rmat_press00_sph
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_scalar00_sph                          &
+      subroutine const_rmat_scalar00_sph                                &
      &         (sph_rj, sph_bc, dt, coef_imp, coef_f, coef_d,           &
      &          n_vect, n_comp, evo_mat, band_s00_evo)
 !
@@ -136,7 +200,7 @@
       if(i_debug .ne. iflag_full_msg) return
       call check_center_band_matrix(my_rank, sph_rj, band_s00_evo)
 !
-      end subroutine const_radial_mat_scalar00_sph
+      end subroutine const_rmat_scalar00_sph
 !
 ! -----------------------------------------------------------------------
 !

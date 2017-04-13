@@ -24,8 +24,9 @@
 !!        Input address:    ipol%i_magne, itor%i_magne
 !!        Solution address: ipol%i_magne, itor%i_magne
 !!
-!!      subroutine cal_sol_scalar_sph_crank(dt, sph_rj, property        &
-!!     &         sph_bc, band_s_evo, band_s00_evo, is_scalar, rj_fld)
+!!      subroutine cal_sol_scalar_sph_crank                             &
+!!     &        (dt, sph_rj, property, sph_bc, band_s_evo, band_s00_evo,&
+!!     &         is_scalar, rj_fld, x00_w_center)
 !!         type(sph_rj_grid), intent(in) :: sph_rj
 !!         type(scalar_property), intent(in) :: cp_prop
 !!         type(band_matrices_type), intent(in) :: band_comp_evo
@@ -56,7 +57,7 @@
 !
       implicit none
 !
-      private :: set_bc_velo_sph_crank, cal_sol_scl_sph_crank
+      private :: set_bc_velo_sph_crank
       private :: set_bc_magne_sph_crank, set_bc_scalar_sph_crank
 !
 ! -----------------------------------------------------------------------
@@ -153,39 +154,13 @@
       end subroutine cal_sol_magne_sph_crank
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
 !
-      subroutine cal_sol_scalar_sph_crank(dt, sph_rj, property,         &
-     &         sph_bc, band_s_evo, band_s00_evo, is_scalar, rj_fld)
+      subroutine cal_sol_scalar_sph_crank                               &
+     &        (dt, sph_rj, property, sph_bc, band_s_evo, band_s00_evo,  &
+     &         is_scalar, rj_fld, x00_w_center)
 !
-      use m_radial_mat_sph_w_center
       use t_physical_property
-!
-      type(sph_rj_grid), intent(in) :: sph_rj
-      type(scalar_property), intent(in) :: property
-      type(sph_boundary_type), intent(in) :: sph_bc
-      type(band_matrices_type), intent(in) :: band_s_evo
-      type(band_matrix_type), intent(in) :: band_s00_evo
-      real(kind = kreal), intent(in) :: dt
-      integer(kind = kint), intent(in) :: is_scalar
-!
-      type(phys_data), intent(inout) :: rj_fld
-!
-!
-      call cal_sol_scl_sph_crank                                        &
-     &   (sph_rj, sph_bc, band_s_evo, band_s00_evo,                     &
-     &    property%coef_advect, property%coef_diffuse,                  &
-     &    dt, property%coef_imp, is_scalar, rj_fld)
-!
-      end subroutine cal_sol_scalar_sph_crank
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine cal_sol_scl_sph_crank                                  &
-     &         (sph_rj, sph_bc, band_s_evo, band_s00_evo, coef_adv,     &
-     &          coef_diffuse, dt, coef_imp, is_scalar, rj_fld)
-!
-      use m_radial_mat_sph_w_center
       use t_sph_center_matrix
       use t_boundary_params_sph_MHD
       use solve_sph_fluid_crank
@@ -195,16 +170,18 @@
       type(sph_boundary_type), intent(in) :: sph_bc
       type(band_matrices_type), intent(in) :: band_s_evo
       type(band_matrix_type), intent(in) :: band_s00_evo
-      real(kind = kreal), intent(in) :: coef_adv, coef_diffuse
-      real(kind = kreal), intent(in) :: coef_imp
+      type(scalar_property), intent(in) :: property
       real(kind = kreal), intent(in) :: dt
       integer(kind = kint), intent(in) :: is_scalar
 !
       type(phys_data), intent(inout) :: rj_fld
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: x00_w_center(0:sph_rj%nidx_rj(1))
 !
 !
       call set_bc_scalar_sph_crank(sph_rj, sph_bc,                      &
-     &    coef_adv, coef_diffuse, dt, coef_imp, is_scalar, rj_fld)
+     &    property%coef_advect, property%coef_diffuse,                  &
+     &    dt, property%coef_imp, is_scalar, rj_fld)
 !
       call solve_scalar_sph_crank(sph_rj, band_s_evo, band_s00_evo,     &
      &    is_scalar, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld,    &
@@ -215,7 +192,7 @@
      &    sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                         &
      &    is_scalar, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
-      end subroutine cal_sol_scl_sph_crank
+      end subroutine cal_sol_scalar_sph_crank
 !
 ! -----------------------------------------------------------------------
 !
