@@ -41,7 +41,7 @@
       use m_rms_4_sph_spectr
       use m_physical_property
       use m_sph_trans_arrays_MHD
-      use m_boundary_params_sph_MHD
+      use m_boundary_data_sph_MHD
 !
       use set_control_sph_mhd
       use set_sph_phys_address
@@ -167,7 +167,7 @@
       use t_schmidt_poly_on_rtm
       use t_work_4_sph_trans
       use t_sph_multi_FFTW
-      use m_boundary_params_sph_MHD
+      use m_boundary_data_sph_MHD
 !
       use set_address_sph_trans_MHD
       use pole_sph_transform
@@ -291,7 +291,7 @@
      &          sph_params, sph_rj, leg, ipol, rj_fld, pwr, WK_pwr)
 !
       use m_machine_parameter
-      use m_boundary_params_sph_MHD
+      use m_boundary_data_sph_MHD
       use t_MHD_step_parameter
       use t_schmidt_poly_on_rtm
 !

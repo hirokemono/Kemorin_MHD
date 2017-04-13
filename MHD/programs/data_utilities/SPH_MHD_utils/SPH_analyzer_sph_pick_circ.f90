@@ -26,7 +26,7 @@
       use m_SGS_control_parameter
       use m_MHD_step_parameter
       use m_physical_property
-      use m_boundary_params_sph_MHD
+      use m_boundary_data_sph_MHD
       use t_phys_address
 !
       implicit none
@@ -52,7 +52,6 @@
       use m_rms_4_sph_spectr
       use m_physical_property
       use m_sph_trans_arrays_MHD
-      use m_boundary_params_sph_MHD
 !
       use set_control_sph_mhd
       use set_sph_phys_address

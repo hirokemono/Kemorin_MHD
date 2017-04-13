@@ -42,7 +42,7 @@
       use m_sph_spectr_data
       use m_fdm_coefs
       use m_sph_trans_arrays_MHD
-      use m_boundary_params_sph_MHD
+      use m_boundary_data_sph_MHD
 !
       use cal_nonlinear
       use cal_sol_sph_MHD_crank

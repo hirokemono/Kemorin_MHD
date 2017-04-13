@@ -92,7 +92,7 @@
       use m_spheric_parameter
       use m_sph_spectr_data
       use m_rms_4_sph_spectr
-      use m_boundary_params_sph_MHD
+      use m_boundary_data_sph_MHD
 !
       use cal_nonlinear
       use cal_sol_sph_MHD_crank

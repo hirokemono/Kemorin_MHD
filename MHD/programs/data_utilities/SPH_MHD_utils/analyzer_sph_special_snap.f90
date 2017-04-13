@@ -137,7 +137,7 @@
       use m_schmidt_poly_on_rtm
       use m_sph_trans_arrays_MHD
       use m_rms_4_sph_spectr
-      use m_boundary_params_sph_MHD
+      use m_boundary_data_sph_MHD
       use t_MHD_step_parameter
 !
       use cal_nonlinear
@@ -309,7 +309,7 @@
       use t_sph_trans_arrays_MHD
       use t_sph_transforms
       use m_physical_property
-      use m_boundary_params_sph_MHD
+      use m_boundary_data_sph_MHD
       use m_schmidt_poly_on_rtm
       use output_viz_file_control
       use lead_fields_4_sph_mhd
