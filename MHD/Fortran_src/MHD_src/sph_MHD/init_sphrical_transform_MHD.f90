@@ -194,7 +194,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'select_legendre_transform'
       call select_legendre_transform                                    &
-     &   (sph, comms_sph, fl_prop, omega_sph, trans_p, ipol,            &
+     &   (sph, comms_sph, fl_prop, sph_bc_U, omega_sph, trans_p, ipol,  &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
      &    rj_fld, trns_MHD, WK_sph, MHD_mul_FFTW)
 !
@@ -211,17 +211,17 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine select_legendre_transform                              &
-     &         (sph, comms_sph, fl_prop, omega_sph, trans_p, ipol,      &
+      subroutine select_legendre_transform(sph, comms_sph,              &
+     &          fl_prop, sph_bc_U, omega_sph, trans_p, ipol,            &
      &          ncomp_max_trans, nvector_max_trans, nscalar_max_trans,  &
      &          rj_fld, trns_MHD, WK_sph, MHD_mul_FFTW)
 !
-      use m_boundary_params_sph_MHD
       use sph_transforms_4_MHD
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(fluid_property), intent(in) :: fl_prop
+      type(sph_boundary_type), intent(in) :: sph_bc_U
       type(sph_rotation), intent(in) :: omega_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(phys_address), intent(in) :: ipol

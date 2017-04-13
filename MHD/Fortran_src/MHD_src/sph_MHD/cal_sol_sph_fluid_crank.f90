@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine cal_sol_velo_by_vort_sph_crank                       &
-!!     &         (sph_rj, sph_bc_U, vt_ICB_bc, vt_CMB_bc,               &
+!!     &         (sph_rj, sph_bc_U, bc_Uspectr,                         &
 !!     &          band_vp_evo, band_vt_evo, ipol, itor, rj_fld)
 !!        Input address:    ipol%i_vort, itor%i_vort
 !!        Solution address: ipol%i_velo, itor%i_velo
@@ -49,7 +49,7 @@
       use t_phys_address
       use t_phys_data
       use t_sph_matrices
-      use t_boundary_params_sph_MHD
+      use t_boundary_data_sph_MHD
 !
       use set_reference_sph_mhd
       use lubksb_357band_mul
@@ -66,7 +66,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sol_velo_by_vort_sph_crank                         &
-     &         (sph_rj, sph_bc_U, vt_ICB_bc, vt_CMB_bc,                 &
+     &         (sph_rj, sph_bc_U, bc_Uspectr,                           &
      &          band_vp_evo, band_vt_evo, ipol, itor, rj_fld)
 !
       use m_coef_fdm_free_ICB
@@ -76,8 +76,7 @@
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc_U
-      real(kind= kreal), intent(in) :: vt_ICB_bc(sph_rj%nidx_rj(2))
-      real(kind= kreal), intent(in) :: vt_CMB_bc(sph_rj%nidx_rj(2))
+      type(sph_velocity_BC_spectr), intent(in) :: bc_Uspectr
       type(band_matrices_type), intent(in) :: band_vp_evo, band_vt_evo
       type(phys_address), intent(in) :: ipol, itor
 !
@@ -92,7 +91,7 @@
 !$omp end parallel
 !
       call set_bc_velo_sph_crank(ipol%i_velo, sph_rj,                   &
-     &    sph_bc_U, vt_ICB_bc, vt_CMB_bc, rj_fld)
+     &    sph_bc_U, bc_Uspectr,  rj_fld)
 !
       call solve_velo_by_vort_sph_crank                                 &
      &   (sph_rj, band_vp_evo, band_vt_evo, ipol%i_velo, itor%i_velo,   &
@@ -221,7 +220,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_bc_velo_sph_crank(is_velo, sph_rj,                 &
-     &          sph_bc_U, vt_ICB_bc, vt_CMB_bc, rj_fld)
+     &          sph_bc_U, bc_Uspectr, rj_fld)
 !
       use m_coef_fdm_free_ICB
       use m_coef_fdm_free_CMB
@@ -233,8 +232,7 @@
       integer(kind = kint), intent(in) :: is_velo
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc_U
-      real(kind= kreal), intent(in) :: vt_ICB_bc(sph_rj%nidx_rj(2))
-      real(kind= kreal), intent(in) :: vt_CMB_bc(sph_rj%nidx_rj(2))
+      type(sph_velocity_BC_spectr), intent(in) :: bc_Uspectr
 !
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -251,11 +249,12 @@
         call cal_sph_nod_icb_rotate_velo2                               &
      &     (sph_rj%idx_rj_degree_zero, sph_rj%idx_rj_degree_one,        &
      &      sph_rj%nidx_rj, sph_bc_U%kr_in, sph_bc_U%r_ICB,             &
-     &      sph_rj%radius_1d_rj_r, vt_ICB_bc, is_velo,                  &
+     &      sph_rj%radius_1d_rj_r, bc_Uspectr%vt_ICB_bc, is_velo,       &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else
-        call cal_sph_nod_icb_rigid_velo2(sph_rj%nidx_rj(2),             &
-     &      sph_bc_U%kr_in, sph_bc_U%r_ICB, vt_ICB_bc, is_velo,         &
+        call cal_sph_nod_icb_rigid_velo2                                &
+     &     (sph_rj%nidx_rj(2), sph_bc_U%kr_in,                          &
+     &      sph_bc_U%r_ICB, bc_Uspectr%vt_ICB_bc, is_velo,              &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
@@ -264,8 +263,9 @@
      &     (sph_rj%nidx_rj(2), sph_bc_U%kr_out, fdm2_free_vp_CMB,       &
      &      is_velo, rj_fld%n_point,rj_fld%ntot_phys, rj_fld%d_fld)
       else
-        call cal_sph_nod_cmb_rigid_velo2(sph_rj%nidx_rj(2),             &
-     &      sph_bc_U%kr_out, sph_bc_U%r_CMB, vt_CMB_bc, is_velo,        &
+        call cal_sph_nod_cmb_rigid_velo2                                &
+     &     (sph_rj%nidx_rj(2), sph_bc_U%kr_out,                         &
+     &      sph_bc_U%r_CMB, bc_Uspectr%vt_CMB_bc, is_velo,              &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !

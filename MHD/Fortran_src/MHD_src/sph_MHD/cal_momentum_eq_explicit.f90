@@ -8,12 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine sel_explicit_sph(i_step, dt, SGS_param, MHD_prop,    &
-!!     &          sph_rj, ipol, itor, rj_fld)
+!!     &          sph_MHD_bc, sph_rj, ipol, itor, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
-!!        type(scalar_property), intent(in) :: fl_prop
-!!        type(conductive_property), intent(in) :: cd_prop
-!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
+!!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(phys_address), intent(in) :: ipol, itor
 !!        type(phys_data), intent(inout) :: rj_fld
@@ -33,6 +32,7 @@
       use t_phys_data
       use t_fdm_coefs
       use t_schmidt_poly_on_rtm
+      use t_boundary_data_sph_MHD
       use t_boundary_params_sph_MHD
 !
       implicit  none
@@ -50,9 +50,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sel_explicit_sph(i_step, dt, SGS_param, MHD_prop,      &
-     &          sph_rj, ipol, itor, rj_fld)
-!
-      use m_boundary_params_sph_MHD
+     &          sph_MHD_bc, sph_rj, ipol, itor, rj_fld)
 !
       integer(kind = kint), intent(in) :: i_step
       real(kind = kreal), intent(in) :: dt
@@ -60,6 +58,7 @@
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(phys_address), intent(in) :: ipol, itor
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -68,23 +67,27 @@
         call cal_explicit_sph_euler(dt, SGS_param, sph_rj,              &
      &      MHD_prop%fl_prop, MHD_prop%cd_prop,                         &
      &      MHD_prop%ht_prop, MHD_prop%cp_prop,                         &
-     &      sph_bc_U, sph_bc_T, sph_bc_C, ipol, itor, rj_fld)
+     &      sph_MHD_bc%sph_bc_U, sph_MHD_bc%sph_bc_T,                   &
+     &      sph_MHD_bc%sph_bc_C, ipol, itor, rj_fld)
       else if(i_step .eq. 1) then
         if(iflag_debug.gt.0) write(*,*) 'cal_explicit_sph_euler'
         call cal_explicit_sph_euler(dt, SGS_param, sph_rj,              &
      &      MHD_prop%fl_prop, MHD_prop%cd_prop,                         &
      &      MHD_prop%ht_prop, MHD_prop%cp_prop,                         &
-     &      sph_bc_U, sph_bc_T, sph_bc_C, ipol, itor, rj_fld)
+     &      sph_MHD_bc%sph_bc_U, sph_MHD_bc%sph_bc_T,                   &
+     &      sph_MHD_bc%sph_bc_C, ipol, itor, rj_fld)
         call cal_first_prev_step_adams(SGS_param, sph_rj,               &
      &      MHD_prop%fl_prop, MHD_prop%cd_prop,                         &
      &      MHD_prop%ht_prop, MHD_prop%cp_prop,                         &
-     &      sph_bc_T, sph_bc_C, ipol, itor, rj_fld)
+     &      sph_MHD_bc%sph_bc_T, sph_MHD_bc%sph_bc_C,                   &
+     &      ipol, itor, rj_fld)
       else
         if(iflag_debug.gt.0) write(*,*) 'cal_explicit_sph_adams'
         call cal_explicit_sph_adams(dt, SGS_param, sph_rj,              &
      &      MHD_prop%fl_prop, MHD_prop%cd_prop,                         &
      &      MHD_prop%ht_prop, MHD_prop%cp_prop,                         &
-     &      sph_bc_U, sph_bc_T, sph_bc_C, ipol, itor, rj_fld)
+     &      sph_MHD_bc%sph_bc_U, sph_MHD_bc%sph_bc_T,                   &
+     &      sph_MHD_bc%sph_bc_C, ipol, itor, rj_fld)
       end if
 !
       end subroutine sel_explicit_sph

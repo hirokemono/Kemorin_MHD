@@ -13,7 +13,8 @@
 !!        Solution: is_grad
 !!
 !!      subroutine const_grad_vp_and_vorticity                          &
-!!     &         (sph_rj, r_2nd, g_sph_rj, is_velo, is_vort, rj_fld)
+!!     &         (sph_rj, r_2nd, sph_bc_U, bc_Uspectr, g_sph_rj,        &
+!!     &          is_velo, is_vort, rj_fld)
 !!        Input:    ipol%i_velo, itor%i_velo
 !!        Solution: idpdr%i_velo, ipol%i_vort, itor%i_vort, idpdr%i_vort
 !!
@@ -24,7 +25,7 @@
 !!                  ipol%i_current, itor%i_current, idpdr%i_current
 !!
 !!      subroutine const_grad_poloidal_moment                           &
-!!     &         (sph_rj, r_2nd, is_fld, rj_fld)
+!!     &         (sph_rj, r_2nd, sph_bc_U, bc_Uspectr, is_fld, rj_fld)
 !!        Input:    is_fld, is_fld+2
 !!        Solution: is_fld+1
 !!
@@ -45,6 +46,8 @@
 !!
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
+!!        type(sph_boundary_type), intent(in) :: sph_bc_U
+!!        type(sph_velocity_BC_spectr), intent(in) :: bc_Uspectr
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !!
@@ -76,8 +79,9 @@
 !
       use t_spheric_rj_data
       use t_phys_data
-      use t_boundary_params_sph_MHD
       use t_fdm_coefs
+      use t_boundary_data_sph_MHD
+      use t_boundary_params_sph_MHD
 !
       use cal_sph_exp_1st_diff
 !
@@ -119,14 +123,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_grad_vp_and_vorticity                            &
-     &         (sph_rj, r_2nd, g_sph_rj, is_velo, is_vort, rj_fld)
+     &         (sph_rj, r_2nd, sph_bc_U, bc_Uspectr, g_sph_rj,          &
+     &          is_velo, is_vort, rj_fld)
 !
-      use m_boundary_params_sph_MHD
       use cal_sph_exp_rotation
       use select_exp_velocity_bc
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
+      type(sph_boundary_type), intent(in) :: sph_bc_U
+      type(sph_velocity_BC_spectr), intent(in) :: bc_Uspectr
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       integer(kind = kint), intent(in) :: is_velo, is_vort
 !
@@ -134,7 +140,8 @@
 !
 !
       call sel_bc_grad_vp_and_vorticity                                 &
-     &   (sph_rj, r_2nd, g_sph_rj, is_velo, is_vort, rj_fld)
+     &   (sph_rj, r_2nd, sph_bc_U, bc_Uspectr,                          &
+     &    g_sph_rj, is_velo, is_vort, rj_fld)
       call cal_sph_diff_pol_and_rot2(sph_bc_U%kr_in, sph_bc_U%kr_out,   &
      &    sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                    &
      &    r_2nd%fdm(1)%dmat, r_2nd%fdm(2)%dmat, is_velo, is_vort,       &
@@ -187,20 +194,22 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_grad_poloidal_moment                             &
-     &         (sph_rj, r_2nd, is_fld, rj_fld)
+     &         (sph_rj, r_2nd, sph_bc_U, bc_Uspectr, is_fld, rj_fld)
 !
-      use m_boundary_params_sph_MHD
       use cal_sph_exp_rotation
       use select_exp_velocity_bc
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
+      type(sph_boundary_type), intent(in) :: sph_bc_U
+      type(sph_velocity_BC_spectr), intent(in) :: bc_Uspectr
       integer(kind = kint), intent(in) :: is_fld
 !
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call sel_bc_grad_poloidal_moment(sph_rj, r_2nd, is_fld, rj_fld)
+      call sel_bc_grad_poloidal_moment(sph_rj, r_2nd, sph_bc_U,         &
+     &    bc_Uspectr, is_fld, rj_fld)
       call cal_sph_diff_poloidal2(sph_bc_U%kr_in, sph_bc_U%kr_out,      &
      &    sph_rj%nidx_rj, r_2nd%fdm(1)%dmat, is_fld,                    &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)

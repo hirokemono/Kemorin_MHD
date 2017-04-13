@@ -74,13 +74,14 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd_evo'
       call init_r_infos_sph_mhd_evo(sph_grps1, ipol, sph1,              &
-     &    omega_sph1, ref_temp1, ref_comp1, MHD_prop1, r_2nd, rj_fld1)
+     &    omega_sph1, ref_temp1, ref_comp1, MHD_prop1, sph_MHD_bc1,     &
+     &    r_2nd, rj_fld1)
 !
 ! ---------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD'
       call init_sph_transform_MHD                                       &
-     &   (SGS_par1%model_p, MHD_prop1, sph_bc_U,                        &
+     &   (SGS_par1%model_p, MHD_prop1, sph_MHD_bc1%sph_bc_U,            &
      &    ipol, idpdr, itor, iphys, sph1, comms_sph1, omega_sph1,       &
      &    trans_p1, trns_WK1, rj_fld1)
 !
@@ -89,9 +90,10 @@
       if(iflag_debug.gt.0) write(*,*)' sph_initial_data_control'
       call sph_initial_data_control                                     &
      &   (ref_temp1%t_rj, sph1%sph_params, sph1%sph_rj,                 &
-     &    MHD_prop1%ref_param_T, ipol, idpdr, itor, rj_fld1,            &
-     &    MHD_step%rst_step, MHD_step1%init_d, MHD_step1%time_d)
-      MHD_step1%iflag_initial_step = 0
+     &    MHD_prop1%ref_param_T, sph_MHD_bc1%sph_bc_B,                  &
+     &    ipol, idpdr, itor, rj_fld1, MHD_step%rst_step,                &
+     &    MHD_step%init_d, MHD_step%time_d)
+      MHD_step%iflag_initial_step = 0
 !
       if(iflag_debug.gt.0) write(*,*)' sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph(ref_temp1, ref_comp1, MHD_prop1,   &
@@ -108,21 +110,21 @@
 !  -------------------------------
 !
       if(iflag_debug.gt.0) write(*,*)' const_radial_mat_sph_mhd'
-      call const_radial_mat_sph_mhd(MHD_step1%time_d%dt, MHD_prop1,     &
-     &    sph1%sph_rj, r_2nd, trans_p1%leg)
+      call const_radial_mat_sph_mhd(MHD_step%time_d%dt, MHD_prop1,      &
+     &    sph_MHD_bc1, sph1%sph_rj, r_2nd, trans_p1%leg)
 !*
 !* obtain linear terms for starting
 !*
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_field_to_start'
       call set_sph_field_to_start(sph1%sph_rj, r_2nd,                   &
-     &    MHD_prop1, trans_p1%leg, ipol, itor, rj_fld1)
+     &    MHD_prop1, sph_MHD_bc1, trans_p1%leg, ipol, itor, rj_fld1)
 !
 !* obtain nonlinear terms for starting
 !*
       if(iflag_debug .gt. 0) write(*,*) 'first nonlinear'
       call nonlinear                                                    &
      &   (SGS_par1%model_p, sph1, comms_sph1, omega_sph1, r_2nd,        &
-     &    MHD_prop1, trans_p1, ref_temp1, ref_comp1,                    &
+     &    MHD_prop1, sph_MHD_bc1, trans_p1, ref_temp1, ref_comp1,       &
      &    ipol, itor, trns_WK1, rj_fld1)
 !
 !* -----  Open Volume integration data files -----------------
@@ -172,14 +174,15 @@
       call start_eleps_time(6)
       if(iflag_debug.gt.0) write(*,*) 'sel_explicit_sph'
       call sel_explicit_sph                                             &
-     &   (i_step, MHD_step1%time_d%dt, SGS_par1%model_p,                &
-     &    MHD_prop1, sph1%sph_rj, ipol, itor, rj_fld1)
+     &   (i_step, MHD_step%time_d%dt, SGS_par1%model_p,                 &
+     &    MHD_prop1, sph_MHD_bc1, sph1%sph_rj, ipol, itor, rj_fld1)
 !*
 !*  ----------  time evolution by inplicit method ----------
 !*
       call start_eleps_time(7)
-      call s_cal_sol_sph_MHD_crank(MHD_step1%time_d%dt, sph1%sph_rj,    &
-     &    r_2nd, MHD_prop1, trans_p1%leg, ipol, idpdr, itor, rj_fld1)
+      call s_cal_sol_sph_MHD_crank(MHD_step%time_d%dt, sph1%sph_rj,     &
+     &    r_2nd, MHD_prop1, sph_MHD_bc1, trans_p1%leg,                  &
+     &    ipol, idpdr, itor, rj_fld1)
       call end_eleps_time(7)
       call end_eleps_time(6)
 !*
@@ -188,7 +191,7 @@
       call start_eleps_time(8)
       call nonlinear                                                    &
      &   (SGS_par1%model_p, sph1, comms_sph1, omega_sph1, r_2nd,        &
-     &    MHD_prop1, trans_p1, ref_temp1, ref_comp1,                    &
+     &    MHD_prop1, sph_MHD_bc1, trans_p1, ref_temp1, ref_comp1,       &
      &    ipol, itor, trns_WK1, rj_fld1)
       call end_eleps_time(8)
       call end_eleps_time(5)
@@ -205,7 +208,7 @@
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
         call s_lead_fields_4_sph_mhd(SGS_par1%model_p, sph1,            &
-     &      comms_sph1, r_2nd, MHD_prop1, trans_p1,                     &
+     &      comms_sph1, r_2nd, MHD_prop1, sph_MHD_bc1, trans_p1,        &
      &      ipol, rj_fld1, trns_WK1)
       end if
       call end_eleps_time(9)
@@ -216,14 +219,14 @@
       call start_eleps_time(10)
       if(iflag_debug.gt.0) write(*,*) 'output_sph_restart_control'
       call output_sph_restart_control                                   &
-     &   (MHD_step1%time_d, rj_fld1, MHD_step%rst_step)
+     &   (MHD_step%time_d, rj_fld1, MHD_step%rst_step)
 !
       total_time = MPI_WTIME() - total_start
       call MPI_allREDUCE (total_time, total_max, ione, CALYPSO_REAL,    &
      &    MPI_MAX, CALYPSO_COMM, ierr_MPI)
       if      (MHD_step%finish_d%i_end_step .eq. -1                     &
      &   .and. total_max .gt. MHD_step%finish_d%elapsed_time) then
-        call output_sph_rst_by_elaps(MHD_step1%time_d, rj_fld1)
+        call output_sph_rst_by_elaps(MHD_step%time_d, rj_fld1)
         iflag_finish = 1
       end if
       call end_eleps_time(10)
@@ -235,8 +238,9 @@
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
         call output_rms_sph_mhd_control                                 &
-     &     (MHD_step1%time_d, sph1%sph_params, sph1%sph_rj,             &
-     &      sph_bc_U, trans_p1%leg, ipol, rj_fld1, pwr1, WK_pwr)
+     &     (MHD_step%time_d, sph1%sph_params, sph1%sph_rj,              &
+     &      sph_MHD_bc1%sph_bc_U, trans_p1%leg, ipol, rj_fld1,          &
+     &      pwr1, WK_pwr)
       end if
       call end_eleps_time(11)
 !

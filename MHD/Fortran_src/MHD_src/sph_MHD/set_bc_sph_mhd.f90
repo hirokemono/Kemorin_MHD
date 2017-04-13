@@ -7,15 +7,14 @@
 !>@brief Set boundary conditions for MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine s_set_bc_sph_mhd(sph_params, sph_rj, radial_rj_grp,  &
-!!     &          fl_prop, cd_prop, ht_prop, cp_prop,                   &
-!!     &          CTR_nod_grp_name, CTR_sf_grp_name)
-!!        type(fluid_property), intent(in) :: fl_prop
-!!        type(conductive_property), intent(in)  :: cd_prop
-!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
+!!      subroutine s_set_bc_sph_mhd                                     &
+!!     &         (sph_params, sph_rj, radial_rj_grp, MHD_prop,          &
+!!     &          CTR_nod_grp_name, CTR_sf_grp_name, sph_MHD_bc)
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(group_data), intent(in) :: radial_rj_grp
+!!        type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
 !!@endverbatim
 !
       module set_bc_sph_mhd
@@ -26,9 +25,12 @@
       use m_boundary_condition_IDs
       use m_phys_labels
 !
+      use t_control_parameter
       use t_physical_property
       use t_spheric_parameter
       use t_group_data
+      use t_boundary_data_sph_MHD
+      use t_boundary_params_sph_MHD
 !
       implicit none
 !
@@ -40,12 +42,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_bc_sph_mhd(sph_params, sph_rj, radial_rj_grp,    &
-     &          fl_prop, cd_prop, ht_prop, cp_prop,                     &
-     &          CTR_nod_grp_name, CTR_sf_grp_name)
+      subroutine s_set_bc_sph_mhd                                       &
+     &         (sph_params, sph_rj, radial_rj_grp, MHD_prop,            &
+     &          CTR_nod_grp_name, CTR_sf_grp_name, sph_MHD_bc)
 !
       use m_phys_labels
-      use m_boundary_params_sph_MHD
       use set_bc_flag_sph_velo
       use set_bc_sph_scalars
 !
@@ -57,54 +58,61 @@
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(group_data), intent(in) :: radial_rj_grp
-      type(fluid_property), intent(in) :: fl_prop
-      type(conductive_property), intent(in)  :: cd_prop
-      type(scalar_property), intent(in) :: ht_prop, cp_prop
+      type(MHD_evolution_param), intent(in) :: MHD_prop
       character(len=kchara), intent(in) :: CTR_nod_grp_name
       character(len=kchara), intent(in) :: CTR_sf_grp_name
+!
+      type(sph_MHD_boundary_data), intent(inout) :: sph_MHD_bc
 !
       integer(kind = kint) :: kst, ked
 !
 !
-      if (fl_prop%iflag_scheme .gt. id_no_evolution) then
+      if (MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_velo_sph'
         call set_sph_bc_velo_sph(sph_rj, radial_rj_grp,                 &
-     &      sph_params%radius_ICB, sph_params%radius_CMB)
+     &      sph_params%radius_ICB, sph_params%radius_CMB,               &
+     &      sph_MHD_bc%sph_bc_U, sph_MHD_bc%bc_Uspectr)
 !
         call cal_fdm_coefs_4_BCs                                        &
-     &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, sph_bc_U)
+     &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                   &
+     &      sph_MHD_bc%sph_bc_U)
 !
-        kst = sph_bc_U%kr_in
-        ked = sph_bc_U%kr_in + 1
+        kst = sph_MHD_bc%sph_bc_U%kr_in
+        ked = sph_MHD_bc%sph_bc_U%kr_in + 1
         call cal_fdm2_ICB_free_vp(sph_rj%radius_1d_rj_r(kst:ked))
         call cal_fdm2_ICB_free_vt(sph_rj%radius_1d_rj_r(kst:ked))
 !
-        kst = sph_bc_U%kr_out-1
-        ked = sph_bc_U%kr_out
+        kst = sph_MHD_bc%sph_bc_U%kr_out-1
+        ked = sph_MHD_bc%sph_bc_U%kr_out
         call cal_fdm2_CMB_free_vp(sph_rj%radius_1d_rj_r(kst:ked))
         call cal_fdm2_CMB_free_vt(sph_rj%radius_1d_rj_r(kst:ked))
       end if
 !
-      if (ht_prop%iflag_scheme .gt. id_no_evolution) then
+      if(MHD_prop%ht_prop%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_temp_sph'
-        call set_sph_bc_temp_sph(sph_rj, radial_rj_grp)
+        call set_sph_bc_temp_sph(sph_rj, radial_rj_grp,                &
+     &      sph_MHD_bc%sph_bc_T)
         call cal_fdm_coefs_4_BCs                                       &
-     &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, sph_bc_T)
+     &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                  &
+     &      sph_MHD_bc%sph_bc_T)
       end if
 !
-      if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
+      if(MHD_prop%cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_magne_sph'
         call set_sph_bc_magne_sph(sph_rj, radial_rj_grp,               &
-     &      CTR_nod_grp_name, CTR_sf_grp_name)
+     &      CTR_nod_grp_name, CTR_sf_grp_name, sph_MHD_bc%sph_bc_B)
         call cal_fdm_coefs_4_BCs                                       &
-     &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, sph_bc_B)
+     &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                  &
+     &      sph_MHD_bc%sph_bc_B)
       end if
 !
-      if (cp_prop%iflag_scheme .gt. id_no_evolution) then
+      if(MHD_prop%cp_prop%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_composition_sph'
-        call set_sph_bc_composition_sph(sph_rj, radial_rj_grp)
+        call set_sph_bc_composition_sph                                &
+     &     (sph_rj, radial_rj_grp, sph_MHD_bc%sph_bc_C)
         call cal_fdm_coefs_4_BCs                                       &
-     &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, sph_bc_C)
+     &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                  &
+     &      sph_MHD_bc%sph_bc_C)
       end if
 !
 !      Set FDM matrices for Center
@@ -117,48 +125,51 @@
 !      Check data
 !
       if(iflag_debug .gt. 1) then
-        write(*,*) 'sph_bc_U%iflag_icb', sph_bc_U%kr_in,                &
-     &          sph_bc_U%iflag_icb
-        write(*,*) 'sph_bc_U%iflag_cmb', sph_bc_U%kr_out,               &
-     &          sph_bc_U%iflag_cmb
-        write(*,*) 'sph_bc_T%iflag_icb', sph_bc_T%kr_in,                &
-     &          sph_bc_T%iflag_icb
-        write(*,*) 'sph_bc_T%iflag_cmb', sph_bc_T%kr_out,               &
-     &          sph_bc_T%iflag_cmb
-        write(*,*) 'sph_bc_B%iflag_icb', sph_bc_B%kr_in,                &
-     &          sph_bc_B%iflag_icb
-        write(*,*) 'sph_bc_B%iflag_cmb', sph_bc_B%kr_out,               &
-     &          sph_bc_B%iflag_cmb
-        write(*,*) 'sph_bc_C%iflag_icb', sph_bc_C%kr_in,                &
-     &          sph_bc_C%iflag_icb
-        write(*,*) 'sph_bc_C%iflag_cmb', sph_bc_C%kr_out,               &
-     &          sph_bc_C%iflag_cmb
+        write(*,*) 'sph_bc_U%iflag_icb', sph_MHD_bc%sph_bc_U%kr_in,     &
+     &          sph_MHD_bc%sph_bc_U%iflag_icb
+        write(*,*) 'sph_bc_U%iflag_cmb', sph_MHD_bc%sph_bc_U%kr_out,    &
+     &          sph_MHD_bc%sph_bc_U%iflag_cmb
+        write(*,*) 'sph_bc_T%iflag_icb', sph_MHD_bc%sph_bc_T%kr_in,     &
+     &          sph_MHD_bc%sph_bc_T%iflag_icb
+        write(*,*) 'sph_bc_T%iflag_cmb', sph_MHD_bc%sph_bc_T%kr_out,    &
+     &          sph_MHD_bc%sph_bc_T%iflag_cmb
+        write(*,*) 'sph_bc_B%iflag_icb', sph_MHD_bc%sph_bc_B%kr_in,     &
+     &          sph_MHD_bc%sph_bc_B%iflag_icb
+        write(*,*) 'sph_bc_B%iflag_cmb', sph_MHD_bc%sph_bc_B%kr_out,    &
+     &          sph_MHD_bc%sph_bc_B%iflag_cmb
+        write(*,*) 'sph_bc_C%iflag_icb', sph_MHD_bc%sph_bc_C%kr_in,     &
+     &          sph_MHD_bc%sph_bc_C%iflag_icb
+        write(*,*) 'sph_bc_C%iflag_cmb', sph_MHD_bc%sph_bc_C%kr_out,    &
+     &          sph_MHD_bc%sph_bc_C%iflag_cmb
 !
-        if (ht_prop%iflag_scheme .gt. id_no_evolution) then
+        if(MHD_prop%ht_prop%iflag_scheme .gt. id_no_evolution) then
           call check_sph_boundary_spectra(fhd_temp,                     &
-     &        sph_rj%nidx_rj(2), sph_rj%idx_gl_1d_rj_j, sph_bc_T)
+     &        sph_rj%nidx_rj(2), sph_rj%idx_gl_1d_rj_j,                 &
+     &        sph_MHD_bc%sph_bc_T)
         end if
-        if (cp_prop%iflag_scheme .gt. id_no_evolution) then
+        if(MHD_prop%cp_prop%iflag_scheme .gt. id_no_evolution) then
           call check_sph_boundary_spectra(fhd_light,                    &
-     &        sph_rj%nidx_rj(2), sph_rj%idx_gl_1d_rj_j, sph_bc_C)
+     &        sph_rj%nidx_rj(2), sph_rj%idx_gl_1d_rj_j,                 &
+     &        sph_MHD_bc%sph_bc_C)
         end if
       end if
 !
       if (iflag_debug .eq. iflag_full_msg) then
-        if (fl_prop%iflag_scheme .gt. id_no_evolution) then
-          call check_fdm_coefs_4_BC2(fhd_velo,  sph_bc_U)
+        if (MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
+          call check_fdm_coefs_4_BC2(fhd_velo,  sph_MHD_bc%sph_bc_U)
           call check_coef_fdm_free_ICB
           call check_coef_fdm_free_CMB
         end if
 !
-        if (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
-          call check_fdm_coefs_4_BC2(fhd_magne, sph_bc_B)
+        if(MHD_prop%cd_prop%iflag_Bevo_scheme .gt. id_no_evolution)     &
+     &   then
+          call check_fdm_coefs_4_BC2(fhd_magne, sph_MHD_bc%sph_bc_B)
         end if
-        if (ht_prop%iflag_scheme .gt. id_no_evolution) then
-          call check_fdm_coefs_4_BC2(fhd_temp,  sph_bc_T)
+        if(MHD_prop%ht_prop%iflag_scheme .gt. id_no_evolution) then
+          call check_fdm_coefs_4_BC2(fhd_temp,  sph_MHD_bc%sph_bc_T)
         end if
-        if (cp_prop%iflag_scheme .gt. id_no_evolution) then
-          call check_fdm_coefs_4_BC2(fhd_light, sph_bc_C)
+        if(MHD_prop%cp_prop%iflag_scheme .gt. id_no_evolution) then
+          call check_fdm_coefs_4_BC2(fhd_light, sph_MHD_bc%sph_bc_C)
         end if
 !
         call check_coef_fdm_fix_dr_2ctr
@@ -169,9 +180,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_sph_bc_magne_sph(sph_rj, radial_rj_grp,            &
-     &          CTR_nod_grp_name, CTR_sf_grp_name)
+     &          CTR_nod_grp_name, CTR_sf_grp_name, sph_bc_B)
 !
-      use m_boundary_params_sph_MHD
       use m_bc_data_list
       use m_surf_data_list
       use set_bc_sph_scalars
@@ -180,6 +190,8 @@
       character(len=kchara), intent(in) :: CTR_sf_grp_name
       type(sph_rj_grid), intent(in) :: sph_rj
       type(group_data), intent(in) :: radial_rj_grp
+!
+      type(sph_boundary_type), intent(inout) :: sph_bc_B
 !
       integer(kind = kint) :: i
       integer(kind = kint) :: igrp_icb, igrp_cmb

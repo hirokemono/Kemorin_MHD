@@ -72,7 +72,8 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd_evo'
       call init_r_infos_sph_mhd_evo(sph_grps1, ipol, sph1,              &
-     &    omega_sph1, ref_temp1, ref_comp1, MHD_prop1, r_2nd, rj_fld1)
+     &    omega_sph1, ref_temp1, ref_comp1, MHD_prop1, sph_MHD_bc1,     &
+     &    r_2nd, rj_fld1)
 !
 !  -------------------------------
 !
@@ -214,8 +215,8 @@
 !
       call alloc_sph_trans_address(sph%sph_rtp, WK)
 !
-      call sel_sph_transform_MHD                                        &
-     &   (ipol, fl_prop, sph_bc_U, sph, comms_sph, omega_sph,           &
+      call sel_sph_transform_MHD(ipol, fl_prop,                         &
+     &    sph_MHD_bc1%sph_bc_U, sph, comms_sph, omega_sph,              &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
      &    trans_p, WK%trns_MHD, WK%WK_sph, WK%MHD_mul_FFTW, rj_fld)
 !

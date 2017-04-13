@@ -8,9 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine set_sph_bc_velo_sph                                  &
-!!     &         (sph_rj, radial_rj_grp, r_ICB, r_CMB)
+!!     &         (sph_rj, radial_rj_grp, r_ICB, r_CMB,                  &
+!!     &          sph_bc_U, bc_Uspectr)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(group_data), intent(in) :: radial_rj_grp
+!!        type(sph_boundary_type), intent(inout) :: sph_bc_U
+!!        type(sph_velocity_BC_spectr), intent(inout) :: bc_Uspectr
 !!@endverbatim
 !
       module set_bc_flag_sph_velo
@@ -20,6 +23,7 @@
       use m_constants
       use m_machine_parameter
       use m_boundary_condition_IDs
+      use t_boundary_data_sph_MHD
       use t_boundary_params_sph_MHD
 !
       use m_bc_data_list
@@ -36,9 +40,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_sph_bc_velo_sph                                    &
-     &         (sph_rj, radial_rj_grp, r_ICB, r_CMB)
+     &         (sph_rj, radial_rj_grp, r_ICB, r_CMB,                    &
+     &          sph_bc_U, bc_Uspectr)
 !
-      use m_boundary_params_sph_MHD
       use t_spheric_rj_data
       use t_group_data
       use set_bc_sph_scalars
@@ -47,6 +51,9 @@
       type(group_data), intent(in) :: radial_rj_grp
       real(kind = kreal), intent(in) :: r_ICB, r_CMB
 !
+      type(sph_boundary_type), intent(inout) :: sph_bc_U
+      type(sph_velocity_BC_spectr), intent(inout) :: bc_Uspectr
+!
       integer(kind = kint) :: i
       integer(kind = kint) :: igrp_icb, igrp_cmb
 !
@@ -54,7 +61,7 @@
       call find_both_sides_of_boundaries(sph_rj, radial_rj_grp,        &
      &   velo_nod, torque_surf, sph_bc_U, igrp_icb, igrp_cmb)
 !
-      call allocate_vsp_bc_array(sph_rj%nidx_rj(2))
+      call alloc_vsp_bc_array(sph_rj%nidx_rj(2), bc_Uspectr)
 !
 !
       i = abs(igrp_icb)
@@ -62,12 +69,12 @@
         call set_sph_velo_ICB_flag                                      &
      &    (sph_rj%nidx_rj(2), sph_rj%idx_rj_degree_one, r_ICB,          &
      &     torque_surf%ibc_type(i), torque_surf%bc_magnitude(i),        &
-     &      sph_bc_U, vt_ICB_bc)
+     &      sph_bc_U, bc_Uspectr%vt_ICB_bc)
       else
         call set_sph_velo_ICB_flag                                      &
      &    (sph_rj%nidx_rj(2), sph_rj%idx_rj_degree_one, r_ICB,          &
      &     velo_nod%ibc_type(i), velo_nod%bc_magnitude(i),              &
-     &      sph_bc_U, vt_ICB_bc)
+     &      sph_bc_U, bc_Uspectr%vt_ICB_bc)
       end if
 !
       i = abs(igrp_cmb)
@@ -75,12 +82,12 @@
         call set_sph_velo_CMB_flag                                      &
      &    (sph_rj%nidx_rj(2), sph_rj%idx_rj_degree_one, r_CMB,          &
      &      torque_surf%ibc_type(i), torque_surf%bc_magnitude(i),       &
-     &      sph_bc_U, vt_CMB_bc)
+     &      sph_bc_U, bc_Uspectr%vt_CMB_bc)
       else
         call set_sph_velo_CMB_flag                                      &
      &    (sph_rj%nidx_rj(2), sph_rj%idx_rj_degree_one, r_CMB,          &
      &      velo_nod%ibc_type(i), velo_nod%bc_magnitude(i),             &
-     &      sph_bc_U, vt_CMB_bc)
+     &      sph_bc_U, bc_Uspectr%vt_CMB_bc)
       end if
 !
       end subroutine set_sph_bc_velo_sph

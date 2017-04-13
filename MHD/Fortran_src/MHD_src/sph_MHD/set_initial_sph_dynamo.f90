@@ -8,11 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine sph_initial_data_control(reftemp_rj,                 &
-!!     &          sph_params, sph_rj, ref_param_T, ipol, idpdr, itor,   &
-!!     &          rj_fld, rst_step, init_d, time_d)
+!!     &          sph_params, sph_rj, ref_param_T, c,            &
+!!     &          ipol, idpdr, itor, rj_fld, rst_step, init_d, time_d)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(reference_scalar_param), intent(in) :: ref_param_T
+!!        type(sph_boundary_type), intent(in) :: sph_bc_B
 !!        type(phys_address), intent(in) :: ipol
 !!        type(time_data), intent(inout) :: init_d, time_d
 !!        type(phys_data), intent(inout) :: rj_fld
@@ -32,6 +33,7 @@
       use t_time_data
       use t_spheric_rj_data
       use t_phys_address
+      use t_boundary_params_sph_MHD
 !
       implicit none
 !
@@ -47,8 +49,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine sph_initial_data_control(reftemp_rj,                   &
-     &          sph_params, sph_rj, ref_param_T, ipol, idpdr, itor,     &
-     &          rj_fld, rst_step, init_d, time_d)
+     &          sph_params, sph_rj, ref_param_T, sph_bc_B,              &
+     &          ipol, idpdr, itor, rj_fld, rst_step, init_d, time_d)
 !
       use m_machine_parameter
       use m_initial_field_control
@@ -65,6 +67,7 @@
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
       type(reference_scalar_param), intent(in) :: ref_param_T
+      type(sph_boundary_type), intent(in) :: sph_bc_B
       real(kind=kreal), intent(in) :: reftemp_rj(sph_rj%nidx_rj(1),0:2)
       type(phys_address), intent(in) :: ipol, idpdr, itor
 !
@@ -145,7 +148,8 @@
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
         if(ipol%i_magne .gt. 0) then
-          call set_initial_magne_sph(sph_rj, ipol, idpdr, itor,         &
+          call set_initial_magne_sph                                    &
+     &       (sph_rj, sph_bc_B, ipol, idpdr, itor,                      &
      &        sph_params%radius_ICB, sph_params%radius_CMB,             &
      &        sph_params%nlayer_ICB, sph_params%nlayer_CMB,             &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
@@ -401,12 +405,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_magne_sph(sph_rj, ipol, idpdr, itor,       &
-     &          r_ICB, r_CMB, nlayer_ICB, nlayer_CMB,                   &
-     &          n_point, ntot_phys_rj, d_rj)
+      subroutine set_initial_magne_sph                                  &
+     &         (sph_rj, sph_bc_B, ipol, idpdr, itor, r_ICB, r_CMB,      &
+     &          nlayer_ICB, nlayer_CMB, n_point, ntot_phys_rj, d_rj)
 !
-      use m_boundary_params_sph_MHD
-!
+      type(sph_boundary_type), intent(in) :: sph_bc_B
       type(sph_rj_grid), intent(in) :: sph_rj
       type(phys_address), intent(in) :: ipol, idpdr, itor
       integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB

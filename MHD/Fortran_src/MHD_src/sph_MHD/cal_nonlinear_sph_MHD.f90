@@ -16,7 +16,7 @@
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(scalar_property), intent(in) :: ht_prop, cp_prop
 !!        type(phys_address), intent(in) :: b_trns, f_trns
-!!      subroutine add_ref_advect_sph_MHD(sph_rj,                       &
+!!      subroutine add_ref_advect_sph_MHD(sph_rj, sph_bc_T, sph_bc_C,   &
 !!     &          ht_prop, cp_prop, ref_param_T, ref_param_C,           &
 !!     &          leg, ref_temp, ref_comp, ipol, rj_fld)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
@@ -24,6 +24,8 @@
 !!        type(scalar_property), intent(in) :: cp_prop
 !!        type(reference_scalar_param), intent(in) :: ref_param_T
 !!        type(reference_scalar_param), intent(in) :: ref_param_C
+!!        type(sph_boundary_type), intent(in) :: sph_bc_T
+!!        type(sph_boundary_type), intent(in) :: sph_bc_C
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(phys_address), intent(in) :: ipol
 !!        type(reference_temperature), intent(in) :: ref_temp
@@ -53,6 +55,7 @@
       use t_phys_data
       use t_schmidt_poly_on_rtm
       use t_radial_reference_temp
+      use t_boundary_params_sph_MHD
 !
       implicit none
 !
@@ -135,17 +138,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine add_ref_advect_sph_MHD(sph_rj,                         &
+      subroutine add_ref_advect_sph_MHD(sph_rj, sph_bc_T, sph_bc_C,     &
      &          ht_prop, cp_prop, ref_param_T, ref_param_C,             &
      &          leg, ref_temp, ref_comp, ipol, rj_fld)
-!
-      use m_boundary_params_sph_MHD
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(scalar_property), intent(in) :: ht_prop
       type(scalar_property), intent(in) :: cp_prop
       type(reference_scalar_param), intent(in) :: ref_param_T
       type(reference_scalar_param), intent(in) :: ref_param_C
+      type(sph_boundary_type), intent(in) :: sph_bc_T
+      type(sph_boundary_type), intent(in) :: sph_bc_C
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_address), intent(in) :: ipol
 !
@@ -164,7 +167,7 @@
      &      rj_fld%d_fld)
       end if
       if (ref_param_C%iflag_reference .eq. id_sphere_ref_temp) then
-        call add_reference_advect_sph(sph_bc_C%kr_in, sph_bc_T%kr_out,  &
+        call add_reference_advect_sph(sph_bc_C%kr_in, sph_bc_C%kr_out,  &
      &      sph_rj%nidx_rj, sph_rj%ar_1d_rj, leg%g_sph_rj,              &
      &      cp_prop%coef_advect, ipol%i_c_advect, ipol%i_velo,          &
      &      rj_fld%n_point, rj_fld%ntot_phys, ref_comp%t_rj,            &

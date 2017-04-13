@@ -7,8 +7,9 @@
 !>@brief Set boundary conditions for scalar fields
 !!
 !!@verbatim
-!!      subroutine set_sph_bc_temp_sph(sph_rj, radial_rj_grp)
-!!      subroutine set_sph_bc_composition_sph(sph_rj, radial_rj_grp)
+!!      subroutine set_sph_bc_temp_sph(sph_rj, radial_rj_grp, sph_bc_T)
+!!      subroutine set_sph_bc_composition_sph                           &
+!!     &         (sph_rj, radial_rj_grp, sph_bc_C)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(group_data), intent(in) :: radial_rj_grp
 !!
@@ -33,6 +34,7 @@
 !
       use t_spheric_rj_data
       use t_group_data
+      use t_boundary_params_sph_MHD
 !
       implicit none
 !
@@ -46,16 +48,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sph_bc_temp_sph(sph_rj, radial_rj_grp)
+      subroutine set_sph_bc_temp_sph(sph_rj, radial_rj_grp, sph_bc_T)
 !
       use m_phys_labels
-      use m_boundary_params_sph_MHD
       use m_bc_data_list
       use m_surf_data_list
       use m_sph_boundary_input_data
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(group_data), intent(in) :: radial_rj_grp
+      type(sph_boundary_type), intent(inout) :: sph_bc_T
 !
       integer(kind = kint) :: i
 !
@@ -103,16 +105,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sph_bc_composition_sph(sph_rj, radial_rj_grp)
+      subroutine set_sph_bc_composition_sph                             &
+     &         (sph_rj, radial_rj_grp, sph_bc_C)
 !
       use m_phys_labels
-      use m_boundary_params_sph_MHD
       use m_bc_data_list
       use m_surf_data_list
       use m_sph_boundary_input_data
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(group_data), intent(in) :: radial_rj_grp
+      type(sph_boundary_type), intent(inout) :: sph_bc_C
 !
       integer(kind = kint) :: i
 !

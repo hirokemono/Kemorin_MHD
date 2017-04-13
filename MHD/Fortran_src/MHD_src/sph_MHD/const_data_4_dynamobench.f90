@@ -8,9 +8,10 @@
 !!
 !!@verbatim
 !!      subroutine s_const_data_4_dynamobench(time, sph_params, sph_rj, &
-!!     &          leg, ipol, itor, rj_fld, pwr, WK_pwr)
+!!     &          sph_MHD_bc, leg, ipol, itor, rj_fld, pwr, WK_pwr)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(legendre_4_sph_trans), intent(in) :: leg
 !!        type(phys_address), intent(in) :: ipol, itor
 !!        type(phys_data), intent(in) :: rj_fld
@@ -33,9 +34,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_const_data_4_dynamobench(time, sph_params, sph_rj,   &
-     &          leg, ipol, itor, rj_fld, pwr, WK_pwr)
+     &          sph_MHD_bc, leg, ipol, itor, rj_fld, pwr, WK_pwr)
 !
-      use m_boundary_params_sph_MHD
       use m_field_at_mid_equator
 !
       use t_spheric_parameter
@@ -45,6 +45,7 @@
       use t_schmidt_poly_on_rtm
       use t_rms_4_sph_spectr
       use t_sum_sph_rms_data
+      use t_boundary_data_sph_MHD
 !
       use calypso_mpi
       use cal_rms_fields_by_sph
@@ -53,6 +54,7 @@
       real(kind=kreal), intent(in) :: time
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_address), intent(in) :: ipol, itor
       type(phys_data), intent(in) :: rj_fld
@@ -71,14 +73,14 @@
      &    pwr, WK_pwr)
       if(my_rank .eq. 0) call copy_energy_4_dynamobench(pwr)
 !
-      if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
+      if(sph_MHD_bc%sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call pick_inner_core_rotation(sph_rj%idx_rj_degree_one,         &
      &      sph_rj%nidx_rj, sph_params%nlayer_ICB, sph_rj%ar_1d_rj,     &
      &      itor%i_velo, rj_fld%n_point, rj_fld%ntot_phys,              &
      &      rj_fld%d_fld)
       end if
 !
-      if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
+      if(sph_MHD_bc%sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
         pwr%v_spectr(1)%kr_inside =  izero
         pwr%v_spectr(1)%kr_outside = sph_params%nlayer_ICB
         call cal_mean_squre_in_shell                                    &
@@ -87,8 +89,9 @@
         if(my_rank .eq. 0) call copy_icore_energy_4_dbench(pwr)
       end if
 !
-      if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center                  &
-     &   .and. sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
+      if(sph_MHD_bc%sph_bc_B%iflag_icb .eq. iflag_sph_fill_center       &
+     &   .and. sph_MHD_bc%sph_bc_U%iflag_icb .eq. iflag_rotatable_ic)   &
+     & then
         call pick_mag_torque_inner_core                                 &
      &     (sph_rj%idx_rj_degree_one,  sph_rj%nidx_rj,                  &
      &      sph_params%nlayer_ICB, sph_rj%radius_1d_rj_r,               &

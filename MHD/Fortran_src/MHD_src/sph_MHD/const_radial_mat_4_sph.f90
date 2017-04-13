@@ -8,10 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine const_radial_mat_sph_mhd                             &
-!!     &        (dt, MHD_prop, sph_rj, r_2nd, leg)
+!!     &        (dt, MHD_prop, sph_MHD_bc, sph_rj, r_2nd, leg)
 !!      subroutine const_radial_mat_sph_snap                            &
-!!     &         (MHD_prop, sph_rj, r_2nd, leg)
-!!      type(MHD_evolution_param), intent(in) :: MHD_prop
+!!     &         (MHD_prop, sph_MHD_bc, sph_rj, r_2nd, leg)
+!!        type(MHD_evolution_param), intent(in) :: MHD_prop
+!!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(legendre_4_sph_trans), intent(in) :: leg
@@ -46,11 +47,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_radial_mat_sph_mhd                               &
-     &        (dt, MHD_prop, sph_rj, r_2nd, leg)
+     &        (dt, MHD_prop, sph_MHD_bc, sph_rj, r_2nd, leg)
 !
-      use m_boundary_params_sph_MHD
+      use t_boundary_data_sph_MHD
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(legendre_4_sph_trans), intent(in) :: leg
@@ -61,13 +63,15 @@
       call const_radial_matrices_sph                                    &
      &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
-     &    sph_bc_U, sph_bc_B, sph_bc_T, sph_bc_C,                       &
+     &    sph_MHD_bc%sph_bc_U, sph_MHD_bc%sph_bc_B,                     &
+     &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%sph_bc_C,                     &
      &    sph_rj, r_2nd, leg%g_sph_rj, dt)
 !
       if(sph_rj%inod_rj_center .gt. 0) then
         call const_radial_mat_sph_w_center(dt, sph_rj,                  &
      &      MHD_prop%fl_prop, MHD_prop%ht_prop, MHD_prop%cp_prop,       &
-     &      sph_bc_U, sph_bc_T, sph_bc_C)
+     &      sph_MHD_bc%sph_bc_U, sph_MHD_bc%sph_bc_T,                   &
+     &      sph_MHD_bc%sph_bc_C)
       end if
 !
       end subroutine const_radial_mat_sph_mhd
@@ -75,15 +79,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_radial_mat_sph_snap                              &
-     &         (MHD_prop, sph_rj, r_2nd, leg)
+     &         (MHD_prop, sph_MHD_bc, sph_rj, r_2nd, leg)
 !
-      use m_boundary_params_sph_MHD
       use m_radial_matrices_sph
       use m_radial_mat_sph_w_center
+      use t_boundary_data_sph_MHD
       use const_r_mat_4_scalar_sph
       use const_r_mat_w_center_sph
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(legendre_4_sph_trans), intent(in) :: leg
@@ -93,13 +98,14 @@
       if(iflag_debug .gt. 0)                                            &
      &          write(*,*) 'const_radial_mat_4_press_sph'
       call const_radial_mat_4_press_sph(sph_rj, r_2nd,                  &
-     &    MHD_prop%fl_prop, sph_bc_U, leg%g_sph_rj, band_p_poisson)
+     &    MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U, leg%g_sph_rj,          &
+     &    band_p_poisson)
 !
       if(sph_rj%inod_rj_center .eq. 0) return
 !
       if(i_debug .gt. 0) write(*,*) 'const_radial_mat_press00_sph'
       call const_radial_mat_press00_sph                                 &
-     &   (sph_rj, sph_bc_U, MHD_prop%fl_prop,                           &
+     &   (sph_rj, sph_MHD_bc%sph_bc_U, MHD_prop%fl_prop,                &
      &    band_p_poisson%n_vect, band_p_poisson%n_comp,                 &
      &    band_p_poisson%mat, band_p00_poisson)
 !
