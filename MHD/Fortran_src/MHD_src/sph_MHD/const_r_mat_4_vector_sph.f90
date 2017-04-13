@@ -7,10 +7,10 @@
 !!
 !!@verbatim
 !!      subroutine const_radial_mat_vort_2step                          &
-!!     &        (sph_rj, r_2nd, fl_prop, sph_bc_U, g_sph_rj, dt,        &
+!!     &        (dt, sph_rj, r_2nd, fl_prop, sph_bc_U, g_sph_rj,        &
 !!     &         band_vs_poisson, band_vp_evo, band_vt_evo, band_wt_evo)
 !!      subroutine const_radial_mat_4_magne_sph                         &
-!!     &         (sph_rj, r_2nd, cd_prop, sph_bc_B, g_sph_rj, dt,       &
+!!     &         (dt, sph_rj, r_2nd, cd_prop, sph_bc_B, g_sph_rj,       &
 !!     &          band_bp_evo, band_bt_evo)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
@@ -52,7 +52,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_radial_mat_vort_2step                            &
-     &        (sph_rj, r_2nd, fl_prop, sph_bc_U, g_sph_rj, dt,          &
+     &        (dt, sph_rj, r_2nd, fl_prop, sph_bc_U, g_sph_rj,          &
      &         band_vs_poisson, band_vp_evo, band_vt_evo, band_wt_evo)
 !
       use m_coef_fdm_to_center
@@ -239,7 +239,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_radial_mat_4_magne_sph                           &
-     &         (sph_rj, r_2nd, cd_prop, sph_bc_B, g_sph_rj, dt,         &
+     &         (dt, sph_rj, r_2nd, cd_prop, sph_bc_B, g_sph_rj,         &
      &          band_bp_evo, band_bt_evo)
 !
       use m_coef_fdm_to_center
@@ -263,6 +263,7 @@
 !
       write(band_bp_evo%mat_name,'(a)') 'poloidal_magne_evolution'
       write(band_bt_evo%mat_name,'(a)') 'toroidal_magne_evolution'
+      if (cd_prop%iflag_Bevo_scheme .lt. id_Crank_nicolson) return
 !
       call alloc_band_mat_sph(ithree, sph_rj, band_bp_evo)
       call alloc_band_mat_sph(ithree, sph_rj, band_bt_evo)

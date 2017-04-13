@@ -86,7 +86,8 @@
      &       write(*,*) 'cal_sol_velo_by_vort_sph_crank'
         call cal_sol_velo_by_vort_sph_crank                             &
      &     (sph_rj, sph_MHD_bc%sph_bc_U, sph_MHD_bc%bc_Uspectr,         &
-     &      band_vp_evo, band_vt_evo, ipol, itor, rj_fld)
+     &      sph_MHD_mat1%band_vp_evo, sph_MHD_mat1%band_vt_evo,         &
+     &      ipol, itor, rj_fld)
         call const_grad_vp_and_vorticity                                &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, sph_MHD_bc%bc_Uspectr,  &
      &      leg%g_sph_rj, ipol%i_velo, ipol%i_vort, rj_fld)
@@ -97,7 +98,7 @@
       if(MHD_prop%ht_prop%iflag_scheme .gt. id_no_evolution) then
         call cal_sol_scalar_sph_crank                                   &
      &     (dt, sph_rj, MHD_prop%ht_prop, sph_MHD_bc%sph_bc_T,          &
-     &      band_temp_evo, sph_MHD_mat1%band_temp00_evo,                &
+     &      sph_MHD_mat1%band_temp_evo, sph_MHD_mat1%band_temp00_evo,   &
      &      ipol%i_temp, rj_fld, sph_MHD_mat1%x00_w_center)
       end if
 !g
@@ -106,7 +107,7 @@
       if(MHD_prop%cp_prop%iflag_scheme .gt. id_no_evolution) then
         call cal_sol_scalar_sph_crank                                   &
      &     (dt, sph_rj, MHD_prop%cp_prop, sph_MHD_bc%sph_bc_C,          &
-     &      band_comp_evo, sph_MHD_mat1%band_comp00_evo,                &
+     &      sph_MHD_mat1%band_comp_evo, sph_MHD_mat1%band_comp00_evo,   &
      &      ipol%i_light, rj_fld, sph_MHD_mat1%x00_w_center)
       end if
 !
@@ -115,7 +116,8 @@
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_magne_sph_crank'
       if(MHD_prop%cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         call cal_sol_magne_sph_crank(sph_rj, sph_MHD_bc%sph_bc_B,       &
-     &      band_bp_evo, band_bt_evo, leg%g_sph_rj, ipol, itor, rj_fld)
+     &      sph_MHD_mat1%band_bp_evo, sph_MHD_mat1%band_bt_evo,         &
+     &      leg%g_sph_rj, ipol, itor, rj_fld)
         call const_grad_bp_and_current                                  &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_B,                         &
      &      leg%g_sph_rj, ipol%i_magne, ipol%i_current, rj_fld)

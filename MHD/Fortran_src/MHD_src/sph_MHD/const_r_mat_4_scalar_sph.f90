@@ -8,9 +8,9 @@
 !!@verbatim
 !!      subroutine const_radial_mat_4_press_sph(sph_rj, r_2nd,          &
 !!     &          fl_prop, sph_bc_U, g_sph_rj, band_p_poisson)
-!!      subroutine const_radial_mat_4_scalar_sph(sph_rj, r_2nd, sph_bc, &
-!!     &          g_sph_rj, dt, coef_imp, coef_f, coef_d, band_s_evo)
-!!        type(fluid_property), intent(in) :: fl_prop
+!!      subroutine const_radial_mat_4_scalar_sph(mat_name, dt,          &
+!!     &          sph_rj, r_2nd, property, sph_bc, g_sph_rj, band_s_evo)
+!!        type(scalar_property), intent(in) :: property
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
@@ -108,12 +108,11 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_4_scalar_sph(sph_rj, r_2nd, sph_bc,   &
-     &          g_sph_rj, dt, coef_imp, coef_f, coef_d, band_s_evo)
+      subroutine const_radial_mat_4_scalar_sph(mat_name, dt,            &
+     &          sph_rj, r_2nd, property, sph_bc, g_sph_rj, band_s_evo)
 !
       use m_coef_fdm_to_center
       use m_ludcmp_3band
-      use t_boundary_params_sph_MHD
       use center_sph_matrices
       use set_radial_mat_sph
       use set_sph_scalar_mat_bc
@@ -121,26 +120,29 @@
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
+      type(scalar_property), intent(in) :: property
       type(sph_boundary_type), intent(in) :: sph_bc
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
-      real(kind = kreal), intent(in) :: coef_imp, coef_f, coef_d
       real(kind = kreal), intent(in) :: dt
+      character(len=kchara), intent(in) :: mat_name
 !
       type(band_matrices_type), intent(inout) :: band_s_evo
 !
       real(kind = kreal) :: coef
 !
 !
+      write(band_s_evo%mat_name,'(a)') trim(mat_name)
+      if(property%iflag_scheme .lt. id_Crank_nicolson) return
       call alloc_band_mat_sph(ithree, sph_rj, band_s_evo)
       call set_unit_on_diag(band_s_evo)
 !
-      if(coef_f .eq. zero) then
+      if(property%coef_advect .eq. zero) then
         coef = one
         call set_unit_mat_4_poisson                                     &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2),                       &
      &      sph_bc%kr_in, sph_bc%kr_out, band_s_evo%mat)
       else
-        coef = coef_imp * coef_d * dt
+        coef = property%coef_imp * property%coef_diffuse * dt
         call set_unit_mat_4_time_evo                                    &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), band_s_evo%mat)
       end if

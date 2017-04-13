@@ -61,7 +61,7 @@
       type(band_matrix_type), intent(inout) :: band_p00_poisson
 !
 !
-      if (fl_prop%iflag_scheme .le. id_Crank_nicolson) return
+      if (fl_prop%iflag_scheme .lt. id_Crank_nicolson) return
 !
       if(i_debug .gt. 0) write(*,*) 'const_rmat_press00_sph'
       write(band_p00_poisson%mat_name,'(a)') trim(mat_name)
@@ -90,7 +90,7 @@
       type(band_matrix_type), intent(inout) :: band_s00_evo
 !
 !
-      if (prop%iflag_scheme .le. id_Crank_nicolson) return
+      if (prop%iflag_scheme .lt. id_Crank_nicolson) return
       if(i_debug .gt. 0) write(*,*) 'const_rmat_scalar00_sph'
       write(band_s00_evo%mat_name,'(a)') trim(mat_name)
       call const_rmat_scalar00_sph(sph_rj, sph_bc, dt,                  &

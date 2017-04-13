@@ -80,7 +80,7 @@
       if(MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
         call pressure_4_sph_mhd                                         &
      &     (SGS_param, sph%sph_rj, MHD_prop, sph_MHD_bc, r_2nd,         &
-     &      trans_p%leg, band_p_poisson, ipol, rj_fld)
+     &      trans_p%leg, sph_MHD_mat1%band_p_poisson, ipol, rj_fld)
       end if
 !
 !
