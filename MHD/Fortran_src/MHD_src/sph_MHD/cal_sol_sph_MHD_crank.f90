@@ -7,8 +7,9 @@
 !>@brief  Update fields for MHD dynamo model
 !!
 !!@verbatim
-!!      subroutine s_cal_sol_sph_MHD_crank(dt, sph_rj, r_2nd,           &
-!!     &          MHD_prop, sph_MHD_bc, leg, ipol, idpdr, itor, rj_fld)
+!!      subroutine s_cal_sol_sph_MHD_crank                              &
+!!     &         (dt, sph_rj, r_2nd, MHD_prop, sph_MHD_bc, leg,         &
+!!     &          ipol, idpdr, itor, sph_MHD_mat, rj_fld)
 !!      subroutine set_sph_field_to_start                               &
 !!     &         (sph_rj, r_2nd, MHD_prop, sph_MHD_bc, leg,             &
 !!     &          ipol, itor, rj_fld)
@@ -18,6 +19,7 @@
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(phys_address), intent(in) :: ipol, itor
+!!        type(MHD_radial_matrices), intent(inout) :: sph_MHD_mat
 !!        type(phys_data), intent(inout) :: rj_fld
 !!
 !!      subroutine check_ws_spectr(sph_rj, ipol, idpdr, itor, rj_fld)
@@ -31,7 +33,6 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_radial_matrices_sph
       use m_schmidt_poly_on_rtm
       use const_sph_radial_grad
       use const_sph_rotation
@@ -45,6 +46,7 @@
       use t_fdm_coefs
       use t_boundary_data_sph_MHD
       use t_boundary_params_sph_MHD
+      use t_radial_matrices_sph_MHD
 !
       implicit none
 !
@@ -57,8 +59,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_cal_sol_sph_MHD_crank(dt, sph_rj, r_2nd,             &
-     &          MHD_prop, sph_MHD_bc, leg, ipol, idpdr, itor, rj_fld)
+      subroutine s_cal_sol_sph_MHD_crank                                &
+     &         (dt, sph_rj, r_2nd, MHD_prop, sph_MHD_bc, leg,           &
+     &          ipol, idpdr, itor, sph_MHD_mat, rj_fld)
 !
       use cal_rot_buoyancies_sph_MHD
       use cal_sol_sph_fluid_crank
@@ -71,6 +74,8 @@
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_address), intent(in) :: ipol, idpdr, itor
+!
+      type(MHD_radial_matrices), intent(inout) :: sph_MHD_mat
       type(phys_data), intent(inout) :: rj_fld
 !
 !      integer(kind = kint) :: j, k, inod
@@ -86,7 +91,7 @@
      &       write(*,*) 'cal_sol_velo_by_vort_sph_crank'
         call cal_sol_velo_by_vort_sph_crank                             &
      &     (sph_rj, sph_MHD_bc%sph_bc_U, sph_MHD_bc%bc_Uspectr,         &
-     &      sph_MHD_mat1%band_vp_evo, sph_MHD_mat1%band_vt_evo,         &
+     &      sph_MHD_mat%band_vp_evo, sph_MHD_mat%band_vt_evo,           &
      &      ipol, itor, rj_fld)
         call const_grad_vp_and_vorticity                                &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, sph_MHD_bc%bc_Uspectr,  &
@@ -98,8 +103,8 @@
       if(MHD_prop%ht_prop%iflag_scheme .gt. id_no_evolution) then
         call cal_sol_scalar_sph_crank                                   &
      &     (dt, sph_rj, MHD_prop%ht_prop, sph_MHD_bc%sph_bc_T,          &
-     &      sph_MHD_mat1%band_temp_evo, sph_MHD_mat1%band_temp00_evo,   &
-     &      ipol%i_temp, rj_fld, sph_MHD_mat1%x00_w_center)
+     &      sph_MHD_mat%band_temp_evo, sph_MHD_mat%band_temp00_evo,     &
+     &      ipol%i_temp, rj_fld, sph_MHD_mat%x00_w_center)
       end if
 !g
 !  Input: ipol%i_light,  Solution: ipol%i_light
@@ -107,8 +112,8 @@
       if(MHD_prop%cp_prop%iflag_scheme .gt. id_no_evolution) then
         call cal_sol_scalar_sph_crank                                   &
      &     (dt, sph_rj, MHD_prop%cp_prop, sph_MHD_bc%sph_bc_C,          &
-     &      sph_MHD_mat1%band_comp_evo, sph_MHD_mat1%band_comp00_evo,   &
-     &      ipol%i_light, rj_fld, sph_MHD_mat1%x00_w_center)
+     &      sph_MHD_mat%band_comp_evo, sph_MHD_mat%band_comp00_evo,     &
+     &      ipol%i_light, rj_fld, sph_MHD_mat%x00_w_center)
       end if
 !
 !  Input: ipol%i_magne, itor%i_magne
@@ -116,7 +121,7 @@
       if(iflag_debug.gt.0) write(*,*) 'cal_sol_magne_sph_crank'
       if(MHD_prop%cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         call cal_sol_magne_sph_crank(sph_rj, sph_MHD_bc%sph_bc_B,       &
-     &      sph_MHD_mat1%band_bp_evo, sph_MHD_mat1%band_bt_evo,         &
+     &      sph_MHD_mat%band_bp_evo, sph_MHD_mat%band_bt_evo,           &
      &      leg%g_sph_rj, ipol, itor, rj_fld)
         call const_grad_bp_and_current                                  &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_B,                         &

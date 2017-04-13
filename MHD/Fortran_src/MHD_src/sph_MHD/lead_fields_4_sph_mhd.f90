@@ -8,7 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine s_lead_fields_4_sph_mhd(SGS_param, sph, comms_sph,   &
-!!     &         r_2nd, MHD_prop, sph_MHD_bc, trans_p, ipol, rj_fld, WK)
+!!     &          r_2nd, MHD_prop, sph_MHD_bc, trans_p, ipol,           &
+!!     &          sph_MHD_mat, rj_fld, WK)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
@@ -18,6 +19,7 @@
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(phys_address), intent(in) :: ipol
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
+!!        type(MHD_radial_matrices), intent(inout) :: sph_MHD_mat
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
 !
@@ -40,6 +42,7 @@
       use t_work_4_sph_trans
       use t_sph_transforms
       use t_boundary_data_sph_MHD
+      use t_radial_matrices_sph_MHD
       use sph_filtering
 !
       implicit none
@@ -54,9 +57,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_lead_fields_4_sph_mhd(SGS_param, sph, comms_sph,     &
-     &         r_2nd, MHD_prop, sph_MHD_bc, trans_p, ipol, rj_fld, WK)
+     &          r_2nd, MHD_prop, sph_MHD_bc, trans_p, ipol,             &
+     &          sph_MHD_mat, rj_fld, WK)
 !
-      use m_radial_matrices_sph
       use sph_transforms_4_MHD
       use sph_transforms_4_SGS
       use copy_MHD_4_sph_trans
@@ -74,13 +77,14 @@
       type(phys_address), intent(in) :: ipol
 !
       type(works_4_sph_trans_MHD), intent(inout) :: WK
+      type(MHD_radial_matrices), intent(inout) :: sph_MHD_mat
       type(phys_data), intent(inout) :: rj_fld
 !
 !
       if(MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
         call pressure_4_sph_mhd                                         &
      &     (SGS_param, sph%sph_rj, MHD_prop, sph_MHD_bc, r_2nd,         &
-     &      trans_p%leg, sph_MHD_mat1%band_p_poisson, ipol, rj_fld)
+     &      trans_p%leg, sph_MHD_mat%band_p_poisson, ipol, rj_fld)
       end if
 !
 !

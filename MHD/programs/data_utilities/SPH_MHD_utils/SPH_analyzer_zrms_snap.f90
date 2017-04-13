@@ -25,6 +25,7 @@
       use m_machine_parameter
       use m_MHD_step_parameter
       use m_physical_property
+      use m_radial_matrices_sph
 !
       implicit none
 !
@@ -93,7 +94,7 @@
         if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
         call s_lead_fields_4_sph_mhd(SGS_par1%model_p, sph1,            &
      &      comms_sph1, r_2nd, MHD_prop1, sph_MHD_bc1, trans_p1,        &
-     &      ipol, rj_fld1, trns_WK1)
+     &      ipol, sph_MHD_mat1, rj_fld1, trns_WK1)
       end if
       call end_eleps_time(9)
 !

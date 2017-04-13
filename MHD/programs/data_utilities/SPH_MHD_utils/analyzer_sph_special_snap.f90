@@ -138,6 +138,7 @@
       use m_sph_trans_arrays_MHD
       use m_rms_4_sph_spectr
       use m_boundary_data_sph_MHD
+      use m_radial_matrices_sph
       use t_MHD_step_parameter
 !
       use cal_nonlinear
@@ -191,7 +192,8 @@
 !*
       if(iflag_debug.gt.0) write(*,*) 'lead_special_fields_4_sph_mhd'
       call lead_special_fields_4_sph_mhd(i_step, sph1, comms_sph1,      &
-     &    omega_sph1, r_2nd, ipol, trns_WK1, rj_fld1, MHD_step)
+     &    omega_sph1, r_2nd, ipol, trns_WK1, sph_MHD_mat1, rj_fld1,     &
+     &    MHD_step)
       call end_eleps_time(9)
 !
 !*  -----------  lead energy data --------------
@@ -298,7 +300,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine lead_special_fields_4_sph_mhd(i_step, sph, comms_sph,  &
-     &          omega_sph, r_2nd, ipol, trns_WK, rj_fld, MHD_step)
+     &          omega_sph, r_2nd, ipol, trns_WK, sph_MHD_mat, rj_fld,   &
+     &          MHD_step)
 !
       use t_MHD_step_parameter
       use t_spheric_parameter
@@ -308,6 +311,7 @@
       use t_fdm_coefs
       use t_sph_trans_arrays_MHD
       use t_sph_transforms
+      use t_radial_matrices_sph_MHD
       use m_physical_property
       use m_boundary_data_sph_MHD
       use m_schmidt_poly_on_rtm
@@ -328,6 +332,7 @@
       type(works_4_sph_trans_MHD), intent(inout) :: trns_WK
       type(phys_data), intent(inout) :: rj_fld
       type(MHD_step_param), intent(inout) :: MHD_step
+      type(MHD_radial_matrices), intent(inout) :: sph_MHD_mat
 !
       integer(kind = kint) :: iflag
 !
@@ -337,7 +342,7 @@
       if(iflag .eq. 0) then
         call s_lead_fields_4_sph_mhd(SGS_par1%model_p, sph,             &
      &      comms_sph, r_2nd, MHD_prop1, sph_MHD_bc1, trans_p1,         &
-     &      ipol, rj_fld, trns_WK)
+     &      ipol, sph_MHD_mat, rj_fld, trns_WK)
       end if
 !
       call sph_back_trans_4_MHD(sph, comms_sph,                         &
