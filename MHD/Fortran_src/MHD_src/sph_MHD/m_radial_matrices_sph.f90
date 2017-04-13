@@ -11,6 +11,7 @@
       use m_precision
       use t_spheric_rj_data
       use t_sph_matrices
+      use t_radial_matrices_sph_MHD
 !
       implicit none
 !
