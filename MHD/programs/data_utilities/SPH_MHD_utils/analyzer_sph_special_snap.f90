@@ -347,8 +347,8 @@
 !
       call sph_back_trans_4_MHD(sph, comms_sph,                         &
      &    MHD_prop1%fl_prop, sph_MHD_bc1%sph_bc_U, omega_sph, trans_p1, &
-     &    ipol, rj_fld, trns_WK%trns_MHD, trns_WK%WK_sph,               &
-     &    trns_WK%MHD_mul_FFTW)
+     &    trns_WK%gt_cor, ipol, rj_fld, trns_WK%trns_MHD,               &
+     &    trns_WK%WK_sph, trns_WK%MHD_mul_FFTW, trns_WK%cor_rlm)
 !
       call sph_forward_trans_snapshot_MHD                               &
      &   (sph, comms_sph, trans_p1, trns_WK%trns_snap, ipol,            &

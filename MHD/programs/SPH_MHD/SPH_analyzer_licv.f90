@@ -117,10 +117,9 @@
 !*  ----------------lead nonlinear term ... ----------
 !*
       if(iflag_debug .gt. 0) write(*,*) 'first licv_exp'
-      call licv_exp                                                     &
-     &   (ref_temp1, ref_comp1, MHD_prop1, sph_MHD_bc1,                 &
-     &    sph1, comms_sph1,  omega_sph1, trans_p1, trns_WK1%trns_MHD,   &
-     &    ipol, itor, rj_fld1)
+      call licv_exp(ref_temp1, ref_comp1, MHD_prop1, sph_MHD_bc1,       &
+     &    sph1, comms_sph1,  omega_sph1, trans_p1, ipol, itor,          &
+     &    trns_WK1, rj_fld1)
 !
 !* -----  Open Volume integration data files -----------------
 !*
@@ -193,10 +192,9 @@
 !
 !*  ----------------lead nonlinear term ... ----------
 !*
-        call licv_exp                                                   &
-     &     (ref_temp1, ref_comp1, MHD_prop1, sph_MHD_bc1,               &
-     &      sph1, comms_sph1, omega_sph1, trans_p1, trns_WK1%trns_MHD,  &
-     &      ipol, itor, rj_fld1)
+        call licv_exp(ref_temp1, ref_comp1, MHD_prop1, sph_MHD_bc1,     &
+     &      sph1, comms_sph1, omega_sph1, trans_p1, ipol, itor,         &
+     &      trns_WK1, rj_fld1)
 !
 !*  -----------  output restart data --------------
 !*

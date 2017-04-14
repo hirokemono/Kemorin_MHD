@@ -22,11 +22,14 @@
       use t_addresses_sph_transform
       use t_sph_multi_FFTW
       use t_sph_transforms
+      use t_coriolis_terms_rlm
+      use t_gaunt_coriolis_rlm
+!
       use sph_filtering
 !
       implicit none
 !
-!>     strucutres for spherical transform for MHD dynamo
+!>      strucutres for spherical transform for MHD dynamo
       type works_4_sph_trans_MHD
 !>        strucutres for spherical transform for MHD
         type(address_4_sph_trans) :: trns_MHD
@@ -47,6 +50,11 @@
         type(work_for_sgl_FFTW) :: Csim_mul_FFTW
 !
         type(dynamic_SGS_data_4_sph) :: dynamic_SPH
+!
+!>        Gunat integrals of Coriolis term
+        type(gaunt_coriolis_rlm) :: gt_cor
+!>        Structure of Coriolis terms in@f$ f(r,l,m) @f$.
+        type(coriolis_rlm_data) :: cor_rlm
       end type works_4_sph_trans_MHD
 !
 !-----------------------------------------------------------------------

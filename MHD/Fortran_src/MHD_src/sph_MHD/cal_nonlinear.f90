@@ -10,10 +10,9 @@
 !!      subroutine nonlinear(SGS_param, sph, comms_sph,                 &
 !!     &          omega_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,      &
 !!     &          ref_temp, ref_comp, ipol, itor, WK, rj_fld)
-!!      subroutine licv_exp                                             &
-!!     &         (ref_temp, ref_comp, MHD_prop, sph_MHD_bc,             &
-!!     &          sph, comms_sph, omega_sph, trans_p, trns_MHD,         &
-!!     &          ipol, itor, rj_fld)
+!!      subroutine licv_exp(ref_temp, ref_comp, MHD_prop, sph_MHD_bc,   &
+!!     &          sph, comms_sph, omega_sph, trans_p, ipol, itor,       &
+!!     &          WK, rj_fld)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
@@ -54,6 +53,8 @@
       use t_sph_filtering_data
       use t_radial_reference_temp
       use t_sph_transforms
+      use t_coriolis_terms_rlm
+      use t_gaunt_coriolis_rlm
       use t_boundary_data_sph_MHD
       use sph_filtering
 !
@@ -86,8 +87,7 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(phys_address), intent(in) :: ipol, itor
-      type(reference_temperature), intent(in) :: ref_temp
-      type(reference_temperature), intent(in) :: ref_comp
+      type(reference_temperature), intent(in) :: ref_temp, ref_comp
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !
@@ -99,9 +99,9 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'nonlinear_by_pseudo_sph'
       call nonlinear_by_pseudo_sph(SGS_param, sph, comms_sph,           &
-     &    omega_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,              &
+     &    omega_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p, WK%gt_cor,   &
      &    WK%dynamic_SPH, WK%trns_MHD, WK%WK_sph, WK%MHD_mul_FFTW,      &
-     &    ipol, itor, rj_fld)
+     &    WK%cor_rlm, ipol, itor, rj_fld)
 !
 !   ----  Lead SGS terms
       if(SGS_param%iflag_SGS .gt. 0) then
@@ -114,7 +114,7 @@
 !
 !   ----  Lead advection of reference field
       call add_ref_advect_sph_MHD                                       &
-     &   (sph%sph_rj, sph_MHD_bc%sph_bc_T, sph_MHD_bc%sph_bc_C,                               &
+     &   (sph%sph_rj, sph_MHD_bc%sph_bc_T, sph_MHD_bc%sph_bc_C,         &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
      &    MHD_prop%ref_param_T, MHD_prop%ref_param_C,                   &
      &    trans_p%leg, ref_temp, ref_comp, ipol, rj_fld)
@@ -146,9 +146,9 @@
 !*   ------------------------------------------------------------------
 !
       subroutine nonlinear_by_pseudo_sph                                &
-     &         (SGS_param, sph, comms_sph, omega_sph, r_2nd,            &
-     &          MHD_prop, sph_MHD_bc, trans_p, dynamic_SPH, trns_MHD,   &
-     &          WK_sph, MHD_mul_FFTW, ipol, itor, rj_fld)
+     &         (SGS_param, sph, comms_sph, omega_sph, r_2nd, MHD_prop,  &
+     &          sph_MHD_bc, trans_p, gt_cor, dynamic_SPH, trns_MHD,     &
+     &          WK_sph, MHD_mul_FFTW, cor_rlm, ipol, itor, rj_fld)
 !
       use sph_transforms_4_MHD
       use cal_nonlinear_sph_MHD
@@ -166,12 +166,14 @@
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(parameters_4_sph_trans), intent(in) :: trans_p
+      type(gaunt_coriolis_rlm), intent(in) :: gt_cor
       type(dynamic_SGS_data_4_sph), intent(in) :: dynamic_SPH
       type(phys_address), intent(in) :: ipol, itor
 !
       type(address_4_sph_trans), intent(inout) :: trns_MHD
       type(spherical_trns_works), intent(inout) :: WK_sph
       type(work_for_sgl_FFTW), intent(inout) :: MHD_mul_FFTW
+      type(coriolis_rlm_data), intent(inout) :: cor_rlm
       type(phys_data), intent(inout) :: rj_fld
 !
 !
@@ -190,8 +192,8 @@
       if (iflag_debug.ge.1) write(*,*) 'sph_back_trans_4_MHD'
       call sph_back_trans_4_MHD                                         &
      &   (sph, comms_sph, MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U,        &
-     &    omega_sph, trans_p, ipol, rj_fld, trns_MHD,                   &
-     &    WK_sph, MHD_mul_FFTW)
+     &    omega_sph, trans_p, gt_cor, ipol, rj_fld, trns_MHD,           &
+     &    WK_sph, MHD_mul_FFTW, cor_rlm)
       call end_eleps_time(14)
 !
       call start_eleps_time(15)
@@ -217,7 +219,7 @@
       call start_eleps_time(16)
       if (iflag_debug.ge.1) write(*,*) 'sph_forward_trans_4_MHD'
       call sph_forward_trans_4_MHD                                      &
-     &   (sph, comms_sph, MHD_prop%fl_prop, trans_p,                    &
+     &   (sph, comms_sph, MHD_prop%fl_prop, trans_p, cor_rlm,           &
      &    ipol, trns_MHD, WK_sph, MHD_mul_FFTW, rj_fld)
       call end_eleps_time(16)
 !
@@ -325,10 +327,9 @@
 !*   ------------------------------------------------------------------
 !*   ------------------------------------------------------------------
 !*
-      subroutine licv_exp                                               &
-     &         (ref_temp, ref_comp, MHD_prop, sph_MHD_bc,               &
-     &          sph, comms_sph, omega_sph, trans_p, trns_MHD,           &
-     &          ipol, itor, rj_fld)
+      subroutine licv_exp(ref_temp, ref_comp, MHD_prop, sph_MHD_bc,     &
+     &          sph, comms_sph, omega_sph, trans_p, ipol, itor,         &
+     &          WK, rj_fld)
 !
       use m_phys_constants
       use sph_transforms_4_MHD
@@ -340,13 +341,12 @@
       type(sph_comm_tables), intent(in) :: comms_sph
       type(sph_rotation), intent(in) :: omega_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
-      type(address_4_sph_trans), intent(in) :: trns_MHD
       type(phys_address), intent(in) :: ipol, itor
-      type(reference_temperature), intent(in) :: ref_temp
-      type(reference_temperature), intent(in) :: ref_comp
+      type(reference_temperature), intent(in) :: ref_temp, ref_comp
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !
+      type(works_4_sph_trans_MHD), intent(inout) :: WK
       type(phys_data), intent(inout) :: rj_fld
 !
 !*  ----  copy velocity for coriolis term ------------------
@@ -356,7 +356,8 @@
         call sph_transform_4_licv                                       &
      &     (sph%sph_rlm, comms_sph%comm_rlm, comms_sph%comm_rj,         &
      &      MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U, omega_sph,           &
-     &      trans_p%leg, trns_MHD, ipol, rj_fld)
+     &      trans_p%leg, WK%gt_cor, WK%trns_MHD,                        &
+     &      ipol, rj_fld, WK%cor_rlm)
       end if
 !
 !   ----  lead nonlinear terms by phesdo spectrum

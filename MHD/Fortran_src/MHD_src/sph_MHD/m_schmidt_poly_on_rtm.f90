@@ -14,6 +14,5 @@
       implicit none
 !
       type(parameters_4_sph_trans), save :: trans_p1
-!trans_p1%leg
 !
       end module m_schmidt_poly_on_rtm
