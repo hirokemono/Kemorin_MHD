@@ -1,5 +1,5 @@
-!>@file   m_gaunt_coriolis_rlm.f90
-!!@brief  module m_gaunt_coriolis_rlm
+!>@file   t_gaunt_coriolis_rlm.f90
+!!@brief  module t_gaunt_coriolis_rlm
 !!
 !!@author H. Matsui
 !!@date Programmed in 1994
@@ -9,8 +9,8 @@
 !!       and coefficients for Coriolis term on f(r,l,m)
 !!
 !!@verbatim
-!!      subroutine alloacte_gaunt_coriolis_rlm(jmax_rlm)
-!!      subroutine alloc_coriolis_coef_tri_rlm(jmax_rlm)
+!!      subroutine alloc_gaunt_coriolis_rlm(jmax_rlm, gt_cor)
+!!      subroutine alloc_coriolis_coef_tri_rlm(jmax_rlm, gt_cor)
 !!      subroutine dealloacte_gaunt_coriolis_rlm
 !!      subroutine dealloc_coriolis_coef_tri_rlm
 !!
@@ -66,10 +66,10 @@
 !!*************************************************************
 !!*
 !!*      gk_cor(j3,jk,2) : gaunt integral for Coriolis term
-!!*              jgi_cor_rlm(j3,1) : index for gi_cor_rlm(j3,1)
-!!*              jgi_cor_rlm(j3,2) : index for gi_cor_rlm(j3,2)
-!!*      ei_cor_rlm(j3,1) : elsasser integral for Coriolis term
-!!*              jei_cor_rlm(j3,1) : index for ei_cor_rlm(j3,1)
+!!*              jgi_rlm(j3,1) : index for gi_rlm(j3,1)
+!!*              jgi_rlm(j3,2) : index for gi_rlm(j3,2)
+!!*      ei_rlm(j3,1) : elsasser integral for Coriolis term
+!!*              jei_rlm(j3,1) : index for ei_rlm(j3,1)
 !!*
 !!*************************************************************
 !!*
@@ -106,40 +106,43 @@
 !!*******************************************************************
 !!@endverbatim
 !!
-      module m_gaunt_coriolis_rlm
+      module t_gaunt_coriolis_rlm
 !*
       use m_precision
       use m_constants
 !
       implicit none
 !
-!>      Local address for Coriolis term using Gaunt integral
-      integer(kind = kint), allocatable :: jgi_cor_rlm(:,:)
-!>      Local address for Coriolis term using Elsasser integral
-      integer(kind = kint), allocatable :: jei_cor_rlm(:,:)
+!>        Gunat integrals of Coriolis term
+      type gaunt_coriolis_rlm
+!>        Local address for Coriolis term using Gaunt integral
+        integer(kind = kint), allocatable :: jgi_rlm(:,:)
+!>        Local address for Coriolis term using Elsasser integral
+        integer(kind = kint), allocatable :: jei_rlm(:,:)
 !
-!>      Gaunt integral for Coriolis term
-      real(kind = kreal), allocatable :: gi_cor_rlm(:,:)
-!>      Elsasser integral for Coriolis term
-      real(kind = kreal), allocatable :: ei_cor_rlm(:,:)
+!>        Gaunt integral for Coriolis term
+        real(kind = kreal), allocatable :: gi_rlm(:,:)
+!>        Elsasser integral for Coriolis term
+        real(kind = kreal), allocatable :: ei_rlm(:,:)
 !
 !
-!>      Coefficients for curl of Coriolis force for poloidal vorticity
-      real(kind = kreal), allocatable :: sw_rlm(:,:,:)
-!>      Coefficients for curl of Coriolis force for toroidal vorticity
-      real(kind = kreal), allocatable :: tw_rlm(:,:,:)
-!>      Coefficients for divergence of Coriolis force 
-!!       for poloidal vorticity by poloidal velocity
-      real(kind = kreal), allocatable :: sd_rlm(:,:,:)
-!>      Coefficients for divergence of Coriolis force 
-!!       for poloidal vorticity by Toroidal velocity
-      real(kind = kreal), allocatable :: td_rlm(:,:)
-!>      Coefficients for radial compoonent of Coriolis force 
-!!       for poloidal vorticity by poloidal velocity
-      real(kind = kreal), allocatable :: sr_rlm(:,:)
-!>      Coefficients for radial compoennt of Coriolis force 
-!!       for poloidal vorticity by Toroidal velocity
-      real(kind = kreal), allocatable :: tr_rlm(:,:)
+!>        Coefficients for curl of Coriolis force for poloidal vorticity
+        real(kind = kreal), allocatable :: sw_rlm(:,:,:)
+!>        Coefficients for curl of Coriolis force for toroidal vorticity
+        real(kind = kreal), allocatable :: tw_rlm(:,:,:)
+!>        Coefficients for divergence of Coriolis force 
+!!         for poloidal vorticity by poloidal velocity
+        real(kind = kreal), allocatable :: sd_rlm(:,:,:)
+!>        Coefficients for divergence of Coriolis force 
+!!         for poloidal vorticity by Toroidal velocity
+        real(kind = kreal), allocatable :: td_rlm(:,:)
+!>        Coefficients for radial compoonent of Coriolis force 
+!!         for poloidal vorticity by poloidal velocity
+        real(kind = kreal), allocatable :: sr_rlm(:,:)
+!>        Coefficients for radial compoennt of Coriolis force 
+!!         for poloidal vorticity by Toroidal velocity
+        real(kind = kreal), allocatable :: tr_rlm(:,:)
+      end type gaunt_coriolis_rlm
 !
 !*   ------------------------------------------------------------------
 !*
@@ -147,70 +150,79 @@
 !*
 !*   ------------------------------------------------------------------
 !
-      subroutine alloacte_gaunt_coriolis_rlm(jmax_rlm)
+      subroutine alloc_gaunt_coriolis_rlm(jmax_rlm, gt_cor)
 !
       integer(kind = kint), intent(in) :: jmax_rlm
+      type(gaunt_coriolis_rlm), intent(inout) :: gt_cor
 !
 !
-      allocate( jgi_cor_rlm(jmax_rlm,2) )
-      allocate( jei_cor_rlm(jmax_rlm,1) )
-      allocate( gi_cor_rlm(jmax_rlm,2) )
-      allocate( ei_cor_rlm(jmax_rlm,1) )
+      allocate( gt_cor%jgi_rlm(jmax_rlm,2) )
+      allocate( gt_cor%jei_rlm(jmax_rlm,1) )
+      allocate( gt_cor%gi_rlm(jmax_rlm,2) )
+      allocate( gt_cor%ei_rlm(jmax_rlm,1) )
 !
-      jgi_cor_rlm = 0
-      jei_cor_rlm = 0
-      gi_cor_rlm = 0.0d0
-      ei_cor_rlm = 0.0d0
+      if(jmax_rlm .le. 0) return
+      gt_cor%jgi_rlm = 0
+      gt_cor%jei_rlm = 0
+      gt_cor%gi_rlm = 0.0d0
+      gt_cor%ei_rlm = 0.0d0
 !
-      end subroutine alloacte_gaunt_coriolis_rlm
+      end subroutine alloc_gaunt_coriolis_rlm
 !
 !-----------------------------------------------------------------------
 !
-      subroutine alloc_coriolis_coef_tri_rlm(jmax_rlm)
+      subroutine alloc_coriolis_coef_tri_rlm(jmax_rlm, gt_cor)
 !
       integer(kind = kint), intent(in) :: jmax_rlm
+      type(gaunt_coriolis_rlm), intent(inout) :: gt_cor
 !
 !
-      allocate( sw_rlm(2,3,jmax_rlm) )
-      allocate( tw_rlm(2,4,jmax_rlm) )
+      allocate( gt_cor%sw_rlm(2,3,jmax_rlm) )
+      allocate( gt_cor%tw_rlm(2,4,jmax_rlm) )
 !
-      allocate( sd_rlm(2,2,jmax_rlm) )
-      allocate( td_rlm(2,jmax_rlm) )
+      allocate( gt_cor%sd_rlm(2,2,jmax_rlm) )
+      allocate( gt_cor%td_rlm(2,jmax_rlm) )
 !
-      allocate( sr_rlm(2,jmax_rlm) )
-      allocate( tr_rlm(2,jmax_rlm) )
+      allocate( gt_cor%sr_rlm(2,jmax_rlm) )
+      allocate( gt_cor%tr_rlm(2,jmax_rlm) )
 !
-      sw_rlm = zero
-      tw_rlm = zero
+      if(jmax_rlm .le. 0) return
+      gt_cor%sw_rlm = zero
+      gt_cor%tw_rlm = zero
 !
-      sd_rlm = zero
-      td_rlm = zero
+      gt_cor%sd_rlm = zero
+      gt_cor%td_rlm = zero
 !
-      sr_rlm = zero
-      tr_rlm = zero
+      gt_cor%sr_rlm = zero
+      gt_cor%tr_rlm = zero
 !
       end subroutine alloc_coriolis_coef_tri_rlm
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine dealloacte_gaunt_coriolis_rlm
+      subroutine dealloacte_gaunt_coriolis_rlm(gt_cor)
+!
+      type(gaunt_coriolis_rlm), intent(inout) :: gt_cor
 !
 !
-      deallocate(jgi_cor_rlm, gi_cor_rlm)
-      deallocate(jei_cor_rlm, ei_cor_rlm)
+      deallocate(gt_cor%jgi_rlm, gt_cor%gi_rlm)
+      deallocate(gt_cor%jei_rlm, gt_cor%ei_rlm)
 !
       end subroutine dealloacte_gaunt_coriolis_rlm
 !
 !-----------------------------------------------------------------------
 !
-      subroutine dealloc_coriolis_coef_tri_rlm
+      subroutine dealloc_coriolis_coef_tri_rlm(gt_cor)
 !
-      deallocate(sw_rlm, tw_rlm)
-      deallocate(sd_rlm, td_rlm)
-      deallocate(sr_rlm, tr_rlm)
+      type(gaunt_coriolis_rlm), intent(inout) :: gt_cor
+!
+      deallocate(gt_cor%sw_rlm, gt_cor%tw_rlm)
+      deallocate(gt_cor%sd_rlm, gt_cor%td_rlm)
+      deallocate(gt_cor%sr_rlm, gt_cor%tr_rlm)
 !
       end subroutine dealloc_coriolis_coef_tri_rlm
 !
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       integer function find_local_sph_rlm_address(jmax_rlm,             &
@@ -258,4 +270,4 @@
 !
 !-----------------------------------------------------------------------
 !
-      end module m_gaunt_coriolis_rlm
+      end module t_gaunt_coriolis_rlm

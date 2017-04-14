@@ -9,9 +9,10 @@
 !!
 !!@verbatim
 !!      subroutine s_check_gaunt_coriolis_rlm(iflag_sph_coriolis_file,  &
-!!     &          jmax_tri_sph, sph_params, sph_rlm)
+!!     &          jmax_tri_sph, sph_params, sph_rlm, gt_cor)
 !!        type(sph_shell_parameters), intent(inout) :: sph_params
 !!        type(sph_rlm_grid), intent(inout) :: sph_rlm
+!!        type(gaunt_coriolis), intent(in) :: gt_cor
 !!      subroutine check_gaunt_coriolis_rlm(iflag_sph_coriolis_file)
 !!@endverbatim
       module check_gaunt_coriolis_rlm
@@ -31,30 +32,35 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_check_gaunt_coriolis_rlm(iflag_sph_coriolis_file,    &
-     &          jmax_tri_sph, sph_params, sph_rlm)
+     &          jmax_tri_sph, sph_params, sph_rlm, gt_cor)
 !
+      use t_gaunt_coriolis_rlm
       use t_spheric_parameter
 !
       integer(kind = kint), intent(in) :: iflag_sph_coriolis_file
       integer(kind = kint), intent(in) :: jmax_tri_sph
       type(sph_shell_parameters), intent(inout) :: sph_params
-      type(sph_rlm_grid), intent(inout) :: sph_rlm
+      type(sph_rlm_grid), intent(in) :: sph_rlm
+      type(gaunt_coriolis), intent(in) :: gt_cor
 !
 !
       call check_gaunt_integrals_rlm(iflag_sph_coriolis_file,           &
-     &   jmax_tri_sph, sph_params%l_truncation,                         &
-     &    sph_rlm%nidx_rlm(2), sph_rlm%idx_gl_1d_rlm_j)
+     &    jmax_tri_sph, sph_params%l_truncation,                        &
+     &    sph_rlm%nidx_rlm(2), sph_rlm%idx_gl_1d_rlm_j,                 &
+     &    gt_cor%jgi_rlm, gt_cor%jei_rlm, gt_cor%gi_rlm, gt_cor%ei_rlm)
       call check_interact_coriolis_rlm                                  &
-     &   (sph_rlm%nidx_rlm(2), sph_rlm%idx_gl_1d_rlm_j)
+     &   (sph_rlm%nidx_rlm(2), sph_rlm%idx_gl_1d_rlm_j,                 &
+     &    gt_cor%sw_rlm, gt_cor%tw_rlm, gt_cor%sd_rlm,                  &
+     &    gt_cor%td_rlm, gt_cor%sr_rlm, gt_cor%tr_rlm)
 !
       end subroutine s_check_gaunt_coriolis_rlm
 !
 !-----------------------------------------------------------------------
 !
       subroutine check_gaunt_integrals_rlm(iflag_sph_coriolis_file,     &
-     &          jmax_tri_sph, l_truncation, jmax_rlm, idx_gl_1d_rlm_j)
+     &          jmax_tri_sph, l_truncation, jmax_rlm, idx_gl_1d_rlm_j,  &
+     &          jgi_cor_rlm, jei_cor_rlm, gi_cor_rlm, ei_cor_rlm)
 !
-      use m_gaunt_coriolis_rlm
       use m_integrals_4_sph_coriolis
       use m_int_4_sph_coriolis_IO
       use sph_coriolis_IO_select
@@ -64,6 +70,11 @@
       integer(kind = kint), intent(in) :: jmax_tri_sph
       integer(kind = kint), intent(in) :: l_truncation, jmax_rlm
       integer(kind = kint), intent(in) :: idx_gl_1d_rlm_j(jmax_rlm,3)
+      integer(kind = kint), intent(in) :: jgi_cor_rlm(jmax_rlm,2)
+      integer(kind = kint), intent(in) :: jei_cor_rlm(jmax_rlm,1)
+!
+      real(kind = kreal), intent(in) :: gi_cor_rlm(jmax_rlm,2)
+      real(kind = kreal), intent(in) :: ei_cor_rlm(jmax_rlm,1)
 !
       integer(kind = kint) :: l3, m3, j3, j_rlm
       integer(kind = kint) :: jgi_cor_ref1, jgi_cor_ref2, jei_cor_ref
@@ -119,13 +130,21 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine check_interact_coriolis_rlm(jmax_rlm, idx_gl_1d_rlm_j)
+      subroutine check_interact_coriolis_rlm(jmax_rlm, idx_gl_1d_rlm_j, &
+     &          sw_rlm, tw_rlm, sd_rlm, td_rlm, sr_rlm, tr_rlm)
 !
-      use m_gaunt_coriolis_rlm
       use m_coriolis_coefs_tri_sph
 !
       integer(kind = kint), intent(in) :: jmax_rlm
       integer(kind = kint), intent(in) :: idx_gl_1d_rlm_j(jmax_rlm,3)
+!
+      real(kind = kreal), intent(in) :: sw_rlm(2,3,jmax_rlm)
+      real(kind = kreal), intent(in) :: tw_rlm(2,4,jmax_rlm) 
+      real(kind = kreal), intent(in) :: sd_rlm(2,2,jmax_rlm)
+      real(kind = kreal), intent(in) :: td_rlm(2,jmax_rlm)
+      real(kind = kreal), intent(in) :: sr_rlm(2,jmax_rlm)
+      real(kind = kreal), intent(in) :: tr_rlm(2,jmax_rlm)
+!
       integer(kind = kint) :: j3, j_gl
       real(kind = kreal) :: err
 !

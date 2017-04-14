@@ -81,9 +81,9 @@
       use calypso_mpi
       use m_work_time
       use m_machine_parameter
+      use m_coriolis_terms_rlm
       use MHD_FFT_selector
       use spherical_SRs_N
-      use const_coriolis_sph_rlm
 !
       use t_physical_property
       use t_spheric_parameter

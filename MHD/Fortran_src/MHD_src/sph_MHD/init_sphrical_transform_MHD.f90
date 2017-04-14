@@ -149,6 +149,7 @@
      &          ncomp_max_trans, nvector_max_trans, nscalar_max_trans,  &
      &          trans_p, trns_MHD, WK_sph, MHD_mul_FFTW, rj_fld)
 !
+      use m_coriolis_terms_rlm
       use init_sph_trans
       use init_FFT_4_MHD
       use set_address_sph_trans_MHD
@@ -156,7 +157,6 @@
       use set_address_sph_trans_snap
       use set_address_sph_trans_tmp
       use const_wz_coriolis_rtp
-      use const_coriolis_sph_rlm
       use pole_sph_transform
       use skip_comment_f
 !

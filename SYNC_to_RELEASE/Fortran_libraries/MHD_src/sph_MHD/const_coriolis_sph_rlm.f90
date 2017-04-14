@@ -1,1 +1,0 @@
-../../../../MHD/Fortran_src/MHD_src/sph_MHD/const_coriolis_sph_rlm.f90
