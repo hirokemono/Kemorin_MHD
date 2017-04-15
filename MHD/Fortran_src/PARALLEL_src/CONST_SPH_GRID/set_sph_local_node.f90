@@ -44,13 +44,13 @@
 !
       if    (iflag_shell_mode .eq. iflag_MESH_w_pole                    &
      &  .or. iflag_shell_mode .eq. iflag_MESH_w_center) then
-        if(iflag_Spole_t(ip_t) .gt. 0)  then
+        if(stbl%iflag_Spole_t(ip_t) .gt. 0)  then
           call set_intnod_Spole
           call set_nnod_lc_Spole(nnod_sph_r(ip_r))
         end if
         call set_nnod_gl_Spole
 !
-        if(iflag_Npole_t(ip_t) .gt. 0)  then
+        if(stbl%iflag_Npole_t(ip_t) .gt. 0)  then
           call set_intnod_Npole
           call set_nnod_lc_Npole(nnod_sph_r(ip_r))
         end if
@@ -62,12 +62,12 @@
       if    (iflag_shell_mode .eq. iflag_MESH_w_center) then
         call set_nnod_gl_center
 !
-        if(iflag_center_r(ip_r) .gt. 0) then
-          if(iflag_Spole_t(ip_t) .gt. 0)  then
+        if(stbl%iflag_center_r(ip_r) .gt. 0) then
+          if(stbl%iflag_Spole_t(ip_t) .gt. 0)  then
             call set_intnod_center
             call set_nnod_lc_center(ione)
             call set_nnod_lc_ctr_sph(nnod_sph_ct)
-            if(iflag_Npole_t(ip_t) .eq. 0) then
+            if(stbl%iflag_Npole_t(ip_t) .eq. 0) then
               call set_nnod_lc_ctr_Np(ione)
             end if
           else
@@ -128,7 +128,7 @@
 !
 !    Set nodes for south pole
 !
-        if(iflag_Spole_t(ip_t) .gt. 0)  then
+        if(stbl%iflag_Spole_t(ip_t) .gt. 0)  then
           do knum = 1, nnod_sph_r(ip_r)
             k = inod_sph_r(knum,ip_r)
             inod = sph_s_pole_node_id(knum)
@@ -142,7 +142,7 @@
 !
 !    Set nodes for north pole
 !
-        if(iflag_Npole_t(ip_t) .gt. 0)  then
+        if(stbl%iflag_Npole_t(ip_t) .gt. 0)  then
           do knum = 1, nnod_sph_r(ip_r)
             k = inod_sph_r(knum,ip_r)
             inod = sph_n_pole_node_id(knum)
@@ -158,7 +158,7 @@
 !     Set nodes at center
 !
       if    (iflag_shell_mode .eq. iflag_MESH_w_center) then
-        if(iflag_center_r(ip_r) .gt. 0)  then
+        if(stbl%iflag_center_r(ip_r) .gt. 0)  then
           inod = sph_center_node_id()
           node%inod_global(inod) = global_sph_center_node_id()
 !
@@ -166,7 +166,7 @@
           node%theta(inod) =  zero
           node%phi(inod) =    zero
 !
-          if(iflag_Spole_t(ip_t) .gt. 0)  then
+          if(stbl%iflag_Spole_t(ip_t) .gt. 0)  then
             do mnum = 1, nidx_global_fem(3)
               do lnum = 1, nnod_sph_ct
                 l = inod_sph_ct(lnum)
@@ -181,7 +181,7 @@
               end do
             end do
 !
-            if(iflag_Npole_t(ip_t) .eq. 0)  then
+            if(stbl%iflag_Npole_t(ip_t) .eq. 0)  then
               inod = sph_center_np_node_id()
               node%inod_global(inod) = global_sph_n_pole_node_id(ione)
 !

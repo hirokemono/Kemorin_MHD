@@ -38,10 +38,10 @@
       integer(kind = kint), intent(inout) :: num_export
 !
 !
-      if(iflag_center_r(ip_r) .eq. ip_r                                 &
-     &  .and.  iflag_center_r(jp_r) .eq. ip_r                           &
-     &  .and.  iflag_Spole_t(ip_t) .eq.  ip_t                           &
-     &  .and.  iflag_Spole_t(jp_t) .eq. 0) then
+      if      (stbl%iflag_center_r(ip_r) .eq. ip_r                      &
+     &  .and.  stbl%iflag_center_r(jp_r) .eq. ip_r                      &
+     &  .and.  stbl%iflag_Spole_t(ip_t) .eq.  ip_t                      &
+     &  .and.  stbl%iflag_Spole_t(jp_t) .eq. 0) then
         num_export = num_export + 1
       end if
 !
@@ -61,9 +61,9 @@
       integer(kind = kint) :: l, lnum
 !
 !
-      if(iflag_center_r(ip_r) .eq. ip_r                                 &
-     &  .and.  iflag_center_r(jp_r) .eq. ip_r                           &
-     &  .and.  iflag_Spole_t(jp_t) .eq.  jp_t) then
+      if      (stbl%iflag_center_r(ip_r) .eq. ip_r                      &
+     &  .and.  stbl%iflag_center_r(jp_r) .eq. ip_r                      &
+     &  .and.  stbl%iflag_Spole_t(jp_t) .eq.  jp_t) then
         do lnum = 1, nnod_sph_ct
           l = inod_sph_ct(lnum)
           if(iflag_internal_t(l,ip_t) .eq. ip_t) then
@@ -86,11 +86,11 @@
       integer(kind = kint), intent(inout) :: num_export
 !
 !
-      if(iflag_center_r(ip_r) .eq. ip_r                                 &
-     &  .and.  iflag_center_r(jp_r) .eq. ip_r                           &
-     &  .and.  iflag_Spole_t(jp_t) .eq.  jp_t                           &
-     &  .and.  iflag_Npole_t(jp_t) .ne.  jp_t                           &
-     &  .and.  iflag_Npole_t(ip_t) .eq.  ip_t) then
+      if      (stbl%iflag_center_r(ip_r) .eq. ip_r                      &
+     &  .and.  stbl%iflag_center_r(jp_r) .eq. ip_r                      &
+     &  .and.  stbl%iflag_Spole_t(jp_t) .eq.  jp_t                      &
+     &  .and.  stbl%iflag_Npole_t(jp_t) .ne.  jp_t                      &
+     &  .and.  stbl%iflag_Npole_t(ip_t) .eq.  ip_t) then
         num_export = num_export + 1
       end if
 !
@@ -111,10 +111,10 @@
       type(communication_table), intent(inout) :: nod_comm
 !
 !
-      if(iflag_center_r(ip_r) .eq. ip_r                                 &
-     &  .and.  iflag_center_r(jp_r) .eq. ip_r                           &
-     &  .and.  iflag_Spole_t(ip_t) .eq.  ip_t                           &
-     &  .and.  iflag_Spole_t(jp_t) .eq. 0) then
+      if      (stbl%iflag_center_r(ip_r) .eq. ip_r                      &
+     &  .and.  stbl%iflag_center_r(jp_r) .eq. ip_r                      &
+     &  .and.  stbl%iflag_Spole_t(ip_t) .eq.  ip_t                      &
+     &  .and.  stbl%iflag_Spole_t(jp_t) .eq. 0) then
         icou = icou + 1
         item_export_1d_rtp(1,icou) = 0
         item_export_1d_rtp(2,icou) = 0
@@ -143,9 +143,9 @@
       integer(kind = kint) :: ist, num_rl
 !
 !
-      if(iflag_center_r(ip_r) .eq. ip_r                                 &
-     &  .and.  iflag_center_r(jp_r) .eq. ip_r                           &
-     &  .and.  iflag_Spole_t(jp_t) .eq.  jp_t) then
+      if      (stbl%iflag_center_r(ip_r) .eq. ip_r                      &
+     &  .and.  stbl%iflag_center_r(jp_r) .eq. ip_r                      &
+     &  .and.  stbl%iflag_Spole_t(jp_t) .eq.  jp_t) then
         ist = icou
         do lnum = 1, nnod_sph_ct
           l = inod_sph_ct(lnum)
@@ -196,11 +196,11 @@
       type(communication_table), intent(inout) :: nod_comm
 !
 !
-      if(iflag_center_r(ip_r) .eq. ip_r                                 &
-     &  .and.  iflag_center_r(jp_r) .eq. ip_r                           &
-     &  .and.  iflag_Spole_t(jp_t) .eq.  jp_t                           &
-     &  .and.  iflag_Npole_t(jp_t) .ne.  jp_t                           &
-     &  .and.  iflag_Npole_t(ip_t) .eq.  ip_t) then
+      if      (stbl%iflag_center_r(ip_r) .eq. ip_r                      &
+     &  .and.  stbl%iflag_center_r(jp_r) .eq. ip_r                      &
+     &  .and.  stbl%iflag_Spole_t(jp_t) .eq.  jp_t                      &
+     &  .and.  stbl%iflag_Npole_t(jp_t) .ne.  jp_t                      &
+     &  .and.  stbl%iflag_Npole_t(ip_t) .eq.  ip_t) then
 !
         icou = icou + 1
         item_export_1d_rtp(1,icou) = irev_sph_r(ione,ip_r)

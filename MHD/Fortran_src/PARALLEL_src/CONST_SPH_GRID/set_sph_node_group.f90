@@ -102,18 +102,18 @@
 !    count nodes for south pole
         icou = icou + 1
         nod_grp%grp_name(icou) = 'South_pole'
-        if(iflag_Spole_t(ip_t) .gt. 0)  then
+        if(stbl%iflag_Spole_t(ip_t) .gt. 0)  then
           nod_grp%nitem_grp(icou) = nnod_sph_r(ip_r)
         end if
 !
 !    count nodes for north pole
         icou = icou + 1
         nod_grp%grp_name(icou) = 'North_pole'
-        if(iflag_Npole_t(ip_t) .gt. 0)  then
+        if(stbl%iflag_Npole_t(ip_t) .gt. 0)  then
           nod_grp%nitem_grp(icou) = nnod_sph_r(ip_r)
-        else if(iflag_Npole_t(ip_t) .eq. 0)  then
-          if(iflag_center_r(ip_r) .gt. 0                                &
-             .and. iflag_Spole_t(ip_t) .gt. 0) then
+        else if(stbl%iflag_Npole_t(ip_t) .eq. 0)  then
+          if      (stbl%iflag_center_r(ip_r) .gt. 0                     &
+             .and. stbl%iflag_Spole_t(ip_t) .gt. 0) then
             nod_grp%nitem_grp(icou) = 1
           end if
         end if
@@ -122,7 +122,9 @@
       if    (sph_params%iflag_shell_mode .eq. iflag_MESH_w_center) then
         icou = icou + 1
         nod_grp%grp_name(icou) = 'Center'
-        if(iflag_center_r(ip_r) .gt. 0) nod_grp%nitem_grp(icou) = 1
+        if(stbl%iflag_center_r(ip_r) .gt. 0) then
+          nod_grp%nitem_grp(icou) = 1
+        end if
       end if
 !
       end subroutine count_sph_local_node_grp_item
@@ -166,7 +168,7 @@
 !    Set nodes for south pole
         icou = icou + 1
         inum = nod_grp%istack_grp(icou-1)
-        if(iflag_Spole_t(ip_t) .gt. 0)  then
+        if(stbl%iflag_Spole_t(ip_t) .gt. 0)  then
           do knum = 1, nnod_sph_r(ip_r)
             inum = inum + 1
             nod_grp%item_grp(inum) = sph_s_pole_node_id(knum)
@@ -176,14 +178,14 @@
 !    Set nodes for north pole
         icou = icou + 1
         inum = nod_grp%istack_grp(icou-1)
-        if(iflag_Npole_t(ip_t) .gt. 0)  then
+        if(stbl%iflag_Npole_t(ip_t) .gt. 0)  then
           do knum = 1, nnod_sph_r(ip_r)
             inum = inum + 1
             nod_grp%item_grp(inum) = sph_n_pole_node_id(knum)
           end do
-        else if(iflag_Npole_t(ip_t) .eq. 0)  then
-          if(iflag_center_r(ip_r) .gt. 0                                &
-             .and. iflag_Spole_t(ip_t) .gt. 0) then
+        else if(stbl%iflag_Npole_t(ip_t) .eq. 0)  then
+          if      (stbl%iflag_center_r(ip_r) .gt. 0                     &
+             .and. stbl%iflag_Spole_t(ip_t) .gt. 0) then
             inum = inum + 1
             nod_grp%item_grp(inum) = sph_center_np_node_id()
           end if
@@ -192,7 +194,7 @@
 !
       if    (sph_params%iflag_shell_mode .eq. iflag_MESH_w_center) then
         icou = icou + 1
-        if(iflag_center_r(ip_r) .gt. 0)  then
+        if(stbl%iflag_center_r(ip_r) .gt. 0)  then
           inum = nod_grp%istack_grp(icou-1) + 1
           nod_grp%item_grp(inum) = sph_center_node_id()
         end if
@@ -213,16 +215,16 @@
 !
       nitem_grp = nidx_global_fem(3)*nnod_sph_t(ip_t)
 !
-      if(iflag_Spole_t(ip_t) .gt. 0) nitem_grp = nitem_grp + 1
-      if(iflag_Npole_t(ip_t) .gt. 0) nitem_grp = nitem_grp + 1
+      if(stbl%iflag_Spole_t(ip_t) .gt. 0) nitem_grp = nitem_grp + 1
+      if(stbl%iflag_Npole_t(ip_t) .gt. 0) nitem_grp = nitem_grp + 1
 !
 !     Set nodes around center
 !
       if(inod_sph_r(knum,ip_r) .eq. 1                                   &
-     &     .and.  iflag_center_r(ip_r) .gt. 0)  then
-        if(iflag_Spole_t(ip_t) .gt. 0)  then
+     &     .and.  stbl%iflag_center_r(ip_r) .gt. 0)  then
+        if(stbl%iflag_Spole_t(ip_t) .gt. 0)  then
           nitem_grp = nitem_grp + nidx_global_fem(3)*nnod_sph_ct
-          if(iflag_Npole_t(ip_t) .eq. 0) nitem_grp = nitem_grp + 1
+          if(stbl%iflag_Npole_t(ip_t) .eq. 0) nitem_grp = nitem_grp + 1
           end if
       end if
 !
@@ -252,21 +254,21 @@
       end do
 !
 !    Set nodes for south pole
-      if(iflag_Spole_t(ip_t) .gt. 0)  then
+      if(stbl%iflag_Spole_t(ip_t) .gt. 0)  then
         inum = inum + 1
         nod_grp%item_grp(inum) = sph_s_pole_node_id(knum)
       end if
 !
 !    Set nodes for north pole
-      if(iflag_Npole_t(ip_t) .gt. 0)  then
+      if(stbl%iflag_Npole_t(ip_t) .gt. 0)  then
         inum = inum + 1
         nod_grp%item_grp(inum) = sph_n_pole_node_id(knum)
       end if
 !
 !     Set nodes around center
       if(inod_sph_r(knum,ip_r) .eq. 1                                   &
-     &     .and.  iflag_center_r(ip_r) .gt. 0)  then
-        if(iflag_Spole_t(ip_t) .gt. 0)  then
+     &     .and.  stbl%iflag_center_r(ip_r) .gt. 0)  then
+        if(stbl%iflag_Spole_t(ip_t) .gt. 0)  then
           do mnum = 1, nidx_global_fem(3)
             do lnum = 1, nnod_sph_ct
               inum = inum + 1
@@ -275,7 +277,7 @@
             end do
           end do
 !
-          if(iflag_Npole_t(ip_t) .eq. 0)  then
+          if(stbl%iflag_Npole_t(ip_t) .eq. 0)  then
             inum = inum + 1
             nod_grp%item_grp(inum) = sph_center_np_node_id()
           end if

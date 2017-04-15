@@ -129,7 +129,7 @@
 !
 !
           if(iflag_r(ione).eq.ione                                      &
-     &       .and. iflag_center_r(ip_r) .gt. 0)  then
+     &       .and. stbl%iflag_center_r(ip_r) .gt. 0)  then
             call count_ele_grp_item_4_center(ip_t,                      &
      &          ele_grp%nitem_grp(icou))
           end if
@@ -189,7 +189,7 @@
           end do
 !
           if(iflag_r(ione).eq.ione                                      &
-     &         .and. iflag_center_r(ip_r) .gt. 0)  then
+     &         .and. stbl%iflag_center_r(ip_r) .gt. 0)  then
             call set_ele_grp_item_4_center(ip_t, inum, ele_grp)
           end if
 !
@@ -218,13 +218,13 @@
      &  .or. sph_params%iflag_shell_mode .eq. iflag_MESH_w_center) then
 !
 !    Set elements for south pole
-        if(iflag_Spole_t(ip_t) .gt. 0)  then
+        if(stbl%iflag_Spole_t(ip_t) .gt. 0)  then
           nitem_grp = nitem_grp + stbl%nele_around_pole
         end if
 !
 !    Set elements for north pole
 !
-        if(iflag_Npole_t(ip_t) .gt. 0)  then
+        if(stbl%iflag_Npole_t(ip_t) .gt. 0)  then
           nitem_grp = nitem_grp + stbl%nele_around_pole
         end if
       end if
@@ -243,7 +243,7 @@
 !
 !
 !    Set elements for Center elements
-      if(iflag_Spole_t(ip_t) .gt. 0)  then
+      if(stbl%iflag_Spole_t(ip_t) .gt. 0)  then
         nitem_grp = nitem_grp                                           &
      &             + (nidx_global_fem(2)-1)*nidx_global_fem(3)          &
      &             + nidx_global_fem(3)
@@ -251,7 +251,7 @@
       else
         nitem_grp = nitem_grp + nele_sph_t(ip_t)*nidx_global_fem(3)
 !    Set element for north pole
-         if(iflag_Npole_t(ip_t) .gt. 0)  then
+         if(stbl%iflag_Npole_t(ip_t) .gt. 0)  then
            nitem_grp = nitem_grp + stbl%nele_around_pole
          end if
       end if
@@ -288,7 +288,7 @@
      &  .or. sph_params%iflag_shell_mode .eq. iflag_MESH_w_center) then
 !
 !    Set elements for south pole
-        if(iflag_Spole_t(ip_t) .gt. 0)  then
+        if(stbl%iflag_Spole_t(ip_t) .gt. 0)  then
           do m = 1, stbl%nele_around_pole
             inum = inum + 1
             ele_grp%item_grp(inum) = sph_s_pole_ele_id(ip_r, kr, m)
@@ -297,7 +297,7 @@
 !
 !    Set elements for north pole
 !
-        if(iflag_Npole_t(ip_t) .gt. 0)  then
+        if(stbl%iflag_Npole_t(ip_t) .gt. 0)  then
           do m = 1, stbl%nele_around_pole
             inum = inum + 1
             ele_grp%item_grp(inum) = sph_n_pole_ele_id(ip_r, kr, m)
@@ -323,7 +323,7 @@
 !
 !    Set elements for Center elements
 !
-      if(iflag_Spole_t(ip_t) .gt. 0)  then
+      if(stbl%iflag_Spole_t(ip_t) .gt. 0)  then
         do m = 1, nidx_global_fem(3)
           do l = 1, nidx_global_fem(2)-1
             inum = inum + 1
@@ -353,7 +353,7 @@
         end do
 !
 !    Set element for north pole
-        if(iflag_Npole_t(ip_t) .gt. 0)  then
+        if(stbl%iflag_Npole_t(ip_t) .gt. 0)  then
           do m = 1, stbl%nele_around_pole
             inum = inum + 1
             ele_grp%item_grp(inum)                                      &

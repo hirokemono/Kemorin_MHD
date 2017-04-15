@@ -46,7 +46,7 @@
       integer(kind = kint) :: knum
 !
 !
-      lflag = iflag_Spole_t(ip_t)
+      lflag = stbl%iflag_Spole_t(ip_t)
       if(abs(lflag) .ne. jp_t) return
 !
       do knum = 1, nnod_sph_r(ip_r)
@@ -76,7 +76,7 @@
       integer(kind = kint) :: knum
 !
 !
-      lflag = iflag_Npole_t(ip_t)
+      lflag = stbl%iflag_Npole_t(ip_t)
       if(abs(lflag) .ne. jp_t) return
 !
       do knum = 1, nnod_sph_r(ip_r)
@@ -109,7 +109,7 @@
       integer(kind = kint) :: knum
 !
 !
-      lflag = iflag_Spole_t(ip_t)
+      lflag = stbl%iflag_Spole_t(ip_t)
       if(abs(lflag) .ne. jp_t) return
 !
       do knum = 1, nnod_sph_r(ip_r)
@@ -148,7 +148,7 @@
       integer(kind = kint) :: knum
 !
 !
-      lflag = iflag_Npole_t(ip_t)
+      lflag = stbl%iflag_Npole_t(ip_t)
       if(abs(lflag) .ne. jp_t) return
 !
       do knum = 1, nnod_sph_r(ip_r)
@@ -184,7 +184,7 @@
       integer(kind = kint) :: knum
 !
 !
-      lflag = iflag_Spole_t(jp_t)
+      lflag = stbl%iflag_Spole_t(jp_t)
       if(abs(lflag) .ne. ip_t) return
 !
       do knum = 1, nnod_sph_r(jp_r)
@@ -213,7 +213,7 @@
       integer(kind = kint) :: knum
 !
 !
-      lflag = iflag_Npole_t(jp_t)
+      lflag = stbl%iflag_Npole_t(jp_t)
       if(abs(lflag) .ne. ip_t) return
 !
       do knum = 1, nnod_sph_r(jp_r)
@@ -246,7 +246,7 @@
       integer(kind = kint) :: knum
 !
 !
-      lflag = iflag_Spole_t(jp_t)
+      lflag = stbl%iflag_Spole_t(jp_t)
       if(abs(lflag) .ne. ip_t) return
 !
       do knum = 1, nnod_sph_r(jp_r)
@@ -285,7 +285,7 @@
       integer(kind = kint) :: knum
 !
 !
-      lflag = iflag_Npole_t(jp_t)
+      lflag = stbl%iflag_Npole_t(jp_t)
       if(abs(lflag) .ne. ip_t) return
 !
       do knum = 1, nnod_sph_r(jp_r)

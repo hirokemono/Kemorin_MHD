@@ -52,13 +52,13 @@
      &  .or. sph_params%iflag_shell_mode .eq. iflag_MESH_w_center) then
 !
 !    Set elements for South pole
-        if(iflag_Spole_t(ip_t) .gt. 0)  then
+        if(stbl%iflag_Spole_t(ip_t) .gt. 0)  then
           call set_nele_lc_Spole(ip_r)
         end if
         call set_nele_gl_Spole
 !
 !    Set elements for North pole
-        if(iflag_Npole_t(ip_t) .gt. 0)  then
+        if(stbl%iflag_Npole_t(ip_t) .gt. 0)  then
           call set_nele_lc_Npole(ip_r)
         end if
         call set_nele_gl_Npole
@@ -69,14 +69,14 @@
       if    (sph_params%iflag_shell_mode .eq. iflag_MESH_w_center) then
 !
 !     Mesh with center
-        if     (iflag_center_r(ip_r) .gt. 0)  then
-          if(iflag_Spole_t(ip_t) .gt. 0)  then
+        if     (stbl%iflag_center_r(ip_r) .gt. 0)  then
+          if(stbl%iflag_Spole_t(ip_t) .gt. 0)  then
             call set_nele_lc_ctr_sph
             call set_nele_center_Spole
             call set_nele_center_Npole
           else
             call set_nele_ext_ctr_sph(ip_t)
-            if(iflag_Npole_t(ip_t) .gt. 0)  then
+            if(stbl%iflag_Npole_t(ip_t) .gt. 0)  then
               call set_nele_center_Npole
             end if
           end if
@@ -113,13 +113,13 @@
      &  .or. sph_params%iflag_shell_mode .eq. iflag_MESH_w_center) then
 !
 !    Set elements for south pole
-        if(iflag_Spole_t(ip_t) .gt. 0)  then
+        if(stbl%iflag_Spole_t(ip_t) .gt. 0)  then
           call set_south_pole_element(ip_r, ip_t, ele)
         end if
 !
 !    Set elements for north pole
 !
-        if(iflag_Npole_t(ip_t) .gt. 0)  then
+        if(stbl%iflag_Npole_t(ip_t) .gt. 0)  then
           call set_north_pole_element(ip_r, ip_t, ele)
         end if
       end if
@@ -127,8 +127,8 @@
 !    Set elements for Center elements
 !
       if    (sph_params%iflag_shell_mode .eq. iflag_MESH_w_center) then
-        if     (iflag_center_r(ip_r) .gt. 0)  then
-          if(iflag_Spole_t(ip_t) .gt. 0)  then
+        if     (stbl%iflag_center_r(ip_r) .gt. 0)  then
+          if(stbl%iflag_Spole_t(ip_t) .gt. 0)  then
             call set_inter_center_shell_ele(ip_r, ip_t, ele)
 !
 !    Set element for south pole
@@ -141,7 +141,7 @@
             call set_exter_center_shell_ele(ip_r, ip_t, ele)
 !
 !    Set element for north pole
-            if(iflag_Npole_t(ip_t) .gt. 0)  then
+            if(stbl%iflag_Npole_t(ip_t) .gt. 0)  then
               call set_exter_center_n_pole_ele(ip_r, ip_t, ele)
             end if
           end if

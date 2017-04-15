@@ -171,13 +171,13 @@
      &  .or. sph_params%iflag_shell_mode .eq. iflag_MESH_w_center) then
 !
 !    Set elements for south pole
-        if(iflag_Spole_t(ip_t) .gt. 0)  then
+        if(stbl%iflag_Spole_t(ip_t) .gt. 0)  then
           nitem_grp = nitem_grp + stbl%nele_around_pole
         end if
 !
 !    Set elements for north pole
 !
-        if(iflag_Npole_t(ip_t) .gt. 0)  then
+        if(stbl%iflag_Npole_t(ip_t) .gt. 0)  then
           nitem_grp = nitem_grp + stbl%nele_around_pole
         end if
       end if
@@ -215,7 +215,7 @@
      &  .or. sph_params%iflag_shell_mode .eq. iflag_MESH_w_center) then
 !
 !    Set elements for south pole
-        if(iflag_Spole_t(ip_t) .gt. 0)  then
+        if(stbl%iflag_Spole_t(ip_t) .gt. 0)  then
           do m = 1, stbl%nele_around_pole
             inum = inum + 1
             surf_grp%item_sf_grp(1,inum) = sph_s_pole_ele_id(ip_r, kr, m)
@@ -225,7 +225,7 @@
 !
 !    Set elements for north pole
 !
-        if(iflag_Npole_t(ip_t) .gt. 0)  then
+        if(stbl%iflag_Npole_t(ip_t) .gt. 0)  then
           do m = 1, stbl%nele_around_pole
             inum = inum + 1
             surf_grp%item_sf_grp(1,inum) = sph_n_pole_ele_id(ip_r, kr, m)

@@ -49,17 +49,17 @@
       integer(kind = kint), allocatable :: iflag_internal_r(:,:)
       integer(kind = kint), allocatable :: iflag_internal_t(:,:)
 !
-      integer(kind = kint), allocatable :: iflag_Spole_t(:)
-      integer(kind = kint), allocatable :: iflag_Npole_t(:)
-      integer(kind = kint), allocatable :: iflag_center_r(:)
-      integer(kind = kint), allocatable :: iflag_center_t(:)
+!      integer(kind = kint), allocatable :: iflag_Spole_t(:)
+!      integer(kind = kint), allocatable :: iflag_Npole_t(:)
+!      integer(kind = kint), allocatable :: iflag_center_r(:)
+!      integer(kind = kint), allocatable :: iflag_center_t(:)
 !
       integer(kind = kint), allocatable :: iflag_ele_r(:,:)
       integer(kind = kint), allocatable :: iflag_ele_t(:,:)
 !
-      integer(kind = kint), allocatable :: iflag_ele_Spole(:)
-      integer(kind = kint), allocatable :: iflag_ele_Npole(:)
-      integer(kind = kint), allocatable :: iflag_ele_center(:)
+!      integer(kind = kint), allocatable :: iflag_ele_Spole(:)
+!      integer(kind = kint), allocatable :: iflag_ele_Npole(:)
+!      integer(kind = kint), allocatable :: iflag_ele_center(:)
 !
       integer(kind = kint), allocatable :: nnod_sph_r(:)
       integer(kind = kint), allocatable :: nnod_sph_t(:)
@@ -151,10 +151,10 @@
       nnod_sph_r = 0
       nele_sph_r = 0
 !
-      allocate( iflag_center_r(np) )
-      allocate( iflag_ele_center(np) )
-      iflag_center_r =   0
-      iflag_ele_center = 0
+      allocate( stbl%iflag_center_r(np) )
+      allocate( stbl%iflag_ele_center(np) )
+      stbl%iflag_center_r =   0
+      stbl%iflag_ele_center = 0
 !
       np =  ndomain_fem(2)
       num = nidx_global_fem(2)
@@ -169,17 +169,17 @@
       nnod_sph_t = 0
       nele_sph_t = 0
 !
-      allocate( iflag_Spole_t(np) )
-      allocate( iflag_Npole_t(np) )
-      allocate( iflag_ele_Spole(np) )
-      allocate( iflag_ele_Npole(np) )
-      iflag_Spole_t = 0
-      iflag_Npole_t = 0
-      iflag_ele_Spole = 0
-      iflag_ele_Npole = 0
+      allocate( stbl%iflag_Spole_t(np) )
+      allocate( stbl%iflag_Npole_t(np) )
+      allocate( stbl%iflag_ele_Spole(np) )
+      allocate( stbl%iflag_ele_Npole(np) )
+      stbl%iflag_Spole_t = 0
+      stbl%iflag_Npole_t = 0
+      stbl%iflag_ele_Spole = 0
+      stbl%iflag_ele_Npole = 0
 !
-      allocate( iflag_center_t(0:num+1) )
-      iflag_center_t = 0
+      allocate( stbl%iflag_center_t(0:num+1) )
+      stbl%iflag_center_t = 0
 !
       stbl%nele_around_pole = nidx_global_fem(3) / 2
 !
@@ -265,9 +265,9 @@
       deallocate(iflag_internal_r, nnod_sph_r, nele_sph_r)
       deallocate(iflag_internal_t, nnod_sph_t, nele_sph_t)
       deallocate(iflag_neib_r, iflag_neib_t)
-      deallocate(iflag_center_r, iflag_center_t)
-      deallocate(iflag_Spole_t, iflag_Npole_t)
-      deallocate(iflag_ele_center, iflag_ele_Spole, iflag_ele_Npole)
+      deallocate(stbl%iflag_center_r, stbl%iflag_center_t)
+      deallocate(stbl%iflag_Spole_t, stbl%iflag_Npole_t)
+      deallocate(stbl%iflag_ele_center, stbl%iflag_ele_Spole, stbl%iflag_ele_Npole)
       deallocate(iflag_ele_r, iflag_ele_t)
       deallocate(stbl%ie_center_t)
 !
@@ -302,9 +302,9 @@
 !
       write(*,'(a,255i6)') 'iflag_internal_r',                          &
      &                       nidx_global_fem(1), ndomain_fem(1)
-      write(*,'(a,255i6)') 'Center: ', iflag_center_r(1:ndomain_fem(1))
+      write(*,'(a,255i6)') 'Center: ', stbl%iflag_center_r(1:ndomain_fem(1))
       do k = 0, nidx_global_fem(2)+1
-        write(*,'(255i6)') k, iflag_center_t(k),                        &
+        write(*,'(255i6)') k, stbl%iflag_center_t(k),                   &
      &                    inod_sph_ct(k), irev_sph_ct(k)
       end do
       write(*,'(a)') 'connectivity for center element'
@@ -321,11 +321,11 @@
       end do
       write(*,*) 'iflag_internal_t', nidx_global_fem(2), ndomain_fem(2)
       write(*,*) 'numbers: ', nnod_sph_t
-      write(*,'(a,255i6)') 'S_pole: ', iflag_Spole_t(1:ndomain_fem(2))
+      write(*,'(a,255i6)') 'S_pole: ', stbl%iflag_Spole_t(1:ndomain_fem(2))
       do k = 1, nidx_global_fem(2)
         write(*,'(255i6)') k, iflag_internal_t(k,1:ndomain_fem(2))
       end do
-      write(*,'(a,255i6)') 'N_pole: ', iflag_Npole_t(1:ndomain_fem(2))
+      write(*,'(a,255i6)') 'N_pole: ', stbl%iflag_Npole_t(1:ndomain_fem(2))
 !
       do ip = 1, ndomain_fem(1)
         write(*,*) 'k, ie_sph_r(k,1:2,ip) for ', ip, nele_sph_r(ip)

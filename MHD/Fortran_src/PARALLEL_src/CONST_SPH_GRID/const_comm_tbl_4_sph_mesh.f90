@@ -74,7 +74,7 @@
       integer(kind = kint) :: jp_r, jp_t
 !
 !
-      if(iflag_center_r(ip_r) .eq. izero) return
+      if(stbl%iflag_center_r(ip_r) .eq. izero) return
 !
       do jp = 1, ntot_domain-1
         j_rank = mod((ip_rank+jp),ntot_domain)
@@ -139,7 +139,7 @@
       integer(kind = kint) :: icou
 !
 !
-      if(iflag_center_r(ip_r) .eq. izero) return
+      if(stbl%iflag_center_r(ip_r) .eq. izero) return
 !
       icou = nod_comm%num_neib
       do jp = 1, ntot_domain-1
