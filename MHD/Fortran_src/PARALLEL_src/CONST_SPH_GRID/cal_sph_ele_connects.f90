@@ -43,15 +43,15 @@
 !
 !
       do m = 1, nidx_global_fem(3)
-        m1 = ie_sph_p(m,1)
-        m2 = ie_sph_p(m,2)
+        m1 = stbl%ie_sph_p(m,1)
+        m2 = stbl%ie_sph_p(m,2)
         do l = 1, nele_sph_t(ip_t)
-          l1 = ie_sph_t(l,1,ip_t)
-          l2 = ie_sph_t(l,2,ip_t)
+          l1 = stbl%ie_sph_t(l,1,ip_t)
+          l2 = stbl%ie_sph_t(l,2,ip_t)
           l_gl = inod_sph_t(l1,ip_t)
           do k = 1, nele_sph_r(ip_r)
-            k1 = ie_sph_r(k,1,ip_r)
-            k2 = ie_sph_r(k,2,ip_r)
+            k1 = stbl%ie_sph_r(k,1,ip_r)
+            k2 = stbl%ie_sph_r(k,2,ip_r)
             k_gl = inod_sph_r(k1,ip_r)
 !
             iele = sph_shell_ele_id(ip_r, ip_t, k, l, m)
@@ -87,12 +87,12 @@
 !
       l2 = stbl%ie_Spole_t(2,ip_t)
       do m = 1, stbl%nele_around_pole
-        m1 = ie_sph_p(2*m-1,1)
-        m2 = ie_sph_p(2*m,  1)
-        m3 = ie_sph_p(2*m,  2)
+        m1 = stbl%ie_sph_p(2*m-1,1)
+        m2 = stbl%ie_sph_p(2*m,  1)
+        m3 = stbl%ie_sph_p(2*m,  2)
         do k = 1, nele_sph_r(ip_r)
-          k1 = ie_sph_r(k,1,ip_r)
-          k2 = ie_sph_r(k,2,ip_r)
+          k1 = stbl%ie_sph_r(k,1,ip_r)
+          k2 = stbl%ie_sph_r(k,2,ip_r)
           k_gl = inod_sph_r(k1,ip_r)
 !
           iele = sph_s_pole_ele_id(ip_r, k, m)
@@ -125,12 +125,12 @@
 !
       l1 = stbl%ie_Npole_t(1,ip_t)
       do m = 1, stbl%nele_around_pole
-        m1 = ie_sph_p(2*m-1,1)
-        m2 = ie_sph_p(2*m,  1)
-        m3 = ie_sph_p(2*m,  2)
+        m1 = stbl%ie_sph_p(2*m-1,1)
+        m2 = stbl%ie_sph_p(2*m,  1)
+        m3 = stbl%ie_sph_p(2*m,  2)
         do k = 1, nele_sph_r(ip_r)
-          k1 = ie_sph_r(k,1,ip_r)
-          k2 = ie_sph_r(k,2,ip_r)
+          k1 = stbl%ie_sph_r(k,1,ip_r)
+          k2 = stbl%ie_sph_r(k,2,ip_r)
           k_gl = inod_sph_r(k1,ip_r)
 !
           iele = sph_n_pole_ele_id(ip_r, k, m)
@@ -164,8 +164,8 @@
 !
       k2 = stbl%ie_center_r(2,ip_r)
       do m = 1, nidx_global_fem(3)
-        m1 = ie_sph_p(m,1)
-        m2 = ie_sph_p(m,2)
+        m1 = stbl%ie_sph_p(m,1)
+        m2 = stbl%ie_sph_p(m,2)
         do l = 1, nidx_global_fem(2)-1
           l1 = stbl%ie_center_t(l,1)
           l2 = stbl%ie_center_t(l,2)
@@ -214,11 +214,11 @@
 !
       k2 = stbl%ie_center_r(2,ip_r)
       do m = 1, nidx_global_fem(3)
-        m1 = ie_sph_p(m,1)
-        m2 = ie_sph_p(m,2)
+        m1 = stbl%ie_sph_p(m,1)
+        m2 = stbl%ie_sph_p(m,2)
         do l = 1, nele_sph_t(ip_t)
-          l1 = ie_sph_t(l,1,ip_t)
-          l2 = ie_sph_t(l,2,ip_t)
+          l1 = stbl%ie_sph_t(l,1,ip_t)
+          l2 = stbl%ie_sph_t(l,2,ip_t)
           l_gl = inod_sph_t(l1,ip_t)
 !
           iele = sph_exter_ctr_shell_ele_id(ip_t, l, m)
@@ -252,9 +252,9 @@
       k2 = stbl%ie_center_r(2,ip_r)
       l2 = stbl%ie_center_Sp(2)
       do m = 1, stbl%nele_around_pole
-        m1 = ie_sph_p(2*m-1,1)
-        m2 = ie_sph_p(2*m,  1)
-        m3 = ie_sph_p(2*m,  2)
+        m1 = stbl%ie_sph_p(2*m-1,1)
+        m2 = stbl%ie_sph_p(2*m,  1)
+        m3 = stbl%ie_sph_p(2*m,  2)
 !
         iele = sph_inter_ctr_spole_ele_id(m)
         ele%iele_global(iele) = global_ctr_spole_ele_id(m)
@@ -285,9 +285,9 @@
       k2 = stbl%ie_center_r(2,ip_r)
       l1 = stbl%ie_center_Np(1)
       do m = 1, stbl%nele_around_pole
-        m1 = ie_sph_p(2*m-1,1)
-        m2 = ie_sph_p(2*m,  1)
-        m3 = ie_sph_p(2*m,  2)
+        m1 = stbl%ie_sph_p(2*m-1,1)
+        m2 = stbl%ie_sph_p(2*m,  1)
+        m3 = stbl%ie_sph_p(2*m,  2)
         iele = sph_inter_ctr_npole_ele_id(m)
         ele%iele_global(iele) = global_ctr_npole_ele_id(m)
 !
@@ -327,9 +327,9 @@
       k2 = stbl%ie_center_r(2,ip_r)
       l1 = stbl%ie_Npole_t(1,ip_t)
       do m = 1, stbl%nele_around_pole
-        m1 = ie_sph_p(2*m-1,1)
-        m2 = ie_sph_p(2*m,  1)
-        m3 = ie_sph_p(2*m,  2)
+        m1 = stbl%ie_sph_p(2*m-1,1)
+        m2 = stbl%ie_sph_p(2*m,  1)
+        m3 = stbl%ie_sph_p(2*m,  2)
         iele = sph_exter_ctr_npole_ele_id(m)
         ele%iele_global(iele) = global_ctr_npole_ele_id(m)
 !

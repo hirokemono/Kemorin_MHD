@@ -74,9 +74,9 @@
 !
       stbl%iflag_center_r =   0
       iflag_internal_r = 0
-      iflag_ele_r =      0
+      stbl%iflag_ele_r =      0
       nmax_nod_sph_r =   0
-      nmax_ele_sph_r =   0
+      stbl%nmax_ele_sph_r =   0
       do ip = 1, ndomain_fem(1)
         ist = istack_idx_local_rtp_r(ip-1) + 1
         ied = istack_idx_local_rtp_r(ip)
@@ -105,14 +105,14 @@
         nnod_sph_r(ip) = abs(iflag_internal_r(1,ip))
         nele_sph_r(ip) = 0
         do kr = 1, nidx_global_fem(1)-1
-          iflag_ele_r(kr,ip) = abs(iflag_internal_r(kr,ip)              &
-     &                           * iflag_internal_r(kr+1,  ip))
+          stbl%iflag_ele_r(kr,ip) = abs(iflag_internal_r(kr,ip)         &
+     &                             * iflag_internal_r(kr+1,  ip))
           nnod_sph_r(ip) = nnod_sph_r(ip)                               &
      &                   + abs(iflag_internal_r(kr+1,ip))
-          nele_sph_r(ip)= nele_sph_r(ip) + abs(iflag_ele_r(kr,ip))
+          nele_sph_r(ip)= nele_sph_r(ip) + abs(stbl%iflag_ele_r(kr,ip))
         end do
         nmax_nod_sph_r = max(nmax_nod_sph_r,nnod_sph_r(ip))
-        nmax_ele_sph_r = max(nmax_ele_sph_r,nele_sph_r(ip))
+        stbl%nmax_ele_sph_r = max(stbl%nmax_ele_sph_r,nele_sph_r(ip))
       end do
 !
       do ip = 1, ndomain_fem(1)
@@ -161,9 +161,9 @@
 !
 !
       iflag_internal_t = 0
-      iflag_ele_t =      0
+      stbl%iflag_ele_t =      0
       nmax_nod_sph_t =   0
-      nmax_ele_sph_t =   0
+      stbl%nmax_ele_sph_t =   0
       do ip = 1, ndomain_fem(2)
         ist = istack_idx_local_rtp_t(ip-1) + 1
         ied = istack_idx_local_rtp_t(ip)
@@ -196,11 +196,11 @@
         nele_sph_t(ip) = 0
 !
         do k = 1, nidx_global_fem(2)-1
-          iflag_ele_t(k,ip) = abs(iflag_internal_t(k,ip)                &
-     &                          * iflag_internal_t(k+1,  ip))
+          stbl%iflag_ele_t(k,ip) = abs(iflag_internal_t(k,ip)           &
+     &                            * iflag_internal_t(k+1,  ip))
           nnod_sph_t(ip) = nnod_sph_t(ip)                               &
      &                          + abs(iflag_internal_t(k+1,ip))
-          nele_sph_t(ip)= nele_sph_t(ip) + abs(iflag_ele_t(k,ip))
+          nele_sph_t(ip)= nele_sph_t(ip) + abs(stbl%iflag_ele_t(k,ip))
         end do
 !
         k = nidx_global_fem(2)
@@ -208,7 +208,7 @@
      &                            * stbl%iflag_Npole_t(ip))
 !
         nmax_nod_sph_t = max(nmax_nod_sph_t,nnod_sph_t(ip))
-        nmax_ele_sph_t = max(nmax_ele_sph_t,nele_sph_t(ip))
+        stbl%nmax_ele_sph_t = max(stbl%nmax_ele_sph_t,nele_sph_t(ip))
       end do
 !
       nnod_sph_ct = 0
@@ -300,10 +300,10 @@
 !
         icou = 0
         do kr = 1, nidx_global_fem(1)-1
-          if(iflag_ele_r(kr,ip) .gt. 0) then
+          if(stbl%iflag_ele_r(kr,ip) .gt. 0) then
             icou = icou + 1
-            ie_sph_r(icou,1,ip) = irev_sph_r(kr,  ip)
-            ie_sph_r(icou,2,ip) = irev_sph_r(kr+1,ip)
+            stbl%ie_sph_r(icou,1,ip) = irev_sph_r(kr,  ip)
+            stbl%ie_sph_r(icou,2,ip) = irev_sph_r(kr+1,ip)
           end if
         end do
 !
@@ -345,10 +345,10 @@
 !
         icou = 0
         do k = 1, nidx_global_fem(2)-1
-          if(iflag_ele_t(k,ip) .gt. 0) then
+          if(stbl%iflag_ele_t(k,ip) .gt. 0) then
             icou = icou + 1
-            ie_sph_t(icou,1,ip) = irev_sph_t(k,  ip)
-            ie_sph_t(icou,2,ip) = irev_sph_t(k+1,ip)
+            stbl%ie_sph_t(icou,1,ip) = irev_sph_t(k,  ip)
+            stbl%ie_sph_t(icou,2,ip) = irev_sph_t(k+1,ip)
           end if
         end do
 !
@@ -420,8 +420,8 @@
 !
 !
       do m = 1, nidx_global_fem(3)
-        ie_sph_p(m,1) = m
-        ie_sph_p(m,2) = mod(m,nidx_global_fem(3)) + 1
+        stbl%ie_sph_p(m,1) = m
+        stbl%ie_sph_p(m,2) = mod(m,nidx_global_fem(3)) + 1
       end do
 !
       end subroutine set_iele_4_sph_phi

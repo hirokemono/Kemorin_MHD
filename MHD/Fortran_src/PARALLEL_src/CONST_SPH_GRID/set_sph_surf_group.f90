@@ -86,8 +86,8 @@
           end if
 !
           do kele = 1, nele_sph_r(ip_r)
-            if(ie_sph_r(kele,1,ip_r) .eq. kl1 &
-     &         .and. ie_sph_r(kele,2,ip_r) .eq. kl2) then
+            if      (stbl%ie_sph_r(kele,1,ip_r) .eq. kl1                &
+     &         .and. stbl%ie_sph_r(kele,2,ip_r) .eq. kl2) then
               call count_surf_grp_item_on_sphere(ip_t, sph_params,      &
      &            surf_grp%nitem_grp(icou))
             end if
@@ -139,8 +139,8 @@
           end if
 !
           do kele = 1, nele_sph_r(ip_r)
-            if(ie_sph_r(kele,1,ip_r) .eq. kl1                           &
-     &         .and. ie_sph_r(kele,2,ip_r) .eq. kl2) then
+            if      (stbl%ie_sph_r(kele,1,ip_r) .eq. kl1                &
+     &         .and. stbl%ie_sph_r(kele,2,ip_r) .eq. kl2) then
               call set_surf_grp_item_on_sphere(ip_r, ip_t, kele,        &
      &            inum, isf, sph_params, surf_grp)
               exit

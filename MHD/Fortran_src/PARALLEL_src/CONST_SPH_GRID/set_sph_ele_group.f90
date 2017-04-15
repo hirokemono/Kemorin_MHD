@@ -113,8 +113,8 @@
           end do
 !
           do kele = 1, nele_sph_r(ip_r)
-            kl1 = ie_sph_r(kele,1,ip_r)
-            kl2 = ie_sph_r(kele,2,ip_r)
+            kl1 = stbl%ie_sph_r(kele,1,ip_r)
+            kl2 = stbl%ie_sph_r(kele,2,ip_r)
             kg1 = inod_sph_r(kl1,ip_r)
             kg2 = inod_sph_r(kl2,ip_r)
             if(iflag_r(kg1)*iflag_r(kg2) .gt. 0) then
@@ -174,8 +174,8 @@
           end do
 !
           do kele = 1, nele_sph_r(ip_r)
-            kl1 = ie_sph_r(kele,1,ip_r)
-            kl2 = ie_sph_r(kele,2,ip_r)
+            kl1 = stbl%ie_sph_r(kele,1,ip_r)
+            kl2 = stbl%ie_sph_r(kele,2,ip_r)
             kg1 = inod_sph_r(kl1,ip_r)
             kg2 = inod_sph_r(kl2,ip_r)
             if(iflag_r(kg1)*iflag_r(kg2) .gt. 0) then
