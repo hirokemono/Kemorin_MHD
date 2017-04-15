@@ -7,15 +7,18 @@
 !>@brief  One-dimmentional connectivity list for spherical shell
 !!
 !!@verbatim
-!!      subroutine alloc_radius_1d_gl(nri_global, tbl)
-!!      subroutine dealloc_radius_1d_gl(tbl)
+!!      subroutine alloc_radius_1d_gl(nri_global, stbl)
+!!      subroutine dealloc_radius_1d_gl(stbl)
 !!
 !!      subroutine alloc_nnod_nele_sph_mesh(ndomain_sph, ndomain_rtp,&
-!!     &          nidx_global_rtp, m_folding, tbl)
-!!      subroutine alloc_iele_sph_mesh(tbl)
-!!      subroutine dealloc_nnod_nele_sph_mesh(tbl)
+!!     &          nidx_global_rtp, m_folding, stbl)
+!!      subroutine alloc_iele_sph_mesh(stbl)
+!!      subroutine alloc_1d_comm_tbl_4_sph                              &
+!!     &         (ntot_import, ntot_export, stbl)
+!!      subroutine dealloc_nnod_nele_sph_mesh(stbl)
+!!      subroutine dealloc_1d_comm_tbl_4_sph(stbl)
 !!
-!!      subroutine check_iele_4_sph_connects(tbl)
+!!      subroutine chk_iele_4_sph_connects(stbl)
 !!@endverbatim
 !
       module t_sph_mesh_1d_connect
@@ -99,24 +102,24 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine alloc_radius_1d_gl(nri_global, tbl)
+      subroutine alloc_radius_1d_gl(nri_global, stbl)
 !
       integer(kind = kint), intent(in) :: nri_global
-      type(comm_table_make_sph), intent(inout) :: tbl
+      type(comm_table_make_sph), intent(inout) :: stbl
 !
 !
-      allocate(tbl%radius_1d_gl(nri_global))
-      if(nri_global .gt. 0) tbl%radius_1d_gl = 0.0d0
+      allocate(stbl%radius_1d_gl(nri_global))
+      if(nri_global .gt. 0) stbl%radius_1d_gl = 0.0d0
 !
       end subroutine alloc_radius_1d_gl
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine dealloc_radius_1d_gl(tbl)
+      subroutine dealloc_radius_1d_gl(stbl)
 !
-      type(comm_table_make_sph), intent(inout) :: tbl
+      type(comm_table_make_sph), intent(inout) :: stbl
 !
-      deallocate(tbl%radius_1d_gl)
+      deallocate(stbl%radius_1d_gl)
 !
       end subroutine dealloc_radius_1d_gl
 !
@@ -124,256 +127,261 @@
 ! ----------------------------------------------------------------------
 !
       subroutine alloc_nnod_nele_sph_mesh(ndomain_sph, ndomain_rtp,     &
-     &          nidx_global_rtp, m_folding, tbl)
+     &          nidx_global_rtp, m_folding, stbl)
 !
       integer(kind = kint), intent(in) :: ndomain_sph
       integer(kind = kint), intent(in) :: ndomain_rtp(3)
       integer(kind = kint), intent(in) :: nidx_global_rtp(3)
       integer(kind = kint), intent(in) :: m_folding
 !
-      type(comm_table_make_sph), intent(inout) :: tbl
+      type(comm_table_make_sph), intent(inout) :: stbl
 !
       integer(kind = kint) :: np, num
 !
 !
-      tbl%ntot_domain =      ndomain_sph
-      tbl%ndomain_fem(1:3) = ndomain_rtp(1:3)
-      tbl%nidx_global_fem(1:3) = nidx_global_rtp(1:3)
-      tbl%nidx_global_fem(3) =  m_folding * tbl%nidx_global_fem(3)
+      stbl%ntot_domain =      ndomain_sph
+      stbl%ndomain_fem(1:3) = ndomain_rtp(1:3)
+      stbl%nidx_global_fem(1:3) = nidx_global_rtp(1:3)
+      stbl%nidx_global_fem(3) =  m_folding * stbl%nidx_global_fem(3)
 !
-      np =  tbl%ndomain_fem(1)
-      num = tbl%nidx_global_fem(1)
-      allocate( tbl%iflag_neib_r(np,np) )
-      allocate( tbl%iflag_ele_r(num-1,np) )
-      allocate( tbl%iflag_internal_r(num,np) )
-      allocate( tbl%nnod_sph_r(np) )
-      allocate( tbl%nele_sph_r(np) )
-      tbl%iflag_neib_r =   0
-      tbl%iflag_internal_r = 0
-      tbl%iflag_ele_r = 0
-      tbl%nnod_sph_r = 0
-      tbl%nele_sph_r = 0
+      np =  stbl%ndomain_fem(1)
+      num = stbl%nidx_global_fem(1)
+      allocate( stbl%iflag_neib_r(np,np) )
+      allocate( stbl%iflag_ele_r(num-1,np) )
+      allocate( stbl%iflag_internal_r(num,np) )
+      allocate( stbl%nnod_sph_r(np) )
+      allocate( stbl%nele_sph_r(np) )
+      stbl%iflag_neib_r =   0
+      stbl%iflag_internal_r = 0
+      stbl%iflag_ele_r = 0
+      stbl%nnod_sph_r = 0
+      stbl%nele_sph_r = 0
 !
-      allocate( tbl%iflag_center_r(np) )
-      allocate( tbl%iflag_ele_center(np) )
-      tbl%iflag_center_r =   0
-      tbl%iflag_ele_center = 0
+      allocate( stbl%iflag_center_r(np) )
+      allocate( stbl%iflag_ele_center(np) )
+      stbl%iflag_center_r =   0
+      stbl%iflag_ele_center = 0
 !
-      np =  tbl%ndomain_fem(2)
-      num = tbl%nidx_global_fem(2)
-      allocate( tbl%iflag_neib_t(np,np) )
-      allocate( tbl%iflag_internal_t(num,np) )
-      allocate( tbl%iflag_ele_t(num-1,np) )
-      allocate( tbl%nnod_sph_t(np) )
-      allocate( tbl%nele_sph_t(np) )
-      tbl%iflag_neib_t =   0
-      tbl%iflag_internal_t = 0
-      tbl%iflag_ele_t = 0
-      tbl%nnod_sph_t = 0
-      tbl%nele_sph_t = 0
+      np =  stbl%ndomain_fem(2)
+      num = stbl%nidx_global_fem(2)
+      allocate( stbl%iflag_neib_t(np,np) )
+      allocate( stbl%iflag_internal_t(num,np) )
+      allocate( stbl%iflag_ele_t(num-1,np) )
+      allocate( stbl%nnod_sph_t(np) )
+      allocate( stbl%nele_sph_t(np) )
+      stbl%iflag_neib_t =   0
+      stbl%iflag_internal_t = 0
+      stbl%iflag_ele_t = 0
+      stbl%nnod_sph_t = 0
+      stbl%nele_sph_t = 0
 !
-      allocate( tbl%iflag_Spole_t(np) )
-      allocate( tbl%iflag_Npole_t(np) )
-      allocate( tbl%iflag_ele_Spole(np) )
-      allocate( tbl%iflag_ele_Npole(np) )
-      tbl%iflag_Spole_t = 0
-      tbl%iflag_Npole_t = 0
-      tbl%iflag_ele_Spole = 0
-      tbl%iflag_ele_Npole = 0
+      allocate( stbl%iflag_Spole_t(np) )
+      allocate( stbl%iflag_Npole_t(np) )
+      allocate( stbl%iflag_ele_Spole(np) )
+      allocate( stbl%iflag_ele_Npole(np) )
+      stbl%iflag_Spole_t = 0
+      stbl%iflag_Npole_t = 0
+      stbl%iflag_ele_Spole = 0
+      stbl%iflag_ele_Npole = 0
 !
-      allocate( tbl%iflag_center_t(0:num+1) )
-      tbl%iflag_center_t = 0
+      allocate( stbl%iflag_center_t(0:num+1) )
+      stbl%iflag_center_t = 0
 !
-      tbl%nele_around_pole = tbl%nidx_global_fem(3) / 2
+      stbl%nele_around_pole = stbl%nidx_global_fem(3) / 2
 !
       end subroutine alloc_nnod_nele_sph_mesh
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine alloc_iele_sph_mesh(tbl)
+      subroutine alloc_iele_sph_mesh(stbl)
 !
-      type(comm_table_make_sph), intent(inout) :: tbl
+      type(comm_table_make_sph), intent(inout) :: stbl
 !
       integer(kind = kint) :: num, np
 !
 !
-      np =  tbl%ndomain_fem(1)
-      num = tbl%nidx_global_fem(1)
-      allocate( tbl%irev_sph_r(0:num,np) )
-      allocate( tbl%inod_sph_r(0:tbl%nmax_nod_sph_r,np) )
-      allocate( tbl%ie_sph_r(tbl%nmax_ele_sph_r,2,np) )
-      tbl%irev_sph_r = 0
-      tbl%inod_sph_r = 0
-      tbl%ie_sph_r =   0
+      np =  stbl%ndomain_fem(1)
+      num = stbl%nidx_global_fem(1)
+      allocate( stbl%irev_sph_r(0:num,np) )
+      allocate( stbl%inod_sph_r(0:stbl%nmax_nod_sph_r,np) )
+      allocate( stbl%ie_sph_r(stbl%nmax_ele_sph_r,2,np) )
+      stbl%irev_sph_r = 0
+      stbl%inod_sph_r = 0
+      stbl%ie_sph_r =   0
 !
-      allocate( tbl%ie_center_r(2,np) )
-      tbl%ie_center_r = 0
+      allocate( stbl%ie_center_r(2,np) )
+      stbl%ie_center_r = 0
 !
-      np =  tbl%ndomain_fem(2)
-      num = tbl%nidx_global_fem(2)
-      allocate( tbl%irev_sph_t(0:num+1,np) )
-      allocate( tbl%inod_sph_t(0:tbl%nmax_nod_sph_t+1,np) )
-      allocate( tbl%ie_sph_t(tbl%nmax_ele_sph_t,2,np) )
-      allocate( tbl%ie_center_t(num-1,2) )
-      tbl%irev_sph_t = 0
-      tbl%inod_sph_t = 0
-      tbl%ie_sph_t =    0
-      tbl%ie_center_t = 0
-      tbl%ie_center_Sp = 0
-      tbl%ie_center_Np = 0
+      np =  stbl%ndomain_fem(2)
+      num = stbl%nidx_global_fem(2)
+      allocate( stbl%irev_sph_t(0:num+1,np) )
+      allocate( stbl%inod_sph_t(0:stbl%nmax_nod_sph_t+1,np) )
+      allocate( stbl%ie_sph_t(stbl%nmax_ele_sph_t,2,np) )
+      allocate( stbl%ie_center_t(num-1,2) )
+      stbl%irev_sph_t = 0
+      stbl%inod_sph_t = 0
+      stbl%ie_sph_t =    0
+      stbl%ie_center_t = 0
+      stbl%ie_center_Sp = 0
+      stbl%ie_center_Np = 0
 !
-      allocate( tbl%ie_Spole_t(2,np) )
-      allocate( tbl%ie_Npole_t(2,np) )
-      tbl%ie_Spole_t =  0
-      tbl%ie_Npole_t =  0
+      allocate( stbl%ie_Spole_t(2,np) )
+      allocate( stbl%ie_Npole_t(2,np) )
+      stbl%ie_Spole_t =  0
+      stbl%ie_Npole_t =  0
 !
-      allocate( tbl%inod_sph_ct(0:num+1) )
-      allocate( tbl%irev_sph_ct(0:num+1) )
-      tbl%inod_sph_ct = 0
-      tbl%irev_sph_ct = 0
+      allocate( stbl%inod_sph_ct(0:num+1) )
+      allocate( stbl%irev_sph_ct(0:num+1) )
+      stbl%inod_sph_ct = 0
+      stbl%irev_sph_ct = 0
 !
-      np =  tbl%ndomain_fem(3)
-      num = tbl%nidx_global_fem(3)
-      allocate( tbl%ie_sph_p(num,2) )
-      tbl%ie_sph_p = 0
+      np =  stbl%ndomain_fem(3)
+      num = stbl%nidx_global_fem(3)
+      allocate( stbl%ie_sph_p(num,2) )
+      stbl%ie_sph_p = 0
 !!
       end subroutine alloc_iele_sph_mesh
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine alloc_1d_comm_tbl_4_sph(ntot_import, ntot_export, tbl)
+      subroutine alloc_1d_comm_tbl_4_sph                                &
+     &         (ntot_import, ntot_export, stbl)
 !
       integer(kind = kint), intent(in) :: ntot_import, ntot_export
-      type(comm_table_make_sph), intent(inout) :: tbl
+      type(comm_table_make_sph), intent(inout) :: stbl
 !
 !
-      allocate(tbl%item_import_rtp(ntot_import))
-      allocate(tbl%item_export_rtp(ntot_export))
-      allocate(tbl%item_import_1d_rtp(3,ntot_import))
-      allocate(tbl%item_export_1d_rtp(3,ntot_export))
-      if(ntot_import .gt. 0) tbl%item_import_rtp = 0
-      if(ntot_export .gt. 0) tbl%item_export_rtp = 0
-      if(ntot_import .gt. 0) tbl%item_import_1d_rtp = 0
-      if(ntot_export .gt. 0) tbl%item_export_1d_rtp = 0
+      allocate(stbl%item_import_rtp(ntot_import))
+      allocate(stbl%item_export_rtp(ntot_export))
+      allocate(stbl%item_import_1d_rtp(3,ntot_import))
+      allocate(stbl%item_export_1d_rtp(3,ntot_export))
+      if(ntot_import .gt. 0) stbl%item_import_rtp = 0
+      if(ntot_export .gt. 0) stbl%item_export_rtp = 0
+      if(ntot_import .gt. 0) stbl%item_import_1d_rtp = 0
+      if(ntot_export .gt. 0) stbl%item_export_1d_rtp = 0
 !
       end subroutine alloc_1d_comm_tbl_4_sph
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine dealloc_nnod_nele_sph_mesh(tbl)
+      subroutine dealloc_nnod_nele_sph_mesh(stbl)
 !
-      type(comm_table_make_sph), intent(inout) :: tbl
+      type(comm_table_make_sph), intent(inout) :: stbl
 !
 !
-      deallocate(tbl%inod_sph_ct, tbl%irev_sph_ct)
-      deallocate(tbl%ie_sph_r, tbl%ie_sph_t, tbl%ie_sph_p)
-      deallocate(tbl%irev_sph_r, tbl%irev_sph_t)
-      deallocate(tbl%inod_sph_r, tbl%inod_sph_t)
-      deallocate(tbl%iflag_internal_r, tbl%nnod_sph_r, tbl%nele_sph_r)
-      deallocate(tbl%iflag_internal_t, tbl%nnod_sph_t, tbl%nele_sph_t)
-      deallocate(tbl%iflag_neib_r, tbl%iflag_neib_t)
-      deallocate(tbl%iflag_center_r, tbl%iflag_center_t)
-      deallocate(tbl%iflag_Spole_t, tbl%iflag_Npole_t)
-      deallocate(tbl%iflag_ele_center)
-      deallocate(tbl%iflag_ele_Spole, tbl%iflag_ele_Npole)
-      deallocate(tbl%iflag_ele_r, tbl%iflag_ele_t)
-      deallocate(tbl%ie_center_t)
+      deallocate(stbl%inod_sph_ct, stbl%irev_sph_ct)
+      deallocate(stbl%ie_sph_r, stbl%ie_sph_t, stbl%ie_sph_p)
+      deallocate(stbl%irev_sph_r, stbl%irev_sph_t)
+      deallocate(stbl%inod_sph_r, stbl%inod_sph_t)
+      deallocate(stbl%iflag_internal_r)
+      deallocate(stbl%nnod_sph_r, stbl%nele_sph_r)
+      deallocate(stbl%iflag_internal_t)
+      deallocate(stbl%nnod_sph_t, stbl%nele_sph_t)
+      deallocate(stbl%iflag_neib_r, stbl%iflag_neib_t)
+      deallocate(stbl%iflag_center_r, stbl%iflag_center_t)
+      deallocate(stbl%iflag_Spole_t, stbl%iflag_Npole_t)
+      deallocate(stbl%iflag_ele_center)
+      deallocate(stbl%iflag_ele_Spole, stbl%iflag_ele_Npole)
+      deallocate(stbl%iflag_ele_r, stbl%iflag_ele_t)
+      deallocate(stbl%ie_center_t)
 !
       end subroutine dealloc_nnod_nele_sph_mesh
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine dealloc_1d_comm_tbl_4_sph(tbl)
+      subroutine dealloc_1d_comm_tbl_4_sph(stbl)
 !
-      type(comm_table_make_sph), intent(inout) :: tbl
+      type(comm_table_make_sph), intent(inout) :: stbl
 !
 !
-      deallocate(tbl%item_import_rtp, tbl%item_export_rtp)
-      deallocate(tbl%item_import_1d_rtp, tbl%item_export_1d_rtp)
+      deallocate(stbl%item_import_rtp, stbl%item_export_rtp)
+      deallocate(stbl%item_import_1d_rtp, stbl%item_export_1d_rtp)
 !
       end subroutine dealloc_1d_comm_tbl_4_sph
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine check_iele_4_sph_connects(tbl)
+      subroutine chk_iele_4_sph_connects(stbl)
 !
       integer(kind = kint) :: k, ip, i12(2)
-      type(comm_table_make_sph), intent(in) :: tbl
+      type(comm_table_make_sph), intent(in) :: stbl
 !
 !
-      write(*,'(a,255i6)') 'iflag_neib_r', tbl%ndomain_fem(1)
-      do k = 1, tbl%ndomain_fem(1)
-        write(*,'(255i6)') k, tbl%iflag_neib_r(k,1:tbl%ndomain_fem(1))
+      write(*,'(a,255i6)') 'iflag_neib_r', stbl%ndomain_fem(1)
+      do k = 1, stbl%ndomain_fem(1)
+        write(*,'(255i6)')                                              &
+     &      k, stbl%iflag_neib_r(k,1:stbl%ndomain_fem(1))
       end do
-      write(*,*) 'iflag_neib_t', tbl%ndomain_fem(2)
-      do k = 1, tbl%ndomain_fem(2)
-        write(*,'(255i6)') k, tbl%iflag_neib_t(k,1:tbl%ndomain_fem(2))
+      write(*,*) 'iflag_neib_t', stbl%ndomain_fem(2)
+      do k = 1, stbl%ndomain_fem(2)
+        write(*,'(255i6)')                                              &
+     &      k, stbl%iflag_neib_t(k,1:stbl%ndomain_fem(2))
       end do
 !
       write(*,'(a,255i6)') 'iflag_internal_r',                          &
-     &                       tbl%nidx_global_fem(1), tbl%ndomain_fem(1)
+     &                    stbl%nidx_global_fem(1), stbl%ndomain_fem(1)
       write(*,'(a,255i6)') 'Center: ',                                  &
-     &                    tbl%iflag_center_r(1:tbl%ndomain_fem(1))
-      do k = 0, tbl%nidx_global_fem(2)+1
-        write(*,'(255i6)') k, tbl%iflag_center_t(k),                    &
-     &                    tbl%inod_sph_ct(k), tbl%irev_sph_ct(k)
+     &                    stbl%iflag_center_r(1:stbl%ndomain_fem(1))
+      do k = 0, stbl%nidx_global_fem(2)+1
+        write(*,'(255i6)') k, stbl%iflag_center_t(k),                    &
+     &                    stbl%inod_sph_ct(k), stbl%irev_sph_ct(k)
       end do
       write(*,'(a)') 'connectivity for center element'
-      write(*,'(a,255i6)') 'S-pole: ', tbl%ie_center_Sp
-      do k = 1, tbl%nidx_global_fem(2)-1
-        write(*,'(255i6)') k, tbl%ie_center_t(k,1:2)
+      write(*,'(a,255i6)') 'S-pole: ', stbl%ie_center_Sp
+      do k = 1, stbl%nidx_global_fem(2)-1
+        write(*,'(255i6)') k, stbl%ie_center_t(k,1:2)
       end do
-      write(*,'(a,255i6)') 'N-pole: ', tbl%ie_center_Np
+      write(*,'(a,255i6)') 'N-pole: ', stbl%ie_center_Np
 !
       write(*,'(a,255i6)') 'radial numbers: ',                          &
-     &         tbl%nnod_sph_r(1:tbl%ndomain_fem(1))
-      do k = 1, tbl%nidx_global_fem(1)
+     &         stbl%nnod_sph_r(1:stbl%ndomain_fem(1))
+      do k = 1, stbl%nidx_global_fem(1)
         write(*,'(255i6)') k,                                           &
-     &                tbl%iflag_internal_r(k,1:tbl%ndomain_fem(1))
+     &                stbl%iflag_internal_r(k,1:stbl%ndomain_fem(1))
       end do
       write(*,*) 'iflag_internal_t',                                    &
-     &          tbl%nidx_global_fem(2), tbl%ndomain_fem(2)
-      write(*,*) 'numbers: ', tbl%nnod_sph_t
+     &          stbl%nidx_global_fem(2), stbl%ndomain_fem(2)
+      write(*,*) 'numbers: ', stbl%nnod_sph_t
       write(*,'(a,255i6)') 'S_pole: ',                                  &
-     &                    tbl%iflag_Spole_t(1:tbl%ndomain_fem(2))
-      do k = 1, tbl%nidx_global_fem(2)
+     &                    stbl%iflag_Spole_t(1:stbl%ndomain_fem(2))
+      do k = 1, stbl%nidx_global_fem(2)
         write(*,'(255i6)') k,                                           &
-     &                tbl%iflag_internal_t(k,1:tbl%ndomain_fem(2))
+     &                stbl%iflag_internal_t(k,1:stbl%ndomain_fem(2))
       end do
       write(*,'(a,255i6)') 'N_pole: ',                                  &
-     &                    tbl%iflag_Npole_t(1:tbl%ndomain_fem(2))
+     &                    stbl%iflag_Npole_t(1:stbl%ndomain_fem(2))
 !
-      do ip = 1, tbl%ndomain_fem(1)
-        write(*,*) 'k, tbl%ie_sph_r(k,1:2,ip) for ',                    &
-     &            ip, tbl%nele_sph_r(ip)
-        i12(1:2) = tbl%ie_center_r(1:2,ip)
-        write(*,*) 'Center: ' , i12(1:2), tbl%inod_sph_r(i12(1:2),ip)
-        do k = 1, tbl%nele_sph_r(ip)
-          i12(1:2) = tbl%ie_sph_r(k,1:2,ip)
-          write(*,*) k, i12(1:2), tbl%inod_sph_r(i12(1:2),ip)
+      do ip = 1, stbl%ndomain_fem(1)
+        write(*,*) 'k, stbl%ie_sph_r(k,1:2,ip) for ',                    &
+     &            ip, stbl%nele_sph_r(ip)
+        i12(1:2) = stbl%ie_center_r(1:2,ip)
+        write(*,*) 'Center: ' , i12(1:2), stbl%inod_sph_r(i12(1:2),ip)
+        do k = 1, stbl%nele_sph_r(ip)
+          i12(1:2) = stbl%ie_sph_r(k,1:2,ip)
+          write(*,*) k, i12(1:2), stbl%inod_sph_r(i12(1:2),ip)
         end do
       end do
 !
-      do ip = 1, tbl%ndomain_fem(2)
-        write(*,*) 'k, tbl%ie_sph_t(k,1:2,ip) for ', ip
-        i12(1:2) = tbl%ie_Spole_t(1:2,ip)
-        write(*,*) 'S_pole: ', i12(1:2), tbl%inod_sph_t(i12(1:2),ip)
-        do k = 1, tbl%nele_sph_t(ip)
-          i12(1:2) = tbl%ie_sph_t(k,1:2,ip)
-          write(*,*) k, i12(1:2), tbl%inod_sph_t(i12(1:2),ip)
+      do ip = 1, stbl%ndomain_fem(2)
+        write(*,*) 'k, stbl%ie_sph_t(k,1:2,ip) for ', ip
+        i12(1:2) = stbl%ie_Spole_t(1:2,ip)
+        write(*,*) 'S_pole: ', i12(1:2), stbl%inod_sph_t(i12(1:2),ip)
+        do k = 1, stbl%nele_sph_t(ip)
+          i12(1:2) = stbl%ie_sph_t(k,1:2,ip)
+          write(*,*) k, i12(1:2), stbl%inod_sph_t(i12(1:2),ip)
         end do
-        i12(1:2) = tbl%ie_Npole_t(1:2,ip)
-        write(*,*) 'N_pole: ', i12(1:2), tbl%inod_sph_t(i12(1:2),ip)
+        i12(1:2) = stbl%ie_Npole_t(1:2,ip)
+        write(*,*) 'N_pole: ', i12(1:2), stbl%inod_sph_t(i12(1:2),ip)
       end do
 !
-      write(*,*) 'k, tbl%ie_sph_p(k,1:2) for all'
-      do k = 1, tbl%nidx_global_fem(3)
-        write(*,*) k, tbl%ie_sph_p(k,1:2)
+      write(*,*) 'k, stbl%ie_sph_p(k,1:2) for all'
+      do k = 1, stbl%nidx_global_fem(3)
+        write(*,*) k, stbl%ie_sph_p(k,1:2)
       end do
 !
-      end subroutine check_iele_4_sph_connects
+      end subroutine chk_iele_4_sph_connects
 !
 ! ----------------------------------------------------------------------
 !

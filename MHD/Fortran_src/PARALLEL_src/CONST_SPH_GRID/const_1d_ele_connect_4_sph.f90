@@ -307,8 +307,8 @@
         end do
 !
         if(iflag_ele_center(ip) .gt. 0) then
-          ie_center_r(1,ip) = irev_sph_r(0,ip)
-          ie_center_r(2,ip) = irev_sph_r(1,ip)
+          stbl%ie_center_r(1,ip) = irev_sph_r(0,ip)
+          stbl%ie_center_r(2,ip) = irev_sph_r(1,ip)
         end if
       end do
 !
@@ -352,12 +352,12 @@
         end do
 !
         if(iflag_ele_Spole(ip) .gt. 0) then
-          ie_Spole_t(1,ip) = irev_sph_t(0,ip)
-          ie_Spole_t(2,ip) = irev_sph_t(1,ip)
+          stbl%ie_Spole_t(1,ip) = irev_sph_t(0,ip)
+          stbl%ie_Spole_t(2,ip) = irev_sph_t(1,ip)
         end if
         if(iflag_ele_Npole(ip) .gt. 0) then
-          ie_Npole_t(1,ip) = irev_sph_t(nidx_global_fem(2),  ip)
-          ie_Npole_t(2,ip) = irev_sph_t(nidx_global_fem(2)+1,ip)
+          stbl%ie_Npole_t(1,ip) = irev_sph_t(nidx_global_fem(2),  ip)
+          stbl%ie_Npole_t(2,ip) = irev_sph_t(nidx_global_fem(2)+1,ip)
         end if
       end do
 !
@@ -377,27 +377,27 @@
       end do
       do k = 1, nidx_global_fem(2)-1
         if(irev_sph_t(k,1) .eq. 0) then
-          ie_center_t(k,1) = -irev_sph_ct(k  )
+          stbl%ie_center_t(k,1) = -irev_sph_ct(k  )
         else
-          ie_center_t(k,1) = irev_sph_t(k,1)
+          stbl%ie_center_t(k,1) = irev_sph_t(k,1)
         end if
 !
         if(irev_sph_t(k+1,1) .eq. 0) then
-          ie_center_t(k,2) = -irev_sph_ct(k+1)
+          stbl%ie_center_t(k,2) = -irev_sph_ct(k+1)
         else
-          ie_center_t(k,2) = irev_sph_t(k+1,1)
+          stbl%ie_center_t(k,2) = irev_sph_t(k+1,1)
         end if
       end do
 !
-      ie_center_Sp(1) = ie_Spole_t(1,1)
-      ie_center_Sp(2) = ie_Spole_t(2,1)
+      stbl%ie_center_Sp(1) = stbl%ie_Spole_t(1,1)
+      stbl%ie_center_Sp(2) = stbl%ie_Spole_t(2,1)
 !
       if(iflag_Npole_t(1) .gt. 0)  then
-        ie_center_Np(1) = ie_Npole_t(1,1)
-        ie_center_Np(2) = ie_Npole_t(2,1)
+        stbl%ie_center_Np(1) = stbl%ie_Npole_t(1,1)
+        stbl%ie_center_Np(2) = stbl%ie_Npole_t(2,1)
       else
-        ie_center_Np(1) = -nnod_sph_ct
-        ie_center_Np(2) = -(nnod_sph_ct+1)
+        stbl%ie_center_Np(1) = -nnod_sph_ct
+        stbl%ie_center_Np(2) = -(nnod_sph_ct+1)
       end if
 !
       k = nidx_global_fem(2)+1

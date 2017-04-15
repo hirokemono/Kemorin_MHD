@@ -117,7 +117,7 @@
       integer(kind = kint), intent(in) :: ip_r
 !
 !
-      nele_lc_Spole =  nele_sph_r(ip_r) * nele_around_pole
+      nele_lc_Spole =  nele_sph_r(ip_r) * stbl%nele_around_pole
 !
       end subroutine set_nele_lc_Spole
 !
@@ -127,7 +127,7 @@
 !
       integer(kind = kint), intent(in) :: ip_r
 !
-      nele_lc_Npole = nele_sph_r(ip_r) * nele_around_pole
+      nele_lc_Npole = nele_sph_r(ip_r) * stbl%nele_around_pole
 !
       end subroutine set_nele_lc_Npole
 !
@@ -154,7 +154,7 @@
 !
       subroutine set_nele_center_Spole
 !
-      nele_ctr_Spole = nele_around_pole
+      nele_ctr_Spole = stbl%nele_around_pole
 !
       end subroutine set_nele_center_Spole
 !
@@ -162,7 +162,7 @@
 !
       subroutine set_nele_center_Npole
 !
-      nele_ctr_Npole = nele_around_pole
+      nele_ctr_Npole = stbl%nele_around_pole
 !
       end subroutine set_nele_center_Npole
 !
@@ -188,7 +188,7 @@
 !
 !
       nr8 = nidx_global_fem(1)-1
-      nele_gl_Spole = nr8 * nele_around_pole
+      nele_gl_Spole = nr8 * stbl%nele_around_pole
 !
       end subroutine set_nele_gl_Spole
 !
@@ -199,7 +199,7 @@
       integer(kind = kint_gl) :: nr8
 !
       nr8 = nidx_global_fem(1)-1
-      nele_gl_Npole = nr8 * nele_around_pole
+      nele_gl_Npole = nr8 * stbl%nele_around_pole
 !
       end subroutine set_nele_gl_Npole
 !
@@ -212,8 +212,8 @@
       nt8 = nidx_global_fem(2)-1
       np8 = nidx_global_fem(3)
       nele_gl_ctr_sph = nt8 * np8
-      nele_gl_ctr_Spole = nele_around_pole
-      nele_gl_ctr_Npole = nele_around_pole
+      nele_gl_ctr_Spole = stbl%nele_around_pole
+      nele_gl_ctr_Npole = stbl%nele_around_pole
 !
       end subroutine set_nele_gl_ctr_sph
 !

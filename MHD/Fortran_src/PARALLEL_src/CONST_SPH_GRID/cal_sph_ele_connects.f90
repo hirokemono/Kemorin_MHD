@@ -85,8 +85,8 @@
       integer(kind = kint) :: iele
 !
 !
-      l2 = ie_Spole_t(2,ip_t)
-      do m = 1, nele_around_pole
+      l2 = stbl%ie_Spole_t(2,ip_t)
+      do m = 1, stbl%nele_around_pole
         m1 = ie_sph_p(2*m-1,1)
         m2 = ie_sph_p(2*m,  1)
         m3 = ie_sph_p(2*m,  2)
@@ -123,8 +123,8 @@
       integer(kind = kint) :: iele
 !
 !
-      l1 = ie_Npole_t(1,ip_t)
-      do m = 1, nele_around_pole
+      l1 = stbl%ie_Npole_t(1,ip_t)
+      do m = 1, stbl%nele_around_pole
         m1 = ie_sph_p(2*m-1,1)
         m2 = ie_sph_p(2*m,  1)
         m3 = ie_sph_p(2*m,  2)
@@ -162,13 +162,13 @@
       integer(kind = kint) :: iele
 !
 !
-      k2 = ie_center_r(2,ip_r)
+      k2 = stbl%ie_center_r(2,ip_r)
       do m = 1, nidx_global_fem(3)
         m1 = ie_sph_p(m,1)
         m2 = ie_sph_p(m,2)
         do l = 1, nidx_global_fem(2)-1
-          l1 = ie_center_t(l,1)
-          l2 = ie_center_t(l,2)
+          l1 = stbl%ie_center_t(l,1)
+          l2 = stbl%ie_center_t(l,2)
 !
           iele = sph_inter_ctr_shell_ele_id(l, m)
           ele%iele_global(iele) = global_ctr_shell_ele_id(l, m)
@@ -212,7 +212,7 @@
       integer(kind = kint) :: iele
 !
 !
-      k2 = ie_center_r(2,ip_r)
+      k2 = stbl%ie_center_r(2,ip_r)
       do m = 1, nidx_global_fem(3)
         m1 = ie_sph_p(m,1)
         m2 = ie_sph_p(m,2)
@@ -249,9 +249,9 @@
       integer(kind = kint) :: iele
 !
 !
-      k2 = ie_center_r(2,ip_r)
-      l2 = ie_center_Sp(2)
-      do m = 1, nele_around_pole
+      k2 = stbl%ie_center_r(2,ip_r)
+      l2 = stbl%ie_center_Sp(2)
+      do m = 1, stbl%nele_around_pole
         m1 = ie_sph_p(2*m-1,1)
         m2 = ie_sph_p(2*m,  1)
         m3 = ie_sph_p(2*m,  2)
@@ -282,9 +282,9 @@
       integer(kind = kint) :: iele
 !
 !
-      k2 = ie_center_r(2,ip_r)
-      l1 = ie_center_Np(1)
-      do m = 1, nele_around_pole
+      k2 = stbl%ie_center_r(2,ip_r)
+      l1 = stbl%ie_center_Np(1)
+      do m = 1, stbl%nele_around_pole
         m1 = ie_sph_p(2*m-1,1)
         m2 = ie_sph_p(2*m,  1)
         m3 = ie_sph_p(2*m,  2)
@@ -324,9 +324,9 @@
       integer(kind = kint) :: iele
 !
 !
-      k2 = ie_center_r(2,ip_r)
-      l1 = ie_Npole_t(1,ip_t)
-      do m = 1, nele_around_pole
+      k2 = stbl%ie_center_r(2,ip_r)
+      l1 = stbl%ie_Npole_t(1,ip_t)
+      do m = 1, stbl%nele_around_pole
         m1 = ie_sph_p(2*m-1,1)
         m2 = ie_sph_p(2*m,  1)
         m3 = ie_sph_p(2*m,  2)

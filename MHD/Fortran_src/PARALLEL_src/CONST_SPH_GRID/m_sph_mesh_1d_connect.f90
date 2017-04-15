@@ -22,8 +22,13 @@
 !
       use m_precision
       use m_constants
+      use t_sph_mesh_1d_connect
 !
       implicit none
+!
+!
+      type(comm_table_make_sph), save :: stbl
+!
 !
       integer(kind = kint) :: ntot_domain
       integer(kind = kint) :: ndomain_fem(3)
@@ -83,13 +88,13 @@
       integer(kind = kint), allocatable :: ie_sph_t(:,:,:)
       integer(kind = kint), allocatable :: ie_sph_p(:,:)
 !
-      integer(kind = kint) :: nele_around_pole
-      integer(kind = kint), allocatable :: ie_Spole_t(:,:)
-      integer(kind = kint), allocatable :: ie_Npole_t(:,:)
-      integer(kind = kint), allocatable :: ie_center_r(:,:)
-      integer(kind = kint), allocatable :: ie_center_t(:,:)
-      integer(kind = kint) :: ie_center_Sp(2)
-      integer(kind = kint) :: ie_center_Np(2)
+!      integer(kind = kint) :: nele_around_pole
+!      integer(kind = kint), allocatable :: ie_Spole_t(:,:)
+!      integer(kind = kint), allocatable :: ie_Npole_t(:,:)
+!      integer(kind = kint), allocatable :: ie_center_r(:,:)
+!      integer(kind = kint), allocatable :: ie_center_t(:,:)
+!      integer(kind = kint) :: ie_center_Sp(2)
+!      integer(kind = kint) :: ie_center_Np(2)
 !
 ! ----------------------------------------------------------------------
 !
@@ -176,7 +181,7 @@
       allocate( iflag_center_t(0:num+1) )
       iflag_center_t = 0
 !
-      nele_around_pole = nidx_global_fem(3) / 2
+      stbl%nele_around_pole = nidx_global_fem(3) / 2
 !
       end subroutine allocate_nnod_nele_sph_mesh
 !
@@ -196,26 +201,26 @@
       inod_sph_r = 0
       ie_sph_r =   0
 !
-      allocate( ie_center_r(2,np) )
-      ie_center_r = 0
+      allocate( stbl%ie_center_r(2,np) )
+      stbl%ie_center_r = 0
 !
       np =  ndomain_fem(2)
       num = nidx_global_fem(2)
       allocate( irev_sph_t(0:num+1,np) )
       allocate( inod_sph_t(0:nmax_nod_sph_t+1,np) )
       allocate( ie_sph_t(nmax_ele_sph_t,2,np) )
-      allocate( ie_center_t(num-1,2) )
+      allocate( stbl%ie_center_t(num-1,2) )
       irev_sph_t = 0
       inod_sph_t = 0
       ie_sph_t =    0
-      ie_center_t = 0
-      ie_center_Sp = 0
-      ie_center_Np = 0
+      stbl%ie_center_t = 0
+      stbl%ie_center_Sp = 0
+      stbl%ie_center_Np = 0
 !
-      allocate( ie_Spole_t(2,np) )
-      allocate( ie_Npole_t(2,np) )
-      ie_Spole_t =  0
-      ie_Npole_t =  0
+      allocate( stbl%ie_Spole_t(2,np) )
+      allocate( stbl%ie_Npole_t(2,np) )
+      stbl%ie_Spole_t =  0
+      stbl%ie_Npole_t =  0
 !
       allocate( inod_sph_ct(0:num+1) )
       allocate( irev_sph_ct(0:num+1) )
@@ -264,7 +269,7 @@
       deallocate(iflag_Spole_t, iflag_Npole_t)
       deallocate(iflag_ele_center, iflag_ele_Spole, iflag_ele_Npole)
       deallocate(iflag_ele_r, iflag_ele_t)
-      deallocate(ie_center_t)
+      deallocate(stbl%ie_center_t)
 !
       end subroutine deallocate_nnod_nele_sph_mesh
 !
@@ -303,11 +308,11 @@
      &                    inod_sph_ct(k), irev_sph_ct(k)
       end do
       write(*,'(a)') 'connectivity for center element'
-      write(*,'(a,255i6)') 'S-pole: ', ie_center_Sp
+      write(*,'(a,255i6)') 'S-pole: ', stbl%ie_center_Sp
       do k = 1, nidx_global_fem(2)-1
-        write(*,'(255i6)') k, ie_center_t(k,1:2)
+        write(*,'(255i6)') k, stbl%ie_center_t(k,1:2)
       end do
-      write(*,'(a,255i6)') 'N-pole: ', ie_center_Np
+      write(*,'(a,255i6)') 'N-pole: ', stbl%ie_center_Np
 !
       write(*,'(a,255i6)') 'radial numbers: ',                          &
      &         nnod_sph_r(1:ndomain_fem(1))
@@ -324,7 +329,7 @@
 !
       do ip = 1, ndomain_fem(1)
         write(*,*) 'k, ie_sph_r(k,1:2,ip) for ', ip, nele_sph_r(ip)
-        i12(1:2) = ie_center_r(1:2,ip)
+        i12(1:2) = stbl%ie_center_r(1:2,ip)
         write(*,*) 'Center: ' , i12(1:2), inod_sph_r(i12(1:2),ip)
         do k = 1, nele_sph_r(ip)
           i12(1:2) = ie_sph_r(k,1:2,ip)
@@ -334,13 +339,13 @@
 !
       do ip = 1, ndomain_fem(2)
         write(*,*) 'k, ie_sph_t(k,1:2,ip) for ', ip
-        i12(1:2) = ie_Spole_t(1:2,ip)
+        i12(1:2) = stbl%ie_Spole_t(1:2,ip)
         write(*,*) 'S_pole: ', i12(1:2), inod_sph_t(i12(1:2),ip)
         do k = 1, nele_sph_t(ip)
           i12(1:2) = ie_sph_t(k,1:2,ip)
           write(*,*) k, i12(1:2), inod_sph_t(i12(1:2),ip)
         end do
-        i12(1:2) = ie_Npole_t(1:2,ip)
+        i12(1:2) = stbl%ie_Npole_t(1:2,ip)
         write(*,*) 'N_pole: ', i12(1:2), inod_sph_t(i12(1:2),ip)
       end do
 !
