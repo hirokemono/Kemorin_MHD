@@ -4,9 +4,10 @@
 !     Written by H. Matsui on March, 2012
 !
 !!      subroutine count_numnod_local_sph_mesh                          &
-!!     &          (iflag_shell_mode, ip_r, ip_t, node)
+!!     &          (iflag_shell_mode, ip_r, ip_t, stbl, node)
 !!      subroutine set_local_nodes_sph_mesh(iflag_shell_mode,           &
-!!     &          ip_r, ip_t, num_colat, r_global, colat_gl, node)
+!!     &          ip_r, ip_t, num_colat, r_global, colat_gl, stbl, node)
+!!        type(comm_table_make_sph), intent(in) :: stbl
 !!        type(node_data), intent(inout) :: node
 !
       module set_sph_local_node
@@ -14,6 +15,11 @@
       use m_precision
       use m_constants
       use m_machine_parameter
+      use m_spheric_constants
+!
+      use t_sph_mesh_1d_connect
+      use t_geometry_data
+!
       use cal_sph_node_addresses
 !
       implicit none
@@ -25,36 +31,33 @@
 ! -----------------------------------------------------------------------
 !
       subroutine count_numnod_local_sph_mesh                            &
-     &          (iflag_shell_mode, ip_r, ip_t, node)
-!
-      use t_geometry_data
-      use m_spheric_constants
-      use m_sph_mesh_1d_connect
+     &          (iflag_shell_mode, ip_r, ip_t, stbl, node)
 !
       integer(kind = kint), intent(in) :: iflag_shell_mode, ip_r, ip_t
+      type(comm_table_make_sph), intent(in) :: stbl
       type(node_data), intent(inout) :: node
 !
 !
       call reset_local_sph_node_constants
-      call set_intnod_shell
-      call set_nnod_lc_shell(ip_r, ip_t)
-      call set_nnod_gl_shell
+      call set_intnod_shell(stbl)
+      call set_nnod_lc_shell(ip_r, ip_t, stbl)
+      call set_nnod_gl_shell(stbl)
 !
 !  Count nodes for poles
 !
       if    (iflag_shell_mode .eq. iflag_MESH_w_pole                    &
      &  .or. iflag_shell_mode .eq. iflag_MESH_w_center) then
         if(stbl%iflag_Spole_t(ip_t) .gt. 0)  then
-          call set_intnod_Spole
+          call set_intnod_Spole(stbl)
           call set_nnod_lc_Spole(stbl%nnod_sph_r(ip_r))
         end if
-        call set_nnod_gl_Spole
+        call set_nnod_gl_Spole(stbl)
 !
         if(stbl%iflag_Npole_t(ip_t) .gt. 0)  then
-          call set_intnod_Npole
+          call set_intnod_Npole(stbl)
           call set_nnod_lc_Npole(stbl%nnod_sph_r(ip_r))
         end if
-        call set_nnod_gl_Npole
+        call set_nnod_gl_Npole(stbl)
       end if
 !
 !  Count nodes for center
@@ -66,7 +69,7 @@
           if(stbl%iflag_Spole_t(ip_t) .gt. 0)  then
             call set_intnod_center
             call set_nnod_lc_center(ione)
-            call set_nnod_lc_ctr_sph(stbl%nnod_sph_ct)
+            call set_nnod_lc_ctr_sph(stbl%nnod_sph_ct, stbl)
             if(stbl%iflag_Npole_t(ip_t) .eq. 0) then
               call set_nnod_lc_ctr_Np(ione)
             end if
@@ -84,12 +87,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_local_nodes_sph_mesh(iflag_shell_mode,             &
-     &          ip_r, ip_t, num_colat, r_global, colat_gl, node)
+     &          ip_r, ip_t, num_colat, r_global, colat_gl, stbl, node)
 !
-      use m_spheric_constants
-      use m_sph_mesh_1d_connect
-      use t_geometry_data
-!
+      type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint), intent(in) :: iflag_shell_mode, ip_r, ip_t
       integer(kind = kint), intent(in) :: num_colat
       real(kind= kreal), intent(in) :: r_global(stbl%nidx_global_fem(1))
@@ -110,9 +110,10 @@
           l = stbl%inod_sph_t(lnum,ip_t)
           do knum = 1, stbl%nnod_sph_r(ip_r)
             k = stbl%inod_sph_r(knum,ip_r)
-            inod = sph_shell_node_id(ip_r, ip_t, knum, lnum, mnum)
+            inod                                                        &
+     &         = sph_shell_node_id(ip_r, ip_t, knum, lnum, mnum, stbl)
             node%inod_global(inod)                                      &
-     &          = global_sph_shell_node_id(k, l, mnum)
+     &         = global_sph_shell_node_id(k, l, mnum, stbl)
             node%rr(inod) =     r_global(k)
             node%theta(inod) =  colat_gl(l)
             node%phi(inod) =  two*pi*dble(mnum-1)                       &
@@ -173,7 +174,7 @@
                 inod = sph_ctr_shell_node_id(stbl%nnod_sph_ct,          &
      &                                       lnum, mnum)
                 node%inod_global(inod)                                  &
-     &                = global_sph_shell_node_id(ione, l, mnum)
+     &                = global_sph_shell_node_id(ione, l, mnum, stbl)
 !
                 node%rr(inod) =    r_global(1)
                 node%theta(inod) = colat_gl(l)

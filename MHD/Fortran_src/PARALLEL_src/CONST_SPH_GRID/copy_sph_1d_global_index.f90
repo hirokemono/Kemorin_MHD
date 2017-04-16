@@ -8,13 +8,13 @@
 !!
 !!
 !!@verbatim
-!!      subroutine copy_sph_1d_gl_idx_rtp(sph_rtp)
+!!      subroutine copy_sph_1d_gl_idx_rtp(nri_gl, radius_1d_gl, sph_rtp)
 !!        type(sph_rtp_grid), intent(inout) :: sph_rtp
-!!      subroutine copy_sph_1d_gl_idx_rtm(sph_rtm)
+!!      subroutine copy_sph_1d_gl_idx_rtm(nri_gl, radius_1d_gl, sph_rtm)
 !!        type(sph_rtm_grid), intent(inout) :: sph_rtm
-!!      subroutine copy_sph_1d_gl_idx_rlm(sph_rlm)
+!!      subroutine copy_sph_1d_gl_idx_rlm(nri_gl, radius_1d_gl, sph_rlm)
 !!        type(sph_rlm_grid), intent(inout) :: sph_rlm
-!!      subroutine copy_sph_1d_gl_idx_rj(sph_rj)
+!!      subroutine copy_sph_1d_gl_idx_rj(nri_gl, radius_1d_gl, sph_rj)
 !!        type(sph_rj_grid), intent(inout) :: sph_rj
 !!
 !!      subroutine add_center_mode_rj(ip_rank, sph_rj)
@@ -41,10 +41,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine copy_sph_1d_gl_idx_rtp(sph_rtp)
+      subroutine copy_sph_1d_gl_idx_rtp(nri_gl, radius_1d_gl, sph_rtp)
 !
-      use m_sph_mesh_1d_connect
-!
+      integer(kind = kint), intent(in) :: nri_gl
+      real(kind = kreal), intent(in) :: radius_1d_gl(nri_gl)
       type(sph_rtp_grid), intent(inout) :: sph_rtp
 !
       integer(kind = kint) :: i, j
@@ -56,7 +56,7 @@
       end do
       do i = 1, sph_rtp%nidx_rtp(1)
         j = sph_rtp%idx_gl_1d_rtp_r(i)
-        sph_rtp%radius_1d_rtp_r(i) = stbl%radius_1d_gl(j)
+        sph_rtp%radius_1d_rtp_r(i) = radius_1d_gl(j)
       end do
 !
       do i = 1, sph_rtp%nidx_rtp(2)
@@ -74,10 +74,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine copy_sph_1d_gl_idx_rtm(sph_rtm)
+      subroutine copy_sph_1d_gl_idx_rtm(nri_gl, radius_1d_gl, sph_rtm)
 !
-      use m_sph_mesh_1d_connect
-!
+      integer(kind = kint), intent(in) :: nri_gl
+      real(kind = kreal), intent(in) :: radius_1d_gl(nri_gl)
       type(sph_rtm_grid), intent(inout) :: sph_rtm
 !
       integer(kind = kint) :: i, j
@@ -89,7 +89,7 @@
       end do
       do i = 1, sph_rtm%nidx_rtm(1)
         j = sph_rtm%idx_gl_1d_rtm_r(i)
-        sph_rtm%radius_1d_rtm_r(i) = stbl%radius_1d_gl(j)
+        sph_rtm%radius_1d_rtm_r(i) = radius_1d_gl(j)
       end do
 !
       do i = 1, sph_rtm%nidx_rtm(2)
@@ -107,10 +107,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine copy_sph_1d_gl_idx_rlm(sph_rlm)
+      subroutine copy_sph_1d_gl_idx_rlm(nri_gl, radius_1d_gl, sph_rlm)
 !
-      use m_sph_mesh_1d_connect
-!
+      integer(kind = kint), intent(in) :: nri_gl
+      real(kind = kreal), intent(in) :: radius_1d_gl(nri_gl)
       type(sph_rlm_grid), intent(inout) :: sph_rlm
 !
       integer(kind = kint) :: i, j
@@ -122,7 +122,7 @@
       end do
       do i = 1, sph_rlm%nidx_rlm(1)
         j = sph_rlm%idx_gl_1d_rlm_r(i)
-        sph_rlm%radius_1d_rlm_r(i) = stbl%radius_1d_gl(j)
+        sph_rlm%radius_1d_rlm_r(i) = radius_1d_gl(j)
       end do
 !
       do i = 1, sph_rlm%nidx_rlm(2)
@@ -136,10 +136,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine copy_sph_1d_gl_idx_rj(sph_rj)
+      subroutine copy_sph_1d_gl_idx_rj(nri_gl, radius_1d_gl, sph_rj)
 !
-      use m_sph_mesh_1d_connect
-!
+      integer(kind = kint), intent(in) :: nri_gl
+      real(kind = kreal), intent(in) :: radius_1d_gl(nri_gl)
       type(sph_rj_grid), intent(inout) :: sph_rj
 !
       integer(kind = kint) :: i, j
@@ -151,7 +151,7 @@
       end do
       do i = 1, sph_rj%nidx_rj(1)
         j = sph_rj%idx_gl_1d_rj_r(i)
-        sph_rj%radius_1d_rj_r(i) = stbl%radius_1d_gl(j)
+        sph_rj%radius_1d_rj_r(i) = radius_1d_gl(j)
       end do
 !
       do i = 1, sph_rj%nidx_rj(2)

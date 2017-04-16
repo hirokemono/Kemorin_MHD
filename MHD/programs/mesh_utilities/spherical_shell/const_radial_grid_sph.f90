@@ -8,6 +8,7 @@
       use m_precision
 !
       use m_constants
+      use m_sph_mesh_1d_connect
       use t_spheric_parameter
       use t_spheric_rtp_data
 !
@@ -50,7 +51,7 @@
       end if
 !
       call count_set_radial_grid                                        &
-     &   (nele, rmin, rmax, sph_params_rgrid, sph_rtp_rgrid)
+     &   (nele, rmin, rmax, sph_params_rgrid, sph_rtp_rgrid, stbl)
 !
       stop
       end program const_radial_grid_sph

@@ -1,11 +1,12 @@
 !set_sph_ele_group.f90
 !      module set_sph_ele_group
 !
-!      subroutine count_sph_local_ele_group(ele_grp, radial_rj_grp)
+!!      subroutine allocate_sph_ele_grp_flag(stbl)
+!!      subroutine count_sph_local_ele_group(ele_grp, radial_rj_grp)
 !!      subroutine count_sph_local_ele_grp_item                         &
-!!     &         (ip_r, ip_t, sph_params, radial_rj_grp, ele_grp)
+!!     &         (ip_r, ip_t, sph_params, stbl, radial_rj_grp, ele_grp)
 !!      subroutine set_sph_local_ele_grp_item                           &
-!!     &         (ip_r, ip_t, sph_params, radial_rj_grp, ele_grp)
+!!     &         (ip_r, ip_t, sph_params, stbl, radial_rj_grp, ele_grp)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(group_data), intent(in) :: radial_rj_grp
 !!        type(group_data), intent(inout) :: ele_grp
@@ -19,11 +20,12 @@
 !
       use t_spheric_parameter
       use t_group_data
+      use t_sph_mesh_1d_connect
 !
       implicit none
 !
       private :: count_ele_grp_item_on_sphere
-      private ::  set_ele_grp_item_on_sphere
+      private :: set_ele_grp_item_on_sphere
       private :: count_ele_grp_item_4_center, set_ele_grp_item_4_center
 !
       integer(kind = kint), allocatable :: iflag_r(:)
@@ -35,10 +37,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_sph_ele_grp_flag
+      subroutine allocate_sph_ele_grp_flag(stbl)
 !
-      use m_sph_mesh_1d_connect
-!
+      type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint) :: num
 !
 !
@@ -83,13 +84,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine count_sph_local_ele_grp_item                           &
-     &         (ip_r, ip_t, sph_params, radial_rj_grp, ele_grp)
+     &         (ip_r, ip_t, sph_params, stbl, radial_rj_grp, ele_grp)
 !
-      use m_sph_mesh_1d_connect
       use set_stack_4_sph_groups
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(group_data), intent(in) :: radial_rj_grp
+      type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint), intent(in) :: ip_r, ip_t
       type(group_data), intent(inout) :: ele_grp
 !
@@ -118,11 +119,11 @@
             kg1 = stbl%inod_sph_r(kl1,ip_r)
             kg2 = stbl%inod_sph_r(kl2,ip_r)
             if(iflag_r(kg1)*iflag_r(kg2) .gt. 0) then
-              call count_ele_grp_item_on_sphere(ip_t, sph_params,       &
+              call count_ele_grp_item_on_sphere(ip_t, sph_params, stbl, &
      &            ele_grp%nitem_grp(icou))
             else if(ele_grp%grp_name(icou) .eq. IC_ele_grp_name         &
      &           .and. iflag_r(kg1).gt.0) then
-              call count_ele_grp_item_on_sphere(ip_t, sph_params,       &
+              call count_ele_grp_item_on_sphere(ip_t, sph_params, stbl, &
      &            ele_grp%nitem_grp(icou))
             end if
           end do
@@ -130,7 +131,7 @@
 !
           if(iflag_r(ione).eq.ione                                      &
      &       .and. stbl%iflag_center_r(ip_r) .gt. 0)  then
-            call count_ele_grp_item_4_center(ip_t,                      &
+            call count_ele_grp_item_4_center(ip_t, stbl,                &
      &          ele_grp%nitem_grp(icou))
           end if
 !
@@ -143,14 +144,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_sph_local_ele_grp_item                             &
-     &         (ip_r, ip_t, sph_params, radial_rj_grp, ele_grp)
+     &         (ip_r, ip_t, sph_params, stbl, radial_rj_grp, ele_grp)
 !
-      use m_sph_mesh_1d_connect
       use set_stack_4_sph_groups
       use cal_sph_node_addresses
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(group_data), intent(in) :: radial_rj_grp
+      type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint), intent(in) :: ip_r, ip_t
       type(group_data), intent(inout) :: ele_grp
 !
@@ -180,17 +181,17 @@
             kg2 = stbl%inod_sph_r(kl2,ip_r)
             if(iflag_r(kg1)*iflag_r(kg2) .gt. 0) then
               call set_ele_grp_item_on_sphere(ip_r, ip_t, kele,         &
-     &            sph_params, inum, ele_grp)
+     &            sph_params, stbl, inum, ele_grp)
             else if(ele_grp%grp_name(icou) .eq. IC_ele_grp_name         &
      &           .and. iflag_r(kg1).gt.0) then
               call set_ele_grp_item_on_sphere(ip_r, ip_t, kele,         &
-     &            sph_params, inum, ele_grp)
+     &            sph_params, stbl, inum, ele_grp)
             end if
           end do
 !
           if(iflag_r(ione).eq.ione                                      &
      &         .and. stbl%iflag_center_r(ip_r) .gt. 0)  then
-            call set_ele_grp_item_4_center(ip_t, inum, ele_grp)
+            call set_ele_grp_item_4_center(ip_t, stbl, inum, ele_grp)
           end if
 !
         end if
@@ -202,11 +203,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine count_ele_grp_item_on_sphere                           &
-     &         (ip_t, sph_params, nitem_grp)
-!
-      use m_sph_mesh_1d_connect
+     &         (ip_t, sph_params, stbl, nitem_grp)
 !
       type(sph_shell_parameters), intent(in) :: sph_params
+      type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint), intent(in) :: ip_t
       integer(kind = kint), intent(inout) :: nitem_grp
 !
@@ -234,10 +234,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine count_ele_grp_item_4_center(ip_t, nitem_grp)
+      subroutine count_ele_grp_item_4_center(ip_t, stbl, nitem_grp)
 !
-      use m_sph_mesh_1d_connect
-!
+      type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint), intent(in) :: ip_t
       integer(kind = kint), intent(inout) :: nitem_grp
 !
@@ -263,13 +262,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_ele_grp_item_on_sphere(ip_r, ip_t, kr,             &
-     &          sph_params, inum, ele_grp)
+     &          sph_params, stbl, inum, ele_grp)
 !
-      use m_sph_mesh_1d_connect
       use cal_sph_ele_addresses
 !
       integer(kind = kint), intent(in) :: ip_r, ip_t, kr
       type(sph_shell_parameters), intent(in) :: sph_params
+      type(comm_table_make_sph), intent(in) :: stbl
 !
       type(group_data), intent(inout) :: ele_grp
       integer(kind = kint), intent(inout) :: inum
@@ -281,7 +280,7 @@
         do l = 1, stbl%nele_sph_t(ip_t)
           inum = inum + 1
           ele_grp%item_grp(inum)                                        &
-     &                     = sph_shell_ele_id(ip_r, ip_t, kr, l, m)
+     &         = sph_shell_ele_id(ip_r, ip_t, kr, l, m, stbl)
         end do
       end do
 !
@@ -293,7 +292,8 @@
         if(stbl%iflag_Spole_t(ip_t) .gt. 0)  then
           do m = 1, stbl%nele_around_pole
             inum = inum + 1
-            ele_grp%item_grp(inum) = sph_s_pole_ele_id(ip_r, kr, m)
+            ele_grp%item_grp(inum)                                      &
+     &           = sph_s_pole_ele_id(ip_r, kr, m, stbl)
           end do
         end if
 !
@@ -302,7 +302,8 @@
         if(stbl%iflag_Npole_t(ip_t) .gt. 0)  then
           do m = 1, stbl%nele_around_pole
             inum = inum + 1
-            ele_grp%item_grp(inum) = sph_n_pole_ele_id(ip_r, kr, m)
+            ele_grp%item_grp(inum)                                      &
+     &           = sph_n_pole_ele_id(ip_r, kr, m, stbl)
           end do
         end if
       end if
@@ -311,11 +312,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_ele_grp_item_4_center(ip_t, inum, ele_grp)
+      subroutine set_ele_grp_item_4_center(ip_t, stbl, inum, ele_grp)
 !
-      use m_sph_mesh_1d_connect
       use cal_sph_ele_addresses
 !
+      type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint), intent(in) :: ip_t
       integer(kind = kint), intent(inout) :: inum
       type(group_data), intent(inout) :: ele_grp
@@ -329,7 +330,8 @@
         do m = 1, stbl%nidx_global_fem(3)
           do l = 1, stbl%nidx_global_fem(2)-1
             inum = inum + 1
-            ele_grp%item_grp(inum) = sph_inter_ctr_shell_ele_id(l, m)
+            ele_grp%item_grp(inum)                                      &
+     &           = sph_inter_ctr_shell_ele_id(l, m, stbl)
           end do
         end do
 !
@@ -350,7 +352,7 @@
           do l = 1, stbl%nele_sph_t(ip_t)
             inum = inum + 1
             ele_grp%item_grp(inum)                                      &
-     &          = sph_exter_ctr_shell_ele_id(ip_t, l, m)
+     &          = sph_exter_ctr_shell_ele_id(ip_t, l, m, stbl)
           end do
         end do
 !

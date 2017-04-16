@@ -3,10 +3,12 @@
 !
 !!      subroutine count_sph_local_surf_group(radial_rj_grp, surf_grp)
 !!      subroutine count_sph_local_surf_grp_item                        &
-!!     &          (ip_r, ip_t, sph_params, radial_rj_grp, surf_grp)
+!!     &         (ip_r, ip_t, sph_params, radial_rj_grp, stbl, surf_grp)
 !!      subroutine set_sph_local_surf_grp_item                          &
-!!     &         (ip_r, ip_t, sph_params, radial_rj_grp, surf_grp)
+!!     &         (ip_r, ip_t, sph_params, radial_rj_grp, stbl, surf_grp)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
+!!        type(group_data), intent(in) :: radial_rj_grp
+!!        type(comm_table_make_sph), intent(in) :: stbl
 !!        type(surface_group_data), intent(inout) :: surf_grp
 !
 !     Written by H. Matsui on March, 2012
@@ -18,6 +20,7 @@
 !
       use t_spheric_parameter
       use t_group_data
+      use t_sph_mesh_1d_connect
 !
       implicit none
 !
@@ -52,14 +55,15 @@
 ! ----------------------------------------------------------------------
 !
       subroutine count_sph_local_surf_grp_item                          &
-     &          (ip_r, ip_t, sph_params, radial_rj_grp, surf_grp)
+     &         (ip_r, ip_t, sph_params, radial_rj_grp, stbl, surf_grp)
 !
-      use m_sph_mesh_1d_connect
       use set_stack_4_sph_groups
 !
       integer(kind = kint), intent(in) :: ip_r, ip_t
       type(sph_shell_parameters), intent(in) :: sph_params
       type(group_data), intent(in) :: radial_rj_grp
+      type(comm_table_make_sph), intent(in) :: stbl
+!
       type(surface_group_data), intent(inout) :: surf_grp
 !
       integer(kind = kint) :: igrp, icou, knum, kr, kele, kst
@@ -88,8 +92,8 @@
           do kele = 1, stbl%nele_sph_r(ip_r)
             if      (stbl%ie_sph_r(kele,1,ip_r) .eq. kl1                &
      &         .and. stbl%ie_sph_r(kele,2,ip_r) .eq. kl2) then
-              call count_surf_grp_item_on_sphere(ip_t, sph_params,      &
-     &            surf_grp%nitem_grp(icou))
+              call count_surf_grp_item_on_sphere                        &
+     &           (ip_t, sph_params, stbl, surf_grp%nitem_grp(icou))
             end if
           end do
 !
@@ -102,15 +106,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_sph_local_surf_grp_item                            &
-     &         (ip_r, ip_t, sph_params, radial_rj_grp, surf_grp)
+     &         (ip_r, ip_t, sph_params, radial_rj_grp, stbl, surf_grp)
 !
-      use m_sph_mesh_1d_connect
       use set_stack_4_sph_groups
       use cal_sph_node_addresses
 !
       integer(kind = kint), intent(in) :: ip_r, ip_t
       type(sph_shell_parameters), intent(in) :: sph_params
       type(group_data), intent(in) :: radial_rj_grp
+      type(comm_table_make_sph), intent(in) :: stbl
+!
       type(surface_group_data), intent(inout) :: surf_grp
 !
       integer(kind = kint) :: igrp, icou, inum, kst
@@ -142,7 +147,7 @@
             if      (stbl%ie_sph_r(kele,1,ip_r) .eq. kl1                &
      &         .and. stbl%ie_sph_r(kele,2,ip_r) .eq. kl2) then
               call set_surf_grp_item_on_sphere(ip_r, ip_t, kele,        &
-     &            inum, isf, sph_params, surf_grp)
+     &            sph_params, stbl, inum, isf, surf_grp)
               exit
             end if
           end do
@@ -155,11 +160,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine count_surf_grp_item_on_sphere                          &
-     &         (ip_t, sph_params, nitem_grp)
-!
-      use m_sph_mesh_1d_connect
+     &         (ip_t, sph_params, stbl, nitem_grp)
 !
       type(sph_shell_parameters), intent(in) :: sph_params
+      type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint), intent(in) :: ip_t
       integer(kind = kint), intent(inout) :: nitem_grp
 !
@@ -188,15 +192,15 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_surf_grp_item_on_sphere(ip_r, ip_t, kr,            &
-     &          inum, isf, sph_params, surf_grp)
+     &          sph_params, stbl, inum, isf, surf_grp)
 !
-      use m_sph_mesh_1d_connect
       use cal_sph_ele_addresses
 !
       integer(kind = kint), intent(in) :: ip_r, ip_t, kr
-      integer(kind = kint), intent(inout) :: inum, isf
       type(sph_shell_parameters), intent(in) :: sph_params
+      type(comm_table_make_sph), intent(in) :: stbl
 !
+      integer(kind = kint), intent(inout) :: inum, isf
       type(surface_group_data), intent(inout) :: surf_grp
 !
       integer(kind = kint) :: l, m
@@ -206,7 +210,7 @@
         do l = 1, stbl%nele_sph_t(ip_t)
           inum = inum + 1
           surf_grp%item_sf_grp(1,inum)                                  &
-     &                     = sph_shell_ele_id(ip_r, ip_t, kr, l, m)
+     &         = sph_shell_ele_id(ip_r, ip_t, kr, l, m, stbl)
           surf_grp%item_sf_grp(2,inum) = isf
         end do
       end do
@@ -219,7 +223,8 @@
         if(stbl%iflag_Spole_t(ip_t) .gt. 0)  then
           do m = 1, stbl%nele_around_pole
             inum = inum + 1
-            surf_grp%item_sf_grp(1,inum) = sph_s_pole_ele_id(ip_r, kr, m)
+            surf_grp%item_sf_grp(1,inum)                                &
+     &           = sph_s_pole_ele_id(ip_r, kr, m, stbl)
             surf_grp%item_sf_grp(2,inum) = isf
           end do
         end if
@@ -229,7 +234,8 @@
         if(stbl%iflag_Npole_t(ip_t) .gt. 0)  then
           do m = 1, stbl%nele_around_pole
             inum = inum + 1
-            surf_grp%item_sf_grp(1,inum) = sph_n_pole_ele_id(ip_r, kr, m)
+            surf_grp%item_sf_grp(1,inum)                                &
+     &           = sph_n_pole_ele_id(ip_r, kr, m, stbl)
             surf_grp%item_sf_grp(2,inum) = isf
           end do
         end if

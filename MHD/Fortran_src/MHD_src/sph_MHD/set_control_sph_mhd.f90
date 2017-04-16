@@ -141,6 +141,7 @@
       use m_spheric_global_ranks
       use m_ucd_data
       use m_flexible_time_step
+      use m_sph_mesh_1d_connect
       use sph_mhd_rms_IO
 !
       use t_SGS_control_parameter
@@ -206,7 +207,8 @@
       if(iflag_make_SPH .gt. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_control_4_shell_grids'
         call set_control_4_shell_grids                                  &
-     &     (nprocs, psph_ctl%spctl, psph_ctl%sdctl, sph_gen, ierr)
+     &     (nprocs, psph_ctl%spctl, psph_ctl%sdctl,                     &
+     &      sph_gen, stbl, ierr)
       end if
 !
 !   set forces

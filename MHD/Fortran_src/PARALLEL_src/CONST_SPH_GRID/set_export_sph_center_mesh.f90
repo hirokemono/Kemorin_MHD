@@ -3,23 +3,30 @@
 !
 !     Written by H. Matsui on March, 2013
 !
-!      subroutine count_export_4_center_mesh(ip_r, ip_t, jp_r, jp_t,    &
-!     &          num_export)
-!      subroutine count_export_4_ctr_shell_mesh(ip_r, ip_t, jp_r, jp_t, &
-!     &          num_export)
-!      subroutine count_export_4_ctr_Npole_mesh(ip_r, ip_t, jp_r, jp_t, &
-!     &          num_export)
-!      subroutine set_export_rtp_center_mesh(ip_r, ip_t, jp_r, jp_t,    &
-!     &          icou, nod_comm)
-!      subroutine set_export_rtp_ctr_shell_mesh(ip_r, ip_t, jp_r, jp_t, &
-!     &          icou, nod_comm)
-!      subroutine set_export_rtp_ctr_Npole_mesh(ip_r, ip_t, jp_r, jp_t, &
-!     &          icou, nod_comm)
+!!      subroutine count_export_4_center_mesh(ip_r, ip_t, jp_r, jp_t,   &
+!!     &          stbl, num_export)
+!!      subroutine count_export_4_ctr_shell_mesh(ip_r, ip_t, jp_r, jp_t,&
+!!     &          stbl, num_export)
+!!      subroutine count_export_4_ctr_Npole_mesh(ip_r, ip_t, jp_r, jp_t,&
+!!     &          stbl, num_export)
+!!        type(comm_table_make_sph), intent(in) :: stbl
+!!
+!!      subroutine set_export_rtp_center_mesh(ip_r, ip_t, jp_r, jp_t,   &
+!!     &          icou, stbl, nod_comm)
+!!      subroutine set_export_rtp_ctr_shell_mesh(ip_r, ip_t, jp_r, jp_t,&
+!!     &          icou, stbl, nod_comm)
+!!      subroutine set_export_rtp_ctr_Npole_mesh(ip_r, ip_t, jp_r, jp_t,&
+!!     &          icou, stbl, nod_comm)
+!!        type(comm_table_make_sph), intent(inout) :: stbl
+!!        type(communication_table), intent(inout) :: nod_comm
 !
       module set_export_sph_center_mesh
 !
       use m_precision
       use m_constants
+!
+      use t_comm_table
+      use t_sph_mesh_1d_connect
 !
       implicit none
 !
@@ -30,10 +37,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine count_export_4_center_mesh(ip_r, ip_t, jp_r, jp_t,     &
-     &          num_export)
+     &          stbl, num_export)
 !
-      use m_sph_mesh_1d_connect
-!
+      type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint), intent(in) :: ip_r, ip_t, jp_r, jp_t
       integer(kind = kint), intent(inout) :: num_export
 !
@@ -50,11 +56,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine count_export_4_ctr_shell_mesh(ip_r, ip_t, jp_r, jp_t,  &
-     &          num_export)
+     &          stbl, num_export)
 !
-      use m_sph_mesh_1d_connect
       use cal_sph_node_addresses
 !
+      type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint), intent(in) :: ip_r, ip_t, jp_r, jp_t
       integer(kind = kint), intent(inout) :: num_export
 !
@@ -77,11 +83,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine count_export_4_ctr_Npole_mesh(ip_r, ip_t, jp_r, jp_t,  &
-     &          num_export)
+     &          stbl, num_export)
 !
-      use m_sph_mesh_1d_connect
       use cal_sph_node_addresses
 !
+      type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint), intent(in) :: ip_r, ip_t, jp_r, jp_t
       integer(kind = kint), intent(inout) :: num_export
 !
@@ -99,15 +105,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_export_rtp_center_mesh(ip_r, ip_t, jp_r, jp_t,     &
-     &          icou, nod_comm)
+     &          icou, stbl, nod_comm)
 !
-      use t_comm_table
-      use m_sph_mesh_1d_connect
       use cal_sph_node_addresses
 !
       integer(kind = kint), intent(in) :: ip_r, ip_t, jp_r, jp_t
-      integer(kind = kint), intent(inout) :: icou
 !
+      integer(kind = kint), intent(inout) :: icou
+      type(comm_table_make_sph), intent(inout) :: stbl
       type(communication_table), intent(inout) :: nod_comm
 !
 !
@@ -128,15 +133,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_export_rtp_ctr_shell_mesh(ip_r, ip_t, jp_r, jp_t,  &
-     &          icou, nod_comm)
+     &          icou, stbl, nod_comm)
 !
-      use t_comm_table
-      use m_sph_mesh_1d_connect
       use cal_sph_node_addresses
 !
       integer(kind = kint), intent(in) :: ip_r, ip_t, jp_r, jp_t
-      integer(kind = kint), intent(inout) :: icou
 !
+      integer(kind = kint), intent(inout) :: icou
+      type(comm_table_make_sph), intent(inout) :: stbl
       type(communication_table), intent(inout) :: nod_comm
 !
       integer(kind = kint) :: l, m, lnum
@@ -162,7 +166,8 @@
      &         = sph_shell_node_id(ip_r, ip_t,                          &
      &                             stbl%item_export_1d_rtp(1,icou),     &
      &                             stbl%item_export_1d_rtp(2,icou),     &
-     &                             stbl%item_export_1d_rtp(3,icou))
+     &                             stbl%item_export_1d_rtp(3,icou),     &
+     &                             stbl)
           end if
         end do
         num_rl = icou - ist
@@ -176,11 +181,12 @@
      &                            = stbl%item_export_1d_rtp(2,l+ist)
             stbl%item_export_1d_rtp(3,icou) = m
 !
-          nod_comm%item_export(icou)                                    &
+            nod_comm%item_export(icou)                                  &
      &         = sph_shell_node_id(ip_r, ip_t,                          &
      &                             stbl%item_export_1d_rtp(1,icou),     &
      &                             stbl%item_export_1d_rtp(2,icou),     &
-     &                             stbl%item_export_1d_rtp(3,icou))
+     &                             stbl%item_export_1d_rtp(3,icou),     &
+     &                             stbl)
           end do
         end do
       end if
@@ -190,15 +196,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_export_rtp_ctr_Npole_mesh(ip_r, ip_t, jp_r, jp_t,  &
-     &          icou, nod_comm)
+     &          icou, stbl, nod_comm)
 !
-      use t_comm_table
-      use m_sph_mesh_1d_connect
       use cal_sph_node_addresses
 !
       integer(kind = kint), intent(in) :: ip_r, ip_t, jp_r, jp_t
-      integer(kind = kint), intent(inout) :: icou
 !
+      integer(kind = kint), intent(inout) :: icou
+      type(comm_table_make_sph), intent(inout) :: stbl
       type(communication_table), intent(inout) :: nod_comm
 !
 !

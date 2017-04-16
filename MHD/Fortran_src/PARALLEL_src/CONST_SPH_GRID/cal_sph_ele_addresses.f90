@@ -9,35 +9,42 @@
 !!@verbatim
 !!      subroutine reset_local_sph_ele_constants
 !!
-!!      subroutine set_nele_lc_shell(ip_r, ip_t)
-!!      subroutine set_nele_lc_Spole(ip_r)
-!!      subroutine set_nele_lc_Npole(ip_r)
-!!      subroutine set_nele_lc_ctr_sph
-!!      subroutine set_nele_ext_ctr_sph(ip_t)
-!!      subroutine set_nele_center_Spole
-!!      subroutine set_nele_center_Npole
-!!      subroutine set_nele_gl_shell
-!!      subroutine set_nele_gl_Spole
-!!      subroutine set_nele_gl_Npole
-!!      subroutine set_nele_gl_ctr_sph
+!!      subroutine set_nele_lc_shell(ip_r, ip_t, stbl)
+!!      subroutine set_nele_lc_Spole(ip_r, stbl)
+!!      subroutine set_nele_lc_Npole(ip_r, stbl)
+!!      subroutine set_nele_lc_ctr_sph(stbl)
+!!      subroutine set_nele_ext_ctr_sph(ip_t, stbl)
+!!      subroutine set_nele_center_Spole(stbl)
+!!      subroutine set_nele_center_Npole(stbl)
+!!      subroutine set_nele_gl_shell(stbl)
+!!      subroutine set_nele_gl_Spole(stbl)
+!!      subroutine set_nele_gl_Npole(stbl)
+!!      subroutine set_nele_gl_ctr_sph(stbl)
 !!
 !!      subroutine cal_sph_local_numele(numele)
 !!
-!!      integer(kind= kint) function sph_shell_ele_id                   &
-!!     &                  (ip_r, ip_t, kr, lt, mp)
-!!      integer(kind= kint) function sph_n_pole_ele_id(ip_r, kr, mp)
-!!      integer(kind= kint) function sph_inter_ctr_shell_ele_id(lt, mp)
-!!      integer(kind= kint) function sph_exter_ctr_shell_ele_id         &
-!!     &                  (ip_t, lt, mp)
+!!      integer(kind = kint) function sph_shell_ele_id                  &
+!!     &                            (ip_r, ip_t, kr, lt, mp, stbl)
+!!      integer(kind = kint) function sph_s_pole_ele_id                 &
+!!     &                            (ip_r, kr, mp, stbl)
+!!      integer(kind = kint) function sph_n_pole_ele_id                 &
+!!     &                            (ip_r, kr, mp, stbl)
+!!      integer(kind = kint) function sph_inter_ctr_shell_ele_id        &
+!!     &                            (lt, mp, stbl)
+!!      integer(kind = kint) function sph_exter_ctr_shell_ele_id        &
+!!     &                            (ip_t, lt, mp, stbl)
 !!      integer(kind= kint) function sph_inter_ctr_spole_ele_id(mp)
 !!      integer(kind= kint) function sph_inter_ctr_npole_ele_id(mp)
 !!      integer(kind= kint) function sph_exter_ctr_npole_ele_id(mp)
 !!
-!!      integer(kind= kint_gl) function global_sph_shell_ele_id         &
-!!                           (kr, lt, mp)
-!!      integer(kind= kint_gl) function global_sph_s_pole_ele_id(kr, mp)
-!!      integer(kind= kint_gl) function global_sph_n_pole_ele_id(kr, mp)
-!!      integer(kind= kint_gl) function global_ctr_shell_ele_id(lt, mp)
+!!      integer(kind = kint_gl) function global_sph_shell_ele_id        &
+!!                                     (kr, lt, mp, stbl)
+!!      integer(kind = kint_gl) function global_sph_s_pole_ele_id       &
+!!     &                               (kr, mp, stbl)
+!!      integer(kind = kint_gl) function global_sph_n_pole_ele_id       &
+!!     &                               (kr, mp, stbl)
+!!      integer(kind = kint_gl) function global_ctr_shell_ele_id        &
+!!     &                               (lt, mp, stbl)
 !!      integer(kind= kint_gl) function global_ctr_spole_ele_id(mp)
 !!      integer(kind= kint_gl) function global_ctr_npole_ele_id(mp)
 !!@endverbatim
@@ -48,7 +55,7 @@
       use m_precision
       use m_constants
 !
-      use m_sph_mesh_1d_connect
+      use t_sph_mesh_1d_connect
 !
       implicit none
 !
@@ -101,8 +108,9 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_nele_lc_shell(ip_r, ip_t)
+      subroutine set_nele_lc_shell(ip_r, ip_t, stbl)
 !
+      type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint), intent(in) :: ip_r, ip_t
 !
       nele_lc_shell =  stbl%nele_sph_r(ip_r) * stbl%nele_sph_t(ip_t)    &
@@ -112,8 +120,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_nele_lc_Spole(ip_r)
+      subroutine set_nele_lc_Spole(ip_r, stbl)
 !
+      type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint), intent(in) :: ip_r
 !
 !
@@ -123,8 +132,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_nele_lc_Npole(ip_r)
+      subroutine set_nele_lc_Npole(ip_r, stbl)
 !
+      type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint), intent(in) :: ip_r
 !
       nele_lc_Npole = stbl%nele_sph_r(ip_r) * stbl%nele_around_pole
@@ -133,7 +143,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_nele_lc_ctr_sph
+      subroutine set_nele_lc_ctr_sph(stbl)
+!
+      type(comm_table_make_sph), intent(in) :: stbl
 !
 !
       nele_lc_ctr_sph = (stbl%nidx_global_fem(2)-1)                     &
@@ -143,8 +155,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_nele_ext_ctr_sph(ip_t)
+      subroutine set_nele_ext_ctr_sph(ip_t, stbl)
 !
+      type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint), intent(in) :: ip_t
 !
       nele_ext_ctr_sph =  stbl%nele_sph_t(ip_t)                         &
@@ -154,7 +167,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_nele_center_Spole
+      subroutine set_nele_center_Spole(stbl)
+!
+      type(comm_table_make_sph), intent(in) :: stbl
 !
       nele_ctr_Spole = stbl%nele_around_pole
 !
@@ -162,7 +177,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_nele_center_Npole
+      subroutine set_nele_center_Npole(stbl)
+!
+      type(comm_table_make_sph), intent(in) :: stbl
 !
       nele_ctr_Npole = stbl%nele_around_pole
 !
@@ -171,8 +188,9 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_nele_gl_shell
+      subroutine set_nele_gl_shell(stbl)
 !
+      type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint_gl) :: nr8, nt8, np8
 !
       nr8 = stbl%nidx_global_fem(1)-1
@@ -184,8 +202,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_nele_gl_Spole
+      subroutine set_nele_gl_Spole(stbl)
 !
+      type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint_gl) :: nr8
 !
 !
@@ -196,8 +215,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_nele_gl_Npole
+      subroutine set_nele_gl_Npole(stbl)
 !
+      type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint_gl) :: nr8
 !
       nr8 = stbl%nidx_global_fem(1) - 1
@@ -207,8 +227,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_nele_gl_ctr_sph
+      subroutine set_nele_gl_ctr_sph(stbl)
 !
+      type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint_gl) :: nt8, np8
 !
       nt8 = stbl%nidx_global_fem(2) - 1
@@ -236,9 +257,10 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      integer(kind= kint) function sph_shell_ele_id                     &
-     &                  (ip_r, ip_t, kr, lt, mp)
+      integer(kind = kint) function sph_shell_ele_id                    &
+     &                            (ip_r, ip_t, kr, lt, mp, stbl)
 !
+      type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint), intent(in) :: ip_r, ip_t
       integer(kind = kint), intent(in) :: kr, lt, mp
 !
@@ -250,8 +272,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      integer(kind= kint) function sph_s_pole_ele_id(ip_r, kr, mp)
+      integer(kind = kint) function sph_s_pole_ele_id                   &
+     &                            (ip_r, kr, mp, stbl)
 !
+      type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint), intent(in) :: ip_r
       integer(kind = kint), intent(in) :: kr, mp
 !
@@ -263,8 +287,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      integer(kind= kint) function sph_n_pole_ele_id(ip_r, kr, mp)
+      integer(kind = kint) function sph_n_pole_ele_id                   &
+     &                            (ip_r, kr, mp, stbl)
 !
+      type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint), intent(in) :: ip_r
       integer(kind = kint), intent(in) :: kr, mp
 !
@@ -276,8 +302,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      integer(kind= kint) function sph_inter_ctr_shell_ele_id(lt, mp)
+      integer(kind = kint) function sph_inter_ctr_shell_ele_id          &
+     &                            (lt, mp, stbl)
 !
+      type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint), intent(in) :: lt, mp
 !
 !
@@ -289,9 +317,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      integer(kind= kint) function sph_exter_ctr_shell_ele_id           &
-     &                  (ip_t, lt, mp)
+      integer(kind = kint) function sph_exter_ctr_shell_ele_id          &
+     &                           (ip_t, lt, mp, stbl)
 !
+      type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint), intent(in) :: ip_t, lt, mp
 !
 !
@@ -342,9 +371,10 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      integer(kind= kint_gl) function global_sph_shell_ele_id           &
-     &                              (kr, lt, mp)
+      integer(kind = kint_gl) function global_sph_shell_ele_id          &
+     &                               (kr, lt, mp, stbl)
 !
+      type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint), intent(in) :: kr, lt, mp
       integer(kind = kint_gl) :: nr8, nt8
 !
@@ -357,8 +387,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      integer(kind= kint_gl) function global_sph_s_pole_ele_id(kr, mp)
+      integer(kind = kint_gl) function global_sph_s_pole_ele_id         &
+     &                               (kr, mp, stbl)
 !
+      type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint), intent(in) :: kr, mp
       integer(kind = kint_gl) :: nr8
 !
@@ -371,8 +403,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      integer(kind= kint_gl) function global_sph_n_pole_ele_id(kr, mp)
+      integer(kind = kint_gl) function global_sph_n_pole_ele_id         &
+     &                               (kr, mp, stbl)
 !
+      type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint), intent(in) :: kr, mp
       integer(kind = kint_gl) :: nr8
 !
@@ -385,8 +419,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      integer(kind= kint_gl) function global_ctr_shell_ele_id(lt, mp)
+      integer(kind = kint_gl) function global_ctr_shell_ele_id          &
+     &                              (lt, mp, stbl)
 !
+      type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint), intent(in) :: lt, mp
       integer(kind = kint_gl) :: nt8
 !

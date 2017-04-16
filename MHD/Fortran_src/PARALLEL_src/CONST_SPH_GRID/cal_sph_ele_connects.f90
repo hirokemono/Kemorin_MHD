@@ -3,14 +3,16 @@
 !
 !     Written by H. Matsui on March, 2012
 !
-!!      subroutine set_spherical_shell_element(ip_r, ip_t, ele)
-!!      subroutine set_south_pole_element(ip_r, ip_t, ele)
-!!      subroutine set_north_pole_element(ip_r, ip_t, ele)
-!!      subroutine set_inter_center_shell_ele(ip_r, ip_t, ele)
-!!      subroutine set_exter_center_shell_ele(ip_r, ip_t, ele)
-!!      subroutine set_inter_center_s_pole_ele(ip_r, ip_t, ele)
-!!      subroutine set_inter_center_n_pole_ele(ip_r, ip_t, ele)
-!!      subroutine set_exter_center_n_pole_ele(ip_r, ip_t, ele)
+!!      subroutine set_spherical_shell_element(ip_r, ip_t, stbl, ele)
+!!      subroutine set_south_pole_element(ip_r, ip_t, stbl, ele)
+!!      subroutine set_north_pole_element(ip_r, ip_t, stbl, ele)
+!!      subroutine set_inter_center_shell_ele(ip_r, ip_t, stbl, ele)
+!!      subroutine set_exter_center_shell_ele(ip_r, ip_t, stbl, ele)
+!!      subroutine set_inter_center_s_pole_ele(ip_r, ip_t, stbl, ele)
+!!      subroutine set_inter_center_n_pole_ele(ip_r, ip_t, stbl, ele)
+!!      subroutine set_exter_center_n_pole_ele(ip_r, ip_t, stbl, ele)
+!!        type(comm_table_make_sph), intent(in) :: stbl
+!!        type(element_data), intent(inout) :: ele
 !
       module cal_sph_ele_connects
 !
@@ -18,8 +20,8 @@
       use m_constants
 !
       use t_geometry_data
+      use t_sph_mesh_1d_connect
 !
-      use m_sph_mesh_1d_connect
       use cal_sph_node_addresses
       use cal_sph_ele_addresses
 !
@@ -31,9 +33,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_spherical_shell_element(ip_r, ip_t, ele)
+      subroutine set_spherical_shell_element(ip_r, ip_t, stbl, ele)
 !
       integer(kind = kint), intent(in) :: ip_r, ip_t
+      type(comm_table_make_sph), intent(in) :: stbl
       type(element_data), intent(inout) :: ele
 !
       integer(kind = kint) :: k, k1, k2, k_gl
@@ -54,18 +57,26 @@
             k2 = stbl%ie_sph_r(k,2,ip_r)
             k_gl = stbl%inod_sph_r(k1,ip_r)
 !
-            iele = sph_shell_ele_id(ip_r, ip_t, k, l, m)
+            iele = sph_shell_ele_id(ip_r, ip_t, k, l, m, stbl)
             ele%iele_global(iele)                                       &
-     &           = global_sph_shell_ele_id(k_gl, l_gl, m)
+     &            = global_sph_shell_ele_id(k_gl, l_gl, m, stbl)
 !
-            ele%ie(iele,1) = sph_shell_node_id(ip_r, ip_t, k1, l1, m1)
-            ele%ie(iele,2) = sph_shell_node_id(ip_r, ip_t, k1, l1, m2)
-            ele%ie(iele,3) = sph_shell_node_id(ip_r, ip_t, k1, l2, m2)
-            ele%ie(iele,4) = sph_shell_node_id(ip_r, ip_t, k1, l2, m1)
-            ele%ie(iele,5) = sph_shell_node_id(ip_r, ip_t, k2, l1, m1)
-            ele%ie(iele,6) = sph_shell_node_id(ip_r, ip_t, k2, l1, m2)
-            ele%ie(iele,7) = sph_shell_node_id(ip_r, ip_t, k2, l2, m2)
-            ele%ie(iele,8) = sph_shell_node_id(ip_r, ip_t, k2, l2, m1)
+            ele%ie(iele,1)                                              &
+     &            = sph_shell_node_id(ip_r, ip_t, k1, l1, m1, stbl)
+            ele%ie(iele,2)                                              &
+     &            = sph_shell_node_id(ip_r, ip_t, k1, l1, m2, stbl)
+            ele%ie(iele,3)                                              &
+     &            = sph_shell_node_id(ip_r, ip_t, k1, l2, m2, stbl)
+            ele%ie(iele,4)                                              &
+     &            = sph_shell_node_id(ip_r, ip_t, k1, l2, m1, stbl)
+            ele%ie(iele,5)                                              &
+     &            = sph_shell_node_id(ip_r, ip_t, k2, l1, m1, stbl)
+            ele%ie(iele,6)                                              &
+     &            = sph_shell_node_id(ip_r, ip_t, k2, l1, m2, stbl)
+            ele%ie(iele,7)                                              &
+     &            = sph_shell_node_id(ip_r, ip_t, k2, l2, m2, stbl)
+            ele%ie(iele,8)                                              &
+     &            = sph_shell_node_id(ip_r, ip_t, k2, l2, m1, stbl)
           end do
         end do
       end do
@@ -75,9 +86,10 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_south_pole_element(ip_r, ip_t, ele)
+      subroutine set_south_pole_element(ip_r, ip_t, stbl, ele)
 !
       integer(kind = kint), intent(in) :: ip_r, ip_t
+      type(comm_table_make_sph), intent(in) :: stbl
       type(element_data), intent(inout) :: ele
 !
       integer(kind = kint) :: k, k1, k2, k_gl
@@ -95,17 +107,24 @@
           k2 = stbl%ie_sph_r(k,2,ip_r)
           k_gl = stbl%inod_sph_r(k1,ip_r)
 !
-          iele = sph_s_pole_ele_id(ip_r, k, m)
-          ele%iele_global(iele) = global_sph_s_pole_ele_id(k_gl, m)
+          iele = sph_s_pole_ele_id(ip_r, k, m, stbl)
+          ele%iele_global(iele)                                         &
+     &            = global_sph_s_pole_ele_id(k_gl, m, stbl)
 !
           ele%ie(iele,1) = sph_s_pole_node_id(k1)
-          ele%ie(iele,2) = sph_shell_node_id(ip_r, ip_t, k1, l2, m3)
-          ele%ie(iele,3) = sph_shell_node_id(ip_r, ip_t, k1, l2, m2)
-          ele%ie(iele,4) = sph_shell_node_id(ip_r, ip_t, k1, l2, m1)
+          ele%ie(iele,2)                                                &
+     &            = sph_shell_node_id(ip_r, ip_t, k1, l2, m3, stbl)
+          ele%ie(iele,3)                                                &
+     &            = sph_shell_node_id(ip_r, ip_t, k1, l2, m2, stbl)
+          ele%ie(iele,4)                                                &
+     &            = sph_shell_node_id(ip_r, ip_t, k1, l2, m1, stbl)
           ele%ie(iele,5) = sph_s_pole_node_id(k2)
-          ele%ie(iele,6) = sph_shell_node_id(ip_r, ip_t, k2, l2, m3)
-          ele%ie(iele,7) = sph_shell_node_id(ip_r, ip_t, k2, l2, m2)
-          ele%ie(iele,8) = sph_shell_node_id(ip_r, ip_t, k2, l2, m1)
+          ele%ie(iele,6)                                                &
+     &            = sph_shell_node_id(ip_r, ip_t, k2, l2, m3, stbl)
+          ele%ie(iele,7)                                                &
+     &            = sph_shell_node_id(ip_r, ip_t, k2, l2, m2, stbl)
+          ele%ie(iele,8)                                                &
+     &            = sph_shell_node_id(ip_r, ip_t, k2, l2, m1, stbl)
         end do
       end do
 !
@@ -113,9 +132,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_north_pole_element(ip_r, ip_t, ele)
+      subroutine set_north_pole_element(ip_r, ip_t, stbl, ele)
 !
       integer(kind = kint), intent(in) :: ip_r, ip_t
+      type(comm_table_make_sph), intent(in) :: stbl
       type(element_data), intent(inout) :: ele
 !
       integer(kind = kint) :: k, k1, k2, k_gl
@@ -133,16 +153,23 @@
           k2 = stbl%ie_sph_r(k,2,ip_r)
           k_gl = stbl%inod_sph_r(k1,ip_r)
 !
-          iele = sph_n_pole_ele_id(ip_r, k, m)
-          ele%iele_global(iele) = global_sph_n_pole_ele_id(k_gl, m)
+          iele = sph_n_pole_ele_id(ip_r, k, m, stbl)
+          ele%iele_global(iele)                                         &
+     &            = global_sph_n_pole_ele_id(k_gl, m, stbl)
 !
-          ele%ie(iele,1) = sph_shell_node_id(ip_r, ip_t, k1, l1, m1)
-          ele%ie(iele,2) = sph_shell_node_id(ip_r, ip_t, k1, l1, m2)
-          ele%ie(iele,3) = sph_shell_node_id(ip_r, ip_t, k1, l1, m3)
+          ele%ie(iele,1)                                                &
+     &            = sph_shell_node_id(ip_r, ip_t, k1, l1, m1, stbl)
+          ele%ie(iele,2)                                                &
+     &            = sph_shell_node_id(ip_r, ip_t, k1, l1, m2, stbl)
+          ele%ie(iele,3)                                                &
+     &            = sph_shell_node_id(ip_r, ip_t, k1, l1, m3, stbl)
           ele%ie(iele,4) = sph_n_pole_node_id(k1)
-          ele%ie(iele,5) = sph_shell_node_id(ip_r, ip_t, k2, l1, m1)
-          ele%ie(iele,6) = sph_shell_node_id(ip_r, ip_t, k2, l1, m2)
-          ele%ie(iele,7) = sph_shell_node_id(ip_r, ip_t, k2, l1, m3)
+          ele%ie(iele,5)                                                &
+     &            = sph_shell_node_id(ip_r, ip_t, k2, l1, m1, stbl)
+          ele%ie(iele,6)                                                &
+     &            = sph_shell_node_id(ip_r, ip_t, k2, l1, m2, stbl)
+          ele%ie(iele,7)                                                &
+     &            = sph_shell_node_id(ip_r, ip_t, k2, l1, m3, stbl)
           ele%ie(iele,8) = sph_n_pole_node_id(k2)
         end do
       end do
@@ -152,9 +179,10 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_inter_center_shell_ele(ip_r, ip_t, ele)
+      subroutine set_inter_center_shell_ele(ip_r, ip_t, stbl, ele)
 !
       integer(kind = kint), intent(in) :: ip_r, ip_t
+      type(comm_table_make_sph), intent(in) :: stbl
       type(element_data), intent(inout) :: ele
 !
       integer(kind = kint) :: k2, m, m1, m2
@@ -170,16 +198,18 @@
           l1 = stbl%ie_center_t(l,1)
           l2 = stbl%ie_center_t(l,2)
 !
-          iele = sph_inter_ctr_shell_ele_id(l, m)
-          ele%iele_global(iele) = global_ctr_shell_ele_id(l, m)
+          iele = sph_inter_ctr_shell_ele_id(l, m, stbl)
+          ele%iele_global(iele) = global_ctr_shell_ele_id(l, m, stbl)
 !
           ele%ie(iele,1) = sph_center_node_id()
           ele%ie(iele,2) = sph_center_node_id()
           ele%ie(iele,3) = sph_center_node_id()
           ele%ie(iele,4) = sph_center_node_id()
           if(l1 .gt. 0) then
-            ele%ie(iele,5) = sph_shell_node_id(ip_r, ip_t, k2, l1, m1)
-            ele%ie(iele,6) = sph_shell_node_id(ip_r, ip_t, k2, l1, m2)
+            ele%ie(iele,5)                                              &
+     &            = sph_shell_node_id(ip_r, ip_t, k2, l1, m1, stbl)
+            ele%ie(iele,6)                                              &
+     &            = sph_shell_node_id(ip_r, ip_t, k2, l1, m2, stbl)
           else
             ele%ie(iele,5) = sph_ctr_shell_node_id(stbl%nnod_sph_ct,    &
      &                      (-l1), m1)
@@ -187,8 +217,10 @@
      &                      (-l1), m2)
           end if
           if(l2 .gt. 0) then
-            ele%ie(iele,7) = sph_shell_node_id(ip_r, ip_t, k2, l2, m2)
-            ele%ie(iele,8) = sph_shell_node_id(ip_r, ip_t, k2, l2, m1)
+            ele%ie(iele,7)                                              &
+     &            = sph_shell_node_id(ip_r, ip_t, k2, l2, m2, stbl)
+            ele%ie(iele,8)                                              &
+     &            = sph_shell_node_id(ip_r, ip_t, k2, l2, m1, stbl)
           else
             ele%ie(iele,7) = sph_ctr_shell_node_id(stbl%nnod_sph_ct,    &
      &                      (-l2), m2)
@@ -202,9 +234,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_exter_center_shell_ele(ip_r, ip_t, ele)
+      subroutine set_exter_center_shell_ele(ip_r, ip_t, stbl, ele)
 !
       integer(kind = kint), intent(in) :: ip_r, ip_t
+      type(comm_table_make_sph), intent(in) :: stbl
       type(element_data), intent(inout) :: ele
 !
       integer(kind = kint) :: k2, m, m1, m2
@@ -221,17 +254,22 @@
           l2 = stbl%ie_sph_t(l,2,ip_t)
           l_gl = stbl%inod_sph_t(l1,ip_t)
 !
-          iele = sph_exter_ctr_shell_ele_id(ip_t, l, m)
-          ele%iele_global(iele) = global_ctr_shell_ele_id(l_gl, m)
+          iele = sph_exter_ctr_shell_ele_id(ip_t, l, m, stbl)
+          ele%iele_global(iele)                                         &
+     &            = global_ctr_shell_ele_id(l_gl, m, stbl)
 !
           ele%ie(iele,1) = sph_center_node_id()
           ele%ie(iele,2) = sph_center_node_id()
           ele%ie(iele,3) = sph_center_node_id()
           ele%ie(iele,4) = sph_center_node_id()
-          ele%ie(iele,5) = sph_shell_node_id(ip_r, ip_t, k2, l1, m1)
-          ele%ie(iele,6) = sph_shell_node_id(ip_r, ip_t, k2, l1, m2)
-          ele%ie(iele,7) = sph_shell_node_id(ip_r, ip_t, k2, l2, m2)
-          ele%ie(iele,8) = sph_shell_node_id(ip_r, ip_t, k2, l2, m1)
+          ele%ie(iele,5)                                                &
+     &            = sph_shell_node_id(ip_r, ip_t, k2, l1, m1, stbl)
+          ele%ie(iele,6)                                                &
+     &            = sph_shell_node_id(ip_r, ip_t, k2, l1, m2, stbl)
+          ele%ie(iele,7)                                                &
+     &            = sph_shell_node_id(ip_r, ip_t, k2, l2, m2, stbl)
+          ele%ie(iele,8)                                                &
+     &            = sph_shell_node_id(ip_r, ip_t, k2, l2, m1, stbl)
         end do
       end do
 !
@@ -240,9 +278,10 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_inter_center_s_pole_ele(ip_r, ip_t, ele)
+      subroutine set_inter_center_s_pole_ele(ip_r, ip_t, stbl, ele)
 !
       integer(kind = kint), intent(in) :: ip_r, ip_t
+      type(comm_table_make_sph), intent(in) :: stbl
       type(element_data), intent(inout) :: ele
 !
       integer(kind = kint) :: k2, l2, m, m1, m2, m3
@@ -264,18 +303,22 @@
         ele%ie(iele,3) = sph_center_node_id()
         ele%ie(iele,4) = sph_center_node_id()
         ele%ie(iele,5) = sph_s_pole_node_id(k2)
-        ele%ie(iele,6) = sph_shell_node_id(ip_r, ip_t, k2, l2, m3)
-        ele%ie(iele,7) = sph_shell_node_id(ip_r, ip_t, k2, l2, m2)
-        ele%ie(iele,8) = sph_shell_node_id(ip_r, ip_t, k2, l2, m1)
+        ele%ie(iele,6)                                                &
+     &            = sph_shell_node_id(ip_r, ip_t, k2, l2, m3, stbl)
+        ele%ie(iele,7)                                                &
+     &            = sph_shell_node_id(ip_r, ip_t, k2, l2, m2, stbl)
+        ele%ie(iele,8)                                                &
+     &            = sph_shell_node_id(ip_r, ip_t, k2, l2, m1, stbl)
       end do
 !
       end subroutine set_inter_center_s_pole_ele
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_inter_center_n_pole_ele(ip_r, ip_t, ele)
+      subroutine set_inter_center_n_pole_ele(ip_r, ip_t, stbl, ele)
 !
       integer(kind = kint), intent(in) :: ip_r, ip_t
+      type(comm_table_make_sph), intent(in) :: stbl
       type(element_data), intent(inout) :: ele
 !
       integer(kind = kint) :: k2, l1, m, m1, m2, m3
@@ -296,9 +339,12 @@
         ele%ie(iele,3) = sph_center_node_id()
         ele%ie(iele,4) = sph_center_node_id()
         if(l1 .gt. 0) then
-          ele%ie(iele,5) = sph_shell_node_id(ip_r, ip_t, k2, l1, m1)
-          ele%ie(iele,6) = sph_shell_node_id(ip_r, ip_t, k2, l1, m2)
-          ele%ie(iele,7) = sph_shell_node_id(ip_r, ip_t, k2, l1, m3)
+          ele%ie(iele,5)                                                &
+     &            = sph_shell_node_id(ip_r, ip_t, k2, l1, m1, stbl)
+          ele%ie(iele,6)                                                &
+     &            = sph_shell_node_id(ip_r, ip_t, k2, l1, m2, stbl)
+          ele%ie(iele,7)                                                &
+     &            = sph_shell_node_id(ip_r, ip_t, k2, l1, m3, stbl)
           ele%ie(iele,8) = sph_n_pole_node_id(k2)
         else
           ele%ie(iele,5) = sph_ctr_shell_node_id(stbl%nnod_sph_ct,      &
@@ -315,9 +361,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_exter_center_n_pole_ele(ip_r, ip_t, ele)
+      subroutine set_exter_center_n_pole_ele(ip_r, ip_t, stbl, ele)
 !
       integer(kind = kint), intent(in) :: ip_r, ip_t
+      type(comm_table_make_sph), intent(in) :: stbl
       type(element_data), intent(inout) :: ele
 !
       integer(kind = kint) :: k2, l1, m, m1, m2, m3
@@ -337,9 +384,12 @@
         ele%ie(iele,2) = sph_center_node_id()
         ele%ie(iele,3) = sph_center_node_id()
         ele%ie(iele,4) = sph_center_node_id()
-        ele%ie(iele,5) = sph_shell_node_id(ip_r, ip_t, k2, l1, m1)
-        ele%ie(iele,6) = sph_shell_node_id(ip_r, ip_t, k2, l1, m2)
-        ele%ie(iele,7) = sph_shell_node_id(ip_r, ip_t, k2, l1, m3)
+        ele%ie(iele,5)                                                  &
+     &            = sph_shell_node_id(ip_r, ip_t, k2, l1, m1, stbl)
+        ele%ie(iele,6)                                                  &
+     &            = sph_shell_node_id(ip_r, ip_t, k2, l1, m2, stbl)
+        ele%ie(iele,7)                                                  &
+     &            = sph_shell_node_id(ip_r, ip_t, k2, l1, m3, stbl)
         ele%ie(iele,8) = sph_n_pole_node_id(k2)
       end do
 !

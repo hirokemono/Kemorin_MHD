@@ -7,7 +7,7 @@
 !>@brief  One-dimmentional connectivity list for spherical shell
 !!
 !!@verbatim
-!!      subroutine alloc_radius_1d_gl(nri_global, stbl)
+!!      subroutine alloc_radius_1d_gl(nri_gl, stbl)
 !!      subroutine dealloc_radius_1d_gl(stbl)
 !!
 !!      subroutine alloc_nnod_nele_sph_mesh(ndomain_sph, ndomain_rtp,&
@@ -18,7 +18,7 @@
 !!      subroutine dealloc_nnod_nele_sph_mesh(stbl)
 !!      subroutine dealloc_1d_comm_tbl_4_sph(stbl)
 !!
-!!      subroutine chk_iele_4_sph_connects(stbl)
+!!      subroutine check_iele_4_sph_connects(stbl)
 !!@endverbatim
 !
       module t_sph_mesh_1d_connect
@@ -34,6 +34,7 @@
         integer(kind = kint) :: nidx_global_fem(3)
         integer(kind = kint) :: nidx_local_fem(3)
 !
+        integer(kind = kint) :: nri_global
 !>        global radius data @f$ r(k) @f$
         real(kind = kreal), allocatable :: radius_1d_gl(:)
 !
@@ -102,14 +103,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine alloc_radius_1d_gl(nri_global, stbl)
+      subroutine alloc_radius_1d_gl(nri_gl, stbl)
 !
-      integer(kind = kint), intent(in) :: nri_global
+      integer(kind = kint), intent(in) :: nri_gl
       type(comm_table_make_sph), intent(inout) :: stbl
 !
 !
-      allocate(stbl%radius_1d_gl(nri_global))
-      if(nri_global .gt. 0) stbl%radius_1d_gl = 0.0d0
+      stbl%nri_global = nri_gl
+      allocate(stbl%radius_1d_gl(stbl%nri_global))
+      if(stbl%nri_global .gt. 0) stbl%radius_1d_gl = 0.0d0
 !
       end subroutine alloc_radius_1d_gl
 !
@@ -303,7 +305,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine chk_iele_4_sph_connects(stbl)
+      subroutine check_iele_4_sph_connects(stbl)
 !
       integer(kind = kint) :: k, ip, i12(2)
       type(comm_table_make_sph), intent(in) :: stbl
@@ -325,7 +327,7 @@
       write(*,'(a,255i6)') 'Center: ',                                  &
      &                    stbl%iflag_center_r(1:stbl%ndomain_fem(1))
       do k = 0, stbl%nidx_global_fem(2)+1
-        write(*,'(255i6)') k, stbl%iflag_center_t(k),                    &
+        write(*,'(255i6)') k, stbl%iflag_center_t(k),                   &
      &                    stbl%inod_sph_ct(k), stbl%irev_sph_ct(k)
       end do
       write(*,'(a)') 'connectivity for center element'
@@ -354,7 +356,7 @@
      &                    stbl%iflag_Npole_t(1:stbl%ndomain_fem(2))
 !
       do ip = 1, stbl%ndomain_fem(1)
-        write(*,*) 'k, stbl%ie_sph_r(k,1:2,ip) for ',                    &
+        write(*,*) 'k, stbl%ie_sph_r(k,1:2,ip) for ',                   &
      &            ip, stbl%nele_sph_r(ip)
         i12(1:2) = stbl%ie_center_r(1:2,ip)
         write(*,*) 'Center: ' , i12(1:2), stbl%inod_sph_r(i12(1:2),ip)
@@ -381,7 +383,7 @@
         write(*,*) k, stbl%ie_sph_p(k,1:2)
       end do
 !
-      end subroutine chk_iele_4_sph_connects
+      end subroutine check_iele_4_sph_connects
 !
 ! ----------------------------------------------------------------------
 !

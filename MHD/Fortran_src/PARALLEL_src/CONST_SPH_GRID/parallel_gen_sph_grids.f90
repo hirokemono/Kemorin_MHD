@@ -7,8 +7,9 @@
 !>@brief  Main loop to generate spherical harmonics indices
 !!
 !!@verbatim
-!!      subroutine para_gen_sph_grids(sph)
+!!      subroutine para_gen_sph_grids(stbl, sph)
 !!      subroutine deallocate_gen_mesh_params
+!!        type(comm_table_make_sph), intent(in) :: stbl
 !!        type(sph_grids), intent(inout) :: sph
 !!@endverbatim
 !
@@ -23,6 +24,7 @@
 !
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
+      use t_sph_mesh_1d_connect
 !
       implicit none
 !
@@ -47,7 +49,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine para_gen_sph_grids(sph)
+      subroutine para_gen_sph_grids(stbl, sph)
 !
       use m_spheric_global_ranks
       use set_global_spherical_param
@@ -57,6 +59,7 @@
       use const_global_sph_grids_modes
       use const_sph_radial_grid
 !
+      type(comm_table_make_sph), intent(in) :: stbl
       type(sph_grids), intent(inout) :: sph
 !
 !
@@ -70,7 +73,7 @@
         call check_global_spheric_parameter                             &
      &     (sph%sph_params, sph%sph_rtp)
         call output_set_radial_grid                                     &
-     &     (sph%sph_params, sph%sph_rtp)
+     &     (sph%sph_params, sph%sph_rtp, stbl)
       end if
 !
 !  ========= Generate spherical harmonics table ========================
@@ -83,11 +86,11 @@
 !
       if(ndomain_sph .eq. nprocs) then
         if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rlm_grids'
-        call mpi_gen_sph_rlm_grids                                      &
-     &     (sph%sph_params, sph%sph_rlm, comm_rlm_mul)
+        call mpi_gen_sph_rlm_grids(stbl, sph%sph_params,                &
+     &      sph%sph_rlm, comm_rlm_mul)
       else
-        call para_gen_sph_rlm_grids                                     &
-     &     (ndomain_sph, sph%sph_params, sph%sph_rlm, comm_rlm_mul)
+        call para_gen_sph_rlm_grids(ndomain_sph, stbl,                  &
+     &      sph%sph_params, sph%sph_rlm, comm_rlm_mul)
       end if
       call bcast_comm_stacks_sph(ndomain_sph, comm_rlm_mul)
       call end_eleps_time(2)
@@ -95,10 +98,10 @@
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rj_modes'
       call start_eleps_time(3)
       if(ndomain_sph .eq. nprocs) then
-        call mpi_gen_sph_rj_modes                                       &
-     &     (comm_rlm_mul, sph%sph_params, sph%sph_rlm, sph%sph_rj)
+        call mpi_gen_sph_rj_modes(comm_rlm_mul, stbl,                   &
+     &      sph%sph_params, sph%sph_rlm, sph%sph_rj)
       else
-        call para_gen_sph_rj_modes(ndomain_sph, comm_rlm_mul,           &
+        call para_gen_sph_rj_modes(ndomain_sph, comm_rlm_mul, stbl,     &
      &      sph%sph_params, sph%sph_rlm, sph%sph_rj)
       end if
       call dealloc_comm_stacks_sph(ndomain_sph, comm_rlm_mul)
@@ -110,22 +113,22 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rtm_grids'
       if(ndomain_sph .eq. nprocs) then
-        call mpi_gen_sph_rtm_grids                                      &
-     &     (sph%sph_params, sph%sph_rtm, comm_rtm_mul)
+        call mpi_gen_sph_rtm_grids(stbl, sph%sph_params,                &
+     &      sph%sph_rtm, comm_rtm_mul)
       else
-        call para_gen_sph_rtm_grids                                     &
-     &     (ndomain_sph, sph%sph_params, sph%sph_rtm, comm_rtm_mul)
+        call para_gen_sph_rtm_grids(ndomain_sph, stbl,                  &
+     &     sph%sph_params, sph%sph_rtm, comm_rtm_mul)
       end if
       call bcast_comm_stacks_sph(ndomain_sph, comm_rtm_mul)
       call end_eleps_time(2)
 !
       call start_eleps_time(3)
       if(ndomain_sph .eq. nprocs) then
-        call mpi_gen_sph_rtp_grids                                      &
-     &     (comm_rtm_mul, sph%sph_params, sph%sph_rtp, sph%sph_rtm)
+        call mpi_gen_sph_rtp_grids(comm_rtm_mul, stbl,                  &
+     &      sph%sph_params, sph%sph_rtp, sph%sph_rtm)
       else
         if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rtp_grids'
-        call para_gen_sph_rtp_grids(ndomain_sph, comm_rtm_mul,          &
+        call para_gen_sph_rtp_grids(ndomain_sph, comm_rtm_mul, stbl,    &
      &      sph%sph_params, sph%sph_rtp, sph%sph_rtm)
       end if
       call dealloc_comm_stacks_sph(ndomain_sph, comm_rtm_mul)

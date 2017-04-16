@@ -7,8 +7,9 @@
 !>@brief  Construct FEM mesh from spherical harmonics transform data
 !!
 !!@verbatim
-!!      subroutine const_FEM_mesh_4_sph_mhd(sph_params, sph_rtp, sph_rj,&
-!!     &          radial_rtp_grp, radial_rj_grp, mesh, group, mesh_file)
+!!      subroutine const_FEM_mesh_4_sph_mhd                             &
+!!     &         (sph_params, sph_rtp, sph_rj, radial_rtp_grp,          &
+!!     &          radial_rj_grp, mesh, group, mesh_file, stbl)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_rj_grid), intent(in) :: sph_rj
@@ -16,6 +17,7 @@
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::  group
 !!        type(field_IO_params), intent(inout) ::  mesh_file
+!!        type(comm_table_make_sph), intent(inout) :: stbl
 !!@endverbatim
 !
       module const_FEM_mesh_sph_mhd
@@ -29,6 +31,7 @@
       use t_mesh_data
       use t_group_data
       use t_gauss_points
+      use t_sph_mesh_1d_connect
 !
       implicit none
 !
@@ -42,8 +45,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine const_FEM_mesh_4_sph_mhd(sph_params, sph_rtp, sph_rj,  &
-     &          radial_rtp_grp, radial_rj_grp, mesh, group, mesh_file)
+      subroutine const_FEM_mesh_4_sph_mhd                               &
+     &         (sph_params, sph_rtp, sph_rj, radial_rtp_grp,            &
+     &          radial_rj_grp, mesh, group, mesh_file, stbl)
 !
       use calypso_mpi
       use m_spheric_global_ranks
@@ -63,6 +67,7 @@
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::  group
       type(field_IO_params), intent(inout) ::  mesh_file
+      type(comm_table_make_sph), intent(inout) :: stbl
 !
 !
       call const_gauss_colatitude(sph_rtp%nidx_global_rtp(2), gauss_s)
@@ -70,13 +75,14 @@
 !
       call const_global_sph_FEM(sph_rtp, sph_rj, radial_rtp_grp)
       call s_const_1d_ele_connect_4_sph                                 &
-     &   (sph_params%iflag_shell_mode, sph_params%m_folding, sph_rtp)
+     &   (sph_params%iflag_shell_mode, sph_params%m_folding, sph_rtp,   &
+     &    stbl)
 !
 !      write(*,*) 's_const_FEM_mesh_for_sph',                           &
 !     &          sph_params%iflag_shell_mode, iflag_MESH_w_center
       call s_const_FEM_mesh_for_sph                                     &
      &   (my_rank, sph_rtp%nidx_rtp, sph_rj%radius_1d_rj_r, gauss_s,    &
-     &    sph_params, sph_rtp, radial_rj_grp, mesh, group)
+     &    sph_params, sph_rtp, radial_rj_grp, mesh, group, stbl)
 !
 ! Output mesh data
       if(iflag_output_mesh .gt. 0) then
@@ -86,7 +92,7 @@
      &          'FEM mesh for domain', my_rank, ' is done.'
       end if
 !
-      call deallocate_nnod_nele_sph_mesh
+      call dealloc_nnod_nele_sph_mesh(stbl)
       call dealloc_gauss_colatitude(gauss_s)
 !
       end subroutine const_FEM_mesh_4_sph_mhd

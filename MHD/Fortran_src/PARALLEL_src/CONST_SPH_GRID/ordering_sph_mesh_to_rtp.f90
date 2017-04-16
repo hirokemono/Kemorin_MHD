@@ -4,7 +4,8 @@
 !     Written by H. Matsui on March, 2013
 !
 !!      subroutine s_ordering_sph_mesh_for_rtp(nidx_rtp, ip_r, ip_t,    &
-!!     &          node, ele, nod_grp, nod_comm)
+!!     &          stbl, node, ele, nod_grp, nod_comm)
+!!        type(comm_table_make_sph), intent(in) :: stbl
 !!        type(node_data), intent(inout) :: node
 !!        type(element_data), intent(inout) :: ele
 !!        type(group_data), intent(inout) :: nod_grp
@@ -27,18 +28,20 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_ordering_sph_mesh_for_rtp(nidx_rtp, ip_r, ip_t,      &
-     &          node, ele, nod_grp, nod_comm)
+     &          stbl, node, ele, nod_grp, nod_comm)
 !
       use t_geometry_data
       use t_comm_table
       use t_group_data
+      use t_sph_mesh_1d_connect
 !
       use m_sph_1d_global_index
-      use m_sph_mesh_1d_connect
       use cal_sph_node_addresses
 !
       integer(kind = kint), intent(in) :: nidx_rtp(3)
       integer(kind = kint), intent(in) :: ip_r, ip_t
+      type(comm_table_make_sph), intent(in) :: stbl
+!
       type(node_data), intent(inout) :: node
       type(element_data), intent(inout) :: ele
       type(group_data), intent(inout) :: nod_grp
@@ -76,7 +79,8 @@
 !
             inod = k + (l-1)*nidx_rtp(1)                                &
      &               + (m-1)*nidx_rtp(1)*nidx_rtp(2)
-            inod_org = sph_shell_node_id(ip_r, ip_t, k_lc, l_lc, m)
+            inod_org                                                    &
+     &           = sph_shell_node_id(ip_r, ip_t, k_lc, l_lc, m, stbl)
 !
             if(inod_old2new(inod_org) .gt. 0) write(*,*) 'wrong!!',     &
      &                                       inod, k_lc, l_lc, m

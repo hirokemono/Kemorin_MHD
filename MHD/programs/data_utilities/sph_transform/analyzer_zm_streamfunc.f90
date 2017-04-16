@@ -14,6 +14,7 @@
       use m_SPH_transforms
       use m_work_time
       use m_spheric_data_transform
+      use m_sph_mesh_1d_connect
 !
       use SPH_analyzer_back_trans_old
       use FEM_analyzer_back_trans
@@ -69,7 +70,7 @@
       call load_para_SPH_and_FEM_mesh(sph_mesh_trans%sph,               &
      &    sph_mesh_trans%sph_comms, sph_mesh_trans%sph_grps,            &
      &    femmesh_STR%mesh, femmesh_STR%group, elemesh_STR,             &
-     &    mesh_file_STR)
+     &    mesh_file_STR, stbl)
 !
 !  -------------------------------
 !

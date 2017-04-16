@@ -4,18 +4,22 @@
 !        programmed by H.Matsui on July, 2007
 !
 !!      subroutine count_set_radial_grid                                &
-!!     &          (nele, rmin, rmax, sph_param, sph_rtp)
+!!     &          (nele, rmin, rmax, sph_param, sph_rtp, stbl)
 !!        type(sph_shell_parameters), intent(inout) :: sph_param
 !!        type(sph_rtp_grid), intent(inout) :: sph_rtp
-!!      subroutine output_set_radial_grid(sph_param, sph_rtp)
+!!        type(comm_table_make_sph), intent(inout) :: stbl
+!!      subroutine output_set_radial_grid(sph_param, sph_rtp, stbl)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(comm_table_make_sph), intent(in) :: stbl
 !
       module const_sph_radial_grid
 !
       use m_precision
       use m_constants
 !
+      use m_spheric_constants
       use t_spheric_parameter
+      use t_sph_mesh_1d_connect
 !
       implicit  none
 !
@@ -26,10 +30,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine count_set_radial_grid                                  &
-     &          (nele, rmin, rmax, sph_param, sph_rtp)
+     &          (nele, rmin, rmax, sph_param, sph_rtp, stbl)
 !
-      use m_spheric_constants
-      use m_sph_mesh_1d_connect
       use chebyshev_radial_grid
       use half_chebyshev_radial_grid
       use set_radial_grid_sph_shell
@@ -39,6 +41,7 @@
 !
       type(sph_shell_parameters), intent(inout) :: sph_param
       type(sph_rtp_grid), intent(inout) :: sph_rtp
+      type(comm_table_make_sph), intent(inout) :: stbl
 !
 !
       sph_param%nlayer_2_center = 1
@@ -60,7 +63,7 @@
      &      sph_param%nlayer_ICB, sph_param%nlayer_CMB)
       end if
 !
-      call allocate_radius_1d_gl(sph_rtp%nidx_global_rtp(1))
+      call alloc_radius_1d_gl(sph_rtp%nidx_global_rtp(1), stbl)
 !
       if(sph_param%iflag_radial_grid .eq. igrid_Chebyshev) then
         call set_chebyshev_distance_shell(sph_rtp%nidx_global_rtp(1),   &
@@ -83,13 +86,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine output_set_radial_grid(sph_param, sph_rtp)
-!
-      use m_sph_mesh_1d_connect
+      subroutine output_set_radial_grid(sph_param, sph_rtp, stbl)
 !
 !
       type(sph_shell_parameters), intent(in) :: sph_param
       type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(comm_table_make_sph), intent(in) :: stbl
 !
       integer(kind = kint), parameter :: id_file = 14
 !

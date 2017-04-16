@@ -25,6 +25,7 @@
       use t_file_IO_parameter
       use t_ctl_data_4_platforms
       use t_ctl_data_gen_sph_shell
+      use m_sph_mesh_1d_connect
 !
       implicit none
 !
@@ -71,7 +72,7 @@
      &   (control_file_name, psph_gen_plt, psph_gen_ctl)
       call s_set_control_4_gen_shell_grids                              &
      &   (psph_gen_plt, psph_gen_ctl%spctl, psph_gen_ctl%sdctl,         &
-     &    sph_const, fem_mesh_file, sph_file_prm_const, ierr_MPI)
+     &    sph_const, fem_mesh_file, sph_file_prm_const, stbl, ierr_MPI)
       if(ierr_MPI .gt. 0) call calypso_mpi_abort(ierr_MPI, e_message)
 !
       end subroutine init_gen_sph_grids
@@ -88,18 +89,18 @@
 !  ========= Generate spherical harmonics table ========================
 !
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_grids'
-      call para_gen_sph_grids(sph_const)
+      call para_gen_sph_grids(stbl, sph_const)
 !
       call start_eleps_time(4)
       if(ndomain_sph .eq. nprocs) then
         call mpi_gen_fem_mesh_for_sph                                   &
      &     (sph_const%sph_params, sph_const%sph_rj, sph_const%sph_rtp,  &
-     &      fem_mesh_file)
+     &      fem_mesh_file, stbl)
       else
         if(iflag_debug .gt. 0) write(*,*) 'para_gen_fem_mesh_for_sph'
         call para_gen_fem_mesh_for_sph(ndomain_sph,                     &
      &      sph_const%sph_params, sph_const%sph_rj, sph_const%sph_rtp,  &
-     &      fem_mesh_file)
+     &      fem_mesh_file, stbl)
       end if
       call end_eleps_time(4)
       call end_eleps_time(1)

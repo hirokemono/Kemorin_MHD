@@ -4,11 +4,12 @@
 !!      subroutine count_sph_local_node_group                           &
 !!     &         (sph_params, radial_rj_grp, nod_grp)
 !!      subroutine count_sph_local_node_grp_item                        &
-!!     &         (ip_r, ip_t, sph_params, radial_rj_grp, nod_grp)
+!!     &         (ip_r, ip_t, sph_params, radial_rj_grp, stbl, nod_grp)
 !!      subroutine set_sph_local_node_grp_item                          &
-!!     &         (ip_r, ip_t, sph_params, radial_rj_grp, nod_grp)
+!!     &         (ip_r, ip_t, sph_params, radial_rj_grp, stbl, nod_grp)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(group_data), intent(in) :: radial_rj_grp
+!!        type(comm_table_make_sph), intent(in) :: stbl
 !!        type(group_data), intent(inout) :: nod_grp
 !
 !     Written by H. Matsui on March, 2012
@@ -20,6 +21,7 @@
 !
       use t_spheric_parameter
       use t_group_data
+      use t_sph_mesh_1d_connect
 !
       implicit none
 !
@@ -36,6 +38,7 @@
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(group_data), intent(in) :: radial_rj_grp
+!
       type(group_data), intent(inout) :: nod_grp
 !
       integer(kind = kint) :: igrp, num
@@ -64,13 +67,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine count_sph_local_node_grp_item                          &
-     &         (ip_r, ip_t, sph_params, radial_rj_grp, nod_grp)
-!
-      use m_sph_mesh_1d_connect
+     &         (ip_r, ip_t, sph_params, radial_rj_grp, stbl, nod_grp)
 !
       integer(kind = kint), intent(in) :: ip_r, ip_t
       type(sph_shell_parameters), intent(in) :: sph_params
       type(group_data), intent(in) :: radial_rj_grp
+      type(comm_table_make_sph), intent(in) :: stbl
+!
       type(group_data), intent(inout) :: nod_grp
 !
       integer(kind = kint) :: igrp, icou, knum, kr, num
@@ -88,8 +91,9 @@
 !
           nod_grp%grp_name(icou) = radial_rj_grp%grp_name(igrp)
           if(stbl%irev_sph_r(kr,ip_r) .gt. 0) then
-            call count_node_grp_on_sphere(ip_r, ip_t,                   &
-     &          stbl%irev_sph_r(kr,ip_r), nod_grp%nitem_grp(icou))
+            call count_node_grp_on_sphere                               &
+     &         (ip_r, ip_t, stbl%irev_sph_r(kr,ip_r), stbl,             &
+     &          nod_grp%nitem_grp(icou))
           else
             nod_grp%nitem_grp(icou) =  0
           end if
@@ -133,14 +137,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_sph_local_node_grp_item                            &
-     &         (ip_r, ip_t, sph_params, radial_rj_grp, nod_grp)
+     &         (ip_r, ip_t, sph_params, radial_rj_grp, stbl, nod_grp)
 !
-      use m_sph_mesh_1d_connect
       use cal_sph_node_addresses
 !
       integer(kind = kint), intent(in) :: ip_r, ip_t
       type(sph_shell_parameters), intent(in) :: sph_params
       type(group_data), intent(in) :: radial_rj_grp
+      type(comm_table_make_sph), intent(in) :: stbl
       type(group_data), intent(inout) :: nod_grp
 !
       integer(kind = kint) :: igrp, icou, knum, inum, kr, num
@@ -157,7 +161,7 @@
 !
           if(stbl%irev_sph_r(kr,ip_r) .gt. 0) then
             call set_node_grp_item_on_sphere(ip_r, ip_t,                &
-     &          stbl%irev_sph_r(kr,ip_r), icou, nod_grp)
+     &          stbl%irev_sph_r(kr,ip_r), icou, stbl, nod_grp)
           end if
         end if
       end do
@@ -205,10 +209,10 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine count_node_grp_on_sphere(ip_r, ip_t, knum, nitem_grp)
+      subroutine count_node_grp_on_sphere                               &
+     &         (ip_r, ip_t, knum, stbl, nitem_grp)
 !
-      use m_sph_mesh_1d_connect
-!
+      type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint), intent(in) :: ip_r, ip_t, knum
       integer(kind = kint), intent(inout) :: nitem_grp
 !
@@ -234,12 +238,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_node_grp_item_on_sphere(ip_r, ip_t, knum,          &
-     &          icou, nod_grp)
+     &          icou, stbl, nod_grp)
 !
-      use m_sph_mesh_1d_connect
       use cal_sph_node_addresses
 !
       integer(kind = kint), intent(in) :: ip_r, ip_t, knum, icou
+      type(comm_table_make_sph), intent(in) :: stbl
+!
       type(group_data), intent(inout) :: nod_grp
 !
       integer(kind = kint) :: lnum, mnum, inum
@@ -249,8 +254,8 @@
       do mnum = 1, stbl%nidx_global_fem(3)
         do lnum = 1, stbl%nnod_sph_t(ip_t)
           inum = inum + 1
-          nod_grp%item_grp(inum) = sph_shell_node_id(ip_r, ip_t,        &
-     &                            knum, lnum, mnum)
+          nod_grp%item_grp(inum)                                        &
+     &         = sph_shell_node_id(ip_r, ip_t, knum, lnum, mnum, stbl)
         end do
       end do
 !
