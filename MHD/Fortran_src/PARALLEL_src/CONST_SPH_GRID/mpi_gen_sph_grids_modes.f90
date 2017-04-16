@@ -235,7 +235,7 @@
 !
       call copy_gl_2_local_rtp_param(my_rank, sph_rtp)
       call s_const_FEM_mesh_for_sph                                     &
-     &   (my_rank, sph_rtp%nidx_rtp, radius_1d_gl, gauss_s,             &
+     &   (my_rank, sph_rtp%nidx_rtp, stbl%radius_1d_gl, gauss_s,        &
      &    sph_params, sph_rtp, radial_rj_grp_lc,                        &
      &    femmesh%mesh, femmesh%group)
 !

@@ -42,9 +42,9 @@
       integer(kind = kint) :: num
 !
 !
-      num = nidx_global_fem(1)
+      num = stbl%nidx_global_fem(1)
       allocate(iflag_r(num))
-      if(nidx_global_fem(1) .gt. 0) iflag_r = 0
+      if(stbl%nidx_global_fem(1) .gt. 0) iflag_r = 0
 !
       end subroutine allocate_sph_ele_grp_flag
 !
@@ -112,11 +112,11 @@
             iflag_r(kr) = 1
           end do
 !
-          do kele = 1, nele_sph_r(ip_r)
+          do kele = 1, stbl%nele_sph_r(ip_r)
             kl1 = stbl%ie_sph_r(kele,1,ip_r)
             kl2 = stbl%ie_sph_r(kele,2,ip_r)
-            kg1 = inod_sph_r(kl1,ip_r)
-            kg2 = inod_sph_r(kl2,ip_r)
+            kg1 = stbl%inod_sph_r(kl1,ip_r)
+            kg2 = stbl%inod_sph_r(kl2,ip_r)
             if(iflag_r(kg1)*iflag_r(kg2) .gt. 0) then
               call count_ele_grp_item_on_sphere(ip_t, sph_params,       &
      &            ele_grp%nitem_grp(icou))
@@ -173,11 +173,11 @@
             iflag_r(kr) = 1
           end do
 !
-          do kele = 1, nele_sph_r(ip_r)
+          do kele = 1, stbl%nele_sph_r(ip_r)
             kl1 = stbl%ie_sph_r(kele,1,ip_r)
             kl2 = stbl%ie_sph_r(kele,2,ip_r)
-            kg1 = inod_sph_r(kl1,ip_r)
-            kg2 = inod_sph_r(kl2,ip_r)
+            kg1 = stbl%inod_sph_r(kl1,ip_r)
+            kg2 = stbl%inod_sph_r(kl2,ip_r)
             if(iflag_r(kg1)*iflag_r(kg2) .gt. 0) then
               call set_ele_grp_item_on_sphere(ip_r, ip_t, kele,         &
      &            sph_params, inum, ele_grp)
@@ -211,7 +211,8 @@
       integer(kind = kint), intent(inout) :: nitem_grp
 !
 !
-      nitem_grp = nitem_grp + nele_sph_t(ip_t)*nidx_global_fem(3)
+      nitem_grp = nitem_grp                                             &
+     &           + stbl%nele_sph_t(ip_t) * stbl%nidx_global_fem(3)
 !
 !    Set elements for poles
       if    (sph_params%iflag_shell_mode .eq. iflag_MESH_w_pole         &
@@ -245,11 +246,12 @@
 !    Set elements for Center elements
       if(stbl%iflag_Spole_t(ip_t) .gt. 0)  then
         nitem_grp = nitem_grp                                           &
-     &             + (nidx_global_fem(2)-1)*nidx_global_fem(3)          &
-     &             + nidx_global_fem(3)
+     &           + (stbl%nidx_global_fem(2)-1)*stbl%nidx_global_fem(3)  &
+     &            + stbl%nidx_global_fem(3)
 !
       else
-        nitem_grp = nitem_grp + nele_sph_t(ip_t)*nidx_global_fem(3)
+        nitem_grp = nitem_grp                                           &
+     &             + stbl%nele_sph_t(ip_t) * stbl%nidx_global_fem(3)
 !    Set element for north pole
          if(stbl%iflag_Npole_t(ip_t) .gt. 0)  then
            nitem_grp = nitem_grp + stbl%nele_around_pole
@@ -275,8 +277,8 @@
       integer(kind = kint) :: l, m
 !
 !
-      do m = 1, nidx_global_fem(3)
-        do l = 1, nele_sph_t(ip_t)
+      do m = 1, stbl%nidx_global_fem(3)
+        do l = 1, stbl%nele_sph_t(ip_t)
           inum = inum + 1
           ele_grp%item_grp(inum)                                        &
      &                     = sph_shell_ele_id(ip_r, ip_t, kr, l, m)
@@ -324,8 +326,8 @@
 !    Set elements for Center elements
 !
       if(stbl%iflag_Spole_t(ip_t) .gt. 0)  then
-        do m = 1, nidx_global_fem(3)
-          do l = 1, nidx_global_fem(2)-1
+        do m = 1, stbl%nidx_global_fem(3)
+          do l = 1, stbl%nidx_global_fem(2)-1
             inum = inum + 1
             ele_grp%item_grp(inum) = sph_inter_ctr_shell_ele_id(l, m)
           end do
@@ -344,8 +346,8 @@
         end do
 !
       else
-        do m = 1, nidx_global_fem(3)
-          do l = 1, nele_sph_t(ip_t)
+        do m = 1, stbl%nidx_global_fem(3)
+          do l = 1, stbl%nele_sph_t(ip_t)
             inum = inum + 1
             ele_grp%item_grp(inum)                                      &
      &          = sph_exter_ctr_shell_ele_id(ip_t, l, m)

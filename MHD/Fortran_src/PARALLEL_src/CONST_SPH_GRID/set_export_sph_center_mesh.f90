@@ -64,10 +64,10 @@
       if      (stbl%iflag_center_r(ip_r) .eq. ip_r                      &
      &  .and.  stbl%iflag_center_r(jp_r) .eq. ip_r                      &
      &  .and.  stbl%iflag_Spole_t(jp_t) .eq.  jp_t) then
-        do lnum = 1, nnod_sph_ct
-          l = inod_sph_ct(lnum)
-          if(iflag_internal_t(l,ip_t) .eq. ip_t) then
-            num_export = num_export + nidx_global_fem(3)
+        do lnum = 1, stbl%nnod_sph_ct
+          l = stbl%inod_sph_ct(lnum)
+          if(stbl%iflag_internal_t(l,ip_t) .eq. ip_t) then
+            num_export = num_export + stbl%nidx_global_fem(3)
           end if
         end do
       end if
@@ -116,9 +116,9 @@
      &  .and.  stbl%iflag_Spole_t(ip_t) .eq.  ip_t                      &
      &  .and.  stbl%iflag_Spole_t(jp_t) .eq. 0) then
         icou = icou + 1
-        item_export_1d_rtp(1,icou) = 0
-        item_export_1d_rtp(2,icou) = 0
-        item_export_1d_rtp(3,icou) = 1
+        stbl%item_export_1d_rtp(1,icou) = 0
+        stbl%item_export_1d_rtp(2,icou) = 0
+        stbl%item_export_1d_rtp(3,icou) = 1
 !
         nod_comm%item_export(icou)  = sph_center_node_id()
       end if
@@ -147,34 +147,40 @@
      &  .and.  stbl%iflag_center_r(jp_r) .eq. ip_r                      &
      &  .and.  stbl%iflag_Spole_t(jp_t) .eq.  jp_t) then
         ist = icou
-        do lnum = 1, nnod_sph_ct
-          l = inod_sph_ct(lnum)
-          if(iflag_internal_t(l,ip_t) .eq. ip_t) then
+        do lnum = 1, stbl%nnod_sph_ct
+          l = stbl%inod_sph_ct(lnum)
+          if(stbl%iflag_internal_t(l,ip_t) .eq. ip_t) then
 !
             icou = icou + 1
-            item_export_1d_rtp(1,icou) = irev_sph_r(ione,ip_r)
-            item_export_1d_rtp(2,icou) = irev_sph_t(l,   ip_t)
-            item_export_1d_rtp(3,icou) = 1
+            stbl%item_export_1d_rtp(1,icou)                             &
+     &                           = stbl%irev_sph_r(ione,ip_r)
+            stbl%item_export_1d_rtp(2,icou)                             &
+     &                           = stbl%irev_sph_t(l,   ip_t)
+            stbl%item_export_1d_rtp(3,icou) = 1
 !
             nod_comm%item_export(icou)                                  &
      &         = sph_shell_node_id(ip_r, ip_t,                          &
-     &          item_export_1d_rtp(1,icou), item_export_1d_rtp(2,icou), &
-     &          item_export_1d_rtp(3,icou))
+     &                             stbl%item_export_1d_rtp(1,icou),     &
+     &                             stbl%item_export_1d_rtp(2,icou),     &
+     &                             stbl%item_export_1d_rtp(3,icou))
           end if
         end do
         num_rl = icou - ist
 !
-        do m = 2, nidx_global_fem(3)
+        do m = 2, stbl%nidx_global_fem(3)
           do l = 1, num_rl
             icou = icou + 1
-            item_export_1d_rtp(1,icou) = item_export_1d_rtp(1,l+ist)
-            item_export_1d_rtp(2,icou) = item_export_1d_rtp(2,l+ist)
-            item_export_1d_rtp(3,icou) = m
+            stbl%item_export_1d_rtp(1,icou)                             &
+     &                            = stbl%item_export_1d_rtp(1,l+ist)
+            stbl%item_export_1d_rtp(2,icou)                             &
+     &                            = stbl%item_export_1d_rtp(2,l+ist)
+            stbl%item_export_1d_rtp(3,icou) = m
 !
           nod_comm%item_export(icou)                                    &
      &         = sph_shell_node_id(ip_r, ip_t,                          &
-     &          item_export_1d_rtp(1,icou), item_export_1d_rtp(2,icou), &
-     &          item_export_1d_rtp(3,icou))
+     &                             stbl%item_export_1d_rtp(1,icou),     &
+     &                             stbl%item_export_1d_rtp(2,icou),     &
+     &                             stbl%item_export_1d_rtp(3,icou))
           end do
         end do
       end if
@@ -203,12 +209,12 @@
      &  .and.  stbl%iflag_Npole_t(ip_t) .eq.  ip_t) then
 !
         icou = icou + 1
-        item_export_1d_rtp(1,icou) = irev_sph_r(ione,ip_r)
-        item_export_1d_rtp(2,icou) = nnod_sph_t(ip_t)+1
-        item_export_1d_rtp(3,icou) = 1
+        stbl%item_export_1d_rtp(1,icou) = stbl%irev_sph_r(ione,ip_r)
+        stbl%item_export_1d_rtp(2,icou) = stbl%nnod_sph_t(ip_t) + 1
+        stbl%item_export_1d_rtp(3,icou) = 1
 !
         nod_comm%item_export(icou)                                      &
-     &            = sph_n_pole_node_id(item_export_1d_rtp(1,icou))
+     &            = sph_n_pole_node_id(stbl%item_export_1d_rtp(1,icou))
       end if
 !
       end subroutine set_export_rtp_ctr_Npole_mesh

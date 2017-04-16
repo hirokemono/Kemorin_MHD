@@ -49,9 +49,9 @@
       lflag = stbl%iflag_Spole_t(ip_t)
       if(abs(lflag) .ne. jp_t) return
 !
-      do knum = 1, nnod_sph_r(ip_r)
-        k = inod_sph_r(knum,ip_r)
-        kflag = iflag_internal_r(k,ip_r)
+      do knum = 1, stbl%nnod_sph_r(ip_r)
+        k = stbl%inod_sph_r(knum,ip_r)
+        kflag = stbl%iflag_internal_r(k,ip_r)
         if(abs(kflag) .ne. jp_r) cycle
 !
         if(kflag.lt.izero .or. lflag.lt. izero) then
@@ -79,9 +79,9 @@
       lflag = stbl%iflag_Npole_t(ip_t)
       if(abs(lflag) .ne. jp_t) return
 !
-      do knum = 1, nnod_sph_r(ip_r)
-        k = inod_sph_r(knum,ip_r)
-        kflag = iflag_internal_r(k,ip_r)
+      do knum = 1, stbl%nnod_sph_r(ip_r)
+        k = stbl%inod_sph_r(knum,ip_r)
+        kflag = stbl%iflag_internal_r(k,ip_r)
         if(abs(kflag) .ne. jp_r) cycle
 !
         if(kflag.lt.izero .or. lflag.lt. izero) then
@@ -112,19 +112,19 @@
       lflag = stbl%iflag_Spole_t(ip_t)
       if(abs(lflag) .ne. jp_t) return
 !
-      do knum = 1, nnod_sph_r(ip_r)
-        k = inod_sph_r(knum,ip_r)
-        kflag = iflag_internal_r(k,ip_r)
+      do knum = 1, stbl%nnod_sph_r(ip_r)
+        k = stbl%inod_sph_r(knum,ip_r)
+        kflag = stbl%iflag_internal_r(k,ip_r)
         if(abs(kflag) .ne. jp_r) cycle
 !
         if(kflag.lt.izero .or. lflag.lt. izero) then
           icou = icou + 1
-          item_import_1d_rtp(1,icou) = knum
-          item_import_1d_rtp(2,icou) = 0
-          item_import_1d_rtp(3,icou) = 1
+          stbl%item_import_1d_rtp(1,icou) = knum
+          stbl%item_import_1d_rtp(2,icou) = 0
+          stbl%item_import_1d_rtp(3,icou) = 1
 !
           nod_comm%item_import(icou)                                    &
-     &          = sph_s_pole_node_id(item_import_1d_rtp(1,icou))
+     &          = sph_s_pole_node_id(stbl%item_import_1d_rtp(1,icou))
         end if
       end do
 !
@@ -151,19 +151,19 @@
       lflag = stbl%iflag_Npole_t(ip_t)
       if(abs(lflag) .ne. jp_t) return
 !
-      do knum = 1, nnod_sph_r(ip_r)
-        k = inod_sph_r(knum,ip_r)
-        kflag = iflag_internal_r(k,ip_r)
+      do knum = 1, stbl%nnod_sph_r(ip_r)
+        k = stbl%inod_sph_r(knum,ip_r)
+        kflag = stbl%iflag_internal_r(k,ip_r)
         if(abs(kflag) .ne. jp_r) cycle
 !
         if(kflag.lt.izero .or. lflag.lt. izero) then
           icou = icou + 1
-          item_import_1d_rtp(1,icou) = knum
-          item_import_1d_rtp(2,icou) = nnod_sph_t(ip_t)+1
-          item_import_1d_rtp(3,icou) = 1
+          stbl%item_import_1d_rtp(1,icou) = knum
+          stbl%item_import_1d_rtp(2,icou) = stbl%nnod_sph_t(ip_t) + 1
+          stbl%item_import_1d_rtp(3,icou) = 1
 !
           nod_comm%item_import(icou)                                    &
-     &          = sph_n_pole_node_id(item_import_1d_rtp(1,icou))
+     &          = sph_n_pole_node_id(stbl%item_import_1d_rtp(1,icou))
         end if
       end do
 !
@@ -187,9 +187,9 @@
       lflag = stbl%iflag_Spole_t(jp_t)
       if(abs(lflag) .ne. ip_t) return
 !
-      do knum = 1, nnod_sph_r(jp_r)
-        k = inod_sph_r(knum,jp_r)
-        kflag = iflag_internal_r(k,jp_r)
+      do knum = 1, stbl%nnod_sph_r(jp_r)
+        k = stbl%inod_sph_r(knum,jp_r)
+        kflag = stbl%iflag_internal_r(k,jp_r)
         if(abs(kflag) .ne. ip_r) cycle
 !
         if(kflag.lt.izero .or. lflag.lt. izero) then
@@ -216,9 +216,9 @@
       lflag = stbl%iflag_Npole_t(jp_t)
       if(abs(lflag) .ne. ip_t) return
 !
-      do knum = 1, nnod_sph_r(jp_r)
-        k = inod_sph_r(knum,jp_r)
-        kflag = iflag_internal_r(k,jp_r)
+      do knum = 1, stbl%nnod_sph_r(jp_r)
+        k = stbl%inod_sph_r(knum,jp_r)
+        kflag = stbl%iflag_internal_r(k,jp_r)
         if(abs(kflag) .ne. ip_r) cycle
 !
         if(kflag.lt.izero .or. lflag.lt. izero) then
@@ -249,19 +249,19 @@
       lflag = stbl%iflag_Spole_t(jp_t)
       if(abs(lflag) .ne. ip_t) return
 !
-      do knum = 1, nnod_sph_r(jp_r)
-        k = inod_sph_r(knum,jp_r)
-        kflag = iflag_internal_r(k,jp_r)
+      do knum = 1, stbl%nnod_sph_r(jp_r)
+        k = stbl%inod_sph_r(knum,jp_r)
+        kflag = stbl%iflag_internal_r(k,jp_r)
         if(abs(kflag) .ne. ip_r) cycle
 !
         if(kflag.lt.izero .or. lflag.lt. izero) then
           icou = icou + 1
-          item_export_1d_rtp(1,icou) = irev_sph_r(k,ip_r)
-          item_export_1d_rtp(2,icou) = 0
-          item_export_1d_rtp(3,icou) = 1
+          stbl%item_export_1d_rtp(1,icou) = stbl%irev_sph_r(k,ip_r)
+          stbl%item_export_1d_rtp(2,icou) = 0
+          stbl%item_export_1d_rtp(3,icou) = 1
 !
           nod_comm%item_export(icou)                                    &
-     &          = sph_s_pole_node_id(item_export_1d_rtp(1,icou))
+     &          = sph_s_pole_node_id(stbl%item_export_1d_rtp(1,icou))
         end if
       end do
 !
@@ -288,19 +288,19 @@
       lflag = stbl%iflag_Npole_t(jp_t)
       if(abs(lflag) .ne. ip_t) return
 !
-      do knum = 1, nnod_sph_r(jp_r)
-        k = inod_sph_r(knum,jp_r)
-        kflag = iflag_internal_r(k,jp_r)
+      do knum = 1, stbl%nnod_sph_r(jp_r)
+        k = stbl%inod_sph_r(knum,jp_r)
+        kflag = stbl%iflag_internal_r(k,jp_r)
         if(abs(kflag) .ne. ip_r) cycle
 !
        if(kflag.lt.izero .or. lflag.lt. izero) then
           icou = icou + 1
-          item_export_1d_rtp(1,icou) = irev_sph_r(k,ip_r)
-          item_export_1d_rtp(2,icou) = nnod_sph_t(ip_t)+1
-          item_export_1d_rtp(3,icou) = 1
+          stbl%item_export_1d_rtp(1,icou) = stbl%irev_sph_r(k,ip_r)
+          stbl%item_export_1d_rtp(2,icou) = stbl%nnod_sph_t(ip_t) + 1
+          stbl%item_export_1d_rtp(3,icou) = 1
 !
           nod_comm%item_export(icou)                                    &
-     &          = sph_n_pole_node_id(item_export_1d_rtp(1,icou))
+     &          = sph_n_pole_node_id(stbl%item_export_1d_rtp(1,icou))
         end if
       end do
 !

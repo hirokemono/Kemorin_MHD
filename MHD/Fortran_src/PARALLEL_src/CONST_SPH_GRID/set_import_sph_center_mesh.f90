@@ -64,10 +64,10 @@
      &  .and.  stbl%iflag_center_r(jp_r) .eq. ip_r                      &
      &  .and.  stbl%iflag_Spole_t(ip_t) .eq.  ip_t) then
 !
-        do lnum = 1, nnod_sph_ct
-          l = inod_sph_ct(lnum)
-          if(iflag_internal_t(l,jp_t) .eq. jp_t) then
-            num_import = num_import + nidx_global_fem(3)
+        do lnum = 1, stbl%nnod_sph_ct
+          l = stbl%inod_sph_ct(lnum)
+          if(stbl%iflag_internal_t(l,jp_t) .eq. jp_t) then
+            num_import = num_import + stbl%nidx_global_fem(3)
           end if
         end do
       end if
@@ -115,9 +115,9 @@
      &  .and.  stbl%iflag_Spole_t(ip_t) .eq.  0                         &
      &  .and.  stbl%iflag_Spole_t(jp_t) .eq.  jp_t) then
         icou = icou + 1
-        item_import_1d_rtp(1,icou) = 0
-        item_import_1d_rtp(2,icou) = 0
-        item_import_1d_rtp(3,icou) = 1
+        stbl%item_import_1d_rtp(1,icou) = 0
+        stbl%item_import_1d_rtp(2,icou) = 0
+        stbl%item_import_1d_rtp(3,icou) = 1
 !
         nod_comm%item_import(icou) = sph_center_node_id()
       end if
@@ -147,32 +147,37 @@
      &  .and.  stbl%iflag_Spole_t(ip_t) .eq.  ip_t) then
 !
         ist = icou
-        do lnum = 1, nnod_sph_ct
-          l = inod_sph_ct(lnum)
-          if(iflag_internal_t(l,jp_t) .eq. jp_t) then
+        do lnum = 1, stbl%nnod_sph_ct
+          l = stbl%inod_sph_ct(lnum)
+          if(stbl%iflag_internal_t(l,jp_t) .eq. jp_t) then
 !
             icou = icou + 1
-            item_import_1d_rtp(1,icou) = irev_sph_r(ione,ip_r)
-            item_import_1d_rtp(2,icou) = lnum
-            item_import_1d_rtp(3,icou) = 1
+            stbl%item_import_1d_rtp(1,icou)                             &
+     &                               = stbl%irev_sph_r(ione,ip_r)
+            stbl%item_import_1d_rtp(2,icou) = lnum
+            stbl%item_import_1d_rtp(3,icou) = 1
 !
             nod_comm%item_import(icou)                                  &
-     &         = sph_ctr_shell_node_id(nnod_sph_ct,                     &
-     &          item_import_1d_rtp(2,icou), item_import_1d_rtp(3,icou))
+     &         = sph_ctr_shell_node_id(stbl%nnod_sph_ct,                &
+     &                                 stbl%item_import_1d_rtp(2,icou), &
+     &                                 stbl%item_import_1d_rtp(3,icou))
           end if
         end do
         num_rl = icou - ist
 !
-        do m = 2, nidx_global_fem(3)
+        do m = 2, stbl%nidx_global_fem(3)
           do l = 1, num_rl
             icou = icou + 1
-            item_import_1d_rtp(1,icou) = item_import_1d_rtp(1,l+ist)
-            item_import_1d_rtp(2,icou) = item_import_1d_rtp(2,l+ist)
-            item_import_1d_rtp(3,icou) = m
+            stbl%item_import_1d_rtp(1,icou)                             &
+     &                               = stbl%item_import_1d_rtp(1,l+ist)
+            stbl%item_import_1d_rtp(2,icou)                             &
+     &                               = stbl%item_import_1d_rtp(2,l+ist)
+            stbl%item_import_1d_rtp(3,icou) = m
 !
             nod_comm%item_import(icou)                                  &
-     &         = sph_ctr_shell_node_id(nnod_sph_ct,                     &
-     &          item_import_1d_rtp(2,icou), item_import_1d_rtp(3,icou))
+     &         = sph_ctr_shell_node_id(stbl%nnod_sph_ct,                &
+     &                                 stbl%item_import_1d_rtp(2,icou), &
+     &                                 stbl%item_import_1d_rtp(3,icou))
           end do
         end do
       end if
@@ -201,9 +206,9 @@
      &  .and.  stbl%iflag_Npole_t(jp_t) .eq.  jp_t) then
 !
         icou = icou + 1
-        item_import_1d_rtp(1,icou) = irev_sph_r(ione,ip_r)
-        item_import_1d_rtp(2,icou) = nnod_sph_t(ip_t)+1
-        item_import_1d_rtp(3,icou) = 1
+        stbl%item_import_1d_rtp(1,icou) = stbl%irev_sph_r(ione,ip_r)
+        stbl%item_import_1d_rtp(2,icou) = stbl%nnod_sph_t(ip_t) + 1
+        stbl%item_import_1d_rtp(3,icou) = 1
 !
         nod_comm%item_import(icou) = sph_center_np_node_id()
       end if

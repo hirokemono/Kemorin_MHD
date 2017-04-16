@@ -274,7 +274,7 @@
 !
           do i = 1, sph_rtp%nidx_global_rtp(1)
             kr = spctl%radius_ctl%ivec(i)
-            radius_1d_gl(kr) = spctl%radius_ctl%vect(i)
+            stbl%radius_1d_gl(kr) = spctl%radius_ctl%vect(i)
           end do
 !
           call dealloc_control_array_i_r(spctl%radius_ctl)

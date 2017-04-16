@@ -56,7 +56,7 @@
       end do
       do i = 1, sph_rtp%nidx_rtp(1)
         j = sph_rtp%idx_gl_1d_rtp_r(i)
-        sph_rtp%radius_1d_rtp_r(i) = radius_1d_gl(j)
+        sph_rtp%radius_1d_rtp_r(i) = stbl%radius_1d_gl(j)
       end do
 !
       do i = 1, sph_rtp%nidx_rtp(2)
@@ -89,7 +89,7 @@
       end do
       do i = 1, sph_rtm%nidx_rtm(1)
         j = sph_rtm%idx_gl_1d_rtm_r(i)
-        sph_rtm%radius_1d_rtm_r(i) = radius_1d_gl(j)
+        sph_rtm%radius_1d_rtm_r(i) = stbl%radius_1d_gl(j)
       end do
 !
       do i = 1, sph_rtm%nidx_rtm(2)
@@ -122,7 +122,7 @@
       end do
       do i = 1, sph_rlm%nidx_rlm(1)
         j = sph_rlm%idx_gl_1d_rlm_r(i)
-        sph_rlm%radius_1d_rlm_r(i) = radius_1d_gl(j)
+        sph_rlm%radius_1d_rlm_r(i) = stbl%radius_1d_gl(j)
       end do
 !
       do i = 1, sph_rlm%nidx_rlm(2)
@@ -151,7 +151,7 @@
       end do
       do i = 1, sph_rj%nidx_rj(1)
         j = sph_rj%idx_gl_1d_rj_r(i)
-        sph_rj%radius_1d_rj_r(i) = radius_1d_gl(j)
+        sph_rj%radius_1d_rj_r(i) = stbl%radius_1d_gl(j)
       end do
 !
       do i = 1, sph_rj%nidx_rj(2)

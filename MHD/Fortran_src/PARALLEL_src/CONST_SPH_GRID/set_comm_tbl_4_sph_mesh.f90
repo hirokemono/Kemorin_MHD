@@ -39,18 +39,18 @@
       integer(kind = kint) :: knum, lnum
 !
 !
-      do lnum = 1, nnod_sph_t(ip_t)
-        l = inod_sph_t(lnum,ip_t)
-        lflag = iflag_internal_t(l,ip_t)
+      do lnum = 1, stbl%nnod_sph_t(ip_t)
+        l = stbl%inod_sph_t(lnum,ip_t)
+        lflag = stbl%iflag_internal_t(l,ip_t)
         if(abs(lflag) .ne. jp_t) cycle
 !
-        do knum = 1, nnod_sph_r(ip_r)
-          k = inod_sph_r(knum,ip_r)
-          kflag = iflag_internal_r(k,ip_r)
+        do knum = 1, stbl%nnod_sph_r(ip_r)
+          k = stbl%inod_sph_r(knum,ip_r)
+          kflag = stbl%iflag_internal_r(k,ip_r)
           if(abs(kflag) .ne. jp_r) cycle
 !
           if(kflag.lt.izero .or. lflag.lt. izero) then
-            num_import = num_import + nidx_global_fem(3)
+            num_import = num_import + stbl%nidx_global_fem(3)
           end if
         end do
       end do
@@ -77,41 +77,45 @@
 !
 !
       ist = icou
-      do lnum = 1, nnod_sph_t(ip_t)
-        l = inod_sph_t(lnum,ip_t)
-        lflag = iflag_internal_t(l,ip_t)
+      do lnum = 1, stbl%nnod_sph_t(ip_t)
+        l = stbl%inod_sph_t(lnum,ip_t)
+        lflag = stbl%iflag_internal_t(l,ip_t)
         if(abs(lflag) .ne. jp_t) cycle
 !
-        do knum = 1, nnod_sph_r(ip_r)
-          k = inod_sph_r(knum,ip_r)
-          kflag = iflag_internal_r(k,ip_r)
+        do knum = 1, stbl%nnod_sph_r(ip_r)
+          k = stbl%inod_sph_r(knum,ip_r)
+          kflag = stbl%iflag_internal_r(k,ip_r)
           if(abs(kflag) .ne. jp_r) cycle
 !
           if(kflag.lt.izero .or. lflag.lt. izero) then
             icou = icou + 1
-            item_import_1d_rtp(1,icou) = knum
-            item_import_1d_rtp(2,icou) = lnum
-            item_import_1d_rtp(3,icou) = 1
+            stbl%item_import_1d_rtp(1,icou) = knum
+            stbl%item_import_1d_rtp(2,icou) = lnum
+            stbl%item_import_1d_rtp(3,icou) = 1
 !
             nod_comm%item_import(icou)                                  &
      &         = sph_shell_node_id(ip_r, ip_t,                          &
-     &          item_import_1d_rtp(1,icou), item_import_1d_rtp(2,icou), &
-     &          item_import_1d_rtp(3,icou))
+     &                             stbl%item_import_1d_rtp(1,icou),     &
+     &                             stbl%item_import_1d_rtp(2,icou),     &
+     &                             stbl%item_import_1d_rtp(3,icou))
           end if
         end do
       end do
       num_rl = icou - ist
 !
-      do m = 2, nidx_global_fem(3)
+      do m = 2, stbl%nidx_global_fem(3)
         do k = 1, num_rl
           icou = icou + 1
-          item_import_1d_rtp(1,icou) = item_import_1d_rtp(1,k+ist)
-          item_import_1d_rtp(2,icou) = item_import_1d_rtp(2,k+ist)
-          item_import_1d_rtp(3,icou) = m
+          stbl%item_import_1d_rtp(1,icou)                               &
+     &                           = stbl%item_import_1d_rtp(1,k+ist)
+          stbl%item_import_1d_rtp(2,icou)                               &
+     &                           = stbl%item_import_1d_rtp(2,k+ist)
+          stbl%item_import_1d_rtp(3,icou) = m
           nod_comm%item_import(icou)                                    &
      &         = sph_shell_node_id(ip_r, ip_t,                          &
-     &          item_import_1d_rtp(1,icou), item_import_1d_rtp(2,icou), &
-     &          item_import_1d_rtp(3,icou))
+     &                             stbl%item_import_1d_rtp(1,icou),     &
+     &                             stbl%item_import_1d_rtp(2,icou),     &
+     &                             stbl%item_import_1d_rtp(3,icou))
         end do
       end do
 !
@@ -133,18 +137,18 @@
       integer(kind = kint) :: knum, lnum
 !
 !
-      do lnum = 1, nnod_sph_t(jp_t)
-        l = inod_sph_t(lnum,jp_t)
-        lflag = iflag_internal_t(l,jp_t)
+      do lnum = 1, stbl%nnod_sph_t(jp_t)
+        l = stbl%inod_sph_t(lnum,jp_t)
+        lflag = stbl%iflag_internal_t(l,jp_t)
         if(abs(lflag) .ne. ip_t) cycle
 !
-        do knum = 1, nnod_sph_r(jp_r)
-          k = inod_sph_r(knum,jp_r)
-          kflag = iflag_internal_r(k,jp_r)
+        do knum = 1, stbl%nnod_sph_r(jp_r)
+          k = stbl%inod_sph_r(knum,jp_r)
+          kflag = stbl%iflag_internal_r(k,jp_r)
           if(abs(kflag) .ne. ip_r) cycle
 !
           if(kflag.lt.izero .or. lflag.lt. izero) then
-            num_export = num_export + nidx_global_fem(3)
+            num_export = num_export + stbl%nidx_global_fem(3)
           end if
         end do
       end do
@@ -171,41 +175,45 @@
 !
 !
       ist = icou
-      do lnum = 1, nnod_sph_t(jp_t)
-        l = inod_sph_t(lnum,jp_t)
-        lflag = iflag_internal_t(l,jp_t)
+      do lnum = 1, stbl%nnod_sph_t(jp_t)
+        l = stbl%inod_sph_t(lnum,jp_t)
+        lflag = stbl%iflag_internal_t(l,jp_t)
         if(abs(lflag) .ne. ip_t) cycle
 !
-        do knum = 1, nnod_sph_r(jp_r)
-          k = inod_sph_r(knum,jp_r)
-          kflag = iflag_internal_r(k,jp_r)
+        do knum = 1, stbl%nnod_sph_r(jp_r)
+          k = stbl%inod_sph_r(knum,jp_r)
+          kflag = stbl%iflag_internal_r(k,jp_r)
           if(abs(kflag) .ne. ip_r) cycle
 !
           if(kflag.lt.izero .or. lflag.lt. izero) then
             icou = icou + 1
-            item_export_1d_rtp(1,icou) = irev_sph_r(k,ip_r)
-            item_export_1d_rtp(2,icou) = irev_sph_t(l,ip_t)
-            item_export_1d_rtp(3,icou) = 1
+            stbl%item_export_1d_rtp(1,icou) = stbl%irev_sph_r(k,ip_r)
+            stbl%item_export_1d_rtp(2,icou) = stbl%irev_sph_t(l,ip_t)
+            stbl%item_export_1d_rtp(3,icou) = 1
 !
             nod_comm%item_export(icou)                                  &
      &         = sph_shell_node_id(ip_r, ip_t,                          &
-     &          item_export_1d_rtp(1,icou), item_export_1d_rtp(2,icou), &
-     &          item_export_1d_rtp(3,icou))
+     &                             stbl%item_export_1d_rtp(1,icou),     &
+     &                             stbl%item_export_1d_rtp(2,icou),     &
+     &                             stbl%item_export_1d_rtp(3,icou))
           end if
         end do
       end do
       num_rl = icou - ist
 !
-      do m = 2, nidx_global_fem(3)
+      do m = 2, stbl%nidx_global_fem(3)
         do k = 1, num_rl
           icou = icou + 1
-          item_export_1d_rtp(1,icou) = item_export_1d_rtp(1,k+ist)
-          item_export_1d_rtp(2,icou) = item_export_1d_rtp(2,k+ist)
-          item_export_1d_rtp(3,icou) = m
+          stbl%item_export_1d_rtp(1,icou)                               &
+     &                           = stbl%item_export_1d_rtp(1,k+ist)
+          stbl%item_export_1d_rtp(2,icou)                               &
+     &                           = stbl%item_export_1d_rtp(2,k+ist)
+          stbl%item_export_1d_rtp(3,icou) = m
           nod_comm%item_export(icou)                                    &
      &         = sph_shell_node_id(ip_r, ip_t,                          &
-     &          item_export_1d_rtp(1,icou), item_export_1d_rtp(2,icou), &
-     &          item_export_1d_rtp(3,icou))
+     &                             stbl%item_export_1d_rtp(1,icou),     &
+     &                             stbl%item_export_1d_rtp(2,icou),     &
+     &                             stbl%item_export_1d_rtp(3,icou))
         end do
       end do
 !

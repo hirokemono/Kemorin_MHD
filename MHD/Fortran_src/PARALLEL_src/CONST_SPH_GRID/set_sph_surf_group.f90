@@ -78,14 +78,14 @@
           kr = radial_rj_grp%item_grp(knum)
           if(surf_grp%grp_name(icou) .eq. ICB_nod_grp_name              &
      &         .or. surf_grp%grp_name(icou) .eq. CTR_nod_grp_name) then
-            kl1 = irev_sph_r(kr,  ip_r)
-            kl2 = irev_sph_r(kr+1,ip_r)
+            kl1 = stbl%irev_sph_r(kr,  ip_r)
+            kl2 = stbl%irev_sph_r(kr+1,ip_r)
           else
-            kl1 = irev_sph_r(kr-1,ip_r)
-            kl2 = irev_sph_r(kr,  ip_r)
+            kl1 = stbl%irev_sph_r(kr-1,ip_r)
+            kl2 = stbl%irev_sph_r(kr,  ip_r)
           end if
 !
-          do kele = 1, nele_sph_r(ip_r)
+          do kele = 1, stbl%nele_sph_r(ip_r)
             if      (stbl%ie_sph_r(kele,1,ip_r) .eq. kl1                &
      &         .and. stbl%ie_sph_r(kele,2,ip_r) .eq. kl2) then
               call count_surf_grp_item_on_sphere(ip_t, sph_params,      &
@@ -129,16 +129,16 @@
           kr = radial_rj_grp%item_grp(knum)
           if(surf_grp%grp_name(icou) .eq. ICB_nod_grp_name              &
      &         .or. surf_grp%grp_name(icou) .eq. CTR_nod_grp_name) then
-            kl1 = irev_sph_r(kr,  ip_r)
-            kl2 = irev_sph_r(kr+1,ip_r)
+            kl1 = stbl%irev_sph_r(kr,  ip_r)
+            kl2 = stbl%irev_sph_r(kr+1,ip_r)
             isf = ifive
           else
-            kl1 = irev_sph_r(kr-1,ip_r)
-            kl2 = irev_sph_r(kr,  ip_r)
+            kl1 = stbl%irev_sph_r(kr-1,ip_r)
+            kl2 = stbl%irev_sph_r(kr,  ip_r)
             isf = isix
           end if
 !
-          do kele = 1, nele_sph_r(ip_r)
+          do kele = 1, stbl%nele_sph_r(ip_r)
             if      (stbl%ie_sph_r(kele,1,ip_r) .eq. kl1                &
      &         .and. stbl%ie_sph_r(kele,2,ip_r) .eq. kl2) then
               call set_surf_grp_item_on_sphere(ip_r, ip_t, kele,        &
@@ -164,7 +164,8 @@
       integer(kind = kint), intent(inout) :: nitem_grp
 !
 !
-      nitem_grp = nitem_grp + nele_sph_t(ip_t)*nidx_global_fem(3)
+      nitem_grp = nitem_grp                                             &
+     &           + stbl%nele_sph_t(ip_t) * stbl%nidx_global_fem(3)
 !
 !    Set elements for poles
       if    (sph_params%iflag_shell_mode .eq. iflag_MESH_w_pole         &
@@ -201,8 +202,8 @@
       integer(kind = kint) :: l, m
 !
 !
-      do m = 1, nidx_global_fem(3)
-        do l = 1, nele_sph_t(ip_t)
+      do m = 1, stbl%nidx_global_fem(3)
+        do l = 1, stbl%nele_sph_t(ip_t)
           inum = inum + 1
           surf_grp%item_sf_grp(1,inum)                                  &
      &                     = sph_shell_ele_id(ip_r, ip_t, kr, l, m)

@@ -105,8 +105,8 @@
 !
       integer(kind = kint), intent(in) :: ip_r, ip_t
 !
-      nele_lc_shell = nele_sph_r(ip_r) * nele_sph_t(ip_t)               &
-     &               * nidx_global_fem(3)
+      nele_lc_shell =  stbl%nele_sph_r(ip_r) * stbl%nele_sph_t(ip_t)    &
+     &               * stbl%nidx_global_fem(3)
 !
       end subroutine set_nele_lc_shell
 !
@@ -117,7 +117,7 @@
       integer(kind = kint), intent(in) :: ip_r
 !
 !
-      nele_lc_Spole =  nele_sph_r(ip_r) * stbl%nele_around_pole
+      nele_lc_Spole =  stbl%nele_sph_r(ip_r) * stbl%nele_around_pole
 !
       end subroutine set_nele_lc_Spole
 !
@@ -127,7 +127,7 @@
 !
       integer(kind = kint), intent(in) :: ip_r
 !
-      nele_lc_Npole = nele_sph_r(ip_r) * stbl%nele_around_pole
+      nele_lc_Npole = stbl%nele_sph_r(ip_r) * stbl%nele_around_pole
 !
       end subroutine set_nele_lc_Npole
 !
@@ -136,7 +136,8 @@
       subroutine set_nele_lc_ctr_sph
 !
 !
-      nele_lc_ctr_sph = (nidx_global_fem(2)-1)*nidx_global_fem(3)
+      nele_lc_ctr_sph = (stbl%nidx_global_fem(2)-1)                     &
+     &                 * stbl%nidx_global_fem(3)
 !
       end subroutine set_nele_lc_ctr_sph
 !
@@ -146,7 +147,8 @@
 !
       integer(kind = kint), intent(in) :: ip_t
 !
-      nele_ext_ctr_sph = nele_sph_t(ip_t) * nidx_global_fem(3)
+      nele_ext_ctr_sph =  stbl%nele_sph_t(ip_t)                         &
+     &                  * stbl%nidx_global_fem(3)
 !
       end subroutine set_nele_ext_ctr_sph
 !
@@ -173,9 +175,9 @@
 !
       integer(kind = kint_gl) :: nr8, nt8, np8
 !
-      nr8 = nidx_global_fem(1)-1
-      nt8 = nidx_global_fem(2)-1
-      np8 = nidx_global_fem(3)
+      nr8 = stbl%nidx_global_fem(1)-1
+      nt8 = stbl%nidx_global_fem(2)-1
+      np8 = stbl%nidx_global_fem(3)
       nele_gl_shell = nr8 * nt8 * np8
 !
       end subroutine set_nele_gl_shell
@@ -187,7 +189,7 @@
       integer(kind = kint_gl) :: nr8
 !
 !
-      nr8 = nidx_global_fem(1)-1
+      nr8 = stbl%nidx_global_fem(1) - 1
       nele_gl_Spole = nr8 * stbl%nele_around_pole
 !
       end subroutine set_nele_gl_Spole
@@ -198,7 +200,7 @@
 !
       integer(kind = kint_gl) :: nr8
 !
-      nr8 = nidx_global_fem(1)-1
+      nr8 = stbl%nidx_global_fem(1) - 1
       nele_gl_Npole = nr8 * stbl%nele_around_pole
 !
       end subroutine set_nele_gl_Npole
@@ -209,8 +211,8 @@
 !
       integer(kind = kint_gl) :: nt8, np8
 !
-      nt8 = nidx_global_fem(2)-1
-      np8 = nidx_global_fem(3)
+      nt8 = stbl%nidx_global_fem(2) - 1
+      np8 = stbl%nidx_global_fem(3)
       nele_gl_ctr_sph = nt8 * np8
       nele_gl_ctr_Spole = stbl%nele_around_pole
       nele_gl_ctr_Npole = stbl%nele_around_pole
@@ -241,8 +243,8 @@
       integer(kind = kint), intent(in) :: kr, lt, mp
 !
 !
-      sph_shell_ele_id =  kr + (lt-1) * nele_sph_r(ip_r)                &
-     &                  + (mp-1) * nele_sph_r(ip_r)*nele_sph_t(ip_t)
+      sph_shell_ele_id =  kr + (lt-1) * stbl%nele_sph_r(ip_r)           &
+     &         + (mp-1) * stbl%nele_sph_r(ip_r) * stbl%nele_sph_t(ip_t)
 !
       end function sph_shell_ele_id
 !
@@ -254,8 +256,8 @@
       integer(kind = kint), intent(in) :: kr, mp
 !
 !
-      sph_s_pole_ele_id = kr + (mp-1) * nele_sph_r(ip_r)                &
-     &                        + nele_lc_shell
+      sph_s_pole_ele_id = kr + (mp-1) * stbl%nele_sph_r(ip_r)           &
+     &                       + nele_lc_shell
 !
       end function sph_s_pole_ele_id
 !
@@ -267,8 +269,8 @@
       integer(kind = kint), intent(in) :: kr, mp
 !
 !
-      sph_n_pole_ele_id = kr + (mp-1) * nele_sph_r(ip_r)                &
-     &                        + nele_lc_shell + nele_lc_Spole
+      sph_n_pole_ele_id = kr + (mp-1) * stbl%nele_sph_r(ip_r)           &
+     &                       + nele_lc_shell + nele_lc_Spole
 !
       end function sph_n_pole_ele_id
 !
@@ -279,8 +281,9 @@
       integer(kind = kint), intent(in) :: lt, mp
 !
 !
-      sph_inter_ctr_shell_ele_id = lt + (mp-1) * (nidx_global_fem(2)-1) &
-     &           + nele_lc_shell + nele_lc_Spole + nele_lc_Npole
+      sph_inter_ctr_shell_ele_id                                        &
+     &   = lt + (mp-1) * (stbl%nidx_global_fem(2)-1)                    &
+     &        + nele_lc_shell + nele_lc_Spole + nele_lc_Npole
 !
       end function sph_inter_ctr_shell_ele_id
 !
@@ -292,7 +295,7 @@
       integer(kind = kint), intent(in) :: ip_t, lt, mp
 !
 !
-      sph_exter_ctr_shell_ele_id = lt + (mp-1) * nele_sph_t(ip_t)       &
+      sph_exter_ctr_shell_ele_id = lt + (mp-1) * stbl%nele_sph_t(ip_t)  &
      &           + nele_lc_shell + nele_lc_Spole + nele_lc_Npole
 !
       end function sph_exter_ctr_shell_ele_id
@@ -346,8 +349,8 @@
       integer(kind = kint_gl) :: nr8, nt8
 !
 !
-      nr8 = nidx_global_fem(1)-1
-      nt8 = nidx_global_fem(2)-1
+      nr8 = stbl%nidx_global_fem(1) - 1
+      nt8 = stbl%nidx_global_fem(2) - 1
       global_sph_shell_ele_id =  kr + (lt-1) * nr8 + (mp-1) * nr8*nt8
 !
       end function global_sph_shell_ele_id
@@ -360,7 +363,7 @@
       integer(kind = kint_gl) :: nr8
 !
 !
-      nr8 = nidx_global_fem(1)-1
+      nr8 = stbl%nidx_global_fem(1) - 1
       global_sph_s_pole_ele_id = kr + (mp-1) * nr8                      &
      &                          + nele_gl_shell
 !
@@ -374,7 +377,7 @@
       integer(kind = kint_gl) :: nr8
 !
 !
-      nr8 = nidx_global_fem(1)-1
+      nr8 = stbl%nidx_global_fem(1) - 1
       global_sph_n_pole_ele_id = kr + (mp-1) * nr8                      &
      &                          + nele_gl_shell + nele_gl_Spole
 !
@@ -388,7 +391,7 @@
       integer(kind = kint_gl) :: nt8
 !
 !
-      nt8 = nidx_global_fem(2)-1
+      nt8 = stbl%nidx_global_fem(2) - 1
       global_ctr_shell_ele_id = lt + (mp-1) * nt8                       &
      &                         + nele_gl_shell + nele_gl_Spole          &
      &                         + nele_gl_Npole

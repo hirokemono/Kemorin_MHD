@@ -108,8 +108,9 @@
       subroutine set_intnod_shell
 !
 !
-      intnod_shell                                                      &
-     &      = nidx_local_fem(1)*nidx_local_fem(2)*nidx_local_fem(3)
+      intnod_shell =  stbl%nidx_local_fem(1)                            &
+     &              * stbl%nidx_local_fem(2)                            &
+     &              * stbl%nidx_local_fem(3)
 !
       end subroutine set_intnod_shell
 !
@@ -118,7 +119,7 @@
       subroutine set_intnod_Spole
 !
 !
-      intnod_Spole = nidx_local_fem(1)
+      intnod_Spole = stbl%nidx_local_fem(1)
 !
       end subroutine set_intnod_Spole
 !
@@ -127,7 +128,7 @@
       subroutine set_intnod_Npole
 !
 !
-      intnod_Npole = nidx_local_fem(1)
+      intnod_Npole = stbl%nidx_local_fem(1)
 !
       end subroutine set_intnod_Npole
 !
@@ -147,8 +148,8 @@
 !
       integer(kind = kint), intent(in) :: ip_r, ip_t
 !
-      nnod_lc_shell = nnod_sph_r(ip_r)*nnod_sph_t(ip_t)                 &
-     &               *nidx_global_fem(3)
+      nnod_lc_shell =  stbl%nnod_sph_r(ip_r) * stbl%nnod_sph_t(ip_t)    &
+     &               * stbl%nidx_global_fem(3)
 !
       end subroutine set_nnod_lc_shell
 !
@@ -188,7 +189,7 @@
 !
       integer(kind = kint), intent(in) :: nnod_sph_ct
 !
-      nnod_lc_ctr_sph = nnod_sph_ct*nidx_global_fem(3)
+      nnod_lc_ctr_sph = nnod_sph_ct * stbl%nidx_global_fem(3)
 !
       end subroutine set_nnod_lc_ctr_sph
 !
@@ -208,8 +209,9 @@
       subroutine set_nnod_gl_shell
 !
 !
-      nnod_gl_shell                                                     &
-     &     = nidx_global_fem(1)*nidx_global_fem(2)*nidx_global_fem(3)
+      nnod_gl_shell =  stbl%nidx_global_fem(1)                          &
+     &               * stbl%nidx_global_fem(2)                          &
+     &               * stbl%nidx_global_fem(3)
 !
       end subroutine set_nnod_gl_shell
 !
@@ -218,7 +220,7 @@
       subroutine set_nnod_gl_Spole
 !
 !
-      nnod_gl_Spole = nidx_global_fem(1)
+      nnod_gl_Spole = stbl%nidx_global_fem(1)
 !
       end subroutine set_nnod_gl_Spole
 !
@@ -227,7 +229,7 @@
       subroutine set_nnod_gl_Npole
 !
 !
-      nnod_gl_Npole = nidx_global_fem(1)
+      nnod_gl_Npole = stbl%nidx_global_fem(1)
 !
       end subroutine set_nnod_gl_Npole
 !
@@ -280,8 +282,9 @@
       integer(kind = kint), intent(in) :: kr, lt, mp
 !
 !
-      sph_shell_node_id = kr + (lt-1)*nnod_sph_r(ip_r)                  &
-     &                   + (mp-1)*nnod_sph_r(ip_r)*nnod_sph_t(ip_t)
+      sph_shell_node_id = kr + (lt-1) * stbl%nnod_sph_r(ip_r)           &
+     &                       + (mp-1) * stbl%nnod_sph_r(ip_r)           &
+     &                                * stbl%nnod_sph_t(ip_t)
 !
       end function sph_shell_node_id
 !
@@ -351,8 +354,9 @@
       integer(kind = kint), intent(in) :: kr, lt, mp
 !
 !
-      global_sph_shell_node_id = kr + (lt-1)*nidx_global_fem(1)         &
-     &                   + (mp-1)*nidx_global_fem(1)*nidx_global_fem(2)
+      global_sph_shell_node_id                                          &
+          = kr + (lt-1)*stbl%nidx_global_fem(1)                         &
+     &         + (mp-1)*stbl%nidx_global_fem(1)*stbl%nidx_global_fem(2)
 !
       end function global_sph_shell_node_id
 !

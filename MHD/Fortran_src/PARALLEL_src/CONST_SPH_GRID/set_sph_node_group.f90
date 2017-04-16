@@ -87,9 +87,9 @@
           kr = radial_rj_grp%item_grp(knum)
 !
           nod_grp%grp_name(icou) = radial_rj_grp%grp_name(igrp)
-          if(irev_sph_r(kr,ip_r) .gt. 0) then
+          if(stbl%irev_sph_r(kr,ip_r) .gt. 0) then
             call count_node_grp_on_sphere(ip_r, ip_t,                   &
-     &          irev_sph_r(kr,ip_r), nod_grp%nitem_grp(icou))
+     &          stbl%irev_sph_r(kr,ip_r), nod_grp%nitem_grp(icou))
           else
             nod_grp%nitem_grp(icou) =  0
           end if
@@ -103,14 +103,14 @@
         icou = icou + 1
         nod_grp%grp_name(icou) = 'South_pole'
         if(stbl%iflag_Spole_t(ip_t) .gt. 0)  then
-          nod_grp%nitem_grp(icou) = nnod_sph_r(ip_r)
+          nod_grp%nitem_grp(icou) = stbl%nnod_sph_r(ip_r)
         end if
 !
 !    count nodes for north pole
         icou = icou + 1
         nod_grp%grp_name(icou) = 'North_pole'
         if(stbl%iflag_Npole_t(ip_t) .gt. 0)  then
-          nod_grp%nitem_grp(icou) = nnod_sph_r(ip_r)
+          nod_grp%nitem_grp(icou) = stbl%nnod_sph_r(ip_r)
         else if(stbl%iflag_Npole_t(ip_t) .eq. 0)  then
           if      (stbl%iflag_center_r(ip_r) .gt. 0                     &
              .and. stbl%iflag_Spole_t(ip_t) .gt. 0) then
@@ -155,9 +155,9 @@
           knum = radial_rj_grp%istack_grp(igrp)
           kr = radial_rj_grp%item_grp(knum)
 !
-          if(irev_sph_r(kr,ip_r) .gt. 0) then
+          if(stbl%irev_sph_r(kr,ip_r) .gt. 0) then
             call set_node_grp_item_on_sphere(ip_r, ip_t,                &
-     &          irev_sph_r(kr,ip_r), icou, nod_grp)
+     &          stbl%irev_sph_r(kr,ip_r), icou, nod_grp)
           end if
         end if
       end do
@@ -169,7 +169,7 @@
         icou = icou + 1
         inum = nod_grp%istack_grp(icou-1)
         if(stbl%iflag_Spole_t(ip_t) .gt. 0)  then
-          do knum = 1, nnod_sph_r(ip_r)
+          do knum = 1, stbl%nnod_sph_r(ip_r)
             inum = inum + 1
             nod_grp%item_grp(inum) = sph_s_pole_node_id(knum)
           end do
@@ -179,7 +179,7 @@
         icou = icou + 1
         inum = nod_grp%istack_grp(icou-1)
         if(stbl%iflag_Npole_t(ip_t) .gt. 0)  then
-          do knum = 1, nnod_sph_r(ip_r)
+          do knum = 1, stbl%nnod_sph_r(ip_r)
             inum = inum + 1
             nod_grp%item_grp(inum) = sph_n_pole_node_id(knum)
           end do
@@ -213,17 +213,18 @@
       integer(kind = kint), intent(inout) :: nitem_grp
 !
 !
-      nitem_grp = nidx_global_fem(3)*nnod_sph_t(ip_t)
+      nitem_grp = stbl%nidx_global_fem(3) * stbl%nnod_sph_t(ip_t)
 !
       if(stbl%iflag_Spole_t(ip_t) .gt. 0) nitem_grp = nitem_grp + 1
       if(stbl%iflag_Npole_t(ip_t) .gt. 0) nitem_grp = nitem_grp + 1
 !
 !     Set nodes around center
 !
-      if(inod_sph_r(knum,ip_r) .eq. 1                                   &
-     &     .and.  stbl%iflag_center_r(ip_r) .gt. 0)  then
+      if       (stbl%inod_sph_r(knum,ip_r) .eq. 1                       &
+     &    .and. stbl%iflag_center_r(ip_r) .gt. 0)  then
         if(stbl%iflag_Spole_t(ip_t) .gt. 0)  then
-          nitem_grp = nitem_grp + nidx_global_fem(3)*nnod_sph_ct
+          nitem_grp = nitem_grp                                         &
+     &               + stbl%nidx_global_fem(3) * stbl%nnod_sph_ct
           if(stbl%iflag_Npole_t(ip_t) .eq. 0) nitem_grp = nitem_grp + 1
           end if
       end if
@@ -245,8 +246,8 @@
 !
 !
       inum = nod_grp%istack_grp(icou-1)
-      do mnum = 1, nidx_global_fem(3)
-        do lnum = 1, nnod_sph_t(ip_t)
+      do mnum = 1, stbl%nidx_global_fem(3)
+        do lnum = 1, stbl%nnod_sph_t(ip_t)
           inum = inum + 1
           nod_grp%item_grp(inum) = sph_shell_node_id(ip_r, ip_t,        &
      &                            knum, lnum, mnum)
@@ -266,14 +267,15 @@
       end if
 !
 !     Set nodes around center
-      if(inod_sph_r(knum,ip_r) .eq. 1                                   &
-     &     .and.  stbl%iflag_center_r(ip_r) .gt. 0)  then
+      if      (stbl%inod_sph_r(knum,ip_r) .eq. 1                        &
+     &   .and. stbl%iflag_center_r(ip_r) .gt. 0)  then
         if(stbl%iflag_Spole_t(ip_t) .gt. 0)  then
-          do mnum = 1, nidx_global_fem(3)
-            do lnum = 1, nnod_sph_ct
+          do mnum = 1, stbl%nidx_global_fem(3)
+            do lnum = 1, stbl%nnod_sph_ct
               inum = inum + 1
               nod_grp%item_grp(inum)                                    &
-     &               = sph_ctr_shell_node_id(nnod_sph_ct, lnum, mnum)
+     &               = sph_ctr_shell_node_id(stbl%nnod_sph_ct,          &
+     &                                       lnum, mnum)
             end do
           end do
 !

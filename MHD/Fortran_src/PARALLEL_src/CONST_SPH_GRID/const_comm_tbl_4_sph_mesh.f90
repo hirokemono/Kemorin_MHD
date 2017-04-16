@@ -45,12 +45,12 @@
 !
 !
       nod_comm%num_neib = 0
-      do jp = 1, ntot_domain-1
-        j_rank = mod((ip_rank+jp),ntot_domain)
+      do jp = 1, stbl%ntot_domain-1
+        j_rank = mod((ip_rank+jp),stbl%ntot_domain)
         jp_r = iglobal_rank_rtp(1,j_rank) + 1
         jp_t = iglobal_rank_rtp(2,j_rank) + 1
-        if(     iflag_neib_r(jp_r,ip_r).ne.izero                        &
-     &    .and. iflag_neib_t(jp_t,ip_t).ne.izero) then
+        if(     stbl%iflag_neib_r(jp_r,ip_r).ne.izero                   &
+     &    .and. stbl%iflag_neib_t(jp_t,ip_t).ne.izero) then
           nod_comm%num_neib = nod_comm%num_neib + 1
         end if
       end do
@@ -76,12 +76,12 @@
 !
       if(stbl%iflag_center_r(ip_r) .eq. izero) return
 !
-      do jp = 1, ntot_domain-1
-        j_rank = mod((ip_rank+jp),ntot_domain)
+      do jp = 1, stbl%ntot_domain-1
+        j_rank = mod((ip_rank+jp),stbl%ntot_domain)
         jp_r = iglobal_rank_rtp(1,j_rank) + 1
         jp_t = iglobal_rank_rtp(2,j_rank) + 1
-        if(     iflag_neib_r(jp_r,ip_r).gt.izero                        &
-     &    .and. iflag_neib_t(jp_t,ip_t).eq.izero) then
+        if(     stbl%iflag_neib_r(jp_r,ip_r).gt.izero                   &
+     &    .and. stbl%iflag_neib_t(jp_t,ip_t).eq.izero) then
           nod_comm%num_neib = nod_comm%num_neib + 1
         end if
       end do
@@ -106,13 +106,13 @@
 !
 !
       icou = 0
-      do jp = 1, ntot_domain-1
-        j_rank = mod((ip_rank+jp),ntot_domain)
+      do jp = 1, stbl%ntot_domain-1
+        j_rank = mod((ip_rank+jp),stbl%ntot_domain)
         jp_r = iglobal_rank_rtp(1,j_rank) + 1
         jp_t = iglobal_rank_rtp(2,j_rank) + 1
 !
-        if(     iflag_neib_r(jp_r,ip_r).ne.izero                        &
-     &    .and. iflag_neib_t(jp_t,ip_t).ne.izero) then
+        if(     stbl%iflag_neib_r(jp_r,ip_r).ne.izero                   &
+     &    .and. stbl%iflag_neib_t(jp_t,ip_t).ne.izero) then
           icou = icou + 1
           nod_comm%id_neib(icou) = j_rank
         end if
@@ -142,12 +142,12 @@
       if(stbl%iflag_center_r(ip_r) .eq. izero) return
 !
       icou = nod_comm%num_neib
-      do jp = 1, ntot_domain-1
-        j_rank = mod((ip_rank+jp),ntot_domain)
+      do jp = 1, stbl%ntot_domain-1
+        j_rank = mod((ip_rank+jp),stbl%ntot_domain)
         jp_r = iglobal_rank_rtp(1,j_rank) + 1
         jp_t = iglobal_rank_rtp(2,j_rank) + 1
-        if(     iflag_neib_r(jp_r,ip_r).gt.izero                        &
-     &    .and. iflag_neib_t(jp_t,ip_t).eq.izero) then
+        if(     stbl%iflag_neib_r(jp_r,ip_r).gt.izero                   &
+     &    .and. stbl%iflag_neib_t(jp_t,ip_t).eq.izero) then
           icou = icou + 1
           nod_comm%id_neib(icou) = j_rank
         end if

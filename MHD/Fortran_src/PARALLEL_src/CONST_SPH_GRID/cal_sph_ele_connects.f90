@@ -42,17 +42,17 @@
       integer(kind = kint) :: iele
 !
 !
-      do m = 1, nidx_global_fem(3)
+      do m = 1, stbl%nidx_global_fem(3)
         m1 = stbl%ie_sph_p(m,1)
         m2 = stbl%ie_sph_p(m,2)
-        do l = 1, nele_sph_t(ip_t)
+        do l = 1, stbl%nele_sph_t(ip_t)
           l1 = stbl%ie_sph_t(l,1,ip_t)
           l2 = stbl%ie_sph_t(l,2,ip_t)
-          l_gl = inod_sph_t(l1,ip_t)
-          do k = 1, nele_sph_r(ip_r)
+          l_gl = stbl%inod_sph_t(l1,ip_t)
+          do k = 1, stbl%nele_sph_r(ip_r)
             k1 = stbl%ie_sph_r(k,1,ip_r)
             k2 = stbl%ie_sph_r(k,2,ip_r)
-            k_gl = inod_sph_r(k1,ip_r)
+            k_gl = stbl%inod_sph_r(k1,ip_r)
 !
             iele = sph_shell_ele_id(ip_r, ip_t, k, l, m)
             ele%iele_global(iele)                                       &
@@ -90,10 +90,10 @@
         m1 = stbl%ie_sph_p(2*m-1,1)
         m2 = stbl%ie_sph_p(2*m,  1)
         m3 = stbl%ie_sph_p(2*m,  2)
-        do k = 1, nele_sph_r(ip_r)
+        do k = 1, stbl%nele_sph_r(ip_r)
           k1 = stbl%ie_sph_r(k,1,ip_r)
           k2 = stbl%ie_sph_r(k,2,ip_r)
-          k_gl = inod_sph_r(k1,ip_r)
+          k_gl = stbl%inod_sph_r(k1,ip_r)
 !
           iele = sph_s_pole_ele_id(ip_r, k, m)
           ele%iele_global(iele) = global_sph_s_pole_ele_id(k_gl, m)
@@ -128,10 +128,10 @@
         m1 = stbl%ie_sph_p(2*m-1,1)
         m2 = stbl%ie_sph_p(2*m,  1)
         m3 = stbl%ie_sph_p(2*m,  2)
-        do k = 1, nele_sph_r(ip_r)
+        do k = 1, stbl%nele_sph_r(ip_r)
           k1 = stbl%ie_sph_r(k,1,ip_r)
           k2 = stbl%ie_sph_r(k,2,ip_r)
-          k_gl = inod_sph_r(k1,ip_r)
+          k_gl = stbl%inod_sph_r(k1,ip_r)
 !
           iele = sph_n_pole_ele_id(ip_r, k, m)
           ele%iele_global(iele) = global_sph_n_pole_ele_id(k_gl, m)
@@ -163,10 +163,10 @@
 !
 !
       k2 = stbl%ie_center_r(2,ip_r)
-      do m = 1, nidx_global_fem(3)
+      do m = 1, stbl%nidx_global_fem(3)
         m1 = stbl%ie_sph_p(m,1)
         m2 = stbl%ie_sph_p(m,2)
-        do l = 1, nidx_global_fem(2)-1
+        do l = 1, stbl%nidx_global_fem(2)-1
           l1 = stbl%ie_center_t(l,1)
           l2 = stbl%ie_center_t(l,2)
 !
@@ -181,18 +181,18 @@
             ele%ie(iele,5) = sph_shell_node_id(ip_r, ip_t, k2, l1, m1)
             ele%ie(iele,6) = sph_shell_node_id(ip_r, ip_t, k2, l1, m2)
           else
-            ele%ie(iele,5) = sph_ctr_shell_node_id(nnod_sph_ct,         &
+            ele%ie(iele,5) = sph_ctr_shell_node_id(stbl%nnod_sph_ct,    &
      &                      (-l1), m1)
-            ele%ie(iele,6) = sph_ctr_shell_node_id(nnod_sph_ct,         &
+            ele%ie(iele,6) = sph_ctr_shell_node_id(stbl%nnod_sph_ct,    &
      &                      (-l1), m2)
           end if
           if(l2 .gt. 0) then
             ele%ie(iele,7) = sph_shell_node_id(ip_r, ip_t, k2, l2, m2)
             ele%ie(iele,8) = sph_shell_node_id(ip_r, ip_t, k2, l2, m1)
           else
-            ele%ie(iele,7) = sph_ctr_shell_node_id(nnod_sph_ct,         &
+            ele%ie(iele,7) = sph_ctr_shell_node_id(stbl%nnod_sph_ct,    &
      &                      (-l2), m2)
-            ele%ie(iele,8) = sph_ctr_shell_node_id(nnod_sph_ct,         &
+            ele%ie(iele,8) = sph_ctr_shell_node_id(stbl%nnod_sph_ct,    &
      &                      (-l2), m1)
           end if
         end do
@@ -213,13 +213,13 @@
 !
 !
       k2 = stbl%ie_center_r(2,ip_r)
-      do m = 1, nidx_global_fem(3)
+      do m = 1, stbl%nidx_global_fem(3)
         m1 = stbl%ie_sph_p(m,1)
         m2 = stbl%ie_sph_p(m,2)
-        do l = 1, nele_sph_t(ip_t)
+        do l = 1, stbl%nele_sph_t(ip_t)
           l1 = stbl%ie_sph_t(l,1,ip_t)
           l2 = stbl%ie_sph_t(l,2,ip_t)
-          l_gl = inod_sph_t(l1,ip_t)
+          l_gl = stbl%inod_sph_t(l1,ip_t)
 !
           iele = sph_exter_ctr_shell_ele_id(ip_t, l, m)
           ele%iele_global(iele) = global_ctr_shell_ele_id(l_gl, m)
@@ -301,11 +301,11 @@
           ele%ie(iele,7) = sph_shell_node_id(ip_r, ip_t, k2, l1, m3)
           ele%ie(iele,8) = sph_n_pole_node_id(k2)
         else
-          ele%ie(iele,5) = sph_ctr_shell_node_id(nnod_sph_ct,           &
+          ele%ie(iele,5) = sph_ctr_shell_node_id(stbl%nnod_sph_ct,      &
      &                    (-l1), m1)
-          ele%ie(iele,6) = sph_ctr_shell_node_id(nnod_sph_ct,           &
+          ele%ie(iele,6) = sph_ctr_shell_node_id(stbl%nnod_sph_ct,      &
      &                    (-l1), m2)
-          ele%ie(iele,7) = sph_ctr_shell_node_id(nnod_sph_ct,           &
+          ele%ie(iele,7) = sph_ctr_shell_node_id(stbl%nnod_sph_ct,      &
      &                    (-l1), m3)
           ele%ie(iele,8) = sph_center_np_node_id()
         end if

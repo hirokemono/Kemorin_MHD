@@ -65,15 +65,18 @@
       if(sph_param%iflag_radial_grid .eq. igrid_Chebyshev) then
         call set_chebyshev_distance_shell(sph_rtp%nidx_global_rtp(1),   &
      &      sph_param%nlayer_ICB, sph_param%nlayer_CMB,                 &
-     &      sph_param%radius_ICB, sph_param%radius_CMB, radius_1d_gl)
+     &      sph_param%radius_ICB, sph_param%radius_CMB,                 &
+     &      stbl%radius_1d_gl)
       else if(sph_param%iflag_radial_grid .eq. igrid_half_Chebyshev)    &
      & then
         call half_chebyshev_distance_shell(sph_rtp%nidx_global_rtp(1),  &
-     &      sph_param%nlayer_CMB, sph_param%radius_CMB, radius_1d_gl)
+     &      sph_param%nlayer_CMB, sph_param%radius_CMB,                 &
+     &      stbl%radius_1d_gl)
       else if(sph_param%iflag_radial_grid .eq. igrid_equidistance) then
         call set_equi_distance_shell(sph_rtp%nidx_global_rtp(1),        &
      &      sph_param%nlayer_ICB, sph_param%nlayer_CMB,                 &
-     &      sph_param%radius_ICB, sph_param%radius_CMB, radius_1d_gl)
+     &      sph_param%radius_ICB, sph_param%radius_CMB,                 &
+     &      stbl%radius_1d_gl)
       end if
 !
       end subroutine count_set_radial_grid
@@ -100,7 +103,7 @@
      &                         sph_rtp%nidx_global_rtp(1)
       do k = 1, sph_rtp%nidx_global_rtp(1)
         write(id_file,'(a,i6,1pE25.15e3)')                              &
-     &                     '      r_layer   ', k, radius_1d_gl(k)
+     &                     '      r_layer   ', k, stbl%radius_1d_gl(k)
       end do
       write(id_file,'(a)')    '    end array r_layer'
       write(id_file,'(a)')    '!'

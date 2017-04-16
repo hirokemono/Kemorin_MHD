@@ -73,77 +73,81 @@
 !
 !
       stbl%iflag_center_r =   0
-      iflag_internal_r = 0
+      stbl%iflag_internal_r = 0
       stbl%iflag_ele_r =      0
-      nmax_nod_sph_r =   0
+      stbl%nmax_nod_sph_r =   0
       stbl%nmax_ele_sph_r =   0
-      do ip = 1, ndomain_fem(1)
+      do ip = 1, stbl%ndomain_fem(1)
         ist = istack_idx_local_rtp_r(ip-1) + 1
         ied = istack_idx_local_rtp_r(ip)
         do k = ist, ied
           kr = idx_global_rtp_r(k)
-          iflag_internal_r(kr,ip) = 1
+          stbl%iflag_internal_r(kr,ip) = 1
 !
           if(kr.eq.ione) then
             if(iflag_shell_mode .eq. iflag_MESH_w_center) then
               stbl%iflag_center_r(ip) = 1
             end if
           else
-            if(iflag_internal_r(kr-1,ip) .eq. 0) then
-              iflag_internal_r(kr-1,ip) = -1
+            if(stbl%iflag_internal_r(kr-1,ip) .eq. 0) then
+              stbl%iflag_internal_r(kr-1,ip) = -1
             end if
           end if
 !
-          if(kr .lt. nidx_global_fem(1)                                 &
-     &        .and. iflag_internal_r(kr+1,ip) .eq. 0) then
-            iflag_internal_r(kr+1,ip) = -1
+          if(kr .lt. stbl%nidx_global_fem(1)                            &
+     &        .and. stbl%iflag_internal_r(kr+1,ip) .eq. 0) then
+            stbl%iflag_internal_r(kr+1,ip) = -1
           end if
         end do
 !
         stbl%iflag_ele_center(ip) = abs(stbl%iflag_center_r(ip)         &
-     &                        * iflag_internal_r(1,ip))
-        nnod_sph_r(ip) = abs(iflag_internal_r(1,ip))
-        nele_sph_r(ip) = 0
-        do kr = 1, nidx_global_fem(1)-1
-          stbl%iflag_ele_r(kr,ip) = abs(iflag_internal_r(kr,ip)         &
-     &                             * iflag_internal_r(kr+1,  ip))
-          nnod_sph_r(ip) = nnod_sph_r(ip)                               &
-     &                   + abs(iflag_internal_r(kr+1,ip))
-          nele_sph_r(ip)= nele_sph_r(ip) + abs(stbl%iflag_ele_r(kr,ip))
+     &                        * stbl%iflag_internal_r(1,ip))
+        stbl%nnod_sph_r(ip) = abs(stbl%iflag_internal_r(1,ip))
+        stbl%nele_sph_r(ip) = 0
+        do kr = 1, stbl%nidx_global_fem(1)-1
+          stbl%iflag_ele_r(kr,ip) = abs(stbl%iflag_internal_r(kr,ip)    &
+     &                             * stbl%iflag_internal_r(kr+1,  ip))
+          stbl%nnod_sph_r(ip) = stbl%nnod_sph_r(ip)                     &
+     &                         + abs(stbl%iflag_internal_r(kr+1,ip))
+          stbl%nele_sph_r(ip) = stbl%nele_sph_r(ip)                     &
+     &                         + abs(stbl%iflag_ele_r(kr,ip))
         end do
-        nmax_nod_sph_r = max(nmax_nod_sph_r,nnod_sph_r(ip))
-        stbl%nmax_ele_sph_r = max(stbl%nmax_ele_sph_r,nele_sph_r(ip))
+        stbl%nmax_nod_sph_r                                             &
+     &        = max(stbl%nmax_nod_sph_r,stbl%nnod_sph_r(ip))
+        stbl%nmax_ele_sph_r                                             &
+     &        = max(stbl%nmax_ele_sph_r,stbl%nele_sph_r(ip))
       end do
 !
-      do ip = 1, ndomain_fem(1)
-        iflag_neib_r(ip,ip) = 1
+      do ip = 1, stbl%ndomain_fem(1)
+        stbl%iflag_neib_r(ip,ip) = 1
       end do
 !
-      do kr = 1, nidx_global_fem(1)
-        do jp = 1, ndomain_fem(1)
-          if(iflag_internal_r(kr,jp) .eq. 1) then
+      do kr = 1, stbl%nidx_global_fem(1)
+        do jp = 1, stbl%ndomain_fem(1)
+          if(stbl%iflag_internal_r(kr,jp) .eq. 1) then
             ip = jp
             exit
           end if
         end do
-        do jp = 1, ndomain_fem(1)
-          iflag_internal_r(kr,jp) = iflag_internal_r(kr,jp) * ip
+        do jp = 1, stbl%ndomain_fem(1)
+          stbl%iflag_internal_r(kr,jp)                                  &
+     &                     = stbl%iflag_internal_r(kr,jp) * ip
         end do
-        do jp = 1, ndomain_fem(1)
-          if(iflag_internal_r(kr,jp) .lt. 0) then
-            ip = abs(iflag_internal_r(kr,jp))
-            iflag_neib_r(ip,jp) = -1
+        do jp = 1, stbl%ndomain_fem(1)
+          if(stbl%iflag_internal_r(kr,jp) .lt. 0) then
+            ip = abs(stbl%iflag_internal_r(kr,jp))
+            stbl%iflag_neib_r(ip,jp) = -1
           end if
         end do
       end do
 !
-      do jp = 1, ndomain_fem(1)
+      do jp = 1, stbl%ndomain_fem(1)
         stbl%iflag_center_r(jp) = stbl%iflag_center_r(jp) * jp
       end do
-      do jp = 1, ndomain_fem(1)
+      do jp = 1, stbl%ndomain_fem(1)
         if(stbl%iflag_center_r(jp) .lt. 0) then
           ip = abs(stbl%iflag_center_r(jp))
-          iflag_neib_r(ip,jp) = -1
+          stbl%iflag_neib_r(ip,jp) = -1
         end if
       end do
 !
@@ -160,11 +164,11 @@
       integer(kind = kint) :: k, ip, ist, ied, jp
 !
 !
-      iflag_internal_t = 0
+      stbl%iflag_internal_t = 0
       stbl%iflag_ele_t =      0
-      nmax_nod_sph_t =   0
+      stbl%nmax_nod_sph_t =   0
       stbl%nmax_ele_sph_t =   0
-      do ip = 1, ndomain_fem(2)
+      do ip = 1, stbl%ndomain_fem(2)
         ist = istack_idx_local_rtp_t(ip-1) + 1
         ied = istack_idx_local_rtp_t(ip)
 !
@@ -174,101 +178,105 @@
             stbl%iflag_Spole_t(ip) = 1
           end if
         else
-          iflag_internal_t(ist-1,ip) = -1
+          stbl%iflag_internal_t(ist-1,ip) = -1
         end if
 !
         do k = ist, ied
-          iflag_internal_t(k,ip) = 1
+          stbl%iflag_internal_t(k,ip) = 1
         end do
 !
-        if(ied .eq. nidx_global_fem(2)) then
+        if(ied .eq. stbl%nidx_global_fem(2)) then
           if    (iflag_shell_mode .eq. iflag_MESH_w_pole                &
      &      .or. iflag_shell_mode .eq. iflag_MESH_w_center) then
             stbl%iflag_Npole_t(ip) = 1
           end if
         else
-          iflag_internal_t(ied+1,ip) = -1
+          stbl%iflag_internal_t(ied+1,ip) = -1
         end if
 !
         stbl%iflag_ele_Spole(ip) = abs(stbl%iflag_Spole_t(ip)           &
-     &                            * iflag_internal_t(1,ip))
-        nnod_sph_t(ip) = abs(iflag_internal_t(1,ip))
-        nele_sph_t(ip) = 0
+     &                            * stbl%iflag_internal_t(1,ip))
+        stbl%nnod_sph_t(ip) = abs(stbl%iflag_internal_t(1,ip))
+        stbl%nele_sph_t(ip) = 0
 !
-        do k = 1, nidx_global_fem(2)-1
-          stbl%iflag_ele_t(k,ip) = abs(iflag_internal_t(k,ip)           &
-     &                            * iflag_internal_t(k+1,  ip))
-          nnod_sph_t(ip) = nnod_sph_t(ip)                               &
-     &                          + abs(iflag_internal_t(k+1,ip))
-          nele_sph_t(ip)= nele_sph_t(ip) + abs(stbl%iflag_ele_t(k,ip))
+        do k = 1, stbl%nidx_global_fem(2)-1
+          stbl%iflag_ele_t(k,ip) = abs(stbl%iflag_internal_t(k,ip)      &
+     &                            * stbl%iflag_internal_t(k+1,  ip))
+          stbl%nnod_sph_t(ip) = stbl%nnod_sph_t(ip)                     &
+     &                         + abs(stbl%iflag_internal_t(k+1,ip))
+          stbl%nele_sph_t(ip) = stbl%nele_sph_t(ip)                     &
+     &                         + abs(stbl%iflag_ele_t(k,ip))
         end do
 !
-        k = nidx_global_fem(2)
-        stbl%iflag_ele_Npole(ip) = abs(iflag_internal_t(k,ip)           &
+        k = stbl%nidx_global_fem(2)
+        stbl%iflag_ele_Npole(ip) = abs(stbl%iflag_internal_t(k,ip)      &
      &                            * stbl%iflag_Npole_t(ip))
 !
-        nmax_nod_sph_t = max(nmax_nod_sph_t,nnod_sph_t(ip))
-        stbl%nmax_ele_sph_t = max(stbl%nmax_ele_sph_t,nele_sph_t(ip))
+        stbl%nmax_nod_sph_t                                             &
+     &      = max(stbl%nmax_nod_sph_t,stbl%nnod_sph_t(ip))
+        stbl%nmax_ele_sph_t                                             &
+     &      = max(stbl%nmax_ele_sph_t,stbl%nele_sph_t(ip))
       end do
 !
-      nnod_sph_ct = 0
+      stbl%nnod_sph_ct = 0
       if(iflag_shell_mode .eq. iflag_MESH_w_center) then
-        nnod_sph_ct = nidx_global_fem(2) - nnod_sph_t(1)
+        stbl%nnod_sph_ct = stbl%nidx_global_fem(2) - stbl%nnod_sph_t(1)
         stbl%iflag_center_t(0) = stbl%iflag_Spole_t(1)
-        do k = 1, nidx_global_fem(2)
-          stbl%iflag_center_t(k) = iflag_internal_t(k,1)
+        do k = 1, stbl%nidx_global_fem(2)
+          stbl%iflag_center_t(k) = stbl%iflag_internal_t(k,1)
         end do
-        stbl%iflag_center_t(nidx_global_fem(2)+1)                       &
+        stbl%iflag_center_t(stbl%nidx_global_fem(2)+1)                  &
      &       = stbl%iflag_Npole_t(1)
-        do k = 0, nidx_global_fem(2)+1
+        do k = 0, stbl%nidx_global_fem(2)+1
           if(stbl%iflag_center_t(k) .eq. 0) stbl%iflag_center_t(k) = -1
         end do
       end if
 !
 !
-      do ip = 1, ndomain_fem(2)
-        iflag_neib_t(ip,ip) = 1
+      do ip = 1, stbl%ndomain_fem(2)
+        stbl%iflag_neib_t(ip,ip) = 1
       end do
 !
-      do k = 1, nidx_global_fem(2)
-        do jp = 1, ndomain_fem(2)
-          if(iflag_internal_t(k,jp) .eq. 1) then
+      do k = 1, stbl%nidx_global_fem(2)
+        do jp = 1, stbl%ndomain_fem(2)
+          if(stbl%iflag_internal_t(k,jp) .eq. 1) then
             ip = jp
             exit
           end if
         end do
-        do jp = 1, ndomain_fem(2)
-          iflag_internal_t(k,jp) = iflag_internal_t(k,jp) * ip
+        do jp = 1, stbl%ndomain_fem(2)
+          stbl%iflag_internal_t(k,jp)                                   &
+     &           = stbl%iflag_internal_t(k,jp) * ip
         end do
         stbl%iflag_center_t(k) =   stbl%iflag_center_t(k) * ip
-        do jp = 1, ndomain_fem(2)
-          if(iflag_internal_t(k,jp) .lt. 0) then
-            ip = abs(iflag_internal_t(k,jp))
-            iflag_neib_t(ip,jp) = -1
+        do jp = 1, stbl%ndomain_fem(2)
+          if(stbl%iflag_internal_t(k,jp) .lt. 0) then
+            ip = abs(stbl%iflag_internal_t(k,jp))
+            stbl%iflag_neib_t(ip,jp) = -1
           end if
         end do
       end do
 !
-      do jp = 1, ndomain_fem(2)
+      do jp = 1, stbl%ndomain_fem(2)
         if(stbl%iflag_Spole_t(jp) .gt. 0) then
           ip = jp
           exit
         end if
       end do
       stbl%iflag_center_t(0) =   stbl%iflag_center_t(0) * ip
-      do jp = 1, ndomain_fem(2)
+      do jp = 1, stbl%ndomain_fem(2)
         stbl%iflag_Spole_t(jp) = stbl%iflag_Spole_t(jp) * ip
       end do
 !
-      do jp = 1, ndomain_fem(2)
+      do jp = 1, stbl%ndomain_fem(2)
         if(stbl%iflag_Npole_t(jp) .gt. 0) then
           ip = jp
           exit
         end if
       end do
-      stbl%iflag_center_t(nidx_global_fem(2)+1)                         &
-     &           =   stbl%iflag_center_t(nidx_global_fem(2)+1) * ip
-      do jp = 1, ndomain_fem(2)
+      stbl%iflag_center_t(stbl%nidx_global_fem(2)+1)                    &
+     &        =   stbl%iflag_center_t(stbl%nidx_global_fem(2)+1) * ip
+      do jp = 1, stbl%ndomain_fem(2)
         stbl%iflag_Npole_t(jp) = stbl%iflag_Npole_t(jp) * ip
       end do
 !
@@ -284,32 +292,32 @@
       integer(kind = kint) :: kr, ip, icou
 !
 !
-      do ip = 1, ndomain_fem(1)
+      do ip = 1, stbl%ndomain_fem(1)
         icou = 0
-        do kr = 1, nidx_global_fem(1)
-          if(iflag_internal_r(kr,ip) .ne. 0) then
+        do kr = 1, stbl%nidx_global_fem(1)
+          if(stbl%iflag_internal_r(kr,ip) .ne. 0) then
             icou = icou + 1
-            inod_sph_r(icou,ip) = kr
-            irev_sph_r(kr,ip) = icou
+            stbl%inod_sph_r(icou,ip) = kr
+            stbl%irev_sph_r(kr,ip) = icou
           end if
         end do
         if(stbl%iflag_center_r(ip) .ne. 0) then
-          inod_sph_r(0,ip) = 0
-          irev_sph_r(0,ip) = 0
+          stbl%inod_sph_r(0,ip) = 0
+          stbl%irev_sph_r(0,ip) = 0
         end if
 !
         icou = 0
-        do kr = 1, nidx_global_fem(1)-1
+        do kr = 1, stbl%nidx_global_fem(1)-1
           if(stbl%iflag_ele_r(kr,ip) .gt. 0) then
             icou = icou + 1
-            stbl%ie_sph_r(icou,1,ip) = irev_sph_r(kr,  ip)
-            stbl%ie_sph_r(icou,2,ip) = irev_sph_r(kr+1,ip)
+            stbl%ie_sph_r(icou,1,ip) = stbl%irev_sph_r(kr,  ip)
+            stbl%ie_sph_r(icou,2,ip) = stbl%irev_sph_r(kr+1,ip)
           end if
         end do
 !
         if(stbl%iflag_ele_center(ip) .gt. 0) then
-          stbl%ie_center_r(1,ip) = irev_sph_r(0,ip)
-          stbl%ie_center_r(2,ip) = irev_sph_r(1,ip)
+          stbl%ie_center_r(1,ip) = stbl%irev_sph_r(0,ip)
+          stbl%ie_center_r(2,ip) = stbl%irev_sph_r(1,ip)
         end if
       end do
 !
@@ -324,41 +332,43 @@
       integer(kind = kint) :: k, ip, icou
 !
 !
-      do ip = 1, ndomain_fem(2)
+      do ip = 1, stbl%ndomain_fem(2)
         icou = 0
         if(stbl%iflag_Spole_t(ip) .ne. 0) then
-          inod_sph_t(0,ip) = 0
-          irev_sph_t(0,ip) = 0
+          stbl%inod_sph_t(0,ip) = 0
+          stbl%irev_sph_t(0,ip) = 0
         end if
-        do k = 1, nidx_global_fem(2)
-          if(iflag_internal_t(k,ip) .ne. 0) then
+        do k = 1, stbl%nidx_global_fem(2)
+          if(stbl%iflag_internal_t(k,ip) .ne. 0) then
             icou = icou + 1
-            inod_sph_t(icou,ip) = k
-            irev_sph_t(k,ip) = icou
+            stbl%inod_sph_t(icou,ip) = k
+            stbl%irev_sph_t(k,ip) = icou
           end if
         end do
         if(stbl%iflag_Npole_t(ip) .ne. 0) then
           icou = icou + 1
-          inod_sph_t(icou,ip) = nidx_global_fem(2) + 1
-          irev_sph_t(nidx_global_fem(2)+1,ip) = icou
+          stbl%inod_sph_t(icou,ip) = stbl%nidx_global_fem(2) + 1
+          stbl%irev_sph_t(stbl%nidx_global_fem(2)+1,ip) = icou
         end if
 !
         icou = 0
-        do k = 1, nidx_global_fem(2)-1
+        do k = 1, stbl%nidx_global_fem(2)-1
           if(stbl%iflag_ele_t(k,ip) .gt. 0) then
             icou = icou + 1
-            stbl%ie_sph_t(icou,1,ip) = irev_sph_t(k,  ip)
-            stbl%ie_sph_t(icou,2,ip) = irev_sph_t(k+1,ip)
+            stbl%ie_sph_t(icou,1,ip) = stbl%irev_sph_t(k,  ip)
+            stbl%ie_sph_t(icou,2,ip) = stbl%irev_sph_t(k+1,ip)
           end if
         end do
 !
         if(stbl%iflag_ele_Spole(ip) .gt. 0) then
-          stbl%ie_Spole_t(1,ip) = irev_sph_t(0,ip)
-          stbl%ie_Spole_t(2,ip) = irev_sph_t(1,ip)
+          stbl%ie_Spole_t(1,ip) = stbl%irev_sph_t(0,ip)
+          stbl%ie_Spole_t(2,ip) = stbl%irev_sph_t(1,ip)
         end if
         if(stbl%iflag_ele_Npole(ip) .gt. 0) then
-          stbl%ie_Npole_t(1,ip) = irev_sph_t(nidx_global_fem(2),  ip)
-          stbl%ie_Npole_t(2,ip) = irev_sph_t(nidx_global_fem(2)+1,ip)
+          stbl%ie_Npole_t(1,ip)                                         &
+     &        = stbl%irev_sph_t(stbl%nidx_global_fem(2),  ip)
+          stbl%ie_Npole_t(2,ip)                                         &
+     &        = stbl%irev_sph_t(stbl%nidx_global_fem(2)+1,ip)
         end if
       end do
 !
@@ -366,28 +376,28 @@
       if       (stbl%iflag_center_t(0).lt.0                             &
      &    .and. stbl%iflag_Spole_t(1).eq.0) then
         icou = icou + 1
-        inod_sph_ct(icou) = 0
-        irev_sph_ct(0) = icou
+        stbl%inod_sph_ct(icou) = 0
+        stbl%irev_sph_ct(0) = icou
       end if
 !
-      do k = 1, nidx_global_fem(2)
-        if(iflag_internal_t(k,1) .eq. 0) then
+      do k = 1, stbl%nidx_global_fem(2)
+        if(stbl%iflag_internal_t(k,1) .eq. 0) then
           icou = icou + 1
-          inod_sph_ct(icou) = k
-          irev_sph_ct(k) = icou
+          stbl%inod_sph_ct(icou) = k
+          stbl%irev_sph_ct(k) = icou
         end if
       end do
-      do k = 1, nidx_global_fem(2)-1
-        if(irev_sph_t(k,1) .eq. 0) then
-          stbl%ie_center_t(k,1) = -irev_sph_ct(k  )
+      do k = 1, stbl%nidx_global_fem(2)-1
+        if(stbl%irev_sph_t(k,1) .eq. 0) then
+          stbl%ie_center_t(k,1) = -stbl%irev_sph_ct(k  )
         else
-          stbl%ie_center_t(k,1) = irev_sph_t(k,1)
+          stbl%ie_center_t(k,1) = stbl%irev_sph_t(k,1)
         end if
 !
-        if(irev_sph_t(k+1,1) .eq. 0) then
-          stbl%ie_center_t(k,2) = -irev_sph_ct(k+1)
+        if(stbl%irev_sph_t(k+1,1) .eq. 0) then
+          stbl%ie_center_t(k,2) = -stbl%irev_sph_ct(k+1)
         else
-          stbl%ie_center_t(k,2) = irev_sph_t(k+1,1)
+          stbl%ie_center_t(k,2) = stbl%irev_sph_t(k+1,1)
         end if
       end do
 !
@@ -398,16 +408,16 @@
         stbl%ie_center_Np(1) = stbl%ie_Npole_t(1,1)
         stbl%ie_center_Np(2) = stbl%ie_Npole_t(2,1)
       else
-        stbl%ie_center_Np(1) = -nnod_sph_ct
-        stbl%ie_center_Np(2) = -(nnod_sph_ct+1)
+        stbl%ie_center_Np(1) = -stbl%nnod_sph_ct
+        stbl%ie_center_Np(2) = -(stbl%nnod_sph_ct+1)
       end if
 !
-      k = nidx_global_fem(2)+1
+      k = stbl%nidx_global_fem(2)+1
       if      (stbl%iflag_center_t(k).lt.0                              &
      &   .and. stbl%iflag_Npole_t(1).eq.0) then
         icou = icou + 1
-        inod_sph_ct(icou) = k
-        irev_sph_ct(k) = icou
+        stbl%inod_sph_ct(icou) = k
+        stbl%irev_sph_ct(k) = icou
       end if
 !
       end subroutine set_iele_4_sph_theta
@@ -419,9 +429,9 @@
       integer(kind = kint) :: m
 !
 !
-      do m = 1, nidx_global_fem(3)
+      do m = 1, stbl%nidx_global_fem(3)
         stbl%ie_sph_p(m,1) = m
-        stbl%ie_sph_p(m,2) = mod(m,nidx_global_fem(3)) + 1
+        stbl%ie_sph_p(m,2) = mod(m,stbl%nidx_global_fem(3)) + 1
       end do
 !
       end subroutine set_iele_4_sph_phi

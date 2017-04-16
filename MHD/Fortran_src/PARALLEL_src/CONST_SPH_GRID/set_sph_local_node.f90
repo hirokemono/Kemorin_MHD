@@ -46,13 +46,13 @@
      &  .or. iflag_shell_mode .eq. iflag_MESH_w_center) then
         if(stbl%iflag_Spole_t(ip_t) .gt. 0)  then
           call set_intnod_Spole
-          call set_nnod_lc_Spole(nnod_sph_r(ip_r))
+          call set_nnod_lc_Spole(stbl%nnod_sph_r(ip_r))
         end if
         call set_nnod_gl_Spole
 !
         if(stbl%iflag_Npole_t(ip_t) .gt. 0)  then
           call set_intnod_Npole
-          call set_nnod_lc_Npole(nnod_sph_r(ip_r))
+          call set_nnod_lc_Npole(stbl%nnod_sph_r(ip_r))
         end if
         call set_nnod_gl_Npole
       end if
@@ -66,7 +66,7 @@
           if(stbl%iflag_Spole_t(ip_t) .gt. 0)  then
             call set_intnod_center
             call set_nnod_lc_center(ione)
-            call set_nnod_lc_ctr_sph(nnod_sph_ct)
+            call set_nnod_lc_ctr_sph(stbl%nnod_sph_ct)
             if(stbl%iflag_Npole_t(ip_t) .eq. 0) then
               call set_nnod_lc_ctr_Np(ione)
             end if
@@ -92,7 +92,7 @@
 !
       integer(kind = kint), intent(in) :: iflag_shell_mode, ip_r, ip_t
       integer(kind = kint), intent(in) :: num_colat
-      real(kind= kreal), intent(in) :: r_global(nidx_global_fem(1))
+      real(kind= kreal), intent(in) :: r_global(stbl%nidx_global_fem(1))
       real(kind= kreal), intent(in) :: colat_gl(num_colat)
 !
       type(node_data), intent(inout) :: node
@@ -105,18 +105,18 @@
 !
       pi = four*atan(one)
 !
-      do mnum = 1, nidx_global_fem(3)
-        do lnum = 1, nnod_sph_t(ip_t)
-          l = inod_sph_t(lnum,ip_t)
-          do knum = 1, nnod_sph_r(ip_r)
-            k = inod_sph_r(knum,ip_r)
+      do mnum = 1, stbl%nidx_global_fem(3)
+        do lnum = 1, stbl%nnod_sph_t(ip_t)
+          l = stbl%inod_sph_t(lnum,ip_t)
+          do knum = 1, stbl%nnod_sph_r(ip_r)
+            k = stbl%inod_sph_r(knum,ip_r)
             inod = sph_shell_node_id(ip_r, ip_t, knum, lnum, mnum)
             node%inod_global(inod)                                      &
      &          = global_sph_shell_node_id(k, l, mnum)
             node%rr(inod) =     r_global(k)
             node%theta(inod) =  colat_gl(l)
             node%phi(inod) =  two*pi*dble(mnum-1)                       &
-     &                         / dble(nidx_global_fem(3))
+     &                         / dble(stbl%nidx_global_fem(3))
           end do
         end do
       end do
@@ -129,8 +129,8 @@
 !    Set nodes for south pole
 !
         if(stbl%iflag_Spole_t(ip_t) .gt. 0)  then
-          do knum = 1, nnod_sph_r(ip_r)
-            k = inod_sph_r(knum,ip_r)
+          do knum = 1, stbl%nnod_sph_r(ip_r)
+            k = stbl%inod_sph_r(knum,ip_r)
             inod = sph_s_pole_node_id(knum)
             node%inod_global(inod) = global_sph_s_pole_node_id(k)
 !
@@ -143,8 +143,8 @@
 !    Set nodes for north pole
 !
         if(stbl%iflag_Npole_t(ip_t) .gt. 0)  then
-          do knum = 1, nnod_sph_r(ip_r)
-            k = inod_sph_r(knum,ip_r)
+          do knum = 1, stbl%nnod_sph_r(ip_r)
+            k = stbl%inod_sph_r(knum,ip_r)
             inod = sph_n_pole_node_id(knum)
             node%inod_global(inod) = global_sph_n_pole_node_id(k)
 !
@@ -167,17 +167,18 @@
           node%phi(inod) =    zero
 !
           if(stbl%iflag_Spole_t(ip_t) .gt. 0)  then
-            do mnum = 1, nidx_global_fem(3)
-              do lnum = 1, nnod_sph_ct
-                l = inod_sph_ct(lnum)
-                inod = sph_ctr_shell_node_id(nnod_sph_ct, lnum, mnum)
+            do mnum = 1, stbl%nidx_global_fem(3)
+              do lnum = 1, stbl%nnod_sph_ct
+                l = stbl%inod_sph_ct(lnum)
+                inod = sph_ctr_shell_node_id(stbl%nnod_sph_ct,          &
+     &                                       lnum, mnum)
                 node%inod_global(inod)                                  &
      &                = global_sph_shell_node_id(ione, l, mnum)
 !
                 node%rr(inod) =    r_global(1)
                 node%theta(inod) = colat_gl(l)
                 node%phi(inod) =  two*pi*dble(mnum-1)                   &
-     &                         / dble(nidx_global_fem(3))
+     &                         / dble(stbl%nidx_global_fem(3))
               end do
             end do
 !

@@ -47,7 +47,8 @@
 !
       integer(kind = kint), intent(in) :: nidx_rtp(3)
       integer(kind = kint), intent(in) :: ip_rank
-      real(kind= kreal), intent(in) :: r_global(nidx_global_fem(1))
+      real(kind= kreal), intent(in)                                     &
+     &            :: r_global(stbl%nidx_global_fem(1))
 !
       type(gauss_points), intent(in) :: gauss
       type(sph_shell_parameters), intent(in) :: sph_params
@@ -60,8 +61,9 @@
       integer(kind = kint) :: ip_r, ip_t
 !
 !
-      nidx_local_fem(1:3) = sph_rtp%nidx_rtp(1:3)
-      nidx_local_fem(3) =   sph_params%m_folding * nidx_local_fem(3)
+      stbl%nidx_local_fem(1:3) = sph_rtp%nidx_rtp(1:3)
+      stbl%nidx_local_fem(3) =   sph_params%m_folding                   &
+     &                         * stbl%nidx_local_fem(3)
 !
       ip_r = iglobal_rank_rtp(1,ip_rank) + 1
       ip_t = iglobal_rank_rtp(2,ip_rank) + 1
@@ -107,7 +109,8 @@
       use set_sph_local_element
 !
       integer(kind = kint), intent(in) :: ip_r, ip_t
-      real(kind= kreal), intent(in) :: r_global(nidx_global_fem(1))
+      real(kind= kreal), intent(in)                                     &
+     &               :: r_global(stbl%nidx_global_fem(1))
       type(sph_shell_parameters), intent(in) :: sph_params
       type(gauss_points), intent(in) :: gauss
 !
