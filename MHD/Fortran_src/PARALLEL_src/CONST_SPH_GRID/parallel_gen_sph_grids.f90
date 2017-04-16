@@ -7,10 +7,11 @@
 !>@brief  Main loop to generate spherical harmonics indices
 !!
 !!@verbatim
-!!      subroutine para_gen_sph_grids(stbl, sph)
+!!      subroutine para_gen_sph_grids(stbl, sph, s2d_tbl)
 !!      subroutine deallocate_gen_mesh_params
 !!        type(comm_table_make_sph), intent(in) :: stbl
 !!        type(sph_grids), intent(inout) :: sph
+!!        type(sph_trans_2d_table), intent(inout) :: s2d_tbl
 !!@endverbatim
 !
       module parallel_gen_sph_grids
@@ -25,6 +26,7 @@
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
       use t_sph_mesh_1d_connect
+      use t_2d_sph_trans_table
 !
       implicit none
 !
@@ -49,7 +51,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine para_gen_sph_grids(stbl, sph)
+      subroutine para_gen_sph_grids(stbl, sph, s2d_tbl)
 !
       use m_spheric_global_ranks
       use set_global_spherical_param
@@ -60,7 +62,9 @@
       use const_sph_radial_grid
 !
       type(comm_table_make_sph), intent(in) :: stbl
+!
       type(sph_grids), intent(inout) :: sph
+      type(sph_trans_2d_table), intent(inout) :: s2d_tbl
 !
 !
 !  =========  Set global resolutions ===================================
@@ -79,7 +83,8 @@
 !  ========= Generate spherical harmonics table ========================
 !
       call s_const_global_sph_grids_modes                               &
-     &   (sph%sph_params, sph%sph_rtp, sph%sph_rtm, sph%sph_rj)
+     &   (sph%sph_params, sph%sph_rtp, sph%sph_rtm, sph%sph_rj,         &
+     &    s2d_tbl)
 !
       call start_eleps_time(2)
       allocate(comm_rlm_mul(ndomain_sph))

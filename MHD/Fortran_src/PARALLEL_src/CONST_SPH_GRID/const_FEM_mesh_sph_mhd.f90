@@ -105,7 +105,6 @@
       use m_spheric_global_ranks
       use m_sph_global_parameter
       use m_sph_1d_global_index
-      use m_2d_sph_trans_table
       use set_sph_1d_domain_id
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -136,7 +135,6 @@
       use m_spheric_global_ranks
       use m_sph_global_parameter
       use m_sph_1d_global_index
-      use m_2d_sph_trans_table
       use const_global_sph_grids_modes
       use set_global_spherical_param
 !

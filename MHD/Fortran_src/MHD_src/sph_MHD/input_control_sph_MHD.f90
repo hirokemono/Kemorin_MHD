@@ -333,7 +333,7 @@
      &     'Set parameters for spherical shell')
       else
         if (my_rank.eq.0) write(*,*) 'Make spherical harmonics table'
-        call para_gen_sph_grids(stbl, sph_gen)
+        call para_gen_sph_grids(stbl, sph_gen, s2d_tbl)
         call deallocate_gen_mesh_params
       end if
       call calypso_mpi_barrier

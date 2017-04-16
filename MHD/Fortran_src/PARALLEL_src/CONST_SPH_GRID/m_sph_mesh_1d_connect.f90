@@ -23,10 +23,12 @@
       use m_precision
       use m_constants
       use t_sph_mesh_1d_connect
+      use t_2d_sph_trans_table
 !
       implicit none
 !
 !
       type(comm_table_make_sph), save :: stbl
+      type(sph_trans_2d_table), save :: s2d_tbl
 !
       end module m_sph_mesh_1d_connect

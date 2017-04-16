@@ -89,7 +89,7 @@
 !  ========= Generate spherical harmonics table ========================
 !
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_grids'
-      call para_gen_sph_grids(stbl, sph_const)
+      call para_gen_sph_grids(stbl, sph_const, s2d_tbl)
 !
       call start_eleps_time(4)
       if(ndomain_sph .eq. nprocs) then
