@@ -45,7 +45,7 @@
 !
 !
       do ip  = 1, ndomain_rtp(1)
-        icou = istack_idx_local_rtp_r(ip-1)
+        icou = stk_lc1d%istack_idx_local_rtp_r(ip-1)
 !
         do i = 1, nidx_local_rtp_IC(ip)
           icou = icou + 1
@@ -68,16 +68,16 @@
 !
 !
       do ip = 1, ndomain_rtp(2)
-        ist = istack_idx_local_rtp_t(ip-1) + 1
-        ied = istack_idx_local_rtp_t(ip)
+        ist = stk_lc1d%istack_idx_local_rtp_t(ip-1) + 1
+        ied = stk_lc1d%istack_idx_local_rtp_t(ip)
         do i = ist, ied
           sph_gl1d%idx_global_rtp_t(i) = i
         end do
       end do
 !
       do ip = 1, ndomain_rtp(3)
-        ist = istack_idx_local_rtp_p(ip-1) + 1
-        ied = istack_idx_local_rtp_p(ip)
+        ist = stk_lc1d%istack_idx_local_rtp_p(ip-1) + 1
+        ied = stk_lc1d%istack_idx_local_rtp_p(ip)
         do i = ist, ied
           sph_gl1d%idx_global_rtp_p(i,1) = i
           sph_gl1d%idx_global_rtp_p(i,2) = mdx_ispack(i) * m_folding
@@ -108,7 +108,7 @@
       n3 = ndomain_rtm(3)
 !
       do ip  = 1, n1
-        icou = istack_idx_local_rtm_r(ip-1)
+        icou = stk_lc1d%istack_idx_local_rtm_r(ip-1)
 !
         do i = 1, nidx_local_rtm_IC(ip)
           icou = icou + 1

@@ -80,8 +80,8 @@
       stbl%nmax_nod_sph_r =   0
       stbl%nmax_ele_sph_r =   0
       do ip = 1, stbl%ndomain_fem(1)
-        ist = istack_idx_local_rtp_r(ip-1) + 1
-        ied = istack_idx_local_rtp_r(ip)
+        ist = stk_lc1d%istack_idx_local_rtp_r(ip-1) + 1
+        ied = stk_lc1d%istack_idx_local_rtp_r(ip)
         do k = ist, ied
           kr = sph_gl1d%idx_global_rtp_r(k)
           stbl%iflag_internal_r(kr,ip) = 1
@@ -172,8 +172,8 @@
       stbl%nmax_nod_sph_t =   0
       stbl%nmax_ele_sph_t =   0
       do ip = 1, stbl%ndomain_fem(2)
-        ist = istack_idx_local_rtp_t(ip-1) + 1
-        ied = istack_idx_local_rtp_t(ip)
+        ist = stk_lc1d%istack_idx_local_rtp_t(ip-1) + 1
+        ied = stk_lc1d%istack_idx_local_rtp_t(ip)
 !
         if(ist .eq. ione) then
           if    (iflag_shell_mode .eq. iflag_MESH_w_pole                &

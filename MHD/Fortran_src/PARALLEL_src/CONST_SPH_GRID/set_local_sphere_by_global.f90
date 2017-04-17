@@ -52,10 +52,10 @@
 !
       i1 = sph_rj%irank_sph_rj(1) + 1
       i2 = sph_rj%irank_sph_rj(2) + 1
-      sph_rj%ist_rj(1) =  istack_idx_local_rj_r(i1-1) + 1
-      sph_rj%ist_rj(2) =  istack_idx_local_rj_j(i2-1) + 1
-      sph_rj%ied_rj(1) =  istack_idx_local_rj_r(i1)
-      sph_rj%ied_rj(2) =  istack_idx_local_rj_j(i2)
+      sph_rj%ist_rj(1) =  stk_lc1d%istack_idx_local_rj_r(i1-1) + 1
+      sph_rj%ist_rj(2) =  stk_lc1d%istack_idx_local_rj_j(i2-1) + 1
+      sph_rj%ied_rj(1) =  stk_lc1d%istack_idx_local_rj_r(i1)
+      sph_rj%ied_rj(2) =  stk_lc1d%istack_idx_local_rj_j(i2)
 !
       end subroutine copy_gl_2_local_rj_param
 !
@@ -81,10 +81,10 @@
 !
       i1 = sph_rlm%irank_sph_rlm(1) + 1
       i2 = sph_rlm%irank_sph_rlm(2) + 1
-      sph_rlm%ist_rlm(1) = istack_idx_local_rlm_r(i1-1) + 1
-      sph_rlm%ist_rlm(2) = istack_idx_local_rlm_j(i2-1) + 1
-      sph_rlm%ied_rlm(1) = istack_idx_local_rlm_r(i1)
-      sph_rlm%ied_rlm(2) = istack_idx_local_rlm_j(i2)
+      sph_rlm%ist_rlm(1) = stk_lc1d%istack_idx_local_rlm_r(i1-1) + 1
+      sph_rlm%ist_rlm(2) = stk_lc1d%istack_idx_local_rlm_j(i2-1) + 1
+      sph_rlm%ied_rlm(1) = stk_lc1d%istack_idx_local_rlm_r(i1)
+      sph_rlm%ied_rlm(2) = stk_lc1d%istack_idx_local_rlm_j(i2)
 !
       end subroutine copy_gl_2_local_rlm_param
 !
@@ -111,12 +111,12 @@
       i1 = sph_rtm%irank_sph_rtm(1) + 1
       i2 = sph_rtm%irank_sph_rtm(2) + 1
       i3 = sph_rtm%irank_sph_rtm(3) + 1
-      sph_rtm%ist_rtm(1) = istack_idx_local_rtm_r(i1-1) + 1
-      sph_rtm%ist_rtm(2) = istack_idx_local_rtm_t(i2-1) + 1
-      sph_rtm%ist_rtm(3) = istack_idx_local_rtm_m(i3-1) + 1
-      sph_rtm%ied_rtm(1) = istack_idx_local_rtm_r(i1)
-      sph_rtm%ied_rtm(2) = istack_idx_local_rtm_t(i2)
-      sph_rtm%ied_rtm(3) = istack_idx_local_rtm_m(i3)
+      sph_rtm%ist_rtm(1) = stk_lc1d%istack_idx_local_rtm_r(i1-1) + 1
+      sph_rtm%ist_rtm(2) = stk_lc1d%istack_idx_local_rtm_t(i2-1) + 1
+      sph_rtm%ist_rtm(3) = stk_lc1d%istack_idx_local_rtm_m(i3-1) + 1
+      sph_rtm%ied_rtm(1) = stk_lc1d%istack_idx_local_rtm_r(i1)
+      sph_rtm%ied_rtm(2) = stk_lc1d%istack_idx_local_rtm_t(i2)
+      sph_rtm%ied_rtm(3) = stk_lc1d%istack_idx_local_rtm_m(i3)
 !
       end subroutine copy_gl_2_local_rtm_param
 !
@@ -143,12 +143,12 @@
       i1 = sph_rtp%irank_sph_rtp(1) + 1
       i2 = sph_rtp%irank_sph_rtp(2) + 1
       i3 = sph_rtp%irank_sph_rtp(3) + 1
-      sph_rtp%ist_rtp(1) = istack_idx_local_rtp_r(i1-1) + 1
-      sph_rtp%ist_rtp(2) = istack_idx_local_rtp_t(i2-1) + 1
-      sph_rtp%ist_rtp(3) = istack_idx_local_rtp_p(i3-1) + 1
-      sph_rtp%ied_rtp(1) = istack_idx_local_rtp_r(i1)
-      sph_rtp%ied_rtp(2) = istack_idx_local_rtp_t(i2)
-      sph_rtp%ied_rtp(3) = istack_idx_local_rtp_p(i3)
+      sph_rtp%ist_rtp(1) = stk_lc1d%istack_idx_local_rtp_r(i1-1) + 1
+      sph_rtp%ist_rtp(2) = stk_lc1d%istack_idx_local_rtp_t(i2-1) + 1
+      sph_rtp%ist_rtp(3) = stk_lc1d%istack_idx_local_rtp_p(i3-1) + 1
+      sph_rtp%ied_rtp(1) = stk_lc1d%istack_idx_local_rtp_r(i1)
+      sph_rtp%ied_rtp(2) = stk_lc1d%istack_idx_local_rtp_t(i2)
+      sph_rtp%ied_rtp(3) = stk_lc1d%istack_idx_local_rtp_p(i3)
 !
       end subroutine copy_gl_2_local_rtp_param
 !

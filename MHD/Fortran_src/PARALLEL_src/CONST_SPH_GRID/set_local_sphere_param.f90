@@ -47,8 +47,8 @@
 !
       ndom_r = ndomain_rtp(1)
       ndom_t = ndomain_rtp(2)
-      nsize_r = istack_idx_local_rtp_r(ndom_r)
-      nsize_t = istack_idx_local_rtp_t(ndom_t)
+      nsize_r = stk_lc1d%istack_idx_local_rtp_r(ndom_r)
+      nsize_t = stk_lc1d%istack_idx_local_rtp_t(ndom_t)
 !
       inod = 0
       do m = 1, sph_rtp%nidx_rtp(3)
@@ -82,8 +82,8 @@
       integer(kind = kint) :: j, k, inod
       integer(kind = kint) :: ndom_r, nsize_r
 !
-      ndom_r = ndomain_rj(1)
-      nsize_r = istack_idx_local_rj_r(ndom_r)
+      ndom_r =  ndomain_rj(1)
+      nsize_r = stk_lc1d%istack_idx_local_rj_r(ndom_r)
 !
       inod = 0
       do k = 1, sph_rj%nidx_rj(1)
@@ -116,8 +116,8 @@
 !
       ndom_r = ndomain_rtm(1)
       ndom_t = ndomain_rtm(2)
-      nsize_r = istack_idx_local_rtm_r(ndom_r)
-      nsize_t = istack_idx_local_rtm_t(ndom_t)
+      nsize_r = stk_lc1d%istack_idx_local_rtm_r(ndom_r)
+      nsize_t = stk_lc1d%istack_idx_local_rtm_t(ndom_t)
 !
 !
       inod = 0
@@ -149,7 +149,7 @@
       integer(kind = kint) :: ndom_r, nsize_r
 !
       ndom_r = ndomain_rlm(1)
-      nsize_r = istack_idx_local_rlm_r(ndom_r)
+      nsize_r = stk_lc1d%istack_idx_local_rlm_r(ndom_r)
 !
       inod = 0
       do k = 1, sph_rlm%nidx_rlm(1)

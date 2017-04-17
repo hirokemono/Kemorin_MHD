@@ -31,25 +31,25 @@
 !
 !
 !>      Global radial address for f(r,t,p)
-      integer(kind = kint), allocatable :: istack_idx_local_rtp_r(:)
+!      integer(kind = kint), allocatable :: istack_idx_local_rtp_r(:)
 !>      Global radial address for f(r,t,p)
-      integer(kind = kint), allocatable :: istack_idx_local_rtp_t(:)
+!      integer(kind = kint), allocatable :: istack_idx_local_rtp_t(:)
 !>      Global zonal grid address for f(r,t,p)
-      integer(kind = kint), allocatable :: istack_idx_local_rtp_p(:)
+!      integer(kind = kint), allocatable :: istack_idx_local_rtp_p(:)
 !>      Global radial address for f(r,t,m)
-      integer(kind = kint), allocatable :: istack_idx_local_rtm_r(:)
+!      integer(kind = kint), allocatable :: istack_idx_local_rtm_r(:)
 !>      Global meridional grid address for f(r,t,m)
-      integer(kind = kint), allocatable :: istack_idx_local_rtm_t(:)
+!      integer(kind = kint), allocatable :: istack_idx_local_rtm_t(:)
 !>      Global zonal mode address for f(r,t,m)
-      integer(kind = kint), allocatable :: istack_idx_local_rtm_m(:)
+!      integer(kind = kint), allocatable :: istack_idx_local_rtm_m(:)
 !>      Global radial address for f(r,l,m)
-      integer(kind = kint), allocatable :: istack_idx_local_rlm_r(:)
+!      integer(kind = kint), allocatable :: istack_idx_local_rlm_r(:)
 !>      Global spherical harmonics mode address for f(r,l,m)
-      integer(kind = kint), allocatable :: istack_idx_local_rlm_j(:)
+!      integer(kind = kint), allocatable :: istack_idx_local_rlm_j(:)
 !>      Global radial address for f(r,j)
-      integer(kind = kint), allocatable :: istack_idx_local_rj_r(:)
+!      integer(kind = kint), allocatable :: istack_idx_local_rj_r(:)
 !>      Global spherical harmonics mode address for f(r,j)
-      integer(kind = kint), allocatable :: istack_idx_local_rj_j(:)
+!      integer(kind = kint), allocatable :: istack_idx_local_rj_j(:)
 !
 !
 !>      number of radial address for f(r,t,p)
@@ -113,45 +113,8 @@
 !
       subroutine allocate_sph_1d_global_stack
 !
-      use m_spheric_global_ranks
 !
-      integer(kind = kint) :: num
-!
-!
-      num = ndomain_rtp(1)
-      allocate(istack_idx_local_rtp_r(0:num))
-      num = ndomain_rtp(2)
-      allocate(istack_idx_local_rtp_t(0:num))
-      num = ndomain_rtp(3)
-      allocate(istack_idx_local_rtp_p(0:num))
-!
-      num = ndomain_rtm(1)
-      allocate(istack_idx_local_rtm_r(0:num))
-      num = ndomain_rtm(2)
-      allocate(istack_idx_local_rtm_t(0:num))
-      num = ndomain_rtm(3)
-      allocate(istack_idx_local_rtm_m(0:num))
-!
-      num = ndomain_rlm(1)
-      allocate(istack_idx_local_rlm_r(0:num))
-      num = ndomain_rlm(2)
-      allocate(istack_idx_local_rlm_j(0:num))
-!
-      num = ndomain_rj(1)
-      allocate(istack_idx_local_rj_r(0:num))
-      num = ndomain_rj(2)
-      allocate(istack_idx_local_rj_j(0:num))
-!
-      istack_idx_local_rtp_r = 0
-      istack_idx_local_rtp_t = 0
-      istack_idx_local_rtp_p = 0
-      istack_idx_local_rtm_r = 0
-      istack_idx_local_rtm_t = 0
-      istack_idx_local_rtm_m = 0
-      istack_idx_local_rlm_r = 0
-      istack_idx_local_rlm_j = 0
-      istack_idx_local_rj_r =  0
-      istack_idx_local_rj_j =  0
+      call alloc_sph_1d_global_stack(stk_lc1d)
 !
       end subroutine allocate_sph_1d_global_stack
 !
@@ -167,9 +130,9 @@
       n1 = ndomain_rtp(1)
       n2 = ndomain_rtp(2)
       n3 = ndomain_rtp(3)
-      num_gl_rtp_r = istack_idx_local_rtp_r(n1)
-      num_gl_rtp_t = istack_idx_local_rtp_t(n2)
-      num_gl_rtp_p = istack_idx_local_rtp_p(n3)
+      num_gl_rtp_r = stk_lc1d%istack_idx_local_rtp_r(n1)
+      num_gl_rtp_t = stk_lc1d%istack_idx_local_rtp_t(n2)
+      num_gl_rtp_p = stk_lc1d%istack_idx_local_rtp_p(n3)
 !
       allocate( sph_gl1d%idx_global_rtp_r(1:num_gl_rtp_r) )
       allocate( sph_gl1d%idx_global_rtp_t(1:num_gl_rtp_t) )
@@ -183,9 +146,9 @@
       n1 = ndomain_rtm(1)
       n2 = ndomain_rtm(2)
       n3 = ndomain_rtm(3)
-      num_gl_rtm_r = istack_idx_local_rtm_r(n1)
-      num_gl_rtm_t = istack_idx_local_rtm_t(n2)
-      num_gl_rtm_m = istack_idx_local_rtm_m(n3)
+      num_gl_rtm_r = stk_lc1d%istack_idx_local_rtm_r(n1)
+      num_gl_rtm_t = stk_lc1d%istack_idx_local_rtm_t(n2)
+      num_gl_rtm_m = stk_lc1d%istack_idx_local_rtm_m(n3)
 !
       allocate( sph_gl1d%idx_global_rtm_r(1:num_gl_rtm_r) )
       allocate( sph_gl1d%idx_global_rtm_t(1:num_gl_rtm_t) )
@@ -198,8 +161,8 @@
 !
       n1 = ndomain_rlm(1)
       n2 = ndomain_rlm(2)
-      num_gl_rlm_r = istack_idx_local_rlm_r(n1)
-      num_gl_rlm_j = istack_idx_local_rlm_j(n2)
+      num_gl_rlm_r = stk_lc1d%istack_idx_local_rlm_r(n1)
+      num_gl_rlm_j = stk_lc1d%istack_idx_local_rlm_j(n2)
 !
       allocate( sph_gl1d%idx_global_rlm_r(1:num_gl_rlm_r) )
       allocate( sph_gl1d%idx_global_rlm_j(0:num_gl_rlm_j,3) )
@@ -210,8 +173,8 @@
 !
       n1 = ndomain_rj(1)
       n2 = ndomain_rj(2)
-      nun_gl_rj_r = istack_idx_local_rj_r(n1)
-      num_gl_rj_j = istack_idx_local_rj_j(n2)
+      nun_gl_rj_r = stk_lc1d%istack_idx_local_rj_r(n1)
+      num_gl_rj_j = stk_lc1d%istack_idx_local_rj_j(n2)
 !
       allocate( sph_gl1d%idx_global_rj_r(1:nun_gl_rj_r) )
       allocate( sph_gl1d%idx_global_rj_j(0:num_gl_rj_j,3) )
@@ -227,19 +190,7 @@
       subroutine deallocate_sph_1d_global_stack
 !
 !
-      deallocate(istack_idx_local_rtp_r)
-      deallocate(istack_idx_local_rtp_t)
-      deallocate(istack_idx_local_rtp_p)
-!
-      deallocate(istack_idx_local_rtm_r)
-      deallocate(istack_idx_local_rtm_t)
-      deallocate(istack_idx_local_rtm_m)
-!
-      deallocate(istack_idx_local_rlm_r)
-      deallocate(istack_idx_local_rlm_j)
-!
-      deallocate(istack_idx_local_rj_r)
-      deallocate(istack_idx_local_rj_j)
+      call dealloc_sph_1d_global_stack(stk_lc1d)
 !
       end subroutine deallocate_sph_1d_global_stack
 !
@@ -259,29 +210,8 @@
 !
       integer(kind = kint), intent(in) :: my_rank
 !
-      write(my_rank+50,*) 'istack_idx_local_rtp_r',                     &
-     &     istack_idx_local_rtp_r
-      write(my_rank+50,*) 'istack_idx_local_rtp_t',                     &
-     &     istack_idx_local_rtp_t
-      write(my_rank+50,*) 'istack_idx_local_rtp_p',                     &
-     &     istack_idx_local_rtp_p
 !
-      write(my_rank+50,*) 'istack_idx_local_rtm_r',                     &
-     &     istack_idx_local_rtm_r
-      write(my_rank+50,*) 'istack_idx_local_rtm_t',                     &
-     &     istack_idx_local_rtm_t
-      write(my_rank+50,*) 'istack_idx_local_rtm_m',                     &
-     &     istack_idx_local_rtm_m
-!
-      write(my_rank+50,*) 'istack_idx_local_rlm_r',                     &
-     &     istack_idx_local_rlm_r
-      write(my_rank+50,*) 'istack_idx_local_rlm_j',                     &
-     &     istack_idx_local_rlm_j
-!
-      write(my_rank+50,*) 'istack_idx_local_rj_r',                      &
-     &     istack_idx_local_rj_r
-      write(my_rank+50,*) 'istack_idx_local_rj_j',                      &
-     &     istack_idx_local_rj_j
+      call chk_spheric_global_stack(my_rank, stk_lc1d)
 !
       end subroutine check_spheric_global_stack
 !

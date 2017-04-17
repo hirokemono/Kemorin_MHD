@@ -294,16 +294,16 @@
 !
 !      call cal_local_nums                                              &
 !     &   (ndomain_rtp(1), ione, sph_rtp%nidx_global_rtp(1),            &
-!     &    nidx_local_rtp_r, istack_idx_local_rtp_r)
+!     &    nidx_local_rtp_r, stk_lc1d%istack_idx_local_rtp_r)
 !      write(*,*) 'cal_local_nums 1',                                   &
 !     &     ndomain_rtp(1:3), sph_rtp%nidx_global_rtp(2)
       call cal_local_nums                                               &
      &   (ndomain_rtp(2), ione, sph_rtp%nidx_global_rtp(2),             &
-     &    nidx_local_rtp_t, istack_idx_local_rtp_t)
+     &    nidx_local_rtp_t, stk_lc1d%istack_idx_local_rtp_t)
 !      write(*,*) 'cal_local_nums 2'
       call cal_local_nums                                               &
      &   (ndomain_rtp(3), ione, sph_rtp%nidx_global_rtp(3),             &
-     &    nidx_local_rtp_p, istack_idx_local_rtp_p)
+     &    nidx_local_rtp_p, stk_lc1d%istack_idx_local_rtp_p)
 !
 !
 !      write(*,*) 'cal_local_nums_st'
@@ -329,7 +329,7 @@
 !      write(*,*) 'merge_num_3_local_layers'
       call merge_num_3_local_layers(ndomain_rtp(1),                     &
      &    nidx_local_rtp_OC, nidx_local_rtp_IC, nidx_local_rtp_MT,      &
-     &    ione, nidx_local_rtp_r, istack_idx_local_rtp_r)
+     &    ione, nidx_local_rtp_r, stk_lc1d%istack_idx_local_rtp_r)
 !
 !
 !      write(*,*) 'set_gl_nnod_spherical'
@@ -359,13 +359,13 @@
 !
 !      call cal_local_nums                                              &
 !     &   (ndomain_rtm(1), ione, sph_rtm%nidx_global_rtm(1),            &
-!     &    nidx_local_rtm_r, istack_idx_local_rtm_r)
+!     &    nidx_local_rtm_r, stk_lc1d%istack_idx_local_rtm_r)
       call cal_local_nums                                               &
      &   (ndomain_rtm(2), ione, sph_rtm%nidx_global_rtm(2),             &
-     &    nidx_local_rtm_t, istack_idx_local_rtm_t)
+     &    nidx_local_rtm_t, stk_lc1d%istack_idx_local_rtm_t)
       call cal_local_num_rtm_m(ndomain_rtm(3), sph_params%l_truncation, &
      &    sph_params%m_folding, nidx_local_rtm_m,                       &
-     &    istack_idx_local_rtm_m)
+     &    stk_lc1d%istack_idx_local_rtm_m)
 !
       call cal_local_nums_st(ndomain_rtm(1),                            &
      &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
@@ -386,7 +386,7 @@
 !
       call merge_num_3_local_layers(ndomain_rtm(1),                     &
      &    nidx_local_rtm_OC, nidx_local_rtm_IC, nidx_local_rtm_MT,      &
-     &    ione, nidx_local_rtm_r, istack_idx_local_rtm_r)
+     &    ione, nidx_local_rtm_r, stk_lc1d%istack_idx_local_rtm_r)
 !
       call set_gl_nnod_spherical(ndomain_sph,                           &
      &    ndomain_rtm(1), ndomain_rtm(2), ndomain_rtm(3),               &
@@ -415,12 +415,13 @@
 !
       call cal_local_nums                                               &
      &   (ndomain_rj(1), ione, sph_rj%nidx_global_rj(1),                &
-     &    nidx_local_rj_r, istack_idx_local_rj_r)
+     &    nidx_local_rj_r, stk_lc1d%istack_idx_local_rj_r)
 ! 
       call set_merged_index_4_sph_rj(ndomain_rtm(1), ndomain_rtm(3),    &
      &    ndomain_rj(2), sph_rj%nidx_global_rj(2),                      &
-     &    istack_idx_local_rlm_j, s2d_tbl%jtbl_fsph, nidx_local_rj_j,   &
-     &    istack_idx_local_rj_j, s2d_tbl%jtbl_rj)
+     &    stk_lc1d%istack_idx_local_rlm_j, s2d_tbl%jtbl_fsph,           &
+     &    nidx_local_rj_j, stk_lc1d%istack_idx_local_rj_j,              &
+     &    s2d_tbl%jtbl_rj)
 !
       call set_gl_nnod_spheric_rj(ndomain_sph,                          &
      &    ndomain_rj(1), ndomain_rj(2),                                 &
@@ -455,8 +456,8 @@
 !
       nidx_local_rlm_r(1:ndomain_rlm(1))                                &
      &      = nidx_local_rtm_r(1:ndomain_rlm(1))
-      istack_idx_local_rlm_r(0:ndomain_rlm(1))                          &
-     &      = istack_idx_local_rtm_r(0:ndomain_rlm(1))
+      stk_lc1d%istack_idx_local_rlm_r(0:ndomain_rlm(1))                 &
+     &      = stk_lc1d%istack_idx_local_rtm_r(0:ndomain_rlm(1))
 !
 !
       call set_wavenumber_4_ispack_fft(sph_rtp%nidx_global_rtp(2),      &
@@ -471,8 +472,9 @@
       call set_merged_index_4_sph_trans(ndomain_rtm(3),                 &
      &    sph_params%l_truncation, sph_rj%nidx_global_rj(2),            &
      &    sph_rtp%nidx_global_rtp(3), sph_params%m_folding,             &
-     &    istack_idx_local_rtm_m, s2d_tbl%mdx_4_lgd, nidx_local_rlm_j,  &
-     &    istack_idx_local_rlm_j, s2d_tbl%jtbl_fsph)
+     &    stk_lc1d%istack_idx_local_rtm_m, s2d_tbl%mdx_4_lgd,           &
+     &    nidx_local_rlm_j, stk_lc1d%istack_idx_local_rlm_j,            &
+     &    s2d_tbl%jtbl_fsph)
 !
       call set_gl_nnod_spheric_rj(ndomain_sph,                          &
      &    ndomain_rlm(1), ndomain_rlm(2),                               &

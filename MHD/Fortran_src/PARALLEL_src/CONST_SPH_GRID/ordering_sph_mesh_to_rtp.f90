@@ -70,10 +70,10 @@
       inod = 0
       do m = 1, nidx_rtp(3)
         do l = 1, nidx_rtp(2)
-          l_gl = l + istack_idx_local_rtp_t(ip_t-1)
+          l_gl = l + stk_lc1d%istack_idx_local_rtp_t(ip_t-1)
           l_lc = stbl%irev_sph_t(l_gl,ip_t)
           do k = 1, nidx_rtp(1)
-            kr = k + istack_idx_local_rtp_r(ip_r-1)
+            kr = k + stk_lc1d%istack_idx_local_rtp_r(ip_r-1)
             k_gl = sph_gl1d%idx_global_rtp_r(kr)
             k_lc = stbl%irev_sph_r(k_gl,ip_r)
 !
