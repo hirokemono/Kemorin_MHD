@@ -85,7 +85,7 @@
       type(sph_trans_2d_table), intent(inout) :: s2d_tbl
 !
 !
-      call allocate_sph_1d_global_stack
+      call alloc_sph_1d_global_stack(stk_lc1d)
       call allocate_sph_gl_parameter
       call allocate_sph_gl_bc_param
       call allocate_sph_ranks
@@ -112,7 +112,7 @@
 !
 !
       call deallocate_nidx_local
-      call allocate_sph_1d_global_idx
+      call alloc_sph_1d_global_idx(stk_lc1d, sph_gl1d)
 !
       call set_sph_1d_global_idx_rtp                                    &
      &   (sph_params%m_folding, sph_rtp%nidx_global_rtp(3),             &
@@ -159,7 +159,7 @@
       type(sph_trans_2d_table), intent(inout) :: s2d_tbl
 !
 !
-      call allocate_sph_1d_global_stack
+      call alloc_sph_1d_global_stack(stk_lc1d)
       call allocate_sph_gl_parameter
       call allocate_sph_gl_bc_param
       call allocate_sph_ranks
@@ -176,7 +176,7 @@
      &    s2d_tbl%jdx_fsph, s2d_tbl%mtbl_fft_2_lgd)
 !
       call deallocate_nidx_local
-      call allocate_sph_1d_global_idx
+      call alloc_sph_1d_global_idx(stk_lc1d, sph_gl1d)
 !
       call set_sph_1d_global_idx_rtp(sph_params%m_folding,              &
      &    sph_rtp%nidx_global_rtp(3), s2d_tbl%mdx_ispack)

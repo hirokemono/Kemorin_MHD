@@ -170,7 +170,7 @@
       end if
 !
       call allocate_nidx_local
-      call allocate_sph_1d_global_stack
+      call alloc_sph_1d_global_stack(stk_lc1d)
 !
       ip = sph_rtp%irank_sph_rtp(1) + 1
       nidx_local_rtp_r(ip)= sph_rtp%nidx_rtp(1)
@@ -264,7 +264,7 @@
      &    iglobal_rank_rtp, nidx_local_rtp_r, nidx_local_rtp_t,         &
      &    nidx_local_rtp_p, nidx_local_rtp, nnod_local_rtp)
 !
-      call allocate_sph_1d_global_idx
+      call alloc_sph_1d_global_idx(stk_lc1d, sph_gl1d)
 !
       do inum = 1, sph_rtp%nidx_rtp(1)
         inod = sph_rtp%ist_rtp(1) + inum - 1

@@ -18,7 +18,7 @@
 !!      subroutine dealloc_sph_1d_global_idx(sph_gl1d)
 !!        type(sph_1d_global_index), intent(inout) :: sph_gl1d
 !!
-!!      subroutine chk_spheric_global_stack(ip_rank, stk_lc1d)
+!!      subroutine check_spheric_global_stack(ip_rank, stk_lc1d)
 !!@endverbatim
 !
 !
@@ -263,7 +263,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine chk_spheric_global_stack(my_rank, stk_lc1d)
+      subroutine check_spheric_global_stack(my_rank, stk_lc1d)
 !
       integer(kind = kint), intent(in) :: my_rank
       type(sph_1d_index_stack), intent(in) :: stk_lc1d
@@ -292,7 +292,7 @@
       write(my_rank+50,*) 'istack_idx_local_rj_j',                      &
      &     stk_lc1d%istack_idx_local_rj_j
 !
-      end subroutine chk_spheric_global_stack
+      end subroutine check_spheric_global_stack
 !
 ! -----------------------------------------------------------------------
 !

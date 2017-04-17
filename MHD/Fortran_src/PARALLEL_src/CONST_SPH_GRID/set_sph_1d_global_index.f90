@@ -131,17 +131,17 @@
       end do
 !
 !
-      do i = 1, num_gl_rtm_t
+      do i = 1, sph_gl1d%num_gl_rtm_t
         sph_gl1d%idx_global_rtm_t(i) = i
       end do
 !
-      do i = 0, num_gl_rtm_m
+      do i = 0, sph_gl1d%num_gl_rtm_m
         sph_gl1d%idx_global_rtm_m(i,1) = mtbl_fft_2_lgd(i)
         sph_gl1d%idx_global_rtm_m(i,2) = mdx_4_lgd(i) * m_folding
       end do
 !
 !      write(*,*) 'i,j, idx_global_rtm_m(j,1:2)'
-!      do i = 0, num_gl_rtm_m
+!      do i = 0, sph_gl1d%num_gl_rtm_m
 !        write(*,*) i, sph_gl1d%idx_global_rtm_m(i,1:2)
 !      end do
 !
@@ -159,18 +159,18 @@
       integer(kind = kint) :: i
 !
 !
-      do i = 1, num_gl_rlm_r
+      do i = 1, sph_gl1d%num_gl_rlm_r
         sph_gl1d%idx_global_rlm_r(i) = sph_gl1d%idx_global_rtm_r(i)
       end do
 !
-      do i = 0, num_gl_rlm_j
+      do i = 0, sph_gl1d%num_gl_rlm_j
         sph_gl1d%idx_global_rlm_j(i,1) = jtbl_fsph(i,1)
         sph_gl1d%idx_global_rlm_j(i,2) = jtbl_fsph(i,2)
         sph_gl1d%idx_global_rlm_j(i,3) = jtbl_fsph(i,3)
       end do
 !
 !      write(*,*) 'i, jtbl_fsph(i,1:3)'
-!      do i = 0, num_gl_rlm_j
+!      do i = 0, sph_gl1d%num_gl_rlm_j
 !        write(*,*) i, jtbl_fsph(i,1:3)
 !      end do
 !
@@ -188,18 +188,18 @@
       integer(kind = kint) :: k, j
 !
 !
-      do k = 1, nun_gl_rj_r
+      do k = 1, sph_gl1d%nun_gl_rj_r
         sph_gl1d%idx_global_rj_r(k) = k
       end do
 !
-      do j = 0, num_gl_rj_j
+      do j = 0, sph_gl1d%num_gl_rj_j
         sph_gl1d%idx_global_rj_j(j,1) = jtbl_rj(j,1)
         sph_gl1d%idx_global_rj_j(j,2) = jtbl_rj(j,2)
         sph_gl1d%idx_global_rj_j(j,3) = jtbl_rj(j,3)
       end do
 !
 !      write(8,*) 'j, sph_gl1d%idx_global_rj_j(j,1:3)'
-!      do j = 0, num_gl_rj_j
+!      do j = 0, sph_gl1d%num_gl_rj_j
 !        write(8,*) j, sph_gl1d%idx_global_rj_j(j,1:3)
 !      end do
 !

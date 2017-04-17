@@ -159,8 +159,8 @@
       call deallocate_sph_gl_bc_param
       call deallocate_sph_gl_parameter
 !
-      call deallocate_sph_1d_global_idx
-      call deallocate_sph_1d_global_stack
+      call dealloc_sph_1d_global_idx(sph_gl1d)
+      call dealloc_sph_1d_global_stack(stk_lc1d)
 !
       end subroutine deallocate_gen_mesh_params
 !
