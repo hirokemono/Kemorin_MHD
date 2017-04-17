@@ -134,7 +134,7 @@
       call set_sph_1d_global_idx_rj                                     &
      &   (sph_rj%nidx_global_rj(2), s2d_tbl%jtbl_rj, sph_gl1d)
 !
-      call allocate_sph_1d_domain_id(sph_rtp, sph_rj)
+      call alloc_sph_1d_domain_id(sph_rtp, sph_rj, s3d_ranks)
 !
       call set_sph_1d_domain_id_rtp(stk_lc1d, sph_gl1d)
       call set_sph_1d_domain_id_rj(stk_lc1d, sph_gl1d)
@@ -143,7 +143,7 @@
         write(50,*) 'idx_global_rtp_r', sph_gl1d%idx_global_rtp_r
         write(50,*) 'idx_global_rtm_r', sph_gl1d%idx_global_rtm_r
         write(50,*) 'idx_global_rlm_r', sph_gl1d%idx_global_rlm_r
-!        call check_sph_1d_domain_id(sph_rtp, sph_rj)
+!        call check_sph_1d_domain_id(sph_rtp, sph_rj, s3d_ranks)
       end if
 !
       end subroutine s_const_global_sph_grids_modes
@@ -193,7 +193,7 @@
      &    sph_rtp%nidx_global_rtp(3), s2d_tbl%mdx_ispack,               &
      &    stk_lc1d, sph_gl1d)
 !
-      call allocate_sph_1d_domain_id(sph_rtp, sph_rj)
+      call alloc_sph_1d_domain_id(sph_rtp, sph_rj, s3d_ranks)
 !
       call set_sph_1d_domain_id_rtp(stk_lc1d, sph_gl1d)
 !

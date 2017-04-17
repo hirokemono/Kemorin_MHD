@@ -83,8 +83,8 @@
       do inod = 1, nnod_rlm
         idx1 = idx_global_rlm(inod,1)
         idx2 = idx_global_rlm(inod,2)
-        kp_rj = id_domain_rj_r(idx1)
-        jp_rj = id_domain_rj_j(idx2)
+        kp_rj = s3d_ranks%id_domain_rj_r(idx1)
+        jp_rj = s3d_ranks%id_domain_rj_j(idx2)
 !
         irank_tgt = set_rank_by_1b_rj_rank(iflag_radial_inner_domain,   &
      &                                     ndomain_rj, kp_rj, jp_rj)
@@ -123,8 +123,8 @@
       do inod = 1, nnod_rlm
         idx1 = idx_global_rlm(inod,1)
         idx2 = idx_global_rlm(inod,2)
-        kp_rj = id_domain_rj_r(idx1)
-        jp_rj = id_domain_rj_j(idx2)
+        kp_rj = s3d_ranks%id_domain_rj_r(idx1)
+        jp_rj = s3d_ranks%id_domain_rj_j(idx2)
 !
         irank_tgt = set_rank_by_1b_rj_rank(iflag_radial_inner_domain,   &
      &                                     ndomain_rj, kp_rj, jp_rj)
@@ -160,19 +160,19 @@
         idx3 = idx_global_rtm(inod,3)
 !
         if(idx1.ge.1 .and. idx1 .le. nidx_global_rtm(1)) then
-          kp_rtp = id_domain_rtp_r(idx1)
+          kp_rtp = s3d_ranks%id_domain_rtp_r(idx1)
         else
           kp_rtp = -1
         end if
 !
         if(idx2.ge.1 .and. idx2 .le. nidx_global_rtm(2)) then
-          lp_rtp = id_domain_rtp_t(idx2)
+          lp_rtp = s3d_ranks%id_domain_rtp_t(idx2)
         else
           lp_rtp = -1
         end if
 !
         if(idx3.ge.1 .and. idx3 .le. nidx_global_rtm(3)) then
-          mp_rtp = id_domain_rtp_p(idx3)
+          mp_rtp = s3d_ranks%id_domain_rtp_p(idx3)
         else
           mp_rtp = -1
         end if
@@ -221,19 +221,19 @@
         idx3 = idx_global_rtm(inod,3)
 !
         if(idx1.ge.1 .and. idx1 .le. nidx_global_rtm(1)) then
-          kp_rtp = id_domain_rtp_r(idx1)
+          kp_rtp = s3d_ranks%id_domain_rtp_r(idx1)
         else
           kp_rtp = -1
         end if
 !
         if(idx2.ge.1 .and. idx2 .le. nidx_global_rtm(2)) then
-          lp_rtp = id_domain_rtp_t(idx2)
+          lp_rtp = s3d_ranks%id_domain_rtp_t(idx2)
         else
           lp_rtp = -1
         end if
 !
         if(idx3.ge.1 .and. idx3 .le. nidx_global_rtm(3)) then
-          mp_rtp = id_domain_rtp_p(idx3)
+          mp_rtp = s3d_ranks%id_domain_rtp_p(idx3)
         else
           mp_rtp = -1
         end if

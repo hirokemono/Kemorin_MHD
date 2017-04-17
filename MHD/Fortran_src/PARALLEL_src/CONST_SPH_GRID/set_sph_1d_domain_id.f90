@@ -38,7 +38,7 @@
         ied = stk_lc1d%istack_idx_local_rtp_r(ip)
         do i = ist, ied
           idx = sph_gl1d%idx_global_rtp_r(i)
-          id_domain_rtp_r(idx) = ip_rank
+          s3d_ranks%id_domain_rtp_r(idx) = ip_rank
         end do
       end do
 !
@@ -48,7 +48,7 @@
         ied = stk_lc1d%istack_idx_local_rtp_t(ip)
         do i = ist, ied
           idx = sph_gl1d%idx_global_rtp_t(i)
-          id_domain_rtp_t(idx) = ip_rank
+          s3d_ranks%id_domain_rtp_t(idx) = ip_rank
         end do
       end do
 !
@@ -58,7 +58,7 @@
         ied = stk_lc1d%istack_idx_local_rtp_p(ip)
         do i = ist, ied
           idx = sph_gl1d%idx_global_rtp_p(i,1)
-          id_domain_rtp_p(idx) = ip_rank
+          s3d_ranks%id_domain_rtp_p(idx) = ip_rank
         end do
       end do
 !
@@ -82,7 +82,7 @@
         ied = stk_lc1d%istack_idx_local_rj_r(ip)
         do i = ist, ied
           idx = sph_gl1d%idx_global_rj_r(i)
-          id_domain_rj_r(idx) = ip_rank
+          s3d_ranks%id_domain_rj_r(idx) = ip_rank
         end do
       end do
 !
@@ -92,7 +92,7 @@
         ied = stk_lc1d%istack_idx_local_rj_j(ip)
         do i = ist, ied
           idx = sph_gl1d%idx_global_rj_j(i,1)
-          id_domain_rj_j(idx) = ip_rank
+          s3d_ranks%id_domain_rj_j(idx) = ip_rank
         end do
       end do
 !

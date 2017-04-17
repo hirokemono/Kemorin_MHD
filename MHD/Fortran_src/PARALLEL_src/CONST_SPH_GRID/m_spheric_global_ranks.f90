@@ -23,8 +23,12 @@
       module m_spheric_global_ranks
 !
       use m_precision
+      use t_spheric_global_ranks
 !
       implicit none
+!
+!
+      type(spheric_global_rank), save :: s3d_ranks
 !
 !>      number of subdomains
       integer(kind = kint) :: iflag_make_SPH
@@ -48,12 +52,6 @@
       integer(kind = kint), allocatable :: iglobal_rank_rtm(:,:)
       integer(kind = kint), allocatable :: iglobal_rank_rlm(:,:)
       integer(kind = kint), allocatable :: iglobal_rank_rj(:,:)
-!
-      integer(kind = kint), allocatable :: id_domain_rtp_r(:)
-      integer(kind = kint), allocatable :: id_domain_rtp_t(:)
-      integer(kind = kint), allocatable :: id_domain_rtp_p(:)
-      integer(kind = kint), allocatable :: id_domain_rj_r(:)
-      integer(kind = kint), allocatable :: id_domain_rj_j(:)
 ! 
 ! -----------------------------------------------------------------------
 !
@@ -76,40 +74,6 @@
       end subroutine allocate_sph_ranks
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine allocate_sph_1d_domain_id(sph_rtp, sph_rj)
-!
-      use t_spheric_parameter
-!
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_rj_grid), intent(in) :: sph_rj
-!
-      integer(kind = kint) :: n1, n2, n3
-!
-      n1 = sph_rtp%nidx_global_rtp(1)
-      n2 = sph_rtp%nidx_global_rtp(2)
-      n3 = sph_rtp%nidx_global_rtp(3)
-      allocate( id_domain_rtp_r(n1) )
-      allocate( id_domain_rtp_t(n2) )
-      allocate( id_domain_rtp_p(n3) )
-!
-      id_domain_rtp_r = -1
-      id_domain_rtp_t = -1
-      id_domain_rtp_p = -1
-!
-!
-!
-      n1 = sph_rj%nidx_global_rj(1)
-      n2 = sph_rj%nidx_global_rj(2)
-      allocate( id_domain_rj_r(n1) )
-      allocate( id_domain_rj_j(0:n2) )
-!
-      id_domain_rj_r = -1
-      id_domain_rj_j = -1
-!
-      end subroutine allocate_sph_1d_domain_id
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine deallocate_sph_ranks
@@ -118,15 +82,6 @@
       deallocate(iglobal_rank_rlm, iglobal_rank_rj)
 !
       end subroutine deallocate_sph_ranks
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_sph_1d_domain_id
-!
-      deallocate( id_domain_rtp_r, id_domain_rtp_t, id_domain_rtp_p )
-      deallocate( id_domain_rj_r, id_domain_rj_j )
-!
-      end subroutine deallocate_sph_1d_domain_id
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -207,34 +162,6 @@
       end do
 !
       end subroutine check_sph_ranks
-!
-! -----------------------------------------------------------------------
-!
-      subroutine check_sph_1d_domain_id(sph_rtp, sph_rj)
-!
-      use t_spheric_parameter
-!
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(sph_rj_grid), intent(in) :: sph_rj
-!
-      write(50,*) 'id_domain_rtp_r'
-      write(50,'(5i16)') id_domain_rtp_r(1:sph_rtp%nidx_global_rtp(1))
-!
-      write(50,*) 'id_domain_rtp_t'
-      write(50,'(5i16)') id_domain_rtp_t(1:sph_rtp%nidx_global_rtp(2))
-!
-      write(50,*) 'id_domain_rtp_p'
-      write(50,'(5i16)') id_domain_rtp_p(1:sph_rtp%nidx_global_rtp(3))
-!
-!
-      write(50,*) 'id_domain_rj_r'
-      write(50,'(5i16)') id_domain_rj_r(1:sph_rj%nidx_global_rj(1))
-!
-      write(50,*) 'id_domain_rj_j'
-      write(50,'(5i16)') id_domain_rj_j(0)
-      write(50,'(5i16)') id_domain_rj_j(1:sph_rj%nidx_global_rj(2))
-!
-      end subroutine check_sph_1d_domain_id
 !
 ! -----------------------------------------------------------------------
 !

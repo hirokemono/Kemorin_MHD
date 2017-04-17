@@ -143,14 +143,14 @@
 !
       deallocate( s3d_ranks%id_domain_rtp_r, s3d_ranks%id_domain_rtp_t)
       deallocate( s3d_ranks%id_domain_rtp_p )
-      deallocate( s3d_ranks%id_domain_rj_r, s3d_ranks%id_domain_rj_j )
+      deallocate( s3d_ranks%id_domain_rj_r, s3d_ranks%id_domain_rj_j)
 !
       end subroutine dealloc_sph_1d_domain_id
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_sph_domains                                      &
+      subroutine ccheck_sph_domains                                      &
      &         (nprocs_check, s3d_ranks, ierr, e_message)
 !
       use m_error_IDs
@@ -204,11 +204,11 @@
         return
       end if
 !
-      end subroutine check_sph_domains
+      end subroutine ccheck_sph_domains
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_sph_ranks(my_rank, s3d_ranks)
+      subroutine ccheck_sph_ranks(my_rank, s3d_ranks)
 !
       integer(kind = kint), intent(in) :: my_rank
       type(spheric_global_rank), intent(in) :: s3d_ranks
@@ -236,7 +236,7 @@
         write(my_rank+50,*) i, s3d_ranks%iglobal_rank_rj(1:2,i)
       end do
 !
-      end subroutine check_sph_ranks
+      end subroutine ccheck_sph_ranks
 !
 ! -----------------------------------------------------------------------
 !

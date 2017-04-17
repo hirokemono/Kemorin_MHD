@@ -181,7 +181,7 @@
 !
 !
       call deallocate_sph_ranks
-      call deallocate_sph_1d_domain_id
+      call dealloc_sph_1d_domain_id(s3d_ranks)
 !
       call deallocate_sph_gl_bc_param
       call deallocate_sph_gl_parameter

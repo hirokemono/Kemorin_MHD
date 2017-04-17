@@ -129,7 +129,7 @@
       call const_global_rtp_mesh                                        &
      &   (sph_rtp, radial_rtp_grp, stk_lc1d, sph_gl1d)
 !
-      call allocate_sph_1d_domain_id(sph_rtp, sph_rj)
+      call alloc_sph_1d_domain_id(sph_rtp, sph_rj, s3d_ranks)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_1d_domain_id_rtp'
       call set_sph_1d_domain_id_rtp(stk_lc1d, sph_gl1d)
