@@ -21,6 +21,7 @@
 !
       use m_precision
       use t_sph_1d_global_index
+      use t_control_1D_layering
 !
       implicit none
 !

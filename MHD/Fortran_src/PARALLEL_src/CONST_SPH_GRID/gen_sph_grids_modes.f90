@@ -8,11 +8,17 @@
 !!        (Serial version)
 !!
 !!@verbatim
-!!      subroutine const_sph_rlm_modes(ip_rank, stbl, sph_rlm, comm_rlm)
+!!      subroutine const_sph_rlm_modes                                  &
+!!     &         (ip_rank, stk_lc1d, sph_gl1d, stbl, sph_rlm, comm_rlm)
+!!        type(sph_1d_index_stack), intent(in)  :: stk_lc1d
+!!        type(sph_1d_global_index), intent(in)  :: sph_gl1d
 !!        type(comm_table_make_sph), intent(in) :: stbl
 !!        type(sph_rlm_grid), intent(inout) :: sph_rlm
 !!        type(sph_comm_tbl), intent(inout) :: comm_rlm
-!!      subroutine const_sph_rtm_grids(ip_rank, stbl, sph_rtm, comm_rtm)
+!!      subroutine const_sph_rtm_grids                                  &
+!!     &         (ip_rank, stk_lc1d, sph_gl1d, stbl, sph_rtm, comm_rtm)
+!!        type(sph_1d_index_stack), intent(in)  :: stk_lc1d
+!!        type(sph_1d_global_index), intent(in)  :: sph_gl1d
 !!        type(comm_table_make_sph), intent(in) :: stbl
 !!        type(sph_rtm_grid), intent(inout) :: sph_rtm
 !!        type(sph_comm_tbl), intent(inout) :: comm_rtm
@@ -36,10 +42,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_sph_rlm_modes(ip_rank, stbl, sph_rlm, comm_rlm)
+      subroutine const_sph_rlm_modes                                    &
+     &         (ip_rank, stk_lc1d, sph_gl1d, stbl, sph_rlm, comm_rlm)
 !
       use t_spheric_rlm_data
       use t_sph_trans_comm_tbl
+      use t_sph_1d_global_index
       use t_sph_mesh_1d_connect
 !
       use copy_sph_1d_global_index
@@ -47,12 +55,14 @@
       use set_local_sphere_by_global
 !
       integer(kind = kint), intent(in) :: ip_rank
+      type(sph_1d_index_stack), intent(in)  :: stk_lc1d
+      type(sph_1d_global_index), intent(in)  :: sph_gl1d
       type(comm_table_make_sph), intent(in) :: stbl
       type(sph_rlm_grid), intent(inout) :: sph_rlm
       type(sph_comm_tbl), intent(inout) :: comm_rlm
 !
 !
-      call copy_gl_2_local_rlm_param(ip_rank, sph_rlm)
+      call copy_gl_2_local_rlm_param(ip_rank, stk_lc1d, sph_rlm)
 !
 !      nnod_rlm = sph_rlm%nnod_rlm
 !      nidx_rlm(1:2) = sph_rlm%nidx_rlm(1:2)
@@ -60,11 +70,11 @@
       call alloc_type_sph_1d_index_rlm(sph_rlm)
 !
       call copy_sph_1d_gl_idx_rlm                                       &
-     &   (stbl%nri_global, stbl%radius_1d_gl, sph_rlm)
+     &   (stbl%nri_global, stbl%radius_1d_gl, sph_gl1d, sph_rlm)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &          'set_global_sph_4_rlm', ip_rank
-      call set_global_sph_4_rlm(sph_rlm)
+      call set_global_sph_4_rlm(stk_lc1d, sph_rlm)
 !
       if(iflag_debug .gt. 0) then
         call check_type_spheric_param_rlm(ip_rank, sph_rlm)
@@ -78,10 +88,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine const_sph_rtm_grids(ip_rank, stbl, sph_rtm, comm_rtm)
+      subroutine const_sph_rtm_grids                                    &
+     &         (ip_rank, stk_lc1d, sph_gl1d, stbl, sph_rtm, comm_rtm)
 !
       use t_spheric_rtm_data
       use t_sph_trans_comm_tbl
+      use t_sph_1d_global_index
       use t_sph_mesh_1d_connect
 !
       use copy_sph_1d_global_index
@@ -89,22 +101,25 @@
       use set_local_sphere_by_global
 !
       integer(kind = kint), intent(in) :: ip_rank
+      type(sph_1d_index_stack), intent(in)  :: stk_lc1d
+      type(sph_1d_global_index), intent(in)  :: sph_gl1d
       type(comm_table_make_sph), intent(in) :: stbl
+!
       type(sph_rtm_grid), intent(inout) :: sph_rtm
       type(sph_comm_tbl), intent(inout) :: comm_rtm
 !
 !
-      call copy_gl_2_local_rtm_param(ip_rank, sph_rtm)
+      call copy_gl_2_local_rtm_param(ip_rank, stk_lc1d, sph_rtm)
 !
       call alloc_type_spheric_param_rtm(sph_rtm)
       call alloc_type_sph_1d_index_rtm(sph_rtm)
 !
       call copy_sph_1d_gl_idx_rtm                                       &
-     &   (stbl%nri_global, stbl%radius_1d_gl, sph_rtm)
+     &   (stbl%nri_global, stbl%radius_1d_gl, sph_gl1d, sph_rtm)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &          'set_global_sph_4_rtm', ip_rank
-      call set_global_sph_4_rtm(sph_rtm)
+      call set_global_sph_4_rtm(stk_lc1d, sph_rtm)
 !
       if(iflag_debug .gt. 0) then
         call check_type_spheric_param_rtm(ip_rank, sph_rtm)

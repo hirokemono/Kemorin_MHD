@@ -7,17 +7,25 @@
 !>@brief Set groups for spherical harmonics indexing
 !!
 !!@verbatim
-!!      subroutine set_sph_rtp_groups(sph_param, sph_rtp, bc_rtp_grp,   &
-!!     &          radial_rtp_grp, theta_rtp_grp, zonal_rtp_grp)
+!!      subroutine set_sph_rtp_groups(sph_param, sph_rtp,               &
+!!     &          added_radial_grp, r_layer_grp, med_layer_grp,         &
+!!     &          bc_rtp_grp, radial_rtp_grp, theta_rtp_grp,            &
+!!     &          zonal_rtp_grp)
 !!        type(sph_shell_parameters), intent(in) :: sph_param
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(group_data), intent(inout) :: bc_rtp_grp
 !!        type(group_data), intent(inout) :: radial_rtp_grp
 !!        type(group_data), intent(inout) :: theta_rtp_grp
 !!        type(group_data), intent(inout) :: zonal_rtp_grp
-!!      subroutine set_sph_rj_groups(sph_param, sph_rj,                 &
+!!      subroutine set_sph_rj_groups                                    &
+!!     &         (sph_param, sph_rj, added_radial_grp,                  &
 !!     &          radial_rj_grp, sphere_rj_grp)
 !!        type(sph_shell_parameters), intent(in) :: sph_param
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(group_data), intent(inout) :: radial_rj_grp
+!!        type(group_data), intent(inout) :: sphere_rj_grp
+!!      subroutine set_rj_radial_grp                                    &
+!!     &         (sph_param, sph_rj, added_radial_grp, radial_rj_grp)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(group_data), intent(inout) :: radial_rj_grp
 !!        type(group_data), intent(inout) :: sphere_rj_grp
@@ -29,9 +37,11 @@
 !
       use t_spheric_parameter
       use t_group_data
+      use t_control_1D_layering
 !
       implicit none
 !
+      private :: set_rtp_meridional_grp
       private :: set_rtp_radial_grp
       private :: set_rj_spectr_grp
       private :: set_no_rtp_node_grp
@@ -44,11 +54,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sph_rtp_groups(sph_param, sph_rtp, bc_rtp_grp,     &
-     &          radial_rtp_grp, theta_rtp_grp, zonal_rtp_grp)
+      subroutine set_sph_rtp_groups(sph_param, sph_rtp,                 &
+     &          added_radial_grp, r_layer_grp, med_layer_grp,           &
+     &          bc_rtp_grp, radial_rtp_grp, theta_rtp_grp,              &
+     &          zonal_rtp_grp)
 !
       type(sph_shell_parameters), intent(in) :: sph_param
       type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(layering_group_list), intent(in) :: added_radial_grp
+      type(layering_group_list), intent(in) :: r_layer_grp
+      type(layering_group_list), intent(in) :: med_layer_grp
 !
       type(group_data), intent(inout) :: bc_rtp_grp
       type(group_data), intent(inout) :: radial_rtp_grp
@@ -57,9 +72,11 @@
 !
 !
 !      write(*,*) 'set_rtp_radial_grp'
-      call set_rtp_radial_grp(sph_param, sph_rtp, radial_rtp_grp)
+      call set_rtp_radial_grp(sph_param, sph_rtp,                       &
+     &   added_radial_grp, r_layer_grp, radial_rtp_grp)
 !      write(*,*) 'set_rtp_meridional_grp'
-      call set_rtp_meridional_grp(sph_rtp, theta_rtp_grp)
+      call set_rtp_meridional_grp                                       &
+     &   (sph_rtp, med_layer_grp, theta_rtp_grp)
 !      write(*,*) 'set_no_rtp_zonal_grp'
       call set_no_rtp_zonal_grp(zonal_rtp_grp)
 !
@@ -70,18 +87,21 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sph_rj_groups(sph_param, sph_rj,                   &
+      subroutine set_sph_rj_groups                                      &
+     &         (sph_param, sph_rj, added_radial_grp,                    &
      &          radial_rj_grp, sphere_rj_grp)
 !
       type(sph_shell_parameters), intent(in) :: sph_param
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(layering_group_list), intent(in) :: added_radial_grp
 !
       type(group_data), intent(inout) :: radial_rj_grp
       type(group_data), intent(inout) :: sphere_rj_grp
 !
 !
 !      write(*,*) 'set_rj_radial_grp'
-      call set_rj_radial_grp(sph_param, sph_rj, radial_rj_grp)
+      call set_rj_radial_grp                                            &
+     &   (sph_param, sph_rj, added_radial_grp, radial_rj_grp)
 !      write(*,*) 'set_rj_spectr_grp'
       call set_rj_spectr_grp(sph_rj, sphere_rj_grp)
 !
@@ -90,40 +110,45 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_rtp_radial_grp(sph_param, sph_rtp, radial_rtp_grp)
+      subroutine set_rtp_radial_grp(sph_param, sph_rtp,                 &
+     &          added_radial_grp, r_layer_grp, radial_rtp_grp)
 !
-      use m_sph_1d_global_index
       use set_stack_4_sph_groups
       use set_item_4_sph_groups
 !
       type(sph_shell_parameters), intent(in) :: sph_param
       type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(layering_group_list), intent(in) :: added_radial_grp
+      type(layering_group_list), intent(in) :: r_layer_grp
 !
       type(group_data), intent(inout) :: radial_rtp_grp
 !
 !
       call count_sph_radial_group(radial_rtp_grp%num_grp,               &
-     &    sph_param, sph_rtp%nidx_global_rtp(1))
-      call add_sph_SGS_radial_group(radial_rtp_grp%num_grp)
+     &    sph_param, added_radial_grp, sph_rtp%nidx_global_rtp(1))
+      call add_sph_SGS_radial_group                                     &
+     &   (r_layer_grp, radial_rtp_grp%num_grp)
       call allocate_grp_type_num(radial_rtp_grp)
 !
-      call set_stack_rtp_radial_grp                                     &
-     &   (sph_param, sph_rtp, radial_rtp_grp)
+      call set_stack_rtp_radial_grp(sph_param, sph_rtp,                 &
+     &    r_layer_grp, added_radial_grp, radial_rtp_grp)
 !
       call allocate_grp_type_item(radial_rtp_grp)
-      call set_item_rtp_radial_grp(sph_param, sph_rtp, radial_rtp_grp)
+      call set_item_rtp_radial_grp(sph_param, sph_rtp,                  &
+     &   r_layer_grp, added_radial_grp, radial_rtp_grp)
 !
       end subroutine set_rtp_radial_grp
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_rtp_meridional_grp(sph_rtp, theta_rtp_grp)
+      subroutine set_rtp_meridional_grp                                 &
+     &         (sph_rtp, med_layer_grp, theta_rtp_grp)
 !
-      use m_sph_1d_global_index
       use set_stack_4_sph_groups
       use set_item_4_sph_groups
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(layering_group_list), intent(in) :: med_layer_grp
 !
       type(group_data), intent(inout) :: theta_rtp_grp
 !
@@ -131,35 +156,39 @@
       theta_rtp_grp%num_grp =  med_layer_grp%nlayer
       call allocate_grp_type_num(theta_rtp_grp)
 !
-      call set_stack_rtp_meridional_grp(sph_rtp, theta_rtp_grp)
+      call set_stack_rtp_meridional_grp                                 &
+     &   (sph_rtp, med_layer_grp, theta_rtp_grp)
 !
       call allocate_grp_type_item(theta_rtp_grp)
-      call set_item_rtp_meridional_grp(sph_rtp, theta_rtp_grp)
+      call set_item_rtp_meridional_grp                                  &
+     &   (sph_rtp, med_layer_grp, theta_rtp_grp)
 !
       end subroutine set_rtp_meridional_grp
 !
 ! -----------------------------------------------------------------------
 !
       subroutine set_rj_radial_grp                                      &
-     &         (sph_param, sph_rj, radial_rj_grp)
+     &         (sph_param, sph_rj, added_radial_grp, radial_rj_grp)
 !
       use set_stack_4_sph_groups
       use set_item_4_sph_groups
 !
       type(sph_shell_parameters), intent(in) :: sph_param
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(layering_group_list), intent(in) :: added_radial_grp
 !
       type(group_data), intent(inout) :: radial_rj_grp
 !
 !
       call count_sph_radial_group(radial_rj_grp%num_grp,                &
-     &    sph_param, sph_rj%nidx_global_rj(1))
+     &    sph_param, added_radial_grp, sph_rj%nidx_global_rj(1))
       call allocate_grp_type_num(radial_rj_grp)
       call set_stack_rj_radial_grp                                      &
-     &   (sph_param, sph_rj, radial_rj_grp)
+     &   (sph_param, sph_rj, added_radial_grp, radial_rj_grp)
 !
       call allocate_grp_type_item(radial_rj_grp)
-      call set_item_rj_radial_grp(sph_param, sph_rj, radial_rj_grp)
+      call set_item_rj_radial_grp                                       &
+     &   (sph_param, sph_rj, added_radial_grp, radial_rj_grp)
 !
       end subroutine set_rj_radial_grp
 !
@@ -232,11 +261,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine count_sph_radial_group                                 &
-     &         (num_grp, sph_param, nidx_global_r)
-!
-      use m_sph_1d_global_index
+     &         (num_grp, sph_param, added_radial_grp, nidx_global_r)
 !
       type(sph_shell_parameters), intent(in) :: sph_param
+      type(layering_group_list), intent(in) :: added_radial_grp
       integer(kind = kint), intent(in) :: nidx_global_r
       integer(kind = kint), intent(inout) :: num_grp
 !
@@ -250,10 +278,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_sph_SGS_radial_group(num_grp)
+      subroutine add_sph_SGS_radial_group(r_layer_grp, num_grp)
 !
-      use m_sph_1d_global_index
-!
+      type(layering_group_list), intent(in) :: r_layer_grp
       integer(kind = kint), intent(inout) :: num_grp
 !
 !

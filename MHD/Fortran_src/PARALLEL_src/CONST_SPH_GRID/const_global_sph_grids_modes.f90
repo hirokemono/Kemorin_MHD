@@ -8,13 +8,17 @@
 !!
 !!@verbatim
 !!      subroutine s_const_global_sph_grids_modes                       &
-!!     &         (sph_params, sph_rtp, sph_rtm, sph_rj, s2d_tbl)
+!!     &         (sph_params, sph_rtp, sph_rtm, sph_rj,                 &
+!!     &          stk_lc1d, sph_gl1d, s2d_tbl)
 !!      subroutine const_global_sph_FEM_grid                            &
-!!     &         (sph_params, sph_rtp, sph_rj, s2d_tbl)
+!!     &         (sph_params, sph_rtp, sph_rj,                          &
+!!     &          stk_lc1d, sph_gl1d, s2d_tbl)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_rtm_grid), intent(in) :: sph_rtm
 !!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(sph_1d_index_stack), intent(inout) :: stk_lc1d
+!!        type(sph_1d_global_index), intent(inout) :: sph_gl1d
 !!        type(sph_trans_2d_table), intent(inout) :: s2d_tbl
 !!
 !!      subroutine check_nidx_local(ip_rank)
@@ -31,6 +35,7 @@
 !
       use t_spheric_parameter
       use t_2d_sph_trans_table
+      use t_sph_1d_global_index
 !
       use set_global_spherical_param
       use set_indices_4_sph_tranform
@@ -56,7 +61,7 @@
 !      private :: nidx_local_rlm_r, nidx_local_rlm_j
 !      private :: nidx_local_rj_r, nidx_local_rj_j
 !
-!      private :: const_global_rtp_grids, const_global_rtm_grids
+      private :: const_global_rtp_grids, const_global_rtm_grids
       private :: const_global_rj_modes_by_rlm, const_global_rlm_modes
 !      private :: allocate_nidx_local, deallocate_nidx_local
 !
@@ -67,11 +72,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_const_global_sph_grids_modes                         &
-     &         (sph_params, sph_rtp, sph_rtm, sph_rj, s2d_tbl)
+     &         (sph_params, sph_rtp, sph_rtm, sph_rj,                   &
+     &          stk_lc1d, sph_gl1d, s2d_tbl)
 !
       use m_spheric_global_ranks
       use m_sph_global_parameter
-      use m_sph_1d_global_index
 !
       use set_sph_1d_global_index
       use set_sph_1d_domain_id
@@ -82,6 +87,8 @@
       type(sph_rtm_grid), intent(in) :: sph_rtm
       type(sph_rj_grid), intent(in) :: sph_rj
 !
+      type(sph_1d_index_stack), intent(inout) :: stk_lc1d
+      type(sph_1d_global_index), intent(inout) :: sph_gl1d
       type(sph_trans_2d_table), intent(inout) :: s2d_tbl
 !
 !
@@ -93,16 +100,17 @@
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'const_global_rtp_grids'
-      call const_global_rtp_grids(sph_params, sph_rtp)
+      call const_global_rtp_grids(sph_params, sph_rtp, stk_lc1d)
 !
       if(iflag_debug .gt. 0) write(*,*) 'const_global_rtm_grids'
-      call const_global_rtm_grids(sph_params, sph_rtm)
+      call const_global_rtm_grids(sph_params, sph_rtm, stk_lc1d)
 !
       if(iflag_debug .gt. 0) write(*,*) 'const_global_rlm_modes'
-      call const_global_rlm_modes(sph_params, sph_rtp, sph_rj, s2d_tbl)
+      call const_global_rlm_modes                                       &
+     &   (sph_params, sph_rtp, sph_rj, stk_lc1d, s2d_tbl)
 !
       if(iflag_debug .gt. 0) write(*,*) 'const_global_rj_modes_by_rlm'
-      call const_global_rj_modes_by_rlm(sph_rj, s2d_tbl)
+      call const_global_rj_modes_by_rlm(sph_rj, stk_lc1d, s2d_tbl)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_trans_table_fft_2_lgd'
       call set_trans_table_fft_2_lgd(sph_params%l_truncation,           &
@@ -116,19 +124,20 @@
 !
       call set_sph_1d_global_idx_rtp                                    &
      &   (sph_params%m_folding, sph_rtp%nidx_global_rtp(3),             &
-     &    s2d_tbl%mdx_ispack)
+     &    s2d_tbl%mdx_ispack, stk_lc1d, sph_gl1d)
       call set_sph_1d_global_idx_rtm                                    &
      &   (sph_params%m_folding, sph_rtp%nidx_global_rtp(3),             &
-     &    s2d_tbl%mtbl_fft_2_lgd, s2d_tbl%mdx_4_lgd)
+     &    s2d_tbl%mtbl_fft_2_lgd, s2d_tbl%mdx_4_lgd,                    &
+     &    stk_lc1d, sph_gl1d)
       call set_sph_1d_global_idx_rlm                                    &
-     &   (sph_rj%nidx_global_rj(2), s2d_tbl%jtbl_fsph)
+     &   (sph_rj%nidx_global_rj(2), s2d_tbl%jtbl_fsph, sph_gl1d)
       call set_sph_1d_global_idx_rj                                     &
-     &   (sph_rj%nidx_global_rj(2), s2d_tbl%jtbl_rj)
+     &   (sph_rj%nidx_global_rj(2), s2d_tbl%jtbl_rj, sph_gl1d)
 !
       call allocate_sph_1d_domain_id(sph_rtp, sph_rj)
 !
-      call set_sph_1d_domain_id_rtp
-      call set_sph_1d_domain_id_rj
+      call set_sph_1d_domain_id_rtp(stk_lc1d, sph_gl1d)
+      call set_sph_1d_domain_id_rj(stk_lc1d, sph_gl1d)
 !
       if(iflag_debug .gt. 0) then
         write(50,*) 'idx_global_rtp_r', sph_gl1d%idx_global_rtp_r
@@ -142,11 +151,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_global_sph_FEM_grid                              &
-     &         (sph_params, sph_rtp, sph_rj, s2d_tbl)
+     &         (sph_params, sph_rtp, sph_rj,                            &
+     &          stk_lc1d, sph_gl1d, s2d_tbl)
 !
       use m_spheric_global_ranks
       use m_sph_global_parameter
-      use m_sph_1d_global_index
 !
       use set_sph_1d_global_index
       use set_sph_1d_domain_id
@@ -156,6 +165,8 @@
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_rj_grid), intent(in) :: sph_rj
 !
+      type(sph_1d_index_stack), intent(inout) :: stk_lc1d
+      type(sph_1d_global_index), intent(inout) :: sph_gl1d
       type(sph_trans_2d_table), intent(inout) :: s2d_tbl
 !
 !
@@ -167,7 +178,7 @@
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'const_global_rtp_grids'
-      call const_global_rtp_grids(sph_params, sph_rtp)
+      call const_global_rtp_grids(sph_params, sph_rtp, stk_lc1d)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_trans_table_fft_2_lgd'
       call set_trans_table_fft_2_lgd(sph_params%l_truncation,           &
@@ -179,11 +190,12 @@
       call alloc_sph_1d_global_idx(stk_lc1d, sph_gl1d)
 !
       call set_sph_1d_global_idx_rtp(sph_params%m_folding,              &
-     &    sph_rtp%nidx_global_rtp(3), s2d_tbl%mdx_ispack)
+     &    sph_rtp%nidx_global_rtp(3), s2d_tbl%mdx_ispack,               &
+     &    stk_lc1d, sph_gl1d)
 !
       call allocate_sph_1d_domain_id(sph_rtp, sph_rj)
 !
-      call set_sph_1d_domain_id_rtp
+      call set_sph_1d_domain_id_rtp(stk_lc1d, sph_gl1d)
 !
       if(iflag_debug .gt. 0) then
         write(50,*) 'idx_global_rtp_r', sph_gl1d%idx_global_rtp_r
@@ -276,14 +288,14 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine const_global_rtp_grids(sph_params, sph_rtp)
+      subroutine const_global_rtp_grids(sph_params, sph_rtp, stk_lc1d)
 !
       use m_spheric_global_ranks
       use m_sph_global_parameter
-      use m_sph_1d_global_index
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_1d_index_stack), intent(inout) :: stk_lc1d
 !
       integer(kind = kint) :: ist, ied
 !
@@ -342,14 +354,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_global_rtm_grids(sph_params, sph_rtm)
+      subroutine const_global_rtm_grids(sph_params, sph_rtm, stk_lc1d)
 !
       use m_spheric_global_ranks
       use m_sph_global_parameter
-      use m_sph_1d_global_index
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rtm_grid), intent(in) :: sph_rtm
+      type(sph_1d_index_stack), intent(inout) :: stk_lc1d
 !
       integer(kind = kint) :: ist, ied
 !
@@ -399,14 +411,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_global_rj_modes_by_rlm(sph_rj, s2d_tbl)
+      subroutine const_global_rj_modes_by_rlm                           &
+     &         (sph_rj, stk_lc1d, s2d_tbl)
 !
       use m_spheric_global_ranks
       use m_sph_global_parameter
-      use m_sph_1d_global_index
       use set_sph_tranform_ordering
 !
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(sph_1d_index_stack), intent(inout) :: stk_lc1d
       type(sph_trans_2d_table), intent(inout) :: s2d_tbl
 !
 !
@@ -433,17 +446,17 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_global_rlm_modes                                 &
-     &         (sph_params, sph_rtp, sph_rj, s2d_tbl)
+     &         (sph_params, sph_rtp, sph_rj, stk_lc1d, s2d_tbl)
 !
       use m_spheric_global_ranks
       use m_sph_global_parameter
-      use m_sph_1d_global_index
       use set_sph_tranform_ordering
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_rj_grid), intent(in) :: sph_rj
 !
+      type(sph_1d_index_stack), intent(inout) :: stk_lc1d
       type(sph_trans_2d_table), intent(inout) :: s2d_tbl
 !
 !

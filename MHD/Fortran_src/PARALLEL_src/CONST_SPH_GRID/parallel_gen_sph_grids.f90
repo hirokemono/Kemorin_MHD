@@ -7,8 +7,15 @@
 !>@brief  Main loop to generate spherical harmonics indices
 !!
 !!@verbatim
-!!      subroutine para_gen_sph_grids(stbl, sph, s2d_tbl)
-!!      subroutine deallocate_gen_mesh_params
+!!      subroutine para_gen_sph_grids                                   &
+!!     &         (added_radial_grp, r_layer_grp, med_layer_grp, stbl,   &
+!!     &          sph, stk_lc1d, sph_gl1d, s2d_tbl)
+!!
+!!      subroutine deallocate_gen_mesh_params                           &
+!!     &         (stk_lc1d, sph_gl1d)
+!!      subroutine deallocate_gen_mesh_data                             &
+!!     &         (added_radial_grp, r_layer_grp, med_layer_grp,         &
+!!     &          stbl, s2d_tbl)
 !!        type(comm_table_make_sph), intent(in) :: stbl
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_trans_2d_table), intent(inout) :: s2d_tbl
@@ -25,7 +32,9 @@
 !
       use t_spheric_parameter
       use t_sph_trans_comm_tbl
+      use t_sph_1d_global_index
       use t_sph_mesh_1d_connect
+      use t_control_1D_layering
       use t_2d_sph_trans_table
 !
       implicit none
@@ -51,7 +60,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine para_gen_sph_grids(stbl, sph, s2d_tbl)
+      subroutine para_gen_sph_grids                                     &
+     &         (added_radial_grp, r_layer_grp, med_layer_grp, stbl,     &
+     &          sph, stk_lc1d, sph_gl1d, s2d_tbl)
 !
       use m_spheric_global_ranks
       use set_global_spherical_param
@@ -61,9 +72,14 @@
       use const_global_sph_grids_modes
       use const_sph_radial_grid
 !
+      type(layering_group_list), intent(in) :: added_radial_grp
+      type(layering_group_list), intent(in) :: r_layer_grp
+      type(layering_group_list), intent(in) :: med_layer_grp
       type(comm_table_make_sph), intent(in) :: stbl
 !
       type(sph_grids), intent(inout) :: sph
+      type(sph_1d_index_stack), intent(inout) :: stk_lc1d
+      type(sph_1d_global_index), intent(inout) :: sph_gl1d
       type(sph_trans_2d_table), intent(inout) :: s2d_tbl
 !
 !
@@ -84,17 +100,18 @@
 !
       call s_const_global_sph_grids_modes                               &
      &   (sph%sph_params, sph%sph_rtp, sph%sph_rtm, sph%sph_rj,         &
-     &    s2d_tbl)
+     &    stk_lc1d, sph_gl1d, s2d_tbl)
 !
       call start_eleps_time(2)
       allocate(comm_rlm_mul(ndomain_sph))
 !
       if(ndomain_sph .eq. nprocs) then
         if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rlm_grids'
-        call mpi_gen_sph_rlm_grids(stbl, sph%sph_params,                &
-     &      sph%sph_rlm, comm_rlm_mul)
+        call mpi_gen_sph_rlm_grids(stk_lc1d, sph_gl1d, stbl,            &
+     &      sph%sph_params, sph%sph_rlm, comm_rlm_mul)
       else
-        call para_gen_sph_rlm_grids(ndomain_sph, stbl,                  &
+        call para_gen_sph_rlm_grids                                     &
+     &     (ndomain_sph, stk_lc1d, sph_gl1d, stbl,                      &
      &      sph%sph_params, sph%sph_rlm, comm_rlm_mul)
       end if
       call bcast_comm_stacks_sph(ndomain_sph, comm_rlm_mul)
@@ -103,10 +120,12 @@
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rj_modes'
       call start_eleps_time(3)
       if(ndomain_sph .eq. nprocs) then
-        call mpi_gen_sph_rj_modes(comm_rlm_mul, stbl,                   &
+        call mpi_gen_sph_rj_modes(comm_rlm_mul,                         &
+     &      added_radial_grp, stk_lc1d, sph_gl1d, stbl,                 &
      &      sph%sph_params, sph%sph_rlm, sph%sph_rj)
       else
-        call para_gen_sph_rj_modes(ndomain_sph, comm_rlm_mul, stbl,     &
+        call para_gen_sph_rj_modes(ndomain_sph, comm_rlm_mul,           &
+     &          added_radial_grp, stk_lc1d, sph_gl1d, stbl,             &
      &      sph%sph_params, sph%sph_rlm, sph%sph_rj)
       end if
       call dealloc_comm_stacks_sph(ndomain_sph, comm_rlm_mul)
@@ -118,10 +137,11 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rtm_grids'
       if(ndomain_sph .eq. nprocs) then
-        call mpi_gen_sph_rtm_grids(stbl, sph%sph_params,                &
-     &      sph%sph_rtm, comm_rtm_mul)
+        call mpi_gen_sph_rtm_grids(stk_lc1d, sph_gl1d, stbl,            &
+     &      sph%sph_params, sph%sph_rtm, comm_rtm_mul)
       else
-        call para_gen_sph_rtm_grids(ndomain_sph, stbl,                  &
+        call para_gen_sph_rtm_grids                                     &
+     &    (ndomain_sph, stk_lc1d, sph_gl1d,  stbl,                      &
      &     sph%sph_params, sph%sph_rtm, comm_rtm_mul)
       end if
       call bcast_comm_stacks_sph(ndomain_sph, comm_rtm_mul)
@@ -129,11 +149,15 @@
 !
       call start_eleps_time(3)
       if(ndomain_sph .eq. nprocs) then
-        call mpi_gen_sph_rtp_grids(comm_rtm_mul, stbl,                  &
+        call mpi_gen_sph_rtp_grids(comm_rtm_mul,                        &
+     &      added_radial_grp, r_layer_grp, med_layer_grp,               &
+     &      stk_lc1d, sph_gl1d, stbl,                                   &
      &      sph%sph_params, sph%sph_rtp, sph%sph_rtm)
       else
         if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rtp_grids'
-        call para_gen_sph_rtp_grids(ndomain_sph, comm_rtm_mul, stbl,    &
+        call para_gen_sph_rtp_grids(ndomain_sph, comm_rtm_mul,          &
+     &      added_radial_grp, r_layer_grp, med_layer_grp,               &
+     &      stk_lc1d, sph_gl1d, stbl,                                   &
      &      sph%sph_params, sph%sph_rtp, sph%sph_rtm)
       end if
       call dealloc_comm_stacks_sph(ndomain_sph, comm_rtm_mul)
@@ -146,11 +170,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine deallocate_gen_mesh_params
+      subroutine deallocate_gen_mesh_params                             &
+     &         (stk_lc1d, sph_gl1d)
 !
       use m_spheric_global_ranks
       use m_sph_global_parameter
-      use m_sph_1d_global_index
+!
+      type(sph_1d_index_stack), intent(inout) :: stk_lc1d
+      type(sph_1d_global_index), intent(inout) :: sph_gl1d
 !
 !
       call deallocate_sph_ranks
@@ -163,6 +190,35 @@
       call dealloc_sph_1d_global_stack(stk_lc1d)
 !
       end subroutine deallocate_gen_mesh_params
+!
+! -----------------------------------------------------------------------
+!
+      subroutine deallocate_gen_mesh_data                               &
+     &         (added_radial_grp, r_layer_grp, med_layer_grp,           &
+     &          stbl, s2d_tbl)
+!
+      use t_sph_mesh_1d_connect
+      use t_2d_sph_trans_table
+!
+      type(layering_group_list), intent(inout) :: added_radial_grp
+      type(layering_group_list), intent(inout) :: r_layer_grp
+      type(layering_group_list), intent(inout) :: med_layer_grp
+!
+      type(comm_table_make_sph), intent(inout) :: stbl
+      type(sph_trans_2d_table), intent(inout) :: s2d_tbl
+!
+!
+      call dealloc_2d_sph_trans_table(s2d_tbl)
+!
+      call dealloc_nnod_nele_sph_mesh(stbl)
+      call dealloc_1d_comm_tbl_4_sph(stbl)
+      call dealloc_radius_1d_gl(stbl)
+!
+      call dealloc_layering_group(med_layer_grp)
+      call dealloc_layering_group(r_layer_grp)
+      call dealloc_layering_group(added_radial_grp)
+!
+      end subroutine deallocate_gen_mesh_data
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

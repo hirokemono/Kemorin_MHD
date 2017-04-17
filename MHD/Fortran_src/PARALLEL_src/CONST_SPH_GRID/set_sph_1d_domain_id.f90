@@ -3,14 +3,16 @@
 !
 !     Written by H. Matsui on July, 2007
 !
-!!      subroutine set_sph_1d_domain_id_rtp
-!!      subroutine set_sph_1d_domain_id_rj
+!!      subroutine set_sph_1d_domain_id_rtp(stk_lc1d, sph_gl1d)
+!!      subroutine set_sph_1d_domain_id_rj(stk_lc1d, sph_gl1d)
+!!        type(sph_1d_index_stack), intent(in) :: stk_lc1d
+!!        type(sph_1d_global_index), intent(in) :: sph_gl1d
 !
       module set_sph_1d_domain_id
 !
       use m_precision
 !
-      use m_sph_1d_global_index
+      use t_sph_1d_global_index
 !
       implicit none
 !
@@ -20,9 +22,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sph_1d_domain_id_rtp
+      subroutine set_sph_1d_domain_id_rtp(stk_lc1d, sph_gl1d)
 !
       use m_spheric_global_ranks
+!
+      type(sph_1d_index_stack), intent(in) :: stk_lc1d
+      type(sph_1d_global_index), intent(in) :: sph_gl1d
 !
       integer(kind = kint) :: ip_rank, ip, ist, ied, i, idx
 !
@@ -61,9 +66,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sph_1d_domain_id_rj
+      subroutine set_sph_1d_domain_id_rj(stk_lc1d, sph_gl1d)
 !
       use m_spheric_global_ranks
+!
+      type(sph_1d_index_stack), intent(in) :: stk_lc1d
+      type(sph_1d_global_index), intent(in) :: sph_gl1d
 !
       integer(kind = kint) :: ip_rank, ip, ist, ied, i, idx
 !

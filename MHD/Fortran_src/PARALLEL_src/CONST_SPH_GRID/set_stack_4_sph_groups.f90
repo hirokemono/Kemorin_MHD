@@ -8,15 +8,20 @@
 !!
 !!
 !!@verbatim
-!!      subroutine set_stack_rtp_radial_grp                             &
-!!     &         (sph_param, sph_rtp, radial_rtp_grp)
-!!      subroutine set_stack_rtp_meridional_grp(sph_rtp, theta_rtp_grp)
+!!      subroutine set_stack_rtp_radial_grp(sph_param, sph_rtp,         &
+!!     &          r_layer_grp, added_radial_grp, radial_rtp_grp)
+!!      subroutine set_stack_rtp_meridional_grp                         &
+!!     &         (sph_rtp, med_layer_grp, theta_rtp_grp)
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(layering_group_list), intent(in) :: med_layer_grp
+!!        type(group_data), intent(inout) :: theta_rtp_grp
 !!      subroutine set_stack_rj_radial_grp                              &
-!!     &         (sph_param, sph_rj, radial_rj_grp)
+!!     &        (sph_param, sph_rj, added_radial_grp, radial_rj_grp)
 !!      subroutine set_stack_rj_spectr_grp(sph_rj, sphere_rj_grp)
 !!        type(sph_shell_parameters), intent(in) :: sph_param
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(layering_group_list), intent(in) :: added_radial_grp
 !!        type(group_data), intent(inout) :: radial_rtp_grp
 !!        type(group_data), intent(inout) :: radial_rj_grp
 !!        type(group_data), intent(inout) :: sphere_rj_grp
@@ -30,6 +35,7 @@
 !
       use t_spheric_parameter
       use t_group_data
+      use t_control_1D_layering
 !
       implicit none
 !
@@ -51,13 +57,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_stack_rtp_radial_grp                               &
-     &         (sph_param, sph_rtp, radial_rtp_grp)
-!
-      use m_sph_1d_global_index
+      subroutine set_stack_rtp_radial_grp(sph_param, sph_rtp,           &
+     &          r_layer_grp, added_radial_grp, radial_rtp_grp)
 !
       type(sph_shell_parameters), intent(in) :: sph_param
       type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(layering_group_list), intent(in) :: r_layer_grp
+      type(layering_group_list), intent(in) :: added_radial_grp
       type(group_data), intent(inout) :: radial_rtp_grp
 !
       integer(kind = kint) :: icou, nlayer_ed, inum
@@ -136,12 +142,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_stack_rj_radial_grp                                &
-     &        (sph_param, sph_rj, radial_rj_grp)
-!
-      use m_sph_1d_global_index
+     &        (sph_param, sph_rj, added_radial_grp, radial_rj_grp)
 !
       type(sph_shell_parameters), intent(in) :: sph_param
       type(sph_rj_grid), intent(in) :: sph_rj
+      type(layering_group_list), intent(in) :: added_radial_grp
       type(group_data), intent(inout) :: radial_rj_grp
 !
       integer(kind = kint) :: icou, nlayer_ed, inum
@@ -210,11 +215,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_stack_rtp_meridional_grp(sph_rtp, theta_rtp_grp)
-!
-      use m_sph_1d_global_index
+      subroutine set_stack_rtp_meridional_grp                           &
+     &         (sph_rtp, med_layer_grp, theta_rtp_grp)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(layering_group_list), intent(in) :: med_layer_grp
       type(group_data), intent(inout) :: theta_rtp_grp
 !
       integer(kind = kint) :: inum, icou

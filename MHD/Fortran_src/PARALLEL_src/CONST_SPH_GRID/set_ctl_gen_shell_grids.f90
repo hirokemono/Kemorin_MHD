@@ -8,19 +8,29 @@
 !!
 !!@verbatim
 !!      subroutine s_set_control_4_gen_shell_grids                      &
-!!     &        (plt, spctl, sdctl, sph, mesh_file, sph_file_param,     &
-!!     &         stbl, ierr)
+!!     &         (plt, spctl, sdctl, sph, mesh_file, sph_file_param,    &
+!!     &          added_radial_grp, r_layer_grp, med_layer_grp,         &
+!!     &          stbl, ierr)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(sphere_data_control), intent(inout) :: spctl
 !!        type(sphere_domain_control), intent(inout) :: sdctl
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(field_IO_params), intent(inout) ::  mesh_file
 !!        type(field_IO_params), intent(inout) :: sph_file_param
+!!        type(layering_group_list), intent(inout) :: added_radial_grp
+!!        type(layering_group_list), intent(inout) :: r_layer_grp
+!!        type(layering_group_list), intent(inout) :: med_layer_grp
+!!        type(comm_table_make_sph), intent(inout) :: stbl
 !!      subroutine set_control_4_shell_grids                            &
-!!     &         (nprocs_check, spctl, sdctl, sph, stbl, ierr)
+!!     &         (nprocs_check, spctl, sdctl, sph,                      &
+!!     &          added_radial_grp, r_layer_grp, med_layer_grp,         &
+!!     &          stbl, ierr)
 !!        type(sphere_data_control), intent(inout) :: spctl
 !!        type(sphere_domain_control), intent(inout) :: sdctl
 !!        type(sph_grids), intent(inout) :: sph
+!!        type(layering_group_list), intent(inout) :: added_radial_grp
+!!        type(layering_group_list), intent(inout) :: r_layer_grp
+!!        type(layering_group_list), intent(inout) :: med_layer_grp
 !!        type(comm_table_make_sph), intent(inout) :: stbl
 !!@endverbatim
 !
@@ -34,6 +44,7 @@
       use t_ctl_data_4_sphere_model
       use t_ctl_data_4_divide_sphere
       use t_sph_mesh_1d_connect
+      use t_control_1D_layering
 !
       implicit  none
 !
@@ -51,8 +62,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_set_control_4_gen_shell_grids                        &
-     &        (plt, spctl, sdctl, sph, mesh_file, sph_file_param,       &
-     &         stbl, ierr)
+     &         (plt, spctl, sdctl, sph, mesh_file, sph_file_param,      &
+     &          added_radial_grp, r_layer_grp, med_layer_grp,           &
+     &          stbl, ierr)
 !
       type(platform_data_control), intent(in) :: plt
       type(sphere_data_control), intent(inout) :: spctl
@@ -60,6 +72,9 @@
       type(sph_grids), intent(inout) :: sph
       type(field_IO_params), intent(inout) ::  mesh_file
       type(field_IO_params), intent(inout) :: sph_file_param
+      type(layering_group_list), intent(inout) :: added_radial_grp
+      type(layering_group_list), intent(inout) :: r_layer_grp
+      type(layering_group_list), intent(inout) :: med_layer_grp
       type(comm_table_make_sph), intent(inout) :: stbl
       integer(kind = kint), intent(inout) :: ierr
 !
@@ -70,7 +85,8 @@
      &   (plt, nprocs_check, mesh_file, sph_file_param)
 !
       call set_control_4_shell_grids                                    &
-     &   (nprocs_check, spctl, sdctl, sph, stbl, ierr)
+     &   (nprocs_check, spctl, sdctl, sph,                              &
+     &    added_radial_grp, r_layer_grp, med_layer_grp, stbl, ierr)
 !
       end subroutine s_set_control_4_gen_shell_grids
 !
@@ -104,13 +120,14 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_control_4_shell_grids                              &
-     &         (nprocs_check, spctl, sdctl, sph, stbl, ierr)
+     &         (nprocs_check, spctl, sdctl, sph,                        &
+     &          added_radial_grp, r_layer_grp, med_layer_grp,           &
+     &          stbl, ierr)
 !
       use m_constants
       use m_machine_parameter
       use m_spheric_constants
       use m_spheric_global_ranks
-      use m_sph_1d_global_index
       use m_error_IDs
 !
       use m_file_format_switch
@@ -123,6 +140,9 @@
       type(sphere_data_control), intent(inout) :: spctl
       type(sphere_domain_control), intent(inout) :: sdctl
       type(sph_grids), intent(inout) :: sph
+      type(layering_group_list), intent(inout) :: added_radial_grp
+      type(layering_group_list), intent(inout) :: r_layer_grp
+      type(layering_group_list), intent(inout) :: med_layer_grp
       type(comm_table_make_sph), intent(inout) :: stbl
       integer(kind = kint), intent(inout) :: ierr
 !
@@ -157,7 +177,8 @@
 !      end if
 !
       call set_ctl_radius_4_shell                                       &
-     &   (spctl, sph%sph_params, sph%sph_rtp, sph%sph_rj, stbl, ierr)
+     &   (spctl, sph%sph_params, sph%sph_rtp, sph%sph_rj,               &
+     &    added_radial_grp, stbl, ierr)
 !
       call set_subdomains_4_sph_shell                                   &
      &    (nprocs_check, sdctl, ierr, e_message)
@@ -165,7 +186,8 @@
 !
 !
 !   Set layering parameter for SGS models
-      call set_control_4_SGS_shell(spctl, sph)
+      call set_control_4_SGS_shell                                      &
+     &   (sph, spctl, r_layer_grp, med_layer_grp)
 !
 !  Check
       if    (sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_pole     &
@@ -200,12 +222,10 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_ctl_radius_4_shell                                 &
-     &         (spctl, sph_params, sph_rtp, sph_rj, stbl, ierr)
+     &         (spctl, sph_params, sph_rtp, sph_rj,                     &
+     &          added_radial_grp, stbl, ierr)
 !
-      use m_sph_1d_global_index
       use m_error_IDs
-!
-      use t_control_1D_layering
 !
       use const_sph_radial_grid
       use skip_comment_f
@@ -215,6 +235,7 @@
       type(sph_rtp_grid), intent(inout) :: sph_rtp
       type(sph_rj_grid), intent(inout) :: sph_rj
       type(comm_table_make_sph), intent(inout) :: stbl
+      type(layering_group_list), intent(inout) :: added_radial_grp
       integer(kind = kint), intent(inout) :: ierr
 !
       integer(kind = kint) :: i, kr, icou
@@ -369,14 +390,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_control_4_SGS_shell(spctl, sph)
-!
-      use m_sph_1d_global_index
+      subroutine set_control_4_SGS_shell                                &
+     &         (sph, spctl, r_layer_grp, med_layer_grp)
 !
       use t_control_1D_layering
 !
-      type(sphere_data_control), intent(inout) :: spctl
       type(sph_grids), intent(in) :: sph
+      type(sphere_data_control), intent(inout) :: spctl
+      type(layering_group_list), intent(inout) :: r_layer_grp
+      type(layering_group_list), intent(inout) :: med_layer_grp
 !
 !
 !   Set layering parameter for SGS models

@@ -5,11 +5,14 @@
 !
 !!      subroutine s_const_FEM_mesh_for_sph                             &
 !!     &         (ip_rank, nidx_rtp, r_global, gauss,                   &
-!!     &          sph_params, sph_rtp, radial_rj_grp, mesh, group, stbl)
+!!     &          stk_lc1d, sph_gl1d, sph_params, sph_rtp,              &
+!!     &          radial_rj_grp, mesh, group, stbl)
 !!        type(gauss_points), intent(in) :: gauss
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(group_data), intent(in) :: radial_rj_grp
+!!        type(sph_1d_index_stack), intent(in)  :: stk_lc1d
+!!        type(sph_1d_global_index), intent(in)  :: sph_gl1d
 !!        type(comm_table_make_sph), intent(inout) :: stbl
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::  group
@@ -32,7 +35,8 @@
 !
       subroutine s_const_FEM_mesh_for_sph                               &
      &         (ip_rank, nidx_rtp, r_global, gauss,                     &
-     &          sph_params, sph_rtp, radial_rj_grp, mesh, group, stbl)
+     &          stk_lc1d, sph_gl1d, sph_params, sph_rtp,                &
+     &          radial_rj_grp, mesh, group, stbl)
 !
       use t_spheric_parameter
       use t_gauss_points
@@ -41,11 +45,14 @@
       use t_geometry_data
       use t_group_data
       use t_sph_mesh_1d_connect
+      use t_sph_1d_global_index
       use m_spheric_global_ranks
 !
       use coordinate_converter
       use ordering_sph_mesh_to_rtp
 !
+      type(sph_1d_index_stack), intent(in)  :: stk_lc1d
+      type(sph_1d_global_index), intent(in)  :: sph_gl1d
       type(comm_table_make_sph), intent(inout) :: stbl
 !
       integer(kind = kint), intent(in) :: nidx_rtp(3)
@@ -84,8 +91,9 @@
      &    stbl, mesh%nod_comm)
 !
 ! Ordering to connect rtp data
-      call s_ordering_sph_mesh_for_rtp(nidx_rtp, ip_r, ip_t,            &
-     &    stbl, mesh%node, mesh%ele, group%nod_grp, mesh%nod_comm)
+      call s_ordering_sph_mesh_for_rtp                                  &
+     &   (nidx_rtp, ip_r, ip_t, stk_lc1d, sph_gl1d, stbl,               &
+     &    mesh%node, mesh%ele, group%nod_grp, mesh%nod_comm)
 !
 ! Convert spherical coordinate to certesian
       call position_2_xyz(mesh%node%numnod,                             &

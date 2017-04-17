@@ -8,16 +8,21 @@
 !!
 !!
 !!@verbatim
-!!      subroutine copy_sph_1d_gl_idx_rtp(nri_gl, radius_1d_gl, sph_rtp)
+!!      subroutine copy_sph_1d_gl_idx_rtp                               &
+!!     &         (nri_gl, radius_1d_gl, sph_gl1d, sph_rtp)
 !!        type(sph_rtp_grid), intent(inout) :: sph_rtp
-!!      subroutine copy_sph_1d_gl_idx_rtm(nri_gl, radius_1d_gl, sph_rtm)
+!!      subroutine copy_sph_1d_gl_idx_rtm                               &
+!!     &         (nri_gl, radius_1d_gl, sph_gl1d, sph_rtm)
 !!        type(sph_rtm_grid), intent(inout) :: sph_rtm
-!!      subroutine copy_sph_1d_gl_idx_rlm(nri_gl, radius_1d_gl, sph_rlm)
+!!      subroutine copy_sph_1d_gl_idx_rlm                               &
+!!     &         (nri_gl, radius_1d_gl, sph_gl1d, sph_rlm)
 !!        type(sph_rlm_grid), intent(inout) :: sph_rlm
-!!      subroutine copy_sph_1d_gl_idx_rj(nri_gl, radius_1d_gl, sph_rj)
+!!      subroutine copy_sph_1d_gl_idx_rj                                &
+!!     &         (nri_gl, radius_1d_gl, sph_gl1d, sph_rj)
 !!        type(sph_rj_grid), intent(inout) :: sph_rj
 !!
-!!      subroutine add_center_mode_rj(ip_rank, sph_rj)
+!!      subroutine add_center_mode_rj(ip_rank, sph_gl1d, sph_rj)
+!!        type(sph_1d_global_index), intent(in) :: sph_gl1d
 !!        type(sph_rj_grid), intent(inout) :: sph_rj
 !!@endverbatim
 !
@@ -27,11 +32,11 @@
       use m_precision
       use m_constants
 !
-      use m_sph_1d_global_index
       use t_spheric_rtp_data
       use t_spheric_rtm_data
       use t_spheric_rlm_data
       use t_spheric_rj_data
+      use t_sph_1d_global_index
 !
       implicit none
 !
@@ -41,10 +46,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine copy_sph_1d_gl_idx_rtp(nri_gl, radius_1d_gl, sph_rtp)
+      subroutine copy_sph_1d_gl_idx_rtp                                 &
+     &         (nri_gl, radius_1d_gl, sph_gl1d, sph_rtp)
 !
       integer(kind = kint), intent(in) :: nri_gl
       real(kind = kreal), intent(in) :: radius_1d_gl(nri_gl)
+      type(sph_1d_global_index), intent(in) :: sph_gl1d
       type(sph_rtp_grid), intent(inout) :: sph_rtp
 !
       integer(kind = kint) :: i, j
@@ -74,10 +81,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine copy_sph_1d_gl_idx_rtm(nri_gl, radius_1d_gl, sph_rtm)
+      subroutine copy_sph_1d_gl_idx_rtm                                 &
+     &         (nri_gl, radius_1d_gl, sph_gl1d, sph_rtm)
 !
       integer(kind = kint), intent(in) :: nri_gl
       real(kind = kreal), intent(in) :: radius_1d_gl(nri_gl)
+      type(sph_1d_global_index), intent(in) :: sph_gl1d
       type(sph_rtm_grid), intent(inout) :: sph_rtm
 !
       integer(kind = kint) :: i, j
@@ -107,10 +116,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine copy_sph_1d_gl_idx_rlm(nri_gl, radius_1d_gl, sph_rlm)
+      subroutine copy_sph_1d_gl_idx_rlm                                 &
+     &         (nri_gl, radius_1d_gl, sph_gl1d, sph_rlm)
 !
       integer(kind = kint), intent(in) :: nri_gl
       real(kind = kreal), intent(in) :: radius_1d_gl(nri_gl)
+      type(sph_1d_global_index), intent(in) :: sph_gl1d
       type(sph_rlm_grid), intent(inout) :: sph_rlm
 !
       integer(kind = kint) :: i, j
@@ -136,10 +147,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine copy_sph_1d_gl_idx_rj(nri_gl, radius_1d_gl, sph_rj)
+      subroutine copy_sph_1d_gl_idx_rj                                  &
+     &         (nri_gl, radius_1d_gl, sph_gl1d, sph_rj)
 !
       integer(kind = kint), intent(in) :: nri_gl
       real(kind = kreal), intent(in) :: radius_1d_gl(nri_gl)
+      type(sph_1d_global_index), intent(in) :: sph_gl1d
       type(sph_rj_grid), intent(inout) :: sph_rj
 !
       integer(kind = kint) :: i, j
@@ -166,9 +179,10 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine add_center_mode_rj(ip_rank, sph_rj)
+      subroutine add_center_mode_rj(ip_rank, sph_gl1d, sph_rj)
 !
       integer(kind = kint), intent(in) :: ip_rank
+      type(sph_1d_global_index), intent(in) :: sph_gl1d
       type(sph_rj_grid), intent(inout) :: sph_rj
 !
       integer(kind = kint) :: i, j

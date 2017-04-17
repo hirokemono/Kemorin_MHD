@@ -3,8 +3,11 @@
 !
 !     Written by H. Matsui on March, 2013
 !
-!!      subroutine s_ordering_sph_mesh_for_rtp(nidx_rtp, ip_r, ip_t,    &
-!!     &          stbl, node, ele, nod_grp, nod_comm)
+!!      subroutine s_ordering_sph_mesh_for_rtp                          &
+!!     &         (nidx_rtp, ip_r, ip_t, stk_lc1d, sph_gl1d, stbl,       &
+!!     &          node, ele, nod_grp, nod_comm)
+!!        type(sph_1d_index_stack), intent(in) :: stk_lc1d
+!!        type(sph_1d_global_index), intent(in) :: sph_gl1d
 !!        type(comm_table_make_sph), intent(in) :: stbl
 !!        type(node_data), intent(inout) :: node
 !!        type(element_data), intent(inout) :: ele
@@ -27,19 +30,22 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_ordering_sph_mesh_for_rtp(nidx_rtp, ip_r, ip_t,      &
-     &          stbl, node, ele, nod_grp, nod_comm)
+      subroutine s_ordering_sph_mesh_for_rtp                            &
+     &         (nidx_rtp, ip_r, ip_t, stk_lc1d, sph_gl1d, stbl,         &
+     &          node, ele, nod_grp, nod_comm)
 !
       use t_geometry_data
       use t_comm_table
       use t_group_data
       use t_sph_mesh_1d_connect
+      use t_sph_1d_global_index
 !
-      use m_sph_1d_global_index
       use cal_sph_node_addresses
 !
       integer(kind = kint), intent(in) :: nidx_rtp(3)
       integer(kind = kint), intent(in) :: ip_r, ip_t
+      type(sph_1d_index_stack), intent(in) :: stk_lc1d
+      type(sph_1d_global_index), intent(in) :: sph_gl1d
       type(comm_table_make_sph), intent(in) :: stbl
 !
       type(node_data), intent(inout) :: node

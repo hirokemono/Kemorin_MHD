@@ -9,13 +9,17 @@
 !!
 !!
 !!@verbatim
-!!      subroutine copy_gl_2_local_rj_param(ip_rank, sph_rj)
+!!      subroutine copy_gl_2_local_rj_param(ip_rank, stk_lc1d, sph_rj)
+!!        type(sph_1d_index_stack), intent(in) :: stk_lc1d
 !!        type(sph_rj_grid), intent(inout) :: sph_rj
-!!      subroutine copy_gl_2_local_rlm_param(ip_rank, sph_rlm)
+!!      subroutine copy_gl_2_local_rlm_param(ip_rank, stk_lc1d, sph_rlm)
+!!        type(sph_1d_index_stack), intent(in) :: stk_lc1d
 !!        type(sph_rlm_grid), intent(inout) :: sph_rlm
-!!      subroutine copy_gl_2_local_rtm_param(ip_rank, sph_rtm)
+!!      subroutine copy_gl_2_local_rtm_param(ip_rank, stk_lc1d, sph_rtm)
+!!        type(sph_1d_index_stack), intent(in) :: stk_lc1d
 !!        type(sph_rtm_grid), intent(inout) :: sph_rtm
-!!      subroutine copy_gl_2_local_rtp_param(ip_rank, sph_rtp)
+!!      subroutine copy_gl_2_local_rtp_param(ip_rank, stk_lc1d, sph_rtp)
+!!        type(sph_1d_index_stack), intent(in) :: stk_lc1d
 !!        type(sph_rtp_grid), intent(inout) :: sph_rtp
 !!@endverbatim
 !
@@ -23,6 +27,7 @@
 !
       use m_precision
       use t_spheric_parameter
+      use t_sph_1d_global_index
 !
       implicit none
 !
@@ -32,13 +37,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_gl_2_local_rj_param(ip_rank, sph_rj)
+      subroutine copy_gl_2_local_rj_param(ip_rank, stk_lc1d, sph_rj)
 !
       use m_sph_global_parameter
       use m_spheric_global_ranks
-      use m_sph_1d_global_index
 !
       integer(kind = kint), intent(in) :: ip_rank
+      type(sph_1d_index_stack), intent(in) :: stk_lc1d
       type(sph_rj_grid), intent(inout) :: sph_rj
 !
       integer(kind = kint) :: i1, i2
@@ -61,13 +66,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_gl_2_local_rlm_param(ip_rank, sph_rlm)
+      subroutine copy_gl_2_local_rlm_param(ip_rank, stk_lc1d, sph_rlm)
 !
       use m_sph_global_parameter
       use m_spheric_global_ranks
-      use m_sph_1d_global_index
 !
       integer(kind = kint), intent(in) :: ip_rank
+      type(sph_1d_index_stack), intent(in) :: stk_lc1d
       type(sph_rlm_grid), intent(inout) :: sph_rlm
 !
       integer(kind = kint) :: i1, i2
@@ -90,13 +95,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_gl_2_local_rtm_param(ip_rank, sph_rtm)
+      subroutine copy_gl_2_local_rtm_param(ip_rank, stk_lc1d, sph_rtm)
 !
       use m_sph_global_parameter
       use m_spheric_global_ranks
-      use m_sph_1d_global_index
 !
       integer(kind = kint), intent(in) :: ip_rank
+      type(sph_1d_index_stack), intent(in) :: stk_lc1d
       type(sph_rtm_grid), intent(inout) :: sph_rtm
 !
       integer(kind = kint) :: i1, i2, i3
@@ -122,13 +127,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_gl_2_local_rtp_param(ip_rank, sph_rtp)
+      subroutine copy_gl_2_local_rtp_param(ip_rank, stk_lc1d, sph_rtp)
 !
       use m_sph_global_parameter
       use m_spheric_global_ranks
-      use m_sph_1d_global_index
 !
       integer(kind = kint), intent(in) :: ip_rank
+      type(sph_1d_index_stack), intent(in) :: stk_lc1d
       type(sph_rtp_grid), intent(inout) :: sph_rtp
 !
       integer(kind = kint) :: i1, i2, i3

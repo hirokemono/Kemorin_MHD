@@ -4,8 +4,12 @@
 !     Written by H. Matsui on March, 2012
 !
 !!      subroutine s_const_1d_ele_connect_4_sph                         &
-!!     &         (iflag_shell_mode, m_folding, sph_rtp, stbl)
+!!     &         (iflag_shell_mode, m_folding, sph_rtp,                 &
+!!     &          stk_lc1d, sph_gl1d, stbl)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(sph_1d_index_stack), intent(in) :: stk_lc1d
+!!        type(sph_1d_global_index), intent(in) :: sph_gl1d
+!!        type(comm_table_make_sph), intent(inout) :: stbl
 !
       module const_1d_ele_connect_4_sph
 !
@@ -14,6 +18,7 @@
       use m_machine_parameter
       use m_spheric_constants
       use t_sph_mesh_1d_connect
+      use t_sph_1d_global_index
 !
       implicit none
 !
@@ -28,7 +33,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_const_1d_ele_connect_4_sph                           &
-     &         (iflag_shell_mode, m_folding, sph_rtp, stbl)
+     &         (iflag_shell_mode, m_folding, sph_rtp,                   &
+     &          stk_lc1d, sph_gl1d, stbl)
 !
       use m_spheric_global_ranks
       use t_spheric_parameter
@@ -36,6 +42,8 @@
       integer(kind = kint), intent(in) :: iflag_shell_mode
       integer(kind = kint), intent(in) :: m_folding
       type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_1d_index_stack), intent(in) :: stk_lc1d
+      type(sph_1d_global_index), intent(in) :: sph_gl1d
 !
       type(comm_table_make_sph), intent(inout) :: stbl
 !
@@ -44,9 +52,10 @@
      &    sph_rtp%nidx_global_rtp, m_folding, stbl)
 !
       if(iflag_debug .gt. 0) write(*,*) 'count_nod_ele_4_sph_radial'
-      call count_nod_ele_4_sph_radial(iflag_shell_mode, stbl)
+      call count_nod_ele_4_sph_radial                                   &
+     &   (iflag_shell_mode, stk_lc1d, sph_gl1d, stbl)
       if(iflag_debug .gt. 0) write(*,*) 'count_nod_ele_4_sph_theta'
-      call count_nod_ele_4_sph_theta(iflag_shell_mode, stbl)
+      call count_nod_ele_4_sph_theta(iflag_shell_mode, stk_lc1d, stbl)
 !
       call alloc_iele_sph_mesh(stbl)
 !
@@ -64,11 +73,12 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine count_nod_ele_4_sph_radial(iflag_shell_mode, stbl)
-!
-      use m_sph_1d_global_index
+      subroutine count_nod_ele_4_sph_radial                             &
+     &         (iflag_shell_mode, stk_lc1d, sph_gl1d, stbl)
 !
       integer(kind = kint), intent(in) :: iflag_shell_mode
+      type(sph_1d_index_stack), intent(in) :: stk_lc1d
+      type(sph_1d_global_index), intent(in) :: sph_gl1d
       type(comm_table_make_sph), intent(inout) :: stbl
 !
       integer(kind = kint) :: k, kr, ip, jp, ist, ied
@@ -157,11 +167,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine count_nod_ele_4_sph_theta(iflag_shell_mode, stbl)
-!
-      use m_sph_1d_global_index
+      subroutine count_nod_ele_4_sph_theta                              &
+     &         (iflag_shell_mode, stk_lc1d, stbl)
 !
       integer(kind = kint), intent(in) :: iflag_shell_mode
+      type(sph_1d_index_stack), intent(in) :: stk_lc1d
       type(comm_table_make_sph), intent(inout) :: stbl
 !
       integer(kind = kint) :: k, ip, ist, ied, jp
@@ -290,8 +300,6 @@
 !
       subroutine set_iele_4_sph_radial(stbl)
 !
-      use m_sph_1d_global_index
-!
       type(comm_table_make_sph), intent(inout) :: stbl
 !
       integer(kind = kint) :: kr, ip, icou
@@ -331,8 +339,6 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_iele_4_sph_theta(stbl)
-!
-      use m_sph_1d_global_index
 !
       type(comm_table_make_sph), intent(inout) :: stbl
 !

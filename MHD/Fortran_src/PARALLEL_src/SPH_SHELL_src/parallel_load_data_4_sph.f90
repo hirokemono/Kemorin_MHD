@@ -7,7 +7,8 @@
 !!
 !!@verbatim
 !!      subroutine load_para_SPH_and_FEM_mesh(sph, comms_sph, sph_grps, &
-!!     &          mesh, group, ele_mesh, mesh_file, stbl)
+!!     &          mesh, group, ele_mesh, mesh_file,                     &
+!!     &          stk_lc1d, sph_gl1d, stbl)
 !!      subroutine load_para_SPH_rj_mesh(sph, comms_sph, sph_grps)
 !!      subroutine load_para_sph_mesh(sph, bc_rtp_grp, sph_grps)
 !!        type(sph_grids), intent(inout) :: sph
@@ -17,6 +18,8 @@
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(element_geometry), intent(inout) :: ele_mesh
 !!        type(field_IO_params), intent(inout) ::  mesh_file
+!!        type(sph_1d_index_stack), intent(inout) :: stk_lc1d
+!!        type(sph_1d_global_index), intent(inout) :: sph_gl1d
 !!        type(comm_table_make_sph), intent(inout) :: stbl
 !!
 !!      subroutine load_para_rj_mesh                                    &
@@ -56,9 +59,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine load_para_SPH_and_FEM_mesh(sph, comms_sph, sph_grps,   &
-     &          mesh, group, ele_mesh, mesh_file, stbl)
+     &          mesh, group, ele_mesh, mesh_file,                       &
+     &          stk_lc1d, sph_gl1d, stbl)
 !
       use t_mesh_data
+      use t_sph_1d_global_index
       use t_sph_mesh_1d_connect
 !
       type(sph_grids), intent(inout) :: sph
@@ -69,6 +74,8 @@
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
       type(field_IO_params), intent(inout) ::  mesh_file
+      type(sph_1d_index_stack), intent(inout) :: stk_lc1d
+      type(sph_1d_global_index), intent(inout) :: sph_gl1d
       type(comm_table_make_sph), intent(inout) :: stbl
 !
 !
@@ -77,7 +84,7 @@
       call load_FEM_mesh_4_SPH                                          &
      &   (sph%sph_params, sph%sph_rtp, sph%sph_rj,                      &
      &    sph_grps%radial_rtp_grp, sph_grps%radial_rj_grp,              &
-     &    mesh, group, ele_mesh, mesh_file, stbl)
+     &    mesh, group, ele_mesh, mesh_file, stk_lc1d, sph_gl1d, stbl)
 !
       end subroutine load_para_SPH_and_FEM_mesh
 !
@@ -100,14 +107,15 @@
 !
       subroutine load_FEM_mesh_4_SPH(sph_params, sph_rtp, sph_rj,       &
      &          radial_rtp_grp, radial_rj_grp, mesh, group, ele_mesh,   &
-     &          mesh_file, stbl)
+     &          mesh_file, stk_lc1d, sph_gl1d, stbl)
 !
       use calypso_mpi
       use t_mesh_data
       use t_comm_table
       use t_geometry_data
       use t_group_data
-      use t_sph_mesh_1d_connect
+       use t_sph_1d_global_index
+     use t_sph_mesh_1d_connect
 !
       use m_spheric_constants
       use mpi_load_mesh_data
@@ -126,6 +134,8 @@
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
       type(field_IO_params), intent(inout) ::  mesh_file
+      type(sph_1d_index_stack), intent(inout) :: stk_lc1d
+      type(sph_1d_global_index), intent(inout) :: sph_gl1d
       type(comm_table_make_sph), intent(inout) :: stbl
 !
       type(mesh_data) :: femmesh_s
@@ -153,7 +163,8 @@
       if (iflag_debug.gt.0) write(*,*) 'const_FEM_mesh_4_sph_mhd'
       call const_FEM_mesh_4_sph_mhd                                     &
      &   (sph_params, sph_rtp, sph_rj, radial_rtp_grp, radial_rj_grp,   &
-     &    femmesh_s%mesh, femmesh_s%group, mesh_file, stbl)
+     &    femmesh_s%mesh, femmesh_s%group, mesh_file,                   &
+     &    stbl, stk_lc1d, sph_gl1d)
 !      call compare_mesh_type                                           &
 !     &   (my_rank, mesh%nod_comm, mesh%node, mesh%ele, femmesh_s%mesh)
 !      call compare_mesh_groups(group%nod_grp, femmesh_s%group)
