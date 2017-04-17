@@ -54,7 +54,7 @@
       integer(kind = kint), allocatable :: id_domain_rtp_p(:)
       integer(kind = kint), allocatable :: id_domain_rj_r(:)
       integer(kind = kint), allocatable :: id_domain_rj_j(:)
-!
+! 
 ! -----------------------------------------------------------------------
 !
       contains
