@@ -204,8 +204,7 @@
 !
 !   set spherical shell parameters
 !
-      iflag_make_SPH = psph_ctl%iflag_sph_shell
-      if(iflag_make_SPH .gt. 0) then
+      if(psph_ctl%iflag_sph_shell .gt. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_control_4_shell_grids'
         call set_control_4_shell_grids                                  &
      &     (nprocs, psph_ctl%spctl, psph_ctl%sdctl, sph_gen,            &

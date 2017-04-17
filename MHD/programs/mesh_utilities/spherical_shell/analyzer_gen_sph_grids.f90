@@ -97,14 +97,14 @@
      &    sph_const, stk_lc1d, sph_gl1d, s2d_tbl)
 !
       call start_eleps_time(4)
-      if(ndomain_sph .eq. nprocs) then
+      if(s3d_ranks%ndomain_sph .eq. nprocs) then
         call mpi_gen_fem_mesh_for_sph                                   &
      &     (added_radial_grp, stk_lc1d, sph_gl1d,                       &
      &      sph_const%sph_params, sph_const%sph_rj, sph_const%sph_rtp,  &
      &      fem_mesh_file, stbl)
       else
         if(iflag_debug .gt. 0) write(*,*) 'para_gen_fem_mesh_for_sph'
-        call para_gen_fem_mesh_for_sph(ndomain_sph,                     &
+        call para_gen_fem_mesh_for_sph(s3d_ranks%ndomain_sph,           &
      &      added_radial_grp, stk_lc1d, sph_gl1d,                       &
      &      sph_const%sph_params, sph_const%sph_rj, sph_const%sph_rtp,  &
      &      fem_mesh_file, stbl)

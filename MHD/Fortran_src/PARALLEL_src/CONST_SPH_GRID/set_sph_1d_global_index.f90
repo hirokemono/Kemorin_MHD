@@ -53,7 +53,7 @@
       integer(kind = kint) :: icou, i, ip, kr
 !
 !
-      do ip  = 1, ndomain_rtp(1)
+      do ip  = 1, s3d_ranks%ndomain_rtp(1)
         icou = stk_lc1d%istack_idx_local_rtp_r(ip-1)
 !
         do i = 1, nidx_local_rtp_IC(ip)
@@ -76,7 +76,7 @@
       end do
 !
 !
-      do ip = 1, ndomain_rtp(2)
+      do ip = 1, s3d_ranks%ndomain_rtp(2)
         ist = stk_lc1d%istack_idx_local_rtp_t(ip-1) + 1
         ied = stk_lc1d%istack_idx_local_rtp_t(ip)
         do i = ist, ied
@@ -84,7 +84,7 @@
         end do
       end do
 !
-      do ip = 1, ndomain_rtp(3)
+      do ip = 1, s3d_ranks%ndomain_rtp(3)
         ist = stk_lc1d%istack_idx_local_rtp_p(ip-1) + 1
         ied = stk_lc1d%istack_idx_local_rtp_p(ip)
         do i = ist, ied
@@ -115,9 +115,9 @@
       integer(kind = kint) :: icou, i, ip
 !
 !
-      n1 = ndomain_rtm(1)
-      n2 = ndomain_rtm(2)
-      n3 = ndomain_rtm(3)
+      n1 = s3d_ranks%ndomain_rtm(1)
+      n2 = s3d_ranks%ndomain_rtm(2)
+      n3 = s3d_ranks%ndomain_rtm(3)
 !
       do ip  = 1, n1
         icou = stk_lc1d%istack_idx_local_rtm_r(ip-1)

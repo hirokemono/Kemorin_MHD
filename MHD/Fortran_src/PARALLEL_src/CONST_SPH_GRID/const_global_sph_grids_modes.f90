@@ -95,7 +95,7 @@
       call alloc_sph_1d_global_stack(stk_lc1d)
       call allocate_sph_gl_parameter
       call allocate_sph_gl_bc_param
-      call allocate_sph_ranks
+      call alloc_sph_ranks(s3d_ranks)
       call allocate_nidx_local
 !
 !
@@ -173,7 +173,7 @@
       call alloc_sph_1d_global_stack(stk_lc1d)
       call allocate_sph_gl_parameter
       call allocate_sph_gl_bc_param
-      call allocate_sph_ranks
+      call alloc_sph_ranks(s3d_ranks)
       call allocate_nidx_local
 !
 !
@@ -212,28 +212,28 @@
 !
       integer(kind = kint) :: num
 !
-      num = ndomain_rtp(1)
+      num = s3d_ranks%ndomain_rtp(1)
       allocate(nidx_local_rtp_r(num))
-      num = ndomain_rtp(2)
+      num = s3d_ranks%ndomain_rtp(2)
       allocate(nidx_local_rtp_t(num))
-      num = ndomain_rtp(3)
+      num = s3d_ranks%ndomain_rtp(3)
       allocate(nidx_local_rtp_p(num))
 !
-      num = ndomain_rtm(1)
+      num = s3d_ranks%ndomain_rtm(1)
       allocate(nidx_local_rtm_r(num))
-      num = ndomain_rtm(2)
+      num = s3d_ranks%ndomain_rtm(2)
       allocate(nidx_local_rtm_t(num))
-      num = ndomain_rtm(3)
+      num = s3d_ranks%ndomain_rtm(3)
       allocate(nidx_local_rtm_m(num))
 !
-      num = ndomain_rlm(1)
+      num = s3d_ranks%ndomain_rlm(1)
       allocate(nidx_local_rlm_r(num))
-      num = ndomain_rlm(2)
+      num = s3d_ranks%ndomain_rlm(2)
       allocate(nidx_local_rlm_j(num))
 !
-      num = ndomain_rj(1)
+      num = s3d_ranks%ndomain_rj(1)
       allocate(nidx_local_rj_r(num))
-      num = ndomain_rj(2)
+      num = s3d_ranks%ndomain_rj(2)
       allocate(nidx_local_rj_j(num))
 !
       nidx_local_rtp_r = 0
@@ -300,55 +300,57 @@
       integer(kind = kint) :: ist, ied
 !
 !
-!      write(*,*) 'set_gl_rank_3d', ndomain_rtp(1:3)
-      call set_gl_rank_3d(iflag_radial_inner_domain,                    &
-     &    ndomain_sph, ndomain_rtp, iglobal_rank_rtp)
+!      write(*,*) 'set_gl_rank_3d', s3d_ranks%ndomain_rtp(1:3)
+      call set_gl_rank_3d(s3d_ranks%iflag_radial_inner_domain,          &
+     &    s3d_ranks%ndomain_sph, s3d_ranks%ndomain_rtp,                 &
+     &    s3d_ranks%iglobal_rank_rtp)
 !
 !      call cal_local_nums                                              &
-!     &   (ndomain_rtp(1), ione, sph_rtp%nidx_global_rtp(1),            &
+!     &   (s3d_ranks%ndomain_rtp(1), ione, sph_rtp%nidx_global_rtp(1),  &
 !     &    nidx_local_rtp_r, stk_lc1d%istack_idx_local_rtp_r)
 !      write(*,*) 'cal_local_nums 1',                                   &
-!     &     ndomain_rtp(1:3), sph_rtp%nidx_global_rtp(2)
+!     &     s3d_ranks%ndomain_rtp(1:3), sph_rtp%nidx_global_rtp(2)
       call cal_local_nums                                               &
-     &   (ndomain_rtp(2), ione, sph_rtp%nidx_global_rtp(2),             &
+     &   (s3d_ranks%ndomain_rtp(2), ione, sph_rtp%nidx_global_rtp(2),   &
      &    nidx_local_rtp_t, stk_lc1d%istack_idx_local_rtp_t)
 !      write(*,*) 'cal_local_nums 2'
       call cal_local_nums                                               &
-     &   (ndomain_rtp(3), ione, sph_rtp%nidx_global_rtp(3),             &
+     &   (s3d_ranks%ndomain_rtp(3), ione, sph_rtp%nidx_global_rtp(3),   &
      &    nidx_local_rtp_p, stk_lc1d%istack_idx_local_rtp_p)
 !
 !
 !      write(*,*) 'cal_local_nums_st'
-      call cal_local_nums_st(ndomain_rtp(1),                            &
+      call cal_local_nums_st(s3d_ranks%ndomain_rtp(1),                  &
      &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
      &    nidx_local_rtp_OC, ist_idx_local_rtp_OC)
 !
       if (sph_params%nlayer_ICB .gt. 1) then
         ied = sph_params%nlayer_ICB - 1
 !      write(*,*) 'cal_local_nums_rev'
-        call cal_local_nums_rev(ndomain_rtp(1), ione, ied,              &
+        call cal_local_nums_rev(s3d_ranks%ndomain_rtp(1), ione, ied,    &
      &      nidx_local_rtp_IC, ist_idx_local_rtp_IC)
       end if
 !
       if (sph_params%nlayer_CMB .lt. sph_rtp%nidx_global_rtp(1)) then
         ist = sph_params%nlayer_CMB + 1
 !      write(*,*) 'cal_local_nums_rev'
-        call cal_local_nums_rev(ndomain_rtp(1), ist,                    &
+        call cal_local_nums_rev(s3d_ranks%ndomain_rtp(1), ist,          &
      &      sph_rtp%nidx_global_rtp(1), nidx_local_rtp_MT,              &
      &      ist_idx_local_rtp_MT)
       end if
 !
 !      write(*,*) 'merge_num_3_local_layers'
-      call merge_num_3_local_layers(ndomain_rtp(1),                     &
+      call merge_num_3_local_layers(s3d_ranks%ndomain_rtp(1),           &
      &    nidx_local_rtp_OC, nidx_local_rtp_IC, nidx_local_rtp_MT,      &
      &    ione, nidx_local_rtp_r, stk_lc1d%istack_idx_local_rtp_r)
 !
 !
 !      write(*,*) 'set_gl_nnod_spherical'
-      call set_gl_nnod_spherical(ndomain_sph,                           &
-     &    ndomain_rtp(1), ndomain_rtp(2), ndomain_rtp(3),               &
-     &    iglobal_rank_rtp, nidx_local_rtp_r, nidx_local_rtp_t,         &
-     &    nidx_local_rtp_p, nidx_local_rtp, nnod_local_rtp)
+      call set_gl_nnod_spherical(s3d_ranks%ndomain_sph,                 &
+     &    s3d_ranks%ndomain_rtp(1), s3d_ranks%ndomain_rtp(2),           &
+     &    s3d_ranks%ndomain_rtp(3), s3d_ranks%iglobal_rank_rtp,         &
+     &    nidx_local_rtp_r, nidx_local_rtp_t, nidx_local_rtp_p,         &
+     &    nidx_local_rtp, nnod_local_rtp)
 !
       end subroutine const_global_rtp_grids
 !
@@ -366,44 +368,47 @@
       integer(kind = kint) :: ist, ied
 !
 !
-      call set_gl_rank_3d(iflag_radial_inner_domain,                    &
-     &    ndomain_sph, ndomain_rtm, iglobal_rank_rtm)
+      call set_gl_rank_3d(s3d_ranks%iflag_radial_inner_domain,          &
+     &    s3d_ranks%ndomain_sph, s3d_ranks%ndomain_rtm,                 &
+     &    s3d_ranks%iglobal_rank_rtm)
 !
 !      call cal_local_nums                                              &
-!     &   (ndomain_rtm(1), ione, sph_rtm%nidx_global_rtm(1),            &
+!     &   (s3d_ranks%ndomain_rtm(1), ione, sph_rtm%nidx_global_rtm(1),  &
 !     &    nidx_local_rtm_r, stk_lc1d%istack_idx_local_rtm_r)
       call cal_local_nums                                               &
-     &   (ndomain_rtm(2), ione, sph_rtm%nidx_global_rtm(2),             &
+     &   (s3d_ranks%ndomain_rtm(2), ione, sph_rtm%nidx_global_rtm(2),   &
      &    nidx_local_rtm_t, stk_lc1d%istack_idx_local_rtm_t)
-      call cal_local_num_rtm_m(ndomain_rtm(3), sph_params%l_truncation, &
+      call cal_local_num_rtm_m                                          &
+     &   (s3d_ranks%ndomain_rtm(3), sph_params%l_truncation,            &
      &    sph_params%m_folding, nidx_local_rtm_m,                       &
      &    stk_lc1d%istack_idx_local_rtm_m)
 !
-      call cal_local_nums_st(ndomain_rtm(1),                            &
+      call cal_local_nums_st(s3d_ranks%ndomain_rtm(1),                  &
      &    sph_params%nlayer_ICB, sph_params%nlayer_CMB,                 &
      &    nidx_local_rtm_OC, ist_idx_local_rtm_OC)
 !
       if (sph_params%nlayer_ICB .gt. 1) then
         ied = sph_params%nlayer_ICB - 1
-        call cal_local_nums_rev(ndomain_rtm(1), ione, ied,              &
+        call cal_local_nums_rev(s3d_ranks%ndomain_rtm(1), ione, ied,    &
      &      nidx_local_rtm_IC, ist_idx_local_rtm_IC)
       end if
 !
       if (sph_params%nlayer_CMB .lt. sph_rtm%nidx_global_rtm(1)) then
         ist = sph_params%nlayer_CMB + 1
-        call cal_local_nums_rev(ndomain_rtm(1), ist,                    &
+        call cal_local_nums_rev(s3d_ranks%ndomain_rtm(1), ist,          &
      &      sph_rtm%nidx_global_rtm(1), nidx_local_rtm_MT,              &
      &      ist_idx_local_rtm_MT)
       end if
 !
-      call merge_num_3_local_layers(ndomain_rtm(1),                     &
+      call merge_num_3_local_layers(s3d_ranks%ndomain_rtm(1),           &
      &    nidx_local_rtm_OC, nidx_local_rtm_IC, nidx_local_rtm_MT,      &
      &    ione, nidx_local_rtm_r, stk_lc1d%istack_idx_local_rtm_r)
 !
-      call set_gl_nnod_spherical(ndomain_sph,                           &
-     &    ndomain_rtm(1), ndomain_rtm(2), ndomain_rtm(3),               &
-     &    iglobal_rank_rtm, nidx_local_rtm_r, nidx_local_rtm_t,         &
-     &    nidx_local_rtm_m, nidx_local_rtm, nnod_local_rtm)
+      call set_gl_nnod_spherical(s3d_ranks%ndomain_sph,                 &
+     &    s3d_ranks%ndomain_rtm(1), s3d_ranks%ndomain_rtm(2),           &
+     &    s3d_ranks%ndomain_rtm(3), s3d_ranks%iglobal_rank_rtm,         &
+     &    nidx_local_rtm_r, nidx_local_rtm_t, nidx_local_rtm_m,         &
+     &    nidx_local_rtm, nnod_local_rtm)
 !
 !      call check_sph_gl_bc_param(izero)
 !
@@ -423,22 +428,24 @@
       type(sph_trans_2d_table), intent(inout) :: s2d_tbl
 !
 !
-      call set_gl_rank_2d(iflag_radial_inner_domain,                    &
-     &    ndomain_sph, ndomain_rj,  iglobal_rank_rj)
+      call set_gl_rank_2d                                               &
+     &   (s3d_ranks%iflag_radial_inner_domain, s3d_ranks%ndomain_sph,   &
+     &    s3d_ranks%ndomain_rj, s3d_ranks%iglobal_rank_rj)
 !
       call cal_local_nums                                               &
-     &   (ndomain_rj(1), ione, sph_rj%nidx_global_rj(1),                &
+     &   (s3d_ranks%ndomain_rj(1), ione, sph_rj%nidx_global_rj(1),      &
      &    nidx_local_rj_r, stk_lc1d%istack_idx_local_rj_r)
 ! 
-      call set_merged_index_4_sph_rj(ndomain_rtm(1), ndomain_rtm(3),    &
-     &    ndomain_rj(2), sph_rj%nidx_global_rj(2),                      &
+      call set_merged_index_4_sph_rj                                    &
+     &   (s3d_ranks%ndomain_rtm(1), s3d_ranks%ndomain_rtm(3),           &
+     &    s3d_ranks%ndomain_rj(2), sph_rj%nidx_global_rj(2),            &
      &    stk_lc1d%istack_idx_local_rlm_j, s2d_tbl%jtbl_fsph,           &
      &    nidx_local_rj_j, stk_lc1d%istack_idx_local_rj_j,              &
      &    s2d_tbl%jtbl_rj)
 !
-      call set_gl_nnod_spheric_rj(ndomain_sph,                          &
-     &    ndomain_rj(1), ndomain_rj(2),                                 &
-     &    iglobal_rank_rj, nidx_local_rj_r, nidx_local_rj_j,            &
+      call set_gl_nnod_spheric_rj(s3d_ranks%ndomain_sph,                &
+     &    s3d_ranks%ndomain_rj(1), s3d_ranks%ndomain_rj(2),             &
+     &    s3d_ranks%iglobal_rank_rj, nidx_local_rj_r, nidx_local_rj_j,  &
      &    nidx_local_rj, nnod_local_rj)
 !
       end subroutine const_global_rj_modes_by_rlm
@@ -464,35 +471,36 @@
      &    sph_rtp%nidx_global_rtp(3), sph_rj%nidx_global_rj(2),         &
      &    s2d_tbl)
 !
-      call set_gl_rank_2d(iflag_radial_inner_domain,                    &
-     &    ndomain_sph, ndomain_rlm, iglobal_rank_rlm)
+      call set_gl_rank_2d(s3d_ranks%iflag_radial_inner_domain,          &
+     &    s3d_ranks%ndomain_sph, s3d_ranks%ndomain_rlm,                 &
+     &    s3d_ranks%iglobal_rank_rlm)
 !
-      nidx_local_rlm_r(1:ndomain_rlm(1))                                &
-     &      = nidx_local_rtm_r(1:ndomain_rlm(1))
-      stk_lc1d%istack_idx_local_rlm_r(0:ndomain_rlm(1))                 &
-     &      = stk_lc1d%istack_idx_local_rtm_r(0:ndomain_rlm(1))
+      nidx_local_rlm_r(1:s3d_ranks%ndomain_rlm(1))                      &
+     &   = nidx_local_rtm_r(1:s3d_ranks%ndomain_rlm(1))
+      stk_lc1d%istack_idx_local_rlm_r(0:s3d_ranks%ndomain_rlm(1))       &
+     &   = stk_lc1d%istack_idx_local_rtm_r(0:s3d_ranks%ndomain_rlm(1))
 !
 !
       call set_wavenumber_4_ispack_fft(sph_rtp%nidx_global_rtp(2),      &
      &    sph_rtp%nidx_global_rtp(3), sph_params%m_folding,             &
      &    s2d_tbl%mspec_4_ispack, s2d_tbl%mdx_ispack)
 !
-      call set_zonal_wavenum_4_legendre(ndomain_rtm(3),                 &
+      call set_zonal_wavenum_4_legendre(s3d_ranks%ndomain_rtm(3),       &
      &    sph_params%l_truncation, sph_params%m_folding,                &
      &    sph_rtp%nidx_global_rtp(2), sph_rtp%nidx_global_rtp(3),       &
      &    s2d_tbl%jdx_fsph, s2d_tbl%mdx_4_lgd)
 !
-      call set_merged_index_4_sph_trans(ndomain_rtm(3),                 &
+      call set_merged_index_4_sph_trans(s3d_ranks%ndomain_rtm(3),       &
      &    sph_params%l_truncation, sph_rj%nidx_global_rj(2),            &
      &    sph_rtp%nidx_global_rtp(3), sph_params%m_folding,             &
      &    stk_lc1d%istack_idx_local_rtm_m, s2d_tbl%mdx_4_lgd,           &
      &    nidx_local_rlm_j, stk_lc1d%istack_idx_local_rlm_j,            &
      &    s2d_tbl%jtbl_fsph)
 !
-      call set_gl_nnod_spheric_rj(ndomain_sph,                          &
-     &    ndomain_rlm(1), ndomain_rlm(2),                               &
-     &    iglobal_rank_rlm, nidx_local_rlm_r, nidx_local_rlm_j,         &
-     &    nidx_local_rlm, nnod_local_rlm)
+      call set_gl_nnod_spheric_rj(s3d_ranks%ndomain_sph,                &
+     &    s3d_ranks%ndomain_rlm(1), s3d_ranks%ndomain_rlm(2),           &
+     &    s3d_ranks%iglobal_rank_rlm, nidx_local_rlm_r,                 &
+     &    nidx_local_rlm_j, nidx_local_rlm, nnod_local_rlm)
 !
       end subroutine const_global_rlm_modes
 !

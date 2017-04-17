@@ -29,9 +29,6 @@
 !
 !
       type spheric_global_rank
-!>        number of subdomains
-        integer(kind = kint) :: iflag_make_SPH
-!
 !>        flag for radial inner decomposition
         integer(kind = kint) :: iflag_radial_inner_domain = 0
 !
@@ -150,7 +147,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine ccheck_sph_domains                                      &
+      subroutine check_sph_domains                                      &
      &         (nprocs_check, s3d_ranks, ierr, e_message)
 !
       use m_error_IDs
@@ -204,11 +201,11 @@
         return
       end if
 !
-      end subroutine ccheck_sph_domains
+      end subroutine check_sph_domains
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine ccheck_sph_ranks(my_rank, s3d_ranks)
+      subroutine check_sph_ranks(my_rank, s3d_ranks)
 !
       integer(kind = kint), intent(in) :: my_rank
       type(spheric_global_rank), intent(in) :: s3d_ranks
@@ -236,7 +233,7 @@
         write(my_rank+50,*) i, s3d_ranks%iglobal_rank_rj(1:2,i)
       end do
 !
-      end subroutine ccheck_sph_ranks
+      end subroutine check_sph_ranks
 !
 ! -----------------------------------------------------------------------
 !

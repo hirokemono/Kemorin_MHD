@@ -126,8 +126,8 @@
      &   (MHD_ctl%psph_ctl%spctl, sph%sph_params, rj_fld, nod_fld)
 !
 !
-      call select_make_SPH_mesh                                         &
-     &   (sph, comms_sph, sph_grps,  mesh, group, ele_mesh, mesh1_file)
+      call select_make_SPH_mesh(MHD_ctl%psph_ctl%iflag_sph_shell,       &
+     &    sph, comms_sph, sph_grps,  mesh, group, ele_mesh, mesh1_file)
 !
       call sph_boundary_IO_control(MHD_prop)
 !
@@ -211,8 +211,8 @@
      &    MHD1_org_files, sph_fst_IO, pwr, SGS_par, MHD_step,           &
      &    MHD_prop, WK%WK_sph)
 !
-      call select_make_SPH_mesh                                         &
-     &   (sph, comms_sph, sph_grps, mesh, group, ele_mesh, mesh1_file)
+      call select_make_SPH_mesh(MHD_ctl%psph_ctl%iflag_sph_shell,       &
+     &    sph, comms_sph, sph_grps, mesh, group, ele_mesh, mesh1_file)
 !
       end subroutine input_control_4_SPH_make_init
 !
@@ -297,7 +297,8 @@
 ! -----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine select_make_SPH_mesh(sph, comms_sph, sph_grps,         &
+      subroutine select_make_SPH_mesh                                   &
+     &         (iflag_make_SPH, sph, comms_sph, sph_grps,               &
      &          mesh, group, ele_mesh, mesh_file)
 !
       use m_error_IDs
@@ -307,6 +308,7 @@
       use parallel_load_data_4_sph
       use parallel_gen_sph_grids
 !
+      integer(kind = kint), intent(in) :: iflag_make_SPH
       type(sph_grids), intent(inout) :: sph
       type(sph_comm_tables), intent(inout) :: comms_sph
       type(sph_group_data), intent(inout) ::  sph_grps

@@ -48,8 +48,8 @@
 !
       use m_spheric_global_ranks
 !
-      allocate( ncomm(0:ndomain_sph) )
-      allocate( ineib_tgt(0:ndomain_sph) )
+      allocate( ncomm(0:s3d_ranks%ndomain_sph) )
+      allocate( ineib_tgt(0:s3d_ranks%ndomain_sph) )
       ncomm = 0
       ineib_tgt = -1
 !
@@ -86,8 +86,9 @@
         kp_rj = s3d_ranks%id_domain_rj_r(idx1)
         jp_rj = s3d_ranks%id_domain_rj_j(idx2)
 !
-        irank_tgt = set_rank_by_1b_rj_rank(iflag_radial_inner_domain,   &
-     &                                     ndomain_rj, kp_rj, jp_rj)
+        irank_tgt = set_rank_by_1b_rj_rank                              &
+     &            (s3d_ranks%iflag_radial_inner_domain,                 &
+     &             s3d_ranks%ndomain_rj, kp_rj, jp_rj)
         ncomm(irank_tgt) = ncomm(irank_tgt) + 1
       end do
 !
@@ -126,8 +127,9 @@
         kp_rj = s3d_ranks%id_domain_rj_r(idx1)
         jp_rj = s3d_ranks%id_domain_rj_j(idx2)
 !
-        irank_tgt = set_rank_by_1b_rj_rank(iflag_radial_inner_domain,   &
-     &                                     ndomain_rj, kp_rj, jp_rj)
+        irank_tgt = set_rank_by_1b_rj_rank                              &
+     &            (s3d_ranks%iflag_radial_inner_domain,                 &
+     &             s3d_ranks%ndomain_rj, kp_rj, jp_rj)
         ip = ineib_tgt(irank_tgt)
 !
         ncomm(ip) = ncomm(ip) + 1
@@ -178,8 +180,9 @@
         end if
         if(kp_rtp.lt.0 .or. lp_rtp.lt.0 .or. mp_rtp.lt.0) cycle
 !
-        irank_tgt = set_rank_by_1b_sph_rank(iflag_radial_inner_domain,  &
-     &               ndomain_rtp, kp_rtp, lp_rtp, mp_rtp)
+        irank_tgt = set_rank_by_1b_sph_rank                             &
+     &            (s3d_ranks%iflag_radial_inner_domain,                 &
+     &             s3d_ranks%ndomain_rtp, kp_rtp, lp_rtp, mp_rtp)
         ncomm(irank_tgt) = ncomm(irank_tgt) + 1
       end do
 !
@@ -239,8 +242,9 @@
         end if
         if(kp_rtp.lt.0 .or. lp_rtp.lt.0 .or. mp_rtp.lt.0) cycle
 !
-        irank_tgt = set_rank_by_1b_sph_rank(iflag_radial_inner_domain,  &
-     &             ndomain_rtp, kp_rtp, lp_rtp, mp_rtp)
+        irank_tgt = set_rank_by_1b_sph_rank                             &
+     &            (s3d_ranks%iflag_radial_inner_domain,                 &
+     &             s3d_ranks%ndomain_rtp, kp_rtp, lp_rtp, mp_rtp)
         ip = ineib_tgt(irank_tgt)
 !
         ncomm(ip) = ncomm(ip) + 1
@@ -261,7 +265,7 @@
 !
 !
       nneib_domain = 0
-      do ip_rank = 0, ndomain_sph-1
+      do ip_rank = 0, s3d_ranks%ndomain_sph-1
         if (ncomm(ip_rank).gt.0)  nneib_domain = nneib_domain + 1
       end do
 !
@@ -286,8 +290,8 @@
       istack_sr(0) = 0
       icou =       0
       ineib_tgt = -1
-      do ip = 1, ndomain_sph
-        irank_tgt = mod( (ip_rank+ip),ndomain_sph )
+      do ip = 1, s3d_ranks%ndomain_sph
+        irank_tgt = mod( (ip_rank+ip),s3d_ranks%ndomain_sph )
         if (ncomm(irank_tgt) .gt. 0) then
           icou = icou + 1
           ineib_tgt(irank_tgt) = icou

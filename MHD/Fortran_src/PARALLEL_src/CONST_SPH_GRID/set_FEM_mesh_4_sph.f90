@@ -75,8 +75,8 @@
       stbl%nidx_local_fem(3) =   sph_params%m_folding                   &
      &                         * stbl%nidx_local_fem(3)
 !
-      ip_r = iglobal_rank_rtp(1,ip_rank) + 1
-      ip_t = iglobal_rank_rtp(2,ip_rank) + 1
+      ip_r = s3d_ranks%iglobal_rank_rtp(1,ip_rank) + 1
+      ip_t = s3d_ranks%iglobal_rank_rtp(2,ip_rank) + 1
 !
 !  Construct element connectivity
       call const_FEM_geometry_for_sph(ip_r, ip_t, r_global,             &

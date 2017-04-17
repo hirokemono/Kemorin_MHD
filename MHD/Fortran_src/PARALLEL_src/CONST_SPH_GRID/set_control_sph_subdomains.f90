@@ -79,11 +79,11 @@
         return
       end if
 !
-      iflag_radial_inner_domain = 0
+      s3d_ranks%iflag_radial_inner_domain = 0
       if(sdctl%inner_decomp_ctl%iflag .gt. 0) then
         if(cmp_no_case(sdctl%inner_decomp_ctl%charavalue, radius1)      &
      &    .or. cmp_no_case(sdctl%inner_decomp_ctl%charavalue, radius2)) &
-     &   iflag_radial_inner_domain = 1
+     &   s3d_ranks%iflag_radial_inner_domain = 1
       end if
 !
       if (sdctl%ndomain_sph_grid_ctl%num .gt. 0) then
@@ -96,7 +96,7 @@
         call dealloc_ndomain_rj_ctl(sdctl)
       end if
 !
-      call check_sph_domains(nprocs_check, ierr, e_message)
+      call check_sph_domains(nprocs_check, s3d_ranks, ierr, e_message)
 !
       end subroutine set_subdomains_4_sph_shell
 !
@@ -111,49 +111,55 @@
       integer(kind = kint) :: i
 !
 !
-      ndomain_rtp(1:3) = 1
+      s3d_ranks%ndomain_rtp(1:3) = 1
       if (sdctl%ndomain_sph_grid_ctl%num .gt. 0) then
         do i = 1, sdctl%ndomain_sph_grid_ctl%num
           if     (cmp_no_case(sdctl%ndomain_sph_grid_ctl%c_tbl(i),      &
      &                        radius1)                                  &
      &       .or. cmp_no_case(sdctl%ndomain_sph_grid_ctl%c_tbl(i),      &
      &                        radius2)) then
-            ndomain_rtp(1) = sdctl%ndomain_sph_grid_ctl%ivec(i)
+            s3d_ranks%ndomain_rtp(1)                                    &
+     &           = sdctl%ndomain_sph_grid_ctl%ivec(i)
           else if (cmp_no_case(sdctl%ndomain_sph_grid_ctl%c_tbl(i),     &
      &                         theta1)                                  &
      &        .or. cmp_no_case(sdctl%ndomain_sph_grid_ctl%c_tbl(i),     &
      &                         theta2)) then
-            ndomain_rtp(2) = sdctl%ndomain_sph_grid_ctl%ivec(i)
+            s3d_ranks%ndomain_rtp(2)                                    &
+     &           = sdctl%ndomain_sph_grid_ctl%ivec(i)
           end if
         end do
       end if
 !
-      ndomain_rtm(1:3) = 1
+      s3d_ranks%ndomain_rtm(1:3) = 1
       if (sdctl%ndomain_legendre_ctl%num .gt. 0) then
         do i = 1, sdctl%ndomain_legendre_ctl%num
           if     (cmp_no_case(sdctl%ndomain_legendre_ctl%c_tbl(i),      &
      &                        radius1)                                  &
      &       .or. cmp_no_case(sdctl%ndomain_legendre_ctl%c_tbl(i),      &
      &                        radius2)) then
-            ndomain_rtm(1) = sdctl%ndomain_legendre_ctl%ivec(i)
+            s3d_ranks%ndomain_rtm(1)                                    &
+     &        = sdctl%ndomain_legendre_ctl%ivec(i)
           else if (cmp_no_case(sdctl%ndomain_legendre_ctl%c_tbl(i),     &
      &                         phi1)                                    &
      &        .or. cmp_no_case(sdctl%ndomain_legendre_ctl%c_tbl(i),     &
      &                         phi2)) then
-            ndomain_rtm(3) = sdctl%ndomain_legendre_ctl%ivec(i)
+            s3d_ranks%ndomain_rtm(3)                                    &
+     &        = sdctl%ndomain_legendre_ctl%ivec(i)
            end if
         end do
       end if
 !
-      ndomain_rlm(1) = ndomain_rtm(1)
-      ndomain_rlm(2) = ndomain_rtm(3)
+      s3d_ranks%ndomain_rlm(1) = s3d_ranks%ndomain_rtm(1)
+      s3d_ranks%ndomain_rlm(2) = s3d_ranks%ndomain_rtm(3)
 !
-      ndomain_rj(1:2) = 1
+      s3d_ranks%ndomain_rj(1:2) = 1
       if (sdctl%ndomain_spectr_ctl%num .gt. 0) then
         do i = 1, sdctl%ndomain_spectr_ctl%num
           if     (cmp_no_case(sdctl%ndomain_spectr_ctl%c_tbl(i), mode1) &
      &       .or. cmp_no_case(sdctl%ndomain_spectr_ctl%c_tbl(i), mode2) &
-     &      ) ndomain_rj(2) = sdctl%ndomain_spectr_ctl%ivec(i)
+     &      ) then
+            s3d_ranks%ndomain_rj(2) = sdctl%ndomain_spectr_ctl%ivec(i)
+          end if
         end do
       end if
 !
@@ -166,20 +172,20 @@
       type(sphere_domain_control), intent(in) :: sdctl
 !
 !
-      ndomain_rtp(1) = sdctl%num_radial_domain_ctl%intvalue
-      ndomain_rtp(2) = sdctl%num_horiz_domain_ctl%intvalue
-      ndomain_rtp(3) = 1
+      s3d_ranks%ndomain_rtp(1) = sdctl%num_radial_domain_ctl%intvalue
+      s3d_ranks%ndomain_rtp(2) = sdctl%num_horiz_domain_ctl%intvalue
+      s3d_ranks%ndomain_rtp(3) = 1
 !
-      ndomain_rtm(1) = sdctl%num_radial_domain_ctl%intvalue
-      ndomain_rtm(2) = 1
-      ndomain_rtm(3) = sdctl%num_horiz_domain_ctl%intvalue
+      s3d_ranks%ndomain_rtm(1) = sdctl%num_radial_domain_ctl%intvalue
+      s3d_ranks%ndomain_rtm(2) = 1
+      s3d_ranks%ndomain_rtm(3) = sdctl%num_horiz_domain_ctl%intvalue
 !
-      ndomain_rlm(1) = ndomain_rtm(1)
-      ndomain_rlm(2) = ndomain_rtm(3)
+      s3d_ranks%ndomain_rlm(1) = s3d_ranks%ndomain_rtm(1)
+      s3d_ranks%ndomain_rlm(2) = s3d_ranks%ndomain_rtm(3)
 !
-      ndomain_rj(1) = 1
-      ndomain_rj(2) =  sdctl%num_radial_domain_ctl%intvalue             &
-     &               * sdctl%num_horiz_domain_ctl%intvalue
+      s3d_ranks%ndomain_rj(1) = 1
+      s3d_ranks%ndomain_rj(2) =  sdctl%num_radial_domain_ctl%intvalue   &
+     &                         * sdctl%num_horiz_domain_ctl%intvalue
 !
       end subroutine simple_subdomains_4_sph_shell
 !

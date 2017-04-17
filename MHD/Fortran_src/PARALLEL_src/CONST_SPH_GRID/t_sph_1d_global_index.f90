@@ -114,28 +114,28 @@
       integer(kind = kint) :: num
 !
 !
-      num = ndomain_rtp(1)
+      num = s3d_ranks%ndomain_rtp(1)
       allocate(stk_lc1d%istack_idx_local_rtp_r(0:num))
-      num = ndomain_rtp(2)
+      num = s3d_ranks%ndomain_rtp(2)
       allocate(stk_lc1d%istack_idx_local_rtp_t(0:num))
-      num = ndomain_rtp(3)
+      num = s3d_ranks%ndomain_rtp(3)
       allocate(stk_lc1d%istack_idx_local_rtp_p(0:num))
 !
-      num = ndomain_rtm(1)
+      num = s3d_ranks%ndomain_rtm(1)
       allocate(stk_lc1d%istack_idx_local_rtm_r(0:num))
-      num = ndomain_rtm(2)
+      num = s3d_ranks%ndomain_rtm(2)
       allocate(stk_lc1d%istack_idx_local_rtm_t(0:num))
-      num = ndomain_rtm(3)
+      num = s3d_ranks%ndomain_rtm(3)
       allocate(stk_lc1d%istack_idx_local_rtm_m(0:num))
 !
-      num = ndomain_rlm(1)
+      num = s3d_ranks%ndomain_rlm(1)
       allocate(stk_lc1d%istack_idx_local_rlm_r(0:num))
-      num = ndomain_rlm(2)
+      num = s3d_ranks%ndomain_rlm(2)
       allocate(stk_lc1d%istack_idx_local_rlm_j(0:num))
 !
-      num = ndomain_rj(1)
+      num = s3d_ranks%ndomain_rj(1)
       allocate(stk_lc1d%istack_idx_local_rj_r(0:num))
-      num = ndomain_rj(2)
+      num = s3d_ranks%ndomain_rj(2)
       allocate(stk_lc1d%istack_idx_local_rj_j(0:num))
 !
       stk_lc1d%istack_idx_local_rtp_r = 0
@@ -163,9 +163,9 @@
       integer(kind = kint) :: n1, n2, n3
 !
 !
-      n1 = ndomain_rtp(1)
-      n2 = ndomain_rtp(2)
-      n3 = ndomain_rtp(3)
+      n1 = s3d_ranks%ndomain_rtp(1)
+      n2 = s3d_ranks%ndomain_rtp(2)
+      n3 = s3d_ranks%ndomain_rtp(3)
       sph_gl1d%num_gl_rtp_r = stk_lc1d%istack_idx_local_rtp_r(n1)
       sph_gl1d%num_gl_rtp_t = stk_lc1d%istack_idx_local_rtp_t(n2)
       sph_gl1d%num_gl_rtp_p = stk_lc1d%istack_idx_local_rtp_p(n3)
@@ -179,9 +179,9 @@
       sph_gl1d%idx_global_rtp_p = 0
 !
 !
-      n1 = ndomain_rtm(1)
-      n2 = ndomain_rtm(2)
-      n3 = ndomain_rtm(3)
+      n1 = s3d_ranks%ndomain_rtm(1)
+      n2 = s3d_ranks%ndomain_rtm(2)
+      n3 = s3d_ranks%ndomain_rtm(3)
       sph_gl1d%num_gl_rtm_r = stk_lc1d%istack_idx_local_rtm_r(n1)
       sph_gl1d%num_gl_rtm_t = stk_lc1d%istack_idx_local_rtm_t(n2)
       sph_gl1d%num_gl_rtm_m = stk_lc1d%istack_idx_local_rtm_m(n3)
@@ -195,8 +195,8 @@
       sph_gl1d%idx_global_rtm_m = 0
 !
 !
-      n1 = ndomain_rlm(1)
-      n2 = ndomain_rlm(2)
+      n1 = s3d_ranks%ndomain_rlm(1)
+      n2 = s3d_ranks%ndomain_rlm(2)
       sph_gl1d%num_gl_rlm_r = stk_lc1d%istack_idx_local_rlm_r(n1)
       sph_gl1d%num_gl_rlm_j = stk_lc1d%istack_idx_local_rlm_j(n2)
 !
@@ -207,8 +207,8 @@
       sph_gl1d%idx_global_rlm_j = 0
 !
 !
-      n1 = ndomain_rj(1)
-      n2 = ndomain_rj(2)
+      n1 = s3d_ranks%ndomain_rj(1)
+      n2 = s3d_ranks%ndomain_rj(2)
       sph_gl1d%nun_gl_rj_r = stk_lc1d%istack_idx_local_rj_r(n1)
       sph_gl1d%num_gl_rj_j = stk_lc1d%istack_idx_local_rj_j(n2)
 !

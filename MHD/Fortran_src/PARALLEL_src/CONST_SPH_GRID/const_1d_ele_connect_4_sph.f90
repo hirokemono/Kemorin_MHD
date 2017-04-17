@@ -48,7 +48,8 @@
       type(comm_table_make_sph), intent(inout) :: stbl
 !
 !
-      call alloc_nnod_nele_sph_mesh(ndomain_sph, ndomain_rtp,           &
+      call alloc_nnod_nele_sph_mesh                                     &
+     &   (s3d_ranks%ndomain_sph, s3d_ranks%ndomain_rtp,                 &
      &    sph_rtp%nidx_global_rtp, m_folding, stbl)
 !
       if(iflag_debug .gt. 0) write(*,*) 'count_nod_ele_4_sph_radial'

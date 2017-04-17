@@ -62,8 +62,8 @@
       nod_comm%num_neib = 0
       do jp = 1, stbl%ntot_domain-1
         j_rank = mod((ip_rank+jp),stbl%ntot_domain)
-        jp_r = iglobal_rank_rtp(1,j_rank) + 1
-        jp_t = iglobal_rank_rtp(2,j_rank) + 1
+        jp_r = s3d_ranks%iglobal_rank_rtp(1,j_rank) + 1
+        jp_t = s3d_ranks%iglobal_rank_rtp(2,j_rank) + 1
         if(     stbl%iflag_neib_r(jp_r,ip_r).ne.izero                   &
      &    .and. stbl%iflag_neib_t(jp_t,ip_t).ne.izero) then
           nod_comm%num_neib = nod_comm%num_neib + 1
@@ -92,8 +92,8 @@
 !
       do jp = 1, stbl%ntot_domain-1
         j_rank = mod((ip_rank+jp),stbl%ntot_domain)
-        jp_r = iglobal_rank_rtp(1,j_rank) + 1
-        jp_t = iglobal_rank_rtp(2,j_rank) + 1
+        jp_r = s3d_ranks%iglobal_rank_rtp(1,j_rank) + 1
+        jp_t = s3d_ranks%iglobal_rank_rtp(2,j_rank) + 1
         if(     stbl%iflag_neib_r(jp_r,ip_r).gt.izero                   &
      &    .and. stbl%iflag_neib_t(jp_t,ip_t).eq.izero) then
           nod_comm%num_neib = nod_comm%num_neib + 1
@@ -122,8 +122,8 @@
       icou = 0
       do jp = 1, stbl%ntot_domain-1
         j_rank = mod((ip_rank+jp),stbl%ntot_domain)
-        jp_r = iglobal_rank_rtp(1,j_rank) + 1
-        jp_t = iglobal_rank_rtp(2,j_rank) + 1
+        jp_r = s3d_ranks%iglobal_rank_rtp(1,j_rank) + 1
+        jp_t = s3d_ranks%iglobal_rank_rtp(2,j_rank) + 1
 !
         if(     stbl%iflag_neib_r(jp_r,ip_r).ne.izero                   &
      &    .and. stbl%iflag_neib_t(jp_t,ip_t).ne.izero) then
@@ -157,8 +157,8 @@
       icou = nod_comm%num_neib
       do jp = 1, stbl%ntot_domain-1
         j_rank = mod((ip_rank+jp),stbl%ntot_domain)
-        jp_r = iglobal_rank_rtp(1,j_rank) + 1
-        jp_t = iglobal_rank_rtp(2,j_rank) + 1
+        jp_r = s3d_ranks%iglobal_rank_rtp(1,j_rank) + 1
+        jp_t = s3d_ranks%iglobal_rank_rtp(2,j_rank) + 1
         if(     stbl%iflag_neib_r(jp_r,ip_r).gt.izero                   &
      &    .and. stbl%iflag_neib_t(jp_t,ip_t).eq.izero) then
           icou = icou + 1
@@ -190,8 +190,8 @@
 !
       do jp = 1, nod_comm%num_neib
         j_rank = nod_comm%id_neib(jp)
-        jp_r = iglobal_rank_rtp(1,j_rank) + 1
-        jp_t = iglobal_rank_rtp(2,j_rank) + 1
+        jp_r = s3d_ranks%iglobal_rank_rtp(1,j_rank) + 1
+        jp_t = s3d_ranks%iglobal_rank_rtp(2,j_rank) + 1
 !
         nod_comm%num_import(jp) = 0
         call count_import_4_shell_mesh(ip_r, ip_t, jp_r, jp_t,          &
@@ -235,8 +235,8 @@
 !
       do jp = 1, nod_comm%num_neib
         j_rank = nod_comm%id_neib(jp)
-        jp_r = iglobal_rank_rtp(1,j_rank) + 1
-        jp_t = iglobal_rank_rtp(2,j_rank) + 1
+        jp_r = s3d_ranks%iglobal_rank_rtp(1,j_rank) + 1
+        jp_t = s3d_ranks%iglobal_rank_rtp(2,j_rank) + 1
 !
         icou = nod_comm%istack_import(jp-1)
         call set_import_rtp_shell_mesh(ip_r, ip_t, jp_r, jp_t,          &
@@ -277,8 +277,8 @@
 !
       do jp = 1, nod_comm%num_neib
         j_rank = nod_comm%id_neib(jp)
-        jp_r = iglobal_rank_rtp(1,j_rank) + 1
-        jp_t = iglobal_rank_rtp(2,j_rank) + 1
+        jp_r = s3d_ranks%iglobal_rank_rtp(1,j_rank) + 1
+        jp_t = s3d_ranks%iglobal_rank_rtp(2,j_rank) + 1
 !
         nod_comm%num_export(jp) = 0
         call count_export_4_shell_mesh(ip_r, ip_t, jp_r, jp_t,          &
@@ -322,8 +322,8 @@
 !
       do jp = 1, nod_comm%num_neib
         j_rank = nod_comm%id_neib(jp)
-        jp_r = iglobal_rank_rtp(1,j_rank) + 1
-        jp_t = iglobal_rank_rtp(2,j_rank) + 1
+        jp_r = s3d_ranks%iglobal_rank_rtp(1,j_rank) + 1
+        jp_t = s3d_ranks%iglobal_rank_rtp(2,j_rank) + 1
 !
         icou = nod_comm%istack_export(jp-1)
         call set_export_rtp_shell_mesh(ip_r, ip_t, jp_r, jp_t,          &

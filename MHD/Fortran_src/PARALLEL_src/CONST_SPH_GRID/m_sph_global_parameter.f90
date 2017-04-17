@@ -55,15 +55,15 @@
       use m_spheric_global_ranks
 !
 !
-      allocate(nnod_local_rtp(ndomain_sph))
-      allocate(nnod_local_rtm(ndomain_sph))
-      allocate(nnod_local_rlm(ndomain_sph))
-      allocate(nnod_local_rj(ndomain_sph))
+      allocate(nnod_local_rtp(s3d_ranks%ndomain_sph))
+      allocate(nnod_local_rtm(s3d_ranks%ndomain_sph))
+      allocate(nnod_local_rlm(s3d_ranks%ndomain_sph))
+      allocate(nnod_local_rj(s3d_ranks%ndomain_sph))
 !
-      allocate(nidx_local_rtp(ndomain_sph,3))
-      allocate(nidx_local_rtm(ndomain_sph,3))
-      allocate(nidx_local_rlm(ndomain_sph,2))
-      allocate(nidx_local_rj(ndomain_sph,2))
+      allocate(nidx_local_rtp(s3d_ranks%ndomain_sph,3))
+      allocate(nidx_local_rtm(s3d_ranks%ndomain_sph,3))
+      allocate(nidx_local_rlm(s3d_ranks%ndomain_sph,2))
+      allocate(nidx_local_rj(s3d_ranks%ndomain_sph,2))
 !
       nnod_local_rtp = 0
       nnod_local_rtm = 0
@@ -86,7 +86,7 @@
       integer(kind = kint) :: num
 !
 !
-      num = ndomain_rtp(1)
+      num = s3d_ranks%ndomain_rtp(1)
       allocate(nidx_local_rtp_IC(num))
       allocate(nidx_local_rtp_OC(num))
       allocate(nidx_local_rtp_MT(num))
@@ -94,7 +94,7 @@
       allocate(ist_idx_local_rtp_OC(num))
       allocate(ist_idx_local_rtp_MT(num))
 !
-      num = ndomain_rtm(1)
+      num = s3d_ranks%ndomain_rtm(1)
       allocate(nidx_local_rtm_IC(num))
       allocate(nidx_local_rtm_OC(num))
       allocate(nidx_local_rtm_MT(num))
@@ -164,33 +164,33 @@
       integer(kind = kint) :: i
 !
 !
-      write(my_rank+50,*) 'ndomain_rtp ', ndomain_rtp(1:3)
-      write(my_rank+50,*) 'ndomain_rtm ', ndomain_rtm(1:3)
-      write(my_rank+50,*) 'ndomain_rlm ', ndomain_rlm(1:2)
-      write(my_rank+50,*) 'ndomain_rj ',  ndomain_rj(1:2)
-      write(my_rank+50,*) 'ndomain_sph ',  ndomain_sph
+      write(my_rank+50,*) 'ndomain_rtp ', s3d_ranks%ndomain_rtp(1:3)
+      write(my_rank+50,*) 'ndomain_rtm ', s3d_ranks%ndomain_rtm(1:3)
+      write(my_rank+50,*) 'ndomain_rlm ', s3d_ranks%ndomain_rlm(1:2)
+      write(my_rank+50,*) 'ndomain_rj ',  s3d_ranks%ndomain_rj(1:2)
+      write(my_rank+50,*) 'ndomain_sph ',  s3d_ranks%ndomain_sph
 !
       write(my_rank+50,*)                                               &
      &   'i, nnod_local_rtp, nidx_local_rtp'
-      do i = 1, ndomain_sph
+      do i = 1, s3d_ranks%ndomain_sph
         write(my_rank+50,*) i, nnod_local_rtp(i), nidx_local_rtp(i,1:3)
       end do
 !
       write(my_rank+50,*)                                               &
      &   'i, nnod_local_rtm, nidx_local_rtm'
-      do i = 1, ndomain_sph
+      do i = 1, s3d_ranks%ndomain_sph
         write(my_rank+50,*) i, nnod_local_rtm(i), nidx_local_rtm(i,1:3)
       end do
 !
       write(my_rank+50,*)                                               &
      &   'i, nnod_local_rlm, nidx_local_rlm'
-      do i = 1, ndomain_sph
+      do i = 1, s3d_ranks%ndomain_sph
         write(my_rank+50,*) i, nnod_local_rlm(i), nidx_local_rlm(i,1:2)
       end do
 !
       write(my_rank+50,*)                                               &
      &   'i, nnod_local_rj, nidx_local_rj'
-      do i = 1, ndomain_sph
+      do i = 1, s3d_ranks%ndomain_sph
         write(my_rank+50,*) i, nnod_local_rj(i), nidx_local_rj(i,1:2)
       end do
 !

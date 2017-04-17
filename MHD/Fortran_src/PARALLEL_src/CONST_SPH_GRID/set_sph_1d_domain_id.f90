@@ -32,7 +32,7 @@
       integer(kind = kint) :: ip_rank, ip, ist, ied, i, idx
 !
 !
-      do ip = 1, ndomain_rtp(1)
+      do ip = 1, s3d_ranks%ndomain_rtp(1)
         ip_rank = ip - 1
         ist = stk_lc1d%istack_idx_local_rtp_r(ip-1) + 1
         ied = stk_lc1d%istack_idx_local_rtp_r(ip)
@@ -42,7 +42,7 @@
         end do
       end do
 !
-      do ip = 1, ndomain_rtp(2)
+      do ip = 1, s3d_ranks%ndomain_rtp(2)
         ip_rank = ip - 1
         ist = stk_lc1d%istack_idx_local_rtp_t(ip-1) + 1
         ied = stk_lc1d%istack_idx_local_rtp_t(ip)
@@ -52,7 +52,7 @@
         end do
       end do
 !
-      do ip = 1, ndomain_rtp(3)
+      do ip = 1, s3d_ranks%ndomain_rtp(3)
         ip_rank = ip - 1
         ist = stk_lc1d%istack_idx_local_rtp_p(ip-1) + 1
         ied = stk_lc1d%istack_idx_local_rtp_p(ip)
@@ -76,7 +76,7 @@
       integer(kind = kint) :: ip_rank, ip, ist, ied, i, idx
 !
 !
-      do ip = 1, ndomain_rj(1)
+      do ip = 1, s3d_ranks%ndomain_rj(1)
         ip_rank = ip - 1
         ist = stk_lc1d%istack_idx_local_rj_r(ip-1) + 1
         ied = stk_lc1d%istack_idx_local_rj_r(ip)
@@ -86,7 +86,7 @@
         end do
       end do
 !
-      do ip = 1, ndomain_rj(2)
+      do ip = 1, s3d_ranks%ndomain_rj(2)
         ip_rank = ip - 1
         ist = stk_lc1d%istack_idx_local_rj_j(ip-1) + 1
         ied = stk_lc1d%istack_idx_local_rj_j(ip)
