@@ -32,7 +32,7 @@
         ist = istack_idx_local_rtp_r(ip-1) + 1
         ied = istack_idx_local_rtp_r(ip)
         do i = ist, ied
-          idx = idx_global_rtp_r(i)
+          idx = sph_gl1d%idx_global_rtp_r(i)
           id_domain_rtp_r(idx) = ip_rank
         end do
       end do
@@ -42,7 +42,7 @@
         ist = istack_idx_local_rtp_t(ip-1) + 1
         ied = istack_idx_local_rtp_t(ip)
         do i = ist, ied
-          idx = idx_global_rtp_t(i)
+          idx = sph_gl1d%idx_global_rtp_t(i)
           id_domain_rtp_t(idx) = ip_rank
         end do
       end do
@@ -52,7 +52,7 @@
         ist = istack_idx_local_rtp_p(ip-1) + 1
         ied = istack_idx_local_rtp_p(ip)
         do i = ist, ied
-          idx = idx_global_rtp_p(i,1)
+          idx = sph_gl1d%idx_global_rtp_p(i,1)
           id_domain_rtp_p(idx) = ip_rank
         end do
       end do
@@ -73,7 +73,7 @@
         ist = istack_idx_local_rj_r(ip-1) + 1
         ied = istack_idx_local_rj_r(ip)
         do i = ist, ied
-          idx = idx_global_rj_r(i)
+          idx = sph_gl1d%idx_global_rj_r(i)
           id_domain_rj_r(idx) = ip_rank
         end do
       end do
@@ -83,7 +83,7 @@
         ist = istack_idx_local_rj_j(ip-1) + 1
         ied = istack_idx_local_rj_j(ip)
         do i = ist, ied
-          idx = idx_global_rj_j(i,1)
+          idx = sph_gl1d%idx_global_rj_j(i,1)
           id_domain_rj_j(idx) = ip_rank
         end do
       end do

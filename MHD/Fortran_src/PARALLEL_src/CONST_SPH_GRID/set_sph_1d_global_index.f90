@@ -50,19 +50,19 @@
         do i = 1, nidx_local_rtp_IC(ip)
           icou = icou + 1
           kr = i + ist_idx_local_rtp_IC(ip)
-          idx_global_rtp_r(icou) = kr
+          sph_gl1d%idx_global_rtp_r(icou) = kr
         end do
 !
         do i = 1, nidx_local_rtp_OC(ip)
           icou = icou + 1
           kr = i + ist_idx_local_rtp_OC(ip)
-          idx_global_rtp_r(icou) = kr
+          sph_gl1d%idx_global_rtp_r(icou) = kr
         end do
 !
         do i = 1, nidx_local_rtp_MT(ip)
           icou = icou + 1
           kr = i + ist_idx_local_rtp_MT(ip)
-          idx_global_rtp_r(icou) = kr
+          sph_gl1d%idx_global_rtp_r(icou) = kr
         end do
       end do
 !
@@ -71,7 +71,7 @@
         ist = istack_idx_local_rtp_t(ip-1) + 1
         ied = istack_idx_local_rtp_t(ip)
         do i = ist, ied
-          idx_global_rtp_t(i) = i
+          sph_gl1d%idx_global_rtp_t(i) = i
         end do
       end do
 !
@@ -79,8 +79,8 @@
         ist = istack_idx_local_rtp_p(ip-1) + 1
         ied = istack_idx_local_rtp_p(ip)
         do i = ist, ied
-          idx_global_rtp_p(i,1) = i
-          idx_global_rtp_p(i,2) = mdx_ispack(i) * m_folding
+          sph_gl1d%idx_global_rtp_p(i,1) = i
+          sph_gl1d%idx_global_rtp_p(i,2) = mdx_ispack(i) * m_folding
         end do
       end do
 !
@@ -112,34 +112,37 @@
 !
         do i = 1, nidx_local_rtm_IC(ip)
           icou = icou + 1
-          idx_global_rtm_r(icou) = i + ist_idx_local_rtm_IC(ip)
+          sph_gl1d%idx_global_rtm_r(icou)                               &
+     &         = i + ist_idx_local_rtm_IC(ip)
         end do
 !
         do i = 1, nidx_local_rtm_OC(ip)
           icou = icou + 1
-          idx_global_rtm_r(icou) = i + ist_idx_local_rtm_OC(ip)
+          sph_gl1d%idx_global_rtm_r(icou)                               &
+     &         = i + ist_idx_local_rtm_OC(ip)
         end do
 !
         do i = 1, nidx_local_rtm_MT(ip)
           icou = icou + 1
-          idx_global_rtm_r(icou) = i + ist_idx_local_rtm_MT(ip)
+          sph_gl1d%idx_global_rtm_r(icou)                               &
+     &         = i + ist_idx_local_rtm_MT(ip)
         end do
 !
       end do
 !
 !
       do i = 1, num_gl_rtm_t
-        idx_global_rtm_t(i) = i
+        sph_gl1d%idx_global_rtm_t(i) = i
       end do
 !
       do i = 0, num_gl_rtm_m
-        idx_global_rtm_m(i,1) = mtbl_fft_2_lgd(i)
-        idx_global_rtm_m(i,2) = mdx_4_lgd(i) * m_folding
+        sph_gl1d%idx_global_rtm_m(i,1) = mtbl_fft_2_lgd(i)
+        sph_gl1d%idx_global_rtm_m(i,2) = mdx_4_lgd(i) * m_folding
       end do
 !
 !      write(*,*) 'i,j, idx_global_rtm_m(j,1:2)'
 !      do i = 0, num_gl_rtm_m
-!        write(*,*) i, idx_global_rtm_m(i,1:2)
+!        write(*,*) i, sph_gl1d%idx_global_rtm_m(i,1:2)
 !      end do
 !
       end subroutine set_sph_1d_global_idx_rtm
@@ -157,13 +160,13 @@
 !
 !
       do i = 1, num_gl_rlm_r
-        idx_global_rlm_r(i) = idx_global_rtm_r(i)
+        sph_gl1d%idx_global_rlm_r(i) = sph_gl1d%idx_global_rtm_r(i)
       end do
 !
       do i = 0, num_gl_rlm_j
-        idx_global_rlm_j(i,1) = jtbl_fsph(i,1)
-        idx_global_rlm_j(i,2) = jtbl_fsph(i,2)
-        idx_global_rlm_j(i,3) = jtbl_fsph(i,3)
+        sph_gl1d%idx_global_rlm_j(i,1) = jtbl_fsph(i,1)
+        sph_gl1d%idx_global_rlm_j(i,2) = jtbl_fsph(i,2)
+        sph_gl1d%idx_global_rlm_j(i,3) = jtbl_fsph(i,3)
       end do
 !
 !      write(*,*) 'i, jtbl_fsph(i,1:3)'
@@ -186,18 +189,18 @@
 !
 !
       do k = 1, nun_gl_rj_r
-        idx_global_rj_r(k) = k
+        sph_gl1d%idx_global_rj_r(k) = k
       end do
 !
       do j = 0, num_gl_rj_j
-        idx_global_rj_j(j,1) = jtbl_rj(j,1)
-        idx_global_rj_j(j,2) = jtbl_rj(j,2)
-        idx_global_rj_j(j,3) = jtbl_rj(j,3)
+        sph_gl1d%idx_global_rj_j(j,1) = jtbl_rj(j,1)
+        sph_gl1d%idx_global_rj_j(j,2) = jtbl_rj(j,2)
+        sph_gl1d%idx_global_rj_j(j,3) = jtbl_rj(j,3)
       end do
 !
-!      write(8,*) 'j, idx_global_rj_j(j,1:3)'
+!      write(8,*) 'j, sph_gl1d%idx_global_rj_j(j,1:3)'
 !      do j = 0, num_gl_rj_j
-!        write(8,*) j, idx_global_rj_j(j,1:3)
+!        write(8,*) j, sph_gl1d%idx_global_rj_j(j,1:3)
 !      end do
 !
       end subroutine set_sph_1d_global_idx_rj

@@ -131,9 +131,9 @@
       call set_sph_1d_domain_id_rj
 !
       if(iflag_debug .gt. 0) then
-        write(50,*) 'idx_global_rtp_r', idx_global_rtp_r
-        write(50,*) 'idx_global_rtm_r', idx_global_rtm_r
-        write(50,*) 'idx_global_rlm_r', idx_global_rlm_r
+        write(50,*) 'idx_global_rtp_r', sph_gl1d%idx_global_rtp_r
+        write(50,*) 'idx_global_rtm_r', sph_gl1d%idx_global_rtm_r
+        write(50,*) 'idx_global_rlm_r', sph_gl1d%idx_global_rlm_r
 !        call check_sph_1d_domain_id(sph_rtp, sph_rj)
       end if
 !
@@ -186,7 +186,7 @@
       call set_sph_1d_domain_id_rtp
 !
       if(iflag_debug .gt. 0) then
-        write(50,*) 'idx_global_rtp_r', idx_global_rtp_r
+        write(50,*) 'idx_global_rtp_r', sph_gl1d%idx_global_rtp_r
       end if
 !
       end subroutine const_global_sph_FEM_grid

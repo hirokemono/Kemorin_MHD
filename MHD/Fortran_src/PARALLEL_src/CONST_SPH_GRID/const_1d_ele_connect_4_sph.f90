@@ -83,7 +83,7 @@
         ist = istack_idx_local_rtp_r(ip-1) + 1
         ied = istack_idx_local_rtp_r(ip)
         do k = ist, ied
-          kr = idx_global_rtp_r(k)
+          kr = sph_gl1d%idx_global_rtp_r(k)
           stbl%iflag_internal_r(kr,ip) = 1
 !
           if(kr.eq.ione) then

@@ -20,9 +20,14 @@
       module m_sph_1d_global_index
 !
       use m_precision
-      use t_control_1D_layering
+      use t_sph_1d_global_index
 !
       implicit none
+!
+!
+      type(sph_1d_index_stack), save :: stk_lc1d
+      type(sph_1d_global_index), save :: sph_gl1d
+!
 !
 !
 !>      Global radial address for f(r,t,p)
@@ -54,11 +59,11 @@
 !>      number of zonal grid address for f(r,t,p)
       integer(kind = kint) :: num_gl_rtp_p
 !>      Global radial address for f(r,t,p)
-      integer(kind = kint), allocatable :: idx_global_rtp_r(:)
+!      integer(kind = kint), allocatable :: idx_global_rtp_r(:)
 !>      Global radial address for f(r,t,p)
-      integer(kind = kint), allocatable :: idx_global_rtp_t(:)
+!      integer(kind = kint), allocatable :: idx_global_rtp_t(:)
 !>      Global zonal grid address for f(r,t,p)
-      integer(kind = kint), allocatable :: idx_global_rtp_p(:,:)
+!      integer(kind = kint), allocatable :: idx_global_rtp_p(:,:)
 !
 !>      number of radial address for f(r,t,m)
       integer(kind = kint) :: num_gl_rtm_r
@@ -67,29 +72,29 @@
 !>      number of zonal mode address for f(r,t,m)
       integer(kind = kint) :: num_gl_rtm_m
 !>      Global radial address for f(r,t,m)
-      integer(kind = kint), allocatable :: idx_global_rtm_r(:)
+!      integer(kind = kint), allocatable :: idx_global_rtm_r(:)
 !>      Global meridional grid address for f(r,t,m)
-      integer(kind = kint), allocatable :: idx_global_rtm_t(:)
+!      integer(kind = kint), allocatable :: idx_global_rtm_t(:)
 !>      Global zonal mode address for f(r,t,m)
-      integer(kind = kint), allocatable :: idx_global_rtm_m(:,:)
+!      integer(kind = kint), allocatable :: idx_global_rtm_m(:,:)
 !
 !>      number of radial address for f(r,l,m)
       integer(kind = kint) :: num_gl_rlm_r
 !>      number of spherical harmonics mode address for f(r,l,m)
       integer(kind = kint) :: num_gl_rlm_j
 !>      Global radial address for f(r,l,m)
-      integer(kind = kint), allocatable :: idx_global_rlm_r(:)
+!      integer(kind = kint), allocatable :: idx_global_rlm_r(:)
 !>      Global spherical harmonics mode address for f(r,l,m)
-      integer(kind = kint), allocatable :: idx_global_rlm_j(:,:)
+!      integer(kind = kint), allocatable :: idx_global_rlm_j(:,:)
 !
 !>      number of Global radial address for f(r,j)
       integer(kind = kint) :: nun_gl_rj_r
 !>      number of spherical harmonics mode address for f(r,j)
       integer(kind = kint) :: num_gl_rj_j
 !>      Global radial address for f(r,j)
-      integer(kind = kint), allocatable :: idx_global_rj_r(:)
+!      integer(kind = kint), allocatable :: idx_global_rj_r(:)
 !>      Global spherical harmonics mode address for f(r,j)
-      integer(kind = kint), allocatable :: idx_global_rj_j(:,:)
+!      integer(kind = kint), allocatable :: idx_global_rj_j(:,:)
 !
 !
 !>      Structure of additional radial group
@@ -166,13 +171,13 @@
       num_gl_rtp_t = istack_idx_local_rtp_t(n2)
       num_gl_rtp_p = istack_idx_local_rtp_p(n3)
 !
-      allocate( idx_global_rtp_r(1:num_gl_rtp_r) )
-      allocate( idx_global_rtp_t(1:num_gl_rtp_t) )
-      allocate( idx_global_rtp_p(1:num_gl_rtp_p,2) )
+      allocate( sph_gl1d%idx_global_rtp_r(1:num_gl_rtp_r) )
+      allocate( sph_gl1d%idx_global_rtp_t(1:num_gl_rtp_t) )
+      allocate( sph_gl1d%idx_global_rtp_p(1:num_gl_rtp_p,2) )
 !
-      idx_global_rtp_r = 0
-      idx_global_rtp_t = 0
-      idx_global_rtp_p = 0
+      sph_gl1d%idx_global_rtp_r = 0
+      sph_gl1d%idx_global_rtp_t = 0
+      sph_gl1d%idx_global_rtp_p = 0
 !
 !
       n1 = ndomain_rtm(1)
@@ -182,13 +187,13 @@
       num_gl_rtm_t = istack_idx_local_rtm_t(n2)
       num_gl_rtm_m = istack_idx_local_rtm_m(n3)
 !
-      allocate( idx_global_rtm_r(1:num_gl_rtm_r) )
-      allocate( idx_global_rtm_t(1:num_gl_rtm_t) )
-      allocate( idx_global_rtm_m(0:num_gl_rtm_m,2) )
+      allocate( sph_gl1d%idx_global_rtm_r(1:num_gl_rtm_r) )
+      allocate( sph_gl1d%idx_global_rtm_t(1:num_gl_rtm_t) )
+      allocate( sph_gl1d%idx_global_rtm_m(0:num_gl_rtm_m,2) )
 !
-      idx_global_rtm_r = 0
-      idx_global_rtm_t = 0
-      idx_global_rtm_m = 0
+      sph_gl1d%idx_global_rtm_r = 0
+      sph_gl1d%idx_global_rtm_t = 0
+      sph_gl1d%idx_global_rtm_m = 0
 !
 !
       n1 = ndomain_rlm(1)
@@ -196,11 +201,11 @@
       num_gl_rlm_r = istack_idx_local_rlm_r(n1)
       num_gl_rlm_j = istack_idx_local_rlm_j(n2)
 !
-      allocate( idx_global_rlm_r(1:num_gl_rlm_r) )
-      allocate( idx_global_rlm_j(0:num_gl_rlm_j,3) )
+      allocate( sph_gl1d%idx_global_rlm_r(1:num_gl_rlm_r) )
+      allocate( sph_gl1d%idx_global_rlm_j(0:num_gl_rlm_j,3) )
 !
-      idx_global_rlm_r = 0
-      idx_global_rlm_j = 0
+      sph_gl1d%idx_global_rlm_r = 0
+      sph_gl1d%idx_global_rlm_j = 0
 !
 !
       n1 = ndomain_rj(1)
@@ -208,11 +213,11 @@
       nun_gl_rj_r = istack_idx_local_rj_r(n1)
       num_gl_rj_j = istack_idx_local_rj_j(n2)
 !
-      allocate( idx_global_rj_r(1:nun_gl_rj_r) )
-      allocate( idx_global_rj_j(0:num_gl_rj_j,3) )
+      allocate( sph_gl1d%idx_global_rj_r(1:nun_gl_rj_r) )
+      allocate( sph_gl1d%idx_global_rj_j(0:num_gl_rj_j,3) )
 !
-      idx_global_rj_r = 0
-      idx_global_rj_j = 0
+      sph_gl1d%idx_global_rj_r = 0
+      sph_gl1d%idx_global_rj_j = 0
 !
       end subroutine allocate_sph_1d_global_idx
 !
@@ -243,10 +248,7 @@
       subroutine deallocate_sph_1d_global_idx
 !
 !
-      deallocate( idx_global_rtp_r, idx_global_rtp_t, idx_global_rtp_p)
-      deallocate( idx_global_rtm_r, idx_global_rtm_t, idx_global_rtm_m)
-      deallocate( idx_global_rlm_r, idx_global_rlm_j)
-      deallocate( idx_global_rj_r, idx_global_rj_j)
+      call dealloc_sph_1d_global_idx(sph_gl1d)
 !
       end subroutine deallocate_sph_1d_global_idx
 !

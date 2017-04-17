@@ -121,7 +121,7 @@
       call set_sph_1d_domain_id_rtp
 !
       if(iflag_debug .gt. 0) then
-        write(50,*) 'idx_global_rtp_r', idx_global_rtp_r
+        write(50,*) 'idx_global_rtp_r', sph_gl1d%idx_global_rtp_r
       end if
 !
       end subroutine const_global_sph_FEM
@@ -268,29 +268,33 @@
 !
       do inum = 1, sph_rtp%nidx_rtp(1)
         inod = sph_rtp%ist_rtp(1) + inum - 1
-        idx_global_rtp_r(inod) = sph_rtp%idx_gl_1d_rtp_r(inum)
+        sph_gl1d%idx_global_rtp_r(inod) = sph_rtp%idx_gl_1d_rtp_r(inum)
       end do
       do ip = 1, ndomain_rtp(1)
         ip_rank = (ip-1) * inc_r
         ist = istack_idx_local_rtp_r(ip-1) + 1
-        call MPI_Bcast(idx_global_rtp_r(ist), nidx_local_rtp_r(ip),     &
+        call MPI_Bcast                                                  &
+     &     (sph_gl1d%idx_global_rtp_r(ist), nidx_local_rtp_r(ip),       &
      &      CALYPSO_INTEGER, ip_rank, CALYPSO_COMM, ierr_MPI)
       end do
 !
       do inum = 1, sph_rtp%nidx_rtp(2)
         inod = sph_rtp%ist_rtp(2) + inum - 1
-        idx_global_rtp_t(inod) = sph_rtp%idx_gl_1d_rtp_t(inum)
+        sph_gl1d%idx_global_rtp_t(inod) = sph_rtp%idx_gl_1d_rtp_t(inum)
       end do
       do ip = 1, ndomain_rtp(2)
         ip_rank = (ip-1) * inc_t
         ist = istack_idx_local_rtp_t(ip-1) + 1
-        call MPI_Bcast(idx_global_rtp_t(ist), nidx_local_rtp_t(ip),     &
+        call MPI_Bcast                                                  &
+     &     (sph_gl1d%idx_global_rtp_t(ist), nidx_local_rtp_t(ip),       &
      &      CALYPSO_INTEGER, ip_rank, CALYPSO_COMM, ierr_MPI)
       end do
 !
       do inod = 1, sph_rtp%nidx_rtp(3)
-        idx_global_rtp_p(inod,1) = sph_rtp%idx_gl_1d_rtp_p(inod,1)
-        idx_global_rtp_p(inod,2) = sph_rtp%idx_gl_1d_rtp_p(inod,2)
+        sph_gl1d%idx_global_rtp_p(inod,1)                               &
+     &        = sph_rtp%idx_gl_1d_rtp_p(inod,1)
+        sph_gl1d%idx_global_rtp_p(inod,2)                               &
+     &        = sph_rtp%idx_gl_1d_rtp_p(inod,2)
       end do
 !
       call deallocate_nidx_local
