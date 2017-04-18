@@ -224,40 +224,44 @@
 !
 !
 !
-      call allocate_sph_gl_bc_param
+      call alloc_sph_gl_bc_param(sph_dbc)
 !
       ip = sph_rtp%irank_sph_rtp(1) + 1
       do igrp = 1, radial_rtp_grp%num_grp
         if(radial_rtp_grp%grp_name(igrp) .eq. OC_ele_grp_name) then
-          nidx_local_rtp_OC(ip) =  radial_rtp_grp%istack_grp(igrp)      &
-     &                           - radial_rtp_grp%istack_grp(igrp-1)
+          sph_dbc%nidx_local_rtp_OC(ip)                                 &
+     &         =  radial_rtp_grp%istack_grp(igrp)                       &
+     &           - radial_rtp_grp%istack_grp(igrp-1)
           ist = radial_rtp_grp%istack_grp(igrp-1) + 1
           inum = radial_rtp_grp%item_grp(ist)
-          ist_idx_local_rtp_OC(ip) = sph_rtp%idx_gl_1d_rtp_r(inum) - 1
+          sph_dbc%ist_idx_local_rtp_OC(ip)                              &
+     &         = sph_rtp%idx_gl_1d_rtp_r(inum) - 1
           exit
         end if
       end do
 !
       do igrp = 1, radial_rtp_grp%num_grp
         if(radial_rtp_grp%grp_name(igrp) .eq. IC_ele_grp_name) then
-          nidx_local_rtp_IC(ip) =  radial_rtp_grp%istack_grp(igrp)      &
-     &                           - radial_rtp_grp%istack_grp(igrp-1)
+          sph_dbc%nidx_local_rtp_IC(ip)                                 &
+     &         =  radial_rtp_grp%istack_grp(igrp)                       &
+     &          - radial_rtp_grp%istack_grp(igrp-1)
           ist = radial_rtp_grp%istack_grp(igrp-1) + 1
           inum = radial_rtp_grp%item_grp(ist)
-          ist_idx_local_rtp_IC(ip) = sph_rtp%idx_gl_1d_rtp_r(inum) - 1
+          sph_dbc%ist_idx_local_rtp_IC(ip)                              &
+     &         = sph_rtp%idx_gl_1d_rtp_r(inum) - 1
           exit
         end if
       end do
 !
-      nidx_local_rtp_MT(ip) =  sph_rtp%nidx_rtp(1)                      &
-     &                        - nidx_local_rtp_OC(ip)                   &
-     &                        - nidx_local_rtp_IC(ip)
-      if(nidx_local_rtp_MT(ip) .gt. 0) then
+      sph_dbc%nidx_local_rtp_MT(ip) =  sph_rtp%nidx_rtp(1)              &
+     &                               - sph_dbc%nidx_local_rtp_OC(ip)    &
+     &                               - sph_dbc%nidx_local_rtp_IC(ip)
+      if(sph_dbc%nidx_local_rtp_MT(ip) .gt. 0) then
         do igrp = 1, radial_rtp_grp%num_grp
           if(radial_rtp_grp%grp_name(igrp) .eq. OC_ele_grp_name) then
             ist = radial_rtp_grp%istack_grp(igrp)
             inum = radial_rtp_grp%item_grp(ist) + 1
-            ist_idx_local_rtp_MT(ip)                                    &
+            sph_dbc%ist_idx_local_rtp_MT(ip)                            &
      &            = sph_rtp%idx_gl_1d_rtp_r(inum) - 1
             exit
           end if
@@ -266,17 +270,17 @@
 !
       do ip = 1, s3d_ranks%ndomain_rtp(1)
         ip_rank = (ip-1) * inc_r
-        call MPI_Bcast(nidx_local_rtp_OC(ip), ione,                     &
+        call MPI_Bcast(sph_dbc%nidx_local_rtp_OC(ip), ione,             &
      &      CALYPSO_INTEGER, ip_rank, CALYPSO_COMM, ierr_MPI)
-        call MPI_Bcast(nidx_local_rtp_IC(ip), ione,                     &
+        call MPI_Bcast(sph_dbc%nidx_local_rtp_IC(ip), ione,             &
      &      CALYPSO_INTEGER, ip_rank, CALYPSO_COMM, ierr_MPI)
-        call MPI_Bcast(nidx_local_rtp_MT(ip), ione,                     &
+        call MPI_Bcast(sph_dbc%nidx_local_rtp_MT(ip), ione,             &
      &      CALYPSO_INTEGER, ip_rank, CALYPSO_COMM, ierr_MPI)
-        call MPI_Bcast(ist_idx_local_rtp_OC(ip), ione,                  &
+        call MPI_Bcast(sph_dbc%ist_idx_local_rtp_OC(ip), ione,          &
      &      CALYPSO_INTEGER, ip_rank, CALYPSO_COMM, ierr_MPI)
-        call MPI_Bcast(ist_idx_local_rtp_IC(ip), ione,                  &
+        call MPI_Bcast(sph_dbc%ist_idx_local_rtp_IC(ip), ione,          &
      &      CALYPSO_INTEGER, ip_rank, CALYPSO_COMM, ierr_MPI)
-        call MPI_Bcast(ist_idx_local_rtp_MT(ip), ione,                  &
+        call MPI_Bcast(sph_dbc%ist_idx_local_rtp_MT(ip), ione,          &
      &      CALYPSO_INTEGER, ip_rank, CALYPSO_COMM, ierr_MPI)
       end do
 !

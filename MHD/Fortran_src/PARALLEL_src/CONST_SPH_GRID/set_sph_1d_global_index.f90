@@ -56,21 +56,21 @@
       do ip  = 1, s3d_ranks%ndomain_rtp(1)
         icou = stk_lc1d%istack_idx_local_rtp_r(ip-1)
 !
-        do i = 1, nidx_local_rtp_IC(ip)
+        do i = 1, sph_dbc%nidx_local_rtp_IC(ip)
           icou = icou + 1
-          kr = i + ist_idx_local_rtp_IC(ip)
+          kr = i + sph_dbc%ist_idx_local_rtp_IC(ip)
           sph_gl1d%idx_global_rtp_r(icou) = kr
         end do
 !
-        do i = 1, nidx_local_rtp_OC(ip)
+        do i = 1, sph_dbc%nidx_local_rtp_OC(ip)
           icou = icou + 1
-          kr = i + ist_idx_local_rtp_OC(ip)
+          kr = i + sph_dbc%ist_idx_local_rtp_OC(ip)
           sph_gl1d%idx_global_rtp_r(icou) = kr
         end do
 !
-        do i = 1, nidx_local_rtp_MT(ip)
+        do i = 1, sph_dbc%nidx_local_rtp_MT(ip)
           icou = icou + 1
-          kr = i + ist_idx_local_rtp_MT(ip)
+          kr = i + sph_dbc%ist_idx_local_rtp_MT(ip)
           sph_gl1d%idx_global_rtp_r(icou) = kr
         end do
       end do
@@ -122,22 +122,22 @@
       do ip  = 1, n1
         icou = stk_lc1d%istack_idx_local_rtm_r(ip-1)
 !
-        do i = 1, nidx_local_rtm_IC(ip)
+        do i = 1, sph_dbc%nidx_local_rtm_IC(ip)
           icou = icou + 1
           sph_gl1d%idx_global_rtm_r(icou)                               &
-     &         = i + ist_idx_local_rtm_IC(ip)
+     &         = i + sph_dbc%ist_idx_local_rtm_IC(ip)
         end do
 !
-        do i = 1, nidx_local_rtm_OC(ip)
+        do i = 1, sph_dbc%nidx_local_rtm_OC(ip)
           icou = icou + 1
           sph_gl1d%idx_global_rtm_r(icou)                               &
-     &         = i + ist_idx_local_rtm_OC(ip)
+     &         = i + sph_dbc%ist_idx_local_rtm_OC(ip)
         end do
 !
-        do i = 1, nidx_local_rtm_MT(ip)
+        do i = 1, sph_dbc%nidx_local_rtm_MT(ip)
           icou = icou + 1
           sph_gl1d%idx_global_rtm_r(icou)                               &
-     &         = i + ist_idx_local_rtm_MT(ip)
+     &         = i + sph_dbc%ist_idx_local_rtm_MT(ip)
         end do
 !
       end do
