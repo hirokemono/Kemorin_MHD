@@ -168,7 +168,7 @@
 !
       s3d_ranks%ndomain_sph = nprocs
       call alloc_sph_ranks(s3d_ranks)
-      call alloc_sph_gl_parameter(sph_lcp)
+      call alloc_sph_gl_parameter(s3d_ranks, sph_lcp)
 !
       s3d_ranks%iglobal_rank_rtp(1:3,my_rank)                           &
      &           = sph_rtp%irank_sph_rtp(1:3)
@@ -189,8 +189,8 @@
         inc_t = 1
       end if
 !
-      call alloc_nidx_local(sph_lc1)
-      call alloc_sph_1d_global_stack(stk_lc1d)
+      call alloc_nidx_local(s3d_ranks, sph_lc1)
+      call alloc_sph_1d_global_stack(s3d_ranks, stk_lc1d)
 !
       ip = sph_rtp%irank_sph_rtp(1) + 1
       sph_lc1%nidx_local_rtp_r(ip)= sph_rtp%nidx_rtp(1)
@@ -224,7 +224,7 @@
 !
 !
 !
-      call alloc_sph_gl_bc_param(sph_dbc)
+      call alloc_sph_gl_bc_param(s3d_ranks, sph_dbc)
 !
       ip = sph_rtp%irank_sph_rtp(1) + 1
       do igrp = 1, radial_rtp_grp%num_grp
@@ -291,7 +291,7 @@
      &    sph_lc1%nidx_local_rtp_p, sph_lcp%nidx_local_rtp,             &
      &    sph_lcp%nnod_local_rtp)
 !
-      call alloc_sph_1d_global_idx(stk_lc1d, sph_gl1d)
+      call alloc_sph_1d_global_idx(s3d_ranks, stk_lc1d, sph_gl1d)
 !
       do inum = 1, sph_rtp%nidx_rtp(1)
         inod = sph_rtp%ist_rtp(1) + inum - 1

@@ -70,11 +70,11 @@
       type(sph_trans_2d_table), intent(inout) :: s2d_tbl
 !
 !
-      call alloc_sph_1d_global_stack(stk_lc1d)
-      call alloc_sph_gl_parameter(sph_lcp)
-      call alloc_sph_gl_bc_param(sph_dbc)
+      call alloc_sph_1d_global_stack(s3d_ranks, stk_lc1d)
+      call alloc_sph_gl_parameter(s3d_ranks, sph_lcp)
+      call alloc_sph_gl_bc_param(s3d_ranks, sph_dbc)
       call alloc_sph_ranks(s3d_ranks)
-      call alloc_nidx_local(sph_lc1)
+      call alloc_nidx_local(s3d_ranks, sph_lc1)
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'const_global_rtp_grids'
@@ -98,7 +98,7 @@
 !
 !
       call dealloc_nidx_local(sph_lc1)
-      call alloc_sph_1d_global_idx(stk_lc1d, sph_gl1d)
+      call alloc_sph_1d_global_idx(s3d_ranks, stk_lc1d, sph_gl1d)
 !
       call set_sph_1d_global_idx_rtp                                    &
      &   (sph_params%m_folding, sph_rtp%nidx_global_rtp(3),             &
@@ -148,11 +148,11 @@
       type(sph_trans_2d_table), intent(inout) :: s2d_tbl
 !
 !
-      call alloc_sph_1d_global_stack(stk_lc1d)
-      call alloc_sph_gl_parameter(sph_lcp)
-      call alloc_sph_gl_bc_param(sph_dbc)
+      call alloc_sph_1d_global_stack(s3d_ranks, stk_lc1d)
+      call alloc_sph_gl_parameter(s3d_ranks, sph_lcp)
+      call alloc_sph_gl_bc_param(s3d_ranks, sph_dbc)
       call alloc_sph_ranks(s3d_ranks)
-      call alloc_nidx_local(sph_lc1)
+      call alloc_nidx_local(s3d_ranks, sph_lc1)
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'const_global_rtp_grids'
@@ -165,7 +165,7 @@
      &    s2d_tbl%jdx_fsph, s2d_tbl%mtbl_fft_2_lgd)
 !
       call dealloc_nidx_local(sph_lc1)
-      call alloc_sph_1d_global_idx(stk_lc1d, sph_gl1d)
+      call alloc_sph_1d_global_idx(s3d_ranks, stk_lc1d, sph_gl1d)
 !
       call set_sph_1d_global_idx_rtp(sph_params%m_folding,              &
      &    sph_rtp%nidx_global_rtp(3), s2d_tbl%mdx_ispack,               &

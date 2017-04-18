@@ -25,7 +25,6 @@
       module t_sph_local_index
 !
       use m_precision
-!
       use t_spheric_parameter
 !
       implicit none

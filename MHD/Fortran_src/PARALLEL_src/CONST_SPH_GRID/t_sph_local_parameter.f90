@@ -3,15 +3,20 @@
 !
 !     Written by H. Matsui on July, 2007
 !
-!!      subroutine alloc_sph_gl_parameter(sph_lcp)
-!!      subroutine alloc_nidx_local(sph_lc1)
-!!      subroutine alloc_sph_gl_bc_param(sph_dbc)
+!!      subroutine alloc_sph_gl_parameter(s3d_ranks, sph_lcp)
+!!      subroutine alloc_nidx_local(s3d_ranks, sph_lc1)
+!!      subroutine alloc_sph_gl_bc_param(s3d_ranks, sph_dbc)
+!!        type(spheric_global_rank), intent(in) :: s3d_ranks
+!!        type(sph_local_parameters), intent(inout) :: sph_lcp
+!!        type(sph_local_1d_param), intent(inout) :: sph_lc1
+!!        type(sph_local_default_BC), intent(inout) :: sph_dbc
 !!
 !!      subroutine dealloc_sph_gl_parameter(sph_lcp)
 !!      subroutine dealloc_nidx_local(sph_lc1)
 !!      subroutine dealloc_sph_gl_bc_param(sph_dbc)
 !!
-!!      subroutine check_spheric_global_param(my_rank, sph_lcp)
+!!      subroutine check_spheric_global_param                           &
+!!     &         (my_rank, s3d_ranks, sph_lcp)
 !!      subroutine check_nidx_local(ip_rank, sph_lc1)
 !!      subroutine check_sph_gl_bc_param(my_rank, sph_dbc)
 !
@@ -19,6 +24,7 @@
       module t_sph_local_parameter
 !
       use m_precision
+      use t_spheric_global_ranks
 !
       implicit none
 !
@@ -74,10 +80,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_sph_gl_parameter(sph_lcp)
+      subroutine alloc_sph_gl_parameter(s3d_ranks, sph_lcp)
 !
-      use m_spheric_global_ranks
-!
+      type(spheric_global_rank), intent(in) :: s3d_ranks
       type(sph_local_parameters), intent(inout) :: sph_lcp
 !
 !
@@ -105,10 +110,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_nidx_local(sph_lc1)
+      subroutine alloc_nidx_local(s3d_ranks, sph_lc1)
 !
-      use m_spheric_global_ranks
-!
+      type(spheric_global_rank), intent(in) :: s3d_ranks
       type(sph_local_1d_param), intent(inout) :: sph_lc1
 !
       integer(kind = kint) :: num
@@ -153,10 +157,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_sph_gl_bc_param(sph_dbc)
+      subroutine alloc_sph_gl_bc_param(s3d_ranks, sph_dbc)
 !
-      use m_spheric_global_ranks
-!
+      type(spheric_global_rank), intent(in) :: s3d_ranks
       type(sph_local_default_BC), intent(inout) :: sph_dbc
 !
       integer(kind = kint) :: num
@@ -252,11 +255,11 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_spheric_global_param(my_rank, sph_lcp)
-!
-      use m_spheric_global_ranks
+      subroutine check_spheric_global_param                             &
+     &         (my_rank, s3d_ranks, sph_lcp)
 !
       integer(kind = kint), intent(in) :: my_rank
+      type(spheric_global_rank), intent(in) :: s3d_ranks
       type(sph_local_parameters), intent(in) :: sph_lcp
 !
       integer(kind = kint) :: i

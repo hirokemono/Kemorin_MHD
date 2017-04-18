@@ -7,9 +7,10 @@
 !>@brief  Global addresses for soherical harmonics indices
 !!
 !!@verbatim
-!!      subroutine alloc_sph_1d_global_stack(stk_lc1d)
+!!      subroutine alloc_sph_1d_global_stack(s3d_ranks, stk_lc1d)
 !!        type(sph_1d_index_stack), intent(inout) :: stk_lc1d
-!!      subroutine alloc_sph_1d_global_idx(stk_lc1d, sph_gl1d)
+!!      subroutine alloc_sph_1d_global_idx                              &
+!!     &         (s3d_ranks, stk_lc1d, sph_gl1d)
 !!        type(sph_1d_index_stack), intent(in) :: stk_lc1d
 !!        type(sph_1d_global_index), intent(inout) :: sph_gl1d
 !!
@@ -26,6 +27,7 @@
 !
       use m_precision
       use t_control_1D_layering
+      use t_spheric_global_ranks
 !
       implicit none
 !
@@ -106,10 +108,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_sph_1d_global_stack(stk_lc1d)
+      subroutine alloc_sph_1d_global_stack(s3d_ranks, stk_lc1d)
 !
-      use m_spheric_global_ranks
-!
+      type(spheric_global_rank), intent(in) :: s3d_ranks
       type(sph_1d_index_stack), intent(inout) :: stk_lc1d
       integer(kind = kint) :: num
 !
@@ -153,10 +154,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_sph_1d_global_idx(stk_lc1d, sph_gl1d)
+      subroutine alloc_sph_1d_global_idx                                &
+     &         (s3d_ranks, stk_lc1d, sph_gl1d)
 !
-      use m_spheric_global_ranks
-!
+      type(spheric_global_rank), intent(in) :: s3d_ranks
       type(sph_1d_index_stack), intent(in) :: stk_lc1d
       type(sph_1d_global_index), intent(inout) :: sph_gl1d
 !

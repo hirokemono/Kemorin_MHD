@@ -68,12 +68,15 @@
       use t_sph_1d_global_index
       use t_sph_mesh_1d_connect
       use t_control_1D_layering
+      use t_sph_local_index
 !
       use set_local_sphere_by_global
 !
       implicit none
 !
-      type(sph_file_data_type), save, private :: sph_file_p
+      type(sph_file_data_type), save :: sph_file_p
+      type(sph_local_1d_index), save :: sph_lcx_p
+      private :: sph_file_p, sph_lcx_p
 !
 ! -----------------------------------------------------------------------
 !
@@ -178,7 +181,6 @@
      &          added_radial_grp, stk_lc1d, sph_gl1d, stbl,             &
      &          sph_params, sph_rlm, sph_rj)
 !
-      use set_local_index_table_sph
       use set_comm_table_rtp_rj
       use sph_file_IO_select
 !
@@ -195,7 +197,7 @@
       integer(kind = kint) :: ip_rank, ip
 !
 !
-      call alloc_rj_1d_local_idx(sph_rj, sph_lcx)
+      call alloc_rj_1d_local_idx(sph_rj, sph_lcx_p)
       do ip = 0, (ndomain_sph-1) / nprocs
         ip_rank = my_rank + ip * nprocs
         if(ip_rank .ge. ndomain_sph) cycle
@@ -205,13 +207,13 @@
      &            ip_rank,  ' on ', my_rank
         call const_sph_rj_modes(ip_rank, ndomain_sph, comm_rlm_mul,     &
      &      added_radial_grp, stk_lc1d, sph_gl1d, stbl,                 &
-     &      sph_params, sph_rj, sph_rlm, sph_file_p)
+     &      sph_params, sph_rj, sph_rlm, sph_file_p, sph_lcx_p)
 !
         call sel_write_spectr_modes_rj_file(ip_rank, sph_file_p)
         write(*,'(a,i6,a,i6)') 'Spherical modes for domain',            &
      &          ip_rank, ' is done on process ', my_rank
       end do
-      call dealloc_rj_1d_local_idx(sph_lcx)
+      call dealloc_rj_1d_local_idx(sph_lcx_p)
 !
       end subroutine para_gen_sph_rj_modes
 !
@@ -222,7 +224,6 @@
      &          stk_lc1d, sph_gl1d, stbl,                               &
      &          sph_params, sph_rtp, sph_rtm)
 !
-      use set_local_index_table_sph
       use set_comm_table_rtp_rj
       use sph_file_IO_select
 !
@@ -241,7 +242,7 @@
       integer(kind = kint) :: ip_rank, ip
 !
 !
-      call alloc_rtp_1d_local_idx(sph_rtp, sph_lcx)
+      call alloc_rtp_1d_local_idx(sph_rtp, sph_lcx_p)
       do ip = 0, (ndomain_sph-1) / nprocs
         ip_rank = my_rank + ip * nprocs
         if(ip_rank .ge. ndomain_sph) cycle
@@ -252,13 +253,13 @@
         call const_sph_rtp_grids(ip_rank, ndomain_sph, comm_rtm_mul,    &
      &      added_radial_grp, r_layer_grp, med_layer_grp,               &
      &      stk_lc1d, sph_gl1d, stbl, sph_params, sph_rtp, sph_rtm,     &
-     &      sph_file_p)
+     &      sph_file_p, sph_lcx_p)
 !
         call sel_write_geom_rtp_file(ip_rank, sph_file_p)
         write(*,'(a,i6,a,i6)') 'Spherical grids for domain',            &
      &          ip_rank, ' is done on process ', my_rank
       end do
-      call dealloc_rtp_1d_local_idx(sph_lcx)
+      call dealloc_rtp_1d_local_idx(sph_lcx_p)
 !
       end subroutine para_gen_sph_rtp_grids
 !
@@ -271,7 +272,6 @@
       use t_gauss_points
 !
       use const_1d_ele_connect_4_sph
-      use set_local_index_table_sph
       use set_local_sphere_by_global
       use set_sph_groups
       use gen_sph_grids_modes
