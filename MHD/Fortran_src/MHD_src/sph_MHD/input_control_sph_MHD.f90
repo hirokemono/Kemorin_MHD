@@ -338,7 +338,7 @@
       else
         if (my_rank.eq.0) write(*,*) 'Make spherical harmonics table'
         call para_gen_sph_grids                                         &
-     &     (added_radial_grp, r_layer_grp, med_layer_grp, stbl,         &
+     &     (s3d_radius, added_radial_grp, r_layer_grp, med_layer_grp,   &
      &      sph_gen, s3d_ranks, sph_dbc, sph_lcp,                       &
      &      stk_lc1d, sph_gl1d, s2d_tbl)
         call deallocate_gen_mesh_params                                 &
@@ -353,7 +353,7 @@
 !
       call deallocate_gen_mesh_data                                     &
      &   (added_radial_grp, r_layer_grp, med_layer_grp,                 &
-     &    stbl, s2d_tbl)
+     &    s3d_radius, stbl, s2d_tbl)
 !
       end subroutine select_make_SPH_mesh
 !

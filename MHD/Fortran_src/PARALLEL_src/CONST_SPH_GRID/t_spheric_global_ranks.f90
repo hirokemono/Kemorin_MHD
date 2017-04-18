@@ -7,6 +7,10 @@
 !>@brief  Global subdomain informatikn for spherical shell
 !!
 !!@verbatim
+!!      subroutine alloc_radius_1d_gl(nri_gl, s3d_radius)
+!!      subroutine dealloc_radius_1d_gl(s3d_radius)
+!!        type(spheric_global_radius), intent(inout) :: s3d_radius
+!!
 !!      subroutine alloc_sph_ranks(s3d_ranks)
 !!      subroutine alloc_sph_1d_domain_id(sph_rtp, sph_rj, s3d_ranks)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -26,6 +30,14 @@
       use m_precision
 !
       implicit none
+!
+!
+      type spheric_global_radius
+!>        Number of radial points
+        integer(kind = kint) :: nri_global
+!>        global radius data @f$ r(k) @f$
+        real(kind = kreal), allocatable :: radius_1d_gl(:)
+      end type spheric_global_radius
 !
 !
       type spheric_global_rank
@@ -61,6 +73,31 @@
       contains
 !
 ! -----------------------------------------------------------------------
+!
+      subroutine alloc_radius_1d_gl(nri_gl, s3d_radius)
+!
+      integer(kind = kint), intent(in) :: nri_gl
+      type(spheric_global_radius), intent(inout) :: s3d_radius
+!
+!
+      s3d_radius%nri_global = nri_gl
+      allocate(s3d_radius%radius_1d_gl(s3d_radius%nri_global))
+      if(s3d_radius%nri_global .gt. 0) s3d_radius%radius_1d_gl = 0.0d0
+!
+      end subroutine alloc_radius_1d_gl
+!
+! ----------------------------------------------------------------------
+!
+      subroutine dealloc_radius_1d_gl(s3d_radius)
+!
+      type(spheric_global_radius), intent(inout) :: s3d_radius
+!
+      deallocate(s3d_radius%radius_1d_gl)
+!
+      end subroutine dealloc_radius_1d_gl
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
 !
       subroutine alloc_sph_ranks(s3d_ranks)
 !

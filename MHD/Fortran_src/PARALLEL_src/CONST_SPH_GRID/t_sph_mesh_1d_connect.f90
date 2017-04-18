@@ -7,9 +7,6 @@
 !>@brief  One-dimmentional connectivity list for spherical shell
 !!
 !!@verbatim
-!!      subroutine alloc_radius_1d_gl(nri_gl, stbl)
-!!      subroutine dealloc_radius_1d_gl(stbl)
-!!
 !!      subroutine alloc_nnod_nele_sph_mesh(ndomain_sph, ndomain_rtp,&
 !!     &          nidx_global_rtp, m_folding, stbl)
 !!      subroutine alloc_iele_sph_mesh(stbl)
@@ -33,10 +30,6 @@
         integer(kind = kint) :: ndomain_fem(3)
         integer(kind = kint) :: nidx_global_fem(3)
         integer(kind = kint) :: nidx_local_fem(3)
-!
-        integer(kind = kint) :: nri_global
-!>        global radius data @f$ r(k) @f$
-        real(kind = kreal), allocatable :: radius_1d_gl(:)
 !
         integer(kind = kint), allocatable :: iflag_neib_r(:,:)
         integer(kind = kint), allocatable :: iflag_neib_t(:,:)
@@ -101,31 +94,6 @@
 !
       contains
 !
-! ----------------------------------------------------------------------
-!
-      subroutine alloc_radius_1d_gl(nri_gl, stbl)
-!
-      integer(kind = kint), intent(in) :: nri_gl
-      type(comm_table_make_sph), intent(inout) :: stbl
-!
-!
-      stbl%nri_global = nri_gl
-      allocate(stbl%radius_1d_gl(stbl%nri_global))
-      if(stbl%nri_global .gt. 0) stbl%radius_1d_gl = 0.0d0
-!
-      end subroutine alloc_radius_1d_gl
-!
-! ----------------------------------------------------------------------
-!
-      subroutine dealloc_radius_1d_gl(stbl)
-!
-      type(comm_table_make_sph), intent(inout) :: stbl
-!
-      deallocate(stbl%radius_1d_gl)
-!
-      end subroutine dealloc_radius_1d_gl
-!
-! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine alloc_nnod_nele_sph_mesh(ndomain_sph, ndomain_rtp,     &

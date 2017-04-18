@@ -9,16 +9,24 @@
 !!
 !!@verbatim
 !!      subroutine copy_sph_1d_gl_idx_rtp                               &
-!!     &         (nri_gl, radius_1d_gl, sph_gl1d, sph_rtp)
+!!     &         (s3d_radius, sph_gl1d, sph_rtp)
+!!        type(spheric_global_radius), intent(in) :: s3d_radius
+!!        type(sph_1d_global_index), intent(in) :: sph_gl1d
 !!        type(sph_rtp_grid), intent(inout) :: sph_rtp
 !!      subroutine copy_sph_1d_gl_idx_rtm                               &
-!!     &         (nri_gl, radius_1d_gl, sph_gl1d, sph_rtm)
+!!     &         (s3d_radius, sph_gl1d, sph_rtm)
+!!        type(spheric_global_radius), intent(in) :: s3d_radius
+!!        type(sph_1d_global_index), intent(in) :: sph_gl1d
 !!        type(sph_rtm_grid), intent(inout) :: sph_rtm
 !!      subroutine copy_sph_1d_gl_idx_rlm                               &
-!!     &         (nri_gl, radius_1d_gl, sph_gl1d, sph_rlm)
+!!     &         (s3d_radius, sph_gl1d, sph_rlm)
+!!        type(spheric_global_radius), intent(in) :: s3d_radius
+!!        type(sph_1d_global_index), intent(in) :: sph_gl1d
 !!        type(sph_rlm_grid), intent(inout) :: sph_rlm
 !!      subroutine copy_sph_1d_gl_idx_rj                                &
-!!     &         (nri_gl, radius_1d_gl, sph_gl1d, sph_rj)
+!!     &         (s3d_radius, sph_gl1d, sph_rj)
+!!        type(spheric_global_radius), intent(in) :: s3d_radius
+!!        type(sph_1d_global_index), intent(in) :: sph_gl1d
 !!        type(sph_rj_grid), intent(inout) :: sph_rj
 !!
 !!      subroutine add_center_mode_rj(ip_rank, sph_gl1d, sph_rj)
@@ -36,6 +44,7 @@
       use t_spheric_rtm_data
       use t_spheric_rlm_data
       use t_spheric_rj_data
+      use t_spheric_global_ranks
       use t_sph_1d_global_index
 !
       implicit none
@@ -47,10 +56,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine copy_sph_1d_gl_idx_rtp                                 &
-     &         (nri_gl, radius_1d_gl, sph_gl1d, sph_rtp)
+     &         (s3d_radius, sph_gl1d, sph_rtp)
 !
-      integer(kind = kint), intent(in) :: nri_gl
-      real(kind = kreal), intent(in) :: radius_1d_gl(nri_gl)
+      type(spheric_global_radius), intent(in) :: s3d_radius
       type(sph_1d_global_index), intent(in) :: sph_gl1d
       type(sph_rtp_grid), intent(inout) :: sph_rtp
 !
@@ -63,7 +71,7 @@
       end do
       do i = 1, sph_rtp%nidx_rtp(1)
         j = sph_rtp%idx_gl_1d_rtp_r(i)
-        sph_rtp%radius_1d_rtp_r(i) = radius_1d_gl(j)
+        sph_rtp%radius_1d_rtp_r(i) = s3d_radius%radius_1d_gl(j)
       end do
 !
       do i = 1, sph_rtp%nidx_rtp(2)
@@ -82,10 +90,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine copy_sph_1d_gl_idx_rtm                                 &
-     &         (nri_gl, radius_1d_gl, sph_gl1d, sph_rtm)
+     &         (s3d_radius, sph_gl1d, sph_rtm)
 !
-      integer(kind = kint), intent(in) :: nri_gl
-      real(kind = kreal), intent(in) :: radius_1d_gl(nri_gl)
+      type(spheric_global_radius), intent(in) :: s3d_radius
       type(sph_1d_global_index), intent(in) :: sph_gl1d
       type(sph_rtm_grid), intent(inout) :: sph_rtm
 !
@@ -98,7 +105,7 @@
       end do
       do i = 1, sph_rtm%nidx_rtm(1)
         j = sph_rtm%idx_gl_1d_rtm_r(i)
-        sph_rtm%radius_1d_rtm_r(i) = radius_1d_gl(j)
+        sph_rtm%radius_1d_rtm_r(i) = s3d_radius%radius_1d_gl(j)
       end do
 !
       do i = 1, sph_rtm%nidx_rtm(2)
@@ -117,10 +124,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine copy_sph_1d_gl_idx_rlm                                 &
-     &         (nri_gl, radius_1d_gl, sph_gl1d, sph_rlm)
+     &         (s3d_radius, sph_gl1d, sph_rlm)
 !
-      integer(kind = kint), intent(in) :: nri_gl
-      real(kind = kreal), intent(in) :: radius_1d_gl(nri_gl)
+      type(spheric_global_radius), intent(in) :: s3d_radius
       type(sph_1d_global_index), intent(in) :: sph_gl1d
       type(sph_rlm_grid), intent(inout) :: sph_rlm
 !
@@ -133,7 +139,7 @@
       end do
       do i = 1, sph_rlm%nidx_rlm(1)
         j = sph_rlm%idx_gl_1d_rlm_r(i)
-        sph_rlm%radius_1d_rlm_r(i) = radius_1d_gl(j)
+        sph_rlm%radius_1d_rlm_r(i) = s3d_radius%radius_1d_gl(j)
       end do
 !
       do i = 1, sph_rlm%nidx_rlm(2)
@@ -148,10 +154,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine copy_sph_1d_gl_idx_rj                                  &
-     &         (nri_gl, radius_1d_gl, sph_gl1d, sph_rj)
+     &         (s3d_radius, sph_gl1d, sph_rj)
 !
-      integer(kind = kint), intent(in) :: nri_gl
-      real(kind = kreal), intent(in) :: radius_1d_gl(nri_gl)
+      type(spheric_global_radius), intent(in) :: s3d_radius
       type(sph_1d_global_index), intent(in) :: sph_gl1d
       type(sph_rj_grid), intent(inout) :: sph_rj
 !
@@ -164,7 +169,7 @@
       end do
       do i = 1, sph_rj%nidx_rj(1)
         j = sph_rj%idx_gl_1d_rj_r(i)
-        sph_rj%radius_1d_rj_r(i) = radius_1d_gl(j)
+        sph_rj%radius_1d_rj_r(i) = s3d_radius%radius_1d_gl(j)
       end do
 !
       do i = 1, sph_rj%nidx_rj(2)

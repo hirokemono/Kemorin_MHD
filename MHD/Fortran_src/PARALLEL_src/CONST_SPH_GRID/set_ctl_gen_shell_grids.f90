@@ -7,10 +7,10 @@
 !>@brief  Set control data for domain decomposition for spherical transform
 !!
 !!@verbatim
-!!      subroutine s_set_control_4_gen_shell_grids                      &
+!!      subroutine set_control_4_gen_shell_grids                        &
 !!     &         (plt, spctl, sdctl, sph, mesh_file, sph_file_param,    &
-!!     &          s3d_ranks, added_radial_grp, r_layer_grp,             &
-!!     &          med_layer_grp, stbl, ierr)
+!!     &          s3d_ranks, s3d_radius, added_radial_grp, r_layer_grp, &
+!!     &          med_layer_grp, ierr)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(sphere_data_control), intent(inout) :: spctl
 !!        type(sphere_domain_control), intent(inout) :: sdctl
@@ -18,22 +18,21 @@
 !!        type(field_IO_params), intent(inout) ::  mesh_file
 !!        type(field_IO_params), intent(inout) :: sph_file_param
 !!        type(spheric_global_rank), intent(inout) :: s3d_ranks
+!!        type(spheric_global_radius), intent(inout) :: s3d_radius
 !!        type(layering_group_list), intent(inout) :: added_radial_grp
 !!        type(layering_group_list), intent(inout) :: r_layer_grp
 !!        type(layering_group_list), intent(inout) :: med_layer_grp
-!!        type(comm_table_make_sph), intent(inout) :: stbl
-!!      subroutine set_control_4_shell_grids                            &
-!!     &         (nprocs_check, spctl, sdctl, sph, s3d_ranks,           &
-!!     &          added_radial_grp, r_layer_grp, med_layer_grp,         &
-!!     &          stbl, ierr)
+!!      subroutine set_control_4_shell_grids(nprocs_check,              &
+!!     &          spctl, sdctl, sph, s3d_ranks, s3d_radius,             &
+!!     &          added_radial_grp, r_layer_grp, med_layer_grp, ierr)
 !!        type(sphere_data_control), intent(inout) :: spctl
 !!        type(sphere_domain_control), intent(inout) :: sdctl
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(spheric_global_rank), intent(inout) :: s3d_ranks
+!!        type(spheric_global_radius), intent(inout) :: s3d_radius
 !!        type(layering_group_list), intent(inout) :: added_radial_grp
 !!        type(layering_group_list), intent(inout) :: r_layer_grp
 !!        type(layering_group_list), intent(inout) :: med_layer_grp
-!!        type(comm_table_make_sph), intent(inout) :: stbl
 !!@endverbatim
 !
       module set_ctl_gen_shell_grids
@@ -64,10 +63,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_control_4_gen_shell_grids                        &
+      subroutine set_control_4_gen_shell_grids                          &
      &         (plt, spctl, sdctl, sph, mesh_file, sph_file_param,      &
-     &          s3d_ranks, added_radial_grp, r_layer_grp,               &
-     &          med_layer_grp, stbl, ierr)
+     &          s3d_ranks, s3d_radius, added_radial_grp, r_layer_grp,   &
+     &          med_layer_grp, ierr)
 !
       type(platform_data_control), intent(in) :: plt
       type(sphere_data_control), intent(inout) :: spctl
@@ -76,10 +75,10 @@
       type(field_IO_params), intent(inout) ::  mesh_file
       type(field_IO_params), intent(inout) :: sph_file_param
       type(spheric_global_rank), intent(inout) :: s3d_ranks
+      type(spheric_global_radius), intent(inout) :: s3d_radius
       type(layering_group_list), intent(inout) :: added_radial_grp
       type(layering_group_list), intent(inout) :: r_layer_grp
       type(layering_group_list), intent(inout) :: med_layer_grp
-      type(comm_table_make_sph), intent(inout) :: stbl
       integer(kind = kint), intent(inout) :: ierr
 !
       integer(kind = kint) :: nprocs_check
@@ -89,10 +88,10 @@
      &   (plt, nprocs_check, mesh_file, sph_file_param)
 !
       call set_control_4_shell_grids                                    &
-     &   (nprocs_check, spctl, sdctl, sph, s3d_ranks,                   &
-     &    added_radial_grp, r_layer_grp, med_layer_grp, stbl, ierr)
+     &   (nprocs_check, spctl, sdctl, sph, s3d_ranks, s3d_radius,       &
+     &    added_radial_grp, r_layer_grp, med_layer_grp, ierr)
 !
-      end subroutine s_set_control_4_gen_shell_grids
+      end subroutine set_control_4_gen_shell_grids
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -123,10 +122,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_control_4_shell_grids                              &
-     &         (nprocs_check, spctl, sdctl, sph, s3d_ranks,             &
-     &          added_radial_grp, r_layer_grp, med_layer_grp,           &
-     &          stbl, ierr)
+      subroutine set_control_4_shell_grids(nprocs_check,                &
+     &          spctl, sdctl, sph, s3d_ranks, s3d_radius,               &
+     &          added_radial_grp, r_layer_grp, med_layer_grp, ierr)
 !
       use m_constants
       use m_machine_parameter
@@ -143,10 +141,10 @@
       type(sphere_domain_control), intent(inout) :: sdctl
       type(sph_grids), intent(inout) :: sph
       type(spheric_global_rank), intent(inout) :: s3d_ranks
+      type(spheric_global_radius), intent(inout) :: s3d_radius
       type(layering_group_list), intent(inout) :: added_radial_grp
       type(layering_group_list), intent(inout) :: r_layer_grp
       type(layering_group_list), intent(inout) :: med_layer_grp
-      type(comm_table_make_sph), intent(inout) :: stbl
       integer(kind = kint), intent(inout) :: ierr
 !
       integer(kind = kint) :: icou
@@ -181,7 +179,7 @@
 !
       call set_ctl_radius_4_shell                                       &
      &   (spctl, sph%sph_params, sph%sph_rtp, sph%sph_rj,               &
-     &    added_radial_grp, stbl, ierr)
+     &    added_radial_grp, s3d_radius, ierr)
 !
       call set_subdomains_4_sph_shell                                   &
      &    (nprocs_check, sdctl, s3d_ranks, ierr, e_message)
@@ -226,7 +224,7 @@
 !
       subroutine set_ctl_radius_4_shell                                 &
      &         (spctl, sph_params, sph_rtp, sph_rj,                     &
-     &          added_radial_grp, stbl, ierr)
+     &          added_radial_grp, s3d_radius, ierr)
 !
       use m_error_IDs
 !
@@ -237,7 +235,7 @@
       type(sph_shell_parameters), intent(inout) :: sph_params
       type(sph_rtp_grid), intent(inout) :: sph_rtp
       type(sph_rj_grid), intent(inout) :: sph_rj
-      type(comm_table_make_sph), intent(inout) :: stbl
+      type(spheric_global_radius), intent(inout) :: s3d_radius
       type(layering_group_list), intent(inout) :: added_radial_grp
       integer(kind = kint), intent(inout) :: ierr
 !
@@ -300,11 +298,12 @@
         end if
 !
         if (sph_rtp%nidx_global_rtp(1) .gt. 0) then
-          call alloc_radius_1d_gl(sph_rtp%nidx_global_rtp(1), stbl)
+          call alloc_radius_1d_gl                                       &
+     &       (sph_rtp%nidx_global_rtp(1), s3d_radius)
 !
           do i = 1, sph_rtp%nidx_global_rtp(1)
             kr = spctl%radius_ctl%ivec(i)
-            stbl%radius_1d_gl(kr) = spctl%radius_ctl%vect(i)
+            s3d_radius%radius_1d_gl(kr) = spctl%radius_ctl%vect(i)
           end do
 !
           call dealloc_control_array_i_r(spctl%radius_ctl)
@@ -368,7 +367,8 @@
 !
         call count_set_radial_grid(spctl%num_fluid_grid_ctl%intvalue,   &
      &      spctl%Min_radius_ctl%realvalue,                             &
-     &      spctl%Max_radius_ctl%realvalue, sph_params, sph_rtp, stbl)
+     &      spctl%Max_radius_ctl%realvalue, sph_params, sph_rtp,        &
+     &      s3d_radius)
       end if
 !
 !       Check whole sphere model

@@ -29,5 +29,6 @@
 !
 !
       type(spheric_global_rank), save :: s3d_ranks
+      type(spheric_global_radius), save :: s3d_radius
 !
       end module m_spheric_global_ranks

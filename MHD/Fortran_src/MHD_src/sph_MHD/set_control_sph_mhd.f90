@@ -209,8 +209,8 @@
         if (iflag_debug.gt.0) write(*,*) 'set_control_4_shell_grids'
         call set_control_4_shell_grids                                  &
      &     (nprocs, psph_ctl%spctl, psph_ctl%sdctl, sph_gen,            &
-     &      s3d_ranks, added_radial_grp, r_layer_grp, med_layer_grp,    &
-     &      stbl, ierr)
+     &      s3d_ranks, s3d_radius, added_radial_grp, r_layer_grp,       &
+     &      med_layer_grp, ierr)
       end if
 !
 !   set forces
