@@ -8,16 +8,19 @@
 !!
 !!      subroutine deallocate_sph_gl_parameter
 !!      subroutine deallocate_sph_gl_bc_param
-!!
-!!      subroutine check_spheric_global_param(my_rank)
-!!      subroutine check_sph_gl_bc_param(my_rank)
 !
 !
       module m_sph_global_parameter
 !
       use m_precision
+      use t_sph_local_parameter
 !
       implicit none
+!
+      type(sph_local_parameters), save :: sph_lcp
+      type(sph_local_1d_param), save :: sph_lc1
+      type(sph_local_default_BC), save :: sph_dbc
+!
 !
       integer(kind = kint), allocatable :: nnod_local_rtp(:)
       integer(kind = kint), allocatable :: nnod_local_rtm(:)
@@ -152,65 +155,6 @@
       deallocate(ist_idx_local_rtm_MT)
 !
       end subroutine deallocate_sph_gl_bc_param
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine check_spheric_global_param(my_rank)
-!
-      use m_spheric_global_ranks
-!
-      integer(kind = kint), intent(in) :: my_rank
-      integer(kind = kint) :: i
-!
-!
-      write(my_rank+50,*) 'ndomain_rtp ', s3d_ranks%ndomain_rtp(1:3)
-      write(my_rank+50,*) 'ndomain_rtm ', s3d_ranks%ndomain_rtm(1:3)
-      write(my_rank+50,*) 'ndomain_rlm ', s3d_ranks%ndomain_rlm(1:2)
-      write(my_rank+50,*) 'ndomain_rj ',  s3d_ranks%ndomain_rj(1:2)
-      write(my_rank+50,*) 'ndomain_sph ',  s3d_ranks%ndomain_sph
-!
-      write(my_rank+50,*)                                               &
-     &   'i, nnod_local_rtp, nidx_local_rtp'
-      do i = 1, s3d_ranks%ndomain_sph
-        write(my_rank+50,*) i, nnod_local_rtp(i), nidx_local_rtp(i,1:3)
-      end do
-!
-      write(my_rank+50,*)                                               &
-     &   'i, nnod_local_rtm, nidx_local_rtm'
-      do i = 1, s3d_ranks%ndomain_sph
-        write(my_rank+50,*) i, nnod_local_rtm(i), nidx_local_rtm(i,1:3)
-      end do
-!
-      write(my_rank+50,*)                                               &
-     &   'i, nnod_local_rlm, nidx_local_rlm'
-      do i = 1, s3d_ranks%ndomain_sph
-        write(my_rank+50,*) i, nnod_local_rlm(i), nidx_local_rlm(i,1:2)
-      end do
-!
-      write(my_rank+50,*)                                               &
-     &   'i, nnod_local_rj, nidx_local_rj'
-      do i = 1, s3d_ranks%ndomain_sph
-        write(my_rank+50,*) i, nnod_local_rj(i), nidx_local_rj(i,1:2)
-      end do
-!
-      end subroutine check_spheric_global_param
-!
-! -----------------------------------------------------------------------
-!
-      subroutine check_sph_gl_bc_param(my_rank)
-!
-      integer(kind = kint), intent(in) :: my_rank
-!
-!
-      write(my_rank+50,*) 'nidx_local_rtm_OC', nidx_local_rtm_OC
-      write(my_rank+50,*) 'nidx_local_rtm_IC', nidx_local_rtm_IC
-      write(my_rank+50,*) 'nidx_local_rtm_MT', nidx_local_rtm_MT
-      write(my_rank+50,*) 'ist_idx_local_rtm_OC', ist_idx_local_rtm_OC
-      write(my_rank+50,*) 'ist_idx_local_rtm_IC', ist_idx_local_rtm_IC
-      write(my_rank+50,*) 'ist_idx_local_rtm_MT', ist_idx_local_rtm_MT
-!
-      end subroutine check_sph_gl_bc_param
 !
 ! -----------------------------------------------------------------------
 !
