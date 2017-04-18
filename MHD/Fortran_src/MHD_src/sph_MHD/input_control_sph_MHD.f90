@@ -349,11 +349,11 @@
       if (iflag_debug.eq.1) write(*,*) 'load_para_SPH_and_FEM_mesh'
       call load_para_SPH_and_FEM_mesh(sph, comms_sph, sph_grps,         &
      &    mesh, group, ele_mesh, mesh_file,                             &
-     &    s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d, stbl)
+     &    s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
 !
       call deallocate_gen_mesh_data                                     &
      &   (added_radial_grp, r_layer_grp, med_layer_grp,                 &
-     &    s3d_radius, stbl, s2d_tbl)
+     &    s3d_radius, s2d_tbl)
 !
       end subroutine select_make_SPH_mesh
 !

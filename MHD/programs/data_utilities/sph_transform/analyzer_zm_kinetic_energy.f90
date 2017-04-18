@@ -73,7 +73,7 @@
      &    sph_mesh_trans%sph_comms, sph_mesh_trans%sph_grps,            &
      &    femmesh_STR%mesh, femmesh_STR%group, elemesh_STR,             &
      &    mesh_file_STR, &
-     &    s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d, stbl)
+     &    s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
 !
 !  -------------------------------
 !

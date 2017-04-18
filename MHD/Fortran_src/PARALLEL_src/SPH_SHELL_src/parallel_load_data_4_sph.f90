@@ -8,7 +8,7 @@
 !!@verbatim
 !!      subroutine load_para_SPH_and_FEM_mesh(sph, comms_sph, sph_grps, &
 !!     &          mesh, group, ele_mesh, mesh_file,                     &
-!!     &          s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d, stbl)
+!!     &          s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
 !!      subroutine load_para_SPH_rj_mesh(sph, comms_sph, sph_grps)
 !!      subroutine load_para_sph_mesh(sph, bc_rtp_grp, sph_grps)
 !!        type(sph_grids), intent(inout) :: sph
@@ -23,7 +23,6 @@
 !!        type(sph_local_parameters), intent(inout) :: sph_lcp
 !!        type(sph_1d_index_stack), intent(inout) :: stk_lc1d
 !!        type(sph_1d_global_index), intent(inout) :: sph_gl1d
-!!        type(comm_table_make_sph), intent(inout) :: stbl
 !!
 !!      subroutine load_para_rj_mesh                                    &
 !!     &         (sph_params, sph_rj, comm_rj, sph_grps)
@@ -48,7 +47,6 @@
       use t_spheric_data_IO
       use t_spheric_global_ranks
       use t_sph_1d_global_index
-      use t_sph_mesh_1d_connect
       use t_sph_local_parameter
       use sph_file_MPI_IO_select
       use set_loaded_data_4_sph
@@ -67,7 +65,7 @@
 !
       subroutine load_para_SPH_and_FEM_mesh(sph, comms_sph, sph_grps,   &
      &          mesh, group, ele_mesh, mesh_file,                       &
-     &          s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d, stbl)
+     &          s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
 !
       use t_mesh_data
 !
@@ -85,7 +83,6 @@
       type(sph_local_parameters), intent(inout) :: sph_lcp
       type(sph_1d_index_stack), intent(inout) :: stk_lc1d
       type(sph_1d_global_index), intent(inout) :: sph_gl1d
-      type(comm_table_make_sph), intent(inout) :: stbl
 !
 !
       call load_para_sph_mesh(sph, comms_sph, sph_grps)
@@ -94,7 +91,7 @@
      &   (sph%sph_params, sph%sph_rtp, sph%sph_rj,                      &
      &    sph_grps%radial_rtp_grp, sph_grps%radial_rj_grp,              &
      &    mesh, group, ele_mesh, mesh_file,                             &
-     &    s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d, stbl)
+     &    s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
 !
       end subroutine load_para_SPH_and_FEM_mesh
 !
@@ -118,7 +115,7 @@
       subroutine load_FEM_mesh_4_SPH                                    &
      &         (sph_params, sph_rtp, sph_rj, radial_rtp_grp,            &
      &          radial_rj_grp, mesh, group, ele_mesh, mesh_file,        &
-     &          s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d, stbl)
+     &          s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
 !
       use calypso_mpi
       use t_mesh_data
@@ -149,7 +146,6 @@
       type(sph_local_parameters), intent(inout) :: sph_lcp
       type(sph_1d_index_stack), intent(inout) :: stk_lc1d
       type(sph_1d_global_index), intent(inout) :: sph_gl1d
-      type(comm_table_make_sph), intent(inout) :: stbl
 !
       type(mesh_data) :: femmesh_s
 !
@@ -177,7 +173,7 @@
       call const_FEM_mesh_4_sph_mhd                                     &
      &   (sph_params, sph_rtp, sph_rj, radial_rtp_grp, radial_rj_grp,   &
      &    femmesh_s%mesh, femmesh_s%group, mesh_file,                   &
-     &    s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d, stbl)
+     &    s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
 !      call compare_mesh_type                                           &
 !     &   (my_rank, mesh%nod_comm, mesh%node, mesh%ele, femmesh_s%mesh)
 !      call compare_mesh_groups(group%nod_grp, femmesh_s%group)

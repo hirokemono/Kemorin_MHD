@@ -16,7 +16,7 @@
 !!     &         (s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
 !!      subroutine deallocate_gen_mesh_data                             &
 !!     &         (added_radial_grp, r_layer_grp, med_layer_grp,         &
-!!     &          s3d_radius, stbl, s2d_tbl)
+!!     &          s3d_radius, s2d_tbl)
 !!        type(comm_table_make_sph), intent(in) :: stbl
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_trans_2d_table), intent(inout) :: s2d_tbl
@@ -205,9 +205,8 @@
 !
       subroutine deallocate_gen_mesh_data                               &
      &         (added_radial_grp, r_layer_grp, med_layer_grp,           &
-     &          s3d_radius, stbl, s2d_tbl)
+     &          s3d_radius, s2d_tbl)
 !
-      use t_sph_mesh_1d_connect
       use t_2d_sph_trans_table
 !
       type(spheric_global_radius), intent(inout) :: s3d_radius
@@ -215,14 +214,11 @@
       type(layering_group_list), intent(inout) :: r_layer_grp
       type(layering_group_list), intent(inout) :: med_layer_grp
 !
-      type(comm_table_make_sph), intent(inout) :: stbl
       type(sph_trans_2d_table), intent(inout) :: s2d_tbl
 !
 !
       call dealloc_2d_sph_trans_table(s2d_tbl)
 !
-      call dealloc_nnod_nele_sph_mesh(stbl)
-      call dealloc_1d_comm_tbl_4_sph(stbl)
       call dealloc_radius_1d_gl(s3d_radius)
 !
       call dealloc_layering_group(med_layer_grp)

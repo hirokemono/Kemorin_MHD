@@ -17,7 +17,6 @@
       implicit none
 !
 !
-      type(comm_table_make_sph), save :: stbl
       type(sph_trans_2d_table), save :: s2d_tbl
 !
       end module m_sph_mesh_1d_connect
