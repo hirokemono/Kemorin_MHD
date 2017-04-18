@@ -9,16 +9,15 @@
 !!@verbatim
 !!      subroutine s_const_global_sph_grids_modes                       &
 !!     &         (sph_params, sph_rtp, sph_rtm, sph_rj, s3d_ranks,      &
-!!     &          sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
+!!     &          sph_lcp, stk_lc1d, sph_gl1d)
 !!      subroutine const_global_sph_FEM_grid                            &
 !!     &         (sph_params, sph_rtp, sph_rj, s3d_ranks,               &
-!!     &          sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
+!!     &          sph_lcp, stk_lc1d, sph_gl1d)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_rtm_grid), intent(in) :: sph_rtm
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(spheric_global_rank), intent(inout) :: s3d_ranks
-!!        type(sph_local_default_BC), intent(inout) :: sph_dbc
 !!        type(sph_local_parameters), intent(inout) :: sph_lcp
 !!        type(sph_1d_index_stack), intent(inout) :: stk_lc1d
 !!        type(sph_1d_global_index), intent(inout) :: sph_gl1d
@@ -48,6 +47,7 @@
 !
       type(sph_local_1d_param), save :: sph_lc1_SP
       type(sph_trans_2d_table), save :: s2d_tbl_SP
+      type(sph_local_default_BC), save :: sph_dbc_SP
 !
       private :: sph_lc1_SP, s2d_tbl_SP
 !
@@ -59,7 +59,7 @@
 !
       subroutine s_const_global_sph_grids_modes                         &
      &         (sph_params, sph_rtp, sph_rtm, sph_rj, s3d_ranks,        &
-     &          sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
+     &          sph_lcp, stk_lc1d, sph_gl1d)
 !
       use set_sph_1d_global_index
       use set_sph_1d_domain_id
@@ -71,7 +71,6 @@
       type(sph_rj_grid), intent(in) :: sph_rj
 !
       type(spheric_global_rank), intent(inout) :: s3d_ranks
-      type(sph_local_default_BC), intent(inout) :: sph_dbc
       type(sph_local_parameters), intent(inout) :: sph_lcp
       type(sph_1d_index_stack), intent(inout) :: stk_lc1d
       type(sph_1d_global_index), intent(inout) :: sph_gl1d
@@ -79,7 +78,7 @@
 !
       call alloc_sph_1d_global_stack(s3d_ranks, stk_lc1d)
       call alloc_sph_gl_parameter(s3d_ranks, sph_lcp)
-      call alloc_sph_gl_bc_param(s3d_ranks, sph_dbc)
+      call alloc_sph_gl_bc_param(s3d_ranks, sph_dbc_SP)
       call alloc_sph_ranks(s3d_ranks)
       call alloc_nidx_local(s3d_ranks, sph_lc1_SP)
       call alloc_2d_sph_trans_table(sph_rtp, sph_rj, s2d_tbl_SP)
@@ -87,11 +86,11 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'const_global_rtp_grids'
       call const_global_rtp_grids(sph_params, sph_rtp,                  &
-     &    s3d_ranks, sph_lc1_SP, sph_lcp, sph_dbc, stk_lc1d)
+     &    s3d_ranks, sph_lc1_SP, sph_lcp, sph_dbc_SP, stk_lc1d)
 !
       if(iflag_debug .gt. 0) write(*,*) 'const_global_rtm_grids'
       call const_global_rtm_grids(sph_params, sph_rtm,                  &
-     &    s3d_ranks, sph_lc1_SP, sph_lcp, sph_dbc, stk_lc1d)
+     &    s3d_ranks, sph_lc1_SP, sph_lcp, sph_dbc_SP, stk_lc1d)
 !
       if(iflag_debug .gt. 0) write(*,*) 'const_global_rlm_modes'
       call const_global_rlm_modes(sph_params, sph_rtp, sph_rj,          &
@@ -114,11 +113,11 @@
       call set_sph_1d_global_idx_rtp                                    &
      &   (sph_params%m_folding, sph_rtp%nidx_global_rtp(3),             &
      &    s2d_tbl_SP%mdx_ispack, s3d_ranks,                             &
-     &    sph_dbc, stk_lc1d, sph_gl1d)
+     &    sph_dbc_SP, stk_lc1d, sph_gl1d)
       call set_sph_1d_global_idx_rtm                                    &
      &   (sph_params%m_folding, sph_rtp%nidx_global_rtp(3),             &
      &    s2d_tbl_SP%mtbl_fft_2_lgd, s2d_tbl_SP%mdx_4_lgd,              &
-     &    s3d_ranks, sph_dbc, stk_lc1d, sph_gl1d)
+     &    s3d_ranks, sph_dbc_SP, stk_lc1d, sph_gl1d)
       call set_sph_1d_global_idx_rlm                                    &
      &   (sph_rj%nidx_global_rj(2), s2d_tbl_SP%jtbl_fsph, sph_gl1d)
       call set_sph_1d_global_idx_rj                                     &
@@ -137,6 +136,7 @@
       end if
 !
       call dealloc_2d_sph_trans_table(s2d_tbl_SP)
+      call dealloc_sph_gl_bc_param(sph_dbc_SP)
 !
       end subroutine s_const_global_sph_grids_modes
 !
@@ -144,7 +144,7 @@
 !
       subroutine const_global_sph_FEM_grid                              &
      &         (sph_params, sph_rtp, sph_rj, s3d_ranks,                 &
-     &          sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
+     &          sph_lcp, stk_lc1d, sph_gl1d)
 !
       use set_sph_1d_global_index
       use set_sph_1d_domain_id
@@ -155,7 +155,6 @@
       type(sph_rj_grid), intent(in) :: sph_rj
 !
       type(spheric_global_rank), intent(inout) :: s3d_ranks
-      type(sph_local_default_BC), intent(inout) :: sph_dbc
       type(sph_local_parameters), intent(inout) :: sph_lcp
       type(sph_1d_index_stack), intent(inout) :: stk_lc1d
       type(sph_1d_global_index), intent(inout) :: sph_gl1d
@@ -163,7 +162,7 @@
 !
       call alloc_sph_1d_global_stack(s3d_ranks, stk_lc1d)
       call alloc_sph_gl_parameter(s3d_ranks, sph_lcp)
-      call alloc_sph_gl_bc_param(s3d_ranks, sph_dbc)
+      call alloc_sph_gl_bc_param(s3d_ranks, sph_dbc_SP)
       call alloc_sph_ranks(s3d_ranks)
       call alloc_nidx_local(s3d_ranks, sph_lc1_SP)
 !
@@ -171,7 +170,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'const_global_rtp_grids'
       call const_global_rtp_grids(sph_params, sph_rtp,                  &
-     &    s3d_ranks, sph_lc1_SP, sph_lcp, sph_dbc, stk_lc1d)
+     &    s3d_ranks, sph_lc1_SP, sph_lcp, sph_dbc_SP, stk_lc1d)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_trans_table_fft_2_lgd'
       call set_trans_table_fft_2_lgd(sph_params%l_truncation,           &
@@ -184,7 +183,7 @@
 !
       call set_sph_1d_global_idx_rtp(sph_params%m_folding,              &
      &    sph_rtp%nidx_global_rtp(3), s2d_tbl_SP%mdx_ispack,            &
-     &    s3d_ranks, sph_dbc, stk_lc1d, sph_gl1d)
+     &    s3d_ranks, sph_dbc_SP, stk_lc1d, sph_gl1d)
 !
       call alloc_sph_1d_domain_id(sph_rtp, sph_rj, s3d_ranks)
 !
@@ -195,6 +194,7 @@
       end if
 !
       call dealloc_2d_sph_trans_table(s2d_tbl_SP)
+      call dealloc_sph_gl_bc_param(sph_dbc_SP)
 !
       end subroutine const_global_sph_FEM_grid
 !

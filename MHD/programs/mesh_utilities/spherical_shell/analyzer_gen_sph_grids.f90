@@ -95,7 +95,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_grids'
       call para_gen_sph_grids                                           &
      &   (s3d_radius, added_radial_grp, r_layer_grp, med_layer_grp,     &
-     &    sph_const, s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
+     &    sph_const, s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d)
 !
       call start_eleps_time(4)
       if(s3d_ranks%ndomain_sph .eq. nprocs) then

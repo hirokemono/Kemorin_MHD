@@ -65,7 +65,7 @@
 !
       subroutine load_para_SPH_and_FEM_mesh(sph, comms_sph, sph_grps,   &
      &          mesh, group, ele_mesh, mesh_file,                       &
-     &          s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
+     &          s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d)
 !
       use t_mesh_data
 !
@@ -79,7 +79,6 @@
       type(field_IO_params), intent(inout) ::  mesh_file
 !
       type(spheric_global_rank), intent(inout) :: s3d_ranks
-      type(sph_local_default_BC), intent(inout) :: sph_dbc
       type(sph_local_parameters), intent(inout) :: sph_lcp
       type(sph_1d_index_stack), intent(inout) :: stk_lc1d
       type(sph_1d_global_index), intent(inout) :: sph_gl1d
@@ -91,7 +90,7 @@
      &   (sph%sph_params, sph%sph_rtp, sph%sph_rj,                      &
      &    sph_grps%radial_rtp_grp, sph_grps%radial_rj_grp,              &
      &    mesh, group, ele_mesh, mesh_file,                             &
-     &    s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
+     &    s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d)
 !
       end subroutine load_para_SPH_and_FEM_mesh
 !
@@ -115,7 +114,7 @@
       subroutine load_FEM_mesh_4_SPH                                    &
      &         (sph_params, sph_rtp, sph_rj, radial_rtp_grp,            &
      &          radial_rj_grp, mesh, group, ele_mesh, mesh_file,        &
-     &          s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
+     &          s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d)
 !
       use calypso_mpi
       use t_mesh_data
@@ -142,7 +141,6 @@
       type(field_IO_params), intent(inout) ::  mesh_file
 !
       type(spheric_global_rank), intent(inout) :: s3d_ranks
-      type(sph_local_default_BC), intent(inout) :: sph_dbc
       type(sph_local_parameters), intent(inout) :: sph_lcp
       type(sph_1d_index_stack), intent(inout) :: stk_lc1d
       type(sph_1d_global_index), intent(inout) :: sph_gl1d
@@ -173,7 +171,7 @@
       call const_FEM_mesh_4_sph_mhd                                     &
      &   (sph_params, sph_rtp, sph_rj, radial_rtp_grp, radial_rj_grp,   &
      &    femmesh_s%mesh, femmesh_s%group, mesh_file,                   &
-     &    s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
+     &    s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d)
 !      call compare_mesh_type                                           &
 !     &   (my_rank, mesh%nod_comm, mesh%node, mesh%ele, femmesh_s%mesh)
 !      call compare_mesh_groups(group%nod_grp, femmesh_s%group)

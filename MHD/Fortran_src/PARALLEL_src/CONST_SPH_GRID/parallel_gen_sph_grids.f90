@@ -9,10 +9,10 @@
 !!@verbatim
 !!      subroutine para_gen_sph_grids(s3d_radius,                       &
 !!     &          added_radial_grp, r_layer_grp, med_layer_grp, sph,    &
-!!     &          s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
+!!     &          s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d)
 !!
 !!      subroutine deallocate_gen_mesh_params                           &
-!!     &         (s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
+!!     &         (s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d)
 !!      subroutine deallocate_gen_mesh_data                             &
 !!     &         (added_radial_grp, r_layer_grp, med_layer_grp,         &
 !!     &          s3d_radius)
@@ -62,7 +62,7 @@
 !
       subroutine para_gen_sph_grids(s3d_radius,                         &
      &          added_radial_grp, r_layer_grp, med_layer_grp, sph,      &
-     &          s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
+     &          s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d)
 !
       use set_global_spherical_param
       use para_gen_sph_grids_modes
@@ -78,7 +78,6 @@
 !
       type(sph_grids), intent(inout) :: sph
       type(spheric_global_rank), intent(inout) :: s3d_ranks
-      type(sph_local_default_BC), intent(inout) :: sph_dbc
       type(sph_local_parameters), intent(inout) :: sph_lcp
       type(sph_1d_index_stack), intent(inout) :: stk_lc1d
       type(sph_1d_global_index), intent(inout) :: sph_gl1d
@@ -101,7 +100,7 @@
 !
       call s_const_global_sph_grids_modes                               &
      &   (sph%sph_params, sph%sph_rtp, sph%sph_rtm, sph%sph_rj,         &
-     &    s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
+     &    s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d)
 !
       call start_eleps_time(2)
       allocate(comm_rlm_mul(s3d_ranks%ndomain_sph))
@@ -176,10 +175,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine deallocate_gen_mesh_params                             &
-     &         (s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
+     &         (s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d)
 !
       type(spheric_global_rank), intent(inout) :: s3d_ranks
-      type(sph_local_default_BC), intent(inout) :: sph_dbc
       type(sph_local_parameters), intent(inout) :: sph_lcp
       type(sph_1d_index_stack), intent(inout) :: stk_lc1d
       type(sph_1d_global_index), intent(inout) :: sph_gl1d
@@ -188,7 +186,6 @@
       call dealloc_sph_ranks(s3d_ranks)
       call dealloc_sph_1d_domain_id(s3d_ranks)
 !
-      call dealloc_sph_gl_bc_param(sph_dbc)
       call dealloc_sph_gl_parameter(sph_lcp)
 !
       call dealloc_sph_1d_global_idx(sph_gl1d)
