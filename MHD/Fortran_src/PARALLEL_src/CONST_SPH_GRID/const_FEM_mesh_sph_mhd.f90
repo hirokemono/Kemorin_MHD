@@ -103,7 +103,6 @@
       end if
 !
       call dealloc_nnod_nele_sph_mesh(stbl_SF)
-      call dealloc_1d_comm_tbl_4_sph(stbl_SF)
       call dealloc_gauss_colatitude(gauss_SF)
 !
       end subroutine const_FEM_mesh_4_sph_mhd

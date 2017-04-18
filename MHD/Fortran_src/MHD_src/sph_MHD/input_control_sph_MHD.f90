@@ -26,6 +26,7 @@
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
 !!        type(sph_group_data), intent(inout) ::  sph_grps
+!!        type(construct_spherical_grid), intent(inout) :: gen_sph1
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(sph_mean_squares), intent(inout) :: pwr
@@ -47,7 +48,7 @@
       use calypso_mpi
 !
       use t_control_parameter
-      use m_spheric_global_ranks
+      use t_const_spherical_grid
       use t_MHD_step_parameter
       use t_SGS_control_parameter
       use t_spheric_parameter
@@ -75,7 +76,10 @@
 !>      Structure of dynamo file parameters for original data
       type(file_params_4_sph_mhd), save :: MHD1_org_files
 !
-      private :: mesh1_file
+!>      Structure to construct grid
+      type(construct_spherical_grid), save :: gen_sph1
+!
+      private :: mesh1_file, gen_sph1
       private :: select_make_SPH_mesh
       private :: sph_boundary_IO_control
 !
@@ -128,7 +132,8 @@
 !
 !
       call select_make_SPH_mesh(MHD_ctl%psph_ctl%iflag_sph_shell,       &
-     &    sph, comms_sph, sph_grps,  mesh, group, ele_mesh, mesh1_file)
+     &    sph, comms_sph, sph_grps, gen_sph1,                           &
+     &    mesh, group, ele_mesh, mesh1_file)
 !
       call sph_boundary_IO_control(MHD_prop)
 !
@@ -213,7 +218,8 @@
      &    MHD_prop, WK%WK_sph, gen_sph1)
 !
       call select_make_SPH_mesh(MHD_ctl%psph_ctl%iflag_sph_shell,       &
-     &    sph, comms_sph, sph_grps, mesh, group, ele_mesh, mesh1_file)
+     &    sph, comms_sph, sph_grps, gen_sph1,                           &
+     &    mesh, group, ele_mesh, mesh1_file)
 !
       end subroutine input_control_4_SPH_make_init
 !
@@ -299,7 +305,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine select_make_SPH_mesh                                   &
-     &         (iflag_make_SPH, sph, comms_sph, sph_grps,               &
+     &         (iflag_make_SPH, sph, comms_sph, sph_grps, gen_sph,      &
      &          mesh, group, ele_mesh, mesh_file)
 !
       use m_error_IDs
@@ -310,6 +316,7 @@
       type(sph_grids), intent(inout) :: sph
       type(sph_comm_tables), intent(inout) :: comms_sph
       type(sph_group_data), intent(inout) ::  sph_grps
+      type(construct_spherical_grid), intent(inout) :: gen_sph
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
@@ -334,16 +341,16 @@
      &     'Set parameters for spherical shell')
       else
         if (my_rank.eq.0) write(*,*) 'Make spherical harmonics table'
-        call para_gen_sph_grids(sph_gen, gen_sph1)
-        call deallocate_gen_mesh_params(gen_sph1)
+        call para_gen_sph_grids(sph_gen, gen_sph)
+        call deallocate_gen_mesh_params(gen_sph)
       end if
       call calypso_mpi_barrier
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_SPH_and_FEM_mesh'
       call load_para_SPH_and_FEM_mesh(sph, comms_sph, sph_grps,         &
-     &    mesh, group, ele_mesh, mesh_file, gen_sph1)
+     &    mesh, group, ele_mesh, mesh_file, gen_sph)
 !
-      call deallocate_gen_mesh_consts(gen_sph1)
+      call deallocate_gen_mesh_consts(gen_sph)
 !
       end subroutine select_make_SPH_mesh
 !

@@ -43,6 +43,7 @@
       subroutine initialize_sph_pick_circle
 !
       use t_ctl_data_sph_MHD_psf
+      use t_const_spherical_grid
       use m_ctl_data_sph_MHD
       use m_SGS_control_parameter
       use m_node_phys_data
@@ -57,6 +58,7 @@
       use input_control_sph_MHD
 !
       type(field_IO_params), save ::  mesh_file_circ
+      type(construct_spherical_grid), save :: gen_sph_c
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank
@@ -75,7 +77,7 @@
      &    MHD_ctl1%nmtr_ctl, MHD_ctl1%psph_ctl, sph_gen, rj_fld1,       &
      &    mesh_file_circ, sph_file_param1, MHD1_org_files, sph_fst_IO,  &
      &    pwr1, SGS_par1, trns_WK1%dynamic_SPH%sph_filters, MHD_step1,  &
-     &    MHD_prop1, trns_WK1%WK_sph, gen_sph1)
+     &    MHD_prop1, trns_WK1%WK_sph, gen_sph_c)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
 !
       call set_ctl_params_pick_circle                                   &

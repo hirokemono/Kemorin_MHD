@@ -28,6 +28,7 @@
       use t_file_IO_parameter
       use t_sph_transforms
       use t_phys_name_4_sph_trans
+      use t_const_spherical_grid
 !
       implicit none
 !
@@ -45,6 +46,8 @@
 !!        (position, connectivity, and communication)
       type(element_geometry), save :: elemesh_STR
 !
+!>      Structure to make spherical shell grid
+      type(construct_spherical_grid), save :: gen_sph_TRNS
 !
 !>       Structure for nodal field data
       type(phys_data), save :: field_STR

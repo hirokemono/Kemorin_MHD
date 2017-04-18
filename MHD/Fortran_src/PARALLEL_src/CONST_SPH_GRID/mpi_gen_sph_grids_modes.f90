@@ -304,7 +304,6 @@
       call deallocate_grp_type(radial_rj_grp_lc)
 !
       call dealloc_nnod_nele_sph_mesh(stbl_s)
-      call dealloc_1d_comm_tbl_4_sph(stbl_s)
       call dealloc_gauss_colatitude(gauss_s)
 !
       end subroutine mpi_gen_fem_mesh_for_sph

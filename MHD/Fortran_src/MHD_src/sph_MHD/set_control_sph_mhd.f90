@@ -76,7 +76,6 @@
      &         MHD_org_files, sph_fst_IO, pwr, SGS_par, sph_filters,    &
      &         MHD_step, MHD_prop, WK_sph, gen_sph)
 !
-      use m_spheric_global_ranks
       use m_ucd_data
       use sph_mhd_rms_IO
 !
@@ -142,7 +141,6 @@
      &          MHD_org_files, sph_fst_IO, pwr, SGS_par, MHD_step,      &
      &          MHD_prop, WK_sph, gen_sph)
 !
-      use m_spheric_global_ranks
       use m_ucd_data
       use m_flexible_time_step
       use sph_mhd_rms_IO
