@@ -8,7 +8,7 @@
       use m_precision
 !
       use m_constants
-      use m_spheric_global_ranks
+      use t_spheric_global_ranks
       use t_spheric_parameter
       use t_spheric_rtp_data
 !
@@ -23,6 +23,8 @@
       type(sph_shell_parameters) :: sph_params_rgrid
 !>        structure of index table for @f$ f(r,\theta,\phi) @f$
       type(sph_rtp_grid) :: sph_rtp_rgrid
+!
+      type(spheric_global_radius), save :: s3d_radius
 !
 !
       write(*,*) 'input outer core shell width'

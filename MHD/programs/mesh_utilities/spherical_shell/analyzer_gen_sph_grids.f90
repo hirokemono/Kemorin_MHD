@@ -26,7 +26,6 @@
       use t_ctl_data_4_platforms
       use t_ctl_data_gen_sph_shell
       use m_spheric_global_ranks
-      use m_sph_1d_global_index
 !
       implicit none
 !
@@ -74,8 +73,7 @@
       call set_control_4_gen_shell_grids                                &
      &   (psph_gen_plt, psph_gen_ctl%spctl, psph_gen_ctl%sdctl,         &
      &    sph_const, fem_mesh_file, sph_file_prm_const,                 &
-     &    s3d_ranks, s3d_radius, added_radial_grp, r_layer_grp,         &
-     &    med_layer_grp, ierr_MPI)
+     &    gen_sph1, ierr_MPI)
       if(ierr_MPI .gt. 0) call calypso_mpi_abort(ierr_MPI, e_message)
 !
       end subroutine init_gen_sph_grids
@@ -84,7 +82,6 @@
 !
       subroutine analyze_gen_sph_grids
 !
-      use m_sph_global_parameter
       use m_spheric_global_ranks
       use parallel_gen_sph_grids
       use para_gen_sph_grids_modes
@@ -93,21 +90,17 @@
 !  ========= Generate spherical harmonics table ========================
 !
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_grids'
-      call para_gen_sph_grids                                           &
-     &   (s3d_radius, added_radial_grp, r_layer_grp, med_layer_grp,     &
-     &    sph_const, s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d)
+      call para_gen_sph_grids(sph_const, gen_sph1)
 !
       call start_eleps_time(4)
-      if(s3d_ranks%ndomain_sph .eq. nprocs) then
-        call mpi_gen_fem_mesh_for_sph(added_radial_grp,                 &
-     &      s3d_ranks, s3d_radius, sph_lcp, stk_lc1d, sph_gl1d,         &
+      if(gen_sph1%s3d_ranks%ndomain_sph .eq. nprocs) then
+        call mpi_gen_fem_mesh_for_sph(gen_sph1,                         &
      &      sph_const%sph_params, sph_const%sph_rj, sph_const%sph_rtp,  &
      &      fem_mesh_file)
       else
         if(iflag_debug .gt. 0) write(*,*) 'para_gen_fem_mesh_for_sph'
         call para_gen_fem_mesh_for_sph                                  &
-     &     (s3d_ranks%ndomain_sph, added_radial_grp,                    &
-     &      s3d_ranks, s3d_radius, sph_lcp, stk_lc1d, sph_gl1d,         &
+     &     (gen_sph1%s3d_ranks%ndomain_sph, gen_sph1,                   &
      &      sph_const%sph_params, sph_const%sph_rj, sph_const%sph_rtp,  &
      &      fem_mesh_file)
       end if

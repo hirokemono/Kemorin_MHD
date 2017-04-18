@@ -47,6 +47,7 @@
       use calypso_mpi
 !
       use t_control_parameter
+      use m_spheric_global_ranks
       use t_MHD_step_parameter
       use t_SGS_control_parameter
       use t_spheric_parameter
@@ -120,7 +121,7 @@
      &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl,                           &
      &    sph_gen, rj_fld, mesh1_file, sph_file_param1, MHD1_org_files, &
      &    sph_fst_IO, pwr, SGS_par, dynamic_SPH%sph_filters, MHD_step,  &
-     &    MHD_prop, WK%WK_sph)
+     &    MHD_prop, WK%WK_sph, gen_sph1)
 !
       call set_control_4_SPH_to_FEM                                     &
      &   (MHD_ctl%psph_ctl%spctl, sph%sph_params, rj_fld, nod_fld)
@@ -165,7 +166,7 @@
      &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl,                           &
      &    sph_gen, rj_fld, mesh1_file, sph_file_param1, MHD1_org_files, &
      &    sph_fst_IO, pwr, SGS_par, dynamic_SPH%sph_filters, MHD_step,  &
-     &    MHD_prop, WK%WK_sph)
+     &    MHD_prop, WK%WK_sph, gen_sph1)
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
       call load_para_sph_mesh(sph, comms_sph, sph_grps)
@@ -209,7 +210,7 @@
      &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl,                           &
      &    sph_gen, rj_fld, mesh1_file, sph_file_param1,                 &
      &    MHD1_org_files, sph_fst_IO, pwr, SGS_par, MHD_step,           &
-     &    MHD_prop, WK%WK_sph)
+     &    MHD_prop, WK%WK_sph, gen_sph1)
 !
       call select_make_SPH_mesh(MHD_ctl%psph_ctl%iflag_sph_shell,       &
      &    sph, comms_sph, sph_grps, mesh, group, ele_mesh, mesh1_file)
@@ -248,7 +249,7 @@
      &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl,                           &
      &    sph_gen, rj_fld, mesh1_file, sph_file_param1,                 &
      &    MHD1_org_files, sph_fst_IO, pwr, SGS_par, MHD_step,           &
-     &    MHD_prop, WK%WK_sph)
+     &    MHD_prop, WK%WK_sph, gen_sph1)
 !
       call set_control_4_SPH_to_FEM                                     &
      &   (MHD_ctl%psph_ctl%spctl, sph%sph_params, rj_fld, nod_fld)
@@ -302,9 +303,6 @@
      &          mesh, group, ele_mesh, mesh_file)
 !
       use m_error_IDs
-      use m_spheric_global_ranks
-      use m_sph_global_parameter
-      use m_sph_1d_global_index
       use parallel_load_data_4_sph
       use parallel_gen_sph_grids
 !
@@ -336,21 +334,16 @@
      &     'Set parameters for spherical shell')
       else
         if (my_rank.eq.0) write(*,*) 'Make spherical harmonics table'
-        call para_gen_sph_grids                                         &
-     &     (s3d_radius, added_radial_grp, r_layer_grp, med_layer_grp,   &
-     &      sph_gen, s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d)
-        call deallocate_gen_mesh_params                                 &
-     &     (s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d)
+        call para_gen_sph_grids(sph_gen, gen_sph1)
+        call deallocate_gen_mesh_params(gen_sph1)
       end if
       call calypso_mpi_barrier
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_SPH_and_FEM_mesh'
       call load_para_SPH_and_FEM_mesh(sph, comms_sph, sph_grps,         &
-     &    mesh, group, ele_mesh, mesh_file,                             &
-     &    s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d)
+     &    mesh, group, ele_mesh, mesh_file, gen_sph1)
 !
-      call deallocate_gen_mesh_data                                     &
-     &   (added_radial_grp, r_layer_grp, med_layer_grp, s3d_radius)
+      call deallocate_gen_mesh_consts(gen_sph1)
 !
       end subroutine select_make_SPH_mesh
 !

@@ -61,10 +61,8 @@
       use t_spheric_mesh
       use t_spheric_data_IO
       use t_file_IO_parameter
-      use t_spheric_global_ranks
+      use t_const_spherical_grid
       use t_sph_local_parameter
-      use t_sph_1d_global_index
-      use t_control_1D_layering
       use t_sph_local_index
 !
       use set_local_sphere_by_global
@@ -243,8 +241,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine mpi_gen_fem_mesh_for_sph(added_radial_grp,             &
-     &          s3d_ranks, s3d_radius, sph_lcp, stk_lc1d, sph_gl1d,     &
+      subroutine mpi_gen_fem_mesh_for_sph(gen_sph,                      &
      &          sph_params, sph_rj, sph_rtp, mesh_file)
 !
       use t_mesh_data
@@ -261,12 +258,7 @@
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
-      type(layering_group_list), intent(in) :: added_radial_grp
-      type(spheric_global_rank), intent(in) :: s3d_ranks
-      type(spheric_global_radius), intent(in) :: s3d_radius
-      type(sph_local_parameters), intent(in) :: sph_lcp
-      type(sph_1d_index_stack), intent(in) :: stk_lc1d
-      type(sph_1d_global_index), intent(in) :: sph_gl1d
+      type(construct_spherical_grid), intent(in) :: gen_sph
 !
       type(sph_rtp_grid), intent(inout) :: sph_rtp
       type(field_IO_params), intent(inout) ::  mesh_file
@@ -283,19 +275,21 @@
 !
       call s_const_1d_ele_connect_4_sph                                 &
      &   (sph_params%iflag_shell_mode, sph_params%m_folding, sph_rtp,   &
-     &    s3d_ranks, stk_lc1d, sph_gl1d, stbl_s)
+     &    gen_sph%s3d_ranks, gen_sph%stk_lc1d, gen_sph%sph_gl1d,        &
+     &    stbl_s)
       call set_rj_radial_grp(sph_params, sph_rj,                        &
-     &    added_radial_grp, radial_rj_grp_lc)
+     &    gen_sph%added_radial_grp, radial_rj_grp_lc)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &             'Construct FEM mesh for domain ', my_rank
 !
-      call copy_gl_2_local_rtp_param                                    &
-     &   (my_rank, s3d_ranks, sph_lcp, stk_lc1d, sph_rtp)
+      call copy_gl_2_local_rtp_param (my_rank, gen_sph%s3d_ranks,       &
+     &    gen_sph%sph_lcp, gen_sph%stk_lc1d, sph_rtp)
       call s_const_FEM_mesh_for_sph                                     &
-     &   (my_rank, sph_rtp%nidx_rtp, s3d_radius%radius_1d_gl, gauss_s,  &
-     &    s3d_ranks, stk_lc1d, sph_gl1d, sph_params, sph_rtp,           &
-     &    radial_rj_grp_lc, femmesh%mesh, femmesh%group, stbl_s)
+     &   (my_rank, sph_rtp%nidx_rtp, gen_sph%s3d_radius%radius_1d_gl,   &
+     &    gauss_s, gen_sph%s3d_ranks, gen_sph%stk_lc1d,                 &
+     &    gen_sph%sph_gl1d, sph_params, sph_rtp, radial_rj_grp_lc,      &
+     &    femmesh%mesh, femmesh%group, stbl_s)
 !
 ! Output mesh data
       if(iflag_output_mesh .gt. 0) then

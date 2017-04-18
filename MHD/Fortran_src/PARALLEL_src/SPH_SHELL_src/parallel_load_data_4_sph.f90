@@ -7,8 +7,7 @@
 !!
 !!@verbatim
 !!      subroutine load_para_SPH_and_FEM_mesh(sph, comms_sph, sph_grps, &
-!!     &          mesh, group, ele_mesh, mesh_file,                     &
-!!     &          s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
+!!     &          mesh, group, ele_mesh, mesh_file, gen_sph)
 !!      subroutine load_para_SPH_rj_mesh(sph, comms_sph, sph_grps)
 !!      subroutine load_para_sph_mesh(sph, bc_rtp_grp, sph_grps)
 !!        type(sph_grids), intent(inout) :: sph
@@ -18,11 +17,7 @@
 !!        type(mesh_groups), intent(inout) ::   group
 !!        type(element_geometry), intent(inout) :: ele_mesh
 !!        type(field_IO_params), intent(inout) ::  mesh_file
-!!        type(spheric_global_rank), intent(inout) :: s3d_ranks
-!!        type(sph_local_default_BC), intent(inout) :: sph_dbc
-!!        type(sph_local_parameters), intent(inout) :: sph_lcp
-!!        type(sph_1d_index_stack), intent(inout) :: stk_lc1d
-!!        type(sph_1d_global_index), intent(inout) :: sph_gl1d
+!!        type(construct_spherical_grid), intent(inout) :: gen_sph
 !!
 !!      subroutine load_para_rj_mesh                                    &
 !!     &         (sph_params, sph_rj, comm_rj, sph_grps)
@@ -45,8 +40,7 @@
       use t_sph_trans_comm_tbl
       use t_spheric_mesh
       use t_spheric_data_IO
-      use t_spheric_global_ranks
-      use t_sph_1d_global_index
+      use t_const_spherical_grid
       use t_sph_local_parameter
       use sph_file_MPI_IO_select
       use set_loaded_data_4_sph
@@ -64,8 +58,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine load_para_SPH_and_FEM_mesh(sph, comms_sph, sph_grps,   &
-     &          mesh, group, ele_mesh, mesh_file,                       &
-     &          s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d)
+     &          mesh, group, ele_mesh, mesh_file, gen_sph)
 !
       use t_mesh_data
 !
@@ -78,10 +71,7 @@
       type(element_geometry), intent(inout) :: ele_mesh
       type(field_IO_params), intent(inout) ::  mesh_file
 !
-      type(spheric_global_rank), intent(inout) :: s3d_ranks
-      type(sph_local_parameters), intent(inout) :: sph_lcp
-      type(sph_1d_index_stack), intent(inout) :: stk_lc1d
-      type(sph_1d_global_index), intent(inout) :: sph_gl1d
+      type(construct_spherical_grid), intent(inout) :: gen_sph
 !
 !
       call load_para_sph_mesh(sph, comms_sph, sph_grps)
@@ -89,8 +79,7 @@
       call load_FEM_mesh_4_SPH                                          &
      &   (sph%sph_params, sph%sph_rtp, sph%sph_rj,                      &
      &    sph_grps%radial_rtp_grp, sph_grps%radial_rj_grp,              &
-     &    mesh, group, ele_mesh, mesh_file,                             &
-     &    s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d)
+     &    mesh, group, ele_mesh, mesh_file, gen_sph)
 !
       end subroutine load_para_SPH_and_FEM_mesh
 !
@@ -114,7 +103,7 @@
       subroutine load_FEM_mesh_4_SPH                                    &
      &         (sph_params, sph_rtp, sph_rj, radial_rtp_grp,            &
      &          radial_rj_grp, mesh, group, ele_mesh, mesh_file,        &
-     &          s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d)
+     &          gen_sph)
 !
       use calypso_mpi
       use t_mesh_data
@@ -140,10 +129,7 @@
       type(element_geometry), intent(inout) :: ele_mesh
       type(field_IO_params), intent(inout) ::  mesh_file
 !
-      type(spheric_global_rank), intent(inout) :: s3d_ranks
-      type(sph_local_parameters), intent(inout) :: sph_lcp
-      type(sph_1d_index_stack), intent(inout) :: stk_lc1d
-      type(sph_1d_global_index), intent(inout) :: sph_gl1d
+      type(construct_spherical_grid), intent(inout) :: gen_sph
 !
       type(mesh_data) :: femmesh_s
 !
@@ -170,8 +156,7 @@
       if (iflag_debug.gt.0) write(*,*) 'const_FEM_mesh_4_sph_mhd'
       call const_FEM_mesh_4_sph_mhd                                     &
      &   (sph_params, sph_rtp, sph_rj, radial_rtp_grp, radial_rj_grp,   &
-     &    femmesh_s%mesh, femmesh_s%group, mesh_file,                   &
-     &    s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d)
+     &    femmesh_s%mesh, femmesh_s%group, mesh_file, gen_sph)
 !      call compare_mesh_type                                           &
 !     &   (my_rank, mesh%nod_comm, mesh%node, mesh%ele, femmesh_s%mesh)
 !      call compare_mesh_groups(group%nod_grp, femmesh_s%group)

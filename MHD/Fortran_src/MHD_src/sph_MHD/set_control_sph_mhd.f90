@@ -11,12 +11,12 @@
 !!     &         model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,  &
 !!     &         sph_gen, rj_fld, mesh_file, sph_file_param,            &
 !!     &         MHD_org_files, sph_fst_IO, pwr, SGS_par, sph_filters,  &
-!!     &         MHD_step, MHD_prop, WK_sph)
+!!     &         MHD_step, MHD_prop, WK_sph, gen_sph)
 !!      subroutine set_control_4_SPH_MHD(plt, org_plt,                  &
 !!     &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl, &
 !!     &          sph_gen, rj_fld, mesh_file, sph_file_param,           &
 !!     &          MHD_org_files, sph_fst_IO, pwr, SGS_par, MHD_step,    &
-!!     &          MHD_prop, WK_sph)
+!!     &          MHD_prop, WK_sph, gen_sph)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
 !!        type(mhd_model_control), intent(inout) :: model_ctl
@@ -37,6 +37,7 @@
 !!        type(fluid_property), intent(inout) :: fl_prop
 !!        type(MHD_evolution_param), intent(inout) :: MHD_prop
 !!        type(spherical_trns_works), intent(inout) :: WK_sph
+!!        type(construct_spherical_grid), intent(inout) :: gen_sph
 !!@endverbatim
 !
       module set_control_sph_mhd
@@ -73,7 +74,7 @@
      &         model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,    &
      &         sph_gen, rj_fld, mesh_file, sph_file_param,              &
      &         MHD_org_files, sph_fst_IO, pwr, SGS_par, sph_filters,    &
-     &         MHD_step, MHD_prop, WK_sph)
+     &         MHD_step, MHD_prop, WK_sph, gen_sph)
 !
       use m_spheric_global_ranks
       use m_ucd_data
@@ -84,6 +85,7 @@
       use t_phys_data
       use t_rms_4_sph_spectr
       use t_sph_filtering_data
+      use t_const_spherical_grid
 !
       use set_control_4_SGS
 !
@@ -106,6 +108,7 @@
       type(MHD_step_param), intent(inout) :: MHD_step
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(spherical_trns_works), intent(inout) :: WK_sph
+      type(construct_spherical_grid), intent(inout) :: gen_sph
 !
 !
 !   set parameters for SGS model
@@ -126,7 +129,8 @@
       call set_control_4_SPH_MHD(plt, org_plt,                          &
      &    model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,         &
      &    sph_gen, rj_fld, mesh_file, sph_file_param, MHD_org_files,    &
-     &    sph_fst_IO, pwr, SGS_par, MHD_step, MHD_prop, WK_sph)
+     &    sph_fst_IO, pwr, SGS_par, MHD_step, MHD_prop,                 &
+     &    WK_sph, gen_sph)
 !
       end subroutine set_control_SGS_SPH_MHD
 !
@@ -136,13 +140,11 @@
      &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,   &
      &          sph_gen, rj_fld, mesh_file, sph_file_param,             &
      &          MHD_org_files, sph_fst_IO, pwr, SGS_par, MHD_step,      &
-     &          MHD_prop, WK_sph)
+     &          MHD_prop, WK_sph, gen_sph)
 !
       use m_spheric_global_ranks
       use m_ucd_data
       use m_flexible_time_step
-      use m_spheric_global_ranks
-      use m_sph_1d_global_index
       use sph_mhd_rms_IO
 !
       use t_SGS_control_parameter
@@ -150,6 +152,7 @@
       use t_phys_data
       use t_rms_4_sph_spectr
       use t_sph_trans_arrays_MHD
+      use t_const_spherical_grid
 !
       use gen_sph_grids_modes
       use set_control_platform_data
@@ -182,6 +185,7 @@
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(sph_mean_squares), intent(inout) :: pwr
       type(spherical_trns_works), intent(inout) :: WK_sph
+      type(construct_spherical_grid), intent(inout) :: gen_sph
 !
       integer(kind = kint) :: ierr
 !
@@ -208,8 +212,7 @@
         if (iflag_debug.gt.0) write(*,*) 'set_control_4_shell_grids'
         call set_control_4_shell_grids                                  &
      &     (nprocs, psph_ctl%spctl, psph_ctl%sdctl, sph_gen,            &
-     &      s3d_ranks, s3d_radius, added_radial_grp, r_layer_grp,       &
-     &      med_layer_grp, ierr)
+     &      gen_sph, ierr)
       end if
 !
 !   set forces

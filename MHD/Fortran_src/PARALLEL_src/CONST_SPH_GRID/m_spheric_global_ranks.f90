@@ -6,29 +6,15 @@
 !
 !>@brief  Global subdomain informatikn for spherical shell
 !!
-!!@verbatim
-!!      subroutine allocate_sph_ranks
-!!      subroutine allocate_sph_1d_domain_id(sph_rtp, sph_rj)
-!!        type(sph_rtp_grid), intent(in) :: sph_rtp
-!!        type(sph_rj_grid), intent(in) :: sph_rj
-!!
-!!      subroutine deallocate_sph_ranks
-!!      subroutine deallocate_sph_1d_domain_id
-!!
-!!      subroutine check_sph_domains(nprocs_check, ierr, e_message)
-!!      subroutine check_sph_ranks(my_rank)
-!!      subroutine check_sph_1d_domain_id
-!!@endverbatim
 !
       module m_spheric_global_ranks
 !
       use m_precision
-      use t_spheric_global_ranks
+      use t_const_spherical_grid
 !
       implicit none
 !
 !
-      type(spheric_global_rank), save :: s3d_ranks
-      type(spheric_global_radius), save :: s3d_radius
+      type(construct_spherical_grid), save :: gen_sph1
 !
       end module m_spheric_global_ranks

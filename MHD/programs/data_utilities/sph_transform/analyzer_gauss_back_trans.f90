@@ -15,8 +15,6 @@
       use m_spheric_data_transform
       use m_ctl_params_sph_trans
       use m_spheric_global_ranks
-      use m_sph_global_parameter
-      use m_sph_1d_global_index
 !
       use FEM_analyzer_back_trans
       use SPH_analyzer_gauss_b_trans
@@ -68,7 +66,7 @@
       call load_para_SPH_and_FEM_mesh(sph_mesh_trans%sph,               &
      &    sph_mesh_trans%sph_comms, sph_mesh_trans%sph_grps,            &
      &    femmesh_STR%mesh, femmesh_STR%group, elemesh_STR,             &
-     &    mesh_file_STR, s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d)
+     &    mesh_file_STR, gen_sph1)
 !
 !  ------  initialize FEM data
 !

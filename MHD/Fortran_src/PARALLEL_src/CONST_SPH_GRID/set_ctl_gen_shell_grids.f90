@@ -9,30 +9,20 @@
 !!@verbatim
 !!      subroutine set_control_4_gen_shell_grids                        &
 !!     &         (plt, spctl, sdctl, sph, mesh_file, sph_file_param,    &
-!!     &          s3d_ranks, s3d_radius, added_radial_grp, r_layer_grp, &
-!!     &          med_layer_grp, ierr)
+!!     &          gen_sph, ierr)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(sphere_data_control), intent(inout) :: spctl
 !!        type(sphere_domain_control), intent(inout) :: sdctl
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(field_IO_params), intent(inout) ::  mesh_file
 !!        type(field_IO_params), intent(inout) :: sph_file_param
-!!        type(spheric_global_rank), intent(inout) :: s3d_ranks
-!!        type(spheric_global_radius), intent(inout) :: s3d_radius
-!!        type(layering_group_list), intent(inout) :: added_radial_grp
-!!        type(layering_group_list), intent(inout) :: r_layer_grp
-!!        type(layering_group_list), intent(inout) :: med_layer_grp
+!!        type(construct_spherical_grid), intent(inout) :: gen_sph
 !!      subroutine set_control_4_shell_grids(nprocs_check,              &
-!!     &          spctl, sdctl, sph, s3d_ranks, s3d_radius,             &
-!!     &          added_radial_grp, r_layer_grp, med_layer_grp, ierr)
+!!     &          spctl, sdctl, sph, gen_sph, ierr)
 !!        type(sphere_data_control), intent(inout) :: spctl
 !!        type(sphere_domain_control), intent(inout) :: sdctl
 !!        type(sph_grids), intent(inout) :: sph
-!!        type(spheric_global_rank), intent(inout) :: s3d_ranks
-!!        type(spheric_global_radius), intent(inout) :: s3d_radius
-!!        type(layering_group_list), intent(inout) :: added_radial_grp
-!!        type(layering_group_list), intent(inout) :: r_layer_grp
-!!        type(layering_group_list), intent(inout) :: med_layer_grp
+!!        type(construct_spherical_grid), intent(inout) :: gen_sph
 !!@endverbatim
 !
       module set_ctl_gen_shell_grids
@@ -45,8 +35,7 @@
       use t_ctl_data_4_sphere_model
       use t_ctl_data_4_divide_sphere
       use t_spheric_global_ranks
-      use t_sph_mesh_1d_connect
-      use t_control_1D_layering
+      use t_const_spherical_grid
 !
       implicit  none
 !
@@ -65,8 +54,7 @@
 !
       subroutine set_control_4_gen_shell_grids                          &
      &         (plt, spctl, sdctl, sph, mesh_file, sph_file_param,      &
-     &          s3d_ranks, s3d_radius, added_radial_grp, r_layer_grp,   &
-     &          med_layer_grp, ierr)
+     &          gen_sph, ierr)
 !
       type(platform_data_control), intent(in) :: plt
       type(sphere_data_control), intent(inout) :: spctl
@@ -74,11 +62,7 @@
       type(sph_grids), intent(inout) :: sph
       type(field_IO_params), intent(inout) ::  mesh_file
       type(field_IO_params), intent(inout) :: sph_file_param
-      type(spheric_global_rank), intent(inout) :: s3d_ranks
-      type(spheric_global_radius), intent(inout) :: s3d_radius
-      type(layering_group_list), intent(inout) :: added_radial_grp
-      type(layering_group_list), intent(inout) :: r_layer_grp
-      type(layering_group_list), intent(inout) :: med_layer_grp
+      type(construct_spherical_grid), intent(inout) :: gen_sph
       integer(kind = kint), intent(inout) :: ierr
 !
       integer(kind = kint) :: nprocs_check
@@ -88,8 +72,7 @@
      &   (plt, nprocs_check, mesh_file, sph_file_param)
 !
       call set_control_4_shell_grids                                    &
-     &   (nprocs_check, spctl, sdctl, sph, s3d_ranks, s3d_radius,       &
-     &    added_radial_grp, r_layer_grp, med_layer_grp, ierr)
+     &   (nprocs_check, spctl, sdctl, sph, gen_sph, ierr)
 !
       end subroutine set_control_4_gen_shell_grids
 !
@@ -123,8 +106,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_control_4_shell_grids(nprocs_check,                &
-     &          spctl, sdctl, sph, s3d_ranks, s3d_radius,               &
-     &          added_radial_grp, r_layer_grp, med_layer_grp, ierr)
+     &          spctl, sdctl, sph, gen_sph, ierr)
 !
       use m_constants
       use m_machine_parameter
@@ -140,11 +122,7 @@
       type(sphere_data_control), intent(inout) :: spctl
       type(sphere_domain_control), intent(inout) :: sdctl
       type(sph_grids), intent(inout) :: sph
-      type(spheric_global_rank), intent(inout) :: s3d_ranks
-      type(spheric_global_radius), intent(inout) :: s3d_radius
-      type(layering_group_list), intent(inout) :: added_radial_grp
-      type(layering_group_list), intent(inout) :: r_layer_grp
-      type(layering_group_list), intent(inout) :: med_layer_grp
+      type(construct_spherical_grid), intent(inout) :: gen_sph
       integer(kind = kint), intent(inout) :: ierr
 !
       integer(kind = kint) :: icou
@@ -179,16 +157,16 @@
 !
       call set_ctl_radius_4_shell                                       &
      &   (spctl, sph%sph_params, sph%sph_rtp, sph%sph_rj,               &
-     &    added_radial_grp, s3d_radius, ierr)
+     &    gen_sph%added_radial_grp, gen_sph%s3d_radius, ierr)
 !
       call set_subdomains_4_sph_shell                                   &
-     &    (nprocs_check, sdctl, s3d_ranks, ierr, e_message)
+     &    (nprocs_check, sdctl, gen_sph%s3d_ranks, ierr, e_message)
       if (ierr .gt. 0) return
 !
 !
 !   Set layering parameter for SGS models
       call set_control_4_SGS_shell                                      &
-     &   (sph, spctl, r_layer_grp, med_layer_grp)
+     &   (sph, spctl, gen_sph%r_layer_grp, gen_sph%med_layer_grp)
 !
 !  Check
       if    (sph%sph_params%iflag_shell_mode .eq. iflag_MESH_w_pole     &
@@ -207,15 +185,6 @@
       else if (sph%sph_rtp%nidx_global_rtp(2)                           &
      &      .lt. (sph%sph_params%l_truncation+1)) then
         write(*,*) "Grid has less than Nyquist's sampling theorem"
-      end if
-!
-      if(iflag_debug .gt. 0) then
-        write(*,*) 'icou, kr_sph_boundary, sph_bondary_name',           &
-     &             added_radial_grp%nlayer
-        do icou = 1, added_radial_grp%nlayer
-          write(*,*) icou, added_radial_grp%istart(icou),               &
-     &               trim(added_radial_grp%name(icou))
-        end do
       end if
 !
       end subroutine set_control_4_shell_grids
@@ -387,6 +356,15 @@
           ierr = ierr_mesh
           return
         end if
+      end if
+!
+      if(iflag_debug .gt. 0) then
+        write(*,*) 'icou, kr_sph_boundary, sph_bondary_name',           &
+     &             added_radial_grp%nlayer
+        do icou = 1, added_radial_grp%nlayer
+          write(*,*) icou, added_radial_grp%istart(icou),               &
+     &               trim(added_radial_grp%name(icou))
+        end do
       end if
 !
       end subroutine set_ctl_radius_4_shell

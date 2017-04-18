@@ -9,8 +9,7 @@
 !!@verbatim
 !!      subroutine const_FEM_mesh_4_sph_mhd                             &
 !!     &         (sph_params, sph_rtp, sph_rj, radial_rtp_grp,          &
-!!     &          radial_rj_grp, mesh, group, mesh_file,                &
-!!     &          s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d)
+!!     &          radial_rj_grp, mesh, group, mesh_file, gen_sph)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_rj_grid), intent(in) :: sph_rj
@@ -18,10 +17,7 @@
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::  group
 !!        type(field_IO_params), intent(inout) ::  mesh_file
-!!        type(spheric_global_rank), intent(inout) :: s3d_ranks
-!!        type(sph_local_parameters), intent(inout) :: sph_lcp
-!!        type(sph_1d_index_stack), intent(inout) :: stk_lc1d
-!!        type(sph_1d_global_index), intent(inout) :: sph_gl1d
+!!        type(construct_spherical_grid), intent(inout) :: gen_sph
 !!@endverbatim
 !
       module const_FEM_mesh_sph_mhd
@@ -35,10 +31,9 @@
       use t_mesh_data
       use t_group_data
       use t_gauss_points
-      use t_spheric_global_ranks
+      use t_const_spherical_grid
       use t_sph_local_parameter
       use t_sph_mesh_1d_connect
-      use t_sph_1d_global_index
 !
       implicit none
 !
@@ -59,8 +54,7 @@
 !
       subroutine const_FEM_mesh_4_sph_mhd                               &
      &         (sph_params, sph_rtp, sph_rj, radial_rtp_grp,            &
-     &          radial_rj_grp, mesh, group, mesh_file,                  &
-     &          s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d)
+     &          radial_rj_grp, mesh, group, mesh_file, gen_sph)
 !
       use calypso_mpi
       use set_FEM_mesh_4_sph
@@ -80,27 +74,25 @@
       type(mesh_groups), intent(inout) ::  group
       type(field_IO_params), intent(inout) ::  mesh_file
 !
-      type(spheric_global_rank), intent(inout) :: s3d_ranks
-      type(sph_local_parameters), intent(inout) :: sph_lcp
-      type(sph_1d_index_stack), intent(inout) :: stk_lc1d
-      type(sph_1d_global_index), intent(inout) :: sph_gl1d
+      type(construct_spherical_grid), intent(inout) :: gen_sph
 !
 !
       call const_gauss_colatitude(sph_rtp%nidx_global_rtp(2), gauss_SF)
 !
 !
-      call const_global_sph_FEM(sph_rtp, sph_rj, radial_rtp_grp,        &
-     &    s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d)
+      call const_global_sph_FEM                                         &
+     &   (sph_rtp, sph_rj, radial_rtp_grp, gen_sph)
       call s_const_1d_ele_connect_4_sph                                 &
      &   (sph_params%iflag_shell_mode, sph_params%m_folding, sph_rtp,   &
-     &    s3d_ranks, stk_lc1d, sph_gl1d, stbl_SF)
+     &    gen_sph%s3d_ranks, gen_sph%stk_lc1d, gen_sph%sph_gl1d,        &
+     &    stbl_SF)
 !
 !      write(*,*) 's_const_FEM_mesh_for_sph',                           &
 !     &          sph_params%iflag_shell_mode, iflag_MESH_w_center
       call s_const_FEM_mesh_for_sph                                     &
      &   (my_rank, sph_rtp%nidx_rtp, sph_rj%radius_1d_rj_r, gauss_SF,   &
-     &    s3d_ranks, stk_lc1d, sph_gl1d, sph_params, sph_rtp,           &
-     &    radial_rj_grp, mesh, group, stbl_SF)
+     &    gen_sph%s3d_ranks, gen_sph%stk_lc1d, gen_sph%sph_gl1d,        &
+     &    sph_params, sph_rtp, radial_rj_grp, mesh, group, stbl_SF)
 !
 ! Output mesh data
       if(iflag_output_mesh .gt. 0) then
@@ -120,8 +112,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_global_sph_FEM                                   &
-     &         (sph_rtp, sph_rj, radial_rtp_grp,                        &
-     &          s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d)
+     &         (sph_rtp, sph_rj, radial_rtp_grp, gen_sph)
 !
       use set_sph_1d_domain_id
 !
@@ -129,23 +120,23 @@
       type(sph_rj_grid), intent(in) :: sph_rj
       type(group_data), intent(in) :: radial_rtp_grp
 !
-      type(spheric_global_rank), intent(inout) :: s3d_ranks
-      type(sph_local_parameters), intent(inout) :: sph_lcp
-      type(sph_1d_index_stack), intent(inout) :: stk_lc1d
-      type(sph_1d_global_index), intent(inout) :: sph_gl1d
+      type(construct_spherical_grid), intent(inout) :: gen_sph
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'const_global_rtp_mesh'
       call const_global_rtp_mesh(sph_rtp, radial_rtp_grp,               &
-     &    s3d_ranks, sph_dbc_SF, sph_lcp, stk_lc1d, sph_gl1d)
+     &    gen_sph%s3d_ranks, sph_dbc_SF, gen_sph%sph_lcp,               &
+     &    gen_sph%stk_lc1d, gen_sph%sph_gl1d)
 !
-      call alloc_sph_1d_domain_id(sph_rtp, sph_rj, s3d_ranks)
+      call alloc_sph_1d_domain_id(sph_rtp, sph_rj, gen_sph%s3d_ranks)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_1d_domain_id_rtp'
-      call set_sph_1d_domain_id_rtp(stk_lc1d, sph_gl1d, s3d_ranks)
+      call set_sph_1d_domain_id_rtp                                     &
+     &   (gen_sph%stk_lc1d, gen_sph%sph_gl1d, gen_sph%s3d_ranks)
 !
       if(iflag_debug .gt. 0) then
-        write(50,*) 'idx_global_rtp_r', sph_gl1d%idx_global_rtp_r
+        write(50,*) 'idx_global_rtp_r',                                 &
+     &                     gen_sph%sph_gl1d%idx_global_rtp_r
       end if
 !
       end subroutine const_global_sph_FEM
