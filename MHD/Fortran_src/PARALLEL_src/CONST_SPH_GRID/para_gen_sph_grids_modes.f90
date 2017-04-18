@@ -195,7 +195,7 @@
       integer(kind = kint) :: ip_rank, ip
 !
 !
-      call allocate_rj_1d_local_idx(sph_rj)
+      call alloc_rj_1d_local_idx(sph_rj, sph_lcx)
       do ip = 0, (ndomain_sph-1) / nprocs
         ip_rank = my_rank + ip * nprocs
         if(ip_rank .ge. ndomain_sph) cycle
@@ -211,7 +211,7 @@
         write(*,'(a,i6,a,i6)') 'Spherical modes for domain',            &
      &          ip_rank, ' is done on process ', my_rank
       end do
-      call deallocate_rj_1d_local_idx
+      call dealloc_rj_1d_local_idx(sph_lcx)
 !
       end subroutine para_gen_sph_rj_modes
 !
@@ -241,7 +241,7 @@
       integer(kind = kint) :: ip_rank, ip
 !
 !
-      call allocate_rtp_1d_local_idx(sph_rtp)
+      call alloc_rtp_1d_local_idx(sph_rtp, sph_lcx)
       do ip = 0, (ndomain_sph-1) / nprocs
         ip_rank = my_rank + ip * nprocs
         if(ip_rank .ge. ndomain_sph) cycle
@@ -258,7 +258,7 @@
         write(*,'(a,i6,a,i6)') 'Spherical grids for domain',            &
      &          ip_rank, ' is done on process ', my_rank
       end do
-      call deallocate_rtp_1d_local_idx
+      call dealloc_rtp_1d_local_idx(sph_lcx)
 !
       end subroutine para_gen_sph_rtp_grids
 !

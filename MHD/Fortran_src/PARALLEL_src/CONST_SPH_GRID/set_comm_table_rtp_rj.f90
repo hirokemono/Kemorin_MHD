@@ -393,7 +393,7 @@
       integer(kind = kint) :: iflag_jp
 !
 !
-      call set_local_idx_table_rj(sph_rj)
+      call set_local_idx_table_rj(sph_rj, sph_lcx)
 !
       do ip1 = 1, ndomain_sph
         id_org_rank = mod((ip_rank+ip1),ndomain_sph)
@@ -418,8 +418,8 @@
           jnod = comm_rlm_lc%item_sr(j)
           k_glb = sph_rlm%idx_global_rlm(jnod,1)
           j_glb = sph_rlm%idx_global_rlm(jnod,2)
-          k_tmp = idx_local_rj_r(k_glb)
-          j_tmp = idx_local_rj_j(j_glb)
+          k_tmp = sph_lcx%idx_local_rj_r(k_glb)
+          j_tmp = sph_lcx%idx_local_rj_j(j_glb)
           comm_rj%item_sr(icou) =  j_tmp                                &
      &                           + (k_tmp-1) * sph_rj%nidx_rj(2)
         end do
@@ -500,7 +500,7 @@
       integer(kind = kint) :: ip1, jp, id_org_rank, ip_org, iflag_jp
 !
 !
-      call set_local_idx_table_rtp(sph_rtp)
+      call set_local_idx_table_rtp(sph_rtp, sph_lcx)
 !
       do ip1 = 1, ndomain_sph
         id_org_rank = mod((ip_rank+ip1),ndomain_sph)
@@ -526,9 +526,9 @@
           k_glb = sph_rtm%idx_global_rtm(jnod,1)
           l_glb = sph_rtm%idx_global_rtm(jnod,2)
           m_glb = sph_rtm%idx_global_rtm(jnod,3)
-          k_tmp = idx_local_rtp_r(k_glb)
-          l_tmp = idx_local_rtp_t(l_glb)
-          m_tmp = idx_local_rtp_p(m_glb)
+          k_tmp = sph_lcx%idx_local_rtp_r(k_glb)
+          l_tmp = sph_lcx%idx_local_rtp_t(l_glb)
+          m_tmp = sph_lcx%idx_local_rtp_p(m_glb)
           comm_rtp%item_sr(icou) =  k_tmp                               &
      &                             + (l_tmp-1) * sph_rtp%nidx_rtp(1)    &
      &                             + (m_tmp-1) * sph_rtp%nidx_rtp(1)    &

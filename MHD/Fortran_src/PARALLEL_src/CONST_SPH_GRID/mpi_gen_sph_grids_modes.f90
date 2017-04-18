@@ -172,7 +172,7 @@
       type(sph_rj_grid), intent(inout) :: sph_rj
 !
 !
-      call allocate_rj_1d_local_idx(sph_rj)
+      call alloc_rj_1d_local_idx(sph_rj, sph_lcx)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &             'Construct spherical modes for domain ', my_rank
@@ -183,7 +183,7 @@
       call sel_mpi_write_spectr_rj_file(nprocs, my_rank, sph_file_m)
       write(*,'(a,i6,a)') 'Spherical modes for domain',                 &
      &          my_rank, ' is done.'
-      call deallocate_rj_1d_local_idx
+      call dealloc_rj_1d_local_idx(sph_lcx)
 !
       end subroutine mpi_gen_sph_rj_modes
 !
@@ -210,7 +210,7 @@
       type(sph_rtm_grid), intent(inout) :: sph_rtm
 !
 !
-      call allocate_rtp_1d_local_idx(sph_rtp)
+      call alloc_rtp_1d_local_idx(sph_rtp, sph_lcx)
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &             'Construct spherical grids for domain ',  my_rank
       call const_sph_rtp_grids(my_rank, nprocs, comm_rtm_mul,           &
@@ -221,7 +221,7 @@
       call sel_mpi_write_geom_rtp_file(nprocs, my_rank, sph_file_m)
       write(*,'(a,i6,a)') 'Spherical grids for domain',                 &
      &          my_rank, ' is done.'
-      call deallocate_rtp_1d_local_idx
+      call dealloc_rtp_1d_local_idx(sph_lcx)
 !
       end subroutine mpi_gen_sph_rtp_grids
 !
