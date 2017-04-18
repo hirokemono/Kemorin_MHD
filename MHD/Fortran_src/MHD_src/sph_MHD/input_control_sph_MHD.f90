@@ -303,6 +303,7 @@
 !
       use m_error_IDs
       use m_spheric_global_ranks
+      use m_sph_global_parameter
       use m_sph_1d_global_index
       use m_sph_mesh_1d_connect
       use parallel_load_data_4_sph
@@ -338,14 +339,16 @@
         if (my_rank.eq.0) write(*,*) 'Make spherical harmonics table'
         call para_gen_sph_grids                                         &
      &     (added_radial_grp, r_layer_grp, med_layer_grp, stbl,         &
-     &      sph_gen, stk_lc1d, sph_gl1d, s2d_tbl)
-!        call deallocate_gen_mesh_params(stk_lc1d, sph_gl1d)
+     &      sph_gen, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d, s2d_tbl)
+        call deallocate_gen_mesh_params                                 &
+     &     (sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
       end if
       call calypso_mpi_barrier
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_SPH_and_FEM_mesh'
       call load_para_SPH_and_FEM_mesh(sph, comms_sph, sph_grps,         &
-     &    mesh, group, ele_mesh, mesh_file, stk_lc1d, sph_gl1d, stbl)
+     &    mesh, group, ele_mesh, mesh_file,                             &
+     &    sph_dbc, sph_lcp, stk_lc1d, sph_gl1d, stbl)
 !
       call deallocate_gen_mesh_data                                     &
      &   (added_radial_grp, r_layer_grp, med_layer_grp,                 &

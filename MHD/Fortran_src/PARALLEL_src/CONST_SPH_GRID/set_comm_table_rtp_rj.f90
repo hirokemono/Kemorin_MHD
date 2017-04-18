@@ -10,8 +10,9 @@
 !!@verbatim
 !!      subroutine const_sph_rj_modes                                   &
 !!     &         (ip_rank, ndomain_sph, comm_rlm_mul,                   &
-!!     &          added_radial_grp, stk_lc1d, sph_gl1d, stbl,           &
+!!     &          added_radial_grp, sph_lcp, stk_lc1d, sph_gl1d, stbl,  &
 !!     &          sph_params, sph_rj, sph_rlm, sph_file, sph_lcx)
+!!        type(sph_local_parameters), intent(in) :: sph_lcp
 !!        type(sph_1d_index_stack), intent(in) :: stk_lc1d
 !!        type(sph_1d_global_index), intent(in) :: sph_gl1d
 !!        type(comm_table_make_sph), intent(in) :: stbl
@@ -24,14 +25,14 @@
 !!      subroutine const_sph_rtp_grids                                  &
 !!     &         (ip_rank, ndomain_sph, comm_rtm_mul,                   &
 !!     &          added_radial_grp, r_layer_grp, med_layer_grp,         &
-!!     &          stk_lc1d, sph_gl1d, stbl,                             &
+!!     &          sph_lcp, stk_lc1d, sph_gl1d, stbl,                    &
 !!     &          sph_params, sph_rtp, sph_rtm, sph_file, sph_lcx)
+!!        type(sph_local_parameters), intent(in) :: sph_lcp
 !!        type(sph_1d_index_stack), intent(in) :: stk_lc1d
 !!        type(sph_1d_global_index), intent(in) :: sph_gl1d
 !!        type(comm_table_make_sph), intent(in) :: stbl
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_comm_tbl), intent(in) :: comm_rtm_mul(ndomain_sph)
-!!        type(comm_table_make_sph), intent(in) :: stbl
 !!        type(sph_rtp_grid), intent(inout) :: sph_rtp
 !!        type(sph_rtm_grid), intent(inout) :: sph_rtm
 !!        type(sph_file_data_type), intent(inout) :: sph_file
@@ -48,6 +49,7 @@
       use t_sph_trans_comm_tbl
       use t_group_data
       use t_spheric_data_IO
+      use t_sph_local_parameter
       use t_sph_1d_global_index
       use t_sph_mesh_1d_connect
       use t_control_1D_layering
@@ -100,7 +102,7 @@
 !
       subroutine const_sph_rj_modes                                     &
      &         (ip_rank, ndomain_sph, comm_rlm_mul,                     &
-     &          added_radial_grp, stk_lc1d, sph_gl1d, stbl,             &
+     &          added_radial_grp, sph_lcp, stk_lc1d, sph_gl1d, stbl,    &
      &          sph_params, sph_rj, sph_rlm, sph_file, sph_lcx)
 !
       use load_data_for_sph_IO
@@ -114,6 +116,7 @@
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_comm_tbl), intent(in) :: comm_rlm_mul(ndomain_sph)
       type(layering_group_list), intent(in) :: added_radial_grp
+      type(sph_local_parameters), intent(in) :: sph_lcp
       type(sph_1d_index_stack), intent(in) :: stk_lc1d
       type(sph_1d_global_index), intent(in) :: sph_gl1d
       type(comm_table_make_sph), intent(in) :: stbl
@@ -128,7 +131,8 @@
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                'copy_gl_2_local_rj_param', ip_rank
-      call copy_gl_2_local_rj_param(ip_rank, stk_lc1d, sph_rj)
+      call copy_gl_2_local_rj_param                                     &
+     &   (ip_rank, sph_lcp, stk_lc1d, sph_rj)
 !
       call add_center_mode_rj(ip_rank, sph_gl1d, sph_rj)
 !      nnod_rj = sph_rj%nnod_rj
@@ -151,7 +155,7 @@
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                 'const_comm_table_4_rj', ip_rank
       call const_comm_table_4_rj(ip_rank, ndomain_sph,                  &
-     &   comm_rlm_mul, stk_lc1d, sph_gl1d, stbl,                        &
+     &   comm_rlm_mul, sph_lcp, stk_lc1d, sph_gl1d, stbl,               &
      &   sph_rj, sph_rlm, comm_rj_lc, sph_lcx)
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
@@ -171,7 +175,7 @@
       subroutine const_sph_rtp_grids                                    &
      &         (ip_rank, ndomain_sph, comm_rtm_mul,                     &
      &          added_radial_grp, r_layer_grp, med_layer_grp,           &
-     &          stk_lc1d, sph_gl1d, stbl,                               &
+     &          sph_lcp, stk_lc1d, sph_gl1d, stbl,                      &
      &          sph_params, sph_rtp, sph_rtm, sph_file, sph_lcx)
 !
       use load_data_for_sph_IO
@@ -188,6 +192,7 @@
       type(layering_group_list), intent(in) :: added_radial_grp
       type(layering_group_list), intent(in) :: r_layer_grp
       type(layering_group_list), intent(in) :: med_layer_grp
+      type(sph_local_parameters), intent(in) :: sph_lcp
       type(sph_1d_index_stack), intent(in) :: stk_lc1d
       type(sph_1d_global_index), intent(in) :: sph_gl1d
       type(comm_table_make_sph), intent(in) :: stbl
@@ -202,7 +207,8 @@
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                'copy_gl_2_local_rtp_param', ip_rank
-      call copy_gl_2_local_rtp_param(ip_rank, stk_lc1d, sph_rtp)
+      call copy_gl_2_local_rtp_param                                    &
+     &   (ip_rank, sph_lcp, stk_lc1d, sph_rtp)
 !
       call alloc_type_spheric_param_rtp(sph_rtp)
       call alloc_type_sph_1d_index_rtp(sph_rtp)
@@ -222,7 +228,7 @@
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                 'const_comm_table_4_rtp', ip_rank
       call const_comm_table_4_rtp(ip_rank, ndomain_sph,                 &
-     &   comm_rtm_mul, stk_lc1d, sph_gl1d, stbl,                        &
+     &   comm_rtm_mul, sph_lcp, stk_lc1d, sph_gl1d, stbl,               &
      &   sph_rtp, sph_rtm, comm_rtp_lc, sph_lcx)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_sph_rtp_groups', ip_rank
@@ -242,12 +248,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_comm_table_4_rj(ip_rank, ndomain_sph,            &
-     &          comm_rlm_mul, stk_lc1d, sph_gl1d, stbl,                 &
+     &          comm_rlm_mul, sph_lcp, stk_lc1d, sph_gl1d, stbl,        &
      &          sph_rj, sph_rlm, comm_rj, sph_lcx)
 !
       integer(kind = kint), intent(in) :: ip_rank
       integer(kind = kint), intent(in) :: ndomain_sph
       type(sph_comm_tbl), intent(in) :: comm_rlm_mul(ndomain_sph)
+      type(sph_local_parameters), intent(in) :: sph_lcp
       type(sph_1d_index_stack), intent(in) :: stk_lc1d
       type(sph_1d_global_index), intent(in) :: sph_gl1d
       type(comm_table_make_sph), intent(in) :: stbl
@@ -277,7 +284,7 @@
 !
       icou = 0
       call set_comm_table_4_rj(ip_rank, ndomain_sph,                    &
-     &    comm_rlm_mul, stk_lc1d, sph_gl1d, stbl,                       &
+     &    comm_rlm_mul, sph_lcp, stk_lc1d, sph_gl1d, stbl,              &
      &    sph_rj, sph_rlm, comm_rj, sph_lcx, icou)
 !
       end subroutine const_comm_table_4_rj
@@ -285,13 +292,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_comm_table_4_rtp(ip_rank, ndomain_sph,           &
-     &          comm_rtm_mul, stk_lc1d, sph_gl1d, stbl,                 &
+     &          comm_rtm_mul, sph_lcp, stk_lc1d, sph_gl1d, stbl,        &
      &          sph_rtp, sph_rtm, comm_rtp, sph_lcx)
 !
       integer(kind = kint), intent(in) :: ip_rank
       integer(kind = kint), intent(in) :: ndomain_sph
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in) :: comm_rtm_mul(ndomain_sph)
+      type(sph_local_parameters), intent(in) :: sph_lcp
       type(sph_1d_index_stack), intent(in) :: stk_lc1d
       type(sph_1d_global_index), intent(in) :: sph_gl1d
       type(comm_table_make_sph), intent(in) :: stbl
@@ -323,7 +331,7 @@
 !
       icou = 0
       call set_comm_table_4_rtp(ip_rank, ndomain_sph,                   &
-     &    comm_rtm_mul, stk_lc1d, sph_gl1d, stbl,                       &
+     &    comm_rtm_mul, sph_lcp, stk_lc1d, sph_gl1d, stbl,              &
      &    sph_rtp, sph_rtm, comm_rtp, sph_lcx, icou)
 !
       end subroutine const_comm_table_4_rtp
@@ -370,8 +378,8 @@
 !
       subroutine set_comm_table_4_rj                                    &
      &         (ip_rank, ndomain_sph, comm_rlm_mul,                     &
-     &          stk_lc1d, sph_gl1d, stbl, sph_rj, sph_rlm, comm_rj,     &
-     &          sph_lcx, icou)
+     &          sph_lcp, stk_lc1d, sph_gl1d, stbl,                      &
+     &          sph_rj, sph_rlm, comm_rj, sph_lcx, icou)
 !
       use t_spheric_rlm_data
 !
@@ -381,6 +389,7 @@
       integer(kind = kint), intent(in) :: ndomain_sph
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_comm_tbl), intent(in) :: comm_rlm_mul(ndomain_sph)
+      type(sph_local_parameters), intent(in) :: sph_lcp
       type(sph_1d_index_stack), intent(in) :: stk_lc1d
       type(sph_1d_global_index), intent(in) :: sph_gl1d
       type(comm_table_make_sph), intent(in) :: stbl
@@ -414,7 +423,8 @@
         end do
         if(iflag_jp .eq. 0) cycle
 !
-        call const_sph_rlm_modes(id_org_rank, stk_lc1d, sph_gl1d, stbl, &
+        call const_sph_rlm_modes                                        &
+     &     (id_org_rank, sph_lcp, stk_lc1d, sph_gl1d, stbl,             &
      &      sph_rlm, comm_rlm_lc)
 !
         jst = comm_rlm_lc%istack_sr(iflag_jp-1)+1
@@ -481,8 +491,8 @@
 !
       subroutine set_comm_table_4_rtp                                   &
      &         (ip_rank, ndomain_sph, comm_rtm_mul,                     &
-     &          stk_lc1d, sph_gl1d, stbl, sph_rtp, sph_rtm, comm_rtp,   &
-     &          sph_lcx, icou)
+     &          sph_lcp, stk_lc1d, sph_gl1d, stbl,                      &
+     &          sph_rtp, sph_rtm, comm_rtp, sph_lcx, icou)
 !
       use gen_sph_grids_modes
 !
@@ -490,6 +500,7 @@
       integer(kind = kint), intent(in) :: ndomain_sph
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_comm_tbl), intent(in) :: comm_rtm_mul(ndomain_sph)
+      type(sph_local_parameters), intent(in) :: sph_lcp
       type(sph_1d_index_stack), intent(in) :: stk_lc1d
       type(sph_1d_global_index), intent(in) :: sph_gl1d
       type(comm_table_make_sph), intent(in) :: stbl
@@ -521,7 +532,8 @@
         end do
         if(iflag_jp .eq. 0) cycle
 !
-        call const_sph_rtm_grids(id_org_rank, stk_lc1d, sph_gl1d, stbl, &
+        call const_sph_rtm_grids                                        &
+     &     (id_org_rank, sph_lcp, stk_lc1d, sph_gl1d, stbl,             &
      &      sph_rtm, comm_rtm_lc)
 !
         jst = comm_rtm_lc%istack_sr(iflag_jp-1)+1

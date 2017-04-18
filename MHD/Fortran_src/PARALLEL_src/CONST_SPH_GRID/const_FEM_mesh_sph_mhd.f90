@@ -10,7 +10,7 @@
 !!      subroutine const_FEM_mesh_4_sph_mhd                             &
 !!     &         (sph_params, sph_rtp, sph_rj, radial_rtp_grp,          &
 !!     &          radial_rj_grp, mesh, group, mesh_file,                &
-!!     &          stbl, stk_lc1d, sph_gl1d)
+!!     &          sph_dbc, sph_lcp, stk_lc1d, sph_gl1d, stbl)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_rj_grid), intent(in) :: sph_rj
@@ -34,12 +34,16 @@
       use t_mesh_data
       use t_group_data
       use t_gauss_points
+      use t_sph_local_parameter
       use t_sph_mesh_1d_connect
       use t_sph_1d_global_index
 !
       implicit none
 !
-      type(gauss_points), private :: gauss_s
+      type(gauss_points), save :: gauss_SF
+      type(sph_local_1d_param), save :: sph_lc1_SF
+!
+      private :: gauss_SF, sph_lc1_SF
 !
       private :: const_global_sph_FEM, const_global_rtp_mesh
 !
@@ -52,7 +56,7 @@
       subroutine const_FEM_mesh_4_sph_mhd                               &
      &         (sph_params, sph_rtp, sph_rj, radial_rtp_grp,            &
      &          radial_rj_grp, mesh, group, mesh_file,                  &
-     &          stbl, stk_lc1d, sph_gl1d)
+     &          sph_dbc, sph_lcp, stk_lc1d, sph_gl1d, stbl)
 !
       use calypso_mpi
       use m_spheric_global_ranks
@@ -73,16 +77,18 @@
       type(mesh_groups), intent(inout) ::  group
       type(field_IO_params), intent(inout) ::  mesh_file
 !
-      type(comm_table_make_sph), intent(inout) :: stbl
+      type(sph_local_default_BC), intent(inout) :: sph_dbc
+      type(sph_local_parameters), intent(inout) :: sph_lcp
       type(sph_1d_index_stack), intent(inout) :: stk_lc1d
       type(sph_1d_global_index), intent(inout) :: sph_gl1d
+      type(comm_table_make_sph), intent(inout) :: stbl
 !
 !
-      call const_gauss_colatitude(sph_rtp%nidx_global_rtp(2), gauss_s)
+      call const_gauss_colatitude(sph_rtp%nidx_global_rtp(2), gauss_SF)
 !
 !
-      call const_global_sph_FEM                                         &
-     &   (sph_rtp, sph_rj, radial_rtp_grp, stk_lc1d, sph_gl1d)
+      call const_global_sph_FEM(sph_rtp, sph_rj, radial_rtp_grp,        &
+     &    sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
       call s_const_1d_ele_connect_4_sph                                 &
      &   (sph_params%iflag_shell_mode, sph_params%m_folding, sph_rtp,   &
      &    stk_lc1d, sph_gl1d, stbl)
@@ -90,7 +96,7 @@
 !      write(*,*) 's_const_FEM_mesh_for_sph',                           &
 !     &          sph_params%iflag_shell_mode, iflag_MESH_w_center
       call s_const_FEM_mesh_for_sph                                     &
-     &   (my_rank, sph_rtp%nidx_rtp, sph_rj%radius_1d_rj_r, gauss_s,    &
+     &   (my_rank, sph_rtp%nidx_rtp, sph_rj%radius_1d_rj_r, gauss_SF,   &
      &    stk_lc1d, sph_gl1d, sph_params, sph_rtp, radial_rj_grp,       &
      &    mesh, group, stbl)
 !
@@ -103,7 +109,7 @@
       end if
 !
       call dealloc_nnod_nele_sph_mesh(stbl)
-      call dealloc_gauss_colatitude(gauss_s)
+      call dealloc_gauss_colatitude(gauss_SF)
 !
       end subroutine const_FEM_mesh_4_sph_mhd
 !
@@ -111,23 +117,25 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_global_sph_FEM                                   &
-     &         (sph_rtp, sph_rj, radial_rtp_grp, stk_lc1d, sph_gl1d)
+     &         (sph_rtp, sph_rj, radial_rtp_grp,                        &
+     &          sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
 !
       use m_spheric_global_ranks
-      use m_sph_global_parameter
       use set_sph_1d_domain_id
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_rj_grid), intent(in) :: sph_rj
       type(group_data), intent(in) :: radial_rtp_grp
 !
+      type(sph_local_default_BC), intent(inout) :: sph_dbc
+      type(sph_local_parameters), intent(inout) :: sph_lcp
       type(sph_1d_index_stack), intent(inout) :: stk_lc1d
       type(sph_1d_global_index), intent(inout) :: sph_gl1d
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'const_global_rtp_mesh'
-      call const_global_rtp_mesh                                        &
-     &   (sph_rtp, radial_rtp_grp, stk_lc1d, sph_gl1d)
+      call const_global_rtp_mesh(sph_rtp, radial_rtp_grp,               &
+     &    sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
 !
       call alloc_sph_1d_domain_id(sph_rtp, sph_rj, s3d_ranks)
 !
@@ -143,18 +151,19 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine const_global_rtp_mesh                                  &
-     &         (sph_rtp, radial_rtp_grp, stk_lc1d, sph_gl1d)
+      subroutine const_global_rtp_mesh(sph_rtp, radial_rtp_grp,         &
+     &          sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
 !
       use calypso_mpi
       use m_spheric_global_ranks
-      use m_sph_global_parameter
       use const_global_sph_grids_modes
       use set_global_spherical_param
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(group_data), intent(in) :: radial_rtp_grp
 !
+      type(sph_local_default_BC), intent(inout) :: sph_dbc
+      type(sph_local_parameters), intent(inout) :: sph_lcp
       type(sph_1d_index_stack), intent(inout) :: stk_lc1d
       type(sph_1d_global_index), intent(inout) :: sph_gl1d
 !
@@ -189,36 +198,36 @@
         inc_t = 1
       end if
 !
-      call alloc_nidx_local(s3d_ranks, sph_lc1)
+      call alloc_nidx_local(s3d_ranks, sph_lc1_SF)
       call alloc_sph_1d_global_stack(s3d_ranks, stk_lc1d)
 !
       ip = sph_rtp%irank_sph_rtp(1) + 1
-      sph_lc1%nidx_local_rtp_r(ip)= sph_rtp%nidx_rtp(1)
+      sph_lc1_SF%nidx_local_rtp_r(ip)= sph_rtp%nidx_rtp(1)
       stk_lc1d%istack_idx_local_rtp_r(ip-1) = sph_rtp%ist_rtp(1) - 1
       stk_lc1d%istack_idx_local_rtp_r(ip) =   sph_rtp%ied_rtp(1)
       do ip = 1, s3d_ranks%ndomain_rtp(1)
         ip_rank = (ip-1) * inc_r
-        call MPI_Bcast(sph_lc1%nidx_local_rtp_r(ip), ione,              &
+        call MPI_Bcast(sph_lc1_SF%nidx_local_rtp_r(ip), ione,           &
      &      CALYPSO_INTEGER, ip_rank, CALYPSO_COMM, ierr_MPI)
         call MPI_Bcast(stk_lc1d%istack_idx_local_rtp_r(ip-1), itwo,     &
      &      CALYPSO_INTEGER, ip_rank, CALYPSO_COMM, ierr_MPI)
       end do
 !
       ip = sph_rtp%irank_sph_rtp(2) + 1
-      sph_lc1%nidx_local_rtp_t(ip)= sph_rtp%nidx_rtp(2)
+      sph_lc1_SF%nidx_local_rtp_t(ip)= sph_rtp%nidx_rtp(2)
       stk_lc1d%istack_idx_local_rtp_t(ip-1) = sph_rtp%ist_rtp(2) - 1
       stk_lc1d%istack_idx_local_rtp_t(ip) =   sph_rtp%ied_rtp(2)
 !
       do ip = 1, s3d_ranks%ndomain_rtp(2)
         ip_rank = (ip-1) * inc_t
-        call MPI_Bcast(sph_lc1%nidx_local_rtp_t(ip), ione,              &
+        call MPI_Bcast(sph_lc1_SF%nidx_local_rtp_t(ip), ione,           &
      &      CALYPSO_INTEGER, ip_rank, CALYPSO_COMM, ierr_MPI)
         call MPI_Bcast(stk_lc1d%istack_idx_local_rtp_t(ip-1), itwo,     &
      &      CALYPSO_INTEGER, ip_rank, CALYPSO_COMM, ierr_MPI)
       end do
 !
       ip = sph_rtp%irank_sph_rtp(3) + 1
-      sph_lc1%nidx_local_rtp_p(ip)= sph_rtp%nidx_rtp(3)
+      sph_lc1_SF%nidx_local_rtp_p(ip)= sph_rtp%nidx_rtp(3)
       stk_lc1d%istack_idx_local_rtp_p(ip-1) = sph_rtp%ist_rtp(3) - 1
       stk_lc1d%istack_idx_local_rtp_p(ip) =   sph_rtp%ied_rtp(3)
 !
@@ -287,8 +296,8 @@
       call set_gl_nnod_spherical(s3d_ranks%ndomain_sph,                 &
      &    s3d_ranks%ndomain_rtp(1), s3d_ranks%ndomain_rtp(2),           &
      &    s3d_ranks%ndomain_rtp(3), s3d_ranks%iglobal_rank_rtp,         &
-     &    sph_lc1%nidx_local_rtp_r, sph_lc1%nidx_local_rtp_t,           &
-     &    sph_lc1%nidx_local_rtp_p, sph_lcp%nidx_local_rtp,             &
+     &    sph_lc1_SF%nidx_local_rtp_r, sph_lc1_SF%nidx_local_rtp_t,     &
+     &    sph_lc1_SF%nidx_local_rtp_p, sph_lcp%nidx_local_rtp,          &
      &    sph_lcp%nnod_local_rtp)
 !
       call alloc_sph_1d_global_idx(s3d_ranks, stk_lc1d, sph_gl1d)
@@ -301,7 +310,7 @@
         ip_rank = (ip-1) * inc_r
         ist = stk_lc1d%istack_idx_local_rtp_r(ip-1) + 1
         call MPI_Bcast(sph_gl1d%idx_global_rtp_r(ist),                  &
-     &      sph_lc1%nidx_local_rtp_r(ip), CALYPSO_INTEGER,              &
+     &      sph_lc1_SF%nidx_local_rtp_r(ip), CALYPSO_INTEGER,           &
      &      ip_rank, CALYPSO_COMM, ierr_MPI)
       end do
 !
@@ -313,7 +322,7 @@
         ip_rank = (ip-1) * inc_t
         ist = stk_lc1d%istack_idx_local_rtp_t(ip-1) + 1
         call MPI_Bcast(sph_gl1d%idx_global_rtp_t(ist),                  &
-     &      sph_lc1%nidx_local_rtp_t(ip), CALYPSO_INTEGER, ip_rank,     &
+     &      sph_lc1_SF%nidx_local_rtp_t(ip), CALYPSO_INTEGER, ip_rank,  &
      &      CALYPSO_COMM, ierr_MPI)
       end do
 !
@@ -324,7 +333,7 @@
      &        = sph_rtp%idx_gl_1d_rtp_p(inod,2)
       end do
 !
-      call dealloc_nidx_local(sph_lc1)
+      call dealloc_nidx_local(sph_lc1_SF)
 !
       end subroutine const_global_rtp_mesh
 !
