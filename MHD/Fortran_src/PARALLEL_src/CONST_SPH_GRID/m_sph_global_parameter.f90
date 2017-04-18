@@ -22,16 +22,6 @@
       type(sph_local_default_BC), save :: sph_dbc
 !
 !
-      integer(kind = kint), allocatable :: nnod_local_rtp(:)
-      integer(kind = kint), allocatable :: nnod_local_rtm(:)
-      integer(kind = kint), allocatable :: nnod_local_rlm(:)
-      integer(kind = kint), allocatable :: nnod_local_rj(:)
-!
-      integer(kind = kint), allocatable :: nidx_local_rtp(:,:)
-      integer(kind = kint), allocatable :: nidx_local_rtm(:,:)
-      integer(kind = kint), allocatable :: nidx_local_rlm(:,:)
-      integer(kind = kint), allocatable :: nidx_local_rj(:,:)
-!
 !
       integer(kind = kint), allocatable :: nidx_local_rtp_IC(:)
       integer(kind = kint), allocatable :: nidx_local_rtm_IC(:)
@@ -50,35 +40,6 @@
 ! -----------------------------------------------------------------------
 !
       contains
-!
-! -----------------------------------------------------------------------
-!
-      subroutine allocate_sph_gl_parameter
-!
-      use m_spheric_global_ranks
-!
-!
-      allocate(nnod_local_rtp(s3d_ranks%ndomain_sph))
-      allocate(nnod_local_rtm(s3d_ranks%ndomain_sph))
-      allocate(nnod_local_rlm(s3d_ranks%ndomain_sph))
-      allocate(nnod_local_rj(s3d_ranks%ndomain_sph))
-!
-      allocate(nidx_local_rtp(s3d_ranks%ndomain_sph,3))
-      allocate(nidx_local_rtm(s3d_ranks%ndomain_sph,3))
-      allocate(nidx_local_rlm(s3d_ranks%ndomain_sph,2))
-      allocate(nidx_local_rj(s3d_ranks%ndomain_sph,2))
-!
-      nnod_local_rtp = 0
-      nnod_local_rtm = 0
-      nnod_local_rlm = 0
-      nnod_local_rj =  0
-!
-      nidx_local_rtp = 0
-      nidx_local_rtm = 0
-      nidx_local_rlm = 0
-      nidx_local_rj =  0
-!
-      end subroutine allocate_sph_gl_parameter
 !
 ! -----------------------------------------------------------------------
 !
@@ -122,19 +83,6 @@
       end subroutine allocate_sph_gl_bc_param
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_sph_gl_parameter
-!
-!
-      deallocate(nnod_local_rtp, nnod_local_rtm)
-      deallocate(nnod_local_rlm, nnod_local_rj)
-!
-      deallocate(nidx_local_rtp, nidx_local_rtm)
-      deallocate(nidx_local_rlm, nidx_local_rj)
-!
-      end subroutine deallocate_sph_gl_parameter
-!
 ! -----------------------------------------------------------------------
 !
       subroutine deallocate_sph_gl_bc_param

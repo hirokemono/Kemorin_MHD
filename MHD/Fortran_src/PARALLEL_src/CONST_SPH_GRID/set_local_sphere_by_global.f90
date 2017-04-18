@@ -51,9 +51,9 @@
 !
       sph_rj%irank_sph_rj(1:2) = s3d_ranks%iglobal_rank_rj(1:2,ip_rank)
 !
-      sph_rj%nnod_rj =  nnod_local_rj(ip_rank+1)
+      sph_rj%nnod_rj =  sph_lcp%nnod_local_rj(ip_rank+1)
 !
-      sph_rj%nidx_rj(1:2) =  nidx_local_rj(ip_rank+1,1:2)
+      sph_rj%nidx_rj(1:2) =  sph_lcp%nidx_local_rj(ip_rank+1,1:2)
 !
       i1 = sph_rj%irank_sph_rj(1) + 1
       i2 = sph_rj%irank_sph_rj(2) + 1
@@ -81,9 +81,9 @@
       sph_rlm%irank_sph_rlm(1:2)                                        &
      &              = s3d_ranks%iglobal_rank_rlm(1:2,ip_rank)
 !
-      sph_rlm%nnod_rlm = nnod_local_rlm(ip_rank+1)
+      sph_rlm%nnod_rlm = sph_lcp%nnod_local_rlm(ip_rank+1)
 !
-      sph_rlm%nidx_rlm(1:2) = nidx_local_rlm(ip_rank+1,1:2)
+      sph_rlm%nidx_rlm(1:2) = sph_lcp%nidx_local_rlm(ip_rank+1,1:2)
 !
       i1 = sph_rlm%irank_sph_rlm(1) + 1
       i2 = sph_rlm%irank_sph_rlm(2) + 1
@@ -111,9 +111,9 @@
       sph_rtm%irank_sph_rtm(1:3)                                        &
      &                 = s3d_ranks%iglobal_rank_rtm(1:3,ip_rank)
 !
-      sph_rtm%nnod_rtm = nnod_local_rtm(ip_rank+1)
+      sph_rtm%nnod_rtm = sph_lcp%nnod_local_rtm(ip_rank+1)
 !
-      sph_rtm%nidx_rtm(1:3) = nidx_local_rtm(ip_rank+1,1:3)
+      sph_rtm%nidx_rtm(1:3) = sph_lcp%nidx_local_rtm(ip_rank+1,1:3)
 !
       i1 = sph_rtm%irank_sph_rtm(1) + 1
       i2 = sph_rtm%irank_sph_rtm(2) + 1
@@ -144,9 +144,9 @@
       sph_rtp%irank_sph_rtp(1:3)                                        &
      &      = s3d_ranks%iglobal_rank_rtp(1:3,ip_rank)
 !
-      sph_rtp%nnod_rtp = nnod_local_rtp(ip_rank+1)
+      sph_rtp%nnod_rtp = sph_lcp%nnod_local_rtp(ip_rank+1)
 !
-      sph_rtp%nidx_rtp(1:3) = nidx_local_rtp(ip_rank+1,1:3)
+      sph_rtp%nidx_rtp(1:3) = sph_lcp%nidx_local_rtp(ip_rank+1,1:3)
 !
       i1 = sph_rtp%irank_sph_rtp(1) + 1
       i2 = sph_rtp%irank_sph_rtp(2) + 1

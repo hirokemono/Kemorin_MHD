@@ -40,25 +40,6 @@
 !
       implicit none
 !
-!      integer(kind = kint), allocatable :: nidx_local_rtp_r(:)
-!      integer(kind = kint), allocatable :: nidx_local_rtp_t(:)
-!      integer(kind = kint), allocatable :: nidx_local_rtp_p(:)
-!
-!      integer(kind = kint), allocatable :: nidx_local_rtm_r(:)
-!      integer(kind = kint), allocatable :: nidx_local_rtm_t(:)
-!      integer(kind = kint), allocatable :: nidx_local_rtm_m(:)
-!
-!      integer(kind = kint), allocatable :: nidx_local_rlm_r(:)
-!      integer(kind = kint), allocatable :: nidx_local_rlm_j(:)
-!
-!      integer(kind = kint), allocatable :: nidx_local_rj_r(:)
-!      integer(kind = kint), allocatable :: nidx_local_rj_j(:)
-!
-!      private :: nidx_local_rtp_r, nidx_local_rtp_t, nidx_local_rtp_p
-!      private :: nidx_local_rtm_r, nidx_local_rtm_t, nidx_local_rtm_m
-!      private :: nidx_local_rlm_r, nidx_local_rlm_j
-!      private :: nidx_local_rj_r, nidx_local_rj_j
-!
       private :: const_global_rtp_grids, const_global_rtm_grids
       private :: const_global_rj_modes_by_rlm, const_global_rlm_modes
 !
@@ -90,7 +71,7 @@
 !
 !
       call alloc_sph_1d_global_stack(stk_lc1d)
-      call allocate_sph_gl_parameter
+      call alloc_sph_gl_parameter(sph_lcp)
       call allocate_sph_gl_bc_param
       call alloc_sph_ranks(s3d_ranks)
       call alloc_nidx_local(sph_lc1)
@@ -168,7 +149,7 @@
 !
 !
       call alloc_sph_1d_global_stack(stk_lc1d)
-      call allocate_sph_gl_parameter
+      call alloc_sph_gl_parameter(sph_lcp)
       call allocate_sph_gl_bc_param
       call alloc_sph_ranks(s3d_ranks)
       call alloc_nidx_local(sph_lc1)
@@ -266,7 +247,8 @@
      &    s3d_ranks%ndomain_rtp(1), s3d_ranks%ndomain_rtp(2),           &
      &    s3d_ranks%ndomain_rtp(3), s3d_ranks%iglobal_rank_rtp,         &
      &    sph_lc1%nidx_local_rtp_r, sph_lc1%nidx_local_rtp_t,           &
-     &    sph_lc1%nidx_local_rtp_p, nidx_local_rtp, nnod_local_rtp)
+     &    sph_lc1%nidx_local_rtp_p, sph_lcp%nidx_local_rtp,             &
+     &    sph_lcp%nnod_local_rtp)
 !
       end subroutine const_global_rtp_grids
 !
@@ -325,7 +307,8 @@
      &    s3d_ranks%ndomain_rtm(1), s3d_ranks%ndomain_rtm(2),           &
      &    s3d_ranks%ndomain_rtm(3), s3d_ranks%iglobal_rank_rtm,         &
      &    sph_lc1%nidx_local_rtm_r, sph_lc1%nidx_local_rtm_t,           &
-     &    sph_lc1%nidx_local_rtm_m, nidx_local_rtm, nnod_local_rtm)
+     &    sph_lc1%nidx_local_rtm_m, sph_lcp%nidx_local_rtm,             &
+     &    sph_lcp%nnod_local_rtm)
 !
 !      call check_sph_gl_bc_param(izero, sph_lc1)
 !
@@ -363,7 +346,8 @@
       call set_gl_nnod_spheric_rj(s3d_ranks%ndomain_sph,                &
      &    s3d_ranks%ndomain_rj(1), s3d_ranks%ndomain_rj(2),             &
      &    s3d_ranks%iglobal_rank_rj, sph_lc1%nidx_local_rj_r,           &
-     &    sph_lc1%nidx_local_rj_j, nidx_local_rj, nnod_local_rj)
+     &    sph_lc1%nidx_local_rj_j, sph_lcp%nidx_local_rj,               &
+     &    sph_lcp%nnod_local_rj)
 !
       end subroutine const_global_rj_modes_by_rlm
 !
@@ -417,7 +401,8 @@
       call set_gl_nnod_spheric_rj(s3d_ranks%ndomain_sph,                &
      &    s3d_ranks%ndomain_rlm(1), s3d_ranks%ndomain_rlm(2),           &
      &    s3d_ranks%iglobal_rank_rlm, sph_lc1%nidx_local_rlm_r,         &
-     &    sph_lc1%nidx_local_rlm_j, nidx_local_rlm, nnod_local_rlm)
+     &    sph_lc1%nidx_local_rlm_j, sph_lcp%nidx_local_rlm,             &
+     &    sph_lcp%nnod_local_rlm)
 !
       end subroutine const_global_rlm_modes
 !

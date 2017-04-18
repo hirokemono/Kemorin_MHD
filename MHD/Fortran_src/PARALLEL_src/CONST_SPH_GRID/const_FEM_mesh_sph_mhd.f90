@@ -168,7 +168,7 @@
 !
       s3d_ranks%ndomain_sph = nprocs
       call alloc_sph_ranks(s3d_ranks)
-      call allocate_sph_gl_parameter
+      call alloc_sph_gl_parameter(sph_lcp)
 !
       s3d_ranks%iglobal_rank_rtp(1:3,my_rank)                           &
      &           = sph_rtp%irank_sph_rtp(1:3)
@@ -284,7 +284,8 @@
      &    s3d_ranks%ndomain_rtp(1), s3d_ranks%ndomain_rtp(2),           &
      &    s3d_ranks%ndomain_rtp(3), s3d_ranks%iglobal_rank_rtp,         &
      &    sph_lc1%nidx_local_rtp_r, sph_lc1%nidx_local_rtp_t,           &
-     &    sph_lc1%nidx_local_rtp_p, nidx_local_rtp, nnod_local_rtp)
+     &    sph_lc1%nidx_local_rtp_p, sph_lcp%nidx_local_rtp,             &
+     &    sph_lcp%nnod_local_rtp)
 !
       call alloc_sph_1d_global_idx(stk_lc1d, sph_gl1d)
 !
