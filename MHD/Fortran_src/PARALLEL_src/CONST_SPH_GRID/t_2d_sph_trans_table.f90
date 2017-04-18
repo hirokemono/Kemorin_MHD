@@ -7,8 +7,11 @@
 !>@brief  Indices of spherical transform for second harmonics
 !!
 !!@verbatim
-!!      subroutine alloc_2d_sph_trans_table(ntheta, nphi, jmax, s2d_tbl)
+!!      subroutine alloc_2d_sph_trans_table(sph_rtp, sph_rj, s2d_tbl)
 !!      subroutine dealloc_2d_sph_trans_table(s2d_tbl)
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(sph_rj_grid), intent(in) :: sph_rj
+!!        type(sph_trans_2d_table), intent(inout) :: s2d_tbl
 !!
 !!      subroutine check_2d_sph_indices                                 &
 !!     &         (my_rank, nphi, ltr, jmax, s2d_tbl)
@@ -48,10 +51,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_2d_sph_trans_table(ntheta, nphi, jmax, s2d_tbl)
+      subroutine alloc_2d_sph_trans_table(sph_rtp, sph_rj, s2d_tbl)
 !
-      integer(kind = kint), intent(in) :: ntheta, nphi, jmax
+      use t_spheric_parameter
+!
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_trans_2d_table), intent(inout) :: s2d_tbl
+!
+      integer(kind = kint) :: ntheta, nphi, jmax
+!
+      ntheta = sph_rtp%nidx_global_rtp(2)
+      nphi =   sph_rtp%nidx_global_rtp(3)
+      jmax =   sph_rj%nidx_global_rj(2)
 !
       allocate( s2d_tbl%jdx_fsph(-ntheta:ntheta) )
       allocate( s2d_tbl%mspec_4_ispack(-ntheta:ntheta) )

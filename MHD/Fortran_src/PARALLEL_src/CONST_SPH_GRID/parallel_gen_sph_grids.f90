@@ -9,17 +9,15 @@
 !!@verbatim
 !!      subroutine para_gen_sph_grids(s3d_radius,                       &
 !!     &          added_radial_grp, r_layer_grp, med_layer_grp, sph,    &
-!!     &          s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d,      &
-!!     &          s2d_tbl)
+!!     &          s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
 !!
 !!      subroutine deallocate_gen_mesh_params                           &
 !!     &         (s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
 !!      subroutine deallocate_gen_mesh_data                             &
 !!     &         (added_radial_grp, r_layer_grp, med_layer_grp,         &
-!!     &          s3d_radius, s2d_tbl)
+!!     &          s3d_radius)
 !!        type(comm_table_make_sph), intent(in) :: stbl
 !!        type(sph_grids), intent(inout) :: sph
-!!        type(sph_trans_2d_table), intent(inout) :: s2d_tbl
 !!@endverbatim
 !
       module parallel_gen_sph_grids
@@ -38,7 +36,6 @@
       use t_sph_1d_global_index
       use t_sph_mesh_1d_connect
       use t_control_1D_layering
-      use t_2d_sph_trans_table
 !
       implicit none
 !
@@ -65,8 +62,7 @@
 !
       subroutine para_gen_sph_grids(s3d_radius,                         &
      &          added_radial_grp, r_layer_grp, med_layer_grp, sph,      &
-     &          s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d,        &
-     &          s2d_tbl)
+     &          s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
 !
       use set_global_spherical_param
       use para_gen_sph_grids_modes
@@ -86,7 +82,6 @@
       type(sph_local_parameters), intent(inout) :: sph_lcp
       type(sph_1d_index_stack), intent(inout) :: stk_lc1d
       type(sph_1d_global_index), intent(inout) :: sph_gl1d
-      type(sph_trans_2d_table), intent(inout) :: s2d_tbl
 !
 !
 !  =========  Set global resolutions ===================================
@@ -106,7 +101,7 @@
 !
       call s_const_global_sph_grids_modes                               &
      &   (sph%sph_params, sph%sph_rtp, sph%sph_rtm, sph%sph_rj,         &
-     &    s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d, s2d_tbl)
+     &    s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
 !
       call start_eleps_time(2)
       allocate(comm_rlm_mul(s3d_ranks%ndomain_sph))
@@ -205,7 +200,7 @@
 !
       subroutine deallocate_gen_mesh_data                               &
      &         (added_radial_grp, r_layer_grp, med_layer_grp,           &
-     &          s3d_radius, s2d_tbl)
+     &          s3d_radius)
 !
       use t_2d_sph_trans_table
 !
@@ -214,10 +209,6 @@
       type(layering_group_list), intent(inout) :: r_layer_grp
       type(layering_group_list), intent(inout) :: med_layer_grp
 !
-      type(sph_trans_2d_table), intent(inout) :: s2d_tbl
-!
-!
-      call dealloc_2d_sph_trans_table(s2d_tbl)
 !
       call dealloc_radius_1d_gl(s3d_radius)
 !

@@ -40,12 +40,11 @@
 !!
 !!      subroutine mpi_gen_fem_mesh_for_sph(added_radial_grp,           &
 !!     &          s3d_ranks, s3d_radius, sph_lcp, stk_lc1d, sph_gl1d,   &
-!!     &          sph_params, sph_rj, sph_rtp, mesh_file, stbl)
+!!     &          sph_params, sph_rj, sph_rtp, mesh_file)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(sph_rtp_grid), intent(inout) :: sph_rtp
 !!        type(field_IO_params), intent(inout) ::  mesh_file
-!!        type(comm_table_make_sph), intent(inout) :: stbl
 !!@endverbatim
 !
       module mpi_gen_sph_grids_modes
@@ -246,7 +245,7 @@
 !
       subroutine mpi_gen_fem_mesh_for_sph(added_radial_grp,             &
      &          s3d_ranks, s3d_radius, sph_lcp, stk_lc1d, sph_gl1d,     &
-     &          sph_params, sph_rj, sph_rtp, mesh_file, stbl)
+     &          sph_params, sph_rj, sph_rtp, mesh_file)
 !
       use t_mesh_data
       use t_gauss_points
@@ -271,11 +270,11 @@
 !
       type(sph_rtp_grid), intent(inout) :: sph_rtp
       type(field_IO_params), intent(inout) ::  mesh_file
-      type(comm_table_make_sph), intent(inout) :: stbl
 !
       type(mesh_data) :: femmesh
       type(group_data) :: radial_rj_grp_lc
       type(gauss_points) :: gauss_s
+      type(comm_table_make_sph) :: stbl_s
 !
 !
       if(iflag_output_mesh .eq. 0) return
@@ -284,7 +283,7 @@
 !
       call s_const_1d_ele_connect_4_sph                                 &
      &   (sph_params%iflag_shell_mode, sph_params%m_folding, sph_rtp,   &
-     &    s3d_ranks, stk_lc1d, sph_gl1d, stbl)
+     &    s3d_ranks, stk_lc1d, sph_gl1d, stbl_s)
       call set_rj_radial_grp(sph_params, sph_rj,                        &
      &    added_radial_grp, radial_rj_grp_lc)
 !
@@ -296,7 +295,7 @@
       call s_const_FEM_mesh_for_sph                                     &
      &   (my_rank, sph_rtp%nidx_rtp, s3d_radius%radius_1d_gl, gauss_s,  &
      &    s3d_ranks, stk_lc1d, sph_gl1d, sph_params, sph_rtp,           &
-     &    radial_rj_grp_lc, femmesh%mesh, femmesh%group, stbl)
+     &    radial_rj_grp_lc, femmesh%mesh, femmesh%group, stbl_s)
 !
 ! Output mesh data
       if(iflag_output_mesh .gt. 0) then
@@ -309,6 +308,9 @@
       call dealloc_groups_data(femmesh%group)
       call dealloc_mesh_type(femmesh%mesh)
       call deallocate_grp_type(radial_rj_grp_lc)
+!
+      call dealloc_nnod_nele_sph_mesh(stbl_s)
+      call dealloc_1d_comm_tbl_4_sph(stbl_s)
       call dealloc_gauss_colatitude(gauss_s)
 !
       end subroutine mpi_gen_fem_mesh_for_sph

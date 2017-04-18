@@ -305,7 +305,6 @@
       use m_spheric_global_ranks
       use m_sph_global_parameter
       use m_sph_1d_global_index
-      use m_sph_mesh_1d_connect
       use parallel_load_data_4_sph
       use parallel_gen_sph_grids
 !
@@ -339,8 +338,7 @@
         if (my_rank.eq.0) write(*,*) 'Make spherical harmonics table'
         call para_gen_sph_grids                                         &
      &     (s3d_radius, added_radial_grp, r_layer_grp, med_layer_grp,   &
-     &      sph_gen, s3d_ranks, sph_dbc, sph_lcp,                       &
-     &      stk_lc1d, sph_gl1d, s2d_tbl)
+     &      sph_gen, s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
         call deallocate_gen_mesh_params                                 &
      &     (s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
       end if
@@ -352,8 +350,7 @@
      &    s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
 !
       call deallocate_gen_mesh_data                                     &
-     &   (added_radial_grp, r_layer_grp, med_layer_grp,                 &
-     &    s3d_radius, s2d_tbl)
+     &   (added_radial_grp, r_layer_grp, med_layer_grp, s3d_radius)
 !
       end subroutine select_make_SPH_mesh
 !

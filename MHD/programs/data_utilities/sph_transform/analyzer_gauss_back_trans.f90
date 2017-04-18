@@ -17,7 +17,6 @@
       use m_spheric_global_ranks
       use m_sph_global_parameter
       use m_sph_1d_global_index
-      use m_sph_mesh_1d_connect
 !
       use FEM_analyzer_back_trans
       use SPH_analyzer_gauss_b_trans

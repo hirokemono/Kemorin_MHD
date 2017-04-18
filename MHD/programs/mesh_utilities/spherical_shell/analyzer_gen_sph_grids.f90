@@ -27,7 +27,6 @@
       use t_ctl_data_gen_sph_shell
       use m_spheric_global_ranks
       use m_sph_1d_global_index
-      use m_sph_mesh_1d_connect
 !
       implicit none
 !
@@ -96,22 +95,21 @@
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_grids'
       call para_gen_sph_grids                                           &
      &   (s3d_radius, added_radial_grp, r_layer_grp, med_layer_grp,     &
-     &    sph_const, s3d_ranks, sph_dbc, sph_lcp,                       &
-     &    stk_lc1d, sph_gl1d, s2d_tbl)
+     &    sph_const, s3d_ranks, sph_dbc, sph_lcp, stk_lc1d, sph_gl1d)
 !
       call start_eleps_time(4)
       if(s3d_ranks%ndomain_sph .eq. nprocs) then
         call mpi_gen_fem_mesh_for_sph(added_radial_grp,                 &
      &      s3d_ranks, s3d_radius, sph_lcp, stk_lc1d, sph_gl1d,         &
      &      sph_const%sph_params, sph_const%sph_rj, sph_const%sph_rtp,  &
-     &      fem_mesh_file, stbl)
+     &      fem_mesh_file)
       else
         if(iflag_debug .gt. 0) write(*,*) 'para_gen_fem_mesh_for_sph'
         call para_gen_fem_mesh_for_sph                                  &
      &     (s3d_ranks%ndomain_sph, added_radial_grp,                    &
      &      s3d_ranks, s3d_radius, sph_lcp, stk_lc1d, sph_gl1d,         &
      &      sph_const%sph_params, sph_const%sph_rj, sph_const%sph_rtp,  &
-     &      fem_mesh_file, stbl)
+     &      fem_mesh_file)
       end if
       call end_eleps_time(4)
       call end_eleps_time(1)

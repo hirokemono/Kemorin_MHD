@@ -143,7 +143,6 @@
       use m_flexible_time_step
       use m_spheric_global_ranks
       use m_sph_1d_global_index
-      use m_sph_mesh_1d_connect
       use sph_mhd_rms_IO
 !
       use t_SGS_control_parameter

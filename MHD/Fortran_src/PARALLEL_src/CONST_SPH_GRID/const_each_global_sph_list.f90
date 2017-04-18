@@ -245,10 +245,6 @@
       type(sph_trans_2d_table), intent(inout) :: s2d_tbl
 !
 !
-      call alloc_2d_sph_trans_table(sph_rtp%nidx_global_rtp(2),         &
-     &    sph_rtp%nidx_global_rtp(3), sph_rj%nidx_global_rj(2),         &
-     &    s2d_tbl)
-!
       call set_gl_rank_2d(s3d_ranks%iflag_radial_inner_domain,          &
      &    s3d_ranks%ndomain_sph, s3d_ranks%ndomain_rlm,                 &
      &    s3d_ranks%iglobal_rank_rlm)
