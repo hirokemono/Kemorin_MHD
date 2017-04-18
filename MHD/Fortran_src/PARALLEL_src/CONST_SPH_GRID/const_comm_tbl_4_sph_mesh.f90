@@ -4,28 +4,38 @@
 !     Written by H. Matsui on March, 2013
 !
 !!      subroutine count_neib_4_sph_mesh(ip_rank, ip_r, ip_t,           &
-!!     &          stbl, nod_comm)
+!!     &          s3d_ranks, stbl, nod_comm)
 !!      subroutine count_neib_4_sph_center_mesh(ip_rank, ip_r, ip_t,    &
-!!     &          stbl, nod_comm)
+!!     &          s3d_ranks, stbl, nod_comm)
+!!        type(spheric_global_rank), intent(in) :: s3d_ranks
 !!        type(comm_table_make_sph), intent(in) :: stbl
 !!        type(communication_table), intent(inout) :: nod_comm
 !!
 !!      subroutine set_neib_4_sph_mesh(ip_rank, ip_r, ip_t,             &
-!!     &          stbl, nod_comm)
+!!     &          s3d_ranks, stbl, nod_comm)
 !!      subroutine set_neib_4_sph_center_mesh(ip_rank, ip_r, ip_t,      &
-!!     &          stbl, nod_comm)
+!!     &          s3d_ranks, stbl, nod_comm)
+!!        type(spheric_global_rank), intent(in) :: s3d_ranks
 !!        type(comm_table_make_sph), intent(in) :: stbl
 !!        type(communication_table), intent(inout) :: nod_comm
 !!
-!!      subroutine count_import_4_sph_mesh(ip_r, ip_t, stbl, nod_comm)
+!!      subroutine count_import_4_sph_mesh                              &
+!!     &          (ip_r, ip_t, s3d_ranks, stbl, nod_comm)
+!!        type(spheric_global_rank), intent(in) :: s3d_ranks
 !!        type(comm_table_make_sph), intent(in) :: stbl
-!!      subroutine set_import_rtp_sph_mesh(ip_r, ip_t, stbl, nod_comm)
+!!      subroutine set_import_rtp_sph_mesh                              &
+!!     &         (ip_r, ip_t, s3d_ranks, stbl, nod_comm)
+!!        type(spheric_global_rank), intent(in) :: s3d_ranks
 !!        type(comm_table_make_sph), intent(inout) :: stbl
 !!        type(communication_table), intent(inout) :: nod_comm
 !!
-!!      subroutine count_export_4_sph_mesh(ip_r, ip_t, stbl, nod_comm)
+!!      subroutine count_export_4_sph_mesh                              &
+!!     &         (ip_r, ip_t, s3d_ranks, stbl, nod_comm)
+!!        type(spheric_global_rank), intent(in) :: s3d_ranks
 !!        type(comm_table_make_sph), intent(in) :: stbl
-!!      subroutine set_export_rtp_sph_mesh(ip_r, ip_t, stbl, nod_comm)
+!!      subroutine set_export_rtp_sph_mesh                              &
+!!     &         (ip_r, ip_t, s3d_ranks, stbl, nod_comm)
+!!        type(spheric_global_rank), intent(in) :: s3d_ranks
 !!        type(comm_table_make_sph), intent(inout) :: stbl
 !!        type(communication_table), intent(inout) :: nod_comm
 !
@@ -36,6 +46,7 @@
 !
       use t_comm_table
       use t_sph_mesh_1d_connect
+      use t_spheric_global_ranks
 !
       implicit none
 !
@@ -46,10 +57,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine count_neib_4_sph_mesh(ip_rank, ip_r, ip_t,             &
-     &          stbl, nod_comm)
+     &          s3d_ranks, stbl, nod_comm)
 !
-      use m_spheric_global_ranks
-!
+      type(spheric_global_rank), intent(in) :: s3d_ranks
       type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint), intent(in) :: ip_rank, ip_r, ip_t
 !
@@ -75,10 +85,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine count_neib_4_sph_center_mesh(ip_rank, ip_r, ip_t,      &
-     &          stbl, nod_comm)
+     &          s3d_ranks, stbl, nod_comm)
 !
-      use m_spheric_global_ranks
-!
+      type(spheric_global_rank), intent(in) :: s3d_ranks
       type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint), intent(in) :: ip_rank, ip_r, ip_t
 !
@@ -106,10 +115,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_neib_4_sph_mesh(ip_rank, ip_r, ip_t,               &
-     &          stbl, nod_comm)
+     &          s3d_ranks, stbl, nod_comm)
 !
-      use m_spheric_global_ranks
-!
+      type(spheric_global_rank), intent(in) :: s3d_ranks
       type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint), intent(in) :: ip_rank, ip_r, ip_t
 !
@@ -138,11 +146,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_neib_4_sph_center_mesh(ip_rank, ip_r, ip_t,        &
-     &          stbl, nod_comm)
-!
-      use m_spheric_global_ranks
+     &          s3d_ranks, stbl, nod_comm)
       use set_comm_tbl_4_pole_mesh
 !
+      type(spheric_global_rank), intent(in) :: s3d_ranks
       type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint), intent(in) :: ip_rank, ip_r, ip_t
 !
@@ -172,14 +179,15 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine count_import_4_sph_mesh(ip_r, ip_t, stbl, nod_comm)
+      subroutine count_import_4_sph_mesh                                &
+     &          (ip_r, ip_t, s3d_ranks, stbl, nod_comm)
 !
-      use m_spheric_global_ranks
       use set_comm_tbl_4_sph_mesh
       use set_comm_tbl_4_pole_mesh
       use set_import_sph_center_mesh
       use cal_minmax_and_stacks
 !
+      type(spheric_global_rank), intent(in) :: s3d_ranks
       type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint), intent(in) :: ip_r, ip_t
 !
@@ -217,14 +225,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_import_rtp_sph_mesh(ip_r, ip_t, stbl, nod_comm)
+      subroutine set_import_rtp_sph_mesh                                &
+     &         (ip_r, ip_t, s3d_ranks, stbl, nod_comm)
 !
-      use m_spheric_global_ranks
       use set_comm_tbl_4_sph_mesh
       use set_comm_tbl_4_pole_mesh
       use set_import_sph_center_mesh
 !
       integer(kind = kint), intent(in) :: ip_r, ip_t
+      type(spheric_global_rank), intent(in) :: s3d_ranks
 !
       type(comm_table_make_sph), intent(inout) :: stbl
       type(communication_table), intent(inout) :: nod_comm
@@ -259,14 +268,15 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine count_export_4_sph_mesh(ip_r, ip_t, stbl, nod_comm)
+      subroutine count_export_4_sph_mesh                                &
+     &         (ip_r, ip_t, s3d_ranks, stbl, nod_comm)
 !
-      use m_spheric_global_ranks
       use set_comm_tbl_4_sph_mesh
       use set_comm_tbl_4_pole_mesh
       use set_export_sph_center_mesh
       use cal_minmax_and_stacks
 !
+      type(spheric_global_rank), intent(in) :: s3d_ranks
       type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint), intent(in) :: ip_r, ip_t
 !
@@ -304,14 +314,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_export_rtp_sph_mesh(ip_r, ip_t, stbl, nod_comm)
+      subroutine set_export_rtp_sph_mesh                                &
+     &         (ip_r, ip_t, s3d_ranks, stbl, nod_comm)
 !
-      use m_spheric_global_ranks
       use set_comm_tbl_4_sph_mesh
       use set_comm_tbl_4_pole_mesh
       use set_export_sph_center_mesh
 !
       integer(kind = kint), intent(in) :: ip_r, ip_t
+      type(spheric_global_rank), intent(in) :: s3d_ranks
 !
       type(comm_table_make_sph), intent(inout) :: stbl
       type(communication_table), intent(inout) :: nod_comm

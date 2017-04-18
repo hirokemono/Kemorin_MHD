@@ -9,25 +9,27 @@
 !!@verbatim
 !!      subroutine s_set_control_4_gen_shell_grids                      &
 !!     &         (plt, spctl, sdctl, sph, mesh_file, sph_file_param,    &
-!!     &          added_radial_grp, r_layer_grp, med_layer_grp,         &
-!!     &          stbl, ierr)
+!!     &          s3d_ranks, added_radial_grp, r_layer_grp,             &
+!!     &          med_layer_grp, stbl, ierr)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(sphere_data_control), intent(inout) :: spctl
 !!        type(sphere_domain_control), intent(inout) :: sdctl
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(field_IO_params), intent(inout) ::  mesh_file
 !!        type(field_IO_params), intent(inout) :: sph_file_param
+!!        type(spheric_global_rank), intent(inout) :: s3d_ranks
 !!        type(layering_group_list), intent(inout) :: added_radial_grp
 !!        type(layering_group_list), intent(inout) :: r_layer_grp
 !!        type(layering_group_list), intent(inout) :: med_layer_grp
 !!        type(comm_table_make_sph), intent(inout) :: stbl
 !!      subroutine set_control_4_shell_grids                            &
-!!     &         (nprocs_check, spctl, sdctl, sph,                      &
+!!     &         (nprocs_check, spctl, sdctl, sph, s3d_ranks,           &
 !!     &          added_radial_grp, r_layer_grp, med_layer_grp,         &
 !!     &          stbl, ierr)
 !!        type(sphere_data_control), intent(inout) :: spctl
 !!        type(sphere_domain_control), intent(inout) :: sdctl
 !!        type(sph_grids), intent(inout) :: sph
+!!        type(spheric_global_rank), intent(inout) :: s3d_ranks
 !!        type(layering_group_list), intent(inout) :: added_radial_grp
 !!        type(layering_group_list), intent(inout) :: r_layer_grp
 !!        type(layering_group_list), intent(inout) :: med_layer_grp
@@ -43,6 +45,7 @@
       use t_ctl_data_4_platforms
       use t_ctl_data_4_sphere_model
       use t_ctl_data_4_divide_sphere
+      use t_spheric_global_ranks
       use t_sph_mesh_1d_connect
       use t_control_1D_layering
 !
@@ -63,8 +66,8 @@
 !
       subroutine s_set_control_4_gen_shell_grids                        &
      &         (plt, spctl, sdctl, sph, mesh_file, sph_file_param,      &
-     &          added_radial_grp, r_layer_grp, med_layer_grp,           &
-     &          stbl, ierr)
+     &          s3d_ranks, added_radial_grp, r_layer_grp,               &
+     &          med_layer_grp, stbl, ierr)
 !
       type(platform_data_control), intent(in) :: plt
       type(sphere_data_control), intent(inout) :: spctl
@@ -72,6 +75,7 @@
       type(sph_grids), intent(inout) :: sph
       type(field_IO_params), intent(inout) ::  mesh_file
       type(field_IO_params), intent(inout) :: sph_file_param
+      type(spheric_global_rank), intent(inout) :: s3d_ranks
       type(layering_group_list), intent(inout) :: added_radial_grp
       type(layering_group_list), intent(inout) :: r_layer_grp
       type(layering_group_list), intent(inout) :: med_layer_grp
@@ -85,7 +89,7 @@
      &   (plt, nprocs_check, mesh_file, sph_file_param)
 !
       call set_control_4_shell_grids                                    &
-     &   (nprocs_check, spctl, sdctl, sph,                              &
+     &   (nprocs_check, spctl, sdctl, sph, s3d_ranks,                   &
      &    added_radial_grp, r_layer_grp, med_layer_grp, stbl, ierr)
 !
       end subroutine s_set_control_4_gen_shell_grids
@@ -120,16 +124,14 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_control_4_shell_grids                              &
-     &         (nprocs_check, spctl, sdctl, sph,                        &
+     &         (nprocs_check, spctl, sdctl, sph, s3d_ranks,             &
      &          added_radial_grp, r_layer_grp, med_layer_grp,           &
      &          stbl, ierr)
 !
       use m_constants
       use m_machine_parameter
       use m_spheric_constants
-      use m_spheric_global_ranks
       use m_error_IDs
-!
       use m_file_format_switch
 !
       use set_controls_4_sph_shell
@@ -140,6 +142,7 @@
       type(sphere_data_control), intent(inout) :: spctl
       type(sphere_domain_control), intent(inout) :: sdctl
       type(sph_grids), intent(inout) :: sph
+      type(spheric_global_rank), intent(inout) :: s3d_ranks
       type(layering_group_list), intent(inout) :: added_radial_grp
       type(layering_group_list), intent(inout) :: r_layer_grp
       type(layering_group_list), intent(inout) :: med_layer_grp
@@ -181,7 +184,7 @@
      &    added_radial_grp, stbl, ierr)
 !
       call set_subdomains_4_sph_shell                                   &
-     &    (nprocs_check, sdctl, ierr, e_message)
+     &    (nprocs_check, sdctl, s3d_ranks, ierr, e_message)
       if (ierr .gt. 0) return
 !
 !

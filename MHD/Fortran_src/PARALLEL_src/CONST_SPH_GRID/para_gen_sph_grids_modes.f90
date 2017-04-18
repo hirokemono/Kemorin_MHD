@@ -9,23 +9,24 @@
 !!
 !!
 !!@verbatim
-!!      subroutine para_gen_sph_rlm_grids                               &
-!!     &         (ndomain_sph, sph_lcp, stk_lc1d, sph_gl1d, stbl,       &
+!!      subroutine para_gen_sph_rlm_grids(ndomain_sph,                  &
+!!     &          s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d, stbl,         &
 !!     &          sph_params, sph_rlm, comm_rlm_mul)
 !!        type(comm_table_make_sph), intent(in) :: stbl
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rlm_grid), intent(inout) :: sph_rlm
 !!        type(sph_comm_tbl), intent(inout) :: comm_rlm_mul(ndomain_sph)
-!!      subroutine para_gen_sph_rtm_grids                               &
-!!     &         (ndomain_sph, sph_lcp, stk_lc1d, sph_gl1d, stbl,       &
+!!      subroutine para_gen_sph_rtm_grids(ndomain_sph,                  &
+!!     &          s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d, stbl,         &
 !!     &          sph_params, sph_rtm, comm_rtm_mul)
 !!        type(comm_table_make_sph), intent(in) :: stbl
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rtm_grid), intent(inout) :: sph_rtm
 !!        type(sph_comm_tbl), intent(inout) :: comm_rtm_mul(ndomain_sph)
 !!
-!!      subroutine para_gen_sph_rj_modes(ndomain_sph, comm_rlm_mul,     &
-!!     &          added_radial_grp, sph_lcp, stk_lc1d, sph_gl1d, stbl,  &
+!!      subroutine para_gen_sph_rj_modes                                &
+!!     &         (ndomain_sph, comm_rlm_mul, added_radial_grp,          &
+!!     &          s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d, stbl,         &
 !!     &          sph_params, sph_rlm, sph_rj)
 !!        type(sph_comm_tbl), intent(in) :: comm_rlm_mul(ndomain_sph)
 !!        type(comm_table_make_sph), intent(in) :: stbl
@@ -34,7 +35,7 @@
 !!        type(sph_rj_grid), intent(inout) :: sph_rj
 !!      subroutine para_gen_sph_rtp_grids(ndomain_sph, comm_rtm_mul,    &
 !!     &          added_radial_grp, r_layer_grp, med_layer_grp,         &
-!!     &          sph_lcp, stk_lc1d, sph_gl1d, stbl,                    &
+!!     &          s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d, stbl,         &
 !!     &          sph_params, sph_rtp, sph_rtm)
 !!        type(sph_comm_tbl), intent(in) :: comm_rtm_mul(ndomain_sph)
 !!        type(comm_table_make_sph), intent(in) :: stbl
@@ -42,8 +43,9 @@
 !!        type(sph_rtp_grid), intent(inout) :: sph_rtp
 !!        type(sph_rtm_grid), intent(inout) :: sph_rtm
 !!
-!!      subroutine para_gen_fem_mesh_for_sph(ndomain_sph,               &
-!!     &          added_radial_grp, sph_lcp, stk_lc1d, sph_gl1d,        &
+!!      subroutine para_gen_fem_mesh_for_sph                            &
+!!     &         (ndomain_sph, added_radial_grp,                        &
+!!     &          s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d,               &
 !!     &          sph_params, sph_rj, sph_rtp, mesh_file, stbl)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) :: sph_rj
@@ -66,6 +68,7 @@
       use t_spheric_mesh
       use t_spheric_data_IO
       use t_file_IO_parameter
+      use t_spheric_global_ranks
       use t_sph_local_parameter
       use t_sph_1d_global_index
       use t_sph_mesh_1d_connect
@@ -86,8 +89,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine para_gen_sph_rlm_grids                                 &
-     &         (ndomain_sph, sph_lcp, stk_lc1d, sph_gl1d, stbl,         &
+      subroutine para_gen_sph_rlm_grids(ndomain_sph,                    &
+     &          s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d, stbl,           &
      &          sph_params, sph_rlm, comm_rlm_mul)
 !
       use set_comm_table_rtp_rj
@@ -96,6 +99,7 @@
       use sph_file_IO_select
 !
       integer(kind = kint), intent(in) :: ndomain_sph
+      type(spheric_global_rank), intent(in) :: s3d_ranks
       type(sph_local_parameters), intent(in) :: sph_lcp
       type(sph_1d_index_stack), intent(in) :: stk_lc1d
       type(sph_1d_global_index), intent(in) :: sph_gl1d
@@ -116,7 +120,7 @@
      &             'start rlm table generation for',                    &
      &            ip_rank, 'on ', my_rank, nprocs
         call const_sph_rlm_modes                                        &
-     &     (ip_rank, sph_lcp, stk_lc1d, sph_gl1d, stbl,                 &
+     &     (ip_rank, s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d, stbl,      &
      &      sph_rlm, comm_rlm_lc)
         if(iflag_debug .gt. 0) write(*,*) 'copy_sph_comm_neib'
         call copy_sph_comm_neib(comm_rlm_lc, comm_rlm_mul(ip_rank+1))
@@ -135,8 +139,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine para_gen_sph_rtm_grids                                 &
-     &         (ndomain_sph, sph_lcp, stk_lc1d, sph_gl1d, stbl,         &
+      subroutine para_gen_sph_rtm_grids(ndomain_sph,                    &
+     &          s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d, stbl,           &
      &          sph_params, sph_rtm, comm_rtm_mul)
 !
       use set_comm_table_rtp_rj
@@ -145,11 +149,13 @@
       use sph_file_IO_select
 !
       integer(kind = kint), intent(in) :: ndomain_sph
+      type(spheric_global_rank), intent(in) :: s3d_ranks
       type(sph_local_parameters), intent(in) :: sph_lcp
       type(sph_1d_index_stack), intent(in) :: stk_lc1d
       type(sph_1d_global_index), intent(in) :: sph_gl1d
       type(comm_table_make_sph), intent(in) :: stbl
       type(sph_shell_parameters), intent(in) :: sph_params
+!
       type(sph_rtm_grid), intent(inout) :: sph_rtm
       type(sph_comm_tbl), intent(inout) :: comm_rtm_mul(ndomain_sph)
 !
@@ -165,7 +171,7 @@
      &             'start rtm table generation for',                    &
      &            ip_rank, 'on ', my_rank, nprocs
         call const_sph_rtm_grids                                        &
-     &     (ip_rank, sph_lcp, stk_lc1d, sph_gl1d, stbl,                 &
+     &     (ip_rank, s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d, stbl,      &
      &      sph_rtm, comm_rtm_lc)
         call copy_sph_comm_neib(comm_rtm_lc, comm_rtm_mul(ip_rank+1))
 !
@@ -183,8 +189,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine para_gen_sph_rj_modes(ndomain_sph, comm_rlm_mul,       &
-     &          added_radial_grp, sph_lcp, stk_lc1d, sph_gl1d, stbl,    &
+      subroutine para_gen_sph_rj_modes                                  &
+     &         (ndomain_sph, comm_rlm_mul, added_radial_grp,            &
+     &          s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d, stbl,           &
      &          sph_params, sph_rlm, sph_rj)
 !
       use set_comm_table_rtp_rj
@@ -193,6 +200,8 @@
       integer(kind = kint), intent(in) :: ndomain_sph
       type(sph_comm_tbl), intent(in) :: comm_rlm_mul(ndomain_sph)
       type(layering_group_list), intent(in) :: added_radial_grp
+!
+      type(spheric_global_rank), intent(in) :: s3d_ranks
       type(sph_local_parameters), intent(in) :: sph_lcp
       type(sph_1d_index_stack), intent(in) :: stk_lc1d
       type(sph_1d_global_index), intent(in) :: sph_gl1d
@@ -212,8 +221,9 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &             'Construct spherical modes for domain ',             &
      &            ip_rank,  ' on ', my_rank
-        call const_sph_rj_modes(ip_rank, ndomain_sph, comm_rlm_mul,     &
-     &      added_radial_grp, sph_lcp, stk_lc1d, sph_gl1d, stbl,        &
+        call const_sph_rj_modes                                         &
+     &     (ip_rank, ndomain_sph, comm_rlm_mul, added_radial_grp,       &
+     &      s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d, stbl,               &
      &      sph_params, sph_rj, sph_rlm, sph_file_p, sph_lcx_p)
 !
         call sel_write_spectr_modes_rj_file(ip_rank, sph_file_p)
@@ -228,7 +238,7 @@
 !
       subroutine para_gen_sph_rtp_grids(ndomain_sph, comm_rtm_mul,      &
      &          added_radial_grp, r_layer_grp, med_layer_grp,           &
-     &          sph_lcp, stk_lc1d, sph_gl1d, stbl,                      &
+     &          s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d, stbl,           &
      &          sph_params, sph_rtp, sph_rtm)
 !
       use set_comm_table_rtp_rj
@@ -239,6 +249,8 @@
       type(layering_group_list), intent(in) :: added_radial_grp
       type(layering_group_list), intent(in) :: r_layer_grp
       type(layering_group_list), intent(in) :: med_layer_grp
+!
+      type(spheric_global_rank), intent(in) :: s3d_ranks
       type(sph_local_parameters), intent(in) :: sph_lcp
       type(sph_1d_index_stack), intent(in) :: stk_lc1d
       type(sph_1d_global_index), intent(in) :: sph_gl1d
@@ -260,7 +272,7 @@
      &            ip_rank,  ' on ', my_rank
         call const_sph_rtp_grids(ip_rank, ndomain_sph, comm_rtm_mul,    &
      &      added_radial_grp, r_layer_grp, med_layer_grp,               &
-     &      sph_lcp, stk_lc1d, sph_gl1d, stbl, sph_params,              &
+     &      s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d, stbl, sph_params,   &
      &      sph_rtp, sph_rtm, sph_file_p, sph_lcx_p)
 !
         call sel_write_geom_rtp_file(ip_rank, sph_file_p)
@@ -273,8 +285,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine para_gen_fem_mesh_for_sph(ndomain_sph,                 &
-     &          added_radial_grp, sph_lcp, stk_lc1d, sph_gl1d,          &
+      subroutine para_gen_fem_mesh_for_sph                              &
+     &         (ndomain_sph, added_radial_grp,                          &
+     &          s3d_ranks, sph_lcp, stk_lc1d, sph_gl1d,                 &
      &          sph_params, sph_rj, sph_rtp, mesh_file, stbl)
 !
       use t_gauss_points
@@ -291,6 +304,7 @@
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
       type(layering_group_list), intent(in) :: added_radial_grp
+      type(spheric_global_rank), intent(in) :: s3d_ranks
       type(sph_local_parameters), intent(in) :: sph_lcp
       type(sph_1d_index_stack), intent(in) :: stk_lc1d
       type(sph_1d_global_index), intent(in) :: sph_gl1d
@@ -311,7 +325,7 @@
 !
       call s_const_1d_ele_connect_4_sph                                 &
      &   (sph_params%iflag_shell_mode, sph_params%m_folding, sph_rtp,   &
-     &    stk_lc1d, sph_gl1d, stbl)
+     &    s3d_ranks, stk_lc1d, sph_gl1d, stbl)
       call set_rj_radial_grp                                            &
      &   (sph_params, sph_rj, added_radial_grp, radial_rj_grp_lc)
 !
@@ -324,13 +338,13 @@
      &             ' on ', my_rank
 !
         call copy_gl_2_local_rtp_param                                  &
-     &     (ip_rank, sph_lcp, stk_lc1d, sph_rtp)
+     &     (ip_rank, s3d_ranks, sph_lcp, stk_lc1d, sph_rtp)
 !
 !
         call s_const_FEM_mesh_for_sph                                   &
      &     (ip_rank, sph_rtp%nidx_rtp, stbl%radius_1d_gl, gauss_s,      &
-     &      stk_lc1d, sph_gl1d, sph_params, sph_rtp, radial_rj_grp_lc,  &
-     &      femmesh%mesh, femmesh%group, stbl)
+     &      s3d_ranks, stk_lc1d, sph_gl1d, sph_params, sph_rtp,         &
+     &      radial_rj_grp_lc, femmesh%mesh, femmesh%group, stbl)
 !
 ! Output mesh data
         if(iflag_output_mesh .gt. 0) then

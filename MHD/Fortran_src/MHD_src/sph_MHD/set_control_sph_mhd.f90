@@ -141,6 +141,7 @@
       use m_spheric_global_ranks
       use m_ucd_data
       use m_flexible_time_step
+      use m_spheric_global_ranks
       use m_sph_1d_global_index
       use m_sph_mesh_1d_connect
       use sph_mhd_rms_IO
@@ -208,7 +209,7 @@
         if (iflag_debug.gt.0) write(*,*) 'set_control_4_shell_grids'
         call set_control_4_shell_grids                                  &
      &     (nprocs, psph_ctl%spctl, psph_ctl%sdctl, sph_gen,            &
-     &      added_radial_grp, r_layer_grp, med_layer_grp,               &
+     &      s3d_ranks, added_radial_grp, r_layer_grp, med_layer_grp,    &
      &      stbl, ierr)
       end if
 !

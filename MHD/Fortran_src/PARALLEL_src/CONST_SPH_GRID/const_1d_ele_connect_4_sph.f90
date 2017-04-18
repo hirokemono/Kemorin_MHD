@@ -5,8 +5,9 @@
 !
 !!      subroutine s_const_1d_ele_connect_4_sph                         &
 !!     &         (iflag_shell_mode, m_folding, sph_rtp,                 &
-!!     &          stk_lc1d, sph_gl1d, stbl)
+!!     &          s3d_ranks, stk_lc1d, sph_gl1d, stbl)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(spheric_global_rank), intent(in) :: s3d_ranks
 !!        type(sph_1d_index_stack), intent(in) :: stk_lc1d
 !!        type(sph_1d_global_index), intent(in) :: sph_gl1d
 !!        type(comm_table_make_sph), intent(inout) :: stbl
@@ -34,14 +35,15 @@
 !
       subroutine s_const_1d_ele_connect_4_sph                           &
      &         (iflag_shell_mode, m_folding, sph_rtp,                   &
-     &          stk_lc1d, sph_gl1d, stbl)
+     &          s3d_ranks, stk_lc1d, sph_gl1d, stbl)
 !
-      use m_spheric_global_ranks
+      use t_spheric_global_ranks
       use t_spheric_parameter
 !
       integer(kind = kint), intent(in) :: iflag_shell_mode
       integer(kind = kint), intent(in) :: m_folding
       type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(spheric_global_rank), intent(in) :: s3d_ranks
       type(sph_1d_index_stack), intent(in) :: stk_lc1d
       type(sph_1d_global_index), intent(in) :: sph_gl1d
 !

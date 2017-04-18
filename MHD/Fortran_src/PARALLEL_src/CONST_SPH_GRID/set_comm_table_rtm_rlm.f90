@@ -8,23 +8,27 @@
 !> @brief Construct communication table for rlm and rtm grid
 !!
 !!@verbatim
-!!      subroutine allocate_ncomm
+!!      subroutine allocate_ncomm(ndomain_sph)
 !!      subroutine deallocate_ncomm
 !!
-!!      subroutine count_comm_table_4_rlm(nnod_rlm, idx_global_rlm)
-!!      subroutine set_comm_table_4_rlm(nnod_rlm, idx_global_rlm,       &
+!!      subroutine count_comm_table_4_rlm                               &
+!!     &         (s3d_ranks, nnod_rlm, idx_global_rlm)
+!!      subroutine set_comm_table_4_rlm                                 &
+!!     &         (s3d_ranks, nnod_rlm, idx_global_rlm,                  &
 !!     &          nneib_domain_rlm, ntot_item_sr_rlm, istack_sr_rlm,    &
 !!     &          item_sr_rlm)
+!!        type(spheric_global_rank), intent(in) :: s3d_ranks
 !!
 !!      subroutine count_comm_table_4_rtm                               &
-!!     &         (nnod_rtm, nidx_global_rtm, idx_global_rtm)
+!!     &         (s3d_ranks, nnod_rtm, nidx_global_rtm, idx_global_rtm)
 !!      subroutine set_comm_table_4_rtm                                 &
-!!     &         (nnod_rtm, nidx_global_rtm, idx_global_rtm,            &
+!!     &         (s3d_ranks, nnod_rtm, nidx_global_rtm, idx_global_rtm, &
 !!     &          nneib_domain_rtm, ntot_item_sr_rtm, istack_sr_rtm,    &
 !!     &          item_sr_rtm)
+!!        type(spheric_global_rank), intent(in) :: s3d_ranks
 !!
-!!      subroutine count_num_domain_rtm_rlm(nneib_domain)
-!!      subroutine set_comm_stack_rtm_rlm(ip_rank,                      &
+!!      subroutine count_num_domain_rtm_rlm(ndomain_sph, nneib_domain)
+!!      subroutine set_comm_stack_rtm_rlm(ip_rank, ndomain_sph,         &
 !!     &          nneib_domain, id_domain, istack_sr, ntot_item_sr)
 !!@endverbatim
 !
@@ -44,12 +48,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_ncomm
+      subroutine allocate_ncomm(ndomain_sph)
 !
-      use m_spheric_global_ranks
+      integer(kind = kint), intent(in) :: ndomain_sph
 !
-      allocate( ncomm(0:s3d_ranks%ndomain_sph) )
-      allocate( ineib_tgt(0:s3d_ranks%ndomain_sph) )
+      allocate( ncomm(0:ndomain_sph) )
+      allocate( ineib_tgt(0:ndomain_sph) )
       ncomm = 0
       ineib_tgt = -1
 !
@@ -66,11 +70,13 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine count_comm_table_4_rlm(nnod_rlm, idx_global_rlm)
+      subroutine count_comm_table_4_rlm                                 &
+     &         (s3d_ranks, nnod_rlm, idx_global_rlm)
 !
-      use m_spheric_global_ranks
+      use t_spheric_global_ranks
       use set_global_spherical_param
 !
+      type(spheric_global_rank), intent(in) :: s3d_ranks
       integer(kind = kint), intent(in) :: nnod_rlm
       integer(kind = kint), intent(in) :: idx_global_rlm(nnod_rlm,2)
 !
@@ -96,13 +102,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_comm_table_4_rlm(nnod_rlm, idx_global_rlm,         &
+      subroutine set_comm_table_4_rlm                                   &
+     &         (s3d_ranks, nnod_rlm, idx_global_rlm,                    &
      &          nneib_domain_rlm, ntot_item_sr_rlm, istack_sr_rlm,      &
      &          item_sr_rlm)
 !
-      use m_spheric_global_ranks
+      use t_spheric_global_ranks
       use set_global_spherical_param
 !
+      type(spheric_global_rank), intent(in) :: s3d_ranks
       integer(kind = kint), intent(in) :: nnod_rlm
       integer(kind = kint), intent(in) :: idx_global_rlm(nnod_rlm,2)
 !
@@ -142,11 +150,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine count_comm_table_4_rtm                                 &
-     &         (nnod_rtm, nidx_global_rtm, idx_global_rtm)
+     &         (s3d_ranks, nnod_rtm, nidx_global_rtm, idx_global_rtm)
 !
-      use m_spheric_global_ranks
+      use t_spheric_global_ranks
       use set_global_spherical_param
 !
+      type(spheric_global_rank), intent(in) :: s3d_ranks
       integer(kind = kint), intent(in) :: nnod_rtm
       integer(kind = kint), intent(in) :: nidx_global_rtm(3)
       integer(kind = kint), intent(in) :: idx_global_rtm(nnod_rtm,3)
@@ -191,13 +200,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_comm_table_4_rtm                                   &
-     &         (nnod_rtm, nidx_global_rtm, idx_global_rtm,              &
+     &         (s3d_ranks, nnod_rtm, nidx_global_rtm, idx_global_rtm,   &
      &          nneib_domain_rtm, ntot_item_sr_rtm, istack_sr_rtm,      &
      &          item_sr_rtm)
 !
-      use m_spheric_global_ranks
+      use t_spheric_global_ranks
       use set_global_spherical_param
 !
+      type(spheric_global_rank), intent(in) :: s3d_ranks
       integer(kind = kint), intent(in) :: nnod_rtm
       integer(kind = kint), intent(in) :: nidx_global_rtm(3)
       integer(kind = kint), intent(in) :: idx_global_rtm(nnod_rtm,3)
@@ -256,16 +266,15 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine count_num_domain_rtm_rlm(nneib_domain)
+      subroutine count_num_domain_rtm_rlm(ndomain_sph, nneib_domain)
 !
-      use m_spheric_global_ranks
-!
+      integer(kind = kint), intent(in) :: ndomain_sph
       integer(kind = kint), intent(inout) :: nneib_domain
       integer(kind = kint) :: ip_rank
 !
 !
       nneib_domain = 0
-      do ip_rank = 0, s3d_ranks%ndomain_sph-1
+      do ip_rank = 0, ndomain_sph-1
         if (ncomm(ip_rank).gt.0)  nneib_domain = nneib_domain + 1
       end do
 !
@@ -273,11 +282,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_comm_stack_rtm_rlm(ip_rank,                        &
+      subroutine set_comm_stack_rtm_rlm(ip_rank, ndomain_sph,           &
      &          nneib_domain, id_domain, istack_sr, ntot_item_sr)
 !
-      use m_spheric_global_ranks
-!
+      integer(kind = kint), intent(in) :: ndomain_sph
       integer(kind = kint), intent(in) :: ip_rank
       integer(kind = kint), intent(in) :: nneib_domain
       integer(kind = kint), intent(inout) :: ntot_item_sr
@@ -290,8 +298,8 @@
       istack_sr(0) = 0
       icou =       0
       ineib_tgt = -1
-      do ip = 1, s3d_ranks%ndomain_sph
-        irank_tgt = mod( (ip_rank+ip),s3d_ranks%ndomain_sph )
+      do ip = 1, ndomain_sph
+        irank_tgt = mod( (ip_rank+ip),ndomain_sph )
         if (ncomm(irank_tgt) .gt. 0) then
           icou = icou + 1
           ineib_tgt(irank_tgt) = icou

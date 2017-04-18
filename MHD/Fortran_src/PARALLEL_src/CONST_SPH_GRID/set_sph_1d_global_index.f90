@@ -14,12 +14,13 @@
 !!@verbatim
 !!      subroutine set_sph_1d_global_idx_rtp                            &
 !!     &         (m_folding, nphi, mdx_ispack,                          &
-!!     &          sph_dbc, stk_lc1d, sph_gl1d)
+!!     &          s3d_ranks, sph_dbc, stk_lc1d, sph_gl1d)
 !!      subroutine set_sph_1d_global_idx_rtm                            &
 !!     &         (m_folding, nphi, mtbl_fft_2_lgd, mdx_4_lgd,           &
-!!     &          sph_dbc, stk_lc1d, sph_gl1d)
+!!     &          s3d_ranks, sph_dbc, stk_lc1d, sph_gl1d)
 !!      subroutine set_sph_1d_global_idx_rlm(jmax, jtbl_fsph, sph_gl1d)
 !!      subroutine set_sph_1d_global_idx_rj(jmax, jtbl_rj, sph_gl1d)
+!!        type(spheric_global_rank), intent(in) :: s3d_ranks
 !!        type(sph_local_default_BC), intent(in) :: sph_dbc
 !!        type(sph_1d_index_stack), intent(in) :: stk_lc1d
 !!        type(sph_1d_global_index), intent(inout) :: sph_gl1d
@@ -29,6 +30,7 @@
 !
       use m_precision
 !
+      use t_spheric_global_ranks
       use t_sph_1d_global_index
       use t_sph_local_parameter
 !
@@ -42,12 +44,11 @@
 !
       subroutine set_sph_1d_global_idx_rtp                              &
      &         (m_folding, nphi, mdx_ispack,                            &
-     &          sph_dbc, stk_lc1d, sph_gl1d)
-!
-      use m_spheric_global_ranks
+     &          s3d_ranks, sph_dbc, stk_lc1d, sph_gl1d)
 !
       integer(kind = kint), intent(in) :: m_folding, nphi
       integer(kind = kint), intent(in) :: mdx_ispack(nphi)
+      type(spheric_global_rank), intent(in) :: s3d_ranks
       type(sph_local_default_BC), intent(in) :: sph_dbc
       type(sph_1d_index_stack), intent(in) :: stk_lc1d
 !
@@ -103,13 +104,12 @@
 !
       subroutine set_sph_1d_global_idx_rtm                              &
      &         (m_folding, nphi, mtbl_fft_2_lgd, mdx_4_lgd,             &
-     &          sph_dbc, stk_lc1d, sph_gl1d)
-!
-      use m_spheric_global_ranks
+     &          s3d_ranks, sph_dbc, stk_lc1d, sph_gl1d)
 !
       integer(kind = kint), intent(in) :: m_folding, nphi
       integer(kind = kint), intent(in) :: mtbl_fft_2_lgd(0:nphi)
       integer(kind = kint), intent(in) :: mdx_4_lgd(0:nphi)
+      type(spheric_global_rank), intent(in) :: s3d_ranks
       type(sph_local_default_BC), intent(in) :: sph_dbc
       type(sph_1d_index_stack), intent(in) :: stk_lc1d
 !

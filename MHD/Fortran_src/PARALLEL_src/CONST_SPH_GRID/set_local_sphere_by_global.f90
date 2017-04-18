@@ -10,22 +10,22 @@
 !!
 !!@verbatim
 !!      subroutine copy_gl_2_local_rj_param                             &
-!!     &         (ip_rank, sph_lcp, stk_lc1d, sph_rj)
+!!     &         (ip_rank, s3d_ranks, sph_lcp, stk_lc1d, sph_rj)
 !!        type(sph_local_parameters), intent(in) :: sph_lcp
 !!        type(sph_1d_index_stack), intent(in) :: stk_lc1d
 !!        type(sph_rj_grid), intent(inout) :: sph_rj
 !!      subroutine copy_gl_2_local_rlm_param                            &
-!!     &         (ip_rank, sph_lcp, stk_lc1d, sph_rlm)
+!!     &         (ip_rank, s3d_ranks, sph_lcp, stk_lc1d, sph_rlm)
 !!        type(sph_local_parameters), intent(in) :: sph_lcp
 !!        type(sph_1d_index_stack), intent(in) :: stk_lc1d
 !!        type(sph_rlm_grid), intent(inout) :: sph_rlm
 !!      subroutine copy_gl_2_local_rtm_param                            &
-!!     &         (ip_rank, sph_lcp, stk_lc1d, sph_rtm)
+!!     &         (ip_rank, s3d_ranks, sph_lcp, stk_lc1d, sph_rtm)
 !!        type(sph_local_parameters), intent(in) :: sph_lcp
 !!        type(sph_1d_index_stack), intent(in) :: stk_lc1d
 !!        type(sph_rtm_grid), intent(inout) :: sph_rtm
 !!      subroutine copy_gl_2_local_rtp_param                            &
-!!     &         (ip_rank, sph_lcp, stk_lc1d, sph_rtp)
+!!     &         (ip_rank, s3d_ranks, sph_lcp, stk_lc1d, sph_rtp)
 !!        type(sph_local_parameters), intent(in) :: sph_lcp
 !!        type(sph_1d_index_stack), intent(in) :: stk_lc1d
 !!        type(sph_rtp_grid), intent(inout) :: sph_rtp
@@ -35,6 +35,7 @@
 !
       use m_precision
       use t_spheric_parameter
+      use t_spheric_global_ranks
       use t_sph_1d_global_index
       use t_sph_local_parameter
 !
@@ -47,11 +48,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine copy_gl_2_local_rj_param                               &
-     &         (ip_rank, sph_lcp, stk_lc1d, sph_rj)
-!
-      use m_spheric_global_ranks
+     &         (ip_rank, s3d_ranks, sph_lcp, stk_lc1d, sph_rj)
 !
       integer(kind = kint), intent(in) :: ip_rank
+      type(spheric_global_rank), intent(in) :: s3d_ranks
       type(sph_local_parameters), intent(in) :: sph_lcp
       type(sph_1d_index_stack), intent(in) :: stk_lc1d
       type(sph_rj_grid), intent(inout) :: sph_rj
@@ -77,11 +77,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine copy_gl_2_local_rlm_param                              &
-     &         (ip_rank, sph_lcp, stk_lc1d, sph_rlm)
-!
-      use m_spheric_global_ranks
+     &         (ip_rank, s3d_ranks, sph_lcp, stk_lc1d, sph_rlm)
 !
       integer(kind = kint), intent(in) :: ip_rank
+      type(spheric_global_rank), intent(in) :: s3d_ranks
       type(sph_local_parameters), intent(in) :: sph_lcp
       type(sph_1d_index_stack), intent(in) :: stk_lc1d
       type(sph_rlm_grid), intent(inout) :: sph_rlm
@@ -108,11 +107,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine copy_gl_2_local_rtm_param                              &
-     &         (ip_rank, sph_lcp, stk_lc1d, sph_rtm)
-!
-      use m_spheric_global_ranks
+     &         (ip_rank, s3d_ranks, sph_lcp, stk_lc1d, sph_rtm)
 !
       integer(kind = kint), intent(in) :: ip_rank
+      type(spheric_global_rank), intent(in) :: s3d_ranks
       type(sph_local_parameters), intent(in) :: sph_lcp
       type(sph_1d_index_stack), intent(in) :: stk_lc1d
       type(sph_rtm_grid), intent(inout) :: sph_rtm
@@ -142,11 +140,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine copy_gl_2_local_rtp_param                              &
-     &         (ip_rank, sph_lcp, stk_lc1d, sph_rtp)
-!
-      use m_spheric_global_ranks
+     &         (ip_rank, s3d_ranks, sph_lcp, stk_lc1d, sph_rtp)
 !
       integer(kind = kint), intent(in) :: ip_rank
+      type(spheric_global_rank), intent(in) :: s3d_ranks
       type(sph_local_parameters), intent(in) :: sph_lcp
       type(sph_1d_index_stack), intent(in) :: stk_lc1d
       type(sph_rtp_grid), intent(inout) :: sph_rtp

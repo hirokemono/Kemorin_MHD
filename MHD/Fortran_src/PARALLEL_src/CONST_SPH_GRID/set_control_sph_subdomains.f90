@@ -9,15 +9,16 @@
 !!
 !!@verbatim
 !!      subroutine set_subdomains_4_sph_shell                           &
-!!     &         (nprocs_check, sdctl, ierr, e_message)
+!!     &         (nprocs_check, sdctl, s3d_ranks, ierr, e_message)
 !!        type(sphere_domain_control), intent(inout) :: sdctl
+!!        type(spheric_global_rank), intent(inout) :: s3d_ranks
 !!@endverbatim
 !
       module set_control_sph_subdomains
 !
       use m_precision
 !
-      use m_spheric_global_ranks
+      use t_spheric_global_ranks
       use t_ctl_data_4_divide_sphere
 !
       implicit  none
@@ -49,13 +50,15 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_subdomains_4_sph_shell                             &
-     &         (nprocs_check, sdctl, ierr, e_message)
+     &         (nprocs_check, sdctl, s3d_ranks, ierr, e_message)
 !
       use m_error_IDs
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: nprocs_check
+!
       type(sphere_domain_control), intent(inout) :: sdctl
+      type(spheric_global_rank), intent(inout) :: s3d_ranks
       integer(kind = kint), intent(inout) :: ierr
       character(len = kchara), intent(inout) :: e_message
 !
@@ -70,9 +73,9 @@
      &         * sdctl%num_horiz_domain_ctl%iflag
 !
       if(iflag_s .gt. 0) then
-        call simple_subdomains_4_sph_shell(sdctl)
+        call simple_subdomains_4_sph_shell(sdctl, s3d_ranks)
       else if(iflag_f .gt. 0) then
-        call full_subdomains_4_sph_shell(sdctl)
+        call full_subdomains_4_sph_shell(sdctl, s3d_ranks)
       else
         write(e_message,'(a)') 'Set parallelization information'
         ierr = ierr_mesh
@@ -102,11 +105,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine full_subdomains_4_sph_shell(sdctl)
+      subroutine full_subdomains_4_sph_shell(sdctl, s3d_ranks)
 !
       use skip_comment_f
 !
       type(sphere_domain_control), intent(in) :: sdctl
+      type(spheric_global_rank), intent(inout) :: s3d_ranks
 !
       integer(kind = kint) :: i
 !
@@ -167,9 +171,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine simple_subdomains_4_sph_shell(sdctl)
+      subroutine simple_subdomains_4_sph_shell(sdctl, s3d_ranks)
 !
       type(sphere_domain_control), intent(in) :: sdctl
+      type(spheric_global_rank), intent(inout) :: s3d_ranks
 !
 !
       s3d_ranks%ndomain_rtp(1) = sdctl%num_radial_domain_ctl%intvalue

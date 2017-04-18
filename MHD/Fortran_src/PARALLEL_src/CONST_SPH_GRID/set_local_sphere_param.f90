@@ -9,16 +9,20 @@
 !!
 !!
 !!@verbatim
-!!      subroutine set_global_sph_rtp_id(stk_lc1d, sph_rtp)
+!!      subroutine set_global_sph_rtp_id(s3d_ranks, stk_lc1d, sph_rtp)
+!!        type(spheric_global_rank), intent(in) :: s3d_ranks
 !!        type(sph_1d_index_stack), intent(in) :: stk_lc1d
 !!        type(sph_rtp_grid), intent(inout) :: sph_rtp
-!!      subroutine set_global_sph_rj_id(stk_lc1d, sph_rj)
+!!      subroutine set_global_sph_rj_id(s3d_ranks, stk_lc1d, sph_rj)
+!!        type(spheric_global_rank), intent(in) :: s3d_ranks
 !!        type(sph_1d_index_stack), intent(in) :: stk_lc1d
 !!        type(sph_rj_grid), intent(inout) ::  sph_rj
-!!      subroutine set_global_sph_4_rtm(stk_lc1d, sph_rtm)
+!!      subroutine set_global_sph_4_rtm(s3d_ranks, stk_lc1d, sph_rtm)
+!!        type(spheric_global_rank), intent(in) :: s3d_ranks
 !!        type(sph_1d_index_stack), intent(in) :: stk_lc1d
 !!        type(sph_rtm_grid), intent(inout) :: sph_rtm
-!!      subroutine set_global_sph_4_rlm(stk_lc1d, sph_rlm)
+!!      subroutine set_global_sph_4_rlm(s3d_ranks, stk_lc1d, sph_rlm)
+!!        type(spheric_global_rank), intent(in) :: s3d_ranks
 !!        type(sph_1d_index_stack), intent(in) :: stk_lc1d
 !!        type(sph_rlm_grid), intent(inout) :: sph_rlm
 !!@endverbatim
@@ -26,6 +30,9 @@
       module set_local_sphere_param
 !
       use m_precision
+!
+      use t_spheric_global_ranks
+      use t_sph_1d_global_index
 !
       implicit none
 !
@@ -35,13 +42,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_global_sph_rtp_id(stk_lc1d, sph_rtp)
+      subroutine set_global_sph_rtp_id(s3d_ranks, stk_lc1d, sph_rtp)
 !
-      use m_spheric_global_ranks
-!
-      use t_sph_1d_global_index
       use t_spheric_rtp_data
 !
+      type(spheric_global_rank), intent(in) :: s3d_ranks
       type(sph_1d_index_stack), intent(in) :: stk_lc1d
       type(sph_rtp_grid), intent(inout) :: sph_rtp
 !
@@ -75,13 +80,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_global_sph_rj_id(stk_lc1d, sph_rj)
+      subroutine set_global_sph_rj_id(s3d_ranks, stk_lc1d, sph_rj)
 !
-      use m_spheric_global_ranks
-!
-      use t_sph_1d_global_index
       use t_spheric_rj_data
 !
+      type(spheric_global_rank), intent(in) :: s3d_ranks
       type(sph_1d_index_stack), intent(in) :: stk_lc1d
       type(sph_rj_grid), intent(inout) ::  sph_rj
 !
@@ -108,13 +111,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_global_sph_4_rtm(stk_lc1d, sph_rtm)
+      subroutine set_global_sph_4_rtm(s3d_ranks, stk_lc1d, sph_rtm)
 !
-      use m_spheric_global_ranks
-!
-      use t_sph_1d_global_index
       use t_spheric_rtm_data
 !
+      type(spheric_global_rank), intent(in) :: s3d_ranks
       type(sph_1d_index_stack), intent(in) :: stk_lc1d
       type(sph_rtm_grid), intent(inout) :: sph_rtm
 !
@@ -144,13 +145,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_global_sph_4_rlm(stk_lc1d, sph_rlm)
+      subroutine set_global_sph_4_rlm(s3d_ranks, stk_lc1d, sph_rlm)
 !
-      use m_spheric_global_ranks
-!
-      use t_sph_1d_global_index
       use t_spheric_rlm_data
 !
+      type(spheric_global_rank), intent(in) :: s3d_ranks
       type(sph_1d_index_stack), intent(in) :: stk_lc1d
       type(sph_rlm_grid), intent(inout) :: sph_rlm
 !

@@ -3,15 +3,19 @@
 !
 !     Written by H. Matsui on July, 2007
 !
-!!      subroutine set_sph_1d_domain_id_rtp(stk_lc1d, sph_gl1d)
-!!      subroutine set_sph_1d_domain_id_rj(stk_lc1d, sph_gl1d)
+!!      subroutine set_sph_1d_domain_id_rtp                             &
+!!     &         (stk_lc1d, sph_gl1d, s3d_ranks)
+!!      subroutine set_sph_1d_domain_id_rj                              &
+!!     &         (stk_lc1d, sph_gl1d, s3d_ranks)
 !!        type(sph_1d_index_stack), intent(in) :: stk_lc1d
 !!        type(sph_1d_global_index), intent(in) :: sph_gl1d
+!!        type(spheric_global_rank), intent(inout) :: s3d_ranks
 !
       module set_sph_1d_domain_id
 !
       use m_precision
 !
+      use t_spheric_global_ranks
       use t_sph_1d_global_index
 !
       implicit none
@@ -22,12 +26,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sph_1d_domain_id_rtp(stk_lc1d, sph_gl1d)
-!
-      use m_spheric_global_ranks
+      subroutine set_sph_1d_domain_id_rtp                               &
+     &         (stk_lc1d, sph_gl1d, s3d_ranks)
 !
       type(sph_1d_index_stack), intent(in) :: stk_lc1d
       type(sph_1d_global_index), intent(in) :: sph_gl1d
+!
+      type(spheric_global_rank), intent(inout) :: s3d_ranks
 !
       integer(kind = kint) :: ip_rank, ip, ist, ied, i, idx
 !
@@ -66,12 +71,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sph_1d_domain_id_rj(stk_lc1d, sph_gl1d)
-!
-      use m_spheric_global_ranks
+      subroutine set_sph_1d_domain_id_rj                                &
+     &         (stk_lc1d, sph_gl1d, s3d_ranks)
 !
       type(sph_1d_index_stack), intent(in) :: stk_lc1d
       type(sph_1d_global_index), intent(in) :: sph_gl1d
+!
+      type(spheric_global_rank), intent(inout) :: s3d_ranks
 !
       integer(kind = kint) :: ip_rank, ip, ist, ied, i, idx
 !

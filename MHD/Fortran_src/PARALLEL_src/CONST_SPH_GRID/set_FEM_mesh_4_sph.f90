@@ -5,12 +5,13 @@
 !
 !!      subroutine s_const_FEM_mesh_for_sph                             &
 !!     &         (ip_rank, nidx_rtp, r_global, gauss,                   &
-!!     &          stk_lc1d, sph_gl1d, sph_params, sph_rtp,              &
+!!     &          s3d_ranks, stk_lc1d, sph_gl1d, sph_params, sph_rtp,   &
 !!     &          radial_rj_grp, mesh, group, stbl)
 !!        type(gauss_points), intent(in) :: gauss
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(group_data), intent(in) :: radial_rj_grp
+!!        type(spheric_global_rank), intent(in) :: s3d_ranks
 !!        type(sph_1d_index_stack), intent(in)  :: stk_lc1d
 !!        type(sph_1d_global_index), intent(in)  :: sph_gl1d
 !!        type(comm_table_make_sph), intent(inout) :: stbl
@@ -35,7 +36,7 @@
 !
       subroutine s_const_FEM_mesh_for_sph                               &
      &         (ip_rank, nidx_rtp, r_global, gauss,                     &
-     &          stk_lc1d, sph_gl1d, sph_params, sph_rtp,                &
+     &          s3d_ranks, stk_lc1d, sph_gl1d, sph_params, sph_rtp,     &
      &          radial_rj_grp, mesh, group, stbl)
 !
       use t_spheric_parameter
@@ -44,13 +45,14 @@
       use t_comm_table
       use t_geometry_data
       use t_group_data
+      use t_spheric_global_ranks
       use t_sph_mesh_1d_connect
       use t_sph_1d_global_index
-      use m_spheric_global_ranks
 !
       use coordinate_converter
       use ordering_sph_mesh_to_rtp
 !
+      type(spheric_global_rank), intent(in) :: s3d_ranks
       type(sph_1d_index_stack), intent(in)  :: stk_lc1d
       type(sph_1d_global_index), intent(in)  :: sph_gl1d
       type(comm_table_make_sph), intent(inout) :: stbl
@@ -88,7 +90,7 @@
 !
 ! Set communication table
       call const_nod_comm_table_for_sph(ip_rank, ip_r, ip_t,            &
-     &    stbl, mesh%nod_comm)
+     &    s3d_ranks, stbl, mesh%nod_comm)
 !
 ! Ordering to connect rtp data
       call s_ordering_sph_mesh_for_rtp                                  &
@@ -114,7 +116,6 @@
       use t_spheric_parameter
       use t_gauss_points
       use t_sph_mesh_1d_connect
-      use m_spheric_global_ranks
 !
       use set_sph_local_node
       use set_sph_local_element
@@ -224,32 +225,38 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_nod_comm_table_for_sph(ip_rank, ip_r, ip_t,      &
-     &          stbl, nod_comm)
+     &          s3d_ranks, stbl, nod_comm)
 !
       use t_comm_table
+      use t_spheric_global_ranks
       use t_sph_mesh_1d_connect
       use const_comm_tbl_4_sph_mesh
 !
       integer(kind = kint), intent(in) :: ip_rank, ip_r, ip_t
 !
+      type(spheric_global_rank), intent(in) :: s3d_ranks
       type(comm_table_make_sph), intent(inout) :: stbl
       type(communication_table), intent(inout) :: nod_comm
 !
 ! Count subdomain to communicate
-      call count_neib_4_sph_mesh(ip_rank, ip_r, ip_t, stbl, nod_comm)
+      call count_neib_4_sph_mesh(ip_rank, ip_r, ip_t,                   &
+     &    s3d_ranks, stbl, nod_comm)
       call count_neib_4_sph_center_mesh(ip_rank, ip_r, ip_t,            &
-     &    stbl, nod_comm)
+     &    s3d_ranks, stbl, nod_comm)
 !
       call allocate_type_comm_tbl_num(nod_comm)
 !
 ! Set subdomain ID to communicate
-      call set_neib_4_sph_mesh(ip_rank, ip_r, ip_t, stbl, nod_comm)
+      call set_neib_4_sph_mesh(ip_rank, ip_r, ip_t,                     &
+     &    s3d_ranks, stbl, nod_comm)
       call set_neib_4_sph_center_mesh(ip_rank, ip_r, ip_t,              &
-     &    stbl, nod_comm)
+     &    s3d_ranks, stbl, nod_comm)
 !
 ! Count number of nodes to communicate
-      call count_import_4_sph_mesh(ip_r, ip_t, stbl, nod_comm)
-      call count_export_4_sph_mesh(ip_r, ip_t, stbl, nod_comm)
+      call count_import_4_sph_mesh                                      &
+     &   (ip_r, ip_t, s3d_ranks, stbl, nod_comm)
+      call count_export_4_sph_mesh                                      &
+     &   (ip_r, ip_t, s3d_ranks, stbl, nod_comm)
 !
 !
       call allocate_type_import_item(nod_comm)
@@ -258,8 +265,10 @@
      &   (nod_comm%ntot_import, nod_comm%ntot_export, stbl)
 !
 ! set node ID to communicate
-      call set_import_rtp_sph_mesh(ip_r, ip_t, stbl, nod_comm)
-      call set_export_rtp_sph_mesh(ip_r, ip_t, stbl, nod_comm)
+      call set_import_rtp_sph_mesh                                      &
+     &   (ip_r, ip_t, s3d_ranks, stbl, nod_comm)
+      call set_export_rtp_sph_mesh                                      &
+     &   (ip_r, ip_t, s3d_ranks, stbl, nod_comm)
 !
       call dealloc_1d_comm_tbl_4_sph(stbl)
 !

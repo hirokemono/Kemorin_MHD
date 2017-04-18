@@ -38,8 +38,6 @@
       subroutine count_import_4_shell_mesh(ip_r, ip_t, jp_r, jp_t,      &
      &          stbl, num_import)
 !
-      use m_spheric_global_ranks
-!
       type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint), intent(in) :: ip_r, ip_t, jp_r, jp_t
       integer(kind = kint), intent(inout) :: num_import
@@ -71,7 +69,6 @@
       subroutine set_import_rtp_shell_mesh(ip_r, ip_t, jp_r, jp_t,      &
      &          icou, stbl, nod_comm)
 !
-      use m_spheric_global_ranks
       use cal_sph_node_addresses
 !
       integer(kind = kint), intent(in) :: ip_r, ip_t, jp_r, jp_t
@@ -137,8 +134,6 @@
       subroutine count_export_4_shell_mesh(ip_r, ip_t, jp_r, jp_t,      &
      &          stbl, num_export)
 !
-      use m_spheric_global_ranks
-!
       type(comm_table_make_sph), intent(in) :: stbl
       integer(kind = kint), intent(in) ::  ip_r, ip_t, jp_r, jp_t
       integer(kind = kint), intent(inout) :: num_export
@@ -170,7 +165,6 @@
       subroutine set_export_rtp_shell_mesh(ip_r, ip_t, jp_r, jp_t,      &
      &          icou, stbl, nod_comm)
 !
-      use m_spheric_global_ranks
       use cal_sph_node_addresses
 !
       integer(kind = kint), intent(in) :: ip_r, ip_t, jp_r, jp_t
