@@ -90,14 +90,10 @@
       if(gen_sph%s3d_ranks%ndomain_sph .eq. nprocs) then
         if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rlm_grids'
         call mpi_gen_sph_rlm_grids                                      &
-     &     (gen_sph%s3d_ranks, gen_sph%s3d_radius, gen_sph%sph_lcp,     &
-     &      gen_sph%stk_lc1d, gen_sph%sph_gl1d,                         &
-     &      sph%sph_params, sph%sph_rlm, comm_rlm_mul)
+     &     (gen_sph, sph%sph_params, sph%sph_rlm, comm_rlm_mul)
       else
         call para_gen_sph_rlm_grids(gen_sph%s3d_ranks%ndomain_sph,      &
-     &      gen_sph%s3d_ranks, gen_sph%s3d_radius, gen_sph%sph_lcp,     &
-     &      gen_sph%stk_lc1d, gen_sph%sph_gl1d,                         &
-     &      sph%sph_params, sph%sph_rlm, comm_rlm_mul)
+     &      gen_sph, sph%sph_params, sph%sph_rlm, comm_rlm_mul)
       end if
       call bcast_comm_stacks_sph                                        &
      &  (gen_sph%s3d_ranks%ndomain_sph, comm_rlm_mul)
@@ -106,18 +102,12 @@
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rj_modes'
       call start_eleps_time(3)
       if(gen_sph%s3d_ranks%ndomain_sph .eq. nprocs) then
-        call mpi_gen_sph_rj_modes                                       &
-     &     (comm_rlm_mul, gen_sph%added_radial_grp,                     &
-     &      gen_sph%s3d_ranks, gen_sph%s3d_radius,                      &
-     &      gen_sph%sph_lcp, gen_sph%stk_lc1d, gen_sph%sph_gl1d,        &
-     &      sph%sph_params, sph%sph_rlm, sph%sph_rj)
+        call mpi_gen_sph_rj_modes(comm_rlm_mul,                         &
+     &      gen_sph, sph%sph_params, sph%sph_rlm, sph%sph_rj)
       else
         call para_gen_sph_rj_modes                                      &
      &     (gen_sph%s3d_ranks%ndomain_sph, comm_rlm_mul,                &
-     &      gen_sph%added_radial_grp, gen_sph%s3d_ranks,                &
-     &      gen_sph%s3d_radius, gen_sph%sph_lcp,                        &
-     &      gen_sph%stk_lc1d, gen_sph%sph_gl1d,                         &
-     &      sph%sph_params, sph%sph_rlm, sph%sph_rj)
+     &      gen_sph, sph%sph_params, sph%sph_rlm, sph%sph_rj)
       end if
       call dealloc_comm_stacks_sph                                      &
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rlm_mul)
@@ -130,14 +120,10 @@
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rtm_grids'
       if(gen_sph%s3d_ranks%ndomain_sph .eq. nprocs) then
         call mpi_gen_sph_rtm_grids                                      &
-     &     (gen_sph%s3d_ranks, gen_sph%s3d_radius, gen_sph%sph_lcp,     &
-     &      gen_sph%stk_lc1d, gen_sph%sph_gl1d,                         &
-     &      sph%sph_params, sph%sph_rtm, comm_rtm_mul)
+     &     (gen_sph, sph%sph_params, sph%sph_rtm, comm_rtm_mul)
       else
         call para_gen_sph_rtm_grids(gen_sph%s3d_ranks%ndomain_sph,      &
-     &      gen_sph%s3d_ranks, gen_sph%s3d_radius, gen_sph%sph_lcp,     &
-     &      gen_sph%stk_lc1d, gen_sph%sph_gl1d,                         &
-     &      sph%sph_params, sph%sph_rtm, comm_rtm_mul)
+     &      gen_sph, sph%sph_params, sph%sph_rtm, comm_rtm_mul)
       end if
       call bcast_comm_stacks_sph                                        &
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rtm_mul)
@@ -145,21 +131,13 @@
 !
       call start_eleps_time(3)
       if(gen_sph%s3d_ranks%ndomain_sph .eq. nprocs) then
-        call mpi_gen_sph_rtp_grids                                      &
-     &     (comm_rtm_mul, gen_sph%added_radial_grp,                     &
-     &      gen_sph%r_layer_grp, gen_sph%med_layer_grp,                 &
-     &      gen_sph%s3d_ranks, gen_sph%s3d_radius, gen_sph%sph_lcp,     &
-     &      gen_sph%stk_lc1d, gen_sph%sph_gl1d,                         &
-     &      sph%sph_params, sph%sph_rtp, sph%sph_rtm)
+        call mpi_gen_sph_rtp_grids(comm_rtm_mul,                        &
+     &      gen_sph, sph%sph_params, sph%sph_rtp, sph%sph_rtm)
       else
         if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rtp_grids'
         call para_gen_sph_rtp_grids                                     &
      &     (gen_sph%s3d_ranks%ndomain_sph, comm_rtm_mul,                &
-     &      gen_sph%added_radial_grp, gen_sph%r_layer_grp,              &
-     &      gen_sph%med_layer_grp, gen_sph%s3d_ranks,                   &
-     &      gen_sph%s3d_radius, gen_sph%sph_lcp,                        &
-     &      gen_sph%stk_lc1d, gen_sph%sph_gl1d,                         &
-     &      sph%sph_params, sph%sph_rtp, sph%sph_rtm)
+     &      gen_sph, sph%sph_params, sph%sph_rtp, sph%sph_rtm)
       end if
       call dealloc_comm_stacks_sph                                      &
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rtm_mul)
