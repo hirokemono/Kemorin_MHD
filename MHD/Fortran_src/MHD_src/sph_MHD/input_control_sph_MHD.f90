@@ -350,8 +350,6 @@
       call load_para_SPH_and_FEM_mesh(sph, comms_sph, sph_grps,         &
      &    mesh, group, ele_mesh, mesh_file, gen_sph)
 !
-      call deallocate_gen_mesh_consts(gen_sph)
-!
       end subroutine select_make_SPH_mesh
 !
 ! ----------------------------------------------------------------------

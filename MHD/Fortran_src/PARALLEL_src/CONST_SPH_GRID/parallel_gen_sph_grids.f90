@@ -9,7 +9,6 @@
 !!@verbatim
 !!      subroutine para_gen_sph_grids(sph, gen_sph)
 !!      subroutine deallocate_gen_mesh_params(gen_sph)
-!!      subroutine deallocate_gen_mesh_consts(gen_sph)
 !!        type(construct_spherical_grid), intent(inout) :: gen_sph
 !!        type(sph_grids), intent(inout) :: sph
 !!@endverbatim
@@ -188,22 +187,11 @@
 !
       call dealloc_radius_1d_gl(gen_sph%s3d_radius)
 !
-      end subroutine deallocate_gen_mesh_params
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_gen_mesh_consts(gen_sph)
-!
-      use t_2d_sph_trans_table
-!
-      type(construct_spherical_grid), intent(inout) :: gen_sph
-!
-!
       call dealloc_layering_group(gen_sph%med_layer_grp)
       call dealloc_layering_group(gen_sph%r_layer_grp)
       call dealloc_layering_group(gen_sph%added_radial_grp)
 !
-      end subroutine deallocate_gen_mesh_consts
+      end subroutine deallocate_gen_mesh_params
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
