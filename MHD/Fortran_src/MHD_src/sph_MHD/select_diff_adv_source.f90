@@ -49,7 +49,7 @@
       use m_precision
       use m_constants
 !
-      use t_sgs_control_parameter
+      use t_SGS_control_parameter
       use t_spheric_rj_data
       use t_phys_data
 !
