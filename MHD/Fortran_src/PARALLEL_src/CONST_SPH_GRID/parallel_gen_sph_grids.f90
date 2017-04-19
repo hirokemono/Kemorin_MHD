@@ -186,6 +186,8 @@
       call dealloc_sph_1d_global_idx(gen_sph%sph_gl1d)
       call dealloc_sph_1d_global_stack(gen_sph%stk_lc1d)
 !
+      call dealloc_radius_1d_gl(gen_sph%s3d_radius)
+!
       end subroutine deallocate_gen_mesh_params
 !
 ! -----------------------------------------------------------------------
@@ -196,8 +198,6 @@
 !
       type(construct_spherical_grid), intent(inout) :: gen_sph
 !
-!
-      call dealloc_radius_1d_gl(gen_sph%s3d_radius)
 !
       call dealloc_layering_group(gen_sph%med_layer_grp)
       call dealloc_layering_group(gen_sph%r_layer_grp)
