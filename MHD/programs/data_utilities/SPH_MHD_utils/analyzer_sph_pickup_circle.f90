@@ -75,8 +75,9 @@
       call set_control_SGS_SPH_MHD(MHD_ctl1%plt, MHD_ctl1%org_plt,      &
      &    MHD_ctl1%model_ctl, MHD_ctl1%ctl_ctl, MHD_ctl1%smonitor_ctl,  &
      &    MHD_ctl1%nmtr_ctl, MHD_ctl1%psph_ctl, sph_gen, rj_fld1,       &
-     &    mesh_file_circ, sph_file_param1, MHD1_org_files, sph_fst_IO,  &
-     &    pwr1, SGS_par1, trns_WK1%dynamic_SPH%sph_filters, MHD_step1,  &
+     &    mesh_file_circ, sph_file_param1, MHD1_org_files,              &
+     &    sph_fst_IO, bc_IO1, pwr1, SGS_par1,                           &
+     &    trns_WK1%dynamic_SPH%sph_filters, MHD_step1,                  &
      &    MHD_prop1, trns_WK1%WK_sph, gen_sph_c)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
 !

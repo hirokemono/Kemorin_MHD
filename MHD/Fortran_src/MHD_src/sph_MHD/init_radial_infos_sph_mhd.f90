@@ -10,9 +10,11 @@
 !!
 !!@verbatim
 !!      subroutine init_r_infos_sph_mhd_evo                             &
-!!     &         (sph_grps, ipol, sph, omega_sph, ref_temp, ref_comp,   &
-!!     &          MHD_prop, sph_MHD_bc, r_2nd, rj_fld)
-!!      subroutine init_r_infos_sph_mhd(sph_grps, ipol, sph, omega_sph, &
+!!     &         (bc_IO, sph_grps, ipol, sph, omega_sph,                &
+!!     &          ref_temp, ref_comp, MHD_prop, sph_MHD_bc,             &
+!!     &          r_2nd, rj_fld)
+!!      subroutine init_r_infos_sph_mhd                                 &
+!!     &         (bc_IO, sph_grps, ipol, sph, omega_sph,                &
 !!     &          ref_temp, ref_comp, rj_fld, MHD_prop, sph_MHD_bc)
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(sph_group_data), intent(in) :: sph_grps
@@ -51,6 +53,7 @@
       use t_phys_data
       use t_fdm_coefs
       use t_boundary_data_sph_MHD
+      use t_sph_boundary_input_data
 !
       implicit none
 !
@@ -63,13 +66,15 @@
 !  -------------------------------------------------------------------
 !
       subroutine init_r_infos_sph_mhd_evo                               &
-     &         (sph_grps, ipol, sph, omega_sph, ref_temp, ref_comp,     &
-     &          MHD_prop, sph_MHD_bc, r_2nd, rj_fld)
+     &         (bc_IO, sph_grps, ipol, sph, omega_sph,                  &
+     &          ref_temp, ref_comp, MHD_prop, sph_MHD_bc,               &
+     &          r_2nd, rj_fld)
 !
       use calypso_mpi
       use const_fdm_coefs
       use material_property
 !
+      type(boundary_spectra), intent(in) :: bc_IO
       type(sph_group_data), intent(in) :: sph_grps
       type(phys_address), intent(in) :: ipol
 !
@@ -82,7 +87,7 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call init_r_infos_sph_mhd(sph_grps, ipol, sph, omega_sph,         &
+      call init_r_infos_sph_mhd(bc_IO, sph_grps, ipol, sph, omega_sph,  &
      &    ref_temp, ref_comp, rj_fld, MHD_prop, sph_MHD_bc)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_2nd_fdm_matrices'
@@ -97,11 +102,13 @@
 !
 !  -------------------------------------------------------------------
 !
-      subroutine init_r_infos_sph_mhd(sph_grps, ipol, sph, omega_sph,   &
+      subroutine init_r_infos_sph_mhd                                   &
+     &         (bc_IO, sph_grps, ipol, sph, omega_sph,                  &
      &          ref_temp, ref_comp, rj_fld, MHD_prop, sph_MHD_bc)
 !
       use set_bc_sph_mhd
 !
+      type(boundary_spectra), intent(in) :: bc_IO
       type(sph_group_data), intent(in) :: sph_grps
       type(phys_address), intent(in) :: ipol
 !
@@ -127,7 +134,7 @@
 !*  ---------- boudary conditions  ---------------
       if(iflag_debug.gt.0) write(*,*) 's_set_bc_sph_mhd'
       call s_set_bc_sph_mhd                                             &
-     &   (sph%sph_params, sph%sph_rj, sph_grps%radial_rj_grp,           &
+     &   (bc_IO, sph%sph_params, sph%sph_rj, sph_grps%radial_rj_grp,    &
      &    MHD_prop, CTR_nod_grp_name, CTR_sf_grp_name, sph_MHD_bc)
 !
       call init_reference_temps                                         &

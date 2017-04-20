@@ -10,13 +10,13 @@
 !!      subroutine set_control_SGS_SPH_MHD(plt, org_plt,                &
 !!     &         model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,  &
 !!     &         sph_gen, rj_fld, mesh_file, sph_file_param,            &
-!!     &         MHD_org_files, sph_fst_IO, pwr, SGS_par, sph_filters,  &
-!!     &         MHD_step, MHD_prop, WK_sph, gen_sph)
+!!     &         MHD_org_files, sph_fst_IO, bc_IO, pwr, SGS_par,        &
+!!     &         sph_filters, MHD_step, MHD_prop, WK_sph, gen_sph)
 !!      subroutine set_control_4_SPH_MHD(plt, org_plt,                  &
 !!     &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl, &
 !!     &          sph_gen, rj_fld, mesh_file, sph_file_param,           &
-!!     &          MHD_org_files, sph_fst_IO, pwr, SGS_par, MHD_step,    &
-!!     &          MHD_prop, WK_sph, gen_sph)
+!!     &          MHD_org_files, sph_fst_IO, bc_IO, pwr, SGS_par,       &
+!!     &          MHD_step, MHD_prop, WK_sph, gen_sph)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
 !!        type(mhd_model_control), intent(inout) :: model_ctl
@@ -73,8 +73,8 @@
       subroutine set_control_SGS_SPH_MHD(plt, org_plt,                  &
      &         model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,    &
      &         sph_gen, rj_fld, mesh_file, sph_file_param,              &
-     &         MHD_org_files, sph_fst_IO, pwr, SGS_par, sph_filters,    &
-     &         MHD_step, MHD_prop, WK_sph, gen_sph)
+     &         MHD_org_files, sph_fst_IO, bc_IO, pwr, SGS_par,          &
+     &         sph_filters, MHD_step, MHD_prop, WK_sph, gen_sph)
 !
       use m_ucd_data
       use sph_mhd_rms_IO
@@ -85,6 +85,7 @@
       use t_rms_4_sph_spectr
       use t_sph_filtering_data
       use t_const_spherical_grid
+      use t_sph_boundary_input_data
 !
       use set_control_4_SGS
 !
@@ -101,6 +102,7 @@
       type(field_IO_params), intent(inout) :: sph_file_param
       type(file_params_4_sph_mhd), intent(inout) :: MHD_org_files
       type(field_IO), intent(inout) :: sph_fst_IO
+      type(boundary_spectra), intent(inout) :: bc_IO
       type(sph_mean_squares), intent(inout) :: pwr
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(sph_filters_type), intent(inout) :: sph_filters(1)
@@ -128,7 +130,7 @@
       call set_control_4_SPH_MHD(plt, org_plt,                          &
      &    model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,         &
      &    sph_gen, rj_fld, mesh_file, sph_file_param, MHD_org_files,    &
-     &    sph_fst_IO, pwr, SGS_par, MHD_step, MHD_prop,                 &
+     &    sph_fst_IO, bc_IO, pwr, SGS_par, MHD_step, MHD_prop,          &
      &    WK_sph, gen_sph)
 !
       end subroutine set_control_SGS_SPH_MHD
@@ -138,8 +140,8 @@
       subroutine set_control_4_SPH_MHD(plt, org_plt,                    &
      &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,   &
      &          sph_gen, rj_fld, mesh_file, sph_file_param,             &
-     &          MHD_org_files, sph_fst_IO, pwr, SGS_par, MHD_step,      &
-     &          MHD_prop, WK_sph, gen_sph)
+     &          MHD_org_files, sph_fst_IO, bc_IO, pwr, SGS_par,         &
+     &          MHD_step, MHD_prop, WK_sph, gen_sph)
 !
       use m_ucd_data
       use m_flexible_time_step
@@ -151,6 +153,7 @@
       use t_rms_4_sph_spectr
       use t_sph_trans_arrays_MHD
       use t_const_spherical_grid
+      use t_sph_boundary_input_data
 !
       use gen_sph_grids_modes
       use set_control_platform_data
@@ -178,6 +181,7 @@
       type(field_IO_params), intent(inout) :: sph_file_param
       type(file_params_4_sph_mhd), intent(inout) :: MHD_org_files
       type(field_IO), intent(inout) :: sph_fst_IO
+      type(boundary_spectra), intent(inout) :: bc_IO
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(MHD_step_param), intent(inout) :: MHD_step
       type(MHD_evolution_param), intent(inout) :: MHD_prop
@@ -227,7 +231,7 @@
      &   (SGS_par%model_p, MHD_prop, plt,                               &
      &    model_ctl%fld_ctl%field_ctl, ctl_ctl%mevo_ctl,                &
      &    MHD_org_files%rj_file_param, MHD_org_files%rst_file_param,    &
-     &    rj_fld, WK_sph)
+     &    rj_fld, bc_IO, WK_sph)
 !
 !   set control parameters
 !

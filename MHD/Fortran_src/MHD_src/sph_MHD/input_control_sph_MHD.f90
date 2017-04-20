@@ -61,13 +61,14 @@
       use t_SPH_MHD_file_parameters
       use t_ctl_data_MHD
       use t_sph_trans_arrays_MHD
+      use t_sph_boundary_input_data
       use sph_filtering
 !
       implicit none
 !
       private :: set_control_4_SPH_to_FEM
 !
-      type(sph_grids), private :: sph_gen
+      type(sph_grids), private :: sph_tmp
 !
 !>      Structure for mesh file IO paramters
       type(field_IO_params), save ::  mesh1_file
@@ -75,6 +76,8 @@
       type(field_IO_params), save :: sph_file_param1
 !>      Structure of dynamo file parameters for original data
       type(file_params_4_sph_mhd), save :: MHD1_org_files
+!>        Structures for boundary conditions
+      type(boundary_spectra), save :: bc_IO1
 !
 !>      Structure to construct grid
       type(construct_spherical_grid), save :: gen_sph1
@@ -123,9 +126,9 @@
       call set_control_SGS_SPH_MHD(MHD_ctl%plt, MHD_ctl%org_plt,        &
      &    MHD_ctl%model_ctl, MHD_ctl%ctl_ctl, MHD_ctl%smonitor_ctl,     &
      &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl,                           &
-     &    sph_gen, rj_fld, mesh1_file, sph_file_param1, MHD1_org_files, &
-     &    sph_fst_IO, pwr, SGS_par, dynamic_SPH%sph_filters, MHD_step,  &
-     &    MHD_prop, WK%WK_sph, gen_sph1)
+     &    sph_tmp, rj_fld, mesh1_file, sph_file_param1, MHD1_org_files, &
+     &    sph_fst_IO, bc_IO1, pwr, SGS_par, dynamic_SPH%sph_filters,    &
+     &    MHD_step, MHD_prop, WK%WK_sph, gen_sph1)
 !
       call set_control_4_SPH_to_FEM                                     &
      &   (MHD_ctl%psph_ctl%spctl, sph%sph_params, rj_fld, nod_fld)
@@ -146,7 +149,6 @@
      &         (MHD_ctl, sph, comms_sph, sph_grps, rj_fld,              &
      &          pwr, SGS_par, dynamic_SPH, MHD_step, MHD_prop, WK)
 !
-      use m_sph_boundary_input_data
       use sph_mhd_rst_IO_control
       use set_control_sph_mhd
       use parallel_load_data_4_sph
@@ -169,9 +171,9 @@
       call set_control_SGS_SPH_MHD(MHD_ctl%plt, MHD_ctl%org_plt,        &
      &    MHD_ctl%model_ctl, MHD_ctl%ctl_ctl, MHD_ctl%smonitor_ctl,     &
      &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl,                           &
-     &    sph_gen, rj_fld, mesh1_file, sph_file_param1, MHD1_org_files, &
-     &    sph_fst_IO, pwr, SGS_par, dynamic_SPH%sph_filters, MHD_step,  &
-     &    MHD_prop, WK%WK_sph, gen_sph1)
+     &    sph_tmp, rj_fld, mesh1_file, sph_file_param1, MHD1_org_files, &
+     &    sph_fst_IO, bc_IO1, pwr, SGS_par, dynamic_SPH%sph_filters,    &
+     &    MHD_step, MHD_prop, WK%WK_sph, gen_sph1)
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
       call load_para_sph_mesh(sph, comms_sph, sph_grps)
@@ -213,8 +215,8 @@
       call set_control_4_SPH_MHD(MHD_ctl%plt, MHD_ctl%org_plt,          &
      &    MHD_ctl%model_ctl, MHD_ctl%ctl_ctl, MHD_ctl%smonitor_ctl,     &
      &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl,                           &
-     &    sph_gen, rj_fld, mesh1_file, sph_file_param1,                 &
-     &    MHD1_org_files, sph_fst_IO, pwr, SGS_par, MHD_step,           &
+     &    sph_tmp, rj_fld, mesh1_file, sph_file_param1,                 &
+     &    MHD1_org_files, sph_fst_IO, bc_IO1, pwr, SGS_par, MHD_step,   &
      &    MHD_prop, WK%WK_sph, gen_sph1)
 !
       call select_make_SPH_mesh(MHD_ctl%psph_ctl%iflag_sph_shell,       &
@@ -253,8 +255,8 @@
       call set_control_4_SPH_MHD(MHD_ctl%plt, MHD_ctl%org_plt,          &
      &    MHD_ctl%model_ctl, MHD_ctl%ctl_ctl, MHD_ctl%smonitor_ctl,     &
      &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl,                           &
-     &    sph_gen, rj_fld, mesh1_file, sph_file_param1,                 &
-     &    MHD1_org_files, sph_fst_IO, pwr, SGS_par, MHD_step,           &
+     &    sph_tmp, rj_fld, mesh1_file, sph_file_param1,                 &
+     &    MHD1_org_files, sph_fst_IO, bc_IO1, pwr, SGS_par, MHD_step,   &
      &    MHD_prop, WK%WK_sph, gen_sph1)
 !
       call set_control_4_SPH_to_FEM                                     &
@@ -341,7 +343,7 @@
      &     'Set parameters for spherical shell')
       else
         if (my_rank.eq.0) write(*,*) 'Make spherical harmonics table'
-        call para_gen_sph_grids(sph_gen, gen_sph)
+        call para_gen_sph_grids(sph_tmp, gen_sph)
         call deallocate_gen_mesh_params(gen_sph)
       end if
       call calypso_mpi_barrier
@@ -356,7 +358,6 @@
 !
       subroutine sph_boundary_IO_control(MHD_prop)
 !
-      use m_sph_boundary_input_data
       use check_read_bc_file
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -368,7 +369,7 @@
       if (iflag .eq. id_no_boundary_file) return
 !
       if (iflag_debug.eq.1) write(*,*) 'read_boundary_spectr_file'
-      call read_boundary_spectr_file
+      call read_boundary_spectr_file(bc_IO1)
 !
       end subroutine sph_boundary_IO_control
 !

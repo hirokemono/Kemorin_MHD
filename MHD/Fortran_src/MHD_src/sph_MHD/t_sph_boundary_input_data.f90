@@ -1,5 +1,5 @@
-!> @file  m_sph_boundary_input_data.f90
-!!      module m_sph_boundary_input_data
+!> @file  t_sph_boundary_input_data.f90
+!!      module t_sph_boundary_input_data
 !!
 !! @author  H. Matsui
 !! @date Programmed in Dec. 2012
@@ -7,15 +7,16 @@
 !> @brief Boundary condition data from external file
 !!
 !!@verbatim
-!!      subroutine deallocalte_sph_bc_item_ctl
+!!      subroutine dealloc_sph_bc_item_ctl
 !!
 !!      subroutine read_boundary_spectr_file
 !!      subroutine write_boundary_spectr_file
 !!
 !!      subroutine set_fixed_scalar_bc_by_file(field_name, sph_rj,      &
-!!     &          ref_grp, bc_data, iflag_bc_scalar)
+!!     &          bc_IO, ref_grp, bc_data, iflag_bc_scalar)
 !!      subroutine set_fixed_gradient_bc_by_file(field_name, sph_rj,    &
-!!     &          ref_grp, bc_data, iflag_bc_scalar)
+!!     &          bc_IO, ref_grp, bc_data, iflag_bc_scalar)
+!!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!
 !!  ---------------------------------------------------------------------
@@ -39,20 +40,15 @@
 !!@param    bc_data(sph_rj%nidx_rj(2)) Local boundary condition spectrum
 !!@param    iflag_bc_scalar  Boundary condition type flag
 !
-      module m_sph_boundary_input_data
+      module t_sph_boundary_input_data
 !
       use m_precision
       use t_spheric_rj_data
 !
       implicit  none
 !
-!>      File name for boundary condition file
-      character(len=kchara) :: bc_sph_file_name = 'boundary_spectr.dat'
 !>      File ID for boundary condition file
       integer(kind = kint), parameter :: id_boundary_file = 41
-!
-!>      Number of boundary condition data in file
-      integer(kind = kint) :: ntot_bc_data_ctl
 !
 !>        Structure for each boundary condition
       type each_boundary_spectr
@@ -72,16 +68,21 @@
         real(kind = kreal), allocatable ::   bc_input(:,:)
       end type each_boundary_spectr
 !
+!
+      type boundary_spectra
+!>        File name for boundary condition file
+        character(len=kchara) :: file_name = 'boundary_spectr.dat'
 !>        Name of boundary conditions to set
-      integer(kind = kint), save :: num_bc_field_ctl
+        integer(kind = kint) :: num_bc_fld
 !>        Structures for boundary conditions
-      type(each_boundary_spectr), pointer, save :: bc_ctls(:)
+        type(each_boundary_spectr), allocatable :: ctls(:)
+      end type boundary_spectra
+!
 !
       private :: id_boundary_file
-      private :: num_bc_field_ctl, bc_ctls
 !
       private :: alloc_each_bc_item_ctl, dealloc_each_bc_item_ctl
-      private :: allocalte_sph_bc_item_ctl, set_num_comp_bc_data
+      private :: alloc_sph_bc_item_ctl, set_num_comp_bc_data
       private :: set_bc_for_sph_scalar_by_file
 !
 ! -----------------------------------------------------------------------
@@ -119,65 +120,71 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine allocalte_sph_bc_item_ctl
+      subroutine alloc_sph_bc_item_ctl(bc_IO)
+!
+      type(boundary_spectra), intent(inout) :: bc_IO
 !
 !
-      allocate(bc_ctls(num_bc_field_ctl))
-      bc_ctls(1:num_bc_field_ctl)%num_bc_mode = 0
-      bc_ctls(1:num_bc_field_ctl)%ncomp_bc =    1
+      allocate(bc_IO%ctls(bc_IO%num_bc_fld))
+      bc_IO%ctls(1:bc_IO%num_bc_fld)%num_bc_mode = 0
+      bc_IO%ctls(1:bc_IO%num_bc_fld)%ncomp_bc =    1
 !
-      end subroutine allocalte_sph_bc_item_ctl
+      end subroutine alloc_sph_bc_item_ctl
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine deallocalte_sph_bc_item_ctl
+      subroutine dealloc_sph_bc_item_ctl(bc_IO)
+!
+      type(boundary_spectra), intent(inout) :: bc_IO
 !
       integer(kind = kint) :: i
 !
 !
-      do i = 1, num_bc_field_ctl
-        call dealloc_each_bc_item_ctl(bc_ctls(i))
+      do i = 1, bc_IO%num_bc_fld
+        call dealloc_each_bc_item_ctl(bc_IO%ctls(i))
       end do
-      deallocate(bc_ctls)
+      deallocate(bc_IO%ctls)
 !
-      end subroutine deallocalte_sph_bc_item_ctl
+      end subroutine dealloc_sph_bc_item_ctl
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_boundary_spectr_file
+      subroutine read_boundary_spectr_file(bc_IO)
 !
       use m_machine_parameter
       use skip_comment_f
+!
+      type(boundary_spectra), intent(inout) :: bc_IO
 !
       integer(kind = kint) :: igrp, inum
       character(len=255) :: tmpchara
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'read boundary condition: ',    &
-     &                      trim(bc_sph_file_name)
-      open(id_boundary_file, file=bc_sph_file_name)
+     &                      trim(bc_IO%file_name)
+      open(id_boundary_file, file=bc_IO%file_name)
 !
       call skip_comment(tmpchara,id_boundary_file)
-      read(tmpchara,*) num_bc_field_ctl
+      read(tmpchara,*) bc_IO%num_bc_fld
 !
-      call allocalte_sph_bc_item_ctl
+      call alloc_sph_bc_item_ctl(bc_IO)
 !
-      do igrp = 1, num_bc_field_ctl
+      do igrp = 1, bc_IO%num_bc_fld
         call skip_comment(tmpchara,id_boundary_file)
-        read(tmpchara,*)  bc_ctls(igrp)%bc_field
+        read(tmpchara,*)  bc_IO%ctls(igrp)%bc_field
         call skip_comment(tmpchara,id_boundary_file)
-        read(tmpchara,*) bc_ctls(igrp)%bc_group
+        read(tmpchara,*) bc_IO%ctls(igrp)%bc_group
         call skip_comment(tmpchara,id_boundary_file)
-        read(tmpchara,*) bc_ctls(igrp)%num_bc_mode
+        read(tmpchara,*) bc_IO%ctls(igrp)%num_bc_mode
 !
-        call set_num_comp_bc_data(bc_ctls(igrp))
-        call alloc_each_bc_item_ctl(bc_ctls(igrp))
+        call set_num_comp_bc_data(bc_IO%ctls(igrp))
+        call alloc_each_bc_item_ctl(bc_IO%ctls(igrp))
 !
-        do inum = 1, bc_ctls(igrp)%num_bc_mode
+        do inum = 1, bc_IO%ctls(igrp)%num_bc_mode
           call skip_comment(tmpchara,id_boundary_file)
-          read(tmpchara,*) bc_ctls(igrp)%imode_gl(1:2,inum),            &
-     &          bc_ctls(igrp)%bc_input(inum,1:bc_ctls(igrp)%ncomp_bc)
+          read(tmpchara,*) bc_IO%ctls(igrp)%imode_gl(1:2,inum),         &
+     &      bc_IO%ctls(igrp)%bc_input(inum,1:bc_IO%ctls(igrp)%ncomp_bc)
         end do
       end do
       close(id_boundary_file)
@@ -186,32 +193,34 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_boundary_spectr_file
+      subroutine write_boundary_spectr_file(bc_IO)
+!
+      type(boundary_spectra), intent(in) :: bc_IO
 !
       integer(kind = kint) :: igrp, inum
 !
 !
-      open(id_boundary_file, file=bc_sph_file_name)
+      open(id_boundary_file, file=bc_IO%file_name)
 !
       write(id_boundary_file,'(a)') '#'
       write(id_boundary_file,'(a)') '#  number of boundary conditions'
       write(id_boundary_file,'(a)') '#'
 !
-      write(id_boundary_file,'(i16)') num_bc_field_ctl
+      write(id_boundary_file,'(i16)') bc_IO%num_bc_fld
 !
-      do igrp = 1, num_bc_field_ctl
+      do igrp = 1, bc_IO%num_bc_fld
         write(id_boundary_file,'(a)') '#'
         write(id_boundary_file,'(a)') '#   boundary condition data list'
         write(id_boundary_file,'(a)') '#'
 !
-        write(id_boundary_file,'(a)')   trim(bc_ctls(igrp)%bc_field)
-        write(id_boundary_file,'(a)')   trim(bc_ctls(igrp)%bc_group)
-        write(id_boundary_file,'(i16)')  bc_ctls(igrp)%num_bc_mode
+        write(id_boundary_file,'(a)')   trim(bc_IO%ctls(igrp)%bc_field)
+        write(id_boundary_file,'(a)')   trim(bc_IO%ctls(igrp)%bc_group)
+        write(id_boundary_file,'(i16)')  bc_IO%ctls(igrp)%num_bc_mode
 !
-        do inum = 1, bc_ctls(igrp)%num_bc_mode
+        do inum = 1, bc_IO%ctls(igrp)%num_bc_mode
           write(id_boundary_file,'(2i16,1p10E25.15e3)')                 &
-     &          bc_ctls(igrp)%imode_gl(1:2,inum),                       &
-     &          bc_ctls(igrp)%bc_input(inum,1:bc_ctls(igrp)%ncomp_bc)
+     &      bc_IO%ctls(igrp)%imode_gl(1:2,inum),                        &
+     &      bc_IO%ctls(igrp)%bc_input(inum,1:bc_IO%ctls(igrp)%ncomp_bc)
         end do
       end do
 !
@@ -222,12 +231,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_fixed_scalar_bc_by_file(field_name, sph_rj,        &
-     &          ref_grp, bc_data, iflag_bc_scalar)
+     &          bc_IO, ref_grp, bc_data, iflag_bc_scalar)
 !
       use t_boundary_params_sph_MHD
       use skip_comment_f
 !
+      type(boundary_spectra), intent(in) :: bc_IO
       type(sph_rj_grid), intent(in) :: sph_rj
+!
       character(len=kchara), intent(in) :: field_name
       character(len=kchara), intent(in) :: ref_grp
       real(kind = kreal), intent(inout) :: bc_data(sph_rj%nidx_rj(2))
@@ -237,12 +248,12 @@
 !
 !
       if(iflag_bc_scalar .ne. iflag_undefined_bc) return
-      do igrp = 1, num_bc_field_ctl
-        if(      cmp_no_case(bc_ctls(igrp)%bc_field, field_name)        &
-     &     .and. cmp_no_case(bc_ctls(igrp)%bc_group, ref_grp)) then
+      do igrp = 1, bc_IO%num_bc_fld
+        if(      cmp_no_case(bc_IO%ctls(igrp)%bc_field, field_name)     &
+     &     .and. cmp_no_case(bc_IO%ctls(igrp)%bc_group, ref_grp)) then
           iflag_bc_scalar =  iflag_fixed_field
           call set_bc_for_sph_scalar_by_file                            &
-     &              (bc_ctls(igrp), sph_rj, bc_data)
+     &              (bc_IO%ctls(igrp), sph_rj, bc_data)
         end if
       end do
 !
@@ -251,12 +262,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_fixed_gradient_bc_by_file(field_name, sph_rj,      &
-     &          ref_grp, bc_data, iflag_bc_scalar)
+     &          bc_IO, ref_grp, bc_data, iflag_bc_scalar)
 !
       use t_boundary_params_sph_MHD
       use skip_comment_f
 !
+      type(boundary_spectra), intent(in) :: bc_IO
       type(sph_rj_grid), intent(in) :: sph_rj
+!
       character(len=kchara), intent(in) :: field_name
       character(len=kchara), intent(in) :: ref_grp
       real(kind = kreal), intent(inout) :: bc_data(sph_rj%nidx_rj(2))
@@ -266,12 +279,12 @@
 !
 !
       if(iflag_bc_scalar .ne. iflag_undefined_bc) return
-      do igrp = 1, num_bc_field_ctl
-        if(     cmp_no_case(bc_ctls(igrp)%bc_field, field_name)         &
-     &    .and. cmp_no_case(bc_ctls(igrp)%bc_group, ref_grp)) then
+      do igrp = 1, bc_IO%num_bc_fld
+        if(     cmp_no_case(bc_IO%ctls(igrp)%bc_field, field_name)      &
+     &    .and. cmp_no_case(bc_IO%ctls(igrp)%bc_group, ref_grp)) then
           iflag_bc_scalar =  iflag_fixed_flux
           call set_bc_for_sph_scalar_by_file                            &
-     &                (bc_ctls(igrp), sph_rj, bc_data)
+     &                (bc_IO%ctls(igrp), sph_rj, bc_data)
           return
         end if
       end do
@@ -323,4 +336,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module m_sph_boundary_input_data
+      end module t_sph_boundary_input_data

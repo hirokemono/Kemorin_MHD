@@ -9,7 +9,7 @@
 !!@verbatim
 !!     subroutine s_set_control_sph_data_MHD                            &
 !!     &         (SGS_param, MHD_prop, plt, field_ctl, mevo_ctl,        &
-!!     &          rj_org_param, rst_org_param, rj_fld, WK_sph)
+!!     &          rj_org_param, rst_org_param, rj_fld, bc_IO, WK_sph)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -17,7 +17,9 @@
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
 !!        type(field_IO_params), intent(in) :: rj_org_param
 !!        type(field_IO_params), intent(in) :: rst_org_param
+!!        type(boundary_spectra), intent(inout) :: bc_IO
 !!        type(phys_data), intent(inout) :: rj_fld
+!!        type(spherical_trns_works), intent(inout) :: WK_sph
 !!     subroutine set_ctl_params_pick_circle(field_ctl, meq_ctl)
 !!        type(ctl_array_c3), intent(in) :: field_ctl
 !!        type(mid_equator_control), intent(in) :: meq_ctl
@@ -40,14 +42,13 @@
 !
       subroutine s_set_control_sph_data_MHD                             &
      &         (SGS_param, MHD_prop, plt, field_ctl, mevo_ctl,          &
-     &          rj_org_param, rst_org_param, rj_fld, WK_sph)
+     &          rj_org_param, rst_org_param, rj_fld, bc_IO, WK_sph)
 !
       use calypso_mpi
       use m_error_IDs
       use m_machine_parameter
       use m_file_format_switch
 !
-      use m_sph_boundary_input_data
       use m_sel_spherical_SRs
       use m_FFT_selector
       use m_legendre_transform_list
@@ -60,6 +61,7 @@
       use t_field_data_IO
       use t_sph_transforms
       use t_control_parameter
+      use t_sph_boundary_input_data
 !
       use skip_comment_f
       use set_control_sph_data
@@ -74,6 +76,7 @@
       type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
       type(field_IO_params), intent(in) :: rj_org_param, rst_org_param
       type(phys_data), intent(inout) :: rj_fld
+      type(boundary_spectra), intent(inout) :: bc_IO
       type(spherical_trns_works), intent(inout) :: WK_sph
 !
       integer(kind = kint) :: ierr
@@ -132,7 +135,7 @@
       end if
 !
       if (plt%bc_data_file_name_ctl%iflag .gt. 0) then
-        bc_sph_file_name = plt%bc_data_file_name_ctl%charavalue
+        bc_IO%file_name = plt%bc_data_file_name_ctl%charavalue
       end if
 !
       end subroutine s_set_control_sph_data_MHD

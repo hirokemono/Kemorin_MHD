@@ -7,11 +7,15 @@
 !>@brief Set boundary conditions for scalar fields
 !!
 !!@verbatim
-!!      subroutine set_sph_bc_temp_sph(sph_rj, radial_rj_grp, sph_bc_T)
+!!      subroutine set_sph_bc_temp_sph                                  &
+!!     &         (bc_IO, sph_rj, radial_rj_grp, sph_bc_T)
 !!      subroutine set_sph_bc_composition_sph                           &
-!!     &         (sph_rj, radial_rj_grp, sph_bc_C)
+!!     &         (bc_IO, sph_rj, radial_rj_grp, sph_bc_C)
+!!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(group_data), intent(in) :: radial_rj_grp
+!!        type(sph_boundary_type), intent(inout) :: sph_bc_T
+!!        type(sph_boundary_type), intent(inout) :: sph_bc_C
 !!
 !!      subroutine find_both_sides_of_boundaries(sph_rj, radial_rj_grp, &
 !!     &         bc_nod, bc_surf, sph_bc, igrp_icb, igrp_cmb)
@@ -35,6 +39,7 @@
       use t_spheric_rj_data
       use t_group_data
       use t_boundary_params_sph_MHD
+      use t_sph_boundary_input_data
 !
       implicit none
 !
@@ -48,13 +53,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_sph_bc_temp_sph(sph_rj, radial_rj_grp, sph_bc_T)
+      subroutine set_sph_bc_temp_sph                                    &
+     &         (bc_IO, sph_rj, radial_rj_grp, sph_bc_T)
 !
       use m_phys_labels
       use m_bc_data_list
       use m_surf_data_list
-      use m_sph_boundary_input_data
 !
+      type(boundary_spectra), intent(in) :: bc_IO
       type(sph_rj_grid), intent(in) :: sph_rj
       type(group_data), intent(in) :: radial_rj_grp
       type(sph_boundary_type), intent(inout) :: sph_bc_T
@@ -63,7 +69,8 @@
 !
 !
       call set_sph_bc_scalar_sph(fhd_temp, fhd_h_flux,                  &
-     &    temp_nod, h_flux_surf, sph_rj, radial_rj_grp, sph_bc_T)
+     &    temp_nod, h_flux_surf, bc_IO, sph_rj, radial_rj_grp,          &
+     &    sph_bc_T)
 !
       if(i_debug .gt. 0) then
         do i = 1, sph_rj%nidx_rj(2)
@@ -89,7 +96,7 @@
         if(my_rank .eq. 0) write(*,'(a)')                               &
      &   'Thermal boundary condition for ICB is not defined correctly.'
         if(my_rank .eq. 0) write(*,'(2a)')                              &
-     &   'Check control_MHD and ', trim(bc_sph_file_name)
+     &   'Check control_MHD and ', trim(bc_IO%file_name)
         call calypso_MPI_abort(ierr_BC, 'Check boundary conditions')
       end if
 !
@@ -97,7 +104,7 @@
         if(my_rank .eq. 0) write(*,'(a)')                               &
      &   'Thermal boundary condition for CMB is not defined correctly.'
         if(my_rank .eq. 0) write(*,'(2a)')                              &
-     &   'Check control_MHD and ', trim(bc_sph_file_name)
+     &   'Check control_MHD and ', trim(bc_IO%file_name)
         call calypso_MPI_abort(ierr_BC, 'Check boundary conditions')
       end if
 !
@@ -106,13 +113,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_sph_bc_composition_sph                             &
-     &         (sph_rj, radial_rj_grp, sph_bc_C)
+     &         (bc_IO, sph_rj, radial_rj_grp, sph_bc_C)
 !
       use m_phys_labels
       use m_bc_data_list
       use m_surf_data_list
-      use m_sph_boundary_input_data
 !
+      type(boundary_spectra), intent(in) :: bc_IO
       type(sph_rj_grid), intent(in) :: sph_rj
       type(group_data), intent(in) :: radial_rj_grp
       type(sph_boundary_type), intent(inout) :: sph_bc_C
@@ -121,7 +128,8 @@
 !
 !
       call set_sph_bc_scalar_sph(fhd_light, fhd_c_flux,                 &
-     &    light_nod, light_surf, sph_rj, radial_rj_grp, sph_bc_C)
+     &    light_nod, light_surf, bc_IO, sph_rj, radial_rj_grp,          &
+     &    sph_bc_C)
 !
       if(i_debug .gt. 0) then
         do i = 1, sph_rj%nidx_rj(2)
@@ -147,7 +155,7 @@
      &   'Compositional  boundary condition for ICB ',                  &
      &   'is not defined correctly.'
         if(my_rank .eq. 0) write(*,'(2a)')                              &
-     &   'Check control_MHD and ', trim(bc_sph_file_name)
+     &   'Check control_MHD and ', trim(bc_IO%file_name)
         call calypso_MPI_abort(ierr_BC, 'Check boundary conditions')
       end if
 !
@@ -156,7 +164,7 @@
      &   'Compositional  boundary condition for CMB ',                  &
      &   'is not defined correctly.'
         if(my_rank .eq. 0) write(*,'(2a)')                              &
-     &   'Check control_MHD and ', trim(bc_sph_file_name)
+     &   'Check control_MHD and ', trim(bc_IO%file_name)
         call calypso_MPI_abort(ierr_BC, 'Check boundary conditions')
       end if
 
@@ -165,13 +173,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_sph_bc_scalar_sph                                  &
-     &         (fhd_field, fhd_flux, nod_bc_list, surf_bc_list,         &
+     &         (fhd_field, fhd_flux, nod_bc_list, surf_bc_list, bc_IO,  &
      &          sph_rj, radial_rj_grp, sph_bc)
 !
       use m_bc_data_list
       use m_surf_data_list
-      use m_sph_boundary_input_data
-      use t_boundary_params_sph_MHD
 !
       character(len=kchara), intent(in) :: fhd_field
       character(len=kchara), intent(in) :: fhd_flux
@@ -180,6 +186,8 @@
       type(group_data), intent(in) :: radial_rj_grp
       type(nod_bc_list_type), intent(in) :: nod_bc_list
       type(surface_bc_list_type), intent(in) :: surf_bc_list
+      type(boundary_spectra), intent(in) :: bc_IO
+!
       type(sph_boundary_type), intent(inout) :: sph_bc
 !
       integer(kind = kint) :: igrp_icb, igrp_cmb
@@ -192,23 +200,22 @@
 !
 !      Boundary setting for inner boundary
       call inner_sph_bc_scalar_sph(fhd_field, fhd_flux,                 &
-     &    nod_bc_list, surf_bc_list, igrp_icb, sph_rj, sph_bc)
+     &    nod_bc_list, surf_bc_list, bc_IO, igrp_icb, sph_rj, sph_bc)
 !
 !      Boundary setting for outer boundary
       call outer_sph_bc_scalar_sph(fhd_field, fhd_flux,                 &
-     &    nod_bc_list, surf_bc_list, igrp_cmb, sph_rj, sph_bc)
+     &    nod_bc_list, surf_bc_list, bc_IO, igrp_cmb, sph_rj, sph_bc)
 !
       end subroutine set_sph_bc_scalar_sph
 !
 ! -----------------------------------------------------------------------
 !
       subroutine inner_sph_bc_scalar_sph(fhd_field, fhd_flux,           &
-     &          nod_bc_list, surf_bc_list, igrp_icb, sph_rj, sph_bc)
+     &          nod_bc_list, surf_bc_list, bc_IO,                       &
+     &          igrp_icb, sph_rj, sph_bc)
 !
       use m_bc_data_list
       use m_surf_data_list
-      use m_sph_boundary_input_data
-      use t_boundary_params_sph_MHD
 !
       integer(kind = kint), intent(in) :: igrp_icb
       character(len=kchara), intent(in) :: fhd_field
@@ -217,6 +224,8 @@
       type(sph_rj_grid), intent(in) :: sph_rj
       type(nod_bc_list_type), intent(in) :: nod_bc_list
       type(surface_bc_list_type), intent(in) :: surf_bc_list
+      type(boundary_spectra), intent(in) :: bc_IO
+!
       type(sph_boundary_type), intent(inout) :: sph_bc
 !
       integer(kind = kint) :: i
@@ -231,7 +240,7 @@
      &        sph_bc%icb_grp_name, sph_bc%ICB_flux, sph_bc%iflag_icb)
         else if(surf_bc_list%ibc_type(i)  .eq. iflag_bc_file_s) then
           call set_fixed_gradient_bc_by_file                            &
-     &       (fhd_flux, sph_rj, sph_bc%icb_grp_name,                    &
+     &       (fhd_flux, sph_rj, bc_IO, sph_bc%icb_grp_name,             &
      &        sph_bc%ICB_flux, sph_bc%iflag_icb)
 !
         else if(surf_bc_list%ibc_type(i) .eq. iflag_sph_2_center        &
@@ -251,7 +260,7 @@
      &        sph_bc%icb_grp_name, sph_bc%ICB_flux, sph_bc%iflag_icb)
         else if(nod_bc_list%ibc_type(i)  .eq. iflag_bc_file_flux) then
           call set_fixed_gradient_bc_by_file                            &
-     &       (fhd_flux,  sph_rj, sph_bc%icb_grp_name,                   &
+     &       (fhd_flux,  sph_rj, bc_IO, sph_bc%icb_grp_name,            &
      &       sph_bc%ICB_flux, sph_bc%iflag_icb)
 !
         else if(nod_bc_list%ibc_type(i)  .eq. iflag_bc_fix_s) then
@@ -260,7 +269,7 @@
      &        sph_rj%nidx_rj(2), sph_rj%idx_rj_degree_zero,             &
      &        sph_bc%icb_grp_name, sph_bc%ICB_fld, sph_bc%iflag_icb)
         else if(nod_bc_list%ibc_type(i)  .eq. iflag_bc_file_s) then
-          call set_fixed_scalar_bc_by_file(fhd_field, sph_rj,           &
+          call set_fixed_scalar_bc_by_file(fhd_field, sph_rj, bc_IO,    &
      &        sph_bc%icb_grp_name, sph_bc%ICB_fld, sph_bc%iflag_icb)
 !
         else if(nod_bc_list%ibc_type(i) .eq. iflag_sph_2_center         &
@@ -281,12 +290,11 @@
 ! -----------------------------------------------------------------------
 !
       subroutine outer_sph_bc_scalar_sph(fhd_field, fhd_flux,           &
-     &          nod_bc_list, surf_bc_list, igrp_cmb, sph_rj, sph_bc)
+     &          nod_bc_list, surf_bc_list, bc_IO,                       &
+     &          igrp_cmb, sph_rj, sph_bc)
 !
       use m_bc_data_list
       use m_surf_data_list
-      use m_sph_boundary_input_data
-      use t_boundary_params_sph_MHD
 !
       integer(kind = kint), intent(in) :: igrp_cmb
       character(len=kchara), intent(in) :: fhd_field
@@ -295,6 +303,8 @@
       type(sph_rj_grid), intent(in) :: sph_rj
       type(nod_bc_list_type), intent(in) :: nod_bc_list
       type(surface_bc_list_type), intent(in) :: surf_bc_list
+      type(boundary_spectra), intent(in) :: bc_IO
+!
       type(sph_boundary_type), intent(inout) :: sph_bc
 !
       integer(kind = kint) :: i
@@ -309,7 +319,7 @@
      &        sph_bc%cmb_grp_name, sph_bc%CMB_flux, sph_bc%iflag_cmb)
         else if (surf_bc_list%ibc_type(i)  .eq. iflag_bc_file_s) then
           call set_fixed_gradient_bc_by_file                            &
-     &       (fhd_flux, sph_rj, sph_bc%cmb_grp_name,                    &
+     &       (fhd_flux, sph_rj, bc_IO, sph_bc%cmb_grp_name,             &
      &        sph_bc%CMB_flux, sph_bc%iflag_cmb)
         end if
 !
@@ -321,7 +331,7 @@
      &        sph_bc%cmb_grp_name, sph_bc%CMB_flux, sph_bc%iflag_cmb)
         else if(nod_bc_list%ibc_type(i)  .eq. iflag_bc_file_flux) then
           call set_fixed_gradient_bc_by_file                            &
-     &       (fhd_flux, sph_rj, sph_bc%cmb_grp_name,                    &
+     &       (fhd_flux, sph_rj, bc_IO, sph_bc%cmb_grp_name,             &
      &        sph_bc%CMB_flux, sph_bc%iflag_cmb)
 !
         else if(nod_bc_list%ibc_type(i)  .eq. iflag_bc_fix_s) then
@@ -330,7 +340,7 @@
      &        sph_rj%nidx_rj(2), sph_rj%idx_rj_degree_zero,             &
      &        sph_bc%cmb_grp_name, sph_bc%CMB_fld, sph_bc%iflag_cmb)
         else if(nod_bc_list%ibc_type(i)  .eq. iflag_bc_file_s) then
-          call set_fixed_scalar_bc_by_file(fhd_field, sph_rj,           &
+          call set_fixed_scalar_bc_by_file(fhd_field, sph_rj, bc_IO,    &
      &        sph_bc%cmb_grp_name, sph_bc%CMB_fld, sph_bc%iflag_cmb)
         end if
       end if
@@ -343,8 +353,6 @@
       subroutine set_homogenious_scalar_bc(bc_name, bc_magnitude,       &
      &          jmax, idx_rj_degree_zero, ref_grp, bc_data,             &
      &          iflag_bc_scalar)
-!
-      use t_boundary_params_sph_MHD
 !
       character(len=kchara), intent(in) :: ref_grp
       character(len=kchara), intent(in) :: bc_name
@@ -369,8 +377,6 @@
       subroutine set_homogenious_grad_bc(bc_name, bc_magnitude,         &
      &          jmax, idx_rj_degree_zero, ref_grp, bc_data,             &
      &          iflag_bc_scalar)
-!
-      use t_boundary_params_sph_MHD
 !
       character(len=kchara), intent(in) :: ref_grp
       character(len=kchara), intent(in) :: bc_name
@@ -398,7 +404,6 @@
 !
       use m_bc_data_list
       use m_surf_data_list
-      use t_boundary_params_sph_MHD
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(group_data), intent(in) :: radial_rj_grp

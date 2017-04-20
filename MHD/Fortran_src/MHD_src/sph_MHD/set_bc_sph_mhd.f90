@@ -8,8 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine s_set_bc_sph_mhd                                     &
-!!     &         (sph_params, sph_rj, radial_rj_grp, MHD_prop,          &
+!!     &         (bc_IO, sph_params, sph_rj, radial_rj_grp, MHD_prop,   &
 !!     &          CTR_nod_grp_name, CTR_sf_grp_name, sph_MHD_bc)
+!!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
@@ -31,6 +32,7 @@
       use t_group_data
       use t_boundary_data_sph_MHD
       use t_boundary_params_sph_MHD
+      use t_spheric_rj_data
 !
       implicit none
 !
@@ -43,7 +45,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_bc_sph_mhd                                       &
-     &         (sph_params, sph_rj, radial_rj_grp, MHD_prop,            &
+     &         (bc_IO, sph_params, sph_rj, radial_rj_grp, MHD_prop,     &
      &          CTR_nod_grp_name, CTR_sf_grp_name, sph_MHD_bc)
 !
       use m_phys_labels
@@ -55,10 +57,13 @@
       use m_coef_fdm_to_center
       use cal_fdm_coefs_4_boundaries
 !
+      type(boundary_spectra), intent(in) :: bc_IO
+!
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(group_data), intent(in) :: radial_rj_grp
       type(MHD_evolution_param), intent(in) :: MHD_prop
+!
       character(len=kchara), intent(in) :: CTR_nod_grp_name
       character(len=kchara), intent(in) :: CTR_sf_grp_name
 !
@@ -90,28 +95,28 @@
 !
       if(MHD_prop%ht_prop%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_temp_sph'
-        call set_sph_bc_temp_sph(sph_rj, radial_rj_grp,                &
-     &      sph_MHD_bc%sph_bc_T)
-        call cal_fdm_coefs_4_BCs                                       &
-     &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                  &
+        call set_sph_bc_temp_sph                                        &
+     &     (bc_IO, sph_rj, radial_rj_grp, sph_MHD_bc%sph_bc_T)
+        call cal_fdm_coefs_4_BCs                                        &
+     &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                   &
      &      sph_MHD_bc%sph_bc_T)
       end if
 !
       if(MHD_prop%cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_magne_sph'
-        call set_sph_bc_magne_sph(sph_rj, radial_rj_grp,               &
+        call set_sph_bc_magne_sph(sph_rj, radial_rj_grp,                &
      &      CTR_nod_grp_name, CTR_sf_grp_name, sph_MHD_bc%sph_bc_B)
-        call cal_fdm_coefs_4_BCs                                       &
-     &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                  &
+        call cal_fdm_coefs_4_BCs                                        &
+     &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                   &
      &      sph_MHD_bc%sph_bc_B)
       end if
 !
       if(MHD_prop%cp_prop%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_composition_sph'
-        call set_sph_bc_composition_sph                                &
-     &     (sph_rj, radial_rj_grp, sph_MHD_bc%sph_bc_C)
-        call cal_fdm_coefs_4_BCs                                       &
-     &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                  &
+        call set_sph_bc_composition_sph                                 &
+     &     (bc_IO, sph_rj, radial_rj_grp, sph_MHD_bc%sph_bc_C)
+        call cal_fdm_coefs_4_BCs                                        &
+     &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                   &
      &      sph_MHD_bc%sph_bc_C)
       end if
 !

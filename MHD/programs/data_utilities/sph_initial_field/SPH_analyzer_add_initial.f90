@@ -100,6 +100,7 @@
       use const_radial_mat_4_sph
       use set_initial_sph_dynamo
       use sph_mhd_rst_IO_control
+      use input_control_sph_MHD
 !
 !
 !   Allocate spectr field data
@@ -110,7 +111,8 @@
 ! ---------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd'
-      call init_r_infos_sph_mhd(sph_grps1, ipol, sph1, omega_sph1,      &
+      call init_r_infos_sph_mhd                                         &
+     &   (bc_IO1, sph_grps1, ipol, sph1, omega_sph1,                    &
      &    ref_temp1, ref_comp1, rj_fld1, MHD_prop1, sph_MHD_bc1)
 !
 ! ---------------------------------

@@ -58,6 +58,7 @@
       use cal_nonlinear
       use check_dependency_for_MHD
       use output_viz_file_control
+      use input_control_sph_MHD
 !
       use m_work_time
 !
@@ -76,7 +77,7 @@
 ! ---------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd_evo'
-      call init_r_infos_sph_mhd_evo(sph_grps1, ipol, sph1,              &
+      call init_r_infos_sph_mhd_evo(bc_IO1, sph_grps1, ipol, sph1,      &
      &    omega_sph1, ref_temp1, ref_comp1, MHD_prop1, sph_MHD_bc1,     &
      &    r_2nd, rj_fld1)
 !
