@@ -63,10 +63,10 @@
       use m_boundary_condition_IDs
       use m_array_for_send_recv
       use m_finite_element_matrix
-      use m_surf_data_list
       use m_bc_data_velo
       use m_3d_filter_coef_MHD
       use m_SGS_model_coefs
+      use m_bc_data_list
 !
       use count_whole_num_element
 !
@@ -265,7 +265,7 @@
       if (iflag_debug.eq.1) write(*,*)' set_boundary_data'
       call set_boundary_data                                            &
      &   (time_d, IO_bc, mesh, ele_mesh, MHD_mesh, group,               &
-     &    MHD_prop1, iphys, nod_fld)
+     &    MHD_prop1, MHD_BC1, iphys, nod_fld)
 !
 !     ---------------------
 !
@@ -275,7 +275,7 @@
 !
 !     ---------------------
 !
-      call deallocate_surf_bc_lists(MHD_prop1)
+      call deallocate_surf_bc_lists(MHD_prop1, MHD_BC1)
 !
       end subroutine init_analyzer_snap
 !

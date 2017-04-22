@@ -41,6 +41,7 @@
       use m_sph_spectr_data
       use m_rms_4_sph_spectr
       use m_sph_trans_arrays_MHD
+      use m_bc_data_list
       use set_control_sph_mhd
       use init_sph_MHD_elapsed_label
       use input_control_sph_MHD
@@ -60,7 +61,7 @@
       if (iflag_debug.eq.1) write(*,*) 'input_control_4_SPH_make_init'
       call input_control_4_SPH_make_init(MHD_ctl1, sph1, comms_sph1,    &
      &    sph_grps1, rj_fld1, pwr1, SGS_par1, MHD_step1,                &
-     &    mesh1, group1, ele_mesh1, MHD_prop1, trns_WK1)
+     &    mesh1, group1, ele_mesh1, MHD_prop1, MHD_BC1, trns_WK1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
       call end_eleps_time(4)
 !
@@ -87,6 +88,7 @@
       use m_sph_spectr_data
       use m_physical_property
       use m_boundary_data_sph_MHD
+      use m_bc_data_list
 !
       use set_control_sph_mhd
       use set_sph_phys_address
@@ -112,7 +114,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd'
       call init_r_infos_sph_mhd                                         &
-     &   (bc_IO1, sph_grps1, ipol, sph1, omega_sph1,                    &
+     &   (bc_IO1, sph_grps1, MHD_BC1, ipol, sph1, omega_sph1,           &
      &    ref_temp1, ref_comp1, rj_fld1, MHD_prop1, sph_MHD_bc1)
 !
 ! ---------------------------------

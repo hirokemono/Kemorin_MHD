@@ -18,42 +18,58 @@
 !
 !
 !>      Structure for boundary condition lists for MHD
-!      type(MHD_BC_lists), save :: MHD_BC1
-!MHD_BC1%velo_BC%nod_BC
+      type(MHD_BC_lists), save :: MHD_BC1
 !
-!MHD_BC1%press_BC%nod_BC
+!-----------------------------------------------------------------------
 !
-!MHD_BC1%temp_BC%nod_BC
+      contains 
 !
-!MHD_BC1%light_BC%nod_BC
+!-----------------------------------------------------------------------
 !
-!MHD_BC1%magne_BC%nod_BC
+      subroutine deallocate_surf_bc_lists(MHD_prop, MHD_BC)
 !
-!MHD_BC1%a_potential_BC%nod_BC
+      use t_control_parameter
 !
-!MHD_BC1%e_potential_BC%nod_BC
-!
-!MHD_BC1%current_BC%nod_BC
+      type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(MHD_BC_lists), intent(inout) :: MHD_BC
 !
 !
-!>       Node group data list for velocity
-      type(boundary_condition_list), save :: velo_nod
-!>       Node group data list for pressure
-      type(boundary_condition_list), save :: press_nod
+      if (MHD_prop%ht_prop%iflag_scheme .gt. id_no_evolution) then
+        if(MHD_BC%temp_BC%surf_BC%num_bc .gt. 0)                        &
+     &      call dealloc_surf_bc_list(MHD_BC%temp_BC)
+      end if
 !
-!>       Node group data list for temperarure
-      type(boundary_condition_list), save :: temp_nod
-!>       Node group data list for composition
-      type(boundary_condition_list), save :: light_nod
+      if (MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
+        if(MHD_BC%velo_BC%surf_BC%num_bc.gt.0)                          &
+     &      call dealloc_surf_bc_list(MHD_BC%velo_BC)
+        if(MHD_BC%press_BC%surf_BC%num_bc.gt.0)                         &
+     &      call dealloc_surf_bc_list(MHD_BC%press_BC)
+      end if
 !
-!>       Node group data list for magnetic field
-      type(boundary_condition_list), save :: magne_nod
-!>       Node group data list for magnetic vector potential
-      type(boundary_condition_list), save :: a_potential_nod
-!>       Node group data list for electric scalar potential
-      type(boundary_condition_list), save :: e_potential_nod
-!>       Node group data list for current density
-      type(boundary_condition_list), save :: current_nod
+      if    (MHD_prop%cd_prop%iflag_Bevo_scheme .gt. id_no_evolution    &
+     &  .or. MHD_prop%cd_prop%iflag_Aevo_scheme .gt. id_no_evolution)   &
+     & then
+        if(MHD_BC%magne_BC%surf_BC%num_bc .gt. 0)                       &
+     &        call dealloc_surf_bc_list(MHD_BC%magne_BC)
+        if(MHD_BC%current_BC%surf_BC%num_bc .gt. 0)                     &
+     &        call dealloc_surf_bc_list(MHD_BC%current_BC)
+        if(MHD_BC%e_potential_BC%surf_BC%num_bc.gt.0)                   &
+     &        call dealloc_surf_bc_list(MHD_BC%e_potential_BC)
+      end if
+!
+      if (MHD_prop%cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
+        if(MHD_BC%a_potential_BC%surf_BC%num_bc.gt.0)                   &
+     &        call dealloc_surf_bc_list(MHD_BC%a_potential_BC)
+      end if
+! 
+      if (MHD_prop%cp_prop%iflag_scheme .gt. id_no_evolution) then
+        if(MHD_BC%light_BC%surf_BC%num_bc.gt.0)                         &
+     &     call dealloc_surf_bc_list(MHD_BC%light_BC)
+      end if
+!
+      end subroutine deallocate_surf_bc_lists
+!
+!-----------------------------------------------------------------------
 !
 !
       end module m_bc_data_list

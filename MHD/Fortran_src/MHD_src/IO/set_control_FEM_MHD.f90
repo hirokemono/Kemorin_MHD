@@ -10,7 +10,7 @@
 !!      subroutine set_control_4_FEM_MHD                                &
 !!     &        (plt, org_plt, model_ctl, ctl_ctl, nmtr_ctl, mesh_file, &
 !!     &         udt_org_param, FEM_prm, SGS_par, MHD_step, MHD_prop,   &
-!!     &         MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
+!!     &         MHD_BC, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
 !!        type(mhd_model_control), intent(inout) :: model_ctl
@@ -22,6 +22,7 @@
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(MHD_evolution_param), intent(inout) :: MHD_prop
+!!        type(MHD_BC_lists), intent(inout) :: MHD_BC
 !!        type(MGCG_data), intent(inout) :: MGCG_WK
 !!        type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
 !!        type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
@@ -39,6 +40,7 @@
       use t_ctl_data_MHD_model
       use t_ctl_data_MHD_control
       use t_ctl_data_node_monitor
+      use t_bc_data_list
 !
       implicit  none
 !
@@ -54,7 +56,7 @@
       subroutine set_control_4_FEM_MHD                                  &
      &        (plt, org_plt, model_ctl, ctl_ctl, nmtr_ctl, mesh_file,   &
      &         udt_org_param, FEM_prm, SGS_par, MHD_step, MHD_prop,     &
-     &         MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
+     &         MHD_BC, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
 !
       use calypso_mpi
       use m_ucd_data
@@ -92,6 +94,7 @@
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(MHD_step_param), intent(inout) :: MHD_step
       type(MHD_evolution_param), intent(inout) :: MHD_prop
+      type(MHD_BC_lists), intent(inout) :: MHD_BC
       type(MGCG_data), intent(inout) :: MGCG_WK
       type(mesh_4_MGCG), intent(inout) :: MGCG_FEM
       type(MGCG_MHD_data), intent(inout) :: MGCG_MHD_FEM
@@ -163,7 +166,7 @@
 !   set boundary conditions
 !
       call set_control_FEM_MHD_bcs                                      &
-     &   (MHD_prop, model_ctl%nbc_ctl, model_ctl%sbc_ctl)
+     &   (MHD_prop, MHD_BC, model_ctl%nbc_ctl, model_ctl%sbc_ctl)
 !
 !   set control parameters
 !
@@ -184,10 +187,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_FEM_MHD_bcs(MHD_prop, nbc_ctl, sbc_ctl)
+      subroutine set_control_FEM_MHD_bcs                                &
+     &         (MHD_prop, MHD_BC, nbc_ctl, sbc_ctl)
 !
-      use m_bc_data_list
-      use m_surf_data_list
       use t_ctl_data_node_boundary
       use t_ctl_data_surf_boundary
 !
@@ -202,6 +204,7 @@
       use set_control_4_infty
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(MHD_BC_lists), intent(inout) :: MHD_BC
       type(node_bc_control), intent(inout) :: nbc_ctl
       type(surf_bc_control), intent(inout) :: sbc_ctl
 !
@@ -210,49 +213,49 @@
 !
       call s_set_control_4_temp(MHD_prop%ht_prop,                       &
      &    nbc_ctl%node_bc_T_ctl, sbc_ctl%surf_bc_HF_ctl,                &
-     &    temp_nod, h_flux_surf)
+     &    MHD_BC%temp_BC%nod_BC, MHD_BC%temp_BC%surf_BC)
 !
 !   set boundary conditions for velocity
 !
       call s_set_control_4_velo(MHD_prop%fl_prop,                       &
      &   nbc_ctl%node_bc_U_ctl, sbc_ctl%surf_bc_ST_ctl,                 &
-     &   velo_nod, torque_surf)
+     &   MHD_BC%velo_BC%nod_BC, MHD_BC%velo_BC%surf_BC)
 !
 !  set boundary conditions for pressure
 !
       call s_set_control_4_press(MHD_prop%fl_prop,                      &
      &   nbc_ctl%node_bc_P_ctl, sbc_ctl%surf_bc_PN_ctl,                 &
-     &   press_nod, wall_surf)
+     &   MHD_BC%press_BC%nod_BC, MHD_BC%press_BC%surf_BC)
 !
 !   set boundary conditions for composition
 !
       call s_set_control_4_composition(MHD_prop%cp_prop,                &
      &   nbc_ctl%node_bc_C_ctl, sbc_ctl%surf_bc_CF_ctl,                 &
-     &   light_nod, light_surf)
+     &   MHD_BC%light_BC%nod_BC, MHD_BC%light_BC%surf_BC)
 !
 !   set boundary_conditons for magnetic field
 !
       call s_set_control_4_magne(MHD_prop%cd_prop,                      &
      &   nbc_ctl%node_bc_B_ctl, sbc_ctl%surf_bc_BN_ctl,                 &
-     &   magne_nod, magne_surf)
+     &   MHD_BC%magne_BC%nod_BC, MHD_BC%magne_BC%surf_BC)
 !
 !   set boundary_conditons for magnetic potential
 !
       call s_set_control_4_mag_p(MHD_prop%cd_prop,                      &
      &   nbc_ctl%node_bc_MP_ctl, sbc_ctl%surf_bc_MPN_ctl,               &
-     &   e_potential_nod, e_potential_surf)
+     &   MHD_BC%e_potential_BC%nod_BC, MHD_BC%e_potential_BC%surf_BC)
 !
 !   set boundary_conditons for vector potential
 !
       call s_set_control_4_vect_p(MHD_prop%cd_prop,                     &
      &    nbc_ctl%node_bc_A_ctl, sbc_ctl%surf_bc_AN_ctl,                &
-     &    a_potential_nod, a_potential_surf)
+     &    MHD_BC%a_potential_BC%nod_BC, MHD_BC%a_potential_BC%surf_BC)
 !
 !   set boundary_conditons for current density
 !
       call s_set_control_4_current(MHD_prop%cd_prop,                    &
      &   nbc_ctl%node_bc_J_ctl, sbc_ctl%surf_bc_JN_ctl,                 &
-     &   current_nod, current_surf)
+     &   MHD_BC%current_BC%nod_BC, MHD_BC%current_BC%surf_BC)
 !
 !   set boundary_conditons for magnetic potential
 !

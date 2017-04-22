@@ -7,13 +7,16 @@
 !> @brief Decide if boundary condition data field is read
 !!
 !!@verbatim
-!!      integer(kind=kint) function check_read_boundary_files(MHD_prop)
+!!      integer(kind=kint) function check_read_boundary_files           &
+!!     &                          (MHD_prop, MHD_BC)
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
+!!        type(MHD_BC_lists), intent(in) :: MHD_BC
 !!@endverbatim
 !
       module check_read_bc_file
 !
       use m_precision
+      use t_bc_data_list
 !
       implicit none
 !
@@ -31,16 +34,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      integer(kind=kint) function check_read_boundary_files(MHD_prop)
+      integer(kind=kint) function check_read_boundary_files             &
+     &                          (MHD_prop, MHD_BC)
 !
       use t_control_parameter
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(MHD_BC_lists), intent(in) :: MHD_BC
 !
 !
       check_read_boundary_files                                         &
      &   = chk_read_boundary_files(MHD_prop%fl_prop, MHD_prop%cd_prop,  &
-     &                             MHD_prop%ht_prop, MHD_prop%cp_prop)
+     &                             MHD_prop%ht_prop, MHD_prop%cp_prop,  &
+     &                             MHD_BC)
 !
       end function check_read_boundary_files
 !
@@ -48,16 +54,15 @@
 !  ---------------------------------------------------------------------
 !
       integer(kind = kint) function chk_read_boundary_files             &
-     &                   (fl_prop, cd_prop, ht_prop, cp_prop)
+     &                   (fl_prop, cd_prop, ht_prop, cp_prop, MHD_BC)
 !
       use calypso_mpi
-      use m_bc_data_list
-      use m_surf_data_list
       use t_physical_property
 !
       type(fluid_property), intent(in) :: fl_prop
       type(conductive_property), intent(in) :: cd_prop
       type(scalar_property), intent(in) :: ht_prop, cp_prop
+      type(MHD_BC_lists), intent(in) :: MHD_BC
 !
       integer(kind = kint) :: iflag_boundary_file
 !
@@ -67,30 +72,32 @@
 !
       if ( ht_prop%iflag_scheme .gt. id_no_evolution) then
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
-     &      temp_nod%num_bc, temp_nod%ibc_type)
+     &      MHD_BC%temp_BC%nod_BC)
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
-     &      h_flux_surf%num_bc, h_flux_surf%ibc_type)
+     &      MHD_BC%temp_BC%surf_BC)
       end if
 !
 ! ----  read boundary data for velocity
 !
       if (fl_prop%iflag_scheme .gt. id_no_evolution) then
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
-     &      velo_nod%num_bc, velo_nod%ibc_type)
+     &      MHD_BC%velo_BC%nod_BC)
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
-     &      torque_surf%num_bc, torque_surf%ibc_type)
+     &      MHD_BC%velo_BC%surf_BC)
 !
 !  set boundary conditions for pressure
 !
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
-     &      press_nod%num_bc, press_nod%ibc_type)
+     &      MHD_BC%press_BC%nod_BC)
       end if
 !
 ! ----  read boundary data for dummy scalar
 !
       if (cp_prop%iflag_scheme .gt. id_no_evolution) then
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
-     &      light_nod%num_bc, light_nod%ibc_type)
+     &      MHD_BC%light_BC%nod_BC)
+        call set_serch_boundary_file_flag(iflag_boundary_file,          &
+     &      MHD_BC%light_BC%surf_BC)
       end if
 !
 ! ----  read boundary data for magnetic field
@@ -99,14 +106,14 @@
      &   .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
 !
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
-     &      magne_nod%num_bc, magne_nod%ibc_type)
+     &      MHD_BC%magne_BC%nod_BC)
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
-     &      magne_surf%num_bc, magne_surf%ibc_type)
+     &      MHD_BC%magne_BC%surf_BC)
 !
 ! ----  read boundary data for magnetic potential
 !
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
-     &      e_potential_nod%num_bc, e_potential_nod%ibc_type)
+     &      MHD_BC%e_potential_BC%nod_BC)
       end if
 !
 ! ----  read boundary data for vector potential
@@ -114,14 +121,14 @@
       if (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
 !
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
-     &      a_potential_nod%num_bc, a_potential_nod%ibc_type)
+     &      MHD_BC%a_potential_BC%nod_BC)
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
-     &      a_potential_surf%num_bc, a_potential_surf%ibc_type)
+     &      MHD_BC%a_potential_BC%surf_BC)
 !
 ! ----  read boundary data for magnetic potential
 !
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
-     &      e_potential_nod%num_bc, e_potential_nod%ibc_type)
+     &      MHD_BC%e_potential_BC%nod_BC)
       end if
 !
 ! ----  read boundary data for current density
@@ -130,9 +137,9 @@
      &    .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
 !
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
-     &      current_nod%num_bc, current_nod%ibc_type)
+     &      MHD_BC%current_BC%nod_BC)
         call set_serch_boundary_file_flag(iflag_boundary_file,          &
-     &      current_surf%num_bc, current_surf%ibc_type)
+     &      MHD_BC%current_BC%surf_BC)
       end if
 !
       chk_read_boundary_files = iflag_boundary_file
@@ -141,21 +148,20 @@
 !
 ! -----------------------------------------------------------------------
 !
-       subroutine set_serch_boundary_file_flag(iflag, num_bc, ibc_type)
+      subroutine set_serch_boundary_file_flag(iflag, bc_list)
 !
-       integer (kind = kint), intent(inout) :: iflag
-       integer (kind = kint), intent(in) :: num_bc
-       integer (kind = kint), intent(in) :: ibc_type(num_bc)
+      type(boundary_condition_list), intent(in) :: bc_list
+      integer (kind = kint), intent(inout) :: iflag
 !
-       integer(kind = kint) :: i
+      integer(kind = kint) :: i
 !
-       if (iflag .eq. 0 ) then
-         if (num_bc .gt. 0) then
-           do i = 1, num_bc
-            if (ibc_type(i) .lt. 0) iflag = 1
-           end do
-         end if
-       end if
+      if (iflag .eq. 0 ) then
+        if(bc_list%num_bc .gt. 0) then
+          do i = 1, bc_list%num_bc
+           if(bc_list%ibc_type(i) .lt. 0) iflag = 1
+          end do
+        end if
+      end if
 !
        end subroutine set_serch_boundary_file_flag
 !

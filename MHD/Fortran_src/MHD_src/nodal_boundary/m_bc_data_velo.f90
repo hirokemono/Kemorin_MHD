@@ -6,7 +6,7 @@
 !
 !!      subroutine set_boundary_data                                    &
 !!     &         (time_d, IO_bc, mesh, ele_mesh, MHD_mesh, group,       &
-!!     &          MHD_prop, iphys, nod_fld)
+!!     &          MHD_prop, MHD_BC, iphys, nod_fld)
 !!        type(time_data), intent(in) :: time_d
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(mesh_geometry), intent(in) :: mesh
@@ -14,6 +14,7 @@
 !!        type(mesh_data_MHD), intent(in) :: MHD_mesh
 !!        type(mesh_groups), intent(in) ::   group
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
+!!        type(MHD_BC_lists), intent(in) :: MHD_BC
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
 !
@@ -38,7 +39,7 @@
 !
       subroutine set_boundary_data                                      &
      &         (time_d, IO_bc, mesh, ele_mesh, MHD_mesh, group,         &
-     &          MHD_prop, iphys, nod_fld)
+     &          MHD_prop, MHD_BC, iphys, nod_fld)
 !
       use m_machine_parameter
 !
@@ -54,6 +55,7 @@
       use t_physical_property
       use t_reference_scalar_param
       use t_bc_data_MHD
+      use t_bc_data_list
 !
       use set_nodal_bc_id_data
       use set_surface_id_MHD
@@ -68,14 +70,14 @@
       type(mesh_groups), intent(in) ::   group
       type(phys_address), intent(in) :: iphys
       type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(MHD_BC_lists), intent(in) :: MHD_BC
 !
       type(phys_data), intent(inout) :: nod_fld
 !
 !
       if (iflag_debug.eq.1) write(*,*)' set_bc_id_data'
       call set_bc_id_data(time_d%dt, IO_bc, mesh, group, MHD_mesh,      &
-     &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
-     &    MHD_prop%ht_prop, MHD_prop%cp_prop, nod1_bcs)
+     &    MHD_prop, MHD_BC, nod1_bcs)
 !
       if (iflag_debug.eq.1) write(*,*)' set_bc_fields'
       call set_bc_fields(time_d%time, mesh,                             &
@@ -87,7 +89,7 @@
       call set_bc_surface_data                                          &
      &   (IO_bc, mesh%node, mesh%ele, ele_mesh%surf,                    &
      &    group%surf_grp, group%surf_nod_grp, group%surf_grp_geom,      &
-     &    MHD_prop, sf1_bcs)
+     &    MHD_prop, MHD_BC, sf1_bcs)
 !
 !     set normal velocity
       call set_normal_velocity                                          &

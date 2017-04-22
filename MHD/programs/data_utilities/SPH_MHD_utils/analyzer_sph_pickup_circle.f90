@@ -21,6 +21,7 @@
       use m_work_time
       use m_sph_trans_arrays_MHD
       use m_physical_property
+      use m_bc_data_list
       use t_spheric_parameter
       use t_file_IO_parameter
       use t_step_parameter
@@ -78,7 +79,7 @@
      &    mesh_file_circ, sph_file_param1, MHD1_org_files,              &
      &    sph_fst_IO, bc_IO1, pwr1, SGS_par1,                           &
      &    trns_WK1%dynamic_SPH%sph_filters, MHD_step1,                  &
-     &    MHD_prop1, trns_WK1%WK_sph, gen_sph_c)
+     &    MHD_prop1, MHD_BC1, trns_WK1%WK_sph, gen_sph_c)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
 !
       call set_ctl_params_pick_circle                                   &

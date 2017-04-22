@@ -11,12 +11,13 @@
 !!     &         model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,  &
 !!     &         sph_gen, rj_fld, mesh_file, sph_file_param,            &
 !!     &         MHD_org_files, sph_fst_IO, bc_IO, pwr, SGS_par,        &
-!!     &         sph_filters, MHD_step, MHD_prop, WK_sph, gen_sph)
+!!     &         sph_filters, MHD_step, MHD_prop, MHD_BC,               &
+!!     &         WK_sph, gen_sph)
 !!      subroutine set_control_4_SPH_MHD(plt, org_plt,                  &
 !!     &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl, &
 !!     &          sph_gen, rj_fld, mesh_file, sph_file_param,           &
 !!     &          MHD_org_files, sph_fst_IO, bc_IO, pwr, SGS_par,       &
-!!     &          MHD_step, MHD_prop, WK_sph, gen_sph)
+!!     &          MHD_step, MHD_prop, MHD_BC, WK_sph, gen_sph)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
 !!        type(mhd_model_control), intent(inout) :: model_ctl
@@ -34,8 +35,8 @@
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
 !!        type(sph_filters_type), intent(inout) :: sph_filters(1)
 !!        type(MHD_step_param), intent(inout) :: MHD_step
-!!        type(fluid_property), intent(inout) :: fl_prop
 !!        type(MHD_evolution_param), intent(inout) :: MHD_prop
+!!        type(MHD_BC_lists), intent(inout) :: MHD_BC
 !!        type(spherical_trns_works), intent(inout) :: WK_sph
 !!        type(construct_spherical_grid), intent(inout) :: gen_sph
 !!@endverbatim
@@ -59,6 +60,7 @@
       use t_ctl_data_node_monitor
       use t_ctl_data_gen_sph_shell
       use t_sph_transforms
+      use t_bc_data_list
 !
       implicit none
 !
@@ -74,7 +76,8 @@
      &         model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,    &
      &         sph_gen, rj_fld, mesh_file, sph_file_param,              &
      &         MHD_org_files, sph_fst_IO, bc_IO, pwr, SGS_par,          &
-     &         sph_filters, MHD_step, MHD_prop, WK_sph, gen_sph)
+     &         sph_filters, MHD_step, MHD_prop, MHD_BC,                 &
+     &         WK_sph, gen_sph)
 !
       use m_ucd_data
       use sph_mhd_rms_IO
@@ -108,6 +111,7 @@
       type(sph_filters_type), intent(inout) :: sph_filters(1)
       type(MHD_step_param), intent(inout) :: MHD_step
       type(MHD_evolution_param), intent(inout) :: MHD_prop
+      type(MHD_BC_lists), intent(inout) :: MHD_BC
       type(spherical_trns_works), intent(inout) :: WK_sph
       type(construct_spherical_grid), intent(inout) :: gen_sph
 !
@@ -130,7 +134,7 @@
       call set_control_4_SPH_MHD(plt, org_plt,                          &
      &    model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,         &
      &    sph_gen, rj_fld, mesh_file, sph_file_param, MHD_org_files,    &
-     &    sph_fst_IO, bc_IO, pwr, SGS_par, MHD_step, MHD_prop,          &
+     &    sph_fst_IO, bc_IO, pwr, SGS_par, MHD_step, MHD_prop, MHD_BC,  &
      &    WK_sph, gen_sph)
 !
       end subroutine set_control_SGS_SPH_MHD
@@ -141,7 +145,7 @@
      &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,   &
      &          sph_gen, rj_fld, mesh_file, sph_file_param,             &
      &          MHD_org_files, sph_fst_IO, bc_IO, pwr, SGS_par,         &
-     &          MHD_step, MHD_prop, WK_sph, gen_sph)
+     &          MHD_step, MHD_prop, MHD_BC, WK_sph, gen_sph)
 !
       use m_ucd_data
       use m_flexible_time_step
@@ -185,6 +189,7 @@
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(MHD_step_param), intent(inout) :: MHD_step
       type(MHD_evolution_param), intent(inout) :: MHD_prop
+      type(MHD_BC_lists), intent(inout) :: MHD_BC
       type(sph_mean_squares), intent(inout) :: pwr
       type(spherical_trns_works), intent(inout) :: WK_sph
       type(construct_spherical_grid), intent(inout) :: gen_sph
@@ -244,7 +249,7 @@
 !   set boundary conditions
 !
       call set_control_SPH_MHD_bcs                                      &
-     &   (MHD_prop, model_ctl%nbc_ctl, model_ctl%sbc_ctl)
+     &   (MHD_prop, MHD_BC, model_ctl%nbc_ctl, model_ctl%sbc_ctl)
 !
 !   set control parameters
 !
@@ -274,10 +279,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_control_SPH_MHD_bcs(MHD_prop, nbc_ctl, sbc_ctl)
+      subroutine set_control_SPH_MHD_bcs                                &
+     &         (MHD_prop, MHD_BC, nbc_ctl, sbc_ctl)
 !
-      use m_bc_data_list
-      use m_surf_data_list
       use t_ctl_data_node_boundary
       use t_ctl_data_surf_boundary
 !
@@ -288,6 +292,7 @@
       use set_control_4_composition
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(MHD_BC_lists), intent(inout) :: MHD_BC
       type(node_bc_control), intent(inout) :: nbc_ctl
       type(surf_bc_control), intent(inout) :: sbc_ctl
 !
@@ -297,35 +302,35 @@
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_temp'
       call s_set_control_4_temp(MHD_prop%ht_prop,                       &
      &    nbc_ctl%node_bc_T_ctl, sbc_ctl%surf_bc_HF_ctl,                &
-     &    temp_nod, h_flux_surf)
+     &    MHD_BC%temp_BC%nod_BC, MHD_BC%temp_BC%surf_BC)
 !
 !   set boundary conditions for velocity
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_velo'
       call s_set_control_4_velo(MHD_prop%fl_prop,                       &
      &    nbc_ctl%node_bc_U_ctl, sbc_ctl%surf_bc_ST_ctl,                &
-     &    velo_nod, torque_surf)
+     &    MHD_BC%velo_BC%nod_BC, MHD_BC%velo_BC%surf_BC)
 !
 !  set boundary conditions for pressure
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_press'
       call s_set_control_4_press(MHD_prop%fl_prop,                      &
      &    nbc_ctl%node_bc_P_ctl, sbc_ctl%surf_bc_PN_ctl,                &
-     &    press_nod, wall_surf)
+     &    MHD_BC%press_BC%nod_BC, MHD_BC%press_BC%surf_BC)
 !
 !   set boundary conditions for composition variation
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_composition'
       call s_set_control_4_composition(MHD_prop%cp_prop,                &
      &    nbc_ctl%node_bc_C_ctl, sbc_ctl%surf_bc_CF_ctl,                &
-     &    light_nod, light_surf)
+     &    MHD_BC%light_BC%nod_BC, MHD_BC%light_BC%surf_BC)
 !
 !   set boundary_conditons for magnetic field
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_magne'
       call s_set_control_4_magne(MHD_prop%cd_prop,                      &
      &    nbc_ctl%node_bc_B_ctl, sbc_ctl%surf_bc_BN_ctl,                &
-     &    magne_nod, magne_surf)
+     &    MHD_BC%magne_BC%nod_BC, MHD_BC%magne_BC%surf_BC)
 !
       end subroutine set_control_SPH_MHD_bcs
 !

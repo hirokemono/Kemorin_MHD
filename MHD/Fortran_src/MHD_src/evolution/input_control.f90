@@ -9,13 +9,14 @@
 !>@brief  Load mesh and filtering data for MHD simulation
 !!
 !!@verbatim
-!!      subroutine input_control_4_MHD(FEM_prm, SGS_par, MHD_step,      &
-!!     &          MHD_prop, mesh, group, ele_mesh, nod_fld, IO_bc,      &
+!!      subroutine input_control_4_MHD                                  &
+!!     &         (FEM_prm, SGS_par, MHD_step, MHD_prop, MHD_BC,         &
+!!     &          mesh, group, ele_mesh, nod_fld, IO_bc,                &
 !!     &          filtering, wide_filtering, wk_filter, MHD_matrices,   &
 !!     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
 !!      subroutine input_control_4_snapshot(FEM_prm, SGS_par, MHD_step, &
-!!     &          MHD_prop, mesh, group, ele_mesh, nod_fld, IO_bc,      &
-!!     &          filtering, wide_filtering, wk_filter,                 &
+!!     &          MHD_prop, MHD_BC, mesh, group, ele_mesh, nod_fld,     &
+!!     &          IO_bc, filtering, wide_filtering, wk_filter,          &
 !!     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
@@ -64,6 +65,7 @@
       use t_ctl_data_MHD
       use t_MGCG_data
       use t_MGCG_data_4_MHD
+      use t_bc_data_list
 !
       implicit none
 !
@@ -88,8 +90,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine input_control_4_MHD(FEM_prm, SGS_par, MHD_step,        &
-     &          MHD_prop, mesh, group, ele_mesh, nod_fld, IO_bc,        &
+      subroutine input_control_4_MHD                                    &
+     &         (FEM_prm, SGS_par, MHD_step, MHD_prop, MHD_BC,           &
+     &          mesh, group, ele_mesh, nod_fld, IO_bc,                  &
      &          filtering, wide_filtering, wk_filter, MHD_matrices,     &
      &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
 !
@@ -109,6 +112,7 @@
       type(element_geometry), intent(inout) :: ele_mesh
       type(MHD_step_param), intent(inout) :: MHD_step
       type(MHD_evolution_param), intent(inout) :: MHD_prop
+      type(MHD_BC_lists), intent(inout) :: MHD_BC
       type(phys_data), intent(inout) :: nod_fld
 !
       type(IO_boundary), intent(inout) :: IO_bc
@@ -129,14 +133,14 @@
      &   (FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt, FEM_MHD_ctl%model_ctl,  &
      &    FEM_MHD_ctl%ctl_ctl, FEM_MHD_ctl%nmtr_ctl, mesh1_file,        &
      &    FEM_udt_org_param, FEM_prm, SGS_par, MHD_step,                &
-     &    MHD_prop, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
+     &    MHD_prop, MHD_BC, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
 !
 !  --  load FEM mesh data
       call mpi_input_mesh(mesh1_file, nprocs, mesh, group,              &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
       call input_meshes_4_MHD                                           &
-     &   (SGS_par%model_p, MHD_prop, mesh, group, IO_bc,                &
+     &   (SGS_par%model_p, MHD_prop, MHD_BC, mesh, group, IO_bc,        &
      &    SGS_par%filter_p, filtering, wide_filtering, wk_filter)
 !
       if(cmp_no_case(FEM_PRM%CG11_param%METHOD, cflag_mgcg)) then
@@ -160,8 +164,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine input_control_4_snapshot(FEM_prm, SGS_par, MHD_step,   &
-     &          MHD_prop, mesh, group, ele_mesh, nod_fld, IO_bc,        &
-     &          filtering, wide_filtering, wk_filter,                   &
+     &          MHD_prop, MHD_BC, mesh, group, ele_mesh, nod_fld,       &
+     &          IO_bc, filtering, wide_filtering, wk_filter,            &
      &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
 !
       use t_ctl_data_sph_MHD_psf
@@ -177,6 +181,7 @@
       type(element_geometry), intent(inout) :: ele_mesh
       type(MHD_step_param), intent(inout) :: MHD_step
       type(MHD_evolution_param), intent(inout) :: MHD_prop
+      type(MHD_BC_lists), intent(inout) :: MHD_BC
       type(phys_data), intent(inout) :: nod_fld
 !
       type(IO_boundary), intent(inout) :: IO_bc
@@ -196,14 +201,14 @@
      &   (FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt, FEM_MHD_ctl%model_ctl,  &
      &    FEM_MHD_ctl%ctl_ctl, FEM_MHD_ctl%nmtr_ctl, mesh1_file,        &
      &    FEM_udt_org_param, FEM_prm, SGS_par, MHD_step,                &
-     &    MHD_prop, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
+     &    MHD_prop, MHD_BC, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
 !
 !  --  load FEM mesh data
       call mpi_input_mesh(mesh1_file, nprocs, mesh, group,              &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
       call input_meshes_4_MHD                                           &
-     &   (SGS_par%model_p, MHD_prop, mesh, group, IO_bc,                &
+     &   (SGS_par%model_p, MHD_prop, MHD_BC, mesh, group, IO_bc,        &
      &    SGS_par%filter_p, filtering, wide_filtering, wk_filter)
 !
       call count_field_4_monitor                                        &
@@ -216,8 +221,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine input_meshes_4_MHD                                     &
-     &         (SGS_param, MHD_prop, mesh, group, IO_bc, filter_param,  &
-     &          filtering, wide_filtering, wk_filter)
+     &         (SGS_param, MHD_prop, MHD_BC, mesh, group, IO_bc,        &
+     &          filter_param, filtering, wide_filtering, wk_filter)
 !
       use m_machine_parameter
 !
@@ -231,6 +236,7 @@
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
       type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(MHD_BC_lists), intent(in) :: MHD_BC
 !
 !
       type(IO_boundary), intent(inout) :: IO_bc
@@ -247,7 +253,7 @@
 !
 ! ----  open data file for boundary data
 !
-      call boundary_file_IO_control(MHD_prop, group, IO_bc)
+      call boundary_file_IO_control(MHD_prop, MHD_BC, group, IO_bc)
 !
 ! ---------------------------------
 !
@@ -281,11 +287,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine boundary_file_IO_control(MHD_prop, group, IO_bc)
+      subroutine boundary_file_IO_control                               &
+     &         (MHD_prop, MHD_BC, group, IO_bc)
 !
       use check_read_bc_file
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(MHD_BC_lists), intent(in) :: MHD_BC
 !
       type(mesh_groups), intent(in) ::   group
       type(IO_boundary), intent(inout) :: IO_bc
@@ -293,7 +301,7 @@
       integer(kind = kint) :: iflag
 !
 !
-      iflag = check_read_boundary_files(MHD_prop)
+      iflag = check_read_boundary_files(MHD_prop, MHD_BC)
       if (iflag .eq. id_no_boundary_file) return
 !
       call read_bc_condition_file                                       &

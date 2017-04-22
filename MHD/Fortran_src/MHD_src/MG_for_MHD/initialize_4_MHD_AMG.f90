@@ -5,8 +5,8 @@
 !
 !!      subroutine s_initialize_4_MHD_AMG                               &
 !!     &         (dt, FEM_prm, node_1st, ele_1st, ifld_diff, diff_coefs,&
-!!     &          MHD_prop, DJDS_param, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM,&
-!!     &          MHD_matrices)
+!!     &          MHD_prop, MHD_BC, DJDS_param, MGCG_WK,                &
+!!     &          MGCG_FEM, MGCG_MHD_FEM, MHD_matrices)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(node_data), intent(inout) :: node_1st
 !!        type(element_data), intent(inout) :: ele_1st
@@ -18,6 +18,7 @@
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(SGS_terms_address), intent(in) :: ifld_diff
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
+!!        type(DJDS_poarameter), intent(in) :: DJDS_param
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(DJDS_poarameter), intent(in) :: DJDS_param
 !!        type(MGCG_data), intent(inout) :: MGCG_WK
@@ -54,14 +55,15 @@
 !
       subroutine s_initialize_4_MHD_AMG                                 &
      &         (dt, FEM_prm, node_1st, ele_1st, ifld_diff, diff_coefs,  &
-     &          MHD_prop, DJDS_param, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM,  &
-     &          MHD_matrices)
+     &          MHD_prop, MHD_BC, DJDS_param, MGCG_WK,                  &
+     &          MGCG_FEM, MGCG_MHD_FEM, MHD_matrices)
 !
       use t_geometry_data
       use t_edge_data
       use t_surface_data
       use t_bc_data_MHD
       use t_jacobians
+      use t_bc_data_list
 !
       use m_boundary_condition_IDs
       use set_layers_4_MHD_AMG
@@ -86,6 +88,7 @@
       type(SGS_terms_address), intent(in) :: ifld_diff
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(MHD_BC_lists), intent(in) :: MHD_BC
       type(DJDS_poarameter), intent(in) :: DJDS_param
 !
       type(node_data), intent(inout) :: node_1st
@@ -251,9 +254,7 @@
      &      MGCG_FEM%MG_mesh(i_level)%mesh,                             &
      &      MGCG_FEM%MG_mesh(i_level)%group,                            &
      &      MGCG_MHD_FEM%MG_MHD_mesh(i_level),                          &
-     &      MHD_prop%fl_prop, MHD_prop%cd_prop,                         &
-     &      MHD_prop%ht_prop, MHD_prop%cp_prop,                         &
-     &      MGCG_MHD_FEM%MG_node_bc(i_level))
+     &      MHD_prop, MHD_BC, MGCG_MHD_FEM%MG_node_bc(i_level))
 !
         call set_bc_surface_data(MGCG_MHD_FEM%IO_MG_bc(i_level),        &
      &      MGCG_FEM%MG_mesh(i_level)%mesh%node,                        &
@@ -262,7 +263,7 @@
      &      MGCG_FEM%MG_mesh(i_level)%group%surf_grp,                   &
      &      MGCG_FEM%MG_mesh(i_level)%group%surf_nod_grp,               &
      &      MGCG_FEM%MG_mesh(i_level)%group%surf_grp_geom,              &
-     &      MHD_prop, MGCG_MHD_FEM%MG_surf_bc(i_level) )
+     &      MHD_prop, MHD_BC, MGCG_MHD_FEM%MG_surf_bc(i_level) )
       end do
 !
 !     --------------------- 

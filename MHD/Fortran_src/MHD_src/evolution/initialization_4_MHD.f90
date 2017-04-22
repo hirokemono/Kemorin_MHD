@@ -65,8 +65,8 @@
       use m_SGS_model_coefs
 !
       use m_cal_max_indices
-      use m_surf_data_list
       use m_bc_data_velo
+      use m_bc_data_list
 !
       use count_whole_num_element
 !
@@ -313,7 +313,7 @@
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_data'
       call set_boundary_data                                            &
      &   (time_d, IO_bc, mesh, ele_mesh, MHD_mesh, group,               &
-     &    MHD_prop1, iphys, nod_fld)
+     &    MHD_prop1, MHD_BC1, iphys, nod_fld)
 !
 !     ---------------------
 !
@@ -331,15 +331,15 @@
       if(solver_iflag(FEM_PRM%CG11_param%METHOD) .eq. iflag_mgcg) then
         call s_initialize_4_MHD_AMG(time_d%dt, FEM_prm,                 &
      &      mesh%node, mesh%ele, ifld_diff, diff_coefs, MHD_prop1,      &
-     &      FEM_prm%DJDS_param, MGCG_WK1, MGCG_FEM1, MGCG_MHD_FEM1,     &
-     &      MHD1_matrices)
+     &      MHD_BC1, FEM_prm%DJDS_param, MGCG_WK1,                      &
+     &      MGCG_FEM1, MGCG_MHD_FEM1, MHD1_matrices)
       end if
 !
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_stability_4_diffuse'
       call cal_stability_4_diffuse(time_d%dt, mesh%ele, MHD_prop1)
-      call deallocate_surf_bc_lists(MHD_prop1)
+      call deallocate_surf_bc_lists(MHD_prop1, MHD_BC1)
 !
       end subroutine init_analyzer_fl
 !

@@ -43,6 +43,7 @@
       use m_rms_4_sph_spectr
       use m_sph_trans_arrays_MHD
       use m_boundary_data_sph_MHD
+      use m_bc_data_list
 !
       use set_control_sph_mhd
       use set_sph_phys_address
@@ -75,7 +76,8 @@
 ! ---------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd_evo'
-      call init_r_infos_sph_mhd_evo(bc_IO1, sph_grps1, ipol, sph1,      &
+      call init_r_infos_sph_mhd_evo                                     &
+     &   (bc_IO1, sph_grps1, MHD_BC1, ipol, sph1,                       &
      &    omega_sph1, ref_temp1, ref_comp1, MHD_prop1, sph_MHD_bc1,     &
      &    r_2nd, rj_fld1)
 !

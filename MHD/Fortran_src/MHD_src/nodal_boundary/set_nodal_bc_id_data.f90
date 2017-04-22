@@ -56,9 +56,7 @@
      &          ref_param_T, ref_param_C, iphys, nod_fld, nod_bcs)
 !
       use m_machine_parameter
-!
       use m_boundary_condition_IDs
-      use m_bc_data_list
 !
       use count_num_nod_bc_MHD
       use set_nodal_boundary
