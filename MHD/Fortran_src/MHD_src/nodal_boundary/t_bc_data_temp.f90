@@ -4,12 +4,13 @@
 !!      Written by Kemorin on Feb., 2004
 !!
 !!      subroutine set_bc_temp_id                                       &
-!!     &         (IO_bc, node, ele, fluid, nod_grp, Snod_bcs)
+!!     &         (IO_bc, node, ele, fluid, nod_grp, temp_nod, Snod_bcs)
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(group_data), intent(in) :: nod_grp
+!!        type(boundary_condition_list), intent(in) :: temp_nod
 !!        type(nodal_bcs_4_scalar_type), intent(inout) :: Snod_bcs
 !
 !
@@ -35,13 +36,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_bc_temp_id                                         &
-     &         (IO_bc, node, ele, fluid, nod_grp, Snod_bcs)
+     &         (IO_bc, node, ele, fluid, nod_grp, temp_nod, Snod_bcs)
 !
       use t_geometry_data
       use t_group_data
       use t_geometry_data_MHD
       use t_boundary_field_IO
-      use m_bc_data_list
+      use t_bc_data_list
       use count_num_nod_bc_MHD
       use set_bc_scalars
       use set_ele_nod_bc_vectors
@@ -52,6 +53,7 @@
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
       type(group_data), intent(in) :: nod_grp
+      type(boundary_condition_list), intent(in) :: temp_nod
 !
       type(nodal_bcs_4_scalar_type), intent(inout) :: Snod_bcs
 !

@@ -4,17 +4,23 @@
 !
 !     Written by Kemorin
 !
-!!      subroutine set_bc_vect_p_id(IO_bc, node, ele, nod_grp, Bnod_bcs)
-!!      subroutine set_bc_magne_id(IO_bc, node, ele, nod_grp, Bnod_bcs)
+!!      subroutine set_bc_vect_p_id                                     &
+!!     &         (IO_bc, node, ele, nod_grp, a_potential_nod, Bnod_bcs)
+!!      subroutine set_bc_magne_id                                      &
+!!     &         (IO_bc, node, ele, nod_grp, magne_nod, Bnod_bcs)
 !!      subroutine set_bc_current_id                                    &
-!!     &         (IO_bc, node, ele, nod_grp, Bnod_bcs)
+!!     &         (IO_bc, node, ele, nod_grp, current_nod, Bnod_bcs)
 !!      subroutine set_bc_m_potential_id(IO_bc, node, ele,              &
-!!     &          conduct, insulate, nod_grp, Bnod_bcs)
+!!     &          conduct, insulate, nod_grp, e_potential_nod, Bnod_bcs)
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: conduct, insulate
 !!        type(group_data), intent(in) :: nod_grp
+!!        type(boundary_condition_list), intent(in) :: a_potential_nod
+!!        type(boundary_condition_list), intent(in) :: magne_nod
+!!        type(boundary_condition_list), intent(in) :: current_nod
+!!        type(boundary_condition_list), intent(in) :: e_potential_nod
 !!        type(nodal_bcs_4_induction_type), intent(inout) :: Bnod_bcs
 !
       module t_bc_data_magne
@@ -24,6 +30,7 @@
       use t_group_data
       use t_nodal_bc_data
       use t_boundary_field_IO
+      use t_bc_data_list
 !
       implicit  none
 !
@@ -54,9 +61,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_bc_vect_p_id(IO_bc, node, ele, nod_grp, Bnod_bcs)
+      subroutine set_bc_vect_p_id                                       &
+     &         (IO_bc, node, ele, nod_grp, a_potential_nod, Bnod_bcs)
 !
-      use m_bc_data_list
       use m_boundary_condition_IDs
       use count_num_nod_bc_MHD
       use set_bc_vectors
@@ -66,6 +73,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(group_data), intent(in) :: nod_grp
+      type(boundary_condition_list), intent(in) :: a_potential_nod
 !
       type(nodal_bcs_4_induction_type), intent(inout) :: Bnod_bcs
 !
@@ -93,9 +101,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_bc_magne_id(IO_bc, node, ele, nod_grp, Bnod_bcs)
+      subroutine set_bc_magne_id                                        &
+     &         (IO_bc, node, ele, nod_grp, magne_nod, Bnod_bcs)
 !
-      use m_bc_data_list
       use m_boundary_condition_IDs
       use count_num_nod_bc_MHD
       use set_bc_vectors
@@ -105,6 +113,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(group_data), intent(in) :: nod_grp
+      type(boundary_condition_list), intent(in) :: magne_nod
 !
       type(nodal_bcs_4_induction_type), intent(inout) :: Bnod_bcs
 !
@@ -134,10 +143,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_bc_current_id                                      &
-     &         (IO_bc, node, ele, nod_grp, Bnod_bcs)
+     &         (IO_bc, node, ele, nod_grp, current_nod, Bnod_bcs)
 !
       use m_boundary_condition_IDs
-      use m_bc_data_list
       use count_num_nod_bc_MHD
       use set_bc_vectors
       use set_ele_nod_bc_vectors
@@ -146,6 +154,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(group_data), intent(in) :: nod_grp
+      type(boundary_condition_list), intent(in) :: current_nod
 !
       type(nodal_bcs_4_induction_type), intent(inout) :: Bnod_bcs
 !
@@ -169,10 +178,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_bc_m_potential_id(IO_bc, node, ele,                &
-     &          conduct, insulate, nod_grp, Bnod_bcs)
+     &          conduct, insulate, nod_grp, e_potential_nod, Bnod_bcs)
 !
       use t_geometry_data_MHD
-      use m_bc_data_list
       use count_num_nod_bc_MHD
       use set_bc_scalars
       use set_ele_nod_bc_vectors
@@ -182,12 +190,13 @@
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: conduct, insulate
       type(group_data), intent(in) :: nod_grp
+      type(boundary_condition_list), intent(in) :: e_potential_nod
 !
       type(nodal_bcs_4_induction_type), intent(inout) :: Bnod_bcs
 !
 !
-      call count_num_bc_magp                                            &
-     &   (nod_grp, Bnod_bcs%nod_bc_f, Bnod_bcs%sgs_bc_f)
+      call count_num_bc_magp(nod_grp, e_potential_nod,                  &
+     &    Bnod_bcs%nod_bc_f, Bnod_bcs%sgs_bc_f)
 !
       call alloc_scalar_nod_bc_type(node%numnod, Bnod_bcs%nod_bc_f)
       call alloc_scalar_nod_bc_type(node%numnod, Bnod_bcs%sgs_bc_f)

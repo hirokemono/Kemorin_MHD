@@ -221,9 +221,6 @@
 !
       subroutine check_sph_boundary_spectra(label, jmax, j_rj, sph_bc)
 !
-      use m_bc_data_list
-      use m_surf_data_list
-!
       integer(kind = kint), intent(in) :: jmax
       integer(kind = kint), intent(in) :: j_rj(jmax,3)
       character(len=kchara), intent(in) :: label

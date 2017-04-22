@@ -186,6 +186,8 @@
 !
       subroutine set_control_FEM_MHD_bcs(MHD_prop, nbc_ctl, sbc_ctl)
 !
+      use m_bc_data_list
+      use m_surf_data_list
       use t_ctl_data_node_boundary
       use t_ctl_data_surf_boundary
 !
@@ -207,42 +209,50 @@
 !   set boundary conditions for temperature
 !
       call s_set_control_4_temp(MHD_prop%ht_prop,                       &
-     &   nbc_ctl%node_bc_T_ctl, sbc_ctl%surf_bc_HF_ctl)
+     &    nbc_ctl%node_bc_T_ctl, sbc_ctl%surf_bc_HF_ctl,                &
+     &    temp_nod, h_flux_surf)
 !
 !   set boundary conditions for velocity
 !
       call s_set_control_4_velo(MHD_prop%fl_prop,                       &
-     &   nbc_ctl%node_bc_U_ctl, sbc_ctl%surf_bc_ST_ctl)
+     &   nbc_ctl%node_bc_U_ctl, sbc_ctl%surf_bc_ST_ctl,                 &
+     &   velo_nod, torque_surf)
 !
 !  set boundary conditions for pressure
 !
       call s_set_control_4_press(MHD_prop%fl_prop,                      &
-     &   nbc_ctl%node_bc_P_ctl, sbc_ctl%surf_bc_PN_ctl)
+     &   nbc_ctl%node_bc_P_ctl, sbc_ctl%surf_bc_PN_ctl,                 &
+     &   press_nod, wall_surf)
 !
 !   set boundary conditions for composition
 !
       call s_set_control_4_composition(MHD_prop%cp_prop,                &
-     &   nbc_ctl%node_bc_C_ctl, sbc_ctl%surf_bc_CF_ctl)
+     &   nbc_ctl%node_bc_C_ctl, sbc_ctl%surf_bc_CF_ctl,                 &
+     &   light_nod, light_surf)
 !
 !   set boundary_conditons for magnetic field
 !
       call s_set_control_4_magne(MHD_prop%cd_prop,                      &
-     &   nbc_ctl%node_bc_B_ctl, sbc_ctl%surf_bc_BN_ctl)
+     &   nbc_ctl%node_bc_B_ctl, sbc_ctl%surf_bc_BN_ctl,                 &
+     &   magne_nod, magne_surf)
 !
 !   set boundary_conditons for magnetic potential
 !
       call s_set_control_4_mag_p(MHD_prop%cd_prop,                      &
-     &   nbc_ctl%node_bc_MP_ctl, sbc_ctl%surf_bc_MPN_ctl)
+     &   nbc_ctl%node_bc_MP_ctl, sbc_ctl%surf_bc_MPN_ctl,               &
+     &   e_potential_nod, e_potential_surf)
 !
 !   set boundary_conditons for vector potential
 !
       call s_set_control_4_vect_p(MHD_prop%cd_prop,                     &
-     &   nbc_ctl%node_bc_A_ctl, sbc_ctl%surf_bc_AN_ctl)
+     &    nbc_ctl%node_bc_A_ctl, sbc_ctl%surf_bc_AN_ctl,                &
+     &    a_potential_nod, a_potential_surf)
 !
 !   set boundary_conditons for current density
 !
       call s_set_control_4_current(MHD_prop%cd_prop,                    &
-     &   nbc_ctl%node_bc_J_ctl, sbc_ctl%surf_bc_JN_ctl)
+     &   nbc_ctl%node_bc_J_ctl, sbc_ctl%surf_bc_JN_ctl,                 &
+     &   current_nod, current_surf)
 !
 !   set boundary_conditons for magnetic potential
 !

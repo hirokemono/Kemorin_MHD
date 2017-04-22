@@ -17,6 +17,25 @@
       implicit  none
 !
 !
+!>      Structure for boundary condition lists for MHD
+!      type(MHD_BC_lists), save :: MHD_BC1
+!MHD_BC1%velo_BC%nod_BC
+!
+!MHD_BC1%press_BC%nod_BC
+!
+!MHD_BC1%temp_BC%nod_BC
+!
+!MHD_BC1%light_BC%nod_BC
+!
+!MHD_BC1%magne_BC%nod_BC
+!
+!MHD_BC1%a_potential_BC%nod_BC
+!
+!MHD_BC1%e_potential_BC%nod_BC
+!
+!MHD_BC1%current_BC%nod_BC
+!
+!
 !>       Node group data list for velocity
       type(boundary_condition_list), save :: velo_nod
 !>       Node group data list for pressure

@@ -7,29 +7,32 @@
 !        modified by Kemorin on Oct. 2005
 !        modified by Kemorin on Oct. 2009
 !
-!      subroutine count_num_bc_scl                                      &
-!     &         (iflag_bc, nod_grp, nod_bc_list, scalar_bc)
-!      subroutine count_num_bc_vect                                     &
-!     &         (iflag_bc, nod_grp, bc_list, nod_bc_vect)
-!
-!      subroutine count_num_bc_scl_w_SGS                                &
-!     &         (nod_grp, nod_bc_list, scalar_bc, sgs_bc)
-!
-!      subroutine count_num_bc_velo(nod_grp, velocity, sgs_velo,        &
-!     &          rotation, free_plane, free_sphere, no_radial_v)
-!        type(group_data), intent(in) :: nod_grp
-!        type(vect_fixed_nod_bc_type),     intent(inout) :: velocity
-!        type(vect_fixed_nod_bc_type),     intent(inout) :: sgs_velo
-!        type(scaler_rotaion_nod_bc_type), intent(inout) :: rotation
-!        type(scaler_fixed_nod_bc_type),   intent(inout) :: free_plane
-!        type(scaler_fixed_nod_bc_type),   intent(inout) :: free_sphere
-!        type(scaler_fixed_nod_bc_type),   intent(inout) :: no_radial_v
-!      subroutine count_num_bc_magne                                    &
-!     &         (iflag_bc,  nod_grp,  bc_list,  nod_bc_vect)
-!      subroutine count_num_bc_magp(nod_grp, magne_p, sgs_mag_p)
-!        type(group_data), intent(in) :: nod_grp
-!        type(scaler_fixed_nod_bc_type), intent(inout) :: magne_p
-!        type(scaler_fixed_nod_bc_type), intent(inout) :: sgs_mag_p
+!!      subroutine count_num_bc_scl                                     &
+!!     &         (iflag_bc, nod_grp, nod_bc_list, scalar_bc)
+!!      subroutine count_num_bc_vect                                    &
+!!     &         (iflag_bc, nod_grp, bc_list, nod_bc_vect)
+!!
+!!      subroutine count_num_bc_scl_w_SGS                               &
+!!     &         (nod_grp, nod_bc_list, scalar_bc, sgs_bc)
+!!
+!!      subroutine count_num_bc_velo                                    &
+!!     &         (nod_grp, velo_nod, velocity, sgs_velo,                &
+!!     &          rotation, free_plane, free_sphere, no_radial_v)
+!!        type(group_data), intent(in) :: nod_grp
+!!        type(vect_fixed_nod_bc_type),     intent(inout) :: velocity
+!!        type(vect_fixed_nod_bc_type),     intent(inout) :: sgs_velo
+!!        type(scaler_rotaion_nod_bc_type), intent(inout) :: rotation
+!!        type(scaler_fixed_nod_bc_type),   intent(inout) :: free_plane
+!!        type(scaler_fixed_nod_bc_type),   intent(inout) :: free_sphere
+!!        type(scaler_fixed_nod_bc_type),   intent(inout) :: no_radial_v
+!!      subroutine count_num_bc_magne                                   &
+!!     &         (iflag_bc,  nod_grp,  bc_list,  nod_bc_vect)
+!!      subroutine count_num_bc_magp                                    &
+!!     &         (nod_grp, e_potential_nod, magne_p, sgs_mag_p)
+!!        type(group_data), intent(in) :: nod_grp
+!!        type(boundary_condition_list), intent(in) :: e_potential_nod
+!!        type(scaler_fixed_nod_bc_type), intent(inout) :: magne_p
+!!        type(scaler_fixed_nod_bc_type), intent(inout) :: sgs_mag_p
 !
       module count_num_nod_bc_MHD
 !
@@ -47,8 +50,8 @@
       subroutine count_num_bc_scl                                       &
      &         (iflag_bc, nod_grp, nod_bc_list, scalar_bc)
 !
-      use m_bc_data_list
       use m_boundary_condition_IDs
+      use t_bc_data_list
       use t_group_data
       use t_nodal_bc_data
       use count_num_nodal_fields
@@ -72,7 +75,7 @@
      &         (iflag_bc, nod_grp, bc_list, nod_bc_vect)
 !
       use m_boundary_condition_IDs
-      use m_bc_data_list
+      use t_bc_data_list
       use t_group_data
       use t_nodal_bc_data
       use count_num_nodal_fields
@@ -100,9 +103,9 @@
       subroutine count_num_bc_scl_w_SGS                                 &
      &         (nod_grp, nod_bc_list, scalar_bc, sgs_bc)
 !
-      use m_bc_data_list
       use m_boundary_condition_IDs
       use t_group_data
+      use t_bc_data_list
       use t_nodal_bc_data
       use count_num_nodal_fields
 !
@@ -123,16 +126,19 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine count_num_bc_velo(nod_grp, velocity, sgs_velo,         &
+      subroutine count_num_bc_velo                                      &
+     &         (nod_grp, velo_nod, velocity, sgs_velo,                  &
      &          rotation, free_plane, free_sphere, no_radial_v)
 !
-      use m_bc_data_list
       use m_boundary_condition_IDs
+      use t_bc_data_list
       use t_group_data
       use t_nodal_bc_data
       use count_num_nodal_fields
 !
       type(group_data), intent(in) :: nod_grp
+      type(boundary_condition_list), intent(in) :: velo_nod
+!
       type(vect_fixed_nod_bc_type),     intent(inout) :: velocity
       type(vect_fixed_nod_bc_type),     intent(inout) :: sgs_velo
       type(scaler_rotaion_nod_bc_type), intent(inout) :: rotation
@@ -165,7 +171,7 @@
      &         (iflag_bc,  nod_grp,  bc_list,  nod_bc_vect)
 !
       use m_boundary_condition_IDs
-      use m_bc_data_list
+      use t_bc_data_list
       use t_group_data
       use t_nodal_bc_data
       use count_num_nodal_fields
@@ -189,22 +195,24 @@
      &    nod_bc_vect%num_bc_nod)
 !
 !
-      call cal_max_int_4_vector                                        &
+      call cal_max_int_4_vector                                         &
      &   (nod_bc_vect%nmax_bc, nod_bc_vect%num_bc_nod)
 !
       end subroutine count_num_bc_magne
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_num_bc_magp(nod_grp, magne_p, sgs_mag_p)
+      subroutine count_num_bc_magp                                      &
+     &         (nod_grp, e_potential_nod, magne_p, sgs_mag_p)
 !
-      use m_bc_data_list
       use m_boundary_condition_IDs
+      use t_bc_data_list
       use t_group_data
       use t_nodal_bc_data
       use count_num_nodal_fields
 !
       type(group_data), intent(in) :: nod_grp
+      type(boundary_condition_list), intent(in) :: e_potential_nod
       type(scaler_fixed_nod_bc_type), intent(inout) :: magne_p
       type(scaler_fixed_nod_bc_type), intent(inout) :: sgs_mag_p
 !

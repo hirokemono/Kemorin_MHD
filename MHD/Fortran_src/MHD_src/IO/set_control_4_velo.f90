@@ -10,10 +10,13 @@
 !!
 !!@verbatim
 !!      subroutine s_set_control_4_velo                                 &
-!!     &         (fl_prop, node_bc_U_ctl, surf_bc_ST_ctl)
+!!     &         (fl_prop, node_bc_U_ctl, surf_bc_ST_ctl,               &
+!!     &          velo_nod, torque_surf)
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(ctl_array_c2r), intent(inout) :: node_bc_U_ctl
 !!        type(ctl_array_c2r), intent(inout) :: surf_bc_ST_ctl
+!!        type(boundary_condition_list), intent(inout) :: velo_nod
+!!        type(boundary_condition_list), intent(inout) :: torque_surf
 !!@endverbatim
 !
       module set_control_4_velo
@@ -29,14 +32,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_4_velo                                   &
-     &         (fl_prop, node_bc_U_ctl, surf_bc_ST_ctl)
+     &         (fl_prop, node_bc_U_ctl, surf_bc_ST_ctl,                 &
+     &          velo_nod, torque_surf)
 !
       use m_machine_parameter
       use calypso_mpi
       use t_physical_property
       use t_read_control_arrays
-      use m_bc_data_list
-      use m_surf_data_list
+      use t_bc_data_list
       use set_node_group_types
       use set_surface_group_types
       use skip_comment_f
@@ -44,6 +47,8 @@
       type(fluid_property), intent(in) :: fl_prop
       type(ctl_array_c2r), intent(inout) :: node_bc_U_ctl
       type(ctl_array_c2r), intent(inout) :: surf_bc_ST_ctl
+      type(boundary_condition_list), intent(inout) :: velo_nod
+      type(boundary_condition_list), intent(inout) :: torque_surf
 !
       integer (kind = kint) :: i, iflag_4_hemi
 !

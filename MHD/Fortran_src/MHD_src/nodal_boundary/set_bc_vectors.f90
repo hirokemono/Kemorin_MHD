@@ -49,6 +49,7 @@
       use t_group_data
       use t_nodal_bc_data
       use t_boundary_field_IO
+      use t_bc_data_list
       use set_nod_bc_vector_id
 !
       implicit none
@@ -64,7 +65,6 @@
       subroutine set_bc_fixed_velo_id(IO_bc, node, nod_grp, bc_list,    &
      &          nod_bc_v, sgs_bc_v, nod_bc_rot)
 !
-      use m_bc_data_list
 !
       type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
@@ -102,8 +102,6 @@
       subroutine set_bc_fixed_vect_p_id                                 &
      &         (IO_bc, node, nod_grp, bc_list, nod_bc_a, sgs_bc_a)
 !
-      use m_bc_data_list
-!
       type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
@@ -130,8 +128,6 @@
       subroutine set_bc_fixed_magne_id                                  &
      &         (IO_bc, node, nod_grp, bc_list, nod_bc_b, sgs_bc_b)
 !
-      use m_bc_data_list
-!
       type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
@@ -148,7 +144,7 @@
       call set_bc_fixed_vect_id                                         &
      &   (IO_bc, node, nod_grp, bc_list, nod_bc_b, l_f)
 !
-      call set_sph_magne_id(node, nod_grp, bc_list%num_bc,              &
+      call set_sph_magne_id(node, nod_grp, bc_list, bc_list%num_bc,     &
      &    bc_list%bc_name, bc_list%ibc_type, nod_bc_b, l_f)
 !
       l_s(1:3) = 0
@@ -161,8 +157,6 @@
 !
       subroutine set_bc_fixed_current_id                                &
      &         (IO_bc, node, nod_grp, bc_list, nod_bc_j)
-!
-      use m_bc_data_list
 !
       type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
@@ -187,7 +181,6 @@
      &         (IO_bc, node, nod_grp, bc_list, vector_bc, l_f)
 !
       use t_nodal_bc_data
-      use m_bc_data_list
 !
       type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
@@ -213,7 +206,6 @@
      &         (node, nod_grp, bc_list, vector_bc, l_s)
 !
       use t_nodal_bc_data
-      use m_bc_data_list
 !
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp

@@ -3,9 +3,11 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine s_set_mag_p_sph(node, nod_grp, ii, i, j, nod_bc_f)
+!!      subroutine s_set_mag_p_sph                                      &
+!!     &         (node, nod_grp, e_potential_nod, ii, i, j, nod_bc_f)
 !!        type(node_data), intent(in) :: node
 !!        type(group_data), intent(in) :: nod_grp
+!!        type(boundary_condition_list), intent(in) :: e_potential_nod
 !!        type(scaler_fixed_nod_bc_type), intent(inout) :: nod_bc_f
 !
       module set_mag_p_sph
@@ -28,13 +30,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_set_mag_p_sph(node, nod_grp, ii, i, j, nod_bc_f)
+      subroutine s_set_mag_p_sph                                        &
+     &         (node, nod_grp, e_potential_nod, ii, i, j, nod_bc_f)
 !
-      use m_bc_data_list
+      use t_bc_data_list
       use spherical_harmonics
 !
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
+      type(boundary_condition_list), intent(in) :: e_potential_nod
       integer(kind = kint), intent(in) :: i, j
 !
       integer(kind = kint), intent(inout) :: ii

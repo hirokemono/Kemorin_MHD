@@ -49,6 +49,8 @@
      &          CTR_nod_grp_name, CTR_sf_grp_name, sph_MHD_bc)
 !
       use m_phys_labels
+      use m_bc_data_list
+      use m_surf_data_list
       use set_bc_flag_sph_velo
       use set_bc_sph_scalars
 !
@@ -76,6 +78,7 @@
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_velo_sph'
         call set_sph_bc_velo_sph(sph_rj, radial_rj_grp,                 &
      &      sph_params%radius_ICB, sph_params%radius_CMB,               &
+     &      velo_nod, torque_surf,                                      &
      &      sph_MHD_bc%sph_bc_U, sph_MHD_bc%bc_Uspectr)
 !
         call cal_fdm_coefs_4_BCs                                        &
@@ -95,8 +98,8 @@
 !
       if(MHD_prop%ht_prop%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_temp_sph'
-        call set_sph_bc_temp_sph                                        &
-     &     (bc_IO, sph_rj, radial_rj_grp, sph_MHD_bc%sph_bc_T)
+        call set_sph_bc_temp_sph(bc_IO, sph_rj, radial_rj_grp,          &
+     &      temp_nod, h_flux_surf, sph_MHD_bc%sph_bc_T)
         call cal_fdm_coefs_4_BCs                                        &
      &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                   &
      &      sph_MHD_bc%sph_bc_T)
@@ -113,8 +116,8 @@
 !
       if(MHD_prop%cp_prop%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*) 'set_sph_bc_composition_sph'
-        call set_sph_bc_composition_sph                                 &
-     &     (bc_IO, sph_rj, radial_rj_grp, sph_MHD_bc%sph_bc_C)
+        call set_sph_bc_composition_sph(bc_IO, sph_rj, radial_rj_grp,   &
+     &      light_nod, light_surf, sph_MHD_bc%sph_bc_C)
         call cal_fdm_coefs_4_BCs                                        &
      &     (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                   &
      &      sph_MHD_bc%sph_bc_C)

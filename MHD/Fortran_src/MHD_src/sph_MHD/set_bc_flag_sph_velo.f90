@@ -9,9 +9,11 @@
 !!@verbatim
 !!      subroutine set_sph_bc_velo_sph                                  &
 !!     &         (sph_rj, radial_rj_grp, r_ICB, r_CMB,                  &
-!!     &          sph_bc_U, bc_Uspectr)
+!!     &          velo_nod, torque_surf, sph_bc_U, bc_Uspectr)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(group_data), intent(in) :: radial_rj_grp
+!!        type(boundary_condition_list), intent(in) :: velo_nod
+!!        type(boundary_condition_list), intent(in) :: torque_surf
 !!        type(sph_boundary_type), intent(inout) :: sph_bc_U
 !!        type(sph_velocity_BC_spectr), intent(inout) :: bc_Uspectr
 !!@endverbatim
@@ -26,9 +28,6 @@
       use t_boundary_data_sph_MHD
       use t_boundary_params_sph_MHD
 !
-      use m_bc_data_list
-      use m_surf_data_list
-!
       implicit none
 !
       private :: set_sph_velo_ICB_flag, set_sph_velo_CMB_flag
@@ -41,15 +40,18 @@
 !
       subroutine set_sph_bc_velo_sph                                    &
      &         (sph_rj, radial_rj_grp, r_ICB, r_CMB,                    &
-     &          sph_bc_U, bc_Uspectr)
+     &          velo_nod, torque_surf, sph_bc_U, bc_Uspectr)
 !
       use t_spheric_rj_data
       use t_group_data
+      use t_bc_data_list
       use set_bc_sph_scalars
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(group_data), intent(in) :: radial_rj_grp
       real(kind = kreal), intent(in) :: r_ICB, r_CMB
+      type(boundary_condition_list), intent(in) :: velo_nod
+      type(boundary_condition_list), intent(in) :: torque_surf
 !
       type(sph_boundary_type), intent(inout) :: sph_bc_U
       type(sph_velocity_BC_spectr), intent(inout) :: bc_Uspectr

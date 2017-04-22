@@ -4,9 +4,11 @@
 !        programmed by H.Matsui on July 2000 (ver 1.1)
 !        modified by H.Matsui on Aug., 2007
 !
-!!      subroutine set_r_magne_sph(node, nod_grp, l_f, i, j, nod_bc_b)
+!!      subroutine set_r_magne_sph                                      &
+!!     &         (node, nod_grp, magne_nod, l_f, i, j, nod_bc_b)
 !!        type(node_data), intent(in) :: node
 !!        type(group_data), intent(in) :: nod_grp
+!!        type(boundary_condition_list), intent(in) :: magne_nod
 !!        type(vect_fixed_nod_bc_type), intent(inout) :: nod_bc_b
 !
       module set_radial_magne_sph
@@ -25,16 +27,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_r_magne_sph(node, nod_grp, l_f, i, j, nod_bc_b)
+      subroutine set_r_magne_sph                                        &
+     &         (node, nod_grp, magne_nod, l_f, i, j, nod_bc_b)
 !
       use t_geometry_data
       use t_group_data
       use t_nodal_bc_data
-      use m_bc_data_list
+      use t_bc_data_list
       use spherical_harmonics
 !
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
+      type(boundary_condition_list), intent(in) :: magne_nod
       integer(kind = kint), intent(in) :: i, j
 !
       integer(kind = kint), intent(inout) :: l_f(3)

@@ -91,6 +91,7 @@
      &         (IO_bc, sf_grp, sf_grp_nod, surf_bcs)
 !
       use m_machine_parameter
+      use m_surf_data_list
       use m_scalar_surf_id
       use m_vector_surf_id
 !
@@ -145,6 +146,7 @@
      &         (IO_bc, node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v,   &
      &          fl_prop, cd_prop, ht_prop, cp_prop, surf_bcs)
 !
+      use m_surf_data_list
       use m_scalar_surf_id
       use m_vector_surf_id
 !

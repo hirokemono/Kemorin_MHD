@@ -10,10 +10,13 @@
 !!
 !!@verbatim
 !!      subroutine s_set_control_4_press                                &
-!!     &         (fl_prop, node_bc_P_ctl, surf_bc_PN_ctl)
+!!     &         (fl_prop, node_bc_P_ctl, surf_bc_PN_ctl,               &
+!!     &          press_nod, wall_surf)
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(ctl_array_c2r), intent(inout) :: node_bc_P_ctl
 !!        type(ctl_array_c2r), intent(inout) :: surf_bc_PN_ctl
+!!        type(boundary_condition_list), intent(inout) :: press_nod
+!!        type(boundary_condition_list), intent(inout) :: wall_surf
 !!@endverbatim
 !
       module set_control_4_press
@@ -29,20 +32,22 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_4_press                                  &
-     &         (fl_prop, node_bc_P_ctl, surf_bc_PN_ctl)
+     &         (fl_prop, node_bc_P_ctl, surf_bc_PN_ctl,                 &
+     &          press_nod, wall_surf)
 !
       use m_machine_parameter
       use calypso_mpi
       use t_physical_property
       use t_read_control_arrays
-      use m_bc_data_list
-      use m_surf_data_list
+      use t_bc_data_list
       use set_node_group_types
       use set_surface_group_types
 !
       type(fluid_property), intent(in) :: fl_prop
       type(ctl_array_c2r), intent(inout) :: node_bc_P_ctl
       type(ctl_array_c2r), intent(inout) :: surf_bc_PN_ctl
+      type(boundary_condition_list), intent(inout) :: press_nod
+      type(boundary_condition_list), intent(inout) :: wall_surf
 !
       integer (kind = kint) :: i
 !

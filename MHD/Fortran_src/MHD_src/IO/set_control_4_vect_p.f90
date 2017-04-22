@@ -10,10 +10,14 @@
 !!
 !!@verbatim
 !!      subroutine s_set_control_4_vect_p                               &
-!!     &         (cd_prop, node_bc_A_ctl, surf_bc_AN_ctl)
+!!     &         (cd_prop, node_bc_A_ctl, surf_bc_AN_ctl,               &
+!!     &          a_potential_nod, a_potential_surf)
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(ctl_array_c2r), intent(inout) :: node_bc_A_ctl
 !!        type(ctl_array_c2r), intent(inout) :: surf_bc_AN_ctl
+!!        type(boundary_condition_list), intent(inout) :: a_potential_nod
+!!        type(boundary_condition_list), intent(inout)                  &
+!!     &                                :: a_potential_surf
 !!@endverbatim
 !
       module set_control_4_vect_p
@@ -29,14 +33,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_4_vect_p                                 &
-     &         (cd_prop, node_bc_A_ctl, surf_bc_AN_ctl)
+     &         (cd_prop, node_bc_A_ctl, surf_bc_AN_ctl,                 &
+     &          a_potential_nod, a_potential_surf)
 !
       use m_machine_parameter
       use calypso_mpi
       use t_physical_property
       use t_read_control_arrays
-      use m_bc_data_list
-      use m_surf_data_list
+      use t_bc_data_list
       use set_node_group_types
       use set_surface_group_types
       use skip_comment_f
@@ -44,6 +48,8 @@
       type(conductive_property), intent(in) :: cd_prop
       type(ctl_array_c2r), intent(inout) :: node_bc_A_ctl
       type(ctl_array_c2r), intent(inout) :: surf_bc_AN_ctl
+      type(boundary_condition_list), intent(inout) :: a_potential_nod
+      type(boundary_condition_list), intent(inout) :: a_potential_surf
 !
       integer (kind = kint) :: i
 !

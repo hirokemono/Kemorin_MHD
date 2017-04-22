@@ -8,9 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine set_sph_bc_temp_sph                                  &
-!!     &         (bc_IO, sph_rj, radial_rj_grp, sph_bc_T)
+!!     &         (bc_IO, sph_rj, radial_rj_grp, temp_nod, h_flux_surf,  &
+!!     &          sph_bc_T)
 !!      subroutine set_sph_bc_composition_sph                           &
-!!     &         (bc_IO, sph_rj, radial_rj_grp, sph_bc_C)
+!!     &         (bc_IO, sph_rj, radial_rj_grp, light_nod, light_surf,  &
+!!     &          sph_bc_C)
 !!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(group_data), intent(in) :: radial_rj_grp
@@ -40,6 +42,7 @@
       use t_group_data
       use t_boundary_params_sph_MHD
       use t_sph_boundary_input_data
+      use t_bc_data_list
 !
       implicit none
 !
@@ -54,15 +57,17 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_sph_bc_temp_sph                                    &
-     &         (bc_IO, sph_rj, radial_rj_grp, sph_bc_T)
+     &         (bc_IO, sph_rj, radial_rj_grp, temp_nod, h_flux_surf,    &
+     &          sph_bc_T)
 !
       use m_phys_labels
-      use m_bc_data_list
-      use m_surf_data_list
 !
       type(boundary_spectra), intent(in) :: bc_IO
       type(sph_rj_grid), intent(in) :: sph_rj
       type(group_data), intent(in) :: radial_rj_grp
+      type(boundary_condition_list), intent(in) :: temp_nod
+      type(boundary_condition_list), intent(in) :: h_flux_surf
+!
       type(sph_boundary_type), intent(inout) :: sph_bc_T
 !
       integer(kind = kint) :: i
@@ -113,15 +118,17 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_sph_bc_composition_sph                             &
-     &         (bc_IO, sph_rj, radial_rj_grp, sph_bc_C)
+     &         (bc_IO, sph_rj, radial_rj_grp, light_nod, light_surf,    &
+     &          sph_bc_C)
 !
       use m_phys_labels
-      use m_bc_data_list
-      use m_surf_data_list
 !
       type(boundary_spectra), intent(in) :: bc_IO
       type(sph_rj_grid), intent(in) :: sph_rj
       type(group_data), intent(in) :: radial_rj_grp
+      type(boundary_condition_list), intent(in) :: light_nod
+      type(boundary_condition_list), intent(in) :: light_surf
+!
       type(sph_boundary_type), intent(inout) :: sph_bc_C
 !
       integer(kind = kint) :: i
@@ -176,9 +183,6 @@
      &         (fhd_field, fhd_flux, nod_bc_list, surf_bc_list, bc_IO,  &
      &          sph_rj, radial_rj_grp, sph_bc)
 !
-      use m_bc_data_list
-      use m_surf_data_list
-!
       character(len=kchara), intent(in) :: fhd_field
       character(len=kchara), intent(in) :: fhd_flux
 !
@@ -213,9 +217,6 @@
       subroutine inner_sph_bc_scalar_sph(fhd_field, fhd_flux,           &
      &          nod_bc_list, surf_bc_list, bc_IO,                       &
      &          igrp_icb, sph_rj, sph_bc)
-!
-      use m_bc_data_list
-      use m_surf_data_list
 !
       integer(kind = kint), intent(in) :: igrp_icb
       character(len=kchara), intent(in) :: fhd_field
@@ -292,9 +293,6 @@
       subroutine outer_sph_bc_scalar_sph(fhd_field, fhd_flux,           &
      &          nod_bc_list, surf_bc_list, bc_IO,                       &
      &          igrp_cmb, sph_rj, sph_bc)
-!
-      use m_bc_data_list
-      use m_surf_data_list
 !
       integer(kind = kint), intent(in) :: igrp_cmb
       character(len=kchara), intent(in) :: fhd_field
@@ -402,8 +400,7 @@
       subroutine find_both_sides_of_boundaries(sph_rj, radial_rj_grp,   &
      &          bc_nod, bc_surf, sph_bc, igrp_icb, igrp_cmb)
 !
-      use m_bc_data_list
-      use m_surf_data_list
+      use t_bc_data_list
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(group_data), intent(in) :: radial_rj_grp

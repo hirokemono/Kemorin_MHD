@@ -9,10 +9,13 @@
 !!
 !!@verbatim
 !!      subroutine s_set_control_4_composition                          &
-!!     &         (cp_prop, node_bc_C_ctl, surf_bc_CF_ctl)
+!!     &         (cp_prop, node_bc_C_ctl, surf_bc_CF_ctl,               &
+!!     &          light_nod, light_surf)
 !!        type(scalar_property), intent(in) :: cp_prop
 !!        type(ctl_array_c2r), intent(inout) :: node_bc_C_ctl
 !!        type(ctl_array_c2r), intent(inout) :: surf_bc_CF_ctl
+!!        type(boundary_condition_list), intent(inout) :: light_nod
+!!        type(boundary_condition_list), intent(inout) :: light_surf
 !!@endverbatim
 !
       module set_control_4_composition
@@ -28,20 +31,22 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_4_composition                            &
-     &         (cp_prop, node_bc_C_ctl, surf_bc_CF_ctl)
+     &         (cp_prop, node_bc_C_ctl, surf_bc_CF_ctl,                 &
+     &          light_nod, light_surf)
 !
-      use m_machine_parameter
       use calypso_mpi
+      use m_machine_parameter
       use t_physical_property
       use t_read_control_arrays
-      use m_bc_data_list
-      use m_surf_data_list
+      use t_bc_data_list
       use set_node_group_types
       use set_surface_group_types
 !
       type(scalar_property), intent(in) :: cp_prop
       type(ctl_array_c2r), intent(inout) :: node_bc_C_ctl
       type(ctl_array_c2r), intent(inout) :: surf_bc_CF_ctl
+      type(boundary_condition_list), intent(inout) :: light_nod
+      type(boundary_condition_list), intent(inout) :: light_surf
 !
       integer (kind = kint) :: i
 !

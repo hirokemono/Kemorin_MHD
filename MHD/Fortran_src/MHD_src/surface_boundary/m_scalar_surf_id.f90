@@ -21,11 +21,11 @@
 !
       use m_precision
 !
-      use m_surf_data_list
       use m_header_4_surface_bc
       use t_group_data
       use t_surface_bc_data
       use t_boundary_field_IO
+      use t_bc_data_list
 !
       implicit  none
 !

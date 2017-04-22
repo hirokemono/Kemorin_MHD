@@ -10,10 +10,13 @@
 !!
 !!@verbatim
 !!      subroutine s_set_control_4_temp                                 &
-!!     &         (ht_prop, node_bc_T_ctl, surf_bc_HF_ctl)
+!!     &         (ht_prop, node_bc_T_ctl, surf_bc_HF_ctl,               &
+!!     &          temp_nod, h_flux_surf)
 !!        type(scalar_property), intent(in) :: ht_prop
 !!        type(ctl_array_c2r), intent(inout) :: node_bc_T_ctl
 !!        type(ctl_array_c2r), intent(inout) :: surf_bc_HF_ctl
+!!        type(boundary_condition_list), intent(inout) :: temp_nod
+!!        type(boundary_condition_list), intent(inout) :: h_flux_surf
 !!@endverbatim
 !
       module set_control_4_temp
@@ -29,20 +32,22 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_4_temp                                   &
-     &         (ht_prop, node_bc_T_ctl, surf_bc_HF_ctl)
+     &         (ht_prop, node_bc_T_ctl, surf_bc_HF_ctl,                 &
+     &          temp_nod, h_flux_surf)
 !
       use m_machine_parameter
       use calypso_mpi
       use t_physical_property
       use t_read_control_arrays
-      use m_bc_data_list
-      use m_surf_data_list
+      use t_bc_data_list
       use set_node_group_types
       use set_surface_group_types
 !
       type(scalar_property), intent(in) :: ht_prop
       type(ctl_array_c2r), intent(inout) :: node_bc_T_ctl
       type(ctl_array_c2r), intent(inout) :: surf_bc_HF_ctl
+      type(boundary_condition_list), intent(inout) :: temp_nod
+      type(boundary_condition_list), intent(inout) :: h_flux_surf
 !
       integer(kind = kint) :: i
 !

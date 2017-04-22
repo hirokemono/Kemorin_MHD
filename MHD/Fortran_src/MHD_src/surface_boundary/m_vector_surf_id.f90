@@ -28,7 +28,6 @@
 !
       use m_precision
 !
-      use m_surf_data_list
       use m_header_4_surface_bc
       use t_geometry_data
       use t_surface_data
@@ -37,6 +36,7 @@
       use t_surface_group_geometry
       use t_surface_bc_data
       use t_boundary_field_IO
+      use t_bc_data_list
 !
       implicit  none
 !
@@ -149,8 +149,8 @@
      &    Vsf_bcs%free_sph_out%id_grp_sf_dat)
 !
       call s_set_sf_grad_vector_id(IO_bc, sf_grp,                       &
-     &    a_potential_surf%num_bc, a_potential_surf%bc_name,            &
-     &    a_potential_surf%ibc_type, a_potential_surf%bc_magnitude,     &
+     &    vector_surf%num_bc, vector_surf%bc_name,                      &
+     &    vector_surf%ibc_type, vector_surf%bc_magnitude,               &
      &    name_grad, Vsf_bcs%grad, Vsf_bcs%torque_lead)
 !
       end subroutine set_surf_grad_velo

@@ -18,6 +18,21 @@
 !
       implicit  none
 !
+!MHD_BC1%velo_BC%surf_BC
+!
+!MHD_BC1%press_BC%surf_BC
+!
+!MHD_BC1%temp_BC%surf_BC
+!
+!MHD_BC1%light_BC%surf_BC
+!
+!MHD_BC1%magne_BC%surf_BC
+!
+!MHD_BC1%a_potential_BC%surf_BC
+!
+!MHD_BC1%e_potential_BC%surf_BC
+!
+!MHD_BC1%current_BC%surf_BC
 !
 !>       Surface group data list for stresses
       type(boundary_condition_list), save :: torque_surf

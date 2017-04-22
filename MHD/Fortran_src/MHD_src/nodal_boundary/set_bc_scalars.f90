@@ -18,7 +18,7 @@
       use m_constants
       use m_phys_labels
       use m_boundary_condition_IDs
-      use m_bc_data_list
+      use t_bc_data_list
       use t_geometry_data
       use t_group_data
       use t_nodal_bc_data
@@ -121,8 +121,9 @@
       call set_bc_fixed_scalar_id                                       &
      &   (IO_bc, node, nod_grp, bc_list, nod_bc_f, ii)
 !
-      call set_bc_sph_magne_p_id(node, nod_grp, bc_list%num_bc,         &
-     &    bc_list%bc_name, bc_list%ibc_type, ii, nod_bc_f)
+      call set_bc_sph_magne_p_id(node, nod_grp, bc_list,                &
+     &    bc_list%num_bc, bc_list%bc_name, bc_list%ibc_type,            &
+     &    ii, nod_bc_f)
 !
       i0 = 0
       call set_bc_sgs_scalar_id(node, nod_grp, bc_list, sgs_bc_f, i0)

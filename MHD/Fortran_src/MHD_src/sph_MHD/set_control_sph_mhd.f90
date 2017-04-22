@@ -276,6 +276,8 @@
 !
       subroutine set_control_SPH_MHD_bcs(MHD_prop, nbc_ctl, sbc_ctl)
 !
+      use m_bc_data_list
+      use m_surf_data_list
       use t_ctl_data_node_boundary
       use t_ctl_data_surf_boundary
 !
@@ -294,31 +296,36 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_temp'
       call s_set_control_4_temp(MHD_prop%ht_prop,                       &
-     &    nbc_ctl%node_bc_T_ctl, sbc_ctl%surf_bc_HF_ctl)
+     &    nbc_ctl%node_bc_T_ctl, sbc_ctl%surf_bc_HF_ctl,                &
+     &    temp_nod, h_flux_surf)
 !
 !   set boundary conditions for velocity
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_velo'
       call s_set_control_4_velo(MHD_prop%fl_prop,                       &
-     &    nbc_ctl%node_bc_U_ctl, sbc_ctl%surf_bc_ST_ctl)
+     &    nbc_ctl%node_bc_U_ctl, sbc_ctl%surf_bc_ST_ctl,                &
+     &    velo_nod, torque_surf)
 !
 !  set boundary conditions for pressure
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_press'
       call s_set_control_4_press(MHD_prop%fl_prop,                      &
-     &    nbc_ctl%node_bc_P_ctl, sbc_ctl%surf_bc_PN_ctl)
+     &    nbc_ctl%node_bc_P_ctl, sbc_ctl%surf_bc_PN_ctl,                &
+     &    press_nod, wall_surf)
 !
 !   set boundary conditions for composition variation
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_composition'
       call s_set_control_4_composition(MHD_prop%cp_prop,                &
-     &    nbc_ctl%node_bc_C_ctl, sbc_ctl%surf_bc_CF_ctl)
+     &    nbc_ctl%node_bc_C_ctl, sbc_ctl%surf_bc_CF_ctl,                &
+     &    light_nod, light_surf)
 !
 !   set boundary_conditons for magnetic field
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_magne'
       call s_set_control_4_magne(MHD_prop%cd_prop,                      &
-     &    nbc_ctl%node_bc_B_ctl, sbc_ctl%surf_bc_BN_ctl)
+     &    nbc_ctl%node_bc_B_ctl, sbc_ctl%surf_bc_BN_ctl,                &
+     &    magne_nod, magne_surf)
 !
       end subroutine set_control_SPH_MHD_bcs
 !

@@ -9,10 +9,13 @@
 !!
 !!@verbatim
 !!      subroutine s_set_control_4_current                              &
-!!     &         (cd_prop, node_bc_J_ctl, surf_bc_JN_ctl)
+!!     &         (cd_prop, node_bc_J_ctl, surf_bc_JN_ctl,               &
+!!     &          current_nod, current_surf)
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(ctl_array_c2r), intent(inout) :: node_bc_J_ctl
 !!        type(ctl_array_c2r), intent(inout) :: surf_bc_JN_ctl
+!!        type(boundary_condition_list), intent(inout) :: current_nod
+!!        type(boundary_condition_list), intent(inout) :: current_surf
 !!@endverbatim
 !
       module set_control_4_current
@@ -28,20 +31,22 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_4_current                                &
-     &         (cd_prop, node_bc_J_ctl, surf_bc_JN_ctl)
+     &         (cd_prop, node_bc_J_ctl, surf_bc_JN_ctl,                 &
+     &          current_nod, current_surf)
 !
       use calypso_mpi
       use m_machine_parameter
       use t_physical_property
       use t_read_control_arrays
-      use m_bc_data_list
-      use m_surf_data_list
+      use t_bc_data_list
       use set_node_group_types
       use set_surface_group_types
 !
       type(conductive_property), intent(in) :: cd_prop
       type(ctl_array_c2r), intent(inout) :: node_bc_J_ctl
       type(ctl_array_c2r), intent(inout) :: surf_bc_JN_ctl
+      type(boundary_condition_list), intent(inout) :: current_nod
+      type(boundary_condition_list), intent(inout) :: current_surf
 !
       integer (kind = kint) :: i
 !
