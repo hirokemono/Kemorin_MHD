@@ -40,7 +40,7 @@
 !
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
-      type(nod_bc_list_type), intent(in) :: bc_list
+      type(boundary_condition_list), intent(in) :: bc_list
 !
       type(scaler_fixed_nod_bc_type), intent(inout) :: nod_bc_vfree
       type(scaler_fixed_nod_bc_type), intent(inout) :: nod_bc_vr0
@@ -83,7 +83,7 @@
       type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
-      type(nod_bc_list_type), intent(in) :: bc_list
+      type(boundary_condition_list), intent(in) :: bc_list
 !
       type(scaler_fixed_nod_bc_type), intent(inout) :: nod_bc_t
       type(scaler_fixed_nod_bc_type), intent(inout) :: sgs_bc_t
@@ -109,7 +109,7 @@
       type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
-      type(nod_bc_list_type), intent(in) :: bc_list
+      type(boundary_condition_list), intent(in) :: bc_list
 !
       type(scaler_fixed_nod_bc_type), intent(inout) :: nod_bc_f
       type(scaler_fixed_nod_bc_type), intent(inout) :: sgs_bc_f
@@ -138,7 +138,7 @@
       type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
-      type(nod_bc_list_type), intent(in) :: bc_list
+      type(boundary_condition_list), intent(in) :: bc_list
 !
       type(scaler_fixed_nod_bc_type), intent(inout) :: scalar_bc
       integer (kind = kint), intent(inout) :: ii
@@ -159,7 +159,7 @@
 !
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
-      type(nod_bc_list_type), intent(in) :: bc_list
+      type(boundary_condition_list), intent(in) :: bc_list
 !
       type(scaler_fixed_nod_bc_type), intent(inout) :: scalar_bc
       integer (kind = kint), intent(inout) :: ii

@@ -61,7 +61,7 @@
      &       write(*,*) 'magne_nod%num_bc ',magne_nod%num_bc
       if (magne_nod%num_bc .gt. 0) then
 !
-        call allocate_nod_bc_list_magne
+        call alloc_bc_type_ctl(magne_nod)
 !
         magne_nod%bc_name(1:magne_nod%num_bc)                           &
      &      = node_bc_B_ctl%c2_tbl(1:magne_nod%num_bc)
@@ -98,7 +98,7 @@
      &           write(*,*) 'magne_surf%num_bc ',magne_surf%num_bc
       if (magne_surf%num_bc .gt. 0) then
 !
-        call allocate_magne_surf_ctl
+        call alloc_bc_type_ctl(magne_surf)
 !
         magne_surf%bc_name(1:magne_surf%num_bc)                         &
      &        = surf_bc_BN_ctl%c2_tbl(1:magne_surf%num_bc)

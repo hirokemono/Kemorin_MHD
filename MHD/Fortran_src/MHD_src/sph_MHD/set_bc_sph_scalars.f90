@@ -21,8 +21,8 @@
 !!     &         bc_nod, bc_surf, sph_bc, igrp_icb, igrp_cmb)
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(group_data), intent(in) :: radial_rj_grp
-!!        type(nod_bc_list_type), intent(in) :: bc_nod
-!!        type(surface_bc_list_type), intent(in) :: bc_surf
+!!        type(boundary_condition_list), intent(in) :: bc_nod
+!!        type(boundary_condition_list), intent(in) :: bc_surf
 !!        type(sph_boundary_type), intent(inout) :: sph_bc
 !!@endverbatim
 !
@@ -184,8 +184,8 @@
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(group_data), intent(in) :: radial_rj_grp
-      type(nod_bc_list_type), intent(in) :: nod_bc_list
-      type(surface_bc_list_type), intent(in) :: surf_bc_list
+      type(boundary_condition_list), intent(in) :: nod_bc_list
+      type(boundary_condition_list), intent(in) :: surf_bc_list
       type(boundary_spectra), intent(in) :: bc_IO
 !
       type(sph_boundary_type), intent(inout) :: sph_bc
@@ -222,8 +222,8 @@
       character(len=kchara), intent(in) :: fhd_flux
 !
       type(sph_rj_grid), intent(in) :: sph_rj
-      type(nod_bc_list_type), intent(in) :: nod_bc_list
-      type(surface_bc_list_type), intent(in) :: surf_bc_list
+      type(boundary_condition_list), intent(in) :: nod_bc_list
+      type(boundary_condition_list), intent(in) :: surf_bc_list
       type(boundary_spectra), intent(in) :: bc_IO
 !
       type(sph_boundary_type), intent(inout) :: sph_bc
@@ -301,8 +301,8 @@
       character(len=kchara), intent(in) :: fhd_flux
 !
       type(sph_rj_grid), intent(in) :: sph_rj
-      type(nod_bc_list_type), intent(in) :: nod_bc_list
-      type(surface_bc_list_type), intent(in) :: surf_bc_list
+      type(boundary_condition_list), intent(in) :: nod_bc_list
+      type(boundary_condition_list), intent(in) :: surf_bc_list
       type(boundary_spectra), intent(in) :: bc_IO
 !
       type(sph_boundary_type), intent(inout) :: sph_bc
@@ -407,8 +407,7 @@
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(group_data), intent(in) :: radial_rj_grp
-      type(nod_bc_list_type), intent(in) :: bc_nod
-      type(surface_bc_list_type), intent(in) :: bc_surf
+      type(boundary_condition_list), intent(in) :: bc_nod, bc_surf
 !
       integer(kind = kint), intent(inout) :: igrp_icb, igrp_cmb
       type(sph_boundary_type), intent(inout) :: sph_bc

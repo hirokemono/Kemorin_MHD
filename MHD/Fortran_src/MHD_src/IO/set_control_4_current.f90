@@ -61,7 +61,7 @@
      &      write(*,*) 'current_nod%num_bc ',current_nod%num_bc
       if (current_nod%num_bc .gt. 0) then
 !
-        call allocate_nod_bc_list_j
+        call alloc_bc_type_ctl(current_nod)
 !
         current_nod%bc_name(1:current_nod%num_bc)                       &
      &             = node_bc_J_ctl%c2_tbl(1:current_nod%num_bc)
@@ -93,7 +93,7 @@
      &      write(*,*) 'current_surf%num_bc ',current_surf%num_bc
       if (current_surf%num_bc .gt. 0) then
 !
-        call allocate_current_surf_ctl
+        call alloc_bc_type_ctl(current_surf)
 !
         current_surf%bc_name(1:current_surf%num_bc)                     &
      &      = surf_bc_JN_ctl%c2_tbl(1:current_surf%num_bc)

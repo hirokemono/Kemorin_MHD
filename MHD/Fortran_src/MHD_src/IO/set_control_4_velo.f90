@@ -62,7 +62,7 @@
      &      write(*,*) 'velo_nod%num_bc ',velo_nod%num_bc
       if (velo_nod%num_bc .gt. 0) then
 !
-        call allocate_nod_bc_list_velo
+        call alloc_bc_type_ctl(velo_nod)
 !
         velo_nod%bc_name(1:velo_nod%num_bc)                             &
      &      = node_bc_U_ctl%c2_tbl(1:velo_nod%num_bc)
@@ -111,7 +111,7 @@
      &            write(*,*) 'torque_surf%num_bc', torque_surf%num_bc
       if(torque_surf%num_bc .gt. 0) then
 !
-        call allocate_velo_surf_ctl
+        call alloc_bc_type_ctl(torque_surf)
 !
         torque_surf%bc_name(1:torque_surf%num_bc)                       &
      &       = surf_bc_ST_ctl%c2_tbl(1:torque_surf%num_bc)

@@ -56,7 +56,7 @@
 !
       integer(kind = kint), intent(in) :: iflag_bc
       type(group_data), intent(in) :: nod_grp
-      type(nod_bc_list_type), intent(in) :: nod_bc_list
+      type(boundary_condition_list), intent(in) :: nod_bc_list
       type(scaler_fixed_nod_bc_type), intent(inout) :: scalar_bc
 !
 !
@@ -81,7 +81,7 @@
       integer(kind = kint), intent(in) :: iflag_bc
 !
       type(group_data), intent(in) :: nod_grp
-      type(nod_bc_list_type), intent(in) :: bc_list
+      type(boundary_condition_list), intent(in) :: bc_list
       type(vect_fixed_nod_bc_type), intent(inout) :: nod_bc_vect
 !
 !
@@ -108,7 +108,7 @@
 !
 !
       type(group_data), intent(in) :: nod_grp
-      type(nod_bc_list_type), intent(in) :: nod_bc_list
+      type(boundary_condition_list), intent(in) :: nod_bc_list
       type(scaler_fixed_nod_bc_type), intent(inout) :: scalar_bc
       type(scaler_fixed_nod_bc_type), intent(inout) :: sgs_bc
 !
@@ -174,7 +174,7 @@
       integer(kind = kint), intent(in) :: iflag_bc
 !
       type(group_data), intent(in) :: nod_grp
-      type(nod_bc_list_type), intent(in) :: bc_list
+      type(boundary_condition_list), intent(in) :: bc_list
       type(vect_fixed_nod_bc_type), intent(inout) :: nod_bc_vect
 !
 !

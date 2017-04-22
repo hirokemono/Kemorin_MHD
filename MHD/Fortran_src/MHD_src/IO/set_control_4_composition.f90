@@ -61,7 +61,7 @@
 !
       if (light_nod%num_bc .gt. 0) then
 !
-        call allocate_nod_bc_list_composit
+        call alloc_bc_type_ctl(light_nod)
 !
         light_nod%bc_name(1:light_nod%num_bc)                           &
      &      = node_bc_C_ctl%c2_tbl(1:light_nod%num_bc)
@@ -96,7 +96,7 @@
      &       write(*,*) 'light_surf%num_bc ',light_surf%num_bc
       if (light_surf%num_bc .gt. 0) then
 !
-        call allocate_d_scalar_surf_ctl
+        call alloc_bc_type_ctl(light_surf)
 !
         light_surf%bc_name(1:light_surf%num_bc)                         &
      &          = surf_bc_CF_ctl%c2_tbl(1:light_surf%num_bc)

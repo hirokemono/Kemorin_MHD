@@ -9,7 +9,7 @@
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(node_data), intent(in) :: node
 !!        type(group_data), intent(in) :: nod_grp
-!!        type(nod_bc_list_type), intent(in) :: bc_list
+!!        type(boundary_condition_list), intent(in) :: bc_list
 !!        type(vect_fixed_nod_bc_type), intent(inout) :: nod_bc_v
 !!        type(vect_fixed_nod_bc_type), intent(inout) :: sgs_bc_v
 !!        type(scaler_rotaion_nod_bc_type), intent(inout) :: nod_bc_rot
@@ -19,7 +19,7 @@
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(node_data), intent(in) :: node
 !!        type(group_data), intent(in) :: nod_grp
-!!        type(nod_bc_list_type), intent(in) :: bc_list
+!!        type(boundary_condition_list), intent(in) :: bc_list
 !!        type(vect_fixed_nod_bc_type), intent(inout) :: nod_bc_a
 !!        type(vect_fixed_nod_bc_type), intent(inout) :: sgs_bc_a
 !!      subroutine set_bc_fixed_magne_id                                &
@@ -27,7 +27,7 @@
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(node_data), intent(in) :: node
 !!        type(group_data), intent(in) :: nod_grp
-!!        type(nod_bc_list_type), intent(in) :: bc_list
+!!        type(boundary_condition_list), intent(in) :: bc_list
 !!        type(vect_fixed_nod_bc_type), intent(inout) :: nod_bc_b
 !!        type(vect_fixed_nod_bc_type), intent(inout) :: sgs_bc_b
 !!      subroutine set_bc_fixed_current_id                              &
@@ -35,7 +35,7 @@
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(node_data), intent(in) :: node
 !!        type(group_data), intent(in) :: nod_grp
-!!        type(nod_bc_list_type), intent(in) :: bc_list
+!!        type(boundary_condition_list), intent(in) :: bc_list
 !!        type(vect_fixed_nod_bc_type), intent(inout) :: nod_bc_b
 !!        type(vect_fixed_nod_bc_type), intent(inout) :: sgs_bc_b
 !
@@ -69,7 +69,7 @@
       type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
-      type(nod_bc_list_type), intent(in) :: bc_list
+      type(boundary_condition_list), intent(in) :: bc_list
 !
       type(vect_fixed_nod_bc_type), intent(inout) :: nod_bc_v
       type(vect_fixed_nod_bc_type), intent(inout) :: sgs_bc_v
@@ -107,7 +107,7 @@
       type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
-      type(nod_bc_list_type), intent(in) :: bc_list
+      type(boundary_condition_list), intent(in) :: bc_list
 !
       type(vect_fixed_nod_bc_type), intent(inout) :: nod_bc_a
       type(vect_fixed_nod_bc_type), intent(inout) :: sgs_bc_a
@@ -135,7 +135,7 @@
       type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
-      type(nod_bc_list_type), intent(in) :: bc_list
+      type(boundary_condition_list), intent(in) :: bc_list
 !
       type(vect_fixed_nod_bc_type), intent(inout) :: nod_bc_b
       type(vect_fixed_nod_bc_type), intent(inout) :: sgs_bc_b
@@ -167,7 +167,7 @@
       type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
-      type(nod_bc_list_type), intent(in) :: bc_list
+      type(boundary_condition_list), intent(in) :: bc_list
 !
       type(vect_fixed_nod_bc_type), intent(inout) :: nod_bc_j
 !
@@ -192,7 +192,7 @@
       type(IO_boundary), intent(in) :: IO_bc
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
-      type(nod_bc_list_type), intent(in) :: bc_list
+      type(boundary_condition_list), intent(in) :: bc_list
 !
       type(vect_fixed_nod_bc_type), intent(inout) :: vector_bc
       integer (kind = kint), intent(inout) :: l_f(3)
@@ -217,7 +217,7 @@
 !
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
-      type(nod_bc_list_type), intent(in) :: bc_list
+      type(boundary_condition_list), intent(in) :: bc_list
 !
       type(vect_fixed_nod_bc_type), intent(inout) :: vector_bc
       integer (kind = kint), intent(inout) :: l_s(3)

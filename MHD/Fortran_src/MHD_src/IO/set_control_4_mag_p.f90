@@ -61,7 +61,7 @@
 !
       if (e_potential_nod%num_bc .gt. 0) then
 !
-        call allocate_nod_bc_list_mag_p
+        call alloc_bc_type_ctl(e_potential_nod)
 !
         e_potential_nod%bc_name(1:e_potential_nod%num_bc)               &
      &      = node_bc_MP_ctl%c2_tbl(1:e_potential_nod%num_bc)
@@ -83,7 +83,7 @@
 !
       if (e_potential_surf%num_bc .gt. 0) then
 !
-        call allocate_magp_surf_ctl
+        call alloc_bc_type_ctl(e_potential_surf)
 !
         e_potential_surf%bc_name(1:e_potential_surf%num_bc)             &
      &       = surf_bc_MPN_ctl%c2_tbl(1:e_potential_surf%num_bc)

@@ -21,7 +21,7 @@
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(surface_node_grp_data), intent(in) :: sf_grp_nod
 !!        type(surface_group_geometry), intent(in) :: sf_grp_v
-!!        type(surface_bc_list_type), intent(in) :: vector_surf
+!!        type(boundary_condition_list), intent(in) :: vector_surf
 !!        type(vector_surf_bc_type), intent(inout) :: Bsf_bcs
 !
       module m_vector_surf_id
@@ -58,7 +58,7 @@
       type(IO_boundary), intent(in) :: IO_bc
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_node_grp_data), intent(in) :: sf_nod
-      type(surface_bc_list_type), intent(in) :: vector_surf
+      type(boundary_condition_list), intent(in) :: vector_surf
       type(velocity_surf_bc_type), intent(inout) :: Vsf_bcs
 !
 !
@@ -94,7 +94,7 @@
       type(IO_boundary), intent(in) :: IO_bc
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_node_grp_data), intent(in) :: sf_nod
-      type(surface_bc_list_type), intent(in) :: vector_surf
+      type(boundary_condition_list), intent(in) :: vector_surf
       type(vector_surf_bc_type), intent(inout) :: Bsf_bcs
 !
 !
@@ -128,7 +128,7 @@
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_node_grp_data), intent(in) :: sf_grp_nod
       type(surface_group_geometry), intent(in) :: sf_grp_v
-      type(surface_bc_list_type), intent(in) :: vector_surf
+      type(boundary_condition_list), intent(in) :: vector_surf
 !
       type(velocity_surf_bc_type), intent(inout) :: Vsf_bcs
 !
@@ -173,7 +173,7 @@
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_node_grp_data), intent(in) :: sf_grp_nod
       type(surface_group_geometry), intent(in) :: sf_grp_v
-      type(surface_bc_list_type), intent(in) :: vector_surf
+      type(boundary_condition_list), intent(in) :: vector_surf
       type(vector_surf_bc_type), intent(inout) :: Bsf_bcs
 !
 !

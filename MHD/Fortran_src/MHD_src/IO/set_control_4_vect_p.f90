@@ -63,7 +63,7 @@
      &     write(*,*) 'a_potential_nod%num_bc ',a_potential_nod%num_bc
       if (a_potential_nod%num_bc .gt. 0) then
 !
-        call allocate_nod_bc_list_vecp
+        call alloc_bc_type_ctl(a_potential_nod)
 !
         a_potential_nod%bc_name(1:a_potential_nod%num_bc)               &
      &     = node_bc_A_ctl%c2_tbl(1:a_potential_nod%num_bc)
@@ -99,7 +99,7 @@
      &    write(*,*) 'a_potential_surf%num_bc ',a_potential_surf%num_bc
       if (a_potential_surf%num_bc .gt. 0) then
 !
-        call allocate_vect_p_surf_ctl
+        call alloc_bc_type_ctl(a_potential_surf)
 !
         a_potential_surf%bc_name(1:a_potential_surf%num_bc)             &
      &          = surf_bc_AN_ctl%c2_tbl(1:a_potential_surf%num_bc)

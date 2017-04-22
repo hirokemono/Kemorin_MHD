@@ -61,7 +61,7 @@
      &          write(*,*)  'temp_nod%num_bc ',temp_nod%num_bc
       if(temp_nod%num_bc .gt. 0) then
 !
-        call allocate_nod_bc_list_temp
+        call alloc_bc_type_ctl(temp_nod)
 !
         temp_nod%bc_name(1:temp_nod%num_bc)                             &
      &        = node_bc_T_ctl%c2_tbl(1:temp_nod%num_bc)
@@ -94,7 +94,7 @@
 !
       if (h_flux_surf%num_bc .gt. 0) then
 !
-        call allocate_temp_surf_ctl
+        call alloc_bc_type_ctl(h_flux_surf)
 !
         h_flux_surf%bc_name(1:h_flux_surf%num_bc)                       &
      &       = surf_bc_HF_ctl%c2_tbl(1:h_flux_surf%num_bc)

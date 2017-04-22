@@ -61,7 +61,7 @@
      &    write(*,*) 'press_nod%num_bc ', press_nod%num_bc
       if(press_nod%num_bc .gt. 0) then
 !
-        call allocate_nod_bc_list_press
+        call alloc_bc_type_ctl(press_nod)
 !
         press_nod%bc_name(1:press_nod%num_bc)                           &
      &      = node_bc_P_ctl%c2_tbl(1:press_nod%num_bc)
@@ -91,7 +91,7 @@
 !
       if (wall_surf%num_bc .gt. 0) then
 !
-        call allocate_press_surf_ctl
+        call alloc_bc_type_ctl(wall_surf)
 !
         wall_surf%bc_magnitude(1:wall_surf%num_bc)                      &
      &        =  surf_bc_PN_ctl%vect(1:wall_surf%num_bc)

@@ -14,7 +14,7 @@
 !!     &         (IO_bc, sf_grp, potential_surf, Psf_bcs)
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(surface_group_data), intent(in) :: sf_grp
-!!        type(surface_bc_list_type), intent(in) :: scalar_surf
+!!        type(boundary_condition_list), intent(in) :: scalar_surf
 !!        type(scaler_surf_bc_type),  intent(inout) :: Ssf_bcs
 !
       module m_scalar_surf_id
@@ -44,7 +44,7 @@
       character(len=kchara), intent(in) :: name_grad
       type(IO_boundary), intent(in) :: IO_bc
       type(surface_group_data), intent(in) :: sf_grp
-      type(surface_bc_list_type), intent(in) :: scalar_surf
+      type(boundary_condition_list), intent(in) :: scalar_surf
       type(scaler_surf_bc_type),  intent(inout) :: Ssf_bcs
 !
 !
@@ -72,7 +72,7 @@
       character(len=kchara), intent(in) :: name_grad
       type(IO_boundary), intent(in) :: IO_bc
       type(surface_group_data), intent(in) :: sf_grp
-      type(surface_bc_list_type), intent(in) :: potential_surf
+      type(boundary_condition_list), intent(in) :: potential_surf
       type(potential_surf_bc_type),  intent(inout) :: Psf_bcs
 !
 !
@@ -104,7 +104,7 @@
 !
       type(IO_boundary), intent(in) :: IO_bc
       type(surface_group_data), intent(in) :: sf_grp
-      type(surface_bc_list_type), intent(in) :: scalar_surf
+      type(boundary_condition_list), intent(in) :: scalar_surf
       type(scaler_surf_bc_type),  intent(inout) :: Ssf_bcs
 !
 !
@@ -135,7 +135,7 @@
 !
       type(IO_boundary), intent(in) :: IO_bc
       type(surface_group_data), intent(in) :: sf_grp
-      type(surface_bc_list_type), intent(in) :: potential_surf
+      type(boundary_condition_list), intent(in) :: potential_surf
       type(potential_surf_bc_type),  intent(inout) :: Psf_bcs
 !
 !
