@@ -415,7 +415,7 @@ void modify_psf_opacitymap_point_data(int i_point){
 	return;
 }
 
-vold save_colormap_file_glut(){
+void save_colormap_file_glut(){
 	char file_name[LENGTHBUF];
 	char buf[LENGTHBUF];
 	char *delchara;

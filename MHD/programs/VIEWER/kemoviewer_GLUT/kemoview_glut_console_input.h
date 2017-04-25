@@ -46,7 +46,7 @@ void modify_psf_colormap_point_data(int i_point);
 void add_psf_opacitymap_point_data();
 void modify_psf_opacitymap_point_data(int i_point);
 
-vold save_colormap_file_glut();
+void save_colormap_file_glut();
 
 void save_viewmatrix_file();
 void load_viewmatrix_file();
