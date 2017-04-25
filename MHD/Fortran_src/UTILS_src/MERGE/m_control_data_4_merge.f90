@@ -35,6 +35,8 @@
       type(field_control), save :: fld_mge_ctl
 !>      Structure for time stepping control
       type(time_data_control), save :: t_mge_ctl
+!>      Structure for new time stepping control
+      type(time_data_control), save :: t2_mge_ctl
 !
       type(read_real_item), save :: magnetic_ratio_ctl
 !
@@ -71,6 +73,10 @@
      &      :: hd_time_step = 'time_step_ctl'
       integer (kind=kint) :: i_tstep =      0
 !
+      character(len=kchara), parameter                                  &
+     &      :: hd_new_time_step = 'new_time_step_ctl'
+      integer (kind=kint) :: i_nstep =      0
+!
 !   newrst_magne_ratio data
 !
       character(len=kchara), parameter                                  &
@@ -81,7 +87,7 @@
       private :: hd_new_data, i_new_data
       private :: hd_model, hd_control, i_model, i_control
       private :: hd_phys_values, i_phys_values
-      private :: hd_time_step, i_tstep
+      private :: hd_time_step, i_tstep, hd_new_time_step, i_nstep
       private :: hd_newrst_magne
 !
       private :: read_merge_control_data
@@ -185,6 +191,8 @@
 !
         call read_control_time_step_data                                &
      &     (hd_time_step, i_tstep, t_mge_ctl)
+        call read_control_time_step_data                                &
+     &     (hd_new_time_step, i_nstep, t2_mge_ctl)
       end do
 !
       end subroutine read_merge_step_data

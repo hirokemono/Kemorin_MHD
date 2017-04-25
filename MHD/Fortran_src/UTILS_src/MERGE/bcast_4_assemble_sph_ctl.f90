@@ -33,6 +33,7 @@
 !
       call bcast_phys_data_ctl(fld_mge_ctl)
       call bcast_ctl_data_4_time_step(t_mge_ctl)
+      call bcast_ctl_data_4_time_step(t2_mge_ctl)
 !
       call bcast_ctl_type_r1(magnetic_ratio_ctl)
 !

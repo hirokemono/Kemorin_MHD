@@ -185,6 +185,7 @@
       integer(kind = kint) :: istep, icou
       integer(kind = kint) :: ip, jp, irank_new
       integer(kind = kint) :: iloop, jloop
+      integer(kind = kint) :: istep_out
 !
 !
 !     ---------------------
@@ -200,6 +201,14 @@
      &        init_t, org_sph_phys(ip))
           call calypso_mpi_barrier
         end do
+!
+        istep_out = istep
+        if(iflag_newtime .gt. 0) then
+          istep_out =          istep_new_rst / increment_new_step
+          init_t%i_time_step = istep_new_rst
+          init_t%time =        time_new
+        end if
+!
         call share_time_step_data(init_t)
 !
 !     Bloadcast original spectr data
@@ -233,7 +242,7 @@
 !
 !
         call sel_write_SPH_assemble_field                               &
-     &     (np_sph_new, istep, nloop_new, fst_time_IO, new_fst_IO)
+     &     (np_sph_new, istep_out, nloop_new, fst_time_IO, new_fst_IO)
 !
         do jloop = 1, nloop_new
           irank_new = my_rank + (jloop-1) * nprocs

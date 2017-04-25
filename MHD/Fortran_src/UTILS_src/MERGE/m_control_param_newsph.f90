@@ -3,7 +3,8 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine set_control_4_newsph
+!!      subroutine bcast_ctl_param_newsph
+!!      subroutine set_control_4_newsph
 !
       module m_control_param_newsph
 !
@@ -18,6 +19,10 @@
       integer(kind = kint) :: np_sph_new
 !
       integer(kind=kint ) :: istep_start, istep_end, increment_step
+!
+      integer(kind = kint) :: iflag_newtime = 0
+      integer(kind = kint) :: istep_new_rst, increment_new_step
+      real(kind = kreal) :: time_new
 !
       character(len=kchara) :: org_sph_head = 'mesh_org/in_rj'
       character(len=kchara) :: new_sph_head = 'mesh_new/in_rj'
@@ -38,6 +43,8 @@
 !>      multiply the amplitude
       real(kind = kreal) :: b_sph_ratio
 !
+      private :: set_control_original_step, set_control_new_step
+!
 !------------------------------------------------------------------
 !
       contains
@@ -52,11 +59,20 @@
       call MPI_Bcast(np_sph_new, ione, CALYPSO_INTEGER,                 &
      &               izero, CALYPSO_COMM, ierr_MPI)
 !
-      call MPI_Bcast(istep_start, ione, CALYPSO_INTEGER,                &
+      call MPI_Bcast(iflag_newtime, ione, CALYPSO_INTEGER,              &
      &               izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(istep_end, ione, CALYPSO_INTEGER,                  &
+      call MPI_Bcast(istep_new_rst, ione, CALYPSO_INTEGER,              &
      &               izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(increment_step, ione, CALYPSO_INTEGER,             &
+      call MPI_Bcast(increment_new_step, ione, CALYPSO_INTEGER,         &
+     &               izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(time_new ,ione, CALYPSO_REAL,                      &
+     &               izero, CALYPSO_COMM, ierr_MPI)
+!
+      call MPI_Bcast(np_sph_new, ione, CALYPSO_INTEGER,                 &
+     &               izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(np_sph_new, ione, CALYPSO_INTEGER,                 &
+     &               izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(np_sph_new, ione, CALYPSO_INTEGER,                 &
      &               izero, CALYPSO_COMM, ierr_MPI)
 !
       call MPI_Bcast(org_sph_head, kchara, CALYPSO_CHARACTER,           &
@@ -157,6 +173,21 @@
         b_sph_ratio = magnetic_ratio_ctl%realvalue
       end if
 !
+      call set_control_original_step(t_mge_ctl)
+      call set_control_new_step(t2_mge_ctl)
+!
+      end subroutine set_control_4_newsph
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine set_control_original_step(t_mge_ctl)
+!
+      use t_ctl_data_4_time_steps
+!
+      type(time_data_control), intent(in) :: t_mge_ctl
+!
+!
       istep_start = 1
       if(t_mge_ctl%i_step_init_ctl%iflag .gt. 0) then
         istep_start = t_mge_ctl%i_step_init_ctl%intvalue
@@ -172,7 +203,44 @@
         increment_step = t_mge_ctl%i_step_rst_ctl%intvalue
       end if
 !
-      end subroutine set_control_4_newsph
+      end subroutine set_control_original_step
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_control_new_step(t2_mge_ctl)
+!
+      use t_ctl_data_4_time_steps
+!
+      type(time_data_control), intent(in) :: t2_mge_ctl
+!
+!
+      if(t2_mge_ctl%i_step_init_ctl%iflag .gt. 0) then
+        istep_new_rst = t2_mge_ctl%i_step_init_ctl%intvalue
+      else
+        istep_new_rst = istep_start
+      end if
+      if (t2_mge_ctl%i_step_rst_ctl%iflag .gt. 0) then
+        increment_new_step = t2_mge_ctl%i_step_rst_ctl%intvalue
+      else
+        increment_new_step = increment_step
+      end if
+      if(t2_mge_ctl%time_init_ctl%iflag .gt. 0) then
+        time_new = t2_mge_ctl%time_init_ctl%realvalue
+      end if
+!
+      if      (t2_mge_ctl%time_init_ctl%iflag .gt. 0                    &
+     &   .and. t2_mge_ctl%i_step_init_ctl%iflag .gt. 0                  &
+     &   .and. t2_mge_ctl%i_step_rst_ctl%iflag .gt. 0) then
+        if(istep_start .ne. istep_end) then
+          stop 'Choose one snapshot to change time step information'
+        else
+          iflag_newtime = 1
+        end if
+      else
+        iflag_newtime = 0
+      end if
+!
+      end subroutine set_control_new_step
 !
 ! -----------------------------------------------------------------------
 !
