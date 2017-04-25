@@ -384,7 +384,7 @@ static void read_psf_colormap_data(float *new_value, float *new_color){
 	return;
 }
 
-void add_psf_colormap_point_data(){
+void add_psf_colormap_point_console(){
 	float value, color;
 	read_psf_colormap_data(&value, &color);
 	add_current_PSF_color_idx_list((double) value, (double) color);
@@ -392,7 +392,7 @@ void add_psf_colormap_point_data(){
 	
 	return;
 }
-void modify_psf_colormap_point_data(int i_point){
+void modify_psf_colormap_point_console(int i_point){
 	float value, color;
 	read_psf_colormap_data(&value, &color);
 	set_current_PSF_color_point(i_point, (double) value, (double) color);
@@ -400,14 +400,14 @@ void modify_psf_colormap_point_data(int i_point){
 	return;
 }
 
-void add_psf_opacitymap_point_data(){
+void add_psf_opacitymap_point_console(){
 	float value, opacity;
 	read_psf_colormap_data(&value, &opacity);
 	add_current_PSF_opacity_idx_list((double) value, (double) opacity);
 	check_current_PSF_colormap_control();
 	return;
 }
-void modify_psf_opacitymap_point_data(int i_point){
+void modify_psf_opacitymap_point_console(int i_point){
 	float value, opacity;
 	read_psf_colormap_data(&value, &opacity);
 	set_current_PSF_opacity_point(i_point, (double) value, (double) opacity);

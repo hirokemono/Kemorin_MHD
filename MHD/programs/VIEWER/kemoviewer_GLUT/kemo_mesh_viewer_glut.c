@@ -326,14 +326,14 @@ static void set_psf_linecolor_handler(int sel){
 
 static void add_psf_colormap_handler(int sel){
 	if (sel == ADD_PSF_COLOR) {
-		add_psf_colormap_point_data();
+		add_psf_colormap_point_console();
 		draw_mesh_w_menu();
 	}
     return;
 };
 
 static void modify_psf_colormap_handler(int sel){
-	modify_psf_colormap_point_data(sel);
+	modify_psf_colormap_point_console(sel);
 	draw_mesh_w_menu();
     return;
 };
@@ -348,14 +348,14 @@ static void delete_psf_colormap_handler(int sel){
 
 static void add_psf_opacitymap_handler(int sel){
 	if (sel == ADD_PSF_OPACITY){
-		add_psf_opacitymap_point_data();
+		add_psf_opacitymap_point_console();
 		draw_mesh_w_menu();
 	}
     return;
 };
 
 static void modify_psf_opacitymap_handler(int sel){
-	modify_psf_opacitymap_point_data(sel);
+	modify_psf_opacitymap_point_console(sel);
 	draw_mesh_w_menu();
     return;
 };
