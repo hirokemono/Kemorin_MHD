@@ -134,6 +134,26 @@ void realloc_PSF_opacity_index_list(struct psf_menu_val *psf_menu, int num){
 	return;
 }
 
+void delete_PSF_color_index_list(struct psf_menu_val *psf_menu, int i_delete){
+	delete_color_index_list_s(psf_menu->cmap_psf, i_delete);
+	return;
+}
+void delete_PSF_opacity_index_list(struct psf_menu_val *psf_menu, int i_delete){
+	delete_opacity_index_list_s(psf_menu->cmap_psf, i_delete);
+	return;
+}
+
+void add_PSF_color_index_list(struct psf_menu_val *psf_menu, double add_value, double add_color){
+	add_color_index_list_s(psf_menu->cmap_psf, add_value, add_color);
+	return;
+}
+void add_PSF_opacity_index_list(struct psf_menu_val *psf_menu, double add_value, double add_opacity){
+	add_opacity_index_list_s(psf_menu->cmap_psf, add_value, add_opacity);
+	return;
+}
+
+
+
 void set_PSF_linear_colormap(struct psf_menu_val *psf_menu, double minvalue, double maxvalue){
 	set_linear_colormap(psf_menu->cmap_psf, minvalue, maxvalue);
 	return;
@@ -199,4 +219,7 @@ void send_each_PSF_opacity_table_items(struct psf_menu_val *psf_menu, int i_poin
 
 void write_each_PSF_colormap_control_file(struct psf_menu_val *psf_menu, const char *file_name){
 	write_colormap_control_file_s(file_name, psf_menu->cmap_psf);
+}
+void check_each_PSF_colormap_control(struct psf_menu_val *psf_menu){
+	output_colormap_control_s(stdout, psf_menu->cmap_psf);
 }

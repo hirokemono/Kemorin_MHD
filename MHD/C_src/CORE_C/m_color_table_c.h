@@ -38,5 +38,12 @@ void dealloc_opacity_index_list_s(struct colormap_params *cmap_s);
 void realloc_color_index_list_s(struct colormap_params *cmap_s, int id_cmode, int num);
 void realloc_opacity_index_list_s(struct colormap_params *cmap_s, int num);
 
+
+void delete_color_index_list_s(struct colormap_params *cmap_s, int i_delete);
+void delete_opacity_index_list_s(struct colormap_params *cmap_s, int i_delete);
+
+void add_color_index_list_s(struct colormap_params *cmap_s, double add_value, double add_color);
+void add_opacity_index_list_s(struct colormap_params *cmap_s, double add_value, double add_opacity);
+
 #endif
 

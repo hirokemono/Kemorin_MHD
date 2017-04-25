@@ -166,5 +166,3 @@ void write_colormap_control_file_s(const char *file_name, struct colormap_params
 	fclose(fp);
 	return;
 }
-
-

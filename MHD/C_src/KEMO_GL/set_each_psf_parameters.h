@@ -86,6 +86,12 @@ double send_psf_data_max(struct psf_data *psf_d, int icomp);
 void realloc_PSF_color_index_list(struct psf_menu_val *psf_menu, int id_cmode, int num);
 void realloc_PSF_opacity_index_list(struct psf_menu_val *psf_menu, int num);
 
+void delete_PSF_color_index_list(struct psf_menu_val *psf_menu, int i_delete);
+void delete_PSF_opacity_index_list(struct psf_menu_val *psf_menu, int i_delete);
+
+void add_PSF_color_index_list(struct psf_menu_val *psf_menu, double add_value, double add_color);
+void add_PSF_opacity_index_list(struct psf_menu_val *psf_menu, double add_value, double add_opacity);
+
 void set_PSF_linear_colormap(struct psf_menu_val *psf_menu, double minvalue, double maxvalue);
 
 void set_PSF_fixed_color(struct psf_data *psf_d, struct psf_menu_val *psf_menu,
@@ -111,5 +117,6 @@ void send_each_PSF_color_table_items(struct psf_menu_val *psf_menu, int i_point,
 void send_each_PSF_opacity_table_items(struct psf_menu_val *psf_menu, int i_point, double *value, double *opacity);
 
 void write_each_PSF_colormap_control_file(struct psf_menu_val *psf_menu, const char *file_name);
+void check_each_PSF_colormap_control(struct psf_menu_val *psf_menu);
 
 #endif

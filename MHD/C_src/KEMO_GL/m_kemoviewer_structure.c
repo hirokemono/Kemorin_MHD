@@ -800,6 +800,20 @@ void realloc_current_PSF_opacity_idx_list(int num){
     realloc_PSF_opacity_index_list(psf_current_menu, num);
 }
 
+void delete_current_PSF_color_idx_list(int i_delete){
+    delete_PSF_color_index_list(psf_current_menu, i_delete);
+}
+void delete_current_PSF_opacity_idx_list(int i_delete){
+    delete_PSF_opacity_index_list(psf_current_menu, i_delete);
+}
+
+void add_current_PSF_color_idx_list(double add_value, double add_color){
+    add_PSF_color_index_list(psf_current_menu, add_value, add_color);
+}
+void add_current_PSF_opacity_idx_list(double add_value, double add_opacity){
+    add_PSF_opacity_index_list(psf_current_menu, add_value, add_opacity);
+}
+
 void set_current_PSF_linear_colormap(double minvalue, double maxvalue){
     set_PSF_linear_colormap(psf_current_menu, minvalue, maxvalue);
 }
@@ -841,6 +855,9 @@ void send_current_PSF_opacity_table_items(int i_point, double *value, double *op
 
 void write_current_PSF_colormap_control_file(const char *file_name){
     write_each_PSF_colormap_control_file(psf_current_menu, file_name);
+}
+void check_current_PSF_colormap_control(){
+    check_each_PSF_colormap_control(psf_current_menu);
 }
 
 

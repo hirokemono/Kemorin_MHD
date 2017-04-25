@@ -64,7 +64,17 @@ struct glut_menu_address{
 	
 	GLint ichoose_psf_patchcolor_menu;
 	GLint ichoose_psf_linecolor_menu;
-	
+    
+    GLint ichoose_psf_colormap_menu;
+    GLint ichoose_psf_opacitymap_menu;
+
+    GLint add_colormap_menu;
+    GLint modify_colormap_menu;
+    GLint delete_colormap_menu;
+    GLint add_opacitymap_menu;
+    GLint modify_opacitymap_menu;
+    GLint delete_opacitymap_menu;
+
 	GLint ichoose_fline_c_menu;
 	GLint ichoose_fline_col_type_menu;
 };

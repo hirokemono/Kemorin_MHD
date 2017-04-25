@@ -257,6 +257,15 @@
 #define ISET_PSF_REFVECT    45
 #define ISET_PSF_V_THICK    46
 #define PSFTANVEC_TOGGLE    47
+#define WRITE_CMAP          60
+
+#define ADD_PSF_COLOR       61
+#define MODIFY_PSF_COLOR    62
+#define DELETE_PSF_COLOR    63
+#define ADD_PSF_OPACITY     64
+#define MODIFY_PSF_OPACITY  65
+#define DELETE_PSF_OPACITY  66
+
 #define PSF_NOTHING_TODO    99
 
 #define ISET_FLINE_TYPE   11
@@ -628,7 +637,12 @@ extern "C" {
     
     void realloc_current_PSF_color_idx_list(int id_cmode, int num);
     void realloc_current_PSF_opacity_idx_list(int num);
-    
+	
+	void delete_current_PSF_color_idx_list(int i_delete);
+	void delete_current_PSF_opacity_idx_list(int i_delete);
+	void add_current_PSF_color_idx_list(double add_value, double add_color);
+	void add_current_PSF_opacity_idx_list(double add_value, double add_opacity);
+	
     void set_current_PSF_linear_colormap(double minvalue, double maxvalue);
     void set_current_PSF_fixed_color(double *rgba);
     void set_current_PSF_constant_opacity(double opacity);
@@ -649,6 +663,7 @@ extern "C" {
     void send_current_PSF_opacity_table_items(int i_point, double *value, double *opacity);
     
     void write_current_PSF_colormap_control_file(const char *file_name);
+	void check_current_PSF_colormap_control();
     
     
     /* Subroutines for field lines */

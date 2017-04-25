@@ -371,6 +371,64 @@ void read_psf_evolution_steps(int *ist_udt, int *ied_udt, int *inc_udt){
 	printf("start # %d, end # %d, interval # %d\n",*ist_udt, *ied_udt,*inc_udt);
 };
 
+static void read_psf_colormap_data(float *new_value, float *new_color){
+	char buf[1024];
+	
+	printf("Input Feature point data value\n");
+	fgets(buf,sizeof(buf),stdin);
+	sscanf(buf,"%f", new_value);
+	
+	printf("Input color or opacity value (0 to 1)\n");
+	fgets(buf,sizeof(buf),stdin);
+	sscanf(buf,"%f", new_color);
+	return;
+}
+
+void add_psf_colormap_point_data(){
+	float value, color;
+	read_psf_colormap_data(&value, &color);
+	add_current_PSF_color_idx_list((double) value, (double) color);
+	check_current_PSF_colormap_control();
+	
+	return;
+}
+void modify_psf_colormap_point_data(int i_point){
+	float value, color;
+	read_psf_colormap_data(&value, &color);
+	set_current_PSF_color_point(i_point, (double) value, (double) color);
+	check_current_PSF_colormap_control();
+	return;
+}
+
+void add_psf_opacitymap_point_data(){
+	float value, opacity;
+	read_psf_colormap_data(&value, &opacity);
+	add_current_PSF_opacity_idx_list((double) value, (double) opacity);
+	check_current_PSF_colormap_control();
+	return;
+}
+void modify_psf_opacitymap_point_data(int i_point){
+	float value, opacity;
+	read_psf_colormap_data(&value, &opacity);
+	set_current_PSF_opacity_point(i_point, (double) value, (double) opacity);
+	check_current_PSF_colormap_control();
+	return;
+}
+
+vold save_colormap_file_glut(){
+	char file_name[LENGTHBUF];
+	char buf[LENGTHBUF];
+	char *delchara;
+	
+	printf("Input colormap file name\n");
+	fgets(buf,sizeof(buf),stdin);
+	delchara=strrchr(buf,'\n');
+	*delchara='\0';
+	strcpy(file_name, buf);
+	write_current_PSF_colormap_control_file(file_name);
+	return;
+};
+
 void save_viewmatrix_file(){
 	char file_name[LENGTHBUF];
 	char buf[LENGTHBUF];
