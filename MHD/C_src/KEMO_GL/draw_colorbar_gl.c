@@ -58,7 +58,7 @@ void draw_colorbar_gl(int iflag_retina, GLint nx_win, GLint ny_win,
 	int i, inum, nd;
     
 	GLfloat xwin, ywin;
-	GLfloat xbar_min, xbar_max;
+	GLfloat xbar_min, xbar_max, xbar_mid;
 	GLfloat ybar_min, ybar_max, ydelta, y1, yline_zero;
 	GLfloat xy_buf[384][2];
 	GLfloat rgba_buf[384][4];
@@ -77,6 +77,7 @@ void draw_colorbar_gl(int iflag_retina, GLint nx_win, GLint ny_win,
         xbar_max = xwin - (iflag_retina+1) * 80;
     }
 	xbar_min = xbar_max - 0.025 * xwin;
+	xbar_mid = (xbar_min + xbar_max) * 0.5;
 	ybar_min = 0.05 * ywin;
 	ybar_max = 0.25 * ywin;
 	ydelta =  (ybar_max - ybar_min) / ((GLfloat)64);
@@ -127,20 +128,52 @@ void draw_colorbar_gl(int iflag_retina, GLint nx_win, GLint ny_win,
         l_color[nd] = l_color[nd] * l_color[3]
         + bg_color[nd] * (ONE - l_color[3]);
     };
-    l_color[3] = ONE;        
+    l_color[3] = ONE;
 
 	for(i=0;i<64;i++){
 		y1 = ybar_min + ydelta * (GLfloat)i;
 		psf_value = psf_min + (psf_max-psf_min) * (double)(i+1) / (double)64;
 		set_rainbow_color_code(cmap_s, psf_value, f_color);
-        
-        for (nd=0; nd<3; nd++) {
-            f_color[nd] = f_color[nd] * f_color[3]
-                        + bg_color[nd] * (ONE - f_color[3]);
+	
+        f_color[3] = ONE;
+		
+		xy_buf[6*i  ][0] = xbar_min;
+		xy_buf[6*i+1][0] = xbar_mid;
+		xy_buf[6*i+2][0] = xbar_mid;
+		xy_buf[6*i  ][1] = y1;
+		xy_buf[6*i+1][1] = y1;
+		xy_buf[6*i+2][1] = y1 + ydelta;
+
+		xy_buf[6*i+3][0] = xbar_mid;
+		xy_buf[6*i+4][0] = xbar_min;
+		xy_buf[6*i+5][0] = xbar_min;
+		xy_buf[6*i+3][1] = y1 + ydelta;
+		xy_buf[6*i+4][1] = y1 + ydelta;
+		xy_buf[6*i+5][1] = y1;
+		for (nd=0; nd<4; nd++) {
+			rgba_buf[6*i  ][nd] = l_color[nd];
+			rgba_buf[6*i+1][nd] = l_color[nd];
+			rgba_buf[6*i+2][nd] = f_color[nd];
+			rgba_buf[6*i+3][nd] = f_color[nd];
+			rgba_buf[6*i+4][nd] = f_color[nd];
+			rgba_buf[6*i+5][nd] = l_color[nd];
+		}
+		for (nd=0; nd<4; nd++) {l_color[nd] = f_color[nd];};
+	};
+	glDrawArrays(GL_TRIANGLES, IZERO, (ITHREE*128));
+
+	for(i=0;i<64;i++){
+		y1 = ybar_min + ydelta * (GLfloat)i;
+		psf_value = psf_min + (psf_max-psf_min) * (double)(i+1) / (double)64;
+		set_rainbow_color_code(cmap_s, psf_value, f_color);
+	
+		for (nd=0; nd<3; nd++) {
+			f_color[nd] = f_color[nd] * f_color[3]
+					+ bg_color[nd] * (ONE - f_color[3]);
         };
         f_color[3] = ONE;        
 		
-		xy_buf[6*i  ][0] = xbar_min;
+		xy_buf[6*i  ][0] = xbar_mid;
 		xy_buf[6*i+1][0] = xbar_max;
 		xy_buf[6*i+2][0] = xbar_max;
 		xy_buf[6*i  ][1] = y1;
@@ -148,8 +181,8 @@ void draw_colorbar_gl(int iflag_retina, GLint nx_win, GLint ny_win,
 		xy_buf[6*i+2][1] = y1 + ydelta;
 
 		xy_buf[6*i+3][0] = xbar_max;
-		xy_buf[6*i+4][0] = xbar_min;
-		xy_buf[6*i+5][0] = xbar_min;
+		xy_buf[6*i+4][0] = xbar_mid;
+		xy_buf[6*i+5][0] = xbar_mid;
 		xy_buf[6*i+3][1] = y1 + ydelta;
 		xy_buf[6*i+4][1] = y1 + ydelta;
 		xy_buf[6*i+5][1] = y1;
