@@ -15,15 +15,22 @@ static GLUI_StaticText *staticText;
 static GLUI_EditText   *editText;
 static GLUI_EditText   *editText_min;
 static GLUI_EditText   *editText_max;
+static GLUI_EditText   *editText_data;
+static GLUI_EditText   *editText_color;
 static GLUI_EditText   *editText_opacity;
 static GLUI_EditText   *editText_fline_thick;
+static GLUI_RadioGroup *radiogroup_colormap;
+static GLUI_RadioGroup *radiogroup_opacitymap;
 
+static int obj_type = 1;
 static float psf_color_min;
 static float psf_color_max;
 static float fline_color_min;
 static float fline_color_max;
 static float fline_thick;
 
+static float value;
+static float color;
 static float opacity;
 
 static int nline;
@@ -62,6 +69,91 @@ static void input_psf_max_from_panel(int val){
 	};
 	return;
 }
+
+static void select_colormap_point(int val){
+	double dvalue, dcolor;
+	int sel = radiogroup_colormap->get_int_val();
+	send_current_PSF_color_table_items(sel, &dvalue, &dcolor);
+	value = (float)dvalue;
+	color = (float)dcolor;
+	editText_data->set_float_val((float)dvalue);
+	editText_color->set_float_val((float)dcolor);
+	return;
+}
+
+static void select_opacitymap_point(int val){
+	double dvalue, dopacity;
+	int sel = radiogroup_opacitymap->get_int_val();
+	send_current_PSF_opacity_table_items(sel, &dvalue, &dopacity);
+	value = (float)dvalue;
+	opacity = (float)dopacity;
+	editText_data->set_float_val((float)dvalue);
+	editText_opacity->set_float_val((float)dopacity);
+	return;
+}
+
+static void input_psf_value_panel(int val){
+	value = editText_data->get_float_val();
+	return;
+}
+static void input_psf_color_panel(int val){
+	color = editText_color->get_float_val();
+	return;
+}
+
+static void input_psf_opacity_panel(int val){
+	opacity = editText_opacity->get_float_val();
+	return;
+}
+
+static void update_colormap_glui(int val){
+	int sel = radiogroup_colormap->get_int_val();
+	value = editText_data->get_float_val();
+	color = editText_color->get_float_val();
+	set_current_PSF_color_point(sel, (double) value, (double) color);
+	close_panel(0);
+	return;
+}
+
+static void add_colormap_glui(int val){
+	value = editText_data->get_float_val();
+	color = editText_color->get_float_val();
+	add_current_PSF_color_idx_list((double) value, (double) color);
+	close_panel(0);
+	return;
+}
+
+static void delete_colormap_glui(int val){
+	int sel = radiogroup_colormap->get_int_val();
+	delete_current_PSF_color_idx_list(sel);
+	close_panel(0);
+	return;
+}
+
+static void update_opacitymap_glui(int val){
+	int sel = radiogroup_opacitymap->get_int_val();
+	value = editText_data->get_float_val();
+	opacity = editText_opacity->get_float_val();
+	set_current_PSF_opacity_point(sel, (double) value, (double) opacity);
+	close_panel(0);
+	return;
+}
+
+static void add_opacitymap_glui(int val){
+	value = editText_data->get_float_val();
+	opacity = editText_opacity->get_float_val();
+	add_current_PSF_opacity_idx_list((double) value, (double) opacity);
+	close_panel(0);
+	return;
+}
+
+static void delete_opacitymap_glui(int val){
+	int sel = radiogroup_opacitymap->get_int_val();
+	delete_current_PSF_opacity_idx_list(sel);
+	close_panel(0);
+	return;
+}
+
 
 static void input_fline_min_from_panel(int val){
 	fline_color_min = editText_min->get_float_val();
@@ -360,3 +452,69 @@ void set_node_size_by_glui(int winid){
 	glui_sub->set_main_gfx_window(winid);
 	return;
 }
+
+
+void edit_psf_colormap_by_glui(int winid){
+	GLUI_Panel *color_panel;
+	int i, nloop;
+	double dvalue, dcolor;
+	char tmp_menu[1024];
+	
+	nloop = send_current_PSF_color_table_num();
+	
+	glui_sub = GLUI_Master.create_glui("Color map editor", 0, 100, 100);
+	color_panel = new GLUI_Panel(glui_sub, "Colormap (data, color)");
+	
+	radiogroup_colormap = new GLUI_RadioGroup(color_panel, &obj_type, -1, select_colormap_point);
+	for(i = 0; i < nloop; i++) {
+		send_current_PSF_color_table_items(i, &dvalue, &dcolor);
+		sprintf(tmp_menu, "%3.2e	|	%.2f", (float) dvalue, (float) dcolor);
+		new GLUI_RadioButton(radiogroup_colormap, tmp_menu);
+	};
+	
+	send_current_PSF_color_table_items(radiogroup_colormap->get_int_val(), &dvalue, &dcolor);
+	value = (float)dvalue;
+	color = (float)dcolor;
+	editText_data = new GLUI_EditText( glui_sub, "data: ", GLUI_EDITTEXT_FLOAT,
+									 &value, -1, input_psf_value_panel );
+	editText_color = new GLUI_EditText( glui_sub, "color: " , GLUI_EDITTEXT_FLOAT,
+									 &color, -1, input_psf_color_panel );
+	glui_sub->add_button("Update selected", 0, update_colormap_glui);
+	glui_sub->add_button("Add feature point", 0, add_colormap_glui);
+	glui_sub->add_button("Delete selected", 0, delete_colormap_glui);
+	glui_sub->add_button("Cancel", 0, close_panel);
+	return;
+};
+void edit_psf_opacitymap_by_glui(int winid){
+	GLUI_Panel *opacity_panel;
+	int i, nloop;
+    double dvalue, dopacity;
+	char tmp_menu[1024];
+	
+	nloop = send_current_PSF_opacity_table_num();
+	
+	glui_sub = GLUI_Master.create_glui("Opacity map editor", 0, 100, 100);
+	opacity_panel = new GLUI_Panel(glui_sub, "Opacity map (data, color)");
+	
+	radiogroup_opacitymap = new GLUI_RadioGroup(opacity_panel, &obj_type, -1, select_opacitymap_point);
+	for(i = 0; i < nloop; i++) {
+		send_current_PSF_opacity_table_items(i, &dvalue, &dopacity);
+		sprintf(tmp_menu, "%3.2e	|	%.2f", (float) dvalue, (float) dopacity);
+		new GLUI_RadioButton(radiogroup_opacitymap, tmp_menu);
+	};
+	
+	
+	send_current_PSF_opacity_table_items(radiogroup_opacitymap->get_int_val(), &dvalue, &dopacity);
+	value = (float)dvalue;
+	opacity = (float)dopacity;
+	
+	editText_data = new GLUI_EditText( glui_sub, "data: ", GLUI_EDITTEXT_FLOAT,
+									 &value, -1, input_psf_value_panel );
+	editText_opacity = new GLUI_EditText( glui_sub, "opacity: " , GLUI_EDITTEXT_FLOAT,
+									 &opacity, -1, input_psf_opacity_panel );
+	glui_sub->add_button("Update selected", 0, update_opacitymap_glui);
+	glui_sub->add_button("Add feature point", 0, add_opacitymap_glui);
+	glui_sub->add_button("Delete selected", 0, delete_opacitymap_glui);
+	glui_sub->add_button("Cancel", 0, close_panel);
+	return;
+};

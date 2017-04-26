@@ -267,6 +267,9 @@ static void psf_handler(int sel){
 		nload_psf = close_psf_view();
 		draw_mesh_w_menu();
 	}
+    else if(sel == WRITE_CMAP){
+     /*   save_colormap_file_gtk();*/
+    }
 	else {
 		toggle = kemoview_psf_draw_switch_select(sel);
 		kemoview_psf_draw_input_setting(sel);
@@ -668,6 +671,7 @@ static void make_2nd_level_psf_menu(){
     if(iflag_solid > 0 || iflag_grid > 0){
         glutAddSubMenu("Color map",    glut_menu_id->ichoose_psf_colormap_menu);
         glutAddSubMenu("Opacitiy map", glut_menu_id->ichoose_psf_opacitymap_menu);
+        glutAddMenuEntry("Save colormap file", WRITE_CMAP);
     }
     
 	glutAddMenuEntry("Close Current PSF data", PSF_OFF);

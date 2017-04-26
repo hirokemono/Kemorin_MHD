@@ -90,14 +90,14 @@ void delete_color_index_list_s(struct colormap_params *cmap_s, int i_delete){
 	id_cmode = cmap_s->id_color_mode;
 	alloc_color_index_list_s(cmap_s, id_cmode, num);
 	
-	for(i = 0; i < i_delete-1; i++) {
+	for(i = 0; i < i_delete; i++) {
 		cmap_s->color_data[i] = color_data_tmp[i];
 		cmap_s->color_value[i] = color_value_tmp[i];
 	}
 	
-	for(i = i_delete; i < num; i++) {
-		cmap_s->color_data[i] = color_data_tmp[i+1];
-		cmap_s->color_value[i] = color_value_tmp[i+1];
+	for(i = i_delete+1; i < num+1; i++) {
+		cmap_s->color_data[i-1] = color_data_tmp[i];
+		cmap_s->color_value[i-1] = color_value_tmp[i];
 	}
 	
 	free(color_data_tmp);
@@ -123,14 +123,14 @@ void delete_opacity_index_list_s(struct colormap_params *cmap_s, int i_delete){
 	num = cmap_s->nbuf_opacity_point - 1;
 	alloc_opacity_index_list_s(cmap_s, num);
 	
-	for(i = 0; i < i_delete-1; i++) {
+	for(i = 0; i < i_delete; i++) {
 		cmap_s->opacity_data[i] = opacity_data_tmp[i];
 		cmap_s->opacity_value[i] = opacity_value_tmp[i];
 	}
 	
-	for(i = i_delete; i < num; i++) {
-		cmap_s->opacity_data[i] = opacity_data_tmp[i+1];
-		cmap_s->opacity_value[i] = opacity_value_tmp[i+1];
+	for(i = i_delete+1; i < num+1; i++) {
+		cmap_s->opacity_data[i-1] = opacity_data_tmp[i];
+		cmap_s->opacity_value[i-1] = opacity_value_tmp[i];
 	}
 	
 	free(opacity_data_tmp);

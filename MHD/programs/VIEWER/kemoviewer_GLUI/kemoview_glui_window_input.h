@@ -26,7 +26,6 @@ void set_domain_opacity_by_glui(int winid);
 void set_ele_group_opacity_by_glui(int winid);
 void set_surf_group_opacity_by_glui(int winid);
 
-
 void set_num_isoline_from_glui(int winid);
 void set_psf_vect_increment_glui(int winid);
 void set_psf_vector_scale_by_glui(int winid);
@@ -35,5 +34,9 @@ void set_coastline_radius_glui(int winid);
 void set_domain_distance_by_glui(int winid);
 void set_num_color_loop_by_glui(int winid);
 void set_node_size_by_glui(int winid);
+
+void edit_psf_colormap_by_glui(int winid);
+void edit_psf_opacitymap_by_glui(int winid);
+
 
 #endif
