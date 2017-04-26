@@ -20,6 +20,8 @@
 
 /*  prototypes */
 
+void edit_psf_colormap_gtk();
+void edit_psf_opasitymap_gtk();
 void set_psf_range_gtk();
 void set_fline_range_gtk();
 void set_fline_thick_gtk();

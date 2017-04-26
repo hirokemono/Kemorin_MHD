@@ -363,9 +363,9 @@ static void psf_handler(int sel){
 		nload_psf = close_psf_view();
 		draw_mesh_w_menu();
 	}
-    else if(sel == WRITE_CMAP){set_colormap_file_glui(winid);}
-    else if (sel == ADD_PSF_COLOR) {edit_psf_colormap_by_glui(winid);}
-    else if (sel == ADD_PSF_OPACITY) {edit_psf_opacitymap_by_glui(winid);}
+	else if(sel == WRITE_CMAP){set_colormap_file_glui(winid);}
+	else if (sel == ADD_PSF_COLOR) {edit_psf_colormap_by_glui(winid);}
+	else if (sel == ADD_PSF_OPACITY) {edit_psf_opacitymap_by_glui(winid);}
 	else {
 		toggle = kemoview_psf_draw_switch_select(sel);
 		kemoview_psf_draw_input_setting(sel);

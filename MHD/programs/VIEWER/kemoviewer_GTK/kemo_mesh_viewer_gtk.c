@@ -267,9 +267,12 @@ static void psf_handler(int sel){
 		nload_psf = close_psf_view();
 		draw_mesh_w_menu();
 	}
-    else if(sel == WRITE_CMAP){
-     /*   save_colormap_file_gtk();*/
-    }
+	else if(sel == WRITE_CMAP){save_colormap_file_gtk();}
+	else if (sel == ADD_PSF_COLOR) {edit_psf_colormap_gtk(winid);}
+	else if (sel == ADD_PSF_OPACITY) {
+		edit_psf_opasitymap_gtk(winid);
+		draw_mesh_w_menu();
+	}
 	else {
 		toggle = kemoview_psf_draw_switch_select(sel);
 		kemoview_psf_draw_input_setting(sel);
@@ -322,32 +325,6 @@ static void set_psf_linecolor_handler(int sel){
 	
 	draw_mesh_w_menu();
 	return;
-};
-
-static void add_psf_colormap_handler(int sel){
-    if (sel == ADD_PSF_COLOR) {printf("Add color points\n");}
-    return;
-};
-static void modify_psf_colormap_handler(int sel){
-    printf("modify color points at %d\n", sel);
-    return;
-};
-static void delete_psf_colormap_handler(int sel){
-    printf("delete color points at %d\n", sel);
-    return;
-};
-
-static void add_psf_opacitymap_handler(int sel){
-    if (sel == ADD_PSF_OPACITY) {printf("Add opacity points\n");}
-    return;
-};
-static void modify_psf_opacitymap_handler(int sel){
-    printf("modify opacity points at %d\n", sel);
-    return;
-};
-static void delete_psf_opacitymap_handler(int sel){
-    printf("delete opacity points at %d\n", sel);
-    return;
 };
 
 
@@ -511,49 +488,6 @@ static void make_2nd_level_mesh_menu(){
 	return;
 };
 
-/* 4th level menues*/
-static void make_4th_level_psf_menu(){
-    int iflag_solid = send_kemoview_psf_draw_flags(PSFSOLID_TOGGLE);
-    int iflag_grid =  send_kemoview_psf_draw_flags(PSFGRID_TOGGLE);
-    int i, npoint;
-    double value, color, opacity;
-    char tmp_menu[1024];
-    
-    if(iflag_solid > 0 || iflag_grid > 0){
-        npoint = send_current_PSF_color_table_num();
-        glut_menu_id->modify_colormap_menu =  glutCreateMenu(modify_psf_colormap_handler);
-        for(i = 0; i < npoint; i++) {
-            send_current_PSF_color_table_items(i, &value, &color);
-            sprintf(tmp_menu, "data:%3.2e, color:%.2f", value, color);
-            glutAddMenuEntry(tmp_menu,  i);
-        };
-        
-        glut_menu_id->delete_colormap_menu =  glutCreateMenu(delete_psf_colormap_handler);
-        for(i = 0; i < npoint; i++) {
-            send_current_PSF_color_table_items(i, &value, &color);
-            sprintf(tmp_menu, "data:%3.2e, color:%.2f", value, color);
-            glutAddMenuEntry(tmp_menu,  i);
-        };
-        
-        
-        npoint = send_current_PSF_opacity_table_num();
-        glut_menu_id->modify_opacitymap_menu =  glutCreateMenu(modify_psf_opacitymap_handler);
-        for(i = 0; i < npoint; i++) {
-            send_current_PSF_opacity_table_items(i, &value, &opacity);
-            sprintf(tmp_menu, "data:%3.2e, color:%.2f", value, opacity);
-            glutAddMenuEntry(tmp_menu,  i);
-        };
-        
-        glut_menu_id->delete_opacitymap_menu =  glutCreateMenu(delete_psf_opacitymap_handler);
-        for(i = 0; i < npoint; i++) {
-            send_current_PSF_opacity_table_items(i, &value, &opacity);
-            sprintf(tmp_menu, "data:%3.2e, color:%.2f", value, opacity);
-            glutAddMenuEntry(tmp_menu,  i);
-        };
-    };
-    return;
-};
-
 /* 3rd level menues*/
 static void make_3rd_level_psf_menu(){
 	
@@ -588,19 +522,6 @@ static void make_3rd_level_psf_menu(){
 		glut_menu_id->ichoose_psf_linecolor_menu =  glutCreateMenu(set_psf_linecolor_handler);
 		glut_PSF_linecolor_select();
 	};
-
-    if(iflag_solid > 0 || iflag_grid > 0){
-        glut_menu_id->ichoose_psf_colormap_menu =  glutCreateMenu(add_psf_colormap_handler);
-        glutAddMenuEntry("Add feature point",  ADD_PSF_COLOR);
-        glutAddSubMenu("Modify feature point",  glut_menu_id->modify_colormap_menu);
-        glutAddSubMenu("Delete feature point",  glut_menu_id->delete_colormap_menu);
-        
-        glut_menu_id->ichoose_psf_opacitymap_menu =  glutCreateMenu(add_psf_opacitymap_handler);
-        glutAddMenuEntry("Add feature point",  ADD_PSF_OPACITY);
-        glutAddSubMenu("Modify feature point",  glut_menu_id->modify_opacitymap_menu);
-        glutAddSubMenu("Delete feature point",  glut_menu_id->delete_opacitymap_menu);
-    };
-    
 	return;
 };
 
@@ -668,12 +589,12 @@ static void make_2nd_level_psf_menu(){
 
 	glut_PSF_range_menu();
 
-    if(iflag_solid > 0 || iflag_grid > 0){
-        glutAddSubMenu("Color map",    glut_menu_id->ichoose_psf_colormap_menu);
-        glutAddSubMenu("Opacitiy map", glut_menu_id->ichoose_psf_opacitymap_menu);
-        glutAddMenuEntry("Save colormap file", WRITE_CMAP);
-    }
-    
+	if(iflag_solid > 0 || iflag_grid > 0){
+		glutAddMenuEntry("Edit Color map",  ADD_PSF_COLOR);
+		glutAddMenuEntry("Edit Opacitiy map",  ADD_PSF_OPACITY);
+		glutAddMenuEntry("Save colormap file", WRITE_CMAP);
+	}
+	
 	glutAddMenuEntry("Close Current PSF data", PSF_OFF);
 	
 	return;
@@ -784,7 +705,6 @@ static void make_1st_level_menu(){
 	};
 	
 	if( iflag_draw_p > 0){
-        make_4th_level_psf_menu();
 		make_3rd_level_psf_menu();
 		make_2nd_level_psf_menu();
 	};
