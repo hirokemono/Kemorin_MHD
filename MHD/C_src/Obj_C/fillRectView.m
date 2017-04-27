@@ -32,6 +32,7 @@
     int		i, npoint;
     
 
+    if(send_num_loaded_PSF() < 1) return;
 	npoint = send_current_PSF_color_table_num();
 	send_current_PSF_color_table_items(IZERO, &colorMin, &color);
 	send_current_PSF_color_table_items(npoint-1, &colorMax, &color);

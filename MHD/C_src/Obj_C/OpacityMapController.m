@@ -24,62 +24,41 @@
 } // end awakeFromNib
 
 - (IBAction)addAtSelectedRow:(id)pId {
-	double value, color, opacity;
+	double value, opacity;
 	double value1, opacity1;
 	double value2, opacity2;
-	int i;
 	int isel = [idOpacityTableView selectedRow];
-
-	if ([idOpacityTableView selectedRow] > 0) {
-		value = 0.5;
-		color = 0.5;
-		opacity = 1.0;
-		
+	
+	if ([idOpacityTableView selectedRow] > 0 && isel > 0) {
 		value1 =   [[self.OpacityTableField objectAtIndex:isel-1] doubleValue];
 		opacity1 = [[self.OpacityTableOpacity objectAtIndex:isel-1] doubleValue];
 		value2 =   [[self.OpacityTableField objectAtIndex:isel] doubleValue];
 		opacity2 = [[self.OpacityTableOpacity objectAtIndex:isel] doubleValue];
 		value =   (value1 + value2)*HALF;
 		opacity = (opacity1 + opacity2)*HALF;
+		add_current_PSF_opacity_idx_list(value, opacity);
 		
-		[OpacityTableField   insertObject:[[NSNumber alloc] initWithDouble:value] atIndex:isel];
-		[OpacityTableOpacity insertObject:[[NSNumber alloc] initWithDouble:opacity] atIndex:isel];
-		[idOpacityTableView reloadData];
-		
-		int num = [self.OpacityTableField count];
-		realloc_current_PSF_opacity_idx_list(num);
-		for (i=0;i<num;i++){
-			value =   [[self.OpacityTableField objectAtIndex:i] doubleValue];
-			opacity = [[self.OpacityTableOpacity objectAtIndex:i] doubleValue];
-			set_current_PSF_opacity_point(i, value, opacity);
-		}
+		[self SetOpacityTables];
 	}
-	
-} // end deleteSelectedRow
+	[_kemoviewer UpdateImage];
+}
 
 - (IBAction)deleteSelectedRow:(id)pId {
-	double value, opacity;
 	int i;
 	
 	NSIndexSet *SelectedList = [idOpacityTableView selectedRowIndexes];
+	if([self.OpacityTableField count] < 3) return;
 	
 	if ([idOpacityTableView numberOfSelectedRows] > 0) {
-		for(int i=[self.OpacityTableField count]-2;i>1;i--){
-			if([SelectedList containsIndex:i] !=0){
-				[OpacityTableField    removeObjectAtIndex:i];
-				[OpacityTableOpacity removeObjectAtIndex:i];
+		for(i = [self.OpacityTableField count]-1;i>1;i--){
+			if([SelectedList containsIndex:i] == TRUE){
+				delete_current_PSF_opacity_idx_list(i);
 			}
 		}
-		[idOpacityTableView reloadData];
-		
-		int num = [self.OpacityTableField count];
-		realloc_current_PSF_opacity_idx_list(num);
-		for (i=0;i<num;i++){
-			value =   [[self.OpacityTableField objectAtIndex:i] doubleValue];
-			opacity = [[self.OpacityTableOpacity objectAtIndex:i] doubleValue];
-			set_current_PSF_opacity_point(i, value, opacity);
-		}
 	}
+	
+	[self SetOpacityTables];
+	[_kemoviewer UpdateImage];
 }
 
 
@@ -149,9 +128,6 @@
 	NumOpacityTable = 2;
 	d_min = send_current_PSF_color_table_min();
 	d_max = send_current_PSF_color_table_max();
-	realloc_current_PSF_opacity_idx_list(NumOpacityTable);
-	set_current_PSF_opacity_point(IZERO, d_min, ONE);
-	set_current_PSF_opacity_point(IONE,  d_max, ONE);
 	
 	[self SetOpacityTables];
 }

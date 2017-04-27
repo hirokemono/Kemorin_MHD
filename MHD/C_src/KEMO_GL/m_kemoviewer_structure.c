@@ -793,12 +793,6 @@ double send_current_psf_data_min(int i){return send_psf_data_min(psf_current_dat
 double send_current_psf_data_max(int i){return send_psf_data_max(psf_current_data, i);};
 
 
-void realloc_current_PSF_color_idx_list(int id_cmode, int num){
-    realloc_PSF_color_index_list(psf_current_menu, id_cmode, num);
-}
-void realloc_current_PSF_opacity_idx_list(int num){
-    realloc_PSF_opacity_index_list(psf_current_menu, num);
-}
 
 void delete_current_PSF_color_idx_list(int i_delete){
     delete_PSF_color_index_list(psf_current_menu, i_delete);

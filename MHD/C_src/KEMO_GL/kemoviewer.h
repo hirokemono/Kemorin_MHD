@@ -635,9 +635,6 @@ extern "C" {
     double send_current_psf_data_min(int i);
     double send_current_psf_data_max(int i);
     
-    void realloc_current_PSF_color_idx_list(int id_cmode, int num);
-    void realloc_current_PSF_opacity_idx_list(int num);
-	
 	void delete_current_PSF_color_idx_list(int i_delete);
 	void delete_current_PSF_opacity_idx_list(int i_delete);
 	void add_current_PSF_color_idx_list(double add_value, double add_color);

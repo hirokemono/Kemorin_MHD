@@ -36,59 +36,37 @@
 	double value, color;
 	double value1, color1;
 	double value2, color2;
-	int i;
 	int isel = [idColorTableView selectedRow];
 	
-	if ([idColorTableView selectedRow] > 0) {
-		value = 0.5;
-		color = 0.5;
-		color = 1.0;
-		
+	if ([idColorTableView selectedRow] > 0 && isel > 0) {
 		value1 =   [[self.ColorTableField objectAtIndex:isel-1] doubleValue];
 		color1 = [[self.ColorTableColor objectAtIndex:isel-1] doubleValue];
 		value2 =   [[self.ColorTableField objectAtIndex:isel] doubleValue];
 		color2 = [[self.ColorTableColor objectAtIndex:isel] doubleValue];
 		value = (value1 + value2)*HALF;
 		color = (color1 + color2)*HALF;
+		add_current_PSF_color_idx_list(value, color);
 		
-		[ColorTableField insertObject:[[NSNumber alloc] initWithDouble:value] atIndex:isel];
-		[ColorTableColor insertObject:[[NSNumber alloc] initWithDouble:color] atIndex:isel];
-		[idColorTableView reloadData];
-		
-		int num = [self.ColorTableField count];
-		realloc_current_PSF_color_idx_list(RAINBOW_MODE, num);
-		for (i=0;i<num;i++){
-			value =   [[self.ColorTableField objectAtIndex:i] doubleValue];
-			color = [[self.ColorTableColor objectAtIndex:i] doubleValue];
-			set_current_PSF_color_point(i, value, color);
-		}
+		[self SetColorTables];
 	}
 	[_kemoviewer UpdateImage];
-} // end deleteSelectedRow
+}
 
 - (IBAction)deleteSelectedRow:(id)pId {
-	double value, color;
 	int i;
 	
 	NSIndexSet *SelectedList = [idColorTableView selectedRowIndexes];
+	if([self.ColorTableField count] < 3) return;
 	
 	if ([idColorTableView numberOfSelectedRows] > 0) {
-		for(int i=[self.ColorTableField count]-2;i>1;i--){
-			if([SelectedList containsIndex:i] !=0){
-				[ColorTableField    removeObjectAtIndex:i];
-				[ColorTableColor removeObjectAtIndex:i];
+		for(i = [self.ColorTableField count]-1;i>1;i--){
+			if([SelectedList containsIndex:i] == TRUE){
+				delete_current_PSF_color_idx_list(i);
 			}
-		}
-		[idColorTableView reloadData];
-		
-		int num = [self.ColorTableField count];
-		realloc_current_PSF_color_idx_list(RAINBOW_MODE, num);
-		for (i=0;i<num;i++){
-			value = [[self.ColorTableField objectAtIndex:i] doubleValue];
-			color = [[self.ColorTableColor objectAtIndex:i] doubleValue];
-			set_current_PSF_color_point(i, value, color);
-		}
+		};
 	}
+	
+	[self SetColorTables];
 	[_kemoviewer UpdateImage];
 }
 
