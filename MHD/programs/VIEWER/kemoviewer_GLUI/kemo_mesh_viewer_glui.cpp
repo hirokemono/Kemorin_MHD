@@ -131,10 +131,11 @@ static void openFileBrowerCB(int val)
 	text_fname = file_brouser->get_file();
 	text_current = current;
 	glui->sync_live();
-	
+	/*
 	int count = send_glui_idle_count();
 	if(count <= 5000) init_kemoview_data_glui(val);
 	reset_glui_idle_count();
+	*/
 
 }
 /* Routines for GLUI Interface */
