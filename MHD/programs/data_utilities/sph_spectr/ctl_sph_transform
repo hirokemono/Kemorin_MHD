@@ -87,7 +87,7 @@ begin spherical_transform
 !
     begin gauss_coefficient_ctl
       gauss_coefs_prefix           'sph_spectr/gauss_coefs'
-      gauss_coefs_radius_ctl    2.91
+      gauss_coefs_radius_ctl    2.82
 !
       array pick_gauss_coefs_ctl  2
         pick_gauss_coefs_ctl   2  -2

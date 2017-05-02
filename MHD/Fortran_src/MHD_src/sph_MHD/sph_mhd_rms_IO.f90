@@ -58,7 +58,7 @@
       type(pickup_mode_list), save :: gauss_list1
 !>      Structure for gauss coeffciients
 !!      Radius to evaluate Gauss coefficients (Default: 6400km/2200km)
-!!      gauss1%radius_gl(1) = 2.91
+!!      gauss1%radius_gl(1) = 2.82
       type(picked_spectrum_data), save :: gauss1
 !>      File prefix for Gauss coefficients file
       character(len = kchara) :: gauss_coefs_file_head
@@ -75,7 +75,10 @@
       subroutine open_sph_vol_rms_file_mhd                              &
      &         (sph_params, sph_rj, ipol, rj_fld, pwr, WK_pwr)
 !
+      use m_error_IDs
       use cal_rms_fields_by_sph
+      use output_sph_m_square_file
+      use gauss_coefs_monitor_IO
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) ::  sph_rj
@@ -85,17 +88,39 @@
       type(sph_mean_squares), intent(inout) :: pwr
       type(sph_mean_square_work), intent(inout) :: WK_pwr
 !
+      integer(kind = kint) :: iflag
+!
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_rms_4_sph_spectr'
       call init_rms_4_sph_spectr                                        &
      &   (sph_params, sph_rj, rj_fld, pwr, WK_pwr)
 !
-      if ( iflag_debug.gt.0 ) write(*,*) 'init_gauss_coefs_4_monitor'
-      call init_gauss_coefs_4_monitor                                   &
-     &   (sph_params%l_truncation, sph_rj, ipol, gauss_list1, gauss1)
+      iflag = check_sph_vol_ms_file(my_rank, sph_params, sph_rj, pwr)
+      call MPI_Bcast(iflag, ione, CALYPSO_INTEGER, izero,               &
+     &               CALYPSO_COMM, ierr_MPI)
+      if(iflag .gt. 0) then
+        call calypso_mpi_barrier
+        call calypso_mpi_abort(ierr_file,                               &
+     &     'Field information might be updated.')
+      end if
+!
       if ( iflag_debug.gt.0 ) write(*,*) 'init_sph_spec_4_monitor'
       call init_sph_spec_4_monitor                                      &
      &   (sph_params%l_truncation, sph_rj, rj_fld, pick_list1, pick1)
+!
+      if ( iflag_debug.gt.0 ) write(*,*) 'init_gauss_coefs_4_monitor'
+      call init_gauss_coefs_4_monitor                                   &
+     &   (sph_params%l_truncation, sph_rj, ipol, gauss_list1, gauss1)
+!
+      iflag = check_gauss_coefs_file                                    &
+     &      (my_rank, gauss_coefs_file_head, gauss1)
+      call MPI_Bcast(iflag, ione, CALYPSO_INTEGER, izero,               &
+     &               CALYPSO_COMM, ierr_MPI)
+      if(iflag .gt. 0) then
+        call calypso_mpi_barrier
+        call calypso_mpi_abort(ierr_file,                               &
+     &     'Field information might be updated.')
+      end if
 !
       end subroutine open_sph_vol_rms_file_mhd
 !

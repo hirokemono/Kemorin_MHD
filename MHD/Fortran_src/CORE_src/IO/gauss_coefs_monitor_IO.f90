@@ -9,6 +9,9 @@
 !!@verbatim
 !!      subroutine write_gauss_coefs_4_monitor                          &
 !!     &         (my_rank, i_step, time, gauss_coefs_file_head, gauss)
+!!     integer(kind = kint) function check_gauss_coefs_file             &
+!!     &                  (my_rank, gauss_coefs_file_head, gauss)
+!!
 !!      subroutine open_gauss_coefs_read_monitor                        &
 !!     &         (id_pick, gauss_coefs_file_head, gauss)
 !!      subroutine read_gauss_coefs_4_monitor(id_pick, i_step, time,    &
@@ -33,6 +36,7 @@
       integer(kind = kint), parameter :: id_gauss_coef = 23
 !
       private :: open_gauss_coefs_4_monitor
+      private :: check_gauss_coefs_4_monitor
 !
 ! -----------------------------------------------------------------------
 !
@@ -76,6 +80,65 @@
 !
 ! -----------------------------------------------------------------------
 !
+      integer(kind = kint) function check_gauss_coefs_4_monitor(gauss)
+!
+      use m_phys_labels
+      use skip_comment_f
+!
+      type(picked_spectrum_data), intent(in) :: gauss
+!
+      integer(kind = kint) :: nmode_read
+      real(kind = kreal) :: radius_read
+      character(len = kchara), allocatable :: mode_name_read(:)
+!
+      integer(kind = kint) :: nd
+      character(len=255) :: tmpchara
+!
+!
+      call skip_comment(tmpchara,id_gauss_coef)
+      read(id_gauss_coef,*) nmode_read, radius_read
+!      write(*,*) 'gauss%num_sph_mode', gauss%num_sph_mode, nmode_read
+!      write(*,*) 'gauss%radius_gl(1)', gauss%radius_gl(1), radius_read
+      if(gauss%num_sph_mode .ne. nmode_read) then
+        write(*,*) 'Number of Gauss coefficients does not match ',      &
+     &             'with the data in the file'
+        check_gauss_coefs_4_monitor = 1
+        return
+      end if
+      if(abs(gauss%radius_gl(1) - radius_read) .gt. 1.0E-8) then
+        write(*,*) 'Radius of Gauss coefficients does not match ',      &
+     &             'with the data in the file',                         &
+     &              gauss%radius_gl(1), radius_read
+        check_gauss_coefs_4_monitor = 1
+        return
+      end if
+!
+      allocate(mode_name_read(nmode_read))
+!
+      read(id_gauss_coef,*) (tmpchara,nd=1,2),                          &
+     &                 mode_name_read(1:gauss%num_sph_mode)
+!
+      do nd = 1, gauss%num_sph_mode
+!        write(*,*) 'gauss%gauss_mode_name(nd)',                        &
+!     &            gauss%gauss_mode_name(nd), mode_name_read(nd)
+        if(gauss%gauss_mode_name(nd) .ne. mode_name_read(nd)) then
+          write(*,*) 'coefficient ', trim(mode_name_read(nd)),          &
+     &               'does not match with the data file'
+          check_gauss_coefs_4_monitor = 1
+          deallocate(mode_name_read)
+          return
+        end if
+      end do
+!
+      deallocate(mode_name_read)
+      check_gauss_coefs_4_monitor = 0
+      return
+!
+      end function check_gauss_coefs_4_monitor
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
       subroutine write_gauss_coefs_4_monitor                            &
      &         (my_rank, i_step, time, gauss_coefs_file_head, gauss)
 !
@@ -106,6 +169,39 @@
       end subroutine write_gauss_coefs_4_monitor
 !
 ! -----------------------------------------------------------------------
+!
+     integer(kind = kint) function check_gauss_coefs_file               &
+     &                  (my_rank, gauss_coefs_file_head, gauss)
+!
+      use set_parallel_file_name
+!
+      character(len = kchara), intent(in) :: gauss_coefs_file_head
+      integer(kind = kint), intent(in) :: my_rank
+      type(picked_spectrum_data), intent(in) :: gauss
+!!
+      character(len = kchara) :: gauss_coefs_file_name
+!
+!
+      check_gauss_coefs_file = 0
+      if(gauss%num_sph_mode .eq. izero) return
+      if(my_rank .gt. izero) return
+!
+      call add_dat_extension(gauss_coefs_file_head,                     &
+     &    gauss_coefs_file_name)
+      open(id_gauss_coef, file = gauss_coefs_file_name,                 &
+     &    form='formatted', status='old', err = 99)
+!
+      check_gauss_coefs_file = check_gauss_coefs_4_monitor(gauss)
+      close(id_gauss_coef)
+      return
+!
+  99  continue
+      write(*,*) 'No Gauss coefficient file'
+      return
+!
+      end function check_gauss_coefs_file
+!
+! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine open_gauss_coefs_read_monitor                          &
@@ -133,7 +229,7 @@
 !
       gauss%num_layer =    1
       call alloc_num_pick_layer(gauss)
-      gauss%radius_gl(1) = 2.91
+      gauss%radius_gl(1) = 2.82
 !
       gauss%num_field_rj = 1
       gauss%ntot_comp_rj = 1

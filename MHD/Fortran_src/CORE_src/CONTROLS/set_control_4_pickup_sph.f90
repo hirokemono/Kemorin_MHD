@@ -286,7 +286,7 @@
 !
       gauss_coef%num_layer = 1
       call alloc_num_pick_layer(gauss_coef)
-      gauss_coef%radius_gl(1) = 2.91
+      gauss_coef%radius_gl(1) = 2.82
 !
       if(g_pwr%gauss_coefs_radius_ctl%iflag .gt. 0) then
         gauss_coef%radius_gl(1)                                         &

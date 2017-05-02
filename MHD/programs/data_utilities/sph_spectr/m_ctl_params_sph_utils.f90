@@ -43,7 +43,7 @@
       type(pickup_mode_list), save :: gauss_list_u
 !>      Structure for gauss coeffciients
 !!      Radius to evaluate Gauss coefficients (Default: 6400km/2200km)
-!!      gauss_u%radius_gl(1) = 2.91
+!!      gauss_u%radius_gl(1) = 2.82
       type(picked_spectrum_data), save :: gauss_u
 !
 !>      File prefix for Gauss coefficients file

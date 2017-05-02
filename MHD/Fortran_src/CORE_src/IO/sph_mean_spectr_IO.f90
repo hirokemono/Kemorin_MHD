@@ -7,6 +7,12 @@
 !>@brief Mean sqare data
 !!
 !!@verbatim
+!!      integer(kind = kint) function check_sph_vol_mean_sq_file        &
+!!     &         (id_file, fname_rms, mode_label,                       &
+!!     &          ltr, num_rms_rj, ntot_rms_rj, num_rms_comp_rj,        &
+!!     &          rms_name_rj, nri, nlayer_ICB, nlayer_CMB,             &
+!!     &          kr_inner, kr_outer)
+!!
 !!      subroutine open_sph_vol_mean_sq_file                            &
 !!     &         (id_file, fname_rms, mode_label,                       &
 !!     &          ltr, num_rms_rj, ntot_rms_rj, num_rms_comp_rj,        &
@@ -37,19 +43,56 @@
 !
       implicit none
 !
-      private :: write_sph_mean_sq_header, write_sph_vol_mean_sq_header
-!
 ! -----------------------------------------------------------------------
 !
       contains
 !
 ! -----------------------------------------------------------------------
 !
+      integer(kind = kint) function check_sph_vol_mean_sq_file          &
+     &         (id_file, fname_rms, mode_label,                         &
+     &          ltr, num_rms_rj, ntot_rms_rj, num_rms_comp_rj,          &
+     &          rms_name_rj, nri, nlayer_ICB, nlayer_CMB,               &
+     &          kr_inner, kr_outer)
+!
+      use sph_mean_spectr_header_IO
+!
+      integer(kind = kint), intent(in) :: id_file
+      character(len = kchara), intent(in) :: fname_rms, mode_label
+      integer(kind = kint), intent(in) :: nri, ltr
+      integer(kind = kint), intent(in) :: num_rms_rj, ntot_rms_rj
+      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
+      integer(kind = kint), intent(in) :: kr_inner, kr_outer
+      integer(kind = kint), intent(in) :: num_rms_comp_rj(num_rms_rj)
+      character (len=kchara), intent(in) :: rms_name_rj(num_rms_rj)
+!
+!
+      open(id_file, file=fname_rms, form='formatted',                   &
+     &    status='old', err = 99)
+!
+      check_sph_vol_mean_sq_file                                        &
+     &         = check_sph_vol_mean_sq_header(id_file, mode_label, ltr, &
+     &          num_rms_rj, ntot_rms_rj, num_rms_comp_rj, rms_name_rj,  &
+     &          nri, nlayer_ICB, nlayer_CMB, kr_inner, kr_outer)
+      close(id_file)
+!
+      return
+!
+   99 continue
+      write(*,*) 'No mean suare file'
+      check_sph_vol_mean_sq_file = 0
+!
+      end function check_sph_vol_mean_sq_file
+!
+!  --------------------------------------------------------------------
+!
       subroutine open_sph_vol_mean_sq_file                              &
      &         (id_file, fname_rms, mode_label,                         &
      &          ltr, num_rms_rj, ntot_rms_rj, num_rms_comp_rj,          &
      &          rms_name_rj, nri, nlayer_ICB, nlayer_CMB,               &
      &          kr_inner, kr_outer, r_inner,  r_outer)
+!
+      use sph_mean_spectr_header_IO
 !
       integer(kind = kint), intent(in) :: id_file
       character(len = kchara), intent(in) :: fname_rms, mode_label
@@ -82,6 +125,8 @@
      &          ltr, num_rms_rj, ntot_rms_rj, num_rms_comp_rj,          &
      &          rms_name_rj, nri_rms, nlayer_ICB, nlayer_CMB)
 !
+      use sph_mean_spectr_header_IO
+!
       integer(kind = kint), intent(in) :: id_file
       character(len = kchara), intent(in) :: fname_rms, mode_label
       integer(kind = kint), intent(in) :: nri_rms, ltr
@@ -104,151 +149,6 @@
 !
       end subroutine open_sph_mean_sq_file
 !
-!  --------------------------------------------------------------------
-!  --------------------------------------------------------------------
-!
-      subroutine write_sph_vol_mean_sq_header(id_file, mode_label, ltr, &
-     &          num_rms_rj, ntot_rms_rj, num_rms_comp_rj, rms_name_rj,  &
-     &          nri, nlayer_ICB, nlayer_CMB, kr_inner, kr_outer,        &
-     &          r_inner,  r_outer)
-!
-      use m_phys_labels
-      use write_field_labels
-!
-      integer(kind = kint), intent(in) :: id_file
-      character(len = kchara), intent(in) :: mode_label
-      integer(kind = kint), intent(in) :: nri, ltr
-      integer(kind = kint), intent(in) :: num_rms_rj, ntot_rms_rj
-      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
-      integer(kind = kint), intent(in) :: kr_inner, kr_outer
-      real(kind = kreal), intent(in) ::   r_inner,  r_outer
-      integer(kind = kint), intent(in) :: num_rms_comp_rj(num_rms_rj)
-      character (len=kchara), intent(in) :: rms_name_rj(num_rms_rj)
-!
-      integer(kind = kint) :: i
-      character(len=kchara) :: labels(6)
-!
-!
-      write(id_file,'(a)')    'radial_layers, truncation'
-      write(id_file,'(3i16)') nri, ltr
-      write(id_file,'(a)')    'ICB_id, CMB_id'
-      write(id_file,'(2i16)') nlayer_ICB, nlayer_CMB
-      write(id_file,'(a)')    'Lower boudary'
-      write(id_file,'(i16,1pe23.14e3)') kr_inner, r_inner
-      write(id_file,'(a)')    'Upper boundary'
-      write(id_file,'(i16,1pe23.14e3)') kr_outer, r_outer
-!
-      write(id_file,'(a)')    'number of components'
-      write(id_file,'(5i16)')   num_rms_rj, ntot_rms_rj
-      write(id_file,'(16i5)')   num_rms_comp_rj(1:num_rms_rj)
-!
-!
-      write(id_file,'(a)',advance='no')    't_step    time    '
-      if(mode_label .ne. 'EMPTY') then
-        write(id_file,'(a,a4)',advance='no') trim(mode_label), '    '
-      end if
-!
-      do i = 1, num_rms_rj
-        call set_sph_rms_labels(num_rms_comp_rj(i), rms_name_rj(i),     &
-     &      labels(1))
-        call write_multi_labels(id_file, num_rms_comp_rj(i), labels(1))
-      end do
-      write(id_file,*)
-!
-      end subroutine write_sph_vol_mean_sq_header
-!
-!  --------------------------------------------------------------------
-!
-      subroutine write_sph_mean_sq_header(id_file, mode_label, ltr,     &
-     &          num_rms_rj, ntot_rms_rj, num_rms_comp_rj, rms_name_rj,  &
-     &          nri_rms, nlayer_ICB, nlayer_CMB)
-!
-      use m_phys_labels
-      use write_field_labels
-!
-      integer(kind = kint), intent(in) :: id_file
-      character(len = kchara), intent(in) :: mode_label
-      integer(kind = kint), intent(in) :: nri_rms, ltr
-      integer(kind = kint), intent(in) :: num_rms_rj, ntot_rms_rj
-      integer(kind = kint), intent(in) :: nlayer_ICB, nlayer_CMB
-      integer(kind = kint), intent(in) :: num_rms_comp_rj(num_rms_rj)
-      character (len=kchara), intent(in) :: rms_name_rj(num_rms_rj)
-!
-      integer(kind = kint) :: i
-      character(len=kchara) :: labels(6)
-!
-!
-      write(id_file,'(a)')    'radial_layers, truncation'
-      write(id_file,'(3i16)') nri_rms, ltr
-      write(id_file,'(a)')    'ICB_id, CMB_id'
-      write(id_file,'(3i16)') nlayer_ICB, nlayer_CMB
-!
-      write(id_file,'(a)')    'number of components'
-      write(id_file,'(5i16)')   num_rms_rj, ntot_rms_rj
-      write(id_file,'(16i5)')   num_rms_comp_rj(1:num_rms_rj)
-!
-!
-      write(id_file,'(a)',advance='no')    't_step    time    '
-      if(mode_label .ne. 'EMPTY') then
-        write(id_file,'(a,a4)',advance='no') trim(mode_label), '    '
-      end if
-!
-      do i = 1, num_rms_rj
-        call set_sph_rms_labels(num_rms_comp_rj(i), rms_name_rj(i),     &
-     &      labels(1))
-        call write_multi_labels(id_file, num_rms_comp_rj(i), labels(1))
-      end do
-      write(id_file,*)
-!
-      end subroutine write_sph_mean_sq_header
-!
-!  --------------------------------------------------------------------
-!
-      subroutine set_sph_rms_labels(num_rms_comp, rms_name, labels)
-!
-      use m_phys_labels
-      use add_direction_labels
-!
-      integer(kind = kint), intent(in) :: num_rms_comp
-      character(len = kchara), intent(in) :: rms_name
-!
-      character(len = kchara), intent(inout) :: labels(num_rms_comp)
-!
-!
-      if ( rms_name .eq. fhd_velo) then
-        write(labels(1),'(a)')   'K_ene_pol'
-        write(labels(2),'(a)')   'K_ene_tor'
-        write(labels(3),'(a)')   'K_ene'
-!
-      else if (rms_name .eq. fhd_magne) then
-        write(labels(1),'(a)')   'M_ene_pol'
-        write(labels(2),'(a)')   'M_ene_tor'
-        write(labels(3),'(a)')   'M_ene'
-!
-      else if (rms_name .eq. fhd_filter_velo) then
-        write(labels(1),'(a)')   'filter_KE_pol'
-        write(labels(2),'(a)')   'filter_KE_tor'
-        write(labels(3),'(a)')   'filter_KE'
-!
-      else if (rms_name .eq. fhd_filter_magne) then
-        write(labels(1),'(a)')   'filter_ME_pol'
-        write(labels(2),'(a)')   'filter_ME_tor'
-        write(labels(3),'(a)')   'filter_ME'
-!
-      else if (num_rms_comp .eq. 1) then
-        write(labels(1),'(a)')   trim(rms_name)
-      else if (num_rms_comp .eq. 3) then
-        call add_vector_power_sph_label(rms_name,                       &
-     &          labels(1), labels(2), labels(3))
-      else if (num_rms_comp .eq. 6) then
-        call add_tensor_direction_label_rtp(rms_name,                   &
-     &          labels(1), labels(2), labels(3), labels(4), labels(5),  &
-     &          labels(6))
-      end if
-!
-      end subroutine set_sph_rms_labels
-!
-!  --------------------------------------------------------------------
 !  --------------------------------------------------------------------
 !
       subroutine write_sph_volume_data(id_file, istep, time,            &

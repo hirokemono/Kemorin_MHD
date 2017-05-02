@@ -11,6 +11,8 @@
 !!      subroutine write_sph_vol_ave_file                               &
 !!     &         (time_d, sph_params, sph_rj, pwr)
 !!
+!!      integer(kind = kint) function check_sph_vol_ms_file             &
+!!     &                   (my_rank, sph_params, sph_rj, pwr)
 !!      subroutine write_sph_vol_ms_file                                &
 !!     &         (my_rank, time_d, sph_params, sph_rj, pwr)
 !!      subroutine write_sph_vol_ms_spectr_file                         &
@@ -135,6 +137,40 @@
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
+!
+      integer(kind = kint) function check_sph_vol_ms_file               &
+     &                   (my_rank, sph_params, sph_rj, pwr)
+!
+      use t_spheric_parameter
+      use t_rms_4_sph_spectr
+      use set_parallel_file_name
+      use sph_mean_spectr_IO
+!
+      integer(kind = kint), intent(in) :: my_rank
+!
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(sph_mean_squares), intent(in) :: pwr
+!
+      character(len=kchara) :: fname_rms, mode_label
+!
+!
+      check_sph_vol_ms_file = 0
+      if(my_rank.gt.0) return
+      if(pwr%ntot_comp_sq .eq. 0)  return
+!
+      call add_dat_extension(pwr%v_spectr(1)%fhead_rms_v, fname_rms)
+      write(mode_label,'(a)') 'EMPTY'
+      check_sph_vol_ms_file = check_sph_vol_mean_sq_file(id_file_rms,   &
+     &         fname_rms, mode_label, sph_params%l_truncation,          &
+     &         pwr%num_fld_sq, pwr%ntot_comp_sq, pwr%num_comp_sq,       &
+     &         pwr%pwr_name, sph_rj%nidx_rj(1),                         &
+     &         sph_params%nlayer_ICB, sph_params%nlayer_CMB,            &
+     &         pwr%v_spectr(1)%kr_inside, pwr%v_spectr(1)%kr_outside)
+!
+      end function check_sph_vol_ms_file
+!
+!  --------------------------------------------------------------------
 !
       subroutine write_sph_vol_ms_file                                  &
      &         (my_rank, time_d, sph_params, sph_rj, pwr)
@@ -393,7 +429,7 @@
       end subroutine write_sph_volume_spec_file
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
+!  --------------------------------------------------------------------
 !
       subroutine write_sph_volume_pwr_file(fname_rms, mode_label,       &
      &          istep, time, l_truncation, nlayer_ICB, nlayer_CMB,      &

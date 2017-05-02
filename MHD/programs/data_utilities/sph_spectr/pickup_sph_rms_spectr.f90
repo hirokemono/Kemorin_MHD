@@ -233,7 +233,7 @@
 !
       use m_phys_labels
       use add_direction_labels
-      use sph_mean_spectr_IO
+      use sph_mean_spectr_header_IO
 !
       type(sph_mean_squares), intent(in) :: pwr
       type(picked_spectrum_data), intent(inout) :: pick_rms
