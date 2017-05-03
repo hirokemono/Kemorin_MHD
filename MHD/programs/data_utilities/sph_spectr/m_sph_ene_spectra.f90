@@ -9,13 +9,17 @@
 !!
 !!@verbatim
 !!      subroutine allocate_sph_espec_name
-!!      subroutine deallocate_tave_sph_espec_data
+!!      subroutine allocate_sph_sq_data
+!!
+!!      subroutine deallocate_sph_espec_name
+!!      subroutine deallocate_sph_espec_data
+!!      subroutine deallocate_sph_spectr_data
+!!      subroutine deallocate_sph_sq_data
 !!
 !!      subroutine select_sph_ene_spec_data_file
 !!      subroutine set_org_ene_spec_file_name
 !!
 !!      subroutine open_org_ene_spec_data
-!!      subroutine close_ene_spec_data
 !!
 !!      subroutine read_org_layer_ene_data(istep, ierr)
 !!      subroutine read_org_volume_ene_data(istep, ierr)
@@ -46,8 +50,6 @@
 !
       real(kind = kreal), allocatable :: spectr_pre_t(:,:)
       real(kind = kreal), allocatable :: spectr_pre_l(:,:,:)
-      real(kind = kreal), allocatable :: spectr_pre_m(:,:,:)
-      real(kind = kreal), allocatable :: spectr_pre_lm(:,:,:)
 !
       integer(kind = kint) :: iflag_sph_ene_file
       integer(kind = kint) :: ilayer_sph_ene
@@ -71,7 +73,6 @@
 !
       private :: fhead_rms_vol, fhead_rms_layer
       private :: ilayer_sph_ene
-      private :: read_ene_spectr_header
 !
 !   --------------------------------------------------------------------
 !
@@ -101,8 +102,6 @@
 !
       allocate( spectr_pre_t(ncomp_sph_spec,nri_sph) )
       allocate( spectr_pre_l(ncomp_sph_spec,0:ltr_sph,nri_sph) )
-      allocate( spectr_pre_m(ncomp_sph_spec,0:ltr_sph,nri_sph) )
-      allocate( spectr_pre_lm(ncomp_sph_spec,0:ltr_sph,nri_sph) )
 !
       r_sph = zero
 !
@@ -113,21 +112,80 @@
 !
       spectr_pre_t =  zero
       spectr_pre_l =  zero
-      spectr_pre_m =  zero
-      spectr_pre_lm = zero
 !
       end subroutine allocate_sph_espec_data
 !
 !   --------------------------------------------------------------------
 !
-      subroutine deallocate_tave_sph_espec_data
+      subroutine allocate_sph_spectr_data
+!
+!
+      allocate( kr_sph(nri_sph) )
+      allocate( r_sph(nri_sph) )
+!
+      allocate( spectr_l(ncomp_sph_spec,0:ltr_sph,nri_sph) )
+      allocate( spectr_pre_l(ncomp_sph_spec,0:ltr_sph,nri_sph) )
+!
+      r_sph = zero
+      spectr_l =  zero
+      spectr_pre_l =  zero
+!
+      end subroutine allocate_sph_spectr_data
+!
+!   --------------------------------------------------------------------
+!
+      subroutine allocate_sph_sq_data
+!
+!
+      allocate( kr_sph(nri_sph) )
+      allocate( r_sph(nri_sph) )
+!
+      allocate( spectr_t(ncomp_sph_spec,nri_sph) )
+      allocate( spectr_pre_t(ncomp_sph_spec,nri_sph) )
+!
+      r_sph = zero
+!
+      spectr_t =  zero
+      spectr_pre_t =  zero
+!
+      end subroutine allocate_sph_sq_data
+!
+!   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine deallocate_sph_espec_name
+!
+      deallocate(ene_sph_spec_name)
+!
+      end subroutine deallocate_sph_espec_name
+!
+!   --------------------------------------------------------------------
+!
+      subroutine deallocate_sph_espec_data
 !
       deallocate(ene_sph_spec_name, kr_sph, r_sph)
       deallocate(spectr_t, spectr_l, spectr_m, spectr_lm)
       deallocate(spectr_pre_t, spectr_pre_l)
-      deallocate(spectr_pre_m, spectr_pre_lm)
 !
-      end subroutine deallocate_tave_sph_espec_data
+      end subroutine deallocate_sph_espec_data
+!
+!   --------------------------------------------------------------------
+!
+      subroutine deallocate_sph_spectr_data
+!
+      deallocate(kr_sph, r_sph)
+      deallocate(spectr_l, spectr_pre_l)
+!
+      end subroutine deallocate_sph_spectr_data
+!
+!   --------------------------------------------------------------------
+!
+      subroutine deallocate_sph_sq_data
+!
+      deallocate(kr_sph, r_sph)
+      deallocate(spectr_t, spectr_pre_t)
+!
+      end subroutine deallocate_sph_sq_data
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
@@ -213,33 +271,24 @@
       open(id_file_rms_m, file=fname_org_rms_m)
       open(id_file_rms_lm,file=fname_org_rms_lm)
 !
-      call read_ene_spectr_header(id_file_rms,   ione)
-      call read_ene_spectr_header(id_file_rms_l, izero)
-      call read_ene_spectr_header(id_file_rms_m, izero)
-      call read_ene_spectr_header(id_file_rms_lm, izero)
+      call read_ene_spectr_header(id_file_rms,   ione, ene_sph_spec_name)
+      call read_ene_spectr_header(id_file_rms_l, izero, ene_sph_spec_name)
+      call read_ene_spectr_header(id_file_rms_m, izero, ene_sph_spec_name)
+      call read_ene_spectr_header(id_file_rms_lm, izero, ene_sph_spec_name)
 !
       end subroutine open_org_ene_spec_data
 !
 !   --------------------------------------------------------------------
-!
-      subroutine close_ene_spec_data
-!
-!
-      close(id_file_rms)
-      close(id_file_rms_l)
-      close(id_file_rms_m)
-      close(id_file_rms_lm)
-!
-      end subroutine close_ene_spec_data
-!
-!   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine read_ene_spectr_header(id_file, iflag_total)
+      subroutine read_ene_spectr_header                                 &
+     &         (id_file, iflag_total, ene_sph_spec_name)
 !
       use skip_comment_f
 !
       integer(kind = kint), intent(in) :: id_file, iflag_total
+      character(len = kchara), intent(inout)                            &
+     &             :: ene_sph_spec_name(ncomp_sph_spec+num_time_labels)
       character(len=255) :: character_4_read
       integer(kind = kint) :: num, itmp, nfld, i
 !
@@ -260,90 +309,159 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine read_org_layer_ene_data(istep, ierr)
+      integer(kind = kint) function read_org_layer_ene_data(istep)
 !
-      integer(kind = kint), intent(inout) :: istep, ierr
+      integer(kind = kint), intent(inout) :: istep
+!
+!
+      read_org_layer_ene_data                                           &
+     &     = read_layer_ene_sph(id_file_rms, istep, time_sph,           &
+     &      nri_sph, ncomp_sph_spec, spectr_t)
+!
+      read_org_layer_ene_data = read_org_layer_ene_data                 &
+     &     + read_layer_ene_spectr(id_file_rms_l, istep, time_sph,      &
+     &      nri_sph, ltr_sph, ncomp_sph_spec, spectr_l)
+      read_org_layer_ene_data = read_org_layer_ene_data                 &
+     &     + read_layer_ene_spectr(id_file_rms_m, istep, time_sph,      &
+     &      nri_sph, ltr_sph, ncomp_sph_spec, spectr_m)
+      read_org_layer_ene_data = read_org_layer_ene_data                 &
+     &     + read_layer_ene_spectr(id_file_rms_lm, istep, time_sph,     &
+     &      nri_sph, ltr_sph, ncomp_sph_spec, spectr_lm)
+!
+      end function read_org_layer_ene_data
+!
+!   --------------------------------------------------------------------
+!
+      integer(kind = kint) function read_org_volume_ene_data(istep)
+!
+      integer(kind = kint), intent(inout) :: istep
+!
+!
+      read_org_volume_ene_data                                          &
+     &     = read_vol_ene_sph(id_file_rms, istep, time_sph,             &
+     &      ncomp_sph_spec, spectr_t(1,1))
+!
+      read_org_volume_ene_data = read_org_volume_ene_data               &
+     &     + read_vol_ene_spectr(id_file_rms_l, istep, time_sph,        &
+     &      ltr_sph, ncomp_sph_spec, spectr_l(1,0,1))
+      read_org_volume_ene_data = read_org_volume_ene_data               &
+     &     + read_vol_ene_spectr(id_file_rms_m, istep, time_sph,        &
+     &      ltr_sph, ncomp_sph_spec, spectr_m(1,0,1))
+      read_org_volume_ene_data = read_org_volume_ene_data               &
+     &     + read_vol_ene_spectr(id_file_rms_lm, istep, time_sph,       &
+     &      ltr_sph, ncomp_sph_spec, spectr_lm(1,0,1))
+!
+      end function read_org_volume_ene_data
+!
+!   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      integer(kind = kint) function  read_layer_ene_sph(id_file,        &
+     &                    istep, time, nri, ncomp, spectr_t)
+!
+      integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint), intent(in) :: nri, ncomp
+      integer(kind = kint), intent(inout) :: istep
+      real(kind = kreal), intent(inout) :: time
+      real(kind = kreal), intent(inout) :: spectr_t(ncomp,nri)
+!
+      integer(kind = kint) :: kr
+!
+!
+      read_layer_ene_sph = 0
+      do kr = 1, nri_sph
+        read(id_file,*,err=99,end=99) istep, time,                      &
+     &         kr_sph(kr), r_sph(kr), spectr_t(1:ncomp_sph_spec,kr)
+      end do
+      return
+!
+   99 continue
+      read_layer_ene_sph = 1
+      return
+!
+      end function read_layer_ene_sph
+!
+!   --------------------------------------------------------------------
+!
+      integer(kind = kint) function  read_layer_ene_spectr(id_file,     &
+     &                    istep, time, nri, ltr, ncomp, spectr_l)
+!
+      integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint), intent(in) :: nri, ltr, ncomp
+      integer(kind = kint), intent(inout) :: istep
+      real(kind = kreal), intent(inout) :: time
+      real(kind = kreal), intent(inout) :: spectr_l(ncomp,0:ltr,nri)
+!
       integer(kind = kint) :: itmp
       integer(kind = kint) :: kr, lth
       real(kind = kreal) :: rtmp
 !
 !
-      ierr = 0
-      do kr = 1, nri_sph
-        read(id_file_rms,*,err=99,end=99) istep, time_sph,              &
-     &         kr_sph(kr), r_sph(kr), spectr_t(1:ncomp_sph_spec,kr)
-        do lth = 0, ltr_sph
-          read(id_file_rms_l,*,err=99,end=99) istep, time_sph,          &
+      do kr = 1, nri
+        do lth = 0, ltr
+          read(id_file,*,err=99,end=99) istep, time,                    &
      &         itmp, rtmp, itmp, spectr_l(1:ncomp_sph_spec,lth,kr)
-          read(id_file_rms_m,*,err=99,end=99) istep, time_sph,          &
-     &         itmp, rtmp, itmp, spectr_m(1:ncomp_sph_spec,lth,kr)
-          read(id_file_rms_lm,*,err=99,end=99) istep, time_sph,         &
-     &         itmp, rtmp, itmp, spectr_lm(1:ncomp_sph_spec,lth,kr)
         end do
       end do
+      read_layer_ene_spectr = 0
       return
 !
    99 continue
-      ierr = 1
+      read_layer_ene_spectr = 1
       return
 !
-      end subroutine read_org_layer_ene_data
+      end function read_layer_ene_spectr
+!
+!   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      integer(kind = kint) function read_vol_ene_sph                    &
+     &                   (id_file, istep, time, ncomp, spectr_t)
+!
+      integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint), intent(in) :: ncomp
+      integer(kind = kint), intent(inout) :: istep
+      real(kind = kreal), intent(inout) :: time
+      real(kind = kreal), intent(inout) :: spectr_t(ncomp)
+!
+!
+      read(id_file,*,err=99,end=99) istep, time, spectr_t(1:ncomp)
+      read_vol_ene_sph = 0
+      return
+!
+   99 continue
+      read_vol_ene_sph = 1
+      return
+!
+      end function read_vol_ene_sph
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_org_volume_ene_data(istep, ierr)
+      integer(kind = kint) function read_vol_ene_spectr                 &
+     &                   (id_file, istep, time, ltr, ncomp, spectr_l)
 !
-      integer(kind = kint), intent(inout) :: istep, ierr
+      integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint), intent(in) :: ltr, ncomp
+      integer(kind = kint), intent(inout) :: istep
+      real(kind = kreal), intent(inout) :: time
+      real(kind = kreal), intent(inout) :: spectr_l(ncomp,0:ltr)
+!
       integer(kind = kint) :: itmp
       integer(kind = kint) :: lth
 !
 !
-      ierr = 0
-      read(id_file_rms,*,err=99,end=99) istep, time_sph,                &
-     &         spectr_t(1:ncomp_sph_spec,ione)
-      do lth = 0, ltr_sph
-          read(id_file_rms_l,*,err=99,end=99) istep, time_sph,          &
-     &         itmp, spectr_l(1:ncomp_sph_spec,lth,ione)
-          read(id_file_rms_m,*,err=99,end=99) istep, time_sph,          &
-     &         itmp, spectr_m(1:ncomp_sph_spec,lth,ione)
-          read(id_file_rms_lm,*,err=99,end=99) istep, time_sph,         &
-     &         itmp, spectr_lm(1:ncomp_sph_spec,lth,ione)
+      do lth = 0, ltr
+          read(id_file,*,err=99,end=99) istep, time,                    &
+     &         itmp, spectr_l(1:ncomp,lth)
       end do
+      read_vol_ene_spectr = 0
       return
 !
    99 continue
-      ierr = 1
+      read_vol_ene_spectr = 1
       return
 !
-      end subroutine read_org_volume_ene_data
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_org_volume_ms_data(istep, ierr)
-!
-      integer(kind = kint), intent(inout) :: istep, ierr
-      integer(kind = kint) :: itmp
-      integer(kind = kint) :: lth
-!
-!
-      ierr = 0
-      read(id_file_rms,*,err=99,end=99) istep, time_sph,                &
-     &         spectr_t(1:ncomp_sph_spec,ione)
-      do lth = 0, ltr_sph
-          read(id_file_rms_l,*,err=99,end=99) istep, time_sph,          &
-     &         itmp, spectr_l(1:ncomp_sph_spec,lth,ione)
-          read(id_file_rms_m,*,err=99,end=99) istep, time_sph,          &
-     &         itmp, spectr_m(1:ncomp_sph_spec,lth,ione)
-          read(id_file_rms_lm,*,err=99,end=99) istep, time_sph,         &
-     &         itmp, spectr_lm(1:ncomp_sph_spec,lth,ione)
-      end do
-      return
-!
-   99 continue
-      ierr = 1
-      return
-!
-      end subroutine read_org_volume_ms_data
+      end function read_vol_ene_spectr
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------

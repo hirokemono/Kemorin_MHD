@@ -49,11 +49,10 @@
      &       'step= ', istep,   ' evaluation finished. Count=  ', icou
       do
         if(iflag_sph_ene_file .eq. 1) then
-          call read_org_volume_ene_data(istep, ierr)
+          if(read_org_volume_ene_data(istep) .gt. 0) go to 99
         else
-          call read_org_layer_ene_data(istep, ierr)
+          if(read_org_layer_ene_data(istep) .gt. 0) go to 99
         end if
-        if(ierr.gt.0) go to 99
 !
         if (istep .ge. ist) then
           if (ist_true .eq. -1) then
@@ -76,7 +75,10 @@
       write(*,*)
 !
       call close_uli_sph_lscale
-      call close_ene_spec_data
+      close(id_file_rms)
+      close(id_file_rms_l)
+      close(id_file_rms_m)
+      close(id_file_rms_lm)
 !
       stop
       end program sph_uli_lengh_scale

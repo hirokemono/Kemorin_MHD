@@ -8,7 +8,7 @@
 !!
       module kemorin_MHD_C_linkage
 !
-      use iso_c_binding,  only: C_DOUBLE, c_int
+      use iso_c_binding
       use m_precision
 !
 ! -----------------------------------------------------------------------
