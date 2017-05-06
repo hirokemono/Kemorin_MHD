@@ -142,8 +142,11 @@ m_neutral_pt_by_pick_sph.o
 
 MOD_TAVE_SPH_ENE_SPEC = \
 t_average_sph_ene_spec.o \
+t_read_sph_spectra.o \
+sph_mean_square_IO_select.o \
 m_sph_ene_spectra.o \
 m_tave_sph_ene_spectr.o \
+simple_sph_spectr_data_IO.o \
 cal_tave_sph_ene_spectr.o
 
 MOD_MAX_SPH_ENE = \

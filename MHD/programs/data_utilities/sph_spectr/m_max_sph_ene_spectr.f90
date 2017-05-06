@@ -57,17 +57,17 @@
 !
       use m_sph_ene_spectra
 !
-      allocate( max_spec_l(ncomp_sph_spec,nri_sph) )
-      allocate( max_spec_m(ncomp_sph_spec,nri_sph) )
-      allocate( max_spec_lm(ncomp_sph_spec,nri_sph) )
+      allocate( max_spec_l(ntot_sph_spec,nri_sph) )
+      allocate( max_spec_m(ntot_sph_spec,nri_sph) )
+      allocate( max_spec_lm(ntot_sph_spec,nri_sph) )
 !
-      allocate( max_degree(ncomp_sph_spec,nri_sph) )
-      allocate( max_order(ncomp_sph_spec,nri_sph) )
-      allocate( max_diff_lm(ncomp_sph_spec,nri_sph) )
+      allocate( max_degree(ntot_sph_spec,nri_sph) )
+      allocate( max_order(ntot_sph_spec,nri_sph) )
+      allocate( max_diff_lm(ntot_sph_spec,nri_sph) )
 !
-      allocate( max_count_l(ncomp_sph_spec,0:ltr_sph,nri_sph) )
-      allocate( max_count_m(ncomp_sph_spec,0:ltr_sph,nri_sph) )
-      allocate( max_count_lm(ncomp_sph_spec,0:ltr_sph,nri_sph) )
+      allocate( max_count_l(ntot_sph_spec,0:ltr_sph,nri_sph) )
+      allocate( max_count_m(ntot_sph_spec,0:ltr_sph,nri_sph) )
+      allocate( max_count_lm(ntot_sph_spec,0:ltr_sph,nri_sph) )
 !
       max_spec_l =  0.0d0
       max_spec_m =  0.0d0
@@ -141,12 +141,12 @@
       integer(kind = kint), intent(in) :: istep
 !
 !
-      if(iflag_sph_ene_file .eq. 1) then
-        call write_max_vol_sph_data(nri_sph, ncomp_sph_spec,            &
+      if(iflag_volume_average .eq. 1) then
+        call write_max_vol_sph_data(nri_sph, ntot_sph_spec,             &
      &      max_degree, max_order, max_diff_lm, istep)
       else
         call write_max_layer_sph_data(nri_sph,                          &
-     &      ncomp_sph_spec, max_degree, max_order, max_diff_lm, istep)
+     &      ntot_sph_spec, max_degree, max_order, max_diff_lm, istep)
       end if
 !
       end subroutine output_dominant_scale_sph
@@ -162,7 +162,7 @@
       integer(kind = kint) :: num
 !
 !
-      num = ncomp_sph_spec + num_time_labels
+      num = ntot_sph_spec + num_time_labels
       write(ene_sph_spec_name(num_time_labels),'(a)') 'degree'
       call write_multi_labels(id_max_rms_l, num, ene_sph_spec_name)
 !
@@ -243,7 +243,7 @@
 !$omp parallel private(kr,lth,nd)
       do kr = 1, nri_sph
 !$omp do
-        do nd = 1, ncomp_sph_spec
+        do nd = 1, ntot_sph_spec
           max_spec_l(nd,kr) = spectr_l(nd,0,kr)
           max_degree(nd,kr) = 0
           max_spec_m(nd,kr) = spectr_m(nd,0,kr)
@@ -259,7 +259,7 @@
 !$omp parallel private(kr,nd)
         do kr = 1, nri_sph
 !$omp do
-          do nd = 1, ncomp_sph_spec
+          do nd = 1, ntot_sph_spec
             if(spectr_l(nd,lth,kr) .gt. max_spec_l(nd,kr)) then
               max_spec_l(nd,kr) = spectr_l(nd,lth,kr)
               max_degree(nd,kr) = lth

@@ -47,9 +47,9 @@
 !
       use m_sph_ene_spectra
 !
-      allocate( total_msq(ncomp_sph_spec,nri_sph) )
-      allocate( scale_uli(ncomp_sph_spec,nri_sph) )
-      allocate( spec_times_l(ncomp_sph_spec,nri_sph) )
+      allocate( total_msq(ntot_sph_spec,nri_sph) )
+      allocate( scale_uli(ntot_sph_spec,nri_sph) )
+      allocate( spec_times_l(ntot_sph_spec,nri_sph) )
 !
       total_msq =  0.0d0
       scale_uli =  0.0d0
@@ -103,11 +103,11 @@
       integer(kind = kint), intent(in) :: istep
 !
 !
-      if(iflag_sph_ene_file .eq. 1) then
-        call write_volume_sph_lscale(nri_sph, ncomp_sph_spec,           &
+      if(iflag_volume_average .eq. 1) then
+        call write_volume_sph_lscale(nri_sph, ntot_sph_spec,            &
      &      scale_uli, istep)
       else
-        call write_layer_sph_lscale(nri_sph, ncomp_sph_spec,            &
+        call write_layer_sph_lscale(nri_sph, ntot_sph_spec,             &
      &      scale_uli, istep)
       end if
 !
@@ -124,7 +124,7 @@
       integer(kind = kint) :: num
 !
 !
-      num = ncomp_sph_spec + num_time_labels
+      num = ntot_sph_spec + num_time_labels
       write(ene_sph_spec_name(num_time_labels),'(a)') 'degree'
       call write_multi_labels(id_lscale, num, ene_sph_spec_name)
 !
@@ -180,7 +180,7 @@
 !$omp parallel private(kr,nd)
       do kr = 1, nri_sph
 !$omp do
-        do nd = 1, ncomp_sph_spec
+        do nd = 1, ntot_sph_spec
           total_msq(nd,kr) =    spectr_l(nd,0,kr)
           spec_times_l(nd,kr) = 0.0d0
         end do
@@ -192,7 +192,7 @@
 !$omp parallel private(kr,nd)
         do kr = 1, nri_sph
 !$omp do
-          do nd = 1, ncomp_sph_spec
+          do nd = 1, ntot_sph_spec
             total_msq(nd,kr) = total_msq(nd,kr)                         &
      &                           + spectr_l(nd,lth,kr)
             spec_times_l(nd,kr) = spec_times_l(nd,kr)                   &
@@ -206,7 +206,7 @@
 !$omp parallel private(kr,nd)
       do kr = 1, nri_sph
 !$omp do
-        do nd = 1, ncomp_sph_spec
+        do nd = 1, ntot_sph_spec
           scale_uli(nd,kr) = spec_times_l(nd,kr) / total_msq(nd,kr)
         end do
 !$omp end do nowait

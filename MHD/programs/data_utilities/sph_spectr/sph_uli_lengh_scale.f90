@@ -17,22 +17,26 @@
       implicit none
 !
 !
+      character(len = kchara) :: input_header
       integer(kind = kint) :: ist, ied, ierr
       integer(kind = kint) :: icou, istep, i
 !
 !
-      call select_sph_ene_spec_data_file
-      call set_org_ene_spec_file_name
+      call select_sph_ene_spec_data_file                                &
+     &   (iflag_volume_average, iflag_old_file_format, input_header)
+      call set_org_ene_spec_file_name(input_header)
 !
       write(*,*) 'imput start and end step number'
       read(*,*) ist, ied
 !
-      if(iflag_sph_ene_file .eq. 1) then
-        call count_degree_on_volume_data
-      else  if(iflag_sph_ene_file .eq. 2) then
-        call count_degree_on_layer_data
-      else
-        call count_degree_one_layer_data
+      if(iflag_volume_average .eq. 1) then
+        open (id_file_rms_l,file=fname_org_rms_l)
+        call count_degree_on_volume_spectr(id_file_rms_l)
+        close(id_file_rms_l)
+      else  if(iflag_volume_average .eq. 0) then
+        open (id_file_rms_l,file=fname_org_rms_l)
+        call count_degree_on_layer_spectr(id_file_rms_l)
+        close(id_file_rms_l)
       end if
       call allocate_sph_espec_data
       call allocate_lscale_espec_data
@@ -48,7 +52,7 @@
       write(*,'(a5,i12,a30,i12)',advance="NO")                          &
      &       'step= ', istep,   ' evaluation finished. Count=  ', icou
       do
-        if(iflag_sph_ene_file .eq. 1) then
+        if(iflag_volume_average .eq. 1) then
           if(read_org_volume_ene_data(istep) .gt. 0) go to 99
         else
           if(read_org_layer_ene_data(istep) .gt. 0) go to 99
