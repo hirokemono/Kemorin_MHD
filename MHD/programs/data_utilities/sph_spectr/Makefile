@@ -18,6 +18,7 @@ TARGET_ZM_SPH_SPEC =       zonal_mean_sph
 TARGET_T_AVE_SPEC =        t_ave_sph_spec
 TARGET_SPH_NEUTRAL =       sph_neutral_points
 TARGET_TAVE_SPH_ENE_SPEC = t_ave_sph_mean_square
+TARGET_PSUM_SPH_ENE_SPEC = part_sum_sph_mean_square
 
 TARGET_T_AVE_GAUSS_COEFS =   t_ave_gauss_coefs
 TARGET_T_AVE_PICK_SPH_SPEC = t_ave_picked_sph_coefs
@@ -159,6 +160,13 @@ sph_uli_lengh_scale.o \
 m_sph_ene_spectra.o \
 m_uli_sph_lscale.o
 
+MOD_PSUM_SPH_ENE_SPEC = \
+t_read_sph_spectra.o \
+m_sph_ene_spectra.o \
+m_part_sum_sph_ene_spectr.o \
+simple_sph_spectr_data_IO.o \
+sph_mean_square_IO_select.o \
+part_sum_sph_ene_spec.o
 
 MOD_T_AVE_GAUSS_COEFS = \
 tave_picked_gauss_coefs.o
@@ -222,6 +230,8 @@ target_list:
 	>> $(MAKENAME)
 	@echo 'TARGET_SPH_ENE_CHECK = $$(BUILDDIR)/$(TARGET_SPH_ENE_CHECK)' \
 	>> $(MAKENAME)
+	@echo 'TARGET_PSUM_SPH_ENE_SPEC = $$(BUILDDIR)/$(TARGET_PSUM_SPH_ENE_SPEC)' \
+	>> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:
@@ -235,7 +245,8 @@ target_task:
 	'$$(TARGET_PICK_GAUSS_COEF)    $$(TARGET_T_AVE_PICK_SPH_SPEC)' \
 	'$$(TARGET_T_AVE_GAUSS_COEFS)  $$(TARGET_T_AVE_PICK_SPH_ENE)' \
 	'$$(TARGET_MAX_SPH_ENE)        $$(TARGET_SPH_ULI_LSCALE)'     \
-	'$$(TARGET_T_AVE_NUSSELT)      $$(TARGET_SPH_ENE_CHECK)'   >> $(MAKENAME)
+	'$$(TARGET_T_AVE_NUSSELT)      $$(TARGET_SPH_ENE_CHECK)'      \
+	'$$(TARGET_PSUM_SPH_ENE_SPEC) ' >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 	@echo '$$(TARGET_SPH_ENE_SPEC)': '$$(MOD_SPH_ENE_SPEC)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
@@ -341,6 +352,14 @@ target_task:
 	@echo '$$(TARGET_T_AVE_PICK_SPH_SPEC)': '$$(MOD_T_AVE_PICK_SPH)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
+	@echo '$$(TARGET_PSUM_SPH_ENE_SPEC)': '$$(MOD_PSUM_SPH_ENE_SPEC)' \
+	'$$(LIB_FILES_SPH_UTIL)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_PSUM_SPH_ENE_SPEC)' \
+	'$$(MOD_PSUM_SPH_ENE_SPEC)' \
+	'-L. $$(LIBS_SPH_UTIL)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_T_AVE_PICK_SPH_SPEC)' \
 	'$$(MOD_T_AVE_PICK_SPH)' \
 	'-L. $$(LIBS_SPH_UTIL)' \
@@ -428,6 +447,8 @@ mod_list:
 	@echo  $(MOD_MAX_SPH_ENE)          >> $(MAKENAME)
 	@echo  MOD_SPH_ULI_LSCALE=  \\     >> $(MAKENAME)
 	@echo  $(MOD_SPH_ULI_LSCALE)       >> $(MAKENAME)
+	@echo  MOD_PSUM_SPH_ENE_SPEC=  \\  >> $(MAKENAME)
+	@echo  $(MOD_PSUM_SPH_ENE_SPEC)    >> $(MAKENAME)
 	@echo  MOD_T_AVE_NUSSELT=  \\      >> $(MAKENAME)
 	@echo  $(MOD_T_AVE_NUSSELT)        >> $(MAKENAME)
 	@echo  MOD_SPH_ENE_CHECK=  \\      >> $(MAKENAME)

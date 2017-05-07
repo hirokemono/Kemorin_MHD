@@ -57,7 +57,6 @@
 !
       sph_IN1%iflag_spectr = 1
       if(iflag_data_mode .eq. 0 .or. iflag_data_mode .eq. 2) then
-        call allocate_sph_spectr_data
         call sph_spectr_average(fname_org_rms_l, start_time, end_time)
         call sph_spectr_std_deviation                                   &
      &     (fname_org_rms_l, start_time, end_time)

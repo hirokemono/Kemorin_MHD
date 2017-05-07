@@ -7,6 +7,8 @@
 !> @brief Time average spherical harmonics spectrum data
 !!
 !!@verbatim
+!!      subroutine alloc_sph_espec_name(sph_IN)
+!!      subroutine alloc_sph_spectr_data(ltr, sph_IN)
 !!      subroutine dealloc_sph_espec_data(sph_IN)
 !!
 !!      subroutine input_sph_pwr_vol_head(id_file, sph_IN)
@@ -21,6 +23,8 @@
 !!
 !!      subroutine write_sph_pwr_vol_head(id_file, sph_IN)
 !!      subroutine write_sph_pwr_layer_head(id_file, sph_IN)
+!!
+!!      subroutine copy_read_ene_step_data(sph_IN, sph_OUT)
 !!@endverbatim
 !
       module t_read_sph_spectra
@@ -48,14 +52,13 @@
         integer(kind = kint) :: kr_inner, kr_outer
         integer(kind = kint), allocatable :: kr_sph(:)
         real(kind = kreal), allocatable :: r_sph(:)
-        real(kind = kreal), allocatable :: r_inner, r_outer
+        real(kind = kreal) :: r_inner, r_outer
 !
         integer(kind = kint) :: i_step
         real(kind = kreal) :: time
         real(kind = kreal), allocatable :: spectr_IO(:,:,:)
       end type read_sph_spectr_data
 !
-      private :: alloc_sph_espec_name, alloc_sph_spectr_data
       private :: read_sph_pwr_vol_head, read_sph_pwr_layer_head
       private :: read_sph_spectr_name
 !
@@ -386,6 +389,25 @@
       call alloc_sph_spectr_data(sph_IN%ltr_sph, sph_IN)
 !
       end subroutine input_sph_spectr_layer_head_old
+!
+!   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine copy_read_ene_step_data(sph_IN, sph_OUT)
+!
+      type(read_sph_spectr_data), intent(in) :: sph_IN
+      type(read_sph_spectr_data), intent(inout) :: sph_OUT
+!
+      integer(kind = kint) :: i
+!
+      sph_OUT%time = sph_IN%time
+      sph_OUT%i_step = sph_IN%i_step
+      sph_OUT%kr_sph(1:sph_OUT%nri_sph)                                 &
+     &      = sph_IN%kr_sph(1:sph_OUT%nri_sph)
+      sph_OUT%r_sph(1:sph_OUT%nri_sph)                                  &
+     &      = sph_IN%r_sph(1:sph_OUT%nri_sph)
+!
+      end subroutine copy_read_ene_step_data
 !
 !   --------------------------------------------------------------------
 !
