@@ -20,6 +20,7 @@
 !
       use m_precision
       use t_read_sph_spectra
+      use simple_sph_spectr_head_IO
       use simple_sph_spectr_data_IO
 !
       implicit none

@@ -8,9 +8,10 @@
 !> @brief Time average spherical harmonics spectrum data
 !!
 !!@verbatim
-!!      subroutine sph_spectr_average(fname_org, start_time, end_time)
+!!      subroutine sph_spectr_average                                   &
+!!     &         (fname_org, start_time, end_time, sph_IN)
 !!      subroutine sph_spectr_std_deviation                             &
-!!     &         (fname_org, start_time, end_time)
+!!     &         (fname_org, start_time, end_time, sph_IN)
 !!@endverbatim
 !
       module m_tave_sph_ene_spectr
@@ -23,8 +24,6 @@
 !
 !
       integer(kind = kint), parameter :: id_file_rms =      34
-!
-      type(read_sph_spectr_data), save :: sph_IN1
 !
       real(kind = kreal), allocatable :: ave_spec_l(:,:,:)
       real(kind = kreal), allocatable :: sigma_spec_l(:,:,:)
@@ -40,13 +39,15 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine sph_spectr_average(fname_org, start_time, end_time)
+      subroutine sph_spectr_average                                     &
+     &         (fname_org, start_time, end_time, sph_IN)
 !
       use sph_mean_square_IO_select
       use cal_tave_sph_ene_spectr
 !
       character(len = kchara), intent(in) :: fname_org
       real(kind = kreal), intent(in) :: start_time, end_time
+      type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
       character(len = kchara) :: file_name
       real(kind = kreal) :: time_ini, pre_time
@@ -54,43 +55,43 @@
 !
 !
       open(id_file_rms, file=fname_org)
-      call select_input_sph_pwr_head(id_file_rms, sph_IN1)
+      call select_input_sph_pwr_head(id_file_rms, sph_IN)
 !
-      ltr = sph_IN1%ltr_sph * sph_IN1%iflag_spectr
-      call allocate_tave_sph_data(ltr, sph_IN1)
+      ltr = sph_IN%ltr_sph * sph_IN%iflag_spectr
+      call allocate_tave_sph_data(ltr, sph_IN)
 !
       icou = 0
       ist_true = -1
-      pre_time = sph_IN1%time
+      pre_time = sph_IN%time
       write(*,'(a5,i12,a30,i12)',advance="NO")                          &
-     &       'step= ', sph_IN1%i_step,                                  &
+     &       'step= ', sph_IN%i_step,                                   &
      &       ' averaging finished. Count=  ', icou
       do
-        ierr = select_input_sph_pwr_data(id_file_rms, sph_IN1)
+        ierr = select_input_sph_pwr_data(id_file_rms, sph_IN)
         if(ierr .gt. 0) go to 99
 !
-        if (sph_IN1%time .ge. start_time) then
+        if (sph_IN%time .ge. start_time) then
           if (ist_true .eq. -1) then
-            ist_true = sph_IN1%i_step
-            time_ini = sph_IN1%time
+            ist_true = sph_IN%i_step
+            time_ini = sph_IN%time
 !
-            call copy_ene_spectr_2_pre(sph_IN1%time, pre_time,          &
-     &          sph_IN1%nri_sph, ltr, sph_IN1%ntot_sph_spec,            &
-     &          sph_IN1%spectr_IO, ave_spec_l, spectr_pre_l)
+            call copy_ene_spectr_2_pre(sph_IN%time, pre_time,          &
+     &          sph_IN%nri_sph, ltr, sph_IN%ntot_sph_spec,             &
+     &          sph_IN%spectr_IO, ave_spec_l, spectr_pre_l)
           else
 !
-            call sum_average_ene_spectr(sph_IN1%time, pre_time,         &
-     &          sph_IN1%nri_sph, ltr, sph_IN1%ntot_sph_spec,            &
-     &          sph_IN1%spectr_IO, ave_spec_l, spectr_pre_l)
+            call sum_average_ene_spectr(sph_IN%time, pre_time,         &
+     &          sph_IN%nri_sph, ltr, sph_IN%ntot_sph_spec,             &
+     &          sph_IN%spectr_IO, ave_spec_l, spectr_pre_l)
 
             icou = icou + 1
           end if
         end if
 !
         write(*,'(59a1,a5,i12,a30,i12)',advance="NO") (char(8),i=1,59), &
-     &       'step= ', sph_IN1%i_step,                                  &
+     &       'step= ', sph_IN%i_step,                                   &
      &       ' averaging finished. Count=   ', icou
-        if (sph_IN1%time .ge. end_time) exit
+        if (sph_IN%time .ge. end_time) exit
       end do
 !
    99 continue
@@ -98,30 +99,31 @@
       close(id_file_rms)
 !
 !
-      call divide_average_ene_spectr(sph_IN1%time, time_ini,            &
-     &    sph_IN1%nri_sph, ltr, sph_IN1%ntot_sph_spec, ave_spec_l,      &
-     &    sph_IN1%spectr_IO)
+      call divide_average_ene_spectr(sph_IN%time, time_ini,             &
+     &    sph_IN%nri_sph, ltr, sph_IN%ntot_sph_spec, ave_spec_l,        &
+     &    sph_IN%spectr_IO)
 !
       write(file_name, '(a6,a)') 't_ave_', trim(fname_org)
       open(id_file_rms, file=file_name)
-      call select_output_sph_pwr_head(id_file_rms, sph_IN1)
-      call select_output_sph_pwr_data(id_file_rms, sph_IN1)
+      call select_output_sph_pwr_head(id_file_rms, sph_IN)
+      call select_output_sph_pwr_data(id_file_rms, sph_IN)
       close(id_file_rms)
 !
-      call dealloc_sph_espec_data(sph_IN1)
+      call dealloc_sph_espec_data(sph_IN)
 !
       end subroutine sph_spectr_average
 !
 !   --------------------------------------------------------------------
 !
       subroutine sph_spectr_std_deviation                               &
-     &         (fname_org, start_time, end_time)
+     &         (fname_org, start_time, end_time, sph_IN)
 !
       use sph_mean_square_IO_select
       use cal_tave_sph_ene_spectr
 !
       character(len = kchara), intent(in) :: fname_org
       real(kind = kreal), intent(in) :: start_time, end_time
+      type(read_sph_spectr_data), intent(inout) :: sph_IN
 !
       character(len = kchara) :: file_name
       real(kind = kreal) :: time_ini, pre_time
@@ -132,33 +134,33 @@
       write(*,*) 'Open file ', trim(fname_org)
       open(id_file_rms, file=fname_org)
 !
-      call select_input_sph_pwr_head(id_file_rms, sph_IN1)
-      ltr = sph_IN1%ltr_sph * sph_IN1%iflag_spectr
+      call select_input_sph_pwr_head(id_file_rms, sph_IN)
+      ltr = sph_IN%ltr_sph * sph_IN%iflag_spectr
 !
       icou = 0
       ist_true = -1
-      pre_time = sph_IN1%time
+      pre_time = sph_IN%time
       sigma_spec_l = 0.0d0
       write(*,'(a5,i12,a30,i12)',advance="NO")                          &
-     &       'step= ', sph_IN1%i_step,                                  &
+     &       'step= ', sph_IN%i_step,                                   &
      &       ' deviation finished. Count=  ', icou
       do
-        ierr = select_input_sph_pwr_data(id_file_rms, sph_IN1)
+        ierr = select_input_sph_pwr_data(id_file_rms, sph_IN)
         if(ierr .gt. 0) go to 99
 !
-        if (sph_IN1%time .ge. start_time) then
+        if (sph_IN%time .ge. start_time) then
           if (ist_true .eq. -1) then
-            ist_true = sph_IN1%i_step
-            time_ini = sph_IN1%time
-            call copy_deviation_ene_2_pre(sph_IN1%time, pre_time,       &
-     &          sph_IN1%nri_sph, ltr, sph_IN1%ntot_sph_spec,            &
-     &          sph_IN1%spectr_IO, ave_spec_l, sigma_spec_l,            &
+            ist_true = sph_IN%i_step
+            time_ini = sph_IN%time
+            call copy_deviation_ene_2_pre(sph_IN%time, pre_time,        &
+     &          sph_IN%nri_sph, ltr, sph_IN%ntot_sph_spec,              &
+     &          sph_IN%spectr_IO, ave_spec_l, sigma_spec_l,             &
      &          spectr_pre_l)
 !
           else
-            call sum_deviation_ene_spectr(sph_IN1%time, pre_time,       &
-     &          sph_IN1%nri_sph, ltr, sph_IN1%ntot_sph_spec,            &
-     &          sph_IN1%spectr_IO, ave_spec_l, sigma_spec_l,            &
+            call sum_deviation_ene_spectr(sph_IN%time, pre_time,        &
+     &          sph_IN%nri_sph, ltr, sph_IN%ntot_sph_spec,              &
+     &          sph_IN%spectr_IO, ave_spec_l, sigma_spec_l,             &
      &          spectr_pre_l)
 !
             icou = icou + 1
@@ -166,25 +168,25 @@
         end if
 !
         write(*,'(59a1,a5,i12,a30,i12)',advance="NO") (char(8),i=1,59), &
-     &       'step= ', sph_IN1%i_step,                                  &
+     &       'step= ', sph_IN%i_step,                                   &
      &       ' deviation finished. Count=   ', icou
-        if (sph_IN1%time .ge. end_time) exit
+        if (sph_IN%time .ge. end_time) exit
       end do
    99 continue
       write(*,*)
       close(id_file_rms)
 !
-      call divide_deviation_ene_spectr(sph_IN1%time, time_ini,          &
-     &    sph_IN1%nri_sph, ltr, sph_IN1%ntot_sph_spec,                  &
-     &    sigma_spec_l, sph_IN1%spectr_IO)
+      call divide_deviation_ene_spectr(sph_IN%time, time_ini,           &
+     &    sph_IN%nri_sph, ltr, sph_IN%ntot_sph_spec,                    &
+     &    sigma_spec_l, sph_IN%spectr_IO)
 !
       write(file_name, '(a8,a)') 't_sigma_', trim(fname_org)
       open(id_file_rms, file=file_name)
-      call select_output_sph_pwr_head(id_file_rms, sph_IN1)
-      call select_output_sph_pwr_data(id_file_rms, sph_IN1)
+      call select_output_sph_pwr_head(id_file_rms, sph_IN)
+      call select_output_sph_pwr_data(id_file_rms, sph_IN)
       close(id_file_rms)
 !
-      call dealloc_sph_espec_data(sph_IN1)
+      call dealloc_sph_espec_data(sph_IN)
       call deallocate_tave_sph_data
 !
       end subroutine sph_spectr_std_deviation

@@ -11,76 +11,58 @@
 !
       use m_precision
 !
-      use m_sph_ene_spectra
-      use m_max_sph_ene_spectr
+      use m_maxmode_sph_ene_spectr
+      use t_read_sph_spectra
+      use set_parallel_file_name
 !
       implicit none
 !
-!
+      integer(kind = kint) :: iflag_data_mode
       character(len = kchara) :: input_header
-      integer(kind = kint) :: ist, ied, ierr, i
-      integer(kind = kint) :: icou, istep
+      character(len = kchara) :: fname_org_rms, fname_org_rms_l
+      real(kind = kreal) :: start_time, end_time
+      type(read_sph_spectr_data), save :: sph_IN_m
 !
 !
-      call select_sph_ene_spec_data_file                                &
-     &   (iflag_volume_average, iflag_old_file_format, input_header)
-      call set_org_ene_spec_file_name(input_header)
+      write(*,*) ' Choose data to take average'
+      write(*,*)  ' 0: Total and all spectrum  '
+      write(*,*)  ' 1: Total average '
+      write(*,*)  ' 2: One spectrum data '
+      read(*,*) iflag_data_mode
 !
-      write(*,*) 'imput start and end step number'
-      read(*,*) ist, ied
+      call select_sph_ene_spec_data_file(sph_IN_m, input_header)
 !
-      if(iflag_volume_average .eq. 1) then
-        open (id_file_rms_l,file=fname_org_rms_l)
-        call count_degree_on_volume_spectr(id_file_rms_l)
-        close(id_file_rms_l)
-      else  if(iflag_volume_average .eq. 0) then
-        open (id_file_rms_l,file=fname_org_rms_l)
-        call count_degree_on_layer_spectr(id_file_rms_l)
-        close(id_file_rms_l)
+      if(iflag_data_mode .eq. 0) then
+        call add_dat_extension(input_header, fname_org_rms)
+        write(fname_org_rms_l, '(a,a6)')                                &
+     &                        trim(input_header), '_l.dat'
+      else if(iflag_data_mode .eq. 1) then
+        call add_dat_extension(input_header, fname_org_rms)
+      else if(iflag_data_mode .eq. 2) then
+        call add_dat_extension(input_header, fname_org_rms_l)
       end if
-      call allocate_sph_espec_data
-      call allocate_max_sph_espec_data
+!
+      write(*,*) 'Input start and end time'
+      read(*,*) start_time, end_time
 !
 !    Evaluate time average
 !
-      call open_org_ene_spec_data
-      call open_maxmode_spec_data
+      if(iflag_data_mode .eq. 0 .or. iflag_data_mode .eq. 2) then
+        call sph_maximum_pwr_spectr                                     &
+     &     (fname_org_rms_l, start_time, end_time, sph_IN_m)
+      end if
 !
-      ist_true = -1
-      icou = 0
-      write(*,'(a5,i12,a26,i12)',advance="NO")                          &
-     &       'step= ', istep,   ' Search finished. Count=  ', icou
-      do
-        if(iflag_volume_average .eq. 1) then
-          if(read_org_volume_ene_data(istep) .gt. 0) go to 99
-        else
-          if(read_org_layer_ene_data(istep) .gt. 0) go to 99
-        end if
+      if(iflag_data_mode .eq. 0) then
+        write(fname_org_rms, '(a,a6)')                                  &
+     &                        trim(input_header), '_m.dat'
+        call sph_maximum_pwr_spectr                                     &
+     &     (fname_org_rms, start_time, end_time, sph_IN_m)
 !
-        if (istep .ge. ist) then
-          if (ist_true .eq. -1) then
-            ist_true = istep
-          end if
-          icou = icou + 1
-          ied_true = istep
-!
-          call find_dominant_scale_sph
-          call output_dominant_scale_sph(istep)
-        end if
-!
-        if (istep .ge. ied) exit
-!
-        write(*,'(55a1,a5,i12,a26,i12)',advance="NO") (char(8),i=1,55), &
-     &       'step= ', istep,   ' Search finished. Count=  ', icou
-      end do
-   99 continue
-      write(*,*)
-!
-      call close_maxmode_spec_data
-      close(id_file_rms)
-      close(id_file_rms_l)
-      close(id_file_rms_m)
-      close(id_file_rms_lm)
+        write(fname_org_rms,'(a,a7)')                                   &
+     &                        trim(input_header), '_lm.dat'
+        call sph_maximum_pwr_spectr                                     &
+     &     (fname_org_rms, start_time, end_time, sph_IN_m)
+      end if
 !
       stop
       end program maxmode_sph_ene_spec

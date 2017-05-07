@@ -144,7 +144,6 @@
 !
       subroutine write_vol_sph_data(id_file, sph_IN)
 !
-      use m_sph_ene_spectra
       use write_field_labels
 !
       integer(kind = kint), intent(in) :: id_file

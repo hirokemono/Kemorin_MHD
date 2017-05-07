@@ -144,28 +144,34 @@ m_neutral_pt_by_pick_sph.o
 MOD_TAVE_SPH_ENE_SPEC = \
 t_average_sph_ene_spec.o \
 t_read_sph_spectra.o \
-sph_mean_square_IO_select.o \
-m_sph_ene_spectra.o \
 m_tave_sph_ene_spectr.o \
+sph_mean_square_IO_select.o \
+simple_sph_spectr_head_IO.o \
 simple_sph_spectr_data_IO.o \
 cal_tave_sph_ene_spectr.o
 
 MOD_MAX_SPH_ENE = \
 maxmode_sph_ene_spec.o \
-m_sph_ene_spectra.o \
-m_max_sph_ene_spectr.o
+t_read_sph_spectra.o \
+m_maxmode_sph_ene_spectr.o \
+sph_mean_square_IO_select.o \
+simple_sph_spectr_head_IO.o \
+simple_sph_spectr_data_IO.o
 
 MOD_SPH_ULI_LSCALE = \
 sph_uli_lengh_scale.o \
-m_sph_ene_spectra.o \
-m_uli_sph_lscale.o
+t_read_sph_spectra.o \
+m_sph_uli_lengh_scale.o \
+sph_mean_square_IO_select.o \
+simple_sph_spectr_head_IO.o \
+simple_sph_spectr_data_IO.o
 
 MOD_PSUM_SPH_ENE_SPEC = \
 t_read_sph_spectra.o \
-m_sph_ene_spectra.o \
 m_part_sum_sph_ene_spectr.o \
-simple_sph_spectr_data_IO.o \
 sph_mean_square_IO_select.o \
+simple_sph_spectr_head_IO.o \
+simple_sph_spectr_data_IO.o \
 part_sum_sph_ene_spec.o
 
 MOD_T_AVE_GAUSS_COEFS = \
@@ -178,7 +184,6 @@ MOD_T_AVE_PICK_SPH_ENE = \
 tave_picked_sph_rms_data.o
 
 MOD_T_AVE_NUSSELT = \
-m_sph_ene_spectra.o \
 t_average_nusselt.o
 
 MOD_SPH_ENE_CHECK = \
