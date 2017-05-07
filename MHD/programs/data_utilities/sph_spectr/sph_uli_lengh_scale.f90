@@ -43,7 +43,8 @@
 !
 !    Evaluate time average
 !
-      call open_org_ene_spec_data
+      open(id_file_rms_l, file=fname_org_rms_l)
+      call read_ene_spectr_header(id_file_rms_l)
       call open_uli_sph_lscale
 !
       ist_true = -1
@@ -53,9 +54,11 @@
      &       'step= ', istep,   ' evaluation finished. Count=  ', icou
       do
         if(iflag_volume_average .eq. 1) then
-          if(read_org_volume_ene_data(istep) .gt. 0) go to 99
+          if(read_vol_ene_spectr(id_file_rms_l, istep, time_sph,        &
+     &      ltr_sph, ntot_sph_spec, spectr_l(1,0,1)) .gt. 0) go to 99
         else
-          if(read_org_layer_ene_data(istep) .gt. 0) go to 99
+          if(read_layer_ene_spectr(id_file_rms_l, istep, time_sph,      &
+     &      nri_sph, ltr_sph, ntot_sph_spec, spectr_l) .gt. 0) go to 99
         end if
 !
         if (istep .ge. ist) then
@@ -79,10 +82,7 @@
       write(*,*)
 !
       call close_uli_sph_lscale
-      close(id_file_rms)
       close(id_file_rms_l)
-      close(id_file_rms_m)
-      close(id_file_rms_lm)
 !
       stop
       end program sph_uli_lengh_scale
