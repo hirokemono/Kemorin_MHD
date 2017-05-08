@@ -111,7 +111,7 @@
 !
       if( (f_trns%i_Coriolis*fl_prop%iflag_4_coriolis) .gt. 0) then
         call cal_wz_coriolis_rtp                                        &
-     &     (nnod_pole, sph_rtp%nidx_rtp, fl_prop%coef_cor,              &
+     &     (sph_rtp%nnod_pole, sph_rtp%nidx_rtp, fl_prop%coef_cor,      &
      &      fls_pl(1,bs_trns%i_velo), frc_pl(1,f_trns%i_Coriolis))
       end if
 !$omp end parallel
