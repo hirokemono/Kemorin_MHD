@@ -214,7 +214,7 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call delete_zero_degree_comp                                      &
+      call delete_zero_degree_vect                                      &
      &   (is_velo, sph_rj%idx_rj_degree_zero, rj_fld%n_point,           &
      &    sph_rj%nidx_rj, rj_fld%ntot_phys, rj_fld%d_fld)
 !
@@ -267,7 +267,7 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call delete_zero_degree_comp(is_magne,                            &
+      call delete_zero_degree_vect(is_magne,                            &
      &    sph_rj%idx_rj_degree_zero, rj_fld%n_point, sph_rj%nidx_rj,    &
      &    rj_fld%ntot_phys, rj_fld%d_fld)
 !

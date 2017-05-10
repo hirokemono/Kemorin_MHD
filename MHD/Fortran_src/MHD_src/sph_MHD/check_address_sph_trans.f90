@@ -272,9 +272,24 @@
      &         'b_trns%i_c_diffuse  ',                                  &
      &         b_trns%i_c_diffuse, ipol%i_c_diffuse, iphys%i_c_diffuse
 !
-      if(b_trns%i_div_Coriolis .gt. 0) write(*,*)                       &
-     &         'b_trns%i_div_Coriolis  ', b_trns%i_div_Coriolis,        &
-     &         ipol%i_div_Coriolis, iphys%i_div_Coriolis
+      if(b_trns%i_h_advect .gt. 0) write(*,*)                           &
+     &         'b_trns%i_h_advect  ', b_trns%i_h_advect,                &
+     &         ipol%i_h_advect, iphys%i_h_advect
+      if(b_trns%i_c_advect .gt. 0) write(*,*)                           &
+     &         'b_trns%i_c_advect  ', b_trns%i_c_advect,                &
+     &         ipol%i_c_advect, iphys%i_c_advect
+!
+      if(b_trns%i_buoyancy .gt. 0) write(*,*)                           &
+     &         'b_trns%i_buoyancy  ', b_trns%i_buoyancy,                &
+     &         ipol%i_buoyancy, iphys%i_buoyancy
+!
+      if(b_trns%i_comp_buo .gt. 0) write(*,*)                           &
+     &         'b_trns%i_comp_buo  ', b_trns%i_comp_buo,                &
+     &         ipol%i_comp_buo, iphys%i_comp_buo
+      if(b_trns%i_comp_buo .gt. 0) write(*,*)                           &
+     &         'b_trns%i_comp_buo  ', b_trns%i_comp_buo,                &
+     &         ipol%i_comp_buo, iphys%i_comp_buo
+!
 !
       if(b_trns%i_Csim_SGS_h_flux .gt. 0) write(*,*)                    &
      &       'b_trns%i_Csim_SGS_h_flux  ', b_trns%i_Csim_SGS_h_flux,    &

@@ -177,6 +177,11 @@
      &    iphys%i_SGS_c_flux, nvector_snap_rj_2_rtp,                    &
      &    bs_trns%i_SGS_c_flux)
 !
+      call add_vec_trans_flag_snap(ipol%i_buoyancy,                     &
+     &    iphys%i_buoyancy, nvector_snap_rj_2_rtp, bs_trns%i_buoyancy)
+      call add_vec_trans_flag_snap(ipol%i_comp_buo,                     &
+     &    iphys%i_comp_buo, nvector_snap_rj_2_rtp, bs_trns%i_comp_buo)
+!
       call add_vec_trans_flag_snap(ipol%i_geostrophic,                  &
      &    iphys%i_geostrophic, nvector_snap_rj_2_rtp,                   &
      &    bs_trns%i_geostrophic)
@@ -274,6 +279,9 @@
       call add_scl_trans_flag_snap(ipol%i_h_advect, iphys%i_h_advect,   &
      &    nvector_snap_rj_2_rtp, nscalar_snap_rj_2_rtp,                 &
      &    bs_trns%i_h_advect)
+      call add_scl_trans_flag_snap(ipol%i_c_advect, iphys%i_c_advect,   &
+     &    nvector_snap_rj_2_rtp, nscalar_snap_rj_2_rtp,                 &
+     &    bs_trns%i_c_advect)
 !
       call add_scl_trans_flag_snap(ipol%i_div_Coriolis,                 &
      &    iphys%i_div_Coriolis, nvector_snap_rj_2_rtp,                  &

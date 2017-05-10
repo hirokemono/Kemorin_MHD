@@ -25,6 +25,10 @@
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_address), intent(in) :: ipol, idpdr
+!!
+!!      subroutine delete_sphere_average(is_scalar, sph_rj, rj_fld)
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(phys_data), intent(in) :: rj_fld
 !!@endverbatim
 !
       module adjust_reference_fields
@@ -190,5 +194,27 @@
       end subroutine trans_pert_to_scalar_sph
 !
 ! -----------------------------------------------------------------------
+!
+      subroutine delete_sphere_average(is_scalar, sph_rj, rj_fld)
+!
+      use copy_nodal_fields
+      use set_reference_sph_mhd
+!
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      integer(kind = kint), intent(in) :: is_scalar
+!
+      type(phys_data), intent(inout) :: rj_fld
+!
+!
+      call delete_zero_degree_comp                                      &
+     &   (is_scalar, sph_rj%idx_rj_degree_zero, rj_fld%n_point,         &
+     &    sph_rj%nidx_rj, rj_fld%ntot_phys, rj_fld%d_fld)
+      if(sph_rj%inod_rj_center .gt. 0) then
+        rj_fld%d_fld(sph_rj%inod_rj_center,is_scalar) = 0.0d0
+      end if
+!
+      end subroutine delete_sphere_average
+!
+!-----------------------------------------------------------------------
 !
       end module adjust_reference_fields

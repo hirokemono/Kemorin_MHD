@@ -66,8 +66,8 @@
       type(sph_comm_tables), intent(in) :: comms_sph
       type(parameters_4_sph_trans), intent(in) :: trans_p
       type(phys_address), intent(in) :: ipol
-      type(phys_data), intent(in) :: rj_fld
 !
+      type(phys_data), intent(inout) :: rj_fld
       type(address_4_sph_trans), intent(inout) :: trns_snap
       type(spherical_trns_works), intent(inout) :: WK_sph
 !

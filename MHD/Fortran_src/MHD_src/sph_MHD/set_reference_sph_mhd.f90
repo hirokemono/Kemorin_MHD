@@ -35,6 +35,8 @@
 !!        d_rj(inod,is_grad_t):      d \Theta / dr   => dT / dr
 !!        d_rj(inod,is_grad_part_t): d \Theta / dr
 !!
+!!      subroutine delete_zero_degree_vect(is_fld, idx_rj_degree_zero,  &
+!!     &          n_point, nidx_rj, ntot_phys_rj, d_rj)
 !!      subroutine delete_zero_degree_comp(is_fld, idx_rj_degree_zero,  &
 !!     &          n_point, nidx_rj, ntot_phys_rj, d_rj)
 !!@endverbatim
@@ -218,7 +220,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine delete_zero_degree_comp(is_fld, idx_rj_degree_zero,    &
+      subroutine delete_zero_degree_vect(is_fld, idx_rj_degree_zero,    &
      &          n_point, nidx_rj, ntot_phys_rj, d_rj)
 !
       integer(kind = kint), intent(in) :: idx_rj_degree_zero
@@ -237,6 +239,30 @@
         inod = idx_rj_degree_zero + (k-1)*nidx_rj(2)
         d_rj(inod,is_fld  ) = zero
         d_rj(inod,is_fld+2) = zero
+      end do
+!
+      end subroutine delete_zero_degree_vect
+!
+! -----------------------------------------------------------------------
+!
+      subroutine delete_zero_degree_comp(is_fld, idx_rj_degree_zero,    &
+     &          n_point, nidx_rj, ntot_phys_rj, d_rj)
+!
+      integer(kind = kint), intent(in) :: idx_rj_degree_zero
+      integer(kind = kint), intent(in) :: is_fld
+      integer(kind = kint), intent(in) :: n_point, nidx_rj(2)
+      integer(kind = kint), intent(in) :: ntot_phys_rj
+!
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
+!
+      integer(kind = kint) :: k, inod
+!
+!
+      if (idx_rj_degree_zero .eq. 0) return
+!
+      do k = 1, nidx_rj(1)
+        inod = idx_rj_degree_zero + (k-1)*nidx_rj(2)
+        d_rj(inod,is_fld  ) = zero
       end do
 !
       end subroutine delete_zero_degree_comp

@@ -394,6 +394,13 @@
      &    comm_rj, rj_fld, n_WS, WS)
 !
       call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_buoyancy, bs_trns%i_buoyancy,                          &
+     &    comm_rj, rj_fld, n_WS, WS)
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
+     &    ipol%i_comp_buo, bs_trns%i_comp_buo,                          &
+     &    comm_rj, rj_fld, n_WS, WS)
+!
+      call sel_sph_rj_vector_to_send(ncomp_send,                        &
      &    ipol%i_geostrophic, bs_trns%i_geostrophic,                    &
      &    comm_rj, rj_fld, n_WS, WS)
 !
@@ -472,6 +479,13 @@
      &    sph_rj, comm_rj, rj_fld, n_WS, WS, v_pl_local)
       call sel_sph_rj_scalar_2_send_wpole(ncomp_send,                   &
      &    ipol%i_c_diffuse, bs_trns%i_c_diffuse, nnod_pole,             &
+     &    sph_rj, comm_rj, rj_fld, n_WS, WS, v_pl_local)
+!
+      call sel_sph_rj_scalar_2_send_wpole(ncomp_send,                   &
+     &    ipol%i_h_advect, bs_trns%i_h_advect, nnod_pole,               &
+     &    sph_rj, comm_rj, rj_fld, n_WS, WS, v_pl_local)
+      call sel_sph_rj_scalar_2_send_wpole(ncomp_send,                   &
+     &    ipol%i_c_advect, bs_trns%i_c_advect, nnod_pole,               &
      &    sph_rj, comm_rj, rj_fld, n_WS, WS, v_pl_local)
 !
       call sel_sph_rj_scalar_2_send_wpole(ncomp_send,                   &

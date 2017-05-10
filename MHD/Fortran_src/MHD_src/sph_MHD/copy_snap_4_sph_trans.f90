@@ -116,6 +116,13 @@
      &    m_folding, sph_rtp, trns_snap, node, nod_fld)
 !
       call copy_vector_from_snap_trans                                  &
+     &   (trns_snap%b_trns%i_buoyancy, iphys%i_buoyancy,                &
+     &    m_folding, sph_rtp, trns_snap, node, nod_fld)
+      call copy_vector_from_snap_trans                                  &
+     &   (trns_snap%b_trns%i_comp_buo, iphys%i_comp_buo,                &
+     &    m_folding, sph_rtp, trns_snap, node, nod_fld)
+!
+      call copy_vector_from_snap_trans                                  &
      &   (trns_snap%b_trns%i_geostrophic, iphys%i_geostrophic,          &
      &    m_folding, sph_rtp, trns_snap, node, nod_fld)
 !

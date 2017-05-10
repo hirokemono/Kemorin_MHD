@@ -204,6 +204,7 @@
      &          WK_sph, rj_fld)
 !
       use sph_transforms_snapshot
+      use cal_buoyancies_sph_MHD
       use cal_energy_flux_rtp
       use cal_energy_flux_rj
       use cal_SGS_terms_sph_MHD
@@ -229,6 +230,11 @@
       if (iflag_debug.eq.1) write(*,*) 's_cal_energy_flux_rj'
       call s_cal_energy_flux_rj                                         &
      &   (sph%sph_rj, r_2nd, sph_MHD_bc, ipol, rj_fld)
+!
+      call sel_buoyancies_sph_MHD                                       &
+     &   (sph%sph_rj, trans_p%leg, ipol, MHD_prop%fl_prop,              &
+     &    MHD_prop%ref_param_T, MHD_prop%ref_param_C,                   &
+     &    sph_MHD_bc%sph_bc_U, rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_snapshot_MHD'
       call sph_back_trans_snapshot_MHD(sph, comms_sph, trans_p,         &
