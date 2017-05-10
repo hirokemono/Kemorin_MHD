@@ -147,9 +147,21 @@
      &      ipol%i_coriolis, ipol%i_div_Coriolis, rj_fld)
       end if
 !
-      call sel_div_buoyancies_sph_MHD(sph_rj, ipol,                     &
-     &    MHD_prop%fl_prop, MHD_prop%ref_param_T, MHD_prop%ref_param_C, &
-     &    sph_MHD_bc%sph_bc_U, rj_fld)
+      if(MHD_prop%fl_prop%iflag_4_gravity .gt. id_turn_OFF) then
+        call const_sph_div_force                                        &
+     &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,               &
+     &      ipol%i_buoyancy, ipol%i_div_buoyancy, rj_fld)
+      end if
+!
+      if(MHD_prop%fl_prop%iflag_4_composit_buo .gt. id_turn_OFF) then
+        call const_sph_div_force                                        &
+     &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, g_sph_rj,               &
+     &      ipol%i_comp_buo, ipol%i_div_comp_buo, rj_fld)
+      end if
+!
+!      call sel_div_buoyancies_sph_MHD(sph_rj, ipol,                    &
+!     &    MHD_prop%fl_prop, MHD_prop%ref_param_T, MHD_prop%ref_param_C,&
+!     &    sph_MHD_bc%sph_bc_U, rj_fld)
 !
       end subroutine cal_div_of_forces_sph_2
 !

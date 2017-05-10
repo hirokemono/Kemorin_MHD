@@ -62,6 +62,7 @@
 !
       use sph_transforms_4_MHD
       use sph_transforms_4_SGS
+      use cal_buoyancies_sph_MHD
       use copy_MHD_4_sph_trans
       use cal_energy_flux_rtp
       use swap_phi_4_sph_trans
@@ -80,6 +81,11 @@
       type(MHD_radial_matrices), intent(inout) :: sph_MHD_mat
       type(phys_data), intent(inout) :: rj_fld
 !
+!
+      call sel_buoyancies_sph_MHD                                       &
+     &   (sph%sph_rj, trans_p%leg, ipol, MHD_prop%fl_prop,              &
+     &    MHD_prop%ref_param_T, MHD_prop%ref_param_C,                   &
+     &    sph_MHD_bc%sph_bc_U, rj_fld)
 !
       if(MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
         call pressure_4_sph_mhd                                         &
@@ -177,7 +183,7 @@
       end if
 !
       call s_const_radial_forces_on_bc                                  &
-     &   (sph_rj, leg%g_sph_rj,MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U,   &
+     &   (sph_rj, leg%g_sph_rj, MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U,  &
      &    MHD_prop%ref_param_T, MHD_prop%ref_param_C, ipol, rj_fld)
 !
       call sum_div_of_forces(MHD_prop%fl_prop, ipol, rj_fld)
@@ -204,7 +210,6 @@
      &          WK_sph, rj_fld)
 !
       use sph_transforms_snapshot
-      use cal_buoyancies_sph_MHD
       use cal_energy_flux_rtp
       use cal_energy_flux_rj
       use cal_SGS_terms_sph_MHD
@@ -230,11 +235,6 @@
       if (iflag_debug.eq.1) write(*,*) 's_cal_energy_flux_rj'
       call s_cal_energy_flux_rj                                         &
      &   (sph%sph_rj, r_2nd, sph_MHD_bc, ipol, rj_fld)
-!
-      call sel_buoyancies_sph_MHD                                       &
-     &   (sph%sph_rj, trans_p%leg, ipol, MHD_prop%fl_prop,              &
-     &    MHD_prop%ref_param_T, MHD_prop%ref_param_C,                   &
-     &    sph_MHD_bc%sph_bc_U, rj_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_snapshot_MHD'
       call sph_back_trans_snapshot_MHD(sph, comms_sph, trans_p,         &

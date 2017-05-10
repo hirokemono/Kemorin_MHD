@@ -167,7 +167,7 @@
 !
       character(len=255) :: character_4_read
       character(len=kchara) :: labels(6), tmpc1, tmpc2, tmpc3
-      integer(kind = kint) :: i, icou, nd
+      integer(kind = kint) :: i, nd, icou
       real(kind = kreal) :: rtmp
 !
 !
@@ -250,6 +250,7 @@
         read(id_file,*) tmpc1, tmpc2, read_name(1:ntot_read)
       end if
 !
+      icou = 0
       do i = 1, num_rms_rj
         call set_sph_rms_labels(num_rms_comp_rj(i), rms_name_rj(i),     &
      &      labels(1))
@@ -266,7 +267,8 @@
           icou = icou + 1
           if(read_name(icou) .ne. labels(nd)) then
             write(*,*) 'field ', trim(labels(nd)),                      &
-     &                 'does not match with the data file'
+     &                 ' does not match with the data file',            &
+     &                 read_name(icou), labels(nd)
             check_sph_vol_mean_sq_header = 1
             deallocate(read_name, num_read_comp)
             return

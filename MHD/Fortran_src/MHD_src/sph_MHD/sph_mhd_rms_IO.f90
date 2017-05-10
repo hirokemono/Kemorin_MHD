@@ -95,6 +95,7 @@
       call init_rms_4_sph_spectr                                        &
      &   (sph_params, sph_rj, rj_fld, pwr, WK_pwr)
 !
+      if ( iflag_debug.gt.0 ) write(*,*) 'check_sph_vol_ms_file'
       iflag = check_sph_vol_ms_file(my_rank, sph_params, sph_rj, pwr)
       call MPI_Bcast(iflag, ione, CALYPSO_INTEGER, izero,               &
      &               CALYPSO_COMM, ierr_MPI)
@@ -112,6 +113,7 @@
       call init_gauss_coefs_4_monitor                                   &
      &   (sph_params%l_truncation, sph_rj, ipol, gauss_list1, gauss1)
 !
+      if ( iflag_debug.gt.0 ) write(*,*) 'check_gauss_coefs_file'
       iflag = check_gauss_coefs_file                                    &
      &      (my_rank, gauss_coefs_file_head, gauss1)
       call MPI_Bcast(iflag, ione, CALYPSO_INTEGER, izero,               &
