@@ -237,6 +237,13 @@
       if(b_trns%i_grad_vz .gt. 0) write(*,*) 'b_trns%i_grad_vz',        &
      &        b_trns%i_grad_vz, ipol%i_grad_vz, itor%i_grad_vz,         &
      &        idpdr%i_grad_vz, iphys%i_grad_vz
+!
+      if(b_trns%i_comp_buo .gt. 0) write(*,*)                           &
+     &         'b_trns%i_comp_buo  ', b_trns%i_comp_buo,                &
+     &         ipol%i_comp_buo, iphys%i_comp_buo
+      if(b_trns%i_comp_buo .gt. 0) write(*,*)                           &
+     &         'b_trns%i_comp_buo  ', b_trns%i_comp_buo,                &
+     &         ipol%i_comp_buo, iphys%i_comp_buo
       write(*,*)
 !
 !
@@ -282,13 +289,6 @@
       if(b_trns%i_buoyancy .gt. 0) write(*,*)                           &
      &         'b_trns%i_buoyancy  ', b_trns%i_buoyancy,                &
      &         ipol%i_buoyancy, iphys%i_buoyancy
-!
-      if(b_trns%i_comp_buo .gt. 0) write(*,*)                           &
-     &         'b_trns%i_comp_buo  ', b_trns%i_comp_buo,                &
-     &         ipol%i_comp_buo, iphys%i_comp_buo
-      if(b_trns%i_comp_buo .gt. 0) write(*,*)                           &
-     &         'b_trns%i_comp_buo  ', b_trns%i_comp_buo,                &
-     &         ipol%i_comp_buo, iphys%i_comp_buo
 !
 !
       if(b_trns%i_Csim_SGS_h_flux .gt. 0) write(*,*)                    &
