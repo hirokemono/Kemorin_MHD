@@ -178,6 +178,7 @@
      &          irtp_sgs, irtp_wide, ifld_sgs, icomp_sgs,               &
      &          wk_sgs, trns_SGS)
 !
+      use m_FFT_selector
       use zonal_lsq_4_model_coefs
       use prod_SGS_model_coefs_sph
 !
@@ -200,9 +201,17 @@
      &    wk_sgs%comp_coef(1,icomp_sgs), wk_sgs%comp_clip(1,icomp_sgs), &
      &    wk_sgs%fld_coef(1,ifld_sgs))
 !
-      call sel_product_model_coefs                                      &
+!$omp parallel
+      if(iflag_FFT .eq. iflag_FFTW) then
+        call product_model_coefs_pin                                    &
      &   (numdir, sph_rtp%nnod_rtp, nnod_med, sph_rtp%nidx_rtp(3),      &
      &    wk_sgs%fld_coef(1,ifld_sgs), trns_SGS%frc_rtp(1,irtp_sgs))
+      else
+        call product_model_coefs_pout                                   &
+     &   (numdir, sph_rtp%nnod_rtp, nnod_med, sph_rtp%nidx_rtp(3),      &
+     &    wk_sgs%fld_coef(1,ifld_sgs), trns_SGS%frc_rtp(1,irtp_sgs))
+      end if
+!$omp end parallel
 !
       end subroutine cal_dynamic_SGS_4_sph_MHD
 !
@@ -229,9 +238,11 @@
 !$omp end parallel workshare
 !
       nnod_med = sph_rtp%nidx_rtp(1) * sph_rtp%nidx_rtp(2)
+!$omp parallel
       call product_model_coefs_pout                                     &
      &   (ione, sph_rtp%nnod_rtp, nnod_med, sph_rtp%nidx_rtp(3),        &
      &    wk_sgs%fld_coef(1,ifld_sgs), trns_SGS%frc_rtp(1,irtp_sgs))
+!$omp end parallel
 !
       end subroutine set_model_coefs_sph_snap
 !
