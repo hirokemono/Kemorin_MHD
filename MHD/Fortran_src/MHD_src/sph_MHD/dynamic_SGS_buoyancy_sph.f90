@@ -64,7 +64,6 @@
 !
 !
       call calypso_mpi_barrier
-      write(*,*) 'SGS_fluxes_for_buo_coefs'
       nnod_med = sph_rtp%nidx_rtp(1) * sph_rtp%nidx_rtp(2)
       call SGS_fluxes_for_buo_coefs(nnod_med, sph_rtp, fl_prop,         &
      &    trns_MHD%b_trns, trns_SGS%f_trns, trns_snap%f_trns,           &
@@ -73,16 +72,12 @@
      &    trns_snap%frc_rtp)
 !
       call calypso_mpi_barrier
-      write(*,*) 'cal_SGS_buo_coefs_sph_MHD'
       call cal_SGS_buo_coefs_sph_MHD(sph_rtp, nnod_med,                 &
      &    trns_snap%f_trns, trns_snap%ncomp_rtp_2_rj,                   &
      &    trns_snap%frc_rtp, dynamic_SPH%ifld_sgs,                      &
      &    dynamic_SPH%icomp_sgs, dynamic_SPH%wk_sgs)
 !
       call calypso_mpi_barrier
-      write(*,*) 'prod_SGS_buoyancy_to_Reynolds'
-      write(*,*) 'trns_SGS%frc_rtp', size(trns_SGS%frc_rtp,1), size(trns_SGS%frc_rtp,2)
-      write(*,*) 'trns_SGS%f_trns%i_SGS_inertia', trns_SGS%f_trns%i_SGS_inertia, trns_SGS%ncomp_rtp_2_rj
       call prod_SGS_buoyancy_to_Reynolds(sph_rtp, trns_SGS%f_trns,      &
      &    dynamic_SPH%ifld_sgs, dynamic_SPH%wk_sgs,                     &
      &    nnod_med, trns_SGS%ncomp_rtp_2_rj, trns_SGS%frc_rtp)
@@ -218,6 +213,8 @@
       real(kind = kreal), intent(inout)                                 &
      &                   :: fSGS_rtp(sph_rtp%nnod_rtp,nc_SGS_rtp_2_rj)
 !
+!
+      write(*,*) 'wk_sgs%fld_coef(1,ifld_sgs%i_buoyancy)', wk_sgs%fld_coef(:,ifld_sgs%i_buoyancy)
 !
 !$omp parallel
       if     (ifld_sgs%i_buoyancy .gt. 0                                &
