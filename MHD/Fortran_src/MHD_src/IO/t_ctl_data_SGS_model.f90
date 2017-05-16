@@ -36,7 +36,13 @@
 !!                             Spherical:   use Spherical   coordinate
 !!                             Cylindrical: use Cylindrical coordinate
 !!
+!!     SGS_buoyancy_Csim_usage::   
+!!                             volume: use volume average
+!!                             zonal: use zonal average
+!!                             sphere: use sphere average
+!!
 !!    filter_file_header:  header name for filter data
+!!
 !!
 !!    3d_filtering_ctl
 !!      whole_area:   filtering groups for whole domain
@@ -64,6 +70,8 @@
 !!      negative_clip_ctl       save
 !!      clipping_limit_ctl      0.2
 !!      direction_marging_ctl   lsq
+!!
+!!      SGS_buoyancy_Csim_usage   volume
 !!
 !!      array sph_filter_ctl    2
 !!        begin sph_filter_ctl
@@ -209,6 +217,7 @@
         type(read_character_item) :: uxb_csim_type_ctl
 !
         type(read_character_item) :: SGS_model_coef_coord_ctl
+        type(read_character_item) :: SGS_buo_Csim_usage_ctl
 ! 
         type(read_integer_item) :: min_step_dynamic_ctl
         type(read_integer_item) :: max_step_dynamic_ctl
@@ -297,6 +306,8 @@
 !
       character(len=kchara), parameter :: hd_model_coef_coord_ctl       &
      &                        = 'model_coef_coordinate_ctl'
+      character(len=kchara), parameter :: hd_SGS_buo_Csim_usage         &
+     &                        = 'SGS_buoyancy_Csim_usage'
       character(len=kchara), parameter :: hd_commutation_fld            &
      &                        = 'commutation_ctl'
 !
@@ -325,7 +336,7 @@
       private :: hd_delta_shrink_dynamic, hd_delta_extend_dynamic
       private :: hd_SGS_terms, hd_SGS_perturbation_ctl, hd_sph_filter
       private :: hd_model_coef_type_ctl, hd_model_coef_coord_ctl
-      private :: hd_commutation_fld
+      private :: hd_commutation_fld, hd_SGS_buo_Csim_usage
       private :: hd_hf_csim_type_ctl, hd_mf_csim_type_ctl
       private :: hd_mxwl_csim_type_ctl, hd_uxb_csim_type_ctl
 !
@@ -425,6 +436,8 @@
      &      sgs_ctl%uxb_csim_type_ctl)
         call read_chara_ctl_type(hd_model_coef_coord_ctl,               &
      &      sgs_ctl%SGS_model_coef_coord_ctl)
+        call read_chara_ctl_type(hd_SGS_buo_Csim_usage,                 &
+     &      sgs_ctl%SGS_buo_Csim_usage_ctl)
 !
 !
         call read_real_ctl_type(hd_delta_shrink_dynamic,                &
@@ -529,6 +542,7 @@
       call bcast_ctl_type_c1(sgs_ctl%maxwell_csim_type_ctl)
       call bcast_ctl_type_c1(sgs_ctl%uxb_csim_type_ctl)
       call bcast_ctl_type_c1(sgs_ctl%SGS_model_coef_coord_ctl)
+      call bcast_ctl_type_c1(sgs_ctl%SGS_buo_Csim_usage_ctl)
 !
 !
       call bcast_ctl_type_r1(sgs_ctl%delta_to_shrink_dynamic_ctl)

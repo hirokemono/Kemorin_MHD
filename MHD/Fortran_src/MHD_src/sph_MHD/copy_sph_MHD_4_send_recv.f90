@@ -285,6 +285,14 @@
      &    ipol%i_SGS_c_flux, fg_trns%i_SGS_c_flux,                      &
      &    comm_rj, n_WR, WR, rj_fld)
 !
+!      Scalars
+      call sel_sph_rj_scalar_from_recv(ncomp_recv,                      &
+     &    ipol%i_Csim_SGS_buoyancy, fg_trns%i_Csim_SGS_buoyancy,        &
+     &    comm_rj, n_WR, WR, rj_fld)
+      call sel_sph_rj_scalar_from_recv(ncomp_recv,                      &
+     &    ipol%i_Csim_SGS_comp_buo, fg_trns%i_Csim_SGS_comp_buo,        &
+     &    comm_rj, n_WR, WR, rj_fld)
+!
       end  subroutine copy_SGS_vec_spec_from_trans
 !
 !-----------------------------------------------------------------------
@@ -302,7 +310,7 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-!      Scalars
+!      Vectors
       call sel_sph_rj_vector_from_recv(ncomp_recv,                      &
      &    ipol%i_SGS_inertia, fg_trns%i_SGS_inertia,                    &
      &    comm_rj, n_WR, WR, rj_fld)
@@ -573,12 +581,12 @@
       call sel_sph_rj_scalar_from_recv(ncomp_recv,                      &
      &    ipol%i_Csim_SGS_c_flux, fs_trns%i_Csim_SGS_c_flux,            &
      &    comm_rj, n_WR, WR, rj_fld)
-      call sel_sph_rj_scalar_from_recv(ncomp_recv,                      &
-     &    ipol%i_Csim_SGS_buoyancy, fs_trns%i_Csim_SGS_buoyancy,        &
-     &    comm_rj, n_WR, WR, rj_fld)
-      call sel_sph_rj_scalar_from_recv(ncomp_recv,                      &
-     &    ipol%i_Csim_SGS_comp_buo, fs_trns%i_Csim_SGS_comp_buo,        &
-     &    comm_rj, n_WR, WR, rj_fld)
+!!      call sel_sph_rj_scalar_from_recv(ncomp_recv,                    &
+!!     &    ipol%i_Csim_SGS_buoyancy, fs_trns%i_Csim_SGS_buoyancy,      &
+!!     &    comm_rj, n_WR, WR, rj_fld)
+!!      call sel_sph_rj_scalar_from_recv(ncomp_recv,                    &
+!!     &    ipol%i_Csim_SGS_comp_buo, fs_trns%i_Csim_SGS_comp_buo,      &
+!!     &    comm_rj, n_WR, WR, rj_fld)
 !
       call sel_sph_rj_scalar_from_recv(ncomp_recv,                      &
      &    ipol%i_velo_scale, fs_trns%i_velo_scale,                      &

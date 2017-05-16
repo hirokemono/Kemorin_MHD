@@ -96,7 +96,6 @@
       call calypso_mpi_barrier
 !$omp parallel
       if(iflag_FFT .eq. iflag_FFTW) then
-        write(*,*) 'int_zonal_buo_coefs_pin'
         call int_zonal_buo_coefs_pin(nnod_rtp, nnod_med, nphi,          &
      &      frc_simi(1), frc_wide(1), sgs_zl(1), sgs_zt(1))
       else
@@ -106,7 +105,6 @@
 !$omp end parallel
 !
       call calypso_mpi_barrier
-      write(*,*) 'cal_sph_model_coefs'
       call cal_sph_model_coefs                                          &
      &   (ione, nnod_med, sgs_zl(1), sgs_zt(1), sgs_c(1))
 !

@@ -11,6 +11,12 @@
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(sph_mean_squares), intent(inout) :: pwr
+!!
+!!      subroutine cal_ave_scalar_sph_spectr(icomp, jcomp,              &
+!!     &          n_point, nidx_rj, idx_rj_degree_zero, inod_rj_center, &
+!!     &          ntot_phys_rj, d_rj, radius_1d_rj_r,                   &
+!!     &          nri_ave, ntot_rms_rj, ave_sph)
+!
 !!@endverbatim
 !!
 !!@n @param istep         time step number
@@ -26,7 +32,7 @@
 !
 !
       private :: cal_sphere_average_sph, averaging_4_sph_ave_int
-      private :: cal_ave_vector_sph_spectr, cal_ave_scalar_sph_spectr
+      private :: cal_ave_vector_sph_spectr
 !
 ! -----------------------------------------------------------------------
 !

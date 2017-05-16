@@ -304,8 +304,11 @@
             if(iflag_debug .gt. 0) write(*,*)                           &
      &           'const_dynamic_SGS_4_buo_sph'
             call const_dynamic_SGS_4_buo_sph                            &
-     &         (sph%sph_rtp, MHD_prop%fl_prop,                          &
+     &         (SGS_param, sph%sph_rtp, MHD_prop%fl_prop,               &
      &          trns_MHD, trns_snap, trns_SGS, dynamic_SPH)
+            call copy_Csim_buo_4_sph_trans(sph%sph_rtp,                 &
+     &          dynamic_SPH%ifld_sgs, dynamic_SPH%wk_sgs, trns_SGS)
+!
           end if
         end if
         call end_eleps_time(15)
@@ -316,7 +319,21 @@
      &      ipol, trns_SGS, WK_sph, SGS_mul_FFTW, rj_fld)
         call end_eleps_time(16)
 !
+!
         call start_eleps_time(17)
+        if(SGS_param%iflag_SGS_buo_usage .eq. id_use_sphere) then
+          if (iflag_debug.eq.1) write(*,*)                              &
+     &                      'sphere_averaged_SGS_buoyancy'
+          call sphere_averaged_SGS_buoyancy(sph%sph_rj, sph%sph_rtp,    &
+     &        ipol, rj_fld, trns_SGS, dynamic_SPH)
+        else if(SGS_param%iflag_SGS_buo_usage .ne. id_use_zonal) then
+          if (iflag_debug.eq.1) write(*,*)                              &
+     &                      'volume_averaged_SGS_buoyancy'
+          call volume_averaged_SGS_buoyancy                             &
+     &       (sph%sph_params, sph%sph_rj, sph%sph_rtp,                  &
+     &        ipol, rj_fld, trns_SGS, dynamic_SPH)
+        end if
+!
         if (iflag_debug.ge.1) write(*,*) 'rot_SGS_terms_exp_sph'
         call rot_SGS_terms_exp_sph(sph%sph_rj, r_2nd, sph_MHD_bc,       &
      &      trans_p%leg, ipol, itor, rj_fld)

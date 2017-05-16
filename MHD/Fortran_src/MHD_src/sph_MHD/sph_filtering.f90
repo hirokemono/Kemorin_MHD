@@ -7,6 +7,8 @@
 !>@brief  Evaluate horizontal filtering in spectrunm space
 !!
 !!@verbatim
+!!      subroutine dealloc_sph_ave_Csim_SGS_buo(dynamic_SPH)
+!!
 !!      subroutine init_SGS_model_sph_mhd                               &
 !!     &         (SGS_par, sph, sph_grps, MHD_prop, dynamic_SPH)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -53,14 +55,68 @@
 !
 !>         Filter functions
         type(sph_filters_type) :: sph_filters(1)
+!
+!
+!         horizontal average for SGS bouyancies
+        real(kind = kreal), allocatable :: Cbuo_ave_sph_lc(:,:)
+!         horizontal average for SGS bouyancies
+        real(kind = kreal), allocatable :: Cbuo_ave_sph_gl(:,:)
+!
+!         horizontal average for SGS bouyancies
+        real(kind = kreal), allocatable :: Cbuo_ave_sph_rtp(:,:)
+!
+!         local voulme average for SGS bouyancies
+        real(kind = kreal) :: Cbuo_vol_lc(2)
+!         global voulme average for SGS bouyancies
+        real(kind = kreal) :: Cbuo_vol_gl(2)
+!         horizontal average for SGS bouyancies
+        real(kind = kreal) :: avol_SGS_buo
       end type dynamic_SGS_data_4_sph
 !
+      private :: alloc_sph_ave_Csim_SGS_buo
       private :: init_work_4_SGS_sph_mhd
 !
 ! ----------------------------------------------------------------------
 !
       contains
 !
+! ----------------------------------------------------------------------
+!
+      subroutine alloc_sph_ave_Csim_SGS_buo                             &
+     &         (sph_params, sph_rj, sph_rtp, dynamic_SPH)
+!
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rj_grid), intent(in) :: sph_rj
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
+!
+      allocate(dynamic_SPH%Cbuo_ave_sph_lc(0:sph_rj%nidx_rj(1),2))
+      allocate(dynamic_SPH%Cbuo_ave_sph_gl(0:sph_rj%nidx_rj(1),2))
+      allocate(dynamic_SPH%Cbuo_ave_sph_rtp(sph_rtp%nidx_rtp(1),2))
+      dynamic_SPH%Cbuo_ave_sph_lc = 0.0d0
+      dynamic_SPH%Cbuo_ave_sph_gl = 0.0d0
+      dynamic_SPH%Cbuo_ave_sph_rtp = 0.0d0
+!
+      dynamic_SPH%avol_SGS_buo = (one / three)                          &
+     &      * (sph_rj%radius_1d_rj_r(sph_params%nlayer_CMB)**3          &
+     &       - sph_rj%radius_1d_rj_r(sph_params%nlayer_ICB)**3)
+      dynamic_SPH%avol_SGS_buo = one / dynamic_SPH%avol_SGS_buo
+!
+      end subroutine alloc_sph_ave_Csim_SGS_buo
+!
+! ----------------------------------------------------------------------
+!
+      subroutine dealloc_sph_ave_Csim_SGS_buo(dynamic_SPH)
+!
+      type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
+!
+      deallocate(dynamic_SPH%Cbuo_ave_sph_lc)
+      deallocate(dynamic_SPH%Cbuo_ave_sph_gl)
+      deallocate(dynamic_SPH%Cbuo_ave_sph_rtp)
+!
+      end subroutine dealloc_sph_ave_Csim_SGS_buo
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine init_SGS_model_sph_mhd                                 &
@@ -82,6 +138,9 @@
       call init_work_4_SGS_sph_mhd(SGS_par, sph%sph_rtp, MHD_prop,      &
      &    dynamic_SPH%ifld_sgs, dynamic_SPH%icomp_sgs,                  &
      &    dynamic_SPH%sgs_coefs, dynamic_SPH%wk_sgs)
+!
+      call alloc_sph_ave_Csim_SGS_buo                                   &
+     &   (sph%sph_params, sph%sph_rj, sph%sph_rtp, dynamic_SPH)
 !
       end subroutine init_SGS_model_sph_mhd
 !

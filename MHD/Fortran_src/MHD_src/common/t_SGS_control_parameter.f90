@@ -50,6 +50,10 @@
       integer (kind=kint), parameter :: id_SGS_DIR_AVERAGE =   1
       integer (kind=kint), parameter :: id_SGS_DIR_CORRELATE = 2
 !
+      integer (kind=kint), parameter :: id_use_volume =   0
+      integer (kind=kint), parameter :: id_use_zonal =    1
+      integer (kind=kint), parameter :: id_use_sphere =   2
+!
 !>      filter ID for @f$ s\Delta @f$  filter
       integer (kind=kint), parameter :: ifilter_2delta = 1
 !>      filter ID for @f$ 4\Delta @f$  filter
@@ -82,6 +86,8 @@
         integer (kind=kint) :: itype_Csym =  id_CSIM_FIELD
 !>        Direction to evaluate model coefficients
         integer (kind=kint) :: icoord_Csim = 0
+!>        Usae of model coefficients for SGS buoyancy
+        integer (kind=kint) :: iflag_SGS_buo_usage = 0
 !
         integer (kind=kint) :: itype_Csym_h_flux =   id_CSIM_FIELD
         integer (kind=kint) :: itype_Csym_c_flux =   id_CSIM_FIELD
