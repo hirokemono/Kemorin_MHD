@@ -36,6 +36,7 @@
       use udt_file_IO
       use ucd_field_file_IO
       use ucd_field_file_IO_b
+      use write_ucd_to_vtk_file
 !
 #ifdef ZLIB_IO
       use gz_udt_file_IO
@@ -224,6 +225,8 @@
 !
       if(ucd%ifmt_file .eq. iflag_udt) then
         call read_and_alloc_udt_file(my_rank, istep_ucd, ucd)
+      else if(ucd%ifmt_file .eq. iflag_vtk) then
+        call read_udt_data_2_vtk_phys(my_rank, istep_ucd, ucd)
 !
 #ifdef ZLIB_IO
       else if(ucd%ifmt_file .eq. iflag_udt_gz) then
@@ -280,6 +283,8 @@
 !
       if (ucd%ifmt_file .eq. iflag_ucd) then
         call read_and_alloc_ucd_file(my_rank, istep_ucd, nnod_ele, ucd)
+      else if(ucd%ifmt_file .eq. iflag_vtk) then
+        call read_udt_data_2_vtk_file(my_rank, istep_ucd, ucd)
 !
 #ifdef ZLIB_IO
       else if (ucd%ifmt_file .eq. iflag_ucd_gz) then

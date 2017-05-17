@@ -226,9 +226,20 @@
      &   (trns_SGS%f_trns%i_SGS_c_flux, iphys%i_SGS_c_flux,             &
      &    m_folding, sph_rtp, trns_SGS, node, nod_fld)
 !
+!
 !      call copy_scalar_from_snap_force                                 &
 !     &   (trns_SGS%f_trns%i_comp_scale, iphys%i_comp_scale,            &
 !     &    m_folding, sph_rtp, trns_SGS, node, nod_fld)
+!
+      call copy_scalar_from_snap_force                                  &
+     &   (trns_SGS%f_trns%i_Csim_SGS_buoyancy,                          &
+     &    iphys%i_Csim_SGS_buoyancy,                                    &
+     &    m_folding, sph_rtp, trns_SGS, node, nod_fld)
+!
+      call copy_scalar_from_snap_force                                  &
+     &   (trns_SGS%f_trns%i_Csim_SGS_comp_buo,                          &
+     &    iphys%i_Csim_SGS_comp_buo,                                    &
+     &    m_folding, sph_rtp, trns_SGS, node, nod_fld)
 !
       end  subroutine copy_SGS_force_from_trans
 !

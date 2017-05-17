@@ -44,19 +44,7 @@
 ! . for local 
 !  ===========
 !
-      write(*,*) 'Choose psf format'
-      write(*,*) iflag_ucd, ': UCD'
-      write(*,*) iflag_udt, ': UDT'
-      write(*,*) iflag_vtk, ': VTK'
-      write(*,*) iflag_ucd_gz, ': gzipped_UCD'
-      write(*,*) iflag_udt_gz, ': gzipped_UDT'
-      write(*,*) iflag_vtk_gz, ': gzipped_VTK'
-!
-      read(*,*)  iflag_psf_fmt
-      write(*,*) 'iflag_psf_fmt', iflag_psf_fmt
-!
-      write(*,*) 'input psf file name'
-      read(*,*) psf_file_header
+      call input_ucd_file_format_code(iflag_psf_fmt, psf_file_header)
 !
       write(*,*) 'input istep_start, istep_end, istep_int'
       read(*,*) istep_start, istep_end, istep_int

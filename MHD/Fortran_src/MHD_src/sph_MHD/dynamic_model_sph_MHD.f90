@@ -155,6 +155,11 @@
      &        ifld_sgs%i_heat_flux, trns_snap%f_trns%i_Csim_SGS_h_flux
         write(*,*) 'ifld_sgs%i_comp_flux',                              &
      &        ifld_sgs%i_comp_flux, trns_snap%f_trns%i_Csim_SGS_c_flux
+        write(*,*) 'ifld_sgs%i_buoyancy',                               &
+     &        ifld_sgs%i_buoyancy, trns_snap%f_trns%i_Csim_SGS_buoyancy
+        write(*,*) 'ifld_sgs%i_comp_buoyancy',                          &
+     &        ifld_sgs%i_comp_buoyancy,                                 &
+     &        trns_snap%f_trns%i_Csim_SGS_comp_buo
       end if
 !
       if(ifld_sgs%i_mom_flux .gt. 0) then
@@ -185,6 +190,19 @@
         call set_model_coefs_sph_snap(sph_rtp,                          &
      &      trns_snap%f_trns%i_Csim_SGS_c_flux, ifld_sgs%i_comp_flux,   &
      &      wk_sgs, trns_snap)
+      end if
+!
+!
+      if(ifld_sgs%i_buoyancy .gt. 0) then
+        call set_model_coefs_sph_snap(sph_rtp,                          &
+     &      trns_snap%f_trns%i_Csim_SGS_buoyancy,                       &
+     &      ifld_sgs%i_buoyancy, wk_sgs, trns_snap)
+      end if
+!
+      if(ifld_sgs%i_comp_buoyancy .gt. 0) then
+        call set_model_coefs_sph_snap(sph_rtp,                          &
+     &      trns_snap%f_trns%i_Csim_SGS_comp_buo,                       &
+     &      ifld_sgs%i_comp_buoyancy, wk_sgs, trns_snap)
       end if
 !
       end subroutine copy_model_coefs_4_sph_snap

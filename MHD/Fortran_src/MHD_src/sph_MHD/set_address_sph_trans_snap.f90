@@ -398,14 +398,14 @@
      &   (ipol%i_Csim_SGS_induction, iphys%i_Csim_SGS_induction,        &
      &    nvector_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                 &
      &    fs_trns%i_Csim_SGS_induction)
-!      call add_scl_trans_flag_snap                                     &
-!     &   (ipol%i_Csim_SGS_buoyancy, iphys%i_Csim_SGS_buoyancy,         &
-!     &    nvector_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                &
-!     &    fs_trns%i_Csim_SGS_buoyancy)
-!      call add_scl_trans_flag_snap                                     &
-!     &   (ipol%i_Csim_SGS_comp_buo, iphys%i_Csim_SGS_comp_buo,         &
-!     &    nvector_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                &
-!     &    fs_trns%i_Csim_SGS_comp_buo)
+      call add_scl_trans_flag_snap                                      &
+     &   (ipol%i_Csim_SGS_buoyancy, iphys%i_Csim_SGS_buoyancy,          &
+     &    nvector_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                 &
+     &    fs_trns%i_Csim_SGS_buoyancy)
+      call add_scl_trans_flag_snap                                      &
+     &   (ipol%i_Csim_SGS_comp_buo, iphys%i_Csim_SGS_comp_buo,          &
+     &    nvector_snap_rtp_2_rj, nscalar_snap_rtp_2_rj,                 &
+     &    fs_trns%i_Csim_SGS_comp_buo)
 !
       call add_scl_trans_flag_snap                                      &
      &   (ipol%i_velo_scale, iphys%i_velo_scale,                        &

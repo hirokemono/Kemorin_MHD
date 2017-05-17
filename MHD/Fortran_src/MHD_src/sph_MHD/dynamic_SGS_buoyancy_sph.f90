@@ -166,9 +166,6 @@
      &    rj_fld%d_fld(1,ipol%i_SGS_inertia))
 !$omp end parallel
 !
-      write(*,*) 'dynamic_SPH%Cbuo_ave_sph_gl_1', dynamic_SPH%Cbuo_ave_sph_gl(:,1)
-      write(*,*) 'dynamic_SPH%Cbuo_ave_sph_gl_2', dynamic_SPH%Cbuo_ave_sph_gl(:,2)
-!
 !$omp parallel
       if(iflag_FFT .eq. iflag_FFTW) then
         call prod_dbl_radial_buo_coefs_pin                              &
