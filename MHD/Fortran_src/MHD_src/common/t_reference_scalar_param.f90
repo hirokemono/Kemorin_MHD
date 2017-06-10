@@ -134,6 +134,8 @@
         tmpchara = ref_temp_ctl%charavalue
         if (cmp_no_case(tmpchara, 'spherical_shell')) then
           ref_param%iflag_reference = id_sphere_ref_temp
+        else if (cmp_no_case(tmpchara, 'takepiro')) then
+          ref_param%iflag_reference = id_takepiro_temp
         else if (cmp_no_case(tmpchara, 'sph_constant_heat')) then
           ref_param%iflag_reference = id_linear_r_ref_temp
         else if (cmp_no_case(tmpchara, 'linear_x')) then
