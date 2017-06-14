@@ -94,22 +94,22 @@
       module t_coef_fdm2_MHD_boundaries
 !
       use m_precision
-!
       use m_constants
-      use cal_inverse_small_matrix
 !
       implicit none
 !
+!>      Structure for FDM matrix of free slip boundary
       type fdm2_free_slip
-!>      Matrix to evaluate radial derivative of poloidal velocity
-!!      with free slip boundary
+!>        Matrix to evaluate radial derivative of poloidal velocity
+!!        with free slip boundary
         real(kind = kreal) :: dmat_vp(-1:1,3)
-!>      Matrix to evaluate radial derivative of toroidal vorticity
-!!      with free slip boundary
+!>        Matrix to evaluate radial derivative of toroidal vorticity
+!!        with free slip boundary
         real(kind = kreal) :: dmat_vt(-1:1,3)
       end type fdm2_free_slip
 !
 !
+!>      Structure for FDM matrix of center
       type fdm2_center_mat
 !>        Matrix to evaluate radial derivative at center
 !!        with fixed field

@@ -132,15 +132,15 @@
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
         call add_vector_poisson_mat_center                              &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
-     &      sph_bc_U%r_ICB, fdm2_fix_fld_ctr1,                          &
+     &      sph_bc_U%r_ICB, fdm2_center1%dmat_fix_fld,                  &
      &      coef_dvt, band_vt_evo%mat)
         call add_vector_poisson_mat_center                              &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
-     &      sph_bc_U%r_ICB, fdm2_fix_fld_ctr1,                          &
+     &      sph_bc_U%r_ICB, fdm2_center1%dmat_fix_fld,                  &
      &      coef_dvt, band_wt_evo%mat)
         call add_vector_poisson_mat_center                              &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
-     &      sph_bc_U%r_ICB, fdm2_fix_fld_ctr1,                          &
+     &      sph_bc_U%r_ICB, fdm2_center1%dmat_fix_fld,                  &
      &      one, band_vs_poisson%mat)
       else
         call add_fix_flux_icb_poisson_mat                               &
@@ -300,11 +300,11 @@
       if(sph_bc_B%iflag_icb .eq. iflag_sph_fill_center) then
         call add_vector_poisson_mat_center                              &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
-     &      sph_bc_B%r_ICB, fdm2_fix_fld_ctr1,                          &
+     &      sph_bc_B%r_ICB, fdm2_center1%dmat_fix_fld,                  &
      &      coef_dbt, band_bp_evo%mat)
         call add_vector_poisson_mat_center                              &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
-     &      sph_bc_B%r_ICB, fdm2_fix_fld_ctr1,                          &
+     &      sph_bc_B%r_ICB, fdm2_center1%dmat_fix_fld,                  &
      &      coef_dbt, band_bt_evo%mat)
       else if(sph_bc_B%iflag_icb .eq. iflag_radial_magne) then
         call add_fix_flux_icb_poisson_mat                               &

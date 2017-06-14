@@ -58,6 +58,7 @@
       use m_coef_fdm_free_CMB
       use m_coef_fdm_to_center
       use cal_fdm_coefs_4_boundaries
+      use coef_fdm2_to_center
 !
       type(boundary_spectra), intent(in) :: bc_IO
 !
@@ -131,9 +132,12 @@
 !      Set FDM matrices for Center
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_2nd_to_center_fixed_fdm'
-      call cal_2nd_to_center_fixed_fdm(sph_rj%radius_1d_rj_r(1:2))
-      call cal_2nd_center_fix_df_fdm(sph_rj%radius_1d_rj_r(1))
-      call cal_2nd_center_fixed_fdm(sph_rj%radius_1d_rj_r(1:2))
+      call cal_2nd_to_center_fixed_fdm                                  &
+     &   (sph_rj%radius_1d_rj_r(1:2), fdm2_center1)
+      call cal_2nd_center_fix_df_fdm                                    &
+     &   (sph_rj%radius_1d_rj_r(1), fdm2_center1)
+      call cal_2nd_center_fixed_fdm                                     &
+     &   (sph_rj%radius_1d_rj_r(1:2), fdm2_center1)
 !
 !      Check data
 !
@@ -185,7 +189,7 @@
           call check_fdm_coefs_4_BC2(fhd_light, sph_MHD_bc%sph_bc_C)
         end if
 !
-        call check_coef_fdm_fix_dr_2ctr
+        call check_coef_fdm_fix_dr_2ctr(fdm2_center1)
       end if
 !
       end subroutine s_set_bc_sph_mhd

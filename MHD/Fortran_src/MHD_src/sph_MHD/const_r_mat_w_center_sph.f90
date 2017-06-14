@@ -132,8 +132,9 @@
 !
 !      write(*,*) 'add_scalar_poisson_mat_fill_ctr'
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
-        call add_scalar_poisson_mat_fill_ctr(sph_rj%nidx_rj(1),         &
-     &      sph_bc_U%r_ICB, fdm2_fix_dr_center, fdm2_fix_fld_ctr1,      &
+        call add_scalar_poisson_mat_fill_ctr                            &
+     &     (sph_rj%nidx_rj(1), sph_bc_U%r_ICB,                          &
+     &      fdm2_center1%dmat_fix_dr, fdm2_center1%dmat_fix_fld,        &
      &      coef_p, band_p00_poisson%mat)
       else
         call add_scalar_poisson_mat_no_fld                              &
@@ -181,15 +182,17 @@
       call set_unit_ctr_single_mat(band_s00_evo)
 !
       call copy_to_band3_mat_w_center(sph_rj%nidx_rj(1), coef_f,        &
-      &   evo_mat(1,1,sph_rj%idx_rj_degree_zero), band_s00_evo%mat)
+     &   evo_mat(1,1,sph_rj%idx_rj_degree_zero), band_s00_evo%mat)
 !
       if     (sph_bc%iflag_icb .eq. iflag_sph_fill_center) then
-        call add_scalar_poisson_mat_fill_ctr(sph_rj%nidx_rj(1),         &
-     &      sph_bc%r_ICB, fdm2_fix_dr_center, fdm2_fix_fld_ctr1, coef,  &
-     &      band_s00_evo%mat)
+        call add_scalar_poisson_mat_fill_ctr                            &
+     &     (sph_rj%nidx_rj(1), sph_bc%r_ICB,                            &
+     &      fdm2_center1%dmat_fix_dr, fdm2_center1%dmat_fix_fld,        &
+     &      coef, band_s00_evo%mat)
       else if(sph_bc%iflag_icb .eq. iflag_sph_fix_center) then
-        call add_scalar_poisson_mat_fix_ctr(sph_rj%nidx_rj(1),          &
-     &      sph_bc%r_ICB, fdm2_fix_fld_ctr1, coef, band_s00_evo%mat)
+        call add_scalar_poisson_mat_fix_ctr                             &
+     &     (sph_rj%nidx_rj(1), sph_bc%r_ICB, fdm2_center1%dmat_fix_fld, &
+     &      coef, band_s00_evo%mat)
       else
         call add_scalar_poisson_mat_no_fld                              &
      &     (sph_rj%nidx_rj(1), band_s00_evo%mat)

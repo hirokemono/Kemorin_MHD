@@ -53,9 +53,6 @@
 !!         Matrix to evaluate radial derivative at ICB with fixed field
 !!@n @param fdm2_fix_fld_CMB(0:2,3)
 !!         Matrix to evaluate radial derivative at CMB with fixed field
-!!@n @param fdm2_fix_fld_ctr1(-1:1,3)
-!!         Matrix to evaluate radial derivative
-!!         for center with fixed field
 !!
 !!@n @param fix_ICB(jmax) Spectr data for fixed scalar at ICB
 !!@n @param fix_CMB(jmax) Spectr data for fixed scalar at CMB

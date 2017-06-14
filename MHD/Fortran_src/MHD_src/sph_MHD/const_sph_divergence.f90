@@ -46,7 +46,6 @@
       subroutine const_sph_scalar_advect(sph_rj, r_2nd, sph_bc,         &
      &          g_sph_rj, is_flux, is_advect, rj_fld)
 !
-      use m_coef_fdm_to_center
       use cal_sph_exp_rotation
       use select_exp_scalar_bc
 !

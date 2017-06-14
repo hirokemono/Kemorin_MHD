@@ -79,7 +79,7 @@
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
         call add_scalar_poisson_mat_ctr1                                &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
-     &      sph_bc_U%r_ICB, fdm2_fix_fld_ctr1, coef_p,                  &
+     &      sph_bc_U%r_ICB, fdm2_center1%dmat_fix_fld, coef_p,          &
      &      band_p_poisson%mat)
       else
         call add_icb_scalar_poisson_mat                                 &
@@ -156,7 +156,8 @@
      &   .or. sph_bc%iflag_icb .eq. iflag_sph_fix_center) then
         call add_scalar_poisson_mat_ctr1                                &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
-     &      sph_bc%r_ICB, fdm2_fix_fld_ctr1, coef, band_s_evo%mat)
+     &      sph_bc%r_ICB, fdm2_center1%dmat_fix_fld, coef,              &
+     &      band_s_evo%mat)
       else if (sph_bc%iflag_icb .eq. iflag_fixed_flux) then
         call add_fix_flux_icb_poisson_mat                               &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
