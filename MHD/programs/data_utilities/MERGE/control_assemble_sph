@@ -29,6 +29,9 @@ begin assemble_control
       i_step_number_ctl     2000
       i_step_rst_ctl        800
     end time_step_ctl
+!
+    begin new_time_step_ctl
+    end new_time_step_ctl
   end control
 !
   begin newrst_magne_ctl
