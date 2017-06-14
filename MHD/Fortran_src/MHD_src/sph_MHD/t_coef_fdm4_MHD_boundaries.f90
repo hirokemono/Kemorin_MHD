@@ -119,7 +119,7 @@
         real(kind = kreal) :: dmat_vp0(-2:0,2:4)
 !>        Matrix to evaluate radial derivative at next of CMB
         real(kind = kreal) :: dmat_vp1(-2:1,2:5)
-      type fdm4_CMB_vpol
+      end type fdm4_CMB_vpol
 !
 !
 ! -----------------------------------------------------------------------

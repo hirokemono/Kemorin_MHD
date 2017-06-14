@@ -11,7 +11,7 @@
 !!      subroutine cal_2nd_to_center_fixed_fdm(radius, fdm2_center)
 !!      subroutine cal_2nd_center_fix_df_fdm(radius, fdm2_center)
 !!      subroutine cal_2nd_center_fixed_fdm(radius, fdm2_center)
-!!        type(fdm4_ICB_vpol), intent(inout) :: fdm2_center
+!!        type(fdm2_center_mat), intent(inout) :: fdm2_center
 !!
 !!   Matrix for derivatives with fixed field
 !!      dfdr =      fdm2_center%dmat_fix_fld(-1,2) * d_center(0)
@@ -98,7 +98,7 @@
       subroutine cal_2nd_to_center_fixed_fdm(radius, fdm2_center)
 !
       real(kind = kreal), intent(in) :: radius(2)
-      type(fdm4_ICB_vpol), intent(inout) :: fdm2_center
+      type(fdm2_center_mat), intent(inout) :: fdm2_center
 !
       integer(kind = kint) :: ierr
       real(kind = kreal) :: mat_taylor_3(3,3)
@@ -137,7 +137,7 @@
       subroutine cal_2nd_center_fix_df_fdm(radius, fdm2_center)
 !
       real(kind = kreal), intent(in) :: radius
-      type(fdm4_ICB_vpol), intent(inout) :: fdm2_center
+      type(fdm2_center_mat), intent(inout) :: fdm2_center
 !
       integer(kind = kint) :: ierr
       real(kind = kreal) :: mat_taylor_3(3,3)
@@ -173,7 +173,7 @@
       subroutine cal_2nd_center_fixed_fdm(radius, fdm2_center)
 !
       real(kind = kreal), intent(in) :: radius(2)
-      type(fdm4_ICB_vpol), intent(inout) :: fdm2_center
+      type(fdm2_center_mat), intent(inout) :: fdm2_center
 !
       integer(kind = kint) :: ierr
       real(kind = kreal) :: mat_taylor_3(3,3)
