@@ -323,9 +323,9 @@
       use gravity_vec_each_ele
       use sgs_terms_to_each_ele
       use cal_skv_to_ff_smp
-      use fem_skv_nodal_fld_upw_type
+      use fem_skv_nodal_fld_upwind
       use fem_skv_vect_diff_upw_type
-      use fem_skv_nonlinear_upw_type
+      use fem_skv_nonlinear_upwind
       use fem_skv_div_sgs_flux_upw
       use fem_skv_lorentz_full_type
 !

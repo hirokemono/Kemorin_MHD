@@ -153,7 +153,7 @@
       use nodal_fld_cst_to_element
       use sgs_terms_to_each_ele
       use cal_skv_to_ff_smp
-      use fem_skv_nonlinear_upw_type
+      use fem_skv_nonlinear_upwind
       use fem_skv_div_sgs_flux_upw
 !
       integer(kind = kint), intent(in) :: iflug_SGS_term

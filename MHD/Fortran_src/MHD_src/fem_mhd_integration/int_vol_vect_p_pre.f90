@@ -117,7 +117,7 @@
       use cal_add_smp
       use nodal_fld_cst_to_element
       use cal_skv_to_ff_smp
-      use fem_skv_nonlinear_upw_type
+      use fem_skv_nonlinear_upwind
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele

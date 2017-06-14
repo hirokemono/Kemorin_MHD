@@ -100,7 +100,7 @@
 !
       use gravity_vec_each_ele
       use cal_skv_to_ff_smp
-      use fem_skv_nodal_fld_upw_type
+      use fem_skv_nodal_fld_upwind
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele

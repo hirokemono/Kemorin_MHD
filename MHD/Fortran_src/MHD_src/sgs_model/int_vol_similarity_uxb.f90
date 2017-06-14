@@ -101,7 +101,7 @@
      &          sgs_coefs, ncomp_ele, iele_magne, d_ele, fem_wk, f_nl)
 !
       use nodal_fld_2_each_element
-      use fem_skv_nodal_fld_upw_type
+      use fem_skv_nodal_fld_upwind
       use cal_products_within_skv
       use cal_skv_to_ff_smp
 !

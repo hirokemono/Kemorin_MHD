@@ -1,16 +1,16 @@
-!fem_skv_nodal_fld_upw_type.f90
-!      module fem_skv_nodal_fld_upw_type
+!fem_skv_nodal_fld_upwind.f90
+!      module fem_skv_nodal_fld_upwind
 !
 !     programmed by H.Matsui on May 2012
 !
-!      subroutine fem_skv_scalar_field_upwind(iele_fsmp_stack,          &
-!     &          n_int, k2, dt, vxe, ele, jac_3d, scalar_1, sk_v) 
-!      subroutine fem_skv_vector_field_upwind(iele_fsmp_stack,          &
-!     &          n_int, k2, dt, vxe, ele, jac_3d, vector_1, sk_v) 
-!      subroutine fem_skv_tensor_field_upwind(iele_fsmp_stack,          &
-!     &          n_int, k2, dt, vxe, ele, jac_3d, tensor_1, sk_v) 
+!!      subroutine fem_skv_scalar_field_upwind(iele_fsmp_stack,         &
+!!     &          n_int, k2, dt, vxe, ele, jac_3d, scalar_1, sk_v) 
+!!      subroutine fem_skv_vector_field_upwind(iele_fsmp_stack,         &
+!!     &          n_int, k2, dt, vxe, ele, jac_3d, vector_1, sk_v) 
+!!      subroutine fem_skv_tensor_field_upwind(iele_fsmp_stack,         &
+!!     &          n_int, k2, dt, vxe, ele, jac_3d, tensor_1, sk_v) 
 !
-      module fem_skv_nodal_fld_upw_type
+      module fem_skv_nodal_fld_upwind
 !
       use m_precision
 !
@@ -113,4 +113,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-      end module fem_skv_nodal_fld_upw_type
+      end module fem_skv_nodal_fld_upwind
