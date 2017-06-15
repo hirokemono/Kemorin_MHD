@@ -6,8 +6,9 @@
 !>@brief Construct matrix for time evolution of vector fields
 !!
 !!@verbatim
-!!      subroutine const_radial_mat_vort_2step(dt, sph_rj, r_2nd,       &
-!!     &         fl_prop, sph_bc_U, fdm2_center, g_sph_rj,              &
+!!      subroutine const_radial_mat_vort_2step                          &
+!!     &        (dt, sph_rj, r_2nd, fl_prop, sph_bc_U,                  &
+!!     &         fdm2_center, fdm2_free_ICB, g_sph_rj,                  &
 !!     &         band_vs_poisson, band_vp_evo, band_vt_evo, band_wt_evo)
 !!      subroutine const_radial_mat_4_magne_sph                         &
 !!     &         (dt, sph_rj, r_2nd, cd_prop, sph_bc_B, fdm2_center,    &
@@ -53,11 +54,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_vort_2step(dt, sph_rj, r_2nd,         &
-     &         fl_prop, sph_bc_U, fdm2_center, g_sph_rj,                &
+      subroutine const_radial_mat_vort_2step                            &
+     &        (dt, sph_rj, r_2nd, fl_prop, sph_bc_U,                    &
+     &         fdm2_center, fdm2_free_ICB, g_sph_rj,                    &
      &         band_vs_poisson, band_vp_evo, band_vt_evo, band_wt_evo)
 !
-      use m_coef_fdm_free_ICB
       use m_coef_fdm_free_CMB
       use m_ludcmp_band
       use set_sph_scalar_mat_bc
@@ -71,6 +72,7 @@
       type(fluid_property), intent(in) :: fl_prop
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(fdm2_center_mat), intent(in) :: fdm2_center
+      type(fdm2_free_slip), intent(in) :: fdm2_free_ICB
 !
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: dt
@@ -154,11 +156,11 @@
         if(sph_bc_U%iflag_icb .eq. iflag_free_slip) then
           call add_fix_flux_icb_poisson_mat                             &
      &       (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,           &
-     &        sph_bc_U%kr_in, sph_bc_U%r_ICB, fdm2_free_vt_ICB,         &
+     &        sph_bc_U%kr_in, sph_bc_U%r_ICB, fdm2_free_ICB%dmat_vt,    &
      &        coef_dvt, band_vt_evo%mat)
           call add_fix_flux_icb_poisson_mat                             &
      &       (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,           &
-     &        sph_bc_U%kr_in, sph_bc_U%r_ICB, fdm2_free_vp_ICB,         &
+     &        sph_bc_U%kr_in, sph_bc_U%r_ICB, fdm2_free_ICB%dmat_vp,    &
      &        one, band_vs_poisson%mat)
         else
           call set_fix_fld_icb_poisson_mat                              &

@@ -105,6 +105,7 @@
       subroutine const_sph_vorticity(sph_rj, r_2nd, sph_bc_U,           &
      &          g_sph_rj, is_velo, is_vort, rj_fld)
 !
+      use m_coef_fdm_free_ICB
       use select_exp_velocity_bc
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
@@ -117,7 +118,8 @@
 !
 !
       call sel_bc_sph_vorticity                                         &
-     &   (sph_rj, r_2nd, sph_bc_U, g_sph_rj, is_velo, is_vort, rj_fld)
+     &   (sph_rj, r_2nd, sph_bc_U, fdm2_free_ICB1,                      &
+     &    g_sph_rj, is_velo, is_vort, rj_fld)
 !
       call cal_sph_nod_vect_rot2(sph_bc_U%kr_in, sph_bc_U%kr_out,       &
      &    sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                    &
@@ -215,6 +217,7 @@
       subroutine const_sph_force_rot2(sph_rj, r_2nd, sph_bc_U,          &
      &          g_sph_rj, is_fld, is_rot, rj_fld)
 !
+      use m_coef_fdm_free_ICB
       use select_exp_velocity_bc
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
@@ -227,7 +230,8 @@
 !
 !
       call sel_bc_sph_vorticity                                         &
-     &   (sph_rj, r_2nd, sph_bc_U, g_sph_rj, is_fld, is_rot, rj_fld)
+     &   (sph_rj, r_2nd, sph_bc_U, fdm2_free_ICB1,                      &
+     &    g_sph_rj, is_fld, is_rot, rj_fld)
 !
       call cal_sph_nod_vect_w_div_rot2(sph_bc_U%kr_in, sph_bc_U%kr_out, &
      &    sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj, r_2nd%fdm(1)%dmat, &
@@ -243,6 +247,7 @@
      &         (sph_rj, r_2nd, sph_bc_U, g_sph_rj, coef_diffuse,        &
      &          is_velo, is_vort, is_viscous, rj_fld)
 !
+      use m_coef_fdm_free_ICB
       use cal_sph_exp_rotation
       use select_exp_velocity_bc
 !
@@ -266,8 +271,8 @@
      &    is_vort, is_viscous, rj_fld%n_point, rj_fld%ntot_phys,        &
      &    rj_fld%d_fld)
 !
-      call sel_bc_sph_viscous_diffusion                                 &
-     &   (sph_rj, r_2nd, sph_bc_U, g_sph_rj, coef_diffuse,              &
+      call sel_bc_sph_viscous_diffusion(sph_rj, r_2nd, sph_bc_U,        &
+     &    fdm2_free_ICB1, g_sph_rj, coef_diffuse,                       &
      &    is_velo, is_vort, is_viscous, idp_diffuse, rj_fld)
 !
       end subroutine const_sph_viscous_by_vort2

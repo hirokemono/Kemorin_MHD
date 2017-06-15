@@ -58,6 +58,7 @@
       use m_coef_fdm_free_CMB
       use m_coef_fdm_to_center
       use cal_fdm_coefs_4_boundaries
+      use coef_fdm2_free_ICB
       use coef_fdm2_to_center
 !
       type(boundary_spectra), intent(in) :: bc_IO
@@ -89,8 +90,10 @@
 !
         kst = sph_MHD_bc%sph_bc_U%kr_in
         ked = sph_MHD_bc%sph_bc_U%kr_in + 1
-        call cal_fdm2_ICB_free_vp(sph_rj%radius_1d_rj_r(kst:ked))
-        call cal_fdm2_ICB_free_vt(sph_rj%radius_1d_rj_r(kst:ked))
+        call cal_fdm2_ICB_free_vp                                       &
+     &     (sph_rj%radius_1d_rj_r(kst:ked), fdm2_free_ICB1)
+        call cal_fdm2_ICB_free_vt                                       &
+     &     (sph_rj%radius_1d_rj_r(kst:ked), fdm2_free_ICB1)
 !
         kst = sph_MHD_bc%sph_bc_U%kr_out-1
         ked = sph_MHD_bc%sph_bc_U%kr_out
@@ -174,7 +177,7 @@
       if (iflag_debug .eq. iflag_full_msg) then
         if (MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
           call check_fdm_coefs_4_BC2(fhd_velo,  sph_MHD_bc%sph_bc_U)
-          call check_coef_fdm_free_ICB
+          call check_coef_fdm_free_ICB(fdm2_free_ICB1)
           call check_coef_fdm_free_CMB
         end if
 !

@@ -120,6 +120,7 @@
      &          MHD_prop, sph_MHD_bc, g_sph_rj, sph_MHD_mat)
 !
       use m_coef_fdm_to_center
+      use m_coef_fdm_free_ICB
       use const_r_mat_4_scalar_sph
       use const_r_mat_4_vector_sph
 !
@@ -141,7 +142,7 @@
      &          write(*,*) 'const_radial_mat_vort_2step'
         call const_radial_mat_vort_2step                                &
      &     (dt, sph_rj, r_2nd, MHD_prop%fl_prop,                        &
-     &      sph_MHD_bc%sph_bc_U, fdm2_center1, g_sph_rj,                &
+     &      sph_MHD_bc%sph_bc_U, fdm2_center1, fdm2_free_ICB1, g_sph_rj,&
      &      sph_MHD_mat%band_vs_poisson, sph_MHD_mat%band_vp_evo,       &
      &      sph_MHD_mat%band_vt_evo, sph_MHD_mat%band_wt_evo)
         call const_radial_mat_4_press_sph(sph_rj, r_2nd,                &
