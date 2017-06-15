@@ -32,6 +32,7 @@
       use t_schmidt_poly_on_rtm
       use t_boundary_data_sph_MHD
       use t_boundary_params_sph_MHD
+      use t_coef_fdm2_MHD_boundaries
 !
       implicit none
 !
@@ -48,6 +49,7 @@
       subroutine rot_SGS_terms_exp_sph                                  &
      &         (sph_rj, r_2nd, sph_MHD_bc, leg, ipol, itor, rj_fld)
 !
+      use m_coef_fdm_to_center
       use calypso_mpi
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
@@ -71,7 +73,8 @@
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &     write(*,*) 'cal_div_of_SGS_fluxes_sph'
       call cal_div_of_SGS_fluxes_sph(sph_rj, r_2nd, leg%g_sph_rj,       &
-     &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%sph_bc_C, ipol, rj_fld)
+     &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%sph_bc_C, fdm2_center1,       &
+     &    ipol, rj_fld)
 !
       end subroutine rot_SGS_terms_exp_sph
 !
@@ -175,17 +178,17 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_div_of_SGS_fluxes_sph(sph_rj, r_2nd, g_sph_rj,     &
-     &          sph_bc_T, sph_bc_C, ipol, rj_fld)
+     &          sph_bc_T, sph_bc_C, fdm2_center, ipol, rj_fld)
 !
-      use m_coef_fdm_to_center
       use calypso_mpi
       use const_sph_divergence
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(phys_address), intent(in) :: ipol
-      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       type(sph_boundary_type), intent(in) :: sph_bc_T, sph_bc_C
+      type(fdm2_center_mat), intent(in) :: fdm2_center
+      real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -193,14 +196,14 @@
       if( (ipol%i_SGS_h_flux*ipol%i_h_advect) .gt. 0) then
         if (iflag_debug .gt. 0) write(*,*) 'take div of heat flux'
         call const_sph_scalar_advect                                    &
-     &     (sph_rj, r_2nd, sph_bc_T, fdm2_center1, g_sph_rj,            &
+     &     (sph_rj, r_2nd, sph_bc_T, fdm2_center, g_sph_rj,             &
      &      ipol%i_SGS_h_flux, ipol%i_SGS_div_h_flux, rj_fld)
       end if
 !
       if( (ipol%i_SGS_c_flux*ipol%i_c_advect) .gt. 0) then
         if (iflag_debug .gt. 0) write(*,*) 'take div  of composit flux'
         call const_sph_scalar_advect                                    &
-     &     (sph_rj, r_2nd, sph_bc_C, fdm2_center1, g_sph_rj,            &
+     &     (sph_rj, r_2nd, sph_bc_C, fdm2_center, g_sph_rj,             &
      &      ipol%i_SGS_c_flux, ipol%i_SGS_div_c_flux, rj_fld)
       end if
 !
