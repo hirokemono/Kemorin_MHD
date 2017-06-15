@@ -20,6 +20,7 @@
 !
       use m_precision
       use t_boundary_params_sph_MHD
+      use t_coef_fdm2_MHD_boundaries
 !
       implicit none
 !
@@ -49,6 +50,12 @@
 !
 !>        Structure for boundary velocity spectr
         type(sph_velocity_BC_spectr) :: bc_Uspectr
+!
+!
+!>        Structure for FDM matrix of free slip boundary at ICB
+        type(fdm2_free_slip) :: fdm2_free_ICB
+!>        Structure for FDM matrix of free slip boundary at ICB
+        type(fdm2_free_slip) :: fdm2_free_CMB
       end type sph_MHD_boundary_data
 !
 ! -----------------------------------------------------------------------

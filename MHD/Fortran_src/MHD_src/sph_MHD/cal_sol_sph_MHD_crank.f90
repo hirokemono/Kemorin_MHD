@@ -65,8 +65,6 @@
      &          ipol, idpdr, itor, sph_MHD_mat, rj_fld)
 !
       use m_coef_fdm_to_center
-      use m_coef_fdm_free_ICB
-      use m_coef_fdm_free_CMB
       use cal_rot_buoyancies_sph_MHD
       use cal_sol_sph_fluid_crank
       use const_sph_radial_grad
@@ -94,14 +92,14 @@
         if (iflag_debug .gt. 0)                                         &
      &       write(*,*) 'cal_sol_velo_by_vort_sph_crank'
         call cal_sol_velo_by_vort_sph_crank                             &
-     &     (sph_rj, sph_MHD_bc%sph_bc_U,                                &
-     &      sph_MHD_bc%bc_Uspectr, fdm2_free_ICB1, fdm2_free_CMB1,      &
+     &     (sph_rj, sph_MHD_bc%sph_bc_U, sph_MHD_bc%bc_Uspectr,         &
+     &      sph_MHD_bc%fdm2_free_ICB, sph_MHD_bc%fdm2_free_CMB,         &
      &      sph_MHD_mat%band_vp_evo, sph_MHD_mat%band_vt_evo,           &
      &      ipol, itor, rj_fld)
         call const_grad_vp_and_vorticity                                &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, sph_MHD_bc%bc_Uspectr,  &
-     &      fdm2_free_ICB1, fdm2_free_CMB1, leg%g_sph_rj,               &
-     &      ipol%i_velo, ipol%i_vort, rj_fld)
+     &      sph_MHD_bc%fdm2_free_ICB, sph_MHD_bc%fdm2_free_CMB,         &
+     &      leg%g_sph_rj, ipol%i_velo, ipol%i_vort, rj_fld)
       end if
 !
 !  Input: ipol%i_temp,  Solution: ipol%i_temp
@@ -139,8 +137,8 @@
 !
       if(MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
         call update_after_vorticity_sph                                 &
-     &     (sph_rj, r_2nd, MHD_prop%fl_prop,                            &
-     &      sph_MHD_bc%sph_bc_U, fdm2_free_ICB1, fdm2_free_CMB1,        &
+     &     (sph_rj, r_2nd, MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U,       &
+     &      sph_MHD_bc%fdm2_free_ICB, sph_MHD_bc%fdm2_free_CMB,         &
      &      leg, ipol, itor, rj_fld)
         call cal_rot_radial_self_gravity                                &
      &     (sph_rj, ipol, itor, MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U,  &
@@ -169,8 +167,6 @@
      &         (sph_rj, r_2nd, MHD_prop, sph_MHD_bc, leg,               &
      &          ipol, itor, rj_fld)
 !
-      use m_coef_fdm_free_ICB
-      use m_coef_fdm_free_CMB
       use const_sph_radial_grad
       use cal_rot_buoyancies_sph_MHD
 !
@@ -186,15 +182,15 @@
       if(ipol%i_velo*ipol%i_vort .gt. 0) then
         call const_grad_vp_and_vorticity                                &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, sph_MHD_bc%bc_Uspectr,  &
-     &      fdm2_free_ICB1, fdm2_free_CMB1, leg%g_sph_rj,               &
-     &      ipol%i_velo, ipol%i_vort, rj_fld)
+     &      sph_MHD_bc%fdm2_free_ICB, sph_MHD_bc%fdm2_free_CMB,         &
+     &      leg%g_sph_rj, ipol%i_velo, ipol%i_vort, rj_fld)
       end if
 !
       if(MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug.gt.0) write(*,*) 'update_after_vorticity_sph'
         call update_after_vorticity_sph                                 &
-     &     (sph_rj, r_2nd, MHD_prop%fl_prop,                            &
-     &      sph_MHD_bc%sph_bc_U, fdm2_free_ICB1, fdm2_free_CMB1,        &
+     &     (sph_rj, r_2nd, MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U,       &
+     &      sph_MHD_bc%fdm2_free_ICB, sph_MHD_bc%fdm2_free_CMB,         &
      &      leg, ipol, itor, rj_fld)
         if(iflag_debug.gt.0) write(*,*) 'cal_rot_radial_self_gravity'
         call cal_rot_radial_self_gravity                                &

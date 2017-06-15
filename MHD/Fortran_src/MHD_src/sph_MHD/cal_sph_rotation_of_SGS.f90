@@ -48,8 +48,6 @@
       subroutine rot_SGS_terms_exp_sph                                  &
      &         (sph_rj, r_2nd, sph_MHD_bc, leg, ipol, itor, rj_fld)
 !
-      use m_coef_fdm_free_ICB
-      use m_coef_fdm_free_CMB
       use calypso_mpi
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
@@ -62,8 +60,9 @@
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &     write(*,*) 'SGS_rot_of_SGS_forces_sph_2'
-      call SGS_rot_of_SGS_forces_sph_2(sph_rj, r_2nd, leg%g_sph_rj,     &
-     &    sph_MHD_bc%sph_bc_U, fdm2_free_ICB1, fdm2_free_CMB1,          &
+      call SGS_rot_of_SGS_forces_sph_2                                  &
+     &   (sph_rj, r_2nd, leg%g_sph_rj, sph_MHD_bc%sph_bc_U,             &
+     &    sph_MHD_bc%fdm2_free_ICB, sph_MHD_bc%fdm2_free_CMB,           &
      &    ipol, itor, rj_fld)
 !
       call cal_rot_of_SGS_induction_sph(sph_rj, r_2nd, leg%g_sph_rj,    &

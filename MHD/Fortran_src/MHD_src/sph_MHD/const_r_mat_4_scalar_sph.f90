@@ -46,7 +46,6 @@
      &         (sph_rj, r_2nd, fl_prop, sph_bc_U, fdm2_center,          &
      &          g_sph_rj, band_p_poisson)
 !
-      use m_coef_fdm_free_CMB
       use m_ludcmp_3band
       use set_sph_scalar_mat_bc
       use cal_inner_core_rotation

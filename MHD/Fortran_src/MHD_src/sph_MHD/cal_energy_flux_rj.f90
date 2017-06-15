@@ -39,8 +39,6 @@
       subroutine s_cal_energy_flux_rj                                   &
      &         (sph_rj, r_2nd, sph_MHD_bc, ipol, rj_fld)
 !
-      use m_coef_fdm_free_ICB
-      use m_coef_fdm_free_CMB
       use const_sph_radial_grad
       use copy_nodal_fields
 !
@@ -54,7 +52,8 @@
       if(ipol%i_rot_Coriolis .gt. 0) then
         call const_grad_poloidal_moment                                 &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, sph_MHD_bc%bc_Uspectr,  &
-     &      fdm2_free_ICB1, fdm2_free_CMB1, ipol%i_rot_Coriolis, rj_fld)
+     &      sph_MHD_bc%fdm2_free_ICB, sph_MHD_bc%fdm2_free_CMB,         &
+     &      ipol%i_rot_Coriolis, rj_fld)
       end if
 !
 !
