@@ -47,6 +47,7 @@
       use t_boundary_data_sph_MHD
       use t_boundary_params_sph_MHD
       use t_radial_matrices_sph_MHD
+      use t_coef_fdm2_MHD_boundaries
 !
       implicit none
 !
@@ -99,7 +100,8 @@
      &      ipol, itor, rj_fld)
         call const_grad_vp_and_vorticity                                &
      &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, sph_MHD_bc%bc_Uspectr,  &
-     &      leg%g_sph_rj, ipol%i_velo, ipol%i_vort, rj_fld)
+     &      fdm2_free_ICB1, fdm2_free_CMB1, leg%g_sph_rj,               &
+     &      ipol%i_velo, ipol%i_vort, rj_fld)
       end if
 !
 !  Input: ipol%i_temp,  Solution: ipol%i_temp
@@ -136,11 +138,12 @@
 !      call check_vs_spectr(sph_rj, ipol, idpdr, itor, rj_fld)
 !
       if(MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
-        call update_after_vorticity_sph(sph_rj, r_2nd,                  &
-     &      MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U, leg,                 &
-     &      ipol, itor, rj_fld)
+        call update_after_vorticity_sph                                 &
+     &     (sph_rj, r_2nd, MHD_prop%fl_prop,                            &
+     &      sph_MHD_bc%sph_bc_U, fdm2_free_ICB1, fdm2_free_CMB1,        &
+     &      leg, ipol, itor, rj_fld)
         call cal_rot_radial_self_gravity                                &
-     &     (sph_rj, ipol, itor, MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U, &
+     &     (sph_rj, ipol, itor, MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U,  &
      &      rj_fld)
       end if
 !
@@ -166,6 +169,8 @@
      &         (sph_rj, r_2nd, MHD_prop, sph_MHD_bc, leg,               &
      &          ipol, itor, rj_fld)
 !
+      use m_coef_fdm_free_ICB
+      use m_coef_fdm_free_CMB
       use const_sph_radial_grad
       use cal_rot_buoyancies_sph_MHD
 !
@@ -179,15 +184,17 @@
 !
 !
       if(ipol%i_velo*ipol%i_vort .gt. 0) then
-        call const_grad_vp_and_vorticity(                               &
-     &      sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, sph_MHD_bc%bc_Uspectr,  &
-     &      leg%g_sph_rj, ipol%i_velo, ipol%i_vort, rj_fld)
+        call const_grad_vp_and_vorticity                                &
+     &     (sph_rj, r_2nd, sph_MHD_bc%sph_bc_U, sph_MHD_bc%bc_Uspectr,  &
+     &      fdm2_free_ICB1, fdm2_free_CMB1, leg%g_sph_rj,               &
+     &      ipol%i_velo, ipol%i_vort, rj_fld)
       end if
 !
       if(MHD_prop%fl_prop%iflag_scheme .gt. id_no_evolution) then
         if(iflag_debug.gt.0) write(*,*) 'update_after_vorticity_sph'
-        call update_after_vorticity_sph(sph_rj, r_2nd,                  &
-     &      MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U,                      &
+        call update_after_vorticity_sph                                 &
+     &     (sph_rj, r_2nd, MHD_prop%fl_prop,                            &
+     &      sph_MHD_bc%sph_bc_U, fdm2_free_ICB1, fdm2_free_CMB1,        &
      &      leg, ipol, itor, rj_fld)
         if(iflag_debug.gt.0) write(*,*) 'cal_rot_radial_self_gravity'
         call cal_rot_radial_self_gravity                                &
@@ -217,7 +224,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine update_after_vorticity_sph(sph_rj, r_2nd, fl_prop,     &
-     &          sph_bc_U, leg, ipol, itor, rj_fld)
+     &          sph_bc_U, fdm2_free_ICB, fdm2_free_CMB, leg,            &
+     &          ipol, itor, rj_fld)
 !
       use t_physical_property
       use cal_inner_core_rotation
@@ -226,6 +234,7 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(fluid_property), intent(in) :: fl_prop
       type(sph_boundary_type), intent(in) :: sph_bc_U
+      type(fdm2_free_slip), intent(in) :: fdm2_free_ICB, fdm2_free_CMB
       type(legendre_4_sph_trans), intent(in) :: leg
       type(phys_address), intent(in) :: ipol, itor
       type(phys_data), intent(inout) :: rj_fld
@@ -241,7 +250,8 @@
       if(ipol%i_v_diffuse .gt. 0) then
         if(iflag_debug.gt.0) write(*,*) 'const_sph_viscous_by_vort2'
         call const_sph_viscous_by_vort2(sph_rj, r_2nd,                  &
-     &      sph_bc_U, leg%g_sph_rj, fl_prop%coef_diffuse,               &
+     &      sph_bc_U, fdm2_free_ICB, fdm2_free_CMB,                     &
+     &      leg%g_sph_rj, fl_prop%coef_diffuse,                         &
      &      ipol%i_velo, ipol%i_vort, ipol%i_v_diffuse, rj_fld)
       end if
 !
@@ -250,7 +260,8 @@
       if(ipol%i_w_diffuse .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)'const_sph_vorticirty_diffusion'
         call const_sph_vorticirty_diffusion(sph_rj, r_2nd,              &
-     &      sph_bc_U, leg%g_sph_rj, fl_prop%coef_diffuse,               &
+     &      sph_bc_U, fdm2_free_ICB, fdm2_free_CMB,                     &
+     &      leg%g_sph_rj, fl_prop%coef_diffuse,                         &
      &      ipol%i_vort, ipol%i_w_diffuse, rj_fld)
       end if
 !

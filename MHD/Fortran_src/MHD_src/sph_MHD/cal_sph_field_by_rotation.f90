@@ -33,6 +33,7 @@
       use t_schmidt_poly_on_rtm
       use t_boundary_data_sph_MHD
       use t_boundary_params_sph_MHD
+      use t_coef_fdm2_MHD_boundaries
 !
       implicit none
 !
@@ -48,6 +49,8 @@
       subroutine rot_momentum_eq_exp_sph                                &
      &         (sph_rj, r_2nd, sph_MHD_bc, leg, ipol, itor, rj_fld)
 !
+      use m_coef_fdm_free_ICB
+      use m_coef_fdm_free_CMB
       use calypso_mpi
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
@@ -61,7 +64,8 @@
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &     write(*,*) 'cal_rot_of_forces_sph_2'
       call cal_rot_of_forces_sph_2(sph_rj, r_2nd, leg%g_sph_rj,         &
-     &   sph_MHD_bc%sph_bc_U, ipol, itor, rj_fld)
+     &   sph_MHD_bc%sph_bc_U, fdm2_free_ICB1, fdm2_free_CMB1,           &
+     &   ipol, itor, rj_fld)
 !
       call cal_rot_of_induction_sph(sph_rj, r_2nd, leg%g_sph_rj,        &
      &    sph_MHD_bc%sph_bc_B, ipol, rj_fld)
@@ -76,8 +80,9 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_rot_of_forces_sph_2                                &
-     &         (sph_rj, r_2nd, g_sph_rj, sph_bc_U, ipol, itor, rj_fld)
+      subroutine cal_rot_of_forces_sph_2(sph_rj, r_2nd, g_sph_rj,       &
+     &          sph_bc_U, fdm2_free_ICB, fdm2_free_CMB,                 &
+     &          ipol, itor, rj_fld)
 !
       use calypso_mpi
       use const_sph_radial_grad
@@ -88,6 +93,7 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(phys_address), intent(in) :: ipol, itor
       type(sph_boundary_type), intent(in)  :: sph_bc_U
+      type(fdm2_free_slip), intent(in) :: fdm2_free_ICB, fdm2_free_CMB
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
       type(phys_data), intent(inout) :: rj_fld
@@ -95,13 +101,15 @@
 !
       if( (ipol%i_m_advect*ipol%i_rot_inertia) .gt. 0) then
         if (iflag_debug .gt. 0) write(*,*) 'take rotation of advection'
-        call const_sph_force_rot2(sph_rj, r_2nd, sph_bc_U, g_sph_rj,    &
+        call const_sph_force_rot2(sph_rj, r_2nd,                        &
+     &      sph_bc_U, fdm2_free_ICB, fdm2_free_CMB, g_sph_rj,           &
      &      ipol%i_m_advect, ipol%i_rot_inertia, rj_fld)
       end if
 !
       if( (ipol%i_lorentz*ipol%i_rot_Lorentz) .gt. 0) then
         if (iflag_debug .gt. 0) write(*,*) 'take rotation of Lorentz'
-        call const_sph_force_rot2(sph_rj, r_2nd, sph_bc_U, g_sph_rj,    &
+        call const_sph_force_rot2(sph_rj, r_2nd,                        &
+     &      sph_bc_U, fdm2_free_ICB, fdm2_free_CMB, g_sph_rj,           &
      &      ipol%i_lorentz, ipol%i_rot_Lorentz, rj_fld)
 !
         if(sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
