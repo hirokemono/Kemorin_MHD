@@ -170,6 +170,7 @@
       subroutine cal_div_of_SGS_fluxes_sph(sph_rj, r_2nd, g_sph_rj,     &
      &          sph_bc_T, sph_bc_C, ipol, rj_fld)
 !
+      use m_coef_fdm_to_center
       use calypso_mpi
       use const_sph_divergence
 !
@@ -184,13 +185,15 @@
 !
       if( (ipol%i_SGS_h_flux*ipol%i_h_advect) .gt. 0) then
         if (iflag_debug .gt. 0) write(*,*) 'take div of heat flux'
-        call const_sph_scalar_advect(sph_rj, r_2nd, sph_bc_T, g_sph_rj, &
+        call const_sph_scalar_advect                                    &
+     &     (sph_rj, r_2nd, sph_bc_T, fdm2_center1, g_sph_rj,            &
      &      ipol%i_SGS_h_flux, ipol%i_SGS_div_h_flux, rj_fld)
       end if
 !
       if( (ipol%i_SGS_c_flux*ipol%i_c_advect) .gt. 0) then
         if (iflag_debug .gt. 0) write(*,*) 'take div  of composit flux'
-        call const_sph_scalar_advect(sph_rj, r_2nd, sph_bc_C, g_sph_rj, &
+        call const_sph_scalar_advect                                    &
+     &     (sph_rj, r_2nd, sph_bc_C, fdm2_center1, g_sph_rj,            &
      &      ipol%i_SGS_c_flux, ipol%i_SGS_div_c_flux, rj_fld)
       end if
 !

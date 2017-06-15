@@ -8,7 +8,12 @@
 !!
 !!@verbatim
 !!      subroutine const_radial_grad_scalar(sph_rj, r_2nd, sph_bc,      &
-!!     &          g_sph_rj, is_fld, is_grad, rj_fld)
+!!     &          fdm2_center, g_sph_rj, is_fld, is_grad, rj_fld)
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(fdm_matrices), intent(in) :: r_2nd
+!!        type(sph_boundary_type), intent(in) :: sph_bc
+!!        type(fdm2_center_mat), intent(in) :: fdm2_center
+!!        type(phys_data), intent(inout) :: rj_fld
 !!        Input:    is_fld
 !!        Solution: is_grad
 !!
@@ -94,13 +99,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_radial_grad_scalar(sph_rj, r_2nd, sph_bc,        &
-     &          g_sph_rj, is_fld, is_grad, rj_fld)
+     &          fdm2_center, g_sph_rj, is_fld, is_grad, rj_fld)
 !
+      use t_coef_fdm2_MHD_boundaries
       use select_exp_scalar_bc
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
       type(sph_boundary_type), intent(in) :: sph_bc
+      type(fdm2_center_mat), intent(in) :: fdm2_center
+!
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       integer(kind = kint), intent(in) :: is_fld, is_grad
 !
@@ -111,8 +119,8 @@
      &    is_fld, is_grad, sph_rj%nidx_rj, sph_rj%radius_1d_rj_r,       &
      &    g_sph_rj, r_2nd%fdm(1)%dmat,                                  &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
-      call sel_bc_radial_grad_scalar(sph_rj, sph_bc, g_sph_rj,          &
-     &    is_fld, is_grad, rj_fld)
+      call sel_bc_radial_grad_scalar(sph_rj, sph_bc, fdm2_center,       &
+     &    g_sph_rj, is_fld, is_grad, rj_fld)
       call normalize_sph_average_grad(is_grad,                          &
      &    sph_rj%idx_rj_degree_zero, sph_rj%nidx_rj,                    &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)

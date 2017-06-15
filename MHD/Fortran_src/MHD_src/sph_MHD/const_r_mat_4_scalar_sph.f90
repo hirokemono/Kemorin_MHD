@@ -6,14 +6,17 @@
 !>@brief Construct matrix for time evolution of scalar fields
 !!
 !!@verbatim
-!!      subroutine const_radial_mat_4_press_sph(sph_rj, r_2nd,          &
-!!     &          fl_prop, sph_bc_U, g_sph_rj, band_p_poisson)
-!!      subroutine const_radial_mat_4_scalar_sph(mat_name, dt,          &
-!!     &          sph_rj, r_2nd, property, sph_bc, g_sph_rj, band_s_evo)
+!!      subroutine const_radial_mat_4_press_sph                         &
+!!     &         (sph_rj, r_2nd, fl_prop, sph_bc_U, fdm2_center,        &
+!!     &          g_sph_rj, band_p_poisson)
+!!      subroutine const_radial_mat_4_scalar_sph                        &
+!!     &         (mat_name, dt, sph_rj, r_2nd, property,                &
+!!     &          sph_bc, fdm2_center, g_sph_rj, band_s_evo)
 !!        type(scalar_property), intent(in) :: property
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(fdm_matrices), intent(in) :: r_2nd
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
+!!        type(fdm2_center_mat), intent(in) :: fdm2_center
 !!@endverbatim
 !
       module const_r_mat_4_scalar_sph
@@ -29,6 +32,7 @@
       use t_sph_matrices
       use t_fdm_coefs
       use t_boundary_params_sph_MHD
+      use t_coef_fdm2_MHD_boundaries
 !
       implicit none
 !
@@ -38,10 +42,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_4_press_sph(sph_rj, r_2nd,            &
-     &          fl_prop, sph_bc_U, g_sph_rj, band_p_poisson)
+      subroutine const_radial_mat_4_press_sph                           &
+     &         (sph_rj, r_2nd, fl_prop, sph_bc_U, fdm2_center,          &
+     &          g_sph_rj, band_p_poisson)
 !
-      use m_coef_fdm_to_center
       use m_coef_fdm_free_ICB
       use m_coef_fdm_free_CMB
       use m_ludcmp_3band
@@ -56,6 +60,8 @@
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(fdm_matrices), intent(in) :: r_2nd
+      type(fdm2_center_mat), intent(in) :: fdm2_center
+!
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
 !
       type(band_matrices_type), intent(inout) :: band_p_poisson
@@ -79,7 +85,7 @@
       if(sph_bc_U%iflag_icb .eq. iflag_sph_fill_center) then
         call add_scalar_poisson_mat_ctr1                                &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
-     &      sph_bc_U%r_ICB, fdm2_center1%dmat_fix_fld, coef_p,          &
+     &      sph_bc_U%r_ICB, fdm2_center%dmat_fix_fld, coef_p,           &
      &      band_p_poisson%mat)
       else
         call add_icb_scalar_poisson_mat                                 &
@@ -108,10 +114,10 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine const_radial_mat_4_scalar_sph(mat_name, dt,            &
-     &          sph_rj, r_2nd, property, sph_bc, g_sph_rj, band_s_evo)
+      subroutine const_radial_mat_4_scalar_sph                          &
+     &         (mat_name, dt, sph_rj, r_2nd, property,                  &
+     &          sph_bc, fdm2_center, g_sph_rj, band_s_evo)
 !
-      use m_coef_fdm_to_center
       use m_ludcmp_3band
       use center_sph_matrices
       use set_radial_mat_sph
@@ -122,6 +128,8 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(scalar_property), intent(in) :: property
       type(sph_boundary_type), intent(in) :: sph_bc
+      type(fdm2_center_mat), intent(in) :: fdm2_center
+!
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: dt
       character(len=kchara), intent(in) :: mat_name
@@ -156,7 +164,7 @@
      &   .or. sph_bc%iflag_icb .eq. iflag_sph_fix_center) then
         call add_scalar_poisson_mat_ctr1                                &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
-     &      sph_bc%r_ICB, fdm2_center1%dmat_fix_fld, coef,              &
+     &      sph_bc%r_ICB, fdm2_center%dmat_fix_fld, coef,               &
      &      band_s_evo%mat)
       else if (sph_bc%iflag_icb .eq. iflag_fixed_flux) then
         call add_fix_flux_icb_poisson_mat                               &

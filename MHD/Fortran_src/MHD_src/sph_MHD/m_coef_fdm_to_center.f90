@@ -18,6 +18,5 @@
 !
 !
       type(fdm2_center_mat), save :: fdm2_center1
-!fdm2_center1%dmat_fix_fld
 !
       end module m_coef_fdm_to_center
