@@ -58,6 +58,7 @@
         type(fdm2_free_slip) :: fdm2_free_ICB
 !>        Structure for FDM matrix of free slip boundary at ICB
         type(fdm2_free_slip) :: fdm2_free_CMB
+!
       end type sph_MHD_boundary_data
 !
 ! -----------------------------------------------------------------------

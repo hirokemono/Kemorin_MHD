@@ -33,7 +33,7 @@
 !!@n @param r_ICB(0:2)    Radius at ICB
 !!@n @param r_ICB1(0:2)   Radius at the next of ICB
 !!
-!!@n @param fdm4_free_vp_ICB0(0:2,4)
+!!@n @param fdm4_free_vp_ICB0(0:2,2:4)
 !!         Matrix to evaluate poloidal velocity
 !!         with free slip boundary at ICB
 !!@n @param fdm4_free_vp_ICB1(-1:2,5)
@@ -72,7 +72,7 @@
       integer(kind = kint), intent(in) :: nri, jmax, kr_in
       real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_ICB(0:2), r_ICB1(0:2)
-      real(kind = kreal), intent(in) :: fdm4_free_vp_ICB0(0:2,4)
+      real(kind = kreal), intent(in) :: fdm4_free_vp_ICB0(0:2,2:4)
       real(kind = kreal), intent(in) :: fdm4_free_vp_ICB1(-1:2,5)
 !
       real(kind = kreal), intent(inout) :: poisson_mat5(5,nri,jmax)
@@ -108,7 +108,7 @@
       real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_ICB1(0:2)
       real(kind = kreal), intent(in) :: d1nod_mat_fdm_2(nri,-1:1)
-      real(kind = kreal), intent(in) :: fdm4_free_vp_ICB0(0:2,4)
+      real(kind = kreal), intent(in) :: fdm4_free_vp_ICB0(0:2,2:4)
       real(kind = kreal), intent(in) :: fdm4_free_vp_ICB1(-1:2,5)
       real(kind = kreal), intent(in) :: fdm2_free_vt_ICB(0:1,3)
 !
@@ -174,7 +174,7 @@
       real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_ICB1(0:2)
       real(kind = kreal), intent(in) :: d1nod_mat_fdm_2(nri,-1:1)
-      real(kind = kreal), intent(in) :: fdm4_free_vp_ICB0(0:2,4)
+      real(kind = kreal), intent(in) :: fdm4_free_vp_ICB0(0:2,2:4)
       real(kind = kreal), intent(in) :: fdm4_free_vp_ICB1(-1:2,5)
       real(kind = kreal), intent(in) :: fdm2_free_vt_ICB(0:1,3)
 !
@@ -231,7 +231,7 @@
       real(kind = kreal), intent(in) :: g_sph_rj(jmax,13)
       real(kind = kreal), intent(in) :: r_ICB(0:2), r_ICB1(0:2)
       real(kind = kreal), intent(in) :: d2nod_mat_fdm_2(nri,-1:1)
-      real(kind = kreal), intent(in) :: fdm4_free_vp_ICB0(0:2,4)
+      real(kind = kreal), intent(in) :: fdm4_free_vp_ICB0(0:2,2:4)
       real(kind = kreal), intent(in) :: fdm4_free_vp_ICB1(-1:2,5)
       real(kind = kreal), intent(in) :: fdm2_free_vt_ICB(0:1,3)
       real(kind = kreal), intent(in) :: coef_d

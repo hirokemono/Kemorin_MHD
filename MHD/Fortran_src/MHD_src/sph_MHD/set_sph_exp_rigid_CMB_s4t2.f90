@@ -31,9 +31,9 @@
 !!
 !!@n @param fdm2_fix_fld_CMB(0:2,3)
 !!         Matrix to evaluate radial derivative at CMB with fixed field
-!!@n @param  fdm4_noslip_CMB(-2:0,3:4)
+!!@n @param  fdm4_noslip_CMB(-2:0,2:4)
 !!         Matrix for poloidal velocity with non-slip boundary at CMB
-!!@n @param  fdm4_noslip_CMB1(-2:1,5)
+!!@n @param  fdm4_noslip_CMB1(-2:1,2:5)
 !!          Matrix for poloidal velocity with non-slip boundary
 !!          at next of CMB
 !!
@@ -70,8 +70,8 @@
       real(kind = kreal), intent(in) :: r_CMB(0:2), r_CMB1(0:2)
       real(kind = kreal), intent(in) :: d1nod_mat_fdm_2(nri,-1:1)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(0:2,3)
-      real(kind = kreal), intent(in) :: fdm4_noslip_CMB(-2:0,3:4)
-      real(kind = kreal), intent(in) :: fdm4_noslip_CMB1(-2:1,5)
+      real(kind = kreal), intent(in) :: fdm4_noslip_CMB(-2:0,2:4)
+      real(kind = kreal), intent(in) :: fdm4_noslip_CMB1(-2:1,2:5)
       real(kind = kreal), intent(in) :: Vt_CMB(jmax)
 !
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
@@ -138,8 +138,8 @@
       real(kind = kreal), intent(in) :: r_CMB1(0:2)
       real(kind = kreal), intent(in) :: d1nod_mat_fdm_2(nri,-1:1)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(0:2,3)
-      real(kind = kreal), intent(in) :: fdm4_noslip_CMB(-2:0,3:4)
-      real(kind = kreal), intent(in) :: fdm4_noslip_CMB1(-2:1,5)
+      real(kind = kreal), intent(in) :: fdm4_noslip_CMB(-2:0,2:4)
+      real(kind = kreal), intent(in) :: fdm4_noslip_CMB1(-2:1,2:5)
 !
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
@@ -198,8 +198,8 @@
       real(kind = kreal), intent(in) :: r_CMB(0:2), r_CMB1(0:2)
       real(kind = kreal), intent(in) :: d2nod_mat_fdm_2(nri,-1:1)
       real(kind = kreal), intent(in) :: fdm2_fix_fld_CMB(0:2,3)
-      real(kind = kreal), intent(in) :: fdm4_noslip_CMB(-2:0,3:4)
-      real(kind = kreal), intent(in) :: fdm4_noslip_CMB1(-2:1,5)
+      real(kind = kreal), intent(in) :: fdm4_noslip_CMB(-2:0,2:4)
+      real(kind = kreal), intent(in) :: fdm4_noslip_CMB1(-2:1,2:5)
 !
       integer(kind = kint), intent(in) :: n_point, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
