@@ -8,7 +8,7 @@
 !!@verbatim
 !!      subroutine const_radial_mat_vort_2step                          &
 !!     &        (dt, sph_rj, r_2nd, fl_prop, sph_bc_U,                  &
-!!     &         fdm2_center, fdm2_free_ICB, g_sph_rj,                  &
+!!     &         fdm2_center, fdm2_free_ICB, fdm2_free_CMB, g_sph_rj,   &
 !!     &         band_vs_poisson, band_vp_evo, band_vt_evo, band_wt_evo)
 !!      subroutine const_radial_mat_4_magne_sph                         &
 !!     &         (dt, sph_rj, r_2nd, cd_prop, sph_bc_B, fdm2_center,    &
@@ -20,6 +20,8 @@
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
 !!        type(sph_boundary_type), intent(in) :: sph_bc_B
 !!        type(fdm2_center_mat), intent(in) :: fdm2_center
+!!        type(fdm2_free_slip), intent(in) :: fdm2_free_ICB
+!!        type(fdm2_free_slip), intent(in) :: fdm2_free_CMB
 !!        type(band_matrices_type), intent(inout) :: band_vp_evo
 !!        type(band_matrices_type), intent(inout) :: band_vt_evo
 !!        type(band_matrices_type), intent(inout) :: band_wt_evo
@@ -56,10 +58,9 @@
 !
       subroutine const_radial_mat_vort_2step                            &
      &        (dt, sph_rj, r_2nd, fl_prop, sph_bc_U,                    &
-     &         fdm2_center, fdm2_free_ICB, g_sph_rj,                    &
+     &         fdm2_center, fdm2_free_ICB, fdm2_free_CMB, g_sph_rj,     &
      &         band_vs_poisson, band_vp_evo, band_vt_evo, band_wt_evo)
 !
-      use m_coef_fdm_free_CMB
       use m_ludcmp_band
       use set_sph_scalar_mat_bc
       use cal_inner_core_rotation
@@ -72,7 +73,7 @@
       type(fluid_property), intent(in) :: fl_prop
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(fdm2_center_mat), intent(in) :: fdm2_center
-      type(fdm2_free_slip), intent(in) :: fdm2_free_ICB
+      type(fdm2_free_slip), intent(in) :: fdm2_free_ICB, fdm2_free_CMB
 !
       real(kind = kreal), intent(in) :: g_sph_rj(sph_rj%nidx_rj(2),13)
       real(kind = kreal), intent(in) :: dt
@@ -191,11 +192,11 @@
       if(sph_bc_U%iflag_cmb .eq. iflag_free_slip) then
         call add_fix_flux_cmb_poisson_mat                               &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
-     &      sph_bc_U%kr_out, sph_bc_U%r_CMB, fdm2_free_vt_CMB,          &
+     &      sph_bc_U%kr_out, sph_bc_U%r_CMB, fdm2_free_CMB%dmat_vt,     &
      &      coef_dvt, band_vt_evo%mat)
         call add_fix_flux_cmb_poisson_mat                               &
      &     (sph_rj%nidx_rj(1), sph_rj%nidx_rj(2), g_sph_rj,             &
-     &      sph_bc_U%kr_out, sph_bc_U%r_CMB, fdm2_free_vp_CMB,          &
+     &      sph_bc_U%kr_out, sph_bc_U%r_CMB, fdm2_free_CMB%dmat_vp,     &
      &      one, band_vs_poisson%mat)
       else
         call set_fix_fld_cmb_poisson_mat                                &

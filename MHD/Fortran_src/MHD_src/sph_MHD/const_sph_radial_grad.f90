@@ -135,6 +135,7 @@
      &          is_velo, is_vort, rj_fld)
 !
       use m_coef_fdm_free_ICB
+      use m_coef_fdm_free_CMB
       use cal_sph_exp_rotation
       use select_exp_velocity_bc
 !
@@ -148,9 +149,9 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      call sel_bc_grad_vp_and_vorticity                                 &
-     &   (sph_rj, r_2nd, sph_bc_U, bc_Uspectr, fdm2_free_ICB1,          &
-     &    g_sph_rj, is_velo, is_vort, rj_fld)
+      call sel_bc_grad_vp_and_vorticity(sph_rj, r_2nd, sph_bc_U,        &
+     &    bc_Uspectr, fdm2_free_ICB1, fdm2_free_CMB1, g_sph_rj,         &
+     &    is_velo, is_vort, rj_fld)
       call cal_sph_diff_pol_and_rot2(sph_bc_U%kr_in, sph_bc_U%kr_out,   &
      &    sph_rj%nidx_rj, sph_rj%ar_1d_rj, g_sph_rj,                    &
      &    r_2nd%fdm(1)%dmat, r_2nd%fdm(2)%dmat, is_velo, is_vort,       &
@@ -206,6 +207,7 @@
      &         (sph_rj, r_2nd, sph_bc_U, bc_Uspectr, is_fld, rj_fld)
 !
       use m_coef_fdm_free_ICB
+      use m_coef_fdm_free_CMB
       use cal_sph_exp_rotation
       use select_exp_velocity_bc
 !
@@ -219,7 +221,7 @@
 !
 !
       call sel_bc_grad_poloidal_moment(sph_rj, r_2nd, sph_bc_U,         &
-     &    bc_Uspectr, fdm2_free_ICB1, is_fld, rj_fld)
+     &    bc_Uspectr, fdm2_free_ICB1, fdm2_free_CMB1, is_fld, rj_fld)
       call cal_sph_diff_poloidal2(sph_bc_U%kr_in, sph_bc_U%kr_out,      &
      &    sph_rj%nidx_rj, r_2nd%fdm(1)%dmat, is_fld,                    &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)

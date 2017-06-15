@@ -17,6 +17,7 @@
       implicit none
 !
 !
+!>      Structure for FDM matrix of center
       type(fdm2_center_mat), save :: fdm2_center1
 !
       end module m_coef_fdm_to_center

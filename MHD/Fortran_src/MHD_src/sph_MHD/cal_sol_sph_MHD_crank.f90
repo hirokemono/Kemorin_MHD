@@ -65,6 +65,7 @@
 !
       use m_coef_fdm_to_center
       use m_coef_fdm_free_ICB
+      use m_coef_fdm_free_CMB
       use cal_rot_buoyancies_sph_MHD
       use cal_sol_sph_fluid_crank
       use const_sph_radial_grad
@@ -93,7 +94,7 @@
      &       write(*,*) 'cal_sol_velo_by_vort_sph_crank'
         call cal_sol_velo_by_vort_sph_crank                             &
      &     (sph_rj, sph_MHD_bc%sph_bc_U,                                &
-     &      sph_MHD_bc%bc_Uspectr, fdm2_free_ICB1,                      &
+     &      sph_MHD_bc%bc_Uspectr, fdm2_free_ICB1, fdm2_free_CMB1,      &
      &      sph_MHD_mat%band_vp_evo, sph_MHD_mat%band_vt_evo,           &
      &      ipol, itor, rj_fld)
         call const_grad_vp_and_vorticity                                &

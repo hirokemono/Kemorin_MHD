@@ -7,8 +7,8 @@
 !>@brief  Update each field for MHD dynamo model
 !!
 !!@verbatim
-!!      subroutine cal_sol_velo_by_vort_sph_crank                       &
-!!     &         (sph_rj, sph_bc_U, bc_Uspectr, fdm2_free_ICB,          &
+!!      subroutine cal_sol_velo_by_vort_sph_crank(sph_rj, sph_bc_U,     &
+!!     &          bc_Uspectr, fdm2_free_ICB, fdm2_free_CMB,             &
 !!     &          band_vp_evo, band_vt_evo, ipol, itor, rj_fld)
 !!        Input address:    ipol%i_vort, itor%i_vort
 !!        Solution address: ipol%i_velo, itor%i_velo
@@ -67,18 +67,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sol_velo_by_vort_sph_crank                         &
-     &         (sph_rj, sph_bc_U, bc_Uspectr, fdm2_free_ICB,            &
+      subroutine cal_sol_velo_by_vort_sph_crank(sph_rj, sph_bc_U,       &
+     &          bc_Uspectr, fdm2_free_ICB, fdm2_free_CMB,               &
      &          band_vp_evo, band_vt_evo, ipol, itor, rj_fld)
 !
-      use m_coef_fdm_free_CMB
       use copy_field_smp
       use solve_sph_fluid_crank
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(sph_velocity_BC_spectr), intent(in) :: bc_Uspectr
-      type(fdm2_free_slip), intent(in) :: fdm2_free_ICB
+      type(fdm2_free_slip), intent(in) :: fdm2_free_ICB, fdm2_free_CMB
       type(band_matrices_type), intent(in) :: band_vp_evo, band_vt_evo
       type(phys_address), intent(in) :: ipol, itor
 !
@@ -93,7 +92,7 @@
 !$omp end parallel
 !
       call set_bc_velo_sph_crank(ipol%i_velo, sph_rj,                   &
-     &    sph_bc_U, bc_Uspectr, fdm2_free_ICB, rj_fld)
+     &    sph_bc_U, bc_Uspectr, fdm2_free_ICB, fdm2_free_CMB, rj_fld)
 !
       call solve_velo_by_vort_sph_crank                                 &
      &   (sph_rj, band_vp_evo, band_vt_evo, ipol%i_velo, itor%i_velo,   &
@@ -197,10 +196,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_bc_velo_sph_crank(is_velo, sph_rj,                 &
-     &          sph_bc_U, bc_Uspectr, fdm2_free_ICB, rj_fld)
+      subroutine set_bc_velo_sph_crank                                  &
+     &         (is_velo, sph_rj, sph_bc_U, bc_Uspectr,                  &
+     &          fdm2_free_ICB, fdm2_free_CMB, rj_fld)
 !
-      use m_coef_fdm_free_CMB
       use set_sph_exp_rigid_ICB
       use set_sph_exp_rigid_CMB
       use set_sph_exp_free_ICB
@@ -210,7 +209,7 @@
       type(sph_rj_grid), intent(in) :: sph_rj
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(sph_velocity_BC_spectr), intent(in) :: bc_Uspectr
-      type(fdm2_free_slip), intent(in) :: fdm2_free_ICB
+      type(fdm2_free_slip), intent(in) :: fdm2_free_ICB, fdm2_free_CMB
 !
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -238,7 +237,7 @@
 !
       if(sph_bc_U%iflag_cmb .eq. iflag_free_slip) then
         call cal_sph_nod_cmb_free_vpol2                                 &
-     &     (sph_rj%nidx_rj(2), sph_bc_U%kr_out, fdm2_free_vp_CMB,       &
+     &     (sph_rj%nidx_rj(2), sph_bc_U%kr_out, fdm2_free_CMB%dmat_vp,  &
      &      is_velo, rj_fld%n_point,rj_fld%ntot_phys, rj_fld%d_fld)
       else
         call cal_sph_nod_cmb_rigid_velo2                                &

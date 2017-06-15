@@ -83,6 +83,7 @@
      &          is_velo, it_velo, is_viscous, rj_fld)
 !
       use m_coef_fdm_free_ICB
+      use m_coef_fdm_free_CMB
       use cal_sph_exp_1st_diff
       use cal_sph_exp_fixed_scalar
       use select_exp_velocity_bc
@@ -110,7 +111,7 @@
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
       call sel_bc_sph_viscous_diffusion(sph_rj, r_2nd, sph_bc_U,        &
-     &    fdm2_free_ICB1, g_sph_rj, coef_diffuse,                       &
+     &    fdm2_free_ICB1, fdm2_free_CMB1, g_sph_rj, coef_diffuse,       &
      &    is_velo, it_velo, is_viscous, idp_diffuse, rj_fld)
 !
       end subroutine const_sph_viscous_diffusion
@@ -122,6 +123,7 @@
      &          is_vort, is_w_diffuse, rj_fld)
 !
       use m_coef_fdm_free_ICB
+      use m_coef_fdm_free_CMB
       use cal_sph_exp_1st_diff
       use select_exp_velocity_bc
 !
@@ -147,8 +149,8 @@
      &    is_w_diffuse, idp_diffuse, sph_rj%nidx_rj, r_2nd%fdm(1)%dmat, &
      &    rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
 !
-      call sel_bc_sph_vort_diffusion                                    &
-     &   (sph_rj, r_2nd, sph_bc_U, fdm2_free_ICB1, g_sph_rj,            &
+      call sel_bc_sph_vort_diffusion(sph_rj, r_2nd, sph_bc_U,           &
+     &    fdm2_free_ICB1, fdm2_free_CMB1, g_sph_rj,                     &
      &    coef_diffuse, is_vort, is_w_diffuse, idp_diffuse, rj_fld)
 !
       end subroutine const_sph_vorticirty_diffusion
