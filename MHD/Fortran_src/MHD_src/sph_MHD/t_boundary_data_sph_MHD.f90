@@ -21,6 +21,7 @@
       use m_precision
       use t_boundary_params_sph_MHD
       use t_coef_fdm2_MHD_boundaries
+      use t_coef_fdm4_MHD_boundaries
 !
       implicit none
 !
@@ -56,9 +57,18 @@
         type(fdm2_center_mat) :: fdm2_center
 !>        Structure for FDM matrix of free slip boundary at ICB
         type(fdm2_free_slip) :: fdm2_free_ICB
-!>        Structure for FDM matrix of free slip boundary at ICB
+!>        Structure for FDM matrix of free slip boundary at CMB
         type(fdm2_free_slip) :: fdm2_free_CMB
 !
+!>        Structure for 4th order FDM matrix of non-slip boundary at ICB
+        type(fdm4_ICB_vpol) :: fdm4_noslip_ICB
+!>        Structure for 4th order FDM matrix of free slip boundary at ICB
+        type(fdm4_ICB_vpol) :: fdm4_free_ICB
+!
+!>        Structure for 4th order FDM matrix of non-slip boundary at CMB
+        type(fdm4_CMB_vpol) :: fdm4_noslip_CMB
+!>        Structure for 4th order FDM matrix of free slip boundary at CMB
+        type(fdm4_CMB_vpol) :: fdm4_free_CMB
       end type sph_MHD_boundary_data
 !
 ! -----------------------------------------------------------------------
