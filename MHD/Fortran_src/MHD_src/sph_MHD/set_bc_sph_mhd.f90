@@ -54,7 +54,6 @@
       use set_bc_flag_sph_velo
       use set_bc_sph_scalars
 !
-      use m_coef_fdm_to_center
       use cal_fdm_coefs_4_boundaries
       use coef_fdm2_to_center
       use coef_fdm2_free_ICB
@@ -137,11 +136,11 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_2nd_to_center_fixed_fdm'
       call cal_2nd_to_center_fixed_fdm                                  &
-     &   (sph_rj%radius_1d_rj_r(1:2), fdm2_center1)
+     &   (sph_rj%radius_1d_rj_r(1:2), sph_MHD_bc%fdm2_center)
       call cal_2nd_center_fix_df_fdm                                    &
-     &   (sph_rj%radius_1d_rj_r(1), fdm2_center1)
+     &   (sph_rj%radius_1d_rj_r(1), sph_MHD_bc%fdm2_center)
       call cal_2nd_center_fixed_fdm                                     &
-     &   (sph_rj%radius_1d_rj_r(1:2), fdm2_center1)
+     &   (sph_rj%radius_1d_rj_r(1:2), sph_MHD_bc%fdm2_center)
 !
 !      Check data
 !
@@ -193,7 +192,7 @@
           call check_fdm_coefs_4_BC2(fhd_light, sph_MHD_bc%sph_bc_C)
         end if
 !
-        call check_coef_fdm_fix_dr_2ctr(fdm2_center1)
+        call check_coef_fdm_fix_dr_2ctr(sph_MHD_bc%fdm2_center)
       end if
 !
       end subroutine s_set_bc_sph_mhd

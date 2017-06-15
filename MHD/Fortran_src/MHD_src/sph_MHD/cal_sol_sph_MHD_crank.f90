@@ -64,7 +64,6 @@
      &         (dt, sph_rj, r_2nd, MHD_prop, sph_MHD_bc, leg,           &
      &          ipol, idpdr, itor, sph_MHD_mat, rj_fld)
 !
-      use m_coef_fdm_to_center
       use cal_rot_buoyancies_sph_MHD
       use cal_sol_sph_fluid_crank
       use const_sph_radial_grad
@@ -147,11 +146,13 @@
 !
       if(MHD_prop%ht_prop%iflag_scheme .gt. id_no_evolution) then
         call update_after_heat_sph(sph_rj, r_2nd, MHD_prop%ht_prop,     &
-     &      sph_MHD_bc%sph_bc_T, fdm2_center1, leg, ipol, rj_fld)
+     &      sph_MHD_bc%sph_bc_T, sph_MHD_bc%fdm2_center,                &
+     &      leg, ipol, rj_fld)
       end if
       if(MHD_prop%cp_prop%iflag_scheme .gt. id_no_evolution) then
         call update_after_composit_sph(sph_rj, r_2nd, MHD_prop%cp_prop, &
-     &      sph_MHD_bc%sph_bc_C, fdm2_center1, leg, ipol, rj_fld)
+     &      sph_MHD_bc%sph_bc_C, sph_MHD_bc%fdm2_center,                &
+     &      leg, ipol, rj_fld)
       end if
       if(MHD_prop%cd_prop%iflag_Bevo_scheme .gt. id_no_evolution) then
         call update_after_magne_sph(sph_rj, r_2nd, MHD_prop%cd_prop,    &
@@ -167,7 +168,6 @@
      &         (sph_rj, r_2nd, MHD_prop, sph_MHD_bc, leg,               &
      &          ipol, itor, rj_fld)
 !
-      use m_coef_fdm_to_center
       use const_sph_radial_grad
       use cal_rot_buoyancies_sph_MHD
 !
@@ -201,10 +201,12 @@
 !
       if(iflag_debug.gt.0) write(*,*) 'update_after_heat_sph'
       call update_after_heat_sph(sph_rj, r_2nd, MHD_prop%ht_prop,       &
-     &    sph_MHD_bc%sph_bc_T, fdm2_center1, leg, ipol, rj_fld)
+     &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%fdm2_center,                  &
+     &    leg, ipol, rj_fld)
       if(iflag_debug.gt.0) write(*,*) 'update_after_composit_sph'
       call update_after_composit_sph(sph_rj, r_2nd, MHD_prop%cp_prop,   &
-     &    sph_MHD_bc%sph_bc_C, fdm2_center1, leg, ipol, rj_fld)
+     &    sph_MHD_bc%sph_bc_C, sph_MHD_bc%fdm2_center,                  &
+     &    leg, ipol, rj_fld)
 !
       if(ipol%i_magne*ipol%i_current .gt. 0) then
         call const_grad_bp_and_current                                  &

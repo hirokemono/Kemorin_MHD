@@ -49,7 +49,6 @@
       subroutine rot_momentum_eq_exp_sph                                &
      &         (sph_rj, r_2nd, sph_MHD_bc, leg, ipol, itor, rj_fld)
 !
-      use m_coef_fdm_to_center
       use calypso_mpi
 !
       type(sph_rj_grid), intent(in) ::  sph_rj
@@ -72,9 +71,9 @@
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &     write(*,*) 'cal_div_of_fluxes_sph'
-      call cal_div_of_fluxes_sph(sph_rj, r_2nd, leg%g_sph_rj,           &
-     &    sph_MHD_bc%sph_bc_T, sph_MHD_bc%sph_bc_C, fdm2_center1,       &
-     &    ipol, rj_fld)
+      call cal_div_of_fluxes_sph                                        &
+     &   (sph_rj, r_2nd, leg%g_sph_rj, sph_MHD_bc%sph_bc_T,             &
+     &    sph_MHD_bc%sph_bc_C, sph_MHD_bc%fdm2_center, ipol, rj_fld)
 !
       end subroutine rot_momentum_eq_exp_sph
 !
