@@ -25,6 +25,7 @@
 !
       character(len=kchara), parameter :: radius1 = 'r'
       character(len=kchara), parameter :: radius2 = 'radial'
+      character(len=kchara), parameter :: radius3 = 'radius'
 !
       character(len=kchara), parameter :: theta1 = 'theta'
       character(len=kchara), parameter :: theta2 = 'meridional'
@@ -86,6 +87,7 @@
       if(sdctl%inner_decomp_ctl%iflag .gt. 0) then
         if(cmp_no_case(sdctl%inner_decomp_ctl%charavalue, radius1)      &
      &    .or. cmp_no_case(sdctl%inner_decomp_ctl%charavalue, radius2)) &
+     &    .or. cmp_no_case(sdctl%inner_decomp_ctl%charavalue, radius3))
      &   s3d_ranks%iflag_radial_inner_domain = 1
       end if
 !
