@@ -24,6 +24,7 @@
       use m_MHD_step_parameter
 !
       use SPH_analyzer_MHD
+      use init_sph_MHD_elapsed_label
 !
       implicit none
 !
@@ -44,7 +45,6 @@
       use m_rms_4_sph_spectr
       use m_bc_data_list
       use set_control_sph_mhd
-      use init_sph_MHD_elapsed_label
       use input_control_sph_MHD
 !
 !

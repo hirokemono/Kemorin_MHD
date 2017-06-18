@@ -27,6 +27,7 @@
 !
       use FEM_analyzer_sph_MHD
       use SPH_analyzer_MHD
+      use init_sph_MHD_elapsed_label
 !
       implicit none
 !
@@ -48,7 +49,6 @@
       use m_rms_4_sph_spectr
       use m_cal_max_indices
       use m_bc_data_list
-      use init_sph_MHD_elapsed_label
       use input_control_sph_MHD
 !
 !
