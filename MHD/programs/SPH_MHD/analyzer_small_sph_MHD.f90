@@ -83,6 +83,8 @@
 !
       subroutine evolution_sph_mhd_only
 !
+      use m_spheric_parameter
+!
       integer(kind = kint) :: iflag_finish
 !
 !
