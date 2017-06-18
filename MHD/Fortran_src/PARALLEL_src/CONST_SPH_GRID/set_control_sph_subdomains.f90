@@ -86,7 +86,7 @@
       s3d_ranks%iflag_radial_inner_domain = 0
       if(sdctl%inner_decomp_ctl%iflag .gt. 0) then
         if(cmp_no_case(sdctl%inner_decomp_ctl%charavalue, radius1)      &
-     &    .or. cmp_no_case(sdctl%inner_decomp_ctl%charavalue, radius2)) &
+     &    .or. cmp_no_case(sdctl%inner_decomp_ctl%charavalue, radius2)  &
      &    .or. cmp_no_case(sdctl%inner_decomp_ctl%charavalue, radius3))
      &   s3d_ranks%iflag_radial_inner_domain = 1
       end if
