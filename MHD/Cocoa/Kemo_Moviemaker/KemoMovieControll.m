@@ -211,6 +211,11 @@
             SnapshotImage = [[NSImage alloc] initWithContentsOfFile:imageFileName];
             CGImageRef CGImage = [SnapshotImage CGImageForProposedRect:nil context:nil hints:nil];
             buffer = [self pixelBufferFromCGImage:CGImage];
+
+            while (adaptor.assetWriterInput.readyForMoreMediaData == FALSE) {
+                NSDate *maxDate = [NSDate dateWithTimeIntervalSinceNow:0.1];
+                [[NSRunLoop currentRunLoop] runUntilDate:maxDate];
+            }
             
             // Append Image buffer
             if (![adaptor appendPixelBuffer:buffer withPresentationTime:frameTime]) {
