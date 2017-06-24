@@ -176,6 +176,8 @@ begin volume_rendering   (BMP or PNG)
     colorbar_range     0.0   1.0
 !    font_size_ctl         3
     num_grid_ctl     4
+!
+    axis_label_switch      ON
   end colorbar_ctl
 !
   begin image_rotation_ctl
