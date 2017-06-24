@@ -213,6 +213,7 @@
             buffer = [self pixelBufferFromCGImage:CGImage];
 
             while (adaptor.assetWriterInput.readyForMoreMediaData == FALSE) {
+                printf("WAit at %d\n", i);
                 NSDate *maxDate = [NSDate dateWithTimeIntervalSinceNow:0.1];
                 [[NSRunLoop currentRunLoop] runUntilDate:maxDate];
             }

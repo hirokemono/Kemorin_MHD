@@ -155,7 +155,7 @@
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_snap'
 !      call SPH_finalize_snap
 !
-      call copy_COMM_TIME_to_eleps(num_elapsed)
+      call copy_COMM_TIME_to_elaps(num_elapsed)
       call end_eleps_time(1)
 !
       call output_elapsed_times

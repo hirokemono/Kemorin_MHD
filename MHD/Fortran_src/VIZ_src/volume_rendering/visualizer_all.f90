@@ -111,18 +111,21 @@
       call start_eleps_time(65)
       call SECTIONING_visualize                                         &
      &   (viz_step%PSF_t%istep_file, time_d, ele_mesh%edge, nod_fld)
+      call calypso_MPI_barrier
       call end_eleps_time(65)
 !
       call start_eleps_time(66)
       call ISOSURF_visualize                                            &
      &   (viz_step%ISO_t%istep_file, time_d, mesh%node, mesh%ele,       &
      &    ele_mesh%edge, ele_mesh%edge_comm, nod_fld)
+      call calypso_MPI_barrier
       call end_eleps_time(66)
 !
       call start_eleps_time(67)
       call PVR_visualize                                                &
      &   (viz_step%PVR_t%istep_file, mesh%node, mesh%ele,               &
      &    ele_mesh%surf, group, jacobians%jac_3d, nod_fld)
+      call calypso_MPI_barrier
       call end_eleps_time(67)
 !
       call start_eleps_time(68)
@@ -130,6 +133,7 @@
      &   (viz_step%FLINE_t%istep_file, mesh%node, mesh%ele,             &
      &    ele_mesh%surf, group%ele_grp, ele_4_nod, nod_fld,             &
      &    mesh%nod_comm)
+      call calypso_MPI_barrier
       call end_eleps_time(68)
 !
       end subroutine visualize_all

@@ -331,19 +331,23 @@
       type(element_geometry), intent(inout) :: ele_mesh
       type(field_IO_params), intent(inout) ::  mesh_file
 !
-      integer(kind = kint) :: iflag_lc, iflag_gl
+      integer(kind = kint) :: iflag_lc
 !
 !
-      iflag_lc = 0
-      if     (check_exsist_rtp_file(my_rank) .ne. 0                     &
-     &  .or. check_exsist_rtm_file(my_rank) .ne. 0                      &
-     &  .or. check_exsist_rlm_file(my_rank) .ne. 0                      &
-     &  .or. check_exsist_rj_file(my_rank) .ne.  0) iflag_lc = 1
-      call MPI_allREDUCE(iflag_lc, iflag_gl, ione, CALYPSO_INTEGER,     &
-     &    MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      call calypso_mpi_barrier
 !
-      if(iflag_gl.eq.0) then
-        if (my_rank.eq.0) write(*,*) 'spherical harmonics table exists'
+      if(my_rank .eq. izero) then
+        iflag_lc = 0
+        if     (check_exsist_rtp_file(my_rank) .ne. 0                   &
+     &     .or. check_exsist_rtm_file(my_rank) .ne. 0                   &
+     &     .or. check_exsist_rlm_file(my_rank) .ne. 0                   &
+     &     .or. check_exsist_rj_file(my_rank) .ne.  0) iflag_lc = 1
+      end if
+      call MPI_BCAST(iflag_lc, ione, CALYPSO_INTEGER, izero,            &
+     &    CALYPSO_COMM, ierr_MPI)
+!
+      if(iflag_lc .eq. 0) then
+        if(my_rank.eq.0) write(*,*) 'spherical harmonics table exists'
       else if(iflag_make_SPH .eq. 0) then
         call calypso_mpi_abort(ierr_file,                               &
      &     'Set parameters for spherical shell')
