@@ -74,8 +74,6 @@
       if(iflag_debug.gt.0) write(*,*)' const_edge_comm_table'
       call const_edge_comm_table(mesh%node, mesh%nod_comm,              &
      &    ele_mesh%edge, blng_tbl, ele_mesh%edge_comm)
-      call calypso_mpi_barrier
-      call calypso_mpi_barrier
       if(iflag_debug.gt.0) write(*,*)' const_global_edge_id'
       call const_global_edge_id(ele_mesh%edge, ele_mesh%edge_comm)
       call calypso_mpi_barrier
