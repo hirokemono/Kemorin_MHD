@@ -54,7 +54,6 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-!$omp parallel
       if(      fl_prop%iflag_4_gravity  .ne. id_turn_OFF                &
      &   .and. fl_prop%iflag_4_coriolis .ne. id_turn_OFF                &
      &   .and. fl_prop%iflag_4_lorentz  .ne. id_turn_OFF) then
@@ -78,6 +77,7 @@
         call set_rot_cv_terms_to_force(ipol, itor, itor%i_rot_comp_buo, &
      &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
       else
+!$omp parallel
         if((ipol%i_forces*ipol%i_rot_inertia) .gt. 0) then
           call set_rot_advection_to_force                               &
      &     (ipol, itor, sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
@@ -100,8 +100,8 @@
           call add_buoyancy_to_vort_force(itor, itor%i_rot_filter_buo,  &
      &        sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
         end if
-      end if
 !$omp end parallel
+      end if
 !
       end subroutine sum_forces_to_explicit
 !
@@ -119,24 +119,23 @@
       type(phys_address), intent(in) :: ipol, itor
       type(phys_data), intent(inout) :: rj_fld
 !
+      integer(kind = kint) :: ist, ied
+!
+!
+      ist = (sph_bc_U%kr_in-1)*sph_rj%nidx_rj(2) + 1
+      ied =  sph_bc_U%kr_out * sph_rj%nidx_rj(2)
 !
 !$omp parallel
       if(      SGS_param%iflag_SGS_m_flux  .ne. id_turn_OFF             &
      &   .and. SGS_param%iflag_SGS_lorentz .ne. id_turn_OFF) then
-        call add_SGS_MHD_terms_to_force                                 &
-     &     (ipol, itor, sph_bc_U%kr_in, sph_bc_U%kr_out,                &
-     &      sph_rj%nnod_rj, sph_rj%nidx_rj(2), rj_fld%ntot_phys,        &
-     &      rj_fld%d_fld)
+        call add_SGS_MHD_terms_to_force(ipol, itor, ist, ied,           &
+     &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
       else if(SGS_param%iflag_SGS_m_flux  .ne. id_turn_OFF) then
-        call add_SGS_inertia_to_vort_force                              &
-     &     (ipol, itor, sph_bc_U%kr_in, sph_bc_U%kr_out,                &
-     &      sph_rj%nnod_rj, sph_rj%nidx_rj(2), rj_fld%ntot_phys,        &
-     &      rj_fld%d_fld)
+        call add_SGS_inertia_to_vort_force(ipol, itor, ist, ied,        &
+     &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
       else if(SGS_param%iflag_SGS_lorentz  .ne. id_turn_OFF) then
-        call add_SGS_lorentz_to_vort_force                              &
-     &     (ipol, itor, sph_bc_U%kr_in, sph_bc_U%kr_out,                &
-     &      sph_rj%nnod_rj, sph_rj%nidx_rj(2), rj_fld%ntot_phys,        &
-     &      rj_fld%d_fld)
+        call add_SGS_lorentz_to_vort_force(ipol, itor, ist, ied,        &
+     &      sph_rj%nnod_rj, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !$omp end parallel
 !

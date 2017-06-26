@@ -115,15 +115,18 @@
       type(phys_address), intent(in) :: ipol, itor
       type(phys_data), intent(inout) :: rj_fld
 !
+      integer(kind = kint) :: ist, ied
 !
-!$omp parallel
+!
       if(fl_prop%iflag_scheme .gt.     id_no_evolution) then
-        call cal_vorticity_eq_adams(ipol, itor,                         &
-     &      sph_bc_U%kr_in, sph_bc_U%kr_out, dt, fl_prop%coef_exp,      &
-     &      rj_fld%n_point,sph_rj%nidx_rj(2), rj_fld%ntot_phys,         &
-     &      rj_fld%d_fld)
+        ist = (sph_bc_U%kr_in-1)*sph_rj%nidx_rj(2) + 1
+        ied = sph_bc_U%kr_out * sph_rj%nidx_rj(2)
+        call cal_vorticity_eq_adams                                     &
+     &     (ipol, itor, ist, ied, dt, fl_prop%coef_exp,                 &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
+!$omp parallel
       if(cd_prop%iflag_Bevo_scheme .gt.    id_no_evolution) then
         call sel_diff_induction_MHD_adams                               &
      &     (SGS_param%iflag_SGS_uxb, dt, cd_prop, ipol, itor, rj_fld)
@@ -195,14 +198,18 @@
       type(phys_address), intent(in) :: ipol, itor
       type(phys_data), intent(inout) :: rj_fld
 !
-!$omp parallel
+      integer(kind = kint) :: ist, ied
+!
+!
       if(fl_prop%iflag_scheme .gt.     id_no_evolution) then
-        call cal_vorticity_eq_euler(ipol, itor,                         &
-     &      sph_bc_U%kr_in, sph_bc_U%kr_out, dt, fl_prop%coef_exp,      &
-     &      rj_fld%n_point, sph_rj%nidx_rj(2), rj_fld%ntot_phys,        &
-     &      rj_fld%d_fld)
+        ist = (sph_bc_U%kr_in-1)*sph_rj%nidx_rj(2) + 1
+        ied = sph_bc_U%kr_out * sph_rj%nidx_rj(2)
+        call cal_vorticity_eq_euler                                     &
+     &     (ipol, itor, ist, ied, dt, fl_prop%coef_exp,                 &
+     &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
+!$omp parallel
       if(cd_prop%iflag_Bevo_scheme .gt.    id_no_evolution) then
         call sel_diff_induction_MHD_euler(SGS_param%iflag_SGS_uxb,      &
      &      dt, cd_prop, ipol, itor, rj_fld)
@@ -271,12 +278,12 @@
       type(phys_address), intent(in) :: ipol, itor
       type(phys_data), intent(inout) :: rj_fld
 !
-!$omp parallel
       if(fl_prop%iflag_scheme .gt.     id_no_evolution) then
         call set_ini_adams_inertia(ipol, itor,                          &
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
+!$omp parallel
       if(cd_prop%iflag_Bevo_scheme .gt.    id_no_evolution) then
         call sel_ini_adams_mag_induct                                   &
      &     (SGS_param%iflag_SGS_uxb, ipol, itor, rj_fld)
