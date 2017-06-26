@@ -151,10 +151,6 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !
-      if(ipol%i_forces .gt. 0) then
-        call clear_field_data(rj_fld, n_vector, ipol%i_forces)
-      end if
-!
 !$omp parallel
       if(fl_prop%iflag_4_coriolis .ne. id_turn_OFF) then
         call add_coriolis_to_vort_force(ipol, itor,                     &

@@ -385,6 +385,10 @@
       if(ipol%i_c_advect .gt. 0) then
         call clear_field_data(rj_fld, n_scalar, ipol%i_c_advect)
       end if
+      if(ipol%i_forces .gt. 0) then
+        call clear_field_data(rj_fld, n_vector, ipol%i_forces)
+      end if
+!
 !
       call add_ref_advect_sph_MHD                                       &
      &   (sph%sph_rj, sph_MHD_bc%sph_bc_T, sph_MHD_bc%sph_bc_C,         &
