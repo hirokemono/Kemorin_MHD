@@ -81,15 +81,19 @@
 !
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
+      integer(kind = kint) :: inod
 !
-!$omp workshare
-      d_rj(ist:ied,ipol_scalar) = d_rj(ist:ied,ipol_scalar)             &
-     &          + dt * (coef_exp * d_rj(ist:ied,ipol_diffuse)           &
-     &              - adam_0 * d_rj(ist:ied,ipol_advect)                &
-     &              + adam_1 * d_rj(ist:ied,ipol_pre) )
 !
-      d_rj(ist:ied,ipol_pre) = - d_rj(ist:ied,ipol_advect)
- !$omp end workshare
+!$omp parallel do private(inod)
+      do inod = ist, ied
+        d_rj(inod,ipol_scalar) = d_rj(inod,ipol_scalar)                 &
+     &        + dt * (coef_exp * d_rj(inod,ipol_diffuse)                &
+     &                - adam_0 * d_rj(inod,ipol_advect)                 &
+     &                + adam_1 * d_rj(inod,ipol_pre) )
+!
+        d_rj(inod,ipol_pre) = - d_rj(inod,ipol_advect)
+      end do
+!$omp end parallel do
 !
       end subroutine scalar_diff_advect_adams
 !
@@ -108,12 +112,16 @@
 !
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
+      integer(kind = kint) :: inod
 !
-!$omp workshare
-      d_rj(ist:ied,ipol_scalar) = d_rj(ist:ied,ipol_scalar)             &
-     &         + dt * (coef_exp*d_rj(ist:ied,ipol_diffuse)              &
-     &             - d_rj(ist:ied,ipol_advect) )
- !$omp end workshare
+!
+!$omp parallel do private(inod)
+      do inod = ist, ied
+        d_rj(inod,ipol_scalar) = d_rj(inod,ipol_scalar)                 &
+     &          + dt * (coef_exp*d_rj(inod,ipol_diffuse)                &
+     &                         - d_rj(inod,ipol_advect) )
+      end do
+!$omp end parallel do
 !
       end subroutine scalar_diff_advect_euler
 !
@@ -128,10 +136,14 @@
 !
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
+      integer(kind = kint) :: inod
 !
-!$omp workshare
-      d_rj(ist:ied,ipol_pre) =  -d_rj(ist:ied,ipol_advect)
-!$omp end workshare
+!
+!$omp parallel do private(inod)
+      do inod = ist, ied
+        d_rj(inod,ipol_pre) =  -d_rj(inod,ipol_advect)
+      end do
+!$omp end parallel do
 !
       end subroutine set_ini_adams_scalar
 !
@@ -152,17 +164,21 @@
 !
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
+      integer(kind = kint) :: inod
 !
-!$omp workshare
-      d_rj(ist:ied,ipol_scalar) = d_rj(ist:ied,ipol_scalar)             &
-     &          + dt * (coef_exp * d_rj(ist:ied,ipol_diffuse)           &
-     &              + adam_0 * ( -d_rj(ist:ied,ipol_advect)             &
-     &                 + coef_src * d_rj(ist:ied,ipol_source) )         &
-     &              + adam_1 * d_rj(ist:ied,ipol_pre) )
 !
-       d_rj(ist:ied,ipol_pre) = - d_rj(ist:ied,ipol_advect)             &
-     &              + coef_src * d_rj(ist:ied,ipol_source)
- !$omp end workshare
+!$omp parallel do private(inod)
+      do inod = ist, ied
+        d_rj(inod,ipol_scalar) = d_rj(inod,ipol_scalar)                 &
+     &        + dt * (coef_exp * d_rj(inod,ipol_diffuse)                &
+     &             + adam_0 * ( -d_rj(inod,ipol_advect)                 &
+     &              + coef_src * d_rj(inod,ipol_source) )               &
+     &                + adam_1 * d_rj(inod,ipol_pre) )
+!
+         d_rj(inod,ipol_pre) = - d_rj(inod,ipol_advect)                 &
+     &              + coef_src * d_rj(inod,ipol_source)
+      end do
+!$omp end parallel do
 !
       end subroutine scalar_diff_adv_src_adams
 !
@@ -182,13 +198,17 @@
 !
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
+      integer(kind = kint) :: inod
 !
-!$omp workshare
-      d_rj(ist:ied,ipol_scalar) = d_rj(ist:ied,ipol_scalar)             &
-     &       + dt * (coef_exp*d_rj(ist:ied,ipol_diffuse)                &
-     &           - d_rj(ist:ied,ipol_advect)                            &
-     &            + coef_src * d_rj(ist:ied,ipol_source) )
- !$omp end workshare
+!
+!$omp parallel do private(inod)
+      do inod = ist, ied
+        d_rj(inod,ipol_scalar) = d_rj(inod,ipol_scalar)                 &
+     &          + dt * (coef_exp*d_rj(inod,ipol_diffuse)                &
+     &                         - d_rj(inod,ipol_advect)                 &
+     &              + coef_src * d_rj(inod,ipol_source) )
+      end do
+!$omp end parallel do
 !
       end subroutine scalar_diff_adv_src_euler
 !
@@ -206,11 +226,15 @@
 !
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
+      integer(kind = kint) :: inod
 !
-!$omp workshare
-       d_rj(ist:ied,ipol_pre) =  -d_rj(ist:ied,ipol_advect)             &
-     &                        + coef_src * d_rj(ist:ied,ipol_source)
-!$omp end workshare
+!
+!$omp parallel do private(inod)
+      do inod = ist, ied
+         d_rj(inod,ipol_pre) =  -d_rj(inod,ipol_advect)                 &
+     &              + coef_src * d_rj(inod,ipol_source)
+      end do
+!$omp end parallel do
 !
       end subroutine set_ini_adams_scalar_w_src
 !
@@ -227,10 +251,14 @@
 !
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
+      integer(kind = kint) :: inod
 !
-!$omp workshare
-      d_rj(ist:ied,ipol_scalar) = coef_src * d_rj(ist:ied,ipol_source)
-!$omp end workshare
+!
+!$omp parallel do private(inod)
+      do inod = ist, ied
+        d_rj(inod,ipol_scalar) = coef_src * d_rj(inod,ipol_source)
+      end do
+!$omp end parallel do
 !
       end subroutine stable_scalar_diff_src
 !
@@ -245,10 +273,14 @@
 !
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
+      integer(kind = kint) :: inod
 !
-!$omp workshare
-      d_rj(ist:ied,ipol_scalar) = zero
-!$omp end workshare
+!
+!$omp parallel do private(inod)
+      do inod = ist, ied
+        d_rj(inod,ipol_scalar) = zero
+      end do
+!$omp end parallel do
 !
       end subroutine stable_scalar_diffusion
 !

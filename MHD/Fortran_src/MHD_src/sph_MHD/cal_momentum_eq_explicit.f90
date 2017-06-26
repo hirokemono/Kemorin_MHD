@@ -131,7 +131,6 @@
      &     (SGS_param%iflag_SGS_uxb, dt, cd_prop, ipol, itor, rj_fld)
       end if
 !
-!$omp parallel
       if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
           if(iflag_debug .gt. 0) write(*,*)                             &
      &                'sel_scalar_diff_adv_src_adams temperature'
@@ -151,7 +150,6 @@
      &      ipol%i_light_source, ipol%i_light, ipol%i_pre_composit,     &
      &      dt, cp_prop%coef_exp, cp_prop%coef_source, sph_rj, rj_fld)
       end if
-!$omp end parallel
 !
 !  Center evolution
 !
@@ -214,7 +212,6 @@
      &      dt, cd_prop, ipol, itor, rj_fld)
       end if
 !
-!$omp parallel
       if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                'sel_scalar_diff_adv_src_euler temperature'
@@ -234,7 +231,6 @@
      &      ipol%i_light_source, ipol%i_light, dt, cp_prop%coef_exp,    &
      &      cp_prop%coef_advect, cp_prop%coef_source, sph_rj, rj_fld)
       end if
-!$omp end parallel
 !
 !   Center evolution
 !
@@ -288,7 +284,6 @@
      &     (SGS_param%iflag_SGS_uxb, ipol, itor, rj_fld)
       end if
 !
-!$omp parallel
       if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
         call sel_ini_adams_scalar_w_src(SGS_param%iflag_SGS_h_flux,     &
      &      sph_bc_T%kr_in, sph_bc_T%kr_out, ipol%i_h_advect,           &
@@ -302,7 +297,6 @@
      &      ipol%i_SGS_div_c_flux, ipol%i_light_source,                 &
      &      ipol%i_pre_composit, cp_prop%coef_source, sph_rj, rj_fld)
       end if
-!$omp end parallel
 !
 !   Center evolution
 !
