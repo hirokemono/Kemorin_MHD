@@ -126,12 +126,12 @@
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
-!$omp parallel
       if(cd_prop%iflag_Bevo_scheme .gt.    id_no_evolution) then
         call sel_diff_induction_MHD_adams                               &
      &     (SGS_param%iflag_SGS_uxb, dt, cd_prop, ipol, itor, rj_fld)
       end if
 !
+!$omp parallel
       if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
           if(iflag_debug .gt. 0) write(*,*)                             &
      &                'sel_scalar_diff_adv_src_adams temperature'
@@ -209,12 +209,12 @@
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
-!$omp parallel
       if(cd_prop%iflag_Bevo_scheme .gt.    id_no_evolution) then
         call sel_diff_induction_MHD_euler(SGS_param%iflag_SGS_uxb,      &
      &      dt, cd_prop, ipol, itor, rj_fld)
       end if
 !
+!$omp parallel
       if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                'sel_scalar_diff_adv_src_euler temperature'
@@ -283,12 +283,12 @@
      &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
 !
-!$omp parallel
       if(cd_prop%iflag_Bevo_scheme .gt.    id_no_evolution) then
         call sel_ini_adams_mag_induct                                   &
      &     (SGS_param%iflag_SGS_uxb, ipol, itor, rj_fld)
       end if
 !
+!$omp parallel
       if(ht_prop%iflag_scheme .gt.     id_no_evolution) then
         call sel_ini_adams_scalar_w_src(SGS_param%iflag_SGS_h_flux,     &
      &      sph_bc_T%kr_in, sph_bc_T%kr_out, ipol%i_h_advect,           &
