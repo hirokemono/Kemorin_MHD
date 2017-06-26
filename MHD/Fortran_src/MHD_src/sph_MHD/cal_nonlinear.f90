@@ -138,7 +138,8 @@
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                'SGS_forces_to_explicit'
         call SGS_forces_to_explicit                                     &
-     &    (SGS_param, sph%sph_rj, ipol, itor, rj_fld)
+     &    (SGS_param, sph%sph_rj, sph_MHD_bc%sph_bc_U,                  &
+     &     ipol, itor, rj_fld)
       end if
 !
       end subroutine nonlinear

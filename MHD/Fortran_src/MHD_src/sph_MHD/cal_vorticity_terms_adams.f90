@@ -16,8 +16,8 @@
 !!     &         (ipol, itor, it_rot_buo, nnod_rj, ntot_phys_rj, d_rj)
 !!      subroutine set_rot_cv_terms_to_force                            &
 !!     &         (ipol, itor, it_rot_buo, nnod_rj, ntot_phys_rj, d_rj)
-!!      subroutine add_SGS_MHD_terms_to_force                           &
-!!     &         (ipol, itor, nnod_rj, ntot_phys_rj, d_rj)
+!!      subroutine add_SGS_MHD_terms_to_force(ipol, itor,               &
+!!     &          kr_in, kr_out, nnod_rj, jmax, ntot_phys_rj, d_rj)
 !!
 !!      subroutine set_rot_advection_to_force                           &
 !!     &         (ipol, itor, nnod_rj, ntot_phys_rj, d_rj)
@@ -28,10 +28,10 @@
 !!      subroutine add_lorentz_to_vort_force                            &
 !!     &         (ipol, itor, nnod_rj, ntot_phys_rj, d_rj)
 !!
-!!      subroutine add_SGS_inertia_to_vort_force                        &
-!!     &         (ipol, itor, it_rot_buo, nnod_rj, ntot_phys_rj, d_rj)
-!!      subroutine add_SGS_lorentz_to_vort_force                        &
-!!     &         (ipol, itor, nnod_rj, ntot_phys_rj, d_rj)
+!!      subroutine add_SGS_inertia_to_vort_force(ipol, itor,            &
+!!     &          kr_in, kr_out, nnod_rj, jmax, ntot_phys_rj, d_rj)
+!!      subroutine add_SGS_lorentz_to_vort_force(ipol, itor,            &
+!!     &          kr_in, kr_out, nnod_rj, jmax, ntot_phys_rj, d_rj)
 !!
 !!      subroutine set_ini_adams_inertia                                &
 !!     &         (ipol, itor, nnod_rj, ntot_phys_rj, d_rj)
@@ -71,24 +71,26 @@
       integer(kind = kint), intent(in) :: nnod_rj, jmax, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
-      integer(kind = kint) :: ist, ied
+      integer(kind = kint) :: inod, ist, ied
 !
 !
       ist = (kr_in-1)*jmax + 1
       ied = kr_out * jmax
-!$omp workshare
-        d_rj(ist:ied,ipol%i_vort) = d_rj(ist:ied,ipol%i_vort)           &
-     &             + dt * (coef_exp * d_rj(ist:ied,ipol%i_w_diffuse)    &
-     &                     + adam_0 * d_rj(ist:ied,ipol%i_forces)       &
-     &                     + adam_1 * d_rj(ist:ied,ipol%i_pre_mom))
-        d_rj(ist:ied,itor%i_vort) = d_rj(ist:ied,itor%i_vort)           &
-     &             + dt * (coef_exp * d_rj(ist:ied,itor%i_w_diffuse)    &
-     &                     + adam_0 * d_rj(ist:ied,itor%i_forces)       &
-     &                     + adam_1 * d_rj(ist:ied,itor%i_pre_mom))
+!$omp do private (inod)
+      do inod = ist, ied
+        d_rj(inod,ipol%i_vort) = d_rj(inod,ipol%i_vort)                 &
+     &                 + dt * (coef_exp * d_rj(inod,ipol%i_w_diffuse)   &
+     &                         + adam_0 * d_rj(inod,ipol%i_forces)      &
+     &                         + adam_1 * d_rj(inod,ipol%i_pre_mom))
+        d_rj(inod,itor%i_vort) = d_rj(inod,itor%i_vort)                 &
+     &                 + dt * (coef_exp * d_rj(inod,itor%i_w_diffuse)   &
+     &                         + adam_0 * d_rj(inod,itor%i_forces)      &
+     &                         + adam_1 * d_rj(inod,itor%i_pre_mom))
 !
-        d_rj(ist:ied,ipol%i_pre_mom) = d_rj(ist:ied,ipol%i_forces)
-        d_rj(ist:ied,itor%i_pre_mom) = d_rj(ist:ied,itor%i_forces)
-!$omp end workshare
+        d_rj(inod,ipol%i_pre_mom) = d_rj(inod,ipol%i_forces)
+        d_rj(inod,itor%i_pre_mom) = d_rj(inod,itor%i_forces)
+      end do
+!$omp end do nowait
 !
       end subroutine cal_vorticity_eq_adams
 !
@@ -104,20 +106,22 @@
       integer(kind = kint), intent(in) :: nnod_rj, jmax, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
-      integer(kind = kint) :: ist, ied
+      integer(kind = kint) :: inod, ist, ied
 !
 !
       ist = (kr_in-1)*jmax + 1
       ied = kr_out * jmax
-!$omp workshare
-        d_rj(ist:ied,ipol%i_vort) = d_rj(ist:ied,ipol%i_vort)           &
-     &             + dt * (coef_exp *  d_rj(ist:ied,ipol%i_w_diffuse)   &
-     &                               + d_rj(ist:ied,ipol%i_forces) )
+!$omp do private (inod)
+      do inod = ist, ied
+        d_rj(inod,ipol%i_vort) = d_rj(inod,ipol%i_vort)                 &
+     &               + dt * (coef_exp *  d_rj(inod,ipol%i_w_diffuse)    &
+     &                                 + d_rj(inod,ipol%i_forces) )
 !
-        d_rj(ist:ied,itor%i_vort) = d_rj(ist:ied,itor%i_vort)           &
-     &             + dt * (coef_exp *  d_rj(ist:ied,itor%i_w_diffuse)   &
-     &                                 + d_rj(ist:ied,itor%i_forces) )
-!$omp end workshare
+        d_rj(inod,itor%i_vort) = d_rj(inod,itor%i_vort)                 &
+     &               + dt * (coef_exp *  d_rj(inod,itor%i_w_diffuse)    &
+     &                                 + d_rj(inod,itor%i_forces) )
+       end do
+!$omp end do
 !
       end subroutine cal_vorticity_eq_euler
 !
@@ -132,18 +136,20 @@
       integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
+      integer(kind = kint) :: inod
 !
-!$omp workshare
-        d_rj(1:nnod_rj,ipol%i_forces)                                   &
-     &                         = - d_rj(1:nnod_rj,ipol%i_rot_inertia)   &
-     &                           + d_rj(1:nnod_rj,ipol%i_rot_Coriolis)  &
-     &                           + d_rj(1:nnod_rj,ipol%i_rot_Lorentz)
-        d_rj(1:nnod_rj,itor%i_forces)                                   &
-     &                         = - d_rj(1:nnod_rj,itor%i_rot_inertia)   &
-     &                           + d_rj(1:nnod_rj,itor%i_rot_Coriolis)  &
-     &                           + d_rj(1:nnod_rj,itor%i_rot_Lorentz)   &
-     &                           + d_rj(1:nnod_rj,it_rot_buo)
-!$omp end workshare
+!
+!$omp do private (inod)
+      do inod = 1, nnod_rj
+        d_rj(inod,ipol%i_forces) = - d_rj(inod,ipol%i_rot_inertia)      &
+     &                             + d_rj(inod,ipol%i_rot_Coriolis)     &
+     &                             + d_rj(inod,ipol%i_rot_Lorentz)
+        d_rj(inod,itor%i_forces) = - d_rj(inod,itor%i_rot_inertia)      &
+     &                             + d_rj(inod,itor%i_rot_Coriolis)     &
+     &                             + d_rj(inod,itor%i_rot_Lorentz)      &
+     &                             + d_rj(inod,it_rot_buo)
+      end do
+!$omp end do nowait
 !
       end subroutine set_MHD_terms_to_force
 !
@@ -157,37 +163,47 @@
       integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
+      integer(kind = kint) :: inod
 !
-!$omp workshare
-        d_rj(1:nnod_rj,ipol%i_forces)                                   &
-     &                          = - d_rj(1:nnod_rj,ipol%i_rot_inertia)  &
-     &                            + d_rj(1:nnod_rj,ipol%i_rot_Coriolis)
-        d_rj(1:nnod_rj,itor%i_forces)                                   &
-     &                          = - d_rj(1:nnod_rj,itor%i_rot_inertia)  &
-     &                            + d_rj(1:nnod_rj,itor%i_rot_Coriolis) &
-     &                            + d_rj(1:nnod_rj,it_rot_buo)
-!$omp end workshare
+!
+!$omp do private (inod)
+      do inod = 1, nnod_rj
+        d_rj(inod,ipol%i_forces) = - d_rj(inod,ipol%i_rot_inertia)      &
+     &                             + d_rj(inod,ipol%i_rot_Coriolis)
+        d_rj(inod,itor%i_forces) = - d_rj(inod,itor%i_rot_inertia)      &
+     &                             + d_rj(inod,itor%i_rot_Coriolis)     &
+     &                             + d_rj(inod,it_rot_buo)
+      end do
+!$omp end do nowait
 !
       end subroutine set_rot_cv_terms_to_force
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine add_SGS_MHD_terms_to_force                             &
-     &         (ipol, itor, nnod_rj, ntot_phys_rj, d_rj)
+      subroutine add_SGS_MHD_terms_to_force(ipol, itor,                 &
+     &          kr_in, kr_out, nnod_rj, jmax, ntot_phys_rj, d_rj)
 !
       type(phys_address), intent(in) :: ipol, itor
-      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      integer(kind = kint), intent(in) :: nnod_rj, jmax, ntot_phys_rj
+      integer(kind = kint), intent(in) :: kr_in, kr_out
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
+      integer(kind = kint) :: inod, ist, ied
 !
-!$omp workshare
-        d_rj(1:nnod_rj,ipol%i_forces) = d_rj(1:nnod_rj,ipol%i_forces)   &
-     &                        - d_rj(1:nnod_rj,ipol%i_SGS_rot_inertia)  &
-     &                        + d_rj(1:nnod_rj,ipol%i_SGS_rot_Lorentz)
-        d_rj(1:nnod_rj,itor%i_forces) = d_rj(1:nnod_rj,itor%i_forces)   &
-     &                        - d_rj(1:nnod_rj,itor%i_SGS_rot_inertia)  &
-     &                        + d_rj(1:nnod_rj,itor%i_SGS_rot_Lorentz)
-!$omp end workshare
+!
+      ist = (kr_in-1)*jmax + 1
+      ied = kr_out * jmax
+!
+!$omp do private (inod)
+      do inod = ist, ied
+        d_rj(inod,ipol%i_forces) = d_rj(inod,ipol%i_forces)             &
+     &                            - d_rj(inod,ipol%i_SGS_rot_inertia)   &
+     &                            + d_rj(inod,ipol%i_SGS_rot_Lorentz)
+        d_rj(inod,itor%i_forces) = d_rj(inod,itor%i_forces)             &
+     &                            - d_rj(inod,itor%i_SGS_rot_inertia)   &
+     &                            + d_rj(inod,itor%i_SGS_rot_Lorentz)
+      end do
+!$omp end do nowait
 !
       end subroutine add_SGS_MHD_terms_to_force
 !
@@ -202,13 +218,15 @@
       integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
+      integer(kind = kint) :: inod
 !
-!$omp workshare
-        d_rj(1:nnod_rj,ipol%i_forces)                                   &
-     &                          = - d_rj(1:nnod_rj,ipol%i_rot_inertia)
-        d_rj(1:nnod_rj,itor%i_forces)                                   &
-     &                          = - d_rj(1:nnod_rj,itor%i_rot_inertia)
-!$omp end workshare
+!
+!$omp do private (inod)
+      do inod = 1, nnod_rj
+        d_rj(inod,ipol%i_forces) = - d_rj(inod,ipol%i_rot_inertia)
+        d_rj(inod,itor%i_forces) = - d_rj(inod,itor%i_rot_inertia)
+      end do
+!$omp end do nowait
 !
       end subroutine set_rot_advection_to_force
 !
@@ -221,13 +239,17 @@
       integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
+      integer(kind = kint) :: inod
 !
-!$omp workshare
-        d_rj(1:nnod_rj,ipol%i_forces) = d_rj(1:nnod_rj,ipol%i_forces)   &
-     &                           + d_rj(1:nnod_rj,ipol%i_rot_Coriolis)
-        d_rj(1:nnod_rj,itor%i_forces) = d_rj(1:nnod_rj,itor%i_forces)   &
-     &                           + d_rj(1:nnod_rj,itor%i_rot_Coriolis)
-!$omp end workshare
+!
+!$omp do private (inod)
+      do inod = 1, nnod_rj
+        d_rj(inod,ipol%i_forces) = d_rj(inod,ipol%i_forces)             &
+     &                           + d_rj(inod,ipol%i_rot_Coriolis)
+        d_rj(inod,itor%i_forces) = d_rj(inod,itor%i_forces)             &
+     &                           + d_rj(inod,itor%i_rot_Coriolis)
+      end do
+!$omp end do nowait
 !
       end subroutine add_coriolis_to_vort_force
 !
@@ -241,11 +263,15 @@
       integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
+      integer(kind = kint) :: inod
 !
-!$omp workshare
-        d_rj(1:nnod_rj,itor%i_forces) = d_rj(1:nnod_rj,itor%i_forces)   &
-     &                            + d_rj(1:nnod_rj,it_rot_buo)
-!$omp end workshare
+!
+!$omp do private (inod)
+      do inod = 1, nnod_rj
+        d_rj(inod,itor%i_forces) = d_rj(inod,itor%i_forces)             &
+     &                           + d_rj(inod,it_rot_buo)
+       end do
+!$omp end do nowait
 !
       end subroutine add_buoyancy_to_vort_force
 !
@@ -258,52 +284,72 @@
       integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
+      integer(kind = kint) :: inod
 !
-!$omp workshare
-        d_rj(1:nnod_rj,ipol%i_forces) = d_rj(1:nnod_rj,ipol%i_forces)   &
-     &                           + d_rj(1:nnod_rj,ipol%i_rot_Lorentz)
-        d_rj(1:nnod_rj,itor%i_forces) = d_rj(1:nnod_rj,itor%i_forces)   &
-     &                           + d_rj(1:nnod_rj,itor%i_rot_Lorentz)
-!$omp end workshare
+!
+!$omp do private (inod)
+      do inod = 1, nnod_rj
+        d_rj(inod,ipol%i_forces) = d_rj(inod,ipol%i_forces)             &
+     &                           + d_rj(inod,ipol%i_rot_Lorentz)
+        d_rj(inod,itor%i_forces) = d_rj(inod,itor%i_forces)             &
+     &                           + d_rj(inod,itor%i_rot_Lorentz)
+       end do
+!$omp end do nowait
 !
       end subroutine add_lorentz_to_vort_force
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine add_SGS_inertia_to_vort_force                          &
-     &         (ipol, itor, nnod_rj, ntot_phys_rj, d_rj)
+      subroutine add_SGS_inertia_to_vort_force(ipol, itor,              &
+     &          kr_in, kr_out, nnod_rj, jmax, ntot_phys_rj, d_rj)
 !
       type(phys_address), intent(in) :: ipol, itor
-      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      integer(kind = kint), intent(in) :: nnod_rj, jmax, ntot_phys_rj
+      integer(kind = kint), intent(in) :: kr_in, kr_out
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
+      integer(kind = kint) :: inod, ist, ied
 !
-!$omp workshare
-        d_rj(1:nnod_rj,ipol%i_forces) = d_rj(1:nnod_rj,ipol%i_forces)   &
-     &                        - d_rj(1:nnod_rj,ipol%i_SGS_rot_inertia)
-        d_rj(1:nnod_rj,itor%i_forces) = d_rj(1:nnod_rj,itor%i_forces)   &
-     &                        - d_rj(1:nnod_rj,itor%i_SGS_rot_inertia)
-!$omp end workshare
+!
+      ist = (kr_in-1)*jmax + 1
+      ied = kr_out * jmax
+!
+!$omp do private (inod)
+      do inod = ist, ied
+        d_rj(inod,ipol%i_forces) = d_rj(inod,ipol%i_forces)             &
+     &                            - d_rj(inod,ipol%i_SGS_rot_inertia)
+        d_rj(inod,itor%i_forces) = d_rj(inod,itor%i_forces)             &
+     &                            - d_rj(inod,itor%i_SGS_rot_inertia)
+      end do
+!$omp end do nowait
 !
       end subroutine add_SGS_inertia_to_vort_force
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine add_SGS_lorentz_to_vort_force                          &
-     &         (ipol, itor, nnod_rj, ntot_phys_rj, d_rj)
+      subroutine add_SGS_lorentz_to_vort_force(ipol, itor,              &
+     &          kr_in, kr_out, nnod_rj, jmax, ntot_phys_rj, d_rj)
 !
       type(phys_address), intent(in) :: ipol, itor
-      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      integer(kind = kint), intent(in) :: nnod_rj, jmax, ntot_phys_rj
+      integer(kind = kint), intent(in) :: kr_in, kr_out
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
+      integer(kind = kint) :: inod, ist, ied
 !
-!$omp workshare
-        d_rj(1:nnod_rj,ipol%i_forces) = d_rj(1:nnod_rj,ipol%i_forces)   &
-     &                     + d_rj(1:nnod_rj,ipol%i_SGS_rot_Lorentz)
-        d_rj(1:nnod_rj,itor%i_forces) = d_rj(1:nnod_rj,itor%i_forces)   &
-     &                     + d_rj(1:nnod_rj,itor%i_SGS_rot_Lorentz)
-!$omp end workshare
+!
+      ist = (kr_in-1)*jmax + 1
+      ied = kr_out * jmax
+!
+!$omp do private (inod)
+      do inod = ist, ied
+        d_rj(inod,ipol%i_forces) = d_rj(inod,ipol%i_forces)             &
+     &                            + d_rj(inod,ipol%i_SGS_rot_Lorentz)
+        d_rj(inod,itor%i_forces) = d_rj(inod,itor%i_forces)             &
+     &                            + d_rj(inod,itor%i_SGS_rot_Lorentz)
+      end do
+!$omp end do nowait
 !
       end subroutine add_SGS_lorentz_to_vort_force
 !
@@ -317,11 +363,15 @@
       integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
 !
+      integer(kind = kint) :: inod
 !
-!$omp workshare
-        d_rj(1:nnod_rj,ipol%i_pre_mom) = d_rj(1:nnod_rj,ipol%i_forces)
-        d_rj(1:nnod_rj,itor%i_pre_mom) = d_rj(1:nnod_rj,itor%i_forces)
-!$omp end workshare
+!
+!$omp do private (inod)
+      do inod = 1, nnod_rj
+        d_rj(inod,ipol%i_pre_mom) = d_rj(inod,ipol%i_forces)
+        d_rj(inod,itor%i_pre_mom) = d_rj(inod,itor%i_forces)
+      end do
+!$omp end do nowait
 !
       end subroutine set_ini_adams_inertia
 !
