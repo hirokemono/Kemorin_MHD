@@ -119,12 +119,13 @@
 !
 ! ---------------------------------
 !
-     if(iflag_debug.gt.0) write(*,*)' read_alloc_sph_restart_data'
-     call read_alloc_sph_restart_data                                   &
+      if(iflag_debug.gt.0) write(*,*)' read_alloc_sph_restart_data'
+      call read_alloc_sph_restart_data                                  &
      &  (MHD_step1%init_d, rj_fld1, MHD_step1%rst_step)
 !
-     if(iflag_debug.gt.0) write(*,*)' sph_initial_spectrum'
-     call sph_initial_spectrum(ipol, itor, rj_fld1, MHD_step1%rst_step)
+      if(iflag_debug.gt.0) write(*,*)' sph_initial_spectrum'
+      call sph_initial_spectrum                                         &
+     &   (sph_MHD_bc1, ipol, itor, rj_fld1, MHD_step1%rst_step)
 !
       end subroutine SPH_add_initial_field
 !

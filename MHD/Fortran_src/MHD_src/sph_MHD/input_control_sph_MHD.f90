@@ -7,7 +7,7 @@
 !>@brief  Load mesh and filtering data for MHD simulation
 !!
 !!@verbatim
-!!      subroutine input_control_SPH_mesh                               &
+!!      subroutine input_control_SPH_dynamo                             &
 !!     &         (MHD_ctl, sph, comms_sph, sph_grps, rj_fld, nod_fld,   &
 !!     &          pwr, SGS_par, dynamic_SPH, MHD_step, MHD_prop, MHD_BC,&
 !!     &          WK, mesh, group, ele_mesh)
@@ -94,7 +94,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine input_control_SPH_mesh                                 &
+      subroutine input_control_SPH_dynamo                               &
      &         (MHD_ctl, sph, comms_sph, sph_grps, rj_fld, nod_fld,     &
      &          pwr, SGS_par, dynamic_SPH, MHD_step, MHD_prop, MHD_BC,  &
      &          WK, mesh, group, ele_mesh)
@@ -143,7 +143,7 @@
 !
       call sph_boundary_IO_control(MHD_prop, MHD_BC)
 !
-      end subroutine input_control_SPH_mesh
+      end subroutine input_control_SPH_dynamo
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -227,6 +227,8 @@
       call select_make_SPH_mesh(MHD_ctl%psph_ctl%iflag_sph_shell,       &
      &    sph, comms_sph, sph_grps, gen_sph1,                           &
      &    mesh, group, ele_mesh, mesh1_file)
+!
+      call sph_boundary_IO_control(MHD_prop, MHD_BC)
 !
       end subroutine input_control_4_SPH_make_init
 !
