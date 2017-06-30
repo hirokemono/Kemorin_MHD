@@ -51,9 +51,9 @@
 !!
 !!      subroutine adjust_by_CMB_temp                                   &
 !!     &         (sph_bc_T, ipol, n_point, ntot_phys_rj, d_rj)
-!!      subroutine add_inner_core_heat_source                           &
-!!     &         (sph_bc_T, ipol, n_point, ntot_phys_rj, d_rj)
 !!      subroutine add_outer_core_heat_source                           &
+!!     &         (sph_bc_T, ipol, n_point, ntot_phys_rj, d_rj)
+!!      subroutine add_inner_core_heat_source                           &
 !!     &         (sph_bc_T, ipol, n_point, ntot_phys_rj, d_rj)
 !!      subroutine add_whole_core_heat_source                           &
 !!     &         (sph_bc_T, ipol, n_point, ntot_phys_rj, d_rj)
@@ -134,6 +134,10 @@
         call set_initial_heat_source_sph(sph_MHD_bc%sph_bc_T,           &
      &      ipol, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
+!      if(ipol%i_heat_source*ipol%i_temp .gt. izero) then
+!        call add_inner_core_heat_source(sph_MHD_bc%sph_bc_T,           &
+!     &      ipol, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+!      end if
 !  Set light element source if light element is exist
       if(ipol%i_light_source .gt. izero) then
         call set_initial_light_source_sph(sph_MHD_bc%sph_bc_C,          &
@@ -546,57 +550,6 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine add_inner_core_heat_source                             &
-     &         (sph_bc_T, ipol, n_point, ntot_phys_rj, d_rj)
-!
-      type(sph_boundary_type), intent(in) :: sph_bc_T
-      type(phys_address), intent(in) :: ipol
-      integer(kind = kint), intent(in) ::  n_point, ntot_phys_rj
-      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
-!
-      real (kind = kreal) :: rr, q, T_ICB
-      integer(kind = kint) :: inod, k, jj
-!
-!
-      q = three * sph_bc_T%r_CMB(0)**2 / sph_bc_T%r_ICB(0)**3
-!
-!$omp parallel do
-      do inod = 1, n_point
-        d_rj(inod,ipol%i_heat_source) = zero
-      end do
-!$omp end parallel do
-!
-!
-!    Find address for l = m = 0
-      jj =  find_local_sph_mode_address(0, 0)
-!
-      if (jj .gt. 0) then
-        inod = local_sph_data_address(sph_bc_T%kr_in,jj)
-        T_ICB = d_rj(inod,ipol%i_temp)
-!
-        do k = 1, sph_bc_T%kr_in
-          inod = local_sph_data_address(k,jj)
-          rr = radius_1d_rj_r(k)
-!   Substitute initial heat source
-          d_rj(inod,ipol%i_heat_source) = q
-!   Fill inner core temperature
-          d_rj(inod,ipol%i_temp) = T_ICB                                &
-     &       + (one / six) * q * (sph_bc_T%r_ICB(0)**2 - rr**2)
-        end do
-      end if
-!
-!    Center
-      if(inod_rj_center() .gt. 0) then
-        inod = inod_rj_center()
-        d_rj(inod,ipol%i_heat_source) = q
-        d_rj(inod,ipol%i_temp)                                          &
-     &      = T_ICB + (one / six) * q * sph_bc_T%r_ICB(0)**2
-      end if
-!
-      end subroutine add_inner_core_heat_source
-!
-!-----------------------------------------------------------------------
-!
       subroutine add_outer_core_heat_source                             &
      &         (sph_bc_T, ipol, n_point, ntot_phys_rj, d_rj)
 !
@@ -632,16 +585,12 @@
           d_rj(inod,ipol%i_heat_source)  = q
         end do
       end if
-!    Center
-      if(inod_rj_center() .gt. 0) then
-        d_rj(inod_rj_center(),ipol%i_heat_source) = q
-      end if
 !
       end subroutine add_outer_core_heat_source
 !
 !-----------------------------------------------------------------------
 !
-      subroutine add_whole_core_heat_source                             &
+      subroutine add_inner_core_heat_source                             &
      &         (sph_bc_T, ipol, n_point, ntot_phys_rj, d_rj)
 !
       type(sph_boundary_type), intent(in) :: sph_bc_T
@@ -649,11 +598,9 @@
       integer(kind = kint), intent(in) ::  n_point, ntot_phys_rj
       real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
 !
-      real (kind = kreal) :: rr, q, T_ICB
+      real (kind = kreal) :: rr, q, T_ICB, f_ICB
       integer(kind = kint) :: inod, k, jj
 !
-!
-      q = three / sph_bc_T%r_ICB(0)
 !
 !$omp parallel do
       do inod = 1, n_point
@@ -666,6 +613,64 @@
       jj =  find_local_sph_mode_address(0, 0)
 !
       if (jj .gt. 0) then
+        f_ICB = -sph_bc_T%CMB_flux(jj)                                  &
+     &         * (sph_bc_T%r_CMB(0) / sph_bc_T%r_ICB(0))**2
+        q = three * f_ICB / sph_bc_T%r_ICB(0)
+!
+        inod = local_sph_data_address(sph_bc_T%kr_in,jj)
+        T_ICB = d_rj(inod,ipol%i_temp)
+!
+        do k = 1, sph_bc_T%kr_in
+          inod = local_sph_data_address(k,jj)
+          rr = radius_1d_rj_r(k)
+!   Substitute initial heat source
+          d_rj(inod,ipol%i_heat_source) = q
+!   Fill inner core temperature
+          d_rj(inod,ipol%i_temp) = T_ICB                                &
+     &       + half * f_ICB * (sph_bc_T%r_ICB(0)**2 - rr**2)            &
+     &        / sph_bc_T%r_ICB(0)
+        end do
+      end if
+!
+!    Center
+      if(inod_rj_center() .gt. 0) then
+        inod = inod_rj_center()
+        d_rj(inod,ipol%i_heat_source) = q
+        d_rj(inod,ipol%i_temp) = T_ICB                                  &
+     &       + half * f_ICB * sph_bc_T%r_ICB(0)
+      end if
+!
+      end subroutine add_inner_core_heat_source
+!
+!-----------------------------------------------------------------------
+!
+      subroutine add_whole_core_heat_source                             &
+     &         (sph_bc_T, ipol, n_point, ntot_phys_rj, d_rj)
+!
+      type(sph_boundary_type), intent(in) :: sph_bc_T
+      type(phys_address), intent(in) :: ipol
+      integer(kind = kint), intent(in) ::  n_point, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(n_point,ntot_phys_rj)
+!
+      real (kind = kreal) :: rr, q, T_ICB, f_ICB
+      integer(kind = kint) :: inod, k, jj
+!
+!
+!$omp parallel do
+      do inod = 1, n_point
+        d_rj(inod,ipol%i_heat_source) = zero
+      end do
+!$omp end parallel do
+!
+!
+!    Find address for l = m = 0
+      jj =  find_local_sph_mode_address(0, 0)
+!
+      if (jj .gt. 0) then
+        q = three * sph_bc_T%CMB_flux(jj) / sph_bc_T%r_ICB(0) 
+        f_ICB = -sph_bc_T%CMB_flux(jj)                                  &
+     &         * (sph_bc_T%r_ICB(0) / sph_bc_T%r_CMB(0))
+!
         inod = local_sph_data_address(sph_bc_T%kr_in,jj)
         T_ICB = d_rj(inod,ipol%i_temp)
 !
@@ -681,7 +686,8 @@
           rr = radius_1d_rj_r(k)
 !   Fill inner core temperature
           d_rj(inod,ipol%i_temp) = T_ICB                                &
-     &       + (one / six) * q * (sph_bc_T%r_ICB(0)**2 - rr**2)
+     &       + half * f_ICB * (sph_bc_T%r_ICB(0)**2 - rr**2)            &
+     &        / sph_bc_T%r_ICB(0)
         end do
       end if
 !
@@ -689,8 +695,8 @@
       if(inod_rj_center() .gt. 0) then
         inod = inod_rj_center()
         d_rj(inod,ipol%i_heat_source) = q
-        d_rj(inod,ipol%i_temp)                                          &
-     &       = T_ICB + (one / six) * q * sph_bc_T%r_ICB(0)**2
+        d_rj(inod,ipol%i_temp) = T_ICB                                  &
+     &       + half * f_ICB * sph_bc_T%r_ICB(0)
       end if
 !
       end subroutine add_whole_core_heat_source
