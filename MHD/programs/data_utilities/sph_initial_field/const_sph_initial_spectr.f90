@@ -51,12 +51,31 @@
 !!
 !!      subroutine adjust_by_CMB_temp                                   &
 !!     &         (sph_bc_T, ipol, n_point, ntot_phys_rj, d_rj)
+!!
 !!      subroutine add_outer_core_heat_source                           &
 !!     &         (sph_bc_T, ipol, n_point, ntot_phys_rj, d_rj)
+!!       Set homogenious heat source at outer core
+!!       by CMB and ICB heat flux
+!!
 !!      subroutine add_inner_core_heat_source                           &
 !!     &         (sph_bc_T, ipol, n_point, ntot_phys_rj, d_rj)
+!!       Set homogenious heat source and temperature at inner core
+!!       by CMB heat flux
+!!         f_CMB = (dT/dr)_CMB
+!!         f_ICB = -(dT/dr)_ICB
+!!               = - f_CMB * (r_CMB / r_ICB)**2
+!!             Q = - 3.0 * f_ICB / r_ICB
+!!          T(r) = T_ICB + 0.5 * (f_ICB / r_ICB) * (r_ICB**2 - r**2)
+!!
 !!      subroutine add_whole_core_heat_source                           &
-!!     &         (sph_bc_T, ipol, n_point, ntot_phys_rj, d_rj)
+!!     &          (sph_bc_T, ipol, n_point, ntot_phys_rj, d_rj)
+!!       Set homogenious heat source for whole core
+!!       and temperature at inner core by CMB heat flux
+!!         f_CMB = (dT/dr)_CMB
+!!             Q = - 3.0 * f_CMB / r_CMB
+!!         f_ICB = -(dT/dr)_ICB
+!!               = - f_CMB * (r_ICB / r_CMB)
+!!          T(r) = T_ICB + 0.5 * (f_ICB / r_ICB) * (r_ICB**2 - r**2)
 !!@endverbatim
 !
 !
@@ -667,7 +686,7 @@
       jj =  find_local_sph_mode_address(0, 0)
 !
       if (jj .gt. 0) then
-        q = three * sph_bc_T%CMB_flux(jj) / sph_bc_T%r_ICB(0) 
+        q = three * sph_bc_T%CMB_flux(jj) / sph_bc_T%r_CMB(0)
         f_ICB = -sph_bc_T%CMB_flux(jj)                                  &
      &         * (sph_bc_T%r_ICB(0) / sph_bc_T%r_CMB(0))
 !
