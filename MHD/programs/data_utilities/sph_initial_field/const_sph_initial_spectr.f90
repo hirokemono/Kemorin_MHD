@@ -42,11 +42,16 @@
 !!       Heat source ::          d_rj(:,ipol%i_heat_source)
 !!       Light element source :: d_rj(:,ipol%i_light_source)
 !!
+!!       nlayer_ICB() :: radial ID for ICB
+!!       nlayer_CMB() :: radial ID for CMB
+!!        r_ICB() :: ICB radius
+!!        r_CMB() :: CMB radius
+!!
 !!       nidx_rj(1) :: Number of radial grids
-!!       sph_bc_*%kr_in :: radial ID for ICB
-!!       sph_bc_*%kr_out :: radial ID for CMB
-!!       sph_bc_*%r_ICB(0) :: ICB radius
-!!       sph_bc_*%r_CMB(0) :: CMB radius
+!!       sph_bc_*%kr_in :: radial ID for inner boundary of each evolution
+!!       sph_bc_*%kr_out :: radial ID for outer boundary
+!!       sph_bc_*%r_ICB(0) :: radius for inner boundary of each evolution
+!!       sph_bc_*%r_CMB(0) :: radius for outer boundary
 !!
 !!
 !!      subroutine adjust_by_CMB_temp                                   &
@@ -633,21 +638,20 @@
 !
       if (jj .gt. 0) then
         f_ICB = -sph_bc_T%CMB_flux(jj)                                  &
-     &         * (sph_bc_T%r_CMB(0) / sph_bc_T%r_ICB(0))**2
-        q = three * f_ICB / sph_bc_T%r_ICB(0)
+     &         * (sph_bc_T%r_CMB(0) / r_ICB())**2
+        q = three * f_ICB / r_ICB()
 !
-        inod = local_sph_data_address(sph_bc_T%kr_in,jj)
+        inod = local_sph_data_address(nlayer_ICB(),jj)
         T_ICB = d_rj(inod,ipol%i_temp)
 !
-        do k = 1, sph_bc_T%kr_in
+        do k = 1, nlayer_ICB()
           inod = local_sph_data_address(k,jj)
           rr = radius_1d_rj_r(k)
 !   Substitute initial heat source
           d_rj(inod,ipol%i_heat_source) = q
 !   Fill inner core temperature
           d_rj(inod,ipol%i_temp) = T_ICB                                &
-     &       + half * f_ICB * (sph_bc_T%r_ICB(0)**2 - rr**2)            &
-     &        / sph_bc_T%r_ICB(0)
+     &       + half * f_ICB * (r_ICB()**2 - rr**2) / r_ICB()
         end do
       end if
 !
@@ -655,8 +659,7 @@
       if(inod_rj_center() .gt. 0) then
         inod = inod_rj_center()
         d_rj(inod,ipol%i_heat_source) = q
-        d_rj(inod,ipol%i_temp) = T_ICB                                  &
-     &       + half * f_ICB * sph_bc_T%r_ICB(0)
+        d_rj(inod,ipol%i_temp) = T_ICB + half * f_ICB * r_ICB()
       end if
 !
       end subroutine add_inner_core_heat_source
@@ -688,9 +691,9 @@
       if (jj .gt. 0) then
         q = three * sph_bc_T%CMB_flux(jj) / sph_bc_T%r_CMB(0)
         f_ICB = -sph_bc_T%CMB_flux(jj)                                  &
-     &         * (sph_bc_T%r_ICB(0) / sph_bc_T%r_CMB(0))
+     &         * (r_ICB() / sph_bc_T%r_CMB(0))
 !
-        inod = local_sph_data_address(sph_bc_T%kr_in,jj)
+        inod = local_sph_data_address(nlayer_ICB(),jj)
         T_ICB = d_rj(inod,ipol%i_temp)
 !
         do k = 1, sph_bc_T%kr_out
@@ -700,13 +703,12 @@
           d_rj(inod,ipol%i_heat_source) = q
         end do
 !
-        do k = 1, sph_bc_T%kr_in
+        do k = 1, nlayer_ICB()
           inod = local_sph_data_address(k,jj)
           rr = radius_1d_rj_r(k)
 !   Fill inner core temperature
           d_rj(inod,ipol%i_temp) = T_ICB                                &
-     &       + half * f_ICB * (sph_bc_T%r_ICB(0)**2 - rr**2)            &
-     &        / sph_bc_T%r_ICB(0)
+     &       + half * f_ICB * (r_ICB()**2 - rr**2) / r_ICB()
         end do
       end if
 !
@@ -714,8 +716,7 @@
       if(inod_rj_center() .gt. 0) then
         inod = inod_rj_center()
         d_rj(inod,ipol%i_heat_source) = q
-        d_rj(inod,ipol%i_temp) = T_ICB                                  &
-     &       + half * f_ICB * sph_bc_T%r_ICB(0)
+        d_rj(inod,ipol%i_temp) = T_ICB + half * f_ICB * r_ICB()
       end if
 !
       end subroutine add_whole_core_heat_source
