@@ -195,7 +195,8 @@
       if(pwr%ntot_comp_sq .eq. 0)  return
 !
       do i = 1, pwr%num_vol_spectr
-        call add_dat_extension(pwr%v_spectr(i)%fhead_rms_v, fname_rms)
+        write(fname_rms,   '(a,a6)')                                    &
+     &      trim(pwr%v_spectr(i)%fhead_rms_v), '_s.dat'
         write(mode_label,'(a)') 'EMPTY'
         call write_sph_volume_pwr_file(fname_rms, mode_label,           &
      &      time_d%i_time_step, time_d%time, sph_params%l_truncation,   &
@@ -316,7 +317,7 @@
       if(pwr%ntot_comp_sq .eq. 0)  return
 !
 !
-      write(fname_rms,   '(a,a4)') trim(pwr%fhead_rms_layer), '.dat'
+      write(fname_rms,   '(a,a6)') trim(pwr%fhead_rms_layer), '_s.dat'
       write(mode_label,'(a)') 'radial_id  radius'
       call write_sph_layer_pwr_file(fname_rms, mode_label,              &
      &    time_d%i_time_step, time_d%time, sph_params%l_truncation,     &

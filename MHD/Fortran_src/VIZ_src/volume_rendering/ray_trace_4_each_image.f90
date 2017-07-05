@@ -25,6 +25,7 @@
       implicit  none
 !
       real(kind = kint), parameter :: SMALL = 0.1
+      real(kind = kint), parameter :: TINY =  1.0D-9
 !
       private :: ray_trace_each_pixel
 !
@@ -167,7 +168,7 @@
 !
       integer(kind = kint), parameter :: iflag_back = 0
       integer(kind = kint) :: isf_tgt, isurf_end, iele, isf_org
-      integer(kind = kint) :: i_iso, i_psf
+      integer(kind = kint) :: i_iso, i_psf, iflag
       real(kind = kreal) :: screen_tgt(3), c_tgt(1), c_org(1)
       real(kind = kreal) :: grad_tgt(3), xx_tgt(3), rflag, rflag2
 !
@@ -228,10 +229,17 @@
           end if
 !
           do i_psf = 1, field_pvr%num_sections
-            rflag =  side_of_plane(field_pvr%coefs(1:10,i_psf), xx_st)  &
-     &             * side_of_plane(field_pvr%coefs(1:10,i_psf), xx_tgt)
+            rflag =  side_of_plane(field_pvr%coefs(1:10,i_psf), xx_st)
             rflag2 = side_of_plane(field_pvr%coefs(1:10,i_psf), xx_tgt)
-            if(rflag2 .eq. zero .or. rflag .lt. zero) then
+            if     (rflag .ge. -TINY .and. rflag2 .le. TINY) then
+              iflag = 1
+            else if(rflag .le. TINY .and. rflag2 .ge. -TINY) then
+              iflag = 1
+            else
+              iflag = 0
+            end if
+
+            if(iflag .ne. 0) then
               call cal_normal_of_plane                                  &
      &           (field_pvr%coefs(1:10,i_psf), xx_tgt, grad_tgt)
               call color_plane_with_light                               &
