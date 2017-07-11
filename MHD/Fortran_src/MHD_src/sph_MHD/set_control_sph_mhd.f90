@@ -120,7 +120,8 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'set_control_SGS_model'
       call set_control_SGS_model(model_ctl%sgs_ctl,                     &
-     &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p)
+     &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
+     &    SGS_par%i_step_sgs_coefs)
 !
       if(SGS_par%model_p%iflag_SGS .ne. id_SGS_none) then
         call set_control_SPH_SGS                                        &

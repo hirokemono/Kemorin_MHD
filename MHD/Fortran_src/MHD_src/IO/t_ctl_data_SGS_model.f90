@@ -97,6 +97,9 @@
 !!        wider_filter_header     'filter/filter_coef_2'
 !!      end  filter_files_def
 !!
+!!      istep_dynamic_ctl         10
+!!      stabilize_weight_ctl      0.6
+!!
 !!      min_step_dynamic_ctl      1
 !!      max_step_dynamic_ctl      50
 !!      delta_to_shrink_ctl      1.0d-2
@@ -219,8 +222,10 @@
         type(read_character_item) :: SGS_model_coef_coord_ctl
         type(read_character_item) :: SGS_buo_Csim_usage_ctl
 ! 
+        type(read_integer_item) :: istep_dynamic_ctl
         type(read_integer_item) :: min_step_dynamic_ctl
         type(read_integer_item) :: max_step_dynamic_ctl
+        type(read_real_item) :: stabilize_weight_ctl
         type(read_real_item) :: delta_to_shrink_dynamic_ctl
         type(read_real_item) :: delta_to_extend_dynamic_ctl
 !
@@ -280,6 +285,10 @@
      &             :: hd_DIFF_coefs =  'diff_coef_mode_ctl'
       character(len=kchara), parameter                                  &
      &             :: hd_3d_filtering = '3d_filtering_ctl'
+      character(len=kchara), parameter :: hd_istep_dynamic              &
+     &                        = 'istep_dynamic_ctl'
+      character(len=kchara), parameter :: hd_stabilize_weight           &
+     &                        = 'stabilize_weight_ctl'
       character(len=kchara), parameter :: hd_min_step_dynamic           &
      &                        = 'min_step_dynamic_ctl'
       character(len=kchara), parameter :: hd_max_step_dynamic           &
@@ -332,6 +341,7 @@
       private :: hd_SGS_mf_factor, hd_SGS_mxwl_factor
       private :: hd_SGS_uxb_factor, hd_SGS_hf_factor
       private :: hd_SGS_marging, hd_DIFF_coefs, hd_3d_filtering
+      private :: hd_istep_dynamic, hd_stabilize_weight
       private :: hd_min_step_dynamic, hd_max_step_dynamic
       private :: hd_delta_shrink_dynamic, hd_delta_extend_dynamic
       private :: hd_SGS_terms, hd_SGS_perturbation_ctl, hd_sph_filter
@@ -458,7 +468,11 @@
 !
         call read_real_ctl_type(hd_delta_extend_dynamic,                &
      &      sgs_ctl%delta_to_extend_dynamic_ctl)
+        call read_real_ctl_type(hd_stabilize_weight,                    &
+     &      sgs_ctl%stabilize_weight_ctl)
 !
+        call read_integer_ctl_type(hd_istep_dynamic,                    &
+     &      sgs_ctl%istep_dynamic_ctl)
         call read_integer_ctl_type(hd_min_step_dynamic,                 &
      &      sgs_ctl%min_step_dynamic_ctl)
         call read_integer_ctl_type(hd_max_step_dynamic,                 &
@@ -555,7 +569,9 @@
       call bcast_ctl_type_r1(sgs_ctl%SGS_uxb_factor_ctl)
 !
       call bcast_ctl_type_r1(sgs_ctl%delta_to_extend_dynamic_ctl)
+      call bcast_ctl_type_r1(sgs_ctl%stabilize_weight_ctl)
 !
+      call bcast_ctl_type_i1(sgs_ctl%istep_dynamic_ctl)
       call bcast_ctl_type_i1(sgs_ctl%min_step_dynamic_ctl)
       call bcast_ctl_type_i1(sgs_ctl%max_step_dynamic_ctl)
 !

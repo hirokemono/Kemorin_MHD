@@ -7,7 +7,7 @@
 !>@brief Evaluate nonlinear terms by pseudo spectram scheme
 !!
 !!@verbatim
-!!      subroutine nonlinear(SGS_param, sph, comms_sph,                 &
+!!      subroutine nonlinear(i_step, SGS_par, sph, comms_sph,           &
 !!     &          omega_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,      &
 !!     &          ref_temp, ref_comp, ipol, itor, WK, rj_fld)
 !!      subroutine licv_exp(ref_temp, ref_comp, MHD_prop, sph_MHD_bc,   &
@@ -69,7 +69,7 @@
 !*
 !*   ------------------------------------------------------------------
 !*
-      subroutine nonlinear(SGS_param, sph, comms_sph,                   &
+      subroutine nonlinear(i_step, SGS_par, sph, comms_sph,             &
      &          omega_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,        &
      &          ref_temp, ref_comp, ipol, itor, WK, rj_fld)
 !
@@ -80,7 +80,8 @@
 !
       use m_work_time
 !
-      type(SGS_model_control_params), intent(in) :: SGS_param
+      integer(kind = kint), intent(in) :: i_step
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
       type(sph_rotation), intent(in) :: omega_sph
@@ -98,16 +99,17 @@
 !   ----  lead nonlinear terms by phesdo spectrum
 !
       if (iflag_debug.eq.1) write(*,*) 'nonlinear_by_pseudo_sph'
-      call nonlinear_by_pseudo_sph(SGS_param, sph, comms_sph,           &
+      call nonlinear_by_pseudo_sph(SGS_par%model_p, sph, comms_sph,     &
      &    omega_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p, WK%gt_cor,   &
      &    WK%dynamic_SPH, WK%trns_MHD, WK%WK_sph, WK%MHD_mul_FFTW,      &
      &    WK%cor_rlm, ipol, itor, rj_fld)
 !
 !   ----  Lead SGS terms
-      if(SGS_param%iflag_SGS .gt. 0) then
+      if(SGS_par%model_p%iflag_SGS .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'SGS_by_pseudo_sph'
         call SGS_by_pseudo_sph                                          &
-     &     (SGS_param, sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc,     &
+     &     (i_step, SGS_par%i_step_sgs_coefs, SGS_par%model_p,          &
+     &      sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc,                &
      &      trans_p, WK%trns_MHD, WK%trns_snap, WK%trns_SGS, WK%WK_sph, &
      &      WK%SGS_mul_FFTW, WK%dynamic_SPH, ipol, itor, rj_fld)
       end if
@@ -134,11 +136,11 @@
       call sum_forces_to_explicit                                       &
      &   (sph%sph_rj, MHD_prop%fl_prop, ipol, itor, rj_fld)
 !
-      if(SGS_param%iflag_SGS .gt. 0) then
+      if(SGS_par%model_p%iflag_SGS .gt. 0) then
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                'SGS_forces_to_explicit'
         call SGS_forces_to_explicit                                     &
-     &    (SGS_param, sph%sph_rj, sph_MHD_bc%sph_bc_U,                  &
+     &    (SGS_par%model_p, sph%sph_rj, sph_MHD_bc%sph_bc_U,            &
      &     ipol, itor, rj_fld)
       end if
 !
@@ -235,8 +237,8 @@
 !*   ------------------------------------------------------------------
 !*   ------------------------------------------------------------------
 !
-      subroutine SGS_by_pseudo_sph                                      &
-     &         (SGS_param, sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc, &
+      subroutine SGS_by_pseudo_sph(i_step, i_step_sgs_coefs, SGS_param, &
+     &          sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc,            &
      &          trans_p, trns_MHD, trns_snap, trns_SGS, WK_sph,         &
      &          SGS_mul_FFTW, dynamic_SPH, ipol, itor, rj_fld)
 !
@@ -249,6 +251,7 @@
 !
       use m_work_time
 !
+      integer(kind = kint), intent(in) :: i_step, i_step_sgs_coefs
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph
@@ -264,6 +267,8 @@
       type(work_for_sgl_FFTW), intent(inout) :: SGS_mul_FFTW
       type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       type(phys_data), intent(inout) :: rj_fld
+!
+      integer(kind = kint) :: istep_dynamic
 !
 !
 !   ----  Lead filtered forces for SGS terms
@@ -287,29 +292,34 @@
      &      trns_SGS%ncomp_rtp_2_rj, trns_MHD%frc_rtp,                  &
      &      trns_SGS%fld_rtp, trns_SGS%frc_rtp)
 !
+        istep_dynamic = mod(i_step, i_step_sgs_coefs)
         if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
+!
           if (iflag_debug.eq.1) write(*,*) 'wider_similarity_SGS_rtp'
-          call wider_similarity_SGS_rtp(sph%sph_rtp,                    &
+          call wider_similarity_SGS_rtp(istep_dynamic, sph%sph_rtp,     &
      &        MHD_prop%fl_prop, MHD_prop%cd_prop,                       &
      &        MHD_prop%ht_prop, MHD_prop%cp_prop,                       &
      &        trns_MHD%b_trns, trns_SGS%b_trns,                         &
      &        trns_MHD%ncomp_rj_2_rtp, trns_SGS%ncomp_rj_2_rtp,         &
      &        trns_MHD%fld_rtp, trns_SGS%fld_rtp)
 !
-          if (iflag_debug.eq.1) write(*,*) 'const_model_coefs_4_sph'
+          if (iflag_debug.eq.1) write(*,*)                              &
+     &                   'const_model_coefs_4_sph', istep_dynamic
           call const_model_coefs_4_sph                                  &
-     &       (sph%sph_rtp, dynamic_SPH%ifld_sgs, dynamic_SPH%icomp_sgs, &
+     &       (istep_dynamic, SGS_param%stab_weight, sph%sph_rtp,        &
+     &        dynamic_SPH%ifld_sgs, dynamic_SPH%icomp_sgs,              &
      &        dynamic_SPH%wk_sgs, trns_SGS)
 !
-          if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none) then
+          if(SGS_param%iflag_SGS_gravity .ne. id_SGS_none               &
+     &       .and. istep_dynamic .eq. 0) then
             if(iflag_debug .gt. 0) write(*,*)                           &
-     &           'const_dynamic_SGS_4_buo_sph'
+     &           'const_dynamic_SGS_4_buo_sph', iflag_debug
             call const_dynamic_SGS_4_buo_sph                            &
-     &         (SGS_param, sph%sph_rtp, MHD_prop%fl_prop,               &
+     &         (SGS_param%iflag_SGS_buo_usage, SGS_param%stab_weight,   &
+     &          sph%sph_rtp, MHD_prop%fl_prop,                          &
      &          trns_MHD, trns_snap, trns_SGS, dynamic_SPH)
             call copy_Csim_buo_4_sph_trans(sph%sph_rtp,                 &
      &          dynamic_SPH%ifld_sgs, dynamic_SPH%wk_sgs, trns_SGS)
-!
           end if
         end if
         call end_eleps_time(15)
@@ -320,19 +330,31 @@
      &      ipol, trns_SGS, WK_sph, SGS_mul_FFTW, rj_fld)
         call end_eleps_time(16)
 !
-!
         call start_eleps_time(17)
         if(SGS_param%iflag_SGS_buo_usage .eq. id_use_sphere) then
-          if (iflag_debug.eq.1) write(*,*)                              &
-     &                      'sphere_averaged_SGS_buoyancy'
-          call sphere_averaged_SGS_buoyancy(sph%sph_rj, sph%sph_rtp,    &
-     &        ipol, rj_fld, trns_SGS, dynamic_SPH)
+          if(istep_dynamic .eq. 0) then
+            if (iflag_debug.eq.1) write(*,*)                            &
+     &                      'sphere_averaged_SGS_buoyancy', iflag_debug
+            call sphere_averaged_SGS_buoyancy(sph%sph_rj, sph%sph_rtp,  &
+     &          ipol, rj_fld, dynamic_SPH)
+          end if
+!
+            if(iflag_debug.eq.1) write(*,*)                             &
+     &                      'magnify_sph_ave_SGS_buoyancy'
+          call magnify_sph_ave_SGS_buoyancy(sph%sph_rj, sph%sph_rtp,    &
+     &        ipol, dynamic_SPH, rj_fld, trns_SGS)
         else if(SGS_param%iflag_SGS_buo_usage .ne. id_use_zonal) then
-          if (iflag_debug.eq.1) write(*,*)                              &
-     &                      'volume_averaged_SGS_buoyancy'
-          call volume_averaged_SGS_buoyancy                             &
-     &       (sph%sph_params, sph%sph_rj, sph%sph_rtp,                  &
-     &        ipol, rj_fld, trns_SGS, dynamic_SPH)
+          if(istep_dynamic .eq. 0) then
+            if (iflag_debug.eq.1) write(*,*)                            &
+     &                      'volume_averaged_SGS_buoyancy', iflag_debug
+            call volume_averaged_SGS_buoyancy                           &
+     &         (sph%sph_params, sph%sph_rj, ipol, rj_fld, dynamic_SPH)
+          end if
+!
+            if(iflag_debug.eq.1) write(*,*)                             &
+     &                      'magnify_vol_ave_SGS_buoyancy'
+          call magnify_vol_ave_SGS_buoyancy                             &
+     &       (sph%sph_rtp, ipol, dynamic_SPH, rj_fld, trns_SGS)
         end if
 !
         if (iflag_debug.ge.1) write(*,*) 'rot_SGS_terms_exp_sph'

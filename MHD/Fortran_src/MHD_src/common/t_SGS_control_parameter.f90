@@ -82,6 +82,8 @@
         real (kind = kreal) :: shrink_SGS_dt = 1.0d5
         real (kind = kreal) :: extend_SGS_dt = 1.0d-5
 !
+        real (kind = kreal) :: stab_weight = 1.0d0
+!
 !>        Model coefficient type
         integer (kind=kint) :: itype_Csym =  id_CSIM_FIELD
 !>        Direction to evaluate model coefficients

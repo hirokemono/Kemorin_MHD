@@ -128,8 +128,6 @@
 !
 !   parameters for time evolution
 !
-      SGS_par%i_step_sgs_coefs = 1
-!
       if(flex_p%iflag_flexible_step .eq. iflag_flex_step) then
         if (iflag_debug .ge. iflag_routine_msg)                         &
      &    write(*,*) 'set_flex_time_step_controls'

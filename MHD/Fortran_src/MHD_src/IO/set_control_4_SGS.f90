@@ -11,7 +11,8 @@
 !!
 !!@verbatim
 !!      subroutine set_control_SGS_model                                &
-!!     &         (sgs_ctl, SGS_param, cmt_param, filter_param)
+!!     &         (sgs_ctl, SGS_param, cmt_param, filter_param,          &
+!!     &          i_step_sgs_coefs)
 !!        type(SGS_model_control), intent(inout) :: sgs_ctl
 !!        type(SGS_model_control_params), intent(inout) :: SGS_param
 !!        type(commutation_control_params), intent(inout) :: cmt_param
@@ -109,7 +110,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_control_SGS_model                                  &
-     &         (sgs_ctl, SGS_param, cmt_param, filter_param)
+     &         (sgs_ctl, SGS_param, cmt_param, filter_param,            &
+     &          i_step_sgs_coefs)
 !
       use m_geometry_constants
       use m_phys_labels
@@ -120,6 +122,7 @@
       type(SGS_model_control_params), intent(inout) :: SGS_param
       type(commutation_control_params), intent(inout) :: cmt_param
       type(SGS_filtering_params), intent(inout) :: filter_param
+      integer(kind = kint), intent(inout) :: i_step_sgs_coefs
 !
       integer(kind = kint) :: i
       character(len=kchara) :: tmpchara
@@ -161,9 +164,21 @@
         end if
       end if
 !
+      i_step_sgs_coefs = 1
+      if (sgs_ctl%istep_dynamic_ctl%iflag .gt. 0) then
+        i_step_sgs_coefs = sgs_ctl%istep_dynamic_ctl%intvalue
+      end if
+!
+      SGS_param%stab_weight = one
+      if (sgs_ctl%stabilize_weight_ctl%iflag .gt. 0) then
+        SGS_param%stab_weight = sgs_ctl%stabilize_weight_ctl%realvalue
+      end if
+!
       if (iflag_debug .gt. 0) then
         write(*,*) 'iflag_SGS_model',   SGS_param%iflag_SGS
         write(*,*) 'iflag_dynamic_SGS', SGS_param%iflag_dynamic
+        write(*,*) 'i_step_sgs_coefs',  i_step_sgs_coefs
+        write(*,*) 'SGS_param%stab_weight',  SGS_param%stab_weight
       end if
 !
 !

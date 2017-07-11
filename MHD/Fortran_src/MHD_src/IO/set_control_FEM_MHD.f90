@@ -136,7 +136,7 @@
 !
       call set_control_SGS_model                                        &
      &   (model_ctl%sgs_ctl, SGS_par%model_p, SGS_par%commute_p,        &
-     &    SGS_par%filter_p)
+     &    SGS_par%filter_p, SGS_par%i_step_sgs_coefs)
       call set_control_FEM_SGS(model_ctl%sgs_ctl%ffile_ctl,             &
      &    model_ctl%sgs_ctl, model_ctl%sgs_ctl%elayer_ctl,              &
      &    SGS_par%model_p)

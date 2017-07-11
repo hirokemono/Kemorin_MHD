@@ -553,6 +553,7 @@ begin fluid_control
 !        wider_filter_header     'filter/filter_coef_2'
       end
 !
+      istep_dynamic_ctl         1
       min_step_dynamic_ctl      1
       max_step_dynamic_ctl      50
       delta_to_shrink_ctl      1.0d-2
