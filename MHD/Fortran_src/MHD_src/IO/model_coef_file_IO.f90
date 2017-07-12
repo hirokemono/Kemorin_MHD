@@ -10,7 +10,7 @@
 !> @brief Call restart data IO routines
 !!
 !!@verbatim
-!!      subroutine output_model_coef_file(index_rst, i_step_Csim,       &
+!!      subroutine output_model_coef_file(istep_rst, i_step_Csim,       &
 !!     &          SGS_param, cmt_param, time_d, wk_sgs, wk_diff)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -51,7 +51,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine output_model_coef_file(index_rst, i_step_Csim,         &
+      subroutine output_model_coef_file(istep_rst, i_step_Csim,         &
      &          SGS_param, cmt_param, time_d, wk_sgs, wk_diff)
 !
       use t_ele_info_4_dynamic
@@ -59,27 +59,18 @@
       use sgs_ini_model_coefs_IO
       use set_parallel_file_name
 !
-      integer(kind = kint), intent(in) :: index_rst
+      integer(kind = kint), intent(in) :: istep_rst
       integer(kind = kint), intent(in) :: i_step_Csim
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
       type(time_data), intent(in) :: time_d
       type(dynamic_model_data), intent(in) :: wk_sgs, wk_diff
 !
-      character(len=kchara) :: fn_tmp
-!
 !
       if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_OFF) return
 !
-      if(index_rst .lt. 0) then
-        call add_elaps_postfix(rst_sgs_coef_head, fn_tmp)
-      else
-        call add_int_suffix(index_rst, rst_sgs_coef_head, fn_tmp)
-      end if
-      call add_dat_extension(fn_tmp, rst_sgs_coef_name)
-!
       call output_ini_model_coefs                                       &
-     &   (i_step_Csim, time_d%i_time_step, time_d%time,                 &
+     &   (i_step_Csim, istep_rst, time_d%i_time_step, time_d%time,      &
      &    cmt_param, wk_sgs, wk_diff)
 !
       end subroutine output_model_coef_file
@@ -109,20 +100,11 @@
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
-      character(len=kchara) :: fn_tmp
-!
 !
       if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_OFF) return
-      if(iflag_rst_sgs_coef_code .eq. 0) return
 !
-      if (istep_rst .eq. -1) then
-        call add_elaps_postfix(rst_sgs_coef_head, fn_tmp)
-      else
-        call add_int_suffix(istep_rst, rst_sgs_coef_head, fn_tmp)
-      end if
-!
-      call add_dat_extension(fn_tmp, rst_sgs_coef_name)
-      call input_ini_model_coefs(cmt_param, ele, fluid, layer_tbl,      &
+      call input_ini_model_coefs                                        &
+     &   (istep_rst, cmt_param, ele, fluid, layer_tbl,                  &
      &    i_step_Csim, wk_sgs, wk_diff, sgs_coefs, diff_coefs)
 !
       end subroutine input_model_coef_file

@@ -12,21 +12,16 @@
 !!@verbatim
 !!      subroutine set_control_SGS_model                                &
 !!     &         (sgs_ctl, SGS_param, cmt_param, filter_param,          &
-!!     &          i_step_sgs_coefs)
+!!     &          Csim_IO, Cdiff_IO, i_step_sgs_coefs)
 !!        type(SGS_model_control), intent(inout) :: sgs_ctl
 !!        type(SGS_model_control_params), intent(inout) :: SGS_param
 !!        type(commutation_control_params), intent(inout) :: cmt_param
+!!        type(field_IO), intent(inout) :: Csim_IO
 !!        type(SGS_filtering_params), intent(inout) :: filter_param
 !!      subroutine set_control_SPH_SGS                                  &
 !!     &         (num_sph_filter_ctl, sph_filter_ctl, sph_filters)
 !!        type(sph_filter_ctl_type), intent(in) :: sph_filter_ctl(1)
 !!        type(sph_filters_type), intent(inout) :: sph_filters(1)
-!!      subroutine set_control_FEM_SGS                                  &
-!!     &         (ffile_ctl, sgs_ctl, elayer_ctl, SGS_param)
-!!        type(filter_file_control), intent(in) :: ffile_ctl
-!!        type(SGS_model_control), intent(inout) :: sgs_ctl
-!!        type(layering_control), intent(inout) :: elayer_ctl
-!!        type(SGS_model_control_params), intent(inout) :: SGS_param
 !!@endverbatim
 !
       module set_control_4_SGS
@@ -38,8 +33,6 @@
       use calypso_mpi
 !
       implicit  none
-!
-      private :: set_Csim_type
 !
 ! -----------------------------------------------------------------------
 !
@@ -111,17 +104,21 @@
 !
       subroutine set_control_SGS_model                                  &
      &         (sgs_ctl, SGS_param, cmt_param, filter_param,            &
-     &          i_step_sgs_coefs)
+     &          Csim_IO, Cdiff_IO, i_step_sgs_coefs)
 !
       use m_geometry_constants
       use m_phys_labels
+      use m_file_format_switch
       use t_SGS_control_parameter
       use t_ctl_data_SGS_model
+      use t_field_data_IO
+      use sgs_ini_model_coefs_IO
 !
       type(SGS_model_control), intent(inout) :: sgs_ctl
       type(SGS_model_control_params), intent(inout) :: SGS_param
       type(commutation_control_params), intent(inout) :: cmt_param
       type(SGS_filtering_params), intent(inout) :: filter_param
+      type(field_IO), intent(inout) :: Csim_IO, Cdiff_IO
       integer(kind = kint), intent(inout) :: i_step_sgs_coefs
 !
       integer(kind = kint) :: i
@@ -235,234 +232,48 @@
         end if
       end if
 !
-      call set_control_SGS_commute(SGS_param, sgs_ctl, cmt_param)
+!
+      if (SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
+        iflag_rst_sgs_coef_code                                         &
+     &        = sgs_ctl%ffile_ctl%model_coef_ini_head_ctl%iflag
+        if(iflag_rst_sgs_coef_code .gt. 0) then
+          Csim_IO%file_prefix                                           &
+     &        = sgs_ctl%ffile_ctl%model_coef_ini_head_ctl%charavalue
+        else
+          Csim_IO%file_prefix = def_rst_sgs_coef
+        end if
+!
+        call choose_para_file_format                                    &
+     &     (sgs_ctl%ffile_ctl%model_coef_rst_format,                    &
+     &      Csim_IO%iflag_file_fmt)
+!
+        if (iflag_debug .gt. 0)  then
+          write(*,*) 'Csim_IO%file_prefix: ', trim(Csim_IO%file_prefix)
+          write(*,*) 'Csim_IO%iflag_file_fmt: ', Csim_IO%iflag_file_fmt
+        end if
+      end if
+!
+      call set_control_SGS_commute                                      &
+     &   (SGS_param, sgs_ctl, cmt_param, Cdiff_IO)
 !
       end subroutine set_control_SGS_model
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_FEM_SGS                                    &
-     &         (ffile_ctl, sgs_ctl, elayer_ctl, SGS_param)
-!
-      use m_geometry_constants
-      use m_file_format_switch
-      use m_phys_labels
-      use m_filter_file_names
-      use t_ctl_data_SGS_model
-      use t_ctl_data_filter_files
-      use t_ctl_data_ele_layering
-      use t_SGS_control_parameter
-      use sgs_ini_model_coefs_IO
-      use set_control_ele_layering
-!
-      type(filter_file_control), intent(in) :: ffile_ctl
-      type(SGS_model_control), intent(inout) :: sgs_ctl
-      type(layering_control), intent(inout) :: elayer_ctl
-      type(SGS_model_control_params), intent(inout) :: SGS_param
-!
-      character(len=kchara) :: tmpchara
-!
-!
-      SGS_param%ifilter_final = ifilter_2delta
-!
-!
-      if (SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
-        if (sgs_ctl%SGS_negative_clip_ctl%iflag .eq. 0) then
-          e_message                                                     &
-     &      = 'Set cliping method for model coefficient'
-          call calypso_MPI_abort(ierr_SGS, e_message)
-        else
-          tmpchara = sgs_ctl%SGS_negative_clip_ctl%charavalue
-!
-          if (cmp_no_case(tmpchara, 'none'))                            &
-     &      SGS_param%iflag_nagetive_clip = id_SGS_NO_CLIP
-          if (cmp_no_case(tmpchara, 'zero'))                            &
-     &      SGS_param%iflag_nagetive_clip = id_SGS_ZERO_CLIP
-          if (cmp_no_case(tmpchara, 'keep'))                            &
-     &      SGS_param%iflag_nagetive_clip = id_SGS_KEEP_PREVIOUS
-        end if
-!
-!
-        SGS_param%clipping_limit                                        &
-     &        = set_fixed_Csim(zero, sgs_ctl%clipping_limit_ctl)
-!
-        SGS_param%SGS_hf_factor                                         &
-     &        = set_fixed_Csim(one, sgs_ctl%SGS_hf_factor_ctl)
-        SGS_param%SGS_mf_factor                                         &
-     &        = set_fixed_Csim(one, sgs_ctl%SGS_mf_factor_ctl)
-        SGS_param%SGS_mawell_factor                                     &
-     &        = set_fixed_Csim(one, sgs_ctl%SGS_mxwl_factor_ctl)
-        SGS_param%SGS_uxb_factor                                        &
-     &        = set_fixed_Csim(one, sgs_ctl%SGS_uxb_factor_ctl)
-        SGS_param%SGS_cf_factor                                         &
-     &        = set_fixed_Csim(one, sgs_ctl%SGS_cf_factor_ctl)
-!
-!
-        SGS_param%iflag_Csim_marging = id_SGS_DIR_LSQ
-        if (sgs_ctl%SGS_marging_ctl%iflag .gt. 0) then
-          tmpchara = sgs_ctl%SGS_marging_ctl%charavalue
-!
-          if      (cmp_no_case(tmpchara, 'lsq_over_directions')         &
-     &        .or. cmp_no_case(tmpchara, 'lsq')) then
-             SGS_param%iflag_Csim_marging = id_SGS_DIR_LSQ
-          else if (cmp_no_case(tmpchara, 'average_over_directions')     &
-     &        .or. cmp_no_case(tmpchara, 'average')) then
-             SGS_param%iflag_Csim_marging = id_SGS_DIR_AVERAGE
-          else if (cmp_no_case(tmpchara, 'weighting_by_correlation')    &
-     &        .or. cmp_no_case(tmpchara, 'weighting')) then
-             SGS_param%iflag_Csim_marging = id_SGS_DIR_CORRELATE
-          end if
-        end if
-!
-        SGS_param%min_step_dynamic = 1
-        if (sgs_ctl%min_step_dynamic_ctl%iflag .gt. 0) then
-          SGS_param%min_step_dynamic                                    &
-     &      = sgs_ctl%min_step_dynamic_ctl%intvalue
-        end if
-!
-        SGS_param%max_step_dynamic = 50
-        if (sgs_ctl%max_step_dynamic_ctl%iflag .gt. 0) then
-          SGS_param%max_step_dynamic                                    &
-     &      = sgs_ctl%max_step_dynamic_ctl%intvalue
-        end if
-!
-        SGS_param%extend_SGS_dt                                         &
-     &      = sgs_ctl%delta_to_shrink_dynamic_ctl%realvalue
-        SGS_param%extend_SGS_dt                                         &
-     &      = sgs_ctl%delta_to_extend_dynamic_ctl%realvalue
-      end if
-!
-!
-      SGS_param%iflag_parterbuation = id_turn_OFF
-      if(sgs_ctl%SGS_perturbation_ctl%iflag .gt. 0) then
-          tmpchara = sgs_ctl%SGS_perturbation_ctl%charavalue
-          if (cmp_no_case(tmpchara, 'reference')                        &
-     &       ) SGS_param%iflag_parterbuation = id_SGS_REFERENCE
-          if (cmp_no_case(tmpchara, 'average')                          &
-     &       ) SGS_param%iflag_parterbuation = id_SGS_REF_AVERAGE
-      end if
-!
-!
-      SGS_param%itype_Csym                                              &
-     &      = set_Csim_type(id_CSIM_FIELD,                              &
-     &                      sgs_ctl%SGS_model_coef_type_ctl)
-!
-      SGS_param%itype_Csym_h_flux                                       &
-     &      = set_Csim_type(SGS_param%itype_Csym,                       &
-     &                      sgs_ctl%heat_flux_csim_type_ctl)
-      SGS_param%itype_Csym_c_flux                                       &
-     &      = set_Csim_type(SGS_param%itype_Csym,                       &
-     &                      sgs_ctl%comp_flux_csim_type_ctl)
-      SGS_param%itype_Csym_m_flux                                       &
-     &      = set_Csim_type(SGS_param%itype_Csym,                       &
-     &                      sgs_ctl%mom_flux_csim_type_ctl)
-      SGS_param%itype_Csym_maxwell                                      &
-     &      = set_Csim_type(SGS_param%itype_Csym,                       &
-     &                      sgs_ctl%maxwell_csim_type_ctl)
-      SGS_param%itype_Csym_uxb                                          &
-     &      = set_Csim_type(SGS_param%itype_Csym,                       &
-     &                      sgs_ctl%uxb_csim_type_ctl)
-!
-      SGS_param%icoord_Csim = 0
-      if(sgs_ctl%SGS_model_coef_coord_ctl%iflag .gt. 0) then
-          tmpchara = sgs_ctl%SGS_model_coef_coord_ctl%charavalue
-          if(   cmp_no_case(tmpchara, 'spherical')                      &
-     &     .or. cmp_no_case(tmpchara, 'sph')) then
-             SGS_param%icoord_Csim = iflag_spherical
-          end if
-          if(   cmp_no_case(tmpchara, 'cylindrical')                    &
-     &     .or. cmp_no_case(tmpchara, 'spz')) then
-            SGS_param%icoord_Csim = iflag_cylindrical
-          end if
-      end if
-!
-      SGS_param%iflag_SGS_buo_usage = id_use_volume
-      if(sgs_ctl%SGS_buo_Csim_usage_ctl%iflag .gt. 0) then
-        tmpchara = sgs_ctl%SGS_buo_Csim_usage_ctl%charavalue
-        if(   cmp_no_case(tmpchara, 'zonal')                            &
-     &     .or. cmp_no_case(tmpchara, 'phi')) then
-          SGS_param%iflag_SGS_buo_usage = id_use_zonal
-        end if
-        if(   cmp_no_case(tmpchara, 'sphere')) then
-          SGS_param%iflag_SGS_buo_usage = id_use_sphere
-        end if
-        if(   cmp_no_case(tmpchara, 'volume')                           &
-     &     .or. cmp_no_case(tmpchara, 'V')) then
-          SGS_param%iflag_SGS_buo_usage = id_use_volume
-        end if
-      end if
-
-!
-      if (SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
-        call s_set_control_ele_layering(elayer_ctl)
-      end if
-!
-      if (SGS_param%iflag_SGS .eq. id_SGS_NL_grad) then
-        if (ffile_ctl%filter_elen_head_ctl%iflag .eq. 1) then
-          filter_elen_head = ffile_ctl%filter_elen_head_ctl%charavalue
-        end if
-!
-        call choose_file_format                                         &
-     &     (ffile_ctl%filter_elen_format, ifmt_filter_elen)
-!
-        if (iflag_debug .gt. 0)  then
-          write(*,*) 'filter_elen_head: ', trim(filter_elen_head)
-          write(*,*) 'filter_elen_format: ', ifmt_filter_elen
-        end if
-      end if
-!
-      if (SGS_param%iflag_SGS .ne. id_SGS_none) then
-        if (iflag_debug .gt. 0)  then
-          write(*,*) 'itype_SGS_model_coef: ',  SGS_param%itype_Csym
-          write(*,*) 'icoord_SGS_model_coef: ', SGS_param%icoord_Csim
-!
-          write(*,*) 'SGS_hf_factor:     ', SGS_param%SGS_hf_factor
-          write(*,*) 'SGS_mf_factor:     ', SGS_param%SGS_mf_factor
-          write(*,*) 'SGS_mawell_factor: ',                             &
-     &               SGS_param%SGS_mawell_factor
-          write(*,*) 'SGS_uxb_factor:    ', SGS_param%SGS_uxb_factor
-          write(*,*) 'SGS_cf_factor:     ', SGS_param%SGS_cf_factor
-!
-          write(*,*) 'itype_SGS_h_flux_coef:  ',                        &
-     &              SGS_param%itype_Csym_h_flux
-          write(*,*) 'itype_SGS_c_flux_coef:  ',                        &
-     &              SGS_param%itype_Csym_c_flux
-          write(*,*) 'itype_SGS_m_flux_coef:  ',                        &
-     &              SGS_param%itype_Csym_m_flux
-          write(*,*) 'itype_SGS_maxwell_coef: ',                        &
-     &              SGS_param%itype_Csym_maxwell
-          write(*,*) 'itype_SGS_uxb_coef:     ',                        &
-     &              SGS_param%itype_Csym_uxb
-        end if
-      end if
-!
-      if (SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
-        iflag_rst_sgs_coef_code                                         &
-     &          = ffile_ctl%model_coef_ini_head_ctl%iflag
-        if(iflag_rst_sgs_coef_code .gt. 0) then
-          rst_sgs_coef_head                                             &
-     &          = ffile_ctl%model_coef_ini_head_ctl%charavalue
-        end if
-!
-        if (iflag_debug .gt. 0)  then
-          write(*,*) 'rst_sgs_coef_head: ',   trim(rst_sgs_coef_head)
-        end if
-      end if
-!
-      end subroutine set_control_FEM_SGS
-!
-! -----------------------------------------------------------------------
-!
       subroutine set_control_SGS_commute                                &
-     &         (SGS_param, sgs_ctl, cmt_param)
+     &         (SGS_param, sgs_ctl, cmt_param, Cdiff_IO)
 !
       use m_phys_labels
+      use m_file_format_switch
       use t_ctl_data_SGS_model
       use t_SGS_control_parameter
+      use t_field_data_IO
+      use sgs_ini_model_coefs_IO
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(SGS_model_control), intent(inout) :: sgs_ctl
       type(commutation_control_params), intent(inout) :: cmt_param
+      type(field_IO), intent(inout) :: Cdiff_IO
 !
       integer(kind = kint) :: i
       character(len=kchara) :: tmpchara
@@ -540,44 +351,30 @@
         write(*,*) 'iset_DIFF_coefs:   ', cmt_param%iset_DIFF_coefs
       end if
 !
+!
+      if(cmt_param%iflag_commute .ne. id_SGS_commute_OFF) then
+        iflag_rst_sgs_comm_code                                         &
+     &        = sgs_ctl%ffile_ctl%commute_coef_ini_head_ctl%iflag
+        if(iflag_rst_sgs_comm_code .gt. 0) then
+          Cdiff_IO%file_prefix                                          &
+     &        = sgs_ctl%ffile_ctl%commute_coef_ini_head_ctl%charavalue
+        else
+          Cdiff_IO%file_prefix = def_rst_comm_coef
+        end if
+!
+        call choose_para_file_format                                    &
+     &     (sgs_ctl%ffile_ctl%commute_coef_rst_format,                  &
+     &      Cdiff_IO%iflag_file_fmt)
+!
+        if (iflag_debug .gt. 0)  then
+          write(*,*) 'Cdiff_IO%file_prefix: ',                          &
+     &              trim(Cdiff_IO%file_prefix)
+          write(*,*) 'Cdiff_IO%iflag_file_fmt: ',                       &
+     &              Cdiff_IO%iflag_file_fmt
+        end if
+      end if
+!
       end subroutine set_control_SGS_commute
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      integer(kind = kint) function set_Csim_type(i_default,            &
-     &                                            csim_type_ctl)
-!
-      use t_control_elements
-      use t_SGS_control_parameter
-      use skip_comment_f
-!
-      integer(kind = kint), intent(in) :: i_default
-      type(read_character_item), intent(in) :: csim_type_ctl
-!
-      set_Csim_type = i_default
-      if(csim_type_ctl%iflag .eq. 0) return 
-      if(cmp_no_case(csim_type_ctl%charavalue, 'components'))           &
-     &        set_Csim_type = id_CSIM_COMPONENT
-!
-      end function set_Csim_type
-!
-! -----------------------------------------------------------------------
-!
-      real(kind = kreal) function set_fixed_Csim                        &
-     &                          (default, csim_fact_ctl)
-!
-      use t_control_elements
-!
-      real(kind = kreal), intent(in) :: default
-      type(read_real_item), intent(in) :: csim_fact_ctl
-!
-      set_fixed_Csim = default
-!
-      if(csim_fact_ctl%iflag .eq. 0) return
-      set_fixed_Csim = csim_fact_ctl%realvalue
-!
-      end function set_fixed_Csim
 !
 ! -----------------------------------------------------------------------
 !

@@ -71,6 +71,7 @@
       use set_control_nodal_data_MHD
       use set_ctl_parallel_platform
       use set_control_4_time_steps
+      use sgs_ini_model_coefs_IO
 !
       use set_control_4_force
       use set_control_4_normalize
@@ -80,6 +81,7 @@
       use set_control_4_scheme
       use set_control_4_solver
       use set_control_evo_layers
+      use set_control_FEM_SGS
 !
       use m_fem_mhd_restart
 !
@@ -136,8 +138,9 @@
 !
       call set_control_SGS_model                                        &
      &   (model_ctl%sgs_ctl, SGS_par%model_p, SGS_par%commute_p,        &
-     &    SGS_par%filter_p, SGS_par%i_step_sgs_coefs)
-      call set_control_FEM_SGS(model_ctl%sgs_ctl%ffile_ctl,             &
+     &    SGS_par%filter_p, Csim1_IO, Cdiff1_IO,                        &
+     &    SGS_par%i_step_sgs_coefs)
+      call s_set_control_FEM_SGS(model_ctl%sgs_ctl%ffile_ctl,           &
      &    model_ctl%sgs_ctl, model_ctl%sgs_ctl%elayer_ctl,              &
      &    SGS_par%model_p)
 !

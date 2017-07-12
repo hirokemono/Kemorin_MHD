@@ -9,28 +9,28 @@
 !> @brief read and write restart file
 !!
 !!@verbatim
-!!      subroutine check_step_FEM_field_file                            &
-!!     &         (id_rank, istep_fld, fld_IO, ierr)
+!!      integer(kind = kint) function check_step_FEM_field_file         &
+!!     &                   (id_rank, istep_fld, fld_IO)
 !!
 !!      subroutine sel_write_step_FEM_field_file                        &
-!!     &         (nprocs_in, id_rank, istep_fld, fld_IO)
+!!     &         (nprocs_in, id_rank, istep_fld, t_IO, fld_IO)
 !!      subroutine sel_write_step_SPH_field_file                        &
-!!     &         (nprocs_in, id_rank, istep_fld, fld_IO)
+!!     &         (nprocs_in, id_rank, istep_fld, t_IO, fld_IO)
 !!
 !!      subroutine sel_read_step_FEM_field_file                         &
-!!     &         (nprocs_in, id_rank, istep_fld, fld_IO)
+!!     &         (nprocs_in, id_rank, istep_fld, t_IO, fld_IO)
 !!      subroutine sel_read_step_SPH_field_file                         &
-!!     &         (nprocs_in, id_rank, istep_fld, fld_IO)
+!!     &         (nprocs_in, id_rank, istep_fld, t_IO, fld_IO)
 !!
 !!      subroutine sel_read_alloc_step_FEM_file                         &
-!!     &         (nprocs_in, id_rank, istep_fld, fld_IO)
+!!     &         (nprocs_in, id_rank, istep_fld, t_IO, fld_IO)
 !!      subroutine sel_read_alloc_step_SPH_file                         &
-!!     &         (nprocs_in, id_rank, istep_fld, fld_IO)
+!!     &         (nprocs_in, id_rank, istep_fld, t_IO, fld_IO)
 !!
 !!      subroutine sel_read_alloc_FEM_fld_head                          &
-!!     &         (nprocs_in, id_rank, istep_fld, fld_IO)
+!!     &         (nprocs_in, id_rank, istep_fld, t_IO, fld_IO)
 !!      subroutine sel_read_alloc_SPH_fld_head                          &
-!!     &         (nprocs_in, id_rank, istep_fld, fld_IO)
+!!     &         (nprocs_in, id_rank, istep_fld, t_IO, fld_IO)
 !!@endverbatim
 !
       module field_IO_select
@@ -39,6 +39,7 @@
 !
       use m_file_format_switch
       use t_field_data_IO
+      use t_time_data
       use field_file_IO
       use field_file_MPI_IO
 !
@@ -61,34 +62,35 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine check_step_FEM_field_file                              &
-     &         (id_rank, istep_fld, fld_IO, ierr)
+      integer(kind = kint) function check_step_FEM_field_file           &
+     &                   (id_rank, istep_fld, fld_IO)
 !
       use set_field_file_names
       use delete_data_files
 !
       integer(kind=kint), intent(in) :: id_rank, istep_fld
       type(field_IO), intent(in) :: fld_IO
-      integer(kind=kint), intent(inout) :: ierr
+!
       character(len=kchara) :: file_name
 !
 !
       call set_FEM_fld_file_name(fld_IO%file_prefix,                    &
      &    fld_IO%iflag_file_fmt, id_rank, istep_fld, file_name)
 !
-      ierr = check_file_exist(file_name)
+      check_step_FEM_field_file = check_file_exist(file_name)
 !
-      end subroutine check_step_FEM_field_file
+      end function check_step_FEM_field_file
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine sel_write_step_FEM_field_file                          &
-     &         (nprocs_in, id_rank, istep_fld, fld_IO)
+     &         (nprocs_in, id_rank, istep_fld, t_IO, fld_IO)
 !
       use set_field_file_names
 !
       integer(kind=kint), intent(in) :: nprocs_in, id_rank, istep_fld
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
       character(len=kchara) :: file_name
 !
@@ -97,18 +99,19 @@
      &    fld_IO%iflag_file_fmt, id_rank, istep_fld, file_name)
 !
       call sel_write_step_field_file                                    &
-     &    (file_name, nprocs_in, id_rank, fld_IO)
+     &    (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       end subroutine sel_write_step_FEM_field_file
 !
 !------------------------------------------------------------------
 !
       subroutine sel_write_step_SPH_field_file                          &
-     &         (nprocs_in, id_rank, istep_fld, fld_IO)
+     &         (nprocs_in, id_rank, istep_fld, t_IO, fld_IO)
 !
       use set_field_file_names
 !
       integer(kind=kint), intent(in) :: nprocs_in, id_rank, istep_fld
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
       character(len=kchara) :: file_name
 !
@@ -117,7 +120,7 @@
      &    fld_IO%iflag_file_fmt, id_rank, istep_fld, file_name)
 !
       call sel_write_step_field_file                                    &
-     &    (file_name, nprocs_in, id_rank, fld_IO)
+     &    (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       end subroutine sel_write_step_SPH_field_file
 !
@@ -125,11 +128,12 @@
 !------------------------------------------------------------------
 !
       subroutine sel_read_step_FEM_field_file                           &
-     &         (nprocs_in, id_rank, istep_fld, fld_IO)
+     &         (nprocs_in, id_rank, istep_fld, t_IO, fld_IO)
 !
       use set_field_file_names
 !
       integer(kind=kint), intent(in) :: id_rank, istep_fld, nprocs_in
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       character(len=kchara) :: file_name
@@ -139,18 +143,19 @@
      &    fld_IO%iflag_file_fmt, id_rank, istep_fld, file_name)
 !
       call sel_read_step_field_file                                     &
-     &    (file_name, nprocs_in, id_rank, fld_IO)
+     &    (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       end subroutine sel_read_step_FEM_field_file
 !
 !------------------------------------------------------------------
 !
       subroutine sel_read_step_SPH_field_file                           &
-     &         (nprocs_in, id_rank, istep_fld, fld_IO)
+     &         (nprocs_in, id_rank, istep_fld, t_IO, fld_IO)
 !
       use set_field_file_names
 !
       integer(kind=kint), intent(in) :: id_rank, istep_fld, nprocs_in
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       character(len=kchara) :: file_name
@@ -160,7 +165,7 @@
      &    fld_IO%iflag_file_fmt, id_rank, istep_fld, file_name)
 !
       call sel_read_step_field_file                                     &
-     &    (file_name, nprocs_in, id_rank, fld_IO)
+     &    (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       end subroutine sel_read_step_SPH_field_file
 !
@@ -168,11 +173,12 @@
 !------------------------------------------------------------------
 !
       subroutine sel_read_alloc_step_FEM_file                           &
-     &         (nprocs_in, id_rank, istep_fld, fld_IO)
+     &         (nprocs_in, id_rank, istep_fld, t_IO, fld_IO)
 !
       use set_field_file_names
 !
       integer(kind=kint), intent(in) :: id_rank, istep_fld, nprocs_in
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       character(len=kchara) :: file_name
@@ -182,18 +188,19 @@
      &    fld_IO%iflag_file_fmt, id_rank, istep_fld, file_name)
 !
       call sel_read_alloc_step_field_file                               &
-     &    (file_name, nprocs_in, id_rank, fld_IO)
+     &    (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       end subroutine sel_read_alloc_step_FEM_file
 !
 !------------------------------------------------------------------
 !
       subroutine sel_read_alloc_step_SPH_file                           &
-     &         (nprocs_in, id_rank, istep_fld, fld_IO)
+     &         (nprocs_in, id_rank, istep_fld, t_IO, fld_IO)
 !
       use set_field_file_names
 !
       integer(kind=kint), intent(in) :: id_rank, istep_fld, nprocs_in
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       character(len=kchara) :: file_name
@@ -203,18 +210,19 @@
      &    fld_IO%iflag_file_fmt, id_rank, istep_fld, file_name)
 !
       call sel_read_alloc_step_field_file                               &
-     &    (file_name, nprocs_in, id_rank, fld_IO)
+     &    (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       end subroutine sel_read_alloc_step_SPH_file
 !
 !------------------------------------------------------------------
 !
       subroutine sel_read_alloc_FEM_fld_head                            &
-     &         (nprocs_in, id_rank, istep_fld, fld_IO)
+     &         (nprocs_in, id_rank, istep_fld, t_IO, fld_IO)
 !
       use set_field_file_names
 !
       integer(kind=kint), intent(in) :: id_rank, istep_fld, nprocs_in
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       character(len=kchara) :: file_name
@@ -224,18 +232,19 @@
      &    fld_IO%iflag_file_fmt, id_rank, istep_fld, file_name)
 !
       call sel_read_alloc_field_head                                    &
-     &    (file_name, nprocs_in, id_rank, fld_IO)
+     &    (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       end subroutine sel_read_alloc_FEM_fld_head
 !
 !------------------------------------------------------------------
 !
       subroutine sel_read_alloc_SPH_fld_head                            &
-     &         (nprocs_in, id_rank, istep_fld, fld_IO)
+     &         (nprocs_in, id_rank, istep_fld, t_IO, fld_IO)
 !
       use set_field_file_names
 !
       integer(kind=kint), intent(in) :: id_rank, istep_fld, nprocs_in
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
       character(len=kchara) :: file_name
@@ -245,7 +254,7 @@
      &    fld_IO%iflag_file_fmt, id_rank, istep_fld, file_name)
 !
       call sel_read_alloc_field_head                                    &
-     &    (file_name, nprocs_in, id_rank, fld_IO)
+     &    (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       end subroutine sel_read_alloc_SPH_fld_head
 !
@@ -253,13 +262,14 @@
 !------------------------------------------------------------------
 !
       subroutine sel_write_step_field_file                              &
-     &     (file_name, nprocs_in, id_rank, fld_IO)
+     &     (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       use calypso_mpi
       use m_error_IDs
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind=kint), intent(in) :: id_rank, nprocs_in
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
 !
@@ -307,10 +317,11 @@
 !------------------------------------------------------------------
 !
       subroutine sel_read_step_field_file                               &
-     &     (file_name, nprocs_in, id_rank, fld_IO)
+     &     (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       integer(kind = kint), intent(in) :: id_rank, nprocs_in
       character(len=kchara), intent(in) :: file_name
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
 !
@@ -355,10 +366,11 @@
 !------------------------------------------------------------------
 !
       subroutine sel_read_alloc_step_field_file                         &
-     &         (file_name, nprocs_in, id_rank, fld_IO)
+     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       integer(kind = kint), intent(in) :: id_rank, nprocs_in
       character(len=kchara), intent(in) :: file_name
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
 !
@@ -405,10 +417,11 @@
 !------------------------------------------------------------------
 !
       subroutine sel_read_alloc_field_head                              &
-     &         (file_name, nprocs_in, id_rank, fld_IO)
+     &         (file_name, nprocs_in, id_rank, t_IO, fld_IO)
 !
       integer(kind = kint), intent(in) :: id_rank, nprocs_in
       character(len=kchara), intent(in) :: file_name
+      type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO
 !
 !

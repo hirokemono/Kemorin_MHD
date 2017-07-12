@@ -41,7 +41,7 @@
 !!                             zonal: use zonal average
 !!                             sphere: use sphere average
 !!
-!!    filter_file_header:  header name for filter data
+!!    filter_file_prefix:  header name for filter data
 !!
 !!
 !!    3d_filtering_ctl
@@ -91,10 +91,12 @@
 !!      SGS_cf_factor_ctl        0.5
 !!
 !!      begin filter_files_def
-!!        filter_elength_header   'filter_elen'
-!!        filter_file_header      'filter_node'
-!!        model_coef_ini_header    'model_coefs_ini'
-!!        wider_filter_header     'filter/filter_coef_2'
+!!        filter_elength_prefix        'filter_elen'
+!!        filter_file_prefix           'filter_node'
+!!        wider_filter_prefix          'filter/filter_coef_2'
+!!
+!!        model_coef_rst_prefix        'model_coefs_ini'
+!!        commutel_coef_rst_prefix    'commute_coefs_ini'
 !!      end  filter_files_def
 !!
 !!      istep_dynamic_ctl         10

@@ -41,10 +41,13 @@
       call bcast_ctl_type_c1(ffile_ctl%filter_moms_head_ctl)
       call bcast_ctl_type_c1(ffile_ctl%filter_wide_head_ctl)
       call bcast_ctl_type_c1(ffile_ctl%model_coef_ini_head_ctl)
+      call bcast_ctl_type_c1(ffile_ctl%commute_coef_ini_head_ctl)
 !
       call bcast_ctl_type_c1(ffile_ctl%filter_elen_format)
       call bcast_ctl_type_c1(ffile_ctl%filter_3d_format)
       call bcast_ctl_type_c1(ffile_ctl%filter_wide_format)
+      call bcast_ctl_type_c1(ffile_ctl%model_coef_rst_format)
+      call bcast_ctl_type_c1(ffile_ctl%commute_coef_rst_format)
 !
       end subroutine bcast_ctl_data_4_filter_files
 !

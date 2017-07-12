@@ -7,10 +7,10 @@ begin const_filter
   end
 !
   begin filter_files_ctl
-    filter_file_header     'mesh/filter_node'
-    filter_elength_header   'filter_elen'
-    filter_moment_header    'filter_moms'
-    filter_coefs_header     'filter_coef'
+    filter_file_prefix     'mesh/filter_node'
+    filter_elength_prefix   'filter_elen'
+    filter_moment_prefix    'filter_moms'
+    filter_coefs_prefix     'filter_coef'
   end
 !
 end

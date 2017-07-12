@@ -1,6 +1,6 @@
 !
 begin const_z_filter
-  filter_file_header    filter_node_l.0
+  filter_file_prefix    filter_node_l.0
   num_smp_ctl           1
 !
 !    num_node_ctl: number of node (x, y, z)

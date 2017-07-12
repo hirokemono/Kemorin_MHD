@@ -545,7 +545,7 @@ begin fluid_control
 !                             reference...use given reference temperature
 !                             average.....use average of sphere or plane
 !
-!    filter_file_header:  header name for filter data
+!    filter_file_prefix:  header name for filter data
 !
 !    3d_filtering_ctl
 !      whole_area:   filtering groups for whole domain
@@ -574,16 +574,16 @@ begin fluid_control
       direction_marging_ctl   lsq
 !
       begin SGS_files_control
-        filter_elength_header   'filter_elen'
-        filter_file_header      'filter_node'
-        wider_filter_header     'filter/filter_coef_2'
+        filter_elength_prefix   'filter_elen'
+        filter_file_prefix      'filter_node'
+        wider_filter_prefix     'filter/filter_coef_2'
 !
-        filter_elen_format        'ascii'
-        filter_3d_format          'binary'
-        filter_wide_format        'gzip'
+        filter_elen_format          'ascii'
+        filter_3d_format            'binary'
+        filter_wide_format          'gzip'
 !
-        model_coef_ini_header    'model_coefs_ini'
-!        filter_file_header      'mesh/filter_node_l'
+        model_coef_rst_prefix       'model_coefs_ini'
+        commutel_coef_rst_prefix    'commute_coefs_ini'
       end  SGS_files_control
 !
       min_step_dynamic_ctl      1

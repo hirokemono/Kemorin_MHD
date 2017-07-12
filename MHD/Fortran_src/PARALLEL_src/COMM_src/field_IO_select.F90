@@ -9,8 +9,8 @@
 !> @brief read and write restart file
 !!
 !!@verbatim
-!!      subroutine check_step_FEM_field_file                            &
-!!     &         (id_rank, istep_fld, fld_IO, ierr)
+!!      integer(kind = kint) function check_step_FEM_field_file         &
+!!     &                   (id_rank, istep_fld, fld_IO)
 !!
 !!      subroutine sel_write_step_FEM_field_file                        &
 !!     &         (nprocs_in, id_rank, istep_fld, t_IO, fld_IO)
@@ -65,24 +65,24 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine check_step_FEM_field_file                              &
-     &         (id_rank, istep_fld, fld_IO, ierr)
+      integer(kind = kint) function check_step_FEM_field_file           &
+     &                   (id_rank, istep_fld, fld_IO)
 !
       use set_field_file_names
       use delete_data_files
 !
       integer(kind=kint), intent(in) :: id_rank, istep_fld
       type(field_IO), intent(in) :: fld_IO
-      integer(kind=kint), intent(inout) :: ierr
+!
       character(len=kchara) :: file_name
 !
 !
       call set_FEM_fld_file_name(fld_IO%file_prefix,                    &
      &    fld_IO%iflag_file_fmt, id_rank, istep_fld, file_name)
 !
-      ierr = check_file_exist(file_name)
+      check_step_FEM_field_file = check_file_exist(file_name)
 !
-      end subroutine check_step_FEM_field_file
+      end function check_step_FEM_field_file
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------

@@ -30,15 +30,22 @@
       use t_SGS_control_parameter
       use t_ele_info_4_dynamic
       use t_SGS_model_coefs
+      use t_time_data
+      use t_field_data_IO
 !
       implicit none
 !
-      integer (kind = kint) :: iflag_rst_sgs_coef_code
+      integer (kind = kint) :: iflag_rst_sgs_coef_code = 0
+      integer (kind = kint) :: iflag_rst_sgs_comm_code = 0
       integer (kind = kint), parameter :: rst_sgs_coef_code = 18
-      character(len=kchara) :: rst_sgs_coef_head                        &
-     &                       = 'rst_model_coefs'
-      character(len=kchara) :: rst_sgs_coef_name                        &
-     &                       = 'rst_model_coefs.dat'
+      character(len=kchara), parameter                                  &
+     &                      :: def_rst_sgs_coef =  'rst_model_coefs'
+      character(len=kchara), parameter                                  &
+     &                      :: def_rst_comm_coef = 'rst_diff_coefs'
+!
+      type(time_data), save :: Csim1_time
+      type(field_IO), save :: Csim1_IO
+      type(field_IO), save :: Cdiff1_IO
 !
       integer (kind = kint) :: n_layer_d_IO
       integer (kind = kint) :: num_sgs_kinds_IO, num_diff_kinds_IO
@@ -61,13 +68,133 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine read_alloc_sph_Csim_data                               &
+     &         (init_d, rst_step, i_step_sgs_coefs, wk_sgs)
+!
+      use t_ele_info_4_dynamic
+      use field_IO_select
+!
+      type(time_data), intent(in) :: init_d
+      type(IO_step_param), intent(inout) :: rst_step
+      type(dynamic_model_data), intent(inout) :: wk_sgs
+      integer(kind = kint), intent(inout) :: i_step_sgs_coefs
+!
+      integer(kind = kint) :: ierr, istep_rst
+!
+!
+      write(*,*) 'wk_sgs%nlayer', wk_sgs%nlayer
+      write(*,*) 'wk_sgs%num_kinds', wk_sgs%num_kinds
+      write(*,*) 'wk_sgs%ntot_comp', wk_sgs%ntot_comp
+      write(*,*) 'wk_sgs%name', wk_sgs%name
+      write(*,*) 'wk_sgs%fld_coef', size(wk_sgs%fld_coef,1), size(wk_sgs%fld_coef,2)
+!
+      if (init_d%i_time_step .eq. -1) then
+        istep_rst = init_d%i_time_step
+      else
+        rst_step%istep_file = init_d%i_time_step / rst_step%increment
+        istep_rst = rst_step%istep_file
+      end if
+!
+      ierr = check_step_FEM_field_file(my_rank, istep_rst, Csim1_IO)
+      if(ierr .gt. 0) then
+        iflag_rst_sgs_coef_code = 0
+        return
+      end if
+!
+      call sel_read_alloc_step_FEM_file(nprocs, my_rank,                &
+     &    rst_step%istep_file, Csim1_time, Csim1_IO)
+!
+      if(i_step_sgs_coefs .eq. 0) then
+        i_step_sgs_coefs = int(Csim1_time%dt / init_d%dt)
+      end if
+!
+!      call set_sph_restart_from_IO(Csim1_IO, rj_fld)
+!      call copy_time_step_data(Csim1_time, init_d)
+!
+!      call dealloc_phys_data_IO(Csim1_IO)
+!      call dealloc_phys_name_IO(Csim1_IO)
+!
+      end subroutine read_alloc_sph_Csim_data
+!
+! -----------------------------------------------------------------------
+!
+      subroutine write_sph_Csim_data                                    &
+     &        (i_step_sgs_coefs, rst_step, time_d, dynamic_SPH)
+!
+      use t_ele_info_4_dynamic
+      use sph_filtering
+      use field_IO_select
+      use cal_minmax_and_stacks
+!
+      integer(kind = kint), intent(in) :: i_step_sgs_coefs
+      type(IO_step_param), intent(in) :: rst_step
+      type(time_data), intent(in) :: time_d
+!
+      type(dynamic_SGS_data_4_sph), intent(in) :: dynamic_SPH
+!
+!
+      call set_sph_Csim_to_IO                                           &
+     &   (i_step_sgs_coefs, time_d, dynamic_SPH%wk_sgs,                 &
+     &    Csim1_time, Csim1_IO)
+!
+      call sel_write_step_FEM_field_file(nprocs, my_rank,               &
+     &    rst_step%istep_file, Csim1_time, Csim1_IO)
+!
+      call dealloc_phys_data_IO(Csim1_IO)
+      call dealloc_phys_name_IO(Csim1_IO)
+!
+      end subroutine write_sph_Csim_data
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_sph_Csim_to_IO(i_step_sgs_coefs, time_d, wk_sgs,   &
+     &          Csim_time, Csim_IO)
+!
+      use cal_minmax_and_stacks
+!
+      integer(kind = kint), intent(in) :: i_step_sgs_coefs
+      type(time_data), intent(in) :: time_d
+      type(dynamic_model_data), intent(in) :: wk_sgs
+!
+      type(time_data), intent(inout) :: Csim_time
+      type(field_IO), intent(inout) :: Csim_IO
+!
+!
+      Csim_time%i_time_step = time_d%i_time_step
+      Csim_time%time = time_d%time
+      Csim_time%dt = time_d%dt * dble(i_step_sgs_coefs)
+!
+      Csim_IO%nnod_IO =      wk_sgs%nlayer
+      Csim_IO%num_field_IO = wk_sgs%num_kinds
+      call alloc_phys_name_IO(Csim_IO)
+!
+      Csim_IO%fld_name(1:wk_sgs%num_kinds)                              &
+     &      = wk_sgs%name(1:wk_sgs%num_kinds)
+      Csim_IO%num_comp_IO(1:Csim_IO%num_field_IO) = 1
+!
+      call s_cal_total_and_stacks                                       &
+     &   (Csim_IO%num_field_IO, Csim_IO%num_comp_IO, izero,             &
+     &    Csim_IO%istack_comp_IO, Csim_IO%ntot_comp_IO)
+!
+      call alloc_phys_data_IO(Csim_IO)
+!
+!$omp parallel workshare
+      Csim_IO%d_IO(:,:) = wk_sgs%fld_coef(:,:)
+!$omp end parallel workshare
+!
+      end subroutine set_sph_Csim_to_IO
+!
+! -----------------------------------------------------------------------
+!
       subroutine output_ini_model_coefs                                 &
-     &         (i_step_sgs_coefs, i_step, time,                         &
+     &         (i_step_sgs_coefs, istep_rst, i_step, time,              &
      &          cmt_param, wk_sgs, wk_diff)
 !
       use open_sgs_model_coefs
       use sgs_model_coefs_IO
+      use set_parallel_file_name
 !
+      integer(kind = kint), intent(in) :: istep_rst
       integer(kind=kint), intent(in) :: i_step
       real(kind=kreal), intent(in) :: time
 !
@@ -76,55 +203,61 @@
       type(dynamic_model_data), intent(in) :: wk_sgs, wk_diff
 !
       integer (kind = kint) :: inum
+      character(len=kchara) :: file_name, fn_tmp
 !
 !
 !
-      if (my_rank.eq.0) then
+      if (my_rank .ne. 0) return
 !
-        open (rst_sgs_coef_code,file = rst_sgs_coef_name)
+      if(istep_rst .lt. 0) then
+        call add_elaps_postfix(Csim1_IO%file_prefix, fn_tmp)
+      else
+        call add_int_suffix(istep_rst, Csim1_IO%file_prefix, fn_tmp)
+      end if
+      call add_dat_extension(fn_tmp, file_name)
 !
 !
-        write(rst_sgs_coef_code,'(a)')                                  &
+      open (rst_sgs_coef_code,file = file_name)
+!
+      write(rst_sgs_coef_code,'(a)')                                    &
      &              '! time step and interbal for dynamic model'
-        write(rst_sgs_coef_code,'(2i16)') i_step, i_step_sgs_coefs
+      write(rst_sgs_coef_code,'(2i16)') i_step, i_step_sgs_coefs
 !
-        write(rst_sgs_coef_code,'(a)')  '! num. of model coefs'
-        write(rst_sgs_coef_code,'(2i16)')                               &
+      write(rst_sgs_coef_code,'(a)')  '! num. of model coefs'
+      write(rst_sgs_coef_code,'(2i16)')                                 &
      &       wk_sgs%num_kinds, wk_sgs%nlayer
 !
-        call write_sgs_coef_head(rst_sgs_coef_code, wk_sgs)
+      call write_sgs_coef_head(rst_sgs_coef_code, wk_sgs)
 !
 !   write model coefs for whole domain
-        write(rst_sgs_coef_code,1000)  i_step, time, izero,             &
+      write(rst_sgs_coef_code,1000)  i_step, time, izero,               &
      &        wk_sgs%fld_whole_clip(1:wk_sgs%num_kinds)
 !
 !   write model coefs for each layer
-        do inum = 1, wk_sgs%nlayer
-          write(rst_sgs_coef_code,1000) i_step, time, inum,             &
+      do inum = 1, wk_sgs%nlayer
+        write(rst_sgs_coef_code,1000) i_step, time, inum,               &
      &       wk_sgs%fld_clip(inum,1:wk_sgs%num_kinds)
-        end do
+      end do
 !
-        if (cmt_param%iflag_commute .gt. id_SGS_commute_OFF) then
+      if (cmt_param%iflag_commute .gt. id_SGS_commute_OFF) then
 !
-          write(rst_sgs_coef_code,'(a)')  '! num. of commute coefs'
-          write(rst_sgs_coef_code,'(2i16)')                             &
+        write(rst_sgs_coef_code,'(a)')  '! num. of commute coefs'
+        write(rst_sgs_coef_code,'(2i16)')                               &
      &       wk_diff%num_kinds, wk_diff%nlayer
 !
-          call write_diff_coef_head(rst_sgs_coef_code, wk_diff)
+        call write_diff_coef_head(rst_sgs_coef_code, wk_diff)
 !
-          write(rst_sgs_coef_code,1000) i_step, time, izero,            &
+        write(rst_sgs_coef_code,1000) i_step, time, izero,              &
      &          wk_diff%fld_whole_clip(1:wk_diff%num_kinds)
 !
-          if (cmt_param%iset_DIFF_coefs .eq. 1 ) then
-            do inum = 1, wk_diff%nlayer
-              write(rst_sgs_coef_code,1000)  i_step, time, inum,        &
+        if (cmt_param%iset_DIFF_coefs .eq. 1 ) then
+          do inum = 1, wk_diff%nlayer
+            write(rst_sgs_coef_code,1000)  i_step, time, inum,          &
      &              wk_diff%fld_clip(inum,1:wk_diff%num_kinds)
-            end do
-          end if
+          end do
         end if
-        close (rst_sgs_coef_code)
-!
       end if
+      close (rst_sgs_coef_code)
 !
  1000 format(i16,1pE25.15e3,i16,1p200E25.15e3)
 !
@@ -133,14 +266,16 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine input_ini_model_coefs                                  &
-     &         (cmt_param, ele, fluid, layer_tbl, i_step_sgs_coefs,     &
+      subroutine input_ini_model_coefs(istep_rst, cmt_param,            &
+     &          ele, fluid, layer_tbl, i_step_sgs_coefs,                &
      &          wk_sgs, wk_diff, sgs_coefs, diff_coefs)
 !
       use t_geometry_data
       use t_geometry_data_MHD
       use t_layering_ele_list
+      use set_parallel_file_name
 !
+      integer(kind = kint), intent(in) :: istep_rst
       type(commutation_control_params), intent(in) :: cmt_param
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
@@ -151,8 +286,32 @@
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !
+      character(len=kchara) :: file_name, fn_tmp
 !
+!
+      if(iflag_rst_sgs_coef_code .eq. 0) return
+!
+      if (istep_rst .lt. 0) then
+        call add_elaps_postfix(Csim1_IO%file_prefix, fn_tmp)
+      else
+        call add_int_suffix(istep_rst, Csim1_IO%file_prefix, fn_tmp)
+      end if
+      call add_dat_extension(fn_tmp, file_name)
+!
+      open (rst_sgs_coef_code,file = file_name, status='old', ERR=99)
       call read_ini_model_coefs(cmt_param, i_step_sgs_coefs)
+      close(rst_sgs_coef_code)
+!
+   99 continue
+      num_sgs_kinds_IO = 0
+      allocate( name_ak_sgs_IO(num_sgs_kinds_IO) )
+      allocate( coef_sgs_IO(0:n_layer_d_IO,num_sgs_kinds_IO) )
+      if (cmt_param%iflag_commute .gt. id_SGS_commute_OFF) then
+        num_diff_kinds_IO = 0
+        allocate( name_ak_diff_IO(num_diff_kinds_IO) )
+        allocate( coef_diff_IO(0:n_layer_d_IO,num_diff_kinds_IO) )
+      end if
+!
       call set_ini_model_coefs_from_IO(cmt_param, wk_sgs, wk_diff)
       call set_initial_model_coefs_ele                                  &
      &   (cmt_param, ele, fluid, layer_tbl%e_grp,                       &
@@ -173,9 +332,6 @@
       character(len=255) :: character_4_read
       integer (kind = kint) :: itmp, i_step
 !
-!
-      open (rst_sgs_coef_code,file = rst_sgs_coef_name,                 &
-     &      status='old', ERR=99)
 !
       call skip_comment(character_4_read, rst_sgs_coef_code)
       read(character_4_read,*) itmp, i_step_sgs_coefs
@@ -218,20 +374,6 @@
 !
         end if
       end if
-!
-      close(rst_sgs_coef_code)
-      return
-!
-   99 continue
-      num_sgs_kinds_IO = 0
-      allocate( name_ak_sgs_IO(num_sgs_kinds_IO) )
-      allocate( coef_sgs_IO(0:n_layer_d_IO,num_sgs_kinds_IO) )
-      if (cmt_param%iflag_commute .gt. id_SGS_commute_OFF) then
-        num_diff_kinds_IO = 0
-        allocate( name_ak_diff_IO(num_diff_kinds_IO) )
-        allocate( coef_diff_IO(0:n_layer_d_IO,num_diff_kinds_IO) )
-      end if
-      return
 !
       end subroutine read_ini_model_coefs
 !

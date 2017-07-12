@@ -517,7 +517,7 @@ begin fluid_control
 !                             average..........average over directions
 !                             weighting........weighting average by correlation
 !
-!    filter_file_header:  header name for filter data
+!    filter_file_prefix:  header name for filter data
 !
 !    3d_filtering_ctl
 !      whole_area:   filtering groups for whole domain
@@ -546,11 +546,12 @@ begin fluid_control
       direction_marging_ctl   lsq
 !
       begin SGS_files_control
-        filter_elength_header   'filter_elen'
-        filter_file_header      'filter_node'
-        model_coef_ini_header    'model_coefs_ini'
-!        filter_file_header      'mesh/filter_node_l'
-!        wider_filter_header     'filter/filter_coef_2'
+        filter_elength_prefix   'filter_elen'
+        filter_file_prefix      'filter_node'
+!        wider_filter_prefix     'filter/filter_coef_2'
+!
+        model_coef_rst_prefix       'model_coefs_ini'
+        commutel_coef_rst_prefix    'commute_coefs_ini'
       end
 !
       istep_dynamic_ctl         1

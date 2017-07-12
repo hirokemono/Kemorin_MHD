@@ -463,8 +463,15 @@ begin MHD_control
     end Magneto_convection_def
 !
     begin SGS_control
-!       SGS_model_ctl           similarity
+!      SGS_model_ctl           similarity
       SGS_model_ctl           dynamic
+!
+      begin filter_files_def
+        model_coef_rst_prefix       'rst_8/Csim_med'
+        commutel_coef_rst_prefix    'rst_8/Cdiff_med'
+        model_coef_rst_format  'merged_gz'
+        commute_coef_rst_format  'merged_gz'
+      end filter_files_def
 !
       array sph_filter_ctl  1
         begin sph_filter_ctl
@@ -492,11 +499,12 @@ begin MHD_control
 !        end   sph_filter_ctl
       end array sph_filter_ctl
 !
-      array SGS_terms_ctl      4
+      array SGS_terms_ctl      5
         SGS_terms_ctl    heat              end
         SGS_terms_ctl    inertia           end
         SGS_terms_ctl    Lorentz           end
         SGS_terms_ctl    induction         end
+        SGS_terms_ctl    gravity           end
       end array SGS_terms_ctl
     end SGS_control
   end model

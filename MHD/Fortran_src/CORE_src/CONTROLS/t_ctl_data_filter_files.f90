@@ -13,17 +13,20 @@
 !!  ---------------------------------------------------------------------
 !!
 !!      begin filter_files_def
-!!        filter_file_header           'filter/filter_node'
-!!        filter_elength_header        'filter/filter_elength'
-!!        filter_moment_header         'filter/filter_moms'
-!!        filter_coefs_header          'filter/filter_coef'
-!!        wider_filter_header          'filter/filter_coef_2'
+!!        filter_file_prefix           'filter/filter_node'
+!!        filter_elength_prefix        'filter/filter_elength'
+!!        filter_moment_prefix         'filter/filter_moms'
+!!        filter_coefs_prefix          'filter/filter_coef'
+!!        wider_filter_prefix          'filter/filter_coef_2'
 !!
 !!        filter_elen_format        'ascii'
 !!        filter_3d_format          'binary'
 !!        filter_wide_format        'gzip'
 !!
-!!        model_coef_ini_header    'model_coefs_ini'
+!!        model_coef_rst_prefix       'model_coefs_ini'
+!!        commutel_coef_rst_prefix    'commute_coefs_ini'
+!!        model_coef_rst_format      'merged_gz'
+!!        commute_coef_rst_format    'merged_gz'
 !!      end filter_files_def
 !!
 !!  ---------------------------------------------------------------------
@@ -53,6 +56,8 @@
 !
 !>        Structure for model coefficients file for nodes
         type(read_character_item) :: model_coef_ini_head_ctl
+!>        Structure for commutation coefficients file for nodes
+        type(read_character_item) :: commute_coef_ini_head_ctl
 !
 !>        Structure for file format of element length
         type(read_character_item) :: filter_elen_format
@@ -60,22 +65,29 @@
         type(read_character_item) :: filter_3d_format
 !>        Structure for file format of wider filter file
         type(read_character_item) :: filter_wide_format
+!
+!>        Structure for file format of model coefficient
+        type(read_character_item) :: model_coef_rst_format
+!>        Structure for file format of commutation coefficient
+        type(read_character_item) :: commute_coef_rst_format
       end type filter_file_control
 !
 !     flags for filter file headers
 !
       character(len=kchara), parameter                                  &
-     &         :: hd_filter_head_ctl =      'filter_file_header'
+     &         :: hd_filter_head_ctl =       'filter_file_prefix'
       character(len=kchara), parameter                                  &
-     &         :: hd_filter_elen_head_ctl = 'filter_elength_header'
+     &         :: hd_filter_elen_head_ctl =  'filter_elength_prefix'
       character(len=kchara), parameter                                  &
-     &         :: hd_filter_moms_head_ctl = 'filter_moment_header'
+     &         :: hd_filter_moms_head_ctl =  'filter_moment_prefix'
       character(len=kchara), parameter                                  &
-     &         :: hd_filter_coef_head_ctl = 'filter_coefs_header'
+     &         :: hd_filter_coef_head_ctl =  'filter_coefs_prefix'
       character(len=kchara), parameter                                  &
-     &         :: hd_filter_wide_head =     'wider_filter_header'
+     &         :: hd_filter_wide_head =      'wider_filter_prefix'
       character(len=kchara), parameter                                  &
-     &         :: hd_model_coef_ini_head =  'model_coef_ini_header'
+     &         :: hd_model_coef_ini_head =   'model_coef_rst_prefix'
+      character(len=kchara), parameter                                  &
+     &         :: hd_commute_coef_ini_head = 'commutel_coef_rst_prefix'
 !
       character(len=kchara), parameter                                  &
      &         :: hd_filter_elen_fmt = 'filter_elen_format'
@@ -83,12 +95,17 @@
      &         :: hd_filter_3d_fmt =   'filter_3d_format'
       character(len=kchara), parameter                                  &
      &         :: hd_filter_wide_fmt = 'filter_wide_format'
+      character(len=kchara), parameter                                  &
+     &         :: hd_model_coef_rst_format = 'model_coef_rst_format'
+      character(len=kchara), parameter                                  &
+     &         :: hd_commute_c_rst_format = 'commute_coef_rst_format'
 !
       private :: hd_filter_head_ctl, hd_filter_elen_head_ctl
       private :: hd_filter_moms_head_ctl, hd_filter_coef_head_ctl
-      private :: hd_filter_wide_head, hd_model_coef_ini_head
+      private :: hd_filter_wide_head, hd_commute_c_rst_format
+      private :: hd_model_coef_ini_head, hd_commute_coef_ini_head
       private :: hd_filter_elen_fmt, hd_filter_3d_fmt
-      private :: hd_filter_wide_fmt
+      private :: hd_filter_wide_fmt, hd_model_coef_rst_format
 !
 !  ---------------------------------------------------------------------
 !
@@ -129,6 +146,8 @@
      &     (hd_filter_wide_head, ffile_ctl%filter_wide_head_ctl)
         call read_chara_ctl_type                                        &
      &     (hd_model_coef_ini_head, ffile_ctl%model_coef_ini_head_ctl)
+        call read_chara_ctl_type(hd_commute_coef_ini_head,              &
+     &      ffile_ctl%commute_coef_ini_head_ctl)
 !
         call read_chara_ctl_type                                        &
      &     (hd_filter_elen_fmt, ffile_ctl%filter_elen_format)
@@ -136,6 +155,10 @@
      &     (hd_filter_3d_fmt, ffile_ctl%filter_3d_format)
         call read_chara_ctl_type                                        &
      &     (hd_filter_wide_fmt, ffile_ctl%filter_wide_format)
+        call read_chara_ctl_type                                        &
+     &     (hd_model_coef_rst_format, ffile_ctl%model_coef_rst_format)
+        call read_chara_ctl_type(hd_commute_c_rst_format,               &
+     &      ffile_ctl%commute_coef_rst_format)
       end do
 !
       end subroutine read_filter_fnames_control

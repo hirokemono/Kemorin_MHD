@@ -91,6 +91,7 @@
       use t_sph_boundary_input_data
 !
       use set_control_4_SGS
+      use sgs_ini_model_coefs_IO
 !
       type(platform_data_control), intent(in) :: plt
       type(platform_data_control), intent(in) :: org_plt
@@ -121,7 +122,7 @@
       if (iflag_debug.gt.0) write(*,*) 'set_control_SGS_model'
       call set_control_SGS_model(model_ctl%sgs_ctl,                     &
      &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
-     &    SGS_par%i_step_sgs_coefs)
+     &    Csim1_IO, Cdiff1_IO, SGS_par%i_step_sgs_coefs)
 !
       if(SGS_par%model_p%iflag_SGS .ne. id_SGS_none) then
         call set_control_SPH_SGS                                        &
@@ -132,6 +133,7 @@
         call dealloc_sph_filter_ctl(model_ctl%sgs_ctl)
       end if
 !
+      if (iflag_debug.gt.0) write(*,*) 'set_control_4_SPH_MHD'
       call set_control_4_SPH_MHD(plt, org_plt,                          &
      &    model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,         &
      &    sph_gen, rj_fld, mesh_file, sph_file_param, MHD_org_files,    &
