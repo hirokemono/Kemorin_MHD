@@ -120,9 +120,7 @@
       type(IO_step_param), intent(inout) :: rst_step
 !
 !
-      if (output_IO_flag(time_d%i_time_step,rst_step) .ne. 0) return
-!
-      rst_step%istep_file = time_d%i_time_step/rst_step%increment
+      if(set_IO_step_flag(time_d%i_time_step,rst_step) .ne. 0) return
 !
       call copy_time_step_size_data(time_d, sph_time_IO)
       call set_sph_restart_data_to_IO(rj_fld, sph_fst_IO)
@@ -261,13 +259,12 @@
 !
 !
       if(sph_file_param%iflag_IO .eq. 0) return
-      if(output_IO_flag(i_step,ucd_step) .ne. 0) return
+      if(set_IO_step_flag(i_step,ucd_step) .ne. 0) return
 !
       call set_field_file_fmt_prefix                                    &
      &   (sph_file_param%iflag_format, sph_file_param%file_prefix,      &
      &    sph_out_IO)
 !
-      ucd_step%istep_file = i_step / ucd_step%increment
       call copy_time_step_size_data(time_d, sph_time_IO)
       call copy_rj_phys_name_to_IO                                      &
      &   (rj_fld%num_phys_viz, rj_fld, sph_out_IO)

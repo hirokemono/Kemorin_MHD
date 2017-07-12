@@ -98,9 +98,7 @@
 !
 !
       if(fem_ucd%ifmt_file .lt. 0) return
-      if(output_IO_flag(i_step,ucd_step) .ne. 0) return
-!
-      ucd_step%istep_file = i_step / ucd_step%increment
+      if(set_IO_step_flag(i_step,ucd_step) .ne. 0) return
 !
       call copy_time_step_size_data(time_d, ucd_time_IO)
       call sel_write_parallel_ucd_file                                  &
@@ -186,8 +184,7 @@
       type(IO_step_param), intent(inout) :: ucd_step
 !
 !
-      if(output_IO_flag(i_step,ucd_step) .ne. izero) return
-      ucd_step%istep_file = i_step / ucd_step%increment
+      if(set_IO_step_flag(i_step,ucd_step) .ne. izero) return
       call set_data_by_read_ucd_once(my_rank, ucd_step%istep_file,      &
     &     udt_file_param%iflag_format, udt_file_param%file_prefix,      &
     &     nod_fld, t_IO)

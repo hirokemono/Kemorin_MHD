@@ -77,8 +77,7 @@
 !
 !
       do i_step = t_VIZ%init_d%i_time_step, t_VIZ%finish_d%i_end_step
-        if(output_IO_flag(i_step,t_VIZ%ucd_step) .ne. izero) cycle
-        t_VIZ%ucd_step%istep_file = i_step / t_VIZ%ucd_step%increment
+        if(set_IO_step_flag(i_step,t_VIZ%ucd_step) .ne. izero) cycle
 !
 !  Load field data
         if(iflag_debug .gt. 0)  write(*,*) 'FEM_analyze_vizs', i_step

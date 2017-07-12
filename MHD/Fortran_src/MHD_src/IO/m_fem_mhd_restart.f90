@@ -227,8 +227,7 @@
       type(IO_step_param), intent(inout) :: rst_step
 !
 !
-      if (output_IO_flag(i_step, rst_step) .ne. 0) return
-      rst_step%istep_file = i_step / rst_step%increment
+      if (set_IO_step_flag(i_step, rst_step) .ne. 0) return
 !
       call sel_read_step_FEM_field_file                                 &
      &    (nprocs, my_rank, rst_step%istep_file, t_IO, fem_fst_IO)

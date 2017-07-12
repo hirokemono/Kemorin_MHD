@@ -84,9 +84,8 @@
       type(IO_step_param), intent(inout) :: rst_step
 !
 !
-      if (output_IO_flag(i_step,rst_step) .ne. 0) return
+      if (set_IO_step_flag(i_step,rst_step) .ne. 0) return
 !
-      rst_step%istep_file = i_step / rst_step%increment
       call output_restart_files                                         &
      &   (rst_step%istep_file, time_d, node, nod_comm, iphys, nod_fld)
       call output_model_coef_file(rst_step%istep_file,                  &
