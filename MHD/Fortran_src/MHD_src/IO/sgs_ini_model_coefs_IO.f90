@@ -104,15 +104,11 @@
       call sel_read_alloc_step_FEM_file(nprocs, my_rank,                &
      &    rst_step%istep_file, Csim1_time, Csim1_IO)
 !
-      if(i_step_sgs_coefs .eq. 0) then
-        i_step_sgs_coefs = int(Csim1_time%dt / init_d%dt)
-      end if
+      call set_sph_Csim_from_IO(Csim1_time, Csim1_IO, init_d,           &
+     &    i_step_sgs_coefs, wk_sgs, ierr)
 !
-!      call set_sph_restart_from_IO(Csim1_IO, rj_fld)
-!      call copy_time_step_data(Csim1_time, init_d)
-!
-!      call dealloc_phys_data_IO(Csim1_IO)
-!      call dealloc_phys_name_IO(Csim1_IO)
+      call dealloc_phys_data_IO(Csim1_IO)
+      call dealloc_phys_name_IO(Csim1_IO)
 !
       end subroutine read_alloc_sph_Csim_data
 !
@@ -144,6 +140,58 @@
       call dealloc_phys_name_IO(Csim1_IO)
 !
       end subroutine write_sph_Csim_data
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_sph_Csim_from_IO(Csim_time, Csim_IO, time_d,       &
+     &          i_step_sgs_coefs, wk_sgs, ierr)
+!
+      type(time_data), intent(in) :: Csim_time
+      type(field_IO), intent(in) :: Csim_IO
+      type(time_data), intent(in) :: time_d
+!
+      integer(kind = kint), intent(inout) :: ierr
+      integer(kind = kint), intent(inout) :: i_step_sgs_coefs
+      type(dynamic_model_data), intent(inout) :: wk_sgs
+!
+      integer(kind = kint) :: i_fld, j_fld
+!
+!
+      ierr = 0
+      if(time_d%i_time_step .ne. Csim_time%i_time_step) then
+        e_message = 'Time step data in Csim restart file is wrong'
+        ierr = 1
+      end if
+      if(time_d%time .ne. Csim_time%time) then
+        e_message = 'Time data in Csim restart file is wrong'
+        ierr = 1
+      end if
+      if(time_d%time .ne. Csim_time%time) then
+        e_message = 'Time data in Csim restart file is wrong'
+        ierr = 1
+      end if
+      if(wk_sgs%nlayer .ne. Csim_IO%nnod_IO) then
+        e_message = 'number of node in Csim restart file is wrong'
+        ierr = 1
+      end if
+      if(ierr .gt. 0) return
+!
+      if(i_step_sgs_coefs .eq. 0) then
+        i_step_sgs_coefs = int(Csim_time%dt / time_d%dt)
+      end if
+!
+      do i_fld = 1, wk_sgs%num_kinds
+        do j_fld = 1, Csim_IO%num_field_IO
+          if(Csim_IO%fld_name(j_fld) .eq. wk_sgs%name(i_fld)) then
+!$omp parallel workshare
+            wk_sgs%fld_coef(:,i_fld) = Csim_IO%d_IO(:,j_fld)
+!$omp end parallel workshare
+            exit
+          end if
+        end do
+      end do
+!
+      end subroutine set_sph_Csim_from_IO
 !
 ! -----------------------------------------------------------------------
 !
