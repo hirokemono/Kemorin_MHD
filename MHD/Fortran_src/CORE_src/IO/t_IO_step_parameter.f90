@@ -89,7 +89,9 @@
 !
 !
       set_IO_step_flag = output_flag(i_step, IO_step%increment)
-      IO_step%istep_file = i_step / IO_step%increment
+      if(IO_step%increment .gt. 0) then
+         IO_step%istep_file = i_step / IO_step%increment
+       end if
 !
       end function set_IO_step_flag
 !
