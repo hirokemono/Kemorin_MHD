@@ -293,6 +293,8 @@
      &      trns_SGS%fld_rtp, trns_SGS%frc_rtp)
 !
         istep_dynamic = mod(i_step, i_step_sgs_coefs)
+      if(my_rank .eq. 0) write(*,*) 'istep_dynamic', istep_dynamic, i_step_sgs_coefs
+      if(my_rank .eq. 0) write(*,*) 'SGS_param%stab_weight', SGS_param%stab_weight
         if(SGS_param%iflag_dynamic .eq. id_SGS_DYNAMIC_ON) then
 !
           if (iflag_debug.eq.1) write(*,*) 'wider_similarity_SGS_rtp'
