@@ -151,6 +151,13 @@
      &    m_folding, sph_rtp, trns_snap, node, nod_fld)
 !
       call copy_scalar_from_snap_trans                                  &
+     &   (trns_snap%b_trns%i_h_advect, iphys%i_h_advect,                &
+     &    m_folding, sph_rtp, trns_snap, node, nod_fld)
+      call copy_scalar_from_snap_trans                                  &
+     &   (trns_snap%b_trns%i_c_advect, iphys%i_c_advect,                &
+     &    m_folding, sph_rtp, trns_snap, node, nod_fld)
+!
+      call copy_scalar_from_snap_trans                                  &
      &   (trns_snap%b_trns%i_div_Coriolis, iphys%i_div_Coriolis,        &
      &    m_folding, sph_rtp, trns_snap, node, nod_fld)
 !
