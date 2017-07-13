@@ -128,6 +128,7 @@
       type(phys_data), intent(inout) :: rj_fld
       type(IO_step_param), intent(inout) :: rst_step
 !
+      integer(kind = kint) :: iflag
 !
 !  Set initial velocity if velocity is exist
       if(ipol%i_velo .gt. izero) then
@@ -172,12 +173,14 @@
       call copy_time_step_data(MHD_step1%init_d, MHD_step1%time_d)
       call init_output_sph_restart_file(rj_fld)
 !
-      call output_sph_restart_control                                   &
-     &   (MHD_step1%time_d, rj_fld, rst_step)
 !
       if(MHD_step1%init_d%i_time_step .eq. -1) then
-        call output_sph_rst_by_elaps(MHD_step1%time_d, rj_fld)
+        rst_step%istep_file = MHD_step1%init_d%i_time_step
+      else
+        iflag = set_IO_step_flag(MHD_step1%time_d%i_time_step,rst_step)
       end if
+      call output_sph_restart_control                                   &
+     &   (MHD_step1%time_d, rj_fld, rst_step)
 !
       end subroutine sph_initial_spectrum
 !

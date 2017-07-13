@@ -247,20 +247,23 @@
 !
 !
       if(istep_dynamic .eq. 0) then
-        if(iflag_debug .gt. 0)                                          &
-     &      write(*,*) 'sel_int_zonal_for_model_coefs', istep_dynamic
+      call calypso_mpi_barrier
+!        if(iflag_debug .gt. 0)                                          &
+           write(*,*) 'sel_int_zonal_for_model_coefs', istep_dynamic
         call sel_int_zonal_for_model_coefs                              &
      &   (numdir, sph_rtp%nnod_rtp, nnod_med, sph_rtp%nidx_rtp(3),      &
      &    trns_SGS%frc_rtp(1,irtp_sgs), trns_SGS%fld_rtp(1,irtp_wide),  &
      &    wk_sgs%comp_coef(1,icomp_sgs), wk_sgs%comp_clip(1,icomp_sgs))
 !
-        if(iflag_debug .gt. 0)                                          &
-     &      write(*,*) 'sel_sph_model_coefs'
+      call calypso_mpi_barrier
+!        if(iflag_debug .gt. 0)                                          &
+           write(*,*) 'sel_sph_model_coefs', stablize_weight
         call sel_sph_model_coefs(numdir, nnod_med,                      &
      &    stablize_weight, wk_sgs%comp_coef(1,icomp_sgs),               &
      &    wk_sgs%comp_clip(1,icomp_sgs), wk_sgs%fld_coef(1,ifld_sgs))
       end if
 !
+      call calypso_mpi_barrier
 !$omp parallel
       if(iflag_FFT .eq. iflag_FFTW) then
         call product_model_coefs_pin                                    &
@@ -272,6 +275,7 @@
      &    wk_sgs%fld_coef(1,ifld_sgs), trns_SGS%frc_rtp(1,irtp_sgs))
       end if
 !$omp end parallel
+      call calypso_mpi_barrier
 !
       end subroutine cal_dynamic_SGS_4_sph_MHD
 !

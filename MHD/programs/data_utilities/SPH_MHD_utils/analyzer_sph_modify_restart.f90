@@ -118,10 +118,15 @@
       call set_modify_rj_fields
 !
       if(iflag_debug.gt.0) write(*,*) 'output_sph_restart_control'
-      call copy_time_step_data(MHD_step1%init_d, MHD_step1%time_d)
+      call copy_time_step_data(MHD_step%init_d, MHD_step%time_d)
       call init_output_sph_restart_file(rj_fld1)
-      call output_sph_restart_control                                   &
-     &   (MHD_step1%time_d, rj_fld1, MHD_step%rst_step)
+!
+      iflag = set_IO_step_flag(MHD_step%time_d%i_time_step,             &
+     &                         MHD_step%rst_step)
+      if(iflag .eq. 0) then
+        call output_sph_restart_control                                 &
+     &     (MHD_step%time_d, rj_fld1, MHD_step%rst_step)
+      end if
 !*
 !*  -----------  lead energy data --------------
 !*

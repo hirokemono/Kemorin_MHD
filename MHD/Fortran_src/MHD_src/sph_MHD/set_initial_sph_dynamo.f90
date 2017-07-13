@@ -7,13 +7,16 @@
 !> @brief Set initial data for spectrum dynamos
 !!
 !!@verbatim
-!!      subroutine sph_initial_data_control(reftemp_rj,                 &
-!!     &          sph_params, sph_rj, ref_param_T, c,            &
-!!     &          ipol, idpdr, itor, rj_fld, rst_step, init_d, time_d)
+!!      subroutine sph_initial_data_control                             &
+!!     &         (reftemp_rj, sph_params, sph_rj,                       &
+!!     &          ref_param_T, sph_bc_B, SGS_param, ipol, idpdr, itor,  &
+!!     &          rj_fld, rst_step, init_d, time_d,                     &
+!!     &          i_step_sgs_coefs, dynamic_SPH)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(reference_scalar_param), intent(in) :: ref_param_T
 !!        type(sph_boundary_type), intent(in) :: sph_bc_B
+!!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(phys_address), intent(in) :: ipol
 !!        type(time_data), intent(inout) :: init_d, time_d
 !!        type(phys_data), intent(inout) :: rj_fld
@@ -48,9 +51,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sph_initial_data_control(reftemp_rj,                   &
-     &          sph_params, sph_rj, ref_param_T, sph_bc_B,              &
-     &          ipol, idpdr, itor, rj_fld, rst_step, init_d, time_d)
+      subroutine sph_initial_data_control                               &
+     &         (reftemp_rj, sph_params, sph_rj,                         &
+     &          ref_param_T, sph_bc_B, SGS_param, ipol, idpdr, itor,    &
+     &          rj_fld, rst_step, init_d, time_d,                       &
+     &          i_step_sgs_coefs, dynamic_SPH)
 !
       use m_machine_parameter
       use m_initial_field_control
@@ -58,9 +63,12 @@
       use t_reference_scalar_param
       use t_spheric_parameter
       use t_phys_data
+      use t_SGS_control_parameter
+      use sph_filtering
 !
       use set_sph_restart_IO
       use sph_mhd_rst_IO_control
+      use sgs_ini_model_coefs_IO
       use initial_magne_dynamobench
       use initial_magne_dbench_qvc
 !
@@ -68,12 +76,15 @@
       type(sph_rj_grid), intent(in) :: sph_rj
       type(reference_scalar_param), intent(in) :: ref_param_T
       type(sph_boundary_type), intent(in) :: sph_bc_B
+      type(SGS_model_control_params), intent(in) :: SGS_param
       real(kind=kreal), intent(in) :: reftemp_rj(sph_rj%nidx_rj(1),0:2)
       type(phys_address), intent(in) :: ipol, idpdr, itor
 !
+      integer(kind=kint), intent(inout) :: i_step_sgs_coefs
       type(time_data), intent(inout) :: init_d, time_d
       type(phys_data), intent(inout) :: rj_fld
       type(IO_step_param), intent(inout) :: rst_step
+      type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !
       integer(kind = kint) :: isig
 !
@@ -176,6 +187,19 @@
      &     .and. init_d%i_time_step.eq.0) then
         if(iflag_debug .gt. 0) write(*,*) 'output_sph_restart_control'
         call output_sph_restart_control(time_d, rj_fld, rst_step)
+      end if
+!
+!
+      if(SGS_param%iflag_dynamic .gt. 0) then
+        if (iflag_restart .eq. i_rst_by_file) then
+          call read_alloc_sph_Csim_data(init_d, rst_step,               &
+     &        i_step_sgs_coefs, dynamic_SPH%wk_sgs)
+        else
+          iflag_rst_sgs_coef_code = 0
+          call write_sph_Csim_data                                      &
+     &       (i_step_sgs_coefs, rst_step, init_d, dynamic_SPH)
+        end if
+        write(*,*) 'iflag_rst_sgs_coef_code', iflag_rst_sgs_coef_code
       end if
 !
       end subroutine sph_initial_data_control

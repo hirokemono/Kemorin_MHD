@@ -91,25 +91,26 @@
 !
 !  -------------------------------
 !
-      if(iflag_debug.gt.0) write(*,*)' sph_initial_data_control'
-      call sph_initial_data_control                                     &
-     &   (ref_temp1%t_rj, sph1%sph_params, sph1%sph_rj,                 &
-     &    MHD_prop1%ref_param_T, sph_MHD_bc1%sph_bc_B,                  &
-     &    ipol, idpdr, itor, rj_fld1, MHD_step%rst_step,                &
-     &    MHD_step%init_d, MHD_step%time_d)
-      MHD_step%iflag_initial_step = 0
-!
-      if(iflag_debug.gt.0) write(*,*)' sync_temp_by_per_temp_sph'
-      call sync_temp_by_per_temp_sph(ref_temp1, ref_comp1, MHD_prop1,   &
-     &    sph1%sph_rj, ipol, idpdr, rj_fld1)
-!
-!  -------------------------------
-!
       if(SGS_par1%model_p%iflag_SGS .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)' init_SGS_model_sph_mhd'
         call init_SGS_model_sph_mhd(SGS_par1, sph1, sph_grps1,          &
      &      MHD_prop1, trns_WK1%dynamic_SPH)
       end if
+!
+!  -------------------------------
+!
+      if(iflag_debug.gt.0) write(*,*)' sph_initial_data_control'
+      call sph_initial_data_control                                     &
+     &   (ref_temp1%t_rj, sph1%sph_params, sph1%sph_rj,                 &
+     &    MHD_prop1%ref_param_T, sph_MHD_bc1%sph_bc_B,                  &
+     &    SGS_par1%model_p, ipol, idpdr, itor, rj_fld1,                 &
+     &    MHD_step%rst_step, MHD_step%init_d, MHD_step%time_d,          &
+     &    SGS_par1%i_step_sgs_coefs, trns_WK1%dynamic_SPH)
+      MHD_step%iflag_initial_step = 0
+!
+      if(iflag_debug.gt.0) write(*,*)' sync_temp_by_per_temp_sph'
+      call sync_temp_by_per_temp_sph(ref_temp1, ref_comp1, MHD_prop1,   &
+     &    sph1%sph_rj, ipol, idpdr, rj_fld1)
 !
 !  -------------------------------
 !
@@ -220,17 +221,27 @@
 !*
       call start_eleps_time(4)
       call start_eleps_time(10)
-      if(iflag_debug.gt.0) write(*,*) 'output_sph_restart_control'
-      call output_sph_restart_control                                   &
-     &   (MHD_step%time_d, rj_fld1, MHD_step%rst_step)
+      iflag = set_IO_step_flag(MHD_step%time_d%i_time_step,             &
+     &                         MHD_step%rst_step)
+      if(iflag .eq. 0) then
+        if(iflag_debug.gt.0) write(*,*) 'output_sph_MHD_rst_control'
+        call output_sph_MHD_rst_control                                 &
+     &     (MHD_step%time_d, rj_fld1, MHD_step%rst_step,                &
+     &      SGS_par1%i_step_sgs_coefs, SGS_par1%model_p,                &
+     &      trns_WK1%dynamic_SPH)
+      end if
 !
       total_time = MPI_WTIME() - total_start
       call MPI_allREDUCE (total_time, total_max, ione, CALYPSO_REAL,    &
      &    MPI_MAX, CALYPSO_COMM, ierr_MPI)
       if      (MHD_step%finish_d%i_end_step .eq. -1                     &
      &   .and. total_max .gt. MHD_step%finish_d%elapsed_time) then
-        call output_sph_rst_by_elaps(MHD_step%time_d, rj_fld1)
+        MHD_step%rst_step%istep_file = MHD_step%finish_d%i_end_step
         iflag_finish = 1
+        call output_sph_MHD_rst_control                                 &
+     &     (MHD_step%time_d, rj_fld1, MHD_step%rst_step,                &
+     &      SGS_par1%i_step_sgs_coefs, SGS_par1%model_p,                &
+     &      trns_WK1%dynamic_SPH)
       end if
       call end_eleps_time(10)
 !

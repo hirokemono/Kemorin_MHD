@@ -15,9 +15,10 @@
 !!
 !!      subroutine init_output_sph_restart_file(rj_fld)
 !!      subroutine output_sph_restart_control(time_d, rj_fld, rst_step)
-!!      subroutine output_sph_rst_by_elaps(time_d, rj_fld)
+!!      subroutine output_sph_MHD_rst_control(time_d, rj_fld, rst_step, &
+!!     &          i_step_sgs_coefs, dynamic_SPH)
 !!        type(phys_data), intent(in) :: rj_fld
-!!        type(IO_step_param), intent(inout) :: rst_step
+!!        type(IO_step_param), intent(in) :: rst_step
 !!
 !!      subroutine read_alloc_sph_restart_data(init_d, rj_fld, rst_step)
 !!        type(time_data), intent(inout) :: init_d
@@ -117,10 +118,8 @@
 !
       type(time_data), intent(in) :: time_d
       type(phys_data), intent(in) :: rj_fld
-      type(IO_step_param), intent(inout) :: rst_step
+      type(IO_step_param), intent(in) :: rst_step
 !
-!
-      if(set_IO_step_flag(time_d%i_time_step,rst_step) .ne. 0) return
 !
       call copy_time_step_size_data(time_d, sph_time_IO)
       call set_sph_restart_data_to_IO(rj_fld, sph_fst_IO)
@@ -132,23 +131,29 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine output_sph_rst_by_elaps(time_d, rj_fld)
+      subroutine output_sph_MHD_rst_control(time_d, rj_fld, rst_step,   &
+     &          i_step_sgs_coefs, SGS_param, dynamic_SPH)
 !
+      use sph_filtering
       use set_sph_restart_IO
+      use sgs_ini_model_coefs_IO
 !
+      integer(kind=kint), intent(in) :: i_step_sgs_coefs
       type(time_data), intent(in) :: time_d
       type(phys_data), intent(in) :: rj_fld
+      type(IO_step_param), intent(in) :: rst_step
+      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(dynamic_SGS_data_4_sph), intent(in) :: dynamic_SPH
 !
-      integer(kind = kint), parameter :: negaone = -1
 !
+      call output_sph_restart_control(time_d, rj_fld, rst_step)
 !
-      call copy_time_step_size_data(time_d, sph_time_IO)
-      call set_sph_restart_data_to_IO(rj_fld, sph_fst_IO)
-
-      call sel_write_step_SPH_field_file                                &
-     &   (nprocs, my_rank, negaone, sph_time_IO, sph_fst_IO)
+!      if(SGS_param%iflag_dynamic .gt. 0) then
+!        call write_sph_Csim_data                                        &
+!     &     (i_step_sgs_coefs, rst_step, time_d, dynamic_SPH)
+!      end if
 !
-      end subroutine output_sph_rst_by_elaps
+      end subroutine output_sph_MHD_rst_control
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
