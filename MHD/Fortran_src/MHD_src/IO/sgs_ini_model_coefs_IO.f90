@@ -50,7 +50,7 @@
       character(len=kchara), parameter                                  &
      &                      :: def_rst_comm_coef = 'rst_diff_coefs'
 !
-      type(time_data), save :: Csim1_time
+      type(time_data), save, private :: Csim_time_IO
       type(field_IO), save :: Csim1_IO
       type(field_IO), save :: Cdiff1_IO
 !
@@ -90,9 +90,9 @@
       end if
 !
       call sel_read_alloc_step_FEM_file(nprocs, my_rank,                &
-     &    rst_step%istep_file, Csim1_time, Csim1_IO)
+     &    rst_step%istep_file, Csim_time_IO, Csim1_IO)
 !
-      call set_SPH_Csim_from_IO(Csim1_time, Csim1_IO, init_d,           &
+      call set_SPH_Csim_from_IO(Csim_time_IO, Csim1_IO, init_d,         &
      &    i_step_sgs_coefs, wk_sgs, ierr)
 !
       call dealloc_phys_data_IO(Csim1_IO)
@@ -120,10 +120,10 @@
 !
       call set_SPH_Csim_to_IO                                           &
      &   (i_step_sgs_coefs, time_d, dynamic_SPH%wk_sgs,                 &
-     &    Csim1_time, Csim1_IO)
+     &    Csim_time_IO, Csim1_IO)
 !
       call sel_write_step_FEM_field_file(nprocs, my_rank,               &
-     &    rst_step%istep_file, Csim1_time, Csim1_IO)
+     &    rst_step%istep_file, Csim_time_IO, Csim1_IO)
 !
       call dealloc_phys_data_IO(Csim1_IO)
       call dealloc_phys_name_IO(Csim1_IO)
@@ -169,9 +169,9 @@
       end if
 !
       call sel_read_alloc_step_FEM_file(nprocs, my_rank,                &
-     &    rst_step%istep_file, Csim1_time, Csim1_IO)
+     &    rst_step%istep_file, Csim_time_IO, Csim1_IO)
 !
-      call set_FEM_Csim_from_IO(Csim1_time, Csim1_IO, init_d,           &
+      call set_FEM_Csim_from_IO(Csim_time_IO, Csim1_IO, init_d,         &
      &    i_step_sgs_coefs, wk_sgs, ierr)
 !
       call dealloc_phys_data_IO(Csim1_IO)
@@ -179,9 +179,9 @@
 !
       if (cmt_param%iflag_commute .gt. id_SGS_commute_OFF) then
         call sel_read_alloc_step_FEM_file(nprocs, my_rank,              &
-     &      rst_step%istep_file, Csim1_time, Csim1_IO)
+     &      rst_step%istep_file, Csim_time_IO, Csim1_IO)
 !
-        call set_FEM_Csim_from_IO(Csim1_time, Cdiff1_IO, init_d,        &
+        call set_FEM_Csim_from_IO(Csim_time_IO, Cdiff1_IO, init_d,      &
      &      i_step_sgs_coefs, wk_diff, ierr)
 !
         call dealloc_phys_data_IO(Cdiff1_IO)
@@ -218,19 +218,19 @@
       if (my_rank .ne. 0) return
 !
       call set_FEM_Csim_to_IO(i_step_sgs_coefs, time_d, wk_sgs,         &
-     &   Csim1_time, Csim1_IO)
+     &   Csim_time_IO, Csim1_IO)
 !
       call sel_write_step_FEM_field_file(nprocs, my_rank,               &
-     &    rst_step%istep_file, Csim1_time, Csim1_IO)
+     &    rst_step%istep_file, Csim_time_IO, Csim1_IO)
 !
       call dealloc_phys_data_IO(Csim1_IO)
       call dealloc_phys_name_IO(Csim1_IO)
 !
       if (cmt_param%iflag_commute .gt. id_SGS_commute_OFF) then
         call set_FEM_Csim_to_IO(i_step_sgs_coefs, time_d, wk_diff,      &
-     &     Csim1_time, Cdiff1_IO)
+     &     Csim_time_IO, Cdiff1_IO)
         call sel_write_step_FEM_field_file(nprocs, my_rank,             &
-     &      rst_step%istep_file, Csim1_time, Cdiff1_IO)
+     &      rst_step%istep_file, Csim_time_IO, Cdiff1_IO)
 !
         call dealloc_phys_data_IO(Cdiff1_IO)
         call dealloc_phys_name_IO(Cdiff1_IO)
