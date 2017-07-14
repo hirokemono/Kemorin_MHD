@@ -153,6 +153,10 @@
      &    iedge_4_ele, num_surf, num_surf_bc, surf_istack, surf_item,   &
      &    psf_search, psf_list, psf_grp_list, psf_mesh)
 !
+      do i_psf = 1, num_psf
+        call dealloc_mark_ele_psf(psf_search(i_psf))
+      end do
+!
       end subroutine set_node_and_patch_psf
 !
 !  ---------------------------------------------------------------------
@@ -188,6 +192,8 @@
       type(sectioning_list), intent(inout):: iso_list(num_iso)
       type(psf_local_data), intent(inout) :: iso_mesh(num_iso)
 !
+      integer(kind= kint) :: i_iso
+!
 !
       call count_nodes_4_iso(num_iso, numedge,                          &
      &    nnod_4_edge, ie_edge, interior_edge,                          &
@@ -204,6 +210,10 @@
 !
       call set_iso_patches(num_iso, numele, numedge, iedge_4_ele,       &
      &    iso_search, iso_list, iso_mesh)
+!
+      do i_iso = 1, num_iso
+        call dealloc_mark_ele_psf(iso_search(i_iso))
+      end do
 !
       end subroutine set_node_and_patch_iso
 !
