@@ -257,7 +257,7 @@
       use t_geometry_data
       use t_group_data
       use t_geometry_data_MHD
-      use t_sgs_control_parameter
+      use t_SGS_control_parameter
       use set_sgs_diff_model_coefs
 !
       type(commutation_control_params), intent(in) :: cmt_param
