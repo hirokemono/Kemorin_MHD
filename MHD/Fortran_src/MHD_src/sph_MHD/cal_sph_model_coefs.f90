@@ -54,12 +54,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_scalar_sph_model_coefs                             &
-     &         (nnod_med, weight, sgs_zl, sgs_zt, sgs_c)
+     &         (nnod_med, stab_wt, sgs_zl, sgs_zt, sgs_c)
 !
       integer(kind = kint), intent(in) :: nnod_med
       real(kind = kreal), intent(in) :: sgs_zl(nnod_med)
       real(kind = kreal), intent(in) :: sgs_zt(nnod_med)
-      real(kind = kreal), intent(in) :: weight
+      real(kind = kreal), intent(in) :: stab_wt
 !
       real(kind = kreal), intent(inout) :: sgs_c(nnod_med)
 !
@@ -71,8 +71,8 @@
         if( sgs_zt(inod) .ne. zero) then
 !          sgs_c(inod) = one
 !        else
-          sgs_c(inod) = (one - weight) * sgs_c(inod)                    &
-     &                 + sgs_zl(inod) * weight / sgs_zt(inod)
+          sgs_c(inod) = (one - stab_wt) * sgs_c(inod)                   &
+     &                 + sgs_zl(inod) * stab_wt / sgs_zt(inod)
         end if
       end do
 !$omp end parallel do
@@ -82,12 +82,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_vector_sph_model_coefs                             &
-     &         (nnod_med, weight, sgs_zl, sgs_zt, sgs_c)
+     &         (nnod_med, stab_wt, sgs_zl, sgs_zt, sgs_c)
 !
       integer(kind = kint), intent(in) :: nnod_med
       real(kind = kreal), intent(in) :: sgs_zl(nnod_med,3)
       real(kind = kreal), intent(in) :: sgs_zt(nnod_med,3)
-      real(kind = kreal), intent(in) :: weight
+      real(kind = kreal), intent(in) :: stab_wt
 !
       real(kind = kreal), intent(inout) :: sgs_c(nnod_med)
 !
@@ -101,11 +101,11 @@
         if(rflag .ne. zero) then
 !          sgs_c(inod) = one
 !        else
-          sgs_c(inod) = (one - weight) * sgs_c(inod)                    &
+          sgs_c(inod) = (one - stab_wt) * sgs_c(inod)                   &
      &                + (sgs_zl(inod,1) / sgs_zt(inod,1)                &
      &                 + sgs_zl(inod,2) / sgs_zt(inod,2)                &
      &                 + sgs_zl(inod,3) / sgs_zt(inod,3))               &
-     &               * weight / three
+     &               * stab_wt / three
         end if
       end do
 !$omp end parallel do

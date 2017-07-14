@@ -59,9 +59,11 @@
       integer(kind = kint) :: iflag
 !
 !
-      call read_alloc_sph_rst_4_snap                                    &
+      call read_alloc_sph_rst_SGS_snap                                  &
      &   (i_step, MHD1_org_files%rj_file_param, sph1%sph_rj,            &
-     &    ipol, rj_fld1, MHD_step%rst_step, MHD_step%init_d)
+     &    ipol, rj_fld1, MHD_step%rst_step, MHD_step%init_d,            &
+     &    SGS_par1%i_step_sgs_coefs, SGS_par1%model_p,                  &
+     &    trns_WK1%dynamic_SPH)
       call copy_time_data(MHD_step%init_d, MHD_step%time_d)
 !
       if (iflag_debug.eq.1) write(*,*)' sync_temp_by_per_temp_sph'

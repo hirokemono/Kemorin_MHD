@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine const_model_coefs_4_sph                              &
-!!     &         (istep_dynamic, stablize_weight, sph_rtp,              &
+!!     &         (istep_dynamic, stab_weight, sph_rtp,                  &
 !!     &          ifld_sgs, icomp_sgs, wk_sgs, trns_SGS)
 !!      subroutine copy_Csim_buo_4_sph_trans                            &
 !!     &         (sph_rtp, ifld_sgs,  wk_sgs, trns_SGS)
@@ -48,11 +48,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine const_model_coefs_4_sph                                &
-     &         (istep_dynamic, stablize_weight, sph_rtp,                &
+     &         (istep_dynamic, stab_weight, sph_rtp,                    &
      &          ifld_sgs, icomp_sgs, wk_sgs, trns_SGS)
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
-      real(kind = kreal), intent(in) :: stablize_weight
+      real(kind = kreal), intent(in) :: stab_weight
       integer(kind = kint), intent(in) :: istep_dynamic
       type(SGS_terms_address), intent(in) :: ifld_sgs, icomp_sgs
 !
@@ -66,7 +66,7 @@
 !
       if(ifld_sgs%i_mom_flux .gt. 0) then
         call cal_dynamic_SGS_4_sph_MHD                                  &
-     &     (sph_rtp, istep_dynamic, stablize_weight, nnod_med,          &
+     &     (sph_rtp, istep_dynamic, stab_weight, nnod_med,              &
      &      n_vector, trns_SGS%f_trns%i_SGS_inertia,                    &
      &      trns_SGS%b_trns%i_wide_SGS_inertia,                         &
      &      ifld_sgs%i_mom_flux, icomp_sgs%i_mom_flux,                  &
@@ -75,7 +75,7 @@
 !
       if(ifld_sgs%i_lorentz .gt. 0) then
         call cal_dynamic_SGS_4_sph_MHD                                  &
-     &     (sph_rtp, istep_dynamic, stablize_weight, nnod_med,          &
+     &     (sph_rtp, istep_dynamic, stab_weight, nnod_med,              &
      &      n_vector, trns_SGS%f_trns%i_SGS_Lorentz,                    &
      &      trns_SGS%b_trns%i_wide_SGS_Lorentz,                         &
      &      ifld_sgs%i_lorentz, icomp_sgs%i_lorentz,                    &
@@ -84,7 +84,7 @@
 !
       if(ifld_sgs%i_induction .gt. 0) then
         call cal_dynamic_SGS_4_sph_MHD                                  &
-     &     (sph_rtp, istep_dynamic, stablize_weight, nnod_med,          &
+     &     (sph_rtp, istep_dynamic, stab_weight, nnod_med,              &
      &      n_vector, trns_SGS%f_trns%i_SGS_vp_induct,                  &
      &      trns_SGS%b_trns%i_wide_SGS_vp_induct,                       &
      &      ifld_sgs%i_induction, icomp_sgs%i_induction,                &
@@ -93,7 +93,7 @@
 !
       if(ifld_sgs%i_heat_flux .gt. 0) then
         call cal_dynamic_SGS_4_sph_MHD                                  &
-     &     (sph_rtp, istep_dynamic, stablize_weight, nnod_med,          &
+     &     (sph_rtp, istep_dynamic, stab_weight, nnod_med,              &
      &      n_vector, trns_SGS%f_trns%i_SGS_h_flux,                     &
      &      trns_SGS%b_trns%i_wide_SGS_h_flux,                          &
      &      ifld_sgs%i_heat_flux, icomp_sgs%i_heat_flux,                &
@@ -102,7 +102,7 @@
 !
       if(ifld_sgs%i_comp_flux .gt. 0) then
         call cal_dynamic_SGS_4_sph_MHD                                  &
-     &     (sph_rtp, istep_dynamic, stablize_weight, nnod_med,          &
+     &     (sph_rtp, istep_dynamic, stab_weight, nnod_med,              &
      &      n_vector, trns_SGS%f_trns%i_SGS_c_flux,                     &
      &      trns_SGS%b_trns%i_wide_SGS_c_flux,                          &
      &      ifld_sgs%i_comp_flux, icomp_sgs%i_comp_flux,                &
@@ -224,7 +224,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_dynamic_SGS_4_sph_MHD                              &
-     &         (sph_rtp, istep_dynamic, stablize_weight, nnod_med,      &
+     &         (sph_rtp, istep_dynamic, stab_weight, nnod_med,          &
      &          numdir, irtp_sgs, irtp_wide, ifld_sgs, icomp_sgs,       &
      &          wk_sgs, trns_SGS)
 !
@@ -234,7 +234,7 @@
       use cal_sph_model_coefs
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
-      real(kind = kreal), intent(in) :: stablize_weight
+      real(kind = kreal), intent(in) :: stab_weight
       integer(kind = kint), intent(in) :: istep_dynamic
       integer(kind = kint), intent(in) :: numdir
       integer(kind = kint), intent(in) :: nnod_med
@@ -255,9 +255,9 @@
      &    wk_sgs%comp_coef(1,icomp_sgs), wk_sgs%comp_clip(1,icomp_sgs))
 !
         if(iflag_debug .gt. 0)                                          &
-           write(*,*) 'sel_sph_model_coefs', stablize_weight
+           write(*,*) 'sel_sph_model_coefs', stab_weight
         call sel_sph_model_coefs(numdir, nnod_med,                      &
-     &    stablize_weight, wk_sgs%comp_coef(1,icomp_sgs),               &
+     &    stab_weight, wk_sgs%comp_coef(1,icomp_sgs),                   &
      &    wk_sgs%comp_clip(1,icomp_sgs), wk_sgs%fld_coef(1,ifld_sgs))
       end if
 !

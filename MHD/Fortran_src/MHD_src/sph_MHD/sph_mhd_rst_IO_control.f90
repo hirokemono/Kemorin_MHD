@@ -27,6 +27,9 @@
 !!
 !!      subroutine init_radial_sph_interpolation                        &
 !!     &         (rj_file_param, sph_params, sph_rj)
+!!      subroutine read_alloc_sph_rst_SGS_snap(i_step, rj_file_param,   &
+!!     &          sph_rj, ipol, rj_fld, rst_step, time_d,               &
+!!     &          i_step_sgs_coefs, SGS_param, dynamic_SPH)
 !!      subroutine read_alloc_sph_rst_4_snap(i_step, rj_file_param,     &
 !!     &          sph_rj, ipol, rj_fld, rst_step, time_d)
 !!        type(field_IO_params), intent(in) :: rj_file_param
@@ -148,10 +151,10 @@
 !
       call output_sph_restart_control(time_d, rj_fld, rst_step)
 !
-!      if(SGS_param%iflag_dynamic .gt. 0) then
-!        call write_sph_Csim_data                                        &
-!     &     (i_step_sgs_coefs, rst_step, time_d, dynamic_SPH)
-!      end if
+      if(SGS_param%iflag_dynamic .gt. 0) then
+        call write_sph_Csim_data                                        &
+     &     (i_step_sgs_coefs, rst_step, time_d, dynamic_SPH)
+      end if
 !
       end subroutine output_sph_MHD_rst_control
 !
@@ -211,6 +214,46 @@
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine read_alloc_sph_rst_SGS_snap(i_step, rj_file_param,     &
+     &          sph_rj, ipol, rj_fld, rst_step, time_d,                 &
+     &          i_step_sgs_coefs, SGS_param, dynamic_SPH)
+!
+      use t_spheric_rj_data
+      use t_SGS_control_parameter
+      use sph_filtering
+      use sgs_ini_model_coefs_IO
+      use set_sph_restart_IO
+      use r_interpolate_sph_data
+!
+      integer(kind = kint), intent(in) :: i_step
+      type(field_IO_params), intent(in) :: rj_file_param
+      type(sph_rj_grid), intent(in) ::  sph_rj
+      type(phys_address), intent(in) :: ipol
+!
+      type(phys_data), intent(inout) :: rj_fld
+      type(IO_step_param), intent(inout) :: rst_step
+      type(time_data), intent(inout) :: time_d
+      type(SGS_model_control_params), intent(inout) :: SGS_param
+      type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
+      integer(kind = kint), intent(inout) :: i_step_sgs_coefs
+!
+!
+      call read_alloc_sph_rst_4_snap(i_step, rj_file_param,             &
+     &          sph_rj, ipol, rj_fld, rst_step, time_d)
+!
+      if(SGS_param%iflag_dynamic .gt. 0) then
+        call read_alloc_sph_Csim_data(time_d, rst_step,                 &
+     &      i_step_sgs_coefs, dynamic_SPH%wk_sgs)
+        write(*,*) 'iflag_rst_sgs_coef_code', iflag_rst_sgs_coef_code
+        if(iflag_rst_sgs_coef_code .eq. 0) then
+          SGS_param%stab_weight = one
+        end if
+      end if
+!
+      end subroutine read_alloc_sph_rst_SGS_snap
+!
+! -----------------------------------------------------------------------
+!
       subroutine read_alloc_sph_rst_4_snap(i_step, rj_file_param,       &
      &          sph_rj, ipol, rj_fld, rst_step, time_d)
 !
@@ -222,6 +265,7 @@
       type(field_IO_params), intent(in) :: rj_file_param
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_address), intent(in) :: ipol
+!
       type(phys_data), intent(inout) :: rj_fld
       type(IO_step_param), intent(inout) :: rst_step
       type(time_data), intent(inout) :: time_d

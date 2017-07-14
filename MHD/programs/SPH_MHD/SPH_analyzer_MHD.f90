@@ -62,11 +62,14 @@
       use sph_filtering
       use check_dependency_for_MHD
       use input_control_sph_MHD
+      use sgs_ini_model_coefs_IO
 !
       use m_work_time
 !
       type(phys_address), intent(in) :: iphys
       type(MHD_step_param), intent(inout) :: MHD_step
+!
+      real(kind = kreal) :: tmp_stab_wt = one
 !
 !   Allocate spectr field data
 !
@@ -126,11 +129,20 @@
 !
 !* obtain nonlinear terms for starting
 !*
+      if(iflag_rst_sgs_coef_code .eq. 0) then
+        tmp_stab_wt = SGS_par1%model_p%stab_weight
+        SGS_par1%model_p%stab_weight = one
+      end if
+!
       if(iflag_debug .gt. 0) write(*,*) 'first nonlinear'
       call nonlinear(MHD_step%init_d%i_time_step, SGS_par1,             &
      &    sph1, comms_sph1, omega_sph1, r_2nd,                          &
      &    MHD_prop1, sph_MHD_bc1, trans_p1,                             &
      &    ref_temp1, ref_comp1, ipol, itor, trns_WK1, rj_fld1)
+!
+      if(iflag_rst_sgs_coef_code .eq. 0) then
+        SGS_par1%model_p%stab_weight = tmp_stab_wt
+      end if
 !
 !* -----  Open Volume integration data files -----------------
 !*

@@ -466,6 +466,9 @@ begin MHD_control
 !      SGS_model_ctl           similarity
       SGS_model_ctl           dynamic
 !
+      istep_dynamic_ctl         10
+      stabilize_weight_ctl      0.6
+!
       begin filter_files_def
         model_coef_rst_prefix       'rst_8/Csim_med'
         commutel_coef_rst_prefix    'rst_8/Cdiff_med'

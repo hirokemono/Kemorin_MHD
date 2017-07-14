@@ -27,14 +27,6 @@
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(time_data), intent(inout) :: time_d
 !!        type(flexible_stepping_parameter), intent(inout) :: flex_p
-!!      subroutine input_restart_4_snapshot                             &
-!!     &         (i_step, node, nod_fld, t_IO, rst_step)
-!!        type(IO_step_param), intent(in) :: rst_step
-!!        type(SGS_paremeters), intent(inout) :: SGS_par
-!!        type(dynamic_model_data), intent(inout) :: wk_sgs
-!!        type(dynamic_model_data), intent(inout) :: wk_diff
-!!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
-!!        type(SGS_coefficients_type), intent(inout) :: diff_coefs
 !!@endverbatim
 !
       module fem_mhd_rst_IO_control
