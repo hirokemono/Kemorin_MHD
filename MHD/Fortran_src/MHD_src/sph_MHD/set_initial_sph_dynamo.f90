@@ -192,11 +192,11 @@
 !
       if(SGS_param%iflag_dynamic .gt. 0) then
         if (iflag_restart .eq. i_rst_by_file) then
-          call read_alloc_sph_Csim_data(init_d, rst_step,               &
+          call read_alloc_SPH_Csim_file(init_d, rst_step,               &
      &        i_step_sgs_coefs, dynamic_SPH%wk_sgs)
         else
           iflag_rst_sgs_coef_code = 0
-          call write_sph_Csim_data                                      &
+          call write_SPH_Csim_file                                      &
      &       (i_step_sgs_coefs, rst_step, init_d, dynamic_SPH)
         end if
         write(*,*) 'iflag_rst_sgs_coef_code', iflag_rst_sgs_coef_code

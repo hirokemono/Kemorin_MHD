@@ -6,8 +6,6 @@
 !                                    on July 2000 (ver 1.1)
 !     modified by H. Matsui on Aug., 2007
 !
-!!      subroutine write_sgs_coef_head(file_id, wk_sgs)
-!!
 !!      subroutine open_SGS_model_coef_file(iflag_type, id_file,        &
 !!     &          file_name, wk_sgs)
 !!      subroutine open_SGS_correlation_file(iflag_type, id_file,       &
@@ -36,6 +34,7 @@
       integer(kind = kint), parameter :: iflag_layered = 1
       integer(kind = kint), parameter :: iflag_whole = 2
 !
+      private :: write_sgs_coef_head
       private :: write_sgs_comps_head, write_diff_comps_head
       private :: write_sgs_whole_time_head
 !
@@ -162,7 +161,7 @@
         call write_sgs_whole_time_head(id_file)
       end if
 !
-      call write_diff_coef_head(id_file, wk_diff)
+      call write_sgs_coef_head(id_file, wk_diff)
 !
       end subroutine open_SGS_diff_coef_file
 !
@@ -272,64 +271,11 @@
 !
 !
       do i = 1, wk_sgs%num_kinds
-        if ( wk_sgs%name(i) .eq. fhd_SGS_h_flux ) then
-          call write_one_label(file_id, fhd_SGS_h_flux)
-        else if ( wk_sgs%name(i) .eq. fhd_SGS_m_flux ) then
-          call write_one_label(file_id, fhd_SGS_m_flux)
-        else if ( wk_sgs%name(i) .eq. fhd_SGS_maxwell_t ) then
-          call write_one_label(file_id, fhd_SGS_maxwell_t)
-        else if ( wk_sgs%name(i) .eq. fhd_SGS_induction ) then
-          call write_one_label(file_id, fhd_SGS_induction)
-        else if ( wk_sgs%name(i) .eq. fhd_SGS_c_flux ) then
-          call write_one_label(file_id, fhd_SGS_c_flux)
-        else if ( wk_sgs%name(i) .eq. fhd_SGS_buoyancy ) then
-          call write_one_label(file_id, fhd_SGS_buoyancy)
-        else if ( wk_sgs%name(i) .eq. fhd_SGS_comp_buo ) then
-          call write_one_label(file_id, fhd_SGS_comp_buo)
-        end if
+        call write_one_label(file_id, wk_sgs%name(i))
       end do
       write(file_id,*)
 !
       end subroutine write_sgs_coef_head
-!
-!-----------------------------------------------------------------------
-!
-      subroutine write_diff_coef_head(file_id, wk_diff)
-!
-      use m_phys_labels
-!
-      use write_field_labels
-!
-      integer(kind = kint), intent(in) :: file_id
-      type(dynamic_model_data), intent(in) :: wk_diff
-!
-      integer ( kind=kint) :: i
-!
-!
-      do i = 1, wk_diff%num_kinds
-        if ( wk_diff%name(i) .eq. fhd_velo ) then
-          call write_one_label(file_id, fhd_velo)
-        else if ( wk_diff%name(i) .eq. fhd_temp ) then
-          call write_one_label(file_id, fhd_temp)
-        else if ( wk_diff%name(i) .eq. fhd_magne ) then
-          call write_one_label(file_id, fhd_magne)
-        else if ( wk_diff%name(i) .eq. fhd_light ) then
-          call write_one_label(file_id, fhd_light)
-        else if ( wk_diff%name(i) .eq. fhd_SGS_h_flux ) then
-          call write_one_label(file_id, fhd_SGS_h_flux)
-        else if ( wk_diff%name(i) .eq. fhd_SGS_m_flux ) then
-          call write_one_label(file_id, fhd_SGS_m_flux)
-        else if ( wk_diff%name(i) .eq. fhd_SGS_maxwell_t ) then
-          call write_one_label(file_id, fhd_SGS_maxwell_t)
-        else if ( wk_diff%name(i) .eq. fhd_SGS_induction ) then
-          call write_one_label(file_id, fhd_SGS_induction)
-        else if ( wk_diff%name(i) .eq. fhd_SGS_c_flux ) then
-          call write_one_label(file_id, fhd_SGS_c_flux)
-        end if
-      end do
-      write(file_id,*)
-!
-      end subroutine write_diff_coef_head
 !
 !-----------------------------------------------------------------------
 !

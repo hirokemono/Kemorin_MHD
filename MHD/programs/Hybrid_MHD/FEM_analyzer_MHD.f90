@@ -285,13 +285,6 @@
      &     (flex_p1%istep_max_dt, MHD_step%time_d,                      &
      &      SGS_par1, MHD_prop1%cd_prop, wk_sgs1, wk_diff1)
 !
-!     ---- Output restart field data
-!
-        if (iflag_debug.eq.1) write(*,*) 'output_MHD_restart_file_ctl'
-        call output_MHD_restart_file_ctl(flex_p1%istep_max_dt,          &
-     &      MHD_step%time_d, SGS_par1, mesh1%node, mesh1%nod_comm,      &
-     &      iphys, wk_sgs1, wk_diff1, nod_fld1, MHD_step%rst_step)
-!
 !     ---- Output voulme field data
 !
         if (iflag_debug.eq.1) write(*,*) 's_output_ucd_file_control'
@@ -302,6 +295,17 @@
         call start_eleps_time(3)
       end if
 !
+!
+!     ---- Output restart field data
+!
+      iflag = set_IO_step_flag(flex_p1%istep_max_dt,MHD_step%rst_step)
+      if(iflag .eq. 0) then
+        if (iflag_debug.eq.1) write(*,*) 'output_MHD_restart_file_ctl'
+        call output_MHD_restart_file_ctl                                &
+     &     (SGS_par1, MHD_step%time_d, MHD_step%rst_step,               &
+     &      mesh1%node, mesh1%nod_comm, iphys,                          &
+     &      wk_sgs1, wk_diff1, nod_fld1)
+       end if
 !
 !     ----
 !
@@ -314,11 +318,13 @@
 !   Finish by elapsed time
       if(MHD_step%finish_d%i_end_step .eq. -1) then
         if(total_max .gt. MHD_step%finish_d%elapsed_time) then
-          call start_eleps_time(4)
-          call elspased_MHD_restart_ctl                                 &
-     &       (SGS_par, MHD_step%time_d, mesh1%node, mesh1%nod_comm,     &
-     &        iphys, wk_sgs1, wk_diff1, nod_fld1)
+          MHD_step%rst_step%istep_file = MHD_step%finish_d%i_end_step
           retval = 0
+          call start_eleps_time(4)
+          call output_MHD_restart_file_ctl                              &
+     &       (SGS_par1, MHD_step%time_d, MHD_step%rst_step,             &
+     &        mesh1%node, mesh1%nod_comm, iphys,                        &
+     &        wk_sgs1, wk_diff1, nod_fld1)
           call end_eleps_time(4)
         end if
 !

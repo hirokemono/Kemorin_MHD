@@ -152,7 +152,7 @@
       call output_sph_restart_control(time_d, rj_fld, rst_step)
 !
       if(SGS_param%iflag_dynamic .gt. 0) then
-        call write_sph_Csim_data                                        &
+        call write_SPH_Csim_file                                        &
      &     (i_step_sgs_coefs, rst_step, time_d, dynamic_SPH)
       end if
 !
@@ -242,7 +242,7 @@
      &          sph_rj, ipol, rj_fld, rst_step, time_d)
 !
       if(SGS_param%iflag_dynamic .gt. 0) then
-        call read_alloc_sph_Csim_data(time_d, rst_step,                 &
+        call read_alloc_SPH_Csim_file(time_d, rst_step,                 &
      &      i_step_sgs_coefs, dynamic_SPH%wk_sgs)
         write(*,*) 'iflag_rst_sgs_coef_code', iflag_rst_sgs_coef_code
         if(iflag_rst_sgs_coef_code .eq. 0) then
