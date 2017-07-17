@@ -243,9 +243,10 @@
 !
       if(SGS_param%iflag_dynamic .gt. 0) then
         call read_alloc_SPH_Csim_file(time_d, rst_step,                 &
-     &      i_step_sgs_coefs, dynamic_SPH%wk_sgs)
-        write(*,*) 'iflag_rst_sgs_coef_code', iflag_rst_sgs_coef_code
-        if(iflag_rst_sgs_coef_code .eq. 0) then
+     &      i_step_sgs_coefs, SGS_param, dynamic_SPH%wk_sgs)
+        if(iflag_debug .gt. 0) write(*,*) 'iflag_rst_sgs_coef_code',    &
+     &                        SGS_param%iflag_rst_sgs_coef_code
+        if(SGS_param%iflag_rst_sgs_coef_code .eq. 0) then
           SGS_param%stab_weight = one
         end if
       end if

@@ -234,9 +234,9 @@
 !
 !
       if (SGS_param%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
-        iflag_rst_sgs_coef_code                                         &
+        SGS_param%iflag_rst_sgs_coef_code                               &
      &        = sgs_ctl%ffile_ctl%model_coef_ini_head_ctl%iflag
-        if(iflag_rst_sgs_coef_code .gt. 0) then
+        if(SGS_param%iflag_rst_sgs_coef_code .gt. 0) then
           Csim_IO%file_prefix                                           &
      &        = sgs_ctl%ffile_ctl%model_coef_ini_head_ctl%charavalue
         else
@@ -353,9 +353,9 @@
 !
 !
       if(cmt_param%iflag_commute .ne. id_SGS_commute_OFF) then
-        iflag_rst_sgs_comm_code                                         &
+        cmt_param%iflag_rst_sgs_comm_code                               &
      &        = sgs_ctl%ffile_ctl%commute_coef_ini_head_ctl%iflag
-        if(iflag_rst_sgs_comm_code .gt. 0) then
+        if(cmt_param%iflag_rst_sgs_comm_code .gt. 0) then
           Cdiff_IO%file_prefix                                          &
      &        = sgs_ctl%ffile_ctl%commute_coef_ini_head_ctl%charavalue
         else

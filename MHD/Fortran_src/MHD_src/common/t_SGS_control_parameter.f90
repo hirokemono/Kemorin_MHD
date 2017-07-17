@@ -97,7 +97,9 @@
         integer (kind=kint) :: itype_Csym_maxwell =  id_CSIM_FIELD
         integer (kind=kint) :: itype_Csym_uxb =      id_CSIM_FIELD
 !
-!>        Flag to treat perturbation of SGSheat flux
+!>        Flag of exsistense of initial model coefficients
+        integer (kind = kint) :: iflag_rst_sgs_coef_code = id_turn_OFF
+!>        Flag to treat perturbation of SGS heat flux
         integer (kind=kint) :: iflag_parterbuation = id_turn_OFF
 !
 !>        fla to clip negative model coefficients
@@ -146,6 +148,9 @@
         integer (kind=kint) :: iflag_c_uxb = id_SGS_commute_OFF
 !>      commutation error correction flag for composition flux
         integer (kind=kint) :: iflag_c_cf  = id_SGS_commute_OFF
+!
+!>        Flag of exsistense of initial model coefficients
+        integer (kind = kint) :: iflag_rst_sgs_comm_code = 0
       end type commutation_control_params
 !
 !

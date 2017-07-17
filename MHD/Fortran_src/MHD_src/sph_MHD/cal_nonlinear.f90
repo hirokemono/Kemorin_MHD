@@ -7,6 +7,9 @@
 !>@brief Evaluate nonlinear terms by pseudo spectram scheme
 !!
 !!@verbatim
+!!      subroutine nonlinear_first(i_step, sph, comms_sph,              &
+!!     &          omega_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,      &
+!!     &          ref_temp, ref_comp, ipol, itor, WK, rj_fld, SGS_par)
 !!      subroutine nonlinear(i_step, SGS_par, sph, comms_sph,           &
 !!     &          omega_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,      &
 !!     &          ref_temp, ref_comp, ipol, itor, WK, rj_fld)
@@ -66,6 +69,45 @@
 !*   ------------------------------------------------------------------
 !*
       contains
+!*
+!*   ------------------------------------------------------------------
+!*
+      subroutine nonlinear_first(i_step, sph, comms_sph,                &
+     &          omega_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,        &
+     &          ref_temp, ref_comp, ipol, itor, WK, rj_fld, SGS_par)
+!
+      integer(kind = kint), intent(in) :: i_step
+      type(sph_grids), intent(in) :: sph
+      type(sph_comm_tables), intent(in) :: comms_sph
+      type(sph_rotation), intent(in) :: omega_sph
+      type(fdm_matrices), intent(in) :: r_2nd
+      type(parameters_4_sph_trans), intent(in) :: trans_p
+      type(phys_address), intent(in) :: ipol, itor
+      type(reference_temperature), intent(in) :: ref_temp, ref_comp
+      type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
+!
+      type(SGS_paremeters), intent(inout) :: SGS_par
+      type(works_4_sph_trans_MHD), intent(inout) :: WK
+      type(phys_data), intent(inout) :: rj_fld
+!
+      real(kind = kreal) :: tmp_stab_wt = one
+!
+!
+      if(SGS_par%model_p%iflag_rst_sgs_coef_code .eq. 0) then
+        tmp_stab_wt = SGS_par%model_p%stab_weight
+        SGS_par%model_p%stab_weight = one
+      end if
+!
+      call nonlinear(i_step, SGS_par, sph, comms_sph,                   &
+     &    omega_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,              &
+     &    ref_temp, ref_comp, ipol, itor, WK, rj_fld)
+!
+      if(SGS_par%model_p%iflag_rst_sgs_coef_code .eq. 0) then
+        SGS_par%model_p%stab_weight = tmp_stab_wt
+      end if
+!
+      end subroutine nonlinear_first
 !*
 !*   ------------------------------------------------------------------
 !*

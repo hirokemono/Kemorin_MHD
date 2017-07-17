@@ -5,13 +5,13 @@
 !     modified by H. Matsui on Aug., 2007
 !
 !!      subroutine read_alloc_SPH_Csim_file                             &
-!!     &         (init_d, rst_step, i_step_sgs_coefs, wk_sgs)
+!!     &         (init_d, rst_step, i_step_sgs_coefs, SGS_param, wk_sgs)
 !!      subroutine write_SPH_Csim_file                                  &
 !!     &        (i_step_sgs_coefs, rst_step, time_d, dynamic_SPH)
 !!
 !!      subroutine read_alloc_FEM_Csim_file                             &
-!!     &         (rst_step, init_d, SGS_param, cmt_param,               &
-!!     &          ele, fluid, layer_tbl, i_step_sgs_coefs,              &
+!!     &         (rst_step, init_d, ele, fluid, layer_tbl,              &
+!!     &          i_step_sgs_coefs, SGS_param, cmt_param,               &
 !!     &          wk_sgs, wk_diff, sgs_coefs, diff_coefs)
 !!        type(IO_step_param), intent(inout) :: rst_step
 !!        type(time_data), intent(in) :: init_d
@@ -43,8 +43,6 @@
 !
       implicit none
 !
-      integer (kind = kint) :: iflag_rst_sgs_coef_code = 0
-      integer (kind = kint) :: iflag_rst_sgs_comm_code = 0
       character(len=kchara), parameter                                  &
      &                      :: def_rst_sgs_coef =  'rst_model_coefs'
       character(len=kchara), parameter                                  &
@@ -54,7 +52,6 @@
       type(field_IO), save :: Csim1_IO
       type(field_IO), save :: Cdiff1_IO
 !
-!
 !-----------------------------------------------------------------------
 !
       contains
@@ -62,7 +59,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine read_alloc_SPH_Csim_file                               &
-     &         (init_d, rst_step, i_step_sgs_coefs, wk_sgs)
+     &         (init_d, rst_step, i_step_sgs_coefs, SGS_param, wk_sgs)
 !
       use t_ele_info_4_dynamic
       use field_IO_select
@@ -70,6 +67,7 @@
 !
       type(time_data), intent(in) :: init_d
       type(IO_step_param), intent(inout) :: rst_step
+      type(SGS_model_control_params), intent(inout) :: SGS_param
       type(dynamic_model_data), intent(inout) :: wk_sgs
       integer(kind = kint), intent(inout) :: i_step_sgs_coefs
 !
@@ -85,7 +83,7 @@
 !
       ierr = check_step_FEM_field_file(my_rank, istep_rst, Csim1_IO)
       if(ierr .gt. 0) then
-        iflag_rst_sgs_coef_code = 0
+        SGS_param%iflag_rst_sgs_coef_code = 0
         return
       end if
 !
@@ -134,8 +132,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine read_alloc_FEM_Csim_file                               &
-     &         (rst_step, init_d, SGS_param, cmt_param,                 &
-     &          ele, fluid, layer_tbl, i_step_sgs_coefs,                &
+     &         (rst_step, init_d, ele, fluid, layer_tbl,                &
+     &          i_step_sgs_coefs, SGS_param, cmt_param,                 &
      &          wk_sgs, wk_diff, sgs_coefs, diff_coefs)
 !
       use t_geometry_data
@@ -146,13 +144,13 @@
 !
       type(time_data), intent(in) :: init_d
       type(IO_step_param), intent(in) :: rst_step
-      type(SGS_model_control_params), intent(in) :: SGS_param
-      type(commutation_control_params), intent(in) :: cmt_param
       type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
       type(layering_tbl), intent(in) :: layer_tbl
 !
       integer(kind = kint), intent(inout) :: i_step_sgs_coefs
+      type(SGS_model_control_params), intent(inout) :: SGS_param
+      type(commutation_control_params), intent(inout) :: cmt_param
       type(dynamic_model_data), intent(inout) :: wk_sgs, wk_diff
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
       type(SGS_coefficients_type), intent(inout) :: diff_coefs
@@ -164,7 +162,7 @@
 !
       ierr = check_step_FEM_field_file(my_rank, istep_rst, Csim1_IO)
       if(ierr .gt. 0) then
-        iflag_rst_sgs_coef_code = 0
+        SGS_param%iflag_rst_sgs_coef_code = 0
         return
       end if
 !
@@ -178,6 +176,12 @@
       call dealloc_phys_name_IO(Csim1_IO)
 !
       if (cmt_param%iflag_commute .gt. id_SGS_commute_OFF) then
+        ierr = check_step_FEM_field_file(my_rank, istep_rst, Cdiff1_IO)
+        if(ierr .gt. 0) then
+          cmt_param%iflag_rst_sgs_comm_code = 0
+          return
+        end if
+!
         call sel_read_alloc_step_FEM_file(nprocs, my_rank,              &
      &      rst_step%istep_file, Csim_time_IO, Csim1_IO)
 !

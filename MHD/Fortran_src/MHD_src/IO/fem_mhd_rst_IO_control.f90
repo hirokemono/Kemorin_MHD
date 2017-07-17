@@ -107,10 +107,10 @@
 !
       call input_restart_files                                          &
      &   (rst_step%istep_file, node, nod_fld, init_d, time_d, flex_p)
-      call read_alloc_FEM_Csim_file(rst_step, init_d,                   &
-     &    SGS_par%model_p, SGS_par%commute_p, ele, fluid, layer_tbl,    &
-     &    SGS_par%i_step_sgs_coefs, wk_sgs, wk_diff,                    &
-     &    sgs_coefs, diff_coefs)
+      call read_alloc_FEM_Csim_file                                     &
+     &   (rst_step, init_d, ele, fluid, layer_tbl,                      &
+     &    SGS_par%i_step_sgs_coefs, SGS_par%model_p, SGS_par%commute_p, &
+     &    wk_sgs, wk_diff, sgs_coefs, diff_coefs)
 !
       end subroutine input_MHD_restart_file_ctl
 !

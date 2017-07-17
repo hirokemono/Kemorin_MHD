@@ -69,7 +69,6 @@
       type(phys_address), intent(in) :: iphys
       type(MHD_step_param), intent(inout) :: MHD_step
 !
-      real(kind = kreal) :: tmp_stab_wt = one
 !
 !   Allocate spectr field data
 !
@@ -106,9 +105,8 @@
       call sph_initial_data_control                                     &
      &   (ref_temp1%t_rj, sph1%sph_params, sph1%sph_rj,                 &
      &    MHD_prop1%ref_param_T, sph_MHD_bc1%sph_bc_B,                  &
-     &    SGS_par1%model_p, ipol, idpdr, itor, rj_fld1,                 &
-     &    MHD_step%rst_step, MHD_step%init_d, MHD_step%time_d,          &
-     &    SGS_par1%i_step_sgs_coefs, trns_WK1%dynamic_SPH)
+     &    ipol, idpdr, itor, rj_fld1, MHD_step,                         &
+     &    SGS_par1, trns_WK1%dynamic_SPH)
       MHD_step%iflag_initial_step = 0
 !
       if(iflag_debug.gt.0) write(*,*)' sync_temp_by_per_temp_sph'
@@ -129,20 +127,11 @@
 !
 !* obtain nonlinear terms for starting
 !*
-      if(iflag_rst_sgs_coef_code .eq. 0) then
-        tmp_stab_wt = SGS_par1%model_p%stab_weight
-        SGS_par1%model_p%stab_weight = one
-      end if
-!
       if(iflag_debug .gt. 0) write(*,*) 'first nonlinear'
-      call nonlinear(MHD_step%init_d%i_time_step, SGS_par1,             &
+      call nonlinear_first(MHD_step%init_d%i_time_step,                 &
      &    sph1, comms_sph1, omega_sph1, r_2nd,                          &
-     &    MHD_prop1, sph_MHD_bc1, trans_p1,                             &
-     &    ref_temp1, ref_comp1, ipol, itor, trns_WK1, rj_fld1)
-!
-      if(iflag_rst_sgs_coef_code .eq. 0) then
-        SGS_par1%model_p%stab_weight = tmp_stab_wt
-      end if
+     &    MHD_prop1, sph_MHD_bc1, trans_p1, ref_temp1, ref_comp1,       &
+     &    ipol, itor, trns_WK1, rj_fld1, SGS_par1)
 !
 !* -----  Open Volume integration data files -----------------
 !*

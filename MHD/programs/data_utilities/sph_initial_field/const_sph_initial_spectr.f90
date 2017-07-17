@@ -692,9 +692,11 @@
       jj =  find_local_sph_mode_address(0, 0)
 !
       if (jj .gt. 0) then
-        q = three * sph_bc_T%CMB_flux(jj) / sph_bc_T%r_CMB(0)
+        q = - three * sph_bc_T%CMB_flux(jj) / sph_bc_T%r_CMB(0)
         f_ICB = -sph_bc_T%CMB_flux(jj)                                  &
      &         * (r_ICB() / sph_bc_T%r_CMB(0))
+        write(*,*) 'q', q
+        write(*,*) 'flux_ICB', f_ICB
 !
         inod = local_sph_data_address(nlayer_ICB(),jj)
         T_ICB = d_rj(inod,ipol%i_temp)
