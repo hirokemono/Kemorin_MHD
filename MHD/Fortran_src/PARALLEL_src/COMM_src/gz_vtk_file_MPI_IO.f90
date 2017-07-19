@@ -7,9 +7,12 @@
 !> @brief Output merged VTK file usging MPI-IO
 !!
 !!@verbatim
-!!      subroutine gz_write_vtk_file_mpi(file_name, ucd, m_ucd)
-!!      subroutine gz_write_vtk_phys_mpi(file_name, ucd, m_ucd)
-!!      subroutine gz_write_vtk_grid_mpi(file_name, ucd, m_ucd)
+!!      subroutine gz_write_vtk_data_mpi(id_vtk, ioff_gl,               &
+!!     &          nnod, num_field, ntot_comp, ncomp_field,              &
+!!     &          field_name, d_nod, istack_merged_intnod)
+!!      subroutine gz_write_vtk_mesh_mpi(id_vtk, ioff_gl,               &
+!!     &          nnod, nele, nnod_ele, xx, ie,                         &
+!!     &          istack_merged_intnod, istack_merged_ele)
 !!@endverbatim
 !
       module gz_vtk_file_MPI_IO
@@ -20,13 +23,11 @@
       use calypso_mpi
       use m_calypso_mpi_IO
       use vtk_data_to_buffer
-      use t_ucd_data
 !
       implicit none
 !
       character(len=1), allocatable :: gzip_buf(:)
 !
-      private :: gz_write_vtk_data_mpi, gz_write_vtk_mesh_mpi
       private :: gz_write_vtk_scalar_mpi
       private :: gz_write_vtk_tensor_mpi, gz_write_vtk_vecotr_mpi
       private :: gz_write_vtk_connect_mpi, gz_write_vtk_celltype_mpi
@@ -36,83 +37,6 @@
       contains
 !
 !  ---------------------------------------------------------------------
-!
-      subroutine gz_write_vtk_file_mpi(file_name, ucd, m_ucd)
-!
-      character(len=kchara), intent(in) :: file_name
-!
-      type(ucd_data), intent(in) :: ucd
-      type(merged_ucd_data), intent(in) :: m_ucd
-!
-      integer :: id_vtk
-      integer(kind = kint_gl) :: ioff_gl
-!
-!
-      call calypso_mpi_write_file_open(file_name, nprocs, id_vtk)
-!
-      ioff_gl = 0
-      call gz_write_vtk_mesh_mpi(id_vtk, ioff_gl,                       &
-     &    ucd%nnod, ucd%nele, ucd%nnod_4_ele, ucd%xx, ucd%ie,           &
-     &    m_ucd%istack_merged_intnod, m_ucd%istack_merged_ele)
-!
-      call gz_write_vtk_data_mpi(id_vtk, ioff_gl,                       &
-     &    ucd%nnod, ucd%num_field, ucd%ntot_comp, ucd%num_comp,         &
-     &    ucd%phys_name, ucd%d_ucd, m_ucd%istack_merged_intnod)
-!
-      call calypso_close_mpi_file(id_vtk)
-!
-      end subroutine gz_write_vtk_file_mpi
-!
-! -----------------------------------------------------------------------
-!
-      subroutine gz_write_vtk_phys_mpi(file_name, ucd, m_ucd)
-!
-      character(len=kchara), intent(in) :: file_name
-!
-      type(ucd_data), intent(in) :: ucd
-      type(merged_ucd_data), intent(in) :: m_ucd
-!
-      integer :: id_vtk
-      integer(kind = kint_gl) :: ioff_gl
-!
-!
-      call calypso_mpi_write_file_open(file_name, nprocs, id_vtk)
-!
-      ioff_gl = 0
-      call gz_write_vtk_data_mpi(id_vtk, ioff_gl,                       &
-     &    ucd%nnod, ucd%num_field, ucd%ntot_comp, ucd%num_comp,         &
-     &    ucd%phys_name, ucd%d_ucd, m_ucd%istack_merged_intnod)
-!
-      call calypso_close_mpi_file(id_vtk)
-!
-      end subroutine gz_write_vtk_phys_mpi
-!
-! -----------------------------------------------------------------------
-!
-      subroutine gz_write_vtk_grid_mpi(file_name, ucd, m_ucd)
-!
-      character(len=kchara), intent(in) :: file_name
-!
-      type(ucd_data), intent(in) :: ucd
-      type(merged_ucd_data), intent(in) :: m_ucd
-!
-      integer :: id_vtk
-      integer(kind = kint_gl) :: ioff_gl
-!
-!
-      call calypso_mpi_write_file_open(file_name, nprocs, id_vtk)
-!
-      ioff_gl = 0
-      call gz_write_vtk_mesh_mpi(id_vtk, ioff_gl,                       &
-     &    ucd%nnod, ucd%nele, ucd%nnod_4_ele, ucd%xx, ucd%ie,           &
-     &    m_ucd%istack_merged_intnod, m_ucd%istack_merged_ele)
-!
-      call calypso_close_mpi_file(id_vtk)
-!
-      end subroutine gz_write_vtk_grid_mpi
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
 !
       subroutine gz_write_vtk_data_mpi(id_vtk, ioff_gl,                 &
      &          nnod, num_field, ntot_comp, ncomp_field,                &

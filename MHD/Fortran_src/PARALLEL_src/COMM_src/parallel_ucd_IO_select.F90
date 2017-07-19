@@ -76,50 +76,64 @@
       type(ucd_data), intent(in) :: ucd
       type(merged_ucd_data), intent(inout) :: m_ucd
 !
+      character(len=kchara) :: file_name
+!
+!
+      if( (ucd%ifmt_file/icent) .eq. 1) then
+        call set_single_ucd_file_name(ucd%file_prefix, ucd%ifmt_file,   &
+     &      istep_ucd, file_name)
+      else
+        call set_parallel_ucd_file_name(ucd%file_prefix, ucd%ifmt_file, &
+     &      my_rank, istep_ucd, file_name)
+      end if
 !
       if      (ucd%ifmt_file .eq. iflag_sgl_vtk) then
-        call write_merged_vtk_file(istep_ucd, ucd, m_ucd)
+        call write_vtk_file_mpi(file_name, ucd, m_ucd)
       else if (ucd%ifmt_file .eq. iflag_sgl_vtd) then
-        call write_merged_vtk_phys(istep_ucd, ucd, m_ucd)
+        call write_vtk_phys_mpi(file_name, ucd, m_ucd)
       else if (ucd%ifmt_file .eq. iflag_sgl_ucd) then
-        call write_merged_ucd_file(istep_ucd, ucd, m_ucd)
+        call write_ucd_file_mpi(file_name, ucd, m_ucd)
       else if (ucd%ifmt_file .eq. iflag_sgl_udt) then
-        call write_merged_udt_file(istep_ucd, ucd, m_ucd)
+        call write_ucd_phys_mpi(file_name, ucd, m_ucd)
 !
 #ifdef ZLIB_IO
       else if (ucd%ifmt_file .eq. iflag_sgl_vtk_gz) then
-        call write_gz_merged_vtk_file(istep_ucd, ucd, m_ucd)
+        call gz_write_vtk_file_mpi(file_name, ucd, m_ucd)
       else if (ucd%ifmt_file .eq. iflag_sgl_vtd_gz) then
-        call write_gz_merged_vtk_phys(istep_ucd, ucd, m_ucd)
+        call gz_write_vtk_phys_mpi(file_name, ucd, m_ucd)
       else if (ucd%ifmt_file .eq. iflag_sgl_ucd_gz) then
-        call write_gz_merged_ucd_file(istep_ucd, ucd, m_ucd)
+        call gz_write_ucd_file_mpi(file_name, ucd, m_ucd)
       else if (ucd%ifmt_file .eq. iflag_sgl_udt_gz) then
-        call write_gz_merged_udt_file(istep_ucd, ucd, m_ucd)
+        call gz_write_ucd_phys_mpi(file_name, ucd, m_ucd)
 !
       else if(ucd%ifmt_file .eq. iflag_vtk_gz) then
         call write_gz_parallel_vtk_file(my_rank, nprocs, istep_ucd,     &
-     &      ucd)
-        call write_ucd_data_2_gz_vtk(my_rank, istep_ucd, ucd)
+     &      ucd%file_prefix)
+        call write_ucd_data_2_gz_vtk(my_rank, file_name, ucd)
       else if (ucd%ifmt_file .eq. iflag_vtd_gz) then
         call write_gz_parallel_vtk_file(my_rank, nprocs, istep_ucd,     &
-     &      ucd)
-        call write_ucd_data_2_gz_vtk_phys(my_rank, istep_ucd, ucd)
+     &      ucd%file_prefix)
+        call write_ucd_data_2_gz_vtk_phys(my_rank, file_name, ucd)
 #endif
 !
 #ifdef HDF5_IO
       else if(ucd%ifmt_file .eq. iflag_sgl_hdf5) then
-        call parallel_write_hdf5_field_file(istep_ucd, ucd, m_ucd)
+        call parallel_write_hdf5_field_file                             &
+     &     (ucd%file_prefix, istep_ucd, ucd, m_ucd)
         call parallel_write_xdmf_snap_file                              &
-     &     (istep_ucd, t_IO, ucd, m_ucd)
-        call parallel_write_xdmf_evo_file(istep_ucd, t_IO, ucd, m_ucd)
+     &     (ucd%file_prefix, istep_ucd, t_IO, ucd, m_ucd)
+        call parallel_write_xdmf_evo_file                               &
+     &     (ucd%file_prefix, istep_ucd, t_IO, ucd, m_ucd)
 #endif
 !
       else if(ucd%ifmt_file .eq. iflag_vtk) then
-        call write_parallel_vtk_file(my_rank, nprocs, istep_ucd, ucd)
-        call write_udt_data_2_vtk_file(my_rank, istep_ucd, ucd)
+        call write_parallel_vtk_file                                    &
+     &     (my_rank, nprocs, istep_ucd, ucd%file_prefix)
+        call write_udt_data_2_vtk_file(my_rank, file_name, ucd)
       else if (ucd%ifmt_file .eq. iflag_vtd) then
-        call write_parallel_vtk_file(my_rank, nprocs, istep_ucd, ucd)
-        call write_udt_data_2_vtk_phys(my_rank, istep_ucd, ucd)
+        call write_parallel_vtk_file                                    &
+     &     (my_rank, nprocs, istep_ucd, ucd%file_prefix)
+        call write_udt_data_2_vtk_phys(my_rank, file_name, ucd)
       else
         call sel_write_ucd_file(my_rank, istep_ucd, t_IO, ucd)
       end if
@@ -142,22 +156,29 @@
       type(ucd_data), intent(in) :: ucd
       type(merged_ucd_data), intent(inout) :: m_ucd
 !
+      character(len=kchara) :: file_name
+!
+!
+      if( (ucd%ifmt_file/icent) .eq. 1) then
+        call set_single_grd_file_name(ucd%file_prefix, ucd%ifmt_file,   &
+     &      file_name)
+      end if
 !
       if(ucd%ifmt_file .eq. iflag_sgl_vtd) then
-        call write_merged_vtk_grid(ucd, m_ucd)
+        call write_vtk_grid_mpi(file_name, ucd, m_ucd)
       else if(ucd%ifmt_file .eq. iflag_sgl_udt) then
-        call write_merged_grd_file(ucd, m_ucd)
+        call write_ucd_grid_mpi(file_name, ucd, m_ucd)
 !
 #ifdef ZLIB_IO
       else if (ucd%ifmt_file .eq. iflag_sgl_vtd_gz) then
-        call write_gz_merged_vtk_grid(ucd, m_ucd)
+        call gz_write_vtk_grid_mpi(file_name, ucd, m_ucd)
       else if(ucd%ifmt_file .eq. iflag_sgl_udt_gz) then
-        call write_gz_merged_grd_file(ucd, m_ucd)
+        call gz_write_ucd_grid_mpi(file_name, ucd, m_ucd)
 #endif
 !
 #ifdef HDF5_IO
       else if(ucd%ifmt_file .eq. iflag_sgl_hdf5) then
-        call parallel_write_hdf5_mesh_file(ucd, m_ucd)
+        call parallel_write_hdf5_mesh_file(ucd%file_prefix, ucd, m_ucd)
 #endif
 !
       else

@@ -112,6 +112,7 @@
       integer(kind = kint) :: i1, i2, i3, nd
       integer(kind = kint), allocatable :: istack_ele(:)
 !
+      character(len=kchara) :: file_name
       type(ucd_data), allocatable :: grp_ucd(:)
 !
 !
@@ -121,7 +122,9 @@
         call add_int_suffix((igrp+ist_mesh-1), mesh_file_head,          &
      &                      grp_ucd(igrp)%file_prefix)
         write(*,*) 'grp_ucd: ', ist_mesh, grp_ucd(igrp)%file_prefix
-        call read_udt_data_2_vtk_grid(-1, grp_ucd(igrp))
+        call set_parallel_grd_file_name(grp_ucd(igrp)%file_prefix,      &
+     &      iflag_vtd, -1, file_name)
+        call read_udt_data_2_vtk_grid(-1, file_name, grp_ucd(igrp))
       end do
 !
 !

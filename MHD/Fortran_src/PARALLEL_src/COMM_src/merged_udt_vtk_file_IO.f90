@@ -16,13 +16,13 @@
 !!        type(merged_ucd_data), intent(inout) :: m_ucd
 !!      subroutine finalize_merged_ucd(ucd, m_ucd)
 !!
-!!      subroutine write_merged_ucd_file(istep, ucd, m_ucd)
-!!      subroutine write_merged_udt_file(istep, ucd, m_ucd)
-!!      subroutine write_merged_grd_file(ucd, m_ucd)
+!!      subroutine write_ucd_file_mpi(file_name, ucd, m_ucd)
+!!      subroutine write_ucd_phys_mpi(file_name, ucd, m_ucd)
+!!      subroutine write_ucd_grid_mpi(file_name, ucd, m_ucd)
 !!
-!!      subroutine write_merged_vtk_file(istep, ucdv)
-!!      subroutine write_merged_vtk_phys(istep, ucd, m_ucd)
-!!      subroutine write_merged_vtk_grid(ucd, m_ucd)
+!!      subroutine write_vtk_file_mpi(file_name, ucd, m_ucd)
+!!      subroutine write_vtk_phys_mpi(file_name, ucd, m_ucd)
+!!      subroutine write_vtk_grid_mpi(file_name, ucd, m_ucd)
 !!@endverbatim
 !
       module merged_udt_vtk_file_IO
@@ -101,152 +101,202 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine write_merged_ucd_file(istep, ucd, m_ucd)
+      subroutine write_ucd_file_mpi(file_name, ucd, m_ucd)
 !
       use ucd_file_MPI_IO
 !
-      integer(kind = kint), intent(in) :: istep
+      character(len=kchara), intent(in) :: file_name
+!
       type(ucd_data), intent(in) :: ucd
       type(merged_ucd_data), intent(in) :: m_ucd
 !
-      character(len=kchara) :: file_name
+      integer :: id_vtk
+      integer(kind = kint_gl) :: ioff_gl
 !
 !
-      call set_single_ucd_file_name(ucd%file_prefix, iflag_ucd,         &
-     &      istep, file_name)
-!
-     if(my_rank .eq. 0) then
+      call calypso_mpi_barrier
+      if(my_rank .eq. 0) then
         write(*,*) 'UCD data by MPI-IO: ', trim(file_name)
       end if
-      call calypso_mpi_barrier
 !
-      call write_ucd_file_mpi(file_name, ucd, m_ucd)
+      call calypso_mpi_write_file_open(file_name, nprocs, id_vtk)
 !
-      end subroutine write_merged_ucd_file
+      ioff_gl = 0
+      call write_ucd_node_mpi(id_vtk, ioff_gl,                          &
+     &    ucd%nnod, ucd%ntot_comp, ucd%xx,                              &
+     &    m_ucd%istack_merged_intnod, m_ucd%istack_merged_ele)
+      call write_ucd_connect_mpi(id_vtk, ioff_gl,                       &
+     &    ucd%nele, ucd%nnod_4_ele, ucd%ie, m_ucd%istack_merged_ele)
+!
+      call write_ucd_data_mpi(id_vtk, ioff_gl,                          &
+     &    ucd%nnod, ucd%num_field, ucd%ntot_comp, ucd%num_comp,         &
+     &    ucd%phys_name, ucd%d_ucd, m_ucd%istack_merged_intnod)
+!
+      call calypso_close_mpi_file(id_vtk)
+!
+      end subroutine write_ucd_file_mpi
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_merged_udt_file(istep, ucd, m_ucd)
+      subroutine write_ucd_phys_mpi(file_name, ucd, m_ucd)
 !
       use ucd_file_MPI_IO
 !
-      integer(kind = kint), intent(in) ::  istep
+      character(len=kchara), intent(in) :: file_name
+!
       type(ucd_data), intent(in) :: ucd
       type(merged_ucd_data), intent(in) :: m_ucd
 !
-      character(len=kchara) :: file_name
+      integer :: id_vtk
+      integer(kind = kint_gl) :: ioff_gl
 !
 !
-      call set_single_ucd_file_name(ucd%file_prefix, iflag_udt,         &
-     &      istep, file_name)
-!
+      call calypso_mpi_barrier
      if(my_rank .eq. 0) then
         write(*,*) 'UCD field by MPI-IO: ', trim(file_name)
       end if
-      call calypso_mpi_barrier
 !
-      call write_ucd_phys_mpi(file_name, ucd, m_ucd)
+      call calypso_mpi_write_file_open(file_name, nprocs, id_vtk)
 !
-      end subroutine write_merged_udt_file
+      ioff_gl = 0
+      call write_ucd_data_mpi(id_vtk, ioff_gl,                          &
+     &    ucd%nnod, ucd%num_field, ucd%ntot_comp, ucd%num_comp,         &
+     &    ucd%phys_name, ucd%d_ucd, m_ucd%istack_merged_intnod)
+!
+      call calypso_close_mpi_file(id_vtk)
+!
+      end subroutine write_ucd_phys_mpi
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_merged_grd_file(ucd, m_ucd)
+      subroutine write_ucd_grid_mpi(file_name, ucd, m_ucd)
 !
       use ucd_file_MPI_IO
 !
+      character(len=kchara), intent(in) :: file_name
+!
       type(ucd_data), intent(in) :: ucd
       type(merged_ucd_data), intent(in) :: m_ucd
 !
-      character(len=kchara) :: file_name
+      integer :: id_vtk
+      integer(kind = kint_gl) :: ioff_gl
 !
 !
-      call set_single_grd_file_name(ucd%file_prefix, iflag_udt,         &
-     &    file_name)
-!
-     if(my_rank .eq. 0) then
+      call calypso_mpi_barrier
+      if(my_rank .eq. 0) then
         write(*,*) 'UCD grid by MPI-IO: ', trim(file_name)
       end if
-      call calypso_mpi_barrier
 !
-      call write_ucd_grid_mpi(file_name, ucd, m_ucd)
+      call calypso_mpi_write_file_open(file_name, nprocs, id_vtk)
 !
-      end subroutine write_merged_grd_file
+      ioff_gl = 0
+      call write_ucd_node_mpi(id_vtk, ioff_gl,                          &
+     &    ucd%nnod, ucd%ntot_comp, ucd%xx,                              &
+     &    m_ucd%istack_merged_intnod, m_ucd%istack_merged_ele)
+      call write_ucd_connect_mpi(id_vtk, ioff_gl,                       &
+     &    ucd%nele, ucd%nnod_4_ele, ucd%ie, m_ucd%istack_merged_ele)
+!
+      call calypso_close_mpi_file(id_vtk)
+!
+      end subroutine write_ucd_grid_mpi
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine write_merged_vtk_file(istep, ucd, m_ucd)
+      subroutine write_vtk_file_mpi(file_name, ucd, m_ucd)
 !
       use vtk_file_MPI_IO
 !
-      integer(kind = kint), intent(in) ::  istep
+      character(len=kchara), intent(in) :: file_name
+!
       type(ucd_data), intent(in) :: ucd
       type(merged_ucd_data), intent(in) :: m_ucd
 !
-      character(len=kchara) :: file_name
+      integer :: id_vtk
+      integer(kind = kint_gl) :: ioff_gl
 !
 !
-      call set_single_ucd_file_name(ucd%file_prefix, iflag_vtk,         &
-     &      istep, file_name)
-!
+      call calypso_mpi_barrier
      if(my_rank .eq. 0) then
         write(*,*) 'VTK by MPI-IO: ', trim(file_name)
       end if
-      call calypso_mpi_barrier
 !
-      call write_vtk_file_mpi(file_name, ucd, m_ucd)
+      call calypso_mpi_write_file_open(file_name, nprocs, id_vtk)
 !
-      end subroutine write_merged_vtk_file
+      ioff_gl = 0
+      call write_vtk_mesh_mpi(id_vtk, ioff_gl,                          &
+     &    ucd%nnod, ucd%nele, ucd%nnod_4_ele, ucd%xx, ucd%ie,           &
+     &    m_ucd%istack_merged_intnod, m_ucd%istack_merged_ele)
+!
+      call write_vtk_data_mpi(id_vtk, ioff_gl,                          &
+     &    ucd%nnod, ucd%num_field, ucd%ntot_comp, ucd%num_comp,         &
+     &    ucd%phys_name, ucd%d_ucd, m_ucd%istack_merged_intnod)
+!
+      call calypso_close_mpi_file(id_vtk)
+!
+      end subroutine write_vtk_file_mpi
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_merged_vtk_phys(istep, ucd, m_ucd)
+      subroutine write_vtk_phys_mpi(file_name, ucd, m_ucd)
 !
       use vtk_file_MPI_IO
 !
-      integer(kind = kint), intent(in) :: istep
+      character(len=kchara), intent(in) :: file_name
+!
       type(ucd_data), intent(in) :: ucd
       type(merged_ucd_data), intent(in) :: m_ucd
 !
-      character(len=kchara) :: file_name
+      integer :: id_vtk
+      integer(kind = kint_gl) :: ioff_gl
 !
 !
-      call set_single_ucd_file_name(ucd%file_prefix, iflag_vtd,         &
-     &      istep, file_name)
-!
+      call calypso_mpi_barrier
      if(my_rank .eq. 0) then
         write(*,*) 'VTK field by MPI-IO: ', trim(file_name)
       end if
-      call calypso_mpi_barrier
 !
-      call write_vtk_phys_mpi(file_name, ucd, m_ucd)
+      call calypso_mpi_write_file_open(file_name, nprocs, id_vtk)
 !
-      end subroutine write_merged_vtk_phys
+      ioff_gl = 0
+      call write_vtk_data_mpi(id_vtk, ioff_gl,                          &
+     &    ucd%nnod, ucd%num_field, ucd%ntot_comp, ucd%num_comp,         &
+     &    ucd%phys_name, ucd%d_ucd, m_ucd%istack_merged_intnod)
+!
+      call calypso_close_mpi_file(id_vtk)
+!
+      end subroutine write_vtk_phys_mpi
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_merged_vtk_grid(ucd, m_ucd)
+      subroutine write_vtk_grid_mpi(file_name, ucd, m_ucd)
 !
       use vtk_file_MPI_IO
+!
+      character(len=kchara), intent(in) :: file_name
 !
       type(ucd_data), intent(in) :: ucd
       type(merged_ucd_data), intent(in) :: m_ucd
 !
-      character(len=kchara) :: file_name
+      integer :: id_vtk
+      integer(kind = kint_gl) :: ioff_gl
 !
 !
-      call set_single_grd_file_name(ucd%file_prefix, iflag_vtd,         &
-     &    file_name)
-!
+      call calypso_mpi_barrier
      if(my_rank .eq. 0) then
         write(*,*) 'VTK grid by MPI-IO: ', trim(file_name)
       end if
-      call calypso_mpi_barrier
 !
-      call write_vtk_grid_mpi(file_name, ucd, m_ucd)
+      call calypso_mpi_write_file_open(file_name, nprocs, id_vtk)
 !
-      end subroutine write_merged_vtk_grid
+      ioff_gl = 0
+      call write_vtk_mesh_mpi(id_vtk, ioff_gl,                          &
+     &    ucd%nnod, ucd%nele, ucd%nnod_4_ele, ucd%xx, ucd%ie,           &
+     &    m_ucd%istack_merged_intnod, m_ucd%istack_merged_ele)
+!
+      call calypso_close_mpi_file(id_vtk)
+!
+      end subroutine write_vtk_grid_mpi
 !
 ! -----------------------------------------------------------------------
 !

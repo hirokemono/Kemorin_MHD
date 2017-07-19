@@ -9,15 +9,15 @@
 !!
 !!@verbatim
 !!      subroutine write_gz_parallel_vtk_file(my_rank, nprocs,          &
-!!     &          istep, ucd)
+!!     &          istep, file_prefix)
 !!
-!!      subroutine write_ucd_data_2_gz_vtk(my_rank, istep, ucd)
-!!      subroutine write_ucd_data_2_gz_vtk_phys(my_rank, istep, ucd)
-!!      subroutine write_ucd_data_2_gz_vtk_grid(my_rank, ucd)
+!!      subroutine write_ucd_data_2_gz_vtk(my_rank, gzip_name, ucd)
+!!      subroutine write_ucd_data_2_gz_vtk_phys(my_rank, gzip_name, ucd)
+!!      subroutine write_ucd_data_2_gz_vtk_grid(my_rank, gzip_name, ucd)
 !!@endverbatim
 !!
 !!@param my_rank    subdomain ID
-!!@param istep      Step number for VTK data
+!!@param gzip_name  file name
 !
       module gz_write_ucd_to_vtk_file
 !
@@ -39,13 +39,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine write_gz_parallel_vtk_file(my_rank, nprocs,            &
-     &          istep, ucd)
+     &          istep, file_prefix)
 !
       use set_parallel_file_name
       use skip_gz_comment
 !
+      character(len=kchara), intent(in) :: file_prefix
       integer(kind=kint), intent(in) :: my_rank, nprocs, istep
-      type(ucd_data), intent(in) :: ucd
 !
       character(len=kchara) :: gzip_name, file_name, fname_tmp
       character(len=kchara) :: fname_nodir
@@ -54,8 +54,8 @@
 !
       if(my_rank .gt. 0) return
 !
-      call delete_directory_name(ucd%file_prefix, fname_nodir)
-      call add_int_suffix(istep, ucd%file_prefix, fname_tmp)
+      call delete_directory_name(file_prefix, fname_nodir)
+      call add_int_suffix(istep, file_prefix, fname_tmp)
       call add_pvtk_extension(fname_tmp, file_name)
       call add_gzip_extension(file_name, gzip_name)
 !
@@ -86,18 +86,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine write_ucd_data_2_gz_vtk(my_rank, istep, ucd)
+      subroutine write_ucd_data_2_gz_vtk(my_rank, gzip_name, ucd)
 !
       use gz_vtk_file_IO
 !
-      integer(kind = kint), intent(in) ::  my_rank, istep
+      character(len=kchara), intent(in) :: gzip_name
+      integer(kind = kint), intent(in) ::  my_rank
       type(ucd_data), intent(in) :: ucd
 !
-      character(len=kchara) :: gzip_name
-!
-!
-      call set_parallel_ucd_file_name(ucd%file_prefix, iflag_vtk_gz,    &
-     &    my_rank, istep, gzip_name)
 !
       if(my_rank.le.0) write(*,*)                                       &
      &    'Write gzipped VTK data: ', trim(gzip_name)
@@ -111,18 +107,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_ucd_data_2_gz_vtk_phys(my_rank, istep, ucd)
+      subroutine write_ucd_data_2_gz_vtk_phys(my_rank, gzip_name, ucd)
 !
       use gz_vtk_file_IO
 !
-      integer(kind = kint), intent(in) ::  my_rank, istep
+      character(len=kchara), intent(in) :: gzip_name
+      integer(kind = kint), intent(in) ::  my_rank
       type(ucd_data), intent(in) :: ucd
 !
-      character(len=kchara) :: gzip_name
-!
-!
-      call set_parallel_ucd_file_name(ucd%file_prefix, iflag_vtd_gz,    &
-     &    my_rank, istep, gzip_name)
 !
       if(my_rank.le.0) write(*,*)                                       &
      &    'Write gzipped VTK field: ', trim(gzip_name)
@@ -134,18 +126,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_ucd_data_2_gz_vtk_grid(my_rank, ucd)
+      subroutine write_ucd_data_2_gz_vtk_grid(my_rank, gzip_name, ucd)
 !
       use gz_vtk_file_IO
 !
+      character(len=kchara), intent(in) :: gzip_name
       integer(kind = kint), intent(in) ::  my_rank
       type(ucd_data), intent(in) :: ucd
 !
-      character(len=kchara) :: gzip_name
-!
-!
-      call set_parallel_grd_file_name(ucd%file_prefix, iflag_vtd_gz,    &
-     &    my_rank, gzip_name)
 !
       if(my_rank.le.0) write(*,*)                                       &
      &    'Write gzipped VTK grid: ', trim(gzip_name)

@@ -6,13 +6,15 @@
 !      subroutine parallel_init_hdf5(ucd, m_ucd)
 !      subroutine parallel_finalize_hdf5(m_ucd)
 !
-!      subroutine parallel_write_hdf5_mesh_file(ucd, m_ucd)
-!      subroutine parallel_write_hdf5_field_file(cur_step, ucd, m_ucd)
+!!      subroutine parallel_write_hdf5_mesh_file                        &
+!!     &         (file_prefix, ucd, m_ucd)
+!!      subroutine parallel_write_hdf5_field_file                       &
+!!     &        (file_prefix, cur_step, ucd, m_ucd)
 !
 !!      subroutine parallel_write_xdmf_snap_file                        &
-!!     &         (istep_hdf5, t_IO, ucd, m_ucd)
+!!     &         (file_prefix, istep_hdf5, t_IO, ucd, m_ucd)
 !!      subroutine parallel_write_xdmf_evo_file                         &
-!!     &         (istep_hdf5, t_IO, ucd, m_ucd)
+!!     &         (file_prefix, istep_hdf5, t_IO, ucd, m_ucd)
 !!        type(time_data), intent(in) :: t_IO
 !!        type(ucd_data), intent(in) :: ucd
 !!        type(merged_ucd_data), intent(in) :: m_ucd
@@ -197,8 +199,10 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine parallel_write_hdf5_mesh_file(ucd, m_ucd)
+      subroutine parallel_write_hdf5_mesh_file                          &
+     &         (file_prefix, ucd, m_ucd)
 !
+      character(len = kchara), intent(in) :: file_prefix
       type(ucd_data), intent(in) :: ucd
       type(merged_ucd_data), intent(inout) :: m_ucd
 !
@@ -227,7 +231,7 @@
       nnod = int(m_ucd%istack_merged_intnod(my_rank+1)                  &
      &         - m_ucd%istack_merged_intnod(my_rank)  )
 !
-      call set_merged_hdf_mesh_file_name(ucd%file_prefix, file_name)
+      call set_merged_hdf_mesh_file_name(file_prefix, file_name)
 !
 ! Remove our own counts from the offset
 !
@@ -361,8 +365,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine parallel_write_hdf5_field_file(cur_step, ucd, m_ucd)
+      subroutine parallel_write_hdf5_field_file                         &
+     &        (file_prefix, cur_step, ucd, m_ucd)
 !
+      character(len = kchara), intent(in) :: file_prefix
       integer(kind=kint), intent(in) :: cur_step
       type(ucd_data), intent(in) :: ucd
       type(merged_ucd_data), intent(inout) :: m_ucd
@@ -384,8 +390,8 @@
 !
 ! Setup the filename
 !
-      call set_merged_hdf_field_file_name(ucd%file_prefix,              &
-     &    cur_step, file_name)
+      call set_merged_hdf_field_file_name                               &
+     &   (file_prefix, cur_step, file_name)
 !
 ! Progress update
 !
@@ -498,54 +504,59 @@
 ! ----------------------------------------------------------------------
 !
       subroutine parallel_write_xdmf_snap_file                          &
-     &         (istep_hdf5, t_IO, ucd, m_ucd)
+     &         (file_prefix, istep_hdf5, t_IO, ucd, m_ucd)
 !
+      character(len = kchara), intent(in) :: file_prefix
       integer(kind=kint), intent(in) :: istep_hdf5
       type(time_data), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
       type(merged_ucd_data), intent(in) :: m_ucd
+!
       character(len = kchara) :: xdmf_dir_file
 !
 ! Only write the file on process 0
       if (my_rank .ne. 0) return
 !
 ! Get the XDMF file location/name
-      call set_merged_snap_xdmf_file_name(ucd%file_prefix,              &
-     &    istep_hdf5, xdmf_dir_file)
+      call set_merged_snap_xdmf_file_name                               &
+     &   (file_prefix, istep_hdf5, xdmf_dir_file)
 ! Open the XDMF file to append
-      call parallel_write_xdmf_file(xdmf_dir_file, istep_hdf5,          &
-     &    t_IO, ucd, m_ucd)
+      call parallel_write_xdmf_file(file_prefix, xdmf_dir_file,         &
+     &    istep_hdf5, t_IO, ucd, m_ucd)
 !
       end subroutine parallel_write_xdmf_snap_file
 !
 ! ----------------------------------------------------------------------
 !
       subroutine parallel_write_xdmf_evo_file                           &
-     &         (istep_hdf5, t_IO, ucd, m_ucd)
+     &         (file_prefix, istep_hdf5, t_IO, ucd, m_ucd)
 !
+      character(len = kchara), intent(in) :: file_prefix
       integer(kind=kint), intent(in) :: istep_hdf5
       type(time_data), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
       type(merged_ucd_data), intent(in) :: m_ucd
+!
       character(len = kchara) :: xdmf_dir_file
 !
 ! Only write the file on process 0
       if (my_rank .ne. 0) return
 !
 ! Get the XDMF file location/name
-      call set_merged_xdmf_file_name(ucd%file_prefix, xdmf_dir_file)
+      call set_merged_xdmf_file_name(file_prefix, xdmf_dir_file)
 ! Open the XDMF file to append
-      call parallel_write_xdmf_file(xdmf_dir_file, istep_hdf5,          &
-     &    t_IO, ucd, m_ucd)
+      call parallel_write_xdmf_file(file_prefix, xdmf_dir_file,         &
+     &    istep_hdf5, t_IO, ucd, m_ucd)
 !
       end subroutine parallel_write_xdmf_evo_file
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine parallel_write_xdmf_file(xdmf_dir_file, istep_hdf5,    &
-     &          t_IO, ucd, m_ucd)
+      subroutine parallel_write_xdmf_file(file_prefix, xdmf_dir_file,   &
+     &          istep_hdf5, t_IO, ucd, m_ucd)
 !
+      character(len = kchara), intent(in) :: file_prefix
       character(len = kchara), intent(in) :: xdmf_dir_file
       integer(kind=kint), intent(in) :: istep_hdf5
       type(time_data), intent(in) :: t_IO
@@ -590,14 +601,13 @@
 !
 !
 !   Get the mesh file name
-      call set_merged_hdf_mesh_file_name                                &
-     &   (ucd%file_prefix, mesh_dir_file)
+      call set_merged_hdf_mesh_file_name(file_prefix, mesh_dir_file)
       call delete_directory_name(mesh_dir_file, mesh_file_name)
 !
 !  Append field entry
       call real_to_str(t_IO%time, time_str)
-      call set_merged_hdf_field_file_name(ucd%file_prefix,              &
-     &    istep_hdf5, field_dir_file)
+      call set_merged_hdf_field_file_name                               &
+     &   (file_prefix, istep_hdf5, field_dir_file)
       call delete_directory_name(field_dir_file, field_file_name)
       write(id_xdmf, '(2a)')                                            &
      &         '    <Grid Name="CellTime" GridType="Collection" ',      &
