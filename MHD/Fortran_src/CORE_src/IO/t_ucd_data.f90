@@ -59,10 +59,6 @@
 !
 !>        Structure for FEM field data IO
       type ucd_data
-!>        file name for field data
-        character(len=kchara) :: file_name
-!
-!
 !>        file header for field data
         character(len=kchara) :: file_prefix = "field/out"
 !
