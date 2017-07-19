@@ -93,10 +93,8 @@
 !     --------------------- 
 !
       i_step = int(t_ITP%init_d%i_time_step / t_ITP%rst_step%increment)
-      call set_field_file_fmt_prefix                                    &
-     &   (ifmt_org_rst_file, org_rst_file_head, itp_fld_IO)
-      call sel_read_alloc_step_FEM_file                                 &
-     &   (ndomain_org, izero, i_step, itp_time_IO, itp_fld_IO)
+      call sel_read_alloc_step_FEM_file(ndomain_org, izero, i_step,     &
+     &    org_fst_IO, itp_time_IO, itp_fld_IO)
       if (iflag_debug.eq.1) write(*,*) 'init_field_name_by_restart'
       call init_field_name_by_restart(itp_fld_IO, nod_fld_ITP)
       call dealloc_phys_data_IO(itp_fld_IO)
@@ -143,10 +141,8 @@
           itp_fld_IO%nnod_IO = org_femmesh%mesh%node%numnod
           call alloc_phys_data_IO(itp_fld_IO)
 !
-          call set_field_file_fmt_prefix                                &
-     &       (ifmt_org_rst_file, org_rst_file_head, itp_fld_IO)
-          call sel_read_step_FEM_field_file                             &
-     &       (nprocs, my_rank, i_step, itp_time_IO, itp_fld_IO)
+          call sel_read_step_FEM_field_file(nprocs, my_rank, i_step,    &
+     &        org_fst_IO, itp_time_IO, itp_fld_IO)
 !
           call copy_field_data_from_restart                             &
      &       (org_femmesh%mesh%node, itp_fld_IO, nod_fld_ITP)
@@ -179,10 +175,8 @@
           call count_number_of_node_stack                               &
      &       (itp_fld_IO%nnod_IO, itp_fld_IO%istack_numnod_IO)
 !
-          call set_field_file_fmt_prefix                                &
-     &       (ifmt_itp_rst_file, itp_rst_file_head, itp_fld_IO)
-          call sel_write_step_FEM_field_file                            &
-     &       (nprocs, my_rank, i_step, itp_time_IO, itp_fld_IO)
+          call sel_write_step_FEM_field_file(nprocs, my_rank, i_step,   &
+     &        itp_fst_IO, itp_time_IO, itp_fld_IO)
 !
           call dealloc_phys_data_IO(itp_fld_IO)
           call dealloc_merged_field_stack(itp_fld_IO)

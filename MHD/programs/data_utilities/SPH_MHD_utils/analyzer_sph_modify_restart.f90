@@ -20,6 +20,7 @@
       use m_MHD_step_parameter
       use t_MHD_step_parameter
       use t_step_parameter
+      use t_file_IO_parameter
 !
       implicit none
 !
@@ -55,7 +56,7 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_mod_restart'
         call SPH_analyze_mod_restart(MHD_step1%time_d%i_time_step,      &
-     &                               MHD_step1)
+     &                               MHD_files1%fst_file_IO, MHD_step1)
 !*
 !*  -----------  output field data --------------
 !*
@@ -86,7 +87,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_mod_restart(i_step, MHD_step)
+      subroutine SPH_analyze_mod_restart(i_step, fst_file_IO, MHD_step)
 !
       use m_work_time
       use m_spheric_parameter
@@ -103,12 +104,15 @@
       use input_control_sph_MHD
 !
       integer(kind = kint), intent(in) :: i_step
+      type(field_IO_params), intent(in) :: fst_file_IO
       type(MHD_step_param), intent(inout) :: MHD_step
 !
       integer(kind = kint) :: iflag
 !
 !
-      call read_alloc_sph_rst_2_modify(i_step,                          &
+      MHD1_org_files%rst_file_param%iflag_format                        &
+     &    = fst_file_IO%iflag_format
+      call read_alloc_sph_rst_4_snap(i_step,                            &
      &    MHD1_org_files%rj_file_param, MHD1_org_files%rst_file_param,  &
      &    sph1%sph_rj, ipol, rj_fld1, MHD_step%rst_step,                &
      &    MHD_step%init_d)
@@ -125,7 +129,7 @@
      &                         MHD_step%rst_step)
       if(iflag .eq. 0) then
         call output_sph_restart_control                                 &
-     &     (MHD_step%time_d, rj_fld1, MHD_step%rst_step)
+     &     (fst_file_IO, MHD_step%time_d, rj_fld1, MHD_step%rst_step)
       end if
 !*
 !*  -----------  lead energy data --------------

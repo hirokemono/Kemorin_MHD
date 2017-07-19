@@ -29,6 +29,9 @@
 !
       type(field_IO_params), save :: sph_file_spec_p
 !
+      type(field_IO_params), save :: spec_fst_param
+      type(field_IO_params), save :: zm_sph_fst_param
+!
 !>        Structure for pickup list
       type(pickup_mode_list), save :: pick_list_u
 !>        Structure for pickup list
@@ -53,7 +56,8 @@
 !
       integer(kind = kint) :: iflag_org_sph_file_fmt = 0
       character(len = kchara) :: org_sph_file_head = 'spectral'
-      character(len = kchara) :: zm_sph_file_head = 'zm_spectral'
+      character(len = kchara), parameter                                &
+     &                        :: zm_sph_file_head = 'zm_spectral'
 !
       character(len = kchara) :: ene_spec_head =     'ene_spectr'
       character(len = kchara) :: vol_ene_spec_head = 'ene_spectr_vol'
@@ -63,6 +67,8 @@
 !
       real(kind = kreal) :: buo_ratio
       real(kind = kreal) :: thermal_buo
+!
+      private :: zm_sph_file_head
 !
 ! -----------------------------------------------------------------------
 !
@@ -116,35 +122,37 @@
 !    file header for field data
 !
       if(su_plt%spectr_field_file_prefix%iflag .gt. 0) then
-        org_sph_file_head =  su_plt%spectr_field_file_prefix%charavalue
-        call choose_para_file_format                                    &
-     &     (su_plt%restart_file_fmt_ctl, iflag_org_sph_file_fmt)
+        call set_parallel_file_ctl_params(org_sph_file_head,            &
+     &      su_plt%spectr_field_file_prefix,                            &
+     &      su_plt%restart_file_fmt_ctl, spec_fst_param)
       end if
 !
       if(zm_spec_file_head_ctl%iflag .gt. 0) then
-        zm_sph_file_head = zm_spec_file_head_ctl%charavalue
+        call set_parallel_file_ctl_params(zm_sph_file_head,             &
+     &      zm_spec_file_head_ctl, su_plt%restart_file_fmt_ctl,         &
+     &      zm_sph_fst_param)
       end if
 !
 !   using restart data for spherical dynamo
 !
       if(su_plt%restart_file_prefix%iflag .gt. 0) then
-        org_sph_file_head = su_plt%restart_file_prefix%charavalue
-        call choose_para_file_format                                    &
-     &     (su_plt%restart_file_fmt_ctl, iflag_org_sph_file_fmt)
+        call set_parallel_file_ctl_params(org_sph_file_head,            &
+     &      su_plt%restart_file_prefix, su_plt%restart_file_fmt_ctl,    &
+     &      spec_fst_param)
         time_SHR%ucd_step%increment = time_SHR%rst_step%increment
       end if
 !
       if( (rj_org_param%iflag_IO) .gt. 0) then
-        org_sph_file_head =  rst_org_param%file_prefix
+        call set_parallel_file_ctl_params(org_sph_file_head,            &
+     &      org_su_plt%restart_file_prefix,                             &
+     &      org_su_plt%sph_file_fmt_ctl, spec_fst_param)
         time_SHR%ucd_step%increment = time_SHR%rst_step%increment
-        call choose_file_format                                         &
-     &     (org_su_plt%sph_file_fmt_ctl, iflag_org_sph_file_fmt)
       end if
 !
       write(tave_sph_file_head,'(a,a5)')                                &
-     &                     trim(org_sph_file_head), '_tave'
+     &               trim(spec_fst_param%file_prefix), '_tave'
       write(sdev_sph_file_head,'(a,a5)')                                &
-     &                     trim(org_sph_file_head), '_sdev'
+     &               trim(spec_fst_param%file_prefix), '_sdev'
 !
 !     file header for reduced data
 !

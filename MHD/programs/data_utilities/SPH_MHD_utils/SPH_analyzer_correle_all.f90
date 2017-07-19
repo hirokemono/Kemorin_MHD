@@ -85,7 +85,7 @@
 !
       call read_alloc_sph_spectr                                        &
      &   (time_d%i_time_step, MHD1_org_files%rj_file_param,             &
-     &    sph_file_param2,sph1%sph_rj, ipol, rj_fld1,                   &
+     &    sph_file_param2, sph1%sph_rj, ipol, rj_fld1,                  &
      &    MHD_step%ucd_step, MHD_step%init_d)
       call copy_time_data(MHD_step%init_d, MHD_step%time_d)
 !

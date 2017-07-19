@@ -15,8 +15,9 @@
 !!        type(field_IO_params), intent(inout) :: mesh_file
 !!        type(field_IO_params), intent(inout) :: sph_file_param
 !!      subroutine set_FEM_mesh_switch_4_SPH(plt, iflag_access_FEM)
-!!      subroutine set_control_restart_file_def(plt, fld_IO)
+!!      subroutine set_control_restart_file_def(plt, file_IO)
 !!        type(platform_data_control), intent(in) :: plt
+!!        type(field_IO_params), intent(inout) :: file_IO
 !!
 !!      subroutine set_control_mesh_file_def                            &
 !!     &         (default_prefix, plt_ctl, mesh_file)
@@ -37,6 +38,8 @@
       use t_file_IO_parameter
 !
       implicit  none
+!
+      character(len=kchara), parameter :: default_rst_prefix = 'rst'
 !
 ! ----------------------------------------------------------------------
 !
@@ -174,21 +177,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_control_restart_file_def(plt, fld_IO)
+      subroutine set_control_restart_file_def(plt, file_IO)
 !
-      use t_field_data_IO
+      use t_file_IO_parameter
       use m_file_format_switch
 !
       type(platform_data_control), intent(in) :: plt
-      type(field_IO), intent(inout) :: fld_IO
+      type(field_IO_params), intent(inout) :: file_IO
 !
 !
-      if (plt%restart_file_prefix%iflag .gt. 0) then
-        fld_IO%file_prefix = plt%restart_file_prefix%charavalue
-      end if
-!
-      call choose_para_file_format                                      &
-     &   (plt%restart_file_fmt_ctl, fld_IO%iflag_file_fmt)
+      call set_parallel_file_ctl_params(default_rst_prefix,             &
+     &    plt%restart_file_prefix, plt%restart_file_fmt_ctl,            &
+     &    file_IO)
 !
       end subroutine set_control_restart_file_def
 !

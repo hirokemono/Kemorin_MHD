@@ -42,8 +42,8 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_ctl_data_4_sph_trans'
       call s_set_ctl_data_4_sph_trans                                   &
-     &   (t_STR, mesh_file_STR, ucd_SPH_TRNS, rj_fld_trans,             &
-     &    d_gauss_trans, field_STR, WK_sph_TRNS)
+     &   (t_STR, mesh_file_STR, sph_fst_param, ucd_SPH_TRNS,            &
+     &    rj_fld_trans, d_gauss_trans, field_STR, WK_sph_TRNS)
       call set_ctl_data_4_zm_trans
 !
 !  ------    set spectr grids

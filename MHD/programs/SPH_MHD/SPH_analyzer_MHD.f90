@@ -7,21 +7,25 @@
 !>@brief Evolution loop for spherical MHD
 !!
 !!@verbatim
-!!      subroutine SPH_initialize_MHD(iphys, MHD_step)
+!!      subroutine SPH_initialize_MHD(MHD_files, iphys, MHD_step)
 !!        type(phys_address), intent(in) :: iphys
-!!      subroutine SPH_analyze_MHD(i_step, iflag_finish, MHD_step)
+!!      subroutine SPH_analyze_MHD                                      &
+!!     &         (i_step, MHD_files, iflag_finish, MHD_step)
+!!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!@endverbatim
 !
       module SPH_analyzer_MHD
 !
       use m_precision
+      use m_constants
       use m_MHD_step_parameter
       use m_SGS_control_parameter
       use m_physical_property
       use m_radial_matrices_sph
       use t_phys_address
       use t_MHD_step_parameter
+      use t_MHD_file_parameter
 !
       implicit none
 !
@@ -31,9 +35,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_initialize_MHD(iphys, MHD_step)
+      subroutine SPH_initialize_MHD(MHD_files, iphys, MHD_step)
 !
-      use m_constants
       use calypso_mpi
       use m_machine_parameter
 !
@@ -66,6 +69,7 @@
 !
       use m_work_time
 !
+      type(MHD_file_IO_params), intent(in) :: MHD_files
       type(phys_address), intent(in) :: iphys
       type(MHD_step_param), intent(inout) :: MHD_step
 !
@@ -103,7 +107,7 @@
 !
       if(iflag_debug.gt.0) write(*,*)' sph_initial_data_control'
       call sph_initial_data_control                                     &
-     &   (ref_temp1%t_rj, sph1%sph_params, sph1%sph_rj,                 &
+     &   (MHD_files, ref_temp1%t_rj, sph1%sph_params, sph1%sph_rj,      &
      &    MHD_prop1%ref_param_T, sph_MHD_bc1%sph_bc_B,                  &
      &    ipol, idpdr, itor, rj_fld1, MHD_step,                         &
      &    SGS_par1, trns_WK1%dynamic_SPH)
@@ -146,7 +150,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_MHD(i_step, iflag_finish, MHD_step)
+      subroutine SPH_analyze_MHD                                        &
+     &         (i_step, MHD_files, iflag_finish, MHD_step)
 !
       use m_work_time
       use m_spheric_parameter
@@ -166,6 +171,7 @@
       use output_viz_file_control
 !
       integer(kind = kint), intent(in) :: i_step
+      type(MHD_file_IO_params), intent(in) :: MHD_files
 !
       integer(kind = kint), intent(inout) :: iflag_finish
       type(MHD_step_param), intent(inout) :: MHD_step
@@ -227,7 +233,7 @@
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0) write(*,*) 'output_sph_MHD_rst_control'
         call output_sph_MHD_rst_control                                 &
-     &     (MHD_step%time_d, rj_fld1, MHD_step%rst_step,                &
+     &     (MHD_files, MHD_step%time_d, rj_fld1, MHD_step%rst_step,     &
      &      SGS_par1%i_step_sgs_coefs, SGS_par1%model_p,                &
      &      trns_WK1%dynamic_SPH)
       end if
@@ -240,7 +246,7 @@
         MHD_step%rst_step%istep_file = MHD_step%finish_d%i_end_step
         iflag_finish = 1
         call output_sph_MHD_rst_control                                 &
-     &     (MHD_step%time_d, rj_fld1, MHD_step%rst_step,                &
+     &     (MHD_files, MHD_step%time_d, rj_fld1, MHD_step%rst_step,     &
      &      SGS_par1%i_step_sgs_coefs, SGS_par1%model_p,                &
      &      trns_WK1%dynamic_SPH)
       end if

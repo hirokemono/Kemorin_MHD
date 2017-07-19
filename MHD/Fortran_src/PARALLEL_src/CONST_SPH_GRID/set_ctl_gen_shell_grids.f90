@@ -125,8 +125,6 @@
       type(construct_spherical_grid), intent(inout) :: gen_sph
       integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: icou
-!
 !
       call set_FEM_mesh_mode_4_SPH                                      &
      &   (spctl, sph%sph_params%iflag_shell_mode)

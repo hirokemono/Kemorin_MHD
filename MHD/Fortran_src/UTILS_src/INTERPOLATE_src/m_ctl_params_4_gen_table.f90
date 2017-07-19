@@ -17,22 +17,23 @@
 !
 !
       type(field_IO_params), save :: itp_org_mesh_file
-!
       type(field_IO_params), save :: itp_dest_mesh_file
+!
+      type(field_IO_params), save :: org_fst_IO
+      type(field_IO_params), save :: itp_fst_IO
 !
       character(len = kchara) :: table_file_head = "mesh/table"
       character(len = kchara)                                           &
      &             :: sgl_table_file_head = "single_itp_table"
 !
-      character(len = kchara) :: org_rst_file_head = "restart/rst"
+      character(len = kchara), parameter                                &
+     &             :: def_org_rst_prefix = "restart/rst"
       character(len = kchara) :: org_udt_file_head = "field/out"
 !
       character(len = kchara) :: itp_node_file_head = "node_test_itp"
-      character(len = kchara) :: itp_rst_file_head = "rst_new/rst"
+      character(len = kchara), parameter                                &
+     &             :: def_itp_rst_prefix = "rst_new/rst"
       character(len = kchara) :: itp_udt_file_head = "field_new/out"
-!
-      integer(kind = kint) :: ifmt_org_rst_file =  0
-      integer(kind = kint) :: ifmt_itp_rst_file =  0
 !
       integer(kind = kint) :: itype_org_udt_file =  iflag_fld
       integer(kind = kint) :: itype_itp_udt_file =  iflag_fld

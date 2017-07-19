@@ -20,8 +20,6 @@
 !!      subroutine dealloc_phys_data_IO(fld_IO)
 !!      subroutine dealloc_merged_field_stack(fld_IO)
 !!
-!!      subroutine set_field_file_fmt_prefix                            &
-!!     &         (iflag_fmt, file_head, fld_IO)
 !!      subroutine cal_istack_phys_comp_IO(fld_IO)
 !!@endverbatim
 !!
@@ -39,9 +37,9 @@
 !>      Structure for field data IO
       type field_IO
 !>        file header for field data
-        character(len=kchara) :: file_prefix = "rst"
+!        character(len=kchara) :: file_prefix = "rst"
 !>        file format flag for field data
-        integer(kind = kint) :: iflag_file_fmt =  0
+!        integer(kind = kint) :: iflag_file_fmt =  0
 !>        number of field for IO (num_phys_data_IO)
         integer(kind = kint) :: num_field_IO
 !>        total number of component for IO (ntot_phys_data_IO)
@@ -193,20 +191,6 @@
       end subroutine dealloc_merged_field_stack
 !
 ! -----------------------------------------------------------------------
-! -------------------------------------------------------------------
-!
-      subroutine set_field_file_fmt_prefix                              &
-     &         (iflag_fmt, file_head, fld_IO)
-!
-      integer(kind = kint), intent(in) :: iflag_fmt
-      character(len=kchara), intent(in) :: file_head
-      type(field_IO), intent(inout) :: fld_IO
-!
-      fld_IO%iflag_file_fmt = iflag_fmt
-      write(fld_IO%file_prefix,'(a)') trim(file_head)
-!
-      end subroutine set_field_file_fmt_prefix
-!
 ! -------------------------------------------------------------------
 !
       subroutine cal_istack_phys_comp_IO(fld_IO)

@@ -11,12 +11,16 @@
       use m_precision
       use m_constants
       use calypso_mpi
+      use t_file_IO_parameter
 !
       implicit    none
 !
 !
       integer(kind = kint) :: np_sph_org
       integer(kind = kint) :: np_sph_new
+!
+      type(field_IO_params), save :: org_sph_fst_param
+      type(field_IO_params), save :: new_sph_fst_param
 !
       integer(kind=kint ) :: istep_start, istep_end, increment_step
 !
@@ -31,12 +35,11 @@
       integer(kind=kint ) :: ifmt_new_sph_file =      0
 !
 !>      File prefix for new restart data
-      character(len=kchara) :: org_sph_fst_head = "restart/rst"
+      character(len=kchara), parameter                                  &
+     &                    :: def_org_sph_fst = "restart/rst"
 !>      File prefix for new restart data
-      character(len=kchara) :: new_sph_fst_head = "rst_new/rst"
-!
-      integer(kind=kint ) :: ifmt_org_sph_fst =       0
-      integer(kind=kint ) :: ifmt_new_sph_fst =       0
+      character(len=kchara), parameter                                  &
+     &                    :: def_new_sph_fst = "rst_new/rst"
 !
       integer(kind=kint ) :: iflag_delete_org_sph =   0
 !
@@ -85,17 +88,21 @@
       call MPI_Bcast(ifmt_new_sph_file, ione, CALYPSO_INTEGER,          &
      &               izero, CALYPSO_COMM, ierr_MPI)
 !
-      call MPI_Bcast(org_sph_fst_head, kchara, CALYPSO_CHARACTER,       &
-     &               izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(new_sph_fst_head ,kchara, CALYPSO_CHARACTER,       &
-     &               izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(org_sph_fst_param%file_prefix, kchara,             &
+     &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(org_sph_fst_param%iflag_IO ,ione,                  &
+     &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(org_sph_fst_param%iflag_format, ione,              &
+     &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
 !
-      call MPI_Bcast(ifmt_org_sph_fst, ione, CALYPSO_INTEGER,           &
-     &               izero, CALYPSO_COMM, ierr_MPI)
-      call MPI_Bcast(ifmt_new_sph_fst ,ione, CALYPSO_INTEGER,           &
-     &               izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(new_sph_fst_param%file_prefix, kchara,             &
+     &               CALYPSO_CHARACTER, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(new_sph_fst_param%iflag_IO ,ione,                  &
+     &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
+      call MPI_Bcast(new_sph_fst_param%iflag_format, ione,              &
+     &               CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
 !
-      call MPI_Bcast(iflag_delete_org_sph ,ione, CALYPSO_INTEGER,       &
+      call MPI_Bcast(iflag_delete_org_sph, ione, CALYPSO_INTEGER,       &
      &               izero, CALYPSO_COMM, ierr_MPI)
 !
       call MPI_Bcast(b_sph_ratio ,ione, CALYPSO_REAL,                   &
@@ -141,22 +148,18 @@
      &   (assemble_plt%sph_file_fmt_ctl, ifmt_new_sph_file)
 !
 !
-      if (source_plt%restart_file_prefix%iflag .gt. 0) then
-        org_sph_fst_head = source_plt%restart_file_prefix%charavalue
-      end if
+      call set_parallel_file_ctl_params(def_org_sph_fst,                &
+     &    source_plt%restart_file_prefix,                               &
+     &    source_plt%restart_file_fmt_ctl, org_sph_fst_param)
+      call set_parallel_file_ctl_params(def_new_sph_fst,                &
+     &    assemble_plt%restart_file_prefix,                             &
+     &    assemble_plt%restart_file_fmt_ctl, new_sph_fst_param)
 !
-      if(assemble_plt%restart_file_prefix%iflag .gt. 0) then
-        new_sph_fst_head = assemble_plt%restart_file_prefix%charavalue
-      end if
 !
-      call choose_para_file_format                                      &
-     &   (source_plt%restart_file_fmt_ctl, ifmt_org_sph_fst)
-      call choose_para_file_format                                      &
-     &   (assemble_plt%restart_file_fmt_ctl, ifmt_new_sph_fst)
-!
-      if((ifmt_new_sph_fst/iflag_single) .gt. 0                         &
+      if((new_sph_fst_param%iflag_format/iflag_single) .gt. 0           &
      &     .and. np_sph_new .ne. nprocs) then
-        ifmt_new_sph_fst = ifmt_new_sph_fst - iflag_single
+        new_sph_fst_param%iflag_format                                  &
+     &            = new_sph_fst_param%iflag_format - iflag_single
         write(*,*) 'Turn off Merged data IO ',                          &
      &             'when number of MPI prosesses is not ',              &
      &             'the number of target subdomains.'

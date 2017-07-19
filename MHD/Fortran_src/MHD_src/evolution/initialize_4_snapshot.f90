@@ -3,10 +3,10 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine init_analyzer_snap(FEM_prm, SGS_par,                 &
-!!     &          IO_bc, MHD_step, time_d, mesh, group, ele_mesh,       &
-!!     &          MHD_mesh, layer_tbl, iphys, nod_fld, t_IO, rst_step,  &
-!!     &          label_sim)
+!!      subroutine init_analyzer_snap(fst_file_IO, FEM_prm, SGS_par,    &
+!!     &          IO_bc, MHD_step, mesh, group, ele_mesh, MHD_mesh,     &
+!!     &          layer_tbl, iphys, nod_fld, t_IO, rst_step, label_sim)
+!!        type(field_IO_params), intent(in) :: fst_file_IO
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(IO_boundary), intent(in) :: IO_bc
@@ -38,6 +38,7 @@
       use t_time_data
       use t_boundary_field_IO
       use t_IO_step_parameter
+      use t_file_IO_parameter
 !
       implicit none
 !
@@ -47,10 +48,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer_snap(FEM_prm, SGS_par,                   &
-     &          IO_bc, MHD_step, time_d, mesh, group, ele_mesh,         &
-     &          MHD_mesh, layer_tbl, iphys, nod_fld, t_IO, rst_step,    &
-     &          label_sim)
+      subroutine init_analyzer_snap(fst_file_IO, FEM_prm, SGS_par,      &
+     &          IO_bc, MHD_step, mesh, group, ele_mesh, MHD_mesh,       &
+     &          layer_tbl, iphys, nod_fld, t_IO, rst_step, label_sim)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -95,12 +95,12 @@
 !
       use nod_phys_send_recv
 !
-      type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
+      type(field_IO_params), intent(in) :: fst_file_IO
       type(SGS_paremeters), intent(in) :: SGS_par
       type(IO_boundary), intent(in) :: IO_bc
       type(MHD_step_param), intent(in) :: MHD_step
-      type(time_data), intent(in) :: time_d
 !
+      type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
@@ -227,8 +227,8 @@
 !
       if (rst_step%increment .gt. 0) then
         if (iflag_debug.eq.1) write(*,*)' init_restart_4_snapshot'
-        call init_restart_4_snapshot                                    &
-     &     (MHD_step%init_d%i_time_step, mesh%node, t_IO, rst_step)
+        call init_restart_4_snapshot(MHD_step%init_d%i_time_step,       &
+     &      fst_file_IO, mesh%node, t_IO, rst_step)
       end if
 !
 !     ---------------------
@@ -264,7 +264,7 @@
 !
       if (iflag_debug.eq.1) write(*,*)' set_boundary_data'
       call set_boundary_data                                            &
-     &   (time_d, IO_bc, mesh, ele_mesh, MHD_mesh, group,               &
+     &   (MHD_step%time_d, IO_bc, mesh, ele_mesh, MHD_mesh, group,      &
      &    MHD_prop1, MHD_BC1, iphys, nod_fld)
 !
 !     ---------------------

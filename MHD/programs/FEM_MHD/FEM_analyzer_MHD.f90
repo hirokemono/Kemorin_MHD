@@ -3,8 +3,10 @@
 !
 !      modified by H. Matsui on June, 2005 
 !
-!!      subroutine FEM_initialize_MHD(MHD_step)
-!!      subroutine FEM_analyze_MHD(MHD_step, visval, retval)
+!!      subroutine FEM_initialize_MHD(MHD_files, MHD_step)
+!!      subroutine FEM_analyze_MHD                                      &
+!!     &         (MHD_files, MHD_step, visval, retval)
+!!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!      subroutine FEM_finalize_MHD(MHD_step)
 !
@@ -21,6 +23,7 @@
       use m_sorted_node_MHD
       use m_physical_property
       use t_MHD_step_parameter
+      use t_MHD_file_parameter
 !
       use calypso_mpi
 !
@@ -32,7 +35,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_MHD(MHD_step)
+      subroutine FEM_initialize_MHD(MHD_files, MHD_step)
 !
       use m_geometry_data_MHD
       use m_node_phys_data
@@ -63,14 +66,16 @@
       use chenge_step_4_dynamic
       use output_viz_file_control
 !
+      type(MHD_file_IO_params), intent(in) :: MHD_files
+!
       type(MHD_step_param), intent(inout) :: MHD_step
 !
       integer(kind = kint) :: iflag
 !
 !   matrix assembling
 !
-      call init_analyzer_fl(IO_bc1, FEM_prm1, SGS_par1, MHD_step,       &
-     &    MHD_step%time_d, mesh1, group1, ele_mesh1, MHD_mesh1,         &
+      call init_analyzer_fl(MHD_files, IO_bc1, FEM_prm1, SGS_par1,      &
+     &    MHD_step, mesh1, group1, ele_mesh1, MHD_mesh1,                &
      &    layer_tbl1, iphys, nod_fld1, label_sim)
 !
       call nod_fields_send_recv(mesh1%nod_comm, nod_fld1)
@@ -163,7 +168,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_MHD(MHD_step, visval, retval)
+      subroutine FEM_analyze_MHD                                        &
+     &         (MHD_files, MHD_step, visval, retval)
 !
       use m_geometry_data_MHD
       use m_node_phys_data
@@ -196,6 +202,8 @@
       use init_iccg_matrices
       use check_deltat_by_prev_rms
       use output_viz_file_control
+!
+      type(MHD_file_IO_params), intent(in) :: MHD_files
 !
       integer(kind=kint ), intent(inout) :: visval
       type(MHD_step_param), intent(inout) :: MHD_step
@@ -309,7 +317,7 @@
       if(iflag .eq. 0) then
         if (iflag_debug.eq.1) write(*,*) 'output_MHD_restart_file_ctl'
         call output_MHD_restart_file_ctl                                &
-     &     (SGS_par1, MHD_step%time_d, MHD_step%rst_step,               &
+     &     (SGS_par1, MHD_files, MHD_step%time_d, MHD_step%rst_step,    &
      &      mesh1%node, mesh1%nod_comm, iphys,                          &
      &      wk_sgs1, wk_diff1, nod_fld1)
       end if
@@ -331,7 +339,7 @@
           retval = 0
           call start_eleps_time(4)
           call output_MHD_restart_file_ctl                              &
-     &       (SGS_par1, MHD_step%time_d, MHD_step%rst_step,             &
+     &       (SGS_par1, MHD_files, MHD_step%time_d, MHD_step%rst_step,  &
      &        mesh1%node, mesh1%nod_comm, iphys,                        &
      &        wk_sgs1, wk_diff1, nod_fld1)
           call end_eleps_time(4)

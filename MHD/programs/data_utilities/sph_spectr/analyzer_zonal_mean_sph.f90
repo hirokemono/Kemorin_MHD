@@ -56,10 +56,9 @@
 !  ------  initialize spectr data
 !
       if (iflag_debug.gt.0) write(*,*) 'sel_read_alloc_step_SPH_file'
-      call set_field_file_fmt_prefix                                    &
-     &    (iflag_org_sph_file_fmt, org_sph_file_head, sph_spec_IO)
-      call sel_read_alloc_step_SPH_file(nprocs, my_rank,                &
-     &    t_SHR%init_d%i_time_step, spec_time_IO, sph_spec_IO)
+      call sel_read_alloc_step_SPH_file                                 &
+     &   (nprocs, my_rank, t_SHR%init_d%i_time_step,                    &
+     &    spec_fst_param, spec_time_IO, sph_spec_IO)
 !
 !  -------------------------------
 !
@@ -88,10 +87,8 @@
 !   Input spectr data
 !
         if (iflag_debug.gt.0) write(*,*) 'sel_read_step_SPH_field_file'
-        call set_field_file_fmt_prefix                                  &
-     &     (iflag_org_sph_file_fmt, org_sph_file_head, sph_spec_IO)
-      call sel_read_step_SPH_field_file                                 &
-     &     (nprocs, my_rank, i_step, spec_time_IO, sph_spec_IO)
+        call sel_read_step_SPH_field_file(nprocs, my_rank, i_step,      &
+     &      spec_fst_param, spec_time_IO, sph_spec_IO)
 !
         if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
         call set_rj_phys_data_from_IO(sph_spec_IO, rj_fld_spec)
@@ -107,12 +104,10 @@
         call count_number_of_node_stack                                 &
      &     (sph_spec_IO%nnod_IO, sph_spec_IO%istack_numnod_IO)
 !
-!
-        sph_spec_IO%file_prefix = zm_sph_file_head
         if (iflag_debug.gt.0)                                           &
      &    write(*,*) 'sel_write_step_SPH_field_file'
-        call sel_write_step_SPH_field_file                              &
-     &     (nprocs, my_rank, i_step, spec_time_IO, sph_spec_IO)
+        call sel_write_step_SPH_field_file(nprocs, my_rank, i_step,     &
+     &      zm_sph_fst_param, spec_time_IO, sph_spec_IO)
         call dealloc_merged_field_stack(sph_spec_IO)
       end do
 !

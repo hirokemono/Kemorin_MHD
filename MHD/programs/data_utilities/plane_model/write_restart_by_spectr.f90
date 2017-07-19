@@ -12,15 +12,17 @@
       module write_restart_by_spectr
 !
       use m_precision
+      use t_file_IO_parameter
       use t_field_data_IO
 !
       implicit none
 !
 !
       real(kind = kreal), allocatable :: rst_from_sp(:,:)
+      type(field_IO_params), save :: pl_fld_file
       type(field_IO), save :: pl_fld_IO
 !
-      private :: pl_fld_IO
+      private :: pl_fld_file, pl_fld_IO
 !
 !  ---------------------------------------------------------------------
 !
@@ -97,9 +99,9 @@
      &   (nnod, merged_fld%ntot_phys, rst_from_sp,                      &
      &    pl_fld_IO%ntot_comp_IO, pl_fld_IO%nnod_IO, pl_fld_IO%d_IO)
 !
-      pl_fld_IO%file_prefix = rst_head_plane
+      pl_fld_file%file_prefix = rst_head_plane
       call sel_write_step_FEM_field_file                                &
-     &   (num_pe, id_rank, izero, t_IO, pl_fld_IO)
+     &   (num_pe, id_rank, izero, pl_fld_file, t_IO, pl_fld_IO)
 !
       call dealloc_merged_field_stack(pl_fld_IO)
       call dealloc_phys_name_IO(pl_fld_IO)

@@ -49,7 +49,8 @@
       type(time_data), save :: plane_t_IO
       type(field_IO) :: plane_fst_IO
       type(mesh_geometry) :: mesh_IO_p
-      type(field_IO_params) ::  cube_mesh_file
+      type(field_IO_params), save :: cube_mesh_file
+      type(field_IO_params), save :: plane_fld_file
 !
       character(len=kchara), parameter                                  &
      &      :: org_rst_f_header = 'restart/rst'
@@ -145,10 +146,10 @@
         call simple_copy_fld_data_to_rst                                &
      &     (merged%node, merged_fld, plane_fst_IO)
 !
-        call set_field_file_fmt_prefix                                  &
-     &     (izero, org_rst_f_header, plane_fst_IO)
-        call sel_write_step_FEM_field_file                              &
-     &     (num_pe, id_rank, izero, plane_t_IO, plane_fst_IO)
+        call set_file_fmt_prefix                                        &
+     &     (izero, org_rst_f_header, plane_fld_file)
+        call sel_write_step_FEM_field_file(num_pe, id_rank, izero,      &
+     &      plane_fld_file, plane_t_IO, plane_fst_IO)
 !
         call dealloc_phys_name_IO(plane_fst_IO)
         call dealloc_phys_data_IO(plane_fst_IO)

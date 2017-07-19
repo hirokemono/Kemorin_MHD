@@ -50,13 +50,9 @@
 !
 !  ------  initialize spectr data
 !
-      if (iflag_debug.gt.0) write(*,*) 'sel_read_alloc_step_fld_file'
-      call set_field_file_fmt_prefix                                    &
-     &   (rst_org_param%iflag_format, rst_org_param%file_prefix,        &
-     &    fld_IO)
-      write(*,*) 'ifmt_org_rst', rst_org_param%iflag_format
-      call sel_read_alloc_step_SPH_file                                 &
-     &   (nprocs, my_rank, t_STR%init_d%i_time_step, t_IO, fld_IO)
+      if (iflag_debug.gt.0) write(*,*) 'sel_read_alloc_step_SPH_file'
+      call sel_read_alloc_step_SPH_file(nprocs, my_rank,                &
+     &   t_STR%init_d%i_time_step, rst_org_param, t_IO, fld_IO)
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_sph_name_rj_to_rtp'
       call copy_sph_name_rj_to_rtp(rj_fld, fld_rtp_TRNS)

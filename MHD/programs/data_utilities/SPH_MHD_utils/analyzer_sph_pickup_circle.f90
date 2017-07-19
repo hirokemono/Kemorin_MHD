@@ -76,10 +76,9 @@
       call set_control_SGS_SPH_MHD(MHD_ctl1%plt, MHD_ctl1%org_plt,      &
      &    MHD_ctl1%model_ctl, MHD_ctl1%ctl_ctl, MHD_ctl1%smonitor_ctl,  &
      &    MHD_ctl1%nmtr_ctl, MHD_ctl1%psph_ctl, sph_gen, rj_fld1,       &
-     &    mesh_file_circ, sph_file_param1, MHD1_org_files,              &
-     &    sph_fst_IO, bc_IO1, pwr1, SGS_par1,                           &
-     &    trns_WK1%dynamic_SPH%sph_filters, MHD_step1,                  &
-     &    MHD_prop1, MHD_BC1, trns_WK1%WK_sph, gen_sph_c)
+     &    mesh_file_circ, sph_file_param1, MHD1_org_files, MHD_files1,  &
+     &    bc_IO1, pwr1, SGS_par1, trns_WK1%dynamic_SPH%sph_filters,     &
+     &    MHD_step1, MHD_prop1, MHD_BC1, trns_WK1%WK_sph, gen_sph_c)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
 !
       call set_ctl_params_pick_circle                                   &
@@ -128,7 +127,8 @@
 !*  ----------  time evolution by spectral methood -----------------
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_pick_circle'
-        call SPH_analyze_pick_circle(MHD_step1%time_d%i_time_step)
+        call SPH_analyze_pick_circle                                    &
+     &     (MHD_step1%time_d%i_time_step, MHD_files1%fst_file_IO)
 !*
 !*  -----------  exit loop --------------
 !*

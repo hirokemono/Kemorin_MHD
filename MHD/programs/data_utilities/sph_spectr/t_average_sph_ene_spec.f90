@@ -28,8 +28,8 @@
 !
 !
       write(*,*) ' Choose data to take average'
-      write(*,*)  ' 0: Total and all spectrum  '
-      write(*,*)  ' 1: Total average '
+      write(*,*)  ' 0: Spectrum data over l, m, and l-m '
+      write(*,*)  ' 1: Average over volume or sphere'
       write(*,*)  ' 2: One spectrum data '
       read(*,*) iflag_data_mode
 !
@@ -51,7 +51,7 @@
 !    Evaluate time average
 !
       sph_IN_t%iflag_spectr = 0
-      if(iflag_data_mode .eq. 0 .or. iflag_data_mode .eq. 1) then
+      if(iflag_data_mode .eq. 1) then
         call sph_spectr_average                                         &
      &     (fname_org_rms, start_time, end_time, sph_IN_t)
         call sph_spectr_std_deviation                                   &

@@ -40,7 +40,8 @@
 !
 !     --------------------- 
 !
-      call input_control_4_snapshot(FEM_prm1, SGS_par1, MHD_step1,      &
+      call input_control_4_snapshot                                     &
+     &   (MHD_files1, FEM_prm1, SGS_par1, MHD_step1,                    &
      &    MHD_prop1, MHD_BC1, mesh1, group1, ele_mesh1, nod_fld1,       &
      &    IO_bc1, filtering1, wide_filtering, wk_filter1,               &
      &    MGCG_WK1, MGCG_FEM1, MGCG_MHD_FEM1)
@@ -49,7 +50,8 @@
 !   matrix assembling
 !
       if (iflag_debug.eq.1)  write(*,*) 'FEM_initialize_vol_average'
-      call FEM_initialize_vol_average(MHD_step1)
+      call FEM_initialize_vol_average                                   &
+     &   (MHD_files1%fst_file_IO, MHD_step1)
 !
       end subroutine init_analyzer
 !

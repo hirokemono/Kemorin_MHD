@@ -1,10 +1,14 @@
 !
 !     module SPH_analyzer_licv
 !
-!!      subroutine SPH_initialize_linear_conv(iphys, MHD_step)
+!!      subroutine SPH_initialize_linear_conv                           &
+!!     &         (MHD_files, iphys, MHD_step)
+!!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(phys_address), intent(in) :: iphys
+!!        type(MHD_step_param), intent(inout) :: MHD_step
 !!      subroutine SPH_analyze_linear_conv                              &
-!!     &         (i_step, iflag_finish, MHD_step)
+!!     &         (i_step, MHD_files, iflag_finish, MHD_step)
+!!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !
 !      Written by H. Matsui
@@ -17,6 +21,7 @@
       use m_radial_matrices_sph
       use t_phys_address
       use t_MHD_step_parameter
+      use t_MHD_file_parameter
 !
       implicit none
 !
@@ -26,7 +31,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_initialize_linear_conv(iphys, MHD_step)
+      subroutine SPH_initialize_linear_conv                             &
+     &         (MHD_files, iphys, MHD_step)
 !
       use calypso_mpi
       use m_constants
@@ -63,6 +69,7 @@
 !
       use m_work_time
 !
+      type(MHD_file_IO_params), intent(in) :: MHD_files
       type(phys_address), intent(in) :: iphys
       type(MHD_step_param), intent(inout) :: MHD_step
 !
@@ -95,7 +102,7 @@
 !
       if(iflag_debug.gt.0) write(*,*)' sph_initial_data_control'
       call sph_initial_data_control                                     &
-     &   (ref_temp1%t_rj, sph1%sph_params, sph1%sph_rj,                 &
+     &   (MHD_files, ref_temp1%t_rj, sph1%sph_params, sph1%sph_rj,      &
      &    MHD_prop1%ref_param_T, sph_MHD_bc1%sph_bc_B,                  &
      &    ipol, idpdr, itor, rj_fld1, MHD_step,                         &
      &    SGS_par1, trns_WK1%dynamic_SPH)
@@ -136,7 +143,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_analyze_linear_conv                                &
-     &         (i_step, iflag_finish, MHD_step)
+     &         (i_step, MHD_files, iflag_finish, MHD_step)
 !
       use m_work_time
       use m_physical_property
@@ -157,6 +164,8 @@
       use cal_nonlinear
 !
       integer(kind = kint), intent(in) :: i_step
+      type(MHD_file_IO_params), intent(in) :: MHD_files
+!
       integer(kind = kint), intent(inout) :: iflag_finish
       type(MHD_step_param), intent(inout) :: MHD_step
 !
@@ -208,7 +217,8 @@
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0) write(*,*) 'output_sph_restart_control'
         call output_sph_restart_control                                 &
-     &   (MHD_step%time_d, rj_fld1, MHD_step%rst_step)
+     &     (MHD_files%fst_file_IO, MHD_step%time_d,                     &
+     &      rj_fld1, MHD_step%rst_step)
       end if
 !
       total_time = MPI_WTIME() - total_start
@@ -217,7 +227,8 @@
         MHD_step%rst_step%istep_file = MHD_step%finish_d%i_end_step
         iflag_finish = 1
         call output_sph_restart_control                                 &
-     &     (MHD_step%time_d, rj_fld1, MHD_step%rst_step)
+     &     (MHD_files%fst_file_IO, MHD_step%time_d,                     &
+     &      rj_fld1, MHD_step%rst_step)
       end if
       call end_eleps_time(10)
 !

@@ -15,11 +15,9 @@
       module   m_control_parameter
 !
       use m_precision
-      use m_constants
       use t_FEM_control_parameter
 !
       implicit  none
-!
 !
 !
 !  Parameters for FEM dynamo

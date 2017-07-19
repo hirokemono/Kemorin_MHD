@@ -10,13 +10,13 @@
 !!      subroutine set_control_SGS_SPH_MHD(plt, org_plt,                &
 !!     &         model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,  &
 !!     &         sph_gen, rj_fld, mesh_file, sph_file_param,            &
-!!     &         MHD_org_files, sph_fst_IO, bc_IO, pwr, SGS_par,        &
+!!     &         MHD_org_files, MHD_files, bc_IO, pwr, SGS_par,         &
 !!     &         sph_filters, MHD_step, MHD_prop, MHD_BC,               &
 !!     &         WK_sph, gen_sph)
 !!      subroutine set_control_4_SPH_MHD(plt, org_plt,                  &
 !!     &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl, &
 !!     &          sph_gen, rj_fld, mesh_file, sph_file_param,           &
-!!     &          MHD_org_files, sph_fst_IO, bc_IO, pwr, SGS_par,       &
+!!     &          MHD_org_files, fst_file_IO, bc_IO, pwr, SGS_par,      &
 !!     &          MHD_step, MHD_prop, MHD_BC, WK_sph, gen_sph)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
@@ -29,8 +29,9 @@
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(field_IO_params), intent(inout) :: mesh_file
 !!        type(field_IO_params), intent(inout) :: sph_file_param
+!!        type(field_IO_params), intent(inout) :: fst_file_IO
+!!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(file_params_4_sph_mhd), intent(inout) :: MHD_org_files
-!!        type(field_IO), intent(inout) :: sph_fst_IO
 !!        type(sph_mean_squares), intent(inout) :: pwr
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
 !!        type(sph_filters_type), intent(inout) :: sph_filters(1)
@@ -50,7 +51,7 @@
 !
       use t_control_parameter
       use t_MHD_step_parameter
-      use t_file_IO_parameter
+      use t_MHD_file_parameter
       use t_field_data_IO
       use t_SPH_MHD_file_parameters
       use t_ctl_data_4_platforms
@@ -75,7 +76,7 @@
       subroutine set_control_SGS_SPH_MHD(plt, org_plt,                  &
      &         model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,    &
      &         sph_gen, rj_fld, mesh_file, sph_file_param,              &
-     &         MHD_org_files, sph_fst_IO, bc_IO, pwr, SGS_par,          &
+     &         MHD_org_files, MHD_files, bc_IO, pwr, SGS_par,           &
      &         sph_filters, MHD_step, MHD_prop, MHD_BC,                 &
      &         WK_sph, gen_sph)
 !
@@ -91,10 +92,10 @@
       use t_sph_boundary_input_data
 !
       use set_control_4_SGS
-      use sgs_ini_model_coefs_IO
 !
       type(platform_data_control), intent(in) :: plt
       type(platform_data_control), intent(in) :: org_plt
+!
       type(mhd_model_control), intent(inout) :: model_ctl
       type(mhd_control_control), intent(inout) :: ctl_ctl
       type(sph_monitor_control), intent(inout) :: smonitor_ctl
@@ -104,8 +105,8 @@
       type(phys_data), intent(inout) :: rj_fld
       type(field_IO_params), intent(inout) :: mesh_file
       type(field_IO_params), intent(inout) :: sph_file_param
+      type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(file_params_4_sph_mhd), intent(inout) :: MHD_org_files
-      type(field_IO), intent(inout) :: sph_fst_IO
       type(boundary_spectra), intent(inout) :: bc_IO
       type(sph_mean_squares), intent(inout) :: pwr
       type(SGS_paremeters), intent(inout) :: SGS_par
@@ -122,7 +123,8 @@
       if (iflag_debug.gt.0) write(*,*) 'set_control_SGS_model'
       call set_control_SGS_model(model_ctl%sgs_ctl,                     &
      &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
-     &    Csim1_IO, Cdiff1_IO, SGS_par%i_step_sgs_coefs)
+     &    MHD_files%Csim_file_IO, MHD_files%Cdiff_file_IO,              &
+     &    SGS_par%i_step_sgs_coefs)
 !
       if(SGS_par%model_p%iflag_SGS .ne. id_SGS_none) then
         call set_control_SPH_SGS                                        &
@@ -137,8 +139,8 @@
       call set_control_4_SPH_MHD(plt, org_plt,                          &
      &    model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,         &
      &    sph_gen, rj_fld, mesh_file, sph_file_param, MHD_org_files,    &
-     &    sph_fst_IO, bc_IO, pwr, SGS_par, MHD_step, MHD_prop, MHD_BC,  &
-     &    WK_sph, gen_sph)
+     &    MHD_files%fst_file_IO, bc_IO, pwr, SGS_par, MHD_step,         &
+     &    MHD_prop, MHD_BC, WK_sph, gen_sph)
 !
       end subroutine set_control_SGS_SPH_MHD
 !
@@ -147,7 +149,7 @@
       subroutine set_control_4_SPH_MHD(plt, org_plt,                    &
      &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,   &
      &          sph_gen, rj_fld, mesh_file, sph_file_param,             &
-     &          MHD_org_files, sph_fst_IO, bc_IO, pwr, SGS_par,         &
+     &          MHD_org_files, fst_file_IO, bc_IO, pwr, SGS_par,        &
      &          MHD_step, MHD_prop, MHD_BC, WK_sph, gen_sph)
 !
       use m_ucd_data
@@ -186,8 +188,8 @@
       type(phys_data), intent(inout) :: rj_fld
       type(field_IO_params), intent(inout) :: mesh_file
       type(field_IO_params), intent(inout) :: sph_file_param
+      type(field_IO_params), intent(inout) :: fst_file_IO
       type(file_params_4_sph_mhd), intent(inout) :: MHD_org_files
-      type(field_IO), intent(inout) :: sph_fst_IO
       type(boundary_spectra), intent(inout) :: bc_IO
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(MHD_step_param), intent(inout) :: MHD_step
@@ -208,7 +210,7 @@
       call set_control_mesh_def(plt, mesh_file)
       call set_FEM_mesh_switch_4_SPH(plt, iflag_output_mesh)
       call set_control_sph_mesh(plt, mesh_file, sph_file_param)
-      call set_control_restart_file_def(plt, sph_fst_IO)
+      call set_control_restart_file_def(plt, fst_file_IO)
       call set_control_MHD_field_file(plt)
       call set_control_org_sph_files(org_plt, MHD_org_files)
 !
@@ -239,7 +241,7 @@
      &   (SGS_par%model_p, MHD_prop, plt,                               &
      &    model_ctl%fld_ctl%field_ctl, ctl_ctl%mevo_ctl,                &
      &    MHD_org_files%rj_file_param, MHD_org_files%rst_file_param,    &
-     &    rj_fld, bc_IO, WK_sph)
+     &    fst_file_IO, rj_fld, bc_IO, WK_sph)
 !
 !   set control parameters
 !

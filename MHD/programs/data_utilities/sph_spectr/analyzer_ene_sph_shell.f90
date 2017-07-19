@@ -58,11 +58,9 @@
 !  ------  initialize spectr data
 !
       if (iflag_debug.gt.0) write(*,*) 'sel_read_alloc_step_SPH_file'
-      call set_field_file_fmt_prefix                                    &
-     &  (sph_file_spec_p%iflag_format, sph_file_spec_p%file_prefix,     &
-     &   sph_spec_IO)
-      call sel_read_alloc_step_SPH_file(nprocs, my_rank,                &
-     &    t_SHR%init_d%i_time_step, spec_time_IO, sph_spec_IO)
+      call sel_read_alloc_step_SPH_file                                 &
+     &   (nprocs, my_rank, t_SHR%init_d%i_time_step, sph_file_spec_p,   &
+     &    spec_time_IO, sph_spec_IO)
 !
 !  -------------------------------
 !
@@ -95,18 +93,15 @@
       integer(kind = kint) :: i_step
 !
 !
-      call set_field_file_fmt_prefix                                    &
-     &  (sph_file_spec_p%iflag_format, sph_file_spec_p%file_prefix,     &
-     &   sph_spec_IO)
-!
       do i_step = t_SHR%init_d%i_time_step, t_SHR%finish_d%i_end_step,  &
      &           t_SHR%ucd_step%increment
         t_SHR%time_d%i_time_step = i_step
 !
 !   Input spectr data
 !
-      call sel_read_step_SPH_field_file (nprocs, my_rank,               &
-     &    t_SHR%time_d%i_time_step, spec_time_IO, sph_spec_IO)
+        call sel_read_step_SPH_field_file                               &
+     &     (nprocs, my_rank, t_SHR%time_d%i_time_step,                  &
+     &      spec_fst_param, spec_time_IO, sph_spec_IO)
 !
         call set_rj_phys_data_from_IO(sph_spec_IO, rj_fld_spec)
         call copy_time_step_data(spec_time_IO, t_SHR%time_d)

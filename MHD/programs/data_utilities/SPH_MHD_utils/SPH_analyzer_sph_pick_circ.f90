@@ -16,7 +16,8 @@
 !!@verbatim
 !!      subroutine SPH_init_sph_pick_circle(iphys)
 !!        type(phys_address), intent(in) :: iphys
-!!      subroutine SPH_analyze_pick_circle(i_step)
+!!      subroutine SPH_analyze_pick_circle(i_step, fst_file_IO)
+!!        type(field_IO_params), intent(in) :: fst_file_IO
 !!      subroutine SPH_finalize_pick_circle
 !!@endverbatim
 !
@@ -29,6 +30,7 @@
       use m_boundary_data_sph_MHD
       use m_radial_matrices_sph
       use t_phys_address
+      use t_file_IO_parameter
 !
       implicit none
 !
@@ -138,7 +140,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_pick_circle(i_step)
+      subroutine SPH_analyze_pick_circle(i_step, fst_file_IO)
 !
       use m_work_time
       use m_spheric_parameter
@@ -158,11 +160,12 @@
       use output_viz_file_control
 !
       integer(kind = kint), intent(in) :: i_step
+      type(field_IO_params), intent(in) :: fst_file_IO
       integer(kind = kint) :: iflag
 !
 !
-      call read_alloc_sph_rst_4_snap                                    &
-     &   (i_step, MHD1_org_files%rj_file_param, sph1%sph_rj,            &
+      call read_alloc_sph_rst_4_snap(i_step,                            &
+     &    MHD1_org_files%rj_file_param, fst_file_IO, sph1%sph_rj,       &
      &    ipol, rj_fld1, MHD_step1%rst_step, MHD_step1%init_d)
       call copy_time_data(MHD_step1%init_d, MHD_step1%time_d)
 !

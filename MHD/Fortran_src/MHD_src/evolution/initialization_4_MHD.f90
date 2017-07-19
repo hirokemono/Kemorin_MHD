@@ -3,9 +3,10 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine init_analyzer_fl(IO_bc, FEM_prm, SGS_par, MHD_step,  &
-!!     &          mesh, group, ele_mesh, MHD_mesh, layer_tbl,           &
-!!     &          iphys, nod_fld, label_sim)
+!!      subroutine init_analyzer_fl(MHD_files, IO_bc,                   &
+!!     &          FEM_prm, SGS_par, MHD_step, mesh, group, ele_mesh,    &
+!!     &          MHD_mesh, layer_tbl, iphys, nod_fld, label_sim)
+!!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
@@ -32,6 +33,7 @@
       use t_geometry_data_MHD
       use t_layering_ele_list
       use t_work_layer_correlate
+      use t_MHD_file_parameter
       use t_boundary_field_IO
 !
       implicit none
@@ -42,9 +44,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer_fl(IO_bc, FEM_prm, SGS_par, MHD_step,    &
-     &          time_d, mesh, group, ele_mesh, MHD_mesh, layer_tbl,     &
-     &          iphys, nod_fld, label_sim)
+      subroutine init_analyzer_fl(MHD_files, IO_bc,                     &
+     &          FEM_prm, SGS_par, MHD_step, mesh, group, ele_mesh,      &
+     &          MHD_mesh, layer_tbl, iphys, nod_fld, label_sim)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -103,12 +105,12 @@
       use nod_phys_send_recv
       use solver_MGCG_MHD
 !
+      type(MHD_file_IO_params), intent(in) :: MHD_files
       type(IO_boundary), intent(in) :: IO_bc
 !
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(MHD_step_param), intent(inout) :: MHD_step
-      type(time_data), intent(inout) :: time_d
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
@@ -256,11 +258,11 @@
 !
       if (iflag_debug.eq.1) write(*,*)' initial_data_control'
       call initial_data_control                                         &
-     &   (MHD_step%rst_step, MHD_prop1%ref_param_T,                     &
+     &   (MHD_files, MHD_step%rst_step, MHD_prop1%ref_param_T,          &
      &    mesh%node, mesh%ele, MHD_mesh%fluid, MHD_prop1%cd_prop,       &
      &    iphys, layer_tbl, SGS_par, wk_sgs1, wk_diff1,                 &
      &    sgs_coefs, diff_coefs, nod_fld, flex_p1,                      &
-     &    MHD_step%init_d, time_d)
+     &    MHD_step%init_d, MHD_step%time_d)
       MHD_step%iflag_initial_step = 0
 !
 !  -------------------------------
@@ -312,7 +314,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_data'
       call set_boundary_data                                            &
-     &   (time_d, IO_bc, mesh, ele_mesh, MHD_mesh, group,               &
+     &   (MHD_step%time_d, IO_bc, mesh, ele_mesh, MHD_mesh, group,      &
      &    MHD_prop1, MHD_BC1, iphys, nod_fld)
 !
 !     ---------------------
@@ -325,11 +327,11 @@
 !
       if (iflag_debug.eq.1 ) write(*,*) 'allocate_aiccg_matrices'
       call allocate_aiccg_matrices                                      &
-     &   (time_d%dt, mesh%node, MHD_prop1, FEM_prm)
+     &   (MHD_step%time_d%dt, mesh%node, MHD_prop1, FEM_prm)
 !      call reset_aiccg_matrices(mesh%node, mesh%ele, MHD_mesh%fluid)
 !
       if(solver_iflag(FEM_PRM%CG11_param%METHOD) .eq. iflag_mgcg) then
-        call s_initialize_4_MHD_AMG(time_d%dt, FEM_prm,                 &
+        call s_initialize_4_MHD_AMG(MHD_step%time_d%dt, FEM_prm,        &
      &      mesh%node, mesh%ele, ifld_diff, diff_coefs, MHD_prop1,      &
      &      MHD_BC1, FEM_prm%DJDS_param, MGCG_WK1,                      &
      &      MGCG_FEM1, MGCG_MHD_FEM1, MHD1_matrices)
@@ -338,7 +340,8 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_stability_4_diffuse'
-      call cal_stability_4_diffuse(time_d%dt, mesh%ele, MHD_prop1)
+      call cal_stability_4_diffuse                                      &
+     &   (MHD_step%time_d%dt, mesh%ele, MHD_prop1)
       call deallocate_surf_bc_lists(MHD_prop1, MHD_BC1)
 !
       end subroutine init_analyzer_fl

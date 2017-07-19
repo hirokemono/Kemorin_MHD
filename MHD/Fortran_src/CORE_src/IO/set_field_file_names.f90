@@ -8,9 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine delete_FEM_fld_file                                  &
-!!     &         (itype_file, nprocs, istep_fld, file_prefix)
+!!     &         (file_param, nprocs, istep_fld)
+!!        type(field_IO_params), intent(in) :: file_param
 !!      subroutine delete_SPH_fld_file                                  &
-!!     &         (itype_file, nprocs, istep_fld, file_prefix)
+!!     &         (file_param, nprocs, istep_fld)
+!!        type(field_IO_params), intent(in) :: file_param
 !!      subroutine delete_SPH_fld_file(itype_file, nprocs, istep_fld)
 !!
 !!      subroutine set_fld_file_name(file_header, itype_file,           &
@@ -35,12 +37,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine delete_FEM_fld_file                                    &
-     &         (itype_file, nprocs, istep_fld, file_prefix)
+     &         (file_param, nprocs, istep_fld)
 !
+      use t_file_IO_parameter
       use delete_data_files
 !
-      integer(kind=kint), intent(in) :: itype_file, nprocs, istep_fld
-      character(len=kchara), intent(in) :: file_prefix
+      type(field_IO_params), intent(in) :: file_param
+      integer(kind=kint), intent(in) :: nprocs, istep_fld
 !
       integer(kind=kint) :: my_rank, ip
       character(len=kchara) :: file_name
@@ -49,7 +52,8 @@
       do ip =1, nprocs
         my_rank = ip - 1
 !
-        call set_FEM_fld_file_name(file_prefix, itype_file,             &
+        call set_FEM_fld_file_name                                      &
+     &     (file_param%file_prefix, file_param%iflag_format,            &
      &      my_rank, istep_fld, file_name)
 !
         call delete_file_by_f(file_name)
@@ -60,12 +64,13 @@
 !------------------------------------------------------------------
 !
       subroutine delete_SPH_fld_file                                    &
-     &         (itype_file, nprocs, istep_fld, file_prefix)
+     &         (file_param, nprocs, istep_fld)
 !
+      use t_file_IO_parameter
       use delete_data_files
 !
-      integer(kind=kint), intent(in) :: itype_file, nprocs, istep_fld
-      character(len=kchara), intent(in) :: file_prefix
+      type(field_IO_params), intent(in) :: file_param
+      integer(kind=kint), intent(in) :: nprocs, istep_fld
 !
       integer(kind=kint) :: my_rank, ip
       character(len=kchara) :: file_name
@@ -74,7 +79,8 @@
       do ip =1, nprocs
         my_rank = ip - 1
 !
-        call set_SPH_fld_file_name(file_prefix, itype_file,             &
+        call set_SPH_fld_file_name                                      &
+     &     (file_param%file_prefix, file_param%iflag_format,            &
      &      my_rank, istep_fld, file_name)
 !
         call delete_file_by_f(file_name)

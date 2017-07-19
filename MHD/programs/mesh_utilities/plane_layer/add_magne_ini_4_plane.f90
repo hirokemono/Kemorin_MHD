@@ -58,7 +58,8 @@
       type(time_data), save :: plane_t_IO
       type(field_IO) :: plane_fst_IO
       type(mesh_geometry) :: mesh_IO_p
-      type(field_IO_params) ::  cube_mesh_file
+      type(field_IO_params), save :: cube_mesh_file
+      type(field_IO_params), save :: plane_fld_file
 !
 !
       pi = four*atan(one)
@@ -81,10 +82,10 @@
       ip = 1
       id_rank = 0
 !
-      call set_field_file_fmt_prefix                                    &
-     &   (izero, org_rst_f_header, plane_fst_IO)
-      call sel_read_alloc_FEM_fld_head                                  &
-     &   (num_pe, izero, istep, plane_t_IO, plane_fst_IO)
+      call set_file_fmt_prefix                                          &
+     &   (izero, org_rst_f_header, plane_fld_file)
+      call sel_read_alloc_FEM_fld_head(num_pe, izero, istep,            &
+     &    plane_fld_file, plane_t_IO, plane_fst_IO)
 !
       num_rst_org = plane_fst_IO%num_field_IO
 !
@@ -144,10 +145,10 @@
         plane_fst_IO%num_field_IO =  num_rst_org
         plane_fst_IO%ntot_comp_IO = ntot_rst_org
 !
-        call set_field_file_fmt_prefix                                  &
-     &     (izero, org_rst_f_header, plane_fst_IO)
-        call sel_read_step_FEM_field_file                               &
-     &     (num_pe, id_rank, istep, plane_t_IO, plane_fst_IO)
+        call set_file_fmt_prefix                                        &
+     &     (izero, org_rst_f_header, plane_fld_file)
+        call sel_read_step_FEM_field_file(num_pe, id_rank, istep,       &
+     &      plane_fld_file, plane_t_IO, plane_fst_IO)
 !
         do np = 1, ntot_rst_org
           merged_fld%d_fld(1:merged%node%numnod,np)                     &
@@ -186,9 +187,9 @@
         call simple_copy_fld_data_to_rst                                &
      &     (merged%node, merged_fld, plane_fst_IO)
 !
-        plane_fst_IO%file_prefix = new_rst_file_header
-        call sel_write_step_FEM_field_file                              &
-     &     (num_pe, id_rank, izero, plane_t_IO, plane_fst_IO)
+        plane_fld_file%file_prefix = new_rst_file_header
+        call sel_write_step_FEM_field_file(num_pe, id_rank, izero,      &
+     &      plane_fld_file, plane_t_IO, plane_fst_IO)
 !
         call dealloc_phys_name_IO(plane_fst_IO)
         call dealloc_phys_data_IO(plane_fst_IO)

@@ -3,8 +3,12 @@
 !
 !      modified by H. Matsui on June, 2005 
 !
-!!      subroutine FEM_initialize_snapshot(MHD_step)
-!!      subroutine FEM_analyze_snapshot(i_step, MHD_step, visval)
+!!      subroutine FEM_initialize_snapshot(fst_file_IO, MHD_step)
+!!        type(field_IO_params), intent(inout) :: fst_file_IO
+!!        type(MHD_step_param), intent(inout) :: MHD_step
+!!      subroutine FEM_analyze_snapshot                                 &
+!!     &         (i_step, fst_file_IO, MHD_step, visval)
+!!        type(field_IO_params), intent(in) :: fst_file_IO
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!      subroutine FEM_finalize_snapshot(MHD_step)
 !
@@ -20,6 +24,7 @@
       use t_time_data
       use t_IO_step_parameter
       use t_MHD_step_parameter
+      use t_file_IO_parameter
 !
       use calypso_mpi
 !
@@ -33,7 +38,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_snapshot(MHD_step)
+      subroutine FEM_initialize_snapshot(fst_file_IO, MHD_step)
 !
       use m_cal_max_indices
       use m_node_phys_data
@@ -43,13 +48,14 @@
 !
       use initialize_4_snapshot
 !
+      type(field_IO_params), intent(inout) :: fst_file_IO
       type(MHD_step_param), intent(inout) :: MHD_step
 !
 !   matrix assembling
 !
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
       call init_analyzer_snap                                           &
-     &   (FEM_prm1, SGS_par1, IO_bc1, MHD_step, MHD_step%time_d,        &
+     &   (fst_file_IO, FEM_prm1, SGS_par1, IO_bc1, MHD_step,            &
      &    mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,              &
      &    iphys, nod_fld1, SNAP_time_IO, MHD_step%rst_step, label_sim)
 !
@@ -62,7 +68,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_snapshot(i_step, MHD_step, visval)
+      subroutine FEM_analyze_snapshot                                   &
+     &         (i_step, fst_file_IO, MHD_step, visval)
 !
       use m_physical_property
       use m_geometry_data_MHD
@@ -96,6 +103,8 @@
       use output_viz_file_control
 !
       integer(kind=kint ), intent(in) :: i_step
+      type(field_IO_params), intent(in) :: fst_file_IO
+!
       integer(kind=kint ), intent(inout) :: visval
       type(MHD_step_param), intent(inout) :: MHD_step
 !
@@ -109,7 +118,8 @@
 !
       if (MHD_step%rst_step%increment .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'input_restart_4_snapshot'
-        call input_restart_4_snapshot(flex_p1%istep_max_dt,             &
+        call input_restart_4_snapshot                                   &
+     &     (flex_p1%istep_max_dt, fst_file_IO,                          &
      &      mesh1%node, nod_fld1, SNAP_time_IO, MHD_step%rst_step)
 !
       else if (MHD_step%ucd_step%increment .gt. 0) then

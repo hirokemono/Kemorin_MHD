@@ -12,10 +12,14 @@
 !
       use m_precision
       use t_MHD_step_parameter
+      use t_MHD_file_parameter
 !
       implicit  none
 !
 !
       type(MHD_step_param), save :: MHD_step1
+!
+!>      Structure of file name and format for MHD
+      type(MHD_file_IO_params), save :: MHD_files1
 !
       end module m_MHD_step_parameter

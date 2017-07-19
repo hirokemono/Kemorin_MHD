@@ -3,7 +3,8 @@
 !
 !      modified by H. Matsui on June, 2005 
 !
-!      subroutine FEM_check_MHD_mat
+!!      subroutine FEM_check_MHD_mat(MHD_files)
+!!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !
       module FEM_check_MHD_matrices
 !
@@ -12,6 +13,7 @@
       use m_work_time
 !
       use calypso_mpi
+      use t_MHD_file_parameter
 !
       implicit none
 !
@@ -21,7 +23,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_check_MHD_mat
+      subroutine FEM_check_MHD_mat(MHD_files)
 !
       use m_MHD_step_parameter
       use m_SGS_control_parameter
@@ -46,13 +48,16 @@
       use construct_matrices
       use write_djds_mat_MHD
 !
+      type(MHD_file_IO_params), intent(in) :: MHD_files
+!
 !
 !   matrix assembling
 !
       if (iflag_debug.eq.1) write(*,*) 'init_analyzer_fl'
-      call init_analyzer_fl(IO_bc1, FEM_prm1, SGS_par1, MHD_step1,      &
-     &    MHD_step1%time_d, mesh1, group1, ele_mesh1, MHD_mesh1,        &
-     &    layer_tbl1, iphys, nod_fld1, label_sim)
+      call init_analyzer_fl                                             &
+     &   (MHD_files, IO_bc1, FEM_prm1, SGS_par1, MHD_step1,             &
+     &    mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,              &
+     &    iphys, nod_fld1, label_sim)
 !
 !   construct matrix for Poisson and diffusion terms
 !

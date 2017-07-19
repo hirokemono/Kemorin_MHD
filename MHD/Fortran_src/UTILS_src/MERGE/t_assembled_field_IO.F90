@@ -7,8 +7,11 @@
 !> @brief gzipped data IO for 
 !!
 !!@verbatim
-!!      subroutine sel_write_SPH_assemble_field                         &
-!!     &         (nprocs_in, istep_fld, nloop, t_IO, fld_IO)
+!!      subroutine sel_write_SPH_assemble_field(nprocs_in, istep_fld,   &
+!!     &          nloop, fst_IO_param, t_IO, fld_IO)
+!!        type(field_IO_params), intent(in) :: fst_IO_param
+!!        type(time_data), intent(inout) :: t_IO
+!!        type(field_IO), intent(inout) :: fld_IO(nloop)
 !!
 !!   Data format for the merged ascii field data
 !!     1.   Number of process
@@ -40,6 +43,7 @@
       use m_constants
       use calypso_mpi
 !
+      use t_file_IO_parameter
       use t_time_data
       use t_field_data_IO
       use m_calypso_mpi_IO
@@ -52,8 +56,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sel_write_SPH_assemble_field                           &
-     &         (nprocs_in, istep_fld, nloop, t_IO, fld_IO)
+      subroutine sel_write_SPH_assemble_field(nprocs_in, istep_fld,     &
+     &          nloop, fst_IO_param, t_IO, fld_IO)
 !
       use field_IO_select
       use set_field_file_names
@@ -63,6 +67,7 @@
 !
       integer(kind = kint), intent(in) :: istep_fld
       integer(kind = kint), intent(in) :: nloop, nprocs_in
+      type(field_IO_params), intent(in) :: fst_IO_param
 !
       type(time_data), intent(inout) :: t_IO
       type(field_IO), intent(inout) :: fld_IO(nloop)
@@ -76,17 +81,17 @@
         do iloop = 1, nloop
           id_rank = my_rank + (iloop-1) * nprocs
 !
-          call set_SPH_fld_file_name(fld_IO(iloop)%file_prefix,         &
-     &       fld_IO(iloop)%iflag_file_fmt, id_rank, istep_fld,          &
-     &       file_name)
+          call set_SPH_fld_file_name                                    &
+     &       (fst_IO_param%file_prefix, fst_IO_param%iflag_format,      &
+     &        id_rank, istep_fld, file_name)
         end do 
 !
-        if(fld_IO(1)%iflag_file_fmt                                     &
+        if(fst_IO_param%iflag_format                                    &
      &       .eq. iflag_single+id_gzip_bin_file_fmt) then
           call gz_write_step_asbl_fld_mpi_b                             &
      &         (file_name, nprocs_in, id_rank, nloop, fld_IO, t_IO)
           return
-        else if(fld_IO(1)%iflag_file_fmt                                &
+        else if(fst_IO_param%iflag_format                               &
      &       .eq. iflag_single+id_gzip_txt_file_fmt) then
           call gz_write_step_asbl_fld_mpi                               &
      &         (file_name, nprocs_in, nloop, fld_IO, t_IO)
@@ -98,8 +103,8 @@
       do iloop = 1, nloop
         id_rank = my_rank + (iloop-1) * nprocs
 !
-        call sel_write_step_SPH_field_file                              &
-     &     (nprocs_in, id_rank, istep_fld, t_IO, fld_IO(iloop))
+        call sel_write_step_SPH_field_file(nprocs_in, id_rank,          &
+     &      istep_fld, fst_IO_param, t_IO, fld_IO(iloop))
       end do
 !
       end subroutine sel_write_SPH_assemble_field

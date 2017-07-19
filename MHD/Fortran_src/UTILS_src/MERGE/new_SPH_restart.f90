@@ -20,11 +20,10 @@
 !!     &          nlayer_ICB, nlayer_CMB)
 !!        type(sph_group_data), intent(in) ::  sph_grps
 !!        integer(kind = kint), intent(inout) :: nlayer_ICB, nlayer_CMB
-!!      subroutine load_field_name_assemble_sph                         &
-!!     &         (org_sph_fst_head, ifmt_org_sph_fst, istep_start,      &
-!!     &          np_sph_org, org_phys, new_phys, t_IO)
-!!      subroutine load_org_sph_data                                    &
-!!     &         (org_sph_fst_head, ifmt_org_sph_fst, ip, istep,        &
+!!      subroutine load_field_name_assemble_sph(istep_start, np_sph_org,&
+!!     &          org_fst_param, org_phys, new_phys, t_IO)
+!!      subroutine load_org_sph_data(irank, istep, np_sph_org,          &
+!!     &          org_fst_param, org_sph, init_d, org_phys)
 !!     &          np_sph_org, org_sph, init_d, org_phys)
 !!        type(sph_grids), intent(in) :: org_sph
 !!        type(time_data), intent(inout) :: time_d
@@ -48,6 +47,7 @@
       use t_time_data
       use t_spheric_mesh
       use t_sph_spectr_data
+      use t_file_IO_parameter
       use t_time_data
       use t_field_data_IO
       use t_spheric_parameter
@@ -121,20 +121,16 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine load_field_name_assemble_sph                           &
-     &         (org_sph_fst_head, ifmt_org_sph_fst, istep_start,        &
-     &          np_sph_org, org_phys, new_phys, t_IO)
+      subroutine load_field_name_assemble_sph(istep_start, np_sph_org,  &
+     &          org_fst_param, org_phys, new_phys, t_IO)
 !
       use calypso_mpi
       use t_spheric_parameter
       use copy_rj_phys_data_4_IO
       use field_IO_select
 !
-!
-      character(len=kchara), intent(in) :: org_sph_fst_head
-      integer(kind=kint ), intent(in) :: ifmt_org_sph_fst
-!
       integer(kind = kint),  intent(in) :: istep_start, np_sph_org
+      type(field_IO_params), intent(in) :: org_fst_param
 !
       type(phys_data), intent(inout) :: org_phys(np_sph_org)
       type(phys_data), intent(inout) :: new_phys
@@ -145,10 +141,8 @@
       integer(kind = kint) :: ip
 !
 !
-      call set_field_file_fmt_prefix                                    &
-     &   (ifmt_org_sph_fst, org_sph_fst_head, org_fst_IO)
-      call sel_read_alloc_step_SPH_file                                 &
-     &   (np_sph_org, izero, istep_start, t_IO, org_fst_IO)
+      call sel_read_alloc_step_SPH_file(np_sph_org, izero, istep_start, &
+     &    org_fst_param, t_IO, org_fst_IO)
 !
       if(my_rank .eq. 0) then
         call copy_rj_phys_name_from_IO(org_fst_IO, new_phys)
@@ -174,19 +168,17 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine load_org_sph_data                                      &
-     &         (org_sph_fst_head, ifmt_org_sph_fst, ip, istep,          &
-     &          np_sph_org, org_sph, init_d, org_phys)
+      subroutine load_org_sph_data(irank, istep, np_sph_org,            &
+     &          org_fst_param, org_sph, init_d, org_phys)
 !
       use field_IO_select
       use copy_rj_phys_data_4_IO
 !
-      character(len=kchara), intent(in) :: org_sph_fst_head
       integer(kind=kint ), intent(in) :: np_sph_org
-      integer(kind=kint ), intent(in) :: ifmt_org_sph_fst
 !
-      integer(kind = kint), intent(in) :: ip, istep
+      integer(kind = kint), intent(in) :: irank, istep
       type(sph_grids), intent(in) :: org_sph
+      type(field_IO_params), intent(in) :: org_fst_param
 !
       type(time_data), intent(inout) :: init_d
       type(phys_data), intent(inout) :: org_phys
@@ -194,15 +186,12 @@
 !>      Field data IO structure for original data
       type(time_data) :: org_time_IO
       type(field_IO) :: org_fst_IO
-      integer(kind = kint) :: irank_org
 !
-      irank_org = ip - 1
-      call set_field_file_fmt_prefix                                    &
-     &   (ifmt_org_sph_fst, org_sph_fst_head, org_fst_IO)
-      call sel_read_alloc_step_SPH_file                                 &
-     &   (np_sph_org, irank_org, istep, org_time_IO, org_fst_IO)
 !
-      if(irank_org .lt. np_sph_org) then
+      call sel_read_alloc_step_SPH_file(np_sph_org, irank, istep,       &
+     &    org_fst_param, org_time_IO, org_fst_IO)
+!
+      if(irank .lt. np_sph_org) then
         call copy_time_steps_from_restart(org_time_IO, init_d)
 !
         call alloc_phys_data_type(org_sph%sph_rj%nnod_rj, org_phys)

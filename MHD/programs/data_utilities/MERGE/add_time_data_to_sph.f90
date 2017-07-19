@@ -17,6 +17,7 @@
       use m_constants
       use calypso_mpi
 !
+      use t_file_IO_parameter
       use t_time_data
       use t_field_data_IO
 !
@@ -119,8 +120,8 @@
 !      Construct field list from spectr file
 !
       call load_field_name_assemble_sph                                 &
-     &   (org_sph_fst_head, ifmt_org_sph_fst, istep_start,              &
-     &    np_sph_org, org_sph_phys(1), new_sph_phys(1), fst_time_IO)
+     &   (istep_start, np_sph_org, org_sph_fst_param,                   &
+     &    org_sph_phys(1), new_sph_phys(1), fst_time_IO)
 !
       do jp = 2, np_sph_new
         new_sph_phys(jp)%num_phys =  new_sph_phys(1)%num_phys
@@ -152,8 +153,8 @@
 !
 !     Load original spectr data
         do ip = 1, np_sph_org
-          call load_org_fld_data(org_sph_fst_head, ifmt_org_sph_fst,    &
-     &        ip, istep, org_sph_mesh(ip)%sph, org_sph_phys(ip))
+          call load_org_fld_data(org_sph_fst_param, ip, istep,          &
+     &        org_sph_mesh(ip)%sph, org_sph_phys(ip))
         end do
         call reset_time_data(time_zero)
 !
@@ -183,8 +184,6 @@
           call dealloc_phys_data_type(org_sph_phys(ip))
         end do
 !
-        call set_field_file_fmt_prefix                                  &
-     &     (ifmt_new_sph_fst, new_sph_fst_head, new_fst_IO)
         do jp = 1, np_sph_new
           irank_new = jp - 1
           call const_assembled_sph_data                                 &
@@ -192,7 +191,8 @@
      &        r_itp, new_sph_phys(jp), new_fst_IO, fst_time_IO)
 !
           call sel_write_step_SPH_field_file                            &
-     &       (np_sph_new, irank_new, istep, fst_time_IO, new_fst_IO)
+     &       (np_sph_new, irank_new, istep,                             &
+     &        new_sph_fst_param, fst_time_IO, new_fst_IO)
 !
           call dealloc_phys_data_IO(new_fst_IO)
           call dealloc_phys_name_IO(new_fst_IO)
@@ -219,14 +219,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine load_org_fld_data(org_sph_fst_head, ifmt_org_sph_fst,  &
-     &          ip, istep, org_sph, org_phys)
+      subroutine load_org_fld_data                                      &
+     &         (org_fst_param, ip, istep, org_sph, org_phys)
 !
       use input_old_file_sel_4_zlib
       use copy_rj_phys_data_4_IO
 !
-      character(len=kchara), intent(in) :: org_sph_fst_head
-      integer(kind=kint ), intent(in) :: ifmt_org_sph_fst
+      type(field_IO_params), intent(in) :: org_fst_param
 !
       integer(kind = kint), intent(in) :: ip, istep
       type(sph_grids), intent(in) :: org_sph
@@ -237,9 +236,8 @@
       integer(kind = kint) :: irank_org
 !
       irank_org = ip - 1
-      call set_field_file_fmt_prefix                                    &
-     &   (ifmt_org_sph_fst, org_sph_fst_head, org_fst_IO)
-      call sel_read_alloc_field_file(irank_org, istep, org_fst_IO)
+      call sel_read_alloc_field_file                                    &
+     &   (irank_org, istep, org_fst_param, org_fst_IO)
 !
       call alloc_phys_data_type(org_sph%sph_rj%nnod_rj, org_phys)
       call copy_rj_phys_data_from_IO(org_fst_IO, org_phys)

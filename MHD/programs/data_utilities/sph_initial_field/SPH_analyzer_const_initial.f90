@@ -9,6 +9,7 @@
 !!
 !!@verbatim
 !!      subroutine initialize_const_sph_initial
+!!      subroutine SPH_const_initial_field
 !!@endverbatim
 !
 !
@@ -23,6 +24,7 @@
       use m_SGS_control_parameter
       use m_MHD_step_parameter
       use m_physical_property
+      use t_MHD_file_parameter
 !
       implicit none
 !
@@ -61,7 +63,8 @@
       call read_control_4_sph_MHD_noviz(MHD_ctl_name, MHD_ctl1)
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_4_SPH_make_init'
-      call input_control_4_SPH_make_init(MHD_ctl1, sph1, comms_sph1,    &
+      call input_control_4_SPH_make_init                                &
+     &   (MHD_files1, MHD_ctl1, sph1, comms_sph1,                       &
      &    sph_grps1, rj_fld1, pwr1, SGS_par1, MHD_step1,                &
      &    mesh1, group1, ele_mesh1, MHD_prop1, MHD_BC1, trns_WK1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
@@ -120,8 +123,8 @@
 ! ---------------------------------
 !
       if(iflag_debug.gt.0) write(*,*)' sph_initial_spectrum'
-      call sph_initial_spectrum                                         &
-     &   (sph_MHD_bc1, ipol, itor, rj_fld1, MHD_step1%rst_step)
+      call sph_initial_spectrum(MHD_files1%fst_file_IO, sph_MHD_bc1,    &
+     &    ipol, itor, rj_fld1, MHD_step1%rst_step)
 !
       end subroutine SPH_const_initial_field
 !

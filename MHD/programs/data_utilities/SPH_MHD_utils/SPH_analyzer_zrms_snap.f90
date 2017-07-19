@@ -12,7 +12,9 @@
 !>@brief  main routines to evaluate zonal root mean square field
 !!
 !!@verbatim
-!!      subroutine SPH_analyze_zRMS_snap(i_step)
+!!      subroutine SPH_analyze_zRMS_snap(i_step, MHD_files, MHD_step)
+!!        type(MHD_file_IO_params), intent(in) :: MHD_files
+!!        type(MHD_step_param), intent(inout) :: MHD_step
 !!      subroutine SPH_to_FEM_bridge_zRMS_snap
 !!@endverbatim
 !!
@@ -26,6 +28,7 @@
       use m_MHD_step_parameter
       use m_physical_property
       use m_radial_matrices_sph
+      use t_MHD_file_parameter
 !
       implicit none
 !
@@ -35,7 +38,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_zRMS_snap(i_step)
+      subroutine SPH_analyze_zRMS_snap(i_step, MHD_files, MHD_step)
 !
       use m_work_time
       use m_SGS_control_parameter
@@ -54,15 +57,18 @@
       use output_viz_file_control
 !
       integer(kind = kint), intent(in) :: i_step
+      type(MHD_file_IO_params), intent(in) :: MHD_files
+      type(MHD_step_param), intent(inout) :: MHD_step
+!
       integer(kind = kint) :: iflag
 !
 !
       call read_alloc_sph_rst_SGS_snap                                  &
-     &   (i_step, MHD1_org_files%rj_file_param, sph1%sph_rj,            &
-     &    ipol, rj_fld1, MHD_step1%rst_step, MHD_step1%init_d,          &
+     &   (i_step, MHD1_org_files%rj_file_param, MHD_files, sph1%sph_rj, &
+     &    ipol, rj_fld1, MHD_step%rst_step, MHD_step%init_d,            &
      &    SGS_par1%i_step_sgs_coefs, SGS_par1%model_p,                  &
      &    trns_WK1%dynamic_SPH)
-      call copy_time_data(MHD_step1%init_d, MHD_step1%time_d)
+      call copy_time_data(MHD_step%init_d, MHD_step%time_d)
 !
       if (iflag_debug.eq.1) write(*,*)' sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph(ref_temp1, ref_comp1, MHD_prop1,   &
@@ -89,8 +95,7 @@
       call trans_per_temp_to_temp_sph(ref_temp1, ref_comp1, MHD_prop1,  &
      &    sph1%sph_rj, ipol, idpdr, rj_fld1)
 !*
-      iflag = lead_field_data_flag(i_step, MHD_step1,                   &
-     &                             SGS_par1%sgs_step)
+      iflag = lead_field_data_flag(i_step, MHD_step, SGS_par1%sgs_step)
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
         call s_lead_fields_4_sph_mhd(SGS_par1%model_p, sph1,            &

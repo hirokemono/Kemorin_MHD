@@ -8,7 +8,8 @@
 !!
 !!@verbatim
 !!      subroutine sph_initial_spectrum                                 &
-!!     &         (sph_MHD_bc, ipol, itor, rj_fld, rst_step)
+!!     &         (fst_file_IO, sph_MHD_bc, ipol, itor, rj_fld, rst_step)
+!!        type(field_IO_params), intent(in) :: fst_file_IO
 !!        type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !!        type(phys_address), intent(in) :: ipol, itor
 !!        type(phys_data), intent(inout) :: rj_fld
@@ -92,6 +93,7 @@
       use m_spheric_parameter
       use t_phys_address
       use t_phys_data
+      use t_file_IO_parameter
       use t_boundary_data_sph_MHD
 !
       implicit none
@@ -114,7 +116,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine sph_initial_spectrum                                   &
-     &         (sph_MHD_bc, ipol, itor, rj_fld, rst_step)
+     &         (fst_file_IO, sph_MHD_bc, ipol, itor, rj_fld, rst_step)
 !
       use m_initial_field_control
       use m_MHD_step_parameter
@@ -123,6 +125,7 @@
       use sph_mhd_rst_IO_control
       use set_sph_restart_IO
 !
+      type(field_IO_params), intent(in) :: fst_file_IO
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
       type(phys_address), intent(in) :: ipol, itor
       type(phys_data), intent(inout) :: rj_fld
@@ -180,7 +183,7 @@
         iflag = set_IO_step_flag(MHD_step1%time_d%i_time_step,rst_step)
       end if
       call output_sph_restart_control                                   &
-     &   (MHD_step1%time_d, rj_fld, rst_step)
+     &   (fst_file_IO, MHD_step1%time_d, rj_fld, rst_step)
 !
       end subroutine sph_initial_spectrum
 !

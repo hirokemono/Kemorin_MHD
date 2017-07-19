@@ -14,6 +14,7 @@
       use m_2nd_geometry_4_merge
       use m_control_data_4_merge
       use m_control_param_merge
+      use t_file_IO_parameter
       use t_time_data
       use t_field_data_IO
       use t_ucd_data
@@ -22,6 +23,7 @@
       use set_2nd_geometry_4_serial
       use new_FEM_restart
       use field_IO_select
+      use set_field_file_names
 !
       implicit    none
 !
@@ -64,14 +66,16 @@
 !
 !  allocate restart data
 !
-      call count_restart_data_fields(merged_time_IO, merged_IO)
+      call count_restart_data_fields                                    &
+     &   (org_fst_param, merged_time_IO, merged_IO)
 !
 !   loop for time integration
 !
       do istep = istep_start, istep_end, increment_step
 !
         call generate_new_restart_snap                                  &
-     &     (istep, merged_time_IO, merged_IO)
+     &     (istep, org_fst_param, new_fst_param,                        &
+     &      merged_time_IO, merged_IO)
         write(*,*) 'step', istep, 'finish '
       end do
       call dealloc_phys_name_IO(merged_IO)
@@ -79,7 +83,7 @@
 !
       if(iflag_delete_org .gt. 0) then
         do istep = istep_start, istep_end, increment_step
-          call delete_restart_files(istep)
+          call delete_FEM_fld_file(org_fst_param, num_pe, istep)
         end do
       end if
 !

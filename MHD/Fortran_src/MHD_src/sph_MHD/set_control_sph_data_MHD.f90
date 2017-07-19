@@ -9,7 +9,8 @@
 !!@verbatim
 !!     subroutine s_set_control_sph_data_MHD                            &
 !!     &         (SGS_param, MHD_prop, plt, field_ctl, mevo_ctl,        &
-!!     &          rj_org_param, rst_org_param, rj_fld, bc_IO, WK_sph)
+!!     &          rj_org_param, rst_org_param, fst_file_IO,             &
+!!     &          rj_fld, bc_IO, WK_sph)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -17,6 +18,7 @@
 !!        type(ctl_array_c3), intent(inout) :: field_ctl
 !!        type(field_IO_params), intent(in) :: rj_org_param
 !!        type(field_IO_params), intent(in) :: rst_org_param
+!!        type(field_IO_params), intent(inout) :: fst_file_IO
 !!        type(boundary_spectra), intent(inout) :: bc_IO
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(spherical_trns_works), intent(inout) :: WK_sph
@@ -42,7 +44,8 @@
 !
       subroutine s_set_control_sph_data_MHD                             &
      &         (SGS_param, MHD_prop, plt, field_ctl, mevo_ctl,          &
-     &          rj_org_param, rst_org_param, rj_fld, bc_IO, WK_sph)
+     &          rj_org_param, rst_org_param, fst_file_IO,               &
+     &          rj_fld, bc_IO, WK_sph)
 !
       use calypso_mpi
       use m_error_IDs
@@ -75,6 +78,8 @@
       type(ctl_array_c3), intent(inout) :: field_ctl
       type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
       type(field_IO_params), intent(in) :: rj_org_param, rst_org_param
+!
+      type(field_IO_params), intent(inout) :: fst_file_IO
       type(phys_data), intent(inout) :: rj_fld
       type(boundary_spectra), intent(inout) :: bc_IO
       type(spherical_trns_works), intent(inout) :: WK_sph
@@ -83,7 +88,8 @@
 !
 !   overwrite restart header for magnetic field extension
 !
-      call set_rst_file_by_orignal_mesh(rj_org_param, rst_org_param)
+      if( (rj_org_param%iflag_IO*rst_org_param%iflag_IO) .gt. 0)        &
+     &   fst_file_IO%file_prefix = rst_org_param%file_prefix
 !
 !   set physical values
 !

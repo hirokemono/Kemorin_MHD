@@ -12,11 +12,12 @@
 !!@verbatim
 !!      subroutine set_control_SGS_model                                &
 !!     &         (sgs_ctl, SGS_param, cmt_param, filter_param,          &
-!!     &          Csim_IO, Cdiff_IO, i_step_sgs_coefs)
+!!     &          Csim_file_IO, Cdiff_file_IO, i_step_sgs_coefs)
 !!        type(SGS_model_control), intent(inout) :: sgs_ctl
 !!        type(SGS_model_control_params), intent(inout) :: SGS_param
 !!        type(commutation_control_params), intent(inout) :: cmt_param
-!!        type(field_IO), intent(inout) :: Csim_IO
+!!        type(field_IO_params), intent(inout) :: Csim_file_IO
+!!        type(field_IO_params), intent(inout) :: Cdiff_file_IO
 !!        type(SGS_filtering_params), intent(inout) :: filter_param
 !!      subroutine set_control_SPH_SGS                                  &
 !!     &         (num_sph_filter_ctl, sph_filter_ctl, sph_filters)
@@ -31,8 +32,15 @@
       use m_constants
       use m_machine_parameter
       use calypso_mpi
+      use t_file_IO_parameter
 !
       implicit  none
+!
+      character(len=kchara), parameter                                  &
+     &                      :: def_rst_sgs_coef =  'rst_model_coefs'
+      character(len=kchara), parameter                                  &
+     &                      :: def_rst_comm_coef = 'rst_diff_coefs'
+      private :: def_rst_sgs_coef, def_rst_comm_coef
 !
 ! -----------------------------------------------------------------------
 !
@@ -104,7 +112,7 @@
 !
       subroutine set_control_SGS_model                                  &
      &         (sgs_ctl, SGS_param, cmt_param, filter_param,            &
-     &          Csim_IO, Cdiff_IO, i_step_sgs_coefs)
+     &          Csim_file_IO, Cdiff_file_IO, i_step_sgs_coefs)
 !
       use m_geometry_constants
       use m_phys_labels
@@ -112,13 +120,13 @@
       use t_SGS_control_parameter
       use t_ctl_data_SGS_model
       use t_field_data_IO
-      use sgs_ini_model_coefs_IO
 !
       type(SGS_model_control), intent(inout) :: sgs_ctl
       type(SGS_model_control_params), intent(inout) :: SGS_param
       type(commutation_control_params), intent(inout) :: cmt_param
       type(SGS_filtering_params), intent(inout) :: filter_param
-      type(field_IO), intent(inout) :: Csim_IO, Cdiff_IO
+      type(field_IO_params), intent(inout) :: Csim_file_IO
+      type(field_IO_params), intent(inout) :: Cdiff_file_IO
       integer(kind = kint), intent(inout) :: i_step_sgs_coefs
 !
       integer(kind = kint) :: i
@@ -237,43 +245,44 @@
         SGS_param%iflag_rst_sgs_coef_code                               &
      &        = sgs_ctl%ffile_ctl%model_coef_ini_head_ctl%iflag
         if(SGS_param%iflag_rst_sgs_coef_code .gt. 0) then
-          Csim_IO%file_prefix                                           &
+          Csim_file_IO%file_prefix                                      &
      &        = sgs_ctl%ffile_ctl%model_coef_ini_head_ctl%charavalue
         else
-          Csim_IO%file_prefix = def_rst_sgs_coef
+          Csim_file_IO%file_prefix = def_rst_sgs_coef
         end if
 !
         call choose_para_file_format                                    &
      &     (sgs_ctl%ffile_ctl%model_coef_rst_format,                    &
-     &      Csim_IO%iflag_file_fmt)
+     &      Csim_file_IO%iflag_format)
 !
         if (iflag_debug .gt. 0)  then
-          write(*,*) 'Csim_IO%file_prefix: ', trim(Csim_IO%file_prefix)
-          write(*,*) 'Csim_IO%iflag_file_fmt: ', Csim_IO%iflag_file_fmt
+          write(*,*) 'Csim_file_IO%file_prefix: ',                      &
+     &      trim(Csim_file_IO%file_prefix)
+          write(*,*) 'Csim_file_IO%iflag_format: ',                     &
+     &      Csim_file_IO%iflag_format
         end if
       end if
 !
       call set_control_SGS_commute                                      &
-     &   (SGS_param, sgs_ctl, cmt_param, Cdiff_IO)
+     &   (SGS_param, sgs_ctl, cmt_param, Cdiff_file_IO)
 !
       end subroutine set_control_SGS_model
 !
 ! -----------------------------------------------------------------------
 !
       subroutine set_control_SGS_commute                                &
-     &         (SGS_param, sgs_ctl, cmt_param, Cdiff_IO)
+     &         (SGS_param, sgs_ctl, cmt_param, Cdiff_file_IO)
 !
       use m_phys_labels
       use m_file_format_switch
       use t_ctl_data_SGS_model
       use t_SGS_control_parameter
       use t_field_data_IO
-      use sgs_ini_model_coefs_IO
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(SGS_model_control), intent(inout) :: sgs_ctl
       type(commutation_control_params), intent(inout) :: cmt_param
-      type(field_IO), intent(inout) :: Cdiff_IO
+      type(field_IO_params), intent(inout) :: Cdiff_file_IO
 !
       integer(kind = kint) :: i
       character(len=kchara) :: tmpchara
@@ -356,21 +365,21 @@
         cmt_param%iflag_rst_sgs_comm_code                               &
      &        = sgs_ctl%ffile_ctl%commute_coef_ini_head_ctl%iflag
         if(cmt_param%iflag_rst_sgs_comm_code .gt. 0) then
-          Cdiff_IO%file_prefix                                          &
+          Cdiff_file_IO%file_prefix                                     &
      &        = sgs_ctl%ffile_ctl%commute_coef_ini_head_ctl%charavalue
         else
-          Cdiff_IO%file_prefix = def_rst_comm_coef
+          Cdiff_file_IO%file_prefix = def_rst_comm_coef
         end if
 !
         call choose_para_file_format                                    &
      &     (sgs_ctl%ffile_ctl%commute_coef_rst_format,                  &
-     &      Cdiff_IO%iflag_file_fmt)
+     &      Cdiff_file_IO%iflag_format)
 !
         if (iflag_debug .gt. 0)  then
-          write(*,*) 'Cdiff_IO%file_prefix: ',                          &
-     &              trim(Cdiff_IO%file_prefix)
-          write(*,*) 'Cdiff_IO%iflag_file_fmt: ',                       &
-     &              Cdiff_IO%iflag_file_fmt
+          write(*,*) 'Cdiff_file_IO%file_prefix: ',                     &
+     &              trim(Cdiff_file_IO%file_prefix)
+          write(*,*) 'Cdiff_file_IO%iflag_format: ',                    &
+     &              Cdiff_file_IO%iflag_format
         end if
       end if
 !

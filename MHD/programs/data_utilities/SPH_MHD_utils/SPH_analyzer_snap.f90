@@ -9,7 +9,8 @@
 !!@verbatim
 !!      subroutine SPH_init_sph_snap(iphys)
 !!        type(phys_address), intent(in) :: iphys
-!!      subroutine SPH_analyze_snap(i_step, MHD_step)
+!!      subroutine SPH_analyze_snap(i_step, MHD_files, MHD_step)
+!!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!@endverbatim
 !
@@ -21,6 +22,7 @@
       use m_physical_property
       use m_radial_matrices_sph
       use t_phys_address
+      use t_MHD_file_parameter
 !
       implicit none
 !
@@ -115,7 +117,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_snap(i_step, MHD_step)
+      subroutine SPH_analyze_snap(i_step, MHD_files, MHD_step)
 !
       use m_work_time
       use m_spheric_parameter
@@ -136,13 +138,14 @@
       use output_viz_file_control
 !
       integer(kind = kint), intent(in) :: i_step
+      type(MHD_file_IO_params), intent(in) :: MHD_files
       type(MHD_step_param), intent(inout) :: MHD_step
 !
       integer(kind = kint) :: iflag
 !
 !
       call read_alloc_sph_rst_SGS_snap                                  &
-     &   (i_step, MHD1_org_files%rj_file_param, sph1%sph_rj,            &
+     &   (i_step, MHD1_org_files%rj_file_param, MHD_files, sph1%sph_rj, &
      &    ipol, rj_fld1, MHD_step%rst_step, MHD_step1%init_d,           &
      &    SGS_par1%i_step_sgs_coefs, SGS_par1%model_p,                  &
      &    trns_WK1%dynamic_SPH)

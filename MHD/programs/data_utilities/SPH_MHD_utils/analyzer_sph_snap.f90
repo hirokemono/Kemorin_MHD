@@ -68,8 +68,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_dynamo'
       call input_control_SPH_dynamo                                     &
-     &   (MHD_ctl1, sph1, comms_sph1, sph_grps1, rj_fld1, nod_fld1,     &
-     &    pwr1, SGS_par1, trns_WK1%dynamic_SPH, MHD_step1,              &
+     &   (MHD_files1, MHD_ctl1, sph1, comms_sph1, sph_grps1, rj_fld1,   &
+     &    nod_fld1, pwr1, SGS_par1, trns_WK1%dynamic_SPH, MHD_step1,    &
      &    MHD_prop1, MHD_BC1, trns_WK1, mesh1, group1, ele_mesh1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
       call end_eleps_time(4)
@@ -125,7 +125,8 @@
 !*  ----------  time evolution by spectral methood -----------------
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_snap'
-        call SPH_analyze_snap(MHD_step1%time_d%i_time_step, MHD_step1)
+        call SPH_analyze_snap                                           &
+     &     (MHD_step1%time_d%i_time_step, MHD_files1, MHD_step1)
 !*
 !*  -----------  output field data --------------
 !*
@@ -219,7 +220,8 @@
 !*
       MHD_step1%time_d%i_time_step = MHD_step1%init_d%i_time_step
       if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_snap'
-      call SPH_analyze_snap(MHD_step1%time_d%i_time_step, MHD_step1)
+      call SPH_analyze_snap                                             &
+     &   (MHD_step1%time_d%i_time_step, MHD_files1, MHD_step1)
 !*
       iflag = lead_field_data_flag(MHD_step1%time_d%i_time_step,        &
      &                             MHD_step1, SGS_par1%sgs_step)

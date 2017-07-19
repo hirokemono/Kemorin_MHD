@@ -57,10 +57,9 @@
 !  ------  initialize spectr data
 !
       if (iflag_debug.gt.0) write(*,*) 'sel_read_alloc_step_SPH_file'
-      call set_field_file_fmt_prefix                                    &
-     &    (iflag_org_sph_file_fmt, org_sph_file_head, sph_fld_IN)
-      call sel_read_alloc_step_SPH_file(nprocs, my_rank,                &
-     &    t_SHR%init_d%i_time_step, spec_time_IO, sph_fld_IN)
+      call sel_read_alloc_step_SPH_file                                 &
+     &   (nprocs, my_rank, t_SHR%init_d%i_time_step,                    &
+     &    spec_fst_param, spec_time_IO, sph_fld_IN)
 !
 !  -------------------------------
 !
@@ -87,6 +86,7 @@
       use const_global_element_ids
 !
       integer(kind = kint) :: i_step
+      type(field_IO_params) :: ave_fst_param
 !
 !
       call allocate_d_rj_tmp                                            &
@@ -95,11 +95,9 @@
 !   Averaging
       do i_step = t_SHR%init_d%i_time_step, t_SHR%finish_d%i_end_step,  &
      &           t_SHR%ucd_step%increment
-        call set_field_file_fmt_prefix                                  &
-     &   (iflag_org_sph_file_fmt, org_sph_file_head, sph_fld_IN)
         if (iflag_debug.gt.0) write(*,*) 'sel_read_step_SPH_field_file'
-        call sel_read_step_SPH_field_file                               &
-     &     (nprocs, my_rank, i_step, spec_time_IO, sph_fld_IN)
+        call sel_read_step_SPH_field_file(nprocs, my_rank, i_step,      &
+     &      spec_fst_param, spec_time_IO, sph_fld_IN)
 !
         call copy_time_data(spec_time_IO, t_SHR%init_d)
 !
@@ -128,12 +126,12 @@
      &   (sph_fld_OUT%nnod_IO, sph_fld_OUT%istack_numnod_IO)
 !
 !
-      call set_field_file_fmt_prefix                                    &
-     &    (iflag_org_sph_file_fmt, org_sph_file_head, sph_fld_OUT)
+      call copy_file_params_type(spec_fst_param, ave_fst_param)
       call add_int_suffix(t_SHR%init_d%i_time_step,                     &
-     &    tave_sph_file_head, sph_fld_OUT%file_prefix)
-      call sel_write_step_SPH_field_file(nprocs, my_rank,               &
-     &    t_SHR%finish_d%i_end_step, spec_time_IO, sph_fld_OUT)
+     &    tave_sph_file_head, ave_fst_param%file_prefix)
+      call sel_write_step_SPH_field_file                                &
+     &   (nprocs, my_rank, t_SHR%finish_d%i_end_step,                   &
+     &    ave_fst_param, spec_time_IO, sph_fld_OUT)
 !
       call dealloc_phys_data_IO(sph_fld_OUT)
       call dealloc_phys_name_IO(sph_fld_OUT)
@@ -143,11 +141,9 @@
 !
       do i_step = t_SHR%init_d%i_time_step, t_SHR%finish_d%i_end_step,  &
      &           t_SHR%ucd_step%increment
-        call set_field_file_fmt_prefix                                  &
-     &   (iflag_org_sph_file_fmt, org_sph_file_head, sph_fld_IN)
         if (iflag_debug.gt.0) write(*,*) 'sel_read_step_SPH_field_file'
-        call sel_read_step_SPH_field_file                               &
-     &     (nprocs, my_rank, i_step, spec_time_IO, sph_fld_IN)
+        call sel_read_step_SPH_field_file(nprocs, my_rank, i_step,      &
+     &      spec_fst_param, spec_time_IO, sph_fld_IN)
 !
         call copy_time_data(spec_time_IO, t_SHR%init_d)
 !
@@ -179,12 +175,12 @@
      &   (sph_fld_OUT%nnod_IO, sph_fld_OUT%istack_numnod_IO)
 !
 !
-      call set_field_file_fmt_prefix                                    &
-     &    (iflag_org_sph_file_fmt, org_sph_file_head, sph_fld_OUT)
+      call copy_file_params_type(spec_fst_param, ave_fst_param)
       call add_int_suffix(t_SHR%init_d%i_time_step,                     &
-     &    sdev_sph_file_head, sph_fld_OUT%file_prefix)
-      call sel_write_step_SPH_field_file(nprocs, my_rank,               &
-     &    t_SHR%finish_d%i_end_step, spec_time_IO, sph_fld_OUT)
+     &    sdev_sph_file_head, ave_fst_param%file_prefix)
+      call sel_write_step_SPH_field_file                                &
+     &   (nprocs, my_rank, t_SHR%finish_d%i_end_step,                   &
+     &    ave_fst_param, spec_time_IO, sph_fld_OUT)
 !
       call dealloc_phys_data_IO(sph_fld_OUT)
       call dealloc_phys_name_IO(sph_fld_OUT)

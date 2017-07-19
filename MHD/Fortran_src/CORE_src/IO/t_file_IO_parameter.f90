@@ -10,6 +10,8 @@
 !!      subroutine copy_file_params_type(org_param, new_param)
 !!      subroutine copy_mesh_format_and_prefix(prefix, i_fmt, f_param)
 !!        type(field_IO_params), intent(inout) :: f_param
+!!      subroutine set_file_fmt_prefix(iflag_fmt, file_head, f_param)
+!!        type(field_IO_params), intent(inout) :: f_param
 !!@endverbatim
 !
       module t_file_IO_parameter
@@ -63,5 +65,19 @@
       end subroutine copy_mesh_format_and_prefix
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine set_file_fmt_prefix(iflag_fmt, file_head, f_param)
+!
+      integer(kind = kint), intent(in) :: iflag_fmt
+      character(len=kchara), intent(in) :: file_head
+      type(field_IO_params), intent(inout) :: f_param
+!
+      f_param%iflag_format = iflag_fmt
+      write(f_param%file_prefix,'(a)') trim(file_head)
+!
+      end subroutine set_file_fmt_prefix
+!
+! -------------------------------------------------------------------
 !
       end module t_file_IO_parameter

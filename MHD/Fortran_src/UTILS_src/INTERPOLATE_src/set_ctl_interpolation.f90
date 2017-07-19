@@ -68,12 +68,6 @@
      &   write(*,*) 'itp_node_file_head: ', trim(itp_node_file_head)
       end if
 !
-      if(dst_plt%restart_file_prefix%iflag .gt. 0) then
-        itp_rst_file_head = dst_plt%restart_file_prefix%charavalue
-      end if
-        if (iflag_debug.eq.1)                                           &
-     &   write(*,*) 'itp_rst_file_head: ', trim(itp_rst_file_head)
-!
       if (dst_plt%field_file_prefix%iflag .gt. 0) then
         itp_udt_file_head = dst_plt%field_file_prefix%charavalue
       end if
@@ -81,11 +75,12 @@
      &   write(*,*) 'itp_udt_file_head: ', trim(itp_udt_file_head)
 !
 !
-      if (src_plt%restart_file_prefix%iflag .ne. 0) then
-        org_rst_file_head = src_plt%restart_file_prefix%charavalue
-      end if
-        if (iflag_debug.eq.1)                                           &
-     &   write(*,*) 'org_rst_file_head: ', trim(org_rst_file_head)
+      call set_parallel_file_ctl_params(def_itp_rst_prefix,             &
+     &    dst_plt%restart_file_prefix, dst_plt%restart_file_fmt_ctl,    &
+     &    itp_fst_IO)
+      call set_parallel_file_ctl_params(def_org_rst_prefix,             &
+     &    src_plt%restart_file_prefix, src_plt%restart_file_fmt_ctl,    &
+     &    org_fst_IO)
 !
       if (src_plt%field_file_prefix%iflag .ne. 0) then
         org_udt_file_head = src_plt%field_file_prefix%charavalue
@@ -114,11 +109,6 @@
 !
       call choose_file_format                                           &
      &   (fmt_itp_table_file_ctl, ifmt_itp_table_file)
-!
-      call choose_para_file_format                                      &
-     &   (src_plt%restart_file_fmt_ctl, ifmt_org_rst_file)
-      call choose_para_file_format                                      &
-     &   (dst_plt%restart_file_fmt_ctl, ifmt_itp_rst_file)
 !
       call choose_ucd_file_format                                       &
      &   (src_plt%field_file_fmt_ctl%charavalue,                        &

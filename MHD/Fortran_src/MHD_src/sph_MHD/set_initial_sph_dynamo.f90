@@ -8,10 +8,11 @@
 !!
 !!@verbatim
 !!      subroutine sph_initial_data_control                             &
-!!     &         (reftemp_rj, sph_params, sph_rj,                       &
+!!     &         (MHD_files, reftemp_rj, sph_params, sph_rj,            &
 !!     &          ref_param_T, sph_bc_B, ipol, idpdr, itor,             &
 !!     &          ref_param_T, sph_bc_B, ipol, idpdr, itor, rj_fld,     &
 !!     &          MHD_step, SGS_par, dynamic_SPH)
+!!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(reference_scalar_param), intent(in) :: ref_param_T
@@ -31,6 +32,7 @@
       use m_machine_parameter
 !
       use t_reference_scalar_param
+      use t_MHD_file_parameter
       use t_IO_step_parameter
       use t_time_data
       use t_spheric_rj_data
@@ -51,7 +53,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine sph_initial_data_control                               &
-     &         (reftemp_rj, sph_params, sph_rj,                         &
+     &         (MHD_files, reftemp_rj, sph_params, sph_rj,              &
      &          ref_param_T, sph_bc_B, ipol, idpdr, itor, rj_fld,       &
      &          MHD_step, SGS_par, dynamic_SPH)
 !
@@ -71,6 +73,7 @@
       use initial_magne_dynamobench
       use initial_magne_dbench_qvc
 !
+      type(MHD_file_IO_params), intent(in) :: MHD_files
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rj_grid), intent(in) :: sph_rj
       type(reference_scalar_param), intent(in) :: ref_param_T
@@ -88,8 +91,8 @@
 !
       if (iflag_restart .eq. i_rst_by_file) then
         if(iflag_debug .gt. 0) write(*,*) 'read_alloc_sph_restart_data'
-        call read_alloc_sph_restart_data                                &
-     &     (MHD_step%init_d, rj_fld, MHD_step%rst_step)
+        call read_alloc_sph_restart_data(MHD_files%fst_file_IO,         &
+     &      MHD_step%init_d, rj_fld, MHD_step%rst_step)
 !
 !   for dynamo benchmark
 !
@@ -184,20 +187,21 @@
       if (iflag_restart.ne.i_rst_by_file                                &
      &     .and. MHD_step%init_d%i_time_step.eq.0) then
         if(iflag_debug .gt. 0) write(*,*) 'output_sph_restart_control'
-        call output_sph_restart_control                                 &
-     &     (MHD_step%time_d, rj_fld, MHD_step%rst_step)
+        call output_sph_restart_control(MHD_files%fst_file_IO,          &
+     &      MHD_step%time_d, rj_fld, MHD_step%rst_step)
       end if
 !
 !
       if(SGS_par%model_p%iflag_dynamic .gt. 0) then
         if (iflag_restart .eq. i_rst_by_file) then
-          call read_alloc_SPH_Csim_file                                 &
-     &       (MHD_step%init_d, MHD_step%rst_step,                       &
+          call read_alloc_SPH_Csim_file(MHD_files%Csim_file_IO,         &
+     &        MHD_step%init_d, MHD_step%rst_step,                       &
      &        SGS_par%i_step_sgs_coefs, SGS_par%model_p,                &
      &        dynamic_SPH%wk_sgs)
         else
           SGS_par%model_p%iflag_rst_sgs_coef_code = 0
-          call write_SPH_Csim_file(SGS_par%i_step_sgs_coefs,            &
+          call write_SPH_Csim_file                                      &
+     &       (SGS_par%i_step_sgs_coefs, MHD_files%Csim_file_IO,         &
      &        MHD_step%rst_step, MHD_step%init_d, dynamic_SPH)
         end if
         if(iflag_debug .gt. 0) write(*,*) 'iflag_rst_sgs_coef_code',    &

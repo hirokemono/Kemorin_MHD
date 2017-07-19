@@ -150,9 +150,9 @@
 !
 !      Construct field list from spectr file
 !
-      call load_field_name_assemble_sph(org_sph_fst_head,               &
-     &      ifmt_org_sph_fst, istep_start, np_sph_org,                  &
-     &      org_sph_phys(1), new_sph_phys(1), fst_time_IO)
+      call load_field_name_assemble_sph                                 &
+     &   (istep_start, np_sph_org, org_sph_fst_param,                   &
+     &    org_sph_phys(1), new_sph_phys(1), fst_time_IO)
 !
       call share_spectr_field_names(np_sph_org, np_sph_new,             &
      &    new_sph_mesh, org_sph_phys, new_sph_phys)
@@ -196,9 +196,9 @@
         do iloop = 0, (np_sph_org-1)/nprocs
           irank_new = my_rank + iloop * nprocs
           ip = irank_new + 1
-          call load_org_sph_data(org_sph_fst_head, ifmt_org_sph_fst,    &
-     &        ip, istep, np_sph_org, org_sph_mesh(ip)%sph,              &
-     &        init_t, org_sph_phys(ip))
+          call load_org_sph_data                                        &
+     &       (irank_new, istep, np_sph_org, org_sph_fst_param,          &
+     &        org_sph_mesh(ip)%sph, init_t, org_sph_phys(ip))
           call calypso_mpi_barrier
         end do
 !
@@ -235,14 +235,10 @@
      &          (b_sph_ratio, init_t, new_sph_mesh(jp)%sph, r_itp,      &
      &           new_sph_phys(jp), new_fst_IO(jloop), fst_time_IO)
           end if
-!
-            call set_field_file_fmt_prefix                              &
-     &         (ifmt_new_sph_fst, new_sph_fst_head, new_fst_IO(jloop))
         end do
 !
-!
-        call sel_write_SPH_assemble_field                               &
-     &     (np_sph_new, istep_out, nloop_new, fst_time_IO, new_fst_IO)
+        call sel_write_SPH_assemble_field(np_sph_new, istep_out,        &
+     &      nloop_new, new_sph_fst_param, fst_time_IO, new_fst_IO)
 !
         do jloop = 1, nloop_new
           irank_new = my_rank + (jloop-1) * nprocs
@@ -272,8 +268,8 @@
         do istep = istep_start, istep_end, increment_step
           icou = icou + 1
           if(mod(icou,nprocs) .ne. my_rank) cycle
-          call delete_SPH_fld_file(ifmt_org_sph_fst,                    &
-     &        np_sph_org, istep, org_sph_fst_head)
+          call delete_SPH_fld_file                                      &
+     &        (org_sph_fst_param, np_sph_org, istep)
         end do
       end if
 !

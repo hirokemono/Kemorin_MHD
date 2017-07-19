@@ -91,16 +91,12 @@
       type(field_IO) :: sph_fst_IO, sph_sub_IO
 !
 !
-      call set_field_file_fmt_prefix(files%org_file_param%iflag_format, &
-     &    files%org_file_param%file_prefix, sph_fst_IO)
-      call sel_read_alloc_step_SPH_file                                 &
-     &   (nprocs, my_rank, istep_fld, fst_t_IO, sph_fst_IO)
+      call sel_read_alloc_step_SPH_file(nprocs, my_rank, istep_fld,     &
+     &    files%org_file_param, fst_t_IO, sph_fst_IO)
 !
 !
-      call set_field_file_fmt_prefix(files%sub_file_param%iflag_format, &
-     &    files%sub_file_param%file_prefix, sph_sub_IO)
-      call sel_read_alloc_step_SPH_file                                 &
-     &   (nprocs, my_rank, istep_fld, fst_t_IO, sph_sub_IO)
+      call sel_read_alloc_step_SPH_file(nprocs, my_rank, istep_fld,     &
+     &    files%sub_file_param, fst_t_IO, sph_sub_IO)
 !
       call calypso_mpi_barrier
       call overwrt_subtract_field_IO(sph_fst_IO, sph_sub_IO)
@@ -110,11 +106,9 @@
       call count_number_of_node_stack                                   &
      &   (sph_fst_IO%nnod_IO, sph_fst_IO%istack_numnod_IO)
 !
-      call set_field_file_fmt_prefix(files%out_file_param%iflag_format, &
-     &    files%out_file_param%file_prefix, sph_fst_IO)
       call calypso_mpi_barrier
-      call sel_write_step_SPH_field_file                                &
-     &   (nprocs, my_rank, istep_fld, fst_t_IO, sph_fst_IO)
+      call sel_write_step_SPH_field_file(nprocs, my_rank, istep_fld,    &
+     &    files%out_file_param, fst_t_IO, sph_fst_IO)
       call calypso_mpi_barrier
 !
       call dealloc_phys_data_IO(sph_sub_IO)

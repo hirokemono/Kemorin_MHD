@@ -10,14 +10,16 @@
 !!
 !!@verbatim
 !!      subroutine input_control_4_MHD                                  &
-!!     &         (FEM_prm, SGS_par, MHD_step, MHD_prop, MHD_BC,         &
-!!     &          mesh, group, ele_mesh, nod_fld, IO_bc,                &
+!!     &         (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,      &
+!!     &          MHD_BC, mesh, group, ele_mesh, nod_fld, IO_bc,        &
 !!     &          filtering, wide_filtering, wk_filter, MHD_matrices,   &
 !!     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
-!!      subroutine input_control_4_snapshot(FEM_prm, SGS_par, MHD_step, &
-!!     &          MHD_prop, MHD_BC, mesh, group, ele_mesh, nod_fld,     &
-!!     &          IO_bc, filtering, wide_filtering, wk_filter,          &
+!!      subroutine input_control_4_snapshot                             &
+!!     &         (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,      &
+!!     &          MHD_BC, mesh, group, ele_mesh, nod_fld, IO_bc,        &
+!!     &          filtering, wide_filtering, wk_filter,                 &
 !!     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
+!!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
 !!        type(MHD_step_param), intent(inout) :: MHD_step
@@ -60,7 +62,7 @@
       use t_filtering_data
       use t_solver_djds_MHD
       use t_phys_data
-      use t_file_IO_parameter
+      use t_MHD_file_parameter
       use t_field_data_IO
       use t_ctl_data_MHD
       use t_MGCG_data
@@ -91,8 +93,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine input_control_4_MHD                                    &
-     &         (FEM_prm, SGS_par, MHD_step, MHD_prop, MHD_BC,           &
-     &          mesh, group, ele_mesh, nod_fld, IO_bc,                  &
+     &         (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,        &
+     &          MHD_BC, mesh, group, ele_mesh, nod_fld, IO_bc,          &
      &          filtering, wide_filtering, wk_filter, MHD_matrices,     &
      &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
 !
@@ -105,6 +107,7 @@
       use ordering_field_by_viz
       use node_monitor_IO
 !
+      type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(mesh_geometry), intent(inout) :: mesh
@@ -132,7 +135,7 @@
       call set_control_4_FEM_MHD                                        &
      &   (FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt, FEM_MHD_ctl%model_ctl,  &
      &    FEM_MHD_ctl%ctl_ctl, FEM_MHD_ctl%nmtr_ctl, mesh1_file,        &
-     &    FEM_udt_org_param, FEM_prm, SGS_par, MHD_step,                &
+     &    MHD_files, FEM_udt_org_param, FEM_prm, SGS_par, MHD_step,     &
      &    MHD_prop, MHD_BC, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
 !
 !  --  load FEM mesh data
@@ -163,9 +166,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine input_control_4_snapshot(FEM_prm, SGS_par, MHD_step,   &
-     &          MHD_prop, MHD_BC, mesh, group, ele_mesh, nod_fld,       &
-     &          IO_bc, filtering, wide_filtering, wk_filter,            &
+      subroutine input_control_4_snapshot                               &
+     &         (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,        &
+     &          MHD_BC, mesh, group, ele_mesh, nod_fld, IO_bc,          &
+     &          filtering, wide_filtering, wk_filter,                   &
      &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
 !
       use t_ctl_data_sph_MHD_psf
@@ -174,6 +178,7 @@
       use node_monitor_IO
       use ordering_field_by_viz
 !
+      type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(mesh_geometry), intent(inout) :: mesh
@@ -200,7 +205,7 @@
       call set_control_4_FEM_MHD                                        &
      &   (FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt, FEM_MHD_ctl%model_ctl,  &
      &    FEM_MHD_ctl%ctl_ctl, FEM_MHD_ctl%nmtr_ctl, mesh1_file,        &
-     &    FEM_udt_org_param, FEM_prm, SGS_par, MHD_step,                &
+     &    MHD_files, FEM_udt_org_param, FEM_prm, SGS_par, MHD_step,     &
      &    MHD_prop, MHD_BC, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
 !
 !  --  load FEM mesh data

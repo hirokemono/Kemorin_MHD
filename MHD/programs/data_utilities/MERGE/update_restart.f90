@@ -62,13 +62,14 @@
 !
 !  allocate restart data
 !
-      call init_by_old_restart_data(merged_time_IO, merged_IO)
+      call init_by_old_restart_data                                     &
+     &   (org_fst_param, merged_time_IO, merged_IO)
 !
 !   loop for time integration
 !
       do istep = istep_start, istep_end, increment_step
-!
-        call update_restart_file(istep, merged_time_IO, merged_IO)
+        call update_restart_file(istep, org_fst_param, new_fst_param,   &
+     &      merged_time_IO, merged_IO)
         write(*,*) 'step', istep, 'finish '
       end do
       call dealloc_phys_name_IO(merged_IO)
@@ -76,7 +77,7 @@
 !
       if(iflag_delete_org .gt. 0) then
         do istep = istep_start, istep_end, increment_step
-          call delete_old_restart(istep)
+          call delete_old_restart(istep, org_fst_param)
         end do
       end if
 !

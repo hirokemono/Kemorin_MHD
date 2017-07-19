@@ -111,12 +111,9 @@
      &    write(*,*) 'copy_rj_phys_data_to_IO'
       call copy_rj_phys_data_to_IO(rj_fld%num_phys, rj_fld, fld_IO)
 !
-     call reset_time_data(time_IO)
-     call set_field_file_fmt_prefix                                     &
-     &   (sph_file_trns_p%iflag_format, sph_file_trns_p%file_prefix,    &
-     &    fld_IO)
+      call reset_time_data(time_IO)
       call sel_write_step_SPH_field_file                                &
-     &   (nprocs, my_rank, i_step, time_IO, fld_IO)
+     &   (nprocs, my_rank, i_step, sph_file_trns_p, time_IO, fld_IO)
 !
       end subroutine SPH_analyze_sph_trans
 !
@@ -125,6 +122,7 @@
       subroutine SPH_analyze_sph_zm_trans                               &
      &         (i_step, sph_mesh, rj_fld, fld_IO)
 !
+      use m_ctl_params_sph_trans
       use t_spheric_mesh
       use t_phys_data
       use t_field_data_IO
@@ -164,7 +162,7 @@
 !
       call reset_time_data(time_IO)
       call sel_write_step_SPH_field_file                                &
-     &   (nprocs, my_rank, i_step, time_IO, fld_IO)
+     &   (nprocs, my_rank, i_step, sph_file_trns_p, time_IO, fld_IO)
 !
       end subroutine SPH_analyze_sph_zm_trans
 !

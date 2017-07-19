@@ -21,12 +21,10 @@
       integer(kind=kint ), parameter ::  id_merged_ucd = 16
 !
       type(field_IO_params), save :: merge_org_mesh_file
-!
       type(field_IO_params), save :: merged_mesh_file
-!merged_mesh_file%iflag_format
 !
-      character(len=kchara) :: org_rst_head
-      character(len=kchara) :: new_rst_head
+      type(field_IO_params), save :: org_fst_param
+      type(field_IO_params), save :: new_fst_param
 !
 !
       integer(kind=kint ) :: istep_start, istep_end, increment_step
@@ -70,9 +68,6 @@
       character(len=kchara) :: dx_connect_fname
 !
       integer(kind=kint ) :: iorg_mesh_file_fmt = 0
-      integer(kind=kint ) :: iorg_rst_file_fmt =  0
-!
-      integer(kind=kint ) :: inew_rst_file_fmt =  0
 !
       integer(kind=kint ) :: iflag_delete_org = 0
 !
@@ -201,28 +196,17 @@
       use m_geometry_data_4_merge
       use m_2nd_geometry_4_merge
       use m_file_format_switch
+      use set_control_platform_data
 !
 !
       call set_control_4_newudt
 !
-!
-      if (source_plt%restart_file_prefix%iflag .gt. 0) then
-        org_rst_head = source_plt%restart_file_prefix%charavalue
-      else
-        org_rst_head = org_rst_def_head
-      end if
-!
-      if(assemble_plt%restart_file_prefix%iflag .gt. 0) then
-        new_rst_head = assemble_plt%restart_file_prefix%charavalue
-      else
-        new_rst_head = new_rst_def_head
-      end if
-!
-      call choose_para_file_format                                      &
-     &   (source_plt%restart_file_fmt_ctl, iorg_rst_file_fmt)
-      call choose_para_file_format                                      &
-     &   (assemble_plt%restart_file_fmt_ctl, inew_rst_file_fmt)
-!
+      call set_parallel_file_ctl_params(org_rst_def_head,               &
+     &    source_plt%restart_file_prefix,                               &
+     &    source_plt%restart_file_fmt_ctl, org_fst_param)
+      call set_parallel_file_ctl_params(new_rst_def_head,               &
+     &    assemble_plt%restart_file_prefix,                             &
+     &    assemble_plt%restart_file_fmt_ctl, new_fst_param)
 !
       if (magnetic_ratio_ctl%iflag .gt. 0) then
         b_ratio = magnetic_ratio_ctl%realvalue
