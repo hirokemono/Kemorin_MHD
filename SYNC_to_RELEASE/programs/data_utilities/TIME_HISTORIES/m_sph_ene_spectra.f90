@@ -1,1 +1,0 @@
-/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/programs/data_utilities/sph_spectr/m_sph_ene_spectra.f90

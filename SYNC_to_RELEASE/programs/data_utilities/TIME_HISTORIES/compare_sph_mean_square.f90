@@ -1,1 +1,1 @@
-/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/programs/data_utilities/sph_spectr/compare_sph_mean_square.f90
+../../../../MHD/programs/data_utilities/sph_spectr/compare_sph_mean_square.f90
