@@ -19,8 +19,11 @@
 !
 !>      Structure of file name and format for MHD
       type MHD_file_IO_params
+!>        Structure of mesh file IO paramters
+        type(field_IO_params) ::  mesh_file_IO
 !>        Structure of file name and format for restart file
         type(field_IO_params) :: fst_file_IO
+!
 !>        Structure of file name and format for model coefficients
         type(field_IO_params) :: Csim_file_IO
 !>        Structure of file name and format for commutation coefficients

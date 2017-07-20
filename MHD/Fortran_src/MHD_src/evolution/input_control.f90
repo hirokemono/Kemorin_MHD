@@ -77,13 +77,10 @@
 !
 !>      Control struture for MHD simulation
       type(mhd_simulation_control), save :: FEM_MHD_ctl
-!>      Structure for mesh file IO paramters
-      type(field_IO_params), save ::  mesh1_file
 !>      Structure for field data IO paramters
       type(field_IO_params), save :: FEM_udt_org_param
 !
       private :: FEM_MHD_ctl
-      private :: mesh1_file
       private :: input_meshes_4_MHD, boundary_file_IO_control
 !
 ! ----------------------------------------------------------------------
@@ -134,12 +131,12 @@
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_FEM_MHD'
       call set_control_4_FEM_MHD                                        &
      &   (FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt, FEM_MHD_ctl%model_ctl,  &
-     &    FEM_MHD_ctl%ctl_ctl, FEM_MHD_ctl%nmtr_ctl, mesh1_file,        &
-     &    MHD_files, FEM_udt_org_param, FEM_prm, SGS_par, MHD_step,     &
-     &    MHD_prop, MHD_BC, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
+     &    FEM_MHD_ctl%ctl_ctl, FEM_MHD_ctl%nmtr_ctl, MHD_files,         &
+     &    FEM_udt_org_param, FEM_prm, SGS_par, MHD_step, MHD_prop,      &
+     &    MHD_BC, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
 !
 !  --  load FEM mesh data
-      call mpi_input_mesh(mesh1_file, nprocs, mesh, group,              &
+      call mpi_input_mesh(MHD_files%mesh_file_IO, nprocs, mesh, group,  &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
       call input_meshes_4_MHD                                           &
@@ -149,7 +146,7 @@
       if(cmp_no_case(FEM_PRM%CG11_param%METHOD, cflag_mgcg)) then
         call alloc_MHD_MG_DJDS_mat(MGCG_WK%num_MG_level, MHD_matrices)
         call input_MG_mesh                                              &
-     &     (FEM_prm%MG_file, MGCG_WK, MGCG_FEM, mesh1_file)
+     &     (FEM_prm%MG_file, MGCG_WK, MGCG_FEM, MHD_files%mesh_file_IO)
         call input_MG_itp_tables(FEM_prm%MG_file, MGCG_WK, MGCG_FEM,    &
      &      MHD_matrices%MG_interpolate)
       else
@@ -204,12 +201,12 @@
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_FEM_MHD'
       call set_control_4_FEM_MHD                                        &
      &   (FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt, FEM_MHD_ctl%model_ctl,  &
-     &    FEM_MHD_ctl%ctl_ctl, FEM_MHD_ctl%nmtr_ctl, mesh1_file,        &
-     &    MHD_files, FEM_udt_org_param, FEM_prm, SGS_par, MHD_step,     &
-     &    MHD_prop, MHD_BC, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
+     &    FEM_MHD_ctl%ctl_ctl, FEM_MHD_ctl%nmtr_ctl, MHD_files,         &
+     &    FEM_udt_org_param, FEM_prm, SGS_par, MHD_step, MHD_prop,      &
+     &    MHD_BC, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
 !
 !  --  load FEM mesh data
-      call mpi_input_mesh(mesh1_file, nprocs, mesh, group,              &
+      call mpi_input_mesh(MHD_files%mesh_file_IO, nprocs, mesh, group,  &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
       call input_meshes_4_MHD                                           &

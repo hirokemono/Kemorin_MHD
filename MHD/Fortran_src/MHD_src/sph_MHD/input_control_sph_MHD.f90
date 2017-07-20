@@ -74,8 +74,6 @@
 !
       type(sph_grids), private :: sph_tmp
 !
-!>      Structure for mesh file IO paramters
-      type(field_IO_params), save ::  mesh1_file
 !>      Structure of dynamo file parameters for original data
       type(file_params_4_sph_mhd), save :: MHD1_org_files
 !>        Structures for boundary conditions
@@ -84,7 +82,7 @@
 !>      Structure to construct grid
       type(construct_spherical_grid), save :: gen_sph1
 !
-      private :: mesh1_file, gen_sph1
+      private :: gen_sph1
       private :: select_make_SPH_mesh
       private :: sph_boundary_IO_control
 !
@@ -129,7 +127,7 @@
       call set_control_SGS_SPH_MHD(MHD_ctl%plt, MHD_ctl%org_plt,        &
      &    MHD_ctl%model_ctl, MHD_ctl%ctl_ctl, MHD_ctl%smonitor_ctl,     &
      &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl, sph_tmp, rj_fld,          &
-     &    mesh1_file, MHD1_org_files, MHD_files, bc_IO1, pwr, SGS_par,  &
+     &    MHD_files, MHD1_org_files, bc_IO1, pwr, SGS_par,              &
      &    dynamic_SPH%sph_filters, MHD_step, MHD_prop, MHD_BC,          &
      &    WK%WK_sph, gen_sph1)
 !
@@ -139,7 +137,7 @@
 !
       call select_make_SPH_mesh(MHD_ctl%psph_ctl%iflag_sph_shell,       &
      &    sph, comms_sph, sph_grps, gen_sph1,                           &
-     &    mesh, group, ele_mesh, mesh1_file)
+     &    mesh, group, ele_mesh, MHD_files%mesh_file_IO)
 !
       call sph_boundary_IO_control(MHD_prop, MHD_BC)
 !
@@ -175,7 +173,7 @@
       call set_control_SGS_SPH_MHD(MHD_ctl%plt, MHD_ctl%org_plt,        &
      &    MHD_ctl%model_ctl, MHD_ctl%ctl_ctl, MHD_ctl%smonitor_ctl,     &
      &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl, sph_tmp, rj_fld,          &
-     &    mesh1_file, MHD1_org_files, MHD_files, bc_IO1, pwr, SGS_par,  &
+     &    MHD_files, MHD1_org_files, bc_IO1, pwr, SGS_par,              &
      &    dynamic_SPH%sph_filters, MHD_step, MHD_prop, MHD_BC,          &
      &    WK%WK_sph, gen_sph1)
 !
@@ -220,12 +218,12 @@
       call set_control_4_SPH_MHD(MHD_ctl%plt, MHD_ctl%org_plt,          &
      &    MHD_ctl%model_ctl, MHD_ctl%ctl_ctl, MHD_ctl%smonitor_ctl,     &
      &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl, sph_tmp, rj_fld,          &
-     &    mesh1_file, MHD1_org_files, MHD_files, bc_IO1, pwr, SGS_par,  &
+     &    MHD_files, MHD1_org_files, bc_IO1, pwr, SGS_par,              &
      &    MHD_step, MHD_prop, MHD_BC, WK%WK_sph, gen_sph1)
 !
       call select_make_SPH_mesh(MHD_ctl%psph_ctl%iflag_sph_shell,       &
      &    sph, comms_sph, sph_grps, gen_sph1,                           &
-     &    mesh, group, ele_mesh, mesh1_file)
+     &    mesh, group, ele_mesh, MHD_files%mesh_file_IO)
 !
       call sph_boundary_IO_control(MHD_prop, MHD_BC)
 !
@@ -262,7 +260,7 @@
       call set_control_4_SPH_MHD(MHD_ctl%plt, MHD_ctl%org_plt,          &
      &    MHD_ctl%model_ctl, MHD_ctl%ctl_ctl, MHD_ctl%smonitor_ctl,     &
      &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl, sph_tmp, rj_fld,          &
-     &    mesh1_file, MHD1_org_files, MHD_files, bc_IO1, pwr, SGS_par,  &
+     &    MHD_files, MHD1_org_files, bc_IO1, pwr, SGS_par,              &
      &    MHD_step, MHD_prop, MHD_BC, WK%WK_sph, gen_sph1)
 !
       call set_control_4_SPH_to_FEM                                     &

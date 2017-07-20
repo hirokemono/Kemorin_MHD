@@ -8,16 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine set_control_4_FEM_MHD                                &
-!!     &        (plt, org_plt, model_ctl, ctl_ctl, nmtr_ctl, mesh_file, &
-!!     &         MHD_files, udt_org_param, FEM_prm, SGS_par,            &
-!!     &         MHD_step, MHD_prop, MHD_BC, MGCG_WK, MGCG_FEM,         &
-!!     &         MGCG_MHD_FEM, nod_fld)
+!!     &        (plt, org_plt, model_ctl, ctl_ctl, nmtr_ctl, MHD_files, &
+!!     &         udt_org_param, FEM_prm, SGS_par, MHD_step, MHD_prop,   &
+!!     &         MHD_BC, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
 !!        type(mhd_model_control), intent(inout) :: model_ctl
 !!        type(mhd_control_control), intent(inout) :: ctl_ctl
 !!        type(node_monitor_control), intent(inout) :: nmtr_ctl
-!!        type(field_IO_params), intent(inout) :: mesh_file
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(field_IO_params), intent(inout) :: udt_org_param
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
@@ -56,10 +54,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_control_4_FEM_MHD                                  &
-     &        (plt, org_plt, model_ctl, ctl_ctl, nmtr_ctl, mesh_file,   &
-     &         MHD_files, udt_org_param, FEM_prm, SGS_par,              &
-     &         MHD_step, MHD_prop, MHD_BC, MGCG_WK, MGCG_FEM,           &
-     &         MGCG_MHD_FEM, nod_fld)
+     &        (plt, org_plt, model_ctl, ctl_ctl, nmtr_ctl, MHD_files,   &
+     &         udt_org_param, FEM_prm, SGS_par, MHD_step, MHD_prop,     &
+     &         MHD_BC, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
 !
       use calypso_mpi
       use m_default_file_prefix
@@ -94,7 +91,6 @@
       type(mhd_model_control), intent(inout) :: model_ctl
       type(mhd_control_control), intent(inout) :: ctl_ctl
       type(node_monitor_control), intent(inout) :: nmtr_ctl
-      type(field_IO_params), intent(inout) :: mesh_file
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(field_IO_params), intent(inout) :: udt_org_param
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
@@ -113,7 +109,7 @@
       call turn_off_debug_flag_by_ctl(my_rank, plt)
       call check_control_num_domains(plt)
       call set_control_smp_def(my_rank, plt)
-      call set_control_mesh_def(plt, mesh_file)
+      call set_control_mesh_def(plt, MHD_files%mesh_file_IO)
       call set_control_restart_file_def(plt, MHD_files%fst_file_IO)
       call set_merged_ucd_file_define(plt, MHD_files%ucd_file_IO)
       call set_control_mesh_file_def                                    &

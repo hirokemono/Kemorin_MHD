@@ -9,15 +9,13 @@
 !!@verbatim
 !!      subroutine set_control_SGS_SPH_MHD(plt, org_plt,                &
 !!     &         model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,  &
-!!     &         sph_gen, rj_fld, mesh_file, sph_file_param,            &
-!!     &         MHD_org_files, MHD_files, bc_IO, pwr, SGS_par,         &
-!!     &         sph_filters, MHD_step, MHD_prop, MHD_BC,               &
+!!     &         sph_gen, rj_fld, MHD_files, MHD_org_files, bc_IO, pwr, &
+!!     &         SGS_par, sph_filters, MHD_step, MHD_prop, MHD_BC,      &
 !!     &         WK_sph, gen_sph)
 !!      subroutine set_control_4_SPH_MHD(plt, org_plt,                  &
 !!     &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl, &
-!!     &          sph_gen, rj_fld, mesh_file, sph_file_param,           &
-!!     &          MHD_org_files, fst_file_IO, bc_IO, pwr, SGS_par,      &
-!!     &          MHD_step, MHD_prop, MHD_BC, WK_sph, gen_sph)
+!!     &          sph_gen, rj_fld, MHD_files, MHD_org_files, bc_IO, pwr,&
+!!     &          SGS_par, MHD_step, MHD_prop, MHD_BC, WK_sph, gen_sph)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
 !!        type(mhd_model_control), intent(inout) :: model_ctl
@@ -27,9 +25,6 @@
 !!        type(parallel_sph_shell_control), intent(inout) :: psph_ctl
 !!        type(sph_grids), intent(inout) :: sph_gen
 !!        type(phys_data), intent(inout) :: rj_fld
-!!        type(field_IO_params), intent(inout) :: mesh_file
-!!        type(field_IO_params), intent(inout) :: sph_file_param
-!!        type(field_IO_params), intent(inout) :: fst_file_IO
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(file_params_4_sph_mhd), intent(inout) :: MHD_org_files
 !!        type(sph_mean_squares), intent(inout) :: pwr
@@ -75,9 +70,9 @@
 !
       subroutine set_control_SGS_SPH_MHD(plt, org_plt,                  &
      &         model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,    &
-     &         sph_gen, rj_fld, mesh_file, MHD_org_files, MHD_files,    &
-     &         bc_IO, pwr, SGS_par, sph_filters, MHD_step, MHD_prop,    &
-     &         MHD_BC, WK_sph, gen_sph)
+     &         sph_gen, rj_fld, MHD_files, MHD_org_files, bc_IO, pwr,   &
+     &         SGS_par, sph_filters, MHD_step, MHD_prop, MHD_BC,        &
+     &         WK_sph, gen_sph)
 !
       use m_ucd_data
       use sph_mhd_rms_IO
@@ -102,7 +97,6 @@
       type(parallel_sph_shell_control), intent(inout) :: psph_ctl
       type(sph_grids), intent(inout) :: sph_gen
       type(phys_data), intent(inout) :: rj_fld
-      type(field_IO_params), intent(inout) :: mesh_file
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(file_params_4_sph_mhd), intent(inout) :: MHD_org_files
       type(boundary_spectra), intent(inout) :: bc_IO
@@ -136,8 +130,8 @@
       if (iflag_debug.gt.0) write(*,*) 'set_control_4_SPH_MHD'
       call set_control_4_SPH_MHD(plt, org_plt,                          &
      &    model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,         &
-     &    sph_gen, rj_fld, mesh_file, MHD_org_files, MHD_files, bc_IO,  &
-     &    pwr, SGS_par, MHD_step, MHD_prop, MHD_BC, WK_sph, gen_sph)
+     &    sph_gen, rj_fld, MHD_files, MHD_org_files, bc_IO, pwr,        &
+     &    SGS_par, MHD_step, MHD_prop, MHD_BC, WK_sph, gen_sph)
 !
       end subroutine set_control_SGS_SPH_MHD
 !
@@ -145,9 +139,8 @@
 !
       subroutine set_control_4_SPH_MHD(plt, org_plt,                    &
      &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,   &
-     &          sph_gen, rj_fld, mesh_file, MHD_org_files, MHD_files,   &
-     &          bc_IO, pwr, SGS_par, MHD_step, MHD_prop, MHD_BC,        &
-     &          WK_sph, gen_sph)
+     &          sph_gen, rj_fld, MHD_files, MHD_org_files, bc_IO, pwr,  &
+     &          SGS_par, MHD_step, MHD_prop, MHD_BC, WK_sph, gen_sph)
 !
       use m_flexible_time_step
       use sph_mhd_rms_IO
@@ -184,7 +177,6 @@
       type(sph_grids), intent(inout) :: sph_gen
       type(phys_data), intent(inout) :: rj_fld
       type(MHD_file_IO_params), intent(inout) :: MHD_files
-      type(field_IO_params), intent(inout) :: mesh_file
       type(file_params_4_sph_mhd), intent(inout) :: MHD_org_files
       type(boundary_spectra), intent(inout) :: bc_IO
       type(SGS_paremeters), intent(inout) :: SGS_par
@@ -203,9 +195,10 @@
       call turn_off_debug_flag_by_ctl(my_rank, plt)
       call check_control_num_domains(plt)
       call set_control_smp_def(my_rank, plt)
-      call set_control_mesh_def(plt, mesh_file)
+      call set_control_mesh_def(plt, MHD_files%mesh_file_IO)
       call set_FEM_mesh_switch_4_SPH(plt, iflag_output_mesh)
-      call set_control_sph_mesh(plt, mesh_file, MHD_files%sph_file_IO)
+      call set_control_sph_mesh                                         &
+     &   (plt, MHD_files%mesh_file_IO, MHD_files%sph_file_IO)
       call set_control_restart_file_def(plt, MHD_files%fst_file_IO)
       call set_merged_ucd_file_define(plt, MHD_files%ucd_file_IO)
       call set_control_org_sph_files(org_plt, MHD_org_files)
