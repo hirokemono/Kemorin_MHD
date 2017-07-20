@@ -70,7 +70,6 @@
      &         rj_fld, MHD_files, bc_IO, pwr, SGS_par, sph_filters,     &
      &         MHD_step, MHD_prop, MHD_BC, WK_sph, gen_sph)
 !
-      use m_ucd_data
       use sph_mhd_rms_IO
 !
       use t_SGS_control_parameter
