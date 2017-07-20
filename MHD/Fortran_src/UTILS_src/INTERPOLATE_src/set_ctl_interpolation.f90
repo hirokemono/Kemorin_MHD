@@ -70,15 +70,17 @@
       end if
 !
 !
-      call set_parallel_file_ctl_params(def_itp_rst_prefix,             &
-     &    dst_plt%restart_file_prefix, dst_plt%restart_file_fmt_ctl,    &
-     &    itp_fst_IO)
       call set_parallel_file_ctl_params(def_org_rst_prefix,             &
      &    src_plt%restart_file_prefix, src_plt%restart_file_fmt_ctl,    &
      &    org_fst_IO)
+      call set_parallel_file_ctl_params(def_itp_rst_prefix,             &
+     &    dst_plt%restart_file_prefix, dst_plt%restart_file_fmt_ctl,    &
+     &    itp_fst_IO)
 !
-      call set_merged_ucd_file_define(dst_plt, itp_ucd_IO)
       call set_merged_ucd_file_define(src_plt, org_ucd_IO)
+      call set_merged_ucd_file_ctl(itp_udt_file_head,                   &
+     &    dst_plt%field_file_prefix, dst_plt%field_file_fmt_ctl,        &
+     &    itp_ucd_IO)
 !
       ndomain_org = 1
       if (src_plt%ndomain_ctl%iflag .gt. 0) then

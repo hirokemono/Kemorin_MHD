@@ -44,8 +44,6 @@
      &      :: def_new_udt_head = 'field_new/out'
 !
       character(len=kchara), parameter                                  &
-     &      :: def_org_udt_head =    'field/out'
-      character(len=kchara), parameter                                  &
      &      :: def_dx_node_file_name =    'node_info.dat'
       character(len=kchara), parameter                                  &
      &      :: def_dx_connect_file_name = 'connect_info.dat'
@@ -64,7 +62,7 @@
 !
       real(kind = kreal) :: b_ratio
 !
-      private :: def_org_udt_head, def_merged_mesh_header
+      private :: def_merged_mesh_header, def_new_udt_head
       private :: org_rst_def_head, new_rst_def_head
 !
       private :: allocate_control_4_merge
@@ -119,8 +117,10 @@
 !
       call set_control_mesh_def(source_plt, merge_org_mesh_file)
 !
-      call set_merged_ucd_file_define(source_plt,   original_ucd_param)
-      call set_merged_ucd_file_define(assemble_plt, assemble_ucd_param)
+      call set_merged_ucd_file_define(source_plt, original_ucd_param)
+      call set_merged_ucd_file_ctl                                      &
+     &   (def_new_udt_head, assemble_plt%field_file_prefix,             &
+     &    assemble_plt%field_file_fmt_ctl, assemble_ucd_param)
 !
 !
        num_nod_phys = 0

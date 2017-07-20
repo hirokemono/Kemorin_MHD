@@ -31,8 +31,6 @@
 !
       character(len = kchara), parameter                                &
      &             :: def_org_rst_prefix = "restart/rst"
-      character(len = kchara), parameter                                &
-     &             :: org_udt_file_head = "field/out"
 !
       character(len = kchara) :: itp_node_file_head = "node_test_itp"
       character(len = kchara), parameter                                &
