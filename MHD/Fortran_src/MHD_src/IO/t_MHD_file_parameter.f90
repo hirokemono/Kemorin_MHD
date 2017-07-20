@@ -28,6 +28,8 @@
 !
 !>        Structure of file name and format for restart file
         type(field_IO_params) :: ucd_file_IO
+!>        Structure of file name and format for spectr data file
+        type(field_IO_params) :: sph_file_IO
       end type MHD_file_IO_params
 !
       end module t_MHD_file_parameter

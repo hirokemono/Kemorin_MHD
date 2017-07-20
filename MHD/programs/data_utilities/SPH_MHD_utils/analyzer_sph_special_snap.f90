@@ -219,7 +219,7 @@
 !*  -----------  Output spectr data --------------
 !*
       call output_spectr_4_snap(i_step, MHD_step1%time_d,               &
-     &    sph_file_param1, rj_fld1, MHD_step%ucd_step)
+     &    MHD_files%sph_file_IO, rj_fld1, MHD_step%ucd_step)
 !
       end subroutine SPH_analyze_special_snap
 !

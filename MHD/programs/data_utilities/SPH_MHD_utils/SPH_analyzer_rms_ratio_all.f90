@@ -7,7 +7,7 @@
 !>@brief Evolution loop for spherical MHD
 !!
 !!@verbatim
-!!      subroutine SPH_analyze_rms_ratio_all(time_d, MHD_step)
+!!      subroutine SPH_analyze_rms_ratio_all(time_d, MHD_files, MHD_step)
 !!        type(time_data), intent(in) :: time_d
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!@endverbatim
@@ -21,6 +21,7 @@
       use t_file_IO_parameter
       use t_phys_data
       use t_MHD_step_parameter
+      use t_MHD_file_parameter
       use SPH_analyzer_back_trans
 !
       implicit none
@@ -34,7 +35,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_rms_ratio_all(time_d, MHD_step)
+      subroutine SPH_analyze_rms_ratio_all(time_d, MHD_files, MHD_step)
 !
       use m_work_time
       use m_spheric_parameter
@@ -57,6 +58,7 @@
       use zonal_correlation_rtp
 !
       type(time_data), intent(in) :: time_d
+      type(MHD_file_IO_params), intent(in) :: MHD_files
       type(MHD_step_param), intent(inout) :: MHD_step
 !
       integer(kind = kint) :: iflag, ncomp
@@ -73,7 +75,7 @@
 !
       call read_alloc_sph_spectr                                        &
      &   (time_d%i_time_step, MHD1_org_files%rj_file_param,             &
-     &    sph_file_param1, sph1%sph_rj, ipol, rj_fld1,                  &
+     &    MHD_files%sph_file_IO, sph1%sph_rj, ipol, rj_fld1,            &
      &    MHD_step%ucd_step, MHD_step%init_d)
 !
       call copy_field_name_type(rj_fld1, ref_rj_fld)

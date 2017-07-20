@@ -76,8 +76,6 @@
 !
 !>      Structure for mesh file IO paramters
       type(field_IO_params), save ::  mesh1_file
-!>      Structure for spectr file  paramters
-      type(field_IO_params), save :: sph_file_param1
 !>      Structure of dynamo file parameters for original data
       type(file_params_4_sph_mhd), save :: MHD1_org_files
 !>        Structures for boundary conditions
@@ -130,10 +128,10 @@
       if (iflag_debug.eq.1) write(*,*) 'set_control_SGS_SPH_MHD'
       call set_control_SGS_SPH_MHD(MHD_ctl%plt, MHD_ctl%org_plt,        &
      &    MHD_ctl%model_ctl, MHD_ctl%ctl_ctl, MHD_ctl%smonitor_ctl,     &
-     &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl,                           &
-     &    sph_tmp, rj_fld, mesh1_file, sph_file_param1, MHD1_org_files, &
-     &    MHD_files, bc_IO1, pwr, SGS_par, dynamic_SPH%sph_filters,     &
-     &    MHD_step, MHD_prop, MHD_BC, WK%WK_sph, gen_sph1)
+     &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl, sph_tmp, rj_fld,          &
+     &    mesh1_file, MHD1_org_files, MHD_files, bc_IO1, pwr, SGS_par,  &
+     &    dynamic_SPH%sph_filters, MHD_step, MHD_prop, MHD_BC,          &
+     &    WK%WK_sph, gen_sph1)
 !
       call set_control_4_SPH_to_FEM                                     &
      &   (MHD_ctl%psph_ctl%spctl, sph%sph_params, rj_fld, nod_fld)
@@ -176,10 +174,10 @@
       if (iflag_debug.eq.1) write(*,*) 'set_control_SGS_SPH_MHD'
       call set_control_SGS_SPH_MHD(MHD_ctl%plt, MHD_ctl%org_plt,        &
      &    MHD_ctl%model_ctl, MHD_ctl%ctl_ctl, MHD_ctl%smonitor_ctl,     &
-     &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl,                           &
-     &    sph_tmp, rj_fld, mesh1_file, sph_file_param1, MHD1_org_files, &
-     &    MHD_files, bc_IO1, pwr, SGS_par, dynamic_SPH%sph_filters,     &
-     &    MHD_step, MHD_prop, MHD_BC, WK%WK_sph, gen_sph1)
+     &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl, sph_tmp, rj_fld,          &
+     &    mesh1_file, MHD1_org_files, MHD_files, bc_IO1, pwr, SGS_par,  &
+     &    dynamic_SPH%sph_filters, MHD_step, MHD_prop, MHD_BC,          &
+     &    WK%WK_sph, gen_sph1)
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
       call load_para_sph_mesh(sph, comms_sph, sph_grps)
@@ -221,9 +219,8 @@
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
       call set_control_4_SPH_MHD(MHD_ctl%plt, MHD_ctl%org_plt,          &
      &    MHD_ctl%model_ctl, MHD_ctl%ctl_ctl, MHD_ctl%smonitor_ctl,     &
-     &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl,                           &
-     &    sph_tmp, rj_fld, mesh1_file, sph_file_param1,                 &
-     &    MHD1_org_files, MHD_files, bc_IO1, pwr, SGS_par,              &
+     &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl, sph_tmp, rj_fld,          &
+     &    mesh1_file, MHD1_org_files, MHD_files, bc_IO1, pwr, SGS_par,  &
      &    MHD_step, MHD_prop, MHD_BC, WK%WK_sph, gen_sph1)
 !
       call select_make_SPH_mesh(MHD_ctl%psph_ctl%iflag_sph_shell,       &
@@ -264,9 +261,8 @@
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
       call set_control_4_SPH_MHD(MHD_ctl%plt, MHD_ctl%org_plt,          &
      &    MHD_ctl%model_ctl, MHD_ctl%ctl_ctl, MHD_ctl%smonitor_ctl,     &
-     &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl,                           &
-     &    sph_tmp, rj_fld, mesh1_file, sph_file_param1,                 &
-     &    MHD1_org_files, MHD_files, bc_IO1, pwr, SGS_par,              &
+     &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl, sph_tmp, rj_fld,          &
+     &    mesh1_file, MHD1_org_files, MHD_files, bc_IO1, pwr, SGS_par,  &
      &    MHD_step, MHD_prop, MHD_BC, WK%WK_sph, gen_sph1)
 !
       call set_control_4_SPH_to_FEM                                     &

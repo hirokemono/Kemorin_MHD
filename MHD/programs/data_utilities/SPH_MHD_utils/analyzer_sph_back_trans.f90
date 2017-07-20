@@ -54,8 +54,6 @@
       use FEM_analyzer_sph_MHD_w_viz
       use input_control_sph_MHD
 !
-      integer(kind = kint) :: iflag
-!
       write(*,*) 'Simulation start: PE. ', my_rank
       total_start = MPI_WTIME()
       call set_sph_MHD_elapsed_label
@@ -126,7 +124,7 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_back_trans'
         call SPH_analyze_back_trans(MHD_step1%time_d%i_time_step,       &
-     &                              MHD_step1)
+     &                              MHD_files1, MHD_step1)
 !*
 !*  -----------  output field data --------------
 !*

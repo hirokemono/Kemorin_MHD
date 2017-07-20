@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine SPH_init_sph_back_trans(iphys)
 !!        type(phys_address), intent(in) :: iphys
-!!      subroutine SPH_analyze_back_trans(i_step, MHD_step)
+!!      subroutine SPH_analyze_back_trans(i_step, MHD_files, MHD_step)
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!@endverbatim
 !
@@ -19,6 +19,7 @@
       use calypso_mpi
       use t_phys_address
       use t_MHD_step_parameter
+      use t_MHD_file_parameter
 !
       implicit none
 !
@@ -98,7 +99,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_back_trans(i_step, MHD_step)
+      subroutine SPH_analyze_back_trans(i_step, MHD_files, MHD_step)
 !
       use m_work_time
       use m_spheric_parameter
@@ -119,11 +120,12 @@
       use sph_transforms_snapshot
 !
       integer(kind = kint), intent(in) :: i_step
+      type(MHD_file_IO_params), intent(in) :: MHD_files
       type(MHD_step_param), intent(inout) :: MHD_step
 !
 !
       call read_alloc_sph_spectr                                        &
-     &   (i_step, MHD1_org_files%rj_file_param, sph_file_param1,        &
+     &   (i_step, MHD1_org_files%rj_file_param, MHD_files%sph_file_IO,  &
      &    sph1%sph_rj, ipol, rj_fld1,                                   &
      &    MHD_step%ucd_step, MHD_step%init_d)
       call copy_time_data(MHD_step%init_d, MHD_step%time_d)

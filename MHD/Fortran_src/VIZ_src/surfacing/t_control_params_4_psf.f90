@@ -17,13 +17,13 @@
       implicit  none
 !
 !
-      character(len = kchara), target, allocatable :: psf_header(:)
-      integer(kind = kint), target, allocatable :: itype_psf_file(:)
+        character(len = kchara), allocatable :: psf_header(:)
+        integer(kind = kint), allocatable :: itype_psf_file(:)
 !
-      integer(kind = kint), allocatable :: id_section_method(:)
+        integer(kind = kint), allocatable :: id_section_method(:)
 !
 !
-      real(kind = kreal), allocatable :: const_psf(:,:)
+        real(kind = kreal), allocatable :: const_psf(:,:)
 !
       integer(kind = kint), allocatable :: id_psf_group(:)
 !

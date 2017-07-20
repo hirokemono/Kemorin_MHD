@@ -130,7 +130,8 @@
 !*  ----------  time evolution by spectral methood -----------------
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_correlate_all'
-        call SPH_analyze_rms_ratio_all(MHD_step1%time_d, MHD_step1)
+        call SPH_analyze_rms_ratio_all                                  &
+     &     (MHD_step1%time_d, MHD_files1, MHD_step1)
 !*
 !*  -----------  output field data --------------
 !*

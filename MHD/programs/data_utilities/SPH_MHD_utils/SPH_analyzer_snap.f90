@@ -204,7 +204,7 @@
 !*
       if(iflag_debug.gt.0)  write(*,*) 'output_spectr_4_snap'
       call output_spectr_4_snap(i_step, MHD_step1%time_d,               &
-     &    sph_file_param1, rj_fld1, MHD_step%ucd_step)
+     &    MHD_files%sph_file_IO, rj_fld1, MHD_step%ucd_step)
       call end_eleps_time(4)
 !
       end subroutine SPH_analyze_snap
