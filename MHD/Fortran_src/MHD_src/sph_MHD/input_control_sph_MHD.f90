@@ -71,15 +71,15 @@
 !
       private :: set_control_4_SPH_to_FEM
 !
-      type(sph_grids), private :: sph_tmp
-!
-!>        Structures for boundary conditions
+!>      Structures for boundary conditions
       type(boundary_spectra), save :: bc_IO1
 !
 !>      Structure to construct grid
       type(construct_spherical_grid), save :: gen_sph1
 !
-      private :: gen_sph1
+      type(sph_grids), save :: sph_tmp
+!
+      private :: gen_sph1, sph_tmp
       private :: select_make_SPH_mesh
       private :: sph_boundary_IO_control
 !

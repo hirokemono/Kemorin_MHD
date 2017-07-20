@@ -3,10 +3,11 @@
 !
 !      modified by H. Matsui on June, 2005 
 !
-!!      subroutine FEM_initialize_vol_average(fst_file_IO, MHD_step)
-!!        type(field_IO_params), intent(inout) :: fst_file_IO
+!!      subroutine FEM_initialize_vol_average(MHD_files, MHD_step)
+!!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(MHD_step_param), intent(inout) :: MHD_step
-!!      subroutine FEM_analyze_vol_average(i_step, MHD_step)
+!!      subroutine FEM_analyze_vol_average(i_step, MHD_files, MHD_step)
+!!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !
       module FEM_analyzer_vol_average
@@ -16,6 +17,7 @@
       use m_work_time
       use m_SGS_control_parameter
       use t_time_data
+      use t_MHD_file_parameter
       use t_MHD_step_parameter
 !
       use calypso_mpi
@@ -30,7 +32,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_vol_average(fst_file_IO, MHD_step)
+      subroutine FEM_initialize_vol_average(MHD_files, MHD_step)
 !
       use m_mesh_data
       use m_node_phys_data
@@ -44,14 +46,14 @@
       use node_monitor_IO
       use open_sgs_model_coefs
 !
-      type(field_IO_params), intent(inout) :: fst_file_IO
+      type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(MHD_step_param), intent(inout) :: MHD_step
 !
 !   matrix assembling
 !
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
       call init_analyzer_snap                                           &
-     &   (fst_file_IO, FEM_prm1, SGS_par1, IO_bc1, MHD_step,            &
+     &   (MHD_files%fst_file_IO, FEM_prm1, SGS_par1, IO_bc1, MHD_step,  &
      &    mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,              &
      &    iphys, nod_fld1, SNAP_time_IO, MHD_step%rst_step, label_sim)
 !
@@ -59,7 +61,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_vol_average(i_step, MHD_step)
+      subroutine FEM_analyze_vol_average(i_step, MHD_files, MHD_step)
 !
       use m_control_parameter
       use m_physical_property
@@ -80,6 +82,7 @@
       use output_parallel_ucd_file
 !
       integer(kind = kint), intent(in) :: i_step
+      type(MHD_file_IO_params), intent(in) :: MHD_files
       type(MHD_step_param), intent(inout) :: MHD_step
 !
       integer(kind = kint) :: iflag
@@ -89,8 +92,8 @@
       if (my_rank.eq.0) write(*,*) 'step: ', i_step
 !
       if (iflag_debug.eq.1)  write(*,*) 'read_udt_4_snap'
-      call read_udt_4_snap(i_step,                                      &
-     &    FEM_udt_org_param, nod_fld1, SNAP_time_IO, MHD_step%ucd_step)
+      call read_udt_4_snap(i_step, MHD_files%org_ucd_file_IO,           &
+     &    nod_fld1, SNAP_time_IO, MHD_step%ucd_step)
       MHD_step%time_d%time = MHD_step%init_d%time                       &
      &                      + MHD_step%time_d%dt * dble(i_step)
 !

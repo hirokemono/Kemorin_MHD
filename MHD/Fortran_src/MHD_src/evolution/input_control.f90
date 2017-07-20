@@ -56,13 +56,13 @@
       use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_MHD_step_parameter
+      use t_MHD_file_parameter
       use t_control_parameter
       use t_mesh_data
       use t_boundary_field_IO
       use t_filtering_data
       use t_solver_djds_MHD
       use t_phys_data
-      use t_MHD_file_parameter
       use t_field_data_IO
       use t_ctl_data_MHD
       use t_MGCG_data
@@ -77,8 +77,6 @@
 !
 !>      Control struture for MHD simulation
       type(mhd_simulation_control), save :: FEM_MHD_ctl
-!>      Structure for field data IO paramters
-      type(field_IO_params), save :: FEM_udt_org_param
 !
       private :: FEM_MHD_ctl
       private :: input_meshes_4_MHD, boundary_file_IO_control
@@ -132,8 +130,8 @@
       call set_control_4_FEM_MHD                                        &
      &   (FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt, FEM_MHD_ctl%model_ctl,  &
      &    FEM_MHD_ctl%ctl_ctl, FEM_MHD_ctl%nmtr_ctl, MHD_files,         &
-     &    FEM_udt_org_param, FEM_prm, SGS_par, MHD_step, MHD_prop,      &
-     &    MHD_BC, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
+     &    FEM_prm, SGS_par, MHD_step, MHD_prop, MHD_BC,                 &
+     &    MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
 !
 !  --  load FEM mesh data
       call mpi_input_mesh(MHD_files%mesh_file_IO, nprocs, mesh, group,  &
@@ -202,8 +200,8 @@
       call set_control_4_FEM_MHD                                        &
      &   (FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt, FEM_MHD_ctl%model_ctl,  &
      &    FEM_MHD_ctl%ctl_ctl, FEM_MHD_ctl%nmtr_ctl, MHD_files,         &
-     &    FEM_udt_org_param, FEM_prm, SGS_par, MHD_step, MHD_prop,      &
-     &    MHD_BC, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
+     &    FEM_prm, SGS_par, MHD_step, MHD_prop, MHD_BC,                 &
+     &    MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
 !
 !  --  load FEM mesh data
       call mpi_input_mesh(MHD_files%mesh_file_IO, nprocs, mesh, group,  &

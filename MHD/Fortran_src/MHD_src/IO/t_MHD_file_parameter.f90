@@ -38,6 +38,8 @@
         type(field_IO_params) :: org_rj_file_IO
 !>        Structure for original restart file  paramters
         type(field_IO_params) :: org_rst_file_IO
+!>        Structure for original restart file  paramters
+        type(field_IO_params) :: org_ucd_file_IO
       end type MHD_file_IO_params
 !
 !------------------------------------------------------------------

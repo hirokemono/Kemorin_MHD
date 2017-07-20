@@ -50,8 +50,7 @@
 !   matrix assembling
 !
       if (iflag_debug.eq.1)  write(*,*) 'FEM_initialize_vol_average'
-      call FEM_initialize_vol_average                                   &
-     &   (MHD_files1%fst_file_IO, MHD_step1)
+      call FEM_initialize_vol_average(MHD_files1, MHD_step1)
 !
       end subroutine init_analyzer
 !
@@ -64,7 +63,7 @@
 !
       do i_step = MHD_step1%init_d%i_time_step, MHD_step1%finish_d%i_end_step
         if (iflag_debug.eq.1)  write(*,*) 'FEM_analyze_vol_average'
-        call FEM_analyze_vol_average(i_step, MHD_step1)
+        call FEM_analyze_vol_average(i_step, MHD_files1, MHD_step1)
       end do
 !
 !      call FEM_finalize_vol_average
