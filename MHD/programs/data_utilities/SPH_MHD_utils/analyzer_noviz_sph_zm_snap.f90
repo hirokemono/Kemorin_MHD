@@ -81,7 +81,7 @@
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap'
-      call SPH_init_sph_snap(iphys)
+      call SPH_init_sph_snap(MHD_files1, iphys)
 !
       call calypso_MPI_barrier
 !

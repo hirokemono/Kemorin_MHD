@@ -14,10 +14,10 @@
 !!       Initialzation and evolution loop to pick up data on circle
 !!
 !!@verbatim
-!!      subroutine SPH_init_sph_pick_circle(iphys)
+!!      subroutine SPH_init_sph_pick_circle(MHD_files, iphys)
 !!        type(phys_address), intent(in) :: iphys
-!!      subroutine SPH_analyze_pick_circle(i_step, fst_file_IO)
-!!        type(field_IO_params), intent(in) :: fst_file_IO
+!!      subroutine SPH_analyze_pick_circle(i_step, MHD_files)
+!!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!      subroutine SPH_finalize_pick_circle
 !!@endverbatim
 !
@@ -30,7 +30,7 @@
       use m_boundary_data_sph_MHD
       use m_radial_matrices_sph
       use t_phys_address
-      use t_file_IO_parameter
+      use t_MHD_file_parameter
 !
       implicit none
 !
@@ -40,7 +40,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_init_sph_pick_circle(iphys)
+      subroutine SPH_init_sph_pick_circle(MHD_files, iphys)
 !
       use m_constants
       use m_array_for_send_recv
@@ -77,6 +77,7 @@
       use check_dependency_for_MHD
       use input_control_sph_MHD
 !
+      type(MHD_file_IO_params), intent(in) :: MHD_files
       type(phys_address), intent(in) :: iphys
 !
 !
@@ -129,7 +130,7 @@
 !  set original spectr mesh data for extension of B
 !
       call init_radial_sph_interpolation                                &
-     &   (MHD1_org_files%rj_file_param, sph1%sph_params, sph1%sph_rj)
+     &   (MHD_files%org_rj_file_IO, sph1%sph_params, sph1%sph_rj)
 !
 !* -----  find mid-equator point -----------------
 !
@@ -140,7 +141,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_pick_circle(i_step, fst_file_IO)
+      subroutine SPH_analyze_pick_circle(i_step, MHD_files)
 !
       use m_work_time
       use m_spheric_parameter
@@ -160,12 +161,12 @@
       use output_viz_file_control
 !
       integer(kind = kint), intent(in) :: i_step
-      type(field_IO_params), intent(in) :: fst_file_IO
+      type(MHD_file_IO_params), intent(in) :: MHD_files
       integer(kind = kint) :: iflag
 !
 !
       call read_alloc_sph_rst_4_snap(i_step,                            &
-     &    MHD1_org_files%rj_file_param, fst_file_IO, sph1%sph_rj,       &
+     &    MHD_files%org_rj_file_IO, MHD_files%fst_file_IO, sph1%sph_rj, &
      &    ipol, rj_fld1, MHD_step1%rst_step, MHD_step1%init_d)
       call copy_time_data(MHD_step1%init_d, MHD_step1%time_d)
 !

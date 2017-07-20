@@ -158,7 +158,7 @@
 !
 !
       call read_alloc_sph_rst_SGS_snap                                  &
-     &   (i_step, MHD1_org_files%rj_file_param, MHD_files, sph1%sph_rj, &
+     &   (i_step, MHD_files%org_rj_file_IO, MHD_files, sph1%sph_rj,     &
      &    ipol, rj_fld1, MHD_step%rst_step, MHD_step1%init_d,           &
      &    SGS_par1%i_step_sgs_coefs, SGS_par1%model_p,                  &
      &    trns_WK1%dynamic_SPH)

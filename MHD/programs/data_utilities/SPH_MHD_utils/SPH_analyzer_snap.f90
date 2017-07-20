@@ -7,9 +7,9 @@
 !>@brief Evolution loop for spherical MHD
 !!
 !!@verbatim
-!!      subroutine SPH_init_sph_snap(iphys)
-!!        type(phys_address), intent(in) :: iphys
+!!      subroutine SPH_init_sph_snap(MHD_files, iphys)
 !!      subroutine SPH_analyze_snap(i_step, MHD_files, MHD_step)
+!!        type(phys_address), intent(in) :: iphys
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!@endverbatim
@@ -32,7 +32,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_init_sph_snap(iphys)
+      subroutine SPH_init_sph_snap(MHD_files, iphys)
 !
       use m_constants
       use calypso_mpi
@@ -65,6 +65,7 @@
       use check_dependency_for_MHD
       use input_control_sph_MHD
 !
+      type(MHD_file_IO_params), intent(in) :: MHD_files
       type(phys_address), intent(in) :: iphys
 !
 !
@@ -107,7 +108,7 @@
 !  set original spectr mesh data for extension of B
 !
       call init_radial_sph_interpolation                                &
-     &   (MHD1_org_files%rj_file_param, sph1%sph_params, sph1%sph_rj)
+     &   (MHD_files%org_rj_file_IO, sph1%sph_params, sph1%sph_rj)
 !*
       if(iflag_debug .gt. 0) write(*,*) 'open_sph_vol_rms_file_mhd'
       call open_sph_vol_rms_file_mhd                                    &
@@ -145,7 +146,7 @@
 !
 !
       call read_alloc_sph_rst_SGS_snap                                  &
-     &   (i_step, MHD1_org_files%rj_file_param, MHD_files, sph1%sph_rj, &
+     &   (i_step, MHD_files%org_rj_file_IO, MHD_files, sph1%sph_rj,     &
      &    ipol, rj_fld1, MHD_step%rst_step, MHD_step1%init_d,           &
      &    SGS_par1%i_step_sgs_coefs, SGS_par1%model_p,                  &
      &    trns_WK1%dynamic_SPH)

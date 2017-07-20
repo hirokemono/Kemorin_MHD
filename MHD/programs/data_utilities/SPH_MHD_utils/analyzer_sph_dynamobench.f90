@@ -76,7 +76,7 @@
 !        Initialize spherical transform dynamo
 !
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_dbench'
-      call SPH_init_sph_dbench(iphys)
+      call SPH_init_sph_dbench(MHD_files1, iphys)
       call calypso_MPI_barrier
 !
       call end_eleps_time(2)
@@ -108,7 +108,7 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_dbench'
         call SPH_analyze_dbench                                         &
-     &     (MHD_step1%time_d%i_time_step, MHD_files1%fst_file_IO)
+     &     (MHD_step1%time_d%i_time_step, MHD_files1)
 !*
 !*  -----------  exit loop --------------
 !*

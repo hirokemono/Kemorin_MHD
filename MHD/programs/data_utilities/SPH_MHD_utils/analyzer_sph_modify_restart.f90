@@ -20,7 +20,7 @@
       use m_MHD_step_parameter
       use t_MHD_step_parameter
       use t_step_parameter
-      use t_file_IO_parameter
+      use t_MHD_file_parameter
 !
       implicit none
 !
@@ -56,7 +56,7 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_mod_restart'
         call SPH_analyze_mod_restart(MHD_step1%time_d%i_time_step,      &
-     &                               MHD_files1%fst_file_IO, MHD_step1)
+     &      MHD_files1%fst_file_IO, MHD_files1, MHD_step1)
 !*
 !*  -----------  output field data --------------
 !*
@@ -87,7 +87,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_mod_restart(i_step, fst_file_IO, MHD_step)
+      subroutine SPH_analyze_mod_restart                                &
+     &         (i_step, fst_file_IO, MHD_files, MHD_step)
 !
       use m_work_time
       use m_spheric_parameter
@@ -105,15 +106,16 @@
 !
       integer(kind = kint), intent(in) :: i_step
       type(field_IO_params), intent(in) :: fst_file_IO
+      type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(MHD_step_param), intent(inout) :: MHD_step
 !
       integer(kind = kint) :: iflag
 !
 !
-      MHD1_org_files%rst_file_param%iflag_format                        &
+      MHD_files%org_rst_file_IO%iflag_format                            &
      &    = fst_file_IO%iflag_format
       call read_alloc_sph_rst_4_snap(i_step,                            &
-     &    MHD1_org_files%rj_file_param, MHD1_org_files%rst_file_param,  &
+     &    MHD_files%org_rj_file_IO, MHD_files%org_rst_file_IO,          &
      &    sph1%sph_rj, ipol, rj_fld1, MHD_step%rst_step,                &
      &    MHD_step%init_d)
 !

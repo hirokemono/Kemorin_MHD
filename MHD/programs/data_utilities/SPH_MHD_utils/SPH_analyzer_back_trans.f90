@@ -7,7 +7,7 @@
 !>@brief Evolution loop for spherical MHD
 !!
 !!@verbatim
-!!      subroutine SPH_init_sph_back_trans(iphys)
+!!      subroutine SPH_init_sph_back_trans(MHD_files, iphys)
 !!        type(phys_address), intent(in) :: iphys
 !!      subroutine SPH_analyze_back_trans(i_step, MHD_files, MHD_step)
 !!        type(MHD_step_param), intent(inout) :: MHD_step
@@ -29,7 +29,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_init_sph_back_trans(iphys)
+      subroutine SPH_init_sph_back_trans(MHD_files, iphys)
 !
       use m_constants
       use calypso_mpi
@@ -62,6 +62,7 @@
       use cal_rms_fields_by_sph
       use input_control_sph_MHD
 !
+      type(MHD_file_IO_params), intent(in) :: MHD_files
       type(phys_address), intent(in) :: iphys
 !
 !
@@ -88,7 +89,7 @@
 ! ---------------------------------
 !
       call init_radial_sph_interpolation                                &
-     &   (MHD1_org_files%rj_file_param, sph1%sph_params, sph1%sph_rj)
+     &   (MHD_files%org_rj_file_IO, sph1%sph_params, sph1%sph_rj)
 !
 ! ---------------------------------
 !
@@ -125,7 +126,7 @@
 !
 !
       call read_alloc_sph_spectr                                        &
-     &   (i_step, MHD1_org_files%rj_file_param, MHD_files%sph_file_IO,  &
+     &   (i_step, MHD_files%org_rj_file_IO, MHD_files%sph_file_IO,      &
      &    sph1%sph_rj, ipol, rj_fld1,                                   &
      &    MHD_step%ucd_step, MHD_step%init_d)
       call copy_time_data(MHD_step%init_d, MHD_step%time_d)
