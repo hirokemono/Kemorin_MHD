@@ -38,7 +38,7 @@
 !
        implicit none
 !
-      type(field_IO_params), save ::  plane_mesh_file
+      type(field_IO_params), save ::  plane_mesh_file, ucd_file_param
       type(ucd_data) :: fft_ucd
       type(time_data), save :: fft_t_IO
 !
@@ -77,7 +77,7 @@
       call s_set_plane_spectr_file_head(plane_mesh_file)
       call set_parameters_4_FFT(num_pe, ist, ied, iint)
       call set_parameters_data_by_spec(num_pe, kx_org, ky_org, iz_org,  &
-     &                                 plane_mesh_file, fft_ucd)
+     &                                 plane_mesh_file, ucd_file_param)
       call s_set_numnod_4_plane
 !
       call allocate_z_compliment_info(nz_all)
@@ -307,8 +307,9 @@
         call link_merged_node_2_ucd_IO(fft_ucd)
         call link_merged_field_2_udt_IO(fft_ucd)
 !
-        fft_ucd%ifmt_file = iflag_udt
-        call sel_write_ucd_file(izero, istep, fft_t_IO, fft_ucd)
+        ucd_file_param%iflag_format = iflag_udt
+        call sel_write_ucd_file                                         &
+     &     (izero, istep, ucd_file_param, fft_t_IO, fft_ucd)
         call disconnect_ucd_data(fft_ucd)
       end do
 !

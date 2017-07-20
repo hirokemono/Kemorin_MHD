@@ -23,7 +23,7 @@
 !
       implicit    none
 !
-      character(len=kchara) :: line_udt_head
+      type(field_IO_params), save :: line_ucd_param
 !
       integer(kind = kint) :: istep_start, istep_end
       integer(kind = kint) :: istep_int
@@ -40,10 +40,8 @@
 ! . for local 
 !  ===========
 !
-      call input_ucd_file_format_code(iflag_psf_fmt, psf_file_header)
-!
-      psf_u%iflag_psf_fmt =   iflag_psf_fmt
-      psf_u%psf_file_header = psf_file_header
+      call input_ucd_file_format_code                                   &
+     &    (psf_file_param%iflag_format, psf_file_param%file_prefix)
 !
       write(*,*) 'inputistep_start, istep_end, istep_int'
       read(*,*) istep_start, istep_end, istep_int
@@ -60,10 +58,10 @@
       if(cmp_no_case(direction, 's')) nd = 21
 !
       write(*,*) 'input output header'
-      read(*,*) line_udt_head
+      read(*,*) line_ucd_param%file_prefix
 !
       do istep = istep_start, istep_end, istep_int
-        call load_psf_data(istep, psf_u)
+        call load_psf_data(istep, psf_file_param, psf_u)
         call find_psf_edges(psf_u%psf_ele)
         call pick_psf_by_sections                                       &
      &     (nd, xref, psf_u%psf_nod, psf_u%psf_ele,                     &
@@ -72,8 +70,9 @@
         call deallocate_psf_edge
         call dealloc_psf_results(psf_u)
 !
+      line_ucd_param%iflag_format = psf_file_param%iflag_format
         call write_psf_line_data                                        &
-     &     (iflag_ucd, line_udt_head, istep, line_time, line)
+     &     (istep, line_ucd_param, line_time, line)
       end do
 !
       stop ' //// program normally finished //// '

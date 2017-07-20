@@ -4,8 +4,8 @@
 !
 !       Written by H. Matsui
 !
-!!      subroutine FEM_initialize_pvr
-!!      subroutine FEM_analyze_pvr(i_step, t_VIZ, pvr_step)
+!!      subroutine FEM_initialize_pvr(ucd_param)
+!!      subroutine FEM_analyze_pvr(i_step, ucd_param, t_VIZ, pvr_step)
 !!        type(time_step_param), intent(in) :: t_VIZ
 !!        type(IO_step_param), intent(inout)  :: pvr_step
 !
@@ -19,6 +19,7 @@
       use t_step_parameter
       use t_VIZ_step_parameter
       use t_IO_step_parameter
+      use t_file_IO_parameter
 !
       implicit none
 !
@@ -28,13 +29,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_pvr
+      subroutine FEM_initialize_pvr(ucd_param)
+!
+      type(field_IO_params), intent(in) :: ucd_param
 !
 !   --------------------------------
 !       setup mesh information
 !   --------------------------------
 !
-      call mesh_setup_4_VIZ
+      call mesh_setup_4_VIZ(ucd_param)
 !
 !     --------------------- init for PVR
 !
@@ -49,9 +52,10 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_pvr(i_step, t_VIZ, pvr_step)
+      subroutine FEM_analyze_pvr(i_step, ucd_param, t_VIZ, pvr_step)
 !
       integer (kind =kint), intent(in) :: i_step
+      type(field_IO_params), intent(in) :: ucd_param
       type(time_step_param), intent(in) :: t_VIZ
       type(IO_step_param), intent(inout)  :: pvr_step
 !
@@ -61,7 +65,7 @@
       visval = ione
       call accum_flag_to_visualization(i_step, pvr_step, visval)
       call set_field_data_4_VIZ                                         &
-     &   (pvr_step%istep_file, i_step, t_VIZ%time_d)
+     &   (pvr_step%istep_file, i_step, ucd_param, t_VIZ%time_d)
 !
       end subroutine FEM_analyze_pvr
 !

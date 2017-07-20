@@ -4,9 +4,8 @@
 !
 !      subroutine deallocate_control_4_merge
 !
-!      subroutine set_control_4_merge(ucd)
-!        type(ucd_data), intent(inout) :: ucd
-!      subroutine set_control_4_newrst
+!!       subroutine set_control_4_merge
+!!      subroutine set_control_4_newrst
 !
 !      subroutine set_control_4_newudt
 !
@@ -26,6 +25,8 @@
       type(field_IO_params), save :: org_fst_param
       type(field_IO_params), save :: new_fst_param
 !
+      type(field_IO_params), save :: original_ucd_param
+      type(field_IO_params), save :: assemble_ucd_param
 !
       integer(kind=kint ) :: istep_start, istep_end, increment_step
 !
@@ -56,18 +57,8 @@
       character(len=kchara), parameter                                  &
      &                      :: new_rst_def_head =   "rst_new/rst"
 !
-      character(len=kchara) :: udt_original_header = def_org_udt_head
-      integer(kind = kint) :: itype_org_ucd_file
-!
-!
-      character(len=kchara) :: merged_data_head = 'outall'
-      character(len=kchara) :: new_udt_head
-      integer(kind = kint) :: itype_assembled_data
-!
       character(len=kchara) :: dx_node_fname
       character(len=kchara) :: dx_connect_fname
-!
-      integer(kind=kint ) :: iorg_mesh_file_fmt = 0
 !
       integer(kind=kint ) :: iflag_delete_org = 0
 !
@@ -102,9 +93,9 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-       subroutine set_control_4_merge(ucd)
+       subroutine set_control_4_merge
 !
-      use t_ucd_data
+      use t_file_IO_parameter
 !
       use m_geometry_data_4_merge
       use m_file_format_switch
@@ -114,8 +105,7 @@
       use set_parallel_file_name
       use set_control_platform_data
       use ucd_IO_select
-!
-      type(ucd_data), intent(inout) :: ucd
+      use parallel_ucd_IO_select
 !
       integer(kind=kint ) :: i, icou
 !
@@ -129,24 +119,8 @@
 !
       call set_control_mesh_def(source_plt, merge_org_mesh_file)
 !
-      call set_ucd_file_define(source_plt, ucd)
-!
-      if(source_plt%field_file_prefix%iflag .gt. 0)                     &
-     &    udt_original_header = source_plt%field_file_prefix%charavalue
-      call choose_ucd_file_format                                       &
-     &   (source_plt%field_file_fmt_ctl%charavalue,                     &
-     &    source_plt%field_file_fmt_ctl%iflag, itype_org_ucd_file)
-!
-!
-      if (assemble_plt%field_file_prefix%iflag .gt. 0) then
-        new_udt_head =     assemble_plt%field_file_prefix%charavalue
-        merged_data_head = assemble_plt%field_file_prefix%charavalue
-      else
-        new_udt_head = def_new_udt_head
-      end if
-      call choose_ucd_file_format                                       &
-     &   (assemble_plt%field_file_fmt_ctl%charavalue,                   &
-     &    assemble_plt%field_file_fmt_ctl%iflag, itype_assembled_data)
+      call set_merged_ucd_file_define(source_plt,   original_ucd_param)
+      call set_merged_ucd_file_define(assemble_plt, assemble_ucd_param)
 !
 !
        num_nod_phys = 0

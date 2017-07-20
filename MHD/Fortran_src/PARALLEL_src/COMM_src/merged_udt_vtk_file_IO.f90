@@ -8,13 +8,15 @@
 !> @brief Output merged VTK file usgin MPI-IO
 !!
 !!@verbatim
-!!      subroutine init_merged_ucd(node, ele, nod_comm, ucd, m_ucd)
+!!      subroutine init_merged_ucd                                      &
+!!     &         (iflag_format, node, ele, nod_comm, ucd, m_ucd)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(ucd_data), intent(inout) :: ucd
 !!        type(merged_ucd_data), intent(inout) :: m_ucd
-!!      subroutine finalize_merged_ucd(ucd, m_ucd)
+!!      subroutine finalize_merged_ucd(iflag_format, m_ucd)
+!!        type(merged_ucd_data), intent(inout) :: m_ucd
 !!
 !!      subroutine write_ucd_file_mpi(file_name, ucd, m_ucd)
 !!      subroutine write_ucd_phys_mpi(file_name, ucd, m_ucd)
@@ -23,6 +25,8 @@
 !!      subroutine write_vtk_file_mpi(file_name, ucd, m_ucd)
 !!      subroutine write_vtk_phys_mpi(file_name, ucd, m_ucd)
 !!      subroutine write_vtk_grid_mpi(file_name, ucd, m_ucd)
+!!        type(ucd_data), intent(in) :: ucd
+!!        type(merged_ucd_data), intent(in) :: m_ucd
 !!@endverbatim
 !
       module merged_udt_vtk_file_IO
@@ -47,7 +51,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine init_merged_ucd(node, ele, nod_comm, ucd, m_ucd)
+      subroutine init_merged_ucd                                        &
+     &         (iflag_format, node, ele, nod_comm, ucd, m_ucd)
 !
       use t_geometry_data
       use t_comm_table
@@ -55,6 +60,7 @@
       use hdf5_file_IO
       use set_ucd_data_to_type
 !
+      integer(kind = kint), intent(in) :: iflag_format
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(communication_table), intent(in) :: nod_comm
@@ -73,8 +79,7 @@
       call update_ele_by_double_address                                 &
      &   (node%istack_internod, m_ucd, ucd)
 !
-!
-      if (ucd%ifmt_file .eq. iflag_sgl_hdf5) then
+      if(iflag_format .eq. iflag_sgl_hdf5) then
         call parallel_init_hdf5(ucd, m_ucd)
       end if
 !
@@ -82,16 +87,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine finalize_merged_ucd(ucd, m_ucd)
+      subroutine finalize_merged_ucd(iflag_format, m_ucd)
 !
       use m_merged_ucd_data
       use hdf5_file_IO
 !
-      type(ucd_data), intent(in) :: ucd
+      integer(kind = kint), intent(in) :: iflag_format
       type(merged_ucd_data), intent(inout) :: m_ucd
 !
 !
-      if (ucd%ifmt_file .eq. iflag_sgl_hdf5) then
+      if(iflag_format .eq. iflag_sgl_hdf5) then
         call parallel_finalize_hdf5(m_ucd)
       end if
       call deallocate_merged_ucd_data(m_ucd)

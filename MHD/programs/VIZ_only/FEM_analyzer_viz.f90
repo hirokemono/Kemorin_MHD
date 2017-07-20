@@ -4,8 +4,9 @@
 !
 !       Written by H. Matsui
 !
-!!      subroutine FEM_initialize_vizs(viz_step, elemesh)
-!!      subroutine FEM_analyze_vizs(i_step, time_VIZ, viz_step, visval)
+!!      subroutine FEM_initialize_vizs(ucd_param, viz_step)
+!!      subroutine FEM_analyze_vizs                                     &
+!!     &         (i_step, ucd_param, time_VIZ, viz_step, visval)
 !!        type(time_step_param), intent(inout) :: time_VIZ
 !!        type(VIZ_step_params), intent(inout) :: viz_step
 !!        type(element_geometry), intent(inout) :: elemesh
@@ -21,6 +22,7 @@
       use t_VIZ_step_parameter
       use t_IO_step_parameter
       use t_mesh_data
+      use t_file_IO_parameter
       use m_visualization
 !
       implicit none
@@ -31,8 +33,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_vizs(viz_step)
+      subroutine FEM_initialize_vizs(ucd_param, viz_step)
 !
+      type(field_IO_params), intent(in) :: ucd_param
       type(VIZ_step_params), intent(inout) :: viz_step
 !
       integer(kind = kint) :: iflag
@@ -41,7 +44,7 @@
 !       setup mesh information
 !   --------------------------------
 !
-      call mesh_setup_4_VIZ
+      call mesh_setup_4_VIZ(ucd_param)
 !
 !     --------------------- Connection information for PVR and fieldline
 !     --------------------- init for fieldline and PVR
@@ -62,18 +65,21 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_vizs(i_step, time_VIZ, viz_step, visval)
+      subroutine FEM_analyze_vizs                                       &
+     &         (i_step, ucd_param, time_VIZ, viz_step, visval)
 !
       use t_ucd_data
 !
       integer (kind =kint), intent(in) :: i_step
+      type(field_IO_params), intent(in) :: ucd_param
       type(time_step_param), intent(inout) :: time_VIZ
       integer(kind=kint ), intent(inout) :: visval
       type(VIZ_step_params), intent(inout) :: viz_step
 !
 !
       visval = viz_file_step_4_fix(i_step, viz_step)
-      call set_field_data_4_VIZ(visval, i_step, time_VIZ%time_d)
+      call set_field_data_4_VIZ                                         &
+     &   (visval, i_step, ucd_param, time_VIZ%time_d)
 !
       end subroutine FEM_analyze_vizs
 !

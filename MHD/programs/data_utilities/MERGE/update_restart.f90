@@ -25,9 +25,6 @@
 !
       implicit none
 !
-!>        Instance for FEM field data IO
-      type(ucd_data), save :: fem_ucd
-!
       type(time_data), save :: merged_time_IO
       type(field_IO), save :: merged_IO
 !
@@ -48,7 +45,7 @@
 !
       call read_control_4_merge
 !
-      call set_control_4_merge(fem_ucd)
+      call set_control_4_merge
       call set_control_4_newrst
 !
 !     read outline of mesh

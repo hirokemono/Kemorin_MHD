@@ -7,18 +7,25 @@
 !
       use m_precision
       use m_geometry_constants
+      use t_file_IO_parameter
 !
       implicit none
 !
       character(len = kchara) :: grouping_mesh_head = "grouping_mesh"
 !
-      character(len = kchara) :: tgt_udt_file_head = "field_new/out"
-      character(len = kchara) :: ref_udt_file_head = "field/out"
+      character(len = kchara), parameter                                &
+     &               :: ref_udt_file_head = "field/out"
+      character(len = kchara), parameter                                &
+     &               :: tgt_udt_file_head = "field_new/out"
 !
-      character(len = kchara) :: diff_udt_file_head = "field_new/out"
+      type(field_IO_params), save :: first_ucd_param
+      type(field_IO_params), save :: second_ucd_param
+      type(field_IO_params), save :: diff_ucd_param
+      type(field_IO_params), save :: ave_ucd_param
+!
+      character(len = kchara), parameter                                &
+     &               :: diff_udt_file_head = "field_diff/out"
       character(len = kchara) :: ave_udt_file_head =  "out_average"
-      character(len = kchara) :: prod_udt_file_head = "field_new/out"
-      integer(kind = kint) :: ifmt_diff_udt_file = 0
 !
       character(len = kchara) :: product_field_name = "velocity"
       integer(kind = kint) :: i_field_4_product = 1

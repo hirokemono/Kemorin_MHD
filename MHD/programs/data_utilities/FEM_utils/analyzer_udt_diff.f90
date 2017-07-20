@@ -43,8 +43,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_udt_diff'
       call s_input_control_udt_diff                                     &
-     &   (mesh_file_FUTIL, udt_param_FUTIL, field_FUTIL, ucd_FUTIL,     &
-     &    time_U)
+     &   (mesh_file_FUTIL, udt_param_FUTIL, field_FUTIL, time_U)
 !
 !     --------------------- 
 !
@@ -82,12 +81,10 @@
 !
         call set_data_by_read_ucd_once                                  &
      &     (my_rank, time_U%ucd_step%istep_file,                        &
-     &      udt_param_FUTIL%iflag_format, ref_udt_file_head,            &
-     &      field_FUTIL, time_IO_FUTIL)
+     &      first_ucd_param, field_FUTIL, time_IO_FUTIL)
 !
         call subtract_by_ucd_data(my_rank, time_U%ucd_step%istep_file,  &
-     &      udt_param_FUTIL%iflag_format, tgt_udt_file_head,            &
-     &      field_FUTIL)
+     &      second_ucd_param, field_FUTIL)
 !
         call s_divide_phys_by_delta_t(time_U%time_d%dt, field_FUTIL)
 !
@@ -97,8 +94,7 @@
 !    output udt data
         call link_output_ucd_file_once                                  &
      &     (my_rank, time_U%ucd_step%istep_file,                        &
-     &      ifmt_diff_udt_file, diff_udt_file_head,                     &
-     &      field_FUTIL, time_IO_FUTIL)
+     &      field_FUTIL, diff_ucd_param, time_IO_FUTIL)
       end do
 !
       end subroutine analyze_udt_diff

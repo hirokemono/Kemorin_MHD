@@ -13,6 +13,7 @@
       use m_psf_results
       use m_field_file_format
 !
+      use t_file_IO_parameter
       use t_time_data
       use t_ucd_data
 !
@@ -23,7 +24,6 @@
       use take_normals_4_psf
 !
       implicit    none
-!
 !
       type(time_data), save :: psf_time
       type(ucd_data), save:: psf_ucd
@@ -44,7 +44,8 @@
 ! . for local 
 !  ===========
 !
-      call input_ucd_file_format_code(iflag_psf_fmt, psf_file_header)
+      call input_ucd_file_format_code                                   &
+     &   (psf_file_param%iflag_format, psf_file_param%file_prefix)
 !
       write(*,*) 'input istep_start, istep_end, istep_int'
       read(*,*) istep_start, istep_end, istep_int
@@ -52,10 +53,8 @@
       write(*,*) 'input radius range'
       read(*,*) rmin, rmax
 !
-      psf_u%iflag_psf_fmt =   iflag_psf_fmt
-      psf_u%psf_file_header = psf_file_header
-!
-      call load_psf_data_to_link_IO(istep_start, psf_u, psf_ucd)
+      call load_psf_data_to_link_IO                                     &
+     &   (istep_start, psf_file_param, psf_u, psf_ucd)
       call alloc_psf_averages(psf_u%psf_phys, psf_average)
 !
       do i_fld = 1, psf_u%psf_phys%num_phys
@@ -90,10 +89,8 @@
 !
       call set_averaging_range(rmin, rmax, psf_normal)
 !
-      call open_psf_ave_rms_data(psf_file_header, psf_u%psf_phys)
-!
-      psf_ucd%ifmt_file = iflag_psf_fmt
-      psf_ucd%file_prefix = psf_file_header
+      call open_psf_ave_rms_data                                        &
+     &   (psf_file_param%file_prefix, psf_u%psf_phys)
 !
       icou = 0
       write(*,'(a,i15)', advance='NO')                                  &
@@ -103,7 +100,8 @@
         write(*,'(10a1)', advance='NO') (char(8),i=1,10)
         write(*,'(i15)', advance='NO') istep
 !
-        call sel_read_udt_file(iminus, istep, psf_time, psf_ucd)
+        call sel_read_udt_file                                          &
+     &     (iminus, istep, psf_file_param, psf_time, psf_ucd)
         call cal_range_rms_ave_4_psf                                    &
      &     (psf_u%psf_ele, psf_u%psf_phys, psf_normal,                  &
      &      icomp_ref_field, iflag_ref, ref_value, area_res,            &

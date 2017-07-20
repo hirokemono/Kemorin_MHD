@@ -55,7 +55,7 @@
 !
       call read_control_4_merge
 !
-      call set_control_4_merge(fem_ucd)
+      call set_control_4_merge
       call set_control_4_newudt
 !
 !  read mesh information
@@ -66,7 +66,8 @@
 !
 !   read field name and number of components
 !
-      call init_ucd_data_4_merge(istep_start, fem_time_IO, fem_ucd)
+      call init_ucd_data_4_merge                                        &
+     &   (istep_start, original_ucd_param, fem_time_IO, fem_ucd)
 !
 !    set list array for merged field
 !
@@ -75,23 +76,25 @@
 !
 !   Cnostract grid data
 !
-      call assemble_2nd_udt_mesh(second_ucd)
+      call assemble_2nd_udt_mesh(assemble_ucd_param, second_ucd)
 !
 !   loop for snap shots
 !
 !
       do istep = istep_start, istep_end, increment_step
 !        write(*,*) 'read_ucd_data_4_merge', istep
-        call read_ucd_data_4_merge(istep, fem_time_IO, fem_ucd)
-        call assemble_2nd_udt_phys(istep, fem_time_IO, second_ucd)
+        call read_ucd_data_4_merge                                      &
+     &     (istep, original_ucd_param, fem_time_IO, fem_ucd)
+        call assemble_2nd_udt_phys                                      &
+     &     (istep, assemble_ucd_param, fem_time_IO, second_ucd)
         write(*,*) 'step', istep, 'finish '
       end do
 !
 !
       if(iflag_delete_org .gt. 0) then
         do istep = istep_start, istep_end, increment_step
-          call delete_para_ucd_file(udt_original_header,                &
-     &        itype_org_ucd_file, num_pe, istep)
+          call delete_para_ucd_file(original_ucd_param%file_prefix,     &
+     &        original_ucd_param%iflag_format, num_pe, istep)
         end do
       end if
 !

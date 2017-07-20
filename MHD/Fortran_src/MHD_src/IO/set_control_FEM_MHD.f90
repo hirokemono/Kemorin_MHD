@@ -62,7 +62,6 @@
      &         MGCG_MHD_FEM, nod_fld)
 !
       use calypso_mpi
-      use m_ucd_data
       use m_default_file_prefix
       use m_flexible_time_step
       use t_file_IO_parameter
@@ -86,6 +85,7 @@
       use set_control_4_solver
       use set_control_evo_layers
       use set_control_FEM_SGS
+      use parallel_ucd_IO_select
 !
       use m_fem_mhd_restart
 !
@@ -115,7 +115,7 @@
       call set_control_smp_def(my_rank, plt)
       call set_control_mesh_def(plt, mesh_file)
       call set_control_restart_file_def(plt, MHD_files%fst_file_IO)
-      call set_control_MHD_field_file(plt)
+      call set_merged_ucd_file_define(plt, MHD_files%ucd_file_IO)
       call set_control_mesh_file_def                                    &
      &   (def_org_ucd_header, org_plt, udt_org_param)
 !

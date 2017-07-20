@@ -77,8 +77,8 @@
 !
       call start_eleps_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
-      call FEM_initialize_sph_MHD(MHD_step1, mesh1, group1, ele_mesh1,  &
-     &    iphys, nod_fld1, range)
+      call FEM_initialize_sph_MHD(MHD_files1%ucd_file_IO, MHD_step1,    &
+     &    mesh1, group1, ele_mesh1, iphys, nod_fld1, range)
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap'
@@ -138,8 +138,8 @@
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
-        call FEM_analyze_sph_MHD                                        &
-     &     (SGS_par1, mesh1,  nod_fld1, MHD_step1, visval)
+        call FEM_analyze_sph_MHD(MHD_files1%ucd_file_IO,                &
+     &      SGS_par1, mesh1,  nod_fld1, MHD_step1, visval)
 !
         call end_eleps_time(4)
 !
@@ -165,7 +165,7 @@
       call end_eleps_time(3)
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
-      call FEM_finalize(MHD_step1)
+      call FEM_finalize(MHD_files1%ucd_file_IO, MHD_step1)
 !
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_snap'
 !      call SPH_finalize_snap

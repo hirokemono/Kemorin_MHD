@@ -53,11 +53,11 @@
       if (iflag_debug.gt.0) write(*,*) 'set_control_params_4_viz'
       call read_control_data_section_only
       call set_control_params_4_viz(my_rank, t_sect_ctl, sect_plt,      &
-     &    mesh_file_VIZ, ucd_VIZ, ierr)
+     &    mesh_file_VIZ, ucd_file_VIZ, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !  FEM Initialization
-      call FEM_initialize_surface
+      call FEM_initialize_surface(ucd_file_VIZ)
 !
 !  VIZ Initialization
       call init_visualize_surface(femmesh_VIZ%mesh, femmesh_VIZ%group,  &
@@ -76,7 +76,8 @@
         if(set_IO_step_flag(i_step,t_VIZ%ucd_step) .ne. izero) cycle
 !
 !  Load field data
-        call FEM_analyze_surface(i_step, t_VIZ, viz_step_V)
+        call FEM_analyze_surface                                        &
+     &     (i_step, ucd_file_VIZ, t_VIZ, viz_step_V)
 !
 !  Generate field lines
         call start_eleps_time(12)

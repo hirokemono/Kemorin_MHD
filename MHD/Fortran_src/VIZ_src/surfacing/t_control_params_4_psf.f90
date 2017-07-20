@@ -1,5 +1,5 @@
 !
-!      module m_control_params_4_psf
+!      module t_control_params_4_psf
 !
 !        programmed by H.Matsui on May. 2006
 !
@@ -10,17 +10,15 @@
 !!     &          num_surf, surf_name, num_nod_phys, phys_nod_name,     &
 !!     &          psf_fld, psf_param, ierr)
 !
-      module m_control_params_4_psf
+      module t_control_params_4_psf
 !
       use m_precision
-      use t_file_IO_parameter
 !
       implicit  none
 !
 !
-      character(len=kchara), parameter :: default_psf_prefix = 'psf'
-!
-      type(field_IO_params), allocatable :: psf_file_IO(:)
+      character(len = kchara), target, allocatable :: psf_header(:)
+      integer(kind = kint), target, allocatable :: itype_psf_file(:)
 !
       integer(kind = kint), allocatable :: id_section_method(:)
 !
@@ -28,8 +26,6 @@
       real(kind = kreal), allocatable :: const_psf(:,:)
 !
       integer(kind = kint), allocatable :: id_psf_group(:)
-!
-      private :: default_psf_prefix
 !
 !  ---------------------------------------------------------------------
 !
@@ -44,7 +40,8 @@
       integer(kind= kint), intent(in) :: num_psf
 !
 !
-      allocate(psf_file_IO(num_psf))
+      allocate(psf_header(num_psf))
+      allocate(itype_psf_file(num_psf))
 !
       allocate(id_section_method(num_psf))
 !
@@ -52,7 +49,7 @@
 !
       allocate(id_psf_group(num_psf))
 !
-      psf_file_IO(1:num_psf)%iflag_format = iflag_sgl_udt
+      itype_psf_file =   iflag_sgl_udt
       id_section_method =  0
       id_psf_group =       0
 !
@@ -89,9 +86,15 @@
 !
 !
       ierr = 0
-      call set_merged_ucd_file_ctl(default_psf_prefix,                  &
-     &    psf%psf_file_head_ctl, psf%psf_output_type_ctl,               &
-     &    psf_file_IO(i_psf))
+      if(psf%psf_file_head_ctl%iflag .gt. 0) then
+        psf_header(i_psf) =  psf%psf_file_head_ctl%charavalue
+      else
+        psf_header(i_psf) =  'psf'
+      end if
+!
+      call choose_para_fld_file_format                                  &
+     &   (psf%psf_output_type_ctl%charavalue,                           &
+     &    psf%psf_output_type_ctl%iflag, itype_psf_file(i_psf) )
 !
       call check_field_4_viz(num_nod_phys, phys_nod_name,               &
      &   psf%psf_out_field_ctl%num, psf%psf_out_field_ctl%c1_tbl,       &
@@ -174,4 +177,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module m_control_params_4_psf
+      end module t_control_params_4_psf

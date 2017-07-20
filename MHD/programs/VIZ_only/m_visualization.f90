@@ -7,9 +7,12 @@
 !>@brief Arrays for Field data IO for visualizers
 !!
 !!@verbatim
-!!      subroutine mesh_setup_4_VIZ
+!!      subroutine set_control_params_4_viz                             &
+!!     &         (my_rank, tctl, plt, mesh_file, ucd_param, ierr)
+!!      subroutine mesh_setup_4_VIZ(ucd_param)
 !!      subroutine element_normals_4_VIZ
 !!      subroutine set_field_data_4_VIZ(iflag, istep_ucd, time_d)
+!!        type(field_IO_params), intent(in) :: ucd_param
 !!        type(time_data), intent(inout) :: time_d
 !!@endverbatim
 !
@@ -40,6 +43,8 @@
 !
 !>      Structure for mesh file IO paramters
       type(field_IO_params), save :: mesh_file_VIZ
+!>      Structure for field file IO paramters
+      type(field_IO_params), save :: ucd_file_VIZ
 !
 !
 !>     Structure for mesh data
@@ -74,7 +79,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_control_params_4_viz                               &
-     &         (my_rank, tctl, plt, mesh_file, ucd, ierr)
+     &         (my_rank, tctl, plt, mesh_file, ucd_param, ierr)
 !
       use t_ucd_data
       use t_file_IO_parameter
@@ -93,13 +98,13 @@
       integer(kind = kint), intent(inout) :: ierr
       type(platform_data_control), intent(inout) :: plt
       type(field_IO_params), intent(inout) :: mesh_file
-      type(ucd_data), intent(inout) :: ucd
+      type(field_IO_params), intent(inout) :: ucd_param
 !
 !
       call turn_off_debug_flag_by_ctl(my_rank, plt)
       call set_control_smp_def(my_rank, plt)
       call set_control_mesh_def(plt, mesh_file)
-      call set_ucd_file_define(plt, ucd)
+      call set_ucd_file_define(plt, ucd_param)
 !
       call set_fixed_time_step_params(tctl, t_VIZ, ierr, e_message)
       call viz_fixed_time_step_params                                   &
@@ -113,7 +118,7 @@
 ! ----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine mesh_setup_4_VIZ
+      subroutine mesh_setup_4_VIZ(ucd_param)
 !
       use calypso_mpi
       use m_array_for_send_recv
@@ -124,6 +129,9 @@
       use const_element_comm_tables
       use set_ucd_data_to_type
       use ucd_IO_select
+!
+      type(field_IO_params), intent(in) :: ucd_param
+!
 !
 !   --------------------------------
 !       setup mesh information
@@ -150,8 +158,8 @@
 !     ---------------------
 !
       ucd_VIZ%nnod =      femmesh_VIZ%mesh%node%numnod
-      call sel_read_udt_param                                           &
-     &   (my_rank, t_VIZ%init_d%i_time_step, VIZ_time_IO, ucd_VIZ)
+      call sel_read_udt_param(my_rank, t_VIZ%init_d%i_time_step,        &
+     &    ucd_param, VIZ_time_IO, ucd_VIZ)
       call alloc_phys_data_type_by_output                               &
      &   (ucd_VIZ, femmesh_VIZ%mesh%node, field_VIZ)
 !
@@ -187,18 +195,20 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_field_data_4_VIZ(iflag, istep_ucd, time_d)
+      subroutine set_field_data_4_VIZ                                   &
+     &         (iflag, istep_ucd, ucd_param, time_d)
 !
       use set_ucd_data_to_type
       use nod_phys_send_recv
 !
       integer(kind = kint), intent(in) :: iflag, istep_ucd
+      type(field_IO_params), intent(in) :: ucd_param
       type(time_data), intent(inout) :: time_d
 !
 !
       if(iflag .ne. 0) return
-      call set_data_by_read_ucd                                         &
-     &   (my_rank, istep_ucd, VIZ_time_IO, ucd_VIZ, field_VIZ)
+      call set_data_by_read_ucd(my_rank, istep_ucd,                     &
+     &    ucd_param, VIZ_time_IO, ucd_VIZ, field_VIZ)
       call copy_time_step_size_data(VIZ_time_IO, time_d)
 !
       if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'

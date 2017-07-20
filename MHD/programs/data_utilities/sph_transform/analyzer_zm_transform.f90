@@ -13,6 +13,7 @@
       use m_work_time
       use m_spheric_data_transform
       use m_SPH_transforms
+      use m_ctl_params_sph_trans
 !
       use FEM_analyzer_sph_trans
       use SPH_analyzer_sph_trans
@@ -28,7 +29,6 @@
       subroutine init_zm_trans
 !
       use m_ctl_data_4_sph_trans
-      use m_ctl_params_sph_trans
       use parallel_load_data_4_sph
 !
 !     --------------------- 
@@ -42,7 +42,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_ctl_data_4_sph_trans'
       call s_set_ctl_data_4_sph_trans                                   &
-     &   (t_STR, mesh_file_STR, sph_fst_param, ucd_SPH_TRNS,            &
+     &   (t_STR, mesh_file_STR, ucd_file_param, sph_fst_param,          &
      &    rj_fld_trans, d_gauss_trans, field_STR, WK_sph_TRNS)
       call set_ctl_data_4_zm_trans
 !
@@ -63,8 +63,7 @@
 !
 !    Set field IOP array by spectr fields
       if (iflag_debug.gt.0) write(*,*) 'SPH_to_FEM_bridge_sph_trans'
-      call SPH_to_FEM_bridge_sph_trans(zm_source_file_param,            &
-     &    rj_fld_trans, sph_trns_IO)
+      call SPH_to_FEM_bridge_sph_trans(rj_fld_trans, sph_trns_IO)
 !
       end subroutine init_zm_trans
 !
@@ -78,14 +77,15 @@
       do i_step = t_STR%init_d%i_time_step, t_STR%finish_d%i_end_step
 !
 !   Input field data
-        call FEM_analyze_sph_trans(i_step, time_IO_TRNS, visval)
+        call FEM_analyze_sph_trans                                      &
+     &     (i_step, udt_org_param, time_IO_TRNS, visval)
 !
 !   Spherical transform
         call SPH_analyze_sph_zm_trans                                   &
      &     (i_step, sph_mesh_trans, rj_fld_trans, sph_trns_IO)
       end do
 !
-      call FEM_finalize_sph_trans(ucd_SPH_TRNS, m_ucd_SPH_TRNS)
+      call FEM_finalize_sph_trans(udt_org_param, m_ucd_SPH_TRNS)
 !
       call output_elapsed_times
 !

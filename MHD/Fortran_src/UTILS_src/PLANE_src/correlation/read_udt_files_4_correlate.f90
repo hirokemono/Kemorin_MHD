@@ -41,13 +41,11 @@
 
 !
 !
-      ucd%ifmt_file = itype_cor_ucd_file
-      ucd%file_prefix = cor_udt_header
-      call init_by_ucd_4_plane_model(istep, nod_fld, t_IO, ucd)
+      call init_by_ucd_4_plane_model                                    &
+     &   (istep, cor_ucd_param, nod_fld, t_IO, ucd)
 !
-      ucd%ifmt_file = itype_ref_ucd_file
-      ucd%file_prefix = ref_udt_header
-      call init_by_ucd_4_plane_model(istep, nod_fld, t_IO, ucd)
+      call init_by_ucd_4_plane_model                                    &
+     &   (istep, ref_ucd_param, nod_fld, t_IO, ucd)
 !
       end subroutine init_udt_4_correlate
 !
@@ -66,18 +64,14 @@
       type(ucd_data), intent(inout) :: ucd
 !
 !
-      ucd%ifmt_file = itype_cor_ucd_file
-      ucd%file_prefix = cor_udt_header
       call read_udt_data_4_plane_model(num_pe, istep,                   &
      &    num_domain, num_crt, icomp_crt, ifield_crt, phys_d1(1),       &
-     &    merge_tbl%nnod_max, subdomain, t_IO, ucd)
+     &    merge_tbl%nnod_max, subdomain, cor_ucd_param, t_IO, ucd)
 !
 !
-      ucd%ifmt_file = itype_ref_ucd_file
-      ucd%file_prefix = ref_udt_header
       call read_udt_data_4_plane_model(num_pe2, istep,                  &
      &    num_domain, num_crt, icomp_crt, ifield_crt2, phys_d2(1),      &
-     &    merge_tbl_2%nnod_max, subdomains_2, t_IO, ucd)
+     &    merge_tbl_2%nnod_max, subdomains_2, ref_ucd_param, t_IO, ucd)
 !
       end subroutine read_udt_4_correlate
 !

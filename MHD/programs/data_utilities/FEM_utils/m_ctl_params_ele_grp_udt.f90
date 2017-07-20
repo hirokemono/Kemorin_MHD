@@ -9,15 +9,16 @@
       module m_ctl_params_ele_grp_udt
 !
       use m_precision
+      use t_file_IO_parameter
 !
       implicit none
 !
+      type(field_IO_params), save :: grp_ucd_param
+      type(field_IO_params), save :: tave_grp_ucd_param
+      type(field_IO_params), save :: sdev_grp_ucd_param
+!
       character(len = kchara) :: layerd_mesh_head
       character(len = kchara) :: group_data_file_name
-      character(len = kchara) :: grp_ucd_data_head
-!
-      character(len = kchara) :: tave_grp_udt_head
-      character(len = kchara) :: tsig_grp_udt_head
 !
       character(len=kchara) :: start_ele_grp_name
       integer(kind = kint) :: istart_ele_grp_drmd, iend_ele_grp_drmd
@@ -72,9 +73,9 @@
       end if
 !
       if(grp_ucd_data_head_ctl%iflag .gt. 0) then
-        grp_ucd_data_head = grp_ucd_data_head_ctl%charavalue
+        grp_ucd_param%file_prefix = grp_ucd_data_head_ctl%charavalue
       else
-        grp_ucd_data_head = group_data_file_name
+        grp_ucd_param%file_prefix = group_data_file_name
       end if
 !
       if(ngrp_ele_grp_ctl%iflag .gt. 0) then
@@ -128,13 +129,18 @@
         istep_inc = t_egu_ctl%i_step_psf_ctl%intvalue
       end if
 !
-      call add_int_suffix(istep_start, grp_ucd_data_head, fhead_tmp)
-      write(tave_grp_udt_head,'(6a,a)') 't_ave_', trim(fhead_tmp)
-      write(tsig_grp_udt_head,'(6a,a)') 'sigma_', trim(fhead_tmp)
+      call add_int_suffix                                               &
+     &   (istep_start, grp_ucd_param%file_prefix, fhead_tmp)
+      write(tave_grp_ucd_param%file_prefix,'(6a,a)')                    &
+     &                              't_ave_', trim(fhead_tmp)
+      write(sdev_grp_ucd_param%file_prefix,'(6a,a)')                    &
+     &                              'sigma_', trim(fhead_tmp)
 !
-      write(*,*) 'grp_ucd_data_head: ', trim(grp_ucd_data_head)
-      write(*,*) 'tsig_grp_udt_head: ', trim(tsig_grp_udt_head)
-      write(*,*) 'tave_grp_udt_head: ', trim(tave_grp_udt_head)
+      write(*,*) 'grp_ucd_data_head: ', trim(grp_ucd_param%file_prefix)
+      write(*,*) 'tsig_grp_udt_head: ',                                 &
+     &          trim(sdev_grp_ucd_param%file_prefix)
+      write(*,*) 'tave_grp_udt_head: ',                                 &
+     &          trim(tave_grp_ucd_param%file_prefix)
 !
       write(*,*) 'start_ele_grp_name: ', trim(start_ele_grp_name)
       write(*,*) 'num_ele_grp_drmd: ', num_ele_grp_drmd

@@ -7,8 +7,9 @@
 !>@brief set edge information for PSF results
 !!
 !!@verbatim
-!!      subroutine load_psf_data_to_link_IO(istep, psf_ucd)
-!!      subroutine load_psf_data(istep)
+!!      subroutine load_psf_data_to_link_IO                             &
+!!     &         (istep, psf_file_param, psf, psf_ucd)
+!!      subroutine load_psf_data(istep, psf_file_param, psf)
 !!
 !!      subroutine dealloc_psf_results(psf_nod, psf_ele, psf_phys)
 !!@endverbatim
@@ -21,6 +22,7 @@
       use t_geometry_data
       use t_phys_data
       use t_ucd_data
+      use t_file_IO_parameter
 !
       implicit none
 !
@@ -33,9 +35,6 @@
         type(element_data) :: psf_ele
 !>       structure for sectioned field
         type(phys_data) :: psf_phys
-!
-        character(len=kchara) :: psf_file_header
-        integer(kind = kint) :: iflag_psf_fmt = iflag_udt
       end type psf_results
 !
       private :: set_psf_udt_mesh, set_psf_udt_data
@@ -46,40 +45,40 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine load_psf_data_to_link_IO(istep, psf, psf_ucd)
+      subroutine load_psf_data_to_link_IO                               &
+     &         (istep, psf_file_param, psf, psf_ucd)
 !
       use set_ucd_data_to_type
 !
       integer(kind = kint), intent(in) :: istep
+      type(field_IO_params), intent(in) :: psf_file_param
       type(psf_results), intent(inout) :: psf
       type(ucd_data), intent(inout) :: psf_ucd
 !
 !
-      call load_psf_data(istep, psf)
+      call load_psf_data(istep, psf_file_param, psf)
 !
       call link_node_data_2_ucd(psf%psf_nod, psf_ucd)
       call link_ele_data_2_ucd(psf%psf_ele, psf_ucd)
       call link_field_data_to_ucd(psf%psf_phys, psf_ucd)
-      psf_ucd%ifmt_file = psf%iflag_psf_fmt
 !
       end subroutine load_psf_data_to_link_IO
 !
 !-----------------------------------------------------------------------
 !
-      subroutine load_psf_data(istep, psf)
+      subroutine load_psf_data(istep, psf_file_param, psf)
 !
       use ucd_IO_select
 !
       integer(kind = kint), intent(in) :: istep
+      type(field_IO_params), intent(in) :: psf_file_param
       type(psf_results), intent(inout) :: psf
 !
       type(ucd_data) :: read_psf
 !
 !
-      read_psf%file_prefix = psf%psf_file_header
-      read_psf%ifmt_file =   psf%iflag_psf_fmt
-!
-      call sel_read_ucd_file(iminus, istep, ithree, read_psf)
+      call sel_read_ucd_file                                            &
+     &   (iminus, istep, ithree, psf_file_param, read_psf)
 !
       call set_psf_udt_mesh                                             &
      &   (read_psf, psf%psf_nod, psf%psf_ele, psf%psf_phys)

@@ -4,10 +4,10 @@
 !        programmed by H.Matsui on Oct., 2007
 !
 !!      subroutine set_control_4_sph_transform(time_STR, mesh_file,     &
-!!     &          ucd, rj_fld, d_gauss, fem_fld, WK_sph)
-!!      subroutine s_set_ctl_data_4_sph_trans(time_STR, mesh_file,      &
-!!     &         ucd, rj_fld, d_gauss, fem_fld, WK_sph)
-!!        type(ucd_data), intent(inout) :: ucd
+!!     &          ucd_param, rj_fld, d_gauss, fem_fld, WK_sph)
+!!      subroutine s_set_ctl_data_4_sph_trans                           &
+!!     &         (time_STR, mesh_file, ucd_param, sph_fst_param,        &
+!!     &          rj_fld, d_gauss, fem_fld, WK_sph)
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(spherical_trns_works), intent(inout) :: WK_sph
 !!      subroutine set_ctl_data_4_zm_trans
@@ -37,7 +37,10 @@
       type(field_IO_params), save :: sph_file_trns_p
       type(field_IO_params), save :: field_file_param
       type(field_IO_params), save :: zm_source_file_param
+      type(field_IO_params), save :: zonal_ucd_param
 !
+!>      Structure for field data IO paramters
+      type(field_IO_params), save :: ucd_file_param
 !>      Structure for field data IO paramters
       type(field_IO_params), save :: sph_fst_param
 !>      Structure for field data IO paramters
@@ -48,7 +51,7 @@
       type(field_IO_params), save :: rst_org_param
 !
       character(len = kchara) :: zm_spec_file_head = 'zm_spectral'
-      character(len = kchara) :: zonal_udt_head = 'z_mean_out'
+!      character(len = kchara) :: zonal_udt_head = 'z_mean_out'
 !
       character(len = kchara) :: cmb_radial_grp =     'CMB'
       character(len = kchara) :: icb_radial_grp =     'ICB'
@@ -60,9 +63,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_control_4_sph_transform(time_STR, mesh_file,       &
-     &          ucd, rj_fld, d_gauss, fem_fld, WK_sph)
+     &          ucd_param, rj_fld, d_gauss, fem_fld, WK_sph)
 !
-      use t_ucd_data
       use calypso_mpi
       use m_FFT_selector
       use m_legendre_transform_list
@@ -77,7 +79,7 @@
 !
       type(time_step_param), intent(inout) :: time_STR
       type(field_IO_params), intent(inout) :: mesh_file
-      type(ucd_data), intent(inout) :: ucd
+      type(field_IO_params), intent(inout) :: ucd_param
       type(phys_data), intent(inout) :: rj_fld
       type(phys_data), intent(inout) :: fem_fld
       type(spherical_trns_works), intent(inout) :: WK_sph
@@ -90,9 +92,8 @@
       call set_control_smp_def(my_rank, st_plt)
       call set_control_sph_mesh(st_plt, mesh_file, sph_file_trns_p)
       call set_control_restart_file_def(st_plt, sph_fst_param)
-      call set_ucd_file_define(st_plt, ucd)
-      field_file_param%file_prefix =  ucd%file_prefix
-      field_file_param%iflag_format = ucd%ifmt_file
+      call set_ucd_file_define(st_plt, ucd_param)
+      call copy_file_params_type(ucd_param, field_file_param)
 !
 !   setting for spherical transform
 !
@@ -149,12 +150,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_ctl_data_4_sph_trans(time_STR, mesh_file,        &
-     &          sph_fst_param, ucd, rj_fld, d_gauss, fem_fld, WK_sph)
+      subroutine s_set_ctl_data_4_sph_trans                             &
+     &         (time_STR, mesh_file, ucd_param, sph_fst_param,          &
+     &          rj_fld, d_gauss, fem_fld, WK_sph)
 !
       use calypso_mpi
       use t_file_IO_parameter
-      use t_ucd_data
       use m_machine_parameter
       use m_FFT_selector
       use m_legendre_transform_list
@@ -170,8 +171,8 @@
 !
       type(time_step_param), intent(inout) :: time_STR
       type(field_IO_params), intent(inout) :: mesh_file
+      type(field_IO_params), intent(inout) :: ucd_param
       type(field_IO_params), intent(inout) :: sph_fst_param
-      type(ucd_data), intent(inout) :: ucd
       type(phys_data), intent(inout) :: rj_fld
       type(phys_data), intent(inout) :: fem_fld
       type(spherical_trns_works), intent(inout) :: WK_sph
@@ -185,7 +186,7 @@
       call set_control_mesh_def(st_plt, mesh_file)
       call set_control_sph_mesh(st_plt, mesh_file, sph_file_trns_p)
       call set_control_restart_file_def(st_plt, sph_fst_param)
-      call set_merged_ucd_file_define(st_plt, ucd)
+      call set_merged_ucd_file_define(st_plt, ucd_param)
       call set_control_mesh_file_def                                    &
      &   (def_org_sph_rj_head, org_st_plt, rj_org_param)
       call set_control_mesh_file_def                                    &
@@ -225,8 +226,9 @@
 !     file header for reduced data
 !
       if(zonal_udt_head_ctl%iflag .gt. 0) then
-        zonal_udt_head = zonal_udt_head_ctl%charavalue
+        zonal_ucd_param%file_prefix = zonal_udt_head_ctl%charavalue
       end if
+      zonal_ucd_param%iflag_format = ucd_param%iflag_format
 !
 !      stepping parameter
 !

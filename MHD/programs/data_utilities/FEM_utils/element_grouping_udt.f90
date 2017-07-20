@@ -63,19 +63,17 @@
       call link_node_data_2_ucd(psf_data%psf_nod, psf_ucd)
       call link_ele_data_2_ucd(psf_data%psf_ele, psf_ucd)
 !
-      psf_ucd%ifmt_file = iflag_udt
-      psf_ucd%file_prefix = grp_ucd_data_head
-      call sel_write_grd_file(iminus, psf_ucd)
+      grp_ucd_param%iflag_format = iflag_udt
+      call sel_write_grd_file(iminus, grp_ucd_param, psf_ucd)
       call deallocate_med_grouping_patch
 !
 !    output udt data
 !
       call sqrt_of_rms_coefs(num_layer, num_comp, coef)
 !
-      psf_ucd%ifmt_file = iflag_udt
-      psf_ucd%file_prefix = tave_grp_udt_head
-      call sel_write_udt_file                                           &
-     &   (iminus, istep_start, psf_time_IO, psf_ucd)
+      tave_grp_ucd_param%iflag_format = iflag_udt
+      call sel_write_udt_file(iminus, istep_start,                     &
+     &    tave_grp_ucd_param, psf_time_IO, psf_ucd)
 !
       do
         call read_evolution_data(id_org_file, num_comp, num_layer,      &
@@ -87,7 +85,7 @@
      &     .and. istep_read.ge.istep_start) then
           call sqrt_of_rms_coefs(num_layer, num_comp, coef)
           call sel_write_udt_file                                       &
-     &       (iminus, istep_start, psf_time_IO, psf_ucd)
+     &       (iminus, istep_start, grp_ucd_param, psf_time_IO, psf_ucd)
         end if
 !
         if(istep_read .ge. istep_end) exit

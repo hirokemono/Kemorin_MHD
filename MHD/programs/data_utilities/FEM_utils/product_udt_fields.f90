@@ -112,15 +112,15 @@
 !
 !
       ucd_step%istep_file = init_d%i_time_step / ucd_step%increment
-      call find_field_id_in_read_ucd(my_rank, ucd_step%istep_file,      &
-     &    ifmt_result_udt_file, prod_udt_file1_head,                    &
+      call find_field_id_in_read_ucd                                    &
+     &   (my_rank, ucd_step%istep_file, prod1_ucd_param,                &
      &    numnod, product_field_1_name, i_field_product1,               &
      &    ncomp_4_product1, t_IO)
 !
-      call find_field_id_in_read_ucd(my_rank, ucd_step%istep_file,      &
-     &   ifmt_result_udt_file, prod_udt_file2_head,                     &
-     &   numnod, product_field_2_name, i_field_product2,                &
-     &   ncomp_4_product2, t_IO)
+      call find_field_id_in_read_ucd                                    &
+     &   (my_rank, ucd_step%istep_file, prod2_ucd_param,                &
+     &    numnod, product_field_2_name, i_field_product2,               &
+     &    ncomp_4_product2, t_IO)
 !
       if( (i_field_product1*i_field_product2) .eq. 0) then
         call calypso_MPI_abort(ierr_fld,'Field does not excist')
@@ -156,15 +156,6 @@
         end if
       end if
 !
-      if(my_rank .eq. 0) then
-        write(*,*) trim(prod_udt_file1_head), ': ',                     &
-     &             trim(product_field_1_name), ': ',                    &
-     &             i_field_product1, ncomp_4_product1
-        write(*,*) trim(prod_udt_file2_head), ': ',                     &
-     &             trim(product_field_2_name), ': ',                    &
-     &             i_field_product2, ncomp_4_product2
-      end if
-!
       end subroutine set_field_id_4_product
 !
 !-----------------------------------------------------------------------
@@ -179,12 +170,12 @@
       type(time_data), intent(inout) :: t_IO
 !
 !
-      call set_one_field_by_read_ucd_once(my_rank, istep_ucd,           &
-     &    ifmt_result_udt_file, prod_udt_file1_head,                    &
+      call set_one_field_by_read_ucd_once                               &
+     &   (my_rank, istep_ucd, prod1_ucd_param,                          &
      &    i_field_product1, ncomp_4_product1, numnod, d_prod1, t_IO)
 !
-      call set_one_field_by_read_ucd_once(my_rank, istep_ucd,           &
-     &    ifmt_result_udt_file, prod_udt_file2_head,                    &
+      call set_one_field_by_read_ucd_once                               &
+     &   (my_rank, istep_ucd, prod2_ucd_param,                          &
      &    i_field_product2, ncomp_4_product2, numnod, d_prod2, t_IO)
 !
       end subroutine set_data_for_product
@@ -332,15 +323,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine find_field_id_in_read_ucd(my_rank, istep_ucd,          &
-     &          ifile_format, ucd_prefix, numnod, field_name,           &
+     &          ucd_param, numnod, field_name,                          &
      &          i_field, ncomp_field, t_IO)
 !
       use set_and_cal_udt_data
       use ucd_IO_select
 !
-      character(len=kchara), intent(in) :: ucd_prefix
-      integer(kind = kint),  intent(in) :: ifile_format
       integer(kind = kint),  intent(in) :: my_rank, istep_ucd, numnod
+      type(field_IO_params), intent(in) :: ucd_param
 !
       character(len = kchara), intent(in) :: field_name
       integer(kind = kint),  intent(inout) :: i_field, ncomp_field
@@ -350,9 +340,8 @@
 !
 !
       local_ucd%nnod = numnod
-      call set_ucd_file_format_prefix                                   &
-     &   (ucd_prefix, ifile_format, local_ucd)
-      call sel_read_udt_param(my_rank, istep_ucd, t_IO, local_ucd)
+      call sel_read_udt_param                                           &
+     &   (my_rank, istep_ucd, ucd_param, t_IO, local_ucd)
       call find_field_id_in_ucd(local_ucd, field_name,                  &
      &    i_field, ncomp_field)
       call deallocate_ucd_data(local_ucd)
@@ -362,14 +351,12 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_one_field_by_read_ucd_once(my_rank, istep_ucd,     &
-     &          ifile_format, ucd_prefix, i_field, ncomp_field,         &
-     &          numnod, d_fld, t_IO)
+     &          ucd_param, i_field, ncomp_field, numnod, d_fld, t_IO)
 !
       use set_and_cal_udt_data
       use ucd_IO_select
 !
-      character(len=kchara), intent(in) :: ucd_prefix
-      integer(kind = kint),  intent(in) :: ifile_format
+      type(field_IO_params), intent(in) :: ucd_param
       integer(kind = kint),  intent(in) :: my_rank, istep_ucd
       integer(kind = kint),  intent(in) :: numnod, i_field, ncomp_field
 !
@@ -381,9 +368,8 @@
 !
 !
       local_ucd%nnod =      numnod
-      call set_ucd_file_format_prefix                                   &
-     &   (ucd_prefix, ifile_format, local_ucd)
-      call sel_read_alloc_udt_file(my_rank, istep_ucd, t_IO, local_ucd)
+      call sel_read_alloc_udt_file                                      &
+     &   (my_rank, istep_ucd, ucd_param, t_IO, local_ucd)
       call set_one_field_by_udt_data(numnod, ncomp_field,               &
      &    i_field, d_fld, local_ucd)
       call deallocate_ucd_data(local_ucd)

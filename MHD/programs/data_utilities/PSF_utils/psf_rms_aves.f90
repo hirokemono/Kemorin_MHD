@@ -13,6 +13,7 @@
       use m_psf_results
       use m_field_file_format
 !
+      use t_file_IO_parameter
       use t_time_data
       use t_ucd_data
 !
@@ -24,14 +25,14 @@
 !
       implicit    none
 !
+      type(field_IO_params), save :: ave_psf_param
+      type(field_IO_params), save :: rms_psf_param
+      type(field_IO_params), save :: sdev_psf_param
 !
       type(time_data), save :: psf_time
       type(ucd_data), save:: psf_ucd
-
+!
       character(len=kchara) :: fname_tmp
-      character(len=kchara) :: psf_ave_header
-      character(len=kchara) :: psf_rms_header
-      character(len=kchara) :: psf_sdev_header
 !
       integer(kind = kint) :: istep_start, istep_end
       integer(kind = kint) :: istep_int
@@ -49,7 +50,8 @@
 ! . for local 
 !  ===========
 !
-      call input_ucd_file_format_code(iflag_psf_fmt, psf_file_header)
+      call input_ucd_file_format_code                                   &
+     &   (psf_file_param%iflag_format, psf_file_param%file_prefix)
 !
       write(*,*) 'input istep_start, istep_end, istep_int'
       read(*,*) istep_start, istep_end, istep_int
@@ -57,23 +59,26 @@
       write(*,*) 'input radius range'
       read(*,*) rmin, rmax
 !
-      call add_int_suffix(istep_start, psf_file_header, fname_tmp)
-      write(psf_ave_header, '(a9,a)') 'time_ave_', trim(fname_tmp)
-      write(psf_rms_header, '(a9,a)') 'time_rms_', trim(fname_tmp)
-      write(psf_sdev_header,'(a9,a)') 'time_dev_', trim(fname_tmp)
+      call add_int_suffix                                               &
+     &   (istep_start, psf_file_param%file_prefix, fname_tmp)
+      write(ave_psf_param%file_prefix, '(a9,a)')                        &
+     &                                'time_ave_', trim(fname_tmp)
+      write(rms_psf_param%file_prefix, '(a9,a)')                        &
+     &                                'time_rms_', trim(fname_tmp)
+      write(sdev_psf_param%file_prefix,'(a9,a)')                        &
+     &                                'time_dev_', trim(fname_tmp)
 !
-      psf_u%iflag_psf_fmt =   iflag_psf_fmt
-      psf_u%psf_file_header = psf_file_header
+      ave_psf_param%iflag_format =  psf_file_param%iflag_format
+      rms_psf_param%iflag_format =  psf_file_param%iflag_format
+      sdev_psf_param%iflag_format = psf_file_param%iflag_format
 !
-      call load_psf_data_to_link_IO(istep_start, psf_u, psf_ucd)
+      call load_psf_data_to_link_IO                                     &
+     &   (istep_start, psf_file_param, psf_u, psf_ucd)
       call alloc_psf_averages(psf_u%psf_phys, psf_average)
 !
-      psf_ucd%file_prefix = psf_ave_header
-      call sel_write_grd_file(iminus, psf_ucd)
-      psf_ucd%file_prefix = psf_rms_header
-      call sel_write_grd_file(iminus, psf_ucd)
-      psf_ucd%file_prefix = psf_sdev_header
-      call sel_write_grd_file(iminus, psf_ucd)
+      call sel_write_grd_file(iminus, ave_psf_param, psf_ucd)
+      call sel_write_grd_file(iminus, rms_psf_param, psf_ucd)
+      call sel_write_grd_file(iminus, sdev_psf_param, psf_ucd)
 !
 !   Evaluate size of patches
 !
@@ -90,8 +95,10 @@
       write(*,*) 'set_averaging_range'
       call set_averaging_range(rmin, rmax, psf_normal)
 !
-      call open_psf_ave_rms_data(psf_file_header, psf_u%psf_phys)
-      call open_psf_range_data(psf_file_header,  psf_u%psf_phys)
+      call open_psf_ave_rms_data                                        &
+     &   (psf_file_param%file_prefix, psf_u%psf_phys)
+      call open_psf_range_data                                          &
+     &   (psf_file_param%file_prefix,  psf_u%psf_phys)
 !
       nnod_psf = psf_u%psf_nod%numnod
       ncomp_phys = psf_u%psf_phys%ntot_phys
@@ -102,9 +109,6 @@
       trms_psf =  zero
       tsdev_psf = zero
 !
-      psf_ucd%ifmt_file = iflag_psf_fmt
-      psf_ucd%file_prefix = psf_file_header
-!
       icou = 0
       write(*,'(a,i15)', advance='NO')                                  &
      &          'read for averaging. Step:  ', istep_start
@@ -113,7 +117,8 @@
         write(*,'(15a1)', advance='NO') (char(8),i=1,15)
         write(*,'(i15)', advance='NO') istep
 !
-        call sel_read_udt_file(iminus, istep, psf_time, psf_ucd)
+        call sel_read_udt_file                                          &
+     &     (iminus, istep, psf_file_param, psf_time, psf_ucd)
         call cal_rms_ave_4_psf(psf_u%psf_ele, psf_u%psf_phys,           &
      &     psf_normal, psf_average)
         call cal_minmax_psf                                             &
@@ -156,14 +161,15 @@
 !
 !
       icou = 0
-      write(*,'(a,i15)', advance='NO')                                &
+      write(*,'(a,i15)', advance='NO')                                  &
      &          'read for RMS. Step:  ', istep
       do istep = istep_start, istep_end, istep_int
         icou = icou + 1
         write(*,'(15a1)', advance='NO') (char(8),i=1,15)
         write(*,'(i15)', advance='NO') istep
 !
-        call sel_read_udt_file(iminus, istep, psf_time, psf_ucd)
+        call sel_read_udt_file                                          &
+     &     (iminus, istep, psf_file_param, psf_time, psf_ucd)
 !
 !$omp parallel
         do nd = 1, psf_u%psf_phys%ntot_phys
@@ -190,18 +196,17 @@
 !$omp end parallel
 !
 !
-      psf_ucd%file_prefix = psf_ave_header
       call copy_filed_to_phys_data(tave_psf, psf_u%psf_phys)
-      call sel_write_udt_file(iminus, istep_end, psf_time, psf_ucd)
+      call sel_write_udt_file                                           &
+     &   (iminus, istep_end, ave_psf_param, psf_time, psf_ucd)
 !
-!
-      psf_ucd%file_prefix = psf_rms_header
       call copy_filed_to_phys_data(trms_psf, psf_u%psf_phys)
-      call sel_write_udt_file(iminus, istep_end, psf_time, psf_ucd)
+      call sel_write_udt_file                                           &
+     &   (iminus, istep_end, rms_psf_param, psf_time, psf_ucd)
 !
-      psf_ucd%file_prefix = psf_sdev_header
       call copy_filed_to_phys_data(tsdev_psf, psf_u%psf_phys)
-      call sel_write_udt_file(iminus, istep_end, psf_time, psf_ucd)
+      call sel_write_udt_file                                           &
+     &   (iminus, istep_end, sdev_psf_param, psf_time, psf_ucd)
 !
       stop ' //// program normally finished //// '
 !

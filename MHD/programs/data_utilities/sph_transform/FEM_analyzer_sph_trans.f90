@@ -3,7 +3,8 @@
 !!      subroutine FEM_initialize_sph_trans(udt_file_param, t_IO)
 !!        type(field_IO_params), intent(in) :: udt_file_param
 !!
-!!      subroutine FEM_analyze_sph_trans(i_step, t_IO, visval)
+!!      subroutine FEM_analyze_sph_trans                                &
+!!     &         (i_step, udt_file_param, t_IO, visval)
 !!
 !!      subroutine SPH_to_FEM_bridge_sph_trans                          &
 !!     &         (udt_file_param, rj_fld, fld_IO)
@@ -11,8 +12,8 @@
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(phys_data), intent(in) :: rj_fld
 !!        type(field_IO), intent(inout) :: fld_IO
-!!      subroutine FEM_finalize_sph_trans(ucd, m_ucd)
-!!        type(ucd_data), intent(inout) :: ucd
+!!      subroutine FEM_finalize_sph_trans(udt_file_param, m_ucd)
+!!        type(field_IO_params), intent(in) :: udt_file_param
 !!        type(merged_ucd_data), intent(inout) :: m_ucd
 !
       module FEM_analyzer_sph_trans
@@ -64,25 +65,24 @@
 !
 !  -------------------------------
 !
-      call set_ucd_file_format(udt_file_param%iflag_format, input_ucd)
-      call set_ucd_file_prefix(udt_file_param%file_prefix, input_ucd)
-!
       input_ucd%nnod = ione
-      call sel_read_udt_param                                           &
-    &    (my_rank, t_STR%init_d%i_time_step, t_IO, input_ucd)
+      call sel_read_udt_param(my_rank, t_STR%init_d%i_time_step,        &
+    &     udt_file_param, t_IO, input_ucd)
 !
       end subroutine FEM_initialize_sph_trans
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_sph_trans(i_step, t_IO, visval)
+      subroutine FEM_analyze_sph_trans                                  &
+     &         (i_step, udt_file_param, t_IO, visval)
 !
       use m_ctl_params_sph_trans
       use set_ucd_data_to_type
       use nod_phys_send_recv
 !
       integer(kind =kint), intent(in) :: i_step
+      type(field_IO_params), intent(in) :: udt_file_param
       type(time_data), intent(inout) :: t_IO
       integer(kind =kint), intent(inout) :: visval
 !
@@ -94,9 +94,8 @@
 !*  -----------  Output volume data --------------
 !*
       if(visval .eq. 0) then
-        call set_ucd_file_prefix(udt_org_param%file_prefix, input_ucd)
         call set_data_by_read_ucd                                       &
-     &    (my_rank, i_step, t_IO, input_ucd, field_STR)
+     &    (my_rank, i_step, udt_file_param, t_IO, input_ucd, field_STR)
         call nod_fields_send_recv                                       &
      &    (femmesh_STR%mesh%nod_comm, field_STR)
       end if
@@ -106,20 +105,15 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine SPH_to_FEM_bridge_sph_trans                            &
-     &         (udt_file_param, rj_fld, fld_IO)
+      subroutine SPH_to_FEM_bridge_sph_trans(rj_fld, fld_IO)
 !
       use t_field_data_IO
       use t_phys_data
       use copy_rj_phys_data_4_IO
 !
-      type(field_IO_params), intent(in) :: udt_file_param
       type(phys_data), intent(in) :: rj_fld
       type(field_IO), intent(inout) :: fld_IO
 !
-!
-      call set_ucd_file_format(udt_file_param%iflag_format, input_ucd)
-      call set_ucd_file_prefix(udt_file_param%file_prefix, input_ucd)
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_rj_all_phys_name_to_IO'
       call copy_rj_phys_name_to_IO(rj_fld%num_phys, rj_fld, fld_IO)
@@ -131,18 +125,18 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_finalize_sph_trans(ucd, m_ucd)
+      subroutine FEM_finalize_sph_trans(udt_file_param, m_ucd)
 !
       use m_ctl_params_sph_trans
       use t_ucd_data
       use output_parallel_ucd_file
 !
-      type(ucd_data), intent(inout) :: ucd
+      type(field_IO_params), intent(in) :: udt_file_param
       type(merged_ucd_data), intent(inout) :: m_ucd
 !
 !
       if(t_STR%ucd_step%increment .gt. 0) then
-        call finalize_ucd_file_output(ucd, m_ucd)
+        call finalize_ucd_file_output(udt_file_param, m_ucd)
       end if
 !
       end subroutine FEM_finalize_sph_trans

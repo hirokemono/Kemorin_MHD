@@ -62,7 +62,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_ctl_data_4_sph_trans'
       call s_set_ctl_data_4_sph_trans                                   &
-     &   (t_STR, mesh_file_STR, sph_fst_param, ucd_SPH_TRNS,            &
+     &   (t_STR, mesh_file_STR, ucd_file_param, sph_fst_param,          &
      &    rj_fld_trans, d_gauss_trans, field_STR, WK_sph_TRNS)
       call set_ctl_data_4_pick_zm
 !
@@ -75,7 +75,8 @@
 !
 !    Initialize FEM grid
       if (iflag_debug.gt.0) write(*,*) 'FEM_initialize_back_trans'
-      call FEM_initialize_back_trans(viz_step_STR, ele_4_nod_SPH_TRANS, &
+      call FEM_initialize_back_trans                                    &
+     &   (ucd_file_param, viz_step_STR, ele_4_nod_SPH_TRANS,            &
      &    jacobians_STR, ucd_SPH_TRNS, m_ucd_SPH_TRNS)
 !
 !    Initialization for spherical tranform
@@ -84,8 +85,7 @@
 !
 !    Set field IOP array by spectr fields
       if (iflag_debug.gt.0) write(*,*) 'SPH_to_FEM_bridge_sph_trans'
-      call SPH_to_FEM_bridge_sph_trans(field_file_param,                &
-     &    rj_fld_trans, sph_trns_IO)
+      call SPH_to_FEM_bridge_sph_trans(rj_fld_trans, sph_trns_IO)
 !
 !  -------------------------------
 !
@@ -108,7 +108,8 @@
       do i_step = t_STR%init_d%i_time_step, t_STR%finish_d%i_end_step
 !
 !   Input field data
-        call FEM_analyze_sph_trans(i_step, time_IO_TRNS, visval)
+        call FEM_analyze_sph_trans                                      &
+     &     (i_step, udt_org_param, time_IO_TRNS, visval)
 !
 !   Take zonal RMS
         if (iflag_debug.gt.0) write(*,*) 'zonal_rms_all_rtp_field'
@@ -117,8 +118,8 @@
         call zonal_rms_all_rtp_field (sph_mesh_trans%sph%sph_rtp,       &
      &      femmesh_STR%mesh%node, field_STR)
 !
-        call set_ucd_file_prefix(zonal_udt_head, ucd_SPH_TRNS)
-        call FEM_analyze_back_trans(time_IO_TRNS, ucd_SPH_TRNS, i_step, &
+        call FEM_analyze_back_trans                                     &
+     &     (zonal_ucd_param, time_IO_TRNS, ucd_SPH_TRNS, i_step,        &
      &      viz_step_STR, visval)
 !
         if(visval .eq. 0) then
@@ -128,7 +129,7 @@
         end if
       end do
 !
-      call FEM_finalize_sph_trans(ucd_SPH_TRNS, m_ucd_SPH_TRNS)
+      call FEM_finalize_sph_trans(udt_org_param, m_ucd_SPH_TRNS)
 !
       call output_elapsed_times
 !

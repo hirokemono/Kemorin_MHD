@@ -3,20 +3,27 @@
 !
 !     Written by H. Matsui on Nov., 2006
 !
-!!      subroutine set_ctl_params_prod_udt                              &
-!!     &         (mesh_file, udt_org_param, ucd)
+!!      subroutine set_ctl_params_prod_udt(mesh_file, udt_org_param)
 !
       module m_ctl_params_4_prod_udt
 !
       use m_precision
+      use t_file_IO_parameter
 !
       implicit none
 !
 !
-      character(len = kchara) :: prod_udt_file1_head = "field_1/out"
-      character(len = kchara) :: prod_udt_file2_head = "field_2/out"
+      type(field_IO_params), save :: prod1_ucd_param
+      type(field_IO_params), save :: prod2_ucd_param
+      type(field_IO_params), save :: output_ucd_param
 !
-      character(len = kchara) :: result_udt_file_head= "field_prod/out"
+      character(len = kchara), parameter                                &
+     &       :: prod_udt_file1_head = "field_1/out"
+      character(len = kchara), parameter                                &
+     &       :: prod_udt_file2_head = "field_2/out"
+!
+      character(len = kchara), parameter                                &
+     &       :: result_udt_file_head= "field_prod/out"
       integer(kind = kint) :: ifmt_result_udt_file = 0
 !
       character(len = kchara) :: product_field_1_name = "velocity"
@@ -39,12 +46,10 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_ctl_params_prod_udt                                &
-     &         (mesh_file, udt_org_param, ucd)
+      subroutine set_ctl_params_prod_udt(mesh_file, udt_org_param)
 !
       use calypso_mpi
       use t_file_IO_parameter
-      use t_ucd_data
       use m_error_IDs
       use m_ctl_data_product_udt
       use m_file_format_switch
@@ -54,7 +59,6 @@
 !
       type(field_IO_params), intent(inout) ::  mesh_file
       type(field_IO_params), intent(inout)  :: udt_org_param
-      type(ucd_data), intent(inout) :: ucd
 !
 !
       if (nprocs .ne. pu_plt%ndomain_ctl%intvalue) then
@@ -64,34 +68,34 @@
 !
       call set_control_smp_def(my_rank, pu_plt)
       call set_control_mesh_def(pu_plt, mesh_file)
-      call set_ucd_file_define(pu_plt, ucd)
       call set_control_mesh_file_def                                    &
      &   (def_org_ucd_header, org_pu_plt, udt_org_param)
 !
 !   set fiale name
 !
-      prod_udt_file1_head = "field/out"
-      if (product_udt_1_head_ctl%iflag .ne. 0) then
-        prod_udt_file1_head = product_udt_1_head_ctl%charavalue
-        if (iflag_debug.gt.0)                                           &
-     &   write(*,*) 'prod_udt_file1_head: ', trim(prod_udt_file1_head)
-      end if
-!
-      prod_udt_file2_head = "field/out"
-      if (product_udt_2_head_ctl%iflag .ne. 0) then
-        prod_udt_file2_head = product_udt_2_head_ctl%charavalue
-        if (iflag_debug.gt.0)                                           &
-     &   write(*,*) 'prod_udt_file2_head: ', trim(prod_udt_file2_head)
-      end if
-!
-      if (pu_plt%field_file_prefix%iflag .ne. 0) then
-        result_udt_file_head = pu_plt%field_file_prefix%charavalue
-      else
-        result_udt_file_head = "field_new/out"
-      end if
-!
       call choose_ucd_file_format(pu_plt%field_file_fmt_ctl%charavalue, &
      &    pu_plt%field_file_fmt_ctl%iflag, ifmt_result_udt_file)
+!
+      if (product_udt_1_head_ctl%iflag .ne. 0) then
+        prod1_ucd_param%file_prefix = product_udt_1_head_ctl%charavalue
+      else
+        prod1_ucd_param%file_prefix = prod_udt_file1_head
+      end if
+!
+      prod2_ucd_param%file_prefix = "field/out"
+      if (product_udt_2_head_ctl%iflag .ne. 0) then
+        prod2_ucd_param%file_prefix = product_udt_2_head_ctl%charavalue
+      else
+        prod2_ucd_param%file_prefix = prod_udt_file2_head
+      end if
+      prod2_ucd_param%iflag_format = ifmt_result_udt_file
+!
+      if (pu_plt%field_file_prefix%iflag .ne. 0) then
+        output_ucd_param%file_prefix                                    &
+     &          = pu_plt%field_file_prefix%charavalue
+      else
+        output_ucd_param%file_prefix = result_udt_file_head
+      end if
 !
 !
       product_field_1_name = "velocity"

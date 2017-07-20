@@ -3,10 +3,10 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine set_parameters_4_FFT(num_pe, ist, ied, iint)
-!      subroutine set_parameters_data_by_spec(num_pe,                   &
-!     &          kx_org, ky_org, iz_org, ucd)
-!        type(ucd_data), intent(inout) :: ucd
+!!      subroutine set_parameters_4_FFT(num_pe, ist, ied, iint)
+!!      subroutine set_parameters_data_by_spec(num_pe,                  &
+!!     &          kx_org, ky_org, iz_org, ucd_param)
+!!      type(field_IO_params), intent(inout) :: ucd_param
 !
       module set_list_4_FFT
 !
@@ -167,7 +167,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_parameters_data_by_spec(num_pe,                    &
-     &          kx_org, ky_org, iz_org, mesh_file, ucd)
+     &          kx_org, ky_org, iz_org, mesh_file, ucd_param)
 !
       use m_control_plane_fft
       use m_ctl_data_4_plane_model
@@ -184,7 +184,7 @@
       integer(kind=kint ), intent(inout) :: num_pe
       integer(kind=kint ), intent(inout) :: kx_org, ky_org, iz_org
       type(field_IO_params),  intent(inout) ::  mesh_file
-      type(ucd_data), intent(inout) :: ucd
+      type(field_IO_params), intent(inout) :: ucd_param
 !
 !
       write(*,*) 'nnod_plane_ctl       ', nnod_plane_ctl%intvalue
@@ -198,9 +198,8 @@
 !
       if (new_p_plt%field_file_prefix%iflag .gt. 0) then
         call choose_file_format                                         &
-     &     (new_p_plt%field_file_fmt_ctl, ucd%ifmt_file)
-        call set_ucd_file_prefix                                        &
-     &     (new_p_plt%field_file_prefix%charavalue, ucd)
+     &     (new_p_plt%field_file_fmt_ctl, ucd_param%iflag_format)
+        ucd_param%file_prefix = new_p_plt%field_file_prefix%charavalue
       end if
 !
 !

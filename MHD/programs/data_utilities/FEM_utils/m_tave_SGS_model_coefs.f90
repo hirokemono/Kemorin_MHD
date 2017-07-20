@@ -79,7 +79,8 @@
       integer(kind = kint) :: i
 !
 !
-      call add_int_suffix(istep, tave_grp_udt_head, fname_tmp)
+      call add_int_suffix                                               &
+     &   (istep, tave_grp_ucd_param%file_prefix, fname_tmp)
       call add_dat_extension(fname_tmp, file_name)
       open (id_ave_file,file=file_name)
 !
@@ -120,7 +121,8 @@
       character(len = kchara) :: file_name, fname_tmp
       integer(kind = kint) :: i
 !
-      call add_int_suffix(istep, tsig_grp_udt_head, fname_tmp)
+      call add_int_suffix                                               &
+     &   (istep, sdev_grp_ucd_param%file_prefix, fname_tmp)
       call add_dat_extension(fname_tmp, file_name)
       open (id_sig_file,file=file_name)
 !

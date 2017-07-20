@@ -4,8 +4,9 @@
 !
 !       Written by H. Matsui
 !
-!!      subroutine FEM_initialize_surface(elemesh)
-!!      subroutine FEM_analyze_surface(i_step, time_VIZ, viz_step)
+!!      subroutine FEM_initialize_surface(ucd_param)
+!!      subroutine FEM_analyze_surface                                  &
+!!     &         (i_step, ucd_param, time_VIZ, viz_step)
 !!        type(time_step_param), intent(inout) :: time_VIZ
 !!        type(VIZ_step_params), intent(inout) :: viz_step
 !
@@ -19,6 +20,7 @@
       use t_step_parameter
       use t_VIZ_step_parameter
       use t_IO_step_parameter
+      use t_file_IO_parameter
       use m_visualization
 !
       implicit none
@@ -29,13 +31,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_surface
+      subroutine FEM_initialize_surface(ucd_param)
+!
+      type(field_IO_params), intent(in) :: ucd_param
 !
 !   --------------------------------
 !       setup mesh information
 !   --------------------------------
 !
-      call mesh_setup_4_VIZ
+      call mesh_setup_4_VIZ(ucd_param)
 !
 !     ---------------------
 !
@@ -47,9 +51,11 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_surface(i_step, time_VIZ, viz_step)
+      subroutine FEM_analyze_surface                                    &
+     &         (i_step, ucd_param, time_VIZ, viz_step)
 !
       integer (kind =kint), intent(in) :: i_step
+      type(field_IO_params), intent(in) :: ucd_param
       type(time_step_param), intent(inout) :: time_VIZ
       type(VIZ_step_params), intent(inout) :: viz_step
 !
@@ -61,7 +67,8 @@
       call accum_flag_to_visualization(i_step, viz_step%ISO_t, visval)
 !
       iflag = viz_step%PSF_t%istep_file * viz_step%ISO_t%istep_file
-      call set_field_data_4_VIZ(iflag, i_step, time_VIZ%time_d)
+      call set_field_data_4_VIZ                                         &
+     &   (iflag, i_step, ucd_param, time_VIZ%time_d)
 !
       end subroutine FEM_analyze_surface
 !

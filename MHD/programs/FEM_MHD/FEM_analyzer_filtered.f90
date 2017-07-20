@@ -4,9 +4,9 @@
 !      modified by H. Matsui on June, 2005 
 !
 !!      subroutine FEM_analyze_filtered                                 &
-!!     &         (i_step, fst_file_IO, MHD_step, visval)
-!!        type(field_IO_params), intent(in) :: fst_file_IO
-!!      type(MHD_step_param), intent(inout) :: MHD_step
+!!     &         (i_step, MHD_files, MHD_step, visval)
+!!        type(MHD_file_IO_params), intent(in) :: MHD_files
+!!        type(MHD_step_param), intent(inout) :: MHD_step
 !
       module FEM_analyzer_filtered
 !
@@ -16,7 +16,7 @@
       use t_time_data
       use t_IO_step_parameter
       use t_MHD_step_parameter
-      use t_file_IO_parameter
+      use t_MHD_file_parameter
 !
       use calypso_mpi
 !
@@ -31,7 +31,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_analyze_filtered                                   &
-     &         (i_step, fst_file_IO, MHD_step, visval)
+     &         (i_step, MHD_files, MHD_step, visval)
 !
       use m_control_parameter
       use m_physical_property
@@ -69,7 +69,7 @@
       use output_viz_file_control
 !
       integer(kind=kint ), intent(in) :: i_step
-      type(field_IO_params), intent(in) :: fst_file_IO
+      type(MHD_file_IO_params), intent(inout) :: MHD_files
 !
       integer(kind=kint ), intent(inout) :: visval
       type(MHD_step_param), intent(inout) :: MHD_step
@@ -85,7 +85,7 @@
       if (MHD_step%rst_step%increment .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'input_restart_4_snapshot'
         call input_restart_4_snapshot                                   &
-     &     (flex_p1%istep_max_dt, fst_file_IO,                          &
+     &     (flex_p1%istep_max_dt, MHD_files%fst_file_IO,                &
      &      mesh1%node, nod_fld1, SNAP_time_IO, MHD_step%rst_step)
 !
       else if (MHD_step%ucd_step%increment .gt. 0) then
@@ -189,8 +189,8 @@
 !     ---- Output voulme field data
 !
       if (iflag_debug.eq.1) write(*,*) 's_output_ucd_file_control'
-      call s_output_ucd_file_control                                    &
-     &   (flex_p1%istep_max_dt, MHD_step%time_d, MHD_step%ucd_step)
+      call s_output_ucd_file_control(MHD_files%ucd_file_IO,             &
+     &    flex_p1%istep_max_dt, MHD_step%time_d, MHD_step%ucd_step)
 !
 !     ----
 !

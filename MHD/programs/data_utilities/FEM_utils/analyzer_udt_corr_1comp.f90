@@ -70,8 +70,7 @@
       call init_element_mesh_type(elemesh_FUT)
 !
       call s_input_control_corr_udt                                     &
-     &   (mesh_file_FUTIL, udt_param_FUTIL, field_FUTIL, ucd_FUTIL,     &
-     &    time_U)
+     &   (mesh_file_FUTIL, udt_param_FUTIL, field_FUTIL, time_U)
       if (iflag_debug.eq.1) write(*,*) 'mpi_input_mesh_p'
       call mpi_input_mesh_p(mesh_file_FUTIL, femmesh_p_FUT,             &
      &    elemesh_FUT%surf%nnod_4_surf,                                 &
@@ -167,8 +166,7 @@
 !
         call set_data_by_read_ucd_once                                  &
      &     (my_rank, time_U%ucd_step%istep_file,                        &
-     &      udt_param_FUTIL%iflag_format, ref_udt_file_head,            &
-     &      field_FUTIL, time_IO_FUTIL)
+     &      first_ucd_param, field_FUTIL, time_IO_FUTIL)
 !
         call nod_fields_send_recv                                       &
      &     (femmesh_p_FUT%mesh%nod_comm, field_FUTIL)

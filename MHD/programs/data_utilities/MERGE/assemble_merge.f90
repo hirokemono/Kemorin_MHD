@@ -50,7 +50,7 @@
 !   read control data for merge
 !
       call read_control_4_merge
-      call set_control_4_merge(fem_ucd)
+      call set_control_4_merge
 !
 !  read mesh information
 !
@@ -58,7 +58,8 @@
 !
 !   read field name and number of components
 !
-      call init_ucd_data_4_merge(istep_start, fem_time_IO, fem_ucd)
+      call init_ucd_data_4_merge                                        &
+     &   (istep_start, original_ucd_param, fem_time_IO, fem_ucd)
 !
 !    set list array for merged field
 !
@@ -70,24 +71,24 @@
       call link_merged_node_2_ucd_IO(fem_ucd)
       call link_merged_ele_2_ucd_IO(fem_ucd)
 !
-      fem_ucd%ifmt_file = itype_assembled_data
-      fem_ucd%file_prefix = merged_data_head
-      call sel_write_grd_file(izero, fem_ucd)
+      call sel_write_grd_file(izero, assemble_ucd_param, fem_ucd)
 !
-      if(    mod(fem_ucd%ifmt_file,100)/10 .eq. iflag_vtd/10            &
-     &  .or. mod(fem_ucd%ifmt_file,100)/10 .eq. iflag_udt/10) then
+      if(    mod(assemble_ucd_param%iflag_format,100)/10                &
+     &                                     .eq. iflag_vtd/10            &
+     &  .or. mod(assemble_ucd_param%iflag_format,100)/10                &
+     &                                     .eq. iflag_udt/10) then
         call deallocate_ucd_ele(fem_ucd)
       end if
 !
 !   loop for snap shots
 !
       do istep = istep_start, istep_end, increment_step
-        call read_ucd_data_4_merge(istep, fem_time_IO, fem_ucd)
+        call read_ucd_data_4_merge                                      &
+     &     (istep, original_ucd_param, fem_time_IO, fem_ucd)
         call link_merged_field_2_udt_IO(fem_ucd)
 !
-        fem_ucd%ifmt_file = itype_assembled_data
-        fem_ucd%file_prefix = merged_data_head
-        call sel_write_ucd_file(iminus, istep, fem_time_IO, fem_ucd)
+        call sel_write_ucd_file                                         &
+     &     (iminus, istep, assemble_ucd_param, fem_time_IO, fem_ucd)
         call deallocate_ucd_data(fem_ucd)
       write(*,*) 'step', istep, 'finish '
       end do

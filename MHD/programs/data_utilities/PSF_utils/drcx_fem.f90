@@ -62,12 +62,12 @@
 !
 !*  ----------  main loop for graphic  ---------------
 !*
-      psf_file_header = pg_psf_file_prefix
-      iflag_psf_fmt = iflag_pg_psf_fmt
+      psf_file_param%file_prefix = pg_psf_file_prefix
+      psf_file_param%iflag_format = iflag_pg_psf_fmt
       do istep = ist_pg, ied_pg, inc_pg
         time = dble(istep)*delta_time_pg
 !*
-        call load_psf_data(istep, psf_u)
+        call load_psf_data(istep, psf_file_param, psf_u)
         call set_psffield_id_4_plot_pg(psf_u%psf_phys)
 !
         nnod_pg =     psf_u%psf_nod%numnod

@@ -54,13 +54,13 @@
       if (iflag_debug.gt.0) write(*,*) 'set_control_params_4_viz'
       call read_control_data_vizs
       call set_control_params_4_viz(my_rank, t_viz_ctl, viz_plt,        &
-     &    mesh_file_VIZ, ucd_VIZ, ierr)
+     &    mesh_file_VIZ, ucd_file_VIZ, ierr)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !
 !  FEM Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_vizs'
-      call FEM_initialize_vizs(viz_step_V)
+      call FEM_initialize_vizs(ucd_file_VIZ, viz_step_V)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
@@ -81,7 +81,8 @@
 !
 !  Load field data
         if(iflag_debug .gt. 0)  write(*,*) 'FEM_analyze_vizs', i_step
-        call FEM_analyze_vizs(i_step, t_VIZ, viz_step_V, visval)
+        call FEM_analyze_vizs                                           &
+     &     (i_step, ucd_file_VIZ, t_VIZ, viz_step_V, visval)
 !
 !  Rendering
         if(visval .eq. 0) then

@@ -5,14 +5,14 @@
 !      Written by H. Matsui
 !
 !!      subroutine FEM_initialize_back_trans                            &
-!!     &         (viz_step, ele_4_nod, jacobians, ucd, m_ucd)
+!!     &         (ucd_param, viz_step, ele_4_nod, jacobians, ucd, m_ucd)
 !!        type(VIZ_step_params), intent(in) :: viz_step
 !!        type(element_around_node), intent(inout) :: ele_4_nod
 !!        type(jacobians_type), intent(inout) :: jacobians
 !!        type(ucd_data), intent(inout) :: ucd
 !!        type(merged_ucd_data), intent(inout)  :: m_ucd
 !!      subroutine FEM_analyze_back_trans                               &
-!!     &         (t_IO, ucd, i_step, viz_step, visval)
+!!     &         (ucd_param, t_IO, ucd, i_step, viz_step, visval)
 !!        type(VIZ_step_params), intent(inout) :: viz_step
 !
       module FEM_analyzer_back_trans
@@ -23,6 +23,7 @@
 !
       use m_SPH_transforms
       use t_VIZ_step_parameter
+      use t_file_IO_parameter
 !
       implicit none
 !
@@ -33,7 +34,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_initialize_back_trans                              &
-     &         (viz_step, ele_4_nod, jacobians, ucd, m_ucd)
+     &         (ucd_param, viz_step, ele_4_nod, jacobians, ucd, m_ucd)
 !
       use t_ucd_data
       use t_next_node_ele_4_node
@@ -54,6 +55,7 @@
       use const_element_comm_tables
 !
       type(VIZ_step_params), intent(in) :: viz_step
+      type(field_IO_params), intent(in) :: ucd_param
       type(element_around_node), intent(inout) :: ele_4_nod
       type(jacobians_type), intent(inout) :: jacobians
       type(ucd_data), intent(inout) :: ucd
@@ -91,7 +93,7 @@
       if(t_STR%ucd_step%increment .eq. 0) return
       call link_output_grd_file                                         &
      &   (femmesh_STR%mesh%node, femmesh_STR%mesh%ele,                  &
-     &    femmesh_STR%mesh%nod_comm, field_STR, ucd, m_ucd)
+     &    femmesh_STR%mesh%nod_comm, field_STR, ucd_param, ucd, m_ucd)
 !
       call calypso_mpi_barrier
 !
@@ -101,7 +103,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_analyze_back_trans                                 &
-     &         (t_IO, ucd, i_step, viz_step, visval)
+     &         (ucd_param, t_IO, ucd, i_step, viz_step, visval)
 !
       use m_ctl_params_sph_trans
       use t_time_data
@@ -112,6 +114,7 @@
       use nod_phys_send_recv
 !
       integer (kind =kint), intent(in) :: i_step
+      type(field_IO_params), intent(in) :: ucd_param
       type(time_data), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
 !
@@ -131,7 +134,7 @@
 !*  -----------  Output volume data --------------
 !*
       if(output_IO_flag(i_step,t_STR%ucd_step) .eq. 0) then
-        call sel_write_udt_file(my_rank, i_step, t_IO, ucd)
+        call sel_write_udt_file(my_rank, i_step, ucd_param, t_IO, ucd)
       end if
 !
       end subroutine FEM_analyze_back_trans

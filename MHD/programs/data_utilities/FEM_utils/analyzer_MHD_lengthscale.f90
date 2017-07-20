@@ -54,7 +54,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_prod_udt'
       call set_ctl_params_prod_udt                                      &
-     &   (mesh_file_FUTIL, udt_param_FUTIL, ucd_FUTIL)
+     &   (mesh_file_FUTIL, udt_param_FUTIL)
       call set_fixed_time_step_params                                   &
      &   (t_pu_ctl, time_U, ierr, e_message)
 !
@@ -86,8 +86,7 @@
 !
         call set_data_by_read_ucd_once                                  &
      &     (my_rank, time_U%ucd_step%istep_file,                        &
-     &      udt_param_FUTIL%iflag_format, ref_udt_file_head,            &
-     &      field_FUTIL, time_IO_FUTIL)
+     &      first_ucd_param, field_FUTIL, time_IO_FUTIL)
 !
         call const_MHD_length_scales                                    &
      &     (femmesh_FUTIL%mesh%node, iphys_FUTIL, field_FUTIL,          &

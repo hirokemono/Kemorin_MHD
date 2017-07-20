@@ -55,11 +55,10 @@
 !
 !    output grid data
 !
-!      psf_ucd%ifmt_file = iflag_udt
-!      psf_ucd%file_prefix = tave_grp_udt_head
-!      call sel_write_grd_file(iminus, psf_ucd)
-!      psf_ucd%file_prefix = tsig_grp_udt_head
-!      call sel_write_grd_file(iminus, psf_ucd)
+!      tave_grp_ucd_param%iflag_format = iflag_udt
+!      call sel_write_grd_file(iminus, tave_grp_ucd_param, psf_ucd)
+!      sdev_grp_ucd_param%iflag_format = iflag_udt
+!      call sel_write_grd_file(iminus, sdev_grp_ucd_param, psf_ucd)
 !
 !      call deallocate_med_grouping_patch
 !
@@ -138,9 +137,9 @@
      &    num_layer, num_comp, num_comp, ncomp, comp_name, ave_coef,    &
      &    ucd_med)
 !
-      ucd_med%ifmt_file = iflag_vtk
-      ucd_med%file_prefix = tave_grp_udt_head
-      call sel_write_udt_file(iminus, istep_read, med_time_IO, ucd_med)
+      tave_grp_ucd_param%iflag_format = iflag_vtk
+      call sel_write_udt_file                                           &
+     &   (iminus, istep_read, tave_grp_ucd_param, med_time_IO, ucd_med)
       stop
 !
       end program element_grouping_udt

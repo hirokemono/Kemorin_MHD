@@ -52,7 +52,7 @@
 !
       call read_control_4_merge
 !
-      call set_control_4_merge(fem_ucd)
+      call set_control_4_merge
       call set_control_4_newrst
 !
 !     read outline of mesh

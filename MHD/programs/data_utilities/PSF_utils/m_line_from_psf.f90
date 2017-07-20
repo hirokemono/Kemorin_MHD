@@ -10,7 +10,7 @@
 !!      subroutine pick_psf_by_sections                                 &
 !!     &         (nd, xref, psf_nod, psf_ele, psf_phys, line)
 !!      subroutine write_psf_line_data                                  &
-!!     &         (iflag_format, file_header, istep, line_time, line)
+!!     &         (istep, line_ucd_param, line_time, line)
 !!@endverbatim
 !
       module m_line_from_psf
@@ -20,6 +20,7 @@
 !
       use t_time_data
       use t_ucd_data
+      use t_file_IO_parameter
 !
       implicit none
 !
@@ -30,22 +31,21 @@
 !-----------------------------------------------------------------------
 !
       subroutine write_psf_line_data                                    &
-     &         (iflag_format, file_header, istep, line_time, line)
+     &         (istep, line_ucd_param, line_time, line)
 !
       use m_geometry_constants
       use ucd_IO_select
 !
-      character(len=kchara), intent(in) :: file_header
-      integer(kind = kint), intent(in) :: istep, iflag_format
+      integer(kind = kint), intent(in) :: istep
+      type(field_IO_params), intent(in) :: line_ucd_param
       type(time_data), intent(inout) :: line_time
       type(ucd_data), intent(inout) :: line
 !
       integer(kind = kint), parameter :: delete_process = -1
 !
 !
-      line%ifmt_file =   iflag_format
-      line%file_prefix = file_header
-      call sel_write_ucd_file(delete_process, istep, line_time, line)
+      call sel_write_ucd_file                                           &
+     &   (delete_process, istep, line_ucd_param, line_time, line)
       call deallocate_ucd_mesh(line)
 !
       end subroutine write_psf_line_data

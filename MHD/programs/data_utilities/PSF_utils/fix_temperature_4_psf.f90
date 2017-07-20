@@ -15,6 +15,7 @@
       use m_psf_results
       use m_field_file_format
 !
+      use t_file_IO_parameter
       use t_time_data
       use t_ucd_data
 !
@@ -24,12 +25,11 @@
       implicit    none
 !
 !
+      type(field_IO_params), save :: fix_psf_param
       type(time_data), save :: psf_time
       type(ucd_data), save:: psf_ucd
 !
       character(len=kchara) :: psf_format
-      character(len=kchara) :: psf_org_header
-      character(len=kchara) :: psf_fixed_header
 !
       integer(kind = kint) :: istep_start, istep_end
       integer(kind = kint) :: istep_int
@@ -54,23 +54,22 @@
       read(*,*) psf_format
 !
       write(*,*) 'input original psf file name'
-      read(*,*) psf_org_header
+      read(*,*) psf_file_param%file_prefix
 !
       write(*,*) 'input fixed file name'
-      read(*,*) psf_fixed_header
+      read(*,*) fix_psf_param%file_prefix
 !
       write(*,*) 'inputistep_start, istep_end, istep_int'
       read(*,*) istep_start, istep_end, istep_int
 !
-      call choose_ucd_file_format(psf_format, ione, iflag_psf_fmt)
-      psf_ucd%ifmt_file = iflag_psf_fmt
+      call choose_ucd_file_format                                       &
+     &   (psf_format, ione, psf_file_param%iflag_format)
 !
-      psf_file_header = psf_org_header
-      psf_ucd%file_prefix = psf_org_header
-      call load_psf_data_to_link_IO(istep_start, psf_u, psf_ucd)
+      call load_psf_data_to_link_IO                                     &
+     &   (istep_start, psf_file_param, psf_u, psf_ucd)
+      fix_psf_param%iflag_format = psf_file_param%iflag_format
 !
-      psf_ucd%file_prefix = psf_fixed_header
-      call sel_write_grd_file(iminus, psf_ucd)
+      call sel_write_grd_file(iminus, fix_psf_param, psf_ucd)
 !
       ipsf_temp = 0
       do ifld = 1, psf_u%psf_phys%num_phys
@@ -103,17 +102,17 @@
         write(*,'(10a1)', advance='NO') (char(8),i=1,10)
         write(*,'(i15)', advance='NO') istep
 !
-        psf_ucd%file_prefix = psf_org_header
-        call sel_read_udt_file(iminus, istep, psf_time, psf_ucd)
+        call sel_read_udt_file                                          &
+     &     (iminus, istep, psf_file_param, psf_time, psf_ucd)
 !
         do inod = 1, psf_u%psf_nod%numnod
           psf_u%psf_phys%d_fld(inod,ipsf_temp)                          &
-      &         = psf_u%psf_phys%d_fld(inod,ipsf_temp)                  &
-      &          + reftemp_psf(inod)
+     &         = psf_u%psf_phys%d_fld(inod,ipsf_temp)                   &
+     &          + reftemp_psf(inod)
         end do
 !
-        psf_ucd%file_prefix = psf_fixed_header
-        call sel_write_udt_file(iminus, istep, psf_time, psf_ucd)
+        call sel_write_udt_file                                         &
+     &     (iminus, istep, fix_psf_param, psf_time, psf_ucd)
       end do
       write(*,*)
 !

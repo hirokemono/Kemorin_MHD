@@ -27,11 +27,12 @@
       type(field_IO_params), save ::  cor_mesh_file
       type(field_IO_params), save ::  ref_mesh_file
 !
-      character(len=kchara) :: cor_udt_header =  'field/out'
-      character(len=kchara) :: ref_udt_header =  'field_ref/out'
+      type(field_IO_params), save :: cor_ucd_param
+      type(field_IO_params), save :: ref_ucd_param
 !
-      integer (kind = kint) :: itype_cor_ucd_file = iflag_fld
-      integer (kind = kint) :: itype_ref_ucd_file = iflag_fld
+      character(len=kchara), parameter :: cor_udt_header =  'field/out'
+      character(len=kchara), parameter                                  &
+     &     :: ref_udt_header =  'field_ref/out'
 !
 !
       real   (kind=kreal), allocatable  ::  phys_d1(:)

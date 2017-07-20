@@ -8,19 +8,26 @@
 !> @brief UCD data IO selector
 !!
 !!@verbatim
-!!      subroutine set_ucd_file_define(plt, ucd)
-!!        type(platform_data_control), intent(inout) :: plt
-!!        type(ucd_data), intent(inout) :: ucd
+!!      subroutine set_ucd_file_define(plt, ucd_param)
+!!        type(platform_data_control), intent(in) :: plt
+!!        type(field_IO_params), intent(inout) :: ucd_param
 !!
-!!      subroutine sel_write_ucd_file(my_rank, istep_ucd, t_IO, ucd)
-!!      subroutine sel_write_udt_file(my_rank, istep_ucd, t_IO, ucd)
-!!      subroutine sel_write_grd_file(my_rank, ucd)
+!!      subroutine sel_write_ucd_file                                   &
+!!     &         (my_rank, istep_ucd, ucd_param, t_IO, ucd)
+!!      subroutine sel_write_udt_file                                   &
+!!     &         (my_rank, istep_ucd, ucd_param, t_IO, ucd)
+!!      subroutine sel_write_grd_file(my_rank, ucd_param, ucd)
 !!
-!!      subroutine sel_read_udt_param(my_rank, istep_ucd, t_IO, ucd)
+!!      subroutine sel_read_udt_param                                   &
+!!     &         (my_rank, istep_ucd, ucd_param, t_IO, ucd)
 !!      subroutine sel_read_alloc_udt_file                              &
-!!     &         (my_rank, istep_ucd, t_IO, ucd)
-!!      subroutine sel_read_udt_file(my_rank, istep_ucd, t_IO, ucd)
-!!      subroutine sel_read_ucd_file(my_rank, istep_ucd, nnod_ele, ucd)
+!!     &         (my_rank, istep_ucd, ucd_param, t_IO, ucd)
+!!      subroutine sel_read_udt_file                                    &
+!!     &         (my_rank, istep_ucd, ucd_param, t_IO, ucd)
+!!      subroutine sel_read_ucd_file                                    &
+!!     &         (my_rank, istep_ucd, nnod_ele, ucd_param, ucd)
+!!        type(field_IO_params), intent(in) :: ucd_param
+!!        type(ucd_data), intent(inout) :: ucd
 !!@endverbatim
 !!
 !!@param my_rank  process ID
@@ -45,6 +52,7 @@
       use gz_write_ucd_to_vtk_file
 #endif
 !
+      use t_file_IO_parameter
       use t_time_data
       use t_ucd_data
 !
@@ -56,62 +64,65 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_ucd_file_define(plt, ucd)
+      subroutine set_ucd_file_define(plt, ucd_param)
 !
       use t_ctl_data_4_platforms
 !
-      type(platform_data_control), intent(inout) :: plt
-      type(ucd_data), intent(inout) :: ucd
+      type(platform_data_control), intent(in) :: plt
+      type(field_IO_params), intent(inout) :: ucd_param
 !
 !
-      ucd%ifmt_file = plt%field_file_prefix%iflag
-      if (ucd%ifmt_file .gt. 0)                                         &
-     &         ucd%file_prefix = plt%field_file_prefix%charavalue
+      ucd_param%iflag_IO = plt%field_file_prefix%iflag
+      if(ucd_param%iflag_IO .gt. 0)                                     &
+     &       ucd_param%file_prefix = plt%field_file_prefix%charavalue
 !
       call choose_ucd_file_format(plt%field_file_fmt_ctl%charavalue,    &
-     &    plt%field_file_fmt_ctl%iflag, ucd%ifmt_file)
+     &    plt%field_file_fmt_ctl%iflag, ucd_param%iflag_format)
 !
       end subroutine set_ucd_file_define
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sel_write_ucd_file(my_rank, istep_ucd, t_IO, ucd)
+      subroutine sel_write_ucd_file                                     &
+     &         (my_rank, istep_ucd, ucd_param, t_IO, ucd)
 !
       use write_ucd_to_vtk_file
 !
       integer(kind=kint), intent(in) :: my_rank, istep_ucd
+      type(field_IO_params), intent(in) :: ucd_param
       type(time_data), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
 !
       character(len=kchara) :: file_name
 !
 !
-      call set_parallel_ucd_file_name(ucd%file_prefix, ucd%ifmt_file,   &
+      call set_parallel_ucd_file_name                                   &
+     &   (ucd_param%file_prefix, ucd_param%iflag_format,                &
      &    my_rank, istep_ucd, file_name)
 !
-      if(ucd%ifmt_file .eq. iflag_vtk) then
+      if(ucd_param%iflag_format .eq. iflag_vtk) then
         call write_udt_data_2_vtk_file(my_rank, file_name, ucd)
 !
 #ifdef ZLIB_IO
-      else if(ucd%ifmt_file .eq. iflag_vtk_gz) then
+      else if(ucd_param%iflag_format .eq. iflag_vtk_gz) then
         call write_ucd_data_2_gz_vtk(my_rank, file_name, ucd)
-      else if(ucd%ifmt_file .eq. iflag_vtd_gz) then
+      else if(ucd_param%iflag_format .eq. iflag_vtd_gz) then
         call write_ucd_data_2_gz_vtk_phys(my_rank, file_name, ucd)
-      else if(ucd%ifmt_file .eq. iflag_ucd_gz) then
+      else if(ucd_param%iflag_format .eq. iflag_ucd_gz) then
         call write_gz_ucd_file(my_rank, file_name, ucd)
-      else if(ucd%ifmt_file .eq. iflag_udt_gz) then
+      else if(ucd_param%iflag_format .eq. iflag_udt_gz) then
         call write_gz_udt_file(my_rank, file_name, ucd)
-      else if(ucd%ifmt_file .eq. iflag_fld_gz) then
+      else if(ucd_param%iflag_format .eq. iflag_fld_gz) then
         call write_ucd_2_gz_fld_file(my_rank, file_name, t_IO, ucd)
 #endif
 !
-      else if (ucd%ifmt_file .eq. iflag_bin) then
+      else if (ucd_param%iflag_format .eq. iflag_bin) then
         call write_ucd_2_fld_file_b(my_rank, file_name, t_IO, ucd)
-      else if(ucd%ifmt_file .eq. iflag_vtd) then
+      else if(ucd_param%iflag_format .eq. iflag_vtd) then
         call write_udt_data_2_vtk_phys(my_rank, file_name, ucd)
-      else if(ucd%ifmt_file .eq. iflag_ucd) then
+      else if(ucd_param%iflag_format .eq. iflag_ucd) then
         call write_ucd_file(my_rank, file_name, ucd)
-      else if(ucd%ifmt_file .eq. iflag_udt) then
+      else if(ucd_param%iflag_format .eq. iflag_udt) then
         call write_udt_file(my_rank, file_name, ucd)
       else
         call write_ucd_2_fld_file(my_rank, file_name, t_IO, ucd)
@@ -121,44 +132,47 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine sel_write_udt_file(my_rank, istep_ucd, t_IO, ucd)
+      subroutine sel_write_udt_file                                     &
+     &         (my_rank, istep_ucd, ucd_param, t_IO, ucd)
 !
       use write_ucd_to_vtk_file
 !
       integer(kind=kint), intent(in) :: my_rank, istep_ucd
+      type(field_IO_params), intent(in) :: ucd_param
       type(time_data), intent(in) :: t_IO
       type(ucd_data), intent(in) :: ucd
 !
       character(len=kchara) :: file_name
 !
 !
-      call set_parallel_ucd_file_name(ucd%file_prefix, ucd%ifmt_file,   &
+      call set_parallel_ucd_file_name                                   &
+     &   (ucd_param%file_prefix, ucd_param%iflag_format,                &
      &    my_rank, istep_ucd, file_name)
 !
 !
-      if(ucd%ifmt_file .eq. iflag_vtk) then
+      if(ucd_param%iflag_format .eq. iflag_vtk) then
         call write_udt_data_2_vtk_file(my_rank, file_name, ucd)
 !
 #ifdef ZLIB_IO
-      else if(ucd%ifmt_file .eq. iflag_vtk_gz) then
+      else if(ucd_param%iflag_format .eq. iflag_vtk_gz) then
         call write_ucd_data_2_gz_vtk(my_rank, file_name, ucd)
-      else if(ucd%ifmt_file .eq. iflag_vtd_gz) then
+      else if(ucd_param%iflag_format .eq. iflag_vtd_gz) then
         call write_ucd_data_2_gz_vtk_phys(my_rank, file_name, ucd)
-      else if(ucd%ifmt_file .eq. iflag_ucd_gz) then
+      else if(ucd_param%iflag_format .eq. iflag_ucd_gz) then
         call write_gz_ucd_file(my_rank, file_name, ucd)
-      else if(ucd%ifmt_file .eq. iflag_udt_gz) then
+      else if(ucd_param%iflag_format .eq. iflag_udt_gz) then
         call write_gz_udt_file(my_rank, file_name, ucd)
-      else if(ucd%ifmt_file .eq. iflag_fld_gz) then
+      else if(ucd_param%iflag_format .eq. iflag_fld_gz) then
         call write_ucd_2_gz_fld_file(my_rank, file_name, t_IO, ucd)
 #endif
 !
-      else if (ucd%ifmt_file .eq. iflag_bin) then
+      else if (ucd_param%iflag_format .eq. iflag_bin) then
         call write_ucd_2_fld_file_b(my_rank, file_name, t_IO, ucd)
-      else if(ucd%ifmt_file .eq. iflag_vtd) then
+      else if(ucd_param%iflag_format .eq. iflag_vtd) then
         call write_udt_data_2_vtk_phys(my_rank, file_name, ucd)
-      else if(ucd%ifmt_file .eq. iflag_ucd) then
+      else if(ucd_param%iflag_format .eq. iflag_ucd) then
         call write_ucd_file(my_rank, file_name, ucd)
-      else if(ucd%ifmt_file .eq. iflag_udt) then
+      else if(ucd_param%iflag_format .eq. iflag_udt) then
         call write_udt_file(my_rank, file_name, ucd)
       else
         call write_ucd_2_fld_file(my_rank, file_name, t_IO, ucd)
@@ -168,31 +182,33 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine sel_write_grd_file(my_rank, ucd)
+      subroutine sel_write_grd_file(my_rank, ucd_param, ucd)
 !
       use write_ucd_to_vtk_file
 !
       integer(kind=kint), intent(in) :: my_rank
+      type(field_IO_params), intent(in) :: ucd_param
       type(ucd_data), intent(in) :: ucd
 !
       character(len=kchara) :: file_name
 !
 !
-      call set_parallel_grd_file_name(ucd%file_prefix, ucd%ifmt_file,   &
+      call set_parallel_grd_file_name                                   &
+     &   (ucd_param%file_prefix, ucd_param%iflag_format,                &
      &    my_rank, file_name)
 !
 !
-      if(ucd%ifmt_file .eq. iflag_vtd) then
+      if(ucd_param%iflag_format .eq. iflag_vtd) then
         call write_udt_data_2_vtk_grid(my_rank, file_name, ucd)
 !
 #ifdef ZLIB_IO
-      else if(ucd%ifmt_file .eq. iflag_vtd_gz) then
+      else if(ucd_param%iflag_format .eq. iflag_vtd_gz) then
         call write_ucd_data_2_gz_vtk_grid(my_rank, file_name, ucd)
-      else if(ucd%ifmt_file .eq. iflag_udt_gz) then
+      else if(ucd_param%iflag_format .eq. iflag_udt_gz) then
         call write_gz_grd_file(my_rank, file_name, ucd)
 #endif
 !
-      else if(ucd%ifmt_file .eq. iflag_udt) then
+      else if(ucd_param%iflag_format .eq. iflag_udt) then
         call write_grd_file(my_rank, file_name, ucd)
       end if
 !
@@ -201,32 +217,35 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine sel_read_udt_param(my_rank, istep_ucd, t_IO, ucd)
+      subroutine sel_read_udt_param                                     &
+     &         (my_rank, istep_ucd, ucd_param, t_IO, ucd)
 !
 !
       integer(kind=kint), intent(in) :: my_rank, istep_ucd
+      type(field_IO_params), intent(in) :: ucd_param
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
       character(len=kchara) :: file_name
 !
 !
-      call set_parallel_ucd_file_name(ucd%file_prefix, ucd%ifmt_file,   &
+      call set_parallel_ucd_file_name                                   &
+     &   (ucd_param%file_prefix, ucd_param%iflag_format,                &
      &    my_rank, istep_ucd, file_name)
 !
 !
-      if(ucd%ifmt_file .eq. iflag_udt) then
+      if(ucd_param%iflag_format .eq. iflag_udt) then
         call read_and_alloc_udt_params(my_rank, file_name, ucd)
 !
 #ifdef ZLIB_IO
-      else if(ucd%ifmt_file .eq. iflag_udt_gz) then
+      else if(ucd_param%iflag_format .eq. iflag_udt_gz) then
         call read_alloc_gz_udt_head(my_rank, file_name, ucd)
-      else if(ucd%ifmt_file .eq. iflag_fld_gz) then
+      else if(ucd_param%iflag_format .eq. iflag_fld_gz) then
         call read_alloc_ucd_2_gz_fld_file                               &
      &     (my_rank, file_name, t_IO, ucd)
 #endif
 !
-      else if (ucd%ifmt_file .eq. iflag_bin) then
+      else if (ucd_param%iflag_format .eq. iflag_bin) then
         call read_alloc_ucd_2_fld_header_b                              &
      &     (my_rank, file_name, t_IO, ucd)
       else
@@ -238,34 +257,36 @@
 !------------------------------------------------------------------
 !
       subroutine sel_read_alloc_udt_file                                &
-     &         (my_rank, istep_ucd, t_IO, ucd)
+     &         (my_rank, istep_ucd, ucd_param, t_IO, ucd)
 !
 !
       integer(kind=kint), intent(in) :: my_rank, istep_ucd
+      type(field_IO_params), intent(in) :: ucd_param
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
       character(len=kchara) :: file_name
 !
 !
-      call set_parallel_ucd_file_name(ucd%file_prefix, ucd%ifmt_file,   &
+      call set_parallel_ucd_file_name                                   &
+     &   (ucd_param%file_prefix, ucd_param%iflag_format,                &
      &    my_rank, istep_ucd, file_name)
 !
 !
-      if(ucd%ifmt_file .eq. iflag_udt) then
+      if(ucd_param%iflag_format .eq. iflag_udt) then
         call read_and_alloc_udt_file(my_rank, file_name, ucd)
-      else if(ucd%ifmt_file .eq. iflag_vtd) then
+      else if(ucd_param%iflag_format .eq. iflag_vtd) then
         call read_udt_data_2_vtk_phys(my_rank, file_name, ucd)
 !
 #ifdef ZLIB_IO
-      else if(ucd%ifmt_file .eq. iflag_udt_gz) then
+      else if(ucd_param%iflag_format .eq. iflag_udt_gz) then
         call read_alloc_gz_udt_file(my_rank, file_name, ucd)
-      else if(ucd%ifmt_file .eq. iflag_fld_gz) then
+      else if(ucd_param%iflag_format .eq. iflag_fld_gz) then
         call read_alloc_ucd_2_gz_fld_file                               &
      &     (my_rank, file_name, t_IO, ucd)
 #endif
 !
-      else if (ucd%ifmt_file .eq. iflag_bin) then
+      else if (ucd_param%iflag_format .eq. iflag_bin) then
         call read_alloc_ucd_2_fld_file_b(my_rank, file_name, t_IO, ucd)
       else
         call read_alloc_ucd_2_fld_file(my_rank, file_name, t_IO, ucd)
@@ -275,30 +296,33 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine sel_read_udt_file(my_rank, istep_ucd, t_IO, ucd)
+      subroutine sel_read_udt_file                                      &
+     &         (my_rank, istep_ucd, ucd_param, t_IO, ucd)
 !
 !
       integer(kind=kint), intent(in) :: my_rank, istep_ucd
+      type(field_IO_params), intent(in) :: ucd_param
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
       character(len=kchara) :: file_name
 !
 !
-      call set_parallel_ucd_file_name(ucd%file_prefix, ucd%ifmt_file,   &
+      call set_parallel_ucd_file_name                                   &
+     &   (ucd_param%file_prefix, ucd_param%iflag_format,                &
      &    my_rank, istep_ucd, file_name)
 !
-      if(ucd%ifmt_file .eq. iflag_udt) then
+      if(ucd_param%iflag_format .eq. iflag_udt) then
         call read_udt_file(my_rank, file_name, ucd)
 !
 #ifdef ZLIB_IO
-      else if(ucd%ifmt_file .eq. iflag_udt_gz) then
+      else if(ucd_param%iflag_format .eq. iflag_udt_gz) then
         call read_gz_udt_file(my_rank, file_name, ucd)
-      else if(ucd%ifmt_file .eq. iflag_fld_gz) then
+      else if(ucd_param%iflag_format .eq. iflag_fld_gz) then
         call read_ucd_2_gz_fld_file(my_rank, file_name, t_IO, ucd)
 #endif
 !
-      else if (ucd%ifmt_file .eq. iflag_bin) then
+      else if (ucd_param%iflag_format .eq. iflag_bin) then
         call read_ucd_2_fld_file_b(my_rank, file_name, t_IO, ucd)
       else
         call read_ucd_2_fld_file(my_rank, file_name, t_IO, ucd)
@@ -308,34 +332,39 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine sel_read_ucd_file(my_rank, istep_ucd, nnod_ele, ucd)
+      subroutine sel_read_ucd_file                                      &
+     &         (my_rank, istep_ucd, nnod_ele, ucd_param, ucd)
 !
       integer(kind=kint), intent(in) :: my_rank, istep_ucd, nnod_ele
+      type(field_IO_params), intent(in) :: ucd_param
       type(ucd_data), intent(inout) :: ucd
 !
       character(len=kchara) :: file_name, grid_name
 !
 !
-      call set_parallel_ucd_file_name(ucd%file_prefix, ucd%ifmt_file,   &
+      call set_parallel_ucd_file_name                                   &
+     &   (ucd_param%file_prefix, ucd_param%iflag_format,                &
      &    my_rank, istep_ucd, file_name)
 !
-      if (ucd%ifmt_file .eq. iflag_ucd) then
+      if (ucd_param%iflag_format .eq. iflag_ucd) then
         call read_and_alloc_ucd_file(my_rank, file_name, nnod_ele, ucd)
-      else if(ucd%ifmt_file .eq. iflag_vtk) then
+      else if(ucd_param%iflag_format .eq. iflag_vtk) then
         call read_udt_data_2_vtk_file(my_rank, file_name, ucd)
 !
 #ifdef ZLIB_IO
-      else if (ucd%ifmt_file .eq. iflag_ucd_gz) then
+      else if (ucd_param%iflag_format .eq. iflag_ucd_gz) then
         call read_alloc_gz_ucd_file(my_rank, file_name, nnod_ele, ucd)
-      else if(ucd%ifmt_file .eq. iflag_udt_gz) then
-        call set_parallel_grd_file_name(ucd%file_prefix, ucd%ifmt_file, &
+      else if(ucd_param%iflag_format .eq. iflag_udt_gz) then
+        call set_parallel_grd_file_name                                 &
+     &     (ucd_param%file_prefix, ucd_param%iflag_format,              &
      &      my_rank, grid_name)
         call read_gz_ucd_grd(my_rank, grid_name, nnod_ele, ucd)
         call read_alloc_gz_udt_file(my_rank, file_name, ucd)
 #endif
 !
       else
-        call set_parallel_grd_file_name(ucd%file_prefix, ucd%ifmt_file, &
+        call set_parallel_grd_file_name                                 &
+     &     (ucd_param%file_prefix, ucd_param%iflag_format,              &
      &      my_rank, grid_name)
         call read_grd_file(my_rank, grid_name, nnod_ele, ucd)
         call read_and_alloc_udt_file(my_rank, file_name, ucd)

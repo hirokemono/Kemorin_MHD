@@ -53,7 +53,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_prod_udt'
       call set_ctl_params_prod_udt                                      &
-     &   (mesh_file_FUTIL, udt_param_FUTIL, ucd_FUTIL)
+     &   (mesh_file_FUTIL, udt_param_FUTIL)
       call set_fixed_time_step_params                                   &
      &   (t_pu_ctl, time_U, ierr, e_message)
 !
@@ -98,8 +98,7 @@
 !    output udt data
         call link_output_ucd_file_once                                  &
      &     (my_rank, time_U%ucd_step%istep_file,                        &
-     &      ifmt_result_udt_file, result_udt_file_head,                 &
-     &      field_FUTIL, time_IO_FUTIL)
+     &      field_FUTIL, output_ucd_param, time_IO_FUTIL)
       end do
 !
       end subroutine analyze_udt_product

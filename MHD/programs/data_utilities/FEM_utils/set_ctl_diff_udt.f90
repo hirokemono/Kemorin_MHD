@@ -5,7 +5,7 @@
 !     Modified by H. Matsui on JUne, 2007
 !
 !!      subroutine set_ctl_params_correlate_udt                         &
-!!     &         (mesh_file, udt_org_param, nod_fld, ucd, time_U)
+!!     &         (mesh_file, udt_org_param, nod_fld, time_U)
 !!        type(field_IO_params), intent(inout) ::  mesh_file
 !!        type(field_IO_params), intent(inout) :: udt_org_param
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -38,9 +38,8 @@
 !   --------------------------------------------------------------------
 !
       subroutine set_ctl_params_correlate_udt                           &
-     &         (mesh_file, udt_org_param, nod_fld, ucd, time_U)
+     &         (mesh_file, udt_org_param, nod_fld, time_U)
 !
-      use t_ucd_data
       use m_ctl_data_diff_udt
       use m_fem_gauss_int_coefs
       use set_control_nodal_data
@@ -49,13 +48,12 @@
       type(field_IO_params), intent(inout) ::  mesh_file
       type(field_IO_params), intent(inout) :: udt_org_param
       type(phys_data), intent(inout) :: nod_fld
-      type(ucd_data), intent(inout) :: ucd
       type(time_step_param), intent(inout) :: time_U
       integer(kind = kint) :: ierr
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_diff_udt'
-      call set_ctl_params_diff_udt(mesh_file, udt_org_param, ucd)
+      call set_ctl_params_diff_udt(mesh_file, udt_org_param)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_control_ele_layering'
       call s_set_control_ele_layering(elayer_d_ctl)
@@ -76,10 +74,8 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_ctl_params_diff_udt                                &
-     &         (mesh_file, udt_org_param, ucd)
+      subroutine set_ctl_params_diff_udt(mesh_file, udt_org_param)
 !
-      use t_ucd_data
       use t_field_data_IO
       use m_ctl_data_diff_udt
       use m_geometry_constants
@@ -92,7 +88,6 @@
 !
       type(field_IO_params), intent(inout) ::  mesh_file
       type(field_IO_params), intent(inout) :: udt_org_param
-      type(ucd_data), intent(inout) :: ucd
 !
       character(len=kchara) :: tmpchara
 !
@@ -104,24 +99,21 @@
       call set_control_mesh_file_def                                    &
      &   (def_org_ucd_header, org_d_plt, udt_org_param)
 !
-!
-      call set_ucd_file_define(d_plt, ucd)
-!
 !   set field data name
 !
-      ref_udt_file_head = "field/out"
       if (ref_udt_head_ctl%iflag .ne. 0) then
-        ref_udt_file_head = ref_udt_head_ctl%charavalue
-        if (iflag_debug.gt.0)                                           &
-     &   write(*,*) 'ref_udt_file_head: ', trim(ref_udt_file_head)
+        first_ucd_param%file_prefix = ref_udt_head_ctl%charavalue
+      else
+        first_ucd_param%file_prefix = ref_udt_file_head
       end if
+      first_ucd_param%iflag_format = udt_org_param%iflag_format
 !
-      tgt_udt_file_head = "field/out"
       if (tgt_udt_head_ctl%iflag .ne. 0) then
-        tgt_udt_file_head = tgt_udt_head_ctl%charavalue
-        if (iflag_debug.gt.0)                                           &
-     &   write(*,*) 'tgt_udt_file_head: ', trim(tgt_udt_file_head)
+        second_ucd_param%file_prefix = tgt_udt_head_ctl%charavalue
+      else
+        second_ucd_param%file_prefix = tgt_udt_file_head
       end if
+      second_ucd_param%iflag_format = udt_org_param%iflag_format
 !
       grouping_mesh_head =  "grouping_mesh"
       if (group_mesh_head_ctl%iflag .ne. 0) then
@@ -133,17 +125,14 @@
 !   field setting
 !
       if (d_plt%field_file_prefix%iflag .ne. 0) then
-        diff_udt_file_head = d_plt%field_file_prefix%charavalue
-        ave_udt_file_head =  d_plt%field_file_prefix%charavalue
-        prod_udt_file_head = d_plt%field_file_prefix%charavalue
+        diff_ucd_param%file_prefix = d_plt%field_file_prefix%charavalue
+        ave_ucd_param%file_prefix =  d_plt%field_file_prefix%charavalue
       else
-        diff_udt_file_head = "field_diff/out"
-        ave_udt_file_head =  "out_average"
-        prod_udt_file_head = "field_new/out"
+        diff_ucd_param%file_prefix = diff_udt_file_head
+        ave_ucd_param%file_prefix =  ave_udt_file_head
       end if
-!
-      call choose_ucd_file_format(d_plt%field_file_fmt_ctl%charavalue,  &
-     &    d_plt%field_file_fmt_ctl%iflag, ifmt_diff_udt_file)
+      diff_ucd_param%iflag_format = udt_org_param%iflag_format
+      ave_ucd_param%iflag_format =  udt_org_param%iflag_format
 !
       product_field_name = "velocity"
       if (product_field_ctl%iflag .ne. 0) then

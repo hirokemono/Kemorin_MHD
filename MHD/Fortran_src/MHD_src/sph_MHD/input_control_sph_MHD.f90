@@ -223,7 +223,7 @@
      &    MHD_ctl%model_ctl, MHD_ctl%ctl_ctl, MHD_ctl%smonitor_ctl,     &
      &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl,                           &
      &    sph_tmp, rj_fld, mesh1_file, sph_file_param1,                 &
-     &    MHD1_org_files, MHD_files%fst_file_IO, bc_IO1, pwr, SGS_par,  &
+     &    MHD1_org_files, MHD_files, bc_IO1, pwr, SGS_par,              &
      &    MHD_step, MHD_prop, MHD_BC, WK%WK_sph, gen_sph1)
 !
       call select_make_SPH_mesh(MHD_ctl%psph_ctl%iflag_sph_shell,       &
@@ -266,7 +266,7 @@
      &    MHD_ctl%model_ctl, MHD_ctl%ctl_ctl, MHD_ctl%smonitor_ctl,     &
      &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl,                           &
      &    sph_tmp, rj_fld, mesh1_file, sph_file_param1,                 &
-     &    MHD1_org_files, MHD_files%fst_file_IO, bc_IO1, pwr, SGS_par,  &
+     &    MHD1_org_files, MHD_files, bc_IO1, pwr, SGS_par,              &
      &    MHD_step, MHD_prop, MHD_BC, WK%WK_sph, gen_sph1)
 !
       call set_control_4_SPH_to_FEM                                     &

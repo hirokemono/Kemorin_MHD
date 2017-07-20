@@ -17,6 +17,7 @@
 !
       use t_psf_results
       use t_norms_4_psf
+      use t_file_IO_parameter
 !
       implicit none
 !
@@ -29,10 +30,8 @@
 !
 !>      structure for averages
       type(psf_averages), save :: psf_average
-!psf_aves%ntot_comp
 !
-      character(len=kchara) :: psf_file_header
-      integer(kind = kint) :: iflag_psf_fmt = iflag_udt
+      type(field_IO_params), save :: psf_file_param
 !
 !
       end module  m_psf_results

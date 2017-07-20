@@ -23,15 +23,12 @@
 !
       implicit    none
 !
-!>        Instance for FEM field data IO
-      type(ucd_data), save :: fem_ucd
-!
 ! ==============================================                                                                                                            
 ! * get number of  nodes,elements for whole PES
 ! ==============================================
 !
       call read_control_4_merge
-      call set_control_4_merge(fem_ucd)
+      call set_control_4_merge
       call set_control_mesh_file_def                                    &
      &   (def_new_mesh_head, assemble_plt, merged_mesh_file)
 !

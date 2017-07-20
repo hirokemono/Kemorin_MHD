@@ -53,6 +53,7 @@
       use t_group_data
       use t_surface_group_connect
       use t_time_data
+      use t_file_IO_parameter
 !
       implicit  none
 !
@@ -175,8 +176,8 @@
       call alloc_psf_field_data(num_psf, psf_mesh)
 !
       if (iflag_debug.eq.1) write(*,*) 'output_section_mesh'
-      call output_section_mesh(num_psf, psf_header, itype_psf_file,     &
-     &   psf_mesh, psf_out, psf_out_m)
+      call output_section_mesh                                          &
+     &   (num_psf, psf_file_IO, psf_mesh, psf_out, psf_out_m)
 !
 !      call calypso_mpi_barrier
 !
@@ -210,8 +211,8 @@
 !
 !      call start_eleps_time(21)
       if (iflag_debug.eq.1) write(*,*) 'output_section_mesh'
-      call output_section_data(num_psf, istep_psf, time_d, psf_mesh,    &
-     &    psf_time_IO, psf_out, psf_out_m)
+      call output_section_data(num_psf, psf_file_IO, istep_psf, time_d, &
+     &    psf_mesh, psf_time_IO, psf_out, psf_out_m)
 !
       end subroutine SECTIONING_visualize
 !

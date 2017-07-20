@@ -18,6 +18,7 @@
       use m_psf_edge_connect
       use m_dynamobench_data_by_psf
 !
+      use t_file_IO_parameter
       use t_time_data
       use t_ucd_data
 !
@@ -37,12 +38,14 @@
 !      type(time_data), save :: line_time
       type(ucd_data), save :: line
 !
+      type(field_IO_params), save :: line_ucd_param
+!
 !  ===========
 ! . for local 
 !  ===========
 !
       write(*,*) 'input psf file name'
-      read(*,*) psf_file_header
+      read(*,*) psf_file_param%file_prefix
 !
       write(*,*) 'input mean  square header'
       read(*,*) rms_file_header
@@ -54,7 +57,7 @@
       read(*,*) istep_psf
 !
       xref = 0.5d0 + 7.0d0 / 13.0d0
-      iflag_psf_fmt = iflag_udt_gz
+      psf_file_param%iflag_format = iflag_udt_gz
       line_udt_head = 'eq_mid_depth'
 !
 !
@@ -76,7 +79,7 @@
         end do
         write(*,*) 'step is', istep, time
 !
-        call load_psf_data(istep, psf_u)
+        call load_psf_data(istep, psf_file_param, psf_u)
         call find_psf_edges(psf_u%psf_ele)
         call pick_psf_by_sections(nd, xref, psf_u%psf_nod,              &
      &      psf_u%psf_ele, psf_u%psf_phys, line)
@@ -86,7 +89,7 @@
 !
         call cal_dynamobench_data_by_psf(istep, time, line)
 !        call write_psf_line_data                                       &
-!     &     (iflag_ucd, line_udt_head, istep, line_time, line)
+!     &     (istep, line_ucd_param, line_time, line)
         call deallocate_ucd_mesh(line)
       end do
 !

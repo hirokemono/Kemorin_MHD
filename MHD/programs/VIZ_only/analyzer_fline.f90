@@ -33,12 +33,12 @@
       if (iflag_debug.gt.0) write(*,*) 'set_control_params_4_viz'
       call read_control_data_vizs
       call set_control_params_4_viz(my_rank, t_viz_ctl, viz_plt,        &
-     &   mesh_file_VIZ, ucd_VIZ, ierr)
+     &   mesh_file_VIZ, ucd_file_VIZ, ierr)
 !
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !  FEM Initialization
-      call FEM_initialize_fline
+      call FEM_initialize_fline(ucd_file_VIZ)
 !
 !  VIZ Initialization
       call FLINE_initialize                                             &
@@ -59,7 +59,8 @@
         if(set_IO_step_flag(i_step,t_VIZ%ucd_step) .ne. izero) cycle
 !
 !  Load field data
-        call FEM_analyze_fline(i_step, t_VIZ, viz_step_V%FLINE_t)
+        call FEM_analyze_fline                                          &
+     &     (i_step, ucd_file_VIZ, t_VIZ, viz_step_V%FLINE_t)
 !
 !  Generate field lines
         call FLINE_visualize( viz_step_V%FLINE_t%istep_file,            &

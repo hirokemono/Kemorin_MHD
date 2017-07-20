@@ -239,7 +239,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_parallel_file_ctl_params(default_prefix,           &
-     &          file_prefix_ctl, file_format_ctl,  file_params)
+     &          file_prefix_ctl, file_format_ctl, file_params)
 !
       use t_control_elements
       use m_file_format_switch

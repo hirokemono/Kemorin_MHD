@@ -30,7 +30,7 @@
 ! . for local 
 !  ===========
 
-      type(field_IO_params), save ::  plane_mesh_file
+      type(field_IO_params), save ::  plane_mesh_file, ucd_file_param
 !
       type(time_data), save :: fft_t_IO
       type(ucd_data), save :: fft_ucd
@@ -69,7 +69,7 @@
 !   read field name and number of components
 !
       write(*,*) 'init_ucd_data_4_FFT'
-      call init_ucd_data_4_FFT(ist, fft_t_IO, fft_ucd)
+      call init_ucd_data_4_FFT(ist, ucd_file_param, fft_t_IO, fft_ucd)
 !
       call set_fields_4_FFT(fld_zfft_ctl%field_ctl)
 !
@@ -93,7 +93,8 @@
 !
       do istep = ist, ied, iint
 !
-       call s_read_udt_data_4_FFT(istep, fft_t_IO, fft_ucd)
+       call s_read_udt_data_4_FFT                                       &
+     &    (istep, ucd_file_param, fft_t_IO, fft_ucd)
 !
 !  -------   Fourier Transform
 !

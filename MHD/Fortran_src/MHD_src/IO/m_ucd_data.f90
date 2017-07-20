@@ -9,26 +9,27 @@
 !>@brief Strucures for field data output
 !!
 !!@verbatim
-!!      subroutine set_control_MHD_field_file(plt)
-!!        type(platform_data_control), intent(in) :: plt
-!!      subroutine s_output_ucd_file_control(i_step, time_d, ucd_step)
+!!      subroutine s_output_ucd_file_control                            &
+!!     &         (ucd_param, i_step, time_d, ucd_step)
+!!        type(field_IO_params), intent(in) :: ucd_param
 !!        type(time_data), intent(in) :: time_d
 !!        type(IO_step_param), intent(inout) :: ucd_step
 !!
-!!      subroutine output_grd_file_4_snapshot(ucd_step, mesh, nod_fld)
+!!      subroutine output_grd_file_4_snapshot                           &
+!!     &         (ucd_param, ucd_step, mesh, nod_fld)
 !!      subroutine output_grd_file_w_org_connect                        &
-!!     &        (mesh, MHD_mesh, nod_fld)
+!!     &         (ucd_step, mesh, MHD_mesh, nod_fld, ucd_param)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_data_MHD), intent(in) :: MHD_mesh
 !!        type(phys_data), intent(in) :: nod_fld
-!!        type(ucd_data), intent(inout) :: ucd
-!!        type(merged_ucd_data), intent(inout) :: m_ucd
+!!        type(field_IO_params), intent(in) :: ucd_param
 !!      subroutine read_udt_4_snap                                      &
 !!     &         (i_step, udt_file_param, nod_fld, t_IO, ucd_step)
 !!        type(IO_step_param), intent(in) :: ucd_step
 !!        type(field_IO_params), intent(in) :: udt_file_param
 !!        type(phys_data),intent(inout) :: nod_fld
-!!      subroutine finalize_output_ucd
+!!      subroutine finalize_output_ucd(ucd_param)
+!!        type(field_IO_params), intent(in) :: ucd_param
 !!
 !!      subroutine link_global_org_mesh_4_ucd(mesh, MHD_mesh, ucd)
 !!@endverbatim
@@ -68,67 +69,52 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_control_MHD_field_file(plt)
-!
-      use t_ctl_data_4_platforms
-      use parallel_ucd_IO_select
-!
-      type(platform_data_control), intent(in) :: plt
-!
-!
-      if(plt%field_file_prefix%iflag .eq. 0) then
-        fem_ucd%ifmt_file = -1
-        return
-      end if
-!
-      call set_merged_ucd_file_define(plt, fem_ucd)
-!
-      end subroutine set_control_MHD_field_file
-!
-! -----------------------------------------------------------------------
-!
-      subroutine s_output_ucd_file_control(i_step, time_d, ucd_step)
+      subroutine s_output_ucd_file_control                              &
+     &         (ucd_param, i_step, time_d, ucd_step)
 !
       use calypso_mpi
       use parallel_ucd_IO_select
 !
       integer(kind = kint), intent(in) :: i_step
+      type(field_IO_params), intent(in) :: ucd_param
       type(time_data), intent(in) :: time_d
       type(IO_step_param), intent(inout) :: ucd_step
 !
 !
-      if(fem_ucd%ifmt_file .lt. 0) return
+      if(ucd_param%iflag_format .lt. 0) return
       if(set_IO_step_flag(i_step,ucd_step) .ne. 0) return
 !
       call copy_time_step_size_data(time_d, ucd_time_IO)
-      call sel_write_parallel_ucd_file                                  &
-     &   (ucd_step%istep_file, ucd_time_IO, fem_ucd, merged_ucd)
+      call sel_write_parallel_ucd_file(ucd_step%istep_file,             &
+     &    ucd_param, ucd_time_IO, fem_ucd, merged_ucd)
 !      call output_range_data(node, nod_fld, ucd_step%istep_file, time)
 !
       end subroutine s_output_ucd_file_control
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine output_grd_file_4_snapshot(ucd_step, mesh, nod_fld)
+      subroutine output_grd_file_4_snapshot                             &
+     &         (ucd_param, ucd_step, mesh, nod_fld)
 !
       use output_parallel_ucd_file
 !
+      type(field_IO_params), intent(in) :: ucd_param
       type(IO_step_param), intent(in) :: ucd_step
       type(mesh_geometry), intent(in) :: mesh
       type(phys_data),intent(inout) :: nod_fld
 !
 !
-      if(fem_ucd%ifmt_file .lt. 0) return
+      if(ucd_param%iflag_format .lt. 0) return
       if(ucd_step%increment .eq. 0) return
       call link_output_grd_file(mesh%node, mesh%ele, mesh%nod_comm,     &
-     &    nod_fld, fem_ucd, merged_ucd)
+     &    nod_fld, ucd_param, fem_ucd, merged_ucd)
 !
       end subroutine output_grd_file_4_snapshot
 !
 ! ----------------------------------------------------------------------
 !
       subroutine output_grd_file_w_org_connect                          &
-     &          (ucd_step, mesh, MHD_mesh, nod_fld)
+     &          (ucd_step, mesh, MHD_mesh, nod_fld, ucd_param)
 !
       use m_field_file_format
       use set_ucd_data_to_type
@@ -140,9 +126,10 @@
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_data_MHD), intent(in) :: MHD_mesh
       type(phys_data), intent(in) :: nod_fld
+      type(field_IO_params), intent(in) :: ucd_param
 !
 !
-      if(fem_ucd%ifmt_file .lt. 0) return
+      if(ucd_param%iflag_format .lt. 0) return
       if(ucd_step%increment .eq. 0) return
 !
       call link_num_field_2_ucd(nod_fld, fem_ucd)
@@ -150,22 +137,22 @@
      &   (mesh%node, mesh%ele, MHD_mesh, fem_ucd)
       call link_field_data_to_ucd(nod_fld, fem_ucd)
 !
-      if (fem_ucd%ifmt_file/icent .eq. iflag_single/icent) then
-        call init_merged_ucd                                            &
-     &     (mesh%node, mesh%ele, mesh%nod_comm, fem_ucd, merged_ucd)
+      if (ucd_param%iflag_format/icent .eq. iflag_single/icent) then
+        call init_merged_ucd(ucd_param%iflag_format,                    &
+     &      mesh%node, mesh%ele, mesh%nod_comm, fem_ucd, merged_ucd)
       end if
 !
-      call sel_write_parallel_ucd_mesh(fem_ucd, merged_ucd)
+      call sel_write_parallel_ucd_mesh(ucd_param, fem_ucd, merged_ucd)
       call calypso_mpi_barrier
 !
-      if(   mod(fem_ucd%ifmt_file,icent)/iten .eq. iflag_udt/iten       &
-     & .or. mod(fem_ucd%ifmt_file,icent)/iten .eq. iflag_vtd/iten) then
+      if(   mod(ucd_param%iflag_format,icent)/iten .eq. iflag_udt/iten  &
+     & .or. mod(ucd_param%iflag_format,icent)/iten .eq. iflag_vtd/iten) &
+     &    then
         call deallocate_ucd_ele(fem_ucd)
       end if
 !
-      if(mod(fem_ucd%ifmt_file,icent)/iten .eq. iflag_vtd/iten) then
-        call deallocate_ucd_node(fem_ucd)
-      end if
+      if(mod(ucd_param%iflag_format,icent)/iten .eq. iflag_vtd/iten)    &
+     &    call deallocate_ucd_node(fem_ucd)
 !
       end subroutine output_grd_file_w_org_connect
 !
@@ -186,20 +173,21 @@
 !
       if(set_IO_step_flag(i_step,ucd_step) .ne. izero) return
       call set_data_by_read_ucd_once(my_rank, ucd_step%istep_file,      &
-    &     udt_file_param%iflag_format, udt_file_param%file_prefix,      &
-    &     nod_fld, t_IO)
+    &     udt_file_param, nod_fld, t_IO)
 !
       end subroutine read_udt_4_snap
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine finalize_output_ucd
+      subroutine finalize_output_ucd(ucd_param)
 !
       use output_parallel_ucd_file
 !
+      type(field_IO_params), intent(in) :: ucd_param
 !
-      call finalize_ucd_file_output(fem_ucd, merged_ucd)
+!
+      call finalize_ucd_file_output(ucd_param, merged_ucd)
 !
       end subroutine finalize_output_ucd
 !

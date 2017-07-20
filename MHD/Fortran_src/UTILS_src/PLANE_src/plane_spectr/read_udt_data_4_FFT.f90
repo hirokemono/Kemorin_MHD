@@ -3,8 +3,8 @@
 !
 !      Written by H. Matsui on Feb., 2007
 !
-!!      subroutine init_ucd_data_4_FFT(istep, t_IO, ucd)
-!!      subroutine s_read_udt_data_4_FFT(istep, t_IO, ucd)
+!!      subroutine init_ucd_data_4_FFT(istep, ucd_param, t_IO, ucd)
+!!      subroutine s_read_udt_data_4_FFT(istep, ucd_param, t_IO, ucd)
 !!      subroutine set_fields_4_FFT(field_ctl)
 !!        type(ctl_array_c3), intent(in) :: field_ctl
 !
@@ -26,13 +26,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_ucd_data_4_FFT(istep, t_IO, ucd)
+      subroutine init_ucd_data_4_FFT(istep, ucd_param, t_IO, ucd)
 !
       use m_constants
       use m_control_param_merge
 !
       use t_time_data
       use t_ucd_data
+      use t_file_IO_parameter
 !
       use set_list_4_FFT
       use ucd_IO_select
@@ -40,12 +41,13 @@
       use copy_pick_udt_data_plane
 !
       integer (kind = kint), intent(in) :: istep
+      type(field_IO_params), intent(in) :: ucd_param
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
 !
       ucd%nnod = ione
-      call sel_read_udt_param(izero, istep, t_IO, ucd)
+      call sel_read_udt_param(izero, istep, ucd_param, t_IO, ucd)
 !
       call alloc_phys_name_type_by_output(ucd, plane_phys)
       call deallocate_ucd_phys_data(ucd)
@@ -54,11 +56,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_read_udt_data_4_FFT(istep, t_IO, ucd)
+      subroutine s_read_udt_data_4_FFT(istep, ucd_param, t_IO, ucd)
 !
       use m_geometry_data_4_merge
       use m_spectr_4_ispack
       use m_file_format_switch
+      use t_file_IO_parameter
 !
       use t_time_data
       use t_ucd_data
@@ -66,6 +69,7 @@
       use set_list_4_FFT
 !
       integer (kind = kint), intent(in) :: istep
+      type(field_IO_params), intent(in) :: ucd_param
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
@@ -75,7 +79,7 @@
 !
       call read_udt_data_4_plane_model(num_pe, istep,                   &
      &    num_spectr, num_fft, icomp_fft, ifield_fft, phys_d,           &
-     &    merge_tbl%nnod_max, subdomain, t_IO, ucd)
+     &    merge_tbl%nnod_max, subdomain, ucd_param, t_IO, ucd)
 !
        end subroutine s_read_udt_data_4_FFT
 !

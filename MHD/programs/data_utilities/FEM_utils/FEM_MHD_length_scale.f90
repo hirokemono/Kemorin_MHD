@@ -125,8 +125,8 @@
      &     (node%numnod, ione, icou, d_mag(1), ucd)
       end if
 !
-      call set_ucd_file_prefix(result_udt_file_head, ucd)
-      call sel_write_udt_file(my_rank, istep_ucd, t_IO, ucd)
+      call sel_write_udt_file(my_rank, istep_ucd,                       &
+     &   output_ucd_param, t_IO, ucd)
       call deallocate_ucd_data(ucd)
 !
       end subroutine const_MHD_length_scales

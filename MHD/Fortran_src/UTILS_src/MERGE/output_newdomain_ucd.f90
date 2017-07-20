@@ -3,8 +3,9 @@
 !
 !      Written by H. Matsui on Feb., 2007
 !
-!!      subroutine assemble_2nd_udt_phys(istep, t_IO, ucd)
-!!      subroutine assemble_2nd_udt_mesh(ucd)
+!!      subroutine assemble_2nd_udt_phys(istep, ucd_param, t_IO, ucd)
+!!      subroutine assemble_2nd_udt_mesh(ucd_param, ucd)
+!!        type(field_IO_params), intent(in) :: ucd_param
 !!        type(time_data), intent(inout) :: t_IO
 !!        type(ucd_data), intent(inout) :: ucd
 !
@@ -18,6 +19,7 @@
       use m_2nd_geometry_4_merge
       use t_time_data
       use t_ucd_data
+      use t_file_IO_parameter
 !
       implicit none
 !
@@ -30,11 +32,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine assemble_2nd_udt_phys(istep, t_IO, ucd)
+      subroutine assemble_2nd_udt_phys(istep, ucd_param, t_IO, ucd)
 !
       use ucd_IO_select
 !
       integer (kind = kint), intent(in) :: istep
+      type(field_IO_params), intent(in) :: ucd_param
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
@@ -50,8 +53,6 @@
       ucd%phys_name(1:ucd%num_field)                                    &
      &     = merged_fld%phys_name(1:ucd%num_field)
 !
-      ucd%ifmt_file = itype_assembled_data
-      ucd%file_prefix = new_udt_head
       do ip = 1, num_pe2
         my_rank = ip - 1
 !
@@ -60,7 +61,7 @@
         call allocate_ucd_phys_data(ucd)
 !
         call copy_domain_data_from_global(ip, ucd)
-        call sel_write_udt_file(my_rank, istep, t_IO, ucd)
+        call sel_write_udt_file(my_rank, istep, ucd_param, t_IO, ucd)
 !
         call deallocate_ucd_phys_data(ucd)
         call deallocate_ucd_node(ucd)
@@ -71,20 +72,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine assemble_2nd_udt_mesh(ucd)
+      subroutine assemble_2nd_udt_mesh(ucd_param, ucd)
 !
       use m_file_format_switch
       use set_and_cal_udt_data
       use ucd_IO_select
 !
+      type(field_IO_params), intent(in) :: ucd_param
       type(ucd_data), intent(inout) :: ucd
 !
       integer(kind = kint) :: ip, my_rank
 !
 !
-      ucd%ifmt_file = itype_assembled_data
       ucd%nnod_4_ele = merged%ele%nnod_4_ele
-      ucd%file_prefix = new_udt_head
 !
       do ip = 1, num_pe2
         my_rank = ip - 1
@@ -100,12 +100,13 @@
      &      subdomains_2(ip)%ele%iele_global, subdomains_2(ip)%ele%ie,  &
      &      ucd)
 !
-        call sel_write_grd_file(my_rank, ucd)
+        call sel_write_grd_file(my_rank, ucd_param, ucd)
 !
         call deallocate_ucd_node(ucd)
 !
-        if(   mod(ucd%ifmt_file,100)/10 .eq. iflag_vtd/10               &
-       & .or. mod(ucd%ifmt_file,100)/10 .eq. iflag_udt/10) then
+        if(   mod(ucd_param%iflag_format,100)/10 .eq. iflag_vtd/10      &
+       & .or. mod(ucd_param%iflag_format,100)/10 .eq. iflag_udt/10)     &
+       &     then
           call deallocate_ucd_ele(ucd)
         end if
       end do

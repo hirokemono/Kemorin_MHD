@@ -33,6 +33,7 @@
       use m_field_file_format
       use itp_table_IO_select_4_zlib
       use set_control_platform_data
+      use parallel_ucd_IO_select
 !
 !
       call turn_off_debug_flag_by_ctl(my_rank, src_plt)
@@ -68,12 +69,6 @@
      &   write(*,*) 'itp_node_file_head: ', trim(itp_node_file_head)
       end if
 !
-      if (dst_plt%field_file_prefix%iflag .gt. 0) then
-        itp_udt_file_head = dst_plt%field_file_prefix%charavalue
-      end if
-        if (iflag_debug.eq.1)                                           &
-     &   write(*,*) 'itp_udt_file_head: ', trim(itp_udt_file_head)
-!
 !
       call set_parallel_file_ctl_params(def_itp_rst_prefix,             &
      &    dst_plt%restart_file_prefix, dst_plt%restart_file_fmt_ctl,    &
@@ -82,13 +77,8 @@
      &    src_plt%restart_file_prefix, src_plt%restart_file_fmt_ctl,    &
      &    org_fst_IO)
 !
-      if (src_plt%field_file_prefix%iflag .ne. 0) then
-        org_udt_file_head = src_plt%field_file_prefix%charavalue
-      end if
-        if (iflag_debug.eq.1)                                           &
-     &   write(*,*) 'org_udt_file_head: ', trim(org_udt_file_head)
-!
-!
+      call set_merged_ucd_file_define(dst_plt, itp_ucd_IO)
+      call set_merged_ucd_file_define(src_plt, org_ucd_IO)
 !
       ndomain_org = 1
       if (src_plt%ndomain_ctl%iflag .gt. 0) then
@@ -109,14 +99,6 @@
 !
       call choose_file_format                                           &
      &   (fmt_itp_table_file_ctl, ifmt_itp_table_file)
-!
-      call choose_ucd_file_format                                       &
-     &   (src_plt%field_file_fmt_ctl%charavalue,                        &
-     &    src_plt%field_file_fmt_ctl%iflag, itype_org_udt_file)
-      call choose_ucd_file_format                                       &
-     &   (dst_plt%field_file_fmt_ctl%charavalue,                        &
-     &    dst_plt%field_file_fmt_ctl%iflag, itype_itp_udt_file)
-!
 !
       if (nprocs .ne. max(ndomain_org,ndomain_dest) ) then
         write(e_message,*)                                              &

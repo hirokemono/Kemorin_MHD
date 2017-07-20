@@ -60,7 +60,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_ctl_data_4_sph_trans'
       call s_set_ctl_data_4_sph_trans                                   &
-     &   (t_STR, mesh_file_STR, sph_fst_param, ucd_SPH_TRNS,            &
+     &   (t_STR, mesh_file_STR, ucd_file_param, sph_fst_param,          &
      &    rj_fld_trans, d_gauss_trans, field_STR, WK_sph_TRNS)
 !
 !  ------    set spectr grids
@@ -73,7 +73,8 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'FEM_initialize_back_trans'
-      call FEM_initialize_back_trans(viz_step_STR, ele_4_nod_SPH_TRANS, &
+      call FEM_initialize_back_trans                                    &
+     &   (ucd_file_param, viz_step_STR, ele_4_nod_SPH_TRANS,            &
      &    jacobians_STR, ucd_SPH_TRNS, m_ucd_SPH_TRNS)
 !
 !  -------------------------------
@@ -106,7 +107,8 @@
      &      sph_mesh_trans, ipol_trans, rj_fld_trans,                   &
      &      time_IO_TRNS, sph_trns_IO, visval)
 !
-        call FEM_analyze_back_trans(time_IO_TRNS, ucd_SPH_TRNS, i_step, &
+        call FEM_analyze_back_trans                                     &
+     &     (ucd_file_param, time_IO_TRNS, ucd_SPH_TRNS, i_step,         &
      &      viz_step_STR, visval)
 !
         if(visval .eq. 0) then

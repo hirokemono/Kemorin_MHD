@@ -119,9 +119,8 @@
       do istep = t_ITP%init_d%i_time_step, t_ITP%finish_d%i_end_step,   &
      &          t_ITP%ucd_step%increment
         if (my_rank .lt. ndomain_org) then
-          call set_data_by_read_ucd_once                                &
-     &       (my_rank, istep, itype_org_udt_file, org_udt_file_head,    &
-     &        nod_fld_ITP, itp_time_IO)
+          call set_data_by_read_ucd_once(my_rank, istep,                &
+     &        org_ucd_IO, nod_fld_ITP, itp_time_IO)
 !
           call nod_fields_send_recv                                     &
      &       (org_femmesh%mesh%nod_comm, nod_fld_ITP)
@@ -140,9 +139,8 @@
           call link_field_data_type_2_IO(new_femmesh%mesh%node,         &
      &        new_phys, fem_ucd)
 !
-          call set_ucd_file_format(itype_itp_udt_file, fem_ucd)
-          call set_ucd_file_prefix(itp_udt_file_head, fem_ucd)
-          call sel_write_udt_file(my_rank, istep, itp_time_IO, fem_ucd)
+          call sel_write_udt_file                                       &
+     &       (my_rank, istep, itp_ucd_IO, itp_time_IO, fem_ucd)
           call disconnect_ucd_data(fem_ucd)
           call disconnect_ucd_node(fem_ucd)
         end if

@@ -178,8 +178,8 @@
      &    nod_fld%istack_component, nod_fld%d_fld,                      &
      &    iso_param, iso_list, iso_mesh)
 !
-      call output_isosurface(num_iso, iso_header, itype_iso_file,       &
-     &    istep_iso, time_d, iso_mesh, iso_time_IO, iso_out, iso_out_m)
+      call output_isosurface(num_iso, iso_file_IO, istep_iso,           &
+     &    time_d, iso_mesh, iso_time_IO, iso_out, iso_out_m)
 !
       call dealloc_psf_field_data(num_iso, iso_mesh)
       call dealloc_psf_node_and_patch(num_iso, iso_list, iso_mesh)

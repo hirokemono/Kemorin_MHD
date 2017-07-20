@@ -4,8 +4,10 @@
 !!      subroutine allocate_subdomain_parameters
 !!      subroutine deallocate_subdomain_parameters
 !!
-!!      subroutine init_ucd_data_4_merge(istep, t_IO, ucd)
-!!      subroutine read_ucd_data_4_merge(istep, t_IO, ucd)
+!!      subroutine init_ucd_data_4_merge                                &
+!!     &         (istep, org_ucd_param, t_IO, ucd)
+!!      subroutine read_ucd_data_4_merge                                &
+!!     &         (istep, org_ucd_param, t_IO, ucd)
 !!        type(time_data), intent(inout) :: t_IO
 !!        type(ucd_data), intent(inout) :: ucd
 !!
@@ -52,15 +54,18 @@
 ! -----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine init_ucd_data_4_merge(istep, t_IO, ucd)
+      subroutine init_ucd_data_4_merge                                  &
+     &         (istep, org_ucd_param, t_IO, ucd)
 !
       use m_constants
       use t_time_data
       use t_ucd_data
+      use t_file_IO_parameter
       use m_control_param_merge
       use ucd_IO_select
 !
       integer (kind = kint), intent(in) :: istep
+      type(field_IO_params), intent(in) :: org_ucd_param
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
@@ -68,9 +73,7 @@
 !
 !
       ucd%nnod = ione
-      call set_ucd_file_format(itype_org_ucd_file, ucd)
-      call set_ucd_file_prefix(udt_original_header, ucd)
-      call sel_read_udt_param(izero, istep, t_IO, ucd)
+      call sel_read_udt_param(izero, istep, org_ucd_param, t_IO, ucd)
       call deallocate_ucd_phys_data(ucd)
 !
       org_fld%num_phys =    ucd%num_field
@@ -90,7 +93,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_ucd_data_4_merge(istep, t_IO, ucd)
+      subroutine read_ucd_data_4_merge                                  &
+     &         (istep, org_ucd_param, t_IO, ucd)
 !
       use t_time_data
       use t_ucd_data
@@ -99,11 +103,12 @@
       use set_read_geometry_2_merge
       use ucd_IO_select
 !
-       integer (kind = kint), intent(in) :: istep
+      integer (kind = kint), intent(in) :: istep
+      type(field_IO_params), intent(in) :: org_ucd_param
       type(time_data), intent(inout) :: t_IO
       type(ucd_data), intent(inout) :: ucd
 !
-       integer (kind = kint) :: ip, my_rank
+      integer (kind = kint) :: ip, my_rank
 !
 ! ========================
 ! * PES loops 
@@ -113,15 +118,13 @@
       ucd%ntot_comp = org_fld%istack_component(org_fld%num_phys)
       call allocate_ucd_phys_name(ucd)
 !
-      call set_ucd_file_format(itype_org_ucd_file, ucd)
-      call set_ucd_file_prefix(udt_original_header, ucd)
-!
       do ip =1, num_pe
         my_rank = ip - 1
         ucd%nnod = subdomain(ip)%node%numnod
         call allocate_ucd_phys_data(ucd)
 !
-        call sel_read_udt_file(my_rank, istep, t_IO, ucd)
+        call sel_read_udt_file                                          &
+     &     (my_rank, istep, org_ucd_param, t_IO, ucd)
 !
         call copy_udt_field_data_merge(ip, ifield_2_copy, org_fld, ucd)
 !
