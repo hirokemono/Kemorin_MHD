@@ -23,8 +23,6 @@
       type file_params_4_sph_mhd
 !>        Structure for field data IO paramters
         type(field_IO_params) :: rj_file_param
-!>        Structure for field data IO paramters
-        type(field_IO_params) :: udt_file_param
 !>        Structure for original restart file  paramters
         type(field_IO_params) :: rst_file_param
       end type file_params_4_sph_mhd
@@ -48,8 +46,6 @@
      &   (def_org_sph_rj_head, org_plt, MHD_files%rj_file_param)
       call set_control_mesh_file_def                                    &
      &   (def_org_rst_header, org_plt, MHD_files%rst_file_param)
-      call set_control_mesh_file_def                                    &
-     &   (def_org_ucd_header, org_plt, MHD_files%udt_file_param)
 !
       end subroutine set_control_org_sph_files
 !
