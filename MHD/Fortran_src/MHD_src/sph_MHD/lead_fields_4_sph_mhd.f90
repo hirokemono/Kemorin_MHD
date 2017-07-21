@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine s_lead_fields_4_sph_mhd(SGS_param, sph, comms_sph,   &
 !!     &          r_2nd, MHD_prop, sph_MHD_bc, trans_p, ipol,           &
-!!     &          sph_MHD_mat, rj_fld, WK)
+!!     &          sph_MHD_mat, WK, dynamic_SPH, rj_fld)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(sph_grids), intent(in) :: sph
 !!        type(sph_comm_tables), intent(in) :: comms_sph
@@ -19,6 +19,7 @@
 !!        type(parameters_4_sph_trans), intent(in) :: trans_p
 !!        type(phys_address), intent(in) :: ipol
 !!        type(works_4_sph_trans_MHD), intent(inout) :: WK
+!!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !!        type(MHD_radial_matrices), intent(inout) :: sph_MHD_mat
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
@@ -43,7 +44,7 @@
       use t_sph_transforms
       use t_boundary_data_sph_MHD
       use t_radial_matrices_sph_MHD
-      use sph_filtering
+      use t_sph_filtering
 !
       implicit none
 !
@@ -58,7 +59,7 @@
 !
       subroutine s_lead_fields_4_sph_mhd(SGS_param, sph, comms_sph,     &
      &          r_2nd, MHD_prop, sph_MHD_bc, trans_p, ipol,             &
-     &          sph_MHD_mat, rj_fld, WK)
+     &          sph_MHD_mat, WK, dynamic_SPH, rj_fld)
 !
       use sph_transforms_4_MHD
       use sph_transforms_4_SGS
@@ -66,7 +67,7 @@
       use copy_MHD_4_sph_trans
       use cal_energy_flux_rtp
       use swap_phi_4_sph_trans
-      use dynamic_model_sph_MHD
+      use copy_Csim_4_sph_MHD
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(sph_grids), intent(in) :: sph
@@ -78,6 +79,7 @@
       type(phys_address), intent(in) :: ipol
 !
       type(works_4_sph_trans_MHD), intent(inout) :: WK
+      type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       type(MHD_radial_matrices), intent(inout) :: sph_MHD_mat
       type(phys_data), intent(inout) :: rj_fld
 !
@@ -133,8 +135,7 @@
         if(SGS_param%iflag_dynamic .gt. id_SGS_none) then
           if(iflag_debug.eq.1) write(*,*) 'copy_model_coefs_4_sph_snap'
           call copy_model_coefs_4_sph_snap(sph%sph_rtp,                 &
-     &        WK%dynamic_SPH%ifld_sgs, WK%dynamic_SPH%wk_sgs,           &
-     &        WK%trns_snap)
+     &        dynamic_SPH%ifld_sgs, dynamic_SPH%wk_sgs, WK%trns_snap)
         end if
       end if
 !

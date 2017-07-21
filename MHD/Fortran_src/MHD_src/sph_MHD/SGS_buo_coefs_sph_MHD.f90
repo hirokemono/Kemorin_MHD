@@ -12,7 +12,7 @@
 !!     &          ncomp_snap_rtp_2_rj, if_trns_reynolds, if_trns_buo_wk,&
 !!     &          ifld_SGS_buo, icomp_SGS_buo, wk_sgs)
 !!      subroutine sel_mag_sph_ave_SGS_buo_rtp                          &
-!!     &         (sph_rtp, dynamic_SPH, trns_SGS)
+!!     &         (sph_rtp, Cbuo_ave_sph_rtp, trns_SGS)
 !!      subroutine prod_SGS_buoyancy_to_Reynolds(sph_rtp, fg_trns,      &
 !!     &          ifld_sgs, wk_sgs, nnod_med, nc_SGS_rtp_2_rj, fSGS_rtp)
 !!@endverbatim
@@ -32,7 +32,6 @@
       use t_addresses_sph_transform
       use t_SGS_model_coefs
       use t_ele_info_4_dynamic
-      use sph_filtering
 !
       implicit none
 !
@@ -89,7 +88,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sel_mag_sph_ave_SGS_buo_rtp                            &
-     &         (sph_rtp, dynamic_SPH, trns_SGS)
+     &         (sph_rtp, Cbuo_ave_sph_rtp, trns_SGS)
 !
       use t_rms_4_sph_spectr
       use t_spheric_parameter
@@ -99,7 +98,8 @@
       use prod_SGS_model_coefs_sph
 !
       type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(dynamic_SGS_data_4_sph), intent(in) :: dynamic_SPH
+      real(kind = kreal), intent(in)                                    &
+     &                   :: Cbuo_ave_sph_rtp(sph_rtp%nidx_rtp(1),2)
 !
       type(address_4_sph_trans), intent(inout) :: trns_SGS
 !
@@ -108,14 +108,12 @@
       if(iflag_FFT .eq. iflag_FFTW) then
         call prod_dbl_radial_buo_coefs_pin                              &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
-     &      dynamic_SPH%Cbuo_ave_sph_rtp(1,1),                          &
-     &      dynamic_SPH%Cbuo_ave_sph_rtp(1,2),                          &
+     &      Cbuo_ave_sph_rtp(1,1), Cbuo_ave_sph_rtp(1,2),               &
      &      trns_SGS%frc_rtp(1,trns_SGS%f_trns%i_SGS_inertia))
       else
         call prod_dbl_radial_buo_coefs_pout                             &
      &     (sph_rtp%nnod_rtp, sph_rtp%nidx_rtp,                         &
-     &      dynamic_SPH%Cbuo_ave_sph_rtp(1,1),                          &
-     &      dynamic_SPH%Cbuo_ave_sph_rtp(1,2),                          &
+     &      Cbuo_ave_sph_rtp(1,1), Cbuo_ave_sph_rtp(1,2),               &
      &      trns_SGS%frc_rtp(1,trns_SGS%f_trns%i_SGS_inertia))
       end if
 !$omp end parallel

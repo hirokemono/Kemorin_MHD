@@ -20,6 +20,7 @@
       use t_spheric_rj_data
       use t_phys_data
       use t_sph_filtering_data
+      use t_sph_filtering
 !
       implicit none
 !

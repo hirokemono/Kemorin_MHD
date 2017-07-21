@@ -7,12 +7,14 @@
 !>@brief Evaluate nonlinear terms by pseudo spectram scheme
 !!
 !!@verbatim
-!!      subroutine nonlinear_first(i_step, sph, comms_sph,              &
-!!     &          omega_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,      &
-!!     &          ref_temp, ref_comp, ipol, itor, WK, rj_fld, SGS_par)
-!!      subroutine nonlinear(i_step, SGS_par, sph, comms_sph,           &
-!!     &          omega_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,      &
-!!     &          ref_temp, ref_comp, ipol, itor, WK, rj_fld)
+!!      subroutine nonlinear_first                                      &
+!!     &         (i_step, sph, comms_sph, omega_sph, r_2nd, MHD_prop,   &
+!!     &          sph_MHD_bc, trans_p, ref_temp, ref_comp, ipol, itor,  &
+!!     &          WK, SGS_par, dynamic_SPH, rj_fld)
+!!      subroutine nonlinear                                            &
+!!     &         (i_step, SGS_par, sph, comms_sph, omega_sph, r_2nd,    &
+!!     &          MHD_prop, sph_MHD_bc, trans_p, ref_temp, ref_comp,    &
+!!     &          ipol, itor, WK, dynamic_SPH, rj_fld)
 !!      subroutine licv_exp(ref_temp, ref_comp, MHD_prop, sph_MHD_bc,   &
 !!     &          sph, comms_sph, omega_sph, trans_p, ipol, itor,       &
 !!     &          WK, rj_fld)
@@ -59,7 +61,7 @@
       use t_coriolis_terms_rlm
       use t_gaunt_coriolis_rlm
       use t_boundary_data_sph_MHD
-      use sph_filtering
+      use t_sph_filtering
 !
       implicit none
 !
@@ -72,9 +74,10 @@
 !*
 !*   ------------------------------------------------------------------
 !*
-      subroutine nonlinear_first(i_step, sph, comms_sph,                &
-     &          omega_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,        &
-     &          ref_temp, ref_comp, ipol, itor, WK, rj_fld, SGS_par)
+      subroutine nonlinear_first                                        &
+     &         (i_step, sph, comms_sph, omega_sph, r_2nd, MHD_prop,     &
+     &          sph_MHD_bc, trans_p, ref_temp, ref_comp, ipol, itor,    &
+     &          WK, SGS_par, dynamic_SPH, rj_fld)
 !
       integer(kind = kint), intent(in) :: i_step
       type(sph_grids), intent(in) :: sph
@@ -89,6 +92,7 @@
 !
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(works_4_sph_trans_MHD), intent(inout) :: WK
+      type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       type(phys_data), intent(inout) :: rj_fld
 !
       real(kind = kreal) :: tmp_stab_wt = one
@@ -101,7 +105,7 @@
 !
       call nonlinear(i_step, SGS_par, sph, comms_sph,                   &
      &    omega_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,              &
-     &    ref_temp, ref_comp, ipol, itor, WK, rj_fld)
+     &    ref_temp, ref_comp, ipol, itor, WK, dynamic_SPH, rj_fld)
 !
       if(SGS_par%model_p%iflag_rst_sgs_coef_code .eq. 0) then
         SGS_par%model_p%stab_weight = tmp_stab_wt
@@ -111,9 +115,10 @@
 !*
 !*   ------------------------------------------------------------------
 !*
-      subroutine nonlinear(i_step, SGS_par, sph, comms_sph,             &
-     &          omega_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p,        &
-     &          ref_temp, ref_comp, ipol, itor, WK, rj_fld)
+      subroutine nonlinear                                              &
+     &         (i_step, SGS_par, sph, comms_sph, omega_sph, r_2nd,      &
+     &          MHD_prop, sph_MHD_bc, trans_p, ref_temp, ref_comp,      &
+     &          ipol, itor, WK, dynamic_SPH, rj_fld)
 !
       use cal_inner_core_rotation
 !
@@ -135,6 +140,7 @@
       type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
 !
       type(works_4_sph_trans_MHD), intent(inout) :: WK
+      type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       type(phys_data), intent(inout) :: rj_fld
 !
 !
@@ -143,7 +149,7 @@
       if (iflag_debug.eq.1) write(*,*) 'nonlinear_by_pseudo_sph'
       call nonlinear_by_pseudo_sph(SGS_par%model_p, sph, comms_sph,     &
      &    omega_sph, r_2nd, MHD_prop, sph_MHD_bc, trans_p, WK%gt_cor,   &
-     &    WK%dynamic_SPH, WK%trns_MHD, WK%WK_sph, WK%MHD_mul_FFTW,      &
+     &    dynamic_SPH, WK%trns_MHD, WK%WK_sph, WK%MHD_mul_FFTW,         &
      &    WK%cor_rlm, ipol, itor, rj_fld)
 !
 !   ----  Lead SGS terms
@@ -153,7 +159,7 @@
      &     (i_step, SGS_par%i_step_sgs_coefs, SGS_par%model_p,          &
      &      sph, comms_sph, r_2nd, MHD_prop, sph_MHD_bc,                &
      &      trans_p, WK%trns_MHD, WK%trns_snap, WK%trns_SGS, WK%WK_sph, &
-     &      WK%SGS_mul_FFTW, WK%dynamic_SPH, ipol, itor, rj_fld)
+     &      WK%SGS_mul_FFTW, dynamic_SPH, ipol, itor, rj_fld)
       end if
 !
 !   ----  Lead advection of reference field
@@ -284,12 +290,13 @@
      &          trans_p, trns_MHD, trns_snap, trns_SGS, WK_sph,         &
      &          SGS_mul_FFTW, dynamic_SPH, ipol, itor, rj_fld)
 !
+      use t_SGS_buoyancy_sph
       use sph_transforms_4_SGS
       use cal_sph_rotation_of_SGS
       use cal_filtered_sph_fields
       use cal_SGS_terms_sph_MHD
       use dynamic_model_sph_MHD
-      use dynamic_SGS_buoyancy_sph
+      use copy_Csim_4_sph_MHD
 !
       use m_work_time
 !
@@ -380,25 +387,25 @@
             if (iflag_debug.eq.1) write(*,*)                            &
      &                      'sphere_averaged_SGS_buoyancy', iflag_debug
             call sphere_averaged_SGS_buoyancy(sph%sph_rj, sph%sph_rtp,  &
-     &          ipol, rj_fld, dynamic_SPH)
+     &          ipol, rj_fld, dynamic_SPH%wk_sgs_buo)
           end if
 !
             if(iflag_debug.eq.1) write(*,*)                             &
      &                      'magnify_sph_ave_SGS_buoyancy'
           call magnify_sph_ave_SGS_buoyancy(sph%sph_rj, sph%sph_rtp,    &
-     &        ipol, dynamic_SPH, rj_fld, trns_SGS)
+     &        ipol, dynamic_SPH%wk_sgs_buo, rj_fld, trns_SGS)
         else if(SGS_param%iflag_SGS_buo_usage .ne. id_use_zonal) then
           if(istep_dynamic .eq. 0) then
             if (iflag_debug.eq.1) write(*,*)                            &
      &                      'volume_averaged_SGS_buoyancy', iflag_debug
-            call volume_averaged_SGS_buoyancy                           &
-     &         (sph%sph_params, sph%sph_rj, ipol, rj_fld, dynamic_SPH)
+            call volume_averaged_SGS_buoyancy(sph%sph_params,           &
+     &          sph%sph_rj, ipol, rj_fld, dynamic_SPH%wk_sgs_buo)
           end if
 !
             if(iflag_debug.eq.1) write(*,*)                             &
      &                      'magnify_vol_ave_SGS_buoyancy'
-          call magnify_vol_ave_SGS_buoyancy                             &
-     &       (sph%sph_rtp, ipol, dynamic_SPH, rj_fld, trns_SGS)
+          call magnify_vol_ave_SGS_buoyancy(sph%sph_rtp, ipol,          &
+     &        dynamic_SPH%wk_sgs_buo, rj_fld, trns_SGS)
         end if
 !
         if (iflag_debug.ge.1) write(*,*) 'rot_SGS_terms_exp_sph'

@@ -117,7 +117,7 @@
      &         (MHD_files, time_d, rj_fld, rst_step,                    &
      &          i_step_sgs_coefs, SGS_param, dynamic_SPH)
 !
-      use sph_filtering
+      use t_sph_filtering
       use set_sph_restart_IO
       use sgs_ini_model_coefs_IO
 !
@@ -206,7 +206,7 @@
 !
       use t_spheric_rj_data
       use t_SGS_control_parameter
-      use sph_filtering
+      use t_sph_filtering
       use sgs_ini_model_coefs_IO
       use set_sph_restart_IO
       use r_interpolate_sph_data

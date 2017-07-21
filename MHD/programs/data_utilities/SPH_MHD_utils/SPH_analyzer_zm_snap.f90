@@ -65,8 +65,7 @@
       call read_alloc_sph_rst_SGS_snap                                  &
      &   (i_step, MHD_files%org_rj_file_IO, MHD_files, sph1%sph_rj,     &
      &    ipol, rj_fld1, MHD_step%rst_step, MHD_step%init_d,            &
-     &    SGS_par1%i_step_sgs_coefs, SGS_par1%model_p,                  &
-     &    trns_WK1%dynamic_SPH)
+     &    SGS_par1%i_step_sgs_coefs, SGS_par1%model_p, dynamic_SPH1)
       call copy_time_data(MHD_step%init_d, MHD_step%time_d)
 !
       if (iflag_debug.eq.1) write(*,*)' sync_temp_by_per_temp_sph'
@@ -84,7 +83,8 @@
       call start_eleps_time(8)
       call nonlinear(i_step, SGS_par1, sph1, comms_sph1, omega_sph1,    &
      &    r_2nd, MHD_prop1, sph_MHD_bc1, trans_p1,                      &
-     &    ref_temp1, ref_comp1, ipol, itor, trns_WK1, rj_fld1)
+     &    ref_temp1, ref_comp1, ipol, itor,                             &
+     &    trns_WK1, dynamic_SPH1, rj_fld1)
       call end_eleps_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=
@@ -100,7 +100,7 @@
         if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
         call s_lead_fields_4_sph_mhd(SGS_par1%model_p, sph1,            &
      &      comms_sph1, r_2nd, MHD_prop1, sph_MHD_bc1, trans_p1,        &
-     &      ipol, sph_MHD_mat1, rj_fld1, trns_WK1)
+     &      ipol, sph_MHD_mat1, trns_WK1, dynamic_SPH1, rj_fld1)
       end if
       call end_eleps_time(9)
 !

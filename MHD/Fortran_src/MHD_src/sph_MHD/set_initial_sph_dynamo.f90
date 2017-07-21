@@ -65,7 +65,7 @@
       use t_spheric_parameter
       use t_phys_data
       use t_SGS_control_parameter
-      use sph_filtering
+      use t_sph_filtering
 !
       use set_sph_restart_IO
       use sph_mhd_rst_IO_control

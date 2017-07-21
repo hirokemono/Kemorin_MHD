@@ -65,7 +65,7 @@
       use t_sph_trans_arrays_MHD
       use t_sph_boundary_input_data
       use t_bc_data_list
-      use sph_filtering
+      use t_sph_filtering
 !
       implicit none
 !

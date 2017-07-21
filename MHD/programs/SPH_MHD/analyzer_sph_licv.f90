@@ -58,8 +58,8 @@
 !
       call input_control_4_SPH_MHD_nosnap                               &
      &   (MHD_files1, MHD_ctl1, sph1, comms_sph1, sph_grps1, rj_fld1,   &
-     &    pwr1, SGS_par1, trns_WK1%dynamic_SPH, MHD_step1,              &
-     &    MHD_prop1, MHD_BC1, trns_WK1)
+     &    pwr1, SGS_par1, dynamic_SPH1, MHD_step1, MHD_prop1, MHD_BC1,  &
+     &    trns_WK1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
       call end_eleps_time(4)
 !

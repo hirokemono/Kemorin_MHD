@@ -160,8 +160,7 @@
       call read_alloc_sph_rst_SGS_snap                                  &
      &   (i_step, MHD_files%org_rj_file_IO, MHD_files, sph1%sph_rj,     &
      &    ipol, rj_fld1, MHD_step%rst_step, MHD_step1%init_d,           &
-     &    SGS_par1%i_step_sgs_coefs, SGS_par1%model_p,                  &
-     &    trns_WK1%dynamic_SPH)
+     &    SGS_par1%i_step_sgs_coefs, SGS_par1%model_p, dynamic_SPH1)
 
       call copy_time_data(MHD_step1%init_d, MHD_step1%time_d)
 !
@@ -184,7 +183,8 @@
       call start_eleps_time(8)
       call nonlinear(i_step, SGS_par1, sph1, comms_sph1, omega_sph1,    &
      &    r_2nd, MHD_prop1, sph_MHD_bc1, trans_p1,                      &
-     &    ref_temp1, ref_comp1, ipol, itor, trns_WK1, rj_fld1)
+     &    ref_temp1, ref_comp1, ipol, itor,                             &
+     &    trns_WK1, dynamic_SPH1, rj_fld1)
       call end_eleps_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=
@@ -197,8 +197,8 @@
 !*
       if(iflag_debug.gt.0) write(*,*) 'lead_special_fields_4_sph_mhd'
       call lead_special_fields_4_sph_mhd(i_step, sph1, comms_sph1,      &
-     &    omega_sph1, r_2nd, ipol, trns_WK1, sph_MHD_mat1, rj_fld1,     &
-     &    MHD_step)
+     &    omega_sph1, r_2nd, ipol, trns_WK1, dynamic_SPH1,              &
+     &    sph_MHD_mat1, rj_fld1, MHD_step)
       call end_eleps_time(9)
 !
 !*  -----------  lead energy data --------------
@@ -305,8 +305,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine lead_special_fields_4_sph_mhd(i_step, sph, comms_sph,  &
-     &          omega_sph, r_2nd, ipol, trns_WK, sph_MHD_mat, rj_fld,   &
-     &          MHD_step)
+     &          omega_sph, r_2nd, ipol, trns_WK, dynamic_SPH,           &
+     &          sph_MHD_mat, rj_fld, MHD_step)
 !
       use t_MHD_step_parameter
       use t_spheric_parameter
@@ -335,9 +335,10 @@
       type(fdm_matrices), intent(in) :: r_2nd
       type(phys_address), intent(in) :: ipol
       type(works_4_sph_trans_MHD), intent(inout) :: trns_WK
-      type(phys_data), intent(inout) :: rj_fld
       type(MHD_step_param), intent(inout) :: MHD_step
       type(MHD_radial_matrices), intent(inout) :: sph_MHD_mat
+      type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
+      type(phys_data), intent(inout) :: rj_fld
 !
       integer(kind = kint) :: iflag
 !
@@ -347,7 +348,7 @@
       if(iflag .eq. 0) then
         call s_lead_fields_4_sph_mhd(SGS_par1%model_p, sph,             &
      &      comms_sph, r_2nd, MHD_prop1, sph_MHD_bc1, trans_p1,         &
-     &      ipol, sph_MHD_mat, rj_fld, trns_WK)
+     &      ipol, sph_MHD_mat, trns_WK, dynamic_SPH, rj_fld)
       end if
 !
       call sph_back_trans_4_MHD(sph, comms_sph,                         &

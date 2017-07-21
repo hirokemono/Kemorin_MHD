@@ -189,6 +189,7 @@
       end type SGS_filtering_params
 !
 !
+!>      Structure of input parameters for SGS model
       type SGS_paremeters
 !>        Increment of time step for evaluation of SGS model coefficients
         integer(kind=kint) :: i_step_sgs_coefs = ione

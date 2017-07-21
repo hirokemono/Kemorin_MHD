@@ -120,7 +120,7 @@
      &          rst_step, time_d, dynamic_SPH)
 !
       use t_ele_info_4_dynamic
-      use sph_filtering
+      use t_sph_filtering
       use field_IO_select
       use cal_minmax_and_stacks
       use set_ini_sgs_model_coefs_IO

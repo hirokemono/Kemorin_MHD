@@ -14,10 +14,16 @@
 !
       use m_precision
       use t_SGS_control_parameter
+      use t_sph_filtering
 !
-      implicit  none
+      implicit none
 !
 !
+!>      Structure of input parameters for SGS model
       type(SGS_paremeters), save :: SGS_par1
+!
+!>      Structure of work area for dyanmic SGS model for spectrum dynamo
+      type(dynamic_SGS_data_4_sph), save :: dynamic_SPH1
+
 !
       end module m_SGS_control_parameter
