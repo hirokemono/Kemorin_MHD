@@ -17,6 +17,7 @@
       use t_IO_step_parameter
       use t_MHD_step_parameter
       use t_MHD_file_parameter
+      use t_ucd_file
 !
       use calypso_mpi
 !
@@ -185,8 +186,9 @@
 !     ---- Output voulme field data
 !
       if (iflag_debug.eq.1) write(*,*) 's_output_ucd_file_control'
-      call s_output_ucd_file_control(MHD_files%ucd_file_IO,             &
-     &    flex_p1%istep_max_dt, MHD_step%time_d, MHD_step%ucd_step)
+      call s_output_ucd_file_control                                    &
+     &   (MHD_files%ucd_file_IO, flex_p1%istep_max_dt,                  &
+     &    MHD_step%time_d, MHD_step%ucd_step, fem_ucd1)
 !
 !     ----
 !

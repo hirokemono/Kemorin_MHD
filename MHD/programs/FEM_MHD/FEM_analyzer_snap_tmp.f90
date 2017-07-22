@@ -26,6 +26,7 @@
       use t_IO_step_parameter
       use t_MHD_step_parameter
       use t_MHD_file_parameter
+      use t_ucd_file
 !
       use calypso_mpi
 !
@@ -51,6 +52,7 @@
       use m_SGS_control_parameter
 !
       use initialize_4_snapshot
+      use FEM_MHD_ucd_data
 !
       use node_monitor_IO
       use open_sgs_model_coefs
@@ -68,7 +70,7 @@
      &    SNAP_time_IO, MHD_step%rst_step, label_sim)
 !
       call output_grd_file_w_org_connect(MHD_step%ucd_step,             &
-     &    mesh1, MHD_mesh1, nod_fld1, MHD_files%ucd_file_IO)
+     &    mesh1, MHD_mesh1, nod_fld1, MHD_files%ucd_file_IO, fem_ucd1)
 !
       call alloc_phys_range(nod_fld1%ntot_phys_viz, range)
 !
@@ -225,8 +227,9 @@
 !     ---- Output voulme field data
 !
       if (iflag_debug.eq.1) write(*,*) 's_output_ucd_file_control'
-      call s_output_ucd_file_control(MHD_files%ucd_file_IO,             &
-     &    flex_p1%istep_max_dt, MHD_step%time_d, MHD_step%ucd_step)
+      call s_output_ucd_file_control                                    &
+     &   (MHD_files%ucd_file_IO, flex_p1%istep_max_dt,                  &
+     &    MHD_step%time_d, MHD_step%ucd_step, fem_ucd1)
 !
 !     ----
 !
@@ -251,7 +254,7 @@
 !
 !
       if(MHD_step%ucd_step%increment .gt. 0) then
-        call finalize_output_ucd(MHD_files%ucd_file_IO)
+        call finalize_output_ucd(MHD_files%ucd_file_IO, fem_ucd1)
         call dealloc_phys_range(range)
       end if
 !      call close_boundary_monitor(my_rank)

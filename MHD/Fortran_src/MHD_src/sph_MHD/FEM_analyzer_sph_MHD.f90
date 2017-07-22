@@ -57,6 +57,7 @@
       use t_time_data
       use t_MHD_step_parameter
       use t_file_IO_parameter
+      use t_ucd_file
 !
       implicit none
 !
@@ -127,7 +128,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'output_grd_file_4_snapshot'
       call output_grd_file_4_snapshot                                   &
-     &   (ucd_param, MHD_step%ucd_step, mesh, nod_fld)
+     &   (ucd_param, MHD_step%ucd_step, mesh, nod_fld, fem_ucd1)
 !
       end subroutine FEM_initialize_sph_MHD
 !
@@ -172,7 +173,7 @@
 !*
       call s_output_ucd_file_control                                    &
      &   (ucd_param, MHD_step%time_d%i_time_step,                       &
-     &    MHD_step%time_d, MHD_step%ucd_step)
+     &    MHD_step%time_d, MHD_step%ucd_step, fem_ucd1)
 !
       end subroutine FEM_analyze_sph_MHD
 !
@@ -274,7 +275,7 @@
 !
      if(MHD_step%ucd_step%increment .gt. 0) then
        call dealloc_phys_range(range)
-       call finalize_output_ucd(ucd_param)
+       call finalize_output_ucd(ucd_param, fem_ucd1)
      end if
 !
       end subroutine FEM_finalize

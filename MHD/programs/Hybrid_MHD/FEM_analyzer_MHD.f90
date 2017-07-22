@@ -21,6 +21,7 @@
       use m_sorted_node_MHD
       use t_MHD_step_parameter
       use t_MHD_file_parameter
+      use t_ucd_file
 !
       use calypso_mpi
 !
@@ -61,6 +62,7 @@
 !
       use chenge_step_4_dynamic
       use output_viz_file_control
+      use FEM_MHD_ucd_data
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
 !
@@ -152,7 +154,7 @@
       call start_eleps_time(4)
 !
       call output_grd_file_w_org_connect(MHD_step%ucd_step, mesh1,      &
-     &    MHD_mesh1, nod_fld1, ucd_param)
+     &    MHD_mesh1, nod_fld1, ucd_param, fem_ucd1)
 !
       call alloc_phys_range(nod_fld1%ntot_phys_viz, range)
 !       call s_open_boundary_monitor(my_rank, group1%sf_grp)
@@ -288,8 +290,8 @@
 !     ---- Output voulme field data
 !
         if (iflag_debug.eq.1) write(*,*) 's_output_ucd_file_control'
-        call s_output_ucd_file_control(ucd_param,                       &
-     &      flex_p1%istep_max_dt, MHD_step%time_d, MHD_step%ucd_step)
+        call s_output_ucd_file_control(ucd_param, flex_p1%istep_max_dt, &
+     &      MHD_step%time_d, MHD_step%ucd_step, fem_ucd1)
 !
         call end_eleps_time(4)
         call start_eleps_time(3)
@@ -380,7 +382,7 @@
 !
 !
       if(MHD_step%ucd_step%increment .gt. 0) then
-        call finalize_output_ucd(MHD_files%ucd_file_IO)
+        call finalize_output_ucd(MHD_files%ucd_file_IO, fem_ucd1)
         call dealloc_phys_range(range)
       end if
 !      call close_boundary_monitor(my_rank)
