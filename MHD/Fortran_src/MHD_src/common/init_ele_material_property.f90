@@ -1,14 +1,16 @@
-!m_ele_material_property.f90
-!     module m_ele_material_property
+!init_ele_material_property.f90
+!     module init_ele_material_property
 !
 !> @brief coefficients for each element
 !
 !     Written by H. Matsui
 !
-!!      subroutine init_ele_material_property(numele, MHD_prop)
+!!      subroutine s_init_ele_material_property                         &
+!!     &         (numele, MHD_prop, ak_MHD)
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
+!!        type(coefs_4_MHD_type), intent(inout) :: ak_MHD
 !
-      module m_ele_material_property
+      module init_ele_material_property
 !
       use m_precision
       use m_machine_parameter
@@ -17,10 +19,6 @@
       use t_physical_property
 !
       implicit  none
-!
-!
-!>      Strucutre of coefficients for each element
-      type(coefs_4_MHD_type), save :: ak_MHD
 !
       private :: ele_viscous_diffusion, ele_magnetic_diffusion
       private :: ele_thermal_diffusion, ele_compositional_diffusion
@@ -31,23 +29,28 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine init_ele_material_property(numele, MHD_prop)
+      subroutine s_init_ele_material_property                           &
+     &         (numele, MHD_prop, ak_MHD)
 !
 !
       integer(kind = kint), intent(in) :: numele
       type(MHD_evolution_param), intent(in) :: MHD_prop
 !
+      type(coefs_4_MHD_type), intent(inout) :: ak_MHD
+!
+!
 !    For thermal
-      call ele_thermal_diffusion(numele, MHD_prop%ht_prop)
+      call ele_thermal_diffusion(numele, MHD_prop%ht_prop, ak_MHD)
 !
 !    For convection
-      call ele_viscous_diffusion(numele, MHD_prop%fl_prop)
+      call ele_viscous_diffusion(numele, MHD_prop%fl_prop, ak_MHD)
 !
 !   For Induction
-      call ele_magnetic_diffusion(numele, MHD_prop%cd_prop)
+      call ele_magnetic_diffusion(numele, MHD_prop%cd_prop, ak_MHD)
 !
 !   For dummy scalar
-      call ele_compositional_diffusion(numele, MHD_prop%cp_prop)
+      call ele_compositional_diffusion                                  &
+     &   (numele, MHD_prop%cp_prop, ak_MHD)
 !
 !  check
 !
@@ -79,15 +82,17 @@
        end if
       end if
 !
-      end subroutine init_ele_material_property
+      end subroutine s_init_ele_material_property
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine ele_viscous_diffusion(numele, fl_prop)
+      subroutine ele_viscous_diffusion(numele, fl_prop, ak_MHD)
 !
       integer(kind = kint), intent(in) :: numele
       type(fluid_property), intent(in) :: fl_prop
+!
+      type(coefs_4_MHD_type), intent(inout) :: ak_MHD
 !
 !
       if (fl_prop%iflag_scheme .gt. id_no_evolution) then
@@ -110,10 +115,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine ele_magnetic_diffusion(numele, cd_prop)
+      subroutine ele_magnetic_diffusion(numele, cd_prop, ak_MHD)
 !
       integer(kind = kint), intent(in) :: numele
       type(conductive_property), intent(in)  :: cd_prop
+!
+      type(coefs_4_MHD_type), intent(inout) :: ak_MHD
 !
 !
       if     (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution            &
@@ -126,10 +133,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine ele_thermal_diffusion(numele, ht_prop)
+      subroutine ele_thermal_diffusion(numele, ht_prop, ak_MHD)
 !
       integer(kind = kint), intent(in) :: numele
       type(scalar_property), intent(in) :: ht_prop
+!
+      type(coefs_4_MHD_type), intent(inout) :: ak_MHD
 !
 !
       if (ht_prop%iflag_scheme .gt. id_no_evolution) then
@@ -141,10 +150,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine ele_compositional_diffusion(numele, cp_prop)
+      subroutine ele_compositional_diffusion(numele, cp_prop, ak_MHD)
 !
       integer(kind = kint), intent(in) :: numele
       type(scalar_property), intent(in) :: cp_prop
+!
+      type(coefs_4_MHD_type), intent(inout) :: ak_MHD
 !
 !
       if(cp_prop%iflag_scheme .gt. id_no_evolution) then
@@ -156,4 +167,4 @@
 !
 !-----------------------------------------------------------------------
 !
-      end module m_ele_material_property
+      end module init_ele_material_property

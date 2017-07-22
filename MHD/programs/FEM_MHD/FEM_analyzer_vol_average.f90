@@ -40,6 +40,9 @@
       use m_layering_ele_list
       use m_geometry_data_MHD
       use m_boundary_field_IO
+      use m_physical_property
+      use m_element_phys_data
+      use m_SGS_control_parameter
 !
       use initialize_4_snapshot
 !
@@ -55,7 +58,8 @@
       call init_analyzer_snap                                           &
      &   (MHD_files%fst_file_IO, FEM_prm1, SGS_par1, IO_bc1, MHD_step,  &
      &    mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,              &
-     &    iphys, nod_fld1, SNAP_time_IO, MHD_step%rst_step, label_sim)
+     &    MHD_prop1, ak_MHD, Csims_FEM_MHD1, iphys, nod_fld1,           &
+     &    SNAP_time_IO, MHD_step%rst_step, label_sim)
 !
       end subroutine FEM_initialize_vol_average
 !

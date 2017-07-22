@@ -43,8 +43,6 @@
       use m_filter_elength
       use m_3d_filter_coef_MHD
       use m_layering_ele_list
-      use m_ele_material_property
-      use m_SGS_model_coefs
       use m_work_4_dynamic_model
       use m_ucd_data
       use m_bc_data_velo
@@ -78,7 +76,8 @@
 !
 !     ---- Load field data --- 
 !
-      call reset_update_flag(nod_fld1, sgs_coefs, diff_coefs)
+      call reset_update_flag(nod_fld1,                                  &
+     &    Csims_FEM_MHD1%sgs_coefs, Csims_FEM_MHD1%diff_coefs)
       flex_p1%istep_max_dt = i_step
       if (my_rank.eq.0) write(*,*) 'step: ', flex_p1%istep_max_dt
 !
@@ -123,10 +122,9 @@
       call update_fields                                                &
      &   (MHD_step%time_d, FEM_prm1, SGS_par1, mesh1, group1,           &
      &    ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs, iphys, iphys_ele,    &
-     &    fem_int1, FEM1_elen, ifld_diff, icomp_diff, iphys_elediff,    &
-     &    filtering1, wide_filtering, layer_tbl1, wk_cor1, wk_lsq1,     &
-     &    wk_diff1, wk_filter1, mhd_fem1_wk, rhs_mat1,                  &
-     &    nod_fld1, fld_ele1, diff_coefs)
+     &    fem_int1, FEM1_elen, filtering1, wide_filtering, layer_tbl1,  &
+     &    wk_cor1, wk_lsq1, wk_diff1, wk_filter1, mhd_fem1_wk,          &
+     &    rhs_mat1, nod_fld1, fld_ele1, Csims_FEM_MHD1)
 !
 !     ----- Evaluate model coefficients
 !
@@ -136,11 +134,9 @@
      &     (MHD_step%time_d, FEM_prm1, SGS_par1,                        &
      &     mesh1, group1, ele_mesh1, MHD_mesh1, MHD_prop1,              &
      &      layer_tbl1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,  &
-     &      fem_int1, FEM1_elen, ifld_sgs, icomp_sgs, ifld_diff,        &
-     &      icomp_diff, iphys_elediff, filtering1, wide_filtering,      &
+     &      fem_int1, FEM1_elen, filtering1, wide_filtering,            &
      &      wk_cor1, wk_lsq1, wk_sgs1, wk_diff1, wk_filter1,            &
-     &      mhd_fem1_wk, rhs_mat1, nod_fld1,                            &
-     &      sgs_coefs, sgs_coefs_nod, diff_coefs)
+     &      mhd_fem1_wk, rhs_mat1, nod_fld1, Csims_FEM_MHD1)
       end if
 !
 !     ========  Data output
@@ -152,10 +148,9 @@
      &    (MHD_step%time_d, FEM_prm1, SGS_par1, mesh1, group1,          &
      &     ele_mesh1, MHD_mesh1, MHD_prop1, nod1_bcs, sf1_bcs,          &
      &     iphys, iphys_ele, ak_MHD, fem_int1, FEM1_elen,               &
-     &     icomp_sgs, icomp_diff, ifld_diff, iphys_elediff,             &
-     &     sgs_coefs, sgs_coefs_nod, filtering1, wide_filtering,        &
-     &     layer_tbl1, wk_cor1, wk_lsq1, wk_diff1, wk_filter1,          &
-     &     mhd_fem1_wk, rhs_mat1, nod_fld1, fld_ele1, diff_coefs)
+     &     filtering1, wide_filtering, layer_tbl1,                      &
+     &     wk_cor1, wk_lsq1, wk_diff1, wk_filter1, mhd_fem1_wk,         &
+     &     rhs_mat1, nod_fld1, fld_ele1, Csims_FEM_MHD1)
       end if
 !
 !     ----Filtering

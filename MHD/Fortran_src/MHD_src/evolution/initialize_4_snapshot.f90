@@ -5,7 +5,8 @@
 !
 !!      subroutine init_analyzer_snap(fst_file_IO, FEM_prm, SGS_par,    &
 !!     &          IO_bc, MHD_step, mesh, group, ele_mesh, MHD_mesh,     &
-!!     &          layer_tbl, iphys, nod_fld, t_IO, rst_step, label_sim)
+!!     &          layer_tbl, MHD_prop, ak_MHD, Csims_FEM_MHD,           &
+!!     &          iphys, nod_fld, t_IO, rst_step, label_sim)
 !!        type(field_IO_params), intent(in) :: fst_file_IO
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -16,6 +17,8 @@
 !!        type(element_geometry), intent(inout) :: ele_mesh
 !!        type(mesh_data_MHD), intent(inout) :: MHD_mesh
 !!        type(layering_tbl), intent(inout) :: layer_tbl
+!!        type(MHD_evolution_param), intent(inout) :: MHD_prop
+!!        type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
 !!        type(phys_address), intent(inout) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(time_data), intent(inout) :: t_IO
@@ -24,6 +27,10 @@
       module initialize_4_snapshot
 !
       use m_precision
+      use m_machine_parameter
+      use calypso_mpi
+!
+      use t_control_parameter
       use t_FEM_control_parameter
       use t_SGS_control_parameter
       use t_MHD_step_parameter
@@ -39,6 +46,8 @@
       use t_boundary_field_IO
       use t_IO_step_parameter
       use t_file_IO_parameter
+      use t_FEM_SGS_model_coefs
+      use t_material_property
 !
       implicit none
 !
@@ -50,22 +59,17 @@
 !
       subroutine init_analyzer_snap(fst_file_IO, FEM_prm, SGS_par,      &
      &          IO_bc, MHD_step, mesh, group, ele_mesh, MHD_mesh,       &
-     &          layer_tbl, iphys, nod_fld, t_IO, rst_step, label_sim)
+     &          layer_tbl, MHD_prop, ak_MHD, Csims_FEM_MHD,             &
+     &          iphys, nod_fld, t_IO, rst_step, label_sim)
 !
-      use calypso_mpi
-      use m_machine_parameter
       use m_fem_mhd_restart
 !
-      use m_physical_property
-      use m_ele_material_property
-      use m_mean_square_values
       use m_work_4_dynamic_model
       use m_boundary_condition_IDs
       use m_array_for_send_recv
       use m_finite_element_matrix
       use m_bc_data_velo
       use m_3d_filter_coef_MHD
-      use m_SGS_model_coefs
       use m_bc_data_list
 !
       use count_whole_num_element
@@ -92,6 +96,7 @@
       use const_jacobians_sf_grp
       use const_element_comm_tables
       use const_mesh_information
+      use init_ele_material_property
 !
       use nod_phys_send_recv
 !
@@ -106,6 +111,9 @@
       type(element_geometry), intent(inout) :: ele_mesh
       type(mesh_data_MHD), intent(inout) :: MHD_mesh
       type(layering_tbl), intent(inout) :: layer_tbl
+      type(MHD_evolution_param), intent(inout) :: MHD_prop
+      type(coefs_4_MHD_type), intent(inout) :: ak_MHD
+      type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
       type(phys_address), intent(inout) :: iphys
       type(phys_data), intent(inout) :: nod_fld
       type(time_data), intent(inout) :: t_IO
@@ -194,31 +202,34 @@
 !     ---------------------
 !
       if (iflag_debug.eq.1) write(*,*)' allocate_array'
-      call allocate_array                                               &
-     &   (SGS_par, mesh, MHD_prop1, iphys, nod_fld, iphys_elediff,      &
+      call allocate_array(SGS_par, mesh, MHD_prop,                      &
+     &    iphys, nod_fld, Csims_FEM_MHD%iphys_elediff,                  &
      &    mhd_fem1_wk, rhs_mat1, fem_int1, label_sim)
 !
       if (iflag_debug.eq.1) write(*,*)' set_reference_temp'
       call set_reference_temp                                           &
-     &   (MHD_prop1%ref_param_T, MHD_prop1%takepito_T, mesh%node,       &
+     &   (MHD_prop%ref_param_T, MHD_prop%takepito_T, mesh%node,         &
      &    MHD_mesh%fluid, iphys%i_ref_t, iphys%i_gref_t, nod_fld)
       call set_reference_temp                                           &
-     &   (MHD_prop1%ref_param_C, MHD_prop1%takepito_C, mesh%node,       &
+     &   (MHD_prop%ref_param_C, MHD_prop%takepito_C, mesh%node,         &
      &    MHD_mesh%fluid, iphys%i_ref_c, iphys%i_gref_c, nod_fld)
 !
       if (iflag_debug.eq.1) write(*,*)' set_material_property'
       call set_material_property                                        &
-     &   (iphys, MHD_prop1%ref_param_T%depth_top,                       &
-     &    MHD_prop1%ref_param_T%depth_bottom, MHD_prop1)
-      call init_ele_material_property(mesh%ele%numele, MHD_prop1)
+     &   (iphys, MHD_prop%ref_param_T%depth_top,                        &
+     &    MHD_prop%ref_param_T%depth_bottom, MHD_prop)
+      call s_init_ele_material_property                                 &
+     &   (mesh%ele%numele, MHD_prop, ak_MHD)
+!
       call define_sgs_components                                        &
-     &   (mesh%node%numnod, mesh%ele%numele, SGS_par%model_p,           &
-     &    layer_tbl, MHD_prop1, ifld_sgs, icomp_sgs, wk_sgs1,           &
-     &    sgs_coefs, sgs_coefs_nod)
-      call define_sgs_diff_coefs                                        &
-     &   (mesh%ele%numele, SGS_par%model_p, SGS_par%commute_p,          &
-     &    layer_tbl, MHD_prop1, ifld_diff, icomp_diff,                  &
-     &    wk_diff1, diff_coefs)
+     &   (mesh%node%numnod, mesh%ele%numele,                            &
+     &    SGS_par%model_p, layer_tbl, MHD_prop,                         &
+     &    Csims_FEM_MHD%ifld_sgs, Csims_FEM_MHD%icomp_sgs, wk_sgs1,     &
+     &    Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%sgs_coefs_nod)
+      call define_sgs_diff_coefs(mesh%ele%numele,                       &
+     &    SGS_par%model_p, SGS_par%commute_p, layer_tbl, MHD_prop,      &
+     &    Csims_FEM_MHD%ifld_diff, Csims_FEM_MHD%icomp_diff,            &
+     &    wk_diff1, Csims_FEM_MHD%diff_coefs)
 !
       call deallocate_surface_geom_type(ele_mesh%surf)
       call deallocate_edge_geom_type(ele_mesh%edge)
@@ -265,7 +276,7 @@
       if (iflag_debug.eq.1) write(*,*)' set_boundary_data'
       call set_boundary_data                                            &
      &   (MHD_step%time_d, IO_bc, mesh, ele_mesh, MHD_mesh, group,      &
-     &    MHD_prop1, MHD_BC1, iphys, nod_fld)
+     &    MHD_prop, MHD_BC1, iphys, nod_fld)
 !
 !     ---------------------
 !
@@ -275,7 +286,7 @@
 !
 !     ---------------------
 !
-      call deallocate_surf_bc_lists(MHD_prop1, MHD_BC1)
+      call deallocate_surf_bc_lists(MHD_prop, MHD_BC1)
 !
       end subroutine init_analyzer_snap
 !

@@ -15,6 +15,7 @@
       use m_precision
       use t_SGS_control_parameter
       use t_sph_filtering
+      use t_FEM_SGS_model_coefs
 !
       implicit none
 !
@@ -24,6 +25,8 @@
 !
 !>      Structure of work area for dyanmic SGS model for spectrum dynamo
       type(dynamic_SGS_data_4_sph), save :: dynamic_SPH1
-
+!
+!>      Structure of model coefficieints for FEM MHD
+      type(SGS_coefficients_data), save :: Csims_FEM_MHD1
 !
       end module m_SGS_control_parameter

@@ -19,6 +19,7 @@
       use m_precision
       use t_phys_data
       use t_phys_address
+      use t_material_property
 !
       implicit  none
 !
@@ -28,6 +29,9 @@
 !
 !>   address for element fields
       type(phys_address), save :: iphys_ele
+!
+!>      Strucutre of coefficients for each element
+      type(coefs_4_MHD_type), save :: ak_MHD
 !
       private ::  set_element_field_address
 !

@@ -36,12 +36,11 @@
       use m_filter_elength
       use m_layering_ele_list
       use m_sorted_node_MHD
-      use m_ele_material_property
-      use m_SGS_model_coefs
       use m_bc_data_velo
       use m_solver_djds_MHD
       use m_boundary_field_IO
       use m_type_AMG_data
+      use m_element_phys_data
 !
       use initialization_4_MHD
 !
@@ -57,6 +56,7 @@
       call init_analyzer_fl                                             &
      &   (MHD_files, IO_bc1, FEM_prm1, SGS_par1, MHD_step1,             &
      &    mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,              &
+     &    MHD_prop1, ak_MHD, Csims_FEM_MHD1,                            &
      &    iphys, nod_fld1, label_sim)
 !
 !   construct matrix for Poisson and diffusion terms
@@ -69,7 +69,7 @@
       call set_aiccg_matrices(MHD_step1%time_d%dt, FEM_prm1,            &
      &    SGS_par1%model_p, SGS_par1%commute_p, mesh1, group1,          &
      &    ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs, MHD_prop1, ak_MHD,   &
-     &    fem_int1, FEM1_elen, ifld_diff, diff_coefs, MHD1_mat_tbls,    &
+     &    fem_int1, FEM1_elen, Csims_FEM_MHD1, MHD1_mat_tbls,           &
      &    rhs_mat1, mhd_fem1_wk, MHD1_matrices)
 !
       if (iflag_debug.eq.1) write(*,*) 's_write_djds_mat_MHD'
