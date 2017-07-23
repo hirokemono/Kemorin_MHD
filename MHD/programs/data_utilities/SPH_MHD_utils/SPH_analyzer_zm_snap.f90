@@ -8,9 +8,16 @@
 !!
 !!@verbatim
 !!      subroutine SPH_analyze_zm_snap(i_step, MHD_files, MHD_step)
-!!      subroutine SPH_to_FEM_bridge_zm_snap(i_step, MHD_step)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(inout) :: MHD_step
+!!      subroutine SPH_to_FEM_bridge_zm_snap                            &
+!!     &         (sph_params, sph_rtp, WK, mesh, iphys, nod_fld)
+!!        type(sph_shell_parameters), intent(in) :: sph_params
+!!        type(sph_rtp_grid), intent(in) :: sph_rtp
+!!        type(works_4_sph_trans_MHD), intent(in) :: WK
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(phys_address), intent(in) :: iphys
+!!        type(phys_data), intent(inout) :: nod_fld
 !!@endverbatim
 !!
 !!@param i_step  time step number
@@ -127,46 +134,36 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_to_FEM_bridge_zm_snap(i_step, MHD_step)
+      subroutine SPH_to_FEM_bridge_zm_snap                              &
+     &         (sph_params, sph_rtp, WK, mesh, iphys, nod_fld)
 !
-      use m_mesh_data
-      use m_node_phys_data
-      use m_spheric_parameter
-      use m_sph_spectr_data
+      use t_spheric_parameter
+      use t_mesh_data
+      use t_phys_data
+      use t_phys_address
+      use t_sph_trans_arrays_MHD
 !
-      use m_sph_trans_arrays_MHD
-!
-      use output_viz_file_control
-      use copy_snap_4_sph_trans
-      use copy_MHD_4_sph_trans
+      use FEM_analyzer_sph_MHD
       use sph_rtp_zonal_rms_data
 !
-      integer(kind = kint), intent(in) :: i_step
-      type(MHD_step_param), intent(inout) :: MHD_step
+      type(sph_shell_parameters), intent(in) :: sph_params
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(works_4_sph_trans_MHD), intent(in) :: WK
+      type(mesh_geometry), intent(in) :: mesh
+      type(phys_address), intent(in) :: iphys
 !
-      integer(kind = kint) :: iflag
-!
-!
-      iflag = lead_field_data_flag(i_step, MHD_step,                    &
-     &                             SGS_par1%sgs_step)
-      if(iflag .ne. 0) return
+      type(phys_data), intent(inout) :: nod_fld
+!*
 !*
 !*  -----------  data transfer to FEM array --------------
 !*
-      call copy_forces_to_snapshot_rtp                                  &
-     &   (sph1%sph_params%m_folding, sph1%sph_rtp, trns_WK1%trns_MHD,   &
-     &    mesh1%node, iphys, nod_fld1)
-      call copy_snap_vec_fld_from_trans                                 &
-     &   (sph1%sph_params%m_folding, sph1%sph_rtp, trns_WK1%trns_snap,  &
-     &    mesh1%node, iphys, nod_fld1)
-      call copy_snap_vec_force_from_trans                               &
-     &   (sph1%sph_params%m_folding, sph1%sph_rtp, trns_WK1%trns_snap,  &
-     &    mesh1%node, iphys, nod_fld1)
+      call SPH_to_FEM_bridge_MHD(sph_params, sph_rtp,                   &
+     &   WK, mesh, iphys, nod_fld)
 !
 ! ----  Take zonal mean
 !
       if (iflag_debug.eq.1) write(*,*) 'zonal_mean_all_rtp_field'
-      call zonal_mean_all_rtp_field(sph1%sph_rtp, mesh1%node, nod_fld1)
+      call zonal_mean_all_rtp_field(sph_rtp, mesh%node, nod_fld)
 !
       end subroutine SPH_to_FEM_bridge_zm_snap
 !

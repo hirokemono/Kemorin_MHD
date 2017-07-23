@@ -21,6 +21,7 @@
       use m_MHD_step_parameter
       use m_SGS_control_parameter
       use m_work_time
+      use m_spheric_parameter
       use m_mesh_data
       use m_node_phys_data
       use m_sph_trans_arrays_MHD
@@ -44,7 +45,6 @@
 !
       use t_ctl_data_sph_MHD_psf
       use m_ctl_data_sph_MHD
-      use m_spheric_parameter
       use m_sph_spectr_data
       use m_rms_4_sph_spectr
       use m_cal_max_indices
@@ -134,7 +134,8 @@
         if(iflag .eq. 0) then
           if(iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_zm_snap'
           call SPH_to_FEM_bridge_zm_snap                                &
-     &       (MHD_step1%time_d%i_time_step, MHD_step1)
+     &       (sph1%sph_params, sph1%sph_rtp, trns_WK1,                  &
+     &        mesh1, iphys, nod_fld1)
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'

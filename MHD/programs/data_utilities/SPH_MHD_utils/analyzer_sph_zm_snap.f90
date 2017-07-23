@@ -20,6 +20,7 @@
       use m_machine_parameter
       use m_MHD_step_parameter
       use m_SGS_control_parameter
+      use m_spheric_parameter
       use m_work_time
       use m_mesh_data
       use m_node_phys_data
@@ -44,7 +45,6 @@
 !
       use t_ctl_data_sph_MHD_psf
       use m_ctl_data_sph_MHD
-      use m_spheric_parameter
       use m_sph_spectr_data
       use m_rms_4_sph_spectr
       use m_cal_max_indices
@@ -100,6 +100,7 @@
       subroutine evolution_sph_zm_snap
 !
       use SPH_analyzer_zm_snap
+      use FEM_analyzer_sph_SGS_MHD
       use output_viz_file_control
 !
       integer(kind = kint) :: visval
@@ -132,14 +133,16 @@
         iflag = lead_field_data_flag(MHD_step1%time_d%i_time_step,      &
      &                               MHD_step1, SGS_par1%sgs_step)
         if(iflag .eq. 0) then
-          if(iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_zm_snap'
-          call SPH_to_FEM_bridge_zm_snap                                &
-     &       (MHD_step1%time_d%i_time_step, MHD_step1)
+          if(iflag_debug .eq. 1) write(*,*)                             &
+     &         'SPH_to_FEM_bridge_zm_SGS_snap'
+          call SPH_to_FEM_bridge_zm_SGS_snap                            &
+     &       (SGS_par1, sph1%sph_params, sph1%sph_rtp, trns_WK1,        &
+     &        mesh1, iphys, nod_fld1)
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
         call FEM_analyze_sph_MHD(MHD_files1%ucd_file_IO,                &
-     &      SGS_par1, mesh1,  nod_fld1, MHD_step1, visval)
+     &      SGS_par1, mesh1, nod_fld1, MHD_step1, visval)
 !
         call end_eleps_time(4)
 !
