@@ -143,9 +143,9 @@
      &     (sph1%sph_params%m_folding, sph1%sph_rtp, trns_WK1%trns_MHD, &
      &      mesh1%node, nod_fld1)
 !
-        if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_SGS_MHD'
-        call FEM_analyze_sph_SGS_MHD(MHD_files1%ucd_file_IO,            &
-     &      mesh1, nod_fld1, MHD_step1, visval)
+        if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
+        call FEM_analyze_sph_MHD(MHD_files1%ucd_file_IO,                &
+     &      SGS_par1, mesh1, nod_fld1, MHD_step1, visval)
 !
         call end_eleps_time(4)
 !

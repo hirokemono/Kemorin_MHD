@@ -1,5 +1,5 @@
-!>@file   analyzer_noviz_sph_zm_snap.f90
-!!@brief  module analyzer_noviz_sph_zm_snap
+!>@file   analyzer_sph_zm_snap_w_psf.f90
+!!@brief  module analyzer_sph_zm_snap_w_psf
 !!
 !!@author H. Matsui
 !!@date   Programmed  H. Matsui in Apr., 2010
@@ -11,7 +11,7 @@
 !!      subroutine evolution_voviz_sph_zm_snap
 !!@endverbatim
 !
-      module analyzer_noviz_sph_zm_snap
+      module analyzer_sph_zm_snap_w_psf
 !
       use m_precision
       use calypso_mpi
@@ -125,7 +125,7 @@
         call start_eleps_time(4)
 !
         iflag = lead_field_data_flag(MHD_step1%time_d%i_time_step,      &
-     &                               MHD_step1)
+     &                               MHD_step1, SGS_par1%sgs_step)
         if(iflag .eq. 0) then
           if(iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_zm_snap'
           call SPH_to_FEM_bridge_zm_snap                                &
@@ -134,7 +134,7 @@
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
         call FEM_analyze_sph_MHD(MHD_files1%ucd_file_IO,                &
-     &      mesh1, nod_fld1, MHD_step1, visval)
+     &      SGS_par1, mesh1, nod_fld1, MHD_step1, visval)
 !
         call end_eleps_time(4)
         call end_eleps_time(1)
@@ -167,4 +167,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-      end module analyzer_noviz_sph_zm_snap
+      end module analyzer_sph_zm_snap_w_psf

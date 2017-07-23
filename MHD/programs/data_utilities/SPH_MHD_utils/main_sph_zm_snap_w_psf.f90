@@ -15,7 +15,7 @@
       use m_precision
 !
       use calypso_mpi
-      use analyzer_noviz_sph_zm_snap
+      use analyzer_sph_zm_snap_w_psf
 !
       implicit none
 !
