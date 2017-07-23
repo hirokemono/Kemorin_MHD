@@ -1,1 +1,0 @@
-/Users/matsui/git/Kemorin_MHD/MHD/Fortran_src/PARALLEL_src/COMM_src/parallel_ucd_IO_select.F90

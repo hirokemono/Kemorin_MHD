@@ -9,6 +9,7 @@ LIB_PARA_FILE = libkemo_parallel.a
 
 SUBDIRS = \
 COMM_src             \
+MPI_IO               \
 FEM_base_integration \
 ORDERING_4_DJDS      \
 INTERPOLATE_PARA     \

@@ -6,6 +6,8 @@
 !
 !!      integer(kind = kint) function lead_field_data_flag              &
 !!     &                   (i_step, MHD_step, sgs_step)
+!!      integer(kind = kint) function lead_field_data_w_SGS_flag        &
+!!     &                   (i_step, MHD_step, sgs_step)
 !!        type(MHD_step_param), intent(in) :: MHD_step
 !!        type(IO_step_param), intent(in) :: sgs_step
 !
@@ -59,6 +61,26 @@
       end if
 !
       end function lead_field_data_flag
+!
+!-----------------------------------------------------------------------
+!
+      integer(kind = kint) function lead_field_data_w_SGS_flag          &
+     &                   (i_step, MHD_step, sgs_step)
+!
+      integer(kind = kint), intent(in) :: i_step
+      type(MHD_step_param), intent(in) :: MHD_step
+      type(IO_step_param), intent(in) :: sgs_step
+!
+      integer (kind =kint) :: i_coef
+!
+!
+      i_coef = output_IO_flag(i_step, sgs_step)
+      lead_field_data_w_SGS_flag                                        &
+     &      = lead_field_data_flag(i_step, MHD_step, sgs_step) * i_coef
+!
+      if (iflag_debug .eq. 1)  write(*,*) 'i_coef: ', i_coef
+!
+      end function lead_field_data_w_SGS_flag
 !
 !-----------------------------------------------------------------------
 !

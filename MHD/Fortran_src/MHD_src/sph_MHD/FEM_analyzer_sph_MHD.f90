@@ -139,7 +139,6 @@
      &         (ucd_param, SGS_par, mesh, nod_fld, MHD_step, visval)
 !
       use t_SGS_control_parameter
-      use t_MHD_step_parameter
       use nod_phys_send_recv
       use output_viz_file_control
 !

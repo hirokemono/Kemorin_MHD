@@ -107,6 +107,7 @@
       use m_spheric_parameter
 !
       use FEM_analyzer_sph_MHD
+      use FEM_analyzer_sph_SGS_MHD
       use output_viz_file_control
 !
       integer(kind = kint) :: visval, iflag_finish
@@ -138,15 +139,15 @@
         iflag = lead_field_data_flag(MHD_step1%time_d%i_time_step,      &
      &                               MHD_step1, SGS_par1%sgs_step)
         if(iflag .eq. 0) then
-          if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_MHD'
-          call SPH_to_FEM_bridge_MHD                                    &
-     &       (sph1%sph_params, sph1%sph_rtp, trns_WK1,                  &
+          if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_SGS_MHD'
+          call SPH_to_FEM_bridge_SGS_MHD                                &
+     &       (SGS_par1, sph1%sph_params, sph1%sph_rtp, trns_WK1,        &
      &        mesh1, iphys, nod_fld1)
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
-        call FEM_analyze_sph_MHD(MHD_files1%ucd_file_IO,                &
-     &      SGS_par1, mesh1, nod_fld1, MHD_step1, visval)
+        call FEM_analyze_sph_MHD(MHD_files1%ucd_file_IO, SGS_par1,      &
+     &      mesh1, nod_fld1, MHD_step1, visval)
 !
         call end_eleps_time(4)
 !
