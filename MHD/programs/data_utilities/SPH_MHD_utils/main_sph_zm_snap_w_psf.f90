@@ -22,8 +22,8 @@
 !
       call calypso_MPI_init
 !
-      call initialize_noviz_sph_zm_snap
-      call evolution_voviz_sph_zm_snap
+      call initialize_sph_zm_snap_w_psf
+      call evolution_sph_zm_snap_w_psf
 !
       call  calypso_MPI_finalize
 !

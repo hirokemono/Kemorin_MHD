@@ -12,7 +12,7 @@ TARGET_SPH_SNAP_BADBOY =  sph_snapshot_badboy
 TARGET_SPH_SP_SNAP =    sph_special_snap
 TARGET_MODIFY_SPH_INI = sph_modify_restart
 
-TARGET_SPH_ZM_PSF_SNAP =  sph_zm_snapshot_noviz
+TARGET_SPH_ZM_PSF_SNAP =  sph_zm_snapshot_psf
 TARGET_SPH_PSF_SNAP =     sph_snapshot_psf
 
 TARGET_SPH_SNAP_NOVIZ =    sph_snapshot_noviz
