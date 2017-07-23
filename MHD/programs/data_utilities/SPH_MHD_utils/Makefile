@@ -70,6 +70,12 @@ analyzer_sph_zm_snap.o \
 SPH_analyzer_snap.o \
 SPH_analyzer_zm_snap.o
 
+MOD_SPH_ZM_PSF_SNAP_MAIN =  \
+main_sph_zm_snap_w_psf.o \
+analyzer_sph_zm_snap_w_psf.o \
+SPH_analyzer_snap.o \
+SPH_analyzer_zm_snap.o
+
 MOD_SPH_ZRMS_SNAP_MAIN =  \
 main_sph_zonal_rms_snap.o \
 analyzer_sph_zonal_rms_snap.o \
@@ -93,12 +99,6 @@ MOD_SPH_SNAP_NOVIZ_MAIN =  \
 main_sph_snapshot_noviz.o \
 analyzer_noviz_sph_snap.o \
 SPH_analyzer_snap.o
-
-MOD_SPH_ZM_PSF_SNAP_MAIN =  \
-main_sph_zm_snap_w_psf.o \
-analyzer_sph_zm_snap_w_psf.o \
-SPH_analyzer_snap.o \
-SPH_analyzer_zm_snap.o
 
 MOD_SPH_D_BENCH_MAIN = \
 main_sph_dynamobench.o \
