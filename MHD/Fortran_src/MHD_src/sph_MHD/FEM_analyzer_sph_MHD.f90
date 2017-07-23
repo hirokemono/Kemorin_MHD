@@ -187,7 +187,6 @@
       use t_phys_data
       use t_phys_address
       use t_sph_trans_arrays_MHD
-      use m_SGS_control_parameter
 !
       use copy_snap_4_sph_trans
       use copy_MHD_4_sph_trans
@@ -217,40 +216,6 @@
       call copy_snap_vec_force_from_trans                               &
      &   (sph_params%m_folding, sph_rtp, WK%trns_snap,                  &
      &    mesh%node, iphys, nod_fld)
-!
-      if(SGS_par1%model_p%iflag_SGS .eq. 0) return
-!
-      if (iflag_debug.gt.0) write(*,*) 'copy_filtered_field_from_trans'
-      call copy_filtered_field_from_trans                               &
-     &   (sph_params%m_folding, sph_rtp, WK%trns_MHD,                   &
-     &    mesh%node, iphys, nod_fld)
-      if (iflag_debug.gt.0) write(*,*) 'copy_wide_SGS_field_from_trans'
-      call copy_wide_SGS_field_from_trans                               &
-     &   (sph_params%m_folding, sph_rtp, WK%trns_SGS,                   &
-     &    mesh%node, iphys, nod_fld)
-      if (iflag_debug.gt.0) write(*,*) 'copy_SGS_force_from_trans'
-!      call copy_SGS_force_from_trans                                   &
-!     &   (sph_params%m_folding, sph_rtp, WK%trns_SGS,                  &
-!     &    mesh%node, iphys, nod_fld)
-      call copy_SGS_snap_fld_from_trans                                 &
-     &   (sph_params%m_folding, sph_rtp, WK%trns_snap,                  &
-     &    mesh%node, iphys, nod_fld)
-      call copy_SGS_diff_field_from_trans                               &
-     &   (sph_params%m_folding, sph_rtp, WK%trns_snap,                  &
-     &    mesh%node, iphys, nod_fld)
-!
-!
-!!!!!   These routines are for debugging. Be careful!
-!
-!  Check nonlinear terms by filtered field as SGS term list
-!      call copy_filtered_forces_to_snap                                &
-!     &   (sph_params%m_folding, sph_rtp, WK%trns_MHD,                  &
-!     &    mesh%node, iphys, nod_fld)
-!
-!  Check filtered nonlinear terms by using SGS term list
-!      call copy_SGS_field_from_trans                                   &
-!     &   (sph_params%m_folding, sph_rtp, WK%trns_SGS,                  &
-!     &    mesh%node, iphys, nod_fld)
 !
       end subroutine SPH_to_FEM_bridge_MHD
 !
