@@ -100,6 +100,7 @@
       subroutine evolution_sph_zonal_rms_snap
 !
       use SPH_analyzer_zrms_snap
+      use FEM_analyzer_sph_SGS_MHD
       use output_viz_file_control
 !
       integer(kind = kint) :: visval
