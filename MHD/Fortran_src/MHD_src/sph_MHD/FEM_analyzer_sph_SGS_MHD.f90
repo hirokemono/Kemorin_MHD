@@ -51,48 +51,6 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_sph_SGS_MHD                                &
-     &         (ucd_param, SGS_par, mesh, nod_fld, MHD_step, visval)
-!
-      use nod_phys_send_recv
-      use output_viz_file_control
-!
-      type(field_IO_params), intent(in) :: ucd_param
-      type(SGS_paremeters), intent(in) :: SGS_par
-      type(mesh_geometry), intent(in) :: mesh
-      type(phys_data), intent(inout) :: nod_fld
-!
-      integer (kind =kint), intent(inout) :: visval
-      type(MHD_step_param), intent(inout) :: MHD_step
-!
-      integer(kind = kint) :: iflag
-!
-!
-!*  ----------   Count steps for visualization
-!*
-!*
-      visval = 1
-      visval = viz_file_step_4_fix(MHD_step%time_d%i_time_step,         &
-     &                             MHD_step%viz_step)
-      iflag = lead_field_data_flag(MHD_step%time_d%i_time_step,         &
-     &                             MHD_step, SGS_par%sgs_step)
-      if(iflag .ne. 0) return
-!
-!*  ----------- Data communication  --------------
-!
-      if (iflag_debug.gt.0) write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(mesh%nod_comm, nod_fld)
-!
-!*  -----------  Output volume data --------------
-!*
-      call s_output_ucd_file_control                                    &
-     &   (ucd_param, MHD_step%time_d%i_time_step,                       &
-     &    MHD_step%time_d, MHD_step%ucd_step, fem_ucd1)
-!
-      end subroutine FEM_analyze_sph_SGS_MHD
-!
-!-----------------------------------------------------------------------
-!
       subroutine SPH_to_FEM_bridge_SGS_MHD                              &
      &        (SGS_par, sph_params, sph_rtp, WK, mesh, iphys, nod_fld)
 !

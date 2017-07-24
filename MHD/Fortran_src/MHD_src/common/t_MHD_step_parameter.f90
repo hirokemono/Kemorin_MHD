@@ -41,6 +41,8 @@
         type(IO_step_param) :: point_step
 !>        Increment for boundary condition file
         type(IO_step_param) :: boundary_step
+!>        Increment for model coefficient file
+        type(IO_step_param) :: sgs_IO_step
 !
 !>        Increment for visualizations
         type(VIZ_step_params) :: viz_step

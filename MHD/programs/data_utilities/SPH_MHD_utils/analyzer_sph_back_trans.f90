@@ -138,7 +138,7 @@
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
         call FEM_analyze_sph_MHD(MHD_files1%ucd_file_IO,                &
-     &      SGS_par1, mesh1, nod_fld1, MHD_step1, visval)
+     &      mesh1, nod_fld1, MHD_step1, visval)
 !
         call end_eleps_time(4)
 !

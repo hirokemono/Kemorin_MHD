@@ -128,8 +128,7 @@
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'lead_fields_by_FEM'
-      iflag = lead_field_data_flag(flex_p1%istep_max_dt,                &
-     &                             MHD_step, SGS_par1%sgs_step)
+      iflag = lead_field_data_flag(flex_p1%istep_max_dt, MHD_step)
       if(iflag .eq. 0) then
         call lead_fields_by_FEM                                         &
      &     (MHD_step%time_d, FEM_prm1, SGS_par1, mesh1, group1,         &
@@ -248,8 +247,7 @@
 !     ========  Data output
 !
       if(flex_p1%istep_flex_to_max .eq. 0) then
-        iflag = lead_field_data_flag(flex_p1%istep_max_dt,              &
-     &                               MHD_step, SGS_par1%sgs_step)
+        iflag = lead_field_data_flag(flex_p1%istep_max_dt, MHD_step)
         if(iflag .eq. 0) then
           call lead_fields_by_FEM                                       &
      &       (MHD_step%time_d, FEM_prm1, SGS_par1, mesh1, group1,       &
@@ -283,8 +281,7 @@
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 's_output_sgs_model_coefs'
-        call s_output_sgs_model_coefs                                   &
-     &     (flex_p1%istep_max_dt, MHD_step%time_d,                      &
+        call s_output_sgs_model_coefs(flex_p1%istep_max_dt, MHD_step,   &
      &      SGS_par1, MHD_prop1%cd_prop, wk_sgs1, wk_diff1)
 !
 !     ---- Output voulme field data

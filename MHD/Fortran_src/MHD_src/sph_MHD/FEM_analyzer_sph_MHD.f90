@@ -136,14 +136,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_analyze_sph_MHD                                    &
-     &         (ucd_param, SGS_par, mesh, nod_fld, MHD_step, visval)
+     &         (ucd_param, mesh, nod_fld, MHD_step, visval)
 !
-      use t_SGS_control_parameter
       use nod_phys_send_recv
       use output_viz_file_control
 !
       type(field_IO_params), intent(in) :: ucd_param
-      type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -160,7 +158,7 @@
       visval = viz_file_step_4_fix(MHD_step%time_d%i_time_step,         &
      &                             MHD_step%viz_step)
       iflag = lead_field_data_flag(MHD_step%time_d%i_time_step,         &
-     &                             MHD_step, SGS_par%sgs_step)
+     &                             MHD_step)
       if(iflag .ne. 0) return
 !
 !*  ----------- Data communication  --------------

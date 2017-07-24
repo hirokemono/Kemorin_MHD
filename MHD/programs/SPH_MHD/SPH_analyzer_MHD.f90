@@ -217,8 +217,7 @@
       call trans_per_temp_to_temp_sph(ref_temp1, ref_comp1, MHD_prop1,  &
      &    sph1%sph_rj, ipol, idpdr, rj_fld1)
 !*
-      iflag = lead_field_data_flag(i_step, MHD_step,                    &
-     &                             SGS_par1%sgs_step)
+      iflag = lead_field_data_flag(i_step, MHD_step)
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
         call s_lead_fields_4_sph_mhd(SGS_par1%model_p, sph1,            &

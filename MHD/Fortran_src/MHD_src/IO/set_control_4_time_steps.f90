@@ -167,7 +167,7 @@
 !
       subroutine set_fixed_time_step_controls(SGS_par, tctl, MHD_step)
 !
-      type(SGS_paremeters), intent(inout) :: SGS_par
+      type(SGS_paremeters), intent(in) :: SGS_par
       type(time_data_control), intent(inout) :: tctl
       type(MHD_step_param), intent(inout) :: MHD_step
 !
@@ -186,9 +186,9 @@
      &    MHD_step%rms_step)
 !
       if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
-        call set_output_step_4_fixed_step(ione, MHD_step%init_d%dt,     &
+        call set_output_step_4_fixed_step(izero, MHD_step%init_d%dt,    &
      &      tctl%i_step_sgs_coefs_ctl, tctl%delta_t_sgs_coefs_ctl,      &
-     &      SGS_par%sgs_step)
+     &      MHD_step%sgs_IO_step)
       end if
 !
       call set_output_step_4_fixed_step(izero, MHD_step%init_d%dt,      &
@@ -213,7 +213,7 @@
 !
 !
       call set_flex_time_step_params                                    &
-     &   (flex_p, SGS_par, tctl, MHD_step%init_d, MHD_step%finish_d,    &
+     &   (flex_p, tctl, MHD_step%init_d, MHD_step%finish_d,             &
      &    MHD_step%rst_step, MHD_step%ucd_step)
 !
       call set_output_step_4_flex_step(ione, flex_p%dt_max,             &
@@ -221,9 +221,9 @@
      &    MHD_step%rms_step)
 !
       if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
-        call set_output_step_4_flex_step(ione, flex_p%dt_max,           &
+        call set_output_step_4_flex_step(izero, flex_p%dt_max,          &
      &      tctl%i_step_sgs_coefs_ctl, tctl%delta_t_sgs_coefs_ctl,      &
-     &      SGS_par%sgs_step)
+     &      MHD_step%sgs_IO_step)
       end if
 !
       call set_output_step_4_flex_step(izero, flex_p%dt_max,            &
@@ -241,13 +241,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_flex_time_step_params(flex_p, SGS_par, tctl,       &
+      subroutine set_flex_time_step_params(flex_p, tctl,                &
      &          init_d, finish_d, rst_step, ucd_step)
 !
       type(time_data), intent(inout) :: init_d
       type(finish_data), intent(inout) :: finish_d
 !
-      type(SGS_paremeters), intent(inout) :: SGS_par
       type(flexible_stepping_parameter), intent(inout) :: flex_p
       type(time_data_control), intent(inout) :: tctl
       type(IO_step_param), intent(inout) :: rst_step, ucd_step

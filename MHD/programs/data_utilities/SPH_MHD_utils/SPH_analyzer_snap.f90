@@ -147,10 +147,10 @@
 !
       call read_alloc_sph_rst_SGS_snap                                  &
      &   (i_step, MHD_files%org_rj_file_IO, MHD_files, sph1%sph_rj,     &
-     &    ipol, rj_fld1, MHD_step%rst_step, MHD_step1%init_d,           &
+     &    ipol, rj_fld1, MHD_step%rst_step, MHD_step%init_d,            &
      &    SGS_par1%i_step_sgs_coefs, SGS_par1%model_p, dynamic_SPH1)
 
-      call copy_time_data(MHD_step1%init_d, MHD_step1%time_d)
+      call copy_time_data(MHD_step%init_d, MHD_step%time_d)
 !
       if (iflag_debug.eq.1) write(*,*)' sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph(ref_temp1, ref_comp1, MHD_prop1,   &
@@ -178,8 +178,7 @@
       call trans_per_temp_to_temp_sph(ref_temp1, ref_comp1, MHD_prop1,  &
      &    sph1%sph_rj, ipol, idpdr, rj_fld1)
 !*
-      iflag = lead_field_data_flag(i_step, MHD_step,                    &
-     &                             SGS_par1%sgs_step)
+      iflag = lead_field_data_flag(i_step, MHD_step)
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
         call s_lead_fields_4_sph_mhd(SGS_par1%model_p, sph1,            &
@@ -195,7 +194,7 @@
       if(output_IO_flag(i_step, MHD_step%rms_step) .eq. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'
         call output_rms_sph_mhd_control                                 &
-     &     (MHD_step1%time_d, sph1%sph_params, sph1%sph_rj,             &
+     &     (MHD_step%time_d, sph1%sph_params, sph1%sph_rj,              &
      &      sph_MHD_bc1%sph_bc_U, trans_p1%leg, ipol, rj_fld1,          &
      &       pwr1, WK_pwr)
       end if
@@ -204,7 +203,7 @@
 !*  -----------  Output spectr data --------------
 !*
       if(iflag_debug.gt.0)  write(*,*) 'output_spectr_4_snap'
-      call output_spectr_4_snap(i_step, MHD_step1%time_d,               &
+      call output_spectr_4_snap(i_step, MHD_step%time_d,                &
      &    MHD_files%sph_file_IO, rj_fld1, MHD_step%ucd_step)
       call end_eleps_time(4)
 !

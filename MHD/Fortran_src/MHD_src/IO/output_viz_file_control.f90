@@ -5,11 +5,8 @@
 !     modified by H. Matsui on Aug., 2007
 !
 !!      integer(kind = kint) function lead_field_data_flag              &
-!!     &                   (i_step, MHD_step, sgs_step)
-!!      integer(kind = kint) function lead_field_data_w_SGS_flag        &
-!!     &                   (i_step, MHD_step, sgs_step)
+!!     &                   (i_step, MHD_step)
 !!        type(MHD_step_param), intent(in) :: MHD_step
-!!        type(IO_step_param), intent(in) :: sgs_step
 !
       module output_viz_file_control
 !
@@ -29,11 +26,10 @@
 !-----------------------------------------------------------------------
 !
       integer(kind = kint) function lead_field_data_flag                &
-     &                   (i_step, MHD_step, sgs_step)
+     &                   (i_step, MHD_step)
 !
       integer(kind = kint), intent(in) :: i_step
       type(MHD_step_param), intent(in) :: MHD_step
-      type(IO_step_param), intent(in) :: sgs_step
 !
       integer (kind =kint) :: i_monitor, i_bulk, i_udt, i_coef, irst
 !
@@ -47,40 +43,20 @@
       i_bulk =    output_IO_flag(i_step, MHD_step%rms_step)
       i_monitor = output_IO_flag(i_step, MHD_step%point_step)
 !
-      i_coef =    output_IO_flag(i_step, sgs_step)
+      i_coef =    output_IO_flag(i_step, MHD_step%sgs_IO_step)
 !
       lead_field_data_flag = lead_field_data_flag                       &
      &                     * irst * i_udt * i_monitor * i_bulk * i_coef
 !
       if (iflag_debug.eq.1) then
-        write(*,*) 'irst: ', i_udt
-        write(*,*) 'i_udt: ', i_udt
-        write(*,*) 'i_monitor: ', i_monitor
-        write(*,*) 'i_bulk: ', i_bulk
-        write(*,*) 'i_coef: ', i_coef
+        write(*,*) 'irst: ',         i_udt
+        write(*,*) 'i_udt: ',        i_udt
+        write(*,*) 'i_monitor: ',    i_monitor
+        write(*,*) 'i_bulk: ',       i_bulk
+        write(*,*) 'i_model_coef: ', i_coef
       end if
 !
       end function lead_field_data_flag
-!
-!-----------------------------------------------------------------------
-!
-      integer(kind = kint) function lead_field_data_w_SGS_flag          &
-     &                   (i_step, MHD_step, sgs_step)
-!
-      integer(kind = kint), intent(in) :: i_step
-      type(MHD_step_param), intent(in) :: MHD_step
-      type(IO_step_param), intent(in) :: sgs_step
-!
-      integer (kind =kint) :: i_coef
-!
-!
-      i_coef = output_IO_flag(i_step, sgs_step)
-      lead_field_data_w_SGS_flag                                        &
-     &      = lead_field_data_flag(i_step, MHD_step, sgs_step) * i_coef
-!
-      if (iflag_debug .eq. 1)  write(*,*) 'i_coef: ', i_coef
-!
-      end function lead_field_data_w_SGS_flag
 !
 !-----------------------------------------------------------------------
 !
