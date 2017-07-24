@@ -20,7 +20,6 @@
       use m_precision
       use m_constants
       use m_MHD_step_parameter
-      use m_SGS_control_parameter
       use m_physical_property
       use m_radial_matrices_sph
       use t_phys_address
