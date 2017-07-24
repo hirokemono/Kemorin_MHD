@@ -30,6 +30,13 @@
 !!        type(time_data), intent(inout) :: time_d
 !!        type(SGS_model_control_params), intent(inout) :: SGS_param
 !!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
+!!
+!!      subroutine sst_initial_Csim_control                             &
+!!     &         (MHD_files, MHD_step, SGS_par, dynamic_SPH)
+!!        type(MHD_file_IO_params), intent(in) :: MHD_files
+!!        type(SGS_paremeters), intent(inout) :: SGS_par
+!!        type(MHD_step_param), intent(inout) :: MHD_step
+!!        type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !!@endverbatim
 !!
 !!@n @param i_step  time step
@@ -133,5 +140,47 @@
       end subroutine read_alloc_sph_rst_SGS_snap
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine sst_initial_Csim_control                               &
+     &         (MHD_files, MHD_step, SGS_par, dynamic_SPH)
+!
+      use m_machine_parameter
+      use m_initial_field_control
+!
+      use t_MHD_step_parameter
+      use t_spheric_parameter
+      use t_SGS_control_parameter
+      use t_sph_filtering
+!
+      use set_sph_restart_IO
+      use sph_mhd_rst_IO_control
+      use sgs_ini_model_coefs_IO
+!
+      type(MHD_file_IO_params), intent(in) :: MHD_files
+!
+      type(SGS_paremeters), intent(inout) :: SGS_par
+      type(MHD_step_param), intent(inout) :: MHD_step
+      type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
+!
+!
+      if(SGS_par%model_p%iflag_dynamic .eq. 0) return
+      if (iflag_restart .eq. i_rst_by_file) then
+        call read_alloc_SPH_Csim_file(MHD_files%Csim_file_IO,           &
+     &      MHD_step%init_d, MHD_step%rst_step,                         &
+     &      SGS_par%i_step_sgs_coefs, SGS_par%model_p,                  &
+     &      dynamic_SPH%wk_sgs)
+      else
+        SGS_par%model_p%iflag_rst_sgs_coef_code = 0
+        call write_SPH_Csim_file                                        &
+     &     (SGS_par%i_step_sgs_coefs, MHD_files%Csim_file_IO,           &
+     &      MHD_step%rst_step, MHD_step%init_d, dynamic_SPH)
+      end if
+      if(iflag_debug .gt. 0) write(*,*) 'iflag_rst_sgs_coef_code',      &
+     &                        SGS_par%model_p%iflag_rst_sgs_coef_code
+!
+      end subroutine sst_initial_Csim_control
+!
+!-----------------------------------------------------------------------
 !
       end module sph_SGS_MHD_rst_IO_control

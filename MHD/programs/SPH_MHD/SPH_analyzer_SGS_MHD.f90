@@ -61,12 +61,13 @@
       use init_radial_infos_sph_mhd
       use const_radial_mat_4_sph
       use sph_mhd_rms_IO
+      use sph_SGS_MHD_rst_IO_control
+      use sgs_ini_model_coefs_IO
       use cal_sol_sph_MHD_crank
       use cal_SGS_nonlinear
       use sph_filtering
       use check_dependency_for_MHD
       use input_control_sph_MHD
-      use sgs_ini_model_coefs_IO
 !
       use m_work_time
 !
@@ -111,8 +112,9 @@
       call sph_initial_data_control                                     &
      &   (MHD_files, ref_temp1%t_rj, sph1%sph_params, sph1%sph_rj,      &
      &    MHD_prop1%ref_param_T, sph_MHD_bc1%sph_bc_B,                  &
-     &    ipol, idpdr, itor, rj_fld1, MHD_step,                         &
-     &    SGS_par1, dynamic_SPH1)
+     &    ipol, idpdr, itor, rj_fld1, MHD_step)
+      call sst_initial_Csim_control                                     &
+     &   (MHD_files, MHD_step, SGS_par1, dynamic_SPH1)
       MHD_step%iflag_initial_step = 0
 !
       if(iflag_debug.gt.0) write(*,*)' sync_temp_by_per_temp_sph'

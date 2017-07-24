@@ -55,6 +55,7 @@
 !
       use cal_diff_adv_src_explicit
       use SGS_diff_adv_src_explicit
+      use select_diff_adv_source
 !
       implicit  none
 !
@@ -159,8 +160,6 @@
      &          ipol_advect, ipol_SGS_advect, ipol_source, ipol_pre,    &
      &          coef_src, sph_rj, rj_fld)
 !
-      use select_diff_adv_source
-!
       type(sph_rj_grid), intent(in) :: sph_rj
       integer(kind = kint), intent(in) :: iflag_SGS
       integer(kind = kint), intent(in) :: kr_st, kr_ed
@@ -206,8 +205,6 @@
      &          ipol_SGS_advect, ipol_source, ipol_scalar, ipol_pre,    &
      &          dt, coef_exp, coef_src, sph_rj, rj_fld)
 !
-      use select_diff_adv_source
-!
       type(sph_rj_grid), intent(in) :: sph_rj
       integer(kind = kint), intent(in) :: iflag_SGS
       integer(kind = kint), intent(in) :: ipol_diffuse, ipol_advect
@@ -228,7 +225,7 @@
      &      ipol_scalar, ipol_pre, dt, coef_exp, coef_src,              &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       else
-        call sel_ct_scl_diff_adv_src_adams                              &
+        call sel_ctr_scl_diff_adv_src_adams                             &
      &     (ipol_diffuse, ipol_advect, ipol_source, ipol_scalar,        &
      &      ipol_pre, dt, coef_exp, coef_src, sph_rj, rj_fld)
       end if
@@ -241,8 +238,6 @@
      &         (iflag_SGS, ipol_diffuse, ipol_advect,                   &
      &          ipol_SGS_advect, ipol_source, ipol_scalar,              &
      &          dt, coef_exp, coef_adv, coef_src, sph_rj, rj_fld)
-!
-      use select_diff_adv_source
 !
       type(sph_rj_grid), intent(in) :: sph_rj
       integer(kind = kint), intent(in) :: iflag_SGS

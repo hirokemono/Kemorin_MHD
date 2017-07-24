@@ -9,16 +9,14 @@
 !!@verbatim
 !!      subroutine sph_initial_data_control                             &
 !!     &         (MHD_files, reftemp_rj, sph_params, sph_rj,            &
-!!     &          ref_param_T, sph_bc_B, ipol, idpdr, itor,             &
 !!     &          ref_param_T, sph_bc_B, ipol, idpdr, itor, rj_fld,     &
-!!     &          MHD_step, SGS_par, dynamic_SPH)
+!!     &          MHD_step)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(reference_scalar_param), intent(in) :: ref_param_T
 !!        type(sph_boundary_type), intent(in) :: sph_bc_B
 !!        type(phys_address), intent(in) :: ipol
-!!        type(SGS_paremeters), intent(inout) :: SGS_par
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(phys_data), intent(inout) :: rj_fld
 !!@endverbatim
@@ -55,7 +53,7 @@
       subroutine sph_initial_data_control                               &
      &         (MHD_files, reftemp_rj, sph_params, sph_rj,              &
      &          ref_param_T, sph_bc_B, ipol, idpdr, itor, rj_fld,       &
-     &          MHD_step, SGS_par, dynamic_SPH)
+     &          MHD_step)
 !
       use m_machine_parameter
       use m_initial_field_control
@@ -64,12 +62,10 @@
       use t_reference_scalar_param
       use t_spheric_parameter
       use t_phys_data
-      use t_SGS_control_parameter
       use t_sph_filtering
 !
       use set_sph_restart_IO
       use sph_mhd_rst_IO_control
-      use sgs_ini_model_coefs_IO
       use initial_magne_dynamobench
       use initial_magne_dbench_qvc
 !
@@ -81,10 +77,8 @@
       real(kind=kreal), intent(in) :: reftemp_rj(sph_rj%nidx_rj(1),0:2)
       type(phys_address), intent(in) :: ipol, idpdr, itor
 !
-      type(SGS_paremeters), intent(inout) :: SGS_par
       type(MHD_step_param), intent(inout) :: MHD_step
       type(phys_data), intent(inout) :: rj_fld
-      type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
 !
       integer(kind = kint) :: isig
 !
@@ -189,23 +183,6 @@
         if(iflag_debug .gt. 0) write(*,*) 'output_sph_restart_control'
         call output_sph_restart_control(MHD_files%fst_file_IO,          &
      &      MHD_step%time_d, rj_fld, MHD_step%rst_step)
-      end if
-!
-!
-      if(SGS_par%model_p%iflag_dynamic .gt. 0) then
-        if (iflag_restart .eq. i_rst_by_file) then
-          call read_alloc_SPH_Csim_file(MHD_files%Csim_file_IO,         &
-     &        MHD_step%init_d, MHD_step%rst_step,                       &
-     &        SGS_par%i_step_sgs_coefs, SGS_par%model_p,                &
-     &        dynamic_SPH%wk_sgs)
-        else
-          SGS_par%model_p%iflag_rst_sgs_coef_code = 0
-          call write_SPH_Csim_file                                      &
-     &       (SGS_par%i_step_sgs_coefs, MHD_files%Csim_file_IO,         &
-     &        MHD_step%rst_step, MHD_step%init_d, dynamic_SPH)
-        end if
-        if(iflag_debug .gt. 0) write(*,*) 'iflag_rst_sgs_coef_code',    &
-     &                        SGS_par%model_p%iflag_rst_sgs_coef_code
       end if
 !
       end subroutine sph_initial_data_control

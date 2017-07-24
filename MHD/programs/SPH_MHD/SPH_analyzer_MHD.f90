@@ -111,8 +111,7 @@
       call sph_initial_data_control                                     &
      &   (MHD_files, ref_temp1%t_rj, sph1%sph_params, sph1%sph_rj,      &
      &    MHD_prop1%ref_param_T, sph_MHD_bc1%sph_bc_B,                  &
-     &    ipol, idpdr, itor, rj_fld1, MHD_step,                         &
-     &    SGS_par1, dynamic_SPH1)
+     &    ipol, idpdr, itor, rj_fld1, MHD_step)
       MHD_step%iflag_initial_step = 0
 !
       if(iflag_debug.gt.0) write(*,*)' sync_temp_by_per_temp_sph'

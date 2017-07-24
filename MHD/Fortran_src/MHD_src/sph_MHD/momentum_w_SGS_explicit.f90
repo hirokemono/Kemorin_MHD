@@ -186,7 +186,7 @@
      &         sph_bc_U, sph_bc_T, sph_bc_C, ipol, itor, rj_fld)
 !
       use cal_vorticity_terms_adams
-      use select_diff_adv_source
+      use select_SGS_diff_adv_source
 !
       real(kind = kreal), intent(in) :: dt
 !
