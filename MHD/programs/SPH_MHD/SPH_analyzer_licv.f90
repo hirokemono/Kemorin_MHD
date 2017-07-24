@@ -194,9 +194,9 @@
       iflag = lead_field_data_flag(i_step, MHD_step)
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
-        call s_lead_fields_4_sph_mhd(SGS_par1%model_p, sph1,            &
-     &      comms_sph1, r_2nd, MHD_prop1, sph_MHD_bc1, trans_p1,        &
-     &      ipol, sph_MHD_mat1, trns_WK1, dynamic_SPH1, rj_fld1)
+        call s_lead_fields_4_sph_mhd                                    &
+     &     (sph1, comms_sph1, r_2nd, MHD_prop1, sph_MHD_bc1, trans_p1,  &
+     &      ipol, sph_MHD_mat1, trns_WK1, rj_fld1)
       end if
       call end_eleps_time(9)
 !

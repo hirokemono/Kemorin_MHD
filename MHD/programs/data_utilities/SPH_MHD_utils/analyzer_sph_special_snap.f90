@@ -321,7 +321,7 @@
       use m_boundary_data_sph_MHD
       use m_schmidt_poly_on_rtm
       use output_viz_file_control
-      use lead_fields_4_sph_mhd
+      use lead_fields_SPH_SGS_MHD
 !
       use cal_zonal_mean_sph_spectr
       use sph_transforms_4_MHD
@@ -345,7 +345,7 @@
 !
       iflag = lead_field_data_flag(i_step, MHD_step)
       if(iflag .eq. 0) then
-        call s_lead_fields_4_sph_mhd(SGS_par1%model_p, sph,             &
+        call lead_fields_4_SPH_SGS_MHD(SGS_par1%model_p, sph,           &
      &      comms_sph, r_2nd, MHD_prop1, sph_MHD_bc1, trans_p1,         &
      &      ipol, sph_MHD_mat, trns_WK, dynamic_SPH, rj_fld)
       end if

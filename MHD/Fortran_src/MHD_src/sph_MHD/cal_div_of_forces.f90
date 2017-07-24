@@ -8,6 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine sum_div_of_forces(fl_prop, ipol, rj_fld)
+!!      subroutine sum_div_of_SGS_forces(fl_prop, ipol, rj_fld)
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(phys_address), intent(in) :: ipol
 !!        type(phys_data), intent(inout) :: rj_fld
@@ -23,6 +24,7 @@
       private :: set_DMHD_terms_to_div_force
       private :: set_MHD_terms_to_div_force, set_div_cv_terms_to_force
       private :: add_term_to_div_force, set_div_advection_to_force
+      private :: set_SGS_forces_to_div_force
 !
 ! ----------------------------------------------------------------------
 !
@@ -104,6 +106,38 @@
 !$omp end parallel
 !
       end subroutine sum_div_of_forces
+!
+! ----------------------------------------------------------------------
+!
+      subroutine sum_div_of_SGS_forces(fl_prop, ipol, rj_fld)
+!
+      use t_physical_property
+      use t_phys_data
+!
+      type(fluid_property), intent(in) :: fl_prop
+      type(phys_address), intent(in) :: ipol
+      type(phys_data), intent(inout) :: rj_fld
+!
+!
+!$omp parallel
+      if(ipol%i_SGS_rot_inertia  .ne. 0                                 &
+     &  .and.  ipol%i_SGS_rot_Lorentz .ne. 0) then
+        call set_SGS_forces_to_div_force                                &
+     &     (ipol, rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+      else
+!
+        if(fl_prop%iflag_4_filter_gravity .ne. id_turn_OFF) then
+          call add_term_to_div_force(ipol, ipol%i_div_inertia,          &
+     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+        end if
+        if(ipol%i_SGS_rot_inertia .ne. izero) then
+          call add_term_to_div_force(ipol, ipol%i_div_Lorentz,          &
+     &        rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
+        end if
+      end if
+!$omp end parallel
+!
+      end subroutine sum_div_of_SGS_forces
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -243,6 +277,28 @@
 !$omp end do nowait
 !
       end subroutine add_term_to_div_force
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_SGS_forces_to_div_force                            &
+     &         (ipol, nnod_rj, ntot_phys_rj, d_rj)
+!
+      type(phys_address), intent(in) :: ipol
+      integer(kind = kint), intent(in) :: nnod_rj, ntot_phys_rj
+      real (kind=kreal), intent(inout) :: d_rj(nnod_rj,ntot_phys_rj)
+!
+      integer(kind = kint) :: inod
+!
+!
+!$omp do private (inod)
+      do inod = 1, nnod_rj
+        d_rj(inod,ipol%i_press) =  d_rj(inod,ipol%i_press)              &
+     &                           - d_rj(inod,ipol%i_SGS_rot_inertia)    &
+     &                           + d_rj(inod,ipol%i_SGS_rot_Lorentz)
+      end do
+!$omp end do nowait
+!
+      end subroutine set_SGS_forces_to_div_force
 !
 ! ----------------------------------------------------------------------
 !

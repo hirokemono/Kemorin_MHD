@@ -132,7 +132,7 @@
       use cal_nonlinear
       use cal_sol_sph_MHD_crank
       use adjust_reference_fields
-      use lead_fields_4_sph_mhd
+      use lead_fields_SPH_SGS_MHD
       use sph_SGS_MHD_rst_IO_control
       use sph_mhd_rms_IO
       use input_control_sph_MHD
@@ -180,8 +180,8 @@
 !*
       iflag = lead_field_data_flag(i_step, MHD_step)
       if(iflag .eq. 0) then
-        if(iflag_debug.gt.0) write(*,*) 's_lead_fields_4_sph_mhd'
-        call s_lead_fields_4_sph_mhd(SGS_par1%model_p, sph1,            &
+        if(iflag_debug.gt.0) write(*,*) 'lead_fields_4_SPH_SGS_MHD'
+        call lead_fields_4_SPH_SGS_MHD(SGS_par1%model_p, sph1,          &
      &      comms_sph1, r_2nd, MHD_prop1, sph_MHD_bc1, trans_p1,        &
      &      ipol, sph_MHD_mat1, trns_WK1, dynamic_SPH1, rj_fld1)
       end if
