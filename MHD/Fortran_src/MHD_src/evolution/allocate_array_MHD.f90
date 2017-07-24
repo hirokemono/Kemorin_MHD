@@ -60,7 +60,7 @@
 !
       use count_sgs_components
       use node_monitor_IO
-      use check_dependency_for_MHD
+      use check_dependency_SGS_MHD
 !
       type(SGS_paremeters), intent(in) :: SGS_par
       type(mesh_geometry), intent(in) :: mesh
@@ -93,8 +93,8 @@
      &   (MHD_prop%cd_prop, SGS_par%model_p, iphys_elediff)
 !
 !  allocation for field values
-      if (iflag_debug.ge.1)  write(*,*) 'set_FEM_MHD_field_data'
-      call set_FEM_MHD_field_data                                       &
+      if (iflag_debug.ge.1)  write(*,*) 'set_FEM_SGS_MHD_field_data'
+      call set_FEM_SGS_MHD_field_data                                   &
      &   (SGS_par%model_p, SGS_par%commute_p, mesh%node,                &
      &    MHD_prop, iphys, nod_fld)
       if (iflag_debug.ge.1)  write(*,*) 'initialize_ele_field_data'

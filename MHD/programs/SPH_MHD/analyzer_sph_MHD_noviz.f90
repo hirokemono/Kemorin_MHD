@@ -23,6 +23,7 @@
       use m_mesh_data
       use m_sph_trans_arrays_MHD
       use m_MHD_step_parameter
+      use m_SGS_control_parameter
       use m_physical_property
 !
       use FEM_analyzer_sph_MHD
@@ -42,7 +43,6 @@
 !
       use t_ctl_data_sph_MHD_psf
       use m_ctl_data_sph_MHD
-      use m_SGS_control_parameter
       use m_spheric_parameter
       use m_mesh_data
       use m_node_phys_data
@@ -80,7 +80,8 @@
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_SGS_MHD'
-      call SPH_initialize_SGS_MHD(MHD_files1, iphys, MHD_step1)
+      call SPH_initialize_SGS_MHD                                       &
+     &   (MHD_files1, iphys, MHD_step1, SGS_par1, dynamic_SPH1)
 !
       call calypso_MPI_barrier
 !
@@ -118,7 +119,8 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_SGS_MHD'
         call SPH_analyze_SGS_MHD(MHD_step1%time_d%i_time_step,          &
-     &      MHD_files1, iflag_finish, MHD_step1)
+     &      MHD_files1, SGS_par1, iflag_finish, MHD_step1,              &
+     &      dynamic_SPH1)
 !*
 !*  -----------  output field data --------------
 !*

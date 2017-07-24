@@ -110,8 +110,8 @@
 !
 !   Allocate spectr field data
 !
-      call set_sph_MHD_sprctr_data(SGS_par1%model_p, sph1%sph_rj,       &
-     &    MHD_prop1, ipol, idpdr, itor, rj_fld1)
+      call set_sph_MHD_sprctr_data                                      &
+     &   (sph1%sph_rj, MHD_prop1, ipol, idpdr, itor, rj_fld1)
 !
 ! ---------------------------------
 !
