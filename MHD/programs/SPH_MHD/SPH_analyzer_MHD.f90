@@ -134,10 +134,9 @@
 !* obtain nonlinear terms for starting
 !*
       if(iflag_debug .gt. 0) write(*,*) 'first nonlinear'
-      call nonlinear_first(MHD_step%init_d%i_time_step,                 &
-     &    sph1, comms_sph1, omega_sph1, r_2nd,                          &
+      call nonlinear(sph1, comms_sph1, omega_sph1, r_2nd,               &
      &    MHD_prop1, sph_MHD_bc1, trans_p1, ref_temp1, ref_comp1,       &
-     &    ipol, itor, trns_WK1, SGS_par1, dynamic_SPH1, rj_fld1)
+     &    ipol, itor, trns_WK1, rj_fld1)
 !
 !* -----  Open Volume integration data files -----------------
 !*
@@ -203,10 +202,9 @@
 !*  ----------------lead nonlinear term ... ----------
 !*
       call start_eleps_time(8)
-      call nonlinear(i_step, SGS_par1, sph1, comms_sph1, omega_sph1,    &
-     &    r_2nd, MHD_prop1, sph_MHD_bc1, trans_p1,                      &
-     &    ref_temp1, ref_comp1, ipol, itor,                             &
-     &    trns_WK1, dynamic_SPH1, rj_fld1)
+      call nonlinear(sph1, comms_sph1, omega_sph1, r_2nd,               &
+     &    MHD_prop1, sph_MHD_bc1, trans_p1, ref_temp1, ref_comp1,       &
+     &    ipol, itor, trns_WK1, rj_fld1)
       call end_eleps_time(8)
       call end_eleps_time(5)
 !

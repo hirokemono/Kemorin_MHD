@@ -143,7 +143,7 @@
       use m_radial_matrices_sph
       use t_MHD_step_parameter
 !
-      use cal_nonlinear
+      use cal_SGS_nonlinear
       use cal_sol_sph_MHD_crank
       use adjust_reference_fields
       use lead_fields_4_sph_mhd
@@ -181,8 +181,8 @@
 !*  ----------------lead nonlinear term ... ----------
 !*
       call start_eleps_time(8)
-      call nonlinear(i_step, SGS_par1, sph1, comms_sph1, omega_sph1,    &
-     &    r_2nd, MHD_prop1, sph_MHD_bc1, trans_p1,                      &
+      call nonlinear_w_SGS(i_step, SGS_par1, sph1, comms_sph1,          &
+     &    omega_sph1, r_2nd, MHD_prop1, sph_MHD_bc1, trans_p1,          &
      &    ref_temp1, ref_comp1, ipol, itor,                             &
      &    trns_WK1, dynamic_SPH1, rj_fld1)
       call end_eleps_time(8)

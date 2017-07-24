@@ -62,7 +62,7 @@
       use const_radial_mat_4_sph
       use sph_mhd_rms_IO
       use cal_sol_sph_MHD_crank
-      use cal_nonlinear
+      use cal_SGS_nonlinear
       use sph_filtering
       use check_dependency_for_MHD
       use input_control_sph_MHD
@@ -134,7 +134,7 @@
 !* obtain nonlinear terms for starting
 !*
       if(iflag_debug .gt. 0) write(*,*) 'first nonlinear'
-      call nonlinear_first(MHD_step%init_d%i_time_step,                 &
+      call nonlinear_SGS_first(MHD_step%init_d%i_time_step,             &
      &    sph1, comms_sph1, omega_sph1, r_2nd,                          &
      &    MHD_prop1, sph_MHD_bc1, trans_p1, ref_temp1, ref_comp1,       &
      &    ipol, itor, trns_WK1, SGS_par1, dynamic_SPH1, rj_fld1)
@@ -165,7 +165,7 @@
 !
       use cal_momentum_eq_explicit
       use cal_sol_sph_MHD_crank
-      use cal_nonlinear
+      use cal_SGS_nonlinear
       use adjust_reference_fields
       use lead_fields_SPH_SGS_MHD
       use sph_SGS_MHD_rst_IO_control
@@ -203,8 +203,8 @@
 !*  ----------------lead nonlinear term ... ----------
 !*
       call start_eleps_time(8)
-      call nonlinear(i_step, SGS_par1, sph1, comms_sph1, omega_sph1,    &
-     &    r_2nd, MHD_prop1, sph_MHD_bc1, trans_p1,                      &
+      call nonlinear_w_SGS(i_step, SGS_par1, sph1, comms_sph1,          &
+     &    omega_sph1, r_2nd, MHD_prop1, sph_MHD_bc1, trans_p1,          &
      &    ref_temp1, ref_comp1, ipol, itor,                             &
      &    trns_WK1, dynamic_SPH1, rj_fld1)
       call end_eleps_time(8)
