@@ -189,7 +189,6 @@
       use copy_snap_4_sph_trans
       use copy_MHD_4_sph_trans
       use coordinate_convert_4_sph
-      use copy_SGS_4_sph_trans
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rtp_grid), intent(in) :: sph_rtp

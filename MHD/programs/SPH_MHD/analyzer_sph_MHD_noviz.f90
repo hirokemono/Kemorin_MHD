@@ -27,7 +27,7 @@
 !
       use FEM_analyzer_sph_MHD
       use FEM_analyzer_sph_SGS_MHD
-      use SPH_analyzer_MHD
+      use SPH_analyzer_SGS_MHD
       use init_sph_MHD_elapsed_label
 !
       implicit none
@@ -79,8 +79,8 @@
      &    mesh1, group1, ele_mesh1, iphys, nod_fld1, range)
 !
 !        Initialize spherical transform dynamo
-      if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_MHD'
-      call SPH_initialize_MHD(MHD_files1, iphys, MHD_step1)
+      if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_SGS_MHD'
+      call SPH_initialize_SGS_MHD(MHD_files1, iphys, MHD_step1)
 !
       call calypso_MPI_barrier
 !
@@ -116,8 +116,8 @@
 !
 !*  ----------  time evolution by spectral methood -----------------
 !*
-        if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_MHD'
-        call SPH_analyze_MHD(MHD_step1%time_d%i_time_step,              &
+        if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_SGS_MHD'
+        call SPH_analyze_SGS_MHD(MHD_step1%time_d%i_time_step,          &
      &      MHD_files1, iflag_finish, MHD_step1)
 !*
 !*  -----------  output field data --------------
