@@ -163,7 +163,7 @@
       use m_rms_4_sph_spectr
       use m_boundary_data_sph_MHD
 !
-      use cal_momentum_eq_explicit
+      use momentum_w_SGS_explicit
       use cal_sol_sph_MHD_crank
       use cal_SGS_nonlinear
       use adjust_reference_fields
@@ -186,8 +186,8 @@
 !
       call start_eleps_time(5)
       call start_eleps_time(6)
-      if(iflag_debug.gt.0) write(*,*) 'sel_explicit_sph'
-      call sel_explicit_sph                                             &
+      if(iflag_debug.gt.0) write(*,*) 'sel_explicit_sph_SGS_MHD'
+      call sel_explicit_sph_SGS_MHD                                     &
      &   (i_step, MHD_step%time_d%dt, SGS_par1%model_p,                 &
      &    MHD_prop1, sph_MHD_bc1, sph1%sph_rj, ipol, itor, rj_fld1)
 !*

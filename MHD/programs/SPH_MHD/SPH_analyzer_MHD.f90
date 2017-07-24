@@ -186,8 +186,7 @@
       call start_eleps_time(5)
       call start_eleps_time(6)
       if(iflag_debug.gt.0) write(*,*) 'sel_explicit_sph'
-      call sel_explicit_sph                                             &
-     &   (i_step, MHD_step%time_d%dt, SGS_par1%model_p,                 &
+      call sel_explicit_sph(i_step, MHD_step%time_d%dt,                 &
      &    MHD_prop1, sph_MHD_bc1, sph1%sph_rj, ipol, itor, rj_fld1)
 !*
 !*  ----------  time evolution by inplicit method ----------
