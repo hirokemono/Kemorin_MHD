@@ -97,14 +97,6 @@
 !
 !  -------------------------------
 !
-      if(SGS_par1%model_p%iflag_SGS .gt. 0) then
-        if(iflag_debug.gt.0) write(*,*)' init_SGS_model_sph_mhd'
-        call init_SGS_model_sph_mhd(SGS_par1, sph1, sph_grps1,          &
-     &      MHD_prop1, dynamic_SPH1)
-      end if
-!
-!  -------------------------------
-!
       if(iflag_debug.gt.0) write(*,*)' sph_initial_data_control'
       call sph_initial_data_control                                     &
      &   (MHD_files, ref_temp1%t_rj, sph1%sph_params, sph1%sph_rj,      &
