@@ -8,14 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine init_sph_transform_MHD                               &
-!!     &         (SGS_param, MHD_prop, sph_bc_U, ipol, idpdr, itor,     &
-!!     &          iphys, sph, comms_sph, omega_sph, trans_p, WK, rj_fld)
+!!     &         (MHD_prop, sph_bc_U, ipol, idpdr, itor, iphys,         &
+!!     &          sph, comms_sph, omega_sph, trans_p, WK, rj_fld,       &
+!!     &          ncomp_max_trans)
 !!      subroutine sel_sph_transform_MHD                                &
 !!     &         (ipol, fl_prop, sph_bc_U, sph, comms_sph, omega_sph,   &
 !!     &          ncomp_max_trans, nvector_max_trans, nscalar_max_trans,&
 !!     &          trans_p, trns_MHD, WK_sph, MHD_mul_FFTW,              &
 !!     &          gt_cor, cor_rlm, rj_fld)
-!!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(sph_boundary_type), intent(in) :: sph_bc_U
 !!        type(phys_address), intent(in) :: ipol, idpdr, itor
@@ -75,8 +75,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine init_sph_transform_MHD                                 &
-     &         (SGS_param, MHD_prop, sph_bc_U, ipol, idpdr, itor,       &
-     &          iphys, sph, comms_sph, omega_sph, trans_p, WK, rj_fld)
+     &         (MHD_prop, sph_bc_U, ipol, idpdr, itor, iphys,           &
+     &          sph, comms_sph, omega_sph, trans_p, WK, rj_fld,         &
+     &          ncomp_max_trans)
 !
       use set_address_sph_trans_MHD
       use set_address_sph_trans_SGS
@@ -85,7 +86,6 @@
       use pole_sph_transform
       use MHD_FFT_selector
 !
-      type(SGS_model_control_params), intent(in) :: SGS_param
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(sph_boundary_type), intent(in) :: sph_bc_U
       type(phys_address), intent(in) :: ipol, idpdr, itor
@@ -100,7 +100,8 @@
       type(phys_data), intent(inout) :: rj_fld
 !
 !>      total number of components for spherical harmonics transform
-      integer(kind = kint), save :: ncomp_max_trans
+      integer(kind = kint), intent(inout) :: ncomp_max_trans
+!
 !>      total number of vectors for spherical harmonics transform
       integer(kind = kint), save :: nvector_max_trans
 !>      total number of svalars for spherical harmonics transform
@@ -142,12 +143,6 @@
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
      &    trans_p, WK%trns_MHD, WK%WK_sph, WK%MHD_mul_FFTW,             &
      &    WK%gt_cor, WK%cor_rlm, rj_fld)
-!
-      if(SGS_param%iflag_SGS .gt. 0) then
-        call init_MHD_FFT_select(my_rank, sph%sph_rtp, ncomp_max_trans, &
-     &      WK%trns_SGS%ncomp_rtp_2_rj,                                 &
-     &      WK%trns_SGS%ncomp_rj_2_rtp, WK%SGS_mul_FFTW)
-      end if
 !
       end subroutine init_sph_transform_MHD
 !

@@ -7,6 +7,10 @@
 !>@brief Evaluate nonlinear terms by pseudo spectram scheme
 !!
 !!@verbatim
+!!      subroutine init_sph_transform_SGS_MHD                           &
+!!     &         (SGS_param, MHD_prop, sph_MHD_bc, ipol, idpdr, itor,   &
+!!     &          iphys, sph, comms_sph, omega_sph, trans_p, WK, rj_fld)
+!!
 !!      subroutine nonlinear_SGS_first                                  &
 !!     &         (i_step, sph, comms_sph, omega_sph, r_2nd, MHD_prop,   &
 !!     &          sph_MHD_bc, trans_p, ref_temp, ref_comp, ipol, itor,  &
@@ -70,6 +74,47 @@
       contains
 !*
 !*   ------------------------------------------------------------------
+!
+      subroutine init_sph_transform_SGS_MHD                             &
+     &         (SGS_param, MHD_prop, sph_MHD_bc, ipol, idpdr, itor,     &
+     &          iphys, sph, comms_sph, omega_sph, trans_p, WK, rj_fld)
+!
+      use set_address_sph_trans_SGS
+      use init_sphrical_transform_MHD
+      use MHD_FFT_selector
+!
+      type(SGS_model_control_params), intent(in) :: SGS_param
+      type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
+      type(phys_address), intent(in) :: ipol, idpdr, itor
+      type(phys_address), intent(in) :: iphys
+!
+      type(sph_grids), intent(inout) :: sph
+      type(sph_comm_tables), intent(inout) :: comms_sph
+      type(sph_rotation), intent(in) :: omega_sph
+!
+      type(parameters_4_sph_trans), intent(inout) :: trans_p
+      type(works_4_sph_trans_MHD), intent(inout) :: WK
+      type(phys_data), intent(inout) :: rj_fld
+!
+!>      total number of components for spherical harmonics transform
+      integer(kind = kint), save :: ncomp_max = 0
+!
+!
+      call init_sph_transform_MHD                                       &
+     &   (MHD_prop, sph_MHD_bc%sph_bc_U, ipol, idpdr, itor, iphys,      &
+     &    sph, comms_sph, omega_sph, trans_p, WK, rj_fld, ncomp_max)
+!
+      if(SGS_param%iflag_SGS .gt. 0) then
+        call init_MHD_FFT_select(my_rank, sph%sph_rtp, ncomp_max,       &
+     &      WK%trns_SGS%ncomp_rtp_2_rj,                                 &
+     &      WK%trns_SGS%ncomp_rj_2_rtp, WK%SGS_mul_FFTW)
+      end if
+!
+      end subroutine init_sph_transform_SGS_MHD
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
 !*
       subroutine nonlinear_SGS_first                                    &
      &         (i_step, sph, comms_sph, omega_sph, r_2nd, MHD_prop,     &

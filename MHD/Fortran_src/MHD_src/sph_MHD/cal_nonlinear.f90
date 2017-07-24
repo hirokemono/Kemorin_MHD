@@ -7,6 +7,10 @@
 !>@brief Evaluate nonlinear terms by pseudo spectram scheme
 !!
 !!@verbatim
+!!      subroutine init_sph_transform_MHD_noSGS                         &
+!!     &         (MHD_prop, sph_MHD_bc, ipol, idpdr, itor, iphys,       &
+!!     &          sph, comms_sph, omega_sph, trans_p, WK, rj_fld)
+!!
 !!      subroutine nonlinear(sph, comms_sph, omega_sph, r_2nd,          &
 !!     &          MHD_prop, sph_MHD_bc, trans_p, ref_temp, ref_comp,    &
 !!     &          ipol, itor, WK, rj_fld)
@@ -68,6 +72,37 @@
 !*
 !*   ------------------------------------------------------------------
 !*
+      subroutine init_sph_transform_MHD_noSGS                           &
+     &         (MHD_prop, sph_MHD_bc, ipol, idpdr, itor, iphys,         &
+     &          sph, comms_sph, omega_sph, trans_p, WK, rj_fld)
+!
+      use init_sphrical_transform_MHD
+!
+      type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(sph_MHD_boundary_data), intent(in) :: sph_MHD_bc
+      type(phys_address), intent(in) :: ipol, idpdr, itor
+      type(phys_address), intent(in) :: iphys
+!
+      type(sph_grids), intent(inout) :: sph
+      type(sph_comm_tables), intent(inout) :: comms_sph
+      type(sph_rotation), intent(in) :: omega_sph
+!
+      type(parameters_4_sph_trans), intent(inout) :: trans_p
+      type(works_4_sph_trans_MHD), intent(inout) :: WK
+      type(phys_data), intent(inout) :: rj_fld
+!
+!>      total number of components for spherical harmonics transform
+      integer(kind = kint), save :: ncomp_max = 0
+!
+!
+      call init_sph_transform_MHD                                       &
+     &   (MHD_prop, sph_MHD_bc%sph_bc_U, ipol, idpdr, itor, iphys,      &
+     &    sph, comms_sph, omega_sph, trans_p, WK, rj_fld, ncomp_max)
+!
+      end subroutine init_sph_transform_MHD_noSGS
+!
+!-----------------------------------------------------------------------
+!
       subroutine nonlinear(sph, comms_sph, omega_sph, r_2nd,            &
      &          MHD_prop, sph_MHD_bc, trans_p, ref_temp, ref_comp,      &
      &          ipol, itor, WK, rj_fld)

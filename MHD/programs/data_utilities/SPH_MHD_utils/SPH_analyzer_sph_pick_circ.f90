@@ -71,7 +71,7 @@
       use cal_rms_fields_by_sph
       use r_interpolate_sph_data
       use sph_mhd_rst_IO_control
-      use init_sphrical_transform_MHD
+      use cal_SGS_nonlinear
       use sph_MHD_circle_transform
       use nod_phys_send_recv
       use sph_filtering
@@ -107,9 +107,9 @@
 !
 !  -------------------------------
 !
-      if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD'
-      call init_sph_transform_MHD                                       &
-     &   (SGS_par1%model_p, MHD_prop1, sph_MHD_bc1%sph_bc_U,            &
+      if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_SGS_MHD'
+      call init_sph_transform_SGS_MHD                                   &
+     &   (SGS_par1%model_p, MHD_prop1, sph_MHD_bc1,                     &
      &    ipol, idpdr, itor, iphys, sph1, comms_sph1, omega_sph1,       &
      &    trans_p1, trns_WK1, rj_fld1)
 !
