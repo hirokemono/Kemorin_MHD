@@ -147,7 +147,7 @@
       use cal_sol_sph_MHD_crank
       use adjust_reference_fields
       use lead_fields_4_sph_mhd
-      use sph_mhd_rst_IO_control
+      use sph_SGS_MHD_rst_IO_control
       use sph_mhd_rms_IO
       use input_control_sph_MHD
 !

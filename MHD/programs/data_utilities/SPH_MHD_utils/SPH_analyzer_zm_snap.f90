@@ -56,7 +56,7 @@
       use adjust_reference_fields
       use lead_fields_4_sph_mhd
       use input_control_sph_MHD
-      use sph_mhd_rst_IO_control
+      use sph_SGS_MHD_rst_IO_control
       use sph_mhd_rms_IO
       use output_viz_file_control
 !

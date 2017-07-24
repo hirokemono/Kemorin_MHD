@@ -233,10 +233,9 @@
       iflag = set_IO_step_flag(MHD_step%time_d%i_time_step,             &
      &                         MHD_step%rst_step)
       if(iflag .eq. 0) then
-        if(iflag_debug.gt.0) write(*,*) 'output_sph_MHD_rst_control'
-        call output_sph_MHD_rst_control                                 &
-     &     (MHD_files, MHD_step%time_d, rj_fld1, MHD_step%rst_step,     &
-     &      SGS_par1%i_step_sgs_coefs, SGS_par1%model_p, dynamic_SPH1)
+        if(iflag_debug.gt.0) write(*,*) 'output_sph_restart_control'
+        call output_sph_restart_control(MHD_files%fst_file_IO,          &
+     &     MHD_step%time_d, rj_fld1, MHD_step%rst_step)
       end if
 !
       total_time = MPI_WTIME() - total_start
@@ -246,9 +245,8 @@
      &   .and. total_max .gt. MHD_step%finish_d%elapsed_time) then
         MHD_step%rst_step%istep_file = MHD_step%finish_d%i_end_step
         iflag_finish = 1
-        call output_sph_MHD_rst_control                                 &
-     &     (MHD_files, MHD_step%time_d, rj_fld1, MHD_step%rst_step,     &
-     &      SGS_par1%i_step_sgs_coefs, SGS_par1%model_p, dynamic_SPH1)
+        call output_sph_restart_control(MHD_files%fst_file_IO,          &
+     &     MHD_step%time_d, rj_fld1, MHD_step%rst_step)
       end if
       call end_eleps_time(10)
 !
