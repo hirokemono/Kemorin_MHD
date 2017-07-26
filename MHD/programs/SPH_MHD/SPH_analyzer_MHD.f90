@@ -25,7 +25,6 @@
       use t_phys_address
       use t_MHD_step_parameter
       use t_MHD_file_parameter
-      use t_sph_filtering
 !
       implicit none
 !
