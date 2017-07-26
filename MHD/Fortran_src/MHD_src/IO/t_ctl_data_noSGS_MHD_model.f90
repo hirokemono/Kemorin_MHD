@@ -1,5 +1,5 @@
-!>@file   t_ctl_data_SGS_MHD_model.f90
-!!@brief  module t_ctl_data_SGS_MHD_model
+!>@file   t_ctl_data_noSGS_MHD_model.f90
+!!@brief  module t_ctl_data_noSGS_MHD_model
 !!
 !!@author H. Matsui
 !>@brief   Control read routine
@@ -16,7 +16,7 @@
 !!        type(sgs_mhd_model_control), intent(inout) :: model_ctl
 !!@endverbatim
 !
-      module t_ctl_data_SGS_MHD_model
+      module t_ctl_data_noSGS_MHD_model
 !
       use m_precision
 !
@@ -234,4 +234,4 @@
 !
 !   --------------------------------------------------------------------
 !
-      end module t_ctl_data_SGS_MHD_model
+      end module t_ctl_data_noSGS_MHD_model
