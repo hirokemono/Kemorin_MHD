@@ -13,8 +13,7 @@
 !!     &          WK, mesh, group, ele_mesh)
 !!      subroutine input_control_4_SPH_MHD_nosnap                       &
 !!     &         (MHD_files, bc_IO, MHD_ctl, sph, comms_sph, sph_grps,  &
-!!     &          rj_fld, pwr, SGS_par, dynamic_SPH, MHD_step, MHD_prop,&
-!!     &          MHD_BC, WK)
+!!     &          rj_fld, pwr, MHD_step, MHD_prop, MHD_BC, WK)
 !!
 !!      subroutine input_control_4_SPH_make_init                        &
 !!     &         (MHD_files, bc_IO, MHD_ctl, sph, comms_sph, sph_grps,  &
@@ -143,10 +142,9 @@
 !
       subroutine input_control_4_SPH_MHD_nosnap                         &
      &         (MHD_files, bc_IO, MHD_ctl, sph, comms_sph, sph_grps,    &
-     &          rj_fld, pwr, SGS_par, dynamic_SPH, MHD_step, MHD_prop,  &
-     &          MHD_BC, WK)
+     &          rj_fld, pwr, MHD_step, MHD_prop, MHD_BC, WK)
 !
-      use set_control_sph_SGS_MHD
+      use set_control_sph_mhd
       use parallel_load_data_4_sph
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
@@ -158,20 +156,18 @@
 !
       type(phys_data), intent(inout) :: rj_fld
       type(sph_mean_squares), intent(inout) :: pwr
-      type(SGS_paremeters), intent(inout) :: SGS_par
-      type(dynamic_SGS_data_4_sph), intent(inout) :: dynamic_SPH
       type(MHD_step_param), intent(inout) :: MHD_step
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(MHD_BC_lists), intent(inout) :: MHD_BC
       type(works_4_sph_trans_MHD), intent(inout) :: WK
 !
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_SGS_MHD'
-      call set_control_4_SPH_SGS_MHD(MHD_ctl%plt, MHD_ctl%org_plt,      &
+      if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
+      call set_control_4_SPH_MHD(MHD_ctl%plt, MHD_ctl%org_plt,          &
      &    MHD_ctl%model_ctl, MHD_ctl%ctl_ctl, MHD_ctl%smonitor_ctl,     &
      &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl, sph_tmp, rj_fld,          &
-     &    MHD_files, bc_IO, pwr, SGS_par, dynamic_SPH%sph_filters,      &
-     &    MHD_step, MHD_prop, MHD_BC, WK%WK_sph, gen_sph1)
+     &    MHD_files, bc_IO, pwr, MHD_step, MHD_prop, MHD_BC,            &
+     &    WK%WK_sph, gen_sph1)
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
       call load_para_sph_mesh(sph, comms_sph, sph_grps)
