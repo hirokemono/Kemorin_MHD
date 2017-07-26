@@ -16,6 +16,7 @@
       use m_precision
 !
       use t_ctl_data_MHD
+      use t_sph_boundary_input_data
 !
       implicit none
 !
@@ -29,5 +30,7 @@
 !
 !>      Control struture for MHD simulation
       type(mhd_simulation_control), save :: MHD_ctl1
+!>      Structures for boundary conditions
+      type(boundary_spectra), save :: bc_IO1
 !
       end module m_ctl_data_sph_MHD

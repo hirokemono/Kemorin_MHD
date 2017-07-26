@@ -7,9 +7,10 @@
 !>@brief Evolution loop for spherical MHD
 !!
 !!@verbatim
-!!      subroutine SPH_init_sph_back_trans(MHD_files, iphys)
+!!      subroutine SPH_init_sph_back_trans(MHD_files, bc_IO, iphys)
 !!        type(phys_address), intent(in) :: iphys
 !!      subroutine SPH_analyze_back_trans(i_step, MHD_files, MHD_step)
+!!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!@endverbatim
 !
@@ -29,7 +30,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_init_sph_back_trans(MHD_files, iphys)
+      subroutine SPH_init_sph_back_trans(MHD_files, bc_IO, iphys)
 !
       use m_constants
       use calypso_mpi
@@ -44,6 +45,8 @@
       use m_sph_trans_arrays_MHD
       use m_boundary_data_sph_MHD
       use m_bc_data_list
+!
+      use t_sph_boundary_input_data
 !
       use set_control_sph_mhd
       use set_sph_phys_address
@@ -63,6 +66,7 @@
       use input_control_sph_MHD
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
+      type(boundary_spectra), intent(in) :: bc_IO
       type(phys_address), intent(in) :: iphys
 !
 !
@@ -75,7 +79,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'init_r_infos_sph_mhd_evo'
       call init_r_infos_sph_mhd_evo                                     &
-     &   (bc_IO1, sph_grps1, MHD_BC1, ipol, sph1,                       &
+     &   (bc_IO, sph_grps1, MHD_BC1, ipol, sph1,                        &
      &    omega_sph1, ref_temp1, ref_comp1, MHD_prop1, sph_MHD_bc1,     &
      &    r_2nd, rj_fld1)
 !

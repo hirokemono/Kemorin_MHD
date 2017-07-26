@@ -21,6 +21,7 @@
       use calypso_mpi
       use m_machine_parameter
       use m_work_time
+      use m_ctl_data_sph_MHD
       use m_SGS_control_parameter
       use m_MHD_step_parameter
       use m_physical_property
@@ -39,7 +40,6 @@
       subroutine initialize_const_sph_initial
 !
       use t_ctl_data_sph_MHD_psf
-      use m_ctl_data_sph_MHD
       use m_spheric_parameter
       use m_mesh_data
       use m_sph_spectr_data
@@ -64,9 +64,9 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_4_SPH_make_init'
       call input_control_4_SPH_make_init                                &
-     &   (MHD_files1, MHD_ctl1, sph1, comms_sph1, sph_grps1, rj_fld1,   &
-     &    pwr1, MHD_step1, mesh1, group1, ele_mesh1, MHD_prop1,         &
-     &    MHD_BC1, trns_WK1)
+     &   (MHD_files1, bc_IO1, MHD_ctl1, sph1, comms_sph1, sph_grps1,    &
+     &    rj_fld1, pwr1, MHD_step1, mesh1, group1, ele_mesh1,           &
+     &    MHD_prop1, MHD_BC1, trns_WK1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
       call end_eleps_time(4)
 !

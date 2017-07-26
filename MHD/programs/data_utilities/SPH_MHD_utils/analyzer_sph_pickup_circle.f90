@@ -95,7 +95,7 @@
 !
       call start_eleps_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_pick_circle'
-      call SPH_init_sph_pick_circle(MHD_files1, iphys)
+      call SPH_init_sph_pick_circle(MHD_files1, bc_IO1, iphys)
       call calypso_MPI_barrier
 !
       call end_eleps_time(2)

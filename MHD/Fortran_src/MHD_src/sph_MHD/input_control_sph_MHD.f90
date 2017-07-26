@@ -7,21 +7,22 @@
 !>@brief  Load mesh and filtering data for MHD simulation
 !!
 !!@verbatim
-!!      subroutine input_control_SPH_dynamo(MHD_files, MHD_ctl,         &
+!!      subroutine input_control_SPH_dynamo(MHD_files, bc_IO, MHD_ctl,  &
 !!     &          sph, comms_sph, sph_grps, rj_fld, nod_fld, pwr,       &
 !!     &          SGS_par, dynamic_SPH, MHD_step, MHD_prop, MHD_BC,     &
 !!     &          WK, mesh, group, ele_mesh)
-!!      subroutine input_control_4_SPH_MHD_nosnap(MHD_files, MHD_ctl,   &
-!!     &          sph, comms_sph, sph_grps, rj_fld, pwr, SGS_par,       &
-!!     &          dynamic_SPH, MHD_step, MHD_prop, MHD_BC, WK)
+!!      subroutine input_control_4_SPH_MHD_nosnap                       &
+!!     &         (MHD_files, bc_IO, MHD_ctl, sph, comms_sph, sph_grps,  &
+!!     &          rj_fld, pwr, SGS_par, dynamic_SPH, MHD_step, MHD_prop,&
+!!     &          MHD_BC, WK)
 !!
 !!      subroutine input_control_4_SPH_make_init                        &
-!!     &         (MHD_files, MHD_ctl, sph, comms_sph, sph_grps, rj_fld, &
-!!     &          pwr, MHD_step, mesh, group, ele_mesh,                 &
+!!     &         (MHD_files, bc_IO, MHD_ctl, sph, comms_sph, sph_grps,  &
+!!     &          rj_fld, pwr, MHD_step, mesh, group, ele_mesh,         &
 !!     &          MHD_prop, MHD_BC, WK)
-!!      subroutine input_control_SPH_dynamobench(MHD_files, MHD_ctl,    &
-!!     &           sph, comms_sph, sph_grps, rj_fld, nod_fld,           &
-!!     &           pwr, MHD_step, MHD_prop, MHD_BC, WK)
+!!      subroutine input_control_SPH_dynamobench                        &
+!!     &          (MHD_files, bc_IO, MHD_ctl, sph, comms_sph, sph_grps, &
+!!     &           rj_fld, nod_fld, pwr, MHD_step, MHD_prop, MHD_BC, WK)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
 !!        type(sph_grids), intent(inout) :: sph
@@ -40,7 +41,7 @@
 !!        type(MHD_evolution_param), intent(inout) :: MHD_prop
 !!        type(MHD_BC_lists), intent(inout) :: MHD_BC
 !!
-!!      subroutine sph_boundary_IO_control(MHD_prop, MHD_BC)
+!!      subroutine sph_boundary_IO_control(MHD_prop, MHD_BC, bc_IO)
 !!@endverbatim
 !
 !
@@ -73,9 +74,6 @@
 !
       private :: set_control_4_SPH_to_FEM
 !
-!>      Structures for boundary conditions
-      type(boundary_spectra), save :: bc_IO1
-!
 !>      Structure to construct grid
       type(construct_spherical_grid), save :: gen_sph1
 !
@@ -89,7 +87,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine input_control_SPH_dynamo(MHD_files, MHD_ctl,           &
+      subroutine input_control_SPH_dynamo(MHD_files, bc_IO, MHD_ctl,    &
      &          sph, comms_sph, sph_grps, rj_fld, nod_fld, pwr,         &
      &          SGS_par, dynamic_SPH, MHD_step, MHD_prop, MHD_BC,       &
      &          WK, mesh, group, ele_mesh)
@@ -100,6 +98,7 @@
       use sph_file_IO_select
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
+      type(boundary_spectra), intent(inout) :: bc_IO
       type(mhd_simulation_control), intent(inout) :: MHD_ctl
       type(sph_grids), intent(inout) :: sph
       type(sph_comm_tables), intent(inout) :: comms_sph
@@ -124,7 +123,7 @@
       call set_control_4_SPH_SGS_MHD(MHD_ctl%plt, MHD_ctl%org_plt,      &
      &    MHD_ctl%model_ctl, MHD_ctl%ctl_ctl, MHD_ctl%smonitor_ctl,     &
      &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl, sph_tmp, rj_fld,          &
-     &    MHD_files, bc_IO1, pwr, SGS_par, dynamic_SPH%sph_filters,     &
+     &    MHD_files, bc_IO, pwr, SGS_par, dynamic_SPH%sph_filters,      &
      &    MHD_step, MHD_prop, MHD_BC, WK%WK_sph, gen_sph1)
 !
       call set_control_4_SPH_to_FEM                                     &
@@ -135,21 +134,23 @@
      &    sph, comms_sph, sph_grps, gen_sph1,                           &
      &    mesh, group, ele_mesh, MHD_files%mesh_file_IO)
 !
-      call sph_boundary_IO_control(MHD_prop, MHD_BC)
+      call sph_boundary_IO_control(MHD_prop, MHD_BC, bc_IO)
 !
       end subroutine input_control_SPH_dynamo
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine input_control_4_SPH_MHD_nosnap(MHD_files, MHD_ctl,     &
-     &          sph, comms_sph, sph_grps, rj_fld, pwr, SGS_par,         &
-     &          dynamic_SPH, MHD_step, MHD_prop, MHD_BC, WK)
+      subroutine input_control_4_SPH_MHD_nosnap                         &
+     &         (MHD_files, bc_IO, MHD_ctl, sph, comms_sph, sph_grps,    &
+     &          rj_fld, pwr, SGS_par, dynamic_SPH, MHD_step, MHD_prop,  &
+     &          MHD_BC, WK)
 !
       use set_control_sph_SGS_MHD
       use parallel_load_data_4_sph
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
+      type(boundary_spectra), intent(inout) :: bc_IO
       type(mhd_simulation_control), intent(inout) :: MHD_ctl
       type(sph_grids), intent(inout) :: sph
       type(sph_comm_tables), intent(inout) :: comms_sph
@@ -169,13 +170,13 @@
       call set_control_4_SPH_SGS_MHD(MHD_ctl%plt, MHD_ctl%org_plt,      &
      &    MHD_ctl%model_ctl, MHD_ctl%ctl_ctl, MHD_ctl%smonitor_ctl,     &
      &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl, sph_tmp, rj_fld,          &
-     &    MHD_files, bc_IO1, pwr, SGS_par, dynamic_SPH%sph_filters,     &
+     &    MHD_files, bc_IO, pwr, SGS_par, dynamic_SPH%sph_filters,      &
      &    MHD_step, MHD_prop, MHD_BC, WK%WK_sph, gen_sph1)
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
       call load_para_sph_mesh(sph, comms_sph, sph_grps)
 !
-      call sph_boundary_IO_control(MHD_prop, MHD_BC)
+      call sph_boundary_IO_control(MHD_prop, MHD_BC, bc_IO)
 !
       end subroutine input_control_4_SPH_MHD_nosnap
 !
@@ -183,14 +184,15 @@
 ! ----------------------------------------------------------------------
 !
       subroutine input_control_4_SPH_make_init                          &
-     &         (MHD_files, MHD_ctl, sph, comms_sph, sph_grps, rj_fld,   &
-     &          pwr, MHD_step, mesh, group, ele_mesh,                   &
+     &         (MHD_files, bc_IO, MHD_ctl, sph, comms_sph, sph_grps,    &
+     &          rj_fld, pwr, MHD_step, mesh, group, ele_mesh,           &
      &          MHD_prop, MHD_BC, WK)
 !
       use set_control_sph_mhd
       use parallel_load_data_4_sph
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
+      type(boundary_spectra), intent(inout) :: bc_IO
       type(mhd_simulation_control), intent(inout) :: MHD_ctl
       type(sph_grids), intent(inout) :: sph
       type(sph_comm_tables), intent(inout) :: comms_sph
@@ -212,29 +214,30 @@
       call set_control_4_SPH_MHD(MHD_ctl%plt, MHD_ctl%org_plt,          &
      &    MHD_ctl%model_ctl, MHD_ctl%ctl_ctl, MHD_ctl%smonitor_ctl,     &
      &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl, sph_tmp, rj_fld,          &
-     &    MHD_files, bc_IO1, pwr, MHD_step, MHD_prop, MHD_BC,           &
+     &    MHD_files, bc_IO, pwr, MHD_step, MHD_prop, MHD_BC,            &
      &    WK%WK_sph, gen_sph1)
 !
       call select_make_SPH_mesh(MHD_ctl%psph_ctl%iflag_sph_shell,       &
      &    sph, comms_sph, sph_grps, gen_sph1,                           &
      &    mesh, group, ele_mesh, MHD_files%mesh_file_IO)
 !
-      call sph_boundary_IO_control(MHD_prop, MHD_BC)
+      call sph_boundary_IO_control(MHD_prop, MHD_BC, bc_IO)
 !
       end subroutine input_control_4_SPH_make_init
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine input_control_SPH_dynamobench(MHD_files, MHD_ctl,      &
-     &           sph, comms_sph, sph_grps, rj_fld, nod_fld,             &
-     &           pwr, MHD_step, MHD_prop, MHD_BC, WK)
+      subroutine input_control_SPH_dynamobench                          &
+     &          (MHD_files, bc_IO, MHD_ctl, sph, comms_sph, sph_grps,   &
+     &           rj_fld, nod_fld, pwr, MHD_step, MHD_prop, MHD_BC, WK)
 !
       use set_control_sph_mhd
       use set_control_sph_data_MHD
       use parallel_load_data_4_sph
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
+      type(boundary_spectra), intent(inout) :: bc_IO
       type(mhd_simulation_control), intent(inout) :: MHD_ctl
       type(sph_grids), intent(inout) :: sph
       type(sph_comm_tables), intent(inout) :: comms_sph
@@ -253,7 +256,7 @@
       call set_control_4_SPH_MHD(MHD_ctl%plt, MHD_ctl%org_plt,          &
      &    MHD_ctl%model_ctl, MHD_ctl%ctl_ctl, MHD_ctl%smonitor_ctl,     &
      &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl, sph_tmp, rj_fld,          &
-     &    MHD_files, bc_IO1, pwr, MHD_step, MHD_prop, MHD_BC,           &
+     &    MHD_files, bc_IO, pwr, MHD_step, MHD_prop, MHD_BC,            &
      &    WK%WK_sph, gen_sph1)
 !
       call set_control_4_SPH_to_FEM                                     &
@@ -357,12 +360,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sph_boundary_IO_control(MHD_prop, MHD_BC)
+      subroutine sph_boundary_IO_control(MHD_prop, MHD_BC, bc_IO)
 !
       use check_read_bc_file
 !
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(MHD_BC_lists), intent(in) :: MHD_BC
+      type(boundary_spectra), intent(inout) :: bc_IO
 !
       integer(kind = kint) :: iflag
 !
@@ -371,7 +375,7 @@
       if (iflag .eq. id_no_boundary_file) return
 !
       if (iflag_debug.eq.1) write(*,*) 'read_boundary_spectr_file'
-      call read_boundary_spectr_file(bc_IO1)
+      call read_boundary_spectr_file(bc_IO)
 !
       end subroutine sph_boundary_IO_control
 !

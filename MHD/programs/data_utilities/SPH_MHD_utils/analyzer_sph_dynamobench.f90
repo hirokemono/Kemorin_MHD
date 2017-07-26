@@ -63,8 +63,9 @@
 
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_dynamobench'
       call input_control_SPH_dynamobench                                &
-     &   (MHD_files1, MHD_ctl1, sph1, comms_sph1, sph_grps1, rj_fld1,   &
-     &    nod_fld1, pwr1, MHD_step1, MHD_prop1, MHD_BC1, trns_WK1)
+     &   (MHD_files1, bc_IO1, MHD_ctl1, sph1, comms_sph1, sph_grps1,    &
+     &    rj_fld1, nod_fld1, pwr1, MHD_step1, MHD_prop1, MHD_BC1,       &
+     &    trns_WK1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
       call end_eleps_time(4)
 !
@@ -75,7 +76,7 @@
 !        Initialize spherical transform dynamo
 !
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_dbench'
-      call SPH_init_sph_dbench(MHD_files1, iphys)
+      call SPH_init_sph_dbench(MHD_files1, bc_IO1, iphys)
       call calypso_MPI_barrier
 !
       call end_eleps_time(2)
