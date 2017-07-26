@@ -52,7 +52,7 @@ SPH_analyzer_MHD.o
 MOD_SPH_MHD_NOVIZ_MAIN =  \
 main_sph_MHD_noviz.o \
 analyzer_sph_MHD_noviz.o \
-SPH_analyzer_SGS_MHD.o
+SPH_analyzer_MHD.o
 
 MOD_SPH_MINI_MHD_MAIN =  \
 main_sph_MHD_only.o \
