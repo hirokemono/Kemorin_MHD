@@ -1,5 +1,5 @@
-!>@file   set_control_sph_mhd.f90
-!!@brief  module set_control_sph_mhd
+!>@file   set_control_sph_SGS_MHD.f90
+!!@brief  module set_control_sph_SGS_MHD
 !!
 !!@author H. Matsui
 !!@date    programmed by H.Matsui in Sep., 2009
@@ -7,10 +7,10 @@
 !>@brief Set control data for spherical transform MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine set_control_4_SPH_MHD(plt, org_plt,                  &
-!!     &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl, &
-!!     &          sph_gen, rj_fld, MHD_files, bc_IO, pwr,               &
-!!     &          MHD_step, MHD_prop, MHD_BC, WK_sph, gen_sph)
+!!      subroutine set_control_4_SPH_SGS_MHD(plt, org_plt, model_ctl,   &
+!!     &         ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl, sph_gen,    &
+!!     &         rj_fld, MHD_files, bc_IO, pwr, SGS_par, sph_filters,   &
+!!     &         MHD_step, MHD_prop, MHD_BC, WK_sph, gen_sph)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
 !!        type(mhd_model_control), intent(inout) :: model_ctl
@@ -22,6 +22,7 @@
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(sph_mean_squares), intent(inout) :: pwr
+!!        type(SGS_paremeters), intent(inout) :: SGS_par
 !!        type(sph_filters_type), intent(inout) :: sph_filters(1)
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(MHD_evolution_param), intent(inout) :: MHD_prop
@@ -30,7 +31,7 @@
 !!        type(construct_spherical_grid), intent(inout) :: gen_sph
 !!@endverbatim
 !
-      module set_control_sph_mhd
+      module set_control_sph_SGS_MHD
 !
       use m_precision
 !
@@ -52,30 +53,36 @@
 !
       implicit none
 !
+      private :: set_control_sph_data_SGS_MHD
+!
 ! ----------------------------------------------------------------------
 !
       contains
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_control_4_SPH_MHD(plt, org_plt,                    &
-     &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,   &
-     &          sph_gen, rj_fld, MHD_files, bc_IO, pwr,                 &
-     &          MHD_step, MHD_prop, MHD_BC, WK_sph, gen_sph)
+      subroutine set_control_4_SPH_SGS_MHD(plt, org_plt, model_ctl,     &
+     &         ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl, sph_gen,      &
+     &         rj_fld, MHD_files, bc_IO, pwr, SGS_par, sph_filters,     &
+     &         MHD_step, MHD_prop, MHD_BC, WK_sph, gen_sph)
 !
-      use m_flexible_time_step
       use sph_mhd_rms_IO
 !
+      use t_SGS_control_parameter
       use t_spheric_parameter
       use t_phys_data
       use t_rms_4_sph_spectr
+      use t_sph_filtering_data
       use t_sph_trans_arrays_MHD
       use t_const_spherical_grid
       use t_sph_boundary_input_data
 !
+      use m_flexible_time_step
+!
       use gen_sph_grids_modes
       use set_control_platform_data
       use set_ctl_parallel_platform
+      use set_control_sph_mhd
       use set_control_4_model
       use set_control_sph_data_MHD
       use set_control_4_force
@@ -85,6 +92,7 @@
       use set_control_4_pickup_sph
       use set_ctl_gen_shell_grids
       use parallel_ucd_IO_select
+      use set_control_4_SGS
 !
       type(platform_data_control), intent(in) :: plt
       type(platform_data_control), intent(in) :: org_plt
@@ -98,14 +106,33 @@
       type(phys_data), intent(inout) :: rj_fld
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(boundary_spectra), intent(inout) :: bc_IO
+      type(sph_mean_squares), intent(inout) :: pwr
+      type(SGS_paremeters), intent(inout) :: SGS_par
+      type(sph_filters_type), intent(inout) :: sph_filters(1)
       type(MHD_step_param), intent(inout) :: MHD_step
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(MHD_BC_lists), intent(inout) :: MHD_BC
-      type(sph_mean_squares), intent(inout) :: pwr
       type(spherical_trns_works), intent(inout) :: WK_sph
       type(construct_spherical_grid), intent(inout) :: gen_sph
 !
       integer(kind = kint) :: ierr
+!
+!   set parameters for SGS model
+!
+      if (iflag_debug.gt.0) write(*,*) 'set_control_SGS_model'
+      call set_control_SGS_model(model_ctl%sgs_ctl,                     &
+     &    SGS_par%model_p, SGS_par%commute_p, SGS_par%filter_p,         &
+     &    MHD_files%Csim_file_IO, MHD_files%Cdiff_file_IO,              &
+     &    SGS_par%i_step_sgs_coefs)
+!
+      if(SGS_par%model_p%iflag_SGS .ne. id_SGS_none) then
+        call set_control_SPH_SGS                                        &
+     &     (model_ctl%sgs_ctl%num_sph_filter_ctl,                       &
+     &      model_ctl%sgs_ctl%sph_filter_ctl(1), sph_filters(1))
+      end if
+      if(model_ctl%sgs_ctl%num_sph_filter_ctl .gt. 0) then
+        call dealloc_sph_filter_ctl(model_ctl%sgs_ctl)
+      end if
 !
 !
 !   set parameters for data files
@@ -143,9 +170,10 @@
 !
 !   set parameters for general information
 !
-      if (iflag_debug.gt.0) write(*,*) 's_set_control_sph_data_MHD'
-      call s_set_control_sph_data_MHD                                   &
-     &   (MHD_prop, plt, model_ctl%fld_ctl%field_ctl, ctl_ctl%mevo_ctl, &
+      if (iflag_debug.gt.0) write(*,*) 'set_control_sph_data_SGS_MHD'
+      call set_control_sph_data_SGS_MHD                                 &
+     &   (SGS_par%model_p, MHD_prop, plt,                               &
+     &    model_ctl%fld_ctl%field_ctl, ctl_ctl%mevo_ctl,                &
      &    MHD_files%org_rj_file_IO, MHD_files%org_rst_file_IO,          &
      &    MHD_files%fst_file_IO, rj_fld, bc_IO, WK_sph)
 !
@@ -186,65 +214,115 @@
       call set_ctl_params_no_heat_Nu(smonitor_ctl%Nusselt_file_prefix,  &
      &    rj_fld, Nu_type1)
 !
-      end subroutine set_control_4_SPH_MHD
+      end subroutine set_control_4_SPH_SGS_MHD
 !
 ! ----------------------------------------------------------------------
+! -----------------------------------------------------------------------
 !
-      subroutine set_control_SPH_MHD_bcs                                &
-     &         (MHD_prop, MHD_BC, nbc_ctl, sbc_ctl)
+      subroutine set_control_sph_data_SGS_MHD                           &
+     &         (SGS_param, MHD_prop, plt, field_ctl, mevo_ctl,          &
+     &          rj_org_param, rst_org_param, fst_file_IO,               &
+     &          rj_fld, bc_IO, WK_sph)
 !
-      use t_ctl_data_node_boundary
-      use t_ctl_data_surf_boundary
+      use calypso_mpi
+      use m_error_IDs
+      use m_machine_parameter
+      use m_file_format_switch
 !
-      use set_control_4_velo
-      use set_control_4_press
-      use set_control_4_temp
-      use set_control_4_magne
-      use set_control_4_composition
+      use m_sel_spherical_SRs
+      use m_FFT_selector
+      use m_legendre_transform_list
 !
+      use t_SGS_control_parameter
+      use t_ctl_data_4_platforms
+      use t_read_control_arrays
+      use t_ctl_data_mhd_evo_scheme
+      use t_phys_data
+      use t_field_data_IO
+      use t_sph_transforms
+      use t_control_parameter
+      use t_sph_boundary_input_data
+!
+      use skip_comment_f
+      use set_control_sph_data
+      use add_nodal_fields_4_MHD
+      use add_sph_MHD_fields_2_ctl
+      use sph_mhd_rst_IO_control
+!
+      type(SGS_model_control_params), intent(in) :: SGS_param
       type(MHD_evolution_param), intent(in) :: MHD_prop
-      type(MHD_BC_lists), intent(inout) :: MHD_BC
-      type(node_bc_control), intent(inout) :: nbc_ctl
-      type(surf_bc_control), intent(inout) :: sbc_ctl
+      type(platform_data_control), intent(in) :: plt
+      type(ctl_array_c3), intent(inout) :: field_ctl
+      type(mhd_evo_scheme_control), intent(in) :: mevo_ctl
+      type(field_IO_params), intent(in) :: rj_org_param, rst_org_param
+!
+      type(field_IO_params), intent(inout) :: fst_file_IO
+      type(phys_data), intent(inout) :: rj_fld
+      type(boundary_spectra), intent(inout) :: bc_IO
+      type(spherical_trns_works), intent(inout) :: WK_sph
+!
+      integer(kind = kint) :: ierr
+!
+!   overwrite restart header for magnetic field extension
+!
+      if( (rj_org_param%iflag_IO*rst_org_param%iflag_IO) .gt. 0)        &
+     &   fst_file_IO%file_prefix = rst_org_param%file_prefix
+!
+!   set physical values
+!
+      if(field_ctl%icou .eq. 0) then
+        call calypso_MPI_abort(ierr_fld, 'Set field for simulation')
+      end if
+      if (iflag_debug.eq.1) write(*,*)                                  &
+     &    'original number of field ', field_ctl%num
+!
+      if ( field_ctl%num .ne. 0 ) then
+!
+!     add fields for simulation
+        call add_field_name_4_mhd(MHD_prop, field_ctl)
+        call add_field_name_4_sph_mhd                                   &
+     &     (MHD_prop%fl_prop, MHD_prop%cd_prop,                         &
+     &      MHD_prop%ht_prop, MHD_prop%cp_prop, field_ctl)
+        call add_field_name_4_SGS(SGS_param, field_ctl)
+        call add_field_name_dynamic_SGS                                 &
+     &     (SGS_param, MHD_prop%fl_prop, field_ctl)
+        if (iflag_debug.eq.1) write(*,*)                                &
+     &    'field_ctl%num after modified ', field_ctl%num
+!
+!    set nodal data
+!
+        if (iflag_debug.gt.0) write(*,*) 's_set_control_sph_data'
+        call s_set_control_sph_data(field_ctl, rj_fld, ierr)
+      end if
 !
 !
-!   set boundary conditions for temperature
+      if(mevo_ctl%leg_vector_len%iflag .gt. 0) then
+        nvector_legendre = mevo_ctl%leg_vector_len%intvalue
+      else
+        nvector_legendre = 0
+      end if
+!      
+      if(mevo_ctl%Legendre_trans_type%iflag .gt. 0) then
+        WK_sph%WK_leg%id_legendre = set_legendre_trans_mode_ctl         &
+     &                       (mevo_ctl%Legendre_trans_type%charavalue)
+      end if
 !
-      if (iflag_debug.gt.0) write(*,*) 's_set_control_4_temp'
-      call s_set_control_4_temp(MHD_prop%ht_prop,                       &
-     &    nbc_ctl%node_bc_T_ctl, sbc_ctl%surf_bc_HF_ctl,                &
-     &    MHD_BC%temp_BC%nod_BC, MHD_BC%temp_BC%surf_BC)
+      if(mevo_ctl%FFT_library%iflag .gt. 0) then
+        call set_fft_library_ctl(mevo_ctl%FFT_library%charavalue)
+      end if
+      if(mevo_ctl%import_mode%iflag .gt. 0) then
+        call set_import_table_ctl(mevo_ctl%import_mode%charavalue)
+      end if
+      if(mevo_ctl%SR_routine%iflag .gt. 0) then
+        call set_sph_comm_routine_ctl(mevo_ctl%SR_routine%charavalue)
+      end if
 !
-!   set boundary conditions for velocity
+      if (plt%bc_data_file_name_ctl%iflag .gt. 0) then
+        bc_IO%file_name = plt%bc_data_file_name_ctl%charavalue
+      end if
 !
-      if (iflag_debug.gt.0) write(*,*) 's_set_control_4_velo'
-      call s_set_control_4_velo(MHD_prop%fl_prop,                       &
-     &    nbc_ctl%node_bc_U_ctl, sbc_ctl%surf_bc_ST_ctl,                &
-     &    MHD_BC%velo_BC%nod_BC, MHD_BC%velo_BC%surf_BC)
+      end subroutine set_control_sph_data_SGS_MHD
 !
-!  set boundary conditions for pressure
+! -----------------------------------------------------------------------
 !
-      if (iflag_debug.gt.0) write(*,*) 's_set_control_4_press'
-      call s_set_control_4_press(MHD_prop%fl_prop,                      &
-     &    nbc_ctl%node_bc_P_ctl, sbc_ctl%surf_bc_PN_ctl,                &
-     &    MHD_BC%press_BC%nod_BC, MHD_BC%press_BC%surf_BC)
-!
-!   set boundary conditions for composition variation
-!
-      if (iflag_debug.gt.0) write(*,*) 's_set_control_4_composition'
-      call s_set_control_4_composition(MHD_prop%cp_prop,                &
-     &    nbc_ctl%node_bc_C_ctl, sbc_ctl%surf_bc_CF_ctl,                &
-     &    MHD_BC%light_BC%nod_BC, MHD_BC%light_BC%surf_BC)
-!
-!   set boundary_conditons for magnetic field
-!
-      if (iflag_debug.gt.0) write(*,*) 's_set_control_4_magne'
-      call s_set_control_4_magne(MHD_prop%cd_prop,                      &
-     &    nbc_ctl%node_bc_B_ctl, sbc_ctl%surf_bc_BN_ctl,                &
-     &    MHD_BC%magne_BC%nod_BC, MHD_BC%magne_BC%surf_BC)
-!
-      end subroutine set_control_SPH_MHD_bcs
-!
-! ----------------------------------------------------------------------
-!
-      end module set_control_sph_mhd
+      end module set_control_sph_SGS_MHD

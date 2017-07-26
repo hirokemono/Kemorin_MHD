@@ -52,7 +52,7 @@
       use m_sph_spectr_data
       use m_rms_4_sph_spectr
       use sph_mhd_rst_IO_control
-      use set_control_sph_mhd
+      use set_control_sph_SGS_MHD
       use set_control_sph_data_MHD
       use init_sph_MHD_elapsed_label
       use parallel_load_data_4_sph
@@ -71,8 +71,8 @@
       call start_eleps_time(4)
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_MHD_noviz'
       call read_control_4_sph_MHD_noviz(snap_ctl_name, MHD_ctl1)
-      if (iflag_debug.eq.1) write(*,*) 'set_control_SGS_SPH_MHD'
-      call set_control_SGS_SPH_MHD(MHD_ctl1%plt, MHD_ctl1%org_plt,      &
+      if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_SGS_MHD'
+      call set_control_4_SPH_SGS_MHD(MHD_ctl1%plt, MHD_ctl1%org_plt,    &
      &    MHD_ctl1%model_ctl, MHD_ctl1%ctl_ctl, MHD_ctl1%smonitor_ctl,  &
      &    MHD_ctl1%nmtr_ctl, MHD_ctl1%psph_ctl, sph_gen, rj_fld1,       &
      &    MHD_files1, bc_IO1, pwr1, SGS_par1,                           &

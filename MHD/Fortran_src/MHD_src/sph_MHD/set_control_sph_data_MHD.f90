@@ -43,7 +43,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_set_control_sph_data_MHD                             &
-     &         (SGS_param, MHD_prop, plt, field_ctl, mevo_ctl,          &
+     &         (MHD_prop, plt, field_ctl, mevo_ctl,                     &
      &          rj_org_param, rst_org_param, fst_file_IO,               &
      &          rj_fld, bc_IO, WK_sph)
 !
@@ -72,7 +72,6 @@
       use add_sph_MHD_fields_2_ctl
       use sph_mhd_rst_IO_control
 !
-      type(SGS_model_control_params), intent(in) :: SGS_param
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(platform_data_control), intent(in) :: plt
       type(ctl_array_c3), intent(inout) :: field_ctl
@@ -106,11 +105,6 @@
         call add_field_name_4_sph_mhd                                   &
      &     (MHD_prop%fl_prop, MHD_prop%cd_prop,                         &
      &      MHD_prop%ht_prop, MHD_prop%cp_prop, field_ctl)
-        call add_field_name_4_SGS(SGS_param, field_ctl)
-        call add_field_name_dynamic_SGS                                 &
-     &     (SGS_param, MHD_prop%fl_prop, field_ctl)
-        if (iflag_debug.eq.1) write(*,*)                                &
-     &    'field_ctl%num after modified ', field_ctl%num
 !
 !    set nodal data
 !
