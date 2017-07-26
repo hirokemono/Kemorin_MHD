@@ -20,7 +20,8 @@ sgs_model \
 sgs_dynamic \
 MG_for_MHD   \
 \
-sph_MHD
+sph_MHD \
+sph_SGS_MHD
 
 #
 #  -------------------------------------------------------------------------
@@ -76,7 +77,8 @@ mod_list:
 	@echo '$$(MOD_EVOLVE)'      \\  >> $(MAKENAME)
 	@echo '$$(MOD_MHD_SOLVE)'   \\  >> $(MAKENAME)
 	@echo '$$(MOD_MG_4_MHD)'    \\  >> $(MAKENAME)
-	@echo '$$(MOD_SPH_MHD)'         >> $(MAKENAME)
+	@echo '$$(MOD_SPH_MHD)'     \\  >> $(MAKENAME)
+	@echo '$$(MOD_SPH_SGS_MHD)'     >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 	
 	@for dir in $(SUBDIRS); do \
