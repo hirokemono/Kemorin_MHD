@@ -13,7 +13,7 @@
 !!     &          MHD_step, MHD_prop, MHD_BC, WK_sph, gen_sph)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
-!!        type(mhd_model_control), intent(inout) :: model_ctl
+!!        type(mhd_noSGS_model_control), intent(inout) :: model_ctl
 !!        type(mhd_control_control), intent(inout) :: ctl_ctl
 !!        type(sph_monitor_control), intent(inout) :: smonitor_ctl
 !!        type(node_monitor_control), intent(inout) :: nmtr_ctl
@@ -42,7 +42,7 @@
       use t_MHD_file_parameter
       use t_field_data_IO
       use t_ctl_data_4_platforms
-      use t_ctl_data_MHD_model
+      use t_ctl_data_noSGS_MHD_model
       use t_ctl_data_MHD_control
       use t_ctl_data_4_sph_monitor
       use t_ctl_data_node_monitor
@@ -89,7 +89,7 @@
       type(platform_data_control), intent(in) :: plt
       type(platform_data_control), intent(in) :: org_plt
 !
-      type(mhd_model_control), intent(inout) :: model_ctl
+      type(mhd_noSGS_model_control), intent(inout) :: model_ctl
       type(mhd_control_control), intent(inout) :: ctl_ctl
       type(sph_monitor_control), intent(inout) :: smonitor_ctl
       type(node_monitor_control), intent(inout) :: nmtr_ctl

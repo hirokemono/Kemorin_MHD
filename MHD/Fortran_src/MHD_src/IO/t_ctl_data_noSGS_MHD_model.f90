@@ -13,7 +13,7 @@
 !!@verbatim
 !!      subroutine read_sgs_mhd_model(hd_block, iflag, model_ctl)
 !!      subroutine bcast_sgs_mhd_model(model_ctl)
-!!        type(sgs_mhd_model_control), intent(inout) :: model_ctl
+!!        type(mhd_noSGS_model_control), intent(inout) :: model_ctl
 !!@endverbatim
 !
       module t_ctl_data_noSGS_MHD_model
@@ -29,13 +29,12 @@
       use t_ctl_data_mhd_normalize
       use t_ctl_data_mhd_forces
       use t_ctl_data_temp_model
-      use t_ctl_data_SGS_model
 !
       use skip_comment_f
 !
       implicit none
 !
-      type sgs_mhd_model_control
+      type mhd_noSGS_model_control
 !>        Structure for field information control
         type(field_control) :: fld_ctl
 !
@@ -67,9 +66,7 @@
         type(reference_temperature_ctl) :: reft_ctl
 !>        Structures for reference composition
         type(reference_temperature_ctl) :: refc_ctl
-!>        Structures for SGS controls
-        type(SGS_model_control) :: sgs_ctl
-      end type sgs_mhd_model_control
+      end type mhd_noSGS_model_control
 !
 !    label for entry of group
 !
@@ -120,8 +117,8 @@
       integer (kind=kint) :: i_comp_def =      0
       integer (kind=kint) :: i_bc_4_surf =     0
 !
-      character(len=kchara), parameter :: hd_sgs_ctl = 'SGS_control'
-      integer (kind=kint) :: i_sgs_ctl =       0
+!      character(len=kchara), parameter :: hd_sgs_ctl = 'SGS_control'
+!      integer (kind=kint) :: i_sgs_ctl =       0
 !
 !
       private :: hd_phys_values, i_phys_values
@@ -141,7 +138,7 @@
 !
       private :: hd_temp_def, i_temp_def
       private :: hd_comp_def, i_comp_def
-      private :: hd_sgs_ctl, i_sgs_ctl
+!      private :: hd_sgs_ctl, i_sgs_ctl
 !
 ! ----------------------------------------------------------------------
 !
@@ -154,7 +151,7 @@
       character(len=kchara), intent(in) :: hd_block
 !
       integer(kind = kint), intent(inout) :: iflag
-      type(sgs_mhd_model_control), intent(inout) :: model_ctl
+      type(mhd_noSGS_model_control), intent(inout) :: model_ctl
 !
 !
       if(right_begin_flag(hd_block) .eq. 0) return
@@ -197,8 +194,6 @@
      &     (hd_temp_def, i_temp_def, model_ctl%reft_ctl)
         call read_reftemp_ctl                                           &
      &     (hd_comp_def, i_comp_def, model_ctl%refc_ctl)
-!
-        call read_sgs_ctl(hd_sgs_ctl, i_sgs_ctl, model_ctl%sgs_ctl)
       end do
 !
       end subroutine read_sgs_mhd_model
@@ -210,7 +205,7 @@
 !
       use bcast_4_field_ctl
 !
-      type(sgs_mhd_model_control), intent(inout) :: model_ctl
+      type(mhd_noSGS_model_control), intent(inout) :: model_ctl
 !
 !
       call bcast_phys_data_ctl(model_ctl%fld_ctl)
@@ -228,7 +223,6 @@
       call bcast_magneto_ctl(model_ctl%mcv_ctl)
       call bcast_ref_scalar_ctl(model_ctl%reft_ctl)
       call bcast_ref_scalar_ctl(model_ctl%refc_ctl)
-      call bcast_sgs_ctl(model_ctl%sgs_ctl)
 !
       end subroutine bcast_sgs_mhd_model
 !
