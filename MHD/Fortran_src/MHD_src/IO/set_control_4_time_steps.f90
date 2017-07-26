@@ -9,10 +9,9 @@
 !> @brief set parameters for time stepping
 !!
 !!@verbatim
-!!      subroutine s_set_control_4_time_steps(flex_p, SGS_par,          &
-!!     &          MHD_step, mr_ctl, tctl)
+!!      subroutine s_set_control_4_time_steps                           &
+!!     &         (flex_p, MHD_step, mr_ctl, tctl)
 !!        type(mhd_restart_control), intent(in) :: mr_ctl
-!!        type(SGS_paremeters), intent(inout) :: SGS_par
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(flexible_stepping_parameter), intent(inout) :: flex_p
 !!        type(time_data_control), intent(inout) :: tctl
@@ -28,7 +27,6 @@
       use m_MHD_step_parameter
       use t_time_data
       use t_step_parameter
-      use t_SGS_control_parameter
       use t_ctl_data_4_time_steps
       use t_VIZ_step_parameter
       use t_MHD_step_parameter
@@ -46,8 +44,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_control_4_time_steps(flex_p, SGS_par,            &
-     &          MHD_step, mr_ctl, tctl)
+      subroutine s_set_control_4_time_steps                             &
+     &         (flex_p, MHD_step, mr_ctl, tctl)
 !
       use t_time_data
       use t_ctl_data_mhd_evo_scheme
@@ -57,7 +55,6 @@
 !
       type(mhd_restart_control), intent(in) :: mr_ctl
       type(flexible_stepping_parameter), intent(inout) :: flex_p
-      type(SGS_paremeters), intent(inout) :: SGS_par
       type(MHD_step_param), intent(inout) :: MHD_step
       type(time_data_control), intent(inout) :: tctl
 !
@@ -131,12 +128,11 @@
       if(flex_p%iflag_flexible_step .eq. iflag_flex_step) then
         if (iflag_debug .ge. iflag_routine_msg)                         &
      &    write(*,*) 'set_flex_time_step_controls'
-        call set_flex_time_step_controls                                &
-     &     (flex_p, SGS_par, tctl, MHD_step)
+        call set_flex_time_step_controls(flex_p, tctl, MHD_step)
       else
         if (iflag_debug .ge. iflag_routine_msg)                         &
      &    write(*,*) 'set_fixed_time_step_controls'
-        call set_fixed_time_step_controls(SGS_par, tctl, MHD_step)
+        call set_fixed_time_step_controls(tctl, MHD_step)
       end if
 !
       if (MHD_step%finish_d%i_end_step .eq. -1) then
@@ -165,9 +161,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_fixed_time_step_controls(SGS_par, tctl, MHD_step)
+      subroutine set_fixed_time_step_controls(tctl, MHD_step)
 !
-      type(SGS_paremeters), intent(in) :: SGS_par
       type(time_data_control), intent(inout) :: tctl
       type(MHD_step_param), intent(inout) :: MHD_step
 !
@@ -185,11 +180,9 @@
      &    tctl%i_step_check_ctl, tctl%delta_t_check_ctl,                &
      &    MHD_step%rms_step)
 !
-      if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
-        call set_output_step_4_fixed_step(izero, MHD_step%init_d%dt,    &
-     &      tctl%i_step_sgs_coefs_ctl, tctl%delta_t_sgs_coefs_ctl,      &
-     &      MHD_step%sgs_IO_step)
-      end if
+      call set_output_step_4_fixed_step(izero, MHD_step%init_d%dt,      &
+     &    tctl%i_step_sgs_coefs_ctl, tctl%delta_t_sgs_coefs_ctl,        &
+     &    MHD_step%sgs_IO_step)
 !
       call set_output_step_4_fixed_step(izero, MHD_step%init_d%dt,      &
      &    tctl%i_step_monitor_ctl, tctl%delta_t_monitor_ctl,            &
@@ -203,10 +196,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_flex_time_step_controls                            &
-     &         (flex_p, SGS_par, tctl, MHD_step)
+      subroutine set_flex_time_step_controls(flex_p, tctl, MHD_step)
 !
-      type(SGS_paremeters), intent(inout) :: SGS_par
       type(flexible_stepping_parameter), intent(inout) :: flex_p
       type(time_data_control), intent(inout) :: tctl
       type(MHD_step_param), intent(inout) :: MHD_step
@@ -220,11 +211,9 @@
      &    tctl%i_step_check_ctl, tctl%delta_t_check_ctl,                &
      &    MHD_step%rms_step)
 !
-      if(SGS_par%model_p%iflag_dynamic .ne. id_SGS_DYNAMIC_OFF) then
-        call set_output_step_4_flex_step(izero, flex_p%dt_max,          &
-     &      tctl%i_step_sgs_coefs_ctl, tctl%delta_t_sgs_coefs_ctl,      &
-     &      MHD_step%sgs_IO_step)
-      end if
+      call set_output_step_4_flex_step(izero, flex_p%dt_max,            &
+     &    tctl%i_step_sgs_coefs_ctl, tctl%delta_t_sgs_coefs_ctl,        &
+     &    MHD_step%sgs_IO_step)
 !
       call set_output_step_4_flex_step(izero, flex_p%dt_max,            &
      &    tctl%i_step_monitor_ctl, tctl%delta_t_monitor_ctl,            &
