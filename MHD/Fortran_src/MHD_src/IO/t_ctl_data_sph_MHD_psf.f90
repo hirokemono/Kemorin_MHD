@@ -22,7 +22,7 @@
 !
       use m_precision
 !
-      use t_ctl_data_MHD
+      use t_ctl_data_SGS_MHD
       use m_machine_parameter
       use m_read_control_elements
       use calypso_mpi
@@ -50,12 +50,12 @@
         open ( ctl_file_code, file = file_name, status='old' )
 !
         call load_ctl_label_and_line
-        call read_sph_mhd_ctl_w_psf(MHD_ctl)
+        call read_sph_sgs_mhd_ctl_w_psf(MHD_ctl)
 !
         close(ctl_file_code)
       end if
 !
-      call bcast_sph_mhd_ctl_w_psf(MHD_ctl)
+      call bcast_sph_sgs_mhd_ctl_w_psf(MHD_ctl)
 !
       if(MHD_ctl%psph_ctl%ifile_sph_shell .gt. 0) then
         call read_ctl_file_shell_in_MHD(MHD_ctl%psph_ctl)
@@ -76,12 +76,12 @@
         open ( ctl_file_code, file = file_name, status='old' )
 !
         call load_ctl_label_and_line
-        call read_sph_mhd_ctl_noviz(MHD_ctl)
+        call read_sph_sgs_mhd_ctl_noviz(MHD_ctl)
 !
         close(ctl_file_code)
       end if
 !
-      call bcast_sph_mhd_ctl_data(MHD_ctl)
+      call bcast_sph_sgs_mhd_ctl_data(MHD_ctl)
 !
       if(MHD_ctl%psph_ctl%ifile_sph_shell .gt. 0) then
         call read_ctl_file_shell_in_MHD(MHD_ctl%psph_ctl)

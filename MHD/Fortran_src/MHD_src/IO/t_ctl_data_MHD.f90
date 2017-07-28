@@ -17,7 +17,6 @@
 !!
 !!      subroutine bcast_sph_mhd_ctl_w_psf(MHD_ctl)
 !!      subroutine bcast_sph_mhd_ctl_data(MHD_ctl)
-!!      subroutine bcast_fem_mhd_ctl_data(MHD_ctl)
 !!@endverbatim
 !
       module t_ctl_data_MHD
@@ -26,7 +25,7 @@
 !
       use m_machine_parameter
       use t_ctl_data_4_platforms
-      use t_ctl_data_SGS_MHD_model
+      use t_ctl_data_MHD_model
       use t_ctl_data_MHD_control
       use t_ctl_data_4_sph_monitor
       use t_ctl_data_node_monitor
@@ -47,7 +46,7 @@
         type(parallel_sph_shell_control) :: psph_ctl
 !
 !>        Control structure for MHD/model
-        type(mhd_model_control) :: model_ctl
+        type(mhd_DNS_model_control) :: DNS_model_ctl
 !>        Control structure for MHD/control
         type(mhd_control_control) :: ctl_ctl
 !
@@ -126,8 +125,8 @@
         call read_parallel_shell_in_MHD_ctl                             &
      &     (hd_sph_shell, MHD_ctl%psph_ctl)
 !
-        call read_sph_sgs_mhd_model                                     &
-     &     (hd_model, i_model, MHD_ctl%model_ctl)
+        call read_sph_mhd_model                                         &
+     &     (hd_model, i_model, MHD_ctl%DNS_model_ctl)
         call read_sph_mhd_control                                       &
      &     (hd_control, i_control, MHD_ctl%ctl_ctl)
 !
@@ -165,8 +164,8 @@
         call read_parallel_shell_in_MHD_ctl                             &
      &     (hd_sph_shell, MHD_ctl%psph_ctl)
 !
-        call read_sph_sgs_mhd_model                                     &
-     &     (hd_model, i_model, MHD_ctl%model_ctl)
+        call read_sph_mhd_model                                         &
+     &     (hd_model, i_model, MHD_ctl%DNS_model_ctl)
         call read_sph_mhd_control                                       &
      &     (hd_control, i_control, MHD_ctl%ctl_ctl)
 !
@@ -177,42 +176,6 @@
       end do
 !
       end subroutine read_sph_mhd_ctl_noviz
-!
-!   --------------------------------------------------------------------
-!
-      subroutine read_fem_mhd_control_data(MHD_ctl)
-!
-      use calypso_mpi
-      use m_control_data_sections
-!
-      type(mhd_simulation_control), intent(inout) :: MHD_ctl
-!
-!
-      if(right_begin_flag(hd_mhd_ctl) .eq. 0) return
-      if (i_mhd_ctl .gt. 0) return
-      do
-        call load_ctl_label_and_line
-!
-        call find_control_end_flag(hd_mhd_ctl, i_mhd_ctl)
-        if(i_mhd_ctl .gt. 0) exit
-!
-!
-        call read_control_platforms                                     &
-     &     (hd_platform, i_platform, MHD_ctl%plt)
-        call read_control_platforms                                     &
-     &     (hd_org_data, i_org_data, MHD_ctl%org_plt)
-!
-        call read_sph_sgs_mhd_model                                     &
-     &     (hd_model, i_model, MHD_ctl%model_ctl)
-        call read_fem_mhd_control                                       &
-     &     (hd_control, i_control, MHD_ctl%ctl_ctl)
-!
-        call read_monitor_data_ctl                                      &
-     &     (hd_monitor_data, i_monitor_data, MHD_ctl%nmtr_ctl)
-        call read_sections_control_data
-      end do
-!
-      end subroutine read_fem_mhd_control_data
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
@@ -245,7 +208,7 @@
       call bcast_ctl_data_4_platform(MHD_ctl%plt)
       call bcast_ctl_data_4_platform(MHD_ctl%org_plt)
 !
-      call bcast_sph_sgs_mhd_model(MHD_ctl%model_ctl)
+      call bcast_sph_mhd_model(MHD_ctl%DNS_model_ctl)
       call bcast_sph_mhd_control(MHD_ctl%ctl_ctl)
 !
       call bcast_parallel_shell_ctl(MHD_ctl%psph_ctl)
@@ -254,31 +217,6 @@
       call bcast_sph_monitoring_ctl(MHD_ctl%smonitor_ctl)
 !
       end subroutine bcast_sph_mhd_ctl_data
-!
-!   --------------------------------------------------------------------
-!
-      subroutine bcast_fem_mhd_ctl_data(MHD_ctl)
-!
-      use m_control_data_sections
-      use bcast_4_platform_ctl
-      use bcast_4_field_ctl
-      use bcast_4_sph_monitor_ctl
-      use bcast_4_sphere_ctl
-!
-      type(mhd_simulation_control), intent(inout) :: MHD_ctl
-!
-      call bcast_ctl_data_4_platform(MHD_ctl%plt)
-      call bcast_ctl_data_4_platform(MHD_ctl%org_plt)
-!
-      call bcast_sph_sgs_mhd_model(MHD_ctl%model_ctl)
-      call bcast_fem_mhd_control(MHD_ctl%ctl_ctl)
-!
-      call bcast_monitor_data_ctl(MHD_ctl%nmtr_ctl)
-!
-      call bcast_files_4_psf_ctl
-      call bcast_files_4_iso_ctl
-!
-      end subroutine bcast_fem_mhd_ctl_data
 !
 !   --------------------------------------------------------------------
 !

@@ -66,7 +66,7 @@
       use t_group_data
       use t_rms_4_sph_spectr
       use t_file_IO_parameter
-      use t_ctl_data_MHD
+      use t_ctl_data_SGS_MHD
       use t_sph_trans_arrays_MHD
       use t_sph_boundary_input_data
       use t_bc_data_list

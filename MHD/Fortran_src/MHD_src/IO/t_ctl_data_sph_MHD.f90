@@ -18,7 +18,7 @@
 !
       use m_precision
 !
-      use t_ctl_data_MHD
+      use t_ctl_data_SGS_MHD
       use m_machine_parameter
       use m_read_control_elements
       use calypso_mpi
@@ -122,7 +122,7 @@
       type(mhd_simulation_control), intent(inout) :: MHD_ctl
 !
 !
-      call bcast_sph_mhd_ctl_data(MHD_ctl)
+      call bcast_sph_sgs_mhd_ctl_data(MHD_ctl)
       call bcast_ctl_data_4_platform(MHD_ctl%new_plt)
 !
       call bcast_viz_control_data

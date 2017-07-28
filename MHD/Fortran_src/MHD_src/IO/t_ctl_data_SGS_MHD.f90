@@ -11,12 +11,12 @@
 !!@n        Modified by H. Matsui on Oct., 2012
 !!
 !!@verbatim
-!!      subroutine read_sph_mhd_ctl_w_psf(MHD_ctl)
-!!      subroutine read_sph_mhd_ctl_noviz(MHD_ctl)
+!!      subroutine read_sph_sgs_mhd_ctl_w_psf(MHD_ctl)
+!!      subroutine read_sph_sgs_mhd_ctl_noviz(MHD_ctl)
 !!      subroutine read_fem_mhd_control_data(MHD_ctl)
 !!
-!!      subroutine bcast_sph_mhd_ctl_w_psf(MHD_ctl)
-!!      subroutine bcast_sph_mhd_ctl_data(MHD_ctl)
+!!      subroutine bcast_sph_sgs_mhd_ctl_w_psf(MHD_ctl)
+!!      subroutine bcast_sph_sgs_mhd_ctl_data(MHD_ctl)
 !!      subroutine bcast_fem_mhd_ctl_data(MHD_ctl)
 !!@endverbatim
 !
@@ -102,7 +102,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine read_sph_mhd_ctl_w_psf(MHD_ctl)
+      subroutine read_sph_sgs_mhd_ctl_w_psf(MHD_ctl)
 !
       use m_control_data_sections
 !
@@ -139,11 +139,11 @@
         call read_sections_control_data
       end do
 !
-      end subroutine read_sph_mhd_ctl_w_psf
+      end subroutine read_sph_sgs_mhd_ctl_w_psf
 !
 !   --------------------------------------------------------------------
 !
-      subroutine read_sph_mhd_ctl_noviz(MHD_ctl)
+      subroutine read_sph_sgs_mhd_ctl_noviz(MHD_ctl)
 !
       type(mhd_simulation_control), intent(inout) :: MHD_ctl
 !
@@ -176,7 +176,7 @@
      &     (hd_pick_sph, i_pick_sph, MHD_ctl%smonitor_ctl)
       end do
 !
-      end subroutine read_sph_mhd_ctl_noviz
+      end subroutine read_sph_sgs_mhd_ctl_noviz
 !
 !   --------------------------------------------------------------------
 !
@@ -217,22 +217,22 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine bcast_sph_mhd_ctl_w_psf(MHD_ctl)
+      subroutine bcast_sph_sgs_mhd_ctl_w_psf(MHD_ctl)
 !
       use m_control_data_sections
 !
       type(mhd_simulation_control), intent(inout) :: MHD_ctl
 !
 !
-      call bcast_sph_mhd_ctl_data(MHD_ctl)
+      call bcast_sph_sgs_mhd_ctl_data(MHD_ctl)
       call bcast_files_4_psf_ctl
       call bcast_files_4_iso_ctl
 !
-      end subroutine bcast_sph_mhd_ctl_w_psf
+      end subroutine bcast_sph_sgs_mhd_ctl_w_psf
 !
 !   --------------------------------------------------------------------
 !
-      subroutine bcast_sph_mhd_ctl_data(MHD_ctl)
+      subroutine bcast_sph_sgs_mhd_ctl_data(MHD_ctl)
 !
       use bcast_4_platform_ctl
       use bcast_4_field_ctl
@@ -253,7 +253,7 @@
       call bcast_monitor_data_ctl(MHD_ctl%nmtr_ctl)
       call bcast_sph_monitoring_ctl(MHD_ctl%smonitor_ctl)
 !
-      end subroutine bcast_sph_mhd_ctl_data
+      end subroutine bcast_sph_sgs_mhd_ctl_data
 !
 !   --------------------------------------------------------------------
 !

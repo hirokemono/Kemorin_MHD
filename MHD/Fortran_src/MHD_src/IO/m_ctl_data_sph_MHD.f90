@@ -15,7 +15,7 @@
 !
       use m_precision
 !
-      use t_ctl_data_MHD
+      use t_ctl_data_SGS_MHD
       use t_sph_boundary_input_data
 !
       implicit none

@@ -1,5 +1,5 @@
-!>@file   t_ctl_data_noSGS_MHD_model.f90
-!!@brief  module t_ctl_data_noSGS_MHD_model
+!>@file   t_ctl_data_MHD_model.f90
+!!@brief  module t_ctl_data_MHD_model
 !!
 !!@author H. Matsui
 !>@brief   Control read routine
@@ -11,12 +11,12 @@
 !!@n        Modified by H. Matsui on Oct., 2012
 !!
 !!@verbatim
-!!      subroutine read_sgs_mhd_model(hd_block, iflag, model_ctl)
-!!      subroutine bcast_sgs_mhd_model(model_ctl)
-!!        type(mhd_noSGS_model_control), intent(inout) :: model_ctl
+!!      subroutine read_sph_mhd_model(hd_block, iflag, model_ctl)
+!!      subroutine bcast_sph_mhd_model(model_ctl)
+!!        type(mhd_DNS_model_control), intent(inout) :: model_ctl
 !!@endverbatim
 !
-      module t_ctl_data_noSGS_MHD_model
+      module t_ctl_data_MHD_model
 !
       use m_precision
 !
@@ -34,7 +34,7 @@
 !
       implicit none
 !
-      type mhd_noSGS_model_control
+      type mhd_DNS_model_control
 !>        Structure for field information control
         type(field_control) :: fld_ctl
 !
@@ -66,7 +66,7 @@
         type(reference_temperature_ctl) :: reft_ctl
 !>        Structures for reference composition
         type(reference_temperature_ctl) :: refc_ctl
-      end type mhd_noSGS_model_control
+      end type mhd_DNS_model_control
 !
 !    label for entry of group
 !
@@ -146,12 +146,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine read_sgs_mhd_model(hd_block, iflag, model_ctl)
+      subroutine read_sph_mhd_model(hd_block, iflag, model_ctl)
 !
       character(len=kchara), intent(in) :: hd_block
 !
       integer(kind = kint), intent(inout) :: iflag
-      type(mhd_noSGS_model_control), intent(inout) :: model_ctl
+      type(mhd_DNS_model_control), intent(inout) :: model_ctl
 !
 !
       if(right_begin_flag(hd_block) .eq. 0) return
@@ -196,16 +196,16 @@
      &     (hd_comp_def, i_comp_def, model_ctl%refc_ctl)
       end do
 !
-      end subroutine read_sgs_mhd_model
+      end subroutine read_sph_mhd_model
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine bcast_sgs_mhd_model(model_ctl)
+      subroutine bcast_sph_mhd_model(model_ctl)
 !
       use bcast_4_field_ctl
 !
-      type(mhd_noSGS_model_control), intent(inout) :: model_ctl
+      type(mhd_DNS_model_control), intent(inout) :: model_ctl
 !
 !
       call bcast_phys_data_ctl(model_ctl%fld_ctl)
@@ -224,8 +224,8 @@
       call bcast_ref_scalar_ctl(model_ctl%reft_ctl)
       call bcast_ref_scalar_ctl(model_ctl%refc_ctl)
 !
-      end subroutine bcast_sgs_mhd_model
+      end subroutine bcast_sph_mhd_model
 !
 !   --------------------------------------------------------------------
 !
-      end module t_ctl_data_noSGS_MHD_model
+      end module t_ctl_data_MHD_model

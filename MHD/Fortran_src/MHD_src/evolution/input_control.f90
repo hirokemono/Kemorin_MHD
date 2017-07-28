@@ -64,7 +64,7 @@
       use t_solver_djds_MHD
       use t_phys_data
       use t_field_data_IO
-      use t_ctl_data_MHD
+      use t_ctl_data_SGS_MHD
       use t_MGCG_data
       use t_MGCG_data_4_MHD
       use t_bc_data_list
