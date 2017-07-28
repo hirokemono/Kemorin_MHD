@@ -1,5 +1,5 @@
-!>@file   t_ctl_data_MHD_model.f90
-!!@brief  module t_ctl_data_MHD_model
+!>@file   t_ctl_data_SGS_MHD_model.f90
+!!@brief  module t_ctl_data_SGS_MHD_model
 !!
 !!@author H. Matsui
 !>@brief   Control read routine
@@ -11,12 +11,12 @@
 !!@n        Modified by H. Matsui on Oct., 2012
 !!
 !!@verbatim
-!!      subroutine read_sph_mhd_model(hd_block, iflag, model_ctl)
-!!      subroutine bcast_sph_mhd_model(model_ctl)
+!!      subroutine read_sph_sgs_mhd_model(hd_block, iflag, model_ctl)
+!!      subroutine bcast_sph_sgs_mhd_model(model_ctl)
 !!        type(mhd_model_control), intent(inout) :: model_ctl
 !!@endverbatim
 !
-      module t_ctl_data_MHD_model
+      module t_ctl_data_SGS_MHD_model
 !
       use m_precision
 !
@@ -149,7 +149,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine read_sph_mhd_model(hd_block, iflag, model_ctl)
+      subroutine read_sph_sgs_mhd_model(hd_block, iflag, model_ctl)
 !
       character(len=kchara), intent(in) :: hd_block
 !
@@ -201,12 +201,12 @@
         call read_sgs_ctl(hd_sgs_ctl, i_sgs_ctl, model_ctl%sgs_ctl)
       end do
 !
-      end subroutine read_sph_mhd_model
+      end subroutine read_sph_sgs_mhd_model
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine bcast_sph_mhd_model(model_ctl)
+      subroutine bcast_sph_sgs_mhd_model(model_ctl)
 !
       use bcast_4_field_ctl
 !
@@ -230,8 +230,8 @@
       call bcast_ref_scalar_ctl(model_ctl%refc_ctl)
       call bcast_sgs_ctl(model_ctl%sgs_ctl)
 !
-      end subroutine bcast_sph_mhd_model
+      end subroutine bcast_sph_sgs_mhd_model
 !
 !   --------------------------------------------------------------------
 !
-      end module t_ctl_data_MHD_model
+      end module t_ctl_data_SGS_MHD_model

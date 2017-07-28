@@ -26,7 +26,7 @@
 !
       use m_machine_parameter
       use t_ctl_data_4_platforms
-      use t_ctl_data_MHD_model
+      use t_ctl_data_SGS_MHD_model
       use t_ctl_data_MHD_control
       use t_ctl_data_4_sph_monitor
       use t_ctl_data_node_monitor
@@ -126,7 +126,8 @@
         call read_parallel_shell_in_MHD_ctl                             &
      &     (hd_sph_shell, MHD_ctl%psph_ctl)
 !
-        call read_sph_mhd_model(hd_model, i_model, MHD_ctl%model_ctl)
+        call read_sph_sgs_mhd_model                                     &
+     &     (hd_model, i_model, MHD_ctl%model_ctl)
         call read_sph_mhd_control                                       &
      &     (hd_control, i_control, MHD_ctl%ctl_ctl)
 !
@@ -164,7 +165,8 @@
         call read_parallel_shell_in_MHD_ctl                             &
      &     (hd_sph_shell, MHD_ctl%psph_ctl)
 !
-        call read_sph_mhd_model(hd_model, i_model, MHD_ctl%model_ctl)
+        call read_sph_sgs_mhd_model                                     &
+     &     (hd_model, i_model, MHD_ctl%model_ctl)
         call read_sph_mhd_control                                       &
      &     (hd_control, i_control, MHD_ctl%ctl_ctl)
 !
@@ -200,7 +202,8 @@
         call read_control_platforms                                     &
      &     (hd_org_data, i_org_data, MHD_ctl%org_plt)
 !
-        call read_sph_mhd_model(hd_model, i_model, MHD_ctl%model_ctl)
+        call read_sph_sgs_mhd_model                                     &
+     &     (hd_model, i_model, MHD_ctl%model_ctl)
         call read_fem_mhd_control                                       &
      &     (hd_control, i_control, MHD_ctl%ctl_ctl)
 !
@@ -242,7 +245,7 @@
       call bcast_ctl_data_4_platform(MHD_ctl%plt)
       call bcast_ctl_data_4_platform(MHD_ctl%org_plt)
 !
-      call bcast_sph_mhd_model(MHD_ctl%model_ctl)
+      call bcast_sph_sgs_mhd_model(MHD_ctl%model_ctl)
       call bcast_sph_mhd_control(MHD_ctl%ctl_ctl)
 !
       call bcast_parallel_shell_ctl(MHD_ctl%psph_ctl)
@@ -267,7 +270,7 @@
       call bcast_ctl_data_4_platform(MHD_ctl%plt)
       call bcast_ctl_data_4_platform(MHD_ctl%org_plt)
 !
-      call bcast_sph_mhd_model(MHD_ctl%model_ctl)
+      call bcast_sph_sgs_mhd_model(MHD_ctl%model_ctl)
       call bcast_fem_mhd_control(MHD_ctl%ctl_ctl)
 !
       call bcast_monitor_data_ctl(MHD_ctl%nmtr_ctl)

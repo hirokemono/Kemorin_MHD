@@ -43,7 +43,7 @@
       use t_MHD_file_parameter
       use t_field_data_IO
       use t_ctl_data_4_platforms
-      use t_ctl_data_MHD_model
+      use t_ctl_data_SGS_MHD_model
       use t_ctl_data_MHD_control
       use t_ctl_data_4_sph_monitor
       use t_ctl_data_node_monitor

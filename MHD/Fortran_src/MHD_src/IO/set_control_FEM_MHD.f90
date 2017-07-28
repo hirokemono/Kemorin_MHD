@@ -36,7 +36,7 @@
       use t_phys_data
       use t_MHD_file_parameter
       use t_ctl_data_4_platforms
-      use t_ctl_data_MHD_model
+      use t_ctl_data_SGS_MHD_model
       use t_ctl_data_MHD_control
       use t_ctl_data_node_monitor
       use t_bc_data_list

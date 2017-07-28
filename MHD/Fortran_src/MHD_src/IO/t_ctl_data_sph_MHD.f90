@@ -97,7 +97,8 @@
         call read_parallel_shell_in_MHD_ctl                             &
      &     (hd_sph_shell, MHD_ctl%psph_ctl)
 !
-        call read_sph_mhd_model(hd_model, i_model, MHD_ctl%model_ctl)
+        call read_sph_sgs_mhd_model                                     &
+     &     (hd_model, i_model, MHD_ctl%model_ctl)
         call read_sph_mhd_control                                       &
      &     (hd_control, i_control, MHD_ctl%ctl_ctl)
 !
