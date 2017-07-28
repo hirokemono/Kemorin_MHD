@@ -26,7 +26,7 @@
 !!     &          (MHD_files, bc_IO, DMHD_ctl, sph, comms_sph, sph_grps,&
 !!     &           rj_fld, nod_fld, pwr, MHD_step, MHD_prop, MHD_BC, WK)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
-!!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
+!!        type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
 !!        type(DNS_mhd_simulation_control), intent(inout) :: DMHD_ctl
 !!        type(sph_grids), intent(inout) :: sph
 !!        type(sph_comm_tables), intent(inout) :: comms_sph
@@ -101,7 +101,7 @@
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(boundary_spectra), intent(inout) :: bc_IO
-      type(mhd_simulation_control), intent(inout) :: MHD_ctl
+      type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
       type(sph_grids), intent(inout) :: sph
       type(sph_comm_tables), intent(inout) :: comms_sph
       type(sph_group_data), intent(inout) ::  sph_grps
@@ -123,7 +123,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_SGS_MHD'
       call set_control_4_SPH_SGS_MHD(MHD_ctl%plt, MHD_ctl%org_plt,      &
-     &    MHD_ctl%model_ctl, MHD_ctl%ctl_ctl, MHD_ctl%smonitor_ctl,     &
+     &    MHD_ctl%model_ctl, MHD_ctl%smctl_ctl, MHD_ctl%smonitor_ctl,   &
      &    MHD_ctl%nmtr_ctl, MHD_ctl%psph_ctl, sph_maker1%sph_tmp,       &
      &    rj_fld, MHD_files, bc_IO, pwr,                                &
      &    SGS_par, dynamic_SPH%sph_filters, MHD_step, MHD_prop,         &
@@ -175,8 +175,9 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
-      call set_control_4_SPH_MHD(DMHD_ctl%plt, DMHD_ctl%org_plt,        &
-     &    DMHD_ctl%Dmodel_ctl, DMHD_ctl%ctl_ctl, DMHD_ctl%smonitor_ctl, &
+      call set_control_4_SPH_MHD                                        &
+     &   (DMHD_ctl%plt, DMHD_ctl%org_plt, DMHD_ctl%Dmodel_ctl,          &
+     &    DMHD_ctl%smctl_ctl, DMHD_ctl%smonitor_ctl,                    &
      &    DMHD_ctl%nmtr_ctl, DMHD_ctl%psph_ctl, sph_maker1%sph_tmp,     &
      &    rj_fld, MHD_files, bc_IO, pwr, MHD_step, MHD_prop, MHD_BC,    &
      &    WK%WK_sph, sph_maker1%gen_sph)
@@ -219,8 +220,9 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
-      call set_control_4_SPH_MHD(DMHD_ctl%plt, DMHD_ctl%org_plt,        &
-     &    DMHD_ctl%Dmodel_ctl, DMHD_ctl%ctl_ctl, DMHD_ctl%smonitor_ctl, &
+      call set_control_4_SPH_MHD                                        &
+     &   (DMHD_ctl%plt, DMHD_ctl%org_plt, DMHD_ctl%Dmodel_ctl,          &
+     &    DMHD_ctl%smctl_ctl, DMHD_ctl%smonitor_ctl,                    &
      &    DMHD_ctl%nmtr_ctl, DMHD_ctl%psph_ctl, sph_maker1%sph_tmp,     &
      &    rj_fld, MHD_files, bc_IO, pwr, MHD_step, MHD_prop, MHD_BC,    &
      &    WK%WK_sph, sph_maker1%gen_sph)
@@ -264,8 +266,9 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
-      call set_control_4_SPH_MHD(DMHD_ctl%plt, DMHD_ctl%org_plt,        &
-     &    DMHD_ctl%Dmodel_ctl, DMHD_ctl%ctl_ctl, DMHD_ctl%smonitor_ctl, &
+      call set_control_4_SPH_MHD                                        &
+     &   (DMHD_ctl%plt, DMHD_ctl%org_plt, DMHD_ctl%Dmodel_ctl,          &
+     &    DMHD_ctl%smctl_ctl, DMHD_ctl%smonitor_ctl,                    &
      &    DMHD_ctl%nmtr_ctl, DMHD_ctl%psph_ctl, sph_maker1%sph_tmp,     &
      &    rj_fld, MHD_files, bc_IO, pwr, MHD_step, MHD_prop, MHD_BC,    &
      &    WK%WK_sph, sph_maker1%gen_sph)
@@ -307,8 +310,9 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
-      call set_control_4_SPH_MHD(DMHD_ctl%plt, DMHD_ctl%org_plt,        &
-     &    DMHD_ctl%Dmodel_ctl, DMHD_ctl%ctl_ctl, DMHD_ctl%smonitor_ctl, &
+      call set_control_4_SPH_MHD                                        &
+     &   (DMHD_ctl%plt, DMHD_ctl%org_plt, DMHD_ctl%Dmodel_ctl,          &
+     &    DMHD_ctl%smctl_ctl, DMHD_ctl%smonitor_ctl,                    &
      &    DMHD_ctl%nmtr_ctl, DMHD_ctl%psph_ctl, sph_maker1%sph_tmp,     &
      &    rj_fld, MHD_files, bc_IO, pwr, MHD_step, MHD_prop, MHD_BC,    &
      &    WK%WK_sph, sph_maker1%gen_sph)

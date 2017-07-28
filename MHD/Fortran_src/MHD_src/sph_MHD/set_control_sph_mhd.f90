@@ -8,13 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine set_control_4_SPH_MHD(plt, org_plt, modelD_ctl,      &
-!!     &          ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,            &
+!!     &          smctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,          &
 !!     &          sph_gen, rj_fld, MHD_files, bc_IO, pwr,               &
 !!     &          MHD_step, MHD_prop, MHD_BC, WK_sph, gen_sph)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
 !!        type(mhd_DNS_model_control), intent(inout) :: modelD_ctl
-!!        type(mhd_control_control), intent(inout) :: ctl_ctl
+!!        type(sph_mhd_control_control), intent(inout) :: smctl_ctl
 !!        type(sph_monitor_control), intent(inout) :: smonitor_ctl
 !!        type(node_monitor_control), intent(inout) :: nmtr_ctl
 !!        type(parallel_sph_shell_control), intent(inout) :: psph_ctl
@@ -43,7 +43,7 @@
       use t_field_data_IO
       use t_ctl_data_4_platforms
       use t_ctl_data_MHD_model
-      use t_ctl_data_MHD_control
+      use t_ctl_data_SPH_MHD_control
       use t_ctl_data_4_sph_monitor
       use t_ctl_data_node_monitor
       use t_ctl_data_gen_sph_shell
@@ -59,7 +59,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_control_4_SPH_MHD(plt, org_plt, modelD_ctl,        &
-     &          ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,              &
+     &          smctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,            &
      &          sph_gen, rj_fld, MHD_files, bc_IO, pwr,                 &
      &          MHD_step, MHD_prop, MHD_BC, WK_sph, gen_sph)
 !
@@ -90,7 +90,7 @@
       type(platform_data_control), intent(in) :: org_plt
 !
       type(mhd_DNS_model_control), intent(inout) :: modelD_ctl
-      type(mhd_control_control), intent(inout) :: ctl_ctl
+      type(sph_mhd_control_control), intent(inout) :: smctl_ctl
       type(sph_monitor_control), intent(inout) :: smonitor_ctl
       type(node_monitor_control), intent(inout) :: nmtr_ctl
       type(parallel_sph_shell_control), intent(inout) :: psph_ctl
@@ -123,7 +123,7 @@
 !
       call s_set_control_4_model                                        &
      &    (modelD_ctl%reft_ctl, modelD_ctl%refc_ctl,                    &
-     &     ctl_ctl%mevo_ctl, modelD_ctl%evo_ctl, nmtr_ctl, MHD_prop)
+     &     smctl_ctl%mevo_ctl, modelD_ctl%evo_ctl, nmtr_ctl, MHD_prop)
 !
 !   set spherical shell parameters
 !
@@ -145,7 +145,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_sph_data_MHD'
       call s_set_control_sph_data_MHD(MHD_prop, plt,                    &
-     &    modelD_ctl%fld_ctl%field_ctl, ctl_ctl%mevo_ctl,               &
+     &    modelD_ctl%fld_ctl%field_ctl, smctl_ctl%mevo_ctl,             &
      &    MHD_files%org_rj_file_IO, MHD_files%org_rst_file_IO,          &
      &    MHD_files%fst_file_IO, rj_fld, bc_IO, WK_sph)
 !
@@ -166,9 +166,9 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_time_steps'
       call s_set_control_4_time_steps                                   &
-     &   (flex_p1, MHD_step, ctl_ctl%mrst_ctl, ctl_ctl%tctl)
+     &   (flex_p1, MHD_step, smctl_ctl%mrst_ctl, smctl_ctl%tctl)
 !
-      call s_set_control_4_crank(ctl_ctl%mevo_ctl,                      &
+      call s_set_control_4_crank(smctl_ctl%mevo_ctl,                    &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop)
 !

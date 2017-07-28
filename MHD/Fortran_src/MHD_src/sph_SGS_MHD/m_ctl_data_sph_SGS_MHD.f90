@@ -20,14 +20,11 @@
       implicit none
 !
 !
-!
-      integer(kind=kint), parameter :: control_file_code = 11
-!
       character(len=kchara), parameter :: MHD_ctl_name =  'control_MHD'
       character(len=kchara), parameter                                  &
      &                      :: snap_ctl_name = 'control_snapshot'
 !
 !>      Control struture for MHD simulation
-      type(mhd_simulation_control), save :: MHD_ctl1
+      type(sph_sgs_mhd_control), save :: MHD_ctl1
 !
       end module m_ctl_data_sph_SGS_MHD

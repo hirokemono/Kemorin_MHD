@@ -8,13 +8,13 @@
 !!
 !!@verbatim
 !!      subroutine set_control_4_FEM_MHD                                &
-!!     &        (plt, org_plt, model_ctl, ctl_ctl, nmtr_ctl, MHD_files, &
-!!     &         FEM_prm, SGS_par, MHD_step, MHD_prop, MHD_BC,          &
-!!     &         MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
+!!     &        (plt, org_plt, model_ctl, fmctl_ctl, nmtr_ctl,          &
+!!     &         MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,       &
+!!     &         MHD_BC,  MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
 !!        type(mhd_model_control), intent(inout) :: model_ctl
-!!        type(mhd_control_control), intent(inout) :: ctl_ctl
+!!        type(fem_mhd_control_control), intent(inout) :: fmctl_ctl
 !!        type(node_monitor_control), intent(inout) :: nmtr_ctl
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
@@ -37,7 +37,7 @@
       use t_MHD_file_parameter
       use t_ctl_data_4_platforms
       use t_ctl_data_SGS_MHD_model
-      use t_ctl_data_MHD_control
+      use t_ctl_data_FEM_MHD_control
       use t_ctl_data_node_monitor
       use t_bc_data_list
 !
@@ -53,9 +53,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_control_4_FEM_MHD                                  &
-     &        (plt, org_plt, model_ctl, ctl_ctl, nmtr_ctl, MHD_files,   &
-     &         FEM_prm, SGS_par, MHD_step, MHD_prop, MHD_BC,            &
-     &         MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
+     &        (plt, org_plt, model_ctl, fmctl_ctl, nmtr_ctl,            &
+     &         MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,         &
+     &         MHD_BC,  MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
 !
       use calypso_mpi
       use m_default_file_prefix
@@ -88,7 +88,7 @@
       type(platform_data_control), intent(in) :: plt
       type(platform_data_control), intent(in) :: org_plt
       type(mhd_model_control), intent(inout) :: model_ctl
-      type(mhd_control_control), intent(inout) :: ctl_ctl
+      type(fem_mhd_control_control), intent(inout) :: fmctl_ctl
       type(node_monitor_control), intent(inout) :: nmtr_ctl
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
@@ -117,7 +117,7 @@
 !
       call s_set_control_4_model                                        &
      &   (model_ctl%reft_ctl, model_ctl%refc_ctl,                       &
-     &    ctl_ctl%mevo_ctl, model_ctl%evo_ctl, nmtr_ctl, MHD_prop)
+     &    fmctl_ctl%mevo_ctl, model_ctl%evo_ctl, nmtr_ctl, MHD_prop)
 !
 !   set element groups for evolution
 !
@@ -131,7 +131,7 @@
      &    model_ctl%cor_ctl, model_ctl%mcv_ctl,                         &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop)
       call set_control_rotation_form(MHD_prop%iflag_all_scheme,         &
-     &    MHD_prop%fl_prop, ctl_ctl%mevo_ctl, FEM_prm)
+     &    MHD_prop%fl_prop, fmctl_ctl%mevo_ctl, FEM_prm)
 !
 !   set parameters for SGS model
 !
@@ -173,16 +173,17 @@
 !   set control parameters
 !
       call s_set_control_4_time_steps                                   &
-     &   (flex_p1, MHD_step, ctl_ctl%mrst_ctl, ctl_ctl%tctl)
+     &   (flex_p1, MHD_step, fmctl_ctl%mrst_ctl, fmctl_ctl%tctl)
 !
-      call s_set_control_4_crank(ctl_ctl%mevo_ctl,                      &
+      call s_set_control_4_crank(fmctl_ctl%mevo_ctl,                    &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop)
 !
-      call s_set_control_4_solver                                       &
-     &   (MHD_prop%iflag_all_scheme, ctl_ctl%mevo_ctl, ctl_ctl%CG_ctl,  &
+      call s_set_control_4_solver(MHD_prop%iflag_all_scheme,            &
+     &    fmctl_ctl%mevo_ctl, fmctl_ctl%CG_ctl,                         &
      &    FEM_prm, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
-      call set_control_4_FEM_params(ctl_ctl%mevo_ctl, ctl_ctl%fint_ctl, &
+      call set_control_4_FEM_params                                     &
+     &   (fmctl_ctl%mevo_ctl, fmctl_ctl%fint_ctl,                       &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop, FEM_prm)
 !
       end subroutine set_control_4_FEM_MHD

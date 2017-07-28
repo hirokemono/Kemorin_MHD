@@ -26,7 +26,7 @@
       use m_machine_parameter
       use t_ctl_data_4_platforms
       use t_ctl_data_MHD_model
-      use t_ctl_data_MHD_control
+      use t_ctl_data_SPH_MHD_control
       use t_ctl_data_4_sph_monitor
       use t_ctl_data_node_monitor
       use t_ctl_data_gen_sph_shell
@@ -48,7 +48,7 @@
 !>        Control structure for MHD/model
         type(mhd_DNS_model_control) :: Dmodel_ctl
 !>        Control structure for MHD/control
-        type(mhd_control_control) :: ctl_ctl
+        type(sph_mhd_control_control) :: smctl_ctl
 !
 !>        Structure for spectr monitoring control
         type(sph_monitor_control) :: smonitor_ctl
@@ -128,7 +128,7 @@
         call read_sph_mhd_model                                         &
      &     (hd_model, i_model, MHD_ctl%Dmodel_ctl)
         call read_sph_mhd_control                                       &
-     &     (hd_control, i_control, MHD_ctl%ctl_ctl)
+     &     (hd_control, i_control, MHD_ctl%smctl_ctl)
 !
         call read_monitor_data_ctl                                      &
      &     (hd_monitor_data, i_monitor_data, MHD_ctl%nmtr_ctl)
@@ -167,7 +167,7 @@
         call read_sph_mhd_model                                         &
      &     (hd_model, i_model, MHD_ctl%Dmodel_ctl)
         call read_sph_mhd_control                                       &
-     &     (hd_control, i_control, MHD_ctl%ctl_ctl)
+     &     (hd_control, i_control, MHD_ctl%smctl_ctl)
 !
         call read_monitor_data_ctl                                      &
      &     (hd_monitor_data, i_monitor_data, MHD_ctl%nmtr_ctl)
@@ -209,7 +209,7 @@
       call bcast_ctl_data_4_platform(MHD_ctl%org_plt)
 !
       call bcast_sph_mhd_model(MHD_ctl%Dmodel_ctl)
-      call bcast_sph_mhd_control(MHD_ctl%ctl_ctl)
+      call bcast_sph_mhd_control(MHD_ctl%smctl_ctl)
 !
       call bcast_parallel_shell_ctl(MHD_ctl%psph_ctl)
 !

@@ -43,7 +43,7 @@
 !
       subroutine initialize_sph_back_trans
 !
-      use t_ctl_data_sph_MHD
+      use t_ctl_data_SGS_MHD
       use m_ctl_data_sph_SGS_MHD
       use m_spheric_parameter
       use m_sph_spectr_data
@@ -62,8 +62,8 @@
 !
       call start_eleps_time(1)
       call start_eleps_time(4)
-      if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_MHD'
-      call read_control_4_sph_MHD(back_ctl_name, MHD_ctl1)
+      if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_SGS_MHD'
+      call read_control_4_sph_SGS_MHD(back_ctl_name, MHD_ctl1)
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_dynamo'
       call input_control_SPH_dynamo(MHD_files1, bc_sph_IO1,             &

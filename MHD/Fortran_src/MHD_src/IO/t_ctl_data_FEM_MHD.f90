@@ -1,5 +1,5 @@
-!>@file   t_ctl_data_SGS_MHD.f90
-!!@brief  module t_ctl_data_SGS_MHD
+!>@file   t_ctl_data_FEM_MHD.f90
+!!@brief  module t_ctl_data_FEM_MHD
 !!
 !!@author H. Matsui
 !>@brief   Control read routine
@@ -11,18 +11,17 @@
 !!@n        Modified by H. Matsui on Oct., 2012
 !!
 !!@verbatim
-!!      subroutine read_sph_mhd_control_data(MHD_ctl)
-!!      subroutine bcast_sph_sgs_mhd_ctl_data(MHD_ctl)
+!!      subroutine read_control_4_fem_MHD(file_name, FEM_MHD_ctl)
 !!@endverbatim
 !
-      module t_ctl_data_SGS_MHD
+      module t_ctl_data_FEM_MHD
 !
       use m_precision
 !
       use m_machine_parameter
       use t_ctl_data_4_platforms
       use t_ctl_data_SGS_MHD_model
-      use t_ctl_data_SPH_MHD_control
+      use t_ctl_data_FEM_MHD_control
       use t_ctl_data_4_sph_monitor
       use t_ctl_data_node_monitor
       use t_ctl_data_gen_sph_shell
@@ -32,7 +31,7 @@
 !
       integer(kind=kint), parameter :: control_file_code = 11
 !
-      type sph_sgs_mhd_control
+      type fem_mhd_control
 !>        Structure for file settings
         type(platform_data_control) :: plt
 !>        Control structure for orginal file informations
@@ -46,13 +45,13 @@
 !>        Control structure for MHD/model
         type(mhd_model_control) :: model_ctl
 !>        Control structure for MHD/control
-        type(sph_mhd_control_control) :: smctl_ctl
+        type(fem_mhd_control_control) :: fmctl_ctl
 !
 !>        Structure for spectr monitoring control
         type(sph_monitor_control) :: smonitor_ctl
 !>        Structure for monitoring plave list
         type(node_monitor_control) :: nmtr_ctl
-      end type sph_sgs_mhd_control
+      end type fem_mhd_control
 !
 !   Top level of label
 !
@@ -85,8 +84,7 @@
       integer (kind=kint) :: i_monitor_data = 0
 !
       private :: hd_mhd_ctl, i_mhd_ctl
-!
-      private :: bcast_sph_sgs_mhd_ctl_data
+      private :: read_fem_mhd_control_data, bcast_fem_mhd_ctl_data
 !
 ! ----------------------------------------------------------------------
 !
@@ -94,39 +92,36 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine read_control_4_sph_SGS_MHD(file_name, MHD_ctl)
+      subroutine read_control_4_fem_MHD(file_name, FEM_MHD_ctl)
 !
       character(len=kchara), intent(in) :: file_name
-      type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
+      type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
 !
 !
       if(my_rank .eq. 0) then
         ctl_file_code = control_file_code
-        open ( ctl_file_code, file = file_name, status='old' )
+        open (ctl_file_code, file = file_name, status='old' )
 !
         call load_ctl_label_and_line
-        call read_sph_mhd_control_data(MHD_ctl)
+        call read_fem_mhd_control_data(FEM_MHD_ctl)
 !
         close(ctl_file_code)
       end if
 !
-      call bcast_sph_mhd_control_data(MHD_ctl)
+      call bcast_fem_mhd_ctl_data(FEM_MHD_ctl)
 !
-      if(MHD_ctl%psph_ctl%ifile_sph_shell .gt. 0) then
-       call read_ctl_file_shell_in_MHD(MHD_ctl%psph_ctl)
-      end if
-!
-      end subroutine read_control_4_sph_SGS_MHD
+      end subroutine read_control_4_fem_MHD
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine read_sph_mhd_control_data(MHD_ctl)
+      subroutine read_fem_mhd_control_data(FEM_MHD_ctl)
 !
-      use t_ctl_data_SPH_MHD_control
-      use m_control_data_pvrs
+      use calypso_mpi
+      use m_control_data_sections
+      use t_ctl_data_FEM_MHD_control
 !
-      type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
+      type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
 !
 !
       if(right_begin_flag(hd_mhd_ctl) .eq. 0) return
@@ -139,74 +134,49 @@
 !
 !
         call read_control_platforms                                     &
-     &     (hd_platform, i_platform, MHD_ctl%plt)
+     &     (hd_platform, i_platform, FEM_MHD_ctl%plt)
         call read_control_platforms                                     &
-     &     (hd_org_data, i_org_data, MHD_ctl%org_plt)
-        call read_control_platforms                                     &
-     &     (hd_new_data, i_new_data, MHD_ctl%new_plt)
-!
-        call read_parallel_shell_in_MHD_ctl                             &
-     &     (hd_sph_shell, MHD_ctl%psph_ctl)
+     &     (hd_org_data, i_org_data, FEM_MHD_ctl%org_plt)
 !
         call read_sph_sgs_mhd_model                                     &
-     &     (hd_model, i_model, MHD_ctl%model_ctl)
-        call read_sph_mhd_control                                       &
-     &     (hd_control, i_control, MHD_ctl%smctl_ctl)
+     &     (hd_model, i_model, FEM_MHD_ctl%model_ctl)
+        call read_fem_mhd_control                                       &
+     &     (hd_control, i_control, FEM_MHD_ctl%fmctl_ctl)
 !
         call read_monitor_data_ctl                                      &
-     &     (hd_monitor_data, i_monitor_data, MHD_ctl%nmtr_ctl)
-        call read_sph_monitoring_ctl                                    &
-     &     (hd_pick_sph, i_pick_sph, MHD_ctl%smonitor_ctl)
-!
-        call read_viz_control_data
+     &     (hd_monitor_data, i_monitor_data, FEM_MHD_ctl%nmtr_ctl)
+        call read_sections_control_data
       end do
 !
-      end subroutine read_sph_mhd_control_data
+      end subroutine read_fem_mhd_control_data
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine bcast_sph_mhd_control_data(MHD_ctl)
+      subroutine bcast_fem_mhd_ctl_data(FEM_MHD_ctl)
 !
-      use m_control_data_pvrs
-      use bcast_4_platform_ctl
-!
-      type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
-!
-!
-      call bcast_sph_sgs_mhd_ctl_data(MHD_ctl)
-      call bcast_ctl_data_4_platform(MHD_ctl%new_plt)
-!
-      call bcast_viz_control_data
-!
-      end subroutine bcast_sph_mhd_control_data
-!
-!   --------------------------------------------------------------------
-!
-      subroutine bcast_sph_sgs_mhd_ctl_data(MHD_ctl)
-!
-      use t_ctl_data_SPH_MHD_control
+      use m_control_data_sections
+      use t_ctl_data_FEM_MHD_control
       use bcast_4_platform_ctl
       use bcast_4_field_ctl
       use bcast_4_sph_monitor_ctl
       use bcast_4_sphere_ctl
 !
-      type(sph_sgs_mhd_control), intent(inout) :: MHD_ctl
+      type(fem_mhd_control), intent(inout) :: FEM_MHD_ctl
 !
+      call bcast_ctl_data_4_platform(FEM_MHD_ctl%plt)
+      call bcast_ctl_data_4_platform(FEM_MHD_ctl%org_plt)
 !
-      call bcast_ctl_data_4_platform(MHD_ctl%plt)
-      call bcast_ctl_data_4_platform(MHD_ctl%org_plt)
+      call bcast_sph_sgs_mhd_model(FEM_MHD_ctl%model_ctl)
+      call bcast_fem_mhd_control(FEM_MHD_ctl%fmctl_ctl)
 !
-      call bcast_sph_sgs_mhd_model(MHD_ctl%model_ctl)
-      call bcast_sph_mhd_control(MHD_ctl%smctl_ctl)
+      call bcast_monitor_data_ctl(FEM_MHD_ctl%nmtr_ctl)
 !
-      call bcast_parallel_shell_ctl(MHD_ctl%psph_ctl)
+      call bcast_files_4_psf_ctl
+      call bcast_files_4_iso_ctl
 !
-      call bcast_monitor_data_ctl(MHD_ctl%nmtr_ctl)
-      call bcast_sph_monitoring_ctl(MHD_ctl%smonitor_ctl)
-!
-      end subroutine bcast_sph_sgs_mhd_ctl_data
+      end subroutine bcast_fem_mhd_ctl_data
 !
 !   --------------------------------------------------------------------
 !
-      end module t_ctl_data_SGS_MHD
+      end module t_ctl_data_FEM_MHD

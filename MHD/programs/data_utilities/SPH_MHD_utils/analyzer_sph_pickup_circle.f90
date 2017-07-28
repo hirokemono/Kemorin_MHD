@@ -43,7 +43,7 @@
 !
       subroutine initialize_sph_pick_circle
 !
-      use t_ctl_data_sph_MHD
+      use t_ctl_data_SGS_MHD
       use t_const_spherical_grid
       use m_ctl_data_sph_SGS_MHD
       use m_SGS_control_parameter
@@ -69,11 +69,12 @@
 !
       call start_eleps_time(1)
       call start_eleps_time(4)
-      if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_MHD'
-      call read_control_4_sph_MHD(snap_ctl_name, MHD_ctl1)
+      if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_SGS_MHD'
+      call read_control_4_sph_SGS_MHD(snap_ctl_name, MHD_ctl1)
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_SGS_MHD'
-      call set_control_4_SPH_SGS_MHD(MHD_ctl1%plt, MHD_ctl1%org_plt,    &
-     &    MHD_ctl1%model_ctl, MHD_ctl1%ctl_ctl, MHD_ctl1%smonitor_ctl,  &
+      call set_control_4_SPH_SGS_MHD                                    &
+     &   (MHD_ctl1%plt, MHD_ctl1%org_plt, MHD_ctl1%model_ctl,           &
+     &    MHD_ctl1%smctl_ctl, MHD_ctl1%smonitor_ctl,                    &
      &    MHD_ctl1%nmtr_ctl, MHD_ctl1%psph_ctl, sph_gen, rj_fld1,       &
      &    MHD_files1, bc_sph_IO1, pwr1, SGS_par1,                       &
      &    dynamic_SPH1%sph_filters, MHD_step1, MHD_prop1,               &

@@ -9,12 +9,12 @@
 !>@brief  Load mesh and filtering data for MHD simulation
 !!
 !!@verbatim
-!!      subroutine input_control_4_MHD                                  &
+!!      subroutine input_control_4_FEM_MHD                              &
 !!     &         (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,      &
 !!     &          MHD_BC, mesh, group, ele_mesh, nod_fld, IO_bc,        &
 !!     &          filtering, wide_filtering, wk_filter, MHD_matrices,   &
 !!     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
-!!      subroutine input_control_4_snapshot                             &
+!!      subroutine input_control_4_FEM_snap                             &
 !!     &         (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,      &
 !!     &          MHD_BC, mesh, group, ele_mesh, nod_fld, IO_bc,        &
 !!     &          filtering, wide_filtering, wk_filter,                 &
@@ -64,7 +64,7 @@
       use t_solver_djds_MHD
       use t_phys_data
       use t_field_data_IO
-      use t_ctl_data_SGS_MHD
+      use t_ctl_data_FEM_MHD
       use t_MGCG_data
       use t_MGCG_data_4_MHD
       use t_bc_data_list
@@ -76,7 +76,7 @@
      &                      :: snap_ctl_name = 'control_snapshot'
 !
 !>      Control struture for MHD simulation
-      type(mhd_simulation_control), save :: FEM_MHD_ctl
+      type(fem_mhd_control), save :: FEM_MHD_ctl
 !
       private :: FEM_MHD_ctl
       private :: input_meshes_4_MHD, boundary_file_IO_control
@@ -87,13 +87,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine input_control_4_MHD                                    &
+      subroutine input_control_4_FEM_MHD                                &
      &         (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,        &
      &          MHD_BC, mesh, group, ele_mesh, nod_fld, IO_bc,          &
      &          filtering, wide_filtering, wk_filter, MHD_matrices,     &
      &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
 !
-      use t_ctl_data_sph_MHD
       use m_flags_4_solvers
       use set_control_FEM_MHD
       use mpi_load_mesh_data
@@ -129,7 +128,7 @@
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_FEM_MHD'
       call set_control_4_FEM_MHD                                        &
      &   (FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt, FEM_MHD_ctl%model_ctl,  &
-     &    FEM_MHD_ctl%ctl_ctl, FEM_MHD_ctl%nmtr_ctl, MHD_files,         &
+     &    FEM_MHD_ctl%fmctl_ctl, FEM_MHD_ctl%nmtr_ctl, MHD_files,       &
      &    FEM_prm, SGS_par, MHD_step, MHD_prop, MHD_BC,                 &
      &    MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
 !
@@ -157,17 +156,16 @@
      &    nod_fld%iflag_monitor, num_field_monitor, ntot_comp_monitor)
 !
 !
-      end subroutine input_control_4_MHD
+      end subroutine input_control_4_FEM_MHD
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine input_control_4_snapshot                               &
+      subroutine input_control_4_FEM_snap                               &
      &         (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,        &
      &          MHD_BC, mesh, group, ele_mesh, nod_fld, IO_bc,          &
      &          filtering, wide_filtering, wk_filter,                   &
      &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
 !
-      use t_ctl_data_sph_MHD
       use set_control_FEM_MHD
       use mpi_load_mesh_data
       use node_monitor_IO
@@ -199,7 +197,7 @@
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_FEM_MHD'
       call set_control_4_FEM_MHD                                        &
      &   (FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt, FEM_MHD_ctl%model_ctl,  &
-     &    FEM_MHD_ctl%ctl_ctl, FEM_MHD_ctl%nmtr_ctl, MHD_files,         &
+     &    FEM_MHD_ctl%fmctl_ctl, FEM_MHD_ctl%nmtr_ctl, MHD_files,       &
      &    FEM_prm, SGS_par, MHD_step, MHD_prop, MHD_BC,                 &
      &    MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
 !
@@ -215,7 +213,7 @@
      &   (nod_fld%num_phys, nod_fld%num_component,                      &
      &    nod_fld%iflag_monitor, num_field_monitor, ntot_comp_monitor)
 !
-      end subroutine input_control_4_snapshot
+      end subroutine input_control_4_FEM_snap
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
