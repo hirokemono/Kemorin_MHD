@@ -3,8 +3,10 @@
 !
 !      modified by H. Matsui on June, 2005 
 !
-!!      subroutine FEM_initialize_vol_average(MHD_files, MHD_step)
+!!      subroutine FEM_initialize_vol_average                           &
+!!     &         (MHD_files, bc_FEM_IO, MHD_step)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
+!!        type(IO_boundary), intent(in) :: bc_FEM_IO
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!      subroutine FEM_analyze_vol_average(i_step, MHD_files, MHD_step)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
@@ -32,17 +34,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_vol_average(MHD_files, MHD_step)
+      subroutine FEM_initialize_vol_average                             &
+     &         (MHD_files, bc_FEM_IO, MHD_step)
 !
       use m_mesh_data
       use m_node_phys_data
       use m_control_parameter
       use m_layering_ele_list
       use m_geometry_data_MHD
-      use m_boundary_field_IO
       use m_physical_property
       use m_element_phys_data
       use m_SGS_control_parameter
+      use t_boundary_field_IO
 !
       use initialize_4_snapshot
 !
@@ -50,14 +53,15 @@
       use open_sgs_model_coefs
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
+      type(IO_boundary), intent(in) :: bc_FEM_IO
       type(MHD_step_param), intent(inout) :: MHD_step
 !
 !   matrix assembling
 !
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
       call init_analyzer_snap                                           &
-     &   (MHD_files%fst_file_IO, FEM_prm1, SGS_par1, IO_bc1, MHD_step,  &
-     &    mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,              &
+     &   (MHD_files%fst_file_IO, FEM_prm1, SGS_par1, bc_FEM_IO,         &
+     &    MHD_step, mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,    &
      &    MHD_prop1, ak_MHD, Csims_FEM_MHD1, iphys, nod_fld1,           &
      &    SNAP_time_IO, MHD_step%rst_step, label_sim)
 !

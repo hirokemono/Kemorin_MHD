@@ -75,7 +75,7 @@
       call set_control_4_SPH_SGS_MHD(MHD_ctl1%plt, MHD_ctl1%org_plt,    &
      &    MHD_ctl1%model_ctl, MHD_ctl1%ctl_ctl, MHD_ctl1%smonitor_ctl,  &
      &    MHD_ctl1%nmtr_ctl, MHD_ctl1%psph_ctl, sph_gen, rj_fld1,       &
-     &    MHD_files1, bc_IO1, pwr1, SGS_par1,                           &
+     &    MHD_files1, bc_sph_IO1, pwr1, SGS_par1,                       &
      &    dynamic_SPH1%sph_filters, MHD_step1, MHD_prop1,               &
      &    MHD_BC1, trns_WK1%WK_sph, gen_sph_c)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
@@ -95,7 +95,7 @@
 !
       call start_eleps_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_pick_circle'
-      call SPH_init_sph_pick_circle(MHD_files1, bc_IO1, iphys)
+      call SPH_init_sph_pick_circle(MHD_files1, bc_sph_IO1, iphys)
       call calypso_MPI_barrier
 !
       call end_eleps_time(2)

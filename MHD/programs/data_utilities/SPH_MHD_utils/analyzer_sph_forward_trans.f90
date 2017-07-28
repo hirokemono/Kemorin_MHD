@@ -66,8 +66,8 @@
       call read_control_4_sph_MHD(snap_ctl_name, MHD_ctl1)
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_dynamo'
-      call input_control_SPH_dynamo                                     &
-     &   (MHD_files1, bc_IO1, MHD_ctl1, sph1, comms_sph1, sph_grps1,    &
+      call input_control_SPH_dynamo(MHD_files1, bc_sph_IO1,             &
+     &    MHD_ctl1, sph1, comms_sph1, sph_grps1,                        &
      &    rj_fld1, nod_fld1, pwr1, SGS_par1, dynamic_SPH1, MHD_step1,   &
      &    MHD_prop1, MHD_BC1, trns_WK1, mesh1, group1, ele_mesh1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
@@ -82,7 +82,7 @@
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap'
-      call SPH_init_sph_snap(MHD_files1, bc_IO1, iphys)
+      call SPH_init_sph_snap(MHD_files1, bc_sph_IO1, iphys)
 !
       call calypso_MPI_barrier
 !
