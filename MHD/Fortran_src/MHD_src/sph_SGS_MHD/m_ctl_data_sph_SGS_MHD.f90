@@ -1,5 +1,5 @@
-!>@file   m_ctl_data_sph_MHD.f90
-!!@brief  module m_ctl_data_sph_MHD
+!>@file   m_ctl_data_sph_SGS_MHD.f90
+!!@brief  module m_ctl_data_sph_SGS_MHD
 !!
 !!@author H. Matsui
 !>@brief   Control read routine
@@ -11,11 +11,11 @@
 !!@n        Modified by H. Matsui on Oct., 2012
 !!
 !
-      module m_ctl_data_sph_MHD
+      module m_ctl_data_sph_SGS_MHD
 !
       use m_precision
 !
-      use t_ctl_data_MHD
+      use t_ctl_data_SGS_MHD
 !
       implicit none
 !
@@ -28,6 +28,6 @@
      &                      :: snap_ctl_name = 'control_snapshot'
 !
 !>      Control struture for MHD simulation
-      type(DNS_mhd_simulation_control), save :: DNS_MHD_ctl1
+      type(mhd_simulation_control), save :: MHD_ctl1
 !
-      end module m_ctl_data_sph_MHD
+      end module m_ctl_data_sph_SGS_MHD

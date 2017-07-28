@@ -7,13 +7,13 @@
 !>@brief Set control data for spherical transform MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine set_control_4_SPH_MHD(plt, org_plt,                  &
-!!     &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl, &
+!!      subroutine set_control_4_SPH_MHD(plt, org_plt, modelD_ctl,      &
+!!     &          ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,            &
 !!     &          sph_gen, rj_fld, MHD_files, bc_IO, pwr,               &
 !!     &          MHD_step, MHD_prop, MHD_BC, WK_sph, gen_sph)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
-!!        type(mhd_model_control), intent(inout) :: model_ctl
+!!        type(mhd_DNS_model_control), intent(inout) :: modelD_ctl
 !!        type(mhd_control_control), intent(inout) :: ctl_ctl
 !!        type(sph_monitor_control), intent(inout) :: smonitor_ctl
 !!        type(node_monitor_control), intent(inout) :: nmtr_ctl
@@ -42,7 +42,7 @@
       use t_MHD_file_parameter
       use t_field_data_IO
       use t_ctl_data_4_platforms
-      use t_ctl_data_SGS_MHD_model
+      use t_ctl_data_MHD_model
       use t_ctl_data_MHD_control
       use t_ctl_data_4_sph_monitor
       use t_ctl_data_node_monitor
@@ -58,8 +58,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_control_4_SPH_MHD(plt, org_plt,                    &
-     &          model_ctl, ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,   &
+      subroutine set_control_4_SPH_MHD(plt, org_plt, modelD_ctl,        &
+     &          ctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,              &
      &          sph_gen, rj_fld, MHD_files, bc_IO, pwr,                 &
      &          MHD_step, MHD_prop, MHD_BC, WK_sph, gen_sph)
 !
@@ -89,7 +89,7 @@
       type(platform_data_control), intent(in) :: plt
       type(platform_data_control), intent(in) :: org_plt
 !
-      type(mhd_model_control), intent(inout) :: model_ctl
+      type(mhd_DNS_model_control), intent(inout) :: modelD_ctl
       type(mhd_control_control), intent(inout) :: ctl_ctl
       type(sph_monitor_control), intent(inout) :: smonitor_ctl
       type(node_monitor_control), intent(inout) :: nmtr_ctl
@@ -122,8 +122,8 @@
       call set_control_org_sph_files(org_plt, MHD_files)
 !
       call s_set_control_4_model                                        &
-     &    (model_ctl%reft_ctl, model_ctl%refc_ctl,                      &
-     &     ctl_ctl%mevo_ctl, model_ctl%evo_ctl, nmtr_ctl, MHD_prop)
+     &    (modelD_ctl%reft_ctl, modelD_ctl%refc_ctl,                    &
+     &     ctl_ctl%mevo_ctl, modelD_ctl%evo_ctl, nmtr_ctl, MHD_prop)
 !
 !   set spherical shell parameters
 !
@@ -137,15 +137,15 @@
 !   set forces
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_force'
-      call s_set_control_4_force(model_ctl%frc_ctl, model_ctl%g_ctl,    &
-     &    model_ctl%cor_ctl, model_ctl%mcv_ctl,                         &
+      call s_set_control_4_force(modelD_ctl%frc_ctl, modelD_ctl%g_ctl,  &
+     &    modelD_ctl%cor_ctl, modelD_ctl%mcv_ctl,                       &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop)
 !
 !   set parameters for general information
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_sph_data_MHD'
-      call s_set_control_sph_data_MHD                                   &
-     &   (MHD_prop, plt, model_ctl%fld_ctl%field_ctl, ctl_ctl%mevo_ctl, &
+      call s_set_control_sph_data_MHD(MHD_prop, plt,                    &
+     &    modelD_ctl%fld_ctl%field_ctl, ctl_ctl%mevo_ctl,               &
      &    MHD_files%org_rj_file_IO, MHD_files%org_rst_file_IO,          &
      &    MHD_files%fst_file_IO, rj_fld, bc_IO, WK_sph)
 !
@@ -155,12 +155,12 @@
       call s_set_control_4_normalize                                    &
      &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
      &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
-     &    model_ctl%dless_ctl, model_ctl%eqs_ctl)
+     &    modelD_ctl%dless_ctl, modelD_ctl%eqs_ctl)
 !
 !   set boundary conditions
 !
       call set_control_SPH_MHD_bcs                                      &
-     &   (MHD_prop, MHD_BC, model_ctl%nbc_ctl, model_ctl%sbc_ctl)
+     &   (MHD_prop, MHD_BC, modelD_ctl%nbc_ctl, modelD_ctl%sbc_ctl)
 !
 !   set control parameters
 !

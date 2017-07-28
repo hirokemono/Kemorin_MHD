@@ -44,7 +44,7 @@
       subroutine initialize_sph_zm_snap
 !
       use t_ctl_data_sph_MHD
-      use m_ctl_data_sph_MHD
+      use m_ctl_data_sph_SGS_MHD
       use m_sph_spectr_data
       use m_rms_4_sph_spectr
       use m_cal_max_indices

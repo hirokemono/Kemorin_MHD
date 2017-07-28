@@ -40,8 +40,8 @@
 !
       subroutine initialize_sph_forward_trans
 !
-      use t_ctl_data_sph_MHD_psf
-      use m_ctl_data_sph_MHD
+      use t_ctl_data_sph_MHD
+      use m_ctl_data_sph_SGS_MHD
       use m_SGS_control_parameter
       use m_spheric_parameter
       use m_mesh_data

@@ -43,9 +43,9 @@
 !
       subroutine initialize_sph_pick_circle
 !
-      use t_ctl_data_sph_MHD_psf
+      use t_ctl_data_sph_MHD
       use t_const_spherical_grid
-      use m_ctl_data_sph_MHD
+      use m_ctl_data_sph_SGS_MHD
       use m_SGS_control_parameter
       use m_node_phys_data
       use m_spheric_parameter

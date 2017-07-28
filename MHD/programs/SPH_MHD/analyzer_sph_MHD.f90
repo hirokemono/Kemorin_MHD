@@ -41,7 +41,7 @@
       subroutine initialize_sph_mhd
 !
       use t_ctl_data_sph_MHD
-      use m_ctl_data_sph_MHD
+      use m_ctl_data_sph_SGS_MHD
       use m_spheric_parameter
       use m_mesh_data
       use m_node_phys_data
