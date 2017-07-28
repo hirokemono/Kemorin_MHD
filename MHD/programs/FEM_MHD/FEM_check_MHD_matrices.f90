@@ -3,8 +3,9 @@
 !
 !      modified by H. Matsui on June, 2005 
 !
-!!      subroutine FEM_check_MHD_mat(MHD_files)
+!!      subroutine FEM_check_MHD_mat(MHD_files, bc_FEM_IO)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
+!!        type(IO_boundary), intent(in) :: bc_FEM_IO
 !
       module FEM_check_MHD_matrices
 !
@@ -23,7 +24,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_check_MHD_mat(MHD_files)
+      subroutine FEM_check_MHD_mat(MHD_files, bc_FEM_IO)
 !
       use m_MHD_step_parameter
       use m_SGS_control_parameter
@@ -38,9 +39,9 @@
       use m_sorted_node_MHD
       use m_bc_data_velo
       use m_solver_djds_MHD
-      use m_boundary_field_IO
       use m_type_AMG_data
       use m_element_phys_data
+      use t_boundary_field_IO
 !
       use initialization_4_MHD
 !
@@ -48,13 +49,14 @@
       use write_djds_mat_MHD
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
+      type(IO_boundary), intent(in) :: bc_FEM_IO
 !
 !
 !   matrix assembling
 !
       if (iflag_debug.eq.1) write(*,*) 'init_analyzer_fl'
       call init_analyzer_fl                                             &
-     &   (MHD_files, IO_bc1, FEM_prm1, SGS_par1, MHD_step1,             &
+     &   (MHD_files, bc_FEM_IO, FEM_prm1, SGS_par1, MHD_step1,          &
      &    mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,              &
      &    MHD_prop1, ak_MHD, Csims_FEM_MHD1,                            &
      &    iphys, nod_fld1, label_sim)

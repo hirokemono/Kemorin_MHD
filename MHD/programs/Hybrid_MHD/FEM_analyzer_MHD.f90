@@ -3,10 +3,11 @@
 !
 !      modified by H. Matsui on June, 2005 
 !
-!!      subroutine FEM_initialize_MHD(MHD_files, MHD_step)
+!!      subroutine FEM_initialize_MHD(MHD_files, bc_FEM_IO, MHD_step)
 !!      subroutine FEM_analyze_MHD(MHD_files, MHD_step, visval, retval)
 !!      subroutine FEM_finalize_MHD(MHD_files, MHD_step)
 !!        type(MHD_step_param), intent(inout) :: MHD_step
+!!        type(IO_boundary), intent(in) :: bc_FEM_IO
 !
       module FEM_analyzer_MHD
 !
@@ -33,7 +34,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_MHD(MHD_files, MHD_step)
+      subroutine FEM_initialize_MHD(MHD_files, bc_FEM_IO, MHD_step)
 !
       use m_mesh_data
       use m_geometry_data_MHD
@@ -47,8 +48,8 @@
       use m_bc_data_velo
       use m_work_4_dynamic_model
       use m_flexible_time_step
-      use m_boundary_field_IO
       use m_type_AMG_data
+      use t_boundary_field_IO
 !
       use input_control
       use initialization_4_MHD
@@ -65,6 +66,7 @@
       use FEM_MHD_ucd_data
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
+      type(IO_boundary), intent(in) :: bc_FEM_IO
 !
       type(MHD_step_param), intent(inout) :: MHD_step
 !
@@ -73,7 +75,7 @@
 !   matrix assembling
 !
       call init_analyzer_fl                                             &
-     &   (MHD_files, IO_bc1, FEM_prm1, SGS_par1, MHD_step,              &
+     &   (MHD_files, bc_FEM_IO, FEM_prm1, SGS_par1, MHD_step,           &
      &    mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,              &
      &    MHD_prop1, ak_MHD, Csims_FEM_MHD1,                            &
      &    iphys, nod_fld1, label_sim)

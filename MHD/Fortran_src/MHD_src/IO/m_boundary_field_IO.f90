@@ -13,6 +13,6 @@
 !
       implicit  none
 !
-      type(IO_boundary), save :: IO_bc1
+      type(IO_boundary), save :: bc_FEM_IO1
 !
       end module m_boundary_field_IO
