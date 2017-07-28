@@ -60,7 +60,7 @@
       call start_eleps_time(1)
       call start_eleps_time(4)
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_MHD_noviz'
-      call read_control_4_sph_MHD_noviz(MHD_ctl_name, MHD_ctl1)
+      call read_control_4_sph_MHD_noviz(MHD_ctl_name, DNS_MHD_ctl1)
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_4_SPH_make_init'
       call input_control_4_SPH_make_init                                &

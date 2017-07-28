@@ -58,8 +58,8 @@
 !
       call start_eleps_time(1)
       call start_eleps_time(4)
-      if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_MHD_noviz'
-      call read_control_4_sph_MHD_noviz(snap_ctl_name, MHD_ctl1)
+      if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_MHD'
+      call read_control_4_sph_MHD(snap_ctl_name, MHD_ctl1)
 
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_dynamobench'
       call input_control_SPH_dynamobench                                &

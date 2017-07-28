@@ -55,7 +55,7 @@
 !
       call start_eleps_time(1)
       call start_eleps_time(4)
-      call read_control_4_sph_MHD_noviz(MHD_ctl_name, MHD_ctl1)
+      call read_control_4_sph_MHD_noviz(MHD_ctl_name, DNS_MHD_ctl1)
 !
       call input_control_4_SPH_MHD_nosnap                               &
      &   (MHD_files1, bc_IO1, MHD_ctl1, sph1, comms_sph1, sph_grps1,    &

@@ -93,7 +93,7 @@
      &          filtering, wide_filtering, wk_filter, MHD_matrices,     &
      &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
 !
-      use t_ctl_data_sph_MHD_psf
+      use t_ctl_data_sph_MHD
       use m_flags_4_solvers
       use set_control_FEM_MHD
       use mpi_load_mesh_data
@@ -167,7 +167,7 @@
      &          filtering, wide_filtering, wk_filter,                   &
      &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
 !
-      use t_ctl_data_sph_MHD_psf
+      use t_ctl_data_sph_MHD
       use set_control_FEM_MHD
       use mpi_load_mesh_data
       use node_monitor_IO

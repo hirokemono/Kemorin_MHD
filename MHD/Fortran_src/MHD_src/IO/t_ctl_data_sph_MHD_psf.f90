@@ -11,18 +11,16 @@
 !!@n        Modified by H. Matsui on Oct., 2012
 !!
 !!@verbatim
-!!      subroutine read_control_4_sph_MHD_w_psf(file_name, MHD_ctl)
-!!      subroutine read_control_4_sph_MHD_noviz(file_name, MHD_ctl)
-!!
-!!      subroutine read_control_4_fem_MHD(file_name, MHD_ctl)
-!!        type(mhd_simulation_control), intent(inout) :: MHD_ctl
+!!      subroutine read_control_4_sph_MHD_w_psf(file_name, DNS_MHD_ctl)
+!!      subroutine read_control_4_sph_MHD_noviz(file_name, DNS_MHD_ctl)
+!!        type(DNS_mhd_simulation_control), intent(inout) :: DNS_MHD_ctl
 !!@endverbatim
 !
       module t_ctl_data_sph_MHD_psf
 !
       use m_precision
 !
-      use t_ctl_data_SGS_MHD
+      use t_ctl_data_MHD
       use m_machine_parameter
       use m_read_control_elements
       use calypso_mpi
@@ -39,10 +37,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine read_control_4_sph_MHD_w_psf(file_name, MHD_ctl)
+      subroutine read_control_4_sph_MHD_w_psf(file_name, DNS_MHD_ctl)
 !
       character(len=kchara), intent(in) :: file_name
-      type(mhd_simulation_control), intent(inout) :: MHD_ctl
+      type(DNS_mhd_simulation_control), intent(inout) :: DNS_MHD_ctl
 !
 !
       if(my_rank .eq. 0) then
@@ -50,25 +48,25 @@
         open ( ctl_file_code, file = file_name, status='old' )
 !
         call load_ctl_label_and_line
-        call read_sph_sgs_mhd_ctl_w_psf(MHD_ctl)
+        call read_sph_mhd_ctl_w_psf(DNS_MHD_ctl)
 !
         close(ctl_file_code)
       end if
 !
-      call bcast_sph_sgs_mhd_ctl_w_psf(MHD_ctl)
+      call bcast_sph_mhd_ctl_w_psf(DNS_MHD_ctl)
 !
-      if(MHD_ctl%psph_ctl%ifile_sph_shell .gt. 0) then
-        call read_ctl_file_shell_in_MHD(MHD_ctl%psph_ctl)
+      if(DNS_MHD_ctl%psph_ctl%ifile_sph_shell .gt. 0) then
+        call read_ctl_file_shell_in_MHD(DNS_MHD_ctl%psph_ctl)
       end if
 !
       end subroutine read_control_4_sph_MHD_w_psf
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine read_control_4_sph_MHD_noviz(file_name, MHD_ctl)
+      subroutine read_control_4_sph_MHD_noviz(file_name, DNS_MHD_ctl)
 !
       character(len=kchara), intent(in) :: file_name
-      type(mhd_simulation_control), intent(inout) :: MHD_ctl
+      type(DNS_mhd_simulation_control), intent(inout) :: DNS_MHD_ctl
 !
 !
       if(my_rank .eq. 0) then
@@ -76,41 +74,18 @@
         open ( ctl_file_code, file = file_name, status='old' )
 !
         call load_ctl_label_and_line
-        call read_sph_sgs_mhd_ctl_noviz(MHD_ctl)
+        call read_sph_mhd_ctl_noviz(DNS_MHD_ctl)
 !
         close(ctl_file_code)
       end if
 !
-      call bcast_sph_sgs_mhd_ctl_data(MHD_ctl)
+      call bcast_sph_mhd_ctl_data(DNS_MHD_ctl)
 !
-      if(MHD_ctl%psph_ctl%ifile_sph_shell .gt. 0) then
-        call read_ctl_file_shell_in_MHD(MHD_ctl%psph_ctl)
+      if(DNS_MHD_ctl%psph_ctl%ifile_sph_shell .gt. 0) then
+        call read_ctl_file_shell_in_MHD(DNS_MHD_ctl%psph_ctl)
       end if
 !
       end subroutine read_control_4_sph_MHD_noviz
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine read_control_4_fem_MHD(file_name, MHD_ctl)
-!
-      character(len=kchara), intent(in) :: file_name
-      type(mhd_simulation_control), intent(inout) :: MHD_ctl
-!
-!
-      if(my_rank .eq. 0) then
-        ctl_file_code = control_file_code
-        open ( ctl_file_code, file = file_name, status='old' )
-!
-        call load_ctl_label_and_line
-        call read_fem_mhd_control_data(MHD_ctl)
-!
-        close(ctl_file_code)
-      end if
-!
-      call bcast_fem_mhd_ctl_data(MHD_ctl)
-!
-      end subroutine read_control_4_fem_MHD
 !
 ! ----------------------------------------------------------------------
 !

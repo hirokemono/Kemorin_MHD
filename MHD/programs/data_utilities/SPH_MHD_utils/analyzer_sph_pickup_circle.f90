@@ -69,8 +69,8 @@
 !
       call start_eleps_time(1)
       call start_eleps_time(4)
-      if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_MHD_noviz'
-      call read_control_4_sph_MHD_noviz(snap_ctl_name, MHD_ctl1)
+      if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_MHD'
+      call read_control_4_sph_MHD(snap_ctl_name, MHD_ctl1)
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_SGS_MHD'
       call set_control_4_SPH_SGS_MHD(MHD_ctl1%plt, MHD_ctl1%org_plt,    &
      &    MHD_ctl1%model_ctl, MHD_ctl1%ctl_ctl, MHD_ctl1%smonitor_ctl,  &

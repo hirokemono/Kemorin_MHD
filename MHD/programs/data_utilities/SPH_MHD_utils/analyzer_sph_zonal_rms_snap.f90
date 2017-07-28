@@ -43,7 +43,7 @@
 !
       subroutine initialize_sph_zonal_rms_snap
 !
-      use t_ctl_data_sph_MHD_psf
+      use t_ctl_data_sph_MHD
       use m_ctl_data_sph_MHD
       use m_sph_spectr_data
       use m_cal_max_indices
@@ -62,8 +62,8 @@
 !
       call start_eleps_time(1)
       call start_eleps_time(4)
-      if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_MHD_w_psf'
-      call read_control_4_sph_MHD_w_psf(snap_ctl_name, MHD_ctl1)
+      if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_MHD'
+      call read_control_4_sph_MHD(snap_ctl_name, MHD_ctl1)
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_dynamo'
       call input_control_SPH_dynamo                                     &

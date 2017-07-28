@@ -34,7 +34,7 @@
       implicit none
 !
 !
-      type mhd_simulation_control
+      type DNS_mhd_simulation_control
 !>        Structure for file settings
         type(platform_data_control) :: plt
 !>        Control structure for orginal file informations
@@ -54,7 +54,7 @@
         type(sph_monitor_control) :: smonitor_ctl
 !>        Structure for monitoring plave list
         type(node_monitor_control) :: nmtr_ctl
-      end type mhd_simulation_control
+      end type DNS_mhd_simulation_control
 !
 !   Top level of label
 !
@@ -105,7 +105,7 @@
 !
       use m_control_data_sections
 !
-      type(mhd_simulation_control), intent(inout) :: MHD_ctl
+      type(DNS_mhd_simulation_control), intent(inout) :: MHD_ctl
 !
 !
       if(right_begin_flag(hd_mhd_ctl) .eq. 0) return
@@ -144,7 +144,7 @@
 !
       subroutine read_sph_mhd_ctl_noviz(MHD_ctl)
 !
-      type(mhd_simulation_control), intent(inout) :: MHD_ctl
+      type(DNS_mhd_simulation_control), intent(inout) :: MHD_ctl
 !
 !
       if(right_begin_flag(hd_mhd_ctl) .eq. 0) return
@@ -184,7 +184,7 @@
 !
       use m_control_data_sections
 !
-      type(mhd_simulation_control), intent(inout) :: MHD_ctl
+      type(DNS_mhd_simulation_control), intent(inout) :: MHD_ctl
 !
 !
       call bcast_sph_mhd_ctl_data(MHD_ctl)
@@ -202,7 +202,7 @@
       use bcast_4_sph_monitor_ctl
       use bcast_4_sphere_ctl
 !
-      type(mhd_simulation_control), intent(inout) :: MHD_ctl
+      type(DNS_mhd_simulation_control), intent(inout) :: MHD_ctl
 !
 !
       call bcast_ctl_data_4_platform(MHD_ctl%plt)

@@ -62,7 +62,7 @@
       call start_eleps_time(1)
       call start_eleps_time(4)
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_MHD_w_psf'
-      call read_control_4_sph_MHD_w_psf(MHD_ctl_name, MHD_ctl1)
+      call read_control_4_sph_MHD_w_psf(MHD_ctl_name, DNS_MHD_ctl1)
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_dynamo'
       call input_control_SPH_dynamo                                     &
