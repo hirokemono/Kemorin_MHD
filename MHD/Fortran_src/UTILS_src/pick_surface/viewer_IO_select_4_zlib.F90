@@ -14,6 +14,12 @@
 !
       use m_file_format_switch
 !
+      use viewer_file_IO
+!
+#ifdef ZLIB_IO
+      use gz_viewer_file_IO
+#endif
+!
       implicit none
 !
 !------------------------------------------------------------------
@@ -24,9 +30,6 @@
 !
       subroutine sel_output_surface_grid                                &
      &         (ifmt_file, nnod_4_surf, nnod_4_edge)
-!
-      use viewer_file_IO
-      use gz_viewer_file_IO
 !
       integer(kind = kint), intent(in) :: nnod_4_surf
       integer(kind = kint), intent(in) :: nnod_4_edge
@@ -49,9 +52,6 @@
 !
       subroutine sel_read_surface_grid                                  &
      &          (ifmt_file, nnod_4_ele, nnod_4_surf, nnod_4_edge)
-!
-      use viewer_file_IO
-      use gz_viewer_file_IO
 !
       integer(kind = kint), intent(in) :: ifmt_file
       integer(kind = kint), intent(in) :: nnod_4_ele

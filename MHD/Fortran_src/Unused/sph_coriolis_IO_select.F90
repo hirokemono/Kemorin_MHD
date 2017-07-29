@@ -18,6 +18,10 @@
 !
       use m_precision
 !
+#ifdef ZLIB_IO
+use gz_int_4_sph_coriolis_IO
+#endif
+!
 !
       implicit none
 !
@@ -34,7 +38,6 @@
       use set_parallel_file_name
       use int_4_sph_coriolis_IO
       use int_4_sph_coriolis_IO_b
-      use gz_int_4_sph_coriolis_IO
 !
 !
       if (ifmt_cor_int_file .eq. id_binary_file_fmt) then
@@ -60,7 +63,6 @@
       use set_parallel_file_name
       use int_4_sph_coriolis_IO
       use int_4_sph_coriolis_IO_b
-      use gz_int_4_sph_coriolis_IO
 !
 !
       if (ifmt_cor_int_file .eq. id_binary_file_fmt) then

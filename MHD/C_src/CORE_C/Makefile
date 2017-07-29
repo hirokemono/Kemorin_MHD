@@ -204,6 +204,7 @@ module:
 	'$$(KEMO_C_DIR)'/kemo_zlib_io_c.c \
 	kemo_zlib_io_c.h \
 	kemosrc_param_c.o \
+	numbers_to_bin_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE)' \
 	'$$(KEMO_C_DIR)'/kemo_zlib_io_c.c \
@@ -242,7 +243,7 @@ module:
 	'$$(KEMO_C_DIR)'/m_psf_data_4_viewer_c.c \
 	m_psf_data_4_viewer_c.h \
 	kemosrc_param_c.o \
-    skip_comment_c.o \
+	skip_comment_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE)' \
 	'$$(KEMO_C_DIR)'/m_psf_data_4_viewer_c.c \

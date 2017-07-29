@@ -42,8 +42,11 @@
 !
       use MPI_sph_modes_file_IO
       use MPI_sph_modes_file_IO_b
+!
+#ifdef ZLIB_IO
       use gz_MPI_sph_modes_file_IO
       use gz_MPI_sph_modes_file_IO_b
+#endif
 !
       implicit none
 !
