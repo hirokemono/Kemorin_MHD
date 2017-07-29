@@ -3,9 +3,12 @@
 !
 !      modified by H. Matsui on June, 2005 
 !
-!!      subroutine FEM_check_MHD_mat(MHD_files, bc_FEM_IO)
+!!      subroutine FEM_check_MHD_mat                                    &
+!!     &         (MHD_files, bc_FEM_IO, flex_p, MHD_step)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(IO_boundary), intent(in) :: bc_FEM_IO
+!!        type(MHD_step_param), intent(inout) :: MHD_step
+!!        type(flexible_stepping_parameter), intent(inout) :: flex_p
 !
       module FEM_check_MHD_matrices
 !
@@ -15,6 +18,8 @@
 !
       use calypso_mpi
       use t_MHD_file_parameter
+      use t_MHD_step_parameter
+      use t_flex_delta_t_data
 !
       implicit none
 !
@@ -24,9 +29,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_check_MHD_mat(MHD_files, bc_FEM_IO)
+      subroutine FEM_check_MHD_mat                                      &
+     &         (MHD_files, bc_FEM_IO, flex_p, MHD_step)
 !
-      use m_MHD_step_parameter
       use m_SGS_control_parameter
       use m_control_parameter
       use m_mesh_data
@@ -51,12 +56,15 @@
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(IO_boundary), intent(in) :: bc_FEM_IO
 !
+      type(MHD_step_param), intent(inout) :: MHD_step
+      type(flexible_stepping_parameter), intent(inout) :: flex_p
+!
 !
 !   matrix assembling
 !
       if (iflag_debug.eq.1) write(*,*) 'init_analyzer_fl'
       call init_analyzer_fl                                             &
-     &   (MHD_files, bc_FEM_IO, FEM_prm1, SGS_par1, MHD_step1,          &
+     &   (MHD_files, bc_FEM_IO, FEM_prm1, SGS_par1, flex_p, MHD_step,   &
      &    mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,              &
      &    MHD_prop1, ak_MHD, Csims_FEM_MHD1,                            &
      &    iphys, nod_fld1, label_sim)
@@ -68,7 +76,7 @@
      &   (mesh1, MHD_mesh1, MHD_prop1, fem_int1,                        &
      &    MGCG_WK1, MHD1_mat_tbls, MHD1_matrices, solver_pack1)
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
-      call set_aiccg_matrices(MHD_step1%time_d%dt, FEM_prm1,            &
+      call set_aiccg_matrices(MHD_step%time_d%dt, FEM_prm1,             &
      &    SGS_par1%model_p, SGS_par1%commute_p, mesh1, group1,          &
      &    ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs, MHD_prop1, ak_MHD,   &
      &    fem_int1, FEM1_elen, Csims_FEM_MHD1, MHD1_mat_tbls,           &

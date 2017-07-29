@@ -7,10 +7,10 @@
 !> @brief Set parameters for MHD dynamo simulation from control data
 !!
 !!@verbatim
-!!      subroutine set_control_4_FEM_MHD                                &
-!!     &        (plt, org_plt, model_ctl, fmctl_ctl, nmtr_ctl,          &
-!!     &         MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,       &
-!!     &         MHD_BC,  MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
+!!      subroutine set_control_4_FEM_MHD(plt, org_plt, model_ctl,       &
+!!     &          fmctl_ctl, nmtr_ctl, MHD_files, FEM_prm, SGS_par,     &
+!!     &          flex_p, MHD_step, MHD_prop, MHD_BC,                   &
+!!     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
 !!        type(mhd_model_control), intent(inout) :: model_ctl
@@ -19,6 +19,7 @@
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
+!!        type(flexible_stepping_parameter), intent(inout) :: flex_p
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(MHD_evolution_param), intent(inout) :: MHD_prop
 !!        type(MHD_BC_lists), intent(inout) :: MHD_BC
@@ -40,6 +41,7 @@
       use t_ctl_data_FEM_MHD_control
       use t_ctl_data_node_monitor
       use t_bc_data_list
+      use t_flex_delta_t_data
 !
       implicit  none
 !
@@ -52,10 +54,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_FEM_MHD                                  &
-     &        (plt, org_plt, model_ctl, fmctl_ctl, nmtr_ctl,            &
-     &         MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,         &
-     &         MHD_BC,  MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
+      subroutine set_control_4_FEM_MHD(plt, org_plt, model_ctl,         &
+     &          fmctl_ctl, nmtr_ctl, MHD_files, FEM_prm, SGS_par,       &
+     &          flex_p, MHD_step, MHD_prop, MHD_BC,                     &
+     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
 !
       use calypso_mpi
       use m_default_file_prefix
@@ -93,6 +95,7 @@
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(SGS_paremeters), intent(inout) :: SGS_par
+      type(flexible_stepping_parameter), intent(inout) :: flex_p
       type(MHD_step_param), intent(inout) :: MHD_step
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(MHD_BC_lists), intent(inout) :: MHD_BC
@@ -173,7 +176,7 @@
 !   set control parameters
 !
       call s_set_control_4_time_steps                                   &
-     &   (flex_p1, MHD_step, fmctl_ctl%mrst_ctl, fmctl_ctl%tctl)
+     &   (flex_p, MHD_step, fmctl_ctl%mrst_ctl, fmctl_ctl%tctl)
 !
       call s_set_control_4_crank(fmctl_ctl%mevo_ctl,                    &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &

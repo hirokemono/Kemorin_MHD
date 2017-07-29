@@ -10,18 +10,19 @@
 !!
 !!@verbatim
 !!      subroutine input_control_4_FEM_MHD                              &
-!!     &         (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,      &
-!!     &          MHD_BC, mesh, group, ele_mesh, nod_fld, IO_bc,        &
-!!     &          filtering, wide_filtering, wk_filter, MHD_matrices,   &
-!!     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
+!!     &         (MHD_files, FEM_prm, SGS_par, flex_p, MHD_step,        &
+!!     &          MHD_prop, MHD_BC, mesh, group, ele_mesh, nod_fld,     &
+!!     &          IO_bc, filtering, wide_filtering, wk_filter,          &
+!!     &          MHD_matrices, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
 !!      subroutine input_control_4_FEM_snap                             &
-!!     &         (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,      &
-!!     &          MHD_BC, mesh, group, ele_mesh, nod_fld, IO_bc,        &
-!!     &          filtering, wide_filtering, wk_filter,                 &
+!!     &         (MHD_files, FEM_prm, SGS_par, flex_p, MHD_step,        &
+!!     &          MHD_prop, MHD_BC, mesh, group, ele_mesh, nod_fld,     &
+!!     &          IO_bc, filtering, wide_filtering, wk_filter,          &
 !!     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
+!!        type(flexible_stepping_parameter), intent(inout) :: flex_p
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(fluid_property), intent(inout) :: fl_prop
 !!        type(conductive_property), intent(inout)  :: cd_prop
@@ -68,6 +69,7 @@
       use t_MGCG_data
       use t_MGCG_data_4_MHD
       use t_bc_data_list
+      use t_flex_delta_t_data
 !
       implicit none
 !
@@ -88,10 +90,10 @@
 ! ----------------------------------------------------------------------
 !
       subroutine input_control_4_FEM_MHD                                &
-     &         (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,        &
-     &          MHD_BC, mesh, group, ele_mesh, nod_fld, IO_bc,          &
-     &          filtering, wide_filtering, wk_filter, MHD_matrices,     &
-     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
+     &         (MHD_files, FEM_prm, SGS_par, flex_p, MHD_step,          &
+     &          MHD_prop, MHD_BC, mesh, group, ele_mesh, nod_fld,       &
+     &          IO_bc, filtering, wide_filtering, wk_filter,            &
+     &          MHD_matrices, MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
 !
       use m_flags_4_solvers
       use set_control_FEM_MHD
@@ -107,6 +109,7 @@
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
+      type(flexible_stepping_parameter), intent(inout) :: flex_p
       type(MHD_step_param), intent(inout) :: MHD_step
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(MHD_BC_lists), intent(inout) :: MHD_BC
@@ -129,7 +132,7 @@
       call set_control_4_FEM_MHD                                        &
      &   (FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt, FEM_MHD_ctl%model_ctl,  &
      &    FEM_MHD_ctl%fmctl_ctl, FEM_MHD_ctl%nmtr_ctl, MHD_files,       &
-     &    FEM_prm, SGS_par, MHD_step, MHD_prop, MHD_BC,                 &
+     &    FEM_prm, SGS_par, flex_p, MHD_step, MHD_prop, MHD_BC,         &
      &    MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
 !
 !  --  load FEM mesh data
@@ -161,9 +164,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine input_control_4_FEM_snap                               &
-     &         (MHD_files, FEM_prm, SGS_par, MHD_step, MHD_prop,        &
-     &          MHD_BC, mesh, group, ele_mesh, nod_fld, IO_bc,          &
-     &          filtering, wide_filtering, wk_filter,                   &
+     &         (MHD_files, FEM_prm, SGS_par, flex_p, MHD_step,          &
+     &          MHD_prop, MHD_BC, mesh, group, ele_mesh, nod_fld,       &
+     &          IO_bc, filtering, wide_filtering, wk_filter,            &
      &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM)
 !
       use set_control_FEM_MHD
@@ -177,6 +180,7 @@
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
       type(element_geometry), intent(inout) :: ele_mesh
+      type(flexible_stepping_parameter), intent(inout) :: flex_p
       type(MHD_step_param), intent(inout) :: MHD_step
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(MHD_BC_lists), intent(inout) :: MHD_BC
@@ -198,7 +202,7 @@
       call set_control_4_FEM_MHD                                        &
      &   (FEM_MHD_ctl%plt, FEM_MHD_ctl%org_plt, FEM_MHD_ctl%model_ctl,  &
      &    FEM_MHD_ctl%fmctl_ctl, FEM_MHD_ctl%nmtr_ctl, MHD_files,       &
-     &    FEM_prm, SGS_par, MHD_step, MHD_prop, MHD_BC,                 &
+     &    FEM_prm, SGS_par, flex_p, MHD_step, MHD_prop, MHD_BC,         &
      &    MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, nod_fld)
 !
 !  --  load FEM mesh data

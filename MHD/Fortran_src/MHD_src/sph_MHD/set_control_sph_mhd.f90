@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine set_control_4_SPH_MHD(plt, org_plt, modelD_ctl,      &
 !!     &          smctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,          &
-!!     &          sph_gen, rj_fld, MHD_files, bc_IO, pwr,               &
+!!     &          sph_gen, rj_fld, MHD_files, bc_IO, pwr, flex_p,       &
 !!     &          MHD_step, MHD_prop, MHD_BC, WK_sph, gen_sph)
 !!        type(platform_data_control), intent(in) :: plt
 !!        type(platform_data_control), intent(in) :: org_plt
@@ -23,6 +23,7 @@
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(sph_mean_squares), intent(inout) :: pwr
 !!        type(sph_filters_type), intent(inout) :: sph_filters(1)
+!!        type(flexible_stepping_parameter), intent(inout) :: flex_p
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(MHD_evolution_param), intent(inout) :: MHD_prop
 !!        type(MHD_BC_lists), intent(inout) :: MHD_BC
@@ -49,6 +50,7 @@
       use t_ctl_data_gen_sph_shell
       use t_sph_transforms
       use t_bc_data_list
+      use t_flex_delta_t_data
 !
       implicit none
 !
@@ -60,10 +62,9 @@
 !
       subroutine set_control_4_SPH_MHD(plt, org_plt, modelD_ctl,        &
      &          smctl_ctl, smonitor_ctl, nmtr_ctl, psph_ctl,            &
-     &          sph_gen, rj_fld, MHD_files, bc_IO, pwr,                 &
+     &          sph_gen, rj_fld, MHD_files, bc_IO, pwr, flex_p,         &
      &          MHD_step, MHD_prop, MHD_BC, WK_sph, gen_sph)
 !
-      use m_flexible_time_step
       use sph_mhd_rms_IO
 !
       use t_spheric_parameter
@@ -98,6 +99,7 @@
       type(phys_data), intent(inout) :: rj_fld
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(boundary_spectra), intent(inout) :: bc_IO
+      type(flexible_stepping_parameter), intent(inout) :: flex_p
       type(MHD_step_param), intent(inout) :: MHD_step
       type(MHD_evolution_param), intent(inout) :: MHD_prop
       type(MHD_BC_lists), intent(inout) :: MHD_BC
@@ -166,7 +168,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_control_4_time_steps'
       call s_set_control_4_time_steps                                   &
-     &   (flex_p1, MHD_step, smctl_ctl%mrst_ctl, smctl_ctl%tctl)
+     &   (flex_p, MHD_step, smctl_ctl%mrst_ctl, smctl_ctl%tctl)
 !
       call s_set_control_4_crank(smctl_ctl%mevo_ctl,                    &
      &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &

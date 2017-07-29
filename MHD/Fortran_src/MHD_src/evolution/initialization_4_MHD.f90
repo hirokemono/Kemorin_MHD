@@ -3,14 +3,15 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine init_analyzer_fl(MHD_files, IO_bc,                   &
-!!     &          FEM_prm, SGS_par, MHD_step, mesh, group, ele_mesh,    &
-!!     &          MHD_mesh, layer_tbl, MHD_prop, ak_MHD, Csims_FEM_MHD, &
+!!      subroutine init_analyzer_fl(MHD_files, IO_bc, FEM_prm, SGS_par, &
+!!     &          flex_p, MHD_step, mesh, group, ele_mesh, MHD_mesh,    &
+!!     &          layer_tbl, MHD_prop, ak_MHD, Csims_FEM_MHD,           &
 !!     &          iphys, nod_fld, label_sim)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
+!!        type(flexible_stepping_parameter), intent(inout) :: flex_p
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
@@ -43,6 +44,7 @@
       use t_boundary_field_IO
       use t_FEM_SGS_model_coefs
       use t_material_property
+      use t_flex_delta_t_data
 !
       implicit none
 !
@@ -52,9 +54,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer_fl(MHD_files, IO_bc,                     &
-     &          FEM_prm, SGS_par, MHD_step, mesh, group, ele_mesh,      &
-     &          MHD_mesh, layer_tbl, MHD_prop, ak_MHD, Csims_FEM_MHD,   &
+      subroutine init_analyzer_fl(MHD_files, IO_bc, FEM_prm, SGS_par,   &
+     &          flex_p, MHD_step, mesh, group, ele_mesh, MHD_mesh,      &
+     &          layer_tbl, MHD_prop, ak_MHD, Csims_FEM_MHD,             &
      &          iphys, nod_fld, label_sim)
 !
       use m_flexible_time_step
@@ -114,6 +116,7 @@
 !
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(SGS_paremeters), intent(inout) :: SGS_par
+      type(flexible_stepping_parameter), intent(inout) :: flex_p
       type(MHD_step_param), intent(inout) :: MHD_step
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
@@ -272,7 +275,7 @@
      &    mesh%node, mesh%ele, MHD_mesh%fluid, MHD_prop%cd_prop,        &
      &    iphys, layer_tbl, SGS_par, wk_sgs1, wk_diff1,                 &
      &    Csims_FEM_MHD%sgs_coefs, Csims_FEM_MHD%diff_coefs,            &
-     &    nod_fld, flex_p1, MHD_step%init_d, MHD_step%time_d)
+     &    nod_fld, flex_p, MHD_step%init_d, MHD_step%time_d)
       MHD_step%iflag_initial_step = 0
 !
 !  -------------------------------

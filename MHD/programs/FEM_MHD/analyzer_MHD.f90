@@ -39,6 +39,7 @@
       use m_solver_djds_MHD
       use m_type_AMG_data
       use m_type_AMG_data_4_MHD
+      use m_flexible_time_step
 !
 !
       total_start = MPI_WTIME()
@@ -72,7 +73,7 @@
 !
       call start_eleps_time(4)
       call input_control_4_FEM_MHD                                      &
-     &   (MHD_files1, FEM_prm1, SGS_par1, MHD_step1,                    &
+     &   (MHD_files1, FEM_prm1, SGS_par1, flex_p1, MHD_step1,           &
      &    MHD_prop1, MHD_BC1, mesh1, group1, ele_mesh1, nod_fld1,       &
      &    bc_FEM_IO1, filtering1, wide_filtering, wk_filter1,           &
      &    MHD1_matrices, MGCG_WK1, MGCG_FEM1, MGCG_MHD_FEM1)
@@ -80,7 +81,8 @@
       call end_eleps_time(4)
 !
       call start_eleps_time(2)
-      call FEM_initialize_MHD(MHD_files1, bc_FEM_IO1, MHD_step1)
+      call FEM_initialize_MHD                                           &
+     &   (MHD_files1, bc_FEM_IO1, flex_p1, MHD_step1)
 !
       call init_visualize_surface(mesh1, group1, ele_mesh1, nod_fld1)
       call end_eleps_time(2)

@@ -34,6 +34,7 @@
       use m_boundary_field_IO
       use m_type_AMG_data
       use m_type_AMG_data_4_MHD
+      use m_flexible_time_step
       use input_control
 !
 !
@@ -65,7 +66,7 @@
 !     --------------------- 
 !
       call input_control_4_FEM_snap                                     &
-     &   (MHD_files1, FEM_prm1, SGS_par1, MHD_step1,                    &
+     &   (MHD_files1, FEM_prm1, SGS_par1, flex_p1, MHD_step1,           &
      &    MHD_prop1, MHD_BC1, mesh1, group1, ele_mesh1, nod_fld1,       &
      &    bc_FEM_IO1, filtering1, wide_filtering, wk_filter1,           &
      &    MGCG_WK1, MGCG_FEM1, MGCG_MHD_FEM1)

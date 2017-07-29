@@ -3,9 +3,11 @@
 !
 !      modified by H. Matsui on June, 2005 
 !
-!!      subroutine FEM_initialize_MHD(MHD_files, MHD_step)
+!!      subroutine FEM_initialize_MHD                                   &
+!!     &         (MHD_files, bc_FEM_IO, flex_p, MHD_step)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(IO_boundary), intent(in) :: bc_FEM_IO
+!!        type(flexible_stepping_parameter), intent(inout) :: flex_p
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!      subroutine FEM_analyze_MHD                                      &
 !!     &         (MHD_files, MHD_step, visval, retval)
@@ -30,6 +32,7 @@
       use t_MHD_step_parameter
       use t_MHD_file_parameter
       use t_ucd_file
+      use t_flex_delta_t_data
 !
       use calypso_mpi
 !
@@ -41,7 +44,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_MHD(MHD_files, bc_FEM_IO, MHD_step)
+      subroutine FEM_initialize_MHD                                     &
+     &         (MHD_files, bc_FEM_IO, flex_p, MHD_step)
 !
       use m_geometry_data_MHD
       use m_node_phys_data
@@ -75,13 +79,14 @@
       type(IO_boundary), intent(in) :: bc_FEM_IO
 !
       type(MHD_step_param), intent(inout) :: MHD_step
+      type(flexible_stepping_parameter), intent(inout) :: flex_p
 !
       integer(kind = kint) :: iflag
 !
 !   matrix assembling
 !
       call init_analyzer_fl(MHD_files, bc_FEM_IO, FEM_prm1, SGS_par1,   &
-     &    MHD_step, mesh1, group1, ele_mesh1, MHD_mesh1,                &
+     &    flex_p, MHD_step, mesh1, group1, ele_mesh1, MHD_mesh1,        &
      &    layer_tbl1, MHD_prop1, ak_MHD, Csims_FEM_MHD1,                &
      &    iphys, nod_fld1, label_sim)
 !
