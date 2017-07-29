@@ -120,6 +120,7 @@
       use cal_inner_core_rotation
 !
       use cal_nonlinear_sph_MHD
+      use sum_rotation_of_SGS
       use sum_rotation_of_forces
 !
       use m_work_time

@@ -53,7 +53,7 @@
 !
       use init_sph_MHD_elapsed_label
       use FEM_analyzer_sph_MHD_w_viz
-      use input_control_sph_MHD
+      use input_control_sph_SGS_MHD
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank

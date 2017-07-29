@@ -4,11 +4,12 @@
 !      modified by H. Matsui on June, 2005 
 !
 !!      subroutine FEM_check_MHD_mat                                    &
-!!     &         (MHD_files, bc_FEM_IO, flex_p, MHD_step)
+!!     &         (MHD_files, bc_FEM_IO, flex_p, flex_data, MHD_step)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(IO_boundary), intent(in) :: bc_FEM_IO
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(flexible_stepping_parameter), intent(inout) :: flex_p
+!!        type(flexible_stepping_data), intent(inout) :: flex_data
 !
       module FEM_check_MHD_matrices
 !
@@ -30,7 +31,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_check_MHD_mat                                      &
-     &         (MHD_files, bc_FEM_IO, flex_p, MHD_step)
+     &         (MHD_files, bc_FEM_IO, flex_p, flex_data, MHD_step)
 !
       use m_SGS_control_parameter
       use m_control_parameter
@@ -58,14 +59,15 @@
 !
       type(MHD_step_param), intent(inout) :: MHD_step
       type(flexible_stepping_parameter), intent(inout) :: flex_p
+      type(flexible_stepping_data), intent(inout) :: flex_data
 !
 !
 !   matrix assembling
 !
       if (iflag_debug.eq.1) write(*,*) 'init_analyzer_fl'
       call init_analyzer_fl                                             &
-     &   (MHD_files, bc_FEM_IO, FEM_prm1, SGS_par1, flex_p, MHD_step,   &
-     &    mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,              &
+     &   (MHD_files, bc_FEM_IO, FEM_prm1, SGS_par1, flex_p, flex_data,  &
+     &    MHD_step, mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,    &
      &    MHD_prop1, ak_MHD, Csims_FEM_MHD1,                            &
      &    iphys, nod_fld1, label_sim)
 !

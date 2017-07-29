@@ -82,7 +82,7 @@
 !
       call start_eleps_time(2)
       call FEM_initialize_MHD                                           &
-     &   (MHD_files1, bc_FEM_IO1, flex_p1, MHD_step1)
+     &   (MHD_files1, bc_FEM_IO1, flex_p1, flex_data1, MHD_step1)
 !
       call init_visualize_surface(mesh1, group1, ele_mesh1, nod_fld1)
       call end_eleps_time(2)

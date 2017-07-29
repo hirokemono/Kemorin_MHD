@@ -4,14 +4,15 @@
 !      Written by H. Matsui
 !
 !!      subroutine init_analyzer_fl(MHD_files, IO_bc, FEM_prm, SGS_par, &
-!!     &          flex_p, MHD_step, mesh, group, ele_mesh, MHD_mesh,    &
-!!     &          layer_tbl, MHD_prop, ak_MHD, Csims_FEM_MHD,           &
+!!     &          flex_p, flex_data, MHD_step, mesh, group, ele_mesh,   &
+!!     &          MHD_mesh, layer_tbl, MHD_prop, ak_MHD, Csims_FEM_MHD, &
 !!     &          iphys, nod_fld, label_sim)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(inout) :: SGS_par
 !!        type(flexible_stepping_parameter), intent(inout) :: flex_p
+!!        type(flexible_stepping_data), intent(inout) :: flex_data
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
@@ -55,8 +56,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine init_analyzer_fl(MHD_files, IO_bc, FEM_prm, SGS_par,   &
-     &          flex_p, MHD_step, mesh, group, ele_mesh, MHD_mesh,      &
-     &          layer_tbl, MHD_prop, ak_MHD, Csims_FEM_MHD,             &
+     &          flex_p, flex_data, MHD_step, mesh, group, ele_mesh,     &
+     &          MHD_mesh, layer_tbl, MHD_prop, ak_MHD, Csims_FEM_MHD,   &
      &          iphys, nod_fld, label_sim)
 !
       use m_flexible_time_step
@@ -117,6 +118,7 @@
       type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
       type(SGS_paremeters), intent(inout) :: SGS_par
       type(flexible_stepping_parameter), intent(inout) :: flex_p
+      type(flexible_stepping_data), intent(inout) :: flex_data
       type(MHD_step_param), intent(inout) :: MHD_step
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group

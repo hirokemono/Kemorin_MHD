@@ -52,7 +52,7 @@
       use m_flexible_time_step
       use init_sph_MHD_elapsed_label
       use SPH_analyzer_snap
-      use input_control_sph_MHD
+      use input_control_sph_SGS_MHD
 !
 !
       write(*,*) 'Simulation start: PE. ', my_rank

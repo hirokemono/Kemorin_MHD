@@ -27,7 +27,6 @@
       use m_phys_labels
 !
       use t_control_parameter
-      use t_SGS_control_parameter
       use t_phys_data
       use t_phys_address
       use t_physical_property

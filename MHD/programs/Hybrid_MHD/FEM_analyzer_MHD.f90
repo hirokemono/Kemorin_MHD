@@ -4,11 +4,12 @@
 !      modified by H. Matsui on June, 2005 
 !
 !!      subroutine FEM_initialize_MHD                                   &
-!!     &         (MHD_files, bc_FEM_IO, flex_p, MHD_step)
+!!     &         (MHD_files, bc_FEM_IO, flex_p, flex_data, MHD_step)
 !!      subroutine FEM_analyze_MHD(MHD_files, MHD_step, visval, retval)
 !!      subroutine FEM_finalize_MHD(MHD_files, MHD_step)
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(flexible_stepping_parameter), intent(inout) :: flex_p
+!!        type(flexible_stepping_data), intent(inout) :: flex_data
 !!        type(IO_boundary), intent(in) :: bc_FEM_IO
 !
       module FEM_analyzer_MHD
@@ -38,7 +39,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_initialize_MHD                                     &
-     &         (MHD_files, bc_FEM_IO, flex_p, MHD_step)
+     &         (MHD_files, bc_FEM_IO, flex_p, flex_data, MHD_step)
 !
       use m_mesh_data
       use m_geometry_data_MHD
@@ -74,14 +75,15 @@
 !
       type(MHD_step_param), intent(inout) :: MHD_step
       type(flexible_stepping_parameter), intent(inout) :: flex_p
+      type(flexible_stepping_data), intent(inout) :: flex_data
 !
       integer(kind = kint) :: iflag
 !
 !   matrix assembling
 !
       call init_analyzer_fl                                             &
-     &   (MHD_files, bc_FEM_IO, FEM_prm1, SGS_par1, flex_p, MHD_step,   &
-     &    mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,              &
+     &   (MHD_files, bc_FEM_IO, FEM_prm1, SGS_par1, flex_p, flex_data,  &
+     &    MHD_step, mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,    &
      &    MHD_prop1, ak_MHD, Csims_FEM_MHD1,                            &
      &    iphys, nod_fld1, label_sim)
 !
@@ -153,7 +155,7 @@
       call s_check_deltat_by_prev_rms                                   &
      &   (flex_p1, MHD_step%time_d, mesh1, MHD_mesh1,                   &
      &    MHD_prop1%cd_prop, iphys, nod_fld1, fem_int1%jcs,             &
-     &    rhs_mat1%fem_wk, flex_data)
+     &    rhs_mat1%fem_wk, flex_data1)
 !
 !    Open monitor files
       call end_eleps_time(2)
@@ -200,6 +202,7 @@
       use init_iccg_matrices
       use check_deltat_by_prev_rms
       use output_viz_file_control
+      use FEM_flexible_time_step
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
 !
@@ -247,7 +250,7 @@
         if (iflag_debug.eq.1) write(*,*) 's_check_flexible_time_step'
         call s_check_flexible_time_step                                 &
      &     (mesh1, MHD_mesh1, MHD_prop1%cd_prop, iphys, nod_fld1,       &
-     &      fem_int1%jcs, rhs_mat1%fem_wk, flex_data,                   &
+     &      fem_int1%jcs, rhs_mat1%fem_wk, flex_data1,                  &
      &      flex_p1, MHD_step%time_d)
       end if
 !

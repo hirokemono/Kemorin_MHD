@@ -49,7 +49,7 @@
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
 !
       call FEM_check_MHD_mat                                            &
-     &   (MHD_files1, bc_FEM_IO1, flex_p1, MHD_step1)
+     &   (MHD_files1, bc_FEM_IO1, flex_p1, flex_data1, MHD_step1)
 !
       end subroutine init_analyzer
 !

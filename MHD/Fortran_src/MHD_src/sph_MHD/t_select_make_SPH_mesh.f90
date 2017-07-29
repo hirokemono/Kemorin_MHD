@@ -32,7 +32,6 @@
       use t_const_spherical_grid
       use t_MHD_file_parameter
       use t_MHD_step_parameter
-      use t_SGS_control_parameter
       use t_spheric_parameter
       use t_mesh_data
       use t_phys_data
@@ -40,7 +39,6 @@
       use t_group_data
       use t_rms_4_sph_spectr
       use t_file_IO_parameter
-      use t_ctl_data_SGS_MHD
       use t_sph_trans_arrays_MHD
 !
       implicit none

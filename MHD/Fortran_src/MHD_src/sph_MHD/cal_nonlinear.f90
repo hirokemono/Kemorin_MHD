@@ -131,7 +131,6 @@
       use sph_transforms_4_MHD
       use cal_nonlinear_sph_MHD
       use cal_sph_field_by_rotation
-      use cal_filtered_sph_fields
 !
       use m_work_time
 !

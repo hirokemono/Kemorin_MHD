@@ -69,7 +69,6 @@
       use t_sph_transforms
       use t_boundary_data_sph_MHD
       use t_radial_matrices_sph_MHD
-      use t_sph_filtering
 !
       implicit none
 !
@@ -205,8 +204,6 @@
       use sph_transforms_snapshot
       use cal_energy_flux_rtp
       use cal_energy_flux_rj
-      use cal_SGS_terms_sph_MHD
-      use cal_SGS_buo_flux_sph_MHD
 !
       type(sph_grids), intent(in) :: sph
       type(sph_comm_tables), intent(in) :: comms_sph

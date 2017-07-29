@@ -64,10 +64,8 @@
       use cal_sol_sph_MHD_crank
       use cal_nonlinear
       use init_sphrical_transform_MHD
-      use sph_filtering
       use check_dependency_for_MHD
       use input_control_sph_MHD
-      use sgs_ini_model_coefs_IO
 !
       use m_work_time
 !

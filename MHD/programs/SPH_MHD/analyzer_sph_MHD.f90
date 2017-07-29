@@ -49,7 +49,7 @@
       use m_rms_4_sph_spectr
       use m_bc_data_list
       use m_flexible_time_step
-      use input_control_sph_MHD
+      use input_control_sph_SGS_MHD
       use FEM_analyzer_sph_MHD_w_viz
 !
 !
