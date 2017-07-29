@@ -61,6 +61,7 @@
       use adjust_reference_fields
       use material_property
       use cal_nonlinear
+      use init_sphrical_transform_MHD
       use init_radial_infos_sph_mhd
       use const_radial_mat_4_sph
       use cal_rms_fields_by_sph
@@ -97,8 +98,8 @@
 !
 !  -------------------------------
 !
-      if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD_noSGS'
-      call init_sph_transform_MHD_noSGS(MHD_prop1, sph_MHD_bc1,         &
+      if (iflag_debug.gt.0) write(*,*) 'init_sph_transform_MHD'
+      call init_sph_transform_MHD(MHD_prop1, sph_MHD_bc1,               &
      &    ipol, idpdr, itor, iphys, sph1, comms_sph1, omega_sph1,       &
      &    trans_p1, trns_WK1, rj_fld1)
 !

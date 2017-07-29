@@ -65,6 +65,7 @@
       use adjust_reference_fields
       use material_property
       use cal_SGS_nonlinear
+      use init_sph_trans_SGS_MHD
       use init_radial_infos_sph_mhd
       use const_radial_mat_4_sph
       use sph_mhd_rms_IO

@@ -250,6 +250,7 @@
       use set_control_sph_data
       use add_nodal_fields_4_MHD
       use add_sph_MHD_fields_2_ctl
+      use add_sph_SGS_MHD_fld_2_ctl
       use sph_mhd_rst_IO_control
 !
       type(SGS_model_control_params), intent(in) :: SGS_param

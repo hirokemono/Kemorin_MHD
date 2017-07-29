@@ -224,11 +224,11 @@
 !
       call alloc_sph_trans_address(sph%sph_rtp, WK)
 !
-      call sel_sph_transform_MHD(ipol, fl_prop,                         &
+      call sel_sph_transform_MHD(izero, ipol, fl_prop,                  &
      &    sph_MHD_bc1%sph_bc_U, sph, comms_sph, omega_sph,              &
      &    ncomp_max_trans, nvector_max_trans, nscalar_max_trans,        &
-     &    trans_p, WK%trns_MHD, WK%WK_sph, WK%MHD_mul_FFTW,             &
-     &    WK%gt_cor, WK%cor_rlm, rj_fld)
+     &    WK%trns_MHD, WK%trns_SGS, WK%WK_sph, WK%MHD_mul_FFTW,         &
+     &    WK%SGS_mul_FFTW, trans_p, WK%gt_cor, WK%cor_rlm, rj_fld)
 !
       end subroutine init_sph_back_transform
 !

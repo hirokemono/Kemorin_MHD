@@ -8,10 +8,9 @@
 !!
 !!@verbatim
 !!     subroutine s_set_control_sph_data_MHD                            &
-!!     &         (SGS_param, MHD_prop, plt, field_ctl, mevo_ctl,        &
+!!     &         (MHD_prop, plt, field_ctl, mevo_ctl,                   &
 !!     &          rj_org_param, rst_org_param, fst_file_IO,             &
 !!     &          rj_fld, bc_IO, WK_sph)
-!!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
 !!        type(platform_data_control), intent(in) :: plt
@@ -56,7 +55,6 @@
       use m_FFT_selector
       use m_legendre_transform_list
 !
-      use t_SGS_control_parameter
       use t_ctl_data_4_platforms
       use t_read_control_arrays
       use t_ctl_data_mhd_evo_scheme

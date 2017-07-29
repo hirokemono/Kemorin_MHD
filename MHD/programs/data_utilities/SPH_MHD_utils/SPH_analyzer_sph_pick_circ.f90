@@ -75,6 +75,7 @@
       use r_interpolate_sph_data
       use sph_mhd_rst_IO_control
       use cal_SGS_nonlinear
+      use init_sph_trans_SGS_MHD
       use sph_MHD_circle_transform
       use nod_phys_send_recv
       use sph_filtering

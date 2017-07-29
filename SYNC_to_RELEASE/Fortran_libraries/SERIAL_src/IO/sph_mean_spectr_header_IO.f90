@@ -1,0 +1,1 @@
+../../../../MHD/Fortran_src/CORE_src/IO/sph_mean_spectr_header_IO.f90
