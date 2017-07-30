@@ -27,6 +27,11 @@ MAKENAME= $(MAKEDIR)/Makefile
 #
 FC_NAME_MANGLE = FC_NAME_LOWER_USCORE
 #
+#   zlib and libpng settings
+#
+ZLIB_CFLAGS =
+ZLIB_LIB =
+#
 #  -------------------------------------------------------------------------
 #
 
@@ -274,6 +279,19 @@ makemake:
 		MAKEDIR='$(MAKEDIR)' \
 		MAKENAME='$(MAKENAME)' \
 		module; \
+		) \
+	done
+	@echo '#' >> $(MAKENAME)
+	@echo '# Rules for includes' >> $(MAKENAME)
+	@echo '#' >> $(MAKENAME)
+	@for dir in C_libraries ; do \
+		( \
+		echo 'copy C include files for ' $$dir ; \
+		cd $${dir};  \
+		$(GMAKE) \
+		GMAKE='$(GMAKE)' \
+		MAKENAME='$(MAKENAME)' \
+		includes; \
 		) \
 	done
 	@echo '' >> $(MAKENAME)

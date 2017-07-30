@@ -6,12 +6,8 @@ C_BASE_DIR =     $$(C_SRCDIR)/BASE
 
 OBJ_BASE_C = \
  calypso_param_c.o \
- numbers_to_bin_c.o
-
-ifdef ZLIB_LIB
-  OBJ_BASE_C += \
+ numbers_to_bin_c.o \
  calypso_zlib_io_c.o
-endif
 
 #
 #  ------------------------------------------------------------------
@@ -54,7 +50,7 @@ module:
 	calypso_zlib_io_c.o: \
 	'$$(C_BASE_DIR)'/calypso_zlib_io_c.c \
 	calypso_zlib_io_c.h \
-	kemosrc_param_c.o \
+	calypso_param_c.o \
 	numbers_to_bin_c.o \
 	>> $(MAKENAME)
 	@echo '	''$$(CC)' -c '$$(OPTFLAGS) $$(C_INCLUDE)' \

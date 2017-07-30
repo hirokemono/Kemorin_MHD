@@ -10,8 +10,6 @@
 !!@verbatim
 !!      subroutine SPH_to_FEM_bridge_SGS_MHD                            &
 !!     &        (SGS_par, sph_params, sph_rtp, WK, mesh, iphys, nod_fld)
-!!      subroutine SPH_to_FEM_bridge_zm_SGS_snap                        &
-!!     &        (SGS_par, sph_params, sph_rtp, WK, mesh, iphys, nod_fld)
 !!      subroutine SPH_to_FEM_bridge_zRMS_snap                          &
 !!     &        (SGS_par, sph_params, sph_rtp, WK, mesh, iphys, nod_fld)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -84,40 +82,6 @@
       end subroutine SPH_to_FEM_bridge_SGS_MHD
 !
 !-----------------------------------------------------------------------
-!
-      subroutine SPH_to_FEM_bridge_zm_SGS_snap                          &
-     &        (SGS_par, sph_params, sph_rtp, WK, mesh, iphys, nod_fld)
-!
-      use t_mesh_data
-      use t_phys_data
-      use t_phys_address
-      use t_sph_trans_arrays_MHD
-      use t_SGS_control_parameter
-!
-      use FEM_analyzer_sph_MHD
-      use sph_rtp_zonal_rms_data
-!
-      type(SGS_paremeters), intent(in) :: SGS_par
-      type(sph_shell_parameters), intent(in) :: sph_params
-      type(sph_rtp_grid), intent(in) :: sph_rtp
-      type(works_4_sph_trans_MHD), intent(in) :: WK
-      type(mesh_geometry), intent(in) :: mesh
-      type(phys_address), intent(in) :: iphys
-!
-      type(phys_data), intent(inout) :: nod_fld
-!*
-!*  -----------  data transfer to FEM array --------------
-!*
-      call SPH_to_FEM_bridge_SGS_MHD(SGS_par, sph_params, sph_rtp,      &
-     &    WK, mesh, iphys, nod_fld)
-!
-! ----  Take zonal mean
-!
-      if (iflag_debug.eq.1) write(*,*) 'zonal_mean_all_rtp_field'
-      call zonal_mean_all_rtp_field(sph_rtp, mesh%node, nod_fld)
-!
-      end subroutine SPH_to_FEM_bridge_zm_SGS_snap
-!
 ! ----------------------------------------------------------------------
 !
       subroutine SPH_to_FEM_bridge_zRMS_snap                            &

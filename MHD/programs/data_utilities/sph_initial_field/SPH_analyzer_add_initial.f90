@@ -20,7 +20,6 @@
       use m_machine_parameter
       use m_work_time
       use m_ctl_data_sph_MHD
-      use m_SGS_control_parameter
       use m_MHD_step_parameter
       use m_physical_property
       use t_MHD_file_parameter

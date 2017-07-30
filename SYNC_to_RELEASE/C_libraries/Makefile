@@ -7,7 +7,7 @@ C_SRCDIR = $$(MHDDIR)/C_libraries
 LIB_CALYPSO_C =       -lcalypso_c
 LIB_CALYPSO_C_FILE = libcalypso_c.a
 
-OBJS_C= $$(OBJ_KEMO_C)
+OBJS_C= $$(OBJ_BASE_C)
 
 SUBDIRS = \
 BASE

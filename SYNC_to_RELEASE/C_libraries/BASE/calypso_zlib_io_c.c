@@ -1,10 +1,10 @@
 /*********************************************************************
-    kemo_zlib_io_c.c
+    calypso_zlib_io_c.c
     fortran wrapper for zlib IO
 *********************************************************************/
 
 #include <string.h>
-#include "kemo_zlib_io_c.h"
+#include "calypso_zlib_io_c.h"
 
 FILE *fp;
 gzFile file_gz;

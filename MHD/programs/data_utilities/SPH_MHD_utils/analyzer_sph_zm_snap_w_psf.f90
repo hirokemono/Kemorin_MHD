@@ -19,7 +19,6 @@
 !
       use m_machine_parameter
       use m_MHD_step_parameter
-      use m_SGS_control_parameter
       use m_work_time
       use m_spheric_parameter
       use m_mesh_data
@@ -51,7 +50,7 @@
       use m_bc_data_list
       use m_flexible_time_step
       use init_sph_MHD_elapsed_label
-      use SPH_analyzer_snap
+      use SPH_analyzer_snap_w_psf
       use input_control_sph_MHD
 !
 !
@@ -83,7 +82,7 @@
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap'
-      call SPH_init_sph_snap(MHD_files1, bc_sph_IO1, iphys)
+      call SPH_init_sph_snap_psf(MHD_files1, bc_sph_IO1, iphys)
 !
 !        Initialize visualization
 !
@@ -100,7 +99,7 @@
 !
       subroutine evolution_sph_zm_snap_w_psf
 !
-      use SPH_analyzer_zm_snap
+      use SPH_analyzer_zm_snap_w_psf
       use output_viz_file_control
 !
       integer(kind = kint) :: visval
@@ -141,7 +140,7 @@
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
         call FEM_analyze_sph_MHD(MHD_files1%ucd_file_IO,                &
-     &      mesh1,  nod_fld1, MHD_step1, visval)
+     &      mesh1, nod_fld1, MHD_step1, visval)
 !
         call end_eleps_time(4)
 !

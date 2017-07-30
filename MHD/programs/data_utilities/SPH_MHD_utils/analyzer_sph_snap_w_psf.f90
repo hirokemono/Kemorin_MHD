@@ -25,7 +25,7 @@
       use t_step_parameter
 !
       use FEM_analyzer_sph_MHD
-      use SPH_analyzer_snap
+      use SPH_analyzer_snap_w_psf
       use sections_for_1st
 !
       implicit none
@@ -43,7 +43,6 @@
 !
       use t_ctl_data_sph_MHD_psf
       use m_ctl_data_sph_MHD
-      use m_SGS_control_parameter
       use m_spheric_parameter
       use m_sph_spectr_data
       use m_rms_4_sph_spectr
@@ -82,8 +81,8 @@
      &    mesh1, group1, ele_mesh1, iphys, nod_fld1, range)
 !
 !        Initialize spherical transform dynamo
-      if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap'
-      call SPH_init_sph_snap(MHD_files1, bc_sph_IO1, iphys)
+      if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap_psf'
+      call SPH_init_sph_snap_psf(MHD_files1, bc_sph_IO1, iphys)
 !
 !        Initialize visualization
 !
@@ -123,8 +122,8 @@
 !
 !*  ----------  time evolution by spectral methood -----------------
 !*
-        if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_snap'
-        call SPH_analyze_snap                                           &
+        if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_snap_psf'
+        call SPH_analyze_snap_psf                                       &
      &     (MHD_step1%time_d%i_time_step, MHD_files1, MHD_step1)
 !*
 !*  -----------  output field data --------------

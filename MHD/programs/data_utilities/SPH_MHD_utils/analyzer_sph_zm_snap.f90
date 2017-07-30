@@ -101,7 +101,6 @@
       subroutine evolution_sph_zm_snap
 !
       use SPH_analyzer_zm_snap
-      use FEM_analyzer_sph_SGS_MHD
       use output_viz_file_control
 !
       integer(kind = kint) :: visval
@@ -123,8 +122,8 @@
 !
 !*  ----------  time evolution by spectral methood -----------------
 !*
-        if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_zm_snap'
-        call SPH_analyze_zm_snap                                        &
+        if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_zm_SGS_snap'
+        call SPH_analyze_zm_SGS_snap                                    &
      &     (MHD_step1%time_d%i_time_step, MHD_files1, MHD_step1)
 !*
 !*  -----------  output field data --------------
