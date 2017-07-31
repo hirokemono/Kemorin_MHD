@@ -116,7 +116,7 @@
       call check_calypso_sph_comm_buf_N(trns_MHD%ncomp_rj_2_rtp,        &
      &   comms_sph%comm_rtm, comms_sph%comm_rtp)
 !
-!      call start_eleps_time(51)
+!      call start_elapsed_time(51)
       if(iflag_debug .gt. 0) write(*,*) 'copy_mhd_spectr_to_send'
       call copy_mhd_spectr_to_send                                      &
      &   (trns_MHD%ncomp_rj_2_rtp, trns_MHD%b_trns, comms_sph%comm_rj,  &
@@ -196,7 +196,7 @@
       call check_calypso_sph_comm_buf_N(trns_MHD%ncomp_rj_2_rtp,        &
      &   comms_sph%comm_rtm, comms_sph%comm_rtp)
 !
-!      call start_eleps_time(51)
+!      call start_elapsed_time(51)
       if(iflag_debug .gt. 0) write(*,*) 'copy_mhd_spectr_to_send'
       call copy_mhd_spectr_to_send                                      &
      &   (trns_MHD%ncomp_rj_2_rtp, trns_MHD%b_trns, comms_sph%comm_rj,  &

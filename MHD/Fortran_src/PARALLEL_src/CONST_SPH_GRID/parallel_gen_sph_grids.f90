@@ -84,7 +84,7 @@
      &    gen_sph%s3d_ranks, gen_sph%sph_lcp,                           &
      &    gen_sph%stk_lc1d, gen_sph%sph_gl1d)
 !
-      call start_eleps_time(2)
+      call start_elapsed_time(2)
       allocate(comm_rlm_mul(gen_sph%s3d_ranks%ndomain_sph))
 !
       if(gen_sph%s3d_ranks%ndomain_sph .eq. nprocs) then
@@ -100,7 +100,7 @@
       call end_elapsed_time(2)
 !
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rj_modes'
-      call start_eleps_time(3)
+      call start_elapsed_time(3)
       if(gen_sph%s3d_ranks%ndomain_sph .eq. nprocs) then
         call mpi_gen_sph_rj_modes(comm_rlm_mul,                         &
      &      gen_sph, sph%sph_params, sph%sph_rlm, sph%sph_rj)
@@ -114,7 +114,7 @@
       deallocate(comm_rlm_mul)
       call end_elapsed_time(3)
 !
-      call start_eleps_time(2)
+      call start_elapsed_time(2)
       allocate(comm_rtm_mul(gen_sph%s3d_ranks%ndomain_sph))
 !
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rtm_grids'
@@ -129,7 +129,7 @@
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rtm_mul)
       call end_elapsed_time(2)
 !
-      call start_eleps_time(3)
+      call start_elapsed_time(3)
       if(gen_sph%s3d_ranks%ndomain_sph .eq. nprocs) then
         call mpi_gen_sph_rtp_grids(comm_rtm_mul,                        &
      &      gen_sph, sph%sph_params, sph%sph_rtp, sph%sph_rtm)

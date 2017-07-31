@@ -69,9 +69,9 @@
 !
 !     --------------------- 
 !
-      call start_eleps_time(1)
+      call start_elapsed_time(1)
 !
-      call start_eleps_time(4)
+      call start_elapsed_time(4)
       call input_control_4_FEM_MHD                                      &
      &   (MHD_files1, FEM_prm1, SGS_par1, flex_p1, MHD_step1,           &
      &    MHD_prop1, MHD_BC1, mesh1, group1, ele_mesh1, nod_fld1,       &
@@ -80,7 +80,7 @@
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
       call end_elapsed_time(4)
 !
-      call start_eleps_time(2)
+      call start_elapsed_time(2)
       call FEM_initialize_MHD                                           &
      &   (MHD_files1, bc_FEM_IO1, flex_p1, flex_data1, MHD_step1)
 !
@@ -98,7 +98,7 @@
 !
 !
       retval = 1
-      call start_eleps_time(3)
+      call start_elapsed_time(3)
 !
       do
 !  Time evolution
@@ -108,7 +108,7 @@
 !
 !  Visualization
         if (visval.eq.0) then
-          call start_eleps_time(4)
+          call start_elapsed_time(4)
           call visualize_surface(MHD_step1%viz_step, MHD_step1%time_d,  &
      &        mesh1, ele_mesh1, nod_fld1)
           call end_elapsed_time(4)

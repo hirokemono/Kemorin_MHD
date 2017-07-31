@@ -55,8 +55,8 @@
 !
 !   Load parameter file
 !
-      call start_eleps_time(1)
-      call start_eleps_time(4)
+      call start_elapsed_time(1)
+      call start_elapsed_time(4)
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_MHD_noviz'
       call read_control_4_sph_MHD_noviz(MHD_ctl_name, DNS_MHD_ctl1)
 !
@@ -70,7 +70,7 @@
 !
 !    precondition elaps start
 !
-      call start_eleps_time(2)
+      call start_elapsed_time(2)
 !
 !        Initialize spherical transform dynamo
 !

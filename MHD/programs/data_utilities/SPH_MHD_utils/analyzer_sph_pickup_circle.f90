@@ -68,8 +68,8 @@
 !
 !   Load parameter file
 !
-      call start_eleps_time(1)
-      call start_eleps_time(4)
+      call start_elapsed_time(1)
+      call start_elapsed_time(4)
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_SGS_MHD'
       call read_control_4_sph_SGS_MHD(snap_ctl_name, MHD_ctl1)
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_SGS_MHD'
@@ -95,7 +95,7 @@
 !
 !        Initialize spherical transform dynamo
 !
-      call start_eleps_time(2)
+      call start_elapsed_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_pick_circle'
       call SPH_init_sph_pick_circle(MHD_files1, bc_sph_IO1, iphys)
       call calypso_MPI_barrier
@@ -113,7 +113,7 @@
 !
 !*  -----------  set initial step data --------------
 !*
-      call start_eleps_time(3)
+      call start_elapsed_time(3)
       call s_initialize_time_step(MHD_step1%init_d, MHD_step1%time_d)
 !*
 !*  -------  time evelution loop start -----------

@@ -59,7 +59,7 @@
       type(phys_data), intent(in) :: nod_fld
 !
 !
-      call start_eleps_time(60)
+      call start_elapsed_time(60)
       if (iflag_debug.eq.1)  write(*,*) 'set_sectioning_case_table'
       call set_sectioning_case_table
 !
@@ -69,18 +69,18 @@
      &    group%ele_grp, group%surf_grp, group%surf_nod_grp, nod_fld)
       call end_elapsed_time(60)
 !
-      call start_eleps_time(61)
+      call start_elapsed_time(61)
       call ISOSURF_initialize(mesh%node, mesh%ele,                      &
      &    ele_mesh%surf, ele_mesh%edge, group%ele_grp, nod_fld)
       call end_elapsed_time(61)
 !
-      call start_eleps_time(62)
+      call start_elapsed_time(62)
       call PVR_initialize                                               &
      &   (mesh%node, mesh%ele, ele_mesh%surf, group, nod_fld)
       call calypso_MPI_barrier
       call end_elapsed_time(62)
 !
-      call start_eleps_time(63)
+      call start_elapsed_time(63)
       call FLINE_initialize                                             &
      &   (mesh%node, mesh%ele, group%ele_grp, group%surf_grp, nod_fld)
       call end_elapsed_time(63)
@@ -108,27 +108,27 @@
       type(jacobians_type), intent(in) :: jacobians
 !
 !
-      call start_eleps_time(65)
+      call start_elapsed_time(65)
       call SECTIONING_visualize                                         &
      &   (viz_step%PSF_t%istep_file, time_d, ele_mesh%edge, nod_fld)
       call calypso_MPI_barrier
       call end_elapsed_time(65)
 !
-      call start_eleps_time(66)
+      call start_elapsed_time(66)
       call ISOSURF_visualize                                            &
      &   (viz_step%ISO_t%istep_file, time_d, mesh%node, mesh%ele,       &
      &    ele_mesh%edge, ele_mesh%edge_comm, nod_fld)
       call calypso_MPI_barrier
       call end_elapsed_time(66)
 !
-      call start_eleps_time(67)
+      call start_elapsed_time(67)
       call PVR_visualize                                                &
      &   (viz_step%PVR_t%istep_file, mesh%node, mesh%ele,               &
      &    ele_mesh%surf, group, jacobians%jac_3d, nod_fld)
       call calypso_MPI_barrier
       call end_elapsed_time(67)
 !
-      call start_eleps_time(68)
+      call start_elapsed_time(68)
       call FLINE_visualize                                              &
      &   (viz_step%FLINE_t%istep_file, mesh%node, mesh%ele,             &
      &    ele_mesh%surf, group%ele_grp, ele_4_nod, nod_fld,             &

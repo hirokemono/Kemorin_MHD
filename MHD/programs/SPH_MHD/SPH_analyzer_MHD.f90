@@ -131,7 +131,7 @@
 !* -----  Open Volume integration data files -----------------
 !*
       if(iflag_debug .gt. 0) write(*,*) 'open_sph_vol_rms_file_mhd'
-      call start_eleps_time(4)
+      call start_elapsed_time(4)
       call open_sph_vol_rms_file_mhd                                    &
      &   (sph1%sph_params, sph1%sph_rj, ipol, rj_fld1, pwr1, WK_pwr)
       call end_elapsed_time(4)
@@ -173,15 +173,15 @@
 !*  ----------  add time evolution -----------------
 !*
 !
-      call start_eleps_time(5)
-      call start_eleps_time(6)
+      call start_elapsed_time(5)
+      call start_elapsed_time(6)
       if(iflag_debug.gt.0) write(*,*) 'sel_explicit_sph'
       call sel_explicit_sph(i_step, MHD_step%time_d%dt,                 &
      &    MHD_prop1, sph_MHD_bc1, sph1%sph_rj, ipol, itor, rj_fld1)
 !*
 !*  ----------  time evolution by inplicit method ----------
 !*
-      call start_eleps_time(7)
+      call start_elapsed_time(7)
       call s_cal_sol_sph_MHD_crank(MHD_step%time_d%dt, sph1%sph_rj,     &
      &    r_2nd, MHD_prop1, sph_MHD_bc1, trans_p1%leg,                  &
      &    ipol, idpdr, itor, sph_MHD_mat1, rj_fld1)
@@ -190,7 +190,7 @@
 !*
 !*  ----------------lead nonlinear term ... ----------
 !*
-      call start_eleps_time(8)
+      call start_elapsed_time(8)
       call nonlinear(sph1, comms_sph1, omega_sph1, r_2nd,               &
      &    MHD_prop1, sph_MHD_bc1, trans_p1, ref_temp1, ref_comp1,       &
      &    ipol, itor, trns_WK1, rj_fld1)
@@ -199,7 +199,7 @@
 !
 !* ----  Update fields after time evolution ------------------------=
 !*
-      call start_eleps_time(9)
+      call start_elapsed_time(9)
       if(iflag_debug.gt.0) write(*,*) 'trans_per_temp_to_temp_sph'
       call trans_per_temp_to_temp_sph(ref_temp1, ref_comp1, MHD_prop1,  &
      &    sph1%sph_rj, ipol, idpdr, rj_fld1)
@@ -215,8 +215,8 @@
 !
 !*  -----------  output restart data --------------
 !*
-      call start_eleps_time(4)
-      call start_eleps_time(10)
+      call start_elapsed_time(4)
+      call start_elapsed_time(10)
       iflag = set_IO_step_flag(MHD_step%time_d%i_time_step,             &
      &                         MHD_step%rst_step)
       if(iflag .eq. 0) then
@@ -239,7 +239,7 @@
 !
 !*  -----------  lead energy data --------------
 !*
-      call start_eleps_time(11)
+      call start_elapsed_time(11)
       iflag = output_IO_flag(i_step, MHD_step%rms_step)
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'

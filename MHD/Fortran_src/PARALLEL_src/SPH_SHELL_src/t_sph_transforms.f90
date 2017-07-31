@@ -92,14 +92,14 @@
 !
 !
       START_SRtime= MPI_WTIME()
-      call start_eleps_time(18)
+      call start_elapsed_time(18)
       call calypso_sph_comm_N                                           &
      &   (ncomp_trans, comms_sph%comm_rj, comms_sph%comm_rlm)
       call finish_send_recv_sph(comms_sph%comm_rj)
       call end_elapsed_time(18)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
-      call start_eleps_time(22)
+      call start_elapsed_time(22)
       call sel_backward_legendre_trans                                  &
      &   (ncomp_trans, nvector, nscalar, sph%sph_rlm, sph%sph_rtm,      &
      &    comms_sph%comm_rlm, comms_sph%comm_rtm,                       &
@@ -108,13 +108,13 @@
       call end_elapsed_time(22)
 !
       START_SRtime= MPI_WTIME()
-      call start_eleps_time(19)
+      call start_elapsed_time(19)
       call calypso_sph_comm_N                                           &
      &   (ncomp_trans, comms_sph%comm_rtm, comms_sph%comm_rtp)
       call end_elapsed_time(19)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
-      call start_eleps_time(24)
+      call start_elapsed_time(24)
       call back_FFT_select_from_recv(sph%sph_rtp, comms_sph%comm_rtp,   &
      &    ncomp_trans, n_WR, WR, v_rtp, WK_sph%WK_FFTs)
       call finish_send_recv_sph(comms_sph%comm_rtm)
@@ -151,13 +151,13 @@
 !
 !
       START_SRtime= MPI_WTIME()
-      call start_eleps_time(18)
+      call start_elapsed_time(18)
       call calypso_sph_comm_N                                           &
      &   (ncomp_trans, comms_sph%comm_rj, comms_sph%comm_rlm)
       call end_elapsed_time(18)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
-      call start_eleps_time(22)
+      call start_elapsed_time(22)
       call calypso_mpi_barrier
       if(iflag_debug .gt. 0) write(*,*) 'pole_backward_transforms'
       call pole_backward_transforms(ncomp_trans, nvector, nscalar,      &
@@ -176,13 +176,13 @@
       call end_elapsed_time(22)
 !
       START_SRtime= MPI_WTIME()
-      call start_eleps_time(19)
+      call start_elapsed_time(19)
       call calypso_sph_comm_N                                           &
      &   (ncomp_trans, comms_sph%comm_rtm, comms_sph%comm_rtp)
       call end_elapsed_time(19)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
-      call start_eleps_time(24)
+      call start_elapsed_time(24)
       call back_FFT_select_from_recv(sph%sph_rtp, comms_sph%comm_rtp,   &
      &    ncomp_trans, n_WR, WR, v_rtp, WK_sph%WK_FFTs)
       call end_elapsed_time(24)
@@ -224,13 +224,13 @@
 !
 !
       START_SRtime= MPI_WTIME()
-      call start_eleps_time(18)
+      call start_elapsed_time(18)
       call calypso_sph_comm_N                                           &
      &   (ncomp_trans, comms_sph%comm_rj, comms_sph%comm_rlm)
       call end_elapsed_time(18)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
-      call start_eleps_time(22)
+      call start_elapsed_time(22)
       call pole_backward_transforms(ncomp_trans, nvector, nscalar,      &
      &    sph%sph_params, sph%sph_rtp, sph%sph_rtm, sph%sph_rlm,        &
      &    comms_sph%comm_rlm, trans_p%leg, n_WR, WR, v_pl_local)
@@ -264,20 +264,20 @@
       type(spherical_trns_works), intent(inout) :: WK_sph
 !
 !
-      call start_eleps_time(24)
+      call start_elapsed_time(24)
       call fwd_FFT_select_to_send(sph%sph_rtp, comms_sph%comm_rtp,      &
      &    ncomp_trans, n_WS, v_rtp, WS, WK_sph%WK_FFTs)
       call end_elapsed_time(24)
 !
       START_SRtime= MPI_WTIME()
-      call start_eleps_time(20)
+      call start_elapsed_time(20)
       call calypso_sph_comm_N                                           &
      &   (ncomp_trans, comms_sph%comm_rtp, comms_sph%comm_rtm)
       call finish_send_recv_sph(comms_sph%comm_rtp)
       call end_elapsed_time(20)
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
-      call start_eleps_time(23)
+      call start_elapsed_time(23)
       if(iflag_debug .gt. 0) write(*,*) 'sel_forward_legendre_trans'
       call sel_forward_legendre_trans                                   &
      &   (ncomp_trans, nvector, nscalar, sph%sph_rtm, sph%sph_rlm,      &
@@ -287,7 +287,7 @@
       call end_elapsed_time(23)
 !
       START_SRtime= MPI_WTIME()
-      call start_eleps_time(21)
+      call start_elapsed_time(21)
       call calypso_sph_comm_N                                           &
      &   (ncomp_trans, comms_sph%comm_rlm, comms_sph%comm_rj)
       call finish_send_recv_sph(comms_sph%comm_rlm)

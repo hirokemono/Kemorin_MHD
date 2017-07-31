@@ -207,7 +207,7 @@
       integer(kind = kint), intent(in) :: istack_recv(0:npe_recv)
 !
 !
-      call start_eleps_time(37)
+      call start_elapsed_time(37)
       call calypso_send_recv_core                                       &
      &       (NB, npe_send, isend_self, id_pe_send, istack_send,        &
      &            npe_recv, irecv_self, id_pe_recv, istack_recv)
@@ -235,7 +235,7 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      call start_eleps_time(36)
+      call start_elapsed_time(36)
       call set_to_send_buf_N(NB, nnod_org, istack_send(npe_send),       &
      &    inod_export, X_org, WS(1))
       call end_elapsed_time(36)
@@ -262,7 +262,7 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      call start_eleps_time(36)
+      call start_elapsed_time(36)
       call set_to_send_buf_vector(NB, nnod_org,                         &
      &      istack_send(npe_send), inod_export, ncomp_X,                &
      &      i_fld_X, i_fld_WS, d_org, WS(1))
@@ -290,7 +290,7 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      call start_eleps_time(36)
+      call start_elapsed_time(36)
       call set_to_send_buf_scalar(NB, nnod_org,                         &
      &    istack_send(npe_send), inod_export, ncomp_X,                  &
      &    i_fld_X, i_fld_WS, d_org, WS(1))
@@ -318,7 +318,7 @@
       real (kind=kreal), intent(inout):: WS(n_WS)
 !
 !
-      call start_eleps_time(36)
+      call start_elapsed_time(36)
       call set_to_send_buf_tensor(NB, nnod_org,                         &
      &      istack_send(npe_send), inod_export, ncomp_X,                &
      &      i_fld_X, i_fld_WS, d_org, WS(1))
@@ -349,7 +349,7 @@
       real (kind=kreal), intent(inout):: d_new(nnod_new,ncomp_X)
 !
 !
-      call start_eleps_time(38)
+      call start_elapsed_time(38)
       if(iflag_sph_SRN .eq. iflag_import_item) then
         call set_from_recv_buf_vector(NB, nnod_new,                     &
      &      istack_recv(npe_recv), inod_import,                         &
@@ -385,7 +385,7 @@
       real (kind=kreal), intent(inout):: d_new(nnod_new,ncomp_X)
 !
 !
-      call start_eleps_time(38)
+      call start_elapsed_time(38)
       if(iflag_sph_SRN .eq. iflag_import_item) then
         call set_from_recv_buf_scalar(NB, nnod_new,                     &
      &      istack_recv(npe_recv), inod_import,                         &
@@ -421,7 +421,7 @@
       real (kind=kreal), intent(inout):: d_new(nnod_new,ncomp_X)
 !
 !
-      call start_eleps_time(38)
+      call start_elapsed_time(38)
       if(iflag_sph_SRN .eq. iflag_import_item) then
         call set_from_recv_buf_tensor(NB, nnod_new,                     &
      &      istack_recv(npe_recv), inod_import,                         &
@@ -457,7 +457,7 @@
       real (kind=kreal), intent(inout) :: X_new(NB*nnod_new)
 !
 !
-      call start_eleps_time(38)
+      call start_elapsed_time(38)
       if(iflag_sph_SRN .eq. iflag_import_item) then
         call set_from_recv_buf_N(NB, nnod_new,                          &
      &      istack_recv(npe_recv), inod_import, WR(1), X_new)

@@ -91,7 +91,7 @@
 !
 !       Transform first data
 !
-      call start_eleps_time(9)
+      call start_elapsed_time(9)
       if (iflag_debug.eq.1) write(*,*) 'sph_all_back_transform'
       call sph_all_back_transform(sph1, comms_sph1, trans_p1,           &
      &    ipol, ref_rj_fld, trns_WK1%trns_MHD, trns_WK1%WK_sph)
@@ -107,7 +107,7 @@
 !
 !       Transform second data
 !
-      call start_eleps_time(9)
+      call start_elapsed_time(9)
       if (iflag_debug.eq.1) write(*,*) 'sph_all_back_transform'
       call sph_all_back_transform(sph1, comms_sph1, trans_p1,           &
      &    ipol, rj_fld1, trns_WK1%trns_MHD, trns_WK1%WK_sph)

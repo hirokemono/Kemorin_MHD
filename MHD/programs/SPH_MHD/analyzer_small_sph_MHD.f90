@@ -54,8 +54,8 @@
 !
 !   Load parameter file
 !
-      call start_eleps_time(1)
-      call start_eleps_time(4)
+      call start_elapsed_time(1)
+      call start_elapsed_time(4)
       call read_control_4_sph_MHD_noviz(MHD_ctl_name, DNS_MHD_ctl1)
 !
       call input_control_4_SPH_MHD_nosnap(MHD_files1, bc_sph_IO1,       &
@@ -66,7 +66,7 @@
 !
 !    precondition elaps start
 !
-      call start_eleps_time(2)
+      call start_elapsed_time(2)
 !
 !        Initialize spherical transform dynamo
 !
@@ -87,7 +87,7 @@
       integer(kind = kint) :: iflag_finish
 !
 !
-      call start_eleps_time(3)
+      call start_elapsed_time(3)
 !
 !*  -----------  set initial step data --------------
 !*

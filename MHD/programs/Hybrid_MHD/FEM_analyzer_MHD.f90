@@ -159,7 +159,7 @@
 !
 !    Open monitor files
       call end_elapsed_time(2)
-      call start_eleps_time(4)
+      call start_elapsed_time(4)
 !
       call output_grd_file_w_org_connect(MHD_step%ucd_step, mesh1,      &
      &    MHD_mesh1, nod_fld1, ucd_param, fem_ucd1)
@@ -271,7 +271,7 @@
 !     -----Output monitor date
 !
         call end_elapsed_time(3)
-        call start_eleps_time(4)
+        call start_elapsed_time(4)
 !
         iflag = output_IO_flag(flex_p1%istep_max_dt, MHD_step%rms_step)
         if(iflag .eq. 0) then
@@ -301,7 +301,7 @@
      &      MHD_step%time_d, MHD_step%ucd_step, fem_ucd1)
 !
         call end_elapsed_time(4)
-        call start_eleps_time(3)
+        call start_elapsed_time(3)
       end if
 !
 !
@@ -329,7 +329,7 @@
         if(total_max .gt. MHD_step%finish_d%elapsed_time) then
           MHD_step%rst_step%istep_file = MHD_step%finish_d%i_end_step
           retval = 0
-          call start_eleps_time(4)
+          call start_elapsed_time(4)
           call output_MHD_restart_file_ctl                              &
      &       (SGS_par1, MHD_files, MHD_step%time_d, MHD_step%rst_step,  &
      &        mesh1%node, mesh1%nod_comm, iphys,                        &

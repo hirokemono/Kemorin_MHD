@@ -62,8 +62,8 @@
 !
 !   Load parameter file
 !
-      call start_eleps_time(1)
-      call start_eleps_time(4)
+      call start_elapsed_time(1)
+      call start_elapsed_time(4)
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_MHD_noviz'
       call read_control_4_sph_MHD_noviz(snap_ctl_name, DNS_MHD_ctl1)
 !
@@ -77,7 +77,7 @@
 !
 !     --------------------- 
 !
-      call start_eleps_time(2)
+      call start_elapsed_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
       call FEM_initialize_sph_MHD(MHD_files1%ucd_file_IO, MHD_step1,    &
      &    mesh1, group1, ele_mesh1, iphys, nod_fld1, range)
@@ -107,7 +107,7 @@
 !
 !*  -----------  set initial step data --------------
 !*
-      call start_eleps_time(3)
+      call start_elapsed_time(3)
       call s_initialize_time_step(MHD_step1%init_d, MHD_step1%time_d)
 !*
 !*  -------  time evelution loop start -----------
@@ -127,8 +127,8 @@
 !*
 !*  -----------  output field data --------------
 !*
-        call start_eleps_time(1)
-        call start_eleps_time(4)
+        call start_elapsed_time(1)
+        call start_elapsed_time(4)
 !
         iflag = lead_field_data_flag(MHD_step1%time_d%i_time_step,      &
      &                               MHD_step1)

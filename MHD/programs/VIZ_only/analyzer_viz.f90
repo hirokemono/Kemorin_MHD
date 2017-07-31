@@ -87,7 +87,7 @@
 !  Rendering
         if(visval .eq. 0) then
           if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step
-          call start_eleps_time(12)
+          call start_elapsed_time(12)
           call visualize_all(viz_step_V, t_VIZ%time_d,                  &
      &        femmesh_VIZ%mesh, femmesh_VIZ%group, elemesh_VIZ,         &
      &        field_VIZ, ele_4_nod_VIZ, jacobians_VIZ)

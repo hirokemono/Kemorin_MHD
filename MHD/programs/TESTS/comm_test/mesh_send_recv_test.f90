@@ -121,8 +121,8 @@
         irev_import(k) = ii
       end do
 !
-      call start_eleps_time(1)
-      call start_eleps_time(2)
+      call start_elapsed_time(1)
+      call start_elapsed_time(2)
 !$omp parallel private(nd,neib,ist,ied)
       do neib= 1, nod_comm%num_neib
         ist = nod_comm%istack_export(neib-1)
@@ -156,7 +156,7 @@
       enddo
 !$omp end parallel
       call end_elapsed_time(1)
-      call start_eleps_time(2)
+      call start_elapsed_time(2)
 !$omp parallel private(nd,neib,ist,ied)
       do neib= 1, nod_comm%num_neib
         ist = nod_comm%istack_import(neib-1)
@@ -174,8 +174,8 @@
 !$omp end parallel
       call end_elapsed_time(2)
 !
-      call start_eleps_time(3)
-      call start_eleps_time(4)
+      call start_elapsed_time(3)
+      call start_elapsed_time(4)
 !$omp parallel private(neib,ist,ied)
       do neib= 1, nod_comm%num_neib
         ist = nod_comm%istack_export(neib-1)
@@ -209,7 +209,7 @@
       enddo
 !$omp end parallel
       call end_elapsed_time(3)
-      call start_eleps_time(4)
+      call start_elapsed_time(4)
 !$omp parallel private(nd,neib,ist,ied)
       do neib= 1, nod_comm%num_neib
         ist = nod_comm%istack_import(neib-1)
@@ -229,8 +229,8 @@
 !
 !
 !
-      call start_eleps_time(5)
-      call start_eleps_time(6)
+      call start_elapsed_time(5)
+      call start_elapsed_time(6)
 !$omp parallel private(neib,nd,ist,num)
       do neib= 1, nod_comm%num_neib
         ist = nod_comm%istack_export(neib-1)
@@ -266,7 +266,7 @@
       enddo
 !$omp end parallel
       call end_elapsed_time(5)
-      call start_eleps_time(6)
+      call start_elapsed_time(6)
 !$omp parallel private(nd,neib,ist,num)
       do neib= 1, nod_comm%num_neib
         ist = nod_comm%istack_import(neib-1)
@@ -285,8 +285,8 @@
 !$omp end parallel
       call end_elapsed_time(6)
 !
-      call start_eleps_time(7)
-      call start_eleps_time(8)
+      call start_elapsed_time(7)
+      call start_elapsed_time(8)
 !$omp parallel private(neib,ist,num)
       do neib= 1, nod_comm%num_neib
         ist = nod_comm%istack_export(neib-1)
@@ -323,7 +323,7 @@
 !$omp end parallel
       call end_elapsed_time(7)
 !
-      call start_eleps_time(8)
+      call start_elapsed_time(8)
 !$omp parallel private(neib,ist,num,inum)
       do neib= 1, nod_comm%num_neib
         ist = nod_comm%istack_import(neib-1)

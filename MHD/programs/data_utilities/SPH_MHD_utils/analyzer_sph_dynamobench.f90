@@ -56,8 +56,8 @@
 !
 !   Load parameter file
 !
-      call start_eleps_time(1)
-      call start_eleps_time(4)
+      call start_elapsed_time(1)
+      call start_elapsed_time(4)
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_sph_MHD_noviz'
       call read_control_4_sph_MHD_noviz(snap_ctl_name, DNS_MHD_ctl1)
 
@@ -70,7 +70,7 @@
 !
 !    precondition elaps start
 !
-      call start_eleps_time(2)
+      call start_elapsed_time(2)
 !
 !        Initialize spherical transform dynamo
 !
@@ -91,7 +91,7 @@
 !
 !*  -----------  set initial step data --------------
 !*
-      call start_eleps_time(3)
+      call start_elapsed_time(3)
       call s_initialize_time_step(MHD_step1%init_d, MHD_step1%time_d)
 !*
 !*  -------  time evelution loop start -----------

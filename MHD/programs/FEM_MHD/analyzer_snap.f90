@@ -99,7 +99,7 @@
 !
 !  Visualization
         if (visval.eq.0) then
-          call start_eleps_time(12)
+          call start_elapsed_time(12)
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
      &        mesh1, group1, ele_mesh1, nod_fld1,                       &
      &        fem_int1%next_tbl%neib_ele, fem_int1%jcs)

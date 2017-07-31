@@ -41,7 +41,7 @@
 !
 !*  -----------  set initial step data --------------
 !*
-      call start_eleps_time(3)
+      call start_elapsed_time(3)
       call s_initialize_time_step(MHD_step1%init_d, MHD_step1%time_d)
 !*
 !*  -------  time evelution loop start -----------
@@ -136,7 +136,7 @@
 !*
 !*  -----------  lead energy data --------------
 !*
-      call start_eleps_time(11)
+      call start_elapsed_time(11)
       iflag = output_IO_flag(MHD_step%time_d%i_time_step,               &
      &                       MHD_step%rms_step)
       if(iflag .eq. 0) then

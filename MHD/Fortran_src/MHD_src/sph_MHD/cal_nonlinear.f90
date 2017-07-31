@@ -107,7 +107,7 @@
 !
 !*  ----  copy coriolis term for inner core rotation
 !*
-      call start_eleps_time(13)
+      call start_elapsed_time(13)
       if(sph_MHD_bc%sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call copy_icore_rot_to_tor_coriolis                             &
      &     (sph_MHD_bc%sph_bc_U%kr_in, sph%sph_rj%idx_rj_degree_one,    &
@@ -153,7 +153,7 @@
 !
 !   ----  lead nonlinear terms by phesdo spectrum
 !
-      call start_eleps_time(14)
+      call start_elapsed_time(14)
       if (iflag_debug.ge.1) write(*,*) 'sph_back_trans_4_MHD'
       call sph_back_trans_4_MHD                                         &
      &   (sph, comms_sph, MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U,        &
@@ -161,7 +161,7 @@
      &    WK_sph, MHD_mul_FFTW, cor_rlm)
       call end_elapsed_time(14)
 !
-      call start_eleps_time(15)
+      call start_elapsed_time(15)
       if (iflag_debug.ge.1) write(*,*) 'nonlinear_terms_in_rtp'
       call nonlinear_terms_in_rtp                                       &
      &   (sph%sph_rtp, MHD_prop%fl_prop, MHD_prop%cd_prop,              &
@@ -170,14 +170,14 @@
      &    trns_MHD%ncomp_rj_2_rtp, trns_MHD%ncomp_rtp_2_rj,             &
      &    trns_MHD%fld_rtp, trns_MHD%frc_rtp)
 !
-      call start_eleps_time(16)
+      call start_elapsed_time(16)
       if (iflag_debug.ge.1) write(*,*) 'sph_forward_trans_4_MHD'
       call sph_forward_trans_4_MHD                                      &
      &   (sph, comms_sph, MHD_prop%fl_prop, trans_p, cor_rlm,           &
      &    ipol, trns_MHD, WK_sph, MHD_mul_FFTW, rj_fld)
       call end_elapsed_time(16)
 !
-      call start_eleps_time(17)
+      call start_elapsed_time(17)
       if (iflag_debug.ge.1) write(*,*) 'rot_momentum_eq_exp_sph'
       call rot_momentum_eq_exp_sph(sph%sph_rj, r_2nd, sph_MHD_bc,       &
      &    trans_p%leg, ipol, itor, rj_fld)

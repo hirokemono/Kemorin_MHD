@@ -261,7 +261,7 @@
       real (kind=kreal), intent(inout):: WS(NB*comm_sph%ntot_item_sr)
 !
 !
-      call start_eleps_time(36)
+      call start_elapsed_time(36)
       call set_to_send_buf_N(NB, nnod_org,                              &
      &    comm_sph%istack_sr(comm_sph%nneib_domain), comm_sph%item_sr,  &
      &    X_org, WS(1))

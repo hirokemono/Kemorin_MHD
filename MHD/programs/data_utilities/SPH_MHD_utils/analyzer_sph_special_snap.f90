@@ -54,7 +54,7 @@
 !
 !*  -----------  set initial step data --------------
 !*
-      call start_eleps_time(3)
+      call start_elapsed_time(3)
       call s_initialize_time_step(MHD_step1%init_d, MHD_step1%time_d)
 !*
 !*  -------  time evelution loop start -----------
@@ -74,8 +74,8 @@
 !*
 !*  -----------  output field data --------------
 !*
-        call start_eleps_time(1)
-        call start_eleps_time(4)
+        call start_elapsed_time(1)
+        call start_elapsed_time(4)
         iflag = lead_field_data_flag(MHD_step1%time_d%i_time_step,      &
      &                               MHD_step1)
         if(iflag .eq. 0) then
@@ -94,7 +94,7 @@
 !*
         if(visval .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'visualize_surface'
-          call start_eleps_time(12)
+          call start_elapsed_time(12)
           call visualize_surface(MHD_step1%viz_step, MHD_step1%time_d,  &
      &        mesh1, ele_mesh1, nod_fld1)
           call end_elapsed_time(12)
@@ -180,7 +180,7 @@
 !
 !*  ----------------lead nonlinear term ... ----------
 !*
-      call start_eleps_time(8)
+      call start_elapsed_time(8)
       call nonlinear_w_SGS(i_step, SGS_par1, sph1, comms_sph1,          &
      &    omega_sph1, r_2nd, MHD_prop1, sph_MHD_bc1, trans_p1,          &
      &    ref_temp1, ref_comp1, ipol, itor,                             &
@@ -189,7 +189,7 @@
 !
 !* ----  Update fields after time evolution ------------------------=
 !*
-      call start_eleps_time(9)
+      call start_elapsed_time(9)
 !
       if(iflag_debug.gt.0) write(*,*) 'trans_per_temp_to_temp_sph'
       call trans_per_temp_to_temp_sph(ref_temp1, ref_comp1, MHD_prop1,  &
@@ -203,8 +203,8 @@
 !
 !*  -----------  lead energy data --------------
 !*
-      call start_eleps_time(4)
-      call start_eleps_time(11)
+      call start_elapsed_time(4)
+      call start_elapsed_time(11)
       iflag = output_IO_flag(i_step, MHD_step%rms_step)
       if(iflag .eq. 0) then
         if(iflag_debug.gt.0)  write(*,*) 'output_rms_sph_mhd_control'

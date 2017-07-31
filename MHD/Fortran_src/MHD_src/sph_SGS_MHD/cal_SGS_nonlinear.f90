@@ -169,7 +169,7 @@
 !
 !*  ----  copy coriolis term for inner core rotation
 !*
-      call start_eleps_time(13)
+      call start_elapsed_time(13)
       if(sph_MHD_bc%sph_bc_U%iflag_icb .eq. iflag_rotatable_ic) then
         call copy_icore_rot_to_tor_coriolis                             &
      &     (sph_MHD_bc%sph_bc_U%kr_in, sph%sph_rj%idx_rj_degree_one,    &
@@ -229,7 +229,7 @@
 !   ----  Lead filtered field for SGS terms
       if(SGS_param%iflag_SGS .gt. id_SGS_none) then
         if (iflag_debug.ge.1) write(*,*) 'cal_filtered_sph_rj_fields'
-        call start_eleps_time(81)
+        call start_elapsed_time(81)
         call cal_filtered_sph_rj_fields                                 &
      &     (sph%sph_rj, ipol, dynamic_SPH%sph_filters, rj_fld)
         call end_elapsed_time(81)
@@ -237,7 +237,7 @@
 !
 !   ----  lead nonlinear terms by phesdo spectrum
 !
-      call start_eleps_time(14)
+      call start_elapsed_time(14)
       if (iflag_debug.ge.1) write(*,*) 'sph_back_trans_4_MHD'
       call sph_back_trans_4_MHD                                         &
      &   (sph, comms_sph, MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U,        &
@@ -245,7 +245,7 @@
      &    WK_sph, MHD_mul_FFTW, cor_rlm)
       call end_elapsed_time(14)
 !
-      call start_eleps_time(15)
+      call start_elapsed_time(15)
       if (iflag_debug.ge.1) write(*,*) 'nonlinear_terms_in_rtp'
       call nonlinear_terms_in_rtp                                       &
      &   (sph%sph_rtp, MHD_prop%fl_prop, MHD_prop%cd_prop,              &
@@ -265,14 +265,14 @@
       end if
       call end_elapsed_time(15)
 !
-      call start_eleps_time(16)
+      call start_elapsed_time(16)
       if (iflag_debug.ge.1) write(*,*) 'sph_forward_trans_4_MHD'
       call sph_forward_trans_4_MHD                                      &
      &   (sph, comms_sph, MHD_prop%fl_prop, trans_p, cor_rlm,           &
      &    ipol, trns_MHD, WK_sph, MHD_mul_FFTW, rj_fld)
       call end_elapsed_time(16)
 !
-      call start_eleps_time(17)
+      call start_elapsed_time(17)
       if (iflag_debug.ge.1) write(*,*) 'rot_momentum_eq_exp_sph'
       call rot_momentum_eq_exp_sph(sph%sph_rj, r_2nd, sph_MHD_bc,       &
      &    trans_p%leg, ipol, itor, rj_fld)
@@ -320,18 +320,18 @@
 !
 !   ----  Lead filtered forces for SGS terms
         if (iflag_debug.ge.1) write(*,*) 'cal_filtered_sph_rj_forces'
-        call start_eleps_time(81)
+        call start_elapsed_time(81)
         call cal_filtered_sph_rj_forces                                 &
      &     (sph%sph_rj, ipol, dynamic_SPH%sph_filters, rj_fld)
         call end_elapsed_time(81)
 !
-        call start_eleps_time(14)
+        call start_elapsed_time(14)
         if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_SGS_MHD'
         call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,            &
      &      ipol, rj_fld, trns_SGS, WK_sph, SGS_mul_FFTW)
         call end_elapsed_time(14)
 !
-        call start_eleps_time(15)
+        call start_elapsed_time(15)
         if (iflag_debug.eq.1) write(*,*) 'similarity_SGS_terms_rtp'
         call similarity_SGS_terms_rtp(sph%sph_rtp,                      &
      &      trns_MHD%f_trns, trns_SGS%b_trns, trns_SGS%f_trns,          &
@@ -375,13 +375,13 @@
         end if
         call end_elapsed_time(15)
 !
-        call start_eleps_time(16)
+        call start_elapsed_time(16)
         if (iflag_debug.eq.1) write(*,*) 'sph_forward_trans_SGS_MHD'
         call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,         &
      &      ipol, trns_SGS, WK_sph, SGS_mul_FFTW, rj_fld)
         call end_elapsed_time(16)
 !
-        call start_eleps_time(17)
+        call start_elapsed_time(17)
         if(SGS_param%iflag_SGS_buo_usage .eq. id_use_sphere) then
           if(istep_dynamic .eq. 0) then
             if (iflag_debug.eq.1) write(*,*)                            &

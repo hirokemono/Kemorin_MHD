@@ -95,7 +95,7 @@
      &    test_ele_mesh%surf%nnod_4_surf,                               &
      &    test_ele_mesh%edge%nnod_4_edge)
 !
-      call start_eleps_time(1)
+      call start_elapsed_time(1)
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
       call const_mesh_infos                                             &
      &   (my_rank, test_fem%mesh, test_fem%group, test_ele_mesh)
@@ -113,7 +113,7 @@
 !  -----    construct geometry informations
 !
       if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
-      call start_eleps_time(2)
+      call start_elapsed_time(2)
       call const_element_comm_tbls(test_fem%mesh, test_ele_mesh)
       call end_elapsed_time(2)
 !

@@ -148,7 +148,7 @@
 ! 
       ierr = i_debug
 !
-      call start_eleps_time(5)
+      call start_elapsed_time(5)
       if (cmp_no_case(METHOD, 'MGCG')) then
         call VMGCG33_DJDS_SMP(num_MG_level, MG_comm,                    &
      &      MG_itp, MG_DJDS_tbl, MG_DJDS_mat, MG_vector,                &
@@ -204,7 +204,7 @@
       if (iflag_debug.eq.1) write(*,*) 'METHOD for scalar: ',           &
      &                                  trim(METHOD)
 !
-      call start_eleps_time(5)
+      call start_elapsed_time(5)
       ierr = i_debug
 !
 !      call CG                                                          &

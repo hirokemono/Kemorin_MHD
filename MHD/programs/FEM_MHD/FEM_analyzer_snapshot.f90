@@ -198,7 +198,7 @@
 !
 !     -----Output monitor date
 !
-      call start_eleps_time(4)
+      call start_elapsed_time(4)
 !
       iflag = output_IO_flag(flex_p1%istep_max_dt, MHD_step%rms_step)
       if(iflag .eq. 0) then
