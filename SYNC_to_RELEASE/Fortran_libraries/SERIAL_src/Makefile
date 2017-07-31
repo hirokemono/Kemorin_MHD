@@ -61,6 +61,9 @@ mod_list:
 	@echo  \
 	'$$(MOD_BASE)'     \
 	'$$(MOD_IO)'       \
+	'$$(MOD_BINARY_IO)'  \
+	'$$(MOD_ZLIB_IO)'    \
+	'$$(MOD_MPI_IO)'     \
 	'$$(MOD_GAUSS)'    \
 	'$$(MOD_SPH)'      \
 	'$$(MOD_FFT_WRAP)' \
