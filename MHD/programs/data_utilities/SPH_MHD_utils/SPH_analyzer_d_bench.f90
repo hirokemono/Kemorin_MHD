@@ -177,7 +177,7 @@
      &     (sph1, comms_sph1, r_2nd, MHD_prop1, sph_MHD_bc1, trans_p1,  &
      &      ipol, sph_MHD_mat1, trns_WK1, rj_fld1)
       end if
-      call end_eleps_time(9)
+      call end_elapsed_time(9)
 !
 !*  -----------  lead mid-equator field --------------
 !*
@@ -189,8 +189,8 @@
      &    sph_MHD_bc1, trans_p1%leg, ipol, itor, rj_fld1, pwr1, WK_pwr)
       call output_field_4_dynamobench(i_step, MHD_step1%time_d%time,    &
      &   sph_MHD_bc1%sph_bc_U, sph_MHD_bc1%sph_bc_B, ipol)
-      call end_eleps_time(11)
-      call end_eleps_time(4)
+      call end_elapsed_time(11)
+      call end_elapsed_time(4)
 !
       end subroutine SPH_analyze_dbench
 !

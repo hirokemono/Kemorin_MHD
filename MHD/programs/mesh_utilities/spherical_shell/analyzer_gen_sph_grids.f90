@@ -106,8 +106,8 @@
      &      sph_const%sph_params, sph_const%sph_rj, sph_const%sph_rtp,  &
      &      fem_mesh_file)
       end if
-      call end_eleps_time(4)
-      call end_eleps_time(1)
+      call end_elapsed_time(4)
+      call end_elapsed_time(1)
 !
       call output_elapsed_times
 !

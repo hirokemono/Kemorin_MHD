@@ -207,7 +207,7 @@
      &    edge%ie_edge, nod_fld%num_phys, nod_fld%ntot_phys,            &
      &    nod_fld%istack_component, nod_fld%d_fld, psf_param,           &
      &    psf_list, psf_grp_list, psf_mesh)
-!      call end_eleps_time(20)
+!      call end_elapsed_time(20)
 !
 !      call start_eleps_time(21)
       if (iflag_debug.eq.1) write(*,*) 'output_section_mesh'

@@ -134,7 +134,7 @@
       call start_eleps_time(4)
       call open_sph_vol_rms_file_mhd                                    &
      &   (sph1%sph_params, sph1%sph_rj, ipol, rj_fld1, pwr1, WK_pwr)
-      call end_eleps_time(4)
+      call end_elapsed_time(4)
 !
       end subroutine SPH_initialize_MHD
 !
@@ -185,8 +185,8 @@
       call s_cal_sol_sph_MHD_crank(MHD_step%time_d%dt, sph1%sph_rj,     &
      &    r_2nd, MHD_prop1, sph_MHD_bc1, trans_p1%leg,                  &
      &    ipol, idpdr, itor, sph_MHD_mat1, rj_fld1)
-      call end_eleps_time(7)
-      call end_eleps_time(6)
+      call end_elapsed_time(7)
+      call end_elapsed_time(6)
 !*
 !*  ----------------lead nonlinear term ... ----------
 !*
@@ -194,8 +194,8 @@
       call nonlinear(sph1, comms_sph1, omega_sph1, r_2nd,               &
      &    MHD_prop1, sph_MHD_bc1, trans_p1, ref_temp1, ref_comp1,       &
      &    ipol, itor, trns_WK1, rj_fld1)
-      call end_eleps_time(8)
-      call end_eleps_time(5)
+      call end_elapsed_time(8)
+      call end_elapsed_time(5)
 !
 !* ----  Update fields after time evolution ------------------------=
 !*
@@ -211,7 +211,7 @@
      &     (sph1, comms_sph1, r_2nd, MHD_prop1, sph_MHD_bc1, trans_p1,  &
      &      ipol, sph_MHD_mat1, trns_WK1, rj_fld1)
       end if
-      call end_eleps_time(9)
+      call end_elapsed_time(9)
 !
 !*  -----------  output restart data --------------
 !*
@@ -235,7 +235,7 @@
         call output_sph_restart_control(MHD_files%fst_file_IO,          &
      &     MHD_step%time_d, rj_fld1, MHD_step%rst_step)
       end if
-      call end_eleps_time(10)
+      call end_elapsed_time(10)
 !
 !*  -----------  lead energy data --------------
 !*
@@ -248,7 +248,7 @@
      &      sph_MHD_bc1%sph_bc_U, trans_p1%leg, ipol, rj_fld1,          &
      &      pwr1, WK_pwr)
       end if
-      call end_eleps_time(11)
+      call end_elapsed_time(11)
 !
       if(iflag_debug.gt.0) write(*,*) 'sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph(ref_temp1, ref_comp1, MHD_prop1,   &
@@ -258,7 +258,7 @@
      &    .and. MHD_step%finish_d%i_end_step .gt. 0) then
         iflag_finish = 1
       end if
-      call end_eleps_time(4)
+      call end_elapsed_time(4)
 !
       end subroutine SPH_analyze_MHD
 !

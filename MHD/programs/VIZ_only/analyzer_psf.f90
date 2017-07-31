@@ -84,7 +84,7 @@
         call visualize_surface                                          &
      &     (viz_step_V, t_VIZ%time_d, femmesh_VIZ%mesh,                 &
      &      elemesh_VIZ, field_VIZ)
-        call end_eleps_time(12)
+        call end_elapsed_time(12)
       end do
 !
       call output_elapsed_times

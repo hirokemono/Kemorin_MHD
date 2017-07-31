@@ -41,8 +41,11 @@
 !
       use sph_modes_grids_file_IO
       use sph_modes_grids_file_IO_b
+!
+#ifdef ZLIB_IO
       use gz_sph_modes_grids_file_IO
       use gz_sph_modes_file_IO_b
+#endif
 !
       implicit none
 !

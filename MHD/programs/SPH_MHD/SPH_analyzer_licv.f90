@@ -200,7 +200,7 @@
      &     (sph1, comms_sph1, r_2nd, MHD_prop1, sph_MHD_bc1, trans_p1,  &
      &      ipol, sph_MHD_mat1, trns_WK1, rj_fld1)
       end if
-      call end_eleps_time(9)
+      call end_elapsed_time(9)
 !
 !*  ----------------lead nonlinear term ... ----------
 !*
@@ -230,7 +230,7 @@
      &     (MHD_files%fst_file_IO, MHD_step%time_d,                     &
      &      rj_fld1, MHD_step%rst_step)
       end if
-      call end_eleps_time(10)
+      call end_elapsed_time(10)
 !
 !*  -----------  lead energy data --------------
 !*
@@ -243,12 +243,12 @@
      &      sph_MHD_bc1%sph_bc_U, trans_p1%leg, ipol, rj_fld1,          &
      &      pwr1, WK_pwr)
       end if
-      call end_eleps_time(11)
+      call end_elapsed_time(11)
 !
       if(iflag_debug.gt.0) write(*,*) 'sync_temp_by_per_temp_sph'
       call sync_temp_by_per_temp_sph(ref_temp1, ref_comp1, MHD_prop1,   &
      &    sph1%sph_rj, ipol, idpdr, rj_fld1)
-      call end_eleps_time(4)
+      call end_elapsed_time(4)
 !
       if(i_step .ge. MHD_step%finish_d%i_end_step                       &
      &     .and. MHD_step%finish_d%i_end_step .gt. 0) then

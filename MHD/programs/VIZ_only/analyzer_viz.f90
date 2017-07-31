@@ -91,7 +91,7 @@
           call visualize_all(viz_step_V, t_VIZ%time_d,                  &
      &        femmesh_VIZ%mesh, femmesh_VIZ%group, elemesh_VIZ,         &
      &        field_VIZ, ele_4_nod_VIZ, jacobians_VIZ)
-          call end_eleps_time(12)
+          call end_elapsed_time(12)
         end if
       end do
 !

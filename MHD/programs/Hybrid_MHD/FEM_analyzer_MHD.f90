@@ -158,7 +158,7 @@
      &    rhs_mat1%fem_wk, flex_data1)
 !
 !    Open monitor files
-      call end_eleps_time(2)
+      call end_elapsed_time(2)
       call start_eleps_time(4)
 !
       call output_grd_file_w_org_connect(MHD_step%ucd_step, mesh1,      &
@@ -166,7 +166,7 @@
 !
       call alloc_phys_range(nod_fld1%ntot_phys_viz, range)
 !       call s_open_boundary_monitor(my_rank, group1%sf_grp)
-      call end_eleps_time(4)
+      call end_elapsed_time(4)
 !
       end subroutine FEM_initialize_MHD
 !
@@ -270,7 +270,7 @@
 !
 !     -----Output monitor date
 !
-        call end_eleps_time(3)
+        call end_elapsed_time(3)
         call start_eleps_time(4)
 !
         iflag = output_IO_flag(flex_p1%istep_max_dt, MHD_step%rms_step)
@@ -300,7 +300,7 @@
         call s_output_ucd_file_control(ucd_param, flex_p1%istep_max_dt, &
      &      MHD_step%time_d, MHD_step%ucd_step, fem_ucd1)
 !
-        call end_eleps_time(4)
+        call end_elapsed_time(4)
         call start_eleps_time(3)
       end if
 !
@@ -334,7 +334,7 @@
      &       (SGS_par1, MHD_files, MHD_step%time_d, MHD_step%rst_step,  &
      &        mesh1%node, mesh1%nod_comm, iphys,                        &
      &        wk_sgs1, wk_diff1, nod_fld1)
-          call end_eleps_time(4)
+          call end_elapsed_time(4)
         end if
 !
 !   Finish by specific time

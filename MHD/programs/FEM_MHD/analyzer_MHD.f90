@@ -78,14 +78,14 @@
      &    bc_FEM_IO1, filtering1, wide_filtering, wk_filter1,           &
      &    MHD1_matrices, MGCG_WK1, MGCG_FEM1, MGCG_MHD_FEM1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
-      call end_eleps_time(4)
+      call end_elapsed_time(4)
 !
       call start_eleps_time(2)
       call FEM_initialize_MHD                                           &
      &   (MHD_files1, bc_FEM_IO1, flex_p1, flex_data1, MHD_step1)
 !
       call init_visualize_surface(mesh1, group1, ele_mesh1, nod_fld1)
-      call end_eleps_time(2)
+      call end_elapsed_time(2)
 !
       end subroutine initialization_MHD
 !
@@ -111,20 +111,20 @@
           call start_eleps_time(4)
           call visualize_surface(MHD_step1%viz_step, MHD_step1%time_d,  &
      &        mesh1, ele_mesh1, nod_fld1)
-          call end_eleps_time(4)
+          call end_elapsed_time(4)
         end if
 !
         if (retval .eq. 0) exit
       end do
 !
-      call end_eleps_time(3)
+      call end_elapsed_time(3)
 !
 !  time evolution end
 !
       call FEM_finalize_MHD(MHD_files1, MHD_step1)
 !
       call copy_COMM_TIME_to_elaps(num_elapsed)
-      call end_eleps_time(1)
+      call end_elapsed_time(1)
 !
       call output_elapsed_times
 !

@@ -162,7 +162,7 @@
      &      METHOD, PRECOND, ierr, eps, itr, itr_res)
       end if
 !
-      call end_eleps_time(5)
+      call end_elapsed_time(5)
       if(iflag_debug .gt. 0) write(12,*) ' Iteration counts:', itr_res
 !
       end subroutine solver_MGCG_vector
@@ -230,7 +230,7 @@
      &      METHOD, PRECOND, ierr, eps, itr, itr_res)
       end if
 !
-      call end_eleps_time(5)
+      call end_elapsed_time(5)
       if (iflag_debug .gt. 0) write(12,*) ' iteration counts', itr_res
 !
       end subroutine solver_MGCG_scalar

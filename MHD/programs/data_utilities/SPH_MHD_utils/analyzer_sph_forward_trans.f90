@@ -72,7 +72,7 @@
      &    pwr1, SGS_par1, dynamic_SPH1, flex_p1, MHD_step1,             &
      &    MHD_prop1, MHD_BC1, trns_WK1, mesh1, group1, ele_mesh1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
-      call end_eleps_time(4)
+      call end_elapsed_time(4)
 !
 !     --------------------- 
 !
@@ -87,7 +87,7 @@
 !
       call calypso_MPI_barrier
 !
-      call end_eleps_time(2)
+      call end_elapsed_time(2)
       call reset_elapse_4_init_sph_mhd
 !
       end subroutine initialize_sph_forward_trans
@@ -129,7 +129,7 @@
 !
 !  time evolution end
 !
-      call end_eleps_time(3)
+      call end_elapsed_time(3)
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
       call FEM_finalize(MHD_files1%ucd_file_IO, MHD_step1)
@@ -138,7 +138,7 @@
 !      call SPH_finalize_snap
 !
       call copy_COMM_TIME_to_elaps(num_elapsed)
-      call end_eleps_time(1)
+      call end_elapsed_time(1)
 !
       call output_elapsed_times
 !

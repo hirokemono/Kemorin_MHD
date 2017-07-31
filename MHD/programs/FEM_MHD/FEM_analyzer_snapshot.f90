@@ -238,7 +238,7 @@
      &                               MHD_step%viz_step)
       end if
 !
-      call end_eleps_time(4)
+      call end_elapsed_time(4)
 !
       end subroutine FEM_analyze_snapshot
 !

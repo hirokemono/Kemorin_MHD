@@ -68,7 +68,7 @@
      &    rj_fld1, pwr1, flex_p1, MHD_step1, mesh1, group1, ele_mesh1,  &
      &    MHD_prop1, MHD_BC1, trns_WK1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
-      call end_eleps_time(4)
+      call end_elapsed_time(4)
 !
 !        Initialize spherical transform dynamo
 !
@@ -76,7 +76,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'SPH_const_initial_field'
       call SPH_const_initial_field
 !
-      call end_eleps_time(2)
+      call end_elapsed_time(2)
       call reset_elapse_4_init_sph_mhd
 !
       end subroutine initialize_const_sph_initial

@@ -212,7 +212,7 @@
      &       (NB, npe_send, isend_self, id_pe_send, istack_send,        &
      &            npe_recv, irecv_self, id_pe_recv, istack_recv)
       call clear_addtional_SR_recv(NB, istack_recv(npe_recv), WR)
-      call end_eleps_time(37)
+      call end_elapsed_time(37)
 !
       end subroutine sel_calypso_sph_comm_N
 !
@@ -238,7 +238,7 @@
       call start_eleps_time(36)
       call set_to_send_buf_N(NB, nnod_org, istack_send(npe_send),       &
      &    inod_export, X_org, WS(1))
-      call end_eleps_time(36)
+      call end_elapsed_time(36)
 !
       end subroutine sel_calypso_to_send_N
 !
@@ -266,7 +266,7 @@
       call set_to_send_buf_vector(NB, nnod_org,                         &
      &      istack_send(npe_send), inod_export, ncomp_X,                &
      &      i_fld_X, i_fld_WS, d_org, WS(1))
-      call end_eleps_time(36)
+      call end_elapsed_time(36)
 !
       end subroutine sel_calypso_to_send_vector
 !
@@ -294,7 +294,7 @@
       call set_to_send_buf_scalar(NB, nnod_org,                         &
      &    istack_send(npe_send), inod_export, ncomp_X,                  &
      &    i_fld_X, i_fld_WS, d_org, WS(1))
-      call end_eleps_time(36)
+      call end_elapsed_time(36)
 !
       end subroutine sel_calypso_to_send_scalar
 !
@@ -322,7 +322,7 @@
       call set_to_send_buf_tensor(NB, nnod_org,                         &
      &      istack_send(npe_send), inod_export, ncomp_X,                &
      &      i_fld_X, i_fld_WS, d_org, WS(1))
-      call end_eleps_time(36)
+      call end_elapsed_time(36)
 !
       end subroutine sel_calypso_to_send_tensor
 !
@@ -359,7 +359,7 @@
      &      istack_recv(npe_recv), irev_import,                         &
      &      ncomp_X, i_fld_X, i_fld_WR, WR(1), d_new)
       end if
-      call end_eleps_time(38)
+      call end_elapsed_time(38)
 !
       end subroutine sel_sph_vector_from_recv
 !
@@ -395,7 +395,7 @@
      &      istack_recv(npe_recv), irev_import,                         &
      &      ncomp_X, i_fld_X, i_fld_WR, WR(1), d_new)
       end if
-      call end_eleps_time(38)
+      call end_elapsed_time(38)
 !
       end subroutine sel_sph_scalar_from_recv
 !
@@ -431,7 +431,7 @@
      &      istack_recv(npe_recv), irev_import,                         &
      &      ncomp_X, i_fld_X, i_fld_WR, WR(1), d_new)
       end if
-      call end_eleps_time(38)
+      call end_elapsed_time(38)
 !
       end subroutine sel_sph_tensor_from_recv
 !
@@ -465,7 +465,7 @@
         call set_from_recv_buf_rev_N(NB, nnod_new,                      &
      &      istack_recv(npe_recv), irev_import, WR(1), X_new)
       end if
-      call end_eleps_time(38)
+      call end_elapsed_time(38)
 !
       end subroutine sel_calypso_from_recv_N
 !

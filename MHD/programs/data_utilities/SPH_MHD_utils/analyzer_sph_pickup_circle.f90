@@ -91,7 +91,7 @@
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
       call load_para_sph_mesh(sph1, comms_sph1, sph_grps1)
 !
-      call end_eleps_time(4)
+      call end_elapsed_time(4)
 !
 !        Initialize spherical transform dynamo
 !
@@ -100,7 +100,7 @@
       call SPH_init_sph_pick_circle(MHD_files1, bc_sph_IO1, iphys)
       call calypso_MPI_barrier
 !
-      call end_eleps_time(2)
+      call end_elapsed_time(2)
       call reset_elapse_4_init_sph_mhd
 !
       end subroutine initialize_sph_pick_circle
@@ -139,13 +139,13 @@
 !
 !  time evolution end
 !
-      call end_eleps_time(3)
+      call end_elapsed_time(3)
 !
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_pick_circle'
 !      call SPH_finalize_pick_circle
 !
       call copy_COMM_TIME_to_elaps(num_elapsed)
-      call end_eleps_time(1)
+      call end_elapsed_time(1)
 !
       call output_elapsed_times
 !

@@ -97,7 +97,7 @@
       end if
       call bcast_comm_stacks_sph                                        &
      &  (gen_sph%s3d_ranks%ndomain_sph, comm_rlm_mul)
-      call end_eleps_time(2)
+      call end_elapsed_time(2)
 !
       if(iflag_debug .gt. 0) write(*,*) 'para_gen_sph_rj_modes'
       call start_eleps_time(3)
@@ -112,7 +112,7 @@
       call dealloc_comm_stacks_sph                                      &
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rlm_mul)
       deallocate(comm_rlm_mul)
-      call end_eleps_time(3)
+      call end_elapsed_time(3)
 !
       call start_eleps_time(2)
       allocate(comm_rtm_mul(gen_sph%s3d_ranks%ndomain_sph))
@@ -127,7 +127,7 @@
       end if
       call bcast_comm_stacks_sph                                        &
      &   (gen_sph%s3d_ranks%ndomain_sph, comm_rtm_mul)
-      call end_eleps_time(2)
+      call end_elapsed_time(2)
 !
       call start_eleps_time(3)
       if(gen_sph%s3d_ranks%ndomain_sph .eq. nprocs) then
@@ -144,7 +144,7 @@
 !
       deallocate(comm_rtm_mul)
       call calypso_MPI_barrier
-      call end_eleps_time(3)
+      call end_elapsed_time(3)
 !
       end subroutine para_gen_sph_grids
 !

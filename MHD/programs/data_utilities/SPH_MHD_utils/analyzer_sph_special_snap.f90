@@ -88,7 +88,7 @@
         call FEM_analyze_sph_MHD(MHD_files1%ucd_file_IO,                &
      &      mesh1, nod_fld1, MHD_step1, visval)
 !
-        call end_eleps_time(4)
+        call end_elapsed_time(4)
 !
 !*  ----------- Visualization --------------
 !*
@@ -97,9 +97,9 @@
           call start_eleps_time(12)
           call visualize_surface(MHD_step1%viz_step, MHD_step1%time_d,  &
      &        mesh1, ele_mesh1, nod_fld1)
-          call end_eleps_time(12)
+          call end_elapsed_time(12)
         end if
-        call end_eleps_time(1)
+        call end_elapsed_time(1)
 !
 !*  -----------  exit loop --------------
 !*
@@ -109,7 +109,7 @@
 !
 !  time evolution end
 !
-      call end_eleps_time(3)
+      call end_elapsed_time(3)
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
       call FEM_finalize(MHD_files1%ucd_file_IO, MHD_step1)
@@ -118,7 +118,7 @@
 !      call SPH_finalize_snap
 !
       call copy_COMM_TIME_to_elaps(num_elapsed)
-      call end_eleps_time(1)
+      call end_elapsed_time(1)
 !
       call output_elapsed_times
 !
@@ -185,7 +185,7 @@
      &    omega_sph1, r_2nd, MHD_prop1, sph_MHD_bc1, trans_p1,          &
      &    ref_temp1, ref_comp1, ipol, itor,                             &
      &    trns_WK1, dynamic_SPH1, rj_fld1)
-      call end_eleps_time(8)
+      call end_elapsed_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=
 !*
@@ -199,7 +199,7 @@
       call lead_special_fields_4_sph_mhd(i_step, sph1, comms_sph1,      &
      &    omega_sph1, r_2nd, ipol, trns_WK1, dynamic_SPH1,              &
      &    sph_MHD_mat1, rj_fld1, MHD_step)
-      call end_eleps_time(9)
+      call end_elapsed_time(9)
 !
 !*  -----------  lead energy data --------------
 !*
@@ -213,8 +213,8 @@
      &      sph_MHD_bc1%sph_bc_U, trans_p1%leg, ipol, rj_fld1,          &
      &      pwr1, WK_pwr)
       end if
-      call end_eleps_time(11)
-      call end_eleps_time(4)
+      call end_elapsed_time(11)
+      call end_elapsed_time(4)
 !
 !*  -----------  Output spectr data --------------
 !*

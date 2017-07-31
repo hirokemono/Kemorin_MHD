@@ -60,7 +60,7 @@
      &    DNS_MHD_ctl1, sph1, comms_sph1, sph_grps1, rj_fld1, pwr1,     &
      &    flex_p1, MHD_step1, MHD_prop1, MHD_BC1, trns_WK1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
-      call end_eleps_time(4)
+      call end_elapsed_time(4)
 !
 !    precondition elaps start
 !
@@ -73,7 +73,7 @@
      &   (MHD_files1, bc_sph_IO1, iphys, MHD_step1)
       call calypso_MPI_barrier
 !
-      call end_eleps_time(2)
+      call end_elapsed_time(2)
       call reset_elapse_4_init_sph_mhd
 !
       end subroutine initialize_sph_licv
@@ -115,7 +115,7 @@
         if(iflag_finish .gt. izero) exit
       end do
 !
-      call end_eleps_time(3)
+      call end_elapsed_time(3)
 !
 !  time evolution end
 !
@@ -123,7 +123,7 @@
 !      call SPH_finalize_licv
 !
       call copy_COMM_TIME_to_elaps(num_elapsed)
-      call end_eleps_time(1)
+      call end_elapsed_time(1)
 !
       call output_elapsed_times
 !

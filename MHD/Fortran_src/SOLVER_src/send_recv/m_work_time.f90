@@ -11,7 +11,7 @@
 !!      subroutine deallocate_elapsed_times
 !!
 !!      subroutine start_eleps_time(iflag_elps)
-!!      subroutine end_eleps_time(iflag_elps)
+!!      subroutine end_elapsed_time(iflag_elps)
 !!      subroutine reset_eleps_time(iflag_elps)
 !!      subroutine copy_COMM_TIME_to_elaps(iflag_elps)
 !!
@@ -105,7 +105,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine end_eleps_time(iflag_elps)
+      subroutine end_elapsed_time(iflag_elps)
 !
       use calypso_mpi
 !
@@ -117,7 +117,7 @@
       elapsed(iflag_elps) = MPI_WTIME() - start_times(iflag_elps)       &
      &                     + elapsed(iflag_elps)
 !
-      end subroutine end_eleps_time
+      end subroutine end_elapsed_time
 !
 ! ----------------------------------------------------------------------
 !

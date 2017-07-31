@@ -176,7 +176,7 @@
      &      sph%sph_rj%nidx_rj(2), ipol, itor,                          &
      &      rj_fld%n_point, rj_fld%ntot_phys, rj_fld%d_fld)
       end if
-      call end_eleps_time(13)
+      call end_elapsed_time(13)
 !
       if(iflag_debug .gt. 0) write(*,*) 'sum_forces_to_explicit'
       call sum_forces_to_explicit                                       &
@@ -232,7 +232,7 @@
         call start_eleps_time(81)
         call cal_filtered_sph_rj_fields                                 &
      &     (sph%sph_rj, ipol, dynamic_SPH%sph_filters, rj_fld)
-        call end_eleps_time(81)
+        call end_elapsed_time(81)
       end if
 !
 !   ----  lead nonlinear terms by phesdo spectrum
@@ -243,7 +243,7 @@
      &   (sph, comms_sph, MHD_prop%fl_prop, sph_MHD_bc%sph_bc_U,        &
      &    omega_sph, trans_p, gt_cor, ipol, rj_fld, trns_MHD,           &
      &    WK_sph, MHD_mul_FFTW, cor_rlm)
-      call end_eleps_time(14)
+      call end_elapsed_time(14)
 !
       call start_eleps_time(15)
       if (iflag_debug.ge.1) write(*,*) 'nonlinear_terms_in_rtp'
@@ -263,20 +263,20 @@
      &      trns_MHD%ncomp_rj_2_rtp, trns_MHD%ncomp_rtp_2_rj,           &
      &      trns_MHD%fld_rtp, trns_MHD%frc_rtp)
       end if
-      call end_eleps_time(15)
+      call end_elapsed_time(15)
 !
       call start_eleps_time(16)
       if (iflag_debug.ge.1) write(*,*) 'sph_forward_trans_4_MHD'
       call sph_forward_trans_4_MHD                                      &
      &   (sph, comms_sph, MHD_prop%fl_prop, trans_p, cor_rlm,           &
      &    ipol, trns_MHD, WK_sph, MHD_mul_FFTW, rj_fld)
-      call end_eleps_time(16)
+      call end_elapsed_time(16)
 !
       call start_eleps_time(17)
       if (iflag_debug.ge.1) write(*,*) 'rot_momentum_eq_exp_sph'
       call rot_momentum_eq_exp_sph(sph%sph_rj, r_2nd, sph_MHD_bc,       &
      &    trans_p%leg, ipol, itor, rj_fld)
-      call end_eleps_time(17)
+      call end_elapsed_time(17)
 !
       end subroutine nonlinear_by_pseudo_sph_SGS
 !
@@ -323,13 +323,13 @@
         call start_eleps_time(81)
         call cal_filtered_sph_rj_forces                                 &
      &     (sph%sph_rj, ipol, dynamic_SPH%sph_filters, rj_fld)
-        call end_eleps_time(81)
+        call end_elapsed_time(81)
 !
         call start_eleps_time(14)
         if (iflag_debug.eq.1) write(*,*) 'sph_back_trans_SGS_MHD'
         call sph_back_trans_SGS_MHD(sph, comms_sph, trans_p,            &
      &      ipol, rj_fld, trns_SGS, WK_sph, SGS_mul_FFTW)
-        call end_eleps_time(14)
+        call end_elapsed_time(14)
 !
         call start_eleps_time(15)
         if (iflag_debug.eq.1) write(*,*) 'similarity_SGS_terms_rtp'
@@ -373,13 +373,13 @@
      &          dynamic_SPH%ifld_sgs, dynamic_SPH%wk_sgs, trns_SGS)
           end if
         end if
-        call end_eleps_time(15)
+        call end_elapsed_time(15)
 !
         call start_eleps_time(16)
         if (iflag_debug.eq.1) write(*,*) 'sph_forward_trans_SGS_MHD'
         call sph_forward_trans_SGS_MHD(sph, comms_sph, trans_p,         &
      &      ipol, trns_SGS, WK_sph, SGS_mul_FFTW, rj_fld)
-        call end_eleps_time(16)
+        call end_elapsed_time(16)
 !
         call start_eleps_time(17)
         if(SGS_param%iflag_SGS_buo_usage .eq. id_use_sphere) then
@@ -411,7 +411,7 @@
         if (iflag_debug.ge.1) write(*,*) 'rot_SGS_terms_exp_sph'
         call rot_SGS_terms_exp_sph(sph%sph_rj, r_2nd, sph_MHD_bc,       &
      &      trans_p%leg, ipol, itor, rj_fld)
-        call end_eleps_time(17)
+        call end_elapsed_time(17)
 !
       end subroutine SGS_by_pseudo_sph
 !

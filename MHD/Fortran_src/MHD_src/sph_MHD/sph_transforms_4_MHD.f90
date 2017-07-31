@@ -121,7 +121,7 @@
       call copy_mhd_spectr_to_send                                      &
      &   (trns_MHD%ncomp_rj_2_rtp, trns_MHD%b_trns, comms_sph%comm_rj,  &
      &    ipol, rj_fld, n_WS, WS)
-!      call end_eleps_time(51)
+!      call end_elapsed_time(51)
 !
       if(trns_MHD%ncomp_rj_2_rtp .eq. 0) return
       call sph_b_trans_w_coriolis(trns_MHD%ncomp_rj_2_rtp,              &
@@ -201,7 +201,7 @@
       call copy_mhd_spectr_to_send                                      &
      &   (trns_MHD%ncomp_rj_2_rtp, trns_MHD%b_trns, comms_sph%comm_rj,  &
      &    ipol, rj_fld, n_WS, WS)
-!      call end_eleps_time(51)
+!      call end_elapsed_time(51)
 !
       if(trns_MHD%ncomp_rj_2_rtp .eq. 0) return
       call pole_b_transform(trns_MHD%ncomp_rj_2_rtp,                    &

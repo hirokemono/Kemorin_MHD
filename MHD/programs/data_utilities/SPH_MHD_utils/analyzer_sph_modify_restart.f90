@@ -66,7 +66,7 @@
 !
 !  time evolution end
 !
-      call end_eleps_time(3)
+      call end_elapsed_time(3)
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
       call FEM_finalize(MHD_files1%ucd_file_IO, MHD_step1)
@@ -75,7 +75,7 @@
 !      call SPH_finalize_snap
 !
       call copy_COMM_TIME_to_elaps(num_elapsed)
-      call end_eleps_time(1)
+      call end_elapsed_time(1)
 !
       call output_elapsed_times
 !
@@ -146,8 +146,8 @@
      &      sph_MHD_bc1%sph_bc_U, trans_p1%leg, ipol, rj_fld1,          &
      &      pwr1, WK_pwr)
       end if
-      call end_eleps_time(11)
-      call end_eleps_time(4)
+      call end_elapsed_time(11)
+      call end_elapsed_time(4)
 !
       end subroutine SPH_analyze_mod_restart
 !

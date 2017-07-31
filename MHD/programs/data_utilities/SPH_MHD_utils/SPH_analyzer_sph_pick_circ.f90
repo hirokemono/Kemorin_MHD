@@ -192,7 +192,7 @@
      &    omega_sph1, r_2nd, MHD_prop1, sph_MHD_bc1, trans_p1,          &
      &    ref_temp1, ref_comp1, ipol, itor,                             &
      &    trns_WK1, dynamic_SPH1, rj_fld1)
-      call end_eleps_time(8)
+      call end_elapsed_time(8)
 !
 !* ----  Update fields after time evolution ------------------------=
 !*
@@ -208,7 +208,7 @@
      &      comms_sph1, r_2nd, MHD_prop1, sph_MHD_bc1, trans_p1,        &
      &      ipol, sph_MHD_mat1, trns_WK1, dynamic_SPH1, rj_fld1)
       end if
-      call end_eleps_time(9)
+      call end_elapsed_time(9)
 !
 !*  -----------  lead mid-equator field --------------
 !*
@@ -216,7 +216,7 @@
       if(iflag_debug.gt.0)  write(*,*) 'sph_transfer_on_circle'
       call sph_transfer_on_circle(sph1%sph_rj, rj_fld1)
       call write_field_data_on_circle(i_step, MHD_step1%time_d%time)
-      call end_eleps_time(4)
+      call end_elapsed_time(4)
 !
       end subroutine SPH_analyze_pick_circle
 !

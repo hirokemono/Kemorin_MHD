@@ -78,7 +78,7 @@
       call set_ctl_4_second_spectr_data                                 &
      &   (MHD_ctl1%new_plt, sph_file_param2)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
-      call end_eleps_time(4)
+      call end_elapsed_time(4)
 !
 !     --------------------- 
 !
@@ -96,7 +96,7 @@
       call init_visualize(mesh1, group1, ele_mesh1, nod_fld1)
 !
       call calypso_MPI_barrier
-      call end_eleps_time(2)
+      call end_elapsed_time(2)
       call reset_elapse_4_init_sph_mhd
 !
       end subroutine initialize_sph_all_rms_ratio
@@ -148,7 +148,7 @@
         call FEM_analyze_sph_MHD(MHD_files1%ucd_file_IO,                &
      &      mesh1, nod_fld1, MHD_step1, visval)
 !
-        call end_eleps_time(4)
+        call end_elapsed_time(4)
 !
 !*  ----------- Visualization --------------
 !*
@@ -158,9 +158,9 @@
           call visualize_all(MHD_step1%viz_step, MHD_step1%time_d,      &
      &        mesh1, group1, ele_mesh1, nod_fld1,                       &
      &        next_tbl_VIZ1%neib_ele, jacobians_VIZ1)
-          call end_eleps_time(12)
+          call end_elapsed_time(12)
         end if
-        call end_eleps_time(1)
+        call end_elapsed_time(1)
 !
 !*  -----------  exit loop --------------
 !*
@@ -170,7 +170,7 @@
 !
 !  time evolution end
 !
-      call end_eleps_time(3)
+      call end_elapsed_time(3)
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
       call FEM_finalize(MHD_files1%ucd_file_IO, MHD_step1)
@@ -179,7 +179,7 @@
 !      call SPH_finalize_snap
 !
       call copy_COMM_TIME_to_elaps(num_elapsed)
-      call end_eleps_time(1)
+      call end_elapsed_time(1)
 !
       call output_elapsed_times
 !
