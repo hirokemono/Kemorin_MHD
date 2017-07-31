@@ -206,10 +206,12 @@ then
 
 # Check zlib
 	AX_CHECK_ZLIB
-	ZLIB_CFLAGS="${CPPFLAGS}"
-	ZLIB_LIB="${LDFLAGS} ${LIBS}"
-	AC_SUBST(ZLIB_CFLAGS)
-	AC_SUBST(ZLIB_LIB)
+	if test -n "${LIBS}"; then
+		ZLIB_CFLAGS="${CPPFLAGS}"
+		ZLIB_LIB="${LDFLAGS} ${LIBS}"
+		AC_SUBST(ZLIB_CFLAGS)
+		AC_SUBST(ZLIB_LIB)
+	fi
 
 # Check libpng
 	if test ${USE_libpng} = "yes"
