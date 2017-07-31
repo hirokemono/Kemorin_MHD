@@ -90,6 +90,13 @@ AC_PROG_FC
 AC_PROG_RANLIB
 AC_MSG_RESULT(RANLIB... "${RANLIB}")
 
+if test -z ${FC}
+then
+	FC=${F77}
+else
+	F77=${FC}
+fi
+
 if test ${host_alias} = "powerpc64-bgq-linux"
 then
   XL_FORTRAN="__bgq__"
