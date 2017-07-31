@@ -12,7 +12,7 @@
 !!
 !!      subroutine start_elapsed_time(iflag_elps)
 !!      subroutine end_elapsed_time(iflag_elps)
-!!      subroutine reset_eleps_time(iflag_elps)
+!!      subroutine reset_elapsed_time(iflag_elps)
 !!      subroutine copy_COMM_TIME_to_elaps(iflag_elps)
 !!
 !!      subroutine output_elapsed_times
@@ -121,7 +121,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine reset_eleps_time(iflag_elps)
+      subroutine reset_elapsed_time(iflag_elps)
 !
 !
       integer, intent(in) :: iflag_elps
@@ -129,7 +129,7 @@
 !
       elapsed(iflag_elps) = zero
 !
-      end subroutine reset_eleps_time
+      end subroutine reset_elapsed_time
 !
 ! ----------------------------------------------------------------------
 !
