@@ -35,7 +35,7 @@
       use t_spheric_rj_data
       use t_sph_filtering_data
       use t_filter_coefficients
-      use t_sgs_control_parameter
+      use t_SGS_control_parameter
       use t_SGS_model_coefs
       use t_SGS_buoyancy_sph
       use t_ele_info_4_dynamic
