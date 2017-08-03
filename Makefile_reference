@@ -63,7 +63,7 @@ BLAS_LIBS = -framework veclib
 #   libpng and zlib settings
 #
 ZLIB_CFLAGS = -I/Users/matsui/local/include
-ZLIB_LIB =    -L/Users/matsui/local/lib -lz
+ZLIB_LIBS =   -L/Users/matsui/local/lib -lz
 PNG_CFLAGS =  -I/Users/matsui/local/include
 PNG_LIBS =    -L/Users/matsui/local/lib -lpng 
 #
@@ -134,7 +134,7 @@ makemake: mpif.h
 		MPICHINCDIR="$(MPICHINCDIR)" \
 		BLAS_LIBS="$(BLAS_LIBS)" \
 		ZLIB_CFLAGS="$(ZLIB_CFLAGS)" \
-		ZLIB_LIB="$(ZLIB_LIB)"       \
+		ZLIB_LIBS="$(ZLIB_LIBS)"     \
 		PNG_CFLAGS="$(PNG_CFLAGS)"   \
 		PNG_LIBS="$(PNG_LIBS)"         \
 		FFTW3_CFLAGS="$(FFTW3_CFLAGS)" \

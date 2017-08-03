@@ -30,7 +30,7 @@ FC_NAME_MANGLE = FC_NAME_LOWER_USCORE
 #   zlib and libpng settings
 #
 ZLIB_CFLAGS =
-ZLIB_LIB =
+ZLIB_LIBS =
 #
 PNG_CFLAGS =
 PNG_LIBS = 
@@ -60,10 +60,10 @@ ifdef FC_NAME_MANGLE
     C_INCLUDE+= $$(PNG_CFLAGS) 
     F90LIBS+= $$(PNG_LIBS)
   endif
-  ifdef ZLIB_LIB
+  ifdef ZLIB_LIBS
     CPP_FLAGS += -DZLIB_IO
     C_INCLUDE+= $$(ZLIB_CFLAGS) 
-    F90LIBS+= $$(ZLIB_LIB)
+    F90LIBS+= $$(ZLIB_LIBS)
   endif
 
   ifdef FFTW3_LIBS
@@ -91,7 +91,7 @@ else
 endif
 
 ifdef OPENGL_LIBS
-  OPENGL_LIBRARIES = $(OPENGL_LIBS) $$(PNG_LIBS) $$(ZLIB_LIB)
+  OPENGL_LIBRARIES = $(OPENGL_LIBS) $$(PNG_LIBS) $$(ZLIB_LIBS)
   OPTFLAGS_GL=  $$(OPTFLAGS) $$(OPENGL_INC) $$(PNG_CFLAGS)
 endif
 
@@ -168,7 +168,7 @@ makemake:
 	@echo '# zlib settings' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@echo 'ZLIB_CFLAGS = $(ZLIB_CFLAGS)' >> $(MAKENAME)
-	@echo 'ZLIB_LIB =    $(ZLIB_LIB)'    >> $(MAKENAME)
+	@echo 'ZLIB_LIBS =   $(ZLIB_LIBS)'   >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
 	@echo '# libpng settings' >> $(MAKENAME)
 	@echo '#' >> $(MAKENAME)
@@ -296,7 +296,7 @@ makemake:
 		( cd $${dir};  \
 		$(GMAKE) \
 		GMAKE='$(GMAKE)' \
-		ZLIB_LIB='$(ZLIB_LIB)'       \
+		ZLIB_LIBS='$(ZLIB_LIBS)'     \
 		PNG_LIBS='$(PNG_LIBS)'       \
 		FFTW3_LIBS='$(FFTW3_LIBS)'   \
         FFTW3_C='$(FFTW3_C)'   \

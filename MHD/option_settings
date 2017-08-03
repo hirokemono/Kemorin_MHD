@@ -89,9 +89,9 @@ BLAS_LIBS = -lblas_p64
 #   libpng and zlib settings
 #
 ZLIB_CFLAGS =  -I/hsfs/home0/matsui/local/include
-ZLIB_LIB =     -L/hsfs/home0/matsui/local/lib -lz -lm -L/opt/IBM/xlc/13.1.0/lib -lxlopt
-PNG_CFLAGS =  -I/hsfs/home0/matsui/local/include/libpng15  
-PNG_LIBS =    -L/hsfs/home0/matsui/local/lib -lpng15
+ZLIB_LIBS =    -L/hsfs/home0/matsui/local/lib -lz -lm -L/opt/IBM/xlc/13.1.0/lib -lxlopt
+PNG_CFLAGS =   -I/hsfs/home0/matsui/local/include/libpng15  
+PNG_LIBS =     -L/hsfs/home0/matsui/local/lib -lpng15
 #
 #    FFTW3 settings
 #
@@ -329,9 +329,9 @@ CXXFLAGS =   -g -O2
 #   libpng and zlib settings
 #
 ZLIB_INC =  -I/Users/matsui/local/include
-ZLIB_LIB =  -L/Users/matsui/local/lib -lz 
+ZLIB_LIBS = -L/Users/matsui/local/lib -lz 
 PNG_INC =   -I/Users/matsui/local/include
-PNG_LIB =   -L/Users/matsui/local/lib -lpng 
+PNG_LIBS =  -L/Users/matsui/local/lib -lpng 
 #
 #   GLUT settings (Requirement: OpenGL, GLUT, libpng)
 #
@@ -410,9 +410,9 @@ CXXFLAGS =   -g -O2  -fopenmp
 #   libpng and zlib settings
 #
 ZLIB_INC =  -I/Users/matsui/local/include
-ZLIB_LIB =  -L/Users/matsui/local/lib -lz 
+ZLIB_LIBS = -L/Users/matsui/local/lib -lz 
 PNG_INC =   -I/Users/matsui/local/include
-PNG_LIB =   -L/Users/matsui/local/lib -lpng 
+PNG_LIBS =  -L/Users/matsui/local/lib -lpng 
 #
 #   GLUT settings (Requirement: OpenGL, GLUT, libpng)
 #
@@ -515,9 +515,9 @@ CXXFLAGS =   -g -O2  -fopenmp
 #   libpng and zlib settings
 #
 ZLIB_INC =  -I/home/matsui/local/include
-ZLIB_LIB =  -L/home/matsui/local/lib -lz 
+ZLIB_LIBS = -L/home/matsui/local/lib -lz 
 PNG_INC =   -I/home/matsui/local/include -I/home/matsui/local/include
-PNG_LIB =   -L/home/matsui/local/lib -lpng  -L/home/matsui/local/lib -lz 
+PNG_LIBS =  -L/home/matsui/local/lib -lpng  -L/home/matsui/local/lib -lz 
 #
 #   GLUT settings (Requirement: OpenGL, GLUT, libpng)
 #
@@ -769,9 +769,9 @@ CXXFLAGS =
 #   libpng and zlib settings
 #
 ZLIB_CFLAGS =  -I/usr/include
-ZLIB_LIB =     -L/usr/lib -lz 
-PNG_CFLAGS =  -I/usr/include/libpng12  
-PNG_LIBS =    -lpng12  
+ZLIB_LIBS =    -L/usr/lib -lz 
+PNG_CFLAGS =   -I/usr/include/libpng12  
+PNG_LIBS =     -lpng12  
 #
 #    FFTW3 settings
 #

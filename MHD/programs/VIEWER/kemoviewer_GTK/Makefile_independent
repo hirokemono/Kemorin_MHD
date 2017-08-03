@@ -15,11 +15,11 @@ OPTFLAGS = -O3 -Wall -g
 #   Library settings
 #
 KEMO_INC = -I. -I$(KEMO_C_GLUTDIR) -I$(LOCALDIR)/include 
-LIB_KEMO_C = -L$(LOCALDIR)/lib -lkemo_c $(PNG_LIB) $(ZLIB_LIB)
+LIB_KEMO_C = -L$(LOCALDIR)/lib -lkemo_c $(PNG_LIBS) $(ZLIB_LIBS)
 
-ZLIB_LIB = -L$(LOCALDIR)/lib -lz
+ZLIB_LIBS = -L$(LOCALDIR)/lib -lz
 #
-PNG_LIB = -L$(LOCALDIR)/lib -lpng -lm
+PNG_LIBS = -L$(LOCALDIR)/lib -lpng -lm
 #
 COCOA_FLAG= -D__APPLE__ 
 OPTFLAGS_GL =  $(OPTFLAGS) $(COCOA_FLAG) $(KEMO_INC) $(OPENGL_INC)

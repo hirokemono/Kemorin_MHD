@@ -49,7 +49,7 @@ OBJ_KEMO_C = \
  transfer_matvec.o \
  quicksort_c.o
 
-ifdef ZLIB_LIB
+ifdef ZLIB_LIBS
   OBJ_KEMO_C += \
  kemo_zlib_io_c.o
 endif

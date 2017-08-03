@@ -126,7 +126,7 @@ target_task:
 	 >> $(MAKENAME)
 	@echo '	''$$(CC)' '$$(OPTFLAGS)' -o '$$(TARGET_C_PNG_TEST)' \
 	'$$(MOD_C_PNG_TEST)' \
-	'$$(PNG_LIBS) $$(ZLIB_LIB)' >> $(MAKENAME)
+	'$$(PNG_LIBS) $$(ZLIB_LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_CGL_EPS_TEST)': '$$(MOD_CGL_EPS_TEST)' \
 	 >> $(MAKENAME)
