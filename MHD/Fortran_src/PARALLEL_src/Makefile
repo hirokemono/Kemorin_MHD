@@ -61,8 +61,8 @@ lib_archve:
 mod_list:
 	@echo  MOD_PARALLEL= \\ >> $(MAKENAME)
 	@echo  \
-	'$$(MOD_MESH1)'      \
-	'$$(MOD_COMM)       $$(MOD_FEM_INT) '         \
+	'$$(MOD_COMM)       $$(MOD_MPI_IO)'           \
+	'$$(MOD_FEM_INT)'                             \
 	'$$(MOD_MULTIGRID)  $$(MOD_FILTERING)'        \
 	'$$(MOD_COMM_SPH)   $$(MOD_SOLVER_SET_ORDER)' \
 	'$$(MOD_ITP_PARA)   $$(MOD_SPH_GRID)'         >> $(MAKENAME)
