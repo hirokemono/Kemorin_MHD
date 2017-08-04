@@ -13,6 +13,7 @@
       use m_spheric_parameter
       use m_tave_field_on_circle
       use t_field_on_circle
+      use field_on_circle_IO
 !
       implicit none
 !
@@ -29,9 +30,9 @@
 !    Evaluate time average
 !
       write(*,*) 'open_read_field_data_on_circle'
-      call open_read_field_data_on_circle                               &
-     &   (sph1%sph_rtp, sph1%sph_rj, cdat_a%circle, cdat_a%d_circle)
-      call allocate_tave_circle_field(cdat_a%d_circle)
+      call open_read_field_data_on_circle(sph1%sph_rtp, sph1%sph_rj,    &
+     &    cdat_a%circle, cdat_a%d_circle)
+      call allocate_tave_circle_field(cdat_a%circle, cdat_a%d_circle)
 !
       icou = 0
       do
@@ -53,14 +54,15 @@
    99 continue
 !
       call close_field_data_on_circle
-      call deallocate_circle_field(cdat_a%circle, cdat_a%d_circle)
-      call divide_average_circle_field(icou, cdat_a%d_circle)
+      call dealloc_circle_field(cdat_a%circle, cdat_a%d_circle)
+      call divide_average_circle_field                                  &
+     &   (icou, cdat_a%circle, cdat_a%d_circle)
 !
 !
 !  Evaluate standard deviation
 !
-      call open_read_field_data_on_circle                               &
-     &   (sph1%sph_rtp, sph1%sph_rj, cdat_a%circle, cdat_a%d_circle)
+      call open_read_field_data_on_circle(sph1%sph_rtp, sph1%sph_rj,    &
+     &    cdat_a%circle, cdat_a%d_circle)
 !
       icou = 0
       do
@@ -82,7 +84,8 @@
    98 continue
 !
       call close_field_data_on_circle
-      call divide_deviation_circle_field(icou, cdat_a%d_circle)
+      call divide_deviation_circle_field                                &
+     &   (icou, cdat_a%circle, cdat_a%d_circle)
 !
       call copy_average_circle_field(cdat_a%circle, cdat_a%d_circle)
       call write_field_data_on_circle                                   &
@@ -91,7 +94,7 @@
       call copy_deviation_circle_field(cdat_a%circle, cdat_a%d_circle)
       call write_field_data_on_circle                                   &
      &   (istep, time, cdat_a%circle, cdat_a%d_circle)
-      call deallocate_circle_field(cdat_a%circle, cdat_a%d_circle)
+      call dealloc_circle_field(cdat_a%circle, cdat_a%d_circle)
 !
       stop 'Finished'
       end program t_ave_sph_picked_circle

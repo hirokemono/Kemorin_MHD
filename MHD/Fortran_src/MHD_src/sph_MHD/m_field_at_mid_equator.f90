@@ -26,6 +26,9 @@
       use m_machine_parameter
       use m_field_4_dynamobench
 !
+      use t_field_on_circle
+      use t_circle_transform
+!
       implicit none
 !
       private :: cal_field_4_dynamobench
@@ -41,11 +44,7 @@
      &         (sph_params, sph_rtp, sph_rj, cdat)
 !
       use m_phys_labels
-      use m_circle_transform
-      use t_field_on_circle
       use t_spheric_parameter
-!
-      use sph_MHD_circle_transform
 !
       type(sph_shell_parameters), intent(in) :: sph_params
       type(sph_rtp_grid), intent(in) :: sph_rtp
@@ -62,7 +61,7 @@
       cdat%circle%s_circle = r_MID
       cdat%circle%z_circle = zero
       call const_circle_point_global(sph_params%l_truncation,           &
-     &    sph_rtp, sph_rj, cdat%circle, cdat%d_circle)
+     &    sph_rtp, sph_rj, cdat)
 !
       end subroutine set_mid_equator_point_global
 !
@@ -72,12 +71,9 @@
      &         (time, sph_rj, rj_fld, cdat)
 !
       use calypso_mpi
-      use m_circle_transform
       use t_field_on_circle
       use t_spheric_rj_data
       use t_phys_data
-!
-      use sph_MHD_circle_transform
 !
       real(kind=kreal), intent(in) :: time
       type(sph_rj_grid), intent(in) :: sph_rj
@@ -86,8 +82,7 @@
 !
 !    spherical transfer
 !
-      call sph_transfer_on_circle                                       &
-     &   (sph_rj, rj_fld, cdat%circle, cdat%d_circle)
+      call sph_transfer_on_circle(sph_rj, rj_fld, cdat)
 !
       if(my_rank .gt. 0) return
 !
@@ -98,7 +93,7 @@
 !   find local point for dynamobench
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_field_4_dynamobench'
-      call cal_field_4_dynamobench(cdat%d_circle)
+      call cal_field_4_dynamobench(cdat%circle, cdat%d_circle)
 !
       end subroutine mid_eq_transfer_dynamobench
 !
@@ -107,7 +102,7 @@
 !
       subroutine cal_drift_by_v44(time, circle)
 !
-      use t_field_on_circle
+      use t_circle_transform
 !
       real(kind=kreal), intent(in) :: time
       type(fields_on_circle), intent(in) :: circle
@@ -142,21 +137,21 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_field_4_dynamobench(d_circle)
+      subroutine cal_field_4_dynamobench(circle, d_circle)
 !
       use calypso_mpi
       use t_phys_data
-      use m_circle_transform
 !
       integer(kind = kint) :: nd, mphi, mp_next, icou
       real(kind = kreal) :: coef
 !
+      type(fields_on_circle), intent(in) :: circle
       type(phys_data), intent(in) :: d_circle
 !
 !
       icou = 0
-      do mphi = 1, mphi_circle
-        mp_next = mod(mphi,mphi_circle) + 1
+      do mphi = 1, circle%mphi_circle
+        mp_next = mod(mphi,circle%mphi_circle) + 1
         if(      d_circle%d_fld(mphi,ibench_velo)  .le.  zero           &
      &     .and. d_circle%d_fld(mp_next,ibench_velo) .gt. zero) then
           icou = icou + 1
@@ -165,7 +160,7 @@
      &              - d_circle%d_fld(mphi,ibench_velo))
 !
           phi_zero(icou) = two*four*atan(one)                           &
-     &                    * (dble(mphi) - coef) / dble(mphi_circle)
+     &                * (dble(mphi) - coef) / dble(circle%mphi_circle)
           do nd = 1, 7
             d_zero(icou,nd) = coef * d_circle%d_fld(mphi,nd)            &
      &                     + (one - coef) * d_circle%d_fld(mp_next,nd)

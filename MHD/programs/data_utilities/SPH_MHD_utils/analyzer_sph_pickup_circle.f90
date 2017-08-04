@@ -22,7 +22,7 @@
       use m_sph_trans_arrays_MHD
       use m_physical_property
       use m_bc_data_list
-      use m_field_on_circle
+      use t_field_on_circle
       use t_spheric_parameter
       use t_file_IO_parameter
       use t_step_parameter
@@ -34,7 +34,9 @@
       character(len=kchara), parameter, private                         &
      &                      :: snap_ctl_name = 'control_snapshot'
 !
-      type(sph_grids), private :: sph_gen
+      type(sph_grids), save, private :: sph_gen
+!
+      type(circle_fld_maker), save, private :: cdat1
 !
 ! ----------------------------------------------------------------------
 !

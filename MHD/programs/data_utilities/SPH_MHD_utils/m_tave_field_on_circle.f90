@@ -7,14 +7,14 @@
 !>@brief  time averaged field data on specific circle at (s,z)
 !!
 !!@verbatim
-!!      subroutine allocate_tave_circle_field(d_circle)
+!!      subroutine allocate_tave_circle_field(circle, d_circle)
 !!      subroutine deallocate_tave_circle_field
 !!
 !!      subroutine sum_average_circle_field(circle, d_circle)
 !!      subroutine sum_deviation_circle_field(circle, d_circle)
 !!
-!!      subroutine divide_average_circle_field(icou, d_circle)
-!!      subroutine divide_deviation_circle_field(icou, d_circle)
+!!      subroutine divide_average_circle_field(icou, circle, d_circle)
+!!      subroutine divide_deviation_circle_field(icou, circle, d_circle)
 !!
 !!      subroutine copy_average_circle_field(circle, d_circle)
 !!      subroutine copy_deviation_circle_field(circle, d_circle)
@@ -28,10 +28,9 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_circle_transform
 !
       use t_phys_data
-      use t_field_on_circle
+      use t_circle_transform
 !
       implicit none
 !
@@ -79,20 +78,26 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_tave_circle_field(d_circle)
+      subroutine allocate_tave_circle_field(circle, d_circle)
 !
+      type(fields_on_circle), intent(in) :: circle
       type(phys_data), intent(in) :: d_circle
 !
+      integer(kind = kint) :: mphi, ntot_comp
 !
-      allocate(tave_v_rtp_circle(mphi_circle,d_circle%ntot_phys))
-      allocate(sigma_v_rtp_circle(mphi_circle,d_circle%ntot_phys))
+!
+      mphi = circle%mphi_circle
+      ntot_comp = d_circle%ntot_phys
+!
+      allocate(tave_v_rtp_circle(mphi,ntot_comp))
+      allocate(sigma_v_rtp_circle(mphi,ntot_comp))
       tave_v_rtp_circle = 0.0d0
       sigma_v_rtp_circle = 0.0d0
 !
-      allocate(tave_vrtm_mag(0:mphi_circle,d_circle%ntot_phys) )
-      allocate(tave_vrtm_phase(0:mphi_circle,d_circle%ntot_phys) )
-      allocate(sigma_vrtm_mag(0:mphi_circle,d_circle%ntot_phys) )
-      allocate(sigma_vrtm_phase(0:mphi_circle,d_circle%ntot_phys) )
+      allocate(tave_vrtm_mag(0:mphi,ntot_comp) )
+      allocate(tave_vrtm_phase(0:mphi,ntot_comp) )
+      allocate(sigma_vrtm_mag(0:mphi,ntot_comp) )
+      allocate(sigma_vrtm_phase(0:mphi,ntot_comp) )
       tave_vrtm_mag =    0.0d0
       tave_vrtm_phase =  0.0d0
       sigma_vrtm_mag =   0.0d0
@@ -123,12 +128,12 @@
 !
 !$omp parallel do private(mphi)
       do nd = 1, d_circle%ntot_phys
-        do mphi = 1, mphi_circle
+        do mphi = 1, circle%mphi_circle
           tave_v_rtp_circle(mphi,nd) = tave_v_rtp_circle(mphi,nd)       &
      &                                + d_circle%d_fld(mphi,nd)
         end do
 !
-        do mphi = 0, mphi_circle / 2
+        do mphi = 0, circle%mphi_circle / 2
           tave_vrtm_mag(mphi,nd) = tave_vrtm_mag(mphi,nd)               &
      &                                + circle%vrtm_mag(mphi,nd)
           tave_vrtm_phase(mphi,nd) = tave_vrtm_phase(mphi,nd)           &
@@ -150,12 +155,12 @@
 !
 !$omp parallel do private(mphi)
       do nd = 1, d_circle%ntot_phys
-        do mphi = 1, mphi_circle
+        do mphi = 1, circle%mphi_circle
           sigma_v_rtp_circle(mphi,nd) = sigma_v_rtp_circle(mphi,nd)     &
      &      + (d_circle%d_fld(mphi,nd) - tave_v_rtp_circle(mphi,nd))**2
         end do
 !
-        do mphi = 0, mphi_circle / 2
+        do mphi = 0, circle%mphi_circle / 2
           sigma_vrtm_mag(mphi,nd) = sigma_vrtm_mag(mphi,nd)             &
      &     + (circle%vrtm_mag(mphi,nd) - tave_vrtm_mag(mphi,nd))**2
           sigma_vrtm_phase(mphi,nd) = sigma_vrtm_phase(mphi,nd)         &
@@ -169,21 +174,22 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine divide_average_circle_field(icou, d_circle)
+      subroutine divide_average_circle_field(icou, circle, d_circle)
 !
       integer(kind = kint), intent(in) :: icou
+      type(fields_on_circle), intent(in) :: circle
       type(phys_data), intent(in) :: d_circle
 !
       integer(kind = kint) :: mphi, nd
 !
 !$omp parallel do private(mphi)
       do nd = 1, d_circle%ntot_phys
-        do mphi = 1, mphi_circle
+        do mphi = 1, circle%mphi_circle
           tave_v_rtp_circle(mphi,nd) = tave_v_rtp_circle(mphi,nd)       &
      &                                / dble(icou)
         end do
 !
-        do mphi = 0, mphi_circle / 2
+        do mphi = 0, circle%mphi_circle / 2
           tave_vrtm_mag(mphi,nd) = tave_vrtm_mag(mphi,nd)               &
      &                                / dble(icou)
           tave_vrtm_phase(mphi,nd) = tave_vrtm_phase(mphi,nd)           &
@@ -196,21 +202,22 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine divide_deviation_circle_field(icou, d_circle)
+      subroutine divide_deviation_circle_field(icou, circle, d_circle)
 !
       integer(kind = kint), intent(in) :: icou
+      type(fields_on_circle), intent(in) :: circle
       type(phys_data), intent(in) :: d_circle
 !
       integer(kind = kint) :: mphi, nd
 !
 !$omp parallel do private(mphi)
       do nd = 1, d_circle%ntot_phys
-        do mphi = 1, mphi_circle
+        do mphi = 1, circle%mphi_circle
           sigma_v_rtp_circle(mphi,nd)                                   &
      &        = sqrt(sigma_v_rtp_circle(mphi,nd))  / dble(icou)
         end do
 !
-        do mphi = 0, mphi_circle / 2
+        do mphi = 0, circle%mphi_circle / 2
           sigma_vrtm_mag(mphi,nd)                                       &
      &        = sqrt(sigma_vrtm_mag(mphi,nd))  / dble(icou)
           sigma_vrtm_phase(mphi,nd)                                     &
@@ -237,11 +244,11 @@
 !
 !$omp parallel do private(mphi)
       do nd = 1, d_circle%ntot_phys
-        do mphi = 1, mphi_circle
+        do mphi = 1, circle%mphi_circle
           d_circle%d_fld(mphi,nd) = tave_v_rtp_circle(mphi,nd)
         end do
 !
-        do mphi = 0, mphi_circle / 2
+        do mphi = 0, circle%mphi_circle / 2
           circle%vrtm_mag(mphi,nd) = tave_vrtm_mag(mphi,nd)
           circle%vrtm_phase(mphi,nd) = tave_vrtm_phase(mphi,nd)
         end do
@@ -265,11 +272,11 @@
 !
 !$omp parallel do private(mphi)
       do nd = 1, d_circle%ntot_phys
-        do mphi = 1, mphi_circle
+        do mphi = 1, circle%mphi_circle
           d_circle%d_fld(mphi,nd) = sigma_v_rtp_circle(mphi,nd)
         end do
 !
-        do mphi = 0, mphi_circle / 2
+        do mphi = 0, circle%mphi_circle / 2
           circle%vrtm_mag(mphi,nd) = sigma_vrtm_mag(mphi,nd)
           circle%vrtm_phase(mphi,nd) = sigma_vrtm_phase(mphi,nd)
         end do

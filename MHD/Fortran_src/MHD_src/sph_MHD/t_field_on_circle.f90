@@ -7,22 +7,15 @@
 !>@brief  field data on specific circle at (s,z)
 !!
 !!@verbatim
-!!      subroutine allocate_circle_field                                &
-!!     &         (mphi_rtp, nidx_global_jmax, circle, d_circle)
-!!      subroutine deallocate_circle_field(circle, d_circle)
-!!
-!!      subroutine write_field_data_on_circle                           &
-!!     &         (i_step, time, circle, d_circle)
-!!      subroutine read_field_data_on_circle                            &
-!!     &         (i_step, time, ierr, circle, d_circle)
-!!
-!!      subroutine open_read_field_data_on_circle                       &
-!!     &         (sph_rtp, sph_rj, circle, d_circle)
+!!      subroutine sph_transfer_on_circle(sph_rj, rj_fld, cdat)
+!!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(phys_data), intent(in) :: rj_fld
+!!        type(circle_fld_maker), intent(inout) :: cdat
+!!      subroutine const_circle_point_global                            &
+!!     &         (l_truncation, sph_rtp, sph_rj, cdat)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
-!!        type(fields_on_circle), intent(inout) :: circle
-!!        type(fields_on_circle), intent(inout) :: d_circle
-!!      subroutine close_field_data_on_circle
+!!        type(circle_fld_maker), intent(inout) :: cdat
 !!@endverbatim
 !
       module t_field_on_circle
@@ -33,65 +26,24 @@
       use m_machine_parameter
 !
       use t_phys_data
+      use t_circle_transform
+      use t_FFT_selector
 !
       implicit none
 !
 !
-!>      file ID for field data on a circle
-      integer(kind=kint), parameter :: id_circ_fid = 41
-!>      file DI for spectr power data on a circle
-      integer(kind=kint), parameter :: id_circ_sq =  42
-!>      file ID for spectr phase data on a circle
-      integer(kind=kint), parameter :: id_circ_ph =  43
-!
-!>      Structure to make fields on circle
-      type fields_on_circle
-!>        file name for field data on a circle
-        character(len=kchara) :: fname_circle_fld = 'circle_field.dat'
-!>        file name for spectr power data on a circle
-        character(len=kchara) :: fname_circle_mag                       &
-     &                        = 'circle_spec_mag.dat'
-!>        file name for spectr phase data on a circle
-        character(len=kchara) :: fname_circle_phs                       &
-     &                        = 'circle_spec_phase.dat'
-!
-!>        cylindrical radius for a circle to pick
-        real(kind = kreal) :: s_circle
-!>        vartical position for a circle to pick
-        real(kind = kreal) :: z_circle
-!
-!>        Inner closest point of circle point of fluid shell
-        integer(kind = kint) :: kr_gl_rcirc_in
-!>        Outer closest point of circle point of fluid shell
-        integer(kind = kint) :: kr_gl_rcirc_out
-!>        Inner closest radius of circle point of fluid shell
-        real(kind = kreal) :: coef_gl_rcirc_in
-!>        Outer closest radius of circle point of fluid shell
-        real(kind = kreal) :: coef_gl_rcirc_out
-!
-!>        Spectr data for circle point for each domain
-        real(kind = kreal), allocatable :: d_rj_circ_lc(:,:)
-!>        Spectr data for circle point collected to 0 process
-        real(kind = kreal), allocatable :: d_rj_circle(:,:)
-!
-!>        Field data for circle point at equator
-        real(kind = kreal), allocatable :: v_rtp_circle(:,:)
-!
-!>        Spectr data for circle point collected to 0 process
-        real(kind = kreal), allocatable :: vrtm_mag(:,:)
-!>        Spectr data for circle point collected to 0 process
-        real(kind = kreal), allocatable :: vrtm_phase(:,:)
-      end type fields_on_circle
-!
       type circle_fld_maker
+        type(circle_transform_spetr) :: circ_spec
 !>        Structure to make fields on circle
         type(fields_on_circle) :: circle
 !>         Structure of field data on circle
         type(phys_data) :: d_circle
+!>        Working structure for Fourier transform at mid-depth equator
+!!@n      (Save attribute is necessary for Hitachi compiler for SR16000)
+        type(working_FFTs) :: WK_circle_fft
       end type circle_fld_maker
 !
-      private :: id_circ_fid, id_circ_sq, id_circ_ph
-      private :: open_field_data_on_circle
+      private :: collect_spectr_for_circle, set_circle_point_global
 !
 ! ----------------------------------------------------------------------
 !
@@ -99,323 +51,186 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_circle_field                                  &
-     &         (mphi_rtp, nidx_global_jmax, circle, d_circle)
-!
-      use calypso_mpi
-      use m_circle_transform
-!
-      integer(kind = kint), intent(in) :: mphi_rtp, nidx_global_jmax
-      type(fields_on_circle), intent(inout) :: circle
-      type(phys_data), intent(inout) :: d_circle
-!
-      integer(kind = kint) :: jmax_gl, ntot
-!
-!
-      jmax_gl = nidx_global_jmax
-      ntot = d_circle%ntot_phys
-!
-      if(mphi_circle .le. izero) mphi_circle = mphi_rtp
-      allocate(circle%v_rtp_circle(mphi_circle,6))
-      circle%v_rtp_circle = 0.0d0
-!
-      allocate( circle%vrtm_mag(0:mphi_circle,ntot) )
-      allocate( circle%vrtm_phase(0:mphi_circle,ntot) )
-      circle%vrtm_mag = 0.0d0
-      circle%vrtm_phase = 0.0d0
-!
-      allocate( circle%d_rj_circ_lc(0:jmax_gl,ntot) )
-      circle%d_rj_circ_lc = 0.0d0
-!
-      if(my_rank .eq. 0) then
-        allocate(circle%d_rj_circle(0:jmax_gl,ntot) )
-!
-        circle%d_rj_circle = 0.0d0
-      end if
-!
-      call alloc_phys_data_type(mphi_circle, d_circle)
-!
-      end subroutine allocate_circle_field
-!
-! ----------------------------------------------------------------------
-!
-      subroutine deallocate_circle_field(circle, d_circle)
-!
-      use calypso_mpi
-!
-      type(fields_on_circle), intent(inout) :: circle
-      type(phys_data), intent(inout) :: d_circle
-!
-!
-      deallocate(circle%vrtm_mag, circle%vrtm_phase)
-      deallocate(circle%d_rj_circ_lc)
-      if(my_rank .eq. 0) then
-        deallocate(circle%d_rj_circle, circle%v_rtp_circle)
-      end if
-!
-      call dealloc_phys_data_type(d_circle)
-      call dealloc_phys_name_type(d_circle)
-!
-      end subroutine deallocate_circle_field
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine write_field_data_on_circle                             &
-     &         (i_step, time, circle, d_circle)
-!
-      use calypso_mpi
-      use m_circle_transform
-!
-      integer(kind = kint), intent(in) :: i_step
-      real(kind = kreal), intent(in) :: time
-      type(fields_on_circle), intent(in) :: circle
-      type(phys_data), intent(in) :: d_circle
-!
-      character(len=kchara) :: fmt_txt
-      integer(kind = kint) :: mphi
-      real(kind = kreal) :: phi, amphi_circle
-!
-!
-      if(my_rank .gt. 0) return
-!
-      amphi_circle = two*four*atan(one) / dble(mphi_circle)
-!
-      call open_field_data_on_circle(circle, d_circle)
-!
-      write(fmt_txt,'(a20,i5,a13)') '(i16,1pE25.15e3,i16,',             &
-     &              (d_circle%ntot_phys_viz+1), '(1pE25.15e3))'
-      do mphi = 1, mphi_circle
-        phi = dble(mphi-1) * amphi_circle
-        write(id_circ_fid,fmt_txt) i_step, time, mphi, phi,             &
-     &             d_circle%d_fld(mphi,1:d_circle%ntot_phys_viz)
-      end do
-!
-      write(fmt_txt,'(a20,i5,a13)') '(i16,1pE25.15e3,i16,',             &
-     &              d_circle%ntot_phys_viz, '(1pE25.15e3))'
-      do mphi = 0, mphi_circle / 2
-        write(id_circ_sq,fmt_txt) i_step, time, mphi,                   &
-     &             circle%vrtm_mag(mphi,1:d_circle%ntot_phys_viz)
-        write(id_circ_ph,fmt_txt) i_step, time, mphi,                   &
-     &             circle%vrtm_phase(mphi,1:d_circle%ntot_phys_viz)
-      end do
-!
-      call close_field_data_on_circle
-!
-      end subroutine write_field_data_on_circle
-!
-! ----------------------------------------------------------------------
-!
-      subroutine read_field_data_on_circle                              &
-     &         (i_step, time, ierr, circle, d_circle)
-!
-      use m_circle_transform
-!
-      integer(kind = kint), intent(inout) :: i_step, ierr
-      real(kind = kreal), intent(inout) :: time
-      type(fields_on_circle), intent(inout) :: circle
-      type(phys_data), intent(inout) :: d_circle
-!
-      integer(kind = kint) :: mphi, itmp
-      real(kind = kreal) :: rtmp
-!
-!
-      do mphi = 1, mphi_circle
-        read(id_circ_fid,*,err=99,end=99) i_step, time, itmp, rtmp,     &
-     &             d_circle%d_fld(mphi,1:d_circle%ntot_phys_viz)
-      end do
-!
-      do mphi = 0, mphi_circle / 2
-        read(id_circ_sq,*,err=99,end=99) i_step, time, itmp,            &
-     &             circle%vrtm_mag(mphi,1:d_circle%ntot_phys_viz)
-        read(id_circ_ph,*,err=99,end=99) i_step, time, itmp,            &
-     &             circle%vrtm_phase(mphi,1:d_circle%ntot_phys_viz)
-      end do
-!
-      ierr = 0
-      return
-!
-  99  continue
-      ierr = 1
-      return
-!
-      end subroutine read_field_data_on_circle
-!
-! ----------------------------------------------------------------------
-!
-      subroutine open_field_data_on_circle(circle, d_circle)
+      subroutine sph_transfer_on_circle(sph_rj, rj_fld, cdat)
 !
       use calypso_mpi
       use m_phys_constants
-      use m_circle_transform
-      use sel_comp_labels_by_coord
-      use write_field_labels
 !
-      type(fields_on_circle), intent(in) :: circle
-      type(phys_data), intent(in) :: d_circle
-!
-      integer(kind = kint) :: ifld
-      character(len=kchara) :: label(6)
-!
-!
-      open(id_circ_fid, file=circle%fname_circle_fld,                   &
-     &    form='formatted', status='old', position='append', err = 99)
-      open(id_circ_sq,  file=circle%fname_circle_mag,                   &
-     &    form='formatted', status='old', position='append', err = 98)
-      open(id_circ_ph,  file=circle%fname_circle_phs,                   &
-     &    form='formatted', status='old', position='append', err = 97)
-!
-      return
-!
-  97  continue
-      close(id_circ_sq)
-  98  continue
-      close(id_circ_fid)
-  99  continue
-!
-      open(id_circ_fid, file=circle%fname_circle_fld)
-      open(id_circ_sq,  file=circle%fname_circle_mag)
-      open(id_circ_ph,  file=circle%fname_circle_phs)
-!
-      write(id_circ_fid,'(a)') '#'
-      write(id_circ_sq, '(a)') '#'
-      write(id_circ_ph, '(a)') '#'
-      write(id_circ_fid,'(a)') '# Cylindrical radius, vertial position'
-      write(id_circ_sq, '(a)') '# Cylindrical radius, vertial position'
-      write(id_circ_ph, '(a)') '# Cylindrical radius, vertial position'
-      write(id_circ_fid,'(1p2e23.12)') circle%s_circle, circle%z_circle
-      write(id_circ_sq, '(1p2e23.12)') circle%s_circle, circle%z_circle
-      write(id_circ_ph, '(1p2e23.12)') circle%s_circle, circle%z_circle
-!
-      write(id_circ_fid,'(a)') '#'
-      write(id_circ_sq, '(a)') '#'
-      write(id_circ_ph, '(a)') '#'
-      write(id_circ_fid,'(a)') '# Number of points and components'
-      write(id_circ_sq, '(a)') '# Number of modes and components'
-      write(id_circ_ph, '(a)') '# Number of modes and components'
-      write(id_circ_fid,'(2i16)') mphi_circle, d_circle%ntot_phys_viz
-      write(id_circ_sq, '(2i16)') mphi_circle/2, d_circle%ntot_phys_viz
-      write(id_circ_ph, '(2i16)') mphi_circle/2, d_circle%ntot_phys_viz
-!
-!
-      write(label(1),'(a)') 't_step'
-      call write_one_label(id_circ_fid, label(1))
-      call write_one_label(id_circ_sq, label(1))
-      call write_one_label(id_circ_ph, label(1))
-      write(label(1),'(a)') 'time'
-      call write_one_label(id_circ_fid, label(1))
-      call write_one_label(id_circ_sq, label(1))
-      call write_one_label(id_circ_ph, label(1))
-!
-      write(label(1),'(a)') 'mphi'
-      call write_one_label(id_circ_fid, label(1))
-      write(label(1),'(a)') 'longitude'
-      call write_one_label(id_circ_fid, label(1))
-!
-      write(label(1),'(a)') 'order'
-      call write_one_label(id_circ_sq, label(1))
-      call write_one_label(id_circ_ph, label(1))
-!
-!
-      do ifld = 1, d_circle%num_phys_viz
-        if(d_circle%num_component(ifld) .eq. n_sym_tensor) then
-          call sel_coord_tensor_comp_labels(iflag_circle_coord,         &
-     &        d_circle%phys_name(ifld), label(1) )
-          call write_sym_tensor_label(id_circ_fid, label(1))
-          call write_sym_tensor_label(id_circ_sq, label(1))
-          call write_sym_tensor_label(id_circ_ph, label(1))
-        else if(d_circle%num_component(ifld) .eq. n_vector) then
-          call sel_coord_vector_comp_labels(iflag_circle_coord,         &
-     &        d_circle%phys_name(ifld), label(1) )
-          call write_vector_label(id_circ_fid, label(1))
-          call write_vector_label(id_circ_sq, label(1))
-          call write_vector_label(id_circ_ph, label(1))
-        else
-          write(label(1),'(a)') trim(d_circle%phys_name(ifld))
-          call write_one_label(id_circ_fid, label(1))
-          call write_one_label(id_circ_sq, label(1))
-          call write_one_label(id_circ_ph, label(1))
-        end if
-      end do
-      write(id_circ_fid,*)
-      write(id_circ_sq,*)
-      write(id_circ_ph,*)
-!
-      end subroutine open_field_data_on_circle
-!
-! ----------------------------------------------------------------------
-!
-      subroutine open_read_field_data_on_circle                         &
-     &         (sph_rtp, sph_rj, circle, d_circle)
-!
-      use m_circle_transform
-      use skip_comment_f
-!
-      use t_spheric_rtp_data
       use t_spheric_rj_data
+      use t_phys_data
 !
-      type(sph_rtp_grid), intent(in) :: sph_rtp
+      use circle_transform_single
+!
       type(sph_rj_grid), intent(in) ::  sph_rj
+      type(phys_data), intent(in) :: rj_fld
 !
-      type(fields_on_circle), intent(inout) :: circle
-      type(phys_data), intent(inout) :: d_circle
+      type(circle_fld_maker), intent(inout) :: cdat
 !
-      character(len=255) :: tmpchara
-      character(len=kchara) :: phi_name
+      integer(kind = kint) :: ifld, icomp, m, nd
 !
 !
-      open(id_circ_fid, file=circle%fname_circle_fld)
-      open(id_circ_sq,  file=circle%fname_circle_mag)
-      open(id_circ_ph,  file=circle%fname_circle_phs)
+      call collect_spectr_for_circle(sph_rj%nidx_rj(2),                 &
+     &    sph_rj%nidx_global_rj, sph_rj%idx_gl_1d_rj_j,                 &
+     &    rj_fld%n_point, rj_fld%num_phys, rj_fld%ntot_phys,            &
+     &    rj_fld%istack_component, rj_fld%phys_name, rj_fld%d_fld,      &
+     &    cdat%d_circle, cdat%circle)
 !
-      call skip_comment(tmpchara, id_circ_fid)
-      read(tmpchara,*) circle%s_circle, circle%z_circle
-      call skip_comment(tmpchara, id_circ_fid)
-      read(tmpchara,*) mphi_circle, d_circle%ntot_phys_viz
-!
-      call skip_comment(tmpchara, id_circ_sq)
-      call skip_comment(tmpchara, id_circ_ph)
-      call skip_comment(tmpchara, id_circ_sq)
-      call skip_comment(tmpchara, id_circ_ph)
-!
-      d_circle%num_phys_viz = d_circle%ntot_phys_viz
-      d_circle%num_phys =     d_circle%ntot_phys_viz
-      d_circle%ntot_phys =    d_circle%ntot_phys_viz
-!
-      write(*,*) 'alloc_phys_name_type'
-      call alloc_phys_name_type(d_circle)
-      write(*,*) 'allocate_circle_field'
-      call allocate_circle_field                                        &
-     &   (sph_rtp%nidx_rtp(3), sph_rj%nidx_global_rj(2),                &
-     &    circle, d_circle)
-!
-      d_circle%num_component = 1
-!
-      write(*,*) 'read field name', size(d_circle%phys_name),           &
-     &          d_circle%num_phys
-      read(id_circ_fid,*) tmpchara, tmpchara, tmpchara, phi_name,       &
-     &                  d_circle%phys_name(1:d_circle%num_phys)
-      read(id_circ_sq,*) tmpchara, tmpchara, tmpchara,                  &
-     &                  d_circle%phys_name(1:d_circle%num_phys)
-      read(id_circ_ph,*) tmpchara, tmpchara, tmpchara,                  &
-     &                  d_circle%phys_name(1:d_circle%num_phys)
-!
-      end subroutine open_read_field_data_on_circle
-!
-! ----------------------------------------------------------------------
-!
-      subroutine close_field_data_on_circle
-!
-      use calypso_mpi
-!
+!    spherical transfer
 !
       if(my_rank .gt. 0) return
 !
-      close(id_circ_fid)
-      close(id_circ_sq)
-      close(id_circ_ph)
+      do ifld = 1, cdat%d_circle%num_phys_viz
+        icomp =  cdat%d_circle%istack_component(ifld-1) + 1
+        if(cdat%d_circle%num_component(ifld) .eq. n_sym_tensor) then
+          call circle_transfer_sym_tensor(icomp, cdat%circle,           &
+     &        cdat%circ_spec, cdat%WK_circle_fft)
+        else if(cdat%d_circle%num_component(ifld) .eq. n_vector) then
+          call circle_transfer_vector(icomp, cdat%circle,               &
+     &        cdat%circ_spec, cdat%WK_circle_fft)
+        else
+          call circle_transfer_scalar(icomp, cdat%circle,               &
+     &        cdat%circ_spec, cdat%WK_circle_fft)
+        end if
 !
-      end subroutine close_field_data_on_circle
+        do nd = 1, cdat%d_circle%num_component(ifld)
+          do m = 1, cdat%circle%mphi_circle
+            cdat%d_circle%d_fld(m,icomp+nd-1)                           &
+     &         = cdat%circle%v_rtp_circle(m,nd)
+          end do
+        end do
+      end do
+!
+      end subroutine sph_transfer_on_circle
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine const_circle_point_global                              &
+     &         (l_truncation, sph_rtp, sph_rj, cdat)
+!
+      use t_spheric_rtp_data
+      use t_spheric_rj_data
+      use circle_transform_single
+!
+      integer(kind = kint), intent(in) :: l_truncation
+      type(sph_rtp_grid), intent(in) :: sph_rtp
+      type(sph_rj_grid), intent(in) ::  sph_rj
+!
+      type(circle_fld_maker), intent(inout) :: cdat
+!
+!
+      call alloc_circle_field                                           &
+     &   (sph_rtp%nidx_rtp(3), sph_rj%nidx_global_rj(2),                &
+     &    cdat%circle, cdat%d_circle)
+      call alloc_circle_transform(l_truncation, cdat%circ_spec)
+      call initialize_circle_transform(cdat%circle, cdat%circ_spec,     &
+     &    cdat%WK_circle_fft)
+      call set_circle_point_global                                      &
+     &   (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r,                     &
+     &    cdat%circ_spec, cdat%circle)
+!
+      end subroutine const_circle_point_global
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine set_circle_point_global                                &
+     &         (nri, radius_1d_rj_r, circ_spec, circle)
+!
+      integer(kind = kint), intent(in) ::  nri
+      real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
+      type(circle_transform_spetr), intent(in) :: circ_spec
+!
+      type(fields_on_circle), intent(inout) :: circle
+!
+      integer(kind = kint) :: kr
+!
+!
+      circle%kr_gl_rcirc_in =  izero
+      circle%kr_gl_rcirc_out = izero
+      do kr = 1, nri - 1
+        if(radius_1d_rj_r(kr) .eq. circ_spec%r_circle) then
+          circle%kr_gl_rcirc_in =  kr
+          circle%kr_gl_rcirc_out = izero
+          circle%coef_gl_rcirc_in =  one
+          circle%coef_gl_rcirc_out = zero
+          exit
+        end if
+        if(radius_1d_rj_r(kr) .lt. circ_spec%r_circle                   &
+     &      .and. radius_1d_rj_r(kr+1) .gt. circ_spec%r_circle) then
+          circle%kr_gl_rcirc_in =  kr
+          circle%kr_gl_rcirc_out = kr + 1
+          circle%coef_gl_rcirc_in                                       &
+     &                   = (radius_1d_rj_r(kr+1) - circ_spec%r_circle)  &
+     &                    / (radius_1d_rj_r(kr+1) - radius_1d_rj_r(kr))
+          circle%coef_gl_rcirc_out = one - circle%coef_gl_rcirc_in
+          exit
+        end if
+      end do
+!
+      end subroutine set_circle_point_global
+!
+! ----------------------------------------------------------------------
+!
+      subroutine collect_spectr_for_circle                              &
+     &         (jmax, nidx_global_rj, idx_gl_1d_rj_j, nnod_rj,          &
+     &          num_phys_rj, ntot_phys_rj, istack_phys_comp_rj,         &
+     &          phys_name_rj, d_rj, d_circle, circle)
+!
+      use calypso_mpi
+!
+      integer(kind = kint), intent(in) :: nnod_rj, jmax
+      integer(kind = kint), intent(in) :: nidx_global_rj(2)
+      integer(kind = kint), intent(in) :: idx_gl_1d_rj_j(jmax,3)
+      integer(kind = kint), intent(in) :: num_phys_rj, ntot_phys_rj
+      integer(kind = kint), intent(in)                                  &
+     &                  :: istack_phys_comp_rj(0:num_phys_rj)
+      character (len=kchara), intent(in) :: phys_name_rj(num_phys_rj)
+      real (kind=kreal), intent(in) :: d_rj(nnod_rj,ntot_phys_rj)
+      type(phys_data), intent(in) :: d_circle
+!
+      type(fields_on_circle), intent(inout) :: circle
+!
+      integer(kind = kint) :: j, j_gl, i_in, i_ot, num, ncomp
+      integer(kind = kint) :: ist_comp, jst_comp, nd, ifld, jfld
+!
+!
+!    pickup spectrum for circle point
+!
+      do ifld = 1, d_circle%num_phys_viz
+        ist_comp = d_circle%istack_component(ifld-1)
+        do jfld = 1, num_phys_rj
+          if(d_circle%phys_name(ifld) .eq. phys_name_rj(jfld)) then
+            jst_comp = istack_phys_comp_rj(jfld-1)
+            ncomp = istack_phys_comp_rj(jfld)                           &
+     &             - istack_phys_comp_rj(jfld-1)
+            if(iflag_debug .gt. 0) write(*,*)                           &
+     &              trim(d_circle%phys_name(ifld)), ifld, jfld, ncomp
+            do nd = 1, ncomp
+              do j = 1, jmax
+                j_gl = idx_gl_1d_rj_j(j,1)
+                i_in = j + (circle%kr_gl_rcirc_in-1) *  jmax
+                i_ot = j + (circle%kr_gl_rcirc_out-1) * jmax
+!
+                circle%d_rj_circ_lc(j_gl,ist_comp+nd)                   &
+     &            = circle%coef_gl_rcirc_in * d_rj(i_in,jst_comp+nd)    &
+     &             + circle%coef_gl_rcirc_out * d_rj(i_ot,jst_comp+nd)
+              end do
+            end do
+            exit
+          end if
+        end do
+      end do
+!
+!    collect data to rank 0
+!
+      num = d_circle%ntot_phys * (nidx_global_rj(2) + 1)
+      if(my_rank .eq. 0) circle%d_rj_circle =   zero
+      call MPI_Reduce                                                   &
+     &   (circle%d_rj_circ_lc(0,1), circle%d_rj_circle(0,1), num,       &
+     &    CALYPSO_REAL, MPI_SUM, izero, CALYPSO_COMM, ierr_MPI)
+!
+      end subroutine collect_spectr_for_circle
 !
 ! ----------------------------------------------------------------------
 !

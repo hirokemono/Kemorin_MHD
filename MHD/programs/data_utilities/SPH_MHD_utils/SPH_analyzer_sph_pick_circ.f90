@@ -79,7 +79,6 @@
       use sph_mhd_rst_IO_control
       use cal_SGS_nonlinear
       use init_sph_trans_SGS_MHD
-      use sph_MHD_circle_transform
       use nod_phys_send_recv
       use sph_filtering
       use check_dependency_SGS_MHD
@@ -146,7 +145,7 @@
 !
       call const_circle_point_global                                    &
      &   (sph1%sph_params%l_truncation, sph1%sph_rtp, sph1%sph_rj,      &
-     &    cdat%circle, cdat%d_circle)
+     &    cdat)
 !
       end subroutine SPH_init_sph_pick_circle
 !
@@ -159,7 +158,6 @@
       use m_sph_spectr_data
       use m_fdm_coefs
       use m_schmidt_poly_on_rtm
-      use m_field_on_circle
       use m_sph_trans_arrays_MHD
 !
       use cal_SGS_nonlinear
@@ -167,9 +165,9 @@
       use adjust_reference_fields
       use lead_fields_SPH_SGS_MHD
       use sph_mhd_rst_IO_control
-      use sph_MHD_circle_transform
       use input_control_sph_MHD
       use output_viz_file_control
+      use field_on_circle_IO
 !
       integer(kind = kint), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files
@@ -222,8 +220,7 @@
 !*
       call start_elapsed_time(4)
       if(iflag_debug.gt.0)  write(*,*) 'sph_transfer_on_circle'
-      call sph_transfer_on_circle                                       &
-     &   (sph1%sph_rj, rj_fld1, cdat%circle, cdat%d_circle)
+      call sph_transfer_on_circle(sph1%sph_rj, rj_fld1, cdat)
       call write_field_data_on_circle                                   &
      &   (i_step, MHD_step1%time_d%time, cdat%circle, cdat%d_circle)
       call end_elapsed_time(4)
