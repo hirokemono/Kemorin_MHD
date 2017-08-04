@@ -7,13 +7,18 @@
 !>@brief  field data on specific circle at (s,z)
 !!
 !!@verbatim
-!!      subroutine sph_transfer_on_circle(sph_rj, rj_fld)
+!!      subroutine sph_transfer_on_circle                               &
+!!     &         (sph_rj, rj_fld, circle, d_circle)
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
 !!        type(phys_data), intent(in) :: rj_fld
+!!        type(phys_data), intent(inout) :: d_circle
+!!        type(fields_on_circle), intent(inout) :: circle
 !!      subroutine const_circle_point_global                            &
-!!     &         (l_truncation, sph_rtp, sph_rj)
+!!     &         (l_truncation, sph_rtp, sph_rj, circle, d_circle)
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(sph_rj_grid), intent(in) ::  sph_rj
+!!        type(phys_data), intent(inout) :: d_circle
+!!        type(fields_on_circle), intent(inout) :: circle
 !!@endverbatim
 !
       module sph_MHD_circle_transform
@@ -22,7 +27,7 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_field_on_circle
+      use t_field_on_circle
 !
       implicit none
 !
@@ -34,7 +39,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sph_transfer_on_circle(sph_rj, rj_fld)
+      subroutine sph_transfer_on_circle                                 &
+     &         (sph_rj, rj_fld, circle, d_circle)
 !
       use calypso_mpi
       use m_phys_constants
@@ -48,13 +54,17 @@
       type(sph_rj_grid), intent(in) ::  sph_rj
       type(phys_data), intent(in) :: rj_fld
 !
+      type(fields_on_circle), intent(inout) :: circle
+      type(phys_data), intent(inout) :: d_circle
+!
       integer(kind = kint) :: ifld, icomp, m, nd
 !
 !
       call collect_spectr_for_circle(sph_rj%nidx_rj(2),                 &
      &    sph_rj%nidx_global_rj, sph_rj%idx_gl_1d_rj_j,                 &
      &    rj_fld%n_point, rj_fld%num_phys, rj_fld%ntot_phys,            &
-     &    rj_fld%istack_component, rj_fld%phys_name, rj_fld%d_fld)
+     &    rj_fld%istack_component, rj_fld%phys_name, rj_fld%d_fld,      &
+     &    d_circle, circle)
 !
 !    spherical transfer
 !
@@ -64,21 +74,21 @@
         icomp =  d_circle%istack_component(ifld-1) + 1
         if(d_circle%num_component(ifld) .eq. n_sym_tensor) then
           call circle_transfer_sym_tensor                               &
-     &       (d_rj_circle(0,icomp), v_rtp_circle(1,1),                  &
-     &        vrtm_mag(0,icomp), vrtm_phase(0,icomp) )
+     &       (circle%d_rj_circle(0,icomp), circle%v_rtp_circle(1,1),    &
+     &        circle%vrtm_mag(0,icomp), circle%vrtm_phase(0,icomp) )
         else if(d_circle%num_component(ifld) .eq. n_vector) then
           call circle_transfer_vector                                   &
-     &       (d_rj_circle(0,icomp), v_rtp_circle(1,1),                  &
-     &        vrtm_mag(0,icomp), vrtm_phase(0,icomp) )
+     &       (circle%d_rj_circle(0,icomp), circle%v_rtp_circle(1,1),    &
+     &        circle%vrtm_mag(0,icomp), circle%vrtm_phase(0,icomp) )
         else
           call circle_transfer_scalar                                   &
-     &       (d_rj_circle(0,icomp), v_rtp_circle(1,1),                  &
-     &        vrtm_mag(0,icomp), vrtm_phase(0,icomp) )
+     &       (circle%d_rj_circle(0,icomp), circle%v_rtp_circle(1,1),    &
+     &        circle%vrtm_mag(0,icomp), circle%vrtm_phase(0,icomp) )
         end if
 !
         do nd = 1, d_circle%num_component(ifld)
           do m = 1, mphi_circle
-            d_circle%d_fld(m,icomp+nd-1) = v_rtp_circle(m,nd)
+            d_circle%d_fld(m,icomp+nd-1) = circle%v_rtp_circle(m,nd)
           end do
         end do
       end do
@@ -89,7 +99,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine const_circle_point_global                              &
-     &         (l_truncation, sph_rtp, sph_rj)
+     &         (l_truncation, sph_rtp, sph_rj, circle, d_circle)
 !
       use t_spheric_rtp_data
       use t_spheric_rj_data
@@ -100,45 +110,51 @@
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_rj_grid), intent(in) ::  sph_rj
 !
+      type(fields_on_circle), intent(inout) :: circle
+      type(phys_data), intent(inout) :: d_circle
+!
 !
       call allocate_circle_field                                        &
-     &   (sph_rtp%nidx_rtp(3), sph_rj%nidx_global_rj(2))
+     &   (sph_rtp%nidx_rtp(3), sph_rj%nidx_global_rj(2),                &
+     &    circle, d_circle)
       call initialize_circle_transform(l_truncation,                    &
-     &    s_circle, z_circle)
+     &    circle%s_circle, circle%z_circle)
       call set_circle_point_global                                      &
-     &   (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r)
+     &   (sph_rj%nidx_rj(1), sph_rj%radius_1d_rj_r, circle)
 !
       end subroutine const_circle_point_global
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_circle_point_global(nri, radius_1d_rj_r)
+      subroutine set_circle_point_global(nri, radius_1d_rj_r, circle)
 !
       use m_circle_transform
 !
       integer(kind = kint), intent(in) ::  nri
       real(kind = kreal), intent(in) :: radius_1d_rj_r(nri)
 !
+      type(fields_on_circle), intent(inout) :: circle
+!
       integer(kind = kint) :: kr
 !
 !
-      kr_gl_rcirc_in =  izero
-      kr_gl_rcirc_out = izero
+      circle%kr_gl_rcirc_in =  izero
+      circle%kr_gl_rcirc_out = izero
       do kr = 1, nri - 1
         if(radius_1d_rj_r(kr) .eq. r_circle) then
-          kr_gl_rcirc_in =  kr
-          kr_gl_rcirc_out = izero
-          coef_gl_rcirc_in =  one
-          coef_gl_rcirc_out = zero
+          circle%kr_gl_rcirc_in =  kr
+          circle%kr_gl_rcirc_out = izero
+          circle%coef_gl_rcirc_in =  one
+          circle%coef_gl_rcirc_out = zero
           exit
         end if
         if(radius_1d_rj_r(kr) .lt. r_circle                             &
      &      .and. radius_1d_rj_r(kr+1) .gt. r_circle) then
-          kr_gl_rcirc_in =  kr
-          kr_gl_rcirc_out = kr + 1
-          coef_gl_rcirc_in =  (radius_1d_rj_r(kr+1) - r_circle)         &
+          circle%kr_gl_rcirc_in =  kr
+          circle%kr_gl_rcirc_out = kr + 1
+          circle%coef_gl_rcirc_in =  (radius_1d_rj_r(kr+1) - r_circle)  &
      &                    / (radius_1d_rj_r(kr+1) - radius_1d_rj_r(kr))
-          coef_gl_rcirc_out = one - coef_gl_rcirc_in
+          circle%coef_gl_rcirc_out = one - circle%coef_gl_rcirc_in
           exit
         end if
       end do
@@ -148,9 +164,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine collect_spectr_for_circle                              &
-     &         (jmax, nidx_global_rj, idx_gl_1d_rj_j,                   &
-     &          nnod_rj, num_phys_rj, ntot_phys_rj,                     &
-     &          istack_phys_comp_rj, phys_name_rj, d_rj)
+     &         (jmax, nidx_global_rj, idx_gl_1d_rj_j, nnod_rj,          &
+     &          num_phys_rj, ntot_phys_rj, istack_phys_comp_rj,         &
+     &          phys_name_rj, d_rj, d_circle, circle)
 !
       use calypso_mpi
 !
@@ -162,6 +178,9 @@
      &                  :: istack_phys_comp_rj(0:num_phys_rj)
       character (len=kchara), intent(in) :: phys_name_rj(num_phys_rj)
       real (kind=kreal), intent(in) :: d_rj(nnod_rj,ntot_phys_rj)
+      type(phys_data), intent(in) :: d_circle
+!
+      type(fields_on_circle), intent(inout) :: circle
 !
       integer(kind = kint) :: j, j_gl, i_in, i_ot, num, ncomp
       integer(kind = kint) :: ist_comp, jst_comp, nd, ifld, jfld
@@ -181,12 +200,12 @@
             do nd = 1, ncomp
               do j = 1, jmax
                 j_gl = idx_gl_1d_rj_j(j,1)
-                i_in = j + (kr_gl_rcirc_in-1) *  jmax
-                i_ot = j + (kr_gl_rcirc_out-1) * jmax
+                i_in = j + (circle%kr_gl_rcirc_in-1) *  jmax
+                i_ot = j + (circle%kr_gl_rcirc_out-1) * jmax
 !
-                d_rj_circ_lc(j_gl,ist_comp+nd)                          &
-     &                      = coef_gl_rcirc_in * d_rj(i_in,jst_comp+nd) &
-     &                     + coef_gl_rcirc_out * d_rj(i_ot,jst_comp+nd)
+                circle%d_rj_circ_lc(j_gl,ist_comp+nd)                   &
+     &            = circle%coef_gl_rcirc_in * d_rj(i_in,jst_comp+nd)    &
+     &             + circle%coef_gl_rcirc_out * d_rj(i_ot,jst_comp+nd)
               end do
             end do
             exit
@@ -197,8 +216,9 @@
 !    collect data to rank 0
 !
       num = d_circle%ntot_phys * (nidx_global_rj(2) + 1)
-      if(my_rank .eq. 0) d_rj_circle =   zero
-      call MPI_Reduce(d_rj_circ_lc(0,1), d_rj_circle(0,1), num,         &
+      if(my_rank .eq. 0) circle%d_rj_circle =   zero
+      call MPI_Reduce                                                   &
+     &   (circle%d_rj_circ_lc(0,1), circle%d_rj_circle(0,1), num,       &
      &    CALYPSO_REAL, MPI_SUM, izero, CALYPSO_COMM, ierr_MPI)
 !
       end subroutine collect_spectr_for_circle

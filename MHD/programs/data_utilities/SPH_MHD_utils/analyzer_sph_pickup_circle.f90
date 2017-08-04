@@ -22,6 +22,7 @@
       use m_sph_trans_arrays_MHD
       use m_physical_property
       use m_bc_data_list
+      use m_field_on_circle
       use t_spheric_parameter
       use t_file_IO_parameter
       use t_step_parameter
@@ -84,7 +85,7 @@
 !
       call set_ctl_params_pick_circle                                   &
      &   (MHD_ctl1%model_ctl%fld_ctl%field_ctl,                         &
-     &    MHD_ctl1%smonitor_ctl%meq_ctl)
+     &    MHD_ctl1%smonitor_ctl%meq_ctl, cdat1%circle, cdat1%d_circle)
 !
 !   Load spherical harmonics data
 !
@@ -97,7 +98,8 @@
 !
       call start_elapsed_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_pick_circle'
-      call SPH_init_sph_pick_circle(MHD_files1, bc_sph_IO1, iphys)
+      call SPH_init_sph_pick_circle                                     &
+     &   (MHD_files1, bc_sph_IO1, iphys, cdat1)
       call calypso_MPI_barrier
 !
       call end_elapsed_time(2)
@@ -129,7 +131,7 @@
 !*
         if (iflag_debug.eq.1) write(*,*) 'SPH_analyze_pick_circle'
         call SPH_analyze_pick_circle                                    &
-     &     (MHD_step1%time_d%i_time_step, MHD_files1)
+     &     (MHD_step1%time_d%i_time_step, MHD_files1, cdat1)
 !*
 !*  -----------  exit loop --------------
 !*

@@ -8,12 +8,14 @@
 !!
 !!@verbatim
 !!      subroutine set_mid_equator_point_global                         &
-!!     &         (sph_params, sph_rtp, sph_rj)
-!!      subroutine mid_eq_transfer_dynamobench(time, sph_rj, rj_fld)
+!!     &         (sph_params, sph_rtp, sph_rj, cdat)
+!!      subroutine mid_eq_transfer_dynamobench                          &
+!!     &         (time, sph_rj, rj_fld, cdat)
 !!        type(sph_shell_parameters), intent(in) :: sph_params
 !!        type(sph_rj_grid), intent(in) :: sph_rj
 !!        type(sph_rtp_grid), intent(in) :: sph_rtp
 !!        type(phys_data), intent(in) :: rj_fld
+!!        type(circle_fld_maker), intent(inout) :: cdat
 !!@endverbatim
 !
       module m_field_at_mid_equator
@@ -36,11 +38,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_mid_equator_point_global                           &
-     &         (sph_params, sph_rtp, sph_rj)
+     &         (sph_params, sph_rtp, sph_rj, cdat)
 !
       use m_phys_labels
-      use m_field_on_circle
       use m_circle_transform
+      use t_field_on_circle
       use t_spheric_parameter
 !
       use sph_MHD_circle_transform
@@ -49,26 +51,29 @@
       type(sph_rtp_grid), intent(in) :: sph_rtp
       type(sph_rj_grid), intent(in) ::  sph_rj
 !
+      type(circle_fld_maker), intent(inout) :: cdat
+!
       real(kind = kreal) :: r_MID
 !
 !
       r_MID = half * (sph_rj%radius_1d_rj_r(sph_params%nlayer_ICB)      &
      &              + sph_rj%radius_1d_rj_r(sph_params%nlayer_CMB) )
 !
-      s_circle = r_MID
-      z_circle = zero
-      call const_circle_point_global                                    &
-     &   (sph_params%l_truncation, sph_rtp, sph_rj)
+      cdat%circle%s_circle = r_MID
+      cdat%circle%z_circle = zero
+      call const_circle_point_global(sph_params%l_truncation,           &
+     &    sph_rtp, sph_rj, cdat%circle, cdat%d_circle)
 !
       end subroutine set_mid_equator_point_global
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine mid_eq_transfer_dynamobench(time, sph_rj, rj_fld)
+      subroutine mid_eq_transfer_dynamobench                            &
+     &         (time, sph_rj, rj_fld, cdat)
 !
       use calypso_mpi
-      use m_field_on_circle
       use m_circle_transform
+      use t_field_on_circle
       use t_spheric_rj_data
       use t_phys_data
 !
@@ -77,32 +82,35 @@
       real(kind=kreal), intent(in) :: time
       type(sph_rj_grid), intent(in) :: sph_rj
       type(phys_data), intent(in) :: rj_fld
+      type(circle_fld_maker), intent(inout) :: cdat
 !
 !    spherical transfer
 !
-      call sph_transfer_on_circle(sph_rj, rj_fld)
+      call sph_transfer_on_circle                                       &
+     &   (sph_rj, rj_fld, cdat%circle, cdat%d_circle)
 !
       if(my_rank .gt. 0) return
 !
 !   Evaluate drift frequencty by velocity 
 !
-      call cal_drift_by_v44(time)
+      call cal_drift_by_v44(time, cdat%circle)
 !
 !   find local point for dynamobench
 !
       if(iflag_debug.gt.0)  write(*,*) 'cal_field_4_dynamobench'
-      call cal_field_4_dynamobench
+      call cal_field_4_dynamobench(cdat%d_circle)
 !
       end subroutine mid_eq_transfer_dynamobench
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_drift_by_v44(time)
+      subroutine cal_drift_by_v44(time, circle)
 !
-      use m_field_on_circle
+      use t_field_on_circle
 !
       real(kind=kreal), intent(in) :: time
+      type(fields_on_circle), intent(in) :: circle
 !
       integer(kind = kint) :: j4c, j4s
       real(kind = kreal) :: vp44c, vp44s
@@ -113,13 +121,13 @@
 !
       j4c = ifour*(ifour+1) + ifour
       j4s = ifour*(ifour+1) - ifour
-      vp44c = d_rj_circle(j4c,ibench_velo  )
-      vp44s = d_rj_circle(j4s,ibench_velo  )
+      vp44c = circle%d_rj_circle(j4c,ibench_velo  )
+      vp44s = circle%d_rj_circle(j4s,ibench_velo  )
 !
       j4c = ifive*(ifive+1) + ifour
       j4s = ifive*(ifive+1) - ifour
-      vt54c = d_rj_circle(j4c,ibench_velo+2)
-      vt54s = d_rj_circle(j4s,ibench_velo+2)
+      vt54c = circle%d_rj_circle(j4c,ibench_velo+2)
+      vt54s = circle%d_rj_circle(j4s,ibench_velo+2)
 !
       phase_vm4(1) = atan2(vp44s,vp44c)
       phase_vm4(2) = atan2(vt54s,vt54c)
@@ -134,14 +142,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_field_4_dynamobench
+      subroutine cal_field_4_dynamobench(d_circle)
 !
       use calypso_mpi
-      use m_field_on_circle
+      use t_phys_data
       use m_circle_transform
 !
       integer(kind = kint) :: nd, mphi, mp_next, icou
       real(kind = kreal) :: coef
+!
+      type(phys_data), intent(in) :: d_circle
 !
 !
       icou = 0

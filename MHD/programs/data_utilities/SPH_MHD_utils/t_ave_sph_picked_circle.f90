@@ -12,12 +12,15 @@
       use m_precision
       use m_spheric_parameter
       use m_tave_field_on_circle
+      use t_field_on_circle
 !
       implicit none
 !
       integer(kind = kint) :: ist, ied, ierr
       integer(kind = kint) :: icou, istep
       real(kind = kreal) :: time
+!
+      type(circle_fld_maker), save :: cdat_a
 !
 !
       write(*,*) 'imput start and end step number'
@@ -26,19 +29,21 @@
 !    Evaluate time average
 !
       write(*,*) 'open_read_field_data_on_circle'
-      call open_read_field_data_on_circle(sph1%sph_rtp, sph1%sph_rj)
-      call allocate_tave_circle_field
+      call open_read_field_data_on_circle                               &
+     &   (sph1%sph_rtp, sph1%sph_rj, cdat_a%circle, cdat_a%d_circle)
+      call allocate_tave_circle_field(cdat_a%d_circle)
 !
       icou = 0
       do
         write(*,*) 'read_field_data_on_circle'
-        call read_field_data_on_circle(istep, time, ierr)
+        call read_field_data_on_circle                                  &
+     &     (istep, time, ierr, cdat_a%circle, cdat_a%d_circle)
         write(*,*) 'read_field_data_on_circle end', istep, time, icou
         if(ierr.gt.0) go to 99
 !
         if (istep .ge. ist) then
           icou = icou + 1
-          call sum_average_circle_field
+          call sum_average_circle_field(cdat_a%circle, cdat_a%d_circle)
         end if
 !
         if (istep .ge. ied) exit
@@ -48,23 +53,26 @@
    99 continue
 !
       call close_field_data_on_circle
-      call deallocate_circle_field
-      call divide_average_circle_field(icou)
+      call deallocate_circle_field(cdat_a%circle, cdat_a%d_circle)
+      call divide_average_circle_field(icou, cdat_a%d_circle)
 !
 !
 !  Evaluate standard deviation
 !
-      call open_read_field_data_on_circle(sph1%sph_rtp, sph1%sph_rj)
+      call open_read_field_data_on_circle                               &
+     &   (sph1%sph_rtp, sph1%sph_rj, cdat_a%circle, cdat_a%d_circle)
 !
       icou = 0
       do
-        call read_field_data_on_circle(istep, time, ierr)
+        call read_field_data_on_circle                                  &
+     &     (istep, time, ierr, cdat_a%circle, cdat_a%d_circle)
         write(*,*) 'read_field_data_on_circle end', istep, time, icou
         if(ierr.gt.0) go to 98
 !
         if (istep .ge. ist) then
           icou = icou + 1
-          call sum_deviation_circle_field
+          call sum_deviation_circle_field                               &
+     &       (cdat_a%circle, cdat_a%d_circle)
         end if
 !
         if (istep .ge. ied) exit
@@ -74,14 +82,16 @@
    98 continue
 !
       call close_field_data_on_circle
-      call divide_deviation_circle_field(icou)
+      call divide_deviation_circle_field(icou, cdat_a%d_circle)
 !
-      call copy_average_circle_field
-      call write_field_data_on_circle(istep, time)
+      call copy_average_circle_field(cdat_a%circle, cdat_a%d_circle)
+      call write_field_data_on_circle                                   &
+     &   (istep, time, cdat_a%circle, cdat_a%d_circle)
 !
-      call copy_deviation_circle_field
-      call write_field_data_on_circle(istep, time)
-      call deallocate_circle_field
+      call copy_deviation_circle_field(cdat_a%circle, cdat_a%d_circle)
+      call write_field_data_on_circle                                   &
+     &   (istep, time, cdat_a%circle, cdat_a%d_circle)
+      call deallocate_circle_field(cdat_a%circle, cdat_a%d_circle)
 !
       stop 'Finished'
       end program t_ave_sph_picked_circle

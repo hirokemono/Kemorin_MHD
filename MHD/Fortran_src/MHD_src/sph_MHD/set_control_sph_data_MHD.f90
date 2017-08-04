@@ -21,12 +21,17 @@
 !!        type(boundary_spectra), intent(inout) :: bc_IO
 !!        type(phys_data), intent(inout) :: rj_fld
 !!        type(spherical_trns_works), intent(inout) :: WK_sph
-!!     subroutine set_ctl_params_pick_circle(field_ctl, meq_ctl)
+!!      subroutine set_ctl_params_pick_circle                           &
+!!     &         (field_ctl, meq_ctl, circle, d_circle)
 !!        type(ctl_array_c3), intent(in) :: field_ctl
 !!        type(mid_equator_control), intent(in) :: meq_ctl
-!!     subroutine set_ctl_params_dynamobench(field_ctl, meq_ctl)
+!!        type(fields_on_circle), intent(inout) :: circle
+!!        type(phys_data), intent(inout) :: d_circle
+!!      subroutine set_ctl_params_dynamobench                           &
+!!     &         (field_ctl, meq_ctl, d_circle)
 !!        type(ctl_array_c3), intent(in) :: field_ctl
 !!        type(mid_equator_control), intent(in) :: meq_ctl
+!!        type(phys_data), intent(inout) :: d_circle
 !!@endverbatim
 !
       module set_control_sph_data_MHD
@@ -140,18 +145,21 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_ctl_params_dynamobench(field_ctl, meq_ctl)
+      subroutine set_ctl_params_dynamobench                             &
+     &         (field_ctl, meq_ctl, d_circle)
 !
       use t_ctl_data_sph_vol_spectr
       use t_read_control_arrays
+      use t_phys_data
       use m_phys_labels
       use m_phys_constants
-      use m_field_on_circle
       use m_circle_transform
       use m_field_at_mid_equator
 !
       type(ctl_array_c3), intent(in) :: field_ctl
       type(mid_equator_control), intent(in) :: meq_ctl
+!
+      type(phys_data), intent(inout) :: d_circle
 !
       integer(kind = kint) :: ifld
 !
@@ -206,11 +214,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_ctl_params_pick_circle(field_ctl, meq_ctl)
+      subroutine set_ctl_params_pick_circle                             &
+     &         (field_ctl, meq_ctl, circle, d_circle)
 !
       use t_ctl_data_sph_vol_spectr
       use t_read_control_arrays
-      use m_field_on_circle
+      use t_field_on_circle
       use m_circle_transform
       use t_phys_data
       use ordering_field_by_viz
@@ -218,6 +227,8 @@
 !
       type(ctl_array_c3), intent(in) :: field_ctl
       type(mid_equator_control), intent(in) :: meq_ctl
+      type(fields_on_circle), intent(inout) :: circle
+      type(phys_data), intent(inout) :: d_circle
 !
       character(len = kchara) :: tmpchara
 !
@@ -239,14 +250,14 @@
         mphi_circle = meq_ctl%nphi_mid_eq_ctl%intvalue
       end if
 !
-      s_circle = 7.0d0/13.0d0 + 0.5d0
+      circle%s_circle = 7.0d0/13.0d0 + 0.5d0
       if(meq_ctl%pick_s_ctl%iflag .gt. 0) then
-        s_circle = meq_ctl%pick_s_ctl%realvalue
+        circle%s_circle = meq_ctl%pick_s_ctl%realvalue
       end if
 !
-      z_circle = 0.0d0
+      circle%z_circle = 0.0d0
       if(meq_ctl%pick_z_ctl%iflag .gt. 0) then
-        z_circle = meq_ctl%pick_z_ctl%realvalue
+        circle%z_circle = meq_ctl%pick_z_ctl%realvalue
       end if
 !
       d_circle%num_phys = field_ctl%num

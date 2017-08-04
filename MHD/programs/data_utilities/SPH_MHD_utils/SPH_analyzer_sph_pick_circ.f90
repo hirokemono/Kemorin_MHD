@@ -14,9 +14,10 @@
 !!       Initialzation and evolution loop to pick up data on circle
 !!
 !!@verbatim
-!!      subroutine SPH_init_sph_pick_circle(MHD_files, bc_IO, iphys)
+!!      subroutine SPH_init_sph_pick_circle                             &
+!!     &         (MHD_files, bc_IO, iphys, cdat)
 !!        type(phys_address), intent(in) :: iphys
-!!      subroutine SPH_analyze_pick_circle(i_step, MHD_files)
+!!      subroutine SPH_analyze_pick_circle(i_step, MHD_files, cdat)
 !!        type(boundary_spectra), intent(in) :: bc_IO
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!      subroutine SPH_finalize_pick_circle
@@ -33,6 +34,7 @@
       use t_phys_address
       use t_MHD_file_parameter
       use t_sph_filtering
+      use t_field_on_circle
 !
       implicit none
 !
@@ -42,7 +44,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_init_sph_pick_circle(MHD_files, bc_IO, iphys)
+      subroutine SPH_init_sph_pick_circle                               &
+     &         (MHD_files, bc_IO, iphys, cdat)
 !
       use m_constants
       use m_array_for_send_recv
@@ -86,6 +89,7 @@
       type(boundary_spectra), intent(in) :: bc_IO
       type(phys_address), intent(in) :: iphys
 !
+      type(circle_fld_maker), intent(inout) :: cdat
 !
 !   Allocate spectr field data
 !
@@ -141,13 +145,14 @@
 !* -----  find mid-equator point -----------------
 !
       call const_circle_point_global                                    &
-     &   (sph1%sph_params%l_truncation, sph1%sph_rtp, sph1%sph_rj)
+     &   (sph1%sph_params%l_truncation, sph1%sph_rtp, sph1%sph_rj,      &
+     &    cdat%circle, cdat%d_circle)
 !
       end subroutine SPH_init_sph_pick_circle
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_pick_circle(i_step, MHD_files)
+      subroutine SPH_analyze_pick_circle(i_step, MHD_files, cdat)
 !
       use m_work_time
       use m_spheric_parameter
@@ -168,6 +173,9 @@
 !
       integer(kind = kint), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files
+!
+      type(circle_fld_maker), intent(inout) :: cdat
+!
       integer(kind = kint) :: iflag
 !
 !
@@ -214,8 +222,10 @@
 !*
       call start_elapsed_time(4)
       if(iflag_debug.gt.0)  write(*,*) 'sph_transfer_on_circle'
-      call sph_transfer_on_circle(sph1%sph_rj, rj_fld1)
-      call write_field_data_on_circle(i_step, MHD_step1%time_d%time)
+      call sph_transfer_on_circle                                       &
+     &   (sph1%sph_rj, rj_fld1, cdat%circle, cdat%d_circle)
+      call write_field_data_on_circle                                   &
+     &   (i_step, MHD_step1%time_d%time, cdat%circle, cdat%d_circle)
       call end_elapsed_time(4)
 !
       end subroutine SPH_analyze_pick_circle

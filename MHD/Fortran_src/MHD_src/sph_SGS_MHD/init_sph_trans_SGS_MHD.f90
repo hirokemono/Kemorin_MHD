@@ -66,7 +66,7 @@
       use set_address_sph_trans_SGS
       use set_address_sph_trans_snap
       use set_address_sph_trans_tmp
-      use init_sphrical_transform_mhd
+      use init_sphrical_transform_MHD
       use pole_sph_transform
       use MHD_FFT_selector
 !
