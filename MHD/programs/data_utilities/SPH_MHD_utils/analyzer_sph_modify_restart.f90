@@ -18,7 +18,6 @@
       use m_machine_parameter
       use m_work_time
       use m_MHD_step_parameter
-      use t_MHD_step_parameter
       use t_step_parameter
       use t_MHD_file_parameter
 !
@@ -69,7 +68,7 @@
       call end_elapsed_time(3)
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
-      call FEM_finalize(MHD_files1%ucd_file_IO, MHD_step1)
+      call FEM_finalize(MHD_files1%ucd_file_IO, MHD_step1, fem_ucd1)
 !
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_snap'
 !      call SPH_finalize_snap

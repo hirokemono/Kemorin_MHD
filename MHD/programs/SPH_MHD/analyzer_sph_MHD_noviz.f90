@@ -76,7 +76,7 @@
       call start_elapsed_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
       call FEM_initialize_sph_MHD(MHD_files1%ucd_file_IO, MHD_step1,    &
-     &    mesh1, group1, ele_mesh1, iphys, nod_fld1, range)
+     &    mesh1, group1, ele_mesh1, iphys, nod_fld1, range, fem_ucd1)
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_initialize_SGS_MHD'
@@ -134,7 +134,7 @@
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
         call FEM_analyze_sph_MHD(MHD_files1%ucd_file_IO,                &
-     &      mesh1, nod_fld1, MHD_step1, visval)
+     &      mesh1, nod_fld1, MHD_step1, visval, fem_ucd1)
 !
         call end_elapsed_time(4)
 !
@@ -148,7 +148,7 @@
       call end_elapsed_time(3)
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
-      call FEM_finalize(MHD_files1%ucd_file_IO, MHD_step1)
+      call FEM_finalize(MHD_files1%ucd_file_IO, MHD_step1, fem_ucd1)
 !
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_MHD'
 !      call SPH_finalize_MHD

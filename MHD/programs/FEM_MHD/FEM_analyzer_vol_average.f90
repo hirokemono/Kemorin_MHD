@@ -21,6 +21,7 @@
       use t_time_data
       use t_MHD_file_parameter
       use t_MHD_step_parameter
+      use t_ucd_file
 !
       use calypso_mpi
 !
@@ -78,8 +79,6 @@
       use m_geometry_data_MHD
       use m_element_phys_data
       use m_finite_element_matrix
-!
-      use m_ucd_data
 !
       use nod_phys_send_recv
       use lead_physical_values

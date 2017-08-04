@@ -86,7 +86,7 @@
 !
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
         call FEM_analyze_sph_MHD(MHD_files1%ucd_file_IO,                &
-     &      mesh1, nod_fld1, MHD_step1, visval)
+     &      mesh1, nod_fld1, MHD_step1, visval, fem_ucd1)
 !
         call end_elapsed_time(4)
 !
@@ -112,7 +112,7 @@
       call end_elapsed_time(3)
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
-      call FEM_finalize(MHD_files1%ucd_file_IO, MHD_step1)
+      call FEM_finalize(MHD_files1%ucd_file_IO, MHD_step1, fem_ucd1)
 !
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_snap'
 !      call SPH_finalize_snap

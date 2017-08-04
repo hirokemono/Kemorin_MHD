@@ -3,18 +3,19 @@
 !
 !      modified by H. Matsui on June, 2005 
 !
-!!      subroutine FEM_initialize_MHD                                   &
-!!     &         (MHD_files, bc_FEM_IO, flex_p, flex_data, MHD_step)
+!!      subroutine FEM_initialize_MHD(MHD_files, bc_FEM_IO,             &
+!!     &          flex_p, flex_data, MHD_step, fem_ucd)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(IO_boundary), intent(in) :: bc_FEM_IO
 !!        type(flexible_stepping_parameter), intent(inout) :: flex_p
 !!        type(flexible_stepping_data), intent(inout) :: flex_data
 !!        type(MHD_step_param), intent(inout) :: MHD_step
+!!        type(ucd_file_data), intent(inout) :: fem_ucd
 !!      subroutine FEM_analyze_MHD                                      &
-!!     &         (MHD_files, MHD_step, visval, retval)
+!!     &         (MHD_files, MHD_step, visval, retval, fem_ucd)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(inout) :: MHD_step
-!!      subroutine FEM_finalize_MHD(MHD_files, MHD_step)
+!!      subroutine FEM_finalize_MHD(MHD_files, MHD_step, fem_ucd)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(in) :: MHD_step
 !
@@ -27,9 +28,9 @@
       use m_control_parameter
       use m_SGS_control_parameter
       use m_mesh_data
-      use m_ucd_data
       use m_sorted_node_MHD
       use m_physical_property
+      use t_ucd_file
       use t_MHD_step_parameter
       use t_MHD_file_parameter
       use t_ucd_file
@@ -45,8 +46,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_MHD                                     &
-     &         (MHD_files, bc_FEM_IO, flex_p, flex_data, MHD_step)
+      subroutine FEM_initialize_MHD(MHD_files, bc_FEM_IO,               &
+     &          flex_p, flex_data, MHD_step, fem_ucd)
 !
       use m_geometry_data_MHD
       use m_node_phys_data
@@ -82,6 +83,7 @@
       type(MHD_step_param), intent(inout) :: MHD_step
       type(flexible_stepping_parameter), intent(inout) :: flex_p
       type(flexible_stepping_data), intent(inout) :: flex_data
+      type(ucd_file_data), intent(inout) :: fem_ucd
 !
       integer(kind = kint) :: iflag
 !
@@ -168,7 +170,7 @@
       call start_elapsed_time(4)
 !
       call output_grd_file_w_org_connect(MHD_step%ucd_step,             &
-     &    mesh1, MHD_mesh1, nod_fld1, MHD_files%ucd_file_IO, fem_ucd1)
+     &    mesh1, MHD_mesh1, nod_fld1, MHD_files%ucd_file_IO, fem_ucd)
 !
       call alloc_phys_range(nod_fld1%ntot_phys_viz, range)
 !       call s_open_boundary_monitor(my_rank, group1%sf_grp)
@@ -179,7 +181,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_analyze_MHD                                        &
-     &         (MHD_files, MHD_step, visval, retval)
+     &         (MHD_files, MHD_step, visval, retval, fem_ucd)
 !
       use m_geometry_data_MHD
       use m_node_phys_data
@@ -218,6 +220,7 @@
       type(MHD_step_param), intent(inout) :: MHD_step
 !
       integer(kind=kint ), intent(inout) :: retval
+      type(ucd_file_data), intent(inout) :: fem_ucd
 !
       integer(kind = kint) :: iflag
       real(kind = kreal) :: total_max
@@ -307,7 +310,7 @@
         if (iflag_debug.eq.1) write(*,*) 's_output_ucd_file_control'
         call s_output_ucd_file_control                                  &
      &     (MHD_files%ucd_file_IO, flex_p1%istep_max_dt,                &
-     &      MHD_step%time_d, MHD_step%ucd_step, fem_ucd1)
+     &      MHD_step%time_d, MHD_step%ucd_step, fem_ucd)
 !
         call end_elapsed_time(4)
         call start_elapsed_time(3)
@@ -391,16 +394,17 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_finalize_MHD(MHD_files, MHD_step)
+      subroutine FEM_finalize_MHD(MHD_files, MHD_step, fem_ucd)
 !
       use m_cal_max_indices
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(MHD_step_param), intent(in) :: MHD_step
+      type(ucd_file_data), intent(inout) :: fem_ucd
 !
 !
       if(MHD_step%ucd_step%increment .gt. 0) then
-        call finalize_output_ucd(MHD_files%ucd_file_IO, fem_ucd1)
+        call finalize_output_ucd(MHD_files%ucd_file_IO, fem_ucd)
         call dealloc_phys_range(range)
       end if
 !      call close_boundary_monitor(my_rank)

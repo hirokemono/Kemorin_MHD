@@ -10,7 +10,7 @@
 !!@verbatim
 !!      subroutine FEM_initialize_w_viz                                 &
 !!     &         (ucd_param, MHD_step, mesh, group, ele_mesh,           &
-!!     &          iphys, nod_fld, next_tbl, jacobians)
+!!     &          iphys, nod_fld, next_tbl, jacobians, fem_ucd)
 !!        type(field_IO_params), intent(in) :: ucd_param
 !!        type(MHD_step_param), intent(in) :: MHD_step
 !!        type(mesh_geometry), intent(inout) :: mesh
@@ -20,6 +20,7 @@
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(next_nod_ele_table), intent(inout) :: next_tbl
 !!        type(jacobians_type), intent(inout) :: jacobians
+!!        type(ucd_file_data), intent(inout) :: fem_ucd
 !!@endverbatim
 !!
 !!@n @param  i_step       Current time step
@@ -43,6 +44,7 @@
       use t_VIZ_step_parameter
       use t_MHD_step_parameter
       use t_file_IO_parameter
+      use t_ucd_file
 !
       implicit none
 !
@@ -54,7 +56,7 @@
 !
       subroutine FEM_initialize_w_viz                                   &
      &         (ucd_param, MHD_step, mesh, group, ele_mesh,             &
-     &          iphys, nod_fld, next_tbl, jacobians)
+     &          iphys, nod_fld, next_tbl, jacobians, fem_ucd)
 !
       use m_fem_gauss_int_coefs
       use m_cal_max_indices
@@ -73,6 +75,7 @@
       type(phys_data), intent(inout) :: nod_fld
       type(next_nod_ele_table), intent(inout) :: next_tbl
       type(jacobians_type), intent(inout) :: jacobians
+      type(ucd_file_data), intent(inout) :: fem_ucd
 !
 !   --------------------------------
 !       setup mesh information
@@ -82,7 +85,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
       call FEM_initialize_sph_MHD(ucd_param, MHD_step,                  &
-     &    mesh, group, ele_mesh, iphys, nod_fld, range)
+     &    mesh, group, ele_mesh, iphys, nod_fld, range, fem_ucd)
 !
 !  -------------------------------
 !

@@ -4,15 +4,16 @@
 !      modified by H. Matsui on June, 2005 
 !
 !!      subroutine FEM_initialize_snap_tmp                              &
-!!     &         (MHD_files, bc_FEM_IO, MHD_step)
+!!     &         (MHD_files, bc_FEM_IO, MHD_step, fem_ucd)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(IO_boundary), intent(in) :: bc_FEM_IO
 !!        type(MHD_step_param), intent(inout) :: MHD_step
+!!        type(ucd_file_data), intent(inout) :: fem_ucd
 !!      subroutine FEM_analyze_snap_tmp                                 &
-!!     &          (i_step, MHD_files, MHD_step, visval)
+!!     &          (i_step, MHD_files, MHD_step, visval, fem_ucd)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(VIZ_step_params), intent(inout) :: MHD_step
-!!      subroutine FEM_finalize_snap_tmp(MHD_files, MHD_step)
+!!      subroutine FEM_finalize_snap_tmp(MHD_files, MHD_step, fem_ucd)
 !
       module FEM_analyzer_snap_tmp
 !
@@ -23,7 +24,7 @@
       use m_control_parameter
       use m_SGS_control_parameter
       use m_mesh_data
-      use m_ucd_data
+      use t_ucd_file
       use t_time_data
       use t_IO_step_parameter
       use t_MHD_step_parameter
@@ -43,7 +44,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_initialize_snap_tmp                                &
-     &         (MHD_files, bc_FEM_IO, MHD_step)
+     &         (MHD_files, bc_FEM_IO, MHD_step, fem_ucd)
 !
       use m_cal_max_indices
       use m_node_phys_data
@@ -62,7 +63,9 @@
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(IO_boundary), intent(in) :: bc_FEM_IO
+!
       type(MHD_step_param), intent(inout) :: MHD_step
+      type(ucd_file_data), intent(inout) :: fem_ucd
 !
 !   matrix assembling
 !
@@ -74,7 +77,7 @@
      &    SNAP_time_IO, MHD_step%rst_step, label_sim)
 !
       call output_grd_file_w_org_connect(MHD_step%ucd_step,             &
-     &    mesh1, MHD_mesh1, nod_fld1, MHD_files%ucd_file_IO, fem_ucd1)
+     &    mesh1, MHD_mesh1, nod_fld1, MHD_files%ucd_file_IO, fem_ucd)
 !
       call alloc_phys_range(nod_fld1%ntot_phys_viz, range)
 !
@@ -83,7 +86,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_analyze_snap_tmp                                   &
-     &          (i_step, MHD_files, MHD_step, visval)
+     &          (i_step, MHD_files, MHD_step, visval, fem_ucd)
 !
       use m_physical_property
       use m_geometry_data_MHD
@@ -119,6 +122,7 @@
 !
       integer(kind=kint ), intent(inout) :: visval
       type(MHD_step_param), intent(inout) :: MHD_step
+      type(ucd_file_data), intent(inout) :: fem_ucd
 !
       integer(kind = kint) :: iflag
 !
@@ -231,7 +235,7 @@
       if (iflag_debug.eq.1) write(*,*) 's_output_ucd_file_control'
       call s_output_ucd_file_control                                    &
      &   (MHD_files%ucd_file_IO, flex_p1%istep_max_dt,                  &
-     &    MHD_step%time_d, MHD_step%ucd_step, fem_ucd1)
+     &    MHD_step%time_d, MHD_step%ucd_step, fem_ucd)
 !
 !     ----
 !
@@ -247,16 +251,17 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_finalize_snap_tmp(MHD_files, MHD_step)
+      subroutine FEM_finalize_snap_tmp(MHD_files, MHD_step, fem_ucd)
 !
       use m_cal_max_indices
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(MHD_step_param), intent(in) :: MHD_step
+      type(ucd_file_data), intent(inout) :: fem_ucd
 !
 !
       if(MHD_step%ucd_step%increment .gt. 0) then
-        call finalize_output_ucd(MHD_files%ucd_file_IO, fem_ucd1)
+        call finalize_output_ucd(MHD_files%ucd_file_IO, fem_ucd)
         call dealloc_phys_range(range)
       end if
 !      call close_boundary_monitor(my_rank)

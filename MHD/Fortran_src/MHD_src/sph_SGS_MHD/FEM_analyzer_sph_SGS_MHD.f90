@@ -33,7 +33,6 @@
       use calypso_mpi
       use m_work_time
 !
-      use m_ucd_data
       use t_time_data
       use t_MHD_step_parameter
       use t_file_IO_parameter

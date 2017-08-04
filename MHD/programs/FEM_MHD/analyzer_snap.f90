@@ -75,7 +75,8 @@
 !
 !     --------------------- 
 !
-      call FEM_initialize_snapshot(MHD_files1, bc_FEM_IO1, MHD_step1)
+      call FEM_initialize_snapshot                                      &
+     &   (MHD_files1, bc_FEM_IO1, MHD_step1, fem_ucd1)
 !
       call init_visualize(mesh1, group1, ele_mesh1, nod_fld1)
 !
@@ -95,7 +96,7 @@
 !
 !  Read and generate fields
         call FEM_analyze_snapshot                                       &
-     &     (i_step, MHD_files1, MHD_step1, visval)
+     &     (i_step, MHD_files1, MHD_step1, visval, fem_ucd1)
 !
 !  Visualization
         if (visval.eq.0) then
@@ -107,7 +108,7 @@
         end if
       end do
 !
-      call FEM_finalize_snapshot(MHD_files1, MHD_step1)
+      call FEM_finalize_snapshot(MHD_files1, MHD_step1, fem_ucd1)
       call output_elapsed_times
 !
       end subroutine analyze

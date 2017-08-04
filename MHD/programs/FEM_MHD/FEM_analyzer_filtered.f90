@@ -4,9 +4,10 @@
 !      modified by H. Matsui on June, 2005 
 !
 !!      subroutine FEM_analyze_filtered                                 &
-!!     &         (i_step, MHD_files, MHD_step, visval)
+!!     &         (i_step, MHD_files, MHD_step, visval, fem_ucd)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(inout) :: MHD_step
+!!        type(ucd_file_data), intent(inout) :: fem_ucd
 !
       module FEM_analyzer_filtered
 !
@@ -32,7 +33,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_analyze_filtered                                   &
-     &         (i_step, MHD_files, MHD_step, visval)
+     &         (i_step, MHD_files, MHD_step, visval, fem_ucd)
 !
       use m_control_parameter
       use m_physical_property
@@ -45,7 +46,6 @@
       use m_3d_filter_coef_MHD
       use m_layering_ele_list
       use m_work_4_dynamic_model
-      use m_ucd_data
       use m_bc_data_velo
       use m_flexible_time_step
       use m_fem_mhd_restart
@@ -72,6 +72,7 @@
 !
       integer(kind=kint ), intent(inout) :: visval
       type(MHD_step_param), intent(inout) :: MHD_step
+      type(ucd_file_data), intent(inout) :: fem_ucd
 !
       integer(kind = kint) :: iflag
 !
@@ -186,7 +187,7 @@
       if (iflag_debug.eq.1) write(*,*) 's_output_ucd_file_control'
       call s_output_ucd_file_control                                    &
      &   (MHD_files%ucd_file_IO, flex_p1%istep_max_dt,                  &
-     &    MHD_step%time_d, MHD_step%ucd_step, fem_ucd1)
+     &    MHD_step%time_d, MHD_step%ucd_step, fem_ucd)
 !
 !     ----
 !
