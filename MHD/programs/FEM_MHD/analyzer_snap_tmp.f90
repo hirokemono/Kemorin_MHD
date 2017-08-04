@@ -75,7 +75,7 @@
 !     --------------------- 
 !
       call FEM_initialize_snap_tmp                                      &
-     &   (MHD_files1, bc_FEM_IO1, MHD_step1, fem_ucd1)
+     &   (MHD_files1, bc_FEM_IO1, MHD_step1, range1, fem_ucd1)
 !
       call init_visualize(mesh1, group1, ele_mesh1, nod_fld1)
 !
@@ -107,7 +107,8 @@
         end if
       end do
 !
-      call FEM_finalize_snap_tmp(MHD_files1, MHD_step1, fem_ucd1)
+      call FEM_finalize_snap_tmp                                        &
+     &   (MHD_files1, MHD_step1, range1, fem_ucd1)
       call output_elapsed_times
 !
       end subroutine analyze

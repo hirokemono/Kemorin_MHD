@@ -4,16 +4,18 @@
 !      modified by H. Matsui on June, 2005 
 !
 !!      subroutine FEM_initialize_snap_tmp                              &
-!!     &         (MHD_files, bc_FEM_IO, MHD_step, fem_ucd)
+!!     &         (MHD_files, bc_FEM_IO, MHD_step, range, fem_ucd)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(IO_boundary), intent(in) :: bc_FEM_IO
 !!        type(MHD_step_param), intent(inout) :: MHD_step
+!!        type(maximum_informations), intent(inout) :: range
 !!        type(ucd_file_data), intent(inout) :: fem_ucd
 !!      subroutine FEM_analyze_snap_tmp                                 &
 !!     &          (i_step, MHD_files, MHD_step, visval, fem_ucd)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(VIZ_step_params), intent(inout) :: MHD_step
-!!      subroutine FEM_finalize_snap_tmp(MHD_files, MHD_step, fem_ucd)
+!!      subroutine FEM_finalize_snap_tmp                                &
+!!     &         (MHD_files, MHD_step, range, fem_ucd)
 !
       module FEM_analyzer_snap_tmp
 !
@@ -30,6 +32,7 @@
       use t_MHD_step_parameter
       use t_MHD_file_parameter
       use t_ucd_file
+      use t_cal_max_indices
 !
       use calypso_mpi
 !
@@ -44,9 +47,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_initialize_snap_tmp                                &
-     &         (MHD_files, bc_FEM_IO, MHD_step, fem_ucd)
+     &         (MHD_files, bc_FEM_IO, MHD_step, range, fem_ucd)
 !
-      use m_cal_max_indices
       use m_node_phys_data
       use m_geometry_data_MHD
       use m_layering_ele_list
@@ -65,6 +67,7 @@
       type(IO_boundary), intent(in) :: bc_FEM_IO
 !
       type(MHD_step_param), intent(inout) :: MHD_step
+      type(maximum_informations), intent(inout) :: range
       type(ucd_file_data), intent(inout) :: fem_ucd
 !
 !   matrix assembling
@@ -251,12 +254,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_finalize_snap_tmp(MHD_files, MHD_step, fem_ucd)
-!
-      use m_cal_max_indices
+      subroutine FEM_finalize_snap_tmp                                  &
+     &         (MHD_files, MHD_step, range, fem_ucd)
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(MHD_step_param), intent(in) :: MHD_step
+      type(maximum_informations), intent(inout) :: range
       type(ucd_file_data), intent(inout) :: fem_ucd
 !
 !

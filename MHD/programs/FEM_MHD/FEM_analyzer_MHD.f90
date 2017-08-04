@@ -4,18 +4,19 @@
 !      modified by H. Matsui on June, 2005 
 !
 !!      subroutine FEM_initialize_MHD(MHD_files, bc_FEM_IO,             &
-!!     &          flex_p, flex_data, MHD_step, fem_ucd)
+!!     &          flex_p, flex_data, MHD_step, range, fem_ucd)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(IO_boundary), intent(in) :: bc_FEM_IO
 !!        type(flexible_stepping_parameter), intent(inout) :: flex_p
 !!        type(flexible_stepping_data), intent(inout) :: flex_data
 !!        type(MHD_step_param), intent(inout) :: MHD_step
+!!        type(maximum_informations), intent(inout) :: range
 !!        type(ucd_file_data), intent(inout) :: fem_ucd
 !!      subroutine FEM_analyze_MHD                                      &
 !!     &         (MHD_files, MHD_step, visval, retval, fem_ucd)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(inout) :: MHD_step
-!!      subroutine FEM_finalize_MHD(MHD_files, MHD_step, fem_ucd)
+!!      subroutine FEM_finalize_MHD(MHD_files, MHD_step, range, fem_ucd)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(in) :: MHD_step
 !
@@ -35,6 +36,7 @@
       use t_MHD_file_parameter
       use t_ucd_file
       use t_flex_delta_t_data
+      use t_cal_max_indices
 !
       use calypso_mpi
 !
@@ -47,7 +49,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_initialize_MHD(MHD_files, bc_FEM_IO,               &
-     &          flex_p, flex_data, MHD_step, fem_ucd)
+     &          flex_p, flex_data, MHD_step, range, fem_ucd)
 !
       use m_geometry_data_MHD
       use m_node_phys_data
@@ -55,7 +57,6 @@
       use m_finite_element_matrix
       use m_filter_elength
       use m_3d_filter_coef_MHD
-      use m_cal_max_indices
       use m_layering_ele_list
       use m_bc_data_velo
       use m_work_4_dynamic_model
@@ -83,6 +84,7 @@
       type(MHD_step_param), intent(inout) :: MHD_step
       type(flexible_stepping_parameter), intent(inout) :: flex_p
       type(flexible_stepping_data), intent(inout) :: flex_data
+      type(maximum_informations), intent(inout) :: range
       type(ucd_file_data), intent(inout) :: fem_ucd
 !
       integer(kind = kint) :: iflag
@@ -394,12 +396,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_finalize_MHD(MHD_files, MHD_step, fem_ucd)
-!
-      use m_cal_max_indices
+      subroutine FEM_finalize_MHD(MHD_files, MHD_step, range, fem_ucd)
 !
       type(MHD_file_IO_params), intent(in) :: MHD_files
       type(MHD_step_param), intent(in) :: MHD_step
+      type(maximum_informations), intent(inout) :: range
       type(ucd_file_data), intent(inout) :: fem_ucd
 !
 !

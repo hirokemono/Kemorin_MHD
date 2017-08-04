@@ -72,7 +72,6 @@
       use m_type_AMG_data_4_MHD
       use m_3d_filter_coef_MHD
 !
-      use m_cal_max_indices
       use m_bc_data_velo
       use m_bc_data_list
 !

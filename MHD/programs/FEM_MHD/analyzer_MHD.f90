@@ -82,7 +82,7 @@
 !
       call start_elapsed_time(2)
       call FEM_initialize_MHD(MHD_files1, bc_FEM_IO1, flex_p1,          &
-     &    flex_data1, MHD_step1, fem_ucd1)
+     &    flex_data1, MHD_step1, range1, fem_ucd1)
 !
       call init_visualize_surface(mesh1, group1, ele_mesh1, nod_fld1)
       call end_elapsed_time(2)
@@ -122,7 +122,7 @@
 !
 !  time evolution end
 !
-      call FEM_finalize_MHD(MHD_files1, MHD_step1, fem_ucd1)
+      call FEM_finalize_MHD(MHD_files1, MHD_step1, range1, fem_ucd1)
 !
       call copy_COMM_TIME_to_elaps(num_elapsed)
       call end_elapsed_time(1)

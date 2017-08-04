@@ -16,6 +16,7 @@
       use t_MHD_file_parameter
       use t_sph_boundary_input_data
       use t_ucd_file
+      use t_cal_max_indices
 !
       implicit  none
 !
@@ -28,5 +29,7 @@
       type(boundary_spectra), save :: bc_sph_IO1
 !
       type(ucd_file_data), save :: fem_ucd1
+!
+      type(maximum_informations), save :: range1
 !
       end module m_MHD_step_parameter

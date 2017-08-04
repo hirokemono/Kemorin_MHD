@@ -49,7 +49,6 @@
       use m_node_phys_data
       use m_sph_spectr_data
       use m_rms_4_sph_spectr
-      use m_cal_max_indices
       use m_bc_data_list
       use m_flexible_time_step
       use init_sph_MHD_elapsed_label
@@ -80,7 +79,7 @@
       call start_elapsed_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
       call FEM_initialize_sph_MHD(MHD_files1%ucd_file_IO, MHD_step1,    &
-     &    mesh1, group1, ele_mesh1, iphys, nod_fld1, range, fem_ucd1)
+     &    mesh1, group1, ele_mesh1, iphys, nod_fld1, range1, fem_ucd1)
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap'
@@ -157,7 +156,8 @@
       call end_elapsed_time(3)
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
-      call FEM_finalize(MHD_files1%ucd_file_IO, MHD_step1, fem_ucd1)
+      call FEM_finalize                                                 &
+     &   (MHD_files1%ucd_file_IO, MHD_step1, range1, fem_ucd1)
 !
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_snap'
 !      call SPH_finalize_snap

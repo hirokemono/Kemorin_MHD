@@ -28,7 +28,7 @@
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(ucd_file_data), intent(inout) :: fem_ucd
-!!      subroutine FEM_finalize(ucd_param, MHD_step)
+!!      subroutine FEM_finalize(ucd_param, MHD_step, range, fem_ucd)
 !!        type(field_IO_params), intent(in) :: ucd_param
 !!        type(MHD_step_param), intent(in) :: MHD_step
 !!
@@ -41,7 +41,6 @@
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
 !!      subroutine FEM_to_SPH_bridge
-!!      subroutine FEM_finalize(ucd_param, MHD_step, fem_ucd)
 !!@endverbatim
 !!
 !!@n @param  i_step       Current time step
@@ -231,13 +230,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_finalize(ucd_param, MHD_step, fem_ucd)
+      subroutine FEM_finalize(ucd_param, MHD_step, range, fem_ucd)
 !
-      use m_cal_max_indices
+      use t_cal_max_indices
 !
       type(field_IO_params), intent(in) :: ucd_param
       type(MHD_step_param), intent(in) :: MHD_step
 !
+      type(maximum_informations), intent(inout) :: range
       type(ucd_file_data), intent(inout) :: fem_ucd
 !
 !

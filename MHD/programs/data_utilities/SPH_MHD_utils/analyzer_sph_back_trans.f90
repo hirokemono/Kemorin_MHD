@@ -80,7 +80,7 @@
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_w_viz'
       call FEM_initialize_w_viz(MHD_files1%ucd_file_IO,                 &
      &    MHD_step1, mesh1, group1, ele_mesh1, iphys, nod_fld1,         &
-     &    next_tbl_VIZ1, jacobians_VIZ1, fem_ucd1)
+     &    next_tbl_VIZ1, jacobians_VIZ1, range1, fem_ucd1)
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_back_trans'
@@ -166,7 +166,8 @@
       call end_elapsed_time(3)
 !
       if (iflag_debug.eq.1) write(*,*) 'FEM_finalize'
-      call FEM_finalize(MHD_files1%ucd_file_IO, MHD_step1, fem_ucd1)
+      call FEM_finalize                                                 &
+     &   (MHD_files1%ucd_file_IO, MHD_step1, range1, fem_ucd1)
 !
 !      if (iflag_debug.eq.1) write(*,*) 'SPH_finalize_snap'
 !      call SPH_finalize_snap
