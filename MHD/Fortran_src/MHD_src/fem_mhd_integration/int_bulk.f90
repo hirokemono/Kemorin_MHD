@@ -72,7 +72,7 @@
 ! ---------  initialize
 !
       fem_msq1%ave_local(1:fem_msq1%num_ave) = 0.0d0
-      rms_local(1:fem_msq1%num_rms-1)  = 0.0d0
+      fem_msq1%rms_local(1:fem_msq1%num_rms-1)  = 0.0d0
 !
 ! ----- lead average in a element -------------
 !
@@ -357,35 +357,40 @@
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
 !
       if(i_rms%i_velo .gt. 0) then
-        rms_local(i_rms%i_velo) = half * rms_local(i_rms%i_velo)
+        fem_msq1%rms_local(i_rms%i_velo)                                &
+     &      = half * fem_msq1%rms_local(i_rms%i_velo)
       end if
       if(i_rms%i_magne .gt. 0) then
-        rms_local(i_rms%i_magne)    = half * rms_local(i_rms%i_magne)
+        fem_msq1%rms_local(i_rms%i_magne)                               &
+     &      = half * fem_msq1%rms_local(i_rms%i_magne)
       end if
       if(ir_me_ic .gt. 0) then
-        rms_local(ir_me_ic) = half * rms_local(ir_me_ic)
+        fem_msq1%rms_local(ir_me_ic)                                    &
+     &      = half * fem_msq1%rms_local(ir_me_ic)
       end if
 !
       if(i_rms%i_filter_velo .gt. 0) then
-        rms_local(i_rms%i_filter_velo)                                  &
-     &      = half * rms_local(i_rms%i_filter_velo)
+        fem_msq1%rms_local(i_rms%i_filter_velo)                         &
+     &      = half * fem_msq1%rms_local(i_rms%i_filter_velo)
       end if
       if(i_rms%i_filter_magne .gt. 0) then
-        rms_local(i_rms%i_filter_magne   )                              &
-     &      = half * rms_local(i_rms%i_filter_magne   )
+        fem_msq1%rms_local(i_rms%i_filter_magne   )                     &
+     &      = half * fem_msq1%rms_local(i_rms%i_filter_magne   )
       end if
       if(ir_me_f_ic .gt. 0) then
-        rms_local(ir_me_f_ic) = half * rms_local(ir_me_f_ic)
+        fem_msq1%rms_local(ir_me_f_ic)                                  &
+     &      = half * fem_msq1%rms_local(ir_me_f_ic)
       end if
 !
       if(ir_rms_w .gt. 0) then
-        rms_local(ir_rms_w) = rms_local(i_rms%i_vort)
+        fem_msq1%rms_local(ir_rms_w) = fem_msq1%rms_local(i_rms%i_vort)
       end if
       if(ir_rms_j .gt. 0) then
-        rms_local(ir_rms_j)    =  rms_local(i_rms%i_current)
+        fem_msq1%rms_local(ir_rms_j)                                    &
+     &      =  fem_msq1%rms_local(i_rms%i_current)
       end if
       if(ir_rms_j_ic .gt. 0) then
-        rms_local(ir_rms_j_ic) =  rms_local(ir_sqj_ic)
+        fem_msq1%rms_local(ir_rms_j_ic) = fem_msq1%rms_local(ir_sqj_ic)
       end if
 !
       call int_all_4_vector                                             &
@@ -614,7 +619,7 @@
      &      jac_3d_q, fem_wk, fem_msq1%ave_local(j_ave%i_div_v))
         call int_rms_divergence                                         &
      &     (fluid%istack_ele_fld_smp, iphys%i_velo, node, ele, nod_fld, &
-     &      jac_3d_q, fem_wk, rms_local(i_rms%i_div_v))
+     &      jac_3d_q, fem_wk, fem_msq1%rms_local(i_rms%i_div_v))
         call cal_stability_4_advect(i_step, dt, ele, fluid,             &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld)
       end if
@@ -625,7 +630,7 @@
      &      jac_3d_q, fem_wk, fem_msq1%ave_local(j_ave%i_div_a))
         call int_rms_divergence                                         &
      &     (ele%istack_ele_smp, iphys%i_vecp, node, ele, nod_fld,       &
-     &      jac_3d_q, fem_wk, rms_local(i_rms%i_div_a))
+     &      jac_3d_q, fem_wk, fem_msq1%rms_local(i_rms%i_div_a))
       end if
 !
       if      (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution           &
@@ -635,7 +640,7 @@
      &      jac_3d_q, fem_wk, fem_msq1%ave_local(j_ave%i_div_b))
         call int_rms_divergence                                         &
      &     (ele%istack_ele_smp, iphys%i_magne, node, ele, nod_fld,      &
-     &      jac_3d_q, fem_wk, rms_local(i_rms%i_div_b))
+     &      jac_3d_q, fem_wk, fem_msq1%rms_local(i_rms%i_div_b))
       end if
 !
       end subroutine int_no_evo_mean_squares

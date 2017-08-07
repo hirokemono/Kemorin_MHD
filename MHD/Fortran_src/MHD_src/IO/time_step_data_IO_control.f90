@@ -90,8 +90,9 @@
       call MPI_allREDUCE                                                &
      &   (fem_msq1%ave_local, fem_msq1%ave_global, fem_msq1%num_ave,    &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
-      call MPI_allREDUCE (rms_local, rms_global, fem_msq1%num_rms,      &
-     &      CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      call MPI_allREDUCE                                                &
+     &   (fem_msq1%rms_local, rms_global, fem_msq1%num_rms,             &
+     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
 !
        do nd = 1, fem_msq1%num_ave

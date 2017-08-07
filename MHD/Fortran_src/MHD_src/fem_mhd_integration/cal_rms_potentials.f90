@@ -54,7 +54,7 @@
 !
       num_int = ione
 !
-      rms_local(ir_phi) = zero
+      fem_msq1%rms_local(ir_phi) = zero
       fem_msq1%ave_local(ja_phi) = zero
       call int_all_4_scalar                                             &
      &   (iele_fsmp_stack, num_int, ir_phi, ja_phi, i_phi,              &
@@ -62,7 +62,7 @@
 !
       call MPI_allREDUCE(fem_msq1%ave_local(ja_phi) , ave_mp, ione,     &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
-      call MPI_allREDUCE(rms_local(ir_phi) , rms_mp, ione,              &
+      call MPI_allREDUCE(fem_msq1%rms_local(ir_phi) , rms_mp, ione,     &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       if (iloop .eq. 0) then
