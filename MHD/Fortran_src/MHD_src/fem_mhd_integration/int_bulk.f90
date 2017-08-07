@@ -71,7 +71,7 @@
 !
 ! ---------  initialize
 !
-      bulk_local(1:fem_msq1%num_ave) = 0.0d0
+      fem_msq1%ave_local(1:fem_msq1%num_ave) = 0.0d0
       rms_local(1:fem_msq1%num_rms-1)  = 0.0d0
 !
 ! ----- lead average in a element -------------
@@ -611,7 +611,7 @@
       if(fl_prop%iflag_scheme .gt. id_no_evolution) then
         call int_norm_divergence                                        &
      &     (fluid%istack_ele_fld_smp, iphys%i_velo, node, ele, nod_fld, &
-     &      jac_3d_q, fem_wk, bulk_local(j_ave%i_div_v))
+     &      jac_3d_q, fem_wk, fem_msq1%ave_local(j_ave%i_div_v))
         call int_rms_divergence                                         &
      &     (fluid%istack_ele_fld_smp, iphys%i_velo, node, ele, nod_fld, &
      &      jac_3d_q, fem_wk, rms_local(i_rms%i_div_v))
@@ -622,7 +622,7 @@
       if  (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         call int_norm_divergence                                        &
      &     (ele%istack_ele_smp, iphys%i_vecp, node, ele, nod_fld,       &
-     &      jac_3d_q, fem_wk, bulk_local(j_ave%i_div_a))
+     &      jac_3d_q, fem_wk, fem_msq1%ave_local(j_ave%i_div_a))
         call int_rms_divergence                                         &
      &     (ele%istack_ele_smp, iphys%i_vecp, node, ele, nod_fld,       &
      &      jac_3d_q, fem_wk, rms_local(i_rms%i_div_a))
@@ -632,7 +632,7 @@
      &    .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
         call int_norm_divergence                                        &
      &     (ele%istack_ele_smp, iphys%i_magne, node, ele, nod_fld,      &
-     &      jac_3d_q, fem_wk, bulk_local(j_ave%i_div_b))
+     &      jac_3d_q, fem_wk, fem_msq1%ave_local(j_ave%i_div_b))
         call int_rms_divergence                                         &
      &     (ele%istack_ele_smp, iphys%i_magne, node, ele, nod_fld,      &
      &      jac_3d_q, fem_wk, rms_local(i_rms%i_div_b))

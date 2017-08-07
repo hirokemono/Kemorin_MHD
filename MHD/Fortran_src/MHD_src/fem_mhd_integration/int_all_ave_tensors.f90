@@ -61,7 +61,7 @@
       if( (ir_rms*i_vect) .gt. 0) then
         call int_vol_ave_rms_sym_tensor(iele_fsmp_stack, n_int,         &
      &      i_vect, node, ele, nod_fld, jac_3d_q, jac_3d_l,             &
-     &      fem_wk, rms_local(ir_rms), bulk_local(ja_ave))
+     &      fem_wk, rms_local(ir_rms), fem_msq1%ave_local(ja_ave))
       end if
 !
       end subroutine int_all_4_sym_tensor
@@ -91,7 +91,7 @@
       if( (ir_rms*i_vect) .gt. 0) then
         call int_vol_ave_rms_asym_tensor(iele_fsmp_stack, n_int,        &
      &      i_vect, node, ele, nod_fld, jac_3d_q, jac_3d_l,             &
-     &      fem_wk, rms_local(ir_rms), bulk_local(ja_ave))
+     &      fem_wk, rms_local(ir_rms), fem_msq1%ave_local(ja_ave))
       end if
 !
       end subroutine int_all_4_asym_tensor

@@ -64,7 +64,7 @@
       if( (ir_rms*i_vect) .gt. 0) then
         call int_vol_all_energy(iele_fsmp_stack, n_int, i_vect,         &
      &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
-     &      rms_local(ir_rms), bulk_local(ja_ave))
+     &      rms_local(ir_rms), fem_msq1%ave_local(ja_ave))
       end if
 !
       end subroutine int_all_4_vector
@@ -93,7 +93,7 @@
       if( (ir_rms*i_comp) .gt. 0) then
         call int_vol_ave_rms_4_scalar(iele_fsmp_stack, n_int, i_comp,   &
      &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
-     &      rms_local(ir_rms), bulk_local(ja_ave) )
+     &      rms_local(ir_rms), fem_msq1%ave_local(ja_ave))
       end if
 !
       end subroutine int_all_4_scalar
@@ -124,7 +124,7 @@
       if( (ja_ave*i_vect) .gt. 0) then
         call int_vol_angular_mom(iele_fsmp_stack, n_int, i_vect,        &
      &      node, ele, nod_fld, jac_3d_q, jac_3d_l,                     &
-     &      fem_wk, mhd_fem_wk, bulk_local(ja_ave))
+     &      fem_wk, mhd_fem_wk, fem_msq1%ave_local(ja_ave))
       end if
 !
       end subroutine int_all_angular_mom
