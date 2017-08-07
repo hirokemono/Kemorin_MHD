@@ -96,8 +96,8 @@
 !
 !
        do nd = 1, fem_msq1%num_ave
-         fem_msq1%ave_global(nd)                                        &
-     &       = fem_msq1%ave_global(nd) / fem_msq1%rms_global(ivol)
+         fem_msq1%ave_global(nd) = fem_msq1%ave_global(nd)              &
+     &                          / fem_msq1%rms_global(ifld_msq1%ivol)
        end do
        do nd = 1, fem_msq1%num_rms - 1
            if (nd .eq. i_rms%i_velo                                     &
@@ -107,11 +107,11 @@
      &    .or. nd .eq. i_rms%i_filter_velo                              &
      &    .or. nd .eq. i_rms%i_filter_magne                             &
      &    .or. nd .eq. ir_me_f_ic) then
-            fem_msq1%rms_global(nd)                                     &
-     &         = fem_msq1%rms_global(nd) / fem_msq1%rms_global(ivol)
+            fem_msq1%rms_global(nd) = fem_msq1%rms_global(nd)           &
+     &                           / fem_msq1%rms_global(ifld_msq1%ivol)
         else
-          fem_msq1%rms_global(nd)                                       &
-     &      = sqrt(fem_msq1%rms_global(nd) / fem_msq1%rms_global(ivol))
+          fem_msq1%rms_global(nd) = sqrt(fem_msq1%rms_global(nd)        &
+     &                           / fem_msq1%rms_global(ifld_msq1%ivol))
         end if
       end do
 !

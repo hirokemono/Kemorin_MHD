@@ -26,18 +26,14 @@
 !
 !>      Structure for mean square values
       type(mean_square_values), save :: fem_msq1
+!>      Structure for mean square addresses not listed in phys_address
+      type(mean_square_address), save :: ifld_msq1
 !
 !>      Structure for addresses of volume average
       type(phys_address), save :: i_rms
 !>      Structure for addresses of mean square
       type(phys_address), save :: j_ave
 !
-!
-!>      Address for root mean square of vorticity
-      integer(kind=kint) :: ir_rms_w = 0
-!
-!>      Address for average of angular momentum
-      integer(kind=kint) :: ja_amom = 0
 !
 !>      Address for magnetic energy including inner core
       integer(kind=kint) :: ir_me_ic = 0
@@ -55,16 +51,10 @@
 !>      Address for RMS of current density including inner core
       integer(kind=kint) :: ir_rms_j_ic = 0
 !
-!>      Address for average of filtered angular momentum
-      integer(kind=kint) :: jr_amom_f = 0
-!
 !>      Address for filtered magnetic energy including inner core
       integer(kind=kint) :: ir_me_f_ic = 0
 !>      Address for average filtererd magnetic field including inner core
       integer(kind=kint) :: ja_mag_f_ic = 0
-!
-!>      Address of volume of fluid area
-      integer(kind=kint) :: ivol = 0
 !
       private :: set_rms_address
 !
@@ -308,7 +298,7 @@
             call set_rms_address(n_scalar, i0, j0,                      &
      &          i_rms%i_div_v, j_ave%i_div_v)
 !
-            ja_amom = j0 + 1
+            ifld_msq1%ja_amom = j0 + 1
             j0 = j0 + 3
           end if
 !
@@ -329,7 +319,7 @@
           if ( field_name .eq. fhd_vort ) then
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_vort, j_ave%i_vort)
-            ir_rms_w   = i0 + 1
+            ifld_msq1%ir_rms_w   = i0 + 1
             i0 = i0 + 1
           end if
 !
@@ -409,7 +399,7 @@
      &          i_rms%i_filter_velo, j_ave%i_filter_velo)
             call set_rms_address(n_scalar, i0, j0,                      &
      &          i_rms%i_div_filter_v, j_ave%i_div_filter_v)
-            jr_amom_f = i0 + 1
+            ifld_msq1%jr_amom_f = i0 + 1
             j0 = j0 + 3
           end if
 !
@@ -829,7 +819,7 @@
         end if
       end do
 !
-      ivol = i0 + 1
+      ifld_msq1%ivol = i0 + 1
       i0 = i0 + 1
 !
       end subroutine set_mean_square_values

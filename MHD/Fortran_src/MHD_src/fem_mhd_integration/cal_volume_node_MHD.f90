@@ -92,9 +92,9 @@
 !
       if (MHD_mesh%fluid%istack_ele_fld_smp(np_smp)                     &
      &   .eq. MHD_mesh%fluid%istack_ele_fld_smp(0)) then
-        fem_msq1%rms_local(ivol) = vol_local
+        fem_msq1%rms_local(ifld_msq1%ivol) = vol_local
       else
-        fem_msq1%rms_local(ivol) = vol_fl_local
+        fem_msq1%rms_local(ifld_msq1%ivol) = vol_fl_local
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_volume_4_conduct'

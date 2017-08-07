@@ -313,7 +313,7 @@
      &    i_rms%i_velo, j_ave%i_velo, iphys%i_velo,                     &
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_angular_mom(fluid%istack_ele_fld_smp,                &
-     &    npoint_integrate, ja_amom, iphys%i_velo,                      &
+     &    npoint_integrate, ifld_msq1%ja_amom, iphys%i_velo,            &
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l, mhd_fem_wk, fem_wk)
 !
       call int_all_4_vector                                             &
@@ -322,7 +322,7 @@
      &    iphys%i_filter_velo,                                          &
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_angular_mom(fluid%istack_ele_fld_smp,                &
-     &    npoint_integrate, jr_amom_f, iphys%i_filter_velo,             &
+     &    npoint_integrate, ifld_msq1%jr_amom_f, iphys%i_filter_velo,   &
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l, mhd_fem_wk, fem_wk)
 !
       call int_all_4_vector                                             &
@@ -382,10 +382,11 @@
      &      = half * fem_msq1%rms_local(ir_me_f_ic)
       end if
 !
-      if(ir_rms_w .gt. 0) then
-        fem_msq1%rms_local(ir_rms_w) = fem_msq1%rms_local(i_rms%i_vort)
+      if(ifld_msq1%ir_rms_w .gt. 0) then
+        fem_msq1%rms_local(ifld_msq1%ir_rms_w)                          &
+     &      = fem_msq1%rms_local(i_rms%i_vort)
       end if
-      if(ir_rms_j .gt. 0) then
+      if(ifld_msq1%ir_rms_j .gt. 0) then
         fem_msq1%rms_local(ir_rms_j)                                    &
      &      =  fem_msq1%rms_local(i_rms%i_current)
       end if

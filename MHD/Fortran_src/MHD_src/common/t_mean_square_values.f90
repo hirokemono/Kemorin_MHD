@@ -22,7 +22,6 @@
       implicit  none
 !
 !
-!
 !>      Structure for mean square values
       type mean_square_values
 !>        number of fields for volume average data
@@ -39,13 +38,11 @@
         real(kind=kreal), allocatable :: rms_local(:)
 !>        volume mean square data for entire domain
         real(kind=kreal), allocatable :: rms_global(:)
-!
-!>        Structure for addresses of volume average
-        type(phys_address) :: i_rms
-!>        Structure for addresses of mean square
-        type(phys_address) :: j_ave
+      end type mean_square_values
 !
 !
+!>      Structure for mean square addresses not listed in phys_address
+      type mean_square_address
 !>        Address for root mean square of vorticity
         integer(kind=kint) :: ir_rms_w = 0
 !
@@ -79,7 +76,7 @@
 !
 !>        Address of volume of fluid area
         integer(kind=kint) :: ivol = 0
-      end type mean_square_values
+      end type mean_square_address
 !
 !-----------------------------------------------------------------------
 !
