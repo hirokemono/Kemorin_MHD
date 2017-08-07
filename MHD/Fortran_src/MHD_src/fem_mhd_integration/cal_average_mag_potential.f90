@@ -28,6 +28,8 @@
 !
       implicit none
 !
+      real(kind=kreal), private :: ave_mp_core_local
+      real(kind=kreal), private :: ave_mp_core
 !
 ! ----------------------------------------------------------------------
 !

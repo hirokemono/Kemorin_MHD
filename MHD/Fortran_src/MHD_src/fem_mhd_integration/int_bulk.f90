@@ -610,28 +610,32 @@
 !
       if(fl_prop%iflag_scheme .gt. id_no_evolution) then
         call int_norm_divergence                                        &
-     &     (fluid%istack_ele_fld_smp, iphys%i_velo,                     &
-     &      node, ele, nod_fld, jac_3d_q, fem_wk, bulk_local(ja_divv))
+     &     (fluid%istack_ele_fld_smp, iphys%i_velo, node, ele, nod_fld, &
+     &      jac_3d_q, fem_wk, bulk_local(j_ave%i_div_v))
         call int_rms_divergence                                         &
-     &     (fluid%istack_ele_fld_smp, iphys%i_velo,                     &
-     &      node, ele, nod_fld, jac_3d_q, fem_wk, rms_local(ir_divv))
+     &     (fluid%istack_ele_fld_smp, iphys%i_velo, node, ele, nod_fld, &
+     &      jac_3d_q, fem_wk, rms_local(i_rms%i_div_v))
         call cal_stability_4_advect(i_step, dt, ele, fluid,             &
      &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld)
       end if
 !
       if  (cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
-        call int_norm_divergence(ele%istack_ele_smp, iphys%i_vecp,      &
-     &      node, ele, nod_fld, jac_3d_q, fem_wk, bulk_local(ja_diva))
-        call int_rms_divergence(ele%istack_ele_smp, iphys%i_vecp,       &
-     &      node, ele, nod_fld, jac_3d_q, fem_wk, rms_local(ir_diva))
+        call int_norm_divergence                                        &
+     &     (ele%istack_ele_smp, iphys%i_vecp, node, ele, nod_fld,       &
+     &      jac_3d_q, fem_wk, bulk_local(j_ave%i_div_a))
+        call int_rms_divergence                                         &
+     &     (ele%istack_ele_smp, iphys%i_vecp, node, ele, nod_fld,       &
+     &      jac_3d_q, fem_wk, rms_local(i_rms%i_div_a))
       end if
 !
       if      (cd_prop%iflag_Bevo_scheme .gt. id_no_evolution           &
      &    .or. cd_prop%iflag_Aevo_scheme .gt. id_no_evolution) then
-        call int_norm_divergence(ele%istack_ele_smp, iphys%i_magne,     &
-     &      node, ele, nod_fld, jac_3d_q, fem_wk, bulk_local(ja_divb))
-        call int_rms_divergence(ele%istack_ele_smp, iphys%i_magne,      &
-     &      node, ele, nod_fld, jac_3d_q, fem_wk, rms_local(ir_divb))
+        call int_norm_divergence                                        &
+     &     (ele%istack_ele_smp, iphys%i_magne, node, ele, nod_fld,      &
+     &      jac_3d_q, fem_wk, bulk_local(j_ave%i_div_b))
+        call int_rms_divergence                                         &
+     &     (ele%istack_ele_smp, iphys%i_magne, node, ele, nod_fld,      &
+     &      jac_3d_q, fem_wk, rms_local(i_rms%i_div_b))
       end if
 !
       end subroutine int_no_evo_mean_squares

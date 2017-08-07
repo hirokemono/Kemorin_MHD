@@ -43,33 +43,17 @@
       type(phys_address), save :: j_ave
 !
 !
-!>      Address for mean square of divergence of velocity
-      integer(kind=kint) :: ir_divv = 0
-!>      Address for average of divergence of velocity
-      integer(kind=kint) :: ja_divv = 0
-!
 !>      Address for root mean square of vorticity
       integer(kind=kint) :: ir_rms_w = 0
 !
 !>      Address for average of angular momentum
       integer(kind=kint) :: ja_amom = 0
 !
-!>      Address for mean square of divergence of magnetic field
-      integer(kind=kint) :: ir_divb = 0
-!>      Address for average of divergence of magnetic field
-      integer(kind=kint) :: ja_divb = 0
-!
 !>      Address for magnetic energy including inner core
       integer(kind=kint) :: ir_me_ic = 0
 !>      Address for average magnetic field including inner core
       integer(kind=kint) :: ja_mag_ic = 0
 !
-!
-!>      Address for mean square of divergence 
-!!        of magnetic vector potential
-      integer(kind=kint) :: ir_diva = 0
-!>      Address for average of divergence of magnetic vector potential
-      integer(kind=kint) :: ja_diva = 0
 !
 !>      Address for mean square of current density including inner core
       integer(kind=kint) :: ir_sqj_ic = 0
@@ -81,11 +65,6 @@
 !>      Address for RMS of current density including inner core
       integer(kind=kint) :: ir_rms_j_ic = 0
 !
-!>      Address for mean square of divergence of filtered velocity
-      integer(kind=kint) :: ir_divv_f = 0
-!>      Address for average of divergence of filtered velocity
-      integer(kind=kint) :: ja_divv_f = 0
-!
 !>      Address for average of filtered angular momentum
       integer(kind=kint) :: jr_amom_f = 0
 !
@@ -94,25 +73,8 @@
 !>      Address for average filtererd magnetic field including inner core
       integer(kind=kint) :: ja_mag_f_ic = 0
 !
-!>      Address for mean square of divergence of filtered magnetic field
-      integer(kind=kint) :: ir_divb_f = 0
-!>      Address for average of divergence of filtered magnetic field
-      integer(kind=kint) :: ja_divb_f = 0
-!
-!>      Address for mean square of divergence
-!!      of filtered magnetic vector potential
-      integer(kind=kint) :: ir_diva_f = 0
-!>      Address for average of divergence
-!!      of filtered magnetic vector potential
-      integer(kind=kint) :: ja_diva_f = 0
-!
 !>      Address of volume of fluid area
       integer(kind=kint) :: ivol = 0
-!
-      real(kind=kreal) :: ave_mp_core
-      real(kind=kreal) :: ave_mp_core_local
-!
-      real(kind=kreal) :: ave_flux_local
 !
       private :: set_rms_address
 !
@@ -361,7 +323,7 @@
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_velo, j_ave%i_velo)
             call set_rms_address(n_scalar, i0, j0,                      &
-     &          ir_divv, ja_divv)
+     &          i_rms%i_div_v, j_ave%i_div_v)
 !
             ja_amom = j0 + 1
             j0 = j0 + 3
@@ -373,12 +335,12 @@
             call set_rms_address(num_comps, i0, j0,                     &
      &          ir_me_ic, ja_mag_ic)
             call set_rms_address(n_scalar, i0, j0,                      &
-     &          ir_divb, ja_divb)
+     &          i_rms%i_div_b, j_ave%i_div_b)
           end if
 !
           if ( field_name .eq. fhd_vecp ) then
             call set_rms_address(n_scalar, i0, j0,                      &
-     &          ir_diva, ja_diva)
+     &          i_rms%i_div_a, j_ave%i_div_a)
           end if
 
           if ( field_name .eq. fhd_vort ) then
@@ -463,7 +425,7 @@
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_filter_velo, j_ave%i_filter_velo)
             call set_rms_address(n_scalar, i0, j0,                      &
-     &          ir_divv_f, ja_divv_f)
+     &          i_rms%i_div_filter_v, j_ave%i_div_filter_v)
             jr_amom_f = i0 + 1
             j0 = j0 + 3
           end if
@@ -474,12 +436,12 @@
             call set_rms_address(num_comps, i0, j0,                     &
      &          ir_me_f_ic, ja_mag_f_ic)
             call set_rms_address(n_scalar, i0, j0,                      &
-     &          ir_divb_f, ja_divb_f)
+     &          i_rms%i_div_filter_b, j_ave%i_div_filter_b)
           end if
 !
           if ( field_name .eq. fhd_filter_vecp ) then
             call set_rms_address(n_scalar, i0, j0,                      &
-     &          ir_diva_f, ja_diva_f)
+     &          i_rms%i_div_filter_a, j_ave%i_div_filter_a)
           else if ( field_name .eq. fhd_filter_temp ) then
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_filter_temp, j_ave%i_filter_temp)
@@ -860,22 +822,22 @@
         else
           if ( field_name .eq. fhd_velo) then
             call set_rms_address(n_scalar, i0, j0,                      &
-     &          ir_divv, ja_divv)
+     &          i_rms%i_div_v, j_ave%i_div_v)
           else if ( field_name .eq. fhd_magne ) then
             call set_rms_address(n_scalar, i0, j0,                      &
-     &          ir_divb, ja_divb)
+     &          i_rms%i_div_b, j_ave%i_div_b)
           else if ( field_name .eq. fhd_vecp ) then
             call set_rms_address(n_scalar, i0, j0,                      &
-     &          ir_diva, ja_diva)
+     &          i_rms%i_div_a, j_ave%i_div_a)
           else if ( field_name .eq. fhd_filter_velo ) then
             call set_rms_address(n_scalar, i0, j0,                      &
-     &          ir_divv_f, ja_divv_f)
+     &          i_rms%i_div_filter_v, j_ave%i_div_filter_v)
           else if ( field_name .eq. fhd_filter_magne ) then
             call set_rms_address(n_scalar, i0, j0,                      &
-     &          ir_divb_f, ja_divb_f)
+     &          i_rms%i_div_filter_b, j_ave%i_div_filter_b)
           else if ( field_name .eq. fhd_filter_vecp ) then
             call set_rms_address(n_scalar, i0, j0,                      &
-     &          ir_diva_f, ja_diva_f)
+     &          i_rms%i_div_filter_a, j_ave%i_div_filter_a)
           else if ( field_name .eq. fhd_mag_potential ) then
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_mag_p, j_ave%i_mag_p)

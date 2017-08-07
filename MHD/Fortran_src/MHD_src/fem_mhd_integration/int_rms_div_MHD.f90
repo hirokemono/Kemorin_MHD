@@ -57,9 +57,9 @@
 !
       call int_rms_divergence                                           &
      &   (fluid%istack_ele_fld_smp, iphys%i_velo,                       &
-     &    node, ele, nod_fld, jac_3d, fem_wk, rms_local(ir_divv))
+     &    node, ele, nod_fld, jac_3d, fem_wk, rms_local(i_rms%i_div_v))
 !
-      call MPI_allREDUCE (rms_local(ir_divv) , rms_div_v_sig, 1,        &
+      call MPI_allREDUCE (rms_local(i_rms%i_div_v) , rms_div_v_sig, 1,  &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       rms_div_v_sig = sqrt(rms_div_v_sig / fluid%volume)
@@ -91,10 +91,10 @@
 !
 !
       call int_rms_divergence(ele%istack_ele_smp, iphys%i_magne,        &
-     &    node, ele, nod_fld, jac_3d, fem_wk, rms_local(ir_divb))
+     &    node, ele, nod_fld, jac_3d, fem_wk, rms_local(i_rms%i_div_b))
 !
-      call MPI_allREDUCE (rms_local(ir_divb) , rms_div_b_sig, 1,        &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      call MPI_allREDUCE (rms_local(i_rms%i_div_b) , rms_div_b_sig,     &
+     &    ione, CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       rms_div_b_sig = sqrt(rms_div_b_sig / ele%volume)
 !
@@ -127,10 +127,10 @@
 !
 !
       call int_rms_divergence(ele%istack_ele_smp, iphys%i_vecp,         &
-     &    node, ele, nod_fld, jac_3d, fem_wk, rms_local(ir_diva))
+     &    node, ele, nod_fld, jac_3d, fem_wk, rms_local(i_rms%i_div_a))
 !
-      call MPI_allREDUCE ( rms_local(ir_diva) , rms_div_a_sig, 1,       &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+      call MPI_allREDUCE ( rms_local(i_rms%i_div_a) , rms_div_a_sig,    &
+     &    ione, CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       rms_div_a_sig = sqrt(rms_div_a_sig / ele%volume)
 !
