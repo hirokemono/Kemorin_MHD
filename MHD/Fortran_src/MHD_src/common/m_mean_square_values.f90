@@ -19,11 +19,14 @@
 !
       use t_phys_address
       use t_phys_data
+      use t_mean_square_values
 !
       implicit  none
 !
-!>      number of fields for volume average data
-      integer (kind = kint) :: num_bulk
+!
+!>      Structure for mean square values
+      type(mean_square_values), save :: fem_msq1
+!
 !>      number of fields for volume mean square data
       integer (kind = kint) :: num_rms
 !
@@ -286,7 +289,7 @@
       end do
 !
       num_rms =  i0 + 1
-      num_bulk = j0
+      fem_msq1%num_ave = j0
 !
        return
        end subroutine count_mean_square_values
@@ -306,8 +309,8 @@
 !
       allocate (rms_local(num_rms))
       allocate (rms_global(num_rms))
-      allocate (bulk_local(num_bulk))
-      allocate (bulk_global(num_bulk))
+      allocate (bulk_local(fem_msq1%num_ave))
+      allocate (bulk_global(fem_msq1%num_ave))
       rms_local  = 0.0d0
       rms_global = 0.0d0
       bulk_local  = 0.0d0

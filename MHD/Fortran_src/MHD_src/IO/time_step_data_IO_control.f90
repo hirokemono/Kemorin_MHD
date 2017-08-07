@@ -87,13 +87,13 @@
      &    mesh%node, mesh%ele, fl_prop, cd_prop, iphys, nod_fld,        &
      &    iphys_ele, ele_fld, MHD_mesh%fluid, jacobians%jac_3d, fem_wk)
 !
-      call MPI_allREDUCE (bulk_local, bulk_global, num_bulk,            &
+      call MPI_allREDUCE (bulk_local, bulk_global, fem_msq1%num_ave,    &
      &      CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
       call MPI_allREDUCE (rms_local, rms_global, num_rms,               &
      &      CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
 !
-       do nd = 1, num_bulk
+       do nd = 1, fem_msq1%num_ave
          bulk_global(nd) = bulk_global(nd) / rms_global(ivol)
        end do
        do nd = 1, num_rms - 1

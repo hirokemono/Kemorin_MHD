@@ -65,7 +65,7 @@
       call open_monitor_file(my_rank, nod_fld)
 !
       write(time_step_data_code,'(i16,1p1000e20.11)')                   &
-     &     i_step_MHD, time, bulk_global(1:num_bulk)
+     &     i_step_MHD, time, bulk_global(1:fem_msq1%num_ave)
       write(rms_data_code,'(i16,1p100e20.11)')                          &
      &     i_step_MHD, time, rms_global(1:num_rms)
 !
@@ -94,7 +94,7 @@
 !
       do
         read(time_step_data_code,*,err=99,end=99)                       &
-     &            i_read_step, rtmp, (rtmp,i=1,num_bulk)
+     &            i_read_step, rtmp, (rtmp,i=1,fem_msq1%num_ave)
         if (i_read_step .ge. i_step_init) exit
       end do
  99   continue
