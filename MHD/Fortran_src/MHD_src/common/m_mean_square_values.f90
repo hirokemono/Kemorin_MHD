@@ -34,28 +34,6 @@
 !>      Structure for addresses of mean square
       type(phys_address), save :: j_ave
 !
-!
-!>      Address for magnetic energy including inner core
-      integer(kind=kint) :: ir_me_ic = 0
-!>      Address for average magnetic field including inner core
-      integer(kind=kint) :: ja_mag_ic = 0
-!
-!
-!>      Address for mean square of current density including inner core
-      integer(kind=kint) :: ir_sqj_ic = 0
-!>      Address for average of current density including inner core
-      integer(kind=kint) :: ja_j_ic = 0
-!
-!>      Address for RMS of current density
-      integer(kind=kint) :: ir_rms_j = 0
-!>      Address for RMS of current density including inner core
-      integer(kind=kint) :: ir_rms_j_ic = 0
-!
-!>      Address for filtered magnetic energy including inner core
-      integer(kind=kint) :: ir_me_f_ic = 0
-!>      Address for average filtererd magnetic field including inner core
-      integer(kind=kint) :: ja_mag_f_ic = 0
-!
       private :: set_rms_address
 !
 !-----------------------------------------------------------------------
@@ -306,7 +284,7 @@
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_magne, j_ave%i_magne)
             call set_rms_address(num_comps, i0, j0,                     &
-     &          ir_me_ic, ja_mag_ic)
+     &          ifld_msq1%ir_me_ic, ifld_msq1%ja_mag_ic)
             call set_rms_address(n_scalar, i0, j0,                      &
      &          i_rms%i_div_b, j_ave%i_div_b)
           end if
@@ -327,10 +305,10 @@
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_current, j_ave%i_current)
             call set_rms_address(num_comps, i0, j0,                     &
-     &          ir_sqj_ic, ja_j_ic)
+     &          ifld_msq1%ir_sqj_ic, ifld_msq1%ja_j_ic)
 !
-            ir_rms_j    = i0 + 1
-            ir_rms_j_ic = i0 + 2
+            ifld_msq1%ir_rms_j    = i0 + 1
+            ifld_msq1%ir_rms_j_ic = i0 + 2
             i0 = i0 + 2
           end if
 !
@@ -407,7 +385,7 @@
             call set_rms_address(num_comps, i0, j0,                     &
      &          i_rms%i_filter_magne, j_ave%i_filter_magne)
             call set_rms_address(num_comps, i0, j0,                     &
-     &          ir_me_f_ic, ja_mag_f_ic)
+     &          ifld_msq1%ir_me_f_ic, ifld_msq1%ja_mag_f_ic)
             call set_rms_address(n_scalar, i0, j0,                      &
      &          i_rms%i_div_filter_b, j_ave%i_div_filter_b)
           end if

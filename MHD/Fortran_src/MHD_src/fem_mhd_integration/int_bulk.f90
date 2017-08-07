@@ -331,7 +331,7 @@
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_vector                                             &
      &   (conduct%istack_ele_fld_smp, npoint_integrate,                 &
-     &    ir_me_ic, ja_mag_ic, iphys%i_magne,                           &
+     &    ifld_msq1%ir_me_ic, ifld_msq1%ja_mag_ic, iphys%i_magne,       &
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
 !
       call int_all_4_vector                                             &
@@ -344,7 +344,7 @@
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_vector                                             &
      &   (conduct%istack_ele_fld_smp, npoint_integrate,                 &
-     &    ir_sqj_ic, ja_j_ic, iphys%i_current,                          &
+     &    ifld_msq1%ir_sqj_ic, ifld_msq1%ja_j_ic, iphys%i_current,      &
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_vector                                             &
      &   (fluid%istack_ele_fld_smp, npoint_integrate,                   &
@@ -353,8 +353,9 @@
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_vector                                             &
      &   (conduct%istack_ele_fld_smp, npoint_integrate,                 &
-     &    ir_me_f_ic, ja_mag_f_ic, iphys%i_filter_magne,                &
-     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
+     &    ifld_msq1%ir_me_f_ic, ifld_msq1%ja_mag_f_ic,                  &
+     &    iphys%i_filter_magne, node, ele, nod_fld,                     &
+     &    jac_3d_q, jac_3d_l, fem_wk)
 !
       if(i_rms%i_velo .gt. 0) then
         fem_msq1%rms_local(i_rms%i_velo)                                &
@@ -364,9 +365,9 @@
         fem_msq1%rms_local(i_rms%i_magne)                               &
      &      = half * fem_msq1%rms_local(i_rms%i_magne)
       end if
-      if(ir_me_ic .gt. 0) then
-        fem_msq1%rms_local(ir_me_ic)                                    &
-     &      = half * fem_msq1%rms_local(ir_me_ic)
+      if(ifld_msq1%ir_me_ic .gt. 0) then
+        fem_msq1%rms_local(ifld_msq1%ir_me_ic)                          &
+     &      = half * fem_msq1%rms_local(ifld_msq1%ir_me_ic)
       end if
 !
       if(i_rms%i_filter_velo .gt. 0) then
@@ -377,9 +378,9 @@
         fem_msq1%rms_local(i_rms%i_filter_magne   )                     &
      &      = half * fem_msq1%rms_local(i_rms%i_filter_magne   )
       end if
-      if(ir_me_f_ic .gt. 0) then
-        fem_msq1%rms_local(ir_me_f_ic)                                  &
-     &      = half * fem_msq1%rms_local(ir_me_f_ic)
+      if(ifld_msq1%ir_me_f_ic .gt. 0) then
+        fem_msq1%rms_local(ifld_msq1%ir_me_f_ic)                        &
+     &      = half * fem_msq1%rms_local(ifld_msq1%ir_me_f_ic)
       end if
 !
       if(ifld_msq1%ir_rms_w .gt. 0) then
@@ -387,11 +388,12 @@
      &      = fem_msq1%rms_local(i_rms%i_vort)
       end if
       if(ifld_msq1%ir_rms_j .gt. 0) then
-        fem_msq1%rms_local(ir_rms_j)                                    &
+        fem_msq1%rms_local(ifld_msq1%ir_rms_j)                          &
      &      =  fem_msq1%rms_local(i_rms%i_current)
       end if
-      if(ir_rms_j_ic .gt. 0) then
-        fem_msq1%rms_local(ir_rms_j_ic) = fem_msq1%rms_local(ir_sqj_ic)
+      if(ifld_msq1%ir_rms_j_ic .gt. 0) then
+        fem_msq1%rms_local(ifld_msq1%ir_rms_j_ic)                       &
+     &      = fem_msq1%rms_local(ifld_msq1%ir_sqj_ic)
       end if
 !
       call int_all_4_vector                                             &

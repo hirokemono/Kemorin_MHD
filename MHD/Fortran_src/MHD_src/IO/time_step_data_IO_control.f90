@@ -101,12 +101,14 @@
        end do
        do nd = 1, fem_msq1%num_rms - 1
            if (nd .eq. i_rms%i_velo                                     &
-     &    .or. nd .eq. i_rms%i_magne .or. nd .eq. ir_me_ic              &
+     &    .or. nd .eq. i_rms%i_magne                                    &
+     &    .or. nd .eq. ifld_msq1%ir_me_ic                               &
      &    .or. nd .eq. i_rms%i_vort                                     &
-     &    .or. nd .eq. i_rms%i_current .or.  nd .eq. ir_sqj_ic          &
+     &    .or. nd .eq. i_rms%i_current                                  &
+     &    .or. nd .eq. ifld_msq1%ir_sqj_ic                              &
      &    .or. nd .eq. i_rms%i_filter_velo                              &
      &    .or. nd .eq. i_rms%i_filter_magne                             &
-     &    .or. nd .eq. ir_me_f_ic) then
+     &    .or. nd .eq. ifld_msq1%ir_me_f_ic) then
             fem_msq1%rms_global(nd) = fem_msq1%rms_global(nd)           &
      &                           / fem_msq1%rms_global(ifld_msq1%ivol)
         else
