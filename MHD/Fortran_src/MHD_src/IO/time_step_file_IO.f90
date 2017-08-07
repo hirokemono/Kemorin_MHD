@@ -67,7 +67,7 @@
       write(time_step_data_code,'(i16,1p1000e20.11)')                   &
      &     i_step_MHD, time, bulk_global(1:fem_msq1%num_ave)
       write(rms_data_code,'(i16,1p100e20.11)')                          &
-     &     i_step_MHD, time, rms_global(1:num_rms)
+     &     i_step_MHD, time, rms_global(1:fem_msq1%num_rms)
 !
       close(time_step_data_code)
       close(rms_data_code)
@@ -101,7 +101,7 @@
 !
       do
         read(rms_data_code,*,err=98,end=98)                             &
-     &            i_read_step, rtmp, (rtmp,i=1,num_rms)
+     &            i_read_step, rtmp, (rtmp,i=1,fem_msq1%num_rms)
         if (i_read_step .ge. iflag) exit
       end do
  98   continue

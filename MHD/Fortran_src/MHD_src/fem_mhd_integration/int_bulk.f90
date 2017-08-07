@@ -72,7 +72,7 @@
 ! ---------  initialize
 !
       bulk_local(1:fem_msq1%num_ave) = 0.0d0
-      rms_local(1:num_rms-1)  = 0.0d0
+      rms_local(1:fem_msq1%num_rms-1)  = 0.0d0
 !
 ! ----- lead average in a element -------------
 !

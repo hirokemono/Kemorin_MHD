@@ -89,14 +89,14 @@
 !
       call MPI_allREDUCE (bulk_local, bulk_global, fem_msq1%num_ave,    &
      &      CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
-      call MPI_allREDUCE (rms_local, rms_global, num_rms,               &
+      call MPI_allREDUCE (rms_local, rms_global, fem_msq1%num_rms,      &
      &      CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
 !
        do nd = 1, fem_msq1%num_ave
          bulk_global(nd) = bulk_global(nd) / rms_global(ivol)
        end do
-       do nd = 1, num_rms - 1
+       do nd = 1, fem_msq1%num_rms - 1
            if (nd .eq. i_rms%i_velo                                     &
      &    .or. nd .eq. i_rms%i_magne .or. nd .eq. ir_me_ic              &
      &    .or. nd .eq. i_rms%i_vort                                     &
