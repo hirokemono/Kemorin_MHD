@@ -67,7 +67,7 @@
       write(time_step_data_code,'(i16,1p1000e20.11)')                   &
      &     i_step_MHD, time, fem_msq1%ave_global(1:fem_msq1%num_ave)
       write(rms_data_code,'(i16,1p100e20.11)')                          &
-     &     i_step_MHD, time, rms_global(1:fem_msq1%num_rms)
+     &     i_step_MHD, time, fem_msq1%rms_global(1:fem_msq1%num_rms)
 !
       close(time_step_data_code)
       close(rms_data_code)

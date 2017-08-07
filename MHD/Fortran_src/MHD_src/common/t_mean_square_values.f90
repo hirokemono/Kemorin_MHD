@@ -21,6 +21,8 @@
 !
       implicit  none
 !
+!
+!
 !>      Structure for mean square values
       type mean_square_values
 !>        number of fields for volume average data

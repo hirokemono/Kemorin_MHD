@@ -27,9 +27,6 @@
 !>      Structure for mean square values
       type(mean_square_values), save :: fem_msq1
 !
-!>      volume mean square data for entire domain
-      real(kind=kreal), dimension(:), allocatable :: rms_global
-!
 !>      Structure for addresses of volume average
       type(phys_address), save :: i_rms
 !>      Structure for addresses of mean square
@@ -297,14 +294,7 @@
       character(len = kchara) :: field_name
 !
 !
-      allocate (fem_msq1%rms_local(fem_msq1%num_rms))
-      allocate (rms_global(fem_msq1%num_rms))
-      allocate (fem_msq1%ave_local(fem_msq1%num_ave))
-      allocate (fem_msq1%ave_global(fem_msq1%num_ave))
-      fem_msq1%rms_local  = 0.0d0
-      rms_global = 0.0d0
-      fem_msq1%ave_local  = 0.0d0
-      fem_msq1%ave_global = 0.0d0
+      call  alloc_mean_square_values(fem_msq1)
 !
       i0 = 0
       j0 = 0

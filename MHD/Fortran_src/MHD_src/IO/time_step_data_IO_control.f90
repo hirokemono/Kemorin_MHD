@@ -91,13 +91,13 @@
      &   (fem_msq1%ave_local, fem_msq1%ave_global, fem_msq1%num_ave,    &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
       call MPI_allREDUCE                                                &
-     &   (fem_msq1%rms_local, rms_global, fem_msq1%num_rms,             &
+     &   (fem_msq1%rms_local, fem_msq1%rms_global, fem_msq1%num_rms,    &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
 !
        do nd = 1, fem_msq1%num_ave
          fem_msq1%ave_global(nd)                                        &
-     &       = fem_msq1%ave_global(nd) / rms_global(ivol)
+     &       = fem_msq1%ave_global(nd) / fem_msq1%rms_global(ivol)
        end do
        do nd = 1, fem_msq1%num_rms - 1
            if (nd .eq. i_rms%i_velo                                     &
@@ -107,9 +107,11 @@
      &    .or. nd .eq. i_rms%i_filter_velo                              &
      &    .or. nd .eq. i_rms%i_filter_magne                             &
      &    .or. nd .eq. ir_me_f_ic) then
-            rms_global(nd) = rms_global(nd) / rms_global(ivol)
+            fem_msq1%rms_global(nd)                                     &
+     &         = fem_msq1%rms_global(nd) / fem_msq1%rms_global(ivol)
         else
-          rms_global(nd) = sqrt(rms_global(nd) / rms_global(ivol))
+          fem_msq1%rms_global(nd)                                       &
+     &      = sqrt(fem_msq1%rms_global(nd) / fem_msq1%rms_global(ivol))
         end if
       end do
 !
