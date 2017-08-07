@@ -23,8 +23,11 @@
       use t_geometry_data
       use t_group_data
       use t_geometry_data_MHD
+      use t_work_4_MHD_layering
 !
       implicit none
+!
+      type(nod_work_4_make_layering), save, private  :: WK_layer_n
 !
       private :: set_layer_fluid, set_layers_4_induction
 !
@@ -59,7 +62,7 @@
 !
       subroutine set_layer_fluid(node, ele, fluid)
 !
-      use m_set_layers
+      use set_layers
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -68,21 +71,21 @@
 !
 !    set node list for fluid
 !
-      call alloc_mat_node_flag(node%numnod)
+      call alloc_mat_node_flag(node%numnod, WK_layer_n)
 !
       call count_node_4_layer(node%numnod, node%internal_node,          &
-     &     fluid%numnod_fld, fluid%internal_node_fld,                   &
-     &     fluid%iele_start_fld, fluid%iele_end_fld,                    &
-     &     ele%numele, ele%nnod_4_ele, ele%ie)
+     &     fluid%iele_start_fld, fluid%iele_end_fld, ele%numele,        &
+     &     ele%nnod_4_ele, ele%ie, WK_layer_n%mat_node_flag,            &
+     &     fluid%numnod_fld, fluid%internal_node_fld)
 !
       call allocate_field_nod_list(fluid)
 !
-      call set_node_4_layer                                             &
-     &   (node%numnod, fluid%numnod_fld, fluid%inod_fld,                &
+      call set_node_4_layer(node%numnod, fluid%numnod_fld,              &
      &    fluid%iele_start_fld, fluid%iele_end_fld,                     &
-     &    ele%numele, ele%nnod_4_ele, ele%ie)
+     &    ele%numele, ele%nnod_4_ele, ele%ie,                           &
+     &    WK_layer_n%mat_node_flag, fluid%inod_fld)
 !
-      call dealloc_mat_node_flag
+      call dealloc_mat_node_flag(WK_layer_n)
 !
       call count_smp_size_4_area(fluid)
 !
@@ -93,7 +96,7 @@
       subroutine set_layers_4_induction(FEM_prm, node, ele, ele_grp,    &
      &          conduct, insulate, inner_core)
 !
-      use m_set_layers
+      use set_layers
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(node_data), intent(in) :: node
@@ -113,22 +116,22 @@
 !
 !    set node list for conductor
 !
-      call alloc_mat_node_flag(node%numnod)
+      call alloc_mat_node_flag(node%numnod, WK_layer_n)
 !
       call count_node_4_layer(node%numnod, node%internal_node,          &
-     &    conduct%numnod_fld, conduct%internal_node_fld,                &
-     &    conduct%iele_start_fld, conduct%iele_end_fld,                 &
-     &    ele%numele, ele%nnod_4_ele, ele%ie)
+     &    conduct%iele_start_fld, conduct%iele_end_fld, ele%numele,     &
+     &     ele%nnod_4_ele, ele%ie, WK_layer_n%mat_node_flag,            &
+     &    conduct%numnod_fld, conduct%internal_node_fld)
 !
       call count_node_4_layer(node%numnod, node%internal_node,          &
-     &    insulate%numnod_fld, insulate%internal_node_fld,              &
-     &    insulate%iele_start_fld, insulate%iele_end_fld,               &
-     &    ele%numele, ele%nnod_4_ele, ele%ie)
+     &    insulate%iele_start_fld, insulate%iele_end_fld, ele%numele,   &
+     &    ele%nnod_4_ele, ele%ie, WK_layer_n%mat_node_flag,             &
+     &    insulate%numnod_fld, insulate%internal_node_fld)
 !
 !      call count_node_4_layer(node%numnod, node%internal_node,         &
-!     &    inner_core%numnod_fld, inner_core%internal_node_fld,         &
-!     &    iele_ic_start, iele_ic_end,                                  &
-!     &    ele%numele, ele%nnod_4_ele, ele%ie)
+!     &    iele_ic_start, iele_ic_end, ele%numele,                      &
+!     &    ele%nnod_4_ele, ele%ie, WK_layer_n%mat_node_flag,            &
+!     &    inner_core%numnod_fld, inner_core%internal_node_fld)
 !
 !  allocate list vector for fluid and conductive layer
 !
@@ -138,22 +141,22 @@
 !
 !  set node list
 !
-      call set_node_4_layer                                             &
-     &     (node%numnod, conduct%numnod_fld, conduct%inod_fld,          &
+      call set_node_4_layer(node%numnod, conduct%numnod_fld,            &
      &      conduct%iele_start_fld, conduct%iele_end_fld,               &
-     &      ele%numele, ele%nnod_4_ele, ele%ie)
+     &      ele%numele, ele%nnod_4_ele, ele%ie,                         &
+     &      WK_layer_n%mat_node_flag, conduct%inod_fld)
 !
-      call set_node_4_layer                                             &
-     &     (node%numnod, insulate%numnod_fld, insulate%inod_fld,        &
+      call set_node_4_layer(node%numnod, insulate%numnod_fld,           &
      &      insulate%iele_start_fld, insulate%iele_end_fld,             &
-     &      ele%numele, ele%nnod_4_ele, ele%ie)
+     &      ele%numele, ele%nnod_4_ele, ele%ie,                         &
+     &      WK_layer_n%mat_node_flag, insulate%inod_fld)
 !
-!      call set_node_4_layer                                            &
-!     &     (node%numnod, inner_core%numnod_fld, inner_core%inod_fld,   &
+!      call set_node_4_layer(node%numnod, inner_core%numnod_fld,        &
 !     &      iele_ic_start, iele_ic_end,                                &
-!     &      ele%numele, ele%nnod_4_ele, ele%ie)
+!     &      ele%numele, ele%nnod_4_ele, ele%ie,                        &
+!     &      WK_layer_n%mat_node_flag, inner_core%inod_fld)
 !
-      call dealloc_mat_node_flag
+      call dealloc_mat_node_flag(WK_layer_n)
 !
       call count_smp_size_4_area(conduct)
       call count_smp_size_4_area(insulate)

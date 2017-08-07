@@ -71,6 +71,7 @@
       use m_bc_data_velo
       use m_3d_filter_coef_MHD
       use m_bc_data_list
+      use t_work_4_MHD_layering
 !
       use count_whole_num_element
 !
@@ -85,7 +86,6 @@
       use const_bc_infty_surf_type
       use set_reference_value
       use material_property
-      use reordering_by_layers
       use set_layers_4_MHD
       use set_istart_3d_filtering
       use count_sgs_components
@@ -97,6 +97,7 @@
       use const_element_comm_tables
       use const_mesh_information
       use init_ele_material_property
+      use reordering_by_layers
 !
       use nod_phys_send_recv
 !

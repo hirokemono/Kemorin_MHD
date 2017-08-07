@@ -71,6 +71,7 @@
       use m_type_AMG_data
       use m_type_AMG_data_4_MHD
       use m_3d_filter_coef_MHD
+      use t_work_4_MHD_layering
 !
       use m_bc_data_velo
       use m_bc_data_list
@@ -92,7 +93,6 @@
       use const_bc_infty_surf_type
       use set_reference_value
       use material_property
-      use reordering_by_layers
       use set_layers_4_MHD
       use set_istart_3d_filtering
       use count_sgs_components
@@ -107,6 +107,7 @@
       use init_check_delta_t_data
       use init_ele_material_property
       use precond_djds_MHD
+      use reordering_by_layers
 !
       use nod_phys_send_recv
       use solver_MGCG_MHD

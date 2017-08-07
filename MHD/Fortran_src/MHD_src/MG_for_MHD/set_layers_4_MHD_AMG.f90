@@ -21,7 +21,11 @@
       use m_precision
       use m_constants
 !
+      use t_work_4_MHD_layering
+!
       implicit none
+!
+      type(nod_work_4_make_layering), save, private  :: WK_layer_nMG
 !
       private :: set_layers_4_field
       private :: set_empty_layers_4_field
@@ -37,7 +41,7 @@
       use t_FEM_control_parameter
       use t_mesh_data
       use t_geometry_data_MHD
-      use m_set_layers
+      use set_layers
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(mesh_geometry), intent(in) :: geom
@@ -46,7 +50,7 @@
       type(mesh_data_MHD), intent(inout) :: MHD_mesh
 !
 !
-      call alloc_mat_node_flag(geom%node%numnod)
+      call alloc_mat_node_flag(geom%node%numnod, WK_layer_nMG)
 !
 !    count number of element for insulated core
 !
@@ -59,12 +63,16 @@
 !
 !    count number of node for each layer
 !
-      call set_layers_4_field(geom%node, geom%ele, MHD_mesh%fluid)
-      call set_layers_4_field(geom%node, geom%ele, MHD_mesh%conduct)
-      call set_layers_4_field(geom%node, geom%ele, MHD_mesh%insulate)
-!      call set_layers_4_field(geom%node, geom%ele, MHD_mesh%inner_core)
+      call set_layers_4_field                                           &
+     &   (geom%node, geom%ele, WK_layer_nMG, MHD_mesh%fluid)
+      call set_layers_4_field                                           &
+     &   (geom%node, geom%ele, WK_layer_nMG, MHD_mesh%conduct)
+      call set_layers_4_field                                           &
+     &   (geom%node, geom%ele, WK_layer_nMG, MHD_mesh%insulate)
+!      call set_layers_4_field                                          &
+!     &   (geom%node, geom%ele, WK_layer_nMG, MHD_mesh%inner_core)
 !
-      call dealloc_mat_node_flag
+      call dealloc_mat_node_flag(WK_layer_nMG)
 !
       call count_smp_size_4_area(MHD_mesh%fluid)
       call count_smp_size_4_area(MHD_mesh%conduct)
@@ -103,24 +111,25 @@
 ! ---------------------------------------------------------------------
 ! ---------------------------------------------------------------------
 !
-      subroutine set_layers_4_field(nod, ele, fld)
+      subroutine set_layers_4_field(nod, ele, WK_layer_n, fld)
 !
       use t_geometry_data
       use t_geometry_data_MHD
-      use m_set_layers
+      use set_layers
 !
       type(node_data), intent(in) :: nod
       type(element_data), intent(in) :: ele
 !
       type(field_geometry_data), intent(inout) :: fld
+      type(nod_work_4_make_layering), intent(inout) :: WK_layer_n
 !
 !
 !    count number of node for each field
 !
       call count_node_4_layer(nod%numnod, nod%internal_node,            &
-     &    fld%numnod_fld, fld%internal_node_fld,                        &
      &    fld%iele_start_fld, fld%iele_end_fld,                         &
-     &    ele%numele, ele%nnod_4_ele, ele%ie)
+     &    ele%numele, ele%nnod_4_ele, ele%ie, WK_layer_n%mat_node_flag, &
+     &    fld%numnod_fld, fld%internal_node_fld)
 !
 !  allocate list vector
 !
@@ -128,9 +137,10 @@
 !
 !  set node list
 !
-      call set_node_4_layer(nod%numnod, fld%numnod_fld, fld%inod_fld,   &
+      call set_node_4_layer(nod%numnod, fld%numnod_fld,                 &
      &    fld%iele_start_fld, fld%iele_end_fld,                         &
-     &    ele%numele, ele%nnod_4_ele, ele%ie)
+     &    ele%numele, ele%nnod_4_ele, ele%ie,                           &
+     &    WK_layer_n%mat_node_flag, fld%inod_fld)
 !
 !
       end subroutine set_layers_4_field
@@ -141,7 +151,7 @@
       subroutine set_empty_layers_4_field(fld)
 !
       use t_geometry_data_MHD
-      use m_set_layers
+      use set_layers
 !
       type(field_geometry_data), intent(inout) :: fld
 !

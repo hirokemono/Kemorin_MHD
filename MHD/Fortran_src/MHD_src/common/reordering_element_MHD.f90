@@ -6,7 +6,8 @@
 !      Moified by H. Matsui on Feb., 2008
 !
 !!      subroutine reordering_element_info                              &
-!!     &         (ele, ele_grp, sf_grp, MHD_mesh)
+!!     &         (WK_layer, ele, ele_grp, sf_grp, MHD_mesh)
+!!        type(work_4_make_layering), intent(in) :: WK_layer
 !!   ordereing of connectivity, element group, and surface group
 !!
 !!      subroutine reordering_element_connect(numele, nnod_4_ele,       &
@@ -29,13 +30,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine reordering_element_info                                &
-     &         (ele, ele_grp, sf_grp, MHD_mesh)
+     &         (WK_layer, ele, ele_grp, sf_grp, MHD_mesh)
 !
-      use m_work_4_MHD_layering
+      use t_work_4_MHD_layering
       use t_geometry_data_MHD
       use t_geometry_data
       use t_group_data
 !
+      type(work_4_make_layering), intent(in) :: WK_layer
       type(element_data), intent(inout) :: ele
       type(group_data), intent(inout) :: ele_grp
       type(surface_group_data), intent(inout) :: sf_grp
@@ -45,13 +47,15 @@
       call alloc_ele_connect_org_type(ele, MHD_mesh)
 !
       call reordering_element_connect(ele%numele, ele%nnod_4_ele,       &
-     &    new2oldele_layer(1), MHD_mesh%iele_global_org,                &
+     &    WK_layer%new2oldele_layer(1), MHD_mesh%iele_global_org,       &
      &    ele%iele_global, MHD_mesh%ie_org, ele%ie)
 !
-      call reordering_element_group(ele%numele, old2newele_layer(1),    &
+      call reordering_element_group                                     &
+     &   (ele%numele, WK_layer%old2newele_layer(1),                     &
      &    ele_grp%num_item, ele_grp%item_grp)
 !
-      call reordering_surface_group(ele%numele, old2newele_layer(1),    &
+      call reordering_surface_group                                     &
+     &   (ele%numele, WK_layer%old2newele_layer(1),                     &
      &    sf_grp%num_item, sf_grp%item_sf_grp)
 !
       end subroutine reordering_element_info

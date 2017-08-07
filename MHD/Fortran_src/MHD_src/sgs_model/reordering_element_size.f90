@@ -4,7 +4,8 @@
 !      Written by H. Matsui on Nov., 2006
 !      Modified by H. Matsui on Feb., 2008
 !
-!!      subroutine reordering_ele_size(SGS_param, numele)
+!!      subroutine reordering_ele_size                                  &
+!!     &         (SGS_param, numele, old2newele_layer)
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!      subroutine reordering_scalar_by_layer
 !!      subroutine reordering_vector_by_layer(numele, old2newele, elen)
@@ -48,14 +49,15 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine reordering_ele_size(SGS_param, numele)
+      subroutine reordering_ele_size                                    &
+     &         (SGS_param, numele, old2newele_layer)
 !
-      use m_work_4_MHD_layering
       use m_filter_elength
       use t_SGS_control_parameter
 !
       type(SGS_model_control_params), intent(in) :: SGS_param
       integer(kind = kint), intent(in) :: numele
+      integer(kind=kint), intent(in)  :: old2newele_layer(numele)
 !
 !
       if(SGS_param%iflag_SGS .ne. id_SGS_NL_grad) return

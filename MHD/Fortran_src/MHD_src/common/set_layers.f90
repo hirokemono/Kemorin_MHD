@@ -1,5 +1,5 @@
 !
-!     module m_set_layers
+!     module set_layers
 !.......................................................................
 !
 !       subroutines for start and end element number of each layer
@@ -10,56 +10,32 @@
 !        modified by H.Matsui on Feb., 2008
 !        modified by H.Matsui on Dec., 2008
 !
-!      subroutine alloc_mat_node_flag(numnod)
-!      subroutine dealloc_mat_node_flag
-!
-!      subroutine count_node_4_layer(numnod, internal_node,             &
-!     &          numnod_field, internal_node_field,                     &
-!     &          iele_start, iele_end, numele, nnod_4_ele, ie)
-!      subroutine count_ele_4_layer(numele, num_field, num_layer,       &
-!     &          layer_name, num_mat, mat_istack, mat_name)
-!
-!      subroutine set_node_4_layer(numnod, numnod_field, inod_field,    &
-!     &     iele_start, iele_end, numele, nnod_4_ele, ie)
+!!      subroutine count_node_4_layer(numnod, internal_node,            &
+!!     &          iele_start, iele_end, numele, nnod_4_ele, ie,         &
+!!     &          mat_node_flag, numnod_field, internal_node_field)
+!!      subroutine count_ele_4_layer(numele, num_field, num_layer,      &
+!!     &          layer_name, num_mat, mat_istack, mat_name)
+!!
+!!      subroutine set_node_4_layer                                     &
+!!     &         (numnod, numnod_field, iele_start, iele_end,           &
+!!     &          numele, nnod_4_ele, ie, mat_node_flag, inod_field)
 !
 !
-      module m_set_layers
+      module set_layers
 !
       use m_precision
 !
       implicit none
 !
-      integer (kind=kint), allocatable :: mat_node_flag(:)
-      private :: mat_node_flag
-! 
 ! ---------------------------------------------------------------------
 !
       contains
 !
 ! ---------------------------------------------------------------------
 !
-      subroutine alloc_mat_node_flag(numnod)
-!
-      integer(kind = kint), intent(in) :: numnod
-!
-      allocate(mat_node_flag(numnod))
-      if(numnod .gt. 0) mat_node_flag = 0
-!
-      end subroutine alloc_mat_node_flag
-!
-! ---------------------------------------------------------------------
-!
-      subroutine dealloc_mat_node_flag
-!
-      deallocate(mat_node_flag)
-!
-      end subroutine dealloc_mat_node_flag
-!
-! ---------------------------------------------------------------------
-!
       subroutine count_node_4_layer(numnod, internal_node,              &
-     &          numnod_field, internal_node_field, iele_start,          &
-     &          iele_end, numele, nnod_4_ele, ie)
+     &          iele_start, iele_end, numele, nnod_4_ele, ie,           &
+     &          mat_node_flag, numnod_field, internal_node_field)
 !
       integer(kind = kint), intent(in) :: numnod, internal_node
       integer(kind = kint), intent(in) :: numele, nnod_4_ele
@@ -68,6 +44,7 @@
 !
       integer(kind = kint), intent(inout) :: numnod_field
       integer(kind = kint), intent(inout) :: internal_node_field
+      integer (kind=kint), intent(inout) :: mat_node_flag(numnod)
 !
       integer (kind = kint) :: inod, iele, j1
 !
@@ -141,14 +118,16 @@
 !
 ! ---------------------------------------------------------------------
 !
-      subroutine set_node_4_layer(numnod, numnod_field, inod_field,     &
-     &     iele_start, iele_end, numele, nnod_4_ele, ie)
+      subroutine set_node_4_layer                                       &
+     &         (numnod, numnod_field, iele_start, iele_end,             &
+     &          numele, nnod_4_ele, ie, mat_node_flag, inod_field)
 !
       integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
       integer(kind = kint), intent(in) :: numnod_field
       integer(kind = kint), intent(in) :: iele_start, iele_end
       integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
       integer(kind = kint), intent(inout) :: inod_field(numnod_field)
+      integer (kind=kint), intent(inout) :: mat_node_flag(numnod)
 !
       integer (kind = kint) :: inod, iele, j1
 !
@@ -164,7 +143,6 @@
         end do
       end do
 !
-!
       j1 = 0
       do inod = 1, numnod
         if (mat_node_flag(inod) .eq. 1 ) then
@@ -173,9 +151,8 @@
         end if
       end do
 !
-!
       end subroutine set_node_4_layer
 !
 ! ---------------------------------------------------------------------
 !
-      end module m_set_layers
+      end module set_layers
