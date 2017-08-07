@@ -6,7 +6,7 @@
 !!      subroutine init_analyzer_fl(MHD_files, IO_bc, FEM_prm, SGS_par, &
 !!     &          flex_p, flex_data, MHD_step, mesh, group, ele_mesh,   &
 !!     &          MHD_mesh, layer_tbl, MHD_prop, ak_MHD, Csims_FEM_MHD, &
-!!     &          iphys, nod_fld, label_sim)
+!!     &          iphys, nod_fld, fem_sq, label_sim)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(IO_boundary), intent(in) :: IO_bc
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
@@ -23,6 +23,7 @@
 !!        type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
 !!        type(phys_address), intent(inout) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
       module initialization_4_MHD
 !
@@ -46,6 +47,7 @@
       use t_FEM_SGS_model_coefs
       use t_material_property
       use t_flex_delta_t_data
+      use t_FEM_MHD_mean_square
 !
       implicit none
 !
@@ -58,7 +60,7 @@
       subroutine init_analyzer_fl(MHD_files, IO_bc, FEM_prm, SGS_par,   &
      &          flex_p, flex_data, MHD_step, mesh, group, ele_mesh,     &
      &          MHD_mesh, layer_tbl, MHD_prop, ak_MHD, Csims_FEM_MHD,   &
-     &          iphys, nod_fld, label_sim)
+     &          iphys, nod_fld, fem_sq, label_sim)
 !
       use m_flexible_time_step
 !
@@ -130,6 +132,7 @@
       type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
       type(phys_address), intent(inout) :: iphys
       type(phys_data), intent(inout) :: nod_fld
+      type(FEM_MHD_mean_square), intent(inout) :: fem_sq
       character(len=kchara), intent(inout)   :: label_sim
 !
       integer(kind = kint) :: iflag
@@ -222,7 +225,7 @@
       if (iflag_debug.eq.1) write(*,*)' allocate_array'
       call allocate_array(SGS_par, mesh, MHD_prop, iphys,               &
      &    nod_fld, Csims_FEM_MHD%iphys_elediff,                         &
-     &    mhd_fem1_wk, rhs_mat1, fem_int1, label_sim)
+     &    mhd_fem1_wk, rhs_mat1, fem_int1, fem_sq, label_sim)
 !
       if ( iflag_debug.ge.1 ) write(*,*) 'init_check_delta_t_data'
       call s_init_check_delta_t_data                                    &
@@ -304,9 +307,9 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*) 'const_MHD_jacobian_and_volumes'
-      call const_MHD_jacobian_and_volumes(SGS_par%model_p,              &
-     &    ele_mesh, group, mesh, layer_tbl, fem_int1%jcs,               &
-     &    MHD_mesh)
+      call const_MHD_jacobian_and_volumes(SGS_par%model_p, ele_mesh,    &
+     &    group, fem_sq%i_msq, mesh, layer_tbl, fem_int1%jcs,           &
+     &    MHD_mesh, fem_sq%msq)
 !
 !     --------------------- 
 !

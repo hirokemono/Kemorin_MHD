@@ -4,14 +4,15 @@
 !      modified by H. Matsui on June, 2005 
 !
 !!      subroutine FEM_initialize_snap_tmp                              &
-!!     &         (MHD_files, bc_FEM_IO, MHD_step, range, fem_ucd)
+!!     &         (MHD_files, bc_FEM_IO, MHD_step, range, fem_ucd, fem_sq)
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(IO_boundary), intent(in) :: bc_FEM_IO
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(maximum_informations), intent(inout) :: range
 !!        type(ucd_file_data), intent(inout) :: fem_ucd
+!!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !!      subroutine FEM_analyze_snap_tmp                                 &
-!!     &          (i_step, MHD_files, MHD_step, visval, fem_ucd)
+!!     &          (i_step, MHD_files, MHD_step, visval, fem_ucd, fem_sq)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(VIZ_step_params), intent(inout) :: MHD_step
 !!      subroutine FEM_finalize_snap_tmp                                &
@@ -33,6 +34,7 @@
       use t_MHD_file_parameter
       use t_ucd_file
       use t_cal_max_indices
+      use t_FEM_MHD_mean_square
 !
       use calypso_mpi
 !
@@ -47,7 +49,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_initialize_snap_tmp                                &
-     &         (MHD_files, bc_FEM_IO, MHD_step, range, fem_ucd)
+     &         (MHD_files, bc_FEM_IO, MHD_step, range, fem_ucd, fem_sq)
 !
       use m_node_phys_data
       use m_geometry_data_MHD
@@ -69,6 +71,7 @@
       type(MHD_step_param), intent(inout) :: MHD_step
       type(maximum_informations), intent(inout) :: range
       type(ucd_file_data), intent(inout) :: fem_ucd
+      type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
 !   matrix assembling
 !
@@ -77,7 +80,7 @@
      &   (MHD_files%fst_file_IO, FEM_prm1, SGS_par1, bc_FEM_IO,         &
      &    MHD_step, mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,    &
      &    MHD_prop1, ak_MHD, Csims_FEM_MHD1, iphys, nod_fld1,           &
-     &    SNAP_time_IO, MHD_step%rst_step, label_sim)
+     &    SNAP_time_IO, MHD_step%rst_step, fem_sq, label_sim)
 !
       call output_grd_file_w_org_connect(MHD_step%ucd_step,             &
      &    mesh1, MHD_mesh1, nod_fld1, MHD_files%ucd_file_IO, fem_ucd)
@@ -89,7 +92,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_analyze_snap_tmp                                   &
-     &          (i_step, MHD_files, MHD_step, visval, fem_ucd)
+     &          (i_step, MHD_files, MHD_step, visval, fem_ucd, fem_sq)
 !
       use m_physical_property
       use m_geometry_data_MHD
@@ -126,6 +129,7 @@
       integer(kind=kint ), intent(inout) :: visval
       type(MHD_step_param), intent(inout) :: MHD_step
       type(ucd_file_data), intent(inout) :: fem_ucd
+      type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
       integer(kind = kint) :: iflag
 !
@@ -218,8 +222,9 @@
         call output_time_step_control                                   &
      &     (FEM_prm1, MHD_step%time_d, mesh1, MHD_mesh1,                &
      &      MHD_prop1%fl_prop, MHD_prop1%cd_prop, iphys,                &
-     &      nod_fld1, iphys_ele, fld_ele1,                              &
-     &      fem_int1%jcs, rhs_mat1%fem_wk, mhd_fem1_wk)
+     &      nod_fld1, iphys_ele, fld_ele1, fem_int1%jcs,                &
+     &      fem_sq%i_rms, fem_sq%j_ave, fem_sq%i_msq,                   &
+     &      rhs_mat1%fem_wk, mhd_fem1_wk, fem_sq%msq)
       end if
 !
       iflag = output_IO_flag(flex_p1%istep_max_dt, MHD_step%point_step)

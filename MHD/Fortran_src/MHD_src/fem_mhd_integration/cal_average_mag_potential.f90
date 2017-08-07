@@ -41,7 +41,6 @@
      &          iphys, nod_fld, inner_core, jac_3d_l)
 !
       use calypso_mpi
-      use m_mean_square_values
 !
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(node_data), intent(in) :: node

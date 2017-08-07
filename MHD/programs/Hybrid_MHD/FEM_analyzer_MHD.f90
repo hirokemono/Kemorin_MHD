@@ -4,9 +4,9 @@
 !      modified by H. Matsui on June, 2005 
 !
 !!      subroutine FEM_initialize_MHD(MHD_files, bc_FEM_IO,             &
-!!     &          flex_p, flex_data, MHD_step, range, fem_ucd)
+!!     &          flex_p, flex_data, MHD_step, range, fem_ucd, fem_sq)
 !!      subroutine FEM_analyze_MHD                                      &
-!!     &         (MHD_files, MHD_step, visval, retval, fem_ucd)
+!!     &         (MHD_files, MHD_step, visval, retval, fem_ucd, fem_sq)
 !!      subroutine FEM_finalize_MHD(MHD_files, MHD_step, range, fem_ucd)
 !!        type(MHD_step_param), intent(inout) :: MHD_step
 !!        type(flexible_stepping_parameter), intent(inout) :: flex_p
@@ -31,6 +31,7 @@
       use t_ucd_file
       use t_flex_delta_t_data
       use t_cal_max_indices
+      use t_FEM_MHD_mean_square
 !
       use calypso_mpi
 !
@@ -43,7 +44,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_initialize_MHD(MHD_files, bc_FEM_IO,               &
-     &          flex_p, flex_data, MHD_step, range, fem_ucd)
+     &          flex_p, flex_data, MHD_step, range, fem_ucd, fem_sq)
 !
       use m_mesh_data
       use m_geometry_data_MHD
@@ -81,6 +82,7 @@
       type(flexible_stepping_data), intent(inout) :: flex_data
       type(maximum_informations), intent(inout) :: range
       type(ucd_file_data), intent(inout) :: fem_ucd
+      type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
       integer(kind = kint) :: iflag
 !
@@ -89,8 +91,8 @@
       call init_analyzer_fl                                             &
      &   (MHD_files, bc_FEM_IO, FEM_prm1, SGS_par1, flex_p, flex_data,  &
      &    MHD_step, mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,    &
-     &    MHD_prop1, ak_MHD, Csims_FEM_MHD1,                            &
-     &    iphys, nod_fld1, label_sim)
+     &    MHD_prop1, ak_MHD, Csims_FEM_MHD1, iphys, nod_fld1,           &
+     &    fem_sq, label_sim)
 !
       call nod_fields_send_recv(mesh1%nod_comm, nod_fld1)
 !
@@ -178,7 +180,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_analyze_MHD                                        &
-     &         (MHD_files, MHD_step, visval, retval, fem_ucd)
+     &         (MHD_files, MHD_step, visval, retval, fem_ucd, fem_sq)
 !
       use m_control_parameter
 !
@@ -215,6 +217,7 @@
       integer(kind=kint), intent(inout) :: visval
       type(MHD_step_param), intent(inout) :: MHD_step
       type(ucd_file_data), intent(inout) :: fem_ucd
+      type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
       integer(kind=kint ), intent(inout) :: retval
 !
@@ -236,7 +239,7 @@
      &    FEM1_elen, filtering1, wide_filtering,                        &
      &    layer_tbl1, solver_pack1, MGCG_WK1, wk_cor1, wk_lsq1,         &
      &    wk_sgs1, wk_diff1, wk_filter1, mhd_fem1_wk, rhs_mat1,         &
-     &    nod_fld1, fld_ele1, Csims_FEM_MHD1)
+     &    nod_fld1, fld_ele1, Csims_FEM_MHD1, fem_sq)
 !
 !     ----- Evaluate model coefficients
 !
@@ -286,8 +289,9 @@
           call output_time_step_control                                 &
      &       (FEM_prm1, MHD_step%time_d, mesh1, MHD_mesh1,              &
      &        MHD_prop1%fl_prop, MHD_prop1%cd_prop,                     &
-     &        iphys, nod_fld1, iphys_ele, fld_ele1,                     &
-     &        fem_int1%jcs, rhs_mat1%fem_wk, mhd_fem1_wk)
+     &        iphys, nod_fld1, iphys_ele, fld_ele1, fem_int1%jcs,       &
+     &        fem_sq%i_rms, fem_sq%j_ave, fem_sq%i_msq,                 &
+     &        rhs_mat1%fem_wk, mhd_fem1_wk, fem_sq%msq)
         end if
 !
         iflag= output_IO_flag(flex_p1%istep_max_dt,MHD_step%point_step)

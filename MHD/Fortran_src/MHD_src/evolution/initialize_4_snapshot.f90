@@ -6,7 +6,7 @@
 !!      subroutine init_analyzer_snap(fst_file_IO, FEM_prm, SGS_par,    &
 !!     &          IO_bc, MHD_step, mesh, group, ele_mesh, MHD_mesh,     &
 !!     &          layer_tbl, MHD_prop, ak_MHD, Csims_FEM_MHD,           &
-!!     &          iphys, nod_fld, t_IO, rst_step, label_sim)
+!!     &          iphys, nod_fld, t_IO, rst_step, fem_sq, label_sim)
 !!        type(field_IO_params), intent(in) :: fst_file_IO
 !!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -23,6 +23,7 @@
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(time_data), intent(inout) :: t_IO
 !!        type(IO_step_param), intent(inout) :: rst_step
+!!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
       module initialize_4_snapshot
 !
@@ -48,6 +49,7 @@
       use t_file_IO_parameter
       use t_FEM_SGS_model_coefs
       use t_material_property
+      use t_FEM_MHD_mean_square
 !
       implicit none
 !
@@ -60,7 +62,7 @@
       subroutine init_analyzer_snap(fst_file_IO, FEM_prm, SGS_par,      &
      &          IO_bc, MHD_step, mesh, group, ele_mesh, MHD_mesh,       &
      &          layer_tbl, MHD_prop, ak_MHD, Csims_FEM_MHD,             &
-     &          iphys, nod_fld, t_IO, rst_step, label_sim)
+     &          iphys, nod_fld, t_IO, rst_step, fem_sq, label_sim)
 !
       use m_fem_mhd_restart
 !
@@ -119,6 +121,7 @@
       type(phys_data), intent(inout) :: nod_fld
       type(time_data), intent(inout) :: t_IO
       type(IO_step_param), intent(inout) :: rst_step
+      type(FEM_MHD_mean_square), intent(inout) :: fem_sq
       character(len=kchara), intent(inout)   :: label_sim
 !
       integer(kind = kint) :: iflag
@@ -205,7 +208,7 @@
       if (iflag_debug.eq.1) write(*,*)' allocate_array'
       call allocate_array(SGS_par, mesh, MHD_prop,                      &
      &    iphys, nod_fld, Csims_FEM_MHD%iphys_elediff,                  &
-     &    mhd_fem1_wk, rhs_mat1, fem_int1, label_sim)
+     &    mhd_fem1_wk, rhs_mat1, fem_int1, fem_sq, label_sim)
 !
       if (iflag_debug.eq.1) write(*,*)' set_reference_temp'
       call set_reference_temp                                           &
@@ -251,9 +254,9 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*)' const_MHD_jacobian_and_volumes'
-      call const_MHD_jacobian_and_volumes(SGS_par%model_p,              &
-     &    ele_mesh, group, mesh, layer_tbl, fem_int1%jcs,               &
-     &    MHD_mesh)
+      call const_MHD_jacobian_and_volumes(SGS_par%model_p, ele_mesh,    &
+     &    group, fem_sq%i_msq, mesh, layer_tbl, fem_int1%jcs,           &
+     &    MHD_mesh, fem_sq%msq)
 !
 !     --------------------- 
 !

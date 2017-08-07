@@ -8,9 +8,11 @@
 !!        type(MHD_file_IO_params), intent(inout) :: MHD_files
 !!        type(IO_boundary), intent(in) :: bc_FEM_IO
 !!        type(MHD_step_param), intent(inout) :: MHD_step
-!!      subroutine FEM_analyze_vol_average(i_step, MHD_files, MHD_step)
+!!      subroutine FEM_analyze_vol_average                              &
+!!     &         (i_step, MHD_files, MHD_step, fem_sq)
 !!        type(MHD_file_IO_params), intent(in) :: MHD_files
 !!        type(MHD_step_param), intent(inout) :: MHD_step
+!!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
       module FEM_analyzer_vol_average
 !
@@ -22,6 +24,7 @@
       use t_MHD_file_parameter
       use t_MHD_step_parameter
       use t_ucd_file
+      use t_FEM_MHD_mean_square
 !
       use calypso_mpi
 !
@@ -36,7 +39,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine FEM_initialize_vol_average                             &
-     &         (MHD_files, bc_FEM_IO, MHD_step)
+     &         (MHD_files, bc_FEM_IO, MHD_step, fem_sq)
 !
       use m_mesh_data
       use m_node_phys_data
@@ -55,6 +58,8 @@
 !
       type(MHD_file_IO_params), intent(inout) :: MHD_files
       type(IO_boundary), intent(in) :: bc_FEM_IO
+!
+      type(FEM_MHD_mean_square), intent(inout) :: fem_sq
       type(MHD_step_param), intent(inout) :: MHD_step
 !
 !   matrix assembling
@@ -64,13 +69,14 @@
      &   (MHD_files%fst_file_IO, FEM_prm1, SGS_par1, bc_FEM_IO,         &
      &    MHD_step, mesh1, group1, ele_mesh1, MHD_mesh1, layer_tbl1,    &
      &    MHD_prop1, ak_MHD, Csims_FEM_MHD1, iphys, nod_fld1,           &
-     &    SNAP_time_IO, MHD_step%rst_step, label_sim)
+     &    SNAP_time_IO, MHD_step%rst_step, fem_sq, label_sim)
 !
       end subroutine FEM_initialize_vol_average
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_vol_average(i_step, MHD_files, MHD_step)
+      subroutine FEM_analyze_vol_average                                &
+     &         (i_step, MHD_files, MHD_step, fem_sq)
 !
       use m_control_parameter
       use m_physical_property
@@ -90,6 +96,8 @@
 !
       integer(kind = kint), intent(in) :: i_step
       type(MHD_file_IO_params), intent(in) :: MHD_files
+!
+      type(FEM_MHD_mean_square), intent(inout) :: fem_sq
       type(MHD_step_param), intent(inout) :: MHD_step
 !
       integer(kind = kint) :: iflag
@@ -132,8 +140,9 @@
         call output_time_step_control                                   &
      &     (FEM_prm1, MHD_step%time_d, mesh1, MHD_mesh1,                &
      &      MHD_prop1%fl_prop, MHD_prop1%cd_prop,                       &
-     &      iphys, nod_fld1, iphys_ele, fld_ele1,                       &
-     &      fem_int1%jcs, rhs_mat1%fem_wk, mhd_fem1_wk)
+     &      iphys, nod_fld1, iphys_ele, fld_ele1, fem_int1%jcs,         &
+     &      fem_sq%i_rms, fem_sq%j_ave, fem_sq%i_msq,                   &
+     &      rhs_mat1%fem_wk, mhd_fem1_wk, fem_sq%msq)
       end if
 !
       end subroutine FEM_analyze_vol_average

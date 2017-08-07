@@ -13,7 +13,8 @@
 !!     &         ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,         &
 !!     &         sgs_coefs_nod, diff_coefs, filtering, layer_tbl,       &
 !!     &         Vmatrix, Pmatrix, MGCG_WK, wk_lsq, wk_sgs, wk_filter,  &
-!!     &         mhd_fem_wk, rhs_mat, nod_fld, ele_fld, sgs_coefs)
+!!     &         mhd_fem_wk, rhs_mat, nod_fld, ele_fld,                 &
+!!     &         sgs_coefs, fem_sq)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
@@ -52,6 +53,7 @@
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(phys_data), intent(inout) :: ele_fld
 !!        type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+!!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
       module cal_velocity
 !
@@ -86,6 +88,7 @@
       use t_MGCG_data
       use t_MHD_finite_element_mat
       use t_work_FEM_integration
+      use t_FEM_MHD_mean_square
 !
       implicit none
 !
@@ -106,7 +109,8 @@
      &         ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,           &
      &         sgs_coefs_nod, diff_coefs, filtering, layer_tbl,         &
      &         Vmatrix, Pmatrix, MGCG_WK, wk_lsq, wk_sgs, wk_filter,    &
-     &         mhd_fem_wk, rhs_mat, nod_fld, ele_fld, sgs_coefs)
+     &         mhd_fem_wk, rhs_mat, nod_fld, ele_fld,                   &
+     &         sgs_coefs, fem_sq)
 !
       use cal_velocity_pre
       use cal_mod_vel_potential
@@ -158,6 +162,7 @@
       type(phys_data), intent(inout) :: nod_fld
       type(phys_data), intent(inout) :: ele_fld
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
+      type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
       integer(kind=kint) :: iloop
       real(kind = kreal) :: rel_correct
@@ -205,11 +210,11 @@
 !
       iloop = -1
       call int_norm_div_v_monitor(iloop, node, ele, fluid,              &
-     &    iphys, nod_fld, fem_int%jcs%jac_3d, rhs_mat%fem_wk,           &
-     &     rel_correct)
+     &    iphys, nod_fld, fem_int%jcs%jac_3d, fem_sq%j_ave,             &
+     &    rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !      call int_rms_div_v_monitor(iloop, node, ele, fluid,              &
-!     &    iphys, nod_fld, fem_int%jcs%jac_3d, rhs_mat%fem_wk,          &
-!     &    rel_correct)
+!     &    iphys, nod_fld, fem_int%jcs%jac_3d, fem_sqi_rms,             &
+!     &    rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !
       do iloop = 0, FEM_prm%maxiter_stokes
         call cal_mod_potential(ifld_diff%i_velo,                        &
@@ -234,9 +239,9 @@
 !
         call cal_rms_scalar_potential                                   &
      &     (iloop, fluid%istack_ele_fld_smp, iphys%i_press,             &
-     &      i_rms%i_press, j_ave%i_press, node, ele, nod_fld,           &
-     &      fem_int%jcs%jac_3d, fem_int%jcs%jac_3d_l,                   &
-     &      rhs_mat%fem_wk, rel_correct, ave_pr0, rms_pr0)
+     &      fem_sq%i_rms%i_press, fem_sq%j_ave%i_press, node, ele,      &
+     &      nod_fld,  fem_int%jcs%jac_3d, fem_int%jcs%jac_3d_l,         &
+     &      rhs_mat%fem_wk, fem_sq%msq, rel_correct, ave_pr0, rms_pr0)
 !
 !
         if (iflag_debug.eq.1)                                           &
@@ -245,11 +250,11 @@
 !
 !
         call int_norm_div_v_monitor(iloop, node, ele, fluid,            &
-     &      iphys, nod_fld, fem_int%jcs%jac_3d, rhs_mat%fem_wk,         &
-     &      rel_correct)
+     &      iphys, nod_fld, fem_int%jcs%jac_3d, fem_sq%j_ave,           &
+     &      rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !        call int_rms_div_v_monitor(iloop, node, ele, fluid,            &
-!     &      iphys, nod_fld, fem_int%jcs%jac_3d, rhs_mat%fem_wk,        &
-!     &      rel_correct)
+!     &      iphys, nod_fld, fem_int%jcs%jac_3d, fem_sq%i_rms,          &
+!     &      rhs_mat%fem_wk, fem_sq%msq, rel_correct)
 !
         if (abs(rel_correct) .lt. FEM_prm%eps_4_stokes) go to 10
 !

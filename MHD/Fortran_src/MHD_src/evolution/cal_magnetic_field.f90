@@ -13,7 +13,7 @@
 !!     &          iphys_elediff, sgs_coefs, diff_coefs, filtering,      &
 !!     &          m_lump, Bmatrix, Fmatrix, ak_d_magne, MGCG_WK,        &
 !!     &          wk_filter, mhd_fem_wk, fem_wk, surf_wk,               &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          f_l, f_nl, fem_sq, nod_fld)
 !!      subroutine s_cal_magnetic_field(dt, FEM_prm, SGS_par,           &
 !!     &          nod_comm, node, ele, surf, conduct, sf_grp,           &
 !!     &          cd_prop, Bnod_bcs, Asf_bcs, Bsf_bcs, Fsf_bcs,         &
@@ -22,7 +22,7 @@
 !!     &          iphys_elediff, sgs_coefs, sgs_coefs_nod, diff_coefs,  &
 !!     &          filtering, m_lump, Bmatrix, Fmatrix, ak_d_magne,      &
 !!     &          MGCG_WK, wk_filter, mhd_fem_wk, fem_wk, surf_wk,      &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          f_l, f_nl, fem_sq, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
@@ -59,6 +59,7 @@
 !!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
+!!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
       module cal_magnetic_field
 !
@@ -88,6 +89,7 @@
       use t_SGS_model_coefs
       use t_solver_djds_MHD
       use t_MGCG_data
+      use t_FEM_MHD_mean_square
 !
       implicit none
 !
@@ -108,7 +110,7 @@
      &          iphys_elediff, sgs_coefs, diff_coefs, filtering,        &
      &          m_lump, Bmatrix, Fmatrix, ak_d_magne, MGCG_WK,          &
      &          wk_filter, mhd_fem_wk, fem_wk, surf_wk,                 &
-     &          f_l, f_nl, nod_fld)
+     &          f_l, f_nl, fem_sq, nod_fld)
 !
       use cal_vector_potential_pre
       use cal_mod_vel_potential
@@ -156,6 +158,7 @@
       type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
+      type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
       integer(kind=kint ) :: iloop
       real(kind = kreal) :: rel_correct
@@ -181,9 +184,11 @@
 !
       iloop = -1
       call int_norm_div_a_monitor(iloop, node, ele,                     &
-     &    iphys, nod_fld, jacobians%jac_3d, fem_wk, rel_correct)
+     &    iphys, nod_fld, jacobians%jac_3d, fem_sq%j_ave, fem_wk,       &
+     &    fem_sq%msq, rel_correct)
 !      call int_rms_div_a_monitor(iloop, node, ele,                     &
-!     &    iphys, nod_fld, jacobians%jac_3d, fem_wk, rel_correct)
+!     &    iphys, nod_fld, jacobians%jac_3d, fem_sq%i_rms, fem_wk,      &
+!     &    fem_sq%msq, rel_correct)
 !
       call init_sol_potential(node%numnod, node%istack_nod_smp,         &
      &    dt, cd_prop%coef_mag_p, nod_fld%ntot_phys,                    &
@@ -216,9 +221,9 @@
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_rms_scalar_potential'
         call cal_rms_scalar_potential(iloop, ele%istack_ele_smp,        &
-     &      iphys%i_mag_p, i_rms%i_mag_p, j_ave%i_mag_p,                &
+     &      iphys%i_mag_p, fem_sq%i_rms%i_mag_p, fem_sq%j_ave%i_mag_p,  &
      &      node, ele, nod_fld, jacobians%jac_3d, jacobians%jac_3d_l,   &
-     &      fem_wk, rel_correct, ave_mp0, rms_mp0)
+     &      fem_wk, fem_sq%msq, rel_correct, ave_mp0, rms_mp0)
 !
         if (iflag_debug.eq.1)                                           &
      &         write(12,*) 'average and RMS of potential correction: ', &
@@ -226,9 +231,11 @@
 !
         if (iflag_debug.gt.0) write(*,*) 'int_norm_div_a_monitor'
         call int_norm_div_a_monitor(iloop, node, ele,                   &
-     &      iphys, nod_fld, jacobians%jac_3d, fem_wk, rel_correct)
+     &      iphys, nod_fld, jacobians%jac_3d, fem_sq%j_ave, fem_wk,     &
+     &      fem_sq%msq, rel_correct)
 !        call int_rms_div_a_monitor(iloop, node, ele,                   &
-!     &      iphys, nod_fld, jacobians%jac_3d, fem_wk, rel_correct)
+!     &      iphys, nod_fld, jacobians%jac_3d, fem_sq%i_rms, fem_wk,    &
+!     &      fem_sq%msq, rel_correct)
 !
         if(abs(rel_correct) .lt. FEM_prm%eps_4_coulomb) exit
       end do
@@ -245,7 +252,7 @@
      &          iphys_elediff, sgs_coefs, sgs_coefs_nod, diff_coefs,    &
      &          filtering, m_lump, Bmatrix, Fmatrix, ak_d_magne,        &
      &          MGCG_WK, wk_filter, mhd_fem_wk, fem_wk, surf_wk,        &
-     &          f_l, f_nl, nod_fld)
+     &          f_l, f_nl, fem_sq, nod_fld)
 !
       use cal_magnetic_pre
       use cal_sol_pressure_MHD
@@ -296,6 +303,7 @@
       type(work_surface_element_mat), intent(inout) :: surf_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
+      type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
       integer(kind=kint) :: iloop, maxiter_insulater
       real(kind = kreal) :: rel_correct
@@ -328,7 +336,8 @@
 !
       iloop = -1
       call int_norm_div_b_monitor(iloop, node, ele,                     &
-     &    iphys, nod_fld, jacobians%jac_3d, fem_wk, rel_correct)
+     &    iphys, nod_fld, jacobians%jac_3d, fem_sq%j_ave, fem_wk,       &
+     &    fem_sq%msq, rel_correct)
 !
 !
       do iloop = 0, FEM_prm%maxiter_coulomb
@@ -354,9 +363,9 @@
      &      f_l, f_nl, nod_fld)
 !
         call cal_rms_scalar_potential(iloop, ele%istack_ele_smp,        &
-     &      iphys%i_mag_p, i_rms%i_mag_p, j_ave%i_mag_p,                &
+     &      iphys%i_mag_p, fem_sq%i_rms%i_mag_p, fem_sq%j_ave%i_mag_p,  &
      &      node, ele, nod_fld, jacobians%jac_3d, jacobians%jac_3d_l,   &
-     &      fem_wk, rel_correct, ave_mp0, rms_mp0)
+     &      fem_wk, fem_sq%msq, rel_correct, ave_mp0, rms_mp0)
 !
       if (iflag_debug.eq.1)                                             &
      &         write(12,*) 'average and RMS of potential correction: ', &
@@ -364,9 +373,11 @@
 !
 !
         call int_norm_div_b_monitor(iloop, node, ele,                   &
-     &      iphys, nod_fld, jacobians%jac_3d, fem_wk, rel_correct)
+     &      iphys, nod_fld, jacobians%jac_3d, fem_sq%j_ave, fem_wk,     &
+     &      fem_sq%msq, rel_correct)
 !        call int_rms_div_b_monitor(iloop, node, ele,                   &
-!     &      iphys, nod_fld, jacobians%jac_3d, fem_wk, rel_correct)
+!     &      iphys, nod_fld, jacobians%jac_3d, fem_sq%i_rms, fem_wk,    &
+!     &      fem_sq%msq, rel_correct)
 !
         if (abs(rel_correct) .lt. FEM_prm%eps_4_coulomb) exit
       end do

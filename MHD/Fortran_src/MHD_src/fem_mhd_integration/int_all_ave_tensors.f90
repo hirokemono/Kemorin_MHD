@@ -7,15 +7,18 @@
 !
 !!      subroutine int_all_4_sym_tensor                                 &
 !!     &         (iele_fsmp_stack, n_int, ir_rms, ja_ave, i_vect,       &
-!!     &          node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
+!!     &          node, ele, nod_fld, jac_3d_q, jac_3d_l,               &
+!!     &          fem_wk, fem_msq)
 !!      subroutine int_all_4_asym_tensor                                &
 !!     &         (iele_fsmp_stack, n_int, ir_rms, ja_ave, i_vect,       &
-!!     &          node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
+!!     &          node, ele, nod_fld, jac_3d_q, jac_3d_l,               &
+!!     &          fem_wk, fem_msq)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(mean_square_values), intent(inout)  :: fem_msq
 !
       module int_all_ave_tensors
 !
@@ -40,9 +43,10 @@
 !
       subroutine int_all_4_sym_tensor                                   &
      &         (iele_fsmp_stack, n_int, ir_rms, ja_ave, i_vect,         &
-     &          node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
+     &          node, ele, nod_fld, jac_3d_q, jac_3d_l,                 &
+     &          fem_wk, fem_msq)
 !
-      use m_mean_square_values
+      use t_mean_square_values
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -56,12 +60,13 @@
       integer (kind=kint), intent(in) :: n_int
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(mean_square_values), intent(inout)  :: fem_msq
 !
 !
       if( (ir_rms*i_vect) .gt. 0) then
         call int_vol_ave_rms_sym_tensor(iele_fsmp_stack, n_int,         &
      &      i_vect, node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,     &
-     &      fem_msq1%rms_local(ir_rms), fem_msq1%ave_local(ja_ave))
+     &      fem_msq%rms_local(ir_rms), fem_msq%ave_local(ja_ave))
       end if
 !
       end subroutine int_all_4_sym_tensor
@@ -70,9 +75,10 @@
 !
       subroutine int_all_4_asym_tensor                                  &
      &         (iele_fsmp_stack, n_int, ir_rms, ja_ave, i_vect,         &
-     &          node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
+     &          node, ele, nod_fld, jac_3d_q, jac_3d_l,                 &
+     &          fem_wk, fem_msq)
 !
-      use m_mean_square_values
+      use t_mean_square_values
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -86,12 +92,13 @@
       integer (kind=kint), intent(in) :: n_int
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(mean_square_values), intent(inout)  :: fem_msq
 !
 !
       if( (ir_rms*i_vect) .gt. 0) then
         call int_vol_ave_rms_asym_tensor(iele_fsmp_stack, n_int,        &
      &      i_vect, node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,     &
-     &      fem_msq1%rms_local(ir_rms), fem_msq1%ave_local(ja_ave))
+     &      fem_msq%rms_local(ir_rms), fem_msq%ave_local(ja_ave))
       end if
 !
       end subroutine int_all_4_asym_tensor

@@ -7,14 +7,16 @@
 !        Modified by H. Matsui on Aug., 2007
 !
 !!      subroutine const_MHD_jacobian_and_volumes                       &
-!!     &         (SGS_param, ele_mesh, group, mesh, layer_tbl,          &
-!!     &          jacobians, MHD_mesh)
+!!     &         (SGS_param, ele_mesh, group, ifld_msq, mesh, layer_tbl,&
+!!     &          jacobians, MHD_mesh, fem_msq)
 !!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(mesh_groups), intent(in) ::   group
+!!        type(mean_square_address), intent(in) :: ifld_msq
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(jacobians_type), intent(inout) :: jacobians
 !!        type(layering_tbl), intent(inout) :: layer_tbl
 !!        type(mesh_data_MHD), intent(inout) :: MHD_mesh
+!!        type(mean_square_values), intent(inout) :: fem_msq
 !
       module cal_volume_node_MHD
 !
@@ -45,10 +47,10 @@
 !  ---------------------------------------------------------------------
 !
       subroutine const_MHD_jacobian_and_volumes                         &
-     &         (SGS_param, ele_mesh, group, mesh, layer_tbl,            &
-     &          jacobians, MHD_mesh)
+     &         (SGS_param, ele_mesh, group, ifld_msq, mesh, layer_tbl,  &
+     &          jacobians, MHD_mesh, fem_msq)
 !
-      use m_mean_square_values
+      use t_mean_square_values
       use t_jacobians
       use t_layering_ele_list
 !
@@ -60,10 +62,13 @@
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(element_geometry), intent(in) :: ele_mesh
       type(mesh_groups), intent(in) ::   group
+      type(mean_square_address), intent(in) :: ifld_msq
+!
       type(mesh_geometry), intent(inout) :: mesh
       type(jacobians_type), intent(inout) :: jacobians
       type(layering_tbl), intent(inout) :: layer_tbl
       type(mesh_data_MHD), intent(inout) :: MHD_mesh
+      type(mean_square_values), intent(inout) :: fem_msq
 !
 !    Construct Jacobians
 !
@@ -92,9 +97,9 @@
 !
       if (MHD_mesh%fluid%istack_ele_fld_smp(np_smp)                     &
      &   .eq. MHD_mesh%fluid%istack_ele_fld_smp(0)) then
-        fem_msq1%rms_local(ifld_msq1%ivol) = vol_local
+        fem_msq%rms_local(ifld_msq%ivol) = vol_local
       else
-        fem_msq1%rms_local(ifld_msq1%ivol) = vol_fl_local
+        fem_msq%rms_local(ifld_msq%ivol) = vol_fl_local
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_volume_4_conduct'

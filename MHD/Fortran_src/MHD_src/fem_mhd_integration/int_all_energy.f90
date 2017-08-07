@@ -6,18 +6,25 @@
 !      Modified by H. Matsui on Aug, 2007
 !
 !!      subroutine int_all_4_vector                                     &
-!!     &         (iele_fsmp_stack, n_int,  ir_rms, ja_ave, i_vect,      &
-!!     &          node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
+!!     &         (iele_fsmp_stack, n_int, ir_rms, ja_ave, i_vect,       &
+!!     &          node, ele, nod_fld, jac_3d_q, jac_3d_l,               &
+!!     &          fem_wk, fem_msq)
 !!      subroutine int_all_4_scalar                                     &
 !!     &     (iele_fsmp_stack, n_int, ir_rms, ja_ave, i_comp,           &
-!!     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
+!!     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk, fem_msq)
 !!      subroutine int_all_angular_mom                                  &
 !!     &         (iele_fsmp_stack, n_int, ja_ave, i_vect,               &
 !!     &          node, ele, nod_fld, jac_3d_q, jac_3d_l,               &
-!!     &          mhd_fem_wk, fem_wk)
+!!     &          mhd_fem_wk, fem_wk, fem_msq)
 !!      subroutine int_ave_rms_4_scalar(iele_fsmp_stack, n_int,         &
 !!     &          i_fld, node, ele, nod_fld, jac_3d_q, jac_3d_l,        &
 !!     &          fem_wk, rms_local, ave_local)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(phys_data), intent(in) :: nod_fld
+!!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+!!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(mean_square_values), intent(inout)  :: fem_msq
 !
       module int_all_energy
 !
@@ -42,10 +49,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_all_4_vector                                       &
-     &         (iele_fsmp_stack, n_int,  ir_rms, ja_ave, i_vect,        &
-     &          node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
+     &         (iele_fsmp_stack, n_int, ir_rms, ja_ave, i_vect,         &
+     &          node, ele, nod_fld, jac_3d_q, jac_3d_l,                 &
+     &          fem_wk, fem_msq)
 !
-      use m_mean_square_values
+      use t_mean_square_values
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -59,12 +67,13 @@
       integer (kind=kint), intent(in) :: n_int
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(mean_square_values), intent(inout)  :: fem_msq
 !
 !
       if( (ir_rms*i_vect) .gt. 0) then
         call int_vol_all_energy(iele_fsmp_stack, n_int, i_vect,         &
      &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
-     &      fem_msq1%rms_local(ir_rms), fem_msq1%ave_local(ja_ave))
+     &      fem_msq%rms_local(ir_rms), fem_msq%ave_local(ja_ave))
       end if
 !
       end subroutine int_all_4_vector
@@ -73,9 +82,9 @@
 !
       subroutine int_all_4_scalar                                       &
      &     (iele_fsmp_stack, n_int, ir_rms, ja_ave, i_comp,             &
-     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
+     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk, fem_msq)
 !
-      use m_mean_square_values
+      use t_mean_square_values
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -88,12 +97,13 @@
       integer (kind=kint), intent(in) :: n_int
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(mean_square_values), intent(inout)  :: fem_msq
 !
 !
       if( (ir_rms*i_comp) .gt. 0) then
         call int_vol_ave_rms_4_scalar(iele_fsmp_stack, n_int, i_comp,   &
      &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
-     &      fem_msq1%rms_local(ir_rms), fem_msq1%ave_local(ja_ave))
+     &      fem_msq%rms_local(ir_rms), fem_msq%ave_local(ja_ave))
       end if
 !
       end subroutine int_all_4_scalar
@@ -103,9 +113,9 @@
       subroutine int_all_angular_mom                                    &
      &         (iele_fsmp_stack, n_int, ja_ave, i_vect,                 &
      &          node, ele, nod_fld, jac_3d_q, jac_3d_l,                 &
-     &          mhd_fem_wk, fem_wk)
+     &          mhd_fem_wk, fem_wk, fem_msq)
 !
-      use m_mean_square_values
+      use t_mean_square_values
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -119,12 +129,13 @@
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
+      type(mean_square_values), intent(inout)  :: fem_msq
 !
 !
       if( (ja_ave*i_vect) .gt. 0) then
         call int_vol_angular_mom(iele_fsmp_stack, n_int, i_vect,        &
      &      node, ele, nod_fld, jac_3d_q, jac_3d_l,                     &
-     &      fem_wk, mhd_fem_wk, fem_msq1%ave_local(ja_ave))
+     &      fem_wk, mhd_fem_wk, fem_msq%ave_local(ja_ave))
       end if
 !
       end subroutine int_all_angular_mom

@@ -4,11 +4,11 @@
 !     Written by H. Matsui on June, 2005
 !
 !!      subroutine int_norm_div_v_monitor(iloop, node, ele, fluid,      &
-!!     &          iphys, nod_fld, jac_3d, fem_wk, rsig)
+!!     &          iphys, nod_fld, jac_3d, j_ave, fem_wk, fem_msq, rsig)
 !!      subroutine int_norm_div_b_monitor(iloop, node, ele,             &
-!!     &          iphys, nod_fld, jac_3d, fem_wk, rsig)
+!!     &          iphys, nod_fld, jac_3d, j_ave, fem_wk, fem_msq, rsig)
 !!      subroutine int_norm_div_a_monitor(iloop, node, ele,             &
-!!     &          iphys, nod_fld, jac_3d, fem_wk, rsig)
+!!     &          iphys, nod_fld, jac_3d, j_ave, fem_wk, fem_msq, rsig)
 !!
 !!      subroutine int_norm_divergence(iele_fsmp_stack, i_field,        &
 !!     &          node, ele, nod_fld, jac_3d, fem_wk, res_norm)
@@ -17,14 +17,14 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_mean_square_values
 !
       use t_geometry_data_MHD
       use t_geometry_data
+      use t_phys_address
       use t_phys_data
       use t_jacobian_3d
       use t_finite_element_mat
-      use t_finite_element_mat
+      use t_mean_square_values
 !
       implicit none
 !
@@ -41,7 +41,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_norm_div_v_monitor(iloop, node, ele, fluid,        &
-     &          iphys, nod_fld, jac_3d, fem_wk, rsig)
+     &          iphys, nod_fld, jac_3d, j_ave, fem_wk, fem_msq, rsig)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -49,18 +49,20 @@
       type(field_geometry_data), intent(in) :: fluid
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_3d), intent(in) :: jac_3d
+      type(phys_address), intent(in) :: j_ave
 !
       integer(kind = kint), intent(in) :: iloop
 !
       real(kind = kreal), intent(inout) :: rsig
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(mean_square_values), intent(inout) :: fem_msq
 !
 !
       call int_norm_divergence                                          &
      &   (fluid%istack_ele_fld_smp, iphys%i_velo, node, ele, nod_fld,   &
-     &    jac_3d, fem_wk, fem_msq1%ave_local(j_ave%i_div_v))
+     &    jac_3d, fem_wk, fem_msq%ave_local(j_ave%i_div_v))
       call MPI_allREDUCE                                                &
-     &   (fem_msq1%ave_local(j_ave%i_div_v) , div_v_sig, ione,          &
+     &   (fem_msq%ave_local(j_ave%i_div_v) , div_v_sig, ione,           &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
 !
@@ -78,25 +80,27 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_norm_div_b_monitor(iloop, node, ele,               &
-     &          iphys, nod_fld, jac_3d, fem_wk, rsig)
+     &          iphys, nod_fld, jac_3d, j_ave, fem_wk, fem_msq, rsig)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_3d), intent(in) :: jac_3d
+      type(phys_address), intent(in) :: j_ave
 !
       integer(kind = kint), intent(in) :: iloop
 !
       real(kind = kreal), intent(inout) :: rsig
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(mean_square_values), intent(inout) :: fem_msq
 !
 !
       call int_norm_divergence                                          &
      &   (ele%istack_ele_smp, iphys%i_magne, node, ele, nod_fld,        &
-     &    jac_3d, fem_wk, fem_msq1%ave_local(j_ave%i_div_b))
+     &    jac_3d, fem_wk, fem_msq%ave_local(j_ave%i_div_b))
       call MPI_allREDUCE                                                &
-     &   (fem_msq1%ave_local(j_ave%i_div_b) , div_b_sig, ione,          &
+     &   (fem_msq%ave_local(j_ave%i_div_b) , div_b_sig, ione,           &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       div_b_sig = abs(div_b_sig) / ele%volume
@@ -113,25 +117,27 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_norm_div_a_monitor(iloop, node, ele,               &
-     &          iphys, nod_fld, jac_3d, fem_wk, rsig)
+     &          iphys, nod_fld, jac_3d, j_ave, fem_wk, fem_msq, rsig)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_3d), intent(in) :: jac_3d
+      type(phys_address), intent(in) :: j_ave
 !
       integer(kind = kint), intent(in) :: iloop
 !
       real(kind = kreal), intent(inout) :: rsig
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(mean_square_values), intent(inout) :: fem_msq
 !
 !
       call int_norm_divergence                                          &
      &   (ele%istack_ele_smp, iphys%i_vecp, node, ele, nod_fld,         &
-     &    jac_3d, fem_wk, fem_msq1%ave_local(j_ave%i_div_a))
+     &    jac_3d, fem_wk, fem_msq%ave_local(j_ave%i_div_a))
       call MPI_allREDUCE                                                &
-     &   (fem_msq1%ave_local(j_ave%i_div_a) , div_a_sig, ione,          &
+     &   (fem_msq%ave_local(j_ave%i_div_a) , div_a_sig, ione,           &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       div_a_sig = abs(div_a_sig) / ele%volume

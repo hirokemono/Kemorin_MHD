@@ -13,7 +13,8 @@
 !!     &          iphys, iphys_ele, ak_MHD, fem_int, FEM_elens,         &
 !!     &          filtering, wide_filtering, layer_tbl, s_package,      &
 !!     &          MGCG_WK, wk_cor, wk_lsq, wk_sgs, wk_diff, wk_filter,  &
-!!     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld, Csims_FEM_MHD)
+!!     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld,                &
+!!     &          Csims_FEM_MHD, fem_sq)
 !!      subroutine update_fields(time_d, FEM_prm, SGS_par,              &
 !!     &          mesh, group, ele_mesh, MHD_mesh, nod_bcs, surf_bcs,   &
 !!     &          iphys, iphys_ele, fem_int, FEM_elens,                 &
@@ -28,7 +29,7 @@
 !!     &          ak_MHD, fem_int, FEM_elens, filtering, wide_filtering,&
 !!     &          layer_tbl, s_package, MGCG_WK, wk_cor, wk_lsq,        &
 !!     &          wk_sgs, wk_diff, wk_filter, mhd_fem_wk, rhs_mat,      &
-!!     &          nod_fld, ele_fld, Csims_FEM_MHD)
+!!     &          nod_fld, ele_fld, Csims_FEM_MHD, fem_sq)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(time_data), intent(in) :: time_d
@@ -59,6 +60,7 @@
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(phys_data), intent(inout) :: ele_fld
 !!        type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
+!!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !!@endverbatim
 !
       module update_after_evolution
@@ -100,6 +102,7 @@
       use t_MHD_finite_element_mat
       use t_FEM_SGS_model_coefs
       use t_work_FEM_integration
+      use t_FEM_MHD_mean_square
 !
       implicit none
 !
@@ -115,7 +118,8 @@
      &          iphys, iphys_ele, ak_MHD, fem_int, FEM_elens,           &
      &          filtering, wide_filtering, layer_tbl, s_package,        &
      &          MGCG_WK, wk_cor, wk_lsq, wk_sgs, wk_diff, wk_filter,    &
-     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld, Csims_FEM_MHD)
+     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld,                  &
+     &          Csims_FEM_MHD, fem_sq)
 !
       use cal_temperature
       use cal_velocity
@@ -159,6 +163,7 @@
       type(phys_data), intent(inout) :: nod_fld
       type(phys_data), intent(inout) :: ele_fld
       type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
+      type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'reset_update_flag'
@@ -179,7 +184,7 @@
      &     Csims_FEM_MHD%diff_coefs, filtering, fem_int%m_lump,         &
      &     s_package%Bmatrix, s_package%Fmatrix, ak_MHD%ak_d_magne,     &
      &     MGCG_WK, wk_filter, mhd_fem_wk, rhs_mat%fem_wk,              &
-     &     rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &     rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, fem_sq, nod_fld)
         call update_with_vector_potential                               &
      &    (Csims_FEM_MHD%ifld_diff%i_magne,                             &
      &     Csims_FEM_MHD%icomp_diff%i_magne,                            &
@@ -214,7 +219,7 @@
      &     filtering, fem_int%m_lump, s_package%Bmatrix,                &
      &     s_package%Fmatrix, ak_MHD%ak_d_magne,                        &
      &     MGCG_WK, wk_filter, mhd_fem_wk, rhs_mat%fem_wk,              &
-     &     rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &     rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, fem_sq, nod_fld)
         call update_with_magnetic_field                                 &
      &    (Csims_FEM_MHD%ifld_diff%i_magne,                             &
      &     Csims_FEM_MHD%icomp_diff%i_magne,                            &
@@ -365,7 +370,7 @@
      &      Csims_FEM_MHD%diff_coefs, filtering, layer_tbl,             &
      &      s_package%Vmatrix, s_package%Pmatrix, MGCG_WK,              &
      &      wk_lsq, wk_sgs, wk_filter, mhd_fem_wk, rhs_mat,             &
-     &      nod_fld, ele_fld, Csims_FEM_MHD%sgs_coefs)
+     &      nod_fld, ele_fld, Csims_FEM_MHD%sgs_coefs, fem_sq)
         call update_with_velocity                                       &
      &     (Csims_FEM_MHD%ifld_diff%i_velo,                             &
      &      Csims_FEM_MHD%icomp_diff%i_velo,                            &
@@ -531,7 +536,7 @@
      &          ak_MHD, fem_int, FEM_elens, filtering, wide_filtering,  &
      &          layer_tbl, s_package, MGCG_WK, wk_cor, wk_lsq,          &
      &          wk_sgs, wk_diff, wk_filter, mhd_fem_wk, rhs_mat,        &
-     &          nod_fld, ele_fld, Csims_FEM_MHD)
+     &          nod_fld, ele_fld, Csims_FEM_MHD, fem_sq)
 !
       use cal_temperature
       use cal_velocity
@@ -572,6 +577,7 @@
       type(phys_data), intent(inout) :: nod_fld
       type(phys_data), intent(inout) :: ele_fld
       type(SGS_coefficients_data), intent(inout) :: Csims_FEM_MHD
+      type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'reset_update_flag'
@@ -706,7 +712,7 @@
      &      Csims_FEM_MHD%diff_coefs, filtering, layer_tbl,             &
      &      s_package%Vmatrix, s_package%Pmatrix, MGCG_WK,              &
      &      wk_lsq, wk_sgs, wk_filter, mhd_fem_wk, rhs_mat,             &
-     &      nod_fld, ele_fld, Csims_FEM_MHD%sgs_coefs)
+     &      nod_fld, ele_fld, Csims_FEM_MHD%sgs_coefs, fem_sq)
         call update_with_velocity                                       &
      &     (Csims_FEM_MHD%ifld_diff%i_velo,                             &
      &      Csims_FEM_MHD%icomp_diff%i_velo,                            &

@@ -17,6 +17,7 @@
       use m_mesh_data
       use m_node_phys_data
       use m_physical_property
+      use m_mean_square_values
       use FEM_analyzer_snapshot
       use visualizer_all
 !
@@ -76,7 +77,7 @@
 !     --------------------- 
 !
       call FEM_initialize_snapshot                                      &
-     &   (MHD_files1, bc_FEM_IO1, MHD_step1, range1, fem_ucd1)
+     &   (MHD_files1, bc_FEM_IO1, MHD_step1, range1, fem_ucd1, fem_sq1)
 !
       call init_visualize(mesh1, group1, ele_mesh1, nod_fld1)
 !
@@ -96,7 +97,7 @@
 !
 !  Read and generate fields
         call FEM_analyze_snapshot                                       &
-     &     (i_step, MHD_files1, MHD_step1, visval, fem_ucd1)
+     &     (i_step, MHD_files1, MHD_step1, visval, fem_ucd1, fem_sq1)
 !
 !  Visualization
         if (visval.eq.0) then

@@ -36,6 +36,7 @@
       use m_type_AMG_data
       use m_type_AMG_data_4_MHD
       use m_flexible_time_step
+      use m_mean_square_values
       use input_control
 !
 !
@@ -48,8 +49,8 @@
      &    MHD1_matrices, MGCG_WK1, MGCG_FEM1, MGCG_MHD_FEM1)
       call copy_delta_t(MHD_step1%init_d, MHD_step1%time_d)
 !
-      call FEM_check_MHD_mat                                            &
-     &   (MHD_files1, bc_FEM_IO1, flex_p1, flex_data1, MHD_step1)
+      call FEM_check_MHD_mat(MHD_files1, bc_FEM_IO1,                    &
+     &    flex_p1, flex_data1, MHD_step1, fem_sq1)
 !
       end subroutine init_analyzer
 !

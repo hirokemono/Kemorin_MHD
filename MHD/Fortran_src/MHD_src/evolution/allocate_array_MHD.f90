@@ -8,7 +8,7 @@
 !
 !!      subroutine allocate_array(SGS_par, mesh, MHD_prop,              &
 !!     &          iphys, nod_fld, iphys_elediff, mhd_fem_wk, rhs_mat,   &
-!!     &          fem_int, label_sim)
+!!     &          fem_int, fem_sq, label_sim)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -18,6 +18,7 @@
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(finite_element_integration), intent(inout) :: fem_int
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
+!!        type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
       module allocate_array_MHD
 !
@@ -45,11 +46,10 @@
 !
       subroutine allocate_array(SGS_par, mesh, MHD_prop,                &
      &          iphys, nod_fld, iphys_elediff, mhd_fem_wk, rhs_mat,     &
-     &          fem_int, label_sim)
+     &          fem_int, fem_sq, label_sim)
 !
       use m_element_phys_data
       use m_phys_constants
-      use m_mean_square_values
 !
       use t_SGS_control_parameter
       use t_mesh_data
@@ -57,6 +57,7 @@
       use t_FEM_phys_data
       use t_material_property
       use t_SGS_model_coefs
+      use t_FEM_MHD_mean_square
 !
       use count_sgs_components
       use node_monitor_IO
@@ -71,6 +72,7 @@
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(finite_element_integration), intent(inout) :: fem_int
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
+      type(FEM_MHD_mean_square), intent(inout) :: fem_sq
 !
       character(len=kchara), intent(inout) :: label_sim
 !
@@ -101,8 +103,7 @@
       call initialize_ele_field_data(mesh%ele%numele)
 !
       if ( iflag_debug.ge.1 ) write(*,*) 'set_mean_square_values'
-      call count_mean_square_values(nod_fld)
-      call set_mean_square_values(nod_fld)
+      call init_FEM_MHD_mean_square(nod_fld, fem_sq)
 !
       end subroutine allocate_array
 !

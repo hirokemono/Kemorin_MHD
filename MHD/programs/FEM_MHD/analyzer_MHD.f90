@@ -17,6 +17,7 @@
       use m_SGS_control_parameter
       use m_mesh_data
       use m_node_phys_data
+      use m_mean_square_values
 !
       use FEM_analyzer_MHD
       use sections_for_1st
@@ -82,7 +83,7 @@
 !
       call start_elapsed_time(2)
       call FEM_initialize_MHD(MHD_files1, bc_FEM_IO1, flex_p1,          &
-     &    flex_data1, MHD_step1, range1, fem_ucd1)
+     &    flex_data1, MHD_step1, range1, fem_ucd1, fem_sq1)
 !
       call init_visualize_surface(mesh1, group1, ele_mesh1, nod_fld1)
       call end_elapsed_time(2)
@@ -103,7 +104,7 @@
       do
 !  Time evolution
         call FEM_analyze_MHD                                            &
-     &     (MHD_files1, MHD_step1, visval, retval, fem_ucd1)
+     &     (MHD_files1, MHD_step1, visval, retval, fem_ucd1, fem_sq1)
 !
 !     ---------------------
 !

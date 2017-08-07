@@ -12,6 +12,16 @@
 !!      subroutine alloc_mean_square_values(fem_msq)
 !!      subroutine dealloc_mean_square_values(fem_msq)
 !!        type(mean_square_values), intent(inout) :: fem_msq
+!!
+!!      subroutine output_monitor_file                                  &
+!!     &         (my_rank, i_step_MHD, time, nod_fld, fem_msq)
+!!        real(kind = kreal), intent(in) :: time
+!!        type(phys_data), intent(in) :: nod_fld
+!!        type(mean_square_values), intent(in) :: fem_msq
+!!      subroutine skip_time_step_data                                  &
+!!     &         (my_rank, i_step_MHD, i_step_init, rms_step, fem_msq)
+!!        type(IO_step_param), intent(in) :: rms_step
+!!        type(mean_square_values), intent(inout) :: fem_msq
 !!@endverbatim
 !
       module t_mean_square_values
@@ -22,8 +32,21 @@
       implicit  none
 !
 !
+!>        File ID for average data
+      integer(kind=kint), parameter :: time_step_data_code = 41
+!>        File ID for mean square data
+      integer(kind=kint), parameter :: rms_data_code =       43
+!
+! 
 !>      Structure for mean square values
       type mean_square_values
+!>        File name for average data
+        character(len=kchara)                                           &
+     &       :: volume_ave_file_name =     'time_step_data.dat'
+!>        File name for mean square data
+        character(len=kchara)                                           &
+     &       :: volume_rms_file_name =     'time_rms_data.dat'
+!
 !>        number of fields for volume average data
         integer (kind = kint) :: num_ave
 !>        number of fields for volume mean square data
@@ -78,6 +101,9 @@
         integer(kind=kint) :: ivol = 0
       end type mean_square_address
 !
+      private :: time_step_data_code,  rms_data_code
+      private :: open_monitor_file
+!
 !-----------------------------------------------------------------------
 !
       contains
@@ -120,5 +146,113 @@
       end subroutine dealloc_mean_square_values
 !
 ! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine output_monitor_file                                    &
+     &         (my_rank, i_step_MHD, time, nod_fld, fem_msq)
+!
+      use t_phys_data
+!
+      integer (kind=kint), intent(in) :: my_rank
+      integer(kind=kint), intent(in) :: i_step_MHD
+      real(kind = kreal), intent(in) :: time
+!
+      type(phys_data), intent(in) :: nod_fld
+      type(mean_square_values), intent(in) :: fem_msq
+!
+!
+      if ( my_rank .gt. 0 ) return
+!
+      call open_monitor_file(my_rank, nod_fld, fem_msq)
+!
+      write(time_step_data_code,'(i16,1p1000e20.11)')                   &
+     &     i_step_MHD, time, fem_msq%ave_global(1:fem_msq%num_ave)
+      write(rms_data_code,'(i16,1p100e20.11)')                          &
+     &     i_step_MHD, time, fem_msq%rms_global(1:fem_msq%num_rms)
+!
+      close(time_step_data_code)
+      close(rms_data_code)
+!
+      end subroutine output_monitor_file
+!
+! ----------------------------------------------------------------------
+!
+      subroutine open_monitor_file(my_rank, nod_fld, fem_msq)
+!
+      use t_phys_data
+      use time_step_file_IO
+!
+      integer (kind=kint), intent(in) :: my_rank
+      type(phys_data), intent(in) :: nod_fld
+      type(mean_square_values), intent(in) :: fem_msq
+!
+      character(len=kchara) :: vector_label(3)
+      integer (kind=kint) :: i
+!
+!
+!
+      if ( my_rank .ne. 0 ) return
+!
+!   If data files exist, append data at the end of file
+!
+      open (time_step_data_code,file = fem_msq%volume_ave_file_name,    &
+     &      status='old', position='append', err = 99)
+      open (rms_data_code,file = fem_msq%volume_rms_file_name,          &
+     &      status='old', position='append', err = 98)
+      return
+!
+!   If data files does not exist, create new data file
+!
+   98 continue
+      close(time_step_data_code)
+   99 continue
+!
+      open (time_step_data_code,file = fem_msq%volume_ave_file_name,    &
+     &      status='replace')
+      open (rms_data_code,file = fem_msq%volume_rms_file_name,          &
+     &      status='replace')
+!
+      call write_monitor_labels                                         &
+     &   (time_step_data_code, rms_data_code, nod_fld)
+!
+      end subroutine open_monitor_file
+!
+! ----------------------------------------------------------------------
+!
+      subroutine skip_time_step_data                                    &
+     &         (my_rank, i_step_MHD, i_step_init, rms_step, fem_msq)
+!
+      use t_IO_step_parameter
+!
+      integer (kind=kint), intent(in) :: my_rank
+      integer(kind=kint), intent(in) :: i_step_MHD, i_step_init
+      type(IO_step_param), intent(in) :: rms_step
+!
+      type(mean_square_values), intent(inout) :: fem_msq
+!
+      integer (kind = kint) :: i, iflag, i_read_step
+      real(kind = kreal) :: rtmp
+!
+!
+      if(my_rank .gt. 0) return
+      iflag = i_step_init - mod(i_step_MHD, rms_step%increment)
+!
+      do
+        read(time_step_data_code,*,err=99,end=99)                       &
+     &            i_read_step, rtmp, (rtmp,i=1,fem_msq%num_ave)
+        if (i_read_step .ge. i_step_init) exit
+      end do
+ 99   continue
+!
+      do
+        read(rms_data_code,*,err=98,end=98)                             &
+     &            i_read_step, rtmp, (rtmp,i=1,fem_msq%num_rms)
+        if (i_read_step .ge. iflag) exit
+      end do
+ 98   continue
+!
+      end subroutine skip_time_step_data
+!
+!  ---------------------------------------------------------------------
 !
       end module t_mean_square_values
