@@ -25,9 +25,9 @@
       implicit  none
 !
       type lumped_mass_mat_layerd
-        type (lumped_mass_matrices) :: fluid
-        type (lumped_mass_matrices) :: conduct
-        type (lumped_mass_matrices) :: insulate
+        type (lumped_mass_matrices) :: mlump_fl
+        type (lumped_mass_matrices) :: mlump_cd
+        type (lumped_mass_matrices) :: mlump_ins
       end type lumped_mass_mat_layerd
 !
 !
@@ -43,7 +43,7 @@
       type(lumped_mass_mat_layerd), intent(inout) :: mk_MHD
 !
 !
-      call alloc_type_fem_lumped_mass(numnod, mk_MHD%fluid)
+      call alloc_type_fem_lumped_mass(numnod, mk_MHD%mlump_fl)
 !
       end subroutine alloc_fem_mat_fluid_type
 !
@@ -55,8 +55,8 @@
       type(lumped_mass_mat_layerd), intent(inout) :: mk_MHD
 !
 !
-      call alloc_type_fem_lumped_mass(numnod, mk_MHD%conduct)
-      call alloc_type_fem_lumped_mass(numnod, mk_MHD%insulate)
+      call alloc_type_fem_lumped_mass(numnod, mk_MHD%mlump_cd)
+      call alloc_type_fem_lumped_mass(numnod, mk_MHD%mlump_ins)
 !
       end subroutine alloc_fem_mat_conduct_type
 !
@@ -68,8 +68,8 @@
       type(lumped_mass_mat_layerd), intent(inout) :: mk_MHD
 !
 !
-      call dealloc_type_fem_lumped_mass(mk_MHD%conduct)
-      call dealloc_type_fem_lumped_mass(mk_MHD%insulate)
+      call dealloc_type_fem_lumped_mass(mk_MHD%mlump_cd)
+      call dealloc_type_fem_lumped_mass(mk_MHD%mlump_ins)
 !
       end subroutine dealloc_fem_mat_conduct_type
 !
@@ -80,7 +80,7 @@
       type(lumped_mass_mat_layerd), intent(inout) :: mk_MHD
 !
 !
-      call dealloc_type_fem_lumped_mass(mk_MHD%fluid)
+      call dealloc_type_fem_lumped_mass(mk_MHD%mlump_fl)
 !
       end subroutine dealloc_fem_mat_fluid_type
 !

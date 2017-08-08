@@ -10,13 +10,14 @@
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(node_data), intent(inout) :: node_1st
 !!        type(element_data), intent(inout) :: ele_1st
-!!      subroutine const_MGCG_MHD_matrices(iflag_scheme, dt,            &
-!!     &          FEM_prm, SGS_param, cmt_param, ifld_diff, MHD_prop,   &
+!!      subroutine const_MGCG_MHD_matrices(iflag_scheme, dt, FEM_prm,   &
+!!     &          SGS_param, cmt_param, Csims_FEM_MHD, MHD_prop,        &
 !!     &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, MHD_matrices)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
 !!        type(SGS_terms_address), intent(in) :: ifld_diff
+!!        type(SGS_coefficients_data), intent(in) :: Csims_FEM_MHD
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(DJDS_poarameter), intent(in) :: DJDS_param
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -384,12 +385,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine const_MGCG_MHD_matrices(iflag_scheme, dt,              &
-     &          FEM_prm, SGS_param, cmt_param, ifld_diff, MHD_prop,     &
+      subroutine const_MGCG_MHD_matrices(iflag_scheme, dt, FEM_prm,     &
+     &          SGS_param, cmt_param, Csims_FEM_MHD, MHD_prop,          &
      &          MGCG_WK, MGCG_FEM, MGCG_MHD_FEM, MHD_matrices)
 !
       use t_FEM_control_parameter
       use t_SGS_control_parameter
+      use t_fem_sgs_model_coefs
       use set_aiccg_matrices_type
       use precond_djds_MHD
 !
@@ -398,7 +400,7 @@
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_model_control_params), intent(in) :: SGS_param
       type(commutation_control_params), intent(in) :: cmt_param
-      type(SGS_terms_address), intent(in) :: ifld_diff
+      type(SGS_coefficients_data), intent(in) :: Csims_FEM_MHD
       type(MHD_evolution_param), intent(in) :: MHD_prop
       type(MGCG_data), intent(in) :: MGCG_WK
 !
@@ -424,7 +426,8 @@
      &        MHD_prop%ht_prop, MHD_prop%cp_prop,                       &
      &        MGCG_MHD_FEM%ak_MHD_AMG(i_level),                         &
      &        MGCG_FEM%MG_FEM_int(i_level)%jcs,                         &
-     &        MGCG_MHD_FEM%MG_filter_MHD(i_level), ifld_diff,           &
+     &        MGCG_MHD_FEM%MG_filter_MHD(i_level),                      &
+     &        Csims_FEM_MHD%ifld_diff,                                  &
      &        MGCG_MHD_FEM%MG_diff_coefs(i_level),                      &
      &        MGCG_FEM%MG_FEM_int(i_level)%rhs_tbl,                     &
      &        MHD_matrices%MG_DJDS_table(i_level),                      &
@@ -436,8 +439,8 @@
      &        MHD_matrices%MG_mat_tbls(i_level)%full_conduct_q,         &
      &        MHD_matrices%MG_mat_tbls(i_level)%linear,                 &
      &        MHD_matrices%MG_mat_tbls(i_level)%fluid_l,                &
-     &        MGCG_MHD_FEM%MG_mk_MHD(i_level)%fluid,                    &
-     &        MGCG_MHD_FEM%MG_mk_MHD(i_level)%conduct,                  &
+     &        MGCG_MHD_FEM%MG_mk_MHD(i_level)%mlump_fl,                 &
+     &        MGCG_MHD_FEM%MG_mk_MHD(i_level)%mlump_cd,                 &
      &        MGCG_FEM%MG_FEM_mat(i_level)%surf_wk,                     &
      &        MGCG_FEM%MG_FEM_mat(i_level)%fem_wk,                      &
      &        MHD_matrices%Vmat_MG_DJDS(i_level),                       &

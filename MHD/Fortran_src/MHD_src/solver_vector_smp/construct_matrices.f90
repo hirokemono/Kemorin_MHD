@@ -246,7 +246,7 @@
 !
       if(cmp_no_case(FEM_PRM%CG11_param%METHOD, 'MGCG')) then
         call const_MGCG_MHD_matrices(MHD_prop%iflag_all_scheme, dt,     &
-     &      FEM_prm, SGS_param, cmt_param, Csims_FEM_MHD%ifld_diff,     &
+     &      FEM_prm, SGS_param, cmt_param, Csims_FEM_MHD,               &
      &      MHD_prop, MHD_CG1%MGCG_WK, MHD_CG1%MGCG_FEM,                &
      &      MHD_CG1%MGCG_MHD_FEM, MHD_matrices)
       end if
