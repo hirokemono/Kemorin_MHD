@@ -164,12 +164,12 @@
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'int_coriolis_nod_exp'
-      call int_coriolis_nod_exp(node, fl_prop, mhd_fem_wk,              &
+      call int_coriolis_nod_exp(node, fl_prop, mhd_fem_wk%mlump_fl,     &
      &    iphys%i_velo, nod_fld, f_l, f_nl)
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_buoyancy_nod_exp'
       call int_buoyancy_nod_exp                                         &
-     &   (node, fl_prop, mhd_fem_wk, iphys, nod_fld, f_nl)
+     &   (node, fl_prop, mhd_fem_wk%mlump_fl, iphys, nod_fld, f_nl)
 !
       call set_boundary_velo_4_rhs(node, Vnod_bcs, f_l, f_nl)
 !

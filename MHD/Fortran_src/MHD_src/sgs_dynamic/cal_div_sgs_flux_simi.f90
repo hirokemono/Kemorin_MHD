@@ -10,12 +10,12 @@
 !!      subroutine cal_div_sgs_sf_simi(i_sgs, i_flux, i_vect, i_scalar, &
 !!     &          iflag_supg, num_int, dt,                              &
 !!     &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,       &
-!!     &          jac_3d, rhs_tbl, fem_wk, mhd_fem_wk,                  &
+!!     &          jac_3d, rhs_tbl, fem_wk, mlump_fl,                    &
 !!     &          f_l, f_nl, nod_fld)
 !!      subroutine cal_div_sgs_idct_simi(i_sgs, i_flux, i_v, i_b, dt,   &
 !!     &          FEM_prm, nod_comm, node, ele, conduct,                &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                  &
-!!     &          fem_wk, mhd_fem_wk, f_l, f_nl, nod_fld)
+!!     &          fem_wk, mlump_fl, f_l, f_nl, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -26,7 +26,7 @@
 !!        type(field_geometry_data), intent(in) :: conduct
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-!!        type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
+!!        type (lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -46,7 +46,6 @@
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
-      use t_MHD_finite_element_mat
 !
       implicit none
 !
@@ -59,7 +58,7 @@
       subroutine cal_div_sgs_mf_simi(i_sgs, i_flux, i_vect, dt,         &
      &          FEM_prm, nod_comm, node, ele, fluid,                    &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                    &
-     &          fem_wk, mhd_fem_wk, f_l, f_nl, nod_fld)
+     &          fem_wk, mlump_fl, f_l, f_nl, nod_fld)
 !
       use cal_ff_smp_to_ffs
       use cal_for_ffs
@@ -76,7 +75,7 @@
       type(phys_data), intent(in) :: ele_fld
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
+      type (lumped_mass_matrices), intent(in) :: mlump_fl
 !
       integer(kind = kint), intent(in) :: i_flux, i_vect
       integer(kind = kint), intent(in) :: i_sgs
@@ -108,9 +107,8 @@
       end if
 !
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
-      call cal_ff_2_vector(node%numnod, node%istack_nod_smp,            &
-     &    f_nl%ff, mhd_fem_wk%mlump_fl%ml, nod_fld%ntot_phys,           &
-     &    i_sgs, nod_fld%d_fld)
+      call cal_ff_2_vector(node%numnod, node%istack_nod_smp, f_nl%ff,   &
+     &    mlump_fl%ml, nod_fld%ntot_phys, i_sgs, nod_fld%d_fld)
 !
 ! ----------   communications
 !
@@ -123,7 +121,7 @@
       subroutine cal_div_sgs_sf_simi(i_sgs, i_flux, i_vect, i_scalar,   &
      &          iflag_supg, num_int, dt,                                &
      &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,         &
-     &          jac_3d, rhs_tbl, fem_wk, mhd_fem_wk,                    &
+     &          jac_3d, rhs_tbl, fem_wk, mlump_fl,                      &
      &          f_l, f_nl, nod_fld)
 !
       use cal_ff_smp_to_ffs
@@ -140,7 +138,7 @@
       type(field_geometry_data), intent(in) :: fluid
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
+      type (lumped_mass_matrices), intent(in) :: mlump_fl
 !
       integer(kind = kint), intent(in) :: i_flux, i_vect, i_scalar
       integer(kind = kint), intent(in) :: i_sgs
@@ -167,9 +165,8 @@
         end if
 !
        call set_ff_nl_smp_2_ff(n_scalar, node, rhs_tbl, f_l, f_nl)
-       call cal_ff_2_scalar(node%numnod, node%istack_nod_smp,           &
-     &     f_nl%ff, mhd_fem_wk%mlump_fl%ml, nod_fld%ntot_phys,          &
-     &     i_sgs, nod_fld%d_fld)
+       call cal_ff_2_scalar(node%numnod, node%istack_nod_smp, f_nl%ff,  &
+     &     mlump_fl%ml, nod_fld%ntot_phys, i_sgs, nod_fld%d_fld)
 !
 ! ----------   communications
 !
@@ -182,7 +179,7 @@
       subroutine cal_div_sgs_idct_simi(i_sgs, i_flux, i_v, i_b, dt,     &
      &          FEM_prm, nod_comm, node, ele, conduct,                  &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                    &
-     &          fem_wk, mhd_fem_wk, f_l, f_nl, nod_fld)
+     &          fem_wk, mlump_fl, f_l, f_nl, nod_fld)
 !
       use cal_ff_smp_to_ffs
       use cal_for_ffs
@@ -199,7 +196,7 @@
       type(phys_data), intent(in) :: ele_fld
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
+      type (lumped_mass_matrices), intent(in) :: mlump_fl
 !
       integer(kind = kint), intent(in) :: i_flux, i_v, i_b
       integer(kind = kint), intent(in) :: i_sgs
@@ -225,9 +222,8 @@
       end if
 !
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
-      call cal_ff_2_vector(node%numnod, node%istack_nod_smp,            &
-     &    f_nl%ff, mhd_fem_wk%mlump_fl%ml, nod_fld%ntot_phys,           &
-     &    i_sgs, nod_fld%d_fld)
+      call cal_ff_2_vector(node%numnod, node%istack_nod_smp, f_nl%ff,   &
+     &    mlump_fl%ml, nod_fld%ntot_phys, i_sgs, nod_fld%d_fld)
 !
 ! ----------   communications
 !

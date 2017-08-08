@@ -157,7 +157,7 @@
       call cal_div_sgs_idct_simi(iphys%i_sgs_simi, iphys%i_sgs_grad_f,  &
      &    iphys%i_filter_velo, iphys%i_filter_magne, dt,                &
      &    FEM_prm, nod_comm, node, ele, conduct, iphys_ele, ele_fld,    &
-     &    jacobians%jac_3d, rhs_tbl, fem_wk, mhd_fem_wk,                &
+     &    jacobians%jac_3d, rhs_tbl, fem_wk, mhd_fem_wk%mlump_fl,       &
      &    f_l, f_nl, nod_fld)
 !
 !   take divergence of heat flux (to iphys%i_sgs_grad)
@@ -166,7 +166,7 @@
       call cal_div_sgs_idct_simi(iphys%i_sgs_grad,                      &
      &    iphys%i_SGS_induct_t, iphys%i_velo, iphys%i_magne, dt,        &
      &    FEM_prm, nod_comm, node, ele, conduct, iphys_ele, ele_fld,    &
-     &    jacobians%jac_3d, rhs_tbl, fem_wk, mhd_fem_wk,                &
+     &    jacobians%jac_3d, rhs_tbl, fem_wk, mhd_fem_wk%mlump_fl,       &
      &    f_l, f_nl, nod_fld)
 !
 !    filtering (to iphys%i_sgs_grad)
