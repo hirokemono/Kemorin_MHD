@@ -315,8 +315,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_MHD_layerd_connectivity'
       call set_MHD_connectivities                                       &
-     &   (FEM_prm%DJDS_param, mesh, MHD_mesh%fluid,                     &
-     &    fem_int1%next_tbl, fem_int1%rhs_tbl)
+     &   (FEM_prm%DJDS_param, mesh, MHD_mesh%fluid, solver_C,           &
+     &    fem_int1%next_tbl, fem_int1%rhs_tbl,  MHD1_matrices, DJDS_comm_fl)
 !
 !     ---------------------
 !
