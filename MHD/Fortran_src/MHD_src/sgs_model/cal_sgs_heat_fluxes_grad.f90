@@ -7,13 +7,13 @@
 !!     &         (iflag_supg, num_int, dt, itype_Csym_flux, icoord_Csim,&
 !!     &          i_filter, icomp_sgs_hf, i_sgs, i_field, ie_dvx,       &
 !!     &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,       &
-!!     &          jac_3d, rhs_tbl, FEM_elens, sgs_coefs,                &
+!!     &          jac_3d, rhs_tbl, FEM_elens, sgs_coefs, mlump_fl,      &
 !!     &          mhd_fem_wk, fem_wk, f_l, nod_fld)
 !!      subroutine cal_sgs_s_flux_grad_no_coef(iflag_supg, num_int, dt, &
 !!     &          i_filter, i_sgs, i_field, ie_dvx,                     &
 !!     &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,       &
-!!     &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,       &
-!!     &          f_l, nod_fld)
+!!     &          jac_3d, rhs_tbl, FEM_elens, mlump_fl,                 &
+!!     &          mhd_fem_wk, fem_wk, f_l, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -24,6 +24,7 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
+!!        type(lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l
@@ -60,7 +61,7 @@
      &         (iflag_supg, num_int, dt, itype_Csym_flux, icoord_Csim,  &
      &          i_filter, icomp_sgs_hf, i_sgs, i_field, ie_dvx,         &
      &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,         &
-     &          jac_3d, rhs_tbl, FEM_elens, sgs_coefs,                  &
+     &          jac_3d, rhs_tbl, FEM_elens, sgs_coefs, mlump_fl,        &
      &          mhd_fem_wk, fem_wk, f_l, nod_fld)
 !
       use cal_ff_smp_to_ffs
@@ -79,6 +80,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
+      type (lumped_mass_matrices), intent(in) :: mlump_fl
 !
       integer (kind=kint), intent(in) :: iflag_supg, num_int
       integer (kind=kint), intent(in) :: itype_Csym_flux, icoord_Csim
@@ -108,8 +110,7 @@
 !
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
      &    fem_wk%sk6, f_l%ff_smp)
-      call cal_ff_smp_2_vector(node, rhs_tbl,                           &
-     &    f_l%ff_smp, mhd_fem_wk%mlump_fl%ml,                           &
+      call cal_ff_smp_2_vector(node, rhs_tbl, f_l%ff_smp, mlump_fl%ml,  &
      &    nod_fld%ntot_phys, i_sgs, nod_fld%d_fld)
 !
 ! ----------   communications
@@ -123,8 +124,8 @@
       subroutine cal_sgs_s_flux_grad_no_coef(iflag_supg, num_int, dt,   &
      &          i_filter, i_sgs, i_field, ie_dvx,                       &
      &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,         &
-     &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,         &
-     &          f_l, nod_fld)
+     &          jac_3d, rhs_tbl, FEM_elens, mlump_fl,                   &
+     &          mhd_fem_wk, fem_wk, f_l, nod_fld)
 !
       use cal_ff_smp_to_ffs
       use cal_skv_to_ff_smp
@@ -140,6 +141,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type (lumped_mass_matrices), intent(in) :: mlump_fl
 !
       integer (kind=kint), intent(in) :: iflag_supg, num_int
       integer (kind=kint), intent(in) :: i_filter
@@ -163,8 +165,7 @@
 !
       call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
      &    fem_wk%sk6, f_l%ff_smp)
-      call cal_ff_smp_2_vector(node, rhs_tbl,                           &
-     &    f_l%ff_smp, mhd_fem_wk%mlump_fl%ml,                           &
+      call cal_ff_smp_2_vector(node, rhs_tbl, f_l%ff_smp, mlump_fl%ml,  &
      &    nod_fld%ntot_phys, i_sgs, nod_fld%d_fld)
 !
 ! ----------   communications

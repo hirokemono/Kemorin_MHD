@@ -9,8 +9,8 @@
 !!     &          ifilter_final, iak_diff_v, ak_d_velo, dt, FEM_prm,    &
 !!     &          nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,        &
 !!     &          iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,&
-!!     &          diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,   &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          diff_coefs, mlump_fl, Vmatrix, MG_vector,             &
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_vect_p_pre_lumped_crank                          &
 !!     &         (iflag_commute_magne, ifilter_final,                   &
 !!     &          i_vecp, i_pre_uxb, iak_diff_b, ak_d_magne, nod_bc_a,  &
@@ -31,7 +31,7 @@
 !!     &          i_pre_advect, iak_diff, ak_diffuese, eps_4_crank, dt, &
 !!     &          FEM_prm, nod_comm, node, ele, fluid, property,        &
 !!     &          Snod_bcs, iphys_ele, ele_fld, jac_3d, rhs_tbl,        &
-!!     &          FEM_elens, diff_coefs, matrix, MG_vector,             &
+!!     &          FEM_elens, diff_coefs, mlump_fl, matrix, MG_vector,   &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(communication_table), intent(in) :: nod_comm
@@ -50,6 +50,7 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
+!!        type(lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_a
 !!        type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_b
 !!        type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_c
@@ -103,8 +104,8 @@
      &          ifilter_final, iak_diff_v, ak_d_velo, dt, FEM_prm,      &
      &          nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,          &
      &          iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,  &
-     &          diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,     &
-     &          f_l, f_nl, nod_fld)
+     &          diff_coefs, mlump_fl, Vmatrix, MG_vector,               &
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_array_for_send_recv
 !
@@ -135,6 +136,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
+      type(lumped_mass_matrices), intent(in) :: mlump_fl
       type(MHD_MG_matrix), intent(in) :: Vmatrix
 !
       real(kind = kreal), intent(in) :: dt
@@ -159,25 +161,23 @@
 !
       call cal_t_evo_4_vector                                           &
      &   (FEM_prm%iflag_velo_supg, fluid%istack_ele_fld_smp, dt,        &
-     &    FEM_prm, mhd_fem_wk%mlump_fl, nod_comm,                       &
-     &    node, ele, iphys_ele, ele_fld, jac_3d, rhs_tbl,               &
-     &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
+     &    FEM_prm, mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld,   &
+     &    jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'int_coriolis_nod_exp'
-      call int_coriolis_nod_exp(node, fl_prop, mhd_fem_wk%mlump_fl,     &
+      call int_coriolis_nod_exp(node, fl_prop, mlump_fl,                &
      &    iphys%i_velo, nod_fld, f_l, f_nl)
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_buoyancy_nod_exp'
       call int_buoyancy_nod_exp                                         &
-     &   (node, fl_prop, mhd_fem_wk%mlump_fl, iphys, nod_fld, f_nl)
+     &   (node, fl_prop, mlump_fl, iphys, nod_fld, f_nl)
 !
       call set_boundary_velo_4_rhs(node, Vnod_bcs, f_l, f_nl)
 !
       call cal_sol_vec_fluid_linear                                     &
      &   (dt, node%numnod, node%istack_nod_smp,                         &
-     &    mhd_fem_wk%mlump_fl%ml_o, f_nl%ff, nod_fld%ntot_phys,         &
-     &    n_vector, iphys%i_velo, iphys%i_pre_mom, nod_fld%d_fld,       &
-     &    f_l%ff)
+     &    mlump_fl%ml_o, f_nl%ff, nod_fld%ntot_phys, n_vector,          &
+     &    iphys%i_velo, iphys%i_pre_mom, nod_fld%d_fld, f_l%ff)
 !
       call solver_crank_vector                                          &
      &   (node, FEM_prm%MG_param, Vmatrix%nlevel_MG,                    &
@@ -364,7 +364,7 @@
      &          i_pre_advect, iak_diff, ak_diffuese, eps_4_crank,       &
      &          dt, FEM_prm, nod_comm, node, ele, fluid, property,      &
      &          Snod_bcs, iphys_ele, ele_fld, jac_3d, rhs_tbl,          &
-     &          FEM_elens, diff_coefs, matrix, MG_vector,               &
+     &          FEM_elens, diff_coefs, mlump_fl, matrix, MG_vector,     &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_array_for_send_recv
@@ -396,6 +396,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
+      type(lumped_mass_matrices), intent(in) :: mlump_fl
       type(MHD_MG_matrix), intent(in) :: matrix
 !
       real(kind = kreal), intent(in) :: dt
@@ -423,16 +424,15 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'multi_pass temp'
       call cal_t_evo_4_scalar(iflag_supg, fluid%istack_ele_fld_smp, dt, &
-     &    FEM_prm, mhd_fem_wk%mlump_fl, nod_comm,                       &
-     &    node, ele, iphys_ele, ele_fld, jac_3d, rhs_tbl,               &
-     &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
+     &    FEM_prm, mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld,   &
+     &    jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
       call set_boundary_rhs_scalar(node, Snod_bcs%nod_bc_s, f_l, f_nl)
 !
       call cal_sol_vec_fluid_linear                                     &
-     &   (dt, node%numnod, node%istack_nod_smp,                         &
-     &    mhd_fem_wk%mlump_fl%ml_o, f_nl%ff, nod_fld%ntot_phys,         &
-     &    n_scalar, i_field, i_pre_advect, nod_fld%d_fld, f_l%ff)
+     &   (dt, node%numnod, node%istack_nod_smp, mlump_fl%ml_o,          &
+     &    f_nl%ff, nod_fld%ntot_phys, n_scalar, i_field, i_pre_advect,  &
+     &    nod_fld%d_fld, f_l%ff)
 !
       call solver_crank_scalar                                          &
      &   (node, FEM_prm%MG_param, matrix%nlevel_MG,                     &

@@ -6,7 +6,7 @@
 !!      subroutine cal_velo_co_lumped_crank(i_velo, dt,                 &
 !!     &          FEM_prm, nod_comm, node, ele, fluid, fl_prop,         &
 !!     &          Vnod_bcs, nod_fld, iphys_ele, fld_ele, jac_3d,        &
-!!     &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
+!!     &          rhs_tbl, mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl)
 !!      subroutine cal_magne_co_lumped_crank(i_magne, dt,               &
 !!     &          FEM_prm, nod_comm, node, ele, nod_fld,                &
 !!     &          iphys_ele, fld_ele, nod_bc_b, jac_3d, rhs_tbl,        &
@@ -28,6 +28,7 @@
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_b
+!!        type(lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -61,7 +62,7 @@
       subroutine cal_velo_co_lumped_crank(i_velo, dt,                   &
      &          FEM_prm, nod_comm, node, ele, fluid, fl_prop,           &
      &          Vnod_bcs, nod_fld, iphys_ele, fld_ele, jac_3d,          &
-     &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl)
+     &          rhs_tbl, mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl)
 !
       use int_vol_coriolis_term
       use cal_multi_pass
@@ -83,6 +84,7 @@
       type(phys_data), intent(in) :: fld_ele
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -92,22 +94,20 @@
       if (iflag_debug.eq.1) write(*,*) 'cal_t_evo_4_vector_fl'
       call cal_t_evo_4_vector                                           &
      &   (FEM_prm%iflag_velo_supg, fluid%istack_ele_fld_smp, dt,        &
-     &    FEM_prm, mhd_fem_wk%mlump_fl, nod_comm,                       &
-     &    node, ele, iphys_ele, fld_ele, jac_3d, rhs_tbl,               &
-     &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
+     &    FEM_prm, mlump_fl, nod_comm, node, ele, iphys_ele, fld_ele,   &
+     &    jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'int_coriolis_nod_exp'
-      call int_coriolis_nod_exp(node, fl_prop, mhd_fem_wk%mlump_fl,     &
-     &    i_velo, nod_fld, f_l, f_nl)
+      call int_coriolis_nod_exp                                         &
+     &   (node, fl_prop, mlump_fl, i_velo, nod_fld, f_l, f_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_velo_4_rhs'
       call set_boundary_velo_4_rhs(node, Vnod_bcs, f_l, f_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_velo_co_crank'
       call cal_sol_velo_co_crank_lump                                   &
-     &   (dt, nod_fld%n_point, node%istack_internal_smp,                &
-     &    mhd_fem_wk%mlump_fl%ml_o, nod_fld%ntot_phys,                  &
-     &    i_velo, nod_fld%d_fld, f_nl%ff, f_l%ff)
+     &   (dt, nod_fld%n_point, node%istack_internal_smp, mlump_fl%ml_o, &
+     &    nod_fld%ntot_phys, i_velo, nod_fld%d_fld, f_nl%ff, f_l%ff)
 !
       end subroutine cal_velo_co_lumped_crank
 !

@@ -283,14 +283,16 @@
       if (fl_prop%iflag_scheme .eq. id_explicit_euler) then
         call cal_velo_pre_euler(dt, FEM_prm, nod_comm, node, ele,       &
      &     fluid, fl_prop, iphys, iphys_ele, ele_fld,                   &
-     &     fem_int%jcs%jac_3d, fem_int%rhs_tbl, mhd_fem_wk,             &
-     &     rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &     fem_int%jcs%jac_3d, fem_int%rhs_tbl, mhd_fem_wk%mlump_fl,    &
+     &     mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl,       &
+     &     nod_fld)
 !
       else if(fl_prop%iflag_scheme .eq. id_explicit_adams2) then
         call cal_velo_pre_adams(dt, FEM_prm, nod_comm, node, ele,       &
      &     fluid, fl_prop, iphys, iphys_ele, ele_fld,                   &
-     &     fem_int%jcs%jac_3d, fem_int%rhs_tbl, mhd_fem_wk,             &
-     &     rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &     fem_int%jcs%jac_3d, fem_int%rhs_tbl, mhd_fem_wk%mlump_fl,    &
+     &     mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl,       &
+     &     nod_fld)
 !
       else if(fl_prop%iflag_scheme .eq. id_Crank_nicolson) then
         call cal_velo_pre_lumped_crank(SGS_par%commute_p%iflag_c_velo,  &
@@ -298,8 +300,8 @@
      &      ifld_diff%i_velo, ak_MHD%ak_d_velo, dt, FEM_prm,            &
      &      nod_comm, node, ele, fluid, fl_prop,                        &
      &      Vnod_bcs, iphys, iphys_ele, ele_fld,                        &
-     &      fem_int%jcs%jac_3d, fem_int%rhs_tbl,                        &
-     &      FEM_elens, diff_coefs, Vmatrix, MG_vector, mhd_fem_wk,      &
+     &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, FEM_elens, diff_coefs, &
+     &      mhd_fem_wk%mlump_fl, Vmatrix, MG_vector, mhd_fem_wk,        &
      &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
 !
       else if(fl_prop%iflag_scheme .eq. id_Crank_nicolson_cmass) then 
@@ -413,8 +415,9 @@
       else
         call cal_velocity_co_exp(iphys%i_velo, iphys%i_p_phi,           &
      &      FEM_prm, nod_comm, node, ele, fluid,                        &
-     &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, mhd_fem_wk,            &
-     &      rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
+     &      fem_int%jcs%jac_3d, fem_int%rhs_tbl, mhd_fem_wk%mlump_fl,   &
+     &      mhd_fem_wk, rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl,      &
+     &      nod_fld)
       end if
 !
 !

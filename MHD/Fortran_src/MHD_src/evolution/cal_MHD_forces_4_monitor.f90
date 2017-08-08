@@ -193,7 +193,7 @@
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, ht_prop,               &
      &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, fem_int,              &
-     &      mhd_fem_wk, rhs_mat, nod_fld)
+     &      mhd_fem_wk%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld)
       end if
 !
       if(iphys%i_ph_advect .gt. izero) then
@@ -204,7 +204,7 @@
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, ht_prop,               &
      &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, fem_int,              &
-     &      mhd_fem_wk, rhs_mat, nod_fld)
+     &      mhd_fem_wk%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld)
       end if
 !
       if(iphys%i_h_flux_div .gt. izero) then
@@ -215,7 +215,7 @@
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, ht_prop,               &
      &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, fem_int,              &
-     &      mhd_fem_wk, rhs_mat, nod_fld)
+     &      mhd_fem_wk%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld)
       end if
 !
       if(iphys%i_ph_flux_div .gt. izero) then
@@ -226,7 +226,7 @@
      &      FEM_prm%iflag_temp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, ht_prop,               &
      &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, fem_int,              &
-     &      mhd_fem_wk, rhs_mat, nod_fld)
+     &      mhd_fem_wk%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld)
       end if
 !
 !
@@ -238,7 +238,7 @@
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, cp_prop,               &
      &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, fem_int,              &
-     &      mhd_fem_wk, rhs_mat, nod_fld)
+     &      mhd_fem_wk%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld)
       end if
 !
       if(iphys%i_pc_advect .gt. izero) then
@@ -249,7 +249,7 @@
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, cp_prop,               &
      &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, fem_int,              &
-     &      mhd_fem_wk, rhs_mat, nod_fld)
+     &      mhd_fem_wk%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld)
       end if
 !
       if(iphys%i_c_flux_div .gt. izero) then
@@ -260,7 +260,7 @@
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, cp_prop,               &
      &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, fem_int,              &
-     &      mhd_fem_wk, rhs_mat, nod_fld)
+     &      mhd_fem_wk%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld)
       end if
 !
       if(iphys%i_pc_flux_div .gt. izero) then
@@ -271,7 +271,7 @@
      &      FEM_prm%iflag_comp_supg, FEM_prm%npoint_t_evo_int, dt,      &
      &      FEM_prm, nod_comm, node, ele, fluid, cp_prop,               &
      &      nod_bcs%Tnod_bcs, iphys_ele, ele_fld, fem_int,              &
-     &      mhd_fem_wk, rhs_mat, nod_fld)
+     &      mhd_fem_wk%mlump_fl, mhd_fem_wk, rhs_mat, nod_fld)
       end if
 !
 !
@@ -294,7 +294,8 @@
      &        node, ele, surf, sf_grp, fluid, fl_prop, cd_prop,         &
      &        surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, iphys, iphys_ele,     &
      &        ak_MHD, fem_int, FEM_elens, diff_coefs,                   &
-     &        mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
+     &        mhd_fem_wk%mlump_fl, mhd_fem_wk, rhs_mat,                 &
+     &        nod_fld, ele_fld)
         end if
       end do
 !
@@ -335,7 +336,7 @@
      &     ak_MHD%ak_d_temp, FEM_prm%npoint_t_evo_int,                  &
      &     SGS_par%model_p, nod_comm, node, ele, surf, fluid, sf_grp,   &
      &     nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, fem_int, FEM_elens,      &
-     &     diff_coefs, mhd_fem_wk, rhs_mat, nod_fld)
+     &     diff_coefs, mhd_fem_wk%mlump_fl, rhs_mat, nod_fld)
       end if
 !
       if (iphys%i_c_diffuse .gt. izero) then
@@ -346,7 +347,7 @@
      &      ak_MHD%ak_d_composit, FEM_prm%npoint_t_evo_int,             &
      &      SGS_par%model_p, nod_comm, node, ele, surf, fluid, sf_grp,  &
      &      nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, fem_int, FEM_elens,     &
-     &      diff_coefs, mhd_fem_wk, rhs_mat, nod_fld)
+     &      diff_coefs, mhd_fem_wk%mlump_fl, rhs_mat, nod_fld)
       end if
 !
       if (iphys%i_v_diffuse .gt. izero) then
@@ -357,8 +358,8 @@
      &      FEM_prm, SGS_par%model_p, SGS_par%commute_p,                &
      &      nod_comm, node, ele, surf, sf_grp, fluid, fl_prop,          &
      &      nod_bcs%Vnod_bcs, surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs,       &
-     &      iphys, ak_MHD, fem_int, FEM_elens, diff_coefs, mhd_fem_wk,  &
-     &      rhs_mat, nod_fld)
+     &      iphys, ak_MHD, fem_int, FEM_elens, diff_coefs,              &
+     &      mhd_fem_wk%mlump_fl, rhs_mat, nod_fld)
       end if
 !
       if (iphys%i_vp_diffuse .gt. izero) then

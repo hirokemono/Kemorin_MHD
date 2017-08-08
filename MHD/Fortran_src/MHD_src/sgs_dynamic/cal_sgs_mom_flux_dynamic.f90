@@ -145,7 +145,7 @@
      &    iphys%i_sgs_grad_f, iphys%i_filter_velo, ie_dfvx, dt,         &
      &    FEM_prm, nod_comm, node, ele, fluid, iphys_ele, ele_fld,      &
      &    jacobians%jac_3d, FEM_elens, rhs_tbl,                         &
-     &    fem_wk, mhd_fem_wk, nod_fld)
+     &    mhd_fem_wk%mlump_fl, fem_wk, mhd_fem_wk, nod_fld)
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_sym_tensor, iphys%i_sgs_grad_f)
 !
@@ -156,7 +156,7 @@
      &    iphys%i_SGS_m_flux, iphys%i_velo, ie_dvx, dt,                 &
      &    FEM_prm, nod_comm, node, ele, fluid, iphys_ele, ele_fld,      &
      &    jacobians%jac_3d, FEM_elens, rhs_tbl,                         &
-     &    fem_wk, mhd_fem_wk, nod_fld)
+     &    mhd_fem_wk%mlump_fl, fem_wk, mhd_fem_wk, nod_fld)
 !
 !      filtering
 !

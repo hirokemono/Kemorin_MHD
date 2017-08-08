@@ -6,12 +6,12 @@
 !!      subroutine cal_terms_4_advect                                   &
 !!     &         (i_field, i_scalar, iflag_supg, num_int, dt,           &
 !!     &          FEM_prm, nod_comm, node, ele, fluid, property,        &
-!!     &          Snod_bcs, iphys_ele, ele_fld, fem_int,                &
+!!     &          Snod_bcs, iphys_ele, ele_fld, fem_int, mlump_fl,      &
 !!     &          mhd_fem_wk, rhs_mat, nod_fld)
 !!      subroutine cal_div_of_scalar_flux                               &
 !!     &         (i_field, i_vector, iflag_supg, num_int, dt,           &
 !!     &          FEM_prm, nod_comm, node, ele, fluid, property,        &
-!!     &          Snod_bcs,  iphys_ele, ele_fld, fem_int,               &
+!!     &          Snod_bcs,  iphys_ele, ele_fld, fem_int, mlump_fl,     &
 !!     &          mhd_fem_wk, rhs_mat, nod_fld)
 !!        type(nodal_bcs_4_scalar_type), intent(in) :: Snod_bcs
 !!
@@ -19,7 +19,7 @@
 !!     &         (i_field, i_scalar, iak_diffuse, ak_diffuse, num_int,  &
 !!     &          SGS_param, nod_comm, node, ele, surf, fluid, sf_grp,  &
 !!     &          Snod_bcs, Ssf_bcs, fem_int, FEM_elens, diff_coefs,    &
-!!     &          mhd_fem_wk, rhs_mat, nod_fld)
+!!     &          mlump_fl, rhs_mat, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(communication_table), intent(in) :: nod_comm
@@ -37,6 +37,7 @@
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
+!!        type(lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -85,7 +86,7 @@
       subroutine cal_terms_4_advect                                     &
      &         (i_field, i_scalar, iflag_supg, num_int, dt,             &
      &          FEM_prm, nod_comm, node, ele, fluid, property,          &
-     &          Snod_bcs, iphys_ele, ele_fld, fem_int,                  &
+     &          Snod_bcs, iphys_ele, ele_fld, fem_int, mlump_fl,        &
      &          mhd_fem_wk, rhs_mat, nod_fld)
 !
       use int_vol_inertia
@@ -104,6 +105,7 @@
       type(phys_data), intent(in) :: ele_fld
       type(field_geometry_data), intent(in) :: fluid
       type(finite_element_integration), intent(in) :: fem_int
+      type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
@@ -128,19 +130,18 @@
       end if
 !
       call cal_t_evo_4_scalar(iflag_supg, fluid%istack_ele_fld_smp, dt, &
-     &    FEM_prm, mhd_fem_wk%mlump_fl, nod_comm, node, ele, iphys_ele, &
-     &    ele_fld, fem_int%jcs%jac_3d, fem_int%rhs_tbl,                 &
-     &    mhd_fem_wk%ff_m_smp, rhs_mat%fem_wk,                          &
-     &    rhs_mat%f_l, rhs_mat%f_nl)
+     &    FEM_prm, mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld,   &
+     &    fem_int%jcs%jac_3d, fem_int%rhs_tbl, mhd_fem_wk%ff_m_smp,     &
+     &    rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl)
 !
       call set_boundary_rhs_scalar                                      &
      &   (node, Snod_bcs%nod_bc_s, rhs_mat%f_l, rhs_mat%f_nl)
 !
 !       call check_ff(my_rank, n_scalar, node%numnod, rhs_mat%f_nl)
 !
-      call cal_ff_2_scalar(node%numnod, node%istack_nod_smp,            &
-     &    rhs_mat%f_nl%ff, mhd_fem_wk%mlump_fl%ml,                      &
-     &    nod_fld%ntot_phys, i_field, nod_fld%d_fld)
+      call cal_ff_2_scalar                                              &
+     &   (node%numnod, node%istack_nod_smp, rhs_mat%f_nl%ff,            &
+     &    mlump_fl%ml, nod_fld%ntot_phys, i_field, nod_fld%d_fld)
 !
 !   communication
 !
@@ -153,7 +154,7 @@
       subroutine cal_div_of_scalar_flux                                 &
      &         (i_field, i_vector, iflag_supg, num_int, dt,             &
      &          FEM_prm, nod_comm, node, ele, fluid, property,          &
-     &          Snod_bcs,  iphys_ele, ele_fld, fem_int,                 &
+     &          Snod_bcs,  iphys_ele, ele_fld, fem_int, mlump_fl,       &
      &          mhd_fem_wk, rhs_mat, nod_fld)
 !
       use int_vol_vect_cst_difference
@@ -173,7 +174,7 @@
       type(phys_data), intent(in) :: ele_fld
       type(field_geometry_data), intent(in) :: fluid
       type(finite_element_integration), intent(in) :: fem_int
-!
+      type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
@@ -198,7 +199,7 @@
 !
       call cal_t_evo_4_scalar                                           &
      &   (iflag_supg, fluid%istack_ele_fld_smp, dt, FEM_prm,            &
-     &    mhd_fem_wk%mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld, &
+     &    mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld,            &
      &    fem_int%jcs%jac_3d, fem_int%rhs_tbl, mhd_fem_wk%ff_m_smp,     &
      &    rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl)
 !
@@ -207,9 +208,9 @@
 !
 !       call check_ff(my_rank, n_scalar, node%numnod, rhs_mat%f_nl)
 !
-      call cal_ff_2_scalar(node%numnod, node%istack_nod_smp,            &
-     &    rhs_mat%f_nl%ff, mhd_fem_wk%mlump_fl%ml,                      &
-     &    nod_fld%ntot_phys, i_field, nod_fld%d_fld)
+      call cal_ff_2_scalar                                              &
+     &   (node%numnod, node%istack_nod_smp, rhs_mat%f_nl%ff,            &
+     &    mlump_fl%ml, nod_fld%ntot_phys, i_field, nod_fld%d_fld)
 !
 !   communication
 !
@@ -224,7 +225,7 @@
      &         (i_field, i_scalar, iak_diffuse, ak_diffuse, num_int,    &
      &          SGS_param, nod_comm, node, ele, surf, fluid, sf_grp,    &
      &          Snod_bcs, Ssf_bcs, fem_int, FEM_elens, diff_coefs,      &
-     &          mhd_fem_wk, rhs_mat, nod_fld)
+     &          mlump_fl, rhs_mat, nod_fld)
 !
       use int_vol_diffusion_ele
       use int_surf_fixed_gradients
@@ -241,7 +242,7 @@
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
-      type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
+      type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
       integer (kind=kint), intent(in) :: i_field, i_scalar
       integer (kind=kint), intent(in) :: num_int
@@ -270,9 +271,9 @@
       call set_boundary_rhs_scalar                                      &
      &   (node, Snod_bcs%nod_bc_s, rhs_mat%f_l, rhs_mat%f_nl)
 !
-      call cal_ff_2_scalar(node%numnod, node%istack_nod_smp,            &
-     &    rhs_mat%f_l%ff, mhd_fem_wk%mlump_fl%ml,                       &
-     &    nod_fld%ntot_phys, i_field, nod_fld%d_fld)
+      call cal_ff_2_scalar                                              &
+     &   (node%numnod, node%istack_nod_smp, rhs_mat%f_l%ff,             &
+     &    mlump_fl%ml, nod_fld%ntot_phys, i_field, nod_fld%d_fld)
 !
 !   communication
 !

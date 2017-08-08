@@ -332,7 +332,8 @@
      &      MHD_prop1%fl_prop, MHD_prop1%cd_prop,                       &
      &      sf1_bcs%Vsf_bcs, sf1_bcs%Bsf_bcs, iphys, iphys_ele, ak_MHD, &
      &      fem_int1, FEM1_elen, Csims_FEM_MHD1%diff_coefs,             &
-     &      mhd_fem1_wk, rhs_mat1, nod_fld1, fld_ele1)
+     &      mhd_fem1_wk%mlump_fl, mhd_fem1_wk, rhs_mat1,                &
+     &      nod_fld1, fld_ele1)
       end if
 !
 !$omp parallel

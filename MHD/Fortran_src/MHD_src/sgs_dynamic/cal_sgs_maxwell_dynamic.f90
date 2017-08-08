@@ -143,7 +143,7 @@
      &    iphys%i_sgs_grad_f, iphys%i_filter_magne, ie_dfbx, dt,        &
      &    FEM_prm, nod_comm, node, ele, fluid, iphys_ele, fld_ele,      &
      &    jacobians%jac_3d, FEM_elens, rhs_tbl,                         &
-     &    fem_wk, mhd_fem_wk, nod_fld)
+     &    mhd_fem_wk%mlump_fl, fem_wk, mhd_fem_wk, nod_fld)
 !
 !   gradient model by original field
 !
@@ -152,7 +152,7 @@
      &    iphys%i_SGS_maxwell, iphys%i_magne, ie_dbx, dt,               &
      &    FEM_prm, nod_comm, node, ele, fluid, iphys_ele, fld_ele,      &
      &    jacobians%jac_3d, FEM_elens, rhs_tbl,                         &
-     &    fem_wk, mhd_fem_wk, nod_fld)
+     &    mhd_fem_wk%mlump_fl, fem_wk, mhd_fem_wk, nod_fld)
 !
 !      filtering
 !

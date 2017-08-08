@@ -264,8 +264,8 @@
      &      cmt_param%iflag_c_hf, cmt_param%iflag_c_temp, dt,           &
      &      FEM_prm, nod_comm, node, ele, surf, fluid, sf_grp, ht_prop, &
      &      nod_bcs%Tnod_bcs, surf_bcs%Tsf_bcs, iphys_ele, ele_fld,     &
-     &      fem_int, FEM_elens, diff_coefs, mhd_fem_wk, rhs_mat,        &
-     &      nod_fld)
+     &      fem_int, FEM_elens, diff_coefs, mhd_fem_wk%mlump_fl,        &
+     &      mhd_fem_wk, rhs_mat, nod_fld)
       end if
 !
       if (iphys%i_SGS_div_c_flux .gt. 0) then
@@ -278,8 +278,8 @@
      &      cmt_param%iflag_c_cf, cmt_param%iflag_c_light, dt,          &
      &      FEM_prm, nod_comm, node, ele, surf, fluid, sf_grp, cp_prop, &
      &      nod_bcs%Cnod_bcs, surf_bcs%Csf_bcs, iphys_ele, ele_fld,     &
-     &      fem_int, FEM_elens, diff_coefs, mhd_fem_wk, rhs_mat,        &
-     &      nod_fld)
+     &      fem_int, FEM_elens, diff_coefs, mhd_fem_wk%mlump_fl,        &
+     &      mhd_fem_wk, rhs_mat, nod_fld)
       end if
 !
       do i = 1, nod_fld%num_phys
@@ -293,8 +293,9 @@
      &        FEM_prm, SGS_param, cmt_param, nod_comm, node, ele, surf, &
      &        sf_grp, fluid, fl_prop, cd_prop,                          &
      &        surf_bcs%Vsf_bcs, surf_bcs%Bsf_bcs, iphys, iphys_ele,     &
-     &        ak_MHD, fem_int, FEM_elens, diff_coefs, mhd_fem_wk,       &
-     &        rhs_mat, nod_fld, ele_fld)
+     &        ak_MHD, fem_int, FEM_elens, diff_coefs,                   &
+     &        mhd_fem_wk%mlump_fl, mhd_fem_wk, rhs_mat,                 &
+     &        nod_fld, ele_fld)
         end if
       end do
 !

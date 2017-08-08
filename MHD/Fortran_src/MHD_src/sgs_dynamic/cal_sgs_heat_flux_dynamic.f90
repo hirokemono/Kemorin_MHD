@@ -151,7 +151,7 @@
      &   (iflag_supg, num_int, dt, ifilter_4delta,                      &
      &    iphys%i_sgs_grad_f, ifield_f, ie_dfvx,                        &
      &    nod_comm, node, ele, fluid, iphys_ele, ele_fld,               &
-     &    jacobians%jac_3d, rhs_tbl, FEM_elens,                         &
+     &    jacobians%jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk%mlump_fl,    &
      &    mhd_fem_wk, fem_wk, f_l, nod_fld)
 !
 !   gradient model by original field
@@ -160,7 +160,7 @@
       call cal_sgs_s_flux_grad_no_coef(iflag_supg, num_int, dt,         &
      &    ifilter_2delta, i_sgs, ifield, ie_dvx,                        &
      &    nod_comm, node, ele, fluid, iphys_ele, ele_fld,               &
-     &    jacobians%jac_3d, rhs_tbl, FEM_elens,                         &
+     &    jacobians%jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk%mlump_fl,    &
      &    mhd_fem_wk, fem_wk, f_l, nod_fld)
 !
 !      filtering

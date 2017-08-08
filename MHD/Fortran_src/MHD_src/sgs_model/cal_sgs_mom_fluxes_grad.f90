@@ -7,12 +7,12 @@
 !!     &         (i_filter, icm_sgs, i_sgs, i_field, ie_dvx, dt,        &
 !!     &          FEM_prm, SGS_param, nod_comm, node, ele, fluid,       &
 !!     &          iphys_ele, ele_fld, jac_3d, FEM_elens, sgs_coefs,     &
-!!     &          rhs_tbl, fem_wk, mhd_fem_wk, nod_fld)
+!!     &          rhs_tbl, mlump_fl, fem_wk, mhd_fem_wk, nod_fld)
 !!      subroutine cal_sgs_m_flux_grad_no_coef                          &
 !!     &         (i_filter, i_sgs, i_field, ie_dvx, dt,                 &
 !!     &          FEM_prm, nod_comm, node, ele, fluid,                  &
 !!     &          iphys_ele, ele_fld, jac_3d, FEM_elens,                &
-!!     &           rhs_tbl, fem_wk, mhd_fem_wk, nod_fld)
+!!     &          rhs_tbl, mlump_fl, fem_wk, mhd_fem_wk, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(communication_table), intent(in) :: nod_comm
@@ -25,6 +25,7 @@
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type (lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -63,7 +64,7 @@
      &         (i_filter, icm_sgs, i_sgs, i_field, ie_dvx, dt,          &
      &          FEM_prm, SGS_param, nod_comm, node, ele, fluid,         &
      &          iphys_ele, ele_fld, jac_3d, FEM_elens, sgs_coefs,       &
-     &          rhs_tbl, fem_wk, mhd_fem_wk, nod_fld)
+     &          rhs_tbl, mlump_fl, fem_wk, mhd_fem_wk, nod_fld)
 !
       use cal_ff_smp_to_ffs
       use cal_skv_to_ff_smp
@@ -83,6 +84,7 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type (lumped_mass_matrices), intent(in) :: mlump_fl
 !
       integer (kind=kint), intent(in) :: i_filter, icm_sgs
       integer (kind=kint), intent(in) :: i_sgs, i_field
@@ -112,8 +114,7 @@
       call add6_skv_to_ff_t_smp(node, ele, rhs_tbl,                     &
      &     fem_wk%sk6, mhd_fem_wk%ff_t_smp)
       call cal_ff_smp_2_tensor(node, rhs_tbl, mhd_fem_wk%ff_t_smp,      &
-     &    mhd_fem_wk%mlump_fl%ml, nod_fld%ntot_phys,                    &
-     &    i_sgs, nod_fld%d_fld)
+     &    mlump_fl%ml, nod_fld%ntot_phys, i_sgs, nod_fld%d_fld)
 !
 ! ----------   communications
 !
@@ -127,7 +128,7 @@
      &         (i_filter, i_sgs, i_field, ie_dvx, dt,                   &
      &          FEM_prm, nod_comm, node, ele, fluid,                    &
      &          iphys_ele, ele_fld, jac_3d, FEM_elens,                  &
-     &          rhs_tbl, fem_wk, mhd_fem_wk, nod_fld)
+     &          rhs_tbl, mlump_fl, fem_wk, mhd_fem_wk, nod_fld)
 !
       use cal_ff_smp_to_ffs
       use cal_skv_to_ff_smp
@@ -144,6 +145,7 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type (lumped_mass_matrices), intent(in) :: mlump_fl
 !
       integer (kind=kint), intent(in) :: i_filter
       integer (kind=kint), intent(in) :: i_sgs, i_field
@@ -167,8 +169,7 @@
       call add6_skv_to_ff_t_smp(node, ele, rhs_tbl,                     &
      &    fem_wk%sk6, mhd_fem_wk%ff_t_smp)
       call cal_ff_smp_2_tensor(node, rhs_tbl, mhd_fem_wk%ff_t_smp,      &
-     &    mhd_fem_wk%mlump_fl%ml, nod_fld%ntot_phys,                    &
-     &    i_sgs, nod_fld%d_fld)
+     &    mlump_fl%ml, nod_fld%ntot_phys, i_sgs, nod_fld%d_fld)
 !
 ! ----------   communications
 !

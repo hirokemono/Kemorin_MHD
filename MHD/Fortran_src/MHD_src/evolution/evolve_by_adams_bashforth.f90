@@ -7,7 +7,8 @@
 !
 !!      subroutine cal_velo_pre_adams(dt, FEM_prm, nod_comm, node, ele, &
 !!     &          fluid, fl_prop, iphys, iphys_ele, ele_fld, jac_3d,    &
-!!     &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          rhs_tbl, mlump_fl, mhd_fem_wk, fem_wk,                &
+!!     &          f_l, f_nl, nod_fld)
 !!      subroutine cal_magne_pre_adams(i_field, i_previous, dt,         &
 !!     &          FEM_prm, nod_comm, node, ele, conduct,                &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                  &
@@ -15,7 +16,7 @@
 !!      subroutine cal_scalar_pre_adams                                 &
 !!     &         (iflag_supg, i_field, i_previous, dt,                  &
 !!     &          FEM_prm, nod_comm, node, ele, fluid,                  &
-!!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                  &
+!!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, mlump_fl,        &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(communication_table), intent(in) :: nod_comm
@@ -27,6 +28,7 @@
 !!        type(phys_data), intent(in) :: ele_fld
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -63,7 +65,8 @@
 !
       subroutine cal_velo_pre_adams(dt, FEM_prm, nod_comm, node, ele,   &
      &          fluid, fl_prop, iphys, iphys_ele, ele_fld, jac_3d,      &
-     &          rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          rhs_tbl, mlump_fl, mhd_fem_wk, fem_wk,                  &
+     &          f_l, f_nl, nod_fld)
 !
       use cal_multi_pass
       use cal_sol_field_explicit
@@ -82,6 +85,7 @@
       type(phys_data), intent(in) :: ele_fld
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -91,21 +95,19 @@
 !
       call cal_t_evo_4_vector                                           &
      &   (FEM_prm%iflag_velo_supg, fluid%istack_ele_fld_smp, dt,        &
-     &    FEM_prm, mhd_fem_wk%mlump_fl, nod_comm,                       &
-     &    node, ele, iphys_ele, ele_fld, jac_3d, rhs_tbl,               &
-     &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
+     &    FEM_prm, mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld,   &
+     &    jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_coriolis_nod_exp'
-      call int_coriolis_nod_exp(node, fl_prop, mhd_fem_wk%mlump_fl,     &
-     &    iphys%i_velo, nod_fld, f_l, f_nl)
+      call int_coriolis_nod_exp                                         &
+     &   (node, fl_prop, mlump_fl, iphys%i_velo, nod_fld, f_l, f_nl)
       if (iflag_debug.eq.1)  write(*,*) 'int_buoyancy_nod_exp'
       call int_buoyancy_nod_exp                                         &
-     &   (node, fl_prop, mhd_fem_wk%mlump_fl, iphys, nod_fld, f_nl)
+     &   (node, fl_prop, mlump_fl, iphys, nod_fld, f_nl)
 !
       call cal_sol_vect_pre_fluid_adams                                 &
-     &   (dt, node%numnod, node%istack_internal_smp,                    &
-     &    mhd_fem_wk%mlump_fl%ml, f_l%ff, f_nl%ff,                      &
-     &    nod_fld%ntot_phys, n_vector, iphys%i_velo,                    &
+     &   (dt, node%numnod, node%istack_internal_smp, mlump_fl%ml,       &
+     &    f_l%ff, f_nl%ff, nod_fld%ntot_phys, n_vector, iphys%i_velo,   &
      &    iphys%i_pre_mom, nod_fld%d_fld)
 !
       end subroutine cal_velo_pre_adams
@@ -159,7 +161,7 @@
       subroutine cal_scalar_pre_adams                                   &
      &         (iflag_supg, i_field, i_previous, dt,                    &
      &          FEM_prm, nod_comm, node, ele, fluid,                    &
-     &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                    &
+     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, mlump_fl,          &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use cal_multi_pass
@@ -178,6 +180,7 @@
       type(phys_data), intent(in) :: ele_fld
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -186,16 +189,14 @@
 !
 !
       call cal_t_evo_4_scalar(iflag_supg, fluid%istack_ele_fld_smp, dt, &
-     &    FEM_prm, mhd_fem_wk%mlump_fl, nod_comm,                       &
-     &    node, ele, iphys_ele, ele_fld, jac_3d, rhs_tbl,               &
-     &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
+     &    FEM_prm, mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld,   &
+     &    jac_3d, rhs_tbl, mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !      call check_ff(my_rank, n_scalar, node%numnod, f_l)
 !      call check_ff(my_rank, n_scalar, node%numnod, f_nl)
       call cal_sol_vect_pre_fluid_adams                                 &
      &   (dt, node%numnod, node%istack_internal_smp,                    &
-     &    mhd_fem_wk%mlump_fl%ml, f_l%ff, f_nl%ff,                      &
-     &    nod_fld%ntot_phys, n_scalar, i_field, i_previous,             &
-     &    nod_fld%d_fld)
+     &    mlump_fl%ml, f_l%ff, f_nl%ff, nod_fld%ntot_phys,              &
+     &    n_scalar, i_field, i_previous, nod_fld%d_fld)
 !
       end subroutine cal_scalar_pre_adams
 !

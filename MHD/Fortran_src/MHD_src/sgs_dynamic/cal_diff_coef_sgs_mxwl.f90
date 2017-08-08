@@ -151,7 +151,7 @@
      &    iphys%i_sgs_grad_f, iphys%i_filter_magne, ie_dfbx, dt,        &
      &    FEM_prm, SGS_par%model_p, nod_comm, node, ele, fluid,         &
      &    iphys_ele, ele_fld, jacobians%jac_3d, FEM_elens, sgs_coefs,   &
-     &    rhs_tbl, fem_wk, mhd_fem_wk, nod_fld)
+     &    rhs_tbl, mhd_fem_wk%mlump_fl, fem_wk, mhd_fem_wk, nod_fld)
 !
 !   take divergence of filtered heat flux (to iphys%i_sgs_simi)
 !

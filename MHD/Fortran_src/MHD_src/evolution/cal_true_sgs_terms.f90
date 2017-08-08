@@ -284,7 +284,8 @@
       call cal_div_of_scalar_flux                                       &
      &   (i_div_flux, i_flux, iflag_supg, num_int, dt,                  &
      &    FEM_prm, nod_comm, node, ele, fluid, property, Snod_bcs,      &
-     &    iphys_ele, ele_fld, fem_int, mhd_fem_wk, rhs_mat, nod_fld)
+     &    iphys_ele, ele_fld, fem_int, mhd_fem_wk%mlump_fl,             &
+     &    mhd_fem_wk, rhs_mat, nod_fld)
       call copy_scalar_component(nod_fld,                               &
      &    i_div_flux, i_div_flux_true)
 !
@@ -337,7 +338,8 @@
      &    FEM_prm, SGS_par%model_p, SGS_par%commute_p,                  &
      &    nod_comm, node, ele, surf, sf_grp, fluid, fl_prop, cd_prop,   &
      &    Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD, fem_int,          &
-     &    FEM_elens, diff_coefs, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
+     &    FEM_elens, diff_coefs, mhd_fem_wk%mlump_fl, mhd_fem_wk,       &
+     &    rhs_mat, nod_fld, ele_fld)
       call copy_vector_component(nod_fld,                               &
      &    iphys%i_m_flux_div, iphys%i_SGS_div_mf_true)
 !
@@ -389,7 +391,8 @@
      &    FEM_prm, SGS_par%model_p, SGS_par%commute_p,                  &
      &    nod_comm, node, ele, surf, sf_grp, fluid, fl_prop, cd_prop,   &
      &    Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD, fem_int,          &
-     &    FEM_elens, diff_coefs, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
+     &    FEM_elens, diff_coefs, mhd_fem_wk%mlump_fl, mhd_fem_wk,       &
+     &    rhs_mat, nod_fld, ele_fld)
       call copy_vector_component(nod_fld,                               &
      &   iphys%i_maxwell_div, iphys%i_SGS_Lor_true)
 !

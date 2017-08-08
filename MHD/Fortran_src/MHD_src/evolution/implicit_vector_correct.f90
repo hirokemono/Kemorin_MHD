@@ -7,7 +7,7 @@
 !
 !!      subroutine cal_velocity_co_exp(i_velo, i_p_phi,                 &
 !!     &          FEM_prm, nod_comm, node, ele, fluid, jac_3d, rhs_tbl, &
-!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_vector_p_co_exp                                  &
 !!     &         (i_vecp, FEM_prm, nod_comm, node, ele,                 &
 !!     &          jac_3d, rhs_tbl, m_lump, mhd_fem_wk, fem_wk,          &
@@ -53,6 +53,7 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
+!!        type (lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(MHD_MG_matrix), intent(in) :: Vmatrix
 !!        type(MHD_MG_matrix), intent(in) :: Bmatrix
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -96,7 +97,7 @@
 !
       subroutine cal_velocity_co_exp(i_velo, i_p_phi,                   &
      &          FEM_prm, nod_comm, node, ele, fluid, jac_3d, rhs_tbl,   &
-     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use cal_multi_pass
       use cal_sol_vector_correct
@@ -110,6 +111,7 @@
       type(field_geometry_data), intent(in) :: fluid
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type (lumped_mass_matrices), intent(in) :: mlump_fl
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -118,16 +120,14 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_multi_pass_4_vector_fl'
-      call cal_multi_pass_4_vector_ff                                   &
-     &   (fluid%istack_ele_fld_smp, FEM_prm, mhd_fem_wk%mlump_fl,       &
-     &    nod_comm, node, ele, jac_3d, rhs_tbl,                         &
+      call cal_multi_pass_4_vector_ff(fluid%istack_ele_fld_smp,         &
+     &    FEM_prm, mlump_fl, nod_comm, node, ele, jac_3d, rhs_tbl,      &
      &    mhd_fem_wk%ff_m_smp, fem_wk, f_l, f_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_velo_co'
       call cal_sol_velocity_co                                          &
-     &   (nod_fld%n_point, node%istack_internal_smp,                    &
-     &    mhd_fem_wk%mlump_fl%ml, f_l%ff, nod_fld%ntot_phys,            &
-     &    i_velo, i_p_phi, nod_fld%d_fld)
+     &   (nod_fld%n_point, node%istack_internal_smp, mlump_fl%ml,       &
+     &    f_l%ff, nod_fld%ntot_phys, i_velo, i_p_phi, nod_fld%d_fld)
 !
       end subroutine cal_velocity_co_exp
 !
@@ -290,7 +290,7 @@
         call cal_velo_co_lumped_crank                                   &
      &     (i_velo, dt, FEM_prm, nod_comm, node, ele, fluid, fl_prop,   &
      &      Vnod_bcs, nod_fld, iphys_ele, ele_fld, jac_3d, rhs_tbl,     &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl)
+     &      mhd_fem_wk%mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl)
       else if(FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)   &
      & then
         call cal_velo_co_consist_crank(i_velo, fl_prop%coef_velo, dt,   &

@@ -141,8 +141,8 @@
      &    SGS_param%icoord_Csim, SGS_param%ifilter_final,               &
      &    icomp_sgs_flux, i_sgs, ifleld, ie_dvx,                        &
      &    nod_comm, node, ele, fluid, iphys_ele, ele_fld, jac_3d,       &
-     &    rhs_tbl, FEM_elens, sgs_coefs, mhd_fem_wk, fem_wk,            &
-     &    f_l, nod_fld)
+     &    rhs_tbl, FEM_elens, sgs_coefs, mhd_fem_wk%mlump_fl,           &
+     &    mhd_fem_wk, fem_wk, f_l, nod_fld)
 !
       else if(iflag_SGS_flux .eq. id_SGS_similarity) then
         if (iflag_debug.eq.1) write(*,*) 'cal_sgs_sf_simi'
@@ -208,7 +208,7 @@
      &      icomp_sgs_mf, iphys%i_SGS_m_flux, iphys%i_velo, ie_dvx, dt, &
      &      FEM_prm, SGS_param, nod_comm, node, ele, fluid,             &
      &      iphys_ele, ele_fld, jac_3d, FEM_elens, sgs_coefs, rhs_tbl,  &
-     &      fem_wk, mhd_fem_wk, nod_fld)
+     &      mhd_fem_wk%mlump_fl, fem_wk, mhd_fem_wk, nod_fld)
 !
       else if (SGS_param%iflag_SGS_m_flux .eq. id_SGS_similarity) then
         if (iflag_debug.eq.1)                                           &
@@ -274,8 +274,8 @@
         call cal_sgs_m_flux_grad_w_coef(SGS_param%ifilter_final,        &
      &      icomp_sgs_lor, iphys%i_SGS_maxwell, iphys%i_magne, ie_dbx,  &
      &      dt, FEM_prm, SGS_param, nod_comm, node, ele, fluid,         &
-     &      iphys_ele, ele_fld, jac_3d, FEM_elens, sgs_coefs,           &
-     &      rhs_tbl, fem_wk, mhd_fem_wk, nod_fld)
+     &      iphys_ele, ele_fld, jac_3d, FEM_elens, sgs_coefs, rhs_tbl,  &
+     &      mhd_fem_wk%mlump_fl, fem_wk, mhd_fem_wk, nod_fld)
 !
 !
       else if(SGS_param%iflag_SGS_lorentz .eq. id_SGS_similarity) then

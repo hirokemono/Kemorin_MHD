@@ -8,13 +8,14 @@
 !!     &        FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,     &
 !!     &        surf, sf_grp, fluid, fl_prop, cd_prop, Vsf_bcs, Bsf_bcs,&
 !!     &        iphys, iphys_ele, ak_MHD, fem_int, FEM_elens,           &
-!!     &        diff_coefs, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
+!!     &        diff_coefs, mlump_fl, mhd_fem_wk, rhs_mat,              &
+!!     &        nod_fld, ele_fld)
 !!      subroutine cal_viscous_diffusion                                &
 !!     &         (iak_diff_v, iak_diff_mf, iak_diff_lor,                &
 !!     &          FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,   &
 !!     &          surf, sf_grp, fluid, fl_prop, Vnod_bcs, Vsf_bcs,      &
 !!     &          Bsf_bcs, iphys, ak_MHD, fem_int, FEM_elens,           &
-!!     &          diff_coefs, mhd_fem_wk, rhs_mat, nod_fld)
+!!     &          diff_coefs, mlump_fl, rhs_mat, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -35,6 +36,7 @@
 !!        type(finite_element_integration), intent(in) :: fem_int
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
+!!        type(lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -86,7 +88,8 @@
      &        FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,       &
      &        surf, sf_grp, fluid, fl_prop, cd_prop, Vsf_bcs, Bsf_bcs,  &
      &        iphys, iphys_ele, ak_MHD, fem_int, FEM_elens,             &
-     &        diff_coefs, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
+     &        diff_coefs, mlump_fl, mhd_fem_wk, rhs_mat,                &
+     &        nod_fld, ele_fld)
 !
       use int_vol_velo_monitor
       use int_surf_velo_pre
@@ -114,6 +117,7 @@
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
+      type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
@@ -158,17 +162,16 @@
 !
       call cal_t_evo_4_vector                                           &
      &   (FEM_prm%iflag_velo_supg, fluid%istack_ele_fld_smp, dt,        &
-     &    FEM_prm, mhd_fem_wk%mlump_fl, nod_comm,                       &
-     &    node, ele, iphys_ele, ele_fld,                                &
+     &    FEM_prm, mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld,   &
      &    fem_int%jcs%jac_3d, fem_int%rhs_tbl,                          &
      &    mhd_fem_wk%ff_m_smp, rhs_mat%fem_wk,                          &
      &    rhs_mat%f_l, rhs_mat%f_nl)
 !       call set_boundary_velo_4_rhs                                    &
 !     &    (node, Vnod_bcs, rhs_mat%f_l, rhs_mat%f_nl)
 !
-      call cal_ff_2_vector(node%numnod, node%istack_nod_smp,            &
-     &    rhs_mat%f_nl%ff, mhd_fem_wk%mlump_fl%ml, nod_fld%ntot_phys,   &
-     &    i_field, nod_fld%d_fld)
+      call cal_ff_2_vector                                              &
+     &   (node%numnod, node%istack_nod_smp, rhs_mat%f_nl%ff,            &
+     &    mlump_fl%ml, nod_fld%ntot_phys, i_field, nod_fld%d_fld)
       call vector_send_recv(i_field, nod_comm, nod_fld)
 !
       end subroutine cal_terms_4_momentum
@@ -180,7 +183,7 @@
      &          FEM_prm, SGS_param, cmt_param, nod_comm, node, ele,     &
      &          surf, sf_grp, fluid, fl_prop, Vnod_bcs, Vsf_bcs,        &
      &          Bsf_bcs, iphys, ak_MHD, fem_int, FEM_elens,             &
-     &          diff_coefs, mhd_fem_wk, rhs_mat, nod_fld)
+     &          diff_coefs, mlump_fl, rhs_mat, nod_fld)
 !
       use int_vol_diffusion_ele
       use int_surf_velo_pre
@@ -206,7 +209,7 @@
       type(finite_element_integration), intent(in) :: fem_int
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
-      type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
+      type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(phys_data), intent(inout) :: nod_fld
@@ -237,7 +240,7 @@
      &   (node, Vnod_bcs, rhs_mat%f_l, rhs_mat%f_nl)
 !
       call cal_ff_2_vector(node%numnod, node%istack_nod_smp,            &
-     &    rhs_mat%f_l%ff, mhd_fem_wk%mlump_fl%ml, nod_fld%ntot_phys,    &
+     &    rhs_mat%f_l%ff, mlump_fl%ml, nod_fld%ntot_phys,               &
      &    iphys%i_v_diffuse, nod_fld%d_fld)
 !
       call vector_send_recv(iphys%i_v_diffuse, nod_comm, nod_fld)
