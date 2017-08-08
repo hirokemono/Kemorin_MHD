@@ -12,8 +12,8 @@
 !!     &         iphys_ele, ak_MHD, fem_int, FEM_elens,                 &
 !!     &         ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,         &
 !!     &         sgs_coefs_nod, diff_coefs, filtering, layer_tbl,       &
-!!     &         Vmatrix, Pmatrix, MGCG_WK, wk_lsq, wk_sgs, wk_filter,  &
-!!     &         mhd_fem_wk, rhs_mat, nod_fld, ele_fld,                 &
+!!     &         mlump_fl, Vmatrix, Pmatrix, MGCG_WK, wk_lsq, wk_sgs,   &
+!!     &         wk_filter, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,      &
 !!     &         sgs_coefs, fem_sq)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -42,6 +42,7 @@
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(layering_tbl), intent(in) :: layer_tbl
+!!        type(lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(MHD_MG_matrix), intent(in) :: Vmatrix
 !!        type(MHD_MG_matrix), intent(in) :: Pmatrix
 !!        type(MGCG_data), intent(inout) :: MGCG_WK
@@ -108,8 +109,8 @@
      &         iphys_ele, ak_MHD, fem_int, FEM_elens,                   &
      &         ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,           &
      &         sgs_coefs_nod, diff_coefs, filtering, layer_tbl,         &
-     &         Vmatrix, Pmatrix, MGCG_WK, wk_lsq, wk_sgs, wk_filter,    &
-     &         mhd_fem_wk, rhs_mat, nod_fld, ele_fld,                   &
+     &         mlump_fl, Vmatrix, Pmatrix, MGCG_WK, wk_lsq, wk_sgs,     &
+     &         wk_filter, mhd_fem_wk, rhs_mat, nod_fld, ele_fld,        &
      &         sgs_coefs, fem_sq)
 !
       use cal_velocity_pre
@@ -150,6 +151,7 @@
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(filtering_data_type), intent(in) :: filtering
       type(layering_tbl), intent(in) :: layer_tbl
+      type(lumped_mass_matrices), intent(in) :: mlump_fl
       type(MHD_MG_matrix), intent(in) :: Vmatrix
       type(MHD_MG_matrix), intent(in) :: Pmatrix
 !
@@ -201,8 +203,8 @@
      &    nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,         &
      &    fl_prop, cd_prop, Vnod_bcs, Vsf_bcs, Bsf_bcs, iphys,          &
      &    iphys_ele, ak_MHD, fem_int, FEM_elens,                        &
-     &    ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,                &
-     &    sgs_coefs_nod, diff_coefs, filtering, layer_tbl,              &
+     &    ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff, sgs_coefs_nod, &
+     &    diff_coefs, filtering, layer_tbl, mlump_fl,                   &
      &    Vmatrix, MGCG_WK%MG_vector, wk_lsq, wk_sgs, wk_filter,        &
      &    mhd_fem_wk, rhs_mat, nod_fld, ele_fld, sgs_coefs)
 !
@@ -234,7 +236,8 @@
      &      nod_comm, node, ele, surf, fluid, sf_grp, sf_grp_nod,       &
      &      fl_prop, Vnod_bcs, Vsf_bcs, Psf_bcs, iphys, iphys_ele,      &
      &      ele_fld, ak_MHD, fem_int, FEM_elens, ifld_diff, diff_coefs, &
-     &      Vmatrix, MGCG_WK%MG_vector, mhd_fem_wk, rhs_mat, nod_fld)
+     &      mlump_fl, Vmatrix, MGCG_WK%MG_vector,                       &
+     &      mhd_fem_wk, rhs_mat, nod_fld)
 !
 !
         call cal_rms_scalar_potential                                   &

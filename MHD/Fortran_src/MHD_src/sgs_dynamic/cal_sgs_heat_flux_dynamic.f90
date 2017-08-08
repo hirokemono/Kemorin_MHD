@@ -9,8 +9,8 @@
 !!     &          ifield, ifield_f, ivelo, ivelo_f, i_sgs,              &
 !!     &          iak_sgs_hlux, icomp_sgs_flux, ie_dvx, ie_dfvx,        &
 !!     &          SGS_par, nod_comm, node, ele, iphys, iphys_ele,       &
-!!     &          ele_fld, fluid, layer_tbl, jacobians,                 &
-!!     &          rhs_tbl, FEM_elens, filtering, sgs_coefs_nod,         &
+!!     &          ele_fld, fluid, layer_tbl, jacobians, rhs_tbl,        &
+!!     &          FEM_elens, filtering, sgs_coefs_nod, mlump_fl,        &
 !!     &          wk_filter, wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,&
 !!     &          f_l, nod_fld, sgs_coefs)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -27,7 +27,7 @@
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
-!!
+!!        type (lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(dynamis_correlation_data), intent(inout) :: wk_cor
 !!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
@@ -76,8 +76,8 @@
      &          ifield, ifield_f, ivelo, ivelo_f, i_sgs,                &
      &          iak_sgs_hlux, icomp_sgs_flux, ie_dvx, ie_dfvx,          &
      &          SGS_par, nod_comm, node, ele, iphys, iphys_ele,         &
-     &          ele_fld, fluid, layer_tbl, jacobians,                   &
-     &          rhs_tbl, FEM_elens, filtering, sgs_coefs_nod,           &
+     &          ele_fld, fluid, layer_tbl, jacobians, rhs_tbl,          &
+     &          FEM_elens, filtering, sgs_coefs_nod, mlump_fl,          &
      &          wk_filter, wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,  &
      &          f_l, nod_fld, sgs_coefs)
 !
@@ -115,6 +115,7 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
       type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
+      type (lumped_mass_matrices), intent(in) :: mlump_fl
 !
       type(filtering_work_type), intent(inout) :: wk_filter
       type(dynamis_correlation_data), intent(inout) :: wk_cor
@@ -151,7 +152,7 @@
      &   (iflag_supg, num_int, dt, ifilter_4delta,                      &
      &    iphys%i_sgs_grad_f, ifield_f, ie_dfvx,                        &
      &    nod_comm, node, ele, fluid, iphys_ele, ele_fld,               &
-     &    jacobians%jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk%mlump_fl,    &
+     &    jacobians%jac_3d, rhs_tbl, FEM_elens, mlump_fl,               &
      &    mhd_fem_wk, fem_wk, f_l, nod_fld)
 !
 !   gradient model by original field
@@ -160,7 +161,7 @@
       call cal_sgs_s_flux_grad_no_coef(iflag_supg, num_int, dt,         &
      &    ifilter_2delta, i_sgs, ifield, ie_dvx,                        &
      &    nod_comm, node, ele, fluid, iphys_ele, ele_fld,               &
-     &    jacobians%jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk%mlump_fl,    &
+     &    jacobians%jac_3d, rhs_tbl, FEM_elens, mlump_fl,               &
      &    mhd_fem_wk, fem_wk, f_l, nod_fld)
 !
 !      filtering

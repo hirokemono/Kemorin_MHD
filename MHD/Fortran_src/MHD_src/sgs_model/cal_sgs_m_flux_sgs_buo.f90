@@ -8,8 +8,9 @@
 !!     &          fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele, &
 !!     &          ak_MHD, fem_int, FEM_elens, filtering,                &
 !!     &          ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,        &
-!!     &          sgs_coefs_nod, diff_coefs, wk_filter, wk_lsq, wk_sgs, &
-!!     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld, sgs_coefs)
+!!     &          sgs_coefs_nod, diff_coefs, mlump_fl,                  &
+!!     &          wk_filter, wk_lsq, wk_sgs, mhd_fem_wk, rhs_mat,       &
+!!     &          nod_fld, ele_fld, sgs_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
@@ -33,6 +34,7 @@
 !!        type(SGS_terms_address), intent(in) :: iphys_elediff
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
+!!        type(lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(dynamic_model_data), intent(inout) :: wk_sgs
 !!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
@@ -89,8 +91,9 @@
      &          fl_prop, cd_prop, Vsf_bcs, Bsf_bcs, iphys, iphys_ele,   &
      &          ak_MHD, fem_int,  FEM_elens, filtering,                 &
      &          ifld_sgs, icomp_sgs, ifld_diff, iphys_elediff,          &
-     &          sgs_coefs_nod, diff_coefs, wk_filter, wk_lsq, wk_sgs,   &
-     &          mhd_fem_wk, rhs_mat, nod_fld, ele_fld, sgs_coefs)
+     &          sgs_coefs_nod, diff_coefs, mlump_fl,                    &
+     &          wk_filter, wk_lsq, wk_sgs, mhd_fem_wk, rhs_mat,         &
+     &          nod_fld, ele_fld, sgs_coefs)
 !
       use m_phys_constants
 !
@@ -129,6 +132,7 @@
       type(SGS_terms_address), intent(in) :: iphys_elediff
       type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
       type(SGS_coefficients_type), intent(in) :: diff_coefs
+      type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
       type(SGS_coefficients_type), intent(inout) :: sgs_coefs
       type(filtering_work_type), intent(inout) :: wk_filter
@@ -160,8 +164,8 @@
      &   (icomp_sgs%i_mom_flux, iphys_elediff%i_velo, dt,               &
      &    FEM_prm, SGS_par%model_p, SGS_par%filter_p,                   &
      &    nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,        &
-     &    fem_int%jcs%jac_3d, fem_int%rhs_tbl, FEM_elens,               &
-     &    filtering, sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk,   &
+     &    fem_int%jcs%jac_3d, fem_int%rhs_tbl, FEM_elens, filtering,    &
+     &    sgs_coefs, sgs_coefs_nod, mlump_fl, wk_filter, mhd_fem_wk,    &
      &    rhs_mat%fem_wk, rhs_mat%f_l, rhs_mat%f_nl, nod_fld)
 !
 !   lead work of Reynolds stress
@@ -171,7 +175,7 @@
      &    FEM_prm, SGS_par%model_p, SGS_par%commute_p,                  &
      &    nod_comm, node, ele, surf, sf_grp, fluid, fl_prop, cd_prop,   &
      &    Vsf_bcs, Bsf_bcs, iphys, iphys_ele, ak_MHD, fem_int,          &
-     &    FEM_elens, diff_coefs, mhd_fem_wk%mlump_fl, mhd_fem_wk,       &
+     &    FEM_elens, diff_coefs, mlump_fl, mhd_fem_wk,                  &
      &    rhs_mat, nod_fld, ele_fld)
 !
 !$omp parallel

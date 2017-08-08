@@ -8,7 +8,7 @@
 !!     &          SGS_par, nod_comm, node, ele, surf, sf_grp,           &
 !!     &          Tsf_bcs, iphys, iphys_ele, ele_fld, fluid, layer_tbl, &
 !!     &          jacobians, rhs_tbl, FEM_elens, filtering, wk_filter,  &
-!!     &          wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk, surf_wk, &
+!!     &          wk_cor, wk_lsq, wk_diff, mlump_fl, fem_wk, surf_wk,   &
 !!     &          f_l, f_nl, nod_fld, diff_coefs)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
@@ -32,7 +32,7 @@
 !!        type(dynamis_correlation_data), intent(inout) :: wk_cor
 !!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
 !!        type(dynamic_model_data), intent(inout) :: wk_diff
-!!        type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
+!!        type (lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(work_surface_element_mat), intent(inout) :: surf_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -54,7 +54,6 @@
       use t_jacobians
       use t_table_FEM_const
       use t_layering_ele_list
-      use t_MHD_finite_element_mat
       use t_finite_element_mat
       use t_int_surface_data
       use t_filter_elength
@@ -79,7 +78,7 @@
      &          SGS_par, nod_comm, node, ele, surf, sf_grp,             &
      &          Tsf_bcs, iphys, iphys_ele, ele_fld, fluid, layer_tbl,   &
      &          jacobians, rhs_tbl, FEM_elens, filtering, wk_filter,    &
-     &          wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk, surf_wk,   &
+     &          wk_cor, wk_lsq, wk_diff, mlump_fl, fem_wk, surf_wk,     &
      &          f_l, f_nl, nod_fld, diff_coefs)
 !
       use m_machine_parameter
@@ -115,7 +114,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
-      type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
+      type (lumped_mass_matrices), intent(in) :: mlump_fl
 !
       type(filtering_work_type), intent(inout) :: wk_filter
       type(dynamis_correlation_data), intent(inout) :: wk_cor
@@ -139,7 +138,7 @@
      &        iphys%i_sgs_simi, ifield_f
       call choose_cal_gradient                                          &
      &   (iflag_supg, num_int, dt, ifield_f, iphys%i_sgs_simi,          &
-     &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
+     &    fluid%istack_ele_fld_smp, mlump_fl,                           &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jacobians%jac_3d,    &
      &    rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !
@@ -149,7 +148,7 @@
      &                     iphys%i_sgs_grad, ifield
       call choose_cal_gradient                                          &
      &   (iflag_supg, num_int, dt, ifield, iphys%i_sgs_grad,            &
-     &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,                &
+     &    fluid%istack_ele_fld_smp, mlump_fl,                           &
      &    nod_comm, node, ele, iphys_ele, ele_fld, jacobians%jac_3d,    &
      &    rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !
@@ -172,7 +171,7 @@
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_commute_error_f_temp', iphys%i_sgs_grad_f
       call cal_grad_commute(num_int, fluid%istack_ele_fld_smp,          &
-     &    mhd_fem_wk%mlump_fl, node, ele, surf, sf_grp,                 &
+     &    mlump_fl, node, ele, surf, sf_grp,                            &
      &    jacobians%jac_3d, jacobians%jac_sf_grp, rhs_tbl,              &
      &    FEM_elens, Tsf_bcs%sgs, ifilter_4delta, iphys%i_sgs_grad_f,   &
      &    ifield_f, fem_wk, surf_wk, f_l, f_nl, nod_fld)
@@ -188,7 +187,7 @@
       if (iflag_debug.gt.0)                                             &
      &     write(*,*) 'cal_commute_error_temp', iphys%i_sgs_grad
       call cal_grad_commute(num_int, fluid%istack_ele_fld_smp,          &
-     &    mhd_fem_wk%mlump_fl, node, ele, surf, sf_grp,                 &
+     &    mlump_fl, node, ele, surf, sf_grp,                            &
      &    jacobians%jac_3d, jacobians%jac_sf_grp, rhs_tbl,              &
      &    FEM_elens, Tsf_bcs%sgs, ifilter_2delta, iphys%i_sgs_grad,     &
      &    ifield, fem_wk, surf_wk, f_l, f_nl, nod_fld)

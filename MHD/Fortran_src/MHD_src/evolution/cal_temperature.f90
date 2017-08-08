@@ -12,8 +12,8 @@
 !!     &          iphys, iphys_ele, ele_fld, jacobians, rhs_tbl,        &
 !!     &          FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,       &
 !!     &          sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,      &
-!!     &          Smatrix, ak_diffuse, MGCG_WK, wk_filter, mhd_fem_wk,  &
-!!     &          fem_wk, surf_wk, f_l, f_nl, nod_fld)
+!!     &          mlump_fl, Smatrix, ak_diffuse, MGCG_WK, wk_filter,    &
+!!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_model_control_params), intent(in) :: SGS_param
 !!        type(commutation_control_params), intent(in) :: cmt_param
@@ -41,6 +41,7 @@
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(filtering_data_type), intent(in) :: filtering
+!!        type(lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(MHD_MG_matrix), intent(in) :: Smatrix
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -97,8 +98,8 @@
      &          iphys, iphys_ele, ele_fld, jacobians, rhs_tbl,          &
      &          FEM_elens, icomp_sgs, ifld_diff, iphys_elediff,         &
      &          sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,        &
-     &          Smatrix, ak_diffuse, MGCG_WK, wk_filter, mhd_fem_wk,    &
-     &          fem_wk, surf_wk, f_l, f_nl, nod_fld)
+     &          mlump_fl, Smatrix, ak_diffuse, MGCG_WK, wk_filter,      &
+     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
       use nod_phys_send_recv
       use cal_sgs_fluxes
@@ -143,6 +144,7 @@
       type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(filtering_data_type), intent(in) :: filtering
+      type(lumped_mass_matrices), intent(in) :: mlump_fl
       type(MHD_MG_matrix), intent(in) :: Smatrix
 !
       real(kind = kreal), intent(in) :: ak_diffuse(ele%numele)
@@ -167,8 +169,8 @@
      &      icomp_sgs%i_heat_flux, iphys_elediff%i_velo, SGS_param,     &
      &      filter_param, nod_comm, node, ele, fluid, iphys_ele,        &
      &      ele_fld, jacobians%jac_3d, rhs_tbl, FEM_elens, filtering,   &
-     &      sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,    &
-     &      f_l, f_nl, nod_fld)
+     &      sgs_coefs, sgs_coefs_nod, mlump_fl, wk_filter,              &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
 !      call check_nodal_data                                            &
@@ -259,14 +261,14 @@
       if (property%iflag_scheme .eq. id_explicit_euler) then
         call cal_scalar_pre_euler(FEM_prm%iflag_temp_supg, i_field, dt, &
      &      FEM_prm, nod_comm, node, ele, fluid, iphys_ele, ele_fld,    &
-     &      jacobians%jac_3d, rhs_tbl, mhd_fem_wk%mlump_fl,             &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      jacobians%jac_3d, rhs_tbl, mlump_fl, mhd_fem_wk, fem_wk,    &
+     &      f_l, f_nl, nod_fld)
       else if (property%iflag_scheme .eq. id_explicit_adams2) then
         call cal_scalar_pre_adams                                       &
      &     (FEM_prm%iflag_temp_supg, i_field, iphys%i_pre_heat, dt,     &
      &      FEM_prm, nod_comm, node, ele, fluid, iphys_ele, ele_fld,    &
-     &      jacobians%jac_3d, rhs_tbl, mhd_fem_wk%mlump_fl,             &
-     &      mhd_fem_wk, fem_wk,   f_l, f_nl, nod_fld)
+     &      jacobians%jac_3d, rhs_tbl, mlump_fl, mhd_fem_wk, fem_wk,   &
+     &      f_l, f_nl, nod_fld)
       else if (property%iflag_scheme .eq. id_Crank_nicolson) then
         call cal_temp_pre_lumped_crank(FEM_prm%iflag_temp_supg,         &
      &      cmt_param%iflag_c_temp, SGS_param%ifilter_final,            &
@@ -274,8 +276,8 @@
      &      ak_diffuse, FEM_prm%eps_4_temp_crank, dt,                   &
      &      FEM_prm, nod_comm, node, ele, fluid, property, nod_bcs,     &
      &      iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl, FEM_elens,   &
-     &      diff_coefs, mhd_fem_wk%mlump_fl, Smatrix,                   &
-     &      MGCG_WK%MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      diff_coefs, mlump_fl, Smatrix, MGCG_WK%MG_vector,           &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if (property%iflag_scheme .eq. id_Crank_nicolson_cmass) then 
         call cal_temp_pre_consist_crank                                 &
      &     (cmt_param%iflag_c_temp, SGS_param%ifilter_final,            &

@@ -12,8 +12,8 @@
 !!     &          FEM_prm, SGS_par, nod_comm, node, ele, surf, fluid,   &
 !!     &          sf_grp, Vsf_bcs, Psf_bcs, iphys, iphys_ele, jacobians,&
 !!     &          rhs_tbl, FEM_elens, filtering, wide_filtering,        &
-!!     &          layer_tbl, wk_cor, wk_lsq, wk_diff, wk_filter,        &
-!!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,               &
+!!     &          layer_tbl, mlump_fl, wk_cor, wk_lsq, wk_diff,         &
+!!     &          wk_filter, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,    &
 !!     &          nod_fld, ele_fld, diff_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
@@ -33,6 +33,7 @@
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(filtering_data_type), intent(in) :: wide_filtering
 !!        type(layering_tbl), intent(in) :: layer_tbl
+!!        type(lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(dynamis_correlation_data), intent(inout) :: wk_cor
 !!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
 !!        type(dynamic_model_data), intent(inout) :: wk_diff
@@ -88,8 +89,8 @@
      &          FEM_prm, SGS_par, nod_comm, node, ele, surf, fluid,     &
      &          sf_grp, Vsf_bcs, Psf_bcs, iphys, iphys_ele, jacobians,  &
      &          rhs_tbl, FEM_elens, filtering, wide_filtering,          &
-     &          layer_tbl, wk_cor, wk_lsq, wk_diff, wk_filter,          &
-     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                 &
+     &          layer_tbl, mlump_fl, wk_cor, wk_lsq, wk_diff,           &
+     &          wk_filter, mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,      &
      &          nod_fld, ele_fld, diff_coefs)
 !
       use average_on_elements
@@ -121,6 +122,7 @@
       type(filtering_data_type), intent(in) :: filtering
       type(filtering_data_type), intent(in) :: wide_filtering
       type(layering_tbl), intent(in) :: layer_tbl
+      type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
       type(dynamis_correlation_data), intent(inout) :: wk_cor
       type(dynamis_least_suare_data), intent(inout) :: wk_lsq
@@ -222,7 +224,7 @@
      &        FEM_prm, SGS_par, nod_comm, node, ele, surf, sf_grp,      &
      &        Vsf_bcs, Psf_bcs, iphys, iphys_ele, ele_fld, fluid,       &
      &        layer_tbl, jacobians, rhs_tbl, FEM_elens, filtering,      &
-     &        wk_filter, wk_cor, wk_lsq, wk_diff, mhd_fem_wk,           &
+     &        wk_filter, wk_cor, wk_lsq, wk_diff, mlump_fl,             &
      &        fem_wk, surf_wk, f_l, f_nl, nod_fld, diff_coefs)
         end if
 !

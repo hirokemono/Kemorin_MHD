@@ -8,7 +8,7 @@
 !!     &          FEM_prm, SGS_par, nod_comm, node, ele, surf, sf_grp,  &
 !!     &          Vnod_bcs, Vsf_bcs, iphys, iphys_ele, ele_fld,         &
 !!     &          fluid, layer_tbl, jacobians, rhs_tbl,                 &
-!!     &          FEM_elens, filtering, sgs_coefs, wk_filter,           &
+!!     &          FEM_elens, filtering, sgs_coefs, mlump_fl, wk_filter, &
 !!     &          wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk, surf_wk, &
 !!     &          f_l, f_nl, nod_fld, diff_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -30,6 +30,7 @@
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
+!!        type(lumped_mass_matrices), intent(in) :: mlump_fl
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(dynamis_correlation_data), intent(inout) :: wk_cor
 !!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
@@ -83,7 +84,7 @@
      &          FEM_prm, SGS_par, nod_comm, node, ele, surf, sf_grp,    &
      &          Vnod_bcs, Vsf_bcs, iphys, iphys_ele, ele_fld,           &
      &          fluid, layer_tbl, jacobians, rhs_tbl,                   &
-     &          FEM_elens, filtering, sgs_coefs, wk_filter,             &
+     &          FEM_elens, filtering, sgs_coefs, mlump_fl, wk_filter,   &
      &          wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk, surf_wk,   &
      &          f_l, f_nl, nod_fld, diff_coefs)
 !
@@ -125,6 +126,7 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
+      type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
       type(filtering_work_type), intent(inout) :: wk_filter
       type(dynamis_correlation_data), intent(inout) :: wk_cor
@@ -152,7 +154,7 @@
      &    iphys%i_sgs_grad_f, iphys%i_filter_velo, ie_dfvx, dt,         &
      &    FEM_prm, SGS_par%model_p, nod_comm, node, ele, fluid,         &
      &    iphys_ele, ele_fld, jacobians%jac_3d, FEM_elens, sgs_coefs,   &
-     &    rhs_tbl, mhd_fem_wk%mlump_fl, fem_wk, mhd_fem_wk, nod_fld)
+     &    rhs_tbl, mlump_fl, fem_wk, mhd_fem_wk, nod_fld)
 !
 !   take divergence of filtered heat flux (to iphys%i_sgs_simi)
 !
@@ -160,7 +162,7 @@
       call cal_div_sgs_mf_simi(iphys%i_sgs_simi,                        &
      &    iphys%i_sgs_grad_f, iphys%i_filter_velo, dt,                  &
      &    FEM_prm, nod_comm, node, ele, fluid, iphys_ele, ele_fld,      &
-     &    jacobians%jac_3d, rhs_tbl, fem_wk, mhd_fem_wk%mlump_fl,       &
+     &    jacobians%jac_3d, rhs_tbl, fem_wk, mlump_fl,                  &
      &    f_l, f_nl, nod_fld)
 !
 !   take divergence of heat flux (to iphys%i_sgs_grad)
@@ -169,7 +171,7 @@
       call cal_div_sgs_mf_simi                                          &
      &   (iphys%i_sgs_grad, iphys%i_SGS_m_flux, iphys%i_velo, dt,       &
      &    FEM_prm, nod_comm, node, ele, fluid, iphys_ele, ele_fld,      &
-     &    jacobians%jac_3d, rhs_tbl, fem_wk, mhd_fem_wk%mlump_fl,       &
+     &    jacobians%jac_3d, rhs_tbl, fem_wk, mlump_fl,                  &
      &    f_l, f_nl, nod_fld)
 !
 !    filtering (to iphys%i_sgs_grad)
@@ -193,7 +195,7 @@
       if (iflag_debug.gt.0)  write(*,*) 'cal_commute_error_4_filter_mf'
       call cal_commute_error_4_mf                                       &
      &   (FEM_prm%npoint_t_evo_int, fluid%istack_ele_fld_smp,           &
-     &    mhd_fem_wk%mlump_fl, node, ele, surf, sf_grp,                 &
+     &    mlump_fl, node, ele, surf, sf_grp,                            &
      &    jacobians%jac_3d, jacobians%jac_sf_grp,                       &
      &    rhs_tbl, FEM_elens, Vsf_bcs%sgs, ifilter_4delta,              &
      &    iphys%i_sgs_grad_f, iphys%i_sgs_grad_f, iphys%i_filter_velo,  &
@@ -217,7 +219,7 @@
       if (iflag_debug.gt.0)   write(*,*) 'cal_commute_error_4_m_flux'
       call cal_commute_error_4_mf                                       &
      &   (FEM_prm%npoint_t_evo_int, fluid%istack_ele_fld_smp,           &
-     &    mhd_fem_wk%mlump_fl, node, ele, surf, sf_grp,                 &
+     &    mlump_fl, node, ele, surf, sf_grp,                            &
      &    jacobians%jac_3d, jacobians%jac_sf_grp,                       &
      &    rhs_tbl, FEM_elens, Vsf_bcs%sgs, ifilter_2delta,              &
      &    iphys%i_sgs_grad, iphys%i_SGS_m_flux, iphys%i_velo,           &

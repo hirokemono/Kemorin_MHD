@@ -8,7 +8,7 @@
 !!     &         FEM_prm, SGS_par, nod_comm, node, ele, surf,           &
 !!     &         fluid, conduct, cd_prop, layer_tbl, sf_grp, Bsf_bcs,   &
 !!     &         iphys, iphys_ele, ele_fld, jacobians, rhs_tbl,         &
-!!     &         FEM_elens, sgs_coefs, filtering,                       &
+!!     &         FEM_elens, sgs_coefs, filtering, mlump_cd,             &
 !!     &         wk_filter, wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk,&
 !!     &         surf_wk, f_l, f_nl, nod_fld, diff_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
@@ -81,7 +81,7 @@
      &         FEM_prm, SGS_par, nod_comm, node, ele, surf,             &
      &         fluid, conduct, cd_prop, layer_tbl, sf_grp, Bsf_bcs,     &
      &         iphys, iphys_ele, ele_fld, jacobians, rhs_tbl,           &
-     &         FEM_elens, sgs_coefs, filtering,                         &
+     &         FEM_elens, sgs_coefs, filtering, mlump_cd,               &
      &         wk_filter, wk_cor, wk_lsq, wk_diff, mhd_fem_wk, fem_wk,  &
      &         surf_wk, f_l, f_nl, nod_fld, diff_coefs)
 !
@@ -123,6 +123,7 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
       type(filtering_data_type), intent(in) :: filtering
+      type (lumped_mass_matrices), intent(in) :: mlump_cd
 !
       type(filtering_work_type), intent(inout) :: wk_filter
       type(dynamis_correlation_data), intent(inout) :: wk_cor
@@ -149,8 +150,8 @@
      &    iphys%i_filter_velo, iphys%i_filter_magne, ie_dfvx, ie_dfbx,  &
      &    dt, FEM_prm, SGS_par%model_p, nod_comm, node, ele, conduct,   &
      &    cd_prop, iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl,       &
-     &    FEM_elens, sgs_coefs, mhd_fem_wk%mlump_cd,                    &
-     &    fem_wk, mhd_fem_wk, f_l, nod_fld)
+     &    FEM_elens, sgs_coefs, mlump_cd, fem_wk, mhd_fem_wk,           &
+     &    f_l, nod_fld)
 !
 !   take divergence of filtered heat flux (to iphys%i_sgs_simi)
 !
@@ -158,7 +159,7 @@
       call cal_div_sgs_idct_simi(iphys%i_sgs_simi, iphys%i_sgs_grad_f,  &
      &    iphys%i_filter_velo, iphys%i_filter_magne, dt,                &
      &    FEM_prm, nod_comm, node, ele, conduct, iphys_ele, ele_fld,    &
-     &    jacobians%jac_3d, rhs_tbl, fem_wk, mhd_fem_wk%mlump_fl,       &
+     &    jacobians%jac_3d, rhs_tbl, fem_wk, mlump_cd,                  &
      &    f_l, f_nl, nod_fld)
 !
 !   take divergence of heat flux (to iphys%i_sgs_grad)
@@ -167,7 +168,7 @@
       call cal_div_sgs_idct_simi(iphys%i_sgs_grad,                      &
      &    iphys%i_SGS_induct_t, iphys%i_velo, iphys%i_magne, dt,        &
      &    FEM_prm, nod_comm, node, ele, conduct, iphys_ele, ele_fld,    &
-     &    jacobians%jac_3d, rhs_tbl, fem_wk, mhd_fem_wk%mlump_fl,       &
+     &    jacobians%jac_3d, rhs_tbl, fem_wk, mlump_cd,                  &
      &    f_l, f_nl, nod_fld)
 !
 !    filtering (to iphys%i_sgs_grad)
@@ -188,7 +189,7 @@
 !
       call cal_commute_error_4_idct                                     &
      &   (FEM_prm%npoint_t_evo_int, conduct%istack_ele_fld_smp,         &
-     &    mhd_fem_wk%mlump_cd, node, ele, surf, sf_grp, Bsf_bcs,        &
+     &    mlump_cd, node, ele, surf, sf_grp, Bsf_bcs,                   &
      &    jacobians%jac_3d, jacobians%jac_sf_grp, rhs_tbl, FEM_elens,   &
      &    ifilter_4delta, iphys%i_sgs_grad_f, iphys%i_sgs_grad_f,       &
      &    iphys%i_filter_velo, iphys%i_filter_magne, fem_wk, surf_wk,   &
@@ -204,7 +205,7 @@
 !
       call cal_commute_error_4_idct                                     &
      &   (FEM_prm%npoint_t_evo_int, conduct%istack_ele_fld_smp,         &
-     &    mhd_fem_wk%mlump_cd, node, ele, surf, sf_grp, Bsf_bcs,        &
+     &    mlump_cd, node, ele, surf, sf_grp, Bsf_bcs,                   &
      &    jacobians%jac_3d, jacobians%jac_sf_grp, rhs_tbl, FEM_elens,   &
      &    ifilter_2delta, iphys%i_sgs_grad, iphys%i_SGS_induct_t,       &
      &    iphys%i_velo, iphys%i_magne, fem_wk, surf_wk,                 &

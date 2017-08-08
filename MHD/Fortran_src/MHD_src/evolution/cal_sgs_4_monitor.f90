@@ -142,8 +142,8 @@
      &      icomp_sgs%i_heat_flux, iphys_elediff%i_velo,                &
      &      SGS_param, filter_param, nod_comm, node, ele, fluid,        &
      &      iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl, FEM_elens,   &
-     &      filtering, sgs_coefs, sgs_coefs_nod, wk_filter,             &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      filtering, sgs_coefs, sgs_coefs_nod, mhd_fem_wk%mlump_fl,   &
+     &      wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       if (iphys%i_SGS_c_flux .gt. 0) then
@@ -156,8 +156,8 @@
      &      icomp_sgs%i_comp_flux, iphys_elediff%i_velo,                &
      &      SGS_param, filter_param, nod_comm, node, ele, fluid,        &
      &      iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl, FEM_elens,   &
-     &      filtering, sgs_coefs, sgs_coefs_nod, wk_filter,             &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      filtering, sgs_coefs, sgs_coefs_nod, mhd_fem_wk%mlump_fl,   &
+     &      wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       if (iphys%i_SGS_m_flux .gt. 0) then
@@ -167,7 +167,8 @@
      &      FEM_prm, SGS_param, filter_param, nod_comm, node, ele,      &
      &      fluid, iphys, iphys_ele, ele_fld, jacobians%jac_3d,         &
      &      rhs_tbl, FEM_elens, filtering, sgs_coefs, sgs_coefs_nod,    &
-     &      wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      mhd_fem_wk%mlump_fl, wk_filter, mhd_fem_wk, fem_wk,         &
+     &      f_l, f_nl, nod_fld)
       end if
 !
       if (iphys%i_SGS_maxwell .gt. 0) then
@@ -178,7 +179,8 @@
      &      FEM_prm, SGS_param, filter_param, nod_comm, node, ele,      &
      &      fluid, iphys, iphys_ele, ele_fld, jacobians%jac_3d,         &
      &      rhs_tbl, FEM_elens, filtering, sgs_coefs, sgs_coefs_nod,    &
-     &      wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      mhd_fem_wk%mlump_fl, wk_filter, mhd_fem_wk, fem_wk,         &
+     &      f_l, f_nl, nod_fld)
       end if
 !
       if (iphys%i_SGS_induct_t .gt. 0) then

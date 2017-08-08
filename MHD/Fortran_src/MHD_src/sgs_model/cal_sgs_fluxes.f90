@@ -9,20 +9,20 @@
 !!     &          icomp_sgs_flux, ie_dvx, SGS_param, filter_param,      &
 !!     &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,       &
 !!     &          jac_3d, rhs_tbl, FEM_elens, filtering, sgs_coefs,     &
-!!     &          sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,         &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          sgs_coefs_nod, mlump_fl, wk_filter, mhd_fem_wk,       &
+!!     &          fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_sgs_momentum_flux(icomp_sgs_mf, ie_dvx, dt,      &
 !!     &          FEM_prm, SGS_param, filter_param,                     &
 !!     &          nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,&
 !!     &          jac_3d, rhs_tbl, FEM_elens, filtering, sgs_coefs,     &
-!!     &          sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,         &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          sgs_coefs_nod, mlump_fl, wk_filter, mhd_fem_wk,       &
+!!     &          fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_sgs_maxwell(icomp_sgs_lor, ie_dbx, dt,           &
 !!     &          FEM_prm, SGS_param, filter_param,                     &
 !!     &          nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,&
 !!     &          jac_3d, rhs_tbl, FEM_elens, filtering, sgs_coefs,     &
-!!     &          sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,         &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          sgs_coefs_nod, mlump_fl, wk_filter, mhd_fem_wk,       &
+!!     &          fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_sgs_magne_induction                              &
 !!     &         (icomp_sgs_uxb, ie_dvx, ie_dbx, dt,                    &
 !!     &          FEM_prm, SGS_param, filter_param, nod_comm, node, ele,&
@@ -97,8 +97,8 @@
      &          icomp_sgs_flux, ie_dvx, SGS_param, filter_param,        &
      &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,         &
      &          jac_3d, rhs_tbl, FEM_elens, filtering, sgs_coefs,       &
-     &          sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,           &
-     &          f_l, f_nl, nod_fld)
+     &          sgs_coefs_nod, mlump_fl, wk_filter, mhd_fem_wk,         &
+     &          fem_wk, f_l, f_nl, nod_fld)
 !
       use cal_sgs_heat_fluxes_grad
       use cal_gradient
@@ -125,6 +125,7 @@
       type(filtering_data_type), intent(in) :: filtering
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
       type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
+      type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
       type(filtering_work_type), intent(inout) :: wk_filter
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -141,7 +142,7 @@
      &    SGS_param%icoord_Csim, SGS_param%ifilter_final,               &
      &    icomp_sgs_flux, i_sgs, ifleld, ie_dvx,                        &
      &    nod_comm, node, ele, fluid, iphys_ele, ele_fld, jac_3d,       &
-     &    rhs_tbl, FEM_elens, sgs_coefs, mhd_fem_wk%mlump_fl,           &
+     &    rhs_tbl, FEM_elens, sgs_coefs, mlump_fl,                      &
      &    mhd_fem_wk, fem_wk, f_l, nod_fld)
 !
       else if(iflag_SGS_flux .eq. id_SGS_similarity) then
@@ -155,7 +156,7 @@
         if (iflag_debug.eq.1) write(*,*) 'cal_sgs_h_flux_diffuse'
         call choose_cal_gradient_w_const                                &
      &     (iflag_supg, num_int, dt, ifleld, i_sgs, dminus,             &
-     &      fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,              &
+     &      fluid%istack_ele_fld_smp, mlump_fl,                         &
      &      nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,            &
      &      rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
       end if
@@ -168,8 +169,8 @@
      &          FEM_prm, SGS_param, filter_param,                       &
      &          nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,  &
      &          jac_3d, rhs_tbl, FEM_elens, filtering, sgs_coefs,       &
-     &          sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,           &
-     &          f_l, f_nl, nod_fld)
+     &          sgs_coefs_nod, mlump_fl, wk_filter, mhd_fem_wk,         &
+     &          fem_wk, f_l, f_nl, nod_fld)
 !
       use cal_sgs_mom_fluxes_grad
 !
@@ -193,6 +194,7 @@
       type(filtering_data_type), intent(in) :: filtering
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
       type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
+      type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
       type(filtering_work_type), intent(inout) :: wk_filter
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -208,7 +210,7 @@
      &      icomp_sgs_mf, iphys%i_SGS_m_flux, iphys%i_velo, ie_dvx, dt, &
      &      FEM_prm, SGS_param, nod_comm, node, ele, fluid,             &
      &      iphys_ele, ele_fld, jac_3d, FEM_elens, sgs_coefs, rhs_tbl,  &
-     &      mhd_fem_wk%mlump_fl, fem_wk, mhd_fem_wk, nod_fld)
+     &      mlump_fl, fem_wk, mhd_fem_wk, nod_fld)
 !
       else if (SGS_param%iflag_SGS_m_flux .eq. id_SGS_similarity) then
         if (iflag_debug.eq.1)                                           &
@@ -224,7 +226,7 @@
         call cal_sgs_m_flux_diffuse                                     &
      &     (iphys%i_velo, iphys%i_sgs_diffuse, iphys%i_SGS_m_flux, dt,  &
      &      FEM_prm, nod_comm, node, ele, fluid, iphys_ele, ele_fld,    &
-     &      jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      jac_3d, rhs_tbl, mlump_fl, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       end subroutine cal_sgs_momentum_flux
@@ -235,8 +237,8 @@
      &          FEM_prm, SGS_param, filter_param,                       &
      &          nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,  &
      &          jac_3d, rhs_tbl, FEM_elens, filtering, sgs_coefs,       &
-     &          sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,           &
-     &          f_l, f_nl, nod_fld)
+     &          sgs_coefs_nod, mlump_fl, wk_filter, mhd_fem_wk,         &
+     &          fem_wk, f_l, f_nl, nod_fld)
 !
       use cal_sgs_mom_fluxes_grad
 !
@@ -260,6 +262,7 @@
       type(filtering_data_type), intent(in) :: filtering
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
       type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
+      type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
       type(filtering_work_type), intent(inout) :: wk_filter
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -275,7 +278,7 @@
      &      icomp_sgs_lor, iphys%i_SGS_maxwell, iphys%i_magne, ie_dbx,  &
      &      dt, FEM_prm, SGS_param, nod_comm, node, ele, fluid,         &
      &      iphys_ele, ele_fld, jac_3d, FEM_elens, sgs_coefs, rhs_tbl,  &
-     &      mhd_fem_wk%mlump_fl, fem_wk, mhd_fem_wk, nod_fld)
+     &      mlump_fl, fem_wk, mhd_fem_wk, nod_fld)
 !
 !
       else if(SGS_param%iflag_SGS_lorentz .eq. id_SGS_similarity) then
@@ -292,7 +295,7 @@
         call cal_sgs_m_flux_diffuse                                     &
      &    (iphys%i_magne, iphys%i_sgs_diffuse, iphys%i_SGS_maxwell, dt, &
      &     FEM_prm, nod_comm, node, ele, fluid, iphys_ele, ele_fld,     &
-     &     jac_3d, rhs_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &     jac_3d, rhs_tbl, mlump_fl, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       end subroutine cal_sgs_maxwell
@@ -432,10 +435,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_sgs_m_flux_diffuse                                 &
-     &         (i_vect, i_sgs_diffuse, i_sgs, dt,                       &
-     &          FEM_prm, nod_comm, node, ele, fluid,                    &
-     &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                    &
-     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &         (i_vect, i_sgs_diffuse, i_sgs, dt, FEM_prm,              &
+     &          nod_comm, node, ele, fluid, iphys_ele, ele_fld, jac_3d, &
+     &          rhs_tbl, mlump_fl, fem_wk, f_l, f_nl, nod_fld)
 !
       use cal_gradient
 !
@@ -451,9 +453,9 @@
       type(phys_data), intent(in) :: ele_fld
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(lumped_mass_matrices), intent(in) :: mlump_fl
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
-      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -461,18 +463,18 @@
       call choose_cal_gradient_w_const                                  &
      &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,        &
      &    i_vect, i_sgs, dminus, fluid%istack_ele_fld_smp,              &
-     &    mhd_fem_wk%mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld, &
+     &    mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld,            &
      &    jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
       call choose_cal_gradient_w_const                                  &
      &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,        &
      &    (i_vect+1),  i_sgs_diffuse, dminus, fluid%istack_ele_fld_smp, &
-     &    mhd_fem_wk%mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld, &
+     &    mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld,            &
      &    jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
       call choose_cal_gradient_w_const                                  &
      &   (FEM_prm%iflag_velo_supg, FEM_prm%npoint_t_evo_int, dt,        &
      &    (i_vect+2), (i_sgs_diffuse+3),                                &
      &    dminus, fluid%istack_ele_fld_smp,                             &
-     &    mhd_fem_wk%mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld, &
+     &    mlump_fl, nod_comm, node, ele, iphys_ele, ele_fld,            &
      &    jac_3d, rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !
 !

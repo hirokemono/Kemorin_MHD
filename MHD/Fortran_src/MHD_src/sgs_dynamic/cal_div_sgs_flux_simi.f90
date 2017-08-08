@@ -15,7 +15,7 @@
 !!      subroutine cal_div_sgs_idct_simi(i_sgs, i_flux, i_v, i_b, dt,   &
 !!     &          FEM_prm, nod_comm, node, ele, conduct,                &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                  &
-!!     &          fem_wk, mlump_fl, f_l, f_nl, nod_fld)
+!!     &          fem_wk, mlump_cd, f_l, f_nl, nod_fld)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -27,6 +27,7 @@
 !!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type (lumped_mass_matrices), intent(in) :: mlump_fl
+!!        type (lumped_mass_matrices), intent(in) :: mlump_cd
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -179,7 +180,7 @@
       subroutine cal_div_sgs_idct_simi(i_sgs, i_flux, i_v, i_b, dt,     &
      &          FEM_prm, nod_comm, node, ele, conduct,                  &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl,                    &
-     &          fem_wk, mlump_fl, f_l, f_nl, nod_fld)
+     &          fem_wk, mlump_cd, f_l, f_nl, nod_fld)
 !
       use cal_ff_smp_to_ffs
       use cal_for_ffs
@@ -196,7 +197,7 @@
       type(phys_data), intent(in) :: ele_fld
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type (lumped_mass_matrices), intent(in) :: mlump_fl
+      type (lumped_mass_matrices), intent(in) :: mlump_cd
 !
       integer(kind = kint), intent(in) :: i_flux, i_v, i_b
       integer(kind = kint), intent(in) :: i_sgs
@@ -223,7 +224,7 @@
 !
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
       call cal_ff_2_vector(node%numnod, node%istack_nod_smp, f_nl%ff,   &
-     &    mlump_fl%ml, nod_fld%ntot_phys, i_sgs, nod_fld%d_fld)
+     &    mlump_cd%ml, nod_fld%ntot_phys, i_sgs, nod_fld%d_fld)
 !
 ! ----------   communications
 !

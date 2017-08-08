@@ -21,8 +21,8 @@
 !!     &          dt, FEM_prm, SGS_param, cmt_param,                    &
 !!     &          nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,        &
 !!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,       &
-!!     &          diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,   &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          diff_coefs, mlump_fl, Vmatrix, MG_vector,             &
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_vector_p_co_imp(i_vecp, iak_diff_b, ak_d_magne,  &
 !!     &          dt, FEM_prm, SGS_param, cmt_param,                    &
 !!     &          nod_comm, node, ele, conduct, cd_prop, Bnod_bcs,      &
@@ -216,8 +216,8 @@
      &          dt, FEM_prm, SGS_param, cmt_param,                      &
      &          nod_comm, node, ele, fluid, fl_prop, Vnod_bcs,          &
      &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens,         &
-     &          diff_coefs, Vmatrix, MG_vector, mhd_fem_wk, fem_wk,     &
-     &          f_l, f_nl, nod_fld)
+     &          diff_coefs, mlump_fl, Vmatrix, MG_vector,               &
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_array_for_send_recv
 !
@@ -245,6 +245,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(SGS_coefficients_type), intent(in) :: diff_coefs
+      type(lumped_mass_matrices), intent(in) :: mlump_fl
       type(MHD_MG_matrix), intent(in) :: Vmatrix
 !
       integer(kind=kint), intent(in) :: i_velo, iak_diff_v
@@ -290,7 +291,7 @@
         call cal_velo_co_lumped_crank                                   &
      &     (i_velo, dt, FEM_prm, nod_comm, node, ele, fluid, fl_prop,   &
      &      Vnod_bcs, nod_fld, iphys_ele, ele_fld, jac_3d, rhs_tbl,     &
-     &      mhd_fem_wk%mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl)
+     &      mlump_fl, mhd_fem_wk, fem_wk, f_l, f_nl)
       else if(FEM_prm%iflag_imp_correct .eq. id_Crank_nicolson_cmass)   &
      & then
         call cal_velo_co_consist_crank(i_velo, fl_prop%coef_velo, dt,   &
