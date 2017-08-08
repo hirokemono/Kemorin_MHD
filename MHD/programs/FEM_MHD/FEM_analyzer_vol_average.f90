@@ -138,7 +138,7 @@
       if(iflag .eq. 0) then
         if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
         call output_time_step_control                                   &
-     &     (FEM_prm1, MHD_step%time_d, mesh1, MHD_mesh1,                &
+     &     (FEM_prm1, MHD_step%time_d, femmesh1%mesh, MHD_mesh1,        &
      &      MHD_prop1%fl_prop, MHD_prop1%cd_prop,                       &
      &      iphys, nod_fld1, iphys_ele, fld_ele1, fem_int1%jcs,         &
      &      fem_sq%i_rms, fem_sq%j_ave, fem_sq%i_msq,                   &

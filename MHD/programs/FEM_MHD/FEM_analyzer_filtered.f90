@@ -137,7 +137,7 @@
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
         call s_cal_model_coefficients                                   &
      &     (MHD_step%time_d, FEM_prm1, SGS_par1,                        &
-     &     mesh1, group1, ele_mesh1, MHD_mesh1, MHD_prop1,              &
+     &      femmesh1, ele_mesh1, MHD_mesh1, MHD_prop1,                  &
      &      layer_tbl1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,  &
      &      fem_int1, FEM1_elen, filtering1, wide_filtering, mk_MHD1,   &
      &      wk_cor1, wk_lsq1, wk_sgs1, wk_diff1, wk_filter1,            &
@@ -149,7 +149,7 @@
       iflag = lead_field_data_flag(flex_p1%istep_max_dt, MHD_step)
       if(iflag .eq. 0) then
         call lead_fields_by_FEM                                         &
-     &    (MHD_step%time_d, FEM_prm1, SGS_par1, mesh1, group1,          &
+     &    (MHD_step%time_d, FEM_prm1, SGS_par1, femmesh1,               &
      &     ele_mesh1, MHD_mesh1, MHD_prop1, nod1_bcs, sf1_bcs,          &
      &     iphys, iphys_ele, ak_MHD, fem_int1, FEM1_elen,               &
      &     filtering1, wide_filtering, layer_tbl1, mk_MHD1,             &
@@ -168,7 +168,7 @@
       if(iflag .eq. 0) then
         if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
         call output_time_step_control                                   &
-     &     (FEM_prm1, MHD_step%time_d, mesh1, MHD_mesh1,                &
+     &     (FEM_prm1, MHD_step%time_d, femmesh1%mesh, MHD_mesh1,        &
      &      MHD_prop1%fl_prop, MHD_prop1%cd_prop,                       &
      &      iphys, nod_fld1, iphys_ele, fld_ele1, fem_int1%jcs,         &
      &      fem_sq%i_rms, fem_sq%j_ave, fem_sq%i_msq,                   &
@@ -179,7 +179,7 @@
       if(iflag .eq. 0) then
         if (iflag_debug.eq.1) write(*,*) 'output_monitor_control'
         call output_monitor_control                                     &
-     &     (MHD_step%time_d, mesh1%node, nod_fld1)
+     &     (MHD_step%time_d, femmesh1%mesh%node, nod_fld1)
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 's_output_sgs_model_coefs'

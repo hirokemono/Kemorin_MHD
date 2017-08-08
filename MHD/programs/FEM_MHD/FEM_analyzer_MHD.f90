@@ -126,11 +126,11 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_data_4_const_matrices'
       call set_data_4_const_matrices                                    &
-     &   (mesh1, MHD_mesh1, MHD_prop1, fem_int1, MHD_CG1%MGCG_WK,       &
+     &   (femmesh1, MHD_mesh1, MHD_prop1, fem_int1, MHD_CG1%MGCG_WK,    &
      &    MHD1_mat_tbls, MHD_CG1%MHD_mat, MHD_CG1%solver_pack)
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
       call set_aiccg_matrices(MHD_step%time_d%dt, FEM_prm1,             &
-     &    SGS_par1%model_p, SGS_par1%commute_p, mesh1, group1,          &
+     &    SGS_par1%model_p, SGS_par1%commute_p, femmesh1,               &
      &    ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs, MHD_prop1,           &
      &    ak_MHD, fem_int1, FEM1_elen, Csims_FEM_MHD1,                  &
      &    MHD1_mat_tbls, mk_MHD1, rhs_mat1, MHD_CG1)
@@ -141,7 +141,7 @@
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
         call s_cal_model_coefficients                                   &
      &     (MHD_step%time_d, FEM_prm1, SGS_par1,                        &
-     &      mesh1, group1, ele_mesh1, MHD_mesh1, MHD_prop1,             &
+     &      femmesh1, ele_mesh1, MHD_mesh1, MHD_prop1,                  &
      &      layer_tbl1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,  &
      &      fem_int1, FEM1_elen, filtering1, wide_filtering, mk_MHD1,   &
      &      wk_cor1, wk_lsq1, wk_sgs1, wk_diff1, wk_filter1,            &
@@ -152,7 +152,7 @@
       if(iflag .eq. 0) then
         if (iflag_debug.eq.1) write(*,*) 'lead_fields_by_FEM'
         call lead_fields_by_FEM                                         &
-     &     (MHD_step%time_d, FEM_prm1, SGS_par1, mesh1, group1,         &
+     &     (MHD_step%time_d, FEM_prm1, SGS_par1, femmesh1,              &
      &      ele_mesh1, MHD_mesh1, MHD_prop1, nod1_bcs, sf1_bcs,         &
      &      iphys, iphys_ele, ak_MHD, fem_int1, FEM1_elen,              &
      &      filtering1, wide_filtering, layer_tbl1, mk_MHD1,            &
@@ -253,7 +253,7 @@
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
         call s_cal_model_coefficients                                   &
      &     (MHD_step%time_d, FEM_prm1, SGS_par1,                        &
-     &      mesh1, group1, ele_mesh1, MHD_mesh1, MHD_prop1,             &
+     &      femmesh1, ele_mesh1, MHD_mesh1, MHD_prop1,                  &
      &      layer_tbl1, nod1_bcs, sf1_bcs, iphys, iphys_ele, fld_ele1,  &
      &      fem_int1, FEM1_elen, filtering1, wide_filtering, mk_MHD1,   &
      &      wk_cor1, wk_lsq1, wk_sgs1, wk_diff1, wk_filter1,            &
@@ -264,10 +264,9 @@
 !
       if (flex_p1%iflag_flexible_step .eq. iflag_flex_step) then
         if (iflag_debug.eq.1) write(*,*) 's_check_flexible_time_step'
-        call s_check_flexible_time_step                                 &
-     &     (mesh1, MHD_mesh1, MHD_prop1%cd_prop, iphys, nod_fld1,       &
-     &      fem_int1%jcs, rhs_mat1%fem_wk, flex_data1, flex_p1,         &
-     &      MHD_step%time_d)
+        call s_check_flexible_time_step(femmesh1%mesh, MHD_mesh1,       &
+     &      MHD_prop1%cd_prop, iphys, nod_fld1, fem_int1%jcs,           &
+     &      rhs_mat1%fem_wk, flex_data1, flex_p1, MHD_step%time_d)
       end if
 !
 !     ========  Data output
@@ -276,7 +275,7 @@
         iflag = lead_field_data_flag(flex_p1%istep_max_dt, MHD_step)
         if(iflag .eq. 0) then
           call lead_fields_by_FEM                                       &
-     &       (MHD_step%time_d, FEM_prm1, SGS_par1, mesh1, group1,       &
+     &       (MHD_step%time_d, FEM_prm1, SGS_par1, femmesh1,            &
      &        ele_mesh1, MHD_mesh1, MHD_prop1, nod1_bcs, sf1_bcs,       &
      &        iphys, iphys_ele, ak_MHD, fem_int1, FEM1_elen,            &
      &        filtering1, wide_filtering, layer_tbl1, mk_MHD1,          &
@@ -293,7 +292,7 @@
         if(iflag .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
           call output_time_step_control                                 &
-     &       (FEM_prm1, MHD_step%time_d, mesh1, MHD_mesh1,              &
+     &       (FEM_prm1, MHD_step%time_d, femmesh1%mesh, MHD_mesh1,      &
      &        MHD_prop1%fl_prop, MHD_prop1%cd_prop,                     &
      &        iphys, nod_fld1, iphys_ele, fld_ele1, fem_int1%jcs,       &
      &        fem_sq%i_rms, fem_sq%j_ave, fem_sq%i_msq,                 &
@@ -304,7 +303,7 @@
         if(iflag .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'output_monitor_control'
           call output_monitor_control                                   &
-     &       (MHD_step%time_d, mesh1%node, nod_fld1)
+     &       (MHD_step%time_d, femmesh1%mesh%node, nod_fld1)
         end if
 !
         if (iflag_debug.eq.1) write(*,*) 's_output_sgs_model_coefs'
@@ -330,7 +329,7 @@
         if (iflag_debug.eq.1) write(*,*) 'output_MHD_restart_file_ctl'
         call output_MHD_restart_file_ctl                                &
      &     (SGS_par1, MHD_files, MHD_step%time_d, MHD_step%rst_step,    &
-     &      mesh1, iphys, wk_sgs1, wk_diff1, nod_fld1)
+     &      femmesh1%mesh, iphys, wk_sgs1, wk_diff1, nod_fld1)
       end if
 !
 !     ----
@@ -351,7 +350,7 @@
           call start_elapsed_time(4)
           call output_MHD_restart_file_ctl                              &
      &       (SGS_par1, MHD_files, MHD_step%time_d, MHD_step%rst_step,  &
-     &        mesh1, iphys, wk_sgs1, wk_diff1, nod_fld1)
+     &        femmesh1%mesh, iphys, wk_sgs1, wk_diff1, nod_fld1)
           call end_elapsed_time(4)
         end if
 !
@@ -388,7 +387,7 @@
       if ( retval .ne. 0 ) then
         if (iflag_debug.eq.1) write(*,*) 'update_matrices'
         call update_matrices(MHD_step%time_d, FEM_prm1, SGS_par1,       &
-     &     mesh1, group1, ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs,      &
+     &     femmesh1, ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs,           &
      &     MHD_prop1, ak_MHD, fem_int1, FEM1_elen, Csims_FEM_MHD1,      &
      &     MHD1_mat_tbls, flex_p1, mk_MHD1, rhs_mat1, MHD_CG1)
       end if

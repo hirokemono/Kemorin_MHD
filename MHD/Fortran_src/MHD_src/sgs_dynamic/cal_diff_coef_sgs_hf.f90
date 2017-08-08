@@ -7,18 +7,16 @@
 !!     &         (itype_Csym_flux, iflag_supg, num_int, dt,             &
 !!     &          ifield, ifield_f, ivelo, ivelo_f, i_sgs,              &
 !!     &          iak_diff_flux, icomp_sgs_flux, icomp_diff_sf, ie_dfvx,&
-!!     &          SGS_par, nod_comm, node, ele, surf, sf_grp, Snod_bcs, &
-!!     &          sf_bcs, iphys, iphys_ele, ele_fld, fluid, layer_tbl,  &
+!!     &          SGS_par, mesh, group, surf, Snod_bcs, sf_bcs,         &
+!!     &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,          &
 !!     &          jacobians, rhs_tbl, FEM_elens, filtering, sgs_coefs,  &
 !!     &          mlump_fl, wk_filter, wk_cor, wk_lsq, wk_diff,         &
 !!     &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,               &
 !!     &          nod_fld, diff_coefs)
 !!        type(SGS_paremeters), intent(in) :: SGS_par
-!!        type(communication_table), intent(in) :: nod_comm
-!!        type(node_data), intent(in) :: node
-!!        type(element_data), intent(in) :: ele
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(mesh_groups), intent(in) ::   group
 !!        type(surface_data), intent(in) :: surf
-!!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
@@ -48,11 +46,9 @@
       use m_precision
 !
       use t_SGS_control_parameter
-      use t_comm_table
+      use t_mesh_data
       use t_geometry_data_MHD
-      use t_geometry_data
       use t_surface_data
-      use t_group_data
       use t_phys_data
       use t_phys_address
       use t_jacobians
@@ -81,8 +77,8 @@
      &         (itype_Csym_flux, iflag_supg, num_int, dt,               &
      &          ifield, ifield_f, ivelo, ivelo_f, i_sgs,                &
      &          iak_diff_flux, icomp_sgs_flux, icomp_diff_sf, ie_dfvx,  &
-     &          SGS_par, nod_comm, node, ele, surf, sf_grp, Snod_bcs,   &
-     &          sf_bcs, iphys, iphys_ele, ele_fld, fluid, layer_tbl,    &
+     &          SGS_par, mesh, group, surf, Snod_bcs, sf_bcs,           &
+     &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,            &
      &          jacobians, rhs_tbl, FEM_elens, filtering, sgs_coefs,    &
      &          mlump_fl, wk_filter, wk_cor, wk_lsq, wk_diff,           &
      &          mhd_fem_wk, fem_wk, surf_wk, f_l, f_nl,                 &
@@ -113,11 +109,9 @@
       real(kind = kreal), intent(in) :: dt
 !
       type(SGS_paremeters), intent(in) :: SGS_par
-      type(communication_table), intent(in) :: nod_comm
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
+      type(mesh_geometry), intent(in) :: mesh
+      type(mesh_groups), intent(in) ::   group
       type(surface_data), intent(in) :: surf
-      type(surface_group_data), intent(in) :: sf_grp
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -145,7 +139,8 @@
 !
 !    reset model coefficients
 !
-      call reset_diff_model_coefs(ele%numele, ele%istack_ele_smp,       &
+      call reset_diff_model_coefs                                       &
+     &   (mesh%ele%numele, mesh%ele%istack_ele_smp,                     &
      &    diff_coefs%num_field, iak_diff_flux, diff_coefs%ak)
       call clear_work_4_dynamic_model(iphys, nod_fld)
 !
@@ -155,8 +150,8 @@
       call cal_sgs_s_flux_grad_w_coef(iflag_supg, num_int, dt,          &
      &    itype_Csym_flux, SGS_par%model_p%icoord_Csim, ifilter_4delta, &
      &    icomp_sgs_flux, iphys%i_sgs_grad_f, ifield_f, ie_dfvx,        &
-     &    nod_comm, node, ele, fluid, iphys_ele, ele_fld,               &
-     &    jacobians%jac_3d, rhs_tbl, FEM_elens, sgs_coefs,              &
+     &    mesh%nod_comm, mesh%node, mesh%ele, fluid, iphys_ele,         &
+     &    ele_fld, jacobians%jac_3d, rhs_tbl, FEM_elens, sgs_coefs,     &
      &    mlump_fl, mhd_fem_wk, fem_wk, f_l, nod_fld)
 !
 !   take divergence of filtered heat flux (to iphys%i_sgs_simi)
@@ -164,8 +159,8 @@
       if (iflag_debug.gt.0)  write(*,*) 'cal_div_sgs_filter_hf_simi'
       call cal_div_sgs_sf_simi(iphys%i_sgs_simi, iphys%i_sgs_grad_f,    &
      &    ivelo_f, ifield_f, iflag_supg, num_int, dt,                   &
-     &    nod_comm, node, ele, fluid, iphys_ele, ele_fld,               &
-     &    jacobians%jac_3d, rhs_tbl, fem_wk, mlump_fl,                  &
+     &    mesh%nod_comm, mesh%node, mesh%ele, fluid, iphys_ele,         &
+     &    ele_fld, jacobians%jac_3d, rhs_tbl, fem_wk, mlump_fl,         &
      &    f_l, f_nl, nod_fld)
 !
 !   take divergence of heat flux (to iphys%i_sgs_grad)
@@ -173,15 +168,15 @@
       if (iflag_debug.gt.0)  write(*,*) 'cal_div_sgs_h_flux_simi'
       call cal_div_sgs_sf_simi(iphys%i_sgs_grad,                        &
      &    i_sgs, ivelo, ifield, iflag_supg, num_int, dt,                &
-     &    nod_comm, node, ele, fluid, iphys_ele, ele_fld,               &
-     &    jacobians%jac_3d, rhs_tbl, fem_wk, mlump_fl,                  &
+     &    mesh%nod_comm, mesh%node, mesh%ele, fluid, iphys_ele,         &
+     &    ele_fld, jacobians%jac_3d, rhs_tbl, fem_wk, mlump_fl,         &
      &    f_l, f_nl, nod_fld)
 !
 !
 !    filtering (to iphys%i_sgs_grad)
 !
       call cal_filtered_scalar_whole                                    &
-     &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
+     &   (SGS_par%filter_p, mesh%nod_comm, mesh%node, filtering,        &
      &    iphys%i_sgs_grad, iphys%i_sgs_grad, wk_filter, nod_fld)
 !
 !    take difference (to iphys%i_sgs_simi)
@@ -197,7 +192,7 @@
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad_f)
 !
       call cal_commute_error_4_sf(num_int, fluid%istack_ele_fld_smp,    &
-     &    mlump_fl, node, ele, surf, sf_grp,                            &
+     &    mlump_fl, mesh%node, mesh%ele, surf, group%surf_grp,          &
      &    jacobians%jac_3d, jacobians%jac_sf_grp,                       &
      &    rhs_tbl, FEM_elens, sf_bcs%sgs, ifilter_4delta,               &
      &    iphys%i_sgs_grad_f, iphys%i_sgs_grad_f, ivelo_f, ifield_f,    &
@@ -205,7 +200,7 @@
       call delete_field_by_fixed_s_bc                                   &
      &   (Snod_bcs%nod_bc_s, iphys%i_sgs_grad_f, nod_fld)
 !
-      call scalar_send_recv(iphys%i_sgs_grad_f, nod_comm, nod_fld)
+      call scalar_send_recv(iphys%i_sgs_grad_f, mesh%nod_comm, nod_fld)
 !
 !      call check_nodal_data                                            &
 !     &   ((50+my_rank), nod_fld, n_scalar, iphys%i_sgs_grad_f)
@@ -213,18 +208,18 @@
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad)
 !
       call cal_commute_error_4_sf(num_int, fluid%istack_ele_fld_smp,    &
-     &    mlump_fl, node, ele, surf, sf_grp,                            &
+     &    mlump_fl, mesh%node, mesh%ele, surf, group%surf_grp,          &
      &    jacobians%jac_3d, jacobians%jac_sf_grp,                       &
      &    rhs_tbl, FEM_elens, sf_bcs%sgs, ifilter_2delta,               &
      &    iphys%i_sgs_grad, i_sgs, ivelo, ifield,                       &
      &    fem_wk, surf_wk, f_l, f_nl, nod_fld)
 !
-      call scalar_send_recv(iphys%i_sgs_grad, nod_comm, nod_fld)
+      call scalar_send_recv(iphys%i_sgs_grad, mesh%nod_comm, nod_fld)
 !
 !    filtering (to iphys%i_sgs_grad)
 !
       call cal_filtered_scalar_whole                                    &
-     &   (SGS_par%filter_p, nod_comm, node, filtering,                  &
+     &   (SGS_par%filter_p, mesh%nod_comm, mesh%node, filtering,        &
      &    iphys%i_sgs_grad, iphys%i_sgs_grad, wk_filter, nod_fld)
       call delete_field_by_fixed_s_bc                                   &
      &   (Snod_bcs%nod_bc_s, iphys%i_sgs_grad, nod_fld)
@@ -236,8 +231,8 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_diff_coef_fluid', n_scalar, iak_diff_flux, icomp_diff_sf
-      call cal_diff_coef_fluid                                          &
-     &   (SGS_par, layer_tbl, node, ele, fluid, iphys, nod_fld,         &
+      call cal_diff_coef_fluid(SGS_par, layer_tbl,                      &
+     &    mesh%node, mesh%ele, fluid, iphys, nod_fld,                   &
      &    jacobians%jac_3d, jacobians%jac_3d_l,                         &
      &    n_scalar, iak_diff_flux, icomp_diff_sf, num_int,              &
      &    wk_cor, wk_lsq, wk_diff, diff_coefs)

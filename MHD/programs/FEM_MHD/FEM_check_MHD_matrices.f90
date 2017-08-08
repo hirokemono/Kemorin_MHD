@@ -76,11 +76,11 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_data_4_const_matrices'
       call set_data_4_const_matrices                                    &
-     &   (mesh1, MHD_mesh1, MHD_prop1, fem_int1, MHD_CG1%MGCG_WK,       &
+     &   (femmesh1, MHD_mesh1, MHD_prop1, fem_int1, MHD_CG1%MGCG_WK,    &
      &    MHD1_mat_tbls, MHD_CG1%MHD_mat, MHD_CG1%solver_pack)
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
       call set_aiccg_matrices(MHD_step%time_d%dt, FEM_prm1,             &
-     &    SGS_par1%model_p, SGS_par1%commute_p, mesh1, group1,          &
+     &    SGS_par1%model_p, SGS_par1%commute_p, femmesh1,               &
      &    ele_mesh1, MHD_mesh1, nod1_bcs, sf1_bcs, MHD_prop1, ak_MHD,   &
      &    fem_int1, FEM1_elen, Csims_FEM_MHD1, MHD1_mat_tbls, mk_MHD1,  &
      &    rhs_mat1, MHD_CG1)

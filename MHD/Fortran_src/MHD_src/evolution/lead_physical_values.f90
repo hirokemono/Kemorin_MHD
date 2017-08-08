@@ -7,8 +7,7 @@
 !> @brief Evaluate many kind of field data
 !!
 !!@verbatim
-!!      subroutine lead_fields_by_FEM                                   &
-!!     &         (time_d, FEM_prm, SGS_par, mesh, group,                &
+!!      subroutine lead_fields_by_FEM(time_d, FEM_prm, SGS_par, femmesh,&
 !!     &          ele_mesh, MHD_mesh, MHD_prop, nod_bcs, surf_bcs,      &
 !!     &          iphys, iphys_ele, ak_MHD, fem_int, FEM_elens,         &
 !!     &          filtering, wide_filtering, layer_tbl, mk_MHD,         &
@@ -17,8 +16,7 @@
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(time_data), intent(in) :: time_d
-!!        type(mesh_geometry), intent(in) :: mesh
-!!        type(mesh_groups), intent(in) ::   group
+!!        type(mesh_data), intent(in) ::   femmesh
 !!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(mesh_data_MHD), intent(in) :: MHD_mesh
 !!        type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -55,12 +53,9 @@
       use t_reference_scalar_param
       use t_time_data
       use t_mesh_data
-      use t_comm_table
       use t_geometry_data_MHD
-      use t_geometry_data
       use t_surface_data
       use t_edge_data
-      use t_group_data
       use t_phys_data
       use t_phys_address
       use t_jacobians
@@ -92,8 +87,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine lead_fields_by_FEM                                     &
-     &         (time_d, FEM_prm, SGS_par, mesh, group,                  &
+      subroutine lead_fields_by_FEM(time_d, FEM_prm, SGS_par, femmesh,  &
      &          ele_mesh, MHD_mesh, MHD_prop, nod_bcs, surf_bcs,        &
      &          iphys, iphys_ele, ak_MHD, fem_int, FEM_elens,           &
      &          filtering, wide_filtering, layer_tbl, mk_MHD,           &
@@ -108,8 +102,7 @@
       type(time_data), intent(in) :: time_d
       type(FEM_MHD_paremeters), intent(in) :: FEM_prm
       type(SGS_paremeters), intent(in) :: SGS_par
-      type(mesh_geometry), intent(in) :: mesh
-      type(mesh_groups), intent(in) ::   group
+      type(mesh_data), intent(in) ::   femmesh
       type(element_geometry), intent(in) :: ele_mesh
       type(mesh_data_MHD), intent(in) :: MHD_mesh
       type(MHD_evolution_param), intent(in) :: MHD_prop
@@ -137,11 +130,12 @@
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_potential_on_edge'
-      call cal_potential_on_edge                                        &
-     &   (mesh%node, mesh%ele, ele_mesh%edge, iphys, nod_fld)
+      call cal_potential_on_edge(femmesh%mesh%node, femmesh%mesh%ele,   &
+     &    ele_mesh%edge, iphys, nod_fld)
 !
       if (iflag_debug.gt.0) write(*,*) 'update_fields'
-      call update_fields(time_d, FEM_prm, SGS_par, mesh, group,         &
+      call update_fields                                                &
+     &   (time_d, FEM_prm, SGS_par, femmesh%mesh, femmesh%group,        &
      &    ele_mesh, MHD_mesh, nod_bcs, surf_bcs, iphys, iphys_ele,      &
      &    fem_int, FEM_elens, filtering, wide_filtering,                &
      &    layer_tbl, mk_MHD, wk_cor, wk_lsq,  wk_diff, wk_filter,       &
@@ -149,10 +143,9 @@
 !
       call cal_field_by_rotation                                        &
      &   (time_d%dt, FEM_prm, SGS_par%model_p, SGS_par%commute_p,       &
-     &    mesh%nod_comm, mesh%node, mesh%ele, ele_mesh%surf,            &
-     &    MHD_mesh%fluid, MHD_mesh%conduct, group%surf_grp,             &
-     &    MHD_prop%cd_prop, nod_bcs, surf_bcs,                          &
-     &    iphys, iphys_ele, ele_fld,                                    &
+     &    femmesh%mesh, femmesh%group, ele_mesh%surf,                   &
+     &    MHD_mesh%fluid, MHD_mesh%conduct, MHD_prop%cd_prop,           &
+     &    nod_bcs, surf_bcs, iphys, iphys_ele, ele_fld,                 &
      &    fem_int%jcs%jac_3d, fem_int%jcs%jac_sf_grp, fem_int%rhs_tbl,  &
      &    FEM_elens, Csims_FEM_MHD%ifld_diff, Csims_FEM_MHD%diff_coefs, &
      &    fem_int%m_lump, mk_MHD, mhd_fem_wk,                           &
@@ -163,8 +156,8 @@
       call cal_helicity(iphys, nod_fld)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_energy_fluxes'
-      call cal_energy_fluxes                                            &
-     &   (time_d%dt, FEM_prm, SGS_par, mesh, group, ele_mesh, MHD_mesh, &
+      call cal_energy_fluxes(time_d%dt, FEM_prm, SGS_par,               &
+     &    femmesh%mesh, femmesh%group, ele_mesh, MHD_mesh,              &
      &    MHD_prop, nod_bcs, surf_bcs, iphys, iphys_ele, ak_MHD,        &
      &    fem_int, FEM_elens, Csims_FEM_MHD, filtering, mk_MHD,         &
      &    wk_filter, mhd_fem_wk, rhs_mat, nod_fld, ele_fld)
