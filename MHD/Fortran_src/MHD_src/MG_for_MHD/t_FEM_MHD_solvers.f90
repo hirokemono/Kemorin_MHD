@@ -16,7 +16,7 @@
 !!
 !!        type(next_nod_ele_table), intent(inout) :: next_tbl
 !!        type(tables_4_FEM_assembles), intent(inout) :: rhs_tbl
-!!         type(communication_table), intent(inout) :: DJDS_comm_fl
+!!        type(communication_table), intent(inout) :: DJDS_comm_fl
 !
       module t_FEM_MHD_solvers
 !
@@ -66,7 +66,9 @@
 !
 !-----------------------------------------------------------------------
 !
-≈!
+      subroutine set_MHD_connectivities(DJDS_param, mesh, fluid,        &
+     &          solver_C, next_tbl, rhs_tbl, MHD_mat, DJDS_comm_fl)
+!
       use t_mesh_data
       use t_geometry_data_MHD
 !
