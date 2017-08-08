@@ -7,17 +7,15 @@
 !
 !>     DJDS ordering table for MHD dynamo model
 !!
-!!      subroutine alloc_aiccg_matrices                                 &
-!!     &          (node, fl_prop, cd_prop, ht_prop, cp_prop,            &
-!!     &           djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fll,     &
-!!     &           mat_velo, mat_magne, mat_temp, mat_light,            &
-!!     &           mat_press, mat_magp)
+!!      subroutine alloc_MHD_MGCG_matrices                              &
+!!     &         (i_lev, node, MHD_prop, MHD_mat)
+!!      subroutine alloc_MHD_MGCG_zero_matrices                         &
+!!     &         (i_lev, MHD_prop, MHD_mat)
+!!      subroutine dealloc_MHD_MGCG_matrices(i_lev, MHD_prop, MHD_mat)
+!!
 !!      subroutine alloc_MG_zero_matrices                               &
 !!     &         (fl_prop, cd_prop, ht_prop, cp_prop, mat_velo,         &
 !!     &          mat_magne, mat_temp,  mat_light, mat_press, mat_magp)
-!!      subroutine dealloc_aiccg_matrices                               &
-!!     &         (fl_prop, cd_prop, ht_prop, cp_prop, mat_velo,         &
-!!     &          mat_magne, mat_temp, mat_light, mat_press, mat_magp)
 !!        type(fluid_property), intent(in) :: fl_prop
 !!        type(conductive_property), intent(in) :: cd_prop
 !!        type(scalar_property), intent(in) :: ht_prop, cp_prop
@@ -32,6 +30,7 @@
 !
       use m_precision
 !
+      use t_control_parameter
       use t_physical_property
       use t_comm_table
       use t_solver_djds
@@ -101,63 +100,131 @@
         type(MG_itp_table), pointer :: MG_interpolate(:)
       end type MHD_MG_matrix
 !
+      private :: alloc_aiccg_matrices, dealloc_aiccg_matrices
+      private :: alloc_MG_zero_matrices
+!
 !-----------------------------------------------------------------------
 !
       contains
 !
 !-----------------------------------------------------------------------
 !
-      subroutine alloc_MHD_MG_DJDS_mat(num_MG_level, matrices)
+      subroutine alloc_MHD_MGCG_matrices                                &
+     &         (i_lev, node, MHD_prop, MHD_mat)
+!
+      use allocate_MHD_AMG_array
+!
+      integer(kind = kint), intent(in) :: i_lev
+      type(node_data), intent(in) :: node
+      type(MHD_evolution_param), intent(in) :: MHD_prop
+!
+      type(MHD_MG_matrices), intent(inout) :: MHD_mat
+!
+!
+!
+      call alloc_aiccg_matrices                                         &
+     &   (node, MHD_prop%fl_prop, MHD_prop%cd_prop,                     &
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
+     &    MHD_mat%MG_DJDS_table(i_lev),  MHD_mat%MG_DJDS_fluid(i_lev),  &
+     &    MHD_mat%MG_DJDS_linear(i_lev), MHD_mat%MG_DJDS_lin_fl(i_lev), &
+     &    MHD_mat%Vmat_MG_DJDS(i_lev), MHD_mat%Bmat_MG_DJDS(i_lev),     &
+     &    MHD_mat%Tmat_MG_DJDS(i_lev), MHD_mat%Cmat_MG_DJDS(i_lev),     &
+     &    MHD_mat%Pmat_MG_DJDS(i_lev), MHD_mat%Fmat_MG_DJDS(i_lev))
+!
+      end subroutine alloc_MHD_MGCG_matrices
+!
+! ----------------------------------------------------------------------
+!
+      subroutine alloc_MHD_MGCG_zero_matrices                           &
+     &         (i_lev, MHD_prop, MHD_mat)
+!
+      integer(kind = kint), intent(in) :: i_lev
+      type(MHD_evolution_param), intent(in) :: MHD_prop
+!
+      type(MHD_MG_matrices), intent(inout) :: MHD_mat
+!
+!
+      call alloc_MG_zero_matrices                                       &
+     &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
+     &    MHD_mat%Vmat_MG_DJDS(i_lev), MHD_mat%Bmat_MG_DJDS(i_lev),     &
+     &    MHD_mat%Tmat_MG_DJDS(i_lev), MHD_mat%Cmat_MG_DJDS(i_lev),     &
+     &    MHD_mat%Pmat_MG_DJDS(i_lev), MHD_mat%Fmat_MG_DJDS(i_lev) )
+!
+      end subroutine alloc_MHD_MGCG_zero_matrices
+!
+! ----------------------------------------------------------------------
+!
+      subroutine dealloc_MHD_MGCG_matrices(i_lev, MHD_prop, MHD_mat)
+!
+      integer(kind = kint), intent(in) :: i_lev
+      type(MHD_evolution_param), intent(in) :: MHD_prop
+      type(MHD_MG_matrices), intent(inout) :: MHD_mat
+!
+!
+      call dealloc_aiccg_matrices                                       &
+     &   (MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop,                           &
+     &    MHD_mat%Vmat_MG_DJDS(i_lev), MHD_mat%Bmat_MG_DJDS(i_lev),     &
+     &    MHD_mat%Tmat_MG_DJDS(i_lev), MHD_mat%Cmat_MG_DJDS(i_lev),     &
+     &    MHD_mat%Pmat_MG_DJDS(i_lev), MHD_mat%Fmat_MG_DJDS(i_lev))
+!
+      end subroutine dealloc_MHD_MGCG_matrices
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine alloc_MHD_MG_DJDS_mat(num_MG_level, MHD_mat)
 !
       integer(kind = kint), intent(in) :: num_MG_level
-      type(MHD_MG_matrices), intent(inout) :: matrices
+      type(MHD_MG_matrices), intent(inout) :: MHD_mat
 !
 !
-      allocate(matrices%Vmat_MG_DJDS(0:num_MG_level))
-      allocate(matrices%Bmat_MG_DJDS(0:num_MG_level))
+      allocate(MHD_mat%Vmat_MG_DJDS(0:num_MG_level))
+      allocate(MHD_mat%Bmat_MG_DJDS(0:num_MG_level))
 !
-      allocate(matrices%Pmat_MG_DJDS(0:num_MG_level))
-      allocate(matrices%Fmat_MG_DJDS(0:num_MG_level))
+      allocate(MHD_mat%Pmat_MG_DJDS(0:num_MG_level))
+      allocate(MHD_mat%Fmat_MG_DJDS(0:num_MG_level))
 !
-      allocate(matrices%Tmat_MG_DJDS(0:num_MG_level))
-      allocate(matrices%Cmat_MG_DJDS(0:num_MG_level))
+      allocate(MHD_mat%Tmat_MG_DJDS(0:num_MG_level))
+      allocate(MHD_mat%Cmat_MG_DJDS(0:num_MG_level))
 !
 !
-      allocate(matrices%MG_DJDS_table(0:num_MG_level))
-      allocate(matrices%MG_DJDS_linear(0:num_MG_level))
-      allocate(matrices%MG_comm_table(0:num_MG_level))
+      allocate(MHD_mat%MG_DJDS_table(0:num_MG_level))
+      allocate(MHD_mat%MG_DJDS_linear(0:num_MG_level))
+      allocate(MHD_mat%MG_comm_table(0:num_MG_level))
 !
-      allocate(matrices%MG_DJDS_fluid(0:num_MG_level))
-      allocate(matrices%MG_DJDS_lin_fl(0:num_MG_level))
-      allocate(matrices%MG_comm_fluid(0:num_MG_level))
+      allocate(MHD_mat%MG_DJDS_fluid(0:num_MG_level))
+      allocate(MHD_mat%MG_DJDS_lin_fl(0:num_MG_level))
+      allocate(MHD_mat%MG_comm_fluid(0:num_MG_level))
 !
-      allocate(matrices%MG_DJDS_conduct(0:num_MG_level))
+      allocate(MHD_mat%MG_DJDS_conduct(0:num_MG_level))
 !
-      allocate(matrices%MG_mat_tbls(0:num_MG_level))
+      allocate(MHD_mat%MG_mat_tbls(0:num_MG_level))
 !
-      allocate(matrices%MG_interpolate(num_MG_level))
+      allocate(MHD_mat%MG_interpolate(num_MG_level))
 !
       end subroutine alloc_MHD_MG_DJDS_mat
 !
 !-----------------------------------------------------------------------
 !
-      subroutine dealloc_MHD_MG_DJDS_mat(matrices)
+      subroutine dealloc_MHD_MG_DJDS_mat(MHD_mat)
 !
-      type(MHD_MG_matrices), intent(inout) :: matrices
+      type(MHD_MG_matrices), intent(inout) :: MHD_mat
 !
 !
-      deallocate(matrices%Vmat_MG_DJDS, matrices%Bmat_MG_DJDS)
-      deallocate(matrices%Pmat_MG_DJDS, matrices%Fmat_MG_DJDS)
-      deallocate(matrices%Tmat_MG_DJDS, matrices%Cmat_MG_DJDS)
+      deallocate(MHD_mat%Vmat_MG_DJDS, MHD_mat%Bmat_MG_DJDS)
+      deallocate(MHD_mat%Pmat_MG_DJDS, MHD_mat%Fmat_MG_DJDS)
+      deallocate(MHD_mat%Tmat_MG_DJDS, MHD_mat%Cmat_MG_DJDS)
 !
-      deallocate(matrices%MG_DJDS_table, matrices%MG_DJDS_linear)
-      deallocate(matrices%MG_comm_table)
-      deallocate(matrices%MG_DJDS_fluid, matrices%MG_DJDS_lin_fl)
-      deallocate(matrices%MG_comm_fluid)
+      deallocate(MHD_mat%MG_DJDS_table, MHD_mat%MG_DJDS_linear)
+      deallocate(MHD_mat%MG_comm_table)
+      deallocate(MHD_mat%MG_DJDS_fluid, MHD_mat%MG_DJDS_lin_fl)
+      deallocate(MHD_mat%MG_comm_fluid)
 !
-      deallocate(matrices%MG_DJDS_conduct)
+      deallocate(MHD_mat%MG_DJDS_conduct)
 !
-      deallocate(matrices%MG_mat_tbls, matrices%MG_interpolate)
+      deallocate(MHD_mat%MG_mat_tbls, MHD_mat%MG_interpolate)
 !
       end subroutine dealloc_MHD_MG_DJDS_mat
 !

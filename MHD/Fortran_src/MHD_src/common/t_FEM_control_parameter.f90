@@ -16,12 +16,20 @@
 !!@verbatim
 !!      subroutine alloc_area_group_name(ngrp, area_group)
 !!      subroutine dealloc_area_group_name(area_group)
+!!
+!!      subroutine set_residual_4_crank                                 &
+!!     &         (dt, fl_prop, cd_prop, ht_prop, cp_prop, FEM_prm)
+!!        type(fluid_property), intent(in) :: fl_prop
+!!        type(conductive_property), intent(in) :: cd_prop
+!!        type(scalar_property), intent(in) :: ht_prop, cp_prop
+!!        type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
 !!@endverbatim
 !
       module t_FEM_control_parameter
 !
       use m_precision
       use m_constants
+      use t_physical_property
       use t_iccg_parameter
       use t_MGCG_parameter
 !
@@ -133,5 +141,55 @@
       end subroutine dealloc_area_group_name
 !
 !  ---------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine set_residual_4_crank                                   &
+     &         (dt, fl_prop, cd_prop, ht_prop, cp_prop, FEM_prm)
+!
+      use m_machine_parameter
+!
+      real(kind = kreal), intent(in) :: dt
+      type(fluid_property), intent(in) :: fl_prop
+      type(conductive_property), intent(in) :: cd_prop
+      type(scalar_property), intent(in) :: ht_prop, cp_prop
+!
+      type(FEM_MHD_paremeters), intent(inout) :: FEM_prm
+!
+!
+      if (fl_prop%iflag_scheme .ge. id_Crank_nicolson) then
+        FEM_prm%eps_4_velo_crank                                        &
+     &      = FEM_PRM%eps_crank * fl_prop%coef_diffuse * dt**2
+        if(iflag_debug.eq.1)                                            &
+     &     write(12,*) 'eps_4_velo', FEM_prm%eps_4_velo_crank
+      end if
+!
+      if (ht_prop%iflag_scheme .ge. id_Crank_nicolson) then
+        FEM_prm%eps_4_temp_crank                                        &
+     &      = FEM_PRM%eps_crank * ht_prop%coef_diffuse * dt**2
+        if(iflag_debug.eq.1)                                            &
+     &     write(12,*) 'eps_4_temp_crank', FEM_prm%eps_4_temp_crank
+      end if
+!
+      if (   cd_prop%iflag_Bevo_scheme .ge. id_Crank_nicolson           &
+     &  .or. cd_prop%iflag_Aevo_scheme .ge. id_Crank_nicolson) then
+!
+        if(FEM_prm%eps_4_magne_crank .le. 0.0d0) then
+          FEM_prm%eps_4_magne_crank                                     &
+     &        = FEM_PRM%eps_crank * cd_prop%coef_diffuse * dt**2
+        end if
+        if(iflag_debug.eq.1)                                            &
+     &     write(12,*) 'eps_4_magne_crank', FEM_prm%eps_4_magne_crank
+      end if
+!
+      if (cp_prop%iflag_scheme .ge. id_Crank_nicolson) then
+        FEM_prm%eps_4_comp_crank                                        &
+     &      = FEM_PRM%eps_crank * cp_prop%coef_diffuse * dt**2
+        if(iflag_debug.eq.1)                                            &
+     &     write(12,*) 'eps_4_comp_crank', FEM_prm%eps_4_comp_crank
+      end if
+!
+      end subroutine set_residual_4_crank
+!
+! ----------------------------------------------------------------------
 !
       end module t_FEM_control_parameter

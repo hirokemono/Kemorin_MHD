@@ -343,9 +343,12 @@
 !
 !     ---------------------
 !
-      if (iflag_debug.eq.1 ) write(*,*) 'allocate_aiccg_matrices'
-      call allocate_aiccg_matrices                                      &
-     &   (MHD_step%time_d%dt, mesh%node, MHD_prop, FEM_prm)
+      call set_residual_4_crank(MHD_step%time_d%dt,                     &
+     &    MHD_prop%fl_prop, MHD_prop%cd_prop,                           &
+     &    MHD_prop%ht_prop, MHD_prop%cp_prop, FEM_prm)
+      if (iflag_debug.eq.1 ) write(*,*) 'alloc_MHD_MGCG_matrices'
+      call alloc_MHD_MGCG_matrices                                      &
+     &   (izero, mesh%node, MHD_prop, MHD1_matrices)
 !      call reset_aiccg_matrices(mesh%node, mesh%ele, MHD_mesh%fluid)
 !
       if(solver_iflag(FEM_PRM%CG11_param%METHOD) .eq. iflag_mgcg) then

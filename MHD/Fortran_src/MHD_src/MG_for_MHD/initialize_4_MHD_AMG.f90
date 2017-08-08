@@ -305,32 +305,15 @@
 !
       do i_level = 1, MGCG_WK%num_MG_level
         if(my_rank .lt. MGCG_WK%MG_mpi(i_level)%nprocs) then
-          if(iflag_debug .gt. 0) write(*,*) 'alloc_aiccg_matrices'
-          call alloc_aiccg_matrices                                     &
-     &       (MGCG_FEM%MG_mesh(i_level)%mesh%node,                      &
-     &        MHD_prop%fl_prop, MHD_prop%cd_prop,                       &
-     &        MHD_prop%ht_prop, MHD_prop%cp_prop,                       &
-     &        MHD_matrices%MG_DJDS_table(i_level),                      &
-     &        MHD_matrices%MG_DJDS_fluid(i_level),                      &
-     &        MHD_matrices%MG_DJDS_linear(i_level),                     &
-     &        MHD_matrices%MG_DJDS_lin_fl(i_level),                     &
-     &        MHD_matrices%Vmat_MG_DJDS(i_level),                       &
-     &        MHD_matrices%Bmat_MG_DJDS(i_level),                       &
-     &        MHD_matrices%Tmat_MG_DJDS(i_level),                       &
-     &        MHD_matrices%Cmat_MG_DJDS(i_level),                       &
-     &        MHD_matrices%Pmat_MG_DJDS(i_level),                       &
-     &        MHD_matrices%Fmat_MG_DJDS(i_level) )
+          if(iflag_debug .gt. 0) write(*,*) 'alloc_MHD_MGCG_matrices'
+          call alloc_MHD_MGCG_matrices                                  &
+     &       (i_level, MGCG_FEM%MG_mesh(i_level)%mesh%node,             &
+     &        MHD_prop, MHD_matrices)
         else
-          if(iflag_debug .gt. 0) write(*,*) 'alloc_MG_zero_matrices'
-          call alloc_MG_zero_matrices                                   &
-     &       (MHD_prop%fl_prop, MHD_prop%cd_prop,                       &
-     &        MHD_prop%ht_prop, MHD_prop%cp_prop,                       &
-     &        MHD_matrices%Vmat_MG_DJDS(i_level),                       &
-     &        MHD_matrices%Bmat_MG_DJDS(i_level),                       &
-     &        MHD_matrices%Tmat_MG_DJDS(i_level),                       &
-     &        MHD_matrices%Cmat_MG_DJDS(i_level),                       &
-     &        MHD_matrices%Pmat_MG_DJDS(i_level),                       &
-     &        MHD_matrices%Fmat_MG_DJDS(i_level) )
+          if(iflag_debug .gt. 0) write(*,*)                             &
+     &                                 'alloc_MHD_MGCG_zero_matrices'
+          call alloc_MHD_MGCG_zero_matrices                             &
+     &       (i_level, MHD_prop, MHD_matrices)
         end if
       end do
 !
