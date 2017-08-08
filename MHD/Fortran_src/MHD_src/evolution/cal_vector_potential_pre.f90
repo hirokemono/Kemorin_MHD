@@ -11,7 +11,7 @@
 !!     &          nod_comm, node, ele, surf, conduct, sf_grp,           &
 !!     &          cd_prop, Bnod_bcs, Asf_bcs, iphys, iphys_ele, ele_fld,&
 !!     &          jacobians, rhs_tbl, FEM_elens, sgs_coefs, diff_coefs, &
-!!     &          filtering, Bmatrix, MG_vector,                        &
+!!     &          filtering, mlump_cd, Bmatrix, MG_vector,              &
 !!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_vector_p_co(iak_diff_b, ak_d_magne, dt,          &
 !!     &          FEM_prm, SGS_param, cmt_param,                        &
@@ -44,6 +44,7 @@
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
 !!        type(filtering_data_type), intent(in) :: filtering
+!!        type(lumped_mass_matrices), intent(in) :: mlump_cd
 !!        type(MHD_MG_matrix), intent(in) :: Bmatrix
 !!        type(vectors_4_solver), intent(inout)                         &
 !!       &           :: MG_vector(0:num_MG_level)
@@ -102,7 +103,7 @@
      &          nod_comm, node, ele, surf, conduct, sf_grp,             &
      &          cd_prop, Bnod_bcs, Asf_bcs, iphys, iphys_ele, ele_fld,  &
      &          jacobians, rhs_tbl, FEM_elens, sgs_coefs, diff_coefs,   &
-     &          filtering, Bmatrix, MG_vector,                          &
+     &          filtering, mlump_cd, Bmatrix, MG_vector,                &
      &          wk_filter, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use calypso_mpi
@@ -141,6 +142,7 @@
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(filtering_data_type), intent(in) :: filtering
+      type(lumped_mass_matrices), intent(in) :: mlump_cd
       type(MHD_MG_matrix), intent(in) :: Bmatrix
 !
       integer(kind = kint), intent(in) :: iak_diff_b, icomp_sgs_uxb
@@ -210,15 +212,15 @@
       if (cd_prop%iflag_Aevo_scheme .eq. id_explicit_euler) then
         call cal_magne_pre_euler(iphys%i_vecp, dt,                      &
      &      FEM_prm, nod_comm, node, ele, conduct, iphys_ele, ele_fld,  &
-     &      jacobians%jac_3d, rhs_tbl, mhd_fem_wk%mlump_cd,             &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      jacobians%jac_3d, rhs_tbl, mlump_cd, mhd_fem_wk, fem_wk,    &
+     &      f_l, f_nl, nod_fld)
 !
 !  -----for Adams_Bashforth
       else if (cd_prop%iflag_Aevo_scheme .eq. id_explicit_adams2) then
         call cal_magne_pre_adams(iphys%i_vecp, iphys%i_pre_uxb, dt,     &
      &      FEM_prm, nod_comm, node, ele, conduct, iphys_ele, ele_fld,  &
-     &      jacobians%jac_3d, rhs_tbl, mhd_fem_wk%mlump_cd,             &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      jacobians%jac_3d, rhs_tbl, mlump_cd, mhd_fem_wk, fem_wk,    &
+     &      f_l, f_nl, nod_fld)
 !
 !  -----for Ceank-nicolson
       else if (cd_prop%iflag_Aevo_scheme .eq. id_Crank_nicolson) then
@@ -227,7 +229,7 @@
      &      iphys%i_vecp, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,      &
      &      Bnod_bcs%nod_bc_a, dt, FEM_prm, nod_comm, node, ele,        &
      &      conduct, cd_prop, iphys_ele, ele_fld, jacobians%jac_3d,     &
-     &      rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk%mlump_cd,        &
+     &      rhs_tbl, FEM_elens, diff_coefs, mlump_cd,                   &
      &      Bmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if(cd_prop%iflag_Aevo_scheme .eq. id_Crank_nicolson_cmass)   &
      & then

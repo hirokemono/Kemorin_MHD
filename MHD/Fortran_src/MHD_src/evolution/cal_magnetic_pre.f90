@@ -10,8 +10,8 @@
 !!     &          FEM_prm, SGS_param, cmt_param, filter_param,          &
 !!     &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,  &
 !!     &          Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,&
-!!     &          jacobians, rhs_tbl, FEM_elens,                        &
-!!     &          sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,      &
+!!     &          jacobians, rhs_tbl, FEM_elens, sgs_coefs,             &
+!!     &          sgs_coefs_nod, diff_coefs, filtering, mlump_cd,       &
 !!     &          Bmatrix, MG_vector, wk_filter, mhd_fem_wk, fem_wk,    &
 !!     &          surf_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_magnetic_co(iak_diff_b, ak_d_magne, dt,          &
@@ -52,6 +52,7 @@
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs
 !!        type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
 !!        type(SGS_coefficients_type), intent(in) :: diff_coefs
+!!        type(lumped_mass_matrices), intent(in) :: mlump_cd
 !!        type(filtering_data_type), intent(in) :: filtering
 !!        type(MHD_MG_matrix), intent(in) :: Bmatrix
 !!        type(vectors_4_solver), intent(inout)                         &
@@ -108,8 +109,8 @@
      &          FEM_prm, SGS_param, cmt_param, filter_param,            &
      &          nod_comm, node, ele, surf, conduct, sf_grp, cd_prop,    &
      &          Bnod_bcs, Asf_bcs, Bsf_bcs, iphys, iphys_ele, ele_fld,  &
-     &          jacobians, rhs_tbl, FEM_elens,                          &
-     &          sgs_coefs, sgs_coefs_nod, diff_coefs, filtering,        &
+     &          jacobians, rhs_tbl, FEM_elens, sgs_coefs,               &
+     &          sgs_coefs_nod, diff_coefs, filtering, mlump_cd,         &
      &          Bmatrix, MG_vector, wk_filter, mhd_fem_wk, fem_wk,      &
      &          surf_wk, f_l, f_nl, nod_fld)
 !
@@ -150,6 +151,7 @@
       type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
       type(SGS_coefficients_type), intent(in) :: diff_coefs
       type(filtering_data_type), intent(in) :: filtering
+      type(lumped_mass_matrices), intent(in) :: mlump_cd
       type(MHD_MG_matrix), intent(in) :: Bmatrix
 !
       integer(kind = kint), intent(in) :: iak_diff_b, iak_diff_uxb
@@ -173,8 +175,8 @@
      &      FEM_prm, SGS_param, filter_param, nod_comm, node, ele,      &
      &      conduct, cd_prop, iphys, iphys_ele, ele_fld,                &
      &      jacobians%jac_3d, rhs_tbl, FEM_elens, filtering,            &
-     &      sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk, fem_wk,    &
-     &      f_l, nod_fld)
+     &      sgs_coefs, sgs_coefs_nod, mlump_cd,                         &
+     &      wk_filter, mhd_fem_wk, fem_wk, f_l, nod_fld)
       end if
 !
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
@@ -219,20 +221,20 @@
       if(cd_prop%iflag_Bevo_scheme .eq. id_explicit_euler) then
         call cal_magne_pre_euler(iphys%i_magne, dt,                     &
      &      FEM_prm, nod_comm, node, ele, conduct, iphys_ele, ele_fld,  &
-     &      jacobians%jac_3d, rhs_tbl, mhd_fem_wk%mlump_cd,             &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      jacobians%jac_3d, rhs_tbl, mlump_cd, mhd_fem_wk, fem_wk,    &
+     &      f_l, f_nl, nod_fld)
       else if(cd_prop%iflag_Bevo_scheme .eq. id_explicit_adams2) then
         call cal_magne_pre_adams(iphys%i_magne, iphys%i_pre_uxb, dt,    &
      &      FEM_prm, nod_comm, node, ele, conduct, iphys_ele, ele_fld,  &
-     &      jacobians%jac_3d, rhs_tbl, mhd_fem_wk%mlump_cd,             &
-     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      jacobians%jac_3d, rhs_tbl, mlump_cd, mhd_fem_wk, fem_wk,    &
+     &      f_l, f_nl, nod_fld)
       else if(cd_prop%iflag_Bevo_scheme .eq. id_Crank_nicolson) then
         call cal_magne_pre_lumped_crank                                 &
      &     (cmt_param%iflag_c_magne, SGS_param%ifilter_final,           &
      &      iphys%i_magne, iphys%i_pre_uxb, iak_diff_b, ak_d_magne,     &
      &      Bnod_bcs%nod_bc_b, dt, FEM_prm, nod_comm, node, ele,        &
      &      conduct, cd_prop, iphys_ele, ele_fld, jacobians%jac_3d,     &
-     &      rhs_tbl, FEM_elens, diff_coefs, mhd_fem_wk%mlump_cd,        &
+     &      rhs_tbl, FEM_elens, diff_coefs, mlump_cd,                   &
      &      Bmatrix, MG_vector, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if(cd_prop%iflag_Bevo_scheme .eq. id_Crank_nicolson_cmass)   &
      & then

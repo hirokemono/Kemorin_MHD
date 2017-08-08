@@ -182,9 +182,10 @@
      &     FEM_elens, Csims_FEM_MHD%icomp_sgs, Csims_FEM_MHD%ifld_diff, &
      &     Csims_FEM_MHD%iphys_elediff, Csims_FEM_MHD%sgs_coefs,        &
      &     Csims_FEM_MHD%diff_coefs, filtering, fem_int%m_lump,         &
-     &     s_package%Bmatrix, s_package%Fmatrix, ak_MHD%ak_d_magne,     &
-     &     MGCG_WK, wk_filter, mhd_fem_wk, rhs_mat%fem_wk,              &
-     &     rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, fem_sq, nod_fld)
+     &     mhd_fem_wk%mlump_cd, s_package%Bmatrix, s_package%Fmatrix,   &
+     &     ak_MHD%ak_d_magne, MGCG_WK, wk_filter, mhd_fem_wk,           &
+     &     rhs_mat%fem_wk, rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl,  &
+     &     fem_sq, nod_fld)
         call update_with_vector_potential                               &
      &    (Csims_FEM_MHD%ifld_diff%i_magne,                             &
      &     Csims_FEM_MHD%icomp_diff%i_magne,                            &
@@ -216,8 +217,8 @@
      &     Csims_FEM_MHD%icomp_sgs, Csims_FEM_MHD%ifld_diff,            &
      &     Csims_FEM_MHD%iphys_elediff, Csims_FEM_MHD%sgs_coefs,        &
      &     Csims_FEM_MHD%sgs_coefs_nod, Csims_FEM_MHD%diff_coefs,       &
-     &     filtering, fem_int%m_lump, s_package%Bmatrix,                &
-     &     s_package%Fmatrix, ak_MHD%ak_d_magne,                        &
+     &     filtering, fem_int%m_lump, mhd_fem_wk%mlump_cd,              &
+     &     s_package%Bmatrix, s_package%Fmatrix, ak_MHD%ak_d_magne,     &
      &     MGCG_WK, wk_filter, mhd_fem_wk, rhs_mat%fem_wk,              &
      &     rhs_mat%surf_wk, rhs_mat%f_l, rhs_mat%f_nl, fem_sq, nod_fld)
         call update_with_magnetic_field                                 &

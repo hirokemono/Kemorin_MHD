@@ -27,9 +27,9 @@
 !!     &         (icomp_sgs_uxb, ie_dvx, ie_dbx, dt,                    &
 !!     &          FEM_prm, SGS_param, filter_param, nod_comm, node, ele,&
 !!     &          conduct, cd_prop, iphys, iphys_ele, ele_fld,          &
-!!     &          jac_3d, rhs_tbl,  FEM_elens, filtering,               &
-!!     &          sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk,      &
-!!     &          fem_wk, f_l, nod_fld)
+!!     &          jac_3d, rhs_tbl, FEM_elens, filtering,                &
+!!     &          sgs_coefs, sgs_coefs_nod, mlump_cd,                   &
+!!     &          wk_filter, mhd_fem_wk, fem_wk, f_l, nod_fld)
 !!      subroutine cal_sgs_uxb_2_evo(icomp_sgs_uxb, ie_dvx, dt,         &
 !!     &          FEM_prm, SGS_param, filter_param, nod_comm, node, ele,&
 !!     &          conduct, cd_prop, iphys, iphys_ele, ele_fld, jac_3d,  &
@@ -50,6 +50,8 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(filtering_data_type), intent(in) :: filtering
+!!        type(lumped_mass_matrices), intent(in) :: mlump_fl
+!!        type(lumped_mass_matrices), intent(in) :: mlump_cd
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -307,8 +309,8 @@
      &          FEM_prm, SGS_param, filter_param, nod_comm, node, ele,  &
      &          conduct, cd_prop, iphys, iphys_ele, ele_fld,            &
      &          jac_3d, rhs_tbl,  FEM_elens, filtering,                 &
-     &          sgs_coefs, sgs_coefs_nod, wk_filter, mhd_fem_wk,        &
-     &          fem_wk, f_l, nod_fld)
+     &          sgs_coefs, sgs_coefs_nod, mlump_cd,                     &
+     &          wk_filter, mhd_fem_wk, fem_wk, f_l, nod_fld)
 !
       use cal_sgs_inductions_grad
 !
@@ -333,6 +335,7 @@
       type(filtering_data_type), intent(in) :: filtering
       type(SGS_coefficients_type), intent(in) :: sgs_coefs
       type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
+      type(lumped_mass_matrices), intent(in) :: mlump_cd
 !
       type(filtering_work_type), intent(inout) :: wk_filter
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -349,7 +352,7 @@
      &      iphys%i_velo, iphys%i_magne, ie_dvx, ie_dbx, dt,            &
      &      FEM_prm, SGS_param, nod_comm, node, ele, conduct, cd_prop,  &
      &      iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elens, sgs_coefs,  &
-     &      mhd_fem_wk%mlump_cd, fem_wk, mhd_fem_wk, f_l, nod_fld)
+     &      mlump_cd, fem_wk, mhd_fem_wk, f_l, nod_fld)
 !
       else if(SGS_param%iflag_SGS_uxb .eq. id_SGS_similarity) then
         if (iflag_debug.eq.1)                                           &

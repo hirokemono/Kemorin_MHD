@@ -8,7 +8,7 @@
 !!     &         (iak_sgs_uxb, icomp_sgs_uxb, ie_dvx, ie_dfvx, dt,      &
 !!     &          FEM_prm, SGS_par, nod_comm, node, ele, iphys,         &
 !!     &          iphys_ele, ele_fld, conduct, cd_prop, layer_tbl,      &
-!!     &          jacobians, rhs_tbl, FEM_elens, filtering,             &
+!!     &          jacobians, rhs_tbl, FEM_elens, filtering, mlump_cd,   &
 !!     &          wk_filter, wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,&
 !!     &          f_l, nod_fld, sgs_coefs)
 !!      subroutine cal_sgs_induct_t_dynamic(iak_sgs_uxb, icomp_sgs_uxb, &
@@ -16,8 +16,8 @@
 !!     &          FEM_prm, SGS_par, nod_comm, node, ele, iphys,         &
 !!     &          iphys_ele, ele_fld, conduct, cd_prop, layer_tbl,      &
 !!     &          jacobians, rhs_tbl, FEM_elens, filtering,             &
-!!     &          sgs_coefs_nod, wk_filter,  wk_cor, wk_lsq, wk_sgs,    &
-!!     &          mhd_fem_wk, fem_wk, f_l, nod_fld, sgs_coefs)
+!!     &          sgs_coefs_nod, mlump_cd, wk_filter, wk_cor, wk_lsq,   &
+!!     &          wk_sgs, mhd_fem_wk, fem_wk, f_l, nod_fld, sgs_coefs)
 !!        type(FEM_MHD_paremeters), intent(in) :: FEM_prm
 !!        type(SGS_paremeters), intent(in) :: SGS_par
 !!        type(communication_table), intent(in) :: nod_comm
@@ -33,6 +33,7 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
 !!        type(filtering_data_type), intent(in) :: filtering
+!!        type(lumped_mass_matrices), intent(in) :: mlump_cd
 !!        type(filtering_work_type), intent(inout) :: wk_filter
 !!        type(dynamis_correlation_data), intent(inout) :: wk_cor
 !!        type(dynamis_least_suare_data), intent(inout) :: wk_lsq
@@ -84,7 +85,7 @@
      &         (iak_sgs_uxb, icomp_sgs_uxb, ie_dvx, ie_dfvx, dt,        &
      &          FEM_prm, SGS_par, nod_comm, node, ele, iphys,           &
      &          iphys_ele, ele_fld, conduct, cd_prop, layer_tbl,        &
-     &          jacobians, rhs_tbl, FEM_elens, filtering,               &
+     &          jacobians, rhs_tbl, FEM_elens, filtering, mlump_cd,     &
      &          wk_filter, wk_cor, wk_lsq, wk_sgs, mhd_fem_wk, fem_wk,  &
      &          f_l, nod_fld, sgs_coefs)
 !
@@ -115,6 +116,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
+      type(lumped_mass_matrices), intent(in) :: mlump_cd
 !
       type(filtering_work_type), intent(inout) :: wk_filter
       type(dynamis_correlation_data), intent(inout) :: wk_cor
@@ -148,7 +150,7 @@
      &    iphys%i_sgs_grad_f, iphys%i_filter_magne, ie_dfvx, dt,        &
      &    FEM_prm, nod_comm, node, ele, conduct, cd_prop,               &
      &    iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl, FEM_elens,     &
-     &    mhd_fem_wk%mlump_cd, mhd_fem_wk, fem_wk, f_l, nod_fld)
+     &    mlump_cd, mhd_fem_wk, fem_wk, f_l, nod_fld)
 !
 !   gradient model by original field
 !
@@ -157,7 +159,7 @@
      &    iphys%i_SGS_vp_induct, iphys%i_magne, ie_dvx, dt,             &
      &    FEM_prm, nod_comm, node, ele, conduct, cd_prop,               &
      &    iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl, FEM_elens,     &
-     &    mhd_fem_wk%mlump_cd, mhd_fem_wk, fem_wk, f_l, nod_fld)
+     &    mlump_cd, mhd_fem_wk, fem_wk, f_l, nod_fld)
 !
 !      filtering
 !
@@ -189,8 +191,8 @@
      &          FEM_prm, SGS_par, nod_comm, node, ele, iphys,           &
      &          iphys_ele, ele_fld, conduct, cd_prop, layer_tbl,        &
      &          jacobians, rhs_tbl, FEM_elens, filtering,               &
-     &          sgs_coefs_nod, wk_filter,  wk_cor, wk_lsq, wk_sgs,      &
-     &          mhd_fem_wk, fem_wk, f_l, nod_fld, sgs_coefs)
+     &          sgs_coefs_nod, mlump_cd, wk_filter, wk_cor, wk_lsq,     &
+     &          wk_sgs, mhd_fem_wk, fem_wk, f_l, nod_fld, sgs_coefs)
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields
@@ -222,6 +224,7 @@
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(filtering_data_type), intent(in) :: filtering
       type(SGS_coefficients_type), intent(in) :: sgs_coefs_nod
+      type(lumped_mass_matrices), intent(in) :: mlump_cd
 !
       type(filtering_work_type), intent(inout) :: wk_filter
       type(dynamis_correlation_data), intent(inout) :: wk_cor
@@ -262,7 +265,7 @@
      &    iphys%i_filter_velo, iphys%i_filter_magne, ie_dfvx, ie_dfbx,  &
      &    dt, FEM_prm, nod_comm, node, ele, conduct, cd_prop,           &
      &    iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl, FEM_elens,     &
-     &    mhd_fem_wk%mlump_cd, fem_wk, mhd_fem_wk, f_l, nod_fld)
+     &    mlump_cd, fem_wk, mhd_fem_wk, f_l, nod_fld)
 !
 !   gradient model by original field
 !
@@ -272,7 +275,7 @@
      &    iphys%i_velo, iphys%i_magne, ie_dvx, ie_dbx, dt,              &
      &    FEM_prm, nod_comm, node, ele, conduct, cd_prop,               &
      &    iphys_ele, ele_fld, jacobians%jac_3d, rhs_tbl, FEM_elens,     &
-     &    mhd_fem_wk%mlump_cd, fem_wk, mhd_fem_wk, f_l, nod_fld)
+     &    mlump_cd, fem_wk, mhd_fem_wk, f_l, nod_fld)
 !
 !      filtering
 !
